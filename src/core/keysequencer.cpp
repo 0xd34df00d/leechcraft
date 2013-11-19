@@ -36,6 +36,7 @@ KeySequencer::KeySequencer (const QString& labelStr, QWidget *parent)
 {
 	Ui_.setupUi (this);
 	Ui_.DescLabel_->setText (labelStr);
+	Ui_.DescLabel_->setFocus ();
 }
 
 QKeySequence KeySequencer::GetResult () const

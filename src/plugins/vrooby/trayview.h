@@ -52,7 +52,7 @@ namespace Vrooby
 
 		DevBackend *Backend_;
 	public:
-		TrayView (ICoreProxy_ptr, QWidget* = 0);
+		TrayView (ICoreProxy_ptr);
 
 		void SetBackend (DevBackend*);
 		bool HasItems () const;

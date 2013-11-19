@@ -57,7 +57,9 @@ namespace LeechCraft
 	public:
 		RootWindowsManager (QObject* = 0);
 
+		void Initialize ();
 		void Release ();
+
 		MainWindow* MakeMainWindow ();
 		TabManager* GetTabManager (MainWindow*) const;
 		TabManager* GetTabManager (int) const;
@@ -77,7 +79,7 @@ namespace LeechCraft
 		QMainWindow* GetMainWindow (int) const;
 		ICoreTabWidget* GetTabWidget (int) const;
 	private:
-		MainWindow* CreateWindow ();
+		MainWindow* CreateWindow (int screen, bool primary);
 		void PerformWithTab (std::function<void (TabManager*, int)>, QWidget*);
 		void MoveTab (int tab, int fromWin, int toWin);
 	public slots:

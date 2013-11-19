@@ -11,7 +11,7 @@
     <message>
         <location filename="playlistmodel.cpp" line="53"/>
         <source>Duration</source>
-        <translation>Продолжительность</translation>
+        <translation>Длительность</translation>
     </message>
 </context>
 <context>

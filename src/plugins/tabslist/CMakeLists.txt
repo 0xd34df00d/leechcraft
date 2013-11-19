@@ -46,4 +46,3 @@ target_link_libraries (leechcraft_tabslist
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_tabslist DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

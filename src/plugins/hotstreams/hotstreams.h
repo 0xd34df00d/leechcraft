@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QHash>
 #include <interfaces/iinfo.h>
@@ -47,6 +48,7 @@ namespace HotStreams
 
 		ICoreProxy_ptr Proxy_;
 		QHash<QString, QStandardItem*> Roots_;
+		QHash<QStandardItem*, std::function<void (QStandardItem*)>> Root2Fetcher_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -58,6 +60,7 @@ namespace HotStreams
 
 		QList<QStandardItem*> GetRadioListItems () const;
 		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
+		void RefreshItems (const QList<QStandardItem*>&);
 	protected slots:
 		void refreshRadios ();
 	signals:

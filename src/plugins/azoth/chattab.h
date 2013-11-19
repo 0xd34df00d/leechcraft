@@ -47,6 +47,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	struct EntryStatus;
+	class CoreMessage;
 	class ICLEntry;
 	class IMUCEntry;
 	class IAccount;
@@ -92,6 +93,8 @@ namespace Azoth
 		int ScrollbackPos_;
 
 		QList<IMessage*> HistoryMessages_;
+		QDateTime LastDateTime_;
+		QList<CoreMessage*> CoreMessages_;
 
 		QIcon TabIcon_;
 		bool IsMUC_;
@@ -151,6 +154,8 @@ namespace Azoth
 
 		QObject* GetCLEntry () const;
 		QString GetSelectedVariant () const;
+
+		QString ReformatTitle ();
 
 		bool eventFilter (QObject*, QEvent*);
 	public slots:
@@ -227,7 +232,6 @@ namespace Azoth
 
 		QStringList GetMUCParticipants () const;
 
-		void ReformatTitle ();
 		void UpdateTextHeight ();
 		void SetChatPartState (ChatPartState);
 

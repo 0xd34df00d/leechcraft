@@ -57,9 +57,8 @@ namespace LeechCraft
 		{
 			if (Parent_)
 			{
-				QList<FlatTreeItem_ptr> c = Parent_->C_;
-				for (int i = 0, size = Parent_->C_.size ();
-						i < size; ++i)
+				const auto& c = Parent_->C_;
+				for (int i = 0, size = c.size (); i < size; ++i)
 					if (c.at (i).get () == this)
 						return i;
 			}
@@ -233,7 +232,7 @@ namespace LeechCraft
 			return SourceModel_->mimeData (sourceIdxs);
 		}
 
-		bool FlatToFoldersProxyModel::dropMimeData (const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+		bool FlatToFoldersProxyModel::dropMimeData (const QMimeData* data, Qt::DropAction action, int, int, const QModelIndex& parent)
 		{
 			if (!SourceModel_)
 				return false;
@@ -329,16 +328,51 @@ namespace LeechCraft
 
 		QList<QModelIndex> FlatToFoldersProxyModel::MapFromSource (const QModelIndex& source) const
 		{
+			auto tags = source.data (RoleTags).toStringList ();
+			if (tags.isEmpty ())
+				tags << QString ();
+
 			QList<QModelIndex> result;
-			Q_FOREACH (FlatTreeItem_ptr item, Items_.values (QPersistentModelIndex (source)))
-				result << item->Index_;
+			for (const auto& tag : tags)
+			{
+				const auto& folder = FindFolder (tag);
+				if (!folder)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "could not find folder for tag"
+							<< tag
+							<< GetSourceModel ();
+					continue;
+				}
+
+				const auto& folderIdx = index (folder->Row (), 0, {});
+
+				for (int i = 0; i < folder->C_.size (); ++i)
+				{
+					const auto& child = folder->C_.at (i);
+					if (child->Index_ != source)
+						continue;
+
+					result << index (i, 0, folderIdx);
+					break;
+				}
+			}
 			return result;
+		}
+
+		FlatTreeItem_ptr FlatToFoldersProxyModel::FindFolder (const QString& tag) const
+		{
+			for (const auto& item : Root_->C_)
+				if (item->Tag_ == tag)
+					return item;
+
+			return {};
 		}
 
 		FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const QString& tag)
 		{
-			QList<FlatTreeItem_ptr>& c = Root_->C_;
-			Q_FOREACH (FlatTreeItem_ptr item, c)
+			auto& c = Root_->C_;
+			for (const auto& item : c)
 				if (item->Tag_ == tag)
 					return item;
 

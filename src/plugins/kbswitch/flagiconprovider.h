@@ -40,7 +40,7 @@ namespace KBSwitch
 	public:
 		FlagIconProvider ();
 
-		QImage requestImage (const QString&, QSize*, const QSize&);
+		QPixmap requestPixmap (const QString&, QSize*, const QSize&);
 	};
 }
 }

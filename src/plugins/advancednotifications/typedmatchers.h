@@ -27,12 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_TYPEDMATCHERS_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_TYPEDMATCHERS_H
+#pragma once
+
 #include <memory>
 #include <QString>
 #include <QRegExp>
 #include <QVariant>
+#include <interfaces/an/ianemitter.h>
 
 namespace Ui
 {
@@ -51,12 +52,14 @@ namespace AdvancedNotifications
 	class TypedMatcherBase
 	{
 	protected:
-		QWidget *CW_;
+		QWidget *CW_ = nullptr;
 	public:
-		static TypedMatcherBase_ptr Create (QVariant::Type);
+		static TypedMatcherBase_ptr Create (QVariant::Type, const ANFieldData& = {});
 
 		virtual QVariantMap Save () const = 0;
 		virtual void Load (const QVariantMap&) = 0;
+
+		virtual void SetValue (const ANFieldValue&) = 0;
 
 		virtual bool Match (const QVariant&) const = 0;
 
@@ -68,15 +71,17 @@ namespace AdvancedNotifications
 	class StringLikeMatcher : public TypedMatcherBase
 	{
 	protected:
-		QRegExp Rx_;
-		bool Contains_;
+		ANStringFieldValue Value_;
+		const QStringList Allowed_;
 
 		std::shared_ptr<Ui::StringLikeMatcherConfigWidget> Ui_;
 	public:
-		StringLikeMatcher ();
+		StringLikeMatcher (const QStringList& variants = {});
 
 		QVariantMap Save () const;
 		void Load (const QVariantMap&);
+
+		void SetValue (const ANFieldValue&);
 
 		QWidget* GetConfigWidget ();
 		void SyncToWidget ();
@@ -85,6 +90,8 @@ namespace AdvancedNotifications
 	class StringMatcher : public StringLikeMatcher
 	{
 	public:
+		StringMatcher (const QStringList& variants = {});
+
 		bool Match (const QVariant&) const;
 
 		QString GetHRDescription () const;
@@ -93,6 +100,8 @@ namespace AdvancedNotifications
 	class StringListMatcher : public StringLikeMatcher
 	{
 	public:
+		StringListMatcher (const QStringList& variants = {});
+
 		bool Match (const QVariant&) const;
 
 		QString GetHRDescription () const;
@@ -100,26 +109,17 @@ namespace AdvancedNotifications
 
 	class IntMatcher : public TypedMatcherBase
 	{
-		int Boundary_;
-
-		enum Operation
-		{
-			OGreater = 0x01,
-			OLess = 0x02,
-			OEqual = 0x04
-		};
-
-		Q_DECLARE_FLAGS (Operations, Operation)
-
-		Operations Ops_;
+		ANIntFieldValue Value_;
 
 		std::shared_ptr<Ui::IntMatcherConfigWidget> Ui_;
-		QMap<Operations, int> Ops2pos_;
+		QMap<ANIntFieldValue::Operations, int> Ops2pos_;
 	public:
 		IntMatcher ();
 
 		QVariantMap Save () const;
 		void Load (const QVariantMap&);
+
+		void SetValue (const ANFieldValue&);
 
 		bool Match (const QVariant&) const;
 
@@ -129,5 +129,3 @@ namespace AdvancedNotifications
 	};
 }
 }
-
-#endif

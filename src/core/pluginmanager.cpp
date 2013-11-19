@@ -30,6 +30,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <functional>
+#include <numeric>
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -533,6 +534,27 @@ namespace LeechCraft
 				}
 
 		return PluginID2PluginCache_ [id];
+	}
+
+	QObjectList PluginManager::GetFirstLevels (const QByteArray& pclass) const
+	{
+		QObjectList result;
+		for (auto pluginObj : GetAllCastableRoots<IPluginReady*> ())
+			if (qobject_cast<IPluginReady*> (pluginObj)->GetExpectedPluginClasses ().contains (pclass))
+				result << pluginObj;
+		return result;
+	}
+
+	QObjectList PluginManager::GetFirstLevels (const QSet<QByteArray>& pclasses) const
+	{
+		return std::accumulate (pclasses.begin (), pclasses.end (), QObjectList (),
+				[this] (QObjectList list, const QByteArray& pc) -> QObjectList
+				{
+					for (const auto plugin : GetFirstLevels (pc))
+						if (!list.contains (plugin))
+							list << plugin;
+					return list;
+				});
 	}
 
 	void PluginManager::InjectPlugin (QObject *object)

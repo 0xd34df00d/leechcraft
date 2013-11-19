@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label lang="en" value="General settings" />
+		<label value="General settings" />
 		<groupbox>
 			<label value="Client" />
 			<item type="lineedit" property="timer" default="90">
-				<label lang="en" value="Update time, seconds" />
+				<label value="Update time, seconds" />
 			</item>
 			<item type="lineedit" property="additional_twits" default="30">
-				<label lang="en" value="Number of twits to get per one request" />
+				<label value="Number of twits to get per one request" />
 			</item>
 		</groupbox>
 		<groupbox>
 			<label value="API" />
 			<item type="lineedit" property="consumer_key" default="nbwLYUDIlgsMgDFCu6jfuA">
-				<label lang="en" value="Consumer key:" />
+				<label value="Consumer key:" />
 			</item>
 			<item type="lineedit" property="consumer_key_secret" default="7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4">
-				<label lang="en" value="Consumer key secret:" />
+				<label value="Consumer key secret:" />
 			</item>
 		</groupbox>
-	</page>
-	<page>
-		<label lang="en" value="Notification settings" />
-		<item type="checkbox" property="notify" default="true">
-			<label lang="en" value="Show notifications" />
-		</item>
+		<groupbox>
+			<label value="Appearance" />
+			<item type="checkbox" property="inline_photo" default="false">
+				<label value="Show photos in popup instead of browser tab" />
+			</item>
+			<item type="checkbox" property="notify" default="true">
+				<label value="Show notifications" />
+			</item>
+		</groupbox>
 	</page>
 </settings>

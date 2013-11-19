@@ -45,12 +45,25 @@ namespace AdvancedNotifications
 #endif
 	}
 
+	namespace
+	{
+		QString ChooseIcon (QAction *action, bool checked)
+		{
+			const auto& on = action->property ("ActionIcon").toString ();
+			if (checked)
+				return on;
+
+			const auto& off = action->property ("ActionIconOff").toString ();
+			return !off.isEmpty () ? off : on;
+		}
+	}
+
 	void ActionsModel::AddAction (QAction *action)
 	{
 		Actions_ << action;
 
 		auto item = new QStandardItem;
-		item->setData (action->property ("ActionIcon"), Roles::IconName);
+		item->setData (ChooseIcon (action, action->isChecked ()), Roles::IconName);
 		item->setData (action->isChecked (), Roles::IsActionChecked);
 		appendRow (item);
 
@@ -78,14 +91,8 @@ namespace AdvancedNotifications
 			return;
 		}
 
+		item (pos)->setData (ChooseIcon (action, checked), Roles::IconName);
 		item (pos)->setData (checked, Roles::IsActionChecked);
-
-		const auto& off = action->property ("ActionIconOff").toString ();
-		if (!off.isEmpty ())
-		{
-			const auto& on = action->property ("ActionIcon").toString ();
-			item (pos)->setData (checked ? on : off, Roles::IconName);
-		}
 	}
 #ifdef USE_QT5
 	QHash<int, QByteArray> ActionsModel::roleNames () const

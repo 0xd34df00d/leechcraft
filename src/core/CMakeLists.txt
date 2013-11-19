@@ -5,6 +5,18 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	)
 
+if (NOT USE_QT5)
+	if (NOT WIN32)
+		set (QT_USE_QTDBUS TRUE)
+	endif ()
+	set (QT_USE_QTNETWORK TRUE)
+	set (QT_USE_QTXML TRUE)
+	set (QT_USE_QTSQL TRUE)
+	set (QT_USE_QTSCRIPT TRUE)
+	set (QT_USE_QTDECLARATIVE TRUE)
+	include (${QT_USE_FILE})
+endif ()
+
 add_definitions (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 add_definitions (${QT_DEFINITIONS})
 
@@ -110,8 +122,18 @@ set (FORMS
 	)
 set (RESOURCES mainresources.qrc)
 
+set (UTILITY_SRCS)
+foreach (ITEM IN LISTS UTIL_SRCS XSD_SRCS)
+	list (APPEND UTILITY_SRCS "../${ITEM}")
+endforeach ()
+
+set (UTILITY_FORMS)
+foreach (ITEM IN LISTS UTIL_FORMS XSD_FORMS)
+	list (APPEND UTILITY_FORMS "../${ITEM}")
+endforeach ()
+
 CreateTrs ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("" "en;ru_RU" "${SRCS};${UTIL_SRCS};${XSD_SRCS}" "${FORMS};${UTIL_FORMS};${XSD_FORMS}" "coresettings.xml")
+CreateTrsUpTarget ("" "en;ru_RU" "${SRCS};${UTILITY_SRCS}" "${FORMS};${UTILITY_FORMS}" "coresettings.xml")
 
 set (WIN_RESOURCES)
 if (WIN32)
@@ -130,7 +152,7 @@ add_executable (leechcraft WIN32
 	${WIN_RESOURCES}
 	)
 
-FindQtLibs (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
+FindQtLibs (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg Qml Quick)
 
 target_link_libraries (leechcraft
 		${QT_QTMAIN_LIBRARY}
@@ -141,7 +163,6 @@ target_link_libraries (leechcraft
 		)
 
 install (TARGETS leechcraft DESTINATION ${LC_BINDIR})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 if (UNIX AND NOT APPLE)

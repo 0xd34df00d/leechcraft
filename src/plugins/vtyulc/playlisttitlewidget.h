@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include <QToolBar>
 #include <interfaces/core/icoreproxy.h>
 
 class QToolButton;
@@ -39,13 +39,9 @@ namespace LeechCraft
 {
 namespace vlc
 {
-	class PlaylistTitleWidget : public QWidget
+	class PlaylistTitleWidget : public QToolBar
 	{
 		Q_OBJECT
-		
-		QToolButton *ClearPlaylist_;
-		QToolButton *MagicSort_;
-		QToolButton *AddFiles_;
 	
 	public:
 		explicit PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent = 0);
@@ -53,6 +49,8 @@ namespace vlc
 		QAction *ClearAction_;
 		QAction *MagicAction_;
 		QAction *AddAction_;
+		QAction *UpAction_;
+		QAction *DownAction_;
 	};
 }
 }

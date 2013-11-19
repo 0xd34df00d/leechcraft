@@ -61,7 +61,7 @@ namespace LMP
 		{
 			for (const auto& format : formats)
 				Ui_.TranscodingFormat_->addItem (format->GetFormatName (), format->GetFormatID ());
-			on_TranscodingFormat__currentIndexChanged (0);
+			on_TranscodingFormat__currentIndexChanged ();
 			Ui_.StatusLabel_->hide ();
 		}
 		else
@@ -111,7 +111,7 @@ namespace LMP
 		return static_cast<Format::BitrateType> (data.toInt ());
 	}
 
-	void TranscodingParamsWidget::on_TranscodingFormat__currentIndexChanged (int idx)
+	void TranscodingParamsWidget::on_TranscodingFormat__currentIndexChanged ()
 	{
 		Ui_.BitrateTypeBox_->clear ();
 
@@ -119,7 +119,7 @@ namespace LMP
 		if (!format)
 			return;
 
-		Q_FOREACH (auto type, format->GetSupportedBitrates ())
+		for (auto type : format->GetSupportedBitrates ())
 			Ui_.BitrateTypeBox_->addItem (type == Format::BitrateType::CBR ? "CBR" : "VBR", static_cast<int> (type));
 
 		on_BitrateTypeBox__currentIndexChanged (0);

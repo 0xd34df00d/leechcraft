@@ -37,6 +37,7 @@
 #include <QtConcurrentRun>
 #include <QApplication>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -134,10 +135,6 @@ namespace LMP
 				SIGNAL (aboutToFinish ()),
 				this,
 				SLOT (handleUpdateSourceQueue ()));
-
-		XmlSettingsManager::Instance ().RegisterObject ("TransitionTime",
-				this, "setTransitionTime");
-		setTransitionTime ();
 
 		XmlSettingsManager::Instance ().RegisterObject ("SingleTrackDisplayMask",
 				this, "refillPlaylist");
@@ -250,7 +247,8 @@ namespace LMP
 
 	void Player::PrepareURLInfo (const QUrl& url, const MediaInfo& info)
 	{
-		Url2Info_ [url] = info;
+		if (!info.IsUseless ())
+			Url2Info_ [url] = info;
 	}
 
 	void Player::Enqueue (const QStringList& paths, bool sort)
@@ -267,6 +265,15 @@ namespace LMP
 		std::for_each (sources.begin (), sources.end (),
 				[&parsedSources] (decltype (sources.front ()) path)
 					{ parsedSources += FileToSource (path); });
+
+		for (auto i = parsedSources.begin (); i != parsedSources.end (); )
+		{
+			if (Items_.contains (*i))
+				i = parsedSources.erase (i);
+			else
+				++i;
+		}
+
 		AddToPlaylistModel (parsedSources, sort);
 	}
 
@@ -508,6 +515,10 @@ namespace LMP
 				SIGNAL (gotPlaylist (QString, QString)),
 				this,
 				SLOT (handleGotRadioPlaylist (QString, QString)));
+		connect (CurrentStation_->GetQObject (),
+				SIGNAL (gotAudioInfos (QList<Media::AudioInfo>)),
+				this,
+				SLOT (handleGotAudioInfos (QList<Media::AudioInfo>)));
 		CurrentStation_->RequestNewStream ();
 
 		auto radioName = station->GetRadioName ();
@@ -637,20 +648,37 @@ namespace LMP
 	{
 		QPair<AudioSource, MediaInfo> PairResolve (const AudioSource& source)
 		{
-			auto resolver = Core::Instance ().GetLocalFileResolver ();
-
 			MediaInfo info;
-			if (source.IsLocalFile ())
+			if (!source.IsLocalFile ())
+				return { source, info };
+
+			info.LocalPath_ = source.GetLocalPath ();
+
+			auto collection = Core::Instance ().GetLocalCollection ();
+
+			const auto trackId = collection->FindTrack (source.GetLocalPath ());
+			if (trackId == -1)
+			{
+				auto resolver = Core::Instance ().GetLocalFileResolver ();
 				try
 				{
 					info = resolver->ResolveInfo (source.GetLocalPath ());
 				}
 				catch (...)
 				{
-					info.LocalPath_ = source.GetLocalPath ();
 				}
+				return { source, info };
+			}
 
-			return qMakePair (source, info);
+			info.Artist_ = collection->GetTrackData (trackId, LocalCollection::Role::ArtistName).toString ();
+			info.Album_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumName).toString ();
+			info.Title_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackTitle).toString ();
+			info.Genres_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackGenres).toStringList ();
+			info.Length_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackLength).toInt ();
+			info.Year_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumYear).toInt ();
+			info.TrackNumber_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackNumber).toInt ();
+
+			return { source, info };
 		}
 
 		QList<QPair<AudioSource, MediaInfo>> PairResolveAll (const QList<AudioSource>& sources)
@@ -745,6 +773,49 @@ namespace LMP
 		RadioItem_ = 0;
 
 		CurrentStation_.reset ();
+	}
+
+	void Player::EmitStateChange ()
+	{
+		QString stateStr;
+		QString hrStateStr;
+		switch (Source_->GetState ())
+		{
+		case SourceState::Paused:
+			stateStr = "Paused";
+			hrStateStr = tr ("paused");
+			break;
+		case SourceState::Buffering:
+		case SourceState::Playing:
+			stateStr = "Playing";
+			hrStateStr = tr ("playing");
+			break;
+		default:
+			stateStr = "Stopped";
+			hrStateStr = tr ("stopped");
+			break;
+		}
+
+		const auto& mediaInfo = GetCurrentMediaInfo ();
+		const auto& str = tr ("%1 by %2 is now %3")
+				.arg (mediaInfo.Title_)
+				.arg (mediaInfo.Artist_)
+				.arg (hrStateStr);
+
+		auto e = Util::MakeAN ("LMP", str, PInfo_,
+				"org.LeechCraft.LMP", AN::CatMediaPlayer, AN::TypeMediaPlaybackStatus,
+				"org.LeechCraft.LMP.PlaybackStatus", {}, 0, 1, str);
+		e.Mime_ += "+advanced";
+		e.Additional_ [AN::Field::MediaPlaybackStatus] = stateStr;
+		e.Additional_ [AN::Field::MediaPlayerURL] =
+				Source_->GetCurrentSource ().ToUrl ().toEncoded ();
+
+		e.Additional_ [AN::Field::MediaArtist] = mediaInfo.Artist_;
+		e.Additional_ [AN::Field::MediaAlbum] = mediaInfo.Album_;
+		e.Additional_ [AN::Field::MediaTitle] = mediaInfo.Title_;
+		e.Additional_ [AN::Field::MediaLength] = mediaInfo.Length_;
+
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	template<typename T>
@@ -1173,6 +1244,27 @@ namespace LMP
 		Enqueue (list, false);
 	}
 
+	void Player::handleGotAudioInfos (const QList<Media::AudioInfo>& infos)
+	{
+		QList<AudioSource> sources;
+		for (const auto& info : infos)
+		{
+			const auto& url = info.Other_ ["URL"].toUrl ();
+			if (!url.isValid ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "skipping invalid URL";
+				continue;
+			}
+
+			Url2Info_ [url] = info;
+			sources << url;
+		}
+
+		if (!sources.isEmpty ())
+			Enqueue (sources, false);
+	}
+
 	void Player::postPlaylistCleanup (const QString& filename)
 	{
 		UnsetRadio ();
@@ -1227,6 +1319,8 @@ namespace LMP
 		}
 
 		SavePlayState (false);
+
+		EmitStateChange ();
 	}
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)
@@ -1255,7 +1349,7 @@ namespace LMP
 		if (curItem)
 			emit indexChanged (PlaylistModel_->indexFromItem (curItem));
 
-		Q_FOREACH (auto item, Items_.values ())
+		for (auto item : Items_)
 		{
 			if (item == curItem)
 				continue;
@@ -1265,6 +1359,8 @@ namespace LMP
 				break;
 			}
 		}
+
+		EmitStateChange ();
 	}
 
 	void Player::handleMetadata ()
@@ -1290,6 +1386,8 @@ namespace LMP
 		}
 
 		LastPhononMediaInfo_ = info;
+
+		EmitStateChange ();
 	}
 
 	void Player::handleSourceError (const QString& sourceText, SourceError error)
@@ -1313,13 +1411,6 @@ namespace LMP
 	void Player::refillPlaylist ()
 	{
 		ReplaceQueue (GetQueue (), false);
-	}
-
-	void Player::setTransitionTime ()
-	{
-		const int time = XmlSettingsManager::Instance ()
-				.property ("TransitionTime").toInt ();
-		Source_->SetTransitionTime (time);
 	}
 }
 }

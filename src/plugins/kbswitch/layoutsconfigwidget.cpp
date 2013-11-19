@@ -67,8 +67,8 @@ namespace KBSwitch
 				for (const auto& item : list)
 					row << new QStandardItem (item);
 
-				const auto& img = flagProv.requestImage (list.at (0), nullptr, {});
-				row.first ()->setIcon ({ QPixmap::fromImage (img) });
+				const auto& img = flagProv.requestPixmap (list.at (0), nullptr, {});
+				row.first ()->setIcon ({ img });
 
 				row.value (0)->setEditable (false);
 				row.value (1)->setEditable (false);

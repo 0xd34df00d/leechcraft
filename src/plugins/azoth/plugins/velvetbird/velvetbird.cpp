@@ -115,7 +115,7 @@ namespace VelvetBird
 		return ProtoMgr_ ? ProtoMgr_->GetProtoObjs () : QList<QObject*> ();
 	}
 
-	void Plugin::initPlugin (QObject *proxy)
+	void Plugin::initPlugin (QObject*)
 	{
 	}
 }

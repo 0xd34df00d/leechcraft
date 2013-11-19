@@ -140,13 +140,13 @@ namespace Liznoo
 		template<>
 		struct Numeric2ID<int>
 		{
-			enum { Value = kCFNumberIntType };
+			static const CFNumberType Value = kCFNumberIntType;
 		};
 
 		template<>
 		struct Numeric2ID<double>
 		{
-			enum { Value = kCFNumberDoubleType };
+			static const CFNumberType Value = kCFNumberDoubleType;
 		};
 
 		template<typename T>

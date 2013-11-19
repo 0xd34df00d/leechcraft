@@ -49,7 +49,8 @@ namespace Xtazy
 			{},
 			map ["length"].toInt (),
 			0,
-			map ["track"].toInt ()
+			map ["track"].toInt (),
+			{}
 		};
 	}
 }

@@ -278,12 +278,11 @@ namespace ChatHistory
 		preNick.replace ('<', "&lt;");
 		postNick.replace ('<', "&lt;");
 
-		QList<QColor> colors = Core::Instance ()->
-				GetPluginProxy ()->GenerateColors ("hash");
+		const auto& colors = Core::Instance ()->GetPluginProxy ()->GenerateColors ("hash", {});
 
 		int scrollPos = -1;
 
-		Q_FOREACH (const QVariant& logVar, logsVar.toList ())
+		for (const auto& logVar : logsVar.toList ())
 		{
 			const QVariantMap& map = logVar.toMap ();
 

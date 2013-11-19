@@ -37,12 +37,20 @@ namespace LeechCraft
 {
 namespace Blasq
 {
+	enum class DeleteFeature
+	{
+		DeleteImages,
+		DeleteCollections
+	};
+
 	class ISupportDeletes
 	{
 	public:
 		virtual ~ISupportDeletes () {}
 
 		virtual void Delete (const QModelIndex&) = 0;
+
+		virtual bool SupportsFeature (DeleteFeature) const = 0;
 	};
 }
 }

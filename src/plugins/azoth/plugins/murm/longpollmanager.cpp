@@ -52,24 +52,15 @@ namespace Murm
 	void LongPollManager::ForceServerRequery ()
 	{
 		LPServer_.clear ();
+		ShouldStop_ = false;
 	}
 
 	void LongPollManager::Stop ()
 	{
 		ShouldStop_ = true;
-	}
 
-	void LongPollManager::Poll ()
-	{
-		const auto& url = GetURLTemplate ();
-
-		qDebug () << Q_FUNC_INFO << url;
-
-		LastPollDT_ = QDateTime::currentDateTime ();
-		connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url)),
-				SIGNAL (finished ()),
-				this,
-				SLOT (handlePollFinished ()));
+		if (CurrentPollReply_)
+			CurrentPollReply_->abort ();
 	}
 
 	QUrl LongPollManager::GetURLTemplate () const
@@ -80,16 +71,69 @@ namespace Murm
 		return url;
 	}
 
+	void LongPollManager::HandlePollError ()
+	{
+		++PollErrorCount_;
+		qWarning () << Q_FUNC_INFO
+				<< "network error:"
+				<< CurrentPollReply_->error ()
+				<< CurrentPollReply_->errorString ()
+				<< "; error count:"
+				<< PollErrorCount_;
+
+		switch (CurrentPollReply_->error ())
+		{
+		case QNetworkReply::RemoteHostClosedError:
+		{
+			const auto diff = LastPollDT_.secsTo (QDateTime::currentDateTime ());
+			const auto newTimeout = std::max ((diff + WaitTimeout_) / 2 - 1, 5);
+			qWarning () << Q_FUNC_INFO
+					<< "got timeout with"
+					<< WaitTimeout_
+					<< diff
+					<< "; new timeout:"
+					<< newTimeout;
+			WaitTimeout_ = newTimeout;
+			break;
+		}
+		case QNetworkReply::HostNotFoundError:
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot find host"
+					<< LPURLTemplate_
+					<< "scheduling requerying server...";
+			ForceServerRequery ();
+			QTimer::singleShot (1000,
+					this,
+					SLOT (start ()));
+			return;
+		}
+		default:
+			if (PollErrorCount_ == 4)
+				emit pollError ();
+			break;
+		}
+
+		CurrentPollReply_ = nullptr;
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (poll ()));
+	}
+
 	void LongPollManager::start ()
 	{
 		if (!LPServer_.isEmpty ())
 			return;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		auto req = [this, nam] (const QString& key) -> QNetworkReply*
+		auto req = [this, nam] (const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
 		{
 			QUrl lpUrl ("https://api.vk.com/method/messages.getLongPollServer");
 			lpUrl.addQueryItem ("access_token", key);
+
+			VkConnection::AddParams (lpUrl, params);
+
 			auto reply = nam->get (QNetworkRequest (lpUrl));
 			connect (reply,
 					SIGNAL (finished ()),
@@ -100,46 +144,32 @@ namespace Murm
 		Conn_->QueueRequest (req);
 	}
 
-	void LongPollManager::handlePollFinished ()
+	void LongPollManager::poll ()
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		if (reply->error () != QNetworkReply::NoError)
+		if (CurrentPollReply_)
 		{
-			++PollErrorCount_;
 			qWarning () << Q_FUNC_INFO
-					<< "network error:"
-					<< reply->error ()
-					<< reply->errorString ()
-					<< "; error count:"
-					<< PollErrorCount_;
-
-			switch (reply->error ())
-			{
-			case QNetworkReply::RemoteHostClosedError:
-			{
-				const auto diff = LastPollDT_.secsTo (QDateTime::currentDateTime ());
-				const auto newTimeout = std::max ((diff + WaitTimeout_) / 2 - 1, 5);
-				qWarning () << Q_FUNC_INFO
-						<< "got timeout with"
-						<< WaitTimeout_
-						<< diff
-						<< "; new timeout:"
-						<< newTimeout;
-				WaitTimeout_ = newTimeout;
-				break;
-			}
-			default:
-				if (PollErrorCount_ == 4)
-					emit pollError ();
-				break;
-			}
-
-			Poll ();
-
+					<< "already polling";
 			return;
 		}
+
+		const auto& url = GetURLTemplate ();
+
+		LastPollDT_ = QDateTime::currentDateTime ();
+		CurrentPollReply_ = Proxy_->
+				GetNetworkAccessManager ()->get (QNetworkRequest (url));
+		connect (CurrentPollReply_,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePollFinished ()));
+	}
+
+	void LongPollManager::handlePollFinished ()
+	{
+		CurrentPollReply_->deleteLater ();
+
+		if (CurrentPollReply_->error () != QNetworkReply::NoError && !ShouldStop_)
+			return HandlePollError ();
 		else if (PollErrorCount_)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -151,10 +181,11 @@ namespace Murm
 			emit listening ();
 		}
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = QJson::Parser ().parse (CurrentPollReply_);
 		const auto& rootMap = data.toMap ();
 		if (rootMap.contains ("failed"))
 		{
+			CurrentPollReply_ = nullptr;
 			ForceServerRequery ();
 			start ();
 			return;
@@ -162,17 +193,26 @@ namespace Murm
 
 		emit gotPollData (rootMap);
 
-		LPTS_ = rootMap ["ts"].toULongLong ();
+		if (rootMap.contains ("ts"))
+			LPTS_ = rootMap ["ts"].toULongLong ();
 
 		if (!ShouldStop_)
 		{
+			CurrentPollReply_ = nullptr;
+
 			if (!LPServer_.isEmpty ())
-				Poll ();
+				poll ();
 			else
 				start ();
 		}
 		else
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "should stop polling, stopping...";
+			CurrentPollReply_ = nullptr;
 			emit stopped ();
+			ShouldStop_ = false;
+		}
 	}
 
 	void LongPollManager::handleGotLPServer()
@@ -205,7 +245,7 @@ namespace Murm
 
 		emit listening ();
 
-		Poll ();
+		poll ();
 	}
 }
 }

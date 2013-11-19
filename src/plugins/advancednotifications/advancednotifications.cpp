@@ -111,9 +111,9 @@ namespace AdvancedNotifications
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
 		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
-			e.Additional_.contains ("org.LC.AdvNotifications.SenderID") &&
-			e.Additional_.contains ("org.LC.AdvNotifications.EventID") &&
-			e.Additional_.contains ("org.LC.AdvNotifications.EventCategory");
+				e.Additional_.contains ("org.LC.AdvNotifications.SenderID") &&
+				e.Additional_.contains ("org.LC.AdvNotifications.EventID") &&
+				e.Additional_.contains ("org.LC.AdvNotifications.EventCategory");
 
 		if (!can)
 			return EntityTestHandleResult ();

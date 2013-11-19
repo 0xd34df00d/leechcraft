@@ -55,14 +55,14 @@ namespace SB2
 #ifdef USE_QT5
 			: QQuickImageProvider (Image)
 #else
-			: QDeclarativeImageProvider (Image)
+			: QDeclarativeImageProvider (Pixmap)
 #endif
 			{
 			}
 
-			QImage requestImage (const QString&, QSize*, const QSize&)
+			QPixmap requestPixmap (const QString&, QSize*, const QSize&)
 			{
-				return QImage ("lcicons:/resources/images/leechcraft.svg");
+				return QPixmap ("lcicons:/resources/images/leechcraft.svg");
 			}
 		};
 

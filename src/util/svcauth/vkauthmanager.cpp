@@ -31,6 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QTimer>
 #include <QWebView>
 
 #if USE_QT5
@@ -38,6 +39,7 @@
 #endif
 
 #include <util/network/customcookiejar.h>
+#include <util/queuemanager.h>
 
 namespace LeechCraft
 {
@@ -56,18 +58,30 @@ namespace SvcAuth
 		}
 	}
 
-	VkAuthManager::VkAuthManager (const QString& id, const QStringList& scope,
-			const QByteArray& cookies, ICoreProxy_ptr proxy, QObject *parent)
+	VkAuthManager::VkAuthManager (const QString& accName,
+			const QString& id, const QStringList& scope,
+			const QByteArray& cookies, ICoreProxy_ptr proxy,
+			QueueManager *queueMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, AccountHR_ (accName)
 	, AuthNAM_ (new QNetworkAccessManager (this))
 	, Cookies_ (new Util::CustomCookieJar)
+	, Queue_ (queueMgr)
 	, ValidFor_ (0)
 	, IsRequesting_ (false)
 	, URL_ (URLFromClientID (id, scope))
+	, IsRequestScheduled_ (false)
+	, ScheduleTimer_ (new QTimer (this))
 	{
 		AuthNAM_->setCookieJar (Cookies_);
 		Cookies_->Load (cookies);
+
+		ScheduleTimer_->setSingleShot (true);
+		connect (ScheduleTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (execScheduledRequest ()));
 	}
 
 	void VkAuthManager::GetAuthKey ()
@@ -79,24 +93,60 @@ namespace SvcAuth
 			return;
 		}
 
+		InvokeQueues (Token_);
 		emit gotAuthKey (Token_);
 	}
 
-	void VkAuthManager::Reauth ()
+	void VkAuthManager::ManageQueue (VkAuthManager::RequestQueue_ptr queue)
 	{
-		auto view = new QWebView;
-		view->setWindowTitle (tr ("VK.com authentication"));
-		view->setWindowFlags (Qt::Window);
-		view->resize (800, 600);
-		view->page ()->setNetworkAccessManager (AuthNAM_);
-		view->show ();
+		if (!Queue_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot manage request queue if queue manager wasn't set";
+			return;
+		}
 
-		view->setUrl (URL_);
+		ManagedQueues_ << queue;
+	}
 
-		connect (view,
-				SIGNAL (urlChanged (QUrl)),
-				this,
-				SLOT (handleViewUrlChanged (QUrl)));
+	void VkAuthManager::UnmanageQueue (VkAuthManager::RequestQueue_ptr queue)
+	{
+		ManagedQueues_.removeAll (queue);
+	}
+
+	void VkAuthManager::ManageQueue (VkAuthManager::PrioRequestQueue_ptr queue)
+	{
+		if (!Queue_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot manage request queue if queue manager wasn't set";
+			return;
+		}
+
+		PrioManagedQueues_ << queue;
+	}
+
+	void VkAuthManager::UnmanageQueue (VkAuthManager::PrioRequestQueue_ptr queue)
+	{
+		PrioManagedQueues_.removeAll (queue);
+	}
+
+	void VkAuthManager::InvokeQueues (const QString& token)
+	{
+		for (auto queue : PrioManagedQueues_)
+			while (!queue->isEmpty ())
+			{
+				const auto& pair = queue->takeFirst ();
+				const auto& f = pair.first;
+				Queue_->Schedule ([f, token] { f (token); }, nullptr, pair.second);
+			}
+
+		for (auto queue : ManagedQueues_)
+			while (!queue->isEmpty ())
+			{
+				const auto& f = queue->takeFirst ();
+				Queue_->Schedule ([f, token] { f (token); });
+			}
 	}
 
 	void VkAuthManager::HandleError ()
@@ -112,14 +162,13 @@ namespace SvcAuth
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleGotForm ()));
-		connect (reply,
-				SIGNAL(error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleFormFetchError ()));
 	}
 
 	void VkAuthManager::RequestAuthKey ()
 	{
+		if (IsRequestScheduled_ && ScheduleTimer_->isActive ())
+			ScheduleTimer_->stop ();
+
 		if (IsRequesting_)
 			return;
 
@@ -145,9 +194,43 @@ namespace SvcAuth
 		qDebug () << Q_FUNC_INFO << Token_ << ValidFor_;
 		IsRequesting_ = false;
 
+		InvokeQueues (Token_);
 		emit gotAuthKey (Token_);
 
 		return true;
+	}
+
+	void VkAuthManager::clearAuthData ()
+	{
+		Cookies_->Load ({});
+		Token_.clear ();
+		ReceivedAt_ = QDateTime ();
+		ValidFor_ = 0;
+	}
+
+	void VkAuthManager::reauth ()
+	{
+		auto view = new QWebView;
+		view->setWindowTitle (tr ("VK.com authentication for %1")
+				.arg (AccountHR_));
+		view->setWindowFlags (Qt::Window);
+		view->resize (800, 600);
+		view->page ()->setNetworkAccessManager (AuthNAM_);
+		view->show ();
+
+		view->setUrl (URL_);
+
+		connect (view,
+				SIGNAL (urlChanged (QUrl)),
+				this,
+				SLOT (handleViewUrlChanged (QUrl)));
+	}
+
+	void VkAuthManager::execScheduledRequest ()
+	{
+		IsRequestScheduled_ = false;
+
+		RequestAuthKey ();
 	}
 
 	void VkAuthManager::handleGotForm ()
@@ -155,10 +238,26 @@ namespace SvcAuth
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
+		if (reply->error () != QNetworkReply::NoError)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< reply->errorString ();
+
+			IsRequesting_ = false;
+
+			if (!IsRequestScheduled_)
+			{
+				IsRequestScheduled_ = true;
+				ScheduleTimer_->start (30000);
+			}
+
+			return;
+		}
+
 		const auto& location = reply->header (QNetworkRequest::LocationHeader).toUrl ();
 		if (location.isEmpty ())
 		{
-			Reauth ();
+			reauth ();
 			return;
 		}
 
@@ -166,17 +265,6 @@ namespace SvcAuth
 			return;
 
 		RequestURL (location);
-	}
-
-	void VkAuthManager::handleFormFetchError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
-
-		HandleError ();
 	}
 
 	void VkAuthManager::handleViewUrlChanged (const QUrl& url)

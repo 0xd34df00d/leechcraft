@@ -136,6 +136,8 @@ namespace LeechCraft
 		void CheckStartupPass ();
 		void InitSettings ();
 	private slots:
+		void finishInit ();
+
 		void handleQuit ();
 		void handleAppStyle ();
 		void handleLanguage ();

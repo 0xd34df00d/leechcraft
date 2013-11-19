@@ -92,15 +92,8 @@ set (HEADERS
 set (FORMS
 	widgets/dataviewwidget.ui
 	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
-if (USE_QT5)
-	QT5_WRAP_UI (UIS_H ${FORMS})
-else ()
-	QT4_WRAP_UI (UIS_H ${FORMS})
-endif ()
+QtWrapUi (UIS_H ${FORMS})
 
 foreach (SRC ${SRCS})
 	set (XSD_SRCS "${XSD_SRCS};xmlsettingsdialog/${SRC}")
@@ -111,16 +104,16 @@ endforeach ()
 set (XSD_SRCS ${XSD_SRCS} PARENT_SCOPE)
 set (XSD_FORMS ${XSD_FORMS} PARENT_SCOPE)
 
-add_library (xmlsettingsdialog SHARED
+add_library (leechcraft-xsd SHARED
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H})
-target_link_libraries (xmlsettingsdialog
+target_link_libraries (leechcraft-xsd
 	${QT_LIBRARIES}
 	)
-set_property (TARGET xmlsettingsdialog PROPERTY SOVERSION 0.3.0)
-install (TARGETS xmlsettingsdialog DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-xsd PROPERTY SOVERSION 0.3.0)
+install (TARGETS leechcraft-xsd DESTINATION ${LIBDIR})
 
 if (USE_QT5)
-	QT5_USE_MODULES (xmlsettingsdialog Xml Sql Widgets Script Network)
+	QT5_USE_MODULES (leechcraft-xsd Xml Widgets Script)
 endif ()

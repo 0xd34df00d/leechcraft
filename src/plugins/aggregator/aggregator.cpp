@@ -194,6 +194,12 @@ namespace Aggregator
 		}
 
 		Impl_->Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
+
+		connect (Impl_->Ui_.ItemsWidget_,
+				SIGNAL (movedToChannel (QModelIndex)),
+				this,
+				SLOT (handleItemsMovedToChannel (QModelIndex)));
+
 		Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
 		Core::Instance ().GetReprWidget ()->SetAppWideActions (Impl_->AppWideActions_);
 		Core::Instance ().GetReprWidget ()->SetChannelActions (Impl_->ChannelActions_);
@@ -756,11 +762,43 @@ namespace Aggregator
 
 	void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 	{
+		QStringList names;
+		Perform ([&names] (const QModelIndex& mi)
+				{ names << mi.sibling (mi.row (), 0).data ().toString (); });
+		if (XmlSettingsManager::Instance ()->Property ("ConfirmMarkChannelAsRead", true).toBool ())
+		{
+			QMessageBox mbox (QMessageBox::Question,
+					"LeechCraft",
+					tr ("Are you sure you want to mark all items in channel(s) %1 as read?", 0, names.size ())
+						.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
+					QMessageBox::Yes | QMessageBox::No);
+
+			mbox.setDefaultButton (QMessageBox::No);
+
+			QPushButton always (tr ("Always"));
+			mbox.addButton (&always, QMessageBox::AcceptRole);
+
+			if (mbox.exec () == QMessageBox::No)
+				return;
+			else if (mbox.clickedButton () == &always)
+				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkChannelAsRead", false);
+		}
+
 		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsRead (mi); });
 	}
 
 	void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 	{
+		QStringList names;
+		Perform ([&names] (const QModelIndex& mi)
+				{ names << mi.sibling (mi.row (), 0).data ().toString (); });
+		if (QMessageBox::question (nullptr,
+				"LeechCraft",
+				tr ("Are you sure you want to mark all items in channel(s) %1 as unread?", 0, names.size ())
+					.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
 		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsUnread (mi); });
 	}
 
@@ -879,11 +917,10 @@ namespace Aggregator
 
 	void Aggregator::currentChannelChanged ()
 	{
-		QModelIndex index = Impl_->Ui_.Feeds_->
-				selectionModel ()->currentIndex ();
+		auto index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
 		if (Impl_->FlatToFolders_->GetSourceModel ())
 		{
-			QModelIndex origIndex = index;
+			auto origIndex = index;
 			index = Impl_->FlatToFolders_->MapToSource (index);
 			if (!index.isValid ())
 			{
@@ -893,6 +930,23 @@ namespace Aggregator
 			}
 		}
 		Impl_->Ui_.ItemsWidget_->CurrentChannelChanged (index);
+	}
+
+	void Aggregator::handleItemsMovedToChannel (QModelIndex index)
+	{
+		if (index.column ())
+			index = index.sibling (index.row (), 0);
+
+		if (Impl_->FlatToFolders_->GetSourceModel ())
+		{
+			const auto& sourceIdx = Impl_->FlatToFolders_->MapFromSource (index).value (0);
+			if (sourceIdx.isValid ())
+				index = sourceIdx;
+		}
+
+		Impl_->Ui_.Feeds_->blockSignals (true);
+		Impl_->Ui_.Feeds_->setCurrentIndex (index);
+		Impl_->Ui_.Feeds_->blockSignals (false);
 	}
 
 	void Aggregator::unreadNumberChanged (int number)

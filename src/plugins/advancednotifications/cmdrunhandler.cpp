@@ -57,7 +57,21 @@ namespace AdvancedNotifications
 			return;
 		}
 
-		QProcess::startDetached (params.Cmd_, params.Args_);
+		auto args = params.Args_;
+		for (auto& arg : args)
+		{
+			if (arg [0] != '$')
+				continue;
+
+			auto stripped = arg;
+			stripped.remove (0, 1);
+			if (!e.Additional_.contains (stripped))
+				continue;
+
+			arg = e.Additional_ [stripped].toString ();
+		}
+
+		QProcess::startDetached (params.Cmd_, args);
 	}
 }
 }

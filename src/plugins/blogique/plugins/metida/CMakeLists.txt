@@ -13,7 +13,7 @@ set (METIDA_SRCS
 	addeditentrydialog.cpp
 	core.cpp
 	frienditemdelegate.cpp
-	friendsmodel.cpp
+	friendsproxymodel.cpp
 	ljaccount.cpp
 	ljaccountconfigurationdialog.cpp
 	ljaccountconfigurationwidget.cpp
@@ -31,6 +31,7 @@ set (METIDA_SRCS
 	recentcommentssidewidget.cpp
 	recentcommentsview.cpp
 	selectgroupsdialog.cpp
+	sendmessagedialog.cpp 
 	updatetypedialog.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp
@@ -72,6 +73,7 @@ set (METIDA_FORMS
 	postoptionswidget.ui
 	recentcommentssidewidget.ui
 	selectgroupsdialog.ui
+	sendmessagedialog.ui
 	updatetypedialog.ui
 	)
 

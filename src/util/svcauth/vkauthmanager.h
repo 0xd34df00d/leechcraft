@@ -29,16 +29,22 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QDateTime>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <util/utilconfig.h>
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Util
 {
+class QueueManager;
+enum class QueuePriority;
+
 class CustomCookieJar;
 
 namespace SvcAuth
@@ -49,8 +55,12 @@ namespace SvcAuth
 
 		ICoreProxy_ptr Proxy_;
 
+		const QString AccountHR_;
+
 		QNetworkAccessManager *AuthNAM_;
 		Util::CustomCookieJar *Cookies_;
+
+		QueueManager * const Queue_;
 
 		QString Token_;
 		QDateTime ReceivedAt_;
@@ -58,19 +68,43 @@ namespace SvcAuth
 
 		bool IsRequesting_;
 		const QUrl URL_;
+
+		bool IsRequestScheduled_;
+		QTimer *ScheduleTimer_;
 	public:
-		VkAuthManager (const QString& clientId, const QStringList& scope, const QByteArray& cookies, ICoreProxy_ptr, QObject* = 0);
+		typedef QList<std::function<void (QString)>> RequestQueue_t;
+		typedef RequestQueue_t* RequestQueue_ptr;
+
+		typedef QList<QPair<std::function<void (QString)>, QueuePriority>> PrioRequestQueue_t;
+		typedef PrioRequestQueue_t* PrioRequestQueue_ptr;
+	private:
+		QList<RequestQueue_ptr> ManagedQueues_;
+		QList<PrioRequestQueue_ptr> PrioManagedQueues_;
+	public:
+		VkAuthManager (const QString& accountName, const QString& clientId,
+				const QStringList& scope, const QByteArray& cookies,
+				ICoreProxy_ptr, QueueManager* = nullptr, QObject* = nullptr);
 
 		void GetAuthKey ();
-		void Reauth ();
+
+		void ManageQueue (RequestQueue_ptr);
+		void UnmanageQueue (RequestQueue_ptr);
+
+		void ManageQueue (PrioRequestQueue_ptr);
+		void UnmanageQueue (PrioRequestQueue_ptr);
 	private:
+		void InvokeQueues (const QString&);
+
 		void HandleError ();
 		void RequestURL (const QUrl&);
 		void RequestAuthKey ();
 		bool CheckIsBlank (QUrl);
+	public slots:
+		void clearAuthData ();
+		void reauth ();
 	private slots:
+		void execScheduledRequest ();
 		void handleGotForm ();
-		void handleFormFetchError ();
 		void handleViewUrlChanged (const QUrl&);
 	signals:
 		void gotAuthKey (const QString&);

@@ -117,12 +117,11 @@ namespace LMP
 				AudioSource ();
 
 		auto existingQueue = Player_->GetQueue ();
-		if (action == Qt::MoveAction)
-			for (const auto& src : sources)
-			{
-				auto remPos = std::remove (existingQueue.begin (), existingQueue.end (), src);
-				existingQueue.erase (remPos, existingQueue.end ());
-			}
+		for (const auto& src : sources)
+		{
+			auto remPos = std::remove (existingQueue.begin (), existingQueue.end (), src);
+			existingQueue.erase (remPos, existingQueue.end ());
+		}
 
 		auto pos = std::find (existingQueue.begin (), existingQueue.end (), firstSrc);
 		if (pos == existingQueue.end ())

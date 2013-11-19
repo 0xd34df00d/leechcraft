@@ -346,7 +346,7 @@
        <item>
         <widget class="QLineEdit" name="PollName_">
          <property name="placeholderText">
-          <string>Poll nam (optional)</string>
+          <string>Poll name (optional)</string>
          </property>
         </widget>
        </item>

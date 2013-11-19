@@ -51,10 +51,6 @@ namespace Azoth
 			if (!acc->IsShownInRoster ())
 				continue;
 
-			ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (acc->GetQObject ());
-			if (!supBms)
-				continue;
-
 			auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 			if (!Proto2Joiner_.contains (proto))
@@ -72,19 +68,20 @@ namespace Azoth
 				Proto2Joiner_ [proto] = joiner;
 			}
 
-			Q_FOREACH (const QVariant& item, supBms->GetBookmarkedMUCs ())
-			{
-				const QVariantMap& map = item.toMap ();
-				const QString& name = map ["HumanReadableName"].toString ();
-				if (name.isEmpty ())
-					continue;
+			if (auto supBms = qobject_cast<ISupportBookmarks*> (acc->GetQObject ()))
+				for (const auto& item : supBms->GetBookmarkedMUCs ())
+				{
+					const QVariantMap& map = item.toMap ();
+					const QString& name = map ["HumanReadableName"].toString ();
+					if (name.isEmpty ())
+						continue;
 
-				Ui_.BookmarksBox_->addItem (QString ("%1 (%2 [%3])")
-							.arg (name)
-							.arg (acc->GetAccountName ())
-							.arg (proto->GetProtocolName ()),
-						map);
-			}
+					Ui_.BookmarksBox_->addItem (QString ("%1 (%2 [%3])")
+								.arg (name)
+								.arg (acc->GetAccountName ())
+								.arg (proto->GetProtocolName ()),
+							map);
+				}
 
 			Ui_.AccountBox_->addItem (tr ("%1 (%2, %3)")
 						.arg (acc->GetAccountName ())

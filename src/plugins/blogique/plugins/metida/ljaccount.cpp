@@ -119,9 +119,17 @@ namespace Metida
 				this,
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)));
 		connect (LJXmlRpc_,
-				SIGNAL (unreadMessagesExist (bool)),
+				SIGNAL (unreadMessagesIds (QList<int>)),
 				this,
-				SLOT (handleUnreadMessagesExist (bool)));
+				SLOT (handleUnreadMessagesIds (QList<int>)));
+		connect (LJXmlRpc_,
+				SIGNAL (messagesRead ()),
+				this,
+				SLOT (handleMessagesRead ()));
+		connect (LJXmlRpc_,
+				SIGNAL (messageSent ()),
+				this,
+				SLOT (handleMessageSent ()));
 		connect (LJXmlRpc_,
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
 				this,
@@ -430,9 +438,9 @@ namespace Metida
 	}
 
 	void LJAccount::AddNewFriend (const QString& username,
-			const QString& bgcolor, const QString& fgcolor, uint groupId)
+			const QString& bgcolor, const QString& fgcolor, uint groupMask)
 	{
-		LJXmlRpc_->AddNewFriend (username, bgcolor, fgcolor, groupId);
+		LJXmlRpc_->AddNewFriend (username, bgcolor, fgcolor, groupMask);
 	}
 
 	void LJAccount::DeleteFriend (const QString& username)
@@ -448,6 +456,17 @@ namespace Metida
 	void LJAccount::DeleteGroup (int id)
 	{
 		LJXmlRpc_->DeleteGroup (id);
+	}
+
+	void LJAccount::SetMessagesAsRead (const QList<int>& ids)
+	{
+		LJXmlRpc_->SetMessagesAsRead (ids);
+	}
+
+	void LJAccount::SendMessage (const QStringList& addresses, const QString& subject,
+			const QString& text)
+	{
+		LJXmlRpc_->SendMessage (addresses, subject, text);
 	}
 
 	void LJAccount::CallLastUpdateMethod ()
@@ -640,27 +659,46 @@ namespace Metida
 		LJXmlRpc_->GetChangedEvents (dt);
 	}
 
-	void LJAccount::handleUnreadMessagesExist (bool exists)
+	void LJAccount::handleUnreadMessagesIds (const QList<int>& ids)
 	{
-		if (exists)
-		{
-			Entity e = Util::MakeNotification ("Blogique Metida",
-					tr ("You have unread messages in account %1")
-							.arg ("<em>" + GetAccountName () + "</em>"),
-					Priority::PInfo_);
-			Util::NotificationActionHandler *nh =
-					new Util::NotificationActionHandler (e, this);
-			nh->AddFunction (tr ("Open inbox"),
-					[this] ()
-					{
-						Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
-								QString (),
-								static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
-						Core::Instance ().SendEntity (urlEntity);
-					});
-			nh->AddDependentObject (this);
-			Core::Instance ().SendEntity (e);
-		}
+		if (ids.isEmpty ())
+			return;
+		
+		Entity e = Util::MakeNotification ("Blogique Metida",
+				tr ("You have unread messages in account %1")
+						.arg ("<em>" + GetAccountName () + "</em>"),
+				Priority::PInfo_);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Open inbox"),
+				[this] ()
+				{
+					Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
+							QString (),
+							OnlyHandle | FromUserInitiated);
+					Core::Instance ().SendEntity (urlEntity);
+				});
+		nh->AddDependentObject (this);
+		nh->AddFunction (tr ("Mark all as read"),
+				[this, ids] ()
+				{
+					SetMessagesAsRead (ids);
+				});
+		Core::Instance ().SendEntity (e);
+	}
+	
+	void LJAccount::handleMessagesRead ()
+	{
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+				tr ("All unread messages were marked as read"),
+				Priority::PInfo_));
+	}
+
+	void LJAccount::handleMessageSent ()
+	{
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+				tr ("Message has been sent successfully"),
+				Priority::PInfo_));
 	}
 
 }

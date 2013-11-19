@@ -31,6 +31,7 @@
 
 #include <QStandardItemModel>
 #include <QVector>
+#include <QFontMetrics>
 
 struct libvlc_media_list_t;
 struct libvlc_media_t;
@@ -44,20 +45,13 @@ namespace vlc
 {
 	class PlaylistWidget;
 	
-	enum Columns
-	{
-		ColumnName,
-		ColumnDuration,
-		ColumnMax
-	};
-	
 	class PlaylistModel : public QStandardItemModel
 	{
 		Q_OBJECT
 		
-		libvlc_media_list_t *Playlist_;
-		QVector<QStandardItem*> Items_ [ColumnMax];
 		PlaylistWidget *Parent_;
+		libvlc_media_list_t *Playlist_;
+		QVector<QStandardItem*> Items_;
 		libvlc_instance_t *Instance_;
 	
 	public:
@@ -70,9 +64,14 @@ namespace vlc
 		Qt::DropActions supportedDropActions () const;
 		
 		void AddUrl (const QUrl&);
+		libvlc_media_t* Take (const QUrl&);
+		
+		int Width_;
+		QFontMetrics FontMetrics_;
+		
 		
 	private:
-		libvlc_media_t* Take (const QUrl&);
+		QString ShrinkText (const QString&, const QString&);
 		
 	public slots:
 		void updateTable ();

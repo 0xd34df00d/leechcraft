@@ -43,11 +43,11 @@ namespace DeadLyrics
 		Proxy_ = proxy;
 
 		Searchers_ << Searcher_ptr (new SitesSearcher (":/deadlyrics/resources/sites.xml", proxy));
-		Q_FOREACH (auto searcher, Searchers_)
+		for (auto searcher : Searchers_)
 			connect (searcher.get (),
-					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)),
+					SIGNAL (gotLyrics (Media::LyricsResults)),
 					this,
-					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)));
+					SIGNAL (gotLyrics (Media::LyricsResults)));
 	}
 
 	void DeadLyRicS::SecondInit ()
@@ -85,7 +85,7 @@ namespace DeadLyrics
 		if (query.Artist_.isEmpty () || query.Title_.isEmpty ())
 			return;
 
-		Q_FOREACH (auto searcher, Searchers_)
+		for (auto searcher : Searchers_)
 			searcher->Search (query, options);
 	}
 }

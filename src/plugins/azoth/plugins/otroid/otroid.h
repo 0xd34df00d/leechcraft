@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
-#define PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
+#pragma once
+
 #include <QObject>
 #include <QDir>
 
@@ -42,6 +42,7 @@ extern "C"
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/imessage.h>
 
 class QTranslator;
 
@@ -49,6 +50,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class ICLEntry;
+
 namespace OTRoid
 {
 	class Plugin : public QObject
@@ -64,8 +67,15 @@ namespace OTRoid
 		OtrlMessageAppOps OtrOps_;
 
 		QHash<QObject*, QAction*> Entry2Action_;
+		QHash<QAction*, QObject*> Action2Entry_;
+
+		QHash<QObject*, QString> Msg2OrigText_;
+
+		QSet<QObject*> PendingInjectedMessages_;
 
 		QDir OtrDir_;
+
+		bool IsGenerating_ = false;
 
 #if OTRL_VERSION_MAJOR >= 4
 		QTimer *PollTimer_;
@@ -82,18 +92,23 @@ namespace OTRoid
 		QSet<QByteArray> GetPluginClasses () const;
 
 		int IsLoggedIn (const QString& accId, const QString& entryId);
-		void InjectMsg (const QString& accId,
-				const QString& entryId, const QString& msg);
+		void InjectMsg (const QString& accId, const QString& entryId,
+				const QString& msg, bool hidden, IMessage::Direction,
+				IMessage::MessageType = IMessage::MTChatMessage);
+		void InjectMsg (ICLEntry *entry,
+				const QString& msg, bool hidden, IMessage::Direction,
+				IMessage::MessageType = IMessage::MTChatMessage);
 		void Notify (const QString& accId, const QString& entryId,
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
 		void WriteFingerprints ();
 		QString GetAccountName (const QString& accId);
+		QString GetVisibleEntryName (const QString& accId, const QString& entryId);
+
+		void CreatePrivkey (const char*, const char*);
 
 #if OTRL_VERSION_MAJOR >= 4
 		void SetPollTimerInterval (unsigned int seconds);
-#else
-		void LogMsg (const QString&);
 #endif
 	private:
 		const char* GetOTRFilename (const QString&) const;
@@ -114,6 +129,8 @@ namespace OTRoid
 				QObject *chatTab,
 				QObject *message);
 	private slots:
+		void handleOtrAction ();
+
 #if OTRL_VERSION_MAJOR >= 4
 		void pollOTR ();
 #endif
@@ -123,5 +140,3 @@ namespace OTRoid
 }
 }
 }
-
-#endif

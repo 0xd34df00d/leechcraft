@@ -14,12 +14,10 @@ set (DELICIOUS_SRCS
 	)
 set (DELICIOUS_FORMS deliciousauthwidget.ui)
 
-set (DELICIOUS_RESOURCES onlinebookmarksdelicious.qrc)
 CreateTrs ("poshuku_onlinebookmarks_delicious" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS)
 
-QtWrapUi (DELICIOUS_UIS_H ${DELICIOUS_FORMS})
-QtAddResources (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
 set (DELICIOUS_RESOURCES deliciousresources.qrc)
+QtWrapUi (DELICIOUS_UIS_H ${DELICIOUS_FORMS})
 QtAddResources (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
 
 add_library (leechcraft_poshuku_onlinebookmarks_delicious SHARED

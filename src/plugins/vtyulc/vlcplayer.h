@@ -69,6 +69,7 @@ namespace vlc
 		
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
+		~VlcPlayer();
 		
 		void AddSubtitles (const QString&);
 		bool NowPlaying () const;
@@ -96,6 +97,7 @@ namespace vlc
 		
 		QTime GetCurrentTime () const;
 		QTime GetFullTime () const;
+		void SetCurrentTime (libvlc_time_t);
 		
 	private:
 		libvlc_track_description_t* GetTrack (libvlc_track_description_t *t, int track) const;
@@ -109,6 +111,7 @@ namespace vlc
 	public slots:
 		void stop ();
 		void togglePlay ();
+		void pause ();
 		void addUrl (const QUrl&);
 		void setUrl (const QUrl&);
 		void changePosition (double);

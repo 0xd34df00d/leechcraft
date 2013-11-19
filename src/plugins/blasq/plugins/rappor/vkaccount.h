@@ -111,6 +111,7 @@ namespace Rappor
 		void CreateCollection (const QModelIndex& parent);
 		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths);
 
+		bool SupportsFeature (DeleteFeature) const;
 		void Delete (const QModelIndex&);
 	private:
 		void HandleAlbumElement (const QDomElement&);

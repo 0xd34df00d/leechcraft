@@ -627,7 +627,7 @@ namespace AdiumStyles
 
 		// First, prepare colors
 		if (templ.contains ("%senderColor") && !Coloring2Colors_.contains ("hash"))
-			Coloring2Colors_ ["hash"] = Proxy_->GenerateColors ("hash");
+			Coloring2Colors_ ["hash"] = Proxy_->GenerateColors ("hash", {});
 
 		// %senderColor%
 		const QString& nickColor = Proxy_->GetNickColor (senderNick, Coloring2Colors_ ["hash"]);

@@ -48,6 +48,11 @@ Rectangle
 			anchors.fill: flowElement
 			z: flowElement.z - 1
 		}
+		
+		onWidthChanged:
+			updateTagsCloud ();
+		onHeightChanged:
+			updateTagsCloud ();
 	}
 
 	Component
@@ -85,6 +90,7 @@ Rectangle
 	function clearTags ()
 	{
 		TagsCloudList.clearTextTagsArray ();
+		updateTagsCloud ()
 	}
 
 	function addTag (tag, count, maxCount)
@@ -92,6 +98,7 @@ Rectangle
 		var freq = 11 + count / maxCount * 30;
 		var obj = tagComponent.createObject (flowElement, {tag: tag, pointSz: freq});
 		TagsCloudList.addTextTag (obj)
+		updateTagsCloud ()
 	}
 
 	function selectTag (tag, select)

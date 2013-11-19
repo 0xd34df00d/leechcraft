@@ -37,6 +37,7 @@
 #include "cmdrunhandler.h"
 #include "core.h"
 #include "wmurgenthandler.h"
+#include "rulesmanager.h"
 
 namespace LeechCraft
 {
@@ -64,23 +65,29 @@ namespace AdvancedNotifications
 		Cat2IconName_ [AN::CatOrganizer] = "view-calendar";
 		Cat2IconName_ [AN::CatGeneric] = "preferences-desktop-notification-bell";
 		Cat2IconName_ [AN::CatPackageManager] = "system-software-update";
+		Cat2IconName_ [AN::CatMediaPlayer] = "applications-multimedia";
 	}
 
 	void GeneralHandler::Handle (const Entity& e)
 	{
+		if (e.Mime_ == "x-leechcraft/notification-rule-create")
+		{
+			Core::Instance ().GetRulesManager ()->HandleEntity (e);
+			return;
+		}
+
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
 		{
-			Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
+			for (const auto& handler : Handlers_)
 				handler->Handle (e, NotificationRule ());
 			return;
 		}
 
-		const QList<NotificationRule>& rules = Core::Instance ().GetRules (e);
-		Q_FOREACH (const NotificationRule& rule, rules)
+		const auto& rules = Core::Instance ().GetRules (e);
+		for (const auto& rule : rules)
 		{
-			NotificationMethods methods = rule.GetMethods ();
-
-			Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
+			const auto& methods = rule.GetMethods ();
+			for (const auto& handler : Handlers_)
 			{
 				if (!(methods & handler->GetHandlerMethod ()))
 					continue;

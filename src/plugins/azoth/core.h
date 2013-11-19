@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CORE_H
-#define PLUGINS_AZOTH_CORE_H
+#pragma once
+
 #include <functional>
 #include <boost/scoped_ptr.hpp>
 #include <QObject>
@@ -40,7 +40,7 @@
 #endif
 #include <util/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
-#include <interfaces/ianemitter.h>
+#include <interfaces/an/ianemitter.h>
 #include <interfaces/iinfo.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/azothcommon.h"
@@ -192,6 +192,7 @@ namespace Azoth
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+		ProxyObject* GetPluginProxy () const;
 
 		QList<ANFieldData> GetANFields () const;
 
@@ -317,7 +318,7 @@ namespace Azoth
 		void FrameFocused (QObject*, QWebFrame*);
 
 		// Theming stuff
-		QList<QColor> GenerateColors (const QString& coloringScheme) const;
+		QList<QColor> GenerateColors (const QString& coloringScheme, QColor background) const;
 
 		QString GetNickColor (const QString& nick, const QList<QColor>& colors) const;
 
@@ -330,6 +331,8 @@ namespace Azoth
 		 * the given amount, which may be negative.
 		 */
 		void IncreaseUnreadCount (ICLEntry *entry, int amount = 1);
+
+		int GetUnreadCount (ICLEntry *entry) const;
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.
@@ -482,7 +485,7 @@ namespace Azoth
 
 		/** Removes the old unneeded variants.
 		 */
-		void handleVariantsChanged (const QStringList& newVariants);
+		void handleVariantsChanged ();
 
 		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
 		 * variant.
@@ -649,5 +652,3 @@ namespace Azoth
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::Core::CLEntryType);
 Q_DECLARE_METATYPE (LeechCraft::Azoth::ICLEntry*);
-
-#endif

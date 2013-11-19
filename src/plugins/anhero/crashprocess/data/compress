@@ -1,0 +1,4 @@
+#!/bin/sh
+
+for i in *.1; do cat $i | gzip -9 > ${i}.gz; done
+

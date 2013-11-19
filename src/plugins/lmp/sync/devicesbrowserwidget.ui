@@ -42,7 +42,7 @@
         <string>Mount</string>
        </property>
        <property name="ActionIcon" stdset="0">
-        <string>emblem-mounted</string>
+        <string notr="true">emblem-mounted</string>
        </property>
       </widget>
      </item>
@@ -52,7 +52,7 @@
         <string>Refresh</string>
        </property>
        <property name="ActionIcon" stdset="0">
-        <string>view-refresh</string>
+        <string notr="true">view-refresh</string>
        </property>
       </widget>
      </item>
@@ -95,12 +95,22 @@
         </widget>
        </item>
        <item>
+        <widget class="QProgressBar" name="SingleUploadProgress_">
+         <property name="value">
+          <number>24</number>
+         </property>
+         <property name="format">
+          <string>Single file: %p%</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="UploadButton_">
          <property name="text">
           <string>Upload...</string>
          </property>
          <property name="ActionIcon" stdset="0">
-          <string>svn-commit</string>
+          <string notr="true">svn-commit</string>
          </property>
         </widget>
        </item>

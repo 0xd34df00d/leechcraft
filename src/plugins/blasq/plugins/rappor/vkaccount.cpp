@@ -53,7 +53,8 @@ namespace Rappor
 	, Service_ (service)
 	, Proxy_ (proxy)
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
-	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3762977", { "photos" }, cookies, proxy))
+	, AuthMgr_ (new Util::SvcAuth::VkAuthManager (name,
+			"3762977", { "photos" }, cookies, proxy))
 	, RequestQueue_ (new Util::QueueManager (350, this))
 	, UploadManager_ (new UploadManager (RequestQueue_, Proxy_, this))
 	{
@@ -240,6 +241,22 @@ namespace Rappor
 	{
 		const auto& aidStr = collection.data (CollectionRole::ID).toString ();
 		UploadManager_->Upload (aidStr, items);
+	}
+
+	bool VkAccount::SupportsFeature (DeleteFeature feature) const
+	{
+		switch (feature)
+		{
+		case DeleteFeature::DeleteImages:
+			return true;
+		case DeleteFeature::DeleteCollections:
+			return false;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown feature"
+				<< static_cast<int> (feature);
+		return false;
 	}
 
 	void VkAccount::Delete (const QModelIndex& item)

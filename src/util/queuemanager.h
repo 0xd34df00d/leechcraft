@@ -41,6 +41,12 @@ namespace LeechCraft
 {
 namespace Util
 {
+	enum class QueuePriority
+	{
+		Normal,
+		High
+	};
+
 	/** @brief A simple scheduling manager for a queue of functors.
 	 *
 	 * This class manages execution of functors that should be called
@@ -78,8 +84,19 @@ namespace Util
 		 * @param[in] functor The functor to add to the queue.
 		 * @param[in] dependent The dependent object, or nullptr if this
 		 * \em functor doesn't depend on anything.
+		 * @param[in] prio The priority of the \em functor. Functors with
+		 * high priority are added to the beginning of the queue.
 		 */
-		void Schedule (std::function<void ()> functor, QObject *dependent = 0);
+		void Schedule (std::function<void ()> functor,
+				QObject *dependent = 0,
+				QueuePriority prio = QueuePriority::Normal);
+
+		/** @brief Clears the queue.
+		 *
+		 * Clears the remaining items in the queue, but doesn't abort the
+		 * current operation.
+		 */
+		void Clear ();
 	private slots:
 		void exec ();
 	};

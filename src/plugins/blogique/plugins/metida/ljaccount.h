@@ -175,11 +175,15 @@ namespace Metida
 
 		void AddFriends (const QList<LJFriendEntry_ptr>& friends);
 		void AddNewFriend (const QString& username,
-				const QString& bgcolor, const QString& fgcolor, uint groupId);
+				const QString& bgcolor, const QString& fgcolor, uint groupMask);
 		void DeleteFriend (const QString& username);
 
 		void AddGroup (const QString& name, bool isPublic, int id);
 		void DeleteGroup (int id);
+		
+		void SetMessagesAsRead (const QList<int>& ids);
+		void SendMessage (const QStringList& addresses, const QString& subject, 
+				const QString& text);
 	private:
 		void CallLastUpdateMethod ();
 
@@ -201,7 +205,9 @@ namespace Metida
 		void handleLoadLastEvents ();
 		void handleLoadChangedEvents ();
 
-		void handleUnreadMessagesExist (bool exists);
+		void handleUnreadMessagesIds (const QList<int>& ids);
+		void handleMessagesRead ();
+		void handleMessageSent ();
 
 	signals:
 		void accountRenamed (const QString& newName);

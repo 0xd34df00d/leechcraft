@@ -246,8 +246,6 @@ namespace LMP
 
 	void BioViewManager::handleAlbumPreviewRequested (int index)
 	{
-		qDebug () << Q_FUNC_INFO;
-
 		QList<QPair<QString, int>> tracks;
 		for (const auto& track : Album2Tracks_.at (index))
 			tracks.push_back ({ track.Name_, track.Length_ });

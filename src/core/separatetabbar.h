@@ -45,11 +45,12 @@ namespace LeechCraft
 		MainWindow *Window_;
 
 		int Id_;
-		bool IsLastTab_;
 		bool InMove_;
 		SeparateTabWidget *TabWidget_;
 
 		QPoint DragStartPos_;
+
+		QWidget *AddTabButton_;
 	public:
 		explicit SeparateTabBar (QWidget* = 0);
 
@@ -57,12 +58,15 @@ namespace LeechCraft
 
 		void SetTabData (int);
 		void SetTabClosable (int index, bool closable, QWidget *closeButton = 0);
-		void SetLastTab (bool);
 		void SetTabWidget (SeparateTabWidget*);
 
-		QTabBar::ButtonPosition GetCloseButtonPosition ();
+		void SetAddTabButton (QWidget*);
+
+		QTabBar::ButtonPosition GetCloseButtonPosition () const;
 
 		void SetInMove (bool inMove);
+	private:
+		QTabBar::ButtonPosition GetAntiCloseButtonPosition () const;
 	protected:
 		QSize tabSizeHint (int) const;
 
@@ -78,10 +82,8 @@ namespace LeechCraft
 
 		void tabInserted (int);
 		void tabRemoved (int);
-		void paintEvent (QPaintEvent*);
 	signals:
 		void addDefaultTab ();
-		void showAddTabButton (bool);
 		void tabWasInserted (int);
 		void tabWasRemoved (int);
 		void releasedMouseAfterMove (int index);

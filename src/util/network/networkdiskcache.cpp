@@ -44,11 +44,17 @@ namespace Util
 {
 	NetworkDiskCache::NetworkDiskCache (const QString& subpath, QObject *parent)
 	: QNetworkDiskCache (parent)
-	, IsCollectingGarbage_ (false)
 	, CurrentSize_ (-1)
 	, InsertRemoveMutex_ (QMutex::Recursive)
+	, GarbageCollectorWatcher_ (nullptr)
 	{
 		setCacheDirectory (CreateIfNotExists (subpath).absolutePath ());
+	}
+
+	NetworkDiskCache::~NetworkDiskCache ()
+	{
+		if (GarbageCollectorWatcher_)
+			GarbageCollectorWatcher_->waitForFinished ();
 	}
 
 	qint64 NetworkDiskCache::cacheSize () const
@@ -65,6 +71,15 @@ namespace Util
 	void NetworkDiskCache::insert (QIODevice *device)
 	{
 		QMutexLocker lock (&InsertRemoveMutex_);
+		if (!PendingDev2Url_.contains (device))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "stall device detected";
+			return;
+		}
+
+		PendingUrl2Devs_ [PendingDev2Url_.take (device)].removeAll (device);
+
 		CurrentSize_ += device->size ();
 		QNetworkDiskCache::insert (device);
 	}
@@ -78,12 +93,17 @@ namespace Util
 	QIODevice* NetworkDiskCache::prepare (const QNetworkCacheMetaData& metadata)
 	{
 		QMutexLocker lock (&InsertRemoveMutex_);
-		return QNetworkDiskCache::prepare (metadata);
+		const auto dev = QNetworkDiskCache::prepare (metadata);
+		PendingDev2Url_ [dev] = metadata.url ();
+		PendingUrl2Devs_ [metadata.url ()] << dev;
+		return dev;
 	}
 
-	bool NetworkDiskCache::remove (const QUrl &url)
+	bool NetworkDiskCache::remove (const QUrl& url)
 	{
 		QMutexLocker lock (&InsertRemoveMutex_);
+		for (const auto dev : PendingUrl2Devs_.take (url))
+			PendingDev2Url_.remove (dev);
 		return QNetworkDiskCache::remove (url);
 	}
 
@@ -109,7 +129,7 @@ namespace Util
 
 	namespace
 	{
-		qint64 Collector (QString& cacheDirectory, qint64 goal, QMutex *fileOpMutex)
+		qint64 Collector (const QString& cacheDirectory, qint64 goal, QMutex *fileOpMutex)
 		{
 			if (cacheDirectory.isEmpty ())
 				return 0;
@@ -152,32 +172,28 @@ namespace Util
 
 	void NetworkDiskCache::collectGarbage ()
 	{
-		if (IsCollectingGarbage_)
+		if (GarbageCollectorWatcher_)
 			return;
 
 		if (cacheDirectory ().isEmpty ())
 			return;
 
-		IsCollectingGarbage_ = true;
-
-		auto watcher = new QFutureWatcher<qint64> (this);
-		connect (watcher,
+		GarbageCollectorWatcher_ = new QFutureWatcher<qint64> (this);
+		connect (GarbageCollectorWatcher_,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleCollectorFinished ()));
 
-		QFuture<qint64> future = QtConcurrent::run (Collector,
+		auto future = QtConcurrent::run (Collector,
 				cacheDirectory (), maximumCacheSize () * 9 / 10, &InsertRemoveMutex_);
-		watcher->setFuture (future);
+		GarbageCollectorWatcher_->setFuture (future);
 	}
 
 	void NetworkDiskCache::handleCollectorFinished ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<qint64>*> (sender ());
-
-		CurrentSize_ = watcher->result ();
-
-		IsCollectingGarbage_ = false;
+		CurrentSize_ = GarbageCollectorWatcher_->result ();
+		GarbageCollectorWatcher_->deleteLater ();
+		GarbageCollectorWatcher_ = nullptr;
 	}
 }
 }

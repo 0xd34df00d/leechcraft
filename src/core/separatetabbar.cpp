@@ -50,8 +50,8 @@ namespace LeechCraft
 	: QTabBar (parent)
 	, Window_ (0)
 	, Id_ (0)
-	, IsLastTab_ (false)
 	, InMove_ (false)
+	, AddTabButton_ (nullptr)
 	{
 		setObjectName ("org_LeechCraft_MainWindow_CentralTabBar");
 		setExpanding (false);
@@ -62,10 +62,9 @@ namespace LeechCraft
 
 		setAcceptDrops (true);
 		setMovable (true);
+		setUsesScrollButtons (false);
 
 		addTab (QString ());
-
-		IsLastTab_ = true;
 	}
 
 	void SeparateTabBar::SetWindow (MainWindow *win)
@@ -100,17 +99,18 @@ namespace LeechCraft
 		setTabButton (index, GetCloseButtonPosition (), closable ? closeButton : 0);
 	}
 
-	void SeparateTabBar::SetLastTab (bool isLast)
-	{
-		IsLastTab_ = isLast;
-	}
-
 	void SeparateTabBar::SetTabWidget (SeparateTabWidget *widget)
 	{
 		TabWidget_ = widget;
 	}
 
-	QTabBar::ButtonPosition SeparateTabBar::GetCloseButtonPosition ()
+	void SeparateTabBar::SetAddTabButton (QWidget *w)
+	{
+		AddTabButton_ = w;
+		setTabButton (count () - 1, GetAntiCloseButtonPosition (), w);
+	}
+
+	QTabBar::ButtonPosition SeparateTabBar::GetCloseButtonPosition () const
 	{
 		return static_cast<QTabBar::ButtonPosition> (style ()->
 				styleHint (QStyle::SH_TabBar_CloseButtonPosition));
@@ -121,29 +121,36 @@ namespace LeechCraft
 		InMove_ = inMove;
 	}
 
+	QTabBar::ButtonPosition SeparateTabBar::GetAntiCloseButtonPosition () const
+	{
+		return GetCloseButtonPosition () == QTabBar::LeftSide ?
+				QTabBar::RightSide :
+				QTabBar::LeftSide;
+	}
+
 	QSize SeparateTabBar::tabSizeHint (int index) const
 	{
-		QSize size = QTabBar::tabSizeHint (index);
+		auto result = QTabBar::tabSizeHint (index);
 		const int tc = count ();
-		if (index == tc - 1 && IsLastTab_)
-			size.setWidth (30);
+		if (index == tc - 1)
+			result.setWidth (AddTabButton_ ?
+					AddTabButton_->width () + style ()->pixelMetric (QStyle::PM_TabBarTabHSpace):
+					30);
 		else
 		{
-			const int target = std::max (100,
-					this->size ().width () / tc);
-			if (size.width () > target)
-				size.setWidth (target);
+			const int target = std::min (size ().width () / (tc + 1), 200);
+			if (result.width () > target)
+				result.setWidth (target);
 		}
 
-		return size;
+		return result;
 	}
 
 	void SeparateTabBar::mouseReleaseEvent (QMouseEvent *event)
 	{
 		int index = tabAt (event->pos ());
 		if (index == count () - 1 &&
-				event->button () == Qt::LeftButton &&
-				IsLastTab_)
+				event->button () == Qt::LeftButton)
 		{
 			emit addDefaultTab ();
 			return;
@@ -169,8 +176,7 @@ namespace LeechCraft
 
 	void SeparateTabBar::mousePressEvent (QMouseEvent *event)
 	{
-		if (IsLastTab_ &&
-				event->button () == Qt::LeftButton &&
+		if (event->button () == Qt::LeftButton &&
 				tabAt (event->pos ()) == count () - 1)
 			return;
 
@@ -235,7 +241,7 @@ namespace LeechCraft
 	void SeparateTabBar::dragMoveEvent (QDragMoveEvent *event)
 	{
 		const auto tabIdx = tabAt (event->pos ());
-		if (IsLastTab_ && tabIdx == count () - 1)
+		if (tabIdx == count () - 1)
 			return;
 
 		auto data = event->mimeData ();
@@ -260,7 +266,7 @@ namespace LeechCraft
 		{
 			const int from = tabAt (DragStartPos_);
 
-			if (from == to || (IsLastTab_ && to == count () - 1))
+			if (from == to || to == count () - 1)
 				return;
 
 			moveTab (from, to);
@@ -281,57 +287,12 @@ namespace LeechCraft
 	void SeparateTabBar::tabInserted (int index)
 	{
 		QTabBar::tabInserted (index);
-
-		int length = 0;
-		for (int i = 0; i < count (); ++i)
-			length += tabRect (i).width ();
-
-		if (length + 30 > width () && IsLastTab_)
-		{
-			IsLastTab_ = false;
-			removeTab (count () - 1);
-			emit showAddTabButton (true);
-		}
-
-		if (index != count () - 1 && (IsLastTab_))
-			emit tabWasInserted (index);
+		emit tabWasInserted (index);
 	}
 
 	void SeparateTabBar::tabRemoved (int index)
 	{
 		QTabBar::tabRemoved (index);
-
-		int length = 0;
-		for (int i = 0; i < count (); ++i)
-			length += tabRect (i).width ();
-
-		if (length + 60 < width () && !IsLastTab_)
-		{
-			IsLastTab_ = true;
-
-			addTab (QString ());
-			SetTabClosable (count () - 1, false);
-
-			emit showAddTabButton (false);
-		}
-
-		if (index != count () - 1 && !IsLastTab_)
-			emit tabWasRemoved (index);
-	}
-
-	void SeparateTabBar::paintEvent (QPaintEvent *event)
-	{
-		QTabBar::paintEvent (event);
-		QStylePainter painter (this);
-
-		if (count () > 0 && IsLastTab_)
-		{
-			CoreProxy proxy;
-			QStyleOptionTabV2 option;
-			initStyleOption (&option, count () - 1);
-			QIcon icon = proxy.GetIcon ("list-add");
-			painter.drawItemPixmap (option.rect, Qt::AlignCenter,
-					icon.pixmap (QSize (15, 15)));
-		}
+		emit tabWasRemoved (index);
 	}
 }

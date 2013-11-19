@@ -60,41 +60,46 @@ namespace Metida
 
 	void LJXmlRPC::Validate (const QString& login, const QString& password)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [login, password, this] (const QString& challenge)
 				{ ValidateAccountData (login, password, challenge); };
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [login, password, this] (const QString& challenge)
 				{ RequestFriendsInfo (login, password, challenge); };
-		//TODO get communities info via parsing page
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::AddNewFriend (const QString& username,
-			const QString& bgcolor, const QString& fgcolor, uint groupId)
+			const QString& bgcolor, const QString& fgcolor, uint groupMask)
 	{
-		ApiCallQueue_ << [username, bgcolor, fgcolor, groupId, this] (const QString& challenge)
-				{ AddNewFriendRequest (username, bgcolor, fgcolor, groupId, challenge); };
-		GenerateChallenge ();
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
+		ApiCallQueue_ << [username, bgcolor, fgcolor, groupMask, this] (const QString& challenge)
+				{ AddNewFriendRequest (username, bgcolor, fgcolor, groupMask, challenge); };
 	}
 
 	void LJXmlRPC::DeleteFriend (const QString& username)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [username, this] (const QString& challenge)
 				{ DeleteFriendRequest (username, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::AddGroup (const QString& name, bool isPublic, int id)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [name, isPublic, id, this] (const QString& challenge)
 				{ AddGroupRequest (name, isPublic, id, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::DeleteGroup (int id)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [id, this] (const QString& challenge)
 				{ DeleteGroupRequest (id, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::UpdateProfileInfo ()
@@ -104,86 +109,131 @@ namespace Metida
 
 	void LJXmlRPC::Preview (const LJEvent& event)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [event, this] (const QString& challenge)
 				{ PreviewEventRequest (event, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::Submit (const LJEvent& event)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [event, this] (const QString& challenge)
 				{ PostEventRequest (event, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::GetEventsWithFilter (const Filter& filter)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [filter, this] (const QString& challenge)
 				{ BackupEventsRequest (0, filter, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::GetLastEvents (int count)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [count, this] (const QString& challenge)
 				{ GetLastEventsRequest (count, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::GetChangedEvents (const QDateTime& dt)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [dt, this] (const QString& challenge)
 				{ GetChangedEventsRequest (dt, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::GetEventsByDate (const QDate& date, int skip)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [date, skip, this] (const QString& challenge)
 				{ GetEventsByDateRequest (date, skip, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::RemoveEvent (const LJEvent& event)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [event, this] (const QString& challenge)
 				{ RemoveEventRequest (event, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::UpdateEvent (const LJEvent& event)
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [event, this] (const QString& challenge)
 				{ UpdateEventRequest (event, challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::RequestStatistics ()
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ BlogStatisticsRequest (challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::RequestLastInbox ()
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ InboxRequest (challenge); };
-		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::SetMessagesAsRead (const QList<int>& ids)
+	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
+		ApiCallQueue_ << [this, ids] (const QString& challenge)
+				{ SetMessageAsReadRequest (ids, challenge); };
+	}
+
+	void LJXmlRPC::SendMessage (const QStringList& addresses, const QString& subject, 
+			const QString& text)
+	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
+		ApiCallQueue_ << [this, addresses, subject, text] (const QString& challenge)
+				{ SendMessageRequest (addresses, subject, text, challenge); };
 	}
 
 	void LJXmlRPC::RequestRecentCommments ()
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ RecentCommentsRequest (challenge); };
-		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::RequestTags ()
 	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ GetUserTagsRequest (challenge); };
-		GenerateChallenge ();
+	}
+
+	std::shared_ptr<void> LJXmlRPC::MakeRunnerGuard ()
+	{
+		const bool shouldRun = ApiCallQueue_.isEmpty ();
+		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*)
+				{
+					if (shouldRun)
+						ApiCallQueue_.dequeue () (QString ());
+				});
+	}
+
+	void LJXmlRPC::CallNextFunctionFromQueue ()
+	{
+		if (!ApiCallQueue_.isEmpty ())
+			ApiCallQueue_.dequeue () (QString ());
 	}
 
 	namespace
@@ -383,7 +433,7 @@ namespace Metida
 
 	void LJXmlRPC::AddNewFriendRequest (const QString& username,
 			const QString& bgcolor, const QString& fgcolor,
-			int groupId, const QString& challenge)
+			int groupMask, const QString& challenge)
 	{
 		QDomDocument document ("AddNewFriendRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.editfriends", document);
@@ -406,7 +456,7 @@ namespace Metida
 			structField.appendChild (GetSimpleMemberElement ("bgcolor", "string",
 					bgcolor, document));
 		structField.appendChild (GetSimpleMemberElement ("groupmask", "int",
-				QString::number (groupId), document));
+				QString::number (groupMask), document));
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
@@ -1005,9 +1055,12 @@ namespace Metida
 		document.appendChild (result.first);
 		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
 				Account_->GetPassword (), challenge, document);
-		element.appendChild (GetSimpleMemberElement ("before",
+		const uint lastSyncDate = XmlSettingsManager::Instance ().Property ("LastInboxUpdateDate",
+				QDateTime (QDateTime::currentDateTime ().date ().addMonths (-1)))
+					.toDateTime ().toTime_t ();
+		element.appendChild (GetSimpleMemberElement ("lastsync",
 				"string",
-				QString::number (QDateTime::currentDateTime ().toTime_t ()),
+				QString::number (lastSyncDate),
 				document));
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
@@ -1017,6 +1070,75 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleInboxReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::SetMessageAsReadRequest (const QList<int>& ids, const QString& challenge)
+	{
+		QDomDocument document ("SetMessageAsReadRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.setmessageread", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+		
+		auto array = GetComplexMemberElement ("qid", "array", document);
+ 		element.appendChild (array.first);
+		
+		for (int id : ids)
+		{
+			QDomElement valueType = document.createElement ("value");
+			array.second.appendChild (valueType);
+			QDomElement type = document.createElement ("int");
+			valueType.appendChild (type);
+			QDomText text = document.createTextNode (QString::number (id));
+			type.appendChild (text);
+		}
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleMessagesSetAsReadFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::SendMessageRequest (const QStringList& addresses, const QString& subject, 
+			const QString& text, const QString& challenge)
+	{
+		QDomDocument document ("SendMessageRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.sendmessage", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+		element.appendChild (GetSimpleMemberElement ("subject", "string", subject, document));
+		element.appendChild (GetSimpleMemberElement ("body", "string", text, document));
+		auto array = GetComplexMemberElement ("to", "array", document);
+		element.appendChild (array.first);
+		for (const auto& address : addresses)
+		{
+			QDomElement valueType = document.createElement ("value");
+			array.second.appendChild (valueType);
+			QDomElement type = document.createElement ("string");
+			valueType.appendChild (type);
+			QDomText text = document.createTextNode (address);
+			type.appendChild (text);
+		}
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleSendMessageRequestFinished ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -1073,19 +1195,22 @@ namespace Metida
 
 	void LJXmlRPC::ParseForError (const QByteArray& content)
 	{
+		//TODO code and message together
 		QXmlQuery query;
 		query.setFocus (content);
 		QString errorCode;
 		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultCode']/value/int/text()");
 		if (!query.evaluateTo (&errorCode))
-			return;
+			errorCode = QString ();
 
 		QString errorString;
 		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
 		if (!query.evaluateTo (&errorString))
-			return;
-		emit error (errorCode.toInt (), errorString,
-				MetidaUtils::GetLocalizedErrorMessage (errorCode.toInt ()));
+			errorString = QString ();
+		
+		if (!errorCode.isEmpty () && !errorString.isEmpty ())
+			emit error (errorCode.toInt (), errorString,
+					MetidaUtils::GetLocalizedErrorMessage (errorCode.toInt ()));
 	}
 
 	namespace
@@ -1144,9 +1269,8 @@ namespace Metida
 			return result;
 		}
 
-		QHash<QString, LJFriendEntry_ptr> CreateFriendEntry (const QString& parentKey, const QVariantList& data)
+		void CreateFriendEntry (const QString& parentKey, const QVariantList& data, QHash<QString, LJFriendEntry_ptr>& frHash)
 		{
-			QHash<QString, LJFriendEntry_ptr> frHash;
 			for (const auto& friendEntry : data)
 			{
 				LJFriendEntry_ptr fr = std::make_shared<LJFriendEntry> ();
@@ -1178,7 +1302,7 @@ namespace Metida
 						fr->SetBirthday (fieldEntry.ValueToString ());
 
 					if (parentKey == "friends" ||
-						parentKey == "added")
+							parentKey == "added")
 						fr->SetMyFriend (true);
 
 					if (parentKey == "friendofs")
@@ -1186,21 +1310,19 @@ namespace Metida
 				}
 
 				if (!isCommunity ||
-					personal)
+						personal)
 				{
 					if (parentKey == "friendofs" &&
-						frHash.contains (fr->GetUserName ()))
+							frHash.contains (fr->GetUserName ()))
 						frHash [fr->GetUserName ()]->SetFriendOf (true);
 					else if ((parentKey == "friends" ||
-						parentKey == "added") &&
-						frHash.contains (fr->GetUserName ()))
+							parentKey == "added") &&
+							frHash.contains (fr->GetUserName ()))
 						frHash [fr->GetUserName ()]->SetMyFriend (true);
 					else
 						frHash [fr->GetUserName ()] = fr;
 				}
 			}
-
-			return frHash;
 		}
 
 		LJEventProperties CreateLJEventPropetries (QStringList& tags, const QVariantList& data)
@@ -1299,8 +1421,9 @@ namespace Metida
 			if (res.Name () == "friends" ||
 					res.Name () == "added" ||
 					res.Name () == "friendofs")
-				Account_->AddFriends (CreateFriendEntry (res.Name (), res.Value ()).values ());
+				CreateFriendEntry (res.Name (), res.Value (), frHash);
 		}
+		Account_->AddFriends (frHash.values ());
 	}
 
 	QList<LJEvent> LJXmlRPC::ParseFullEvents (const QDomDocument& document)
@@ -1552,6 +1675,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			emit profileUpdated (ParseProfileInfo (document));
+			CallNextFunctionFromQueue ();
 			emit validatingFinished (true);
 			return;
 		}
@@ -1572,6 +1696,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			ParseFriends (document);
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1589,6 +1714,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			ParseFriends (document);
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1606,6 +1732,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			Account_->updateProfile ();
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1667,9 +1794,11 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			const int id = GetEventItemId (document);
+
+			ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 			ApiCallQueue_ << [id, this] (const QString& challenge)
 					{ GetParticularEventRequest (id, RequestType::Post, challenge); };
-			GenerateChallenge ();
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1716,13 +1845,13 @@ namespace Metida
 				}
 
 				emit gotFilteredEvents (eventsList);
-
+				ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 				ApiCallQueue_ << [skip, count, filter, this] (const QString& challenge)
 						{ BackupEventsRequest (skip + count , filter, challenge); };
-				GenerateChallenge ();
 			}
 			else
 				emit gettingFilteredEventsFinished ();
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1740,6 +1869,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			emit gotEvents (ParseFullEvents (document));
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1763,11 +1893,9 @@ namespace Metida
 			emit gotEvents (events);
 			const int count = events.count ();
 			if (count)
-			{
 				ApiCallQueue_ << [skip, count, dt, this] (const QString&)
 						{ GetEventsByDate (dt, skip + count); };
-				GenerateChallenge ();
-			}
+			CallNextFunctionFromQueue ();
 			return;
 
 		}
@@ -1786,6 +1914,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			emit eventRemoved (GetEventItemId (document));
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1803,9 +1932,10 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			const int id = GetEventItemId (document);
+			ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 			ApiCallQueue_ << [id, this] (const QString& challenge)
 					{ GetParticularEventRequest (id, RequestType::Update, challenge); };
-			GenerateChallenge ();
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1839,7 +1969,7 @@ namespace Metida
 				emit gotEvents (events);
 				break;
 			}
-
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1891,7 +2021,7 @@ namespace Metida
 			default:
 				break;
 			}
-
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1909,6 +2039,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			emit gotStatistics (ParseStatistics (document));
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -1917,11 +2048,12 @@ namespace Metida
 
 	namespace
 	{
-		bool IsUnreadMessagesExist (QDomDocument document)
+		QList<int> GetUnreadMessagesIds (QDomDocument document)
 		{
+			QList<int> unreadIds;
 			const auto& firstStructElement = document.elementsByTagName ("struct");
 			if (firstStructElement.at (0).isNull ())
-				return false;
+				return unreadIds;
 
 			const auto& members = firstStructElement.at (0).childNodes ();
 			for (int i = 0, count = members.count (); i < count; ++i)
@@ -1932,37 +2064,80 @@ namespace Metida
 					continue;
 
 				auto res = ParseMember (member);
-				if (res.Name () == "items")
-					for (const auto& message : res.Value ())
-						for (const auto& field : message.toList ())
-						{
-							auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
-							if (fieldEntry.Name () == "state" &&
-									fieldEntry.ValueToString ().toLower () == "n")
-								return true;
-						}
+				if (res.Name () != "items")
+					continue;
+				
+				for (const auto& message : res.Value ())
+				{
+					bool isUnread = false;
+					int id = -1;
+					for (const auto& field : message.toList ())
+					{
+						auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+						if (fieldEntry.Name () == "state")
+							isUnread = fieldEntry.ValueToString ().toLower () == "n";
+						if (fieldEntry.Name () == "qid")
+							id = fieldEntry.ValueToInt ();
+					}
+					
+					if (isUnread && id != -1)
+						unreadIds << id;
+				}
 			}
-
-			return false;
+			return unreadIds;
 		}
 	}
 
 	void LJXmlRPC::handleInboxReplyFinished ()
 	{
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
-				document);
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
 		if (content.isEmpty ())
 			return;
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			emit unreadMessagesExist (IsUnreadMessagesExist (document));
+			const auto& unreadIds = GetUnreadMessagesIds (document);
+			if (!unreadIds.isEmpty ())
+				emit unreadMessagesIds (unreadIds);
 			XmlSettingsManager::Instance ().setProperty ("LastInboxUpdateDate",
-					   QDateTime::currentDateTime ());
+					QDateTime::currentDateTime ());
+			CallNextFunctionFromQueue ();
 			return;
 		}
+		ParseForError (content);
+	}
 
+	void LJXmlRPC::handleMessagesSetAsReadFinished ()
+	{
+		QDomDocument document;
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit messagesRead ();
+			return;
+		}
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleSendMessageRequestFinished ()
+	{
+		QDomDocument document;
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit messageSent ();
+			return;
+		}
 		ParseForError (content);
 	}
 
@@ -2056,11 +2231,11 @@ namespace Metida
 
 			if (!ids.isEmpty ())
 			{
+				ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 				ApiCallQueue_ << [this, ids] (const QString& challenge)
 						{ GetMultipleEventsRequest (ids, RequestType::RecentComments, challenge); };
-				GenerateChallenge ();
 			}
-
+			CallNextFunctionFromQueue ();
 			return;
 		}
 
@@ -2119,6 +2294,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			emit gotTags (ParseTags (document));
+			CallNextFunctionFromQueue ();
 			return;
 		}
 

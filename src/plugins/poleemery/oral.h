@@ -625,7 +625,7 @@ namespace oral
 			}
 
 			template<typename T>
-			QString ToSql (ToSqlState<T>& state) const
+			QString ToSql (ToSqlState<T>&) const
 			{
 				return detail::GetFieldsNames<T> () ().at (Index_);
 			}

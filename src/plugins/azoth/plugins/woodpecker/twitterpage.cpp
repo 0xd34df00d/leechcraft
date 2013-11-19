@@ -73,7 +73,6 @@ namespace Woodpecker
 				SIGNAL (timeout ()),
 				this,
 				SLOT (requestUpdate ()));
-		tryToLogin ();
 
 		connect (Ui_.TwitEdit_,
 				SIGNAL (returnPressed ()),
@@ -91,6 +90,8 @@ namespace Woodpecker
 				SLOT (twit ()));
 		Settings_ = new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Woodpecker");
+
+		tryToLogin ();
 
 		ActionRetwit_ = new QAction (tr ("Retwit"), Ui_.TwitList_);
 		ActionRetwit_->setShortcut (Qt::Key_R + Qt::ALT);
@@ -189,7 +190,7 @@ namespace Woodpecker
 			Interface_->Login (Settings_->value ("token").toString (), Settings_->value ("tokenSecret").toString ());
 			requestUpdate ();
 			TwitterTimer_->start ();
-		}
+		};
 
 		UpdateReady_ = false;
 		UiUpdateTimer_ = new QTimer (this);
@@ -242,11 +243,11 @@ namespace Woodpecker
 
 	void TwitterPage::tryToLogin ()
 	{
-		Interface_->GetAccess ();
 		connect (Interface_,
 				SIGNAL (authorized (QString, QString)),
 				this,
 				SLOT (recvdAuth (QString, QString)));
+		Interface_->GetAccess ();
 	}
 
 	void TwitterPage::updateScreenTwits (QList<Tweet_ptr> twits)
@@ -309,10 +310,10 @@ namespace Woodpecker
 			tmpitem->setData (Qt::DisplayRole, "Title");
 			tmpitem->setData (Qt::UserRole, QVariant::fromValue(twit));
 
-			if (twit->GetAuthor ()->Avatar.isNull ())
-				tmpitem->setData (Qt::DecorationRole, QIcon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg"));
+			if (twit->GetAuthor ()->GetAvatar ().isNull ())
+				tmpitem->setData (Qt::DecorationRole, QIcon ("lcicons:/plugins/azoth/woodpecker/resources/images/woodpecker.svg"));
 			else
-				tmpitem->setData (Qt::DecorationRole, twit->GetAuthor ()->Avatar);
+				tmpitem->setData (Qt::DecorationRole, twit->GetAuthor ()->GetAvatar ());
 			Ui_.TwitList_->insertItem (0, tmpitem);
 			Ui_.TwitList_->updateGeometry ();
 		}

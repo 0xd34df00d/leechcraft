@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_COMMON_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_COMMON_H
+#pragma once
+
 #include <QFlags>
 
 namespace LeechCraft
@@ -50,5 +50,3 @@ namespace AdvancedNotifications
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AdvancedNotifications::NotificationMethods);
-
-#endif

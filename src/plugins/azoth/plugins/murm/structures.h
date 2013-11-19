@@ -60,7 +60,7 @@ namespace Murm
 		QUrl BigPhoto_;
 
 		int Gender_;
-	
+
 		QDate Birthday_;
 
 		QString HomePhone_;
@@ -107,6 +107,14 @@ namespace Murm
 		QVariantMap Params_;
 	};
 
+	struct ChatInfo
+	{
+		qulonglong ChatID_;
+
+		QString Title_;
+		QList<qulonglong> Users_;
+	};
+
 	enum class GeoIdType
 	{
 		Country,
@@ -140,6 +148,22 @@ namespace Murm
 		QUrl URL_;
 	};
 
+	struct VideoInfo
+	{
+		qlonglong OwnerID_;
+		qulonglong ID_;
+
+		QString AccessKey_;
+
+		QString Title_;
+		QString Desc_;
+		qulonglong Duration_;
+
+		qlonglong Views_;
+
+		QUrl Image_;
+	};
+
 	struct FullMessageInfo
 	{
 		qlonglong OwnerID_;
@@ -153,6 +177,7 @@ namespace Murm
 
 		QList<PhotoInfo> Photos_;
 		QList<AudioInfo> Audios_;
+		QList<VideoInfo> Videos_;
 		QList<FullMessageInfo> ContainedReposts_;
 	};
 }

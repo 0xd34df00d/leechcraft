@@ -70,7 +70,32 @@ namespace Media
 
 		/** @brief A predefined radio station like an Icecast stream.
 		 */
-		Predefined
+		Predefined,
+
+		/** @brief A radio station that contains user-addable streams.
+		 *
+		 * This can be used to implement bookmarks, for example, or a
+		 * custom collection.
+		 *
+		 * A radio station returned for the item with this radio type
+		 * from the IRadioStationProvider::GetRadioStation() method
+		 * should also implement IModifiableRadioStation.
+		 *
+		 * @sa IModifiableRadioStation
+		 */
+		CustomAddableStreams,
+
+		/** @brief A predefined list of single tracks, not a stream.
+		 *
+		 * Items of this type should provide RadioItemRole::TracksInfos.
+		 */
+		TracksList,
+
+		/** @brief A single song.
+		 *
+		 * Items of this type should provide RadioItemRole::TracksInfos.
+		 */
+		SingleTrack
 	};
 
 	/** @brief Custom user roles for the items in the model.
@@ -88,6 +113,22 @@ namespace Media
 		/** @brief The internal ID of the radio.
 		 */
 		RadioID,
+
+		/** @brief The tracks list.
+		 *
+		 * This role should be available for RadioType::SingleTrack and
+		 * RadioType::TracksList. The role should return a
+		 * <code>QList<Media::AudioInfo></code>.The list should consist
+		 * of one element for RadioType::SingleTrack and of all child
+		 * songs for RadioType::TracksList.
+		 *
+		 * The Media::AudioInfo elements in the list should contain all
+		 * the available metadata and must have the "URL" element in the
+		 * additional map.
+		 *
+		 * @sa Media::AudioInfo
+		 */
+		TracksInfos,
 
 		/** @brief Maximum role.
 		 */
@@ -107,9 +148,9 @@ namespace Media
 
 		/** @brief Returns a radio station for the given item and query.
 		 *
-		 * The item should be the one of returned from the
-		 * GetRadioListItems() method or its child. The query only makes
-		 * sense for RadioType::SimilarArtists and RadioType::GlobalTag
+		 * The \em item should be the one of returned from the
+		 * GetRadioListItems() method or its child. The \em query is only
+		 * used for RadioType::SimilarArtists and RadioType::GlobalTag
 		 * radio station types, where it is the source artist name and
 		 * tag name correspondingly. Otherwise it can be any string and
 		 * shouldn't be taken into account.
@@ -136,6 +177,10 @@ namespace Media
 		 * @return The list of root items.
 		 */
 		virtual QList<QStandardItem*> GetRadioListItems () const = 0;
+
+		/** @brief Refreshes the list of radio items.
+		 */
+		virtual void RefreshItems (const QList<QStandardItem*>&) = 0;
 	};
 }
 

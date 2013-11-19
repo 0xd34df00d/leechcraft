@@ -86,7 +86,8 @@ namespace LMP
 				Bio_.BasicInfo_.FullDesc_;
 		CachedInfo_.replace ("\n", "<br />");
 
-		ArtistImages_->clear ();
+		if (auto rc = ArtistImages_->rowCount ())
+			ArtistImages_->removeRows (0, rc);
 		QList<QStandardItem*> rows;
 		for (const auto& imageItem : bio.OtherImages_)
 		{

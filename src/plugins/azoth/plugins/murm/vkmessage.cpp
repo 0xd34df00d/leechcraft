@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "vkmessage.h"
-#include "vkentry.h"
+#include "entrybase.h"
 
 namespace LeechCraft
 {
@@ -36,9 +36,10 @@ namespace Azoth
 {
 namespace Murm
 {
-	VkMessage::VkMessage (Direction dir, MessageType type, VkEntry *entry)
-	: QObject (entry)
-	, Entry_ (entry)
+	VkMessage::VkMessage (Direction dir, MessageType type, EntryBase *parentEntry, EntryBase *other)
+	: QObject (parentEntry)
+	, OtherPart_ (other)
+	, ParentCLEntry_ (parentEntry)
 	, Type_ (type)
 	, Dir_ (dir)
 	{
@@ -51,13 +52,13 @@ namespace Murm
 
 	void VkMessage::Send ()
 	{
-		Entry_->Send (this);
+		ParentCLEntry_->Send (this);
 		Store ();
 	}
 
 	void VkMessage::Store ()
 	{
-		Entry_->Store (this);
+		ParentCLEntry_->Store (this);
 	}
 
 	qulonglong VkMessage::GetID () const
@@ -98,7 +99,12 @@ namespace Murm
 
 	QObject* VkMessage::OtherPart () const
 	{
-		return Entry_;
+		return OtherPart_ ? OtherPart_ : ParentCLEntry_;
+	}
+
+	QObject* VkMessage::ParentCLEntry() const
+	{
+		return ParentCLEntry_;
 	}
 
 	QString VkMessage::GetOtherVariant () const

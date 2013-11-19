@@ -38,6 +38,7 @@ set (SRCS
 	qml/settableiconprovider.cpp
 	qml/standardnamfactory.cpp
 	qml/themeimageprovider.cpp
+	qml/tooltipitem.cpp
 	qml/unhidelistmodel.cpp
 	qml/unhidelistviewbase.cpp
 	qml/widthiconprovider.cpp
@@ -55,6 +56,7 @@ set (SRCS
 	tags/tagscompletionmodel.cpp
 	tags/tagslineedit.cpp
 	tags/tagsfiltermodel.cpp
+	xpc/stdanfields.cpp
 	xpc/stddatafiltermenucreator.cpp
 	xpc/util.cpp
 	util.cpp
@@ -70,17 +72,15 @@ set (SRCS
 	sysinfo.cpp
 	passutils.cpp
 	queuemanager.cpp
+	delayedexecutor.cpp
 	shortcuts/shortcutmanager.cpp
 	)
 set (FORMS
 	backendselector.ui
 	gui/findnotification.ui
 	)
-if (USE_QT5)
-	qt5_wrap_ui (UIS_H ${FORMS})
-else ()
-	QT4_WRAP_UI (UIS_H ${FORMS})
-endif ()
+
+QtWrapUi (UIS_H ${FORMS})
 
 if (WITH_X11 AND NOT APPLE)
 	find_package (X11)
@@ -108,18 +108,19 @@ add_definitions(-DQT_NO_DEBUG)
 add_definitions(-DQT_SHARED)
 add_definitions(-DQT_GUI_LIB)
 
-add_library (lcutil SHARED
+add_library (leechcraft-util SHARED
 	${SRCS}
 	${UIS_H}
 	)
 
-FindQtLibs (lcutil Concurrent Quick Qml Network Xml Sql WebKitWidgets Widgets)
-
-target_link_libraries (lcutil
+# FindQtLibs (leechcraft-util Concurrent Quick Qml Network Xml Sql WebKitWidgets Widgets)
+QT5_USE_MODULES (leechcraft-util  Concurrent Quick Qml Network Xml Sql WebKitWidgets Widgets)
+target_link_libraries (leechcraft-util
 	${QT_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	${ADDITIONAL_LIBS}
-	xmlsettingsdialog
+	leechcraft-xsd
 	)
-set_property (TARGET lcutil PROPERTY SOVERSION 0.5.0)
-install (TARGETS lcutil DESTINATION ${LIBDIR})
+
+set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.5.0)
+install (TARGETS leechcraft-util DESTINATION ${LIBDIR})

@@ -248,6 +248,10 @@ namespace Azoth
 		 * @param[in] entry Human-readable ID of the remote.
 		 * @param[in] msg Optional request string to display to remote,
 		 * if applicable.
+		 * @param[in] name The name under which the \em entry should be
+		 * added to the contact list. May be blank.
+		 * @param[in] groups The groups to add the \em entry to, if
+		 * applicable. May be blank.
 		 */
 		virtual void RequestAuth (const QString& entry,
 				const QString& msg = QString (),
@@ -421,14 +425,14 @@ namespace Azoth
 		 */
 		virtual void itemGrantedSubscription (QObject *entry, const QString& message) = 0;
 
-		/** @brief This signal should be emitted when state of this
+		/** @brief This signal should be emitted when status of this
 		 * account changes for whatever reason.
 		 *
 		 * @note This function is expected to be a signal.
 		 *
-		 * @param[out] state New state of this account.
+		 * @param[out] status New status of this account.
 		 */
-		virtual void statusChanged (const EntryStatus&) = 0;
+		virtual void statusChanged (const EntryStatus& status) = 0;
 
 		/** @brief This signal should be emitted whenever a MUC
 		 * invitation has been received.
@@ -444,12 +448,11 @@ namespace Azoth
 		virtual void mucInvitationReceived (const QVariantMap& ident,
 				const QString& inviter, const QString& reason) = 0;
 	};
-
-	Q_DECLARE_OPERATORS_FOR_FLAGS (IAccount::AccountFeatures);
 }
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::IAccount*);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IAccount::AccountFeatures);
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAccount,
 		"org.Deviant.LeechCraft.Azoth.IAccount/1.0");
 

@@ -29,9 +29,12 @@
 
 #include "textedit.h"
 #include <QKeyEvent>
+#include <QShortcut>
 #include <QtDebug>
+#include <util/shortcuts/shortcutmanager.h>
 #include "chattab.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -40,6 +43,37 @@ namespace Azoth
 	TextEdit::TextEdit (QWidget *parent)
 	: QTextEdit (parent)
 	{
+		auto wordShortcut = new QShortcut ({},
+				this,
+				SLOT (deleteWord ()));
+		auto bolShortcut = new QShortcut (QString ("Ctrl+U"),
+				this,
+				SLOT (deleteBOL ()));
+		auto eolShortcut = new QShortcut (QString ("Ctrl+K"),
+				this,
+				SLOT (deleteEOL ()));
+
+		auto sm = Core::Instance ().GetShortcutManager ();
+		sm->RegisterShortcut ("org.Azoth.TextEdit.DeleteWord",
+				{ tr ("Delete the word before the cursor"), QKeySequence {}, {} },
+				wordShortcut,
+				true);
+		sm->RegisterShortcut ("org.Azoth.TextEdit.DeleteBOL",
+				{
+					tr ("Delete from cursor to the beginning of line"),
+					bolShortcut->key (),
+					{}
+				},
+				bolShortcut,
+				true);
+		sm->RegisterShortcut ("org.Azoth.TextEdit.DeleteEOL",
+				{
+					tr ("Delete from cursor to the end of line"),
+					eolShortcut->key (),
+					{}
+				},
+				eolShortcut,
+				true);
 	}
 
 	void TextEdit::keyPressEvent (QKeyEvent *event)
@@ -79,6 +113,32 @@ namespace Azoth
 			emit clearAvailableNicks ();
 			QTextEdit::keyPressEvent (event);
 		}
+	}
+
+	void TextEdit::deleteWord ()
+	{
+		auto c = textCursor ();
+
+		const auto pos = c.position ();
+		c.movePosition (QTextCursor::StartOfWord, QTextCursor::KeepAnchor);
+		if (pos == c.position ())
+			c.movePosition (QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
+
+		c.removeSelectedText ();
+	}
+
+	void TextEdit::deleteBOL ()
+	{
+		auto c = textCursor ();
+		c.movePosition (QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
+		c.removeSelectedText ();
+	}
+
+	void TextEdit::deleteEOL ()
+	{
+		auto c = textCursor ();
+		c.movePosition (QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+		c.removeSelectedText ();
 	}
 }
 }

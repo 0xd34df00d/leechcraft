@@ -72,7 +72,7 @@ namespace NetStoreManager
 					SLOT (handleCloseDirectoryEditor (QWidget*)));
 			return dw;
 		}
-		case RemoteDirecory:
+		case RemoteDirectory:
 		{
 			DirectoryWidget *dw = new DirectoryWidget (DirectoryWidget::Type::Remote,
 					index.sibling (index.row (), Account)
@@ -103,7 +103,7 @@ namespace NetStoreManager
 			break;
 		}
 		case LocalDirectory:
-		case RemoteDirecory:
+		case RemoteDirectory:
 		{
 			auto dw = static_cast<DirectoryWidget*> (editor);
 			dw->SetPath (index.data (Qt::EditRole).toString ());
@@ -131,7 +131,7 @@ namespace NetStoreManager
 			break;
 		}
 		case LocalDirectory:
-		case RemoteDirecory:
+		case RemoteDirectory:
 		{
 			auto dw = static_cast<DirectoryWidget*> (editor);
 			model->setData (index, dw->GetPath (), Qt::EditRole);

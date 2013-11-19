@@ -47,6 +47,10 @@
 #include "artistbrowsertab.h"
 #include "progressmanager.h"
 #include "volumenotifycontroller.h"
+#include "radiomanager.h"
+
+typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
+Q_DECLARE_METATYPE (CustomStationsList_t);
 
 namespace LeechCraft
 {
@@ -60,6 +64,9 @@ namespace LMP
 		gchar *argvarr [] = { "leechcraft", nullptr };
 		gchar **argv = argvarr;
 		gst_init (&argc, &argv);
+
+		qRegisterMetaType<QList<QPair<QString, QUrl>>> ("QList<QPair<QString, QUrl>>");
+		qRegisterMetaTypeStreamOperators<QList<QPair<QString, QUrl>>> ();
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
@@ -146,9 +153,10 @@ namespace LMP
 
 	void Plugin::SecondInit ()
 	{
-		Q_FOREACH (const auto& e, GlobAction2Entity_.values ())
+		for (const auto& e : GlobAction2Entity_)
 			emit gotEntity (e);
 
+		Core::Instance ().InitWithOtherPlugins ();
 		PlayerTab_->InitWithOtherPlugins ();
 	}
 
@@ -261,7 +269,10 @@ namespace LMP
 				player->setPause ();
 			}
 			else if (e.Entity_ == "WokeUp")
+			{
 				player->RestorePlayState ();
+				Core::Instance ().GetRadioManager ()->HandleWokeUp ();
+			}
 
 			return;
 		}

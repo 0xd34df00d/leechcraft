@@ -34,6 +34,7 @@
 #include <QDebug>
 #include <qjson/parser.h>
 #include <QtKOAuth/QtKOAuth>
+#include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -76,8 +77,6 @@ namespace Woodpecker
 				SIGNAL (finished ()),
 				this,
 				SLOT (replyFinished ()));
-		//           getAccess ();
-		//           xauth ();
 	}
 
 	void TwitterInterface::replyFinished ()
@@ -127,12 +126,12 @@ namespace Woodpecker
 							if (medium.contains ("media_url_https"))
 							{
 								text.replace (medium ["url"].toString (),
-									QString ("<a href=\"twitter://media/photo/%1\">photo</a>").arg (medium ["media_url_https"].toString ()));
+									QString ("<a class=\"link\" href=\"twitter://media/photo/%1\">%1</a>").arg (medium ["media_url_https"].toString ()));
 							}
 							else if (medium.contains ("media_url"))
 							{
 								text.replace (medium ["url"].toString (), 
-									QString ("<a href=\"twitter://media/photo/%1\">photo</a>").arg (medium ["media_url"].toString ()));
+									QString ("<a class=\"link\" href=\"twitter://media/photo/%1\">%1</a>").arg (medium ["media_url"].toString ()));
 							}
 							else
 							{
@@ -148,7 +147,7 @@ namespace Woodpecker
 			tempTweet->GetAuthor ()->SetUsername (userMap ["screen_name"].toString ());
 			tempTweet->GetAuthor ()->DownloadAvatar (userMap ["profile_image_url"].toString ());
 			connect (tempTweet->GetAuthor ().get (),
-					SIGNAL (userReady ()), 
+					SIGNAL (userAvatarReady ()), 
 					parent (),
 					SLOT (setUpdateReady ()));
 			tempTweet->SetDateTime (locale.toDateTime (tweetMap ["created_at"].toString (), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
@@ -162,6 +161,9 @@ namespace Woodpecker
 
 	void TwitterInterface::GetAccess () 
 	{
+#ifdef WP_DEBUG
+		qDebug() << Q_FUNC_INFO;
+#endif
 		connect (OAuthManager_,
 				SIGNAL (temporaryTokenReceived (QString, QString)),
 				this,
@@ -177,13 +179,18 @@ namespace Woodpecker
 				this,
 				SLOT (onAccessTokenReceived (QString, QString)));
 
+		connect (OAuthManager_,
+				SIGNAL (authorizationPageRequested (QUrl)),
+				this,
+				SLOT (onAuthorizationPageRequested (QUrl)));
+		
 		OAuthRequest_->initRequest (KQOAuthRequest::TemporaryCredentials, QUrl ("https://api.twitter.com/oauth/request_token"));
 		OAuthRequest_->setConsumerKey (ConsumerKey_);
 		OAuthRequest_->setConsumerSecretKey (ConsumerKeySecret_);
 		OAuthManager_->setHandleUserAuthorization (true);
+		OAuthManager_->setHandleAuthorizationPageOpening (false);
 
 		OAuthManager_->executeRequest (OAuthRequest_);
-
 	}
 
 	void TwitterInterface::SignedRequest (TwitterRequest req, KQOAuthRequest::RequestHttpMethod method, KQOAuthParameters params)
@@ -290,48 +297,67 @@ namespace Woodpecker
 
 	void TwitterInterface::onAuthorizedRequestDone ()
 	{
-		qDebug () << "Request sent to Twitter!";
+#ifdef WP_DEBUG
+		qDebug () << Q_FUNC_INFO << "Request sent to Twitter!";
+#endif
 	}
 
 	void TwitterInterface::onRequestReady (const QByteArray& response)
 	{
-		qDebug () << "Response from the service: recvd";// << response;
+#ifdef WP_DEBUG
+		qDebug () << Q_FUNC_INFO << "Response from the service: recvd";// << response;
+#endif
 		emit tweetsReady (ParseReply (response));
 	}
 
-	void TwitterInterface::onAuthorizationReceived (const QString& token, const QString& verifier)
+	void TwitterInterface::onAuthorizationReceived (const QString&, const QString&)
 	{
+#ifdef WP_DEBUG
+		qDebug () << Q_FUNC_INFO;
+#endif
 		OAuthManager_->getUserAccessTokens (QUrl ("https://api.twitter.com/oauth/access_token"));
 
 		if (OAuthManager_->lastError () != KQOAuthManager::NoError) 
 		{
-			qWarning() << "Authorization error";
+			qWarning () << Q_FUNC_INFO << "Authorization error";
 		}
 	}
 
 	void TwitterInterface::onAccessTokenReceived (const QString& token, const QString& tokenSecret) 
 	{
+#ifdef WP_DEBUG
+		qDebug () << Q_FUNC_INFO << "Access tokens now stored. You are ready to send Tweets from user's account!";
+#endif
 		this->Token_ = token;
 		this->TokenSecret_ = tokenSecret;
 
-		qDebug () << "Access tokens now stored. You are ready to send Tweets from user's account!";
 
 		emit authorized (token, tokenSecret);
+
 	}
 
-	void TwitterInterface::onTemporaryTokenReceived (const QString& token, const QString& tokenSecret)
+	void TwitterInterface::onTemporaryTokenReceived (const QString&, const QString&)
 	{
-		QUrl userAuthURL ("https://api.twitter.com/oauth/authorize");
+		const QUrl userAuthURL ("https://api.twitter.com/oauth/authorize");
 
 		if (OAuthManager_->lastError () == KQOAuthManager::NoError)
 		{
-			qDebug () << "Asking for user's permission to access protected resources. Opening URL: " << userAuthURL;
+#ifdef WP_DEBUG
+			qDebug () << Q_FUNC_INFO << "Asking for user's permission to access protected resources. Opening URL: " << userAuthURL;
+#endif
 			OAuthManager_->getUserAuthorization (userAuthURL);
+		}
+		else
+		{
+			qWarning () << Q_FUNC_INFO << "KQOAuthManager error: " << OAuthManager_->lastError ();
 		}
 	}
 
 	void TwitterInterface::Xauth () 
 	{
+#ifdef WP_DEBUG
+		qDebug() << Q_FUNC_INFO;
+#endif
 		connect (OAuthManager_, 
 				SIGNAL (accessTokenReceived (QString, QString)),
 				this, 
@@ -348,7 +374,10 @@ namespace Woodpecker
 	{
 		Token_ = savedToken;
 		TokenSecret_ = savedTokenSecret;
-		qDebug () << "Successfully logged in";
+
+#ifdef WP_DEBUG
+		qDebug () << Q_FUNC_INFO << "Successfully logged in";
+#endif
 	}
 
 	void TwitterInterface::ReportSPAM (const QString& username, const qulonglong userid)
@@ -422,6 +451,15 @@ namespace Woodpecker
 		param.insert ("id", QString::number (id));
 		SignedRequest (TwitterRequest::DeleteFavorite, KQOAuthRequest::POST, param);
 	}
+	
+	void TwitterInterface::onAuthorizationPageRequested (const QUrl& userAuthURL)
+	{
+		const auto& e = Util::MakeEntity (userAuthURL,
+										  QString (), OnlyHandle | FromUserInitiated);
+		
+		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
+	}
+	
 }
 }
 }

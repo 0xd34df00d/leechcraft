@@ -41,6 +41,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
+#include <interfaces/ihavetabs.h>
 
 Q_DECLARE_METATYPE (ICoreTabWidget*)
 
@@ -115,6 +116,14 @@ namespace TabsList
 		ShowList_->setShortcuts (seqs);
 	}
 
+	void Plugin::RemoveTab (ICoreTabWidget *ictw, int idx)
+	{
+		const auto tab = qobject_cast<ITabWidget*> (ictw->Widget (idx));
+		tab->Remove ();
+
+		handleShowList ();
+	}
+
 	namespace
 	{
 		class ListEventFilter : public QObject
@@ -123,10 +132,15 @@ namespace TabsList
 			QString SearchText_;
 			
 			QTimer NumSelectTimer_;
+
+			Plugin * const Plugin_;
+			QWidget * const Widget_;
 		public:
-			ListEventFilter (const QList<QToolButton*>& buttons, QObject *parent = 0)
+			ListEventFilter (const QList<QToolButton*>& buttons, Plugin *plugin, QWidget *parent)
 			: QObject (parent)
 			, AllButtons_ (buttons)
+			, Plugin_ (plugin)
+			, Widget_ (parent)
 			{
 				NumSelectTimer_.setSingleShot (true);
 			}
@@ -157,6 +171,20 @@ namespace TabsList
 					break;
 				case Qt::Key_End:
 					AllButtons_.last ()->setFocus ();
+					break;
+				case Qt::Key_Delete:
+					for (int i = 0; i < AllButtons_.size (); ++i)
+					{
+						const auto button = AllButtons_ [i];
+						if (!button->hasFocus ())
+							continue;
+
+						const auto ictw = button->defaultAction ()->
+								property ("ICTW").value<ICoreTabWidget*> ();
+						Widget_->deleteLater ();
+						Plugin_->RemoveTab (ictw, i);
+						break;
+					}
 					break;
 				default:
 					break;
@@ -226,14 +254,16 @@ namespace TabsList
 		if (tw->WidgetCount () < 2)
 			return;
 
-		QWidget *widget = new QWidget (rootWM->GetPreferredWindow (),
-				Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+		QWidget *widget = new QWidget (nullptr,
+				Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 		widget->setAttribute (Qt::WA_TranslucentBackground);
 		widget->setWindowModality (Qt::ApplicationModal);
 
 		QVBoxLayout *layout = new QVBoxLayout ();
 		layout->setSpacing (1);
 		layout->setContentsMargins (1, 1, 1, 1);
+
+		const QIcon deleteIcon = Proxy_->GetIcon ("tab-close");
 
 		const int currentIdx = tw->CurrentIndex ();
 		QToolButton *toFocus = 0;
@@ -244,8 +274,8 @@ namespace TabsList
 			QString title = QString ("[%1] ").arg (i + 1) + origText;
 			if (title.size () > 100)
 				title = title.left (100) + "...";
-			QAction *action = new QAction (tw->TabIcon (i),
-					title, this);
+			QAction *action = new QAction (tw->TabIcon (i), title, this);
+			action->setToolTip (origText);
 			action->setProperty ("TabIndex", i);
 			action->setProperty ("ICTW", QVariant::fromValue<ICoreTabWidget*> (tw));
 			connect (action,
@@ -263,7 +293,29 @@ namespace TabsList
 			button->setSizePolicy (QSizePolicy::Expanding,
 					button->sizePolicy ().verticalPolicy ());
 			button->setProperty ("OrigText", origText);
-			layout->addWidget (button);
+
+			auto delAction = new QAction (deleteIcon, tr ("Close tab"), this);
+			delAction->setToolTip (delAction->text ());
+			delAction->setProperty ("TabIndex", i);
+			delAction->setProperty ("ICTW", QVariant::fromValue<ICoreTabWidget*> (tw));
+			connect (delAction,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (removeTab ()));
+			connect (delAction,
+					SIGNAL (triggered ()),
+					widget,
+					SLOT (deleteLater ()));
+
+			auto delButton = new QToolButton ();
+			delButton->setDefaultAction (delAction);
+			delButton->setToolButtonStyle (Qt::ToolButtonIconOnly);
+
+			auto horLay = new QHBoxLayout;
+			horLay->addWidget (button);
+			horLay->addWidget (delButton);
+
+			layout->addLayout (horLay);
 
 			if (currentIdx == i)
 				toFocus = button;
@@ -271,7 +323,7 @@ namespace TabsList
 			allButtons << button;
 		}
 
-		widget->installEventFilter (new ListEventFilter (allButtons, widget));
+		widget->installEventFilter (new ListEventFilter (allButtons, this, widget));
 		widget->setLayout (layout);
 		layout->update ();
 		layout->activate ();
@@ -293,8 +345,15 @@ namespace TabsList
 	void Plugin::navigateToTab ()
 	{
 		const int idx = sender ()->property ("TabIndex").toInt ();
-		auto ictw = sender ()->property ("ICTW").value<ICoreTabWidget*> ();
+		const auto ictw = sender ()->property ("ICTW").value<ICoreTabWidget*> ();
 		ictw->setCurrentTab (idx);
+	}
+
+	void Plugin::removeTab ()
+	{
+		const int idx = sender ()->property ("TabIndex").toInt ();
+		const auto ictw = sender ()->property ("ICTW").value<ICoreTabWidget*> ();
+		RemoveTab (ictw, idx);
 	}
 }
 }

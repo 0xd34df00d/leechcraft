@@ -33,6 +33,12 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <interfaces/an/constants.h>
+#include <interfaces/an/ianemitter.h>
+#include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include "core.h"
+#include "typedmatchers.h"
 
 namespace LeechCraft
 {
@@ -115,6 +121,9 @@ namespace AdvancedNotifications
 		Cat2HR_ [AN::CatPackageManager] = tr ("Package manager");
 		Type2HR_ [AN::TypePackageUpdated] = tr ("Package updated");
 
+		Cat2HR_ [AN::CatMediaPlayer] = tr ("Media player");
+		Type2HR_ [AN::TypeMediaPlaybackStatus] = tr ("Media playback status changed");
+
 		Cat2HR_ [AN::CatGeneric] = tr ("Generic");
 		Type2HR_ [AN::TypeGeneric] = tr ("Generic");
 
@@ -163,8 +172,75 @@ namespace AdvancedNotifications
 		const int row = index.row ();
 		Rules_ [row] = rule;
 		int i = 0;
-		for (QStandardItem *item : RuleToRow (rule))
+		for (auto item : RuleToRow (rule))
 			RulesModel_->setItem (row, i++, item);
+
+		SaveSettings ();
+	}
+
+	void RulesManager::HandleEntity (const Entity& e)
+	{
+		const auto& title = e.Entity_.toString ();
+		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
+		const auto& category = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
+		const auto& types = e.Additional_ ["org.LC.AdvNotifications.EventType"].toStringList ();
+
+		const auto& proxy = Core::Instance ().GetProxy ();
+		const auto plugin = proxy->GetPluginsManager ()->GetPluginByID (sender);
+		if (!plugin)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no plugin for"
+					<< sender;
+			return;
+		}
+
+		NotificationRule rule (title, category, types);
+
+		if (e.Additional_ ["org.LC.AdvNotifications.SingleShot"].toBool ())
+			rule.SetSingleShot (true);
+
+		if (e.Additional_ ["org.LC.AdvNotifications.NotifyPersistent"].toBool ())
+			rule.AddMethod (NMTray);
+
+		if (e.Additional_ ["org.LC.AdvNotifications.NotifyTransient"].toBool ())
+			rule.AddMethod (NMVisual);
+
+		const auto& typeSet = types.toSet ();
+		if (e.Additional_ ["org.LC.AdvNotifications.NotifyAudio"].toBool ())
+		{
+			rule.AddMethod (NMAudio);
+
+			for (const auto& other : Rules_)
+			{
+				const auto& audioParams = other.GetAudioParams ();
+				if (!audioParams.Filename_.isEmpty () &&
+						!other.GetTypes ().intersect (typeSet).isEmpty ())
+					rule.SetAudioParams (audioParams);
+			}
+		}
+
+		if (auto iane = qobject_cast<IANEmitter*> (plugin))
+			for (const auto& field : iane->GetANFields ())
+			{
+				qDebug () << "testing" << field.EventTypes_ << "against" << typeSet;
+				if (field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
+					continue;
+
+				if (e.Additional_.contains (field.ID_))
+				{
+					const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
+					valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
+
+					FieldMatch fieldMatch (field.Type_, valMatcher);
+					fieldMatch.SetPluginID (sender);
+					fieldMatch.SetFieldName (field.ID_);
+					rule.AddFieldMatch (fieldMatch);
+				}
+			}
+
+		Rules_.prepend (rule);
+		RulesModel_->insertRow (0, RuleToRow (rule));
 
 		SaveSettings ();
 	}

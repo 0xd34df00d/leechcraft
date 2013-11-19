@@ -367,7 +367,7 @@ namespace Graffiti
 #endif
 	}
 
-	void CueSplitter::handleProcessFinished (int code)
+	void CueSplitter::handleProcessFinished (int)
 	{
 		sender ()->deleteLater ();
 		scheduleNext ();

@@ -224,6 +224,9 @@ namespace LMP
 		int y = option.rect.top ();
 		painter->save ();
 
+		if (option.state & QStyle::State_Selected)
+			painter->setPen (option.palette.color (QPalette::HighlightedText));
+
 		auto append = [&x, &y, painter] (const QString& text, const QFont& font)
 		{
 			painter->setFont (font);

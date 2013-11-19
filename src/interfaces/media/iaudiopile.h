@@ -33,6 +33,7 @@
 #include "audiostructs.h"
 
 class QObject;
+class QIcon;
 
 namespace Media
 {
@@ -168,6 +169,24 @@ namespace Media
 	{
 	public:
 		virtual ~IAudioPile () {}
+
+		/** @brief Returns the name of this service.
+		 *
+		 * This function returns the name of the service this IAudioPile
+		 * represents, like "VKontakte".
+		 *
+		 * @return The well-known service name.
+		 */
+		virtual QString GetServiceName () const = 0;
+
+		/** @brief Returns the icon of this service.
+		 *
+		 * This function returns the icon of the service this IAudioPile
+		 * represents.
+		 *
+		 * @return The service icon.
+		 */
+		virtual QIcon GetServiceIcon () const = 0;
 
 		/** @brief Requests a search by the given request.
 		 *

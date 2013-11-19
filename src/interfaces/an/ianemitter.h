@@ -27,11 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_IANEMITTER_H
-#define INTERFACES_IANEMITTER_H
+#pragma once
+
 #include <QtPlugin>
 #include <QVariant>
 #include <QStringList>
+#include <boost/variant/variant.hpp>
 
 namespace LeechCraft
 {
@@ -72,6 +73,9 @@ namespace LeechCraft
 		 * This member contains the type of the value of this field -
 		 * the value for the corresponding key (equal to ID_) in the
 		 * LeechCraft::Entity::Additional_ map.
+		 *
+		 * For now only QVariant::Int, QVariant::String and
+		 * QVariant::StringList are supported.
 		 */
 		QVariant::Type Type_;
 
@@ -82,6 +86,17 @@ namespace LeechCraft
 		 * not mentioned here.
 		 */
 		QStringList EventTypes_;
+
+		/** @brief The allowed values of this field.
+		 *
+		 * If this list is non-empty, only values from this list are
+		 * allowed.
+		 *
+		 * This currently only makes sense for QVariant::String and
+		 * QVariant::StringList, in which case each QVariant in this list
+		 * should be a QString.
+		 */
+		QVariantList AllowedValues_;
 
 		/** @brief Constructs an empty field info.
 		 *
@@ -95,27 +110,52 @@ namespace LeechCraft
 
 		/** @brief Constructs field with the given info variables.
 		 *
-		 * @param[in] id The ID of the field (ID_).
-		 * @param[in] name The name of the field (Name_).
-		 * @param[in] description The description of the field
-		 * (Description_).
-		 * @param[in] type The type of the field (Type_).
-		 * @param[in] events The list of events for this field
-		 * (EventTypes_).
+		 * @param[in] id The ID of the field.
+		 * @param[in] name The name of the field.
+		 * @param[in] description The description of the field.
+		 * @param[in] type The type of the field.
+		 * @param[in] events The list of events for this field.
+		 * @param[in] values The allowed values of this field.
 		 */
 		ANFieldData (const QString& id,
 				const QString& name,
 				const QString& description,
 				QVariant::Type type,
-				QStringList events)
+				const QStringList& events,
+				const QVariantList& values = {})
 		: ID_ (id)
 		, Name_ (name)
 		, Description_ (description)
 		, Type_ (type)
 		, EventTypes_ (events)
+		, AllowedValues_ (values)
 		{
 		}
 	};
+
+	struct ANIntFieldValue
+	{
+		int Boundary_;
+
+		enum Operation
+		{
+			OGreater = 0x01,
+			OLess = 0x02,
+			OEqual = 0x04
+		};
+
+		Q_DECLARE_FLAGS (Operations, Operation)
+
+		Operations Ops_;
+	};
+
+	struct ANStringFieldValue
+	{
+		QRegExp Rx_;
+		bool Contains_;
+	};
+
+	typedef boost::variant<ANIntFieldValue, ANStringFieldValue> ANFieldValue;
 }
 
 /** @brief Interface for plugins emitting AdvancedNotifications entries.
@@ -157,5 +197,7 @@ public:
 
 Q_DECLARE_INTERFACE (IANEmitter, "org.Deviant.LeechCraft.IANEmitter/1.0");
 Q_DECLARE_METATYPE (LeechCraft::ANFieldData);
+Q_DECLARE_METATYPE (LeechCraft::ANFieldValue);
+Q_DECLARE_METATYPE (QList<LeechCraft::ANFieldValue>);
 
-#endif
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::ANIntFieldValue::Operations);

@@ -69,8 +69,10 @@ namespace Aggregator
 		QAction *ActionMarkItemAsRead_;
 		QAction *ActionMarkItemAsImportant_;
 
+		QAction *ActionPrevUnreadItem_;
 		QAction *ActionPrevItem_;
 		QAction *ActionNextItem_;
+		QAction *ActionNextUnreadItem_;
 
 		QAction *ActionDeleteItem_;
 		QAction *ActionItemCommentsSubscribe_;
@@ -145,7 +147,12 @@ namespace Aggregator
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 
-		addActions ({ Impl_->ActionPrevItem_, Impl_->ActionNextItem_ });
+		addActions ({
+				Impl_->ActionPrevUnreadItem_,
+				Impl_->ActionPrevItem_,
+				Impl_->ActionNextItem_,
+				Impl_->ActionNextUnreadItem_
+			});
 
 		connect (Impl_->Ui_.SearchLine_,
 				SIGNAL (textChanged (const QString&)),
@@ -274,11 +281,13 @@ namespace Aggregator
 
 	Item_ptr ItemsWidget::GetItem (const QModelIndex& index) const
 	{
-		QModelIndex mapped = Impl_->ItemLists_->mapToSource (index);
-		const ItemsListModel *model = static_cast<const ItemsListModel*> (mapped.model ());
+		auto mapped = Impl_->ItemLists_->mapToSource (index);
+		if (!mapped.isValid ())
+			return {};
+
+		auto model = static_cast<const ItemsListModel*> (mapped.model ());
 		ItemShort item = model->GetItem (mapped);
-		return Core::Instance ().GetStorageBackend ()->
-			GetItem (item.ItemID_);
+		return Core::Instance ().GetStorageBackend ()->GetItem (item.ItemID_);
 	}
 
 	QToolBar* ItemsWidget::GetToolBar () const
@@ -296,10 +305,14 @@ namespace Aggregator
 			return Impl_->ActionMarkItemAsUnread_;
 		case Action::MarkAsImportant:
 			return Impl_->ActionMarkItemAsImportant_;
+		case Action::PrevUnreadItem:
+			return Impl_->ActionPrevUnreadItem_;
 		case Action::PrevItem:
 			return Impl_->ActionPrevItem_;
 		case Action::NextItem:
 			return Impl_->ActionNextItem_;
+		case Action::NextUnreadItem:
+			return Impl_->ActionNextUnreadItem_;
 		case Action::Delete:
 			return Impl_->ActionDeleteItem_;
 		case Action::MaxAction:
@@ -625,6 +638,11 @@ namespace Aggregator
 		Impl_->ActionMarkItemAsImportant_->setCheckable (true);
 		Impl_->ActionMarkItemAsImportant_->setShortcut ({ "I" });
 
+		Impl_->ActionPrevUnreadItem_ = new QAction (tr ("Previous unread item"), this);
+		Impl_->ActionPrevUnreadItem_->setObjectName ("ActionPrevUnreadItem_");
+		Impl_->ActionPrevUnreadItem_->setProperty ("ActionIcon", "go-first");
+		Impl_->ActionPrevUnreadItem_->setShortcut ({ "Shift+K" });
+
 		Impl_->ActionPrevItem_ = new QAction (tr ("Previous item"), this);
 		Impl_->ActionPrevItem_->setObjectName ("ActionPrevItem_");
 		Impl_->ActionPrevItem_->setProperty ("ActionIcon", "go-previous");
@@ -634,6 +652,11 @@ namespace Aggregator
 		Impl_->ActionNextItem_->setObjectName ("ActionNextItem_");
 		Impl_->ActionNextItem_->setProperty ("ActionIcon", "go-next");
 		Impl_->ActionNextItem_->setShortcut ({ "J" });
+
+		Impl_->ActionNextUnreadItem_ = new QAction (tr ("Next unread item"), this);
+		Impl_->ActionNextUnreadItem_->setObjectName ("ActionNextUnreadItem_");
+		Impl_->ActionNextUnreadItem_->setProperty ("ActionIcon", "go-last");
+		Impl_->ActionNextUnreadItem_->setShortcut ({ "Shift+J" });
 
 		Impl_->ActionDeleteItem_ = new QAction (tr ("Delete"), this);
 		Impl_->ActionDeleteItem_->setObjectName ("ActionDeleteItem_");
@@ -1222,6 +1245,59 @@ namespace Aggregator
 			sb->RemoveItem (id);
 	}
 
+	void ItemsWidget::on_ActionPrevUnreadItem__triggered ()
+	{
+		auto current = Impl_->Ui_.Items_->currentIndex ();
+		if (!current.isValid () &&
+				Impl_->ItemsFilterModel_->rowCount ())
+		{
+			current = Impl_->ItemsFilterModel_->index (Impl_->ItemsFilterModel_->rowCount () - 1, 0);
+			if (current.isValid () &&
+					!current.data (ItemsListModel::ItemRole::IsRead).toBool ())
+			{
+				Impl_->Ui_.Items_->setCurrentIndex (current);
+				return;
+			}
+		}
+
+		for (int i = current.row () - 1; i >= 0; --i)
+		{
+			const auto& next = current.sibling (i, current.column ());
+			if (!next.isValid ())
+				break;
+
+			if (!next.data (ItemsListModel::ItemRole::IsRead).toBool ())
+			{
+				Impl_->Ui_.Items_->setCurrentIndex (next);
+				return;
+			}
+		}
+
+		const auto& chanIdx = Impl_->LastSelectedChannel_;
+		if (!chanIdx.isValid ())
+			return;
+
+		auto tryRange = [&] (int start, int end) -> bool
+		{
+			for (int i = start; i >= end; --i)
+			{
+				const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
+				if (otherChannel.data ().toInt ())
+				{
+					emit movedToChannel (otherChannel);
+					CurrentChannelChanged (otherChannel);
+					on_ActionPrevUnreadItem__triggered ();
+					return true;
+				}
+			}
+
+			return false;
+		};
+
+		const auto channelRc = chanIdx.model ()->rowCount (chanIdx.parent ());
+		tryRange (chanIdx.row () - 1, 0) || tryRange (channelRc - 1, chanIdx.row () + 1);
+	}
+
 	void ItemsWidget::on_ActionPrevItem__triggered ()
 	{
 		const auto& current = Impl_->Ui_.Items_->currentIndex ();
@@ -1236,6 +1312,59 @@ namespace Aggregator
 		const auto& next = current.sibling (current.row () + 1, current.column ());
 		if (next.isValid ())
 			Impl_->Ui_.Items_->setCurrentIndex (next);
+	}
+
+	void ItemsWidget::on_ActionNextUnreadItem__triggered ()
+	{
+		auto current = Impl_->Ui_.Items_->currentIndex ();
+		if (!current.isValid ())
+		{
+			current = Impl_->ItemsFilterModel_->index (0, 0);
+			if (current.isValid () &&
+					!current.data (ItemsListModel::ItemRole::IsRead).toBool ())
+			{
+				Impl_->Ui_.Items_->setCurrentIndex (current);
+				return;
+			}
+		}
+
+		const auto rc = Impl_->ItemsFilterModel_->rowCount (current.parent ());
+		for (int i = current.row () + 1; i < rc; ++i)
+		{
+			const auto& next = current.sibling (i, current.column ());
+			if (!next.isValid ())
+				break;
+
+			if (!next.data (ItemsListModel::ItemRole::IsRead).toBool ())
+			{
+				Impl_->Ui_.Items_->setCurrentIndex (next);
+				return;
+			}
+		}
+
+		const auto& chanIdx = Impl_->LastSelectedChannel_;
+		if (!chanIdx.isValid ())
+			return;
+
+		auto tryRange = [&] (int start, int end) -> bool
+			{
+				for (int i = start; i < end; ++i)
+				{
+					const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
+					if (otherChannel.data ().toInt ())
+					{
+						emit movedToChannel (otherChannel);
+						CurrentChannelChanged (otherChannel);
+						on_ActionNextUnreadItem__triggered ();
+						return true;
+					}
+				}
+
+				return false;
+			};
+
+		const auto channelRc = chanIdx.model ()->rowCount (chanIdx.parent ());
+		tryRange (chanIdx.row () + 1, channelRc) || tryRange (0, chanIdx.row ());
 	}
 
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)

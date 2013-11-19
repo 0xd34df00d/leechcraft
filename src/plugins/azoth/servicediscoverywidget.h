@@ -35,6 +35,7 @@
 #include "ui_servicediscoverywidget.h"
 
 class QComboBox;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -51,9 +52,13 @@ namespace Azoth
 		static QObject *S_ParentMultiTabs_;
 
 		Ui::ServiceDiscoveryWidget Ui_;
+
 		QToolBar *Toolbar_;
 		QComboBox *AccountBox_;
 		QLineEdit *AddressLine_;
+		QLineEdit *FilterLine_;
+		QSortFilterProxyModel *FilterModel_;
+
 		QTimer *DiscoveryTimer_;
 		std::shared_ptr<ISDSession> SDSession_;
 	public:

@@ -29,7 +29,8 @@
 
 #pragma once
 
-#include <QStandardItemModel>
+#include <QDialog>
+#include "ui_sendmessagedialog.h"
 
 namespace LeechCraft
 {
@@ -37,24 +38,25 @@ namespace Blogique
 {
 namespace Metida
 {
-	class FriendsModel : public QStandardItemModel
+	class LJAccount;
+	class LJProfile;
+	
+	class SendMessageDialog : public QDialog
 	{
 		Q_OBJECT
+
+		Ui::SendMessageDialog Ui_;
+		LJAccount *Account_;
+		LJProfile *Profile_;
+
 	public:
-		FriendsModel (QObject *parent = 0);
-
-		Qt::ItemFlags flags (const QModelIndex& index) const;
-
-		Qt::DropActions supportedDropActions () const;
-
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList& indexes) const;
-		bool dropMimeData (const QMimeData *data, Qt::DropAction action,
-				int row, int column, const QModelIndex& parent);
-
-	signals:
-		void userGroupChanged (const QString& name,
-				const QString& bgColor, const QString& fgColor, int realGroupId);
+		explicit SendMessageDialog (LJProfile *profile, QWidget *parent = 0);
+		void accept ();
+		
+		QStringList GetAddresses () const;
+		void SetAddresses (const QStringList& addresses);
+		QString GetSubject () const;
+		QString GetText () const;
 	};
 }
 }

@@ -55,24 +55,38 @@ namespace HotStreams
 	{
 		Proxy_ = proxy;
 
+		auto nam = Proxy_->GetNetworkAccessManager ();
+
 #ifdef HAVE_QJSON
 		auto di = new QStandardItem ("Digitally Imported");
 		di->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		di->setEditable (false);
 		di->setIcon (QIcon (":/hotstreams/resources/images/di.png"));
 		Roots_ ["di"] = di;
+		Root2Fetcher_ [di] = [nam, this] (QStandardItem *di)
+			{
+				new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::DI,
+						di, nam, this);
+			};
 
 		auto sky = new QStandardItem ("SkyFM");
 		sky->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		sky->setEditable (false);
 		sky->setIcon (QIcon (":/hotstreams/resources/images/skyfm.png"));
 		Roots_ ["sky"] = sky;
+		Root2Fetcher_ [sky] = [nam, this] (QStandardItem *sky)
+			{
+				new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::SkyFM,
+						sky, nam, this);
+			};
 
 		auto rr = new QStandardItem ("RockRadio");
 		rr->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		rr->setEditable (false);
 		rr->setIcon (QIcon (":/hotstreams/resources/images/rockradio.png"));
 		Roots_ ["rr"] = rr;
+		Root2Fetcher_ [rr] = [nam, this] (QStandardItem *rr)
+				{ new RockRadioListFetcher (rr, nam, this); };
 #endif
 
 		auto somafm = new QStandardItem ("SomaFM");
@@ -80,18 +94,30 @@ namespace HotStreams
 		somafm->setEditable (false);
 		somafm->setIcon (QIcon (":/hotstreams/resources/images/somafm.png"));
 		Roots_ ["somafm"] = somafm;
+		Root2Fetcher_ [somafm] = [nam, this] (QStandardItem *somafm)
+				{ new SomaFMListFetcher (somafm, nam, this); };
 
 		auto stealkill = new QStandardItem ("42fm");
 		stealkill->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		stealkill->setEditable (false);
 		stealkill->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
 		Roots_ ["42fm"] = stealkill;
+		Root2Fetcher_ [stealkill] = [nam, this] (QStandardItem *stealkill)
+				{ new StealKillListFetcher (Roots_ ["42fm"], nam, this); };
 
 		auto icecast = new QStandardItem ("Icecast");
 		icecast->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		icecast->setEditable (false);
 		icecast->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
 		Roots_ ["icecast"] = icecast;
+		Root2Fetcher_ [icecast] = [nam, this] (QStandardItem *icecast)
+			{
+				auto icecastFetcher = new IcecastFetcher (Roots_ ["icecast"], nam, this);
+				connect (icecastFetcher,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+						this,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+			};
 	}
 
 	void Plugin::SecondInit ()
@@ -148,41 +174,28 @@ namespace HotStreams
 		}
 	}
 
-	void Plugin::refreshRadios ()
+	void Plugin::RefreshItems (const QList<QStandardItem*>& items)
 	{
-		auto nam = Proxy_->GetNetworkAccessManager ();
-
 		auto clearRoot = [] (QStandardItem *item)
 		{
 			while (item->rowCount ())
 				item->removeRow (0);
 		};
 
-		clearRoot (Roots_ ["somafm"]);
-		new SomaFMListFetcher (Roots_ ["somafm"], nam, this);
+		for (auto item : items)
+		{
+			if (!Root2Fetcher_.contains (item))
+				continue;
 
-		clearRoot (Roots_ ["42fm"]);
-		new StealKillListFetcher (Roots_ ["42fm"], nam, this);
+			clearRoot (item);
+			Root2Fetcher_ [item] (item);
+		}
 
-		clearRoot (Roots_ ["icecast"]);
-		auto icecastFetcher = new IcecastFetcher (Roots_ ["icecast"], nam, this);
-		connect (icecastFetcher,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+	}
 
-#ifdef HAVE_QJSON
-		clearRoot (Roots_ ["rr"]);
-		new RockRadioListFetcher (Roots_ ["rr"], nam, this);
-
-		clearRoot (Roots_ ["di"]);
-		new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::DI,
-				Roots_ ["di"], nam, this);
-
-		clearRoot (Roots_ ["sky"]);
-		new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::SkyFM,
-				Roots_ ["sky"], nam, this);
-#endif
+	void Plugin::refreshRadios ()
+	{
+		RefreshItems (GetRadioListItems ());
 	}
 }
 }

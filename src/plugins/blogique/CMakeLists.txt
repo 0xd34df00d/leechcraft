@@ -19,6 +19,7 @@ set (SRCS
 	calendarwidget.cpp
 	core.cpp
 	draftentrieswidget.cpp
+	dummytexteditor.cpp
 	entriesfilterproxymodel.cpp
 	exportwizard.cpp
 	pluginproxy.cpp

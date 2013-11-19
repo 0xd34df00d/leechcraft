@@ -37,6 +37,7 @@
 #include "soundwidget.h"
 #include "signalledwidget.h"
 #include "playlistwidget.h"
+#include "volumenotification.h"
 
 class QToolBar;
 class QMenu;
@@ -118,8 +119,10 @@ namespace vlc
 		SignalledWidget *VlcMainWidget_;
 		SoundWidget *SoundWidget_;
 		SoundWidget *FullScreenSoundWidget_;
+		VolumeNotification *VolumeNotificationWidget_;
 		QMenu *ContextMenu_;
 		QSettings *Settings_;
+		QString VideoPath_;
 		
 		bool Autostart_;
 		
@@ -136,7 +139,7 @@ namespace vlc
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
 		
-		void Pause ();
+		void Sleep ();
 		
 	private:
 		QString GetNewSubtitles ();
@@ -153,6 +156,8 @@ namespace vlc
 		void SaveSettings ();
 		void RestoreSettings ();
 		void RestorePlaylist ();
+		
+		void ParsePath (QString);
 		
 	public slots:
 		void autostartChanged ();
@@ -183,6 +188,7 @@ namespace vlc
 		void wheelEvent (QWheelEvent*);
 		void dropEvent (QDropEvent*);
 		void dragEnterEvent (QDragEnterEvent*);
+		void mainWidgetResized (QResizeEvent*);
 		
 		void fullScreenPanelRequested ();
 		void hideFullScreenPanel ();
@@ -192,7 +198,8 @@ namespace vlc
 		
 		void disableScreenSaver ();
 		
-		void savePlaylist (const QStringList&);
+		void savePlaylist (const QueueState&);
+		void savePlaylistPosition (Qt::DockWidgetArea);
 		
 	signals:
 		void deleteMe (QWidget*);

@@ -76,7 +76,7 @@ namespace StandardStyles
 		void FrameFocused (QWebFrame*);
 		QStringList GetVariantsForPack (const QString&);
 	private:
-		QList<QColor> CreateColors (const QString&);
+		QList<QColor> CreateColors (const QString&, QWebFrame*);
 		QString GetMessageID (QObject*);
 		QString GetStatusImage (const QString&);
 	private slots:

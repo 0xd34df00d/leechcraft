@@ -611,7 +611,9 @@ namespace Poshuku
 		{
 			WebView_->zoomFactor (),
 			NotifyWhenFinished_->isChecked (),
-			QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ()),
+			ReloadPeriodically_->isChecked () ?
+				QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ()) :
+				QTime (0, 0, 0),
 			ba,
 			WebView_->page ()->mainFrame ()->scrollPosition ()
 		};

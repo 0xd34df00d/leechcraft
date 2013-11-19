@@ -48,6 +48,7 @@ class QToolButton;
 class QShortcut;
 class QSplashScreen;
 class QSystemTrayIcon;
+class QWidgetAction;
 
 namespace LeechCraft
 {
@@ -67,6 +68,8 @@ namespace LeechCraft
 
 		Ui::LeechCraft Ui_;
 
+		const bool IsPrimary_;
+
 		QSystemTrayIcon *TrayIcon_;
 		bool IsShown_;
 		bool WasMaximized_;
@@ -76,6 +79,8 @@ namespace LeechCraft
 
 		QToolBar *QLBar_;
 
+		QToolButton *MenuButton_;
+		QWidgetAction *MBAction_;
 		QMenu *MenuView_;
 		QMenu *MenuTools_;
 
@@ -84,7 +89,8 @@ namespace LeechCraft
 		QToolBar *TopDockToolbar_;
 		QToolBar *BottomDockToolbar_;
 	public:
-		MainWindow (QWidget *parent = 0);
+		MainWindow (int screen, bool isPrimary);
+
 		void Init ();
 		virtual ~MainWindow ();
 
@@ -127,7 +133,6 @@ namespace LeechCraft
 		void on_ActionRestart__triggered ();
 		void on_ActionQuit__triggered ();
 		void on_ActionShowStatusBar__triggered ();
-		void on_ActionMenu__triggered ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();

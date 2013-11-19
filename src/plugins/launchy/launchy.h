@@ -46,6 +46,7 @@ namespace Util
 namespace Launchy
 {
 	class FavoritesManager;
+	class RecentManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -59,6 +60,7 @@ namespace Launchy
 		ICoreProxy_ptr Proxy_;
 		Util::XDG::ItemsFinder *Finder_;
 		FavoritesManager *FavManager_;
+		RecentManager *RecentManager_;
 
 		Util::ShortcutManager *ShortcutMgr_;
 		QAction *FSLauncher_;

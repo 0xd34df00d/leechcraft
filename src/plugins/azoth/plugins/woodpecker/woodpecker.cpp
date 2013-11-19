@@ -109,8 +109,7 @@ namespace Woodpecker
 		
 		auto newtab = new TwitterPage (tc, this, mode, params);
 		
-		emit addNewTab (name, newtab);
-		emit raiseTab (newtab);
+		MakeTab (newtab, tc);
 	}
 
 	void Plugin::SecondInit ()
@@ -138,7 +137,7 @@ namespace Woodpecker
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/woodpecker/resources/images/woodpecker.svg");
 		return icon;
 	}
 

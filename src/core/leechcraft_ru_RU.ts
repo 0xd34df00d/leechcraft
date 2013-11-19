@@ -25,20 +25,16 @@
         <translation>Лицензии</translation>
     </message>
     <message>
-        <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation>LeechCraft — кроссплатформенный модульный интернет-клиент, включающий веб-браузер, клиент для чтения лент новостей, BitTorrent-клиент и множество других модулей.</translation>
-    </message>
-    <message>
-        <source>Third parties</source>
-        <translation>Третьи стороны</translation>
-    </message>
-    <message>
         <source>Diagnostic info</source>
         <translation>Диагностическая информация</translation>
     </message>
     <message>
         <source>Add this information to your bug reports, if any:</source>
         <translation>Добавьте эту информацию к вашему сообщению об ошибке:</translation>
+    </message>
+    <message>
+        <source>LeechCraft — a modular live environment.</source>
+        <translation>LeechCraft — модульное рабочее окружение.</translation>
     </message>
 </context>
 <context>
@@ -165,6 +161,29 @@
     </message>
 </context>
 <context>
+    <name>FindNotification</name>
+    <message>
+        <source>Find</source>
+        <translation>Найти</translation>
+    </message>
+    <message>
+        <source>Backwards</source>
+        <translation>Назад</translation>
+    </message>
+    <message>
+        <source>Case</source>
+        <translation>Регистр</translation>
+    </message>
+    <message>
+        <source>Cycle</source>
+        <translation>Переходить к началу</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Закрыть</translation>
+    </message>
+</context>
+<context>
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
@@ -248,10 +267,6 @@
         <translation>О Qt...</translation>
     </message>
     <message>
-        <source>Menu</source>
-        <translation>Меню</translation>
-    </message>
-    <message>
         <source>Show status bar</source>
         <translation>Показывать строку состояния</translation>
     </message>
@@ -272,12 +287,12 @@
         <translation>F10</translation>
     </message>
     <message>
-        <source>Show toolbar</source>
-        <translation>Показывать панель инструментов</translation>
-    </message>
-    <message>
         <source>Restart LeechCraft...</source>
         <translation>Перезапустить LeechCraft...</translation>
+    </message>
+    <message>
+        <source>New window</source>
+        <translation>Новое окно</translation>
     </message>
 </context>
 <context>
@@ -414,6 +429,30 @@
         <source>Windows fixes.</source>
         <translation>Исправления для Windows.</translation>
     </message>
+    <message>
+        <source>openSUSE packages maintainer.</source>
+        <translation>Мейнтейнер под openSUSE.</translation>
+    </message>
+    <message>
+        <source>Shaitan plugin</source>
+        <translation>Модуль Shaitan</translation>
+    </message>
+    <message>
+        <source>openSUSE maintainership.</source>
+        <translation>Мейнтейнер под openSUSE.</translation>
+    </message>
+    <message>
+        <source>Lackman packages.</source>
+        <translation>Поддержка пакетов для Lackman.</translation>
+    </message>
+    <message>
+        <source>Azoth user guide.</source>
+        <translation>Руководство по Azoth.</translation>
+    </message>
+    <message>
+        <source>Azoth theming.</source>
+        <translation>Темы Azoth.</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::AcceptLangWidget</name>
@@ -435,6 +474,30 @@
     <message>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Невозможно создать путь %1/.leechcraft</translation>
+    </message>
+    <message>
+        <source>Initializing LeechCraft...</source>
+        <translation>Инициализация LeechCraft...</translation>
+    </message>
+    <message>
+        <source>Finalizing...</source>
+        <translation>Последние штрихи...</translation>
+    </message>
+    <message>
+        <source>Startup password</source>
+        <translation>Пароль на запуск</translation>
+    </message>
+    <message>
+        <source>Enter startup password for LeechCraft:</source>
+        <translation>Введите пароль на запуск LeechCraft:</translation>
+    </message>
+    <message>
+        <source>Sorry, incorrect password</source>
+        <translation>Извините, неправильный пароль</translation>
+    </message>
+    <message>
+        <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
+        <translation>Это изменение требует перезапуска LeechCraft. Хотите перезапустить сейчас?</translation>
     </message>
 </context>
 <context>
@@ -460,18 +523,6 @@
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Нет модулей, способных загрузить «%1»</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>Ошибка</translation>
-    </message>
-    <message>
-        <source>Could not add task to the selected downloader, would you like to try another one?</source>
-        <translation>Невозможно добавить задачу в выбранный загрузчик, хотите попробовать другой?</translation>
-    </message>
-    <message>
-        <source>Could not handle task with the selected handler, would you like to try another one?</source>
-        <translation>Невозможно обработать задачу выбранным обработчиком, хотите попробовать другой?</translation>
     </message>
     <message>
         <source>Do you really want to clear the network cache?</source>
@@ -511,6 +562,30 @@
     <message>
         <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
         <translation>Некоторые графические ресурсы могли быть удалены из LeechCraft из-за лицензионных соображений. Воспользуйтесь модулем LackMan для установки этих ресурсов.</translation>
+    </message>
+    <message>
+        <source>Switch to previously active tab</source>
+        <translation>Переключиться к предыдущей вкладке</translation>
+    </message>
+    <message>
+        <source>Toggle fullscreen</source>
+        <translation>Переключить полноэкранный режим</translation>
+    </message>
+    <message>
+        <source>Close tab</source>
+        <translation>Закрыть вкладку</translation>
+    </message>
+    <message>
+        <source>Switch to tab to the left</source>
+        <translation>Переключиться к вкладке левее</translation>
+    </message>
+    <message>
+        <source>Switch to tab to the right</source>
+        <translation>Переключиться к вкладке правее</translation>
+    </message>
+    <message>
+        <source>Quit LeechCraft</source>
+        <translation>Выйти из LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -576,24 +651,8 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <source>/s</source>
-        <translation>/с</translation>
-    </message>
-    <message>
-        <source>%1 down, %2 up</source>
-        <translation>%1 закачка, %2 отдача</translation>
-    </message>
-    <message>
-        <source>/s	</source>
-        <translation>/c	</translation>
-    </message>
-    <message>
         <source>Do you really want to quit?</source>
         <translation>Вы действительно хотите выйти?</translation>
-    </message>
-    <message>
-        <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
-        <translation>Это изменение требует перезапуска LeechCraft. Хотите перезапустить сейчас?</translation>
     </message>
     <message>
         <source>LeechCraft menu</source>
@@ -615,26 +674,6 @@
     <message>
         <source>Tools</source>
         <translation>Инструменты</translation>
-    </message>
-    <message>
-        <source>Initializing LeechCraft...</source>
-        <translation>Инициализация LeechCraft...</translation>
-    </message>
-    <message>
-        <source>Finalizing...</source>
-        <translation>Последние штрихи...</translation>
-    </message>
-    <message>
-        <source>Startup password</source>
-        <translation>Пароль на запуск</translation>
-    </message>
-    <message>
-        <source>Enter startup password for LeechCraft:</source>
-        <translation>Введите пароль на запуск LeechCraft:</translation>
-    </message>
-    <message>
-        <source>Sorry, incorrect password</source>
-        <translation>Извините, неправильный пароль</translation>
     </message>
     <message>
         <source>Do you really want to restart?</source>
@@ -663,12 +702,12 @@
 <context>
     <name>LeechCraft::NewTabMenuManager</name>
     <message>
-        <source>New tab menu</source>
-        <translation>Меню создания вкладки</translation>
+        <source>New tab</source>
+        <translation>Новая вкладка</translation>
     </message>
     <message>
-        <source>Additional tab menu</source>
-        <translation>Дополнительное меню вкладки</translation>
+        <source>Additional</source>
+        <translation>Дополнительно</translation>
     </message>
 </context>
 <context>
@@ -722,10 +761,6 @@
         <translation>Вы уверены, что хотите отключить этот модуль?</translation>
     </message>
     <message>
-        <source>Could not load library %1: %2.</source>
-        <translation>Невозможно загрузить библиотеку %1: %2.</translation>
-    </message>
-    <message>
         <source>Could not load plugin from %1: API level mismatch.</source>
         <translation>Невозможно загрузить модуль %1: несоответствие уровня API.</translation>
     </message>
@@ -735,6 +770,21 @@
     <message>
         <source>Configure...</source>
         <translation>Настроить...</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::SeparateTabWidget</name>
+    <message>
+        <source>Move tab to</source>
+        <translation>Переместить вкладку</translation>
+    </message>
+    <message>
+        <source>New window</source>
+        <translation>В новое окно</translation>
+    </message>
+    <message>
+        <source>To window %1 (%2)</source>
+        <translation>В окно %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -754,14 +804,6 @@
     <message>
         <source>Cancel</source>
         <translation>Отмена</translation>
-    </message>
-    <message>
-        <source>Plugins for %1</source>
-        <translation>Модули %1</translation>
-    </message>
-    <message>
-        <source>General second-level plugins</source>
-        <translation>Общие модули второго уровня</translation>
     </message>
     <message>
         <source>General plugins</source>
@@ -793,6 +835,18 @@
     <message>
         <source>Shortcut</source>
         <translation>Сочетание</translation>
+    </message>
+    <message>
+        <source>Alternate</source>
+        <translation>Альтернативное сочетание</translation>
+    </message>
+    <message>
+        <source>Set alternate shortcut:</source>
+        <translation>Установить альтернативное сочетание:</translation>
+    </message>
+    <message>
+        <source>Set primary shortcut:</source>
+        <translation>Установить главное сочетание:</translation>
     </message>
 </context>
 <context>
@@ -934,6 +988,13 @@
     <message>
         <source>&lt;unknown tag&gt;</source>
         <translation>&lt;неизвестный тег&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::SvcAuth::VkAuthManager</name>
+    <message>
+        <source>VK.com authentication for %1</source>
+        <translation>Аутентификация ВКонтакте для %1</translation>
     </message>
 </context>
 <context>
@@ -1096,6 +1157,54 @@ LeechCraft для Windows — довольно экспериментальна�
         <source>unknown error</source>
         <translation>неизвестная ошибка</translation>
     </message>
+    <message>
+        <source>File URL</source>
+        <translation>URL файла</translation>
+    </message>
+    <message>
+        <source>URL to the file being played.</source>
+        <translation>URL текущего проигрываемого файла.</translation>
+    </message>
+    <message>
+        <source>Playback status</source>
+        <translation>Статус воспроизведения</translation>
+    </message>
+    <message>
+        <source>The status of the currently playing media file.</source>
+        <translation>Статус воспроизведения текущего файла.</translation>
+    </message>
+    <message>
+        <source>Title metadata</source>
+        <translation>Название</translation>
+    </message>
+    <message>
+        <source>Title of the track being played.</source>
+        <translation>Название текущего трека.</translation>
+    </message>
+    <message>
+        <source>Album metadata</source>
+        <translation>Альбом</translation>
+    </message>
+    <message>
+        <source>Album of the track being played.</source>
+        <translation>Альбом, которому принадлежит текущий трек.</translation>
+    </message>
+    <message>
+        <source>Artist metadata</source>
+        <translation>Исполнитель</translation>
+    </message>
+    <message>
+        <source>Artist of the track being played.</source>
+        <translation>Исполнитель текущего трека.</translation>
+    </message>
+    <message>
+        <source>Length metadata</source>
+        <translation>Продолжительность</translation>
+    </message>
+    <message>
+        <source>Length of the track being played.</source>
+        <translation>Продолжительность текущего трека.</translation>
+    </message>
 </context>
 <context>
     <name>ShortcutManager</name>
@@ -1240,10 +1349,6 @@ LeechCraft для Windows — довольно экспериментальна�
         <translation>В зависимости от контекста</translation>
     </message>
     <message>
-        <source>Maximum log lines:</source>
-        <translation>Максимум строк в журнале:</translation>
-    </message>
-    <message>
         <source>Shortcuts</source>
         <translation>Клавиатурные сочетания</translation>
     </message>
@@ -1384,10 +1489,6 @@ LeechCraft для Windows — довольно экспериментальна�
         <translation>Слева от закрытой вкладки</translation>
     </message>
     <message>
-        <source>Manual toolbar visibility control</source>
-        <translation>Ручное управление видимостью панели инструментов</translation>
-    </message>
-    <message>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
@@ -1426,6 +1527,74 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Disable all plugins</source>
         <translation>Выключить все модули</translation>
+    </message>
+    <message>
+        <source>Plugins icon set:</source>
+        <translation>Набор иконок модулей:</translation>
+    </message>
+    <message>
+        <source>Color theme:</source>
+        <translation>Цветовая тема:</translation>
+    </message>
+    <message>
+        <source>System default</source>
+        <translation>Системная</translation>
+    </message>
+    <message>
+        <source>Crafty</source>
+        <translation>Crafty</translation>
+    </message>
+    <message>
+        <source>Window selection mode for a new tab:</source>
+        <translation>Режим выбора нового окна для новой вкладки:</translation>
+    </message>
+    <message>
+        <source>Always select current window</source>
+        <translation>Всегда выбирать текущее окно</translation>
+    </message>
+    <message>
+        <source>Select based on tab class</source>
+        <translation>Выбирать, основываясь на типе вкладки</translation>
+    </message>
+    <message>
+        <source>Privacy</source>
+        <translation>Приватность</translation>
+    </message>
+    <message>
+        <source>Enable cookies</source>
+        <translation>Включить cookies</translation>
+    </message>
+    <message>
+        <source>Delete cookies on application exit</source>
+        <translation>Удалять cookies при выходе из приложения</translation>
+    </message>
+    <message>
+        <source>Match domain exactly</source>
+        <translation>Строгое соответствие домена</translation>
+    </message>
+    <message>
+        <source>Cookie domains whitelist:</source>
+        <translation>Белый список доменов для cookies:</translation>
+    </message>
+    <message>
+        <source>Cookies whose domain matches one of these will always be accepted. Whitelist rules override blacklist.</source>
+        <translation>Cookies, чей домен соответствует одному из этого списка, всегда будут обработаны. Белый список имеет больший приоритет, чем чёрный список.</translation>
+    </message>
+    <message>
+        <source>Cookie domains blacklist:</source>
+        <translation>Чёрный список доменов для cookies:</translation>
+    </message>
+    <message>
+        <source>Cookies whose domain matches one of these will always be rejected. Whitelist rules override blacklist.</source>
+        <translation>Cookies, чей домен соответствует одному из этого списка, всегда будут отвергнуты. Белый список имеет больший приоритет, чем чёрный список.</translation>
+    </message>
+    <message>
+        <source>Set Do Not Track option</source>
+        <translation>Установить опцию Do Not Track</translation>
+    </message>
+    <message>
+        <source>Do not track</source>
+        <translation>Не отслеживать</translation>
     </message>
 </context>
 </TS>

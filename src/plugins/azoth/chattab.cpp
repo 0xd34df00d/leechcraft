@@ -83,6 +83,8 @@
 #include "util.h"
 #include "proxyobject.h"
 #include "customchatstylemanager.h"
+#include "coremessage.h"
+#include "dummymsgmanager.h"
 
 namespace LeechCraft
 {
@@ -160,7 +162,7 @@ namespace Azoth
 	, CurrentNickIndex_ (0)
 	, LastSpacePosition_(-1)
 	, HadHighlight_ (false)
-	, NumUnreadMsgs_ (0)
+	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	, ScrollbackPos_ (0)
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
@@ -228,6 +230,7 @@ namespace Azoth
 				this,
 				SLOT (typeTimeout ()));
 
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
 		PrepareTheme ();
 
 		auto entry = GetEntry<ICLEntry> ();
@@ -269,6 +272,8 @@ namespace Azoth
 		SetChatPartState (CPSGone);
 
 		qDeleteAll (HistoryMessages_);
+		qDeleteAll (CoreMessages_);
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
 		delete Ui_.MsgEdit_->document ();
 
 		delete MUCEventLog_;
@@ -735,6 +740,10 @@ namespace Azoth
 		entry->PurgeMessages (QDateTime ());
 		qDeleteAll (HistoryMessages_);
 		HistoryMessages_.clear ();
+		qDeleteAll (CoreMessages_);
+		CoreMessages_.clear ();
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
+		LastDateTime_ = QDateTime ();
 		PrepareTheme ();
 	}
 
@@ -743,6 +752,10 @@ namespace Azoth
 		ScrollbackPos_ += 50;
 		qDeleteAll (HistoryMessages_);
 		HistoryMessages_.clear ();
+		qDeleteAll (CoreMessages_);
+		CoreMessages_.clear ();
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
+		LastDateTime_ = QDateTime ();
 		RequestLogs (ScrollbackPos_);
 	}
 
@@ -1056,14 +1069,13 @@ namespace Azoth
 			newUrl.removeQueryItem ("hrid");
 
 			IAccount *account = qobject_cast<IAccount*> (own->GetParentAccount ());
-			Q_FOREACH (QObject *entryObj, account->GetCLEntries ())
+			for (QObject *entryObj : account->GetCLEntries ())
 			{
 				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 				if (!entry || entry->GetHumanReadableID () != id)
 					continue;
 
-				QWidget *w = Core::Instance ()
-						.GetChatTabsManager ()->OpenChat (entry);
+				auto w = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
 				QMetaObject::invokeMethod (w,
 						"handleViewLinkClicked",
 						Qt::QueuedConnection,
@@ -1093,7 +1105,7 @@ namespace Azoth
 
 			Entity e = Util::MakeEntity (url,
 					QString (),
-					static_cast<TaskParameter> (FromUserInitiated | OnlyHandle));
+					FromUserInitiated | OnlyHandle);
 			if (!raise)
 				e.Additional_ ["BackgroundHandle"] = true;
 			Core::Instance ().SendEntity (e);
@@ -1110,7 +1122,7 @@ namespace Azoth
 				Ui_.MsgEdit_->setFocus ();
 			}
 			else
-				Q_FOREACH (auto item, url.queryItems ())
+				for (const auto& item : url.queryItems ())
 					if (item.first == "hrid")
 					{
 						OpenChatWithText (url, item.second, GetEntry<ICLEntry> ());
@@ -1546,7 +1558,7 @@ namespace Azoth
 		const auto& openLinkInfo = infos ["org.LeechCraft.Azoth.OpenLastLink"];
 		auto shortcut = new QShortcut (openLinkInfo.Seqs_.value (0),
 				this, SLOT (handleOpenLastLink ()), 0, Qt::WidgetWithChildrenShortcut);
-		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
+		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut, true);
 	}
 
 	void ChatTab::InitEntry ()
@@ -1754,10 +1766,6 @@ namespace Azoth
 				this,
 				SLOT (handleEditScroll (int)));
 
-		QTimer::singleShot (0,
-				Ui_.MsgEdit_,
-				SLOT (setFocus ()));
-
 		connect (Ui_.MsgEdit_,
 				SIGNAL (clearAvailableNicks ()),
 				this,
@@ -1833,6 +1841,14 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		bool IsSameDay (const QDateTime& dt, const IMessage *msg)
+		{
+			return dt.date () == msg->GetDateTime ().date ();
+		}
+	}
+
 	void ChatTab::AppendMessage (IMessage *msg)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
@@ -1899,10 +1915,34 @@ namespace Azoth
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
 
-		ChatMsgAppendInfo info =
+		const bool isActiveChat =  Core::Instance ()
+				.GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ());
+		if (!LastDateTime_.isNull () && !IsSameDay (LastDateTime_, msg))
+		{
+			auto datetime = msg->GetDateTime ();
+			const auto& thisDate = datetime.date ();
+			const auto& str = QLocale ().toString (thisDate, QLocale::LongFormat);
+
+			datetime.setTime ({0, 0});
+
+			auto coreMessage = new CoreMessage (str, datetime,
+					IMessage::MTServiceMessage, IMessage::DIn, parent->GetQObject (), this);
+			ChatMsgAppendInfo coreInfo
+			{
+				false,
+				isActiveChat,
+				ToggleRichText_->isChecked ()
+			};
+			Core::Instance ().AppendMessageByTemplate (frame, coreMessage, coreInfo);
+			CoreMessages_ << coreMessage;
+		}
+
+		LastDateTime_ = msg->GetDateTime ();
+
+		ChatMsgAppendInfo info
 		{
 			Core::Instance ().IsHighlightMessage (msg),
-			Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ()),
+			isActiveChat,
 			ToggleRichText_->isChecked ()
 		};
 
@@ -2139,13 +2179,13 @@ namespace Azoth
 		return participantsList;
 	}
 
-	void ChatTab::ReformatTitle ()
+	QString ChatTab::ReformatTitle ()
 	{
 		if (!GetEntry<ICLEntry> ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "GetEntry<ICLEntry> returned NULL";
-			return;
+			return {};
 		}
 
 		QString title = GetEntry<ICLEntry> ()->GetEntryName ();
@@ -2176,6 +2216,8 @@ namespace Azoth
 		path << title;
 
 		setProperty ("WidgetLogicalPath", path);
+
+		return title;
 	}
 
 	void ChatTab::UpdateTextHeight ()

@@ -18,7 +18,6 @@ set (READITLATER_SRCS
 
 set (READITLATER_FORMS readitlaterauthwidget.ui)
 
-set (READITLATER_RESOURCES onlinebookmarksreaditlater.qrc)
 CreateTrs ("poshuku_onlinebookmarks_readitlater" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS)
 
 QtWrapUi (READITLATER_UIS_H ${READITLATER_FORMS})

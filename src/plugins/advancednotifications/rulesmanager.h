@@ -39,6 +39,8 @@ class QModelIndex;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace AdvancedNotifications
 {
 	class RulesManager : public QObject
@@ -61,6 +63,8 @@ namespace AdvancedNotifications
 
 		void SetRuleEnabled (const NotificationRule&, bool);
 		void UpdateRule (const QModelIndex&, const NotificationRule&);
+
+		void HandleEntity (const Entity&);
 	private:
 		void LoadDefaultRules (int = -1);
 		void LoadSettings ();

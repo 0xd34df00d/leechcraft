@@ -144,7 +144,7 @@ namespace StandardStyles
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
 		QObject *azothSettings = Proxy_->GetSettingsManager ();
-		const auto& colors = CreateColors (frame->metaData ().value ("coloring"));
+		const auto& colors = CreateColors (frame->metaData ().value ("coloring"), frame);
 
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 		const bool isActiveChat = info.IsActiveChat_;
@@ -259,8 +259,9 @@ namespace StandardStyles
 				divClass = "statusmsg";
 				break;
 			case IMessage::MTServiceMessage:
-				qWarning () << Q_FUNC_INFO
-						<< "service message";
+				statusIconName = "notification_chat_info";
+				string.append ("* ");
+				divClass = "servicemsg";
 				break;
 			}
 			break;
@@ -304,7 +305,7 @@ namespace StandardStyles
 		}
 
 		if (!statusIconName.isEmpty ())
-			string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2'/>")
+			string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2' class='deliveryStatusIcon' />")
 					.arg (GetStatusImage (statusIconName))
 					.arg (msgId));
 		string.append (body);
@@ -314,11 +315,11 @@ namespace StandardStyles
 		if (!isActiveChat &&
 				!HasBeenAppended_ [frame])
 		{
-			QWebElement hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
-			if (hr.isNull ())
-				elem.appendInside ("<hr class=\"lastSeparator\" />");
-			else
-				elem.appendInside (hr.takeFromDocument ());
+			auto hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
+			if (!hr.isNull ())
+				hr.removeFromDocument ();
+			elem.appendInside ("<hr class=\"lastSeparator\" />");
+
 			HasBeenAppended_ [frame] = true;
 		}
 
@@ -338,12 +339,27 @@ namespace StandardStyles
 		return QStringList ();
 	}
 
-	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme)
+	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme, QWebFrame *frame)
 	{
-		if (!Coloring2Colors_.contains (scheme))
-			Coloring2Colors_ [scheme] = Proxy_->GenerateColors (scheme);
+		QColor bgColor;
 
-		return Coloring2Colors_ [scheme];
+		const auto js = "window.getComputedStyle(document.body) ['background-color']";
+		auto res = frame->evaluateJavaScript (js).toString ();
+		res.remove (" ");
+		res.remove ("rgb(");
+		res.remove (")");
+		const auto& vals = res.split (',', QString::SkipEmptyParts);
+
+		if (vals.size () == 3)
+			bgColor.setRgb (vals.value (0).toInt (),
+					vals.value (1).toInt (), vals.value (2).toInt ());
+
+		const auto& mangledScheme = scheme + bgColor.name ();
+
+		if (!Coloring2Colors_.contains (mangledScheme))
+			Coloring2Colors_ [mangledScheme] = Proxy_->GenerateColors (scheme, bgColor);
+
+		return Coloring2Colors_ [mangledScheme];
 	}
 
 	QString StandardStyleSource::GetMessageID (QObject *msgObj)

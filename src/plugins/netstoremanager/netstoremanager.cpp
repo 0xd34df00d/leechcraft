@@ -40,7 +40,6 @@
 #include "accountslistwidget.h"
 #include "upmanager.h"
 #include "syncmanager.h"
-#include "syncwidget.h"
 
 namespace LeechCraft
 {
@@ -60,8 +59,9 @@ namespace NetStoreManager
 			TFOpenableByRequest
 		};
 
-		qRegisterMetaType<SyncDirs_t> ("SyncDirs_t");
-		qRegisterMetaTypeStreamOperators<SyncDirs_t> ("SyncDirs_t");
+		qRegisterMetaType<SyncerInfo> ("SyncerInfo");
+		qRegisterMetaTypeStreamOperators<SyncerInfo> ("SyncerInfo");
+		qRegisterMetaTypeStreamOperators<QList<SyncerInfo>> ("QList<SyncerInfo>");
 		qRegisterMetaType<Change> ("Change");
 		qRegisterMetaTypeStreamOperators<Change> ("Change");
 		qRegisterMetaType<StorageItem> ("StorageItem");
@@ -88,9 +88,9 @@ namespace NetStoreManager
 		SyncManager_ = new SyncManager (AccountsManager_, this);
 		SyncWidget *w = new SyncWidget (AccountsManager_);
 		connect (w,
-				SIGNAL (directoriesToSyncUpdated (QVariantMap)),
+				SIGNAL (directoriesToSyncUpdated (QList<SyncerInfo>)),
 				SyncManager_,
-				SLOT (handleDirectoriesToSyncUpdated (QVariantMap)));
+				SLOT (handleDirectoriesToSyncUpdated (QList<SyncerInfo>)));
 		XSD_->SetCustomWidget ("SyncWidget", w);
 		w->RestoreData ();
 	}
@@ -204,6 +204,26 @@ namespace NetStoreManager
 		UpManager_->ScheduleAutoshare (filename);
 	}
 
+	QDataStream& operator<< (QDataStream& out, const SyncerInfo& info)
+	{
+		out << static_cast<quint8> (1)
+				<< info.AccountId_
+				<< info.LocalDirectory_
+				<< info.RemoteDirectory_;
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, SyncerInfo& info)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version == 1)
+			in >> info.AccountId_
+					>> info.LocalDirectory_
+					>> info.RemoteDirectory_;
+		return in;
+	}
+
 	QDataStream& operator<< (QDataStream& out, const Change& change)
 	{
 		out << static_cast<quint8> (1)
@@ -211,7 +231,6 @@ namespace NetStoreManager
 				<< change.ItemID_
 				<< change.Deleted_
 				<< change.Item_;
-
 		return out;
 	}
 
@@ -224,7 +243,6 @@ namespace NetStoreManager
 					>> change.ItemID_
 					>> change.Deleted_
 					>> change.Item_;
-
 		return in;
 	}
 
@@ -238,7 +256,6 @@ namespace NetStoreManager
 				<< item.Hash_
 				<< item.ModifyDate_
 				<< item.Size_;
-
 		return out;
 	}
 
@@ -254,7 +271,6 @@ namespace NetStoreManager
 					>> item.Hash_
 					>> item.ModifyDate_
 					>> item.Size_;
-
 		return in;
 	}
 }

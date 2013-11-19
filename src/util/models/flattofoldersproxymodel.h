@@ -82,6 +82,8 @@ namespace LeechCraft
 			void AddForTag (const QString&, const QPersistentModelIndex&);
 			void RemoveFromTag (const QString&, const QPersistentModelIndex&);
 			void HandleChanged (const QModelIndex&);
+
+			FlatTreeItem_ptr FindFolder (const QString&) const;
 			FlatTreeItem_ptr GetFolder (const QString&);
 		private slots:
 			void handleDataChanged (const QModelIndex&, const QModelIndex&);

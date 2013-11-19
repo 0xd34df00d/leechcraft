@@ -87,8 +87,9 @@ namespace Util
 		 *
 		 * @param[in] id The ID to free.
 		 */
-		void FreeID (T)
+		void FreeID (T id)
 		{
+			Q_UNUSED (id);
 		}
 
 		/** @brief Saves the state of this pool.

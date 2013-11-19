@@ -31,7 +31,8 @@
 
 #include <QWidget>
 #include <QUrl>
-#include <QTreeView>
+#include <QListView>
+#include <vlc/libvlc_structures.h>
 
 struct libvlc_media_player_t;
 struct libvlc_media_list_player_t;
@@ -49,7 +50,14 @@ namespace vlc
 {
 	class PlaylistModel;
 	
-	class PlaylistWidget : public QTreeView
+	struct QueueState
+	{
+		QStringList Playlist_;
+		int Current_;
+		libvlc_time_t Position_;
+	};
+	
+	class PlaylistWidget : public QListView
 	{
 		Q_OBJECT
 		
@@ -67,7 +75,8 @@ namespace vlc
 		~PlaylistWidget ();
 		
 		void SetCurrentMedia (int);
-		void AddUrl (const QUrl&, bool start);
+		void SetCurrentMedia (libvlc_media_t*);
+		libvlc_media_t* AddUrl (const QUrl&, bool start);
 		bool IsPlaying () const;
 		void Init (libvlc_instance_t *instance, libvlc_media_player_t *player);
 		void DeleteRequested (int index);
@@ -76,10 +85,15 @@ namespace vlc
 		void mouseDoubleClickEvent (QMouseEvent*);
 		void resizeEvent (QResizeEvent*);
 		
+	private:
+		void updateModelConstants ();
+		
 	public slots:
 		void clearPlaylist ();
 		void next ();
 		void prev ();
+		void up ();
+		void down ();
 		
 	private slots:
 		void togglePlay ();
@@ -88,7 +102,7 @@ namespace vlc
 		void deleteRequested (QAction*);
 		
 	signals:
-		void savePlaylist (QStringList);
+		void savePlaylist (const QueueState&);
 	};
 }
 }

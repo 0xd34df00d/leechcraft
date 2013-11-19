@@ -118,7 +118,7 @@ namespace XDG
 						item->SetIcon (GetIconDevice (proxy, item->GetIconName ()));
 		}
 
-		Cat2Items_t FindAndParse (const QList<Type>& types, ICoreProxy_ptr proxy)
+		Cat2Items_t FindAndParse (const QList<Type>& types)
 		{
 			Cat2Items_t result;
 
@@ -163,7 +163,7 @@ namespace XDG
 		if (!IsReady_)
 		{
 			IsReady_ = true;
-			Items_ = FindAndParse (Types_, Proxy_);
+			Items_ = FindAndParse (Types_);
 
 			FixIcons (Items_, Proxy_);
 
@@ -176,7 +176,7 @@ namespace XDG
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleScanParseFinished ()));
-		watcher->setFuture (QtConcurrent::run (FindAndParse, Types_, Proxy_));
+		watcher->setFuture (QtConcurrent::run (FindAndParse, Types_));
 	}
 
 	void ItemsFinder::handleScanParseFinished ()

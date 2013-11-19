@@ -304,7 +304,7 @@ namespace OnlineBookmarks
 
 		LeechCraft::Entity eBookmarks = Util::MakeEntity (QVariant (),
 				QString (),
-				static_cast<LeechCraft::TaskParameter> (FromUserInitiated | OnlyHandle),
+				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/browser-import-data");
 
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;

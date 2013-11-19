@@ -80,13 +80,13 @@ namespace Laughty
 			}
 		}
 
-		QPair<QString, QString> GetCatTypePair (const QVariantMap& hints)
+		QPair<QString, QString> GetCatTypePair (const QVariantMap&)
 		{
 			return { AN::CatGeneric, AN::TypeGeneric };
 		}
 	}
 
-	uint ServerObject::Notify (const QString& app_name, uint replaces_id,
+	uint ServerObject::Notify (const QString& app_name, uint,
 			const QString& app_icon, QString summary, QString body,
 			const QStringList& actions, const QVariantMap& hints, uint expire_timeout)
 	{

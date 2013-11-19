@@ -27,10 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_AZOTHCOMMON_H
-#define PLUGINS_AZOTH_INTERFACES_AZOTHCOMMON_H
+#pragma once
+
 #include <QMetaType>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {
@@ -55,11 +56,7 @@ namespace Azoth
 		SConnecting
 	};
 
-	inline bool IsLess (State s1, State s2)
-	{
-		static int order [] = { 7, 3, 4, 5, 6, 1, 2, 8, 9, 10 };
-		return order [s1] < order [s2];
-	}
+	bool IsLess (State s1, State s2);
 
 	/** Represents possible state of authorizations between two
 	 * entities: our user and a remote contact.
@@ -127,5 +124,3 @@ namespace Azoth
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::State);
 Q_DECLARE_METATYPE (LeechCraft::Azoth::ChatPartState);
-
-#endif

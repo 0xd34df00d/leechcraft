@@ -32,6 +32,9 @@
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupporttune.h>
+#include <interfaces/azoth/iextselfinfoaccount.h>
+#include <interfaces/azoth/ihaveconsole.h>
+#include <interfaces/azoth/isupportnonroster.h>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
 
@@ -42,19 +45,29 @@ namespace Azoth
 namespace Murm
 {
 	class VkEntry;
+	class VkChatEntry;
 	class VkMessage;
 	class VkProtocol;
 	class VkConnection;
 	class PhotoStorage;
 	class GeoResolver;
 	class GroupsManager;
+	class Logger;
+	class AccountConfigDialog;
 
 	class VkAccount : public QObject
 					, public IAccount
 					, public ISupportTune
+					, public IExtSelfInfoAccount
+					, public IHaveConsole
+					, public ISupportNonRoster
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::ISupportTune)
+		Q_INTERFACES (LeechCraft::Azoth::IAccount
+				LeechCraft::Azoth::ISupportTune
+				LeechCraft::Azoth::IExtSelfInfoAccount
+				LeechCraft::Azoth::IHaveConsole
+				LeechCraft::Azoth::ISupportNonRoster)
 
 		const ICoreProxy_ptr CoreProxy_;
 
@@ -65,11 +78,27 @@ namespace Murm
 
 		QString Name_;
 
+		Logger * const Logger_;
+
 		VkConnection * const Conn_;
 		GroupsManager * const GroupsMgr_;
 		GeoResolver * const GeoResolver_;
 
+		VkEntry *SelfEntry_ = nullptr;
 		QHash<qulonglong, VkEntry*> Entries_;
+		QHash<qulonglong, VkChatEntry*> ChatEntries_;
+
+		QList<MessageInfo> PendingMessages_;
+
+		bool PublishTune_ = false;
+		bool EnableFileLog_ = false;
+		bool MarkAsOnline_ = false;
+
+		QPointer<AccountConfigDialog> AccConfigDia_;
+
+		QList<qulonglong> NonRosterItems_;
+
+		bool IsRequestingCaptcha_ = false;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
@@ -77,7 +106,13 @@ namespace Murm
 		QByteArray Serialize () const;
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
 
+		void Init ();
+
 		void Send (VkEntry*, VkMessage*);
+		void Send (VkChatEntry*, VkMessage*);
+		void CreateChat (const QString&, const QList<VkEntry*>&);
+		VkEntry* GetEntry (qulonglong) const;
+		VkEntry* GetSelf () const;
 
 		ICoreProxy_ptr GetCoreProxy () const;
 		VkConnection* GetConnection () const;
@@ -109,13 +144,39 @@ namespace Murm
 		QObject* GetTransferManager () const;
 
 		void PublishTune (const QMap<QString, QVariant>& tuneData);
+
+		QObject* GetSelfContact () const;
+		QImage GetSelfAvatar () const;
+		QIcon GetAccountIcon () const;
+
+		PacketFormat GetPacketFormat () const;
+		void SetConsoleEnabled (bool);
+
+		QObject* CreateNonRosterItem (const QString&);
+	private:
+		void TryPendingMessages ();
+		VkEntry* CreateNonRosterItem (qulonglong);
 	private slots:
+		void handleSelfInfo (const UserInfo&);
 		void handleUsers (const QList<UserInfo>&);
+		void handleNRIList (const QList<qulonglong>&);
 		void handleUserState (qulonglong, bool);
 		void handleMessage (const MessageInfo&);
 		void handleTypingNotification (qulonglong);
 
+		void handleGotChatInfo (const ChatInfo&);
+		void handleChatUserRemoved (qulonglong, qulonglong);
+
+		void handleRemoveEntry (VkChatEntry*);
+
+		void handleMarkOnline ();
+
 		void finishOffline ();
+
+		void handleCaptcha (const QString&, const QUrl&);
+		void handleCaptchaEntered (const QString&, const QString&);
+
+		void handleConfigDialogAccepted ();
 
 		void emitUpdateAcc ();
 	signals:
@@ -132,6 +193,8 @@ namespace Murm
 		void mucInvitationReceived (const QVariantMap&, const QString&, const QString&);
 
 		void accountChanged (VkAccount*);
+
+		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 	};
 }
 }

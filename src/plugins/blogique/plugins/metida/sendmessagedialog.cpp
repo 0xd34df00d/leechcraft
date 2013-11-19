@@ -27,10 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "friendsmodel.h"
-#include <QtDebug>
-#include <QMimeData>
-#include "frienditemdelegate.h"
+#include "sendmessagedialog.h"
+#include <QMessageBox>
+#include <QPushButton>
+#include <util/util.h>
+#include "ljaccount.h"
+#include "ljprofile.h"
 
 namespace LeechCraft
 {
@@ -38,73 +40,57 @@ namespace Blogique
 {
 namespace Metida
 {
-	FriendsModel::FriendsModel (QObject *parent)
-	: QStandardItemModel (parent)
+	SendMessageDialog::SendMessageDialog (LJProfile *profile, QWidget *parent) 
+	: QDialog (parent)
+	, Account_ (0)
+	, Profile_ (profile)
 	{
+		Ui_.setupUi (this);
+		Account_ = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+		Ui_.ButtonBox_->addButton (tr ("Send"), QDialogButtonBox::AcceptRole);
+	}
+	
+	void SendMessageDialog::accept ()
+	{
+		if (Ui_.Addresses_->text ().isEmpty ())
+		{
+			QMessageBox::warning (this, "LeechCraft",
+					tr ("Please enter a valid username"));
+			return;
+		}
+		else if (Account_)
+		{
+			const auto& addresses = GetAddresses ();
+			if (addresses.count () == 1 && addresses.at (0) == Account_->GetOurLogin ())
+			{
+				QMessageBox::warning (this, "LeechCraft",
+					tr ("Stop trying to message yourself, livejournal is not that kind of service"));
+				return;
+			}
+		}
+
+		QDialog::accept ();
 	}
 
-	Qt::ItemFlags FriendsModel::flags (const QModelIndex& index) const
+	QStringList SendMessageDialog::GetAddresses () const
 	{
-		Qt::ItemFlags defFlags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-		return index.parent ().isValid () ?
-			Qt::ItemIsDragEnabled | defFlags:
-			Qt::ItemIsDropEnabled | defFlags;
+		return Ui_.Addresses_->text ().split (',');
 	}
 
-	Qt::DropActions FriendsModel::supportedDropActions () const
+	void SendMessageDialog::SetAddresses (const QStringList& addresses)
 	{
-		return Qt::MoveAction;
+		Ui_.Addresses_->setText (addresses.join (","));
 	}
 
-	QStringList FriendsModel::mimeTypes () const
+	QString SendMessageDialog::GetSubject () const
 	{
-		return { "application/lj.friend" };
+		return Ui_.Subject_->text ();
 	}
 
-	QMimeData* FriendsModel::mimeData (const QModelIndexList& indexes) const
+	QString SendMessageDialog::GetText () const
 	{
-		QMimeData *mimeData = new QMimeData ();
-		QByteArray encodedData;
-
-		QDataStream stream (&encodedData, QIODevice::WriteOnly);
-
-		Q_FOREACH (const QModelIndex& index, indexes)
-			if (index.isValid ())
-				stream << data (index).toString ()
-						<< data (index, ItemColorRoles::BackgroundColor).toString ()
-						<< data (index, ItemColorRoles::ForegroundColor).toString ()
-						<< index.parent ().data (ItemGroupRoles::GroupId).toInt ();
-
-		mimeData->setData ("application/lj.friend", encodedData);
-		return mimeData;
+		return Ui_.Text_->toPlainText ();
 	}
-
-	bool FriendsModel::dropMimeData (const QMimeData *mime,
-			Qt::DropAction action, int, int, const QModelIndex& parent)
-	{
-		if (action == Qt::IgnoreAction)
-			return true;
-
-		int newGrp = parent.isValid () ?
-			parent.data (ItemGroupRoles::GroupId).toInt () :
-			-1;
-
-		QDataStream stream (mime->data ("application/lj.friend"));
-		QString name, bgColor, fgColor;
-		int id = -1;
-		stream >> name
-				>> bgColor
-				>> fgColor
-				>> id;
-
-		if (newGrp == id)
-			return false;
-
-		emit userGroupChanged (name, bgColor, fgColor, newGrp);
-		return true;
-	}
-
 }
 }
 }
-

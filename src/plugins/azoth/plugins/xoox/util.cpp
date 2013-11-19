@@ -110,6 +110,7 @@ namespace XooxUtil
 				Node2ClientID_ ["http://jimm.net.ru/caps"] = "jimm";
 				Node2ClientID_ ["http://jitsi.org"] = "sip-communicator";
 				Node2ClientID_ ["http://jtalk.ustyugov.net/caps"] = "jtalk";
+				Node2ClientID_ ["http://kadu.im/caps"] = "kadu";
 				Node2ClientID_ ["http://kopete.kde.org/jabber/caps"] = "kopete";
 				Node2ClientID_ ["http://leechcraft.org/azoth"] = "leechcraft-azoth";
 				Node2ClientID_ ["http://mail.google.com/xmpp/client/caps"] = "mail.google.com";
@@ -191,6 +192,7 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://jimm.net.ru/caps"] = "Jimm";
 				Node2ClientHR_ ["http://jitsi.org"] = "Jitsi";
 				Node2ClientHR_ ["http://jtalk.ustyugov.net/caps"] = "JTalk";
+				Node2ClientHR_ ["http://kadu.im/caps"] = "Kadu IM";
 				Node2ClientHR_ ["http://kopete.kde.org/jabber/caps"] = "Kopete";
 				Node2ClientHR_ ["http://leechcraft.org/azoth"] = "LeechCraft Azoth";
 				Node2ClientHR_ ["http://mail.google.com/xmpp/client/caps"] = "GMail chat widget";

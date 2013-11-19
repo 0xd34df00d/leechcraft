@@ -120,17 +120,22 @@ set (XOOX_FORMS
 	)
 set (XOOX_RESOURCES azothxooxresources.qrc)
 
+set (DEFINITIONS "")
+
 if (ENABLE_CRYPT)
-	add_definitions (-DENABLE_CRYPT)
+	list (APPEND DEFINITIONS "-DENABLE_CRYPT")
 
 	set (XOOX_SRCS ${XOOX_SRCS} pgpmanager.cpp)
 endif ()
 
 if (ENABLE_MEDIACALLS)
-	add_definitions (-DENABLE_MEDIACALLS)
+	list (APPEND DEFINITIONS "-DENABLE_MEDIACALLS")
 
 	set (XOOX_SRCS ${XOOX_SRCS} mediacall.cpp)
 endif ()
+
+add_definitions (${DEFINITIONS})
+set (CMAKE_AUTOMOC_MOC_OPTIONS ${CMAKE_AUTOMOC_MOC_OPTIONS} ${DEFINITIONS})
 
 CreateTrs ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("azoth_xoox" "en;ru_RU" "${XOOX_SRCS}" "${XOOX_FORMS}" "azothxooxsettings.xml")

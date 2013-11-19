@@ -88,7 +88,6 @@ namespace Woodpecker
 		void SignedRequest (TwitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters ());
 		void RequestTwitter (const QUrl& requestAddress);
 		QList<Tweet_ptr> ParseReply (const QByteArray& json);
-		void Xauth ();
 		
 	public:
 		explicit TwitterInterface (QObject *parent = 0);
@@ -98,6 +97,7 @@ namespace Woodpecker
 		void ReportSPAM (const QString& username, const qulonglong userid = 0);
 		void Delete (const qulonglong id);
 		void GetAccess ();
+		void Xauth ();
 		void Login (const QString& savedToken, const QString& savedTokenSecret);
 		FeedMode GetLastRequestMode () const;
 		void SetLastRequestMode (const FeedMode& newLastRequestMode);
@@ -112,6 +112,7 @@ namespace Woodpecker
 		void onRequestReady (const QByteArray&);
 		void onAuthorizedRequestDone ();
 		void onAccessTokenReceived (const QString& token, const QString& tokenSecret);
+		void onAuthorizationPageRequested (const QUrl&);
 		
 	signals:
 		void tweetsReady (const QList<Tweet_ptr>&);

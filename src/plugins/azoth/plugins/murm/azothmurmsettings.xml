@@ -9,11 +9,5 @@
 				<tooltip>The following variables are allowed: $name, $nick, $surname.</tooltip>
 			</item>
 		</groupbox>
-		<groupbox>
-			<label value="Behavior" />
-			<item type="checkbox" property="PublishTune" default="false">
-				<label value="Publish current tune to VK status" />
-			</item>
-		</groupbox>
 	</page>
 </settings>

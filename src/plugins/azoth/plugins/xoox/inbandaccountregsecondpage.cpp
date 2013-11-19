@@ -29,10 +29,15 @@
 
 #include "inbandaccountregsecondpage.h"
 #include <QVBoxLayout>
+#include <QMessageBox>
+#include <util/network/socketerrorstrings.h>
+#include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmppbobmanager.h"
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 #include "regformhandlerwidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -133,6 +138,10 @@ namespace Xoox
 				<< error
 				<< Client_->socketError ()
 				<< Client_->xmppStreamError ();
+
+		if (error == QXmppClient::SocketError &&
+				wizard ()->currentPage () == this)
+			initializePage ();
 	}
 }
 }

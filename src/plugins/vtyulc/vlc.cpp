@@ -172,7 +172,7 @@ namespace vlc
 		connect (widget,
 				SIGNAL (deleteMe (QWidget*)),
 				this,
-				SLOT (deleteDeleted (QWidget*)));
+				SLOT (deleted (QWidget*)));
 	}
 
 	LeechCraft::TabClasses_t Plugin::GetTabClasses () const
@@ -190,7 +190,7 @@ namespace vlc
 		Manager_->SetShortcut (id, shortcuts);
 	}
 
-	void Plugin::deleteDeleted (QWidget *widget)
+	void Plugin::deleted (QWidget *widget)
 	{
 		for (auto i = Tabs_.begin (); i != Tabs_.end (); i++)
 			if (*i == widget)
@@ -217,7 +217,7 @@ namespace vlc
 	{
 		if (entity.Entity_ == "Sleeping")
 			for (int i = 0; i < Tabs_.size (); i++)
-				Tabs_ [i]->Pause ();
+				Tabs_ [i]->Sleep ();
 	}
 }
 }

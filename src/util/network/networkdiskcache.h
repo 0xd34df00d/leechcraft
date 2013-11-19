@@ -31,7 +31,11 @@
 
 #include <QNetworkDiskCache>
 #include <QMutex>
+#include <QHash>
 #include <util/utilconfig.h>
+
+template<typename T>
+class QFutureWatcher;
 
 namespace LeechCraft
 {
@@ -41,12 +45,17 @@ namespace Util
 	{
 		Q_OBJECT
 
-		bool IsCollectingGarbage_;
 		qint64 CurrentSize_;
 
 		mutable QMutex InsertRemoveMutex_;
+
+		QFutureWatcher<qint64> *GarbageCollectorWatcher_;
+
+		QHash<QIODevice*, QUrl> PendingDev2Url_;
+		QHash<QUrl, QList<QIODevice*>> PendingUrl2Devs_;
 	public:
 		NetworkDiskCache (const QString&, QObject* = 0);
+		~NetworkDiskCache ();
 
 		virtual qint64 cacheSize () const;
 		virtual QIODevice* data (const QUrl& url);
