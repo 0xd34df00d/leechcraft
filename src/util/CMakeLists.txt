@@ -113,8 +113,7 @@ add_library (leechcraft-util SHARED
 	${UIS_H}
 	)
 
-# FindQtLibs (leechcraft-util Concurrent Quick Qml Network Xml Sql WebKitWidgets Widgets)
-QT5_USE_MODULES (leechcraft-util  Concurrent Quick Qml Network Xml Sql WebKitWidgets Widgets)
+FindQtLibs (leechcraft-util Concurrent Quick Qml Network Xml Sql WebKitWidgets Widgets)
 target_link_libraries (leechcraft-util
 	${QT_LIBRARIES}
 	${MAGIC_LIBRARIES}
