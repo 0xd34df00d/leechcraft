@@ -76,7 +76,11 @@ namespace HotStreams
 				"Basic " + QString ("%1:%2")
 					.arg (APIUsername)
 					.arg (APIPass)
+#ifdef USE_QT5
+					.toLatin1 ()
+#else
 					.toAscii ()
+#endif
 					.toBase64 ());
 		Request (req);
 	}
