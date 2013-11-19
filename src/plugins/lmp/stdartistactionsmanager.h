@@ -30,30 +30,21 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/media/audiostructs.h>
 
 class QDeclarativeView;
-class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class SimilarViewManager : public QObject
+	class StdArtistActionsManager : public QObject
 	{
 		Q_OBJECT
-
-		QDeclarativeView *View_;
-		QStandardItemModel *Model_;
 	public:
-		SimilarViewManager (QDeclarativeView*, QObject* = 0);
-
-		void InitWithSource ();
-
-		void DefaultRequest (const QString&);
-		void SetInfos (Media::SimilarityInfos_t);
+		StdArtistActionsManager (QDeclarativeView *view, QObject *parent = 0);
 	private slots:
-		void handleSimilarReady ();
+		void handleBookmark (const QString&, const QString&, const QString&);
+		void handleLink (const QString&);
 	};
 }
 }

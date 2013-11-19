@@ -29,19 +29,15 @@
 
 #include "similarviewmanager.h"
 #include <algorithm>
-#include <QGraphicsObject>
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
-#include <QDeclarativeImageProvider>
 #include <util/qml/colorthemeproxy.h>
-#include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/isimilarartists.h>
 #include <interfaces/media/ipendingsimilarartists.h>
 #include "similarmodel.h"
 #include "core.h"
-#include "localcollection.h"
-#include "previewhandler.h"
+#include "stdartistactionsmanager.h"
 
 namespace LeechCraft
 {
@@ -59,22 +55,7 @@ namespace LMP
 
 	void SimilarViewManager::InitWithSource ()
 	{
-		connect (View_->rootObject (),
-				SIGNAL (bookmarkArtistRequested (QString, QString, QString)),
-				this,
-				SLOT (handleBookmark (QString, QString, QString)));
-		connect (View_->rootObject (),
-				SIGNAL (previewRequested (QString)),
-				Core::Instance ().GetPreviewHandler (),
-				SLOT (previewArtist (QString)));
-		connect (View_->rootObject (),
-				SIGNAL (linkActivated (QString)),
-				this,
-				SLOT (handleLink (QString)));
-		connect (View_->rootObject (),
-				SIGNAL (browseInfo (QString)),
-				&Core::Instance (),
-				SIGNAL (artistBrowseRequested (QString)));
+		new StdArtistActionsManager (View_, this);
 	}
 
 	void SimilarViewManager::DefaultRequest (const QString& artist)
@@ -107,7 +88,7 @@ namespace LMP
 				[] (const Media::SimilarityInfo& left, const Media::SimilarityInfo& right)
 					{ return left.Similarity_ > right.Similarity_; });
 
-		Q_FOREACH (const Media::SimilarityInfo& info, infos)
+		for (const auto& info : infos)
 		{
 			auto item = SimilarModel::ConstructItem (info.Artist_);
 
@@ -132,24 +113,6 @@ namespace LMP
 
 		const auto& similar = obj->GetSimilar ();
 		SetInfos (similar);
-	}
-
-	void SimilarViewManager::handleBookmark (const QString& name, const QString& page, const QString& tags)
-	{
-		auto e = Util::MakeEntity (tr ("Check out \"%1\"").arg (name),
-				QString (),
-				FromUserInitiated | OnlyHandle,
-				"x-leechcraft/todo-item");
-		e.Additional_ ["TodoBody"] = tags + "<br />" + QString ("<a href='%1'>%1</a>").arg (page);
-		e.Additional_ ["Tags"] = QStringList ("music");
-		Core::Instance ().SendEntity (e);
-	}
-
-	void SimilarViewManager::handleLink (const QString& link)
-	{
-		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
-					QString (),
-					FromUserInitiated | OnlyHandle));
 	}
 }
 }

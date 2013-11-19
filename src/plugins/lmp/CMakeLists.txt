@@ -106,6 +106,7 @@ set (SRCS
 	radiocustomstreams.cpp
 	radiocustomstation.cpp
 	radiocustomdialog.cpp
+	stdartistactionsmanager.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
