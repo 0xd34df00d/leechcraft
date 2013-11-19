@@ -12,7 +12,10 @@ Rectangle {
 
     color: colorProxy.color_TextBox_TopColor
 
+    signal bookmarkArtistRequested(string id, string page, string tags)
+    signal previewRequested(string artist)
     signal linkActivated(string id)
+    signal browseInfo(string artist)
     signal albumPreviewRequested(int idx)
 
     Image {
@@ -130,6 +133,20 @@ Rectangle {
             }
         }
 
+        StdArtistActions {
+            id: artistActions
+            z: 2
+            anchors.left: artistNameLabel.right
+            anchors.leftMargin: 8
+            anchors.bottom: artistNameLabel.bottom
+
+            visible: artistName.length > 0
+
+            onBrowseInfo: rootRect.browseInfo(artistName)
+            onBookmarkRequested: rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
+            onPreviewRequested: rootRect.previewRequested(artistName)
+        }
+
         Image {
             id: artistImageThumb
             z: 2
@@ -160,7 +177,7 @@ Rectangle {
             z: 2
             text: artistTags
             color: colorProxy.color_TextBox_Aux1TextColor
-            anchors.left: artistNameLabel.right
+            anchors.left: artistActions.right
             anchors.leftMargin: 2
             anchors.bottom: artistNameLabel.bottom
             anchors.right: parent.right
