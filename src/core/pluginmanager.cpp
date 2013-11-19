@@ -485,6 +485,12 @@ namespace LeechCraft
 						<< obj;
 			}
 		}
+
+		Obj2Loader_.clear ();
+		AvailablePlugins_.clear ();
+		FeatureProviders_.clear ();
+		for (auto loader : PluginContainers_)
+			loader->Unload ();
 	}
 
 	QString PluginManager::Name (const PluginManager::Size_t& pos) const
