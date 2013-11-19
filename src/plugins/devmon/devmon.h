@@ -45,6 +45,7 @@ namespace Devmon
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IRemovableDevManager)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Devmon")
 
 		UDevBackend *Backend_;
 	public:
