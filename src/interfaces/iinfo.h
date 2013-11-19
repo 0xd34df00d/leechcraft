@@ -370,6 +370,7 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 			return CURRENT_API_LEVEL;\
 		}\
 	}
+#define Q_PLUGIN_METADATA (x)
 #else
 	#define LC_EXPORT_PLUGIN(name,file) \
 	extern "C"\
