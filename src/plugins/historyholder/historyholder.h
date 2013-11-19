@@ -40,44 +40,45 @@ class QModelIndex;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace HistoryHolder
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IFinder
+					, public IEntityHandler
+					, public IHaveShortcuts
 	{
-		namespace HistoryHolder
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IFinder
-						 , public IEntityHandler
-						 , public IHaveShortcuts
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IEntityHandler IHaveShortcuts)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IFinder IEntityHandler IHaveShortcuts)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.HistoryHolder")
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
 
-				QStringList GetCategories () const;
-				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
+		QStringList GetCategories () const;
+		QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
 
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
+		void Handle (LeechCraft::Entity);
 
-				void SetShortcut (const QString&, const QKeySequences_t&);
-				QMap<QString, ActionInfo> GetActionInfo () const;
-			public slots:
-				void handleTasksTreeActivated (const QModelIndex&);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-				void categoriesChanged (const QStringList&, const QStringList&);
-			};
-		};
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo () const;
+	public slots:
+		void handleTasksTreeActivated (const QModelIndex&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void categoriesChanged (const QStringList&, const QStringList&);
 	};
+};
+};
 };
 
 #endif

@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_historyholder)
 include (InitLCPlugin OPTIONAL)
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -21,10 +20,7 @@ set (HEADERS
 set (RESOURCES historyholderresources.qrc)
 CreateTrs ("historyholder" "ar;de;en;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_historyholder SHARED
 	${COMPILED_TRANSLATIONS}
@@ -32,6 +28,9 @@ add_library (leechcraft_historyholder SHARED
 	${MOC_SRCS}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_historyholder Core)
+
 target_link_libraries (leechcraft_historyholder
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
