@@ -44,6 +44,7 @@ namespace DBusManager
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.DBusManager")
 
 		std::auto_ptr<QTranslator> Translator_;
 		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;

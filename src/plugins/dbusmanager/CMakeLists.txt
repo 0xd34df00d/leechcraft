@@ -6,8 +6,6 @@ if (NOT (QT_QTDBUS_FOUND AND UNIX))
 	message (ERROR "DBusManager could not be built")
 endif ()
 
-set (QT_USE_QTDBUS TRUE)
-include (${QT_USE_FILE})
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -42,11 +40,8 @@ set (RESOURCES
 	)
 CreateTrs ("dbusmanager" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_dbusmanager SHARED
 	${COMPILED_TRANSLATIONS}
@@ -55,6 +50,9 @@ add_library (leechcraft_dbusmanager SHARED
 	${UIS_H}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_dbusmanager DBus)
+
 target_link_libraries (leechcraft_dbusmanager
 		${QT_LIBRARIES}
 		${LEECHCRAFT_LIBRARIES}
