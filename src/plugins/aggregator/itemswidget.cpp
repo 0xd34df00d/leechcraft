@@ -219,8 +219,6 @@ namespace Aggregator
 
 	ItemsWidget::~ItemsWidget ()
 	{
-		on_CategoriesSplitter__splitterMoved ();
-
 		disconnect (Impl_->ItemsFilterModel_.get (),
 				0,
 				this,
