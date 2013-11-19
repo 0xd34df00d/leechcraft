@@ -47,6 +47,7 @@ namespace DeadLyrics
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo Media::ILyricsFinder)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.DeadLyrics")
 
 		ICoreProxy_ptr Proxy_;
 		Searchers_t Searchers_;

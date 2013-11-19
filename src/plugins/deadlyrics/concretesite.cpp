@@ -31,6 +31,9 @@
 #include <stdexcept>
 #include <QDomElement>
 #include <QUrl>
+#ifdef USE_QT5
+#include <QUrlQuery>
+#endif
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -227,7 +230,13 @@ namespace DeadLyrics
 		QNetworkRequest req { url };
 
 		url.setPath ({});
+#ifdef USE_QT5
+		QUrlQuery urlQuery;
+		urlQuery.setQueryItems ({});
+		url.setQuery (urlQuery);
+#else
 		url.setQueryItems ({});
+#endif
 		req.setRawHeader ("Referer", url.toString ().toUtf8 ());
 
 		auto reply = nam->get (req);
