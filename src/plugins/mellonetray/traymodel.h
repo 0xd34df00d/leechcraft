@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QAbstractItemModel>
+#include <QAbstractEventDispatcher>
 #include <QIcon>
 
 namespace LeechCraft
@@ -56,6 +57,8 @@ namespace Mellonetray
 			ItemID = Qt::UserRole + 1
 		};
 
+		const QAbstractEventDispatcher::EventFilter PrevFilter_;
+
 		TrayModel ();
 
 		TrayModel (const TrayModel&) = delete;
@@ -75,7 +78,7 @@ namespace Mellonetray
 		QModelIndex parent (const QModelIndex& child) const;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 
-		void Filter (XEvent*);
+		bool Filter (XEvent*);
 	private:
 		template<typename T>
 		void HandleClientMsg (T);
