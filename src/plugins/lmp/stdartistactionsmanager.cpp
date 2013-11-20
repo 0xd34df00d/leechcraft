@@ -27,29 +27,54 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sysiconsprovider.h"
-#include <QIcon>
+#include "stdartistactionsmanager.h"
+#include <QDeclarativeView>
+#include <QGraphicsObject>
+#include <util/util.h>
+#include "core.h"
+#include "previewhandler.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	SysIconProvider::SysIconProvider (ICoreProxy_ptr proxy)
-	: QDeclarativeImageProvider (Pixmap)
-	, Proxy_ (proxy)
+	StdArtistActionsManager::StdArtistActionsManager (QDeclarativeView *view, QObject* parent)
+	: QObject (parent)
 	{
+		connect (view->rootObject (),
+				SIGNAL (bookmarkArtistRequested (QString, QString, QString)),
+				this,
+				SLOT (handleBookmark (QString, QString, QString)));
+		connect (view->rootObject (),
+				SIGNAL (previewRequested (QString)),
+				Core::Instance ().GetPreviewHandler (),
+				SLOT (previewArtist (QString)));
+		connect (view->rootObject (),
+				SIGNAL (linkActivated (QString)),
+				this,
+				SLOT (handleLink (QString)));
+		connect (view->rootObject (),
+				SIGNAL (browseInfo (QString)),
+				&Core::Instance (),
+				SIGNAL (artistBrowseRequested (QString)));
 	}
 
-	QPixmap SysIconProvider::requestPixmap (const QString& id, QSize *size, const QSize& requestedSize)
+	void StdArtistActionsManager::handleBookmark (const QString& name, const QString& page, const QString& tags)
 	{
-		const auto& icon = Proxy_->GetIcon (id);
+		auto e = Util::MakeEntity (tr ("Check out \"%1\"").arg (name),
+				QString (),
+				FromUserInitiated | OnlyHandle,
+				"x-leechcraft/todo-item");
+		e.Additional_ ["TodoBody"] = tags + "<br />" + QString ("<a href='%1'>%1</a>").arg (page);
+		e.Additional_ ["Tags"] = QStringList ("music");
+		Core::Instance ().SendEntity (e);
+	}
 
-		const auto& getSize = requestedSize.width () > 2 && requestedSize.height () > 2 ?
-				requestedSize :
-				QSize (48, 48);
-		if (size)
-			*size = icon.actualSize (getSize);
-		return icon.pixmap (getSize);
+	void StdArtistActionsManager::handleLink (const QString& link)
+	{
+		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
+					QString (),
+					FromUserInitiated | OnlyHandle));
 	}
 }
 }

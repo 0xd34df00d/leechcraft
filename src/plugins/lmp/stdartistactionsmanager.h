@@ -29,20 +29,22 @@
 
 #pragma once
 
-#include <QDeclarativeImageProvider>
-#include <interfaces/core/icoreproxy.h>
+#include <QObject>
+
+class QDeclarativeView;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class SysIconProvider : public QDeclarativeImageProvider
+	class StdArtistActionsManager : public QObject
 	{
-		ICoreProxy_ptr Proxy_;
+		Q_OBJECT
 	public:
-		SysIconProvider (ICoreProxy_ptr);
-
-		QPixmap requestPixmap (const QString&, QSize*, const QSize&);
+		StdArtistActionsManager (QDeclarativeView *view, QObject *parent = 0);
+	private slots:
+		void handleBookmark (const QString&, const QString&, const QString&);
+		void handleLink (const QString&);
 	};
 }
 }

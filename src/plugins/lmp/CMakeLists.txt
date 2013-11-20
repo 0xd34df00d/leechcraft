@@ -91,7 +91,6 @@ set (SRCS
 	sortingcriteriadialog.cpp
 	similarmodel.cpp
 	hypeswidget.cpp
-	sysiconsprovider.cpp
 	previewhandler.cpp
 	bioviewmanager.cpp
 	similarviewmanager.cpp
@@ -107,6 +106,7 @@ set (SRCS
 	radiocustomstreams.cpp
 	radiocustomstation.cpp
 	radiocustomdialog.cpp
+	stdartistactionsmanager.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp

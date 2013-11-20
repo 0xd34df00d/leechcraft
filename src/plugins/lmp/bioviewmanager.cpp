@@ -47,6 +47,7 @@
 #include "core.h"
 #include "util.h"
 #include "previewhandler.h"
+#include "stdartistactionsmanager.h"
 
 namespace LeechCraft
 {
@@ -91,7 +92,7 @@ namespace LMP
 		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		View_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+		View_->engine ()->addImageProvider ("sysIcons", new Util::ThemeImageProvider (proxy));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);
@@ -100,13 +101,11 @@ namespace LMP
 	void BioViewManager::InitWithSource ()
 	{
 		connect (View_->rootObject (),
-				SIGNAL (linkActivated (QString)),
-				this,
-				SLOT (handleLink (QString)));
-		connect (View_->rootObject (),
 				SIGNAL (albumPreviewRequested (int)),
 				this,
 				SLOT (handleAlbumPreviewRequested (int)));
+
+		new StdArtistActionsManager (View_, this);
 	}
 
 	void BioViewManager::Request (Media::IArtistBioFetcher *fetcher, const QString& artist)
@@ -254,13 +253,6 @@ namespace LMP
 
 		auto ph = Core::Instance ().GetPreviewHandler ();
 		ph->previewAlbum (CurrentArtist_, album, tracks);
-	}
-
-	void BioViewManager::handleLink (const QString& link)
-	{
-		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
-					QString (),
-					FromUserInitiated | OnlyHandle));
 	}
 }
 }

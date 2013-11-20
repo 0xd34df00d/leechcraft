@@ -41,22 +41,20 @@
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
 
-typedef bool (*QX11FilterFunction) (XEvent *event);
-extern void qt_installX11EventFilter (QX11FilterFunction func);
-
 namespace LeechCraft
 {
 namespace KBSwitch
 {
 	namespace
 	{
-		bool EventFilter (XEvent *msg)
+		bool EvFilter (void *msg)
 		{
-			return KBCtl::Instance ().Filter (msg);
+			return KBCtl::Instance ().Filter (static_cast<XEvent*> (msg));
 		}
 	}
 
 	KBCtl::KBCtl ()
+	: PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
 	{
 		InitDisplay ();
 
@@ -96,8 +94,6 @@ namespace KBSwitch
 			SetEnabledGroups (enabledGroups);
 		}
 		settings.endGroup ();
-
-		qt_installX11EventFilter (&EventFilter);
 
 		XmlSettingsManager::Instance ().RegisterObject ({
 					"ManageSystemWide",
@@ -203,10 +199,12 @@ namespace KBSwitch
 
 	bool KBCtl::Filter (XEvent *event)
 	{
+		auto invokePrev = [this, event] { return PrevFilter_ ? PrevFilter_ (event) : false; };
+
 		if (event->type == XkbEventType_)
 		{
 			HandleXkbEvent (event);
-			return false;
+			return invokePrev ();
 		}
 
 		switch (event->type)
@@ -227,7 +225,7 @@ namespace KBSwitch
 			break;
 		}
 
-		return false;
+		return invokePrev ();
 	}
 
 	void KBCtl::HandleXkbEvent (XEvent *event)
