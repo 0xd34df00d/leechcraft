@@ -41,6 +41,7 @@ namespace Laughty
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Laughty")
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
