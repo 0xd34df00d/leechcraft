@@ -48,53 +48,9 @@ set (SRCS
 	itemhandlers/itemhandlertreeview.cpp
 	widgets/dataviewwidget.cpp
 	)
-set (HEADERS
-    xmlsettingsdialog.h
-	rangewidget.h
-	filepicker.h
-	radiogroup.h
-	scripter.h
-	typeregister.h
-	dir.h
-	file.h
-	bytearray.h
-	settings.h
-	basesettingsmanager.h
-	fontpicker.h
-	colorpicker.h
-	itemhandlerfactory.h
-	itemhandlers/itemhandlerbase.h
-	itemhandlers/itemhandlerspinboxrange.h
-	itemhandlers/itemhandleroptionssetvalue.h
-	itemhandlers/itemhandlerstringsetvalue.h
-	itemhandlers/itemhandlerbooleangetvalue.h
-	itemhandlers/itemhandlerstringgetvalue.h
-	itemhandlers/itemhandlerpath.h
-	itemhandlers/itemhandlerfont.h
-	itemhandlers/itemhandlercolor.h
-	itemhandlers/itemhandlercheckbox.h
-	itemhandlers/itemhandlergroupbox.h
-	itemhandlers/itemhandlerradio.h
-	itemhandlers/itemhandlercombobox.h
-	itemhandlers/itemhandlerlineedit.h
-	itemhandlers/itemhandlermultiline.h
-	itemhandlers/itemhandlerspinboxbase.h
-	itemhandlers/itemhandlerspinbox.h
-	itemhandlers/itemhandlerspinboxdouble.h
-	itemhandlers/itemhandlernovalue.h
-	itemhandlers/itemhandlerpushbutton.h
-	itemhandlers/itemhandlercustomwidget.h
-	itemhandlers/itemhandlerdataview.h
-	itemhandlers/itemhandlerlistview.h
-	itemhandlers/itemhandlertreeview.h
-	widgets/dataviewwidget.h
-	)
 set (FORMS
 	widgets/dataviewwidget.ui
 	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
 if (USE_QT5)
 	QT5_WRAP_UI (UIS_H ${FORMS})
@@ -113,7 +69,6 @@ set (XSD_FORMS ${XSD_FORMS} PARENT_SCOPE)
 
 add_library (leechcraft-xsd SHARED
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H})
 target_link_libraries (leechcraft-xsd
 	${QT_LIBRARIES}
