@@ -64,7 +64,7 @@ namespace LeechCraft
 		void RemoveDock (QDockWidget*);
 		void HandleDockDestroyed (QDockWidget*, QAction*);
 	private:
-		void UpdateActionGroup (QAction*, bool);
+		void UpdateActionGroup (const QAction*, bool);
 	private slots:
 		void updateDockLocation (Qt::DockWidgetArea);
 		void handleDockFloating (bool);

@@ -220,7 +220,7 @@ namespace LeechCraft
 		void handleCouldHandle (const LeechCraft::Entity& entity,
 				bool *could);
 
-		void queueEntity (LeechCraft::Entity);
+		void queueEntity (const LeechCraft::Entity&);
 
 		void pullEntityQueue ();
 
@@ -228,12 +228,12 @@ namespace LeechCraft
 	private:
 		/** Initializes IInfo's signals of the object.
 		 */
-		void InitDynamicSignals (QObject *object);
+		void InitDynamicSignals (const QObject *object);
 
 		/** Initializes the object as a IMultiTabs. The object is assumed
 		 * to be a valid IMultiTabs*.
 		 */
-		void InitMultiTab (QObject *object);
+		void InitMultiTab (const QObject *object);
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */

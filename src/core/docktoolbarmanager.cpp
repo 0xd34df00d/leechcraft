@@ -173,7 +173,7 @@ namespace LeechCraft
 		Action2Widget_.remove (act);
 	}
 
-	void DockToolbarManager::UpdateActionGroup (QAction *action, bool enabled)
+	void DockToolbarManager::UpdateActionGroup (const QAction *action, bool enabled)
 	{
 		if (!enabled)
 			return;
