@@ -1049,65 +1049,78 @@
         <translation>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="233"/>
+        <location filename="aggregator.cpp" line="239"/>
         <source>Feeds actions</source>
         <translation>Feeds actions</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="319"/>
+        <location filename="aggregator.cpp" line="325"/>
         <source>RSS/Atom feed reader.</source>
         <translation>RSS/Atom feed reader.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="640"/>
+        <location filename="aggregator.cpp" line="646"/>
         <source>Do you really want to mark all channels as read?</source>
         <translation>Do you really want to mark all channels as read?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="645"/>
+        <location filename="aggregator.cpp" line="651"/>
+        <location filename="aggregator.cpp" line="778"/>
         <source>Always</source>
         <translation>Always</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="702"/>
+        <location filename="aggregator.cpp" line="708"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removal confirmation</comment>
         <translation>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="724"/>
+        <location filename="aggregator.cpp" line="730"/>
         <source>You are going to remove the channel:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Channel removal confirmation</comment>
         <translation>You are going to remove the channel:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="816"/>
+        <location filename="aggregator.cpp" line="772"/>
+        <source>Are you sure you want to mark all items in %1 as read?</source>
+        <oldsource>Are you sure you want to mark all items in %n channel(s) %1 as read?</oldsource>
+        <translation>Are you sure you want to mark all items in %1 as read?</translation>
+    </message>
+    <message>
+        <location filename="aggregator.cpp" line="797"/>
+        <source>Are you sure you want to mark all items in %1 as unread?</source>
+        <oldsource>Are you sure you want to mark all items in %n channel(s) %1 as unread?</oldsource>
+        <translation>Are you sure you want to mark all items in %1 as unread?</translation>
+    </message>
+    <message>
+        <location filename="aggregator.cpp" line="854"/>
         <source>Export to OPML</source>
         <translation>Export to OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="817"/>
-        <location filename="aggregator.cpp" line="847"/>
+        <location filename="aggregator.cpp" line="855"/>
+        <location filename="aggregator.cpp" line="885"/>
         <source>Select save file</source>
         <translation>Select save file</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="818"/>
+        <location filename="aggregator.cpp" line="856"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="846"/>
+        <location filename="aggregator.cpp" line="884"/>
         <source>Export to binary file</source>
         <translation>Export to binary file</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="848"/>
+        <location filename="aggregator.cpp" line="886"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Aggregator exchange files (*.lcae);;All files (*.*)</translation>
     </message>
     <message numerus="yes">
-        <location filename="aggregator.cpp" line="908"/>
+        <location filename="aggregator.cpp" line="962"/>
         <source>%n unread message(s)</source>
         <translation>
             <numerusform>%n unread message</numerusform>
@@ -1115,7 +1128,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="aggregator.cpp" line="909"/>
+        <location filename="aggregator.cpp" line="963"/>
         <source>in %n channel(s).</source>
         <translation>
             <numerusform>in %n channel.</numerusform>
@@ -1556,87 +1569,97 @@
 <context>
     <name>LeechCraft::Aggregator::ItemsWidget</name>
     <message>
-        <location filename="itemswidget.cpp" line="116"/>
+        <location filename="itemswidget.cpp" line="118"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="117"/>
+        <location filename="itemswidget.cpp" line="119"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="176"/>
+        <location filename="itemswidget.cpp" line="183"/>
         <source>Items categories</source>
         <translation>Items categories</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="598"/>
+        <location filename="itemswidget.cpp" line="611"/>
         <source>Hide read items</source>
         <translation>Hide read items</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="606"/>
+        <location filename="itemswidget.cpp" line="619"/>
         <source>Show items as tape</source>
         <translation>Show items as tape</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="614"/>
+        <location filename="itemswidget.cpp" line="627"/>
         <source>Mark item as unread</source>
         <translation>Mark item as unread</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="618"/>
+        <location filename="itemswidget.cpp" line="631"/>
         <source>Mark item as read</source>
         <translation>Mark item as read</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="622"/>
+        <location filename="itemswidget.cpp" line="635"/>
         <source>Important</source>
         <translation>Important</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="628"/>
+        <location filename="itemswidget.cpp" line="641"/>
+        <source>Previous unread item</source>
+        <translation>Previous unread item</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="646"/>
         <source>Previous item</source>
         <translation>Previous item</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="633"/>
+        <location filename="itemswidget.cpp" line="651"/>
         <source>Next item</source>
         <translation>Next item</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="638"/>
+        <location filename="itemswidget.cpp" line="656"/>
+        <source>Next unread item</source>
+        <translation>Next unread item</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="661"/>
         <source>Delete</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="643"/>
+        <location filename="itemswidget.cpp" line="666"/>
         <source>Subscribe to comments</source>
         <translation>Subscribe to comments</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="647"/>
+        <location filename="itemswidget.cpp" line="670"/>
         <source>Open in new tab</source>
         <translation>Open in new tab</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="733"/>
+        <location filename="itemswidget.cpp" line="756"/>
         <source>Published on %1 by %2</source>
         <translation>Published on %1 by %2</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="738"/>
+        <location filename="itemswidget.cpp" line="761"/>
         <source>Published on %1</source>
         <translation>Published on %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="742"/>
+        <location filename="itemswidget.cpp" line="765"/>
         <source>Published by %1</source>
         <translation>Published by %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="753"/>
+        <location filename="itemswidget.cpp" line="776"/>
         <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
         <translation>
             <numerusform>%n comment, &lt;a href=&apos;%1&apos;%2&gt;view it&lt;/a&gt;&lt;br /&gt;</numerusform>
@@ -1644,7 +1667,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="758"/>
+        <location filename="itemswidget.cpp" line="781"/>
         <source>%n comment(s)</source>
         <translation>
             <numerusform>%n comment</numerusform>
@@ -1652,112 +1675,112 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="761"/>
+        <location filename="itemswidget.cpp" line="784"/>
         <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;br /&gt;</source>
         <translation>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="772"/>
+        <location filename="itemswidget.cpp" line="795"/>
         <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</source>
         <translation>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="793"/>
+        <location filename="itemswidget.cpp" line="816"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation>File of type %1, size %2:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="797"/>
+        <location filename="itemswidget.cpp" line="820"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
         <translation>File of type %1 and unknown length:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="803"/>
+        <location filename="itemswidget.cpp" line="826"/>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation>&lt;br /&gt;Specified language: %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="817"/>
+        <location filename="itemswidget.cpp" line="840"/>
         <source>Image </source>
         <translation>Image </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="819"/>
+        <location filename="itemswidget.cpp" line="842"/>
         <source>Audio </source>
         <translation>Audio </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="821"/>
+        <location filename="itemswidget.cpp" line="844"/>
         <source>Video </source>
         <translation>Video </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="823"/>
+        <location filename="itemswidget.cpp" line="846"/>
         <source>Document </source>
         <translation>Document </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="825"/>
+        <location filename="itemswidget.cpp" line="848"/>
         <source>Executable </source>
         <translation>Executable </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="893"/>
+        <location filename="itemswidget.cpp" line="916"/>
         <source>&lt;hr /&gt;Thumbnail at %1:&lt;br /&gt;</source>
         <translation>&lt;hr /&gt;Thumbnail at %1:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="917"/>
+        <location filename="itemswidget.cpp" line="940"/>
         <source>&lt;strong&gt;Keywords:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Keywords:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="921"/>
+        <location filename="itemswidget.cpp" line="944"/>
         <source>&lt;strong&gt;Language:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Language:&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="925"/>
+        <location filename="itemswidget.cpp" line="948"/>
         <source>Sample</source>
         <translation>Sample</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="927"/>
+        <location filename="itemswidget.cpp" line="950"/>
         <source>Continuous stream</source>
         <translation>Continuous stream</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="929"/>
+        <location filename="itemswidget.cpp" line="952"/>
         <source>Full version</source>
         <translation>Full version</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="937"/>
+        <location filename="itemswidget.cpp" line="960"/>
         <source>Title: %1&lt;br /&gt;</source>
         <translation>Title: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="940"/>
+        <location filename="itemswidget.cpp" line="963"/>
         <source>Start time: %1&lt;br /&gt;</source>
         <translation>Start time: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="943"/>
+        <location filename="itemswidget.cpp" line="966"/>
         <source>End time: %1&lt;br /&gt;</source>
         <translation>End time: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="956"/>
+        <location filename="itemswidget.cpp" line="979"/>
         <source>&lt;strong&gt;Scenes:&lt;/strong&gt;</source>
         <translation>&lt;strong&gt;Scenes:&lt;/strong&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="965"/>
+        <location filename="itemswidget.cpp" line="988"/>
         <source>&lt;strong&gt;Views:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Views:&lt;/strong&gt; %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="968"/>
+        <location filename="itemswidget.cpp" line="991"/>
         <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
         <translation>
             <numerusform>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time</numerusform>
@@ -1765,97 +1788,97 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="971"/>
+        <location filename="itemswidget.cpp" line="994"/>
         <source>&lt;strong&gt;Average rating:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Average rating:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="974"/>
+        <location filename="itemswidget.cpp" line="997"/>
         <source>&lt;strong&gt;Number of marks:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Number of marks:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="977"/>
+        <location filename="itemswidget.cpp" line="1000"/>
         <source>&lt;strong&gt;Minimal rating:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Minimal rating:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="980"/>
+        <location filename="itemswidget.cpp" line="1003"/>
         <source>&lt;strong&gt;Maximal rating:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Maximal rating:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="984"/>
+        <location filename="itemswidget.cpp" line="1007"/>
         <source>&lt;strong&gt;User tags:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;User tags:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="989"/>
+        <location filename="itemswidget.cpp" line="1012"/>
         <source>&lt;li&gt;&lt;strong&gt;Duration:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Duration:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="992"/>
+        <location filename="itemswidget.cpp" line="1015"/>
         <source>&lt;li&gt;&lt;strong&gt;Channels:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Channels:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="996"/>
+        <location filename="itemswidget.cpp" line="1019"/>
         <source>&lt;li&gt;&lt;strong&gt;Size:&lt;/strong&gt; %1x%2&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Size:&lt;/strong&gt; %1x%2&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1000"/>
+        <location filename="itemswidget.cpp" line="1023"/>
         <source>&lt;li&gt;&lt;strong&gt;Bitrate:&lt;/strong&gt; %1 kbps&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Bitrate:&lt;/strong&gt; %1 kbps&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1003"/>
+        <location filename="itemswidget.cpp" line="1026"/>
         <source>&lt;li&gt;&lt;strong&gt;Framerate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Framerate:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1006"/>
+        <location filename="itemswidget.cpp" line="1029"/>
         <source>&lt;li&gt;&lt;strong&gt;Sampling rate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Sampling rate:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1009"/>
+        <location filename="itemswidget.cpp" line="1032"/>
         <source>&lt;li&gt;&lt;strong&gt;MIME type:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;MIME type:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1014"/>
+        <location filename="itemswidget.cpp" line="1037"/>
         <source>&lt;strong&gt;Technical information:&lt;/strong&gt;</source>
         <translation>&lt;strong&gt;Technical information:&lt;/strong&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1024"/>
+        <location filename="itemswidget.cpp" line="1047"/>
         <source>&lt;strong&gt;Rating:&lt;/strong&gt; %1 (according to %2 scheme)&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Rating:&lt;/strong&gt; %1 (according to %2 scheme)&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1048"/>
+        <location filename="itemswidget.cpp" line="1071"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1052"/>
+        <location filename="itemswidget.cpp" line="1075"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1056"/>
+        <location filename="itemswidget.cpp" line="1079"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="1071"/>
+        <location filename="itemswidget.cpp" line="1094"/>
         <source>&lt;strong&gt;Credits:&lt;/strong&gt;</source>
         <translation>&lt;strong&gt;Credits:&lt;/strong&gt;</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="1211"/>
+        <location filename="itemswidget.cpp" line="1234"/>
         <source>Are you sure you want to remove %n items?</source>
         <translation>
             <numerusform>Are you sure you want to remove %n item?</numerusform>
