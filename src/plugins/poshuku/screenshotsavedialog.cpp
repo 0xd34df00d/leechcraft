@@ -33,7 +33,11 @@
 #include <QBuffer>
 #include <QTimer>
 #include <QFileDialog>
-#include <QDesktopServices>
+#ifndef USE_QT5
+	#include <QDesktopServices>
+#else
+	#include <QStandardPaths>
+#endif
 #include <QMessageBox>
 #include <QtDebug>
 #include <util/util.h>
@@ -114,7 +118,11 @@ namespace Poshuku
 
 	void ScreenShotSaveDialog::Save ()
 	{
-		const auto defLoc = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
+#ifdef USE_QT5
+		const auto& defLoc = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
+#else
+		const auto& defLoc = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
+#endif
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				tr ("Save screenshot"),
 				XmlSettingsManager::Instance ()->Property ("ScreenshotsLocation",

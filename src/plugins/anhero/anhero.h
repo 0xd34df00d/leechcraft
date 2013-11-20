@@ -42,6 +42,7 @@ namespace AnHero
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.AnHero");
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

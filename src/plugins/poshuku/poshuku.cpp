@@ -40,7 +40,13 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <qwebpage.h>
+
+#ifdef USE_QT5
+#include <qwebkitglobal.h>
+#else
 #include <qwebkitversion.h>
+#endif
+
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>

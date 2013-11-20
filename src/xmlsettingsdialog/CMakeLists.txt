@@ -54,11 +54,7 @@ set (FORMS
 	widgets/dataviewwidget.ui
 	)
 
-if (USE_QT5)
-	QT5_WRAP_UI (UIS_H ${FORMS})
-else ()
-	QT4_WRAP_UI (UIS_H ${FORMS})
-endif ()
+QtWrapUi (UIS_H ${FORMS})
 
 foreach (SRC ${SRCS})
 	set (XSD_SRCS "${XSD_SRCS};xmlsettingsdialog/${SRC}")
@@ -79,5 +75,5 @@ set_property (TARGET leechcraft-xsd PROPERTY SOVERSION 0.3.0)
 install (TARGETS leechcraft-xsd DESTINATION ${LIBDIR})
 
 if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-xsd Xml Sql Widgets Script Network)
+	QT5_USE_MODULES (leechcraft-xsd Xml Widgets Script)
 endif ()

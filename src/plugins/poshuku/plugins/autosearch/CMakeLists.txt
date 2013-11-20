@@ -7,13 +7,14 @@ set (AUTOSEARCH_RESOURCES
 	)
 #CreateTrs ("poshuku_autosearch" "en;ru_RU" AUTOSEARCH_COMPILED_TRANSLATIONS)
 
-QT4_ADD_RESOURCES (AUTOSEARCH_RCCS ${AUTOSEARCH_RESOURCES})
+QtAddResources (AUTOSEARCH_RCCS ${AUTOSEARCH_RESOURCES})
 add_library (leechcraft_poshuku_autosearch SHARED
 	${AUTOSEARCH_COMPILED_TRANSLATIONS}
 	${AUTOSEARCH_SRCS}
 	${AUTOSEARCH_MOC_SRCS}
 	${AUTOSEARCH_RCCS}
 	)
+FindQtLibs (leechcraft_poshuku_autosearch Network Xml)
 target_link_libraries (leechcraft_poshuku_autosearch
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

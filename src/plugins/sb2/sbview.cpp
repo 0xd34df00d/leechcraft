@@ -29,27 +29,38 @@
 
 #include "sbview.h"
 #include <QLayout>
+#include <QWidget>
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	SBView::SBView (QWidget *parent)
-	: QDeclarativeView (parent)
+	SBView::SBView ()
+	: ParentWidget_ (nullptr)
 	, Dim_ (32)
 	{
 		setResizeMode (SizeRootObjectToView);
-		setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
 	}
 
 	void SBView::SetDimensions (int dim)
 	{
 		Dim_ = dim;
-		if (!parentWidget ())
+
+		if (!ParentWidget_)
 			return;
 
-		if (auto lay = parentWidget ()->layout ())
+		if (auto lay = ParentWidget_->layout ())
 			lay->update ();
+	}
+
+	void SBView::SetParent (QWidget *parent)
+	{
+		ParentWidget_ = parent;
+	}
+
+	QWidget* SBView::GetParent () const
+	{
+		return ParentWidget_;
 	}
 
 	QSize SBView::minimumSizeHint () const

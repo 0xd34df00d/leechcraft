@@ -35,6 +35,7 @@
 #include <QCursor>
 #include <QShortcut>
 #include <QMenu>
+#include <QMimeData>
 #include <QSplashScreen>
 #include <QTime>
 #include <QDockWidget>

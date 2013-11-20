@@ -32,7 +32,13 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QtDebug>
-#include <QDesktopServices>
+
+#ifndef USE_QT5
+	#include <QDesktopServices>
+#else
+	#include <QStandardPaths>
+#endif
+
 #include <util/util.h>
 #include "../filepicker.h"
 
@@ -120,16 +126,24 @@ namespace LeechCraft
 			{
 				QString text = item.attribute ("default");
 				QMap<QString, QString> str2loc;
+#ifndef USE_QT5
 				str2loc ["DOCUMENTS"] = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
 				str2loc ["DESKTOP"] = QDesktopServices::storageLocation (QDesktopServices::DesktopLocation);
 				str2loc ["MUSIC"] = QDesktopServices::storageLocation (QDesktopServices::MusicLocation);
 				str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
+#else
+				str2loc ["DOCUMENTS"] = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
+				str2loc ["DESKTOP"] = QStandardPaths::writableLocation (QStandardPaths::DesktopLocation);
+				str2loc ["MUSIC"] = QStandardPaths::writableLocation (QStandardPaths::MusicLocation);
+				str2loc ["MOVIES"] = QStandardPaths::writableLocation (QStandardPaths::MoviesLocation);
+#endif
+
 #ifndef Q_OS_LINUX
 				str2loc ["LCDIR"] = GetUserDir ({}).absolutePath ();
 #else
 				str2loc ["LCDIR"] = Util::GetUserDir ({}).absolutePath ();
 #endif
-				Q_FOREACH (const QString& key, str2loc.keys ())
+				for (const QString& key : str2loc.keys ())
 					if (text.startsWith ("{" + key + "}"))
 					{
 						text.replace (0, key.length () + 2, str2loc [key]);

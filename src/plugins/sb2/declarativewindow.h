@@ -29,7 +29,11 @@
 
 #pragma once
 
+#ifdef USE_QT5
+#include <QQuickView>
+#else
 #include <QDeclarativeView>
+#endif
 #include <QVariantMap>
 #include <interfaces/core/icoreproxy.h>
 
@@ -39,11 +43,15 @@ namespace SB2
 {
 	class ViewManager;
 
+#ifdef USE_QT5
+	class DeclarativeWindow : public QQuickView
+#else
 	class DeclarativeWindow : public QDeclarativeView
+#endif
 	{
 		Q_OBJECT
 	public:
-		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, ViewManager*, ICoreProxy_ptr, QWidget* = 0);
+		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, ViewManager*, ICoreProxy_ptr);
 	};
 }
 }

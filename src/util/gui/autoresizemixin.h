@@ -35,7 +35,11 @@
 #include <QRect>
 #include <util/utilconfig.h>
 
+#ifdef USE_QT5
+class QWindow;
+#else
 class QWidget;
+#endif
 
 namespace LeechCraft
 {
@@ -44,12 +48,19 @@ namespace Util
 	class AutoResizeMixin : public QObject
 	{
 		const QPoint OrigPoint_;
+#ifdef USE_QT5
+		QWindow * const View_;
+#else
 		QWidget * const View_;
+#endif
 	public:
 		typedef std::function<QRect ()> RectGetter_f;
 	private:
 		const RectGetter_f Rect_;
 	public:
+#ifdef USE_QT5
+		UTIL_API AutoResizeMixin (const QPoint&, RectGetter_f, QWindow*);
+#endif
 		UTIL_API AutoResizeMixin (const QPoint&, RectGetter_f, QWidget*);
 
 		bool eventFilter (QObject*, QEvent*);

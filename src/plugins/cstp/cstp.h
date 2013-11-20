@@ -64,6 +64,7 @@ namespace CSTP
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.CSTP");
 
 		QMenu *Plugins_;
 		std::auto_ptr<QTranslator> Translator_;

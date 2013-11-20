@@ -29,7 +29,11 @@
 
 #pragma once
 
+#ifdef USE_QT5
+#include <QQuickView>
+#else
 #include <QDeclarativeView>
+#endif
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
@@ -45,7 +49,11 @@ namespace Util
 
 namespace SB2
 {
+#ifdef USE_QT5
+	class TabListView : public QQuickView
+#else
 	class TabListView : public QDeclarativeView
+#endif
 	{
 		Q_OBJECT
 
@@ -59,7 +67,7 @@ namespace SB2
 		Util::UnhoverDeleteMixin *UnhoverDeleteMixin_;
 	public:
 		TabListView (const QByteArray&, const QList<QWidget*>&,
-				ICoreTabWidget*, QMainWindow*, ICoreProxy_ptr, QWidget* = 0);
+				ICoreTabWidget*, QMainWindow*, ICoreProxy_ptr);
 
 		QByteArray GetTabClass () const;
 

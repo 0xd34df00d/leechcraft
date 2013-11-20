@@ -29,7 +29,11 @@
 
 #pragma once
 
+#ifdef USE_QT5
+#include <QQuickView>
+#else
 #include <QDeclarativeView>
+#endif
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
@@ -40,7 +44,11 @@ namespace SB2
 {
 	class ViewManager;
 
+#ifdef USE_QT5
+	class QuarkOrderView : public QQuickView
+#else
 	class QuarkOrderView : public QDeclarativeView
+#endif
 	{
 		Q_OBJECT
 
@@ -49,7 +57,7 @@ namespace SB2
 
 		QStandardItemModel *Model_;
 	public:
-		QuarkOrderView (ViewManager*, ICoreProxy_ptr, QWidget* = 0);
+		QuarkOrderView (ViewManager*, ICoreProxy_ptr);
 	private slots:
 		void handleQuarkCloseRequested (const QString&);
 		void moveQuark (const QString& from, const QString& to, int shift);

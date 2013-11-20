@@ -8,8 +8,6 @@ find_package (QJSON REQUIRED)
 
 cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
 
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -49,7 +47,7 @@ if (WITH_X11)
 endif ()
 
 set (SB2_RESOURCES sb2resources.qrc)
-QT4_ADD_RESOURCES (SB2_RCCS ${SB2_RESOURCES})
+QtAddResources (SB2_RCCS ${SB2_RESOURCES})
 
 add_library (leechcraft_sb2 SHARED
 	${COMPILED_TRANSLATIONS}
@@ -57,6 +55,9 @@ add_library (leechcraft_sb2 SHARED
 	${MOC_SRCS}
 	${SB2_RCCS}
 	)
+
+FindQtLibs (leechcraft_sb2 Quick)
+
 target_link_libraries (leechcraft_sb2
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

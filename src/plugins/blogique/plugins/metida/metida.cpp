@@ -29,7 +29,13 @@
 
 #include "metida.h"
 #include <QIcon>
-#include <QtDeclarative>
+#ifdef USE_QT5
+	#include <QQmlEngine>
+	#include <QQuickPaintedItem>
+#else
+	#include <QtDeclarative>
+#endif
+#include <QGraphicsEffect>
 #include <util/util.h>
 #include <interfaces/structures.h>
 #include "core.h"

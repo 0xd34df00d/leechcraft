@@ -29,7 +29,6 @@ if (DUMBEEP_WITH_PHONON)
 	add_definitions (-DWITH_PHONON)
 endif ()
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -44,6 +43,9 @@ add_library (leechcraft_dumbeep SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
+
+FindQtLibs (leechcraft_dumbeep Core)
+
 target_link_libraries (leechcraft_dumbeep
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

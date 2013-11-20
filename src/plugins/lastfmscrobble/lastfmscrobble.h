@@ -74,6 +74,7 @@ namespace Lastfmscrobble
 				Media::IArtistBioFetcher
 				Media::IEventsProvider
 				Media::IHypesProvider)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Lastfmscrobble")
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 

@@ -28,7 +28,12 @@
  **********************************************************************/
 
 #include "autoresizemixin.h"
-#include <QDeclarativeView>
+#ifndef USE_QT5
+	#include <QDeclarativeView>
+#else
+	#include <QQuickView>
+#endif
+#include <QWidget>
 #include <QResizeEvent>
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
@@ -37,6 +42,23 @@ namespace LeechCraft
 {
 namespace Util
 {
+#ifdef USE_QT5
+	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWindow *view)
+	: QObject (view)
+	, OrigPoint_ (point)
+	, View_ (view)
+	, Rect_ (size)
+	{
+		View_->installEventFilter (this);
+
+		Refit (View_->size ());
+	}
+
+	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWidget *view)
+	: AutoResizeMixin (point, size, view->windowHandle ())
+	{
+	}
+#else
 	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWidget *view)
 	: QObject (view)
 	, OrigPoint_ (point)
@@ -47,6 +69,7 @@ namespace Util
 
 		Refit (View_->size ());
 	}
+#endif
 
 	bool AutoResizeMixin::eventFilter (QObject*, QEvent *event)
 	{
@@ -61,7 +84,11 @@ namespace Util
 	void AutoResizeMixin::Refit (const QSize& size)
 	{
 		const auto& pos = FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap);
+#ifdef USE_QT5
+		View_->setPosition (pos);
+#else
 		View_->move (pos);
+#endif
 	}
 }
 }

@@ -30,16 +30,30 @@
 #pragma once
 
 #include <functional>
+
+#ifdef USE_QT5
+#include <QQmlNetworkAccessManagerFactory>
+#else
 #include <QDeclarativeNetworkAccessManagerFactory>
+#endif
+
 #include <util/utilconfig.h>
 
+#ifdef USE_QT5
+class QQmlEngine;
+#else
 class QDeclarativeEngine;
+#endif
 
 namespace LeechCraft
 {
 namespace Util
 {
+#ifdef USE_QT5
+	class UTIL_API StandardNAMFactory : public QQmlNetworkAccessManagerFactory
+#else
 	class UTIL_API StandardNAMFactory : public QDeclarativeNetworkAccessManagerFactory
+#endif
 	{
 		const QString Subpath_;
 	public:
@@ -48,7 +62,12 @@ namespace Util
 		CacheSizeGetter_f CacheSizeGetter_;
 	public:
 		StandardNAMFactory (const QString& subpath,
-				CacheSizeGetter_f getter, QDeclarativeEngine *engine = nullptr);
+				CacheSizeGetter_f getter,
+#ifdef USE_QT5
+				QQmlEngine *engine = nullptr);
+#else
+				QDeclarativeEngine *engine = nullptr);
+#endif
 
 		QNetworkAccessManager* create (QObject*);
 	};

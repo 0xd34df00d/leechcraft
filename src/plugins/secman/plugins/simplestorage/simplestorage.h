@@ -39,49 +39,50 @@ class QSettings;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SecMan
+{
+namespace StoragePlugins
+{
+namespace SimpleStorage
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IPlugin2
+					, public IStoragePlugin
 	{
-		namespace SecMan
-		{
-			namespace StoragePlugins
-			{
-				namespace SimpleStorage
-				{
-					class Plugin : public QObject
-								 , public IInfo
-								 , public IPlugin2
-								 , public IStoragePlugin
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin)
+		Q_OBJECT
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.SecMan.StoragePlugins.SimpleStorage");
+#endif
 
-						std::shared_ptr<QSettings> Storage_;
-					public:
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						QByteArray GetUniqueID () const;
-						void Release ();
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::SecMan::IStoragePlugin)
 
-						QSet<QByteArray> GetPluginClasses () const;
+		std::shared_ptr<QSettings> Storage_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-						StorageTypes GetStorageTypes () const;
-						QList<QByteArray> ListKeys (StorageType);
-						void Save (const QByteArray&, const QVariantList&, StorageType, bool);
-						QVariantList Load (const QByteArray&, StorageType);
-						void Save (const QList<QPair<QByteArray, QVariantList>>&, StorageType, bool);
-						QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
-					};
-				}
-			}
-		}
-	}
+		QSet<QByteArray> GetPluginClasses () const;
+
+		StorageTypes GetStorageTypes () const;
+		QList<QByteArray> ListKeys (StorageType);
+		void Save (const QByteArray&, const QVariantList&, StorageType, bool);
+		QVariantList Load (const QByteArray&, StorageType);
+		void Save (const QList<QPair<QByteArray, QVariantList>>&, StorageType, bool);
+		QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
+	};
+}
+}
+}
 }
 
 #endif

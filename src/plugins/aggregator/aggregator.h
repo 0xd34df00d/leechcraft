@@ -85,6 +85,7 @@ namespace Aggregator
 				IPluginReady
 				IHaveRecoverableTabs
 				IRecoverableTab)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Aggregator");
 
 		Aggregator_Impl *Impl_;
 	public:

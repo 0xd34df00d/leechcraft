@@ -68,6 +68,7 @@ namespace LackMan
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings
 				IEntityHandler IHaveShortcuts IHaveRecoverableTabs IRecoverableTab)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.LackMan")
 
 		Ui::LackMan Ui_;
 		std::auto_ptr<QTranslator> Translator_;

@@ -31,7 +31,11 @@
 #include <algorithm>
 #include <QCoreApplication>
 #include <QtDebug>
-#include <QDesktopServices>
+#ifndef USE_QT5
+	#include <QDesktopServices>
+#else
+	#include <QStandardPaths>
+#endif
 #include <QFile>
 #include <QFileInfo>
 #include <QHash>
@@ -262,7 +266,11 @@ namespace FatApe
 
 	void UserScript::Install (QNetworkAccessManager *networkManager)
 	{
-		const QString& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
+#ifdef USE_QT5
+		const auto& temp = QStandardPaths::writableLocation (QStandardPaths::TempLocation);
+#else
+		const auto& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
+#endif
 
 		if (!ScriptPath_.startsWith (temp))
 			return;

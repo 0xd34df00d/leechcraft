@@ -29,8 +29,15 @@
 
 #include "viewmanager.h"
 #include <QStandardItemModel>
+
+#if USE_QT5
+#include <QQmlEngine>
+#include <QQmlContext>
+#else
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#endif
+
 #include <QtDebug>
 #include <QDir>
 #include <QSettings>
@@ -72,11 +79,18 @@ namespace SB2
 			ViewItemsModel (QObject *parent)
 			: QStandardItemModel (parent)
 			{
+#ifndef USE_QT5
+				setRoleNames (roleNames ());
+#endif
+			}
+
+			QHash<int, QByteArray> roleNames () const
+			{
 				QHash<int, QByteArray> names;
 				names [Role::SourceURL] = "sourceURL";
 				names [Role::QuarkHasSettings] = "quarkHasSettings";
 				names [Role::QuarkClass] = "quarkClass";
-				setRoleNames (names);
+				return names;
 			}
 		};
 	}
@@ -115,8 +129,16 @@ namespace SB2
 		View_->rootContext ()->setContextProperty ("quarkContext", "panel_" + QString::number (GetWindowIndex ()));
 		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
 
+#ifdef USE_QT5
+		auto container = QWidget::createWindowContainer (View_);
+		container->setFocusPolicy (Qt::TabFocus);
+		View_->SetParent (container);
+		Toolbar_->addWidget (container);
+#else
+		View_->SetParent (Toolbar_);
 		Toolbar_->addWidget (View_);
 		View_->setVisible (true);
+#endif
 
 		GeomManager_->Manage ();
 

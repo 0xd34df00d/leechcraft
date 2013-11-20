@@ -49,7 +49,12 @@
 #include <QTimer>
 #include <QCryptographicHash>
 #include <QTextCodec>
+#ifdef USE_QT5
+#include <QQmlEngine>
+#include <QQuickPaintedItem>
+#else
 #include <QtDeclarative>
+#endif
 #include <interfaces/isyncable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
@@ -72,6 +77,10 @@
 
 #ifdef Q_OS_WIN32
 #include "winwarndialog.h"
+#endif
+
+#ifdef USE_QT5
+	#define qInstallMsgHandler qInstallMessageHandler
 #endif
 
 namespace bpo = boost::program_options;
@@ -113,7 +122,9 @@ namespace LeechCraft
 			std::exit (EVersionRequested);
 		}
 
+#ifndef USE_QT5
 		QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
+#endif
 
 		if (VarMap_.count ("no-app-catch"))
 			CatchExceptions_ = false;

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "pageformsdata.h"
+#include <QDataStream>
 #include <QtDebug>
 
 namespace LeechCraft

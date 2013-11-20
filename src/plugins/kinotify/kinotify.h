@@ -54,6 +54,7 @@ namespace Kinotify
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler IHaveSettings)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Kinotify")
 
 		ICoreProxy_ptr Proxy_;
 

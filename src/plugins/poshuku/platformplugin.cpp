@@ -50,5 +50,7 @@ namespace Poshuku
 }
 }
 
+#ifndef USE_QT5
 Q_EXPORT_PLUGIN2 (poshukuplatformplugin, LeechCraft::Poshuku::PlatformPlugin);
 Q_IMPORT_PLUGIN (poshukuplatformplugin);
+#endif

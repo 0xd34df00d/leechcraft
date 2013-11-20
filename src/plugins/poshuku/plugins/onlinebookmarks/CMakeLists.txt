@@ -12,15 +12,6 @@ set (ONLINEBOOKMARKS_SRCS
 	accountssettings.cpp
 	pluginmanager.cpp
 	)
-
-set (ONLINEBOOKMARKS_HEADERS
-	onlinebookmarks.h
-	xmlsettingsmanager.h
-	core.h
-	accountssettings.h
-	pluginmanager.h
-	)
-
 set (ONLINEBOOKMARKS_FORMS
 	accountssettings.ui
 	)
@@ -30,19 +21,17 @@ set (ONLINEBOOKMARKS_RESOURCES poshukuonlinebookmarksresources.qrc
 
 CreateTrs ("poshuku_onlinebookmarks" "de;en;fr;it;ru_RU;uk_UA" ONLINEBOOKMARKS_COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (ONLINEBOOKMARKS_MOC_SRCS ${ONLINEBOOKMARKS_HEADERS})
-endif ()
-QT4_WRAP_UI (ONLINEBOOKMARKS_UIS_H ${ONLINEBOOKMARKS_FORMS})
-QT4_ADD_RESOURCES (ONLINEBOOKMARKS_RCCS ${ONLINEBOOKMARKS_RESOURCES})
+QtWrapUi (ONLINEBOOKMARKS_UIS_H ${ONLINEBOOKMARKS_FORMS})
+QtAddResources (ONLINEBOOKMARKS_RCCS ${ONLINEBOOKMARKS_RESOURCES})
 
 add_library (leechcraft_poshuku_onlinebookmarks SHARED
  	${ONLINEBOOKMARKS_COMPILED_TRANSLATIONS}
 	${ONLINEBOOKMARKS_SRCS}
-	${ONLINEBOOKMARKS_MOC_SRCS}
 	${ONLINEBOOKMARKS_UIS_H}
 	${ONLINEBOOKMARKS_RCCS}
 	)
+
+FindQtLibs (leechcraft_poshuku_onlinebookmarks Core Gui)
 
 target_link_libraries (leechcraft_poshuku_onlinebookmarks
 	${QT_LIBRARIES}

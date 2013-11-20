@@ -45,6 +45,7 @@ namespace LHTR
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo ITextEditor IHaveSettings)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.LHTR");
 
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;

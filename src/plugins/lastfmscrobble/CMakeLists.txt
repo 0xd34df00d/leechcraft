@@ -6,10 +6,6 @@ set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package (LastFM REQUIRED)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
-
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -59,10 +55,8 @@ set (HEADERS
 	hypedtracksfetcher.h
 	)
 set (RESOURCES lastfmscrobbleresources.qrc)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+
+QtAddResources (RCCS ${RESOURCES})
 CreateTrs ("lastfmscrobble" "en;ru_RU" COMPILED_TRANSLATIONS)
 
 add_library (leechcraft_lastfmscrobble SHARED
@@ -71,6 +65,9 @@ add_library (leechcraft_lastfmscrobble SHARED
 	${MOC_SRCS}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_lastfmscrobble Network Xml)
+
 target_link_libraries (leechcraft_lastfmscrobble
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

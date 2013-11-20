@@ -32,7 +32,11 @@
 #include <QUrl>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
+#ifdef USE_QT5
+class QQmlContext;
+#else
 class QDeclarativeContext;
+#endif
 
 namespace LeechCraft
 {
@@ -41,9 +45,17 @@ namespace SB2
 	class QuarkSettingsManager : public Util::BaseSettingsManager
 	{
 		QUrl QuarkURL_;
-		QDeclarativeContext *Ctx_;
+#ifdef USE_QT5
+		QQmlContext * const Ctx_;
+#else
+		QDeclarativeContext * const Ctx_;
+#endif
 	public:
+#ifdef USE_QT5
+		QuarkSettingsManager (const QUrl&, QQmlContext*);
+#else
 		QuarkSettingsManager (const QUrl&, QDeclarativeContext*);
+#endif
 	protected:
 		QSettings* BeginSettings () const;
 		void EndSettings (QSettings*) const;

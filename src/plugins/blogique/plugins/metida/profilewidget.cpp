@@ -224,8 +224,11 @@ namespace Metida
 			
 			FriendsModel_->appendRow ({ item, itemStatus, itemName, itemBirthday });
 		}
-
+#ifdef USE_QT5
+		Ui_.FriendsView_->header ()->setSectionResizeMode (QHeaderView::ResizeToContents);
+#else
 		Ui_.FriendsView_->header ()->setResizeMode (QHeaderView::ResizeToContents);
+#endif
 	}
 
 	void ProfileWidget::FillGroups (const QList<LJFriendGroup>& groups)

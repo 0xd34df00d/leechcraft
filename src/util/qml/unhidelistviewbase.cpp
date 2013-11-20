@@ -28,9 +28,15 @@
  **********************************************************************/
 
 #include "unhidelistviewbase.h"
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QGraphicsObject>
+#ifndef USE_QT5
+	#include <QDeclarativeContext>
+	#include <QDeclarativeEngine>
+	#include <QGraphicsObject>
+#else
+	#include <QQmlContext>
+	#include <QQmlEngine>
+	#include <QQuickItem>
+#endif
 #include <QtDebug>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
@@ -42,8 +48,13 @@ namespace LeechCraft
 {
 namespace Util
 {
-	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy, QWidget *parent)
+	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy,
+			QWidget *parent)
+#ifndef USE_QT5
 	: QDeclarativeView (parent)
+#else
+	: QQuickView (parent->windowHandle ())
+#endif
 	, Model_ (new UnhideListModel (this))
 	{
 		new UnhoverDeleteMixin (this);
@@ -57,9 +68,11 @@ namespace Util
 			return;
 		}
 
+#ifndef USE_QT5
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
+#endif
 
 		for (const auto& cand : GetPathCandidates (SysPath::QML, ""))
 			engine ()->addImportPath (cand);

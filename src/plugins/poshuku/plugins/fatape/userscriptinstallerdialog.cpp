@@ -28,7 +28,11 @@
  **********************************************************************/
 
 #include "userscriptinstallerdialog.h"
-#include <QDesktopServices>
+#ifndef USE_QT5
+	#include <QDesktopServices>
+#else
+	#include <QStandardPaths>
+#endif
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -47,7 +51,11 @@ namespace FatApe
 	: QDialog (parent)
 	, Plugin_ (plugin)
 	{
+#ifdef USE_QT5
+		QDir temp (QStandardPaths::writableLocation (QStandardPaths::TempLocation));
+#else
 		QDir temp (QDesktopServices::storageLocation (QDesktopServices::TempLocation));
+#endif
 		QFileInfo userScript (temp, QFileInfo (scriptUrl.path ()).fileName ());
 
 		Ui_.setupUi (this);

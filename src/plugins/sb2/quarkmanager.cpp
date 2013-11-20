@@ -28,15 +28,26 @@
  **********************************************************************/
 
 #include "quarkmanager.h"
+#ifdef USE_QT5
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QQuickImageProvider>
+#else
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
+#endif
 #include <QStandardItem>
 #include <QFile>
 #include <QtDebug>
 #include <QFileInfo>
 #include <QDir>
+#ifdef USE_QT5
+#include <QJsonDocument>
+#include <QJsonParseError>
+#else
 #include <qjson/parser.h>
+#endif
 #include <interfaces/iquarkcomponentprovider.h>
 #include "viewmanager.h"
 #include "sbview.h"
@@ -51,12 +62,13 @@ namespace SB2
 
 	namespace
 	{
-		class ImageProvProxy : public QDeclarativeImageProvider
+		template<typename T>
+		class ImageProvProxyT : public T
 		{
-			QDeclarativeImageProvider *Wrapped_;
+			T *Wrapped_;
 		public:
-			ImageProvProxy (QDeclarativeImageProvider *other)
-			: QDeclarativeImageProvider (other->imageType ())
+			ImageProvProxyT (T *other)
+			: T (other->imageType ())
 			, Wrapped_ (other)
 			{
 			}
@@ -71,6 +83,12 @@ namespace SB2
 				return Wrapped_->requestPixmap (id, size, requestedSize);
 			}
 		};
+
+#if USE_QT5
+		typedef ImageProvProxyT<QQuickImageProvider> ImageProvProxy;
+#else
+		typedef ImageProvProxyT<QDeclarativeImageProvider> ImageProvProxy;
+#endif
 	}
 
 	QuarkManager::QuarkManager (QuarkComponent_ptr comp,
@@ -182,6 +200,21 @@ namespace SB2
 			return;
 		}
 
+#ifdef USE_QT5
+		QJsonParseError err;
+		const auto& doc = QJsonDocument::fromJson (file.readAll (), &err);
+		if (err.error != QJsonParseError::NoError)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to parse"
+					<< manifestName
+					<< err.error
+					<< err.errorString ();
+			return;
+		}
+
+		const auto& varMap = doc.toVariant ().toMap ();
+#else
 		QJson::Parser parser;
 		bool ok = false;
 		const auto& varMap = parser.parse (&file, &ok).toMap ();
@@ -194,6 +227,7 @@ namespace SB2
 					<< parser.errorString ();
 			return;
 		}
+#endif
 
 		Name_ = varMap ["quarkName"].toString ();
 		Areas_ = varMap ["areas"].toStringList ();

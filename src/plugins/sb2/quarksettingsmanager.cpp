@@ -29,7 +29,11 @@
 
 #include "quarksettingsmanager.h"
 #include <QCoreApplication>
+#ifdef USE_QT5
+#include <QQmlContext>
+#else
 #include <QDeclarativeContext>
+#endif
 #include <QFileInfo>
 #include <QtDebug>
 
@@ -37,7 +41,11 @@ namespace LeechCraft
 {
 namespace SB2
 {
+#ifdef USE_QT5
+	QuarkSettingsManager::QuarkSettingsManager (const QUrl& url, QQmlContext *ctx)
+#else
 	QuarkSettingsManager::QuarkSettingsManager (const QUrl& url, QDeclarativeContext *ctx)
+#endif
 	: QuarkURL_ (url)
 	, Ctx_ (ctx)
 	{

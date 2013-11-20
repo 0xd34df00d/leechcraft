@@ -30,7 +30,11 @@
 #include "launchercomponent.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <QSettings>
+#ifdef USE_QT5
+#else
 #include <QtDeclarative>
+#endif
 #include <util/gui/util.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/sys/paths.h>
@@ -69,6 +73,13 @@ namespace SB2
 			LauncherModel (QObject *parent)
 			: QStandardItemModel (parent)
 			{
+#ifndef USE_QT5
+				setRoleNames (roleNames ());
+#endif
+			}
+
+			QHash<int, QByteArray> roleNames () const
+			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::TabClassIcon] = "tabClassIcon";
 				roleNames [Roles::TabClassID] = "tabClassID";
@@ -77,7 +88,7 @@ namespace SB2
 				roleNames [Roles::IsCurrentTab] = "isCurrentTab";
 				roleNames [Roles::CanOpenTab] = "canOpenTab";
 				roleNames [Roles::IsSingletonTab] = "isSingletonTab";
-				setRoleNames (roleNames);
+				return roleNames;
 			}
 		};
 	}
@@ -119,9 +130,9 @@ namespace SB2
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
 
-		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
-		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
-		Component_->ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
+		Component_->DynamicProps_.append ({ "SB2_launcherModel", Model_ });
+		Component_->DynamicProps_.append ({ "SB2_launcherProxy", this });
+		Component_->ImageProviders_.append ({ ImageProviderID, ImageProv_ });
 
 		connect (ICTW_->GetQObject (),
 				SIGNAL (currentChanged (int)),
@@ -311,7 +322,11 @@ namespace SB2
 		auto list = new TabUnhideListView (tcs, Proxy_);
 		new Util::AutoResizeMixin ({ x, y }, [this] () { return View_->GetFreeCoords (); }, list);
 		list->show ();
+#ifdef USE_QT5
+		list->requestActivate ();
+#else
 		list->setFocus ();
+#endif
 		connect (list,
 				SIGNAL (unhideRequested (QByteArray)),
 				this,
@@ -334,9 +349,18 @@ namespace SB2
 			delete CurrentTabList_;
 
 		auto view = new TabListView (tc, widgets, ICTW_, View_->GetManagedWindow (), Proxy_);
-		view->move (Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ()));
+		const auto& pos = Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ());
+#ifdef USE_QT5
+		view->setPosition (pos);
+#else
+		view->move (pos);
+#endif
 		view->show ();
+#ifdef USE_QT5
+		view->requestActivate ();
+#else
 		view->setFocus ();
+#endif
 
 		CurrentTabList_ = view;
 	}

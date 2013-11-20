@@ -35,7 +35,11 @@
 #include <QVariant>
 #include <util/sys/paths.h>
 
+#ifdef USE_QT5
+class QQuickImageProvider;
+#else
 class QDeclarativeImageProvider;
+#endif
 
 namespace LeechCraft
 {
@@ -88,7 +92,11 @@ namespace LeechCraft
 		 */
 		QList<QPair<QString, QObject*>> ContextProps_;
 		QList<QPair<QString, QVariant>> StaticProps_;
+#ifdef USE_QT5
+		QList<QPair<QString, QQuickImageProvider*>> ImageProviders_;
+#else
 		QList<QPair<QString, QDeclarativeImageProvider*>> ImageProviders_;
+#endif
 
 		/** @brief Initializes a null quark component.
 		 */

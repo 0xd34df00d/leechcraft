@@ -28,49 +28,81 @@
  **********************************************************************/
 
 #include "launcherdroparea.h"
+#ifndef USE_QT5
 #include <QGraphicsSceneDragDropEvent>
+#endif
+#include <QCursor>
 #include <QMimeData>
 
 namespace LeechCraft
 {
 namespace SB2
 {
+#ifdef USE_QT5
+	LauncherDropArea::LauncherDropArea (QQuickItem *parent)
+	: QQuickItem (parent)
+#else
 	LauncherDropArea::LauncherDropArea (QDeclarativeItem *parent)
 	: QDeclarativeItem (parent)
+#endif
 	{
+#ifdef USE_QT5
+		setFlag (QQuickItem::ItemAcceptsDrops);
+#else
 		setAcceptDrops (true);
+#endif
 	}
 
 	bool LauncherDropArea::GetAcceptingDrops () const
 	{
+#ifdef USE_QT5
+		return flags () & QQuickItem::ItemAcceptsDrops;
+#else
 		return acceptDrops ();
+#endif
 	}
 
 	void LauncherDropArea::SetAcceptingDrops (bool accepting)
 	{
-		if (acceptDrops () == accepting)
+		if (GetAcceptingDrops () == accepting)
 			return;
 
+#ifdef USE_QT5
+		setFlag (QQuickItem::ItemAcceptsDrops, accepting);
+#else
 		setAcceptDrops (accepting);
+#endif
 		emit acceptingDropsChanged (accepting);
 	}
 
+#ifdef USE_QT5
+	void LauncherDropArea::dragEnterEvent (QDragEnterEvent *event)
+#else
 	void LauncherDropArea::dragEnterEvent (QGraphicsSceneDragDropEvent *event)
+#endif
 	{
 		auto data = event->mimeData ();
 		if (!data->formats ().contains ("x-leechcraft/tab-tabclass"))
 			return;
 
 		event->acceptProposedAction ();
-		setCursor (Qt::DragCopyCursor);
+		setCursor (QCursor (Qt::DragCopyCursor));
 	}
 
+#ifdef USE_QT5
+	void LauncherDropArea::dragLeaveEvent (QDragLeaveEvent*)
+#else
 	void LauncherDropArea::dragLeaveEvent (QGraphicsSceneDragDropEvent*)
+#endif
 	{
 		unsetCursor ();
 	}
 
+#ifdef USE_QT5
+	void LauncherDropArea::dropEvent (QDropEvent *event)
+#else
 	void LauncherDropArea::dropEvent (QGraphicsSceneDragDropEvent *event)
+#endif
 	{
 		unsetCursor ();
 		emit tabDropped (event->mimeData ()->data ("x-leechcraft/tab-tabclass"));

@@ -146,3 +146,5 @@ namespace AdvancedNotifications
 }
 
 LC_EXPORT_PLUGIN (leechcraft_advancednotifications, LeechCraft::AdvancedNotifications::Plugin);
+
+

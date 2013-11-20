@@ -30,6 +30,9 @@
 #include "subscriptionsmanager.h"
 #include <memory>
 #include <QMessageBox>
+#ifdef USE_QT5
+#include <QUrlQuery>
+#endif
 #include "core.h"
 #include "subscriptionadddialog.h"
 
@@ -59,10 +62,17 @@ namespace CleanWeb
 	{
 		QUrl url (urlStr);
 		QUrl locationUrl;
-		if (url.queryItemValue ("location").contains ("%"))
-			locationUrl.setUrl (QUrl::fromPercentEncoding (url.queryItemValue ("location").toAscii ()));
+
+#ifdef USE_QT5
+		const auto& locationItem = QUrlQuery (url).queryItemValue ("location");
+#else
+		const auto& locationItem = url.queryItemValue ("location");
+#endif
+
+		if (locationItem.contains ("%"))
+			locationUrl.setUrl (QUrl::fromPercentEncoding (locationItem.toLatin1 ()));
 		else
-			locationUrl.setUrl (url.queryItemValue ("location"));
+			locationUrl.setUrl (locationItem);
 
 		if (url.scheme () == "abp" &&
 				url.host () == "subscribe" &&

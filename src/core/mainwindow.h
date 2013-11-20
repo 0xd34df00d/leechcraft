@@ -90,6 +90,7 @@ namespace LeechCraft
 		QToolBar *BottomDockToolbar_;
 	public:
 		MainWindow (int screen, bool isPrimary);
+
 		void Init ();
 		virtual ~MainWindow ();
 

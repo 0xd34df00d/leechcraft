@@ -219,8 +219,6 @@ namespace Aggregator
 
 	ItemsWidget::~ItemsWidget ()
 	{
-		on_CategoriesSplitter__splitterMoved ();
-
 		disconnect (Impl_->ItemsFilterModel_.get (),
 				0,
 				this,
@@ -1397,9 +1395,9 @@ namespace Aggregator
 	{
 		QList<int> sizes = Impl_->Ui_.CategoriesSplitter_->sizes ();
 		XmlSettingsManager::Instance ()->
-			setProperty ("CategoriesSplitter1", sizes.at (0));
+			setProperty ("CategoriesSplitter1", sizes.value (0));
 		XmlSettingsManager::Instance ()->
-			setProperty ("CategoriesSplitter2", sizes.at (1));
+			setProperty ("CategoriesSplitter2", sizes.value (1));
 	}
 
 	void ItemsWidget::currentItemChanged ()

@@ -34,6 +34,9 @@
 #include <QString>
 #include <QHash>
 #include <QAbstractEventDispatcher>
+#ifdef USE_QT5
+#include <QAbstractNativeEventFilter>
+#endif
 #include <X11/Xdefs.h>
 #include <util/utilconfig.h>
 #include "winflags.h"
@@ -59,7 +62,11 @@ namespace Util
 
 		QHash<QString, Atom> Atoms_;
 
+#ifdef USE_QT5
+		QAbstractNativeEventFilter *Filter_;
+#else
 		const QAbstractEventDispatcher::EventFilter PrevFilter_;
+#endif
 
 		XWrapper ();
 	public:

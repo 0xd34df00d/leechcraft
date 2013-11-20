@@ -12,7 +12,6 @@ if (WITH_X11 AND NOT APPLE)
 	endif ()
 endif ()
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -25,14 +24,16 @@ set (SRCS
 set (RESOURCES anheroresources.qrc)
 CreateTrs ("anhero" "ar;de;en;es;fr;it;oc;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("anhero" "en;ru_RU" "${SRCS}" "${FORMS}" "")
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_anhero SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_anhero Core)
+
 target_link_libraries (leechcraft_anhero
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

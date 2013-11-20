@@ -29,7 +29,11 @@
 
 #pragma once
 
+#ifdef USE_QT5
+#include <QQuickItem>
+#else
 #include <QDeclarativeItem>
+#endif
 #include <QTimer>
 #include <util/utilconfig.h>
 
@@ -68,7 +72,11 @@ namespace Util
 	 *	}
 	 * \endcode
 	 */
+#ifdef USE_QT5
+	class UTIL_API ToolTipItem : public QQuickItem
+#else
 	class UTIL_API ToolTipItem : public QDeclarativeItem
+#endif
 	{
 		Q_OBJECT
 		Q_PROPERTY (QString text READ GetText WRITE SetText NOTIFY textChanged)
@@ -79,7 +87,11 @@ namespace Util
 		bool ContainsMouse_;
 
 	public:
+#ifdef USE_QT5
+		ToolTipItem (QQuickItem *parent = 0);
+#else
 		ToolTipItem (QDeclarativeItem *parent = 0);
+#endif
 
 		void SetText (const QString& text);
 		QString GetText () const;
@@ -87,8 +99,13 @@ namespace Util
 
 		void ShowToolTip (const QString& text) const;
 	protected:
+#ifdef USE_QT5
+		void hoverEnterEvent (QHoverEvent *event);
+		void hoverLeaveEvent (QHoverEvent *event);
+#else
 		void hoverEnterEvent (QGraphicsSceneHoverEvent *event);
 		void hoverLeaveEvent (QGraphicsSceneHoverEvent *event);
+#endif
 
 	public slots:
 		void showToolTip ();

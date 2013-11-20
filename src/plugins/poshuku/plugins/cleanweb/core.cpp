@@ -38,16 +38,19 @@
 #include <QTimer>
 #include <QTextCodec>
 #include <QMessageBox>
+#ifdef USE_QT5
+#include <QUrlQuery>
+#endif
 #include <qwebframe.h>
 #include <qwebpage.h>
 #include <qwebelement.h>
+#include <qwebview.h>
 #include <QCoreApplication>
 #include <QtConcurrentRun>
 #include <QtConcurrentMap>
 #include <QFutureWatcher>
 #include <QMenu>
 #include <QMainWindow>
-#include <qwebview.h>
 #include <util/util.h>
 #include <util/network/customnetworkreply.h>
 #include "xmlsettingsmanager.h"
@@ -303,7 +306,11 @@ namespace CleanWeb
 		if (url.scheme () == "abp" &&
 				url.path () == "subscribe")
 		{
-			QString name = url.queryItemValue ("title");
+#ifdef USE_QT5
+			const auto& name = QUrlQuery (url).queryItemValue ("title");
+#else
+			const auto& name = url.queryItemValue ("title");
+#endif
 			if (std::find_if (Filters_.begin (), Filters_.end (),
 						FilterFinder<FTName_> (name)) == Filters_.end ())
 				return true;
@@ -718,11 +725,20 @@ namespace CleanWeb
 	{
 		qDebug () << Q_FUNC_INFO << subscrUrl;
 		QUrl url;
-		if (subscrUrl.queryItemValue ("location").contains ("%"))
-			url.setUrl (QUrl::fromPercentEncoding (subscrUrl.queryItemValue ("location").toAscii ()));
+
+#ifdef USE_QT5
+		const QUrlQuery queryPart (url);
+		const auto& locationItem = queryPart.queryItemValue ("location");
+		const auto& subscrName = queryPart.queryItemValue ("title");
+#else
+		const auto& locationItem = url.queryItemValue ("location");
+		const auto& subscrName = subscrUrl.queryItemValue ("title");
+#endif
+
+		if (locationItem.contains ("%"))
+			url.setUrl (QUrl::fromPercentEncoding (locationItem.toLatin1 ()));
 		else
-			url.setUrl (subscrUrl.queryItemValue ("location"));
-		QString subscrName = subscrUrl.queryItemValue ("title");
+			url.setUrl (locationItem);
 
 		if (Exists (subscrName) || Exists (url))
 			return false;

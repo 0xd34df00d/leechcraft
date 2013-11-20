@@ -9,15 +9,6 @@ set (FATAPE_SRCS
     userscriptinstallerdialog.cpp
     resourcedownloadhandler.cpp
 	)
-set (FATAPE_HEADERS
-	fatape.h
-    userscript.h
-    greasemonkey.h
-    xmlsettingsmanager.h
-    userscriptsmanagerwidget.h
-    userscriptinstallerdialog.h
-    resourcedownloadhandler.h
-	)
 set (FATAPE_FORMS
     userscriptsmanagerwidget.ui
     userscriptinstallerdialog.ui
@@ -27,18 +18,17 @@ set (FATAPE_RESOURCES
 	)
 CreateTrs ("poshuku_fatape" "en;it;ru_RU;uk_UA" FATAPE_COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (FATAPE_MOC_SRCS ${FATAPE_HEADERS})
-endif ()
-QT4_WRAP_UI (FATAPE_UIS_H ${FATAPE_FORMS})
-QT4_ADD_RESOURCES (FATAPE_RCCS ${FATAPE_RESOURCES})
+QtWrapUi (FATAPE_UIS_H ${FATAPE_FORMS})
+QtAddResources (FATAPE_RCCS ${FATAPE_RESOURCES})
 add_library (leechcraft_poshuku_fatape SHARED
 	${FATAPE_SRCS}
-	${FATAPE_MOC_SRCS}
     ${FATAPE_UIS_H}
 	${FATAPE_COMPILED_TRANSLATIONS}
 	${FATAPE_RCCS}
 	)
+
+FindQtLibs (leechcraft_poshuku_fatape Core)
+
 target_link_libraries (leechcraft_poshuku_fatape
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

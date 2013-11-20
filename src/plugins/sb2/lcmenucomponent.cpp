@@ -29,7 +29,11 @@
 
 #include "lcmenucomponent.h"
 #include <QMenu>
+#ifdef USE_QT5
+#include <QQuickImageProvider>
+#else
 #include <QDeclarativeImageProvider>
+#endif
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/imwproxy.h>
@@ -40,11 +44,19 @@ namespace SB2
 {
 	namespace
 	{
+#ifdef USE_QT5
+		class LCMenuImageProvider : public QQuickImageProvider
+#else
 		class LCMenuImageProvider : public QDeclarativeImageProvider
+#endif
 		{
 		public:
 			LCMenuImageProvider ()
+#ifdef USE_QT5
+			: QQuickImageProvider (Image)
+#else
 			: QDeclarativeImageProvider (Pixmap)
+#endif
 			{
 			}
 

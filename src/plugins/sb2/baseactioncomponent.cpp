@@ -30,7 +30,6 @@
 #include "baseactioncomponent.h"
 #include <QStandardItemModel>
 #include <QAction>
-#include <QDeclarativeImageProvider>
 #include <QApplication>
 #include <util/sys/paths.h>
 #include <util/util.h>
@@ -56,11 +55,18 @@ namespace SB2
 			TrayModel (QObject *parent)
 			: QStandardItemModel (parent)
 			{
+#ifndef USE_QT5
+				setRoleNames (roleNames ());
+#endif
+			}
+
+			QHash<int, QByteArray> roleNames () const
+			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::ActionObject] = "actionObject";
 				roleNames [Roles::ActionText] = "actionText";
 				roleNames [Roles::ActionIcon] = "actionIcon";
-				setRoleNames (roleNames);
+				return roleNames;
 			}
 		};
 	}
@@ -116,8 +122,8 @@ namespace SB2
 	, View_ (view)
 	, ComponentInfo_ (info)
 	{
-		Component_->DynamicProps_ << QPair<QString, QObject*> (info.ModelName_, Model_);
-		Component_->ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (info.ImageProvID_, ImageProv_);
+		Component_->DynamicProps_.append ({ info.ModelName_, Model_ });
+		Component_->ImageProviders_.append ({ info.ImageProvID_, ImageProv_ });
 	}
 
 	QuarkComponent_ptr BaseActionComponent::GetComponent () const
@@ -156,7 +162,11 @@ namespace SB2
 
 		for (auto act : acts)
 		{
+#ifdef USE_QT5
+			View_->GetParent ()->addAction (act);
+#else
 			View_->addAction (act);
+#endif
 			connect (act,
 					SIGNAL (destroyed ()),
 					this,

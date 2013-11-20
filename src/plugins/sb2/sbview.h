@@ -29,21 +29,33 @@
 
 #pragma once
 
+#ifdef USE_QT5
+#include <QQuickView>
+#else
 #include <QDeclarativeView>
+#endif
 
 namespace LeechCraft
 {
 namespace SB2
 {
+#ifdef USE_QT5
+	class SBView : public QQuickView
+#else
 	class SBView : public QDeclarativeView
+#endif
 	{
 		Q_OBJECT
 
+		QWidget *ParentWidget_;
 		int Dim_;
 	public:
-		SBView (QWidget* = 0);
+		SBView ();
 
 		void SetDimensions (int);
+
+		void SetParent (QWidget*);
+		QWidget* GetParent () const;
 
 		QSize minimumSizeHint () const;
 		QSize sizeHint () const;

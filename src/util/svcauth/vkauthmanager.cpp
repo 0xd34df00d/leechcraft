@@ -33,6 +33,11 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QWebView>
+
+#if USE_QT5
+#include <QUrlQuery>
+#endif
+
 #include <util/network/customcookiejar.h>
 #include <util/queuemanager.h>
 
@@ -46,10 +51,10 @@ namespace SvcAuth
 	{
 		QUrl URLFromClientID (const QString& id, const QStringList& scope)
 		{
-			QUrl url = QUrl::fromEncoded ("https://oauth.vk.com/authorize?redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&state=");
-			url.addQueryItem ("client_id", id);
-			url.addQueryItem ("scope", scope.join (","));
-			return url;
+			QByteArray data ("https://oauth.vk.com/authorize?redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&state=");
+			data += "&client_id=" + id;
+			data += "&scope=" + scope.join (",");
+			return QUrl::fromEncoded (data);
 		}
 	}
 
@@ -177,8 +182,14 @@ namespace SvcAuth
 			return false;
 
 		location = QUrl::fromEncoded (location.toEncoded ().replace ('#', '?'));
+#if USE_QT5
+		const QUrlQuery query (location);
+		Token_ = query.queryItemValue ("access_token");
+		ValidFor_ = query.queryItemValue ("expires_in").toInt ();
+#else
 		Token_ = location.queryItemValue ("access_token");
 		ValidFor_ = location.queryItemValue ("expires_in").toInt ();
+#endif
 		ReceivedAt_ = QDateTime::currentDateTime ();
 		qDebug () << Q_FUNC_INFO << Token_ << ValidFor_;
 		IsRequesting_ = false;

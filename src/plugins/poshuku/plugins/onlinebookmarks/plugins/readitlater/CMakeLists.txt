@@ -16,33 +16,24 @@ set (READITLATER_SRCS
 	readitlaterapi.cpp
 	)
 
-set (READITLATER_HEADERS
-	readitlater.h
-	readitlaterservice.h
-	readitlaterauthwidget.h
-	readitlateraccount.h
-	readitlaterapi.h
-	)
-
 set (READITLATER_FORMS readitlaterauthwidget.ui)
 
 CreateTrs ("poshuku_onlinebookmarks_readitlater" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (READITLATER_MOC_SRCS ${READITLATER_HEADERS})
-endif ()
-QT4_WRAP_UI (READITLATER_UIS_H ${READITLATER_FORMS})
+QtWrapUi (READITLATER_UIS_H ${READITLATER_FORMS})
+QtAddResources (READITLATER_RCCS ${READITLATER_RESOURCES})
 
 set (READITLATER_RESOURCES readitlaterresources.qrc)
-QT4_ADD_RESOURCES (READITLATER_RCCS ${READITLATER_RESOURCES})
+QtAddResources (READITLATER_RCCS ${READITLATER_RESOURCES})
 
 add_library (leechcraft_poshuku_onlinebookmarks_readitlater SHARED
  	${ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS}
 	${READITLATER_SRCS}
-	${READITLATER_MOC_SRCS}
 	${READITLATER_UIS_H}
 	${READITLATER_RCCS}
 	)
+
+FindQtLibs (leechcraft_poshuku_onlinebookmarks_readitlater Network)
 
 target_link_libraries (leechcraft_poshuku_onlinebookmarks_readitlater
 	${QT_LIBRARIES}

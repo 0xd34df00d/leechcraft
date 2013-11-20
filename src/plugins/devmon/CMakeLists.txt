@@ -5,7 +5,6 @@ include (InitLCPlugin OPTIONAL)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (UDev REQUIRED)
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -23,6 +22,9 @@ add_library (leechcraft_devmon SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
+
+FindQtLibs (leechcraft_devmon Core)
+
 target_link_libraries (leechcraft_devmon
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

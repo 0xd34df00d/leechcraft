@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "separatetabbar.h"
+#include <QDrag>
+#include <QMimeData>
 #include <QMouseEvent>
 #include <QStyle>
 #include <QStylePainter>

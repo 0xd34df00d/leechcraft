@@ -29,25 +29,43 @@
 
 #pragma once
 
+#ifdef USE_QT5
+#include <QQuickItem>
+#else
 #include <QDeclarativeItem>
+#endif
 
 namespace LeechCraft
 {
 namespace SB2
 {
+#ifdef USE_QT5
+	class LauncherDropArea : public QQuickItem
+#else
 	class LauncherDropArea : public QDeclarativeItem
+#endif
 	{
 		Q_OBJECT
 		Q_PROPERTY (bool acceptingDrops READ GetAcceptingDrops WRITE SetAcceptingDrops NOTIFY acceptingDropsChanged)
 	public:
+#ifdef USE_QT5
+		LauncherDropArea (QQuickItem* = 0);
+#else
 		LauncherDropArea (QDeclarativeItem* = 0);
+#endif
 
 		bool GetAcceptingDrops () const;
 		void SetAcceptingDrops (bool);
 	protected:
+#ifdef USE_QT5
+		void dragEnterEvent (QDragEnterEvent*);
+		void dragLeaveEvent (QDragLeaveEvent*);
+		void dropEvent (QDropEvent*);
+#else
 		void dragEnterEvent (QGraphicsSceneDragDropEvent*);
 		void dragLeaveEvent (QGraphicsSceneDragDropEvent*);
 		void dropEvent (QGraphicsSceneDragDropEvent*);
+#endif
 	signals:
 		void acceptingDropsChanged (bool);
 		void tabDropped (const QByteArray& tabClass);

@@ -32,8 +32,14 @@
 #include <QMainWindow>
 #include <QStatusBar>
 #include <QGraphicsEffect>
-#include <QtDeclarative>
 #include <QtDebug>
+
+#if USE_QT5
+#include <QtQuick>
+#else
+#include <QtDeclarative>
+#endif
+
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>

@@ -29,7 +29,13 @@
 
 #include "standardnamfactory.h"
 #include <QNetworkAccessManager>
+
+#ifdef USE_QT5
+#include <QQmlEngine>
+#else
 #include <QDeclarativeEngine>
+#endif
+
 #include <util/network/networkdiskcache.h>
 
 namespace LeechCraft
@@ -37,7 +43,12 @@ namespace LeechCraft
 namespace Util
 {
 	StandardNAMFactory::StandardNAMFactory (const QString& subpath,
-			CacheSizeGetter_f getter, QDeclarativeEngine *engine)
+			CacheSizeGetter_f getter,
+#ifdef USE_QT5
+			QQmlEngine *engine)
+#else
+			QDeclarativeEngine *engine)
+#endif
 	: Subpath_ (subpath)
 	, CacheSizeGetter_ (getter)
 	{

@@ -56,17 +56,37 @@ namespace Util
 
 	namespace
 	{
+#ifdef USE_QT5
+		class X11EventFilter : public QAbstractNativeEventFilter
+		{
+		public:
+			bool nativeEventFilter (const QByteArray& eventType, void *message, long *result) override
+			{
+				Q_UNUSED (result)
+				qDebug () << eventType;
+				return XWrapper::Instance ().Filter (static_cast<XEvent*> (message));
+			}
+		};
+#else
 		bool EvFilter (void *msg)
 		{
 			return XWrapper::Instance ().Filter (static_cast<XEvent*> (msg));
 		}
+#endif
 	}
 
 	XWrapper::XWrapper ()
 	: Display_ (QX11Info::display ())
 	, AppWin_ (QX11Info::appRootWindow ())
+#ifdef USE_QT5
+	, Filter_ (new X11EventFilter)
+#else
 	, PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
+#endif
 	{
+#ifdef USE_QT5
+		QAbstractEventDispatcher::instance ()->installNativeEventFilter (Filter_);
+#endif
 		XSelectInput (Display_,
 				AppWin_,
 				PropertyChangeMask | StructureNotifyMask | SubstructureNotifyMask);
@@ -92,8 +112,11 @@ namespace Util
 	{
 		if (ev->type == PropertyNotify)
 			HandlePropNotify (&ev->xproperty);
-
+#ifdef USE_QT5
+		return false;
+#else
 		return PrevFilter_ ? PrevFilter_ (ev) : false;
+#endif
 	}
 
 	namespace
@@ -697,7 +720,7 @@ namespace Util
 		msg.data.l [3] = d3;
 		msg.data.l [4] = d4;
 
-		return XSendEvent (Display_, AppWin_, FALSE, SubstructureRedirectMask | SubstructureNotifyMask,
+		return XSendEvent (Display_, AppWin_, 0, SubstructureRedirectMask | SubstructureNotifyMask,
 				reinterpret_cast<XEvent*> (&msg)) == Success;
 	}
 

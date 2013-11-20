@@ -38,6 +38,7 @@ namespace Util
 {
 	class UTIL_API UnhideListModel : public QStandardItemModel
 	{
+		QHash<int, QByteArray> RoleNames_;
 	public:
 		enum Roles
 		{
@@ -48,6 +49,9 @@ namespace Util
 		};
 
 		UnhideListModel (QObject*);
+#ifdef USE_QT5
+		QHash<int, QByteArray> roleNames () const;
+#endif
 	};
 }
 }

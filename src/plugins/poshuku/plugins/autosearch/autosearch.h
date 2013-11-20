@@ -49,6 +49,10 @@ namespace Autosearch
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.Autosearch");
+#endif
+
 		ICoreProxy_ptr Proxy_;
 
 		QMap<QNetworkReply*, QObject*> Reply2Model_;

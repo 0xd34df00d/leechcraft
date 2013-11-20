@@ -54,6 +54,7 @@ namespace Liznoo
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IActionsExporter)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Liznoo")
 
 		ICoreProxy_ptr Proxy_;
 

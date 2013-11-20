@@ -30,7 +30,12 @@
 #include "recentcommentssidewidget.h"
 #include <QtDebug>
 #include <QUrl>
-#include <QDeclarativeContext>
+#ifdef USE_QT5
+	#include <QQmlContext>
+	#include <QQuickItem>
+#else
+	#include <QDeclarativeContext>
+#endif
 #include <QGraphicsObject>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
@@ -54,9 +59,16 @@ namespace Metida
 		Ui_.setupUi (this);
 
 		auto view = new RecentCommentsView (this);
-		Ui_.GridLayout_->addWidget (view);
-
+#ifdef USE_QT5
+		QWidget *container = QWidget::createWindowContainer (view, this);
+		container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		container->setFocusPolicy(Qt::StrongFocus);
+		view->setResizeMode (QQuickView::SizeRootObjectToView);
+		Ui_.GridLayout_->addWidget (container);
+#else
 		view->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+		Ui_.GridLayout_->addWidget (view);
+#endif
 		view->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()
 						.GetCoreProxy ()->GetColorThemeManager (), this));

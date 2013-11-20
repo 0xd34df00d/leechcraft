@@ -308,6 +308,7 @@ namespace Aggregator
 		Impl_->TrayIcon_->hide ();
 		delete Impl_;
 		Core::Instance ().Release ();
+		deleteLater ();
 	}
 
 	QByteArray Aggregator::GetUniqueID () const

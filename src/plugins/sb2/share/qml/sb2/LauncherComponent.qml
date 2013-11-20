@@ -1,5 +1,5 @@
-import QtQuick 1.1
-import Effects 1.0
+import QtQuick 2.0
+import QtGraphicalEffects 1.0
 import SB2 1.0
 import org.LC.common 1.0
 
@@ -58,6 +58,14 @@ Rectangle {
                 height: rootRect.itemSize
                 width: rootRect.itemSize
 
+                Desaturate {
+                    desaturation: openedTabsCount || tcButton.isHovered ? 0 : 0.5
+
+                    Behavior on desaturation { PropertyAnimation {} }
+
+                    source: tcButton
+                }
+
                 ActionButton {
                     id: tcButton
 
@@ -69,6 +77,8 @@ Rectangle {
                     isHighlight: openedTabsCount
                     isStrongHighlight: isCurrentTab
                     isCurrent: isCurrentTab
+
+                    visible: false
 
                     Timer {
                         id: fadeInInterval
@@ -82,12 +92,6 @@ Rectangle {
                     onHoverLeft: {
                         fadeInInterval.stop()
                         SB2_launcherProxy.tabListUnhovered(tabClassID)
-                    }
-
-                    effect: Desaturate {
-                        strength: openedTabsCount || tcButton.isHovered ? 0 : 0.5
-
-                        Behavior on strength { PropertyAnimation {} }
                     }
 
                     ActionButton {

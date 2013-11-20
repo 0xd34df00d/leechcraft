@@ -57,6 +57,10 @@ namespace FatApe
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.FatApe");
+#endif
+
 		std::shared_ptr<QTranslator> Translator_;
 		QList<UserScript> UserScripts_;
 		IProxyObject *Proxy_;

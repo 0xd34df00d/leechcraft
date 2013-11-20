@@ -29,6 +29,11 @@
 
 #include "autosearch.h"
 #include <QUrl>
+
+#ifdef USE_QT5
+#include <QUrlQuery>
+#endif
+
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
@@ -97,9 +102,17 @@ namespace Autosearch
 			return;
 
 		QUrl reqUrl ("http://clients1.google.com/complete/search");
+#ifdef USE_QT5
+		QUrlQuery query;
+		query.addQueryItem ("hl", "en");
+		query.addQueryItem ("output", "toolbar");
+		query.addQueryItem ("q", string);
+		reqUrl.setQuery (query);
+#else
 		reqUrl.addQueryItem ("hl", "en");
 		reqUrl.addQueryItem ("output", "toolbar");
 		reqUrl.addQueryItem ("q", string);
+#endif
 
 		auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (reqUrl));
 		connect (reply,

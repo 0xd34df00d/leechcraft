@@ -29,6 +29,7 @@
 
 #include "fieldmatch.h"
 #include <QtDebug>
+#include <QDataStream>
 #include "typedmatchers.h"
 
 namespace LeechCraft

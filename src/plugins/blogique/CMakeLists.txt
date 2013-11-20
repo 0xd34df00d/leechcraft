@@ -2,12 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blogique)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTSQL TRUE)
-set (QT_USE_QTXML TRUE)
-set (QT_USE_QTWEBKIT TRUE)
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
-
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -57,16 +51,17 @@ set (RESOURCES blogiqueresources.qrc)
 CreateTrs ("blogique" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blogique" "en;ru_RU" "${SRCS}" "${FORMS}" "blogiquesettings.xml")
 
-QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (FORMS_HEADERS ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_blogique SHARED
 	${SRCS}
-	${MOC_SRCS}
 	${FORMS_HEADERS}
 	${RCCS}
 	${COMPILED_TRANSLATIONS}
 	)
+
+FindQtLibs (leechcraft_blogique Sql Xml Quick WebKitWidgets)
 
 target_link_libraries (leechcraft_blogique
 	${QT_LIBRARIES}

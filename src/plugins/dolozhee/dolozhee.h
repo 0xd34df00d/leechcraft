@@ -45,6 +45,7 @@ namespace Dolozhee
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Dolozhee");
 
 		ICoreProxy_ptr Proxy_;
 		QAction *Report_;

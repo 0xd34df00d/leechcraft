@@ -5,6 +5,7 @@ backup/
 debug/
 release/
 build/
+build_qt5
 src/debian/
 changelog
 src/data/*.gz
