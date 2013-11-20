@@ -4,14 +4,6 @@ include (InitLCPlugin OPTIONAL)
 
 option (TESTS_LACKMAN "Enable LackMan tests" OFF)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-set (QT_USE_QTXMLPATTERNS TRUE)
-set (QT_USE_QTSQL TRUE)
-if (TESTS_LACKMAN)
-	set (QT_USE_QTTEST TRUE)
-endif ()
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -45,8 +37,8 @@ set (FORMS
 	lackman.ui
 	)
 
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_lackman SHARED
 	${COMPILED_TRANSLATIONS}
@@ -54,6 +46,9 @@ add_library (leechcraft_lackman SHARED
 	${UIS_H}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_lackman Network Xml XmlPatterns Sql)
+
 target_link_libraries (leechcraft_lackman
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
