@@ -769,7 +769,7 @@ namespace Aggregator
 		{
 			QMessageBox mbox (QMessageBox::Question,
 					"LeechCraft",
-					tr ("Are you sure you want to mark all items in channel(s) %1 as read?", 0, names.size ())
+					tr ("Are you sure you want to mark all items in %1 as read?")
 						.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
 					QMessageBox::Yes | QMessageBox::No);
 
@@ -794,7 +794,7 @@ namespace Aggregator
 				{ names << mi.sibling (mi.row (), 0).data ().toString (); });
 		if (QMessageBox::question (nullptr,
 				"LeechCraft",
-				tr ("Are you sure you want to mark all items in channel(s) %1 as unread?", 0, names.size ())
+				tr ("Are you sure you want to mark all items in %1 as unread?")
 					.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
