@@ -58,21 +58,30 @@ namespace Lemon
 				MaxDownSpeed
 			};
 
+			QHash<int, QByteArray> RoleNames_;
+
 			IfacesModel (QObject *parent)
 			: QStandardItemModel (parent)
 			{
-				QHash<int, QByteArray> roleNames;
-				roleNames [Roles::IfaceName] = "ifaceName";
-				roleNames [Roles::BearerType] = "bearerType";
-				roleNames [Roles::IconName] = "iconName";
-				roleNames [Roles::UpSpeed] = "upSpeed";
-				roleNames [Roles::UpSpeedPretty] = "upSpeedPretty";
-				roleNames [Roles::DownSpeed] = "downSpeed";
-				roleNames [Roles::DownSpeedPretty] = "downSpeedPretty";
-				roleNames [Roles::MaxUpSpeed] = "maxUpSpeed";
-				roleNames [Roles::MaxDownSpeed] = "maxDownSpeed";
+				RoleNames_ [Roles::IfaceName] = "ifaceName";
+				RoleNames_ [Roles::BearerType] = "bearerType";
+				RoleNames_ [Roles::IconName] = "iconName";
+				RoleNames_ [Roles::UpSpeed] = "upSpeed";
+				RoleNames_ [Roles::UpSpeedPretty] = "upSpeedPretty";
+				RoleNames_ [Roles::DownSpeed] = "downSpeed";
+				RoleNames_ [Roles::DownSpeedPretty] = "downSpeedPretty";
+				RoleNames_ [Roles::MaxUpSpeed] = "maxUpSpeed";
+				RoleNames_ [Roles::MaxDownSpeed] = "maxDownSpeed";
+#ifndef USE_QT5
 				setRoleNames (roleNames);
+#endif
 			}
+#ifdef USE_QT5
+			QHash<int, QByteArray> roleNames () const override
+			{
+				return RoleNames_;
+			}
+#endif
 		};
 	}
 
