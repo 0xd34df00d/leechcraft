@@ -22,6 +22,8 @@ set (SRCS
 	basesettingsmanager.cpp
 	fontpicker.cpp
 	colorpicker.cpp
+	settingsthreadmanager.cpp
+	settingsthread.cpp
 	itemhandlerfactory.cpp
 	itemhandlers/itemhandlerbase.cpp
 	itemhandlers/itemhandlerspinboxrange.cpp
