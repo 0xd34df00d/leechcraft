@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_kinotify)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTWEBKIT TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -35,10 +33,7 @@ set (RESOURCES kinotifyresources.qrc)
 CreateTrs ("kinotify" "ar;de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("kinotify" "en;ru_RU" "${SRCS}" "${FORMS}" "kinotifysettings.xml")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_kinotify SHARED
 	${COMPILED_TRANSLATIONS}
@@ -46,6 +41,9 @@ add_library (leechcraft_kinotify SHARED
 	${MOC_SRCS}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_kinotify WebKitWidgets X11Extras)
+
 target_link_libraries (leechcraft_kinotify
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
