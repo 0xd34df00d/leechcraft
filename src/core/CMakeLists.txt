@@ -152,7 +152,7 @@ add_executable (leechcraft WIN32
 	${WIN_RESOURCES}
 	)
 
-FindQtLibs (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg Qml Quick)
+FindQtLibs (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg Qml Quick X11Extras)
 
 target_link_libraries (leechcraft
 		${QT_QTMAIN_LIBRARY}
