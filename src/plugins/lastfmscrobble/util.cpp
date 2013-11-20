@@ -32,6 +32,9 @@
 #include <numeric>
 #include <QCryptographicHash>
 #include <QUrl>
+#ifdef USE_QT5
+#include <QUrlQuery>
+#endif
 #include <QDomElement>
 #include <lastfm/ws.h>
 #include <util/util.h>
@@ -55,9 +58,16 @@ namespace Lastfmscrobble
 		params << QPair<QString, QString> ("api_sig", sig);
 
 		QUrl url;
+#ifdef USE_QT5
+		QUrlQuery query;
+		std::for_each (params.begin (), params.end (),
+				[&query] (decltype (params.front ()) pair) { query.addQueryItem (pair.first, pair.second); });
+		return url.toEncoded ();
+#else
 		std::for_each (params.begin (), params.end (),
 				[&url] (decltype (params.front ()) pair) { url.addQueryItem (pair.first, pair.second); });
 		return url.encodedQuery ();
+#endif
 	}
 
 	void AddLanguageParam (QMap<QString, QString>& params)
