@@ -503,12 +503,12 @@
 <context>
     <name>LeechCraft::LMP::NowPlayingWidget</name>
     <message>
-        <location filename="nowplayingwidget.cpp" line="114"/>
+        <location filename="nowplayingwidget.cpp" line="116"/>
         <source>unknown</source>
         <translation>unknown</translation>
     </message>
     <message numerus="yes">
-        <location filename="nowplayingwidget.cpp" line="150"/>
+        <location filename="nowplayingwidget.cpp" line="152"/>
         <source>%n day(s) ago</source>
         <translation>
             <numerusform>%n day ago</numerusform>
@@ -516,20 +516,17 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="nowplayingwidget.cpp" line="170"/>
+        <location filename="nowplayingwidget.cpp" line="172"/>
         <source>%n play(s) since %1</source>
         <translation>
             <numerusform>%n play since %1</numerusform>
             <numerusform>%n plays since %1</numerusform>
         </translation>
     </message>
-    <message numerus="yes">
-        <location filename="nowplayingwidget.cpp" line="196"/>
-        <source>%n possible lyrics found</source>
-        <translation>
-            <numerusform>%n possible lyrics found</numerusform>
-            <numerusform>%n possible lyrics found</numerusform>
-        </translation>
+    <message>
+        <location filename="nowplayingwidget.cpp" line="199"/>
+        <source>showing lyrics from %3 (%1 of %2)</source>
+        <translation>showing lyrics from %3 (%1 of %2)</translation>
     </message>
 </context>
 <context>
@@ -548,67 +545,67 @@
 <context>
     <name>LeechCraft::LMP::Player</name>
     <message>
-        <location filename="player.cpp" line="521"/>
+        <location filename="player.cpp" line="526"/>
         <source>Radio</source>
         <translation>Radio</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="591"/>
+        <location filename="player.cpp" line="596"/>
         <source>Bitrate</source>
         <translation>Bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="592"/>
+        <location filename="player.cpp" line="597"/>
         <source>Minimum bitrate</source>
         <translation>Minimum bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="593"/>
+        <location filename="player.cpp" line="598"/>
         <source>Maximum bitrate</source>
         <translation>Maximum bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="719"/>
+        <location filename="player.cpp" line="724"/>
         <source>Playlist</source>
         <translation>Playlist</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="781"/>
+        <location filename="player.cpp" line="786"/>
         <source>paused</source>
         <translation>paused</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="786"/>
+        <location filename="player.cpp" line="791"/>
         <source>playing</source>
         <translation>playing</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="790"/>
+        <location filename="player.cpp" line="795"/>
         <source>stopped</source>
         <translation>stopped</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="795"/>
+        <location filename="player.cpp" line="800"/>
         <source>%1 by %2 is now %3</source>
         <translation>%1 by %2 is now %3</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1098"/>
+        <location filename="player.cpp" line="1103"/>
         <source>Stream</source>
         <translation>Stream</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1206"/>
+        <location filename="player.cpp" line="1211"/>
         <source>Radio station error: %1.</source>
         <translation>Radio station error: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1390"/>
+        <location filename="player.cpp" line="1395"/>
         <source>GStreamer says: %1.</source>
         <translation>GStreamer says: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1395"/>
+        <location filename="player.cpp" line="1400"/>
         <source>Cannot find a proper audio decoder. You probably don&apos;t have all the codec plugins installed.</source>
         <translation>Cannot find a proper audio decoder. You probably don&apos;t have all the codec plugins installed.</translation>
     </message>
@@ -741,7 +738,7 @@
         <translation>Playback is stopped.</translation>
     </message>
     <message numerus="yes">
-        <location filename="playertab.cpp" line="847"/>
+        <location filename="playertab.cpp" line="848"/>
         <source>Are you sure you want to remove %n track(s) from your collection?&lt;br/&gt;&lt;br/&gt;Please note that if tracks remain on your disk they will be re-added next time collection is scanned, but you will lose the statistics.</source>
         <translation>
             <numerusform>Are you sure you want to remove %n track from your collection?&lt;br/&gt;&lt;br/&gt;Please note that if tracks remain on your disk they will be re-added next time collection is scanned, but you will lose the statistics.</numerusform>
@@ -749,7 +746,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="playertab.cpp" line="870"/>
+        <location filename="playertab.cpp" line="871"/>
         <source>Are you sure you want to erase %n track(s)? This action cannot be undone.</source>
         <translation>
             <numerusform>Are you sure you want to erase %n track? This action cannot be undone.</numerusform>
@@ -933,7 +930,7 @@
         <translation>Show album art</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="874"/>
+        <location filename="playlistwidget.cpp" line="882"/>
         <source>Music files (*.ogg *.flac *.mp3 *.wav);;Playlists (*.pls *.m3u *.m3u8 *.xspf);;All files (*.*)</source>
         <translation>Music files (*.ogg *.flac *.mp3 *.wav);;Playlists (*.pls *.m3u *.m3u8 *.xspf);;All files (*.*)</translation>
     </message>
@@ -953,12 +950,12 @@
         <translation>Toggle search field</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="717"/>
+        <location filename="playlistwidget.cpp" line="725"/>
         <source>Remove %1</source>
         <translation>Remove %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="718"/>
+        <location filename="playlistwidget.cpp" line="726"/>
         <source>Remove %n song(s)</source>
         <translation>
             <numerusform>Remove %n song</numerusform>
@@ -966,37 +963,37 @@
         </translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="849"/>
+        <location filename="playlistwidget.cpp" line="857"/>
         <source>Save playlist</source>
         <translation>Save playlist</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="850"/>
+        <location filename="playlistwidget.cpp" line="858"/>
         <source>Enter name for the playlist:</source>
         <translation>Enter name for the playlist:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="859"/>
+        <location filename="playlistwidget.cpp" line="867"/>
         <source>Playlist %1 already exists. Do you want to overwrite it?</source>
         <translation>Playlist %1 already exists. Do you want to overwrite it?</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="872"/>
+        <location filename="playlistwidget.cpp" line="880"/>
         <source>Load files</source>
         <translation>Load files</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="895"/>
+        <location filename="playlistwidget.cpp" line="903"/>
         <source>Enter URL to add to the play queue:</source>
         <translation>Enter URL to add to the play queue:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="906"/>
+        <location filename="playlistwidget.cpp" line="914"/>
         <source>Invalid URL.</source>
         <translation>Invalid URL.</translation>
     </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="927"/>
+        <location filename="playlistwidget.cpp" line="935"/>
         <source>%n track(s), total duration: %1</source>
         <translation>
             <numerusform>%n track, total duration: %1</numerusform>
@@ -1007,69 +1004,69 @@
 <context>
     <name>LeechCraft::LMP::Plugin</name>
     <message>
-        <location filename="lmp.cpp" line="91"/>
-        <location filename="lmp.cpp" line="438"/>
+        <location filename="lmp.cpp" line="92"/>
+        <location filename="lmp.cpp" line="439"/>
         <source>Artist browser</source>
         <translation>Artist browser</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="92"/>
+        <location filename="lmp.cpp" line="93"/>
         <source>Allows one to browse information about different artists.</source>
         <oldsource>Allows to browse information about different artists.</oldsource>
         <translation>Allows to browse information about different artists.</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="136"/>
+        <location filename="lmp.cpp" line="137"/>
         <source>Rescan collection</source>
         <translation>Rescan collection</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="143"/>
+        <location filename="lmp.cpp" line="144"/>
         <source>Collection statistics</source>
         <translation>Collection statistics</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="407"/>
+        <location filename="lmp.cpp" line="408"/>
         <source>Play/pause</source>
         <translation>Play/pause</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="408"/>
+        <location filename="lmp.cpp" line="409"/>
         <source>Previous track</source>
         <translation>Previous track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="409"/>
+        <location filename="lmp.cpp" line="410"/>
         <source>Next track</source>
         <translation>Next track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="410"/>
+        <location filename="lmp.cpp" line="411"/>
         <source>Stop playback</source>
         <translation>Stop playback</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="411"/>
+        <location filename="lmp.cpp" line="412"/>
         <source>Love track</source>
         <translation>Love track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="413"/>
+        <location filename="lmp.cpp" line="414"/>
         <source>Notify about current track</source>
         <translation>Notify about current track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="415"/>
+        <location filename="lmp.cpp" line="416"/>
         <source>Increase volume</source>
         <translation>Increase volume</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="416"/>
+        <location filename="lmp.cpp" line="417"/>
         <source>Decrease volume</source>
         <translation>Decrease volume</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="198"/>
+        <location filename="lmp.cpp" line="199"/>
         <source>LeechCraft Music Player.</source>
         <translation>LeechCraft Music Player.</translation>
     </message>
@@ -1124,7 +1121,7 @@
 <context>
     <name>LeechCraft::LMP::RadioCustomStreams</name>
     <message>
-        <location filename="radiocustomstreams.cpp" line="55"/>
+        <location filename="radiocustomstreams.cpp" line="56"/>
         <source>Custom streams</source>
         <translation>Custom streams</translation>
     </message>
@@ -1170,27 +1167,22 @@
 <context>
     <name>LeechCraft::LMP::RadioWidget</name>
     <message>
-        <location filename="radiowidget.cpp" line="107"/>
-        <source>Enter the URL of the stream to add:</source>
-        <translation>Enter the URL of the stream to add:</translation>
-    </message>
-    <message>
-        <location filename="radiowidget.cpp" line="148"/>
+        <location filename="radiowidget.cpp" line="149"/>
         <source>Refresh</source>
         <translation>Refresh</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="153"/>
+        <location filename="radiowidget.cpp" line="154"/>
         <source>Add an URL...</source>
         <translation>Add an URL...</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="159"/>
+        <location filename="radiowidget.cpp" line="160"/>
         <source>Add current stream...</source>
         <translation>Add current stream...</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="165"/>
+        <location filename="radiowidget.cpp" line="166"/>
         <source>Remove this URL</source>
         <translation>Remove this URL</translation>
     </message>
@@ -1219,19 +1211,14 @@
 <context>
     <name>LeechCraft::LMP::SimilarViewManager</name>
     <message>
-        <location filename="similarviewmanager.cpp" line="117"/>
+        <location filename="similarviewmanager.cpp" line="97"/>
         <source>Similarity: %1%</source>
         <translation>Similarity: %1%</translation>
     </message>
     <message>
-        <location filename="similarviewmanager.cpp" line="120"/>
+        <location filename="similarviewmanager.cpp" line="100"/>
         <source>Similar to: %1</source>
         <translation>Similar to: %1</translation>
-    </message>
-    <message>
-        <location filename="similarviewmanager.cpp" line="140"/>
-        <source>Check out &quot;%1&quot;</source>
-        <translation>Check out “%1”</translation>
     </message>
 </context>
 <context>
@@ -1245,6 +1232,14 @@
         <location filename="sortingcriteriadialog.cpp" line="84"/>
         <source>Select criteria to be added:</source>
         <translation>Select criteria to be added:</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::LMP::StdArtistActionsManager</name>
+    <message>
+        <location filename="stdartistactionsmanager.cpp" line="64"/>
+        <source>Check out &quot;%1&quot;</source>
+        <translation>Check out “%1”</translation>
     </message>
 </context>
 <context>
@@ -1496,6 +1491,24 @@
     </message>
 </context>
 <context>
+    <name>RadioCustomDialog</name>
+    <message>
+        <location filename="radiocustomdialog.ui" line="14"/>
+        <source>Custom radio</source>
+        <translation>Custom radio</translation>
+    </message>
+    <message>
+        <location filename="radiocustomdialog.ui" line="22"/>
+        <source>URL:</source>
+        <translation>URL:</translation>
+    </message>
+    <message>
+        <location filename="radiocustomdialog.ui" line="32"/>
+        <source>Name:</source>
+        <translation>Name:</translation>
+    </message>
+</context>
+<context>
     <name>RadioWidget</name>
     <message>
         <location filename="radiowidget.ui" line="23"/>
@@ -1604,17 +1617,17 @@
         <translation>Enable notifications</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Enable scrobbling</source>
         <translation>Enable scrobbling</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="32"/>
         <source>This option requires at least one other scrobbler plugin, like LastFMScrobble, for example.</source>
         <translation>This option requires at least one other scrobbler plugin, like LastFMScrobble, for example.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Request lyrics</source>
         <translation>Request lyrics</translation>
     </message>
@@ -1644,7 +1657,7 @@
         <translation>The following variables are allowed: &amp;lt;em&amp;gt;$artist&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$year&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$album&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$trackNumber&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$title&amp;lt;/em&amp;gt;.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Remember used data providers</source>
         <translation>Remember used data providers</translation>
     </message>
@@ -1659,7 +1672,7 @@
         <translation>Automatically center on current track</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>Automatically fetch missing album art</source>
         <translation>Automatically fetch missing album art</translation>
     </message>
@@ -1677,16 +1690,6 @@
         <location filename="dummy.cpp" line="14"/>
         <source>Album art storage path:</source>
         <translation>Album art storage path:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="29"/>
-        <source>Transition time between tracks:</source>
-        <translation>Transition time between tracks:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="30"/>
-        <source> ms</source>
-        <translation> ms</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
@@ -1764,63 +1767,63 @@
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Exponent in volume change formula (Î± in P = x^Î±):</source>
         <oldsource>Exponent in volume change formula (Î± in P = x^Î±)</oldsource>
         <translation>Exponent in volume change formula (α in P = x^α):</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="30"/>
         <source>Services</source>
         <translation>Services</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>Refresh radio stations on wake up</source>
         <translation>Refresh radio stations on wake up</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Some radio providers (like VKontakte) tie tracks URLs to the IP. Thus if the IP changes the tracks infos need to be refetched. Disable this option if sleeping and waking up doesn&apos;t usually result in changing your IP.</source>
         <translation>Some radio providers (like VKontakte) tie tracks URLs to the IP. Thus if the IP changes the tracks infos need to be refetched. Disable this option if sleeping and waking up doesn&apos;t usually result in changing your IP.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>Automatically refresh radios</source>
         <translation>Automatically refresh radios</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Refresh interval:</source>
         <translation>Refresh interval:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="40"/>
         <source> h</source>
         <translation> h</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Collection</source>
         <translation>Collection</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="42"/>
         <source>Root paths</source>
         <translation>Root paths</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Plugin communication</source>
         <translation>Plugin communication</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="44"/>
         <source>Test only these extensions</source>
         <translation>Test only these extensions</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Extenstions list:</source>
         <translation>Extenstions list:</translation>
     </message>
