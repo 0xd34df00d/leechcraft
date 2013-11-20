@@ -61,7 +61,7 @@ bool QxtGlobalShortcutPrivate::eventFilter(void* message)
             // Mod1Mask == Alt, Mod4Mask == Meta
             key->state & (ShiftMask | ControlMask | Mod1Mask | Mod4Mask));
     }
-    return false;
+    return prevEventFilter ? prevEventFilter(message) : false;
 }
 
 quint32 QxtGlobalShortcutPrivate::nativeModifiers(Qt::KeyboardModifiers modifiers)

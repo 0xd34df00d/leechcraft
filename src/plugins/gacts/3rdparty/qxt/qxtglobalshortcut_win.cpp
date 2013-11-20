@@ -34,7 +34,7 @@ bool QxtGlobalShortcutPrivate::eventFilter(void* message)
         const quint32 modifiers = LOWORD(msg->lParam);
         activateShortcut(keycode, modifiers);
     }
-    return false;
+    return prevEventFilter ? prevEventFilter(message) : false;
 }
 
 quint32 QxtGlobalShortcutPrivate::nativeModifiers(Qt::KeyboardModifiers modifiers)
