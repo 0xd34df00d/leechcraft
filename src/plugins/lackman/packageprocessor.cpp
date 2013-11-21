@@ -523,9 +523,10 @@ namespace LackMan
 					<< "got exception:"
 					<< e.what ();
 			QString str = tr ("Unable to remove package %1 "
-						"while updating to package %2")
+						"while updating to package %2: %3.")
 					.arg (oldId)
-					.arg (newId);
+					.arg (newId)
+					.arg (QString::fromUtf8 (e.what ()));
 			emit packageInstallError (newId, str);
 			return false;
 		}
