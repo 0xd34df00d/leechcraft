@@ -153,7 +153,7 @@ namespace Util
 		const auto& propValue = property (name);
 
 		if (!IsInitializing_)
-			SettingsThreadManager::Instance ().Add (GetSettings (),
+			SettingsThreadManager::Instance ().Add (this,
 					propName, propValue);
 
 		PropertyChanged (propName, propValue);

@@ -30,26 +30,33 @@
 #pragma once
 
 #include <QObject>
-#include "basesettingsmanager.h"
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class BaseSettingsManager;
+}
+
 	class SettingsThread;
 
 	class SettingsThreadManager : public QObject
 	{
 		Q_OBJECT
 
-		SettingsThread *Thread_;
+		QThread * const Thread_;
+		SettingsThread * const Worker_;
 
 		SettingsThreadManager ();
 	public:
 		SettingsThreadManager (const SettingsThreadManager&) = delete;
 		SettingsThreadManager& operator= (const SettingsThreadManager&) = delete;
 
+		~SettingsThreadManager ();
+
 		static SettingsThreadManager& Instance ();
 
-		void Add (const Settings_ptr&,
+		void Add (Util::BaseSettingsManager*,
 				const QString& name, const QVariant& value);
 	};
 }

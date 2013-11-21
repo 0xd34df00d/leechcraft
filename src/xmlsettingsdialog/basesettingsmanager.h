@@ -45,6 +45,8 @@ typedef std::shared_ptr<QSettings> Settings_ptr;
 
 namespace LeechCraft
 {
+class SettingsThread;
+
 namespace Util
 {
 	/** @brief Base class for settings manager.
@@ -63,6 +65,8 @@ namespace Util
 
 		bool IsInitializing_;
 		bool CleanupScheduled_;
+
+		friend class LeechCraft::SettingsThread;
 	protected:
 		bool ReadAllKeys_;
 	public:

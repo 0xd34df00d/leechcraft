@@ -29,19 +29,29 @@
 
 #pragma once
 
-#include <QThread>
-#include "basesettingsmanager.h"
-
-Q_DECLARE_METATYPE (Settings_ptr)
+#include <QMap>
+#include <QVariant>
+#include <QMutex>
 
 namespace LeechCraft
 {
-	class SettingsThread : public QThread
+namespace Util
+{
+	class BaseSettingsManager;
+}
+
+	class SettingsThread : public QObject
 	{
 		Q_OBJECT
+
+		QMutex Mutex_;
+		QMap<Util::BaseSettingsManager*, QList<QPair<QString, QVariant>>> Pendings_;
 	public:
 		SettingsThread (QObject* = 0);
-	public slots:
-		void save (Settings_ptr, QString, QVariant);
+		~SettingsThread ();
+
+		void Save (Util::BaseSettingsManager*, QString, QVariant);
+	private slots:
+		void saveScheduled ();
 	};
 }

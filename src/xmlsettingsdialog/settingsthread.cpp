@@ -28,16 +28,52 @@
  **********************************************************************/
 
 #include "settingsthread.h"
+#include <QMutexLocker>
+#include <QTimer>
+#include <QtDebug>
+#include "basesettingsmanager.h"
 
 namespace LeechCraft
 {
 	SettingsThread::SettingsThread (QObject *parent)
-	: QThread (parent)
+	: QObject (parent)
 	{
 	}
 
-	void SettingsThread::save (Settings_ptr settings, QString name, QVariant value)
+	SettingsThread::~SettingsThread ()
 	{
-		settings->setValue (name, value);
+		{
+			QMutexLocker l (&Mutex_);
+			if (Pendings_.isEmpty ())
+				return;
+		}
+
+		saveScheduled ();
+	}
+
+	void SettingsThread::Save (Util::BaseSettingsManager *bsm, QString name, QVariant value)
+	{
+		QMutexLocker l (&Mutex_);
+
+		if (Pendings_.isEmpty ())
+			QTimer::singleShot (0, this, SLOT (saveScheduled ()));
+		Pendings_ [bsm].push_back ({ name, value });
+	}
+
+	void SettingsThread::saveScheduled ()
+	{
+		decltype (Pendings_) pendings;
+
+		{
+			QMutexLocker l (&Mutex_);
+			std::swap (pendings, Pendings_);
+		}
+
+		for (auto i = pendings.begin (), end = pendings.end (); i != end; ++i)
+		{
+			const auto& s = i.key ()->GetSettings ();
+			for (const auto& p : i.value ())
+				s->setValue (p.first, p.second);
+		}
 	}
 }
