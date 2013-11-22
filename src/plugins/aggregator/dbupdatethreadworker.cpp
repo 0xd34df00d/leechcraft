@@ -138,6 +138,42 @@ namespace Aggregator
 		emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
 	}
 
+	bool DBUpdateThreadWorker::AddItem (const Item_ptr& item, const Channel_ptr& channel,
+			const QVariantMap& channelDataMap, const Feed::FeedSettings& settings)
+	{
+		if (item->PubDate_.isValid ())
+		{
+			if (item->PubDate_.daysTo (QDateTime::currentDateTime ()) >= settings.ItemAge_)
+				return false;
+		}
+		else
+			item->FixDate ();
+
+		item->ChannelID_ = channel->ChannelID_;
+		SB_->AddItem (item);
+
+		RegexpMatcherManager::Instance ().HandleItem (item);
+
+		QVariantList itemData;
+		itemData << GetItemMapItemPart (item).unite (channelDataMap);
+		emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+				itemData);
+
+		if (settings.AutoDownloadEnclosures_)
+			for (const auto& e : item->Enclosures_)
+			{
+				auto de = Util::MakeEntity (QUrl (e.URL_),
+						XmlSettingsManager::Instance ()->
+							property ("EnclosuresDownloadPath").toString (),
+						0,
+						e.Type_);
+				de.Additional_ [" Tags"] = channel->Tags_;
+				emit gotEntity (de);
+			}
+
+		return true;
+	}
+
 	void DBUpdateThreadWorker::NotifyUpdates (int newItems, int updatedItems, const Channel_ptr& channel)
 	{
 		const auto& method = XmlSettingsManager::Instance ()->
@@ -184,9 +220,7 @@ namespace Aggregator
 		const auto& feedSettings = GetFeedSettings (feedId);
 		const auto ipc = feedSettings.NumItems_;
 		const auto days = feedSettings.ItemAge_;
-		const auto downloadEnclosures = feedSettings.AutoDownloadEnclosures_;
 
-		const auto& current = QDateTime::currentDateTime ();
 		for (const auto& channel : channels)
 		{
 			Channel_ptr ourChannel;
@@ -202,52 +236,24 @@ namespace Aggregator
 				continue;
 			}
 
-			const QVariantMap& channelPart = GetItemMapChannelPart (ourChannel);
+			const auto& channelPart = GetItemMapChannelPart (ourChannel);
 
 			int newItems = 0;
 			int updatedItems = 0;
 
-			Q_FOREACH (Item_ptr item, channel->Items_)
+			for (const auto& item : channel->Items_)
 			{
 				Item_ptr ourItem;
 				try
 				{
-					IDType_t ourItemID = SB_->FindItem (item->Title_, item->Link_,
+					const auto ourItemID = SB_->FindItem (item->Title_, item->Link_,
 							ourChannel->ChannelID_);
 					ourItem = SB_->GetItem (ourItemID);
 				}
 				catch (const StorageBackend::ItemNotFoundError&)
 				{
-					if (item->PubDate_.isValid ())
-					{
-						if (item->PubDate_.daysTo (current) >= days)
-							continue;
-					}
-					else
-						item->FixDate ();
-
-					item->ChannelID_ = ourChannel->ChannelID_;
-					SB_->AddItem (item);
-
-					RegexpMatcherManager::Instance ().HandleItem (item);
-
-					QVariantList itemData;
-					itemData << GetItemMapItemPart (item).unite (channelPart);
-					emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
-							itemData);
-
-					if (downloadEnclosures)
-						Q_FOREACH (Enclosure e, item->Enclosures_)
-						{
-							Entity de = Util::MakeEntity (QUrl (e.URL_),
-									XmlSettingsManager::Instance ()->
-										property ("EnclosuresDownloadPath").toString (),
-									0,
-									e.Type_);
-							de.Additional_ [" Tags"] = channel->Tags_;
-							emit gotEntity (de);
-						}
-					++newItems;
+					if (AddItem (item, ourChannel, channelPart, feedSettings))
+						++newItems;
 					continue;
 				}
 
