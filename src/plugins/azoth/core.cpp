@@ -383,6 +383,11 @@ namespace Azoth
 		return CustomChatStyleManager_.get ();
 	}
 
+	UnreadQueueManager* Core::GetUnreadQueueManager () const
+	{
+		return UnreadQueueManager_.get ();
+	}
+
 	void Core::AddPlugin (QObject *plugin)
 	{
 		IPlugin2 *plugin2 = qobject_cast<IPlugin2*> (plugin);

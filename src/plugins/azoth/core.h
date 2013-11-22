@@ -203,6 +203,7 @@ namespace Azoth
 		Util::ShortcutManager* GetShortcutManager () const;
 		CustomStatusesManager* GetCustomStatusesManager () const;
 		CustomChatStyleManager* GetCustomChatStyleManager () const;
+		UnreadQueueManager* GetUnreadQueueManager () const;
 
 		void AddPlugin (QObject*);
 		void RegisterHookable (QObject*);
