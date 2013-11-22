@@ -592,6 +592,18 @@ namespace LackMan
 		lock.Good ();
 	}
 
+	namespace
+	{
+		void Exec (QSqlQuery& query)
+		{
+			if (!query.exec ())
+			{
+				Util::DBLock::DumpError (query);
+				throw std::runtime_error ("Query execution failed");
+			}
+		}
+	}
+
 	void Storage::AddPackages (const PackageInfo& pInfo)
 	{
 		Util::DBLock lock (DB_);
@@ -607,15 +619,11 @@ namespace LackMan
 			throw;
 		}
 
-		Q_FOREACH (const QString& version, pInfo.Versions_)
+		for (const auto& version : pInfo.Versions_)
 		{
 			QueryAddPackage_.bindValue (":name", pInfo.Name_);
 			QueryAddPackage_.bindValue (":version", version);
-			if (!QueryAddPackage_.exec ())
-			{
-				Util::DBLock::DumpError (QueryAddPackage_);
-				throw std::runtime_error ("Query execution failed");
-			}
+			Exec (QueryAddPackage_);
 
 			const int packageId = FindPackage (pInfo.Name_, version);
 			qDebug () << Q_FUNC_INFO << pInfo.Name_ << version << packageId;
@@ -623,11 +631,7 @@ namespace LackMan
 			QueryAddPackageArchiver_.bindValue (":package_id", packageId);
 			QueryAddPackageArchiver_.bindValue (":archiver",
 					pInfo.VersionArchivers_.value (version, "gz"));
-			if (!QueryAddPackageArchiver_.exec ())
-			{
-				Util::DBLock::DumpError (QueryAddPackageArchiver_);
-				throw std::runtime_error ("Query execution failed");
-			}
+			Exec (QueryAddPackageArchiver_);
 
 			const qint64 size = pInfo.PackageSizes_.value (version, -1);
 			if (size == -1)
@@ -635,22 +639,14 @@ namespace LackMan
 
 			QueryAddPackageSize_.bindValue (":package_id", packageId);
 			QueryAddPackageSize_.bindValue (":size", size);
-			if (!QueryAddPackageSize_.exec ())
-			{
-				Util::DBLock::DumpError (QueryAddPackageSize_);
-				throw std::runtime_error ("Query execution failed");
-			}
+			Exec (QueryAddPackageSize_);
 		}
 		QueryAddPackage_.finish ();
 		QueryAddPackageSize_.finish ();
 		QueryAddPackageArchiver_.finish ();
 
 		QueryClearPackageInfos_.bindValue (":name", pInfo.Name_);
-		if (!QueryClearPackageInfos_.exec ())
-		{
-			Util::DBLock::DumpError (QueryClearPackageInfos_);
-			throw std::runtime_error ("Query execution failed");
-		}
+		Exec (QueryClearPackageInfos_);
 		QueryClearPackageInfos_.finish ();
 
 		QueryAddPackageInfo_.bindValue (":name", pInfo.Name_);
@@ -661,55 +657,35 @@ namespace LackMan
 		QueryAddPackageInfo_.bindValue (":maint_name", pInfo.MaintName_);
 		QueryAddPackageInfo_.bindValue (":maint_email", pInfo.MaintEmail_);
 		QueryAddPackageInfo_.bindValue (":icon_url", pInfo.IconURL_);
-		if (!QueryAddPackageInfo_.exec ())
-		{
-			Util::DBLock::DumpError (QueryAddPackageInfo_);
-			throw std::runtime_error ("Query execution failed");
-		}
+		Exec (QueryAddPackageInfo_);
 		QueryAddPackageInfo_.finish ();
 
 		QueryClearTags_.bindValue (":name", pInfo.Name_);
-		if (!QueryClearTags_.exec ())
-		{
-			Util::DBLock::DumpError (QueryClearTags_);
-			throw std::runtime_error ("Query execution failed");
-		}
+		Exec (QueryClearTags_);
 		QueryClearTags_.finish ();
 
-		Q_FOREACH (const QString& tag, pInfo.Tags_)
+		for (const auto& tag : pInfo.Tags_)
 		{
 			QueryAddTag_.bindValue (":name", pInfo.Name_);
 			QueryAddTag_.bindValue (":tag", tag);
-			if (!QueryAddTag_.exec ())
-			{
-				Util::DBLock::DumpError (QueryAddTag_);
-				throw std::runtime_error ("Query execution failed");
-			}
+			Exec (QueryAddTag_);
 		}
 		QueryAddTag_.finish ();
 
 		QueryClearImages_.bindValue (":name", pInfo.Name_);
-		if (!QueryClearImages_.exec ())
-		{
-			Util::DBLock::DumpError (QueryClearImages_);
-			throw std::runtime_error ("Query execution failed");
-		}
+		Exec (QueryClearImages_);
 		QueryClearImages_.finish ();
 
-		Q_FOREACH (const Image& img, pInfo.Images_)
+		for (const auto& img : pInfo.Images_)
 		{
 			QueryAddImage_.bindValue (":name", pInfo.Name_);
 			QueryAddImage_.bindValue (":url", img.URL_);
 			QueryAddImage_.bindValue (":type", img.Type_);
-			if (!QueryAddImage_.exec ())
-			{
-				Util::DBLock::DumpError (QueryAddImage_);
-				throw std::runtime_error ("Query execution failed");
-			}
+			Exec (QueryAddImage_);
 		}
 		QueryAddImage_.finish ();
 
-		Q_FOREACH (const QString& thisVersion, pInfo.Deps_.keys ())
+		for (const auto& thisVersion : pInfo.Deps_.keys ())
 		{
 			int packageId = -1;
 			try
@@ -741,24 +717,16 @@ namespace LackMan
 			}
 
 			QueryClearDeps_.bindValue (":package_id", packageId);
-			if (!QueryClearDeps_.exec ())
-			{
-				Util::DBLock::DumpError (QueryClearDeps_);
-				throw std::runtime_error ("Query execution failed");
-			}
+			Exec (QueryClearDeps_);
 			QueryClearDeps_.finish ();
 
-			Q_FOREACH (const Dependency& dep, pInfo.Deps_ [thisVersion])
+			for (const auto& dep : pInfo.Deps_ [thisVersion])
 			{
 				QueryAddDep_.bindValue (":package_id", packageId);
 				QueryAddDep_.bindValue (":name", dep.Name_);
 				QueryAddDep_.bindValue (":version", dep.Version_);
 				QueryAddDep_.bindValue (":type", dep.Type_);
-				if (!QueryAddDep_.exec ())
-				{
-					Util::DBLock::DumpError (QueryAddDep_);
-					throw std::runtime_error ("Query execution failed");
-				}
+				Exec (QueryAddDep_);
 			}
 			QueryAddDep_.finish ();
 		}
