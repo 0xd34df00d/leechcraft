@@ -130,17 +130,43 @@ namespace LeechCraft
 	{
 		const auto cnt = count ();
 		ComputedWidths_.resize (cnt);
-		for (int i = 0; i < cnt - 1; ++i)
+
+		const auto maxTabWidth = width () / 4;
+
+		struct TabInfo
 		{
-			const int target = std::min (size ().width () / (cnt + 1), 300);
-			const auto& result = QTabBar::tabSizeHint (i);
-			ComputedWidths_ [i] = std::min (result.width (), target);
-		}
+			int Idx_;
+			int WidthHint_;
+		};
+		QVector<TabInfo> infos;
+		for (int i = 0; i < cnt - 1; ++i)
+			infos.push_back ({ i, std::min (QTabBar::tabSizeHint (i).width (), maxTabWidth) });
+		std::sort (infos.begin (), infos.end (),
+				[] (const TabInfo& l, const TabInfo& r) { return l.WidthHint_ < r.WidthHint_; });
 
 		const auto hspace = std::max (style ()->pixelMetric (QStyle::PM_TabBarTabHSpace), 10);
-		ComputedWidths_ [cnt - 1] = AddTabButton_ ?
-					AddTabButton_->sizeHint ().width () + hspace:
-					30;
+		const auto btnWidth = AddTabButton_ ? AddTabButton_->sizeHint ().width () + hspace : 30;
+
+		auto remainder = width () - btnWidth;
+
+		while (!infos.isEmpty ())
+		{
+			auto currentMax = remainder / infos.size ();
+			if (infos.front ().WidthHint_ > currentMax)
+				break;
+
+			const auto& info = infos.front ();
+			remainder -= info.WidthHint_;
+			ComputedWidths_ [info.Idx_] = info.WidthHint_;
+			infos.pop_front ();
+		}
+
+		if (infos.isEmpty ())
+			return;
+
+		const auto uniform = remainder / infos.size ();
+		for (const auto& info : infos)
+			ComputedWidths_ [info.Idx_] = uniform;
 	}
 
 	void SeparateTabBar::tabLayoutChange ()
