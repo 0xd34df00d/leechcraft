@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef SEPARATETABBAR_H
-#define SEPARATETABBAR_H
+#pragma once
 
 #include <QTabBar>
 #include <QHash>
@@ -51,6 +50,7 @@ namespace LeechCraft
 		QPoint DragStartPos_;
 
 		QWidget *AddTabButton_;
+		mutable QVector<int> ComputedWidths_;
 	public:
 		explicit SeparateTabBar (QWidget* = 0);
 
@@ -67,7 +67,9 @@ namespace LeechCraft
 		void SetInMove (bool inMove);
 	private:
 		QTabBar::ButtonPosition GetAntiCloseButtonPosition () const;
+		void UpdateComputedWidths () const;
 	protected:
+		void tabLayoutChange ();
 		QSize tabSizeHint (int) const;
 
 		void mouseReleaseEvent (QMouseEvent*);
@@ -89,5 +91,3 @@ namespace LeechCraft
 		void releasedMouseAfterMove (int index);
 	};
 }
-
-#endif // SEPARATETABBAR_H

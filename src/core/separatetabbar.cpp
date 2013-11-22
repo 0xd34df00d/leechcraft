@@ -126,24 +126,36 @@ namespace LeechCraft
 				QTabBar::LeftSide;
 	}
 
-	QSize SeparateTabBar::tabSizeHint (int index) const
+	void SeparateTabBar::UpdateComputedWidths () const
 	{
-		auto result = QTabBar::tabSizeHint (index);
-		const int tc = count ();
-		if (index == tc - 1)
+		const auto cnt = count ();
+		ComputedWidths_.resize (cnt);
+		for (int i = 0; i < cnt - 1; ++i)
 		{
-			const auto hspace = std::max (style ()->pixelMetric (QStyle::PM_TabBarTabHSpace), 10);
-			result.setWidth (AddTabButton_ ?
-					AddTabButton_->sizeHint ().width () + hspace:
-					30);
-		}
-		else
-		{
-			const int target = std::min (size ().width () / (tc + 1), 200);
-			if (result.width () > target)
-				result.setWidth (target);
+			const int target = std::min (size ().width () / (cnt + 1), 300);
+			const auto& result = QTabBar::tabSizeHint (i);
+			ComputedWidths_ [i] = std::min (result.width (), target);
 		}
 
+		const auto hspace = std::max (style ()->pixelMetric (QStyle::PM_TabBarTabHSpace), 10);
+		ComputedWidths_ [cnt - 1] = AddTabButton_ ?
+					AddTabButton_->sizeHint ().width () + hspace:
+					30;
+	}
+
+	void SeparateTabBar::tabLayoutChange ()
+	{
+		ComputedWidths_.clear ();
+		QTabBar::tabLayoutChange ();
+	}
+
+	QSize SeparateTabBar::tabSizeHint (int index) const
+	{
+		if (ComputedWidths_.isEmpty ())
+			UpdateComputedWidths ();
+
+		auto result = QTabBar::tabSizeHint (index);
+		result.setWidth (ComputedWidths_.value (index));
 		return result;
 	}
 
