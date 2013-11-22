@@ -174,6 +174,40 @@ namespace Aggregator
 		return true;
 	}
 
+	bool DBUpdateThreadWorker::UpdateItem (const Item_ptr& item, const Item_ptr& ourItem)
+	{
+		if (!IsModified (ourItem, item))
+			return false;
+
+		ourItem->Description_ = item->Description_;
+		ourItem->Categories_ = item->Categories_;
+		ourItem->NumComments_ = item->NumComments_;
+		ourItem->CommentsLink_ = item->CommentsLink_;
+		ourItem->CommentsPageLink_ = item->CommentsPageLink_;
+		ourItem->Latitude_ = item->Latitude_;
+		ourItem->Longitude_ = item->Longitude_;
+
+		for (auto& enc : item->Enclosures_)
+		{
+			if (!ourItem->Enclosures_.contains (enc))
+			{
+				enc.ItemID_ = ourItem->ItemID_;
+				ourItem->Enclosures_ << enc;
+			}
+		}
+
+		for (auto& entry : item->MRSSEntries_)
+			if (!ourItem->MRSSEntries_.contains (entry))
+			{
+				entry.ItemID_ = ourItem->ItemID_;
+				ourItem->MRSSEntries_ << entry;
+			}
+
+		SB_->UpdateItem (ourItem);
+
+		return true;
+	}
+
 	void DBUpdateThreadWorker::NotifyUpdates (int newItems, int updatedItems, const Channel_ptr& channel)
 	{
 		const auto& method = XmlSettingsManager::Instance ()->
@@ -257,34 +291,8 @@ namespace Aggregator
 					continue;
 				}
 
-				if (!IsModified (ourItem, item))
-					continue;
-
-				ourItem->Description_ = item->Description_;
-				ourItem->Categories_ = item->Categories_;
-				ourItem->NumComments_ = item->NumComments_;
-				ourItem->CommentsLink_ = item->CommentsLink_;
-				ourItem->CommentsPageLink_ = item->CommentsPageLink_;
-				ourItem->Latitude_ = item->Latitude_;
-				ourItem->Longitude_ = item->Longitude_;
-
-				for (auto& enc : item->Enclosures_)
-				{
-					if (!ourItem->Enclosures_.contains (enc))
-					{
-						enc.ItemID_ = ourItem->ItemID_;
-						ourItem->Enclosures_ << enc;
-					}
-				}
-
-				for (auto& entry : item->MRSSEntries_)
-					if (!ourItem->MRSSEntries_.contains (entry))
-					{
-						entry.ItemID_ = ourItem->ItemID_;
-						ourItem->MRSSEntries_ << entry;
-					}
-
-				SB_->UpdateItem (ourItem);
+				if (UpdateItem (item, ourItem))
+					++updatedItems;
 				++updatedItems;
 			}
 
