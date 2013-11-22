@@ -293,7 +293,6 @@ namespace Aggregator
 
 				if (UpdateItem (item, ourItem))
 					++updatedItems;
-				++updatedItems;
 			}
 
 			SB_->TrimChannel (ourChannel->ChannelID_, days, ipc);
