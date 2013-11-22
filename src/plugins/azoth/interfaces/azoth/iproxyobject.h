@@ -299,6 +299,8 @@ namespace Azoth
 		virtual QObject* CreateCoreMessage (const QString& body, const QDateTime& date,
 				IMessage::MessageType type, IMessage::Direction dir,
 				QObject *other, QObject *parent = nullptr) = 0;
+
+		virtual bool IsMessageRead (QObject *msgObj) = 0;
 	};
 }
 }

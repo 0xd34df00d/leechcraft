@@ -37,6 +37,7 @@
 #include "xmlsettingsmanager.h"
 #include "chattabsmanager.h"
 #include "coremessage.h"
+#include "unreadqueuemanager.h"
 
 namespace LeechCraft
 {
@@ -390,6 +391,11 @@ namespace Azoth
 			QObject *other, QObject *parent)
 	{
 		return new CoreMessage (body, date, type, dir, other, parent);
+	}
+
+	bool ProxyObject::IsMessageRead (QObject *msgObj)
+	{
+		return Core::Instance ().GetUnreadQueueManager ()->IsMessageRead (msgObj);
 	}
 }
 }
