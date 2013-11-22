@@ -536,9 +536,54 @@ namespace LackMan
 		return true;
 	}
 
-	void PackageProcessor::CleanupDir (const QString& directory)
+	bool PackageProcessor::CleanupDir (const QString& directory)
 	{
-		// TODO
+#ifndef QT_NO_DEBUG
+		qDebug () << Q_FUNC_INFO
+				<< directory;
+#endif
+
+		QDir dir (directory);
+		for (const auto& subdir : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+			if (!CleanupDir (dir.absoluteFilePath (subdir)))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to cleanup subdir"
+						<< subdir
+						<< "for"
+						<< directory;
+				return false;
+			}
+
+		for (const auto& entry : dir.entryList (QDir::Files | QDir::Hidden | QDir::System))
+			if (!dir.remove (entry))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to remove file"
+						<< entry
+						<< "for dir"
+						<< directory;
+				return false;
+			}
+
+		const auto& dirName = dir.dirName ();
+		if (!dir.cdUp ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot cd up from"
+					<< directory;
+			return false;
+		}
+
+		const auto res = dir.rmdir (dirName);
+		if (!res)
+			qWarning () << Q_FUNC_INFO
+					<< "cannot remove directory"
+					<< dirName
+					<< "from parent"
+					<< dir.absolutePath ();
+
+		return res;
 	}
 }
 }
