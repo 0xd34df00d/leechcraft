@@ -187,8 +187,11 @@ namespace LackMan
 
 		QProcess *unarch = qobject_cast<QProcess*> (sender ());
 		int packageId = unarch->property ("PackageID").toInt ();
-		QString stagingDir = unarch->property ("StagingDirectory").toString ();
+		const auto& stagingDir = unarch->property ("StagingDirectory").toString ();
 		Mode mode = static_cast<Mode> (unarch->property ("Mode").toInt ());
+
+		auto cleanupGuard = std::shared_ptr<void> (nullptr,
+				[&stagingDir, this] (void*) { CleanupDir (stagingDir); });
 
 		if (ret)
 		{
@@ -205,8 +208,6 @@ namespace LackMan
 					.arg (ret)
 					.arg (errString);
 			emit packageInstallError (packageId, errorString);
-
-			CleanupDir (stagingDir);
 
 			return;
 		}
@@ -238,7 +239,6 @@ namespace LackMan
 			QString errorString = tr ("Unable to get directory for the package: %1.")
 					.arg (QString::fromUtf8 (e.what ()));
 			emit packageInstallError (packageId, errorString);
-			CleanupDir (stagingDir);
 			return;
 		}
 
@@ -275,7 +275,6 @@ namespace LackMan
 							"files from staging area to "
 							"destination directory.");
 					emit packageInstallError (packageId, errorString);
-					CleanupDir (stagingDir);
 					return;
 				}
 		}
@@ -525,10 +524,7 @@ namespace LackMan
 					<< newId
 					<< "got exception:"
 					<< e.what ();
-			QString str = tr ("Unable to remove package %1 "
-						"while updating to package %2: %3.")
-					.arg (oldId)
-					.arg (newId)
+			const auto& str = tr ("Unable to update package: %1.")
 					.arg (QString::fromUtf8 (e.what ()));
 			emit packageInstallError (newId, str);
 			return false;
