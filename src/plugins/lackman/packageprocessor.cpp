@@ -132,7 +132,7 @@ namespace LackMan
 							<< fi.path ()
 							<< "; child node:"
 							<< fi.fileName ();
-					QString str = tr ("Could not remove directory %1.")
+					const auto& str = tr ("Could not remove directory %1.")
 							.arg (fi.fileName ());
 					throw std::runtime_error (str.toUtf8 ().constData ());
 				}
