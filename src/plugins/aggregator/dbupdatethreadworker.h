@@ -35,6 +35,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include "common.h"
 #include "channel.h"
+#include "feed.h"
 
 namespace LeechCraft
 {
@@ -51,6 +52,10 @@ namespace Aggregator
 		std::shared_ptr<StorageBackend> SB_;
 	public:
 		DBUpdateThreadWorker (QObject* = 0);
+	private:
+		Feed::FeedSettings GetFeedSettings (IDType_t);
+		void AddChannel (const Channel_ptr& channel, const Feed::FeedSettings& settings);
+		void NotifyUpdates (int newItems, int updatedItems, const Channel_ptr& channel);
 	public slots:
 		void toggleChannelUnread (IDType_t channel, bool state);
 		void updateFeed (channels_container_t channels, QString url);
