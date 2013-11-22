@@ -108,8 +108,11 @@ namespace LackMan
 			}
 			else if (fi.isDir ())
 			{
-				const QStringList& entries = QDir (fi.absoluteFilePath ())
-						.entryList (QDir::NoDotAndDotDot | QDir::AllEntries);
+				const auto& entries = QDir (fi.absoluteFilePath ())
+						.entryList (QDir::NoDotAndDotDot |
+								QDir::AllEntries |
+								QDir::Hidden |
+								QDir::System);
 				if (!entries.isEmpty ())
 				{
 #ifndef QT_NO_DEBUG
