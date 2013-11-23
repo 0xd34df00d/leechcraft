@@ -144,7 +144,7 @@ namespace LeechCraft
 		return 0;
 	}
 
-	int RootWindowsManager::GetPreferredWindowIndex (ITabWidget *itw) const
+	int RootWindowsManager::GetPreferredWindowIndex (const ITabWidget *itw) const
 	{
 		return GetPreferredWindowIndex (itw->GetTabClassInfo ().TabClass_);
 	}
@@ -234,7 +234,7 @@ namespace LeechCraft
 		return win;
 	}
 
-	void RootWindowsManager::PerformWithTab (std::function<void (TabManager*, int)> f, QWidget *w)
+	void RootWindowsManager::PerformWithTab (const std::function<void (TabManager*, int)>& f, QWidget *w)
 	{
 		const int idx = GetWindowForTab (qobject_cast<ITabWidget*> (w));
 		if (idx < 0)
@@ -258,9 +258,10 @@ namespace LeechCraft
 
 		emit tabIsMoving (fromWin, toWin, tabIdx);
 
+		auto targetMgr = Windows_ [toWin].TM_;
 		Windows_ [fromWin].TM_->remove (widget);
-		Windows_ [toWin].TM_->add (name, widget);
-		Windows_ [toWin].TM_->changeTabIcon (widget, icon);
+		targetMgr->add (name, widget);
+		targetMgr->changeTabIcon (widget, icon);
 
 		emit tabMoved (fromWin, toWin, Windows_ [toWin].TM_->FindTabForWidget (widget));
 	}
