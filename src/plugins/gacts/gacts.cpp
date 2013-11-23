@@ -86,9 +86,7 @@ namespace GActs
 
 		if (e.Mime_ == "x-leechcraft/global-action-unregister")
 		{
-			auto sh = RegisteredShortcuts_.take (id);
-			if (sh)
-				delete sh;
+			delete RegisteredShortcuts_.take (id);
 			return;
 		}
 
