@@ -92,7 +92,8 @@ namespace Util
 		return QString (qgetenv ("PATH")).split (":", QString::SkipEmptyParts);
 	}
 
-	QString FindInSystemPath (const QString& name, const QStringList& paths, std::function<bool (QFileInfo)> filter)
+	QString FindInSystemPath (const QString& name, const QStringList& paths,
+			const std::function<bool (QFileInfo)>& filter)
 	{
 		for (const auto& dir : paths)
 		{

@@ -62,12 +62,14 @@ namespace Util
 				this,
 				SLOT (updateButton (QString)));
 
+		const auto& buttonSH = Button_->sizeHint ();
+
 		const int frameWidth = edit->style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
 		edit->setStyleSheet (QString ("QLineEdit { padding-right: %1px; }")
-					.arg (Button_->sizeHint ().width () + frameWidth + 1));
+					.arg (buttonSH.width () + frameWidth + 1));
 		const auto msz = edit->minimumSizeHint ();
-		edit->setMinimumSize (qMax (msz.width (), Button_->sizeHint ().height () + frameWidth * 2 + 2),
-						qMax (msz.height(), Button_->sizeHint ().height () + frameWidth * 2 + 2));
+		edit->setMinimumSize (qMax (msz.width (), buttonSH.height () + frameWidth * 2 + 2),
+						qMax (msz.height(), buttonSH.height () + frameWidth * 2 + 2));
 
 		UpdatePos ();
 
