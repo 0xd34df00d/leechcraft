@@ -37,6 +37,8 @@
 #include <QTextFrame>
 #include <QUrl>
 #include <QImage>
+#include <QApplication>
+#include <QPalette>
 #include <QVariant>
 #include <QStringList>
 #include <QtDebug>
@@ -73,6 +75,8 @@ namespace FXB
 
 		auto frameFmt = Result_->rootFrame ()->frameFormat ();
 		frameFmt.setMargin (20);
+		const auto& pal = qApp->palette ();
+		frameFmt.setBackground (pal.brush (QPalette::Base));
 		Result_->rootFrame ()->setFrameFormat (frameFmt);
 
 		Handlers_ ["section"] = [this] (const QDomElement& p) { HandleSection (p); };
