@@ -1471,7 +1471,7 @@
     <message>
         <location filename="chattab.cpp" line="1054"/>
         <source>left the conversation</source>
-        <translation>покинул разговор</translation>
+        <translation>покинул(а) разговор</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1159"/>

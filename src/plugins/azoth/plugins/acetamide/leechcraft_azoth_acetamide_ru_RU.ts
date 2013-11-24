@@ -396,12 +396,12 @@
     <message>
         <location filename="channelhandler.cpp" line="258"/>
         <source>%1 has left the channel (%2)</source>
-        <translation>%1 покинул канал (%2)</translation>
+        <translation>%1 покинул(а) канал (%2)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="260"/>
         <source>%1 has left the channel</source>
-        <translation>%1 покинул канал</translation>
+        <translation>%1 покинул(а) канал</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="283"/>

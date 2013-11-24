@@ -1121,7 +1121,7 @@
     <message>
         <location filename="roomhandler.cpp" line="128"/>
         <source>%1 has left the room</source>
-        <translation>%1 покинул комнату</translation>
+        <translation>%1 покинул(а) комнату</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="150"/>

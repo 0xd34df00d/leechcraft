@@ -94,7 +94,7 @@
     <message>
         <location filename="vkentry.cpp" line="101"/>
         <source>%1 has left the site</source>
-        <translation>%1 покинул сайт</translation>
+        <translation>%1 покинул(а) сайт</translation>
     </message>
     <message>
         <location filename="vkentry.cpp" line="378"/>
