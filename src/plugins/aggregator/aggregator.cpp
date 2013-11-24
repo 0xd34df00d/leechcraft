@@ -773,7 +773,7 @@ namespace Aggregator
 						.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
 					QMessageBox::Yes | QMessageBox::No);
 
-			mbox.setDefaultButton (QMessageBox::No);
+			mbox.setDefaultButton (QMessageBox::Yes);
 
 			QPushButton always (tr ("Always"));
 			mbox.addButton (&always, QMessageBox::AcceptRole);
