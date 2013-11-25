@@ -36,6 +36,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDateTime>
+#include <boost/concept_check.hpp>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include "connection.h"
@@ -486,15 +487,36 @@ namespace HttHare
 		{
 			return { ba.constData (), static_cast<size_t> (ba.size ()) };
 		}
+
+		bool SupportsDeflate (const QStringList& ae)
+		{
+			for (const auto& val : ae)
+				if (!val.trimmed ().compare ("deflate", Qt::CaseInsensitive))
+					return true;
+
+			return false;
+		}
 	}
 
 	std::vector<boost::asio::const_buffer> RequestHandler::ToBuffers (Verb verb)
 	{
 		std::vector<boost::asio::const_buffer> result;
 
-		if (std::find_if (ResponseHeaders_.begin (), ResponseHeaders_.end (),
+		const bool hasContentLength = std::find_if (ResponseHeaders_.begin (), ResponseHeaders_.end (),
 				[] (decltype (ResponseHeaders_.at (0)) pair)
-					{ return pair.first.toLower () == "content-length"; }) == ResponseHeaders_.end ())
+					{ return pair.first.toLower () == "content-length"; }) != ResponseHeaders_.end ();
+
+		const auto& splitAe = Headers_.value ("Accept-Encoding").split (',');
+		if (verb == Verb::Get &&
+				!ResponseBody_.isEmpty () &&
+				SupportsDeflate (splitAe))
+		{
+			ResponseHeaders_.append ({ "Content-Encoding", "deflate" });
+			ResponseBody_ = qCompress (ResponseBody_, 6);
+			ResponseBody_.remove (0, 4);
+		}
+
+		if (!hasContentLength)
 			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (ResponseBody_.size ()) });
 
 		CookedRH_.clear ();
