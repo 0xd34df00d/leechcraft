@@ -48,7 +48,7 @@ namespace TouchStreams
 
 		Util::InstallTranslator ("touchstreams");
 
-		Queue_ = new Util::QueueManager (400);
+		Queue_ = new Util::QueueManager (500);
 
 		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("TouchStreams",
 				"3298289",
