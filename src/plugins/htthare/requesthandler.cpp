@@ -201,8 +201,10 @@ namespace HttHare
 		{
 			const auto& item = entries.at (i);
 
+			auto link = QUrl::toPercentEncoding (item.fileName (), {}, "'");
+
 			result += "<tr><td class=" + NormalizeClass (mimes.at (i).MimeType_) + "><a href='";
-			result += item.fileName () + "'>" + item.fileName () + "</a></td>";
+			result += link + "'>" + item.fileName () + "</a></td>";
 			result += "<td>" + Util::MakePrettySize (item.size ()) + "</td>";
 			result += "<td>" + item.created ().toString (Qt::SystemLocaleShortDate) + "</td></tr>";
 		}
