@@ -76,6 +76,22 @@ namespace TouchStreams
 		AuthMgr_->ManageQueue (&RequestQueue_);
 	}
 
+	AlbumsManager::AlbumsManager (qlonglong id, const QVariant& albums, const QVariant& tracks,
+			Util::SvcAuth::VkAuthManager *authMgr, Util::QueueManager *queue, ICoreProxy_ptr proxy, QObject *parent)
+	: QObject (parent)
+	, Proxy_ (proxy)
+	, UserID_ (id)
+	, AuthMgr_ (authMgr)
+	, Queue_ (queue)
+	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
+	{
+		AlbumsRootItem_->setEditable (false);
+		AuthMgr_->ManageQueue (&RequestQueue_);
+
+		HandleAlbums (albums);
+		HandleTracks (tracks);
+	}
+
 	AlbumsManager::~AlbumsManager ()
 	{
 		AuthMgr_->UnmanageQueue (&RequestQueue_);

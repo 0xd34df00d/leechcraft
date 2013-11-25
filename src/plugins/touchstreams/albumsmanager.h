@@ -76,6 +76,8 @@ namespace TouchStreams
 	public:
 		AlbumsManager (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
 		AlbumsManager (qlonglong, Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
+		AlbumsManager (qlonglong, const QVariant& albums, const QVariant& tracks,
+				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
 		~AlbumsManager ();
 
 		QStandardItem* GetRootItem () const;
