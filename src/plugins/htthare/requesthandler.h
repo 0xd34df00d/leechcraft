@@ -75,6 +75,8 @@ namespace HttHare
 		QByteArray MakeDirResponse (const QFileInfo&, const QString&, const QUrl&);
 
 		void HandleRequest (Verb);
+		void WriteDir (const QString&, const QFileInfo&, Verb);
+		void WriteFile (const QString&, const QFileInfo&, Verb);
 		void DefaultWrite (Verb);
 		std::vector<boost::asio::const_buffer> ToBuffers (Verb);
 	};

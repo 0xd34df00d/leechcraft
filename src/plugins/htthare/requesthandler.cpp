@@ -378,91 +378,98 @@ namespace HttHare
 			DefaultWrite (verb);
 		}
 		else if (fi.isDir ())
+			WriteDir (path, fi, verb);
+		else
+			WriteFile (path, fi, verb);
+	}
+
+	void RequestHandler::WriteDir (const QString& path, const QFileInfo& fi, RequestHandler::Verb verb)
+	{
+		if (Url_.path ().endsWith ('/'))
 		{
-			if (Url_.path ().endsWith ('/'))
-			{
-				ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 
-				ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
-				ResponseBody_ = MakeDirResponse (fi, path, Url_);
+			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+			ResponseBody_ = MakeDirResponse (fi, path, Url_);
 
-				DefaultWrite (verb);
-			}
-			else
-			{
-				ResponseLine_ = "HTTP/1.1 301 Moved Permanently\r\n";
-
-				auto url = Url_;
-				url.setPath (url.path () + '/');
-				ResponseHeaders_.append ({ "Location", url.toString ().toUtf8 () });
-				ResponseBody_ = MakeDirResponse (fi, path, url);
-
-				DefaultWrite (verb);
-			}
+			DefaultWrite (verb);
 		}
 		else
 		{
-			auto ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
+			ResponseLine_ = "HTTP/1.1 301 Moved Permanently\r\n";
 
-			ResponseHeaders_.append ({ "Content-Type", Util::MimeDetector {} (path) });
+			auto url = Url_;
+			url.setPath (url.path () + '/');
+			ResponseHeaders_.append ({ "Location", url.toString ().toUtf8 () });
+			ResponseBody_ = MakeDirResponse (fi, path, url);
 
-			if (ranges.isEmpty ())
-			{
-				ResponseLine_ = "HTTP/1.1 200 OK\r\n";
-				ResponseHeaders_.append ({ "Content-Length", QByteArray::number (fi.size ()) });
-			}
-			else
-			{
-				ResponseLine_ = "HTTP/1.1 206 Partial content\r\n";
-
-				qint64 totalSize = 0;
-				for (const auto& range : ranges)
-					totalSize += range.second - range.first + 1;
-
-				ResponseHeaders_.append ({ "Content-Length", QByteArray::number (totalSize) });
-			}
-
-			auto c = Conn_;
-			boost::asio::async_write (c->GetSocket (),
-					ToBuffers (verb),
-					c->GetStrand ().wrap ([c, path, verb, ranges] (boost::system::error_code ec, ulong) mutable -> void
-						{
-							if (ec)
-								qWarning () << Q_FUNC_INFO
-										<< ec.message ().c_str ();
-
-							auto& s = c->GetSocket ();
-
-							std::shared_ptr<void> shutdownGuard = std::shared_ptr<void> (nullptr,
-									[&s, &ec] (void*)
-									{
-										s.shutdown (boost::asio::socket_base::shutdown_both, ec);
-									});
-
-							if (verb != Verb::Get)
-								return;
-
-							std::shared_ptr<QFile> file { new QFile { path } };
-							file->open (QIODevice::ReadOnly);
-
-							if (ranges.isEmpty ())
-								ranges.append ({ 0, file->size () - 1 });
-
-							if (!s.native_non_blocking ())
-								s.native_non_blocking (true, ec);
-
-							const auto& headRange = ranges.takeFirst ();
-							Sendfiler
-							{
-								s,
-								file,
-								0,
-								headRange,
-								ranges,
-								[c, shutdownGuard] (boost::system::error_code, ulong) {}
-							} (ec, 0);
-						}));
+			DefaultWrite (verb);
 		}
+	}
+
+	void RequestHandler::WriteFile (const QString& path, const QFileInfo& fi, RequestHandler::Verb verb)
+	{
+		auto ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
+
+		const auto& mime = Util::MimeDetector {} (path);
+		ResponseHeaders_.append ({ "Content-Type", mime });
+
+		if (ranges.isEmpty ())
+		{
+			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (fi.size ()) });
+		}
+		else
+		{
+			ResponseLine_ = "HTTP/1.1 206 Partial content\r\n";
+
+			qint64 totalSize = 0;
+			for (const auto& range : ranges)
+				totalSize += range.second - range.first + 1;
+
+			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (totalSize) });
+		}
+
+		auto c = Conn_;
+		boost::asio::async_write (c->GetSocket (),
+				ToBuffers (verb),
+				c->GetStrand ().wrap ([c, path, verb, ranges] (boost::system::error_code ec, ulong) mutable -> void
+					{
+						if (ec)
+							qWarning () << Q_FUNC_INFO
+									<< ec.message ().c_str ();
+
+						auto& s = c->GetSocket ();
+
+						std::shared_ptr<void> shutdownGuard = std::shared_ptr<void> (nullptr,
+								[&s, &ec] (void*)
+								{
+									s.shutdown (boost::asio::socket_base::shutdown_both, ec);
+								});
+
+						if (verb != Verb::Get)
+							return;
+
+						std::shared_ptr<QFile> file { new QFile { path } };
+						file->open (QIODevice::ReadOnly);
+
+						if (ranges.isEmpty ())
+							ranges.append ({ 0, file->size () - 1 });
+
+						if (!s.native_non_blocking ())
+							s.native_non_blocking (true, ec);
+
+						const auto& headRange = ranges.takeFirst ();
+						Sendfiler
+						{
+							s,
+							file,
+							0,
+							headRange,
+							ranges,
+							[c, shutdownGuard] (boost::system::error_code, ulong) {}
+						} (ec, 0);
+					}));
 	}
 
 	void RequestHandler::DefaultWrite (Verb verb)
