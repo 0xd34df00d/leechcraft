@@ -29,9 +29,11 @@
 
 #include "pendingartistbio.h"
 #include <algorithm>
-#include <memory>
 #include <QNetworkReply>
 #include <QDomDocument>
+#include <QWebPage>
+#include <QWebFrame>
+#include <QWebElementCollection>
 #include <QtDebug>
 #include "util.h"
 
@@ -42,8 +44,7 @@ namespace Lastfmscrobble
 	PendingArtistBio::PendingArtistBio (QString name,
 			QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
-	, BioFinished_ (false)
-	, ImagesFinished_ (false)
+	, NAM_ (nam)
 	{
 		QMap<QString, QString> params;
 		params ["artist"] = name;
@@ -58,14 +59,6 @@ namespace Lastfmscrobble
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
 				SLOT (handleError ()));
-
-		const QString imgUrl ("http://ws.audioscrobbler.com/2.0/artist/%1/images.rss");
-		QNetworkRequest req (imgUrl.arg (name.replace (' ', '+')));
-		auto imagesReply = nam->get (req);
-		connect (imagesReply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleImagesFinished ()));
 	}
 
 	QObject* PendingArtistBio::GetQObject ()
@@ -78,50 +71,35 @@ namespace Lastfmscrobble
 		return Bio_;
 	}
 
-	void PendingArtistBio::CheckReady ()
+	void PendingArtistBio::handleImagesFinished ()
 	{
-		if (!BioFinished_ || !ImagesFinished_)
-			return;
+		auto page = qobject_cast<QWebPage*> (sender ());
+		page->deleteLater ();
+
+		const auto& elems = page->mainFrame ()->findAllElements ("ul > li > a > img");
+
+		for (const auto& elem : elems)
+		{
+			const auto& thumbUrl = QUrl (elem.attribute ("src"));
+			auto url = thumbUrl;
+			auto split = url.path ().split ('/');
+			if (split.size () != 4)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown image URL format"
+						<< url
+						<< split;
+				continue;
+			}
+
+			split [2] = '_';
+			url.setPath (split.join ("/"));
+
+			Bio_.OtherImages_.append ({ {}, {}, {}, thumbUrl, url });;
+		}
 
 		emit ready ();
 		deleteLater ();
-	}
-
-	void PendingArtistBio::handleImagesFinished ()
-	{
-		ImagesFinished_ = true;
-		std::shared_ptr<void> checkGuard (nullptr, [this] (void*) { CheckReady (); });
-
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		QDomDocument doc;
-		if (!doc.setContent (reply->readAll ()))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to parse reply";
-			return;
-		}
-
-		auto item = doc
-				.documentElement ()
-				.firstChildElement ("channel")
-				.firstChildElement ("item");
-		while (!item.isNull ())
-		{
-			const Media::ArtistImage img
-			{
-				item.firstChildElement ("title").text (),
-				item.firstChildElement ("author").text (),
-				QDateTime (),
-				item.firstChildElement ("media:thumbnail").attribute ("url"),
-				item.firstChildElement ("media:content").attribute ("url")
-			};
-
-			Bio_.OtherImages_ << img;
-
-			item = item.nextSiblingElement ("item");
-		}
 	}
 
 	void PendingArtistBio::handleFinished ()
@@ -143,9 +121,19 @@ namespace Lastfmscrobble
 		Bio_.BasicInfo_ = GetArtistInfo (artist);
 		std::reverse (Bio_.BasicInfo_.Tags_.begin (), Bio_.BasicInfo_.Tags_.end ());
 
-		BioFinished_ = true;
+		auto imagesUrl = Bio_.BasicInfo_.Page_;
+		imagesUrl.setPath (imagesUrl.path () + "/+images?sort=date");
 
-		CheckReady ();
+		auto webPage = new QWebPage;
+		webPage->settings ()->setAttribute (QWebSettings::AutoLoadImages, false);
+		webPage->settings ()->setAttribute (QWebSettings::JavascriptEnabled, false);
+		webPage->settings ()->setAttribute (QWebSettings::JavaEnabled, false);
+		webPage->settings ()->setAttribute (QWebSettings::PluginsEnabled, false);
+		webPage->mainFrame ()->load (imagesUrl);
+		connect (webPage,
+				SIGNAL (loadFinished (bool)),
+				this,
+				SLOT (handleImagesFinished ()));
 	}
 
 	void PendingArtistBio::handleError ()
