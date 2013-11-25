@@ -32,11 +32,15 @@
 #include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/itagsmanager.h>
+
+#ifndef DISABLE_SYNC
+#include "syncproxy.h"
+#endif
+
 #include "todotab.h"
 #include "core.h"
 #include "todomanager.h"
 #include "todostorage.h"
-#include "syncproxy.h"
 
 namespace LeechCraft
 {
@@ -62,7 +66,9 @@ namespace Otlozhu
 			TFOpenableByRequest | TFSingle | TFSuggestOpening
 		};
 
+#ifndef DISABLE_SYNC
 		SyncProxy_ = new SyncProxy;
+#endif
 	}
 
 	void Plugin::SecondInit ()
@@ -148,10 +154,12 @@ namespace Otlozhu
 		mgr->GetTodoStorage ()->AddItem (item);
 	}
 
+#ifndef DISABLE_SYNC
 	ISyncProxy* Plugin::GetSyncProxy ()
 	{
 		return SyncProxy_;
 	}
+#endif
 }
 }
 

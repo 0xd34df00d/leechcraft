@@ -66,7 +66,9 @@ namespace Otlozhu
 		void SendEntity (const LeechCraft::Entity&);
 
 		TodoManager* GetTodoManager () const;
+#ifndef DISABLE_SYNC
 		Util::Sync::Stager* GetStager () const;
+#endif
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

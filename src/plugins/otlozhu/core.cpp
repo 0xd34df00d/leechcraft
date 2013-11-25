@@ -28,10 +28,14 @@
  **********************************************************************/
 
 #include "core.h"
-#include "todomanager.h"
+
+#ifndef DISABLE_SYNC
 #include "stager.h"
-#include "todostorage.h"
 #include "stagerhandler.h"
+#endif
+
+#include "todomanager.h"
+#include "todostorage.h"
 
 namespace LeechCraft
 {
@@ -39,13 +43,16 @@ namespace Otlozhu
 {
 	Core::Core ()
 	: TodoManager_ (new TodoManager ("Default", this))
+#ifndef DISABLE_SYNC
 	, Stager_ (new Util::Sync::Stager ("org.LeechCraft.Otlozhu", this))
+#endif
 	{
 		connect (TodoManager_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
 
+#ifndef DISABLE_SYNC
 		auto stagerHandler = new StagerHandler (this);
 
 		auto storage = TodoManager_->GetTodoStorage ();
@@ -61,6 +68,7 @@ namespace Otlozhu
 				SIGNAL (itemDiffGenerated (QString, QVariantMap)),
 				stagerHandler,
 				SLOT (handleItemDiffGenerated (QString, QVariantMap)));
+#endif
 	}
 
 	Core& Core::Instance ()
@@ -89,9 +97,11 @@ namespace Otlozhu
 		return TodoManager_;
 	}
 
+#ifndef DISABLE_SYNC
 	Util::Sync::Stager* Core::GetStager () const
 	{
 		return Stager_;
 	}
+#endif
 }
 }

@@ -2,6 +2,12 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_otlozhu)
 include (InitLCPlugin OPTIONAL)
 
+option (ENABLE_OTLOZHU_SYNC "Enable synchronization support for Otlozhu" ON)
+
+if (NOT ENABLE_OTLOZHU_SYNC)
+	add_definitions (-DDISABLE_SYNC=1)
+endif ()
+
 set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
 include_directories (
@@ -24,10 +30,17 @@ set (SRCS
 	icalgenerator.cpp
 	icalparser.cpp
 	itemsmergedialog.cpp
-	syncproxy.cpp
-	stager.cpp
-	stagerhandler.cpp
 	)
+
+if (ENABLE_OTLOZHU_SYNC)
+	set (SRCS
+		${SRCS}
+		syncproxy.cpp
+		stager.cpp
+		stagerhandler.cpp
+		)
+endif ()
+
 set (FORMS
 	todotab.ui
 	addtododialog.ui
