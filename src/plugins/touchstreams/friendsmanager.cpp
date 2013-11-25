@@ -114,6 +114,7 @@ namespace TouchStreams
 						this,
 						SLOT (handleGotFriends ()));
 			});
+		AuthMgr_->GetAuthKey ();
 	}
 
 	FriendsManager::~FriendsManager ()
@@ -128,13 +129,87 @@ namespace TouchStreams
 
 		const auto& data = QJson::Parser ().parse (reply).toMap ();
 		auto usersList = data ["response"].toList ();
+
+		QList<qlonglong> ids;
+		QMap<qlonglong, QVariantMap> user2info;
 		for (const auto& userVar : usersList)
 		{
 			const auto& map = userVar.toMap ();
-
 			const auto id = map ["user_id"].toLongLong ();
+			ids << id;
+			user2info [id] = map;
+		}
 
-			auto mgr = new AlbumsManager (id, AuthMgr_, Queue_, Proxy_, this);
+		const auto portion = 10;
+		for (int i = 0; i < ids.size (); i += portion)
+		{
+			QStringList sub;
+			QMap<qlonglong, QVariantMap> theseUsersMap;
+			for (int j = i; j < std::min (ids.size (), i + portion); ++j)
+			{
+				sub << QString::number (ids.at (j));
+				theseUsersMap [ids.at (j)] = user2info [ids.at (j)];
+			}
+
+			const auto& code = QString (R"d(
+					var ids = [%1];
+					var i = 0;
+					var res = [];
+					while (i < %2)
+					{
+						var id = ids [i];
+						var albs = API.audio.getAlbums ({ "uid": id, "count": 100 });
+						var trs = API.audio.get ({ "uid": id, "count": 1000 });
+						res = res + [{ "id": id, "albums": albs, "tracks": trs }];
+						i = i + 1;
+					};
+					return res;
+				)d")
+					.arg (sub.join (","))
+					.arg (sub.size ());
+
+			auto nam = Proxy_->GetNetworkAccessManager ();
+			RequestQueue_.push_back ([this, nam, code, theseUsersMap] (const QString& key) -> void
+				{
+					QUrl url ("https://api.vk.com/method/execute");
+
+					auto query = "access_token=" + QUrl::toPercentEncoding (key.toUtf8 ());
+					query += '&';
+					query += "code=" + QUrl::toPercentEncoding (code.toUtf8 ());
+
+					QNetworkRequest req (url);
+					req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+					auto reply = nam->post (req, query);
+					connect (reply,
+							SIGNAL (finished ()),
+							this,
+							SLOT (handleExecuted ()));
+
+					Reply2Users_ [reply] = theseUsersMap;
+				});
+		}
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void FriendsManager::handleExecuted ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& usersMap = Reply2Users_.take (reply);
+
+		const auto& data = QJson::Parser ().parse (reply).toMap ();
+		for (const auto& userDataVar : data ["response"].toList ())
+		{
+			const auto& userData = userDataVar.toMap ();
+
+			const auto id = userData ["id"].toLongLong ();
+
+			const auto& map = usersMap [id];
+
+			auto mgr = new AlbumsManager (id, userData ["albums"], userData ["tracks"],
+					AuthMgr_, Queue_, Proxy_, this);
+
 			Friend2AlbumsManager_ [id] = mgr;
 
 			const auto& name = map ["first_name"].toString () + " " + map ["last_name"].toString ();
@@ -146,10 +221,7 @@ namespace TouchStreams
 			Root_->appendRow (userItem);
 			Friend2Item_ [id] = userItem;
 
-			connect (mgr,
-					SIGNAL (finished (AlbumsManager*)),
-					this,
-					SLOT (handleAlbumsFinished (AlbumsManager*)));
+			handleAlbumsFinished (mgr);
 		}
 	}
 

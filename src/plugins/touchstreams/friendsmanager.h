@@ -32,6 +32,7 @@
 #include <functional>
 #include <QObject>
 #include <QHash>
+#include <QVariantMap>
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItem;
@@ -66,6 +67,8 @@ namespace TouchStreams
 		QHash<qulonglong, AlbumsManager*> Friend2AlbumsManager_;
 
 		QStandardItem *Root_;
+
+		QHash<QNetworkReply*, QMap<qlonglong, QVariantMap>> Reply2Users_;
 	public:
 		FriendsManager (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
 		~FriendsManager ();
@@ -76,6 +79,7 @@ namespace TouchStreams
 	private slots:
 		void refetchFriends ();
 		void handleGotFriends ();
+		void handleExecuted ();
 		void handleAlbumsFinished (AlbumsManager*);
 		void handlePhotoFetched ();
 	};
