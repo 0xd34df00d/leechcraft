@@ -32,6 +32,8 @@
 #include <QDataStream>
 #include <QtDebug>
 #include <util/util.h>
+#include <interfaces/core/itagsmanager.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -77,10 +79,11 @@ namespace Otlozhu
 
 	QVariantMap TodoItem::ToMap () const
 	{
+		const auto& tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (TagIDs_);
 		return Util::MakeMap<QString, QVariant> ({
 				{ "Title", Title_ },
 				{ "Comment", Comment_ },
-				{ "Tags", TagIDs_ },
+				{ "Tags", tags },
 				{ "Deps", Deps_ },
 				{ "Created", Created_ },
 				{ "Due", Due_ },
@@ -107,7 +110,7 @@ namespace Otlozhu
 	{
 		class Applier
 		{
-			TodoItem *Item_;
+			TodoItem * const Item_;
 
 			const QVariantMap& Map_;
 		public:
@@ -124,15 +127,28 @@ namespace Otlozhu
 					Item_->*g = Map_ [name].value<T> ();
 				return *this;
 			}
+
+			template<typename T>
+			Applier& operator() (const QString& name, const T& g)
+			{
+				if (Map_.contains (name))
+					g (Item_, Map_ [name]);
+				return *this;
+			}
 		};
 	}
 
 	void TodoItem::ApplyDiff (const QVariantMap& map)
 	{
-		Applier (this, map)
+		Applier { this, map }
 				("Title", &TodoItem::Title_)
 				("Comment", &TodoItem::Comment_)
-				("Tags", &TodoItem::TagIDs_)
+				("Tags",
+					[] (TodoItem *item, const QVariant& tagsVar)
+					{
+						item->TagIDs_ = Core::Instance ().GetProxy ()->
+								GetTagsManager ()->GetIDs (tagsVar.toStringList ());
+					})
 				("Deps", &TodoItem::Deps_)
 				("Created", &TodoItem::Created_)
 				("Due", &TodoItem::Due_)
