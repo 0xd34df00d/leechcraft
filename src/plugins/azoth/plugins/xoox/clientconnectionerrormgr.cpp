@@ -130,7 +130,6 @@ namespace Xoox
 		case QXmppStanza::Error::NotAllowed:
 			return tr ("Action is not allowed.");
 		case QXmppStanza::Error::NotAuthorized:
-			emit serverAuthFailed ();
 			return tr ("Not authorized.");
 		case QXmppStanza::Error::PaymentRequired:
 			return tr ("Payment required.");
@@ -170,6 +169,9 @@ namespace Xoox
 			default:
 				break;
 			}
+
+		if (error.condition () == QXmppStanza::Error::NotAuthorized)
+			emit serverAuthFailed ();
 
 		QString typeText;
 		if (!iq.from ().isEmpty ())
