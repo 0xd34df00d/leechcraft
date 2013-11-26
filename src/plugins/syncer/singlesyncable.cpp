@@ -96,7 +96,8 @@ namespace Syncer
 			Proxy_->Merge (ourOps, { *deletedList });
 		}
 
-		if (knownList != reply.operations.end ())
+		if (knownList != reply.operations.end () &&
+				!knownList->getItems ().empty ())
 		{
 			const auto& str = Laretz::PacketGenerator {}
 					({ Laretz::OpType::Fetch, { knownList->getItems () } })
