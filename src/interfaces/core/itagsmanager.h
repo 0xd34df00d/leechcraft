@@ -59,6 +59,14 @@ public:
 	 */
 	virtual tag_id GetID (const QString& tag) = 0;
 
+	QList<tag_id> GetIDs (const QStringList& tags)
+	{
+		QList<tag_id> result;
+		for (const auto& tag : tags)
+			result << GetID (tag);
+		return result;
+	}
+
 	/** @brief Returns the tag with the given id.
 	 *
 	 * If there is no such tag, a null QString is returned. A sensible
@@ -71,6 +79,14 @@ public:
 	 * @sa GetID
 	 */
 	virtual QString GetTag (tag_id id) const = 0;
+
+	QStringList GetTags (const QList<tag_id>& ids)
+	{
+		QStringList result;
+		for (const auto& id : ids)
+			result << GetTag (id);
+		return result;
+	}
 
 	/** Returns all tags existing in LeechCraft now.
 	 *
