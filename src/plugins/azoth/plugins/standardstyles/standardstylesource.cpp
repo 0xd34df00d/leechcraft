@@ -312,16 +312,20 @@ namespace StandardStyles
 
 		QWebElement elem = frame->findFirstElement ("body");
 
-		const auto isRead = Proxy_->IsMessageRead (msgObj);
-		if (!isActiveChat &&
-				!isRead && IsLastMsgRead_.value (frame, false))
+		if (msg->GetMessageType () == IMessage::MTChatMessage ||
+			msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
-			auto hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
-			if (!hr.isNull ())
-				hr.removeFromDocument ();
-			elem.appendInside ("<hr class=\"lastSeparator\" />");
+			const auto isRead = Proxy_->IsMessageRead (msgObj);
+			if (!isActiveChat &&
+					!isRead && IsLastMsgRead_.value (frame, false))
+			{
+				auto hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
+				if (!hr.isNull ())
+					hr.removeFromDocument ();
+				elem.appendInside ("<hr class=\"lastSeparator\" />");
+			}
+			IsLastMsgRead_ [frame] = isRead;
 		}
-		IsLastMsgRead_ [frame] = isRead;
 
 		elem.appendInside (QString ("<div class='%1'>%2</div>")
 					.arg (divClass)
