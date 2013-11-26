@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
 Name=LeechCraft
-GenericName=Internet client
-GenericName[ru]=Интернет-клиент
+GenericName=Live environment
+GenericName[ru]=Рабочая среда
 Icon=leechcraft_main
 Exec=leechcraft
 Categories=Network;FileTransfer;News;P2P;IRCClient;Qt;
