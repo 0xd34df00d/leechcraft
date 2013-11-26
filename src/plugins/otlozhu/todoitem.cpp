@@ -88,46 +88,19 @@ namespace Otlozhu
 			});
 	}
 
-	namespace
-	{
-		class Checker
-		{
-			const TodoItem *This_;
-			const TodoItem *That_;
-
-			QVariantMap Result_;
-		public:
-			Checker (const TodoItem *our, const TodoItem *that)
-			: This_ (our)
-			, That_ (that)
-			{
-			}
-
-			template<typename T>
-			Checker& operator() (const QString& name, T TodoItem::* g)
-			{
-				if (This_->*g != That_->*g)
-					Result_ [name] = This_->*g;
-				return *this;
-			}
-
-			operator QVariantMap () const
-			{
-				return Result_;
-			}
-		};
-	}
-
 	QVariantMap TodoItem::DiffWith (const TodoItem_ptr item) const
 	{
-		return Checker (this, item.get ())
-				("Title", &TodoItem::Title_)
-				("Comment", &TodoItem::Comment_)
-				("Tags", &TodoItem::TagIDs_)
-				("Deps", &TodoItem::Deps_)
-				("Created", &TodoItem::Created_)
-				("Due", &TodoItem::Due_)
-				("Percentage", &TodoItem::Percentage_);
+		const auto& thatMap = item->ToMap ();
+		auto thisMap = ToMap ();
+		for (auto i = thisMap.begin (); i != thisMap.end ();)
+		{
+			const auto& key = i.key ();
+			if (thisMap [key] == thatMap [key])
+				i = thisMap.erase (i);
+			else
+				++i;
+		}
+		return thisMap;
 	}
 
 	namespace
