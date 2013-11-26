@@ -150,8 +150,10 @@ namespace Otlozhu
 								GetTagsManager ()->GetIDs (tagsVar.toStringList ());
 					})
 				("Deps", &TodoItem::Deps_)
-				("Created", &TodoItem::Created_)
-				("Due", &TodoItem::Due_)
+				("Created", [] (TodoItem *item, QVariant time)
+						{ item->Created_.setTime_t (time.toUInt ()); })
+				("Due", [] (TodoItem *item, QVariant time)
+						{ item->Due_.setTime_t (time.toUInt ()); })
 				("Percentage", &TodoItem::Percentage_);
 	}
 
