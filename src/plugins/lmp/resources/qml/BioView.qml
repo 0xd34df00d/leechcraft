@@ -73,7 +73,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             width: 32
             height: width
-            actionIconURL: "image://ThemeIcons/go-previous"
+            actionIconURL: "image://sysIcons/go-previous"
 
             onTriggered: artistImagesView.decrementCurrentIndex()
         }
@@ -85,7 +85,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             width: 32
             height: width
-            actionIconURL: "image://ThemeIcons/go-next"
+            actionIconURL: "image://sysIcons/go-next"
 
             onTriggered: artistImagesView.incrementCurrentIndex()
         }
