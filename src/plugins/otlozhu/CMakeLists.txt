@@ -32,6 +32,7 @@ set (SRCS
 	itemsmergedialog.cpp
 	)
 
+set (LARETZ_LIB)
 if (ENABLE_OTLOZHU_SYNC)
 	set (SRCS
 		${SRCS}
@@ -39,6 +40,7 @@ if (ENABLE_OTLOZHU_SYNC)
 		stager.cpp
 		stagerhandler.cpp
 		)
+	set (LARETZ_LIB laretz_ops)
 endif ()
 
 set (FORMS
@@ -62,7 +64,7 @@ add_library (leechcraft_otlozhu SHARED
 target_link_libraries (leechcraft_otlozhu
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	laretz_ops
+	${LARETZ_LIB}
 	)
 install (TARGETS leechcraft_otlozhu DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
