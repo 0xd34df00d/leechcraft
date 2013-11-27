@@ -66,7 +66,6 @@ namespace Sync
 		Q_OBJECT
 
 		QDir StagingDir_;
-		unsigned long LastID_;
 
 		std::shared_ptr<Laretz::OpSummer> Summer_;
 

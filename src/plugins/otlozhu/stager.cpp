@@ -144,15 +144,10 @@ namespace Sync
 	Stager::Stager (const QString& areaId, QObject *parent)
 	: QObject (parent)
 	, StagingDir_ (Util::CreateIfNotExists ("sync/staging/" + areaId))
-	, LastID_ (0)
 	, Summer_ (new Laretz::OpSummer)
 	, IsEnabled_ (StagingDir_.exists ("enabled"))
 	{
-		QFile file (StagingDir_.absoluteFilePath ("last"));
-		if (file.exists ())
 		{
-			file.open (QIODevice::ReadOnly);
-			LastID_ = file.readAll ().toULong ();
 		}
 	}
 
