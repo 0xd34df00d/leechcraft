@@ -1457,10 +1457,6 @@ namespace Aggregator
 			Impl_->Ui_.ItemView_->SetHtml (QString (), QUrl ());
 			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", link);
 
-			const QModelIndex& sourceIndex =
-					Impl_->Ui_.Items_->currentIndex ();
-			const QModelIndex& cIndex =
-					Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
 			if (html.isEmpty ())
 			{
 				Impl_->ActionItemCommentsSubscribe_->setEnabled (false);
@@ -1470,6 +1466,12 @@ namespace Aggregator
 			}
 			else
 			{
+				auto sourceIndex = Impl_->Ui_.Items_->currentIndex ();
+				if (!sourceIndex.isValid ())
+					sourceIndex = rows.value (0);
+
+				const auto& cIndex = Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
+
 				Selected (cIndex);
 
 				QString commentsRSS = GetItem (cIndex)->CommentsLink_;
