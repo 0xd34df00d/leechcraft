@@ -1439,8 +1439,9 @@ namespace Aggregator
 		{
 			QString html;
 			QUrl link;
-			Q_FOREACH (const QModelIndex& selIndex,
-					Impl_->Ui_.Items_->selectionModel ()->selectedRows ())
+
+			const auto& rows = Impl_->Ui_.Items_->selectionModel ()->selectedRows ();
+			for (const auto& selIndex : rows)
 			{
 				const QModelIndex& sindex = Impl_->
 						ItemsFilterModel_->mapToSource (selIndex);
