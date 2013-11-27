@@ -190,8 +190,11 @@ namespace Syncer
 
 		for (auto& op : ourOps)
 			for (auto& item : op.getItems ())
+			{
+				item.setSeq (maxId);
 				if (item.getParentId ().empty ())
 					item.setParentId (ID_.constData ());
+			}
 
 		State_ = State::Sent;
 
