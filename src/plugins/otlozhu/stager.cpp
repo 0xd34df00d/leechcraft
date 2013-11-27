@@ -31,6 +31,7 @@
 #include <sstream>
 #include <vector>
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/string.hpp>
@@ -147,7 +148,17 @@ namespace Sync
 	, Summer_ (new Laretz::OpSummer)
 	, IsEnabled_ (StagingDir_.exists ("enabled"))
 	{
+		QFile compFile (StagingDir_.absoluteFilePath ("compressed"));
+		if (compFile.exists () && compFile.open (QIODevice::ReadOnly))
 		{
+			const auto& data = compFile.readAll ();
+			std::istringstream arIstr (data.constData ());
+			boost::archive::text_iarchive iars (arIstr);
+			std::vector<Laretz::Operation> ops;
+			iars >> ops;
+
+			for (const auto& op : ops)
+				(*Summer_) += op;
 		}
 	}
 
@@ -184,7 +195,7 @@ namespace Sync
 			(*Summer_) += op;
 
 		QFile file (StagingDir_.absoluteFilePath ("compressed"));
-		if (!file.open (QIODevice::WriteOnly))
+		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "cannot open staging file"
