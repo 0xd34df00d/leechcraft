@@ -105,9 +105,6 @@ namespace LastSeen
 				return false;
 			}
 
-			if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
-				return false;
-
 			return true;
 		}
 	}
