@@ -73,6 +73,7 @@ namespace Util
 
 		Color_ = color;
 		emit colorChanged ();
+		update ();
 	}
 
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
