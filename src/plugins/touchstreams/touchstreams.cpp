@@ -114,7 +114,7 @@ namespace TouchStreams
 
 	QIcon Plugin::GetServiceIcon () const
 	{
-		static QIcon icon;
+		static QIcon icon (":/touchstreams/resources/images/vk.svg");
 		return icon;
 	}
 

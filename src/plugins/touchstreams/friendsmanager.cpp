@@ -32,6 +32,7 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QStandardItem>
+#include <QIcon>
 #include <QTimer>
 #include <QtDebug>
 #include <qjson/parser.h>
@@ -60,6 +61,7 @@ namespace TouchStreams
 	, Queue_ (queueMgr)
 	, Root_ (new QStandardItem (tr ("VKontakte: friends")))
 	{
+		Root_->setIcon (QIcon (":/touchstreams/resources/images/vk.svg"));
 		Root_->setEditable (false);
 
 		AuthMgr_->ManageQueue (&RequestQueue_);
