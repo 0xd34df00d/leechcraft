@@ -82,7 +82,7 @@ namespace Blogique
 	, PostTargetAction_ (0)
 	, ProgressBarAction_ (0)
 	, DraftEntriesWidget_ (new DraftEntriesWidget (this))
-	, BlogEntriesWidget_ (new BlogEntriesWidget (this))
+	, BlogEntriesWidget_ (new BlogEntriesWidget)
 	, CommentsWidget_ (new CommentsWidget (this))
 	, PrevAccountId_ (-1)
 	, EntryType_ (EntryType::None)
@@ -187,6 +187,7 @@ namespace Blogique
 	void BlogiqueWidget::Remove ()
 	{
 		emit removeTab (this);
+		BlogEntriesWidget_->deleteLater ();
 		PostTargetBox_->deleteLater ();
 		Ui_.SideWidget_->deleteLater ();
 		deleteLater ();
@@ -399,6 +400,12 @@ namespace Blogique
 			AccountsBox_->addItem (acc->GetAccountName ());
 			Id2Account_ [AccountsBox_->count () - 1] = acc;
 		}
+		int index = AccountsBox_->findText (XmlSettingsManager::Instance ()
+				.property ("LastActiveAccountName").toString (),
+					Qt::MatchFixedString);
+		if (index > AccountsBox_->count ())
+			index = -1;
+
 		AccountsBox_->addItem (Core::Instance ().GetCoreProxy ()->GetIcon ("list-add"),
 				tr ("Add new account..."));
 
@@ -406,11 +413,7 @@ namespace Blogique
 
 		PostTargetBox_ = new QComboBox;
 
-		int index = AccountsBox_->findText (XmlSettingsManager::Instance ()
-				.property ("LastActiveAccountName").toString (),
-					Qt::MatchFixedString);
-
-		AccountsBox_->setCurrentIndex (index == -1 ? -1 : index);
+		AccountsBox_->setCurrentIndex (index);
 
 		connect (AccountsBox_,
 				SIGNAL (currentIndexChanged (int)),
@@ -631,6 +634,9 @@ namespace Blogique
 
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
 	{
+		if (id == -1)
+			return;
+
 		if (id == AccountsBox_->count () - 1)
 		{
 			Core::Instance ().GetCoreProxy ()->GetPluginsManager ()->
