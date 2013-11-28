@@ -165,11 +165,11 @@
       <item tag="&lt;div id=&quot;songlyrics&quot;&gt;"/>
     </extract>
   </provider>
-  <provider name="songlyrics.com" title="{title} LYRICS - {artist}" charset="utf-8" url="http://www.songlyrics.com/{artist}/{title}-lyrics/">
-    <urlFormat replace=" ._@,;&amp;\/&quot;" with="-"/>
-    <urlFormat replace="'" with="_"/>
+  <provider name="songlyrics.com" title="{artist} - {title} LYRICS" charset="utf-8" url="http://www.songlyrics.com/{artist}/{title}-lyrics/">
+    <urlFormat replace=" ._@,;&amp;\/&quot;()'" with="-"/>
+    <urlFormat replace="?" with=""/>
     <extract>
-      <item tag="&lt;p id=&quot;songLyricsDiv&quot; ondragstart=&quot;return false;&quot; onselectstart=&quot;return false;&quot; oncontextmenu=&quot;return false;&quot; class=&quot;songLyricsV14&quot; style=&quot;font-size: 14px;z-index: 9999;position: absolute;left: -6000px;&quot;&gt;"/>
+      <item tag="&lt;p id=&quot;songLyricsDiv&quot; ondragstart=&quot;return false;&quot; onselectstart=&quot;return false;&quot; oncontextmenu=&quot;return false;&quot; class=&quot;songLyricsV14&quot;&gt;"/>
     </extract>
     <exclude>
       <item begin="&#10;[" end="] "/>
