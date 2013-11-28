@@ -45,5 +45,6 @@ Rectangle {
         points: pointsList
 
         leftAxisEnabled: true
+        leftAxisTitle: qsTr ("Temperature, °C")
     }
 }
