@@ -46,5 +46,6 @@ Rectangle {
 
         leftAxisEnabled: true
         leftAxisTitle: qsTr ("Temperature, °C")
+        yGridEnabled: true
     }
 }
