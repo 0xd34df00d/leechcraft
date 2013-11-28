@@ -33,7 +33,6 @@
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
 #include <QMessageBox>
-#include <boost/concept_check.hpp>
 #include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/tooltipitem.h>
@@ -67,12 +66,15 @@ namespace Blogique
 						.GetCoreProxy ()->GetColorThemeManager (), this));
 		context->setContextProperty ("commentsModel", ProxyModel_);
 		context->setContextProperty ("parentWidget", this);
+
 		auto engine = Ui_.CommentsView_->engine ();
 		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine->addImportPath (cand);
+
 		Ui_.CommentsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique", "commentsview.qml")));
+
 		connect (Ui_.CommentsView_->rootObject (),
 				SIGNAL (linkActivated (QString)),
 				this,
@@ -109,7 +111,7 @@ namespace Blogique
 
 	CommentEntry CommentsWidget::GetRecentCommentFromIndex (const QModelIndex& index) const
 	{
-		return Item2RecentComment_.value (CommentsModel_->itemFromIndex (index), CommentEntry ());
+		return Item2RecentComment_.value (CommentsModel_->itemFromIndex (index));
 	}
 
 	void CommentsWidget::FillModel ()
@@ -154,8 +156,8 @@ namespace Blogique
 	CommentEntry CommentsWidget::GetComment (const QString& accountId, int commentId) const
 	{
 		for (const auto& comment : RecentComments_)
-			if (comment.AccountID_ == accountId.toUtf8 () &&
-					comment.CommentID_ == commentId)
+			if (comment.CommentID_ == commentId &&
+					comment.AccountID_ == accountId.toUtf8 ())
 				return comment;
 		return CommentEntry ();
 	}
@@ -170,17 +172,17 @@ namespace Blogique
 
 	void CommentsWidget::handleDeleteComment (const QString& accountId, int commentId)
 	{
-		auto comment = GetComment (accountId, commentId);
+		const auto& comment = GetComment (accountId, commentId);
 		if (!comment.isValid ())
 			return;
 
-		if (auto account = Core::Instance ().GetAccountFromID (comment.AccountID_))
+		if (auto account = Core::Instance ().GetAccountByID (comment.AccountID_))
 		{
 			auto res = QMessageBox::question (this, "LeechCraft",
 					tr ("Do you want to delete whole comment thread too?"),
 					QMessageBox::Yes | QMessageBox::No);
 			bool deleteThread = res == QMessageBox::Yes;
-			
+
 			account->DeleteComment (commentId, deleteThread);
 		}
 	}
@@ -208,12 +210,12 @@ namespace Blogique
 
 	void CommentsWidget::handleAddComment (const QString& accountId, int entryID, int commentId)
 	{
-		if (auto account = Core::Instance ().GetAccountFromID (accountId.toUtf8 ()))
+		if (auto account = Core::Instance ().GetAccountByID (accountId.toUtf8 ()))
 		{
 			AddCommentDialog dlg;
 			if (dlg.exec () == QDialog::Rejected)
 				return;
-			
+
 			CommentEntry ce;
 			ce.AccountID_ = accountId.toUtf8 ();
 			ce.CommentSubject_ = dlg.GetSubject ();
@@ -243,7 +245,7 @@ namespace Blogique
 		object->setCursor (QCursor (cursor));
 	}
 
-	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentID& comment)
+	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentsWidget::CommentID& comment)
 	{
 		out << static_cast<qint8> (1)
 				<< comment.AccountID_
@@ -251,7 +253,7 @@ namespace Blogique
 		return out;
 	}
 
-	QDataStream& operator>> (QDataStream& in, LeechCraft::Blogique::CommentID& comment)
+	QDataStream& operator>> (QDataStream& in, LeechCraft::Blogique::CommentsWidget::CommentID& comment)
 	{
 		qint8 version = 0;
 		in >> version;
@@ -261,7 +263,7 @@ namespace Blogique
 		return in;
 	}
 
-	uint  qHash (const CommentID& cid)
+	uint qHash (const LeechCraft::Blogique::CommentsWidget::CommentID& cid)
 	{
 		return qHash (cid.AccountID_) + ::qHash (cid.CommentID_);
 	}

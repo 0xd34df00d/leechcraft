@@ -42,7 +42,7 @@ namespace Blogique
 	{
 		Q_OBJECT
 
-		CommentsWidget *CommentsWidget_;
+		CommentsWidget * const CommentsWidget_;
 
 	public:
 		SortCommentsProxyModel (CommentsWidget *widget, QObject *parent = 0);

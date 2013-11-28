@@ -42,8 +42,8 @@ namespace Blogique
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		qRegisterMetaType<LeechCraft::Blogique::CommentIDs_t> ("LeechCraft::Blogique::CommentIDs_t");
-		qRegisterMetaTypeStreamOperators<LeechCraft::Blogique::CommentIDs_t> ();
+		qRegisterMetaType<LeechCraft::Blogique::CommentsWidget::CommentIDs_t> ("LeechCraft::Blogique::CommentIDs_t");
+		qRegisterMetaTypeStreamOperators<LeechCraft::Blogique::CommentsWidget::CommentIDs_t> ();
 
 		Util::InstallTranslator ("blogique");
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);

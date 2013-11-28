@@ -29,7 +29,6 @@
 
 #include "commentsmanager.h"
 #include <QTimer>
-#include <boost/concept_check.hpp>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -61,9 +60,7 @@ namespace Blogique
 	void CommentsManager::checkForComments ()
 	{
 		for (auto acc : Core::Instance ().GetAccounts ())
-			if (auto bloggingPlatform = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ()))
-				if (bloggingPlatform->GetFeatures () & IBloggingPlatform::BPFSupportComments)
-					acc->RequestRecentComments ();
+			acc->RequestRecentComments ();
 	}
 
 	void CommentsManager::handleCommentsCheckingChanged ()

@@ -106,8 +106,8 @@ namespace Blogique
 
 		bool operator== (const CommentEntry& newComment) const
 		{
-			return AccountID_ == newComment.AccountID_ &&
-					CommentID_ == newComment.CommentID_;
+			return CommentID_ == newComment.CommentID_ &&
+					AccountID_ == newComment.AccountID_;
 		}
 	};
 

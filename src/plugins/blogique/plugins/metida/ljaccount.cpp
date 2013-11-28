@@ -739,8 +739,7 @@ namespace Metida
 			recentComment.CommentID_ = comment.ReplyId_;
 			recentComment.ParentCommentID_ = comment.ParentReplyId_;
 			recentComment.CommentUrl_ = QUrl (recentComment.EntryUrl_.toString () +
-					QString ("?thread=%1#t%2")
-							.arg (recentComment.CommentID_)
+					QString ("?thread=%1#t%1")
 							.arg (recentComment.CommentID_));
 
 			return recentComment;
@@ -753,10 +752,11 @@ namespace Metida
 			return;
 
 		QList<CommentEntry> recentComments;
+		const auto& id = GetAccountID ();
 		std::transform (comments.begin (), comments.end (), std::back_inserter (recentComments),
-				[this] (decltype (comments.first ()) comment)
+				[id] (decltype (comments.first ()) comment)
 				{
-					return LJCommentEntry2RecentComment (comment, GetAccountID ());
+					return LJCommentEntry2RecentComment (comment, id);
 				});
 		emit gotRecentComments (recentComments);
 	}

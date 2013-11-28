@@ -143,7 +143,7 @@ namespace Blogique
 		return result;
 	}
 
-	IAccount* Core::GetAccountFromID (const QByteArray& id) const
+	IAccount* Core::GetAccountByID (const QByteArray& id) const
 	{
 		for (auto acc : GetAccounts ())
 			if (acc->GetAccountID () == id)

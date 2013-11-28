@@ -31,7 +31,6 @@
 #pragma once
 
 #include <QWidget>
-#include <boost/fusion/adapted/std_pair.hpp>
 #include "interfaces/blogique/iaccount.h"
 #include "ui_commentswidget.h"
 
@@ -44,34 +43,37 @@ namespace Blogique
 	class CommentsModel;
 	class SortCommentsProxyModel;
 
-	struct CommentID
-	{
-		QByteArray AccountID_;
-		qint64 CommentID_;
-
-		CommentID ()
-		: CommentID_ (-1)
-		{}
-
-		bool operator== (const CommentID& otherComment) const
-		{
-			return AccountID_ == otherComment.AccountID_ &&
-					CommentID_ == otherComment.CommentID_;
-		}
-	};
-	typedef QList<CommentID> CommentIDs_t;
-
 	class CommentsWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::CommentsWidget Ui_;
 
-		CommentsModel *CommentsModel_;
-		SortCommentsProxyModel *ProxyModel_;
+		CommentsModel * const CommentsModel_;
+		SortCommentsProxyModel * const ProxyModel_;
 		QHash<QStandardItem*, CommentEntry> Item2RecentComment_;
 		QSet<CommentEntry> RecentComments_;
+
+	public:
+		struct CommentID
+		{
+			QByteArray AccountID_;
+			qint64 CommentID_;
+
+			CommentID ()
+			: CommentID_ (-1)
+			{}
+
+			bool operator== (const CommentID& otherComment) const
+			{
+				return CommentID_ == otherComment.CommentID_ &&
+				AccountID_ == otherComment.AccountID_;
+			}
+		};
+		typedef QList<CommentID> CommentIDs_t;
+	private:
 		QSet<CommentID> ReadComments_;
+
 	public:
 		CommentsWidget (QWidget *parent = 0);
 
@@ -92,10 +94,10 @@ namespace Blogique
 		void setItemCursor (QGraphicsObject *object, const QString& shape);
 	};
 
-	QDataStream& operator>> (QDataStream& in, LeechCraft::Blogique::CommentID& comment);
-	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentID& comment);
-	uint qHash (const CommentID& cid);
+	QDataStream& operator>> (QDataStream& in, LeechCraft::Blogique::CommentsWidget::CommentID& comment);
+	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentsWidget::CommentID& comment);
+	uint qHash (const LeechCraft::Blogique::CommentsWidget::CommentID& cid);
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Blogique::CommentIDs_t)
+Q_DECLARE_METATYPE (LeechCraft::Blogique::CommentsWidget::CommentIDs_t)

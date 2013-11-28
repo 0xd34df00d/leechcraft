@@ -48,7 +48,7 @@ namespace Blogique
 	{
 		const auto& leftRecentCommment = CommentsWidget_->GetRecentCommentFromIndex (left);
 		const auto& rightRecentCommment = CommentsWidget_->GetRecentCommentFromIndex (right);
- 		return leftRecentCommment.CommentDateTime_ < rightRecentCommment.CommentDateTime_;
+		return leftRecentCommment.CommentDateTime_ < rightRecentCommment.CommentDateTime_;
 	}
 }
 }
