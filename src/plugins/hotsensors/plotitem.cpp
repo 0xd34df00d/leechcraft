@@ -71,12 +71,7 @@ namespace Util
 
 	void PlotItem::SetMinYValue (double val)
 	{
-		if (std::fabs (val - MinYValue_) < std::numeric_limits<double>::epsilon ())
-			return;
-
-		MinYValue_ = val;
-		emit minYValueChanged ();
-		update ();
+		SetNewValue (val, MinYValue_, [this] { emit minYValueChanged (); });
 	}
 
 	double PlotItem::GetMaxYValue () const
@@ -86,12 +81,7 @@ namespace Util
 
 	void PlotItem::SetMaxYValue (double val)
 	{
-		if (std::fabs (val - MaxYValue_) < std::numeric_limits<double>::epsilon ())
-			return;
-
-		MaxYValue_ = val;
-		emit maxYValueChanged ();
-		update ();
+		SetNewValue (val, MaxYValue_, [this] { emit maxYValueChanged (); });
 	}
 
 	bool PlotItem::GetYGridEnabled () const
@@ -121,12 +111,7 @@ namespace Util
 
 	void PlotItem::SetColor (const QColor& color)
 	{
-		if (Color_ == color)
-			return;
-
-		Color_ = color;
-		emit colorChanged ();
-		update ();
+		SetNewValue (color, Color_, [this] { emit colorChanged (); });
 	}
 
 	bool PlotItem::GetLeftAxisEnabled () const
@@ -136,12 +121,7 @@ namespace Util
 
 	void PlotItem::SetLeftAxisEnabled (bool enabled)
 	{
-		if (enabled == LeftAxisEnabled_)
-			return;
-
-		LeftAxisEnabled_ = enabled;
-		emit leftAxisEnabledChanged ();
-		update ();
+		SetNewValue (enabled, LeftAxisEnabled_, [this] { emit leftAxisEnabledChanged (); });
 	}
 
 	bool PlotItem::GetBottomAxisEnabled () const
@@ -151,12 +131,7 @@ namespace Util
 
 	void PlotItem::SetBottomAxisEnabled (bool enabled)
 	{
-		if (enabled == BottomAxisEnabled_)
-			return;
-
-		BottomAxisEnabled_ = enabled;
-		emit bottomAxisEnabledChanged ();
-		update ();
+		SetNewValue (enabled, BottomAxisEnabled_, [this] { emit bottomAxisEnabledChanged (); });
 	}
 
 	QString PlotItem::GetLeftAxisTitle () const
@@ -166,12 +141,7 @@ namespace Util
 
 	void PlotItem::SetLeftAxisTitle (const QString& title)
 	{
-		if (title == LeftAxisTitle_)
-			return;
-
-		LeftAxisTitle_ = title;
-		emit leftAxisTitleChanged ();
-		update ();
+		SetNewValue (title, LeftAxisTitle_, [this] { emit leftAxisTitleChanged (); });
 	}
 
 	QString PlotItem::GetBottomAxisTitle () const
@@ -181,12 +151,7 @@ namespace Util
 
 	void PlotItem::SetBottomAxisTitle (const QString& title)
 	{
-		if (title == BottomAxisTitle_)
-			return;
-
-		BottomAxisTitle_ = title;
-		emit bottomAxisTitleChanged ();
-		update ();
+		SetNewValue (title, BottomAxisTitle_, [this] { emit bottomAxisTitleChanged (); });
 	}
 
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
