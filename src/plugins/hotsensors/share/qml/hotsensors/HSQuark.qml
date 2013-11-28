@@ -77,12 +77,12 @@ Rectangle {
                         "x": global.x,
                         "y": global.y,
                         "existing": "ignore",
-                        "svg": rawSvg,
+                        "pointsList": pointsList,
                         "colorProxy": colorProxy,
                         "sensorName": sensorName
                     };
                     tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
-                    tooltip.svg = (function() { return rawSvg; });
+                    tooltip.pointsList = (function() { return pointsList; });
                 }
                 onExited: if (tooltip != null) { tooltip.closeRequested(); tooltip = null; }
             }

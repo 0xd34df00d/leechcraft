@@ -1,4 +1,5 @@
 import QtQuick 1.1
+import org.LC.common 1.0
 
 Rectangle {
     id: rootRect
@@ -10,7 +11,7 @@ Rectangle {
 
     signal closeRequested()
 
-    property variant svg
+    property variant pointsList
 
     gradient: Gradient {
         GradientStop {
@@ -35,17 +36,12 @@ Rectangle {
         font.bold: true
     }
 
-    Image {
+    Plot {
         anchors.top: sensorNameLabel.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
 
-        sourceSize.width: width
-        sourceSize.height: height
-
-        source: "data:," + svg
-        smooth: true
-        asynchronous: false
+        points: pointsList
     }
 }
