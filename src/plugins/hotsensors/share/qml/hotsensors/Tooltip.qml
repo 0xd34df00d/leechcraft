@@ -43,5 +43,7 @@ Rectangle {
         anchors.bottom: parent.bottom
 
         points: pointsList
+
+        leftAxisEnabled: true
     }
 }
