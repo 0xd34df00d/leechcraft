@@ -52,17 +52,12 @@ Rectangle {
             height: rootRect.itemSize
             width: rootRect.itemSize
 
-            Image {
+            Plot {
                 id: sensorImage
-
                 height: rootRect.itemSize
                 width: rootRect.itemSize
 
-                sourceSize.width: width
-                sourceSize.height: height
-
-                source: "data:," + rawSvg
-                asynchronous: false
+                points: pointsList
             }
 
             Text {

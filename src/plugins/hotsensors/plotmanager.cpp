@@ -36,12 +36,14 @@
 #include <QUrl>
 #include <QFile>
 #include <QDir>
-#include <QtDeclarative/QDeclarativeImageProvider>
+#include <QDeclarativeImageProvider>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_renderer.h>
 #include "contextwrapper.h"
 #include "sensorsgraphmodel.h"
+
+Q_DECLARE_METATYPE (QList<QPointF>)
 
 namespace LeechCraft
 {
@@ -112,8 +114,10 @@ namespace HotSensors
 
 			QVector<double> ySamples;
 			QVector<double> xSamples;
+			QList<QPointF> points;
 			for (const auto& item : *i)
 			{
+				points.append ({ static_cast<qreal> (xSamples.size ()), item });
 				ySamples << item;
 				xSamples << xSamples.size ();
 			}
@@ -141,6 +145,7 @@ namespace HotSensors
 			item->setData (url, SensorsGraphModel::IconURL);
 			item->setData (name, SensorsGraphModel::SensorName);
 			item->setData (svgContents.data (), SensorsGraphModel::SVG);
+			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);
 			if (!isKnownSensor)
 				items << item;
 		}
