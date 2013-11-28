@@ -1,4 +1,4 @@
-/**********************************************************************
+ /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010-2012  Oleg Linkin
  *
@@ -133,7 +133,15 @@ namespace Metida
 		connect (LJXmlRpc_,
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
 				this,
-				SIGNAL (gotRecentComments (QList<LJCommentEntry>)));
+				SLOT (handleGotRecentComments (QList<LJCommentEntry>)));
+		connect (LJXmlRpc_,
+				SIGNAL (commentsDeleted (QList<qint64>)),
+				this,
+				SLOT (handleCommentDeleted (QList<qint64>)));
+		connect (LJXmlRpc_,
+				SIGNAL (commentSent (QUrl)),
+				this,
+				SLOT (handleCommentSent (QUrl)));
 
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
@@ -347,6 +355,16 @@ namespace Metida
 	void LJAccount::RequestRecentComments ()
 	{
 		LJXmlRpc_->RequestRecentCommments ();
+	}
+
+	void LJAccount::AddComment (const CommentEntry& comment)
+	{
+		LJXmlRpc_->AddComment (comment);
+	}
+
+	void LJAccount::DeleteComment (qint64 id, bool deleteThread)
+	{
+		LJXmlRpc_->DeleteComment (id, deleteThread);
 	}
 
 	QList<QAction*> LJAccount::GetUpdateActions () const
@@ -663,7 +681,7 @@ namespace Metida
 	{
 		if (ids.isEmpty ())
 			return;
-		
+
 		Entity e = Util::MakeNotification ("Blogique Metida",
 				tr ("You have unread messages in account %1")
 						.arg ("<em>" + GetAccountName () + "</em>"),
@@ -686,7 +704,7 @@ namespace Metida
 				});
 		Core::Instance ().SendEntity (e);
 	}
-	
+
 	void LJAccount::handleMessagesRead ()
 	{
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
@@ -699,6 +717,62 @@ namespace Metida
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
 				tr ("Message has been sent successfully"),
 				Priority::PInfo_));
+	}
+
+	namespace
+	{
+		CommentEntry LJCommentEntry2RecentComment (const LJCommentEntry& comment,
+				const QByteArray& accountID)
+		{
+			CommentEntry recentComment;
+
+			recentComment.AccountID_ = accountID;
+
+			recentComment.EntryID_ = comment.NodeId_;
+			recentComment.EntrySubject_ = comment.NodeSubject_;
+			recentComment.EntryUrl_ = comment.NodeUrl_;
+
+			recentComment.CommentSubject_ = comment.Subject_;
+			recentComment.CommentText_ = comment.Text_;
+			recentComment.CommentAuthor_ = comment.PosterName_;
+			recentComment.CommentDateTime_ = comment.PostingDate_;
+			recentComment.CommentID_ = comment.ReplyId_;
+			recentComment.ParentCommentID_ = comment.ParentReplyId_;
+			recentComment.CommentUrl_ = QUrl (recentComment.EntryUrl_.toString () +
+					QString ("?thread=%1#t%1")
+							.arg (recentComment.CommentID_));
+
+			return recentComment;
+		}
+	}
+
+	void LJAccount::handleGotRecentComments (const QList<LJCommentEntry>& comments)
+	{
+		if (comments.isEmpty ())
+			return;
+
+		QList<CommentEntry> recentComments;
+		const auto& id = GetAccountID ();
+		std::transform (comments.begin (), comments.end (), std::back_inserter (recentComments),
+				[id] (decltype (comments.first ()) comment)
+				{
+					return LJCommentEntry2RecentComment (comment, id);
+				});
+		emit gotRecentComments (recentComments);
+	}
+
+	void LJAccount::handleCommentDeleted (const QList<qint64>& ids)
+	{
+		emit commentsDeleted (ids);
+	}
+
+	void LJAccount::handleCommentSent (const QUrl& url)
+	{
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+				tr ("Reply was posted successfully:") +
+						QString (" <a href=\"%1\">%1</a>\n").arg (url.toString ()),
+				Priority::PInfo_));
+		LJXmlRpc_->RequestRecentCommments ();
 	}
 
 }

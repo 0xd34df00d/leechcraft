@@ -99,9 +99,13 @@ namespace Blogique
 			 */
 			BPFLocalBlog = 32,
 
-			/** This blogging platform support post preview in blog style
+			/** This blogging platform supports post preview in blog style
 			 */
-			BPFPostPreviewSupport = 64
+			BPFPostPreviewSupport = 64,
+			
+			/** This blogging platform supports getting comments
+			 */
+			BPFSupportComments = 128
 		};
 		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature)
 

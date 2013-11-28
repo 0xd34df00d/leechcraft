@@ -13,19 +13,6 @@
 			</item>
 		</groupbox>
 		<groupbox>
-			<label value="Comments update settings" />
-			<item type="checkbox" property="CheckingCommentsEnabled" default="true">
-				<label value="Enable comments checking" />
-			</item>
-			<item type="spinbox" property="UpdateCommentsInterval" default="5" minimum="1" maximum="600">
-				<label value="Update interval:" />
-				<suffix value=" min" />
-			</item>
-			<item type="spinbox" property="RecentCommentsNumber" default="10" minimum="1" maximum="50">
-				<label value="Number of recent comments to show:" />
-			</item>
-		</groupbox>
-		<groupbox>
 			<label value="Media settings" />
 			<item type="checkbox" property="AutoUpdateCurrentMusic" default="false">
 				<label value="Automatically fill information about current song" />

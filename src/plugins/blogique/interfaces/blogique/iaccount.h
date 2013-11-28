@@ -75,6 +75,46 @@ namespace Blogique
 		};
 	};
 
+	struct CommentEntry
+	{
+		QByteArray AccountID_;
+
+		qint64 EntryID_;
+		QString EntrySubject_;
+		QUrl EntryUrl_;
+
+		qint64 CommentID_;
+		QString CommentSubject_;
+		QString CommentText_;
+		QString CommentAuthor_;
+		QDateTime CommentDateTime_;
+		QUrl CommentUrl_;
+
+		qint64 ParentCommentID_;
+
+		CommentEntry ()
+		: EntryID_ (-1)
+		, CommentID_ (-1)
+		, ParentCommentID_ (-1)
+		{}
+
+		bool isValid () const
+		{
+			return EntryID_ != -1 &&
+					CommentID_ != -1;
+		}
+
+		bool operator== (const CommentEntry& newComment) const
+		{
+			return CommentID_ == newComment.CommentID_ &&
+					AccountID_ == newComment.AccountID_;
+		}
+	};
+
+	inline uint qHash (const CommentEntry& comment)
+	{
+		return qHash (comment.AccountID_) + ::qHash (comment.CommentID_);
+	}
 
 	struct Filter
 	{
@@ -82,9 +122,11 @@ namespace Blogique
 		QDateTime BeginDate_;
 		QDateTime EndDate_;
 		QStringList Tags_;
+		int Skip_;
 
 		Filter ()
 		: CustomDate_ (false)
+		, Skip_ (0)
 		{}
 	};
 
@@ -197,6 +239,21 @@ namespace Blogique
 		 */
 		virtual void RequestLastEntries (int count = 0) = 0;
 
+		/** @brief Requests recent comments.
+		 *
+		 */
+		virtual void RequestRecentComments () = 0;
+
+		/** @brief Add comment.
+		 *
+		 */
+		virtual void AddComment (const CommentEntry& comment) = 0;
+
+		/** @brief Delete comment.
+		 *
+		 */
+		virtual void DeleteComment (qint64 id, bool threadDelete = false) = 0;
+
 		/** @brief Submit post to blog.
 		 *
 		 * @param[in] event Posting event.
@@ -263,6 +320,18 @@ namespace Blogique
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void gettingFilteredEntriesFinished () = 0;
+
+		/** @brief This signal should be emitted when recent comments are got.
+		 *
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void gotRecentComments (const QList<CommentEntry>& comments) = 0;
+
+		/** @brief This signal should be emitted when comments was deleted successfully.
+		 *
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void commentsDeleted (const QList<qint64>& comments) = 0;
 
 		virtual void gotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString = QString ()) = 0;

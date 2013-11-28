@@ -207,6 +207,18 @@ namespace Hestia
 		}
 	}
 
+	void LocalBlogAccount::RequestRecentComments ()
+	{
+	}
+
+	void LocalBlogAccount::AddComment (const CommentEntry&)
+	{
+	}
+
+	void LocalBlogAccount::DeleteComment (qint64, bool)
+	{
+	}
+
 	QHash<QString, int> LocalBlogAccount::GetTags () const
 	{
 		try
