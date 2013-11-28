@@ -34,6 +34,7 @@
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_renderer.h>
+#include <qwt_plot_grid.h>
 
 Q_DECLARE_METATYPE (QList<QPointF>)
 
@@ -91,6 +92,26 @@ namespace Util
 		MaxYValue_ = val;
 		emit maxYValueChanged ();
 		update ();
+	}
+
+	bool PlotItem::GetYGridEnabled () const
+	{
+		return YGridEnabled_;
+	}
+
+	void PlotItem::SetYGridEnabled (bool val)
+	{
+		SetNewValue (val, YGridEnabled_, [this] { emit yGridChanged (); });
+	}
+
+	bool PlotItem::GetYMinorGridEnabled () const
+	{
+		return YMinorGridEnabled_;
+	}
+
+	void PlotItem::SetYMinorGridEnabled (bool val)
+	{
+		SetNewValue (val, YMinorGridEnabled_, [this] { emit yMinorGridChanged (); });
 	}
 
 	QColor PlotItem::GetColor () const
@@ -187,6 +208,19 @@ namespace Util
 		}
 		plot.setAutoFillBackground (false);
 		plot.setCanvasBackground (Qt::transparent);
+
+		if (YGridEnabled_)
+		{
+			auto grid = new QwtPlotGrid;
+			grid->enableYMin (YMinorGridEnabled_);
+			grid->enableX (false);
+#if QWT_VERSION >= 0x060100
+			grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
+#else
+			grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+#endif
+			grid->attach (&plot);
+		}
 
 		QwtPlotCurve curve;
 

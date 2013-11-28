@@ -40,7 +40,13 @@ namespace Util
 		Q_OBJECT
 
 		Q_PROPERTY (QList<QPointF> points READ GetPoints WRITE SetPoints NOTIFY pointsChanged)
+
 		Q_PROPERTY (double minYValue READ GetMinYValue WRITE SetMinYValue NOTIFY minYValueChanged)
+		Q_PROPERTY (double maxYValue READ GetMaxYValue WRITE SetMaxYValue NOTIFY maxYValueChanged)
+
+		Q_PROPERTY (bool yGridEnabled READ GetYGridEnabled WRITE SetYGridEnabled NOTIFY yGridChanged)
+		Q_PROPERTY (bool yMinorGridEnabled READ GetYMinorGridEnabled WRITE SetYMinorGridEnabled NOTIFY yMinorGridChanged)
+
 		Q_PROPERTY (QColor color READ GetColor WRITE SetColor NOTIFY colorChanged)
 		Q_PROPERTY (bool leftAxisEnabled READ GetLeftAxisEnabled WRITE SetLeftAxisEnabled NOTIFY leftAxisEnabledChanged)
 		Q_PROPERTY (bool bottomAxisEnabled READ GetBottomAxisEnabled WRITE SetBottomAxisEnabled NOTIFY bottomAxisEnabledChanged)
@@ -51,6 +57,9 @@ namespace Util
 
 		double MinYValue_ = -1;
 		double MaxYValue_ = -1;
+
+		bool YGridEnabled_ = false;
+		bool YMinorGridEnabled_ = false;
 
 		QColor Color_;
 
@@ -69,6 +78,11 @@ namespace Util
 		void SetMinYValue (double);
 		double GetMaxYValue () const;
 		void SetMaxYValue (double);
+
+		bool GetYGridEnabled () const;
+		void SetYGridEnabled (bool);
+		bool GetYMinorGridEnabled () const;
+		void SetYMinorGridEnabled (bool);
 
 		QColor GetColor () const;
 		void SetColor (const QColor&);
@@ -92,6 +106,9 @@ namespace Util
 
 		void minYValueChanged ();
 		void maxYValueChanged ();
+
+		void yGridChanged ();
+		void yMinorGridChanged ();
 
 		void colorChanged ();
 
