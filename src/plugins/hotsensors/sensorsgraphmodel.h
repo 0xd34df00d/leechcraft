@@ -40,8 +40,7 @@ namespace HotSensors
 	public:
 		enum Role
 		{
-			IconURL = Qt::UserRole + 1,
-			LastTemp,
+			LastTemp = Qt::UserRole + 1,
 			SensorName,
 			PointsList
 		};

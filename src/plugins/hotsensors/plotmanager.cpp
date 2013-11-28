@@ -97,11 +97,9 @@ namespace HotSensors
 
 			const bool isKnownSensor = existing.contains (name);
 			auto item = isKnownSensor ? existing.take (name) : new QStandardItem;
-			const QUrl url ("image://HS_sensorsGraph/" + name + "/" + QString::number (UpdateCounter_));
 
 			const auto lastTemp = i->isEmpty () ? 0 : static_cast<int> (i->last ());
 			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
-			item->setData (url, SensorsGraphModel::IconURL);
 			item->setData (name, SensorsGraphModel::SensorName);
 			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);
 			if (!isKnownSensor)
