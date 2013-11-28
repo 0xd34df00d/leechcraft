@@ -106,6 +106,36 @@ namespace Util
 		update ();
 	}
 
+	QString PlotItem::GetLeftAxisTitle () const
+	{
+		return LeftAxisTitle_;
+	}
+
+	void PlotItem::SetLeftAxisTitle (const QString& title)
+	{
+		if (title == LeftAxisTitle_)
+			return;
+
+		LeftAxisTitle_ = title;
+		emit leftAxisTitleChanged ();
+		update ();
+	}
+
+	QString PlotItem::GetBottomAxisTitle () const
+	{
+		return BottomAxisTitle_;
+	}
+
+	void PlotItem::SetBottomAxisTitle (const QString& title)
+	{
+		if (title == BottomAxisTitle_)
+			return;
+
+		BottomAxisTitle_ = title;
+		emit bottomAxisTitleChanged ();
+		update ();
+	}
+
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
 		QwtPlot plot;
@@ -113,6 +143,8 @@ namespace Util
 		plot.setAxisAutoScale (QwtPlot::yLeft, false);
 		plot.enableAxis (QwtPlot::yLeft, LeftAxisEnabled_);
 		plot.enableAxis (QwtPlot::xBottom, BottomAxisEnabled_);
+		plot.setAxisTitle (QwtPlot::yLeft, LeftAxisTitle_);
+		plot.setAxisTitle (QwtPlot::xBottom, BottomAxisTitle_);
 		plot.resize (option->rect.size ());
 		plot.setAxisScale (QwtPlot::xBottom, 0, Points_.size ());
 		plot.setAxisScale (QwtPlot::yLeft, 0, 100);
