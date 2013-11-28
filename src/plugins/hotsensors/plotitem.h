@@ -41,9 +41,14 @@ namespace Util
 
 		Q_PROPERTY (QList<QPointF> points READ GetPoints WRITE SetPoints NOTIFY pointsChanged)
 		Q_PROPERTY (QColor color READ GetColor WRITE SetColor NOTIFY colorChanged)
+		Q_PROPERTY (bool leftAxisEnabled READ GetLeftAxisEnabled WRITE SetLeftAxisEnabled NOTIFY leftAxisEnabledChanged)
+		Q_PROPERTY (bool bottomAxisEnabled READ GetBottomAxisEnabled WRITE SetBottomAxisEnabled NOTIFY bottomAxisEnabledChanged)
 
 		QList<QPointF> Points_;
 		QColor Color_;
+
+		bool LeftAxisEnabled_ = false;
+		bool BottomAxisEnabled_ = false;
 	public:
 		PlotItem (QDeclarativeItem* = 0);
 
@@ -53,10 +58,18 @@ namespace Util
 		QColor GetColor () const;
 		void SetColor (const QColor&);
 
+		bool GetLeftAxisEnabled () const;
+		void SetLeftAxisEnabled (bool);
+
+		bool GetBottomAxisEnabled () const;
+		void SetBottomAxisEnabled (bool);
+
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 	signals:
 		void pointsChanged ();
 		void colorChanged ();
+		void leftAxisEnabledChanged ();
+		void bottomAxisEnabledChanged ();
 	};
 }
 }

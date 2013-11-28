@@ -76,13 +76,43 @@ namespace Util
 		update ();
 	}
 
+	bool PlotItem::GetLeftAxisEnabled () const
+	{
+		return LeftAxisEnabled_;
+	}
+
+	void PlotItem::SetLeftAxisEnabled (bool enabled)
+	{
+		if (enabled == LeftAxisEnabled_)
+			return;
+
+		LeftAxisEnabled_ = enabled;
+		emit leftAxisEnabledChanged ();
+		update ();
+	}
+
+	bool PlotItem::GetBottomAxisEnabled () const
+	{
+		return BottomAxisEnabled_;
+	}
+
+	void PlotItem::SetBottomAxisEnabled (bool enabled)
+	{
+		if (enabled == BottomAxisEnabled_)
+			return;
+
+		BottomAxisEnabled_ = enabled;
+		emit bottomAxisEnabledChanged ();
+		update ();
+	}
+
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
 		QwtPlot plot;
 		plot.setAxisAutoScale (QwtPlot::xBottom, false);
 		plot.setAxisAutoScale (QwtPlot::yLeft, false);
-		plot.enableAxis (QwtPlot::yLeft, false);
-		plot.enableAxis (QwtPlot::xBottom, false);
+		plot.enableAxis (QwtPlot::yLeft, LeftAxisEnabled_);
+		plot.enableAxis (QwtPlot::xBottom, BottomAxisEnabled_);
 		plot.resize (option->rect.size ());
 		plot.setAxisScale (QwtPlot::xBottom, 0, Points_.size ());
 		plot.setAxisScale (QwtPlot::yLeft, 0, 100);
