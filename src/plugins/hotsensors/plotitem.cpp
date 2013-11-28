@@ -203,5 +203,16 @@ namespace Util
 
 		QwtPlotRenderer {}.render (&plot, painter, option->rect);
 	}
+
+	template<typename T>
+	void PlotItem::SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier)
+	{
+		if (val == ourVal)
+			return;
+
+		ourVal = val;
+		notifier ();
+		update ();
+	}
 }
 }

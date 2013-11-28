@@ -84,6 +84,9 @@ namespace Util
 		void SetBottomAxisTitle (const QString&);
 
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
+	private:
+		template<typename T>
+		void SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier);
 	signals:
 		void pointsChanged ();
 
