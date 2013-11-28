@@ -40,17 +40,23 @@ namespace Util
 		Q_OBJECT
 
 		Q_PROPERTY (QList<QPointF> points READ GetPoints WRITE SetPoints NOTIFY pointsChanged)
+		Q_PROPERTY (QColor color READ GetColor WRITE SetColor NOTIFY colorChanged)
 
 		QList<QPointF> Points_;
+		QColor Color_;
 	public:
 		PlotItem (QDeclarativeItem* = 0);
 
 		QList<QPointF> GetPoints () const;
 		void SetPoints (const QList<QPointF>&);
 
+		QColor GetColor () const;
+		void SetColor (const QColor&);
+
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 	signals:
 		void pointsChanged ();
+		void colorChanged ();
 	};
 }
 }

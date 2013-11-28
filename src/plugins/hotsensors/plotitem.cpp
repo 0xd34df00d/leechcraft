@@ -40,7 +40,8 @@ namespace LeechCraft
 namespace Util
 {
 	PlotItem::PlotItem (QDeclarativeItem *parent)
-	: QDeclarativeItem (parent)
+	: QDeclarativeItem { parent }
+	, Color_ { "#FF4B10" }
 	{
 		setFlag (QGraphicsItem::ItemHasNoContents, false);
 	}
@@ -60,6 +61,20 @@ namespace Util
 		update ();
 	}
 
+	QColor PlotItem::GetColor () const
+	{
+		return Color_;
+	}
+
+	void PlotItem::SetColor (const QColor& color)
+	{
+		if (Color_ == color)
+			return;
+
+		Color_ = color;
+		emit colorChanged ();
+	}
+
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
 		QwtPlot plot;
@@ -75,10 +90,10 @@ namespace Util
 
 		QwtPlotCurve curve;
 
-		QColor percentColor ("#FF4B10");
-		curve.setPen (QPen (percentColor));
-		percentColor.setAlpha (20);
-		curve.setBrush (percentColor);
+		curve.setPen (QPen (Color_));
+		auto transpColor = Color_;
+		transpColor.setAlpha (20);
+		curve.setBrush (transpColor);
 
 		curve.setRenderHint (QwtPlotItem::RenderAntialiased);
 		curve.attach (&plot);
