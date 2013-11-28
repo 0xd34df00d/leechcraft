@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "plotitem.h"
+#include <cmath>
+#include <limits>
 #include <QStyleOption>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
@@ -58,6 +60,36 @@ namespace Util
 
 		Points_ = pts;
 		emit pointsChanged ();
+		update ();
+	}
+
+	double PlotItem::GetMinYValue () const
+	{
+		return MinYValue_;
+	}
+
+	void PlotItem::SetMinYValue (double val)
+	{
+		if (std::fabs (val - MinYValue_) < std::numeric_limits<double>::epsilon ())
+			return;
+
+		MinYValue_ = val;
+		emit minYValueChanged ();
+		update ();
+	}
+
+	double PlotItem::GetMaxYValue () const
+	{
+		return MaxYValue_;
+	}
+
+	void PlotItem::SetMaxYValue (double val)
+	{
+		if (std::fabs (val - MaxYValue_) < std::numeric_limits<double>::epsilon ())
+			return;
+
+		MaxYValue_ = val;
+		emit maxYValueChanged ();
 		update ();
 	}
 
@@ -139,15 +171,20 @@ namespace Util
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
 		QwtPlot plot;
-		plot.setAxisAutoScale (QwtPlot::xBottom, false);
-		plot.setAxisAutoScale (QwtPlot::yLeft, false);
 		plot.enableAxis (QwtPlot::yLeft, LeftAxisEnabled_);
 		plot.enableAxis (QwtPlot::xBottom, BottomAxisEnabled_);
 		plot.setAxisTitle (QwtPlot::yLeft, LeftAxisTitle_);
 		plot.setAxisTitle (QwtPlot::xBottom, BottomAxisTitle_);
 		plot.resize (option->rect.size ());
+
+		plot.setAxisAutoScale (QwtPlot::xBottom, false);
 		plot.setAxisScale (QwtPlot::xBottom, 0, Points_.size ());
-		plot.setAxisScale (QwtPlot::yLeft, 0, 100);
+
+		if (MinYValue_ < MaxYValue_)
+		{
+			plot.setAxisAutoScale (QwtPlot::yLeft, false);
+			plot.setAxisScale (QwtPlot::yLeft, MinYValue_, MaxYValue_);
+		}
 		plot.setAutoFillBackground (false);
 		plot.setCanvasBackground (Qt::transparent);
 

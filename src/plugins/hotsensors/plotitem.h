@@ -40,6 +40,7 @@ namespace Util
 		Q_OBJECT
 
 		Q_PROPERTY (QList<QPointF> points READ GetPoints WRITE SetPoints NOTIFY pointsChanged)
+		Q_PROPERTY (double minYValue READ GetMinYValue WRITE SetMinYValue NOTIFY minYValueChanged)
 		Q_PROPERTY (QColor color READ GetColor WRITE SetColor NOTIFY colorChanged)
 		Q_PROPERTY (bool leftAxisEnabled READ GetLeftAxisEnabled WRITE SetLeftAxisEnabled NOTIFY leftAxisEnabledChanged)
 		Q_PROPERTY (bool bottomAxisEnabled READ GetBottomAxisEnabled WRITE SetBottomAxisEnabled NOTIFY bottomAxisEnabledChanged)
@@ -47,6 +48,10 @@ namespace Util
 		Q_PROPERTY (QString bottomAxisTitle READ GetBottomAxisTitle WRITE SetBottomAxisTitle NOTIFY bottomAxisTitleChanged)
 
 		QList<QPointF> Points_;
+
+		double MinYValue_ = -1;
+		double MaxYValue_ = -1;
+
 		QColor Color_;
 
 		bool LeftAxisEnabled_ = false;
@@ -59,6 +64,11 @@ namespace Util
 
 		QList<QPointF> GetPoints () const;
 		void SetPoints (const QList<QPointF>&);
+
+		double GetMinYValue () const;
+		void SetMinYValue (double);
+		double GetMaxYValue () const;
+		void SetMaxYValue (double);
 
 		QColor GetColor () const;
 		void SetColor (const QColor&);
@@ -76,6 +86,10 @@ namespace Util
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 	signals:
 		void pointsChanged ();
+
+		void minYValueChanged ();
+		void maxYValueChanged ();
+
 		void colorChanged ();
 
 		void leftAxisEnabledChanged ();
