@@ -166,8 +166,8 @@
     </extract>
   </provider>
   <provider name="songlyrics.com" title="{artist} - {title} LYRICS" charset="utf-8" url="http://www.songlyrics.com/{artist}/{title}-lyrics/">
-    <urlFormat replace=" ._@,;&amp;\/&quot;()'" with="-"/>
-    <urlFormat replace="?" with=""/>
+    <urlFormat replace=" ._@;&amp;\/&quot;'" with="-"/>
+    <urlFormat replace="?()[],:" with=""/>
     <extract>
       <item tag="&lt;p id=&quot;songLyricsDiv&quot; ondragstart=&quot;return false;&quot; onselectstart=&quot;return false;&quot; oncontextmenu=&quot;return false;&quot; class=&quot;songLyricsV14&quot;&gt;"/>
     </extract>
