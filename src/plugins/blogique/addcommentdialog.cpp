@@ -30,27 +30,20 @@
 
 #include "addcommentdialog.h"
 #include <QMessageBox>
+#include <QPushButton>
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	AddCommentDialog::AddCommentDialog (QWidget *parent) 
+	AddCommentDialog::AddCommentDialog (QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		Ui_.ButtonBox_->addButton (tr ("Send"), QDialogButtonBox::AcceptRole);
-	}
-	
-	void AddCommentDialog::accept ()
-	{
-		if (Ui_.CommentBody_->toPlainText ().isEmpty ())
-		{
-			QMessageBox::warning (this, "LeechCraft",
-					tr ("Comment body can't be empty"));
-			return;
-		}
-		QDialog::accept ();
+		SendButton_ = Ui_.ButtonBox_->addButton (tr ("Send"), QDialogButtonBox::AcceptRole);
+		SendButton_->setIcon (Core::Instance ().GetCoreProxy ()->GetIcon ("mail-send"));
+		on_CommentBody__textChanged ();
 	}
 
 	QString AddCommentDialog::GetSubject () const
@@ -63,5 +56,9 @@ namespace Blogique
 		return Ui_.CommentBody_->toPlainText ();
 	}
 
+	void AddCommentDialog::on_CommentBody__textChanged ()
+	{
+		 SendButton_->setEnabled (!Ui_.CommentBody_->toPlainText ().isEmpty ());
+	}
 }
 }

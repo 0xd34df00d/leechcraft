@@ -33,6 +33,8 @@
 #include <QDialog>
 #include "ui_addcommentdialog.h"
 
+class QPushButton;
+
 namespace LeechCraft
 {
 namespace Blogique
@@ -42,14 +44,17 @@ namespace Blogique
 		Q_OBJECT
 
 		Ui::AddCommentDialog Ui_;
-	
+
+		QPushButton *SendButton_;
+
 	public:
 		explicit AddCommentDialog (QWidget *parent = 0);
 
-		void accept ();
-
 		QString GetSubject () const;
 		QString GetText () const;
+
+	private slots:
+		void on_CommentBody__textChanged ();
 	};
 }
 }
