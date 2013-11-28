@@ -41,6 +41,7 @@ namespace HotSensors
 		roleNames [LastTemp] = "lastTemp";
 		roleNames [SensorName] = "sensorName";
 		roleNames [SVG] = "rawSvg";
+		roleNames [PointsList] = "pointsList";
 		setRoleNames (roleNames);
 	}
 }

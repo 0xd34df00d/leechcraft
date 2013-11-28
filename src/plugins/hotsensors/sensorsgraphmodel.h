@@ -43,7 +43,8 @@ namespace HotSensors
 			IconURL = Qt::UserRole + 1,
 			LastTemp,
 			SensorName,
-			SVG
+			SVG,
+			PointsList
 		};
 
 		SensorsGraphModel (QObject*);
