@@ -165,7 +165,7 @@
       <item tag="&lt;div id=&quot;songlyrics&quot;&gt;"/>
     </extract>
   </provider>
-  <provider name="songlyrics.com" title="{title} LYRICS - {artist}" charset="utf-8" url="http://www.songlyrics.com/{artist}/{title}-lyrics/">
+  <provider name="songlyrics.com" title="{artist} - {title} LYRICS" charset="utf-8" url="http://www.songlyrics.com/{artist}/{title}-lyrics/">
     <urlFormat replace=" ._@,;&amp;\/&quot;()'" with="-"/>
     <urlFormat replace="?" with=""/>
     <extract>
