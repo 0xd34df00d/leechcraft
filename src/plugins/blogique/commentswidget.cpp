@@ -238,7 +238,7 @@ namespace Blogique
 	{
 		Q_ASSERT (object);
 
-		Qt::CursorShape cursor = (shape == "PointingHandCursor") ?
+		const Qt::CursorShape cursor = (shape == "PointingHandCursor") ?
 			Qt::PointingHandCursor :
 			Qt::ArrowCursor;
 

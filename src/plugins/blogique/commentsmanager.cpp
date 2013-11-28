@@ -88,17 +88,18 @@ namespace Blogique
 
 	void CommentsManager::handleCommentsDeleted (const QList<qint64>& ids)
 	{
-		if (auto account = qobject_cast<IAccount*> (sender ()))
+		auto account = qobject_cast<IAccount*> (sender ());
+		if (!account)
+			return;
+
+		for (auto id : ids)
 		{
-			for (auto id : ids)
-			{
-				CommentEntry ce;
-				ce.AccountID_ = account->GetAccountID ();
-				ce.CommentID_ = id;
-				RecentComments_.remove (ce);
-			}
-			emit commentsUpdated ();
+			CommentEntry ce;
+			ce.AccountID_ = account->GetAccountID ();
+			ce.CommentID_ = id;
+			RecentComments_.remove (ce);
 		}
+		emit commentsUpdated ();
 	}
 
 }
