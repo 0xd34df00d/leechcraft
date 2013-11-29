@@ -54,6 +54,7 @@ namespace Qrosp
 		QObject* GetQObject ();
 		QVariant InvokeMethod (const QString&, const QVariantList&);
 		void AddQObject (QObject* object, const QString& name);
+		void Execute ();
 	};
 }
 }

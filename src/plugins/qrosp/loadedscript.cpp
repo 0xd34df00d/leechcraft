@@ -82,6 +82,10 @@ namespace Qrosp
 	void LoadedScript::AddQObject (QObject *object, const QString& name)
 	{
 		ScriptAction_->addQObject (object, name);
+	void LoadedScript::Execute ()
+	{
+		ScriptAction_->trigger ();
+	}
 	}
 }
 }

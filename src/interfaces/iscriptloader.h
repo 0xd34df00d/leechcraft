@@ -56,6 +56,10 @@ public:
 	 * If there is no such method or call has failed, the returned
 	 * variant is null.
 	 *
+	 * @warning This function should be called after all required objects
+	 * are added with AddQObject() otherwise they may not be visible to
+	 * the script.
+	 *
 	 * @param[in] name The name of the method to invoke.
 	 * @param[in] args The list of arguments for the method.
 	 * @return The return value of the method, if any, or null variant
@@ -71,10 +75,26 @@ public:
 	 * signals, slots, properties and Q_INVOKABLE functions) will become
 	 * available to the script.
 	 *
+	 * @warning This function should be called before Execute()
+	 * or InvokeMethod (), otherwise the added objects may not be visible
+	 * to the script.
+	 *
 	 * @param[in] object The object to add to the script context.
 	 * @param[in] name The name under which the object should be added.
 	 */
 	virtual void AddQObject (QObject *object, const QString& name) = 0;
+
+	/** @brief Executes the script.
+	 *
+	 * There is no need to call this function explicitly if
+	 * InvokeMethod() will be called, since the latter implies executing
+	 * the script.
+	 *
+	 * @warning This function should be called after all required objects
+	 * are added with AddQObject() otherwise they may not be visible to
+	 * the script.
+	 */
+	virtual void Execute () = 0;
 };
 
 typedef std::shared_ptr<IScript> IScript_ptr;
