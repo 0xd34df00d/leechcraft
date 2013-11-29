@@ -105,12 +105,15 @@ namespace Qrosp
 				Q_RETURN_ARG (QObject*, scriptEngineObject));
 		auto engine = qobject_cast<QScriptEngine*> (scriptEngineObject);
 		if (!engine)
+		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to obtain script engine from the"
 					<< "script action though we are Qt Script";
-		else
-			for (const auto& req : { "qt", "qt.core", "qt.gui", "qt.network", "qt.svg", "qt.xml" })
-				engine->importExtension (req);
+			return;
+		}
+
+		for (const auto& req : { "qt", "qt.core", "qt.gui", "qt.network", "qt.svg", "qt.xml" })
+			engine->importExtension (req);
 #endif
 	}
 }
