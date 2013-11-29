@@ -29,6 +29,9 @@
 
 #include "textogroose.h"
 #include <QIcon>
+#include <interfaces/iscriptloader.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 
 namespace LeechCraft
 {
@@ -36,6 +39,14 @@ namespace Textogroose
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		const auto& provs = proxy->GetPluginsManager ()->GetAllCastableTo<IScriptLoader*> ();
+		for (auto plugin : provs)
+		{
+			auto ldr = plugin->CreateScriptLoaderInstance ("textogroose");
+			ldr->AddGlobalPrefix ();
+			ldr->AddLocalPrefix ();
+			Loaders_ << ldr;
+		}
 	}
 
 	void Plugin::SecondInit ()
@@ -49,6 +60,7 @@ namespace Textogroose
 
 	void Plugin::Release ()
 	{
+		qDeleteAll (Loaders_);
 	}
 
 	QString Plugin::GetName () const

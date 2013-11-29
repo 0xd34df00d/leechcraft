@@ -32,6 +32,8 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 
+class IScriptLoaderInstance;
+
 namespace LeechCraft
 {
 namespace Textogroose
@@ -41,6 +43,7 @@ namespace Textogroose
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
+		QList<IScriptLoaderInstance*> Loaders_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
