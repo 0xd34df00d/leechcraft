@@ -70,7 +70,7 @@ namespace Qrosp
 #endif
 	}
 	
-	QVariant LoadedScript::InvokeMethod (const QString& name, const QVariantList& args) const
+	QVariant LoadedScript::InvokeMethod (const QString& name, const QVariantList& args)
 	{
 		if (!ScriptAction_->functionNames ().contains (name))
 			return QVariant ();
