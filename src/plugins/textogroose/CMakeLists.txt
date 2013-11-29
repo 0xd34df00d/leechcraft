@@ -10,6 +10,7 @@ include_directories (
 	)
 set (SRCS
 	textogroose.cpp
+	apiobject.cpp
 	)
 #CreateTrs("textogroose" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("textogroose" "en;ru_RU" "${SRCS}" "${FORMS}" "")
