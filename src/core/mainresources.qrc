@@ -3,5 +3,6 @@
         <file>resources/images/leechcraft.svg</file>
         <file>resources/images/defaultpluginicon.svg</file>
         <file>resources/images/splash.svg</file>
+        <file>resources/data/authors.xml</file>
     </qresource>
 </RCC>
