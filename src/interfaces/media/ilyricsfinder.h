@@ -155,6 +155,9 @@ namespace Media
 	protected:
 		/** @brief Emitted when search for lyrics is complete.
 		 *
+		 * It is OK to emit this signal multiple times for a single
+		 * query.
+		 *
 		 * @param[out] results The results of the lyrics query,
 		 * containing the original query and the actual results.
 		 */
