@@ -42,7 +42,6 @@
 #include "ljaccountconfigurationwidget.h"
 #include "postoptionswidget.h"
 #include "localstorage.h"
-#include "recentcommentssidewidget.h"
 #include "xmlsettingsmanager.h"
 #include "polldialog.h"
 
@@ -64,7 +63,6 @@ namespace Metida
 			tr ("Insert LJ cut"), this))
 	, FirstSeparator_ (new QAction (this))
 	, MessageCheckingTimer_ (new QTimer (this))
-	, CommentsCheckingTimer_ (new QTimer (this))
 	{
 		FirstSeparator_->setSeparator (true);
 
@@ -81,19 +79,10 @@ namespace Metida
 				SIGNAL (timeout ()),
 				this,
 				SLOT (checkForMessages ()));
-		connect (CommentsCheckingTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (checkForComments ()));
 
 		XmlSettingsManager::Instance ().RegisterObject ("CheckingInboxEnabled",
 				this, "handleMessageChecking");
-		XmlSettingsManager::Instance ().RegisterObject ("UpdateCommentsInterval",
-				this, "handleMessageUpdateIntervalChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("CheckingCommentsEnabled",
-				this, "handleCommentsChecking");
-		handleMessageUpdateIntervalChanged ();
-		handleCommentsChecking ();
+		handleMessageChecking ();
 	}
 
 	QObject* LJBloggingPlatform::GetQObject ()
@@ -103,7 +92,7 @@ namespace Metida
 
 	IBloggingPlatform::BloggingPlatfromFeatures LJBloggingPlatform::GetFeatures () const
 	{
-		return BPFSupportsProfiles | BPFSelectablePostDestination | BPFSupportsBackup;
+		return BPFSupportsProfiles | BPFSelectablePostDestination | BPFSupportsBackup | BPFSupportComments;
 	}
 
 	QObjectList LJBloggingPlatform::GetRegisteredAccounts ()
@@ -198,7 +187,7 @@ namespace Metida
 
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
-		return { new PostOptionsWidget, new RecentCommentsSideWidget };
+		return { new PostOptionsWidget };
 	}
 
 	void LJBloggingPlatform::SetPluginProxy (QObject *proxy)
@@ -312,8 +301,6 @@ namespace Metida
 			const auto& name = elem.attribute ("name");
 
 			auto children = elem.childNodes ();
-			while (!children.isEmpty ())
-				elem.removeChild (children.at (0));
 
 			elem.setTagName ("div");
 			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
@@ -321,8 +308,22 @@ namespace Metida
 			elem.setAttribute ("ljPollWhoview", whoView);
 			elem.setAttribute ("ljPollWhovote", whoVote);
 			elem.setAttribute ("ljPollName", name);
+			QString questions;
+			for (int i = 0, size = children.size (); i < size; ++i)
+			{
+				const auto& child = children.at (i);
+				QString question;
+				QTextStream str (&question);
+				child.save (str, 0);
+
+				questions.append (question);
+			}
+			elem.setAttribute ("ljPollQuestions", QString (questions.toUtf8 ().toBase64 ()));
+			while (!children.isEmpty ())
+				elem.removeChild (children.at (0));
 			auto textElem = elem.ownerDocument ().createTextNode (tr ("Poll: %1").arg (name));
 			elem.appendChild (textElem);
+
 		};
 		ljPollTag.FromKnown_ = [] (QDomElement& elem) -> bool
 		{
@@ -333,11 +334,13 @@ namespace Metida
 			auto whoView = elem.attribute ("ljPollWhoview");
 			auto whoVote = elem.attribute ("ljPollWhovote");
 			auto name = elem.attribute ("ljPollName");
+			auto questions = QByteArray::fromBase64 (elem.attribute ("ljPollQuestions").toUtf8 ());
 
 			elem.removeAttribute ("style");
 			elem.removeAttribute ("ljPollWhoview");
 			elem.removeAttribute ("ljPollWhovot");
 			elem.removeAttribute ("ljPollName");
+			elem.removeAttribute ("ljPollQuestions");
 			elem.removeAttribute ("id");
 			elem.removeChild (elem.firstChild ());
 
@@ -345,6 +348,9 @@ namespace Metida
 			elem.setAttribute ("whoview", whoView);
 			elem.setAttribute ("whovote", whoVote);
 			elem.setAttribute ("name", name);
+			QDomDocument doc;
+			doc.setContent (questions);
+			elem.appendChild (doc.documentElement ());
 
 			return true;
 		};
@@ -532,13 +538,9 @@ namespace Metida
 		}
 
 		emit accountValidated (acc->GetQObject (), validated);
-		if (validated)
-		{
-			if (XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool ())
-				checkForMessages ();
-			if (XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool ())
-				checkForComments ();
-		}
+		if (validated &&
+				XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool ())
+			checkForMessages ();;
 	}
 
 	void LJBloggingPlatform::handleMessageChecking ()
@@ -557,27 +559,11 @@ namespace Metida
 			MessageCheckingTimer_->stop ();
 	}
 
-	void LJBloggingPlatform::handleCommentsChecking ()
-	{
-		if (XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool ())
-			CommentsCheckingTimer_->start (XmlSettingsManager::Instance ()
-					.property ("UpdateCommentsInterval").toInt () * 60 * 1000);
-		else if (CommentsCheckingTimer_->isActive ())
-			CommentsCheckingTimer_->stop ();
-	}
-
 	void LJBloggingPlatform::checkForMessages ()
 	{
 		for (auto account : LJAccounts_)
 			account->RequestInbox ();
 	}
-
-	void LJBloggingPlatform::checkForComments ()
-	{
-		for (auto account : LJAccounts_)
-			account->RequestRecentComments ();
-	}
-
 }
 }
 }

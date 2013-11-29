@@ -19,10 +19,14 @@ set (SRCS
 	accountslistwidget.cpp
 	accountsselectdialog.cpp
 	addaccountwizardfirstpage.cpp
+	addcommentdialog.cpp
 	blogique.cpp
 	blogentrieswidget.cpp
 	blogiquewidget.cpp
 	calendarwidget.cpp
+	commentsmanager.cpp
+	commentsmodel.cpp
+	commentswidget.cpp
 	core.cpp
 	draftentrieswidget.cpp
 	dummytexteditor.cpp
@@ -31,6 +35,7 @@ set (SRCS
 	pluginproxy.cpp
 	profiledialog.cpp
 	selecttargetdelegate.cpp
+	sortcommentsproxymodel.cpp
 	storagemanager.cpp
 	submittodialog.cpp
 	tagsproxymodel.cpp
@@ -43,8 +48,10 @@ set (FORMS
 	accountslistwidget.ui
 	accountsselectdialog.ui
 	addaccountwizardfirstpage.ui
+	addcommentdialog.ui 
 	blogentrieswidget.ui
 	blogiquewidget.ui
+	commentswidget.ui
 	draftentrieswidget.ui
 	exportwizard.ui
 	profiledialog.ui

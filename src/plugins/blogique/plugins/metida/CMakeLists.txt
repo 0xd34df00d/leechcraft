@@ -33,9 +33,6 @@ set (METIDA_SRCS
 	postoptionswidget.cpp
 	profiletypes.cpp
 	profilewidget.cpp
-	recentcommentsmodel.cpp
-	recentcommentssidewidget.cpp
-	recentcommentsview.cpp
 	selectgroupsdialog.cpp
 	sendmessagedialog.cpp 
 	updatetypedialog.cpp
@@ -77,7 +74,6 @@ set (METIDA_FORMS
 	polldialog.ui 
 	profilewidget.ui
 	postoptionswidget.ui
-	recentcommentssidewidget.ui
 	selectgroupsdialog.ui
 	sendmessagedialog.ui
 	updatetypedialog.ui
@@ -123,4 +119,3 @@ install (FILES ${METIDA_COMPILED_TRANSLATIONS}
 		DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES blogiquemetidasettings.xml
 		DESTINATION ${LC_SETTINGS_DEST})
-install(DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})

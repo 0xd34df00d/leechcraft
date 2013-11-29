@@ -76,7 +76,7 @@ namespace Metida
 
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
-		
+
 		void Validate (const QString& login, const QString& pass);
 
 		void AddNewFriend (const QString& username,
@@ -92,6 +92,8 @@ namespace Metida
 		void Submit (const LJEvent& event);
 		void GetEventsWithFilter (const Filter& filter);
 		void GetLastEvents (int count);
+		void GetMultiplyEvents (const QList<int>& ids, RequestType rt);
+		void GetParticularEvent (int id, RequestType rt);
 		void GetChangedEvents (const QDateTime& dt);
 		void GetEventsByDate (const QDate& date, int skip = 0);
 
@@ -102,13 +104,15 @@ namespace Metida
 
 		void RequestLastInbox ();
 		void SetMessagesAsRead (const QList<int>& ids);
-		void SendMessage (const QStringList& addresses, const QString& subject, 
+		void SendMessage (const QStringList& addresses, const QString& subject,
 				const QString& text);
-		
+
 		void RequestRecentCommments ();
+		void DeleteComment (qint64 id, bool deleteThread = false);
+		void AddComment (const CommentEntry& comment);
 
 		void RequestTags ();
-		
+
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void CallNextFunctionFromQueue ();
@@ -132,7 +136,7 @@ namespace Metida
 		void RemoveEventRequest (const LJEvent& event, const QString& challenge);
 		void UpdateEventRequest (const LJEvent& event, const QString& challenge);
 
-		void BackupEventsRequest (int skip, const Filter& filter, const QString& challenge);
+		void BackupEventsRequest (const Filter& filter, const QString& challenge);
 
 		void GetLastEventsRequest (int count, const QString& challenge);
 		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);
@@ -140,7 +144,7 @@ namespace Metida
 				const QString& challenge = QString ());
 		void GetParticularEventRequest (int id, RequestType prt,
 				const QString& challenge);
-		void GetMultipleEventsRequest (const QStringList& ids, RequestType rt,
+		void GetMultipleEventsRequest (const QList<int>& ids, RequestType rt,
 				const QString& challenge);
 
 		void BlogStatisticsRequest (const QString& challenge);
@@ -151,15 +155,13 @@ namespace Metida
 				const QString& text, const QString& challenge);
 
 		void RecentCommentsRequest (const QString& challenge);
+		void DeleteCommentRequest (qint64 id, bool deleteThread, const QString& challenge);
+		void AddCommentRequest (const CommentEntry& comment, const QString& challenge);
 
 		void GetUserTagsRequest (const QString& challenge);
 
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
-
-		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
-
-		QMap<QDate, int> ParseStatistics (const QDomDocument& doc);
 
 	private slots:
 		void handleChallengeReplyFinished ();
@@ -181,6 +183,8 @@ namespace Metida
 		void handleMessagesSetAsReadFinished ();
 		void handleSendMessageRequestFinished ();
 		void handleRecentCommentsReplyFinished ();
+		void handleDeleteCommentReplyFinished ();
+		void handleAddCommentReplyFinished ();
 		void handleGetUserTagsReplyFinished ();
 
 		void handleNetworkError (QNetworkReply::NetworkError error);
@@ -208,6 +212,9 @@ namespace Metida
 		void messageSent ();
 
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
+		void commentsDeleted (const QList<qint64>& ids);
+		void commentSent (const QUrl& url);
+		
 		void gotTags (const QHash<QString, int>& tags);
 	};
 }

@@ -32,6 +32,7 @@
 #include <util/util.h>
 #include "accountslistwidget.h"
 #include "blogiquewidget.h"
+#include "commentswidget.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -41,8 +42,11 @@ namespace Blogique
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qRegisterMetaType<LeechCraft::Blogique::CommentsWidget::CommentIDs_t> ("LeechCraft::Blogique::CommentIDs_t");
+		qRegisterMetaTypeStreamOperators<LeechCraft::Blogique::CommentsWidget::CommentIDs_t> ();
+
 		Util::InstallTranslator ("blogique");
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquesettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
@@ -98,7 +102,7 @@ namespace Blogique
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return Core::Instance ().GetUniqueID ();
+		return "org.LeechCraft.Blogique";
 	}
 
 	void Plugin::Release ()
@@ -117,7 +121,8 @@ namespace Blogique
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Core::Instance ().GetIcon ();
+		static QIcon icon ("lcicons:/plugins/blogique/resources/images/blogique.svg");
+		return icon;
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
@@ -142,7 +147,9 @@ namespace Blogique
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
 	{
-		return Core::Instance ().GetExpectedPluginClasses ();
+		QSet<QByteArray> classes;
+		classes << "org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin";
+		return classes;
 	}
 
 	void Plugin::AddPlugin (QObject* plugin)

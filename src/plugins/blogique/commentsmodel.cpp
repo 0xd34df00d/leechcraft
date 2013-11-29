@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2013  Oleg Linkin
+ *  Copyright (C) 2010-2013  Oleg Linkin <MaledicutsDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,25 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "recentcommentsmodel.h"
+#include "commentsmodel.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-	RecentCommentsModel::RecentCommentsModel (QObject *parent)
+	CommentsModel::CommentsModel (QObject *parent)
 	: QStandardItemModel (parent)
 	{
 		QHash<int, QByteArray> roleNames;
-		roleNames [NodeSubject] = "nodeSubject";
-		roleNames [NodeUrl] = "nodeUrl";
+		roleNames [AccountID] = "accountID";
+		roleNames [EntrySubject] = "entrySubject";
+		roleNames [EntryUrl] = "entryUrl";
+		roleNames [EntryID] = "entryID";
+		roleNames [CommentSubject] = "commentSubject";
 		roleNames [CommentBody] = "commentBody";
-		roleNames [CommentInfo] = "commentInfo";
+		roleNames [CommentAuthor] = "commentAuthor";
+		roleNames [CommentDate] = "commentDate";
+		roleNames [CommentUrl] = "commentUrl";
+		roleNames [CommentID] = "commentID";
 		setRoleNames (roleNames);
 	}
-
-}
 }
 }

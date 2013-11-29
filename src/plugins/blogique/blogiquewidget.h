@@ -51,6 +51,7 @@ namespace Blogique
 	class DraftEntriesWidget;
 	class BlogEntriesWidget;
 	class TagsProxyModel;
+	class CommentsWidget;
 
 	class BlogiqueWidget : public QWidget
 						, public ITabWidget
@@ -83,6 +84,7 @@ namespace Blogique
 
 		DraftEntriesWidget *DraftEntriesWidget_;
 		BlogEntriesWidget *BlogEntriesWidget_;
+		CommentsWidget *CommentsWidget_;
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_;
 		QList<QWidget*> SidePluginsWidgets_;
