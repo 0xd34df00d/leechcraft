@@ -47,11 +47,13 @@ namespace Qrosp
 		Q_OBJECT
 		Q_INTERFACES (IScript);
 		
-		Qross::Action *ScriptAction_;
+		Qross::Action * const ScriptAction_;
 	public:
 		LoadedScript (const QString&, const QString&, QObject* = 0);
-		
+
+		QObject* GetQObject ();
 		QVariant InvokeMethod (const QString&, const QVariantList&);
+		void AddQObject (QObject* object, const QString& name);
 	};
 }
 }

@@ -42,6 +42,12 @@ class Q_DECL_EXPORT IScript
 public:
 	virtual ~IScript () {}
 
+	/** @brief Returns this script object as a QObject.
+	 *
+	 * @return This script object as a QObject.
+	 */
+	virtual QObject* GetQObject () = 0;
+
 	/** @brief Runs the given function and returns its value.
 	 *
 	 * This method invokes the method identified by name with the given
@@ -57,6 +63,18 @@ public:
 	 */
 	virtual QVariant InvokeMethod (const QString& name,
 			const QVariantList& args) = 0;
+
+	/** @brief Adds the given object to the script context.
+	 *
+	 * This method adds the \em object to the script context under the
+	 * given \em name. The metafunctions of the \em object (that is,
+	 * signals, slots, properties and Q_INVOKABLE functions) will become
+	 * available to the script.
+	 *
+	 * @param[in] object The object to add to the script context.
+	 * @param[in] name The name under which the object should be added.
+	 */
+	virtual void AddQObject (QObject *object, const QString& name) = 0;
 };
 
 typedef std::shared_ptr<IScript> IScript_ptr;

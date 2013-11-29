@@ -60,12 +60,15 @@ namespace Qrosp
 						<< "unable to obtain script engine from the"
 						<< "script action though we are Qt Script";
 			else
-			{
 				for (const auto& req : { "qt", "qt.core", "qt.gui", "qt.network" })
 					engine->importExtension (req);
-			}
 		}
 #endif
+	}
+
+	QObject* LoadedScript::GetQObject ()
+	{
+		return this;
 	}
 	
 	QVariant LoadedScript::InvokeMethod (const QString& name, const QVariantList& args)
@@ -74,6 +77,11 @@ namespace Qrosp
 			return QVariant ();
 
 		return ScriptAction_->callFunction (name, args);
+	}
+
+	void LoadedScript::AddQObject (QObject *object, const QString& name)
+	{
+		ScriptAction_->addQObject (object, name);
 	}
 }
 }
