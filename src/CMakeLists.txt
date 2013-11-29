@@ -213,6 +213,7 @@ option (ENABLE_POLEEMERY "Build Poleemery, the personal finances manager" ${WITH
 option (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS} "NOT WIN32" OFF)
 cmake_dependent_option (ENABLE_SYSNOTIFY "Build Sysnotify for using D-Bus notification API" ${WITH_PLUGINS} "NOT WIN32" OFF)
+option (ENABLE_TEXTOGROOSE "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
 option (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
 option (ENABLE_TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
 option (ENABLE_VTYULC "Build VtyuLC, the videoplayer plugin" ${WITH_PLUGINS})
@@ -457,6 +458,10 @@ endif ()
 
 if (ENABLE_SYSNOTIFY)
 	add_subdirectory (plugins/sysnotify)
+endif ()
+
+if (ENABLE_TEXTOGROOSE)
+	add_subdirectory (plugins/textogroose)
 endif ()
 
 if (ENABLE_TOUCHSTREAMS)
