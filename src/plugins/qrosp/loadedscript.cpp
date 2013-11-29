@@ -59,7 +59,17 @@ namespace Qrosp
 			CheckImports ();
 
 		if (!ScriptAction_->functionNames ().contains (name))
-			return QVariant ();
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such function"
+					<< name
+					<< "in"
+					<< ScriptAction_->file ();
+			qWarning () << Q_FUNC_INFO
+					<< "known function:"
+					<< ScriptAction_->functionNames ();
+			return {};
+		}
 
 		return ScriptAction_->callFunction (name, args);
 	}
