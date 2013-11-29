@@ -61,9 +61,7 @@ namespace Qrosp
 						<< "script action though we are Qt Script";
 			else
 			{
-				QStringList requires;
-				requires << "qt" << "qt.core" << "qt.gui" << "qt.network" << "qt.webkit";
-				Q_FOREACH (const QString& req, requires)
+				for (const auto& req : { "qt", "qt.core", "qt.gui", "qt.network" })
 					engine->importExtension (req);
 			}
 		}

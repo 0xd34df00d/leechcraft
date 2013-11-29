@@ -78,25 +78,25 @@ namespace Qrosp
 	{
 		ID2Interpereter_.clear ();
 
-		const QStringList& interpreters = Qross::Manager::self ().interpreters ();
+		const auto& interpreters = Qross::Manager::self ().interpreters ();
 		QMap<QString, QStringList> knownExtensions;
 		knownExtensions ["qtscript"] << "*.es" << "*.js" << "*.qs";
 		knownExtensions ["python"] << "*.py";
 		knownExtensions ["ruby"] << "*.rb";
 
 		QStringList result;
-		Q_FOREACH (const QString& prefix, Prefixes_)
-			Q_FOREACH (const QString& interp, interpreters)
+		for (const auto& prefix : Prefixes_)
+			for (const auto& interp : interpreters)
 			{
-				const QString& path = prefix + RelativePath_ + interp + '/';
+				const auto& path = prefix + RelativePath_ + interp + '/';
 
 				QDir dir (path);
-				const QStringList& entries = dir.entryList (knownExtensions [interp],
+				const auto& entries = dir.entryList (knownExtensions [interp],
 						QDir::Readable | QDir::Files);
 
-				Q_FOREACH (const QString& entry, entries)
+				for (const auto& entry : entries)
 				{
-					const QString& id = path + entry;
+					const auto& id = path + entry;
 					ID2Interpereter_ [id] = interp;
 					result << id;
 				}
