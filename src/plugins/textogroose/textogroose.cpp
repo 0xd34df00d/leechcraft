@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2013  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,9 +29,12 @@
 
 #include "textogroose.h"
 #include <QIcon>
+#include <QtDebug>
 #include <interfaces/iscriptloader.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <util/util.h>
+#include "apiobject.h"
 
 namespace LeechCraft
 {
@@ -76,6 +79,37 @@ namespace Textogroose
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	void Plugin::RequestLyrics (const Media::LyricsQuery& query, Media::QueryOptions)
+	{
+		const auto& map = Util::MakeMap<QString, QVariant> ({
+				{ "artist", query.Artist_ },
+				{ "album", query.Album_ },
+				{ "title", query.Title_ }
+			});
+
+		for (const auto ldr : Loaders_)
+			for (const auto& scriptName : ldr->EnumerateScripts ())
+			{
+				auto script = ldr->LoadScript (scriptName);
+
+				auto apiObject = new ApiObject (query, script);
+
+				script->AddQObject (apiObject, "API");
+				script->InvokeMethod ("searchLyrics", { map });
+
+				connect (apiObject,
+						SIGNAL (finished (ApiObject*, Media::LyricsResults)),
+						this,
+						SLOT (handleFinished (ApiObject*, Media::LyricsResults)));
+			}
+	}
+
+	void Plugin::handleFinished (ApiObject *obj, const Media::LyricsResults& results)
+	{
+		emit gotLyrics (results);
+		obj->deleteLater ();
 	}
 }
 }

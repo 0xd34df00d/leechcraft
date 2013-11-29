@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2013  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/media/ilyricsfinder.h>
 
 class IScriptLoaderInstance;
 
@@ -38,11 +39,15 @@ namespace LeechCraft
 {
 namespace Textogroose
 {
+	class ApiObject;
+
 	class Plugin : public QObject
 				 , public IInfo
+				 , public Media::ILyricsFinder
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo Media::ILyricsFinder)
+
 		QList<IScriptLoaderInstance*> Loaders_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -52,6 +57,12 @@ namespace Textogroose
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		void RequestLyrics (const Media::LyricsQuery&, Media::QueryOptions);
+	private slots:
+		void handleFinished (ApiObject*, const Media::LyricsResults&);
+	signals:
+		void gotLyrics (const Media::LyricsResults&);
 	};
 }
 }
