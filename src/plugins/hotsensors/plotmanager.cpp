@@ -30,16 +30,9 @@
 #include "plotmanager.h"
 #include <QStandardItemModel>
 #include <QPainter>
-#include <QSvgGenerator>
-#include <QSvgRenderer>
-#include <QBuffer>
 #include <QUrl>
 #include <QFile>
 #include <QDir>
-#include <QDeclarativeImageProvider>
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_plot_renderer.h>
 #include "contextwrapper.h"
 #include "sensorsgraphmodel.h"
 

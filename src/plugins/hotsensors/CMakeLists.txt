@@ -4,16 +4,12 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package (Qwt REQUIRED)
-
-set (QT_USE_QTSVG TRUE)
 set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QWT_INCLUDE_DIRS}
 	)
 set (SRCS
 	hotsensors.cpp
@@ -22,7 +18,6 @@ set (SRCS
 	plotmanager.cpp
 	sensorsgraphmodel.cpp
 	contextwrapper.cpp
-	plotitem.cpp
 	)
 #CreateTrs("hotsensors" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("hotsensors" "en;ru_RU" "${SRCS}" "${FORMS}" "")

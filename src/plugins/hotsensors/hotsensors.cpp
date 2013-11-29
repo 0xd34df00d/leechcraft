@@ -35,7 +35,6 @@
 #include "sensorsmanager.h"
 #include "historymanager.h"
 #include "plotmanager.h"
-#include "plotitem.h"
 
 namespace LeechCraft
 {
@@ -57,9 +56,6 @@ namespace HotSensors
 				SLOT (handleHistoryUpdated (ReadingsHistory_t)));
 
 		ComponentTemplate_ = QuarkComponent ("hotsensors", "HSQuark.qml");
-
-		qRegisterMetaType<QList<QPointF>> ("QList<QPointF>");
-		qmlRegisterType<Util::PlotItem> ("org.LC.common", 1, 0, "Plot");
 	}
 
 	void Plugin::SecondInit ()

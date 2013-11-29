@@ -17,6 +17,11 @@ if (NOT USE_QT5)
 	include (${QT_USE_FILE})
 endif ()
 
+option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
+if (WITH_QWT)
+	add_definitions (-DWITH_QWT)
+endif ()
+
 add_definitions (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 add_definitions (${QT_DEFINITIONS})
 

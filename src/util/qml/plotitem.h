@@ -30,12 +30,13 @@
 #pragma once
 
 #include <QDeclarativeItem>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class PlotItem : public QDeclarativeItem
+	class UTIL_API PlotItem : public QDeclarativeItem
 	{
 		Q_OBJECT
 

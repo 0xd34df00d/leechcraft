@@ -17,11 +17,19 @@ else ()
 endif ()
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
+option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
+
+if (WITH_QWT)
+	find_package (Qwt REQUIRED)
+	set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${QWT_LIBRARIES})
+	add_definitions (-DWITH_QWT)
+endif ()
 
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${MAGIC_INCLUDE_DIRS}
+	${QWT_INCLUDE_DIRS}
 	..)
 
 set (SRCS
@@ -99,10 +107,14 @@ if (WITH_X11 AND NOT APPLE)
 
 	if (X11_FOUND)
 		add_definitions (-DHAVE_X11)
-		set (ADDITIONAL_LIBS ${X11_X11_LIB})
+		set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${X11_X11_LIB})
 
 		set (SRCS ${SRCS} x11/xwrapper.cpp)
 	endif ()
+endif ()
+
+if (WITH_QWT)
+	set (SRCS ${SRCS} qml/plotitem.cpp)
 endif ()
 
 foreach (SRC ${SRCS})
