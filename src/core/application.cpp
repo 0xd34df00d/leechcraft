@@ -56,7 +56,11 @@
 #include <util/structuresops.h>
 #include <util/sys/paths.h>
 #include <util/qml/tooltipitem.h>
+
+#ifdef WITH_QWT
 #include <util/qml/plotitem.h>
+#endif
+
 #include "debugmessagehandler.h"
 #include "tagsmanager.h"
 #include "mainwindow.h"
