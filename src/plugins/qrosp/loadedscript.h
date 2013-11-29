@@ -48,6 +48,7 @@ namespace Qrosp
 		Q_INTERFACES (IScript);
 		
 		Qross::Action * const ScriptAction_;
+		bool Imported_ = false;
 	public:
 		LoadedScript (const QString&, const QString&, QObject* = 0);
 
@@ -55,6 +56,8 @@ namespace Qrosp
 		QVariant InvokeMethod (const QString&, const QVariantList&);
 		void AddQObject (QObject* object, const QString& name);
 		void Execute ();
+	private:
+		void CheckImports ();
 	};
 }
 }
