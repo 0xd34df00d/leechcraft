@@ -91,13 +91,13 @@ namespace Qrosp
 	{
 		if (Imported_)
 			return;
+
 		Imported_ = true;
+		ScriptAction_->trigger ();
 
 #ifndef QROSP_NO_QTSCRIPT
 		if (ScriptAction_->interpreter () != "qtscript")
 			return;
-
-		ScriptAction_->trigger ();
 
 		QObject *scriptEngineObject = 0;
 		QMetaObject::invokeMethod (ScriptAction_->script (),
