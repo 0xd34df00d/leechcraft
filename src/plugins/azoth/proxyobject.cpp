@@ -397,5 +397,10 @@ namespace Azoth
 	{
 		return Core::Instance ().GetUnreadQueueManager ()->IsMessageRead (msgObj);
 	}
+
+	void ProxyObject::MarkMessagesAsRead (QObject *entryObj)
+	{
+		Core::Instance ().GetUnreadQueueManager ()->clearMessagesForEntry (entryObj);
+	}
 }
 }

@@ -301,6 +301,8 @@ namespace Azoth
 				QObject *other, QObject *parent = nullptr) = 0;
 
 		virtual bool IsMessageRead (QObject *msgObj) = 0;
+
+		virtual void MarkMessagesAsRead (QObject *entryObject) = 0;
 	};
 }
 }
