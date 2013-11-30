@@ -223,7 +223,6 @@ namespace Xoox
 	{
 		HasUnreadMsgs_ = false;
 		UnreadMessages_.clear ();
-		emit messagesAreRead ();
 	}
 
 	void EntryBase::ChatTabClosed ()
