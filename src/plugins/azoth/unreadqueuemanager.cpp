@@ -95,6 +95,8 @@ namespace Azoth
 				pos = UnreadMessages_.erase (pos);
 			else
 				++pos;
+
+		emit messagesCleared (entryObj);
 	}
 }
 }

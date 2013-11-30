@@ -51,6 +51,8 @@ namespace Azoth
 		void ShowNext ();
 	public slots:
 		void clearMessagesForEntry (QObject*);
+	signals:
+		void messagesCleared (QObject*);
 	};
 }
 }
