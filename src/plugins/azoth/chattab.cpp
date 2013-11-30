@@ -360,7 +360,6 @@ namespace Azoth
 
 		if (auto entry = GetEntry<QObject> ())
 			emit entryMadeCurrent (entry);
-		emit entryMadeCurrent (EntryID_);
 
 		NumUnreadMsgs_ = 0;
 		HadHighlight_ = false;

@@ -256,10 +256,6 @@ namespace Azoth
 			rl->SetCacheParams (1000, 0);
 		}
 
-		connect (ChatTabsManager_,
-				SIGNAL (clearUnreadMsgCount (QString)),
-				this,
-				SLOT (handleClearUnreadMsgCount (QString)));
 		connect (this,
 				SIGNAL (hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)),
 				ChatTabsManager_,
@@ -280,6 +276,11 @@ namespace Azoth
 				SIGNAL (entryMadeCurrent (QObject*)),
 				UnreadQueueManager_.get (),
 				SLOT (clearMessagesForEntry (QObject*)));
+
+		connect (UnreadQueueManager_.get (),
+				SIGNAL (messagesCleared (QObject*)),
+				this,
+				SLOT (handleClearUnreadMsgCount (QObject*)));
 
 		PluginManager_->RegisterHookable (this);
 		PluginManager_->RegisterHookable (CLModel_);
@@ -3043,16 +3044,15 @@ namespace Azoth
 			item->setText (entry->GetEntryName ());
 	}
 
-	void Core::handleClearUnreadMsgCount (const QString& entryID)
+	void Core::handleClearUnreadMsgCount (QObject *entryObj)
 	{
-		if (ID2Entry_.contains (entryID))
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto& entryID = entry->GetEntryID ();
+
+		for (QStandardItem *item : Entry2Items_ [entry])
 		{
-			auto entry = qobject_cast<ICLEntry*> (GetEntry (entryID));
-			for (QStandardItem *item : Entry2Items_ [entry])
-			{
-				item->setData (0, CLRUnreadMsgCount);
-				RecalculateUnreadForParents (item);
-			}
+			item->setData (0, CLRUnreadMsgCount);
+			RecalculateUnreadForParents (item);
 		}
 
 		Entity e = Util::MakeNotification ("Azoth", QString (), PInfo_);
