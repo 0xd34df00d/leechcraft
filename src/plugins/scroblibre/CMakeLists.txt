@@ -12,8 +12,9 @@ include_directories (
 	)
 set (SRCS
 	scroblibre.cpp
-	accountsmanager.cpp
 	xmlsettingsmanager.cpp
+	accountsmanager.cpp
+	authmanager.cpp
 	singleaccauth.cpp
 	util.cpp
 	)
