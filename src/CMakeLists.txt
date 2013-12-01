@@ -211,6 +211,7 @@ option (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data 
 option (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" ${WITH_PLUGINS})
 option (ENABLE_POLEEMERY "Build Poleemery, the personal finances manager" ${WITH_PLUGINS})
 option (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
+option (ENABLE_SCROBLIBRE "Build ScrobLibre, multiaccount Scrobbler API 1.2 scrobbler" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS} "NOT WIN32" OFF)
 cmake_dependent_option (ENABLE_SYSNOTIFY "Build Sysnotify for using D-Bus notification API" ${WITH_PLUGINS} "NOT WIN32" OFF)
 option (ENABLE_TEXTOGROOSE "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
@@ -450,6 +451,10 @@ endif ()
 
 if (ENABLE_SB2)
 	add_subdirectory (plugins/sb2)
+endif ()
+
+if (ENABLE_SCROBLIBRE)
+	add_subdirectory (plugins/scroblibre)
 endif ()
 
 if (ENABLE_SNAILS)
