@@ -34,6 +34,7 @@
 
 class QStandardItemModel;
 class QAbstractItemModel;
+class QUrl;
 
 namespace LeechCraft
 {
@@ -47,6 +48,8 @@ namespace Scroblibre
 	public:
 		AccountsManager (QObject* = 0);
 
+		void LoadAccounts ();
+
 		QAbstractItemModel* GetModel () const;
 	private:
 		void SaveSettings ();
@@ -54,6 +57,9 @@ namespace Scroblibre
 	public slots:
 		void addRequested (const QString&, const QVariantList&);
 		void removeRequested (const QString&, const QModelIndexList&);
+	signals:
+		void accountAdded (const QUrl&, const QString&);
+		void accountRemoved (const QUrl&, const QString&);
 	};
 }
 }

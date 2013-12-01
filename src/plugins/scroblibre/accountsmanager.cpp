@@ -31,9 +31,10 @@
 #include <QStandardItemModel>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QUrl>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <util/util.h>
-#include <util/passutils.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -72,7 +73,10 @@ namespace Scroblibre
 		Model_->setHeaderData (Column::CLogin, Qt::Horizontal,
 				DataSources::DataFieldType::String,
 				DataSources::DataSourceRole::FieldType);
+	}
 
+	void AccountsManager::LoadAccounts ()
+	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Scroblibre");
 		const auto accCount = settings.beginReadArray ("Accounts");
@@ -110,36 +114,38 @@ namespace Scroblibre
 
 	void AccountsManager::AddRow (const QVariantList& row)
 	{
+		const auto& service = row.value (0).toString ();
+		const auto& login = row.value (1).toString ();
+
 		QList<QStandardItem*> itemsRow
 		{
-			new QStandardItem (row.value (0).toString ()),
-			new QStandardItem (row.value (1).toString ())
+			new QStandardItem (service),
+			new QStandardItem (login)
 		};
 
 		for (auto item : itemsRow)
 			item->setEditable (false);
 
 		Model_->appendRow (itemsRow);
+
+		emit accountAdded (ServiceToUrl (service), login);
 	}
 
 	void AccountsManager::addRequested (const QString&, const QVariantList& row)
 	{
 		AddRow (row);
-		SaveSettings ();
 
-		const auto& service = row.value (Column::CService).toString ();
-		const auto& login = row.value (Column::CLogin).toString ();
-		Util::GetPassword ("org.LeechCraft.Scroblibre/" + service + '/' + login,
-				tr ("Please enter password for account %1 on %2:")
-					.arg (login)
-					.arg (service),
-				parent ());
+		SaveSettings ();
 	}
 
 	void AccountsManager::removeRequested (const QString&, const QModelIndexList& list)
 	{
 		for (const auto& item : list)
-			Model_->removeRow (list.value (0).row ());
+		{
+			const auto& row = Model_->takeRow (item.row ());
+			emit accountRemoved (ServiceToUrl (row.at (Column::CService)->data ().toString ()),
+					row.at (Column::CLogin)->data ().toString ());
+		}
 
 		SaveSettings ();
 	}
