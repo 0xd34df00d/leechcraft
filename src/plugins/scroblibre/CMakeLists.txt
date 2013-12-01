@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_scroblibre)
 include (InitLCPlugin OPTIONAL)
 
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -12,6 +14,7 @@ set (SRCS
 	scroblibre.cpp
 	accountsmanager.cpp
 	xmlsettingsmanager.cpp
+	singleaccauth.cpp
 	util.cpp
 	)
 #CreateTrs("scroblibre" "en;ru_RU" COMPILED_TRANSLATIONS)
