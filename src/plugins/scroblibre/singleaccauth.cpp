@@ -34,6 +34,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QTimer>
 #include <util/passutils.h>
 #include <util/util.h>
 #include "util.h"
@@ -55,6 +56,8 @@ namespace Scroblibre
 
 	void SingleAccAuth::reauth (bool failed)
 	{
+		ReauthScheduled_ = false;
+
 		SID_.clear ();
 
 		const auto nowTime_t = QDateTime::currentDateTime ().toTime_t ();
@@ -100,21 +103,21 @@ namespace Scroblibre
 		for (auto& part : split)
 			part = part.trimmed ();
 
-		if (split.isEmpty ())
+		const auto& status = split.value (0);
+		if (status == "OK")
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty reply from the server";
+			SID_ = split.value (1);
+			NowPlayingUrl_ = QUrl::fromEncoded (split.value (2).toLatin1 ());
+			SubmissionsUrl_ = QUrl::fromEncoded (split.value (3).toLatin1 ());
 			return;
 		}
 
-		const auto& status = split.value (0);
 		if (status == "BADTIME")
 		{
 			const auto& e = Util::MakeNotification ("Scroblibre",
 					tr ("Your system clock is too incorrect."),
 					PCritical_);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
-			return;
 		}
 		else if (status.startsWith ("FAILED"))
 		{
@@ -123,7 +126,6 @@ namespace Scroblibre
 						.arg (UrlToService (BaseURL_)),
 					PCritical_);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
-			return;
 		}
 		else if (status == "BANNED")
 		{
@@ -132,7 +134,6 @@ namespace Scroblibre
 						.arg (UrlToService (BaseURL_)),
 					PCritical_);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
-			return;
 		}
 		else if (status == "BADAUTH")
 		{
@@ -141,21 +142,23 @@ namespace Scroblibre
 						.arg (UrlToService (BaseURL_)),
 					PCritical_);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
-			return;
 		}
-		else if (status != "OK")
+		else
 		{
 			const auto& e = Util::MakeNotification ("Scroblibre",
 					tr ("General server error for %1.")
 						.arg (UrlToService (BaseURL_)),
 					PCritical_);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
-			return;
 		}
 
-		SID_ = split.value (1);
-		NowPlayingUrl_ = QUrl::fromEncoded (split.value (2).toLatin1 ());
-		SubmissionsUrl_ = QUrl::fromEncoded (split.value (3).toLatin1 ());
+		if (ReauthScheduled_)
+			return;
+
+		QTimer::singleShot (120 * 1000,
+				this,
+				SLOT (reauth ()));
+		ReauthScheduled_ = false;
 	}
 }
 }

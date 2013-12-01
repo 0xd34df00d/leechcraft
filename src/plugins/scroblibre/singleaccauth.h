@@ -48,6 +48,8 @@ namespace Scroblibre
 		QString SID_;
 		QUrl NowPlayingUrl_;
 		QUrl SubmissionsUrl_;
+
+		bool ReauthScheduled_;
 	public:
 		SingleAccAuth (const QUrl& url, const QString& login, ICoreProxy_ptr, QObject*);
 	private slots:
