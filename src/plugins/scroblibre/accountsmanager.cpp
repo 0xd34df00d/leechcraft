@@ -94,12 +94,14 @@ namespace Scroblibre
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Scroblibre");
 		settings.beginWriteArray ("Accounts");
-		settings.remove ("");
 		for (auto i = 0; i < Model_->rowCount (); ++i)
 		{
 			settings.setArrayIndex (i);
 
-			auto getVal = [this, i] (Column c) { return Model_->item (i, c)->data ().toString (); };
+			auto getVal = [this, i] (Column c)
+			{
+					return Model_->item (i, c)->data (Qt::DisplayRole).toString ();
+			};
 			settings.setValue ("Service", getVal (Column::CService));
 			settings.setValue ("Login", getVal (Column::CLogin));
 		}
