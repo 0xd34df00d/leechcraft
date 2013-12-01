@@ -12,6 +12,7 @@ set (SRCS
 	scroblibre.cpp
 	accountsmanager.cpp
 	xmlsettingsmanager.cpp
+	util.cpp
 	)
 #CreateTrs("scroblibre" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("scroblibre" "en;ru_RU" "${SRCS}" "${FORMS}" "scroblibresettings.xml")
