@@ -198,7 +198,7 @@ cmake_dependent_option (ENABLE_KBSWITCH "Build KBSwitch, a keyboard plugin" ${WI
 cmake_dependent_option (ENABLE_KRIGSTASK "Build Krigstask, applications switcher" ${WITH_PLUGINS} "NOT WIN32" OFF)
 option (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_LADS "Build Lads, Ubuntu Unity integration layer" ${WITH_PLUGINS} "NOT WIN32" OFF)
-option (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" ${WITH_PLUGINS})
+option (ENABLE_LASTFMSCROBBLE "Build Last.fm client plugin" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_LAUGHTY "Build Desktop Notifications server" ${WITH_PLUGINS} "NOT WIN32" OFF)
 option (ENABLE_LEMON "Build LeechCraft Network Monitor" ${WITH_PLUGINS})
 option (ENABLE_LHTR "Build LeechCraft HTML Text editoR" ${WITH_PLUGINS})
