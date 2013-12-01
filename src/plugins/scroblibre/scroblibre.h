@@ -38,6 +38,7 @@ namespace LeechCraft
 namespace Scroblibre
 {
 	class AccountsManager;
+	class AuthManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -48,6 +49,7 @@ namespace Scroblibre
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		AccountsManager *AccMgr_;
+		AuthManager *AuthMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -58,6 +60,9 @@ namespace Scroblibre
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int* id, QObject** provider);
 	};
 }
 }

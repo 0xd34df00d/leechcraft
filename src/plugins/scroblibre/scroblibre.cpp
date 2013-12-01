@@ -32,18 +32,38 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
+#include "authmanager.h"
 
 namespace LeechCraft
 {
 namespace Scroblibre
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		AccMgr_ = new AccountsManager (this);
+		AuthMgr_ = new AuthManager (proxy, this);
+		connect (AccMgr_,
+				SIGNAL (accountAdded (QUrl, QString)),
+				AuthMgr_,
+				SLOT (handleAccountAdded (QUrl, QString)));
+		connect (AccMgr_,
+				SIGNAL (accountRemoved (QUrl, QString)),
+				AuthMgr_,
+				SLOT (handleAccountRemoved (QUrl, QString)));
+		AccMgr_->LoadAccounts ();
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "scroblibresettings.xml");
-
-		AccMgr_ = new AccountsManager ();
 		XSD_->SetDataSource ("AccountsView", AccMgr_->GetModel ());
+
+		connect (AuthMgr_,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+		connect (AuthMgr_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void Plugin::SecondInit ()
