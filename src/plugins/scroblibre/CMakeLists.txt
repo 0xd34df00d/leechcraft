@@ -11,9 +11,10 @@ include_directories (
 set (SRCS
 	scroblibre.cpp
 	accountsmanager.cpp
+	xmlsettingsmanager.cpp
 	)
 #CreateTrs("scroblibre" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("scroblibre" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("scroblibre" "en;ru_RU" "${SRCS}" "${FORMS}" "scroblibresettings.xml")
 
 add_library (leechcraft_scroblibre SHARED
 	${COMPILED_TRANSLATIONS}
@@ -24,3 +25,4 @@ target_link_libraries (leechcraft_scroblibre
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_scroblibre DESTINATION ${LC_PLUGINS_DEST})
+install (FILES scroblibresettings.xml DESTINATION ${LC_SETTINGS_DEST})

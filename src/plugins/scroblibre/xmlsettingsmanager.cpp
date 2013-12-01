@@ -27,58 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "scroblibre.h"
-#include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
-#include "accountsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace Scroblibre
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "scroblibresettings.xml");
-
-		AccMgr_ = new AccountsManager ();
-		XSD_->SetDataSource ("AccountsView", AccMgr_->GetModel ());
+		Util::BaseSettingsManager::Init ();
 	}
 
-	void Plugin::SecondInit ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
+		static XmlSettingsManager manager;
+		return manager;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		return "org.LeechCraft.Scroblibre";
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Scroblibre");
+		return settings;
 	}
 
-	void Plugin::Release ()
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Scroblibre";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Multiaccount scrobbler for services supporting Scrobbler API 1.2.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_scroblibre, LeechCraft::Scroblibre::Plugin);
