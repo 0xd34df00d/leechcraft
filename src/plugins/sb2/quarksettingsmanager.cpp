@@ -64,10 +64,13 @@ namespace SB2
 		{
 			if (val == "true" || val == "false")
 				val = val.toBool ();
-			else if (val.canConvert<double> ())
-				val = val.toDouble ();
-			else if (val.canConvert<int> ())
-				val = val.toInt ();
+			else
+			{
+				bool ok = false;
+				auto tempVal = val.toDouble (&ok);
+				if (ok)
+					val = tempVal;
+			}
 		}
 		Ctx_->setContextProperty (name.toUtf8 ().constData (), val);
 	}
