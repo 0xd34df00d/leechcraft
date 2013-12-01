@@ -17,6 +17,7 @@ set (SRCS
 	authmanager.cpp
 	singleaccauth.cpp
 	util.cpp
+	submitinfo.cpp
 	)
 #CreateTrs("scroblibre" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("scroblibre" "en;ru_RU" "${SRCS}" "${FORMS}" "scroblibresettings.xml")
