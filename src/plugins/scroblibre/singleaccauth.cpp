@@ -99,11 +99,8 @@ namespace Scroblibre
 		settings.beginGroup (BaseURL_.toString ());
 		settings.beginGroup (Login_);
 
-		const auto size = settings.beginReadArray ("Items");
-		for (auto i = 0; i < size; ++i)
+		auto restore = [&settings] () -> SubmitInfo
 		{
-			settings.setArrayIndex (i);
-
 			const auto& artist = settings.value ("Artist").toString ();
 			const auto& album = settings.value ("Album").toString ();
 			const auto& title = settings.value ("Title").toString ();
@@ -111,19 +108,32 @@ namespace Scroblibre
 			const auto& length = settings.value ("Length").toInt ();
 			const auto& track = settings.value ("Track").toInt ();
 
-			Queue_.append ({
-				{
-					artist,
-					album,
-					title,
-					{},
-					length,
-					0,
-					track,
-					{}
-				},
-				ts
-				});
+			return {
+					{
+						artist,
+						album,
+						title,
+						{},
+						length,
+						0,
+						track,
+						{}
+					},
+					ts
+				};
+		};
+
+		settings.beginGroup ("LastSubmit");
+		const auto& last = restore ();
+		if (last.IsValid ())
+			Queue_ << last;
+		settings.endGroup ();
+
+		const auto size = settings.beginReadArray ("Items");
+		for (auto i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			Queue_.append (restore ());
 		}
 		settings.endArray ();
 
@@ -140,18 +150,29 @@ namespace Scroblibre
 		settings.beginGroup (BaseURL_.toString ());
 		settings.beginGroup (Login_);
 
-		settings.beginWriteArray ("Items");
-		for (auto i = 0; i < Queue_.size (); ++i)
+		auto save = [&settings] (const SubmitInfo& info) -> void
 		{
-			const auto& info = Queue_.at (i);
-
-			settings.setArrayIndex (i);
 			settings.setValue ("Artist", info.Info_.Artist_);
 			settings.setValue ("Album", info.Info_.Album_);
 			settings.setValue ("Title", info.Info_.Title_);
 			settings.setValue ("TS", info.TS_);
 			settings.setValue ("Length", info.Info_.Length_);
 			settings.setValue ("Track", info.Info_.TrackNumber_);
+		};
+
+		settings.remove ("LastSubmit");
+		settings.beginGroup ("LastSubmit");
+		if (LastSubmit_.IsValid ())
+			save (LastSubmit_);
+		settings.endGroup ();
+
+		settings.beginWriteArray ("Items");
+		for (auto i = 0; i < Queue_.size (); ++i)
+		{
+			const auto& info = Queue_.at (i);
+
+			settings.setArrayIndex (i);
+			save (LastSubmit_);
 		}
 		settings.endArray ();
 
