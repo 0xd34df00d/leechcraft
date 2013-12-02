@@ -317,6 +317,11 @@ namespace Scroblibre
 			Queue_ << LastSubmit_;
 			timeout *= 6;
 		}
+		else
+			qDebug () << Q_FUNC_INFO
+					<< "submitted to"
+					<< BaseURL_
+					<< Login_;
 
 		LastSubmit_.Clear ();
 		SaveQueue ();
