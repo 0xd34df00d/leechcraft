@@ -82,8 +82,9 @@ namespace Scroblibre
 		if (info.Info_.TrackNumber_)
 			append ("n[0]", QString::number (info.Info_.TrackNumber_));
 
-		const auto reply = Proxy_->GetNetworkAccessManager ()->
-				post (QNetworkRequest (SubmissionsUrl_), data);
+		QNetworkRequest req { SubmissionsUrl_ };
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+		const auto reply = Proxy_->GetNetworkAccessManager ()->post (req, data);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
