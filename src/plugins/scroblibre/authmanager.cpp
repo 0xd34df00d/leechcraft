@@ -58,6 +58,10 @@ namespace Scroblibre
 		if (info.Length_)
 			SubmitTimer_->start (std::min (240, info.Length_ / 2) * 1000);
 		LastSubmit_ = info;
+
+		for (const auto& subhash : AccAuths_)
+			for (const auto auth : subhash)
+				auth->SetNP (LastSubmit_);
 	}
 
 	void AuthManager::HandleStopped ()
