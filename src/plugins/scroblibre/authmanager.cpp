@@ -55,7 +55,8 @@ namespace Scroblibre
 		if (info.Length_ && info.Length_ < 30)
 			return;
 
-		SubmitTimer_->start ();
+		if (info.Length_)
+			SubmitTimer_->start (std::min (240, info.Length_ / 2) * 1000);
 		LastSubmit_ = info;
 	}
 
