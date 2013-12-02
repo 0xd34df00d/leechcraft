@@ -64,6 +64,8 @@ namespace Scroblibre
 	private slots:
 		void reauth (bool failed = false);
 
+		void rotateSubmitQueue ();
+
 		void handleHSFinished ();
 		void handleSubmission ();
 	};

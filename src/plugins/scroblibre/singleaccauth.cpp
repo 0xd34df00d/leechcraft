@@ -53,6 +53,7 @@ namespace Scroblibre
 	, BaseURL_ { url }
 	, Login_ { login }
 	{
+		LoadQueue ();
 		reauth ();
 	}
 
@@ -61,8 +62,11 @@ namespace Scroblibre
 		if (SID_.isEmpty () || LastSubmit_.IsValid ())
 		{
 			Queue_ << info;
+			SaveQueue ();
 			return;
 		}
+
+		LastSubmit_ = info;
 
 		QByteArray data;
 		auto append = [&data] (const QByteArray& param, const QString& value) -> void
@@ -219,6 +223,12 @@ namespace Scroblibre
 				SLOT (handleHSFinished ()));
 	}
 
+	void SingleAccAuth::rotateSubmitQueue ()
+	{
+		if (!Queue_.isEmpty ())
+			Submit (Queue_.takeFirst ());
+	}
+
 	void SingleAccAuth::handleHSFinished ()
 	{
 		const auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -236,10 +246,10 @@ namespace Scroblibre
 			NowPlayingUrl_ = QUrl::fromEncoded (split.value (2).toLatin1 ());
 			SubmissionsUrl_ = QUrl::fromEncoded (split.value (3).toLatin1 ());
 
-			decltype (Queue_) queue;
-			std::swap (queue, Queue_);
-			for (const auto& item : queue)
-				Submit (item);
+			if (!Queue_.isEmpty ())
+				QTimer::singleShot (0,
+						this,
+						SLOT (rotateSubmitQueue ()));
 
 			return;
 		}
@@ -301,6 +311,20 @@ namespace Scroblibre
 		reply->deleteLater ();
 
 		const auto& data = reply->readAll ();
+		const auto& split = data.split ('\n');
+
+		int timeout = 10 * 1000;
+		if (split.value (0).trimmed () != "OK")
+		{
+			Queue_ << LastSubmit_;
+			timeout *= 6;
+		}
+
+		LastSubmit_.Clear ();
+		SaveQueue ();
+		QTimer::singleShot (timeout,
+				this,
+				SLOT (rotateSubmitQueue ()));
 	}
 }
 }
