@@ -58,7 +58,7 @@ namespace Scroblibre
 
 	void SingleAccAuth::Submit (const SubmitInfo& info)
 	{
-		if (SID_.isEmpty ())
+		if (SID_.isEmpty () || LastSubmit_.IsValid ())
 		{
 			Queue_ << info;
 			return;
