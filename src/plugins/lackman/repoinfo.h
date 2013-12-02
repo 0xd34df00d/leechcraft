@@ -162,7 +162,11 @@ namespace LackMan
 				* Contents of packages of this type would be
 				* installed into ~/.leechcraft/data
 				*/
-			TTheme
+			TTheme,
+
+			/** @brief Quark package.
+			 */
+			TQuark
 		} Type_;
 		QString Language_;
 		QString Description_;
