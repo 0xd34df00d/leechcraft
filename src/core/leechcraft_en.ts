@@ -367,207 +367,9 @@
 <context>
     <name>LeechCraft::AboutDialog</name>
     <message>
-        <location filename="aboutdialog.cpp" line="88"/>
-        <location filename="aboutdialog.cpp" line="115"/>
+        <location filename="aboutdialog.cpp" line="89"/>
         <source>Years: %1</source>
         <translation>Years: %1</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="136"/>
-        <source>Lead developer and original author.</source>
-        <translation>Lead developer and original author.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="144"/>
-        <source>Firefox importer in New Life.</source>
-        <translation>Firefox importer in New Life.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="143"/>
-        <source>Poshuku OnlineBookmarks.</source>
-        <translation>Poshuku OnlineBookmarks.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="140"/>
-        <source>Blogique module.</source>
-        <translation>Blogique module.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="141"/>
-        <source>Azoth Acetamide: IRC support for Azoth.</source>
-        <translation>Azoth Acetamide: IRC support for Azoth.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="142"/>
-        <source>Google Drive support in NetStoreManager module.</source>
-        <translation>Google Drive support in NetStoreManager module.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="145"/>
-        <source>Chrome-style tabs.</source>
-        <translation>Chrome-style tabs.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="146"/>
-        <location filename="aboutdialog.cpp" line="153"/>
-        <location filename="aboutdialog.cpp" line="234"/>
-        <location filename="aboutdialog.cpp" line="238"/>
-        <location filename="aboutdialog.cpp" line="260"/>
-        <source>Various patches.</source>
-        <translation>Various patches.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="152"/>
-        <source>SecMan SecureStorage.</source>
-        <translation>SecMan SecureStorage.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="157"/>
-        <source>Initial PKGBUILDs for Arch Linux.</source>
-        <translation>Initial PKGBUILDs for Arch Linux.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="161"/>
-        <source>openSUSE packages maintainer.</source>
-        <translation>openSUSE packages maintainer.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="165"/>
-        <location filename="aboutdialog.cpp" line="261"/>
-        <source>Ukrainian translations.</source>
-        <translation>Ukrainian translations.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="169"/>
-        <source>Spanish translations.</source>
-        <translation>Spanish translations.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="173"/>
-        <source>Artwork.</source>
-        <oldsource>Artwork designer.</oldsource>
-        <translation>Artwork.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="173"/>
-        <source>Shaitan plugin</source>
-        <translation>Shaitan plugin</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="177"/>
-        <source>Debian/Ubuntu maintainership.</source>
-        <translation>Debian/Ubuntu maintainership.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="178"/>
-        <source>Small fixes.</source>
-        <translation>Small fixes.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="182"/>
-        <source>openSUSE maintainership.</source>
-        <translation>openSUSE maintainership.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="183"/>
-        <location filename="aboutdialog.cpp" line="255"/>
-        <source>Lackman packages.</source>
-        <translation>Lackman packages.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="184"/>
-        <source>Azoth user guide.</source>
-        <translation>Azoth user guide.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="188"/>
-        <source>Windows maintainership.</source>
-        <translation>Windows maintainership.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="189"/>
-        <source>Windows fixes.</source>
-        <translation>Windows fixes.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="193"/>
-        <source>French translations.</source>
-        <translation>French translations.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="194"/>
-        <source>Italian translations.</source>
-        <translation>Italian translations.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="195"/>
-        <source>Public relations.</source>
-        <translation>Public relations.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="199"/>
-        <source>Microsoft Windows backend for Liznoo plugin.</source>
-        <translation>Microsoft Windows backend for Liznoo plugin.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="200"/>
-        <source>Microsoft Windows builds.</source>
-        <translation>Microsoft Windows builds.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="209"/>
-        <source>Laure plugin.</source>
-        <translation>Laure plugin.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="210"/>
-        <source>Last.FM Scrobbler plugin.</source>
-        <translation>Last.FM Scrobbler plugin.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="211"/>
-        <source>openSUSE package maintainer</source>
-        <translation>openSUSE package maintainer</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="212"/>
-        <source>Fedora package maintainer</source>
-        <translation>Fedora package maintainer</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="220"/>
-        <source>Extensive and thorough testing.</source>
-        <translation>Extensive and thorough testing.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="233"/>
-        <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
-        <translation>FatApe plugin, the GreaseMonkey support layer for Poshuku.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="242"/>
-        <source>Graphical artwork.</source>
-        <translation>Graphical artwork.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="246"/>
-        <source>Arabic translations.</source>
-        <translation>Arabic translations.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="250"/>
-        <source>Esperanto translations</source>
-        <translation>Esperanto translations</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="254"/>
-        <source>Azoth theming.</source>
-        <translation>Azoth theming.</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.cpp" line="259"/>
-        <source>Aggregator fixes and improvements.</source>
-        <translation>Aggregator fixes and improvements.</translation>
     </message>
 </context>
 <context>
@@ -591,37 +393,37 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="146"/>
+        <location filename="application.cpp" line="151"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Could not create path %1/.leechcraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="209"/>
+        <location filename="application.cpp" line="223"/>
         <source>Initializing LeechCraft...</source>
         <translation>Initializing LeechCraft...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="499"/>
+        <location filename="application.cpp" line="513"/>
         <source>Finalizing...</source>
         <translation>Finalizing...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="471"/>
+        <location filename="application.cpp" line="485"/>
         <source>Startup password</source>
         <translation>Startup password</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="472"/>
+        <location filename="application.cpp" line="486"/>
         <source>Enter startup password for LeechCraft:</source>
         <translation>Enter startup password for LeechCraft:</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="477"/>
+        <location filename="application.cpp" line="491"/>
         <source>Sorry, incorrect password</source>
         <translation>Sorry, incorrect password</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="565"/>
+        <location filename="application.cpp" line="579"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>This change requires restarting LeechCraft. Do you want to restart now?</translation>
     </message>
@@ -964,17 +766,17 @@
 <context>
     <name>LeechCraft::SeparateTabWidget</name>
     <message>
-        <location filename="separatetabwidget.cpp" line="349"/>
+        <location filename="separatetabwidget.cpp" line="350"/>
         <source>Move tab to</source>
         <translation>Move tab to</translation>
     </message>
     <message>
-        <location filename="separatetabwidget.cpp" line="350"/>
+        <location filename="separatetabwidget.cpp" line="351"/>
         <source>New window</source>
         <translation>New window</translation>
     </message>
     <message>
-        <location filename="separatetabwidget.cpp" line="364"/>
+        <location filename="separatetabwidget.cpp" line="365"/>
         <source>To window %1 (%2)</source>
         <translation>To window %1 (%2)</translation>
     </message>
