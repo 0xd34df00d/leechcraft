@@ -173,10 +173,8 @@ namespace Scroblibre
 		settings.beginWriteArray ("Items");
 		for (auto i = 0; i < Queue_.size (); ++i)
 		{
-			const auto& info = Queue_.at (i);
-
 			settings.setArrayIndex (i);
-			save (LastSubmit_);
+			save (Queue_.at (i));
 		}
 		settings.endArray ();
 
