@@ -138,10 +138,12 @@ namespace Scroblibre
 		else if (status == "BADAUTH")
 		{
 			const auto& e = Util::MakeNotification ("Scroblibre",
-					tr ("Sorry, the client is banned on %1.")
+					tr ("Invalid authentication on %1.")
 						.arg (UrlToService (BaseURL_)),
 					PCritical_);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
+			reauth (true);
+			return;
 		}
 		else
 		{
