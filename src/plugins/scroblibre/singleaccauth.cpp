@@ -88,6 +88,22 @@ namespace Scroblibre
 		}
 	}
 
+	void SingleAccAuth::SetNP (const SubmitInfo& info)
+	{
+		if (SID_.isEmpty ())
+			return;
+
+		const auto& data = GetPostBody (SID_, info, -1);
+
+		QNetworkRequest req { NowPlayingUrl_ };
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+		const auto reply = Proxy_->GetNetworkAccessManager ()->post (req, data);
+		connect (reply,
+				SIGNAL (finished ()),
+				reply,
+				SLOT (deleteLater ()));
+	}
+
 	void SingleAccAuth::Submit (const SubmitInfo& info)
 	{
 		if (SID_.isEmpty () || LastSubmit_.IsValid ())

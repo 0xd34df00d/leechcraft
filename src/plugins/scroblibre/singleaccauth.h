@@ -57,6 +57,7 @@ namespace Scroblibre
 	public:
 		SingleAccAuth (const QUrl& url, const QString& login, ICoreProxy_ptr, QObject*);
 
+		void SetNP (const SubmitInfo&);
 		void Submit (const SubmitInfo&);
 	private:
 		void LoadQueue ();
