@@ -43,6 +43,12 @@ namespace Scroblibre
 	{
 	}
 
+	SubmitInfo::SubmitInfo (const Media::AudioInfo& info, const QDateTime& ts)
+	: Info_ (info)
+	, TS_ (ts)
+	{
+	}
+
 	SubmitInfo& SubmitInfo::operator= (const Media::AudioInfo& info)
 	{
 		Info_ = info;

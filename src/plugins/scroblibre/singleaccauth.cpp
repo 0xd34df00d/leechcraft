@@ -35,6 +35,8 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <QTimer>
+#include <QSettings>
+#include <QCoreApplication>
 #include <util/passutils.h>
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
@@ -86,6 +88,75 @@ namespace Scroblibre
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleSubmission ()));
+	}
+
+	void SingleAccAuth::LoadQueue ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Scroblibre");
+		settings.beginGroup ("Queues");
+		settings.beginGroup (BaseURL_.toString ());
+		settings.beginGroup (Login_);
+
+		const auto size = settings.beginReadArray ("Items");
+		for (auto i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+
+			const auto& artist = settings.value ("Artist").toString ();
+			const auto& album = settings.value ("Album").toString ();
+			const auto& title = settings.value ("Title").toString ();
+			const auto& ts = settings.value ("TS").toDateTime ();
+			const auto& length = settings.value ("Length").toInt ();
+			const auto& track = settings.value ("Track").toInt ();
+
+			Queue_.append ({
+				{
+					artist,
+					album,
+					title,
+					{},
+					length,
+					0,
+					track,
+					{}
+				},
+				ts
+				});
+		}
+		settings.endArray ();
+
+		settings.endGroup ();
+		settings.endGroup ();
+		settings.endGroup ();
+	}
+
+	void SingleAccAuth::SaveQueue () const
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Scroblibre");
+		settings.beginGroup ("Queues");
+		settings.beginGroup (BaseURL_.toString ());
+		settings.beginGroup (Login_);
+
+		settings.beginWriteArray ("Items");
+		for (auto i = 0; i < Queue_.size (); ++i)
+		{
+			const auto& info = Queue_.at (i);
+
+			settings.setArrayIndex (i);
+			settings.setValue ("Artist", info.Info_.Artist_);
+			settings.setValue ("Album", info.Info_.Album_);
+			settings.setValue ("Title", info.Info_.Title_);
+			settings.setValue ("TS", info.TS_);
+			settings.setValue ("Length", info.Info_.Length_);
+			settings.setValue ("Track", info.Info_.TrackNumber_);
+		}
+		settings.endArray ();
+
+		settings.endGroup ();
+		settings.endGroup ();
+		settings.endGroup ();
 	}
 
 	void SingleAccAuth::reauth (bool failed)
