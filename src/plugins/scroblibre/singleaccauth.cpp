@@ -57,6 +57,37 @@ namespace Scroblibre
 		reauth ();
 	}
 
+	namespace
+	{
+		QByteArray GetPostBody (const QString& sid, const SubmitInfo& info, int idx)
+		{
+			const auto& idStr = idx < 0 ?
+					QString () :
+					("[" + QString::number (idx) + "]");
+
+			QByteArray data;
+			if (!sid.isEmpty ())
+				data = "s=" + QUrl::toPercentEncoding (sid);
+
+			auto append = [&data, &idStr] (const QByteArray& param, const QString& value) -> void
+			{
+				if (!data.isEmpty ())
+					data += '&';
+				data += param + idStr + '=' + QUrl::toPercentEncoding (value);
+			};
+
+			append ("a", info.Info_.Artist_);
+			append ("b", info.Info_.Album_);
+			append ("t", info.Info_.Title_);
+			append ("i", QString::number (info.TS_.toTime_t ()));
+			append ("l", QString::number (info.Info_.Length_));
+			if (info.Info_.TrackNumber_)
+				append ("n", QString::number (info.Info_.TrackNumber_));
+
+			return data;
+		}
+	}
+
 	void SingleAccAuth::Submit (const SubmitInfo& info)
 	{
 		if (SID_.isEmpty () || LastSubmit_.IsValid ())
@@ -68,23 +99,7 @@ namespace Scroblibre
 
 		LastSubmit_ = info;
 
-		QByteArray data;
-		auto append = [&data] (const QByteArray& param, const QString& value) -> void
-		{
-			if (!data.isEmpty ())
-				data += '&';
-			data += param + '=' + QUrl::toPercentEncoding (value);
-		};
-
-		append ("s", SID_);
-		append ("a[0]", info.Info_.Artist_);
-		append ("b[0]", info.Info_.Album_);
-		append ("t[0]", info.Info_.Title_);
-		append ("i[0]", QString::number (info.TS_.toTime_t ()));
-		append ("o[0]", "P");
-		append ("l[0]", QString::number (info.Info_.Length_));
-		if (info.Info_.TrackNumber_)
-			append ("n[0]", QString::number (info.Info_.TrackNumber_));
+		const auto& data = GetPostBody (SID_, info, 0);
 
 		QNetworkRequest req { SubmissionsUrl_ };
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
