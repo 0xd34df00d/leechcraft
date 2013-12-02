@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
+#include "submitinfo.h"
 
 namespace LeechCraft
 {
@@ -49,12 +50,19 @@ namespace Scroblibre
 		QUrl NowPlayingUrl_;
 		QUrl SubmissionsUrl_;
 
-		bool ReauthScheduled_;
+		bool ReauthScheduled_ = false;
+
+		QList<SubmitInfo> Queue_;
+		SubmitInfo LastSubmit_;
 	public:
 		SingleAccAuth (const QUrl& url, const QString& login, ICoreProxy_ptr, QObject*);
+
+		void Submit (const SubmitInfo&);
 	private slots:
 		void reauth (bool failed = false);
+
 		void handleHSFinished ();
+		void handleSubmission ();
 	};
 }
 }

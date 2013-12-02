@@ -37,8 +37,8 @@
 #include <QTimer>
 #include <util/passutils.h>
 #include <util/util.h>
-#include "util.h"
 #include <interfaces/core/ientitymanager.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -54,6 +54,40 @@ namespace Scroblibre
 		reauth ();
 	}
 
+	void SingleAccAuth::Submit (const SubmitInfo& info)
+	{
+		if (SID_.isEmpty ())
+		{
+			Queue_ << info;
+			return;
+		}
+
+		QByteArray data;
+		auto append = [&data] (const QByteArray& param, const QString& value) -> void
+		{
+			if (!data.isEmpty ())
+				data += '&';
+			data += param + '=' + QUrl::toPercentEncoding (value);
+		};
+
+		append ("s", SID_);
+		append ("a[0]", info.Info_.Artist_);
+		append ("b[0]", info.Info_.Album_);
+		append ("t[0]", info.Info_.Title_);
+		append ("i[0]", QString::number (info.TS_.toTime_t ()));
+		append ("o[0]", "P");
+		append ("l[0]", QString::number (info.Info_.Length_));
+		if (info.Info_.TrackNumber_)
+			append ("n[0]", QString::number (info.Info_.TrackNumber_));
+
+		const auto reply = Proxy_->GetNetworkAccessManager ()->
+				post (QNetworkRequest (SubmissionsUrl_), data);
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleSubmission ()));
+	}
+
 	void SingleAccAuth::reauth (bool failed)
 	{
 		ReauthScheduled_ = false;
@@ -67,7 +101,6 @@ namespace Scroblibre
 		reqUrl.addQueryItem ("hs", "true");
 		reqUrl.addQueryItem ("p", "1.2");
 		reqUrl.addQueryItem ("c", "tst");
-		// TODO
 		reqUrl.addQueryItem ("v", "1.0");
 		reqUrl.addQueryItem ("u", Login_);
 		reqUrl.addQueryItem ("t", nowStr);
@@ -109,6 +142,12 @@ namespace Scroblibre
 			SID_ = split.value (1);
 			NowPlayingUrl_ = QUrl::fromEncoded (split.value (2).toLatin1 ());
 			SubmissionsUrl_ = QUrl::fromEncoded (split.value (3).toLatin1 ());
+
+			decltype (Queue_) queue;
+			std::swap (queue, Queue_);
+			for (const auto& item : queue)
+				Submit (item);
+
 			return;
 		}
 
@@ -160,7 +199,15 @@ namespace Scroblibre
 		QTimer::singleShot (120 * 1000,
 				this,
 				SLOT (reauth ()));
-		ReauthScheduled_ = false;
+		ReauthScheduled_ = true;
+	}
+
+	void SingleAccAuth::handleSubmission ()
+	{
+		const auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
 	}
 }
 }
