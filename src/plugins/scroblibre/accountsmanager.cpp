@@ -53,7 +53,7 @@ namespace Scroblibre
 	: QObject (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
-		Model_->setHorizontalHeaderLabels ({ tr ("Service"), tr ("Login"), tr ("Password") });
+		Model_->setHorizontalHeaderLabels ({ tr ("Service"), tr ("Login") });
 
 		Model_->setHeaderData (Column::CService, Qt::Horizontal,
 				DataSources::DataFieldType::Enum,
