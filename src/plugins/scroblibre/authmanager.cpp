@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "authmanager.h"
+#include <algorithm>
+#include <QTimer>
 #include "singleaccauth.h"
 
 namespace LeechCraft
@@ -35,9 +37,40 @@ namespace LeechCraft
 namespace Scroblibre
 {
 	AuthManager::AuthManager (ICoreProxy_ptr proxy, QObject *parent)
-	: QObject (parent)
-	, Proxy_ (proxy)
+	: QObject { parent }
+	, Proxy_ { proxy }
+	, SubmitTimer_ { new QTimer (this) }
 	{
+		SubmitTimer_->setSingleShot (true);
+		connect (SubmitTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (submit ()));
+	}
+
+	void AuthManager::HandleAudio (const Media::AudioInfo& info)
+	{
+		HandleStopped ();
+
+		if (info.Length_ && info.Length_ < 30)
+			return;
+
+		SubmitTimer_->start ();
+		LastSubmit_ = info;
+	}
+
+	void AuthManager::HandleStopped ()
+	{
+		SubmitTimer_->stop ();
+		if (!LastSubmit_.IsValid ())
+			return;
+
+		const int secsTo = LastSubmit_.TS_.secsTo (QDateTime::currentDateTime ());
+		if (!LastSubmit_.Info_.Length_ && secsTo > 30)
+		{
+			LastSubmit_.Info_.Length_ = secsTo;
+			submit ();
+		}
 	}
 
 	void AuthManager::handleAccountAdded (const QUrl& service, const QString& login)
@@ -48,6 +81,13 @@ namespace Scroblibre
 	void AuthManager::handleAccountRemoved (const QUrl& service, const QString& login)
 	{
 		delete AccAuths_ [service].take (login);
+	}
+
+	void AuthManager::submit ()
+	{
+		for (const auto& subhash : AccAuths_)
+			for (const auto auth : subhash)
+				auth->Submit (LastSubmit_);
 	}
 }
 }

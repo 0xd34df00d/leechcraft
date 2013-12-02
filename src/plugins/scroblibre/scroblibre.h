@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/media/iaudioscrobbler.h>
 
 namespace LeechCraft
 {
@@ -43,9 +44,10 @@ namespace Scroblibre
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveSettings
+				 , public Media::IAudioScrobbler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+		Q_INTERFACES (IInfo IHaveSettings Media::IAudioScrobbler)
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		AccountsManager *AccMgr_;
@@ -60,6 +62,12 @@ namespace Scroblibre
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QString GetServiceName () const;
+		void NowPlaying (const Media::AudioInfo&);
+		void PlaybackStopped ();
+		void LoveCurrentTrack ();
+		void BanCurrentTrack ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int* id, QObject** provider);

@@ -33,6 +33,9 @@
 #include <QHash>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
+#include "submitinfo.h"
+
+class QTimer;
 
 namespace LeechCraft
 {
@@ -48,11 +51,20 @@ namespace Scroblibre
 
 		const ICoreProxy_ptr Proxy_;
 		QHash<QUrl, QHash<QString, SingleAccAuth*>> AccAuths_;
+
+		SubmitInfo LastSubmit_;
+
+		QTimer * const SubmitTimer_;
 	public:
 		AuthManager (ICoreProxy_ptr, QObject* = 0);
+
+		void HandleAudio (const Media::AudioInfo&);
+		void HandleStopped ();
 	public slots:
 		void handleAccountAdded (const QUrl& url, const QString& login);
 		void handleAccountRemoved (const QUrl& url, const QString& login);
+	private slots:
+		void submit ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int* id, QObject** provider);

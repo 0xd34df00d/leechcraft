@@ -50,7 +50,6 @@ namespace Scroblibre
 				SIGNAL (accountRemoved (QUrl, QString)),
 				AuthMgr_,
 				SLOT (handleAccountRemoved (QUrl, QString)));
-		AccMgr_->LoadAccounts ();
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "scroblibresettings.xml");
@@ -68,6 +67,7 @@ namespace Scroblibre
 
 	void Plugin::SecondInit ()
 	{
+		AccMgr_->LoadAccounts ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -97,6 +97,29 @@ namespace Scroblibre
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	QString Plugin::GetServiceName () const
+	{
+		return "Scrobbler API 1.2";
+	}
+
+	void Plugin::NowPlaying (const Media::AudioInfo& info)
+	{
+		AuthMgr_->HandleAudio (info);
+	}
+
+	void Plugin::PlaybackStopped ()
+	{
+		AuthMgr_->HandleStopped ();
+	}
+
+	void Plugin::LoveCurrentTrack ()
+	{
+	}
+
+	void Plugin::BanCurrentTrack ()
+	{
 	}
 }
 }
