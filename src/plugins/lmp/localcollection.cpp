@@ -229,6 +229,8 @@ namespace LMP
 
 			LocalCollectionStorage storage;
 
+			const auto& paths = storage.GetTracksPaths ();
+
 			const auto& allInfos = RecIterateInfo (path, symLinks);
 			for (const auto& info : allInfos)
 			{
@@ -252,16 +254,19 @@ namespace LMP
 							<< e.what ();
 				}
 
-				try
+				if (paths.contains (trackPath))
 				{
-					storage.SetMTime (trackPath, mtime);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "error setting mtime"
-							<< trackPath
-							<< e.what ();
+					try
+					{
+						storage.SetMTime (trackPath, mtime);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error setting mtime"
+								<< trackPath
+								<< e.what ();
+					}
 				}
 				result.ChangedFiles_ << trackPath;
 			}
