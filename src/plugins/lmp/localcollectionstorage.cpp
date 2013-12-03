@@ -31,6 +31,7 @@
 #include <stdexcept>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QFileInfo>
 #include <QThread>
 #include <boost/graph/graph_concepts.hpp>
 #include <util/util.h>
@@ -168,6 +169,8 @@ namespace LMP
 					(*i)->Tracks_ << track;
 					break;
 				}
+
+			SetMTime (info.LocalPath_, QFileInfo { info.LocalPath_ }.lastModified ());
 		}
 		lock.Good ();
 
