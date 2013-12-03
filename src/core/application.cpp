@@ -177,7 +177,7 @@ namespace LeechCraft
 #ifdef WITH_QWT
 		qmlRegisterType<Util::PlotItem> ("org.LC.common", 1, 0, "Plot");
 #else
-		qmlRegisterTypeNotAvailable ("org.LC.common", 1, 0, "Plot",
+		qmlRegisterUncreatableType<QObject> ("org.LC.common", 1, 0, "Plot",
 				"LeechCraft core has been built without Qwt support, Plot item is not available.");
 #endif
 
