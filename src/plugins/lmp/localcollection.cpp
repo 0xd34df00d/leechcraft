@@ -556,9 +556,13 @@ namespace LMP
 
 		for (const auto& artist : artists)
 		{
-			if (std::find_if (Artists_.begin (), Artists_.end (),
-						[&artist] (decltype (artist) present) { return present.ID_ == artist.ID_; }) == Artists_.end ())
+			const auto pos = std::find_if (Artists_.begin (), Artists_.end (),
+					[&artist] (decltype (artist) present) { return present.ID_ == artist.ID_; });
+			if (pos == Artists_.end ())
 				Artists_ += artist;
+			else
+				pos->Albums_ << artist.Albums_;
+
 			for (const auto& album : artist.Albums_)
 				for (const auto& track : album->Tracks_)
 					PresentPaths_ << track.FilePath_;
