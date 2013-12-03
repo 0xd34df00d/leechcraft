@@ -344,13 +344,25 @@ namespace LMP
 		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
 				[&artist] (decltype (Artists_.front ()) item) { return item.Name_ == artist; });
 		if (artistPos == Artists_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "artist not found:"
+					<< artist
+					<< album;
 			return -1;
+		}
 
 		const auto& albums = artistPos->Albums_;
 		auto albumPos = std::find_if (albums.begin (), albums.end (),
 				[&album] (decltype (albums.front ()) item) { return item->Name_ == album; });
 		if (albumPos == albums.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "album not found:"
+					<< artist
+					<< album;
 			return -1;
+		}
 
 		return (*albumPos)->ID_;
 	}
