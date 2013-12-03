@@ -346,9 +346,10 @@ namespace LMP
 		if (artistPos == Artists_.end ())
 			return -1;
 
-		auto albumPos = std::find_if (artistPos->Albums_.begin (), artistPos->Albums_.end (),
-				[&album] (decltype (artistPos->Albums_.front ()) item) { return item->Name_ == album; });
-		if (albumPos == artistPos->Albums_.end ())
+		const auto& albums = artistPos->Albums_;
+		auto albumPos = std::find_if (albums.begin (), albums.end (),
+				[&album] (decltype (albums.front ()) item) { return item->Name_ == album; });
+		if (albumPos == albums.end ())
 			return -1;
 
 		return (*albumPos)->ID_;
@@ -864,7 +865,7 @@ namespace LMP
 	{
 		auto future = Watcher_->future ();
 		QList<MediaInfo> newInfos, existingInfos;
-		Q_FOREACH (const auto& info, future)
+		for (const auto& info : future)
 		{
 			const auto& path = info.LocalPath_;
 			if (path.isEmpty ())

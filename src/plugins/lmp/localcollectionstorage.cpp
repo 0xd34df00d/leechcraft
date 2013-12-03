@@ -122,7 +122,7 @@ namespace LMP
 		Util::DBLock lock (DB_);
 
 		lock.Init ();
-		Q_FOREACH (const MediaInfo& info, infos)
+		for (const auto& info : infos)
 		{
 			Collection::Artist artist =
 			{
@@ -161,11 +161,10 @@ namespace LMP
 			};
 			AddTrack (track, artist.ID_, album.ID_);
 
-			auto& trackArtist = artists [artist.ID_];
-			for (auto i = trackArtist.Albums_.begin (), end = trackArtist.Albums_.end (); i != end; ++i)
-				if ((*i)->ID_ == album.ID_)
+			for (auto& trackAlbum : artists [artist.ID_].Albums_)
+				if (trackAlbum->ID_ == album.ID_)
 				{
-					(*i)->Tracks_ << track;
+					trackAlbum->Tracks_ << track;
 					break;
 				}
 
