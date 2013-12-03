@@ -225,6 +225,24 @@ namespace LMP
 		PresentArtists_ = result.PresentArtists_;
 	}
 
+	QStringList LocalCollectionStorage::GetTracksPaths ()
+	{
+		if (!GetAllTracks_.exec ())
+		{
+			Util::DBLock::DumpError (GetAllTracks_);
+			throw std::runtime_error ("cannot get all tracks");
+		}
+
+		QStringList result;
+		result.reserve (GetAllTracks_.size ());
+		while (GetAllTracks_.next ())
+			result << GetAllTracks_.value (1).toString ();
+
+		GetAllTracks_.finish ();
+
+		return result;
+	}
+
 	void LocalCollectionStorage::RemoveTrack (int id)
 	{
 		RemoveTrack_.bindValue (":track_id", id);
@@ -602,6 +620,9 @@ namespace LMP
 
 		GetAlbums_ = QSqlQuery (DB_);
 		GetAlbums_.prepare ("SELECT Id, Name, Year, CoverPath FROM albums;");
+
+		GetAllTracks_ = QSqlQuery (DB_);
+		GetAllTracks_.prepare ("SELECT Id, Path FROM tracks;");
 
 		AddArtist_ = QSqlQuery (DB_);
 		AddArtist_.prepare ("INSERT INTO artists (Name) VALUES (:name);");

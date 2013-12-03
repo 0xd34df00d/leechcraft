@@ -51,6 +51,7 @@ namespace LMP
 
 		QSqlQuery GetArtists_;
 		QSqlQuery GetAlbums_;
+		QSqlQuery GetAllTracks_;
 
 		QSqlQuery AddArtist_;
 		QSqlQuery AddAlbum_;
@@ -90,6 +91,8 @@ namespace LMP
 		Collection::Artists_t AddToCollection (const QList<MediaInfo>&);
 		LoadResult Load ();
 		void Load (const LoadResult&);
+
+		QStringList GetTracksPaths ();
 
 		void RemoveTrack (int);
 		void RemoveAlbum (int);
