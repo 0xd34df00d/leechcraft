@@ -115,7 +115,6 @@ namespace LMP
 
 		Collection::Artists_t GetAllArtists ();
 		QHash<int, Collection::Album_ptr> GetAllAlbums ();
-		QList<Collection::Track> GetAlbumTracks (int);
 
 		void AddArtist (Collection::Artist&);
 		void AddAlbum (const Collection::Artist&, Collection::Album&);
