@@ -33,7 +33,6 @@
 #include <QSqlQuery>
 #include <QFileInfo>
 #include <QThread>
-#include <boost/graph/graph_concepts.hpp>
 #include <util/util.h>
 #include <util/dblock.h>
 #include "util.h"
