@@ -16,23 +16,13 @@ set (ADIUMSTYLES_SRCS
 	packproxymodel.cpp
 	plistparser.cpp
 	)
-set (ADIUMSTYLES_HEADERS
-	adiumstyles.h
-	adiumstylesource.h
-	packproxymodel.h
-	plistparser.h
-	)
 set (ADIUMSTYLES_RESOURCES
 	adiumstyles.qrc
 	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (ADIUMSTYLES_MOC_SRCS ${ADIUMSTYLES_HEADERS})
-endif ()
 QT4_ADD_RESOURCES (ADIUMSTYLES_RCCS ${ADIUMSTYLES_RESOURCES})
 
 add_library (leechcraft_azoth_adiumstyles SHARED
 	${ADIUMSTYLES_SRCS}
-	${ADIUMSTYLES_MOC_SRCS}
 	${ADIUMSTYLES_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_adiumstyles
