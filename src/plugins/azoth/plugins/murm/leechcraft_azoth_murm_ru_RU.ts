@@ -2,6 +2,57 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>AccountConfigDialog</name>
+    <message>
+        <location filename="accountconfigdialog.ui" line="14"/>
+        <source>Account configuration</source>
+        <translation>Настройки учётной записи</translation>
+    </message>
+    <message>
+        <location filename="accountconfigdialog.ui" line="20"/>
+        <source>Keep file log</source>
+        <translation>Вести журнал в файле</translation>
+    </message>
+    <message>
+        <location filename="accountconfigdialog.ui" line="27"/>
+        <source>Publish tune to status</source>
+        <translation>Публиковать проигрываемую мелодию в статус</translation>
+    </message>
+    <message>
+        <location filename="accountconfigdialog.ui" line="34"/>
+        <source>Mark as online</source>
+        <translation>Помечать как присутствующий на сайте</translation>
+    </message>
+    <message>
+        <location filename="accountconfigdialog.ui" line="56"/>
+        <source>Reauth</source>
+        <translation>Переаутентифицироваться</translation>
+    </message>
+</context>
+<context>
+    <name>CaptchaDialog</name>
+    <message>
+        <location filename="captchadialog.ui" line="14"/>
+        <source>CAPTCHA required</source>
+        <translation>Требуется CAPTCHA</translation>
+    </message>
+    <message>
+        <location filename="captchadialog.ui" line="20"/>
+        <source>Image:</source>
+        <translation>Изображение:</translation>
+    </message>
+    <message>
+        <location filename="captchadialog.ui" line="27"/>
+        <source>loading...</source>
+        <translation>загрузка…</translation>
+    </message>
+    <message>
+        <location filename="captchadialog.ui" line="34"/>
+        <source>Text:</source>
+        <translation>Текст:</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Murm::EntryBase</name>
     <message>
         <location filename="entrybase.cpp" line="140"/>
@@ -19,12 +70,12 @@
         <translation>Скачать</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="264"/>
+        <location filename="entrybase.cpp" line="300"/>
         <source>Posted on: %1</source>
         <translation>Опубликовано: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="267"/>
+        <location filename="entrybase.cpp" line="303"/>
         <source>%n like(s)</source>
         <translation>
             <numerusform>%n пользователю это нравится</numerusform>
@@ -33,7 +84,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="269"/>
+        <location filename="entrybase.cpp" line="305"/>
         <source>%n repost(s)</source>
         <translation>
             <numerusform>%n пользователь опубликовал это у себя</numerusform>
@@ -66,9 +117,14 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="239"/>
+        <location filename="vkaccount.cpp" line="273"/>
         <source>me</source>
         <translation>я</translation>
+    </message>
+    <message>
+        <location filename="vkaccount.cpp" line="427"/>
+        <source>%1 is invalid VKontake ID</source>
+        <translation>%1 — неправильный ID В Контакте</translation>
     </message>
 </context>
 <context>
@@ -87,19 +143,24 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkEntry</name>
     <message>
-        <location filename="vkentry.cpp" line="100"/>
+        <location filename="vkentry.cpp" line="105"/>
         <source>%1 is now on the site again</source>
         <translation>%1 снова на сайте</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="101"/>
+        <location filename="vkentry.cpp" line="106"/>
         <source>%1 has left the site</source>
         <translation>%1 покинул(а) сайт</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="378"/>
+        <location filename="vkentry.cpp" line="394"/>
         <source>Self contact</source>
         <translation>Я</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="397"/>
+        <source>Non-friends</source>
+        <translation>Недрузья</translation>
     </message>
 </context>
 <context>
@@ -217,21 +278,6 @@
         <location filename="dummy.cpp" line="5"/>
         <source>The following variables are allowed: $name, $nick, $surname.</source>
         <translation>Разрешены следующие переменные: $name, $nick, $surname.</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="6"/>
-        <source>Behavior</source>
-        <translation>Поведение</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="7"/>
-        <source>Publish current tune to VK status</source>
-        <translation>Публиковать текущую песню как статус В Контакте</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="8"/>
-        <source>Mark the user as online on the VK site</source>
-        <translation>Помечать пользователя как активного на сайте</translation>
     </message>
 </context>
 </TS>

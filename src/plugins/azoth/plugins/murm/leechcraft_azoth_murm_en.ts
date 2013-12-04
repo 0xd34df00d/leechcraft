@@ -2,6 +2,57 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
+    <name>AccountConfigDialog</name>
+    <message>
+        <location filename="accountconfigdialog.ui" line="14"/>
+        <source>Account configuration</source>
+        <translation>Account configuration</translation>
+    </message>
+    <message>
+        <location filename="accountconfigdialog.ui" line="20"/>
+        <source>Keep file log</source>
+        <translation>Keep file log</translation>
+    </message>
+    <message>
+        <location filename="accountconfigdialog.ui" line="27"/>
+        <source>Publish tune to status</source>
+        <translation>Publish tune to status</translation>
+    </message>
+    <message>
+        <location filename="accountconfigdialog.ui" line="34"/>
+        <source>Mark as online</source>
+        <translation>Mark as online</translation>
+    </message>
+    <message>
+        <location filename="accountconfigdialog.ui" line="56"/>
+        <source>Reauth</source>
+        <translation>Reauth</translation>
+    </message>
+</context>
+<context>
+    <name>CaptchaDialog</name>
+    <message>
+        <location filename="captchadialog.ui" line="14"/>
+        <source>CAPTCHA required</source>
+        <translation>CAPTCHA required</translation>
+    </message>
+    <message>
+        <location filename="captchadialog.ui" line="20"/>
+        <source>Image:</source>
+        <translation>Image:</translation>
+    </message>
+    <message>
+        <location filename="captchadialog.ui" line="27"/>
+        <source>loading...</source>
+        <translation>loading...</translation>
+    </message>
+    <message>
+        <location filename="captchadialog.ui" line="34"/>
+        <source>Text:</source>
+        <translation>Text:</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Murm::EntryBase</name>
     <message>
         <location filename="entrybase.cpp" line="140"/>
@@ -19,12 +70,12 @@
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="264"/>
+        <location filename="entrybase.cpp" line="300"/>
         <source>Posted on: %1</source>
         <translation>Posted on: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="267"/>
+        <location filename="entrybase.cpp" line="303"/>
         <source>%n like(s)</source>
         <translation>
             <numerusform>%n like</numerusform>
@@ -32,7 +83,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="269"/>
+        <location filename="entrybase.cpp" line="305"/>
         <source>%n repost(s)</source>
         <translation>
             <numerusform>%n repost</numerusform>
@@ -64,9 +115,14 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="239"/>
+        <location filename="vkaccount.cpp" line="273"/>
         <source>me</source>
         <translation>me</translation>
+    </message>
+    <message>
+        <location filename="vkaccount.cpp" line="427"/>
+        <source>%1 is invalid VKontake ID</source>
+        <translation>%1 is invalid VKontake ID</translation>
     </message>
 </context>
 <context>
@@ -85,19 +141,24 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkEntry</name>
     <message>
-        <location filename="vkentry.cpp" line="100"/>
+        <location filename="vkentry.cpp" line="105"/>
         <source>%1 is now on the site again</source>
         <translation>%1 is now on the site again</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="101"/>
+        <location filename="vkentry.cpp" line="106"/>
         <source>%1 has left the site</source>
         <translation>%1 has left the site</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="378"/>
+        <location filename="vkentry.cpp" line="394"/>
         <source>Self contact</source>
         <translation>Self contact</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="397"/>
+        <source>Non-friends</source>
+        <translation>Non-friends</translation>
     </message>
 </context>
 <context>
@@ -215,21 +276,6 @@
         <location filename="dummy.cpp" line="5"/>
         <source>The following variables are allowed: $name, $nick, $surname.</source>
         <translation>The following variables are allowed: $name, $nick, $surname.</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="6"/>
-        <source>Behavior</source>
-        <translation>Behavior</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="7"/>
-        <source>Publish current tune to VK status</source>
-        <translation>Publish current tune to VK status</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="8"/>
-        <source>Mark the user as online on the VK site</source>
-        <translation>Mark the user as online on the VK site</translation>
     </message>
 </context>
 </TS>
