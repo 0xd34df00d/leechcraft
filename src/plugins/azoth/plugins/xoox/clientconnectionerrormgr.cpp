@@ -170,9 +170,6 @@ namespace Xoox
 				break;
 			}
 
-		if (error.condition () == QXmppStanza::Error::NotAuthorized)
-			emit serverAuthFailed ();
-
 		QString typeText;
 		if (!iq.from ().isEmpty ())
 			typeText = tr ("Error from %1: ")
@@ -231,6 +228,8 @@ namespace Xoox
 		case QXmppClient::XmppStreamError:
 			str = tr ("error while connecting: ");
 			str += HandleErrorCondition (Client_->xmppStreamError ());
+			if (Client_->xmppStreamError () == QXmppStanza::Error::NotAuthorized)
+				emit serverAuthFailed ();
 			break;
 		case QXmppClient::NoError:
 			str = tr ("no error.");
