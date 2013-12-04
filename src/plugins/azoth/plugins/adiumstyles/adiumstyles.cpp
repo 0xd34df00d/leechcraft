@@ -63,7 +63,7 @@ namespace AdiumStyles
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Support for Adium chat styles");
+		return tr ("Support for Adium chat styles.");
 	}
 
 	QIcon Plugin::GetIcon () const
