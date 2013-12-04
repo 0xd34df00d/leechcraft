@@ -21,7 +21,11 @@ set (ADIUMSTYLES_RESOURCES
 	)
 QT4_ADD_RESOURCES (ADIUMSTYLES_RCCS ${ADIUMSTYLES_RESOURCES})
 
+CreateTrs ("azoth_adiumstyles" "en;ru_RU" ADIUMSTYLES_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_adiumstyles" "en;ru_RU" "${ADIUMSTYLES_SRCS}" "" "")
+
 add_library (leechcraft_azoth_adiumstyles SHARED
+	${ADIUMSTYLES_COMPILED_TRANSLATIONS}
 	${ADIUMSTYLES_SRCS}
 	${ADIUMSTYLES_RCCS}
 	)
