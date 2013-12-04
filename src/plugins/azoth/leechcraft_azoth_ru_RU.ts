@@ -512,92 +512,112 @@
 <context>
     <name>LeechCraft::Azoth::AccountActionsManager</name>
     <message>
-        <location filename="accountactionsmanager.cpp" line="65"/>
+        <location filename="accountactionsmanager.cpp" line="68"/>
         <source>Join conference...</source>
         <translation>Присоединиться к конференции...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="66"/>
+        <location filename="accountactionsmanager.cpp" line="69"/>
         <source>Manage bookmarks...</source>
         <translation>Редактировать закладки...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="67"/>
+        <location filename="accountactionsmanager.cpp" line="70"/>
         <source>Add contact...</source>
         <translation>Добавить контакт...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="68"/>
+        <location filename="accountactionsmanager.cpp" line="71"/>
+        <source>Chat with non-CL contact</source>
+        <translation>Разговор с контактом не из ростера</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="72"/>
         <source>View microblogs...</source>
         <translation>Просмотр микроблогов...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="69"/>
+        <location filename="accountactionsmanager.cpp" line="73"/>
         <source>Set activity...</source>
         <translation>Занятие...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="70"/>
+        <location filename="accountactionsmanager.cpp" line="74"/>
         <source>Set mood...</source>
         <translation>Настроение...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="71"/>
+        <location filename="accountactionsmanager.cpp" line="75"/>
         <source>Set location...</source>
         <translation>Установить местоположение...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="72"/>
+        <location filename="accountactionsmanager.cpp" line="76"/>
         <source>Service discovery...</source>
         <translation>Обзор сервисов...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="73"/>
+        <location filename="accountactionsmanager.cpp" line="77"/>
         <source>Console...</source>
         <translation>Консоль...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="74"/>
+        <location filename="accountactionsmanager.cpp" line="78"/>
         <source>Update server password...</source>
         <translation>Обновить пароль на сервере...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="75"/>
+        <location filename="accountactionsmanager.cpp" line="79"/>
         <source>Rename...</source>
         <translation>Переименовать...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="76"/>
+        <location filename="accountactionsmanager.cpp" line="80"/>
         <source>Modify...</source>
         <translation>Изменить...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="84"/>
+        <location filename="accountactionsmanager.cpp" line="88"/>
         <source>Updates the account&apos;s password on the server</source>
         <translation>Обновляет хранящийся на сервере пароль учётной записи</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="153"/>
+        <location filename="accountactionsmanager.cpp" line="161"/>
         <source>Join bookmarked conference</source>
         <translation>Конференции из закладок</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="445"/>
+        <location filename="accountactionsmanager.cpp" line="350"/>
+        <source>Open chat with non-roster contact</source>
+        <translation>Открыть окно разговора с контактом не из ростера</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="351"/>
+        <source>Enter ID of the contact you wish to open chat with:</source>
+        <translation>Введите ID контакта, с которым вы желаете открыть разговор:</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="365"/>
+        <source>Error opening chat: %1</source>
+        <translation>Ошибка создания разговора: %1</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="490"/>
         <source>Change password</source>
         <translation>Изменение пароля</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="446"/>
+        <location filename="accountactionsmanager.cpp" line="491"/>
         <source>Enter new password for account %1 (the password will be updated on server):</source>
         <translation>Введите новый пароль для учётной записи %1 (пароль будет также обновлен на сервере):</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="464"/>
+        <location filename="accountactionsmanager.cpp" line="509"/>
         <source>Rename account</source>
         <translation>Переименование учётной записи</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="465"/>
+        <location filename="accountactionsmanager.cpp" line="510"/>
         <source>Enter new name for account %1:</source>
         <translation>Введите новое имя для учётной записи %1:</translation>
     </message>
@@ -1410,7 +1430,7 @@
         <translation>События</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1523"/>
+        <location filename="chattab.cpp" line="1522"/>
         <source>Enable rich text</source>
         <translation>Включить форматированный текст</translation>
     </message>
@@ -1420,12 +1440,12 @@
         <translation>Невозможно загрузить стиль. Проверьте, что включён хотя бы один стилевой модуль.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="409"/>
+        <location filename="chattab.cpp" line="408"/>
         <source>Chat with %1.</source>
         <translation>Разговор с %1.</translation>
     </message>
     <message numerus="yes">
-        <location filename="chattab.cpp" line="490"/>
+        <location filename="chattab.cpp" line="489"/>
         <source>[%n participant(s)]</source>
         <translation>
             <numerusform>[%n участник]</numerusform>
@@ -1434,127 +1454,127 @@
         </translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="834"/>
+        <location filename="chattab.cpp" line="833"/>
         <source>File offered: %1.</source>
         <translation>Предложен файл: %1.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="881"/>
+        <location filename="chattab.cpp" line="880"/>
         <source>File transfer request</source>
         <translation>Запрос передачи файла</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="891"/>
+        <location filename="chattab.cpp" line="890"/>
         <source>Select save path for incoming file</source>
         <translation>Выберите путь для сохранения входящего файла</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1042"/>
+        <location filename="chattab.cpp" line="1041"/>
         <source>participating</source>
         <translation>участвует</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1045"/>
+        <location filename="chattab.cpp" line="1044"/>
         <source>inactive</source>
         <translation>неактивен</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1048"/>
+        <location filename="chattab.cpp" line="1047"/>
         <source>composing</source>
         <translation>пишет</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1051"/>
+        <location filename="chattab.cpp" line="1050"/>
         <source>paused composing</source>
         <translation>перестал писать</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1054"/>
+        <location filename="chattab.cpp" line="1053"/>
         <source>left the conversation</source>
         <translation>покинул(а) разговор</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1159"/>
+        <location filename="chattab.cpp" line="1158"/>
         <source>%1 isn&apos;t present in this conference at the moment.</source>
         <translation>%1 в данный момент отсутствует в конференции.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1256"/>
+        <location filename="chattab.cpp" line="1255"/>
         <source>Would you like to send image %1 directly in chat? Otherwise the link to it will be sent.</source>
         <translation>Вы хотите отправить картинку %1 прямо в окне разговора? Иначе будет отправлена ссылка на картинку.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1289"/>
+        <location filename="chattab.cpp" line="1288"/>
         <source>This message contains inline image, enable XHTML-IM to view it.</source>
         <translation>Это сообщение содержит картинку, включите XHTML-IM для ее просмотра.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1331"/>
+        <location filename="chattab.cpp" line="1330"/>
         <source>Would you like to send image %1 (%2) directly in chat? Otherwise it will be sent as file.</source>
         <translation>Вы хотите отправить картинку %1 (%2) прямо в окне разговора? Иначе будет отправлена ссылка на картинку.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1545"/>
+        <location filename="chattab.cpp" line="1544"/>
         <source>Quote selection</source>
         <translation>Процитировать выделенное</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1651"/>
+        <location filename="chattab.cpp" line="1650"/>
         <source>MUC log for %1</source>
         <translation>Журнал событий конференции %1</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1683"/>
+        <location filename="chattab.cpp" line="1682"/>
         <source>Call...</source>
         <translation>Позвонить...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="2042"/>
+        <location filename="chattab.cpp" line="2041"/>
         <source>MUC&apos;s participants: </source>
         <translation>Участники конференции:</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="2203"/>
+        <location filename="chattab.cpp" line="2202"/>
         <source>Chat</source>
         <translation>Разговор</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1706"/>
+        <location filename="chattab.cpp" line="1705"/>
         <source>Enable encryption</source>
         <translation>Включить шифрование</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="869"/>
+        <location filename="chattab.cpp" line="868"/>
         <source>Would you like to accept or reject file transfer request for file %1?</source>
         <translation>Вы хотите принять или отклонить запрос на передачу файла %1?</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="874"/>
+        <location filename="chattab.cpp" line="873"/>
         <source>The file description is:</source>
         <translation>Описание файла:</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1893"/>
+        <location filename="chattab.cpp" line="1892"/>
         <source>%1 ended the conversation.</source>
         <translation>%1 завершил разговор.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1896"/>
+        <location filename="chattab.cpp" line="1895"/>
         <source>Conversation ended.</source>
         <translation>Разговор окончен.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="2206"/>
+        <location filename="chattab.cpp" line="2205"/>
         <source>Conference</source>
         <translation>Конференция</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="2209"/>
+        <location filename="chattab.cpp" line="2208"/>
         <source>Private chat</source>
         <translation>Приват</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="2212"/>
+        <location filename="chattab.cpp" line="2211"/>
         <source>Unauthorized user</source>
         <translation>Неавторизованный пользователь</translation>
     </message>
@@ -1603,174 +1623,174 @@
 <context>
     <name>LeechCraft::Azoth::Core</name>
     <message>
-        <location filename="core.cpp" line="1057"/>
+        <location filename="core.cpp" line="1071"/>
         <source>Unauthorized users</source>
         <translation>Неавторизованные</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1199"/>
+        <location filename="core.cpp" line="1213"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2634"/>
-        <location filename="core.cpp" line="2717"/>
+        <location filename="core.cpp" line="2656"/>
+        <location filename="core.cpp" line="2739"/>
         <source>Open chat</source>
         <translation>Начать разговор</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="536"/>
+        <location filename="core.cpp" line="542"/>
         <source>Please select account to handle URI %1</source>
         <translation>Пожалуйста, выберите учётную запись для обработки URI %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1063"/>
+        <location filename="core.cpp" line="1077"/>
         <source>Contacts</source>
         <translation>Контакты</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1262"/>
+        <location filename="core.cpp" line="1276"/>
         <source>Mood:</source>
         <translation>Настроение:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1271"/>
+        <location filename="core.cpp" line="1285"/>
         <source>Activity:</source>
         <translation>Занятие:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1287"/>
+        <location filename="core.cpp" line="1301"/>
         <source>Now listening to:</source>
         <translation>Слушает:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1298"/>
+        <location filename="core.cpp" line="1312"/>
         <source>from</source>
         <translation> с </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1343"/>
+        <location filename="core.cpp" line="1357"/>
         <source>Real ID:</source>
         <translation>Реальный ID:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1344"/>
+        <location filename="core.cpp" line="1358"/>
         <source>unknown</source>
         <translation>неизвестно</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1401"/>
+        <location filename="core.cpp" line="1415"/>
         <source>Using:</source>
         <translation>Использует:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1459"/>
+        <location filename="core.cpp" line="1473"/>
         <source>%1 is now %2.</source>
         <translation>%1 теперь %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1462"/>
+        <location filename="core.cpp" line="1476"/>
         <source>%1/%2 is now %3.</source>
         <translation>%1/%2 теперь %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1724"/>
+        <location filename="core.cpp" line="1746"/>
         <source>Client went to sleep</source>
         <translation>Клиент ушел спать</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1841"/>
+        <location filename="core.cpp" line="1863"/>
         <source>Non-human-readable ID of the sender (protocol-specific).</source>
         <translation>Не-человекочитабельный идентификатор отправителя (зависимый от протокола).</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2555"/>
+        <location filename="core.cpp" line="2577"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;</source>
         <translation>Входящее сообщение в разговоре с &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2577"/>
+        <location filename="core.cpp" line="2599"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;</source>
         <translation>&lt;em&gt;%2&lt;/em&gt; требует вашего внимания в конференции &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2675"/>
+        <location filename="core.cpp" line="2697"/>
         <source>Authorize</source>
         <translation>Авторизовать</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1828"/>
+        <location filename="core.cpp" line="1850"/>
         <source>Message body</source>
         <translation>Тело сообщения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1334"/>
+        <location filename="core.cpp" line="1348"/>
         <source>In groups:</source>
         <translation>В группах:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1405"/>
+        <location filename="core.cpp" line="1419"/>
         <source>Claiming:</source>
         <translation>Заявленная версия:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1407"/>
+        <location filename="core.cpp" line="1421"/>
         <source>OS:</source>
         <translation>ОС:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1829"/>
+        <location filename="core.cpp" line="1851"/>
         <source>Original human-readable message body.</source>
         <translation>Исходное тело сообщения, предназначенное для человека.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1834"/>
+        <location filename="core.cpp" line="1856"/>
         <source>Sender name</source>
         <translation>Имя отправителя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1835"/>
+        <location filename="core.cpp" line="1857"/>
         <source>Human-readable name of the sender of the message.</source>
         <translation>Имя отправителя этого сообщения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1840"/>
+        <location filename="core.cpp" line="1862"/>
         <source>Sender ID</source>
         <translation>ID отправителя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1846"/>
+        <location filename="core.cpp" line="1868"/>
         <source>Sender groups</source>
         <translation>Группы отправителя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1847"/>
+        <location filename="core.cpp" line="1869"/>
         <source>Groups to which the sender belongs.</source>
         <translation>Группы, которым принадлежит отправитель сообщения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1852"/>
+        <location filename="core.cpp" line="1874"/>
         <source>New status</source>
         <translation>Новый статус</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1853"/>
+        <location filename="core.cpp" line="1875"/>
         <source>The new status string of the contact.</source>
         <translation>Новая строка статуса контакта.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2547"/>
+        <location filename="core.cpp" line="2569"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</source>
         <translation>Входящее сообщение в разговоре с &lt;em&gt;%1&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2568"/>
+        <location filename="core.cpp" line="2590"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</source>
         <translation>&lt;em&gt;%2&lt;/em&gt; требует вашего внимания в конференции &lt;em&gt;%1&lt;/em&gt;.</translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2614"/>
-        <location filename="core.cpp" line="2624"/>
+        <location filename="core.cpp" line="2636"/>
+        <location filename="core.cpp" line="2646"/>
         <source>%n message(s) from</source>
         <translation>
             <numerusform>%n сообщение от</numerusform>
@@ -1779,7 +1799,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2618"/>
+        <location filename="core.cpp" line="2640"/>
         <source>%n message(s) in</source>
         <translation>
             <numerusform>%n сообщение в</numerusform>
@@ -1788,7 +1808,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2630"/>
+        <location filename="core.cpp" line="2652"/>
         <source>%n message(s)</source>
         <translation>
             <numerusform>%n сообщение</numerusform>
@@ -1797,182 +1817,182 @@
         </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2658"/>
+        <location filename="core.cpp" line="2680"/>
         <source>Subscription requested by %1.</source>
         <translation>Запрошена подписка от %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2660"/>
+        <location filename="core.cpp" line="2682"/>
         <source>Subscription requested by %1: %2.</source>
         <translation>Запрошена подписка от %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2676"/>
+        <location filename="core.cpp" line="2698"/>
         <source>Deny</source>
         <translation>Отклонить</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2677"/>
+        <location filename="core.cpp" line="2699"/>
         <source>View info</source>
         <translation>Посмотреть информацию</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2698"/>
+        <location filename="core.cpp" line="2720"/>
         <source>%1 requests your attention</source>
         <translation>%1 требует вашего внимания</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2700"/>
+        <location filename="core.cpp" line="2722"/>
         <source>%1 requests your attention: %2</source>
         <translation>%1 требует вашего внимания: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2710"/>
+        <location filename="core.cpp" line="2732"/>
         <source>Attention requested</source>
         <translation>Требуется внимание</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2711"/>
+        <location filename="core.cpp" line="2733"/>
         <source>Attention requested by %1</source>
         <translation>%1 требует внимания</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2748"/>
+        <location filename="core.cpp" line="2770"/>
         <source>Nickname conflict</source>
         <translation>Конфликт ников</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2749"/>
+        <location filename="core.cpp" line="2771"/>
         <source>You have specified a nickname for %1 that&apos;s already used. Would you like to try to join with another nick?</source>
         <translation>Вы указали ник %1, который уже используется. Хотите попробовать присоединиться с другим ником?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2758"/>
+        <location filename="core.cpp" line="2780"/>
         <source>Enter new nick</source>
         <translation>Введите новый ник</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2759"/>
+        <location filename="core.cpp" line="2781"/>
         <source>Enter new nick for joining %1 (%2 is already used):</source>
         <translation>Введите новый ник для присоединения к %1 (%2 уже используется):</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2785"/>
+        <location filename="core.cpp" line="2807"/>
         <source>You have been kicked from %1. Do you want to rejoin?</source>
         <translation>Вас кикнули с %1. Хотите присоединиться снова?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2787"/>
+        <location filename="core.cpp" line="2809"/>
         <source>You have been kicked from %1: %2. Do you want to rejoin?</source>
         <translation>Вас кикнули с %1: %2. Хотите присоединиться?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2810"/>
+        <location filename="core.cpp" line="2832"/>
         <source>You have been banned from %1.</source>
         <translation>Вас забанили на %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2812"/>
+        <location filename="core.cpp" line="2834"/>
         <source>You have been banned from %1: %2.</source>
         <translation>Вас забанили на %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2865"/>
+        <location filename="core.cpp" line="2887"/>
         <source>%1 (%2) subscribed to us.</source>
         <translation>%1 (%2) подписался на нас.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2866"/>
+        <location filename="core.cpp" line="2888"/>
         <source>%1 (%2) subscribed to us: %3.</source>
         <translation>%1 (%2) подписался на нас: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2879"/>
+        <location filename="core.cpp" line="2901"/>
         <source>%1 (%2) unsubscribed from us.</source>
         <translation>%1 (%2) от нас отписался.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2880"/>
+        <location filename="core.cpp" line="2902"/>
         <source>%1 (%2) unsubscribed from us: %3.</source>
         <translation>%1 (%2) от нас отписался: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2893"/>
+        <location filename="core.cpp" line="2915"/>
         <source>%1 unsubscribed from us.</source>
         <translation>%1 от нас отписался.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2895"/>
+        <location filename="core.cpp" line="2917"/>
         <source>%1 unsubscribed from us: %2.</source>
         <translation>%1 от нас отписался: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2909"/>
+        <location filename="core.cpp" line="2931"/>
         <source>%1 (%2) cancelled our subscription.</source>
         <translation>%1 (%2) отозвал нашу подписку.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2910"/>
+        <location filename="core.cpp" line="2932"/>
         <source>%1 (%2) cancelled our subscription: %3.</source>
         <translation>%1 (%2) отозвал нашу подписку: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2921"/>
+        <location filename="core.cpp" line="2943"/>
         <source>%1 (%2) granted subscription.</source>
         <translation>%1 (%2) разрешил подписку.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2922"/>
+        <location filename="core.cpp" line="2944"/>
         <source>%1 (%2) granted subscription: %3.</source>
         <translation>%1 (%2) разрешил подписку: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2940"/>
+        <location filename="core.cpp" line="2962"/>
         <source>You have been invited to %1 by %2.</source>
         <translation>%2 пригласил вас в %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2943"/>
+        <location filename="core.cpp" line="2965"/>
         <source>You have been invited to %1 by %2: %3</source>
         <translation>%2 пригласил вас в %1: %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2962"/>
+        <location filename="core.cpp" line="2984"/>
         <source>Join</source>
         <translation>Зайти</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="157"/>
+        <location filename="proxyobject.cpp" line="158"/>
         <source>Online</source>
         <translation>Доступен</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="159"/>
+        <location filename="proxyobject.cpp" line="160"/>
         <source>Free to chat</source>
         <translation>Готов поболтать</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="161"/>
+        <location filename="proxyobject.cpp" line="162"/>
         <source>Away</source>
         <translation>Отсутствую</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="163"/>
+        <location filename="proxyobject.cpp" line="164"/>
         <source>Do not disturb</source>
         <translation>Не отвлекать</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="165"/>
+        <location filename="proxyobject.cpp" line="166"/>
         <source>Not available</source>
         <translation>Недоступен</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="167"/>
+        <location filename="proxyobject.cpp" line="168"/>
         <source>Offline</source>
         <translation>Отключён</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="169"/>
+        <location filename="proxyobject.cpp" line="170"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -2089,27 +2109,27 @@
 <context>
     <name>LeechCraft::Azoth::MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="240"/>
+        <location filename="mainwidget.cpp" line="239"/>
         <source>Manage bookmarks...</source>
         <translation>Редактировать закладки...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="244"/>
+        <location filename="mainwidget.cpp" line="243"/>
         <source>Add account...</source>
         <translation>Добавить учётную запись...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="431"/>
+        <location filename="mainwidget.cpp" line="430"/>
         <source>Send message...</source>
         <translation>Отправить сообщение...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="611"/>
+        <location filename="mainwidget.cpp" line="610"/>
         <source>Rename group</source>
         <translation>Переименование группы</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="612"/>
+        <location filename="mainwidget.cpp" line="611"/>
         <source>Enter new group name for %1:</source>
         <translation>Введите новое имя группы для %1:</translation>
     </message>
@@ -2129,47 +2149,47 @@
         <translation>Панель Azoth</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="208"/>
+        <location filename="mainwidget.cpp" line="207"/>
         <source>Show all users list</source>
         <translation>Показать список всех пользователей</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="229"/>
+        <location filename="mainwidget.cpp" line="228"/>
         <source>Add contact...</source>
         <translation>Добавить контакт...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="234"/>
+        <location filename="mainwidget.cpp" line="233"/>
         <source>Join conference...</source>
         <translation>Присоединиться к конференции...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="439"/>
+        <location filename="mainwidget.cpp" line="438"/>
         <source>Remove group&apos;s participants</source>
         <translation>Удалить участников группы</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="754"/>
+        <location filename="mainwidget.cpp" line="753"/>
         <source>Are you sure you want to remove %1 from roster?</source>
         <translation>Вы уверены, что хотите удалить %1 из списка контактов?</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="101"/>
+        <location filename="mainwidget.cpp" line="100"/>
         <source>Search...</source>
         <translation>Поиск...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="249"/>
+        <location filename="mainwidget.cpp" line="248"/>
         <source>Show offline contacts</source>
         <translation>Показывать оффлайн-контакты</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="416"/>
+        <location filename="mainwidget.cpp" line="415"/>
         <source>Rename group...</source>
         <translation>Переименовать группу...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="365"/>
+        <location filename="mainwidget.cpp" line="364"/>
         <source>Entry context menu</source>
         <translation>Контекстное меню контакта</translation>
     </message>
@@ -2799,17 +2819,17 @@
 <context>
     <name>LeechCraft::Azoth::ProxyObject</name>
     <message>
-        <location filename="proxyobject.cpp" line="139"/>
+        <location filename="proxyobject.cpp" line="140"/>
         <source>Enter password for %1:</source>
         <translation>Введите пароль для %1:</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="295"/>
+        <location filename="proxyobject.cpp" line="296"/>
         <source>%1 changed status to %2</source>
         <translation>%1 теперь %2</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="298"/>
+        <location filename="proxyobject.cpp" line="299"/>
         <source>%1 changed status to %2 (%3)</source>
         <translation>%1 теперь %2 (%3)</translation>
     </message>
