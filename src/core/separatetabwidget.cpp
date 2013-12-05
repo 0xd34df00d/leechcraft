@@ -487,12 +487,36 @@ namespace LeechCraft
 
 		if (widget == PreviousWidget_)
 			PreviousWidget_ = 0;
-		if (widget == CurrentWidget_)
+		else if (widget == CurrentWidget_)
 			CurrentWidget_ = 0;
 
 		if (auto itw = qobject_cast<ITabWidget*> (widget))
 			if (auto bar = itw->GetToolBar ())
 				RemoveWidgetFromSeparateTabWidget (bar);
+
+		if (!CurrentWidget_)
+		{
+			int nextIdx = -1;
+			switch (MainTabBar_->selectionBehaviorOnRemove ())
+			{
+			case QTabBar::SelectLeftTab:
+				nextIdx = index - 1;
+				if (nextIdx == -1 && WidgetCount () > 1)
+					nextIdx = 1;
+				break;
+			case QTabBar::SelectRightTab:
+				nextIdx = index == WidgetCount () - 1 ?
+						WidgetCount () - 2 :
+						index + 1;
+				break;
+			default:
+				nextIdx = IndexOf (PreviousWidget_);
+				break;
+			}
+
+			if (nextIdx >= 0)
+				setCurrentTab (nextIdx);
+		}
 
 		MainStackedWidget_->removeWidget (widget);
 		MainTabBar_->removeTab (index);
