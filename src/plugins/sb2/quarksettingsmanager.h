@@ -42,8 +42,8 @@ namespace SB2
 	{
 		Q_OBJECT
 
-		QUrl QuarkURL_;
-		QDeclarativeContext *Ctx_;
+		const QUrl QuarkURL_;
+		QDeclarativeContext * const Ctx_;
 	public:
 		QuarkSettingsManager (const QUrl&, QDeclarativeContext*);
 	public slots:
