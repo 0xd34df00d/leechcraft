@@ -44,6 +44,12 @@ namespace SB2
 		Util::BaseSettingsManager::Init ();
 	}
 
+	void QuarkSettingsManager::setSettingsValue (const QString& key, const QVariant& value)
+	{
+		auto s = GetSettings ();
+		s->setValue (key, value);
+	}
+
 	QSettings* QuarkSettingsManager::BeginSettings () const
 	{
 		auto settings = new QSettings (QCoreApplication::organizationName (),
