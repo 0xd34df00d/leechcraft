@@ -50,6 +50,8 @@ namespace SB2
 	{
 		auto s = GetSettings ();
 		s->setValue (key, value);
+
+		PropertyChanged (key, value);
 	}
 
 	QSettings* QuarkSettingsManager::BeginSettings () const
