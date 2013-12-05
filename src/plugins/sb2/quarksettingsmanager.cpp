@@ -42,6 +42,8 @@ namespace SB2
 	, Ctx_ (ctx)
 	{
 		Util::BaseSettingsManager::Init ();
+
+		Ctx_->setContextProperty (QFileInfo (QuarkURL_.path ()).baseName () + "_Settings", this);
 	}
 
 	void QuarkSettingsManager::setSettingsValue (const QString& key, const QVariant& value)
