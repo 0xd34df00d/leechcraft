@@ -42,6 +42,7 @@
 #include <util/queuemanager.h>
 #include <util/util.h>
 #include "albumsmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -71,6 +72,9 @@ namespace TouchStreams
 		QTimer::singleShot (1000,
 				this,
 				SLOT (refetchFriends ()));
+
+		XmlSettingsManager::Instance ().RegisterObject ("RequestFriendsData",
+				this, "refetchFriends");
 	}
 
 	QStandardItem* FriendsManager::GetRootItem () const
@@ -105,6 +109,10 @@ namespace TouchStreams
 
 	void FriendsManager::refetchFriends ()
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("RequestFriendsData").toBool ())
+			return;
+
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		RequestQueue_.push_back ([this, nam] (const QString& key) -> void
 			{
