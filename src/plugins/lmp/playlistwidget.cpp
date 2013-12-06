@@ -752,11 +752,13 @@ namespace LMP
 
 	void PlaylistWidget::removeFromOneShot ()
 	{
-		const auto& index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
-		if (!index.isValid ())
-			return;
+		auto selection = Ui_.Playlist_->selectionModel ()->selectedRows ();
+		const auto& current = Ui_.Playlist_->currentIndex ();
+		if (!selection.contains (current) && current.isValid ())
+			selection << current;
 
-		Player_->RemoveFromOneShotQueue (index);
+		for (const auto& index : selection)
+			Player_->RemoveFromOneShotQueue (PlaylistFilter_->mapToSource (index));
 	}
 
 	void PlaylistWidget::moveOneShotUp ()
