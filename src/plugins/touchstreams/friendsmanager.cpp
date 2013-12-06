@@ -38,6 +38,7 @@
 #include <qjson/parser.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <util/svcauth/vkauthmanager.h>
+#include <util/svcauth/vkcaptchadialog.h>
 #include <util/queuemanager.h>
 #include <util/util.h>
 #include "albumsmanager.h"
@@ -203,6 +204,31 @@ namespace TouchStreams
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void FriendsManager::handleCaptchaEntered (const QString& cid, const QString& value)
+	{
+		if (Queue_->IsPaused ())
+			Queue_->Resume ();
+
+		if (!CaptchaReplyMaker_)
+			return;
+
+		if (value.isEmpty ())
+			return;
+
+		decltype (CaptchaReplyMaker_) maker;
+		std::swap (maker, CaptchaReplyMaker_);
+		Queue_->Schedule ([cid, value, maker, this] () -> void
+				{
+					const auto& map = Util::MakeMap<QString, QString> ({
+							{ "captcha_sid", cid },
+							{ "captcha_key", value }
+						});
+					Reply2Func_ [maker (map)] = maker;
+				},
+				nullptr,
+				Util::QueuePriority::High);
+	}
+
 	void FriendsManager::handleExecuted ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -212,6 +238,37 @@ namespace TouchStreams
 		const auto& reqFunc = Reply2Func_.take (reply);
 
 		const auto& data = QJson::Parser ().parse (reply).toMap ();
+
+		if (data.contains ("error"))
+		{
+			const auto& errMap = data ["error"].toMap ();
+			if (errMap ["error_code"].toULongLong () == 14)
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "captcha requested";
+				if (Queue_->IsPaused ())
+					return;
+
+				Queue_->Pause ();
+
+				auto captchaDialog = new Util::SvcAuth::VkCaptchaDialog (errMap,
+						Proxy_->GetNetworkAccessManager ());
+				captchaDialog->show ();
+				connect (captchaDialog,
+						SIGNAL (gotCaptcha (QString, QString)),
+						this,
+						SLOT (handleCaptchaEntered (QString, QString)));
+				CaptchaReplyMaker_ = std::move (reqFunc);
+			}
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error"
+						<< errMap;
+				return;
+			}
+		}
+
 		for (const auto& userDataVar : data ["response"].toList ())
 		{
 			const auto& userData = userDataVar.toMap ();
