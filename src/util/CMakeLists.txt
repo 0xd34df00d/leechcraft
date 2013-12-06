@@ -60,6 +60,7 @@ set (SRCS
 	qml/unhidelistviewbase.cpp
 	qml/widthiconprovider.cpp
 	svcauth/vkauthmanager.cpp
+	svcauth/vkcaptchadialog.cpp
 	sys/mimedetector.cpp
 	sys/paths.cpp
 	xdg/desktopparser.cpp
@@ -95,6 +96,7 @@ set (SRCS
 set (FORMS
 	backendselector.ui
 	gui/findnotification.ui
+	svcauth/vkcaptchadialog.ui
 	)
 if (USE_QT5)
 	qt5_wrap_ui (UIS_H ${FORMS})
