@@ -37,8 +37,14 @@ namespace Util
 	QueueManager::QueueManager (int timeout, QObject *parent)
 	: QObject (parent)
 	, Timeout_ (timeout)
+	, ReqTimer_ (new QTimer (this))
 	, Paused_ (false)
 	{
+		ReqTimer_->setSingleShot (true);
+		connect (ReqTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (exec ()));
 	}
 
 	void QueueManager::Schedule (std::function<void ()> f, QObject *dep, QueuePriority prio)
@@ -54,9 +60,7 @@ namespace Util
 		if (diff >= Timeout_)
 			exec ();
 		else if (Queue_.size () == 1)
-			QTimer::singleShot (Timeout_ - diff,
-					this,
-					SLOT (exec ()));
+			ReqTimer_->start (Timeout_ - diff);
 	}
 
 	void QueueManager::Clear ()
@@ -67,11 +71,13 @@ namespace Util
 	void QueueManager::Pause ()
 	{
 		Paused_ = true;
+		ReqTimer_->stop ();
 	}
 
 	void QueueManager::Resume ()
 	{
 		Paused_ = false;
+		ReqTimer_->start (Timeout_);
 	}
 
 	void QueueManager::exec ()
@@ -80,12 +86,7 @@ namespace Util
 			return;
 
 		if (Paused_)
-		{
-			QTimer::singleShot (Timeout_,
-					this,
-					SLOT (exec ()));
 			return;
-		}
 
 		const auto& pair = Queue_.takeFirst ();
 		if (pair.second && !*pair.second)
@@ -98,9 +99,7 @@ namespace Util
 		LastRequest_ = QDateTime::currentDateTime ();
 
 		if (!Queue_.isEmpty ())
-			QTimer::singleShot (Timeout_,
-					this,
-					SLOT (exec ()));
+			ReqTimer_->start (Timeout_);
 	}
 }
 }

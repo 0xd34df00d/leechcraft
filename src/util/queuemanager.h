@@ -37,6 +37,8 @@
 #include <QPair>
 #include "utilconfig.h"
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Util
@@ -57,6 +59,7 @@ namespace Util
 		Q_OBJECT
 
 		const int Timeout_;
+		QTimer * const ReqTimer_;
 		QDateTime LastRequest_;
 
 		bool Paused_;
