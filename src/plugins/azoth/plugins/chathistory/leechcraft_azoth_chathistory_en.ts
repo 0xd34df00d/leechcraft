@@ -52,17 +52,17 @@
         <translation>Clear</translation>
     </message>
     <message>
-        <location filename="chathistorywidget.cpp" line="377"/>
+        <location filename="chathistorywidget.cpp" line="376"/>
         <source>No more search results for %1.</source>
         <translation>No more search results for %1.</translation>
     </message>
     <message>
-        <location filename="chathistorywidget.cpp" line="538"/>
+        <location filename="chathistorywidget.cpp" line="537"/>
         <source>Are you sure you wish to delete chat history with %1?</source>
         <translation>Are you sure you wish to delete chat history with %1?</translation>
     </message>
     <message>
-        <location filename="chathistorywidget.cpp" line="559"/>
+        <location filename="chathistorywidget.cpp" line="558"/>
         <source>History is loading...</source>
         <translation>History is loading...</translation>
     </message>
@@ -83,28 +83,28 @@
 <context>
     <name>LeechCraft::Azoth::ChatHistory::Plugin</name>
     <message>
-        <location filename="chathistory.cpp" line="68"/>
+        <location filename="chathistory.cpp" line="69"/>
         <source>IM history</source>
         <translation>IM history</translation>
     </message>
     <message>
-        <location filename="chathistory.cpp" line="101"/>
+        <location filename="chathistory.cpp" line="102"/>
         <source>Stores message history in Azoth.</source>
         <translation>Stores message history in Azoth.</translation>
     </message>
     <message>
-        <location filename="chathistory.cpp" line="230"/>
+        <location filename="chathistory.cpp" line="231"/>
         <source>History...</source>
         <translation>History...</translation>
     </message>
     <message>
-        <location filename="chathistory.cpp" line="243"/>
+        <location filename="chathistory.cpp" line="244"/>
         <source>Logging enabled</source>
         <translation>Logging enabled</translation>
     </message>
     <message>
-        <location filename="chathistory.cpp" line="320"/>
-        <location filename="chathistory.cpp" line="355"/>
+        <location filename="chathistory.cpp" line="347"/>
+        <location filename="chathistory.cpp" line="382"/>
         <source>Chat history</source>
         <translation>Chat history</translation>
     </message>
