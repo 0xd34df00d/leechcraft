@@ -56,7 +56,7 @@ namespace SB2
 			new Util::UnhoverDeleteMixin (this);
 
 		setStyleSheet ("background: transparent");
-		setWindowFlags (Qt::ToolTip);
+		setWindowFlags (Qt::Popup);
 		setAttribute (Qt::WA_TranslucentBackground);
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
