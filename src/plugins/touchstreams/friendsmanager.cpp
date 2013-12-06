@@ -39,6 +39,7 @@
 #include <interfaces/media/iradiostationprovider.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
+#include <util/util.h>
 #include "albumsmanager.h"
 
 namespace LeechCraft
@@ -173,21 +174,30 @@ namespace TouchStreams
 			auto nam = Proxy_->GetNetworkAccessManager ();
 			RequestQueue_.push_back ([this, nam, code, theseUsersMap] (const QString& key) -> void
 				{
-					QUrl url ("https://api.vk.com/method/execute");
+					auto f = [=] (const QMap<QString, QString>& map) -> QNetworkReply*
+					{
+						QUrl url ("https://api.vk.com/method/execute");
 
-					auto query = "access_token=" + QUrl::toPercentEncoding (key.toUtf8 ());
-					query += '&';
-					query += "code=" + QUrl::toPercentEncoding (code.toUtf8 ());
+						auto query = "access_token=" + QUrl::toPercentEncoding (key.toUtf8 ());
+						query += '&';
+						query += "code=" + QUrl::toPercentEncoding (code.toUtf8 ());
 
-					QNetworkRequest req (url);
-					req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-					auto reply = nam->post (req, query);
-					connect (reply,
-							SIGNAL (finished ()),
-							this,
-							SLOT (handleExecuted ()));
+						for (auto i = map.begin (); i != map.end (); ++i)
+							query += '&' + i.key () + '=' + QUrl::toPercentEncoding (i->toUtf8 ());
 
-					Reply2Users_ [reply] = theseUsersMap;
+						QNetworkRequest req (url);
+						req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+						auto reply = nam->post (req, query);
+						connect (reply,
+								SIGNAL (finished ()),
+								this,
+								SLOT (handleExecuted ()));
+
+						Reply2Users_ [reply] = theseUsersMap;
+
+						return reply;
+					};
+					Reply2Func_ [f ({})] = f;
 				});
 		}
 		AuthMgr_->GetAuthKey ();
@@ -199,6 +209,7 @@ namespace TouchStreams
 		reply->deleteLater ();
 
 		const auto& usersMap = Reply2Users_.take (reply);
+		const auto& reqFunc = Reply2Func_.take (reply);
 
 		const auto& data = QJson::Parser ().parse (reply).toMap ();
 		for (const auto& userDataVar : data ["response"].toList ())
