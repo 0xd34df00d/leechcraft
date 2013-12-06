@@ -37,6 +37,7 @@ namespace Util
 	QueueManager::QueueManager (int timeout, QObject *parent)
 	: QObject (parent)
 	, Timeout_ (timeout)
+	, Paused_ (false)
 	{
 	}
 
@@ -63,10 +64,28 @@ namespace Util
 		Queue_.clear ();
 	}
 
+	void QueueManager::Pause ()
+	{
+		Paused_ = true;
+	}
+
+	void QueueManager::Resume ()
+	{
+		Paused_ = false;
+	}
+
 	void QueueManager::exec ()
 	{
 		if (Queue_.isEmpty ())
 			return;
+
+		if (Paused_)
+		{
+			QTimer::singleShot (Timeout_,
+					this,
+					SLOT (exec ()));
+			return;
+		}
 
 		const auto& pair = Queue_.takeFirst ();
 		if (pair.second && !*pair.second)

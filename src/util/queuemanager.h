@@ -59,6 +59,8 @@ namespace Util
 		const int Timeout_;
 		QDateTime LastRequest_;
 
+		bool Paused_;
+
 		typedef boost::optional<QPointer<QObject>> OptionalTracker_t;
 		QList<QPair<std::function<void ()>, boost::optional<QPointer<QObject>>>> Queue_;
 	public:
@@ -97,6 +99,22 @@ namespace Util
 		 * current operation.
 		 */
 		void Clear ();
+
+		/** @brief Pauses the queue rotation.
+		 *
+		 * If the queue is already paused, this function does nothing.
+		 *
+		 * @sa Resume()
+		 */
+		void Pause ();
+
+		/** @brief Continues the queue rotation.
+		 *
+		 * If the queue is already running, this function does nothing.
+		 *
+		 * @sa Pause()
+		 */
+		void Resume ();
 	private slots:
 		void exec ();
 	};
