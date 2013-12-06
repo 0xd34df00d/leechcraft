@@ -16,6 +16,7 @@ set (ISTERIQUE_RESOURCES
 	isterique.qrc
 	)
 QT4_ADD_RESOURCES (ISTERIQUE_RCCS ${ISTERIQUE_RESOURCES})
+CreateTrsUpTarget ("azoth_isterique" "en;ru_RU" "${ISTERIQUE_SRCS}" "" "azothisteriquesettings.xml")
 CreateTrs ("azoth_isterique" "en;ru_RU;uk_UA" ISTERIQUE_COMPILED_TRANSLATIONS)
 
 add_library (leechcraft_azoth_isterique SHARED
@@ -28,5 +29,4 @@ target_link_libraries (leechcraft_azoth_isterique
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_isterique DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${ISTERIQUE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES azothisteriquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
