@@ -107,15 +107,23 @@ namespace Util
 		 *
 		 * If the queue is already paused, this function does nothing.
 		 *
-		 * @sa Resume()
+		 * @sa IsPaused(), Resume()
 		 */
 		void Pause ();
+
+		/** @brief Checks if the queue is paused.
+		 *
+		 * @return Whether the queue is paused.
+		 *
+		 * @sa Pause(), Resume()
+		 */
+		bool IsPaused () const;
 
 		/** @brief Continues the queue rotation.
 		 *
 		 * If the queue is already running, this function does nothing.
 		 *
-		 * @sa Pause()
+		 * @sa IsPaused(), Pause()
 		 */
 		void Resume ();
 	private slots:

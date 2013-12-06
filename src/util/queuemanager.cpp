@@ -74,6 +74,11 @@ namespace Util
 		ReqTimer_->stop ();
 	}
 
+	bool QueueManager::IsPaused () const
+	{
+		return Paused_;
+	}
+
 	void QueueManager::Resume ()
 	{
 		Paused_ = false;
