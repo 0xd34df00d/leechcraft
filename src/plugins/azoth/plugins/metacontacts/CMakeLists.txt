@@ -18,32 +18,18 @@ set (METACONTACTS_SRCS
 	addtometacontactsdialog.cpp
 	managecontactsdialog.cpp
 	)
-set (METACONTACTS_HEADERS
-	metacontacts.h
-	metaprotocol.h
-	metaaccount.h
-	metaentry.h
-	metamessage.h
-	core.h
-	addtometacontactsdialog.h
-	managecontactsdialog.h
-	)
 set (METACONTACTS_FORMS
 	addtometacontactsdialog.ui
 	managecontactsdialog.ui
 	)
 set (METACONTACTS_RESOURCES azothmetacontactsresources.qrc)
 CreateTrs ("azoth_metacontacts" "en;es;ru_RU;uk_UA" METACONTACTS_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (METACONTACTS_MOC_SRCS ${METACONTACTS_HEADERS})
-endif ()
 QT4_WRAP_UI (METACONTACTS_UIS_H ${METACONTACTS_FORMS})
 QT4_ADD_RESOURCES (METACONTACTS_RCCS ${METACONTACTS_RESOURCES})
 
 add_library (leechcraft_azoth_metacontacts SHARED
 	${METACONTACTS_COMPILED_TRANSLATIONS}
 	${METACONTACTS_SRCS}
-	${METACONTACTS_MOC_SRCS}
 	${METACONTACTS_UIS_H}
 	${METACONTACTS_RCCS}
 	)
