@@ -66,7 +66,7 @@ namespace NativeEmoticons
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Support for native Azoth emoticons packs");
+		return tr ("Support for native Azoth emoticons packs as well as Kopete and Psi+ packs.");
 	}
 
 	QIcon Plugin::GetIcon () const
