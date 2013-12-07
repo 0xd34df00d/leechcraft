@@ -17,16 +17,6 @@ set (NATIVEEMOTICONS_SRCS
 	psiplusemoticonssource.cpp
 	baseemoticonssource.cpp
 	)
-set (NATIVEEMOTICONS_HEADERS
-	nativeemoticons.h
-	nativeemoticonssource.h
-	kopeteemoticonssource.h
-	psiplusemoticonssource.h
-	baseemoticonssource.h
-	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (NATIVEEMOTICONS_MOC_SRCS ${NATIVEEMOTICONS_HEADERS})
-endif ()
 
 set (NATIVEEMOTICONS_RESOURCES nativeemoticonsresources.qrc)
 QT4_ADD_RESOURCES (NATIVEEMOTICONS_RCCS ${NATIVEEMOTICONS_RESOURCES})
@@ -34,7 +24,6 @@ QT4_ADD_RESOURCES (NATIVEEMOTICONS_RCCS ${NATIVEEMOTICONS_RESOURCES})
 add_library (leechcraft_azoth_nativeemoticons SHARED
 	${NATIVEEMOTICONS_RCCS}
 	${NATIVEEMOTICONS_SRCS}
-	${NATIVEEMOTICONS_MOC_SRCS}
 	)
 target_link_libraries (leechcraft_azoth_nativeemoticons
 	${QT_LIBRARIES}
