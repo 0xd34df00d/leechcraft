@@ -12,21 +12,13 @@ set (MODNOK_SRCS
 	modnok.cpp
 	xmlsettingsmanager.cpp
 	)
-set (MODNOK_HEADERS
-	modnok.h
-	xmlsettingsmanager.h
-	)
 set (MODNOK_RESOURCES azothmodnokresources.qrc)
 CreateTrs ("azoth_modnok" "en;es;ru_RU;uk_UA" MODNOK_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MODNOK_MOC_SRCS ${MODNOK_HEADERS})
-endif ()
 QT4_ADD_RESOURCES (MODNOK_RCCS ${MODNOK_RESOURCES})
 
 add_library (leechcraft_azoth_modnok SHARED
 	${MODNOK_COMPILED_TRANSLATIONS}
 	${MODNOK_SRCS}
-	${MODNOK_MOC_SRCS}
 	${MODNOK_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_modnok
