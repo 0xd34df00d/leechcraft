@@ -4,19 +4,24 @@
 <context>
     <name>LeechCraft::Azoth::LastSeen::Plugin</name>
     <message>
-        <location filename="lastseen.cpp" line="62"/>
-        <source>Azoth LastSeen displays when a contact has been online and available for the list time.</source>
-        <translation>Azoth LastSeen displays when a contact has been online and available for the list time.</translation>
+        <location filename="lastseen.cpp" line="79"/>
+        <source>Azoth LastSeen displays when a contact has been online and available for the last time.</source>
+        <translation>Azoth LastSeen displays when a contact has been online and available for the last time.</translation>
     </message>
     <message>
-        <location filename="lastseen.cpp" line="178"/>
+        <location filename="lastseen.cpp" line="198"/>
         <source>Was available: %1</source>
         <translation>Was available: %1</translation>
     </message>
     <message>
-        <location filename="lastseen.cpp" line="191"/>
+        <location filename="lastseen.cpp" line="211"/>
         <source>Was online: %1</source>
         <translation>Was online: %1</translation>
+    </message>
+    <message>
+        <location filename="lastseen.cpp" line="221"/>
+        <source>Last status change: %1</source>
+        <translation>Last status change: %1</translation>
     </message>
 </context>
 </TS>
