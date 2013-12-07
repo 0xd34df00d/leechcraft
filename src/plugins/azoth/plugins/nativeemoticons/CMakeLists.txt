@@ -21,6 +21,8 @@ set (NATIVEEMOTICONS_SRCS
 set (NATIVEEMOTICONS_RESOURCES nativeemoticonsresources.qrc)
 QT4_ADD_RESOURCES (NATIVEEMOTICONS_RCCS ${NATIVEEMOTICONS_RESOURCES})
 
+CreateTrsUpTarget ("azoth_nativeemoticons" "en;ru_RU" "${NATIVEEMOTICONS_SRCS}" "" "")
+
 add_library (leechcraft_azoth_nativeemoticons SHARED
 	${NATIVEEMOTICONS_RCCS}
 	${NATIVEEMOTICONS_SRCS}
