@@ -18,6 +18,7 @@ set (LASTSEEN_RESOURCES
 QT4_ADD_RESOURCES (LASTSEEN_RCCS ${LASTSEEN_RESOURCES})
 
 CreateTrs ("azoth_lastseen" "en;es;ru_RU;uk_UA" LASTSEEN_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_lastseen" "en;ru_RU" "${LASTSEEN_SRCS}" "" "")
 
 add_library (leechcraft_azoth_lastseen SHARED
 	${LASTSEEN_COMPILED_TRANSLATIONS}
@@ -29,4 +30,3 @@ target_link_libraries (leechcraft_azoth_lastseen
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_lastseen DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${LASTSEEN_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
