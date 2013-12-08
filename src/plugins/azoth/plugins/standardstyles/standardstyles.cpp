@@ -30,6 +30,7 @@
 #include "standardstyles.h"
 #include <QIcon>
 #include <interfaces/azoth/iproxyobject.h>
+#include <util/util.h>
 #include "standardstylesource.h"
 
 namespace LeechCraft
@@ -41,6 +42,8 @@ namespace StandardStyles
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Proxy_ = 0;
+
+		Util::InstallTranslator ("azoth_standardstyles");
 	}
 
 	void Plugin::SecondInit ()
