@@ -39,4 +39,3 @@ target_link_libraries (leechcraft_azoth_rosenthal
 	)
 install (TARGETS leechcraft_azoth_rosenthal DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothrosenthalsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${ROSENTHAL_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
