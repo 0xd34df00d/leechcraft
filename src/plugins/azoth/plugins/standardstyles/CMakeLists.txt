@@ -14,20 +14,12 @@ set (STANDARDSTYLES_SRCS
 	standardstyles.cpp
 	standardstylesource.cpp
 	)
-set (STANDARDSTYLES_HEADERS
-	standardstyles.h
-	standardstylesource.h
-	)
 set (STANDARDSTYLES_RESOURCES azothstandardstylesresources.qrc)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (STANDARDSTYLES_MOC_SRCS ${STANDARDSTYLES_HEADERS})
-endif ()
 
 QT4_ADD_RESOURCES (STANDARDSTYLES_RCCS ${STANDARDSTYLES_RESOURCES})
 
 add_library (leechcraft_azoth_standardstyles SHARED
 	${STANDARDSTYLES_SRCS}
-	${STANDARDSTYLES_MOC_SRCS}
 	${STANDARDSTYLES_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_standardstyles
