@@ -22,25 +22,16 @@ set (ROSENTHAL_SRCS
 	highlighter.cpp
 	xmlsettingsmanager.cpp
 	)
-set (ROSENTHAL_HEADERS
-	rosenthal.h
-	highlighter.h
-	xmlsettingsmanager.h
-	)
 set (ROSENTHAL_RESOURCES azothrosenthalresources.qrc)
 CreateTrs ("azoth_rosenthal" "en;es;ru_RU;uk_UA" ROSENTHAL_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (ROSENTHAL_MOC_SRCS ${ROSENTHAL_HEADERS})
-endif ()
 QT4_ADD_RESOURCES (ROSENTHAL_RCCS ${ROSENTHAL_RESOURCES})
 
 add_library (leechcraft_azoth_rosenthal SHARED
-    ${ROSENTHAL_SRCS}
-    ${ROSENTHAL_MOC_SRCS}
+	${ROSENTHAL_SRCS}
 	${ROSENTHAL_COMPILED_TRANSLATIONS}
 	${ROSENTHAL_RCCS}
 	${R_HUNSPELL_SRCS}
-    )
+	)
 target_link_libraries (leechcraft_azoth_rosenthal
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
