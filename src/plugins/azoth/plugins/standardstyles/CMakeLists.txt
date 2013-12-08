@@ -18,6 +18,8 @@ set (STANDARDSTYLES_RESOURCES azothstandardstylesresources.qrc)
 
 QT4_ADD_RESOURCES (STANDARDSTYLES_RCCS ${STANDARDSTYLES_RESOURCES})
 
+CreateTrsUpTarget ("azoth_standardstyles" "en;ru_RU" "${STANDARDSTYLES_SRCS}" "" "")
+
 add_library (leechcraft_azoth_standardstyles SHARED
 	${STANDARDSTYLES_SRCS}
 	${STANDARDSTYLES_RCCS}
