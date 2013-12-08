@@ -13,6 +13,7 @@ set (SHX_SRCS
 	xmlsettingsmanager.cpp
 	)
 #CreateTrs ("azoth_shx" "en;ru_RU" AUTOPASTE_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_shx" "en;ru_RU" "${SHX_SRCS}" "" "azothshxsettings.xml")
 set (SHX_RESOURCES
 	shxresources.qrc
 	)
