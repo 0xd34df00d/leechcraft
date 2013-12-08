@@ -24,6 +24,7 @@ set (ROSENTHAL_SRCS
 	)
 set (ROSENTHAL_RESOURCES azothrosenthalresources.qrc)
 CreateTrs ("azoth_rosenthal" "en;es;ru_RU;uk_UA" ROSENTHAL_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_rosenthal" "en;ru_RU" "${ROSENTHAL_SRCS}" "" "azothrosenthalsettings.xml")
 QT4_ADD_RESOURCES (ROSENTHAL_RCCS ${ROSENTHAL_RESOURCES})
 
 add_library (leechcraft_azoth_rosenthal SHARED
