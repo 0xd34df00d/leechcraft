@@ -63,7 +63,7 @@ namespace StandardStyles
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Support for standard Azoth chat styles");
+		return tr ("Support for standard Azoth chat styles.");
 	}
 
 	QIcon Plugin::GetIcon () const
