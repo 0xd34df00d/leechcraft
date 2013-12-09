@@ -1,6 +1,292 @@
 This file lists only more or less major changes, refer to `git log` for
 the rest.
 
+!!! 0.6.60
+* New plugins:
+	* Azoth Murm - VK support for Azoth.
+	* Blasq - client for cloud image storages like Flickr, Picasa or VK.
+	* Devmon - udev-based USB non-storage devices monitor.
+	* Fenet - WM/compositor manager.
+	* Imgaste - image uploader to services like imagebin.ca.
+	* Krigstask - taskbar quark for SB2.
+	* Laughty - system-wide D-Bus notification daemon.
+	* Mellonetray - system tray quark for SB2.
+	* Scroblibre - submissions API 1.2-compliant scrobbler for arbitrary sites.
+	* Sysnotify - notifications plugin using D-Bus notifications.
+	* VtyuLC - VLC-based video player.
+	* Xtazy - current tune fetcher from LMP or MPRIS.
+* [Overall] Added desktop mode.
+* [Overall] Support different icon packs for plugin icons.
+* [Overall] Renamed base libs (lcutil -> leechcraft-util,
+  xmlsettingsdialog -> leechcraft-xsd).
+* [Core] Fixed a dreaded Qt bug with network disk cache leading to frequent
+  crashes on some systems.
+* [Core] Avoid tab scrolling, now tabs just get smaller and smaller.
+* [Core] Added --additional command line switch.
+* [Core] Better cookies handling: support for disabling cookies, whitelists,
+  blacklists, deleting cookies on exit and the likes.
+* [Core] Shortcuts for Close tab, Fullscreen, Quit, Settings and Tabs switching
+  actions are now configurable.
+* [Core] New tab menu is now nested: all tab classes from a plugin and its
+  subplugins are in one submenu.
+* [Core] Better new tab menu button.
+* [Core] Better ActionButton in QML.
+* [Core] Optimized startup a lot: parallelized initial plugin loading,
+  optimized icons usage.
+* [Core] Support opacities in ColorEngine.
+* [Core] Fallback to default icon in shortcuts model.
+* [Core] Fixed toolbar hiding order on tabs switching.
+* [Core] Fixed closing last tab with mid button with lots of tabs.
+* [Core] Fixed LC menu button behavior.
+* [Core] Fixed re-showing toolbar after closing tab.
+* [Core] Fixed tabs closing segfault.
+* [Core] Fixed encoding for debug messages.
+* [Core] Fixed associated side dock widgets handling.
+* [Core] Better NetworkDiskCache::expire() method.
+* [Util] ClearLineEditAddon for FindNotification.
+* [Util] Clear expired cookies in CollectGarbage().
+* [Util] Don't save session cookies.
+* [XSD] Don't update the values while initializing (1.5-2x speedup).
+* [XSD] Parse settings in init mode (100x loading speedup).
+* [XSD] Write settings in a separate thread (considerable speedup on huge IO).
+* [XSD] Schedule cleanup instead of immediate cleanup.
+* [XSD] Source text can be in UTF-8 in settings.
+* [AN] Support creating rules from other plugins (for example, for single-shot
+  notifications from Azoth).
+* [AN] Support event-dependent arguments in command handler.
+* [AN] Added categories or package management, media player and generic events.
+* [AN] Fixed several crashes on some systems.
+* [AN] Fixed saving paths to custom sounds.
+* [Aggregator] Keyboard shortcuts for items navigation (next, previous, next
+  unread, previous unread).
+* [Aggregator] Fixed crash on selecting empty area in the items list.
+* [Aggregator] Fixed several rare crashes.
+* [AnHero] Migrated to own crash handler, avoid KDE dependency.
+* [AnHero] Optionally save crash dumps to a place where Dolozhee can
+  automatically find it.
+* [Auscrie] Moved uploading to Imgaste plugin, migrate to datafilters.
+* [Azoth] Show a message whenever current date changes (at around 00:00).
+* [Azoth] Support registering singleshot event notification rules like for
+  contact status change with plugins like AN.
+* [Azoth] Support opening chat with non-roster items if protocol supports that.
+* [Azoth] Some actions, like chat opening or removal, now can be applied to
+  multiple selected entries.
+* [Azoth] Support changing permissions of a participant in all conferences
+  where there are sufficient permissions.
+* [Azoth] Added shortcuts for deleting current word; to beginning of current
+  line and to the end of the current line.
+* [Azoth] Added an action for changing nick without typing '/nick'.
+* [Azoth] Support chat messages whose content can change on the fly (for media
+  content in Murm for now only).
+* [Azoth] Added font zoom setting, Ctrl+Shift+Wheel changes it locally.
+* [Azoth] Added an option to hide status changes in private chats as well.
+* [Azoth] Added rejoin action.
+* [Azoth] Messages are now marked as read after being forwarded.
+* [Azoth] Support account password changes.
+* [Azoth] Try inviting user to a MUC on DnD.
+* [Azoth] Much more shortcuts are now configurable.
+* [Azoth] Delete entries on Delete key.
+* [Azoth] Don't suggest protocol file transfers if they are disabled.
+* [Azoth] Old/read messages separator is now displayed for just opened tabs as
+  well.
+* [Azoth] Support filtering Service Discovery.
+* [Azoth] Keep information about window corresponding to a notification event.
+* [Azoth] Status icons caching, severe performance boost.
+* [Azoth] Fixed integration with job holder representators (like Summary or TPI
+  plugins).
+* [Azoth] Fixed several occasional crashes.
+* [Azoth] Fixed several smiles handling issues.
+* [Azoth] Show proper unread messages count on tab open.
+* [Azoth] Finally fixed encoding for missing chat style plugin message.
+* [Azoth] Don't accept rich text in group send dialog.
+* [Azoth] Removed final dot in msg notification.
+* [Azoth] Remove calls from entry when finished.
+* [Azoth] Don't focus on newly opened tab.
+* [Azoth AP] Added hastebin service.
+* [Azoth AP] Added paste.org.ru service.
+* [Azoth LastSeen] Keep last status change info.
+* [Azoth SS] Added Lime Dawn theme by Krigstask.
+* [Azoth SS] Palette coloring now depends on chat style theme background
+  instead of global Qt palette.
+* [Azoth SS] Include proper xml header declaration in themes.
+* [Azoth SS] Added a class for message delivery status icon.
+* [Azoth Xoox] Added STUN/TURN to account configuration.
+* [Azoth Xoox] Handle registration errors in in-band registration.
+* [Azoth Xoox] Always disconnect from server on offline.
+* [Azoth Xoox] Check if joining to in-roster entry.
+* [Azoth Xoox] Handle and display incoming error messages.
+* [Azoth Xoox] Fixed form builder-related crashes in in-band registration and
+  MUC configuration.
+* [Azoth Xoox] Fixed several Qt-related crashes.
+* [Azoth Xoox] Restart registration process on socket error.
+* [Azoth Xoox] Added support... err, kludge for cmake 2.8.12.
+* [Azoth Xtazy] Moved tune-fetching logic into a new top-level plugin, Xtazy.
+* [BitTorrent] Fixed several minor issues.
+* [Blogique] Support service-specific tags in WYSIWYG, like <lj-cut/> for
+  LiveJournal.
+* [Blogique] Added blogs export to fb2, html, pdf and plaintext.
+* [Blogique] Support previewing posts.
+* [Blogique] Adding accounts from Blogique tab.
+* [Blogique] Several tags cloud fixes.
+* [Blogique] Use error labels instead of messageboxes
+* [Blogique] Lots of behavioral fixes.
+* [Blogique Hestia] Added default DB suggestion on account creation.
+* [Blogique Metida] Support fetching friends lists.
+* [Blogique Metida] Support modifying friends list with groups.
+* [Blogique Metida] Support communities list.
+* [Blogique Metida] Support sending messages.
+* [Blogique Metida] Fixed comments and inbox checking.
+* [CSTP] Set Accept and Host headers.
+* [CSTP] Trim long URLs in notifications.
+* [CSTP] Try using source entity as URL in filename maker.
+* [CSTP] Support "Filename" Entity parameter.
+* [CSTP] Convert dir paths to URLs.
+* [CSTP] Don't handle just downloaded files.
+* [CSTP] Handle only files instead of QNetworkReply objects.
+* [DeadLyrics] Try recoding the lyrics to UTF-8.
+* [DeadLyrics] Set referer for requests.
+* [DeadLyrics] Added japanese lyrics sources and fixes
+* [DeadLyRicS] Added updates for polish sources from clementine-player
+* [DeadLyrics] Check for invalid indicators.
+* [DeadLyrics] Log requests in debug builds.
+* [DeadLyrics] Proper check for plaintext.
+* [DeadLyrics] Better wrap plaintext in <pre>.
+* [DeadLyrics] Properly handle \r and \r\n for plaintext lyrics.
+* [Dolozhee] Support files attaching.
+* [Dolozhee] Added preview page
+* [Dolozhee] Autodetect if there are issues to send on LeechCraft startup after
+  a crash, for example.
+* [Dolozhee] Escape the sections contents.
+* [Dolozhee] Remove \r from sent strings.
+* [Dolozhee] Show upload progress.
+* [Dolozhee] Support priorities in issues.
+* [Glance] Create glance window with Dialog flag.
+* [HotSensors] Migrated to a QML plot item instead of SVG generation.
+* [HotStreams] Parse radio stations in a separate thread.
+* [Kinotify] Experimental events compression.
+* [Kinotify] Update notifications iff ID match.
+* [LackMan] Properly cleanup staging directories.
+* [LackMan] Don't add own actions to the toolbar.
+* [LackMan] Notify via AN about updated packages.
+* [Lackman] "Open LackMan" action in notification.
+* [LastFMScrobble] Updated artist imgs fetching reflecting Last.FM API cleanup.
+* [Launchy] Remember recently launched apps.
+* [Launchy] Support launching commands in PATH.
+* [Launchy] Autoselect first entry if none is selected.
+* [Launchy] Conform to LC QML theme.
+* [Launchy] Filter by item commands as well.
+* [Launchy] More categories synonyms.
+* [LHTR] Support custom tags.
+* [LHTR] Added (optional) support for broken XHTML via htmltidy.
+* [LHTR] Added "blockquote" action.
+* [LHTR] always setup JS after setting content.
+* [LHTR] Created/exposed Toggle View Action.
+* [LHTR] use own bicycle instead of insertHTML.
+* [LHTR] Support pure 'blockquote' action.
+* [LHTR] Support removing inline tags.
+* [LHTR] Support setting colors for all editors.
+* [LHTR] Use proper content-type and DTD.
+* [LHTR] Use XML mode instead of XHTML.
+* [Liznoo] Added screen platform layer for screensaver prohibition from other
+  plugins.
+* [Liznoo] Added screen platform for FreeDesktop/DBus.
+* [LMP] Migrated to GStreamer from Phonon (both 0.10 and 1.0 are supported).
+* [LMP] Implemented one shot instant queue.
+* [LMP] Expose audio piles (like VKontakte) for searching in Internet tab.
+* [LMP] Notify about progress (like transcoding) via Job Holder API, like TPI
+  or Summary.
+* [LMP] Optional support for recoding non-Unicode tags via LibGuess.
+* [LMP] Support (auto)refreshing radio stations.
+* [LMP] Handle power state events for autopausing on sleeping/hibernation.
+* [LMP] Resolve media info from collection if possible, speeds up playlist
+  manipulation by two-three orders of magnitude.
+* [LMP] Added shortcut for current track notification.
+* [LMP] Added shortcuts for volume up/volume down.
+* [LMP] Support for configurable exponential volume change.
+* [LMP] Support refreshing unmountables in devsync.
+* [LMP] Show additional images in biography view.
+* [LMP] Notify with text on state change.
+* [LMP] Added images QML caching.
+* [LMP] Added support for radio bookmarks.
+* [LMP] Ask for AA fetching on first collection add.
+* [LMP] Load/save last transcoding parameters.
+* [LMP] (Hopefully) nicer looking collection and playlist tree views.
+* [LMP] Support autocontinuing playback on start.
+* [LMP] Added notificationa about volume level.
+* [LMP] Added .desktop file.
+* [LMP] Distinguish between codec name and codec ID.
+* [LMP] Better lyrics UI text.
+* [LMP] Handle custom media info data in AudioPropsWidget.
+* [LMP] Check if AA exists on fetch check.
+* [LMP] Check if source is seekable before seeking.
+* [LMP] Clear playlist search line edit on toggling.
+* [LMP] Configurable album art storage path.
+* [LMP] Don't double-add tracks with the same URI.
+* [LMP] Don't set excessive LMP min height because of nav tabbar.
+* [LMP] Don't store useless media infos for radios.
+* [LMP] Fix playlist/collection/navbuttons palettes.
+* [LMP] Properly notify about copy errors.
+* [LMP] Proper sorting if there are non-local files.
+* [LMP] Similarity label always under the name.
+* [LMP] Use 'libvorbis' as encoder for OGG.
+* [LMP Graffiti] Better notifications about split progress.
+* [LMP Graffiti] Support notifying about cue split and tags fetching progres
+  via job holder API, like Summary or TPI.
+* [Monocle] Support arbitrary document/page rotations.
+* [Monocle] Support datafilters for image selection.
+* [Monocle] "export to PDF" feature.
+* [Monocle] Handle left/right arrows in PresenterWidget.
+* [Monocle] Immediately delete side widgets.
+* [Monocle] Immediate setting for current page on load.
+* [Monocle] Navigate on search via navigateRequested.
+* [Monocle] Navigate to the current page on Presenter invocation.
+* [Monocle] Avoid leaking Poppler's LinkDestination.
+* [Monocle] Properly save dock width.
+* [Monocle] Remember dock widget visibility.
+* [Monocle] Smooth transform for PageGraphicsItem.
+* [Monocle] Update on scale changes only if visible.
+* [Monocle FxB] Set page background color from the palette.
+* [Monocle PDF] Support unnamed destinations.
+* [MZ] Migrate to FFmpeg 1.2 / swrescale.
+* [Nacheku] Early bail-out of clipboard querying, fixes temporary freezes.
+* [NSM] Support Job Holder API for progress notification.
+* [NSM] Initial attempts at syncer.
+* [NSM] Added CreateDirectory action to ToolBar.
+* [NSM] Added posibility to create new dir in remote dir selection dialog.
+* [NSM] Added return/backspace hotkeys.
+* [NSM] Change notification type about uploading to PInfo.
+* [NSM] default icon for unknown mime-type, open file action.
+* [NSM] Notify about uploaded file independently of sharing.
+* [NSM] Open files by double click.
+* [NSM] Set filename for downloaded files
+* [NSM] Show used space for items
+* [NSM] Use last active account as default and auto request files
+* [NSM GDrive] Add method for the type of hash algorithm of files.
+* [Poshuku] Datafilters for page screenshots.
+* [Poshuku] properly handle unsupported content.
+* [Poshuku] Speed up history handling quite a lot.
+* [Poshuku] Show filename as title if title is empty.
+* [Poshuku] Properly filter out duplicates.
+* [Poshuku] Fixed saving cancelled autoreload.
+* [Poshuku Autopaste] Fixed copypaste errors.
+* [Poshuku CleanWeb] Threaded filters parsing on load, avoids blocking for a
+  second or two upon startup.
+* [Poshuku CleanWeb] Threaded filtering, speeds up page loading by an order of
+  magnitude or two.
+* [Poshuku CleanWeb] Fixed subelements hiding.
+* [Poshuku CleanWeb] Lots of fixes.
+* [Poshuku FUA] Update UA list
+* [SB2] Added panel settings like panel width.
+* [SB2] Panel/quark settings are now dependent on launch type and panel position.
+* [SB2] Appear as a separate dock in desktop mode.
+* [SB2] Appear on all desktops in desktop mode.
+* [SB2] Avoid panel overflow & controls hiding.
+* [SB2] Fixed few geometry issues.
+* [TL] Added Close button.
+* [TS] Added support for fetching own and friends' stored tracks.
+* [Vrooby] Support hiding devices.
+* [Vrooby] Fixed unlabeled partition size reporting.
+
 !!! 0.6.0
 * Core: fixed showing toolbar after last tab is closed.
 * Core: fixed reapplying color theme, explicitly setting palette on all
