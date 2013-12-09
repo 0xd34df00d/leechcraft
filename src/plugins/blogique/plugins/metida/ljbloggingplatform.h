@@ -96,9 +96,7 @@ namespace Metida
 		void handleAccountValidated (bool validated);
 		void handleMessageChecking ();
 		void handleMessageUpdateIntervalChanged ();
-		void handleCommentsChecking ();
 		void checkForMessages ();
-
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
