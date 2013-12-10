@@ -49,15 +49,15 @@ namespace Woodpecker
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-											"azothwoodpeckersettings.xml");
+				"azothwoodpeckersettings.xml");
 
 		Core::Instance ().SetProxy (proxy);
 
 		HomeTC_ =
 		{
 			GetUniqueID () + "_home",
-			tr ("Twitter Home"),
 			tr ("Own timeline"),
+			tr ("Own Twitter timeline"),
 			GetIcon (),
 			2,
 			TFOpenableByRequest
@@ -66,8 +66,8 @@ namespace Woodpecker
 		UserTC_ =
 		{
 			GetUniqueID () + "_user",
-			tr ("Twitter user timeline"),
-			tr ("User's timeline"),
+			tr ("User timeline"),
+			tr ("Arbitrary Twitter user timeline"),
 			GetIcon (),
 			2,
 			TFEmpty
@@ -76,8 +76,8 @@ namespace Woodpecker
 		SearchTC_ =
 		{
 			GetUniqueID () + "_search",
-			tr ("Twitter search timeline"),
-			tr ("Twitter search result timeline"),
+			tr ("Search timeline"),
+			tr ("Search result timeline"),
 			GetIcon (),
 			2,
 			TFEmpty
@@ -87,15 +87,15 @@ namespace Woodpecker
 		{
 			GetUniqueID () + "_favorites",
 			tr ("Favorite twits"),
-			tr ("Twitter favorite statuses timeline"),
+			tr ("Favorite statuses timeline"),
 			GetIcon (),
 			2,
 			TFEmpty
 		};
 
 		TabClasses_.append ({ HomeTC_,
-							[this] (const TabClassInfo& tc)
-								{MakeTab (new TwitterPage (tc, this), tc); }});
+				[this] (const TabClassInfo& tc)
+					{MakeTab (new TwitterPage (tc, this), tc); }});
 		TabClasses_.append ({ UserTC_, nullptr });
 		TabClasses_.append ({ SearchTC_, nullptr });
 		TabClasses_.append ({ FavoriteTC_, nullptr });
