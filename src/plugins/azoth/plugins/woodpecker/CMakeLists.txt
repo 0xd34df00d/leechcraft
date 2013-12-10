@@ -44,7 +44,7 @@ set (WOODPECKER_FORMS
 	twitterpage.ui
 	)
 #CreateTrs ("woodpecker" "en;ru_RU" WOODPECKER_COMPILED_TRANSLATIONS)
-#CreateTrsUpTarget("woodpecker" "en;ru_RU" "${SRCS}" "${FORMS}" "azothwoodpeckersettings.xml")
+CreateTrsUpTarget ("azoth_woodpecker" "en;ru_RU" "${WOODPECKER_SRCS}" "${WOODPECKER_FORMS}" "azothwoodpeckersettings.xml")
 QT4_WRAP_UI (WOODPECKER_UIS_H ${WOODPECKER_FORMS})
 QT4_ADD_RESOURCES (WOODPECKER_RCCS ${WOODPECKER_RESOURCES})
 
