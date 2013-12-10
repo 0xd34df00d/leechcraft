@@ -481,8 +481,11 @@ namespace Woodpecker
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
 					{ return tweet->GetId () == twitid; });
 
-		const auto& url = Util::MakeEntity (QUrl (QString ("https://twitter.com/%1/status/%2").arg ((*currentTwit)->GetAuthor ()->GetUsername ()).arg (twitid)),
-				QString (), OnlyHandle | FromUserInitiated, QString ());
+		const auto urlStr = QString ("https://twitter.com/%1/status/%2")
+				.arg ((*currentTwit)->GetAuthor ()->GetUsername ())
+				.arg (twitid);
+		const auto& url = Util::MakeEntity (QUrl (urlStr),
+				QString (), OnlyHandle | FromUserInitiated);
 		EntityManager_->HandleEntity (url);
 	}
 
