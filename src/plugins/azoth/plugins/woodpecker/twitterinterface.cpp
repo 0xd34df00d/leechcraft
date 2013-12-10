@@ -150,7 +150,8 @@ namespace Woodpecker
 					SIGNAL (userAvatarReady ()), 
 					parent (),
 					SLOT (setUpdateReady ()));
-			tempTweet->SetDateTime (locale.toDateTime (tweetMap ["created_at"].toString (), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
+			tempTweet->SetDateTime (locale.toDateTime (tweetMap ["created_at"].toString (),
+					"ddd MMM dd HH:mm:ss +0000 yyyy"));
 			tempTweet->SetId (tweetMap ["id"].toULongLong ());
 
 			result.push_back (tempTweet);
