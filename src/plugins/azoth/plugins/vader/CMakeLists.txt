@@ -76,7 +76,9 @@ set (VADER_FORMS
 	vcarddialog.ui
 	)
 set (VADER_RESOURCES azothvaderresources.qrc)
+
 CreateTrs ("azoth_vader" "en;es;ru_RU;uk_UA" VADER_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_vader" "en;ru_RU" "${VADER_SRCS}" "${VADER_FORMS}" "azothvadersettings.xml")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (VADER_MOC_SRCS ${VADER_HEADERS})
