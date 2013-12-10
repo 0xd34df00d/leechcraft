@@ -105,11 +105,11 @@ namespace Woodpecker
 		if (!ok) 
 			qWarning () << Q_FUNC_INFO << "Parsing error at " << Q_FUNC_INFO << QString::fromUtf8 (json);
 
+		const QLocale locale (QLocale::English);
 		for (int i = answers.count () - 1; i >= 0 ; --i)
 		{
 			const auto& tweetMap = answers [i].toMap ();
 			const auto& userMap = tweetMap ["user"].toMap ();
-			QLocale locale (QLocale::English);
 			QString text = tweetMap ["text"].toString ();
 			Tweet_ptr tempTweet (new Tweet ());
 
