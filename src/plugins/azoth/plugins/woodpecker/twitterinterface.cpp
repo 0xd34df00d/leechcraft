@@ -113,33 +113,25 @@ namespace Woodpecker
 			QString text = tweetMap ["text"].toString ();
 			Tweet_ptr tempTweet (new Tweet ());
 
-			if (tweetMap.contains ("entities"))
+			const auto& entities = tweetMap.value ("entities").toMap ();
+			for (const auto& media : entities.value ("media").toList ())
 			{
-				const auto& entities = tweetMap ["entities"].toMap ();
-				if (entities.contains ("media"))
+				const auto& medium = media.toMap ();
+				if (medium ["type"].toString () != "photo")
+					continue;
+
+				if (medium.contains ("media_url_https"))
+					text.replace (medium ["url"].toString (),
+							QString ("<a class=\"link\" href=\"twitter://media/photo/%1\">%1</a>")
+								.arg (medium ["media_url_https"].toString ()));
+				else if (medium.contains ("media_url"))
+					text.replace (medium ["url"].toString (),
+							QString ("<a class=\"link\" href=\"twitter://media/photo/%1\">%1</a>")
+								.arg (medium ["media_url"].toString ()));
+				else
 				{
-					for (const auto& media : entities ["media"].toList ())
-					{
-						const auto& medium = media.toMap ();
-						if (medium ["type"].toString () == "photo")
-						{
-							if (medium.contains ("media_url_https"))
-							{
-								text.replace (medium ["url"].toString (),
-									QString ("<a class=\"link\" href=\"twitter://media/photo/%1\">%1</a>").arg (medium ["media_url_https"].toString ()));
-							}
-							else if (medium.contains ("media_url"))
-							{
-								text.replace (medium ["url"].toString (), 
-									QString ("<a class=\"link\" href=\"twitter://media/photo/%1\">%1</a>").arg (medium ["media_url"].toString ()));
-							}
-							else
-							{
-								qWarning () << Q_FUNC_INFO << "Found photo without an url";
-								continue;
-							}
-						}
-					}
+					qWarning () << Q_FUNC_INFO << "Found photo without an url";
+					continue;
 				}
 			}
 
