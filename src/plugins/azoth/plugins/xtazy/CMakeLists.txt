@@ -38,4 +38,3 @@ target_link_libraries (leechcraft_azoth_xtazy
 	)
 install (TARGETS leechcraft_azoth_xtazy DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothxtazysettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${XTAZY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
