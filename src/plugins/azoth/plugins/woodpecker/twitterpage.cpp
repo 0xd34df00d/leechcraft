@@ -290,7 +290,7 @@ namespace Woodpecker
 				}
 				else if (!twits.isEmpty ()) {
 					const auto& notification = Util::MakeNotification (tr ("Woodpecker"),
-							tr ( "%1 new twit (s)" ).arg (twits.length ()),
+							tr ("%n new twit(s)", 0, twits.length ()),
 							PInfo_);
 					EntityManager_->HandleEntity (notification);
 				}
