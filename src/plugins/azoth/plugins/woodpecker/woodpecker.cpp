@@ -45,7 +45,7 @@ namespace Woodpecker
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("woodpecker");
+		Util::InstallTranslator ("azoth_woodpecker");
 		
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -122,17 +122,17 @@ namespace Woodpecker
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Woodpecker";
+		return "org.LeechCraft.Azoth.Woodpecker";
 	}
 
 	QString Plugin::GetName () const
 	{
-		return "Woodpecker";
+		return "Azoth Woodpecker";
 	}
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Simple twitter client");
+		return tr ("Simple twitter client.");
 	}
 
 	QIcon Plugin::GetIcon () const
