@@ -405,19 +405,22 @@ namespace Woodpecker
 
 	void TwitterPage::scrolledDown (int sliderPos)
 	{
-		if (sliderPos == Ui_.TwitList_->verticalScrollBar ()->maximum ())
-		{
-			Ui_.TwitList_->verticalScrollBar ()->setSliderPosition (Ui_.TwitList_->verticalScrollBar ()->maximum () - 1);
-			Ui_.TwitList_->setEnabled (false);
-			if (!ScreenTwits_.empty ())
-			{
-				KQOAuthParameters param (PageDefaultParam_);
-				param.insert ("max_id", QString::number ((*ScreenTwits_.begin ())->GetId ()));
-				param.insert ("count", QString::number (XmlSettingsManager::Instance ()->property ("additional_twits").toUInt ()));
-				
-				Interface_->request (param, PageMode_);
-			}
-		}
+		if (sliderPos != Ui_.TwitList_->verticalScrollBar ()->maximum ())
+			return;
+
+		Ui_.TwitList_->verticalScrollBar ()->setSliderPosition (Ui_.TwitList_->verticalScrollBar ()->maximum () - 1);
+		Ui_.TwitList_->setEnabled (false);
+		if (ScreenTwits_.empty ())
+			return;
+
+		KQOAuthParameters param (PageDefaultParam_);
+		param.insert ("max_id",
+				QString::number ((*ScreenTwits_.begin ())->GetId ()));
+		param.insert ("count",
+				QString::number (XmlSettingsManager::Instance ()->
+						property ("additional_twits").toUInt ()));
+
+		Interface_->request (param, PageMode_);
 	}
 
 	void TwitterPage::on_TwitList__customContextMenuRequested (const QPoint& pos)
