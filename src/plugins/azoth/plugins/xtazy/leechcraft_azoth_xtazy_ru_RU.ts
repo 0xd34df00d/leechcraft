@@ -4,9 +4,27 @@
 <context>
     <name>LeechCraft::Azoth::Xtazy::Plugin</name>
     <message>
-        <location filename="xtazy.cpp" line="81"/>
+        <location filename="xtazy.cpp" line="95"/>
         <source>Publishes current tune.</source>
         <translation>Публикует играемую мелодию.</translation>
+    </message>
+    <message>
+        <location filename="xtazy.cpp" line="141"/>
+        <source>No web share plugins are installed. Try installing NetStoreManager, for example.</source>
+        <translation>Нет установленных модулей загрузки данных. Попробуйте, например, установить NetStoreManager.</translation>
+    </message>
+</context>
+<context>
+    <name>TrackShareDialog</name>
+    <message>
+        <location filename="tracksharedialog.ui" line="14"/>
+        <source>Share a local track</source>
+        <translation>Поделиться локальным треком</translation>
+    </message>
+    <message>
+        <location filename="tracksharedialog.ui" line="20"/>
+        <source>You are about to share track %1 (%2) with %3. What service do you want to use?</source>
+        <translation>Вы собираетесь поделиться треком %1 (%2) с %3. Какой сервис вы хотите использовать?</translation>
     </message>
 </context>
 <context>
@@ -18,23 +36,23 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
-        <source>Tune fetching</source>
-        <translation>Получение информации</translation>
+        <source>/np command</source>
+        <translation>Команда /np</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
-        <source>Fetch from MPRIS-compatible players</source>
-        <translation>Получать от MPRIS-совместимых плееров</translation>
+        <source>Substitution:</source>
+        <translation>Подстановка:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
-        <source>Fetch from file</source>
-        <translation>Получать из файла</translation>
+        <source>The following placeholders can be used: $artist, $album, $title.</source>
+        <translation>Можно использовать следующие переменные: $artist, $album, $title.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
-        <source>File source:</source>
-        <translation>Местоположение файла:</translation>
+        <source>Text when nothing is playing:</source>
+        <translation>Текст, когда ничего не проигрывается:</translation>
     </message>
 </context>
 </TS>
