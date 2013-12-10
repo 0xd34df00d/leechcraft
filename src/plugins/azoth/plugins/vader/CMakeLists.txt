@@ -45,31 +45,6 @@ set (VADER_SRCS
 	proto/balancer.cpp
 	proto/typingmanager.cpp
 	)
-set (VADER_HEADERS
-	vader.h
-	core.h
-	mrimprotocol.h
-	mrimaccount.h
-	mrimaccountconfigwidget.h
-	mrimbuddy.h
-	mrimmessage.h
-	vaderutil.h
-	groupmanager.h
-	smsdialog.h
-	selfavatarfetcher.h
-	xmlsettingsmanager.h
-	vcarddialog.h
-	proto/headers.h
-	proto/conversions.h
-	proto/connection.h
-	proto/packet.h
-	proto/packetfactory.h
-	proto/packetextractor.h
-	proto/exceptions.h
-	proto/halfpacket.h
-	proto/balancer.h
-	proto/typingmanager.h
-	)
 set (VADER_FORMS
 	mrimaccountconfigwidget.ui
 	smsdialog.ui
@@ -80,16 +55,12 @@ set (VADER_RESOURCES azothvaderresources.qrc)
 CreateTrs ("azoth_vader" "en;es;ru_RU;uk_UA" VADER_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_vader" "en;ru_RU" "${VADER_SRCS}" "${VADER_FORMS}" "azothvadersettings.xml")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (VADER_MOC_SRCS ${VADER_HEADERS})
-endif ()
 QT4_WRAP_UI (VADER_UIS_H ${VADER_FORMS})
 QT4_ADD_RESOURCES (VADER_RCCS ${VADER_RESOURCES})
 
 add_library (leechcraft_azoth_vader SHARED
 	${VADER_COMPILED_TRANSLATIONS}
 	${VADER_SRCS}
-	${VADER_MOC_SRCS}
 	${VADER_UIS_H}
 	${VADER_RCCS}
 	)
