@@ -39,12 +39,13 @@ namespace Woodpecker
 {
 	TwitterUser::TwitterUser (QObject *parent)
 	: QObject (parent)
+	, Http_ (Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ())
 	{
-		Http_ = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
 	}
 
 	TwitterUser::TwitterUser (const QString& username, QObject *parent)
 	: QObject (parent)
+	, Http_ (Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ())
 	{
 		Username_ = username;
 	}
