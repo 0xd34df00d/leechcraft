@@ -5,7 +5,8 @@
 		<groupbox>
 			<label value="Client" />
 			<item type="lineedit" property="timer" default="90">
-				<label value="Update time, seconds" />
+				<label value="Update time" />
+				<suffix value=" s" />
 			</item>
 			<item type="lineedit" property="additional_twits" default="30">
 				<label value="Number of twits to get per one request" />
