@@ -248,20 +248,17 @@ namespace Woodpecker
 		else if (event->type () == QEvent::MouseMove)
 		{
 			const QMouseEvent *me = static_cast<QMouseEvent*> (event);
-			if (me)
+			const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
+			const auto position = me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ();
+
+			const auto anchor = currentTweet->GetDocument ()->documentLayout ()->anchorAt (position);
+
+			if (ParentListView_)
 			{
-				const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
-				const auto position = (me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ());
-
-				const auto anchor = currentTweet->GetDocument ()->documentLayout ()->anchorAt (position);
-
-				if (ParentListView_)
-				{
-					if (!anchor.isEmpty ())
-						ParentListView_->setCursor (Qt::PointingHandCursor);
-					else
-						ParentListView_->unsetCursor ();
-				}
+				if (!anchor.isEmpty ())
+					ParentListView_->setCursor (Qt::PointingHandCursor);
+				else
+					ParentListView_->unsetCursor ();
 			}
 		}
 		return QAbstractItemDelegate::editorEvent (event, model, option, index);
