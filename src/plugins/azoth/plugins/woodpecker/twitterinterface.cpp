@@ -57,11 +57,12 @@ namespace Woodpecker
 		OAuthRequest_->setEnableDebugOutput (false);
 #endif
 		ConsumerKey_ = XmlSettingsManager::Instance ()->property ("consumer_key").toString ();
-		ConsumerKeySecret_ = XmlSettingsManager::Instance ()->property ("consumer_key_secret").toString ();
+		ConsumerKeySecret_ = XmlSettingsManager::Instance ()->
+				property ("consumer_key_secret").toString ();
 
 		connect (OAuthManager_,
 				SIGNAL (requestReady (QByteArray)),
-				this, 
+				this,
 				SLOT (onRequestReady (QByteArray)));
 
 		connect (OAuthManager_,
@@ -83,7 +84,7 @@ namespace Woodpecker
 	{
 		QByteArray jsonText (qobject_cast<QNetworkReply*> (sender ())->readAll ());
 		sender ()->deleteLater ();
-		
+
 		emit tweetsReady (ParseReply (jsonText));
 	}
 
@@ -101,8 +102,8 @@ namespace Woodpecker
 		}
 		else
 			answers = parser.parse (json, &ok).toList ();
-		
-		if (!ok) 
+
+		if (!ok)
 			qWarning () << Q_FUNC_INFO << "Parsing error at " << Q_FUNC_INFO << QString::fromUtf8 (json);
 
 		const QLocale locale (QLocale::English);
@@ -139,7 +140,7 @@ namespace Woodpecker
 			tempTweet->GetAuthor ()->SetUsername (userMap ["screen_name"].toString ());
 			tempTweet->GetAuthor ()->DownloadAvatar (userMap ["profile_image_url"].toString ());
 			connect (tempTweet->GetAuthor ().get (),
-					SIGNAL (userAvatarReady ()), 
+					SIGNAL (userAvatarReady ()),
 					parent (),
 					SLOT (setUpdateReady ()));
 			tempTweet->SetDateTime (locale.toDateTime (tweetMap ["created_at"].toString (),
@@ -152,7 +153,7 @@ namespace Woodpecker
 		return result;
 	}
 
-	void TwitterInterface::GetAccess () 
+	void TwitterInterface::GetAccess ()
 	{
 #ifdef WP_DEBUG
 		qDebug() << Q_FUNC_INFO;
@@ -164,7 +165,7 @@ namespace Woodpecker
 
 		connect (OAuthManager_,
 				SIGNAL (authorizationReceived (QString, QString)),
-				this, 
+				this,
 				SLOT (onAuthorizationReceived (QString, QString)));
 
 		connect (OAuthManager_,
@@ -176,8 +177,9 @@ namespace Woodpecker
 				SIGNAL (authorizationPageRequested (QUrl)),
 				this,
 				SLOT (onAuthorizationPageRequested (QUrl)));
-		
-		OAuthRequest_->initRequest (KQOAuthRequest::TemporaryCredentials, QUrl ("https://api.twitter.com/oauth/request_token"));
+
+		OAuthRequest_->initRequest (KQOAuthRequest::TemporaryCredentials,
+				QUrl ("https://api.twitter.com/oauth/request_token"));
 		OAuthRequest_->setConsumerKey (ConsumerKey_);
 		OAuthRequest_->setConsumerSecretKey (ConsumerKeySecret_);
 		OAuthManager_->setHandleUserAuthorization (true);
@@ -186,7 +188,8 @@ namespace Woodpecker
 		OAuthManager_->executeRequest (OAuthRequest_);
 	}
 
-	void TwitterInterface::SignedRequest (TwitterRequest req, KQOAuthRequest::RequestHttpMethod method, KQOAuthParameters params)
+	void TwitterInterface::SignedRequest (TwitterRequest req,
+			KQOAuthRequest::RequestHttpMethod method, KQOAuthParameters params)
 	{
 		QUrl reqUrl;
 
@@ -203,59 +206,63 @@ namespace Woodpecker
 			params.insert ("count", "50");
 			params.insert ("include_entities", "true");
 			break;
-			
+
 		case TwitterRequest::UserTimeline:
 			reqUrl = "http://api.twitter.com/1.1/statuses/user_timeline.json";
 			params.insert ("include_entities", "true");
 			break;
-			
+
 		case TwitterRequest::Search:
 			reqUrl = "https://api.twitter.com/1.1/search/tweets.json";
 			params.insert ("count", "50");
 			params.insert ("include_entities", "true");
 			break;
-			
+
 		case TwitterRequest::Update:
 			reqUrl = "http://api.twitter.com/1.1/statuses/update.json";
 			break;
-			
+
 		case TwitterRequest::Direct:
 			reqUrl = "https://api.twitter.com/1.1/direct_messages.json";
-			
+
 		case TwitterRequest::Retweet:
-			reqUrl = QString ("http://api.twitter.com/1.1/statuses/retweet/").append (params.value ("id")).append (".json");
+			reqUrl = QString ("http://api.twitter.com/1.1/statuses/retweet/")
+					.append (params.value ("id"))
+					.append (".json");
 			break;
-			
+
 		case TwitterRequest::Reply:
 			reqUrl = "http://api.twitter.com/1.1/statuses/update.json";
 			break;
-			
+
 		case TwitterRequest::SpamReport:
 			reqUrl = "http://api.twitter.com/1.1/report_spam.json";
 			break;
-		
+
 		case TwitterRequest::Delete:
-			reqUrl = QString ("http://api.twitter.com/1.1/statuses/destroy/").append (params.value ("id")).append (".json");
+			reqUrl = QString ("http://api.twitter.com/1.1/statuses/destroy/")
+					.append (params.value ("id"))
+					.append (".json");
 			break;
-			
+
 		case TwitterRequest::CreateFavorite:
 			reqUrl = QString ("https://api.twitter.com/1.1/favorites/create.json");
-			break;			
-			
+			break;
+
 		case TwitterRequest::DeleteFavorite:
 			reqUrl = QString ("https://api.twitter.com/1.1/favorites/destroy.json");
-			break;			
-		
+			break;
+
 		case TwitterRequest::ListFavorites:
 			reqUrl = "https://api.twitter.com/1.1/favorites/list.json";
 			params.insert ("include_entities", "true");
 			params.insert ("count", "50");
 			break;
-			
+
 		default:
 			return;
 		}
-		
+
 		OAuthRequest_->initRequest (KQOAuthRequest::AuthorizedRequest, reqUrl);
 		OAuthRequest_->setHttpMethod (method);
 		OAuthRequest_->setConsumerKey (ConsumerKey_);
@@ -265,7 +272,7 @@ namespace Woodpecker
 		OAuthRequest_->setAdditionalParameters (params);
 		OAuthManager_->executeRequest (OAuthRequest_);
 	}
-	
+
 	void TwitterInterface::SendTweet (const QString& tweet)
 	{
 		KQOAuthParameters param;
@@ -310,13 +317,13 @@ namespace Woodpecker
 #endif
 		OAuthManager_->getUserAccessTokens (QUrl ("https://api.twitter.com/oauth/access_token"));
 
-		if (OAuthManager_->lastError () != KQOAuthManager::NoError) 
+		if (OAuthManager_->lastError () != KQOAuthManager::NoError)
 		{
 			qWarning () << Q_FUNC_INFO << "Authorization error";
 		}
 	}
 
-	void TwitterInterface::onAccessTokenReceived (const QString& token, const QString& tokenSecret) 
+	void TwitterInterface::onAccessTokenReceived (const QString& token, const QString& tokenSecret)
 	{
 #ifdef WP_DEBUG
 		qDebug () << Q_FUNC_INFO << "Access tokens now stored. You are ready to send Tweets from user's account!";
@@ -346,20 +353,23 @@ namespace Woodpecker
 		}
 	}
 
-	void TwitterInterface::Xauth () 
+	void TwitterInterface::Xauth ()
 	{
 #ifdef WP_DEBUG
 		qDebug() << Q_FUNC_INFO;
 #endif
-		connect (OAuthManager_, 
+		connect (OAuthManager_,
 				SIGNAL (accessTokenReceived (QString, QString)),
-				this, 
+				this,
 				SLOT (onAccessTokenReceived (QString, QString)));
 
 		KQOAuthRequest_XAuth *oauthRequest = new KQOAuthRequest_XAuth (this);
-		oauthRequest->initRequest (KQOAuthRequest::AccessToken, QUrl ("https://api.twitter.com/oauth/access_token"));
-		oauthRequest->setConsumerKey ( XmlSettingsManager::Instance ()->property ("consumer_key").toString ());
-		oauthRequest->setConsumerSecretKey (XmlSettingsManager::Instance ()->property ("consumer_key_secret").toString ());
+		oauthRequest->initRequest (KQOAuthRequest::AccessToken,
+				QUrl ("https://api.twitter.com/oauth/access_token"));
+		oauthRequest->setConsumerKey (XmlSettingsManager::Instance ()->
+					property ("consumer_key").toString ());
+		oauthRequest->setConsumerSecretKey (XmlSettingsManager::Instance ()->
+					property ("consumer_key_secret").toString ());
 		OAuthManager_->executeRequest (oauthRequest);
 	}
 
@@ -382,53 +392,53 @@ namespace Woodpecker
 			param.insert ("user_id", QString::number (userid));
 		SignedRequest (TwitterRequest::SpamReport, KQOAuthRequest::POST, param);
 	}
-	
+
 	FeedMode TwitterInterface::GetLastRequestMode () const
 	{
 		return LastRequestMode_;
 	}
-	
+
 	void TwitterInterface::SetLastRequestMode (const FeedMode& newLastRequestMode)
 	{
 		LastRequestMode_ = newLastRequestMode;
 	}
-	
+
 	void TwitterInterface::request (const KQOAuthParameters& param, const FeedMode mode)
 	{
-		switch (mode) 
+		switch (mode)
 		{
-			case FeedMode::UserTimeline:
-				SetLastRequestMode (FeedMode::UserTimeline);
-				SignedRequest (TwitterRequest::UserTimeline, KQOAuthRequest::GET, param);
-				break;
-				
-			case FeedMode::HomeTimeline:
-				SetLastRequestMode (FeedMode::HomeTimeline);
-				SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
-				break;
-				
-			case FeedMode::SearchResult:
-				SetLastRequestMode (FeedMode::SearchResult);
-				SignedRequest (TwitterRequest::Search, KQOAuthRequest::GET, param);
-				break;
-				
-			case FeedMode::Favorites:
-				SetLastRequestMode (FeedMode::Favorites);
-				SignedRequest (TwitterRequest::ListFavorites, KQOAuthRequest::GET, param);
-				break;
-				
-			default:
-				qWarning () << Q_FUNC_INFO << "Unknown request";
+		case FeedMode::UserTimeline:
+			SetLastRequestMode (FeedMode::UserTimeline);
+			SignedRequest (TwitterRequest::UserTimeline, KQOAuthRequest::GET, param);
+			break;
+
+		case FeedMode::HomeTimeline:
+			SetLastRequestMode (FeedMode::HomeTimeline);
+			SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
+			break;
+
+		case FeedMode::SearchResult:
+			SetLastRequestMode (FeedMode::SearchResult);
+			SignedRequest (TwitterRequest::Search, KQOAuthRequest::GET, param);
+			break;
+
+		case FeedMode::Favorites:
+			SetLastRequestMode (FeedMode::Favorites);
+			SignedRequest (TwitterRequest::ListFavorites, KQOAuthRequest::GET, param);
+			break;
+
+		default:
+			qWarning () << Q_FUNC_INFO << "Unknown request";
 		}
 	}
-	
+
 	void TwitterInterface::Delete (const qulonglong id)
 	{
 		KQOAuthParameters param;
 		param.insert ("id", QString::number (id));
 		SignedRequest (TwitterRequest::Delete, KQOAuthRequest::POST, param);
 	}
-	
+
 	void TwitterInterface::MakeFavorite (const qulonglong id)
 	{
 		KQOAuthParameters param;
@@ -436,7 +446,7 @@ namespace Woodpecker
 		param.insert ("id", QString::number (id));
 		SignedRequest (TwitterRequest::CreateFavorite, KQOAuthRequest::POST, param);
 	}
-	
+
 	void TwitterInterface::DeleteFavorite (const qulonglong id)
 	{
 		KQOAuthParameters param;
@@ -444,15 +454,15 @@ namespace Woodpecker
 		param.insert ("id", QString::number (id));
 		SignedRequest (TwitterRequest::DeleteFavorite, KQOAuthRequest::POST, param);
 	}
-	
+
 	void TwitterInterface::onAuthorizationPageRequested (const QUrl& userAuthURL)
 	{
 		const auto& e = Util::MakeEntity (userAuthURL,
-										  QString (), OnlyHandle | FromUserInitiated);
-		
+				{}, OnlyHandle | FromUserInitiated);
+
 		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
-	
+
 }
 }
 }

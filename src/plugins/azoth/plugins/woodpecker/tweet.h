@@ -46,53 +46,53 @@ namespace Woodpecker
 	class Tweet : public QObject
 	{
 		Q_OBJECT
-		
+
 		qulonglong Id_;			/**< Twit id in Twitter */
 		QString Text_;			/**< Text of twit in plaintext */
 		TwitterUser_ptr Author_;	/**< Pointer to twitter author */
 		QDateTime Created_;		/**< Twit date */
 		QTextDocument Document_;	/**< QTextDocument which is used for drawing twit */
-		
+
 	public:
 		Tweet (QObject *parent = 0);
 		Tweet (const QString& text, TwitterUser_ptr author = TwitterUser_ptr (), QObject *parent = 0);
 		Tweet (const Tweet& original);
-		
+
 		/** @brief Set both plain text contents and generates a html representation */
 		void SetText (const QString& text);
 		QString GetText () const;
-		
+
 		qulonglong GetId () const;
 		void SetId (qulonglong id);
-		
+
 		TwitterUser_ptr GetAuthor () const;
 		void setAuthor (TwitterUser_ptr newAuthor);
-		
+
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime& datetime);
-		
+
 		/** @brief Direct access to QTextDocument representation
 		 * @returns internal document object. You can fix it the way you like for better visuals
-		 * 
+		 *
 		 * Used in TwitDelegate class for drawing Tweet object contents in UI
 		 */
 		QTextDocument* GetDocument ();
-		
+
 		Tweet& operator= (const Tweet&);
-		
+
 		/** @brief Comparison is performed by comparing twit id's */
 		bool operator== (const Tweet&) const;
-		
+
 		/** @brief Comparison is performed by comparing twit id's */
 		bool operator!= (const Tweet&) const;
-		
+
 		/** @brief Comparison is performed by comparing twit id's */
 		bool operator> (const Tweet&) const;
-		
+
 		/** @brief Comparison is performed by comparing twit id's */
 		bool operator< (const Tweet&) const;
 	};
-	
+
 	typedef std::shared_ptr<Tweet> Tweet_ptr;
 }
 }
@@ -100,4 +100,3 @@ namespace Woodpecker
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::Woodpecker::Tweet);
 Q_DECLARE_METATYPE (LeechCraft::Azoth::Woodpecker::Tweet_ptr);
-

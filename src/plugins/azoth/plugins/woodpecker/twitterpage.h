@@ -91,16 +91,16 @@ namespace Woodpecker
 		QAction *ActionShowOwnFavorites_;
 		QAction *ActionMakeFavorite_;
 		QAction *ActionDeleteFavorite_;
-		
+
 		const KQOAuthParameters PageDefaultParam_;	/**< Default API request parameter set for page */
 		const FeedMode PageMode_;					/**< API request mode for the page */
 
 		Plugin *const ParentPlugin_;
-		
+
 	public:
 		explicit TwitterPage (const TabClassInfo&, Plugin*,
-							  const FeedMode mode = FeedMode::HomeTimeline,
-							  const KQOAuthParameters& params = KQOAuthParameters ());
+				const FeedMode mode = FeedMode::HomeTimeline,
+				const KQOAuthParameters& params = KQOAuthParameters ());
 		~TwitterPage();
 
 		void Remove ();
@@ -113,7 +113,7 @@ namespace Woodpecker
 		QByteArray GetTabRecoverData () const;
 		QString GetTabRecoverName () const;
 		QIcon GetTabRecoverIcon () const;
-		
+
 	public slots:
 		void tryToLogin ();
 		void updateScreenTwits (QList<Tweet_ptr> twits);
@@ -134,12 +134,12 @@ namespace Woodpecker
 		void deleteFavorite ();
 		void showFavorites ();
 		void showOwnFavorites ();
-		
+
 	private slots:
 		void on_TwitList__customContextMenuRequested (const QPoint&);
 		void updateTweetList ();
 		void requestUpdate ();
-		
+
 	signals:
 		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);

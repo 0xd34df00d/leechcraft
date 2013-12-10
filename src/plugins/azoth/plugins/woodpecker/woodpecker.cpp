@@ -46,14 +46,14 @@ namespace Woodpecker
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("azoth_woodpecker");
-		
+
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 											"azothwoodpeckersettings.xml");
-		
+
 		Core::Instance ().SetProxy (proxy);
-		
-		HomeTC_ = 
+
+		HomeTC_ =
 		{
 			GetUniqueID () + "_home",
 			tr ("Twitter Home"),
@@ -62,8 +62,8 @@ namespace Woodpecker
 			2,
 			TFOpenableByRequest
 		};
-		
-		UserTC_ = 
+
+		UserTC_ =
 		{
 			GetUniqueID () + "_user",
 			tr ("Twitter user timeline"),
@@ -72,8 +72,8 @@ namespace Woodpecker
 			2,
 			TFEmpty
 		};
-		
-		SearchTC_ = 
+
+		SearchTC_ =
 		{
 			GetUniqueID () + "_search",
 			tr ("Twitter search timeline"),
@@ -82,8 +82,8 @@ namespace Woodpecker
 			2,
 			TFEmpty
 		};
-		
-		FavoriteTC_ = 
+
+		FavoriteTC_ =
 		{
 			GetUniqueID () + "_favorites",
 			tr ("Favorite twits"),
@@ -92,7 +92,7 @@ namespace Woodpecker
 			2,
 			TFEmpty
 		};
-	
+
 		TabClasses_.append ({ HomeTC_,
 							[this] (const TabClassInfo& tc)
 								{MakeTab (new TwitterPage (tc, this), tc); }});
@@ -100,15 +100,15 @@ namespace Woodpecker
 		TabClasses_.append ({ SearchTC_, nullptr });
 		TabClasses_.append ({ FavoriteTC_, nullptr });
 	}
-	
+
 	void Plugin::AddTab (const TabClassInfo& tc, const QString& name,
 						 const FeedMode mode, const KQOAuthParameters& params)
 	{
 		if (name.isEmpty ())
 			return;
-		
+
 		auto newtab = new TwitterPage (tc, this, mode, params);
-		
+
 		MakeTab (newtab, tc);
 	}
 
@@ -161,7 +161,7 @@ namespace Woodpecker
 		const auto pos = std::find_if (TabClasses_.begin (), TabClasses_.end (),
 				[&tc] (decltype (TabClasses_.at (0)) pair)
 					{ return pair.first.TabClass_ == tc; });
-		
+
 		if (pos == TabClasses_.end ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -169,7 +169,7 @@ namespace Woodpecker
 					<< tc;
 			return;
 		}
-		
+
 		pos->second (pos->first);
 	}
 
@@ -188,7 +188,7 @@ namespace Woodpecker
 		emit changeTabIcon (tab, tc.Icon_);
 		emit raiseTab (tab);
 	}
-	
+
 	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
 		for (const auto& recInfo : infos)
@@ -196,9 +196,9 @@ namespace Woodpecker
 			QDataStream stream (recInfo.Data_);
 			char *buf;
 			stream >> buf;
-			
+
 			const QString type (buf);
-			
+
 			if (type.startsWith ("org.LeechCraft.Woodpecker_home"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
@@ -210,7 +210,7 @@ namespace Woodpecker
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
-				
+
 				KQOAuthParameters param;
 				stream >> param;
 
@@ -225,13 +225,13 @@ namespace Woodpecker
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
-				
+
 				KQOAuthParameters param;
 				stream >> param;
-				
+
 				const auto& search = param.take ("q").toUtf8 ().constData ();
 				param.insert ("q", search);
-				
+
 				AddTab (SearchTC_,
 						tr ("Search").append (search),
 						FeedMode::SearchResult, param);
@@ -240,23 +240,23 @@ namespace Woodpecker
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
-				
+
 				KQOAuthParameters param;
 				stream >> param;
-				
-				
+
+
 				const auto& username = param.take ("screen_name");;
 				param.insert ("screen_name", username);
-				
+
 				AddTab (FavoriteTC_,
 						tr ("@%1 favorites").arg (username),
-						FeedMode::Favorites, param);	
+						FeedMode::Favorites, param);
 			}
 			else
 				qWarning () << Q_FUNC_INFO
 						<< "unknown context"
 						<< recInfo.Data_;
-		}	
+		}
 	}
 }
 }

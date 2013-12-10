@@ -74,7 +74,7 @@ namespace Woodpecker
 	class TwitterInterface : public QObject
 	{
 		Q_OBJECT
-	
+
 		QNetworkAccessManager *HttpClient_;
 		KQOAuthManager *OAuthManager_;
 		KQOAuthRequest *OAuthRequest_;
@@ -84,11 +84,13 @@ namespace Woodpecker
 		QString ConsumerKeySecret_;
 		QSettings *Settings_;
 		FeedMode LastRequestMode_;
-		
-		void SignedRequest (TwitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters ());
+
+		void SignedRequest (TwitterRequest req,
+				KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET,
+				KQOAuthParameters params = KQOAuthParameters ());
 		void RequestTwitter (const QUrl& requestAddress);
 		QList<Tweet_ptr> ParseReply (const QByteArray& json);
-		
+
 	public:
 		explicit TwitterInterface (QObject *parent = 0);
 		void SendTweet (const QString& tweet);
@@ -103,21 +105,22 @@ namespace Woodpecker
 		void SetLastRequestMode (const FeedMode& newLastRequestMode);
 		void MakeFavorite (const qulonglong id);
 		void DeleteFavorite (const qulonglong id);
-		
+
 	private slots:
 		void replyFinished ();
-		
-		void onTemporaryTokenReceived (const QString& temporaryToken, const QString& temporaryTokenSecret);
+
+		void onTemporaryTokenReceived (const QString& temporaryToken,
+				const QString& temporaryTokenSecret);
 		void onAuthorizationReceived (const QString& token, const QString& verifier);
 		void onRequestReady (const QByteArray&);
 		void onAuthorizedRequestDone ();
 		void onAccessTokenReceived (const QString& token, const QString& tokenSecret);
 		void onAuthorizationPageRequested (const QUrl&);
-		
+
 	signals:
 		void tweetsReady (const QList<Tweet_ptr>&);
 		void authorized (const QString&, const QString&);
-		
+
 	public slots:
 		void request (const KQOAuthParameters& param, const FeedMode mode);
 	};

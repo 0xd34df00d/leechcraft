@@ -63,7 +63,8 @@ namespace Woodpecker
 	{
 	}
 
-	void TwitDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+	void TwitDelegate::paint (QPainter *painter,
+			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		const QStyleOptionViewItemV4 o = option;
 		auto r = o.rect;
@@ -145,8 +146,14 @@ namespace Woodpecker
 		painter->restore ();
 
 		// Author
-		r = option.rect.adjusted (ImageSpace + Padding, r.height () - mainFont.pixelSize () - Padding * 2, -Padding * 2, 0);
-		QRect author_rect (r.left () + Padding, r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ());
+		r = option.rect.adjusted (ImageSpace + Padding,
+				r.height () - mainFont.pixelSize () - Padding * 2,
+				-Padding * 2,
+				0);
+		QRect author_rect (r.left () + Padding,
+				r.bottom () - painter->fontMetrics ().height () - 8,
+				painter->fontMetrics ().width (author),
+				r.height ());
 		painter->setFont (mainFont);
 		painter->drawText (author_rect, Qt::AlignLeft, author, &r);
 
@@ -173,14 +180,15 @@ namespace Woodpecker
 		return result;
 	}
 
-	void TwitDelegate::HandleClick (const QStyleOptionViewItem& option, const QModelIndex& index, const QMouseEvent* me)
+	void TwitDelegate::HandleClick (const QStyleOptionViewItem& option,
+			const QModelIndex& index, const QMouseEvent* me)
 	{
 		const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
-		const auto position = (me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ());
+		const auto position = me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ();
 
 		const QTextDocument *textDocument = currentTweet->GetDocument ();
-		const int textCursorPosition =
-		textDocument->documentLayout ()->hitTest (position, Qt::FuzzyHit);
+		const int textCursorPosition = textDocument->
+				documentLayout ()->hitTest (position, Qt::FuzzyHit);
 		const QChar character (textDocument->characterAt (textCursorPosition));
 		const QString string (character);
 
@@ -226,7 +234,7 @@ namespace Woodpecker
 				}
 				else
 				{
-					Entity e = Util::MakeEntity (QUrl (url), QString (), OnlyHandle | FromUserInitiated);
+					Entity e = Util::MakeEntity (QUrl (url), {}, OnlyHandle | FromUserInitiated);
 					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 				}
 			}
@@ -236,9 +244,10 @@ namespace Woodpecker
 			Entity e = Util::MakeEntity (QUrl (url), QString (), OnlyHandle | FromUserInitiated);
 			Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 		}
-	};
+	}
 
-	bool TwitDelegate::editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index)
+	bool TwitDelegate::editorEvent (QEvent *event, QAbstractItemModel *model,
+			const QStyleOptionViewItem& option, const QModelIndex& index)
 	{
 		if (event->type () == QEvent::MouseButtonRelease)
 		{

@@ -55,16 +55,16 @@ namespace Woodpecker
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 			return;
-		
+
 		if (reply->error ())
 		{
 			qWarning () << Q_FUNC_INFO << "Avatar downloading problem: " << reply->error ();
 			reply->deleteLater ();
 			return;
 		}
-		
+
 		const auto& data = reply->readAll ();
-		
+
 		if (!data.isNull ())
 		{
 			Avatar_.loadFromData (data);
@@ -86,12 +86,12 @@ namespace Woodpecker
 	{
 		Username_ = username;
 	}
-	
+
 	QString TwitterUser::GetUsername () const
 	{
 		return Username_;
 	}
-	
+
 	QPixmap TwitterUser::GetAvatar () const
 	{
 		return Avatar_;
@@ -99,4 +99,3 @@ namespace Woodpecker
 }
 }
 }
-
