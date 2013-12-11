@@ -50,6 +50,7 @@
 #include "quarkmanager.h"
 #include "viewgeometrymanager.h"
 #include "viewsettingsmanager.h"
+#include "viewpropsmanager.h"
 
 namespace LeechCraft
 {
@@ -100,6 +101,8 @@ namespace SB2
 					<< "file not found";
 			return;
 		}
+
+		new ViewPropsManager (this, SettingsManager_, this);
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);

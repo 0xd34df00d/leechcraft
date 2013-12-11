@@ -38,6 +38,7 @@ set (SRCS
 	viewgeometrymanager.cpp
 	viewsettingsmanager.cpp
 	sb2util.cpp
+	viewpropsmanager.cpp
 	)
 
 if (WITH_X11)
