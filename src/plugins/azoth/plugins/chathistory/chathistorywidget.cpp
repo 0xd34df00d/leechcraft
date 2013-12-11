@@ -278,7 +278,9 @@ namespace ChatHistory
 		preNick.replace ('<', "&lt;");
 		postNick.replace ('<', "&lt;");
 
-		const auto& colors = Core::Instance ()->GetPluginProxy ()->GenerateColors ("hash", {});
+		const auto& bgColor = palette ().color (QPalette::Base);
+		const auto& colors = Core::Instance ()->
+				GetPluginProxy ()->GenerateColors ("hash", bgColor);
 
 		int scrollPos = -1;
 
