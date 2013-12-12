@@ -53,7 +53,7 @@ namespace SB2
 		new Util::AutoResizeMixin (orig, [viewMgr] () { return viewMgr->GetFreeCoords (); }, this);
 
 		if (!params.take ("keepOnFocusLeave").toBool ())
-			new Util::UnhoverDeleteMixin (this);
+			new Util::UnhoverDeleteMixin (this, SLOT (beforeDelete ()));
 
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::Tool | Qt::FramelessWindowHint);
@@ -74,5 +74,13 @@ namespace SB2
 				this,
 				SLOT (deleteLater ()));
 	}
+
+	void DeclarativeWindow::beforeDelete ()
+	{
+		QMetaObject::invokeMethod (rootObject (),
+				"beforeDelete");
+		deleteLater ();
+	}
+
 }
 }
