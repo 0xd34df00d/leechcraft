@@ -150,6 +150,7 @@ namespace LeechCraft
 	signals:
 		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
+		void hookGonnaShowStatusBar (LeechCraft::IHookProxy_ptr, bool);
 		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*);
 		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*, bool);
 	};

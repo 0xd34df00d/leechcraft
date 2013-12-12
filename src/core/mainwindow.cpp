@@ -511,7 +511,14 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 
 void LeechCraft::MainWindow::on_ActionShowStatusBar__triggered ()
 {
-	statusBar ()->setVisible (Ui_.ActionShowStatusBar_->isChecked ());
+	bool visible = Ui_.ActionShowStatusBar_->isChecked ();
+
+	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	emit hookGonnaShowStatusBar (proxy, visible);
+	if (proxy->IsCancelled ())
+		return;
+
+	statusBar ()->setVisible (visible);
 }
 
 void LeechCraft::MainWindow::handleQuit ()
