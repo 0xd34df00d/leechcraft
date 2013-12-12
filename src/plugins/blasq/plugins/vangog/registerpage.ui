@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>WizardPage</string>
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -31,7 +31,7 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>@gmail.com</string>
+          <string notr="true">@gmail.com</string>
          </property>
         </widget>
        </item>
