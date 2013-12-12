@@ -212,7 +212,7 @@
            <item>
             <widget class="QSpinBox" name="ScaleFrom_">
              <property name="toolTip">
-              <string>Limit of 20 selections (to-from)/by &lt; 20</string>
+              <string/>
              </property>
              <property name="readOnly">
               <bool>false</bool>
@@ -228,7 +228,7 @@
            <item>
             <widget class="QSpinBox" name="ScaleTo_">
              <property name="toolTip">
-              <string>Limit of 20 selections (to-from)/by &lt; 20</string>
+              <string/>
              </property>
              <property name="readOnly">
               <bool>false</bool>
@@ -244,7 +244,7 @@
            <item>
             <widget class="QSpinBox" name="ScaleBy_">
              <property name="toolTip">
-              <string>Limit of 20 selections (to-from)/by &lt; 20</string>
+              <string/>
              </property>
              <property name="readOnly">
               <bool>false</bool>
