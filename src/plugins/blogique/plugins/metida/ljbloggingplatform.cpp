@@ -368,7 +368,7 @@ namespace Metida
 			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
 			elem.setAttribute ("id", "embedTag");
 			elem.setAttribute ("name", id);
-			auto textElem = elem.ownerDocument ().createTextNode (tr ("Embeded: %1")
+			auto textElem = elem.ownerDocument ().createTextNode (tr ("Embedded: %1")
 					.arg (id));
 			elem.appendChild (textElem);
 		};

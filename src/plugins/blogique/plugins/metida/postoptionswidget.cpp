@@ -314,13 +314,13 @@ namespace Metida
 		Ui_.Comments_->addItem (tr ("Disable"), CommentsManagement::DisableComments);
 
 		Ui_.ScreenComments_->addItem (tr ("Default"), CommentsManagement::Default);
-		Ui_.ScreenComments_->addItem (tr ("Anonymouse only"),
+		Ui_.ScreenComments_->addItem (tr ("Anonymous only"),
 				CommentsManagement::ScreenAnonymouseComments);
 		Ui_.ScreenComments_->addItem (tr ("Not from friends"),
 				CommentsManagement::ShowFriendsComments);
 		Ui_.ScreenComments_->addItem (tr ("Not from friends with links"),
 				CommentsManagement::ScreenNotFromFriendsWithLinks);
-		Ui_.ScreenComments_->addItem (tr ("Don't hide'"),
+		Ui_.ScreenComments_->addItem (tr ("Don't hide"),
 				CommentsManagement::ShowComments);
 		Ui_.ScreenComments_->addItem (tr ("All"),
 				CommentsManagement::ScreenComments);
