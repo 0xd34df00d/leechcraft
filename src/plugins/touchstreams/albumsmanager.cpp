@@ -202,6 +202,13 @@ namespace TouchStreams
 			album2urls [albumId] << info;
 
 			auto albumItem = Albums_ [albumId].Item_;
+			if (!albumItem)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no album item for album"
+						<< albumId;
+				continue;
+			}
 
 			auto trackItem = new QStandardItem (QString::fromUtf8 ("%1 — %2")
 						.arg (info.Artist_)
