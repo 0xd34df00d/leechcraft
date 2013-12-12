@@ -339,8 +339,8 @@ namespace Metida
 		if (!index.isValid ())
 			return;
 
-		const QString& msg = tr ("Are you sure to delete user <b>%1</b> from your friends.")
-				.arg (index.data ().toString ());
+		const QString& msg = tr ("Are you sure you want to delete %1 from your friends?")
+				.arg ("<em>" + index.data ().toString () + "</em>");
 		int res = QMessageBox::question (this,
 				tr ("Change friendslist"),
 				msg,
@@ -552,9 +552,9 @@ namespace Metida
 		if (!index.isValid ())
 			return;
 
-		const QString& msg = tr ("Are you sure to delete group <b>%1</b>"
+		const QString& msg = tr ("Are you sure you want to delete the group %1?"
 					"<br><i>Note: all friends in this group will <b>not</b> be deleted.</i>")
-							.arg (index.data ().toString ());
+							.arg ("<em>" + index.data ().toString () + "</em>");
 		int res = QMessageBox::question (this,
 				tr ("Change groups"),
 				msg,
