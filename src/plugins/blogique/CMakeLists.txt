@@ -48,7 +48,7 @@ set (FORMS
 	accountslistwidget.ui
 	accountsselectdialog.ui
 	addaccountwizardfirstpage.ui
-	addcommentdialog.ui 
+	addcommentdialog.ui
 	blogentrieswidget.ui
 	blogiquewidget.ui
 	commentswidget.ui
@@ -62,7 +62,7 @@ set (FORMS
 set (RESOURCES blogiqueresources.qrc)
 
 CreateTrs ("blogique" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("blogique" "en;ru_RU" "${SRCS}" "${FORMS}" "blogiquesettings.xml")
+CreateTrsUpTarget ("blogique" "en;ru_RU" "${SRCS}" "${FORMS}" "blogiquesettings.xml")
 
 QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
