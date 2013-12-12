@@ -639,8 +639,7 @@ namespace Poshuku
 		if (frame)
 			HandleForms (frame, request, type);
 
-		if ((type == NavigationTypeLinkClicked ||
-					type == NavigationTypeOther) &&
+		if (type == NavigationTypeLinkClicked &&
 				(MouseButtons_ == Qt::MidButton ||
 					Modifiers_ & Qt::ControlModifier))
 		{
