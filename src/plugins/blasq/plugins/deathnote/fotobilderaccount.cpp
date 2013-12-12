@@ -919,7 +919,7 @@ namespace DeathNote
 			const auto& hash = elem.elementsByTagName ("MD5").at (0).toElement ();
 			if (!errorList.isEmpty ())
 				Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
-						tr ("%1: %2")
+						QString ("%1: %2")
 								.arg (errorList.at (0).toElement ().text ())
 								.arg (Hash2UploadItem_.take (hash.text ().toUtf8 ()).FilePath_),
 						PWarning_));
