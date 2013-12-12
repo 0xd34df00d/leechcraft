@@ -74,6 +74,19 @@
     </message>
 </context>
 <context>
+    <name>AddCommentDialog</name>
+    <message>
+        <location filename="addcommentdialog.ui" line="19"/>
+        <source>Subject:</source>
+        <translation>Тема:</translation>
+    </message>
+    <message>
+        <location filename="addcommentdialog.ui" line="31"/>
+        <source>Text:</source>
+        <translation>Текст:</translation>
+    </message>
+</context>
+<context>
     <name>BlogEntriesWidget</name>
     <message>
         <location filename="blogentrieswidget.ui" line="43"/>
@@ -218,36 +231,38 @@
     </message>
     <message>
         <location filename="blogiquewidget.ui" line="339"/>
-        <source>Update profile</source>
+        <location filename="blogiquewidget.ui" line="342"/>
+        <source>Show profile</source>
+        <oldsource>Update profile</oldsource>
         <translation>Обновить профиль</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="344"/>
+        <location filename="blogiquewidget.ui" line="347"/>
         <source>Save as a new draft</source>
         <translation>Сохранить как новый черновик</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="347"/>
+        <location filename="blogiquewidget.ui" line="350"/>
         <source>Save entry as a new draft</source>
         <translation>Сохранить запись как новый черновик</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="352"/>
+        <location filename="blogiquewidget.ui" line="355"/>
         <source>New post</source>
         <translation>Новая запись</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="357"/>
+        <location filename="blogiquewidget.ui" line="360"/>
         <source>Submit to...</source>
         <translation>Отправить в…</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="362"/>
+        <location filename="blogiquewidget.ui" line="365"/>
         <source>Preview post</source>
         <translation>Предпросмотр записи</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="365"/>
+        <location filename="blogiquewidget.ui" line="368"/>
         <source>Preview post in blog style</source>
         <translation>Предпросмотр записи в стиле блога</translation>
     </message>
@@ -515,6 +530,14 @@ You can specify all export parameters in this wizard.</source>
     </message>
 </context>
 <context>
+    <name>LeechCraft::Blogique::AddCommentDialog</name>
+    <message>
+        <location filename="addcommentdialog.cpp" line="44"/>
+        <source>Send</source>
+        <translation>Отправить</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Blogique::BlogEntriesWidget</name>
     <message>
         <location filename="blogentrieswidget.cpp" line="72"/>
@@ -550,98 +573,111 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LeechCraft::Blogique::BlogiqueWidget</name>
     <message>
-        <location filename="blogiquewidget.cpp" line="279"/>
+        <location filename="blogiquewidget.cpp" line="285"/>
         <source>No subject</source>
         <translation>Без темы</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="382"/>
+        <location filename="blogiquewidget.cpp" line="410"/>
         <source>Add new account...</source>
         <translation>Добавить новую учётную запись…</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="549"/>
+        <location filename="blogiquewidget.cpp" line="574"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="550"/>
+        <location filename="blogiquewidget.cpp" line="575"/>
         <source>Entry can&apos;t be empty.</source>
         <oldsource>Entry can&apos;t be emprty.</oldsource>
         <translation>Запись не может быть пустой.</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="757"/>
+        <location filename="blogiquewidget.cpp" line="785"/>
         <source>You have unsaved changes in your current tab. Do you want to open this entry in a new tab instead?</source>
         <translation>У вас есть несохранённые изменения в текущей вкладке. Хотите открыть эту запись в новой вкладке?</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="796"/>
+        <location filename="blogiquewidget.cpp" line="824"/>
         <source>Removing entry...</source>
         <translation>Удаление записи…</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="806"/>
+        <location filename="blogiquewidget.cpp" line="834"/>
         <source>Updating entries...</source>
         <translation>Обновление записей…</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="860"/>
+        <location filename="blogiquewidget.cpp" line="888"/>
         <source>%1 (original message: %2)</source>
         <translation>%1 (исходное сообщение: %2)</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="896"/>
+        <location filename="blogiquewidget.cpp" line="924"/>
         <source>Do you want to save current entry?</source>
         <translation>Вы хотите сохранить текущую запись?</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="994"/>
+        <location filename="blogiquewidget.cpp" line="1022"/>
         <source>Do you want to update entry or to post new one?</source>
         <translation>Вы хотите обновить запись или опубликовать новую?</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="998"/>
+        <location filename="blogiquewidget.cpp" line="1026"/>
         <source>Update post</source>
         <translation>Обновить запись</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="999"/>
+        <location filename="blogiquewidget.cpp" line="1027"/>
         <source>Post new</source>
         <translation>Опубликовать новую</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="1006"/>
-        <location filename="blogiquewidget.cpp" line="1011"/>
-        <location filename="blogiquewidget.cpp" line="1017"/>
+        <location filename="blogiquewidget.cpp" line="1034"/>
+        <location filename="blogiquewidget.cpp" line="1039"/>
+        <location filename="blogiquewidget.cpp" line="1045"/>
         <source>Posting entry...</source>
         <translation>Публикация записи…</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::Blogique::CommentsWidget</name>
+    <message>
+        <location filename="commentswidget.cpp" line="109"/>
+        <source>Comments</source>
+        <translation>Комментарии</translation>
+    </message>
+    <message>
+        <location filename="commentswidget.cpp" line="182"/>
+        <source>Do you want to delete whole comment thread too?</source>
+        <translation>Вы хотите также удалить всю ветку комментариев?</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Blogique::Core</name>
     <message>
-        <location filename="core.cpp" line="347"/>
+        <location filename="core.cpp" line="356"/>
         <source>Entry was posted successfully:</source>
         <translation>Запись была успешно опубликована:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="352"/>
+        <location filename="core.cpp" line="361"/>
         <source>Open Link</source>
         <translation>Открыть ссылку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="373"/>
+        <location filename="core.cpp" line="382"/>
         <source>Entry was removed successfully.</source>
         <translation>Запись была успешно удалена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="390"/>
+        <location filename="core.cpp" line="399"/>
         <source>Entry was updated successfully.</source>
         <translation>Запись была успешно обновлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="406"/>
+        <location filename="core.cpp" line="415"/>
         <source>Export blog</source>
         <translation>Экспортировать блог</translation>
     </message>
@@ -725,12 +761,12 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LeechCraft::Blogique::Plugin</name>
     <message>
-        <location filename="blogique.cpp" line="87"/>
+        <location filename="blogique.cpp" line="91"/>
         <source>Export blog</source>
         <translation>Экспортировать блог</translation>
     </message>
     <message>
-        <location filename="blogique.cpp" line="115"/>
+        <location filename="blogique.cpp" line="119"/>
         <source>Blogging client</source>
         <translation>Клиент для различных платформ блоггинга</translation>
     </message>
@@ -840,16 +876,41 @@ You can specify all export parameters in this wizard.</source>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
+        <source>Comments update settings</source>
+        <translation>Настройки обновления комментариев</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="13"/>
+        <source>Enable comments checking</source>
+        <translation>Включить проверку комментариев</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="14"/>
+        <source>Update interval:</source>
+        <translation>Интервал обновления:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="15"/>
+        <source> min</source>
+        <translation> мин</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="16"/>
+        <source>Number of recent comments to show:</source>
+        <translation>Показывать столько недавних комментариев:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="17"/>
         <source>Editor options</source>
         <translation>Опции редактора</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>Autosave interval:</source>
         <translation>Период автосохранения:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="19"/>
         <source> s</source>
         <translation> с</translation>
     </message>
