@@ -92,6 +92,8 @@ namespace Importers
 #ifdef Q_OS_LINUX
 		historyPaths << QDir::homePath () + "/.opera/global_history.dat"
 				<< QDir::homePath () + "/.opera-next/global_history.dat";
+#elif defined Q_OS_WIN
+		historyPaths << QDir::homePath () + "/Application Data/Opera Software/Opera Stable/global_history.dat";
 #endif
 		for (const auto& path : historyPaths)
 		{
@@ -113,6 +115,45 @@ namespace Importers
 				}
 			}
 		}
+		
+		{
+			QString historyDbPath;
+#ifdef Q_OS_WIN
+			historyDbPath = QDir::homePath () + "/Application Data/Opera Software/Opera Stable/History";
+#endif
+			if (historyDbPath.isEmpty () || !QFileInfo (historyDbPath).exists ())
+				return history;
+
+			QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE", "Import history connection");
+			db.setDatabaseName (historyDbPath);
+			if (!db.open ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "could not open database. Try to close Opera"
+						<< db.lastError ().text ();
+				emit gotEntity (Util::MakeNotification (tr ("Opera Import"),
+						tr ("Could not open Opera database: %1.")
+							.arg (db.lastError ().text ()),
+						PCritical_));
+			}
+			else
+			{
+				QSqlQuery query (db);
+				query.exec ("SELECT url, title, last_visit_time FROM urls;");
+				while (query.next ())
+				{
+					QMap<QString, QVariant> record;
+					record ["URL"] = query.value (0).toUrl ();
+					record ["Title"] = query.value (1).toString ();
+					record ["DateTime"] = QDateTime::fromTime_t (query.value (2).toLongLong () / 1000000 - 11644473600);
+					history.push_back (record);
+				}
+			}
+
+			QSqlDatabase::database ("Import history connection").close ();
+			QSqlDatabase::removeDatabase ("Import history connection");
+		}
+		
 		return history;
 	}
 
@@ -123,6 +164,8 @@ namespace Importers
 #ifdef Q_OS_LINUX
 		bookmarksPaths << QDir::homePath () + "/.opera/bookmarks.adr"
 				<< QDir::homePath () + "/.opera-next/bookmarks.adr";
+#elif defined Q_OS_WIN
+		bookmarksPaths << QDir::homePath () + "/Application Data/Opera Software/Opera Stable/bookmarks.adr";
 #endif
 		for (const auto& path : bookmarksPaths)
 		{
@@ -145,6 +188,45 @@ namespace Importers
 				}
 			}
 		}
+		
+		{
+			QString bookmarksDbPath;
+#ifdef Q_OS_WIN
+			bookmarksDbPath = QDir::homePath () + "/Application Data/Opera Software/Opera Stable/favorites.db";
+#endif
+			
+			if (bookmarksDbPath.isEmpty () || !QFileInfo (bookmarksDbPath).exists ())
+				return bookmarks;
+
+			QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE", "Import bookmarks connection");
+			db.setDatabaseName (bookmarksDbPath);
+			if (!db.open ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "could not open database. Try to close Opera"
+						<< db.lastError ().text ();
+				emit gotEntity (Util::MakeNotification (tr ("Opera Import"),
+						tr ("Could not open Opera database: %1.")
+							.arg (db.lastError ().text ()),
+						PCritical_));
+			}
+			else
+			{
+				QSqlQuery query (db);
+				query.exec ("SELECT name, url FROM favorites;");
+				while (query.next ())
+				{
+					QMap<QString, QVariant> record;
+					record ["Title"] = query.value (0).toString ();
+					record ["URL"] = query.value (1).toUrl ();
+					bookmarks.push_back (record);
+				}
+			}
+			
+			QSqlDatabase::database ("Import bookmarks connection").close ();
+			QSqlDatabase::removeDatabase ("Import bookmarks connection");
+		}
+
 		return bookmarks;
 	}
 
