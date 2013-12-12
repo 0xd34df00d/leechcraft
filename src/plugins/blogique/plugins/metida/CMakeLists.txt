@@ -52,7 +52,7 @@ set (METIDA_FORMS
 	updatetypedialog.ui
 	)
 
-set (METIDA_RESOURCES blogiquemetidaresources.qrc)
+set (METIDA_RESOURCES blogiquemetidaresources.qrc metidaresources.qrc)
 
 # CreateTrVars ("blogique_metida" "de;en;es;fr;it;ru_RU;uk_UA" METIDA_TRANSLATIONS METIDA_COMPILED_TRANSLATIONS)
 QT4_WRAP_UI (METIDA_UIS_H ${METIDA_FORMS})
@@ -65,8 +65,6 @@ QT4_ADD_RESOURCES (METIDA_RCCS ${METIDA_RESOURCES})
 # 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 # 	)
 
-set (METIDA_RESOURCES metidaresources.qrc)
-QT4_ADD_RESOURCES (METIDA_RCCS ${METIDA_RESOURCES})
 
 add_library (leechcraft_blogique_metida SHARED
 	${METIDA_RCCS}
