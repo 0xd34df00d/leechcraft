@@ -109,8 +109,8 @@ namespace Metida
 				this,
 				SLOT (handleFriendsViewDoubleClicked (QModelIndex)));
 		Ui_.FriendsView_->setContextMenuPolicy (Qt::ActionsContextMenu);
-		Ui_.FriendsView_->addActions ({ readJournal, 
-				Util::CreateSeparator (Ui_.FriendsView_), 
+		Ui_.FriendsView_->addActions ({ readJournal,
+				Util::CreateSeparator (Ui_.FriendsView_),
 				sendMessage,
 				Util::CreateSeparator (Ui_.FriendsView_),
 				newFriend, editFriend, deleteFriend });
@@ -141,12 +141,12 @@ namespace Metida
 				.Property ("ColoringFriendsList", true).toBool ());
 
 		updateProfile ();
-		
+
 		connect (Ui_.Filter_,
 				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (handleFriendFilterTextChanged (QString)));
-		
+
 		Ui_.Groups_->setContextMenuPolicy (Qt::ActionsContextMenu);
 		QAction *newGroup = new QAction (tr ("Add group"), this);
 		newGroup->setProperty ("ActionIcon", "list-add");
@@ -187,7 +187,7 @@ namespace Metida
 	{
 		for (const auto& fr : friends)
 		{
-			Username2Friend_ [fr->GetUserName ()] = fr; 
+			Username2Friend_ [fr->GetUserName ()] = fr;
 
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
@@ -216,12 +216,12 @@ namespace Metida
 			Item2Friend_.remove (Friend2Item_.value (fr));
 			Friend2Item_ [fr] = item;
 			Item2Friend_ [item] = fr;
-				
+
 			Friend2Item_ [fr] = item;
 
 			item->setData (fr->GetBGColor ().name (), ItemColorRoles::BackgroundColor);
 			item->setData (fr->GetFGColor ().name (), ItemColorRoles::ForegroundColor);
-			
+
 			FriendsModel_->appendRow ({ item, itemStatus, itemName, itemBirthday });
 		}
 
@@ -368,7 +368,7 @@ namespace Metida
 	{
 		if (!index.isValid ())
 			return;
-		
+
 		FriendsInGroupModel_->removeRows (0, FriendsInGroupModel_->rowCount ());
 		FriendsNotInGroupModel_->removeRows (0, FriendsNotInGroupModel_->rowCount ());
 
@@ -390,7 +390,7 @@ namespace Metida
 		const auto& index = Ui_.NotInGroupUsers_->currentIndex ();
 		if (!index.isValid ())
 			return;
-		
+
 		const auto& groupIndex = Ui_.Groups_->selectionModel ()->selectedRows ().value (0);
 		if (!groupIndex.isValid ())
 			return;
@@ -417,7 +417,7 @@ namespace Metida
 		const auto& index = Ui_.InGroupUsers_->currentIndex ();
 		if (!index.isValid ())
 			return;
-		
+
 		const auto& groupIndex = Ui_.Groups_->selectionModel ()->selectedRows ().value (0);
 		if (!groupIndex.isValid ())
 			return;
@@ -445,7 +445,7 @@ namespace Metida
 		dlg.setWindowModality (Qt::WindowModal);
 		if (dlg.exec () == QDialog::Rejected)
 			return;
-		
+
 		if (auto acc = qobject_cast<LJAccount*> (Profile_->GetParentAccount ()))
 			acc->SendMessage (dlg.GetAddresses (), dlg.GetSubject (), dlg.GetText ());
 	}
@@ -459,7 +459,7 @@ namespace Metida
 
 		account->AddNewFriend (username, bgColor, fgColor, groupMask);
 	}
-	
+
 	void ProfileWidget::handleFriendFilterTextChanged (const QString& text)
 	{
 		FriendsProxyModel_->setFilterFixedString (text);
@@ -471,11 +471,11 @@ namespace Metida
 		index = index.sibling (index.row (), Columns::Name);
 		if (!index.isValid ())
 			return;
-		
+
 		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
 				HandleEntity (Util::MakeEntity (QUrl (QString ("http://%1.livejournal.com")
-							.arg (index.data ().toString ())), 
-						QString (), 
+							.arg (index.data ().toString ())),
+						QString (),
 						OnlyHandle | FromUserInitiated));
 	}
 
@@ -501,11 +501,11 @@ namespace Metida
 		auto index = Ui_.CommunitiesView_->selectionModel ()->currentIndex ();
 		if (!index.isValid ())
 			return;
-		
+
 		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
 				HandleEntity (Util::MakeEntity (QUrl (QString ("http://%1.livejournal.com")
-							.arg (index.data ().toString ())), 
-						QString (), 
+							.arg (index.data ().toString ())),
+						QString (),
 						OnlyHandle | FromUserInitiated));
 	}
 
@@ -513,7 +513,7 @@ namespace Metida
 	{
 		if (!index.isValid ())
 			return;
-		
+
 		handleReadJournal ();
 	}
 
@@ -521,7 +521,7 @@ namespace Metida
 	{
 		if (!index.isValid ())
 			return;
-		
+
 		handleReadCommunity ();
 	}
 
@@ -537,9 +537,9 @@ namespace Metida
 		int id = Profile_->GetFreeGroupId ();
 		if (id == -1)
 		{
-			QMessageBox::warning (this,
-					tr ("Add new group"),
-					tr ("You cannot add more groups. The limit of 30 groups is reached."));
+			QMessageBox::critical (this,
+					tr ("Adding new group"),
+					tr ("You cannot add more groups: the limit of 30 groups is reached."));
 			return;
 		}
 

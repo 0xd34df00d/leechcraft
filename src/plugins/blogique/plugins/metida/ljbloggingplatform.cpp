@@ -474,7 +474,7 @@ namespace Metida
 		auto rootWM = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ();
 		QString name = QInputDialog::getText (rootWM->GetPreferredWindow (),
 				tr ("Add LJ User"),
-				tr ("Enter LJ user name"));
+				tr ("Enter LJ user name:"));
 		if (name.isEmpty ())
 			return;
 
