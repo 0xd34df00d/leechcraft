@@ -39,6 +39,7 @@
 #include <QUrl>
 #include <QDateTime>
 #include <QXmlStreamWriter>
+#include <boost/concept_check.hpp>
 #include <util/util.h>
 
 namespace LeechCraft
@@ -86,12 +87,65 @@ namespace Importers
 
 	QList<QVariant> OperaImportSelectPage::GetHistory ()
 	{
-		return QList<QVariant> ();
+		QList<QVariant> history;
+		QStringList historyPaths;
+#ifdef Q_OS_LINUX
+		historyPaths << QDir::homePath () + "/.opera/global_history.dat"
+				<< QDir::homePath () + "/.opera-next/global_history.dat";
+#endif
+		for (const auto& path : historyPaths)
+		{
+			QFile oldHistoryFile (path);
+			if (!oldHistoryFile.exists () || !oldHistoryFile.open (QIODevice::ReadOnly))
+				continue;
+			
+			while (!oldHistoryFile.atEnd ())
+			{
+				const auto& line = oldHistoryFile.readLine ().trimmed ();
+				if (line == "-1")
+				{
+					QMap<QString, QVariant> record;
+					record ["Title"] = oldHistoryFile.readLine ().trimmed ();
+					record ["URL"] = oldHistoryFile.readLine ().trimmed ();
+					record ["DateTime"] = QDateTime::fromTime_t (oldHistoryFile.readLine ()
+							.trimmed ().toLongLong ());
+					history.push_back (record);
+				}
+			}
+		}
+		return history;
 	}
 
 	QList<QVariant> OperaImportSelectPage::GetBookmarks ()
 	{
-		return QList<QVariant> ();
+		QList<QVariant> bookmarks;
+		QStringList bookmarksPaths;
+#ifdef Q_OS_LINUX
+		bookmarksPaths << QDir::homePath () + "/.opera/bookmarks.adr"
+				<< QDir::homePath () + "/.opera-next/bookmarks.adr";
+#endif
+		for (const auto& path : bookmarksPaths)
+		{
+			QFile oldBookmarksFile (path);
+			if (!oldBookmarksFile.exists () || !oldBookmarksFile.open (QIODevice::ReadOnly))
+				continue;
+				
+			while (!oldBookmarksFile.atEnd ())
+			{
+				const auto& line = oldBookmarksFile.readLine ().trimmed ();
+				if (line == "#URL")
+				{
+					QMap<QString, QVariant> record;
+					oldBookmarksFile.readLine ();
+					const auto& nameLine = QString::fromUtf8 (oldBookmarksFile.readLine ().trimmed ());
+					record ["Title"] = nameLine.mid (nameLine.indexOf ('=') + 1);
+					const auto& urlLine = QString::fromUtf8 (oldBookmarksFile.readLine ().trimmed ());
+					record ["URL"] = urlLine.mid (urlLine.indexOf ('=') + 1);
+					bookmarks.push_back (record);
+				}
+			}
+		}
+		return bookmarks;
 	}
 
 	void OperaImportSelectPage::handleAccepted ()
