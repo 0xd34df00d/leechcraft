@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,74 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "importwizard.h"
-#include <QtDebug>
-#include "importers/akregator/akregatorimporter.h"
-#include "importers/firefox/firefoximporter.h"
-#include "importers/kopete/kopeteimporter.h"
-#include "importers/ktorrent/ktorrentimporter.h"
-#include "importers/liferea/lifereaimporter.h"
-#include "importers/psiplus/psiplusimporter.h"
-#include "importers/vacuum/vacuumimporter.h"
-#include "importers/opera/operaimporter.h"
+#include "operaimporter.h"
+#include "operaimportselectpage.h"
 
 namespace LeechCraft
 {
 namespace NewLife
 {
-	ImportWizard::ImportWizard (QObject *plugin, QWidget *parent)
-	: QWizard (parent)
-	, Plugin_ (plugin)
+namespace Importers
+{
+	OperaImporter::OperaImporter (QWidget *parent)
+	: AbstractImporter (parent)
 	{
-		Ui_.setupUi (this);
-
-		Importers_ << new Importers::AkregatorImporter (this);
-		Importers_ << new Importers::FirefoxImporter (this);
-		Importers_ << new Importers::OperaImporter (this);
-		Importers_ << new Importers::KTorrentImporter (this);
-		Importers_ << new Importers::LifereaImporter (this);
-		Importers_ << new Importers::KopeteImporter (this);
-		Importers_ << new Importers::PsiPlusImporter (this);
-		Importers_ << new Importers::VacuumImporter (this);
-
-		connect (this,
-				SIGNAL (accepted ()),
-				this,
-				SLOT (handleAccepted ()),
-				Qt::QueuedConnection);
-		connect (this,
-				SIGNAL (accepted ()),
-				this,
-				SLOT (handleRejected ()),
-				Qt::QueuedConnection);
-
-		SetupImporters ();
+		ImportSelectPage_ = new OperaImportSelectPage ();
 	}
 
-	QString ImportWizard::GetSelectedName () const
+	QStringList OperaImporter::GetNames () const
 	{
-		return Ui_.FirstPage_->GetSelectedName ();
+		return QStringList ("Opera");
 	}
 
-	QObject* ImportWizard::GetPlugin () const
+	QList<QIcon> OperaImporter::GetIcons () const
 	{
-		return Plugin_;
+		return QList<QIcon> () << QIcon (":/resources/images/apps/opera.svg");
 	}
 
-	void ImportWizard::handleAccepted ()
+	QList<QWizardPage*> OperaImporter::GetWizardPages () const
 	{
-		deleteLater ();
+		QList<QWizardPage*> result;
+		result << ImportSelectPage_;
+		return result;
 	}
-
-	void ImportWizard::handleRejected ()
-	{
-		deleteLater ();
-	}
-
-	void ImportWizard::SetupImporters ()
-	{
-		Q_FOREACH (AbstractImporter *ai, Importers_)
-			Ui_.FirstPage_->SetupImporter (ai);
-	}
+}
 }
 }
