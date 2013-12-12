@@ -267,7 +267,7 @@ namespace DeathNote
 			case 500:
 				return QObject::tr ("Internal Server Error");
 			case 510:
-				return QObject::tr ("Error creating gpic");
+				return QObject::tr ("Error creating pic");
 			case 512:
 				return QObject::tr ("Error creating gallery");
 			default:
