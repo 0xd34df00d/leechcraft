@@ -132,6 +132,12 @@ namespace SB2
 		ShortcutMgr_->SetShortcut (id, seqs);
 	}
 
+	void Plugin::hookGonnaShowStatusBar (LeechCraft::IHookProxy_ptr proxy, bool show)
+	{
+		if (show)
+			proxy->CancelDefault ();
+	}
+
 	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy,
 			QMainWindow*, QDockWidget*, bool)
 	{

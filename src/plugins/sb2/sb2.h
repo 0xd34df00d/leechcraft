@@ -83,6 +83,7 @@ namespace SB2
 		QMap<QString, ActionInfo> GetActionInfo () const;
 		void SetShortcut (const QString&, const QKeySequences_t&);
 	public slots:
+		void hookGonnaShowStatusBar (LeechCraft::IHookProxy_ptr, bool);
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr,
 				QMainWindow*, QDockWidget*, bool);
 		void hookAddingDockAction (LeechCraft::IHookProxy_ptr,
