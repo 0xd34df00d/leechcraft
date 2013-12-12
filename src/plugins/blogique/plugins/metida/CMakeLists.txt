@@ -65,6 +65,7 @@ QT4_ADD_RESOURCES (METIDA_RCCS ${METIDA_RESOURCES})
 # 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 # 	)
 
+CreateTrsUpTarget ("blogique_metida" "en;ru_RU" "${METIDA_SRCS}" "${METIDA_FORMS}" "blogiquemetidasettings.xml")
 
 add_library (leechcraft_blogique_metida SHARED
 	${METIDA_RCCS}
