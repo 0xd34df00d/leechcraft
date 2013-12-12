@@ -178,7 +178,7 @@
          <item>
           <widget class="QPushButton" name="SelectGroups_">
            <property name="text">
-            <string>Select groups</string>
+            <string>Select groups...</string>
            </property>
           </widget>
          </item>

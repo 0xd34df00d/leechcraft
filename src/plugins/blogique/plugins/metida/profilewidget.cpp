@@ -65,8 +65,8 @@ namespace Metida
 		FriendsProxyModel_->setSourceModel (FriendsModel_);
 		Ui_.FriendsView_->setModel (FriendsProxyModel_);
 		Ui_.FriendsView_->setDropIndicatorShown (true);
-		FriendsModel_->setHorizontalHeaderLabels ({ tr ("UserName"),
-				tr ("Status"), tr ("FullName"), tr ("Birthday") });
+		FriendsModel_->setHorizontalHeaderLabels ({ tr ("Username"),
+				tr ("Status"), tr ("Full name"), tr ("Birthday") });
 
 		FriendItemDelegate *friendDelegate = new FriendItemDelegate (FriendsProxyModel_, Ui_.FriendsView_);
 		connect (this,

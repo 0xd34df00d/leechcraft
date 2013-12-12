@@ -40,7 +40,7 @@ namespace Blogique
 {
 namespace Metida
 {
-	
+
 	AddEditEntryDialog::AddEditEntryDialog (LJProfile *profile, AddTypeEntry type, QWidget *parent)
 	: QDialog (parent)
 	, Profile_ (profile)
@@ -132,17 +132,17 @@ namespace Metida
 	{
 		return Ui_.GroupName_->text ();
 	}
-	
+
 	void AddEditEntryDialog::SetGroupName (const QString& name)
 	{
 		Ui_.GroupName_->setText (name);
 	}
-	
+
 	bool AddEditEntryDialog::GetAcccess () const
 	{
 		return Ui_.Public_->isChecked ();
 	}
-	
+
 	void AddEditEntryDialog::SetAccess (bool isPublic)
 	{
 		Ui_.Public_->setChecked (isPublic);
@@ -180,7 +180,7 @@ namespace Metida
 				Ui_.Username_->text ().isEmpty ())
 		{
 			QMessageBox::warning (this,
-					tr ("Add new friend."),
+					"Blogique Metida",
 					tr ("Username must be defined."));
 			Ui_.Username_->setFocus ();
 			return;
@@ -189,7 +189,7 @@ namespace Metida
 				Ui_.GroupName_->text ().isEmpty ())
 		{
 			QMessageBox::warning (this,
-					tr ("Add new group."),
+					"Blogique Metida",
 					tr ("Group name must be defined."));
 			Ui_.GroupName_->setFocus ();
 			return;
@@ -216,7 +216,7 @@ namespace Metida
 
 	void AddEditEntryDialog::on_SelectBackgroundColor__released ()
 	{
-		SelectColor (tr ("Select background color for new user."),
+		SelectColor (tr ("Select background color for new user:"),
 				"#ffffff",
 				Ui_.BackgroundColorLabel_,
 				&BackgroundColor_,
@@ -225,20 +225,20 @@ namespace Metida
 
 	void AddEditEntryDialog::on_SelectForegroundColor__released ()
 	{
-		SelectColor (tr ("Select foreground color for new user."),
+		SelectColor (tr ("Select foreground color for new user:"),
 				"#000000",
 				Ui_.ForegroundColorLabel_,
 				&ForegroundColor_,
 				this);
 	}
-	
+
 	void AddEditEntryDialog::on_SelectGroups__released ()
 	{
 		SelectGroupsDialog dlg (Profile_, GroupMask_);
 		dlg.SetHeaderLabel (tr ("Add friend to groups:"));
 		if (dlg.exec () == QDialog::Rejected)
 			return;
-		
+
 		GroupMask_ = 0;
 		for (uint id : dlg.GetSelectedGroupsIds ())
 			GroupMask_ |= (1 << id);

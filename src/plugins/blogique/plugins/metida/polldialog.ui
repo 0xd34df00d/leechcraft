@@ -106,7 +106,7 @@
            <item>
             <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>MaxLength:</string>
+              <string>Maximum length:</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
