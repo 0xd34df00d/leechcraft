@@ -303,8 +303,8 @@ namespace Vangog
 		{
 			const auto& text = QInputDialog::getText (Proxy_->GetRootWindowsManager ()->GetPreferredWindow (),
 					"LeechCraft",
-					tr ("Enter your Google login to access to Picasa Web Albums from <em>%1</em> account")
-							.arg (Name_));
+					tr ("Enter your Google login to access to Picasa Web Albums from %1 account:")
+						.arg ("<em>" + Name_ + "</em>"));
 
 			if (!text.isEmpty ())
 			{
