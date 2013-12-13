@@ -64,8 +64,6 @@ namespace LeechCraft
 						"programming; sources", QString::fromUtf8 ("GitHub.com"));
 				Sets_ ["general"] << EngineInfo ("mininova.xml",
 						"torrents; mininova", QString::fromUtf8 ("Mininova"));
-				Sets_ ["general"] << EngineInfo ("isohunt.xml",
-						"torrents; isohunt", QString::fromUtf8 ("isoHunt"));
 				Sets_ ["general"] << EngineInfo ("lastfm.xml",
 						"music; lastfm", QString::fromUtf8 ("Last.fm"));
 				Sets_ ["ru"] << EngineInfo ("ruwiki.xml",
@@ -81,7 +79,7 @@ namespace LeechCraft
 
 				setTitle ("SeekThru");
 				setSubTitle (tr ("Select default search engines"));
-				
+
 				connect (Ui_.LocalizationBox_,
 						SIGNAL (currentIndexChanged (const QString&)),
 						this,
