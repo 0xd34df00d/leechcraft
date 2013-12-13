@@ -73,57 +73,57 @@ namespace SeekThru
 		int r = index.row ();
 		switch (role)
 		{
-			case Qt::DisplayRole:
-				switch (index.column ())
-				{
-					case 0:
-						return SearchString_;
-					case 1:
-						if (Results_.at (r).TotalResults_ >= 0)
-							return tr ("%n total result(s)", "", Results_.at (r).TotalResults_);
-						else
-							return tr ("Unknown number of results");
-					case 2:
-						{
-							QString result = D_.ShortName_;
-							switch (Results_.at (r).Type_)
-							{
-								case Result::TypeRSS:
-									result += " (RSS)";
-									break;
-								case Result::TypeAtom:
-									result += " (Atom)";
-									break;
-								case Result::TypeHTML:
-									result += " (HTML)";
-									break;
-							}
-							return result;
-						}
-					default:
-						return QString ("");
-				}
-			case LeechCraft::RoleAdditionalInfo:
-				if (Results_.at (r).Type_ == Result::TypeHTML)
-				{
-					Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ()
-							.property ("NavBarVisible").toBool ());
-					Viewer_->SetHtml (Results_.at (r).Response_,
-							Results_.at (r).RequestURL_.toString ());
-					return QVariant::fromValue<QWidget*> (Viewer_.get ());
-				}
+		case Qt::DisplayRole:
+			switch (index.column ())
+			{
+			case 0:
+				return SearchString_;
+			case 1:
+				if (Results_.at (r).TotalResults_ >= 0)
+					return tr ("%n total result(s)", "", Results_.at (r).TotalResults_);
 				else
-					return 0;
-			case LeechCraft::RoleControls:
-				if (Results_.at (r).Type_ != Result::TypeHTML)
+					return tr ("Unknown number of results");
+			case 2:
 				{
-					Action_->setData (r);
-					return QVariant::fromValue<QToolBar*> (Toolbar_.get ());
+					QString result = D_.ShortName_;
+					switch (Results_.at (r).Type_)
+					{
+						case Result::TypeRSS:
+							result += " (RSS)";
+							break;
+						case Result::TypeAtom:
+							result += " (Atom)";
+							break;
+						case Result::TypeHTML:
+							result += " (HTML)";
+							break;
+					}
+					return result;
 				}
-				else
-					return 0;
 			default:
-				return QVariant ();
+				return QString ("");
+			}
+		case LeechCraft::RoleAdditionalInfo:
+			if (Results_.at (r).Type_ == Result::TypeHTML)
+			{
+				Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ()
+						.property ("NavBarVisible").toBool ());
+				Viewer_->SetHtml (Results_.at (r).Response_,
+						Results_.at (r).RequestURL_.toString ());
+				return QVariant::fromValue<QWidget*> (Viewer_.get ());
+			}
+			else
+				return 0;
+		case LeechCraft::RoleControls:
+			if (Results_.at (r).Type_ != Result::TypeHTML)
+			{
+				Action_->setData (r);
+				return QVariant::fromValue<QToolBar*> (Toolbar_.get ());
+			}
+			else
+				return 0;
+		default:
+			return QVariant ();
 		}
 	}
 
@@ -164,7 +164,7 @@ namespace SeekThru
 	void SearchHandler::Start (const LeechCraft::Request& r)
 	{
 		SearchString_ = r.String_;
-		Q_FOREACH (UrlDescription u, D_.URLs_)
+		for (const auto& u : D_.URLs_)
 		{
 			const auto& url = u.MakeUrl (r.String_, r.Params_);
 
