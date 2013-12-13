@@ -54,9 +54,6 @@ namespace LeechCraft
 			: QWizardPage (parent)
 			{
 				Ui_.setupUi (this);
-				qDebug () << "just after setupUi" << Ui_.LocalizationBox_;
-				qDebug () << typeid (Ui_.LocalizationBox_).name ()
-					<< typeid (*Ui_.LocalizationBox_).name ();
 
 				Sets_ ["general"] << EngineInfo ("enwiki.xml",
 						"enwiki", QString::fromUtf8 ("Wikipedia: en"));
