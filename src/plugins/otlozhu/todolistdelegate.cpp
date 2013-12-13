@@ -54,6 +54,7 @@ namespace Otlozhu
 			new Util::TagsCompleter (edit, edit);
 			edit->AddSelector ();
 			edit->setText (index.data (Qt::EditRole).toString ());
+			edit->setFrame (false);
 			return edit;
 		}
 		default:
