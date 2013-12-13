@@ -241,8 +241,9 @@ namespace Acetamide
 			role = ChannelRole::Participant;
 
 		entry->SetRole (role);
-		MakeJoinMessage (nickName);
 		entry->SetStatus (EntryStatus (SOnline, QString ()));
+
+		MakeJoinMessage (nickName);
 	}
 
 	void ChannelHandler::MakeJoinMessage (const QString& nick)
