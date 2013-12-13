@@ -30,6 +30,7 @@
 #include "todolistdelegate.h"
 #include <QAbstractItemView>
 #include <QStyle>
+#include <QDateTimeEdit>
 #include <util/tags/tagslineedit.h>
 #include <util/tags/tagscompleter.h>
 #include "storagemodel.h"
@@ -55,6 +56,15 @@ namespace Otlozhu
 			edit->AddSelector ();
 			edit->setText (index.data (Qt::EditRole).toString ());
 			edit->setFrame (false);
+			return edit;
+		}
+		case StorageModel::Columns::DueDate:
+		case StorageModel::Columns::Created:
+		{
+			auto edit = new QDateTimeEdit (parent);
+			edit->setFrame (false);
+			edit->setCalendarPopup (true);
+			edit->setDateTime (index.data (Qt::EditRole).toDateTime ());
 			return edit;
 		}
 		default:
