@@ -32,24 +32,20 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SeekThru
+{
+	TagsAsker::TagsAsker (const QString& text, QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace SeekThru
-		{
-			TagsAsker::TagsAsker (const QString& text, QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
-				new Util::TagsCompleter (Ui_.Tags_, this);
-				Ui_.Tags_->AddSelector ();
-				Ui_.Tags_->setText (text);
-			}
+		Ui_.setupUi (this);
+		new Util::TagsCompleter (Ui_.Tags_, this);
+		Ui_.Tags_->AddSelector ();
+		Ui_.Tags_->setText (text);
+	}
 
-			QString TagsAsker::GetTags () const
-			{
-				return Ui_.Tags_->text ();
-			}
-		};
-	};
-};
-
+	QString TagsAsker::GetTags () const
+	{
+		return Ui_.Tags_->text ();
+	}
+}
+}

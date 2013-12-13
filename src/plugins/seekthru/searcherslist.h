@@ -27,40 +27,32 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_SEARCHERSLIST_H
-#define PLUGINS_SEEKTHRU_SEARCHERSLIST_H
 #include <QWidget>
 #include "ui_searcherslist.h"
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace SeekThru
+{
+	class SearchersList : public QWidget
 	{
-		namespace SeekThru
-		{
-			class SearchersList : public QWidget
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::SearchersList Ui_;
-				QModelIndex Current_;
-			public:
-				SearchersList (QWidget* = 0);
-			private slots:
-				void handleCurrentChanged (const QModelIndex&);
-				void on_ButtonAdd__released ();
-				void on_ButtonRemove__released ();
-				void on_Tags__editingFinished ();
+		Ui::SearchersList Ui_;
+		QModelIndex Current_;
+	public:
+		SearchersList (QWidget* = 0);
+	private slots:
+		void handleCurrentChanged (const QModelIndex&);
+		void on_ButtonAdd__released ();
+		void on_ButtonRemove__released ();
+		void on_Tags__editingFinished ();
 
-				void handleOpenURL ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		void handleOpenURL ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
-
-#endif
-
+}
+}

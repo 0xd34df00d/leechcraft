@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_SEARCHHANDLER_H
-#define PLUGINS_SEEKTHRU_SEARCHHANDLER_H
+#pragma once
+
 #include <memory>
 #include <QAbstractItemModel>
 #include <QUrl>
@@ -41,81 +41,72 @@ class QAction;
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class SelectableBrowser;
-	};
-
-	namespace Plugins
-	{
-		namespace SeekThru
-		{
-			/** This class performs search on a single category with a single search
-			 * provider.
-			 */
-			class SearchHandler : public QAbstractItemModel
-			{
-				Q_OBJECT
-
-				static const QString OS_;
-
-				Description D_;
-
-				QString SearchString_;
-				struct Result
-				{
-					enum Type
-					{
-						TypeRSS,
-						TypeAtom,
-						TypeHTML
-					};
-
-					Type Type_;
-					int TotalResults_;
-					int StartIndex_;
-					int ItemsPerPage_;
-					QString Response_;
-					QString Filename_;
-					QUrl RequestURL_;
-				};
-
-				QList<Result> Results_;
-				QMap<int, Result> Jobs_;
-				QList<QObject*> Downloaders_;
-				std::shared_ptr<Util::SelectableBrowser> Viewer_;
-				std::shared_ptr<QToolBar> Toolbar_;
-				std::shared_ptr<QAction> Action_;
-			public:
-				SearchHandler (const Description&);
-
-				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-				virtual Qt::ItemFlags flags (const QModelIndex&) const;
-				virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-				virtual QModelIndex parent (const QModelIndex&) const;
-				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-
-				void Start (const LeechCraft::Request&);
-			private slots:
-				void handleJobFinished (int);
-				void handleJobError (int);
-				void subscribe ();
-			private:
-				void HandleProvider (QObject*);
-			signals:
-				void delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**);
-				void gotEntity (const LeechCraft::Entity&);
-				void error (const QString&);
-				void warning (const QString&);
-			};
-
-			typedef std::shared_ptr<SearchHandler> SearchHandler_ptr;
-		};
-	};
+namespace Util
+{
+	class SelectableBrowser;
 };
 
-#endif
+namespace SeekThru
+{
+	class SearchHandler : public QAbstractItemModel
+	{
+		Q_OBJECT
 
+		static const QString OS_;
+
+		Description D_;
+
+		QString SearchString_;
+		struct Result
+		{
+			enum Type
+			{
+				TypeRSS,
+				TypeAtom,
+				TypeHTML
+			};
+
+			Type Type_;
+			int TotalResults_;
+			int StartIndex_;
+			int ItemsPerPage_;
+			QString Response_;
+			QString Filename_;
+			QUrl RequestURL_;
+		};
+
+		QList<Result> Results_;
+		QMap<int, Result> Jobs_;
+		QList<QObject*> Downloaders_;
+		std::shared_ptr<Util::SelectableBrowser> Viewer_;
+		std::shared_ptr<QToolBar> Toolbar_;
+		std::shared_ptr<QAction> Action_;
+	public:
+		SearchHandler (const Description&);
+
+		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		virtual Qt::ItemFlags flags (const QModelIndex&) const;
+		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		virtual QModelIndex parent (const QModelIndex&) const;
+		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+
+		void Start (const LeechCraft::Request&);
+	private slots:
+		void handleJobFinished (int);
+		void handleJobError (int);
+		void subscribe ();
+	private:
+		void HandleProvider (QObject*);
+	signals:
+		void delegateEntity (const LeechCraft::Entity&,
+				int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void error (const QString&);
+		void warning (const QString&);
+	};
+
+	typedef std::shared_ptr<SearchHandler> SearchHandler_ptr;
+}
+}
