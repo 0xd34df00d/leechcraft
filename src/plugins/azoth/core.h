@@ -129,6 +129,8 @@ namespace Azoth
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
 
+		QCache<QImage, QString> Avatar2TooltipSrcCache_;
+
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 
 		QMap<State, int> StateCounter_;
