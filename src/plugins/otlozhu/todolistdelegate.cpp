@@ -45,7 +45,8 @@ namespace Otlozhu
 	{
 	}
 
-	QWidget* TodoListDelegate::createEditor (QWidget *parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+	QWidget* TodoListDelegate::createEditor (QWidget *parent,
+			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		switch (index.column ())
 		{
@@ -72,7 +73,8 @@ namespace Otlozhu
 		}
 	}
 
-	void TodoListDelegate::updateEditorGeometry (QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
+	void TodoListDelegate::updateEditorGeometry (QWidget* editor,
+			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		switch (index.column ())
 		{
@@ -85,7 +87,8 @@ namespace Otlozhu
 		}
 	}
 
-	void TodoListDelegate::paint (QPainter *painter, const QStyleOptionViewItem& thatOption, const QModelIndex& index) const
+	void TodoListDelegate::paint (QPainter *painter,
+			const QStyleOptionViewItem& thatOption, const QModelIndex& index) const
 	{
 		QStyleOptionViewItem option (thatOption);
 
