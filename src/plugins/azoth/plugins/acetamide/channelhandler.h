@@ -78,7 +78,7 @@ namespace Acetamide
 		QList<QObject*> GetParticipants () const;
 
 		ChannelParticipantEntry_ptr GetSelf ();
-		ChannelParticipantEntry_ptr GetParticipantEntry (const QString&);
+		ChannelParticipantEntry_ptr GetParticipantEntry (const QString&, bool announce = true);
 
 		bool IsUserExists (const QString&) const;
 
@@ -153,7 +153,7 @@ namespace Acetamide
 		void SetUrl (const QString& url);
 	private:
 		bool RemoveUserFromChannel (const QString&);
-		ChannelParticipantEntry_ptr CreateParticipantEntry (const QString&);
+		ChannelParticipantEntry_ptr CreateParticipantEntry (const QString&, bool announce = true);
 		void RemoveThis ();
 	public slots:
 		void handleWhoIs (const QString& nick);
