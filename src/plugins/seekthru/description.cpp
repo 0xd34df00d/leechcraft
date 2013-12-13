@@ -60,11 +60,9 @@ namespace SeekThru
 
 	QUrl UrlDescription::MakeUrl (const QString& searchStr, const QHash<QString, QVariant>& params) const
 	{
-		QUrl url (Template_);
-		QList<QPair<QString, QString>> items = url.queryItems (),
-			newItems;
-		QPair<QString, QString> item;
-		Q_FOREACH (item, items)
+		QUrl url = Template_;
+		decltype (url.queryItems ()) newItems;
+		for (auto item : url.queryItems ())
 		{
 			// Currently skips optional parameters
 			if (item.second.size () >= 3 &&
@@ -79,8 +77,7 @@ namespace SeekThru
 					*item.second.begin () == '{' &&
 					*(item.second.end () - 1) == '}')
 			{
-				QString key = item.second.mid (1,
-						item.second.size () - 2);
+				auto key = item.second.mid (1, item.second.size () - 2);
 				// To the correct string if Params_ has this key or to
 				// empty string otherwise.
 				item.second = params [key].toString ();
