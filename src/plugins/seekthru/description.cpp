@@ -85,8 +85,6 @@ namespace SeekThru
 				// empty string otherwise.
 				item.second = params [key].toString ();
 			}
-			else
-				item.second = "";
 
 			newItems << item;
 		}
