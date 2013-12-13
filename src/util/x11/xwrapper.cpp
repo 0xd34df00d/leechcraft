@@ -350,6 +350,7 @@ namespace Util
 			GetAtom ("_NET_WM_WINDOW_TYPE_DESKTOP"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_DOCK"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_TOOLBAR"),
+			GetAtom ("_NET_WM_WINDOW_TYPE_UTILITY"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_MENU"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_SPLASH"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_POPUP_MENU")
