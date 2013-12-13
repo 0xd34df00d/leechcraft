@@ -1384,11 +1384,11 @@ namespace Azoth
 
 		auto cleanupBR = [&tip] ()
 		{
-			tip = tip.simplified ();
+			tip = tip.trimmed ();
 			while (tip.endsWith ("<br />"))
 			{
 				tip.chop (6);
-				tip = tip.simplified ();
+				tip = tip.trimmed ();
 			}
 		};
 
