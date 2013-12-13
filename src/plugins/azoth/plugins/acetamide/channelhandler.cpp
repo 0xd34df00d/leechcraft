@@ -211,7 +211,10 @@ namespace Acetamide
 		}
 
 		CM_->ClosePrivateChat (nickName);
-		ChannelParticipantEntry_ptr entry (GetParticipantEntry (nickName));
+
+		const auto existed = Nick2Entry_.contains (nickName);
+
+		ChannelParticipantEntry_ptr entry (GetParticipantEntry (nickName, false));
 		entry->SetUserName (user);
 		entry->SetHostName (host);
 
@@ -242,6 +245,9 @@ namespace Acetamide
 
 		entry->SetRole (role);
 		entry->SetStatus (EntryStatus (SOnline, QString ()));
+
+		if (!existed)
+			CM_->GetAccount ()->handleGotRosterItems ({ entry.get () });
 
 		MakeJoinMessage (nickName);
 	}
