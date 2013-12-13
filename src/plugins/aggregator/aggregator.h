@@ -144,6 +144,7 @@ namespace Aggregator
 		void on_ActionMarkAllAsRead__triggered ();
 		void on_ActionAddFeed__triggered ();
 		void on_ActionRemoveFeed__triggered ();
+		void on_ActionRenameFeed__triggered ();
 		void on_ActionRemoveChannel__triggered ();
 		void on_ActionUpdateSelectedFeed__triggered ();
 		void on_ActionRegexpMatcher__triggered ();

@@ -94,6 +94,11 @@ namespace Aggregator
 		ActionUpdateSelectedFeed_->setObjectName ("ActionUpdateSelectedFeed_");
 		ActionUpdateSelectedFeed_->setProperty ("ActionIcon", "view-refresh");
 
+		ActionRenameFeed_ = new QAction (tr ("Rename feed"),
+				parent);
+		ActionRenameFeed_->setObjectName ("ActionRenameFeed_");
+		ActionRenameFeed_->setProperty ("ActionIcon", "edit-rename");
+		
 		ActionMarkChannelAsRead_ = new QAction (tr ("Mark channel as read"),
 				parent);
 		ActionMarkChannelAsRead_->setObjectName ("ActionMarkChannelAsRead_");

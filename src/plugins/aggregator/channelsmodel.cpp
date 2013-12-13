@@ -225,6 +225,7 @@ namespace Aggregator
 	void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 	{
 		auto idx = std::find (Channels_.begin (), Channels_.end (), cs);
+
 		if (idx == Channels_.end ())
 			return;
 		
