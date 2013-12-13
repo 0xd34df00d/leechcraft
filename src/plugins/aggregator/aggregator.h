@@ -166,6 +166,7 @@ namespace Aggregator
 		void unreadNumberChanged (int);
 		void trayIconActivated ();
 		void handleGroupChannels ();
+		void handleColumnVisibilityActionTriggered ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&,
