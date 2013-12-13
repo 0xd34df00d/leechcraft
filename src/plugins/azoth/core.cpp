@@ -1318,7 +1318,7 @@ namespace Azoth
 		}
 	}
 
-	QString Core::MakeTooltipString (ICLEntry *entry) const
+	QString Core::MakeTooltipString (ICLEntry *entry)
 	{
 		QString tip = "<table border='0'><tr><td>";
 

@@ -378,7 +378,7 @@ namespace Azoth
 		/** Creates the tooltip text for the roster entry to be shown in
 		 * the tree.
 		 */
-		QString MakeTooltipString (ICLEntry *entry) const;
+		QString MakeTooltipString (ICLEntry *entry);
 
 		void RebuildTooltip (ICLEntry *entry);
 
