@@ -73,6 +73,38 @@ namespace SysInfo
 			return {};
 		}
 
+		QString GetEtcOsName ()
+		{
+			QFile file ("/etc/os-release");
+			if (!file.open (QIODevice::ReadOnly))
+				return {};
+
+			QString name;
+			QString version;
+			QString pretty;
+
+			while (file.canReadLine ())
+			{
+				const auto& str = QString::fromUtf8 (file.readLine ());
+				const auto eqPos = str.indexOf ('=');
+				if (eqPos <= 0)
+					continue;
+
+				const auto& id = str.left (eqPos);
+				if (id == "NAME")
+					name = str.mid (eqPos + 1);
+				else if (id == "VERSION")
+					version = str.mid (eqPos + 1);
+				else if (id == "PRETTY_NAME")
+					pretty = str.mid (eqPos + 1);
+			}
+
+			if (!name.isEmpty () && !version.isEmpty ())
+				return name + " " + version;
+
+			return !pretty.isEmpty () ? pretty : name;
+		}
+
 		QString GetEtcName ()
 		{
 			struct OsInfo_t
@@ -188,7 +220,7 @@ namespace SysInfo
 		else if (v == QSysInfo::WV_NT_based)
 			return SplitInfo_t ("Windows", "NT-based");
 #else
-		QString osName;
+		auto osName = Linux::GetEtcOsName ();
 
 		if (osName.isEmpty ())
 			osName = Linux::GetEtcName ();
