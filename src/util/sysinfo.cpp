@@ -118,6 +118,26 @@ namespace SysInfo
 		}
 	}
 
+	namespace
+	{
+		void Normalize (QString& osName)
+		{
+			auto trimQuotes = [&osName]
+			{
+				if (osName.startsWith ('"') && osName.endsWith ('"'))
+					osName = osName.mid (1, osName.size () - 1);
+			};
+
+			trimQuotes ();
+
+			const QString nameMarker ("NAME=");
+			if (osName.startsWith (nameMarker))
+				osName = osName.mid (nameMarker.size ());
+
+			trimQuotes ();
+		}
+	}
+
 	QPair<QString, QString> GetOSNameSplit ()
 	{
 #if defined(Q_OS_MAC)
@@ -175,6 +195,8 @@ namespace SysInfo
 
 		if (osName.isEmpty ())
 			osName = Linux::GetLSBName ();
+
+		Normalize (osName);
 
 		utsname u;
 		uname (&u);
