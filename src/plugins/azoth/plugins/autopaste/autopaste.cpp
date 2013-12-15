@@ -116,7 +116,7 @@ namespace Autopaste
 		const int maxSymbols = XmlSettingsManager::Instance ()
 				.property ("SymbolCount").toInt ();
 		if (text.size () < maxSymbols &&
-				text.split ('\n').size () < maxLines)
+				text.count ('\n') + 1 < maxLines)
 			return;
 
 		QByteArray propName;
