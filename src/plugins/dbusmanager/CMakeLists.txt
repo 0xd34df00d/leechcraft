@@ -41,6 +41,7 @@ set (RESOURCES
 	dbusmanagerresources.qrc
 	)
 CreateTrs ("dbusmanager" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("dbusmanager" "en;ru_RU" "${SRCS}" "${FORMS}" "dbusmanagersettings.xml")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
