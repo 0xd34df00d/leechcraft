@@ -246,19 +246,19 @@ namespace CSTP
 				SLOT (stopTriggered ()));
 		stop->setProperty ("ActionIcon", "media-playback-stop");
 
-		QAction *startAll = Toolbar_->addAction (tr ("media-seek-forward"));
+		QAction *startAll = Toolbar_->addAction (tr ("Start all"));
 		connect (startAll,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (startAllTriggered ()));
-		startAll->setProperty ("ActionIcon", "cstp_startall");
+		startAll->setProperty ("ActionIcon", "media-seek-forward");
 
-		QAction *stopAll = Toolbar_->addAction (tr ("media-record"));
+		QAction *stopAll = Toolbar_->addAction (tr ("Stop all"));
 		connect (stopAll,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (stopAllTriggered ()));
-		stopAll->setProperty ("ActionIcon", "cstp_stopall");
+		stopAll->setProperty ("ActionIcon", "media-record");
 	}
 
 	void CSTP::handleFileExists (boost::logic::tribool *remove)
