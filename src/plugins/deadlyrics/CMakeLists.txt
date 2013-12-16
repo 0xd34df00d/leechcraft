@@ -25,6 +25,7 @@ set (HEADERS
 	concretesite.h
 	)
 CreateTrs ("deadlyrics" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("deadlyrics" "en;ru_RU" "${SRCS}" "" "")
 set (RESOURCES deadlyricsresources.qrc)
 
 if (NOT LC_NO_MOC)
