@@ -46,5 +46,4 @@ target_link_libraries (leechcraft_dbusmanager
 		${LEECHCRAFT_LIBRARIES}
 		)
 install (TARGETS leechcraft_dbusmanager DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES dbusmanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
