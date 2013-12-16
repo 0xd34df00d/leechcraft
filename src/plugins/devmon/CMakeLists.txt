@@ -16,7 +16,7 @@ set (SRCS
 	devmon.cpp
 	udevbackend.cpp
 	)
-#CreateTrs("devmon" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("devmon" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("devmon" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_devmon SHARED
