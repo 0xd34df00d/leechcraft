@@ -61,7 +61,7 @@ namespace Devmon
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Devices monitor plugin.");
+		return tr ("USB non-storage devices monitor plugin.");
 	}
 
 	QIcon Plugin::GetIcon () const
