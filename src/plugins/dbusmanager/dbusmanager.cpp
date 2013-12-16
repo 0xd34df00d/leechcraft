@@ -71,7 +71,7 @@ namespace DBusManager
 
 	QString DBusManager::GetInfo () const
 	{
-		return tr ("DBus support for LeechCraft");
+		return tr ("General DBus support for LeechCraft.");
 	}
 
 	QStringList DBusManager::Provides () const
