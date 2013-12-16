@@ -71,7 +71,7 @@ namespace DeadLyrics
 
 	QString DeadLyRicS::GetInfo () const
 	{
-		return tr ("Lyrics Searcher");
+		return tr ("Song lyrics searcher.");
 	}
 
 	QIcon DeadLyRicS::GetIcon () const
