@@ -61,7 +61,8 @@ namespace CSTP
 	class Core : public QAbstractItemModel
 	{
 		Q_OBJECT
-		QStringList Headers_;
+
+		const QStringList Headers_;
 
 		struct TaskDescr
 		{
