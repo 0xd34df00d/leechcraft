@@ -64,7 +64,7 @@ namespace Util
 		RegisterActionInfo (id,
 				{ act->text (), act->shortcuts (), icon });
 
-		if (update)
+		if (CoreProxy_->GetShortcutProxy ()->HasObject (ContextObj_))
 			SetShortcut (id,
 					CoreProxy_->GetShortcutProxy ()->GetShortcuts (ContextObj_, id));
 	}
@@ -79,7 +79,7 @@ namespace Util
 
 		RegisterActionInfo (id, info);
 
-		if (update)
+		if (CoreProxy_->GetShortcutProxy ()->HasObject (ContextObj_))
 			SetShortcut (id,
 					CoreProxy_->GetShortcutProxy ()->GetShortcuts (ContextObj_, id));
 	}

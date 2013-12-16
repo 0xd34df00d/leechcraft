@@ -41,8 +41,8 @@ namespace LeechCraft
 {
 	NewTabMenuManager::NewTabMenuManager (QObject *parent)
 	: QObject (parent)
-	, NewTabMenu_ (new QMenu (tr ("New tab menu")))
-	, AdditionalTabMenu_ (new QMenu (tr ("Additional tab menu")))
+	, NewTabMenu_ (new QMenu (tr ("New tab")))
+	, AdditionalTabMenu_ (new QMenu (tr ("Additional")))
 	{
 	}
 
@@ -101,7 +101,7 @@ namespace LeechCraft
 		if (ones.size ())
 			lists.prepend (ones);
 
-		Q_FOREACH (QList<QAction*> list, lists)
+		for (const auto& list : lists)
 		{
 			if (!list.size ())
 				continue;

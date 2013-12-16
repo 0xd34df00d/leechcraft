@@ -71,7 +71,7 @@ namespace Media
 		}
 	};
 
-	/** @brief Described the various lyrics request options.
+	/** @brief Describes the various lyrics request options.
 	 *
 	 * @sa ILyricsFinder
 	 */
@@ -84,6 +84,45 @@ namespace Media
 		/** @brief Refresh any cached data.
 		 */
 		Refresh = 0x1
+	};
+
+	/** @brief Describes a single lyrics result item.
+	 *
+	 * A result item is the lyrics themselves and the provider name these
+	 * lyrics were fetched from.
+	 *
+	 * @sa LyricsResults
+	 */
+	struct LyricsResultItem
+	{
+		/** @brief The name of the provider lyrics were fetched from.
+		 */
+		QString ProviderName_;
+
+		/** @brief The HTML-formatted lyrics string.
+		 */
+		QString Lyrics_;
+	};
+
+	/** @brief Describes the result set for a given lyrics query.
+	 *
+	 * The lyrics searching result set consists of the lyrics query and a
+	 * list of lyrics results items.
+	 *
+	 * @sa LyricsResultItem.
+	 */
+	struct LyricsResults
+	{
+		/** @brief The original query these results are for.
+		 */
+		LyricsQuery Query_;
+
+		/** @brief The list of found items for the Query_.
+		 *
+		 * This list may be empty or contain duplicate lyrics (though
+		 * with different ProviderName_ fields).
+		 */
+		QList<LyricsResultItem> Items_;
 	};
 
 	/** @brief Typedef for <code>QFlags<QueryOption></code>.
@@ -116,11 +155,13 @@ namespace Media
 	protected:
 		/** @brief Emitted when search for lyrics is complete.
 		 *
-		 * @param[out] query The query for which the search is complete.
-		 * @param[out] lyrics The list of possible lyrics variants, may
-		 * be empty or contain duplicates.
+		 * It is OK to emit this signal multiple times for a single
+		 * query.
+		 *
+		 * @param[out] results The results of the lyrics query,
+		 * containing the original query and the actual results.
 		 */
-		virtual void gotLyrics (const LyricsQuery& query, const QStringList& lyrics) = 0;
+		virtual void gotLyrics (const LyricsResults& results) = 0;
 	};
 }
 

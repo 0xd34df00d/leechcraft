@@ -84,6 +84,28 @@ namespace Xoox
 		}
 	}
 
+	void ClientConnectionErrorMgr::HandleMessage (const QXmppMessage& msg)
+	{
+		if (msg.type () != QXmppMessage::Error)
+			return;
+
+		const auto& error = msg.error ();
+		const auto& condStr = HandleErrorCondition (error.condition ());
+
+		const auto& text = error.text ().isEmpty () ?
+				tr ("Error from %1: %2")
+					.arg (msg.from ())
+					.arg (condStr) :
+				tr ("Error from %1: %2 (%3).")
+					.arg (msg.from ())
+					.arg (condStr)
+					.arg (error.text ());
+		const auto& e = Util::MakeNotification ("Azoth",
+				text,
+				PCritical_);
+		Core::Instance ().SendEntity (e);
+	}
+
 	QString ClientConnectionErrorMgr::HandleErrorCondition (const QXmppStanza::Error::Condition& condition)
 	{
 		switch (condition)
@@ -108,7 +130,6 @@ namespace Xoox
 		case QXmppStanza::Error::NotAllowed:
 			return tr ("Action is not allowed.");
 		case QXmppStanza::Error::NotAuthorized:
-			emit serverAuthFailed ();
 			return tr ("Not authorized.");
 		case QXmppStanza::Error::PaymentRequired:
 			return tr ("Payment required.");
@@ -207,6 +228,8 @@ namespace Xoox
 		case QXmppClient::XmppStreamError:
 			str = tr ("error while connecting: ");
 			str += HandleErrorCondition (Client_->xmppStreamError ());
+			if (Client_->xmppStreamError () == QXmppStanza::Error::NotAuthorized)
+				emit serverAuthFailed ();
 			break;
 		case QXmppClient::NoError:
 			str = tr ("no error.");

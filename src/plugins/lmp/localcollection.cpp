@@ -229,6 +229,8 @@ namespace LMP
 
 			LocalCollectionStorage storage;
 
+			const auto& paths = storage.GetTracksPaths ();
+
 			const auto& allInfos = RecIterateInfo (path, symLinks);
 			for (const auto& info : allInfos)
 			{
@@ -252,16 +254,19 @@ namespace LMP
 							<< e.what ();
 				}
 
-				try
+				if (paths.contains (trackPath))
 				{
-					storage.SetMTime (trackPath, mtime);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "error setting mtime"
-							<< trackPath
-							<< e.what ();
+					try
+					{
+						storage.SetMTime (trackPath, mtime);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error setting mtime"
+								<< trackPath
+								<< e.what ();
+					}
 				}
 				result.ChangedFiles_ << trackPath;
 			}
@@ -339,12 +344,25 @@ namespace LMP
 		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
 				[&artist] (decltype (Artists_.front ()) item) { return item.Name_ == artist; });
 		if (artistPos == Artists_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "artist not found:"
+					<< artist
+					<< album;
 			return -1;
+		}
 
-		auto albumPos = std::find_if (artistPos->Albums_.begin (), artistPos->Albums_.end (),
-				[&album] (decltype (artistPos->Albums_.front ()) item) { return item->Name_ == album; });
-		if (albumPos == artistPos->Albums_.end ())
+		const auto& albums = artistPos->Albums_;
+		auto albumPos = std::find_if (albums.begin (), albums.end (),
+				[&album] (decltype (albums.front ()) item) { return item->Name_ == album; });
+		if (albumPos == albums.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "album not found:"
+					<< artist
+					<< album;
 			return -1;
+		}
 
 		return (*albumPos)->ID_;
 	}
@@ -538,9 +556,13 @@ namespace LMP
 
 		for (const auto& artist : artists)
 		{
-			if (std::find_if (Artists_.begin (), Artists_.end (),
-						[&artist] (decltype (artist) present) { return present.ID_ == artist.ID_; }) == Artists_.end ())
+			const auto pos = std::find_if (Artists_.begin (), Artists_.end (),
+					[&artist] (decltype (artist) present) { return present.ID_ == artist.ID_; });
+			if (pos == Artists_.end ())
 				Artists_ += artist;
+			else
+				pos->Albums_ << artist.Albums_;
+
 			for (const auto& album : artist.Albums_)
 				for (const auto& track : album->Tracks_)
 					PresentPaths_ << track.FilePath_;
@@ -859,7 +881,7 @@ namespace LMP
 	{
 		auto future = Watcher_->future ();
 		QList<MediaInfo> newInfos, existingInfos;
-		Q_FOREACH (const auto& info, future)
+		for (const auto& info : future)
 		{
 			const auto& path = info.LocalPath_;
 			if (path.isEmpty ())

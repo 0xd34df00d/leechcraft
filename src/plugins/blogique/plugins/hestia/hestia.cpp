@@ -81,7 +81,7 @@ namespace Hestia
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Platform for local blogging");
+		return tr ("Local blogging platform plugin for Blogique.");
 	}
 
 	QIcon Plugin::GetIcon () const

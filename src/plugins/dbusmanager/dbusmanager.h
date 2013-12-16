@@ -55,9 +55,6 @@ namespace DBusManager
 		QString GetName () const;
 		QString GetInfo () const;
 		QStringList Provides () const;
-		QStringList Uses () const;
-		QStringList Needs () const;
-		void SetProvider (QObject*, const QString&);
 		QIcon GetIcon () const;
 
 		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;

@@ -44,16 +44,14 @@ namespace Lastfmscrobble
 		Q_OBJECT
 		Q_INTERFACES (Media::IPendingArtistBio)
 
+		QNetworkAccessManager * const NAM_;
+
 		Media::ArtistBio Bio_;
-		bool BioFinished_;
-		bool ImagesFinished_;
 	public:
 		PendingArtistBio (QString, QNetworkAccessManager*, QObject* = 0);
 
 		QObject* GetQObject ();
 		Media::ArtistBio GetArtistBio () const;
-	private:
-		void CheckReady ();
 	private slots:
 		void handleImagesFinished ();
 

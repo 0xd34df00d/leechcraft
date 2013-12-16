@@ -43,10 +43,6 @@
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 
-typedef bool (*QX11FilterFunction) (XEvent *event);
-
-extern void qt_installX11EventFilter (QX11FilterFunction func);
-
 namespace LeechCraft
 {
 namespace Util
@@ -60,17 +56,17 @@ namespace Util
 
 	namespace
 	{
-		bool EventFilter (XEvent *msg)
+		bool EvFilter (void *msg)
 		{
-			return XWrapper::Instance ().Filter (msg);
+			return XWrapper::Instance ().Filter (static_cast<XEvent*> (msg));
 		}
 	}
 
 	XWrapper::XWrapper ()
 	: Display_ (QX11Info::display ())
 	, AppWin_ (QX11Info::appRootWindow ())
+	, PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
 	{
-		qt_installX11EventFilter (&EventFilter);
 		XSelectInput (Display_,
 				AppWin_,
 				PropertyChangeMask | StructureNotifyMask | SubstructureNotifyMask);
@@ -97,7 +93,7 @@ namespace Util
 		if (ev->type == PropertyNotify)
 			HandlePropNotify (&ev->xproperty);
 
-		return false;
+		return PrevFilter_ ? PrevFilter_ (ev) : false;
 	}
 
 	namespace
@@ -354,6 +350,7 @@ namespace Util
 			GetAtom ("_NET_WM_WINDOW_TYPE_DESKTOP"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_DOCK"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_TOOLBAR"),
+			GetAtom ("_NET_WM_WINDOW_TYPE_UTILITY"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_MENU"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_SPLASH"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_POPUP_MENU")

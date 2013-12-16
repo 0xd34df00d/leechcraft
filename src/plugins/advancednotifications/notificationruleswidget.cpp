@@ -39,6 +39,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
+#include <util/xpc/stdanfields.h>
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
@@ -74,6 +75,8 @@ namespace AdvancedNotifications
 
 		Cat2Types_ [AN::CatPackageManager] << AN::TypePackageUpdated;
 
+		Cat2Types_ [AN::CatMediaPlayer] << AN::TypeMediaPlaybackStatus;
+
 		Cat2Types_ [AN::CatGeneric] << AN::TypeGeneric;
 
 		Ui_.setupUi (this);
@@ -102,15 +105,23 @@ namespace AdvancedNotifications
 				<< tr ("Rule description"));
 	}
 
+	QString NotificationRulesWidget::GetCurrentCat () const
+	{
+		const auto idx = Ui_.EventCat_->currentIndex ();
+		return Ui_.EventCat_->itemData (idx).toString ();
+	}
+
 	QStringList NotificationRulesWidget::GetSelectedTypes () const
 	{
 		QStringList types;
 		for (int i = 0; i < Ui_.EventTypes_->topLevelItemCount (); ++i)
 		{
-			QTreeWidgetItem *item = Ui_.EventTypes_->topLevelItem (i);
+			auto item = Ui_.EventTypes_->topLevelItem (i);
 			if (item->checkState (0) == Qt::Checked)
 				types << item->data (0, Qt::UserRole).toString ();
 		}
+		if (types.isEmpty ())
+			types = Cat2Types_ [GetCurrentCat ()];
 		return types;
 	}
 
@@ -159,29 +170,44 @@ namespace AdvancedNotifications
 		return rule;
 	}
 
+	namespace
+	{
+		QList<ANFieldData> GetPluginFields (const QByteArray& pluginId)
+		{
+			QList<ANFieldData> fields;
+			if (pluginId.isEmpty ())
+				return Util::GetStdANFields ({});
+			else
+			{
+				auto pObj = Core::Instance ().GetProxy ()->
+						GetPluginsManager ()->GetPluginByID (pluginId);
+				auto iae = qobject_cast<IANEmitter*> (pObj);
+				if (!iae)
+					qWarning () << Q_FUNC_INFO
+							<< pObj
+							<< "doesn't implement IANEmitter";
+				else
+					return iae->GetANFields ();
+			}
+
+			return {};
+		}
+	}
+
 	QList<QStandardItem*> NotificationRulesWidget::MatchToRow (const FieldMatch& match) const
 	{
-		QString fieldName = match.GetFieldName ();
+		auto fieldName = match.GetFieldName ();
 
-		QObject *pObj = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetPluginByID (match.GetPluginID ().toUtf8 ());
-		IANEmitter *iae = qobject_cast<IANEmitter*> (pObj);
-		if (!iae)
-			qWarning () << Q_FUNC_INFO
-					<< pObj
-					<< "doesn't implement IANEmitter";
+		const auto& fields = GetPluginFields (match.GetPluginID ().toUtf8 ());
+
+		const auto pos = std::find_if (fields.begin (), fields.end (),
+				[&fieldName] (decltype (fields.front ()) field) { return field.ID_ == fieldName; });
+		if (pos != fields.end ())
+			fieldName = pos->Name_;
 		else
-		{
-			const QList<ANFieldData>& fields = iae->GetANFields ();
-			auto pos = std::find_if (fields.begin (), fields.end (),
-					[&fieldName] (decltype (fields.front ()) field) { return field.ID_ == fieldName; });
-			if (pos != fields.end ())
-				fieldName = pos->Name_;
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "unable to find field"
-						<< fieldName;
-		}
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find field"
+					<< fieldName;
 
 		QList<QStandardItem*> items;
 		items << new QStandardItem (fieldName);
@@ -189,6 +215,67 @@ namespace AdvancedNotifications
 				match.GetMatcher ()->GetHRDescription () :
 				tr ("<empty matcher>"));
 		return items;
+	}
+
+	QMap<QObject*, QList<ANFieldData>> NotificationRulesWidget::GetRelevantANFieldsWPlugins () const
+	{
+		QMap<QObject*, QList<ANFieldData>> result;
+		result [nullptr] += Util::GetStdANFields (GetCurrentCat ());
+		for (const auto& type : GetSelectedTypes ())
+			result [nullptr] += Util::GetStdANFields (type);
+
+		const auto& emitters = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
+		for (auto emitterObj : emitters)
+		{
+			auto emitter = qobject_cast<IANEmitter*> (emitterObj);
+			for (const auto& field : emitter->GetANFields ())
+				if (!GetSelectedTypes ().toSet ().intersect (field.EventTypes_.toSet ()).isEmpty ())
+					result [emitterObj] << field;
+		}
+
+		return result;
+	}
+
+	QList<ANFieldData> NotificationRulesWidget::GetRelevantANFields () const
+	{
+		QList<ANFieldData> result;
+		for (const auto& sublist : GetRelevantANFieldsWPlugins ())
+			result += sublist;
+		return result;
+	}
+
+	QString NotificationRulesWidget::GetArgumentText ()
+	{
+		const auto& fields = GetRelevantANFields ();
+
+		if (fields.isEmpty ())
+			return QInputDialog::getText (this,
+					"LeechCraft",
+					tr ("Please enter the argument:"));
+
+		QStringList items;
+		for (const auto& field : fields)
+			items << tr ("Custom field %1 (%2)")
+					.arg (field.Name_)
+					.arg (field.Description_);
+
+		bool ok = false;
+		const auto& value = QInputDialog::getItem (this,
+				"LeechCraft",
+				tr ("Please enter the argument:"),
+				items,
+				0,
+				true,
+				&ok);
+
+		if (value.isEmpty () || !ok)
+			return {};
+
+		const auto idx = items.indexOf (value);
+		return idx >= 0 ?
+				('$' + fields.value (idx).ID_) :
+				value;
 	}
 
 	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index, const QModelIndex& prevIndex)
@@ -238,7 +325,7 @@ namespace AdvancedNotifications
 
 		ResetMatchesModel ();
 		Matches_ = rule.GetFieldMatches ();
-		Q_FOREACH (const FieldMatch& m, Matches_)
+		for (const auto& m : Matches_)
 			MatchesModel_->appendRow (MatchToRow (m));
 
 		const AudioParams& params = rule.GetAudioParams ();
@@ -264,7 +351,7 @@ namespace AdvancedNotifications
 		{
 			Ui_.CommandLineEdit_->setText (cmdParams.Cmd_);
 
-			Q_FOREACH (const QString& arg, cmdParams.Args_)
+			for (const auto& arg : cmdParams.Args_)
 				new QTreeWidgetItem (Ui_.CommandArgsTree_, QStringList (arg));
 		}
 
@@ -280,11 +367,12 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::on_UpdateRule__released ()
 	{
-		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		const auto& index = Ui_.RulesTree_->currentIndex ();
 		if (!index.isValid ())
 			return;
 
 		RM_->UpdateRule (index, GetRuleFromUI ());
+		Ui_.RulesTree_->setCurrentIndex (index);
 	}
 
 	void NotificationRulesWidget::on_MoveRuleUp__released ()
@@ -320,7 +408,7 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::on_AddMatch__released ()
 	{
-		MatchConfigDialog dia (GetSelectedTypes (), this);
+		MatchConfigDialog dia (GetRelevantANFieldsWPlugins (), this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -335,7 +423,7 @@ namespace AdvancedNotifications
 		if (!index.isValid ())
 			return;
 
-		MatchConfigDialog dia (GetSelectedTypes (), this);
+		MatchConfigDialog dia (GetRelevantANFieldsWPlugins (), this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -358,9 +446,9 @@ namespace AdvancedNotifications
 		MatchesModel_->removeRow (index.row ());
 	}
 
-	void NotificationRulesWidget::on_EventCat__currentIndexChanged (int idx)
+	void NotificationRulesWidget::on_EventCat__currentIndexChanged (int)
 	{
-		const QString& catId = Ui_.EventCat_->itemData (idx).toString ();
+		const auto& catId = GetCurrentCat ();
 		Ui_.EventTypes_->clear ();
 
 		for (const QString& type : Cat2Types_ [catId])
@@ -429,9 +517,7 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::on_AddArgument__released()
 	{
-		const QString& text = QInputDialog::getText (this,
-				"LeechCraft",
-				tr ("Please enter the argument:"));
+		const auto& text = GetArgumentText ();
 		if (text.isEmpty ())
 			return;
 
@@ -444,16 +530,11 @@ namespace AdvancedNotifications
 		if (!item)
 			return;
 
-		const QString& newText = QInputDialog::getText (this,
-				"LeechCraft",
-				tr ("Please enter new argument text:"),
-				QLineEdit::Normal,
-				item->text (0));
-		if (newText.isEmpty () ||
-				newText == item->text (0))
+		const auto& text = GetArgumentText ();
+		if (text.isEmpty ())
 			return;
 
-		item->setText (0, newText);
+		item->setText (0, text);
 	}
 
 	void NotificationRulesWidget::on_RemoveArgument__released()

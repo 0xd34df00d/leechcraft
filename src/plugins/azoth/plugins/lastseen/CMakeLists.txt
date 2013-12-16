@@ -11,23 +11,18 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (LASTSEEN_SRCS
 	lastseen.cpp
 	)
-set (LASTSEEN_HEADERS
-	lastseen.h
-	)
 set (LASTSEEN_RESOURCES
 	lastseenresources.qrc
 	)
 
 QT4_ADD_RESOURCES (LASTSEEN_RCCS ${LASTSEEN_RESOURCES})
+
 CreateTrs ("azoth_lastseen" "en;es;ru_RU;uk_UA" LASTSEEN_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (LASTSEEN_MOC_SRCS ${LASTSEEN_HEADERS})
-endif ()
+CreateTrsUpTarget ("azoth_lastseen" "en;ru_RU" "${LASTSEEN_SRCS}" "" "")
 
 add_library (leechcraft_azoth_lastseen SHARED
 	${LASTSEEN_COMPILED_TRANSLATIONS}
 	${LASTSEEN_SRCS}
-	${LASTSEEN_MOC_SRCS}
 	${LASTSEEN_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_lastseen
@@ -35,4 +30,3 @@ target_link_libraries (leechcraft_azoth_lastseen
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_lastseen DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${LASTSEEN_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

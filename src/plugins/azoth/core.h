@@ -129,6 +129,8 @@ namespace Azoth
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
 
+		QCache<QImage, QString> Avatar2TooltipSrcCache_;
+
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 
 		QMap<State, int> StateCounter_;
@@ -203,6 +205,7 @@ namespace Azoth
 		Util::ShortcutManager* GetShortcutManager () const;
 		CustomStatusesManager* GetCustomStatusesManager () const;
 		CustomChatStyleManager* GetCustomChatStyleManager () const;
+		UnreadQueueManager* GetUnreadQueueManager () const;
 
 		void AddPlugin (QObject*);
 		void RegisterHookable (QObject*);
@@ -318,7 +321,7 @@ namespace Azoth
 		void FrameFocused (QObject*, QWebFrame*);
 
 		// Theming stuff
-		QList<QColor> GenerateColors (const QString& coloringScheme) const;
+		QList<QColor> GenerateColors (const QString& coloringScheme, QColor background) const;
 
 		QString GetNickColor (const QString& nick, const QList<QColor>& colors) const;
 
@@ -331,6 +334,8 @@ namespace Azoth
 		 * the given amount, which may be negative.
 		 */
 		void IncreaseUnreadCount (ICLEntry *entry, int amount = 1);
+
+		int GetUnreadCount (ICLEntry *entry) const;
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.
@@ -375,7 +380,7 @@ namespace Azoth
 		/** Creates the tooltip text for the roster entry to be shown in
 		 * the tree.
 		 */
-		QString MakeTooltipString (ICLEntry *entry) const;
+		QString MakeTooltipString (ICLEntry *entry);
 
 		void RebuildTooltip (ICLEntry *entry);
 
@@ -483,7 +488,7 @@ namespace Azoth
 
 		/** Removes the old unneeded variants.
 		 */
-		void handleVariantsChanged (const QStringList& newVariants);
+		void handleVariantsChanged ();
 
 		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
 		 * variant.
@@ -562,10 +567,7 @@ namespace Azoth
 		 */
 		void showVCard ();
 
-		/** Handles the number of unread messages for the given contact
-		 * list entry identified by the entryID.
-		 */
-		void handleClearUnreadMsgCount (const QString& entryID);
+		void handleClearUnreadMsgCount (QObject*);
 
 		void handleGotSDSession (QObject*);
 

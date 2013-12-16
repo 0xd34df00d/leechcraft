@@ -34,11 +34,13 @@
 #include <QtDebug>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/iaudiopile.h>
+#include <interfaces/media/imodifiableradiostation.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "player.h"
 #include "previewhandler.h"
 #include "xmlsettingsmanager.h"
+#include "radiocustomstreams.h"
 
 namespace LeechCraft
 {
@@ -70,6 +72,8 @@ namespace LMP
 
 	void RadioManager::InitProviders ()
 	{
+		InitProvider (new RadioCustomStreams (this));
+
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		auto pileObjs = pm->GetAllCastableRoots<Media::IAudioPile*> ();
 		for (auto pileObj : pileObjs)
@@ -87,14 +91,7 @@ namespace LMP
 
 		auto providerObjs = pm->GetAllCastableRoots<Media::IRadioStationProvider*> ();
 		for (auto provObj : providerObjs)
-		{
-			auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
-			for (auto item : prov->GetRadioListItems ())
-			{
-				StationsModel_->appendRow (item);
-				Root2Prov_ [item] = prov;
-			}
-		}
+			InitProvider (provObj);
 	}
 
 	QAbstractItemModel* RadioManager::GetModel () const
@@ -129,6 +126,70 @@ namespace LMP
 		}
 
 		Root2Prov_ [root]->RefreshItems ({ item });
+	}
+
+	void RadioManager::AddUrl (const QModelIndex& index, const QUrl& url, const QString& name)
+	{
+		const auto item = StationsModel_->itemFromIndex (index);
+		const auto root = GetRootItem (item);
+		if (!Root2Prov_.contains (root))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown provider for index"
+					<< index;
+			return;
+		}
+
+		const auto radio = Root2Prov_ [root]->GetRadioStation (item, {});
+		if (!radio)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got a null radio station from provider";
+			return;
+		}
+
+		auto modifiable = qobject_cast<Media::IModifiableRadioStation*> (radio->GetQObject ());
+		if (!modifiable)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< radio->GetRadioName ()
+					<< "is not modifiable";
+			return;
+		}
+
+		modifiable->AddItem (url, name);
+	}
+
+	void RadioManager::RemoveUrl (const QModelIndex& index)
+	{
+		const auto item = StationsModel_->itemFromIndex (index);
+		const auto root = GetRootItem (item);
+		if (!Root2Prov_.contains (root))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown provider for index"
+					<< index;
+			return;
+		}
+
+		const auto radio = Root2Prov_ [root]->GetRadioStation (item, {});
+		if (!radio)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got a null radio station from provider";
+			return;
+		}
+
+		auto modifiable = qobject_cast<Media::IModifiableRadioStation*> (radio->GetQObject ());
+		if (!modifiable)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< radio->GetRadioName ()
+					<< "is not modifiable";
+			return;
+		}
+
+		modifiable->RemoveItem (index);
 	}
 
 	void RadioManager::Handle (const QModelIndex& index, Player *player)
@@ -204,6 +265,16 @@ namespace LMP
 			QTimer::singleShot (15000,
 					this,
 					SLOT (refreshAll ()));
+	}
+
+	void RadioManager::InitProvider (QObject *provObj)
+	{
+		auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
+		for (auto item : prov->GetRadioListItems ())
+		{
+			StationsModel_->appendRow (item);
+			Root2Prov_ [item] = prov;
+		}
 	}
 
 	void RadioManager::HandlePile (QStandardItem*, QObject *pileObj)

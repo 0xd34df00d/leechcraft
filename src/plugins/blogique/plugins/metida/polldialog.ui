@@ -21,7 +21,7 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="OptionsStack_">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QGridLayout" name="gridLayout_2">
@@ -106,7 +106,7 @@
            <item>
             <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>MaxLength:</string>
+              <string>Maximum length:</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -212,7 +212,7 @@
            <item>
             <widget class="QSpinBox" name="ScaleFrom_">
              <property name="toolTip">
-              <string>Limit of 20 selections (to-from)/by &lt; 20</string>
+              <string/>
              </property>
              <property name="readOnly">
               <bool>false</bool>
@@ -228,7 +228,7 @@
            <item>
             <widget class="QSpinBox" name="ScaleTo_">
              <property name="toolTip">
-              <string>Limit of 20 selections (to-from)/by &lt; 20</string>
+              <string/>
              </property>
              <property name="readOnly">
               <bool>false</bool>
@@ -244,7 +244,7 @@
            <item>
             <widget class="QSpinBox" name="ScaleBy_">
              <property name="toolTip">
-              <string>Limit of 20 selections (to-from)/by &lt; 20</string>
+              <string/>
              </property>
              <property name="readOnly">
               <bool>false</bool>
@@ -346,7 +346,7 @@
        <item>
         <widget class="QLineEdit" name="PollName_">
          <property name="placeholderText">
-          <string>Poll nam (optional)</string>
+          <string>Poll name (optional)</string>
          </property>
         </widget>
        </item>
@@ -459,7 +459,7 @@
        <item>
         <widget class="QLineEdit" name="PollQuestion_">
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Allowed tags: &amp;lt;a&amp;gt;, &amp;lt;b&amp;gt;, &amp;lt;i&amp;gt;, &amp;lt;em&amp;gt;, &amp;lt;strong&amp;gt;, &amp;lt;u&amp;gt;, &amp;lt;img&amp;gt;, &amp;lt;lj user&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string/>
          </property>
         </widget>
        </item>

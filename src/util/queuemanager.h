@@ -37,6 +37,8 @@
 #include <QPair>
 #include "utilconfig.h"
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Util
@@ -57,7 +59,10 @@ namespace Util
 		Q_OBJECT
 
 		const int Timeout_;
+		QTimer * const ReqTimer_;
 		QDateTime LastRequest_;
+
+		bool Paused_;
 
 		typedef boost::optional<QPointer<QObject>> OptionalTracker_t;
 		QList<QPair<std::function<void ()>, boost::optional<QPointer<QObject>>>> Queue_;
@@ -97,6 +102,30 @@ namespace Util
 		 * current operation.
 		 */
 		void Clear ();
+
+		/** @brief Pauses the queue rotation.
+		 *
+		 * If the queue is already paused, this function does nothing.
+		 *
+		 * @sa IsPaused(), Resume()
+		 */
+		void Pause ();
+
+		/** @brief Checks if the queue is paused.
+		 *
+		 * @return Whether the queue is paused.
+		 *
+		 * @sa Pause(), Resume()
+		 */
+		bool IsPaused () const;
+
+		/** @brief Continues the queue rotation.
+		 *
+		 * If the queue is already running, this function does nothing.
+		 *
+		 * @sa IsPaused(), Pause()
+		 */
+		void Resume ();
 	private slots:
 		void exec ();
 	};

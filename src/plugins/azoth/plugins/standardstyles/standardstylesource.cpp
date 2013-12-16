@@ -144,7 +144,7 @@ namespace StandardStyles
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
 		QObject *azothSettings = Proxy_->GetSettingsManager ();
-		const auto& colors = CreateColors (frame->metaData ().value ("coloring"));
+		const auto& colors = CreateColors (frame->metaData ().value ("coloring"), frame);
 
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 		const bool isActiveChat = info.IsActiveChat_;
@@ -305,22 +305,26 @@ namespace StandardStyles
 		}
 
 		if (!statusIconName.isEmpty ())
-			string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2'/>")
+			string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2' class='deliveryStatusIcon' />")
 					.arg (GetStatusImage (statusIconName))
 					.arg (msgId));
 		string.append (body);
 
 		QWebElement elem = frame->findFirstElement ("body");
 
-		if (!isActiveChat &&
-				!HasBeenAppended_ [frame])
+		if (msg->GetMessageType () == IMessage::MTChatMessage ||
+			msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
-			QWebElement hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
-			if (hr.isNull ())
+			const auto isRead = Proxy_->IsMessageRead (msgObj);
+			if (!isActiveChat &&
+					!isRead && IsLastMsgRead_.value (frame, false))
+			{
+				auto hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
+				if (!hr.isNull ())
+					hr.removeFromDocument ();
 				elem.appendInside ("<hr class=\"lastSeparator\" />");
-			else
-				elem.appendInside (hr.takeFromDocument ());
-			HasBeenAppended_ [frame] = true;
+			}
+			IsLastMsgRead_ [frame] = isRead;
 		}
 
 		elem.appendInside (QString ("<div class='%1'>%2</div>")
@@ -331,7 +335,7 @@ namespace StandardStyles
 
 	void StandardStyleSource::FrameFocused (QWebFrame *frame)
 	{
-		HasBeenAppended_ [frame] = false;
+		IsLastMsgRead_ [frame] = true;
 	}
 
 	QStringList StandardStyleSource::GetVariantsForPack (const QString&)
@@ -339,12 +343,27 @@ namespace StandardStyles
 		return QStringList ();
 	}
 
-	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme)
+	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme, QWebFrame *frame)
 	{
-		if (!Coloring2Colors_.contains (scheme))
-			Coloring2Colors_ [scheme] = Proxy_->GenerateColors (scheme);
+		QColor bgColor;
 
-		return Coloring2Colors_ [scheme];
+		const auto js = "window.getComputedStyle(document.body) ['background-color']";
+		auto res = frame->evaluateJavaScript (js).toString ();
+		res.remove (" ");
+		res.remove ("rgb(");
+		res.remove (")");
+		const auto& vals = res.split (',', QString::SkipEmptyParts);
+
+		if (vals.size () == 3)
+			bgColor.setRgb (vals.value (0).toInt (),
+					vals.value (1).toInt (), vals.value (2).toInt ());
+
+		const auto& mangledScheme = scheme + bgColor.name ();
+
+		if (!Coloring2Colors_.contains (mangledScheme))
+			Coloring2Colors_ [mangledScheme] = Proxy_->GenerateColors (scheme, bgColor);
+
+		return Coloring2Colors_ [mangledScheme];
 	}
 
 	QString StandardStyleSource::GetMessageID (QObject *msgObj)
@@ -385,7 +404,7 @@ namespace StandardStyles
 
 	void StandardStyleSource::handleFrameDestroyed ()
 	{
-		HasBeenAppended_.remove (static_cast<QWebFrame*> (sender ()));
+		IsLastMsgRead_.remove (static_cast<QWebFrame*> (sender ()));
 		const QObject *snd = sender ();
 		for (QHash<QObject*, QWebFrame*>::iterator i = Msg2Frame_.begin ();
 				i != Msg2Frame_.end (); )

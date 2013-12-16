@@ -32,6 +32,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QStandardItem>
+#include <QIcon>
 #include <QTimer>
 #include <QtDebug>
 #include <qjson/parser.h>
@@ -67,6 +68,7 @@ namespace TouchStreams
 	, Queue_ (queue)
 	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
 	{
+		AlbumsRootItem_->setIcon (QIcon (":/touchstreams/resources/images/vk.svg"));
 		AlbumsRootItem_->setEditable (false);
 
 		QTimer::singleShot (1000,
@@ -74,6 +76,22 @@ namespace TouchStreams
 				SLOT (refetchAlbums ()));
 
 		AuthMgr_->ManageQueue (&RequestQueue_);
+	}
+
+	AlbumsManager::AlbumsManager (qlonglong id, const QVariant& albums, const QVariant& tracks,
+			Util::SvcAuth::VkAuthManager *authMgr, Util::QueueManager *queue, ICoreProxy_ptr proxy, QObject *parent)
+	: QObject (parent)
+	, Proxy_ (proxy)
+	, UserID_ (id)
+	, AuthMgr_ (authMgr)
+	, Queue_ (queue)
+	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
+	{
+		AlbumsRootItem_->setEditable (false);
+		AuthMgr_->ManageQueue (&RequestQueue_);
+
+		HandleAlbums (albums);
+		HandleTracks (tracks);
 	}
 
 	AlbumsManager::~AlbumsManager ()
@@ -115,39 +133,14 @@ namespace TouchStreams
 		return nullptr;
 	}
 
-	void AlbumsManager::refetchAlbums ()
+	bool AlbumsManager::HandleAlbums (const QVariant& albumsListVar)
 	{
-		RequestQueue_.append ({
-				[this] (const QString& key) -> void
-				{
-					QUrl url ("https://api.vk.com/method/audio.getAlbums");
-					url.addQueryItem ("access_token", key);
-					url.addQueryItem ("count", "100");
-					if (UserID_ >= 0)
-						url.addQueryItem ("uid", QString::number (UserID_));
+		auto albumsList = albumsListVar.toList ();
 
-					auto nam = Proxy_->GetNetworkAccessManager ();
-					connect (nam->get (QNetworkRequest (url)),
-							SIGNAL (finished ()),
-							this,
-							SLOT (handleAlbumsFetched ()));
-				},
-				Util::QueuePriority::Normal
-			});
-		AuthMgr_->GetAuthKey ();
-	}
-
-	void AlbumsManager::handleAlbumsFetched ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& data = QJson::Parser ().parse (reply).toMap ();
-		auto albumsList = data ["response"].toList ();
 		if (albumsList.isEmpty ())
 		{
 			emit finished (this);
-			return;
+			return false;
 		}
 
 		albumsList.removeFirst ();
@@ -183,6 +176,91 @@ namespace TouchStreams
 			AlbumsRootItem_->appendRow (item);
 		}
 
+		return true;
+	}
+
+	bool AlbumsManager::HandleTracks (const QVariant& tracksListVar)
+	{
+		auto tracksList = tracksListVar.toList ();
+
+		QHash<qlonglong, QList<Media::AudioInfo>> album2urls;
+		for (const auto& trackVar : tracksList)
+		{
+			const auto& map = trackVar.toMap ();
+
+			const auto albumId = map.value ("album", "-1").toLongLong ();
+			const auto& url = QUrl::fromEncoded (map ["url"].toString ().toUtf8 ());
+			if (!url.isValid ())
+				continue;
+
+			Media::AudioInfo info {};
+			info.Title_ = map ["title"].toString ();
+			info.Artist_ = map ["artist"].toString ();
+			info.Length_ = map ["duration"].toInt ();
+			info.Other_ ["URL"] = url;
+
+			album2urls [albumId] << info;
+
+			auto albumItem = Albums_ [albumId].Item_;
+			if (!albumItem)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no album item for album"
+						<< albumId;
+				continue;
+			}
+
+			auto trackItem = new QStandardItem (QString::fromUtf8 ("%1 — %2")
+						.arg (info.Artist_)
+						.arg (info.Title_));
+			trackItem->setEditable (false);
+			trackItem->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
+			trackItem->setData (QVariant::fromValue<QList<Media::AudioInfo>> ({ info }),
+					Media::RadioItemRole::TracksInfos);
+			albumItem->appendRow (trackItem);
+
+			++TracksCount_;
+		}
+
+		for (auto i = album2urls.begin (); i != album2urls.end (); ++i)
+		{
+			auto item = Albums_ [i.key ()].Item_;
+			item->setData (QVariant::fromValue (i.value ()), Media::RadioItemRole::TracksInfos);
+		}
+
+		return true;
+	}
+
+	void AlbumsManager::refetchAlbums ()
+	{
+		RequestQueue_.append ({
+				[this] (const QString& key) -> void
+				{
+					QUrl url ("https://api.vk.com/method/audio.getAlbums");
+					url.addQueryItem ("access_token", key);
+					url.addQueryItem ("count", "100");
+					if (UserID_ >= 0)
+						url.addQueryItem ("uid", QString::number (UserID_));
+
+					auto nam = Proxy_->GetNetworkAccessManager ();
+					connect (nam->get (QNetworkRequest (url)),
+							SIGNAL (finished ()),
+							this,
+							SLOT (handleAlbumsFetched ()));
+				},
+				Util::QueuePriority::Normal
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void AlbumsManager::handleAlbumsFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = QJson::Parser ().parse (reply).toMap ();
+		HandleAlbums (data ["response"]);
+
 		RequestQueue_.prepend ({
 				[this] (const QString& key) -> void
 				{
@@ -210,44 +288,7 @@ namespace TouchStreams
 
 		const auto& data = QJson::Parser ().parse (reply).toMap ();
 		auto tracksList = data ["response"].toList ();
-
-		QHash<qlonglong, QList<Media::AudioInfo>> album2urls;
-		for (const auto& trackVar : tracksList)
-		{
-			const auto& map = trackVar.toMap ();
-
-			const auto albumId = map.value ("album", "-1").toLongLong ();
-			const auto& url = QUrl::fromEncoded (map ["url"].toString ().toUtf8 ());
-			if (!url.isValid ())
-				continue;
-
-			Media::AudioInfo info {};
-			info.Title_ = map ["title"].toString ();
-			info.Artist_ = map ["artist"].toString ();
-			info.Length_ = map ["duration"].toInt ();
-			info.Other_ ["URL"] = url;
-
-			album2urls [albumId] << info;
-
-			auto albumItem = Albums_ [albumId].Item_;
-
-			auto trackItem = new QStandardItem (QString::fromUtf8 ("%1 — %2")
-						.arg (info.Artist_)
-						.arg (info.Title_));
-			trackItem->setEditable (false);
-			trackItem->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
-			trackItem->setData (QVariant::fromValue<QList<Media::AudioInfo>> ({ info }),
-					Media::RadioItemRole::TracksInfos);
-			albumItem->appendRow (trackItem);
-
-			++TracksCount_;
-		}
-
-		for (auto i = album2urls.begin (); i != album2urls.end (); ++i)
-		{
-			auto item = Albums_ [i.key ()].Item_;
-			item->setData (QVariant::fromValue (i.value ()), Media::RadioItemRole::TracksInfos);
-		}
+		HandleTracks (data ["response"]);
 
 		emit finished (this);
 	}

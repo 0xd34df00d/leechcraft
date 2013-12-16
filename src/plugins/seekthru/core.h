@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_CORE_H
-#define PLUGINS_SEEKTHRU_CORE_H
+#pragma once
+
 #include <QAbstractItemModel>
 #include <QMap>
 #include <interfaces/structures.h>
@@ -42,94 +42,88 @@ class IWebBrowser;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SeekThru
+{
+	class Core : public QAbstractItemModel
 	{
-		namespace SeekThru
+		Q_OBJECT
+
+		QMap<QString, QObject*> Providers_;
+		QObjectList Downloaders_;
+		QMap<int, QString> Jobs_;
+		QList<Description> Descriptions_;
+		QStringList Headers_;
+		ICoreProxy_ptr Proxy_;
+
+		static const QString OS_;
+
+		Core ();
+	public:
+		enum Roles
 		{
-			class Core : public QAbstractItemModel
-			{
-				Q_OBJECT
-
-				QMap<QString, QObject*> Providers_;
-				QObjectList Downloaders_;
-				QMap<int, QString> Jobs_;
-				QList<Description> Descriptions_;
-				QStringList Headers_;
-				ICoreProxy_ptr Proxy_;
-
-				static const QString OS_;
-
-				Core ();
-			public:
-				enum Roles
-				{
-					RoleDescription = 200,
-					RoleContact,
-					RoleTags,
-					RoleLongName,
-					RoleDeveloper,
-					RoleAttribution,
-					RoleRight,
-					RoleAdult,
-					RoleLanguages
-				};
-
-				static Core& Instance ();
-
-				void DoDelayedInit ();
-
-				void SetProxy (ICoreProxy_ptr);
-				ICoreProxy_ptr GetProxy () const;
-
-				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-				virtual Qt::ItemFlags flags (const QModelIndex&) const;
-				virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-				virtual QModelIndex parent (const QModelIndex&) const;
-				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-
-				void SetProvider (QObject*, const QString&);
-				bool CouldHandle (const Entity&) const;
-				void Handle (const Entity&);
-
-				/** Fetches the searcher from the url.
-				 *
-				 * @param[in] url The url with the search description.
-				 */
-				void Add (const QUrl& url);
-				void Remove (const QModelIndex&);
-				void SetTags (const QModelIndex&, const QStringList&);
-				QStringList GetCategories () const;
-				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
-				IWebBrowser* GetWebBrowser () const;
-				void HandleEntity (const QString&, const QString& = QString ());
-			private:
-				void SetTags (int, const QStringList&);
-				QStringList ComputeUniqueCategories () const;
-				QList<Description> FindMatchingHRTag (const QString&) const;
-				Description ParseData (const QString&, const QString&);
-				void HandleProvider (QObject*);
-				void ReadSettings ();
-				void WriteSettings ();
-			public:
-				bool HandleDADescrAdded (QDataStream&);
-				bool HandleDADescrRemoved (QDataStream&);
-				bool HandleDATagsChanged (QDataStream&);
-			private slots:
-				void handleJobFinished (int);
-				void handleJobError (int);
-			signals:
-				void error (const QString&);
-				void warning (const QString&);
-				void delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**);
-				void gotEntity (const LeechCraft::Entity&);
-				void categoriesChanged (const QStringList&, const QStringList&);
-			};
+			RoleDescription = Qt::UserRole + 1,
+			RoleContact,
+			RoleTags,
+			RoleLongName,
+			RoleDeveloper,
+			RoleAttribution,
+			RoleRight,
+			RoleAdult,
+			RoleLanguages
 		};
+
+		static Core& Instance ();
+
+		void DoDelayedInit ();
+
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
+
+		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		virtual Qt::ItemFlags flags (const QModelIndex&) const;
+		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		virtual QModelIndex parent (const QModelIndex&) const;
+		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+
+		void SetProvider (QObject*, const QString&);
+		bool CouldHandle (const Entity&) const;
+		void Handle (const Entity&);
+
+		/** Fetches the searcher from the url.
+			*
+			* @param[in] url The url with the search description.
+			*/
+		void Add (const QUrl& url);
+		void Remove (const QModelIndex&);
+		void SetTags (const QModelIndex&, const QStringList&);
+		QStringList GetCategories () const;
+		IFindProxy_ptr GetProxy (const LeechCraft::Request&);
+		IWebBrowser* GetWebBrowser () const;
+		void HandleEntity (const QString&, const QString& = QString ());
+	private:
+		void SetTags (int, const QStringList&);
+		QStringList ComputeUniqueCategories () const;
+		QList<Description> FindMatchingHRTag (const QString&) const;
+		Description ParseData (const QString&, const QString&);
+		void HandleProvider (QObject*);
+		void ReadSettings ();
+		void WriteSettings ();
+	public:
+		bool HandleDADescrAdded (QDataStream&);
+		bool HandleDADescrRemoved (QDataStream&);
+		bool HandleDATagsChanged (QDataStream&);
+	private slots:
+		void handleJobFinished (int);
+		void handleJobError (int);
+	signals:
+		void error (const QString&);
+		void warning (const QString&);
+		void delegateEntity (const LeechCraft::Entity&,
+				int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void categoriesChanged (const QStringList&, const QStringList&);
 	};
-};
-
-#endif
-
+}
+}

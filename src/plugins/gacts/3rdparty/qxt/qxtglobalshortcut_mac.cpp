@@ -54,7 +54,7 @@ bool QxtGlobalShortcutPrivate::eventFilter(void* message)
         Identifier id = keyIDs.key(keyID.id);
         activateShortcut(id.second, id.first);
     }
-    return false;
+    return prevEventFilter ? prevEventFilter(message) : false;
 }
 
 quint32 QxtGlobalShortcutPrivate::nativeModifiers(Qt::KeyboardModifiers modifiers)

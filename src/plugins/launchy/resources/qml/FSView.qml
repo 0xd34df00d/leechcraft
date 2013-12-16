@@ -27,6 +27,8 @@ Rectangle {
 
     Keys.onLeftPressed: itemsView.moveCurrentIndexLeft()
     Keys.onRightPressed: itemsView.moveCurrentIndexRight()
+    Keys.onBacktabPressed: itemsView.moveCurrentIndexLeft()
+    Keys.onTabPressed: itemsView.moveCurrentIndexRight()
     Keys.onUpPressed: itemsView.moveCurrentIndexUp()
     Keys.onDownPressed: itemsView.moveCurrentIndexDown()
     Keys.onEnterPressed: trigger()
@@ -56,6 +58,12 @@ Rectangle {
 
             model: catsModel
 
+            onCurrentIndexChanged: {
+                    rootRect.categorySelected(currentIndex);
+                    itemsView.currentIndex = -1;
+                    appsFilterInput.text = "";
+                }
+
             delegate: Rectangle {
                 id: catsViewDelegate
 
@@ -68,7 +76,7 @@ Rectangle {
                         position: 0
                         color: categoryMouseArea.containsMouse ?
                                 colorProxy.color_ToolButton_HoveredTopColor :
-                                    (catsView.currentIndex == index ?
+                                    (catsView.currentIndex == index && !appsFilterInput.text.length ?
                                         colorProxy.color_ToolButton_SelectedTopColor :
                                         colorProxy.color_ToolButton_TopColor)
                         Behavior on color { PropertyAnimation {} }
@@ -77,7 +85,7 @@ Rectangle {
                         position: 1
                         color: categoryMouseArea.containsMouse ?
                                 colorProxy.color_ToolButton_HoveredBottomColor :
-                                    (catsView.currentIndex == index ?
+                                    (catsView.currentIndex == index && !appsFilterInput.text.length ?
                                         colorProxy.color_ToolButton_SelectedBottomColor :
                                         colorProxy.color_ToolButton_BottomColor)
                         Behavior on color { PropertyAnimation {} }
@@ -113,12 +121,7 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
 
-                    onClicked: {
-                        appsFilterInput.text = "";
-                        rootRect.categorySelected(index);
-                        catsView.currentIndex = index
-                        itemsView.currentIndex = -1
-                    }
+                    onClicked: catsView.currentIndex = index
                 }
             }
 

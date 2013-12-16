@@ -64,8 +64,8 @@ namespace Azoth
 	public:
 		ChatTabsManager (QObject* = 0);
 
-		void OpenChat (const QModelIndex&);
-		QWidget* OpenChat (const ICLEntry*,
+		QWidget* OpenChat (const QModelIndex&);
+		QWidget* OpenChat (const ICLEntry*, bool fromUser,
 				const DynPropertiesList_t& = DynPropertiesList_t ());
 		void CloseChat (const ICLEntry*);
 		bool IsActiveChat (const ICLEntry*) const;
@@ -103,7 +103,6 @@ namespace Azoth
 		void removeTab (QWidget*);
 		void raiseTab (QWidget*);
 
-		void clearUnreadMsgCount (const QString&);
 		void entryMadeCurrent (QObject*);
 		void entryLostCurrent (QObject*);
 	};

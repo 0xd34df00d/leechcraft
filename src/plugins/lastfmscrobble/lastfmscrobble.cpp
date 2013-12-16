@@ -124,7 +124,7 @@ namespace Lastfmscrobble
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Submits information about tracks you've listened to Last.FM.");
+		return tr ("Client for the Last.FM social music service.");
 	}
 
 	void Plugin::Release ()

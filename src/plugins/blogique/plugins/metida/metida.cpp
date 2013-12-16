@@ -85,7 +85,7 @@ namespace Metida
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("LiveJournal blogging platform support");
+		return tr ("LiveJournal blogging platform support for Blogique.");
 	}
 
 	QIcon Plugin::GetIcon () const

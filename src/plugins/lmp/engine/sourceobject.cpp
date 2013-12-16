@@ -29,9 +29,11 @@
 
 #include "sourceobject.h"
 #include <memory>
+#include <atomic>
 #include <QtDebug>
 #include <QTimer>
 #include <QTextCodec>
+#include <QThread>
 #include <gst/gst.h>
 
 #ifdef WITH_LIBGUESS
@@ -46,52 +48,14 @@ extern "C"
 #include "../core.h"
 #include "../xmlsettingsmanager.h"
 
+Q_DECLARE_METATYPE (GstMessage*);
+
 namespace LeechCraft
 {
 namespace LMP
 {
 	namespace
 	{
-		gboolean CbBus (GstBus *bus, GstMessage *message, gpointer data)
-		{
-			auto src = static_cast<SourceObject*> (data);
-
-			switch (GST_MESSAGE_TYPE (message))
-			{
-			case GST_MESSAGE_ERROR:
-				src->HandleErrorMsg (message);
-				break;
-			case GST_MESSAGE_TAG:
-				src->HandleTagMsg (message);
-				break;
-			case GST_MESSAGE_NEW_CLOCK:
-			case GST_MESSAGE_ASYNC_DONE:
-				break;
-			case GST_MESSAGE_BUFFERING:
-				src->HandleBufferingMsg (message);
-				break;
-			case GST_MESSAGE_STATE_CHANGED:
-				src->HandleStateChangeMsg (message);
-				break;
-			case GST_MESSAGE_DURATION:
-				QTimer::singleShot (0,
-						src,
-						SLOT (updateTotalTime ()));
-				break;
-			case GST_MESSAGE_ELEMENT:
-				src->HandleElementMsg (message);
-				break;
-			case GST_MESSAGE_EOS:
-				src->HandleEosMsg (message);
-				break;
-			default:
-				qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
-				break;
-			}
-
-			return true;
-		}
-
 		gboolean CbAboutToFinish (GstElement*, gpointer data)
 		{
 			static_cast<SourceObject*> (data)->HandleAboutToFinish ();
@@ -102,6 +66,54 @@ namespace LMP
 		{
 			static_cast<SourceObject*> (data)->SetupSource ();
 			return true;
+		}
+	}
+
+	class MsgPopThread : public QThread
+	{
+		GstBus * const Bus_;
+		SourceObject * const SourceObj_;
+		std::atomic_bool ShouldStop_;
+	public:
+		MsgPopThread (GstBus*, SourceObject*);
+		~MsgPopThread ();
+
+		void Stop ();
+	protected:
+		void run ();
+	};
+
+	MsgPopThread::MsgPopThread (GstBus *bus, SourceObject *obj)
+	: QThread (obj)
+	, Bus_ (bus)
+	, SourceObj_ (obj)
+	, ShouldStop_ (false)
+	{
+	}
+
+	MsgPopThread::~MsgPopThread ()
+	{
+		gst_object_unref (Bus_);
+	}
+
+	void MsgPopThread::Stop ()
+	{
+		ShouldStop_.store (true, std::memory_order_relaxed);
+	}
+
+	void MsgPopThread::run ()
+	{
+		while (!ShouldStop_.load (std::memory_order_relaxed))
+		{
+			const auto msg = gst_bus_timed_pop (Bus_, 2 * GST_SECOND);
+			if (!msg)
+				continue;
+
+			QMetaObject::invokeMethod (SourceObj_,
+					"handleMessage",
+					Qt::BlockingQueuedConnection,
+					Q_ARG (GstMessage*, msg));
+			gst_message_unref (msg);
 		}
 	}
 
@@ -116,14 +128,13 @@ namespace LMP
 	, IsSeeking_ (false)
 	, LastCurrentTime_ (-1)
 	, PrevSoupRank_ (0)
+	, PopThread_ (new MsgPopThread (gst_pipeline_get_bus (GST_PIPELINE (Dec_)), this))
 	, OldState_ (SourceState::Stopped)
 	{
-		auto bus = gst_pipeline_get_bus (GST_PIPELINE (Dec_));
-		gst_bus_add_watch (bus, CbBus, this);
-		gst_object_unref (bus);
-
 		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
 		g_signal_connect (Dec_, "notify::source", G_CALLBACK (CbSourceChanged), this);
+
+		qRegisterMetaType<GstMessage*> ("GstMessage*");
 
 		qRegisterMetaType<AudioSource> ("AudioSource");
 
@@ -133,10 +144,16 @@ namespace LMP
 				this,
 				SLOT (handleTick ()));
 		timer->start (1000);
+
+		PopThread_->start (QThread::LowestPriority);
 	}
 
 	SourceObject::~SourceObject ()
 	{
+		PopThread_->Stop ();
+		PopThread_->wait (2500);
+		if (PopThread_->isRunning ())
+			PopThread_->terminate ();
 	}
 
 	bool SourceObject::IsSeekable () const
@@ -248,11 +265,6 @@ namespace LMP
 				GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
 	}
 
-	void SourceObject::SetTransitionTime (int time)
-	{
-// 		Obj_->setTransitionTime (time);
-	}
-
 	AudioSource SourceObject::GetCurrentSource () const
 	{
 		return CurrentSource_;
@@ -281,6 +293,20 @@ namespace LMP
 
 			return oldRank;
 		}
+
+		uint GetRank (const char *name)
+		{
+			const auto factory = gst_element_factory_find (name);
+			if (!factory)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot find factory"
+						<< name;
+				return 0;
+			}
+
+			return gst_plugin_feature_get_rank (GST_PLUGIN_FEATURE (factory));
+		}
 	}
 
 	void SourceObject::SetCurrentSource (const AudioSource& source)
@@ -292,7 +318,7 @@ namespace LMP
 		Metadata_.clear ();
 
 		if (source.ToUrl ().scheme ().startsWith ("http"))
-			PrevSoupRank_ = SetSoupRank (G_MAXINT);
+			PrevSoupRank_ = SetSoupRank (G_MAXINT / 2);
 
 		auto path = source.ToUrl ().toEncoded ();
 		g_object_set (G_OBJECT (Dec_), "uri", path.constData (), nullptr);
@@ -635,7 +661,17 @@ namespace LMP
 
 	void SourceObject::HandleEosMsg (GstMessage*)
 	{
+		qDebug () << Q_FUNC_INFO;
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
+	}
+
+	void SourceObject::HandleStreamStatusMsg (GstMessage *msg)
+	{
+		GstStreamStatusType type;
+		GstElement *owner = nullptr;
+		gst_message_parse_stream_status (msg, &type, &owner);
+
+		qDebug () << Q_FUNC_INFO << type;
 	}
 
 	void SourceObject::SetupSource ()
@@ -646,18 +682,26 @@ namespace LMP
 		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
 			return;
 
-		if (PrevSoupRank_)
-		{
-			SetSoupRank (PrevSoupRank_);
-			PrevSoupRank_ = 0;
-		}
+		std::shared_ptr<void> soupRankGuard (nullptr,
+				[&] (void*) -> void
+				{
+					if (PrevSoupRank_)
+					{
+						SetSoupRank (PrevSoupRank_);
+						PrevSoupRank_ = 0;
+					}
+				});
 
 		if (!g_object_class_find_property (G_OBJECT_GET_CLASS (src), "user-agent"))
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "user-agent property not found for"
 					<< CurrentSource_.ToUrl ()
-					<< G_OBJECT_TYPE_NAME (src);
+					<< (QString ("|") + G_OBJECT_TYPE_NAME (src) + "|")
+					<< "soup rank:"
+					<< GetRank ("souphttpsrc")
+					<< "webkit rank:"
+					<< GetRank ("WebKitWebSrc");
 			return;
 		}
 
@@ -680,6 +724,45 @@ namespace LMP
 	{
 		auto bin = path->GetAudioBin ();
 		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
+	}
+
+	void SourceObject::handleMessage (GstMessage *message)
+	{
+		switch (GST_MESSAGE_TYPE (message))
+		{
+		case GST_MESSAGE_ERROR:
+			HandleErrorMsg (message);
+			break;
+		case GST_MESSAGE_TAG:
+			HandleTagMsg (message);
+			break;
+		case GST_MESSAGE_NEW_CLOCK:
+		case GST_MESSAGE_ASYNC_DONE:
+			break;
+		case GST_MESSAGE_BUFFERING:
+			HandleBufferingMsg (message);
+			break;
+		case GST_MESSAGE_STATE_CHANGED:
+			HandleStateChangeMsg (message);
+			break;
+		case GST_MESSAGE_DURATION:
+			QTimer::singleShot (0,
+					this,
+					SLOT (updateTotalTime ()));
+			break;
+		case GST_MESSAGE_ELEMENT:
+			HandleElementMsg (message);
+			break;
+		case GST_MESSAGE_EOS:
+			HandleEosMsg (message);
+			break;
+		case GST_MESSAGE_STREAM_STATUS:
+			HandleStreamStatusMsg (message);
+			break;
+		default:
+			qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
+			break;
+		}
 	}
 
 	void SourceObject::updateTotalTime ()

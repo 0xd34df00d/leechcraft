@@ -93,15 +93,6 @@
     <string>About Qt...</string>
    </property>
   </action>
-  <action name="ActionMenu_">
-   <property name="icon">
-    <iconset resource="mainresources.qrc">
-     <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Menu</string>
-   </property>
-  </action>
   <action name="ActionShowStatusBar_">
    <property name="checkable">
     <bool>true</bool>

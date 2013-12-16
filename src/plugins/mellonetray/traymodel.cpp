@@ -36,10 +36,6 @@
 #include <X11/extensions/Xdamage.h>
 #include <util/x11/xwrapper.h>
 
-typedef bool (*QX11FilterFunction) (XEvent *event);
-
-extern void qt_installX11EventFilter (QX11FilterFunction func);
-
 namespace LeechCraft
 {
 namespace Mellonetray
@@ -76,16 +72,15 @@ namespace Mellonetray
 			return result;
 		}
 
-		bool EventFilter (XEvent *event)
+		bool EvFilter (void *event)
 		{
-			TrayModel::Instance ().Filter (event);
-			return false;
+			return TrayModel::Instance ().Filter (static_cast<XEvent*> (event));
 		}
 	}
 
 	TrayModel::TrayModel ()
+	: PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
 	{
-		qt_installX11EventFilter (&EventFilter);
 
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::ItemID] = "itemID";
@@ -251,10 +246,12 @@ namespace Mellonetray
 		emit updateRequired (wid);
 	}
 
-	void TrayModel::Filter (XEvent *ev)
+	bool TrayModel::Filter (XEvent *ev)
 	{
+		auto invokePrev = [this, ev] { return PrevFilter_ ? PrevFilter_ (ev) : false; };
+
 		if (!IsValid_)
-			return;
+			return invokePrev ();
 
 		switch (ev->type)
 		{
@@ -272,6 +269,8 @@ namespace Mellonetray
 			}
 			break;
 		}
+
+		return invokePrev ();
 	}
 
 	auto TrayModel::FindItem (ulong wid) -> QList<TrayItem>::iterator

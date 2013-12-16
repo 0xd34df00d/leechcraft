@@ -94,7 +94,6 @@ namespace Azoth
 
 		BottomBar_->addWidget (MenuButton_);
 		BottomBar_->addWidget (FastStatusButton_);
-		FastStatusButton_->setPopupMode (QToolButton::MenuButtonPopup);
 
 		Ui_.setupUi (this);
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
@@ -350,7 +349,8 @@ namespace Azoth
 			return;
 
 		if (auto entry = w.GetActivatedParticipant ())
-			Core::Instance ().GetChatTabsManager ()->OpenChat (qobject_cast<ICLEntry*> (entry));
+			Core::Instance ().GetChatTabsManager ()->
+					OpenChat (qobject_cast<ICLEntry*> (entry), true);
 	}
 
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)

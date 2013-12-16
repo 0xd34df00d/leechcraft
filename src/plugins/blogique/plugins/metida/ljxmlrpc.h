@@ -80,7 +80,7 @@ namespace Metida
 		void Validate (const QString& login, const QString& pass);
 
 		void AddNewFriend (const QString& username,
-				const QString& bgcolor, const QString& fgcolor, uint groupId);
+				const QString& bgcolor, const QString& fgcolor, uint groupMask);
 		void DeleteFriend (const QString& username);
 
 		void AddGroup (const QString& name, bool isPublic, int id);
@@ -92,6 +92,8 @@ namespace Metida
 		void Submit (const LJEvent& event);
 		void GetEventsWithFilter (const Filter& filter);
 		void GetLastEvents (int count);
+		void GetMultiplyEvents (const QList<int>& ids, RequestType rt);
+		void GetParticularEvent (int id, RequestType rt);
 		void GetChangedEvents (const QDateTime& dt);
 		void GetEventsByDate (const QDate& date, int skip = 0);
 
@@ -101,10 +103,19 @@ namespace Metida
 		void RequestStatistics ();
 
 		void RequestLastInbox ();
+		void SetMessagesAsRead (const QList<int>& ids);
+		void SendMessage (const QStringList& addresses, const QString& subject,
+				const QString& text);
+
 		void RequestRecentCommments ();
+		void DeleteComment (qint64 id, bool deleteThread = false);
+		void AddComment (const CommentEntry& comment);
 
 		void RequestTags ();
+
 	private:
+		std::shared_ptr<void> MakeRunnerGuard ();
+		void CallNextFunctionFromQueue ();
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
@@ -112,7 +123,7 @@ namespace Metida
 				const QString& pass, const QString& challenge);
 		void AddNewFriendRequest (const QString& username,
 				const QString& bgcolor, const QString& fgcolor,
-				int groupId, const QString& challenge);
+				int groupMask, const QString& challenge);
 		void DeleteFriendRequest (const QString& usernames,
 				const QString& challenge);
 
@@ -125,7 +136,7 @@ namespace Metida
 		void RemoveEventRequest (const LJEvent& event, const QString& challenge);
 		void UpdateEventRequest (const LJEvent& event, const QString& challenge);
 
-		void BackupEventsRequest (int skip, const Filter& filter, const QString& challenge);
+		void BackupEventsRequest (const Filter& filter, const QString& challenge);
 
 		void GetLastEventsRequest (int count, const QString& challenge);
 		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);
@@ -133,22 +144,24 @@ namespace Metida
 				const QString& challenge = QString ());
 		void GetParticularEventRequest (int id, RequestType prt,
 				const QString& challenge);
-		void GetMultipleEventsRequest (const QStringList& ids, RequestType rt,
+		void GetMultipleEventsRequest (const QList<int>& ids, RequestType rt,
 				const QString& challenge);
 
 		void BlogStatisticsRequest (const QString& challenge);
 
 		void InboxRequest (const QString& challenge);
+		void SetMessageAsReadRequest (const QList<int>& ids, const QString& challenge);
+		void SendMessageRequest (const QStringList& addresses, const QString& subject,
+				const QString& text, const QString& challenge);
+
 		void RecentCommentsRequest (const QString& challenge);
+		void DeleteCommentRequest (qint64 id, bool deleteThread, const QString& challenge);
+		void AddCommentRequest (const CommentEntry& comment, const QString& challenge);
 
 		void GetUserTagsRequest (const QString& challenge);
 
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
-
-		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
-
-		QMap<QDate, int> ParseStatistics (const QDomDocument& doc);
 
 	private slots:
 		void handleChallengeReplyFinished ();
@@ -167,7 +180,11 @@ namespace Metida
 		void handleGetMultipleEventsReplyFinished ();
 		void handleBlogStatisticsReplyFinished ();
 		void handleInboxReplyFinished ();
+		void handleMessagesSetAsReadFinished ();
+		void handleSendMessageRequestFinished ();
 		void handleRecentCommentsReplyFinished ();
+		void handleDeleteCommentReplyFinished ();
+		void handleAddCommentReplyFinished ();
 		void handleGetUserTagsReplyFinished ();
 
 		void handleNetworkError (QNetworkReply::NetworkError error);
@@ -190,8 +207,14 @@ namespace Metida
 
 		void gotStatistics (const QMap<QDate, int>& statistics);
 
-		void unreadMessagesExist (bool exists);
+		void unreadMessagesIds (const QList<int>& unreadIds);
+		void messagesRead ();
+		void messageSent ();
+
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
+		void commentsDeleted (const QList<qint64>& ids);
+		void commentSent (const QUrl& url);
+		
 		void gotTags (const QHash<QString, int>& tags);
 	};
 }

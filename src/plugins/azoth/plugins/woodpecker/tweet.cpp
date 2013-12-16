@@ -93,7 +93,7 @@ namespace Woodpecker
 		return Id_ > other.GetId ();
 	}
 
-	void Tweet::SetText (const QString& text) 
+	void Tweet::SetText (const QString& text)
 	{
 		/* HTML links matching */
 		QRegExp rx ("(\\s|^)((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
@@ -107,7 +107,7 @@ namespace Woodpecker
 		int pos = 0;
 		while ((pos = rx.indexIn (html, pos)) != -1)
 		{
-			if (rx.cap (2).startsWith ("http")) 
+			if (rx.cap (2).startsWith ("http"))
 			{
 				QString before = rx.cap (2);
 				if (before.endsWith ("."))
@@ -119,7 +119,7 @@ namespace Woodpecker
 			else
 				pos += rx.matchedLength ();
 		}
-		
+
 		/* Twitter username matching */
 		QRegExp usernameRx ("(\\s|^)(@[\\w\\d_]+)(\\s|,|$|:)");
 		usernameRx.setMinimal (true);
@@ -129,7 +129,7 @@ namespace Woodpecker
 		pos = 0;
 		while ((pos = usernameRx.indexIn (html, pos)) != -1)
 		{
-			if (usernameRx.cap (2).startsWith ("@")) 
+			if (usernameRx.cap (2).startsWith ("@"))
 			{
 				QString before = usernameRx.cap (2);
 				if (before.endsWith ("."))
@@ -141,7 +141,7 @@ namespace Woodpecker
 			else
 				pos += usernameRx.matchedLength ();
 		}
-	
+
 		/* Twitter tag matching */
 		QRegExp tagRx ("(\\s|^)(#[\\w\\d_]+)(\\s|,|$|:|\\.)");
 		tagRx.setMinimal (true);
@@ -151,7 +151,7 @@ namespace Woodpecker
 		pos = 0;
 		while ((pos = tagRx.indexIn (html, pos)) != -1)
 		{
-			if (tagRx.cap (2).startsWith ("#")) 
+			if (tagRx.cap (2).startsWith ("#"))
 			{
 				QString before = tagRx.cap (2);
 				if (before.endsWith ("."))
@@ -163,7 +163,7 @@ namespace Woodpecker
 			else
 				pos += tagRx.matchedLength ();
 		}
-		
+
 		Document_.setHtml (html);
 	}
 
@@ -171,37 +171,37 @@ namespace Woodpecker
 	{
 		return Author_;
 	}
-	
+
 	void Tweet::setAuthor (TwitterUser_ptr newAuthor)
 	{
 		Author_ = newAuthor;
 	}
-	
+
 	QDateTime Tweet::GetDateTime () const
 	{
 		return Created_;
 	}
-	
+
 	void Tweet::SetDateTime (const QDateTime& datetime)
 	{
 		Created_ = datetime;
 	}
-	
+
 	QTextDocument* Tweet::GetDocument ()
 	{
 		return &Document_;
 	}
-	
+
 	QString Tweet::GetText () const
 	{
 		return Text_;
 	}
-	
+
 	qulonglong Tweet::GetId () const
 	{
 		return Id_;
 	}
-	
+
 	void Tweet::SetId (qulonglong id)
 	{
 		Id_ = id;

@@ -152,6 +152,23 @@ namespace Murm
 			result += "</div>";
 			return result;
 		}
+
+		QString Video2Replacement (const VideoInfo& info, ICoreProxy_ptr)
+		{
+			QString result = "<div>";
+			result += QString ("<a href='http://vk.com/video%1_%2' target='_blank'>")
+					.arg (info.OwnerID_)
+					.arg (info.ID_);
+			result += QString ("<img src='%1' width='320' height='240' alt='' /><br />")
+					.arg (info.Image_.toEncoded ().constData ());
+			result += "<strong>" + info.Title_ + "</strong> ";
+			if (!info.Desc_.isEmpty ())
+				result += "(" + info.Desc_ + ") ";
+			result += "[" + LeechCraft::Util::MakeTimeFromLong (info.Duration_) + "] <br />";
+			result += "</a></div>";
+
+			return result;
+		}
 	}
 
 	void EntryBase::HandleAttaches (VkMessage *msg, const MessageInfo& info)
@@ -188,7 +205,7 @@ namespace Murm
 				attach.ID_ = pos->toString ();
 		}
 
-		QStringList photoIds, wallIds, audioIds;
+		QStringList photoIds, wallIds, audioIds, videoIds;
 		for (const auto& info : Attaches_)
 			if (info.Type_ == "photo")
 				photoIds << info.ID_;
@@ -196,7 +213,12 @@ namespace Murm
 				wallIds << info.ID_;
 			else if (info.Type_ == "audio")
 				audioIds << info.ID_;
-		if (photoIds.isEmpty () && wallIds.isEmpty () && audioIds.isEmpty ())
+			else if (info.Type_ == "video")
+				videoIds << info.ID_;
+		if (photoIds.isEmpty () &&
+				wallIds.isEmpty () &&
+				audioIds.isEmpty () &&
+				videoIds.isEmpty ())
 			return;
 
 		const QString audioDivStyle = "border-color: #CDCCCC; "
@@ -211,6 +233,8 @@ namespace Murm
 			newContents += "<div id='wallstub_" + id + "'></div>";
 		for (const auto& id : audioIds)
 			newContents += "<div id='audiostub_" + id + "' style='" + audioDivStyle + "'></div>";
+		for (const auto& id : videoIds)
+			newContents += "<div id='videostub_" + id + "'></div>";
 		msg->SetBody (newContents);
 
 		QPointer<VkMessage> safeMsg (msg);
@@ -241,6 +265,15 @@ namespace Murm
 									Audio2Replacement (audio, Account_->GetCoreProxy ()) });
 					}
 
+					for (const auto& video : msgInfo.Videos_)
+					{
+						const auto& id = QString ("videostub_%1_%2")
+								.arg (video.OwnerID_)
+								.arg (video.ID_);
+						replacements.append ({ id,
+									Video2Replacement (video, Account_->GetCoreProxy ()) });
+					}
+
 					for (const auto& repost : msgInfo.ContainedReposts_)
 					{
 						const auto& id = QString ("wallstub_%1_%2")
@@ -250,6 +283,9 @@ namespace Murm
 						auto replacement = repost.Text_;
 						for (const auto& photo : repost.Photos_)
 							replacement += "<br/>" + Photo2Replacement (photo);
+
+						for (const auto& video : repost.Videos_)
+							replacement += "<br/>" + Video2Replacement (video, Account_->GetCoreProxy ());
 
 						if (!repost.Audios_.empty ())
 						{

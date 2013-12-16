@@ -69,7 +69,7 @@
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Quest</source>
-        <translation type="unfinished"></translation>
+        <translation>Quest</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
@@ -79,43 +79,43 @@
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Enable even for authorization requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Enable even for authorization requests</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Blacklist</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Ask only those in the black list</source>
-        <translation type="unfinished"></translation>
+        <translation>Ask only those in the black list</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Otherwise, everyone who isn&apos;t present in the contact list will be asked with the challenge.</source>
-        <translation type="unfinished"></translation>
+        <translation>Otherwise, everyone who isn&apos;t present in the contact list will be asked with the challenge.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <location filename="dummy.cpp" line="12"/>
         <source>Entry ID regexps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Entry ID regexps:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>If the above option is active, only entry IDs that match these regular expressions will be asked with the challenge. Example regexps:&amp;lt;br/&amp;gt;&amp;lt;blockquote&amp;gt;.*@jabber.org&amp;lt;br/&amp;gt;.*@jabber.(org|ru)(/QIP)?&amp;lt;/blockquote&amp;gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>If the above option is active, only entry IDs that match these regular expressions will be asked with the challenge. Example regexps:&amp;lt;br/&amp;gt;&amp;lt;blockquote&amp;gt;.*@jabber.org&amp;lt;br/&amp;gt;.*@jabber.(org|ru)(/QIP)?&amp;lt;/blockquote&amp;gt;</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Whitelist</source>
-        <translation type="unfinished"></translation>
+        <translation>Whitelist</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>Entry IDs matching these regular expressions won&apos;t be asked with the challenge. See the blacklist regexps option for examples.</source>
-        <translation type="unfinished"></translation>
+        <translation>Entry IDs matching these regular expressions won&apos;t be asked with the challenge. See the blacklist regexps option for examples.</translation>
     </message>
 </context>
 </TS>

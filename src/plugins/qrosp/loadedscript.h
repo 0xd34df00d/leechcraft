@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_LOADEDSCRIPT_H
-#define PLUGINS_QROSP_LOADEDSCRIPT_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iscriptloader.h>
 
@@ -47,13 +47,17 @@ namespace Qrosp
 		Q_OBJECT
 		Q_INTERFACES (IScript);
 		
-		Qross::Action *ScriptAction_;
+		Qross::Action * const ScriptAction_;
+		bool Imported_ = false;
 	public:
 		LoadedScript (const QString&, const QString&, QObject* = 0);
-		
-		QVariant InvokeMethod (const QString&, const QVariantList&) const;
+
+		QObject* GetQObject ();
+		QVariant InvokeMethod (const QString&, const QVariantList&);
+		void AddQObject (QObject* object, const QString& name);
+		void Execute ();
+	private:
+		void CheckImports ();
 	};
 }
 }
-
-#endif

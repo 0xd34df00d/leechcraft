@@ -65,7 +65,7 @@ namespace Azoth
 		QObject* GetEntry (const QString&, const QString&) const;
 		void OpenChat (const QString&, const QString&, const QString&, const QString&) const;
 		QString GetSelectedChatTemplate (QObject*, QWebFrame*) const;
-		QList<QColor> GenerateColors (const QString&) const;
+		QList<QColor> GenerateColors (const QString&, QColor) const;
 		QString GetNickColor (const QString&, const QList<QColor>&) const;
 		QString FormatDate (QDateTime, QObject*) const;
 		QString FormatNickname (QString, QObject*, const QString&) const;
@@ -75,6 +75,10 @@ namespace Azoth
 		QIcon GetIconForState (State) const;
 		void FormatLinks (QString&);
 		QStringList FindLinks (const QString&);
+		QObject* CreateCoreMessage (const QString&, const QDateTime&,
+				IMessage::MessageType, IMessage::Direction, QObject*, QObject*);
+		bool IsMessageRead (QObject*);
+		void MarkMessagesAsRead (QObject*);
 	};
 }
 }

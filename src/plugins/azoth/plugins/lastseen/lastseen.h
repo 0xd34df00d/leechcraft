@@ -56,6 +56,7 @@ namespace LastSeen
 		QHash<QString, State> LastState_;
 		LastHash_t LastAvailable_;
 		LastHash_t LastOnline_;
+		LastHash_t LastStatusChange_;
 
 		bool SaveScheduled_;
 	public:

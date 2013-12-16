@@ -33,6 +33,7 @@
 #include <QSet>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
+#include "interfaces/blogique/iaccount.h"
 
 class QTimer;
 
@@ -46,6 +47,7 @@ namespace Blogique
 	class IAccount;
 	class IBloggingPlatform;
 	class PluginProxy;
+	class CommentsManager;
 
 	class Core : public QObject
 	{
@@ -56,6 +58,7 @@ namespace Blogique
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<PluginProxy> PluginProxy_;
 		StorageManager *StorageManager_;
+		CommentsManager *CommentsManager_;
 
 		QTimer *AutoSaveTimer_;
 
@@ -65,22 +68,24 @@ namespace Blogique
 	public:
 		static Core& Instance ();
 
-		QByteArray GetUniqueID () const;
 		QIcon GetIcon () const;
 
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject *plugin);
 
 		QList<IBloggingPlatform*> GetBloggingPlatforms () const;
 		QList<IAccount*> GetAccounts () const;
 
+		IAccount* GetAccountByID (const QByteArray& id) const;
+
 		void SendEntity (const Entity& e);
 		void DelayedProfilesUpdate ();
 
 		StorageManager* GetStorageManager () const;
+
+		CommentsManager* GetCommentsManager () const;
 
 		BlogiqueWidget* CreateBlogiqueWidget ();
 	private:

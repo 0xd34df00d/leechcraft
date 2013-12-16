@@ -40,10 +40,14 @@ namespace SB2
 {
 	class QuarkSettingsManager : public Util::BaseSettingsManager
 	{
-		QUrl QuarkURL_;
-		QDeclarativeContext *Ctx_;
+		Q_OBJECT
+
+		const QUrl QuarkURL_;
+		QDeclarativeContext * const Ctx_;
 	public:
 		QuarkSettingsManager (const QUrl&, QDeclarativeContext*);
+	public slots:
+		void setSettingsValue (const QString& key, const QVariant& value);
 	protected:
 		QSettings* BeginSettings () const;
 		void EndSettings (QSettings*) const;

@@ -36,9 +36,9 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
-#include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
+#include "commentsmanager.h"
 #include "exportwizard.h"
 #include "pluginproxy.h"
 #include "storagemanager.h"
@@ -50,9 +50,9 @@ namespace LeechCraft
 namespace Blogique
 {
 	Core::Core ()
-	: UniqueID_ ("org.LeechCraft.Blogique")
-	, PluginProxy_ (std::make_shared<PluginProxy> ())
-	, StorageManager_ (new StorageManager (UniqueID_, this))
+	: PluginProxy_ (std::make_shared<PluginProxy> ())
+	, StorageManager_ (new StorageManager ("org.LeechCraft.Blogique", this))
+	, CommentsManager_ (new CommentsManager (this))
 	, AutoSaveTimer_ (new QTimer (this))
 	{
 		connect (AutoSaveTimer_,
@@ -70,11 +70,6 @@ namespace Blogique
 		return c;
 	}
 
-	QByteArray Core::GetUniqueID () const
-	{
-		return UniqueID_;
-	}
-
 	QIcon Core::GetIcon () const
 	{
 		static QIcon icon ("lcicons:/plugins/blogique/resources/images/blogique.svg");
@@ -89,13 +84,6 @@ namespace Blogique
 	ICoreProxy_ptr Core::GetCoreProxy ()
 	{
 		return Proxy_;
-	}
-
-	QSet<QByteArray> Core::GetExpectedPluginClasses () const
-	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin";
-		return classes;
 	}
 
 	void Core::AddPlugin (QObject *plugin)
@@ -155,6 +143,14 @@ namespace Blogique
 		return result;
 	}
 
+	IAccount* Core::GetAccountByID (const QByteArray& id) const
+	{
+		for (auto acc : GetAccounts ())
+			if (acc->GetAccountID () == id)
+				return acc;
+		return 0;
+	}
+
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);
@@ -168,6 +164,11 @@ namespace Blogique
 	StorageManager* Core::GetStorageManager () const
 	{
 		return StorageManager_;
+	}
+
+	CommentsManager* Core::GetCommentsManager () const
+	{
+		return CommentsManager_;
 	}
 
 	BlogiqueWidget* Core::CreateBlogiqueWidget ()
@@ -294,6 +295,14 @@ namespace Blogique
 				this,
 				SIGNAL (tagsUpdated (QHash<QString, int>)));
 		connect (accObj,
+				SIGNAL (gotRecentComments (QList<CommentEntry>)),
+				CommentsManager_,
+				SLOT (handleGotRecentComments (QList<CommentEntry>)));
+		connect (accObj,
+				SIGNAL (commentsDeleted (QList<qint64>)),
+				CommentsManager_,
+				SLOT (handleCommentsDeleted (QList<qint64>)));
+		connect (accObj,
 				SIGNAL (gotError (int, QString, QString)),
 				this,
 				SIGNAL (gotError (int, QString, QString)));
@@ -406,7 +415,6 @@ namespace Blogique
 		wizard->setWindowTitle (tr ("Export blog"));
 		wizard->show ();
 	}
-
 }
 }
 

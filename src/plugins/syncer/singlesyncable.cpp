@@ -83,6 +83,31 @@ namespace Syncer
 		return settings;
 	}
 
+	namespace
+	{
+		template<typename T>
+		void DoWithMaxID (const std::vector<Laretz::Operation>& ops, const T& f)
+		{
+			uint64_t maxSeq = 0;
+			bool found = false;
+			for (const auto& op : ops)
+			{
+				const auto& items = op.getItems ();
+				const auto maxElemPos = std::max_element (items.begin (), items.end (),
+						[] (const Laretz::Item& left, const Laretz::Item& right)
+							{ return left.getSeq () < right.getSeq (); });
+				if (maxElemPos != items.end ())
+				{
+					found = true;
+					maxSeq = maxElemPos->getSeq ();
+				}
+			}
+
+			if (found)
+				f (maxSeq);
+		}
+	}
+
 	void SingleSyncable::HandleList (const Laretz::ParseResult& reply)
 	{
 		auto deletedList = std::find_if (reply.operations.begin (), reply.operations.end (),
@@ -94,9 +119,15 @@ namespace Syncer
 		{
 			QList<Laretz::Operation> ourOps;
 			Proxy_->Merge (ourOps, { *deletedList });
+			DoWithMaxID ({ *deletedList },
+					[this] (uint64_t id)
+					{
+						GetSettings ()->setValue ("LastSyncID", static_cast<quint64> (id));
+					});
 		}
 
-		if (knownList != reply.operations.end ())
+		if (knownList != reply.operations.end () &&
+				!knownList->getItems ().empty ())
 		{
 			const auto& str = Laretz::PacketGenerator {}
 					({ Laretz::OpType::Fetch, { knownList->getItems () } })
@@ -138,6 +169,19 @@ namespace Syncer
 		auto ourOps = Proxy_->GetNewOps ();
 		Proxy_->Merge (ourOps, ToQList (reply.operations));
 
+		auto settings = GetSettings ();
+		uint64_t maxId = settings->value ("LastSyncID").value<quint64> ();
+
+		DoWithMaxID (reply.operations,
+				[&settings, &maxId] (uint64_t id) -> void
+				{
+					if (id > maxId)
+					{
+						maxId = id;
+						settings->setValue ("LastSyncID", static_cast<quint64> (id));
+					}
+				});
+
 		if (ourOps.empty ())
 		{
 			State_ = State::Idle;
@@ -146,8 +190,11 @@ namespace Syncer
 
 		for (auto& op : ourOps)
 			for (auto& item : op.getItems ())
+			{
+				item.setSeq (maxId);
 				if (item.getParentId ().empty ())
 					item.setParentId (ID_.constData ());
+			}
 
 		State_ = State::Sent;
 

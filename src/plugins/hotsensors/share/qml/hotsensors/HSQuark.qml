@@ -52,17 +52,12 @@ Rectangle {
             height: rootRect.itemSize
             width: rootRect.itemSize
 
-            Image {
+            Plot {
                 id: sensorImage
-
                 height: rootRect.itemSize
                 width: rootRect.itemSize
 
-                sourceSize.width: width
-                sourceSize.height: height
-
-                source: "data:," + rawSvg
-                asynchronous: false
+                points: pointsList
             }
 
             Text {
@@ -82,12 +77,12 @@ Rectangle {
                         "x": global.x,
                         "y": global.y,
                         "existing": "ignore",
-                        "svg": rawSvg,
+                        "pointsList": pointsList,
                         "colorProxy": colorProxy,
                         "sensorName": sensorName
                     };
                     tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
-                    tooltip.svg = (function() { return rawSvg; });
+                    tooltip.pointsList = (function() { return pointsList; });
                 }
                 onExited: if (tooltip != null) { tooltip.closeRequested(); tooltip = null; }
             }

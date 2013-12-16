@@ -37,10 +37,9 @@ namespace HotSensors
 	: QStandardItemModel (parent)
 	{
 		QHash<int, QByteArray> roleNames;
-		roleNames [IconURL] = "iconURL";
 		roleNames [LastTemp] = "lastTemp";
 		roleNames [SensorName] = "sensorName";
-		roleNames [SVG] = "rawSvg";
+		roleNames [PointsList] = "pointsList";
 		setRoleNames (roleNames);
 	}
 }

@@ -60,8 +60,8 @@ namespace Summary
 
 	void Core::Release ()
 	{
-		if (Current_)
-			delete Current_;
+		delete Current_;
+		Current_ = nullptr;
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)

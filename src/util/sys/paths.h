@@ -142,6 +142,6 @@ namespace Util
 	 * @return The full path to the first found file or an empty string.
 	 */
 	UTIL_API QString FindInSystemPath (const QString& name, const QStringList& paths,
-			std::function<bool (QFileInfo)> filter = std::function<bool (QFileInfo)> ());
+			const std::function<bool (QFileInfo)>& filter = std::function<bool (QFileInfo)> ());
 }
 }

@@ -103,7 +103,7 @@ namespace VelvetBird
 		return "VelvetBird." + GetPurpleID ();
 	}
 
-	QList<QWidget*> Protocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions opts)
+	QList<QWidget*> Protocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
 		auto nameWidget = new AccRegFirstPage ();
 		return { nameWidget };

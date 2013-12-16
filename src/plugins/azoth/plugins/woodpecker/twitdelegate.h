@@ -45,20 +45,24 @@ namespace Woodpecker
 	class TwitDelegate : public QStyledItemDelegate
 	{
 	Q_OBJECT
-	
-		Plugin *const ParentPlugin_;
-		
+
+		Plugin * const ParentPlugin_;
+		QListView * const ParentListView_;
 	public:
-		TwitDelegate (QObject *parent = 0, Plugin *plugin = 0);
-		
-		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const;
-		bool editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index);
-		
+		TwitDelegate (QListView *parent = 0, Plugin *plugin = 0);
+
+		void paint (QPainter *painter,
+				const QStyleOptionViewItem& option, const QModelIndex& index) const;
+		QSize sizeHint (const QStyleOptionViewItem& option,
+				const QModelIndex& index) const;
+		bool editorEvent (QEvent *event, QAbstractItemModel *model,
+				const QStyleOptionViewItem& option, const QModelIndex& index);
+	private:
+		void HandleClick (const QStyleOptionViewItem& option,
+				const QModelIndex& index, const QMouseEvent *me);
 	private slots:
 		void showImage ();
 	};
 }
 }
 }
-

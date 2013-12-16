@@ -61,7 +61,11 @@ namespace Autopaste
 		Choice GetChoice () const;
 
 		PasteServiceFactory::Creator_f GetCreator () const;
+		QString GetCreatorName () const;
+		void SetCreatorName (const QString&);
+
 		Highlight GetHighlight () const;
+		void SetHighlight (Highlight);
 	private slots:
 		void on_ButtonBox__clicked (QAbstractButton*);
 	};

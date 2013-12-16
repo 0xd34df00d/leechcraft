@@ -145,6 +145,9 @@ namespace Launchy
 
 	void QuarkManager::init ()
 	{
+		if (auto rc = Model_->rowCount ())
+			Model_->removeRows (0, rc);
+
 		QList<QStandardItem*> items;
 		for (const auto& id : FavMgr_->GetFavorites ())
 			if (auto item = MakeItem (id))

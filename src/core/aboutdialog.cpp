@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "aboutdialog.h"
+#include <QDomDocument>
 #include "util/sysinfo.h"
 #include "interfaces/ihavediaginfo.h"
 #include "core.h"
@@ -90,36 +91,79 @@ namespace LeechCraft
 
 				return result;
 			}
+		};
 
-			QString FmtWeb () const
+		QStringList ParseRoles (const QDomElement& contribElem)
+		{
+			QStringList result;
+
+			auto roleElem = contribElem
+					.firstChildElement ("roles")
+					.firstChildElement ("role");
+			while (!roleElem.isNull ())
 			{
-				QString result = "<dt>";
-				if (!Name_.isEmpty ())
-					result += Name_;
-				if (!Name_.isEmpty () && !Nick_.isEmpty ())
-					result += " aka ";
-				if (!Nick_.isEmpty ())
-					result += Nick_;
-				result += "</dt><dd>";
+				result << roleElem.text ();
+				roleElem = roleElem.nextSiblingElement ("role");
+			}
 
-				if (!Email_.isEmpty ())
-					result += QString ("Email: <a href=\"mailto:%1\">%1</a>")
-							.arg (Email_);
+			return result;
+		}
 
-				result += "<ul>";
-				Q_FOREACH (const QString& r, Roles_)
-					result += QString ("<li>%1</li>")
-							.arg (r);
-				result += "</ul>";
+		QList<int> ParseYears (const QDomElement& contribElem)
+		{
+			QList<int> result;
 
-				result += AboutDialog::tr ("Years: %1")
-						.arg (Years_.join (", "));
-
-				result += "</dd>";
+			auto yearsElem = contribElem
+					.firstChildElement ("years");
+			if (yearsElem.hasAttribute ("start") &&
+					yearsElem.hasAttribute ("end"))
+			{
+				for (auto start = yearsElem.attribute ("start").toInt (),
+						end = yearsElem.attribute ("end").toInt ();
+						start <= end; ++start)
+					result << start;
 
 				return result;
 			}
-		};
+
+			auto yearElem = yearsElem.firstChildElement ("year");
+			while (!yearElem.isNull ())
+			{
+				result << yearElem.text ().toInt ();
+				yearElem = yearElem.nextSiblingElement ("year");
+			}
+
+			return result;
+		}
+
+		QList<ContributorInfo> ParseContributors (const QDomDocument& doc, const QString& type)
+		{
+			QList<ContributorInfo> result;
+
+			auto contribElem = doc.documentElement ().firstChildElement ("contrib");
+			while (!contribElem.isNull ())
+			{
+				auto nextGuard = std::shared_ptr<void> (nullptr,
+						[&contribElem] (void*)
+						{
+							contribElem = contribElem.nextSiblingElement ("contrib");
+						});
+
+				if (!type.isEmpty () && contribElem.attribute ("type") != type)
+					continue;
+
+				result.append ({
+						contribElem.attribute ("name"),
+						contribElem.attribute ("nick"),
+						contribElem.attribute ("jid"),
+						contribElem.attribute ("email"),
+						ParseRoles (contribElem),
+						ParseYears (contribElem)
+					});
+			}
+
+			return result;
+		}
 	}
 
 	AboutDialog::AboutDialog (QWidget *parent)
@@ -130,161 +174,21 @@ namespace LeechCraft
 		Ui_.ProgramName_->setText (QString ("LeechCraft %1")
 				.arg (CoreProxy ().GetVersion ()));
 
-		QList<ContributorInfo> authors;
-		authors << ContributorInfo ("Georg Rudoy", "0xd34df00d",
-				"0xd34df00d@0xd34df00d.me", "0xd34df00d@gmail.com",
-				QStringList (tr ("Lead developer and original author.")),
-				QList<int> () << 2006 << 2007 << 2008 << 2009 << 2010 << 2011 << 2012 << 2013);
-		authors << ContributorInfo ("Oleg Linkin", "magog",
-				"magog@gentoo.ru", "MaledictusDeMagog@gmail.com",
-				QStringList (tr ("Blogique module."))
-					<< tr ("Azoth Acetamide: IRC support for Azoth.")
-					<< tr ("Google Drive support in NetStoreManager module.")
-					<< tr ("Poshuku OnlineBookmarks.")
-					<< tr ("Firefox importer in New Life.")
-					<< tr ("Chrome-style tabs.")
-					<< tr ("Various patches."),
-				QList<int> () << 2010 << 2011 << 2012 << 2013);
+		QFile authorsFile (":/resources/data/authors.xml");
+		authorsFile.open (QIODevice::ReadOnly);
 
-		QList<ContributorInfo> contribs;
-		contribs << ContributorInfo (QString (), "Akon32",
-				QString (), "akon32@rambler.ru",
-				QStringList (tr ("SecMan SecureStorage."))
-					<< tr ("Various patches."),
-				QList<int> () << 2011);
-		contribs << ContributorInfo ("Aleksey Frolov", "Aleks Lifey aka atommix",
-				QString (), "aleks.lifey@gmail.com",
-				QStringList (tr ("Initial PKGBUILDs for Arch Linux.")),
-				QList<int> () << 2009);
-		contribs << ContributorInfo ("Aleksey Golovin", "rioky",
-				"rioky@jabber.ru", "nekolayer@yandex.ru",
-				QStringList (tr ("openSUSE packages maintainer.")),
-				QList<int> () << 2012);
-		contribs << ContributorInfo ("Alexander Batischev", "Minoru",
-				QString (), "eual.jp@gmail.com",
-				QStringList (tr ("Ukrainian translations.")),
-				QList<int> () << 2011);
-		contribs << ContributorInfo ("Alia Eolova", "alieola",
-				"alieola@jabber.ru", "aeors-team@yandex.ru",
-				QStringList (tr ("Spanish translations.")),
-				QList<int> () << 2011 << 2012);
-		contribs << ContributorInfo ("Azer Abdullaev", "Like-all",
-				QString (), "lik3a11@gmail.com",
-				QStringList (tr ("Shaitan plugin")) << tr ("Artwork."),
-				QList<int> () << 2011 << 2012 << 2013);
-		contribs << ContributorInfo ("Boris Pek", "Tehnick",
-				QString (), "tehnick-8@mail.ru",
-				QStringList (tr ("Debian/Ubuntu maintainership."))
-					<< tr ("Small fixes."),
-				QList<int> () << 2011 << 2012 << 2013);
-		contribs << ContributorInfo ("Dmitriy Perlow", "DA(P).DarkneSS",
-				"darkness@jabber.org.by", "dap@open.by",
-				QStringList (tr ("openSUSE maintainership."))
-					<< tr ("Lackman packages.")
-					<< tr ("Azoth user guide."),
-				QList<int> () << 2012 << 2013);
-		contribs << ContributorInfo ("Dimitriy Ryazantcev", "DJm00n",
-				"djm00n@jabber.ru", "dimitriy.ryazantcev@gmail.com",
-				QStringList (tr ("Windows maintainership."))
-					<< tr ("Windows fixes."),
-				QList<int> () << 2011 << 2012 << 2013);
-		contribs << ContributorInfo ("Elena Belova", "Zereal",
-				"elena.zereal@neko.im", "zereal25@gmail.com",
-				QStringList (tr ("French translations."))
-					<< tr ("Italian translations.")
-					<< tr ("Public relations."),
-				QList<int> () << 2011);
-		contribs << ContributorInfo ("Eugene Mamin", "DZhon",
-				"dzhon_over@jabber.ru", "TheDZhon@gmail.com",
-				QStringList (tr ("Microsoft Windows backend for Liznoo plugin."))
-					<< tr ("Microsoft Windows builds."),
-				QList<int> () << 2011 << 2012);
-		contribs << ContributorInfo (QString (), "ForNeVeR",
-				"revenrof@jabber.ru", QString (),
-				QStringList ("Maintainer for the Microsoft Windows."),
-				QList<int> () << 2009 << 2010 << 2011);
-		contribs << ContributorInfo (QString (), "Ignotus",
-				"nlminhtl@gmail.com", QString (),
-				QStringList ("Improvements in Psto.net plugin for Azoth.")
-					<< tr ("Laure plugin.")
-					<< tr ("Last.FM Scrobbler plugin.")
-					<< tr ("openSUSE package maintainer")
-					<< tr ("Fedora package maintainer"),
-				QList<int> () << 2011 << 2012);
-		contribs << ContributorInfo (QString (), "lk4d4",
-				QString (), "lk4d4@yander.ru",
-				QStringList ("Initial ebuilds for Gentoo Linux."),
-				QList<int> () << 2009);
-		contribs << ContributorInfo ("Maxim Kirenenko", "part1zan_ aka 0x73571ab",
-				"part1zancheg@gmail.com", "part1zancheg@gmail.com",
-				QStringList (tr ("Extensive and thorough testing.")),
-				QList<int> () << 2010 << 2011);
-		contribs << ContributorInfo (QString (), "Mellon",
-				QString (), "qmellon@gmail.com",
-				QStringList ("Extensive and thorough testing."),
-				QList<int> () << 2012 << 2013);
-		contribs << ContributorInfo (QString (), "Miha",
-				QString (), "miha@52.ru",
-				QStringList ("OpenSUSE package maintainer."),
-				QList<int> () << 2009);
-		contribs << ContributorInfo (QString (), "nobodyzzz",
-				QString (), "nobodyzzz666@gmail.com",
-				QStringList ("Juick plugin.")
-					<< tr ("FatApe plugin, the GreaseMonkey support layer for Poshuku.")
-					<< tr ("Various patches."),
-				QList<int> () << 2011);
-		contribs << ContributorInfo (QString (), "PanteR",
-				"panter_dsd@jabber.ru", "panter.dsd@gmail.com",
-				QStringList (tr ("Various patches.")),
-				QList<int> () << 2009 << 2010);
-		contribs << ContributorInfo (QString (), "Pevzi",
-				QString (), "pevzi23@gmail.com",
-				QStringList (tr ("Graphical artwork.")),
-				QList<int> () << 2009 << 2010);
-		contribs << ContributorInfo (QString (), QString::fromUtf8 ("Phóéñíx"),
-				"nounou@jabber.ru", QString (),
-				QStringList (tr ("Arabic translations.")),
-				QList<int> () << 2009 << 2010);
-		contribs << ContributorInfo (QString (), "sejros",
-				QString (), "home@sejros.mp",
-				QStringList (tr ("Esperanto translations")),
-				QList<int> () << 2009);
-		contribs << ContributorInfo ("Sergey Kuzmin", "pendruk",
-				"pendruk@leechcraft.org", "pendruk@gmail.com",
-				QStringList (tr ("Azoth theming."))
-					<< tr ("Lackman packages."),
-				QList<int> () << 2012 << 2013);
-		contribs << ContributorInfo (QString (), "V0id",
-				QString (), "getbusy@mail.ru",
-				QStringList (tr ("Aggregator fixes and improvements."))
-					<< tr ("Various patches.")
-					<< tr ("Ukrainian translations."),
-				QList<int> () << 2008 << 2009 << 2010);
+		QDomDocument authorsDoc;
+		authorsDoc.setContent (&authorsFile);
 
 		QStringList formatted;
-		Q_FOREACH (const ContributorInfo& i, authors)
+		for (const auto& i : ParseContributors (authorsDoc, "author"))
 			formatted << i.Fmt ();
 		Ui_.Authors_->setHtml (formatted.join ("<hr />"));
 
 		formatted.clear ();
-		Q_FOREACH (const ContributorInfo& i, contribs)
+		for (const auto& i : ParseContributors (authorsDoc, "contrib"))
 			formatted << i.Fmt ();
 		Ui_.Contributors_->setHtml (formatted.join ("<hr />"));
-
-		if (QCoreApplication::arguments ().contains ("--format-contribs-for-web"))
-		{
-			formatted.clear ();
-
-			Q_FOREACH (const ContributorInfo& i, authors)
-				formatted << i.FmtWeb ();
-
-			formatted << QString () << QString ();
-
-			Q_FOREACH (const ContributorInfo& i, contribs)
-				formatted << i.FmtWeb ();
-
-			qDebug () << formatted.join ("\n\n");
-		}
 
 		BuildDiagInfo ();
 	}

@@ -35,6 +35,7 @@
 #include <util/util.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/qml/themeimageprovider.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -43,7 +44,6 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "similarmodel.h"
-#include "sysiconsprovider.h"
 
 namespace LeechCraft
 {
@@ -92,7 +92,7 @@ namespace LMP
 		Ui_.setupUi (this);
 
 		Ui_.HypesView_->engine ()->addImageProvider ("sysIcons",
-				new SysIconProvider (Core::Instance ().GetProxy ()));
+				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
 		new Util::StandardNAMFactory ("lmp/cache",
 				[] { return 50 * 1024 * 1024; },

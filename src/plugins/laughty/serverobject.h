@@ -35,8 +35,8 @@
 
 namespace LeechCraft
 {
+struct Entity;
 
-class Entity;
 namespace Laughty
 {
 	class ServerObject : public QObject

@@ -56,9 +56,28 @@ namespace Autopaste
 		return PasteServiceFactory ().GetInfos ().at (Ui_.ServiceCombo_->currentIndex ()).Creator_;
 	}
 
+	QString PasteDialog::GetCreatorName () const
+	{
+		return Ui_.ServiceCombo_->currentText ();
+	}
+
+	void PasteDialog::SetCreatorName (const QString& name)
+	{
+		const auto idx = Ui_.ServiceCombo_->findText (name);
+		if (idx >= 0)
+			Ui_.ServiceCombo_->setCurrentIndex (idx);
+	}
+
 	Highlight PasteDialog::GetHighlight () const
 	{
 		return static_cast<Highlight> (Ui_.HighlightCombo_->currentIndex ());
+	}
+
+	void PasteDialog::SetHighlight (Highlight highEnum)
+	{
+		auto high = static_cast<int> (highEnum);
+		if (high >= 0 && high < Ui_.HighlightCombo_->count ())
+			Ui_.HighlightCombo_->setCurrentIndex (high);
 	}
 
 	void PasteDialog::on_ButtonBox__clicked (QAbstractButton *button)

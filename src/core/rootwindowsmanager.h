@@ -57,7 +57,9 @@ namespace LeechCraft
 	public:
 		RootWindowsManager (QObject* = 0);
 
+		void Initialize ();
 		void Release ();
+
 		MainWindow* MakeMainWindow ();
 		TabManager* GetTabManager (MainWindow*) const;
 		TabManager* GetTabManager (int) const;
@@ -68,7 +70,7 @@ namespace LeechCraft
 
 		int GetWindowsCount () const;
 		int GetPreferredWindowIndex () const;
-		int GetPreferredWindowIndex (ITabWidget*) const;
+		int GetPreferredWindowIndex (const ITabWidget*) const;
 		int GetPreferredWindowIndex (const QByteArray&) const;
 		int GetWindowForTab (ITabWidget*) const;
 		int GetWindowIndex (QMainWindow*) const;
@@ -77,8 +79,8 @@ namespace LeechCraft
 		QMainWindow* GetMainWindow (int) const;
 		ICoreTabWidget* GetTabWidget (int) const;
 	private:
-		MainWindow* CreateWindow ();
-		void PerformWithTab (std::function<void (TabManager*, int)>, QWidget*);
+		MainWindow* CreateWindow (int screen, bool primary);
+		void PerformWithTab (const std::function<void (TabManager*, int)>&, QWidget*);
 		void MoveTab (int tab, int fromWin, int toWin);
 	public slots:
 		void moveTabToNewWindow ();

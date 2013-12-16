@@ -131,9 +131,8 @@ namespace Vrooby
 		}
 	};
 
-	TrayView::TrayView (ICoreProxy_ptr proxy, QWidget *parent)
-	: QDeclarativeView (0)
-	, CoreProxy_ (proxy)
+	TrayView::TrayView (ICoreProxy_ptr proxy)
+	: CoreProxy_ (proxy)
 	, Flattened_ (new FlatMountableItems (this))
 	, Filtered_ (new FilterModel (this))
 	, Backend_ (0)

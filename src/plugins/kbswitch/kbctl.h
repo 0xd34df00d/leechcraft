@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QHash>
+#include <QAbstractEventDispatcher>
 
 typedef struct _XDisplay Display;
 typedef union  _XEvent XEvent;
@@ -64,6 +65,8 @@ namespace KBSwitch
 		RulesStorage *Rules_;
 
 		bool ApplyScheduled_ = false;
+
+		const QAbstractEventDispatcher::EventFilter PrevFilter_;
 
 		KBCtl ();
 	public:
@@ -108,6 +111,8 @@ namespace KBSwitch
 		void UpdateGroupNames ();
 
 		void AssignWindow (Qt::HANDLE);
+
+		void ApplyKeyRepeat ();
 	public slots:
 		void scheduleApply ();
 		void apply ();

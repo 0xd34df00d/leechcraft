@@ -46,36 +46,75 @@ namespace Qrosp
 	{
 		if (!interp.isEmpty ())
 			ScriptAction_->setInterpreter (interp);
+	}
 
-		ScriptAction_->trigger ();
-#ifndef QROSP_NO_QTSCRIPT
-		if (interp == "qtscript")
-		{
-			QObject *scriptEngineObject = 0;
-			QMetaObject::invokeMethod (ScriptAction_->script (),
-					"engine", Q_RETURN_ARG (QObject*, scriptEngineObject));
-			QScriptEngine *engine = qobject_cast<QScriptEngine*> (scriptEngineObject);
-			if (!engine)
-				qWarning () << Q_FUNC_INFO
-						<< "unable to obtain script engine from the"
-						<< "script action though we are Qt Script";
-			else
-			{
-				QStringList requires;
-				requires << "qt" << "qt.core" << "qt.gui" << "qt.network" << "qt.webkit";
-				Q_FOREACH (const QString& req, requires)
-					engine->importExtension (req);
-			}
-		}
-#endif
+	QObject* LoadedScript::GetQObject ()
+	{
+		return this;
 	}
 	
-	QVariant LoadedScript::InvokeMethod (const QString& name, const QVariantList& args) const
+	QVariant LoadedScript::InvokeMethod (const QString& name, const QVariantList& args)
 	{
+		if (!Imported_)
+			CheckImports ();
+
 		if (!ScriptAction_->functionNames ().contains (name))
-			return QVariant ();
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such function"
+					<< name
+					<< "in"
+					<< ScriptAction_->file ();
+			qWarning () << Q_FUNC_INFO
+					<< "known function:"
+					<< ScriptAction_->functionNames ();
+			return {};
+		}
 
 		return ScriptAction_->callFunction (name, args);
+	}
+
+	void LoadedScript::AddQObject (QObject *object, const QString& name)
+	{
+		ScriptAction_->addQObject (object, name);
+	}
+
+	void LoadedScript::Execute ()
+	{
+		if (!Imported_)
+			CheckImports ();
+
+		ScriptAction_->trigger ();
+	}
+
+	void LoadedScript::CheckImports ()
+	{
+		if (Imported_)
+			return;
+
+		Imported_ = true;
+		ScriptAction_->trigger ();
+
+#ifndef QROSP_NO_QTSCRIPT
+		if (ScriptAction_->interpreter () != "qtscript")
+			return;
+
+		QObject *scriptEngineObject = 0;
+		QMetaObject::invokeMethod (ScriptAction_->script (),
+				"engine",
+				Q_RETURN_ARG (QObject*, scriptEngineObject));
+		auto engine = qobject_cast<QScriptEngine*> (scriptEngineObject);
+		if (!engine)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to obtain script engine from the"
+					<< "script action though we are Qt Script";
+			return;
+		}
+
+		for (const auto& req : { "qt", "qt.core", "qt.gui", "qt.network", "qt.svg", "qt.xml" })
+			engine->importExtension (req);
+#endif
 	}
 }
 }

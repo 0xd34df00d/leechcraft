@@ -223,7 +223,8 @@ namespace Xoox
 	{
 		HasUnreadMsgs_ = false;
 		UnreadMessages_.clear ();
-		emit messagesAreRead ();
+
+		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void EntryBase::ChatTabClosed ()

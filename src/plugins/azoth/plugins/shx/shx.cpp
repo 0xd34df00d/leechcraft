@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QTextDocument>
 #include <QMessageBox>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
@@ -41,8 +42,10 @@ namespace Azoth
 {
 namespace SHX
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("azoth_shx");
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothshxsettings.xml");
 

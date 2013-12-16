@@ -261,17 +261,6 @@ namespace LackMan
 		return SettingsDialog_;
 	}
 
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
-	{
-		QList<QAction*> result;
-		if (place == ActionsEmbedPlace::ToolsMenu)
-		{
-			result << UpdateAll_;
-			result << UpgradeAll_;
-		}
-		return result;
-	}
-
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 	{
 		if (entity.Mime_ != "x-leechcraft/package-manager-action")

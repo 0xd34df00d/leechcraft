@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>TwitterPage</string>
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -70,10 +70,10 @@
            <number>4</number>
           </property>
           <property name="gridSize">
-<!--           <size>
-            <width>0</width>
-            <height>40</height>
-	  </size> -->
+           <size>
+            <width>-1</width>
+            <height>-1</height>
+           </size>
           </property>
           <property name="viewMode">
            <enum>QListView::ListMode</enum>

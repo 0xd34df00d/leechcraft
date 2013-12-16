@@ -30,6 +30,7 @@
 #include "radiowidget.h"
 #include <QSortFilterProxyModel>
 #include <QMenu>
+#include <QInputDialog>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/media/iradiostationprovider.h>
@@ -37,6 +38,8 @@
 #include "player.h"
 #include "previewhandler.h"
 #include "radiomanager.h"
+#include "engine/sourceobject.h"
+#include "radiocustomdialog.h"
 
 namespace LeechCraft
 {
@@ -91,11 +94,46 @@ namespace LMP
 		Player_ = player;
 	}
 
+	void RadioWidget::AddUrl (const QUrl& url)
+	{
+		RadioCustomDialog dia (this);
+		dia.SetUrl (url);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& unmapped = Ui_.StationsView_->currentIndex ();
+		const auto& index = StationsProxy_->mapToSource (unmapped);
+		Core::Instance ().GetRadioManager ()->
+				AddUrl (index, dia.GetUrl (), dia.GetName ());
+	}
+
 	void RadioWidget::handleRefresh ()
 	{
 		const auto& unmapped = Ui_.StationsView_->currentIndex ();
 		const auto& index = StationsProxy_->mapToSource (unmapped);
 		Core::Instance ().GetRadioManager ()->Refresh (index);
+	}
+
+	void RadioWidget::handleAddUrl ()
+	{
+		AddUrl ({});
+	}
+
+	void RadioWidget::handleAddCurrentUrl ()
+	{
+		const auto& url = Player_->GetSourceObject ()->
+				GetCurrentSource ().ToUrl ();
+		if (url.isLocalFile ())
+			return;
+
+		AddUrl (url);
+	}
+
+	void RadioWidget::handleRemoveUrl ()
+	{
+		const auto& unmapped = Ui_.StationsView_->currentIndex ();
+		const auto& index = StationsProxy_->mapToSource (unmapped);
+		Core::Instance ().GetRadioManager ()->RemoveUrl (index);
 	}
 
 	void RadioWidget::on_StationsView__customContextMenuRequested (const QPoint& point)
@@ -104,10 +142,31 @@ namespace LMP
 		if (!idx.isValid ())
 			return;
 
+		const auto type = idx.data (Media::RadioItemRole::ItemType).toInt ();
+		const auto parentType = idx.parent ().data (Media::RadioItemRole::ItemType).toInt ();
+
 		QMenu menu;
 		menu.addAction (tr ("Refresh"),
 				this,
 				SLOT (handleRefresh ()));
+		if (type == Media::RadioType::CustomAddableStreams)
+		{
+			menu.addAction (tr ("Add an URL..."),
+					this,
+					SLOT (handleAddUrl ()));
+
+			const auto& url = Player_->GetSourceObject ()->GetCurrentSource ().ToUrl ();
+			if (url.isValid () && !url.isLocalFile ())
+				menu.addAction (tr ("Add current stream..."),
+						this,
+						SLOT (handleAddCurrentUrl ()));
+		}
+		else if (parentType == Media::RadioType::CustomAddableStreams)
+		{
+			menu.addAction (tr ("Remove this URL"),
+					this,
+					SLOT (handleRemoveUrl ()));
+		}
 		menu.exec (Ui_.StationsView_->viewport ()->mapToGlobal (point));
 	}
 

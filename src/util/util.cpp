@@ -142,18 +142,18 @@ QString LeechCraft::Util::MakeTimeFromLong (ulong time)
 	return result;
 }
 
-QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
+QTranslator* LeechCraft::Util::LoadTranslator (const QString& baseName,
+		const QString& localeName,
 		const QString& prefix,
 		const QString& appName)
 {
-	QString localeName = GetLocaleName ();
-	QString filename = prefix;
+	auto filename = prefix;
 	filename.append ("_");
 	if (!baseName.isEmpty ())
 		filename.append (baseName).append ("_");
 	filename.append (localeName);
 
-	QTranslator *transl = new QTranslator;
+	auto transl = new QTranslator;
 #ifdef Q_OS_WIN32
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
@@ -173,17 +173,31 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 			transl->load (filename,
 					QString ("/usr/share/%1/translations").arg (appName)))
 #endif
+		return transl;
+
+	delete transl;
+
+	return nullptr;
+}
+
+QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
+		const QString& prefix,
+		const QString& appName)
+{
+	const auto& localeName = GetLocaleName ();
+	if (auto transl = LoadTranslator (baseName, localeName, prefix, appName))
 	{
 		qApp->installTranslator (transl);
 		return transl;
 	}
-	delete transl;
 
 	qWarning () << Q_FUNC_INFO
-		<< "could not load translation file for locale"
-		<< localeName
-		<< filename;
-	return 0;
+			<< "could not load translation file for locale"
+			<< localeName
+			<< baseName
+			<< prefix
+			<< appName;
+	return nullptr;
 }
 
 QString LeechCraft::Util::GetLocaleName ()

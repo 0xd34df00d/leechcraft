@@ -186,6 +186,8 @@ namespace LackMan
 			packageInfo.Type_ = PackageInfo::TPlugin;
 		else if (type == "theme")
 			packageInfo.Type_ = PackageInfo::TTheme;
+		else if (type == "quark")
+			packageInfo.Type_ = PackageInfo::TQuark;
 		else
 			packageInfo.Type_ = PackageInfo::TData;
 

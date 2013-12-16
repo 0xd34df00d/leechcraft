@@ -58,6 +58,7 @@ namespace LeechCraft
 
 		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr proxy);
+		void hookGonnaShowStatusBar (LeechCraft::IHookProxy_ptr, bool);
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
 				QNetworkAccessManager *manager,
 				QNetworkAccessManager::Operation *op,

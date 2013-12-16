@@ -48,7 +48,7 @@ namespace Azoth
 {
 namespace Woodpecker
 {
-	TwitterPage::TwitterPage (const TabClassInfo& tc, Plugin *plugin, 
+	TwitterPage::TwitterPage (const TabClassInfo& tc, Plugin *plugin,
 							  const FeedMode mode,
 							  const KQOAuthParameters& params)
 	: TC_ (tc)
@@ -61,14 +61,17 @@ namespace Woodpecker
 		Ui_.setupUi (this);
 		Delegate_ = new TwitDelegate (Ui_.TwitList_, ParentPlugin_);
 		Ui_.TwitList_->setItemDelegate (Delegate_);
-		
+
 		Interface_ = new TwitterInterface (this);
 		connect (Interface_,
 				SIGNAL (tweetsReady (QList<Tweet_ptr>)),
 				this,
 				SLOT (updateScreenTwits (QList<Tweet_ptr>)));
 		TwitterTimer_ = new QTimer (this);
-		TwitterTimer_->setInterval (XmlSettingsManager::Instance ()->property ("timer").toInt () * 1000); // Update twits every 1.5 minutes by default
+
+		// Update twits every 1.5 minutes by default
+		TwitterTimer_->setInterval (XmlSettingsManager::Instance ()->
+					property ("timer").toInt () * 1000);
 		connect (TwitterTimer_,
 				SIGNAL (timeout ()),
 				this,
@@ -88,6 +91,7 @@ namespace Woodpecker
 				SIGNAL (clicked ()),
 				this,
 				SLOT (twit ()));
+
 		Settings_ = new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Woodpecker");
 
@@ -141,7 +145,7 @@ namespace Woodpecker
 				SIGNAL (itemDoubleClicked (QListWidgetItem*)),
 				this,
 				SLOT (reply ()));
-		
+
 		ActionSearch_ = new QAction (tr ("Search in Twitter"), Ui_.TwitList_);
 		ActionSearch_->setProperty ("ActionIcon", "edit-find");
 		ActionSearch_->setShortcut (QKeySequence (Qt::CTRL + Qt::Key_F));
@@ -171,10 +175,10 @@ namespace Woodpecker
 				this,
 				SLOT (deleteFavorite ()));
 
-		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_, ActionCopyText_, 
+		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_, ActionCopyText_,
 			ActionDelete_, ActionShowFavorites_, ActionMakeFavorite_, ActionDeleteFavorite_,
 			ActionOpenWeb_, ActionSearch_, ActionSPAM_ });
-		
+
 		ActionShowOwnFavorites_ = new QAction (tr ("Show user favorites"), Ui_.TwitList_);
 		ActionShowOwnFavorites_->setProperty ("ActionIcon", "folder-favorites");
 		connect (ActionShowOwnFavorites_,
@@ -183,7 +187,7 @@ namespace Woodpecker
 				SLOT (showOwnFavorites ()));
 
 		Toolbar_->addAction (ActionShowOwnFavorites_);
-		
+
 		if ((!Settings_->value ("token").isNull ()) && (!Settings_->value ("tokenSecret").isNull ()))
 		{
 			qDebug () << "Have an authorized" << Settings_->value ("token") << ":" << Settings_->value ("tokenSecret");
@@ -257,14 +261,16 @@ namespace Woodpecker
 
 		Tweet_ptr firstNewTwit = twits.first ();
 
-		if (ScreenTwits_.length () && (twits.last ()->GetId () == ScreenTwits_.first ()->GetId ())) // if we should prepend
+		// if we should prepend
+		if (ScreenTwits_.length () &&
+				twits.last ()->GetId () == ScreenTwits_.first ()->GetId ())
 			for (auto i = twits.end () - 2; i >= twits.begin (); i--)
 				ScreenTwits_.insert (0, *i);
 		else
 		{
-			int i;
+			int i = 0;
 			// Now we'd find firstNewTwit in twitList
-			for (i = 0; i < ScreenTwits_.length (); i++)
+			for ( ; i < ScreenTwits_.length (); i++)
 				if ((ScreenTwits_.at (i)->GetId ()) == firstNewTwit->GetId ())
 					break;
 
@@ -284,7 +290,7 @@ namespace Woodpecker
 				}
 				else if (!twits.isEmpty ()) {
 					const auto& notification = Util::MakeNotification (tr ("Woodpecker"),
-							tr ( "%1 new twit (s)" ).arg (twits.length ()),
+							tr ("%n new twit(s)", 0, twits.length ()),
 							PInfo_);
 					EntityManager_->HandleEntity (notification);
 				}
@@ -311,7 +317,8 @@ namespace Woodpecker
 			tmpitem->setData (Qt::UserRole, QVariant::fromValue(twit));
 
 			if (twit->GetAuthor ()->GetAvatar ().isNull ())
-				tmpitem->setData (Qt::DecorationRole, QIcon ("lcicons:/plugins/azoth/woodpecker/resources/images/woodpecker.svg"));
+				tmpitem->setData (Qt::DecorationRole,
+						QIcon ("lcicons:/plugins/azoth/woodpecker/resources/images/woodpecker.svg"));
 			else
 				tmpitem->setData (Qt::DecorationRole, twit->GetAuthor ()->GetAvatar ());
 			Ui_.TwitList_->insertItem (0, tmpitem);
@@ -371,7 +378,6 @@ namespace Woodpecker
 				SLOT (twit ()));
 	}
 
-
 	void TwitterPage::reply (QListWidgetItem *index)
 	{
 		QListWidgetItem *idx = index;
@@ -405,19 +411,22 @@ namespace Woodpecker
 
 	void TwitterPage::scrolledDown (int sliderPos)
 	{
-		if (sliderPos == Ui_.TwitList_->verticalScrollBar ()->maximum ())
-		{
-			Ui_.TwitList_->verticalScrollBar ()->setSliderPosition (Ui_.TwitList_->verticalScrollBar ()->maximum () - 1);
-			Ui_.TwitList_->setEnabled (false);
-			if (!ScreenTwits_.empty ())
-			{
-				KQOAuthParameters param (PageDefaultParam_);
-				param.insert ("max_id", QString::number ((*ScreenTwits_.begin ())->GetId ()));
-				param.insert ("count", QString::number (XmlSettingsManager::Instance ()->property ("additional_twits").toUInt ()));
-				
-				Interface_->request (param, PageMode_);
-			}
-		}
+		if (sliderPos != Ui_.TwitList_->verticalScrollBar ()->maximum ())
+			return;
+
+		Ui_.TwitList_->verticalScrollBar ()->setSliderPosition (Ui_.TwitList_->verticalScrollBar ()->maximum () - 1);
+		Ui_.TwitList_->setEnabled (false);
+		if (ScreenTwits_.empty ())
+			return;
+
+		KQOAuthParameters param (PageDefaultParam_);
+		param.insert ("max_id",
+				QString::number ((*ScreenTwits_.begin ())->GetId ()));
+		param.insert ("count",
+				QString::number (XmlSettingsManager::Instance ()->
+						property ("additional_twits").toUInt ()));
+
+		Interface_->request (param, PageMode_);
 	}
 
 	void TwitterPage::on_TwitList__customContextMenuRequested (const QPoint& pos)
@@ -425,9 +434,9 @@ namespace Woodpecker
 		const auto& idx = Ui_.TwitList_->indexAt (pos);
 		if (!idx.isValid ())
 			return;
-		
+
 		const auto username = idx.data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
-		
+
 		auto menu = new QMenu (Ui_.TwitList_);
 		auto actionOpenTimeline = new QAction (tr ("Open @%1 timeline").arg (username), menu);
 		actionOpenTimeline->setProperty ("ActionIcon", "document-open-folder");
@@ -437,12 +446,12 @@ namespace Woodpecker
 				SLOT (openUserTimeline ()));
 
 		menu->addActions ({ ActionRetwit_, ActionReply_, menu->addSeparator (),
-			ActionSPAM_, menu->addSeparator (), ActionDelete_, menu->addSeparator (), ActionCopyText_, 
+			ActionSPAM_, menu->addSeparator (), ActionDelete_, menu->addSeparator (), ActionCopyText_,
 						  actionOpenTimeline, menu->addSeparator (),
 						  ActionMakeFavorite_ });
 		if (TC_.TabClass_ == ParentPlugin_->FavoriteTC_.TabClass_)
 			menu->addAction (ActionDeleteFavorite_);
-		menu->addActions ({ ActionShowFavorites_, menu->addSeparator (), 
+		menu->addActions ({ ActionShowFavorites_, menu->addSeparator (),
 						  ActionOpenWeb_, ActionSearch_ });
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
@@ -478,8 +487,11 @@ namespace Woodpecker
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
 					{ return tweet->GetId () == twitid; });
 
-		const auto& url = Util::MakeEntity (QUrl (QString ("https://twitter.com/%1/status/%2").arg ((*currentTwit)->GetAuthor ()->GetUsername ()).arg (twitid)),
-				QString (), OnlyHandle | FromUserInitiated, QString ());
+		const auto urlStr = QString ("https://twitter.com/%1/status/%2")
+				.arg ((*currentTwit)->GetAuthor ()->GetUsername ())
+				.arg (twitid);
+		const auto& url = Util::MakeEntity (QUrl (urlStr),
+				QString (), OnlyHandle | FromUserInitiated);
 		EntityManager_->HandleEntity (url);
 	}
 
@@ -487,7 +499,7 @@ namespace Woodpecker
 	{
 		UpdateReady_ = true;
 	}
-	
+
 	QByteArray TwitterPage::GetTabRecoverData () const
 	{
 		QByteArray result;
@@ -497,22 +509,22 @@ namespace Woodpecker
 
 		return result;
 	}
-	
+
 	QIcon TwitterPage::GetTabRecoverIcon () const
 	{
 		return GetTabClassInfo ().Icon_;
 	}
-	
+
 	QString TwitterPage::GetTabRecoverName () const
 	{
 		return GetTabClassInfo ().VisibleName_;
 	}
-	
+
 	void TwitterPage::requestUpdate ()
 	{
 		Interface_->request (PageDefaultParam_, PageMode_);
 	}
-	
+
 	void TwitterPage::openUserTimeline ()
 	{
 		const auto idx = Ui_.TwitList_->currentItem ();
@@ -524,12 +536,12 @@ namespace Woodpecker
 		const auto& username = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
 		KQOAuthParameters param;
 		param.insert ("screen_name", username.toUtf8 ().constData ());
-		
+
 		ParentPlugin_->AddTab (ParentPlugin_->UserTC_,
-							   tr ("User %1").arg (username),
-							   FeedMode::UserTimeline, param);
+				tr ("User %1").arg (username),
+				FeedMode::UserTimeline, param);
 	}
-	
+
 	void TwitterPage::openSearchTimeline()
 	{
 		const QString& text = QInputDialog::getText (this, tr ("Twitter search"),
@@ -540,11 +552,11 @@ namespace Woodpecker
 			KQOAuthParameters param;
 			param.insert ("q", text.toUtf8 ());
 			ParentPlugin_->AddTab (ParentPlugin_->SearchTC_,
-								   tr ("Search %1").arg (text),
-								   FeedMode::SearchResult, param);
+					tr ("Search %1").arg (text),
+					FeedMode::SearchResult, param);
 		}
 	}
-	
+
 	void TwitterPage::copyTwitText ()
 	{
 		const auto idx = Ui_.TwitList_->currentItem ();
@@ -554,10 +566,10 @@ namespace Woodpecker
 			return;
 		}
 		const auto& text = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetText ();
-		
+
 		QApplication::clipboard ()->setText (text, QClipboard::Clipboard);
 	}
-	
+
 	void TwitterPage::deleteTwit ()
 	{
 		const auto idx = Ui_.TwitList_->currentItem ();
@@ -567,10 +579,10 @@ namespace Woodpecker
 			return;
 		}
 		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
-		
+
 		Interface_->Delete (twitid);
 	}
-	
+
 	void TwitterPage::makeFavorite ()
 	{
 		const auto idx = Ui_.TwitList_->currentItem ();
@@ -583,7 +595,7 @@ namespace Woodpecker
 
 		Interface_->MakeFavorite (twitid);
 	}
-	
+
 	void TwitterPage::deleteFavorite ()
 	{
 		const auto idx = Ui_.TwitList_->currentItem ();
@@ -594,9 +606,9 @@ namespace Woodpecker
 		}
 		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
 
-		Interface_->DeleteFavorite (twitid);	
+		Interface_->DeleteFavorite (twitid);
 	}
-	
+
 	void TwitterPage::showFavorites ()
 	{
 		const auto idx = Ui_.TwitList_->currentItem ();
@@ -608,17 +620,17 @@ namespace Woodpecker
 		const auto& username = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
 		KQOAuthParameters param;
 		param.insert ("screen_name", username.toUtf8 ().constData ());
-		
+
 		ParentPlugin_->AddTab (ParentPlugin_->FavoriteTC_,
 							   tr ("@%1 favorites").arg (username),
-							   FeedMode::Favorites, param);	
+							   FeedMode::Favorites, param);
 	}
-	
+
 	void TwitterPage::showOwnFavorites ()
 	{
 			ParentPlugin_->AddTab (ParentPlugin_->FavoriteTC_,
 							   tr ("Favorite twits"),
-							   FeedMode::Favorites);	
+							   FeedMode::Favorites);
 	}
 }
 }

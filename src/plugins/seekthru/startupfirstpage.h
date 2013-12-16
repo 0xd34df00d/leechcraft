@@ -27,51 +27,45 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_STARTUPFIRSTPAGE_H
-#define PLUGINS_SEEKTHRU_STARTUPFIRSTPAGE_H
+#pragma once
+
 #include <QWizardPage>
 #include "ui_startupfirstpage.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SeekThru
+{
+	struct EngineInfo
 	{
-		namespace SeekThru
-		{
-			struct EngineInfo
-			{
-				QString ResourceFileName_;
-				QString DefaultTags_;
-				QString Name_;
+		QString ResourceFileName_;
+		QString DefaultTags_;
+		QString Name_;
 
-				EngineInfo (const QString&, const QString&, const QString&);
-			};
-			typedef QList<EngineInfo> EngineInfos_t;
-
-			class StartupFirstPage : public QWizardPage
-			{
-				Q_OBJECT
-
-				Ui::SeekThruStartupFirstPageWidget Ui_;
-				QMap<QString, EngineInfos_t> Sets_;
-				enum
-				{
-					RoleSet = Qt::UserRole + 127,
-					RoleFile
-				};
-			public:
-				StartupFirstPage (QWidget* = 0);
-
-				void initializePage ();
-			private:
-				void Populate (const QString&);
-			private slots:
-				void handleAccepted ();
-				void handleCurrentIndexChanged (const QString&);
-			};
-		};
+		EngineInfo (const QString&, const QString&, const QString&);
 	};
-};
+	typedef QList<EngineInfo> EngineInfos_t;
 
-#endif
+	class StartupFirstPage : public QWizardPage
+	{
+		Q_OBJECT
 
+		Ui::SeekThruStartupFirstPageWidget Ui_;
+		QMap<QString, EngineInfos_t> Sets_;
+		enum
+		{
+			RoleSet = Qt::UserRole + 127,
+			RoleFile
+		};
+	public:
+		StartupFirstPage (QWidget* = 0);
+
+		void initializePage ();
+	private:
+		void Populate (const QString&);
+	private slots:
+		void handleAccepted ();
+		void handleCurrentIndexChanged (const QString&);
+	};
+}
+}

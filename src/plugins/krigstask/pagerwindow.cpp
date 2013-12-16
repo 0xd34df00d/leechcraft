@@ -97,19 +97,19 @@ namespace Krigstask
 
 	class ImageProvider : public QDeclarativeImageProvider
 	{
-		QHash<QString, QImage> Images_;
+		QHash<QString, QPixmap> Images_;
 	public:
 		ImageProvider ()
-		: QDeclarativeImageProvider (QDeclarativeImageProvider::Image)
+		: QDeclarativeImageProvider (Pixmap)
 		{
 		}
 
-		void SetImage (const QString& id, const QImage& px)
+		void SetImage (const QString& id, const QPixmap& px)
 		{
 			Images_ [id] = px;
 		}
 
-		QImage requestImage (const QString& id, QSize *size, const QSize&)
+		QPixmap requestPixmap (const QString& id, QSize *size, const QSize&)
 		{
 			const auto& img = Images_.value (id);
 			if (img.isNull ())
@@ -265,7 +265,7 @@ namespace Krigstask
 		{
 			const auto& widStr = QString::number (wid);
 			WinIconProv_->SetIcon ({ widStr }, w.GetWindowIcon (wid));
-			WinSnapshotProv_->SetImage (widStr, GrabWindow (wid));
+			WinSnapshotProv_->SetImage (widStr, QPixmap::fromImage (GrabWindow (wid)));
 
 			auto item = new QStandardItem;
 			item->setData (w.GetWindowTitle (wid), SingleDesktopModel::Role::WinName);

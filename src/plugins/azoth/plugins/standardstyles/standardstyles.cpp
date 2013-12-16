@@ -30,6 +30,7 @@
 #include "standardstyles.h"
 #include <QIcon>
 #include <interfaces/azoth/iproxyobject.h>
+#include <util/util.h>
 #include "standardstylesource.h"
 
 namespace LeechCraft
@@ -41,6 +42,8 @@ namespace StandardStyles
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Proxy_ = 0;
+
+		Util::InstallTranslator ("azoth_standardstyles");
 	}
 
 	void Plugin::SecondInit ()
@@ -63,7 +66,7 @@ namespace StandardStyles
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Support for standard Azoth chat styles");
+		return tr ("Support for standard Azoth chat styles.");
 	}
 
 	QIcon Plugin::GetIcon () const

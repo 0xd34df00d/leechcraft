@@ -51,6 +51,7 @@ namespace Blogique
 	class DraftEntriesWidget;
 	class BlogEntriesWidget;
 	class TagsProxyModel;
+	class CommentsWidget;
 
 	class BlogiqueWidget : public QWidget
 						, public ITabWidget
@@ -83,6 +84,7 @@ namespace Blogique
 
 		DraftEntriesWidget *DraftEntriesWidget_;
 		BlogEntriesWidget *BlogEntriesWidget_;
+		CommentsWidget *CommentsWidget_;
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_;
 		QList<QWidget*> SidePluginsWidgets_;
@@ -161,7 +163,7 @@ namespace Blogique
 		void submit (const Entry& e = Entry ());
 		void submitTo (const Entry& e = Entry ());
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
-		void on_UpdateProfile__triggered ();
+		void on_ShowProfile__triggered ();
 		void on_CurrentTime__released ();
 		void on_SelectTags__toggled (bool checked);
 		void handleTagTextChanged (const QString& text);

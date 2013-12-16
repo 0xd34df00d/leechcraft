@@ -48,6 +48,8 @@ namespace LMP
 		int CurrentTotal_;
 
 		bool IgnoreNextValChange_;
+
+		bool IsPressed_;
 	public:
 		SeekSlider (SourceObject*, QWidget* = 0);
 	private slots:
@@ -55,6 +57,9 @@ namespace LMP
 		void updateRanges ();
 		void handleStateChanged ();
 		void on_Slider__valueChanged (int);
+
+		void handleSliderPressed ();
+		void handleSliderReleased ();
 	};
 }
 }

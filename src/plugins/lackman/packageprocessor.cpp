@@ -108,8 +108,11 @@ namespace LackMan
 			}
 			else if (fi.isDir ())
 			{
-				const QStringList& entries = QDir (fi.absoluteFilePath ())
-						.entryList (QDir::NoDotAndDotDot | QDir::AllEntries);
+				const auto& entries = QDir (fi.absoluteFilePath ())
+						.entryList (QDir::NoDotAndDotDot |
+								QDir::AllEntries |
+								QDir::Hidden |
+								QDir::System);
 				if (!entries.isEmpty ())
 				{
 #ifndef QT_NO_DEBUG
@@ -129,7 +132,7 @@ namespace LackMan
 							<< fi.path ()
 							<< "; child node:"
 							<< fi.fileName ();
-					QString str = tr ("Could not remove directory %1.")
+					const auto& str = tr ("Could not remove directory %1.")
 							.arg (fi.fileName ());
 					throw std::runtime_error (str.toUtf8 ().constData ());
 				}
@@ -184,8 +187,11 @@ namespace LackMan
 
 		QProcess *unarch = qobject_cast<QProcess*> (sender ());
 		int packageId = unarch->property ("PackageID").toInt ();
-		QString stagingDir = unarch->property ("StagingDirectory").toString ();
+		const auto& stagingDir = unarch->property ("StagingDirectory").toString ();
 		Mode mode = static_cast<Mode> (unarch->property ("Mode").toInt ());
+
+		auto cleanupGuard = std::shared_ptr<void> (nullptr,
+				[&stagingDir, this] (void*) { CleanupDir (stagingDir); });
 
 		if (ret)
 		{
@@ -202,8 +208,6 @@ namespace LackMan
 					.arg (ret)
 					.arg (errString);
 			emit packageInstallError (packageId, errorString);
-
-			CleanupDir (stagingDir);
 
 			return;
 		}
@@ -235,7 +239,6 @@ namespace LackMan
 			QString errorString = tr ("Unable to get directory for the package: %1.")
 					.arg (QString::fromUtf8 (e.what ()));
 			emit packageInstallError (packageId, errorString);
-			CleanupDir (stagingDir);
 			return;
 		}
 
@@ -272,7 +275,6 @@ namespace LackMan
 							"files from staging area to "
 							"destination directory.");
 					emit packageInstallError (packageId, errorString);
-					CleanupDir (stagingDir);
 					return;
 				}
 		}
@@ -522,19 +524,62 @@ namespace LackMan
 					<< newId
 					<< "got exception:"
 					<< e.what ();
-			QString str = tr ("Unable to remove package %1 "
-						"while updating to package %2")
-					.arg (oldId)
-					.arg (newId);
+			const auto& str = tr ("Unable to update package: %1.")
+					.arg (QString::fromUtf8 (e.what ()));
 			emit packageInstallError (newId, str);
 			return false;
 		}
 		return true;
 	}
 
-	void PackageProcessor::CleanupDir (const QString& directory)
+	bool PackageProcessor::CleanupDir (const QString& directory)
 	{
-		// TODO
+#ifndef QT_NO_DEBUG
+		qDebug () << Q_FUNC_INFO
+				<< directory;
+#endif
+
+		QDir dir (directory);
+		for (const auto& subdir : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+			if (!CleanupDir (dir.absoluteFilePath (subdir)))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to cleanup subdir"
+						<< subdir
+						<< "for"
+						<< directory;
+				return false;
+			}
+
+		for (const auto& entry : dir.entryList (QDir::Files | QDir::Hidden | QDir::System))
+			if (!dir.remove (entry))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to remove file"
+						<< entry
+						<< "for dir"
+						<< directory;
+				return false;
+			}
+
+		const auto& dirName = dir.dirName ();
+		if (!dir.cdUp ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot cd up from"
+					<< directory;
+			return false;
+		}
+
+		const auto res = dir.rmdir (dirName);
+		if (!res)
+			qWarning () << Q_FUNC_INFO
+					<< "cannot remove directory"
+					<< dirName
+					<< "from parent"
+					<< dir.absolutePath ();
+
+		return res;
 	}
 }
 }

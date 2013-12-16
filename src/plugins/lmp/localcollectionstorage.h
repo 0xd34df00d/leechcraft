@@ -51,6 +51,7 @@ namespace LMP
 
 		QSqlQuery GetArtists_;
 		QSqlQuery GetAlbums_;
+		QSqlQuery GetAllTracks_;
 
 		QSqlQuery AddArtist_;
 		QSqlQuery AddAlbum_;
@@ -91,6 +92,8 @@ namespace LMP
 		LoadResult Load ();
 		void Load (const LoadResult&);
 
+		QStringList GetTracksPaths ();
+
 		void RemoveTrack (int);
 		void RemoveAlbum (int);
 		void RemoveArtist (int);
@@ -115,7 +118,6 @@ namespace LMP
 
 		Collection::Artists_t GetAllArtists ();
 		QHash<int, Collection::Album_ptr> GetAllAlbums ();
-		QList<Collection::Track> GetAlbumTracks (int);
 
 		void AddArtist (Collection::Artist&);
 		void AddAlbum (const Collection::Artist&, Collection::Album&);

@@ -11,20 +11,17 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (JUICK_SRCS
 	juick.cpp
 	)
-set (JUICK_HEADERS
-	juick.h
-	)
 set (JUICK_RESOURCES
 	juick.qrc
 	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (JUICK_MOC_SRCS ${JUICK_HEADERS})
-endif ()
 QT4_ADD_RESOURCES (JUICK_RCCS ${JUICK_RESOURCES})
 
+CreateTrs ("azoth_juick" "en;ru_RU;uk_UA" JUICK_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_juick" "en;ru_RU" "${JUICK_SRCS}" "" "azothjuicksettings.xml")
+
 add_library (leechcraft_azoth_juick SHARED
+	${JUICK_COMPILED_TRANSLATIONS}
 	${JUICK_SRCS}
-	${JUICK_MOC_SRCS}
 	${JUICK_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_juick

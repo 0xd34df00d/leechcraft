@@ -45,7 +45,7 @@ class QTabBar;
 
 namespace Media
 {
-	struct LyricsQuery;
+	struct LyricsResults;
 }
 
 namespace LeechCraft
@@ -129,7 +129,7 @@ namespace LMP
 		void handleSimilarError ();
 		void handleSimilarReady ();
 
-		void handleGotLyrics (const Media::LyricsQuery&, const QStringList&);
+		void handleGotLyrics (const Media::LyricsResults&);
 
 		void handleScanProgress (int);
 		void showCollectionTrackProps ();

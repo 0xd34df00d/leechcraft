@@ -117,7 +117,7 @@ namespace LeechCraft
 		HandleDockToggled (dw, visible);
 	}
 
-	QSet<QDockWidget*> DockManager::GetWindowDocks (MainWindow *window) const
+	QSet<QDockWidget*> DockManager::GetWindowDocks (const MainWindow *window) const
 	{
 		QSet<QDockWidget*> result;
 		for (auto i = Dock2Info_.begin (); i != Dock2Info_.end (); ++i)

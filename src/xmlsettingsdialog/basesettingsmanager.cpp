@@ -30,6 +30,7 @@
 #include "basesettingsmanager.h"
 #include <QtDebug>
 #include <QTimer>
+#include "settingsthreadmanager.h"
 
 namespace LeechCraft
 {
@@ -152,7 +153,8 @@ namespace Util
 		const auto& propValue = property (name);
 
 		if (!IsInitializing_)
-			GetSettings ()->setValue (propName, propValue);
+			SettingsThreadManager::Instance ().Add (this,
+					propName, propValue);
 
 		PropertyChanged (propName, propValue);
 

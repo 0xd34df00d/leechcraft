@@ -61,7 +61,7 @@ namespace DeadLyrics
 
 		void RequestLyrics (const Media::LyricsQuery&, Media::QueryOptions);
 	signals:
-		void gotLyrics (const Media::LyricsQuery&, const QStringList&);
+		void gotLyrics (const Media::LyricsResults&);
 	};
 }
 }

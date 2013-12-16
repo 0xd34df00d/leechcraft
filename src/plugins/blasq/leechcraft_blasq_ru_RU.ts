@@ -38,27 +38,88 @@
 <context>
     <name>LeechCraft::Blasq::NewAccountWizardFirstPage</name>
     <message>
-        <location filename="newaccountwizardfirstpage.cpp" line="89"/>
+        <location filename="newaccountwizardfirstpage.cpp" line="90"/>
         <source>%1 options</source>
         <translation>Опции %1</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::Blasq::PhotosTab</name>
+    <message>
+        <location filename="photostab.cpp" line="140"/>
+        <source>Upload photos...</source>
+        <translation>Загрузить фото…</translation>
+    </message>
+    <message>
+        <location filename="photostab.cpp" line="414"/>
+        <source>Open in browser</source>
+        <translation>Открыть в браузере</translation>
+    </message>
+    <message>
+        <location filename="photostab.cpp" line="417"/>
+        <source>Download original</source>
+        <translation>Сохранить оригинал</translation>
+    </message>
+    <message>
+        <location filename="photostab.cpp" line="420"/>
+        <source>Copy image URL</source>
+        <translation>Скопировать URL изображения</translation>
+    </message>
+    <message>
+        <location filename="photostab.cpp" line="429"/>
+        <source>Delete</source>
+        <translation>Удалить</translation>
+    </message>
+    <message>
+        <location filename="photostab.cpp" line="436"/>
+        <source>Upload</source>
+        <translation>Загрузить</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Blasq::Plugin</name>
     <message>
-        <location filename="blasq.cpp" line="62"/>
+        <location filename="blasq.cpp" line="66"/>
         <source>Blasq</source>
         <translation>Blasq</translation>
     </message>
     <message>
-        <location filename="blasq.cpp" line="63"/>
+        <location filename="blasq.cpp" line="67"/>
         <source>All the photos stored in the cloud</source>
         <translation>Все фотографии, хранящиеся в облаке</translation>
     </message>
     <message>
-        <location filename="blasq.cpp" line="92"/>
+        <location filename="blasq.cpp" line="98"/>
         <source>Client for cloud image storage services like Flickr or Picasa.</source>
         <translation>Клиент для облачных хранилищ изображений вроде Flickr или Picasa.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Blasq::UploadPhotosDialog</name>
+    <message>
+        <location filename="uploadphotosdialog.cpp" line="59"/>
+        <source>Photo</source>
+        <translation>Фото</translation>
+    </message>
+    <message>
+        <location filename="uploadphotosdialog.cpp" line="59"/>
+        <source>Size</source>
+        <translation>Размер</translation>
+    </message>
+    <message>
+        <location filename="uploadphotosdialog.cpp" line="59"/>
+        <source>Description</source>
+        <translation>Описание</translation>
+    </message>
+    <message>
+        <location filename="uploadphotosdialog.cpp" line="110"/>
+        <source>Select photos to upload</source>
+        <translation>Выберите фото для загрузки</translation>
+    </message>
+    <message>
+        <location filename="uploadphotosdialog.cpp" line="112"/>
+        <source>Images (*.jpg *.png *.gif);;All files (*.*)</source>
+        <translation>Изображения (*.jpg *.png *.gif);;Все файлы (*.*)</translation>
     </message>
 </context>
 <context>
@@ -82,6 +143,52 @@
         <location filename="newaccountwizardfirstpage.ui" line="36"/>
         <source>Service:</source>
         <translation>Сервис:</translation>
+    </message>
+</context>
+<context>
+    <name>SelectAlbumDialog</name>
+    <message>
+        <location filename="selectalbumdialog.ui" line="14"/>
+        <source>Select album</source>
+        <translation>Выберите альбом</translation>
+    </message>
+    <message>
+        <location filename="selectalbumdialog.ui" line="38"/>
+        <source>Add...</source>
+        <translation>Добавить...</translation>
+    </message>
+</context>
+<context>
+    <name>UploadPhotosDialog</name>
+    <message>
+        <location filename="uploadphotosdialog.ui" line="14"/>
+        <source>Upload photos</source>
+        <translation>Загрузить фото</translation>
+    </message>
+    <message>
+        <location filename="uploadphotosdialog.ui" line="22"/>
+        <source>Album:</source>
+        <translation>Альбом:</translation>
+    </message>
+    <message>
+        <location filename="uploadphotosdialog.ui" line="38"/>
+        <source>Select...</source>
+        <translation>Выбрать…</translation>
+    </message>
+    <message>
+        <location filename="uploadphotosdialog.ui" line="50"/>
+        <source>Photos:</source>
+        <translation>Фото:</translation>
+    </message>
+    <message>
+        <location filename="uploadphotosdialog.ui" line="95"/>
+        <source>Add...</source>
+        <translation>Добавить...</translation>
+    </message>
+    <message>
+        <location filename="uploadphotosdialog.ui" line="105"/>
+        <source>Remove</source>
+        <translation>Удалить</translation>
     </message>
 </context>
 </TS>

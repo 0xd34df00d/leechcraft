@@ -75,7 +75,6 @@ namespace LMP
 		void handleImageScaled ();
 
 		void handleAlbumPreviewRequested (int);
-		void handleLink (const QString&);
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
 	};

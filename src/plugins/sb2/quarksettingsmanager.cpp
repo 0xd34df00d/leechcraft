@@ -42,6 +42,16 @@ namespace SB2
 	, Ctx_ (ctx)
 	{
 		Util::BaseSettingsManager::Init ();
+
+		Ctx_->setContextProperty (QFileInfo (QuarkURL_.path ()).baseName () + "_Settings", this);
+	}
+
+	void QuarkSettingsManager::setSettingsValue (const QString& key, const QVariant& value)
+	{
+		auto s = GetSettings ();
+		s->setValue (key, value);
+
+		PropertyChanged (key, value);
 	}
 
 	QSettings* QuarkSettingsManager::BeginSettings () const
@@ -64,10 +74,13 @@ namespace SB2
 		{
 			if (val == "true" || val == "false")
 				val = val.toBool ();
-			else if (val.canConvert<double> ())
-				val = val.toDouble ();
-			else if (val.canConvert<int> ())
-				val = val.toInt ();
+			else
+			{
+				bool ok = false;
+				auto tempVal = val.toDouble (&ok);
+				if (ok)
+					val = tempVal;
+			}
 		}
 		Ctx_->setContextProperty (name.toUtf8 ().constData (), val);
 	}

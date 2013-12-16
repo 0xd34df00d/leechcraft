@@ -2,6 +2,12 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_otlozhu)
 include (InitLCPlugin OPTIONAL)
 
+option (ENABLE_OTLOZHU_SYNC "Enable synchronization support for Otlozhu" ON)
+
+if (NOT ENABLE_OTLOZHU_SYNC)
+	add_definitions (-DDISABLE_SYNC=1)
+endif ()
+
 set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
 include_directories (
@@ -24,10 +30,19 @@ set (SRCS
 	icalgenerator.cpp
 	icalparser.cpp
 	itemsmergedialog.cpp
-	syncproxy.cpp
-	stager.cpp
-	stagerhandler.cpp
 	)
+
+set (LARETZ_LIB)
+if (ENABLE_OTLOZHU_SYNC)
+	set (SRCS
+		${SRCS}
+		syncproxy.cpp
+		stager.cpp
+		stagerhandler.cpp
+		)
+	set (LARETZ_LIB laretz_ops)
+endif ()
+
 set (FORMS
 	todotab.ui
 	addtododialog.ui
@@ -37,6 +52,7 @@ set (RESOURCES otlozhuresources.qrc)
 CreateTrs ("otlozhu" "en;ru_RU" COMPILED_TRANSLATIONS)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+add_definitions (-DBOOST_SPIRIT_USE_PHOENIX_V3)
 
 add_library (leechcraft_otlozhu SHARED
 	${COMPILED_TRANSLATIONS}
@@ -48,7 +64,7 @@ add_library (leechcraft_otlozhu SHARED
 target_link_libraries (leechcraft_otlozhu
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	laretz_ops
+	${LARETZ_LIB}
 	)
 install (TARGETS leechcraft_otlozhu DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

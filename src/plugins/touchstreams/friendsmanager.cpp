@@ -32,13 +32,17 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QStandardItem>
+#include <QIcon>
 #include <QTimer>
 #include <QtDebug>
 #include <qjson/parser.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <util/svcauth/vkauthmanager.h>
+#include <util/svcauth/vkcaptchadialog.h>
 #include <util/queuemanager.h>
+#include <util/util.h>
 #include "albumsmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -60,6 +64,7 @@ namespace TouchStreams
 	, Queue_ (queueMgr)
 	, Root_ (new QStandardItem (tr ("VKontakte: friends")))
 	{
+		Root_->setIcon (QIcon (":/touchstreams/resources/images/vk.svg"));
 		Root_->setEditable (false);
 
 		AuthMgr_->ManageQueue (&RequestQueue_);
@@ -67,6 +72,9 @@ namespace TouchStreams
 		QTimer::singleShot (1000,
 				this,
 				SLOT (refetchFriends ()));
+
+		XmlSettingsManager::Instance ().RegisterObject ("RequestFriendsData",
+				this, "refetchFriends");
 	}
 
 	QStandardItem* FriendsManager::GetRootItem () const
@@ -101,8 +109,12 @@ namespace TouchStreams
 
 	void FriendsManager::refetchFriends ()
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("RequestFriendsData").toBool ())
+			return;
+
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		RequestQueue_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+		RequestQueue_.push_back ([this, nam] (const QString& key) -> void
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
 				friendsUrl.addQueryItem ("access_token", key);
@@ -113,8 +125,8 @@ namespace TouchStreams
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleGotFriends ()));
-				return reply;
 			});
+		AuthMgr_->GetAuthKey ();
 	}
 
 	FriendsManager::~FriendsManager ()
@@ -129,13 +141,153 @@ namespace TouchStreams
 
 		const auto& data = QJson::Parser ().parse (reply).toMap ();
 		auto usersList = data ["response"].toList ();
+
+		QList<qlonglong> ids;
+		QMap<qlonglong, QVariantMap> user2info;
 		for (const auto& userVar : usersList)
 		{
 			const auto& map = userVar.toMap ();
-
 			const auto id = map ["user_id"].toLongLong ();
+			ids << id;
+			user2info [id] = map;
+		}
 
-			auto mgr = new AlbumsManager (id, AuthMgr_, Queue_, Proxy_, this);
+		const auto portion = 10;
+		for (int i = 0; i < ids.size (); i += portion)
+		{
+			QStringList sub;
+			QMap<qlonglong, QVariantMap> theseUsersMap;
+			for (int j = i; j < std::min (ids.size (), i + portion); ++j)
+			{
+				sub << QString::number (ids.at (j));
+				theseUsersMap [ids.at (j)] = user2info [ids.at (j)];
+			}
+
+			const auto& code = QString (R"d(
+					var ids = [%1];
+					var i = 0;
+					var res = [];
+					while (i < %2)
+					{
+						var id = ids [i];
+						var albs = API.audio.getAlbums ({ "uid": id, "count": 100 });
+						var trs = API.audio.get ({ "uid": id, "count": 1000 });
+						res = res + [{ "id": id, "albums": albs, "tracks": trs }];
+						i = i + 1;
+					};
+					return res;
+				)d")
+					.arg (sub.join (","))
+					.arg (sub.size ());
+
+			auto nam = Proxy_->GetNetworkAccessManager ();
+			RequestQueue_.push_back ([this, nam, code, theseUsersMap] (const QString& key) -> void
+				{
+					auto f = [=] (const QMap<QString, QString>& map) -> QNetworkReply*
+					{
+						QUrl url ("https://api.vk.com/method/execute");
+
+						auto query = "access_token=" + QUrl::toPercentEncoding (key.toUtf8 ());
+						query += '&';
+						query += "code=" + QUrl::toPercentEncoding (code.toUtf8 ());
+
+						for (auto i = map.begin (); i != map.end (); ++i)
+							query += '&' + i.key () + '=' + QUrl::toPercentEncoding (i->toUtf8 ());
+
+						QNetworkRequest req (url);
+						req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+						auto reply = nam->post (req, query);
+						connect (reply,
+								SIGNAL (finished ()),
+								this,
+								SLOT (handleExecuted ()));
+
+						Reply2Users_ [reply] = theseUsersMap;
+
+						return reply;
+					};
+					Reply2Func_ [f ({})] = f;
+				});
+		}
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void FriendsManager::handleCaptchaEntered (const QString& cid, const QString& value)
+	{
+		if (Queue_->IsPaused ())
+			Queue_->Resume ();
+
+		if (!CaptchaReplyMaker_)
+			return;
+
+		if (value.isEmpty ())
+			return;
+
+		decltype (CaptchaReplyMaker_) maker;
+		std::swap (maker, CaptchaReplyMaker_);
+		Queue_->Schedule ([cid, value, maker, this] () -> void
+				{
+					const auto& map = Util::MakeMap<QString, QString> ({
+							{ "captcha_sid", cid },
+							{ "captcha_key", value }
+						});
+					Reply2Func_ [maker (map)] = maker;
+				},
+				nullptr,
+				Util::QueuePriority::High);
+	}
+
+	void FriendsManager::handleExecuted ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& usersMap = Reply2Users_.take (reply);
+		const auto& reqFunc = Reply2Func_.take (reply);
+
+		const auto& data = QJson::Parser ().parse (reply).toMap ();
+
+		if (data.contains ("error"))
+		{
+			const auto& errMap = data ["error"].toMap ();
+			if (errMap ["error_code"].toULongLong () == 14)
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "captcha requested";
+				if (Queue_->IsPaused ())
+					return;
+
+				Queue_->Pause ();
+
+				auto captchaDialog = new Util::SvcAuth::VkCaptchaDialog (errMap,
+						Proxy_->GetNetworkAccessManager ());
+				captchaDialog->show ();
+				connect (captchaDialog,
+						SIGNAL (gotCaptcha (QString, QString)),
+						this,
+						SLOT (handleCaptchaEntered (QString, QString)));
+				CaptchaReplyMaker_ = std::move (reqFunc);
+			}
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error"
+						<< errMap;
+				return;
+			}
+		}
+
+		for (const auto& userDataVar : data ["response"].toList ())
+		{
+			const auto& userData = userDataVar.toMap ();
+
+			const auto id = userData ["id"].toLongLong ();
+
+			const auto& map = usersMap [id];
+
+			auto mgr = new AlbumsManager (id, userData ["albums"], userData ["tracks"],
+					AuthMgr_, Queue_, Proxy_, this);
+
 			Friend2AlbumsManager_ [id] = mgr;
 
 			const auto& name = map ["first_name"].toString () + " " + map ["last_name"].toString ();
@@ -147,10 +299,7 @@ namespace TouchStreams
 			Root_->appendRow (userItem);
 			Friend2Item_ [id] = userItem;
 
-			connect (mgr,
-					SIGNAL (finished (AlbumsManager*)),
-					this,
-					SLOT (handleAlbumsFinished (AlbumsManager*)));
+			handleAlbumsFinished (mgr);
 		}
 	}
 

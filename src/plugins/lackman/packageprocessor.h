@@ -91,7 +91,7 @@ namespace LackMan
 		bool HandleEntry (int id, const QFileInfo& fi,
 				const QString& stagingDir, QDir& packageDir);
 		bool CleanupBeforeUpdate (int oldId, int toId);
-		void CleanupDir (const QString&);
+		bool CleanupDir (const QString&);
 	signals:
 		void packageInstallError (int, const QString&);
 		void packageInstalled (int);

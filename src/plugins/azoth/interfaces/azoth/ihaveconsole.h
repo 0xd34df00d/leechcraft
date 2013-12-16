@@ -56,39 +56,39 @@ namespace Azoth
 		
 		/** @brief Defines the format of the packets in this protocol.
 		 */
-		enum PacketFormat
+		enum class PacketFormat
 		{
 			/** @brief XML packets (like in XMPP).
 			 * 
 			 * The packets would be represented as formatted XML text.
 			 */
-			PFXML,
+			XML,
 			
 			/** @brief Plain text packets (like in IRC).
 			 * 
 			 * The packets would be represented as unformatted plain
 			 * text.
 			 */
-			PFPlainText,
+			PlainText,
 			
 			/** @brief Binary packets (like in Oscar).
 			 * 
 			 * The packets would be converted to Base64 or Hex-encoding.
 			 */
-			PFBinary
+			Binary
 		};
 		
 		/** @brief Defines the direction of a packet.
 		 */
-		enum PacketDirection
+		enum class PacketDirection
 		{
 			/** @brief Incoming packet.
 			 */
-			PDIn,
+			In,
 			
 			/** @brief Outgoing packet.
 			 */
-			PDOut
+			Out
 		};
 
 		/** @brief Returns the packet format used in this account.
@@ -132,7 +132,7 @@ namespace Azoth
 		 * entry, or null string if not applicable.
 		 */
 		virtual void gotConsolePacket (const QByteArray& packet,
-				int direction, const QString& hrEntryId) = 0;
+				PacketDirection direction, const QString& hrEntryId) = 0;
 	};
 }
 }

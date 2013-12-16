@@ -100,10 +100,10 @@ namespace AdvancedNotifications
 				continue;
 
 			bool fieldsMatch = true;
-			Q_FOREACH (const FieldMatch& match, rule.GetFieldMatches ())
+			for (const auto& match : rule.GetFieldMatches ())
 			{
 				const QString& fieldName = match.GetFieldName ();
-				const TypedMatcherBase_ptr matcher = match.GetMatcher ();
+				const auto& matcher = match.GetMatcher ();
 				if (!matcher->Match (e.Additional_ [fieldName]))
 				{
 					fieldsMatch = false;

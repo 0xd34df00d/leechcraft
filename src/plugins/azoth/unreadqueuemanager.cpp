@@ -35,6 +35,11 @@
 #include "core.h"
 #include "chattabsmanager.h"
 
+uint qHash (const QPointer<QObject>& ptr)
+{
+	return qHash (ptr.data ());
+}
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -50,6 +55,13 @@ namespace Azoth
 		QObject *entryObj = msg->ParentCLEntry ();
 		if (!Queue_.contains (entryObj))
 			Queue_ << entryObj;
+
+		UnreadMessages_ << msgObj;
+	}
+
+	bool UnreadQueueManager::IsMessageRead (QObject *msgObj) const
+	{
+		return !UnreadMessages_.contains (msgObj);
 	}
 
 	void UnreadQueueManager::ShowNext ()
@@ -61,7 +73,7 @@ namespace Azoth
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry);
+		auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 		const auto idx = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (chatWidget));
@@ -77,6 +89,14 @@ namespace Azoth
 	void UnreadQueueManager::clearMessagesForEntry (QObject *entryObj)
 	{
 		Queue_.removeAll (entryObj);
+
+		for (auto pos = UnreadMessages_.begin (); pos != UnreadMessages_.end (); )
+			if (!*pos || qobject_cast<IMessage*> (*pos)->ParentCLEntry () == entryObj)
+				pos = UnreadMessages_.erase (pos);
+			else
+				++pos;
+
+		emit messagesCleared (entryObj);
 	}
 }
 }

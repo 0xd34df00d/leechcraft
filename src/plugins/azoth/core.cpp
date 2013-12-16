@@ -205,6 +205,7 @@ namespace Azoth
 	, CLModel_ (new CLModel (this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, ActionsManager_ (new ActionsManager (this))
+	, Avatar2TooltipSrcCache_ (2 * 1024 * 1024)
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
@@ -256,10 +257,6 @@ namespace Azoth
 			rl->SetCacheParams (1000, 0);
 		}
 
-		connect (ChatTabsManager_,
-				SIGNAL (clearUnreadMsgCount (QString)),
-				this,
-				SLOT (handleClearUnreadMsgCount (QString)));
 		connect (this,
 				SIGNAL (hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)),
 				ChatTabsManager_,
@@ -280,6 +277,11 @@ namespace Azoth
 				SIGNAL (entryMadeCurrent (QObject*)),
 				UnreadQueueManager_.get (),
 				SLOT (clearMessagesForEntry (QObject*)));
+
+		connect (UnreadQueueManager_.get (),
+				SIGNAL (messagesCleared (QObject*)),
+				this,
+				SLOT (handleClearUnreadMsgCount (QObject*)));
 
 		PluginManager_->RegisterHookable (this);
 		PluginManager_->RegisterHookable (CLModel_);
@@ -381,6 +383,11 @@ namespace Azoth
 	CustomChatStyleManager* Core::GetCustomChatStyleManager () const
 	{
 		return CustomChatStyleManager_.get ();
+	}
+
+	UnreadQueueManager* Core::GetUnreadQueueManager () const
+	{
+		return UnreadQueueManager_.get ();
 	}
 
 	void Core::AddPlugin (QObject *plugin)
@@ -833,15 +840,23 @@ namespace Azoth
 		src->FrameFocused (frame);
 	}
 
-	QList<QColor> Core::GenerateColors (const QString& coloring) const
+	QList<QColor> Core::GenerateColors (const QString& coloring, QColor bg) const
 	{
-		auto fix = [] (qreal h) -> qreal
+		auto compatibleColors = [] (const QColor& c1, const QColor& c2) -> bool
 		{
-			while (h < 0)
-				h += 1;
-			while (h >= 1)
-				h -= 1;
-			return h;
+			int dR = c1.red () - c2.red ();
+			int dG = c1.green () - c2.green ();
+			int dB = c1.blue () - c2.blue ();
+
+			double dV = std::abs (c1.value () - c2.value ());
+			double dC = std::sqrt (0.2126 * dR * dR + 0.7152 * dG * dG + 0.0722 * dB * dB);
+
+			if ((dC < 80. && dV > 100.) ||
+					(dC < 110. && dV <= 100. && dV > 10.) ||
+					(dC < 125. && dV <= 10.))
+				return false;
+
+			return true;
 		};
 
 		QList<QColor> result;
@@ -853,35 +868,26 @@ namespace Azoth
 				return result;
 		}
 
-		if (coloring == "hash" ||
-				coloring.isEmpty ())
+		if (coloring == "hash" || coloring.isEmpty ())
 		{
-			const QColor& bg = QApplication::palette ().color (QPalette::Base);
+			if (!bg.isValid ())
+				bg = QApplication::palette ().color (QPalette::Base);
 
-			const qreal lower = 25. / 360.;
-			const qreal delta = 50. / 360.;
-			const qreal higher = 180. / 360. - delta / 2;
-
-			const qreal alpha = bg.alphaF ();
-
-			qreal h = bg.hueF ();
+			int alpha = bg.alpha ();
 
 			QColor color;
-			for (qreal d = lower; d <= higher; d += delta)
+			for (int hue = 0; hue < 360; hue += 18)
 			{
-				color.setHsvF (fix (h + d), 1, 0.6, alpha);
-				result << color;
-				color.setHsvF (fix (h - d), 1, 0.6, alpha);
-				result << color;
-				color.setHsvF (fix (h + d), 1, 0.9, alpha);
-				result << color;
-				color.setHsvF (fix (h - d), 1, 0.9, alpha);
-				result << color;
+				color.setHsv (hue, 255, 255, alpha);
+				if (compatibleColors (color, bg))
+					result << color;
+				color.setHsv (hue, 255, 170, alpha);
+				if (compatibleColors (color, bg))
+					result << color;
 			}
 		}
 		else
-			Q_FOREACH (const QString& str,
-					coloring.split (' ', QString::SkipEmptyParts))
+			for (const auto& str : coloring.split (' ', QString::SkipEmptyParts))
 				result << QColor (str);
 
 		return result;
@@ -1007,35 +1013,51 @@ namespace Azoth
 		if (!src)
 			return body;
 
+		const bool requireSpace = XmlSettingsManager::Instance ()
+				.property ("RequireSpaceBeforeSmiles").toBool ();
+
 		const QString& img = QString ("<img src=\"%2\" title=\"%1\" />");
-		QList<QByteArray> rawDatas;
-		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
+		QMap<int, QString> pos2smile;
+		for (const auto& str : src->GetEmoticonStrings (pack))
 		{
-			const QString& escaped = Qt::escape (str);
-			if (!body.contains (escaped))
-				continue;
+			const auto& escaped = Qt::escape (str);
+			int pos = 0;
+			while ((pos = body.indexOf (escaped, pos)) != -1)
+			{
+				const bool isOk = !pos ||
+						!requireSpace ||
+						(requireSpace && pos && body [pos - 1].isSpace ());
+				if (isOk)
+					pos2smile [pos] = str;
 
-			bool safeReplace = true;
-			Q_FOREACH (const QByteArray& rd, rawDatas)
-				if (rd.indexOf (escaped) != -1)
-				{
-					safeReplace = false;
-					break;
-				}
-			if (!safeReplace)
-				continue;
+				pos += escaped.size ();
+			}
+		}
 
-			const QByteArray& rawData = src->GetImage (pack, str).toBase64 ();
-			rawDatas << rawData;
-			const QString& smileStr = img
+		if (pos2smile.isEmpty ())
+			return body;
+
+		for (auto i = pos2smile.begin (); i != pos2smile.end (); ++i)
+			for (int j = 1; j < Qt::escape (i.value ()).size (); ++j)
+				pos2smile.remove (i.key () + j);
+
+		QList<QPair<int, QString>> reversed;
+		reversed.reserve (pos2smile.size ());
+		for (auto i = pos2smile.begin (); i != pos2smile.end (); ++i)
+			reversed.push_front ({ i.key (), i.value () });
+
+		for (const auto& pair : reversed)
+		{
+			const auto& str = pair.second;
+			const auto& escaped = Qt::escape (str);
+
+			const auto& rawData = src->GetImage (pack, str).toBase64 ();
+
+			const auto& smileStr = img
 					.arg (str)
 					.arg (QString ("data:image/png;base64," + rawData));
-			if (body.startsWith (escaped))
-				body.replace (0, escaped.size (), smileStr);
 
-			auto whites = { " ", "\n", "\t", "<br/>", "<br />", "<br>" };
-			Q_FOREACH (auto white, whites)
-				body.replace (white + escaped, white + smileStr);
+			body.replace (pair.first, escaped.size (), smileStr);
 		}
 
 		return body;
@@ -1073,7 +1095,7 @@ namespace Azoth
 		connect (clEntry->GetQObject (),
 				SIGNAL (availableVariantsChanged (QStringList)),
 				this,
-				SLOT (handleVariantsChanged (QStringList)));
+				SLOT (handleVariantsChanged ()));
 		connect (clEntry->GetQObject (),
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
@@ -1297,24 +1319,35 @@ namespace Azoth
 		}
 	}
 
-	QString Core::MakeTooltipString (ICLEntry *entry) const
+	QString Core::MakeTooltipString (ICLEntry *entry)
 	{
 		QString tip = "<table border='0'><tr><td>";
 
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 		{
 			const int avatarSize = 75;
-			const int minAvatarSize = 32;
+
 			auto avatar = entry->GetAvatar ();
 			if (avatar.isNull ())
 				avatar = GetDefaultAvatar (avatarSize);
 
-			if (std::max (avatar.width (), avatar.height ()) > avatarSize)
-				avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::FastTransformation);
-			else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
-				avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			tip += "<img src='" + Util::GetAsBase64Src (avatar) + "' />";
+			QString data;
+			if (auto dataPtr = Avatar2TooltipSrcCache_ [avatar])
+				data = *dataPtr;
+			else
+			{
+				const int minAvatarSize = 32;
 
+				if (std::max (avatar.width (), avatar.height ()) > avatarSize)
+					avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::FastTransformation);
+				else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
+					avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+				data = Util::GetAsBase64Src (avatar);
+				Avatar2TooltipSrcCache_.insert (avatar, new QString (data), data.size ());
+			}
+
+			tip += "<img src='" + data + "' />";
 			tip += "</td><td>";
 		}
 
@@ -1363,11 +1396,11 @@ namespace Azoth
 
 		auto cleanupBR = [&tip] ()
 		{
-			tip = tip.simplified ();
+			tip = tip.trimmed ();
 			while (tip.endsWith ("<br />"))
 			{
 				tip.chop (6);
-				tip = tip.simplified ();
+				tip = tip.trimmed ();
 			}
 		};
 
@@ -1538,12 +1571,20 @@ namespace Azoth
 
 	void Core::IncreaseUnreadCount (ICLEntry* entry, int amount)
 	{
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_ [entry])
 			{
 				int prevValue = item->data (CLRUnreadMsgCount).toInt ();
 				item->setData (std::max (0, prevValue + amount), CLRUnreadMsgCount);
 				RecalculateUnreadForParents (item);
 			}
+	}
+
+	int Core::GetUnreadCount (ICLEntry *entry) const
+	{
+		const auto item = Entry2Items_.value (entry).value (0);
+		return item ?
+				item->data (CLRUnreadMsgCount).toInt () :
+				0;
 	}
 
 	namespace
@@ -2354,7 +2395,7 @@ namespace Azoth
 		HandleStatusChanged (status, entry, variant, true);
 	}
 
-	void Core::handleVariantsChanged (const QStringList& newVariants)
+	void Core::handleVariantsChanged ()
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		if (!entry)
@@ -2625,7 +2666,7 @@ namespace Azoth
 
 		auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
-				[parentCL, this] () { ChatTabsManager_->OpenChat (parentCL); });
+				[parentCL, this] { ChatTabsManager_->OpenChat (parentCL, true); });
 		nh->AddDependentObject (parentCL->GetQObject ());
 
 		emit gotEntity (e);
@@ -2708,7 +2749,7 @@ namespace Azoth
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
-				[entry, this] () { ChatTabsManager_->OpenChat (entry); });
+				[entry, this] { ChatTabsManager_->OpenChat (entry, true); });
 		nh->AddDependentObject (entry->GetQObject ());
 
 		emit gotEntity (e);
@@ -3015,16 +3056,15 @@ namespace Azoth
 			item->setText (entry->GetEntryName ());
 	}
 
-	void Core::handleClearUnreadMsgCount (const QString& entryID)
+	void Core::handleClearUnreadMsgCount (QObject *entryObj)
 	{
-		if (ID2Entry_.contains (entryID))
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto& entryID = entry->GetEntryID ();
+
+		for (QStandardItem *item : Entry2Items_ [entry])
 		{
-			auto entry = qobject_cast<ICLEntry*> (GetEntry (entryID));
-			for (QStandardItem *item : Entry2Items_ [entry])
-			{
-				item->setData (0, CLRUnreadMsgCount);
-				RecalculateUnreadForParents (item);
-			}
+			item->setData (0, CLRUnreadMsgCount);
+			RecalculateUnreadForParents (item);
 		}
 
 		Entity e = Util::MakeNotification ("Azoth", QString (), PInfo_);

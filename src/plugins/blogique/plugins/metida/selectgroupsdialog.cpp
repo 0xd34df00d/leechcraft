@@ -69,6 +69,11 @@ namespace Metida
 		return result;
 	}
 
+	void SelectGroupsDialog::SetHeaderLabel (const QString& text)
+	{
+		Ui_.DialogHeaderLabel_->setText (text);
+	}
+
 }
 }
 }

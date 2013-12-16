@@ -80,7 +80,11 @@ namespace Hestia
 		void RequestStatistics ();
 		void RequestTags ();
 		void GetEntriesByDate (const QDate& date);
-		void GetEntriesWithFilter(const Filter& filter);
+		void GetEntriesWithFilter (const Filter& filter);
+
+		void RequestRecentComments ();
+		void AddComment (const CommentEntry& comment);
+		void DeleteComment (qint64 id, bool deleteThread = false);
 
 		QHash<QString, int> GetTags () const;
 
@@ -115,6 +119,8 @@ namespace Hestia
 		void gettingFilteredEntriesFinished();
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 		void tagsUpdated (const QHash<QString, int>& tags);
+		void gotRecentComments (const QList<CommentEntry>& comments);
+		void commentsDeleted (const QList<qint64>& comments);
 
 		void gotError(int errorCode, const QString& errorString,
 				const QString& localizedErrorString = QString ());

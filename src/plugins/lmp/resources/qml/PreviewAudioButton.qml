@@ -8,7 +8,7 @@ Image {
     smooth: true
     fillMode: Image.PreserveAspectFit
 
-    source: "image://sysIcons/preferences-desktop-sound"
+    source: "image://sysIcons/media-playback-start"
 
     signal clicked()
 

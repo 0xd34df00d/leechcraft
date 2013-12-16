@@ -327,7 +327,7 @@ namespace Xoox
 		void gotSubscriptionRequest (QObject*, const QString&);
 		void gotMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
-		void gotConsoleLog (const QByteArray&, int, const QString&);
+		void gotConsoleLog (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 
 		void gotRequestedPosts (const QList<LeechCraft::Azoth::Post>&, const QString&);
 		void gotNewPost (const LeechCraft::Azoth::Post&);

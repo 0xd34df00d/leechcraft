@@ -182,7 +182,6 @@ namespace Xoox
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
-		void messagesAreRead ();
 
 		void chatTabClosed ();
 

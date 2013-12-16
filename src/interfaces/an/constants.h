@@ -41,13 +41,13 @@ namespace AN
 	const QString CatIM = "org.LC.AdvNotifications.IM";
 	/** @brief Another user has requested our user's attention.
 	 */
-	const QString TypeIMAttention = "org.LC.AdvNotifications.IM.AttentionDrawn";
+	const QString TypeIMAttention = CatIM + ".AttentionDrawn";
 	/** @brief Another user has sent our user a file.
 	 */
-	const QString TypeIMIncFile = "org.LC.AdvNotifications.IM.IncomingFile";
+	const QString TypeIMIncFile = CatIM + ".IncomingFile";
 	/** @brief User has received a message in a standard one-to-one chat.
 	 */
-	const QString TypeIMIncMsg = "org.LC.AdvNotifications.IM.IncomingMessage";
+	const QString TypeIMIncMsg = CatIM + ".IncomingMessage";
 	/** @brief User has been highlighted in a multiuser chat.
 	 *
 	 * The primary difference from TypeIMMUCMsg is that our user must be
@@ -55,10 +55,10 @@ namespace AN
 	 *
 	 * @sa TypeIMMUCMsg
 	 */
-	const QString TypeIMMUCHighlight = "org.LC.AdvNotifications.IM.MUCHighlightMessage";
+	const QString TypeIMMUCHighlight = CatIM + ".MUCHighlightMessage";
 	/** @brief User has been invited to a multiuser chat.
 	 */
-	const QString TypeIMMUCInvite = "org.LC.AdvNotifications.IM.MUCInvitation";
+	const QString TypeIMMUCInvite = CatIM + ".MUCInvitation";
 	/** @brief A message has been sent to a multiuser chat.
 	 *
 	 * This event should be emitted for each MUC message, even for those
@@ -66,58 +66,66 @@ namespace AN
 	 *
 	 * @sa TypeIMMUCHighlight
 	 */
-	const QString TypeIMMUCMsg = "org.LC.AdvNotifications.IM.MUCMessage";
+	const QString TypeIMMUCMsg = CatIM + ".MUCMessage";
 	/** @brief Another user in our user's contact list has changed its
 	 * status.
 	 */
-	const QString TypeIMStatusChange = "org.LC.AdvNotifications.IM.StatusChange";
+	const QString TypeIMStatusChange = CatIM + ".StatusChange";
 	/** @brief Another user has granted subscription to our user.
 	 */
-	const QString TypeIMSubscrGrant = "org.LC.AdvNotifications.IM.Subscr.Granted";
+	const QString TypeIMSubscrGrant = CatIM + ".Subscr.Granted";
 	/** @brief Another user has revoked subscription from our user.
 	 */
-	const QString TypeIMSubscrRevoke = "org.LC.AdvNotifications.IM.Subscr.Revoked";
+	const QString TypeIMSubscrRevoke = CatIM + ".Subscr.Revoked";
 	/** @brief Another user has requested subscription from our user.
 	 */
-	const QString TypeIMSubscrRequest = "org.LC.AdvNotifications.IM.Subscr.Requested";
+	const QString TypeIMSubscrRequest = CatIM + ".Subscr.Requested";
 	/** @brief Another user has subscribed to our user.
 	 */
-	const QString TypeIMSubscrSub = "org.LC.AdvNotifications.IM.Subscr.Subscribed";
+	const QString TypeIMSubscrSub = CatIM + ".Subscr.Subscribed";
 	/** @brief Another user has unsubscribed from our user.
 	 */
-	const QString TypeIMSubscrUnsub = "org.LC.AdvNotifications.IM.Subscr.Unsubscribed";
+	const QString TypeIMSubscrUnsub = CatIM + ".Subscr.Unsubscribed";
 
 	/** @brief Category of Organizer-related events.
 	 */
 	const QString CatOrganizer = "org.LC.AdvNotifications.Organizer";
 	/** @brief An event due date is coming.
 	 */
-	const QString TypeOrganizerEventDue = "org.LC.AdvNotifications.Organizer.EventDue";
+	const QString TypeOrganizerEventDue = CatOrganizer + ".EventDue";
 
 	/** @brief Category of Downloads-related events.
 	 */
 	const QString CatDownloads = "org.LC.AdvNotifications.Downloads";
 	/** @brief A download has been finished successfully without errors.
 	 */
-	const QString TypeDownloadFinished = "org.LC.AdvNotifications.Downloads.DownloadFinished";
+	const QString TypeDownloadFinished = CatDownloads + ".DownloadFinished";
 	/** @brief A download has been failed.
 	 */
-	const QString TypeDownloadError = "org.LC.AdvNotifications.Downloads.DownloadError";
+	const QString TypeDownloadError = CatDownloads + ".DownloadError";
 
 	/** @brief Category of package manager-related events.
 	 */
 	const QString CatPackageManager = "org.LC.AdvNotifications.PackageManager";
 	/** @brief A package has been updated.
 	 */
-	const QString TypePackageUpdated = "org.LC.AdvNotifications.PackageManager.PackageUpdated";
+	const QString TypePackageUpdated = CatPackageManager + ".PackageUpdated";
+
+	/** @brief Category of media player-related events.
+	 */
+	const QString CatMediaPlayer = "org.LC.AdvNotifications.MediaPlayer";
+
+	/** @brief A media file playback status has been changed.
+	 */
+	const QString TypeMediaPlaybackStatus = CatMediaPlayer + ".PlaybackStatus";
 
 	/** @brief Generic notifications that don't fit into any other category.
 	 */
 	const QString CatGeneric = "org.LC.AdvNotifications.Generic";
 
-	/** @brief Generic category for generic notifications.
+	/** @brief Generic type for generic notifications.
 	 */
-	const QString TypeGeneric = "org.LC.AdvNotifications.Generic.Generic";
+	const QString TypeGeneric = CatGeneric + ".Generic";
 
 	enum NotifyFlag
 	{
@@ -128,6 +136,27 @@ namespace AN
 		NotifyAudio			= 1 << 3
 	};
 	Q_DECLARE_FLAGS (NotifyFlags, NotifyFlag);
+
+	namespace Field
+	{
+		/** @brief The URL to the file being played.
+		*/
+		const QString MediaPlayerURL = CatMediaPlayer + ".Fields.URL";
+
+		/** @brief Playback status of the URL.
+		 *
+		 * A string, one of:
+		 * - Playing
+		 * - Paused
+		 * - Stopped
+		 */
+		const QString MediaPlaybackStatus = CatMediaPlayer + ".Fields.PlaybackStatus";
+
+		const QString MediaTitle = CatMediaPlayer + ".Fields.Title";
+		const QString MediaArtist = CatMediaPlayer + ".Fields.Artist";
+		const QString MediaAlbum = CatMediaPlayer + ".Fields.Album";
+		const QString MediaLength = CatMediaPlayer + ".Fields.Length";
+	}
 }
 }
 

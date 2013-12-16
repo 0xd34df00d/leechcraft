@@ -69,16 +69,13 @@ namespace LeechCraft
 namespace CSTP
 {
 	Core::Core ()
-	: SaveScheduled_ (false)
+	: Headers_ { "URL", tr ("State"), tr ("Progress") }
+	, SaveScheduled_ (false)
 	, Toolbar_ (0)
 	{
 		setObjectName ("CSTP Core");
 		qRegisterMetaType<std::shared_ptr<QFile>> ("std::shared_ptr<QFile>");
 		qRegisterMetaType<QNetworkReply*> ("QNetworkReply*");
-
-		Headers_ << tr ("URL")
-			<< tr ("State")
-			<< tr ("Progress");
 
 		ReadSettings ();
 	}
@@ -174,8 +171,6 @@ namespace CSTP
 		const QUrl entity = e.Entity_.toUrl ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 		QStringList tags = e.Additional_ [" Tags"].toStringList ();
-
-		const QUrl source = e.Additional_ ["SourceURL"].toUrl ();
 
 		const QFileInfo fi (e.Location_);
 		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
@@ -638,7 +633,7 @@ namespace CSTP
 			{
 				tp |= IsDownloaded;
 				auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
-						url,
+						{},
 						tp);
 				e.Additional_ [" Tags"] = tags;
 				emit gotEntity (e);

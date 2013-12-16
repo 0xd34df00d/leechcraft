@@ -30,18 +30,13 @@
 #include "plotmanager.h"
 #include <QStandardItemModel>
 #include <QPainter>
-#include <QSvgGenerator>
-#include <QSvgRenderer>
-#include <QBuffer>
 #include <QUrl>
 #include <QFile>
 #include <QDir>
-#include <QtDeclarative/QDeclarativeImageProvider>
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_plot_renderer.h>
 #include "contextwrapper.h"
 #include "sensorsgraphmodel.h"
+
+Q_DECLARE_METATYPE (QList<QPointF>)
 
 namespace LeechCraft
 {
@@ -89,58 +84,17 @@ namespace HotSensors
 		{
 			const auto& name = i.key ();
 
-			QwtPlot plot;
-			plot.setAxisAutoScale (QwtPlot::xBottom, false);
-			plot.setAxisAutoScale (QwtPlot::yLeft, false);
-			plot.enableAxis (QwtPlot::yLeft, false);
-			plot.enableAxis (QwtPlot::xBottom, false);
-			plot.resize (512, 512);
-			plot.setAxisScale (QwtPlot::xBottom, 0, i->size ());
-			plot.setAxisScale (QwtPlot::yLeft, 0, 100);
-			plot.setAutoFillBackground (false);
-			plot.setCanvasBackground (Qt::transparent);
-
-			QwtPlotCurve curve;
-
-			QColor percentColor ("#FF4B10");
-			curve.setPen (QPen (percentColor));
-			percentColor.setAlpha (20);
-			curve.setBrush (percentColor);
-
-			curve.setRenderHint (QwtPlotItem::RenderAntialiased);
-			curve.attach (&plot);
-
-			QVector<double> ySamples;
-			QVector<double> xSamples;
+			QList<QPointF> points;
 			for (const auto& item : *i)
-			{
-				ySamples << item;
-				xSamples << xSamples.size ();
-			}
-
-			curve.setSamples (xSamples, ySamples);
-			plot.replot ();
-
-			QBuffer svgContents;
-			svgContents.open (QIODevice::WriteOnly);
-
-			QwtPlotRenderer renderer;
-			QSvgGenerator gen;
-			gen.setSize (plot.size ());
-			gen.setViewBox (QRect { { 0, 0 }, plot.size () });
-			gen.setOutputDevice (&svgContents);
-
-			renderer.renderTo (&plot, gen);
+				points.append ({ static_cast<qreal> (points.size ()), item });
 
 			const bool isKnownSensor = existing.contains (name);
 			auto item = isKnownSensor ? existing.take (name) : new QStandardItem;
-			const QUrl url ("image://HS_sensorsGraph/" + name + "/" + QString::number (UpdateCounter_));
 
 			const auto lastTemp = i->isEmpty () ? 0 : static_cast<int> (i->last ());
 			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
-			item->setData (url, SensorsGraphModel::IconURL);
 			item->setData (name, SensorsGraphModel::SensorName);
-			item->setData (svgContents.data (), SensorsGraphModel::SVG);
+			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);
 			if (!isKnownSensor)
 				items << item;
 		}

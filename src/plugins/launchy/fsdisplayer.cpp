@@ -48,6 +48,7 @@
 #include "itemssortfilterproxymodel.h"
 #include "modelroles.h"
 #include "favoritesmanager.h"
+#include "recentmanager.h"
 #include "syspathitemprovider.h"
 
 namespace LeechCraft
@@ -114,11 +115,12 @@ namespace Launchy
 	}
 
 	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy,
-			Util::XDG::ItemsFinder *finder, FavoritesManager *favMgr, QObject *parent)
+			Util::XDG::ItemsFinder *finder, FavoritesManager *favMgr, RecentManager *recMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Finder_ (finder)
 	, FavManager_ (favMgr)
+	, RecentManager_ (recMgr)
 	, CatsModel_ (new DisplayModel (this))
 	, ItemsModel_ (new DisplayModel (this))
 	, ItemsProxyModel_ (new ItemsSortFilterProxyModel (ItemsModel_, this))
@@ -208,9 +210,12 @@ namespace Launchy
 			CatsModel_->appendRow (cat);
 		};
 
+		if (RecentManager_->HasRecents ())
+			addCustomCat (tr ("Recent"), "X-Recent", "document-open-recent",
+					Proxy_->GetIcon ("document-open-recent"));
 		addCustomCat ("LeechCraft", "X-LeechCraft", "leechcraft",
 				QIcon ("lcicons:/resources/images/leechcraft.svg"));
-		addCustomCat ("Favorites", "X-Favorites", "favorites",
+		addCustomCat (tr ("Favorites"), "X-Favorites", "favorites",
 				Proxy_->GetIcon ("favorites"));
 	}
 
@@ -233,6 +238,7 @@ namespace Launchy
 				item->setData (QStringList ("X-LeechCraft"), ModelRoles::ItemNativeCategories);
 				item->setData (tc.TabClass_, ModelRoles::ItemID);
 				item->setData (FavManager_->IsFavorite (tc.TabClass_), ModelRoles::IsItemFavorite);
+				item->setData (false, ModelRoles::IsItemRecent);
 
 				auto executor = [iht, tc] { iht->TabOpenRequested (tc.TabClass_); };
 				item->setData (QVariant::fromValue<Executor_f> (executor),
@@ -377,6 +383,13 @@ namespace Launchy
 			appItem->setData (FavManager_->IsFavorite (item->GetPermanentID ()),
 					ModelRoles::IsItemFavorite);
 
+			const auto isRecent = RecentManager_->IsRecent (item->GetPermanentID ());
+			appItem->setData (isRecent,
+					ModelRoles::IsItemRecent);
+			if (isRecent)
+				appItem->setData (RecentManager_->GetRecentOrder (item->GetPermanentID ()),
+						ModelRoles::ItemRecentPos);
+
 			auto executor = [this, item] { item->Execute (Proxy_); };
 			appItem->setData (QVariant::fromValue<Executor_f> (executor),
 					ModelRoles::ExecutorFunctor);
@@ -433,6 +446,7 @@ namespace Launchy
 			return;
 		}
 
+		RecentManager_->AddRecent (id);
 		item->data (ModelRoles::ExecutorFunctor).value<Executor_f> () ();
 
 		deleteLater ();

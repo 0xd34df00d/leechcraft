@@ -16,7 +16,7 @@ set (SRCS
 	traymodel.cpp
 	iconhandler.cpp
 	)
-#CreateTrs("mellonetray" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("mellonetray" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("mellonetray" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_mellonetray SHARED

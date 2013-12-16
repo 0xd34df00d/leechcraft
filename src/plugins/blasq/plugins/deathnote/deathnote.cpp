@@ -40,6 +40,7 @@ namespace DeathNote
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("blasq_deathnote");
+
 		Service_ = new FotoBilderService (proxy);
 		connect (Service_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),

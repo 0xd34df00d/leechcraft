@@ -71,6 +71,8 @@ namespace OTRoid
 
 		QHash<QObject*, QString> Msg2OrigText_;
 
+		QSet<QObject*> PendingInjectedMessages_;
+
 		QDir OtrDir_;
 
 		bool IsGenerating_ = false;
@@ -90,13 +92,18 @@ namespace OTRoid
 		QSet<QByteArray> GetPluginClasses () const;
 
 		int IsLoggedIn (const QString& accId, const QString& entryId);
-		void InjectMsg (const QString& accId, const QString& entryId, const QString& msg, IMessage::Direction);
-		void InjectMsg (ICLEntry *entry, const QString& msg, IMessage::Direction);
+		void InjectMsg (const QString& accId, const QString& entryId,
+				const QString& msg, bool hidden, IMessage::Direction,
+				IMessage::MessageType = IMessage::MTChatMessage);
+		void InjectMsg (ICLEntry *entry,
+				const QString& msg, bool hidden, IMessage::Direction,
+				IMessage::MessageType = IMessage::MTChatMessage);
 		void Notify (const QString& accId, const QString& entryId,
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
 		void WriteFingerprints ();
 		QString GetAccountName (const QString& accId);
+		QString GetVisibleEntryName (const QString& accId, const QString& entryId);
 
 		void CreatePrivkey (const char*, const char*);
 

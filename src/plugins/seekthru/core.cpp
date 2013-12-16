@@ -47,709 +47,705 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SeekThru
+{
+	const QString Core::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
+
+	Core::Core ()
 	{
-		namespace SeekThru
+		qRegisterMetaType<Description> ("LeechCraft::Plugins::SeekThru::Description");
+		qRegisterMetaTypeStreamOperators<UrlDescription> ("LeechCraft::Plugins::SeekThru::UrlDescription");
+		qRegisterMetaTypeStreamOperators<QueryDescription> ("LeechCraft::Plugins::SeekThru::QueryDescription");
+		qRegisterMetaTypeStreamOperators<Description> ("LeechCraft::Plugins::SeekThru::Description");
+
+		ReadSettings ();
+	}
+
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
+
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
+
+	void Core::DoDelayedInit ()
+	{
+		Headers_ << tr ("Short name");
+	}
+
+	int Core::columnCount (const QModelIndex&) const
+	{
+		return Headers_.size ();
+	}
+
+	QVariant Core::data (const QModelIndex& index, int role) const
+	{
+		if (!index.isValid ())
+			return QVariant ();
+
+		Description d = Descriptions_.at (index.row ());
+		switch (index.column ())
 		{
-			const QString Core::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
-
-			Core::Core ()
-			{
-				qRegisterMetaType<Description> ("LeechCraft::Plugins::SeekThru::Description");
-				qRegisterMetaTypeStreamOperators<UrlDescription> ("LeechCraft::Plugins::SeekThru::UrlDescription");
-				qRegisterMetaTypeStreamOperators<QueryDescription> ("LeechCraft::Plugins::SeekThru::QueryDescription");
-				qRegisterMetaTypeStreamOperators<Description> ("LeechCraft::Plugins::SeekThru::Description");
-
-				ReadSettings ();
-			}
-
-			void Core::SetProxy (ICoreProxy_ptr proxy)
-			{
-				Proxy_ = proxy;
-			}
-
-			ICoreProxy_ptr Core::GetProxy () const
-			{
-				return Proxy_;
-			}
-
-			Core& Core::Instance ()
-			{
-				static Core c;
-				return c;
-			}
-
-			void Core::DoDelayedInit ()
-			{
-				Headers_ << tr ("Short name");
-			}
-
-			int Core::columnCount (const QModelIndex&) const
-			{
-				return Headers_.size ();
-			}
-
-			QVariant Core::data (const QModelIndex& index, int role) const
-			{
-				if (!index.isValid ())
-					return QVariant ();
-
-				Description d = Descriptions_.at (index.row ());
-				switch (index.column ())
+			case 0:
+				switch (role)
 				{
-					case 0:
-						switch (role)
+					case Qt::DisplayRole:
+						return d.ShortName_;
+					case RoleDescription:
+						return d.Description_;
+					case RoleContact:
+						return d.Contact_;
+					case RoleTags:
 						{
-							case Qt::DisplayRole:
-								return d.ShortName_;
-							case RoleDescription:
-								return d.Description_;
-							case RoleContact:
-								return d.Contact_;
-							case RoleTags:
-								{
-									QStringList result;
-									Q_FOREACH (QString tag, d.Tags_)
-										result << Proxy_->GetTagsManager ()->GetTag (tag);
-									return result;
-								}
-							case RoleLongName:
-								return d.LongName_;
-							case RoleDeveloper:
-								return d.Developer_;
-							case RoleAttribution:
-								return d.Attribution_;
-							case RoleRight:
-								switch (d.Right_)
-								{
-									case Description::SROpen:
-										return tr ("Open");
-									case Description::SRLimited:
-										return tr ("Limited");
-									case Description::SRPrivate:
-										return tr ("Private");
-									case Description::SRClosed:
-										return tr ("Closed");
-								}
-							default:
-								return QVariant ();
+							QStringList result;
+							Q_FOREACH (QString tag, d.Tags_)
+								result << Proxy_->GetTagsManager ()->GetTag (tag);
+							return result;
+						}
+					case RoleLongName:
+						return d.LongName_;
+					case RoleDeveloper:
+						return d.Developer_;
+					case RoleAttribution:
+						return d.Attribution_;
+					case RoleRight:
+						switch (d.Right_)
+						{
+							case Description::SROpen:
+								return tr ("Open");
+							case Description::SRLimited:
+								return tr ("Limited");
+							case Description::SRPrivate:
+								return tr ("Private");
+							case Description::SRClosed:
+								return tr ("Closed");
 						}
 					default:
 						return QVariant ();
 				}
-			}
-
-			Qt::ItemFlags Core::flags (const QModelIndex& index) const
-			{
-				if (!index.isValid ())
-					return 0;
-				else
-					return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-			}
-
-			QVariant Core::headerData (int pos, Qt::Orientation orient, int role) const
-			{
-				if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-					return Headers_.at (pos);
-				else
-					return QVariant ();
-			}
-
-			QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
-			{
-				if (!hasIndex (row, column, parent))
-					return QModelIndex ();
-
-				return createIndex (row, column);
-			}
-
-			QModelIndex Core::parent (const QModelIndex&) const
-			{
-				return QModelIndex ();
-			}
-
-			int Core::rowCount (const QModelIndex& parent) const
-			{
-				return parent.isValid () ? 0 : Descriptions_.size ();
-			}
-
-			void Core::SetProvider (QObject *provider, const QString& feature)
-			{
-				Providers_ [feature] = provider;
-			}
-
-			bool Core::CouldHandle (const Entity& e) const
-			{
-				if (e.Mime_ == "x-leechcraft/data-filter-request")
-				{
-					const auto& textVar = e.Entity_;
-					if (!textVar.canConvert<QString> ())
-						return false;
-
-					if (e.Additional_.contains ("DataFilter"))
-					{
-						const auto& catVar = e.Additional_ ["DataFilter"].toByteArray ();
-						const auto& catStr = QString::fromUtf8 (catVar.constData ());
-						if (FindMatchingHRTag (catStr).isEmpty ())
-							return false;
-					}
-
-					const auto& text = textVar.toString ().trimmed ().simplified ();
-					return text.count ('\n') < 3 && text.size () < 200;
-				}
-
-				if (!e.Entity_.canConvert<QUrl> ())
-					return false;
-
-				QUrl url = e.Entity_.toUrl ();
-				if (url.scheme () != "http" &&
-						url.scheme () != "https")
-					return false;
-
-				if (e.Mime_ != "application/opensearchdescription+xml")
-					return false;
-
-				return true;
-			}
-
-			void Core::Handle (const Entity& e)
-			{
-				if (e.Mime_ != "x-leechcraft/data-filter-request")
-				{
-					Add (e.Entity_.toUrl ());
-					return;
-				}
-
-				const auto& text = e.Entity_.toString ();
-				const auto& catVar = e.Additional_ ["DataFilter"].toByteArray ();
-
-				for (const auto& d : FindMatchingHRTag (QString::fromUtf8 (catVar.constData ())))
-					for (const auto& u : d.URLs_)
-					{
-						if (!u.Type_.startsWith ("text/"))
-							continue;
-
-						const auto& url = u.MakeUrl (text, QHash<QString, QVariant> ());
-						const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
-						emit gotEntity (e);
-					}
-			}
-
-			void Core::Add (const QUrl& url)
-			{
-				QString name = LeechCraft::Util::GetTemporaryName ();
-				LeechCraft::Entity e = LeechCraft::Util::MakeEntity (url,
-						name,
-						LeechCraft::Internal |
-							LeechCraft::DoNotSaveInHistory |
-							LeechCraft::DoNotNotifyUser |
-							LeechCraft::NotPersistent);
-
-				int id = -1;
-				QObject *provider;
-				emit delegateEntity (e, &id, &provider);
-				if (id == -1)
-				{
-					emit error (tr ("%1 wasn't delegated")
-							.arg (url.toString ()));
-					return;
-				}
-
-				HandleProvider (provider);
-				Jobs_ [id] = name;
-			}
-
-			void Core::Remove (const QModelIndex& index)
-			{
-				QStringList oldCats = ComputeUniqueCategories ();
-
-				beginRemoveRows (QModelIndex (), index.row (), index.row ());
-				Descriptions_.removeAt (index.row ());
-				endRemoveRows ();
-
-				WriteSettings ();
-
-				QStringList newCats = ComputeUniqueCategories ();
-				emit categoriesChanged (newCats, oldCats);
-			}
-
-			void Core::SetTags (const QModelIndex& index, const QStringList& tags)
-			{
-				SetTags (index.row (), tags);
-			}
-
-			void Core::SetTags (int pos, const QStringList& tags)
-			{
-				QStringList oldCats = ComputeUniqueCategories ();
-
-				Descriptions_ [pos].Tags_.clear ();
-				Q_FOREACH (QString tag, tags)
-					Descriptions_ [pos].Tags_ <<
-						Proxy_->GetTagsManager ()->GetID (tag);
-
-				WriteSettings ();
-
-				QStringList newCats = ComputeUniqueCategories ();
-				emit categoriesChanged (newCats, oldCats);
-			}
-
-			QStringList Core::GetCategories () const
-			{
-				QStringList result;
-				for (const auto& descr : Descriptions_)
-					for (const auto& tag : descr.Tags_)
-						result += Proxy_->GetTagsManager ()->GetTag (tag);
-
-				result.removeAll (QString ());
-				result.sort ();
-				result.erase (std::unique (result.begin (), result.end ()), result.end ());
-
-				return result;
-			}
-
-			IFindProxy_ptr Core::GetProxy (const LeechCraft::Request& r)
-			{
-				QList<SearchHandler_ptr> handlers;
-				Q_FOREACH (Description d, Descriptions_)
-				{
-					QStringList ht;
-					Q_FOREACH (QString id, d.Tags_)
-						ht << Proxy_->GetTagsManager ()->GetTag (id);
-					if (ht.contains (r.Category_))
-					{
-						SearchHandler_ptr sh (new SearchHandler (d));
-						connect (sh.get (),
-								SIGNAL (delegateEntity (const LeechCraft::Entity&,
-										int*, QObject**)),
-								this,
-								SIGNAL (delegateEntity (const LeechCraft::Entity&,
-										int*, QObject**)));
-						connect (sh.get (),
-								SIGNAL (gotEntity (const LeechCraft::Entity&)),
-								this,
-								SIGNAL (gotEntity (const LeechCraft::Entity&)));
-						connect (sh.get (),
-								SIGNAL (error (const QString&)),
-								this,
-								SIGNAL (error (const QString&)));
-						connect (sh.get (),
-								SIGNAL (warning (const QString&)),
-								this,
-								SIGNAL (warning (const QString&)));
-						handlers << sh;
-					}
-				}
-
-				std::shared_ptr<FindProxy> fp (new FindProxy (r));
-				fp->SetHandlers (handlers);
-				return IFindProxy_ptr (fp);
-			}
-
-			IWebBrowser* Core::GetWebBrowser () const
-			{
-				if (Providers_.contains ("webbrowser"))
-					return qobject_cast<IWebBrowser*> (Providers_ ["webbrowser"]);
-				else
-					return 0;
-			}
-
-			void Core::handleJobFinished (int id)
-			{
-				if (!Jobs_.contains (id))
-					return;
-				QString filename = Jobs_ [id];
-				Jobs_.remove (id);
-
-				QFile file (filename);
-				if (!file.open (QIODevice::ReadOnly))
-				{
-					emit error (tr ("Could not open file %1.")
-							.arg (filename));
-					return;
-				}
-
-				HandleEntity (QTextCodec::codecForName ("UTF-8")->
-						toUnicode (file.readAll ()));
-
-				file.close ();
-				if (!file.remove ())
-					emit warning (tr ("Could not remove temporary file %1.")
-							.arg (filename));
-			}
-
-			void Core::handleJobError (int id)
-			{
-				if (!Jobs_.contains (id))
-					return;
-				emit error (tr ("A job was delegated, but it failed.")
-						.arg (Jobs_ [id]));
-				Jobs_.remove (id);
-			}
-
-			void Core::HandleEntity (const QString& contents, const QString& useTags)
-			{
-				try
-				{
-					Description descr = ParseData (contents, useTags);
-
-					QStringList oldCats = ComputeUniqueCategories ();
-
-					beginInsertRows (QModelIndex (), Descriptions_.size (), Descriptions_.size ());
-					Descriptions_ << descr;
-					endInsertRows ();
-
-					WriteSettings ();
-
-					QStringList newCats = ComputeUniqueCategories ();
-					emit categoriesChanged (newCats, oldCats);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< e.what ();
-					return;
-				}
-			}
-
-			QStringList Core::ComputeUniqueCategories () const
-			{
-				QStringList ids;
-				Q_FOREACH (Description d, Descriptions_)
-					Q_FOREACH (QString id, d.Tags_)
-						if (!ids.contains (id))
-							ids << id;
-
-				QStringList result;
-				Q_FOREACH (QString id, ids)
-					result << Proxy_->GetTagsManager ()->GetTag (id);
-				return result;
-			}
-
-			QList<Description> Core::FindMatchingHRTag (const QString& catStr) const
-			{
-				QList<Description> result;
-
-				auto tm = Proxy_->GetTagsManager ();
-				for (const auto& d : Descriptions_)
-				{
-					const auto matchingItem = std::find_if (d.Tags_.begin (), d.Tags_.end (),
-							[&catStr, tm] (const QString& id) { return catStr == tm->GetTag (id); });
-					if (matchingItem != d.Tags_.end ())
-						result << d;
-				}
-
-				return result;
-			}
-
-			Description Core::ParseData (const QString& contents, const QString& useTags)
-			{
-				QDomDocument doc;
-				QString errorString;
-				int line, column;
-				if (!doc.setContent (contents, true, &errorString, &line, &column))
-				{
-					qWarning () << contents;
-					emit error (tr ("XML parse error %1 at %2:%3.")
-							.arg (errorString)
-							.arg (line)
-							.arg (column));
-					throw std::runtime_error ("Parse error");
-				}
-
-				QDomElement root = doc.documentElement ();
-				if (root.tagName () != "OpenSearchDescription")
-					throw std::runtime_error ("Parse error");
-
-				QDomElement shortNameTag = root.firstChildElement ("ShortName");
-				QDomElement descriptionTag = root.firstChildElement ("Description");
-				QDomElement urlTag = root.firstChildElement ("Url");
-				if (shortNameTag.isNull () ||
-						descriptionTag.isNull () ||
-						urlTag.isNull () ||
-						!urlTag.hasAttribute ("template") ||
-						!urlTag.hasAttribute ("type"))
-					throw std::runtime_error ("Parse error");
-
-				Description descr;
-				descr.ShortName_ = shortNameTag.text ();
-				descr.Description_ = descriptionTag.text ();
-
-				while (!urlTag.isNull ())
-				{
-					UrlDescription d =
-					{
-						urlTag.attribute ("template"),
-						urlTag.attribute ("type"),
-						urlTag.attribute ("indexOffset", "1").toInt (),
-						urlTag.attribute ("pageOffset", "1").toInt ()
-					};
-					descr.URLs_ << d;
-
-					urlTag = urlTag.nextSiblingElement ("Url");
-				}
-
-				QDomElement contactTag = root.firstChildElement ("Contact");
-				if (!contactTag.isNull ())
-					descr.Contact_ = contactTag.text ();
-
-				if (useTags.isEmpty ())
-				{
-					QDomElement tagsTag = root.firstChildElement ("Tags");
-					if (!tagsTag.isNull ())
-						descr.Tags_ = Proxy_->GetTagsManager ()->Split (tagsTag.text ());
-					else
-						descr.Tags_ = QStringList ("default");
-
-					TagsAsker ta (Proxy_->GetTagsManager ()->Join (descr.Tags_));
-					QString userTags;
-					qDebug () << Q_FUNC_INFO;
-					if (ta.exec () == QDialog::Accepted)
-						userTags = ta.GetTags ();
-
-					if (!userTags.isEmpty ())
-						descr.Tags_ = Proxy_->GetTagsManager ()->Split (userTags);
-				}
-				else
-					descr.Tags_ = Proxy_->GetTagsManager ()->Split (useTags);
-
-				QStringList hrTags = descr.Tags_;
-				descr.Tags_.clear ();
-				Q_FOREACH (QString tag, hrTags)
-					descr.Tags_ << Proxy_->GetTagsManager ()->GetID (tag);
-
-				QDomElement longNameTag = root.firstChildElement ("LongName");
-				if (!longNameTag.isNull ())
-					descr.LongName_ = longNameTag.text ();
-
-				QDomElement queryTag = root.firstChildElement ("Query");
-				while (!queryTag.isNull () && queryTag.hasAttributeNS (OS_, "role"))
-				{
-					QueryDescription::Role r;
-					QString role = queryTag.attributeNS (OS_, "role");
-					if (role == "request")
-						r = QueryDescription::RoleRequest;
-					else if (role == "example")
-						r = QueryDescription::RoleExample;
-					else if (role == "related")
-						r = QueryDescription::RoleRelated;
-					else if (role == "correction")
-						r = QueryDescription::RoleCorrection;
-					else if (role == "subset")
-						r = QueryDescription::RoleSubset;
-					else if (role == "superset")
-						r = QueryDescription::RoleSuperset;
-					else
-					{
-						queryTag = queryTag.nextSiblingElement ("Query");
-						continue;
-					}
-
-					QueryDescription d =
-					{
-						r,
-						queryTag.attributeNS (OS_, "title"),
-						queryTag.attributeNS (OS_, "totalResults", "-1").toInt (),
-						queryTag.attributeNS (OS_, "searchTerms"),
-						queryTag.attributeNS (OS_, "count", "-1").toInt (),
-						queryTag.attributeNS (OS_, "startIndex", "-1").toInt (),
-						queryTag.attributeNS (OS_, "startPage", "-1").toInt (),
-						queryTag.attributeNS (OS_, "language", "*"),
-						queryTag.attributeNS (OS_, "inputEncoding", "UTF-8"),
-						queryTag.attributeNS (OS_, "outputEncoding", "UTF-8")
-					};
-					descr.Queries_ << d;
-					queryTag = queryTag.nextSiblingElement ("Query");
-				}
-
-				QDomElement developerTag = root.firstChildElement ("Developer");
-				if (!developerTag.isNull ())
-					descr.Developer_ = developerTag.text ();
-
-				QDomElement attributionTag = root.firstChildElement ("Attribution");
-				if (!attributionTag.isNull ())
-					descr.Attribution_ = attributionTag.text ();
-
-				descr.Right_ = Description::SROpen;
-				QDomElement syndicationRightTag = root.firstChildElement ("SyndicationRight");
-				if (!syndicationRightTag.isNull ())
-				{
-					QString sr = syndicationRightTag.text ();
-					if (sr == "limited")
-						descr.Right_ = Description::SRLimited;
-					else if (sr == "private")
-						descr.Right_ = Description::SRPrivate;
-					else if (sr == "closed")
-						descr.Right_ = Description::SRClosed;
-				}
-
-				descr.Adult_ = false;
-				QDomElement adultContentTag = root.firstChildElement ("AdultContent");
-				if (!adultContentTag.isNull ())
-				{
-					QString text = adultContentTag.text ();
-					if (!(text == "false" ||
-							text == "FALSE" ||
-							text == "0" ||
-							text == "no" ||
-							text == "NO"))
-						descr.Adult_ = true;
-				}
-
-				QDomElement languageTag = root.firstChildElement ("Language");
-				bool was = false;;
-				while (!languageTag.isNull ())
-				{
-					descr.Languages_ << languageTag.text ();
-					was = true;
-					languageTag = languageTag.nextSiblingElement ("Language");
-				}
-				if (!was)
-					descr.Languages_ << "*";
-
-				QDomElement inputEncodingTag = root.firstChildElement ("InputEncoding");
-				was = false;
-				while (!inputEncodingTag.isNull ())
-				{
-					descr.InputEncodings_ << inputEncodingTag.text ();
-					was = true;
-					inputEncodingTag = inputEncodingTag.nextSiblingElement ("InputEncoding");
-				}
-				if (!was)
-					descr.InputEncodings_ << "UTF-8";
-
-				QDomElement outputEncodingTag = root.firstChildElement ("OutputEncoding");
-				was = false;
-				while (!outputEncodingTag.isNull ())
-				{
-					descr.InputEncodings_ << outputEncodingTag.text ();
-					was = true;
-					outputEncodingTag = outputEncodingTag.nextSiblingElement ("OutputEncoding");
-				}
-				if (!was)
-					descr.InputEncodings_ << "UTF-8";
-
-				return descr;
-			}
-
-			void Core::HandleProvider (QObject *provider)
-			{
-				if (Downloaders_.contains (provider))
-					return;
-
-				Downloaders_ << provider;
-				connect (provider,
-						SIGNAL (jobFinished (int)),
-						this,
-						SLOT (handleJobFinished (int)));
-				connect (provider,
-						SIGNAL (jobError (int, IDownload::Error)),
-						this,
-						SLOT (handleJobError (int)));
-			}
-
-			void Core::ReadSettings ()
-			{
-				QSettings settings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_SeekThru");
-				int size = settings.beginReadArray ("Descriptions");
-				for (int i = 0; i < size; ++i)
-				{
-					settings.setArrayIndex (i);
-					Descriptions_ << settings.value ("Description").value<Description> ();
-				}
-				settings.endArray ();
-			}
-
-			void Core::WriteSettings ()
-			{
-				QSettings settings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_SeekThru");
-				settings.beginWriteArray ("Descriptions");
-				for (int i = 0; i < Descriptions_.size (); ++i)
-				{
-					settings.setArrayIndex (i);
-					settings.setValue ("Description",
-							QVariant::fromValue<Description> (Descriptions_.at (i)));
-				}
-				settings.endArray ();
-			}
-
-			bool Core::HandleDADescrAdded (QDataStream& in)
-			{
-				Description descr;
-				in >> descr;
-				if (in.status () != QDataStream::Ok)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "bad stream status"
-							<< in.status ();
-					return false;
-				}
-
-				auto pos = std::find_if (Descriptions_.begin (), Descriptions_.end (),
-						[descr] (const Description& d) { return d.ShortName_ == descr.ShortName_; });
-				if (pos == Descriptions_.end ())
-				{
-					Descriptions_ << descr;
-					SetTags (Descriptions_.size () - 1, descr.Tags_);
-				}
-				else
-				{
-					*pos = descr;
-					SetTags (std::distance (Descriptions_.begin (), pos), descr.Tags_);
-				}
-				return true;
-			}
-
-			bool Core::HandleDADescrRemoved (QDataStream& in)
-			{
-				QString shortName;
-				in >> shortName;
-				if (in.status () != QDataStream::Ok)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "bad stream status"
-							<< in.status ();
-					return false;
-				}
-
-				auto pos = std::find_if (Descriptions_.begin (), Descriptions_.end (),
-						[shortName] (const Description& d) { return d.ShortName_ == shortName; });
-				if (pos != Descriptions_.end ())
-					Descriptions_.erase (pos);
+			default:
+				return QVariant ();
+		}
+	}
+
+	Qt::ItemFlags Core::flags (const QModelIndex& index) const
+	{
+		if (!index.isValid ())
+			return 0;
+		else
+			return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	}
+
+	QVariant Core::headerData (int pos, Qt::Orientation orient, int role) const
+	{
+		if (orient == Qt::Horizontal && role == Qt::DisplayRole)
+			return Headers_.at (pos);
+		else
+			return QVariant ();
+	}
+
+	QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
+	{
+		if (!hasIndex (row, column, parent))
+			return QModelIndex ();
+
+		return createIndex (row, column);
+	}
+
+	QModelIndex Core::parent (const QModelIndex&) const
+	{
+		return QModelIndex ();
+	}
+
+	int Core::rowCount (const QModelIndex& parent) const
+	{
+		return parent.isValid () ? 0 : Descriptions_.size ();
+	}
+
+	void Core::SetProvider (QObject *provider, const QString& feature)
+	{
+		Providers_ [feature] = provider;
+	}
+
+	bool Core::CouldHandle (const Entity& e) const
+	{
+		if (e.Mime_ == "x-leechcraft/data-filter-request")
+		{
+			const auto& textVar = e.Entity_;
+			if (!textVar.canConvert<QString> ())
 				return false;
-			}
 
-			bool Core::HandleDATagsChanged (QDataStream& in)
+			if (e.Additional_.contains ("DataFilter"))
 			{
-				QString shortName;
-				in >> shortName;
-				QStringList tags;
-				in >> tags;
-				if (in.status () != QDataStream::Ok)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "bad stream status"
-							<< in.status ();
+				const auto& catVar = e.Additional_ ["DataFilter"].toByteArray ();
+				const auto& catStr = QString::fromUtf8 (catVar.constData ());
+				if (FindMatchingHRTag (catStr).isEmpty ())
 					return false;
-				}
-
-				auto pos = std::find_if (Descriptions_.begin (), Descriptions_.end (),
-						[shortName] (const Description& d) { return d.ShortName_ == shortName; });
-				if (pos != Descriptions_.end ())
-				{
-					SetTags (std::distance (Descriptions_.begin (), pos), tags);
-					return true;
-				}
-				else
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "could not find the required description"
-							<< shortName;
-					return false;
-				}
 			}
-		};
-	};
-};
 
+			const auto& text = textVar.toString ().trimmed ().simplified ();
+			return text.count ('\n') < 3 && text.size () < 200;
+		}
+
+		if (!e.Entity_.canConvert<QUrl> ())
+			return false;
+
+		QUrl url = e.Entity_.toUrl ();
+		if (url.scheme () != "http" &&
+				url.scheme () != "https")
+			return false;
+
+		if (e.Mime_ != "application/opensearchdescription+xml")
+			return false;
+
+		return true;
+	}
+
+	void Core::Handle (const Entity& e)
+	{
+		if (e.Mime_ != "x-leechcraft/data-filter-request")
+		{
+			Add (e.Entity_.toUrl ());
+			return;
+		}
+
+		const auto& text = e.Entity_.toString ();
+		const auto& catVar = e.Additional_ ["DataFilter"].toByteArray ();
+
+		for (const auto& d : FindMatchingHRTag (QString::fromUtf8 (catVar.constData ())))
+			for (const auto& u : d.URLs_)
+			{
+				if (!u.Type_.startsWith ("text/"))
+					continue;
+
+				const auto& url = u.MakeUrl (text, QHash<QString, QVariant> ());
+				const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
+				emit gotEntity (e);
+			}
+	}
+
+	void Core::Add (const QUrl& url)
+	{
+		QString name = LeechCraft::Util::GetTemporaryName ();
+		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (url,
+				name,
+				LeechCraft::Internal |
+					LeechCraft::DoNotSaveInHistory |
+					LeechCraft::DoNotNotifyUser |
+					LeechCraft::NotPersistent);
+
+		int id = -1;
+		QObject *provider;
+		emit delegateEntity (e, &id, &provider);
+		if (id == -1)
+		{
+			emit error (tr ("%1 wasn't delegated")
+					.arg (url.toString ()));
+			return;
+		}
+
+		HandleProvider (provider);
+		Jobs_ [id] = name;
+	}
+
+	void Core::Remove (const QModelIndex& index)
+	{
+		QStringList oldCats = ComputeUniqueCategories ();
+
+		beginRemoveRows (QModelIndex (), index.row (), index.row ());
+		Descriptions_.removeAt (index.row ());
+		endRemoveRows ();
+
+		WriteSettings ();
+
+		QStringList newCats = ComputeUniqueCategories ();
+		emit categoriesChanged (newCats, oldCats);
+	}
+
+	void Core::SetTags (const QModelIndex& index, const QStringList& tags)
+	{
+		SetTags (index.row (), tags);
+	}
+
+	void Core::SetTags (int pos, const QStringList& tags)
+	{
+		QStringList oldCats = ComputeUniqueCategories ();
+
+		Descriptions_ [pos].Tags_.clear ();
+		Q_FOREACH (QString tag, tags)
+			Descriptions_ [pos].Tags_ <<
+				Proxy_->GetTagsManager ()->GetID (tag);
+
+		WriteSettings ();
+
+		QStringList newCats = ComputeUniqueCategories ();
+		emit categoriesChanged (newCats, oldCats);
+	}
+
+	QStringList Core::GetCategories () const
+	{
+		QStringList result;
+		for (const auto& descr : Descriptions_)
+			for (const auto& tag : descr.Tags_)
+				result += Proxy_->GetTagsManager ()->GetTag (tag);
+
+		result.removeAll (QString ());
+		result.sort ();
+		result.erase (std::unique (result.begin (), result.end ()), result.end ());
+
+		return result;
+	}
+
+	IFindProxy_ptr Core::GetProxy (const LeechCraft::Request& r)
+	{
+		QList<SearchHandler_ptr> handlers;
+		Q_FOREACH (Description d, Descriptions_)
+		{
+			QStringList ht;
+			Q_FOREACH (QString id, d.Tags_)
+				ht << Proxy_->GetTagsManager ()->GetTag (id);
+			if (ht.contains (r.Category_))
+			{
+				SearchHandler_ptr sh (new SearchHandler (d));
+				connect (sh.get (),
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)),
+						this,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)));
+				connect (sh.get (),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				connect (sh.get (),
+						SIGNAL (error (const QString&)),
+						this,
+						SIGNAL (error (const QString&)));
+				connect (sh.get (),
+						SIGNAL (warning (const QString&)),
+						this,
+						SIGNAL (warning (const QString&)));
+				handlers << sh;
+			}
+		}
+
+		std::shared_ptr<FindProxy> fp (new FindProxy (r));
+		fp->SetHandlers (handlers);
+		return IFindProxy_ptr (fp);
+	}
+
+	IWebBrowser* Core::GetWebBrowser () const
+	{
+		if (Providers_.contains ("webbrowser"))
+			return qobject_cast<IWebBrowser*> (Providers_ ["webbrowser"]);
+		else
+			return 0;
+	}
+
+	void Core::handleJobFinished (int id)
+	{
+		if (!Jobs_.contains (id))
+			return;
+		QString filename = Jobs_ [id];
+		Jobs_.remove (id);
+
+		QFile file (filename);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			emit error (tr ("Could not open file %1.")
+					.arg (filename));
+			return;
+		}
+
+		HandleEntity (QTextCodec::codecForName ("UTF-8")->
+				toUnicode (file.readAll ()));
+
+		file.close ();
+		if (!file.remove ())
+			emit warning (tr ("Could not remove temporary file %1.")
+					.arg (filename));
+	}
+
+	void Core::handleJobError (int id)
+	{
+		if (!Jobs_.contains (id))
+			return;
+		emit error (tr ("A job was delegated, but it failed.")
+				.arg (Jobs_ [id]));
+		Jobs_.remove (id);
+	}
+
+	void Core::HandleEntity (const QString& contents, const QString& useTags)
+	{
+		try
+		{
+			Description descr = ParseData (contents, useTags);
+
+			QStringList oldCats = ComputeUniqueCategories ();
+
+			beginInsertRows (QModelIndex (), Descriptions_.size (), Descriptions_.size ());
+			Descriptions_ << descr;
+			endInsertRows ();
+
+			WriteSettings ();
+
+			QStringList newCats = ComputeUniqueCategories ();
+			emit categoriesChanged (newCats, oldCats);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< e.what ();
+			return;
+		}
+	}
+
+	QStringList Core::ComputeUniqueCategories () const
+	{
+		QStringList ids;
+		Q_FOREACH (Description d, Descriptions_)
+			Q_FOREACH (QString id, d.Tags_)
+				if (!ids.contains (id))
+					ids << id;
+
+		QStringList result;
+		Q_FOREACH (QString id, ids)
+			result << Proxy_->GetTagsManager ()->GetTag (id);
+		return result;
+	}
+
+	QList<Description> Core::FindMatchingHRTag (const QString& catStr) const
+	{
+		QList<Description> result;
+
+		auto tm = Proxy_->GetTagsManager ();
+		for (const auto& d : Descriptions_)
+		{
+			const auto matchingItem = std::find_if (d.Tags_.begin (), d.Tags_.end (),
+					[&catStr, tm] (const QString& id) { return catStr == tm->GetTag (id); });
+			if (matchingItem != d.Tags_.end ())
+				result << d;
+		}
+
+		return result;
+	}
+
+	Description Core::ParseData (const QString& contents, const QString& useTags)
+	{
+		QDomDocument doc;
+		QString errorString;
+		int line, column;
+		if (!doc.setContent (contents, true, &errorString, &line, &column))
+		{
+			qWarning () << contents;
+			emit error (tr ("XML parse error %1 at %2:%3.")
+					.arg (errorString)
+					.arg (line)
+					.arg (column));
+			throw std::runtime_error ("Parse error");
+		}
+
+		QDomElement root = doc.documentElement ();
+		if (root.tagName () != "OpenSearchDescription")
+			throw std::runtime_error ("Parse error");
+
+		QDomElement shortNameTag = root.firstChildElement ("ShortName");
+		QDomElement descriptionTag = root.firstChildElement ("Description");
+		QDomElement urlTag = root.firstChildElement ("Url");
+		if (shortNameTag.isNull () ||
+				descriptionTag.isNull () ||
+				urlTag.isNull () ||
+				!urlTag.hasAttribute ("template") ||
+				!urlTag.hasAttribute ("type"))
+			throw std::runtime_error ("Parse error");
+
+		Description descr;
+		descr.ShortName_ = shortNameTag.text ();
+		descr.Description_ = descriptionTag.text ();
+
+		while (!urlTag.isNull ())
+		{
+			UrlDescription d =
+			{
+				urlTag.attribute ("template"),
+				urlTag.attribute ("type"),
+				urlTag.attribute ("indexOffset", "1").toInt (),
+				urlTag.attribute ("pageOffset", "1").toInt ()
+			};
+			descr.URLs_ << d;
+
+			urlTag = urlTag.nextSiblingElement ("Url");
+		}
+
+		QDomElement contactTag = root.firstChildElement ("Contact");
+		if (!contactTag.isNull ())
+			descr.Contact_ = contactTag.text ();
+
+		if (useTags.isEmpty ())
+		{
+			QDomElement tagsTag = root.firstChildElement ("Tags");
+			if (!tagsTag.isNull ())
+				descr.Tags_ = Proxy_->GetTagsManager ()->Split (tagsTag.text ());
+			else
+				descr.Tags_ = QStringList ("default");
+
+			TagsAsker ta (Proxy_->GetTagsManager ()->Join (descr.Tags_));
+			QString userTags;
+			qDebug () << Q_FUNC_INFO;
+			if (ta.exec () == QDialog::Accepted)
+				userTags = ta.GetTags ();
+
+			if (!userTags.isEmpty ())
+				descr.Tags_ = Proxy_->GetTagsManager ()->Split (userTags);
+		}
+		else
+			descr.Tags_ = Proxy_->GetTagsManager ()->Split (useTags);
+
+		QStringList hrTags = descr.Tags_;
+		descr.Tags_.clear ();
+		Q_FOREACH (QString tag, hrTags)
+			descr.Tags_ << Proxy_->GetTagsManager ()->GetID (tag);
+
+		QDomElement longNameTag = root.firstChildElement ("LongName");
+		if (!longNameTag.isNull ())
+			descr.LongName_ = longNameTag.text ();
+
+		QDomElement queryTag = root.firstChildElement ("Query");
+		while (!queryTag.isNull () && queryTag.hasAttributeNS (OS_, "role"))
+		{
+			QueryDescription::Role r;
+			QString role = queryTag.attributeNS (OS_, "role");
+			if (role == "request")
+				r = QueryDescription::RoleRequest;
+			else if (role == "example")
+				r = QueryDescription::RoleExample;
+			else if (role == "related")
+				r = QueryDescription::RoleRelated;
+			else if (role == "correction")
+				r = QueryDescription::RoleCorrection;
+			else if (role == "subset")
+				r = QueryDescription::RoleSubset;
+			else if (role == "superset")
+				r = QueryDescription::RoleSuperset;
+			else
+			{
+				queryTag = queryTag.nextSiblingElement ("Query");
+				continue;
+			}
+
+			QueryDescription d =
+			{
+				r,
+				queryTag.attributeNS (OS_, "title"),
+				queryTag.attributeNS (OS_, "totalResults", "-1").toInt (),
+				queryTag.attributeNS (OS_, "searchTerms"),
+				queryTag.attributeNS (OS_, "count", "-1").toInt (),
+				queryTag.attributeNS (OS_, "startIndex", "-1").toInt (),
+				queryTag.attributeNS (OS_, "startPage", "-1").toInt (),
+				queryTag.attributeNS (OS_, "language", "*"),
+				queryTag.attributeNS (OS_, "inputEncoding", "UTF-8"),
+				queryTag.attributeNS (OS_, "outputEncoding", "UTF-8")
+			};
+			descr.Queries_ << d;
+			queryTag = queryTag.nextSiblingElement ("Query");
+		}
+
+		QDomElement developerTag = root.firstChildElement ("Developer");
+		if (!developerTag.isNull ())
+			descr.Developer_ = developerTag.text ();
+
+		QDomElement attributionTag = root.firstChildElement ("Attribution");
+		if (!attributionTag.isNull ())
+			descr.Attribution_ = attributionTag.text ();
+
+		descr.Right_ = Description::SROpen;
+		QDomElement syndicationRightTag = root.firstChildElement ("SyndicationRight");
+		if (!syndicationRightTag.isNull ())
+		{
+			QString sr = syndicationRightTag.text ();
+			if (sr == "limited")
+				descr.Right_ = Description::SRLimited;
+			else if (sr == "private")
+				descr.Right_ = Description::SRPrivate;
+			else if (sr == "closed")
+				descr.Right_ = Description::SRClosed;
+		}
+
+		descr.Adult_ = false;
+		QDomElement adultContentTag = root.firstChildElement ("AdultContent");
+		if (!adultContentTag.isNull ())
+		{
+			QString text = adultContentTag.text ();
+			if (!(text == "false" ||
+					text == "FALSE" ||
+					text == "0" ||
+					text == "no" ||
+					text == "NO"))
+				descr.Adult_ = true;
+		}
+
+		QDomElement languageTag = root.firstChildElement ("Language");
+		bool was = false;;
+		while (!languageTag.isNull ())
+		{
+			descr.Languages_ << languageTag.text ();
+			was = true;
+			languageTag = languageTag.nextSiblingElement ("Language");
+		}
+		if (!was)
+			descr.Languages_ << "*";
+
+		QDomElement inputEncodingTag = root.firstChildElement ("InputEncoding");
+		was = false;
+		while (!inputEncodingTag.isNull ())
+		{
+			descr.InputEncodings_ << inputEncodingTag.text ();
+			was = true;
+			inputEncodingTag = inputEncodingTag.nextSiblingElement ("InputEncoding");
+		}
+		if (!was)
+			descr.InputEncodings_ << "UTF-8";
+
+		QDomElement outputEncodingTag = root.firstChildElement ("OutputEncoding");
+		was = false;
+		while (!outputEncodingTag.isNull ())
+		{
+			descr.InputEncodings_ << outputEncodingTag.text ();
+			was = true;
+			outputEncodingTag = outputEncodingTag.nextSiblingElement ("OutputEncoding");
+		}
+		if (!was)
+			descr.InputEncodings_ << "UTF-8";
+
+		return descr;
+	}
+
+	void Core::HandleProvider (QObject *provider)
+	{
+		if (Downloaders_.contains (provider))
+			return;
+
+		Downloaders_ << provider;
+		connect (provider,
+				SIGNAL (jobFinished (int)),
+				this,
+				SLOT (handleJobFinished (int)));
+		connect (provider,
+				SIGNAL (jobError (int, IDownload::Error)),
+				this,
+				SLOT (handleJobError (int)));
+	}
+
+	void Core::ReadSettings ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SeekThru");
+		int size = settings.beginReadArray ("Descriptions");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			Descriptions_ << settings.value ("Description").value<Description> ();
+		}
+		settings.endArray ();
+	}
+
+	void Core::WriteSettings ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SeekThru");
+		settings.beginWriteArray ("Descriptions");
+		for (int i = 0; i < Descriptions_.size (); ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("Description",
+					QVariant::fromValue<Description> (Descriptions_.at (i)));
+		}
+		settings.endArray ();
+	}
+
+	bool Core::HandleDADescrAdded (QDataStream& in)
+	{
+		Description descr;
+		in >> descr;
+		if (in.status () != QDataStream::Ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "bad stream status"
+					<< in.status ();
+			return false;
+		}
+
+		auto pos = std::find_if (Descriptions_.begin (), Descriptions_.end (),
+				[descr] (const Description& d) { return d.ShortName_ == descr.ShortName_; });
+		if (pos == Descriptions_.end ())
+		{
+			Descriptions_ << descr;
+			SetTags (Descriptions_.size () - 1, descr.Tags_);
+		}
+		else
+		{
+			*pos = descr;
+			SetTags (std::distance (Descriptions_.begin (), pos), descr.Tags_);
+		}
+		return true;
+	}
+
+	bool Core::HandleDADescrRemoved (QDataStream& in)
+	{
+		QString shortName;
+		in >> shortName;
+		if (in.status () != QDataStream::Ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "bad stream status"
+					<< in.status ();
+			return false;
+		}
+
+		auto pos = std::find_if (Descriptions_.begin (), Descriptions_.end (),
+				[shortName] (const Description& d) { return d.ShortName_ == shortName; });
+		if (pos != Descriptions_.end ())
+			Descriptions_.erase (pos);
+		return false;
+	}
+
+	bool Core::HandleDATagsChanged (QDataStream& in)
+	{
+		QString shortName;
+		in >> shortName;
+		QStringList tags;
+		in >> tags;
+		if (in.status () != QDataStream::Ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "bad stream status"
+					<< in.status ();
+			return false;
+		}
+
+		auto pos = std::find_if (Descriptions_.begin (), Descriptions_.end (),
+				[shortName] (const Description& d) { return d.ShortName_ == shortName; });
+		if (pos != Descriptions_.end ())
+		{
+			SetTags (std::distance (Descriptions_.begin (), pos), tags);
+			return true;
+		}
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "could not find the required description"
+					<< shortName;
+			return false;
+		}
+	}
+}
+}

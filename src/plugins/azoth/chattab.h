@@ -93,7 +93,7 @@ namespace Azoth
 		int ScrollbackPos_;
 
 		QList<IMessage*> HistoryMessages_;
-		IMessage *LastAppendedMessage_;
+		QDateTime LastDateTime_;
 		QList<CoreMessage*> CoreMessages_;
 
 		QIcon TabIcon_;
@@ -154,6 +154,8 @@ namespace Azoth
 
 		QObject* GetCLEntry () const;
 		QString GetSelectedVariant () const;
+
+		QString ReformatTitle ();
 
 		bool eventFilter (QObject*, QEvent*);
 	public slots:
@@ -230,7 +232,6 @@ namespace Azoth
 
 		QStringList GetMUCParticipants () const;
 
-		void ReformatTitle ();
 		void UpdateTextHeight ();
 		void SetChatPartState (ChatPartState);
 
@@ -263,7 +264,6 @@ namespace Azoth
 		void changeTabIcon (QWidget*, const QIcon&);
 		void needToClose (ChatTab*);
 		void entryMadeCurrent (QObject*);
-		void entryMadeCurrent (const QString&);
 		void entryLostCurrent (QObject*);
 
 		void tabRecoverDataChanged ();

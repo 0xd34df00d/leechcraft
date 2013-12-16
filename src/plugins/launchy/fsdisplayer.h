@@ -49,6 +49,7 @@ namespace Launchy
 	class ItemIconsProvider;
 	class ItemsSortFilterProxyModel;
 	class FavoritesManager;
+	class RecentManager;
 	class SysPathItemProvider;
 
 	class FSDisplayer : public QObject
@@ -56,21 +57,22 @@ namespace Launchy
 		Q_OBJECT
 		Q_PROPERTY (QString appFilterText READ GetAppFilterText WRITE SetAppFilterText NOTIFY appFilterTextChanged);
 
-		ICoreProxy_ptr Proxy_;
-		Util::XDG::ItemsFinder *Finder_;
-		FavoritesManager *FavManager_;
+		const ICoreProxy_ptr Proxy_;
+		Util::XDG::ItemsFinder * const Finder_;
+		FavoritesManager * const FavManager_;
+		RecentManager * const RecentManager_;
 
-		QStandardItemModel *CatsModel_;
-		QStandardItemModel *ItemsModel_;
-		ItemsSortFilterProxyModel *ItemsProxyModel_;
+		QStandardItemModel * const CatsModel_;
+		QStandardItemModel * const ItemsModel_;
+		ItemsSortFilterProxyModel * const ItemsProxyModel_;
 
-		QDeclarativeView *View_;
-		ItemIconsProvider *IconsProvider_;
+		QDeclarativeView * const View_;
+		ItemIconsProvider * const IconsProvider_;
 
-		SysPathItemProvider *SysPathHandler_;
+		SysPathItemProvider * const SysPathHandler_;
 	public:
-		FSDisplayer (ICoreProxy_ptr,
-				Util::XDG::ItemsFinder *finder, FavoritesManager*, QObject* = 0);
+		FSDisplayer (ICoreProxy_ptr, Util::XDG::ItemsFinder*,
+				FavoritesManager*, RecentManager*, QObject* = 0);
 		~FSDisplayer ();
 
 		QString GetAppFilterText () const;

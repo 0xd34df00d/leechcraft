@@ -12,7 +12,8 @@ set (SHX_SRCS
 	shx.cpp
 	xmlsettingsmanager.cpp
 	)
-#CreateTrs ("azoth_shx" "en;ru_RU" AUTOPASTE_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_shx" "en;ru_RU" SHX_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_shx" "en;ru_RU" "${SHX_SRCS}" "" "azothshxsettings.xml")
 set (SHX_RESOURCES
 	shxresources.qrc
 	)
@@ -29,4 +30,3 @@ target_link_libraries (leechcraft_azoth_shx
 	)
 install (TARGETS leechcraft_azoth_shx DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothshxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-#install (FILES ${SHX_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

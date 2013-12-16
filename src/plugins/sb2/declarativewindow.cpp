@@ -53,10 +53,10 @@ namespace SB2
 		new Util::AutoResizeMixin (orig, [viewMgr] () { return viewMgr->GetFreeCoords (); }, this);
 
 		if (!params.take ("keepOnFocusLeave").toBool ())
-			new Util::UnhoverDeleteMixin (this);
+			new Util::UnhoverDeleteMixin (this, SLOT (beforeDelete ()));
 
 		setStyleSheet ("background: transparent");
-		setWindowFlags (Qt::ToolTip);
+		setWindowFlags (Qt::Tool | Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
@@ -74,5 +74,13 @@ namespace SB2
 				this,
 				SLOT (deleteLater ()));
 	}
+
+	void DeclarativeWindow::beforeDelete ()
+	{
+		QMetaObject::invokeMethod (rootObject (),
+				"beforeDelete");
+		deleteLater ();
+	}
+
 }
 }

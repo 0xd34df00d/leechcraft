@@ -72,6 +72,19 @@ namespace Media
 		 */
 		Predefined,
 
+		/** @brief A radio station that contains user-addable streams.
+		 *
+		 * This can be used to implement bookmarks, for example, or a
+		 * custom collection.
+		 *
+		 * A radio station returned for the item with this radio type
+		 * from the IRadioStationProvider::GetRadioStation() method
+		 * should also implement IModifiableRadioStation.
+		 *
+		 * @sa IModifiableRadioStation
+		 */
+		CustomAddableStreams,
+
 		/** @brief A predefined list of single tracks, not a stream.
 		 *
 		 * Items of this type should provide RadioItemRole::TracksInfos.
@@ -106,7 +119,7 @@ namespace Media
 		 * This role should be available for RadioType::SingleTrack and
 		 * RadioType::TracksList. The role should return a
 		 * <code>QList<Media::AudioInfo></code>.The list should consist
-		 * of one element for RadioType::SingleSong and of all child
+		 * of one element for RadioType::SingleTrack and of all child
 		 * songs for RadioType::TracksList.
 		 *
 		 * The Media::AudioInfo elements in the list should contain all
@@ -135,9 +148,9 @@ namespace Media
 
 		/** @brief Returns a radio station for the given item and query.
 		 *
-		 * The item should be the one of returned from the
-		 * GetRadioListItems() method or its child. The query only makes
-		 * sense for RadioType::SimilarArtists and RadioType::GlobalTag
+		 * The \em item should be the one of returned from the
+		 * GetRadioListItems() method or its child. The \em query is only
+		 * used for RadioType::SimilarArtists and RadioType::GlobalTag
 		 * radio station types, where it is the source artist name and
 		 * tag name correspondingly. Otherwise it can be any string and
 		 * shouldn't be taken into account.

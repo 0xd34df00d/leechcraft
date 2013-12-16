@@ -4,24 +4,24 @@
 <context>
     <name>LeechCraft::Azoth::Juick::Plugin</name>
     <message>
-        <location filename="juick.cpp" line="104"/>
+        <location filename="juick.cpp" line="114"/>
         <source>Azoth Juick provides nicer support for the juick.com microblogging service.</source>
-        <translation type="unfinished"></translation>
+        <translation>Azoth Juick обеспечивает более хорошую поддержку сервиса микроблогов juck.com.</translation>
     </message>
     <message>
-        <location filename="juick.cpp" line="275"/>
+        <location filename="juick.cpp" line="280"/>
         <source>Fix typo?</source>
-        <translation type="unfinished"></translation>
+        <translation>Исправить опечатку?</translation>
     </message>
     <message>
-        <location filename="juick.cpp" line="276"/>
+        <location filename="juick.cpp" line="281"/>
         <source>Did you mean &lt;em&gt;%1&lt;/em&gt; instead of &lt;em&gt;%2&lt;/em&gt;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы имели ввиду &lt;em&gt;%1&lt;/em&gt; вместо &lt;em&gt;%2&lt;/em&gt;?</translation>
     </message>
     <message>
-        <location filename="juick.cpp" line="282"/>
+        <location filename="juick.cpp" line="287"/>
         <source>Always</source>
-        <translation type="unfinished"></translation>
+        <translation>Всегда</translation>
     </message>
 </context>
 </TS>

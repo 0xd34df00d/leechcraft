@@ -51,66 +51,61 @@ namespace SysInfo
 
 	typedef QPair<QString, QString> SplitInfo_t;
 
-	QPair<QString, QString> GetOSNameSplit ()
+	namespace Linux
 	{
-#if defined(Q_OS_MAC)
-		QSysInfo::MacVersion v = QSysInfo::MacintoshVersion;
-		if (v == QSysInfo::MV_10_3)
-			return SplitInfo_t ("Mac OS X", "10.3");
-		else if (v == QSysInfo::MV_10_4)
-			return SplitInfo_t ("Mac OS X", "10.4");
-		else if (v == QSysInfo::MV_10_5)
-			return SplitInfo_t ("Mac OS X", "10.5");
-		else if (v == QSysInfo::MV_10_6)
-			return SplitInfo_t ("Mac OS X", "10.6");
-		else if (v == QSysInfo::MV_10_7)
-			return SplitInfo_t ("Mac OS X", "10.7");
-		else
-			return SplitInfo_t ("Mac OS X", "Unknown version");
-#elif defined(Q_OS_WIN32)
-		QSysInfo::WinVersion v = QSysInfo::WindowsVersion;
-		if (v == QSysInfo::WV_95)
-			return SplitInfo_t ("Windows", "95");
-		else if (v == QSysInfo::WV_98)
-			return SplitInfo_t ("Windows", "98");
-		else if (v == QSysInfo::WV_Me)
-			return SplitInfo_t ("Windows", "Me");
-		else if (v == QSysInfo::WV_DOS_based)
-			return SplitInfo_t ("Windows", "9x/Me");
-		else if (v == QSysInfo::WV_NT)
-			return SplitInfo_t ("Windows", "NT 4.x");
-		else if (v == QSysInfo::WV_2000)
-			return SplitInfo_t ("Windows", "2000");
-		else if (v == QSysInfo::WV_XP)
-			return SplitInfo_t ("Windows", "XP");
-		else if (v == QSysInfo::WV_2003)
-			return SplitInfo_t ("Windows", "2003");
-		else if (v == QSysInfo::WV_VISTA)
-			return SplitInfo_t ("Windows", "Vista");
-		else if (v == QSysInfo::WV_WINDOWS7)
-			return SplitInfo_t ("Windows", "7");
-		else if (v == 0x00a0)
-			return SplitInfo_t ("Windows", "8");
-		else if (v == QSysInfo::WV_NT_based)
-			return SplitInfo_t ("Windows", "NT-based");
-#else
-		QString osName;
-
-		QProcess proc;
-		proc.start (QString ("/bin/sh"),
-					QStringList ("-c") << "lsb_release -ds", QIODevice::ReadOnly);
-		if (proc.waitForStarted ())
+		QString GetLSBName ()
 		{
-			QTextStream stream (&proc);
-			QString ret;
-			while (proc.waitForReadyRead ())
-				ret += stream.readAll ();
-			proc.close ();
-			if (!ret.isEmpty ())
-				osName = ret.remove ('"').trimmed ();
+			QProcess proc;
+
+			proc.start (QString ("/bin/sh"),
+						QStringList ("-c") << "lsb_release -ds", QIODevice::ReadOnly);
+			if (proc.waitForStarted ())
+			{
+				QTextStream stream (&proc);
+				QString ret;
+				while (proc.waitForReadyRead ())
+					ret += stream.readAll ();
+				proc.close ();
+				if (!ret.isEmpty ())
+					return ret.remove ('"').trimmed ();
+			}
+
+			return {};
 		}
 
-		if (osName.isEmpty ())
+		QString GetEtcOsName ()
+		{
+			QFile file ("/etc/os-release");
+			if (!file.open (QIODevice::ReadOnly))
+				return {};
+
+			QString name;
+			QString version;
+			QString pretty;
+
+			while (file.canReadLine ())
+			{
+				const auto& str = QString::fromUtf8 (file.readLine ());
+				const auto eqPos = str.indexOf ('=');
+				if (eqPos <= 0)
+					continue;
+
+				const auto& id = str.left (eqPos);
+				if (id == "NAME")
+					name = str.mid (eqPos + 1);
+				else if (id == "VERSION")
+					version = str.mid (eqPos + 1);
+				else if (id == "PRETTY_NAME")
+					pretty = str.mid (eqPos + 1);
+			}
+
+			if (!name.isEmpty () && !version.isEmpty ())
+				return name + " " + version;
+
+			return !pretty.isEmpty () ? pretty : name;
+		}
+
+		QString GetEtcName ()
 		{
 			struct OsInfo_t
 			{
@@ -142,16 +137,98 @@ namespace SysInfo
 					f.open (QIODevice::ReadOnly);
 					QString data = QString (f.read (1024)).trimmed ();
 					if (osptr->name.isEmpty ())
-						osName = data;
+						return data;
 					else
-						osName = QString ("%1 (%2)")
+						return QString ("%1 (%2)")
 								.arg (osptr->name)
 								.arg (data);
-					break;
 				}
 				++osptr;
 			}
+
+			return {};
 		}
+	}
+
+	namespace
+	{
+		void Normalize (QString& osName)
+		{
+			auto trimQuotes = [&osName]
+			{
+				if (osName.startsWith ('"') && osName.endsWith ('"'))
+					osName = osName.mid (1, osName.size () - 1);
+			};
+
+			trimQuotes ();
+
+			const QString nameMarker ("NAME=");
+			if (osName.startsWith (nameMarker))
+				osName = osName.mid (nameMarker.size ());
+
+			trimQuotes ();
+		}
+	}
+
+	QPair<QString, QString> GetOSNameSplit ()
+	{
+#if defined(Q_OS_MAC)
+		QSysInfo::MacVersion v = QSysInfo::MacintoshVersion;
+		switch (v)
+		{
+		case QSysInfo::MV_10_3:
+			return { "Mac OS X", "10.3" };
+		case QSysInfo::MV_10_4:
+			return { "Mac OS X", "10.4" };
+		case QSysInfo::MV_10_5:
+			return { "Mac OS X", "10.5" };
+		case QSysInfo::MV_10_6:
+			return { "Mac OS X", "10.6" };
+		case QSysInfo::MV_10_7:
+			return { "Mac OS X", "10.7" };
+		case QSysInfo::MV_10_8:
+			return { "Mac OS X", "10.8" };
+		case QSysInfo::MV_10_9:
+			return { "Mac OS X", "10.9" };
+		default:
+			return { "Max OS X", "Unknown version" };
+		}
+#elif defined(Q_OS_WIN32)
+		QSysInfo::WinVersion v = QSysInfo::WindowsVersion;
+		if (v == QSysInfo::WV_95)
+			return SplitInfo_t ("Windows", "95");
+		else if (v == QSysInfo::WV_98)
+			return SplitInfo_t ("Windows", "98");
+		else if (v == QSysInfo::WV_Me)
+			return SplitInfo_t ("Windows", "Me");
+		else if (v == QSysInfo::WV_DOS_based)
+			return SplitInfo_t ("Windows", "9x/Me");
+		else if (v == QSysInfo::WV_NT)
+			return SplitInfo_t ("Windows", "NT 4.x");
+		else if (v == QSysInfo::WV_2000)
+			return SplitInfo_t ("Windows", "2000");
+		else if (v == QSysInfo::WV_XP)
+			return SplitInfo_t ("Windows", "XP");
+		else if (v == QSysInfo::WV_2003)
+			return SplitInfo_t ("Windows", "2003");
+		else if (v == QSysInfo::WV_VISTA)
+			return SplitInfo_t ("Windows", "Vista");
+		else if (v == QSysInfo::WV_WINDOWS7)
+			return SplitInfo_t ("Windows", "7");
+		else if (v == 0x00a0)
+			return SplitInfo_t ("Windows", "8");
+		else if (v == QSysInfo::WV_NT_based)
+			return SplitInfo_t ("Windows", "NT-based");
+#else
+		auto osName = Linux::GetEtcOsName ();
+
+		if (osName.isEmpty ())
+			osName = Linux::GetEtcName ();
+
+		if (osName.isEmpty ())
+			osName = Linux::GetLSBName ();
+
+		Normalize (osName);
 
 		utsname u;
 		uname (&u);

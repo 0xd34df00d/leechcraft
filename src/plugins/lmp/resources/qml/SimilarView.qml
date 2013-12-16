@@ -147,65 +147,19 @@ Rectangle {
                     }
                 }
 
-                BrowseButton {
-                    id: browseInfoImage
+                StdArtistActions {
+                    id: artistActions
 
-                    anchors.top: parent.top
-                    anchors.topMargin: 2
+                    anchors.bottom: artistNameLabel.bottom
                     anchors.left: artistNameLabel.right
                     anchors.leftMargin: 8
 
-                    onClicked: rootRect.browseInfo(artistName)
-                }
+                    previewVisible: !artistInCollection
+                    bookmarkVisible: !artistInCollection
 
-                Image {
-                    id: addToList
-
-                    width: 16
-                    height: 16
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
-
-                    anchors.top: parent.top
-                    anchors.topMargin: 2
-                    anchors.left: browseInfoImage.right
-                    anchors.leftMargin: 8
-                    source: "image://sysIcons/bookmark-new"
-                    visible: !artistInCollection
-
-                    MouseArea {
-                        id: addToListArea
-                        anchors.fill: parent
-                        anchors.margins: -2
-                        hoverEnabled: true
-
-                        onClicked: rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
-                    }
-
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.margins: -1
-                        radius: 2
-
-                        visible: addToListArea.containsMouse
-
-                        color: "#00000000"
-                        border.width: 1
-                        border.color: "#888888"
-                    }
-                }
-
-                PreviewAudioButton {
-                    id: previewAudio
-
-                    anchors.top: parent.top
-                    anchors.topMargin: 2
-                    anchors.left: addToList.right
-                    anchors.leftMargin: 8
-
-                    visible: !artistInCollection
-
-                    onClicked: rootRect.previewRequested(artistName)
+                    onBrowseInfo: rootRect.browseInfo(artistName)
+                    onBookmarkRequested: rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
+                    onPreviewRequested: rootRect.previewRequested(artistName)
                 }
 
                 Text {

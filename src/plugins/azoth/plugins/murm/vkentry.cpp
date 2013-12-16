@@ -87,8 +87,13 @@ namespace Murm
 	void VkEntry::UpdateInfo (const UserInfo& info)
 	{
 		const bool updateStatus = info.IsOnline_ != Info_.IsOnline_;
+		const bool updateName = info.FirstName_ != Info_.FirstName_ ||
+				info.LastName_ != Info_.LastName_;
+
 		Info_ = info;
 
+		if (updateName)
+			nameChanged (GetEntryName ());
 		if (updateStatus)
 		{
 			emit statusChanged (GetStatus (""), "");
@@ -117,6 +122,17 @@ namespace Murm
 	{
 		IsSelf_ = true;
 		emit groupsChanged (Groups ());
+	}
+
+	void VkEntry::SetNonRoster ()
+	{
+		IsNonRoster_ = true;
+		emit groupsChanged (Groups ());
+	}
+
+	bool VkEntry::IsNonRoster () const
+	{
+		return IsNonRoster_;
 	}
 
 	void VkEntry::RegisterIn (VkChatEntry *chat)
@@ -340,7 +356,7 @@ namespace Murm
 
 	ICLEntry::Features VkEntry::GetEntryFeatures () const
 	{
-		return FPermanentEntry | FSupportsGrouping;
+		return (IsNonRoster_ ? FSessionEntry : FPermanentEntry) | FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType VkEntry::GetEntryType () const
@@ -377,6 +393,9 @@ namespace Murm
 		if (IsSelf_)
 			return { tr ("Self contact") };
 
+		if (IsNonRoster_)
+			return { tr ("Non-friends") };
+
 		auto result = Groups_;
 		if (!Chats_.isEmpty ())
 		{
@@ -389,7 +408,7 @@ namespace Murm
 
 	void VkEntry::SetGroups (const QStringList& srcGroups)
 	{
-		if (IsSelf_)
+		if (IsSelf_ || IsNonRoster_)
 			return;
 
 		auto groups = srcGroups;
@@ -479,6 +498,20 @@ namespace Murm
 
 	void VkEntry::ChatTabClosed ()
 	{
+	}
+
+	QVariant VkEntry::GetMetaInfo (DataField field) const
+	{
+		switch (field)
+		{
+		case DataField::BirthDate:
+			return Info_.Birthday_;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown field"
+				<< static_cast<int> (field);
+		return {};
 	}
 
 	void VkEntry::handleTypingTimeout ()

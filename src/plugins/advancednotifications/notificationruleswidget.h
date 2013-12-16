@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULESWIDGET_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULESWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include <QList>
 #include "ui_notificationruleswidget.h"
@@ -39,6 +39,8 @@ class QStandardItem;
 
 namespace LeechCraft
 {
+struct ANFieldData;
+
 namespace AdvancedNotifications
 {
 	class RulesManager;
@@ -59,9 +61,16 @@ namespace AdvancedNotifications
 		NotificationRulesWidget (RulesManager*, QWidget* = 0);
 	private:
 		void ResetMatchesModel ();
+
+		QString GetCurrentCat () const;
 		QStringList GetSelectedTypes () const;
+
 		NotificationRule GetRuleFromUI () const;
 		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
+
+		QMap<QObject*, QList<ANFieldData>> GetRelevantANFieldsWPlugins () const;
+		QList<ANFieldData> GetRelevantANFields () const;
+		QString GetArgumentText ();
 	private slots:
 		void handleItemSelected (const QModelIndex&, const QModelIndex&);
 
@@ -94,5 +103,3 @@ namespace AdvancedNotifications
 	};
 }
 }
-
-#endif

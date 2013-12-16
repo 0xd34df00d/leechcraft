@@ -156,7 +156,7 @@ namespace Acetamide
 
 		void scheduleClientDestruction ();
 
-		void gotConsolePacket (const QByteArray&, int, const QString&);
+		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 
 		void bookmarksChanged ();
 	};

@@ -36,16 +36,16 @@ namespace LeechCraft
 namespace KBSwitch
 {
 	FlagIconProvider::FlagIconProvider ()
-	: QDeclarativeImageProvider (QDeclarativeImageProvider::Image)
+	: QDeclarativeImageProvider (Pixmap)
 	{
 	}
 
-	QImage FlagIconProvider::requestImage (const QString& id, QSize *actual, const QSize&)
+	QPixmap FlagIconProvider::requestPixmap (const QString& id, QSize *actual, const QSize&)
 	{
-		QImage image (Util::GetSysPath (Util::SysPath::Share, "global_icons/flags", id + ".png"));
+		QPixmap px (Util::GetSysPath (Util::SysPath::Share, "global_icons/flags", id + ".png"));
 		if (actual)
-			*actual = image.size ();
-		return image;
+			*actual = px.size ();
+		return px;
 	}
 }
 }

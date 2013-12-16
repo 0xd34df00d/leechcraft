@@ -4,74 +4,74 @@
 <context>
     <name>LeechCraft::Azoth::p100q::Plugin</name>
     <message>
-        <location filename="p100q.cpp" line="82"/>
+        <location filename="p100q.cpp" line="93"/>
         <source>Azoth p100q enhances experience with the psto.net microblogging service.</source>
         <translation>Azoth p100q enhances experience with the psto.net microblogging service.</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="142"/>
+        <location filename="p100q.cpp" line="153"/>
         <source>Subscribe to tag</source>
         <translation>Subscribe to tag</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="203"/>
+        <location filename="p100q.cpp" line="214"/>
         <source>Subscribe</source>
         <translation>Subscribe</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="205"/>
+        <location filename="p100q.cpp" line="216"/>
         <source>Unsubscribe</source>
         <translation>Unsubscribe</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="211"/>
+        <location filename="p100q.cpp" line="222"/>
         <source>View</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="215"/>
-        <location filename="p100q.cpp" line="217"/>
+        <location filename="p100q.cpp" line="226"/>
+        <location filename="p100q.cpp" line="228"/>
         <source>Recommend</source>
         <translation>Recommend</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="222"/>
-        <location filename="p100q.cpp" line="224"/>
+        <location filename="p100q.cpp" line="233"/>
+        <location filename="p100q.cpp" line="235"/>
         <source>Add to bookmarks</source>
         <translation>Add to bookmarks</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="229"/>
-        <location filename="p100q.cpp" line="231"/>
-        <location filename="p100q.cpp" line="233"/>
+        <location filename="p100q.cpp" line="240"/>
+        <location filename="p100q.cpp" line="242"/>
+        <location filename="p100q.cpp" line="244"/>
         <source>Block user</source>
         <translation>Block user</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="238"/>
-        <location filename="p100q.cpp" line="240"/>
-        <location filename="p100q.cpp" line="242"/>
+        <location filename="p100q.cpp" line="249"/>
+        <location filename="p100q.cpp" line="251"/>
+        <location filename="p100q.cpp" line="253"/>
         <source>Send private message to user</source>
         <translation>Send private message to user</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="167"/>
-        <location filename="p100q.cpp" line="172"/>
+        <location filename="p100q.cpp" line="178"/>
+        <location filename="p100q.cpp" line="183"/>
         <source>View user&apos;s posts</source>
         <translation>View user&apos;s posts</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="177"/>
+        <location filename="p100q.cpp" line="188"/>
         <source>Reply</source>
         <translation>Reply</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="207"/>
+        <location filename="p100q.cpp" line="218"/>
         <source>Unsubscribe from post</source>
         <translation>Unsubscribe from post</translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="182"/>
+        <location filename="p100q.cpp" line="193"/>
         <source>View post</source>
         <translation>View post</translation>
     </message>
@@ -140,7 +140,6 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
-        <location filename="dummy.cpp" line="16"/>
         <source>Request Comments</source>
         <translation>Request Comments</translation>
     </message>
@@ -148,6 +147,11 @@
         <location filename="dummy.cpp" line="15"/>
         <source>Recommend this psto</source>
         <translation>Recommend this psto</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="16"/>
+        <source>Add to bookmarks</source>
+        <translation>Add to bookmarks</translation>
     </message>
 </context>
 </TS>

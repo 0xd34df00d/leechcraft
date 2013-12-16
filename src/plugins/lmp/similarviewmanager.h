@@ -54,8 +54,6 @@ namespace LMP
 		void SetInfos (Media::SimilarityInfos_t);
 	private slots:
 		void handleSimilarReady ();
-		void handleBookmark (const QString&, const QString&, const QString&);
-		void handleLink (const QString&);
 	};
 }
 }

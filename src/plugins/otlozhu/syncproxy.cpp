@@ -60,6 +60,8 @@ namespace Otlozhu
 
 	QList<Laretz::Operation> SyncProxy::GetAllOps () const
 	{
+		Core::Instance ().GetStager ()->Enable ();
+
 		std::vector<Laretz::Item> items;
 
 		const auto todoMgr = Core::Instance ().GetTodoManager ();

@@ -32,37 +32,32 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SeekThru
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		namespace SeekThru
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				BaseSettingsManager::Init ();
-			}
-			
-			XmlSettingsManager::~XmlSettingsManager ()
-			{
-			}
-			
-			XmlSettingsManager& XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager xsm;
-				return xsm;
-			}
-			
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_SeekThru");
-				return settings;
-			}
-			
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-			
-		};
-	};
-};
+		BaseSettingsManager::Init ();
+	}
 
+	XmlSettingsManager::~XmlSettingsManager ()
+	{
+	}
+
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SeekThru");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}

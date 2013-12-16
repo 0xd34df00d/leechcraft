@@ -41,22 +41,20 @@
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
 
-typedef bool (*QX11FilterFunction) (XEvent *event);
-extern void qt_installX11EventFilter (QX11FilterFunction func);
-
 namespace LeechCraft
 {
 namespace KBSwitch
 {
 	namespace
 	{
-		bool EventFilter (XEvent *msg)
+		bool EvFilter (void *msg)
 		{
-			return KBCtl::Instance ().Filter (msg);
+			return KBCtl::Instance ().Filter (static_cast<XEvent*> (msg));
 		}
 	}
 
 	KBCtl::KBCtl ()
+	: PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
 	{
 		InitDisplay ();
 
@@ -97,11 +95,12 @@ namespace KBSwitch
 		}
 		settings.endGroup ();
 
-		qt_installX11EventFilter (&EventFilter);
-
 		XmlSettingsManager::Instance ().RegisterObject ({
 					"ManageSystemWide",
-					"KeyboardModel"
+					"KeyboardModel",
+					"ManageKeyRepeat",
+					"RepeatRate",
+					"RepeatTimeout"
 				},
 				this, "scheduleApply");
 	}
@@ -200,10 +199,12 @@ namespace KBSwitch
 
 	bool KBCtl::Filter (XEvent *event)
 	{
+		auto invokePrev = [this, event] { return PrevFilter_ ? PrevFilter_ (event) : false; };
+
 		if (event->type == XkbEventType_)
 		{
 			HandleXkbEvent (event);
-			return false;
+			return invokePrev ();
 		}
 
 		switch (event->type)
@@ -224,7 +225,7 @@ namespace KBSwitch
 			break;
 		}
 
-		return false;
+		return invokePrev ();
 	}
 
 	void KBCtl::HandleXkbEvent (XEvent *event)
@@ -397,6 +398,21 @@ namespace KBSwitch
 				SLOT (apply ()));
 	}
 
+	void KBCtl::ApplyKeyRepeat ()
+	{
+		if (!XmlSettingsManager::Instance ().property ("ManageKeyRepeat").toBool ())
+			return;
+
+		XkbChangeEnabledControls (Display_, XkbUseCoreKbd, XkbRepeatKeysMask, XkbRepeatKeysMask);
+
+		auto timeout = XmlSettingsManager::Instance ().property ("RepeatTimeout").toUInt ();
+		auto rate = XmlSettingsManager::Instance ().property ("RepeatRate").toUInt ();
+		XkbSetAutoRepeatRate (Display_, XkbUseCoreKbd, timeout, 1000 / rate);
+
+		// X11 is crap, XkbSetAutoRepeatRate() doesn't work next time if we don't call this.
+		XkbGetAutoRepeatRate (Display_, XkbUseCoreKbd, &timeout, &rate);
+	}
+
 	void KBCtl::apply ()
 	{
 		ApplyScheduled_ = false;
@@ -441,6 +457,8 @@ namespace KBSwitch
 
 		qDebug () << Q_FUNC_INFO << args;
 		QProcess::startDetached ("setxkbmap", args);
+
+		ApplyKeyRepeat ();
 	}
 }
 }

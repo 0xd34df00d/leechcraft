@@ -79,11 +79,12 @@ namespace OTRoid
 			static_cast<Plugin*> (opData)->InjectMsg (QString::fromUtf8 (accName),
 					QString::fromUtf8 (recipient),
 					QString::fromUtf8 (msg),
+					true,
 					IMessage::DOut);
 		}
 
-		void Notify (void *opdata, OtrlNotifyLevel level,
-				const char *accountname, const char *protocol,
+		void Notify (void *opData, OtrlNotifyLevel level,
+				const char *accountname, const char*,
 				const char *username, const char *title,
 				const char *primary, const char *secondary)
 		{
@@ -103,17 +104,57 @@ namespace OTRoid
 				break;
 			}
 
-			static_cast<Plugin*> (opdata)->Notify (u (accountname),
+			static_cast<Plugin*> (opData)->Notify (u (accountname),
 					u (username), prio, u (title), u (primary), u (secondary));
 		}
 
 #if OTRL_VERSION_MAJOR >= 4
-		void HandleMsgEvent (void*, OtrlMessageEvent event,
-				ConnContext*, const char *msg, gcry_error_t)
+		void HandleMsgEvent (void *opData, OtrlMessageEvent event,
+				ConnContext *context, const char *message, gcry_error_t)
 		{
 			qDebug () << Q_FUNC_INFO
 					<< event
-					<< msg;
+					<< message;
+
+			auto plugin = static_cast<Plugin*> (opData);
+
+			const auto& contact = plugin->GetVisibleEntryName (QString::fromUtf8 (context->accountname),
+					QString::fromUtf8 (context->username));
+
+			QString msg;
+			switch (event)
+			{
+			case OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED:
+				msg = Plugin::tr ("The following message received from %1 "
+								   "was not encrypted:").arg (contact);
+				break;
+			case OTRL_MSGEVENT_CONNECTION_ENDED:
+				msg = Plugin::tr ("Your message was not sent. Either end your "
+								   "private conversation, or restart it.");
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_UNRECOGNIZED:
+				msg = Plugin::tr ("Unreadable encrypted message was received.");
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE:
+				msg = Plugin::tr ("Received an encrypted message but it cannot "
+								   "be read because no private connection is "
+								   "established yet.");
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_UNREADABLE:
+				msg = Plugin::tr ("Received message is unreadable.");
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_MALFORMED:
+				msg = Plugin::tr ("Received message contains malformed data.");
+				break;
+			}
+
+			if (!msg.isEmpty ())
+			{
+				plugin->InjectMsg (QString::fromUtf8 (context->accountname),
+						QString::fromUtf8 (context->username),
+						msg, false, IMessage::DIn,
+						IMessage::MTServiceMessage);
+			}
 		}
 
 		void TimerControl (void *opData, unsigned int interval)
@@ -121,6 +162,51 @@ namespace OTRoid
 			static_cast<Plugin*> (opData)->SetPollTimerInterval (interval);
 		}
 #endif
+
+		void HandleNewFingerprint (void *opData, OtrlUserState,
+				const char *accountname, const char*,
+				const char *username, unsigned char fingerprint [20])
+		{
+			char fpHash [45];
+			otrl_privkey_hash_to_human (fpHash, fingerprint);
+			QString hrHash (fpHash); // human readable fingerprint
+
+			const auto plugin = static_cast<Plugin*> (opData);
+
+			const auto& msg = Plugin::tr ("You have received a new fingerprint from %1: %2")
+					.arg (plugin->GetVisibleEntryName (QString::fromUtf8 (accountname), QString::fromUtf8 (username)))
+					.arg (hrHash);
+			plugin->InjectMsg (QString::fromUtf8 (accountname),
+					QString::fromUtf8 (username),
+					msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
+
+		void HandleGoneSecure (void *opData, ConnContext *context)
+		{
+			const auto& msg = Plugin::tr ("Private conversation started");
+			static_cast<Plugin*> (opData)->
+					InjectMsg (QString::fromUtf8 (context->accountname),
+							QString::fromUtf8 (context->username),
+							msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
+
+		void HandleGoneInsecure (void *opData, ConnContext *context)
+		{
+			const auto& msg = Plugin::tr ("Private conversation lost");
+			static_cast<Plugin*> (opData)->
+					InjectMsg (QString::fromUtf8 (context->accountname),
+							QString::fromUtf8 (context->username),
+							msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
+
+		void HandleStillSecure (void *opData, ConnContext *context, int)
+		{
+			const auto& msg = QObject::tr ("Private conversation refreshed");
+			static_cast<Plugin*> (opData)->
+					InjectMsg (QString::fromUtf8 (context->accountname),
+							QString::fromUtf8 (context->username),
+							msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
 	}
 
 	void Plugin::Init (ICoreProxy_ptr)
@@ -144,9 +230,7 @@ namespace OTRoid
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
 		OtrOps_.update_context_list = [] (void*) {};
-		OtrOps_.new_fingerprint = [] (void*, OtrlUserState,
-				const char *accountname, const char *protocol,
-				const char *username, unsigned char fingerprint[20]) {};
+		OtrOps_.new_fingerprint = &OTR::HandleNewFingerprint;
 		OtrOps_.write_fingerprints = [] (void *opData)
 				{ static_cast<Plugin*> (opData)->WriteFingerprints (); };
 		OtrOps_.account_name = [] (void *opData, const char *acc, const char*) -> const char*
@@ -160,6 +244,9 @@ namespace OTRoid
 					return result;
 				};
 		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
+		OtrOps_.gone_secure = &OTR::HandleGoneSecure;
+		OtrOps_.gone_insecure = &OTR::HandleGoneInsecure;
+		OtrOps_.still_secure = &OTR::HandleStillSecure;
 #if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
 		OtrOps_.timer_control = &OTR::TimerControl;
@@ -175,12 +262,12 @@ namespace OTRoid
 		OtrOps_.notify = &OTR::Notify;
 		OtrOps_.log_message = [] (void*, const char *msg)
 				{ qDebug () << "OTR:" << QString::fromUtf8 (msg).trimmed (); };
-		OtrOps_.display_otr_message = [] (void*, const char *accountname,
-				const char *protocol, const char *username, const char *msg) -> int
+		OtrOps_.display_otr_message = [] (void *opData, const char *accountname,
+				const char*, const char *username, const char *msg) -> int
 			{
-				qDebug () << "OTR disp:"
-						<< accountname << protocol
-						<< username << QString::fromUtf8 (msg);
+				static_cast<Plugin*> (opData)->InjectMsg (QString::fromUtf8 (accountname),
+						QString::fromUtf8 (username),
+						QString::fromUtf8 (msg), false, IMessage::DIn);
 				return 0;
 			};
 #endif
@@ -234,8 +321,8 @@ namespace OTRoid
 		return entry->Variants ().isEmpty () ? 0 : 1;
 	}
 
-	void Plugin::InjectMsg (const QString& accId,
-			const QString& entryId, const QString& body, IMessage::Direction dir)
+	void Plugin::InjectMsg (const QString& accId, const QString& entryId,
+			const QString& body, bool hidden, IMessage::Direction dir, IMessage::MessageType type)
 	{
 		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -248,22 +335,36 @@ namespace OTRoid
 			return;
 		}
 
-		InjectMsg (entry, body, dir);
+		InjectMsg (entry, body, hidden, dir, type);
 	}
 
-	void Plugin::InjectMsg (ICLEntry *entry, const QString& body, IMessage::Direction dir)
+	void Plugin::InjectMsg (ICLEntry *entry, const QString& body, bool hidden,
+			IMessage::Direction dir, IMessage::MessageType type)
 	{
-		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, {}, body);
-		msgObj->setProperty ("Azoth/HiddenMessage", true);
-
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (!msg)
-			return;
-
 		if (dir == IMessage::DOut)
+		{
+			QObject *msgObj = entry->CreateMessage (type, {}, body);
+			if (hidden)
+				msgObj->setProperty ("Azoth/HiddenMessage", true);
+
+			IMessage *msg = qobject_cast<IMessage*> (msgObj);
+			if (!msg)
+				return;
+
 			msg->Send ();
+		}
 		else
+		{
+			auto entryObj = entry->GetQObject ();
+			auto msgObj = AzothProxy_->CreateCoreMessage (body,
+					QDateTime::currentDateTime (),
+					type, dir, entryObj, entryObj);
+
+			PendingInjectedMessages_ << msgObj;
+
+			auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Store ();
+		}
 	}
 
 	void Plugin::Notify (const QString&, const QString&,
@@ -296,6 +397,34 @@ namespace OTRoid
 		}
 
 		return acc->GetAccountName ();
+	}
+
+	namespace
+	{
+		QString GetVisibleEntryNameImpl (ICLEntry *entry)
+		{
+			const auto& id = entry->GetHumanReadableID ();
+			const auto& name = entry->GetEntryName ();
+			return name != id ?
+					QString ("%1 (%2)").arg (name).arg (id) :
+					id;
+		}
+	}
+
+	QString Plugin::GetVisibleEntryName (const QString& accId, const QString& entryId)
+	{
+		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such entry"
+					<< entryId
+					<< accId;
+			return entryId;
+		}
+
+		return GetVisibleEntryNameImpl (entry);
 	}
 
 	void Plugin::CreatePrivkey (const char *accName, const char *proto)
@@ -393,6 +522,12 @@ namespace OTRoid
 
 	void Plugin::hookGotMessage (IHookProxy_ptr proxy, QObject *msgObj)
 	{
+		if (IsGenerating_)
+			return;
+
+		if (PendingInjectedMessages_.remove (msgObj))
+			return;
+
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
 		{
@@ -423,41 +558,66 @@ namespace OTRoid
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
+		OtrlTLV *tlvs = 0;
 		int ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
 				entry->GetEntryID ().toUtf8 ().constData (),
 				msg->GetBody ().toUtf8 ().constData (),
 				&newMsg,
-				NULL,
+				&tlvs,
 				NULL,
 #if OTRL_VERSION_MAJOR >= 4
 				NULL,
 #endif
 				NULL);
 
+		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
+		if (tlv)
+		{
+			const auto& message = tr ("%1 has ended the private conversation with you, "
+					"you should do the same.")
+						.arg (GetVisibleEntryNameImpl (entry));
+			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
+						message, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
+		otrl_tlv_free (tlvs);
+
+#if (OTRL_VERSION_MAJOR >= 4)
+		// Magic hack to force it work similar to libotr < 4.0.0.
+		// If user received unencrypted message he (she) should be notified.
+		// See OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED as well.
+		if (!msg->GetBody ().startsWith("?OTR") && ignore && !newMsg)
+			ignore = 0;
+#endif
+
 		if (ignore)
 		{
 			proxy->CancelDefault ();
 			msgObj->setProperty ("Azoth/HiddenMessage", true);
-			otrl_message_free (newMsg);
-			return;
 		}
 
 		if (newMsg)
 		{
 			msg->SetBody (QString::fromUtf8 (newMsg));
 			otrl_message_free (newMsg);
+		}
 
+		if (ignore || newMsg)
+		{
 			if (!Entry2Action_.contains (entryObj))
 				CreateActions (entryObj);
-
-			Entry2Action_ [entryObj]->setChecked (true);
+			if (!tlv)
+				Entry2Action_ [entryObj]->setChecked (true);
 		}
+
 	}
 
 	void Plugin::hookMessageCreated (IHookProxy_ptr proxy, QObject*, QObject *msgObj)
 	{
+		if (IsGenerating_)
+			return;
+
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
 		{
@@ -547,8 +707,22 @@ namespace OTRoid
 		if (!act->isChecked ())
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
-					accId.constData (), protoId.constData (), entry->GetEntryID ().constData ());
+					accId.constData (), protoId.constData (),
+#if OTRL_VERSION_MAJOR >= 4
+					entry->GetEntryID ().toUtf8 ().constData (), OTRL_INSTAG_BEST);
+#else
+					entry->GetEntryID ().toUtf8 ().constData ());
+#endif
+			const auto& message = tr ("Private conversation closed");
+			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
+						message, false, IMessage::DIn, IMessage::MTServiceMessage);
 			return;
+		}
+		else
+		{
+			const auto& message = tr ("Attempting to start a private conversation");
+			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
+					   message, false, IMessage::DIn, IMessage::MTServiceMessage);
 		}
 
 		char fingerprint [45];
@@ -557,8 +731,17 @@ namespace OTRoid
 			CreatePrivkey (accId.constData (), protoId.constData());
 
 		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accId.constData (),
+#if OTRL_VERSION_MAJOR >= 4
+					OTRL_POLICY_ALLOW_V2), free);
+		// Yes, this is a malicious hack. And in the bright future
+		// (OTRL_POLICY_ALLOW_V3 | OTRL_POLICY_ALLOW_V2) or OTRL_POLICY_DEFAULT
+		// should be used. But for now this is only possible solution for fixing
+		// the problem of initialization of private conversation when both sides
+		// use libotr 4.0.x.
+#else
 					OTRL_POLICY_DEFAULT), free);
-		InjectMsg (entry, QString::fromUtf8 (msg.get ()), IMessage::DOut);
+#endif
+		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::DOut);
 	}
 
 #if OTRL_VERSION_MAJOR >= 4

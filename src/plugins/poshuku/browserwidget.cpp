@@ -417,7 +417,7 @@ namespace Poshuku
 		connect (WebView_,
 				SIGNAL (titleChanged (const QString&)),
 				this,
-				SIGNAL (titleChanged (const QString&)));
+				SLOT (updateTitle (const QString&)));
 		connect (WebView_,
 				SIGNAL (titleChanged (const QString&)),
 				this,
@@ -610,7 +610,9 @@ namespace Poshuku
 		{
 			WebView_->zoomFactor (),
 			NotifyWhenFinished_->isChecked (),
-			QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ()),
+			ReloadPeriodically_->isChecked () ?
+				QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ()) :
+				QTime (0, 0, 0),
 			ba,
 			WebView_->page ()->mainFrame ()->scrollPosition ()
 		};
@@ -1224,6 +1226,18 @@ namespace Poshuku
 		SavePage_->setEnabled (true);
 	}
 
+	void BrowserWidget::updateTitle (const QString& title)
+	{
+		if (!title.isEmpty ())
+		{
+			emit titleChanged (title);
+			return;
+		}
+
+		const auto& name = QFileInfo (WebView_->url ().path ()).fileName ();
+		emit titleChanged (name);
+	}
+
 	const int MaxHistoryItems = 10;
 
 	void BrowserWidget::updateNavHistory ()
@@ -1526,6 +1540,9 @@ namespace Poshuku
 		proxy->FillValue ("progress", p);
 
 		QString title = WebView_->title ();
+		if (title.isEmpty ())
+			title = QFileInfo (WebView_->url ().path ()).fileName ();
+
 		if (p > 0 && p < 100)
 			title.prepend (QString ("[%1%] ").arg (p));
 		emit titleChanged (title);

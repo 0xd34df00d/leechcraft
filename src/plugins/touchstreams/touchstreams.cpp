@@ -48,9 +48,13 @@ namespace TouchStreams
 
 		Util::InstallTranslator ("touchstreams");
 
-		Queue_ = new Util::QueueManager (400);
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");
 
-		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("3298289",
+		Queue_ = new Util::QueueManager (10000);
+
+		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("TouchStreams",
+				"3298289",
 				{ "audio", "friends" },
 				XmlSettingsManager::Instance ().property ("Cookies").toByteArray (),
 				proxy,
@@ -62,9 +66,6 @@ namespace TouchStreams
 
 		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
 		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
-
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");
 
 		connect (XSD_.get (),
 				SIGNAL (pushButtonClicked (QString)),
@@ -113,7 +114,7 @@ namespace TouchStreams
 
 	QIcon Plugin::GetServiceIcon () const
 	{
-		static QIcon icon;
+		static QIcon icon (":/touchstreams/resources/images/vk.svg");
 		return icon;
 	}
 
@@ -149,7 +150,10 @@ namespace TouchStreams
 	void Plugin::handlePushButton (const QString& name)
 	{
 		if (name == "AllowRequestsTriggered")
-			AuthMgr_->Reauth ();
+		{
+			AuthMgr_->clearAuthData ();
+			AuthMgr_->reauth ();
+		}
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown name"

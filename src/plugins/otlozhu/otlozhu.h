@@ -32,7 +32,11 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+
+#ifndef DISABLE_SYNC
 #include <interfaces/isyncable.h>
+#endif
+
 #include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
@@ -45,13 +49,20 @@ namespace Otlozhu
 					, public IInfo
 					, public IHaveTabs
 					, public IEntityHandler
+#ifndef DISABLE_SYNC
 					, public ISyncable
+#endif
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler ISyncable)
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler)
+#ifndef DISABLE_SYNC
+		Q_INTERFACES (ISyncable)
+#endif
 
 		TabClassInfo TCTodo_;
+#ifndef DISABLE_SYNC
 		SyncProxy *SyncProxy_;
+#endif
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -67,7 +78,9 @@ namespace Otlozhu
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
+#ifndef DISABLE_SYNC
 		ISyncProxy* GetSyncProxy ();
+#endif
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

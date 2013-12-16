@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<about>
+	<!-- Feel free to add yourself here and send us a pull request on Github -->
+	<contrib type="author" name="Georg Rudoy" nick="0xd34df00d" jid="0xd34df00d@0xd34df00d.me" email="0xd34df00d@gmail.com	">
+		<roles>
+			<role>Lead developer and original author.</role>
+		</roles>
+		<years start="2006" end="2013" />
+	</contrib>
+	<contrib type="author" name="Oleg Linkin" nick="magog" jid="magog@gentoo.ru" email="MaledictusDeMagog@gmail.com">
+		<roles>
+			<role>Blogique module.</role>
+			<role>Azoth Acetamide: IRC support for Azoth.</role>
+			<role>Google Drive support in NetStoreManager module.</role>
+			<role>Poshuku OnlineBookmarks.</role>
+			<role>Firefox importer in New Life.</role>
+			<role>Chrome-style tabs.</role>
+			<role>Various patches and improvements.</role>
+			<role>Windows builds.</role>
+		</roles>
+		<years start="2010" end="2013" />
+	</contrib>
+	<contrib type="contrib" name="" nick="Akon32" jid="" email="akon32@rambler.ru">
+		<roles>
+			<role>SecMan SecureStorage.</role>
+			<role>Various patches.</role>
+		</roles>
+		<years>
+			<year>2011</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="Aleksey Frolov" nick="Aleks Lifey aka atommix" jid="aleks.lifey@gmail.com" email="aleks.lifey@gmail.com">
+		<roles>
+			<role>Initial PKGBUILDs for Arch Linux.</role>
+		</roles>
+		<years>
+			<year>2009</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="Aleksey Golovin" nick="rioky" jid="rioky@jabber.ru" email="nekolayer@yandex.ru">
+		<roles>
+			<role>openSUSE packages.</role>
+		</roles>
+		<years>
+			<year>2012</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="Alexander Batischev" nick="Minoru" jid="eual.jp@gmail.com" email="eual.jp@gmail.com">
+		<roles>
+			<role>Ukrainian translations.</role>
+		</roles>
+		<years>
+			<year>2011</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="Alia Eolova" nick="alieola" jid="alieola@jabber.ru" email="aeors-team@yandex.ru">
+		<roles>
+			<role>Spanish translations.</role>
+		</roles>
+		<years>
+			<year>2011</year>
+			<year>2012</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="Azer Abdullaev" nick="Like-all" jid="lik3a11@gmail.com" email="lik3a11@gmail.com">
+		<roles>
+			<role>Artwork.</role>
+			<role>Shaitan.</role>
+		</roles>
+		<years start="2011" end="2013" />
+	</contrib>
+	<contrib type="contrib" name="Boris Pek" nick="Tehnick" jid="" email="tehnick-8@mail.ru">
+		<roles>
+			<role>Debian packages.</role>
+			<role>Ubuntu packages.</role>
+		</roles>
+		<years start="2011" end="2013" />
+	</contrib>
+	<contrib type="contrib" name="Dmitriy Perlow" nick="DA(P).DarkneSS" jid="darkness@jabber.org.by" email="dap@open.by">
+		<roles>
+			<role>openSUSE packages.</role>
+			<role>LackMan packages.</role>
+			<role>Azoth user guide.</role>
+		</roles>
+		<years start="2012" end="2013" />
+	</contrib>
+	<contrib type="contrib" name="Dimitriy Ryazantcev" nick="DJm00n" jid="djm00n@jabber.ru" email="dimitriy.ryazantcev@gmail.com">
+		<roles>
+			<role>Windows builds.</role>
+		</roles>
+		<years start="2011" end="2013" />
+	</contrib>
+	<contrib type="contrib" name="Elena Belova" nick="Zereal" jid="elena.zereal@neko.im" email="zereal25@gmail.com">
+		<roles>
+			<role>French translations.</role>
+			<role>Italian translations.</role>
+		</roles>
+		<years>
+			<year>2011</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="Eugene Mamin" nick="DZhon" jid="dzhon_over@jabber.ru" email="TheDZhon@gmail.com">
+		<roles>
+			<role>Windows backend for Liznoo plugin.</role>
+			<role>Windows builds.</role>
+		</roles>
+		<years>
+			<year>2011</year>
+			<year>2012</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="" nick="ForNeVeR" jid="revenrof@jabber.ru" email="">
+		<roles>
+			<role>Windows builds.</role>
+		</roles>
+		<years start="2009" end="2011" />
+	</contrib>
+	<contrib type="contrib" name="" nick="Ignotus" jid="nlminhtl@gmail.com" email="nlminhtl@gmail.com">
+		<roles>
+			<role>Initial Last.FM Scrobbler plugin version.</role>
+			<role>Improvements in Psto.net plugin for Azoth.</role>
+			<role>openSUSE packages.</role>
+			<role>Fedora packages.</role>
+		</roles>
+		<years>
+			<year>2011</year>
+			<year>2012</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="" nick="lk4d4" jid="" email="lk4d4@yandex.ru">
+		<roles>
+			<role>Initial ebuilds for Gentoo Linux.</role>
+		</roles>
+		<years>
+			<year>2009</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="Maxim Kirenenko" nick="part1zan_ aka 0x73571ab" jid="part1zancheg@gmail.com" email="part1zancheg@gmail.com">
+		<roles>
+			<role>Extensive and thorough testing.</role>
+		</roles>
+		<years>
+			<year>2010</year>
+			<year>2011</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="" nick="Mellon" jid="" email="qmellon@gmail.com">
+		<roles>
+			<role>Extensive and thorough testing.</role>
+		</roles>
+		<years>
+			<year>2012</year>
+			<year>2013</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="" nick="Miha" jid="" email="miha@52.ru">
+		<roles>
+			<role>openSUSE packages.</role>
+		</roles>
+		<years>
+			<year>2009</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="" nick="nobodyzzz" jid="nobodyzzz666@gmail.com" email="nobodyzzz666@gmail.com">
+		<roles>
+			<role>Juick plugin.</role>
+			<role>FatApe plugin, the GreaseMonkey support layer for Poshuku.</role>
+			<role>Various patches.</role>
+		</roles>
+		<years>
+			<year>2011</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="" nick="PanteR" jid="panter_dsd@jabber.ru" email="panter.dsd@gmail.com">
+		<roles>
+			<role>Various patches.</role>
+		</roles>
+		<years>
+			<year>2009</year>
+			<year>2010</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="" nick="Pevzi" jid="pevzi23@gmail.com" email="pevzi23@gmail.com">
+		<roles>
+			<role>Graphical artwork.</role>
+		</roles>
+		<years>
+			<year>2009</year>
+			<year>2010</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="" nick="Phóéñíx" jid="nounou@jabber.ru" email="">
+		<roles>
+			<role>Arabic translations.</role>
+		</roles>
+		<years>
+			<year>2009</year>
+			<year>2010</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="" nick="sejros" jid="" email="home@sejros.mp">
+		<roles>
+			<role>Esperanto translations.</role>
+		</roles>
+		<years>
+			<year>2009</year>
+		</years>
+	</contrib>
+	<contrib type="contrib" name="Sergey Kuzmin" nick="pendruk" jid="pendruk@leechcraft.org" email="pendruk@gmail.com">
+		<roles>
+			<role>Azoth theming.</role>
+			<role>LackMan packages.</role>
+		</roles>
+		<years start="2012" end="2013" />
+	</contrib>
+	<contrib type="contrib" name="" nick="V0id" jid="" email="getbusy@mail.ru">
+		<roles>
+			<role>Aggregator fixes and improvements.</role>
+			<role>Ukrainian translations.</role>
+			<role>Various patches.</role>
+		</roles>
+		<years start="2008" end="2010" />
+	</contrib>
+</about>

@@ -21,10 +21,12 @@ set (XTAZY_FORMS
 	tracksharedialog.ui
 	)
 set (XTAZY_RESOURCES azothxtazyresources.qrc)
+
 CreateTrs ("azoth_xtazy" "en;es;ru_RU;uk_UA" XTAZY_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_xtazy" "en;ru_RU" "${XTAZY_SRCS}" "${XTAZY_FORMS}" "azothxtazysettings.xml")
+
 QT4_ADD_RESOURCES (XTAZY_RCCS ${XTAZY_RESOURCES})
 QT4_WRAP_UI (XTAZY_UIS_H ${XTAZY_FORMS})
-
 
 add_library (leechcraft_azoth_xtazy SHARED
 	${XTAZY_COMPILED_TRANSLATIONS}
@@ -38,4 +40,3 @@ target_link_libraries (leechcraft_azoth_xtazy
 	)
 install (TARGETS leechcraft_azoth_xtazy DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothxtazysettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${XTAZY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

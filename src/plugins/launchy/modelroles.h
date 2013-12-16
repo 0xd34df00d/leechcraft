@@ -50,6 +50,8 @@ namespace Launchy
 		ItemCommand,
 
 		IsItemFavorite,
+		IsItemRecent,
+		ItemRecentPos,
 
 		ItemNativeCategories,
 		NativeCategories,

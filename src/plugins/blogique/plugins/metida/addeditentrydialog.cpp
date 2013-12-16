@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include "ljprofile.h"
+#include "selectgroupsdialog.h"
 
 namespace LeechCraft
 {
@@ -39,11 +40,13 @@ namespace Blogique
 {
 namespace Metida
 {
-	AddEditEntryDialog::AddEditEntryDialog (LJProfile *profile, QWidget *parent)
+
+	AddEditEntryDialog::AddEditEntryDialog (LJProfile *profile, AddTypeEntry type, QWidget *parent)
 	: QDialog (parent)
 	, Profile_ (profile)
 	, BackgroundColor_ ("#ffffff")
 	, ForegroundColor_ ("#000000")
+	, GroupMask_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -55,15 +58,20 @@ namespace Metida
 		Ui_.ForegroundColorLabel_->setMinimumWidth (QApplication::fontMetrics ()
 				.width (" #RRGGBB "));
 
-		Ui_.Groups_->addItem (tr ("Not defined"));
-		Ui_.Groups_->setItemData (Ui_.Groups_->count (), -1, GroupRoles::RealGroupId);
-		for (const auto& frGroup : Profile_->GetFriendGroups ())
+		switch (type)
 		{
-			Ui_.Groups_->addItem (frGroup.Name_);
-			Ui_.Groups_->setItemData (Ui_.Groups_->count () - 1,
-					frGroup.RealId_,
-					GroupRoles::RealGroupId);
-		}
+		case ATEFriend:
+			Ui_.AddTypeEntry_->setCurrentIndex (0);
+			break;
+		case ATEGroup:
+			Ui_.AddTypeEntry_->setCurrentIndex (1);
+			break;
+		case ATENone:
+		default:
+			break;
+		};
+		Ui_.AddNewLabel_->setVisible (type == ATENone);
+		Ui_.AddTypeEntry_->setVisible (type == ATENone);
 	}
 
 	QString AddEditEntryDialog::GetUserName () const
@@ -110,41 +118,31 @@ namespace Metida
 		DrawColorPixmap (Ui_.ForegroundColorLabel_, ForegroundColor_);
 	}
 
-	uint AddEditEntryDialog::GetGroupRealId () const
+	uint AddEditEntryDialog::GetGroupMask () const
 	{
-		return Ui_.Groups_->itemData (Ui_.Groups_->currentIndex (),
-				GroupRoles::RealGroupId).toUInt ();
+		return GroupMask_;
 	}
 
-	void AddEditEntryDialog::SetGroup (uint id)
+	void AddEditEntryDialog::SetGroupMask (uint mask)
 	{
-		for (int i = 0, count = Ui_.Groups_->count (); i < count; ++i)
-		{
-			if (Ui_.Groups_->itemData (i, GroupRoles::RealGroupId).toUInt () == id)
-			{
-				Ui_.Groups_->setCurrentIndex (i);
-				return;
-			}
-		}
-
-		Ui_.Groups_->setCurrentIndex (0);
+		GroupMask_ = mask;
 	}
 
 	QString AddEditEntryDialog::GetGroupName () const
 	{
 		return Ui_.GroupName_->text ();
 	}
-	
+
 	void AddEditEntryDialog::SetGroupName (const QString& name)
 	{
 		Ui_.GroupName_->setText (name);
 	}
-	
+
 	bool AddEditEntryDialog::GetAcccess () const
 	{
 		return Ui_.Public_->isChecked ();
 	}
-	
+
 	void AddEditEntryDialog::SetAccess (bool isPublic)
 	{
 		Ui_.Public_->setChecked (isPublic);
@@ -182,7 +180,7 @@ namespace Metida
 				Ui_.Username_->text ().isEmpty ())
 		{
 			QMessageBox::warning (this,
-					tr ("Add new friend."),
+					"Blogique Metida",
 					tr ("Username must be defined."));
 			Ui_.Username_->setFocus ();
 			return;
@@ -191,7 +189,7 @@ namespace Metida
 				Ui_.GroupName_->text ().isEmpty ())
 		{
 			QMessageBox::warning (this,
-					tr ("Add new group."),
+					"Blogique Metida",
 					tr ("Group name must be defined."));
 			Ui_.GroupName_->setFocus ();
 			return;
@@ -218,7 +216,7 @@ namespace Metida
 
 	void AddEditEntryDialog::on_SelectBackgroundColor__released ()
 	{
-		SelectColor (tr ("Select background color for new user."),
+		SelectColor (tr ("Select background color for new user:"),
 				"#ffffff",
 				Ui_.BackgroundColorLabel_,
 				&BackgroundColor_,
@@ -227,12 +225,25 @@ namespace Metida
 
 	void AddEditEntryDialog::on_SelectForegroundColor__released ()
 	{
-		SelectColor (tr ("Select foreground color for new user."),
+		SelectColor (tr ("Select foreground color for new user:"),
 				"#000000",
 				Ui_.ForegroundColorLabel_,
 				&ForegroundColor_,
 				this);
 	}
+
+	void AddEditEntryDialog::on_SelectGroups__released ()
+	{
+		SelectGroupsDialog dlg (Profile_, GroupMask_);
+		dlg.SetHeaderLabel (tr ("Add friend to groups:"));
+		if (dlg.exec () == QDialog::Rejected)
+			return;
+
+		GroupMask_ = 0;
+		for (uint id : dlg.GetSelectedGroupsIds ())
+			GroupMask_ |= (1 << id);
+	}
+
 }
 }
 }

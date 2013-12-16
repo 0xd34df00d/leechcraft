@@ -22,6 +22,9 @@ set (SRCS
 	albumsmanager.cpp
 	friendsmanager.cpp
 	)
+set (RESOURCES touchstreamsresources.qrc)
+
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 CreateTrs ("touchstreams" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("touchstreams" "en;ru_RU" "${SRCS}" "${FORMS}" "touchstreamssettings.xml")
@@ -30,6 +33,7 @@ add_library (leechcraft_touchstreams SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${RCCS}
 	)
 target_link_libraries (leechcraft_touchstreams
 	${QT_LIBRARIES}

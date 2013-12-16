@@ -84,6 +84,14 @@ if (ENABLE_MEDIACALLS)
 	add_definitions (-DENABLE_MEDIACALLS)
 endif ()
 
+set (COMMON_SRCS
+	azothcommon.cpp
+	)
+add_library (leechcraft_azoth_common STATIC
+	${COMMON_SRCS}
+	)
+set_target_properties (leechcraft_azoth_common PROPERTIES POSITION_INDEPENDENT_CODE True)
+
 set (SRCS
 	azoth.cpp
 	core.cpp
@@ -144,6 +152,7 @@ set (SRCS
 	advancedpermchangedialog.cpp
 	groupremovedialog.cpp
 	coremessage.cpp
+	dummymsgmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui
@@ -205,6 +214,7 @@ target_link_libraries (leechcraft_azoth
 	${QTMULTIMEDIA_KLUDGE}
 	${QCA2_LIBRARIES}
 	${CUSTOM_SPEEX}
+	leechcraft_azoth_common
 	)
 install (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothsettings.xml DESTINATION ${LC_SETTINGS_DEST})

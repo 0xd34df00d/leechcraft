@@ -40,6 +40,7 @@ namespace LMP
 	: QWidget (parent)
 	, Source_ (source)
 	, IgnoreNextValChange_ (false)
+	, IsPressed_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -59,6 +60,15 @@ namespace LMP
 				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (handleStateChanged ()));
+
+		connect (Ui_.Slider_,
+				SIGNAL (sliderPressed ()),
+				this,
+				SLOT (handleSliderPressed ()));
+		connect (Ui_.Slider_,
+				SIGNAL (sliderReleased ()),
+				this,
+				SLOT (handleSliderReleased ()));
 	}
 
 	void SeekSlider::handleCurrentPlayTime (qint64 time)
@@ -78,7 +88,8 @@ namespace LMP
 		const auto remaining = Source_->GetRemainingTime ();
 		Ui_.Remaining_->setText (remaining < 0 ? QString () : niceTime (remaining));
 
-		Ui_.Slider_->setValue (time / 1000);
+		if (!IsPressed_)
+			Ui_.Slider_->setValue (time / 1000);
 	}
 
 	void SeekSlider::updateRanges ()
@@ -122,6 +133,16 @@ namespace LMP
 		}
 
 		Source_->Seek (value);
+	}
+
+	void SeekSlider::handleSliderPressed ()
+	{
+		IsPressed_ = true;
+	}
+
+	void SeekSlider::handleSliderReleased ()
+	{
+		IsPressed_ = false;
 	}
 }
 }

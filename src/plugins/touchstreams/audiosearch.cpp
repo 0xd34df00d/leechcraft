@@ -83,7 +83,9 @@ namespace TouchStreams
 						SIGNAL (error (QNetworkReply::NetworkError)),
 						this,
 						SLOT (handleError ()));
-			}, this);
+			},
+			this,
+			Util::QueuePriority::High);
 	}
 
 	void AudioSearch::handleGotReply ()

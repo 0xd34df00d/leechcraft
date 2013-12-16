@@ -84,6 +84,7 @@
 #include "proxyobject.h"
 #include "customchatstylemanager.h"
 #include "coremessage.h"
+#include "dummymsgmanager.h"
 
 namespace LeechCraft
 {
@@ -161,9 +162,8 @@ namespace Azoth
 	, CurrentNickIndex_ (0)
 	, LastSpacePosition_(-1)
 	, HadHighlight_ (false)
-	, NumUnreadMsgs_ (0)
+	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	, ScrollbackPos_ (0)
-	, LastAppendedMessage_ (nullptr)
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
 	, MsgFormatter_ (0)
@@ -230,6 +230,7 @@ namespace Azoth
 				this,
 				SLOT (typeTimeout ()));
 
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
 		PrepareTheme ();
 
 		auto entry = GetEntry<ICLEntry> ();
@@ -272,6 +273,7 @@ namespace Azoth
 
 		qDeleteAll (HistoryMessages_);
 		qDeleteAll (CoreMessages_);
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
 		delete Ui_.MsgEdit_->document ();
 
 		delete MUCEventLog_;
@@ -358,7 +360,6 @@ namespace Azoth
 
 		if (auto entry = GetEntry<QObject> ())
 			emit entryMadeCurrent (entry);
-		emit entryMadeCurrent (EntryID_);
 
 		NumUnreadMsgs_ = 0;
 		HadHighlight_ = false;
@@ -740,7 +741,8 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
-		LastAppendedMessage_ = nullptr;
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
+		LastDateTime_ = QDateTime ();
 		PrepareTheme ();
 	}
 
@@ -751,7 +753,8 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
-		LastAppendedMessage_ = nullptr;
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
+		LastDateTime_ = QDateTime ();
 		RequestLogs (ScrollbackPos_);
 	}
 
@@ -1065,14 +1068,13 @@ namespace Azoth
 			newUrl.removeQueryItem ("hrid");
 
 			IAccount *account = qobject_cast<IAccount*> (own->GetParentAccount ());
-			Q_FOREACH (QObject *entryObj, account->GetCLEntries ())
+			for (QObject *entryObj : account->GetCLEntries ())
 			{
 				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 				if (!entry || entry->GetHumanReadableID () != id)
 					continue;
 
-				QWidget *w = Core::Instance ()
-						.GetChatTabsManager ()->OpenChat (entry);
+				auto w = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
 				QMetaObject::invokeMethod (w,
 						"handleViewLinkClicked",
 						Qt::QueuedConnection,
@@ -1119,7 +1121,7 @@ namespace Azoth
 				Ui_.MsgEdit_->setFocus ();
 			}
 			else
-				Q_FOREACH (auto item, url.queryItems ())
+				for (const auto& item : url.queryItems ())
 					if (item.first == "hrid")
 					{
 						OpenChatWithText (url, item.second, GetEntry<ICLEntry> ());
@@ -1763,10 +1765,6 @@ namespace Azoth
 				this,
 				SLOT (handleEditScroll (int)));
 
-		QTimer::singleShot (0,
-				Ui_.MsgEdit_,
-				SLOT (setFocus ()));
-
 		connect (Ui_.MsgEdit_,
 				SIGNAL (clearAvailableNicks ()),
 				this,
@@ -1844,9 +1842,9 @@ namespace Azoth
 
 	namespace
 	{
-		bool IsSameDay (const IMessage *msg1, const IMessage *msg2)
+		bool IsSameDay (const QDateTime& dt, const IMessage *msg)
 		{
-			return msg1->GetDateTime ().date () == msg2->GetDateTime ().date ();
+			return dt.date () == msg->GetDateTime ().date ();
 		}
 	}
 
@@ -1918,7 +1916,7 @@ namespace Azoth
 
 		const bool isActiveChat =  Core::Instance ()
 				.GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ());
-		if (LastAppendedMessage_ && !IsSameDay (LastAppendedMessage_, msg))
+		if (!LastDateTime_.isNull () && !IsSameDay (LastDateTime_, msg))
 		{
 			auto datetime = msg->GetDateTime ();
 			const auto& thisDate = datetime.date ();
@@ -1935,9 +1933,10 @@ namespace Azoth
 				ToggleRichText_->isChecked ()
 			};
 			Core::Instance ().AppendMessageByTemplate (frame, coreMessage, coreInfo);
+			CoreMessages_ << coreMessage;
 		}
 
-		LastAppendedMessage_ = msg;
+		LastDateTime_ = msg->GetDateTime ();
 
 		ChatMsgAppendInfo info
 		{
@@ -2179,13 +2178,13 @@ namespace Azoth
 		return participantsList;
 	}
 
-	void ChatTab::ReformatTitle ()
+	QString ChatTab::ReformatTitle ()
 	{
 		if (!GetEntry<ICLEntry> ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "GetEntry<ICLEntry> returned NULL";
-			return;
+			return {};
 		}
 
 		QString title = GetEntry<ICLEntry> ()->GetEntryName ();
@@ -2216,6 +2215,8 @@ namespace Azoth
 		path << title;
 
 		setProperty ("WidgetLogicalPath", path);
+
+		return title;
 	}
 
 	void ChatTab::UpdateTextHeight ()

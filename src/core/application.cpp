@@ -49,11 +49,18 @@
 #include <QTimer>
 #include <QCryptographicHash>
 #include <QTextCodec>
+#include <QtDeclarative>
 #include <interfaces/isyncable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
 #include <util/structuresops.h>
 #include <util/sys/paths.h>
+#include <util/qml/tooltipitem.h>
+
+#ifdef WITH_QWT
+#include <util/qml/plotitem.h>
+#endif
+
 #include "debugmessagehandler.h"
 #include "tagsmanager.h"
 #include "mainwindow.h"
@@ -104,9 +111,9 @@ namespace LeechCraft
 		{
 			std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (http://leechcraft.org)" << std::endl;
 #ifdef Q_OS_WIN32
-			std::cout << " <this version does not have UNLIMITED CAT POWA :(>" << std::endl;
+			std::cout << " <this version does not have UNLIMITED CAT POWER :(>" << std::endl;
 #else
-			std::cout << " this version can haz teh UNLIMITED CAT POWA :3 ε:" << std::endl;
+			std::cout << " this version has the UNLIMITED CAT POWER :3 ε:" << std::endl;
 #endif
 			std::exit (EVersionRequested);
 		}
@@ -164,6 +171,16 @@ namespace LeechCraft
 		qRegisterMetaTypeStreamOperators<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 		qRegisterMetaTypeStreamOperators<Entity> ("LeechCraft::Entity");
 
+		qmlRegisterType<Util::ToolTipItem> ("org.LC.common", 1, 0, "ToolTip");
+
+		qRegisterMetaType<QList<QPointF>> ("QList<QPointF>");
+#ifdef WITH_QWT
+		qmlRegisterType<Util::PlotItem> ("org.LC.common", 1, 0, "Plot");
+#else
+		qmlRegisterUncreatableType<QObject> ("org.LC.common", 1, 0, "Plot",
+				"LeechCraft core has been built without Qwt support, Plot item is not available.");
+#endif
+
 		ParseCommandLine ();
 
 #ifdef Q_OS_MAC
@@ -210,12 +227,9 @@ namespace LeechCraft
 				this,
 				SLOT (handleLoadProgress (const QString&)));
 
-		auto mw = Core::Instance ().GetRootWindowsManager ()->MakeMainWindow ();
-		Core::Instance ().DelayedInit ();
-
-		Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
-
-		Splash_->finish (mw);
+		QTimer::singleShot (0,
+				this,
+				SLOT (finishInit ()));
 	}
 
 	const QStringList& Application::Arguments () const
@@ -488,6 +502,17 @@ namespace LeechCraft
 		XmlSettingsManager::Instance ()->RegisterObject ("Language",
 				this, "handleLanguage");
 		PreviousLangName_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
+	}
+
+	void Application::finishInit ()
+	{
+		auto rwm = Core::Instance ().GetRootWindowsManager ();
+		rwm->Initialize ();
+		Core::Instance ().DelayedInit ();
+
+		Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
+
+		Splash_->finish (rwm->GetMainWindow (0));
 	}
 
 	void Application::handleQuit ()

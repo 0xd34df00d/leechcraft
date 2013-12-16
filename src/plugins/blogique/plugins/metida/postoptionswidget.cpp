@@ -314,13 +314,13 @@ namespace Metida
 		Ui_.Comments_->addItem (tr ("Disable"), CommentsManagement::DisableComments);
 
 		Ui_.ScreenComments_->addItem (tr ("Default"), CommentsManagement::Default);
-		Ui_.ScreenComments_->addItem (tr ("Anonymouse only"),
+		Ui_.ScreenComments_->addItem (tr ("Anonymous only"),
 				CommentsManagement::ScreenAnonymouseComments);
 		Ui_.ScreenComments_->addItem (tr ("Not from friends"),
 				CommentsManagement::ShowFriendsComments);
 		Ui_.ScreenComments_->addItem (tr ("Not from friends with links"),
 				CommentsManagement::ScreenNotFromFriendsWithLinks);
-		Ui_.ScreenComments_->addItem (tr ("Don't hide'"),
+		Ui_.ScreenComments_->addItem (tr ("Don't hide"),
 				CommentsManagement::ShowComments);
 		Ui_.ScreenComments_->addItem (tr ("All"),
 				CommentsManagement::ScreenComments);
@@ -373,6 +373,7 @@ namespace Metida
 		{
 			SelectGroupsDialog dlg (qobject_cast<LJProfile*> (Account_->GetProfile ()),
 					AllowMask_);
+			dlg.SetHeaderLabel (tr ("Choose friends groups that will be allowed to comment this post:"));
 
 			if (dlg.exec () == QDialog::Rejected ||
 					dlg.GetSelectedGroupsIds ().isEmpty ())
@@ -415,7 +416,7 @@ namespace Metida
 					.arg (ai.Artist_));
 	}
 
-	void PostOptionsWidget::handleHideMainOptions (bool checked)
+	void PostOptionsWidget::handleHideMainOptions (bool)
 	{
 		Ui_.HideMainOptions_->setText (Ui_.HideMainOptions_->isChecked () ?
 			tr ("Collapse") :
@@ -424,7 +425,7 @@ namespace Metida
 				!Ui_.HideMainOptions_->isChecked ());
 	}
 
-	void PostOptionsWidget::handleHideLikeButtons (bool checked)
+	void PostOptionsWidget::handleHideLikeButtons (bool)
 	{
 		Ui_.HideLikeButtons_->setText (Ui_.HideLikeButtons_->isChecked () ?
 			tr ("Collapse") :

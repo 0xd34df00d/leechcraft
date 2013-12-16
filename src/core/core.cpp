@@ -458,14 +458,14 @@ namespace LeechCraft
 		*could = EntityManager ().CouldHandle (e);
 	}
 
-	void Core::queueEntity (Entity e)
+	void Core::queueEntity (const Entity& e)
 	{
 		QueuedEntities_ << e;
 	}
 
 	void Core::pullEntityQueue ()
 	{
-		Q_FOREACH (const Entity& e, QueuedEntities_)
+		for (const auto& e : QueuedEntities_)
 			handleGotEntity (e);
 		QueuedEntities_.clear ();
 	}
@@ -477,7 +477,7 @@ namespace LeechCraft
 					error, PCritical_));
 	}
 
-	void Core::InitDynamicSignals (QObject *plugin)
+	void Core::InitDynamicSignals (const QObject *plugin)
 	{
 		const QMetaObject *qmo = plugin->metaObject ();
 
@@ -509,7 +509,7 @@ namespace LeechCraft
 							int*, QObject**)));
 	}
 
-	void Core::InitMultiTab (QObject *plugin)
+	void Core::InitMultiTab (const QObject *plugin)
 	{
 		connect (plugin,
 				SIGNAL (addNewTab (const QString&, QWidget*)),

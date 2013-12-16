@@ -230,7 +230,7 @@ public:
 		 * passed QDomElement.
 		 *
 		 * An example function that boldifies
-		 * <code><lj user="$username"/></code>:
+		 * <code>&lt;lj user="$username"/></code>:
 		 *
 		 * \code
 		 * [] (QDomElement& elem) -> void
@@ -252,7 +252,7 @@ public:
 		 * passed QDomElement.
 		 *
 		 * An example function that turns back the boldified
-		 * <code><lj user="$username"/></code> from ToKnown_:
+		 * <code>&lt;lj user="$username"/></code> from ToKnown_:
 		 *
 		 * \code
 		 * [] (QDomElement& elem) -> void
@@ -285,18 +285,6 @@ public:
 	 * @param[in] html The HTML to insert.
 	 */
 	virtual void InsertHTML (const QString& html) = 0;
-
-	/** @brief Sets tags mapping for this editor widget.
-	 *
-	 * This function should be set before ITextEditor::SetContents().
-	 *
-	 * See the IAdvancedHTMLEditor class reference for more information
-	 * about tags mappings.
-	 *
-	 * @param[in] rich2html Mappings for view -> source view conversion.
-	 * @param[in] html2rich Mappings for source view -> view conversion.
-	 */
-	virtual void SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich) = 0;
 
 	/** @brief Adds support for custom tags not present in HTML standard.
 	 *

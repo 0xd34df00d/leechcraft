@@ -58,7 +58,7 @@ namespace MetidaUtils
 				ErrorCode2Message_ [153] = QObject::tr ("Incorrent time value");
 				ErrorCode2Message_ [154] = QObject::tr ("Can't add a redirected account as a friend");
 				ErrorCode2Message_ [155] = QObject::tr ("Non-validated email address");
-				ErrorCode2Message_ [156] = QObject::tr ("Protocol authentication denied due to user’s failure to accept TOS");
+				ErrorCode2Message_ [156] = QObject::tr ("Protocol authentication denied due to user's failure to accept TOS");
 				ErrorCode2Message_ [157] = QObject::tr ("Tags error");
 
 				ErrorCode2Message_ [200] = QObject::tr ("Missing required argument(s)");
@@ -86,7 +86,7 @@ namespace MetidaUtils
 				ErrorCode2Message_ [306] = QObject::tr ("This journal is temporarily in read-only mode. Try again in a couple minutes");
 				ErrorCode2Message_ [307] = QObject::tr ("Selected journal no longer exists");
 				ErrorCode2Message_ [308] = QObject::tr ("Account is locked and cannot be used");
-				ErrorCode2Message_ [309] = QObject::tr ("Account is marked as a memorial (journal is locked and does not accept comments");
+				ErrorCode2Message_ [309] = QObject::tr ("Account is marked as a memorial (journal is locked and does not accept comments)");
 				ErrorCode2Message_ [310] = QObject::tr ("Account user needs to be age-verified before use");
 				ErrorCode2Message_ [311] = QObject::tr ("Access temporarily disabled");
 				ErrorCode2Message_ [312] = QObject::tr ("Not allowed to add tags to entries in this journal");
@@ -98,17 +98,17 @@ namespace MetidaUtils
 				ErrorCode2Message_ [318] = QObject::tr ("Poster is read-only and cannot edit entries");
 				ErrorCode2Message_ [319] = QObject::tr ("Journal is read-only and its entries cannot be edited");
 				ErrorCode2Message_ [320] = QObject::tr ("Sorry, there was a problem with entry content");
-				ErrorCode2Message_ [321] = QObject::tr ("Sorry, deleting is temporary disabled. Entry is 'private' now");
+				ErrorCode2Message_ [321] = QObject::tr ("Sorry, deleting is temporary disabled. Entry is private now");
 
 				ErrorCode2Message_ [402] = QObject::tr ("Your IP address has been temporarily banned for exceeding the login failure rate");
 				ErrorCode2Message_ [404] = QObject::tr ("Cannot post");
-				ErrorCode2Message_ [405] = QObject::tr ("Post frequency limit");
+				ErrorCode2Message_ [405] = QObject::tr ("Post frequency limit is exceeded");
 				ErrorCode2Message_ [406] = QObject::tr ("Client is making repeated requests. Perhaps it's broken?");
 				ErrorCode2Message_ [407] = QObject::tr ("Moderation queue full");
-				ErrorCode2Message_ [408] = QObject::tr ("Maximum queued posts for this <community+poster> combination reached");
+				ErrorCode2Message_ [408] = QObject::tr ("Maximum queued posts for this community and poster combination reached");
 				ErrorCode2Message_ [409] = QObject::tr ("Post is too large");
 				ErrorCode2Message_ [410] = QObject::tr ("Your trial account has expired. Posting is now disabled");
-				ErrorCode2Message_ [411] = QObject::tr ("Action frequency limit");
+				ErrorCode2Message_ [411] = QObject::tr ("Action frequency limit is exceeded");
 
 				ErrorCode2Message_ [500] = QObject::tr ("Internal server error");
 				ErrorCode2Message_ [501] = QObject::tr ("Database error");

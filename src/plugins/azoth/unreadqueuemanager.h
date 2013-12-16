@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSet>
 #include <QPointer>
 
 namespace LeechCraft
@@ -41,13 +42,17 @@ namespace Azoth
 		Q_OBJECT
 
 		QList<QPointer<QObject>> Queue_;
+		QSet<QPointer<QObject>> UnreadMessages_;
 	public:
 		UnreadQueueManager (QObject* = 0);
 
 		void AddMessage (QObject*);
+		bool IsMessageRead (QObject*) const;
 		void ShowNext ();
 	public slots:
 		void clearMessagesForEntry (QObject*);
+	signals:
+		void messagesCleared (QObject*);
 	};
 }
 }

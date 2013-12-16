@@ -30,6 +30,7 @@
 #include "mellonetray.h"
 #include <QIcon>
 #include <QtDeclarative>
+#include <util/util.h>
 #include "traymodel.h"
 #include "iconhandler.h"
 
@@ -37,8 +38,10 @@ namespace LeechCraft
 {
 namespace Mellonetray
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("mellonetray");
+
 		qmlRegisterType<IconHandler> ("Mellonetray", 1, 0, "IconHandler");
 
 		if (TrayModel::Instance ().IsValid ())

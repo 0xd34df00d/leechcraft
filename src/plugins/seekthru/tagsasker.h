@@ -27,30 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_TAGSASKER_H
-#define PLUGINS_SEEKTHRU_TAGSASKER_H
+#pragma once
+
 #include <QDialog>
 #include "ui_tagsasker.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SeekThru
+{
+	class TagsAsker : public QDialog
 	{
-		namespace SeekThru
-		{
-			class TagsAsker : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::TagsAsker Ui_;
-			public:
-				TagsAsker (const QString&, QWidget* = 0);
+		Ui::TagsAsker Ui_;
+	public:
+		TagsAsker (const QString&, QWidget* = 0);
 
-				QString GetTags () const;
-			};
-		};
+		QString GetTags () const;
 	};
-};
-
-#endif
-
+}
+}

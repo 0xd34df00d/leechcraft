@@ -28,9 +28,7 @@
  **********************************************************************/
 
 #include "matchconfigdialog.h"
-#include <interfaces/an/ianemitter.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
+#include <util/xpc/stdanfields.h>
 #include "core.h"
 #include "typedmatchers.h"
 #include "fieldmatch.h"
@@ -39,30 +37,27 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	MatchConfigDialog::MatchConfigDialog (const QStringList& types, QWidget *parent)
+	MatchConfigDialog::MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>& map,
+			QWidget *parent)
 	: QDialog (parent)
-	, Types_ (QSet<QString>::fromList (types))
+	, FieldsMap_ (map)
 	{
 		Ui_.setupUi (this);
 
-		const QObjectList& emitters = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
-		Q_FOREACH (QObject *pObj, emitters)
-		{
-			IInfo *ii = qobject_cast<IInfo*> (pObj);
-			if (!ii)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< pObj
-						<< "doesn't implement IInfo";
-				continue;
-			}
+		if (!FieldsMap_ [nullptr].isEmpty ())
+			Ui_.SourcePlugin_->addItem (tr ("Standard fields"));
 
+		for (auto i = FieldsMap_.begin (); i != FieldsMap_.end (); ++i)
+		{
+			if (!i.key ())
+				continue;
+
+			auto ii = qobject_cast<IInfo*> (i.key ());
 			Ui_.SourcePlugin_->addItem (ii->GetIcon (),
-					ii->GetName (), ii->GetUniqueID ());
+					ii->GetName (), QVariant::fromValue (i.key ()));
 		}
 
-		if (!emitters.isEmpty ())
+		if (Ui_.SourcePlugin_->count ())
 			on_SourcePlugin__activated (0);
 	}
 
@@ -75,67 +70,46 @@ namespace AdvancedNotifications
 
 		CurrentMatcher_->SyncToWidget ();
 
-		const ANFieldData& data = Ui_.FieldName_->
-				itemData (fieldIdx).value<ANFieldData> ();
+		const auto& data = Ui_.FieldName_->itemData (fieldIdx).value<ANFieldData> ();
 
 		FieldMatch result (data.Type_, CurrentMatcher_);
-		result.SetPluginID (Ui_.SourcePlugin_->
-					itemData (sourceIdx).toByteArray ());
+		result.SetPluginID (Ui_.SourcePlugin_->itemData (sourceIdx).toByteArray ());
 		result.SetFieldName (data.ID_);
 
 		return result;
+	}
+
+	void MatchConfigDialog::AddFields (const QList<ANFieldData>& fields)
+	{
+		for (const auto& data : fields)
+			Ui_.FieldName_->addItem (data.Name_, QVariant::fromValue (data));
 	}
 
 	void MatchConfigDialog::on_SourcePlugin__activated (int idx)
 	{
 		Ui_.FieldName_->clear ();
 
-		const QByteArray& id = Ui_.SourcePlugin_->
-				itemData (idx).toByteArray ();
-		QObject *pObj = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetPluginByID (id);
-		IANEmitter *iae = qobject_cast<IANEmitter*> (pObj);
-		if (!iae)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "plugin for ID"
-					<< id
-					<< "doesn't implement IANEmitter:"
-					<< pObj;
-			return;
-		}
+		const auto pObj = Ui_.SourcePlugin_->itemData (idx).value<QObject*> ();
+		AddFields (FieldsMap_ [pObj]);
 
-		const QList<ANFieldData> fields = iae->GetANFields ();
-		Q_FOREACH (const ANFieldData& data, fields)
-		{
-			if (!Types_.isEmpty () &&
-					QSet<QString>::fromList (data.EventTypes_).intersect (Types_).isEmpty ())
-				continue;
-
-			Ui_.FieldName_->addItem (data.Name_,
-					QVariant::fromValue<ANFieldData> (data));
-		}
-
-		if (!fields.isEmpty ())
+		if (Ui_.FieldName_->count ())
 			on_FieldName__activated (0);
 	}
 
 	void MatchConfigDialog::on_FieldName__activated (int idx)
 	{
-		const ANFieldData& data = Ui_.FieldName_->
-				itemData (idx).value<ANFieldData> ();
+		const auto& data = Ui_.FieldName_->itemData (idx).value<ANFieldData> ();
 		Ui_.DescriptionLabel_->setText (data.Description_);
 
 		QLayout *lay = Ui_.ConfigWidget_->layout ();
 		QLayoutItem *oldItem = 0;
 		while ((oldItem = lay->takeAt (0)) != 0)
 		{
-			if (oldItem->widget ())
-				delete oldItem->widget ();
+			delete oldItem->widget ();
 			delete oldItem;
 		}
 
-		CurrentMatcher_ = TypedMatcherBase::Create (data.Type_);
+		CurrentMatcher_ = TypedMatcherBase::Create (data.Type_, data);
 		if (CurrentMatcher_)
 			lay->addWidget (CurrentMatcher_->GetConfigWidget ());
 		else

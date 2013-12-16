@@ -39,6 +39,7 @@
 #include <QTime>
 #include <QDockWidget>
 #include <QDesktopWidget>
+#include <QWidgetAction>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -63,8 +64,8 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
-: QMainWindow (parent, flags)
+LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
+: IsPrimary_ (isPrimary)
 , TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)
@@ -84,13 +85,18 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	addToolBar (Qt::TopToolBarArea, TopDockToolbar_);
 	addToolBar (Qt::BottomToolBarArea, BottomDockToolbar_);
 
-	if (Application::instance ()->arguments ().contains ("--desktop"))
+	if (Application::instance ()->arguments ().contains ("--desktop") && isPrimary)
 	{
+		auto desktop = Application::desktop ();
+		const auto& sRect = desktop->screenGeometry (screen);
+		move (sRect.x (), sRect.y ());
+
 		setWindowFlags (Qt::FramelessWindowHint);
 		connect (qApp->desktop (),
 				SIGNAL (workAreaResized (int)),
 				this,
 				SLOT (handleWorkAreaResized (int)));
+		handleWorkAreaResized (screen);
 	}
 }
 
@@ -179,12 +185,12 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 
 QMenu* LeechCraft::MainWindow::GetMainMenu () const
 {
-	return Ui_.ActionMenu_->menu ();
+	return MenuButton_->menu ();
 }
 
 void LeechCraft::MainWindow::HideMainMenu ()
 {
-	Ui_.ActionMenu_->setVisible (false);
+	MBAction_->setVisible (false);
 }
 
 QToolBar* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) const
@@ -215,8 +221,8 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& men
 			toInsert = MenuTools_;
 		else
 		{
-			const QList<QAction*>& actions = Ui_.ActionMenu_->menu ()->actions ();
-			Q_FOREACH (QAction *action, actions)
+			const auto& actions = MenuButton_->menu ()->actions ();
+			for (auto action : actions)
 				if (action->menu () &&
 					action->text () == menuName)
 				{
@@ -230,9 +236,9 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& men
 					menus [menuName]);
 		else
 		{
-			QMenu *menu = new QMenu (menuName, Ui_.ActionMenu_->menu ());
+			QMenu *menu = new QMenu (menuName, MenuButton_->menu ());
 			menu->addActions (menus [menuName]);
-			Ui_.ActionMenu_->menu ()->insertMenu (MenuTools_->menuAction (), menu);
+			MenuButton_->menu ()->insertMenu (MenuTools_->menuAction (), menu);
 		}
 
 		IconThemeEngine::Instance ().UpdateIconSet (menus [menuName]);
@@ -253,12 +259,12 @@ void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*>>& 
 			toRemove = MenuTools_;
 
 		if (toRemove)
-			Q_FOREACH (QAction *action, menus [menuName])
+			for (auto action : menus [menuName])
 				toRemove->removeAction (action);
 		else
 		{
-			auto menu = Ui_.ActionMenu_->menu ();
-			Q_FOREACH (QAction *action, menu->actions ())
+			auto menu = MenuButton_->menu ();
+			for (auto action : menu->actions ())
 				if (action->text () == menuName)
 				{
 					menu->removeAction (action);
@@ -364,12 +370,21 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	menu->addSeparator ();
 	menu->addAction (Ui_.ActionRestart_);
 	menu->addAction (Ui_.ActionQuit_);
-	Ui_.ActionMenu_->setMenu (menu);
+
+	addAction (menu->menuAction ());
+
+	MenuButton_ = new QToolButton (this);
+	MenuButton_->setIcon (QIcon (":/resources/images/leechcraft.svg"));
+	MenuButton_->setPopupMode (QToolButton::MenuButtonPopup);
+	MenuButton_->setMenu (menu);
+	MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
 	SetStatusBar ();
 	ReadSettings ();
 
-	Ui_.MainTabWidget_->AddAction2TabBarLayout (QTabBar::LeftSide, Ui_.ActionMenu_);
+	MBAction_ = new QWidgetAction (this);
+	MBAction_->setDefaultWidget (MenuButton_);
+	Ui_.MainTabWidget_->InsertAction2TabBarLayout (QTabBar::LeftSide, MBAction_, 0);
 }
 
 void LeechCraft::MainWindow::SetStatusBar ()
@@ -385,12 +400,17 @@ void LeechCraft::MainWindow::SetStatusBar ()
 void LeechCraft::MainWindow::ReadSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
-	settings.beginGroup ("geometry");
-	resize (settings.value ("size", QSize  (1150, 800)).toSize ());
-	move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
-	WasMaximized_ = settings.value ("maximized").toBool ();
-	WasMaximized_ ? showMaximized () : showNormal ();
-	settings.endGroup ();
+
+	if (!Application::instance ()->arguments ().contains ("--desktop") || !IsPrimary_)
+	{
+		settings.beginGroup ("geometry");
+		resize (settings.value ("size", QSize  (1150, 800)).toSize ());
+		move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
+		WasMaximized_ = settings.value ("maximized").toBool ();
+		WasMaximized_ ? showMaximized () : showNormal ();
+		settings.endGroup ();
+	}
+
 	settings.beginGroup ("Window");
 	Ui_.ActionShowStatusBar_->setChecked (settings.value ("StatusBarEnabled", true).toBool ());
 	on_ActionShowStatusBar__triggered ();
@@ -491,13 +511,14 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 
 void LeechCraft::MainWindow::on_ActionShowStatusBar__triggered ()
 {
-	statusBar ()->setVisible (Ui_.ActionShowStatusBar_->isChecked ());
-}
+	bool visible = Ui_.ActionShowStatusBar_->isChecked ();
 
-void LeechCraft::MainWindow::on_ActionMenu__triggered ()
-{
-	QMenu *menu = Ui_.ActionMenu_->menu ();
-	menu->exec (QCursor::pos ());
+	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	emit hookGonnaShowStatusBar (proxy, visible);
+	if (proxy->IsCancelled ())
+		return;
+
+	statusBar ()->setVisible (visible);
 }
 
 void LeechCraft::MainWindow::handleQuit ()
@@ -512,8 +533,11 @@ void LeechCraft::MainWindow::handleQuit ()
 				0,
 				0);
 
-	TrayIcon_->hide ();
-	delete TrayIcon_;
+	if (TrayIcon_)
+	{
+		TrayIcon_->hide ();
+		delete TrayIcon_;
+	}
 }
 
 void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
@@ -564,6 +588,9 @@ void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
 
 void MainWindow::handleShowTrayIconChanged ()
 {
+	if (!TrayIcon_)
+		return;
+
 	const bool isVisible = XmlSettingsManager::Instance ()->
 			property ("ShowTrayIcon").toBool ();
 
@@ -674,6 +701,9 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 
 void LeechCraft::MainWindow::FillTray ()
 {
+	if (!IsPrimary_)
+		return;
+
 	QMenu *iconMenu = new QMenu (this);
 	QMenu *menu = iconMenu->addMenu (tr ("LeechCraft menu"));
 	menu->addAction (Ui_.ActionAddTask_);

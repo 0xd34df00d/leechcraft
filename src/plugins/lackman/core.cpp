@@ -269,6 +269,7 @@ namespace LackMan
 			result = Proxy_->GetIcon ("preferences-desktop-locale");
 			break;
 		case PackageInfo::TData:
+		case PackageInfo::TQuark:
 			result = Proxy_->GetIcon ("package-x-generic");
 			break;
 		case PackageInfo::TTheme:
@@ -359,6 +360,7 @@ namespace LackMan
 			break;
 		case PackageInfo::TData:
 		case PackageInfo::TTheme:
+		case PackageInfo::TQuark:
 			SafeCD ("data");
 			break;
 		}

@@ -57,7 +57,7 @@ namespace LMP
 		Format_ptr GetCurrentFormat () const;
 		Format::BitrateType GetCurrentBitrateType () const;
 	private slots:
-		void on_TranscodingFormat__currentIndexChanged (int);
+		void on_TranscodingFormat__currentIndexChanged ();
 		void on_BitrateTypeBox__currentIndexChanged (int);
 		void on_QualitySlider__valueChanged (int);
 	};

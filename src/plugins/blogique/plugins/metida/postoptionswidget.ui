@@ -75,7 +75,7 @@
          <item row="1" column="1">
           <widget class="QCheckBox" name="FacebookLike_">
            <property name="text">
-            <string>Facebook</string>
+            <string notr="true">Facebook</string>
            </property>
            <property name="tristate">
             <bool>false</bool>
@@ -92,35 +92,35 @@
          <item row="2" column="1">
           <widget class="QCheckBox" name="LiveJournalRepost_">
            <property name="text">
-            <string>LiveJournal</string>
+            <string notr="true">LiveJournal</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
           <widget class="QCheckBox" name="GoogleLike_">
            <property name="text">
-            <string>Google+</string>
+            <string notr="true">Google+</string>
            </property>
           </widget>
          </item>
          <item row="3" column="0">
           <widget class="QCheckBox" name="TumblrLike_">
            <property name="text">
-            <string>Tumblr</string>
+            <string notr="true">Tumblr</string>
            </property>
           </widget>
          </item>
          <item row="4" column="0">
           <widget class="QCheckBox" name="TwitterLike_">
            <property name="text">
-            <string>Twitter</string>
+            <string notr="true">Twitter</string>
            </property>
           </widget>
          </item>
          <item row="4" column="1">
           <widget class="QCheckBox" name="SurfingbirdLike_">
            <property name="text">
-            <string>Surfingbird</string>
+            <string notr="true">Surfingbird</string>
            </property>
           </widget>
          </item>

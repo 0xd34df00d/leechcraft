@@ -387,81 +387,82 @@ namespace Poshuku
 		if (proxy->IsCancelled ())
 			return;
 
-		switch (reply->error ())
-		{
-			case QNetworkReply::ProtocolUnknownError:
-				if (XmlSettingsManager::Instance ()->
-						property ("ExternalSchemes").toString ().split (' ')
-						.contains (reply->url ().scheme ()))
-					QDesktopServices::openUrl (reply->url ());
-				else
+		std::shared_ptr<void> replyGuard = std::shared_ptr<void> (nullptr,
+				[reply] (void*) -> void
 				{
 					reply->abort ();
-					Entity e = Util::MakeEntity (reply->url (),
-							QString (),
-							LeechCraft::FromUserInitiated);
-					e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
-					emit gotEntity (e);
-					if (XmlSettingsManager::Instance ()->
-							property ("CloseEmptyDelegatedPages").toBool () &&
-							history ()->currentItem ().url ().isEmpty ())
-						emit windowCloseRequested ();
-				}
-				break;
-			case QNetworkReply::NoError:
-				{
-					QWebFrame *found = FindFrame (reply->url ());
-					if (!found)
-					{
-						const QString& mime = reply->
-								header (QNetworkRequest::ContentTypeHeader).toString ();
-						if (XmlSettingsManager::Instance ()->
-								property ("ParanoidDownloadsDetection").toBool () ||
-								!mime.isEmpty ())
-						{
-							auto e = Util::MakeEntity (QVariant::fromValue<QNetworkReply*> (reply),
-										QString (),
-										LeechCraft::FromUserInitiated,
-										mime);
-							e.Additional_ ["SourceURL"] = reply->url ();
-							e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
+					reply->deleteLater ();
+				});
 
-							emit gotEntity (e);
-							if (XmlSettingsManager::Instance ()->
-									property ("CloseEmptyDelegatedPages").toBool () &&
-									history ()->currentItem ().url ().isEmpty ())
-								emit windowCloseRequested ();
-							break;
-						}
-						else
-							qDebug () << Q_FUNC_INFO
-								<< reply->header (QNetworkRequest::ContentTypeHeader);
-					}
-					else
-						qDebug () << Q_FUNC_INFO
-							<< "but frame is found";
-				}
-			default:
-				{
-					int statusCode = reply->
-						attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+		const auto& url = reply->url ();
+		const auto& mime = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
 
+		qDebug () << Q_FUNC_INFO << reply->url () << reply->errorString ();
+
+		auto sendEnt = [reply, mime, url, this] () -> void
+		{
+			auto e = Util::MakeEntity (url,
+					{},
+					LeechCraft::FromUserInitiated,
+					mime);
+			e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
+			emit gotEntity (e);
+
+			if (XmlSettingsManager::Instance ()->
+					property ("CloseEmptyDelegatedPages").toBool () &&
+					history ()->currentItem ().url ().isEmpty ())
+				emit windowCloseRequested ();
+		};
+
+		switch (reply->error ())
+		{
+		case QNetworkReply::ProtocolUnknownError:
+			if (XmlSettingsManager::Instance ()->
+					property ("ExternalSchemes").toString ().split (' ')
+					.contains (url.scheme ()))
+				QDesktopServices::openUrl (url);
+			else
+				sendEnt ();
+			break;
+		case QNetworkReply::NoError:
+		{
+			auto found = FindFrame (url);
+			if (!found)
+			{
+				if (XmlSettingsManager::Instance ()->
+						property ("ParanoidDownloadsDetection").toBool () ||
+						!mime.isEmpty ())
+				{
+					sendEnt ();
+					break;
+				}
+				else
 					qDebug () << Q_FUNC_INFO
-							<< "general unsupported content"
-							<< reply->url ()
-							<< reply->error ()
-							<< reply->errorString ();
+							<< mime;
+			}
+			else
+				qDebug () << Q_FUNC_INFO
+					<< "but frame is found";
+		}
+		default:
+		{
+			int statusCode = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
 
-					QString data = MakeErrorReplyContents (statusCode,
-							reply->url (), reply->errorString (), QtNetwork);
+			qDebug () << Q_FUNC_INFO
+					<< "general unsupported content"
+					<< url
+					<< reply->error ()
+					<< reply->errorString ();
 
-					QWebFrame *found = FindFrame (reply->url ());
-					if (found)
-						found->setHtml (data, reply->url ());
-					else if (LoadingURL_ == reply->url ())
-						mainFrame ()->setHtml (data, reply->url ());
-				}
-				break;
+			const auto& data = MakeErrorReplyContents (statusCode,
+					url, reply->errorString (), QtNetwork);
+
+			if (auto found = FindFrame (url))
+				found->setHtml (data, url);
+			else if (LoadingURL_ == url)
+				mainFrame ()->setHtml (data, url);
+			break;
+		}
 		}
 	}
 
@@ -638,8 +639,7 @@ namespace Poshuku
 		if (frame)
 			HandleForms (frame, request, type);
 
-		if ((type == NavigationTypeLinkClicked ||
-					type == NavigationTypeOther) &&
+		if (type == NavigationTypeLinkClicked &&
 				(MouseButtons_ == Qt::MidButton ||
 					Modifiers_ & Qt::ControlModifier))
 		{

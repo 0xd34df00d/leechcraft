@@ -283,22 +283,24 @@ namespace Monocle
 			auto page = Pages_ [i];
 
 			const auto& size = GetRotatedSize (i) * scale;
+			const auto& srcSize = CurrentDoc_->GetPageSize (i) * scale;
+			const auto yDiff = (size.height () - srcSize.height ()) / 2;
 
 			switch (LayMode_)
 			{
 			case LayoutMode::OnePage:
-				page->setPos (0, currentY);
+				page->setPos (0, currentY + yDiff);
 				currentY += size.height () + Margin;
 				break;
 			case LayoutMode::TwoPages:
 				if (i % 2)
 				{
-					page->setPos (lastWidth + Margin / 3, currentY);
+					page->setPos (lastWidth + Margin / 3, currentY + yDiff);
 					currentY += std::max (lastHeight, size.height ()) + Margin;
 				}
 				else
 				{
-					page->setPos (0, currentY);
+					page->setPos (0, currentY + yDiff);
 					lastWidth = size.width ();
 					lastHeight = size.height ();
 				}

@@ -111,6 +111,9 @@ namespace AdvancedNotifications
 		Cat2HR_ [AN::CatPackageManager] = tr ("Package manager");
 		Type2HR_ [AN::TypePackageUpdated] = tr ("Package updated");
 
+		Cat2HR_ [AN::CatMediaPlayer] = tr ("Media player");
+		Type2HR_ [AN::TypeMediaPlaybackStatus] = tr ("Media playback status changed");
+
 		Cat2HR_ [AN::CatGeneric] = tr ("Generic");
 		Type2HR_ [AN::TypeGeneric] = tr ("Generic");
 
@@ -159,7 +162,7 @@ namespace AdvancedNotifications
 		const int row = index.row ();
 		Rules_ [row] = rule;
 		int i = 0;
-		for (QStandardItem *item : RuleToRow (rule))
+		for (auto item : RuleToRow (rule))
 			RulesModel_->setItem (row, i++, item);
 
 		SaveSettings ();
@@ -221,13 +224,15 @@ namespace AdvancedNotifications
 
 					FieldMatch fieldMatch (field.Type_, valMatcher);
 					fieldMatch.SetPluginID (sender);
-					fieldMatch.SetFieldName (field.Name_);
+					fieldMatch.SetFieldName (field.ID_);
 					rule.AddFieldMatch (fieldMatch);
 				}
 			}
 
 		Rules_.prepend (rule);
 		RulesModel_->insertRow (0, RuleToRow (rule));
+
+		SaveSettings ();
 	}
 
 	void RulesManager::LoadDefaultRules (int version)

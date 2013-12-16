@@ -160,8 +160,12 @@ namespace Metida
 		void RequestLastEntries (int count);
 		void RequestStatistics ();
 		void RequestTags ();
+
 		void RequestInbox ();
+
 		void RequestRecentComments ();
+		void AddComment (const CommentEntry& comment);
+		void DeleteComment (qint64 id, bool deleteThread = false);
 
 		QList<QAction*> GetUpdateActions () const;
 
@@ -175,11 +179,15 @@ namespace Metida
 
 		void AddFriends (const QList<LJFriendEntry_ptr>& friends);
 		void AddNewFriend (const QString& username,
-				const QString& bgcolor, const QString& fgcolor, uint groupId);
+				const QString& bgcolor, const QString& fgcolor, uint groupMask);
 		void DeleteFriend (const QString& username);
 
 		void AddGroup (const QString& name, bool isPublic, int id);
 		void DeleteGroup (int id);
+
+		void SetMessagesAsRead (const QList<int>& ids);
+		void SendMessage (const QStringList& addresses, const QString& subject,
+				const QString& text);
 	private:
 		void CallLastUpdateMethod ();
 
@@ -201,7 +209,13 @@ namespace Metida
 		void handleLoadLastEvents ();
 		void handleLoadChangedEvents ();
 
-		void handleUnreadMessagesExist (bool exists);
+		void handleUnreadMessagesIds (const QList<int>& ids);
+		void handleMessagesRead ();
+		void handleMessageSent ();
+
+		void handleGotRecentComments (const QList<LJCommentEntry>& comments);
+		void handleCommentDeleted (const QList<qint64>& ids);
+		void handleCommentSent (const QUrl& url);
 
 	signals:
 		void accountRenamed (const QString& newName);
@@ -221,11 +235,12 @@ namespace Metida
 		void gettingFilteredEntriesFinished ();
 
 		void gotEntries (const QList<Entry>& entries);
-		void gotRecentComments (const QList<LJCommentEntry>& comments);
 
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 		void tagsUpdated (const QHash<QString, int>& tags);
 
+		void gotRecentComments (const QList<CommentEntry>& comments);
+		void commentsDeleted (const QList<qint64>& comments);
 	};
 }
 }

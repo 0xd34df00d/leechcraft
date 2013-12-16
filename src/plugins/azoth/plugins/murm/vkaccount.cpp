@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "vkaccount.h"
+#include <stdexcept>
 #include <QUuid>
+#include <QIcon>
 #include <QtDebug>
 #include "vkprotocol.h"
 #include "vkconnection.h"
@@ -39,6 +41,9 @@
 #include "groupsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "vkchatentry.h"
+#include "logger.h"
+#include "accountconfigdialog.h"
+#include "captchadialog.h"
 
 namespace LeechCraft
 {
@@ -54,7 +59,8 @@ namespace Murm
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
 	, Name_ (name)
-	, Conn_ (new VkConnection (cookies, proxy))
+	, Logger_ (new Logger (ID_, this))
+	, Conn_ (new VkConnection (name, cookies, proxy, *Logger_))
 	, GroupsMgr_ (new GroupsManager (Conn_))
 	, GeoResolver_ (new GeoResolver (Conn_, this))
 	{
@@ -75,6 +81,10 @@ namespace Murm
 				SIGNAL (gotUsers (QList<UserInfo>)),
 				this,
 				SLOT (handleUsers (QList<UserInfo>)));
+		connect (Conn_,
+				SIGNAL (gotNRIList (QList<qulonglong>)),
+				this,
+				SLOT (handleNRIList (QList<qulonglong>)));
 		connect (Conn_,
 				SIGNAL (userStateChanged (qulonglong, bool)),
 				this,
@@ -101,6 +111,16 @@ namespace Murm
 				SIGNAL (chatUserRemoved (qulonglong, qulonglong)),
 				this,
 				SLOT (handleChatUserRemoved (qulonglong, qulonglong)));
+
+		connect (Conn_,
+				SIGNAL (captchaNeeded (QString, QUrl)),
+				this,
+				SLOT (handleCaptcha (QString, QUrl)));
+
+		connect (Logger_,
+				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)),
+				this,
+				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -108,10 +128,13 @@ namespace Murm
 		QByteArray result;
 		QDataStream out (&result, QIODevice::WriteOnly);
 
-		out << static_cast<quint8> (1)
+		out << static_cast<quint8> (3)
 				<< ID_
 				<< Name_
-				<< Conn_->GetCookies ();
+				<< Conn_->GetCookies ()
+				<< EnableFileLog_
+				<< PublishTune_
+				<< MarkAsOnline_;
 
 		return result;
 	}
@@ -122,7 +145,7 @@ namespace Murm
 
 		quint8 version = 0;
 		in >> version;
-		if (version != 1)
+		if (version < 1 || version > 3)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -138,7 +161,23 @@ namespace Murm
 				>> name
 				>> cookies;
 
-		return new VkAccount (name, proto, proxy, id, cookies);
+		auto acc = new VkAccount (name, proto, proxy, id, cookies);
+
+		if (version >= 2)
+			in >> acc->EnableFileLog_
+					>> acc->PublishTune_;
+		if (version >= 3)
+			in >> acc->MarkAsOnline_;
+
+		acc->Init ();
+
+		return acc;
+	}
+
+	void VkAccount::Init ()
+	{
+		Logger_->SetFileEnabled (EnableFileLog_);
+		handleMarkOnline ();
 	}
 
 	void VkAccount::Send (VkEntry *entry, VkMessage *msg)
@@ -218,8 +257,9 @@ namespace Murm
 	QList<QObject*> VkAccount::GetCLEntries ()
 	{
 		QList<QObject*> result;
-		result.reserve (Entries_.size ());
+		result.reserve (Entries_.size () + ChatEntries_.size ());
 		std::copy (Entries_.begin (), Entries_.end (), std::back_inserter (result));
+		std::copy (ChatEntries_.begin (), ChatEntries_.end (), std::back_inserter (result));
 		return result;
 	}
 
@@ -256,6 +296,29 @@ namespace Murm
 
 	void VkAccount::OpenConfigurationDialog ()
 	{
+		auto dia = new AccountConfigDialog;
+
+		AccConfigDia_ = dia;
+
+		dia->SetFileLogEnabled (EnableFileLog_);
+		dia->SetPublishTuneEnabled (PublishTune_);
+		dia->SetMarkAsOnline (MarkAsOnline_);
+
+		connect (dia,
+				SIGNAL (reauthRequested ()),
+				Conn_,
+				SLOT (reauth ()));
+
+		connect (dia,
+				SIGNAL (rejected ()),
+				dia,
+				SLOT (deleteLater ()));
+		connect (dia,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleConfigDialogAccepted ()));
+
+		dia->show ();
 	}
 
 	EntryStatus VkAccount::GetState () const
@@ -280,8 +343,30 @@ namespace Murm
 	{
 	}
 
-	void VkAccount::RemoveEntry (QObject*)
+	void VkAccount::RemoveEntry (QObject *entryObj)
 	{
+		auto entry = qobject_cast<VkEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entry
+					<< "is not a VkEntry";
+			return;
+		}
+
+		if (entry->IsNonRoster ())
+		{
+			emit removedCLItems ({ entry });
+
+			const auto id = entry->GetInfo ().ID_;
+			Entries_.remove (id);
+			entry->deleteLater ();
+
+			NonRosterItems_.removeOne (id);
+			Conn_->SetNRIList (NonRosterItems_);
+
+			return;
+		}
 	}
 
 	QObject* VkAccount::GetTransferManager () const
@@ -291,7 +376,7 @@ namespace Murm
 
 	void VkAccount::PublishTune (const QMap<QString, QVariant>& tuneData)
 	{
-		if (!XmlSettingsManager::Instance ().property ("PublishTune").toBool ())
+		if (!PublishTune_)
 			return;
 
 		QStringList fields
@@ -306,6 +391,76 @@ namespace Murm
 		Conn_->SetStatus (toPublish);
 	}
 
+	QObject* VkAccount::GetSelfContact () const
+	{
+		return SelfEntry_;
+	}
+
+	QImage VkAccount::GetSelfAvatar () const
+	{
+		return SelfEntry_ ? SelfEntry_->GetAvatar () : QImage ();
+	}
+
+	QIcon VkAccount::GetAccountIcon () const
+	{
+		return {};
+	}
+
+	IHaveConsole::PacketFormat VkAccount::GetPacketFormat () const
+	{
+		return PacketFormat::PlainText;
+	}
+
+	void VkAccount::SetConsoleEnabled (bool)
+	{
+	}
+
+	QObject* VkAccount::CreateNonRosterItem (const QString& idStr)
+	{
+		auto realId = idStr;
+		if (realId.startsWith ("id"))
+			realId = realId.remove (0, 2);
+
+		bool ok = false;
+		const auto id = realId.toULongLong (&ok);
+		if (!ok)
+			throw std::runtime_error (tr ("%1 is invalid VKontake ID")
+					.arg (idStr)
+					.toUtf8 ().constData ());
+
+		if (Entries_.contains (id))
+			return Entries_ [id];
+
+		const auto entry = CreateNonRosterItem (id);
+		emit gotCLItems ({ entry });
+
+		NonRosterItems_ << id;
+		Conn_->SetNRIList (NonRosterItems_);
+		Conn_->GetUserInfo ({ id });
+
+		return entry;
+	}
+
+	void VkAccount::TryPendingMessages ()
+	{
+		decltype (PendingMessages_) pending;
+		std::swap (pending, PendingMessages_);
+		for (const auto& info : pending)
+			handleMessage (info);
+	}
+
+	VkEntry* VkAccount::CreateNonRosterItem (qulonglong id)
+	{
+		UserInfo info;
+		info.ID_ = id;
+
+		auto entry = new VkEntry (info, this);
+		entry->SetNonRoster ();
+		Entries_ [id] = entry;
+
+		return entry;
+	}
+
 	void VkAccount::handleSelfInfo (const UserInfo& info)
 	{
 		handleUsers ({ info });
@@ -318,6 +473,7 @@ namespace Murm
 	{
 		QList<QObject*> newEntries;
 		QSet<int> newCountries;
+		bool hadNew = false;
 		for (const auto& info : infos)
 		{
 			if (Entries_.contains (info.ID_))
@@ -331,12 +487,36 @@ namespace Murm
 			newEntries << entry;
 
 			newCountries << info.Country_;
+
+			hadNew = true;
 		}
 
 		GeoResolver_->CacheCountries (newCountries.toList ());
 
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);
+
+		if (hadNew)
+			TryPendingMessages ();
+	}
+
+	void VkAccount::handleNRIList (const QList<qulonglong>& ids)
+	{
+		QList<qulonglong> toRequest;
+		QList<QObject*> objs;
+		for (auto id : ids)
+		{
+			if (Entries_.contains (id))
+				continue;
+
+			toRequest << id;
+			objs << CreateNonRosterItem (id);
+		}
+
+		emit gotCLItems (objs);
+		Conn_->GetUserInfo (toRequest);
+
+		NonRosterItems_ = toRequest;
 	}
 
 	void VkAccount::handleUserState (qulonglong id, bool isOnline)
@@ -379,6 +559,10 @@ namespace Murm
 				qWarning () << Q_FUNC_INFO
 						<< "message from unknown user"
 						<< from;
+
+				PendingMessages_ << info;
+
+				Conn_->GetUserInfo ({ from });
 				return;
 			}
 
@@ -401,11 +585,63 @@ namespace Murm
 		entry->HandleTypingNotification ();
 	}
 
+	void VkAccount::handleMarkOnline ()
+	{
+		Conn_->SetMarkingOnlineEnabled (MarkAsOnline_);
+	}
+
 	void VkAccount::finishOffline ()
 	{
+		SelfEntry_ = nullptr;
+
 		emit removedCLItems (GetCLEntries ());
 		qDeleteAll (Entries_);
 		Entries_.clear ();
+
+		qDeleteAll (ChatEntries_);
+		ChatEntries_.clear ();
+	}
+
+	void VkAccount::handleCaptcha (const QString& cid, const QUrl& url)
+	{
+		if (IsRequestingCaptcha_)
+		{
+			Conn_->HandleCaptcha (cid, {});
+			return;
+		}
+
+		auto dia = new CaptchaDialog (url, cid, CoreProxy_->GetNetworkAccessManager ());
+		connect (dia,
+				SIGNAL (gotCaptcha (QString, QString)),
+				this,
+				SLOT (handleCaptchaEntered (QString, QString)));
+		dia->show ();
+
+		IsRequestingCaptcha_ = true;
+	}
+
+	void VkAccount::handleCaptchaEntered (const QString& cid, const QString& value)
+	{
+		Conn_->HandleCaptcha (cid, value);
+		IsRequestingCaptcha_ = false;
+	}
+
+	void VkAccount::handleConfigDialogAccepted()
+	{
+		if (!AccConfigDia_)
+			return;
+
+		EnableFileLog_ = AccConfigDia_->GetFileLogEnabled ();
+		Logger_->SetFileEnabled (EnableFileLog_);
+
+		MarkAsOnline_ = AccConfigDia_->GetMarkAsOnline ();
+		handleMarkOnline ();
+
+		PublishTune_ = AccConfigDia_->GetPublishTuneEnabled ();
+
+		emit accountChanged (this);
+
+		AccConfigDia_->deleteLater ();
 	}
 
 	void VkAccount::handleGotChatInfo (const ChatInfo& info)
@@ -420,10 +656,7 @@ namespace Murm
 			ChatEntries_ [info.ChatID_] = entry;
 			emit gotCLItems ({ entry });
 
-			decltype (PendingMessages_) pending;
-			std::swap (pending, PendingMessages_);
-			for (const auto& info : pending)
-				handleMessage (info);
+			TryPendingMessages ();
 		}
 		else
 			ChatEntries_ [info.ChatID_]->UpdateInfo (info);

@@ -36,6 +36,8 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "chattabsmanager.h"
+#include "coremessage.h"
+#include "unreadqueuemanager.h"
 
 namespace LeechCraft
 {
@@ -224,7 +226,7 @@ namespace Azoth
 		ChatTabsManager *mgr = Core::Instance ().GetChatTabsManager ();
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (entryID, accID));
-		QWidget *chat = mgr->OpenChat (entry);
+		QWidget *chat = mgr->OpenChat (entry, true);
 
 		QMetaObject::invokeMethod (chat,
 				"prepareMessageText",
@@ -241,9 +243,9 @@ namespace Azoth
 		return Core::Instance ().GetSelectedChatTemplate (entry, frame);
 	}
 
-	QList<QColor> ProxyObject::GenerateColors (const QString& scheme) const
+	QList<QColor> ProxyObject::GenerateColors (const QString& scheme, QColor bg) const
 	{
-		return Core::Instance ().GenerateColors (scheme);
+		return Core::Instance ().GenerateColors (scheme, bg);
 	}
 
 	QString ProxyObject::GetNickColor (const QString& nick, const QList<QColor>& colors) const
@@ -355,9 +357,7 @@ namespace Azoth
 			if (shortened.size () > length)
 				shortened = trimmed.left (length / 2) + "..." + trimmed.right (length / 2);
 
-			const auto& str = QString ("<a href=\"%1\" title=\"%1\">%2</a>")
-					.arg (trimmed)
-					.arg (shortened);
+			const auto& str = "<a href=\"" + trimmed + "\" title=\"" + trimmed + "\">" + shortened + "</a>";
 			body.replace (pos, link.length (), str);
 
 			pos += str.length ();
@@ -384,6 +384,23 @@ namespace Azoth
 		}
 
 		return result;
+	}
+
+	QObject* ProxyObject::CreateCoreMessage (const QString& body, const QDateTime& date,
+			IMessage::MessageType type, IMessage::Direction dir,
+			QObject *other, QObject *parent)
+	{
+		return new CoreMessage (body, date, type, dir, other, parent);
+	}
+
+	bool ProxyObject::IsMessageRead (QObject *msgObj)
+	{
+		return Core::Instance ().GetUnreadQueueManager ()->IsMessageRead (msgObj);
+	}
+
+	void ProxyObject::MarkMessagesAsRead (QObject *entryObj)
+	{
+		Core::Instance ().GetUnreadQueueManager ()->clearMessagesForEntry (entryObj);
 	}
 }
 }

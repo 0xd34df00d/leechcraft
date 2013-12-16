@@ -563,7 +563,7 @@ namespace Azoth
 			{
 				"openchat",
 				SingleEntryActor_f ([] (ICLEntry *e)
-						{ Core::Instance ().GetChatTabsManager ()->OpenChat (e); })
+						{ Core::Instance ().GetChatTabsManager ()->OpenChat (e, true); })
 			},
 			{ "drawattention", SingleEntryActor_f (DrawAttention) },
 			{ "sendfile", SingleEntryActor_f ([] (ICLEntry *entry) { new FileSendDialog (entry); }) },
@@ -614,7 +614,7 @@ namespace Azoth
 				"userslist",
 				SingleEntryActor_f ([] (ICLEntry *e) -> void
 					{
-						auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (e);
+						auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (e, false);
 						auto tab = qobject_cast<ChatTab*> (chatWidget);
 						tab->ShowUsersList ();
 					})
@@ -1074,7 +1074,7 @@ namespace Azoth
 
 					changeClass->addSeparator ();
 					auto advanced = changeClass->addMenu (tr ("Advanced..."));
-					advanced->setToolTip (tr ("Allows to set advanced fields like "
+					advanced->setToolTip (tr ("Allows one to set advanced fields like "
 							"reason or global flag"));
 
 					addPossible (advanced,

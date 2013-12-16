@@ -30,6 +30,7 @@
 #include "rootwindowsmanager.h"
 #include <iterator>
 #include <algorithm>
+#include <QDesktopWidget>
 #include <interfaces/ihavetabs.h>
 #include "core.h"
 #include "mainwindow.h"
@@ -37,8 +38,9 @@
 #include "tabmanager.h"
 #include "dockmanager.h"
 #include "xmlsettingsmanager.h"
+#include "application.h"
 
-#ifdef Q_OS_UNIX
+#if defined (Q_OS_UNIX) && defined (HAVE_X11)
 #include <X11/Xutil.h>
 #include <QX11Info>
 #endif
@@ -50,6 +52,29 @@ namespace LeechCraft
 	{
 	}
 
+	void RootWindowsManager::Initialize ()
+	{
+		const bool deskMode = Application::instance ()->arguments ().contains ("--desktop");
+		if (!deskMode)
+		{
+			CreateWindow (-1, true);
+			return;
+		}
+
+		const auto desk = QApplication::desktop ();
+		const auto sc = desk->screenCount ();
+		const auto virtDesk = desk->isVirtualDesktop ();
+		qDebug () << Q_FUNC_INFO
+				<< "running with"
+				<< sc
+				<< "screens; virtual desktop?"
+				<< virtDesk;
+		qWarning () << Q_FUNC_INFO
+				<< "non-virtual desktops aren't supported";
+		for (int i = 0; i < (virtDesk ? sc : 1); ++i)
+			CreateWindow (i, true);
+	}
+
 	void RootWindowsManager::Release ()
 	{
 		for (const auto& win : Windows_)
@@ -58,7 +83,7 @@ namespace LeechCraft
 
 	MainWindow* RootWindowsManager::MakeMainWindow ()
 	{
-		return CreateWindow ();
+		return CreateWindow (-1, false);
 	}
 
 	TabManager* RootWindowsManager::GetTabManager (MainWindow *win) const
@@ -119,7 +144,7 @@ namespace LeechCraft
 		return 0;
 	}
 
-	int RootWindowsManager::GetPreferredWindowIndex (ITabWidget *itw) const
+	int RootWindowsManager::GetPreferredWindowIndex (const ITabWidget *itw) const
 	{
 		return GetPreferredWindowIndex (itw->GetTabClassInfo ().TabClass_);
 	}
@@ -190,9 +215,9 @@ namespace LeechCraft
 		return Windows_ [index].Window_->GetTabWidget ();
 	}
 
-	MainWindow* RootWindowsManager::CreateWindow ()
+	MainWindow* RootWindowsManager::CreateWindow (int screen, bool primary)
 	{
-		auto win = new MainWindow;
+		auto win = new MainWindow (screen, primary);
 		auto proxy = new MWProxy (win);
 		auto tm = new TabManager (win->GetTabWidget (), win, win->GetTabWidget ());
 
@@ -209,7 +234,7 @@ namespace LeechCraft
 		return win;
 	}
 
-	void RootWindowsManager::PerformWithTab (std::function<void (TabManager*, int)> f, QWidget *w)
+	void RootWindowsManager::PerformWithTab (const std::function<void (TabManager*, int)>& f, QWidget *w)
 	{
 		const int idx = GetWindowForTab (qobject_cast<ITabWidget*> (w));
 		if (idx < 0)
@@ -233,16 +258,17 @@ namespace LeechCraft
 
 		emit tabIsMoving (fromWin, toWin, tabIdx);
 
+		auto targetMgr = Windows_ [toWin].TM_;
 		Windows_ [fromWin].TM_->remove (widget);
-		Windows_ [toWin].TM_->add (name, widget);
-		Windows_ [toWin].TM_->changeTabIcon (widget, icon);
+		targetMgr->add (name, widget);
+		targetMgr->changeTabIcon (widget, icon);
 
 		emit tabMoved (fromWin, toWin, Windows_ [toWin].TM_->FindTabForWidget (widget));
 	}
 
 	void RootWindowsManager::moveTabToNewWindow ()
 	{
-		CreateWindow ();
+		CreateWindow (-1, false);
 
 		MoveTab (sender ()->property ("TabIndex").toInt (),
 				sender ()->property ("FromWindowIndex").toInt (),
@@ -293,7 +319,7 @@ namespace LeechCraft
 
 		if (winIdx == -1)
 		{
-			CreateWindow ();
+			CreateWindow (-1, false);
 			winIdx = Windows_.size () - 1;
 		}
 

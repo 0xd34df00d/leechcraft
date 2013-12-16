@@ -30,6 +30,7 @@
 #include "adiumstyles.h"
 #include <QIcon>
 #include <interfaces/azoth/iproxyobject.h>
+#include <util/util.h>
 #include "adiumstylesource.h"
 
 namespace LeechCraft
@@ -40,6 +41,7 @@ namespace AdiumStyles
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("azoth_adiumstyles");
 		Proxy_ = 0;
 	}
 
@@ -63,7 +65,7 @@ namespace AdiumStyles
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Support for Adium chat styles");
+		return tr ("Support for Adium chat styles.");
 	}
 
 	QIcon Plugin::GetIcon () const

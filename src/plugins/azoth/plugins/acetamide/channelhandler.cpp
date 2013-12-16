@@ -97,12 +97,12 @@ namespace Acetamide
 		return GetParticipantEntry (CM_->GetOurNick ());
 	}
 
-	ChannelParticipantEntry_ptr ChannelHandler::GetParticipantEntry (const QString& nick)
+	ChannelParticipantEntry_ptr ChannelHandler::GetParticipantEntry (const QString& nick, bool announce)
 	{
 		if (Nick2Entry_.contains (nick))
 			return Nick2Entry_ [nick];
 
-		ChannelParticipantEntry_ptr entry (CreateParticipantEntry (nick));
+		ChannelParticipantEntry_ptr entry (CreateParticipantEntry (nick, announce));
 		Nick2Entry_ [nick] = entry;
 		return entry;
 	}
@@ -211,7 +211,10 @@ namespace Acetamide
 		}
 
 		CM_->ClosePrivateChat (nickName);
-		ChannelParticipantEntry_ptr entry (GetParticipantEntry (nickName));
+
+		const auto existed = Nick2Entry_.contains (nickName);
+
+		ChannelParticipantEntry_ptr entry (GetParticipantEntry (nickName, false));
 		entry->SetUserName (user);
 		entry->SetHostName (host);
 
@@ -241,8 +244,12 @@ namespace Acetamide
 			role = ChannelRole::Participant;
 
 		entry->SetRole (role);
-		MakeJoinMessage (nickName);
 		entry->SetStatus (EntryStatus (SOnline, QString ()));
+
+		if (!existed)
+			CM_->GetAccount ()->handleGotRosterItems ({ entry.get () });
+
+		MakeJoinMessage (nickName);
 	}
 
 	void ChannelHandler::MakeJoinMessage (const QString& nick)
@@ -738,11 +745,12 @@ namespace Acetamide
 		return true;
 	}
 
-	ChannelParticipantEntry_ptr ChannelHandler::CreateParticipantEntry (const QString& nick)
+	ChannelParticipantEntry_ptr ChannelHandler::CreateParticipantEntry (const QString& nick, bool announce)
 	{
 		ChannelParticipantEntry_ptr entry (new ChannelParticipantEntry (nick,
 				this, CM_->GetAccount ()));
-		CM_->GetAccount ()->handleGotRosterItems (QObjectList () << entry.get ());
+		if (announce)
+			CM_->GetAccount ()->handleGotRosterItems ({ entry.get () });
 		return entry;
 	}
 

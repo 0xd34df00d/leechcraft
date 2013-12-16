@@ -65,6 +65,7 @@ namespace AdvancedNotifications
 		Cat2IconName_ [AN::CatOrganizer] = "view-calendar";
 		Cat2IconName_ [AN::CatGeneric] = "preferences-desktop-notification-bell";
 		Cat2IconName_ [AN::CatPackageManager] = "system-software-update";
+		Cat2IconName_ [AN::CatMediaPlayer] = "applications-multimedia";
 	}
 
 	void GeneralHandler::Handle (const Entity& e)
@@ -74,7 +75,6 @@ namespace AdvancedNotifications
 			Core::Instance ().GetRulesManager ()->HandleEntity (e);
 			return;
 		}
-
 
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
 		{

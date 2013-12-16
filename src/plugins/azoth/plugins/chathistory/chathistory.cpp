@@ -286,9 +286,16 @@ namespace ChatHistory
 				!RequestedLogs_ [accId].contains (entryId))
 			return;
 
-		QObject *entryObj = RequestedLogs_ [accId].take (entryId);
-		auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
+		auto entryObj = RequestedLogs_ [accId].take (entryId);
+		if (!entryObj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "is dead already";
+			return;
+		}
 
+		auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
 		const auto& parts = mucEntry ?
 				mucEntry->GetParticipants () :
 				QObjectList ();
@@ -315,7 +322,7 @@ namespace ChatHistory
 					IMessage::MTChatMessage;
 
 			HistoryMessage *msg = new HistoryMessage (dir,
-					participantObj ? participantObj : entryObj,
+					participantObj ? participantObj : entryObj.data (),
 					type,
 					participantObj ? QString () : variant,
 					msgMap ["Message"].toString (),

@@ -54,6 +54,8 @@ namespace DeadLyrics
 
 		QList<MatcherBase_ptr> Matchers_;
 
+		QStringList InvalidIndicators_;
+
 		ConcreteSiteDesc (const QDomElement&);
 	};
 
@@ -69,7 +71,7 @@ namespace DeadLyrics
 	private slots:
 		void handleReplyFinished ();
 	signals:
-		void gotLyrics (const Media::LyricsQuery&, const QStringList&);
+		void gotLyrics (const Media::LyricsResults&);
 	};
 }
 }

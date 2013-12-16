@@ -31,8 +31,8 @@
 #include <stdexcept>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QFileInfo>
 #include <QThread>
-#include <boost/graph/graph_concepts.hpp>
 #include <util/util.h>
 #include <util/dblock.h>
 #include "util.h"
@@ -122,7 +122,7 @@ namespace LMP
 		Util::DBLock lock (DB_);
 
 		lock.Init ();
-		Q_FOREACH (const MediaInfo& info, infos)
+		for (const auto& info : infos)
 		{
 			Collection::Artist artist =
 			{
@@ -161,13 +161,14 @@ namespace LMP
 			};
 			AddTrack (track, artist.ID_, album.ID_);
 
-			auto& trackArtist = artists [artist.ID_];
-			for (auto i = trackArtist.Albums_.begin (), end = trackArtist.Albums_.end (); i != end; ++i)
-				if ((*i)->ID_ == album.ID_)
+			for (auto& trackAlbum : artists [artist.ID_].Albums_)
+				if (trackAlbum->ID_ == album.ID_)
 				{
-					(*i)->Tracks_ << track;
+					trackAlbum->Tracks_ << track;
 					break;
 				}
+
+			SetMTime (info.LocalPath_, QFileInfo { info.LocalPath_ }.lastModified ());
 		}
 		lock.Good ();
 
@@ -223,6 +224,24 @@ namespace LMP
 	{
 		PresentAlbums_ = result.PresentAlbums_;
 		PresentArtists_ = result.PresentArtists_;
+	}
+
+	QStringList LocalCollectionStorage::GetTracksPaths ()
+	{
+		if (!GetAllTracks_.exec ())
+		{
+			Util::DBLock::DumpError (GetAllTracks_);
+			throw std::runtime_error ("cannot get all tracks");
+		}
+
+		QStringList result;
+		result.reserve (GetAllTracks_.size ());
+		while (GetAllTracks_.next ())
+			result << GetAllTracks_.value (1).toString ();
+
+		GetAllTracks_.finish ();
+
+		return result;
 	}
 
 	void LocalCollectionStorage::RemoveTrack (int id)
@@ -602,6 +621,9 @@ namespace LMP
 
 		GetAlbums_ = QSqlQuery (DB_);
 		GetAlbums_.prepare ("SELECT Id, Name, Year, CoverPath FROM albums;");
+
+		GetAllTracks_ = QSqlQuery (DB_);
+		GetAllTracks_.prepare ("SELECT Id, Path FROM tracks;");
 
 		AddArtist_ = QSqlQuery (DB_);
 		AddArtist_.prepare ("INSERT INTO artists (Name) VALUES (:name);");

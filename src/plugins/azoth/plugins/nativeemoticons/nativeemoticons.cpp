@@ -29,6 +29,7 @@
 
 #include "nativeemoticons.h"
 #include <QIcon>
+#include <util/util.h>
 #include "nativeemoticonssource.h"
 #include "kopeteemoticonssource.h"
 #include "psiplusemoticonssource.h"
@@ -41,6 +42,8 @@ namespace NativeEmoticons
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("azoth_nativeemoticons");
+
 		ResourceSources_ << new NativeEmoticonsSource ()
 				<< new KopeteEmoticonsSource ()
 				<< new PsiPlusEmoticonsSource ();
@@ -66,7 +69,7 @@ namespace NativeEmoticons
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Support for native Azoth emoticons packs");
+		return tr ("Support for native Azoth emoticons packs as well as Kopete and Psi+ packs.");
 	}
 
 	QIcon Plugin::GetIcon () const

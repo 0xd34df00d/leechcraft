@@ -29,11 +29,14 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QDateTime>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <util/utilconfig.h>
+
+class QTimer;
 
 namespace LeechCraft
 {
@@ -41,6 +44,7 @@ namespace Util
 {
 class QueueManager;
 enum class QueuePriority;
+
 class CustomCookieJar;
 
 namespace SvcAuth
@@ -50,6 +54,8 @@ namespace SvcAuth
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
+
+		const QString AccountHR_;
 
 		QNetworkAccessManager *AuthNAM_;
 		Util::CustomCookieJar *Cookies_;
@@ -62,6 +68,9 @@ namespace SvcAuth
 
 		bool IsRequesting_;
 		const QUrl URL_;
+
+		bool IsRequestScheduled_;
+		QTimer *ScheduleTimer_;
 	public:
 		typedef QList<std::function<void (QString)>> RequestQueue_t;
 		typedef RequestQueue_t* RequestQueue_ptr;
@@ -72,12 +81,11 @@ namespace SvcAuth
 		QList<RequestQueue_ptr> ManagedQueues_;
 		QList<PrioRequestQueue_ptr> PrioManagedQueues_;
 	public:
-		VkAuthManager (const QString& clientId,
+		VkAuthManager (const QString& accountName, const QString& clientId,
 				const QStringList& scope, const QByteArray& cookies,
 				ICoreProxy_ptr, QueueManager* = nullptr, QObject* = nullptr);
 
 		void GetAuthKey ();
-		void Reauth ();
 
 		void ManageQueue (RequestQueue_ptr);
 		void UnmanageQueue (RequestQueue_ptr);
@@ -91,9 +99,12 @@ namespace SvcAuth
 		void RequestURL (const QUrl&);
 		void RequestAuthKey ();
 		bool CheckIsBlank (QUrl);
+	public slots:
+		void clearAuthData ();
+		void reauth ();
 	private slots:
+		void execScheduledRequest ();
 		void handleGotForm ();
-		void handleFormFetchError ();
 		void handleViewUrlChanged (const QUrl&);
 	signals:
 		void gotAuthKey (const QString&);

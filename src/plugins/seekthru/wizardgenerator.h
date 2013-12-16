@@ -27,26 +27,20 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_WIZARDGENERATOR_H
-#define PLUGINS_SEEKTHRU_WIZARDGENERATOR_H
+#pragma once
+
 #include <QList>
 
 class QWizardPage;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SeekThru
+{
+	class WizardGenerator
 	{
-		namespace SeekThru
-		{
-			class WizardGenerator
-			{
-			public:
-				QList<QWizardPage*> GetPages ();
-			};
-		};
+	public:
+		QList<QWizardPage*> GetPages ();
 	};
-};
-
-#endif
-
+}
+}

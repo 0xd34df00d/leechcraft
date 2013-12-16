@@ -82,6 +82,8 @@ namespace Metida
 		scale->setData (Qt::Unchecked, Qt::CheckStateRole);
 		PollTypeModel_->appendRow (scale);
 
+		Ui_.PollQuestion_->setToolTip (tr ("Allowed tags: %1.")
+					.arg ("&lt;a>, &lt;b>, &lt;i>, &lt;em>, &lt;strong>, &lt;u>, &lt;img>, &lt;lj user>"));
 		connect (Ui_.PollType_->view (),
 				SIGNAL (clicked (QModelIndex)),
 				this,

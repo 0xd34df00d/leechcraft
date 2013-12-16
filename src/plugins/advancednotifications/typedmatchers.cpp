@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "typedmatchers.h"
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/apply_visitor.hpp>
 #include <QStringList>
 #include <QWidget>
 #include <QtDebug>
@@ -38,16 +40,29 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	TypedMatcherBase_ptr TypedMatcherBase::Create (QVariant::Type type)
+	namespace
+	{
+		template<typename T>
+		QList<T> ToTList (const QVariantList& list)
+		{
+			QList<T> result;
+			for (const auto& item : list)
+				if (item.canConvert<T> ())
+					result << item.value<T> ();
+			return result;
+		}
+	}
+
+	TypedMatcherBase_ptr TypedMatcherBase::Create (QVariant::Type type, const ANFieldData& fieldData)
 	{
 		switch (type)
 		{
 		case QVariant::Int:
 			return TypedMatcherBase_ptr (new IntMatcher ());
 		case QVariant::String:
-			return TypedMatcherBase_ptr (new StringMatcher ());
+			return TypedMatcherBase_ptr (new StringMatcher (ToTList<QString> (fieldData.AllowedValues_)));
 		case QVariant::StringList:
-			return TypedMatcherBase_ptr (new StringListMatcher ());
+			return TypedMatcherBase_ptr (new StringListMatcher (ToTList<QString> (fieldData.AllowedValues_)));
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
@@ -56,8 +71,9 @@ namespace AdvancedNotifications
 		}
 	}
 
-	StringLikeMatcher::StringLikeMatcher ()
+	StringLikeMatcher::StringLikeMatcher (const QStringList& variants)
 	: Value_ { {}, true }
+	, Allowed_ (variants)
 	{
 	}
 
@@ -111,6 +127,15 @@ namespace AdvancedNotifications
 			CW_ = new QWidget ();
 			Ui_.reset (new Ui::StringLikeMatcherConfigWidget ());
 			Ui_->setupUi (CW_);
+
+			if (Allowed_.isEmpty ())
+				Ui_->VariantsBox_->hide ();
+			else
+			{
+				Ui_->VariantsBox_->addItems (Allowed_);
+				Ui_->RegexType_->hide ();
+				Ui_->RegexpEditor_->hide ();
+			}
 		}
 
 		Ui_->ContainsBox_->setCurrentIndex (Value_.Contains_ ? 0 : 1);
@@ -131,6 +156,10 @@ namespace AdvancedNotifications
 		}
 		Ui_->RegexType_->setCurrentIndex (rxIdx);
 
+		const auto idx = Ui_->VariantsBox_->findText (Value_.Rx_.pattern ());
+		if (idx >= 0)
+			Ui_->VariantsBox_->setCurrentIndex (idx);
+
 		return CW_;
 	}
 
@@ -144,27 +173,37 @@ namespace AdvancedNotifications
 		}
 
 		Value_.Contains_ = Ui_->ContainsBox_->currentIndex () == 0;
-
-		QRegExp::PatternSyntax pattern = QRegExp::FixedString;
-		switch (Ui_->RegexType_->currentIndex ())
+		if (Allowed_.isEmpty ())
 		{
-		case 0:
-			break;
-		case 1:
-			pattern = QRegExp::Wildcard;
-			break;
-		case 2:
-			pattern = QRegExp::RegExp;
-			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown regexp type"
-					<< Ui_->RegexType_->currentIndex ();
-			break;
-		}
+			QRegExp::PatternSyntax pattern = QRegExp::FixedString;
+			switch (Ui_->RegexType_->currentIndex ())
+			{
+			case 0:
+				break;
+			case 1:
+				pattern = QRegExp::Wildcard;
+				break;
+			case 2:
+				pattern = QRegExp::RegExp;
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unknown regexp type"
+						<< Ui_->RegexType_->currentIndex ();
+				break;
+			}
 
-		Value_.Rx_ = QRegExp (Ui_->RegexpEditor_->text (),
-				Qt::CaseInsensitive, pattern);
+			Value_.Rx_ = QRegExp (Ui_->RegexpEditor_->text (),
+					Qt::CaseInsensitive, pattern);
+		}
+		else
+			Value_.Rx_ = QRegExp (Ui_->VariantsBox_->currentText (),
+					Qt::CaseSensitive, QRegExp::FixedString);
+	}
+
+	StringMatcher::StringMatcher (const QStringList& list)
+	: StringLikeMatcher (list)
+	{
 	}
 
 	bool StringMatcher::Match (const QVariant& var) const
@@ -184,6 +223,11 @@ namespace AdvancedNotifications
 		return Value_.Contains_ ?
 				QObject::tr ("contains pattern `%1`").arg (p) :
 				QObject::tr ("doesn't contain pattern `%1`").arg (p);
+	}
+
+	StringListMatcher::StringListMatcher (const QStringList& list)
+	: StringLikeMatcher (list)
+	{
 	}
 
 	bool StringListMatcher::Match (const QVariant& var) const

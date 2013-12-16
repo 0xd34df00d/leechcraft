@@ -72,6 +72,8 @@ namespace LeechCraft
 		in >> arguments;
 		arguments.removeFirst ();
 
+		qDebug () << Q_FUNC_INFO << arguments;
+
 		std::vector<std::wstring> strings;
 		Q_FOREACH (const QString& arg, arguments)
 			strings.push_back (arg.toStdWString ());
@@ -158,6 +160,7 @@ namespace LeechCraft
 					QString (),
 					tp);
 			e.Additional_ = addMap;
+			qDebug () << e.Entity_ << e.Additional_;
 			emit gotEntity (e);
 		}
 	}

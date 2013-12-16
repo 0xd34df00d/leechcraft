@@ -2,40 +2,41 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Plugins::DBusManager::Core</name>
+    <name>LeechCraft::DBusManager::Core</name>
     <message>
-        <location filename="core.cpp" line="72"/>
+        <location filename="core.cpp" line="87"/>
         <source>LeechCraft D-Bus general interface</source>
         <translation>LeechCraft D-Bus general interface</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::DBusManager</name>
+    <name>LeechCraft::DBusManager::DBusManager</name>
     <message>
-        <location filename="dbusmanager.cpp" line="64"/>
-        <source>DBus support for LeechCraft</source>
-        <translation>DBus support for LeechCraft</translation>
+        <location filename="dbusmanager.cpp" line="74"/>
+        <source>General DBus support for LeechCraft.</source>
+        <oldsource>DBus support for LeechCraft</oldsource>
+        <translation>General DBus support for LeechCraft.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::General</name>
+    <name>LeechCraft::DBusManager::General</name>
     <message>
-        <location filename="general.cpp" line="58"/>
-        <location filename="general.cpp" line="82"/>
+        <location filename="general.cpp" line="71"/>
+        <location filename="general.cpp" line="95"/>
         <source>Not found plugin %1.</source>
         <translation>Not found plugin %1.</translation>
     </message>
     <message>
-        <location filename="general.cpp" line="76"/>
+        <location filename="general.cpp" line="89"/>
         <source>Could not save icon for plugin %1 to PNG %2x%2</source>
         <translation>Could not save icon for plugin %1 to PNG %2x%2</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::Tasks</name>
+    <name>LeechCraft::DBusManager::Tasks</name>
     <message>
-        <location filename="tasks.cpp" line="60"/>
-        <location filename="tasks.cpp" line="83"/>
+        <location filename="tasks.cpp" line="72"/>
+        <location filename="tasks.cpp" line="95"/>
         <source>Not found job holder %1.</source>
         <translation>Not found job holder %1.</translation>
     </message>

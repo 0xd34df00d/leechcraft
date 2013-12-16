@@ -2,6 +2,9 @@
 <settings>
 	<page>
 		<label value="General" />
+		<item type="checkbox" property="RequestFriendsData" default="false">
+			<label value="Request friends' audio tracks" />
+		</item>
 		<item type="pushbutton" name="AllowRequestsTriggered">
 			<label value="Login and allow access..." />
 		</item>

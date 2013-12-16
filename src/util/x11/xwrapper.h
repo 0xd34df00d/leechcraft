@@ -33,6 +33,7 @@
 #include <QList>
 #include <QString>
 #include <QHash>
+#include <QAbstractEventDispatcher>
 #include <X11/Xdefs.h>
 #include <util/utilconfig.h>
 #include "winflags.h"
@@ -57,6 +58,8 @@ namespace Util
 		Window AppWin_;
 
 		QHash<QString, Atom> Atoms_;
+
+		const QAbstractEventDispatcher::EventFilter PrevFilter_;
 
 		XWrapper ();
 	public:

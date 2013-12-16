@@ -95,28 +95,28 @@ namespace BitTorrent
 		connect (OpenTorrent_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_OpenTorrent__triggered ()));
+				SLOT (handleOpenTorrentTriggered ()));
 
 		CreateTorrent_ = new QAction (tr ("Create torrent..."), Toolbar_);
 		CreateTorrent_->setProperty ("ActionIcon", "document-new");
 		connect (CreateTorrent_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_CreateTorrent__triggered ()));
+				SLOT (handleCreateTorrentTriggered ()));
 
 		OpenMultipleTorrents_ = new QAction (tr ("Open multiple torrents..."), Toolbar_);
 		OpenMultipleTorrents_->setProperty ("ActionIcon", "document-open-folder");
 		connect (OpenMultipleTorrents_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_OpenMultipleTorrents__triggered ()));
+				SLOT (handleOpenMultipleTorrentsTriggered ()));
 
 		IPFilter_ = new QAction (tr ("IP filter..."), Toolbar_);
 		IPFilter_->setProperty ("ActionIcon", "view-filter");
 		connect (IPFilter_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_IPFilter__triggered ()));
+				SLOT (handleIPFilterTriggered ()));
 
 		RemoveTorrent_ = new QAction (tr ("Remove"), Toolbar_);
 		RemoveTorrent_->setShortcut (tr ("Del"));
@@ -124,7 +124,7 @@ namespace BitTorrent
 		connect (RemoveTorrent_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_RemoveTorrent__triggered ()));
+				SLOT (handleRemoveTorrentTriggered ()));
 
 		Resume_ = new QAction (tr ("Resume"), Toolbar_);
 		Resume_->setShortcut (tr ("R"));
@@ -132,7 +132,7 @@ namespace BitTorrent
 		connect (Resume_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_Resume__triggered ()));
+				SLOT (handleResumeTriggered ()));
 
 		Stop_ = new QAction (tr ("Pause"), Toolbar_);
 		Stop_->setShortcut (tr ("S"));
@@ -140,7 +140,7 @@ namespace BitTorrent
 		connect (Stop_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_Stop__triggered ()));
+				SLOT (handleStopTriggered ()));
 
 		MoveUp_ = new QAction (tr ("Move up"), Toolbar_);
 		MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
@@ -148,7 +148,7 @@ namespace BitTorrent
 		connect (MoveUp_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_MoveUp__triggered ()));
+				SLOT (handleMoveUpTriggered ()));
 
 		MoveDown_ = new QAction (tr ("Move down"), Toolbar_);
 		MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
@@ -156,7 +156,7 @@ namespace BitTorrent
 		connect (MoveDown_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_MoveDown__triggered ()));
+				SLOT (handleMoveDownTriggered ()));
 
 		MoveToTop_ = new QAction (tr ("Move to top"), Toolbar_);
 		MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
@@ -164,7 +164,7 @@ namespace BitTorrent
 		connect (MoveToTop_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_MoveToTop__triggered ()));
+				SLOT (handleMoveToTopTriggered ()));
 
 		MoveToBottom_ = new QAction (tr ("Move to bottom"), Toolbar_);
 		MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
@@ -172,7 +172,7 @@ namespace BitTorrent
 		connect (MoveToBottom_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_MoveToBottom__triggered ()));
+				SLOT (handleMoveToBottomTriggered ()));
 
 		ForceReannounce_ = new QAction (tr ("Reannounce"), Toolbar_);
 		ForceReannounce_->setShortcut (tr ("F"));
@@ -180,14 +180,14 @@ namespace BitTorrent
 		connect (ForceReannounce_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_ForceReannounce__triggered ()));
+				SLOT (handleForceReannounceTriggered ()));
 
 		ForceRecheck_ = new QAction (tr ("Recheck"), Toolbar_);
 		ForceRecheck_->setProperty ("ActionIcon", "tools-check-spelling");
 		connect (ForceRecheck_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_ForceRecheck__triggered ()));
+				SLOT (handleForceRecheckTriggered ()));
 
 		MoveFiles_ = new QAction (tr ("Move files..."), Toolbar_);
 		MoveFiles_->setShortcut (tr ("M"));
@@ -195,7 +195,7 @@ namespace BitTorrent
 		connect (MoveFiles_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_MoveFiles__triggered ()));
+				SLOT (handleMoveFilesTriggered ()));
 
 		ChangeTrackers_ = new QAction (tr ("Change trackers..."), Toolbar_);
 		ChangeTrackers_->setShortcut (tr ("C"));
@@ -203,7 +203,7 @@ namespace BitTorrent
 		connect (ChangeTrackers_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_ChangeTrackers__triggered ()));
+				SLOT (handleChangeTrackersTriggered ()));
 		Ui_.Tabs_->SetChangeTrackersAction (ChangeTrackers_);
 
 		MakeMagnetLink_ = new QAction (tr ("Make magnet link..."), Toolbar_);
@@ -211,7 +211,7 @@ namespace BitTorrent
 		connect (MakeMagnetLink_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (on_MakeMagnetLink__triggered ()));
+				SLOT (handleMakeMagnetLinkTriggered ()));
 
 		Toolbar_->addAction (OpenTorrent_);
 		Toolbar_->addAction (RemoveTorrent_);
@@ -330,7 +330,7 @@ namespace BitTorrent
 #endif
 	}
 
-	void TorrentTab::on_OpenTorrent__triggered ()
+	void TorrentTab::handleOpenTorrentTriggered ()
 	{
 		AddTorrent dia;
 		if (dia.exec () == QDialog::Rejected)
@@ -355,7 +355,7 @@ namespace BitTorrent
 		setActionsEnabled ();
 	}
 
-	void TorrentTab::on_OpenMultipleTorrents__triggered ()
+	void TorrentTab::handleOpenMultipleTorrentsTriggered ()
 	{
 		AddMultipleTorrents dialog;
 		std::unique_ptr<Util::TagsCompleter> completer (new Util::TagsCompleter (dialog.GetEdit (), this));
@@ -384,7 +384,7 @@ namespace BitTorrent
 		setActionsEnabled ();
 	}
 
-	void TorrentTab::on_IPFilter__triggered ()
+	void TorrentTab::handleIPFilterTriggered ()
 	{
 		IPFilterDialog dia;
 		if (dia.exec () != QDialog::Accepted)
@@ -396,7 +396,7 @@ namespace BitTorrent
 			Core::Instance ()->BanPeers (pair.first, pair.second);
 	}
 
-	void TorrentTab::on_CreateTorrent__triggered ()
+	void TorrentTab::handleCreateTorrentTriggered ()
 	{
 		NewTorrentWizard wizard;
 		if (wizard.exec () == QDialog::Accepted)
@@ -404,7 +404,7 @@ namespace BitTorrent
 		setActionsEnabled ();
 	}
 
-	void TorrentTab::on_RemoveTorrent__triggered ()
+	void TorrentTab::handleRemoveTorrentTriggered ()
 	{
 		auto rows = GetSelectedRows ();
 
@@ -436,14 +436,14 @@ namespace BitTorrent
 		setActionsEnabled ();
 	}
 
-	void TorrentTab::on_Resume__triggered ()
+	void TorrentTab::handleResumeTriggered ()
 	{
 		Q_FOREACH (int row, GetSelectedRows ())
 			Core::Instance ()->ResumeTorrent (row);
 		setActionsEnabled ();
 	}
 
-	void TorrentTab::on_Stop__triggered ()
+	void TorrentTab::handleStopTriggered ()
 	{
 		Q_FOREACH (int row, GetSelectedRows ())
 			Core::Instance ()->PauseTorrent (row);
@@ -462,7 +462,7 @@ namespace BitTorrent
 		}
 	}
 
-	void TorrentTab::on_MoveUp__triggered ()
+	void TorrentTab::handleMoveUpTriggered ()
 	{
 		const auto& sis = GetSelectedRowIndexes ();
 		const auto& selections = GetSelectedRows ();
@@ -482,7 +482,7 @@ namespace BitTorrent
 		sel->select (selection, QItemSelectionModel::Rows | QItemSelectionModel::Select);
 	}
 
-	void TorrentTab::on_MoveDown__triggered ()
+	void TorrentTab::handleMoveDownTriggered ()
 	{
 		const auto& sis = GetSelectedRowIndexes ();
 		const auto& selections = GetSelectedRows ();
@@ -503,7 +503,7 @@ namespace BitTorrent
 		sel->select (selection, QItemSelectionModel::Rows | QItemSelectionModel::Select);
 	}
 
-	void TorrentTab::on_MoveToTop__triggered ()
+	void TorrentTab::handleMoveToTopTriggered ()
 	{
 		try
 		{
@@ -517,7 +517,7 @@ namespace BitTorrent
 		}
 	}
 
-	void TorrentTab::on_MoveToBottom__triggered ()
+	void TorrentTab::handleMoveToBottomTriggered ()
 	{
 		try
 		{
@@ -531,7 +531,7 @@ namespace BitTorrent
 		}
 	}
 
-	void TorrentTab::on_ForceReannounce__triggered ()
+	void TorrentTab::handleForceReannounceTriggered ()
 	{
 		try
 		{
@@ -546,7 +546,7 @@ namespace BitTorrent
 		}
 	}
 
-	void TorrentTab::on_ForceRecheck__triggered ()
+	void TorrentTab::handleForceRecheckTriggered ()
 	{
 		try
 		{
@@ -561,7 +561,7 @@ namespace BitTorrent
 		}
 	}
 
-	void TorrentTab::on_ChangeTrackers__triggered ()
+	void TorrentTab::handleChangeTrackersTriggered ()
 	{
 		const auto& sis = GetSelectedRowIndexes ();
 
@@ -600,7 +600,7 @@ namespace BitTorrent
 			Core::Instance ()->SetTrackers (trackers, si.row ());
 	}
 
-	void TorrentTab::on_MoveFiles__triggered ()
+	void TorrentTab::handleMoveFilesTriggered ()
 	{
 		const int current = GetCurrentTorrent ();
 		QString oldDir = Core::Instance ()->GetTorrentDirectory (current);
@@ -621,7 +621,7 @@ namespace BitTorrent
 		}
 	}
 
-	void TorrentTab::on_MakeMagnetLink__triggered ()
+	void TorrentTab::handleMakeMagnetLinkTriggered ()
 	{
 		QString magnet = Core::Instance ()->GetMagnetLink (GetCurrentTorrent ());
 		if (magnet.isEmpty ())

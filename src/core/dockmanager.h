@@ -75,7 +75,7 @@ namespace LeechCraft
 
 		void SetDockWidgetVisibility (QDockWidget*, bool);
 
-		QSet<QDockWidget*> GetWindowDocks (MainWindow*) const;
+		QSet<QDockWidget*> GetWindowDocks (const MainWindow*) const;
 		void MoveDock (QDockWidget *dock, MainWindow *from, MainWindow *to);
 
 		QSet<QDockWidget*> GetForcefullyClosed () const;

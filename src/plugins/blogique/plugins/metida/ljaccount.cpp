@@ -1,4 +1,4 @@
-/**********************************************************************
+ /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010-2012  Oleg Linkin
  *
@@ -119,13 +119,29 @@ namespace Metida
 				this,
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)));
 		connect (LJXmlRpc_,
-				SIGNAL (unreadMessagesExist (bool)),
+				SIGNAL (unreadMessagesIds (QList<int>)),
 				this,
-				SLOT (handleUnreadMessagesExist (bool)));
+				SLOT (handleUnreadMessagesIds (QList<int>)));
+		connect (LJXmlRpc_,
+				SIGNAL (messagesRead ()),
+				this,
+				SLOT (handleMessagesRead ()));
+		connect (LJXmlRpc_,
+				SIGNAL (messageSent ()),
+				this,
+				SLOT (handleMessageSent ()));
 		connect (LJXmlRpc_,
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
 				this,
-				SIGNAL (gotRecentComments (QList<LJCommentEntry>)));
+				SLOT (handleGotRecentComments (QList<LJCommentEntry>)));
+		connect (LJXmlRpc_,
+				SIGNAL (commentsDeleted (QList<qint64>)),
+				this,
+				SLOT (handleCommentDeleted (QList<qint64>)));
+		connect (LJXmlRpc_,
+				SIGNAL (commentSent (QUrl)),
+				this,
+				SLOT (handleCommentSent (QUrl)));
 
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
@@ -341,6 +357,16 @@ namespace Metida
 		LJXmlRpc_->RequestRecentCommments ();
 	}
 
+	void LJAccount::AddComment (const CommentEntry& comment)
+	{
+		LJXmlRpc_->AddComment (comment);
+	}
+
+	void LJAccount::DeleteComment (qint64 id, bool deleteThread)
+	{
+		LJXmlRpc_->DeleteComment (id, deleteThread);
+	}
+
 	QList<QAction*> LJAccount::GetUpdateActions () const
 	{
 		return { LoadLastEvents_, LoadChangedEvents_ };
@@ -430,9 +456,9 @@ namespace Metida
 	}
 
 	void LJAccount::AddNewFriend (const QString& username,
-			const QString& bgcolor, const QString& fgcolor, uint groupId)
+			const QString& bgcolor, const QString& fgcolor, uint groupMask)
 	{
-		LJXmlRpc_->AddNewFriend (username, bgcolor, fgcolor, groupId);
+		LJXmlRpc_->AddNewFriend (username, bgcolor, fgcolor, groupMask);
 	}
 
 	void LJAccount::DeleteFriend (const QString& username)
@@ -448,6 +474,17 @@ namespace Metida
 	void LJAccount::DeleteGroup (int id)
 	{
 		LJXmlRpc_->DeleteGroup (id);
+	}
+
+	void LJAccount::SetMessagesAsRead (const QList<int>& ids)
+	{
+		LJXmlRpc_->SetMessagesAsRead (ids);
+	}
+
+	void LJAccount::SendMessage (const QStringList& addresses, const QString& subject,
+			const QString& text)
+	{
+		LJXmlRpc_->SendMessage (addresses, subject, text);
 	}
 
 	void LJAccount::CallLastUpdateMethod ()
@@ -640,27 +677,102 @@ namespace Metida
 		LJXmlRpc_->GetChangedEvents (dt);
 	}
 
-	void LJAccount::handleUnreadMessagesExist (bool exists)
+	void LJAccount::handleUnreadMessagesIds (const QList<int>& ids)
 	{
-		if (exists)
+		if (ids.isEmpty ())
+			return;
+
+		Entity e = Util::MakeNotification ("Blogique Metida",
+				tr ("You have unread messages in account %1")
+						.arg ("<em>" + GetAccountName () + "</em>"),
+				Priority::PInfo_);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Open inbox"),
+				[this] ()
+				{
+					Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
+							QString (),
+							OnlyHandle | FromUserInitiated);
+					Core::Instance ().SendEntity (urlEntity);
+				});
+		nh->AddDependentObject (this);
+		nh->AddFunction (tr ("Mark all as read"),
+				[this, ids] ()
+				{
+					SetMessagesAsRead (ids);
+				});
+		Core::Instance ().SendEntity (e);
+	}
+
+	void LJAccount::handleMessagesRead ()
+	{
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+				tr ("All unread messages were marked as read"),
+				Priority::PInfo_));
+	}
+
+	void LJAccount::handleMessageSent ()
+	{
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+				tr ("Message has been sent successfully"),
+				Priority::PInfo_));
+	}
+
+	namespace
+	{
+		CommentEntry LJCommentEntry2RecentComment (const LJCommentEntry& comment,
+				const QByteArray& accountID)
 		{
-			Entity e = Util::MakeNotification ("Blogique Metida",
-					tr ("You have unread messages in account %1")
-							.arg ("<em>" + GetAccountName () + "</em>"),
-					Priority::PInfo_);
-			Util::NotificationActionHandler *nh =
-					new Util::NotificationActionHandler (e, this);
-			nh->AddFunction (tr ("Open inbox"),
-					[this] ()
-					{
-						Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
-								QString (),
-								static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
-						Core::Instance ().SendEntity (urlEntity);
-					});
-			nh->AddDependentObject (this);
-			Core::Instance ().SendEntity (e);
+			CommentEntry recentComment;
+
+			recentComment.AccountID_ = accountID;
+
+			recentComment.EntryID_ = comment.NodeId_;
+			recentComment.EntrySubject_ = comment.NodeSubject_;
+			recentComment.EntryUrl_ = comment.NodeUrl_;
+
+			recentComment.CommentSubject_ = comment.Subject_;
+			recentComment.CommentText_ = comment.Text_;
+			recentComment.CommentAuthor_ = comment.PosterName_;
+			recentComment.CommentDateTime_ = comment.PostingDate_;
+			recentComment.CommentID_ = comment.ReplyId_;
+			recentComment.ParentCommentID_ = comment.ParentReplyId_;
+			recentComment.CommentUrl_ = QUrl (recentComment.EntryUrl_.toString () +
+					QString ("?thread=%1#t%1")
+							.arg (recentComment.CommentID_));
+
+			return recentComment;
 		}
+	}
+
+	void LJAccount::handleGotRecentComments (const QList<LJCommentEntry>& comments)
+	{
+		if (comments.isEmpty ())
+			return;
+
+		QList<CommentEntry> recentComments;
+		const auto& id = GetAccountID ();
+		std::transform (comments.begin (), comments.end (), std::back_inserter (recentComments),
+				[id] (decltype (comments.first ()) comment)
+				{
+					return LJCommentEntry2RecentComment (comment, id);
+				});
+		emit gotRecentComments (recentComments);
+	}
+
+	void LJAccount::handleCommentDeleted (const QList<qint64>& ids)
+	{
+		emit commentsDeleted (ids);
+	}
+
+	void LJAccount::handleCommentSent (const QUrl& url)
+	{
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+				tr ("Reply was posted successfully:") +
+						QString (" <a href=\"%1\">%1</a>\n").arg (url.toString ()),
+				Priority::PInfo_));
+		LJXmlRpc_->RequestRecentCommments ();
 	}
 
 }

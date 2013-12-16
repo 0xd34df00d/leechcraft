@@ -172,6 +172,8 @@ namespace LMP
 
 		void UnsetRadio ();
 
+		void EmitStateChange ();
+
 		template<typename T>
 		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,
 				std::function<T (AudioSource)>) const;
@@ -204,7 +206,6 @@ namespace LMP
 		void handleSourceError (const QString&, SourceError);
 
 		void refillPlaylist ();
-		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
 		void songInfoUpdated (const MediaInfo&);

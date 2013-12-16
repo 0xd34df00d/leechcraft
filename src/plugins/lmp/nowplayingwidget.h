@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/media/ilyricsfinder.h>
 #include "ui_nowplayingwidget.h"
 #include "mediainfo.h"
 
@@ -49,13 +50,13 @@ namespace LMP
 		Media::SimilarityInfos_t LastInfos_;
 		MediaInfo CurrentInfo_;
 
-		QStringList PossibleLyrics_;
+		QList<Media::LyricsResultItem> PossibleLyrics_;
 		int LyricsVariantPos_;
 	public:
 		NowPlayingWidget (QWidget* = 0);
 
 		void SetSimilarArtists (Media::SimilarityInfos_t);
-		void SetLyrics (const QString&);
+		void SetLyrics (const Media::LyricsResultItem&);
 
 		void SetAlbumArt (const QPixmap&);
 		void SetTrackInfo (const MediaInfo&);

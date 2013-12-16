@@ -83,7 +83,6 @@ namespace LHTR
 		void SetBackgroundColor (const QColor&, ContentType);
 
 		void InsertHTML (const QString&);
-		void SetTagsMappings (const Replacements_t&, const Replacements_t&);
 		void SetCustomTags (const QList<CustomTag>&);
 		QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params);
 		void ExecJS (const QString&);

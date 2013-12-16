@@ -39,6 +39,7 @@
 #include "favoritesmanager.h"
 #include "quarkmanager.h"
 #include "itemimageprovider.h"
+#include "recentmanager.h"
 
 namespace LeechCraft
 {
@@ -58,6 +59,7 @@ namespace Launchy
 				});
 
 		FavManager_ = new FavoritesManager;
+		RecentManager_ = new RecentManager;
 
 		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 		ShortcutMgr_->SetObject (this);
@@ -134,7 +136,7 @@ namespace Launchy
 
 	void Plugin::handleFSRequested ()
 	{
-		auto dis = new FSDisplayer (Proxy_, Finder_, FavManager_, this);
+		auto dis = new FSDisplayer (Proxy_, Finder_, FavManager_, RecentManager_, this);
 		connect (dis,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,

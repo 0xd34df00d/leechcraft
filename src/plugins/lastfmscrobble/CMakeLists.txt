@@ -7,6 +7,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package (LastFM REQUIRED)
 
 set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTWEBKIT TRUE)
 set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
 

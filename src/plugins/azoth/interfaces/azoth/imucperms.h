@@ -208,6 +208,10 @@ namespace Azoth
 		virtual void TrySetPerm (const QString& userId,
 				const QByteArray& permClass, const QByteArray& targetPerm, const QString& reason)
 		{
+			Q_UNUSED (userId)
+			Q_UNUSED (permClass)
+			Q_UNUSED (targetPerm)
+			Q_UNUSED (reason)
 		}
 	};
 }

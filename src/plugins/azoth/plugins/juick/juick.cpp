@@ -36,6 +36,7 @@
 #include <QSettings>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iclentry.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -82,6 +83,8 @@ namespace Juick
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("azoth_juick");
+
 		UserRX_ = QRegExp ("(@[\\w\\-\\.@\\|]*)\\b([:\\s,.?!])", Qt::CaseInsensitive);
 		PostRX_ = QRegExp ("<br />#(\\d+)\\s", Qt::CaseInsensitive);
 		IdRX_ = QRegExp ("#(\\d+)(\\s|$|<br />)", Qt::CaseInsensitive);

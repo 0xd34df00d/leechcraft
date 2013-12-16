@@ -58,7 +58,7 @@ namespace StandardStyles
 
 		std::shared_ptr<Util::ResourceLoader> StylesLoader_;
 
-		QMap<QWebFrame*, bool> HasBeenAppended_;
+		QMap<QWebFrame*, bool> IsLastMsgRead_;
 		IProxyObject *Proxy_;
 
 		mutable QHash<QString, QList<QColor>> Coloring2Colors_;
@@ -76,7 +76,7 @@ namespace StandardStyles
 		void FrameFocused (QWebFrame*);
 		QStringList GetVariantsForPack (const QString&);
 	private:
-		QList<QColor> CreateColors (const QString&);
+		QList<QColor> CreateColors (const QString&, QWebFrame*);
 		QString GetMessageID (QObject*);
 		QString GetStatusImage (const QString&);
 	private slots:

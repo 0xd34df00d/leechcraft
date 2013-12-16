@@ -33,53 +33,48 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SeekThru
+{
+	using LeechCraft::Util::MergeModel;
+
+	FindProxy::FindProxy (const LeechCraft::Request& r)
+	: R_ (r)
+	, MergeModel_ (new MergeModel (QStringList ("1") << "2" << "3"))
 	{
-		namespace SeekThru
+	}
+
+	FindProxy::~FindProxy ()
+	{
+		Q_FOREACH (SearchHandler_ptr sh, Handlers_)
+			MergeModel_->RemoveModel (sh.get ());
+	}
+
+	QAbstractItemModel* FindProxy::GetModel ()
+	{
+		return MergeModel_.get ();
+	}
+
+	QByteArray FindProxy::GetUniqueSearchID () const
+	{
+		return QString ("org.LeechCraft.SeekThru.%1.%2")
+				.arg (R_.Category_)
+				.arg (R_.String_)
+				.toUtf8 ();
+	}
+
+	QStringList FindProxy::GetCategories () const
+	{
+		return QStringList (R_.Category_);
+	}
+
+	void FindProxy::SetHandlers (const QList<SearchHandler_ptr>& handlers)
+	{
+		Handlers_ = handlers;
+		Q_FOREACH (SearchHandler_ptr sh, Handlers_)
 		{
-			using LeechCraft::Util::MergeModel;
-
-			FindProxy::FindProxy (const LeechCraft::Request& r)
-			: R_ (r)
-			, MergeModel_ (new MergeModel (QStringList ("1") << "2" << "3"))
-			{
-			}
-
-			FindProxy::~FindProxy ()
-			{
-				Q_FOREACH (SearchHandler_ptr sh, Handlers_)
-					MergeModel_->RemoveModel (sh.get ());
-			}
-
-			QAbstractItemModel* FindProxy::GetModel ()
-			{
-				return MergeModel_.get ();
-			}
-
-			QByteArray FindProxy::GetUniqueSearchID () const
-			{
-				return QString ("org.LeechCraft.SeekThru.%1.%2")
-						.arg (R_.Category_)
-						.arg (R_.String_)
-						.toUtf8 ();
-			}
-
-			QStringList FindProxy::GetCategories () const
-			{
-				return QStringList (R_.Category_);
-			}
-
-			void FindProxy::SetHandlers (const QList<SearchHandler_ptr>& handlers)
-			{
-				Handlers_ = handlers;
-				Q_FOREACH (SearchHandler_ptr sh, Handlers_)
-				{
-					MergeModel_->AddModel (sh.get ());
-					sh->Start (R_);
-				}
-			}
-
-		};
-	};
-};
-
+			MergeModel_->AddModel (sh.get ());
+			sh->Start (R_);
+		}
+	}
+}
+}

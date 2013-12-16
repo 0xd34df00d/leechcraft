@@ -32,6 +32,8 @@
 #include <QDataStream>
 #include <QtDebug>
 #include <util/util.h>
+#include <interfaces/core/itagsmanager.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -77,10 +79,11 @@ namespace Otlozhu
 
 	QVariantMap TodoItem::ToMap () const
 	{
+		const auto& tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (TagIDs_);
 		return Util::MakeMap<QString, QVariant> ({
 				{ "Title", Title_ },
 				{ "Comment", Comment_ },
-				{ "Tags", TagIDs_ },
+				{ "Tags", tags },
 				{ "Deps", Deps_ },
 				{ "Created", Created_ },
 				{ "Due", Due_ },
@@ -88,53 +91,26 @@ namespace Otlozhu
 			});
 	}
 
-	namespace
-	{
-		class Checker
-		{
-			const TodoItem *This_;
-			const TodoItem *That_;
-
-			QVariantMap Result_;
-		public:
-			Checker (const TodoItem *our, const TodoItem *that)
-			: This_ (our)
-			, That_ (that)
-			{
-			}
-
-			template<typename T>
-			Checker& operator() (const QString& name, T TodoItem::* g)
-			{
-				if (This_->*g != That_->*g)
-					Result_ [name] = This_->*g;
-				return *this;
-			}
-
-			operator QVariantMap () const
-			{
-				return Result_;
-			}
-		};
-	}
-
 	QVariantMap TodoItem::DiffWith (const TodoItem_ptr item) const
 	{
-		return Checker (this, item.get ())
-				("Title", &TodoItem::Title_)
-				("Comment", &TodoItem::Comment_)
-				("Tags", &TodoItem::TagIDs_)
-				("Deps", &TodoItem::Deps_)
-				("Created", &TodoItem::Created_)
-				("Due", &TodoItem::Due_)
-				("Percentage", &TodoItem::Percentage_);
+		const auto& thatMap = item->ToMap ();
+		auto thisMap = ToMap ();
+		for (auto i = thisMap.begin (); i != thisMap.end ();)
+		{
+			const auto& key = i.key ();
+			if (thisMap [key] == thatMap [key])
+				i = thisMap.erase (i);
+			else
+				++i;
+		}
+		return thisMap;
 	}
 
 	namespace
 	{
 		class Applier
 		{
-			TodoItem *Item_;
+			TodoItem * const Item_;
 
 			const QVariantMap& Map_;
 		public:
@@ -151,18 +127,33 @@ namespace Otlozhu
 					Item_->*g = Map_ [name].value<T> ();
 				return *this;
 			}
+
+			template<typename T>
+			Applier& operator() (const QString& name, const T& g)
+			{
+				if (Map_.contains (name))
+					g (Item_, Map_ [name]);
+				return *this;
+			}
 		};
 	}
 
 	void TodoItem::ApplyDiff (const QVariantMap& map)
 	{
-		Applier (this, map)
+		Applier { this, map }
 				("Title", &TodoItem::Title_)
 				("Comment", &TodoItem::Comment_)
-				("Tags", &TodoItem::TagIDs_)
+				("Tags",
+					[] (TodoItem *item, const QVariant& tagsVar)
+					{
+						item->TagIDs_ = Core::Instance ().GetProxy ()->
+								GetTagsManager ()->GetIDs (tagsVar.toStringList ());
+					})
 				("Deps", &TodoItem::Deps_)
-				("Created", &TodoItem::Created_)
-				("Due", &TodoItem::Due_)
+				("Created", [] (TodoItem *item, QVariant time)
+						{ item->Created_.setTime_t (time.toUInt ()); })
+				("Due", [] (TodoItem *item, QVariant time)
+						{ item->Due_.setTime_t (time.toUInt ()); })
 				("Percentage", &TodoItem::Percentage_);
 	}
 

@@ -71,26 +71,12 @@ namespace DBusManager
 
 	QString DBusManager::GetInfo () const
 	{
-		return tr ("DBus support for LeechCraft");
+		return tr ("General DBus support for LeechCraft.");
 	}
 
 	QStringList DBusManager::Provides () const
 	{
-		return QStringList ("dbus");
-	}
-
-	QStringList DBusManager::Uses () const
-	{
-		return QStringList ();
-	}
-
-	QStringList DBusManager::Needs () const
-	{
-		return QStringList ();
-	}
-
-	void DBusManager::SetProvider (QObject*, const QString&)
-	{
+		return { "dbus" };
 	}
 
 	QIcon DBusManager::GetIcon () const

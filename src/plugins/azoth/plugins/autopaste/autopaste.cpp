@@ -116,7 +116,7 @@ namespace Autopaste
 		const int maxSymbols = XmlSettingsManager::Instance ()
 				.property ("SymbolCount").toInt ();
 		if (text.size () < maxSymbols &&
-				text.split ('\n').size () < maxLines)
+				text.count ('\n') + 1 < maxLines)
 			return;
 
 		QByteArray propName;
@@ -138,10 +138,25 @@ namespace Autopaste
 		if (!XmlSettingsManager::Instance ().property (propName).toBool ())
 			return;
 
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Autopaste");
+		settings.beginGroup ("SavedChoices");
+		settings.beginGroup (other->GetEntryID ());
+		auto guard = std::shared_ptr<void> (nullptr,
+				[&settings] (void*) -> void
+				{
+					settings.endGroup ();
+					settings.endGroup ();
+				});
+
 		PasteDialog dia;
+
+		dia.SetCreatorName (settings.value ("Service").toString ());
+		dia.SetHighlight (static_cast<Highlight> (settings.value ("Highlight").toInt ()));
+
 		dia.exec ();
-		auto choice = dia.GetChoice ();
-		switch (choice)
+
+		switch (dia.GetChoice ())
 		{
 		case PasteDialog::Cancel:
 			proxy->CancelDefault ();
@@ -152,6 +167,9 @@ namespace Autopaste
 			auto service = dia.GetCreator () (entry);
 			service->Paste ({ Proxy_->GetNetworkAccessManager (), text, dia.GetHighlight () });
 			proxy->CancelDefault ();
+
+			settings.setValue ("Service", dia.GetCreatorName ());
+			settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
 		}
 		}
 	}

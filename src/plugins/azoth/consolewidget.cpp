@@ -66,9 +66,9 @@ namespace Azoth
 		TabClass_ = temp;
 
 		connect (obj,
-				SIGNAL (gotConsolePacket (QByteArray, int, QString)),
+				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)),
 				this,
-				SLOT (handleConsolePacket (QByteArray, int, QString)));
+				SLOT (handleConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
 
 		AsConsole_->SetConsoleEnabled (true);
 	}
@@ -106,28 +106,29 @@ namespace Azoth
 		return tr ("%1: console").arg (AsAccount_->GetAccountName ());
 	}
 
-	void ConsoleWidget::handleConsolePacket (QByteArray data, int direction, const QString& entryId)
+	void ConsoleWidget::handleConsolePacket (QByteArray data,
+			IHaveConsole::PacketDirection direction, const QString& entryId)
 	{
 		const QString& filter = Ui_.EntryIDFilter_->text ();
 		if (!filter.isEmpty () && !entryId.contains (filter, Qt::CaseInsensitive))
 			return;
 
-		const QString& color = direction == IHaveConsole::PDOut ?
+		const QString& color = direction == IHaveConsole::PacketDirection::Out ?
 				"#56ED56" :			// rather green
 				"#ED55ED";			// violet or something
 
-		QString html = (direction == IHaveConsole::PDOut ?
+		QString html = (direction == IHaveConsole::PacketDirection::Out ?
 					QString::fromUtf8 ("→→→→→→ [%1] →→→→→→") :
 					QString::fromUtf8 ("←←←←←← [%1] ←←←←←←"))
 				.arg (QTime::currentTime ().toString ("HH:mm:ss.zzz"));
 		html += "<br /><font color=\"" + color + "\">";
 		switch (Format_)
 		{
-		case IHaveConsole::PFBinary:
+		case IHaveConsole::PacketFormat::Binary:
 			html += "(base64) ";
 			html += data.toBase64 ();
 			break;
-		case IHaveConsole::PFXML:
+		case IHaveConsole::PacketFormat::XML:
 		{
 			QDomDocument doc;
 			data.prepend ("<root>");
@@ -139,7 +140,7 @@ namespace Azoth
 			data.chop (markerSize + 1);
 			data = data.mid (markerSize);
 		}
-		case IHaveConsole::PFPlainText:
+		case IHaveConsole::PacketFormat::PlainText:
 			html += QString::fromUtf8 (data
 					.replace ('<', "&lt;")
 					.replace ('\n', "<br/>")

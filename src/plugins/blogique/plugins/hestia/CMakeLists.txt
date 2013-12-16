@@ -23,43 +23,20 @@ set (HESTIA_SRCS
 	xmlsettingsmanager.cpp
 	)
 
-set (HESTIA_HEADERS
-	accountconfigurationdialog.h
-	accountstorage.h
-	core.h
-	hestia.h
-	accountconfigurationwidget.h
-	localblogaccount.h
-	localbloggingplatform.h
-	xmlsettingsmanager.h
-	)
-
 set (HESTIA_FORMS
 	accountconfigurationdialog.ui
 	accountconfigurationwidget.ui
- 	)
+	)
 
-# set (HESTIA_RESOURCES blogiquehestiaresources.qrc)
-
-# CreateTrVars ("blogique_hestia" "de;en;es;fr;it;ru_RU;uk_UA" HESTIA_TRANSLATIONS HESTIA_COMPILED_TRANSLATIONS)
-
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (HESTIA_MOC_SRCS ${HESTIA_HEADERS})
-endif ()
 QT4_WRAP_UI (HESTIA_UIS_H ${HESTIA_FORMS})
 QT4_ADD_RESOURCES (HESTIA_RCCS ${HESTIA_RESOURCES})
 
-# add_custom_command (OUTPUT
-# 	${HESTIA_COMPILED_TRANSLATIONS}
-# 	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${HESTIA_TRANSLATIONS}
-# 	DEPENDS ${HESTIA_TRANSLATIONS}
-# 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-# 	)
+CreateTrs ("blogique_hestia" "en;ru_RU" METIDA_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("blogique_hestia" "en;ru_RU" "${HESTIA_SRCS}" "${HESTIA_FORMS}" "blogiquehestiasettings.xml")
 
 add_library (leechcraft_blogique_hestia SHARED
 	${HESTIA_COMPILED_TRANSLATIONS}
 	${HESTIA_SRCS}
-	${HESTIA_MOC_SRCS}
 	${HESTIA_UIS_H}
 	${HESTIA_RCCS}
 	)
@@ -69,9 +46,5 @@ target_link_libraries (leechcraft_blogique_hestia
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_blogique_hestia
-		DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${HESTIA_COMPILED_TRANSLATIONS}
-		DESTINATION ${LC_TRANSLATIONS_DEST})
-install (FILES blogiquehestiasettings.xml
-		DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_blogique_hestia DESTINATION ${LC_PLUGINS_DEST})
+install (FILES blogiquehestiasettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -147,7 +147,7 @@ namespace BirthdayNotifier
 				.property ("NotificationDays").toString ().split (',', QString::SkipEmptyParts);
 
 		QList<int> allowedDays;
-		Q_FOREACH (const auto& range, ranges)
+		for (const auto& range : ranges)
 		{
 			if (!range.contains ('-'))
 			{
@@ -174,12 +174,11 @@ namespace BirthdayNotifier
 
 		const auto& today = QDate::currentDate ();
 
-		auto accs = AzothProxy_->GetAllAccounts ();
-		Q_FOREACH (auto accObj, AzothProxy_->GetAllAccounts ())
+		for (auto accObj : AzothProxy_->GetAllAccounts ())
 		{
 			auto acc = qobject_cast<IAccount*> (accObj);
 			auto extSelf = qobject_cast<IExtSelfInfoAccount*> (accObj);
-			Q_FOREACH (auto entryObj, acc->GetCLEntries ())
+			for (auto entryObj : acc->GetCLEntries ())
 			{
 				auto entry = qobject_cast<ICLEntry*> (entryObj);
 				if (!entry || entry->GetEntryType () != ICLEntry::ETChat)

@@ -55,6 +55,7 @@ namespace Azoth
 		QAction *AccountJoinConference_;
 		QAction *AccountManageBookmarks_;
 		QAction *AccountAddContact_;
+		QAction *AccountOpenNonRosterChat_;
 		QAction *AccountViewMicroblogs_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
@@ -73,6 +74,7 @@ namespace Azoth
 		void joinAccountConfFromBM ();
 		void manageAccountBookmarks ();
 		void addAccountContact ();
+		void handleOpenNonRoster ();
 		void handleAccountMicroblogs ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();

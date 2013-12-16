@@ -17,11 +17,19 @@ else ()
 endif ()
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
+option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
+
+if (WITH_QWT)
+	find_package (Qwt REQUIRED)
+	set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${QWT_LIBRARIES})
+	add_definitions (-DWITH_QWT)
+endif ()
 
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${MAGIC_INCLUDE_DIRS}
+	${QWT_INCLUDE_DIRS}
 	..)
 
 set (SRCS
@@ -47,10 +55,12 @@ set (SRCS
 	qml/settableiconprovider.cpp
 	qml/standardnamfactory.cpp
 	qml/themeimageprovider.cpp
+	qml/tooltipitem.cpp
 	qml/unhidelistmodel.cpp
 	qml/unhidelistviewbase.cpp
 	qml/widthiconprovider.cpp
 	svcauth/vkauthmanager.cpp
+	svcauth/vkcaptchadialog.cpp
 	sys/mimedetector.cpp
 	sys/paths.cpp
 	xdg/desktopparser.cpp
@@ -64,6 +74,7 @@ set (SRCS
 	tags/tagscompletionmodel.cpp
 	tags/tagslineedit.cpp
 	tags/tagsfiltermodel.cpp
+	xpc/stdanfields.cpp
 	xpc/stddatafiltermenucreator.cpp
 	xpc/util.cpp
 	util.cpp
@@ -85,6 +96,7 @@ set (SRCS
 set (FORMS
 	backendselector.ui
 	gui/findnotification.ui
+	svcauth/vkcaptchadialog.ui
 	)
 if (USE_QT5)
 	qt5_wrap_ui (UIS_H ${FORMS})
@@ -97,10 +109,14 @@ if (WITH_X11 AND NOT APPLE)
 
 	if (X11_FOUND)
 		add_definitions (-DHAVE_X11)
-		set (ADDITIONAL_LIBS ${X11_X11_LIB})
+		set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${X11_X11_LIB})
 
 		set (SRCS ${SRCS} x11/xwrapper.cpp)
 	endif ()
+endif ()
+
+if (WITH_QWT)
+	set (SRCS ${SRCS} qml/plotitem.cpp)
 endif ()
 
 foreach (SRC ${SRCS})
@@ -118,19 +134,19 @@ add_definitions(-DQT_NO_DEBUG)
 add_definitions(-DQT_SHARED)
 add_definitions(-DQT_GUI_LIB)
 
-add_library (lcutil SHARED
+add_library (leechcraft-util SHARED
 	${SRCS}
 	${UIS_H}
 	)
-target_link_libraries (lcutil
+target_link_libraries (leechcraft-util
 	${QT_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	${ADDITIONAL_LIBS}
-	xmlsettingsdialog
+	leechcraft-xsd
 	)
-set_property (TARGET lcutil PROPERTY SOVERSION 0.5.0)
-install (TARGETS lcutil DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.5.0)
+install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
 
 if (USE_QT5)
-	QT5_USE_MODULES (lcutil Declarative Network Xml Sql Widgets)
+	QT5_USE_MODULES (leechcraft-util Declarative Network Xml Sql Widgets)
 endif ()

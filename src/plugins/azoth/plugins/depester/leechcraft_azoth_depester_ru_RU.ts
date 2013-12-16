@@ -4,9 +4,14 @@
 <context>
     <name>LeechCraft::Azoth::Depester::Plugin</name>
     <message>
-        <location filename="depester.cpp" line="57"/>
+        <location filename="depester.cpp" line="77"/>
         <source>Allows one to block messages from unwanted contacts in MUCs.</source>
         <translation>Позволяет блокировать сообщения от нежелательных участников конференций.</translation>
+    </message>
+    <message>
+        <location filename="depester.cpp" line="149"/>
+        <source>Ignore</source>
+        <translation>Игнорировать</translation>
     </message>
 </context>
 </TS>

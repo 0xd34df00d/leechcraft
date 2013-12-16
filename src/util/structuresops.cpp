@@ -36,11 +36,10 @@ QDataStream& operator<< (QDataStream& out, const LeechCraft::Entity& e)
 		<< e.Entity_
 		<< e.Location_
 		<< e.Mime_
-		<< (int) e.Parameters_
+		<< static_cast<quint32> (e.Parameters_)
 		<< e.Additional_;
 	return out;
 }
-
 
 QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 {
@@ -48,7 +47,7 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 	in >> version;
 	if (version == 2)
 	{
-		int parameters;
+		quint32 parameters;
 		in >> e.Entity_
 			>> e.Location_
 			>> e.Mime_
@@ -83,7 +82,7 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 	else if (version == 1)
 	{
 		QByteArray buf;
-		int parameters;
+		quint32 parameters;
 		in >> buf
 			>> e.Location_
 			>> e.Mime_
