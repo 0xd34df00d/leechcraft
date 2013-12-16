@@ -23,13 +23,13 @@ set (RESOURCES
 	cstpresources.qrc
 	)
 CreateTrs ("cstp" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("cstp" "en;ru_RU" "${SRCS}" "${FORMS}" "cstpsettings.xml")
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_cstp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS})
 link_directories (${Boost_LIBRARY_DIR})
@@ -38,5 +38,4 @@ target_link_libraries (leechcraft_cstp
 						${LEECHCRAFT_LIBRARIES}
 						)
 install (TARGETS leechcraft_cstp DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES cstpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
