@@ -8,6 +8,7 @@ build/
 src/debian/
 changelog
 src/data/*.gz
+src/plugins/anhero/crashprocess/data/*.gz
 *.tar.gz
 *~
 dummyfile.cpp
