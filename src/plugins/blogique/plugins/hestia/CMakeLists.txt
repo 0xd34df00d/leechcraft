@@ -31,6 +31,9 @@ set (HESTIA_FORMS
 QT4_WRAP_UI (HESTIA_UIS_H ${HESTIA_FORMS})
 QT4_ADD_RESOURCES (HESTIA_RCCS ${HESTIA_RESOURCES})
 
+CreateTrs ("blogique_hestia" "en;ru_RU" METIDA_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("blogique_hestia" "en;ru_RU" "${HESTIA_SRCS}" "${HESTIA_FORMS}" "blogiquehestiasettings.xml")
+
 add_library (leechcraft_blogique_hestia SHARED
 	${HESTIA_COMPILED_TRANSLATIONS}
 	${HESTIA_SRCS}
