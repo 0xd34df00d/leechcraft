@@ -17,26 +17,15 @@ set (SRCS
 	sitessearcher.cpp
 	concretesite.cpp
 	)
-set (HEADERS
-	deadlyrics.h
-	searcher.h
-	lyricscache.h
-	sitessearcher.h
-	concretesite.h
-	)
 CreateTrs ("deadlyrics" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("deadlyrics" "en;ru_RU" "${SRCS}" "" "")
 set (RESOURCES deadlyricsresources.qrc)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_deadlyrics SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
 	)
 target_link_libraries (leechcraft_deadlyrics
