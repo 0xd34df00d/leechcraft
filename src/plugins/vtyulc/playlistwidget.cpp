@@ -126,9 +126,9 @@ namespace vlc
 				return nullptr;
 			}
 		
-		libvlc_media_t *m = libvlc_media_new_location (Instance_, url.toEncoded ());
+		libvlc_media_t *m = libvlc_media_new_location (Instance_, url.toString ().toUtf8 ().constData ());
 		libvlc_media_parse (m);
-		if (!libvlc_media_is_parsed (m) || libvlc_media_get_duration (m) == 0) 
+		if ((!libvlc_media_is_parsed (m) || libvlc_media_get_duration (m) == 0) && (url.scheme() != "http") && (url.scheme() != "ftp"))
 		{
 			libvlc_media_release (m);
 			qWarning () << Q_FUNC_INFO << "A little fail:" << url;

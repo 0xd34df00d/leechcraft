@@ -151,7 +151,7 @@ namespace vlc
 	{
 		return tr ("Video player, based on VLC");
 	}
-
+	
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
