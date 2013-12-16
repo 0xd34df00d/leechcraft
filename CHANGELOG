@@ -10,6 +10,7 @@ the rest.
 	* Imgaste - image uploader to services like imagebin.ca.
 	* Krigstask - taskbar quark for SB2.
 	* Laughty - system-wide D-Bus notification daemon.
+	* LMP MTPSync - synchronization with MTP devices.
 	* Mellonetray - system tray quark for SB2.
 	* Scroblibre - submissions API 1.2-compliant scrobbler for arbitrary sites.
 	* Sysnotify - notifications plugin using D-Bus notifications.
