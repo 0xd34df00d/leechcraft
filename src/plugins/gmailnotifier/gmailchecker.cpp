@@ -203,6 +203,8 @@ namespace GmailNotifier
 	{
 		if (Reply_)
 			Reply_->abort ();
+
+		emit canContinue ();
 	}
 }
 }
