@@ -114,8 +114,6 @@ namespace Murm
 			break;
 		}
 
-		CurrentPollReply_ = nullptr;
-
 		QTimer::singleShot (1000,
 				this,
 				SLOT (poll ()));
@@ -167,6 +165,13 @@ namespace Murm
 	void LongPollManager::handlePollFinished ()
 	{
 		CurrentPollReply_->deleteLater ();
+		const auto currentReply = CurrentPollReply_;
+
+		auto nullGuard = std::shared_ptr<void> (nullptr, [this, currentReply] (void*)
+				{
+					if (currentReply == CurrentPollReply_)
+						CurrentPollReply_ = nullptr;
+				});
 
 		if (CurrentPollReply_->error () != QNetworkReply::NoError && !ShouldStop_)
 			return HandlePollError ();
@@ -185,7 +190,6 @@ namespace Murm
 		const auto& rootMap = data.toMap ();
 		if (rootMap.contains ("failed"))
 		{
-			CurrentPollReply_ = nullptr;
 			ForceServerRequery ();
 			start ();
 			return;
@@ -198,8 +202,6 @@ namespace Murm
 
 		if (!ShouldStop_)
 		{
-			CurrentPollReply_ = nullptr;
-
 			if (!LPServer_.isEmpty ())
 				poll ();
 			else
@@ -209,7 +211,6 @@ namespace Murm
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "should stop polling, stopping...";
-			CurrentPollReply_ = nullptr;
 			emit stopped ();
 			ShouldStop_ = false;
 		}
