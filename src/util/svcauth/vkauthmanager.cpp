@@ -61,7 +61,7 @@ namespace SvcAuth
 	, Proxy_ (proxy)
 	, AccountHR_ (accName)
 	, AuthNAM_ (new QNetworkAccessManager (this))
-	, Cookies_ (new Util::CustomCookieJar)
+	, Cookies_ (new Util::CustomCookieJar (this))
 	, Queue_ (queueMgr)
 	, ValidFor_ (0)
 	, IsRequesting_ (false)
