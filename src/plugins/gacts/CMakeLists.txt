@@ -24,18 +24,18 @@ else ()
 	else ()
 		find_package (X11)
 		include_directories (${X11_INCLUDE_DIR})
-		
+
 		set (ADDITIONAL_SOURCES
 			3rdparty/qxt/qxtglobalshortcut_x11.cpp
 			)
 	endif ()
-	
+
 	set (ADDITIONAL_SOURCES
 		${ADDITIONAL_SOURCES}
 		3rdparty/qxt/qxtglobal.cpp
 		3rdparty/qxt/qxtglobalshortcut.cpp
 		)
-	
+
 	include_directories (${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qxt)
 endif ()
 
@@ -50,7 +50,9 @@ set (SRCS
 	gacts.cpp
 	)
 
+CreateTrs("gacts" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("gacts" "en;ru_RU" "${SRCS}" "" "")
+
 add_library (leechcraft_gacts SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
