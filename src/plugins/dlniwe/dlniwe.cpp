@@ -54,7 +54,7 @@ namespace DLNiwe
 	namespace HU = Herqq::Upnp;
 	namespace HAV = Herqq::Upnp::Av;
 
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		const auto& path = Util::GetSysPath (Util::SysPath::Share, "dlniwe/desc", "device.xml");
 		if (path.isEmpty ())
