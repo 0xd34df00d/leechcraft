@@ -4,54 +4,33 @@
 <context>
     <name>LeechCraft::GmailNotifier::GmailChecker</name>
     <message>
-        <location filename="gmailchecker.cpp" line="79"/>
-        <location filename="gmailchecker.cpp" line="103"/>
-        <location filename="gmailchecker.cpp" line="161"/>
+        <location filename="gmailchecker.cpp" line="122"/>
+        <location filename="gmailchecker.cpp" line="173"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="84"/>
-        <source>Username or password not set</source>
-        <translation>Username or password not set</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="114"/>
+        <location filename="gmailchecker.cpp" line="128"/>
         <source>Cannot parse XML data</source>
         <translation>Cannot parse XML data</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="133"/>
-        <source>No subject</source>
-        <translation>No subject</translation>
+        <location filename="gmailchecker.cpp" line="97"/>
+        <source>Username for the GMail checker isn&apos;t set. You can enable it in GMail Notifier settings.</source>
+        <translation>Username for the GMail checker isn&apos;t set. You can enable it in GMail Notifier settings.</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="136"/>
-        <source>No content</source>
-        <translation>No content</translation>
+        <location filename="gmailchecker.cpp" line="104"/>
+        <source>Password isn&apos;t set</source>
+        <translation>Password isn&apos;t set</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="140"/>
-        <source>from</source>
-        <translation>from</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="144"/>
-        <source>at</source>
-        <translation>at</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="150"/>
-        <source>and %1 more</source>
-        <translation>and %1 more</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="166"/>
+        <location filename="gmailchecker.cpp" line="178"/>
         <source>The username or password is incorrect</source>
         <translation>The username or password is incorrect</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="168"/>
+        <location filename="gmailchecker.cpp" line="180"/>
         <source>Connection timeout</source>
         <translation>Connection timeout</translation>
     </message>
@@ -59,9 +38,40 @@
 <context>
     <name>LeechCraft::GmailNotifier::GmailNotifier</name>
     <message>
-        <location filename="gmailnotifier.cpp" line="97"/>
+        <location filename="gmailnotifier.cpp" line="120"/>
         <source>Google mail notification plugin</source>
         <translation>Google mail notification plugin</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::GmailNotifier::MailListView</name>
+    <message>
+        <location filename="maillistview.cpp" line="99"/>
+        <source>Yesterday, %1</source>
+        <translation>Yesterday, %1</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::GmailNotifier::Notifier</name>
+    <message>
+        <location filename="notifier.cpp" line="69"/>
+        <source>No subject</source>
+        <translation>No subject</translation>
+    </message>
+    <message>
+        <location filename="notifier.cpp" line="69"/>
+        <source>from</source>
+        <translation>from</translation>
+    </message>
+    <message>
+        <location filename="notifier.cpp" line="73"/>
+        <source>at</source>
+        <translation>at</translation>
+    </message>
+    <message>
+        <location filename="notifier.cpp" line="84"/>
+        <source>and %1 more</source>
+        <translation>and %1 more</translation>
     </message>
 </context>
 <context>
