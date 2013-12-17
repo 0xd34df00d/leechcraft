@@ -50,6 +50,7 @@ set (SRCS
 	gacts.cpp
 	)
 
+CreateTrsUpTarget("gacts" "en;ru_RU" "${SRCS}" "" "")
 add_library (leechcraft_gacts SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
