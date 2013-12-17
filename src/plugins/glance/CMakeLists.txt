@@ -44,4 +44,3 @@ target_link_libraries (leechcraft_glance
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_glance DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
