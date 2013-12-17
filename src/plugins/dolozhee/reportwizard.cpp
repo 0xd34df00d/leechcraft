@@ -131,7 +131,7 @@ namespace Dolozhee
 		return FilePage_;
 	}
 
-	void ReportWizard::handleAuthenticationRequired (QNetworkReply*, QAuthenticator *auth)
+	void ReportWizard::handleAuthenticationRequired (QNetworkReply*, QAuthenticator*)
 	{
 		qDebug () << Q_FUNC_INFO << FirstAuth_;
 		QMessageBox::warning (this, "Dolozhee", tr ("Invalid credentials"));
