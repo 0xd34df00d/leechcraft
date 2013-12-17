@@ -174,6 +174,8 @@ namespace Blasq
 		if (tcId == PhotosTabTC_.TabClass_)
 		{
 			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this, Proxy_);
+			for (const auto& prop : list)
+				tab->setProperty (prop.first, prop.second);
 			connect (tab,
 					SIGNAL (removeTab (QWidget*)),
 					this,
