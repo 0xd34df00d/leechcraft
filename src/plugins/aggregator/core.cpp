@@ -70,6 +70,7 @@
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
 #include "tovarmaps.h"
+#include "dumbstorage.h"
 
 namespace LeechCraft
 {
@@ -398,6 +399,9 @@ namespace Aggregator
 	{
 		Pools_.clear ();
 		ChannelsModel_->Clear ();
+
+
+		StorageBackend_.reset (new DumbStorage);
 
 		const QString& strType = XmlSettingsManager::Instance ()->
 				property ("StorageType").toString ();
