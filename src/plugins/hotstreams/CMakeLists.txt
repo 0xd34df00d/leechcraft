@@ -35,6 +35,8 @@ endif ()
 set (RESOURCES hotstreamsresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
+CreateTrsUpTarget("hotstreams" "en;ru_RU" "${SRCS}" "" "")
+
 add_library (leechcraft_hotstreams SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
