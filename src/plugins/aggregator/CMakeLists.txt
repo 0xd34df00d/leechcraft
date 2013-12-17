@@ -67,6 +67,7 @@ set (SRCS
 	dbupdatethread.cpp
 	dbupdatethreadworker.cpp
 	tovarmaps.cpp
+	dumbstorage.cpp
 	)
 set (HEADERS
     aggregator.h
