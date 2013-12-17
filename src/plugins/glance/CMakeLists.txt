@@ -25,6 +25,7 @@ set (SRCS
 	glanceshower.cpp
 	)
 CreateTrs ("glance" "en;es;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("glance" "en;ru_RU" "${SRCS}" "" "")
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 endif ()
