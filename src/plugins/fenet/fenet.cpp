@@ -44,7 +44,7 @@ namespace LeechCraft
 {
 namespace Fenet
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("fenet");
 
