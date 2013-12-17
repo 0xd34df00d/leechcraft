@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QStandardItem>
 #include <QTimer>
+#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include "somafmlistfetcher.h"
 #include "stealkilllistfetcher.h"
@@ -53,6 +54,8 @@ namespace HotStreams
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("hotstreams");
+
 		Proxy_ = proxy;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
