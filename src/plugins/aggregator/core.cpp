@@ -288,6 +288,7 @@ namespace Aggregator
 
 	bool Core::DoDelayedInit ()
 	{
+		bool result = true;
 		ShortcutMgr_ = new Util::ShortcutManager (Proxy_, this);
 
 		QDir dir = QDir::home ();
@@ -296,13 +297,13 @@ namespace Aggregator
 		{
 			qCritical () << Q_FUNC_INFO << "could not create necessary "
 				"directories for Aggregator";
-			return false;
+			result = false;
 		}
 
 		ChannelsModel_ = new ChannelsModel ();
 
 		if (!ReinitStorage ())
-			return false;
+			result = false;
 
 		PluginManager_->RegisterHookable (StorageBackend_.get ());
 
@@ -392,7 +393,8 @@ namespace Aggregator
 			RegisterObject ("ShowIconInTray", this, "showIconInTrayChanged");
 		UpdateUnreadItemsNumber ();
 		Initialized_ = true;
-		return true;
+
+		return result;
 	}
 
 	bool Core::ReinitStorage ()

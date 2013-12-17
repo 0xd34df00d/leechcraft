@@ -184,13 +184,14 @@ namespace Aggregator
 
 		if (Impl_->InitFailed_)
 		{
-			QMessageBox::critical (this,
+			auto box = new QMessageBox (QMessageBox::Critical,
 					"LeechCraft",
-					tr ("Aggregator failed to initialize properly. "
-						"Check logs and talk with the developers. "
-						"Or, at least, check the storage backend "
-						"settings and restart LeechCraft."));
-			return;
+					tr ("Aggregator failed to initialize properly. Check logs and talk with "
+						"the developers. Or, at least, check the storage backend settings and "
+						"restart LeechCraft.<br /><br />If you are using SQLite backend (the "
+						"default), make sure you have the corresponding Qt driver installed."),
+					QMessageBox::Ok);
+			box->open ();
 		}
 
 		Impl_->Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
