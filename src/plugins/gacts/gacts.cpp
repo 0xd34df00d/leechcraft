@@ -121,9 +121,13 @@ namespace GActs
 
 	void Plugin::handleReceiverDeleted ()
 	{
-		Q_FOREACH (auto sh, RegisteredShortcuts_.values ())
-			if (sh->parent () == sender ())
-				RegisteredShortcuts_.remove (RegisteredShortcuts_.key (sh));
+		for (auto i = RegisteredShortcuts_.begin (); i != RegisteredShortcuts_.end (); )
+		{
+			if ((*i)->parent () != sender ())
+				++i;
+			else
+				i = RegisteredShortcuts_.erase (i);
+		}
 	}
 }
 }
