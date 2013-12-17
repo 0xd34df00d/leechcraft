@@ -157,7 +157,7 @@ namespace Devmon
 		return 0;
 	}
 
-	void UDevBackend::handleSocket (int fd)
+	void UDevBackend::handleSocket (int)
 	{
 		Notifier_->setEnabled (false);
 		std::shared_ptr<udev_device> device (udev_monitor_receive_device (Mon_.get ()), udev_device_unref);
