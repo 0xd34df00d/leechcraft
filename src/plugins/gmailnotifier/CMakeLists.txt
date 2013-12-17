@@ -26,6 +26,7 @@ set(RESOURCES
 	res/resources.qrc
 )
 CreateTrs("gmailnotifier" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("gmailnotifier" "en;ru_RU" "${SRCS}" "" "gmailnotifiersettings.xml")
 QT4_ADD_RESOURCES(RCCS ${RESOURCES})
 
 add_library(leechcraft_gmailnotifier SHARED
