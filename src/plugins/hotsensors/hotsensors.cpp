@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QAbstractItemModel>
 #include <QtDeclarative>
+#include <util/util.h>
 #include <util/sys/paths.h>
 #include "sensorsmanager.h"
 #include "historymanager.h"
@@ -42,6 +43,8 @@ namespace HotSensors
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("hotsensors");
+
 		SensorsMgr_.reset (new SensorsManager (this));
 		HistoryMgr_.reset (new HistoryManager (this));
 		connect (SensorsMgr_.get (),
