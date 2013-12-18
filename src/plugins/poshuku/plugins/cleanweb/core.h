@@ -74,8 +74,8 @@ namespace CleanWeb
 
 		QList<Filter> Filters_;
 
-		QList<QList<FilterItem>> ExceptionsCache_;
-		QList<QList<FilterItem>> FilterItemsCache_;
+		QList<QList<FilterItem_ptr>> ExceptionsCache_;
+		QList<QList<FilterItem_ptr>> FilterItemsCache_;
 
 		QObjectList Downloaders_;
 		QStringList HeaderLabels_;

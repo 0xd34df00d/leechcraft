@@ -90,13 +90,13 @@ namespace CleanWeb
 		switch (index.column ())
 		{
 			case 0:
-				return item.OrigString_;
+				return item->OrigString_;
 			case 1:
 				return isException ?
 					tr ("Allowed") :
 					tr ("Blocked");
 			case 2:
-				switch (item.Option_.MatchType_)
+				switch (item->Option_.MatchType_)
 				{
 					case FilterOption::MTWildcard:
 					case FilterOption::MTPlain:
@@ -107,12 +107,12 @@ namespace CleanWeb
 						return tr ("Regexp");
 				}
 			case 3:
-				return item.Option_.Case_ == Qt::CaseSensitive ?
+				return item->Option_.Case_ == Qt::CaseSensitive ?
 					tr ("True") :
 					tr ("False");
 			case 4:
 				{
-					const auto& options = item.Option_;
+					const auto& options = item->Option_;
 
 					QStringList result;
 					Q_FOREACH (QString domain, options.Domains_)
@@ -182,15 +182,15 @@ namespace CleanWeb
 		fo.MatchType_ = dia.GetType ();
 		fo.Domains_ = dia.GetDomains ();
 		fo.NotDomains_ = dia.GetNotDomains ();
-		const FilterItem item
-		{
-			dia.GetString ().toUtf8 (),
-			itemRx,
-			fo.MatchType_ == FilterOption::MTPlain ?
-					QByteArrayMatcher (dia.GetString ().toUtf8 ()) :
-					QByteArrayMatcher (),
-			fo
-		};
+		const FilterItem_ptr item (new FilterItem
+				{
+					dia.GetString ().toUtf8 (),
+					itemRx,
+					fo.MatchType_ == FilterOption::MTPlain ?
+							QByteArrayMatcher (dia.GetString ().toUtf8 ()) :
+							QByteArrayMatcher (),
+					fo
+				});
 
 		auto& container = dia.IsException () ? Filter_.Exceptions_ : Filter_.Filters_;
 		const int size = dia.IsException () ? Filter_.Exceptions_.size () : rowCount ();
@@ -215,8 +215,8 @@ namespace CleanWeb
 
 		RuleOptionDialog dia;
 		dia.SetException (isException);
-		dia.SetString (item.OrigString_);
-		const auto& options = item.Option_;
+		dia.SetString (item->OrigString_);
+		const auto& options = item->Option_;
 		dia.SetType (options.MatchType_);
 		dia.SetCase (options.Case_);
 		dia.SetDomains (options.Domains_);
@@ -285,8 +285,14 @@ namespace CleanWeb
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_CleanWeb_Subscr");
-		Filter_.Exceptions_ = settings.value ("ExceptionItems").value<decltype (Filter_.Exceptions_)> ();
-		Filter_.Filters_ = settings.value ("FilterItems").value<decltype (Filter_.Filters_)> ();
+
+		auto readItems = [&settings] (const QString& name, QList<FilterItem_ptr>& to) -> void
+		{
+			for (const auto& item : settings.value (name).value<QList<FilterItem>> ())
+				to << FilterItem_ptr (new FilterItem (item));
+		};
+		readItems ("ExceptionItems", Filter_.Exceptions_);
+		readItems ("FilterItems", Filter_.Filters_);
 	}
 
 	void UserFiltersModel::WriteSettings () const
@@ -294,8 +300,17 @@ namespace CleanWeb
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_CleanWeb_Subscr");
 		settings.clear ();
-		settings.setValue ("ExceptionItems", QVariant::fromValue (Filter_.Exceptions_));
-		settings.setValue ("FilterItems", QVariant::fromValue (Filter_.Filters_));
+
+		auto writeItems = [&settings] (const QString& name, const QList<FilterItem_ptr>& from) -> void
+		{
+			QList<FilterItem> saved;
+			saved.reserve (from.size ());
+			for (const auto& item : from)
+				saved << *item;
+			settings.setValue (name, QVariant::fromValue (saved));
+		};
+		writeItems ("ExceptionItems", Filter_.Exceptions_);
+		writeItems ("FilterItems", Filter_.Filters_);
 	}
 
 	void UserFiltersModel::blockImage ()

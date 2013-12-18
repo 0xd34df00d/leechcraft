@@ -515,20 +515,20 @@ namespace CleanWeb
 		}
 #endif
 
-		bool Matches (const FilterItem& item,
+		bool Matches (const FilterItem_ptr& item,
 				const QString& urlStr, const QByteArray& urlUtf8, const QString& domain)
 		{
-			if (item.Option_.MatchObjects_ != FilterOption::MatchObject::All)
+			const auto& opt = item->Option_;
+			if (opt.MatchObjects_ != FilterOption::MatchObject::All)
 			{
-				if (!(item.Option_.MatchObjects_ & FilterOption::MatchObject::CSS) &&
-						!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Image) &&
-						!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Script) &&
-						!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Object) &&
-						!(item.Option_.MatchObjects_ & FilterOption::MatchObject::ObjSubrequest))
+				if (!(opt.MatchObjects_ & FilterOption::MatchObject::CSS) &&
+						!(opt.MatchObjects_ & FilterOption::MatchObject::Image) &&
+						!(opt.MatchObjects_ & FilterOption::MatchObject::Script) &&
+						!(opt.MatchObjects_ & FilterOption::MatchObject::Object) &&
+						!(opt.MatchObjects_ & FilterOption::MatchObject::ObjSubrequest))
 					return false;
 			}
 
-			const auto& opt = item.Option_;
 			if (!opt.NotDomains_.isEmpty ())
 			{
 				for (const auto& notDomain : opt.NotDomains_)
@@ -553,15 +553,15 @@ namespace CleanWeb
 			switch (opt.MatchType_)
 			{
 			case FilterOption::MTRegexp:
-				return item.RegExp_.Matches (urlStr);
+				return item->RegExp_.Matches (urlStr);
 			case FilterOption::MTWildcard:
-				return WildcardMatches (item.OrigString_.constData (), urlUtf8.constData ());
+				return WildcardMatches (item->OrigString_.constData (), urlUtf8.constData ());
 			case FilterOption::MTPlain:
-				return item.PlainMatcher_.indexIn (urlUtf8) >= 0;
+				return item->PlainMatcher_.indexIn (urlUtf8) >= 0;
 			case FilterOption::MTBegin:
-				return urlStr.startsWith (item.OrigString_);
+				return urlStr.startsWith (item->OrigString_);
 			case FilterOption::MTEnd:
-				return urlStr.endsWith (item.OrigString_);
+				return urlStr.endsWith (item->OrigString_);
 			}
 
 			return false;
@@ -637,16 +637,16 @@ namespace CleanWeb
 		const auto& domainUtf8 = domain.toUtf8 ();
 		const bool isForeign = !req.rawHeader ("Referer").contains (domainUtf8);
 
-		auto matches = [=] (const QList<QList<FilterItem>>& chunks) -> bool
+		auto matches = [=] (const QList<QList<FilterItem_ptr>>& chunks) -> bool
 			{
 				return QtConcurrent::blockingMappedReduced (chunks.begin (), chunks.end (),
-						std::function<bool (const QList<FilterItem>&)>
+						std::function<bool (const QList<FilterItem_ptr>&)>
 						{
-							[=] (const QList<FilterItem>& items) -> bool
+							[=] (const QList<FilterItem_ptr>& items) -> bool
 							{
 								for (const auto& item : items)
 								{
-									const auto& opt = item.Option_;
+									const auto& opt = item->Option_;
 									if (opt.AbortForeign_ && isForeign)
 										continue;
 
@@ -655,8 +655,8 @@ namespace CleanWeb
 											!(objs & opt.MatchObjects_))
 										continue;
 
-									const auto& url = item.Option_.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
-									const auto& utf8 = item.Option_.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
+									const auto& url = item->Option_.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
+									const auto& utf8 = item->Option_.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
 									if (Matches (item, url, utf8, domain))
 										return true;
 								}
@@ -959,16 +959,16 @@ namespace CleanWeb
 						for (const Filter& filter : allFilters)
 							for (const auto& item : filter.Filters_)
 							{
-								if (item.Option_.HideSelector_.isEmpty ())
+								if (item->Option_.HideSelector_.isEmpty ())
 									continue;
 
-								const auto& opt = item.Option_;
+								const auto& opt = item->Option_;
 								const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
 								const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
-								if (!item.OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
+								if (!item->OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
 									continue;
 
-								sels << item.Option_.HideSelector_;
+								sels << item->Option_.HideSelector_;
 							}
 						return { frame, 0, sels };
 					}));
@@ -1099,14 +1099,14 @@ namespace CleanWeb
 		const int fChunkSize = std::max (filtersCount / idealThreads / 4, 200);
 		qDebug () << Q_FUNC_INFO << exceptionsCount << filtersCount << exChunkSize << fChunkSize;
 
-		QList<FilterItem> lastItemsChunk, lastExceptionsChunk;
+		QList<FilterItem_ptr> lastItemsChunk, lastExceptionsChunk;
 		lastItemsChunk.reserve (fChunkSize);
 		lastExceptionsChunk.reserve (exChunkSize);
 
 		for (const Filter& filter : allFilters)
 		{
 			for (const auto& item : filter.Exceptions_)
-				if (item.Option_.HideSelector_.isEmpty ())
+				if (item->Option_.HideSelector_.isEmpty ())
 				{
 					lastExceptionsChunk << item;
 					if (lastExceptionsChunk.size () >= exChunkSize)
@@ -1118,7 +1118,7 @@ namespace CleanWeb
 
 			for (const auto& item : filter.Filters_)
 			{
-				if (!item.Option_.HideSelector_.isEmpty ())
+				if (!item->Option_.HideSelector_.isEmpty ())
 					continue;
 
 				lastItemsChunk << item;
