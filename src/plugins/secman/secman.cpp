@@ -103,9 +103,9 @@ namespace SecMan
 		Core::Instance ().AddPlugin (plugin);
 	}
 
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
 	{
-		return QList<QAction*> ();
+		return {};
 	}
 
 	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
