@@ -90,7 +90,7 @@ namespace CleanWeb
 		switch (index.column ())
 		{
 			case 0:
-				return item->OrigString_;
+				return QString::fromUtf8 (item->PlainMatcher_);
 			case 1:
 				return isException ?
 					tr ("Allowed") :
@@ -184,11 +184,8 @@ namespace CleanWeb
 		fo.NotDomains_ = dia.GetNotDomains ();
 		const FilterItem_ptr item (new FilterItem
 				{
-					dia.GetString ().toUtf8 (),
 					itemRx,
-					fo.MatchType_ == FilterOption::MTPlain ?
-							QByteArrayMatcher (dia.GetString ().toUtf8 ()) :
-							QByteArrayMatcher (),
+					dia.GetString ().toUtf8 (),
 					fo
 				});
 
@@ -215,7 +212,7 @@ namespace CleanWeb
 
 		RuleOptionDialog dia;
 		dia.SetException (isException);
-		dia.SetString (item->OrigString_);
+		dia.SetString (QString::fromUtf8 (item->PlainMatcher_));
 		const auto& options = item->Option_;
 		dia.SetType (options.MatchType_);
 		dia.SetCase (options.Case_);

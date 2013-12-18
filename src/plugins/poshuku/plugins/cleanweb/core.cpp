@@ -555,13 +555,13 @@ namespace CleanWeb
 			case FilterOption::MTRegexp:
 				return item->RegExp_.Matches (urlStr);
 			case FilterOption::MTWildcard:
-				return WildcardMatches (item->OrigString_.constData (), urlUtf8.constData ());
+				return WildcardMatches (item->PlainMatcher_.constData (), urlUtf8.constData ());
 			case FilterOption::MTPlain:
-				return item->PlainMatcher_.indexIn (urlUtf8) >= 0;
+				return urlUtf8.indexOf (item->PlainMatcher_) >= 0;
 			case FilterOption::MTBegin:
-				return urlStr.startsWith (item->OrigString_);
+				return urlStr.startsWith (QString::fromUtf8 (item->PlainMatcher_));
 			case FilterOption::MTEnd:
-				return urlStr.endsWith (item->OrigString_);
+				return urlStr.endsWith (QString::fromUtf8 (item->PlainMatcher_));
 			}
 
 			return false;

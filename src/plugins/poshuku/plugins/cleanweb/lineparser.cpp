@@ -106,9 +106,8 @@ namespace CleanWeb
 				f.MatchType_ = FilterOption::MTRegexp;
 				const FilterItem_ptr item (new FilterItem
 						{
-							{},
 							RegExp (actualLine, f.Case_),
-							QByteArrayMatcher (),
+							{},
 							f
 						});
 				items << item;
@@ -202,29 +201,13 @@ namespace CleanWeb
 			const auto& casedOrigStr = (f.Case_ == Qt::CaseSensitive ?
 					actualLine :
 					actualLine.toLower ()).toUtf8 ();
-			QByteArray savedOrigStr;
-			switch (f.MatchType_)
-			{
-			case FilterOption::MTWildcard:
-			case FilterOption::MTBegin:
-			case FilterOption::MTEnd:
-				savedOrigStr = casedOrigStr;
-				break;
-			default:
-				break;
-			}
-
 			const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
 					RegExp (actualLine, f.Case_) :
 					RegExp ();
-			const auto& matcher = f.MatchType_ == FilterOption::MTPlain ?
-					QByteArrayMatcher (casedOrigStr) :
-					QByteArrayMatcher ();
 			const FilterItem_ptr item (new FilterItem
 					{
-						savedOrigStr,
 						itemRx,
-						matcher,
+						casedOrigStr,
 						f
 					});
 			items << item;

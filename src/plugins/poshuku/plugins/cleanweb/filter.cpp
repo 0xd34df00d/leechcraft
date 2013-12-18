@@ -104,7 +104,7 @@ namespace CleanWeb
 	QDataStream& operator<< (QDataStream& out, const FilterItem& item)
 	{
 		out << static_cast<quint8> (2)
-			<< item.OrigString_
+			<< QString::fromUtf8 (item.PlainMatcher_)
 			<< item.RegExp_.GetPattern ()
 			<< static_cast<quint8> (item.RegExp_.GetCaseSensitivity ())
 			<< item.Option_;
@@ -123,7 +123,9 @@ namespace CleanWeb
 			return in;
 		}
 
-		in >> item.OrigString_;
+		QString origStr;
+		in >> origStr;
+		item.PlainMatcher_ = origStr.toUtf8 ();
 		if (version == 1)
 		{
 			QRegExp rx;

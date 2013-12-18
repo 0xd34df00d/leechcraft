@@ -104,9 +104,8 @@ namespace CleanWeb
 
 	struct FilterItem
 	{
-		QByteArray OrigString_;
 		RegExp RegExp_;
-		QByteArrayMatcher PlainMatcher_;
+		QByteArray PlainMatcher_;
 		FilterOption Option_;
 	};
 
