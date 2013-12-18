@@ -670,7 +670,7 @@ namespace Azoth
 	void MainWidget::handleRemoveChildrenTriggered ()
 	{
 		auto entries = GetEntriesFromSender (sender ());
-		for (auto i = entries.begin (); i != entries.end (); ++i)
+		for (auto i = entries.begin (); i != entries.end (); )
 		{
 			auto entry = qobject_cast<ICLEntry*> (*i);
 			if (!entry ||
