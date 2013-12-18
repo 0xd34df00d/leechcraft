@@ -269,7 +269,8 @@ namespace Murm
 			{
 				QUrl url ("https://api.vk.com/method/users.get");
 				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("uids", joined);
+				if (!joined.isEmpty ())
+					url.addQueryItem ("uids", joined);
 				url.addQueryItem ("fields", UserFields);
 
 				AddParams (url, params);
