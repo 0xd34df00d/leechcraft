@@ -465,7 +465,7 @@ namespace UDisks2
 			AddPath (path);
 	}
 
-	void Backend::handleDeviceAdded (const QDBusObjectPath& path, const VariantMapMap_t& map)
+	void Backend::handleDeviceAdded (const QDBusObjectPath& path, const VariantMapMap_t&)
 	{
 		AddPath (path);
 	}
