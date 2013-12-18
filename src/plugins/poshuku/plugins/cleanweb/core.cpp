@@ -965,7 +965,7 @@ namespace CleanWeb
 								const auto& opt = item->Option_;
 								const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
 								const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
-								if (!item->OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
+								if (!Matches (item, url, utf8, domain))
 									continue;
 
 								sels << item->Option_.HideSelector_;
