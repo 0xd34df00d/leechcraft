@@ -223,7 +223,7 @@ namespace TabSessManager
 		act->setProperty ("TabSessManager/SessName", name);
 	}
 
-	void Plugin::hookTabIsRemoving (IHookProxy_ptr proxy, int index, int windowId)
+	void Plugin::hookTabIsRemoving (IHookProxy_ptr, int index, int windowId)
 	{
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
 		const auto tabWidget = rootWM->GetTabWidget (windowId);
