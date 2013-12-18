@@ -84,7 +84,7 @@ namespace Autosearch
 	void Plugin::hookURLCompletionNewStringRequested (IHookProxy_ptr,
 			QObject *model,
 			const QString& string,
-			int historyItems)
+			int)
 	{
 		if (Model2Reply_.contains (model))
 		{
