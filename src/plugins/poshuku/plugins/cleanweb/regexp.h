@@ -51,9 +51,6 @@ namespace CleanWeb
 	class RegExp
 	{
 #if USE_PCRE
-		QString Pattern_;
-		Qt::CaseSensitivity CS_;
-
 		std::shared_ptr<PCREWrapper> PRx_;
 #else
 		QRegExp Rx_;

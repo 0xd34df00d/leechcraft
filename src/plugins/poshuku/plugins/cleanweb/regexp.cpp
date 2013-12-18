@@ -51,6 +51,9 @@ namespace CleanWeb
 	{
 		pcre *RE_;
 		pcre_extra *Extra_;
+
+		QString Pattern_;
+		Qt::CaseSensitivity CS_;
 	public:
 		PCREWrapper ()
 		: RE_ (0)
@@ -61,6 +64,8 @@ namespace CleanWeb
 		PCREWrapper (const QString& str, Qt::CaseSensitivity cs)
 		: RE_ (Compile (str, cs))
 		, Extra_ (0)
+		, Pattern_ (str)
+		, CS_ (cs)
 		{
 			if (RE_)
 			{
@@ -106,6 +111,16 @@ namespace CleanWeb
 				FreeStudy ();
 				pcre_free (RE_);
 			}
+		}
+
+		const QString& GetPattern () const
+		{
+			return Pattern_;
+		}
+
+		Qt::CaseSensitivity GetCS () const
+		{
+			return CS_;
 		}
 
 		int Exec (const QByteArray& utf8) const
@@ -156,9 +171,7 @@ namespace CleanWeb
 
 	RegExp::RegExp (const RegExp& rx)
 #ifdef USE_PCRE
-	: Pattern_ (rx.Pattern_)
-	, CS_ (rx.CS_)
-	, PRx_ (rx.PRx_)
+	: PRx_ (rx.PRx_)
 #else
 	: Rx_ (rx.Rx_)
 #endif
@@ -167,9 +180,7 @@ namespace CleanWeb
 
 	RegExp::RegExp (const QString& str, Qt::CaseSensitivity cs)
 #ifdef USE_PCRE
-	: Pattern_ (str)
-	, CS_ (cs)
-	, PRx_ (new PCREWrapper (str, cs))
+	: PRx_ (new PCREWrapper (str, cs))
 #else
 	: Rx_ (str, cs, QRegExp::RegExp)
 #endif
@@ -183,8 +194,6 @@ namespace CleanWeb
 	RegExp& RegExp::operator= (const RegExp& rx)
 	{
 #ifdef USE_PCRE
-		Pattern_ = rx.Pattern_;
-		CS_ = rx.CS_;
 		PRx_ = rx.PRx_;
 #else
 		Rx_ = rx.Rx_;
@@ -204,7 +213,7 @@ namespace CleanWeb
 	QString RegExp::GetPattern () const
 	{
 #ifdef USE_PCRE
-		return Pattern_;
+		return PRx_->GetPattern ();
 #else
 		return Rx_.pattern ();
 #endif
@@ -213,7 +222,7 @@ namespace CleanWeb
 	Qt::CaseSensitivity RegExp::GetCaseSensitivity () const
 	{
 #ifdef USE_PCRE
-		return CS_;
+		return PRx_->GetCS ();
 #else
 		return Rx_.caseSensitivity ();
 #endif
