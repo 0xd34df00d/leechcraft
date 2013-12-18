@@ -36,7 +36,7 @@ namespace LeechCraft
 {
 namespace Sysnotify
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Manager_.reset (new NotificationManager (this));
 	}
