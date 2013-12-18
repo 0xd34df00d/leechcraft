@@ -71,17 +71,17 @@ namespace Murm
 		return url;
 	}
 
-	void LongPollManager::HandlePollError ()
+	void LongPollManager::HandlePollError (QNetworkReply *pollReply)
 	{
 		++PollErrorCount_;
 		qWarning () << Q_FUNC_INFO
 				<< "network error:"
-				<< CurrentPollReply_->error ()
-				<< CurrentPollReply_->errorString ()
+				<< pollReply->error ()
+				<< pollReply->errorString ()
 				<< "; error count:"
 				<< PollErrorCount_;
 
-		switch (CurrentPollReply_->error ())
+		switch (pollReply->error ())
 		{
 		case QNetworkReply::RemoteHostClosedError:
 		{
@@ -166,15 +166,10 @@ namespace Murm
 	{
 		CurrentPollReply_->deleteLater ();
 		const auto currentReply = CurrentPollReply_;
+		CurrentPollReply_ = nullptr;
 
-		auto nullGuard = std::shared_ptr<void> (nullptr, [this, currentReply] (void*)
-				{
-					if (currentReply == CurrentPollReply_)
-						CurrentPollReply_ = nullptr;
-				});
-
-		if (CurrentPollReply_->error () != QNetworkReply::NoError && !ShouldStop_)
-			return HandlePollError ();
+		if (currentReply->error () != QNetworkReply::NoError && !ShouldStop_)
+			return HandlePollError (currentReply);
 		else if (PollErrorCount_)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -186,7 +181,7 @@ namespace Murm
 			emit listening ();
 		}
 
-		const auto& data = QJson::Parser ().parse (CurrentPollReply_);
+		const auto& data = QJson::Parser ().parse (currentReply);
 		const auto& rootMap = data.toMap ();
 		if (rootMap.contains ("failed"))
 		{

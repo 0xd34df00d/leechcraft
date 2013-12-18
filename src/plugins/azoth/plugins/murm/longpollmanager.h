@@ -74,7 +74,7 @@ namespace Murm
 		void Stop ();
 	private:
 		QUrl GetURLTemplate () const;
-		void HandlePollError ();
+		void HandlePollError (QNetworkReply*);
 	public slots:
 		void start ();
 	private slots:
