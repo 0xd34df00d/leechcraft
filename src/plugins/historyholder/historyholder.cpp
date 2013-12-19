@@ -65,7 +65,7 @@ QString Plugin::GetName () const
 
 QString Plugin::GetInfo () const
 {
-	return tr ("Holds history from various plugins");
+	return tr ("Holds downloads history from various plugins.");
 }
 
 QIcon Plugin::GetIcon () const

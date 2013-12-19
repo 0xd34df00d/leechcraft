@@ -4,27 +4,27 @@
 <context>
     <name>LeechCraft::Plugins::HistoryHolder::Core</name>
     <message>
-        <location filename="core.cpp" line="67"/>
+        <location filename="core.cpp" line="83"/>
         <source>Entity/location</source>
         <translation>Сущность/положение</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="68"/>
+        <location filename="core.cpp" line="84"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="69"/>
+        <location filename="core.cpp" line="85"/>
         <source>Tags</source>
         <translation>Теги</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="84"/>
+        <location filename="core.cpp" line="100"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="172"/>
+        <location filename="core.cpp" line="187"/>
         <source>Binary data</source>
         <translation>Двоичные данные</translation>
     </message>
@@ -32,9 +32,9 @@
 <context>
     <name>LeechCraft::Plugins::HistoryHolder::Plugin</name>
     <message>
-        <location filename="historyholder.cpp" line="56"/>
-        <source>Holds history from various plugins</source>
-        <translation>Хранит историю из других модулей</translation>
+        <location filename="historyholder.cpp" line="68"/>
+        <source>Holds downloads history from various plugins.</source>
+        <translation>Сохраняет историю закачек от различных модулей.</translation>
     </message>
 </context>
 </TS>
