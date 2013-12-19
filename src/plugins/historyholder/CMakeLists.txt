@@ -13,23 +13,14 @@ set (SRCS
 	findproxy.cpp
 	core.cpp
 	)
-set (HEADERS
-	historyholder.h
-	findproxy.h
-	core.h
-	)
 set (RESOURCES historyholderresources.qrc)
 CreateTrs ("historyholder" "ar;de;en;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_historyholder SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
 	)
 target_link_libraries (leechcraft_historyholder
