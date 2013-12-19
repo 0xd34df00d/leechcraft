@@ -28,4 +28,3 @@ target_link_libraries (leechcraft_historyholder
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_historyholder DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
