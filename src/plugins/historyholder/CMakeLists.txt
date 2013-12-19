@@ -15,6 +15,7 @@ set (SRCS
 	)
 set (RESOURCES historyholderresources.qrc)
 CreateTrs ("historyholder" "ar;de;en;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("historyholder" "en;ru_RU" "${SRCS}" "" "")
 
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
