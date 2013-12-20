@@ -63,7 +63,7 @@ namespace Imgaste
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Simple image uploader to services like dump.bitcheese.net.");
+		return tr ("Simple image uploader to imagebin services like dump.bitcheese.net.");
 	}
 
 	QIcon Plugin::GetIcon () const
