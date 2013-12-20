@@ -90,7 +90,7 @@ namespace Imgaste
 		qWarning () << Q_FUNC_INFO
 			<< Reply_->errorString ();
 
-		QString text = tr ("Upload of screenshot failed: %1")
+		QString text = tr ("Image upload failed: %1")
 							.arg (Reply_->errorString ());
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 
