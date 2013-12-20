@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Lastfmscrobble::Authenticator</name>
     <message>
-        <location filename="authenticator.cpp" line="88"/>
+        <location filename="authenticator.cpp" line="99"/>
         <source>Enter password for Last.fm account with login %1:</source>
         <translation>Enter password for Last.fm account with login %1:</translation>
     </message>
@@ -12,32 +12,72 @@
 <context>
     <name>LeechCraft::Lastfmscrobble::Plugin</name>
     <message>
-        <location filename="lastfmscrobble.cpp" line="82"/>
-        <source>Submits information about tracks you&apos;ve listened to Last.FM.</source>
-        <translation>Submits information about tracks you&apos;ve listened to Last.FM.</translation>
+        <location filename="lastfmscrobble.cpp" line="97"/>
+        <source>Library</source>
+        <translation>Library</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="98"/>
+        <source>Recommendations</source>
+        <translation>Recommendations</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="99"/>
+        <source>Loved</source>
+        <translation>Loved</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="100"/>
+        <source>Neighbourhood</source>
+        <translation>Neighbourhood</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="102"/>
+        <source>Similar artists</source>
+        <translation>Similar artists</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="105"/>
+        <source>Global tag</source>
+        <translation>Global tag</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="127"/>
+        <source>Client for the Last.FM social music service.</source>
+        <translation>Client for the Last.FM social music service.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Lastfmscrobble::RadioStation</name>
     <message>
-        <location filename="radiostation.cpp" line="36"/>
+        <location filename="radiostation.cpp" line="47"/>
         <source>Library</source>
         <translation>Library</translation>
     </message>
     <message>
-        <location filename="radiostation.cpp" line="37"/>
+        <location filename="radiostation.cpp" line="48"/>
         <source>Recommendations</source>
         <translation>Recommendations</translation>
     </message>
     <message>
-        <location filename="radiostation.cpp" line="38"/>
+        <location filename="radiostation.cpp" line="49"/>
         <source>Loved tracks</source>
         <translation>Loved tracks</translation>
     </message>
     <message>
-        <location filename="radiostation.cpp" line="39"/>
+        <location filename="radiostation.cpp" line="50"/>
         <source>Neighbourhood</source>
         <translation>Neighbourhood</translation>
+    </message>
+    <message>
+        <location filename="radiostation.cpp" line="63"/>
+        <source>Similar to &quot;%1&quot; radio</source>
+        <translation>Similar to &quot;%1&quot; radio</translation>
+    </message>
+    <message>
+        <location filename="radiostation.cpp" line="71"/>
+        <source>Tag &quot;%1&quot; radio</source>
+        <translation>Tag &quot;%1&quot; radio</translation>
     </message>
 </context>
 <context>

@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Lastfmscrobble::Authenticator</name>
     <message>
-        <location filename="authenticator.cpp" line="88"/>
+        <location filename="authenticator.cpp" line="99"/>
         <source>Enter password for Last.fm account with login %1:</source>
         <translation>Введите пароль для учётной записи Last.fm с именем пользователя %1:</translation>
     </message>
@@ -12,32 +12,72 @@
 <context>
     <name>LeechCraft::Lastfmscrobble::Plugin</name>
     <message>
-        <location filename="lastfmscrobble.cpp" line="82"/>
-        <source>Submits information about tracks you&apos;ve listened to Last.FM.</source>
-        <translation>Отправляет информацию о прослушанных треках на Last.FM.</translation>
+        <location filename="lastfmscrobble.cpp" line="97"/>
+        <source>Library</source>
+        <translation>Библиотека</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="98"/>
+        <source>Recommendations</source>
+        <translation>Рекомендации</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="99"/>
+        <source>Loved</source>
+        <translation>Избранное</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="100"/>
+        <source>Neighbourhood</source>
+        <translation>Соседи</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="102"/>
+        <source>Similar artists</source>
+        <translation>Похожие исполнители</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="105"/>
+        <source>Global tag</source>
+        <translation>Глобальная метка</translation>
+    </message>
+    <message>
+        <location filename="lastfmscrobble.cpp" line="127"/>
+        <source>Client for the Last.FM social music service.</source>
+        <translation>Клиент для социального музыкального сервиса Last.FM.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Lastfmscrobble::RadioStation</name>
     <message>
-        <location filename="radiostation.cpp" line="36"/>
+        <location filename="radiostation.cpp" line="47"/>
         <source>Library</source>
         <translation>Библиотека</translation>
     </message>
     <message>
-        <location filename="radiostation.cpp" line="37"/>
+        <location filename="radiostation.cpp" line="48"/>
         <source>Recommendations</source>
         <translation>Рекомендации</translation>
     </message>
     <message>
-        <location filename="radiostation.cpp" line="38"/>
+        <location filename="radiostation.cpp" line="49"/>
         <source>Loved tracks</source>
         <translation>Избранные треки</translation>
     </message>
     <message>
-        <location filename="radiostation.cpp" line="39"/>
+        <location filename="radiostation.cpp" line="50"/>
         <source>Neighbourhood</source>
         <translation>Соседи</translation>
+    </message>
+    <message>
+        <location filename="radiostation.cpp" line="63"/>
+        <source>Similar to &quot;%1&quot; radio</source>
+        <translation>Радио похожих на «%1»</translation>
+    </message>
+    <message>
+        <location filename="radiostation.cpp" line="71"/>
+        <source>Tag &quot;%1&quot; radio</source>
+        <translation>Радио метки «%1»</translation>
     </message>
 </context>
 <context>
