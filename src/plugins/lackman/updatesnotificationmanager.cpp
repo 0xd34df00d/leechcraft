@@ -128,7 +128,7 @@ namespace LackMan
 		}
 		else
 			bodyText = tr ("New versions are available for %n package(s).",
-					nullptr, upgradableCount);
+					0, upgradableCount);
 
 		auto entity = Util::MakeAN ("Lackman",
 				bodyText,
