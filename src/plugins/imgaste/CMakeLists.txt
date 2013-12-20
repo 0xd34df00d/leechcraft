@@ -15,7 +15,7 @@ set (SRCS
 	poster.cpp
 	requestbuilder.cpp
 	)
-#CreateTrs("imgaste" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("imgaste" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("imgaste" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_imgaste SHARED
