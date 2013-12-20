@@ -98,11 +98,41 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
+        <source>Manage key repeat settings</source>
+        <translation>Manage key repeat settings</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>Timeout before repeating:</source>
+        <translation>Timeout before repeating:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="12"/>
+        <source> ms</source>
+        <translation> ms</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="13"/>
+        <source>Repeat rate:</source>
+        <translation>Repeat rate:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="14"/>
+        <source> Hz</source>
+        <translation> Hz</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="15"/>
+        <source>Test area:</source>
+        <translation>Test area:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="16"/>
         <source>Layouts</source>
         <translation>Layouts</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>

@@ -98,11 +98,41 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
+        <source>Manage key repeat settings</source>
+        <translation>Управлять настройками повтора нажатий</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>Timeout before repeating:</source>
+        <translation>Интервал перед началом повторения:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="12"/>
+        <source> ms</source>
+        <translation> мс</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="13"/>
+        <source>Repeat rate:</source>
+        <translation>Частота повторений:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="14"/>
+        <source> Hz</source>
+        <translation> Гц</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="15"/>
+        <source>Test area:</source>
+        <translation>Область тестирования:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="16"/>
         <source>Layouts</source>
         <translation>Раскладки</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Options</source>
         <translation>Опции</translation>
     </message>
