@@ -39,37 +39,13 @@ set (SRCS
 	hypedartistsfetcher.cpp
 	hypedtracksfetcher.cpp
 	)
-set (HEADERS
-	lastfmsubmitter.h
-	xmlsettingsmanager.h
-	lastfmscrobble.h
-	pendingsimilarartists.h
-	albumartfetcher.h
-	authenticator.h
-	basesimilarartists.h
-	pendingrecommendedartists.h
-	util.h
-	radiostation.h
-	radiotuner.h
-	recentreleasesfetcher.h
-	pendingartistbio.h
-	receventsfetcher.h
-	eventsfetchaggregator.h
-	eventattendmarker.h
-	hypedartistsfetcher.h
-	hypedtracksfetcher.h
-	)
 set (RESOURCES lastfmscrobbleresources.qrc)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("lastfmscrobble" "en;ru_RU" COMPILED_TRANSLATIONS)
 
 add_library (leechcraft_lastfmscrobble SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
 	)
 target_link_libraries (leechcraft_lastfmscrobble
@@ -80,4 +56,3 @@ target_link_libraries (leechcraft_lastfmscrobble
 
 install (TARGETS leechcraft_lastfmscrobble DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lastfmscrobblesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
