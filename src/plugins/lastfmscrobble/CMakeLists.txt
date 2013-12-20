@@ -42,6 +42,7 @@ set (SRCS
 set (RESOURCES lastfmscrobbleresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("lastfmscrobble" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("lastfmscrobble" "en;ru_RU" "${SRCS}" "" "lastfmscrobblesettings.xml")
 
 add_library (leechcraft_lastfmscrobble SHARED
 	${COMPILED_TRANSLATIONS}
