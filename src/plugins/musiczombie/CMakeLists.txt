@@ -39,10 +39,11 @@ if (WITH_MUSICZOMBIE_CHROMAPRINT)
 		pendingtagsfetch.cpp)
 endif ()
 
+CreateTrsUpTarget("musiczombie" "en;ru_RU" "${SRCS}" "" "")
+
 add_library (leechcraft_musiczombie SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 target_link_libraries (leechcraft_musiczombie
 	${QT_LIBRARIES}
