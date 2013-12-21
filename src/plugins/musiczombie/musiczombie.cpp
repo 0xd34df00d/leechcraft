@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <util/queuemanager.h>
+#include <util/util.h>
 #include "pendingdisco.h"
 
 #ifdef WITH_CHROMAPRINT
@@ -43,6 +44,8 @@ namespace MusicZombie
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("musiczombie");
+
 		Queue_ = new Util::QueueManager (500);
 		AcoustidQueue_ = new Util::QueueManager (350);
 

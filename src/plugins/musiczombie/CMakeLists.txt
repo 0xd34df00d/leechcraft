@@ -39,6 +39,7 @@ if (WITH_MUSICZOMBIE_CHROMAPRINT)
 		pendingtagsfetch.cpp)
 endif ()
 
+CreateTrs ("musiczombie" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("musiczombie" "en;ru_RU" "${SRCS}" "" "")
 
 add_library (leechcraft_musiczombie SHARED
