@@ -534,7 +534,7 @@ namespace AdiumStyles
 		}
 
 		// %time%
-		templ.replace ("%time%", msg->GetDateTime ().toString ());
+		templ.replace ("%time%", msg->GetDateTime ().time ().toString ());
 
 		// %time{X}%
 		QRegExp timeRx ("%time\\{(.*?)\\}%");
