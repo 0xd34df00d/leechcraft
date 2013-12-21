@@ -1139,7 +1139,7 @@ namespace GoogleDrive
 			{
 				QMessageBox::warning (Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetPreferredWindow (),
 						"LeechCraft",
-						tr ("This file cannot be downloaded. Use export instead of Download or Open File action"));
+						tr ("This file cannot be downloaded. Use export instead of downloading or opening the file."));
 				DownloadsQueue_.removeFirst ();
 				return;
 			}

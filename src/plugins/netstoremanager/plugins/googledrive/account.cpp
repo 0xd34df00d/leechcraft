@@ -152,7 +152,7 @@ namespace GoogleDrive
 		{
 			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 			auto res = QMessageBox::warning (rootWM->GetPreferredWindow (),
-					tr ("LeechCraft"),
+					"LeechCraft",
 					tr ("Are you sure you want to delete all selected items? This action cannot be undone."
 						"<br><i>Note: if you delete a directory then all files in it will also be deleted.</i>"),
 					QMessageBox::Ok | QMessageBox::Cancel);
