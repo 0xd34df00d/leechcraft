@@ -4,42 +4,22 @@
 <context>
     <name>LeechCraft::NetStoreManager::GoogleDrive::Account</name>
     <message>
-        <location filename="account.cpp" line="96"/>
-        <source>Remove item</source>
-        <translation>Remove item</translation>
+        <location filename="account.cpp" line="156"/>
+        <source>Are you sure you want to delete all selected items? This action cannot be undone.&lt;br&gt;&lt;i&gt;Note: if you delete a directory then all files in it will also be deleted.&lt;/i&gt;</source>
+        <translation>Are you sure you want to delete all selected items? This action cannot be undone.&lt;br&gt;&lt;i&gt;Note: if you delete a directory then all files in it will also be deleted.&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="account.cpp" line="97"/>
-        <source>Are you sure you want to delete %1? This action cannot be undone.&lt;br&gt;&lt;i&gt;Note: if you delete a directory then all files in it will also be deleted.&lt;/i&gt;</source>
-        <translation>Are you sure you want to delete %1? This action cannot be undone.&lt;br&gt;&lt;i&gt;Note: if you delete a directory then all files in it will also be deleted.&lt;/i&gt;</translation>
-    </message>
-    <message>
-        <location filename="account.cpp" line="108"/>
-        <source>Title</source>
-        <translation>Title</translation>
-    </message>
-    <message>
-        <location filename="account.cpp" line="109"/>
-        <source>Owner</source>
-        <translation>Owner</translation>
-    </message>
-    <message>
-        <location filename="account.cpp" line="110"/>
-        <source>Last Modified</source>
-        <translation>Last Modified</translation>
-    </message>
-    <message>
-        <location filename="account.cpp" line="149"/>
+        <location filename="account.cpp" line="202"/>
         <source>Share item</source>
         <translation>Share item</translation>
     </message>
     <message>
-        <location filename="account.cpp" line="150"/>
+        <location filename="account.cpp" line="203"/>
         <source>The item needs to be shared to obtain the URL. Do you want to share it?</source>
         <translation>The item needs to be shared to obtain the URL. Do you want to share it?</translation>
     </message>
     <message>
-        <location filename="account.cpp" line="155"/>
+        <location filename="account.cpp" line="208"/>
         <source>Always</source>
         <translation>Always</translation>
     </message>
@@ -47,33 +27,51 @@
 <context>
     <name>LeechCraft::NetStoreManager::GoogleDrive::AuthManager</name>
     <message>
-        <location filename="authmanager.cpp" line="67"/>
-        <source>Enter account verification code:</source>
-        <translation>Enter account verification code:</translation>
+        <location filename="authmanager.cpp" line="79"/>
+        <source>A browser window will pop up with a request for permissions to access your Google Drive account. Once you accept it, a verification code will appear. Enter that verification code in the box below:</source>
+        <translation>A browser window will pop up with a request for permissions to access your Google Drive account. Once you accept it, a verification code will appear. Enter that verification code in the box below:</translation>
     </message>
     <message>
-        <location filename="authmanager.cpp" line="68"/>
+        <location filename="authmanager.cpp" line="82"/>
         <source>Account configuration</source>
         <translation>Account configuration</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::NetStoreManager::GoogleDrive::Core</name>
+    <message>
+        <location filename="core.cpp" line="74"/>
+        <source>Import error</source>
+        <translation>Import error</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="75"/>
+        <source>Could not find plugin to download %1.</source>
+        <translation>Could not find plugin to download %1.</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::NetStoreManager::GoogleDrive::DriveManager</name>
     <message>
-        <location filename="drivemanager.cpp" line="213"/>
+        <location filename="drivemanager.cpp" line="284"/>
         <source>Initializing...</source>
         <translation>Initializing...</translation>
     </message>
     <message>
-        <location filename="drivemanager.cpp" line="567"/>
+        <location filename="drivemanager.cpp" line="878"/>
         <source>Uploading...</source>
         <translation>Uploading...</translation>
+    </message>
+    <message>
+        <location filename="drivemanager.cpp" line="1142"/>
+        <source>This file cannot be downloaded. Use export instead of downloading or opening the file.</source>
+        <translation>This file cannot be downloaded. Use export instead of downloading or opening the file.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::NetStoreManager::GoogleDrive::Plugin</name>
     <message>
-        <location filename="googledrive.cpp" line="82"/>
+        <location filename="googledrive.cpp" line="98"/>
         <source>Support for the GoogleDrive for NetStoreManager plugin.</source>
         <translation>Support for the GoogleDrive for NetStoreManager plugin.</translation>
     </message>
@@ -81,22 +79,9 @@
 <context>
     <name>LeechCraft::NetStoreManager::GoogleDrive::UploadManager</name>
     <message>
-        <location filename="uploadmanager.cpp" line="105"/>
-        <source>File %1 was uploaded successfully</source>
-        <translation>File %1 was uploaded successfully</translation>
-    </message>
-    <message>
-        <location filename="uploadmanager.cpp" line="109"/>
+        <location filename="uploadmanager.cpp" line="121"/>
         <source>Finished</source>
         <translation>Finished</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <location filename="account.cpp" line="246"/>
-        <source>%1 (by %2)</source>
-        <translation>%1 (by %2)</translation>
     </message>
 </context>
 <context>
