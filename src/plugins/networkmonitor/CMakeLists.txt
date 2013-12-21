@@ -37,6 +37,7 @@ set (FORMS
 	)
 set (RESOURCES networkmonitorresources.qrc)
 CreateTrs ("networkmonitor" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("networkmonitor" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
@@ -55,4 +56,3 @@ target_link_libraries (leechcraft_networkmonitor
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_networkmonitor DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
