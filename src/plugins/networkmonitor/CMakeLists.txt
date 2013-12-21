@@ -27,11 +27,6 @@ set (SRCS
 	requestmodel.cpp
 	headermodel.cpp
 	)
-set (HEADERS
-	networkmonitor.h
-	requestmodel.h
-	headermodel.h
-	)
 set (FORMS
 	networkmonitor.ui
 	)
@@ -39,15 +34,11 @@ set (RESOURCES networkmonitorresources.qrc)
 CreateTrs ("networkmonitor" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("networkmonitor" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 add_library (leechcraft_networkmonitor SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
