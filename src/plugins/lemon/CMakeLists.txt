@@ -28,6 +28,9 @@ set (FORMS
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 
+CreateTrs("lemon" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("lemon" "en;ru_RU" "${SRCS}" "" "")
+
 add_library (leechcraft_lemon SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}

@@ -30,6 +30,7 @@
 #include "lemon.h"
 #include <QIcon>
 #include <QAbstractItemModel>
+#include <util/util.h>
 #include <util/sys/paths.h>
 #include "core.h"
 #include "trafficmanager.h"
@@ -41,6 +42,8 @@ namespace Lemon
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("lemon");
+
 		Core::Instance ().SetProxy (proxy);
 
 		TrafficMgr_ = new TrafficManager;
