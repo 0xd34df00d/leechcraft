@@ -35,29 +35,16 @@ set (GOOGLEDRIVE_SRCS
 	uploadmanager.cpp
 	xmlsettingsmanager.cpp
 	)
-set (GOOGLEDRIVE_HEADERS
-	account.h
-	authmanager.h
-	core.h
-	drivemanager.h
-	googledrive.h
-	uploadmanager.h
-	xmlsettingsmanager.h
-	)
 
 set (GOOGLEDRIVE_RESOURCES netstoremanagergoogledriveresources.qrc)
 
 CreateTrs ("netstoremanager_googledrive" "en;ru_RU" GOOGLEDRIVE_COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (GOOGLEDRIVE_MOC_SRCS ${GOOGLEDRIVE_HEADERS})
-endif ()
 QT4_ADD_RESOURCES (GOOGLEDRIVE_RCCS ${GOOGLEDRIVE_RESOURCES})
 
 add_library (leechcraft_netstoremanager_googledrive SHARED
 	${GOOGLEDRIVE_COMPILED_TRANSLATIONS}
 	${GOOGLEDRIVE_SRCS}
-	${GOOGLEDRIVE_MOC_SRCS}
 	${GOOGLEDRIVE_UIS_H}
 	${GOOGLEDRIVE_RCCS}
 	)
