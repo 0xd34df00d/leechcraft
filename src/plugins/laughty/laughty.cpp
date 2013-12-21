@@ -28,10 +28,11 @@
  **********************************************************************/
 
 #include "laughty.h"
-#include "serverobject.h"
-#include "serveradaptor.h"
 #include <QIcon>
 #include <QDBusConnection>
+#include <util/util.h>
+#include "serverobject.h"
+#include "serveradaptor.h"
 
 namespace LeechCraft
 {
@@ -39,6 +40,8 @@ namespace Laughty
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("laughty");
+
 		if (!QDBusConnection::sessionBus ().registerService ("org.freedesktop.Notifications"))
 		{
 			qWarning () << Q_FUNC_INFO
