@@ -53,10 +53,8 @@ set (FORMS
 if (ENABLE_NETSTOREMANAGER_INOTIFY)
 	add_definitions (-DENABLE_INOTIFY)
 	set (SRCS ${SRCS} fileswatcher_inotify.cpp)
-	set (HEADERS ${HEADERS} fileswatcher_inotify.h)
 else ()
 	set (SRCS ${SRCS} fileswatcher_dummy.cpp)
-	set (HEADERS ${HEADERS} fileswatcher_dummy.h)
 endif ()
 
 set (RESOURCES netstoremanagerresources.qrc)
@@ -64,11 +62,11 @@ set (RESOURCES netstoremanagerresources.qrc)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("netstoremanager" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("netstoremanager" "en;ru_RU" "${SRCS}" "${FORMS}" "netstoremanagersettings.xml")
 
 add_library (leechcraft_netstoremanager SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
