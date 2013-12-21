@@ -15,7 +15,7 @@ set (SRCS
 	serveradaptor.cpp
 	)
 CreateTrs("laughty" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("laughty" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("laughty" "en;ru_RU" "${SRCS}" "" "")
 
 add_library (leechcraft_laughty SHARED
 	${COMPILED_TRANSLATIONS}
