@@ -77,7 +77,7 @@ namespace NetStoreManager
 			{
 				QMessageBox::warning (this,
 					"LeechCraft",
-					tr ("Account hasn't been selected.\nYou should select an account in first column"));
+					tr ("Account hasn't been selected.\nYou should select an account in first column."));
 				break;
 			}
 			RemoteDirectorySelectDialog dlg (AccountID_, AM_);

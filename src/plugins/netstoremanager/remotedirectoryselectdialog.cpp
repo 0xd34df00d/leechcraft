@@ -55,7 +55,7 @@ namespace NetStoreManager
 		Ui_.setupUi (this);
 
 		QPushButton *createDir = new QPushButton (AM_->GetProxy ()->GetIcon ("folder-new"),
-				tr ("New Folder..."));
+				tr ("New directory..."));
 		Ui_.ButtonBox_->addButton (createDir, QDialogButtonBox::ActionRole);
 		connect (createDir,
 				SIGNAL (clicked ()),
@@ -129,7 +129,7 @@ namespace NetStoreManager
 	{
 		const QString& path = QInputDialog::getText (this,
 				"LeechCraft",
-				tr ("Enter new folder name"));
+				tr ("Enter new directory name:"));
 
 		if (path.isEmpty ())
 			return;
