@@ -39,6 +39,7 @@ set (GOOGLEDRIVE_SRCS
 set (GOOGLEDRIVE_RESOURCES netstoremanagergoogledriveresources.qrc)
 
 CreateTrs ("netstoremanager_googledrive" "en;ru_RU" GOOGLEDRIVE_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("netstoremanager_googledrive" "en;ru_RU" "${GOOGLEDRIVE_SRCS}" "" "nsmgoogledrivesettings.xml")
 
 QT4_ADD_RESOURCES (GOOGLEDRIVE_RCCS ${GOOGLEDRIVE_RESOURCES})
 
@@ -57,4 +58,3 @@ target_link_libraries (leechcraft_netstoremanager_googledrive
 
 install (TARGETS leechcraft_netstoremanager_googledrive DESTINATION ${LC_PLUGINS_DEST})
 install (FILES nsmgoogledrivesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${GOOGLEDRIVE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
