@@ -456,8 +456,9 @@ namespace AdiumStyles
 		safeIconReplace ("%outgoingIconPath%",
 				selfEntry ? selfEntry->GetAvatar () : defAvatar, defAvatar);
 
+		const auto& now = QDateTime::currentDateTime ();
 		result.replace ("%timeOpened%",
-				QDateTime::currentDateTime ().toString (Qt::SystemLocaleLongDate));
+				now.time ().toString (Qt::SystemLocaleLongDate));
 
 		QRegExp openedRx ("%timeOpened\\{(.*?)\\}%");
 		int pos = 0;
@@ -465,7 +466,7 @@ namespace AdiumStyles
 			result.replace (pos, openedRx.matchedLength (),
 					QDateTime::currentDateTime ().toString (openedRx.cap (1)));
 
-		result.replace ("%dateOpened%", QDate::currentDate ().toString (Qt::SystemLocaleLongDate));
+		result.replace ("%dateOpened%", now.date ().toString (Qt::SystemLocaleLongDate));
 	}
 
 	QString AdiumStyleSource::ParseMsgTemplate (QString templ, const QString& base,
