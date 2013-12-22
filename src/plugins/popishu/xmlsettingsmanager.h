@@ -27,30 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POPISHU_XMLSETTINGSMANAGER_H
-#define PLUGINS_POPISHU_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Popishu
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		namespace Popishu
-		{
-			class XmlSettingsManager : public Util::BaseSettingsManager
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				XmlSettingsManager ();
-			public:
-				static XmlSettingsManager* Instance ();
-			protected:
-				virtual QSettings* BeginSettings () const;
-				virtual void EndSettings (QSettings*) const;
-			};
-		};
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager* Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
-};
-
-#endif
-
+}
+}

@@ -32,90 +32,87 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Popishu
+{
+	Core::Core ()
 	{
-		namespace Popishu
-		{
-			Core::Core ()
-			{
-				TabClass_.TabClass_ = "Popishu";
-				TabClass_.VisibleName_ = tr ("Text editor");
-				TabClass_.Description_ = tr ("The Popishu text editor");
-				TabClass_.Icon_ = QIcon ("lcicons:/resources/images/popishu.svg");
-				TabClass_.Priority_ = 70;
-				TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
-			}
+		TabClass_.TabClass_ = "Popishu";
+		TabClass_.VisibleName_ = tr ("Text editor");
+		TabClass_.Description_ = tr ("The Popishu text editor");
+		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/popishu.svg");
+		TabClass_.Priority_ = 70;
+		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
+	}
 
-			Core& Core::Instance ()
-			{
-				static Core c;
-				return c;
-			}
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
 
-			TabClassInfo Core::GetTabClass () const
-			{
-				return TabClass_;
-			}
+	TabClassInfo Core::GetTabClass () const
+	{
+		return TabClass_;
+	}
 
-			void Core::SetProxy (ICoreProxy_ptr proxy)
-			{
-				Proxy_ = proxy;
-			}
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
 
-			ICoreProxy_ptr Core::GetProxy () const
-			{
-				return Proxy_;
-			}
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
 
-			EditorPage* Core::NewTabRequested ()
-			{
-				EditorPage *page = MakeEditorPage ();
-				emit addNewTab ("Popishu", page);
-				emit raiseTab (page);
-				emit changeTabIcon (page, QIcon ("lcicons:/resources/images/popishu.svg"));
+	EditorPage* Core::NewTabRequested ()
+	{
+		EditorPage *page = MakeEditorPage ();
+		emit addNewTab ("Popishu", page);
+		emit raiseTab (page);
+		emit changeTabIcon (page, QIcon ("lcicons:/resources/images/popishu.svg"));
 
-				return page;
-			}
+		return page;
+	}
 
-			void Core::Handle (const Entity& e)
-			{
-				EditorPage *page = NewTabRequested ();
-				page->SetText (e.Entity_.toString ());
+	void Core::Handle (const Entity& e)
+	{
+		EditorPage *page = NewTabRequested ();
+		page->SetText (e.Entity_.toString ());
 
-				QString language = e.Additional_ ["Language"].toString ();
-				bool isTempDocumnet = e.Additional_ ["IsTemporaryDocument"].toBool ();
-				if (!language.isEmpty ())
-					page->SetLanguage (language);
-				page->SetTemporaryDocument (isTempDocumnet);
-			}
+		QString language = e.Additional_ ["Language"].toString ();
+		bool isTempDocumnet = e.Additional_ ["IsTemporaryDocument"].toBool ();
+		if (!language.isEmpty ())
+			page->SetLanguage (language);
+		page->SetTemporaryDocument (isTempDocumnet);
+	}
 
-			EditorPage* Core::MakeEditorPage ()
-			{
-				EditorPage *result = new EditorPage ();
-				connect (result,
-						SIGNAL (removeTab (QWidget*)),
-						this,
-						SIGNAL (removeTab (QWidget*)));
-				connect (result,
-						SIGNAL (changeTabName (QWidget*, const QString&)),
-						this,
-						SIGNAL (changeTabName (QWidget*, const QString&)));
-				connect (result,
-						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-						this,
-						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-				connect (result,
-						SIGNAL (delegateEntity (const LeechCraft::Entity&,
-								int*, QObject**)),
-						this,
-						SIGNAL (delegateEntity (const LeechCraft::Entity&,
-								int*, QObject**)));
-				connect (result,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				return result;
-			}
-		};
-	};
-};
+	EditorPage* Core::MakeEditorPage ()
+	{
+		EditorPage *result = new EditorPage ();
+		connect (result,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		connect (result,
+				SIGNAL (changeTabName (QWidget*, const QString&)),
+				this,
+				SIGNAL (changeTabName (QWidget*, const QString&)));
+		connect (result,
+				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
+				this,
+				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
+		connect (result,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)));
+		connect (result,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		return result;
+	}
+}
+}

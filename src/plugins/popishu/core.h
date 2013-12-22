@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POPISHU_CORE_H
-#define PLUGINS_POPISHU_CORE_H
+#pragma once
+
 #include <QObject>
 #include <QIcon>
 #include <interfaces/iinfo.h>
@@ -37,47 +37,42 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Popishu
+{
+	class EditorPage;
+
+	class Core : public QObject
 	{
-		namespace Popishu
-		{
-			class EditorPage;
+		Q_OBJECT
 
-			class Core : public QObject
-			{
-				Q_OBJECT
+		ICoreProxy_ptr Proxy_;
+		TabClassInfo TabClass_;
 
-				ICoreProxy_ptr Proxy_;
-				TabClassInfo TabClass_;
+		Core ();
+	public:
+		static Core& Instance ();
+		TabClassInfo GetTabClass () const;
 
-				Core ();
-			public:
-				static Core& Instance ();
-				TabClassInfo GetTabClass () const;
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
 
-				void SetProxy (ICoreProxy_ptr);
-				ICoreProxy_ptr GetProxy () const;
+		EditorPage* NewTabRequested ();
+		void Handle (const Entity&);
+	private:
+		EditorPage* MakeEditorPage ();
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
+		void delegateEntity (const LeechCraft::Entity&,
+				int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
 
-				EditorPage* NewTabRequested ();
-				void Handle (const Entity&);
-			private:
-				EditorPage* MakeEditorPage ();
-			signals:
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void statusBarChanged (QWidget*, const QString&);
-				void raiseTab (QWidget*);
-				void delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**);
-				void gotEntity (const LeechCraft::Entity&);
-
-				void couldHandle (const LeechCraft::Entity&, bool*);
-			};
-		};
+		void couldHandle (const LeechCraft::Entity&, bool*);
 	};
-};
-
-#endif
+}
+}

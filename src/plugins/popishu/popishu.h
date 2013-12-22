@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POPISHU_POPISHU_H
-#define PLUGINS_POPISHU_POPISHU_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
@@ -40,54 +40,47 @@ class QTranslator;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Popishu
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IHaveTabs
+					, public IEntityHandler
+					, public IHaveSettings
 	{
-		namespace Popishu
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IHaveTabs
-						 , public IEntityHandler
-						 , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
 
-				std::shared_ptr<QTranslator> Translator_;
-				std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				
-				TabClasses_t GetTabClasses () const;
-				void TabOpenRequested (const QByteArray&);
+		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-				EntityTestHandleResult CouldHandle (const Entity&) const;
-				void Handle (Entity);
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 
-				std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-			signals:
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void statusBarChanged (QWidget*, const QString&);
-				void raiseTab (QWidget*);
-				void delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**);
-				void gotEntity (const LeechCraft::Entity&);
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
-				void couldHandle (const LeechCraft::Entity&, bool*);
-			};
-		};
+		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
+		void delegateEntity (const LeechCraft::Entity&,
+				int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+
+		void couldHandle (const LeechCraft::Entity&, bool*);
 	};
-};
-
-#endif
-
+}
+}

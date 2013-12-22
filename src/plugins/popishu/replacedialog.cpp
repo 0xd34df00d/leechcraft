@@ -31,40 +31,37 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Popishu
+{
+	ReplaceDialog::ReplaceDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace Popishu
-		{
-			ReplaceDialog::ReplaceDialog (QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
-			}
-
-			QString ReplaceDialog::GetBefore () const
-			{
-				return Ui_.Before_->text ();
-			}
-
-			QString ReplaceDialog::GetAfter () const
-			{
-				return Ui_.After_->text ();
-			}
-
-			Qt::CaseSensitivity ReplaceDialog::GetCaseSensitivity () const
-			{
-				return Ui_.CaseSensitive_->isChecked () ?
-						Qt::CaseSensitive :
-						Qt::CaseInsensitive;
-			}
-
-			ReplaceDialog::Scope ReplaceDialog::GetScope () const
-			{
-				if (Ui_.ScopeSelected_->isChecked ())
-					return SSelected;
-				else
-					return SAll;
-			}
-		}
+		Ui_.setupUi (this);
 	}
+
+	QString ReplaceDialog::GetBefore () const
+	{
+		return Ui_.Before_->text ();
+	}
+
+	QString ReplaceDialog::GetAfter () const
+	{
+		return Ui_.After_->text ();
+	}
+
+	Qt::CaseSensitivity ReplaceDialog::GetCaseSensitivity () const
+	{
+		return Ui_.CaseSensitive_->isChecked () ?
+				Qt::CaseSensitive :
+				Qt::CaseInsensitive;
+	}
+
+	ReplaceDialog::Scope ReplaceDialog::GetScope () const
+	{
+		if (Ui_.ScopeSelected_->isChecked ())
+			return SSelected;
+		else
+			return SAll;
+	}
+}
 }

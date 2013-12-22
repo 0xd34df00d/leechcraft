@@ -27,38 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POPISHU_REPLACEDIALOG_H
-#define PLUGINS_POPISHU_REPLACEDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_replacedialog.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Popishu
+{
+	class ReplaceDialog : public QDialog
 	{
-		namespace Popishu
+		Q_OBJECT
+
+		Ui::ReplaceDialog Ui_;
+	public:
+		enum Scope
 		{
-			class ReplaceDialog : public QDialog
-			{
-				Q_OBJECT
+			SAll,
+			SSelected
+		};
 
-				Ui::ReplaceDialog Ui_;
-			public:
-				enum Scope
-				{
-					SAll,
-					SSelected
-				};
+		ReplaceDialog (QWidget* = 0);
 
-				ReplaceDialog (QWidget* = 0);
-
-				QString GetBefore () const;
-				QString GetAfter () const;
-				Qt::CaseSensitivity GetCaseSensitivity () const;
-				Scope GetScope () const;
-			};
-		}
-	}
+		QString GetBefore () const;
+		QString GetAfter () const;
+		Qt::CaseSensitivity GetCaseSensitivity () const;
+		Scope GetScope () const;
+	};
 }
-
-#endif
+}
