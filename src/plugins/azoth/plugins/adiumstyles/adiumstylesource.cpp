@@ -428,6 +428,27 @@ namespace AdiumStyles
 		}
 	}
 
+	namespace
+	{
+		void FormatTime (QString& templ, const QString& elem, const QDateTime& dt)
+		{
+			QStringMatcher timeMatcher ("%" + elem + "{");
+			int pos = 0;
+			while ((pos = timeMatcher.indexIn (templ, pos)) != -1)
+			{
+				const auto start = pos;
+				pos += timeMatcher.pattern ().size ();
+				const auto end = templ.indexOf ('}', pos);
+				if (end == -1)
+					break;
+
+				const auto& formatStr = templ.mid (pos, end - pos);
+				const auto& formatted = dt.toString (formatStr);
+				templ.replace (start, end - start + 2, formatted);
+			}
+		}
+	}
+
 	void AdiumStyleSource::ParseGlobalTemplate (QString& result, ICLEntry *entry) const
 	{
 		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
@@ -459,14 +480,8 @@ namespace AdiumStyles
 		const auto& now = QDateTime::currentDateTime ();
 		result.replace ("%timeOpened%",
 				now.time ().toString (Qt::SystemLocaleLongDate));
-
-		QRegExp openedRx ("%timeOpened\\{(.*?)\\}%");
-		int pos = 0;
-		while ((pos = openedRx.indexIn (result, pos)) != -1)
-			result.replace (pos, openedRx.matchedLength (),
-					QDateTime::currentDateTime ().toString (openedRx.cap (1)));
-
 		result.replace ("%dateOpened%", now.date ().toString (Qt::SystemLocaleLongDate));
+		FormatTime (result, "timeOpened", now);
 	}
 
 	QString AdiumStyleSource::ParseMsgTemplate (QString templ, const QString& base,
@@ -538,11 +553,7 @@ namespace AdiumStyles
 		templ.replace ("%time%", msg->GetDateTime ().time ().toString ());
 
 		// %time{X}%
-		QRegExp timeRx ("%time\\{(.*?)\\}%");
-		int pos = 0;
-		while ((pos = timeRx.indexIn (templ, pos)) != -1)
-			templ.replace (pos, timeRx.matchedLength (),
-					msg->GetDateTime ().toString (timeRx.cap (1)));
+		FormatTime (templ, "time", msg->GetDateTime ());
 
 		// %messageDirection%
 		templ.replace ("%messageDirection%", "ltr");
@@ -601,7 +612,7 @@ namespace AdiumStyles
 
 		// %textbackgroundcolor{X}%
 		QRegExp bgColorRx ("%textbackgroundcolor\\{([^}]*)\\}%");
-		pos = 0;
+		int pos = 0;
 		const QString& highColor = isHighlightMsg ?
 				Proxy_->GetSettingsManager ()->
 						property ("HighlightColor").toString () :
