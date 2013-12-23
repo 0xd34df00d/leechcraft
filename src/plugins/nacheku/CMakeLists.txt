@@ -14,20 +14,11 @@ set (SRCS
 	clipboardwatcher.cpp
 	directorywatcher.cpp
 	)
-set (HEADERS
-	nacheku.h
-	xmlsettingsmanager.h
-	clipboardwatcher.h
-	directorywatcher.h
-	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
+
 
 add_library (leechcraft_nacheku SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 target_link_libraries (leechcraft_nacheku
 	${QT_LIBRARIES}
