@@ -180,6 +180,8 @@ Rectangle {
         columns: isVert ? 1 : itemsRepeater.count
         rows: isVert ? itemsRepeater.count : 1
 
+        spacing: quarkSpacing
+
         clip: true
 
         Repeater {

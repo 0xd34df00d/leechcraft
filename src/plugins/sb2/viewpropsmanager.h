@@ -48,6 +48,7 @@ namespace SB2
 		ViewPropsManager (ViewManager*, ViewSettingsManager*, QObject* = 0);
 	private slots:
 		void hoverInTimeoutChanged ();
+		void quarkSpacingChanged ();
 	};
 }
 }

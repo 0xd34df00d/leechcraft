@@ -43,14 +43,25 @@ namespace SB2
 	, ViewMgr_ (view)
 	, VSM_ (vsm)
 	{
-		VSM_->GetXSM ()->RegisterObject ("CommonHoverInTimeout", this, "hoverInTimeoutChanged");
+		const auto& xsm = VSM_->GetXSM ();
+
+		xsm->RegisterObject ("CommonHoverInTimeout", this, "hoverInTimeoutChanged");
 		hoverInTimeoutChanged ();
+
+		xsm->RegisterObject ("QuarkSpacing", this, "quarkSpacingChanged");
+		quarkSpacingChanged ();
 	}
 
 	void ViewPropsManager::hoverInTimeoutChanged ()
 	{
 		const auto timeout = VSM_->GetXSM ()->property ("CommonHoverInTimeout").toInt ();
 		ViewMgr_->GetView ()->rootContext ()->setContextProperty ("commonHoverInTimeout", timeout);
+	}
+
+	void ViewPropsManager::quarkSpacingChanged ()
+	{
+		const auto spacing = VSM_->GetXSM ()->property ("QuarkSpacing").toInt ();
+		ViewMgr_->GetView ()->rootContext ()->setContextProperty ("quarkSpacing", spacing);
 	}
 }
 }
