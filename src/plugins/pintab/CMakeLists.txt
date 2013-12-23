@@ -12,22 +12,16 @@ include_directories (
 set (SRCS
 	pintab.cpp
 	)
-set (HEADERS
-	pintab.h
-	)
 set (RESOURCES
 	pintabresources.qrc
 	)
+
 CreateTrs ("pintab" "en;ru_RU" COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_pintab SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
 	)
 target_link_libraries (leechcraft_pintab
