@@ -13,7 +13,10 @@ set (SRCS
 	pogooglue.cpp
 	)
 set (RESOURCES pogooglueresources.qrc)
+
 CreateTrs ("pogooglue" "en;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("pogooglue" "en;ru_RU" "${SRCS}" "" "")
+
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_pogooglue SHARED
@@ -27,4 +30,3 @@ target_link_libraries (leechcraft_pogooglue
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_pogooglue DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
