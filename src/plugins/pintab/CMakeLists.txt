@@ -17,6 +17,8 @@ set (RESOURCES
 	)
 
 CreateTrs ("pintab" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("pintab" "en;ru_RU" "${SRCS}" "" "")
+
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_pintab SHARED
@@ -29,4 +31,3 @@ target_link_libraries (leechcraft_pintab
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_pintab DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
