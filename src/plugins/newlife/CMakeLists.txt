@@ -52,32 +52,6 @@ set (SRCS
 	importers/vacuum/vacuumimporter.cpp
 	importers/vacuum/vacuumimportpage.cpp
 	)
-set (HEADERS
-	newlife.h
-	importwizard.h
-	firstpage.h
-	abstractimporter.h
-	imhistimporterbase.h
-	common/imimporter.h
-	common/imimportpage.h
-	common/xmlimaccount.h
-	importers/akregator/akregatorimporter.h
-	importers/akregator/akregatorimportpage.h
-	importers/liferea/lifereaimportpage.h
-	importers/liferea/lifereaimporter.h
-	importers/kopete/kopeteimporter.h
-	importers/kopete/kopeteimportpage.h
-	importers/kopete/kopeteimportthread.h
-	importers/ktorrent/ktorrentimportpage.h
-	importers/ktorrent/ktorrentimporter.h
-	importers/firefox/firefoximportpage.h
-	importers/firefox/firefoximporter.h
-	importers/firefox/firefoxprofileselectpage.h
-	importers/psiplus/psiplusimporter.h
-	importers/psiplus/psiplusimportpage.h
-	importers/vacuum/vacuumimporter.h
-	importers/vacuum/vacuumimportpage.h
-	)
 set (FORMS
 	importwizard.ui
 	feedssettingsimportpage.ui
@@ -89,16 +63,12 @@ set (RESOURCES newliferesources.qrc)
 CreateTrs ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("newlife" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_newlife SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
@@ -107,4 +77,3 @@ target_link_libraries (leechcraft_newlife
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_newlife DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
