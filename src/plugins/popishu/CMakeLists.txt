@@ -35,13 +35,6 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	replacedialog.cpp
 	)
-set (HEADERS
-	popishu.h
-	core.h
-	editorpage.h
-	xmlsettingsmanager.h
-	replacedialog.h
-	)
 set (RESOURCES
 	popishuresources.qrc
 	)
@@ -51,9 +44,6 @@ set (FORMS
 	)
 CreateTrs ("popishu" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -61,7 +51,6 @@ add_library (leechcraft_popishu SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${HEADERS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
