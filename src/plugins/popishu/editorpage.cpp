@@ -304,13 +304,12 @@ namespace Popishu
 			return;
 
 		Ui_.TextEditor_->setLexer (GetLexerByLanguage (language));
+		emit languageChanged (language);
 	}
 
 	void EditorPage::selectDoctype (QAction *action)
 	{
-		QString name = action->text ();
-		Ui_.TextEditor_->setLexer (GetLexerByLanguage (name));
-		emit languageChanged (name);
+		SetLanguage (action->text ());
 	}
 
 	void EditorPage::on_ActionNew__triggered ()
