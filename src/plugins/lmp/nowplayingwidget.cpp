@@ -169,7 +169,8 @@ namespace LMP
 			return;
 
 		Ui_.LastPlay_->setText (FormatDateTime (stats.LastPlay_));
-		Ui_.StatsCount_->setText (tr ("%n play(s) since %1", 0, stats.Playcount_)
+		Ui_.StatsCount_->setText (tr ("%1 since %2")
+					.arg (stats.Playcount_)
 					.arg (FormatDateTime (stats.Added_)));
 	}
 
