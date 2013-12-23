@@ -107,7 +107,7 @@ namespace Pogooglue
 
 	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
 	{
-		return { { GetUniqueID () + "_Google", "Google", "Google" } };
+		return { { GetUniqueID () + "_Google", "Google", "Google", {} } };
 	}
 
 	void Plugin::GoogleIt (QString text)
