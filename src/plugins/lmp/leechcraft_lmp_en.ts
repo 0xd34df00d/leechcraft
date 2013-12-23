@@ -471,7 +471,7 @@
 <context>
     <name>LeechCraft::LMP::LocalCollection</name>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="886"/>
+        <location filename="localcollection.cpp" line="908"/>
         <source>%n new artist(s)</source>
         <translation>
             <numerusform>%n new artist</numerusform>
@@ -479,7 +479,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="887"/>
+        <location filename="localcollection.cpp" line="909"/>
         <source>%n new album(s)</source>
         <translation>
             <numerusform>%n new album</numerusform>
@@ -487,7 +487,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="888"/>
+        <location filename="localcollection.cpp" line="910"/>
         <source>%n new track(s)</source>
         <translation>
             <numerusform>%n new track</numerusform>
@@ -495,7 +495,7 @@
         </translation>
     </message>
     <message>
-        <location filename="localcollection.cpp" line="889"/>
+        <location filename="localcollection.cpp" line="911"/>
         <source>Local collection updated: %1, %2, %3.</source>
         <translation>Local collection updated: %1, %2, %3.</translation>
     </message>
@@ -515,16 +515,14 @@
             <numerusform>%n days ago</numerusform>
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="nowplayingwidget.cpp" line="172"/>
-        <source>%n play(s) since %1</source>
-        <translation>
-            <numerusform>%n play since %1</numerusform>
-            <numerusform>%n plays since %1</numerusform>
-        </translation>
+        <source>%1 since %2</source>
+        <oldsource>%n play(s) since %1</oldsource>
+        <translation>%1 since %2</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.cpp" line="199"/>
+        <location filename="nowplayingwidget.cpp" line="200"/>
         <source>showing lyrics from %3 (%1 of %2)</source>
         <translation>showing lyrics from %3 (%1 of %2)</translation>
     </message>
@@ -930,7 +928,7 @@
         <translation>Show album art</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="882"/>
+        <location filename="playlistwidget.cpp" line="884"/>
         <source>Music files (*.ogg *.flac *.mp3 *.wav);;Playlists (*.pls *.m3u *.m3u8 *.xspf);;All files (*.*)</source>
         <translation>Music files (*.ogg *.flac *.mp3 *.wav);;Playlists (*.pls *.m3u *.m3u8 *.xspf);;All files (*.*)</translation>
     </message>
@@ -963,37 +961,37 @@
         </translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="857"/>
+        <location filename="playlistwidget.cpp" line="859"/>
         <source>Save playlist</source>
         <translation>Save playlist</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="858"/>
+        <location filename="playlistwidget.cpp" line="860"/>
         <source>Enter name for the playlist:</source>
         <translation>Enter name for the playlist:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="867"/>
+        <location filename="playlistwidget.cpp" line="869"/>
         <source>Playlist %1 already exists. Do you want to overwrite it?</source>
         <translation>Playlist %1 already exists. Do you want to overwrite it?</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="880"/>
+        <location filename="playlistwidget.cpp" line="882"/>
         <source>Load files</source>
         <translation>Load files</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="903"/>
+        <location filename="playlistwidget.cpp" line="905"/>
         <source>Enter URL to add to the play queue:</source>
         <translation>Enter URL to add to the play queue:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="914"/>
+        <location filename="playlistwidget.cpp" line="916"/>
         <source>Invalid URL.</source>
         <translation>Invalid URL.</translation>
     </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="935"/>
+        <location filename="playlistwidget.cpp" line="937"/>
         <source>%n track(s), total duration: %1</source>
         <translation>
             <numerusform>%n track, total duration: %1</numerusform>
