@@ -88,7 +88,6 @@ namespace LeechCraft
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
 		void bringToFront (QWidget*) const;
-		void handleScrollButtons ();
 		void handleCurrentChanged (int);
 		void handleMoveHappened (int, int);
 		void handleCloseAllButCurrent ();

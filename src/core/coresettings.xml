@@ -4,9 +4,6 @@
 		<label lang="en" value="Appearance" />
 		<groupbox>
 			<label lang="en" value="Appearance" />
-			<item type="checkbox" property="UseTabScrollButtons" state="on">
-				<label lang="en" value="Use tab scroll buttons" />
-			</item>
 			<item type="combobox" property="ToolButtonStyle">
 				<label lang="en" value="Tool button style:" />
 				<option name="iconOnly" default="true">

@@ -64,11 +64,6 @@ TabManager::TabManager (SeparateTabWidget *tabWidget, MainWindow *window, QObjec
 			this,
 			SLOT (handleMoveHappened (int, int)));
 
-	XmlSettingsManager::Instance ()->RegisterObject ("UseTabScrollButtons",
-			this, "handleScrollButtons");
-
-	handleScrollButtons ();
-
 	QAction *closeAllButCurrent = new QAction (tr ("Close all but this"),
 			this);
 	connect (closeAllButCurrent,
@@ -288,12 +283,6 @@ void TabManager::changeTabIcon (QWidget *contents, const QIcon& icon)
 	if (tabNumber == -1)
 		return;
 	TabWidget_->SetTabIcon (tabNumber, icon);
-}
-
-void TabManager::handleScrollButtons ()
-{
-	TabWidget_->TabBar ()->setUsesScrollButtons (XmlSettingsManager::Instance ()->
-			property ("UseTabScrollButtons").toBool ());
 }
 
 void TabManager::bringToFront (QWidget *widget) const
