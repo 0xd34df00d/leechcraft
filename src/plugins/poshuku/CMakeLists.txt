@@ -93,7 +93,9 @@ set (FORMS
 	urlframe.ui
 	)
 set (RESOURCES poshukuresources.qrc)
+
 CreateTrs ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("poshuku" "en;ru_RU" "${SRCS}" "${FORMS}" "poshukusettings.xml")
 
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
@@ -115,7 +117,6 @@ target_link_libraries (leechcraft_poshuku
 	${IDN_LIB}
 	)
 install (TARGETS leechcraft_poshuku DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES poshukusettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY installed/poshuku/ DESTINATION ${LC_INSTALLEDMANIFEST_DEST}/poshuku)
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
