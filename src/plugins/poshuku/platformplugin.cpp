@@ -43,7 +43,7 @@ namespace Poshuku
 		return false;
 	}
 
-	QObject* PlatformPlugin::createExtension (Extension ext) const
+	QObject* PlatformPlugin::createExtension (Extension) const
 	{
 		return 0;
 	}

@@ -278,7 +278,7 @@ namespace Poshuku
 		}
 	}
 
-	bool FavoritesModel::dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+	bool FavoritesModel::dropMimeData (const QMimeData *data, Qt::DropAction, int, int, const QModelIndex&)
 	{
 		const auto& urls = data->urls ();
 
