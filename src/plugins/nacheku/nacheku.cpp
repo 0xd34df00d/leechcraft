@@ -30,6 +30,7 @@
 #include "nacheku.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "clipboardwatcher.h"
 #include "directorywatcher.h"
@@ -40,6 +41,7 @@ namespace Nacheku
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("nacheku");
 		XSD_.reset (new Util::XmlSettingsDialog ());
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "nachekusettings.xml");
 

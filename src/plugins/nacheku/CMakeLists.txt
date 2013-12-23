@@ -15,6 +15,7 @@ set (SRCS
 	directorywatcher.cpp
 	)
 
+CreateTrs ("nacheku" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("nacheku" "en;ru_RU" "${SRCS}" "" "nachekusettings.xml")
 
 add_library (leechcraft_nacheku SHARED
