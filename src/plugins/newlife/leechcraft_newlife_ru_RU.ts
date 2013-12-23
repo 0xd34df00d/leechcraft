@@ -23,22 +23,22 @@
 <context>
     <name>FirefoxProfileSelectPage</name>
     <message>
-        <location filename="firefoximporter/firefoxprofileselectpage.ui" line="24"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.ui" line="24"/>
         <source>Select profile to import</source>
         <translation>Выберите профиль для импорта</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoxprofileselectpage.ui" line="38"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.ui" line="38"/>
         <source>Import history</source>
         <translation>Импорт истории</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoxprofileselectpage.ui" line="45"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.ui" line="45"/>
         <source>Import bookmarks </source>
         <translation>Импорт закладок</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoxprofileselectpage.ui" line="52"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.ui" line="52"/>
         <source>Import rss</source>
         <translation>Импорт RSS</translation>
     </message>
@@ -75,162 +75,185 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::AkregatorImportPage</name>
+    <name>LeechCraft::NewLife::Common::IMImportPage</name>
     <message>
-        <location filename="akregatorimportpage.cpp" line="40"/>
+        <location filename="common/imimportpage.cpp" line="79"/>
+        <source>Account name</source>
+        <translation>Учётная запись</translation>
+    </message>
+    <message>
+        <location filename="common/imimportpage.cpp" line="80"/>
+        <source>JID</source>
+        <translation>JID</translation>
+    </message>
+    <message>
+        <location filename="common/imimportpage.cpp" line="81"/>
+        <source>Import account settings</source>
+        <translation>Импорт настроек учётной записи</translation>
+    </message>
+    <message>
+        <location filename="common/imimportpage.cpp" line="82"/>
+        <source>Import history</source>
+        <translation>Импорт истории</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::NewLife::Importers::AkregatorImportPage</name>
+    <message>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="51"/>
         <source>Akregator&apos;s feeds import</source>
         <translation>Импорт лент из Akregator</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="41"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="52"/>
         <source>Select Akregator&apos;s feeds file and options</source>
         <translation>Выберите файл с лентами Akregator&apos;а и параметры</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="103"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="114"/>
         <source>Select Akregator&apos;s OPML file</source>
         <translation>Выбор OPML-файла Akregator&apos;а</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="105"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="116"/>
         <source>OPML files (*.opml *.xml);;All files (*.*)</source>
         <translation>Файлы OPML (*.opml *.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="112"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="123"/>
         <source>The file you&apos;ve selected is not a valid OPML file.</source>
         <translation>Файл, выбранный вами, не является корректным OPML-файлом.</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="155"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="166"/>
         <source>Akregator settings</source>
         <translation>Параметры Akregator</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="160"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="171"/>
         <source>Could not access or parse Akregator settings.</source>
         <translation>Невозможно получить доступ либо разобрать параметры Akregator.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::FirefoxImportPage</name>
+    <name>LeechCraft::NewLife::Importers::FirefoxImportPage</name>
     <message>
-        <location filename="firefoximporter/firefoximportpage.cpp" line="39"/>
+        <location filename="importers/firefox/firefoximportpage.cpp" line="49"/>
         <source>Firefox&apos;s data import</source>
         <translation>Импорт данных Firefox</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoximportpage.cpp" line="40"/>
-        <location filename="firefoximporter/firefoximportpage.cpp" line="84"/>
+        <location filename="importers/firefox/firefoximportpage.cpp" line="50"/>
+        <location filename="importers/firefox/firefoximportpage.cpp" line="89"/>
         <source>Select Firefox&apos;s INI file</source>
         <translation>Выберите INI-файл Firefox</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoximportpage.cpp" line="86"/>
+        <location filename="importers/firefox/firefoximportpage.cpp" line="91"/>
         <source>INI files (*.ini);;All files (*.*)</source>
         <translation>INI-файлы (*.ini);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoximportpage.cpp" line="93"/>
+        <location filename="importers/firefox/firefoximportpage.cpp" line="98"/>
         <source>The file you&apos;ve selected is not a valid INI file.</source>
         <translation>Выбранный вами файл не является корректным INI-файлом.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::FirefoxProfileSelectPage</name>
+    <name>LeechCraft::NewLife::Importers::FirefoxProfileSelectPage</name>
     <message>
-        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="85"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="93"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="112"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="120"/>
         <source>Please close Firefox before importing.</source>
         <translation>Пожалуйста, закройте Firefox перед импортированием.</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="323"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="331"/>
         <source>OPML file for importing RSS cannot be created: %1</source>
         <translation>OPML-файл для импорта RSS не может быть создан: %1</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="344"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="352"/>
         <source>Firefox Import</source>
         <translation>Импорт из Firefox</translation>
     </message>
     <message>
-        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="345"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="353"/>
         <source>Could not open Firefox database: %1.</source>
         <translation>Невозможно открыть базу данных Firefox: %1.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::KTorrentImportPage</name>
+    <name>LeechCraft::NewLife::Importers::KTorrentImportPage</name>
     <message>
-        <location filename="ktorrentimportpage.cpp" line="41"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="52"/>
         <source>KTorrent&apos;s torrents import</source>
         <translation>Импорт торрентов из KTorrent</translation>
     </message>
     <message>
-        <location filename="ktorrentimportpage.cpp" line="42"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="53"/>
         <source>Select KTorrent&apos;s torrents</source>
         <translation>Выберите торренты KTorrent</translation>
     </message>
     <message>
-        <location filename="ktorrentimportpage.cpp" line="85"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="96"/>
         <source>Select KTorrent&apos;s configuration file</source>
         <translation>Выберите конфигурационный файл KTorrent</translation>
     </message>
     <message>
-        <location filename="ktorrentimportpage.cpp" line="95"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="106"/>
         <source>Can&apos;t read KTorrent&apos;s configuration file</source>
         <translation>Невозможно прочитать конфигурационный файл KTorrent</translation>
     </message>
     <message>
-        <location filename="ktorrentimportpage.cpp" line="182"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="193"/>
         <source>KTorrent settings</source>
         <translation>Параметры KTorrent</translation>
     </message>
     <message>
-        <location filename="ktorrentimportpage.cpp" line="187"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="198"/>
         <source>Could not access or parse KTorrent settings.</source>
         <translation>Невозможно прочесть параметры KTorrent.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::LifereaImportPage</name>
+    <name>LeechCraft::NewLife::Importers::LifereaImportPage</name>
     <message>
-        <location filename="lifereaimportpage.cpp" line="40"/>
+        <location filename="importers/liferea/lifereaimportpage.cpp" line="51"/>
         <source>Liferea&apos;s feeds import</source>
         <translation>Импорт лент из Liferea</translation>
     </message>
     <message>
-        <location filename="lifereaimportpage.cpp" line="41"/>
+        <location filename="importers/liferea/lifereaimportpage.cpp" line="52"/>
         <source>Select Liferea&apos;s base location and options</source>
         <translation>Выберите базовое положение каталога Liferea и параметры</translation>
     </message>
     <message>
-        <location filename="lifereaimportpage.cpp" line="108"/>
+        <location filename="importers/liferea/lifereaimportpage.cpp" line="119"/>
         <source>Select Liferea&apos;s directory</source>
         <translation>Выбор каталога Liferea</translation>
     </message>
     <message>
-        <location filename="lifereaimportpage.cpp" line="117"/>
+        <location filename="importers/liferea/lifereaimportpage.cpp" line="128"/>
         <source>The directory you&apos;ve selected is not Liferea&apos;s directory.</source>
         <translation>Выбранный вами каталог не является каталогом LIferea.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::Plugin</name>
+    <name>LeechCraft::NewLife::Plugin</name>
     <message>
-        <location filename="newlife.cpp" line="68"/>
-        <source>The settings importer.</source>
-        <translation>Импортёр параметров.</translation>
-    </message>
-    <message>
-        <location filename="newlife.cpp" line="37"/>
+        <location filename="newlife.cpp" line="49"/>
         <source>Import settings...</source>
         <translation>Импортировать параметры...</translation>
+    </message>
+    <message>
+        <location filename="newlife.cpp" line="77"/>
+        <source>The settings importer.</source>
+        <translation>Импортёр параметров.</translation>
     </message>
 </context>
 </TS>
