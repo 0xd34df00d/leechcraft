@@ -2,16 +2,16 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Poshuku::Pogooglue::Plugin</name>
+    <name>LeechCraft::Pogooglue::Plugin</name>
     <message>
-        <location filename="pogooglue.cpp" line="55"/>
+        <location filename="pogooglue.cpp" line="66"/>
         <source>Allows one to search for selected text in Google in two clicks.</source>
         <translation>Позволяет искать выбранный текст в Google в два клика.</translation>
     </message>
     <message>
-        <location filename="pogooglue.cpp" line="118"/>
-        <source>Google It!</source>
-        <translation>Погуглить это!</translation>
+        <location filename="pogooglue.cpp" line="105"/>
+        <source>Google it!</source>
+        <translation>Погуглить!</translation>
     </message>
 </context>
 </TS>
