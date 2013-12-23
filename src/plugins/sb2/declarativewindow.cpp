@@ -81,6 +81,5 @@ namespace SB2
 				"beforeDelete");
 		deleteLater ();
 	}
-
 }
 }
