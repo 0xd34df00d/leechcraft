@@ -78,55 +78,6 @@ set (SRCS
 	importentityhandler.cpp
 	platformplugin.cpp
 	)
-set (HEADERS
-	poshuku.h
-	xmlsettingsmanager.h
-	core.h
-	browserwidget.h
-	customwebview.h
-	progresslineedit.h
-	favoritesmodel.h
-	filtermodel.h
-	favoritesdelegate.h
-	favoritestreeview.h
-	customwebpage.h
-	historymodel.h
-	storagebackend.h
-	sqlstoragebackend.h
-	sqlstoragebackend_mysql.h
-	urlcompletionmodel.h
-	finddialog.h
-	screenshotsavedialog.h
-	cookieseditdialog.h
-	cookieseditmodel.h
-	sourceviewer.h
-	htmlhighlighter.h
-	xbelparser.h
-	xbelgenerator.h
-	pluginmanager.h
-	historyfiltermodel.h
-	proxyobject.h
-	jsproxy.h
-	externalproxy.h
-	passwordremember.h
-	pageformsdata.h
-	linkhistory.h
-	cookiesfilter.h
-	searchtext.h
-	reloadintervalselector.h
-	editbookmarkdialog.h
-	favoriteschecker.h
-	webpluginfactory.h
-	browserwidgetsettings.h
-	hideabletabwidget.h
-	bookmarkswidget.h
-	historywidget.h
-	urlframe.h
-	importentityhandler.h
-	platformplugin.h
-	interfaces/iwebplugin.h
-	interfaces/iflashoverrider.h
-	)
 set (FORMS
 	browserwidget.ui
 	screenshotsavedialog.ui
@@ -144,16 +95,12 @@ set (FORMS
 set (RESOURCES poshukuresources.qrc)
 CreateTrs ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_poshuku SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
