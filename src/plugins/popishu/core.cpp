@@ -37,7 +37,7 @@ namespace Popishu
 	Core::Core ()
 	{
 		TabClass_.TabClass_ = "Popishu";
-		TabClass_.VisibleName_ = tr ("Text editor");
+		TabClass_.VisibleName_ = "Popishu";
 		TabClass_.Description_ = tr ("The Popishu text editor");
 		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/popishu.svg");
 		TabClass_.Priority_ = 70;
