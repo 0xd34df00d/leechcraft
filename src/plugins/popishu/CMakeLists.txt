@@ -43,6 +43,7 @@ set (FORMS
 	replacedialog.ui
 	)
 CreateTrs ("popishu" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("popishu" "en;ru_RU" "${SRCS}" "${FORMS}" "popishusettings.xml")
 
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
@@ -60,5 +61,4 @@ target_link_libraries (leechcraft_popishu
 	${QSCINTILLA_LIBRARIES}
 	)
 install (TARGETS leechcraft_popishu DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES popishusettings.xml DESTINATION ${LC_SETTINGS_DEST})
