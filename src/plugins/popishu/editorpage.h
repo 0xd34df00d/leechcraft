@@ -59,6 +59,8 @@ namespace Popishu
 		QMap<QString, QList<QAction*>> WindowMenus_;
 		QHash<QString, QString> Extension2Lang_;
 
+		bool DoctypeDetected_;
+
 		QtMsgHandler DefaultMsgHandler_;
 		QObject *WrappedObject_;
 		bool TemporaryDocument_;
