@@ -38,6 +38,7 @@
 #include <util/sysinfo.h>
 #include "appinfo.h"
 #include "gdblauncher.h"
+#include "highlighter.h"
 
 namespace LeechCraft
 {
@@ -55,6 +56,8 @@ namespace CrashProcess
 		Ui_.InfoLabel_->setText (tr ("Unfortunately LeechCraft has crashed. This is the info we could collect:"));
 		Ui_.RestartBox_->setEnabled (!Info_.ExecLine_.isEmpty ());
 		Ui_.TraceDisplay_->setFont (QFont ("Terminus [Courier New]"));
+
+		new Highlighter (Ui_.TraceDisplay_);
 
 		connect (Ui_.Reload_,
 				SIGNAL (released ()),

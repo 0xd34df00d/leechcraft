@@ -12,6 +12,7 @@ set (SRCS
 	main.cpp
 	gdblauncher.cpp
 	crashdialog.cpp
+	highlighter.cpp
 	)
 set (FORMS
 	crashdialog.ui
