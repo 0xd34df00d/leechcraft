@@ -6,6 +6,7 @@ set (AUTOSEARCH_SRCS
 set (AUTOSEARCH_RESOURCES
 	)
 #CreateTrs ("poshuku_autosearch" "en;ru_RU" AUTOSEARCH_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("poshuku_autosearch" "en;ru_RU" "${AUTOSEARCH_SRCS}" "" "")
 
 QT4_ADD_RESOURCES (AUTOSEARCH_RCCS ${AUTOSEARCH_RESOURCES})
 add_library (leechcraft_poshuku_autosearch SHARED
