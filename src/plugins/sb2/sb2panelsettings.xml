@@ -11,7 +11,7 @@
 			<suffix value=" px" />
 		</item>
 		<item type="spinbox" property="CommonHoverInTimeout" default="400" minimum="0" maximum="2000" step="100">
-			<label value="Hover-in timeout: " />
+			<label value="Hover-in timeout:" />
 			<suffix value=" ms" />
 		</item>
 	</page>
