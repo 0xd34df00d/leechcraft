@@ -118,7 +118,7 @@ namespace Fua
 		return "Poshuku FUA";
 	}
 
-	QString LeechCraft::Poshuku::Fua::FUA::GetInfo () const
+	QString FUA::GetInfo () const
 	{
 		return tr ("Allows one to set fake user agents for different sites.");
 	}
