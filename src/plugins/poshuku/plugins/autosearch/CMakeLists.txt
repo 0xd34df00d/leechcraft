@@ -5,7 +5,7 @@ set (AUTOSEARCH_SRCS
 	)
 set (AUTOSEARCH_RESOURCES
 	)
-#CreateTrs ("poshuku_autosearch" "en;ru_RU" AUTOSEARCH_COMPILED_TRANSLATIONS)
+CreateTrs ("poshuku_autosearch" "en;ru_RU" AUTOSEARCH_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_autosearch" "en;ru_RU" "${AUTOSEARCH_SRCS}" "" "")
 
 QT4_ADD_RESOURCES (AUTOSEARCH_RCCS ${AUTOSEARCH_RESOURCES})
@@ -20,4 +20,3 @@ target_link_libraries (leechcraft_poshuku_autosearch
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_poshuku_autosearch DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${AUTOSEARCH_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
