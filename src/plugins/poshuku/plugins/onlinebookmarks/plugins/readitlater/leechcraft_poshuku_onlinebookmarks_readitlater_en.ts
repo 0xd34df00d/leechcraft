@@ -4,60 +4,55 @@
 <context>
     <name>AuthWidget</name>
     <message>
-        <location filename="readitlaterauthwidget.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="readitlaterauthwidget.ui" line="28"/>
         <source>Login:</source>
-        <translation type="unfinished"></translation>
+        <translation>Login:</translation>
     </message>
     <message>
         <location filename="readitlaterauthwidget.ui" line="38"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Password:</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::OnlineBookmarks::ReadItLater::Plugin</name>
     <message>
-        <location filename="readitlater.cpp" line="63"/>
-        <source>Sync local bookmarks with your account in Read It Later</source>
-        <translation type="unfinished"></translation>
+        <location filename="readitlater.cpp" line="77"/>
+        <source>Sync local bookmarks with your Read It Later account.</source>
+        <translation>Sync local bookmarks with your Read It Later account.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::OnlineBookmarks::ReadItLater::ReadItLaterService</name>
     <message>
-        <location filename="readitlaterservice.cpp" line="260"/>
-        <source>Authentication has finished successfully</source>
-        <translation type="unfinished"></translation>
+        <location filename="readitlaterservice.cpp" line="299"/>
+        <source>Authentication has finished successfully.</source>
+        <translation>Authentication has finished successfully.</translation>
     </message>
     <message>
-        <location filename="readitlaterservice.cpp" line="264"/>
-        <source>Registration has finished successfully</source>
-        <translation type="unfinished"></translation>
+        <location filename="readitlaterservice.cpp" line="303"/>
+        <source>Registration has finished successfully.</source>
+        <translation>Registration has finished successfully.</translation>
     </message>
     <message>
-        <location filename="readitlaterservice.cpp" line="284"/>
-        <source>Invalid request.Please, report to developers.</source>
-        <translation type="unfinished"></translation>
+        <location filename="readitlaterservice.cpp" line="334"/>
+        <source>Invalid request. Please report to developers.</source>
+        <translation>Invalid request. Please report to developers.</translation>
     </message>
     <message>
-        <location filename="readitlaterservice.cpp" line="288"/>
-        <source>Username and/or password is incorrect.</source>
-        <translation type="unfinished"></translation>
+        <location filename="readitlaterservice.cpp" line="338"/>
+        <source>Incorrect username or password.</source>
+        <translation>Incorrect username or password.</translation>
     </message>
     <message>
-        <location filename="readitlaterservice.cpp" line="292"/>
+        <location filename="readitlaterservice.cpp" line="342"/>
         <source>Rate limit exceeded, please wait a little bit before resubmitting.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rate limit exceeded, please wait a little bit before resubmitting.</translation>
     </message>
     <message>
-        <location filename="readitlaterservice.cpp" line="296"/>
+        <location filename="readitlaterservice.cpp" line="346"/>
         <source>Read It Later&apos;s sync server is down for scheduled maintenance.</source>
-        <translation type="unfinished"></translation>
+        <translation>Read It Later&apos;s sync server is down for scheduled maintenance.</translation>
     </message>
 </context>
 </TS>
