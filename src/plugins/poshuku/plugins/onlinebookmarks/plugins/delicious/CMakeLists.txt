@@ -12,32 +12,18 @@ set (DELICIOUS_SRCS
 	deliciousaccount.cpp
 	deliciousapi.cpp
 	)
-
-set (DELICIOUS_HEADERS
-	delicious.h
-	deliciousauthwidget.h
-	deliciousservice.h
-	deliciousaccount.h
-	deliciousapi.h
-	)
-
 set (DELICIOUS_FORMS deliciousauthwidget.ui)
+set (DELICIOUS_RESOURCES deliciousresources.qrc)
 
 CreateTrs ("poshuku_onlinebookmarks_delicious" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_onlinebookmarks_delicious" "en;ru_RU" "${DELICIOUS_SRCS}" "${DELICIOUS_FORMS}" "")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (DELICIOUS_MOC_SRCS ${DELICIOUS_HEADERS})
-endif ()
 QT4_WRAP_UI (DELICIOUS_UIS_H ${DELICIOUS_FORMS})
-
-set (DELICIOUS_RESOURCES deliciousresources.qrc)
 QT4_ADD_RESOURCES (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
 
 add_library (leechcraft_poshuku_onlinebookmarks_delicious SHARED
  	${ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS}
 	${DELICIOUS_SRCS}
-	${DELICIOUS_MOC_SRCS}
 	${DELICIOUS_UIS_H}
 	${DELICIOUS_RCCS}
 	)
