@@ -12,6 +12,7 @@ set (FILESCHEME_RESOURCES
 	poshukufileschemeresources.qrc
 	)
 CreateTrs ("poshuku_filescheme" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" FILESCHEME_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("poshuku_filescheme" "en;ru_RU" "${FILESCHEME_SRCS}" "${FILESCHEME_FORMS}" "")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (FILESCHEME_MOC_SRCS ${FILESCHEME_HEADERS})
@@ -28,4 +29,3 @@ target_link_libraries (leechcraft_poshuku_filescheme
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_poshuku_filescheme DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${FILESCHEME_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
