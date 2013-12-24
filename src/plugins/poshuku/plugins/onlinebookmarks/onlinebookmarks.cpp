@@ -92,7 +92,7 @@ namespace OnlineBookmarks
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Sync local bookmarks with your account in online bookmark services like Read It Later");
+		return tr ("Sync local bookmarks with your account in online bookmark services like Read It Later.");
 	}
 
 	QIcon Plugin::GetIcon () const

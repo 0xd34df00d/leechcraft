@@ -5,7 +5,7 @@
 			<label value="Accounts" />
 		<item type="customwidget" label="own" name="Accounts" />
 		<item type="combobox" property="UploadType">
-			<label value="Upload bookmarks type:"/>
+			<label value="Bookmarks sync mode:"/>
 			<option name="0" default="true">
 				<label value="everything with everything" />
 			</option>
