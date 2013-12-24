@@ -4,55 +4,51 @@
 <context>
     <name>AuthWidget</name>
     <message>
-        <location filename="deliciousauthwidget.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="deliciousauthwidget.ui" line="31"/>
+        <location filename="deliciousauthwidget.ui" line="34"/>
         <source>Login:</source>
-        <translation type="unfinished"></translation>
+        <translation>Login:</translation>
     </message>
     <message>
-        <location filename="deliciousauthwidget.ui" line="41"/>
+        <location filename="deliciousauthwidget.ui" line="44"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Password:</translation>
     </message>
     <message>
-        <location filename="deliciousauthwidget.ui" line="55"/>
-        <source>Use YahooID:</source>
-        <translation type="unfinished"></translation>
+        <location filename="deliciousauthwidget.ui" line="61"/>
+        <source>Use YahooID</source>
+        <translation>Use YahooID</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::OnlineBookmarks::Delicious::DeliciousService</name>
     <message>
-        <location filename="deliciousservice.cpp" line="255"/>
-        <source>Authentication was successfull.</source>
-        <translation type="unfinished"></translation>
+        <location filename="deliciousservice.cpp" line="281"/>
+        <source>Authentication successfull.</source>
+        <translation>Authentication successfull.</translation>
     </message>
     <message>
-        <location filename="deliciousservice.cpp" line="260"/>
-        <source>Invalid nickname or password.</source>
-        <translation type="unfinished"></translation>
+        <location filename="deliciousservice.cpp" line="286"/>
+        <source>Invalid login or password.</source>
+        <oldsource>Invalid nickname or password.</oldsource>
+        <translation>Invalid login or password.</translation>
     </message>
     <message>
-        <location filename="deliciousservice.cpp" line="272"/>
-        <source>Bookmark(s) was send to service Delicious successfully.</source>
-        <translation type="unfinished"></translation>
+        <location filename="deliciousservice.cpp" line="298"/>
+        <source>Bookmarks were sent to Del.icio.us.</source>
+        <translation>Bookmarks were sent to Del.icio.us.</translation>
     </message>
     <message>
-        <location filename="deliciousservice.cpp" line="282"/>
-        <source>Error during sending bookmarks to Delicious.</source>
-        <translation type="unfinished"></translation>
+        <location filename="deliciousservice.cpp" line="308"/>
+        <source>Error sending bookmarks to Del.icio.us.</source>
+        <translation>Error sending bookmarks to Del.icio.us.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::OnlineBookmarks::Delicious::Plugin</name>
     <message>
-        <location filename="delicious.cpp" line="63"/>
-        <source>Sync local bookmarks with your account in Delicious</source>
-        <translation type="unfinished"></translation>
+        <location filename="delicious.cpp" line="77"/>
+        <source>Sync local bookmarks with your Del.icio.us account.</source>
+        <translation>Sync local bookmarks with your Del.icio.us account.</translation>
     </message>
 </context>
 </TS>
