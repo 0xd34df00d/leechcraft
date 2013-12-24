@@ -283,7 +283,7 @@ namespace Delicious
 			}
 			else
 			{
-				msg = tr ("Invalid nickname or password.");
+				msg = tr ("Invalid login or password.");
 				priority = LeechCraft::PWarning_;
 			}
 			e = Util::MakeNotification ("OnlineBookmarks",
