@@ -24,6 +24,7 @@ set (DELICIOUS_HEADERS
 set (DELICIOUS_FORMS deliciousauthwidget.ui)
 
 CreateTrs ("poshuku_onlinebookmarks_delicious" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("poshuku_onlinebookmarks_delicious" "en;ru_RU" "${DELICIOUS_SRCS}" "${DELICIOUS_FORMS}" "")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (DELICIOUS_MOC_SRCS ${DELICIOUS_HEADERS})
@@ -47,4 +48,3 @@ target_link_libraries (leechcraft_poshuku_onlinebookmarks_delicious
 	)
 
 install (TARGETS leechcraft_poshuku_onlinebookmarks_delicious DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
