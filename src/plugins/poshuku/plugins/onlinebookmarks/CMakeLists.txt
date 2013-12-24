@@ -29,6 +29,7 @@ set (ONLINEBOOKMARKS_RESOURCES poshukuonlinebookmarksresources.qrc
 	)
 
 CreateTrs ("poshuku_onlinebookmarks" "de;en;fr;it;ru_RU;uk_UA" ONLINEBOOKMARKS_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("poshuku_onlinebookmarks" "en;ru_RU" "${ONLINEBOOKMARKS_SRCS}" "${ONLINEBOOKMARKS_FORMS}" "poshukuonlinebookmarkssettings.xml")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ONLINEBOOKMARKS_MOC_SRCS ${ONLINEBOOKMARKS_HEADERS})
@@ -50,7 +51,6 @@ target_link_libraries (leechcraft_poshuku_onlinebookmarks
 	)
 
 install (TARGETS leechcraft_poshuku_onlinebookmarks DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${ONLINEBOOKMARKS_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES poshukuonlinebookmarkssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 set (ONLINEBOOKMARKS_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
