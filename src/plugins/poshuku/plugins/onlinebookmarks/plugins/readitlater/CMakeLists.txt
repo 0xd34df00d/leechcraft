@@ -27,6 +27,7 @@ set (READITLATER_HEADERS
 set (READITLATER_FORMS readitlaterauthwidget.ui)
 
 CreateTrs ("poshuku_onlinebookmarks_readitlater" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("poshuku_onlinebookmarks_readitlater" "en;ru_RU" "${READITLATER_SRCS}" "${READITLATER_FORMS}" "")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (READITLATER_MOC_SRCS ${READITLATER_HEADERS})
@@ -51,4 +52,3 @@ target_link_libraries (leechcraft_poshuku_onlinebookmarks_readitlater
 	)
 
 install (TARGETS leechcraft_poshuku_onlinebookmarks_readitlater DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
