@@ -106,7 +106,7 @@ namespace SB2
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Next-generation fluid sidebar.");
+		return tr ("Side panel with quarks like tab launcher and switcher or tray area, where other plugins can also embed quarks .");
 	}
 
 	QIcon Plugin::GetIcon () const
