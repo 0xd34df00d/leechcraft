@@ -12,28 +12,16 @@ set (ONLINEBOOKMARKS_SRCS
 	accountssettings.cpp
 	pluginmanager.cpp
 	)
-
-set (ONLINEBOOKMARKS_HEADERS
-	onlinebookmarks.h
-	xmlsettingsmanager.h
-	core.h
-	accountssettings.h
-	pluginmanager.h
-	)
-
 set (ONLINEBOOKMARKS_FORMS
 	accountssettings.ui
 	)
-
-set (ONLINEBOOKMARKS_RESOURCES poshukuonlinebookmarksresources.qrc
+set (ONLINEBOOKMARKS_RESOURCES
+	poshukuonlinebookmarksresources.qrc
 	)
 
 CreateTrs ("poshuku_onlinebookmarks" "de;en;fr;it;ru_RU;uk_UA" ONLINEBOOKMARKS_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_onlinebookmarks" "en;ru_RU" "${ONLINEBOOKMARKS_SRCS}" "${ONLINEBOOKMARKS_FORMS}" "poshukuonlinebookmarkssettings.xml")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (ONLINEBOOKMARKS_MOC_SRCS ${ONLINEBOOKMARKS_HEADERS})
-endif ()
 QT4_WRAP_UI (ONLINEBOOKMARKS_UIS_H ${ONLINEBOOKMARKS_FORMS})
 QT4_ADD_RESOURCES (ONLINEBOOKMARKS_RCCS ${ONLINEBOOKMARKS_RESOURCES})
 
