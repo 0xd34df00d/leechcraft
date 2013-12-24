@@ -17,6 +17,7 @@ set (FATAPE_RESOURCES
 	poshukufataperesources.qrc
 	)
 CreateTrs ("poshuku_fatape" "en;it;ru_RU;uk_UA" FATAPE_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("poshuku_fatape" "en;ru_RU" "${FATAPE_SRCS}" "${FATAPE_FORMS}" "poshukufatapesettings.xml")
 
 QT4_WRAP_UI (FATAPE_UIS_H ${FATAPE_FORMS})
 QT4_ADD_RESOURCES (FATAPE_RCCS ${FATAPE_RESOURCES})
@@ -32,4 +33,3 @@ target_link_libraries (leechcraft_poshuku_fatape
 	)
 install (TARGETS leechcraft_poshuku_fatape DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukufatapesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${FATAPE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
