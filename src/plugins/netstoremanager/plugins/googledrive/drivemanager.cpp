@@ -36,6 +36,7 @@
 #include <QMainWindow>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
+#include <util/sys/mimedetector.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include "account.h"
@@ -54,17 +55,6 @@ namespace GoogleDrive
 	, Account_ (acc)
 	, SecondRequestIfNoItems_ (true)
 	{
-#ifdef HAVE_MAGIC
-		Magic_ = magic_open (MAGIC_MIME_TYPE);
-		magic_load (Magic_, NULL);
-#endif
-	}
-
-	DriveManager::~DriveManager ()
-	{
-#ifdef HAVE_MAGIC
-		magic_close (Magic_);
-#endif
 	}
 
 	void DriveManager::RefreshListing ()
@@ -288,10 +278,8 @@ namespace GoogleDrive
 				.arg (key));
 		QNetworkRequest request (initiateUrl);
 		request.setPriority (QNetworkRequest::LowPriority);
-#ifdef HAVE_MAGIC
-		request.setRawHeader ("X-Upload-Content-Type",
-				magic_file (Magic_, filePath.toUtf8 ()));
-#endif
+		Util::MimeDetector detector;
+		request.setRawHeader ("X-Upload-Content-Type", detector (filePath));
 		request.setRawHeader ("X-Upload-Content-Length",
 				QString::number (QFileInfo (filePath).size ()).toUtf8 ());
 		QVariantMap map;
@@ -535,7 +523,7 @@ namespace GoogleDrive
 		}
 
 		QString accessKey = res.toMap ().value ("access_token").toString ();
-		qDebug () << accessKey;
+
 		if (accessKey.isEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO << "access token is empty";
@@ -888,10 +876,8 @@ namespace GoogleDrive
 
 		QUrl url (reply->rawHeader ("Location"));
 		QNetworkRequest request (url);
-#ifdef HAVE_MAGIC
-		request.setHeader (QNetworkRequest::ContentTypeHeader,
-				magic_file (Magic_, path.toUtf8 ()));
-#endif
+		Util::MimeDetector detector;
+		request.setHeader (QNetworkRequest::ContentTypeHeader, detector (path));
 		request.setHeader (QNetworkRequest::ContentLengthHeader,
 				QString::number (QFileInfo (path).size ()).toUtf8 ());
 

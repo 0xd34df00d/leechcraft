@@ -6,24 +6,11 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (QJSON REQUIRED)
 
-set (MAGIC_INCLUDES)
-set (MAGIC_LIBS)
-
-if (NOT WIN32)
-	find_package (MAGIC REQUIRED)
-	if (MAGIC_FOUND)
-		add_definitions (-DHAVE_MAGIC)
-		set (MAGIC_INCLUDES ${MAGIC_INCLUDE_DIR})
-		set (MAGIC_LIBS ${MAGIC_LIBRARIES})
-	endif ()
-endif ()
-
 include_directories (${NETSTOREMANAGER_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${QJSON_INCLUDE_DIR}
-	${MAGIC_INCLUDES}
 	)
 
 set (GOOGLEDRIVE_SRCS
@@ -53,7 +40,6 @@ target_link_libraries (leechcraft_netstoremanager_googledrive
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
-	${MAGIC_LIBS}
 	)
 
 install (TARGETS leechcraft_netstoremanager_googledrive DESTINATION ${LC_PLUGINS_DEST})
