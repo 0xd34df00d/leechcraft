@@ -52,7 +52,9 @@ endif ()
 set (SB2_RESOURCES sb2resources.qrc)
 QT4_ADD_RESOURCES (SB2_RCCS ${SB2_RESOURCES})
 
+CreateTrs ("sb2" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("sb2" "en;ru_RU" "${SRCS}" "" "sb2panelsettings.xml")
+
 add_library (leechcraft_sb2 SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}

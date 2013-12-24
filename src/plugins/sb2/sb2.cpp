@@ -35,6 +35,7 @@
 #include <QtDeclarative>
 #include <QtDebug>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
@@ -54,6 +55,7 @@ namespace SB2
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("sb2");
 		Proxy_ = proxy;
 
 		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
