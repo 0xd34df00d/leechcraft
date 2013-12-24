@@ -20,13 +20,16 @@ set (KEYWORDS_RESOURCES
 	poshukukeywordsresources.qrc
 	)
 
+CreateTrs ("poshuku_keywords" "en;ru_RU" KEYWORDS_COMPILED_TRANSLATIONS)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (KEYWORDS_MOC_SRCS ${KEYWORDS_HEADERS})
 endif ()
 CreateTrsUpTarget("poshuku_keywords" "en;ru_RU" "${KEYWORDS_SRCS}" "${KEYWORDS_FORMS}" "poshukukeywordssettings.xml")
+
 QT4_WRAP_UI (KEYWORDS_UIS_H ${KEYWORDS_FORMS})
 QT4_ADD_RESOURCES (KEYWORDS_RCCS ${KEYWORDS_RESOURCES})
 add_library (leechcraft_poshuku_keywords SHARED
+	${KEYWORDS_COMPILED_TRANSLATIONS}
 	${KEYWORDS_SRCS}
 	${KEYWORDS_MOC_SRCS}
 	${KEYWORDS_UIS_H}

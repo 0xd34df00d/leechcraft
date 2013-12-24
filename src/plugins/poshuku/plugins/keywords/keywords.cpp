@@ -46,6 +46,8 @@ namespace Keywords
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("poshuku_keywords");
+
 		CoreProxy_ = proxy;
 		Model_.reset (new QStandardItemModel);
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Keyword"))
