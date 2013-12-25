@@ -39,7 +39,9 @@ set (FORMS
 	summarywidget.ui
 	)
 set (RESOURCES summaryresources.qrc)
+
 CreateTrs ("summary" "ar;be;de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("summary" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
@@ -59,4 +61,3 @@ target_link_libraries (leechcraft_summary
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_summary DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
