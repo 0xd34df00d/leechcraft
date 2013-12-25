@@ -18,7 +18,7 @@ set (SRCS
 	util.cpp
 	submitinfo.cpp
 	)
-#CreateTrs("scroblibre" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("scroblibre" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("scroblibre" "en;ru_RU" "${SRCS}" "${FORMS}" "scroblibresettings.xml")
 
 add_library (leechcraft_scroblibre SHARED
