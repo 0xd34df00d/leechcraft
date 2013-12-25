@@ -123,10 +123,37 @@ namespace CrashProcess
 		Ui_.TraceDisplay_->append (part);
 	}
 
+	namespace
+	{
+		template<typename T>
+		std::reverse_iterator<T> MakeReverse (T t)
+		{
+			return std::reverse_iterator<T> { t };
+		}
+	}
+
 	void CrashDialog::handleFinished (int code)
 	{
 		Ui_.TraceDisplay_->append ("\n\nGDB exited with code " + QString::number (code));
 		SetInteractionAllowed (true);
+
+		auto lines = Ui_.TraceDisplay_->toPlainText ().split ("\n");
+
+		const auto pos = std::find_if (lines.begin (), lines.end (),
+				[] (const QString& line) { return line.contains ("signal handler called"); });
+		if (pos == lines.end ())
+			return;
+
+		const auto lastThread = std::find_if (MakeReverse (pos), MakeReverse (lines.begin ()),
+				[] (const QString& text) { return text.startsWith ("Thread "); });
+		if (lastThread == MakeReverse (lines.end ()))
+			return;
+
+		lines.erase (lastThread.base (), pos);
+
+		Ui_.TraceDisplay_->clear ();
+		for (const auto& line : lines)
+			Ui_.TraceDisplay_->append (line);
 	}
 
 	void CrashDialog::reload ()
