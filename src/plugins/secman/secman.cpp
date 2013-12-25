@@ -44,12 +44,13 @@ namespace SecMan
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("secman");
+
+#ifdef SECMAN_EXPOSE_CONTENTSDISPLAY
 		auto displayContentsAction = new QAction (tr ("Display storages' contents"), this);
 		connect (displayContentsAction,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleDisplayContents ()));
-#ifdef SECMAN_EXPOSE_CONTENTSDISPLAY
 		MenuActions_ ["tools"] << displayContentsAction;
 #endif
 	}
