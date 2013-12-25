@@ -51,6 +51,7 @@ namespace CrashProcess
 	public:
 		CrashDialog (const AppInfo&, QWidget* = 0);
 	private:
+		void SetFormat ();
 		void WriteTrace (const QString&);
 		void SetInteractionAllowed (bool);
 	public slots:

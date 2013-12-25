@@ -68,6 +68,14 @@ namespace CrashProcess
 		show ();
 	}
 
+	void CrashDialog::SetFormat ()
+	{
+		auto doc = Ui_.TraceDisplay_->document ();
+		auto frameFmt = doc->rootFrame ()->frameFormat ();
+		frameFmt.setBackground ({ "#dddddd" });
+		doc->rootFrame ()->setFrameFormat (frameFmt);
+	}
+
 	void CrashDialog::WriteTrace (const QString& filename)
 	{
 		QFile file (filename);
@@ -152,6 +160,9 @@ namespace CrashProcess
 		lines.erase (lastThread.base (), pos);
 
 		Ui_.TraceDisplay_->clear ();
+
+		SetFormat ();
+
 		for (const auto& line : lines)
 			Ui_.TraceDisplay_->append (line);
 	}
@@ -159,6 +170,8 @@ namespace CrashProcess
 	void CrashDialog::reload ()
 	{
 		Ui_.TraceDisplay_->clear ();
+
+		SetFormat ();
 
 		auto l = new GDBLauncher (Info_.PID_, Info_.Path_);
 		connect (l,
