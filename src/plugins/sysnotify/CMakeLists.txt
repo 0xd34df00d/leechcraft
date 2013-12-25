@@ -13,7 +13,7 @@ set (SRCS
 	sysnotify.cpp
 	notificationmanager.cpp
 	)
-#CreateTrs("sysnotify" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("sysnotify" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("sysnotify" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_sysnotify SHARED

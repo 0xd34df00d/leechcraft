@@ -29,6 +29,7 @@
 
 #include "sysnotify.h"
 #include <QIcon>
+#include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "notificationmanager.h"
 
@@ -38,6 +39,8 @@ namespace Sysnotify
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("sysnotify");
+
 		Manager_.reset (new NotificationManager (this));
 	}
 
