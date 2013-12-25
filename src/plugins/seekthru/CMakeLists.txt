@@ -91,6 +91,7 @@ add_custom_command (OUTPUT
 	DEPENDS ${TRANSLATIONS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
+CreateTrsUpTarget("seekthru" "en;ru_RU" "${SRCS}" "${FORMS}" "seekthrusettings.xml")
 add_library (leechcraft_seekthru SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
