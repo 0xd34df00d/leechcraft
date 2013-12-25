@@ -60,7 +60,7 @@ namespace LeechCraft
 
 		setAcceptDrops (true);
 		setMovable (true);
-		setUsesScrollButtons (false);
+		setUsesScrollButtons (true);
 
 		addTab (QString ());
 	}
