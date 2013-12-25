@@ -34,18 +34,6 @@ set (SRCS
 	startupfirstpage.cpp
 	tagsasker.cpp
 	)
-set (HEADERS
-	seekthru.h
-	core.h
-	description.h
-	xmlsettingsmanager.h
-	searcherslist.h
-	findproxy.h
-	searchhandler.h
-	wizardgenerator.h
-	startupfirstpage.h
-	tagsasker.h
-	)
 set (FORMS
 	searcherslist.ui
 	startupfirstpage.ui
@@ -54,10 +42,6 @@ set (FORMS
 set (RESOURCES
 	seekthruresources.qrc
 	)
-
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
