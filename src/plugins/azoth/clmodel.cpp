@@ -151,7 +151,7 @@ namespace Azoth
 		return proxy->IsCancelled ();
 	}
 
-	bool CLModel::TryInvite (const QMimeData *mime, int row, const QModelIndex& parent)
+	bool CLModel::TryInvite (const QMimeData *mime, int, const QModelIndex& parent)
 	{
 		if (!mime->hasFormat (CLEntryFormat))
 			return false;
