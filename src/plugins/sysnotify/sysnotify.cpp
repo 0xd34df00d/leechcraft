@@ -62,7 +62,7 @@ namespace Sysnotify
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("");
+		return tr ("Notifies about LeechCraft events via Desktop Notifications.");
 	}
 
 	QIcon Plugin::GetIcon () const
