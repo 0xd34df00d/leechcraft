@@ -106,7 +106,7 @@ namespace HotStreams
 		stealkill->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
 		Roots_ ["42fm"] = stealkill;
 		Root2Fetcher_ [stealkill] = [nam, this] (QStandardItem *stealkill)
-				{ new StealKillListFetcher (Roots_ ["42fm"], nam, this); };
+				{ new StealKillListFetcher (stealkill, nam, this); };
 
 		auto icecast = new QStandardItem ("Icecast");
 		icecast->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
@@ -115,7 +115,7 @@ namespace HotStreams
 		Roots_ ["icecast"] = icecast;
 		Root2Fetcher_ [icecast] = [nam, this] (QStandardItem *icecast)
 			{
-				auto icecastFetcher = new IcecastFetcher (Roots_ ["icecast"], nam, this);
+				auto icecastFetcher = new IcecastFetcher (icecast, nam, this);
 				connect (icecastFetcher,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 						this,
