@@ -41,6 +41,7 @@ set (RESOURCES
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
+CreateTrsUpTarget("secman" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 add_library (leechcraft_secman SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
