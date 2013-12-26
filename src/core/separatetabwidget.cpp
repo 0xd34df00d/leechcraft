@@ -625,6 +625,11 @@ namespace LeechCraft
 		AddTabButton_->setPopupMode (QToolButton::MenuButtonPopup);
 		AddTabButton_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		AddTabButton_->setDefaultAction (DefaultTabAction_);
+
+		const auto iconSize = QApplication::style ()->pixelMetric (QStyle::PM_TabBarIconSize);
+		AddTabButton_->setIconSize ({ iconSize, iconSize });
+		AddTabButton_->setMaximumHeight (iconSize);
+
 		AddTabButton_->setAutoRaise (true);
 
 		auto cont = new QWidget;
