@@ -50,6 +50,10 @@ set (SRCS
 	gacts.cpp
 	)
 
+if (APPLE)
+	set (ADDITIONAL_LIBS "-framework CoreFoundation;-framework Carbon")
+endif ()
+
 CreateTrs("gacts" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("gacts" "en;ru_RU" "${SRCS}" "" "")
 
@@ -62,5 +66,6 @@ target_link_libraries (leechcraft_gacts
 	${QT_LIBRARIES}
 	${QXT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${ADDITIONAL_LIBS}
 	)
 install (TARGETS leechcraft_gacts DESTINATION ${LC_PLUGINS_DEST})

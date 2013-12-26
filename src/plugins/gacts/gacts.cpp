@@ -93,6 +93,9 @@ namespace GActs
 		}
 
 		const QKeySequence& seq = e.Additional_ ["Shortcut"].value<QKeySequence> ();
+		if (seq.isEmpty ())
+			return;
+
 		if (RegisteredShortcuts_.contains (id))
 		{
 			RegisteredShortcuts_ [id]->setShortcut (seq);

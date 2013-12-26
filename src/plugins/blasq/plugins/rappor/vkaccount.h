@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <QObject>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/blasq/isupportuploads.h>

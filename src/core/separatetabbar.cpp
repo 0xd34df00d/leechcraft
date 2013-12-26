@@ -181,7 +181,8 @@ namespace LeechCraft
 			UpdateComputedWidths ();
 
 		auto result = QTabBar::tabSizeHint (index);
-		result.setWidth (ComputedWidths_.value (index));
+		if (index != count () - 1)
+			result.setWidth (ComputedWidths_.value (index));
 		return result;
 	}
 

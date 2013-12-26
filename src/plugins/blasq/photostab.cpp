@@ -29,6 +29,7 @@
 
 #include "photostab.h"
 #include <array>
+#include <cmath>
 #include <QToolBar>
 #include <QComboBox>
 #include <QDeclarativeEngine>
