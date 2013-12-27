@@ -48,7 +48,7 @@ namespace AdvancedNotifications
 		QObjectList LastEvents_;
 		QUrl Location_;
 	public:
-		VisualNotificationsView (QWidget* = 0);
+		VisualNotificationsView ();
 
 		void SetEvents (const QList<EventData>&);
 	private slots:
