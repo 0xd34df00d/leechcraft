@@ -31,6 +31,7 @@
 #include <QtDebug>
 #include <QApplication>
 #include <util/gui/util.h>
+#include <util/gui/autoresizemixin.h>
 #include "maillistview.h"
 
 namespace LeechCraft
@@ -66,9 +67,7 @@ namespace GmailNotifier
 		}
 
 		MailListView_ = new MailListView (Infos_, Proxy_);
-		qApp->processEvents ();
-		MailListView_->move (Util::FitRect ({ x, y }, MailListView_->size (), geometry,
-				Util::FitFlag::NoOverlap));
+		new Util::AutoResizeMixin ({ x, y }, [geometry] { return geometry; }, MailListView_);
 		MailListView_->show ();
 	}
 }
