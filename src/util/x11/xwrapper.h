@@ -40,6 +40,7 @@
 
 class QIcon;
 class QWidget;
+class QRect;
 
 typedef unsigned long Window;
 #define _XTYPEDEF_XID
@@ -119,6 +120,9 @@ namespace Util
 		QString GetDesktopName (int, const QString& = QString ());
 		int GetWindowDesktop (Window);
 		void MoveWindowToDesktop (Window, int);
+
+		QRect GetAvailableGeometry (int screen = -1);
+		QRect GetAvailableGeometry (QWidget*);
 
 		Atom GetAtom (const QString&);
 	private:
