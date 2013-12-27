@@ -51,6 +51,7 @@ namespace AnHero
 	namespace
 	{
 		QByteArray AppPath_;
+		QByteArray AppDir_;
 		QByteArray AppVersion_;
 		QByteArray AppArgs_;
 
@@ -161,6 +162,7 @@ namespace AnHero
 			return;
 
 		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
+		AppDir_ = QCoreApplication::applicationDirPath ().toUtf8 ();
 		AppVersion_ = proxy->GetVersion ().toUtf8 ();
 		AppArgs_ = args.join (" ").toUtf8 ();
 		SetCrashHandler (DefaultCrashHandler);
