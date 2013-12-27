@@ -436,6 +436,13 @@ namespace Util
 		}
 	}
 
+	void XWrapper::ClearStrut (QWidget *w)
+	{
+		const auto wid = w->effectiveWinId ();
+		XDeleteProperty (Display_, wid, GetAtom ("_NET_WM_STRUT"));
+		XDeleteProperty (Display_, wid, GetAtom ("_NET_WM_STRUT_PARTIAL"));
+	}
+
 	void XWrapper::SetStrut (Window wid,
 			int left, int right, int top, int bottom,
 			int leftStartY, int leftEndY,

@@ -93,6 +93,7 @@ namespace Util
 		void Subscribe (Window);
 
 		void SetStrut (QWidget*, Qt::ToolBarArea);
+		void ClearStrut (QWidget*);
 		void SetStrut (Window wid,
 				int left, int right, int top, int bottom,
 				int leftStartY, int leftEndY,
