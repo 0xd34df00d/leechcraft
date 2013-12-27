@@ -180,8 +180,12 @@ namespace SB2
 		}
 		else
 		{
+			ViewMgr_->GetView ()->hide ();
+
 			const auto screenGeometry = QApplication::desktop ()->
-					screenGeometry (ViewMgr_->GetManagedWindow ());
+					availableGeometry (ViewMgr_->GetManagedWindow ());
+
+			ViewMgr_->GetView ()->show ();
 
 			QSize diff;
 			const auto& rect = ToGeom (screenGeometry, ViewMgr_->GetView ()->minimumSizeHint (), pos, &diff);
