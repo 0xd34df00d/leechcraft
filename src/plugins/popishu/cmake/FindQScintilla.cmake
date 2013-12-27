@@ -11,45 +11,45 @@
 # Redistribution and use is allowed according to the terms of the FreeBSD license.
 
 if(NOT QT4_FOUND)
-    include(FindQt4)
+	include(FindQt4)
 endif()
 
 set(QSCINTILLA_FOUND FALSE)
 
 if(QT4_FOUND)
-    find_path(QSCINTILLA_INCLUDE_DIR qsciglobal.h
-    "${QT_INCLUDE_DIR}/Qsci" /usr/include /usr/include/Qsci
-    )
+	find_path(QSCINTILLA_INCLUDE_DIR qsciglobal.h
+	"${QT_INCLUDE_DIR}/Qsci" /usr/include /usr/include/Qsci /usr/local/include /usr/local/include/Qsci
+	)
 
-    set(QSCINTILLA_NAMES ${QSCINTILLA_NAMES} qscintilla2 libqscintilla2)
-    find_library(QSCINTILLA_LIBRARY
-        NAMES ${QSCINTILLA_NAMES}
-        PATHS ${QT_LIBRARY_DIR}
-    )
+	set(QSCINTILLA_NAMES ${QSCINTILLA_NAMES} qscintilla2 libqscintilla2)
+	find_library(QSCINTILLA_LIBRARY
+		NAMES ${QSCINTILLA_NAMES}
+		PATHS ${QT_LIBRARY_DIR}
+	)
 
-    if (QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
+	if (QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
 
-        set(QSCINTILLA_LIBRARIES ${QSCINTILLA_LIBRARY})
-        set(QSCINTILLA_FOUND TRUE)
+		set(QSCINTILLA_LIBRARIES ${QSCINTILLA_LIBRARY})
+		set(QSCINTILLA_FOUND TRUE)
 
-        if (CYGWIN)
-            if(BUILD_SHARED_LIBS)
-            # No need to define QSCINTILLA_USE_DLL here, because it's default for Cygwin.
-            else()
-            set (QSCINTILLA_DEFINITIONS -DQSCINTILLA_STATIC)
-            endif()
-        endif ()
+		if (CYGWIN)
+			if(BUILD_SHARED_LIBS)
+			# No need to define QSCINTILLA_USE_DLL here, because it's default for Cygwin.
+			else()
+			set (QSCINTILLA_DEFINITIONS -DQSCINTILLA_STATIC)
+			endif()
+		endif ()
 
-    endif ()
+	endif ()
 endif()
 
 if (QSCINTILLA_FOUND)
   if (NOT QScintilla_FIND_QUIETLY)
-    message(STATUS "Found QScintilla2: ${QSCINTILLA_LIBRARY}")
+	message(STATUS "Found QScintilla2: ${QSCINTILLA_LIBRARY}")
   endif ()
 else ()
   if (QScintilla_FIND_REQUIRED)
-    message(FATAL_ERROR "Could not find QScintilla library")
+	message(FATAL_ERROR "Could not find QScintilla library")
   endif ()
 endif ()
 
