@@ -99,9 +99,18 @@ namespace AnHero
 			char pidtxt [10];
 			sprintf (pidtxt, "%lld", QCoreApplication::applicationPid ());
 
+#ifdef Q_OS_MAC
+			char crashprocess [1024] = { 0 };
+			sprintf (crashprocess, "%s/lc_anhero_crashprocess", AppDir_.constData ());
+#endif
+
 			const char *argv [] =
 			{
+#ifndef Q_OS_MAC
 				"lc_anhero_crashprocess",
+#else
+				crashprocess,
+#endif
 #ifdef HAVE_X11
 				"-display",
 				QX11Info::display () ? XDisplayString (QX11Info::display ()) : getenv ("DISPLAY"),
