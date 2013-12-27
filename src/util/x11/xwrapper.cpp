@@ -159,6 +159,12 @@ namespace Util
 		};
 	}
 
+	void XWrapper::Sync ()
+	{
+		XFlush (Display_);
+		XSync (Display_, False);
+	}
+
 	QList<Window> XWrapper::GetWindows ()
 	{
 		ulong length = 0;

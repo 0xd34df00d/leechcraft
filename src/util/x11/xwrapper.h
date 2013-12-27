@@ -77,6 +77,8 @@ namespace Util
 
 		bool Filter (XEvent*);
 
+		void Sync ();
+
 		QList<Window> GetWindows ();
 		QString GetWindowTitle (Window);
 		QIcon GetWindowIcon (Window);
