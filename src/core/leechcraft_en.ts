@@ -643,7 +643,7 @@
         <translation>Always</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="701"/>
+        <location filename="mainwindow.cpp" line="708"/>
         <source>LeechCraft menu</source>
         <translation>LeechCraft menu</translation>
     </message>
@@ -980,7 +980,7 @@
 <context>
     <name>LeechCraft::TabManager</name>
     <message>
-        <location filename="tabmanager.cpp" line="72"/>
+        <location filename="tabmanager.cpp" line="67"/>
         <source>Close all but this</source>
         <translation>Close all but this</translation>
     </message>
@@ -1372,6 +1372,29 @@ If you have read and really understood all these letters, click Cancel button in
     </message>
 </context>
 <context>
+    <name>VkCaptchaDialog</name>
+    <message>
+        <location filename="../util/svcauth/vkcaptchadialog.ui" line="14"/>
+        <source>CAPTCHA required</source>
+        <translation>CAPTCHA required</translation>
+    </message>
+    <message>
+        <location filename="../util/svcauth/vkcaptchadialog.ui" line="20"/>
+        <source>Image:</source>
+        <translation>Image:</translation>
+    </message>
+    <message>
+        <location filename="../util/svcauth/vkcaptchadialog.ui" line="27"/>
+        <source>loading...</source>
+        <translation>loading...</translation>
+    </message>
+    <message>
+        <location filename="../util/svcauth/vkcaptchadialog.ui" line="34"/>
+        <source>Text:</source>
+        <translation>Text:</translation>
+    </message>
+</context>
+<context>
     <name>WizardTypeChoicePage</name>
     <message>
         <location filename="wizardtypechoicepage.ui" line="14"/>
@@ -1409,384 +1432,380 @@ If you have read and really understood all these letters, click Cancel button in
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
-        <source>Use tab scroll buttons</source>
-        <translation>Use tab scroll buttons</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="5"/>
         <source>Tool button style:</source>
+        <oldsource>Use tab scroll buttons</oldsource>
         <translation>Tool button style:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Only display the icon</source>
         <translation>Only display the icon</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="7"/>
+        <location filename="dummy.cpp" line="6"/>
         <source>Only display the text</source>
         <translation>Only display the text</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="8"/>
+        <location filename="dummy.cpp" line="7"/>
         <source>The text appears beside the icon</source>
         <translation>The text appears beside the icon</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="8"/>
         <source>The text appears under the icon</source>
         <translation>The text appears under the icon</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="9"/>
         <source>Icon set:</source>
         <translation>Icon set:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="10"/>
         <source>Oxygen</source>
         <translation>Oxygen</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="17"/>
+        <location filename="dummy.cpp" line="16"/>
         <source>Style:</source>
         <translation>Style:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
-        <location filename="dummy.cpp" line="18"/>
+        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Default</source>
         <translation>Default</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="19"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>Plastique</source>
         <translation>Plastique</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="20"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>Language:</source>
         <translation>Language:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="21"/>
+        <location filename="dummy.cpp" line="20"/>
         <source>System</source>
         <translation>System</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Default new tab contents:</source>
         <translation>Default new tab contents:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="22"/>
         <source>Context-dependent</source>
         <translation>Context-dependent</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Tab bar position</source>
         <translation>Tab bar position</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Top</source>
         <translation>Top</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Bottom</source>
         <translation>Bottom</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Show icon in tray</source>
         <translation>Show icon in tray</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="40"/>
         <source>Try external applications when no plugins can handle an entity</source>
         <translation>Try external applications when no plugins can handle an entity</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Set startup password</source>
         <translation>Set startup password</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>Shortcuts</source>
         <translation>Shortcuts</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="26"/>
         <location filename="dummy.cpp" line="27"/>
-        <location filename="dummy.cpp" line="28"/>
         <source>Behavior</source>
         <translation>Behavior</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Ask quit confirmation</source>
         <translation>Ask quit confirmation</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="30"/>
         <source>Exit on close</source>
         <translation>Exit on close</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Open new tab next to current</source>
         <translation>Open new tab next to current</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="32"/>
         <source>Tab selection behavior: </source>
         <translation>Tab selection behavior: </translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Select the previously selected tab</source>
         <translation>Select the previously selected tab</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>Select the tab to the right of the one being removed</source>
         <translation>Select the tab to the right of the one being removed</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Select the tab to the left of the one being removed</source>
         <translation>Select the tab to the left of the one being removed</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Automatically accept task when there is only one handler</source>
         <translation>Automatically accept task when there is only one handler</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="42"/>
         <source>Show plugin-dependent actions in tab bar context menu</source>
         <translation>Show plugin-dependent actions in tab bar context menu</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Show as a submenu</source>
         <translation>Show as a submenu</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="44"/>
         <source>Show messages in tray</source>
         <translation>Show messages in tray</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Message timeout:</source>
         <translation>Message timeout:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="46"/>
         <source> s</source>
         <translation> s</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="48"/>
         <source>Tags</source>
         <translation>Tags</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Tags manager</source>
         <translation>Tags manager</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="50"/>
         <location filename="dummy.cpp" line="51"/>
-        <location filename="dummy.cpp" line="52"/>
         <source>Network</source>
         <translation>Network</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Cache size:</source>
         <translation>Cache size:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="53"/>
         <source> MB</source>
         <translation> MB</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="69"/>
         <source>Filter tracking cookies</source>
         <translation>Filter tracking cookies</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Clear cache</source>
         <translation>Clear cache</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="75"/>
+        <location filename="dummy.cpp" line="74"/>
         <source>Clear cookies</source>
         <translation>Clear cookies</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="56"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Application-wide proxy</source>
         <translation>Application-wide proxy</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Plugins icon set:</source>
         <translation>Plugins icon set:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>Color theme:</source>
         <translation>Color theme:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="14"/>
         <source>System default</source>
         <translation>System default</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="16"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>Crafty</source>
         <translation>Crafty</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>Window selection mode for a new tab:</source>
         <translation>Window selection mode for a new tab:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Always select current window</source>
         <translation>Always select current window</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>Select based on tab class</source>
         <translation>Select based on tab class</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Host:</source>
         <translation>Host:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Port:</source>
         <translation>Port:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="59"/>
+        <location filename="dummy.cpp" line="58"/>
         <source>Login:</source>
         <translation>Login:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="60"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Password:</source>
         <translation>Password:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="61"/>
+        <location filename="dummy.cpp" line="60"/>
         <source>Proxy type:</source>
         <translation>Proxy type:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="62"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>SOCKS5</source>
         <translation>SOCKS5</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="63"/>
+        <location filename="dummy.cpp" line="62"/>
         <source>Transparent HTTP</source>
         <translation>Transparent HTTP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="64"/>
+        <location filename="dummy.cpp" line="63"/>
         <source>Caching HTTP</source>
         <translation>Caching HTTP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="65"/>
+        <location filename="dummy.cpp" line="64"/>
         <source>Caching FTP</source>
         <translation>Caching FTP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Privacy</source>
         <translation>Privacy</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Enable cookies</source>
         <translation>Enable cookies</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="68"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Delete cookies on application exit</source>
         <translation>Delete cookies on application exit</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="69"/>
+        <location filename="dummy.cpp" line="68"/>
         <source>Match domain exactly</source>
         <translation>Match domain exactly</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="71"/>
+        <location filename="dummy.cpp" line="70"/>
         <source>Cookie domains whitelist:</source>
         <translation>Cookie domains whitelist:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="72"/>
+        <location filename="dummy.cpp" line="71"/>
         <source>Cookies whose domain matches one of these will always be accepted. Whitelist rules override blacklist.</source>
         <translation>Cookies whose domain matches one of these will always be accepted. Whitelist rules override blacklist.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="73"/>
+        <location filename="dummy.cpp" line="72"/>
         <source>Cookie domains blacklist:</source>
         <translation>Cookie domains blacklist:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="74"/>
+        <location filename="dummy.cpp" line="73"/>
         <source>Cookies whose domain matches one of these will always be rejected. Whitelist rules override blacklist.</source>
         <translation>Cookies whose domain matches one of these will always be rejected. Whitelist rules override blacklist.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="76"/>
+        <location filename="dummy.cpp" line="75"/>
         <source>Set Do Not Track option</source>
         <translation>Set Do Not Track option</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="77"/>
+        <location filename="dummy.cpp" line="76"/>
         <source>Do not track</source>
         <translation>Do not track</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="78"/>
+        <location filename="dummy.cpp" line="77"/>
         <source>Languages</source>
         <translation>Languages</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="79"/>
+        <location filename="dummy.cpp" line="78"/>
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="80"/>
+        <location filename="dummy.cpp" line="79"/>
         <source>Plugins manager</source>
         <translation>Plugins manager</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="81"/>
+        <location filename="dummy.cpp" line="80"/>
         <source>Enable all plugins</source>
         <translation>Enable all plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="82"/>
+        <location filename="dummy.cpp" line="81"/>
         <source>Disable all plugins</source>
         <translation>Disable all plugins</translation>
     </message>

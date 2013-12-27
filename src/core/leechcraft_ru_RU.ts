@@ -1112,6 +1112,25 @@ LeechCraft для Windows — довольно экспериментальна�
     </message>
 </context>
 <context>
+    <name>VkCaptchaDialog</name>
+    <message>
+        <source>CAPTCHA required</source>
+        <translation>Требуется CAPTCHA</translation>
+    </message>
+    <message>
+        <source>Image:</source>
+        <translation>Изображение:</translation>
+    </message>
+    <message>
+        <source>loading...</source>
+        <translation>загрузка…</translation>
+    </message>
+    <message>
+        <source>Text:</source>
+        <translation>Текст:</translation>
+    </message>
+</context>
+<context>
     <name>WizardTypeChoicePage</name>
     <message>
         <source>WizardPage</source>
@@ -1139,10 +1158,6 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Appearance</source>
         <translation>Внешний вид</translation>
-    </message>
-    <message>
-        <source>Use tab scroll buttons</source>
-        <translation>Использовать кнопки прокрути вкладок</translation>
     </message>
     <message>
         <source>Tool button style:</source>
