@@ -160,6 +160,7 @@ namespace Blasq
 
 	IPendingImgSourceRequest* Plugin::RequestImages (const QByteArray& serviceId)
 	{
+		// TODO return proper stuff
 		return nullptr;
 	}
 

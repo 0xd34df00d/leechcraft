@@ -144,8 +144,7 @@ namespace LeechCraft
 		std::sort (infos.begin (), infos.end (),
 				[] (const TabInfo& l, const TabInfo& r) { return l.WidthHint_ < r.WidthHint_; });
 
-		const auto hspace = std::max (style ()->pixelMetric (QStyle::PM_TabBarTabHSpace), 10);
-		const auto btnWidth = AddTabButton_ ? AddTabButton_->sizeHint ().width () + hspace : 30;
+		const auto btnWidth = QTabBar::tabSizeHint (count () - 1).width ();
 
 		auto remainder = width () - btnWidth;
 
@@ -177,12 +176,14 @@ namespace LeechCraft
 
 	QSize SeparateTabBar::tabSizeHint (int index) const
 	{
+		auto result = QTabBar::tabSizeHint (index);
+		if (index == count () - 1)
+			return result;
+
 		if (ComputedWidths_.isEmpty ())
 			UpdateComputedWidths ();
 
-		auto result = QTabBar::tabSizeHint (index);
-		if (index != count () - 1)
-			result.setWidth (ComputedWidths_.value (index));
+		result.setWidth (ComputedWidths_.value (index));
 		return result;
 	}
 
