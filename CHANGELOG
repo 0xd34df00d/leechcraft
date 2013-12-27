@@ -105,6 +105,7 @@ the rest.
 * [Azoth] Don't focus on newly opened tab.
 * [Azoth AP] Added hastebin service.
 * [Azoth AP] Added paste.org.ru service.
+* [Azoth AP] Remember last used service and highlight (per-service).
 * [Azoth LastSeen] Keep last status change info.
 * [Azoth SS] Added Lime Dawn theme by Krigstask.
 * [Azoth SS] Palette coloring now depends on chat style theme background
