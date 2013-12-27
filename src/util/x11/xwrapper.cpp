@@ -427,8 +427,7 @@ namespace Util
 					0, 0,
 					0, 0);
 			break;
-		case Qt::AllToolBarAreas:
-		case Qt::NoToolBarArea:
+		default:
 			qWarning () << Q_FUNC_INFO
 					<< "incorrect area passed"
 					<< area;
