@@ -119,15 +119,15 @@ namespace vlc
 				mediaList << media;
 			else
 			{
-				mediaList << libvlc_media_new_location (Instance_, urls [i].toEncoded ());
-				libvlc_media_parse (mediaList [i]);
-				if (libvlc_media_get_duration (mediaList [i]) == 0)
-				{
-					libvlc_media_release (mediaList [i]);
-					mediaList.removeAt (i);
-				}
+				const auto media = libvlc_media_new_location (Instance_, urls [i].toEncoded ());
+				libvlc_media_parse (media);
+				if (libvlc_media_get_duration (media) == 0)
+					libvlc_media_release (media);
 				else
-					libvlc_media_set_meta (mediaList [i], libvlc_meta_URL, urls [i].toEncoded ());
+				{
+					libvlc_media_set_meta (media, libvlc_meta_URL, urls [i].toEncoded ());
+					mediaList << media;
+				}
 			}
 		}
 		
