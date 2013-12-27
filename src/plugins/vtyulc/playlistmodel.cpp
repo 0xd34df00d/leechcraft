@@ -143,10 +143,10 @@ namespace vlc
 				}
 				
 		if (!parent.isValid () && (after == -1))  // VLC forever
-			for (int i = 0; i < urls.size (); i++)
+			for (int i = 0; i < mediaList.size (); i++)
 				libvlc_media_list_add_media (Playlist_, mediaList [i]);
 		else
-			for (int i = 0; i < urls.size (); i++)
+			for (int i = 0; i < mediaList.size (); i++)
 				libvlc_media_list_insert_media (Playlist_, mediaList [i], after + i + 2);
 		
 		updateTable ();
