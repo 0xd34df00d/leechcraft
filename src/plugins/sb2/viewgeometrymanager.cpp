@@ -180,12 +180,12 @@ namespace SB2
 		}
 		else
 		{
-			ViewMgr_->GetView ()->hide ();
+			auto& xwrapper = Util::XWrapper::Instance ();
 
-			const auto screenGeometry = QApplication::desktop ()->
-					availableGeometry (ViewMgr_->GetManagedWindow ());
+			xwrapper.ClearStrut (toolbar);
+			xwrapper.Sync ();
 
-			ViewMgr_->GetView ()->show ();
+			const auto screenGeometry = xwrapper.GetAvailableGeometry (ViewMgr_->GetManagedWindow ());
 
 			QSize diff;
 			const auto& rect = ToGeom (screenGeometry, ViewMgr_->GetView ()->minimumSizeHint (), pos, &diff);
@@ -194,7 +194,7 @@ namespace SB2
 			ViewMgr_->GetView ()->setFixedSize (rect.size () - diff);
 			toolbar->setFixedSize (rect.size ());
 
-			Util::XWrapper::Instance ().SetStrut (toolbar, pos);
+			xwrapper.SetStrut (toolbar, pos);
 		}
 #endif
 	}
