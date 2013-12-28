@@ -56,24 +56,21 @@ namespace Azoth
 		auto sm = Core::Instance ().GetShortcutManager ();
 		sm->RegisterShortcut ("org.Azoth.TextEdit.DeleteWord",
 				{ tr ("Delete the word before the cursor"), QKeySequence {}, {} },
-				wordShortcut,
-				true);
+				wordShortcut);
 		sm->RegisterShortcut ("org.Azoth.TextEdit.DeleteBOL",
 				{
 					tr ("Delete from cursor to the beginning of line"),
 					bolShortcut->key (),
 					{}
 				},
-				bolShortcut,
-				true);
+				bolShortcut);
 		sm->RegisterShortcut ("org.Azoth.TextEdit.DeleteEOL",
 				{
 					tr ("Delete from cursor to the end of line"),
 					eolShortcut->key (),
 					{}
 				},
-				eolShortcut,
-				true);
+				eolShortcut);
 	}
 
 	void TextEdit::keyPressEvent (QKeyEvent *event)

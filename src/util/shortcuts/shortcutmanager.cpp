@@ -50,8 +50,7 @@ namespace Util
 		ContextObj_ = obj;
 	}
 
-	// TODO remove the update parameter
-	void ShortcutManager::RegisterAction (const QString& id, QAction *act, bool update)
+	void ShortcutManager::RegisterAction (const QString& id, QAction *act)
 	{
 		Actions_ [id] << act;
 		connect (act,
@@ -70,8 +69,7 @@ namespace Util
 					CoreProxy_->GetShortcutProxy ()->GetShortcuts (ContextObj_, id));
 	}
 
-	// TODO remove the update parameter
-	void ShortcutManager::RegisterShortcut (const QString& id, const ActionInfo& info, QShortcut* shortcut, bool update)
+	void ShortcutManager::RegisterShortcut (const QString& id, const ActionInfo& info, QShortcut* shortcut)
 	{
 		Shortcuts_ [id] << shortcut;
 		connect (shortcut,
