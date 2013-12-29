@@ -52,7 +52,7 @@
     <message>
         <location filename="singleaccauth.cpp" line="322"/>
         <source>General server error for %1.</source>
-        <translation>Общаяо шибка сервера %1.</translation>
+        <translation>Общая ошибка сервера %1.</translation>
     </message>
 </context>
 <context>
