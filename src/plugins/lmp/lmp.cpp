@@ -60,6 +60,14 @@ namespace LMP
 	{
 		Util::InstallTranslator ("lmp");
 
+#ifdef Q_OS_MAC
+		if (qgetenv ("GST_PLUGIN_SYSTEM_PATH").isEmpty ())
+			qputenv ("GST_PLUGIN_SYSTEM_PATH",
+					QCoreApplication::applicationDirPath ().toUtf8 () + "/../PlugIns/gstreamer");
+
+		qputenv ("GST_REGISTRY_FORK", "no");
+#endif
+
 		gint argc = 1;
 		gchar *argvarr [] = { "leechcraft", nullptr };
 		gchar **argv = argvarr;
