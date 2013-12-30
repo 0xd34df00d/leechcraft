@@ -75,8 +75,9 @@ namespace LMP
 		GstBus * const Bus_;
 		SourceObject * const SourceObj_;
 		std::atomic_bool ShouldStop_;
+		const double Multiplier_;
 	public:
-		MsgPopThread (GstBus*, SourceObject*);
+		MsgPopThread (GstBus*, SourceObject*, double);
 		~MsgPopThread ();
 
 		void Stop ();
@@ -84,11 +85,12 @@ namespace LMP
 		void run ();
 	};
 
-	MsgPopThread::MsgPopThread (GstBus *bus, SourceObject *obj)
+	MsgPopThread::MsgPopThread (GstBus *bus, SourceObject *obj, double multiplier)
 	: QThread (obj)
 	, Bus_ (bus)
 	, SourceObj_ (obj)
 	, ShouldStop_ (false)
+	, Multiplier_ (multiplier)
 	{
 	}
 
@@ -106,7 +108,7 @@ namespace LMP
 	{
 		while (!ShouldStop_.load (std::memory_order_relaxed))
 		{
-			const auto msg = gst_bus_timed_pop (Bus_, 2 * GST_SECOND);
+			const auto msg = gst_bus_timed_pop (Bus_, Multiplier_ * GST_SECOND);
 			if (!msg)
 				continue;
 
@@ -117,7 +119,7 @@ namespace LMP
 		}
 	}
 
-	SourceObject::SourceObject (QObject *parent)
+	SourceObject::SourceObject (Category cat, QObject *parent)
 	: QObject (parent)
 #if GST_VERSION_MAJOR < 1
 	, Dec_ (gst_element_factory_make ("playbin2", "play"))
@@ -128,7 +130,8 @@ namespace LMP
 	, IsSeeking_ (false)
 	, LastCurrentTime_ (-1)
 	, PrevSoupRank_ (0)
-	, PopThread_ (new MsgPopThread (gst_pipeline_get_bus (GST_PIPELINE (Dec_)), this))
+	, PopThread_ (new MsgPopThread (gst_pipeline_get_bus (GST_PIPELINE (Dec_)),
+				this, cat == Category::Notification ? 0.05 : 1))
 	, OldState_ (SourceState::Stopped)
 	{
 		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);

@@ -65,6 +65,12 @@ namespace LMP
 		Playing
 	};
 
+	enum class Category
+	{
+		Music,
+		Notification
+	};
+
 	class MsgPopThread;
 
 	class SourceObject : public QObject
@@ -107,7 +113,7 @@ namespace LMP
 	private:
 		SourceState OldState_;
 	public:
-		SourceObject (QObject* = 0);
+		SourceObject (Category, QObject* = 0);
 		~SourceObject ();
 
 		SourceObject (const SourceObject&) = delete;

@@ -117,7 +117,7 @@ namespace LMP
 	Player::Player (QObject *parent)
 	: QObject (parent)
 	, PlaylistModel_ (new PlaylistModel (this))
-	, Source_ (new SourceObject (this))
+	, Source_ (new SourceObject (Category::Music, this))
 	, Output_ (new Output (this))
 	, Path_ (new Path (Source_, Output_))
 	, RadioItem_ (nullptr)
