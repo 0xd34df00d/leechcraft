@@ -278,7 +278,7 @@ the rest.
 * [Poshuku CleanWeb] Fixed subelements hiding.
 * [Poshuku CleanWeb] Lots of fixes.
 * [Poshuku FUA] Update UA list
-* [SB2] Added panel settings like panel width.
+* [SB2] Added panel settings like panel width or quark spacing.
 * [SB2] Panel/quark settings are now dependent on launch type and panel position.
 * [SB2] Appear as a separate dock in desktop mode.
 * [SB2] Appear on all desktops in desktop mode.
