@@ -157,7 +157,7 @@ namespace LMP
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
 
 		PopThread_->Stop ();
-		PopThread_->wait (2500);
+		PopThread_->wait (1100);
 		if (PopThread_->isRunning ())
 			PopThread_->terminate ();
 	}
