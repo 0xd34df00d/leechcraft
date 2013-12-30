@@ -170,6 +170,11 @@ namespace AnHero
 		if (args.contains ("-noanhero"))
 			return;
 
+#ifdef Q_OS_MAC
+		if (!QFile::exists ("/usr/bin/gdb"))
+			return;
+#endif
+
 		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
 		AppDir_ = QCoreApplication::applicationDirPath ().toUtf8 ();
 		AppVersion_ = proxy->GetVersion ().toUtf8 ();
