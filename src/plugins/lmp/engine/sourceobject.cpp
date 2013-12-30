@@ -160,6 +160,8 @@ namespace LMP
 		PopThread_->wait (1100);
 		if (PopThread_->isRunning ())
 			PopThread_->terminate ();
+
+		gst_object_unref (Dec_);
 	}
 
 	bool SourceObject::IsSeekable () const
@@ -643,6 +645,7 @@ namespace LMP
 		const auto newNativeState = GstToState (newState);
 		if (newNativeState == OldState_)
 			return;
+
 		emit stateChanged (newNativeState, OldState_);
 		OldState_ = newNativeState;
 	}
