@@ -634,7 +634,9 @@ namespace LMP
 			}
 		}
 
-		auto newNativeState = GstToState (newState);
+		const auto newNativeState = GstToState (newState);
+		if (newNativeState == OldState_)
+			return;
 		emit stateChanged (newNativeState, OldState_);
 		OldState_ = newNativeState;
 	}
