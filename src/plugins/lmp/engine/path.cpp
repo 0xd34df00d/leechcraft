@@ -42,11 +42,11 @@ namespace LMP
 	, Pipeline_ (nullptr)
 	, Audiobin_ (nullptr)
 	{
-		source->AddToPath (this);
-		output->AddToPath (this);
+		source->AddToPathExposed (this);
+		output->AddToPathExposed (this);
 
-		source->PostAdd (this);
-		output->PostAdd (this);
+		source->PostAddExposed (this);
+		output->PostAddExposed (this);
 	}
 
 	Path::~Path ()

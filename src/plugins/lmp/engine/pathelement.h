@@ -29,52 +29,21 @@
 
 #pragma once
 
-#include <QObject>
-#include "pathelement.h"
-
-typedef struct _GstElement GstElement;
-typedef struct _GstPad GstPad;
-
 namespace LeechCraft
 {
 namespace LMP
 {
 	class Path;
 
-	class Output : public QObject
-				 , public PathElement
+	class PathElement
 	{
-		Q_OBJECT
-
-		GstElement *Bin_;
-		GstElement *Equalizer_;
-		GstElement *Volume_;
-		GstElement *Converter_;
-		GstElement *Sink_;
-
-		bool SaveVolumeScheduled_;
-	public:
-		Output (QObject* = 0);
-
-		double GetVolume () const;
-		bool IsMuted () const;
+		friend class Path;
 	protected:
-		void AddToPath (Path*);
-		void PostAdd (Path*);
-	private:
-		void ScheduleSaveVolume ();
-	public slots:
-		void setVolume (double);
-		void setVolume (int);
+		void AddToPathExposed (Path *p);
+		void PostAddExposed (Path *p);
 
-		void toggleMuted ();
-	private slots:
-		void saveVolume ();
-	signals:
-		void volumeChanged (qreal);
-		void volumeChanged (int);
-
-		void mutedChanged (bool);
+		virtual void AddToPath (Path*) = 0;
+		virtual void PostAdd (Path*) = 0;
 	};
 }
 }

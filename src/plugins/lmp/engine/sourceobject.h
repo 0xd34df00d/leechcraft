@@ -36,6 +36,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include "audiosource.h"
+#include "pathelement.h"
 
 typedef struct _GstElement GstElement;
 typedef struct _GstPad GstPad;
@@ -73,9 +74,14 @@ namespace LMP
 
 	class MsgPopThread;
 
+	class Path;
+
 	class SourceObject : public QObject
+					   , public PathElement
 	{
 		Q_OBJECT
+
+		friend class Path;
 
 		GstElement *Dec_;
 
@@ -151,7 +157,7 @@ namespace LMP
 		void HandleEosMsg (GstMessage*);
 		void HandleStreamStatusMsg (GstMessage*);
 		void SetupSource ();
-
+	protected:
 		void AddToPath (Path*);
 		void PostAdd (Path*);
 	private slots:

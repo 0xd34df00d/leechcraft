@@ -111,6 +111,7 @@ set (SRCS
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
+	engine/pathelement.cpp
 	engine/sourceobject.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
