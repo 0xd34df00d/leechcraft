@@ -48,6 +48,7 @@
 #include "progressmanager.h"
 #include "volumenotifycontroller.h"
 #include "radiomanager.h"
+#include "notificationplayer.h"
 
 typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
@@ -294,14 +295,7 @@ namespace LMP
 
 		if (e.Parameters_ & Internal)
 		{
-			/* TODO
-			auto obj = Phonon::createPlayer (Phonon::NotificationCategory, path);
-			obj->play ();
-			connect (obj,
-					SIGNAL (finished ()),
-					obj,
-					SLOT (deleteLater ()));
-					*/
+			new NotificationPlayer (path, this);
 			return;
 		}
 
