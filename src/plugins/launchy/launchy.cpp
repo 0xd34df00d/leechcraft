@@ -72,7 +72,7 @@ namespace Launchy
 				this,
 				SLOT (handleFSRequested ()));
 
-		ShortcutMgr_->RegisterAction ("FSLauncher", FSLauncher_, true);
+		ShortcutMgr_->RegisterAction ("FSLauncher", FSLauncher_);
 
 		auto itemImageProv = new ItemImageProvider;
 		auto quarkMgr = new QuarkManager (proxy, FavManager_, Finder_, itemImageProv);

@@ -159,6 +159,12 @@ namespace Util
 		};
 	}
 
+	void XWrapper::Sync ()
+	{
+		XFlush (Display_);
+		XSync (Display_, False);
+	}
+
 	QList<Window> XWrapper::GetWindows ()
 	{
 		ulong length = 0;
@@ -421,13 +427,19 @@ namespace Util
 					0, 0,
 					0, 0);
 			break;
-		case Qt::AllToolBarAreas:
-		case Qt::NoToolBarArea:
+		default:
 			qWarning () << Q_FUNC_INFO
 					<< "incorrect area passed"
 					<< area;
 			break;
 		}
+	}
+
+	void XWrapper::ClearStrut (QWidget *w)
+	{
+		const auto wid = w->effectiveWinId ();
+		XDeleteProperty (Display_, wid, GetAtom ("_NET_WM_STRUT"));
+		XDeleteProperty (Display_, wid, GetAtom ("_NET_WM_STRUT_PARTIAL"));
 	}
 
 	void XWrapper::SetStrut (Window wid,
@@ -637,6 +649,77 @@ namespace Util
 	void XWrapper::MoveWindowToDesktop (Window wid, int num)
 	{
 		SendMessage (wid, GetAtom ("_NET_WM_DESKTOP"), num);
+	}
+
+	QRect XWrapper::GetAvailableGeometry (int screen)
+	{
+		auto dw = QApplication::desktop ();
+
+		if (screen < 0 || screen >= dw->screenCount ())
+			screen = dw->primaryScreen ();
+
+		auto available = dw->screenGeometry (screen);
+		const auto deskGeom = dw->rect ();
+
+		if (dw->isVirtualDesktop ())
+			screen = DefaultScreen (Display_);
+
+		for (const auto wid : GetWindows ())
+		{
+			ulong length = 0;
+			Guarded<ulong> struts;
+			const auto status = GetWinProp (wid, GetAtom ("_NET_WM_STRUT_PARTIAL"),
+					&length, struts.GetAs<uchar**> (), XA_CARDINAL);
+			if (!status || length != 12)
+				continue;
+
+			const QRect left
+			{
+				static_cast<int> (deskGeom.x ()),
+				static_cast<int> (deskGeom.y () + struts [4]),
+				static_cast<int> (struts [0]),
+				static_cast<int> (struts [5] - struts [4])
+			};
+			if (available.intersects (left))
+				available.setX (left.width ());
+
+			const QRect right
+			{
+				static_cast<int> (deskGeom.x () + deskGeom.width () - struts [1]),
+				static_cast<int> (deskGeom.y () + struts [6]),
+				static_cast<int> (struts [1]),
+				static_cast<int> (struts [7] - struts [6])
+			};
+			if (available.intersects (right))
+				available.setWidth (right.x () - available.x ());
+
+			const QRect top
+			{
+				static_cast<int> (deskGeom.x () + struts [8]),
+				static_cast<int> (deskGeom.y ()),
+				static_cast<int> (struts [9] - struts [8]),
+				static_cast<int> (struts [2])
+			};
+			if (available.intersects (top))
+				available.setY (top.height ());
+
+			const QRect bottom
+			{
+				static_cast<int> (deskGeom.x () + struts [10]),
+				static_cast<int> (deskGeom.y () + deskGeom.height () - struts [3]),
+				static_cast<int> (struts [11] - struts [10]),
+				static_cast<int> (struts [3])
+			};
+			if (available.intersects (bottom))
+				available.setHeight (bottom.y () - available.y ());
+		}
+
+		return available;
+	}
+
+	QRect XWrapper::GetAvailableGeometry (QWidget *widget)
+	{
+		return GetAvailableGeometry (QApplication::desktop ()->screenNumber (widget));
 	}
 
 	Atom XWrapper::GetAtom (const QString& name)

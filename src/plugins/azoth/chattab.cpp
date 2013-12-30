@@ -1504,7 +1504,7 @@ namespace Azoth
 				this,
 				SLOT (handleClearChat ()));
 		TabToolbar_->addAction (clearAction);
-		sm->RegisterAction ("org.LeechCraft.Azoth.ClearChat", clearAction, true);
+		sm->RegisterAction ("org.LeechCraft.Azoth.ClearChat", clearAction);
 
 		const auto& backInfo = infos ["org.LeechCraft.Azoth.ScrollHistoryBack"];
 		QAction *historyBack = new QAction (backInfo.UserVisibleText_, this);
@@ -1515,7 +1515,7 @@ namespace Azoth
 				this,
 				SLOT (handleHistoryBack ()));
 		TabToolbar_->addAction (historyBack);
-		sm->RegisterAction ("org.LeechCraft.Azoth.ScrollHistoryBack", historyBack, true);
+		sm->RegisterAction ("org.LeechCraft.Azoth.ScrollHistoryBack", historyBack);
 
 		TabToolbar_->addSeparator ();
 
@@ -1550,14 +1550,14 @@ namespace Azoth
 				SLOT (handleQuoteSelection ()));
 		TabToolbar_->addAction (quoteSelection);
 		TabToolbar_->addSeparator ();
-		sm->RegisterAction ("org.LeechCraft.Azoth.QuoteSelected", quoteSelection, true);
+		sm->RegisterAction ("org.LeechCraft.Azoth.QuoteSelected", quoteSelection);
 
 		Ui_.View_->SetQuoteAction (quoteSelection);
 
 		const auto& openLinkInfo = infos ["org.LeechCraft.Azoth.OpenLastLink"];
 		auto shortcut = new QShortcut (openLinkInfo.Seqs_.value (0),
 				this, SLOT (handleOpenLastLink ()), 0, Qt::WidgetWithChildrenShortcut);
-		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut, true);
+		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
 	}
 
 	void ChatTab::InitEntry ()

@@ -1125,7 +1125,7 @@ namespace Azoth
 			Action2Areas_ [leave] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu
 					<< CLEAAToolbar;
-			sm->RegisterAction ("org.LeechCraft.Azoth.LeaveMUC", leave, true);
+			sm->RegisterAction ("org.LeechCraft.Azoth.LeaveMUC", leave);
 
 			QAction *reconnect = new QAction (tr ("Reconnect"), entry->GetQObject ());
 			reconnect->setProperty ("ActionIcon", "view-refresh");
@@ -1144,7 +1144,7 @@ namespace Azoth
 			userList->setShortcut (QString ("Ctrl+M"));
 			Entry2Actions_ [entry] ["userslist"] = userList;
 			Action2Areas_ [userList] << CLEAAToolbar;
-			sm->RegisterAction ("org.LeechCraft.Azoth.MUCUsers", userList, true);
+			sm->RegisterAction ("org.LeechCraft.Azoth.MUCUsers", userList);
 
 			if (qobject_cast<IConfigurableMUC*> (entry->GetQObject ()))
 			{

@@ -798,13 +798,13 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateLeft ()));
-	sm->RegisterShortcut ("SwitchToLeftTab", {}, leftShortcut, true);
+	sm->RegisterShortcut ("SwitchToLeftTab", {}, leftShortcut);
 	auto rightShortcut = new QShortcut (QKeySequence ("Ctrl+PgDown"), this);
 	connect (rightShortcut,
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateRight ()));
-	sm->RegisterShortcut ("SwitchToRightTab", {}, rightShortcut, true);
+	sm->RegisterShortcut ("SwitchToRightTab", {}, rightShortcut);
 
 	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_T), this),
 			SIGNAL (activated ()),
@@ -812,7 +812,7 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SLOT (handleNewTabShortcutActivated ()));
 
 	auto prevTabSC = new QShortcut (QKeySequence (sysModifier + Qt::Key_Space), this);
-	sm->RegisterShortcut ("SwitchToPrevTab", ActionInfo (), prevTabSC, true);
+	sm->RegisterShortcut ("SwitchToPrevTab", ActionInfo (), prevTabSC);
 	connect (prevTabSC,
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,

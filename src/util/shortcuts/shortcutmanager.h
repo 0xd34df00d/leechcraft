@@ -106,51 +106,23 @@ namespace Util
 		 * automatically, and \em ActionIcon property of the action is
 		 * used to fetch its icon.
 		 *
-		 * If update is set to true, the shortcut manager will request an
-		 * actual and up-to-date shortcut from the LeechCraft core. There
-		 * is no need to update an action registered during IInfo::Init()
-		 * as the Core will update actions with custom shortcuts later on
-		 * anyway.
-		 *
-		 * @note Updating the action (setting update to true) will
-		 * trigger the Core to request the action map, and all new IDs
-		 * past this point won't be known to LeechCraft core. Thus as a
-		 * rule of thumb one should only set update to true only in calls
-		 * happening after IInfo::Init().
-		 *
 		 * @param[in] id The ID of action to register.
 		 * @param[in] action The action to register.
-		 * @param[in] update Whether action shortcut should be updated
-		 * immediately.
 		 *
 		 * @sa RegisterShortcut(), RegisterActionInfo()
 		 */
-		void RegisterAction (const QString& id, QAction *action, bool update = false);
+		void RegisterAction (const QString& id, QAction *action);
 
 		/** @brief Registers the given QShortcut with the given id.
-		 *
-		 * If update is set to true, the shortcut manager will request an
-		 * actual and up-to-date shortcut from the LeechCraft core. There
-		 * is no need to update an action registered during IInfo::Init()
-		 * as the Core will update actions with custom shortcuts later on
-		 * anyway.
-		 *
-		 * @note Updating the action (setting update to true) will
-		 * trigger the Core to request the action map, and all new IDs
-		 * past this point won't be known to LeechCraft core. Thus as a
-		 * rule of thumb one should only set update to true only in calls
-		 * happening after IInfo::Init().
 		 *
 		 * @param[in] id The ID of QShortcut to register.
 		 * @param[in] info The additional ActionInfo about this shortcut.
 		 * @param[in] shortcut The QShortcut to register.
-		 * @param[in] update Whether action shortcut should be updated
-		 * immediately.
 		 *
 		 * @sa RegisterAction(), RegisterActionInfo()
 		 */
 		void RegisterShortcut (const QString& id,
-				const ActionInfo& info, QShortcut *shortcut, bool update = false);
+				const ActionInfo& info, QShortcut *shortcut);
 
 		/** @brief Registers the given action info with the given id.
 		 *

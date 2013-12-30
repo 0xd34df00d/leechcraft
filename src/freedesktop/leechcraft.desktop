@@ -8,3 +8,4 @@ Exec=leechcraft
 Categories=Network;FileTransfer;News;P2P;IRCClient;Qt;
 Terminal=false
 X-StandardInstall=true
+Keywords=Network;P2P;FileSharing;Chat;IM;Web;Viewer;

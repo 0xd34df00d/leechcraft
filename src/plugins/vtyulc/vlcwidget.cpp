@@ -207,22 +207,22 @@ namespace vlc
 				SIGNAL (triggered ()),
 				PlaylistWidget_,
 				SLOT (clearPlaylist ()));
-		
+
 		connect (VlcMainWidget_,
 				SIGNAL (resized (QResizeEvent*)),
 				this,
 				SLOT (mainWidgetResized (QResizeEvent*)));
-		
+
 		connect (SoundWidget_,
 				SIGNAL (volumeChanged (int)),
 				VolumeNotificationWidget_,
 				SLOT (showNotification (int)));
-		
+
 		connect (TitleWidget_->UpAction_,
 				SIGNAL (triggered ()),
 				PlaylistWidget_,
 				SLOT (up ()));
-		
+
 		connect (TitleWidget_->DownAction_,
 				SIGNAL (triggered ()),
 				PlaylistWidget_,
@@ -241,7 +241,7 @@ namespace vlc
 		mw->AddDockWidget ((Qt::DockWidgetArea)Settings_->value ("PlaylistArea", Qt::RightDockWidgetArea).toInt (), PlaylistDock_);
 		mw->AssociateDockWidget (PlaylistDock_, this);
 		mw->ToggleViewActionVisiblity (PlaylistDock_, false);
-		
+
 		connect (PlaylistDock_,
 				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
 				this,
@@ -269,12 +269,12 @@ namespace vlc
 		Settings_->setValue ("PlaylistWidth", PlaylistDock_->width ());
 		delete Settings_;
 	}
-	
+
 	void VlcWidget::savePlaylistPosition (Qt::DockWidgetArea area)
 	{
 		Settings_->setValue ("PlaylistArea", static_cast<int> (area));
 	}
-	
+
 	void VlcWidget::savePlaylist (const QueueState& playlist)
 	{
 		Settings_->setValue ("Playlist", playlist.Playlist_);
@@ -286,7 +286,7 @@ namespace vlc
 	{
 		QStringList playlist = Settings_->value ("Playlist").toStringList ();
 		int lastPlaying = Settings_->value ("LastPlaying").toInt ();
-	
+
 		libvlc_media_t *current = nullptr, *media;
 		for (int i = 0; i < playlist.size (); i++)
 		{
@@ -328,7 +328,7 @@ namespace vlc
 
 		if (!files.isEmpty ())
 			ParsePath (files [0]);
-		
+
 		PlaylistWidget_->clearPlaylist ();
 		for (int i = 0; i < files.size (); i++)
 			if (QFile::exists (files [i]))
@@ -341,10 +341,10 @@ namespace vlc
 				tr ("Open files"),
 				VideoPath_,
 				tr ("Videos (*.mkv *.avi *.mov *.mpg);;Any (*.*)"));
-		
+
 		if (!files.isEmpty ())
 			ParsePath (files [0]);
-		
+
 		for (int i = 0; i < files.size (); i++)
 			if (QFile::exists (files [i]))
 				PlaylistWidget_->AddUrl (QUrl::fromLocalFile (files [i]), Autostart_);
@@ -417,12 +417,12 @@ namespace vlc
 			VlcPlayer_->addUrl (QUrl::fromLocalFile (url));
 		}
 	}
-	
+
 	void VlcWidget::ParsePath (QString s)
 	{
 		while (s.length () && s[s.length () - 1] != '/')
 			s.remove (s.length () - 1, 1);
-		
+
 		Settings_->setValue ("WorkingDirectory", s);
 	}
 
@@ -561,7 +561,7 @@ namespace vlc
 
 		Prev_ = Bar_->addAction (tr ("Prev"));
 		Prev_->setProperty ("ActionIcon", "media-seek-backward");
-		Manager_->RegisterAction ("org.vtyulc.prev", Prev_, true);
+		Manager_->RegisterAction ("org.vtyulc.prev", Prev_);
 
 		connect (Prev_,
 				SIGNAL (triggered ()),
@@ -569,7 +569,7 @@ namespace vlc
 				SLOT (prev ()));
 
 		TogglePlay_ = Bar_->addAction (tr ("Play"));
-		Manager_->RegisterAction ("org.vtyulc.toggle_play", TogglePlay_, true);
+		Manager_->RegisterAction ("org.vtyulc.toggle_play", TogglePlay_);
 		TogglePlay_->setProperty ("ActionIcon", "media-playback-start");
 		TogglePlay_->setProperty ("WatchActionIconChange", true);
 
@@ -578,7 +578,7 @@ namespace vlc
 
 		Next_ = Bar_->addAction (tr ("Next"));
 		Next_->setProperty ("ActionIcon", "media-seek-forward");
-		Manager_->RegisterAction ("org.vtyulc.next", Next_, true);
+		Manager_->RegisterAction ("org.vtyulc.next", Next_);
 
 		connect (Next_,
 				SIGNAL (triggered ()),
@@ -587,7 +587,8 @@ namespace vlc
 
 		FullScreenAction_ = Bar_->addAction (tr ("Fullscreen"));
 		FullScreenAction_->setProperty ("ActionIcon", "view-fullscreen");
-		Manager_->RegisterAction ("org.vtyulc.toggle_fullscreen", FullScreenAction_, true);
+		Manager_->RegisterAction ("org.vtyulc.toggle_fullscreen", FullScreenAction_);
+
 		TimeLeft_ = new QLabel (this);
 		TimeLeft_->setToolTip (tr ("Time left"));
 		Bar_->addWidget (TimeLeft_);
@@ -980,11 +981,11 @@ namespace vlc
 		NavigateRight_ = new QAction (this);
 		NavigateUp_ = new QAction (this);
 
-		Manager_->RegisterAction ("org.vtyulc.navigate_down", NavigateDown_, true);
-		Manager_->RegisterAction ("org.vtyulc.navigate_enter", NavigateEnter_, true);
-		Manager_->RegisterAction ("org.vtyulc.navigate_left", NavigateLeft_, true);
-		Manager_->RegisterAction ("org.vtyulc.navigate_right", NavigateRight_, true);
-		Manager_->RegisterAction ("org.vtyulc.navigate_up", NavigateUp_, true);
+		Manager_->RegisterAction ("org.vtyulc.navigate_down", NavigateDown_);
+		Manager_->RegisterAction ("org.vtyulc.navigate_enter", NavigateEnter_);
+		Manager_->RegisterAction ("org.vtyulc.navigate_left", NavigateLeft_);
+		Manager_->RegisterAction ("org.vtyulc.navigate_right", NavigateRight_);
+		Manager_->RegisterAction ("org.vtyulc.navigate_up", NavigateUp_);
 
 		connect (NavigateDown_,
 				SIGNAL (triggered ()),
@@ -1029,8 +1030,8 @@ namespace vlc
 		IncreaseVolumeAction_ = new QAction (this);
 		DecreaseVolumeAction_ = new QAction (this);
 
-		Manager_->RegisterAction ("org.vtyulc.volume_increase", IncreaseVolumeAction_, true);
-		Manager_->RegisterAction ("org.vtyulc.volume_decrease", DecreaseVolumeAction_, true);
+		Manager_->RegisterAction ("org.vtyulc.volume_increase", IncreaseVolumeAction_);
+		Manager_->RegisterAction ("org.vtyulc.volume_decrease", DecreaseVolumeAction_);
 
 		connect (IncreaseVolumeAction_,
 				SIGNAL (triggered ()),
@@ -1059,10 +1060,10 @@ namespace vlc
 		Next_ = new QAction (this);
 		Prev_ = new QAction (this);
 
-		Manager_->RegisterAction ("org.vtyulc.plus_3_percent", Plus3Percent_, true);
-		Manager_->RegisterAction ("org.vtyulc.plus_10_seconds", Plus10Seconds_, true);
-		Manager_->RegisterAction ("org.vtyulc.minus_3_percent", Minus3Percent_, true);
-		Manager_->RegisterAction ("org.vtyulc.minus_10_seconds", Minus10Seconds_, true);
+		Manager_->RegisterAction ("org.vtyulc.plus_3_percent", Plus3Percent_);
+		Manager_->RegisterAction ("org.vtyulc.plus_10_seconds", Plus10Seconds_);
+		Manager_->RegisterAction ("org.vtyulc.minus_3_percent", Minus3Percent_);
+		Manager_->RegisterAction ("org.vtyulc.minus_10_seconds", Minus10Seconds_);
 
 		connect (Plus10Seconds_,
 				SIGNAL (triggered ()),
@@ -1129,12 +1130,12 @@ namespace vlc
 	{
 		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
 	}
-	
+
 	void VlcWidget::Sleep ()
 	{
 		VlcPlayer_->pause ();
 	}
-	
+
 	void VlcWidget::mainWidgetResized (QResizeEvent *event)
 	{
 		VolumeNotificationWidget_->resetGeometry (VlcMainWidget_);
