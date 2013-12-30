@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QMap>
@@ -39,6 +40,8 @@
 typedef struct _GstElement GstElement;
 typedef struct _GstPad GstPad;
 typedef struct _GstMessage GstMessage;
+
+typedef std::shared_ptr<GstMessage> GstMessage_ptr;
 
 namespace LeechCraft
 {
@@ -146,7 +149,7 @@ namespace LMP
 		void AddToPath (Path*);
 		void PostAdd (Path*);
 	private slots:
-		void handleMessage (GstMessage*);
+		void handleMessage (GstMessage_ptr);
 		void updateTotalTime ();
 		void handleTick ();
 	signals:

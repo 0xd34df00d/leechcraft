@@ -49,6 +49,7 @@ extern "C"
 #include "../xmlsettingsmanager.h"
 
 Q_DECLARE_METATYPE (GstMessage*);
+Q_DECLARE_METATYPE (GstMessage_ptr);
 
 namespace LeechCraft
 {
@@ -111,9 +112,8 @@ namespace LMP
 
 			QMetaObject::invokeMethod (SourceObj_,
 					"handleMessage",
-					Qt::BlockingQueuedConnection,
-					Q_ARG (GstMessage*, msg));
-			gst_message_unref (msg);
+					Qt::QueuedConnection,
+					Q_ARG (GstMessage_ptr, std::shared_ptr<GstMessage> (msg, gst_message_unref)));
 		}
 	}
 
@@ -135,6 +135,7 @@ namespace LMP
 		g_signal_connect (Dec_, "notify::source", G_CALLBACK (CbSourceChanged), this);
 
 		qRegisterMetaType<GstMessage*> ("GstMessage*");
+		qRegisterMetaType<GstMessage_ptr> ("GstMessage_ptr");
 
 		qRegisterMetaType<AudioSource> ("AudioSource");
 
@@ -728,8 +729,10 @@ namespace LMP
 		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
 	}
 
-	void SourceObject::handleMessage (GstMessage *message)
+	void SourceObject::handleMessage (GstMessage_ptr msgPtr)
 	{
+		const auto message = msgPtr.get ();
+
 		switch (GST_MESSAGE_TYPE (message))
 		{
 		case GST_MESSAGE_ERROR:
