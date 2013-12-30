@@ -635,8 +635,8 @@ namespace LMP
 		}
 
 		auto newNativeState = GstToState (newState);
-		OldState_ = newNativeState;
 		emit stateChanged (newNativeState, OldState_);
+		OldState_ = newNativeState;
 	}
 
 	void SourceObject::HandleElementMsg (GstMessage *msg)
