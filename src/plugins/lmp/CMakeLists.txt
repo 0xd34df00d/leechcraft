@@ -109,6 +109,7 @@ set (SRCS
 	stdartistactionsmanager.cpp
 	notificationplayer.cpp
 	engine/audiosource.cpp
+	engine/filterelement.cpp
 	engine/output.cpp
 	engine/path.cpp
 	engine/pathelement.cpp
