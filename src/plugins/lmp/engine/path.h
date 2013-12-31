@@ -66,6 +66,8 @@ namespace LMP
 
 		SourceObject* GetSourceObject () const;
 
+		void InsertElement (GstElement*);
+		void RemoveElement (GstElement*);
 	};
 }
 }
