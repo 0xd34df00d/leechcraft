@@ -152,7 +152,7 @@ namespace LMP
 				qDebug () << "linking...";
 				gst_element_link_many (nextElems.at (0), elem, nextElems.at (1), nullptr);
 
-				GstState wholeCurrent, elemCurrent;
+				GstState wholeCurrent;
 				gst_element_get_state (path->GetWholeOut (), &wholeCurrent, nullptr, GST_SECOND);
 				gst_element_set_state (elem, wholeCurrent);
 
