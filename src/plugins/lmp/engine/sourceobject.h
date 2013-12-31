@@ -77,7 +77,6 @@ namespace LMP
 	class Path;
 
 	class SourceObject : public QObject
-					   , public PathElement
 	{
 		Q_OBJECT
 
@@ -157,9 +156,9 @@ namespace LMP
 		void HandleEosMsg (GstMessage*);
 		void HandleStreamStatusMsg (GstMessage*);
 		void SetupSource ();
-	protected:
+
 		void AddToPath (Path*);
-		void PostAdd (Path*);
+		void SetSink (GstElement*);
 	private slots:
 		void handleMessage (GstMessage_ptr);
 		void updateTotalTime ();

@@ -42,8 +42,15 @@ namespace LMP
 
 	class Path : public QObject
 	{
+		SourceObject * const SrcObj_;
+
+		GstElement * const WholeBin_;
+		GstElement * const Identity_;
+
 		GstElement *Pipeline_;
-		GstElement *Audiobin_;
+		GstElement *OutputBin_;
+
+		QList<GstElement*> NextWholeElems_;
 	public:
 		Path (SourceObject*, Output*, QObject* = 0);
 		~Path ();
@@ -51,8 +58,14 @@ namespace LMP
 		GstElement* GetPipeline () const;
 		void SetPipeline (GstElement*);
 
-		GstElement* GetAudioBin () const;
-		void SetAudioBin (GstElement*);
+		GstElement* GetOutPlaceholder () const;
+		GstElement* GetWholeOut () const;
+
+		GstElement* GetOutputBin () const;
+		void SetOutputBin (GstElement*);
+
+		SourceObject* GetSourceObject () const;
+
 	};
 }
 }

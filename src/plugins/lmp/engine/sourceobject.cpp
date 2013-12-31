@@ -732,9 +732,8 @@ namespace LMP
 		Path_ = path;
 	}
 
-	void SourceObject::PostAdd (Path *path)
+	void SourceObject::SetSink (GstElement *bin)
 	{
-		auto bin = path->GetAudioBin ();
 		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
 	}
 

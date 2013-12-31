@@ -106,7 +106,7 @@ namespace LMP
 
 	void Output::AddToPath (Path *path)
 	{
-		path->SetAudioBin (Bin_);
+		path->SetOutputBin (Bin_);
 	}
 
 	void Output::PostAdd (Path*)

@@ -29,7 +29,7 @@
 
 #include "path.h"
 #include <QtDebug>
-#include <gst/gstpipeline.h>
+#include <gst/gst.h>
 #include "sourceobject.h"
 #include "output.h"
 
@@ -39,13 +39,27 @@ namespace LMP
 {
 	Path::Path (SourceObject *source, Output *output, QObject *parent)
 	: QObject (parent)
+	, SrcObj_ (source)
+	, WholeBin_ (gst_bin_new ("whole_bin"))
+	, Identity_ (gst_element_factory_make ("identity", "effect_placeholder"))
 	, Pipeline_ (nullptr)
-	, Audiobin_ (nullptr)
+	, OutputBin_ (nullptr)
 	{
-		source->AddToPathExposed (this);
+		NextWholeElems_ << Identity_;
+
+		source->AddToPath (this);
 		output->AddToPathExposed (this);
 
-		source->PostAddExposed (this);
+		gst_bin_add_many (GST_BIN (WholeBin_), Identity_, OutputBin_, nullptr);
+		gst_element_link (Identity_, OutputBin_);
+
+		auto pad = gst_element_get_static_pad (Identity_, "sink");
+		auto ghostPad = gst_ghost_pad_new ("sink", pad);
+		gst_pad_set_active (ghostPad, TRUE);
+		gst_element_add_pad (WholeBin_, ghostPad);
+		gst_object_unref (pad);
+
+		source->SetSink (WholeBin_);
 		output->PostAddExposed (this);
 	}
 
@@ -63,14 +77,43 @@ namespace LMP
 		Pipeline_ = pipeline;
 	}
 
-	GstElement* Path::GetAudioBin () const
+	GstElement* Path::GetOutPlaceholder () const
 	{
-		return Audiobin_;
+		return Identity_;
 	}
 
-	void Path::SetAudioBin (GstElement *bin)
+	GstElement* Path::GetWholeOut () const
 	{
-		Audiobin_ = bin;
+		return WholeBin_;
+	}
+
+	GstElement* Path::GetOutputBin () const
+	{
+		return OutputBin_;
+	}
+
+	void Path::SetOutputBin (GstElement *bin)
+	{
+		if (OutputBin_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot change output bin now";
+		}
+
+		OutputBin_ = bin;
+		NextWholeElems_ << OutputBin_;
+	}
+
+	SourceObject* Path::GetSourceObject () const
+	{
+		return SrcObj_;
+	}
+
+	namespace
+	{
+	}
+
+	{
 	}
 }
 }
