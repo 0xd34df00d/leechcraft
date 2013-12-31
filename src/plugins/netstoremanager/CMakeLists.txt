@@ -79,7 +79,12 @@ install (FILES netstoremanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 option (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE "Build support for Google Drive" ON)
+option (ENABLE_NETSTOREMANAGER_DROPBOX "Build support for DropBox" ON)
 
 if (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE)
 	add_subdirectory (plugins/googledrive)
+endif ()
+
+if (ENABLE_NETSTOREMANAGER_DROPBOX)
+	add_subdirectory (plugins/dropbox)
 endif ()

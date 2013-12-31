@@ -85,6 +85,7 @@ namespace NetStoreManager
 		QAction *Upload_;
 
 		QHash<QByteArray, StorageItem> Id2Item_;
+		QHash<QByteArray, int> DirId2ItemCount_;
 
 		enum class TransferOperation
 		{

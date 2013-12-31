@@ -484,6 +484,7 @@ namespace NetStoreManager
 			TreeModel_->appendRow ({ upLevel });
 		}
 
+		int count = -1;
 		for (const auto& item : Id2Item_.values ())
 		{
 			quint64 folderSize = 0;
@@ -494,10 +495,20 @@ namespace NetStoreManager
 			{
 				if (parentId.isNull () &&
 						!Id2Item_.contains (item.ParentID_))
+				{
 					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
+					if (count < 0)
+						count = 0;
+					count++;
+				}
 				else if (!parentId.isNull () &&
 						item.ParentID_ == parentId)
+				{
 					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
+					if (count < 0)
+						count = 0;
+					count++;
+				}
 			}
 			else if (inTrash &&
 					item.IsTrashed_)
@@ -517,6 +528,22 @@ namespace NetStoreManager
 		}
 
 		Ui_.FilesView_->setCurrentIndex (ProxyModel_->index (0, 0));
+		DirId2ItemCount_ [Id2Item_ [parentId].ParentID_] = count;
+		
+		auto isa = GetCurrentAccount ();
+		if (!isa)
+			return;
+		auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ());
+		if (isfl && count == -1 && 
+				(isfl->GetListingOps () & ListingOp::OnlyOneLevelOfFilesListingSupport))
+		{
+			if (auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
+			{
+				qDebug () << Id2Item_ [parentId].ParentID_ + "/" + Id2Item_ [parentId].Name_;
+				isfl->RefreshListing (QString (Id2Item_ [parentId].ParentID_ + "/" + Id2Item_ [parentId].Name_).toUtf8 ());
+				DirId2ItemCount_ [QString (Id2Item_ [parentId].ParentID_ + "/" + Id2Item_ [parentId].Name_).toUtf8 ()] = 0;
+			}
+		}
 	}
 
 	void ManagerTab::handleRefresh ()
@@ -555,12 +582,16 @@ namespace NetStoreManager
 
 	void ManagerTab::handleDoubleClicked (const QModelIndex& idx)
 	{
+		auto isa = GetCurrentAccount ();
+		if (!isa)
+			return;
+
 		if (idx.data (ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
 			ShowListItemsWithParent (Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()].ParentID_,
 					OpenTrash_->isChecked ());
 		else if (!idx.data (ListingRole::IsDirectory).toBool ())
 			flOpenFile ();
-		else
+		else 
 			ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray (),
 					OpenTrash_->isChecked ());
 	}
@@ -611,10 +642,19 @@ namespace NetStoreManager
 
 		LastParentID_ = GetParentIDInListViewMode ();
 
-		Id2Item_.clear ();
-		for (auto item : items)
-			Id2Item_ [item.ID_] = item;
+		auto isfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		if (isfl && (!(isfl->GetListingOps () & ListingOp::OnlyOneLevelOfFilesListingSupport)))
+			Id2Item_.clear ();
 
+		for (auto item : items)
+		{
+			Id2Item_ [item.ID_] = item;
+			if (item.IsDirectory_)
+				DirId2ItemCount_ [QString (item.ParentID_ + "/" + item.Name_).toUtf8 ()] = -1;
+		}
+
+		qDebug () << LastParentID_ << Id2Item_.keys ();
+		
 		FillModel (acc);
 
 		Trash_->setIcon (Proxy_->GetIcon (GetTrashedFiles ().isEmpty () ?
