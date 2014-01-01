@@ -772,10 +772,12 @@ namespace LMP
 		case GST_MESSAGE_STREAM_STATUS:
 			HandleStreamStatusMsg (message);
 			break;
+#if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_STREAM_START:
 			emit currentSourceChanged (CurrentSource_);
 			emit metaDataChanged ();
 			break;
+#endif
 		default:
 			qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
 			break;

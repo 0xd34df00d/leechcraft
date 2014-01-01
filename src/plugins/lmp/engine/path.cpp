@@ -179,13 +179,21 @@ namespace LMP
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "element not found";
+#if GST_VERSION_MAJOR < 1
+					return TRUE;
+#else
 					return GST_PAD_PROBE_DROP;
+#endif
 				}
 				if (!idx || idx == nextElems.size () - 1)
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "cannot remove side element";
+#if GST_VERSION_MAJOR < 1
+					return TRUE;
+#else
 					return GST_PAD_PROBE_DROP;
+#endif
 				}
 
 				const auto prev = nextElems.at (idx - 1);
@@ -204,7 +212,11 @@ namespace LMP
 			}
 			}
 
+#if GST_VERSION_MAJOR < 1
+			return TRUE;
+#else
 			return GST_PAD_PROBE_DROP;
+#endif
 		}
 
 #if GST_VERSION_MAJOR < 1
