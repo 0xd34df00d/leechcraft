@@ -110,6 +110,7 @@ set (SRCS
 	notificationplayer.cpp
 	engine/audiosource.cpp
 	engine/filterelement.cpp
+	engine/gstutil.cpp
 	engine/output.cpp
 	engine/path.cpp
 	engine/pathelement.cpp
