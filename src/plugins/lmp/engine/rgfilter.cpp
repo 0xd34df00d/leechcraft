@@ -29,14 +29,25 @@
 
 #include "rgfilter.h"
 #include <gst/gst.h>
+#include "gstutil.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
 	RGFilter::RGFilter ()
-	: Elem_ (gst_element_factory_make ("rgvolume", "rgvol"))
+	: Elem_ (gst_bin_new ("rgbin"))
+	, RGVol_ (gst_element_factory_make ("rgvolume", "rgvol"))
+	, RGLimiter_ (gst_element_factory_make ("rglimiter", "rglim"))
 	{
+		const auto convIn = gst_element_factory_make ("audioconvert", "convIn");
+		const auto convOut = gst_element_factory_make ("audioconvert", "convOut");
+
+		gst_bin_add_many (GST_BIN (Elem_), RGVol_, RGLimiter_, convIn, convOut, nullptr);
+		gst_element_link_many (convIn, RGVol_, RGLimiter_, convOut, nullptr);
+
+		GstUtil::AddGhostPad (convIn, Elem_, "sink");
+		GstUtil::AddGhostPad (convOut, Elem_, "src");
 	}
 
 	GstElement* RGFilter::GetElement () const

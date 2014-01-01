@@ -38,6 +38,8 @@ namespace LMP
 	class RGFilter : public FilterElement
 	{
 		GstElement * const Elem_;
+		GstElement * const RGVol_;
+		GstElement * const RGLimiter_;
 	public:
 		RGFilter ();
 	protected:
