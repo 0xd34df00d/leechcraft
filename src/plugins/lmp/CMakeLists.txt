@@ -108,6 +108,7 @@ set (SRCS
 	radiocustomdialog.cpp
 	stdartistactionsmanager.cpp
 	notificationplayer.cpp
+	effectsmanager.cpp
 	engine/audiosource.cpp
 	engine/filterelement.cpp
 	engine/gstutil.cpp
