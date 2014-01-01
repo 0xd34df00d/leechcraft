@@ -125,13 +125,25 @@ namespace LMP
 			} const Action_;
 		};
 
+#if GST_VERSION_MAJOR < 1
 		gboolean EventProbeHandler (GstPad *pad, GstEvent *event, CallbackData *cbData)
 		{
 			if (GST_EVENT_TYPE (event) != GST_EVENT_EOS)
 				return TRUE;
+#else
+		GstPadProbeReturn EventProbeHandler (GstPad *pad, GstPadProbeInfo *info, gpointer cbDataPtr)
+		{
+			if (GST_EVENT_TYPE (GST_PAD_PROBE_INFO_DATA (info)) != GST_EVENT_EOS)
+				return GST_PAD_PROBE_OK;
 
+			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
+#endif
 			qDebug () << Q_FUNC_INFO << "eos";
+#if GST_VERSION_MAJOR < 1
 			gst_pad_remove_event_probe (pad, cbData->ID_);
+#else
+			gst_pad_remove_probe (pad, cbData->ID_);
+#endif
 
 			const auto path = cbData->Path_;
 			const auto elem = cbData->Elem_;
@@ -167,13 +179,13 @@ namespace LMP
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "element not found";
-					return FALSE;
+					return GST_PAD_PROBE_DROP;
 				}
 				if (!idx || idx == nextElems.size () - 1)
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "cannot remove side element";
-					return FALSE;
+					return GST_PAD_PROBE_DROP;
 				}
 
 				const auto prev = nextElems.at (idx - 1);
@@ -192,21 +204,41 @@ namespace LMP
 			}
 			}
 
-			return FALSE;
+			return GST_PAD_PROBE_DROP;
 		}
 
+#if GST_VERSION_MAJOR < 1
 		gboolean ProbeHandler (GstPad *pad, GstMiniObject*, CallbackData *cbData)
 		{
+#else
+		GstPadProbeReturn ProbeHandler (GstPad *pad, GstPadProbeInfo*, gpointer cbDataPtr)
+		{
+			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
+#endif
 			qDebug () << Q_FUNC_INFO;
+#if GST_VERSION_MAJOR < 1
 			gst_pad_remove_data_probe (pad, cbData->ID_);
+#else
+			gst_pad_remove_probe (pad, cbData->ID_);
+#endif
 
+#if GST_VERSION_MAJOR < 1
 			cbData->ID_ = gst_pad_add_event_probe (pad, G_CALLBACK (EventProbeHandler), cbData);
+#else
+			cbData->ID_ = gst_pad_add_probe (pad,
+					static_cast<GstPadProbeType> (GST_PAD_PROBE_TYPE_BLOCK | GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM),
+					EventProbeHandler, cbData, nullptr);
+#endif
 
 			const auto sinkpad = gst_element_get_static_pad (cbData->Path_->GetOutPlaceholder (), "sink");
 			gst_pad_send_event (sinkpad, gst_event_new_eos ());
 			gst_object_unref (sinkpad);
 
+#if GST_VERSION_MAJOR < 1
 			return TRUE;
+#else
+			return GST_PAD_PROBE_OK;
+#endif
 		}
 	}
 
@@ -215,7 +247,12 @@ namespace LMP
 		auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
 		qDebug () << Q_FUNC_INFO << elem << srcpad;
 		auto data = new CallbackData { this, elem, NextWholeElems_, 0, CallbackData::Action::Add };
+#if GST_VERSION_MAJOR < 1
 		data->ID_ = gst_pad_add_data_probe (srcpad, G_CALLBACK (ProbeHandler), data);
+#else
+		data->ID_ = gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
+				ProbeHandler, data, nullptr);
+#endif
 	}
 
 	void Path::RemoveElement (GstElement *elem)
@@ -223,7 +260,12 @@ namespace LMP
 		auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
 		qDebug () << Q_FUNC_INFO << elem << srcpad;
 		auto data = new CallbackData { this, elem, NextWholeElems_, 0, CallbackData::Action::Remove };
+#if GST_VERSION_MAJOR < 1
 		data->ID_ = gst_pad_add_data_probe (srcpad, G_CALLBACK (ProbeHandler), data);
+#else
+		data->ID_ = gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
+				ProbeHandler, data, nullptr);
+#endif
 	}
 }
 }
