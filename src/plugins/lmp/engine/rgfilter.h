@@ -42,6 +42,10 @@ namespace LMP
 		GstElement * const RGLimiter_;
 	public:
 		RGFilter ();
+
+		void SetAlbumMode (bool);
+		void SetLimiterEnabled (bool);
+		void SetPreamp (double);
 	protected:
 		GstElement* GetElement () const;
 	};

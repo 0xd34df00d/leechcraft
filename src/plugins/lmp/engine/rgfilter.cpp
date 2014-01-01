@@ -50,6 +50,21 @@ namespace LMP
 		GstUtil::AddGhostPad (convOut, Elem_, "src");
 	}
 
+	void RGFilter::SetAlbumMode (bool albumMode)
+	{
+		g_object_set (RGVol_, "album-mode", static_cast<gboolean> (albumMode), nullptr);
+	}
+
+	void RGFilter::SetLimiterEnabled (bool enabled)
+	{
+		g_object_set (RGLimiter_, "enabled", static_cast<gboolean> (enabled), nullptr);
+	}
+
+	void RGFilter::SetPreamp (double preamp)
+	{
+		g_object_set (RGVol_, "pre-amp", static_cast<gdouble> (preamp), nullptr);
+	}
+
 	GstElement* RGFilter::GetElement () const
 	{
 		return Elem_;
