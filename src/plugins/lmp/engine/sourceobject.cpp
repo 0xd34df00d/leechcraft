@@ -653,13 +653,10 @@ namespace LMP
 
 	void SourceObject::HandleElementMsg (GstMessage *msg)
 	{
+#if GST_VERSION_MAJOR < 1
 		const auto msgStruct = gst_message_get_structure (msg);
 
-#if GST_VERSION_MAJOR < 1
 		if (gst_structure_has_name (msgStruct, "playbin2-stream-changed"))
-#else
-		if (gst_structure_has_name (msgStruct, "playbin-stream-changed"))
-#endif
 		{
 			gchar *uri = nullptr;
 			g_object_get (Dec_, "uri", &uri, nullptr);
@@ -669,6 +666,9 @@ namespace LMP
 			emit currentSourceChanged (CurrentSource_);
 			emit metaDataChanged ();
 		}
+#else
+		Q_UNUSED (msg)
+#endif
 	}
 
 	void SourceObject::HandleEosMsg (GstMessage*)
@@ -771,6 +771,10 @@ namespace LMP
 			break;
 		case GST_MESSAGE_STREAM_STATUS:
 			HandleStreamStatusMsg (message);
+			break;
+		case GST_MESSAGE_STREAM_START:
+			emit currentSourceChanged (CurrentSource_);
+			emit metaDataChanged ();
 			break;
 		default:
 			qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
