@@ -22,5 +22,12 @@ $BASEDIR/replacepath.py --old /usr/local/Cellar/gst-plugins-bad/*/lib/ --new @ex
 $BASEDIR/replacepath.py --old /usr/local/Cellar/gst-plugins-ugly/*/lib/ --new @executable_path/../Frameworks/ --dir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 $BASEDIR/replacepath.py --old /usr/local/Cellar/gstreamer/*/lib/ --new @executable_path/../Frameworks/ --dir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 $BASEDIR/replacepath.py --old /usr/local/opt/gettext/lib/ --new @executable_path/../Frameworks/ --dir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
+for GST in $TARGET/leechcraft.app/Contents/PlugIns/gstreamer/lib*.so; do
+	for LIB in `dyldinfo -dylibs $GST | grep -v executable_path | grep -v attributes | grep -v System | grep -v /usr/lib`; do
+		echo Library $LIB
+		cp $LIB $TARGET/leechcraft.app/Contents/Frameworks
+		install_name_tool -change $LIB @executable_path/../Frameworks/$(basename $LIB) $GST
+	done
+done
 sudo macdeployqt $TARGET/leechcraft.app -verbose=2 -dmg
 #DYLD_PRINT_LIBRARIES_POST_LAUNCH=1 $TARGET/leechcraft.app/Contents/MacOs/leechcraft
