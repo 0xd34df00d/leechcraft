@@ -611,6 +611,7 @@ namespace Murm
 		}
 
 		auto dia = new Util::SvcAuth::VkCaptchaDialog (url, cid, CoreProxy_->GetNetworkAccessManager ());
+		dia->SetContextName ("Azoth Murm");
 		connect (dia,
 				SIGNAL (gotCaptcha (QString, QString)),
 				this,
