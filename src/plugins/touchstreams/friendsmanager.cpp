@@ -261,6 +261,7 @@ namespace TouchStreams
 
 				auto captchaDialog = new Util::SvcAuth::VkCaptchaDialog (errMap,
 						Proxy_->GetNetworkAccessManager ());
+				captchaDialog->SetContextName ("TouchStreams");
 				captchaDialog->show ();
 				connect (captchaDialog,
 						SIGNAL (gotCaptcha (QString, QString)),
