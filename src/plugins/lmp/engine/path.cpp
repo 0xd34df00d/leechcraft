@@ -213,7 +213,7 @@ namespace LMP
 			}
 
 #if GST_VERSION_MAJOR < 1
-			return TRUE;
+			return FALSE;
 #else
 			return GST_PAD_PROBE_DROP;
 #endif
