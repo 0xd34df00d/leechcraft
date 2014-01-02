@@ -66,11 +66,6 @@ namespace SB2
 				names [Roles::TabName] = "tabName";
 				setRoleNames (names);
 			}
-
-			~TabsListModel ()
-			{
-				clear ();
-			}
 		};
 	}
 
@@ -154,6 +149,11 @@ namespace SB2
 				SIGNAL (tabCloseRequested (int)),
 				this,
 				SLOT (closeItem (int)));
+	}
+
+	TabListView::~TabListView ()
+	{
+		Model_->clear ();
 	}
 
 	QByteArray TabListView::GetTabClass () const

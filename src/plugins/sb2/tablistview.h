@@ -60,6 +60,7 @@ namespace SB2
 	public:
 		TabListView (const QByteArray&, const QList<QWidget*>&,
 				ICoreTabWidget*, QMainWindow*, ICoreProxy_ptr, QWidget* = 0);
+		~TabListView ();
 
 		QByteArray GetTabClass () const;
 
