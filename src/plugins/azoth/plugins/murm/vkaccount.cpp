@@ -32,6 +32,7 @@
 #include <QUuid>
 #include <QIcon>
 #include <QtDebug>
+#include <util/svcauth/vkcaptchadialog.h>
 #include "vkprotocol.h"
 #include "vkconnection.h"
 #include "vkentry.h"
@@ -43,7 +44,6 @@
 #include "vkchatentry.h"
 #include "logger.h"
 #include "accountconfigdialog.h"
-#include "captchadialog.h"
 
 namespace LeechCraft
 {
@@ -610,7 +610,7 @@ namespace Murm
 			return;
 		}
 
-		auto dia = new CaptchaDialog (url, cid, CoreProxy_->GetNetworkAccessManager ());
+		auto dia = new Util::SvcAuth::VkCaptchaDialog (url, cid, CoreProxy_->GetNetworkAccessManager ());
 		connect (dia,
 				SIGNAL (gotCaptcha (QString, QString)),
 				this,
