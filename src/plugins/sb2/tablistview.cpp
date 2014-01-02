@@ -66,6 +66,11 @@ namespace SB2
 				names [Roles::TabName] = "tabName";
 				setRoleNames (names);
 			}
+
+			~TabsListModel ()
+			{
+				clear ();
+			}
 		};
 	}
 
