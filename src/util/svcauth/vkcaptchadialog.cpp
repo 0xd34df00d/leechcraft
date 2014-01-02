@@ -61,6 +61,11 @@ namespace SvcAuth
 				SLOT (handleGotImage ()));
 	}
 
+	void VkCaptchaDialog::SetContextName (const QString& context)
+	{
+		setWindowTitle (tr ("CAPTCHA required for %1").arg (context));
+	}
+
 	void VkCaptchaDialog::done (int r)
 	{
 		QDialog::done (r);
