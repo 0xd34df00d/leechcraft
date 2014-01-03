@@ -55,9 +55,10 @@ public:
 	 * Entity could be anything from file name to URL to all kinds of
 	 * hashes like Magnet links.
 	 *
-	 * @param[in] entity A Entity structure that could be possibly
+	 * @param[in] entity A Entity structure that could possibly be
 	 * handled by this plugin.
-	 * @return The result of entity 
+	 * @return The result of testing whether the \em entity can be
+	 * handled.
 	 *
 	 * @sa Handle
 	 * @sa LeechCraft::Entity

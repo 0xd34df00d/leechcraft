@@ -114,6 +114,8 @@ public:
 	 * hashes like Magnet links.
 	 *
 	 * @param[in] entity A Entity structure.
+	 * @return The result of the test whether the \em entity can be
+	 * handled.
 	 *
 	 * @sa AddJob
 	 * @sa LeechCraft::Entity
