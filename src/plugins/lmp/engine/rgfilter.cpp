@@ -27,66 +27,47 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "vkcaptchadialog.h"
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include "ui_vkcaptchadialog.h"
+#include "rgfilter.h"
+#include <gst/gst.h>
+#include "gstutil.h"
 
 namespace LeechCraft
 {
-namespace Util
+namespace LMP
 {
-namespace SvcAuth
-{
-	VkCaptchaDialog::VkCaptchaDialog (const QVariantMap& errorMap,
-			QNetworkAccessManager *nam, QWidget *w)
-	: VkCaptchaDialog (errorMap ["captcha_img"].toString (),
-			errorMap ["captcha_sid"].toString (), nam, w)
+	RGFilter::RGFilter ()
+	: Elem_ (gst_bin_new ("rgbin"))
+	, RGVol_ (gst_element_factory_make ("rgvolume", "rgvol"))
+	, RGLimiter_ (gst_element_factory_make ("rglimiter", "rglim"))
 	{
+		const auto convIn = gst_element_factory_make ("audioconvert", "convIn");
+		const auto convOut = gst_element_factory_make ("audioconvert", "convOut");
+
+		gst_bin_add_many (GST_BIN (Elem_), RGVol_, RGLimiter_, convIn, convOut, nullptr);
+		gst_element_link_many (convIn, RGVol_, RGLimiter_, convOut, nullptr);
+
+		GstUtil::AddGhostPad (convIn, Elem_, "sink");
+		GstUtil::AddGhostPad (convOut, Elem_, "src");
 	}
 
-	VkCaptchaDialog::VkCaptchaDialog (const QUrl& url,
-			const QString& cid, QNetworkAccessManager *manager, QWidget *parent)
-	: QDialog (parent)
-	, Ui_ (new Ui::VkCaptchaDialog)
-	, Cid_ (cid)
+	void RGFilter::SetAlbumMode (bool albumMode)
 	{
-		Ui_->setupUi (this);
-
-		auto reply = manager->get (QNetworkRequest (url));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotImage ()));
+		g_object_set (RGVol_, "album-mode", static_cast<gboolean> (albumMode), nullptr);
 	}
 
-	void VkCaptchaDialog::SetContextName (const QString& context)
+	void RGFilter::SetLimiterEnabled (bool enabled)
 	{
-		setWindowTitle (tr ("CAPTCHA required for %1").arg (context));
+		g_object_set (RGLimiter_, "enabled", static_cast<gboolean> (enabled), nullptr);
 	}
 
-	void VkCaptchaDialog::done (int r)
+	void RGFilter::SetPreamp (double preamp)
 	{
-		QDialog::done (r);
-
-		if (r == DialogCode::Rejected)
-			emit gotCaptcha (Cid_, {});
-		else
-			emit gotCaptcha (Cid_, Ui_->Text_->text ());
-
-		deleteLater ();
+		g_object_set (RGVol_, "pre-amp", static_cast<gdouble> (preamp), nullptr);
 	}
 
-	void VkCaptchaDialog::handleGotImage ()
+	GstElement* RGFilter::GetElement () const
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		QPixmap px;
-		px.loadFromData (reply->readAll ());
-		Ui_->ImageLabel_->setPixmap (px);
+		return Elem_;
 	}
-}
 }
 }

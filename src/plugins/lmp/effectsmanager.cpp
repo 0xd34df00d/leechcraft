@@ -27,52 +27,53 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "captchadialog.h"
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include "effectsmanager.h"
+#include "engine/rgfilter.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace LMP
 {
-namespace Murm
-{
-	CaptchaDialog::CaptchaDialog (const QUrl& url,
-			const QString& cid, QNetworkAccessManager *manager, QWidget *parent)
-	: QDialog (parent)
-	, Cid_ (cid)
+	EffectsManager::EffectsManager (Path *path, QObject *parent)
+	: QObject (parent)
+	, Path_ (path)
 	{
-		Ui_.setupUi (this);
-
-		auto reply = manager->get (QNetworkRequest (url));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotImage ()));
+		const QList<QByteArray> rgProps
+		{
+			"EnableRG",
+			"RGAlbumMode",
+			"RGLimiting",
+			"RGPreamp"
+		};
+		XmlSettingsManager::Instance ().RegisterObject (rgProps, this, "setRG");
+		setRG ();
 	}
 
-	void CaptchaDialog::done (int r)
+	void EffectsManager::setRG ()
 	{
-		QDialog::done (r);
+		const auto& xsm = XmlSettingsManager::Instance ();
+		const auto enable = xsm.property ("EnableRG").toBool ();
+		if (!enable)
+		{
+			if (RGFilter_)
+			{
+				RGFilter_->RemoveFrom (Path_);
+				RGFilter_.reset ();
+			}
 
-		if (r == DialogCode::Rejected)
-			emit gotCaptcha (Cid_, {});
-		else
-			emit gotCaptcha (Cid_, Ui_.Text_->text ());
+			return;
+		}
 
-		deleteLater ();
+		if (!RGFilter_)
+		{
+			RGFilter_.reset (new RGFilter);
+			RGFilter_->InsertInto (Path_);
+		}
+
+		RGFilter_->SetAlbumMode (xsm.property ("RGAlbumMode").toBool ());
+		RGFilter_->SetPreamp (xsm.property ("RGPreamp").toDouble ());
+		RGFilter_->SetLimiterEnabled (xsm.property ("RGLimiting").toBool ());
 	}
-
-	void CaptchaDialog::handleGotImage ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		QPixmap px;
-		px.loadFromData (reply->readAll ());
-		Ui_.ImageLabel_->setPixmap (px);
-	}
-}
 }
 }

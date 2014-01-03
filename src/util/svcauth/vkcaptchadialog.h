@@ -58,6 +58,8 @@ namespace SvcAuth
 		VkCaptchaDialog (const QVariantMap& errorMap, QNetworkAccessManager*, QWidget* = 0);
 		VkCaptchaDialog (const QUrl&, const QString&, QNetworkAccessManager*, QWidget* = 0);
 
+		void SetContextName (const QString&);
+
 		void done (int) override;
 	private slots:
 		void handleGotImage ();

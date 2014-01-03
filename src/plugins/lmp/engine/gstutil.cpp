@@ -27,36 +27,23 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QDialog>
-#include "ui_captchadialog.h"
-
-class QNetworkAccessManager;
-class QUrl;
+#include "gstutil.h"
+#include <gst/gst.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace LMP
 {
-namespace Murm
+namespace GstUtil
 {
-	class CaptchaDialog : public QDialog
+	void AddGhostPad (GstElement *from, GstElement *to, const char *name)
 	{
-		Q_OBJECT
-
-		Ui::CaptchaDialog Ui_;
-
-		const QString Cid_;
-	public:
-		CaptchaDialog (const QUrl&, const QString&, QNetworkAccessManager*, QWidget* = 0);
-
-		void done (int) override;
-	private slots:
-		void handleGotImage ();
-	signals:
-		void gotCaptcha (const QString& cid, const QString& value);
-	};
+		auto pad = gst_element_get_static_pad (from, name);
+		auto ghostPad = gst_ghost_pad_new (name, pad);
+		gst_pad_set_active (ghostPad, TRUE);
+		gst_element_add_pad (to, ghostPad);
+		gst_object_unref (pad);
+	}
 }
 }
 }

@@ -151,6 +151,11 @@ namespace SB2
 				SLOT (closeItem (int)));
 	}
 
+	TabListView::~TabListView ()
+	{
+		Model_->clear ();
+	}
+
 	QByteArray TabListView::GetTabClass () const
 	{
 		return TC_;

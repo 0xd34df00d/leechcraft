@@ -108,11 +108,14 @@ set (SRCS
 	radiocustomdialog.cpp
 	stdartistactionsmanager.cpp
 	notificationplayer.cpp
+	effectsmanager.cpp
 	engine/audiosource.cpp
 	engine/filterelement.cpp
+	engine/gstutil.cpp
 	engine/output.cpp
 	engine/path.cpp
 	engine/pathelement.cpp
+	engine/rgfilter.cpp
 	engine/sourceobject.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp

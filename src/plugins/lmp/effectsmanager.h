@@ -27,66 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "vkcaptchadialog.h"
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include "ui_vkcaptchadialog.h"
+#pragma once
+
+#include <memory>
+#include <QObject>
 
 namespace LeechCraft
 {
-namespace Util
+namespace LMP
 {
-namespace SvcAuth
-{
-	VkCaptchaDialog::VkCaptchaDialog (const QVariantMap& errorMap,
-			QNetworkAccessManager *nam, QWidget *w)
-	: VkCaptchaDialog (errorMap ["captcha_img"].toString (),
-			errorMap ["captcha_sid"].toString (), nam, w)
+	class Path;
+	class RGFilter;
+
+	class EffectsManager : public QObject
 	{
-	}
+		Q_OBJECT
 
-	VkCaptchaDialog::VkCaptchaDialog (const QUrl& url,
-			const QString& cid, QNetworkAccessManager *manager, QWidget *parent)
-	: QDialog (parent)
-	, Ui_ (new Ui::VkCaptchaDialog)
-	, Cid_ (cid)
-	{
-		Ui_->setupUi (this);
+		Path * const Path_;
 
-		auto reply = manager->get (QNetworkRequest (url));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotImage ()));
-	}
-
-	void VkCaptchaDialog::SetContextName (const QString& context)
-	{
-		setWindowTitle (tr ("CAPTCHA required for %1").arg (context));
-	}
-
-	void VkCaptchaDialog::done (int r)
-	{
-		QDialog::done (r);
-
-		if (r == DialogCode::Rejected)
-			emit gotCaptcha (Cid_, {});
-		else
-			emit gotCaptcha (Cid_, Ui_->Text_->text ());
-
-		deleteLater ();
-	}
-
-	void VkCaptchaDialog::handleGotImage ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		QPixmap px;
-		px.loadFromData (reply->readAll ());
-		Ui_->ImageLabel_->setPixmap (px);
-	}
-}
+		std::shared_ptr<RGFilter> RGFilter_;
+	public:
+		EffectsManager (Path*, QObject* = 0);
+	private slots:
+		void setRG ();
+	};
 }
 }

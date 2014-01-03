@@ -39,6 +39,7 @@ namespace LMP
 {
 	class SourceObject;
 	class Output;
+	struct CallbackData;
 
 	class Path : public QObject
 	{
@@ -51,6 +52,14 @@ namespace LMP
 		GstElement *OutputBin_;
 
 		QList<GstElement*> NextWholeElems_;
+
+		enum class Action
+		{
+			Add,
+			Remove
+		};
+
+		friend struct CallbackData;
 	public:
 		Path (SourceObject*, Output*, QObject* = 0);
 		~Path ();
@@ -68,6 +77,10 @@ namespace LMP
 
 		void InsertElement (GstElement*);
 		void RemoveElement (GstElement*);
+
+		void FinalizeAction (CallbackData*);
+	private:
+		void Perform (GstElement*, Action);
 	};
 }
 }
