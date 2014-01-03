@@ -77,7 +77,7 @@ public:
 	 */
 	virtual QMap<QString, QList<QAction*>> GetMenuActions () const
 	{
-		return QMap<QString, QList<QAction*>> ();
+		return {};
 	}
 protected:
 	/** @brief Notifies about new actions for the given area.
