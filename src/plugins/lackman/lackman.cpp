@@ -31,17 +31,10 @@
 #include <QSortFilterProxyModel>
 #include <QIcon>
 #include <util/util.h>
-#include <util/tags/categoryselector.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/core/itagsmanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "packagesmodel.h"
-#include "externalresourcemanager.h"
-#include "storage.h"
 #include "lackmantab.h"
 
 namespace LeechCraft
