@@ -125,8 +125,25 @@ namespace CSTP
 			req.setRawHeader ("Accept", "*/*");
 
 			StartTime_.restart ();
-			QNetworkAccessManager *nam = Core::Instance ().GetNetworkAccessManager ();
-			Reply_.reset (nam->get (req));
+
+			auto nam = Core::Instance ().GetNetworkAccessManager ();
+
+			switch (Params_.value ("Operation", QNetworkAccessManager::GetOperation).toInt ())
+			{
+			case QNetworkAccessManager::GetOperation:
+				Reply_.reset (nam->get (req));
+				break;
+			case QNetworkAccessManager::PostOperation:
+				req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+				Reply_.reset (nam->post (req, QByteArray {}));
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unsupported operation"
+						<< Params_ ["Operation"];
+				handleError ();
+				return;
+			}
 		}
 		else
 		{
