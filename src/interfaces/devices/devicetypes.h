@@ -31,9 +31,34 @@
 
 namespace LeechCraft
 {
+	/** @brief Describes various USB removable devices.
+	 *
+	 * The corresponding device model role is CommonDevRole::DevType.
+	 *
+	 * All device types are expected to return meaningful data for roles
+	 * in the CommonDevRole enum.
+	 *
+	 * @sa CommonDevRole::DevType
+	 * @sa CommonDevRole
+	 */
 	enum DeviceType
 	{
+		/** @brief A general USB device.
+		 *
+		 * The device model rows for this USB device are expected to also
+		 * return data for roles in the USBDeviceRole enum.
+		 *
+		 * @sa USBDeviceRole
+		 */
 		USBDevice,
+
+		/** @brief A mass storage USB device, like a flash drive.
+		 *
+		 * The device model rows for this USB device are expected to also
+		 * return data for roles in the MassStorageRole enum.
+		 *
+		 * @sa MassStorageRole
+		 */
 		MassStorage
 	};
 }
