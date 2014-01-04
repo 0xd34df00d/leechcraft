@@ -121,6 +121,7 @@ namespace CSTP
 				req.setRawHeader ("Referer", Referer_.toEncoded ());
 
 			req.setRawHeader ("Host", URL_.host ().toLatin1 ());
+			req.setRawHeader ("Origin", URL_.scheme ().toLatin1 () + "://" + URL_.host ().toLatin1 ());
 			req.setRawHeader ("Accept", "*/*");
 
 			StartTime_.restart ();
