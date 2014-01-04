@@ -31,7 +31,7 @@
 #include <cmath>
 #include <QtDebug>
 #include <QTimer>
-#include <gst/gst.h>
+#include "../gstfix.h"
 #include "path.h"
 #include "../xmlsettingsmanager.h"
 

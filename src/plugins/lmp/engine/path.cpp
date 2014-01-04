@@ -29,7 +29,7 @@
 
 #include "path.h"
 #include <QtDebug>
-#include <gst/gst.h>
+#include "../gstfix.h"
 #include "sourceobject.h"
 #include "output.h"
 

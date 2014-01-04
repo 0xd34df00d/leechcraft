@@ -27,47 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "rgfilter.h"
-#include "../gstfix.h"
-#include "gstutil.h"
+#pragma once
 
-namespace LeechCraft
-{
-namespace LMP
-{
-	RGFilter::RGFilter ()
-	: Elem_ (gst_bin_new ("rgbin"))
-	, RGVol_ (gst_element_factory_make ("rgvolume", "rgvol"))
-	, RGLimiter_ (gst_element_factory_make ("rglimiter", "rglim"))
-	{
-		const auto convIn = gst_element_factory_make ("audioconvert", "convIn");
-		const auto convOut = gst_element_factory_make ("audioconvert", "convOut");
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-register"
 
-		gst_bin_add_many (GST_BIN (Elem_), RGVol_, RGLimiter_, convIn, convOut, nullptr);
-		gst_element_link_many (convIn, RGVol_, RGLimiter_, convOut, nullptr);
+#include <gst/gst.h>
 
-		GstUtil::AddGhostPad (convIn, Elem_, "sink");
-		GstUtil::AddGhostPad (convOut, Elem_, "src");
-	}
-
-	void RGFilter::SetAlbumMode (bool albumMode)
-	{
-		g_object_set (RGVol_, "album-mode", static_cast<gboolean> (albumMode), nullptr);
-	}
-
-	void RGFilter::SetLimiterEnabled (bool enabled)
-	{
-		g_object_set (RGLimiter_, "enabled", static_cast<gboolean> (enabled), nullptr);
-	}
-
-	void RGFilter::SetPreamp (double preamp)
-	{
-		g_object_set (RGVol_, "pre-amp", static_cast<gdouble> (preamp), nullptr);
-	}
-
-	GstElement* RGFilter::GetElement () const
-	{
-		return Elem_;
-	}
-}
-}
+#pragma clang diagnostic pop

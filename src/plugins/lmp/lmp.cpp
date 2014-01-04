@@ -34,10 +34,10 @@
 #include <QUrl>
 #include <QtDeclarative>
 #include <QGraphicsEffect>
-#include <gst/gst.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
+#include "gstfix.h"
 #include "playertab.h"
 #include "player.h"
 #include "xmlsettingsmanager.h"

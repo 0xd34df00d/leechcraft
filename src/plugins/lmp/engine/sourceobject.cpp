@@ -34,7 +34,6 @@
 #include <QTimer>
 #include <QTextCodec>
 #include <QThread>
-#include <gst/gst.h>
 
 #ifdef WITH_LIBGUESS
 extern "C"
@@ -45,6 +44,7 @@ extern "C"
 
 #include "audiosource.h"
 #include "path.h"
+#include "../gstfix.h"
 #include "../core.h"
 #include "../xmlsettingsmanager.h"
 

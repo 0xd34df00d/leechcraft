@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "gstutil.h"
-#include <gst/gst.h>
+#include "../gstfix.h"
 
 namespace LeechCraft
 {

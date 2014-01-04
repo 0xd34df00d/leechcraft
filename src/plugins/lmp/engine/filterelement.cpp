@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "filterelement.h"
-#include <gst/gst.h>
+#include "../gstfix.h"
 #include "path.h"
 
 namespace LeechCraft
