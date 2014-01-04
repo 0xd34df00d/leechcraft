@@ -48,7 +48,7 @@ namespace LeechCraft
 {
 namespace CSTP
 {
-	Task::Task (const QUrl& url)
+	Task::Task (const QUrl& url, const QVariantMap& params)
 	: URL_ (url)
 	, Done_ (-1)
 	, Total_ (0)
@@ -57,6 +57,8 @@ namespace CSTP
 	, UpdateCounter_ (0)
 	, Timer_ (new QTimer (this))
 	, CanChangeName_ (true)
+	, Referer_ (params ["Referer"].toUrl ())
+	, Params_ (params)
 	{
 		StartTime_.start ();
 

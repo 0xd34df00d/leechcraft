@@ -170,7 +170,7 @@ namespace CSTP
 	{
 		const QUrl entity = e.Entity_.toUrl ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
-		QStringList tags = e.Additional_ [" Tags"].toStringList ();
+		const auto& tags = e.Additional_ [" Tags"].toStringList ();
 
 		const QFileInfo fi (e.Location_);
 		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
@@ -201,6 +201,7 @@ namespace CSTP
 						task.Filename_,
 						task.Comment_,
 						tags,
+						e.Additional_,
 						e.Parameters_);
 			}
 			else if (!dir.isEmpty ())
@@ -209,6 +210,7 @@ namespace CSTP
 						file,
 						QString (),
 						tags,
+						e.Additional_,
 						e.Parameters_);
 		}
 
@@ -239,7 +241,13 @@ namespace CSTP
 		TaskDescr td;
 		td.Task_.reset (new Task (rep));
 
-		return AddTask (td, path, filename, comment, tags, tp);
+		QDir dir (path);
+		td.File_.reset (new QFile (QDir::cleanPath (dir.filePath (filename))));
+		td.Comment_ = comment;
+		td.Parameters_ = tp;
+		td.Tags_ = tags;
+
+		return AddTask (td);
 	}
 
 	int Core::AddTask (const QUrl& url,
@@ -247,28 +255,26 @@ namespace CSTP
 			const QString& filename,
 			const QString& comment,
 			const QStringList& tags,
+			const QVariantMap& params,
 			LeechCraft::TaskParameters tp)
 	{
 		TaskDescr td;
-		td.Task_.reset (new Task (url));
 
-		return AddTask (td, path, filename, comment, tags, tp);
-	}
+		td.Task_.reset (new Task (url, params));
 
-	int Core::AddTask (TaskDescr& td,
-			const QString& path,
-			const QString& filename,
-			const QString& comment,
-			const QStringList& tags,
-			LeechCraft::TaskParameters tp)
-	{
 		QDir dir (path);
 		td.File_.reset (new QFile (QDir::cleanPath (dir.filePath (filename))));
 		td.Comment_ = comment;
-		td.ErrorFlag_ = false;
 		td.Parameters_ = tp;
-		td.ID_ = CoreProxy_->GetID ();
 		td.Tags_ = tags;
+
+		return AddTask (td);
+	}
+
+	int Core::AddTask (TaskDescr& td)
+	{
+		td.ErrorFlag_ = false;
+		td.ID_ = CoreProxy_->GetID ();
 
 		if (td.File_->exists ())
 		{
@@ -292,7 +298,7 @@ namespace CSTP
 			}
 		}
 
-		if (tp & Internal)
+		if (td.Parameters_ & Internal)
 			td.Task_->ForbidNameChanges ();
 
 		connect (td.Task_.get (),
@@ -308,7 +314,7 @@ namespace CSTP
 		ActiveTasks_.push_back (td);
 		endInsertRows ();
 		ScheduleSave ();
-		if (!(tp & LeechCraft::NoAutostart))
+		if (!(td.Parameters_ & LeechCraft::NoAutostart))
 			startTriggered (rowCount () - 1);
 		return td.ID_;
 	}

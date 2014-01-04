@@ -36,6 +36,7 @@
 #include <QNetworkProxy>
 #include <QNetworkAccessManager>
 #include <QSet>
+#include <QUrl>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/idownload.h>
@@ -141,6 +142,7 @@ namespace CSTP
 				const QString&,
 				const QString&,
 				const QStringList&,
+				const QVariantMap&,
 				LeechCraft::TaskParameters = LeechCraft::NoParameters);
 		int AddTask (QNetworkReply*,
 				const QString&,
@@ -148,12 +150,7 @@ namespace CSTP
 				const QString&,
 				const QStringList&,
 				LeechCraft::TaskParameters = LeechCraft::NoParameters);
-		int AddTask (TaskDescr&,
-				const QString&,
-				const QString&,
-				const QString&,
-				const QStringList&,
-				LeechCraft::TaskParameters = LeechCraft::NoParameters);
+		int AddTask (TaskDescr&);
 		void ReadSettings ();
 		void ScheduleSave ();
 		tasks_t::const_iterator FindTask (QObject*) const;

@@ -62,8 +62,11 @@ namespace CSTP
 		int UpdateCounter_;
 		QTimer *Timer_;
 		bool CanChangeName_;
+
+		QUrl Referer_;
+		const QVariantMap Params_;
 	public:
-		explicit Task (const QUrl& = QUrl ());
+		explicit Task (const QUrl& url = QUrl (), const QVariantMap& params = QVariantMap ());
 		explicit Task (QNetworkReply*);
 
 		void Start (const std::shared_ptr<QFile>&);
