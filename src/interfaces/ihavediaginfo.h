@@ -33,11 +33,22 @@
 
 class QString;
 
+/** @brief Interface for plugins having human-readable diagnostic data.
+ *
+ * Library versions, the compiled-in features, etc., count as diagnostic
+ * info. The info aggregated from all plugins will be sent to the issue
+ * tracker with bug reports, for example, so returning proper data can
+ * aid in debugging.
+ */
 class Q_DECL_EXPORT IHaveDiagInfo
 {
 public:
 	virtual ~IHaveDiagInfo () {}
 
+	/** @brief Returns the human-readable diagnostic info.
+	 *
+	 * @return The human-readable diagnostic info.
+	 */
 	virtual QString GetDiagInfoString () const = 0;
 };
 

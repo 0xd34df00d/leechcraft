@@ -40,33 +40,68 @@
  * Examples of such plugins are image uploaders to various image bins,
  * text finders, etc.
  *
- * The list of possible data filter variants (that is, image bins
- * supported by a single plugin) is returned from the GetFilterVariants()
- * function.
+ * A single data filter plugin can support multiple data filter
+ * variants, like particular image bins supported by an image uploader
+ * or particular OpenSearch engines supported by an OpenSearch handler.
+ * The list of possible data filter variants is returned from the
+ * GetFilterVariants() function. The list can be dynamic (that is,
+ * different in different calls).
  *
  * Plugins implementing this interface are also expected to implement
  * IEntityHandler, considering (and accepting) entities with MIME
  * "x-leechcraft/data-filter-request". Such entities will contain the
  * entity to filter (like, a piece of text or an image) in the
  * Entity::Entity_ field and may contain the "DataFilter" key in the
- * Entity::Additional_ map with the name of the exact filter variant
+ * Entity::Additional_ map with the ID of the exact filter variant
  * to use (if user has already selected it).
+ *
+ * @sa Entity, IEntityHandler
  */
 class Q_DECL_EXPORT IDataFilter
 {
 public:
+	/** @brief Describes a single filter variant supported by this data
+	 * filter.
+	 */
 	struct FilterVariant
 	{
+		/** @brief The ID of this filter variant.
+		 *
+		 * This ID will be passed in the Additional_ ["DataFilter"]
+		 * field in the Entity structure.
+		 */
 		QByteArray ID_;
+
+		/** @brief The human-readable name of the filter variant.
+		 */
 		QString Name_;
+
+		/** @brief The description of the filter variant.
+		 */
 		QString Description_;
+
+		/** @brief The icon representing the filter variant.
+		 */
 		QIcon Icon_;
 	};
 
 	virtual ~IDataFilter () {}
 
+	/** @brief Returns the string describing the data filter.
+	 *
+	 * This function should return the human-readable string describing
+	 * the data filter plugin in general in an imperative form, like
+	 * "Upload image to" for an image uploader or "Search in" for a text
+	 * searcher.
+	 *
+	 * @return The human-readable string like "Search in".
+	 */
 	virtual QString GetFilterVerb () const = 0;
 
+	/** @brief Returns the list of concrete data filter variants.
+	 *
+	 * @return The list of exact data filter variants.
+	 */
 	virtual QList<FilterVariant> GetFilterVariants () const = 0;
 };
 

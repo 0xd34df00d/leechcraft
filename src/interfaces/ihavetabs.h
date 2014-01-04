@@ -214,7 +214,7 @@ public:
 	 */
 	virtual QList<QAction*> GetTabBarContextMenuActions () const
 	{
-		return QList<QAction*> ();
+		return {};
 	}
 
 	/** @brief Returns the list of QActions to be inserted into global
@@ -237,7 +237,7 @@ public:
 	 */
 	virtual QMap<QString, QList<QAction*>> GetWindowMenus () const
 	{
-		return QMap<QString, QList<QAction*>> ();
+		return {};
 	}
 
 	/** @brief This method is called when this tab becomes active.
