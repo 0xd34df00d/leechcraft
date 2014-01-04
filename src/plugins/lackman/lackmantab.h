@@ -86,8 +86,11 @@ namespace LackMan
 		void SetFilterTags (const QStringList&);
 		void SetFilterString (const QString&);
 	private:
+		void BuildPackageTreeShortcuts ();
 		void BuildActions ();
 	private slots:
+		void toggleSelected ();
+
 		void handlePackageSelected (const QModelIndex&);
 		void handleFetchListUpdated (const QList<int>&);
 		void handleTagsUpdated (const QStringList&);

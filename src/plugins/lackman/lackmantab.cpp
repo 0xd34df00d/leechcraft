@@ -29,6 +29,7 @@
 
 #include "lackmantab.h"
 #include <QStringListModel>
+#include <QShortcut>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
@@ -103,6 +104,8 @@ namespace LackMan
 
 		Ui_.PackagesTree_->setModel (FilterString_);
 		Ui_.PackagesTree_->setItemDelegate (new PackagesDelegate (Ui_.PackagesTree_));
+
+		BuildPackageTreeShortcuts ();
 
 		auto setColWidth = [this] (int col, const QString& sample)
 		{
@@ -201,6 +204,11 @@ namespace LackMan
 		Ui_.SearchLine_->setText (string);
 	}
 
+	void LackManTab::BuildPackageTreeShortcuts ()
+	{
+		new QShortcut (QString ("Space"), this, SLOT (toggleSelected ()));
+	}
+
 	void LackManTab::BuildActions ()
 	{
 		UpdateAll_ = new QAction (tr ("Update all repos"), this);
@@ -244,6 +252,22 @@ namespace LackMan
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (Apply_);
 		Toolbar_->addAction (Cancel_);
+	}
+
+	void LackManTab::toggleSelected ()
+	{
+		auto idx = Ui_.PackagesTree_->currentIndex ();
+		if (!idx.isValid ())
+			return;
+
+		idx = idx.sibling (idx.row (), PackagesModel::Columns::Upd);
+		if (!(idx.flags () & Qt::ItemIsUserCheckable))
+			idx = idx.sibling (idx.row (), PackagesModel::Columns::Inst);
+
+		const auto state = idx.data (Qt::CheckStateRole).toInt ();
+		Ui_.PackagesTree_->model ()->setData (idx,
+				state == Qt::Checked ? Qt::Unchecked : Qt::Checked,
+				Qt::CheckStateRole);
 	}
 
 	void LackManTab::handlePackageSelected (const QModelIndex& index)
