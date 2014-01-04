@@ -59,6 +59,8 @@ namespace LackMan
 
 		QMap<int, QList<int>> Deps_;
 		QMap<int, QStandardItem*> ID2ModelRow_;
+
+		bool NotifyFetchListUpdateScheduled_;
 	public:
 		PendingManager (QObject* = 0);
 
@@ -78,7 +80,10 @@ namespace LackMan
 		void EnablePackageInto (int, Action);
 		void DisablePackageFrom (int, Action);
 		void ReinitRootItems ();
-		void NotifyFetchListUpdate ();
+
+		void ScheduleNotifyFetchListUpdate ();
+	private slots:
+		void notifyFetchListUpdate ();
 	signals:
 		void packageUpdateToggled (int, bool);
 		void fetchListUpdated (const QList<int>&);
