@@ -331,7 +331,10 @@ namespace SB2
 		}
 
 		if (CurrentTabList_)
-			delete CurrentTabList_;
+		{
+			CurrentTabList_->deleteLater ();
+			CurrentTabList_ = nullptr;
+		}
 
 		auto view = new TabListView (tc, widgets, ICTW_, View_->GetManagedWindow (), Proxy_);
 		view->move (Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ()));
