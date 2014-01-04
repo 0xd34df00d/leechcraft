@@ -48,6 +48,10 @@ class QAbstractItemModel;
  * its part, like a partition for a flash drive. The model is
  * hierarchical: for example, partitions of a flash drive are children of
  * the row representing the flash drive itself.
+ *
+ * Each row of the model should contain data for roles defined in the
+ * LeechCraft::CommonDevRole enum as well as LeechCraft::USBDeviceRole or
+ * LeechCraft::MassStorageRole enums, depending on the device type.
  */
 class Q_DECL_EXPORT IRemovableDevManager
 {
@@ -71,6 +75,10 @@ public:
 	virtual bool SupportsDevType (LeechCraft::DeviceType type) const = 0;
 
 	/** @brief Returns the model describing the devices.
+	 *
+	 * Each row of the model should contain data for roles defined in the
+	 * LeechCraft::CommonDevRole enum as well as LeechCraft::USBDeviceRole or
+	 * LeechCraft::MassStorageRole enums, depending on the device type.
 	 */
 	virtual QAbstractItemModel* GetDevicesModel () const = 0;
 
