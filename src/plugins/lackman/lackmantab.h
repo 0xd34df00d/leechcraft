@@ -97,6 +97,8 @@ namespace LackMan
 		void handleFetchListUpdated (const QList<int>&);
 		void handleTagsUpdated (const QStringList&);
 
+		void toggleInstall ();
+		void toggleUpgrade ();
 		void selectAllForInstall ();
 		void selectNoneForInstall ();
 
