@@ -344,12 +344,13 @@ namespace SB2
 		CurrentTabList_ = view;
 	}
 
-	void LauncherComponent::tabListUnhovered (const QByteArray&)
+	void LauncherComponent::tabListUnhovered (const QByteArray& tc)
 	{
 		if (!CurrentTabList_)
 			return;
 
-		CurrentTabList_->HandleLauncherUnhovered ();
+		if (tc == CurrentTabList_->GetTabClass ())
+			CurrentTabList_->HandleLauncherUnhovered ();
 	}
 
 	void LauncherComponent::handleNewTab (const QString&, QWidget *w)
