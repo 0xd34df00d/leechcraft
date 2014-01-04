@@ -406,6 +406,7 @@ namespace CSTP
 
 		Reply_.reset ();
 
+		Referer_ = URL_;
 		URL_ = QUrl::fromEncoded (newUrl);
 		Start (To_);
 	}
