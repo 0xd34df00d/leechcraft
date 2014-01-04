@@ -206,6 +206,8 @@ namespace LackMan
 
 	void LackManTab::BuildPackageTreeShortcuts ()
 	{
+		new QShortcut (QString ("K"), this, SLOT (navigateUp ()));
+		new QShortcut (QString ("J"), this, SLOT (navigateDown ()));
 		new QShortcut (QString ("Space"), this, SLOT (toggleSelected ()));
 	}
 
@@ -252,6 +254,26 @@ namespace LackMan
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (Apply_);
 		Toolbar_->addAction (Cancel_);
+	}
+
+	void LackManTab::navigateUp ()
+	{
+		auto idx = Ui_.PackagesTree_->currentIndex ();
+		idx = idx.sibling (idx.row () - 1, 0);
+		if (!idx.isValid ())
+			return;
+
+		Ui_.PackagesTree_->setCurrentIndex (idx);
+	}
+
+	void LackManTab::navigateDown ()
+	{
+		auto idx = Ui_.PackagesTree_->currentIndex ();
+		idx = idx.sibling (idx.row () + 1, 0);
+		if (!idx.isValid ())
+			return;
+
+		Ui_.PackagesTree_->setCurrentIndex (idx);
 	}
 
 	void LackManTab::toggleSelected ()

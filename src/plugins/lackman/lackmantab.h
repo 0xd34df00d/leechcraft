@@ -89,6 +89,8 @@ namespace LackMan
 		void BuildPackageTreeShortcuts ();
 		void BuildActions ();
 	private slots:
+		void navigateUp ();
+		void navigateDown ();
 		void toggleSelected ();
 
 		void handlePackageSelected (const QModelIndex&);
