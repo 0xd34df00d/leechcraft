@@ -59,6 +59,7 @@ namespace Media
 	 * belonging to the returning plugin, this class never deletes itself.
 	 *
 	 * @sa IRadioStationProvider
+	 * @sa IModifiableRadioStation
 	 */
 	class Q_DECL_EXPORT IRadioStation
 	{
