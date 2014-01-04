@@ -114,7 +114,12 @@ namespace CSTP
 			if (tof->size ())
 				req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
 			req.setRawHeader ("User-Agent", ua.toLatin1 ());
-			req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
+
+			if (Referer_.isEmpty ())
+				req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
+			else
+				req.setRawHeader ("Referer", Referer_.toEncoded ());
+
 			req.setRawHeader ("Host", URL_.host ().toLatin1 ());
 			req.setRawHeader ("Accept", "*/*");
 
