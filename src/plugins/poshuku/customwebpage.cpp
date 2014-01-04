@@ -396,16 +396,17 @@ namespace Poshuku
 
 		const auto& url = reply->url ();
 		const auto& mime = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
+		const auto& referer = reply->request ().rawHeader ("Referer");
 
-		qDebug () << Q_FUNC_INFO << reply->url () << reply->errorString ();
-
-		auto sendEnt = [reply, mime, url, this] () -> void
+		auto sendEnt = [reply, mime, referer, this] () -> void
 		{
-			auto e = Util::MakeEntity (url,
+			auto e = Util::MakeEntity (reply->url (),
 					{},
 					LeechCraft::FromUserInitiated,
 					mime);
 			e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
+			e.Additional_ ["Referer"] = QUrl::fromEncoded (referer);
+			e.Additional_ ["Operation"] = reply->operation ();
 			emit gotEntity (e);
 
 			if (XmlSettingsManager::Instance ()->
