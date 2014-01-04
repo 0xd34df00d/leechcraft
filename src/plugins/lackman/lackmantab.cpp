@@ -33,6 +33,7 @@
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "typefilterproxymodel.h"
 #include "stringfiltermodel.h"
@@ -40,7 +41,6 @@
 #include "packagesdelegate.h"
 #include "pendingmanager.h"
 #include "storage.h"
-#include <interfaces/core/ipluginsmanager.h>
 
 namespace LeechCraft
 {
