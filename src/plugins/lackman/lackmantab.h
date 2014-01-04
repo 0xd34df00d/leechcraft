@@ -96,6 +96,11 @@ namespace LackMan
 		void handlePackageSelected (const QModelIndex&);
 		void handleFetchListUpdated (const QList<int>&);
 		void handleTagsUpdated (const QStringList&);
+
+		void selectAllForInstall ();
+		void selectNoneForInstall ();
+
+		void on_PackagesTree__customContextMenuRequested (const QPoint&);
 		void on_PackageStatus__currentIndexChanged (int);
 	signals:
 		void addNewTab (const QString&, QWidget*);

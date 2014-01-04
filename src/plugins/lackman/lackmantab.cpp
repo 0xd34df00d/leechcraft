@@ -367,6 +367,31 @@ namespace LackMan
 		TagsModel_->setStringList (tags);
 	}
 
+	void LackManTab::selectAllForInstall ()
+	{
+		const auto model = Ui_.PackagesTree_->model ();
+		for (auto i = 0, rc = model->rowCount (); i < rc; ++i)
+			model->setData (model->index (i, PackagesModel::Columns::Inst),
+					Qt::Checked, Qt::CheckStateRole);
+	}
+
+	void LackManTab::selectNoneForInstall ()
+	{
+		const auto model = Ui_.PackagesTree_->model ();
+		for (auto i = 0, rc = model->rowCount (); i < rc; ++i)
+			model->setData (model->index (i, PackagesModel::Columns::Inst),
+					Qt::Unchecked, Qt::CheckStateRole);
+	}
+
+	void LackManTab::on_PackagesTree__customContextMenuRequested (const QPoint& point)
+	{
+		QMenu menu;
+		menu.addAction (tr ("Mark all for installation"), this, SLOT (selectAllForInstall ()));
+		menu.addAction (tr ("Unmark all for installation"), this, SLOT (selectNoneForInstall ()));
+
+		menu.exec (Ui_.PackagesTree_->viewport ()->mapToGlobal (point));
+	}
+
 	void LackManTab::on_PackageStatus__currentIndexChanged (int index)
 	{
 		TypeFilter_->SetFilterMode (static_cast<TypeFilterProxyModel::FilterMode> (index));
