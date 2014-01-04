@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LackMan</class>
+ <class>LackManTab</class>
  <widget class="QWidget" name="LackMan">
   <property name="geometry">
    <rect>

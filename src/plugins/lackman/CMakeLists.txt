@@ -19,6 +19,7 @@ include_directories (
 	)
 set (SRCS
 	lackman.cpp
+	lackmantab.cpp
 	core.cpp
 	repoinfo.cpp
 	repoinfofetcher.cpp
@@ -41,7 +42,7 @@ set (RESOURCES
 	lackmanresources.qrc
 	)
 set (FORMS
-	lackman.ui
+	lackmantab.ui
 	)
 
 CreateTrs ("lackman" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)

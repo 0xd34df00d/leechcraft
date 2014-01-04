@@ -27,20 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_LACKMAN_LACKMAN_H
-#define PLUGINS_LACKMAN_LACKMAN_H
-#include <QWidget>
-#include <QTranslator>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/ihaveshortcuts.h>
-#include <interfaces/ihaverecoverabletabs.h>
+#pragma once
 
-class QSortFilterProxyModel;
+#include <QWidget>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
+#include "ui_lackmantab.h"
+
 class QStringListModel;
 
 namespace LeechCraft
@@ -51,53 +44,55 @@ namespace Util
 }
 namespace LackMan
 {
-	class LackManTab;
+	class TypeFilterProxyModel;
+	class StringFilterModel;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
-				 , public IHaveSettings
-				 , public IEntityHandler
-				 , public IHaveShortcuts
-				 , public IHaveRecoverableTabs
+	class LackManTab : public QWidget
+					 , public ITabWidget
+					 , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings
-				IEntityHandler IHaveShortcuts IHaveRecoverableTabs)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		Util::ShortcutManager *ShortcutMgr_;
+		Ui::LackManTab Ui_;
 
-		TabClassInfo TabClass_;
+		const TabClassInfo TC_;
+		QObject * const ParentPlugin_;
 
-		QPointer<LackManTab> LackManTab_;
+		Util::ShortcutManager * const ShortcutMgr_;
+
+		QStringListModel * const TagsModel_;
+
+		StringFilterModel * const FilterString_;
+		TypeFilterProxyModel * const TypeFilter_;
+
+		QAction *UpdateAll_;
+		QAction *UpgradeAll_;
+		QAction *Apply_;
+		QAction *Cancel_;
+		QToolBar *Toolbar_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		LackManTab (Util::ShortcutManager*, const TabClassInfo&, QObject*);
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		QByteArray GetTabRecoverData () const;
+		QIcon GetTabRecoverIcon () const;
+		QString GetTabRecoverName () const;
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-
-		void SetShortcut (const QString&, const QKeySequences_t&);
-		QMap<QString, ActionInfo> GetActionInfo () const;
-
-		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+		void SetFilterTags (const QStringList&);
+		void SetFilterString (const QString&);
+	private:
+		void BuildActions ();
 	private slots:
-		void openThis ();
+		void handlePackageSelected (const QModelIndex&);
+		void handleFetchListUpdated (const QList<int>&);
+		void handleTagsUpdated (const QStringList&);
+		void on_PackageStatus__currentIndexChanged (int);
 	signals:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
-
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
@@ -105,8 +100,8 @@ namespace LackMan
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }
-
-#endif
