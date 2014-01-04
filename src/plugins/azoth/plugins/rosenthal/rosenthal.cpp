@@ -36,6 +36,8 @@
 #include <QTextCodec>
 #include <QTranslator>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "hunspell/hunspell.hxx"
 #include "highlighter.h"
@@ -47,8 +49,10 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		Translator_.reset (Util::InstallTranslator ("azoth_rosenthal"));
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
@@ -57,6 +61,11 @@ namespace Rosenthal
 
 		XmlSettingsManager::Instance ().RegisterObject ("CustomLocales",
 				this, "handleCustomLocalesChanged");
+
+		connect (SettingsDialog_.get (),
+				SIGNAL (pushButtonClicked (QString)),
+				this,
+				SLOT (handlePushButtonClicked (QString)));
 
 		ReinitHunspell ();
 	}
@@ -219,6 +228,25 @@ namespace Rosenthal
 		Hunspell_->free_list (&wlist, ns);
 
 		return result;
+	}
+
+	void Plugin::handlePushButtonClicked (const QString& name)
+	{
+		if (name != "InstallDicts")
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown button"
+					<< name;
+			return;
+		}
+
+		auto e = Util::MakeEntity ("ListPackages",
+				QString (),
+				FromUserInitiated,
+				"x-leechcraft/package-manager-action");
+		e.Additional_ ["Tags"] = QStringList ("dicts");
+
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr,

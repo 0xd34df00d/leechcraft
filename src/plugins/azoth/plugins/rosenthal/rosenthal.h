@@ -56,6 +56,8 @@ namespace Rosenthal
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		ICoreProxy_ptr Proxy_;
+
 		std::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<Hunspell> Hunspell_;
@@ -77,6 +79,8 @@ namespace Rosenthal
 		void ReinitHunspell ();
 		QStringList GetPropositions (const QString&);
 	private slots:
+		void handlePushButtonClicked (const QString&);
+
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 				QObject*,
 				QObject*,
