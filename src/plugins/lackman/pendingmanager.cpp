@@ -30,6 +30,7 @@
 #include "pendingmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include "deptreebuilder.h"
 #include "core.h"
@@ -41,6 +42,7 @@ namespace LackMan
 	PendingManager::PendingManager (QObject *parent)
 	: QObject (parent)
 	, PendingModel_ (new QStandardItemModel)
+	, NotifyFetchListUpdateScheduled_ (false)
 	{
 	}
 
@@ -60,7 +62,6 @@ namespace LackMan
 
 	void PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
 	{
-		qDebug () << Q_FUNC_INFO << enable << installed;
 		if (enable)
 			EnablePackageInto (id, installed ? Action::Remove : Action::Install);
 		else
@@ -150,7 +151,7 @@ namespace LackMan
 		RootItemForAction_ [action]->appendRow (packageItem);
 
 		if (action != Action::Remove)
-			NotifyFetchListUpdate ();
+			ScheduleNotifyFetchListUpdate ();
 	}
 
 	void PendingManager::DisablePackageFrom (int id, PendingManager::Action action)
@@ -172,7 +173,7 @@ namespace LackMan
 		delete item;
 
 		if (action != Action::Remove)
-			NotifyFetchListUpdate ();
+			ScheduleNotifyFetchListUpdate ();
 	}
 
 	void PendingManager::ReinitRootItems ()
@@ -198,8 +199,21 @@ namespace LackMan
 		}
 	}
 
-	void PendingManager::NotifyFetchListUpdate ()
+	void PendingManager::ScheduleNotifyFetchListUpdate ()
 	{
+		if (NotifyFetchListUpdateScheduled_)
+			return;
+
+		NotifyFetchListUpdateScheduled_ = true;
+		QTimer::singleShot (0,
+				this,
+				SLOT (notifyFetchListUpdate ()));
+	}
+
+	void PendingManager::notifyFetchListUpdate ()
+	{
+		NotifyFetchListUpdateScheduled_ = false;
+
 		auto ids = (ScheduledForAction_ [Action::Install] +
 					ScheduledForAction_ [Action::Update]).toList ();
 		Q_FOREACH (const int id, ids)

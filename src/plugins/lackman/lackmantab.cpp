@@ -43,6 +43,8 @@
 #include "pendingmanager.h"
 #include "storage.h"
 
+Q_DECLARE_METATYPE (QModelIndex)
+
 namespace LeechCraft
 {
 namespace LackMan
@@ -365,6 +367,86 @@ namespace LackMan
 	void LackManTab::handleTagsUpdated (const QStringList& tags)
 	{
 		TagsModel_->setStringList (tags);
+	}
+
+	void LackManTab::toggleInstall ()
+	{
+		auto idx = sender ()->property ("Index").value<QModelIndex> ();
+		idx = idx.sibling (idx.row (), PackagesModel::Inst);
+
+		Ui_.PackagesTree_->model ()->setData (idx,
+				idx.data (Qt::CheckStateRole).toInt () == Qt::Checked ?
+						Qt::Unchecked :
+						Qt::Checked,
+				Qt::CheckStateRole);
+	}
+
+	void LackManTab::toggleUpgrade ()
+	{
+		auto idx = sender ()->property ("Index").value<QModelIndex> ();
+		idx = idx.sibling (idx.row (), PackagesModel::Upd);
+
+		Ui_.PackagesTree_->model ()->setData (idx,
+				idx.data (Qt::CheckStateRole).toInt () == Qt::Checked ?
+						Qt::Unchecked :
+						Qt::Checked,
+				Qt::CheckStateRole);
+	}
+
+	void LackManTab::selectAllForInstall ()
+	{
+		const auto model = Ui_.PackagesTree_->model ();
+		for (auto i = 0, rc = model->rowCount (); i < rc; ++i)
+			model->setData (model->index (i, PackagesModel::Columns::Inst),
+					Qt::Checked, Qt::CheckStateRole);
+	}
+
+	void LackManTab::selectNoneForInstall ()
+	{
+		const auto model = Ui_.PackagesTree_->model ();
+		for (auto i = 0, rc = model->rowCount (); i < rc; ++i)
+			model->setData (model->index (i, PackagesModel::Columns::Inst),
+					Qt::Unchecked, Qt::CheckStateRole);
+	}
+
+	void LackManTab::on_PackagesTree__customContextMenuRequested (const QPoint& point)
+	{
+		QMenu menu;
+
+		const auto& idx = Ui_.PackagesTree_->indexAt (point);
+
+		if (idx.isValid ())
+		{
+			auto checked = [&idx] (PackagesModel::Columns col) -> bool
+			{
+				return idx.sibling (idx.row (), col).data (Qt::CheckStateRole).toInt () == Qt::Checked;
+			};
+
+			const auto installed = idx.data (PackagesModel::PMRInstalled).toBool ();
+			auto installAction = menu.addAction (installed ? tr ("Uninstall") : tr ("Install"),
+					this,
+					SLOT (toggleInstall ()));
+			installAction->setCheckable (true);
+			installAction->setChecked (installed ^ checked (PackagesModel::Inst));
+			installAction->setProperty ("Index", QVariant::fromValue (idx));
+
+			if (idx.data (PackagesModel::PMRUpgradable).toBool ())
+			{
+				auto upgradeAction = menu.addAction (tr ("Upgrade"),
+						this,
+						SLOT (toggleUpgrade ()));
+				upgradeAction->setCheckable (true);
+				upgradeAction->setChecked (checked (PackagesModel::Upd));
+				upgradeAction->setProperty ("Index", QVariant::fromValue (idx));
+			}
+
+			menu.addSeparator ();
+		}
+
+		menu.addAction (tr ("Mark all for installation"), this, SLOT (selectAllForInstall ()));
+		menu.addAction (tr ("Unmark all for installation"), this, SLOT (selectNoneForInstall ()));
+
+		menu.exec (Ui_.PackagesTree_->viewport ()->mapToGlobal (point));
 	}
 
 	void LackManTab::on_PackageStatus__currentIndexChanged (int index)

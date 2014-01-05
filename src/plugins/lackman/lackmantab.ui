@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>LackManTab</class>
- <widget class="QWidget" name="LackMan">
+ <widget class="QWidget" name="LackManTab">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -99,6 +99,9 @@
                <horstretch>0</horstretch>
                <verstretch>2</verstretch>
               </sizepolicy>
+             </property>
+             <property name="contextMenuPolicy">
+              <enum>Qt::CustomContextMenu</enum>
              </property>
              <property name="rootIsDecorated">
               <bool>false</bool>
