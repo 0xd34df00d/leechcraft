@@ -30,6 +30,7 @@
 #include "knowndictsmanager.h"
 #include <QFileSystemWatcher>
 #include <QStandardItemModel>
+#include <QStringListModel>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 
@@ -62,6 +63,7 @@ namespace Rosenthal
 	KnownDictsManager::KnownDictsManager ()
 	: LocalPath_ (Util::CreateIfNotExists ("data/dicts/myspell").absolutePath ())
 	, Model_ (new QStandardItemModel (this))
+	, EnabledModel_ (new QStringListModel (this))
 	{
 		auto watcher = new QFileSystemWatcher (this);
 		watcher->addPath (LocalPath_);
@@ -76,10 +78,13 @@ namespace Rosenthal
 				this,
 				SLOT (rebuildDictsModel ()));
 		rebuildDictsModel ();
+
 		connect (Model_,
 				SIGNAL (itemChanged (QStandardItem*)),
 				this,
 				SLOT (handleItemChanged (QStandardItem*)));
+		XmlSettingsManager::Instance ().RegisterObject ("PrimaryLanguage",
+				this, "reemitLanguages");
 	}
 
 	QAbstractItemModel* KnownDictsManager::GetModel () const
@@ -100,6 +105,11 @@ namespace Rosenthal
 	QString KnownDictsManager::GetDictPath (const QString& language) const
 	{
 		return Lang2Path_ [language] + language;
+	}
+
+	QAbstractItemModel* KnownDictsManager::GetEnabledModel () const
+	{
+		return EnabledModel_;
 	}
 
 	void KnownDictsManager::LoadSettings ()
@@ -160,6 +170,7 @@ namespace Rosenthal
 			Model_->appendRow (row);
 		}
 	}
+
 	void KnownDictsManager::handleItemChanged (QStandardItem *item)
 	{
 		if (item->column ())
@@ -177,6 +188,7 @@ namespace Rosenthal
 		else
 			Languages_.removeAll (lang);
 
+		EnabledModel_->setStringList (Languages_);
 
 		reemitLanguages() ;
 

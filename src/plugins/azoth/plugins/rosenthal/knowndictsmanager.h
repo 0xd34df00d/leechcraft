@@ -35,6 +35,7 @@
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QStringListModel;
 class QStandardItem;
 
 namespace LeechCraft
@@ -53,6 +54,7 @@ namespace Rosenthal
 		QStringList Languages_;
 		QMap<QString, QString> Lang2Path_;
 
+		QStringListModel * const EnabledModel_;
 	public:
 		KnownDictsManager ();
 
@@ -60,6 +62,7 @@ namespace Rosenthal
 		QStringList GetLanguages () const;
 		QString GetDictPath (const QString& language) const;
 
+		QAbstractItemModel* GetEnabledModel () const;
 	private:
 		void LoadSettings ();
 		void SaveSettings ();
