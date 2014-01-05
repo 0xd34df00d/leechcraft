@@ -95,8 +95,8 @@ public:
 
 	/** @brief Returns the actions to embed.
 	 *
-	 * Returns the list of actions that will be inserted into the Tools
-	 * menu.
+	 * Returns the list of actions that will be inserted into the given
+	 * \em area.
 	 *
 	 * @param[in] area The area where the actions should be placed.
 	 *
