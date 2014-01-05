@@ -30,9 +30,12 @@
 #pragma once
 
 #include <QObject>
+#include <QStringList>
+#include <QMap>
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -47,12 +50,22 @@ namespace Rosenthal
 		const QString LocalPath_;
 
 		QStandardItemModel * const Model_;
+		QStringList Languages_;
+		QMap<QString, QString> Lang2Path_;
+
 	public:
 		KnownDictsManager ();
 
 		QAbstractItemModel* GetModel () const;
+		QStringList GetLanguages () const;
+		QString GetDictPath (const QString& language) const;
+
 	private slots:
 		void rebuildDictsModel ();
+		void handleItemChanged (QStandardItem*);
+		void reemitLanguages ();
+	signals:
+		void languagesChanged (const QStringList&);
 	};
 }
 }

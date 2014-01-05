@@ -31,6 +31,7 @@
 #include <QFileSystemWatcher>
 #include <QStandardItemModel>
 #include <util/util.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -42,7 +43,7 @@ namespace Rosenthal
 	{
 		QStringList GetSystemPaths ()
 		{
-			QStringList candidates;// (Util::CreateIfNotExists ("data/dicts/myspell/").absolutePath ());
+			QStringList candidates;
 #ifdef Q_OS_WIN32
 			candidates << qApp->applicationDirPath () + "/myspell/";
 #else
@@ -73,6 +74,10 @@ namespace Rosenthal
 				this,
 				SLOT (rebuildDictsModel ()));
 		rebuildDictsModel ();
+		connect (Model_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (handleItemChanged (QStandardItem*)));
 	}
 
 	QAbstractItemModel* KnownDictsManager::GetModel () const
@@ -80,12 +85,27 @@ namespace Rosenthal
 		return Model_;
 	}
 
+	QStringList KnownDictsManager::GetLanguages () const
+	{
+		auto langs = Languages_;
+		const auto& primary = XmlSettingsManager::Instance ()
+				.property ("PrimaryLanguage").toString ();
+		if (langs.removeOne (primary))
+			langs.prepend (primary);
+		return langs;
+	}
+
+	QString KnownDictsManager::GetDictPath (const QString& language) const
+	{
+		return Lang2Path_ [language] + language;
+	}
+
 	void KnownDictsManager::rebuildDictsModel ()
 	{
 		auto candidates = GetSystemPaths ();
 		candidates.prepend (LocalPath_);
 
-		QMap<QString, QString> name2path;
+		Lang2Path_.clear ();
 		for (const auto& dir : candidates)
 		{
 			if (!QFile::exists (dir))
@@ -97,21 +117,21 @@ namespace Rosenthal
 					continue;
 
 				file.chop (4);
-				if (name2path.contains (file))
+				if (Lang2Path_.contains (file))
 					continue;
 
-				name2path [file] = dir;
+				Lang2Path_ [file] = dir;
 			}
 		}
 
 		Model_->clear ();
-
 		Model_->setHorizontalHeaderLabels ({ tr ("Locale"), tr ("Language"), tr ("Country") });
 
-		for (auto i = name2path.begin (); i != name2path.end (); ++i)
+		for (auto i = Lang2Path_.begin (); i != Lang2Path_.end (); ++i)
 		{
 			auto item = new QStandardItem (i.key ());
 			item->setCheckable (true);
+			item->setCheckState (Languages_.contains (i.key ()) ? Qt::Checked : Qt::Unchecked);
 
 			const QLocale loc (i.key ());
 
@@ -124,6 +144,33 @@ namespace Rosenthal
 
 			Model_->appendRow (row);
 		}
+	}
+	void KnownDictsManager::handleItemChanged (QStandardItem *item)
+	{
+		if (item->column ())
+			return;
+
+		const auto& lang = item->text ();
+		const auto enabledNow = item->checkState () == Qt::Checked;
+		const auto enabled = Languages_.contains (lang);
+
+		if (enabled == enabledNow)
+			return;
+
+		if (enabledNow)
+			Languages_ << lang;
+		else
+			Languages_.removeAll (lang);
+
+
+		reemitLanguages() ;
+
+		SaveSettings ();
+	}
+
+	void KnownDictsManager::reemitLanguages ()
+	{
+		emit languagesChanged (GetLanguages ());
 	}
 }
 }
