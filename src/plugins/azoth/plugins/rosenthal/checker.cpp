@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "checker.h"
+#include <algorithm>
 #include <QFile>
 #include <QTextCodec>
 #include <util/util.h>
@@ -71,21 +72,23 @@ namespace Rosenthal
 
 	bool Checker::IsCorrect (const QString& word) const
 	{
+		if (!Hunspell_)
+			return true;
+
 		const QByteArray& encoded = Codec_->fromUnicode (word);
 		return Hunspell_->spell (encoded.data ());
 	}
 
 	void Checker::handleCustomLocalesChanged ()
 	{
+		Hunspell_.reset ();
+
 		const QString& userSetting = XmlSettingsManager::Instance ()
 				.property ("CustomLocales").toString ();
 		const QStringList& userLocales = userSetting.split (' ', QString::SkipEmptyParts);
 
 		const QString& locale = userLocales.value (0, Util::GetLocaleName ());
 
-		qDebug () << Q_FUNC_INFO << locale;
-
-		QString base;
 		QStringList candidates (Util::CreateIfNotExists ("data/dicts/myspell/").absolutePath ());
 #ifdef Q_OS_WIN32
 		candidates << qApp->applicationDirPath () + "/myspell/";
@@ -97,17 +100,16 @@ namespace Rosenthal
 				<< "/usr/local/share/hunspell/"
 				<< "/usr/share/hunspell/";
 #endif
-		Q_FOREACH (base, candidates)
-			if (QFile::exists (base + locale + ".aff"))
-				break;
+		const auto basePos = std::find_if (candidates.begin (), candidates.end (),
+				[&locale] (const QString& base) { return QFile::exists (base + locale + ".aff"); });
+		if (basePos == candidates.end ())
+			return;
 
-		qDebug () << base;
-
-		const auto& baBase = (base + locale).toLatin1 ();
+		const auto& baBase = (*basePos + locale).toLatin1 ();
 		Hunspell_.reset (new Hunspell (baBase + ".aff", baBase + ".dic"));
 
 		if (!locale.startsWith ("en_"))
-			Hunspell_->add_dic ((base + "en_GB.dic").toLatin1 ());
+			Hunspell_->add_dic ((*basePos + "en_GB.dic").toLatin1 ());
 
 		if (userLocales.size () > 1)
 			for (const auto& loc : userLocales)
@@ -116,7 +118,7 @@ namespace Rosenthal
 						loc == "en_GB")
 					continue;
 
-				Hunspell_->add_dic ((base + loc + ".dic").toLatin1 ());
+				Hunspell_->add_dic ((*basePos + loc + ".dic").toLatin1 ());
 			}
 
 		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
