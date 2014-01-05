@@ -31,13 +31,9 @@
 
 #include <memory>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/core/ihookproxy.h>
+#include "hunspell/hunspell.hxx"
 
-class QWebView;
-class QTranslator;
+class QTextCodec;
 
 namespace LeechCraft
 {
@@ -45,47 +41,19 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	class Highlighter;
-	class Checker;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
+	class Checker : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-		ICoreProxy_ptr Proxy_;
-
-		std::shared_ptr<QTranslator> Translator_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-
-		Checker *Checker_;
-
-		QList<Highlighter*> Highlighters_;
+		std::unique_ptr<Hunspell> Hunspell_;
+		QTextCodec *Codec_ = nullptr;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QSet<QByteArray> GetPluginClasses () const;
+		Checker (QObject* = 0);
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	protected:
-		bool eventFilter (QObject*, QEvent*);
+		QStringList GetPropositions (const QString&) const;
+		bool IsCorrect (const QString&) const;
 	private slots:
-		void handlePushButtonClicked (const QString&);
-
-		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
-				QObject*,
-				QObject*,
-				QWebView*);
-		void handleCorrectionTriggered ();
-		void handleHighlighterDestroyed ();
+		void handleCustomLocalesChanged ();
 	};
 }
 }

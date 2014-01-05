@@ -27,14 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#define PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
+#pragma once
+
 #include <memory>
 #include <QSyntaxHighlighter>
 #include <QTextFormat>
-
-class Hunspell;
-class QTextCodec;
 
 namespace LeechCraft
 {
@@ -42,24 +39,19 @@ namespace Azoth
 {
 namespace Rosenthal
 {
+	class Checker;
+
 	class Highlighter : public QSyntaxHighlighter
 	{
 		Q_OBJECT
 
-		std::shared_ptr<Hunspell> Hunspell_;
 		QTextCharFormat SpellCheckFormat_;
-		QTextCodec *Codec_;
+		const Checker * const Checker_;
 	public:
-		Highlighter (std::shared_ptr<Hunspell>, QTextDocument*);
-
-		void UpdateHunspell (std::shared_ptr<Hunspell>);
+		Highlighter (const Checker*, QTextDocument*);
 	protected:
 		void highlightBlock (const QString&);
-	private:
-		bool CheckWord (const QString&);
 	};
 }
 }
 }
-
-#endif
