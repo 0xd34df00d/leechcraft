@@ -86,7 +86,7 @@ namespace LeechCraft
 					{ SetDataSource (str, m); });
 		Propname2DataView_ [prop] = view;
 
-		lay->addWidget (view, lay->rowCount (), 0);
+		lay->addWidget (view, lay->rowCount (), 0, 1, 2);
 	}
 
 	QVariant ItemHandlerDataView::GetValue (const QDomElement&, QVariant) const
