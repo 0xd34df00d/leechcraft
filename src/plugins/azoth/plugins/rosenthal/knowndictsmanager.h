@@ -60,8 +60,12 @@ namespace Rosenthal
 		QStringList GetLanguages () const;
 		QString GetDictPath (const QString& language) const;
 
+	private:
+		void LoadSettings ();
+		void SaveSettings ();
 	private slots:
 		void rebuildDictsModel ();
+
 		void handleItemChanged (QStandardItem*);
 		void reemitLanguages ();
 	signals:

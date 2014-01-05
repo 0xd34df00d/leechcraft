@@ -69,6 +69,8 @@ namespace Rosenthal
 			if (QFile::exists (path))
 				watcher->addPath (path);
 
+		LoadSettings ();
+
 		connect (watcher,
 				SIGNAL (directoryChanged (QString)),
 				this,
@@ -98,6 +100,19 @@ namespace Rosenthal
 	QString KnownDictsManager::GetDictPath (const QString& language) const
 	{
 		return Lang2Path_ [language] + language;
+	}
+
+	void KnownDictsManager::LoadSettings ()
+	{
+		const QStringList defLangs { Util::GetLocaleName (), "en_GB" };
+		Languages_ = XmlSettingsManager::Instance ()
+				.Property ("EnabledLanguages", defLangs).toStringList ();
+		EnabledModel_->setStringList (Languages_);
+	}
+
+	void KnownDictsManager::SaveSettings ()
+	{
+		XmlSettingsManager::Instance ().setProperty ("EnabledLanguages", Languages_);
 	}
 
 	void KnownDictsManager::rebuildDictsModel ()
