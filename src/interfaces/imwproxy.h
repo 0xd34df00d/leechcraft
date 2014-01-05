@@ -146,8 +146,23 @@ public:
 	 */
 	virtual void ToggleVisibility () = 0;
 
+	/** @brief Returns the main LeechCraft menu.
+	 *
+	 * @return The main LeechCraft menu.
+	 *
+	 * @sa HideMainMenu()
+	 */
 	virtual QMenu* GetMainMenu () = 0;
 
+	/** @brief Hides the main LeechCraft menu.
+	 *
+	 * Calling this function hides the main LeechCraft menu in the
+	 * tabbar. There is no way of showing it back again after that. The
+	 * menu is still accessable via GetMainMenu() and can be shown via
+	 * other means.
+	 *
+	 * @sa GetMainmenu().
+	 */
 	virtual void HideMainMenu () = 0;
 };
 
