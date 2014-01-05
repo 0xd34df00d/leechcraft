@@ -41,19 +41,23 @@ namespace Azoth
 {
 namespace Rosenthal
 {
+	class KnownDictsManager;
+
 	class Checker : public QObject
 	{
 		Q_OBJECT
 
 		std::unique_ptr<Hunspell> Hunspell_;
 		QTextCodec *Codec_ = nullptr;
+
+		const KnownDictsManager * const KnownMgr_;
 	public:
-		Checker (QObject* = 0);
+		Checker (const KnownDictsManager*, QObject* = 0);
 
 		QStringList GetPropositions (const QString&) const;
 		bool IsCorrect (const QString&) const;
-	private slots:
-		void handleCustomLocalesChanged ();
+	public slots:
+		void setLanguages (const QStringList&);
 	};
 }
 }

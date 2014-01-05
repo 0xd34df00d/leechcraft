@@ -3,10 +3,11 @@
 	<page>
 		<label value="Azoth Rosenthal" />
 		<groupbox>
-			<label value="Languages to use" />
-			<item type="lineedit" property="CustomLocales" default="">
-				<label value="Override autodetect with these locales:" />
+			<label value="Languages" />
+			<item type="combobox" property="PrimaryLanguage" mayHaveDataSource="true">
+				<label value="Primary language:" />
 			</item>
+			<item type="dataview" property="Dictionaries" addEnabled="false" modifyEnabled="false" removeEnabled="false" />
 			<item type="pushbutton" name="InstallDicts">
 				<label value="Download and install dictionaries..." />
 			</item>

@@ -41,6 +41,7 @@
 #include "highlighter.h"
 #include "checker.h"
 #include "xmlsettingsmanager.h"
+#include "knowndictsmanager.h"
 
 namespace LeechCraft
 {
@@ -63,7 +64,11 @@ namespace Rosenthal
 				this,
 				SLOT (handlePushButtonClicked (QString)));
 
-		Checker_ = new Checker ();
+		auto knownMgr = new KnownDictsManager;
+		SettingsDialog_->SetDataSource ("Dictionaries", knownMgr->GetModel ());
+		SettingsDialog_->SetDataSource ("PrimaryLanguage", knownMgr->GetEnabledModel ());
+
+		Checker_ = new Checker (knownMgr, this);
 	}
 
 	void Plugin::SecondInit ()

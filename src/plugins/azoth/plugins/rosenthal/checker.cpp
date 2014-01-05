@@ -32,7 +32,7 @@
 #include <QFile>
 #include <QTextCodec>
 #include <util/util.h>
-#include "xmlsettingsmanager.h"
+#include "knowndictsmanager.h"
 
 namespace LeechCraft
 {
@@ -40,17 +40,20 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	Checker::Checker (QObject *parent)
+	Checker::Checker (const KnownDictsManager *knownMgr, QObject *parent)
 	: QObject (parent)
+	, KnownMgr_ (knownMgr)
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("CustomLocales",
-				this, "handleCustomLocalesChanged");
-		handleCustomLocalesChanged ();
+		connect (knownMgr,
+				SIGNAL (languagesChanged (QStringList)),
+				this,
+				SLOT (setLanguages (QStringList)));
+		setLanguages (knownMgr->GetLanguages ());
 	}
 
 	QStringList Checker::GetPropositions (const QString& word) const
 	{
-		if (!Hunspell_)
+		if (!Hunspell_ || !Codec_)
 			return {};
 
 		const QByteArray& encoded = Codec_->fromUnicode (word);
@@ -72,54 +75,27 @@ namespace Rosenthal
 
 	bool Checker::IsCorrect (const QString& word) const
 	{
-		if (!Hunspell_)
+		if (!Hunspell_ || !Codec_)
 			return true;
 
 		const QByteArray& encoded = Codec_->fromUnicode (word);
 		return Hunspell_->spell (encoded.data ());
 	}
 
-	void Checker::handleCustomLocalesChanged ()
+	void Checker::setLanguages (const QStringList& languages)
 	{
 		Hunspell_.reset ();
 
-		const QString& userSetting = XmlSettingsManager::Instance ()
-				.property ("CustomLocales").toString ();
-		const QStringList& userLocales = userSetting.split (' ', QString::SkipEmptyParts);
-
-		const QString& locale = userLocales.value (0, Util::GetLocaleName ());
-
-		QStringList candidates (Util::CreateIfNotExists ("data/dicts/myspell/").absolutePath ());
-#ifdef Q_OS_WIN32
-		candidates << qApp->applicationDirPath () + "/myspell/";
-#else
-		candidates << "/usr/local/share/myspell/"
-				<< "/usr/share/myspell/"
-				<< "/usr/local/share/myspell/dicts/"
-				<< "/usr/share/myspell/dicts/"
-				<< "/usr/local/share/hunspell/"
-				<< "/usr/share/hunspell/";
-#endif
-		const auto basePos = std::find_if (candidates.begin (), candidates.end (),
-				[&locale] (const QString& base) { return QFile::exists (base + locale + ".aff"); });
-		if (basePos == candidates.end ())
+		const auto& primary = languages.value (0);
+		if (primary.isEmpty ())
 			return;
 
-		const auto& baBase = (*basePos + locale).toLatin1 ();
-		Hunspell_.reset (new Hunspell (baBase + ".aff", baBase + ".dic"));
+		const auto& primaryPath = KnownMgr_->GetDictPath (primary);
 
-		if (!locale.startsWith ("en_"))
-			Hunspell_->add_dic ((*basePos + "en_GB.dic").toLatin1 ());
-
-		if (userLocales.size () > 1)
-			for (const auto& loc : userLocales)
-			{
-				if (loc == locale ||
-						loc == "en_GB")
-					continue;
-
-				Hunspell_->add_dic ((*basePos + loc + ".dic").toLatin1 ());
-			}
+		Hunspell_.reset (new Hunspell ((primaryPath + ".aff").toLatin1 (),
+				(primaryPath + ".dic").toLatin1 ()));
+		for (int i = 1; i < languages.size (); ++i)
+			Hunspell_->add_dic (KnownMgr_->GetDictPath (languages.at (i) + ".dic").toLatin1 ());
 
 		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
 	}
