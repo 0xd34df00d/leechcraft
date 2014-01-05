@@ -21,6 +21,7 @@ set (ROSENTHAL_SRCS
 	rosenthal.cpp
 	highlighter.cpp
 	checker.cpp
+	knowndictsmanager.cpp
 	xmlsettingsmanager.cpp
 	)
 set (ROSENTHAL_RESOURCES azothrosenthalresources.qrc)
