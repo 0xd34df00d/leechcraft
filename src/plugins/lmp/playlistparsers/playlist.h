@@ -60,6 +60,8 @@ namespace LMP
 		Playlist& operator+= (const Playlist&);
 
 		QList<AudioSource> ToSources () const;
+
+		bool SetProperty (const AudioSource&, const QString&, const QVariant&);
 	};
 
 	struct RawReadData

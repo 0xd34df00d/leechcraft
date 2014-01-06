@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "playlist.h"
+#include <algorithm>
 
 namespace LeechCraft
 {
@@ -75,6 +76,17 @@ namespace LMP
 		for (const auto& item : Playlist_)
 			result << item.Source_;
 		return result;
+	}
+
+	bool Playlist::SetProperty (const AudioSource& src, const QString& key, const QVariant& value)
+	{
+		const auto srcPos = std::find_if (Playlist_.begin (), Playlist_.end (),
+				[&src] (const PlaylistItem& item) { return item.Source_ == src; });
+		if (srcPos == Playlist_.end ())
+			return false;
+
+		srcPos->Additional_ [key] = value;
+		return true;
 	}
 }
 }
