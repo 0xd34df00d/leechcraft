@@ -29,17 +29,27 @@
 
 #pragma once
 
-#include <functional>
-#include <QString>
-#include "engine/audiosource.h"
-#include "playlist.h"
+#include <QVariantMap>
+#include "../engine/audiosource.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	typedef std::function<Playlist_t (const QString&)> PlaylistParser_f;
+	struct PlaylistItem
+	{
+		AudioSource Source_;
+		QVariantMap Additional_;
+	};
+	typedef QList<PlaylistItem> Playlist_t;
 
-	PlaylistParser_f MakePlaylistParser (const QString& filename);
+	QList<AudioSource> ToSources (const Playlist_t&);
+	Playlist_t FromSources (const QList<AudioSource>&);
+
+	struct RawReadData
+	{
+		QString SourceStr_;
+		QVariantMap Additional_;
+	};
 }
 }

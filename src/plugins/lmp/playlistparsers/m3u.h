@@ -31,6 +31,7 @@
 
 #include <QStringList>
 #include "engine/audiosource.h"
+#include "playlist.h"
 
 namespace LeechCraft
 {
@@ -41,8 +42,8 @@ namespace M3U
 	QStringList Read (const QString&);
 	void Write (const QString&, const QStringList&);
 
-	QList<AudioSource> Read2Sources (const QString&);
-	void Write (const QString&, const QList<AudioSource>&);
+	Playlist_t Read2Sources (const QString&);
+	void Write (const QString&, const Playlist_t&);
 }
 }
 }

@@ -31,7 +31,9 @@
 
 #include <functional>
 #include <QStringList>
+#include <QVariantMap>
 #include "engine/audiosource.h"
+#include "playlist.h"
 
 namespace LeechCraft
 {
@@ -42,8 +44,9 @@ namespace LMP
 		QStringList Suffixes_;
 		QString Path_;
 
-		std::function<QStringList (QString)> RawParser_;
+		std::function<QList<RawReadData> (QString)> RawParser_;
 	};
-	QList<AudioSource> CommonRead2Sources (const ReadParams&);
+
+	Playlist_t CommonRead2Sources (const ReadParams&);
 }
 }

@@ -38,9 +38,9 @@ namespace LMP
 {
 namespace PLS
 {
-	QStringList Read (const QString& path)
+	QList<RawReadData> Read (const QString& path)
 	{
-		QStringList result;
+		QList<RawReadData> result;
 
 		QSettings settings (path, QSettings::IniFormat);
 		settings.beginGroup ("playlist");
@@ -50,7 +50,7 @@ namespace PLS
 		{
 			const auto& str = settings.value ("File" + QString::number (i)).toString ();
 			if (!str.isEmpty ())
-				result << str;
+				result.append ({ str, {} });
 		}
 
 		settings.endGroup ();
@@ -58,9 +58,9 @@ namespace PLS
 		return result;
 	}
 
-	QList<AudioSource> Read2Sources (const QString& path)
+	Playlist_t Read2Sources (const QString& path)
 	{
-		return CommonRead2Sources ({ QStringList ("pls"), path, Read });
+		return CommonRead2Sources ({ { "pls" }, path, Read });
 	}
 }
 }

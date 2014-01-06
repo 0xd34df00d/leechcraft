@@ -27,101 +27,32 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "m3u.h"
-#include <QFile>
-#include <QFileInfo>
-#include <QDir>
-#include <QUrl>
-#include <QtDebug>
+#include "playlist.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace M3U
-{
-	QStringList Read (const QString& path)
+	QList<AudioSource> ToSources (const Playlist_t& playlist)
 	{
-		QFile file (path);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open"
-					<< path
-					<< file.errorString ();
-			return QStringList ();
-		}
+		QList<AudioSource> result;
+		result.reserve (playlist.size ());
 
-		QStringList result;
-		while (!file.atEnd ())
-		{
-			const auto& line = file.readLine ().trimmed ();
-			if (line.startsWith ('#'))
-				continue;
+		for (const auto& item : playlist)
+			result << item.Source_;
 
-			result << QString::fromUtf8 (line.constData ());
-		}
 		return result;
 	}
 
-	void Write (const QString& path, const QStringList& lines)
+	Playlist_t FromSources (const QList<AudioSource>& sources)
 	{
-		QFile file (path);
-		if (!file.open (QIODevice::WriteOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open"
-					<< path
-					<< file.errorString ();
-			return;
-		}
-
-		file.write (lines.join ("\n").toUtf8 ());
-	}
-
-	Playlist_t Read2Sources (const QString& path)
-	{
-		const auto& m3uDir = QFileInfo (path).absoluteDir ();
-
 		Playlist_t result;
-		for (auto src : Read (path))
-		{
-			QUrl url (src);
-#ifdef Q_OS_WIN32
-			if (url.scheme ().size () > 1)
-#else
-			if (!url.scheme ().isEmpty ())
-#endif
-			{
-				result.append ({ url, {} });
-				continue;
-			}
+		result.reserve (sources.size ());
 
-			src.replace ('\\', '/');
+		for (const auto& src : sources)
+			result.append ({ src, {} });
 
-			const QFileInfo fi (src);
-			if (fi.isRelative ())
-				src = m3uDir.absoluteFilePath (src);
-
-			if (fi.suffix () == "m3u" || fi.suffix () == "m3u8")
-				result += Read2Sources (src);
-			else
-				result.append ({ src, {} });
-		}
 		return result;
 	}
-
-	void Write (const QString& path, const Playlist_t& sources)
-	{
-		QStringList strings;
-		for (const auto& item : sources)
-		{
-			strings << item.Source_.ToUrl ().toString ();
-			for (auto i = item.Additional_.begin (); i != item.Additional_.end (); ++i)
-				strings << "#" + i.key () + "=" + i.value ().toString ();
-		}
-		Write (path, strings);
-	}
-}
 }
 }

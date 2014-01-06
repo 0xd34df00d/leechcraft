@@ -31,6 +31,7 @@
 
 #include <QStringList>
 #include "engine/audiosource.h"
+#include "playlist.h"
 
 namespace LeechCraft
 {
@@ -38,8 +39,7 @@ namespace LMP
 {
 namespace PLS
 {
-	QStringList Read (const QString&);
-	QList<AudioSource> Read2Sources (const QString&);
+	Playlist_t Read2Sources (const QString&);
 }
 }
 }

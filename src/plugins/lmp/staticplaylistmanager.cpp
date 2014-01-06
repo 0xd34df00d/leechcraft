@@ -97,12 +97,12 @@ namespace LMP
 
 	void StaticPlaylistManager::WritePlaylist (const QString& path, const QList<AudioSource>& sources)
 	{
-		M3U::Write (path, sources);
+		M3U::Write (path, FromSources (sources));
 	}
 
 	QList<AudioSource> StaticPlaylistManager::ReadPlaylist (const QString& path) const
 	{
-		return M3U::Read2Sources (path);
+		return ToSources (M3U::Read2Sources (path));
 	}
 }
 }

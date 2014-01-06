@@ -236,12 +236,11 @@ namespace LMP
 
 			const auto& file = source.GetLocalPath ();
 
-			auto parser = MakePlaylistParser (file);
-			if (parser)
+			if (auto parser = MakePlaylistParser (file))
 			{
-				const auto& list = parser (file);
-				if (!list.isEmpty ())
-					return list;
+				const auto& sources = ToSources (parser (file));
+				if (!sources.isEmpty ())
+					return sources;
 			}
 
 			return { AudioSource (file) };
@@ -1243,7 +1242,7 @@ namespace LMP
 			return;
 		}
 
-		const auto& list = parser (name);
+		const auto& list = ToSources (parser (name));
 		Enqueue (list, false);
 	}
 

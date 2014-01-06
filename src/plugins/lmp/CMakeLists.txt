@@ -133,6 +133,7 @@ set (SRCS
 	sync/unmountabledevmanager.cpp
 	sync/uploadmodel.cpp
 	playlistparsers/commonpl.cpp
+	playlistparsers/playlist.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp

@@ -92,7 +92,7 @@ namespace LMP
 				bool playlistHandled = false;
 				if (auto f = MakePlaylistParser (localPath))
 				{
-					const auto& playlistSrcs = f (localPath);
+					const auto& playlistSrcs = ToSources (f (localPath));
 					if (!playlistSrcs.isEmpty ())
 					{
 						playlistHandled = true;
