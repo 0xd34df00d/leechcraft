@@ -230,8 +230,10 @@ namespace OTRoid
 		OtrOps_.policy = [] (void*, ConnContext*) { return OtrlPolicy { OTRL_POLICY_DEFAULT }; };
 		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char *proto)
 				{ static_cast<Plugin*> (opData)->CreatePrivkey (accName, proto); };
+#if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.create_instag = [] (void *opData, const char *accName, const char *proto)
 				{ static_cast<Plugin*> (opData)->CreateInstag (accName, proto); };
+#endif
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
 		OtrOps_.update_context_list = [] (void*) {};
