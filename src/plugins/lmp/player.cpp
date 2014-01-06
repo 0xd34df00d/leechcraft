@@ -229,21 +229,21 @@ namespace LMP
 
 	namespace
 	{
-		QList<AudioSource> FileToSource (const AudioSource& source)
+		Playlist FileToSource (const AudioSource& source)
 		{
 			if (!source.IsLocalFile ())
-				return { source };
+				return Playlist { { source, {} } };
 
 			const auto& file = source.GetLocalPath ();
 
 			if (auto parser = MakePlaylistParser (file))
 			{
-				const auto& sources = parser (file).ToSources ();
-				if (!sources.isEmpty ())
+				const auto& sources = parser (file);
+				if (!sources.IsEmpty ())
 					return sources;
 			}
 
-			return { AudioSource (file) };
+			return Playlist { { file, {} } };
 		}
 	}
 
@@ -263,20 +263,27 @@ namespace LMP
 
 	void Player::Enqueue (const QList<AudioSource>& sources, bool sort)
 	{
-		QList<AudioSource> parsedSources;
+		Playlist parsedSources;
 		std::for_each (sources.begin (), sources.end (),
 				[&parsedSources] (decltype (sources.front ()) path)
 					{ parsedSources += FileToSource (path); });
 
 		for (auto i = parsedSources.begin (); i != parsedSources.end (); )
 		{
-			if (Items_.contains (*i))
+			if (Items_.contains (i->Source_))
 				i = parsedSources.erase (i);
 			else
 				++i;
 		}
 
-		AddToPlaylistModel (parsedSources, sort);
+		for (const auto& item : parsedSources)
+			if (item.Additional_ ["Current"].toBool ())
+			{
+				Source_->SetCurrentSource (item.Source_);
+				break;
+			}
+
+		AddToPlaylistModel (parsedSources.ToSources (), sort);
 	}
 
 	void Player::ReplaceQueue (const QList<AudioSource>& queue, bool sort)
