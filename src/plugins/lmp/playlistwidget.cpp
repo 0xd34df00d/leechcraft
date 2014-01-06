@@ -873,6 +873,7 @@ namespace LMP
 			return;
 
 		Playlist playlist { Player_->GetQueue () };
+		playlist.SetProperty (Player_->GetSourceObject ()->GetCurrentSource (), "Current", true);
 		mgr->SaveCustomPlaylist (name, playlist);
 	}
 
