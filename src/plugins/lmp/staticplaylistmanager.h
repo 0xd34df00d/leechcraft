@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QDir>
 #include "engine/audiosource.h"
+#include "playlistparsers/playlist.h"
 
 namespace LeechCraft
 {
@@ -48,13 +49,13 @@ namespace LMP
 		void SetOnLoadPlaylist (const QList<AudioSource>&);
 		QList<AudioSource> GetOnLoadPlaylist () const;
 
-		void SaveCustomPlaylist (QString, const QList<AudioSource>&);
+		void SaveCustomPlaylist (QString, const Playlist_t&);
 		QStringList EnumerateCustomPlaylists () const;
-		QList<AudioSource> GetCustomPlaylist (const QString&) const;
+		Playlist_t GetCustomPlaylist (const QString&) const;
 		void DeleteCustomPlaylist (const QString&);
 	private:
-		void WritePlaylist (const QString&, const QList<AudioSource>&);
-		QList<AudioSource> ReadPlaylist (const QString&) const;
+		void WritePlaylist (const QString&, const Playlist_t&);
+		Playlist_t ReadPlaylist (const QString&) const;
 	signals:
 		void customPlaylistsChanged ();
 	};

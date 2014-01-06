@@ -51,12 +51,12 @@ namespace LMP
 
 	void StaticPlaylistManager::SetOnLoadPlaylist (const QList<AudioSource>& sources)
 	{
-		WritePlaylist (GetOnLoadPath (), sources);
+		WritePlaylist (GetOnLoadPath (), FromSources (sources));
 	}
 
 	QList<AudioSource> StaticPlaylistManager::GetOnLoadPlaylist () const
 	{
-		return ReadPlaylist (GetOnLoadPath ());
+		return ToSources (ReadPlaylist (GetOnLoadPath ()));
 	}
 
 	namespace
@@ -69,7 +69,7 @@ namespace LMP
 	}
 
 	void StaticPlaylistManager::SaveCustomPlaylist (QString name,
-			const QList<AudioSource>& sources)
+			const Playlist_t& sources)
 	{
 		WritePlaylist (PlaylistsDir_.filePath (GetFileName (name)), sources);
 		emit customPlaylistsChanged ();
@@ -84,7 +84,7 @@ namespace LMP
 		return result;
 	}
 
-	QList<AudioSource> StaticPlaylistManager::GetCustomPlaylist (const QString& name) const
+	Playlist_t StaticPlaylistManager::GetCustomPlaylist (const QString& name) const
 	{
 		return ReadPlaylist (PlaylistsDir_.filePath (GetFileName (name)));
 	}
@@ -95,14 +95,14 @@ namespace LMP
 			emit customPlaylistsChanged ();
 	}
 
-	void StaticPlaylistManager::WritePlaylist (const QString& path, const QList<AudioSource>& sources)
+	void StaticPlaylistManager::WritePlaylist (const QString& path, const Playlist_t& sources)
 	{
-		M3U::Write (path, FromSources (sources));
+		M3U::Write (path, sources);
 	}
 
-	QList<AudioSource> StaticPlaylistManager::ReadPlaylist (const QString& path) const
+	Playlist_t StaticPlaylistManager::ReadPlaylist (const QString& path) const
 	{
-		return ToSources (M3U::Read2Sources (path));
+		return M3U::Read2Sources (path);
 	}
 }
 }
