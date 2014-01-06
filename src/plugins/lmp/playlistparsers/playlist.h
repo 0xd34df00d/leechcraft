@@ -48,12 +48,17 @@ namespace LMP
 		Container_t Playlist_;
 	public:
 		typedef Container_t::const_iterator const_iterator;
+		typedef Container_t::iterator iterator;
 
 		Playlist () = default;
 		explicit Playlist (const QList<AudioSource>&);
 
 		const_iterator begin () const;
+		iterator begin ();
 		const_iterator end () const;
+		iterator end ();
+
+		iterator erase (iterator);
 
 		Playlist& Append (const PlaylistItem&);
 		Playlist& operator+= (const AudioSource&);

@@ -46,9 +46,24 @@ namespace LMP
 		return Playlist_.begin ();
 	}
 
+	Playlist::iterator Playlist::begin ()
+	{
+		return Playlist_.begin ();
+	}
+
 	Playlist::const_iterator Playlist::end () const
 	{
 		return Playlist_.end ();
+	}
+
+	Playlist::iterator Playlist::end ()
+	{
+		return Playlist_.end ();
+	}
+
+	Playlist::iterator Playlist::erase (iterator it)
+	{
+		return Playlist_.erase (it);
 	}
 
 	Playlist& Playlist::Append (const PlaylistItem& item)
