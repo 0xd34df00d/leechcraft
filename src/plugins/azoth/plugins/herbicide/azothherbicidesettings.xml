@@ -18,14 +18,14 @@
 				<label value="Ask only those in the black list" />
 				<tooltip>Otherwise, everyone who isn't present in the contact list will be asked with the challenge.</tooltip>
 			</item>
-			<item type="multiline" property="BlacklistRegexps">
+			<item type="multiline" property="BlacklistRegexps" position="bottom">
 				<label value="Entry ID regexps:" />
 				<tooltip>If the above option is active, only entry IDs that match these regular expressions will be asked with the challenge. Example regexps:&lt;br/>&lt;blockquote>.*@jabber.org&lt;br/>.*@jabber.(org|ru)(/QIP)?&lt;/blockquote></tooltip>
 			</item>
 		</tab>
 		<tab>
 			<label value="Whitelist" />
-			<item type="multiline" property="WhitelistRegexps">
+			<item type="multiline" property="WhitelistRegexps" position="bottom">
 				<label value="Entry ID regexps:" />
 				<tooltip>Entry IDs matching these regular expressions won't be asked with the challenge. See the blacklist regexps option for examples.</tooltip>
 			</item>
