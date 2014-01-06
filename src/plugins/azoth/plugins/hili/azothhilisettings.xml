@@ -4,7 +4,7 @@
 		<label value="HiLi" />
 		<groupbox>
 			<label value="HiLi" />
-			<item type="multiline" property="HighlightRegexps">
+			<item type="multiline" property="HighlightRegexps" position="bottom">
 				<label value="Regexps triggering highlights:" />
 				<tooltip>Enter the regular expressions that should trigger highlights here, one per line, like this:
 					&lt;blockquote>
