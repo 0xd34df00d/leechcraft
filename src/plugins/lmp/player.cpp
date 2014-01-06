@@ -286,7 +286,7 @@ namespace LMP
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
 
-		AddToPlaylistModel (queue, sort);
+		Enqueue (queue, sort);
 	}
 
 	QList<AudioSource> Player::GetQueue () const
