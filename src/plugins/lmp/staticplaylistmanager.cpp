@@ -85,7 +85,12 @@ namespace LMP
 
 	Playlist StaticPlaylistManager::GetCustomPlaylist (const QString& name) const
 	{
-		return ReadPlaylist (PlaylistsDir_.filePath (GetFileName (name)));
+		return ReadPlaylist (GetCustomPlaylistPath (name));
+	}
+
+	QString StaticPlaylistManager::GetCustomPlaylistPath (const QString& name) const
+	{
+		return PlaylistsDir_.filePath (GetFileName (name));
 	}
 
 	void StaticPlaylistManager::DeleteCustomPlaylist (const QString& name)

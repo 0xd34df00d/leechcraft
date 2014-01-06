@@ -52,6 +52,7 @@ namespace LMP
 		void SaveCustomPlaylist (QString, const Playlist&);
 		QStringList EnumerateCustomPlaylists () const;
 		Playlist GetCustomPlaylist (const QString&) const;
+		QString GetCustomPlaylistPath (const QString&) const;
 		void DeleteCustomPlaylist (const QString&);
 	private:
 		void WritePlaylist (const QString&, const Playlist&);
