@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "m3u.h"
+#include <memory>
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
@@ -40,7 +41,19 @@ namespace LMP
 {
 namespace M3U
 {
-	QStringList Read (const QString& path)
+	namespace
+	{
+		QPair<QString, QVariant> ParseMetadata (QString str)
+		{
+			const auto eqIdx = str.indexOf ('=');
+			if (eqIdx == -1)
+				return {};
+
+			return { str.mid (1, eqIdx - 1), str.mid (eqIdx + 1) };
+		}
+	}
+
+	Playlist_t Read2Sources (const QString& path)
 	{
 		QFile file (path);
 		if (!file.open (QIODevice::ReadOnly))
@@ -49,43 +62,28 @@ namespace M3U
 					<< "unable to open"
 					<< path
 					<< file.errorString ();
-			return QStringList ();
+			return {};
 		}
 
-		QStringList result;
-		while (!file.atEnd ())
-		{
-			const auto& line = file.readLine ().trimmed ();
-			if (line.startsWith ('#'))
-				continue;
-
-			result << QString::fromUtf8 (line.constData ());
-		}
-		return result;
-	}
-
-	void Write (const QString& path, const QStringList& lines)
-	{
-		QFile file (path);
-		if (!file.open (QIODevice::WriteOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open"
-					<< path
-					<< file.errorString ();
-			return;
-		}
-
-		file.write (lines.join ("\n").toUtf8 ());
-	}
-
-	Playlist_t Read2Sources (const QString& path)
-	{
 		const auto& m3uDir = QFileInfo (path).absoluteDir ();
 
+		QVariantMap lastMetadata;
+
 		Playlist_t result;
-		for (auto src : Read (path))
+		while (!file.atEnd ())
 		{
+			auto src = QString::fromUtf8 (file.readLine ().trimmed ());
+			if (src.startsWith ('#'))
+			{
+				const auto& pair = ParseMetadata (src);
+				if (!pair.first.isEmpty ())
+					lastMetadata [pair.first] = pair.second;
+				continue;
+			}
+
+			const auto mdGuard = std::shared_ptr<void> (nullptr,
+					[&lastMetadata] (void*) { lastMetadata.clear (); });
+
 			QUrl url (src);
 #ifdef Q_OS_WIN32
 			if (url.scheme ().size () > 1)
@@ -93,7 +91,7 @@ namespace M3U
 			if (!url.scheme ().isEmpty ())
 #endif
 			{
-				result.append ({ url, {} });
+				result.append ({ url, lastMetadata });
 				continue;
 			}
 
@@ -106,21 +104,30 @@ namespace M3U
 			if (fi.suffix () == "m3u" || fi.suffix () == "m3u8")
 				result += Read2Sources (src);
 			else
-				result.append ({ src, {} });
+				result.append ({ src, lastMetadata });
 		}
 		return result;
 	}
 
 	void Write (const QString& path, const Playlist_t& sources)
 	{
-		QStringList strings;
+		QFile file (path);
+		if (!file.open (QIODevice::WriteOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open"
+					<< path
+					<< file.errorString ();
+			return;
+		}
+
 		for (const auto& item : sources)
 		{
-			strings << item.Source_.ToUrl ().toString ();
+			file.write (item.Source_.ToUrl ().toString ().toUtf8 ());
+			file.write ("\n");
 			for (auto i = item.Additional_.begin (); i != item.Additional_.end (); ++i)
-				strings << "#" + i.key () + "=" + i.value ().toString ();
+				file.write (("#" + i.key () + "=" + i.value ().toString () + "\n").toUtf8 ());
 		}
-		Write (path, strings);
 	}
 }
 }
