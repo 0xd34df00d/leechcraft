@@ -93,6 +93,11 @@ namespace LMP
 		return result;
 	}
 
+	bool Playlist::IsEmpty () const
+	{
+		return Playlist_.isEmpty ();
+	}
+
 	bool Playlist::SetProperty (const AudioSource& src, const QString& key, const QVariant& value)
 	{
 		const auto srcPos = std::find_if (Playlist_.begin (), Playlist_.end (),

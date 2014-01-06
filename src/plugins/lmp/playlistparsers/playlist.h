@@ -66,6 +66,8 @@ namespace LMP
 
 		QList<AudioSource> ToSources () const;
 
+		bool IsEmpty () const;
+
 		bool SetProperty (const AudioSource&, const QString&, const QVariant&);
 	};
 
