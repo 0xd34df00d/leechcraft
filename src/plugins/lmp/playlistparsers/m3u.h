@@ -39,8 +39,8 @@ namespace LMP
 {
 namespace M3U
 {
-	Playlist_t Read2Sources (const QString&);
-	void Write (const QString&, const Playlist_t&);
+	Playlist Read2Sources (const QString&);
+	void Write (const QString&, const Playlist&);
 }
 }
 }

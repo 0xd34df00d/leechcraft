@@ -49,13 +49,13 @@ namespace LMP
 		void SetOnLoadPlaylist (const QList<AudioSource>&);
 		QList<AudioSource> GetOnLoadPlaylist () const;
 
-		void SaveCustomPlaylist (QString, const Playlist_t&);
+		void SaveCustomPlaylist (QString, const Playlist&);
 		QStringList EnumerateCustomPlaylists () const;
-		Playlist_t GetCustomPlaylist (const QString&) const;
+		Playlist GetCustomPlaylist (const QString&) const;
 		void DeleteCustomPlaylist (const QString&);
 	private:
-		void WritePlaylist (const QString&, const Playlist_t&);
-		Playlist_t ReadPlaylist (const QString&) const;
+		void WritePlaylist (const QString&, const Playlist&);
+		Playlist ReadPlaylist (const QString&) const;
 	signals:
 		void customPlaylistsChanged ();
 	};

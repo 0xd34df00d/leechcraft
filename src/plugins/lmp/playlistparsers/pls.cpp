@@ -58,7 +58,7 @@ namespace PLS
 		return result;
 	}
 
-	Playlist_t Read2Sources (const QString& path)
+	Playlist Read2Sources (const QString& path)
 	{
 		return CommonRead2Sources ({ { "pls" }, path, Read });
 	}

@@ -36,11 +36,11 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	Playlist_t CommonRead2Sources (const ReadParams& params)
+	Playlist CommonRead2Sources (const ReadParams& params)
 	{
 		const auto& plDir = QFileInfo (params.Path_).absoluteDir ();
 
-		Playlist_t result;
+		Playlist result;
 
 		for (const auto& raw : params.RawParser_ (params.Path_))
 		{
@@ -49,7 +49,7 @@ namespace LMP
 			QUrl url (src);
 			if (!url.scheme ().isEmpty ())
 			{
-				result.append ({
+				result.Append ({
 						url.scheme () == "file" ? url.toLocalFile () : url,
 						raw.Additional_
 					});
@@ -61,9 +61,9 @@ namespace LMP
 				result += CommonRead2Sources ({ params.Suffixes_,
 							plDir.absoluteFilePath (src), params.RawParser_ });
 			else if (fi.isRelative ())
-				result.append ({ plDir.absoluteFilePath (src), raw.Additional_ });
+				result.Append ({ plDir.absoluteFilePath (src), raw.Additional_ });
 			else
-				result.append ({ src, raw.Additional_ });
+				result.Append ({ src, raw.Additional_ });
 		}
 
 		return result;

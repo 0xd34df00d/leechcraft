@@ -39,7 +39,7 @@ namespace LMP
 {
 namespace PLS
 {
-	Playlist_t Read2Sources (const QString&);
+	Playlist Read2Sources (const QString&);
 }
 }
 }

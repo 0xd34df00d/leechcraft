@@ -75,7 +75,7 @@ namespace XSPF
 		return result;
 	}
 
-	Playlist_t Read2Sources (const QString& path)
+	Playlist Read2Sources (const QString& path)
 	{
 		return CommonRead2Sources ({ { "xspf" }, path, Read });
 	}

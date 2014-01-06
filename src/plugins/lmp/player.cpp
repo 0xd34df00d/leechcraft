@@ -238,7 +238,7 @@ namespace LMP
 
 			if (auto parser = MakePlaylistParser (file))
 			{
-				const auto& sources = ToSources (parser (file));
+				const auto& sources = parser (file).ToSources ();
 				if (!sources.isEmpty ())
 					return sources;
 			}
@@ -1242,7 +1242,7 @@ namespace LMP
 			return;
 		}
 
-		const auto& list = ToSources (parser (name));
+		const auto& list = parser (name).ToSources ();
 		Enqueue (list, false);
 	}
 

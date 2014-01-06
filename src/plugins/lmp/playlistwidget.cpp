@@ -872,7 +872,7 @@ namespace LMP
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		auto playlist = FromSources (Player_->GetQueue ());
+		Playlist playlist { Player_->GetQueue () };
 		mgr->SaveCustomPlaylist (name, playlist);
 	}
 

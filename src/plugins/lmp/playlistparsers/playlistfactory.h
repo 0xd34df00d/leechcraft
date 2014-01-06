@@ -38,7 +38,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	typedef std::function<Playlist_t (const QString&)> PlaylistParser_f;
+	typedef std::function<Playlist (const QString&)> PlaylistParser_f;
 
 	PlaylistParser_f MakePlaylistParser (const QString& filename);
 }

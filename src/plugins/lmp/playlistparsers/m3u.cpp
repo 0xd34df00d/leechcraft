@@ -53,7 +53,7 @@ namespace M3U
 		}
 	}
 
-	Playlist_t Read2Sources (const QString& path)
+	Playlist Read2Sources (const QString& path)
 	{
 		QFile file (path);
 		if (!file.open (QIODevice::ReadOnly))
@@ -69,7 +69,7 @@ namespace M3U
 
 		QVariantMap lastMetadata;
 
-		Playlist_t result;
+		Playlist result;
 		while (!file.atEnd ())
 		{
 			auto src = QString::fromUtf8 (file.readLine ().trimmed ());
@@ -91,7 +91,7 @@ namespace M3U
 			if (!url.scheme ().isEmpty ())
 #endif
 			{
-				result.append ({ url, lastMetadata });
+				result.Append ({ url, lastMetadata });
 				continue;
 			}
 
@@ -104,12 +104,12 @@ namespace M3U
 			if (fi.suffix () == "m3u" || fi.suffix () == "m3u8")
 				result += Read2Sources (src);
 			else
-				result.append ({ src, lastMetadata });
+				result.Append ({ src, lastMetadata });
 		}
 		return result;
 	}
 
-	void Write (const QString& path, const Playlist_t& sources)
+	void Write (const QString& path, const Playlist& sources)
 	{
 		QFile file (path);
 		if (!file.open (QIODevice::WriteOnly))

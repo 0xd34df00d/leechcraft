@@ -33,25 +33,47 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	QList<AudioSource> ToSources (const Playlist_t& playlist)
+	Playlist::Playlist (const QList<AudioSource>& sources)
 	{
-		QList<AudioSource> result;
-		result.reserve (playlist.size ());
-
-		for (const auto& item : playlist)
-			result << item.Source_;
-
-		return result;
+		Playlist_.reserve (sources.size ());
+		for (const auto& src : sources)
+			Playlist_.append ({ src, {} });
 	}
 
-	Playlist_t FromSources (const QList<AudioSource>& sources)
+	Playlist::const_iterator Playlist::begin () const
 	{
-		Playlist_t result;
-		result.reserve (sources.size ());
+		return Playlist_.begin ();
+	}
 
-		for (const auto& src : sources)
-			result.append ({ src, {} });
+	Playlist::const_iterator Playlist::end () const
+	{
+		return Playlist_.end ();
+	}
 
+	Playlist& Playlist::Append (const PlaylistItem& item)
+	{
+		Playlist_ << item;
+		return *this;
+	}
+
+	Playlist& Playlist::operator+= (const AudioSource& src)
+	{
+		Playlist_.append ({ src, {} });
+		return *this;
+	}
+
+	Playlist& Playlist::operator+= (const Playlist& playlist)
+	{
+		Playlist_ << playlist.Playlist_;
+		return *this;
+	}
+
+	QList<AudioSource> Playlist::ToSources () const
+	{
+		QList<AudioSource> result;
+		result.reserve (Playlist_.size ());
+		for (const auto& item : Playlist_)
+			result << item.Source_;
 		return result;
 	}
 }

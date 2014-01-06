@@ -47,6 +47,6 @@ namespace LMP
 		std::function<QList<RawReadData> (QString)> RawParser_;
 	};
 
-	Playlist_t CommonRead2Sources (const ReadParams&);
+	Playlist CommonRead2Sources (const ReadParams&);
 }
 }

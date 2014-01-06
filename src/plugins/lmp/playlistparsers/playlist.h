@@ -41,10 +41,26 @@ namespace LMP
 		AudioSource Source_;
 		QVariantMap Additional_;
 	};
-	typedef QList<PlaylistItem> Playlist_t;
 
-	QList<AudioSource> ToSources (const Playlist_t&);
-	Playlist_t FromSources (const QList<AudioSource>&);
+	class Playlist
+	{
+		typedef QList<PlaylistItem> Container_t;
+		Container_t Playlist_;
+	public:
+		typedef Container_t::const_iterator const_iterator;
+
+		Playlist () = default;
+		explicit Playlist (const QList<AudioSource>&);
+
+		const_iterator begin () const;
+		const_iterator end () const;
+
+		Playlist& Append (const PlaylistItem&);
+		Playlist& operator+= (const AudioSource&);
+		Playlist& operator+= (const Playlist&);
+
+		QList<AudioSource> ToSources () const;
+	};
 
 	struct RawReadData
 	{

@@ -180,7 +180,7 @@ namespace LMP
 		switch (index.data (Roles::PlaylistType).toInt ())
 		{
 		case PlaylistTypes::Static:
-			return Static_->GetCustomPlaylist (index.data ().toString ());
+			return Static_->GetCustomPlaylist (index.data ().toString ()).ToSources ();
 		case PlaylistTypes::Random50:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::Random50));
 		case PlaylistTypes::LovedTracks:
