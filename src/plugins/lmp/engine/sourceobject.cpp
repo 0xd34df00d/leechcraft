@@ -78,8 +78,11 @@ namespace LMP
 		SourceObject * const SourceObj_;
 		std::atomic_bool ShouldStop_;
 		const double Multiplier_;
+
+		QMutex& BusDrainMutex_;
+		QWaitCondition& BusDrainWC_;
 	public:
-		MsgPopThread (GstBus*, SourceObject*, double);
+		MsgPopThread (GstBus*, SourceObject*, double, QMutex&, QWaitCondition&);
 		~MsgPopThread ();
 
 		void Stop ();
@@ -87,12 +90,14 @@ namespace LMP
 		void run ();
 	};
 
-	MsgPopThread::MsgPopThread (GstBus *bus, SourceObject *obj, double multiplier)
+	MsgPopThread::MsgPopThread (GstBus *bus, SourceObject *obj, double multiplier, QMutex& bdMutex, QWaitCondition& bdWC)
 	: QThread (obj)
 	, Bus_ (bus)
 	, SourceObj_ (obj)
 	, ShouldStop_ (false)
 	, Multiplier_ (multiplier)
+	, BusDrainMutex_ (bdMutex)
+	, BusDrainWC_ (bdWC)
 	{
 	}
 
@@ -118,6 +123,15 @@ namespace LMP
 					"handleMessage",
 					Qt::QueuedConnection,
 					Q_ARG (GstMessage_ptr, std::shared_ptr<GstMessage> (msg, gst_message_unref)));
+
+			if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR)
+			{
+				BusDrainMutex_.lock ();
+				BusDrainWC_.wait (&BusDrainMutex_);
+				BusDrainMutex_.unlock ();
+
+				qDebug () << "bus drained, continuing";
+			}
 		}
 	}
 
@@ -133,7 +147,10 @@ namespace LMP
 	, LastCurrentTime_ (-1)
 	, PrevSoupRank_ (0)
 	, PopThread_ (new MsgPopThread (gst_pipeline_get_bus (GST_PIPELINE (Dec_)),
-				this, cat == Category::Notification ? 0.05 : 1))
+				this,
+				cat == Category::Notification ? 0.05 : 1,
+				BusDrainMutex_,
+				BusDrainWC_))
 	, OldState_ (SourceState::Stopped)
 	{
 		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
@@ -435,6 +452,18 @@ namespace LMP
 				<< msgStr
 				<< debugStr;
 
+		if (!IsDrainingMsgs_)
+		{
+			qDebug () << Q_FUNC_INFO << "draining bus";
+			IsDrainingMsgs_ = true;
+
+			while (const auto newMsg = gst_bus_pop (gst_pipeline_get_bus (GST_PIPELINE (Dec_))))
+				handleMessage (std::shared_ptr<GstMessage> (newMsg, gst_message_unref));
+
+			IsDrainingMsgs_ = false;
+			BusDrainWC_.wakeAll ();
+		}
+
 		const std::map<decltype (domain), std::map<decltype (code), SourceError>> errMap
 		{
 			{
@@ -469,7 +498,8 @@ namespace LMP
 				}
 			} ();
 
-		emit error (msgStr, errCode);
+		if (!IsDrainingMsgs_)
+			emit error (msgStr, errCode);
 	}
 
 	namespace

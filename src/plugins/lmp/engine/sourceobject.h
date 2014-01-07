@@ -99,6 +99,10 @@ namespace LMP
 
 		uint PrevSoupRank_;
 
+		QMutex BusDrainMutex_;
+		QWaitCondition BusDrainWC_;
+		bool IsDrainingMsgs_ = false;
+
 		MsgPopThread *PopThread_;
 	public:
 		typedef QMap<QString, QString> TagMap_t;
