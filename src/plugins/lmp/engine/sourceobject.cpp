@@ -30,6 +30,8 @@
 #include "sourceobject.h"
 #include <memory>
 #include <atomic>
+#include <map>
+#include <stdexcept>
 #include <QtDebug>
 #include <QTimer>
 #include <QTextCodec>
@@ -423,6 +425,7 @@ namespace LMP
 		const auto& debugStr = QString::fromUtf8 (debug);
 
 		const auto code = gerror->code;
+		const auto domain = gerror->domain;
 
 		g_error_free (gerror);
 		g_free (debug);
@@ -432,15 +435,39 @@ namespace LMP
 				<< msgStr
 				<< debugStr;
 
-		SourceError errCode = SourceError::Other;
-		switch (code)
+		const std::map<decltype (domain), std::map<decltype (code), SourceError>> errMap
 		{
-		case GST_CORE_ERROR_MISSING_PLUGIN:
-			errCode = SourceError::MissingPlugin;
-			break;
-		default:
-			break;
-		}
+			{
+				GST_CORE_ERROR,
+				{
+					{
+						GST_CORE_ERROR_MISSING_PLUGIN,
+						SourceError::MissingPlugin
+					}
+				}
+			},
+			{
+				GST_RESOURCE_ERROR,
+				{
+					{
+						GST_RESOURCE_ERROR_NOT_FOUND,
+						SourceError::SourceNotFound
+					}
+				}
+			}
+		};
+
+		const auto errCode = [&] () -> SourceError
+			{
+				try
+				{
+					return errMap.at (domain).at (code);
+				}
+				catch (const std::out_of_range&)
+				{
+					return SourceError::Other;
+				}
+			} ();
 
 		emit error (msgStr, errCode);
 	}

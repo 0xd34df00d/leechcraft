@@ -54,6 +54,7 @@ namespace LMP
 	enum class SourceError
 	{
 		MissingPlugin,
+		SourceNotFound,
 		Other
 	};
 
