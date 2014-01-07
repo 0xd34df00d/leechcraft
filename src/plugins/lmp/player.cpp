@@ -232,7 +232,7 @@ namespace LMP
 		Playlist FileToSource (const AudioSource& source)
 		{
 			if (!source.IsLocalFile ())
-				return Playlist { { source, {} } };
+				return Playlist { { source } };
 
 			const auto& file = source.GetLocalPath ();
 
@@ -243,7 +243,7 @@ namespace LMP
 					return sources;
 			}
 
-			return Playlist { { file, {} } };
+			return Playlist { { file } };
 		}
 	}
 
