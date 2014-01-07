@@ -222,7 +222,7 @@ namespace LMP
 	{
 		Sorter_.Criteria_ = criteria;
 
-		AddToPlaylistModel (QList<AudioSource> (), true);
+		AddToPlaylistModel ({}, true);
 
 		XmlSettingsManager::Instance ().setProperty ("SortingCriteria", SaveCriteria (criteria));
 	}

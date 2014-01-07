@@ -50,12 +50,12 @@ namespace LMP
 	}
 
 	QVariant SaveCriteria (const QList<SortingCriteria>& criteria)
-		{
-			QVariantList result;
-			for (const auto& crit : criteria)
-				result << static_cast<quint8> (crit);
-			return result;
-		}
+	{
+		QVariantList result;
+		for (const auto crit : criteria)
+			result << static_cast<quint8> (crit);
+		return result;
+	}
 
 	QList<SortingCriteria> LoadCriteria (const QVariant& var)
 	{
