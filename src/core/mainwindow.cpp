@@ -705,10 +705,13 @@ void LeechCraft::MainWindow::FillTray ()
 		return;
 
 	QMenu *iconMenu = new QMenu (this);
-	QMenu *menu = iconMenu->addMenu (tr ("LeechCraft menu"));
-	menu->addAction (Ui_.ActionAddTask_);
-	menu->addMenu (MenuView_);
-	menu->addMenu (MenuTools_);
+	iconMenu->addAction (windowIcon (),
+			tr ("Toggle LeechCraft window"),
+			this,
+			SLOT (showHideMain ()));
+	iconMenu->addAction (Ui_.ActionAddTask_);
+	iconMenu->addMenu (MenuView_);
+	iconMenu->addMenu (MenuTools_);
 	iconMenu->addSeparator ();
 
 	const auto& trayMenus = Core::Instance ().GetPluginManager ()->
