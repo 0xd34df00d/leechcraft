@@ -64,6 +64,36 @@ namespace MPRIS
 		return QDBusVariant (prop.read (child));
 	}
 
+	QVariantMap FDOPropsAdaptor::GetAll (const QString& iface)
+	{
+		QVariantMap result;
+
+		const auto& adaptors = parent ()->findChildren<QDBusAbstractAdaptor*> ();
+		for (const auto child : adaptors)
+		{
+			const auto mo = child->metaObject ();
+
+			if (!iface.isEmpty ())
+			{
+				const auto idx = mo->indexOfClassInfo ("D-Bus Interface");
+				if (idx == -1)
+					continue;
+
+				const auto& info = mo->classInfo (idx);
+				if (iface != info.value ())
+					continue;
+			}
+
+			for (int i = 0, cnt = mo->propertyCount (); i < cnt; ++i)
+			{
+				const auto& property = mo->property (i);
+				result [property.name ()] = property.read (child);
+			}
+		}
+
+		return result;
+	}
+
 	void FDOPropsAdaptor::Set (const QString& iface, const QString& propName, const QDBusVariant& value)
 	{
 		QObject *child = 0;
