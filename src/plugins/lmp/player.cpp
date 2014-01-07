@@ -1321,9 +1321,6 @@ namespace LMP
 		qDebug () << Q_FUNC_INFO << static_cast<int> (state);
 		switch (state)
 		{
-		case SourceState::Error:
-			qDebug () << Source_->GetErrorString ();
-			break;
 		case SourceState::Stopped:
 			emit songChanged ({});
 			break;
