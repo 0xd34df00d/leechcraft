@@ -51,6 +51,9 @@ namespace LMP
 
 	QVariant SaveCriteria (const QList<SortingCriteria>& criteria)
 	{
+		if (criteria.isEmpty ())
+			return false;
+
 		QVariantList result;
 		for (const auto crit : criteria)
 			result << static_cast<quint8> (crit);
