@@ -1416,6 +1416,11 @@ namespace LMP
 			text.prepend (tr ("Cannot find a proper audio decoder. "
 					"You probably don't have all the codec plugins installed."));
 			break;
+		case SourceError::SourceNotFound:
+			text = tr ("Audio source %1 not found, playing next track...")
+					.arg (QFileInfo (Source_->GetCurrentSource ().ToUrl ().path ()).fileName ());
+			nextTrack ();
+			break;
 		case SourceError::Other:
 			break;
 		}
