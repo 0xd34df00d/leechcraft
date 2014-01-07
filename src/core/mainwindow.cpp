@@ -616,7 +616,7 @@ void MainWindow::handleRestoreActionAdded (QAction *act)
 
 void LeechCraft::MainWindow::showHideMain ()
 {
-	IsShown_ = 1 - IsShown_;
+	IsShown_ = !IsShown_;
 	if (IsShown_)
 	{
 		show ();
