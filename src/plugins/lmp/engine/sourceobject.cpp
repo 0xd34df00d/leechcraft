@@ -704,13 +704,8 @@ namespace LMP
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
 	}
 
-	void SourceObject::HandleStreamStatusMsg (GstMessage *msg)
+	void SourceObject::HandleStreamStatusMsg (GstMessage*)
 	{
-		GstStreamStatusType type;
-		GstElement *owner = nullptr;
-		gst_message_parse_stream_status (msg, &type, &owner);
-
-		qDebug () << Q_FUNC_INFO << type;
 	}
 
 	void SourceObject::SetupSource ()
