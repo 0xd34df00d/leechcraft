@@ -1327,6 +1327,9 @@ namespace LMP
 		case SourceState::Stopped:
 			emit songChanged ({});
 			break;
+		case SourceState::Playing:
+			handleCurrentSourceChanged (Source_->GetCurrentSource ());
+			break;
 		default:
 			break;
 		}
