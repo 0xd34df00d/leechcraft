@@ -276,12 +276,13 @@ namespace LMP
 				++i;
 		}
 
-		for (const auto& item : parsedSources)
-			if (item.Additional_ ["Current"].toBool ())
-			{
-				Source_->SetCurrentSource (item.Source_);
-				break;
-			}
+		if (Source_->GetCurrentSource ().IsEmpty ())
+			for (const auto& item : parsedSources)
+				if (item.Additional_ ["Current"].toBool ())
+				{
+					Source_->SetCurrentSource (item.Source_);
+					break;
+				}
 
 		AddToPlaylistModel (parsedSources.ToSources (), sort);
 	}
