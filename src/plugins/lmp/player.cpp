@@ -673,8 +673,12 @@ namespace LMP
 				{
 					info = resolver->ResolveInfo (source.GetLocalPath ());
 				}
-				catch (...)
+				catch (const std::exception& e)
 				{
+					qWarning () << Q_FUNC_INFO
+							<< "could not find track"
+							<< info.LocalPath_
+							<< "in library and cannot resolve its info, probably missing?";
 				}
 				return { source, info };
 			}
