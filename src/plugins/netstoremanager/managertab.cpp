@@ -488,7 +488,6 @@ namespace NetStoreManager
 			if (!inTrash &&
 					!item.IsTrashed_)
 			{
-				qDebug () << parentId.isEmpty () << parentId << item.ID_ << item.ParentID_ << (item.ParentID_ == parentId);
 				if (parentId.isEmpty () &&
 						!Id2Item_.contains (item.ParentID_))
 					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
