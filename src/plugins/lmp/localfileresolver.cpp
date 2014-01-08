@@ -93,7 +93,7 @@ namespace LMP
 		std::for_each (genres.begin (), genres.end (),
 				[] (QString& genre) { genre = genre.trimmed (); });
 
-		MediaInfo info =
+		MediaInfo info
 		{
 			file,
 			ftl (tag->artist ()),
@@ -102,8 +102,7 @@ namespace LMP
 			genres,
 			audio ? audio->length () : 0,
 			static_cast<qint32> (tag->year ()),
-			static_cast<qint32> (tag->track ()),
-			{}
+			static_cast<qint32> (tag->track ())
 		};
 		{
 			QWriteLocker locker (&CacheLock_);

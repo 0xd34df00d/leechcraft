@@ -47,11 +47,19 @@ namespace LMP
 
 		QStringList Genres_;
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
+		qint32 Length_ = 0;
+		qint32 Year_ = 0;
+		qint32 TrackNumber_ = 0;
 
 		QVariantMap Additional_;
+
+		MediaInfo () = default;
+		MediaInfo (const MediaInfo&) = default;
+
+		MediaInfo (const QString& localPath,
+				const QString& artist, const QString& album, const QString& title,
+				const QStringList& genres,
+				qint32 length, qint32 year, qint32 trackNumber);
 
 		MediaInfo& operator= (const Media::AudioInfo&);
 

@@ -33,6 +33,21 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	MediaInfo::MediaInfo (const QString& localPath,
+			const QString& artist, const QString& album, const QString& title,
+			const QStringList& genres,
+			qint32 length, qint32 year, qint32 trackNumber)
+	: LocalPath_ { localPath }
+	, Artist_ { artist }
+	, Album_ { album }
+	, Title_ { title }
+	, Genres_ { genres }
+	, Length_ { length }
+	, Year_ { year }
+	, TrackNumber_ { trackNumber }
+	{
+	}
+
 	MediaInfo& MediaInfo::operator= (const Media::AudioInfo& info)
 	{
 		Artist_ = info.Artist_;
