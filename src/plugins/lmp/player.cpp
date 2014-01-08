@@ -284,13 +284,19 @@ namespace LMP
 				++i;
 		}
 
-		if (Source_->GetCurrentSource ().IsEmpty ())
-			for (const auto& item : parsedSources)
-				if (item.Additional_ ["Current"].toBool ())
-				{
-					Source_->SetCurrentSource (item.Source_);
-					break;
-				}
+		const auto curSrcPos = std::find_if (parsedSources.begin (), parsedSources.end (),
+				[] (const PlaylistItem& item) { return item.Additional_ ["Current"].toBool (); });
+		if (curSrcPos != parsedSources.end ())
+			switch (Source_->GetState ())
+			{
+			case SourceState::Error:
+			case SourceState::Stopped:
+				Source_->SetCurrentSource (curSrcPos->Source_);
+				break;
+			default:
+				AddToOneShotQueue (curSrcPos->Source_);
+				break;
+			}
 
 		AddToPlaylistModel (parsedSources.ToSources (), flags & EnqueueSort);
 	}
