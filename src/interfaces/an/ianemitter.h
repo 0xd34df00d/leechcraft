@@ -133,28 +133,58 @@ namespace LeechCraft
 		}
 	};
 
+	/** @brief Describes a field with integer values.
+	 */
 	struct ANIntFieldValue
 	{
+		/** @brief The boundary of the field.
+		 */
 		int Boundary_;
 
+		/** @brief Describes the elementary semantics of Boundary_.
+		 */
 		enum Operation
 		{
+			/** @brief The value should be greater than Boundary_.
+			 */
 			OGreater = 0x01,
+
+			/** @brief The value should be less than Boundary_.
+			 */
 			OLess = 0x02,
+
+			/** @brief The value should be equal to Boundary_.
+			 */
 			OEqual = 0x04
 		};
 
 		Q_DECLARE_FLAGS (Operations, Operation)
 
+		/** @brief Describe the semantics of Boundary_.
+		 *
+		 * This is the combination of values in Operation enum.
+		 */
 		Operations Ops_;
 	};
 
+	/** @brief Describes a field with QString values.
+	 */
 	struct ANStringFieldValue
 	{
+		/** @brief The regular expression the values should (not) match.
+		 */
 		QRegExp Rx_;
+
+		/** @brief Whether the values should match or not match Rx_.
+		 *
+		 * If this is true, the values should match Rx_, and shouldn't
+		 * otherwise.
+		 */
 		bool Contains_;
 	};
 
+	/** @brief A combination of all possible descriptions.
+	 */
 	typedef boost::variant<ANIntFieldValue, ANStringFieldValue> ANFieldValue;
 }
 
