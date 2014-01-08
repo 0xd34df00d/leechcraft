@@ -143,6 +143,11 @@ namespace GoogleDrive
 		DriveManager_->RefreshListing ();
 	}
 
+	void Account::RefreshChildren (const QByteArray& parentId)
+	{
+		emit listingUpdated ();
+	}
+
 	void Account::Delete (const QList<QByteArray>& ids, bool ask)
 	{
 		if (ids.isEmpty ())
