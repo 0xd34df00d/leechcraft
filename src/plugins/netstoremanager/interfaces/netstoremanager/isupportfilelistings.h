@@ -56,8 +56,7 @@ namespace NetStoreManager
 		NoneOp = 0x00,
 		Delete = 0x01,
 		TrashSupporting = 0x02,
-		DirectorySupport = 0x04,
-		OnlyOneLevelOfFilesListingSupport = 0x08
+		DirectorySupport = 0x04
 	};
 	Q_DECLARE_FLAGS (ListingOps, ListingOp);
 
@@ -126,7 +125,8 @@ namespace NetStoreManager
 		virtual ListingOps GetListingOps () const = 0;
 		virtual HashAlgorithm GetCheckSumAlgorithm () const = 0;
 
-		virtual void RefreshListing (const QByteArray& parentId = QByteArray ()) = 0;
+		virtual void RefreshListing () = 0;
+		virtual void RefreshChildren (const QByteArray& parentId) = 0;
 
 		virtual void Delete (const QList<QByteArray>& ids, bool ask = true) = 0;
 		virtual void MoveToTrash (const QList<QByteArray>& ids) = 0;
@@ -144,6 +144,7 @@ namespace NetStoreManager
 
 	protected:
 		virtual void gotListing (const QList<StorageItem>& items) = 0;
+		virtual void listingUpdated () = 0;
 		virtual void gotFileUrl (const QUrl& url, const QByteArray& id) = 0;
 
 		virtual void gotChanges (const QList<Change>& changes) = 0;
