@@ -448,6 +448,7 @@ namespace LMP
 		g_free (debug);
 
 		qWarning () << Q_FUNC_INFO
+				<< domain
 				<< code
 				<< msgStr
 				<< debugStr;
