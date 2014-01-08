@@ -244,6 +244,10 @@ namespace NetStoreManager
 						this,
 						SLOT (handleGotListing (const QList<StorageItem>&)));
 				connect (acc->GetQObject (),
+						SIGNAL (listingUpdated ()),
+						this,
+						SLOT (handleListingUpdated ()));
+				connect (acc->GetQObject (),
 						SIGNAL (gotNewItem (StorageItem, QByteArray)),
 						this,
 						SLOT (handleGotNewItem (StorageItem, QByteArray)));
@@ -334,12 +338,6 @@ namespace NetStoreManager
 		TreeModel_->removeRows (0, TreeModel_->rowCount ());
 	}
 
-	void ManagerTab::FillModel (IStorageAccount *acc)
-	{
-		ClearModel ();
-		FillListModel (acc);
-	}
-
 	namespace
 	{
 		QList<QStandardItem*> CreateItems (const StorageItem& storageItem, quint64 folderSize, ICoreProxy_ptr proxy)
@@ -379,11 +377,8 @@ namespace NetStoreManager
 		}
 	}
 
-	void ManagerTab::FillListModel (IStorageAccount *acc)
+	void ManagerTab::FillListModel ()
 	{
-		if (acc != GetCurrentAccount ())
-			return;
-
 		ShowListItemsWithParent (LastParentID_, OpenTrash_->isChecked ());
 
 		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
@@ -481,10 +476,10 @@ namespace NetStoreManager
 			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIcon ("go-up"), "..");
 			upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
 			upLevel->setData (parentId);
+			upLevel->setEditable (false);
 			TreeModel_->appendRow ({ upLevel });
 		}
 
-		int count = -1;
 		for (const auto& item : Id2Item_.values ())
 		{
 			quint64 folderSize = 0;
@@ -493,57 +488,32 @@ namespace NetStoreManager
 			if (!inTrash &&
 					!item.IsTrashed_)
 			{
-				if (parentId.isNull () &&
+				qDebug () << parentId.isEmpty () << parentId << item.ID_ << item.ParentID_ << (item.ParentID_ == parentId);
+				if (parentId.isEmpty () &&
 						!Id2Item_.contains (item.ParentID_))
-				{
 					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
-					if (count < 0)
-						count = 0;
-					count++;
-				}
-				else if (!parentId.isNull () &&
+				else if (!parentId.isEmpty () &&
 						item.ParentID_ == parentId)
-				{
 					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
-					if (count < 0)
-						count = 0;
-					count++;
-				}
 			}
 			else if (inTrash &&
 					item.IsTrashed_)
 			{
-				if (parentId.isNull () &&
+				if (parentId.isEmpty () &&
 						(!Id2Item_.contains (item.ParentID_) ||
 						!Id2Item_ [item.ParentID_].IsTrashed_))
 					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
-				else if (!parentId.isNull () &&
+				else if (!parentId.isEmpty () &&
 						item.ParentID_ == parentId &&
 						Id2Item_ [parentId].IsTrashed_)
 					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
-				else if (!parentId.isNull () &&
+				else if (!parentId.isEmpty () &&
 						!Id2Item_ [parentId].IsTrashed_)
 					ShowListItemsWithParent (QByteArray (), true);
 			}
 		}
 
 		Ui_.FilesView_->setCurrentIndex (ProxyModel_->index (0, 0));
-		DirId2ItemCount_ [Id2Item_ [parentId].ParentID_] = count;
-		
-		auto isa = GetCurrentAccount ();
-		if (!isa)
-			return;
-		auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ());
-		if (isfl && count == -1 && 
-				(isfl->GetListingOps () & ListingOp::OnlyOneLevelOfFilesListingSupport))
-		{
-			if (auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
-			{
-				qDebug () << Id2Item_ [parentId].ParentID_ + "/" + Id2Item_ [parentId].Name_;
-				isfl->RefreshListing (QString (Id2Item_ [parentId].ParentID_ + "/" + Id2Item_ [parentId].Name_).toUtf8 ());
-				DirId2ItemCount_ [QString (Id2Item_ [parentId].ParentID_ + "/" + Id2Item_ [parentId].Name_).toUtf8 ()] = 0;
-			}
-		}
 	}
 
 	void ManagerTab::handleRefresh ()
@@ -587,13 +557,23 @@ namespace NetStoreManager
 			return;
 
 		if (idx.data (ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
-			ShowListItemsWithParent (Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()].ParentID_,
-					OpenTrash_->isChecked ());
+		{
+			if (auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
+			{
+				CurrentDirectoryID_ = Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()].ParentID_;
+				isfl->RefreshChildren (CurrentDirectoryID_);
+			}
+		}
 		else if (!idx.data (ListingRole::IsDirectory).toBool ())
 			flOpenFile ();
-		else 
-			ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray (),
-					OpenTrash_->isChecked ());
+		else
+		{
+			if (auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
+			{
+				CurrentDirectoryID_ = idx.data (ListingRole::ID).toByteArray ();
+				isfl->RefreshChildren (CurrentDirectoryID_);
+			}
+		}
 	}
 
 	void ManagerTab::handleAccountAdded (QObject *accObj)
@@ -642,31 +622,23 @@ namespace NetStoreManager
 
 		LastParentID_ = GetParentIDInListViewMode ();
 
-		auto isfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		if (isfl && (!(isfl->GetListingOps () & ListingOp::OnlyOneLevelOfFilesListingSupport)))
-			Id2Item_.clear ();
-
 		for (auto item : items)
-		{
 			Id2Item_ [item.ID_] = item;
-			if (item.IsDirectory_)
-				DirId2ItemCount_ [QString (item.ParentID_ + "/" + item.Name_).toUtf8 ()] = -1;
-		}
-
-		qDebug () << LastParentID_ << Id2Item_.keys ();
-		
-		FillModel (acc);
 
 		Trash_->setIcon (Proxy_->GetIcon (GetTrashedFiles ().isEmpty () ?
 			"user-trash-full" :
 			"user-trash"));
 	}
 
+	void ManagerTab::handleListingUpdated ()
+	{
+		ShowListItemsWithParent (CurrentDirectoryID_, OpenTrash_->isChecked ());
+	}
+
 	void ManagerTab::handleGotNewItem (const StorageItem& item, const QByteArray&)
 	{
 		Id2Item_ [item.ID_] = item;
 		LastParentID_ = GetParentIDInListViewMode ();
-		FillModel (GetCurrentAccount ());
 	}
 
 	void ManagerTab::handleFilesViewSectionResized (int index,
@@ -1025,6 +997,7 @@ namespace NetStoreManager
 		}
 
 		Id2Item_.clear ();
+		CurrentDirectoryID_.clear ();
 		RequestFileListings (acc);
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
@@ -1061,7 +1034,6 @@ namespace NetStoreManager
 		}
 
 		LastParentID_ = GetParentIDInListViewMode ();
-		FillModel (GetCurrentAccount ());
 	}
 
 	void ManagerTab::handleFilterTextChanged (const QString& text)

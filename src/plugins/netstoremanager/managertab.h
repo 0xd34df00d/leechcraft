@@ -85,7 +85,6 @@ namespace NetStoreManager
 		QAction *Upload_;
 
 		QHash<QByteArray, StorageItem> Id2Item_;
-		QHash<QByteArray, int> DirId2ItemCount_;
 
 		enum class TransferOperation
 		{
@@ -111,6 +110,7 @@ namespace NetStoreManager
 		QToolButton *Trash_;
 
 		QByteArray LastParentID_;
+		QByteArray CurrentDirectoryID_;
 
 		QHash<IStorageAccount*, QHash<QByteArray, bool>> Account2ItemExpandState_;
 	public:
@@ -127,8 +127,7 @@ namespace NetStoreManager
 
 
 		void ClearModel ();
-		void FillModel (IStorageAccount *acc);
-		void FillListModel (IStorageAccount *acc);
+		void FillListModel ();
 
 		void RequestFileListings (IStorageAccount *acc);
 		void RequestFileChanges (IStorageAccount *acc);
@@ -153,6 +152,7 @@ namespace NetStoreManager
 		void handleAccountRemoved (QObject *accObj);
 
 		void handleGotListing (const QList<StorageItem>& items);
+		void handleListingUpdated ();
 		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
 
 		void handleFilesViewSectionResized (int index, int oldSize, int newSize);
@@ -191,7 +191,7 @@ namespace NetStoreManager
 		void handleGotFileUrl (const QUrl& url, const QByteArray& id = QByteArray ());
 
 		void handleGotChanges (const QList<Change>& changes);
-		
+
 		void handleFilterTextChanged (const QString& text);
 
 	signals:
