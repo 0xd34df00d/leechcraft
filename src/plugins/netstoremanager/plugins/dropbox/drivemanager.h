@@ -114,8 +114,8 @@ namespace DBox
 		void RequestFileChanges (qlonglong startId, const QString& pageToken = QString ());
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
-		void RequestFiles (const QByteArray& parntId, const QString& key);
-		void RequestSharingEntry (const QString& id, const QString& key);
+		void RequestFiles (const QByteArray& parntId);
+		void RequestSharingEntry (const QString& id);
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);

@@ -59,7 +59,7 @@ namespace DBox
 	void DriveManager::RefreshListing (const QByteArray& parentId)
 	{
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, parentId] (const QString& key) { RequestFiles (parentId, key); };
+		ApiCallQueue_ << [this, parentId] (const QString&) { RequestFiles (parentId); };
 	}
 
 	void DriveManager::RemoveEntry (const QByteArray& id)
@@ -106,8 +106,8 @@ namespace DBox
 	{
 		if (id.isEmpty ())
 			return;
-		ApiCallQueue_ << [this, id] (const QString& key) { RequestSharingEntry (id, key); };
-		RequestAccessToken ();
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this, id] (const QString&) { RequestSharingEntry (id); };
 	}
 
 	void DriveManager::Upload (const QString& filePath, const QStringList& parentId)
@@ -161,7 +161,7 @@ namespace DBox
 				});
 	}
 
-	void DriveManager::RequestFiles (const QByteArray& parentId, const QString& key)
+	void DriveManager::RequestFiles (const QByteArray& parentId)
 	{
 		if (Account_->GetAccessToken ().isEmpty ())
 			return;
@@ -183,25 +183,15 @@ namespace DBox
 				SLOT (handleGotFiles ()));
 	}
 
-	void DriveManager::RequestSharingEntry (const QString& id,
-			const QString& key)
+	void DriveManager::RequestSharingEntry (const QString& id)
 	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/permissions?access_token=%2")
-				.arg (id, key);
+		QString str = QString ("https://api.dropbox.com/1/media/dropbox/%1?access_token=%2")
+				.arg (id, Account_->GetAccessToken ());
 		QNetworkRequest request (str);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
 
-		QVariantMap map;
-		map.insert ("kind", "drive#permission");
-		map.insert ("id", "anyoneWithLink");
-		map.insert ("role", "reader");
-		map.insert ("type", "anyone");
-		map.insert ("withLink", true);
-
-		QJson::Serializer serializer;
-
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
-				GetNetworkAccessManager ()->post (request, serializer.serialize (map));
+				GetNetworkAccessManager ()->post (request, QByteArray ());
 		Reply2Id_ [reply] = id;
 
 		connect (reply,
@@ -625,13 +615,14 @@ namespace DBox
 			return;
 		}
 
-		if (!res.toMap ().contains ("error"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "file shared successfully";
-			emit gotSharedFileId (Reply2Id_.take (reply));
-			return;
-		}
+		qDebug () << res.toMap();
+// 		if (!res.toMap ().contains ("error"))
+// 		{
+// 			qDebug () << Q_FUNC_INFO
+// 					<< "file shared successfully";
+// 			emit gotSharedFileId (Reply2Id_.take (reply));
+// 			return;
+// 		}
 
 		ParseError (res.toMap ());
 	}
