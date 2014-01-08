@@ -447,6 +447,12 @@ namespace LMP
 		g_error_free (gerror);
 		g_free (debug);
 
+		// GStreamer is utter crap
+		if (domain == GST_RESOURCE_ERROR &&
+				code == GST_RESOURCE_ERROR_NOT_FOUND &&
+				msgStr == "Cancelled")
+			return;
+
 		qWarning () << Q_FUNC_INFO
 				<< domain
 				<< code
