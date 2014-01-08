@@ -156,7 +156,7 @@ namespace MPRIS
 		result ["mpris:length"] = info.Length_ * 1000;
 		result ["mpris:artUrl"] = QUrl (Player_->GetCurrentAAPath ()).toLocalFile ();
 		result ["xesam:album"] = info.Album_;
-		result ["xesam:artist"] = info.Artist_;
+		result ["xesam:artist"] = QStringList { info.Artist_ };
 		result ["xesam:genre"] = info.Genres_.join (" / ");
 		result ["xesam:title"] = info.Title_;
 		result ["xesam:trackNumber"] = info.TrackNumber_;
