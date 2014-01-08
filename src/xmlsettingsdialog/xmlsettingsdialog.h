@@ -147,7 +147,7 @@ namespace Util
 		 * integers should correspond to values of the
 		 * DataSources::DataFieldType enumeration.
 		 *
-		 * @param[in] name The identifier of the property.
+		 * @param[in] property The identifier of the property.
 		 * @param[in] source The new datasource.
 		 */
 		XMLSETTINGSMANAGER_API void SetDataSource (const QString& property,

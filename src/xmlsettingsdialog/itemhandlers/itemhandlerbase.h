@@ -102,7 +102,7 @@ namespace LeechCraft
 		 * This function should update the current default value of the
 		 * given element to a new value.
 		 *
-		 * @param[in,out] element
+		 * @param[in,out] element The element which should be updated.
 		 * @param[in] value The new value for this element.
 		 */
 		virtual void UpdateValue (QDomElement& element, const QVariant& value) const = 0;
