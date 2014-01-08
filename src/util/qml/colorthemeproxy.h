@@ -114,8 +114,14 @@ namespace Util
 	 *
 	 * Good examples of color proxy usage are in LMP and SB2 plugins,
 	 * for example.
-
-	 * @sa ICoreProxy, IInfo
+	 *
+	 * This class uses IColorThemeManager internally. The \em section and
+	 * \em key of IColorThemeManager::GetQMLColor() form the name of the
+	 * properties in this class in the form of \em color_section_key.
+	 *
+	 * @sa ICoreProxy
+	 * @sa IInfo
+	 * @sa IColorThemeManager
 	 */
 	class UTIL_API ColorThemeProxy : public QObject
 	{
@@ -123,7 +129,13 @@ namespace Util
 
 		IColorThemeManager *Manager_;
 	public:
-		ColorThemeProxy (IColorThemeManager*, QObject*);
+		/** @brief Constructs the color theme proxy with the given color
+		 * \em manager and \em parent object.
+		 *
+		 * @param[in] manager The color manager to use.
+		 * @param[in] parent The parent object of the proxy.
+		 */
+		ColorThemeProxy (IColorThemeManager *manager, QObject *parent);
 
 #ifdef GEN_RUN
 #define DECL_PROP(group,col) \
@@ -213,6 +225,11 @@ namespace Util
 	private:
 		QColor GetColor (const QString&, const QString&) const;
 	signals:
+		/** @brief Emitted when the color theme changes.
+		 *
+		 * This signal can be used to be notified of the properties
+		 * changes.
+		 */
 		void colorsChanged ();
 	};
 }
