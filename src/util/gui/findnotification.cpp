@@ -85,11 +85,6 @@ namespace Util
 		Ui_->Pattern_->setStyleSheet (ss);
 	}
 
-	void FindNotification::Focus ()
-	{
-		Ui_->Pattern_->setFocus ();
-	}
-
 	auto FindNotification::GetFlags () const -> FindFlags
 	{
 		FindFlags flags;

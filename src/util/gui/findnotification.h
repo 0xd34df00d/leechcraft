@@ -129,13 +129,6 @@ namespace Util
 		 */
 		void SetSuccessful (bool successful);
 
-		/** @brief Sets the focus to the search edit field.
-		 *
-		 * @deprecated This function is deprecated,
-		 * <code>QWidget::setFocus()</code> should be used instead.
-		 */
-		void Focus ();
-
 		/** @brief Returns the current find flags except the direction.
 		 *
 		 * Please note that the direction flag (FindBackwards) never

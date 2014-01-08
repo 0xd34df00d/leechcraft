@@ -1076,7 +1076,7 @@ namespace Poshuku
 		if (act)
 			FindDialog_->SetText (act->data ().toString ());
 		FindDialog_->show ();
-		FindDialog_->Focus ();
+		FindDialog_->setFocus ();
 	}
 
 	void BrowserWidget::handleFindNext ()
