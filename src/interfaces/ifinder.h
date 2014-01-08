@@ -50,10 +50,10 @@ namespace LeechCraft
 		 */
 		enum Type
 		{
-			RTFixed,		//< Fixed string
-			RTWildcard,		//< Wildcard
-			RTRegexp,		//< Regular expression
-			RTTag			//< Tag filtering
+			RTFixed,		///< Fixed string
+			RTWildcard,		///< Wildcard
+			RTRegexp,		///< Regular expression
+			RTTag			///< Tag filtering
 		};
 
 		/** Whether the search should be case sensitive.

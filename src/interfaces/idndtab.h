@@ -69,7 +69,7 @@ public:
 	 * This function is somewhat similar to QWidget::dragEnterEvent() or
 	 * QWidget::dragMoveEvent().
 	 *
-	 * @param[inout] event The object describing the DnD operation.
+	 * @param[in,out] event The object describing the DnD operation.
 	 */
 	virtual void HandleDragEnter (QDragMoveEvent *event) = 0;
 
