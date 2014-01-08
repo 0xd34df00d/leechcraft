@@ -136,7 +136,13 @@ namespace LMP
 				.arg ("<em>" + syncTo.MountPath_) + "</em>");
 
 		if (!FixMask (mask, transcoded))
+		{
+			const auto& errString = tr ("Unable to expand mask for file %1.")
+					.arg ("<em>" + QFileInfo { transcoded }.fileName () + "</em>");
+			emit uploadLog (errString);
+			handleErrorCopying (transcoded, errString);
 			return;
+		}
 
 		if (!Mount2Copiers_.contains (syncTo.MountPath_))
 			CreateSyncer (syncTo.MountPath_);
