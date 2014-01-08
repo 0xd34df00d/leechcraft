@@ -302,7 +302,7 @@ namespace LMP
 		if (!(e.Parameters_ & FromUserInitiated))
 			return;
 
-		player->Enqueue ({ AudioSource (url) }, false);
+		player->Enqueue ({ AudioSource (url) }, Player::EnqueueNone);
 
 		if (e.Additional_ ["Action"] == "AudioEnqueuePlay")
 			player->AddToOneShotQueue (url);

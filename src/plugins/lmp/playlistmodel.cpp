@@ -132,7 +132,7 @@ namespace LMP
 				pos = existingQueue.insert (pos, src) + 1;
 		}
 
-		Player_->ReplaceQueue (existingQueue);
+		Player_->Enqueue (existingQueue, Player::EnqueueReplace | Player::EnqueueSort);
 		return true;
 	}
 

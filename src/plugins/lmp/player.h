@@ -120,6 +120,15 @@ namespace LMP
 			OneShotPos
 		};
 
+		enum EnqueueFlag
+		{
+			EnqueueNone = 0x0,
+			EnqueueSort = 0x1,
+			EnqueueReplace = 0x2
+		};
+
+		Q_DECLARE_FLAGS (EnqueueFlags, EnqueueFlag)
+
 		Player (QObject* = 0);
 
 		QAbstractItemModel* GetPlaylistModel () const;
@@ -135,9 +144,8 @@ namespace LMP
 		void SetSortingCriteria (const QList<SortingCriteria>&);
 
 		void PrepareURLInfo (const QUrl&, const MediaInfo&);
-		void Enqueue (const QStringList&, bool = true);
-		void Enqueue (const QList<AudioSource>&, bool = true);
-		void ReplaceQueue (const QList<AudioSource>&, bool = true);
+		void Enqueue (const QStringList&, EnqueueFlags = EnqueueSort);
+		void Enqueue (const QList<AudioSource>&, EnqueueFlags = EnqueueSort);
 		QList<AudioSource> GetQueue () const;
 		QList<AudioSource> GetIndexSources (const QModelIndex&) const;
 		QModelIndex GetSourceIndex (const AudioSource&) const;
@@ -219,3 +227,5 @@ namespace LMP
 	};
 }
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::Player::EnqueueFlags)

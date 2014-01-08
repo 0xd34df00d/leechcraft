@@ -253,16 +253,24 @@ namespace LMP
 			Url2Info_ [url] = info;
 	}
 
-	void Player::Enqueue (const QStringList& paths, bool sort)
+	void Player::Enqueue (const QStringList& paths, EnqueueFlags flags)
 	{
 		QList<AudioSource> parsedSources;
 		for (const auto& path : paths)
 			parsedSources << AudioSource (path);
-		Enqueue (parsedSources, sort);
+		Enqueue (parsedSources, flags);
 	}
 
-	void Player::Enqueue (const QList<AudioSource>& sources, bool sort)
+	void Player::Enqueue (const QList<AudioSource>& sources, EnqueueFlags flags)
 	{
+		if (flags & EnqueueReplace)
+		{
+			PlaylistModel_->clear ();
+			Items_.clear ();
+			AlbumRoots_.clear ();
+			CurrentQueue_.clear ();
+		}
+
 		Playlist parsedSources;
 		std::for_each (sources.begin (), sources.end (),
 				[&parsedSources] (decltype (sources.front ()) path)
@@ -284,17 +292,7 @@ namespace LMP
 					break;
 				}
 
-		AddToPlaylistModel (parsedSources.ToSources (), sort);
-	}
-
-	void Player::ReplaceQueue (const QList<AudioSource>& queue, bool sort)
-	{
-		PlaylistModel_->clear ();
-		Items_.clear ();
-		AlbumRoots_.clear ();
-		CurrentQueue_.clear ();
-
-		Enqueue (queue, sort);
+		AddToPlaylistModel (parsedSources.ToSources (), flags & EnqueueSort);
 	}
 
 	QList<AudioSource> Player::GetQueue () const
@@ -731,7 +729,10 @@ namespace LMP
 	{
 		if (!CurrentQueue_.isEmpty ())
 		{
-			ReplaceQueue (CurrentQueue_ + sources, sort);
+			EnqueueFlags flags { EnqueueReplace };
+			if (sort)
+				flags |= EnqueueSort;
+			Enqueue (CurrentQueue_ + sources, flags);
 			return;
 		}
 
@@ -1078,7 +1079,7 @@ namespace LMP
 
 		auto queue = GetQueue ();
 		std::random_shuffle (queue.begin (), queue.end ());
-		ReplaceQueue (queue, false);
+		Enqueue (queue, EnqueueReplace);
 	}
 
 	void Player::handleSorted ()
@@ -1255,7 +1256,7 @@ namespace LMP
 		}
 
 		const auto& list = parser (name).ToSources ();
-		Enqueue (list, false);
+		Enqueue (list, EnqueueNone);
 	}
 
 	void Player::handleGotAudioInfos (const QList<Media::AudioInfo>& infos)
@@ -1276,7 +1277,7 @@ namespace LMP
 		}
 
 		if (!sources.isEmpty ())
-			Enqueue (sources, false);
+			Enqueue (sources, EnqueueNone);
 	}
 
 	void Player::postPlaylistCleanup (const QString& filename)
@@ -1429,7 +1430,7 @@ namespace LMP
 
 	void Player::refillPlaylist ()
 	{
-		ReplaceQueue (GetQueue (), false);
+		Enqueue (GetQueue (), EnqueueReplace);
 	}
 }
 }

@@ -250,7 +250,7 @@ namespace LMP
 				sources << url;
 			}
 
-			player->Enqueue (sources, false);
+			player->Enqueue (sources, Player::EnqueueNone);
 			return;
 		}
 		}

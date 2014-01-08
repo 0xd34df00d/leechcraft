@@ -810,7 +810,7 @@ namespace LMP
 			if (sources.contains (allSrcs.at (i)))
 				std::swap (allSrcs [i], allSrcs [i - 1]);
 
-		Player_->ReplaceQueue (allSrcs, false);
+		Player_->Enqueue (allSrcs, Player::EnqueueReplace);
 
 		NextResetSelect_ = sources;
 	}
@@ -822,7 +822,7 @@ namespace LMP
 		Q_FOREACH (const auto& source, sources)
 			allSrcs.removeAll (source);
 
-		Player_->ReplaceQueue (sources + allSrcs, false);
+		Player_->Enqueue (sources + allSrcs, Player::EnqueueReplace);
 		NextResetSelect_ = sources;
 	}
 
@@ -838,7 +838,7 @@ namespace LMP
 			if (sources.contains (allSrcs.at (i)))
 				std::swap (allSrcs [i], allSrcs [i + 1]);
 
-		Player_->ReplaceQueue (allSrcs, false);
+		Player_->Enqueue (allSrcs, Player::EnqueueReplace);
 
 		NextResetSelect_ = sources;
 	}
@@ -850,7 +850,7 @@ namespace LMP
 		Q_FOREACH (const auto& source, sources)
 			allSrcs.removeAll (source);
 
-		Player_->ReplaceQueue (allSrcs + sources, false);
+		Player_->Enqueue (allSrcs + sources, Player::EnqueueReplace);
 		NextResetSelect_ = sources;
 	}
 

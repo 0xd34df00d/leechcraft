@@ -225,7 +225,7 @@ namespace LMP
 		}
 
 		if (!sources.isEmpty ())
-			Player_->Enqueue (sources, false);
+			Player_->Enqueue (sources, Player::EnqueueNone);
 
 		CheckPendingAlbum (pending);
 	}
