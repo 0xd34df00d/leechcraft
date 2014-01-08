@@ -89,19 +89,7 @@ namespace LMP
 			const auto& localPath = url.toLocalFile ();
 			if (QFileInfo (localPath).isFile ())
 			{
-				bool playlistHandled = false;
-				if (auto f = MakePlaylistParser (localPath))
-				{
-					const auto& playlistSrcs = f (localPath).ToSources ();
-					if (!playlistSrcs.isEmpty ())
-					{
-						playlistHandled = true;
-						sources += playlistSrcs;
-					}
-				}
-
-				if (!playlistHandled)
-					sources << AudioSource (localPath);
+				sources << AudioSource (localPath);
 				continue;
 			}
 
