@@ -90,7 +90,10 @@ namespace LMP
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< e.what ();
+						<< e.what ()
+						<< "for"
+						<< mask
+						<< transcoded;
 				return false;
 			}
 
