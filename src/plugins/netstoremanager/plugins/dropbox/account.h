@@ -84,7 +84,8 @@ namespace DBox
 		ListingOps GetListingOps () const;
 		HashAlgorithm GetCheckSumAlgorithm () const;
 
-		void RefreshListing (const QByteArray& parentID = QByteArray ());
+		void RefreshListing ();
+		void RefreshChildren (const QByteArray& parentId);
 
 		void Delete (const QList<QByteArray>& ids, bool ask = true);
 		void MoveToTrash (const QList<QByteArray>& ids);
@@ -120,7 +121,7 @@ namespace DBox
 		void upStatusChanged (const QString& status, const QString& filepath);
 
 		void gotListing (const QList<StorageItem>& items);
-
+		void listingUpdated ();
 		void gotFileUrl (const QUrl& url, const QByteArray& id);
 
 		void gotChanges (const QList<Change>& changes);

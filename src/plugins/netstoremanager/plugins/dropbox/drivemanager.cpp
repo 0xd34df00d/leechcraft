@@ -56,10 +56,10 @@ namespace DBox
 	{
 	}
 
-	void DriveManager::RefreshListing (const QByteArray& parentID)
+	void DriveManager::RefreshListing (const QByteArray& parentId)
 	{
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, parentID] (const QString& key) { RequestFiles (parentID, key); };
+		ApiCallQueue_ << [this, parentId] (const QString& key) { RequestFiles (parentId, key); };
 	}
 
 	void DriveManager::RemoveEntry (const QByteArray& id)
@@ -161,14 +161,14 @@ namespace DBox
 				});
 	}
 
-	void DriveManager::RequestFiles (const QByteArray& parentID, const QString& key)
+	void DriveManager::RequestFiles (const QByteArray& parentId, const QString& key)
 	{
 		if (Account_->GetAccessToken ().isEmpty ())
 			return;
 
 		QString str = QString ("https://api.dropbox.com/1/metadata/dropbox?access_token=%1&path=%2")
 				.arg (Account_->GetAccessToken ())
-				.arg (parentID.isEmpty () ? "/" : QString::fromUtf8 (parentID));
+				.arg (parentId.isEmpty () ? "/" : QString::fromUtf8 (parentId));
 		QNetworkRequest request (str);
 
 		request.setHeader (QNetworkRequest::ContentTypeHeader,
@@ -269,12 +269,12 @@ namespace DBox
 // 				.arg ("844868161425.apps.googleusercontent.com")
 // 				.arg ("l09HkM6nbPMEYcMdcdeGBdaV")
 // 				.arg ("refresh_token");
-// 
+//
 // 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-// 
+//
 // 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
 // 				GetNetworkAccessManager ()->post (request, str.toUtf8 ());
-// 
+//
 // 		connect (reply,
 // 				SIGNAL (finished ()),
 // 				this,
@@ -544,14 +544,16 @@ namespace DBox
 			DBoxItem driveItem;
 			driveItem.FileSize_ = map ["bytes"].toULongLong ();
 			driveItem.FolderHash_ = map ["hash"].toString ();
-			driveItem.Id_ = map ["rev"].toString ();
+			driveItem.Revision_ = map ["rev"].toByteArray ();
+			const auto& path = map ["path"].toString ();
+			driveItem.Id_ = path;
+			driveItem.ParentID_ = QFileInfo (path).dir ().absolutePath ();
 			driveItem.IsDeleted_ = map ["is_deleted"].toBool ();
 			driveItem.IsFolder_ = map ["is_dir"].toBool ();
 			driveItem.ModifiedDate_ = map ["modified"].toDateTime ();
-			driveItem.ParentID_ = QFileInfo (map ["path"].toString ()).dir ().absolutePath ();
-			driveItem.Name_ = QFileInfo (map ["path"].toString ()).fileName ();
+			driveItem.Name_ = QFileInfo (path).fileName ();
 			driveItem.MimeType_ = map ["mime_type"].toString ().replace ('/', '-');
-			
+
 			return driveItem;
 		}
 	}
@@ -580,11 +582,11 @@ namespace DBox
 			if (SecondRequestIfNoItems_)
 			{
 				SecondRequestIfNoItems_ = false;
-				RefreshListing (QByteArray ());
+				RefreshListing ();
 			}
 			return;
 		}
- 
+
 		if (resMap.contains ("error"))
 		{
 			ParseError (res.toMap ());

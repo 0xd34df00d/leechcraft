@@ -126,7 +126,7 @@ namespace DBox
 
 	ListingOps Account::GetListingOps () const
 	{
-		return ListingOp::Delete | ListingOp::DirectorySupport | ListingOp::OnlyOneLevelOfFilesListingSupport;
+		return ListingOp::Delete | ListingOp::DirectorySupport;
 	}
 
 	HashAlgorithm Account::GetCheckSumAlgorithm () const
@@ -134,9 +134,14 @@ namespace DBox
 		return HashAlgorithm::Md5;
 	}
 
-	void Account::RefreshListing (const QByteArray& parentID)
+	void Account::RefreshListing ()
 	{
-		DriveManager_->RefreshListing (parentID);
+		DriveManager_->RefreshListing ();
+	}
+
+	void Account::RefreshChildren (const QByteArray& parentId)
+	{
+		DriveManager_->RefreshListing (parentId);
 	}
 
 	void Account::Delete (const QList<QByteArray>& ids, bool ask)
@@ -304,12 +309,14 @@ namespace DBox
 		{
 			StorageItem storageItem;
 			storageItem.ID_ = item.Id_.toUtf8 ();
+			storageItem.ParentID_ = item.ParentID_.toUtf8 ();
 			storageItem.Name_ = item.Name_;
 			storageItem.Size_ = item.FileSize_;
 			storageItem.ModifyDate_ = item.ModifiedDate_;
 			storageItem.IsDirectory_ = item.IsFolder_;
 			storageItem.IsTrashed_ = item.IsDeleted_;
 			storageItem.MimeType_ = item.MimeType_;
+			storageItem.Hash_ = item.Revision_;
 
 			return storageItem;
 		}
@@ -320,12 +327,10 @@ namespace DBox
 		QList<StorageItem> result;
 
 		for (const auto& item : items)
-		{
 			result << CreateItem (item);
-			qDebug () << item.ParentID_ << item.Name_;
-		}
 
 		emit gotListing (result);
+		emit listingUpdated ();
 	}
 
 	void Account::handleSharedFileId (const QString& id)

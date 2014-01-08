@@ -54,6 +54,7 @@ namespace DBox
 	{
 		QString Id_;
 		QString ParentID_;
+		QByteArray Revision_;
 
 		QString Name_;
 		quint64 FileSize_;
@@ -62,6 +63,7 @@ namespace DBox
 		QString FolderHash_;
 		QDateTime ModifiedDate_;
 		QString MimeType_;
+
 
 		DBoxItem ()
 		: FileSize_ (0)
@@ -92,7 +94,7 @@ namespace DBox
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
 
-		void RefreshListing (const QByteArray& parentID);
+		void RefreshListing (const QByteArray& parentId = QByteArray ());
 		void RemoveEntry (const QByteArray& id);
 		void MoveEntryToTrash (const QByteArray& id);
 		void RestoreEntryFromTrash (const QByteArray& id);
@@ -112,7 +114,7 @@ namespace DBox
 		void RequestFileChanges (qlonglong startId, const QString& pageToken = QString ());
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
-		void RequestFiles (const QByteArray& parentID, const QString& key);
+		void RequestFiles (const QByteArray& parntId, const QString& key);
 		void RequestSharingEntry (const QString& id, const QString& key);
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
