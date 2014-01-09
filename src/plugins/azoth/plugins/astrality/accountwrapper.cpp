@@ -40,7 +40,7 @@
 #include <ContactManager>
 #include <PendingReady>
 #include <util/util.h>
-#include <util/passutils.h>
+#include <util/xpc/passutils.h>
 #include "astralityutil.h"
 #include "entrywrapper.h"
 #include "protowrapper.h"
