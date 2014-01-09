@@ -45,7 +45,8 @@ namespace Aggregator
 		virtual ~Parser ();
 		/** @brief Indicates whether parser could parse the document.
 			*
-			* @param[in] doc
+			* @param[in] doc The document to parse.
+			* @return Whether the given document \em doc can be parsed.
 			*/
 		virtual bool CouldParse (const QDomDocument& doc) const = 0;
 

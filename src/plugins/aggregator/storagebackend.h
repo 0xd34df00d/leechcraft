@@ -251,7 +251,6 @@ namespace Aggregator
 		 * function should do nothing.
 		 *
 		 * @param[in] channel Pointer to the channel that should be added.
-		 * @param[in] feedURL Parent feed's URL.
 		 */
 		virtual void AddChannel (Channel_ptr channel) = 0;
 
@@ -342,9 +341,9 @@ namespace Aggregator
 		 * If the specified feed doesn't exist, this function should do
 		 * nothing.
 		 *
-		 * @param[in] feed Pointer to the feed that should be removed.
+		 * @param[in] feedId The ID of the feed that should be removed.
 		 */
-		virtual void RemoveFeed (const IDType_t&) = 0;
+		virtual void RemoveFeed (const IDType_t& feedId) = 0;
 
 		/** @brief Update feeds storage section.
 		 *
@@ -428,9 +427,9 @@ namespace Aggregator
 		/** @brief Should be emitted whenever a full item is loaded.
 		 *
 		 * @param[out] proxy Standard proxy object.
-		 * @param[out] itemId The ID of the item to be loaded.
+		 * @param[out] item The pointer to the already loaded item.
 		 */
-		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item*) const;
+		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item *item) const;
 	};
 }
 }
