@@ -59,13 +59,13 @@ namespace DBox
 	void DriveManager::RequestUserId ()
 	{
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this] (const QString&) { RequestAccountInfo (); };
+		ApiCallQueue_ << [this] () { RequestAccountInfo (); };
 	}
 
 	void DriveManager::RefreshListing (const QByteArray& parentId)
 	{
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, parentId] (const QString&) { RequestFiles (parentId); };
+		ApiCallQueue_ << [this, parentId] () { RequestFiles (parentId); };
 	}
 
 	void DriveManager::ShareEntry (const QString& id, ShareType type)
@@ -73,15 +73,13 @@ namespace DBox
 		if (id.isEmpty ())
 			return;
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, id, type] (const QString&) { RequestSharingEntry (id, type); };
+		ApiCallQueue_ << [this, id, type] () { RequestSharingEntry (id, type); };
 	}
 
-	void DriveManager::CreateDirectory (const QString& name,
-			const QString& parentId)
+	void DriveManager::CreateDirectory (const QString& name, const QString& parentId)
 	{
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, name, parentId] (const QString&)
-				{ RequestCreateDirectory (name, parentId); };
+		ApiCallQueue_ << [this, name, parentId] () { RequestCreateDirectory (name, parentId); };
 	}
 
 	void DriveManager::RemoveEntry (const QByteArray& id)
@@ -89,7 +87,7 @@ namespace DBox
 		if (id.isEmpty ())
 			return;
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, id] (const QString&) { RequestEntryRemoving (id); };
+		ApiCallQueue_ << [this, id] () { RequestEntryRemoving (id); };
 	}
 
 	void DriveManager::Copy (const QByteArray& id, const QString& parentId)
@@ -97,7 +95,7 @@ namespace DBox
 		if (id.isEmpty ())
 			return;
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, id, parentId] (const QString&) { RequestCopyItem (id, parentId); };
+		ApiCallQueue_ << [this, id, parentId] () { RequestCopyItem (id, parentId); };
 	}
 
 	void DriveManager::Move (const QByteArray& id, const QString& parentId)
@@ -105,56 +103,23 @@ namespace DBox
 		if (id.isEmpty ())
 			return;
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, id, parentId] (const QString&) { RequestMoveItem (id, parentId); };
-	}
-
-	void DriveManager::MoveEntryToTrash (const QByteArray& id)
-	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id] (const QString& key) { RequestMovingEntryToTrash (id, key); };
-		RequestAccessToken ();
-	}
-
-	void DriveManager::RestoreEntryFromTrash (const QByteArray& id)
-	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id] (const QString& key) { RequestRestoreEntryFromTrash (id, key); };
-		RequestAccessToken ();
+		ApiCallQueue_ << [this, id, parentId] () { RequestMoveItem (id, parentId); };
 	}
 
 	void DriveManager::Upload (const QString& filePath, const QStringList& parentId)
 	{
 		QString parent = parentId.value (0);
-		ApiCallQueue_ << [this, filePath, parent] (const QString& key) { RequestUpload (filePath, parent, key); };
-		RequestAccessToken ();
+		auto guard = MakeRunnerGuard ();
+
+		if (QFileInfo (filePath).size () < 150 * 1024 * 1024)
+			ApiCallQueue_ << [this, filePath, parent] () { RequestUpload (filePath, parent); };
+		else
+			;//TODO chunk_upload
 	}
 
 	void DriveManager::Download (const QString& id, const QString& filepath,
 			TaskParameters tp, bool silent, bool open)
 	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath, tp, silent, open] (const QUrl& url)
-			{ DownloadFile (filepath, url, tp, silent, open); };
-		RequestAccessToken ();
-	}
-
-	void DriveManager::Rename (const QString& id, const QString& newName)
-	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id, newName] (const QString& key) { RequestRenameItem (id, newName, key); };
-		RequestAccessToken ();
-	}
-
-	void DriveManager::RequestFileChanges (qlonglong startId, const QString& pageToken)
-	{
-		ApiCallQueue_ << [this, startId, pageToken] (const QString& key)
-				{ GetFileChanges (startId, pageToken, key); };
-		RequestAccessToken ();
 	}
 
 	std::shared_ptr< void > DriveManager::MakeRunnerGuard ()
@@ -163,7 +128,7 @@ namespace DBox
 		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*)
 			{
 				if (shouldRun)
-					ApiCallQueue_.dequeue () (QString ());
+					ApiCallQueue_.dequeue () ();
 			});
 	}
 
@@ -310,160 +275,45 @@ namespace DBox
 				SLOT (handleMoveItem ()));
 	}
 
-	void DriveManager::RequestMovingEntryToTrash (const QString& id,
-			const QString& key)
+	void DriveManager::RequestUpload (const QString& filePath, const QString& parent)
 	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/trash?access_token=%2")
-				.arg (id, key);
-		QNetworkRequest request (str);
-		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
-
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->
-				GetNetworkAccessManager ()->post (request, QByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleRequestMovingEntryToTrash ()));
-	}
-
-	void DriveManager::RequestRestoreEntryFromTrash (const QString& id,
-			const QString& key)
-	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/untrash?access_token=%2")
-				.arg (id, key);
-		QNetworkRequest request (str);
-		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
-
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->
-				GetNetworkAccessManager ()->post (request, QByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleRequestRestoreEntryFromTrash ()));
-	}
-
-	void DriveManager::RequestAccessToken ()
-	{
-// 		QNetworkRequest request (QUrl ("https://accounts.google.com/o/oauth2/token"));
-// 		QString str = QString ("refresh_token=%1&client_id=%2&client_secret=%3&grant_type=%4")
-// 				.arg (Account_->GetRefreshToken ())
-// 				.arg ("844868161425.apps.googleusercontent.com")
-// 				.arg ("l09HkM6nbPMEYcMdcdeGBdaV")
-// 				.arg ("refresh_token");
-//
-// 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-//
-// 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
-// 				GetNetworkAccessManager ()->post (request, str.toUtf8 ());
-//
-// 		connect (reply,
-// 				SIGNAL (finished ()),
-// 				this,
-// 				SLOT (handleAuthTokenRequestFinished ()));
-	}
-
-	void DriveManager::RequestUpload (const QString& filePath,
-			const QString& parent, const QString& key)
-	{
-		emit uploadStatusChanged (tr ("Initializing..."), filePath);
+		emit uploadStatusChanged (tr ("Uploading..."), filePath);
 
 		QFileInfo info (filePath);
-		const QUrl initiateUrl (QString ("https://www.googleapis.com/upload/drive/v2/files?access_token=%1&uploadType=resumable")
-				.arg (key));
-		QNetworkRequest request (initiateUrl);
-		request.setPriority (QNetworkRequest::LowPriority);
-#ifdef HAVE_MAGIC
-		request.setRawHeader ("X-Upload-Content-Type",
-				magic_file (Magic_, filePath.toUtf8 ()));
-#endif
-		request.setRawHeader ("X-Upload-Content-Length",
-				QString::number (QFileInfo (filePath).size ()).toUtf8 ());
-		QVariantMap map;
-		map ["title"] = QFileInfo (filePath).fileName ();
-		if (!parent.isEmpty ())
+		QFile *file = new QFile (filePath);
+		if (!file->open (QIODevice::ReadOnly))
 		{
-			QVariantList parents;
-			QVariantMap parentMap;
-			parentMap ["id"] = parent;
-			parents << parentMap;
-			map ["parents"] = parents;
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file: "
+					<< file->errorString ();
+			return;
 		}
 
-		const auto& data = QJson::Serializer ().serialize (map);
+		const QUrl url (QString ("https://api-content.dropbox.com/1/files_put/%1/%2?access_token=%3")
+				.arg ("dropbox")
+				.arg (parent + "/" + info.fileName ())
+				.arg (Account_->GetAccessToken ()));
+		QNetworkRequest request (url);
+		request.setPriority (QNetworkRequest::LowPriority);
+		request.setHeader (QNetworkRequest::ContentLengthHeader, info.size ());
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
-		request.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
-				GetNetworkAccessManager ()->post (request, data);
+				GetNetworkAccessManager ()->put (request, file);
+		file->setParent (reply);
 		Reply2FilePath_ [reply] = filePath;
-
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
-				SLOT (handleUploadRequestFinished ()));
-	}
-
-	void DriveManager::GetFileChanges (qlonglong startId,
-			const QString& pageToken, const QString& key)
-	{
-		QString urlSuffix = "includeDeleted=true&access_token=" + key;
-
-		if (startId)
-		{
-			urlSuffix.append ("&startChangeId=");
-			urlSuffix += QString::number (startId);
-		}
-
-		if (!pageToken.isEmpty ())
-		{
-			urlSuffix.append ("&pageToken=");
-			urlSuffix += pageToken;
-		}
-
-		const QString str = "https://www.googleapis.com/drive/v2/changes?" + urlSuffix;
-
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				get (QNetworkRequest (str));
+				SLOT (handleUploadFinished ()));
 		connect (reply,
-				SIGNAL (finished ()),
+				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
-				SLOT (handleGetFileChanges ()));
-	}
-
-	void DriveManager::RequestFileInfo (const QString& id, const QString& key)
-	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
-				.arg (id)
-				.arg (key);
-
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				get (QNetworkRequest (str));
-		Reply2DownloadAccessToken_ [reply] = key;
+				SLOT (handleUploadError (QNetworkReply::NetworkError)));
 		connect (reply,
-				SIGNAL (finished ()),
+				SIGNAL (uploadProgress (qint64, qint64)),
 				this,
-				SLOT (handleGetFileInfo ()));
-	}
-
-	void DriveManager::RequestRenameItem (const QString& id, const QString& name, const QString& key)
-	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
-				.arg (id)
-				.arg (key);
-
-		QNetworkRequest request (str);
-		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
-		QVariantMap data;
-		data ["title"] = name;
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				put (request, QJson::Serializer ().serialize (data));
-		Reply2DownloadAccessToken_ [reply] = key;
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleItemRenamed ()));
+				SLOT (handleUploadProgress (qint64, qint64)));
 	}
 
 	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
@@ -485,21 +335,9 @@ namespace DBox
 			Core::Instance ().SendEntity (e);
 	}
 
-	void DriveManager::FindSyncableItems (const QStringList&,
-			const QString& baseDir, const QList<DBoxItem>& items)
-	{
-	}
-
 	void DriveManager::ParseError (const QVariantMap& map)
 	{
-		const auto& errorMap = map ["error"].toMap ();
-		const QString& code = errorMap ["code"].toString ();
-		QString msg = errorMap ["message"].toString ();
-
-		Q_UNUSED (code)
-		//TODO fix false execute
-// 		if (code == "500")
-// 			msg = tr ("Google Drive API v.2 doesn't support directory copying.");
+		QString msg = map ["error"].toString ();
 		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
 				msg,
 				PWarning_));
@@ -672,6 +510,7 @@ namespace DBox
 					<< "parse error";
 			return;
 		}
+
 		qDebug () << Q_FUNC_INFO
 				<< "entry copied successfully";
 		RefreshListing (Reply2Id_.take (reply).toUtf8 ());
@@ -697,128 +536,11 @@ namespace DBox
 		RefreshListing (Reply2Id_.take (reply).toUtf8 ());
 	}
 
-	void DriveManager::handleRequestMovingEntryToTrash ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
-			return;
-		}
-
-		if (!res.toMap ().contains ("error"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "file moved to trash successfully";
-			RequestFileChanges (XmlSettingsManager::Instance ().Property ("largestChangeId", 0)
-					.toLongLong ());
-			return;
-		}
-
-		ParseError (res.toMap ());
-	}
-
-	void DriveManager::handleRequestRestoreEntryFromTrash ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
-			return;
-		}
-
-		if (!res.toMap ().contains ("error"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "file restored from trash successfully";
-			RequestFileChanges (XmlSettingsManager::Instance ().Property ("largestChangeId", 0)
-					.toLongLong ());
-			return;
-		}
-
-		ParseError (res.toMap ());
-	}
-
-	void DriveManager::handleUploadRequestFinished ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-		QString path = Reply2FilePath_.take (reply);
-
-		const int code = reply->
-				attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
-		if (code != 200)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "upload initiating failed with code:"
-					<< code;
-			return;
-		}
-
-		emit uploadStatusChanged (tr ("Uploading..."), path);
-
-		QFile *file = new QFile (path);
-		if (!file->open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open file: "
-					<< file->errorString ();
-			return;
-		}
-
-		QUrl url (reply->rawHeader ("Location"));
-		QNetworkRequest request (url);
-#ifdef HAVE_MAGIC
-		request.setHeader (QNetworkRequest::ContentTypeHeader,
-				magic_file (Magic_, path.toUtf8 ()));
-#endif
-		request.setHeader (QNetworkRequest::ContentLengthHeader,
-				QString::number (QFileInfo (path).size ()).toUtf8 ());
-
-		QNetworkReply *uploadReply = Core::Instance ().GetProxy ()->
-				GetNetworkAccessManager ()->put (request, file);
-		file->setParent (uploadReply);
-		Reply2FilePath_ [uploadReply] = path;
-
-		connect (uploadReply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleUploadFinished ()));
-		connect (uploadReply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleUploadError (QNetworkReply::NetworkError)));
-		connect (uploadReply,
-				SIGNAL (uploadProgress (qint64, qint64)),
-				this,
-				SLOT (handleUploadProgress (qint64, qint64)));
-	}
-
 	void DriveManager::handleUploadFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 			return;
-
 		reply->deleteLater ();
 
 		bool ok = false;
@@ -837,8 +559,7 @@ namespace DBox
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "file uploaded successfully";
-			RequestFileChanges (XmlSettingsManager::Instance ().Property ("largestChangeId", 0)
-					.toLongLong ());
+			emit gotNewItem (CreateDBoxItem (res));
 			emit finished (id, Reply2FilePath_.take (reply));
 			return;
 		}
@@ -864,72 +585,7 @@ namespace DBox
 		reply->deleteLater ();
 
 		emit uploadError ("Error", Reply2FilePath_.take (reply));
-		if (error == QNetworkReply::ProtocolUnknownError)
-		{
-			//TODO resume upload
-		}
 	}
-
-	void DriveManager::handleGetFileChanges ()
-	{
-	}
-
-	void DriveManager::handleGetFileInfo ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
-			return;
-		}
-
-		const QVariantMap& map = res.toMap ();
-		qDebug () << map;
-
-		ParseError (map);
-	}
-
-	void DriveManager::handleItemRenamed ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
-			return;
-		}
-
-		const QVariantMap& map = res.toMap ();
-
-		if (!map.contains ("error"))
-		{
-			DBoxItem it = CreateDBoxItem (res);
-			qDebug () << Q_FUNC_INFO
-					<< "entry renamed successfully";
-			RequestFileChanges (XmlSettingsManager::Instance ().Property ("largestChangeId", 0)
-					.toLongLong ());
-
-			return;
-		}
-
-		ParseError (map);
-	}
-
 }
 }
 }

@@ -224,29 +224,20 @@ namespace DBox
 			DriveManager_->Move (id, newParentId);
 	}
 
-	void Account::MoveToTrash (const QList<QByteArray>& ids)
+	void Account::MoveToTrash (const QList<QByteArray>&)
 	{
-		for (const auto& id : ids)
-			DriveManager_->MoveEntryToTrash (id);
 	}
 
-	void Account::RestoreFromTrash (const QList<QByteArray>& ids)
+	void Account::RestoreFromTrash (const QList<QByteArray>&)
 	{
-		for (const auto& id : ids)
-			DriveManager_->RestoreEntryFromTrash (id);
 	}
 
-	void Account::Rename (const QByteArray& id, const QString& newName)
+	void Account::Rename (const QByteArray&, const QString&)
 	{
-		if (id.isEmpty ())
-			return;
-		DriveManager_->Rename (id, newName);
 	}
 
 	void Account::RequestChanges ()
 	{
-		DriveManager_->RequestFileChanges (XmlSettingsManager::Instance ()
-				.Property ("LastChangesId", 0).toLongLong ());
 	}
 
 	QByteArray Account::Serialize ()

@@ -90,7 +90,7 @@ namespace DBox
 		const QString DirectoryId_;
 
 		Account *Account_;
-		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
+		QQueue<std::function<void (void)>> ApiCallQueue_;
 		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
@@ -110,18 +110,10 @@ namespace DBox
 		void Copy (const QByteArray& id, const QString& parentId);
 		void Move (const QByteArray& id, const QString& parentId);
 
-
-		void MoveEntryToTrash (const QByteArray& id);
-		void RestoreEntryFromTrash (const QByteArray& id);
-
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
 		void Download (const QString& id, const QString& filePath,
 				TaskParameters tp, bool silent, bool open = false);
-
-		void Rename (const QString& id, const QString& newName);
-
-		void RequestFileChanges (qlonglong startId, const QString& pageToken = QString ());
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void RequestAccountInfo ();
@@ -132,22 +124,10 @@ namespace DBox
 		void RequestCopyItem (const QString& id, const QString& parentId);
 		void RequestMoveItem (const QString& id, const QString& parentId);
 
-		void RequestMovingEntryToTrash (const QString& id, const QString& key);
-		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
-		void RequestUpload (const QString& filePath, const QString& parent,
-				const QString& key);
-		void GetFileChanges (qlonglong startId, const QString& pageToken, const QString& key);
-		void RequestFileInfo (const QString& id, const QString& key);
-		void RequestRenameItem (const QString& id,
-				const QString& name,  const QString& key);
-
+		void RequestUpload (const QString& filePath, const QString& parent);
 		void DownloadFile (const QString& filePath, const QUrl& url,
 				TaskParameters tp, bool silent = false, bool open = false);
 
-		void FindSyncableItems (const QStringList& paths,
-				const QString& baseDir, const QList<DBoxItem>& items);
-
-		void RequestAccessToken ();
 		void ParseError (const QVariantMap& map);
 
 	private slots:
@@ -158,15 +138,9 @@ namespace DBox
 		void handleRequestEntryRemoving ();
 		void handleCopyItem ();
 		void handleMoveItem ();
-		void handleRequestMovingEntryToTrash ();
-		void handleRequestRestoreEntryFromTrash ();
-		void handleUploadRequestFinished ();
 		void handleUploadFinished ();
 		void handleUploadProgress (qint64 uploaded, qint64 total);
 		void handleUploadError (QNetworkReply::NetworkError error);
-		void handleGetFileChanges ();
-		void handleGetFileInfo ();
-		void handleItemRenamed ();
 
 	signals:
 		void gotFiles (const QList<DBoxItem>& items);
