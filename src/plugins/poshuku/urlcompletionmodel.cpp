@@ -31,7 +31,7 @@
 #include <stdexcept>
 #include <QUrl>
 #include <QtDebug>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include "core.h"
 

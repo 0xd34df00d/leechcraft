@@ -27,14 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINMANAGER_H
+#pragma once
+
 #include <vector>
 #include <memory>
 #include <QWebPage>
 #include <QDateTime>
 #include <QNetworkRequest>
-#include <util/basehookinterconnector.h>
+#include <util/xpc/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
@@ -831,5 +831,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif

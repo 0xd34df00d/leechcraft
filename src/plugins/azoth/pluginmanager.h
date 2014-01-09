@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_PLUGINMANAGER_H
 #include <QString>
 #include <QDateTime>
-#include <util/basehookinterconnector.h>
+#include <util/xpc/basehookinterconnector.h>
 #include <interfaces/core/ihookproxy.h>
 
 class QDateTime;

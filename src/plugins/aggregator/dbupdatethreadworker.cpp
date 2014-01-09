@@ -32,7 +32,7 @@
 #include <QUrl>
 #include <QtDebug>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "storagebackend.h"

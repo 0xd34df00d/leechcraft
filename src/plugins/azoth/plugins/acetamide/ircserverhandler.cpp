@@ -34,7 +34,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include "channelhandler.h"
 #include "channelclentry.h"
 #include "servercommandmessage.h"

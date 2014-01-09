@@ -80,7 +80,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"

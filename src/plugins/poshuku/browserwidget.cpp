@@ -67,8 +67,8 @@
 #include <QLabel>
 #include <QXmlStreamWriter>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/defaulthookproxy.h>
+#include <util/xpc/notificationactionhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "historymodel.h"

@@ -40,7 +40,7 @@
 #include <QClipboard>
 #include <QFileDialog>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/delayedexecutor.h>
 #include <util/xpc/util.h>

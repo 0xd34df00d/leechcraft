@@ -32,7 +32,7 @@
 #include <QDockWidget>
 #include <QActionGroup>
 #include <QTimer>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include "mainwindow.h"
 #include "core.h"
 #include "coreinstanceobject.h"

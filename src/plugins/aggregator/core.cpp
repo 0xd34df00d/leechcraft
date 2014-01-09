@@ -46,7 +46,7 @@
 #include <util/models/mergemodel.h>
 #include <util/util.h>
 #include <util/fileremoveguard.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "core.h"
 #include "regexpmatchermanager.h"

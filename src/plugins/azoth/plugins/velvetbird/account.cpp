@@ -30,7 +30,7 @@
 #include "account.h"
 #include <QtDebug>
 #include <QTimer>
-#include <util/passutils.h>
+#include <util/xpc/passutils.h>
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "protocol.h"

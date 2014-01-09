@@ -30,9 +30,9 @@
 #pragma once
 
 #include <QMap>
+#include <util/utilconfig.h>
 #include "interfaces/iinfo.h"
 #include "interfaces/core/ihookproxy.h"
-#include "utilconfig.h"
 
 namespace LeechCraft
 {

@@ -32,7 +32,7 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"

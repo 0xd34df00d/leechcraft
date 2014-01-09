@@ -32,7 +32,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
-#include <util/passutils.h>
+#include <util/xpc/passutils.h>
 #include "consts.h"
 
 namespace LeechCraft

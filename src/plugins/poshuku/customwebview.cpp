@@ -42,7 +42,7 @@
 #include <QFileDialog>
 #include <QtDebug>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"

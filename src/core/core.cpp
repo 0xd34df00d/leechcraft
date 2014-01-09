@@ -49,7 +49,7 @@
 #include <QNetworkCookie>
 #include <util/util.h>
 #include <util/network/customcookiejar.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>

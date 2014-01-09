@@ -55,7 +55,7 @@
 #include <QtDebug>
 #include <QMainWindow>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>

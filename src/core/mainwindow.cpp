@@ -41,7 +41,7 @@
 #include <QDesktopWidget>
 #include <QWidgetAction>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>

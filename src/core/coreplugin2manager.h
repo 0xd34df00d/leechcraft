@@ -30,7 +30,7 @@
 #ifndef COREPLUGIN2MANAGER_H
 #define COREPLUGIN2MANAGER_H
 #include <QNetworkAccessManager>
-#include "util/basehookinterconnector.h"
+#include "util/xpc/basehookinterconnector.h"
 #include "interfaces/core/ihookproxy.h"
 #include "interfaces/iinfo.h"
 

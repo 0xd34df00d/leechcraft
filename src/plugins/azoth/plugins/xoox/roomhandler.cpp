@@ -34,7 +34,7 @@
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
-#include <util/passutils.h>
+#include <util/xpc/passutils.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"

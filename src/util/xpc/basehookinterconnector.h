@@ -31,7 +31,7 @@
 
 #include <QObject>
 #include <QList>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {

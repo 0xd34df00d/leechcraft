@@ -37,7 +37,7 @@
 #include <QFileInfo>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include "filtermodel.h"
 #include "core.h"
 #include "editbookmarkdialog.h"

@@ -31,7 +31,7 @@
 #include <QTimer>
 #include <util/xpc/util.h>
 #include <util/models/modeliterator.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/an/constants.h>

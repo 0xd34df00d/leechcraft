@@ -35,7 +35,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "commentsmanager.h"

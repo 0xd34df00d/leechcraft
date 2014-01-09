@@ -31,7 +31,7 @@
 #include "ircerrorhandler.h"
 #include <QTextCodec>
 #include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include "core.h"
 #include "ircserverhandler.h"
 

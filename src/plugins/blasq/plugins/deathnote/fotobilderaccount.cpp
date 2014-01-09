@@ -40,7 +40,7 @@
 #include <QXmlQuery>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/passutils.h>
+#include <util/xpc/passutils.h>
 #include <util/util.h>
 #include "albumsettingsdialog.h"
 #include "fotobilderservice.h"

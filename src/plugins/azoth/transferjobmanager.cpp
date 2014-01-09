@@ -38,7 +38,7 @@
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
 #include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"

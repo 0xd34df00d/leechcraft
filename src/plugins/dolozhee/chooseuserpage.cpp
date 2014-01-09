@@ -30,7 +30,7 @@
 #include "chooseuserpage.h"
 #include <QSettings>
 #include <QtDebug>
-#include <util/passutils.h>
+#include <util/xpc/passutils.h>
 #include "reportwizard.h"
 
 namespace LeechCraft

@@ -32,7 +32,7 @@
 #include <QDBusArgument>
 #include <util/xpc/util.h>
 #include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include <util/xdg/xdg.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>

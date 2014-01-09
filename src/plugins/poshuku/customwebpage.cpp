@@ -40,7 +40,7 @@
 #include <qwebelement.h>
 #include <qwebhistory.h>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"

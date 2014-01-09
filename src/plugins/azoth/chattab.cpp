@@ -42,7 +42,7 @@
 #include <QKeyEvent>
 #include <QTextBrowser>
 #include <QDesktopWidget>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>

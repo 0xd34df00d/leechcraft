@@ -37,7 +37,7 @@
 
 #include <QtDebug>
 #include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include "interfaces/azoth/iclentry.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"

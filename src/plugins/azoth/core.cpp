@@ -44,9 +44,9 @@
 #include <QtDebug>
 #include <util/resourceloader.h>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
 #include <util/tags/categoryselector.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/defaulthookproxy.h>
+#include <util/xpc/notificationactionhandler.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>

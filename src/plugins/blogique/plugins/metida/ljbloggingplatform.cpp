@@ -36,7 +36,7 @@
 #include <QMainWindow>
 #include <QDomElement>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/passutils.h>
+#include <util/xpc/passutils.h>
 #include "core.h"
 #include "ljaccount.h"
 #include "ljaccountconfigurationwidget.h"

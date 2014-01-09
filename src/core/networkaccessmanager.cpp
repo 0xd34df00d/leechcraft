@@ -40,7 +40,7 @@
 #include <util/util.h>
 #include <util/network/customcookiejar.h>
 #include <util/network/networkdiskcache.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include "core.h"
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"

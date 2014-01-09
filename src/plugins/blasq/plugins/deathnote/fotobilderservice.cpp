@@ -32,7 +32,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QtDebug>
-#include <util/passutils.h>
+#include <util/xpc/passutils.h>
 #include "fotobilderaccount.h"
 #include "registerpage.h"
 

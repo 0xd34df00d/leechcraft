@@ -32,7 +32,7 @@
 #include <functional>
 #include <QObject>
 #include <interfaces/structures.h>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {

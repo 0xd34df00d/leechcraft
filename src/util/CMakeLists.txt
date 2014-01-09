@@ -75,6 +75,10 @@ set (SRCS
 	tags/tagscompletionmodel.cpp
 	tags/tagslineedit.cpp
 	tags/tagsfiltermodel.cpp
+	xpc/basehookinterconnector.cpp
+	xpc/defaulthookproxy.cpp
+	xpc/notificationactionhandler.cpp
+	xpc/passutils.cpp
 	xpc/stdanfields.cpp
 	xpc/stddatafiltermenucreator.cpp
 	xpc/util.cpp
@@ -82,13 +86,9 @@ set (SRCS
 	dblock.cpp
 	backendselector.cpp
 	structuresops.cpp
-	defaulthookproxy.cpp
-	basehookinterconnector.cpp
 	fileremoveguard.cpp
 	exceptions.cpp
 	resourceloader.cpp
-	notificationactionhandler.cpp
-	passutils.cpp
 	queuemanager.cpp
 	delayedexecutor.cpp
 	shortcuts/shortcutmanager.cpp
