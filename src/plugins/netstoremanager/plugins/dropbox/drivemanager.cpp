@@ -88,8 +88,8 @@ namespace DBox
 	{
 		if (id.isEmpty ())
 			return;
-		ApiCallQueue_ << [this, id] (const QString& key) { RequestEntryRemoving (id, key); };
-		RequestAccessToken ();
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this, id] (const QString&) { RequestEntryRemoving (id); };
 	}
 
 	void DriveManager::MoveEntryToTrash (const QByteArray& id)
@@ -254,16 +254,17 @@ namespace DBox
 				SLOT (handleCreateDirectory ()));
 	}
 
-	void DriveManager::RequestEntryRemoving (const QString& id,
-			const QString& key)
+	void DriveManager::RequestEntryRemoving (const QString& id)
 	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
-				.arg (id, key);
+		QString str = QString ("https://api.dropbox.com/1/fileops/delete?access_token=%1&root=%2&path=%3")
+				.arg (Account_->GetAccessToken ())
+				.arg ("dropbox")
+				.arg (id);
 		QNetworkRequest request (str);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
-				GetNetworkAccessManager ()->deleteResource (request);
+				GetNetworkAccessManager ()->post (request, QByteArray ());
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -667,15 +668,9 @@ namespace DBox
 			return;
 		}
 
-		if (!res.toMap ().contains ("error"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "file removed successfully";
-// 			RefreshListing ();
-			return;
-		}
-
-		ParseError (res.toMap ());
+		qDebug () << Q_FUNC_INFO
+				<< "file removed successfully";
+		emit gotNewItem (CreateDBoxItem (res));
 	}
 
 	void DriveManager::handleRequestMovingEntryToTrash ()

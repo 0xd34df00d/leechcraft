@@ -126,7 +126,7 @@ namespace DBox
 		void RequestFiles (const QByteArray& parntId);
 		void RequestSharingEntry (const QString& id, ShareType type);
 		void RequestCreateDirectory (const QString& name, const QString& parentId);
-		void RequestEntryRemoving (const QString& id, const QString& key);
+		void RequestEntryRemoving (const QString& id);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
 		void RequestUpload (const QString& filePath, const QString& parent,
