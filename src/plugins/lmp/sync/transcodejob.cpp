@@ -79,7 +79,8 @@ namespace LMP
 		QStringList args
 		{
 			"-i",
-			path
+			path,
+			"-vn"
 		};
 		args << Formats {}.GetFormat (params.FormatID_)->ToFFmpeg (params);
 		args << "-map_metadata" << "0";
