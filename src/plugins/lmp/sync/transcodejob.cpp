@@ -44,30 +44,44 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		QString BuildTranscodedPath (const QString& path, const TranscodingParams& params)
+		{
+			QDir dir = QDir::temp ();
+			if (!dir.exists ("lmp_transcode"))
+				dir.mkdir ("lmp_transcode");
+			if (!dir.cd ("lmp_transcode"))
+				throw std::runtime_error ("unable to cd into temp dir");
+
+			const QFileInfo fi (path);
+
+			const auto format = Formats ().GetFormat (params.FormatID_);
+
+			auto result = dir.absoluteFilePath (fi.fileName ());
+			const auto& ext = format->GetFileExtension ();
+			const auto dotIdx = result.lastIndexOf ('.');
+			if (dotIdx == -1)
+				result += '.' + ext;
+			else
+				result.replace (dotIdx + 1, result.size () - dotIdx, ext);
+
+			return result;
+		}
+	}
 	TranscodeJob::TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent)
 	: QObject (parent)
 	, Process_ (new QProcess (this))
 	, OriginalPath_ (path)
+	, TranscodedPath_ (BuildTranscodedPath (path, params))
 	, TargetPattern_ (params.FilePattern_)
 	{
-		QDir dir = QDir::temp ();
-		if (!dir.exists ("lmp_transcode"))
-			dir.mkdir ("lmp_transcode");
-		if (!dir.cd ("lmp_transcode"))
-			throw std::runtime_error ("unable to cd into temp dir");
-
-		const QFileInfo fi (path);
-
-		const auto format = Formats ().GetFormat (params.FormatID_);
-
-		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + format->GetFileExtension ());
-
 		QStringList args
 		{
 			"-i",
 			path
 		};
-		args << format->ToFFmpeg (params);
+		args << Formats {}.GetFormat (params.FormatID_)->ToFFmpeg (params);
 		args << "-map_metadata" << "0";
 		args << TranscodedPath_;
 

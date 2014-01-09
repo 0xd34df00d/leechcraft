@@ -45,7 +45,7 @@ namespace LMP
 		QProcess *Process_;
 
 		const QString OriginalPath_;
-		QString TranscodedPath_;
+		const QString TranscodedPath_;
 		const QString TargetPattern_;
 	public:
 		TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent = 0);
