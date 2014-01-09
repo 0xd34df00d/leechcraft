@@ -72,7 +72,7 @@ namespace Poshuku
 		 * to its percent-encoding representation.
 		 *
 		 * @param[in] url The possibly non-UTF-8 URL.
-		 * @return
+		 * @return The \em url converted to Unicode.
 		 */
 		QString URLToProperString (const QUrl& url);
 	protected:

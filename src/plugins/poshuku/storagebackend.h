@@ -115,7 +115,7 @@ namespace Poshuku
 			* Puts all the favorites items (FavoritesModel::FavoritesItem) from
 			* the storage backend into the passed container.
 			*
-			* @param[out] items. The container with items. They would be
+			* @param[out] items The container with items. They would be
 			* appended to the container.
 			*/
 		virtual void LoadFavorites (FavoritesModel::items_t& items) const = 0;

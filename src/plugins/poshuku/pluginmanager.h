@@ -476,7 +476,6 @@ namespace Poshuku
 				QWebFrame *frame);
 
 		/** @brief Called whenever the given link is clicked.
-		 * @deprecated
 		 *
 		 * Seems like this hook is no longer used.
 		 *
@@ -495,7 +494,7 @@ namespace Poshuku
 		 * @param link The URL of the link.
 		 * @param title The HTML link element title, if specified in the
 		 * markup.
-		 * @param textContext The text within the HTML link element.
+		 * @param textContent The text within the HTML link element.
 		 */
 		void hookLinkHovered (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
@@ -812,11 +811,12 @@ namespace Poshuku
 		 * @param menu The menu being built.
 		 * @param menuBuildStage The stage of the menu being built.
 		 */
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*,
-				QContextMenuEvent*,
-				const QWebHitTestResult&, QMenu*,
-				WebViewCtxMenuStage);
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
+				QContextMenuEvent *event,
+				const QWebHitTestResult& hitTestResult,
+				QMenu *menu,
+				WebViewCtxMenuStage menuBuildStage);
 
 		/** @brief Called from QWebPage::windowCloseRequested().
 		 *
