@@ -341,6 +341,7 @@ namespace GoogleDrive
 			result << CreateItem (item);
 
 		emit gotListing (result);
+		emit listingUpdated ();
 	}
 
 	void Account::handleSharedFileId (const QString& id)
@@ -352,6 +353,7 @@ namespace GoogleDrive
 	void Account::handleGotNewItem (const DriveItem& item)
 	{
 		emit gotNewItem (CreateItem (item), item.ParentId_.toUtf8 ());
+		emit listingUpdated ();
 	}
 
 	void Account::handleGotChanges (const QList<DriveChanges>& driveChanges)
