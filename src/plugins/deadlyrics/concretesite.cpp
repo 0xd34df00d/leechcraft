@@ -244,7 +244,10 @@ namespace DeadLyrics
 	void ConcreteSite::handleReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
+
 		const auto& data = reply->readAll ();
+		const auto& contentType = reply->header (QNetworkRequest::ContentTypeHeader);
+
 		reply->deleteLater ();
 		deleteLater ();
 
@@ -276,7 +279,6 @@ namespace DeadLyrics
 
 		str = str.trimmed ();
 
-		const auto& contentType = reply->header (QNetworkRequest::ContentTypeHeader);
 		const bool isPlainText = contentType.toString ().toLower ().startsWith ("text/plain");
 		if (isPlainText)
 		{
