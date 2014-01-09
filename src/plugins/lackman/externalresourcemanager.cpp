@@ -107,8 +107,6 @@ namespace LackMan
 				this,
 				SLOT (handleResourceError (int, IDownload::Error)),
 				Qt::UniqueConnection);
-
-		return;
 	}
 
 	QString ExternalResourceManager::GetResourcePath (const QUrl& url) const
