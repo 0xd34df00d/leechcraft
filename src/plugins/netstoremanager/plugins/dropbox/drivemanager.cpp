@@ -92,6 +92,22 @@ namespace DBox
 		ApiCallQueue_ << [this, id] (const QString&) { RequestEntryRemoving (id); };
 	}
 
+	void DriveManager::Copy (const QByteArray& id, const QString& parentId)
+	{
+		if (id.isEmpty ())
+			return;
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this, id, parentId] (const QString&) { RequestCopyItem (id, parentId); };
+	}
+
+	void DriveManager::Move (const QByteArray& id, const QString& parentId)
+	{
+		if (id.isEmpty ())
+			return;
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this, id, parentId] (const QString&) { RequestMoveItem (id, parentId); };
+	}
+
 	void DriveManager::MoveEntryToTrash (const QByteArray& id)
 	{
 		if (id.isEmpty ())
@@ -105,22 +121,6 @@ namespace DBox
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestRestoreEntryFromTrash (id, key); };
-		RequestAccessToken ();
-	}
-
-	void DriveManager::Copy (const QByteArray& id, const QString& parentId)
-	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestCopyItem (id, parentId, key); };
-		RequestAccessToken ();
-	}
-
-	void DriveManager::Move (const QByteArray& id, const QString& parentId)
-	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -272,6 +272,44 @@ namespace DBox
 				SLOT (handleRequestEntryRemoving ()));
 	}
 
+	void DriveManager::RequestCopyItem (const QString& id, const QString& parentId)
+	{
+		QString str = QString ("https://api.dropbox.com/1/fileops/copy?access_token=%1&root=%2&from_path=%3&to_path=%4")
+				.arg (Account_->GetAccessToken ())
+				.arg ("dropbox")
+				.arg (id)
+				.arg (parentId + "/" + QFileInfo (id).fileName ());
+
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				post (request, QByteArray ());
+		Reply2Id_ [reply] = parentId;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCopyItem ()));
+	}
+
+	void DriveManager::RequestMoveItem (const QString& id, const QString& parentId)
+	{
+		QString str = QString ("https://api.dropbox.com/1/fileops/move?access_token=%1&root=%2&from_path=%3&to_path=%4")
+				.arg (Account_->GetAccessToken ())
+				.arg ("dropbox")
+				.arg (id)
+				.arg (parentId + "/" + QFileInfo (id).fileName ());
+
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				post (request, QByteArray ());
+		Reply2Id_ [reply] = parentId;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleMoveItem ()));
+	}
+
 	void DriveManager::RequestMovingEntryToTrash (const QString& id,
 			const QString& key)
 	{
@@ -365,60 +403,6 @@ namespace DBox
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleUploadRequestFinished ()));
-	}
-
-	void DriveManager::RequestCopyItem (const QString& id,
-			const QString& parentId, const QString& key)
-	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/copy?access_token=%2")
-				.arg (id)
-				.arg (key);
-
-		QNetworkRequest request (str);
-		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
-		QVariantMap data;
-		if (!parentId.isEmpty ())
-		{
-			QVariantList parents;
-			QVariantMap parent;
-			parent ["id"] = parentId;
-			parents << parent;
-			data ["parents"] = parents;
-		}
-
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				post (request, QJson::Serializer ().serialize (data));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleCopyItem ()));
-	}
-
-	void DriveManager::RequestMoveItem (const QString& id,
-			const QString& parentId, const QString& key)
-	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
-				.arg (id)
-				.arg (key);
-
-		QNetworkRequest request (str);
-		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
-		QVariantMap data;
-		if (!parentId.isEmpty ())
-		{
-			QVariantList parents;
-			QVariantMap parent;
-			parent ["id"] = parentId;
-			parents << parent;
-			data ["parents"] = parents;
-		}
-
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				put (request, QJson::Serializer ().serialize (data));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleMoveItem ()));
 	}
 
 	void DriveManager::GetFileChanges (qlonglong startId,
@@ -673,6 +657,46 @@ namespace DBox
 		emit gotNewItem (CreateDBoxItem (res));
 	}
 
+	void DriveManager::handleCopyItem ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+		qDebug () << Q_FUNC_INFO
+				<< "entry copied successfully";
+		RefreshListing (Reply2Id_.take (reply).toUtf8 ());
+	}
+
+	void DriveManager::handleMoveItem ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+		qDebug () << Q_FUNC_INFO
+				<< "entry moved successfully";
+		RefreshListing (Reply2Id_.take (reply).toUtf8 ());
+	}
+
 	void DriveManager::handleRequestMovingEntryToTrash ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -844,64 +868,6 @@ namespace DBox
 		{
 			//TODO resume upload
 		}
-	}
-
-	void DriveManager::handleCopyItem ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
-			return;
-		}
-
-		if (!res.toMap ().contains ("error"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "entry copied successfully";
-			RequestFileChanges (XmlSettingsManager::Instance ().Property ("largestChangeId", 0)
-					.toLongLong ());
-			return;
-		}
-
-		ParseError (res.toMap ());
-	}
-
-	void DriveManager::handleMoveItem ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
-			return;
-		}
-
-		if (!res.toMap ().contains ("error"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "entry moved successfully";
-			RequestFileChanges (XmlSettingsManager::Instance ().Property ("largestChangeId", 0)
-					.toLongLong ());
-			return;
-		}
-
-		ParseError (res.toMap ());
 	}
 
 	void DriveManager::handleGetFileChanges ()

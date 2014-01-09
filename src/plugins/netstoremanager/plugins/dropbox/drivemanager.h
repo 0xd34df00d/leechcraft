@@ -92,6 +92,7 @@ namespace DBox
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
+		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 		QHash<QNetworkReply*, QString> Reply2DownloadAccessToken_;
 		bool SecondRequestIfNoItems_;
@@ -105,12 +106,13 @@ namespace DBox
 		void ShareEntry (const QString& id, ShareType type);
 		void CreateDirectory (const QString& name,
 				const QString& parentId = QString ());
-
 		void RemoveEntry (const QByteArray& id);
-		void MoveEntryToTrash (const QByteArray& id);
-		void RestoreEntryFromTrash (const QByteArray& id);
 		void Copy (const QByteArray& id, const QString& parentId);
 		void Move (const QByteArray& id, const QString& parentId);
+
+
+		void MoveEntryToTrash (const QByteArray& id);
+		void RestoreEntryFromTrash (const QByteArray& id);
 
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
@@ -127,14 +129,13 @@ namespace DBox
 		void RequestSharingEntry (const QString& id, ShareType type);
 		void RequestCreateDirectory (const QString& name, const QString& parentId);
 		void RequestEntryRemoving (const QString& id);
+		void RequestCopyItem (const QString& id, const QString& parentId);
+		void RequestMoveItem (const QString& id, const QString& parentId);
+
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
 		void RequestUpload (const QString& filePath, const QString& parent,
 				const QString& key);
-		void RequestCopyItem (const QString& id,
-				const QString& parentId, const QString& key);
-		void RequestMoveItem (const QString& id,
-				const QString& parentId, const QString& key);
 		void GetFileChanges (qlonglong startId, const QString& pageToken, const QString& key);
 		void RequestFileInfo (const QString& id, const QString& key);
 		void RequestRenameItem (const QString& id,
@@ -155,14 +156,14 @@ namespace DBox
 		void handleRequestFileSharing ();
 		void handleCreateDirectory ();
 		void handleRequestEntryRemoving ();
+		void handleCopyItem ();
+		void handleMoveItem ();
 		void handleRequestMovingEntryToTrash ();
 		void handleRequestRestoreEntryFromTrash ();
 		void handleUploadRequestFinished ();
 		void handleUploadFinished ();
 		void handleUploadProgress (qint64 uploaded, qint64 total);
 		void handleUploadError (QNetworkReply::NetworkError error);
-		void handleCopyItem ();
-		void handleMoveItem ();
 		void handleGetFileChanges ();
 		void handleGetFileInfo ();
 		void handleItemRenamed ();

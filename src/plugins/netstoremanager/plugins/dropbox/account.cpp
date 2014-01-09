@@ -212,6 +212,18 @@ namespace DBox
 			DriveManager_->RemoveEntry (id);
 	}
 
+	void Account::Copy (const QList<QByteArray>& ids, const QByteArray& newParentId)
+	{
+		for (const auto& id : ids)
+			DriveManager_->Copy (id, newParentId);
+	}
+
+	void Account::Move (const QList<QByteArray>& ids, const QByteArray& newParentId)
+	{
+		for (const auto& id : ids)
+			DriveManager_->Move (id, newParentId);
+	}
+
 	void Account::MoveToTrash (const QList<QByteArray>& ids)
 	{
 		for (const auto& id : ids)
@@ -222,20 +234,6 @@ namespace DBox
 	{
 		for (const auto& id : ids)
 			DriveManager_->RestoreEntryFromTrash (id);
-	}
-
-	void Account::Copy (const QList<QByteArray>& ids,
-			const QByteArray& newParentId)
-	{
-		for (const auto& id : ids)
-			DriveManager_->Copy (id, newParentId);
-	}
-
-	void Account::Move (const QList<QByteArray>& ids,
-			const QByteArray& newParentId)
-	{
-		for (const auto& id : ids)
-			DriveManager_->Move (id, newParentId);
 	}
 
 	void Account::Rename (const QByteArray& id, const QString& newName)
