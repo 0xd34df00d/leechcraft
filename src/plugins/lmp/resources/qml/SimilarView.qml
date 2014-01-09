@@ -1,4 +1,4 @@
-import QtQuick 1.0
+import QtQuick 1.1
 import Effects 1.0
 import "."
 
@@ -34,6 +34,7 @@ Rectangle {
         z: 2
         smooth: true
         fillMode: Image.PreserveAspectFit
+        cache: false
 
         visible: opacity != 0
 
@@ -136,6 +137,7 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     source: artistImageURL
+                    cache: false
 
                     MouseArea {
                         anchors.fill: parent

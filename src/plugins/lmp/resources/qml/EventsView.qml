@@ -1,4 +1,4 @@
-import QtQuick 1.0
+import QtQuick 1.1
 import Effects 1.0
 import "."
 
@@ -33,6 +33,8 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
 
         visible: opacity != 0
+
+        cache: false
 
         states: [
             State {
@@ -111,6 +113,7 @@ Rectangle {
 
                 Image {
                     id: eventImageThumb
+
                     width: 100
                     height: 100
                     smooth: true
@@ -120,6 +123,7 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     source: eventImageThumbURL
+                    cache: false
 
                     MouseArea {
                         anchors.fill: parent

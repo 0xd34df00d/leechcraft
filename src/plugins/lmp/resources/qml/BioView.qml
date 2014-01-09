@@ -1,4 +1,4 @@
-import QtQuick 1.0
+import QtQuick 1.1
 import Effects 1.0
 import org.LC.common 1.0
 import "."
@@ -30,6 +30,8 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
 
         visible: opacity != 0
+
+        cache: false
 
         property bool navVisible: false
 
@@ -159,6 +161,7 @@ Rectangle {
             anchors.top: parent.top
             anchors.topMargin: 2
             source: artistImageURL
+            cache: false
 
             MouseArea {
                 anchors.fill: parent
@@ -233,6 +236,8 @@ Rectangle {
 
                         smooth: true
                         fillMode: Image.PreserveAspectFit
+
+                        cache: false
                     }
 
                     Text {
@@ -313,6 +318,8 @@ Rectangle {
                 width: artistImagesView.width
                 height: sourceSize.width > 0 ? Math.min(width, sourceSize.height * width / sourceSize.width) : width
                 fillMode: Image.PreserveAspectFit
+
+                cache: false
 
                 smooth: true
 

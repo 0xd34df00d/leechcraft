@@ -10,6 +10,8 @@ Image {
 
     source: "image://sysIcons/media-playback-start"
 
+    cache: false
+
     signal clicked()
 
     MouseArea {

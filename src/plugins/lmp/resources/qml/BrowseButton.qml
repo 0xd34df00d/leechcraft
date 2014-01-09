@@ -10,6 +10,8 @@ Image {
 
     source: "image://sysIcons/dialog-information"
 
+    cache: false
+
     signal clicked()
 
     MouseArea {

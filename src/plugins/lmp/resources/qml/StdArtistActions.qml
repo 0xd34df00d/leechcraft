@@ -29,6 +29,8 @@ Row {
         source: "image://sysIcons/bookmark-new"
         visible: rootRow.bookmarkVisible
 
+        cache: false
+
         MouseArea {
             id: addToListArea
             anchors.fill: parent

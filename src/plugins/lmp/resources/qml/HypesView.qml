@@ -1,4 +1,4 @@
-import QtQuick 1.0
+import QtQuick 1.1
 import Effects 1.0
 import "."
 
@@ -257,6 +257,8 @@ Rectangle {
                             width: 62
                             height: 62
                             smooth: true
+
+                            cache: false
 
                             fillMode: Image.PreserveAspectFit
                             source: thumbImageURL
