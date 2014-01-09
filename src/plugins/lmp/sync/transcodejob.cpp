@@ -33,6 +33,7 @@
 #include <QMap>
 #include <QDir>
 #include <QtDebug>
+#include <taglib/tag.h>
 #include "transcodingparams.h"
 #include "core.h"
 #include "localfileresolver.h"
