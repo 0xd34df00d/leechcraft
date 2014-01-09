@@ -252,9 +252,9 @@ namespace NetStoreManager
 						this,
 						SLOT (handleGotNewItem (StorageItem, QByteArray)));
 				connect (acc->GetQObject (),
-						SIGNAL (gotFileUrl (QUrl, QByteArray)),
+						SIGNAL (gotFileUrl (QUrl)),
 						this,
-						SLOT (handleGotFileUrl (QUrl, QByteArray)));
+						SLOT (handleGotFileUrl (QUrl)));
 				connect (acc->GetQObject (),
 						SIGNAL (gotChanges (QList<Change>)),
 						this,
@@ -1007,7 +1007,7 @@ namespace NetStoreManager
 				acc->GetUniqueID ());
 	}
 
-	void ManagerTab::handleGotFileUrl (const QUrl& url, const QByteArray&)
+	void ManagerTab::handleGotFileUrl (const QUrl& url)
 	{
 		if (url.isEmpty () ||
 				!url.isValid ())
