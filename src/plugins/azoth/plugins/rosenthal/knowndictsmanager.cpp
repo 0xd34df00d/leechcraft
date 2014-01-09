@@ -61,7 +61,7 @@ namespace Rosenthal
 	}
 
 	KnownDictsManager::KnownDictsManager ()
-	: LocalPath_ (Util::CreateIfNotExists ("data/dicts/myspell").absolutePath ())
+	: LocalPath_ (Util::CreateIfNotExists ("data/dicts/myspell").absolutePath () + '/')
 	, Model_ (new QStandardItemModel (this))
 	, EnabledModel_ (new QStringListModel (this))
 	{
