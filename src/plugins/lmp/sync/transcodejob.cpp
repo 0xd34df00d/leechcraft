@@ -34,6 +34,8 @@
 #include <QDir>
 #include <QtDebug>
 #include "transcodingparams.h"
+#include "core.h"
+#include "localfileresolver.h"
 
 #ifdef Q_OS_UNIX
 #include <sys/time.h>
@@ -69,6 +71,7 @@ namespace LMP
 			return result;
 		}
 	}
+
 	TranscodeJob::TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent)
 	: QObject (parent)
 	, Process_ (new QProcess (this))
@@ -83,7 +86,6 @@ namespace LMP
 			"-vn"
 		};
 		args << Formats {}.GetFormat (params.FormatID_)->ToFFmpeg (params);
-		args << "-map_metadata" << "0";
 		args << TranscodedPath_;
 
 		connect (Process_,
@@ -116,14 +118,52 @@ namespace LMP
 		return TargetPattern_;
 	}
 
+	namespace
+	{
+		bool CheckTags (const TagLib::FileRef& ref, const QString& filename)
+		{
+			if (!ref.tag ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot get tags for"
+						<< filename;
+				return false;
+			}
+
+			return true;
+		}
+
+		void CopyTags (const QString& from, const QString& to)
+		{
+			const auto resolver = Core::Instance ().GetLocalFileResolver ();
+
+			QMutexLocker locker (&resolver->GetMutex ());
+
+			auto fromRef = resolver->GetFileRef (from);
+			auto toRef = resolver->GetFileRef (to);
+
+			if (!CheckTags (fromRef, from) || !CheckTags (toRef, to))
+				return;
+
+			TagLib::Tag::duplicate (fromRef.tag (), toRef.tag ());
+
+			if (!toRef.save ())
+				qWarning () << Q_FUNC_INFO
+						<< "cannot save file"
+						<< to;
+		}
+	}
+
 	void TranscodeJob::handleFinished (int code, QProcess::ExitStatus status)
 	{
 		qDebug () << Q_FUNC_INFO << code << status;
-		emit done (this, !code);
-
 		if (code)
 			qWarning () << Q_FUNC_INFO
 					<< Process_->readAllStandardError ();
+
+		CopyTags (OriginalPath_, TranscodedPath_);
+
+		emit done (this, !code);
 	}
 
 	void TranscodeJob::handleReadyRead ()
