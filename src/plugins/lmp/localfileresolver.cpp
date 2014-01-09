@@ -62,7 +62,7 @@ namespace LMP
 #ifdef Q_OS_WIN32
 		return TagLib::FileRef (reinterpret_cast<const wchar_t*> (file.utf16 ()));
 #else
-		return TagLib::FileRef (file.toUtf8 ().constData ());
+		return TagLib::FileRef (file.toUtf8 ().constData (), true, TagLib::AudioProperties::Accurate);
 #endif
 	}
 
