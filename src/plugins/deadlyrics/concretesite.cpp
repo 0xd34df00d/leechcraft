@@ -244,10 +244,10 @@ namespace DeadLyrics
 	void ConcreteSite::handleReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto& data = reply->readAll ();
 		reply->deleteLater ();
 		deleteLater ();
 
-		const auto& data = reply->readAll ();
 #ifdef QT_DEBUG
 		qDebug () << Q_FUNC_INFO
 				<< "got from"
