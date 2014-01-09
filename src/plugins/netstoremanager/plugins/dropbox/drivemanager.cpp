@@ -56,10 +56,24 @@ namespace DBox
 	{
 	}
 
+	void DriveManager::RequestUserId ()
+	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { RequestAccountInfo (); };
+	}
+
 	void DriveManager::RefreshListing (const QByteArray& parentId)
 	{
 		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this, parentId] (const QString&) { RequestFiles (parentId); };
+	}
+
+	void DriveManager::ShareEntry (const QString& id, ShareType type)
+	{
+		if (id.isEmpty ())
+			return;
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this, id, type] (const QString&) { RequestSharingEntry (id, type); };
 	}
 
 	void DriveManager::RemoveEntry (const QByteArray& id)
@@ -100,14 +114,6 @@ namespace DBox
 			return;
 		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
 		RequestAccessToken ();
-	}
-
-	void DriveManager::ShareEntry (const QString& id)
-	{
-		if (id.isEmpty ())
-			return;
-		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, id] (const QString&) { RequestSharingEntry (id); };
 	}
 
 	void DriveManager::Upload (const QString& filePath, const QStringList& parentId)
@@ -161,6 +167,24 @@ namespace DBox
 				});
 	}
 
+	void DriveManager::RequestAccountInfo ()
+	{
+		if (Account_->GetAccessToken ().isEmpty ())
+			return;
+
+		QString str = QString ("https://api.dropbox.com/1/account/info?access_token=%1")
+				.arg (Account_->GetAccessToken ());
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader,
+				"application/x-www-form-urlencoded");
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->
+				GetNetworkAccessManager ()->get (request);
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGotAccountInfo ()));
+	}
+
 	void DriveManager::RequestFiles (const QByteArray& parentId)
 	{
 		if (Account_->GetAccessToken ().isEmpty ())
@@ -183,16 +207,29 @@ namespace DBox
 				SLOT (handleGotFiles ()));
 	}
 
-	void DriveManager::RequestSharingEntry (const QString& id)
+	void DriveManager::RequestSharingEntry (const QString& id, ShareType type)
 	{
-		QString str = QString ("https://api.dropbox.com/1/media/dropbox/%1?access_token=%2")
-				.arg (id, Account_->GetAccessToken ());
+
+		QString str;
+		switch (type)
+		{
+		case ShareType::Preview:
+			str = QString ("https://api.dropbox.com/1/media/dropbox/%1?access_token=%2")
+					.arg (id)
+					.arg (Account_->GetAccessToken ());
+			break;
+		case ShareType::Share:
+			str = QString ("https://api.dropbox.com/1/shares/dropbox/%1?access_token=%2")
+					.arg (id)
+					.arg (Account_->GetAccessToken ());
+			break;
+		}
+
 		QNetworkRequest request (str);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->post (request, QByteArray ());
-		Reply2Id_ [reply] = id;
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -494,35 +531,30 @@ namespace DBox
 				PWarning_));
 	}
 
-	void DriveManager::handleAuthTokenRequestFinished ()
+	void DriveManager::handleGotAccountInfo ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 			return;
-
 		reply->deleteLater ();
 
 		bool ok = false;
-		QVariant res = QJson::Parser ().parse (reply->readAll (), &ok);
-
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
 		if (!ok)
 		{
-			qDebug () << Q_FUNC_INFO << "parse error";
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
 			return;
 		}
 
-		QString accessKey = res.toMap ().value ("access_token").toString ();
-		qDebug () << accessKey;
-		if (accessKey.isEmpty ())
+		const auto& map = res.toMap ();
+		if (!map.contains ("error"))
 		{
-			qDebug () << Q_FUNC_INFO << "access token is empty";
+			Account_->SetUserID (map ["uid"].toString ());
 			return;
 		}
 
-		if (ApiCallQueue_.isEmpty ())
-			return;
-
-		ApiCallQueue_.dequeue () (accessKey);
+		ParseError (res.toMap ());
 	}
 
 	namespace
@@ -615,14 +647,14 @@ namespace DBox
 			return;
 		}
 
-		qDebug () << res.toMap();
-// 		if (!res.toMap ().contains ("error"))
-// 		{
-// 			qDebug () << Q_FUNC_INFO
-// 					<< "file shared successfully";
-// 			emit gotSharedFileId (Reply2Id_.take (reply));
-// 			return;
-// 		}
+		const auto& map = res.toMap ();
+		if (!map.contains ("error"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "file shared successfully";
+			emit gotSharedFileUrl (map ["url"].toUrl (), map ["expires"].toDateTime ());
+			return;
+		}
 
 		ParseError (res.toMap ());
 	}

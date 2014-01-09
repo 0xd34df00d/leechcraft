@@ -53,17 +53,20 @@ namespace DBox
 	, DriveManager_ (new DriveManager (this, this))
 	{
 		connect (DriveManager_,
-				SIGNAL (gotFiles (const QList<DBoxItem>&)),
+				SIGNAL (gotFiles (QList<DBoxItem>)),
 				this,
-				SLOT (handleFileList (const QList<DBoxItem>&)));
+				SLOT (handleFileList (QList<DBoxItem>)));
 		connect (DriveManager_,
-				SIGNAL (gotSharedFileId (const QString&)),
+				SIGNAL (gotSharedFileUrl (QUrl, QDateTime)),
 				this,
-				SLOT (handleSharedFileId (const QString&)));
+				SLOT (handleSharedFileUrl (QUrl, QDateTime)));
 		connect (DriveManager_,
 				SIGNAL (gotNewItem (DBoxItem)),
 				this,
 				SLOT (handleGotNewItem (DBoxItem)));
+
+		if (UserID_.isEmpty ())
+			DriveManager_->RequestUserId ();
 	}
 
 	QObject* Account::GetQObject ()
@@ -196,26 +199,37 @@ namespace DBox
 		if (id.isNull ())
 			return;
 
-		if (!XmlSettingsManager::Instance ().property ("AutoShareOnUrlRequest").toBool ())
+		bool directLinkAvailable = id.startsWith ("/Public");
+
+		if (directLinkAvailable)
 		{
-			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-			QMessageBox mbox (QMessageBox::Question,
-					tr ("Share item"),
-					tr ("The item needs to be shared to obtain the URL. Do you want to share it?"),
-					QMessageBox::Yes | QMessageBox::No,
-					rootWM->GetPreferredWindow());
-			mbox.setDefaultButton (QMessageBox::Yes);
-
-			QPushButton always (tr ("Always"));
-			mbox.addButton (&always, QMessageBox::AcceptRole);
-
-			if (mbox.exec () == QMessageBox::No)
-				return;
-			else if (mbox.clickedButton () == &always)
-				XmlSettingsManager::Instance ().setProperty ("AutoShareOnUrlRequest", true);
+			//Remove /Public from second params
+			emit gotFileUrl (QUrl (QString ("https://dl.dropbox.com/u/%1/%2")
+					.arg (UserID_, QString (id).remove ("/Public/"))));
+			return;
 		}
 
-		DriveManager_->ShareEntry (id);
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		QMessageBox mbox (QMessageBox::Question,
+				tr ("Share item"),
+				tr ("Direct links available only for files in Public folder."
+						" What type of link do you want?"),
+				QMessageBox::Cancel,
+				rootWM->GetPreferredWindow());
+
+		QPushButton dropboxShareLink (tr ("DropBox share link"));
+		QPushButton dropboxPreviewLink (tr ("DropBox preview link"));
+		mbox.setDefaultButton (QMessageBox::Cancel);
+
+		mbox.addButton (&dropboxShareLink, QMessageBox::YesRole);
+		mbox.addButton (&dropboxPreviewLink, QMessageBox::AcceptRole);
+
+		if (mbox.exec () == QMessageBox::Cancel)
+			return;
+		else if (mbox.clickedButton () == &dropboxShareLink)
+			DriveManager_->ShareEntry (id, ShareType::Share);
+		else if (mbox.clickedButton () == &dropboxPreviewLink)
+			DriveManager_->ShareEntry (id, ShareType::Preview);
 	}
 
 	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)
@@ -333,10 +347,10 @@ namespace DBox
 		emit listingUpdated ();
 	}
 
-	void Account::handleSharedFileId (const QString& id)
+	void Account::handleSharedFileUrl (const QUrl& url, const QDateTime& expiredDate)
 	{
-// 		emit gotFileUrl (QUrl (QString ("https://docs.google.com/uc?id=%1&export=download")
-// 				.arg (id)), id.toUtf8 ());
+		Q_UNUSED (expiredDate)
+		emit gotFileUrl (url);
 	}
 
 	void Account::handleGotNewItem (const DBoxItem& item)

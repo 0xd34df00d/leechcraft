@@ -111,7 +111,7 @@ namespace DBox
 		DriveManager* GetDriveManager () const;
 	private slots:
 		void handleFileList (const QList<DBoxItem>& items);
-		void handleSharedFileId (const QString& id);
+		void handleSharedFileUrl (const QUrl& url, const QDateTime& expiredDate);
 		void handleGotNewItem (const DBoxItem& item);
 
 	signals:
@@ -122,7 +122,7 @@ namespace DBox
 
 		void gotListing (const QList<StorageItem>& items);
 		void listingUpdated ();
-		void gotFileUrl (const QUrl& url, const QByteArray& id);
+		void gotFileUrl (const QUrl& url);
 
 		void gotChanges (const QList<Change>& changes);
 

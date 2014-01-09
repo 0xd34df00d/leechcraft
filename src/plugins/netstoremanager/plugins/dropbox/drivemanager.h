@@ -77,6 +77,12 @@ namespace DBox
 		}
 	};
 
+	enum class ShareType
+	{
+		Preview,
+		Share
+	};
+
 	class DriveManager : public QObject
 	{
 		Q_OBJECT
@@ -86,7 +92,6 @@ namespace DBox
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
-		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 		QHash<QNetworkReply*, QString> Reply2DownloadAccessToken_;
 		bool SecondRequestIfNoItems_;
@@ -94,14 +99,17 @@ namespace DBox
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
 
+		void RequestUserId ();
+
 		void RefreshListing (const QByteArray& parentId = QByteArray ());
+		void ShareEntry (const QString& id, ShareType type);
+
 		void RemoveEntry (const QByteArray& id);
 		void MoveEntryToTrash (const QByteArray& id);
 		void RestoreEntryFromTrash (const QByteArray& id);
 		void Copy (const QByteArray& id, const QString& parentId);
 		void Move (const QByteArray& id, const QString& parentId);
 
-		void ShareEntry (const QString& id);
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
 		void Download (const QString& id, const QString& filePath,
@@ -114,8 +122,9 @@ namespace DBox
 		void RequestFileChanges (qlonglong startId, const QString& pageToken = QString ());
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
+		void RequestAccountInfo ();
 		void RequestFiles (const QByteArray& parntId);
-		void RequestSharingEntry (const QString& id);
+		void RequestSharingEntry (const QString& id, ShareType type);
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
@@ -142,7 +151,7 @@ namespace DBox
 		void ParseError (const QVariantMap& map);
 
 	private slots:
-		void handleAuthTokenRequestFinished ();
+		void handleGotAccountInfo ();
 		void handleGotFiles ();
 		void handleRequestFileSharing ();
 		void handleRequestEntryRemoving ();
@@ -161,7 +170,7 @@ namespace DBox
 
 	signals:
 		void gotFiles (const QList<DBoxItem>& items);
-		void gotSharedFileId (const QString& id);
+		void gotSharedFileUrl (const QUrl& url, const QDateTime& expiredDate);
 		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
 		void uploadStatusChanged (const QString& status, const QString& filePath);
 		void uploadError (const QString& str, const QString& filePath);
