@@ -124,7 +124,7 @@ namespace GoogleDrive
 		void gotListing (const QList<StorageItem>& items);
 		void listingUpdated ();
 
-		void gotFileUrl (const QUrl& url, const QByteArray& id);
+		void gotFileUrl (const QUrl& url);
 
 		void gotChanges (const QList<Change>& changes);
 
