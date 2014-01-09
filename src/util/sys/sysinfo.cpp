@@ -36,6 +36,7 @@
 #include <QTextStream>
 #include <QFileInfo>
 #include <QFile>
+#include <QSettings>
 
 namespace LeechCraft
 {
@@ -75,34 +76,16 @@ namespace SysInfo
 
 		QString GetEtcOsName ()
 		{
-			QFile file ("/etc/os-release");
-			if (!file.open (QIODevice::ReadOnly))
+			if (!QFile::exists ("/etc/os-release"))
 				return {};
 
-			QString name;
-			QString version;
-			QString pretty;
+			QSettings relFile { "/etc/os-release", QSettings::IniFormat };
+			relFile.setIniCodec ("UTF-8");
 
-			while (file.canReadLine ())
-			{
-				const auto& str = QString::fromUtf8 (file.readLine ());
-				const auto eqPos = str.indexOf ('=');
-				if (eqPos <= 0)
-					continue;
-
-				const auto& id = str.left (eqPos);
-				if (id == "NAME")
-					name = str.mid (eqPos + 1);
-				else if (id == "VERSION")
-					version = str.mid (eqPos + 1);
-				else if (id == "PRETTY_NAME")
-					pretty = str.mid (eqPos + 1);
-			}
-
-			if (!name.isEmpty () && !version.isEmpty ())
-				return name + " " + version;
-
-			return !pretty.isEmpty () ? pretty : name;
+			const auto& prettyName = relFile.value ("PRETTY_NAME").toString ();
+			const auto& name = relFile.value ("NAME").toString ();
+			const auto& version = relFile.value ("VERSION").toString ();
+			return !prettyName.isEmpty () ? prettyName : (name + " " + version);
 		}
 
 		QString GetEtcName ()
