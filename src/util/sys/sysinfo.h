@@ -27,9 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_SYSINFO_H
-#define UTIL_SYSINFO_H
-#include "utilconfig.h"
+#pragma once
+
+#include <util/utilconfig.h>
 #include <QPair>
 
 class QString;
@@ -54,5 +54,3 @@ namespace SysInfo
 }
 }
 }
-
-#endif

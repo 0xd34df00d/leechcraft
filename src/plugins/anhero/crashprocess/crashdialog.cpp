@@ -35,7 +35,7 @@
 #include <QProcess>
 #include <QtDebug>
 #include <util/util.h>
-#include <util/sysinfo.h>
+#include <util/sys/sysinfo.h>
 #include "appinfo.h"
 #include "gdblauncher.h"
 #include "highlighter.h"

@@ -63,6 +63,7 @@ set (SRCS
 	svcauth/vkcaptchadialog.cpp
 	sys/mimedetector.cpp
 	sys/paths.cpp
+	sys/sysinfo.cpp
 	xdg/desktopparser.cpp
 	xdg/item.cpp
 	xdg/itemsdatabase.cpp
@@ -87,7 +88,6 @@ set (SRCS
 	exceptions.cpp
 	resourceloader.cpp
 	notificationactionhandler.cpp
-	sysinfo.cpp
 	passutils.cpp
 	queuemanager.cpp
 	delayedexecutor.cpp

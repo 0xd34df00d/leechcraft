@@ -31,7 +31,7 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <util/util.h>
-#include <util/sysinfo.h>
+#include <util/sys/sysinfo.h>
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"

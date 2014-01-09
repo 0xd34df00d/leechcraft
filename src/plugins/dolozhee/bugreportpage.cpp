@@ -29,7 +29,7 @@
 
 #include "bugreportpage.h"
 #include <QtDebug>
-#include <util/sysinfo.h>
+#include <util/sys/sysinfo.h>
 #include "reportwizard.h"
 
 namespace LeechCraft

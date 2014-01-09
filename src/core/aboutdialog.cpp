@@ -29,7 +29,7 @@
 
 #include "aboutdialog.h"
 #include <QDomDocument>
-#include "util/sysinfo.h"
+#include "util/sys/sysinfo.h"
 #include "interfaces/ihavediaginfo.h"
 #include "core.h"
 #include "coreproxy.h"
