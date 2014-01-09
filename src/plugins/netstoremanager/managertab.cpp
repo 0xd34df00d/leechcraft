@@ -471,7 +471,7 @@ namespace NetStoreManager
 	void ManagerTab::ShowListItemsWithParent (const QByteArray& parentId, bool inTrash)
 	{
 		ClearModel ();
-		if (Id2Item_.contains (parentId))
+		if (!parentId.isEmpty ())
 		{
 			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIcon ("go-up"), "..");
 			upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
@@ -629,7 +629,7 @@ namespace NetStoreManager
 
 	void ManagerTab::handleListingUpdated ()
 	{
-		ShowListItemsWithParent (LastParentID_, OpenTrash_->isChecked ());
+		FillListModel ();
 	}
 
 	void ManagerTab::handleGotNewItem (const StorageItem& item, const QByteArray&)
