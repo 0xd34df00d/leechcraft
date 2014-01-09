@@ -559,8 +559,8 @@ namespace NetStoreManager
 		{
 			if (auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
 			{
-				CurrentDirectoryID_ = Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()].ParentID_;
-				isfl->RefreshChildren (CurrentDirectoryID_);
+				LastParentID_ = Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()].ParentID_;
+				isfl->RefreshChildren (LastParentID_);
 			}
 		}
 		else if (!idx.data (ListingRole::IsDirectory).toBool ())
@@ -569,8 +569,8 @@ namespace NetStoreManager
 		{
 			if (auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
 			{
-				CurrentDirectoryID_ = idx.data (ListingRole::ID).toByteArray ();
-				isfl->RefreshChildren (CurrentDirectoryID_);
+				LastParentID_ = idx.data (ListingRole::ID).toByteArray ();
+				isfl->RefreshChildren (LastParentID_);
 			}
 		}
 	}
@@ -619,8 +619,6 @@ namespace NetStoreManager
 				sender () != acc->GetQObject ())
 			return;
 
-		LastParentID_ = GetParentIDInListViewMode ();
-
 		for (auto item : items)
 			Id2Item_ [item.ID_] = item;
 
@@ -631,7 +629,7 @@ namespace NetStoreManager
 
 	void ManagerTab::handleListingUpdated ()
 	{
-		ShowListItemsWithParent (CurrentDirectoryID_, OpenTrash_->isChecked ());
+		ShowListItemsWithParent (LastParentID_, OpenTrash_->isChecked ());
 	}
 
 	void ManagerTab::handleGotNewItem (const StorageItem& item, const QByteArray&)
@@ -996,7 +994,7 @@ namespace NetStoreManager
 		}
 
 		Id2Item_.clear ();
-		CurrentDirectoryID_.clear ();
+		LastParentID_.clear ();
 		RequestFileListings (acc);
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());

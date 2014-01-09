@@ -110,7 +110,6 @@ namespace NetStoreManager
 		QToolButton *Trash_;
 
 		QByteArray LastParentID_;
-		QByteArray CurrentDirectoryID_;
 
 		QHash<IStorageAccount*, QHash<QByteArray, bool>> Account2ItemExpandState_;
 	public:
@@ -124,7 +123,6 @@ namespace NetStoreManager
 		void FillToolbar ();
 		void ShowAccountActions (bool show);
 		IStorageAccount* GetCurrentAccount () const;
-
 
 		void ClearModel ();
 		void FillListModel ();
