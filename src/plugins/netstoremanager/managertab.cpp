@@ -769,6 +769,8 @@ namespace NetStoreManager
 			break;
 		case TransferOperation::Move:
 			sfl->Move (TransferedIDs_.second, GetParentIDInListViewMode ());
+			for (const auto& id : TransferedIDs_.second)
+				Id2Item_.remove (id);
 			break;
 		}
 		TransferedIDs_.second.clear ();
