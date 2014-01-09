@@ -103,6 +103,8 @@ namespace DBox
 
 		void RefreshListing (const QByteArray& parentId = QByteArray ());
 		void ShareEntry (const QString& id, ShareType type);
+		void CreateDirectory (const QString& name,
+				const QString& parentId = QString ());
 
 		void RemoveEntry (const QByteArray& id);
 		void MoveEntryToTrash (const QByteArray& id);
@@ -115,8 +117,6 @@ namespace DBox
 		void Download (const QString& id, const QString& filePath,
 				TaskParameters tp, bool silent, bool open = false);
 
-		void CreateDirectory (const QString& name,
-				const QString& parentId = QString ());
 		void Rename (const QString& id, const QString& newName);
 
 		void RequestFileChanges (qlonglong startId, const QString& pageToken = QString ());
@@ -125,13 +125,12 @@ namespace DBox
 		void RequestAccountInfo ();
 		void RequestFiles (const QByteArray& parntId);
 		void RequestSharingEntry (const QString& id, ShareType type);
+		void RequestCreateDirectory (const QString& name, const QString& parentId);
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
 		void RequestUpload (const QString& filePath, const QString& parent,
 				const QString& key);
-		void RequestCreateDirectory (const QString& name,
-				const QString& parentId, const QString& key);
 		void RequestCopyItem (const QString& id,
 				const QString& parentId, const QString& key);
 		void RequestMoveItem (const QString& id,
@@ -154,6 +153,7 @@ namespace DBox
 		void handleGotAccountInfo ();
 		void handleGotFiles ();
 		void handleRequestFileSharing ();
+		void handleCreateDirectory ();
 		void handleRequestEntryRemoving ();
 		void handleRequestMovingEntryToTrash ();
 		void handleRequestRestoreEntryFromTrash ();
@@ -161,7 +161,6 @@ namespace DBox
 		void handleUploadFinished ();
 		void handleUploadProgress (qint64 uploaded, qint64 total);
 		void handleUploadError (QNetworkReply::NetworkError error);
-		void handleCreateDirectory ();
 		void handleCopyItem ();
 		void handleMoveItem ();
 		void handleGetFileChanges ();

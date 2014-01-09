@@ -147,6 +147,50 @@ namespace DBox
 		DriveManager_->RefreshListing (parentId);
 	}
 
+	void Account::RequestUrl (const QByteArray& id)
+	{
+		if (id.isNull ())
+			return;
+
+		bool directLinkAvailable = id.startsWith ("/Public");
+		if (directLinkAvailable)
+		{
+			//Remove /Public from second params
+			emit gotFileUrl (QUrl (QString ("https://dl.dropbox.com/u/%1/%2")
+					.arg (UserID_, QString (id).remove ("/Public/"))));
+			return;
+		}
+
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		QMessageBox mbox (QMessageBox::Question,
+				tr ("Share item"),
+				tr ("Direct links available only for files in Public folder."
+						" What type of link do you want?"),
+				QMessageBox::Cancel,
+				rootWM->GetPreferredWindow());
+
+		QPushButton dropboxShareLink (tr ("DropBox share link"));
+		QPushButton dropboxPreviewLink (tr ("DropBox preview link"));
+		mbox.setDefaultButton (QMessageBox::Cancel);
+
+		mbox.addButton (&dropboxShareLink, QMessageBox::YesRole);
+		mbox.addButton (&dropboxPreviewLink, QMessageBox::AcceptRole);
+
+		if (mbox.exec () == QMessageBox::Cancel)
+			return;
+		else if (mbox.clickedButton () == &dropboxShareLink)
+			DriveManager_->ShareEntry (id, ShareType::Share);
+		else if (mbox.clickedButton () == &dropboxPreviewLink)
+			DriveManager_->ShareEntry (id, ShareType::Preview);
+	}
+
+	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)
+	{
+		if (name.isEmpty ())
+			return;
+		DriveManager_->CreateDirectory (name, parentId);
+	}
+
 	void Account::Delete (const QList<QByteArray>& ids, bool ask)
 	{
 		if (ids.isEmpty ())
@@ -192,51 +236,6 @@ namespace DBox
 	{
 		for (const auto& id : ids)
 			DriveManager_->Move (id, newParentId);
-	}
-
-	void Account::RequestUrl (const QByteArray& id)
-	{
-		if (id.isNull ())
-			return;
-
-		bool directLinkAvailable = id.startsWith ("/Public");
-
-		if (directLinkAvailable)
-		{
-			//Remove /Public from second params
-			emit gotFileUrl (QUrl (QString ("https://dl.dropbox.com/u/%1/%2")
-					.arg (UserID_, QString (id).remove ("/Public/"))));
-			return;
-		}
-
-		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-		QMessageBox mbox (QMessageBox::Question,
-				tr ("Share item"),
-				tr ("Direct links available only for files in Public folder."
-						" What type of link do you want?"),
-				QMessageBox::Cancel,
-				rootWM->GetPreferredWindow());
-
-		QPushButton dropboxShareLink (tr ("DropBox share link"));
-		QPushButton dropboxPreviewLink (tr ("DropBox preview link"));
-		mbox.setDefaultButton (QMessageBox::Cancel);
-
-		mbox.addButton (&dropboxShareLink, QMessageBox::YesRole);
-		mbox.addButton (&dropboxPreviewLink, QMessageBox::AcceptRole);
-
-		if (mbox.exec () == QMessageBox::Cancel)
-			return;
-		else if (mbox.clickedButton () == &dropboxShareLink)
-			DriveManager_->ShareEntry (id, ShareType::Share);
-		else if (mbox.clickedButton () == &dropboxPreviewLink)
-			DriveManager_->ShareEntry (id, ShareType::Preview);
-	}
-
-	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)
-	{
-		if (name.isEmpty ())
-			return;
-		DriveManager_->CreateDirectory (name, parentId);
 	}
 
 	void Account::Rename (const QByteArray& id, const QString& newName)
@@ -355,7 +354,9 @@ namespace DBox
 
 	void Account::handleGotNewItem (const DBoxItem& item)
 	{
-// 		emit gotNewItem (CreateItem (item), item.ParentId_.toUtf8 ());
+		const auto& storageItem = CreateItem (item);
+		emit gotNewItem (storageItem, storageItem.ParentID_);
+		emit listingUpdated ();
 	}
 }
 }

@@ -76,6 +76,14 @@ namespace DBox
 		ApiCallQueue_ << [this, id, type] (const QString&) { RequestSharingEntry (id, type); };
 	}
 
+	void DriveManager::CreateDirectory (const QString& name,
+			const QString& parentId)
+	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this, name, parentId] (const QString&)
+				{ RequestCreateDirectory (name, parentId); };
+	}
+
 	void DriveManager::RemoveEntry (const QByteArray& id)
 	{
 		if (id.isEmpty ())
@@ -134,14 +142,6 @@ namespace DBox
 		RequestAccessToken ();
 	}
 
-	void DriveManager::CreateDirectory (const QString& name,
-			const QString& parentId)
-	{
-		ApiCallQueue_ << [this, name, parentId] (const QString& key)
-			{ RequestCreateDirectory (name, parentId, key); };
-		RequestAccessToken ();
-	}
-
 	void DriveManager::Rename (const QString& id, const QString& newName)
 	{
 		if (id.isEmpty ())
@@ -161,10 +161,10 @@ namespace DBox
 	{
 		const bool shouldRun = ApiCallQueue_.isEmpty ();
 		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*)
-				{
-					if (shouldRun)
-						ApiCallQueue_.dequeue () (QString ());
-				});
+			{
+				if (shouldRun)
+					ApiCallQueue_.dequeue () (QString ());
+			});
 	}
 
 	void DriveManager::RequestAccountInfo ()
@@ -235,6 +235,23 @@ namespace DBox
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestFileSharing ()));
+	}
+
+	void DriveManager::RequestCreateDirectory (const QString& name, const QString& parentId)
+	{
+		QString str = QString ("https://api.dropbox.com/1/fileops/create_folder?access_token=%1&root=%2&path=%3")
+				.arg (Account_->GetAccessToken ())
+				.arg ("dropbox")
+				.arg (parentId + "/" + name);
+
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				post (request, QByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCreateDirectory ()));
 	}
 
 	void DriveManager::RequestEntryRemoving (const QString& id,
@@ -347,34 +364,6 @@ namespace DBox
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleUploadRequestFinished ()));
-	}
-
-	void DriveManager::RequestCreateDirectory (const QString& name,
-			const QString& parentId, const QString& key)
-	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
-				.arg (key);
-
-		QNetworkRequest request (str);
-		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
-		QVariantMap data;
-		data ["title"] = name;
-		data ["mimeType"] = DirectoryId_;
-		if (!parentId.isEmpty ())
-		{
-			QVariantList parents;
-			QVariantMap parent;
-			parent ["id"] = parentId;
-			parents << parent;
-			data ["parents"] = parents;
-		}
-
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				post (request, QJson::Serializer ().serialize (data));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleCreateDirectory ()));
 	}
 
 	void DriveManager::RequestCopyItem (const QString& id,
@@ -547,14 +536,7 @@ namespace DBox
 			return;
 		}
 
-		const auto& map = res.toMap ();
-		if (!map.contains ("error"))
-		{
-			Account_->SetUserID (map ["uid"].toString ());
-			return;
-		}
-
-		ParseError (res.toMap ());
+		Account_->SetUserID (res.toMap () ["uid"].toString ());
 	}
 
 	namespace
@@ -609,12 +591,6 @@ namespace DBox
 			return;
 		}
 
-		if (resMap.contains ("error"))
-		{
-			ParseError (res.toMap ());
-			return;
-		}
-
 		SecondRequestIfNoItems_ = true;
 		QList<DBoxItem> resList;
 		Q_FOREACH (const auto& item, resMap ["contents"].toList ())
@@ -648,15 +624,30 @@ namespace DBox
 		}
 
 		const auto& map = res.toMap ();
-		if (!map.contains ("error"))
+		qDebug () << Q_FUNC_INFO
+				<< "file shared successfully";
+		emit gotSharedFileUrl (map ["url"].toUrl (), map ["expires"].toDateTime ());
+	}
+
+	void DriveManager::handleCreateDirectory ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO
-					<< "file shared successfully";
-			emit gotSharedFileUrl (map ["url"].toUrl (), map ["expires"].toDateTime ());
+					<< "parse error";
 			return;
 		}
 
-		ParseError (res.toMap ());
+		qDebug () << Q_FUNC_INFO
+				<< "directory created successfully";
+		emit gotNewItem (CreateDBoxItem (res.toMap ()));
 	}
 
 	void DriveManager::handleRequestEntryRemoving ()
@@ -858,35 +849,6 @@ namespace DBox
 		{
 			//TODO resume upload
 		}
-	}
-
-	void DriveManager::handleCreateDirectory ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
-			return;
-		}
-
-		if (!res.toMap ().contains ("error"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "directory created successfully";
-
-			emit gotNewItem (CreateDBoxItem (res));
-			return;
-		}
-
-		ParseError (res.toMap ());
 	}
 
 	void DriveManager::handleCopyItem ()

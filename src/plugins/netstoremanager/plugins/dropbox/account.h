@@ -86,6 +86,8 @@ namespace DBox
 
 		void RefreshListing ();
 		void RefreshChildren (const QByteArray& parentId);
+		void RequestUrl (const QByteArray& id);
+		void CreateDirectory (const QString& name, const QByteArray& parentId);
 
 		void Delete (const QList<QByteArray>& ids, bool ask = true);
 		void MoveToTrash (const QList<QByteArray>& ids);
@@ -93,8 +95,6 @@ namespace DBox
 		void Copy (const QList<QByteArray>& ids, const QByteArray& newParentId);
 		void Move (const QList<QByteArray>& ids, const QByteArray& newParentId);
 
-		void RequestUrl (const QByteArray& id);
-		void CreateDirectory (const QString& name, const QByteArray& parentId);
 		void Rename (const QByteArray& id, const QString& newName);
 		void RequestChanges ();
 
