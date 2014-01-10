@@ -91,10 +91,8 @@ namespace DBox
 
 		Account *Account_;
 		QQueue<std::function<void (void)>> ApiCallQueue_;
-		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
-		QHash<QNetworkReply*, QString> Reply2DownloadAccessToken_;
 		bool SecondRequestIfNoItems_;
 
 	public:
@@ -125,8 +123,8 @@ namespace DBox
 		void RequestMoveItem (const QString& id, const QString& parentId);
 
 		void RequestUpload (const QString& filePath, const QString& parent);
-		void DownloadFile (const QString& filePath, const QUrl& url,
-				TaskParameters tp, bool silent = false, bool open = false);
+		void DownloadFile (const QString& id, const QString& filePath,
+				TaskParameters tp, bool silent, bool open = false);
 
 		void ParseError (const QVariantMap& map);
 

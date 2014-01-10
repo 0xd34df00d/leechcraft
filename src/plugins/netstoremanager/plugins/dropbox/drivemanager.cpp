@@ -120,6 +120,11 @@ namespace DBox
 	void DriveManager::Download (const QString& id, const QString& filepath,
 			TaskParameters tp, bool silent, bool open)
 	{
+		if (id.isEmpty ())
+			return;
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this, id, filepath, tp, silent, open] ()
+				{ DownloadFile (id, filepath, tp, silent, open); };
 	}
 
 	std::shared_ptr< void > DriveManager::MakeRunnerGuard ()
@@ -316,7 +321,7 @@ namespace DBox
 				SLOT (handleUploadProgress (qint64, qint64)));
 	}
 
-	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
+	void DriveManager::DownloadFile (const QString& id, const QString& filePath,
 			TaskParameters tp, bool silent, bool open)
 	{
 		QString savePath;
@@ -324,6 +329,10 @@ namespace DBox
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
 					"/" + QFileInfo (filePath).fileName ();
 
+		QUrl url (QString ("https://api-content.dropbox.com/1/files/%1/%2?access_token=%3")
+				.arg ("dropbox")
+				.arg (id)
+				.arg (Account_->GetAccessToken ()));
 		auto e = Util::MakeEntity (url, savePath, tp);
 		QFileInfo fi (filePath);
 		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
