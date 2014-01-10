@@ -18,6 +18,7 @@ include_directories (${LMP_INCLUDE_DIR}
 
 set (JOS_SRCS
 	jos.cpp
+	devmanager.cpp
 	)
 
 #CreateTrs ("lmp_jos" "en;ru_RU" JOS_COMPILED_TRANSLATIONS)
