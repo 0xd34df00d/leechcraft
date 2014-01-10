@@ -157,9 +157,14 @@ namespace UDisks2
 		if (!iface)
 			return;
 
-		if (!iface->property ("DeviceIsMounted").toBool ())
+		auto item = Object2Item_.value (id);
+		if (!item)
+			return;
+
+		const bool isMounted = !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
+		if (!isMounted)
 		{
-			auto async = iface->asyncCall ("FilesystemMount", QString (), QStringList ());
+			auto async = iface->asyncCall ("Mount", QVariantMap ());
 			connect (new QDBusPendingCallWatcher (async, this),
 					SIGNAL (finished (QDBusPendingCallWatcher*)),
 					this,
