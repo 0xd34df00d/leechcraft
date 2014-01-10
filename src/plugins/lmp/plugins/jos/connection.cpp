@@ -111,7 +111,7 @@ namespace jOS
 				[info] (void*) -> void
 				{
 					for (auto p = info; *p; ++p)
-						free (p);
+						free (*p);
 					free (info);
 				});
 
