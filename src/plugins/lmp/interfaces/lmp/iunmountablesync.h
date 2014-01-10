@@ -60,6 +60,11 @@ namespace LMP
 		{
 			return ID_ == other.ID_;
 		}
+
+		inline bool operator< (const UnmountableDevInfo& other) const
+		{
+			return ID_ < other.ID_;
+		}
 	};
 
 	typedef QList<UnmountableDevInfo> UnmountableDevInfos_t;
