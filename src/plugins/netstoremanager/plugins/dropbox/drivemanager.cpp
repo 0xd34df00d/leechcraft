@@ -114,7 +114,7 @@ namespace DBox
 		if (QFileInfo (filePath).size () < 150 * 1024 * 1024)
 			ApiCallQueue_ << [this, filePath, parent] () { RequestUpload (filePath, parent); };
 		else
-			;//TODO chunk_upload
+			ApiCallQueue_ << [this, filePath, parent] () { RequestChunkUpload (filePath, parent); };
 	}
 
 	void DriveManager::Download (const QString& id, const QString& filepath,
@@ -282,9 +282,6 @@ namespace DBox
 
 	void DriveManager::RequestUpload (const QString& filePath, const QString& parent)
 	{
-		emit uploadStatusChanged (tr ("Uploading..."), filePath);
-
-		QFileInfo info (filePath);
 		QFile *file = new QFile (filePath);
 		if (!file->open (QIODevice::ReadOnly))
 		{
@@ -293,6 +290,8 @@ namespace DBox
 					<< file->errorString ();
 			return;
 		}
+		emit uploadStatusChanged (tr ("Uploading..."), filePath);
+		QFileInfo info (filePath);
 
 		const QUrl url (QString ("https://api-content.dropbox.com/1/files_put/%1/%2?access_token=%3")
 				.arg ("dropbox")
@@ -319,6 +318,10 @@ namespace DBox
 				SIGNAL (uploadProgress (qint64, qint64)),
 				this,
 				SLOT (handleUploadProgress (qint64, qint64)));
+	}
+
+	void DriveManager::RequestChunkUpload (const QString& filePath, const QString& parent)
+	{
 	}
 
 	void DriveManager::DownloadFile (const QString& id, const QString& filePath,

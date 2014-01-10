@@ -123,6 +123,7 @@ namespace DBox
 		void RequestMoveItem (const QString& id, const QString& parentId);
 
 		void RequestUpload (const QString& filePath, const QString& parent);
+		void RequestChunkUpload (const QString& filePath, const QString& parent);
 		void DownloadFile (const QString& id, const QString& filePath,
 				TaskParameters tp, bool silent, bool open = false);
 
