@@ -18,6 +18,7 @@ include_directories (${LMP_INCLUDE_DIR}
 
 set (JOS_SRCS
 	jos.cpp
+	mobileraii.cpp
 	devmanager.cpp
 	)
 

@@ -37,6 +37,7 @@
 #include <QFuture>
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
+#include "mobileraii.h"
 
 namespace LeechCraft
 {
@@ -63,52 +64,6 @@ namespace jOS
 
 	namespace
 	{
-		template<typename T, typename Deleter>
-		class MobileRaii
-		{
-			T Type_ = nullptr;
-			const Deleter Deleter_;
-		public:
-			template<typename Creator>
-			MobileRaii (Creator c, Deleter d)
-			: Deleter_ { d }
-			{
-				const auto ret = c (&Type_);
-				if (ret != IDEVICE_E_SUCCESS)
-				{
-					const auto& errStr = "Cannot create something: " + QString::number (ret) + " for " + typeid (T).name ();
-					throw std::runtime_error (errStr.toUtf8 ().constData ());
-				}
-			}
-
-			~MobileRaii ()
-			{
-				if (Type_)
-					Deleter_ (Type_);
-			}
-
-			MobileRaii (MobileRaii&& other)
-			: Type_ { other.Type_ }
-			, Deleter_ { other.Deleter_ }
-			{
-				other.Type_ = nullptr;
-			}
-
-			MobileRaii (const MobileRaii&) = delete;
-			MobileRaii& operator= (const MobileRaii&) = delete;
-
-			operator T () const
-			{
-				return Type_;
-			}
-		};
-
-		template<typename T, typename Creator, typename Deleter>
-		MobileRaii<T, Deleter> MakeRaii (Creator c, Deleter d)
-		{
-			return { c, d };
-		}
-
 		template<typename PListGetter>
 		struct PListType;
 
