@@ -113,15 +113,15 @@ namespace jOS
 		struct PListType;
 
 		template<typename Res>
-		struct PListType<void (plist_t, Res*)>
+		struct PListType<void (*) (plist_t, Res*)>
 		{
 			typedef Res type;
 		};
 
 		template<typename PListGetter>
-		std::function<typename PListType<PListGetter>::type (plist_t)> Wrap (const PListGetter& g)
+		std::function<typename PListType<PListGetter>::type (plist_t)> Wrap (PListGetter g)
 		{
-			return [=] (plist_t t) -> typename PListType<PListGetter>::type
+			return [g] (plist_t t) -> typename PListType<PListGetter>::type
 					{
 						typename PListType<PListGetter>::type r;
 						g (t, &r);
@@ -184,8 +184,6 @@ namespace jOS
 				name += " " + type;
 			if (!osVersion.isEmpty ())
 				name += " (iOS " + osVersion + ")";
-
-			qDebug () << available << total;
 
 			return
 			{
