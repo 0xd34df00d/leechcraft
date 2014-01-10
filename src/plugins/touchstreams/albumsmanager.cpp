@@ -53,6 +53,13 @@ namespace TouchStreams
 		};
 	}
 
+	AlbumsManager::AlbumInfo::AlbumInfo (qlonglong id, const QString& name, QStandardItem *item)
+	: ID_ { id }
+	, Name_ { name }
+	, Item_ { item }
+	{
+	}
+
 	AlbumsManager::AlbumsManager (Util::SvcAuth::VkAuthManager *authMgr,
 			Util::QueueManager *queue, ICoreProxy_ptr proxy, QObject *parent)
 	: AlbumsManager (-1, authMgr, queue, proxy, parent)

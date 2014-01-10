@@ -64,9 +64,12 @@ namespace TouchStreams
 
 		struct AlbumInfo
 		{
-			qlonglong ID_;
+			qlonglong ID_ = static_cast<qlonglong> (-1);
 			QString Name_;
-			QStandardItem *Item_;
+			QStandardItem *Item_ = nullptr;
+
+			AlbumInfo () = default;
+			AlbumInfo (qlonglong, const QString&, QStandardItem*);
 		};
 		QHash<qlonglong, AlbumInfo> Albums_;
 
