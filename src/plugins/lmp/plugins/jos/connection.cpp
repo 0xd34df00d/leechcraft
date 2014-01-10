@@ -79,6 +79,11 @@ namespace jOS
 		qDebug () << "done";
 	}
 
+	afc_client_t Connection::GetAFC () const
+	{
+		return AFC_;
+	}
+
 	QString Connection::GetFileInfo (const QString& path, const QString& key)
 	{
 		char **info = nullptr;

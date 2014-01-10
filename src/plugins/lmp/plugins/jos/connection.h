@@ -51,6 +51,9 @@ namespace jOS
 		const QString TempDirPath_;
 	public:
 		Connection (const QByteArray&);
+
+		afc_client_t GetAFC () const;
+
 	private:
 		QString GetFileInfo (const QString&, const QString&);
 		QStringList ReadDir (const QString&, QDir::Filters);
