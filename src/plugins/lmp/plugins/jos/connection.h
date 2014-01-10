@@ -29,10 +29,11 @@
 
 #pragma once
 
-#include <libimobiledevice/libimobiledevice.h>
-#include <stdexcept>
-#include <typeinfo>
-#include <QString>
+#include <memory>
+#include <QObject>
+#include <QDir>
+#include <libimobiledevice/afc.h>
+#include "mobileraii.h"
 
 namespace LeechCraft
 {
@@ -40,52 +41,24 @@ namespace LMP
 {
 namespace jOS
 {
-	template<typename T, typename Deleter = int16_t (*) (T)>
-	class MobileRaii
+	class Connection : public QObject
 	{
-		T Type_ = nullptr;
-		const Deleter Deleter_;
+		const MobileRaii<idevice_t> Device_;
+		const MobileRaii<lockdownd_client_t> Lockdown_;
+		const MobileRaii<lockdownd_service_descriptor_t> Service_;
+		const MobileRaii<afc_client_t> AFC_;
+
+		const QString TempDirPath_;
 	public:
-		typedef MobileRaii<T, Deleter> type;
-
-		template<typename Creator>
-		MobileRaii (Creator c, Deleter d)
-		: Deleter_ { d }
-		{
-			if (const auto ret = c (&Type_))
-			{
-				const auto& errStr = "Cannot create something: " + QString::number (ret) + " for " + typeid (T).name ();
-				throw std::runtime_error (errStr.toUtf8 ().constData ());
-			}
-		}
-
-		~MobileRaii ()
-		{
-			if (Type_)
-				Deleter_ (Type_);
-		}
-
-		MobileRaii (MobileRaii&& other)
-		: Type_ { other.Type_ }
-		, Deleter_ { other.Deleter_ }
-		{
-			other.Type_ = nullptr;
-		}
-
-		MobileRaii (const MobileRaii&) = delete;
-		MobileRaii& operator= (const MobileRaii&) = delete;
-
-		operator T () const
-		{
-			return Type_;
-		}
+		Connection (const QByteArray&);
+	private:
+		QString GetFileInfo (const QString&, const QString&);
+		QStringList ReadDir (const QString&, QDir::Filters);
+		void CopyDir (const QString&);
+		void CopyFile (const QString&);
 	};
 
-	template<typename T, typename Creator, typename Deleter>
-	MobileRaii<T, Deleter> MakeRaii (Creator c, Deleter d)
-	{
-		return { c, d };
-	}
+	typedef std::shared_ptr<Connection> Connection_ptr;
 }
 }
 }

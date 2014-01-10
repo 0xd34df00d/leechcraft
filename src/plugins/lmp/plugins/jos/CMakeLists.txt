@@ -20,6 +20,7 @@ set (JOS_SRCS
 	jos.cpp
 	mobileraii.cpp
 	devmanager.cpp
+	connection.cpp
 	)
 
 #CreateTrs ("lmp_jos" "en;ru_RU" JOS_COMPILED_TRANSLATIONS)
