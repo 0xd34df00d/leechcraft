@@ -107,7 +107,7 @@ namespace NetStoreManager
 		QAction *UploadInCurrentDir_;
 		QAction *Download_;
 		QAction *OpenTrash_;
-		QToolButton *Trash_;
+		QAction *Trash_;
 
 		QByteArray LastParentID_;
 

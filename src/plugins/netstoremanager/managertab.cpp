@@ -286,13 +286,13 @@ namespace NetStoreManager
 				this,
 				SLOT (showTrashContent (bool)));
 
-		Trash_ = new QToolButton (this);
-		Trash_->setIcon (Proxy_->GetIcon ("user-trash"));
-		Trash_->setText (tr ("Trash"));
-		Trash_->setPopupMode (QToolButton::InstantPopup);
-		Trash_->addActions ({ OpenTrash_, EmptyTrash_ });
+		auto trashButton = new QToolButton (this);
+		trashButton->setIcon (Proxy_->GetIcon ("user-trash"));
+		trashButton->setText (tr ("Trash"));
+		trashButton->setPopupMode (QToolButton::InstantPopup);
+		trashButton->addActions ({ OpenTrash_, EmptyTrash_ });
 
-		ToolBar_->addWidget (Trash_);
+		Trash_ = ToolBar_->addWidget (trashButton);
 
 		ShowAccountActions (AccountsBox_->count ());
 
@@ -1002,6 +1002,8 @@ namespace NetStoreManager
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		DeleteFile_->setVisible (sfl->GetListingOps () & ListingOp::Delete);
 		MoveToTrash_->setVisible (sfl->GetListingOps () & ListingOp::TrashSupporting);
+		UntrashFile_->setVisible (sfl->GetListingOps () & ListingOp::TrashSupporting);
+		Trash_->setVisible (sfl->GetListingOps () & ListingOp::TrashSupporting);
 
 		XmlSettingsManager::Instance ().setProperty ("LastActiveAccount",
 				acc->GetUniqueID ());
