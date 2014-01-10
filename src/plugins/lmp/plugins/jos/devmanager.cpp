@@ -184,9 +184,7 @@ namespace jOS
 				}
 			}
 
-			qDebug () << "done iterating";
 			idevice_device_list_free (devices);
-			qDebug () << "returning";
 
 			return result;
 		}
@@ -200,8 +198,6 @@ namespace jOS
 					<< "already refreshing";
 			return;
 		}
-
-		qDebug () << Q_FUNC_INFO;
 
 		PollWatcher_ = new QFutureWatcher<UnmountableDevInfos_t> ();
 		connect (PollWatcher_,
@@ -226,7 +222,6 @@ namespace jOS
 			return;
 
 		Devices_ = result;
-		qDebug () << "changed";
 		emit availableDevicesChanged ();
 	}
 }
