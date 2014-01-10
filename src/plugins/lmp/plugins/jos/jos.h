@@ -44,6 +44,7 @@ namespace LMP
 namespace jOS
 {
 	class DevManager;
+	class UploadManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -58,7 +59,9 @@ namespace jOS
 				LeechCraft::LMP::IUnmountableSync)
 
 		ILMPProxy_ptr LMPProxy_;
+
 		DevManager *DevManager_;
+		UploadManager *UpManager_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -75,8 +78,8 @@ namespace jOS
 		QString GetSyncSystemName () const;
 		QObject* GetQObject ();
 		UnmountableDevInfos_t AvailableDevices () const;
-		void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info);
-		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId);
+		void SetFileInfo (const QString&, const UnmountableFileInfo&);
+		void Upload (const QString&, const QString&, const QByteArray&, const QByteArray&);
 		void Refresh ();
 	signals:
 		void availableDevicesChanged ();

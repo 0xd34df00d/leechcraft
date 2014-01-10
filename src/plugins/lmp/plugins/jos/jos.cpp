@@ -29,6 +29,7 @@
 
 #include "jos.h"
 #include "devmanager.h"
+#include "uploadmanager.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,8 @@ namespace jOS
 				SIGNAL (availableDevicesChanged ()),
 				this,
 				SIGNAL (availableDevicesChanged ()));
+
+		UpManager_ = new UploadManager (this);
 	}
 
 	void Plugin::SecondInit ()
@@ -102,10 +105,12 @@ namespace jOS
 
 	void Plugin::SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info)
 	{
+		UpManager_->SetInfo (origLocalPath, info);
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId)
+	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray&)
 	{
+		UpManager_->Upload (localPath, origLocalPath, to);
 	}
 
 	void Plugin::Refresh ()
