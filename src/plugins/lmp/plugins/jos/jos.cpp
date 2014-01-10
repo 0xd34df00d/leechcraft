@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "jos.h"
+#include "devmanager.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,11 @@ namespace jOS
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		DevManager_ = new DevManager (this);
+		connect (DevManager_,
+				SIGNAL (availableDevicesChanged ()),
+				this,
+				SIGNAL (availableDevicesChanged ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -45,7 +51,6 @@ namespace jOS
 
 	void Plugin::Release ()
 	{
-
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -78,6 +83,34 @@ namespace jOS
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
 	{
 		LMPProxy_ = proxy;
+	}
+
+	QString Plugin::GetSyncSystemName () const
+	{
+		return "iOS";
+	}
+
+	QObject* Plugin::GetQObject ()
+	{
+		return this;
+	}
+
+	UnmountableDevInfos_t Plugin::AvailableDevices () const
+	{
+		return DevManager_->GetDevices ();
+	}
+
+	void Plugin::SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info)
+	{
+	}
+
+	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId)
+	{
+	}
+
+	void Plugin::Refresh ()
+	{
+		DevManager_->refresh ();
 	}
 }
 }

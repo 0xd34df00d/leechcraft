@@ -35,6 +35,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/isyncplugin.h>
+#include <interfaces/lmp/iunmountablesync.h>
 
 namespace LeechCraft
 {
@@ -42,17 +43,22 @@ namespace LMP
 {
 namespace jOS
 {
+	class DevManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
 				 , public ILMPPlugin
+				 , public IUnmountableSync
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::LMP::ILMPPlugin)
+				LeechCraft::LMP::ILMPPlugin
+				LeechCraft::LMP::IUnmountableSync)
 
 		ILMPProxy_ptr LMPProxy_;
+		DevManager *DevManager_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -65,6 +71,17 @@ namespace jOS
 		QSet<QByteArray> GetPluginClasses () const;
 
 		void SetLMPProxy (ILMPProxy_ptr);
+
+		QString GetSyncSystemName () const;
+		QObject* GetQObject ();
+		UnmountableDevInfos_t AvailableDevices () const;
+		void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info);
+		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId);
+		void Refresh ();
+	signals:
+		void availableDevicesChanged ();
+		void uploadProgress (qint64, qint64);
+		void uploadFinished (const QString&, QFile::FileError, const QString&);
 	};
 }
 }
