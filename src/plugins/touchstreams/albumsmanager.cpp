@@ -200,14 +200,6 @@ namespace TouchStreams
 			if (!url.isValid ())
 				continue;
 
-			Media::AudioInfo info {};
-			info.Title_ = map ["title"].toString ();
-			info.Artist_ = map ["artist"].toString ();
-			info.Length_ = map ["duration"].toInt ();
-			info.Other_ ["URL"] = url;
-
-			album2urls [albumId] << info;
-
 			auto albumItem = Albums_ [albumId].Item_;
 			if (!albumItem)
 			{
@@ -216,6 +208,14 @@ namespace TouchStreams
 						<< albumId;
 				continue;
 			}
+
+			Media::AudioInfo info {};
+			info.Title_ = map ["title"].toString ();
+			info.Artist_ = map ["artist"].toString ();
+			info.Length_ = map ["duration"].toInt ();
+			info.Other_ ["URL"] = url;
+
+			album2urls [albumId] << info;
 
 			auto trackItem = new QStandardItem (QString::fromUtf8 ("%1 — %2")
 						.arg (info.Artist_)
