@@ -21,6 +21,7 @@ set (JOS_SRCS
 	mobileraii.cpp
 	devmanager.cpp
 	connection.cpp
+	uploadmanager.cpp
 	)
 
 #CreateTrs ("lmp_jos" "en;ru_RU" JOS_COMPILED_TRANSLATIONS)
