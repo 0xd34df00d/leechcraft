@@ -337,18 +337,20 @@ namespace DBox
 
 		QFileInfo info (filePath);
 		QUrl url;
-		if (uploadId.isEmpty ())
-			url = (QString ("https://api-content.dropbox.com/1/chunked_upload?root=%1&path=%2&access_token=%3")
-					.arg ("dropbox")
-					.arg (parent + "/" + info.fileName ())
-					.arg (Account_->GetAccessToken ()));
+		if (!chunkFile->atEnd () && uploadId.isEmpty ())
+			url = QString ("https://api-content.dropbox.com/1/chunked_upload?access_token=%1")
+					.arg (Account_->GetAccessToken ());
+		else if (!chunkFile->atEnd ())
+			url = QString ("https://api-content.dropbox.com/1/chunked_upload?access_token=%1&upload_id=%2&offset=%3")
+					.arg (Account_->GetAccessToken ())
+					.arg (uploadId)
+					.arg (offset);
 		else
-			url = (QString ("https://api-content.dropbox.com/1/chunked_upload?root=%1&path=%2&access_token=%3&upload_id=%4&offset=%5")
+			url = QString ("https://api-content.dropbox.com/1/commit_chunked_upload/%1/%2?access_token=%3&upload_id=%4")
 					.arg ("dropbox")
 					.arg (parent + "/" + info.fileName ())
 					.arg (Account_->GetAccessToken ())
-					.arg (uploadId)
-					.arg (offset));
+					.arg (uploadId);
 
 		QNetworkRequest request (url);
 		request.setPriority (QNetworkRequest::LowPriority);
@@ -648,16 +650,25 @@ namespace DBox
 		}
 
 		const auto& map = res.toMap ();
-		qDebug () << map;
 		if (!map.contains ("error"))
 		{
-			const quint64 offset = map ["offset"].toULongLong ();
-			const QString uploadId = map ["upload_id"].toString ();
-			qDebug () << offset;
-			RequestChunkUpload (Reply2FilePath_.take (reply),
-					Reply2ParentId_.take (reply),
-					uploadId,
-					offset);
+			if (map.contains ("offset"))
+			{
+				Reply2ChunkFile_.remove (reply);
+				const quint64 offset = map ["offset"].toULongLong ();
+				const QString uploadId = map ["upload_id"].toString ();
+				RequestChunkUpload (Reply2FilePath_.take (reply),
+						Reply2ParentId_.take (reply),
+						uploadId,
+						offset);
+			}
+			else if (map.contains ("path"))
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "file uploaded successfully";
+				emit gotNewItem (CreateDBoxItem (res));
+				emit finished (Reply2Id_.take (reply), Reply2FilePath_.take (reply));
+			}
 			return;
 		}
 
@@ -671,7 +682,7 @@ namespace DBox
 			return;
 
 		const auto& path = Reply2FilePath_ [reply];
-		quint64 offset = Reply2Offset_ [reply];
+		const quint64 offset = Reply2Offset_ [reply];
 		QFileInfo fi (path);
 		if (fi.size () < ChunkUploadBound_)
 			emit uploadProgress (uploaded, total, path);
@@ -686,7 +697,6 @@ namespace DBox
 			return;
 		reply->deleteLater ();
 
-		qDebug () << error << reply->errorString ();
 		emit uploadError ("Error", Reply2FilePath_.take (reply));
 	}
 }
