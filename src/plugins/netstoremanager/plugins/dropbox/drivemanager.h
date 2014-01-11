@@ -94,8 +94,11 @@ namespace DBox
 		QQueue<std::function<void (void)>> ApiCallQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
+		QHash<QNetworkReply*, QString> Reply2ParentId_;
+		QHash<QNetworkReply*, quint64> Reply2Offset_;
 		QHash<QNetworkReply*, ChunkIODevice*> Reply2ChunkFile_;
 		bool SecondRequestIfNoItems_;
+		const int ChunkUploadBound_;
 
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
@@ -125,7 +128,8 @@ namespace DBox
 		void RequestMoveItem (const QString& id, const QString& parentId);
 
 		void RequestUpload (const QString& filePath, const QString& parent);
-		void RequestChunkUpload (const QString& filePath, const QString& parent);
+		void RequestChunkUpload (const QString& filePath, const QString& parent,
+				const QString& uploadId = QString (), quint64 offset = 0);
 		void DownloadFile (const QString& id, const QString& filePath,
 				TaskParameters tp, bool silent, bool open = false);
 

@@ -54,6 +54,7 @@ namespace DBox
 	, DirectoryId_ ("application/vnd.google-apps.folder")
 	, Account_ (acc)
 	, SecondRequestIfNoItems_ (true)
+	, ChunkUploadBound_ (150 * 1024 * 1024)
 	{
 	}
 
@@ -112,7 +113,7 @@ namespace DBox
 		QString parent = parentId.value (0);
 		auto guard = MakeRunnerGuard ();
 
-		if (QFileInfo (filePath).size () < 150 * 1024 * 1024)
+		if (QFileInfo (filePath).size () < ChunkUploadBound_)
 			ApiCallQueue_ << [this, filePath, parent] () { RequestUpload (filePath, parent); };
 		else
 			ApiCallQueue_ << [this, filePath, parent] () { RequestChunkUpload (filePath, parent); };
@@ -321,7 +322,8 @@ namespace DBox
 				SLOT (handleUploadProgress (qint64, qint64)));
 	}
 
-	void DriveManager::RequestChunkUpload (const QString& filePath, const QString& parent)
+	void DriveManager::RequestChunkUpload (const QString& filePath, const QString& parent,
+			const QString& uploadId, quint64 offset)
 	{
 		ChunkIODevice *chunkFile = new ChunkIODevice (filePath, this);
 		if (!chunkFile->open (QIODevice::ReadOnly))
@@ -334,10 +336,20 @@ namespace DBox
 		emit uploadStatusChanged (tr ("Uploading..."), filePath);
 
 		QFileInfo info (filePath);
-		const QUrl url (QString ("https://api-content.dropbox.com/1/chunked_upload?root=%1&path=%2&access_token=%3")
-				.arg ("dropbox")
-				.arg (parent + "/" + info.fileName ())
-				.arg (Account_->GetAccessToken ()));
+		QUrl url;
+		if (uploadId.isEmpty ())
+			url = (QString ("https://api-content.dropbox.com/1/chunked_upload?root=%1&path=%2&access_token=%3")
+					.arg ("dropbox")
+					.arg (parent + "/" + info.fileName ())
+					.arg (Account_->GetAccessToken ()));
+		else
+			url = (QString ("https://api-content.dropbox.com/1/chunked_upload?root=%1&path=%2&access_token=%3&upload_id=%4&offset=%5")
+					.arg ("dropbox")
+					.arg (parent + "/" + info.fileName ())
+					.arg (Account_->GetAccessToken ())
+					.arg (uploadId)
+					.arg (offset));
+
 		QNetworkRequest request (url);
 		request.setPriority (QNetworkRequest::LowPriority);
 		request.setHeader (QNetworkRequest::ContentLengthHeader, info.size ());
@@ -346,6 +358,10 @@ namespace DBox
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->put (request, chunkFile->GetNextChunk ());
 		Reply2ChunkFile_ [reply] = chunkFile;
+		Reply2FilePath_ [reply] = filePath;
+		Reply2ParentId_ [reply] = parent;
+		if (offset)
+			Reply2Offset_ [reply] = offset;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -633,9 +649,15 @@ namespace DBox
 
 		const auto& map = res.toMap ();
 		qDebug () << map;
-
 		if (!map.contains ("error"))
 		{
+			const quint64 offset = map ["offset"].toULongLong ();
+			const QString uploadId = map ["upload_id"].toString ();
+			qDebug () << offset;
+			RequestChunkUpload (Reply2FilePath_.take (reply),
+					Reply2ParentId_.take (reply),
+					uploadId,
+					offset);
 			return;
 		}
 
@@ -648,7 +670,13 @@ namespace DBox
 		if (!reply)
 			return;
 
-		emit uploadProgress (uploaded, total, Reply2FilePath_ [reply]);
+		const auto& path = Reply2FilePath_ [reply];
+		quint64 offset = Reply2Offset_ [reply];
+		QFileInfo fi (path);
+		if (fi.size () < ChunkUploadBound_)
+			emit uploadProgress (uploaded, total, path);
+		else
+			emit uploadProgress (uploaded + offset, fi.size (), path);
 	}
 
 	void DriveManager::handleUploadError (QNetworkReply::NetworkError error)
@@ -656,9 +684,9 @@ namespace DBox
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 			return;
-
 		reply->deleteLater ();
 
+		qDebug () << error << reply->errorString ();
 		emit uploadError ("Error", Reply2FilePath_.take (reply));
 	}
 }
