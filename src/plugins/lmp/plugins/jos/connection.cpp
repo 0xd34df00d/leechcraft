@@ -87,6 +87,16 @@ namespace jOS
 		return AFC_;
 	}
 
+	namespace
+	{
+		void ListCleanup (char **info)
+		{
+			for (auto p = info; *p; ++p)
+				free (*p);
+			free (info);
+		}
+	}
+
 	QString Connection::GetFileInfo (const QString& path, const QString& key) const
 	{
 		char **info = nullptr;
@@ -111,12 +121,7 @@ namespace jOS
 		}
 
 		auto guard = std::shared_ptr<void> (nullptr,
-				[info] (void*) -> void
-				{
-					for (auto p = info; *p; ++p)
-						free (*p);
-					free (info);
-				});
+				[info] (void*) { ListCleanup (info); });
 
 		QString lastKey;
 		for (auto p = info; *p; ++p)
