@@ -91,6 +91,9 @@ namespace jOS
 	{
 		void ListCleanup (char **info)
 		{
+			if (!info)
+				return;
+
 			for (auto p = info; *p; ++p)
 				free (*p);
 			free (info);
