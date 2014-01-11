@@ -32,6 +32,8 @@
 #include <QDesktopServices>
 #include <QStringList>
 #include <QtDebug>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <libimobiledevice/lockdown.h>
 #include "afcfile.h"
 
@@ -76,10 +78,17 @@ namespace jOS
 				<< "with temp dir"
 				<< TempDirPath_;
 
-		for (const auto& dir : QStringList { "Artwork", "Device", "iTunes" })
-			CopyDir ("/iTunes_Control/" + dir, CopyCreate);
-
-		qDebug () << "done";
+		auto watcher = new QFutureWatcher<void> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (itdbCopyFinished ()));
+		const auto& future = QtConcurrent::run ([this] () -> void
+			{
+				for (const auto& dir : QStringList { "Artwork", "Device", "iTunes" })
+					CopyDir ("/iTunes_Control/" + dir, CopyCreate);
+			});
+		watcher->setFuture (future);
 	}
 
 	afc_client_t Connection::GetAFC () const
@@ -248,6 +257,12 @@ namespace jOS
 			localFile.write (data);
 			copied += data.size ();
 		}
+	}
+
+	void Connection::itdbCopyFinished ()
+	{
+		qDebug () << Q_FUNC_INFO
+				<< "copy finished";
 	}
 }
 }

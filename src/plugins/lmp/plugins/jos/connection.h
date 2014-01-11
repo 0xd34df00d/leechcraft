@@ -43,6 +43,8 @@ namespace jOS
 {
 	class Connection : public QObject
 	{
+		Q_OBJECT
+
 		const MobileRaii<idevice_t> Device_;
 		const MobileRaii<lockdownd_client_t> Lockdown_;
 		const MobileRaii<lockdownd_service_descriptor_t> Service_;
@@ -66,6 +68,8 @@ namespace jOS
 		QStringList ReadDir (const QString&, QDir::Filters);
 		void CopyDir (const QString&, CopyOptions = NoCopyOption);
 		void CopyFile (const QString&);
+	private slots:
+		void itdbCopyFinished ();
 	};
 
 	typedef std::shared_ptr<Connection> Connection_ptr;
