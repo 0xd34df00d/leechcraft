@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <libimobiledevice/lockdown.h>
+#include "afcfile.h"
 
 namespace LeechCraft
 {
@@ -207,6 +208,17 @@ namespace jOS
 		dir.mkpath (localDirPath);
 
 		QFile localFile { localFilePath };
+		AfcFile srcFile { file, this };
+
+		for (qint64 copied = 0, size = srcFile.size (); copied < size; )
+		{
+			const auto& data = srcFile.read (1024 * 1024);
+			if (data.isEmpty ())
+				break;
+
+			localFile.write (data);
+			copied += data.size ();
+		}
 	}
 }
 }
