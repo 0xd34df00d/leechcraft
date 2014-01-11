@@ -49,7 +49,7 @@ namespace jOS
 
 		uint64_t Handle_ = 0;
 	public:
-		AfcFile (const QString& path, Connection*);
+		AfcFile (const QString& path, Connection*, QObject* = nullptr);
 		~AfcFile ();
 
 		bool open (OpenMode mode) override;

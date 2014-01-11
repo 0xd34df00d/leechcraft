@@ -37,10 +37,10 @@ namespace LMP
 {
 namespace jOS
 {
-	AfcFile::AfcFile (const QString& path, Connection *parent)
+	AfcFile::AfcFile (const QString& path, Connection *conn, QObject *parent)
 	: QIODevice { parent }
-	, Conn_ { parent }
-	, AFC_ { parent->GetAFC () }
+	, Conn_ { conn }
+	, AFC_ { conn->GetAFC () }
 	, Path_ { path }
 	{
 	}
