@@ -78,15 +78,18 @@ namespace jOS
 				<< "with temp dir"
 				<< TempDirPath_;
 
-		auto watcher = new QFutureWatcher<void> ();
+		auto watcher = new QFutureWatcher<bool> ();
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
 				SLOT (itdbCopyFinished ()));
-		const auto& future = QtConcurrent::run ([this] () -> void
+		const auto& future = QtConcurrent::run ([this] () -> bool
 			{
+				bool result = true;
 				for (const auto& dir : QStringList { "Artwork", "Device", "iTunes" })
-					CopyDir ("/iTunes_Control/" + dir, CopyCreate);
+					if (!CopyDir ("/iTunes_Control/" + dir, CopyCreate))
+						result = false;
+				return result;
 			});
 		watcher->setFuture (future);
 	}
@@ -264,8 +267,15 @@ namespace jOS
 
 	void Connection::itdbCopyFinished ()
 	{
+		auto watcher = dynamic_cast<QFutureWatcher<bool>*> (sender ());
+		const auto result = watcher->result ();
+		watcher->deleteLater ();
+
 		qDebug () << Q_FUNC_INFO
-				<< "copy finished";
+				<< "copy finished, is good?"
+				<< result;
+
+		CopiedDb_ = result;
 	}
 }
 }

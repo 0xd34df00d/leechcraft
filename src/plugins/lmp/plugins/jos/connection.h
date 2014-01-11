@@ -51,6 +51,8 @@ namespace jOS
 		const MobileRaii<afc_client_t> AFC_;
 
 		const QString TempDirPath_;
+
+		bool CopiedDb_ = false;
 	public:
 		enum CopyOption
 		{
