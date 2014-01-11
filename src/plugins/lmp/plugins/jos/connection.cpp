@@ -218,7 +218,7 @@ namespace jOS
 		return result;
 	}
 
-	void Connection::CopyDir (const QString& dir, CopyOptions options)
+	bool Connection::CopyDir (const QString& dir, CopyOptions options)
 	{
 		qDebug () << "copying dir" << dir;
 
@@ -228,17 +228,23 @@ namespace jOS
 			if (options & CopyCreate)
 				QDir {}.mkpath (TempDirPath_ + dir);
 
-			return;
+			return true;
 		}
 
+		bool result = true;
+
 		for (const auto& file : ReadDir (dir, QDir::Files | QDir::NoDotAndDotDot))
-			CopyFile (dir + '/' + file);
+			if (!CopyFile (dir + '/' + file))
+				result = false;
 
 		for (const auto& subdir : ReadDir (dir, QDir::Dirs | QDir::NoDotAndDotDot))
-			CopyDir (dir + '/' + subdir);
+			if (!CopyDir (dir + '/' + subdir))
+				result = false;
+
+		return result;
 	}
 
-	void Connection::CopyFile (const QString& file)
+	bool Connection::CopyFile (const QString& file)
 	{
 		qDebug () << "copying file" << file;
 
@@ -249,20 +255,48 @@ namespace jOS
 		dir.mkpath (localDirPath);
 
 		QFile localFile { localFilePath };
-		localFile.open (QIODevice::WriteOnly);
+		if (!localFile.open (QIODevice::WriteOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open local file at"
+					<< localFilePath
+					<< localFile.errorString ();
+			return false;
+		}
 
 		AfcFile srcFile { file, this };
-		srcFile.open (QIODevice::ReadOnly);
+		if (!srcFile.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open AFC file at"
+					<< file
+					<< srcFile.errorString ();
+			return false;
+		}
 
 		for (qint64 copied = 0, size = srcFile.size (); copied < size; )
 		{
 			const auto& data = srcFile.read (1024 * 1024);
 			if (data.isEmpty ())
-				break;
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "got empty data chunk";
+				return false;
+			}
 
-			localFile.write (data);
+			if (localFile.write (data) == -1)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot write to local file"
+						<< localFilePath
+						<< localFile.errorString ();
+				return false;
+			}
+
 			copied += data.size ();
 		}
+
+		return true;
 	}
 
 	void Connection::itdbCopyFinished ()
