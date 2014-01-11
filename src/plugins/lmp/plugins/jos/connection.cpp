@@ -44,11 +44,13 @@ namespace jOS
 	{
 		QString GetTemporaryDir ()
 		{
-			QTemporaryFile file { "lmp_jos_XXXXXX" };
+			const auto& tempLocation = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
+
+			QTemporaryFile file { tempLocation + '/' + "lmp_jos_XXXXXX" };
 			if (file.open ())
 				return file.fileName ();
 			else
-				return QDesktopServices::storageLocation (QDesktopServices::TempLocation);
+				return tempLocation + "/lmp_jos";
 		}
 	}
 
@@ -126,7 +128,6 @@ namespace jOS
 
 				lastKey.clear ();
 			}
-
 
 		qWarning () << Q_FUNC_INFO
 				<< "couldn't find property"
