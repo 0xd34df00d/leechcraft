@@ -26,6 +26,7 @@ set (JOS_SRCS
 	connection.cpp
 	uploadmanager.cpp
 	afcfile.cpp
+	gpoddb.cpp
 	)
 
 #CreateTrs ("lmp_jos" "en;ru_RU" JOS_COMPILED_TRANSLATIONS)
