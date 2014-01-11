@@ -77,7 +77,7 @@ namespace jOS
 				<< TempDirPath_;
 
 		for (const auto& dir : QStringList { "Artwork", "Device", "iTunes" })
-			CopyDir ("/iTunes_Control/" + dir);
+			CopyDir ("/iTunes_Control/" + dir, CopyCreate);
 
 		qDebug () << "done";
 	}
@@ -143,6 +143,18 @@ namespace jOS
 		return {};
 	}
 
+	namespace
+	{
+		template<typename AFC>
+		afc_error_t TryReadDir (const AFC& afc, const QString& path)
+		{
+			char **list = nullptr;
+			const auto ret = afc_read_directory (afc, path.toUtf8 ().constData (), &list);
+			ListCleanup (list);
+			return ret;
+		}
+	}
+
 	QStringList Connection::ReadDir (const QString& path, QDir::Filters filters)
 	{
 		char **list = nullptr;
@@ -191,9 +203,18 @@ namespace jOS
 		return result;
 	}
 
-	void Connection::CopyDir (const QString& dir)
+	void Connection::CopyDir (const QString& dir, CopyOptions options)
 	{
 		qDebug () << "copying dir" << dir;
+
+		if (TryReadDir (AFC_, dir) == AFC_E_OBJECT_NOT_FOUND)
+		{
+			qDebug () << "dir not found";
+			if (options & CopyCreate)
+				QDir {}.mkpath (TempDirPath_ + dir);
+
+			return;
+		}
 
 		for (const auto& file : ReadDir (dir, QDir::Files | QDir::NoDotAndDotDot))
 			CopyFile (dir + '/' + file);

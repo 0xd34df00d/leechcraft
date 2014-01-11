@@ -50,6 +50,13 @@ namespace jOS
 
 		const QString TempDirPath_;
 	public:
+		enum CopyOption
+		{
+			NoCopyOption = 0x0,
+			CopyCreate = 0x1
+		};
+		Q_DECLARE_FLAGS (CopyOptions, CopyOption)
+
 		Connection (const QByteArray&);
 
 		afc_client_t GetAFC () const;
@@ -57,7 +64,7 @@ namespace jOS
 		QString GetFileInfo (const QString&, const QString&) const;
 	private:
 		QStringList ReadDir (const QString&, QDir::Filters);
-		void CopyDir (const QString&);
+		void CopyDir (const QString&, CopyOptions = NoCopyOption);
 		void CopyFile (const QString&);
 	};
 
@@ -65,3 +72,5 @@ namespace jOS
 }
 }
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::jOS::Connection::CopyOptions)
