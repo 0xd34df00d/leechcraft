@@ -22,6 +22,7 @@ set (JOS_SRCS
 	devmanager.cpp
 	connection.cpp
 	uploadmanager.cpp
+	afcfile.cpp
 	)
 
 #CreateTrs ("lmp_jos" "en;ru_RU" JOS_COMPILED_TRANSLATIONS)
