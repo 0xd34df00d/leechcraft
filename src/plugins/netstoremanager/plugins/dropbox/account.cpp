@@ -157,7 +157,7 @@ namespace DBox
 		{
 			//Remove /Public from second params
 			emit gotFileUrl (QUrl (QString ("https://dl.dropbox.com/u/%1/%2")
-					.arg (UserID_, QString (id).remove ("/Public/"))));
+					.arg (UserID_, QString (id).remove ("/Public/"))), id);
 			return;
 		}
 
@@ -338,7 +338,7 @@ namespace DBox
 	void Account::handleSharedFileUrl (const QUrl& url, const QDateTime& expiredDate)
 	{
 		Q_UNUSED (expiredDate)
-		emit gotFileUrl (url);
+		emit gotFileUrl (url, QByteArray ());
 	}
 
 	void Account::handleGotNewItem (const DBoxItem& item)

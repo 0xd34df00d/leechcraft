@@ -16,6 +16,7 @@ include_directories (${NETSTOREMANAGER_INCLUDE_DIR}
 set (DBOX_SRCS
 	account.cpp
 	authmanager.cpp
+	chunkiodevice.cpp
 	core.cpp
 	drivemanager.cpp
 	dropbox.cpp

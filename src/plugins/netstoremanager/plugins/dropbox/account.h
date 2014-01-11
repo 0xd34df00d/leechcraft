@@ -122,7 +122,7 @@ namespace DBox
 
 		void gotListing (const QList<StorageItem>& items);
 		void listingUpdated ();
-		void gotFileUrl (const QUrl& url);
+		void gotFileUrl (const QUrl& url, const QByteArray& id);
 
 		void gotChanges (const QList<Change>& changes);
 

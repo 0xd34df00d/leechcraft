@@ -39,6 +39,7 @@
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include "account.h"
+#include "chunkiodevice.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -322,6 +323,41 @@ namespace DBox
 
 	void DriveManager::RequestChunkUpload (const QString& filePath, const QString& parent)
 	{
+		ChunkIODevice *chunkFile = new ChunkIODevice (filePath, this);
+		if (!chunkFile->open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file: "
+					<< chunkFile->errorString ();
+			return;
+		}
+		emit uploadStatusChanged (tr ("Uploading..."), filePath);
+
+		QFileInfo info (filePath);
+		const QUrl url (QString ("https://api-content.dropbox.com/1/chunked_upload?root=%1&path=%2&access_token=%3")
+				.arg ("dropbox")
+				.arg (parent + "/" + info.fileName ())
+				.arg (Account_->GetAccessToken ()));
+		QNetworkRequest request (url);
+		request.setPriority (QNetworkRequest::LowPriority);
+		request.setHeader (QNetworkRequest::ContentLengthHeader, info.size ());
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->
+				GetNetworkAccessManager ()->put (request, chunkFile->GetNextChunk ());
+		Reply2ChunkFile_ [reply] = chunkFile;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleChunkUploadFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleUploadError (QNetworkReply::NetworkError)));
+		connect (reply,
+				SIGNAL (uploadProgress (qint64, qint64)),
+				this,
+				SLOT (handleUploadProgress (qint64, qint64)));
 	}
 
 	void DriveManager::DownloadFile (const QString& id, const QString& filePath,
@@ -577,6 +613,33 @@ namespace DBox
 		}
 
 		 ParseError (map);
+	}
+
+	void DriveManager::handleChunkUploadFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		const auto& map = res.toMap ();
+		qDebug () << map;
+
+		if (!map.contains ("error"))
+		{
+			return;
+		}
+
+		ParseError (map);
 	}
 
 	void DriveManager::handleUploadProgress (qint64 uploaded, qint64 total)

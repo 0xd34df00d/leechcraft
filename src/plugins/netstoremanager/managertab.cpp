@@ -252,9 +252,9 @@ namespace NetStoreManager
 						this,
 						SLOT (handleGotNewItem (StorageItem, QByteArray)));
 				connect (acc->GetQObject (),
-						SIGNAL (gotFileUrl (QUrl)),
+						SIGNAL (gotFileUrl (QUrl, QByteArray)),
 						this,
-						SLOT (handleGotFileUrl (QUrl)));
+						SLOT (handleGotFileUrl (QUrl, QByteArray)));
 				connect (acc->GetQObject (),
 						SIGNAL (gotChanges (QList<Change>)),
 						this,
@@ -866,7 +866,7 @@ namespace NetStoreManager
 
 		const QByteArray id = GetCurrentID ();
 		if (Id2Item_ [id].Shared_)
-			handleGotFileUrl (Id2Item_ [id].ShareUrl_);
+			handleGotFileUrl (Id2Item_ [id].ShareUrl_, id);
 		else
 			qobject_cast<ISupportFileListings*> (acc->GetQObject ())->RequestUrl (id);
 	}
@@ -1009,7 +1009,7 @@ namespace NetStoreManager
 				acc->GetUniqueID ());
 	}
 
-	void ManagerTab::handleGotFileUrl (const QUrl& url)
+	void ManagerTab::handleGotFileUrl (const QUrl& url, const QByteArray&)
 	{
 		if (url.isEmpty () ||
 				!url.isValid ())

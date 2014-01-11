@@ -49,6 +49,7 @@ namespace NetStoreManager
 namespace DBox
 {
 	class Account;
+	class ChunkIODevice;
 
 	struct DBoxItem
 	{
@@ -93,6 +94,7 @@ namespace DBox
 		QQueue<std::function<void (void)>> ApiCallQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
+		QHash<QNetworkReply*, ChunkIODevice*> Reply2ChunkFile_;
 		bool SecondRequestIfNoItems_;
 
 	public:
@@ -138,6 +140,7 @@ namespace DBox
 		void handleCopyItem ();
 		void handleMoveItem ();
 		void handleUploadFinished ();
+		void handleChunkUploadFinished ();
 		void handleUploadProgress (qint64 uploaded, qint64 total);
 		void handleUploadError (QNetworkReply::NetworkError error);
 

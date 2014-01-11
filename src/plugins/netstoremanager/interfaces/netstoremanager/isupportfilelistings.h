@@ -145,7 +145,7 @@ namespace NetStoreManager
 	protected:
 		virtual void gotListing (const QList<StorageItem>& items) = 0;
 		virtual void listingUpdated () = 0;
-		virtual void gotFileUrl (const QUrl& url) = 0;
+		virtual void gotFileUrl (const QUrl& url, const QByteArray& id) = 0;
 
 		virtual void gotChanges (const QList<Change>& changes) = 0;
 		virtual void gotNewItem (const StorageItem& item, const QByteArray& parentId) = 0;
