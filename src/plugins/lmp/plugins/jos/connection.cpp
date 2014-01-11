@@ -246,7 +246,10 @@ namespace jOS
 		dir.mkpath (localDirPath);
 
 		QFile localFile { localFilePath };
+		localFile.open (QIODevice::WriteOnly);
+
 		AfcFile srcFile { file, this };
+		srcFile.open (QIODevice::ReadOnly);
 
 		for (qint64 copied = 0, size = srcFile.size (); copied < size; )
 		{
