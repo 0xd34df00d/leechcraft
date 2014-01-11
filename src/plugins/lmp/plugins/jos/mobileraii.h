@@ -40,6 +40,16 @@ namespace LMP
 {
 namespace jOS
 {
+	class MobileRaiiException : public std::runtime_error
+	{
+		uint16_t ErrCode_;
+	public:
+		MobileRaiiException (const std::string&, uint16_t);
+		~MobileRaiiException () noexcept;
+
+		uint16_t GetErrCode () const;
+	};
+
 	template<typename T, typename Deleter = int16_t (*) (T)>
 	class MobileRaii
 	{
@@ -55,7 +65,7 @@ namespace jOS
 			if (const auto ret = c (&Type_))
 			{
 				const auto& errStr = "Cannot create something: " + QString::number (ret) + " for " + typeid (T).name ();
-				throw std::runtime_error (errStr.toUtf8 ().constData ());
+				throw MobileRaiiException (errStr.toUtf8 ().constData (), ret);
 			}
 		}
 

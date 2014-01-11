@@ -28,3 +28,27 @@
  **********************************************************************/
 
 #include "mobileraii.h"
+
+namespace LeechCraft
+{
+namespace LMP
+{
+namespace jOS
+{
+	MobileRaiiException::MobileRaiiException (const std::string& str, uint16_t err)
+	: runtime_error { str }
+	, ErrCode_ { err }
+	{
+	}
+
+	MobileRaiiException::~MobileRaiiException () noexcept
+	{
+	}
+
+	uint16_t MobileRaiiException::GetErrCode () const
+	{
+		return ErrCode_;
+	}
+}
+}
+}
