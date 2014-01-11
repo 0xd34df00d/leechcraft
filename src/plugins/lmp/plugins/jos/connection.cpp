@@ -84,7 +84,7 @@ namespace jOS
 		return AFC_;
 	}
 
-	QString Connection::GetFileInfo (const QString& path, const QString& key)
+	QString Connection::GetFileInfo (const QString& path, const QString& key) const
 	{
 		char **info = nullptr;
 		if (const auto err = afc_get_file_info (AFC_, path.toUtf8 ().constData (), &info))
