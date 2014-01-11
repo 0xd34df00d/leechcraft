@@ -54,8 +54,8 @@ namespace jOS
 
 		afc_client_t GetAFC () const;
 
+		QString GetFileInfo (const QString&, const QString&) const;
 	private:
-		QString GetFileInfo (const QString&, const QString&);
 		QStringList ReadDir (const QString&, QDir::Filters);
 		void CopyDir (const QString&);
 		void CopyFile (const QString&);
