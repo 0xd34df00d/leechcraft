@@ -38,11 +38,15 @@ namespace Azoth
 	class TextEdit : public QTextEdit
 	{
 		Q_OBJECT
+
+		QFont DefaultFont_;
 	public:
 		TextEdit (QWidget *parent = 0);
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	private slots:
+		void handleMsgFontSize ();
+
 		void deleteWord ();
 		void deleteBOL ();
 		void deleteEOL ();
