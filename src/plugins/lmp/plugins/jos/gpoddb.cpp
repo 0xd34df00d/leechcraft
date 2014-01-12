@@ -138,7 +138,8 @@ namespace jOS
 						suffix [i].toAscii ());
 		}
 
-		track->ipod_path = strdup (filename.toUtf8 ());
+		track->ipod_path = strdup (filename.toUtf8 ().mid (1));
+		itdb_filename_fs2ipod (track->ipod_path);
 
 		itdb_track_add (DB_, track, -1);
 
