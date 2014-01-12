@@ -41,17 +41,26 @@ namespace jOS
 {
 	class GpodDb : public QObject
 	{
-		Q_OBJECT
-
 		Itdb_iTunesDB *DB_ = nullptr;;
+		const QString LocalPath_;
 	public:
-		GpodDb (const QString&, QObject* = 0);
+		GpodDb (const QString& localPath, QObject* = 0);
 		~GpodDb ();
-	private slots:
-		void handleLoadFinished ();
-	signals:
-		void loaded ();
-		void error (const QString&);
+
+		enum class Result
+		{
+			Success,
+			NotFound,
+			OtherError
+		};
+
+		struct InitResult
+		{
+			Result Result_;
+			QString Message_;
+		};
+
+		InitResult Load ();
 	};
 }
 }

@@ -41,35 +41,10 @@ namespace LMP
 namespace jOS
 {
 	GpodDb::GpodDb (const QString& path, QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
+	, LocalPath_ { path }
 	{
-		qDebug () << Q_FUNC_INFO;
-
-		auto watcher = new QFutureWatcher<QPair<decltype (DB_), QString>> (this);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleLoadFinished ()));
-		watcher->setFuture (QtConcurrent::run ([path] () -> QPair<decltype (DB_), QString>
-				{
-					GError *gerr = nullptr;
-					const auto db = itdb_parse (QDir::toNativeSeparators (path).toUtf8 ().constData (), &gerr);
-
-					if (db)
-						return { db, {} };
-
-					QString text;
-					if (gerr)
-					{
-						text = tr ("Error loading iTunes database: %1.")
-								.arg (gerr->message);
-						g_error_free (gerr);
-					}
-					else
-						text = tr ("Error loading iTunes database.");
-
-					return { db, text };
-				}));
+		qDebug () << Q_FUNC_INFO << path;
 	}
 
 	GpodDb::~GpodDb ()
@@ -77,18 +52,31 @@ namespace jOS
 		itdb_free (DB_);
 	}
 
-	void GpodDb::handleLoadFinished ()
+	GpodDb::InitResult GpodDb::Load ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<QPair<decltype (DB_), QString>>*> (sender ());
-		const auto& result = watcher->result ();
-		watcher->deleteLater ();
+		const auto& nativePath = QDir::toNativeSeparators (LocalPath_).toUtf8 ();
+		GError *gerr = nullptr;
+		if ((DB_ = itdb_parse (nativePath, &gerr)))
+			return { Result::Success, {} };
 
-		if (!result.second.isEmpty ())
-			emit error (result.second);
-		else
+		if (gerr && gerr->domain == ITDB_FILE_ERROR && gerr->code == ITDB_FILE_ERROR_NOTFOUND)
 		{
-			DB_ = result.first;
-			emit loaded ();
+			g_error_free (gerr);
+			return { Result::NotFound, {} };
+		}
+
+		QString text;
+		if (gerr)
+		{
+			text = tr ("Error loading iTunes database: %1.")
+					.arg (QString::fromUtf8 (gerr->message));
+			g_error_free (gerr);
+		}
+		else
+			text = tr ("Error loading iTunes database.");
+
+		return { Result::OtherError, text };
+		{
 		}
 	}
 }
