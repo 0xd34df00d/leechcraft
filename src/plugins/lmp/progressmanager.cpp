@@ -85,6 +85,7 @@ namespace LMP
 		if (done == total)
 		{
 			Model_->removeRow (row.first ()->row ());
+			hash.remove (syncer);
 			return;
 		}
 
