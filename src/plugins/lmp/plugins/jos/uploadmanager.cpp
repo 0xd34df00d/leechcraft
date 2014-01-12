@@ -65,6 +65,8 @@ namespace jOS
 						 tr ("Unable to contact the device: %1.").arg (e.what ()));
 				return;
 			}
+
+		AvailableConnections_ [to]->Upload (localPath, Infos_.take (origLocalPath));
 	}
 }
 }
