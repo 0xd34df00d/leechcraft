@@ -94,6 +94,8 @@ namespace jOS
 			text = tr ("Error loading iTunes database.");
 
 		return { Result::OtherError, text };
+	}
+
 	bool GpodDb::Save () const
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -145,6 +147,10 @@ namespace jOS
 		return track;
 	}
 
+	std::shared_ptr<void> GpodDb::GetSyncGuard () const
+	{
+		itdb_start_sync (DB_);
+		return std::shared_ptr<void> (nullptr, [this] (void*) { itdb_stop_sync (DB_); });
 	}
 }
 }

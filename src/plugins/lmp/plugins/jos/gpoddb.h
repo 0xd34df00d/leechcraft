@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 
 typedef struct _Itdb_iTunesDB Itdb_iTunesDB;
@@ -69,6 +70,8 @@ namespace jOS
 		bool Save () const;
 
 		Itdb_Track* AddTrack (const QString&, const QString&, const UnmountableFileInfo&);
+
+		std::shared_ptr<void> GetSyncGuard () const;
 	};
 }
 }
