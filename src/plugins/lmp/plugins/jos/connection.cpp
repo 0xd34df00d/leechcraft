@@ -59,6 +59,12 @@ namespace jOS
 		}
 	}
 
+	struct UploadResult
+	{
+		QString LocalPath_;
+		QString ErrorString_;
+	};
+
 	Connection::Connection (const QByteArray& udid)
 	: Device_ { MakeRaii<idevice_t> ([udid] (idevice_t *dev)
 				{ return idevice_new (dev, udid.constData ()); },
@@ -455,6 +461,50 @@ namespace jOS
 				}));
 	}
 
+	void Connection::rotateUploadQueue ()
+	{
+		if (UploadQueue_.isEmpty ())
+			return;
+
+		const auto& task = UploadQueue_.takeFirst ();
+		qDebug () << Q_FUNC_INFO << "uploading" << task.LocalPath_;
+		const auto& future = QtConcurrent::run ([this, task] () -> UploadResult
+				{
+					const auto& filename = GetNextFilename (task.LocalPath_);
+					if (filename.isEmpty ())
+						return { task.LocalPath_, tr ("Cannot get remote filename") };
+
+					if (!CopyIODevice (QFile { task.LocalPath_ }, task.LocalPath_,
+								AfcFile { filename, this }, filename))
+						return { task.LocalPath_, tr ("Cannot copy file") };
+
+					const auto track = DB_->AddTrack (task.LocalPath_, filename, task.Info_);
+					return { task.LocalPath_, {} };
+				});
+
+		CurUpWatcher_ = new QFutureWatcher<UploadResult> ();
+		connect (CurUpWatcher_,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleTrackUploaded ()));
+		CurUpWatcher_->setFuture (future);
+	}
+
+	void Connection::handleTrackUploaded ()
+	{
+		const auto watcher = dynamic_cast<QFutureWatcher<UploadResult>*> (sender ());
+		const auto& result = watcher->result ();
+		watcher->deleteLater ();
+
+		qDebug () << Q_FUNC_INFO << result.LocalPath_ << result.ErrorString_;
+
+		emit uploadFinished (result.LocalPath_,
+				result.ErrorString_.isEmpty () ? QFile::NoError : QFile::UnspecifiedError,
+				result.ErrorString_);
+
+		rotateUploadQueue ();
+	}
+
 	void Connection::handleDbLoaded ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<QString>*> (sender ());
@@ -471,6 +521,7 @@ namespace jOS
 			return;
 		}
 
+		rotateUploadQueue ();
 	}
 }
 }

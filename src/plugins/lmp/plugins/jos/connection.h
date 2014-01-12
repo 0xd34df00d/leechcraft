@@ -33,15 +33,22 @@
 #include <QObject>
 #include <QDir>
 #include <libimobiledevice/afc.h>
+#include <interfaces/lmp/iunmountablesync.h>
 #include "mobileraii.h"
+
+template<typename T>
+class QFutureWatcher;
 
 namespace LeechCraft
 {
 namespace LMP
 {
+struct UnmountableFileInfo;
+
 namespace jOS
 {
 	class GpodDb;
+	struct UploadResult;
 
 	class Connection : public QObject
 	{
@@ -57,6 +64,15 @@ namespace jOS
 		bool CopiedDb_ = false;
 
 		GpodDb *DB_ = nullptr;
+
+		struct QueueItem
+		{
+			QString LocalPath_;
+			UnmountableFileInfo Info_;
+		};
+		QList<QueueItem> UploadQueue_;
+
+		QFutureWatcher<UploadResult> *CurUpWatcher_ = nullptr;
 	public:
 		enum CopyOption
 		{
@@ -82,7 +98,12 @@ namespace jOS
 		bool UploadFile (const QString&);
 	private slots:
 		void itdbCopyFinished ();
+		void rotateUploadQueue ();
+		void handleTrackUploaded ();
 		void handleDbLoaded ();
+	signals:
+		void error (const QString&);
+		void uploadFinished (const QString&, QFile::FileError, const QString&);
 	};
 
 	typedef std::shared_ptr<Connection> Connection_ptr;
