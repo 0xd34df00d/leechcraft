@@ -68,8 +68,8 @@ namespace jOS
 		QString GetFileInfo (const QString&, const QString&) const;
 	private:
 		QStringList ReadDir (const QString&, QDir::Filters);
-		bool CopyDir (const QString&, CopyOptions = NoCopyOption);
-		bool CopyFile (const QString&);
+		bool DownloadDir (const QString&, CopyOptions = NoCopyOption);
+		bool DownloadFile (const QString&);
 	private slots:
 		void itdbCopyFinished ();
 	};

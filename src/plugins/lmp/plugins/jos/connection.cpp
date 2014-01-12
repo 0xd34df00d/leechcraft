@@ -87,7 +87,7 @@ namespace jOS
 			{
 				bool result = true;
 				for (const auto& dir : QStringList { "Artwork", "Device", "iTunes" })
-					if (!CopyDir ("/iTunes_Control/" + dir, CopyCreate))
+					if (!DownloadDir ("/iTunes_Control/" + dir, CopyCreate))
 						result = false;
 				return result;
 			});
@@ -218,7 +218,7 @@ namespace jOS
 		return result;
 	}
 
-	bool Connection::CopyDir (const QString& dir, CopyOptions options)
+	bool Connection::DownloadDir (const QString& dir, CopyOptions options)
 	{
 		qDebug () << "copying dir" << dir;
 
@@ -234,17 +234,17 @@ namespace jOS
 		bool result = true;
 
 		for (const auto& file : ReadDir (dir, QDir::Files | QDir::NoDotAndDotDot))
-			if (!CopyFile (dir + '/' + file))
+			if (!DownloadFile (dir + '/' + file))
 				result = false;
 
 		for (const auto& subdir : ReadDir (dir, QDir::Dirs | QDir::NoDotAndDotDot))
-			if (!CopyDir (dir + '/' + subdir))
+			if (!DownloadDir (dir + '/' + subdir))
 				result = false;
 
 		return result;
 	}
 
-	bool Connection::CopyFile (const QString& file)
+	bool Connection::DownloadFile (const QString& file)
 	{
 		qDebug () << "copying file" << file;
 
