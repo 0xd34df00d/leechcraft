@@ -426,6 +426,7 @@ namespace jOS
 		DB_->Save ();
 
 		const auto& syncGuard = DB_->GetSyncGuard ();
+		Q_UNUSED (syncGuard);
 		for (const auto& dir : DbSubdirs)
 			if (!UploadDir ("/iTunes_Control/" + dir))
 				return false;
@@ -502,7 +503,7 @@ namespace jOS
 								AfcFile { filename, this }, filename))
 						return { task.LocalPath_, tr ("Cannot copy file") };
 
-					const auto track = DB_->AddTrack (task.LocalPath_, filename, task.Info_);
+					DB_->AddTrack (task.LocalPath_, filename, task.Info_);
 					return { task.LocalPath_, {} };
 				});
 
