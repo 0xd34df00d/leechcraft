@@ -82,6 +82,7 @@ namespace jOS
 		bool UploadFile (const QString&);
 	private slots:
 		void itdbCopyFinished ();
+		void handleDbLoaded ();
 	};
 
 	typedef std::shared_ptr<Connection> Connection_ptr;
