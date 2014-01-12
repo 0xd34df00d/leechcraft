@@ -85,6 +85,8 @@ namespace jOS
 
 		afc_client_t GetAFC () const;
 
+		void Upload (const QString&, const UnmountableFileInfo&);
+
 		QString GetFileInfo (const QString&, const QString&) const;
 		bool Exists (const QString&);
 	private:

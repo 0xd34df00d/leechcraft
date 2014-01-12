@@ -109,6 +109,14 @@ namespace jOS
 		return AFC_;
 	}
 
+	void Connection::Upload (const QString& localPath, const UnmountableFileInfo& info)
+	{
+		UploadQueue_.append ({ localPath, info });
+
+		if (DB_ && UploadQueue_.size () == 1)
+			rotateUploadQueue ();
+	}
+
 	namespace
 	{
 		void ListCleanup (char **info)
@@ -231,7 +239,7 @@ namespace jOS
 		afc_error_t TryReadDir (const AFC& afc, const QString& path)
 		{
 			char **list = nullptr;
-			const auto ret = afc_read_directory (afc, path.toUtf8 ().constData (), &list);
+			const auto ret = afc_read_directory (afc, path.toUtf8 (), &list);
 			ListCleanup (list);
 			return ret;
 		}
@@ -240,7 +248,7 @@ namespace jOS
 	QStringList Connection::ReadDir (const QString& path, QDir::Filters filters)
 	{
 		char **list = nullptr;
-		if (const auto err = afc_read_directory (AFC_, path.toUtf8 ().constData (), &list))
+		if (const auto err = afc_read_directory (AFC_, path.toUtf8 (), &list))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "error reading"
