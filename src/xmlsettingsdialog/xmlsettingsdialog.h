@@ -70,6 +70,7 @@ namespace Util
 			bool Valid_;
 			QPair<bool, QString> Label_;
 			QPair<bool, QString> Suffix_;
+			QPair<bool, QString> SpecialValue_;
 		};
 
 		XMLSETTINGSMANAGER_API XmlSettingsDialog ();

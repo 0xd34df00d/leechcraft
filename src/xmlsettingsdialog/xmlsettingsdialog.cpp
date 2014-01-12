@@ -530,25 +530,25 @@ namespace Util
 		LangElements returning;
 		returning.Valid_ = true;
 
-		QDomElement label = parent.firstChildElement ("label");
-		if (!label.isNull ())
+		auto getElem = [&parent, this] (const QString& elemName) -> QPair<bool, QString>
 		{
-			returning.Label_.first = true;
-			returning.Label_.second = QCoreApplication::translate (qPrintable (Basename_),
-					label.attribute ("value").toUtf8 ().constData (),
-					0,
-					QCoreApplication::Encoding::UnicodeUTF8);
-		}
+			const auto& label = parent.firstChildElement (elemName);
+			if (label.isNull ())
+				return {};
 
-		QDomElement suffix = parent.firstChildElement ("suffix");
-		if (!suffix.isNull ())
-		{
-			returning.Suffix_.first = true;
-			returning.Suffix_.second = QCoreApplication::translate (qPrintable (Basename_),
-					suffix.attribute ("value").toUtf8 ().constData (),
-					0,
-					QCoreApplication::Encoding::UnicodeUTF8);
-		}
+			return
+			{
+				true,
+				QCoreApplication::translate (qPrintable (Basename_),
+						label.attribute ("value").toUtf8 ().constData (),
+						0,
+						QCoreApplication::Encoding::UnicodeUTF8)
+			};
+		};
+
+		returning.Label_ = getElem ("label");
+		returning.Suffix_ = getElem ("suffix");
+		returning.SpecialValue_ = getElem ("specialValue");
 		return returning;
 	}
 
