@@ -77,6 +77,9 @@ namespace jOS
 		QStringList ReadDir (const QString&, QDir::Filters);
 		bool DownloadDir (const QString&, CopyOptions = NoCopyOption);
 		bool DownloadFile (const QString&);
+		bool MkDir (const QString&);
+		bool UploadDir (const QString&);
+		bool UploadFile (const QString&);
 	private slots:
 		void itdbCopyFinished ();
 	};

@@ -35,7 +35,9 @@
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <libimobiledevice/lockdown.h>
+#include <gpod/itdb.h>
 #include "afcfile.h"
+#include "gpoddb.h"
 
 namespace LeechCraft
 {
@@ -362,7 +364,45 @@ namespace jOS
 
 		return CopyIODevice (AfcFile { file, this }, file, QFile { localFilePath }, localFilePath);
 
+	bool Connection::MkDir (const QString& path)
+	{
+		const auto err = afc_make_directory (AFC_, path.toUtf8 ());
+		if (err)
+			qWarning () << Q_FUNC_INFO
+					<< path
+					<< err;
 
+		return !err;
+	}
+
+	bool Connection::UploadDir (const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path;
+		if (!Exists (path) && !MkDir (path))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot mkdir"
+					<< path;
+			return false;
+		}
+
+		const QDir localDir { TempDirPath_ + '/' + path };
+		for (const auto& file : localDir.entryList (QDir::Files | QDir::NoDotAndDotDot))
+			if (!UploadFile (path + '/' + file))
+				return false;
+
+		for (const auto& dir : localDir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+			if (!UploadDir (path + '/' + dir))
+				return false;
+
+		return true;
+	}
+
+	bool Connection::UploadFile (const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path;
+		return CopyIODevice (QFile { TempDirPath_ + '/' + path }, path, AfcFile { path, this }, path);
+	}
 
 
 
