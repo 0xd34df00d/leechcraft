@@ -41,6 +41,8 @@ namespace LMP
 {
 namespace jOS
 {
+	class GpodDb;
+
 	class Connection : public QObject
 	{
 		Q_OBJECT
@@ -53,6 +55,8 @@ namespace jOS
 		const QString TempDirPath_;
 
 		bool CopiedDb_ = false;
+
+		GpodDb *DB_ = nullptr;
 	public:
 		enum CopyOption
 		{

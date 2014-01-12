@@ -379,6 +379,58 @@ namespace jOS
 				<< result;
 
 		CopiedDb_ = result;
+
+		if (!result)
+			emit error (tr ("Error loading iTunes database from the device."));
+
+		DB_ = new GpodDb (TempDirPath_, this);
+		auto loadWatcher = new QFutureWatcher<QString> (this);
+		connect (loadWatcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleDbLoaded ()));
+
+		loadWatcher->setFuture (QtConcurrent::run ([this] ()
+				{
+					qDebug () << Q_FUNC_INFO << "loading db...";
+					auto res = DB_->Load ();
+					if (res.Result_ != GpodDb::Result::NotFound)
+						return res.Message_;
+
+					qDebug () << "cannot find one, reinitializing the device";
+
+					res = DB_->Reinitialize ();
+
+					if (res.Result_ != GpodDb::Result::Success)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "failed to reinitialize";
+						return res.Message_;
+					}
+
+					if (!UploadDir ("/iTunes_Control/Music"))
+						return tr ("Cannot upload Music directory after reinitializing");
+
+					return DB_->Load ().Message_;
+				}));
+	}
+
+	void Connection::handleDbLoaded ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QString>*> (sender ());
+		const auto& msg = watcher->result ();
+		watcher->deleteLater ();
+
+		if (!msg.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot load database:"
+					<< msg;
+			delete DB_;
+			DB_ = nullptr;
+			return;
+		}
+
 	}
 }
 }
