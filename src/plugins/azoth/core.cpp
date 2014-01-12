@@ -2233,6 +2233,8 @@ namespace Azoth
 			{
 				qWarning () << Q_FUNC_INFO
 						<< item
+						<< "from"
+						<< sender ()
 						<< "is not a valid ICLEntry";
 				continue;
 			}
