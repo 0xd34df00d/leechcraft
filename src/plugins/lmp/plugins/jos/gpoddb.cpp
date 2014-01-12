@@ -32,6 +32,7 @@
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
 #include <QtDebug>
+#include <interfaces/lmp/iunmountablesync.h>
 #include <gpod/itdb.h>
 
 namespace LeechCraft
@@ -93,8 +94,42 @@ namespace jOS
 			text = tr ("Error loading iTunes database.");
 
 		return { Result::OtherError, text };
+	Itdb_Track* GpodDb::AddTrack (const QString& path, const QString& filename, const UnmountableFileInfo& info)
+	{
+		auto dup = [] (const QString& str) { return strdup (str.toUtf8 ().constData ()); };
+
+		const auto track = itdb_track_new ();
+		track->track_nr = info.TrackNumber_;
+		track->title = dup (info.TrackTitle_);
+		track->artist = dup (info.Artist_);
+		track->album = dup (info.Album_);
+		track->year = info.AlbumYear_;
+		track->genre = dup (info.Genres_.join (" / "));
+		track->size = QFileInfo { path }.size ();
+
+		track->transferred = 1;
+
+		track->filetype = strdup ("mp3");
+
+		const auto& suffix = filename.section ('.', -1, -1).toUpper ();
+		track->filetype_marker = 0;
+		for (int i = 0; i < 4; ++i)
 		{
+			track->filetype_marker <<= 8;
+			track->filetype_marker |= (i >= suffix.length () ?
+						' ' :
+						suffix [i].toAscii ());
 		}
+
+		track->ipod_path = strdup (filename.toUtf8 ());
+
+		itdb_track_add (DB_, track, -1);
+
+		itdb_playlist_add_track (itdb_playlist_mpl (DB_), track, -1);
+
+		return track;
+	}
+
 	}
 }
 }

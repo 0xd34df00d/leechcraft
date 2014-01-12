@@ -32,11 +32,14 @@
 #include <QObject>
 
 typedef struct _Itdb_iTunesDB Itdb_iTunesDB;
+typedef struct _Itdb_Track Itdb_Track;
 
 namespace LeechCraft
 {
 namespace LMP
 {
+struct UnmountableFileInfo;
+
 namespace jOS
 {
 	class GpodDb : public QObject
@@ -62,6 +65,8 @@ namespace jOS
 
 		InitResult Reinitialize ();
 		InitResult Load ();
+
+		Itdb_Track* AddTrack (const QString&, const QString&, const UnmountableFileInfo&);
 	};
 }
 }
