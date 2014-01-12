@@ -164,6 +164,57 @@ namespace jOS
 		return !GetFileInfo (path, "st_ifmt").isNull ();
 	}
 
+	QString Connection::GetNextFilename (const QString& origPath)
+	{
+		auto mdir = [] (int num)
+		{
+			return QString { "/iTunes_Control/Music/F%1" }
+					.arg (num, 2, 10, QChar { '0' });
+		};
+
+		int lastMD = 0;
+		for ( ; lastMD < 100; ++lastMD)
+			if (!Exists (mdir (lastMD)))
+				break;
+
+		if (!lastMD)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no music dirs were found";
+			return {};
+		}
+
+		const auto dirNum = qrand () % lastMD;
+		const auto& dir = mdir (dirNum);
+		if (!Exists (dir))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "chosen directory for"
+					<< dirNum
+					<< "of"
+					<< lastMD
+					<< "doesn't exist";
+			return {};
+		}
+
+		auto ext = origPath.section ('.', -1, -1).toLower ();
+		if (ext.isEmpty ())
+			ext = "mp3";
+
+		QString filename;
+		while (true)
+		{
+			filename = QString { "jos%1" }.arg (qrand () % 999999, 6, 10, QChar { '0' });
+			filename += '.' + ext;
+			filename.prepend (dir + '/');
+
+			if (!Exists (filename))
+				break;
+		}
+
+		return filename;
+	}
+
 	namespace
 	{
 		template<typename AFC>
