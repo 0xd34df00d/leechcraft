@@ -115,12 +115,13 @@ namespace jOS
 	QString Connection::GetFileInfo (const QString& path, const QString& key) const
 	{
 		char **info = nullptr;
-		if (const auto err = afc_get_file_info (AFC_, path.toUtf8 ().constData (), &info))
+		if (const auto err = afc_get_file_info (AFC_, path.toUtf8 (), &info))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "error getting info for"
-					<< path
-					<< err;
+			if (err != AFC_E_OBJECT_NOT_FOUND)
+				qWarning () << Q_FUNC_INFO
+						<< "error getting info for"
+						<< path
+						<< err;
 			return {};
 		}
 
