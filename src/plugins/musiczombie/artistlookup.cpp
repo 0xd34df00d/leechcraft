@@ -39,11 +39,19 @@ namespace LeechCraft
 {
 namespace MusicZombie
 {
+	namespace
+	{
+		QString NormalizeName (QString name)
+		{
+			return name.remove ('!');
+		}
+	}
+
 	ArtistLookup::ArtistLookup (const QString& name, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	{
 		QUrl url ("http://www.musicbrainz.org/ws/2/artist/");
-		url.addQueryItem ("query", "artist:" + name);
+		url.addQueryItem ("query", "artist:" + NormalizeName (name));
 		auto reply = nam->get (QNetworkRequest (url));
 		connect (reply,
 				SIGNAL (finished ()),
