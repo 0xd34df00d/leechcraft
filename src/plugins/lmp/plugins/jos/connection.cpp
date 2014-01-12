@@ -159,6 +159,11 @@ namespace jOS
 		return {};
 	}
 
+	bool Connection::Exists (const QString& path)
+	{
+		return !GetFileInfo (path, "st_ifmt").isNull ();
+	}
+
 	namespace
 	{
 		template<typename AFC>

@@ -66,6 +66,7 @@ namespace jOS
 		afc_client_t GetAFC () const;
 
 		QString GetFileInfo (const QString&, const QString&) const;
+		bool Exists (const QString&);
 	private:
 		QStringList ReadDir (const QString&, QDir::Filters);
 		bool DownloadDir (const QString&, CopyOptions = NoCopyOption);
