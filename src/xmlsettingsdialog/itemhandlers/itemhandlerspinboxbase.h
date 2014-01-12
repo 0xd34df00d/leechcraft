@@ -92,6 +92,8 @@ namespace LeechCraft
 					label->setText (langs.Label_.second);
 				if (langs.Suffix_.first)
 					box->setSuffix (langs.Suffix_.second);
+				if (langs.SpecialValue_.first)
+					box->setSpecialValueText (langs.SpecialValue_.second);
 			}
 
 			QVariant value = XSD_->GetValue (item);
