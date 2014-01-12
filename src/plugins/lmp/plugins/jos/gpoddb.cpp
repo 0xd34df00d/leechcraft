@@ -52,6 +52,23 @@ namespace jOS
 		itdb_free (DB_);
 	}
 
+	GpodDb::InitResult GpodDb::Reinitialize ()
+	{
+		const auto& nativePath = QDir::toNativeSeparators (LocalPath_).toUtf8 ();
+
+		GError *gerr = nullptr;
+		itdb_init_ipod (nativePath, nullptr, "leechpod", &gerr);
+
+		if (gerr)
+		{
+			const auto& msg = QString::fromUtf8 (gerr->message);
+			g_error_free (gerr);
+			return { Result::OtherError, msg };
+		}
+		else
+			return { Result::Success, {} };
+	}
+
 	GpodDb::InitResult GpodDb::Load ()
 	{
 		const auto& nativePath = QDir::toNativeSeparators (LocalPath_).toUtf8 ();

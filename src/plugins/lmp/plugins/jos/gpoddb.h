@@ -60,6 +60,7 @@ namespace jOS
 			QString Message_;
 		};
 
+		InitResult Reinitialize ();
 		InitResult Load ();
 	};
 }
