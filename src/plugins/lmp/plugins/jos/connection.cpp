@@ -245,6 +245,55 @@ namespace jOS
 		return result;
 	}
 
+	namespace
+	{
+		template<typename Src, typename Dest>
+		bool CopyIODevice (Src&& srcFile, const QString& srcId, Dest&& destFile, const QString& destId)
+		{
+			if (!srcFile.isOpen () && !srcFile.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot open src file at"
+						<< srcId
+						<< srcFile.errorString ();
+				return false;
+			}
+
+			if (!destFile.isOpen () && !destFile.open (QIODevice::WriteOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot open dest file at"
+						<< destId
+						<< srcFile.errorString ();
+				return false;
+			}
+
+			for (qint64 copied = 0, size = srcFile.size (); copied < size; )
+			{
+				const auto& data = srcFile.read (1024 * 1024);
+				if (data.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "got empty data chunk";
+					return false;
+				}
+
+				if (destFile.write (data) == -1)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot write to destination file"
+							<< destId
+							<< destFile.errorString ();
+					return false;
+				}
+
+				copied += data.size ();
+			}
+
+			return true;
+		}
+	}
+
 	bool Connection::DownloadFile (const QString& file)
 	{
 		qDebug () << "copying file" << file;
@@ -255,49 +304,12 @@ namespace jOS
 		QDir dir;
 		dir.mkpath (localDirPath);
 
-		QFile localFile { localFilePath };
-		if (!localFile.open (QIODevice::WriteOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open local file at"
-					<< localFilePath
-					<< localFile.errorString ();
-			return false;
-		}
+		return CopyIODevice (AfcFile { file, this }, file, QFile { localFilePath }, localFilePath);
 
-		AfcFile srcFile { file, this };
-		if (!srcFile.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open AFC file at"
-					<< file
-					<< srcFile.errorString ();
-			return false;
-		}
 
-		for (qint64 copied = 0, size = srcFile.size (); copied < size; )
-		{
-			const auto& data = srcFile.read (1024 * 1024);
-			if (data.isEmpty ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "got empty data chunk";
-				return false;
-			}
 
-			if (localFile.write (data) == -1)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot write to local file"
-						<< localFilePath
-						<< localFile.errorString ();
-				return false;
-			}
 
-			copied += data.size ();
-		}
 
-		return true;
 	}
 
 	void Connection::itdbCopyFinished ()
