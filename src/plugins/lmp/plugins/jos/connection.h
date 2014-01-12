@@ -96,6 +96,7 @@ namespace jOS
 		bool MkDir (const QString&);
 		bool UploadDir (const QString&);
 		bool UploadFile (const QString&);
+		bool UploadDatabase ();
 	private slots:
 		void itdbCopyFinished ();
 		void rotateUploadQueue ();

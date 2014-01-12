@@ -59,6 +59,8 @@ namespace jOS
 		}
 	}
 
+	const QStringList DbSubdirs { "Artwork", "Device", "iTunes" };
+
 	struct UploadResult
 	{
 		QString LocalPath_;
@@ -94,7 +96,7 @@ namespace jOS
 		const auto& future = QtConcurrent::run ([this] () -> bool
 			{
 				bool result = true;
-				for (const auto& dir : QStringList { "Artwork", "Device", "iTunes" })
+				for (const auto& dir : DbSubdirs)
 					if (!DownloadDir ("/iTunes_Control/" + dir, CopyCreate))
 						result = false;
 				return result;
@@ -369,6 +371,7 @@ namespace jOS
 		dir.mkpath (localDirPath);
 
 		return CopyIODevice (AfcFile { file, this }, file, QFile { localFilePath }, localFilePath);
+	}
 
 	bool Connection::MkDir (const QString& path)
 	{
@@ -410,8 +413,16 @@ namespace jOS
 		return CopyIODevice (QFile { TempDirPath_ + '/' + path }, path, AfcFile { path, this }, path);
 	}
 
+	bool Connection::UploadDatabase ()
+	{
+		DB_->Save ();
 
+		const auto& syncGuard = DB_->GetSyncGuard ();
+		for (const auto& dir : DbSubdirs)
+			if (!UploadDir ("/iTunes_Control/" + dir))
+				return false;
 
+		return true;
 	}
 
 	void Connection::itdbCopyFinished ()
@@ -464,7 +475,12 @@ namespace jOS
 	void Connection::rotateUploadQueue ()
 	{
 		if (UploadQueue_.isEmpty ())
+		{
+			if (!UploadDatabase ())
+				qWarning () << Q_FUNC_INFO
+						<< "error uploading database";
 			return;
+		}
 
 		const auto& task = UploadQueue_.takeFirst ();
 		qDebug () << Q_FUNC_INFO << "uploading" << task.LocalPath_;
