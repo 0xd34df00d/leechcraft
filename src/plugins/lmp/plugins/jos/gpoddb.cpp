@@ -94,6 +94,21 @@ namespace jOS
 			text = tr ("Error loading iTunes database.");
 
 		return { Result::OtherError, text };
+	bool GpodDb::Save () const
+	{
+		qDebug () << Q_FUNC_INFO;
+		GError *gerr = nullptr;
+		itdb_write (DB_, &gerr);
+
+		if (!gerr)
+			return true;
+
+		qDebug () << Q_FUNC_INFO
+				<< gerr->message;
+		g_error_free (gerr);
+		return false;
+	}
+
 	Itdb_Track* GpodDb::AddTrack (const QString& path, const QString& filename, const UnmountableFileInfo& info)
 	{
 		auto dup = [] (const QString& str) { return strdup (str.toUtf8 ().constData ()); };

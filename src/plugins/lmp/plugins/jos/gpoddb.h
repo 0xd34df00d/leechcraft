@@ -66,6 +66,8 @@ namespace jOS
 		InitResult Reinitialize ();
 		InitResult Load ();
 
+		bool Save () const;
+
 		Itdb_Track* AddTrack (const QString&, const QString&, const UnmountableFileInfo&);
 	};
 }
