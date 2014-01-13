@@ -464,6 +464,7 @@ namespace LMP
 		ActionRemoveSelected_ = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
 		ActionRemoveSelected_->setProperty ("ActionIcon", "list-remove");
 		ActionRemoveSelected_->setShortcut (Qt::Key_Delete);
+		ActionRemoveSelected_->setShortcutContext (Qt::WidgetShortcut);
 		connect (ActionRemoveSelected_,
 				SIGNAL (triggered ()),
 				this,
