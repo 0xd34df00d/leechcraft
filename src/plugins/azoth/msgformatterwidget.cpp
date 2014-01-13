@@ -208,6 +208,12 @@ namespace Azoth
 		return result;
 	}
 
+	void MsgFormatterWidget::HidePopups ()
+	{
+		if (SmilesTooltip_)
+			SmilesTooltip_->hide ();
+	}
+
 	void MsgFormatterWidget::CharFormatActor (std::function<void (QTextCharFormat*)> format)
 	{
 		QTextCursor cursor = Edit_->textCursor ();

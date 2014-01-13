@@ -75,6 +75,8 @@ namespace Azoth
 		bool HasCustomFormatting () const;
 		void Clear ();
 		QString GetNormalizedRichText () const;
+
+		void HidePopups ();
 	private:
 		void CharFormatActor (std::function<void (QTextCharFormat*)>);
 		void BlockFormatActor (std::function<void (QTextBlockFormat*)>);
