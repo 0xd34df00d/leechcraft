@@ -40,6 +40,7 @@
 #include <QActionGroup>
 #include <QGridLayout>
 #include <QToolButton>
+#include <QKeyEvent>
 #include <QApplication>
 #include <QtDebug>
 #include "interfaces/azoth/iresourceplugin.h"
@@ -50,6 +51,29 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	namespace
+	{
+		class SmilesTooltip : public QWidget
+		{
+		public:
+			SmilesTooltip (QWidget *parent)
+			: QWidget (parent, Qt::Tool)
+			{
+			}
+
+			void keyPressEvent (QKeyEvent *event)
+			{
+				if (event->key () == Qt::Key_Escape)
+				{
+					event->accept ();
+					hide ();
+				}
+				else
+					QWidget::keyPressEvent (event);
+			}
+		};
+	}
+
 	MsgFormatterWidget::MsgFormatterWidget (QTextEdit *edit, QWidget *parent)
 	: QWidget (parent)
 	, Edit_ (edit)
@@ -57,7 +81,7 @@ namespace Azoth
 	, StockBlockFormat_ (Edit_->document ()->begin ().blockFormat ())
 	, StockFrameFormat_ (Edit_->document ()->rootFrame ()->frameFormat ())
 	, HasCustomFormatting_ (false)
-	, SmilesTooltip_ (new QWidget (this, Qt::Tool))
+	, SmilesTooltip_ (new SmilesTooltip (this))
 	{
 		SmilesTooltip_->setWindowTitle (tr ("Emoticons"));
 
