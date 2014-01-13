@@ -40,6 +40,7 @@
 #include <QActionGroup>
 #include <QGridLayout>
 #include <QToolButton>
+#include <QApplication>
 #include <QtDebug>
 #include "interfaces/azoth/iresourceplugin.h"
 #include "xmlsettingsmanager.h"
@@ -373,7 +374,8 @@ namespace Azoth
 		const QString& text = sender ()->property ("Text").toString ();
 		Edit_->textCursor ().insertText (text + " ");
 
-		if (SmilesTooltip_)
+		if (SmilesTooltip_ &&
+				!(QApplication::keyboardModifiers () & Qt::ControlModifier))
 			SmilesTooltip_->hide ();
 	}
 
