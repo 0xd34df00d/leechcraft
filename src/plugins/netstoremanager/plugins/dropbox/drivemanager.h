@@ -96,7 +96,6 @@ namespace DBox
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 		QHash<QNetworkReply*, QString> Reply2ParentId_;
 		QHash<QNetworkReply*, quint64> Reply2Offset_;
-		QHash<QNetworkReply*, ChunkIODevice*> Reply2ChunkFile_;
 		bool SecondRequestIfNoItems_;
 		const int ChunkUploadBound_;
 

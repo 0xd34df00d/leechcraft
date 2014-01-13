@@ -359,7 +359,6 @@ namespace DBox
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->put (request, chunkFile->GetNextChunk ());
-		Reply2ChunkFile_ [reply] = chunkFile;
 		Reply2FilePath_ [reply] = filePath;
 		Reply2ParentId_ [reply] = parent;
 		if (offset)
@@ -654,7 +653,6 @@ namespace DBox
 		{
 			if (map.contains ("offset"))
 			{
-				Reply2ChunkFile_.remove (reply);
 				const quint64 offset = map ["offset"].toULongLong ();
 				const QString uploadId = map ["upload_id"].toString ();
 				RequestChunkUpload (Reply2FilePath_.take (reply),
