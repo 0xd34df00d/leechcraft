@@ -73,7 +73,7 @@ namespace AnHero
 				break;
 			case 0:
 				CloseFiles ();
-				execvp (argv[0], const_cast<char**> (argv));
+				execvp (argv [0], const_cast<char**> (argv));
 				fprintf (stderr, "%s: failed to exec(), errno: %d\n", Q_FUNC_INFO, errno);
 				_exit (253);
 				break;
