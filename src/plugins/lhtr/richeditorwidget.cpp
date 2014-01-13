@@ -755,6 +755,16 @@ namespace LHTR
 
 	void RichEditorWidget::SyncHTMLToView () const
 	{
+		const auto frame = Ui_.View_->page ()->mainFrame ();
+		const auto& peElem = frame->findFirstElement ("parsererror");
+
+		if (!peElem.isNull ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "there are parser errors, ignoring reverting";
+			return;
+		}
+
 		Ui_.HTML_->setPlainText (RevertCustomTags ());
 	}
 
