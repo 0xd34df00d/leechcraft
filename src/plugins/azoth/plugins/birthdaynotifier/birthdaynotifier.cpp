@@ -52,6 +52,7 @@ namespace BirthdayNotifier
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothbirthdaynotifiersettings.xml");
+		XmlSettingsManager::Instance ().RegisterObject ("NotifyNTimesPerDay", this, "notifyNTimesPerDaySettingsChanged");
 
 		CheckTimer_ = new QTimer (this);
 
@@ -60,7 +61,9 @@ namespace BirthdayNotifier
 				this,
 				SLOT (checkDates ()));
 
-		CheckTimer_->start (3600 * 2 * 1000);
+		const int interval = XmlSettingsManager::Instance ().property ("NotifyNTimesPerDay").toInt ();
+		const int timeOutMSec = 24 * 60 * 60 * 1000 / qMax(1, qMin(interval, 24));
+		CheckTimer_->start (timeOutMSec);
 	}
 
 	void Plugin::SecondInit ()
@@ -77,6 +80,7 @@ namespace BirthdayNotifier
 
 	void Plugin::Release ()
 	{
+		CheckTimer_->stop ();
 	}
 
 	QString Plugin::GetName () const
@@ -212,6 +216,14 @@ namespace BirthdayNotifier
 					NotifyBirthday (entry, days);
 			}
 		}
+	}
+
+	void Plugin::notifyNTimesPerDaySettingsChanged ()
+	{
+		CheckTimer_->stop ();
+		const int interval = XmlSettingsManager::Instance ().property ("NotifyNTimesPerDay").toInt ();
+		const int timeOutMSec = 24 * 60 * 60 * 1000 / qMax (1, qMin (interval, 24));
+		CheckTimer_->start (timeOutMSec);
 	}
 }
 }
