@@ -752,6 +752,11 @@ namespace LHTR
 		return root.toOuterXml ();
 	}
 
+	void RichEditorWidget::SyncHTMLToView () const
+	{
+		Ui_.HTML_->setPlainText (RevertCustomTags ());
+	}
+
 	void RichEditorWidget::handleBgColorSettings ()
 	{
 		const auto& color = XmlSettingsManager::Instance ()
@@ -783,7 +788,7 @@ namespace LHTR
 		switch (idx)
 		{
 		case 1:
-			Ui_.HTML_->setPlainText (RevertCustomTags ());
+			SyncHTMLToView ();
 			break;
 		case 0:
 			if (!HTMLDirty_)

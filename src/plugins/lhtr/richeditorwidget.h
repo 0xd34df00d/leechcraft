@@ -100,6 +100,8 @@ namespace LHTR
 
 		QString ExpandCustomTags (QString) const;
 		QString RevertCustomTags () const;
+
+		void SyncHTMLToView () const;
 	private slots:
 		void handleBgColorSettings ();
 
