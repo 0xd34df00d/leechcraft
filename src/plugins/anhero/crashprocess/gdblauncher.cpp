@@ -77,6 +77,16 @@ namespace CrashProcess
 				SIGNAL (finished (int)));
 	}
 
+	GDBLauncher::~GDBLauncher ()
+	{
+		if (Proc_->state () != QProcess::NotRunning)
+		{
+			Proc_->terminate ();
+			if (!Proc_->waitForFinished (500))
+				Proc_->kill ();
+		}
+	}
+
 	void GDBLauncher::handleError ()
 	{
 		qDebug () << Q_FUNC_INFO
