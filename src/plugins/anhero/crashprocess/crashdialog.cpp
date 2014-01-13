@@ -34,6 +34,7 @@
 #include <QClipboard>
 #include <QProcess>
 #include <QtDebug>
+#include <QTimer>
 #include <util/util.h>
 #include <util/sys/sysinfo.h>
 #include "appinfo.h"
@@ -147,6 +148,10 @@ namespace CrashProcess
 
 	void CrashDialog::handleFinished (int code)
 	{
+		QTimer::singleShot (0,
+				this,
+				SLOT (clearGdb ()));
+
 		Ui_.TraceDisplay_->append ("\n\nGDB exited with code " + QString::number (code));
 		SetInteractionAllowed (true);
 
@@ -172,18 +177,23 @@ namespace CrashProcess
 			Ui_.TraceDisplay_->append (line);
 	}
 
+	void CrashDialog::clearGdb ()
+	{
+		GdbLauncher_.reset ();
+	}
+
 	void CrashDialog::reload ()
 	{
 		Ui_.TraceDisplay_->clear ();
 
 		SetFormat ();
 
-		auto l = new GDBLauncher (Info_.PID_, Info_.Path_);
-		connect (l,
+		GdbLauncher_.reset (new GDBLauncher (Info_.PID_, Info_.Path_));
+		connect (GdbLauncher_.get (),
 				SIGNAL (gotOutput (QString)),
 				this,
 				SLOT (appendTrace (QString)));
-		connect (l,
+		connect (GdbLauncher_.get (),
 				SIGNAL (finished (int)),
 				this,
 				SLOT (handleFinished (int)));

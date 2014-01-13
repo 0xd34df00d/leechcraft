@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QDialog>
 #include "ui_crashdialog.h"
 #include "appinfo.h"
@@ -40,6 +41,7 @@ namespace AnHero
 namespace CrashProcess
 {
 	struct AppInfo;
+	class GDBLauncher;
 
 	class CrashDialog : public QDialog
 	{
@@ -48,6 +50,8 @@ namespace CrashProcess
 		Ui::CrashDialog Ui_;
 		const QString CmdLine_;
 		const AppInfo Info_;
+
+		std::shared_ptr<GDBLauncher> GdbLauncher_;
 	public:
 		CrashDialog (const AppInfo&, QWidget* = 0);
 	private:
@@ -60,6 +64,7 @@ namespace CrashProcess
 	private slots:
 		void appendTrace (const QString&);
 		void handleFinished (int);
+		void clearGdb ();
 
 		void reload ();
 
