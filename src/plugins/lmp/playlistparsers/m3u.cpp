@@ -123,10 +123,10 @@ namespace M3U
 
 		for (const auto& item : sources)
 		{
-			file.write (item.Source_.ToUrl ().toString ().toUtf8 ());
-			file.write ("\n");
 			for (auto i = item.Additional_.begin (); i != item.Additional_.end (); ++i)
 				file.write (("#" + i.key () + "=" + i.value ().toString () + "\n").toUtf8 ());
+			file.write (item.Source_.ToUrl ().toString ().toUtf8 ());
+			file.write ("\n");
 		}
 	}
 }
