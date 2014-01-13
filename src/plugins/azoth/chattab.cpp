@@ -1765,10 +1765,6 @@ namespace Azoth
 				this,
 				SLOT (handleEditScroll (int)));
 
-		QTimer::singleShot (0,
-				Ui_.MsgEdit_,
-				SLOT (setFocus ()));
-
 		connect (Ui_.MsgEdit_,
 				SIGNAL (clearAvailableNicks ()),
 				this,
