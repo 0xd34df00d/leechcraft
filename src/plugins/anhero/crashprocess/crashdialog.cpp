@@ -68,6 +68,8 @@ namespace CrashProcess
 				SLOT (reload ()));
 		reload ();
 
+		setAttribute (Qt::WA_DeleteOnClose);
+
 		show ();
 	}
 
