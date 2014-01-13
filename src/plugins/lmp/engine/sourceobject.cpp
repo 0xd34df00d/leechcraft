@@ -728,7 +728,6 @@ namespace LMP
 			g_free (uri);
 
 			emit currentSourceChanged (CurrentSource_);
-			emit metaDataChanged ();
 		}
 #else
 		Q_UNUSED (msg)
@@ -834,7 +833,6 @@ namespace LMP
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_STREAM_START:
 			emit currentSourceChanged (CurrentSource_);
-			emit metaDataChanged ();
 			break;
 #endif
 		default:

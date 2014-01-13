@@ -1381,6 +1381,8 @@ namespace LMP
 			}
 		}
 
+		handleMetadata ();
+
 		EmitStateChange ();
 	}
 
