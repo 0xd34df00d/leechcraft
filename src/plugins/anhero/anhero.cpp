@@ -79,7 +79,7 @@ namespace AnHero
 				break;
 			default:
 				alarm (0);
-				while (waitpid (-1, nullptr, 0) != pid)
+				while (waitpid (pid, nullptr, 0) != pid)
 					;
 				break;
 			}
