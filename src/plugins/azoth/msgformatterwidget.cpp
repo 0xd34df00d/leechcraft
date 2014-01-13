@@ -313,6 +313,7 @@ namespace Azoth
 
 		SmilesTooltip_->move (QCursor::pos ());
 		SmilesTooltip_->show ();
+		SmilesTooltip_->activateWindow ();
 
 		const QSize& size = SmilesTooltip_->size ();
 		const QPoint& newPos = QCursor::pos () - QPoint (0, size.height ());
