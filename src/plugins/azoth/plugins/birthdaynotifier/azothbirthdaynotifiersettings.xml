@@ -10,6 +10,10 @@
 			<item type="lineedit" property="NotificationDays" default="0-3,7">
 				<label value="Notify in these days:" />
 			</item>
+			<item type="spinbox" property="NotifyNTimesPerDay" default="2" minimum="1" maximum="24">
+				<label value="Notify:" />
+				<suffix value=" times per day" />
+			</item>
 		</groupbox>
 	</page>
 </settings>
