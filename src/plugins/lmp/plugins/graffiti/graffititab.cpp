@@ -184,6 +184,24 @@ namespace Graffiti
 		}
 	}
 
+	void GraffitiTab::SetPath (const QString& path)
+	{
+		setEnabled (false);
+		FilesModel_->Clear ();
+		FilesWatcher_->Clear ();
+
+		auto watcher = new QFutureWatcher<QList<QFileInfo>> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleIterateFinished ()));
+
+		watcher->setFuture (QtConcurrent::run ([this, path]
+					{ return LMPProxy_->RecIterateInfo (path, true); }));
+
+		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
+	}
+
 	void GraffitiTab::on_Artist__textChanged (const QString& artist)
 	{
 		UpdateData (artist, [] (MediaInfo& info) -> QString& { return info.Artist_; });
@@ -396,22 +414,11 @@ namespace Graffiti
 
 	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
 	{
-		setEnabled (false);
-		FilesModel_->Clear ();
-		FilesWatcher_->Clear ();
-
 		const auto& path = FSModel_->filePath (index);
 
-		auto watcher = new QFutureWatcher<QList<QFileInfo>> ();
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleIterateFinished ()));
+		SetPath (path);
 
-		auto worker = [this, path] () { return LMPProxy_->RecIterateInfo (path, true); };
-		watcher->setFuture (QtConcurrent::run (std::function<QList<QFileInfo> ()> (worker)));
 
-		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
 	}
 
 	void GraffitiTab::currentFileChanged (const QModelIndex& index)

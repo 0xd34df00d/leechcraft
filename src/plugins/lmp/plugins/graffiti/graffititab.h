@@ -91,6 +91,8 @@ namespace Graffiti
 	private:
 		template<typename T, typename F>
 		void UpdateData (const T& newData, F getter);
+
+		void SetPath (const QString&);
 	private slots:
 		void on_Artist__textChanged (const QString&);
 		void on_Album__textChanged (const QString&);
