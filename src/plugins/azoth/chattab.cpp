@@ -531,11 +531,20 @@ namespace Azoth
 
 		SetChatPartState (CPSActive);
 
-		Ui_.MsgEdit_->clear ();
-		Ui_.MsgEdit_->document ()->clear ();
-		MsgFormatter_->Clear ();
-		CurrentHistoryPosition_ = -1;
-		MsgHistory_.prepend (text);
+		bool clear = true;
+		auto clearGuard = std::shared_ptr<void> (nullptr,
+				[&clear, &text, this] (void*) -> void
+				{
+					if (!clear)
+						return;
+
+					Ui_.MsgEdit_->clear ();
+					Ui_.MsgEdit_->document ()->clear ();
+					MsgFormatter_->Clear ();
+					CurrentHistoryPosition_ = -1;
+					MsgHistory_.prepend (text);
+				});
+
 
 		QString variant = Ui_.VariantBox_->count () > 1 ?
 				Ui_.VariantBox_->currentText () :
@@ -584,7 +593,11 @@ namespace Azoth
 		proxy.reset (new Util::DefaultHookProxy ());
 		emit hookMessageCreated (proxy, this, msg->GetQObject ());
 		if (proxy->IsCancelled ())
+		{
+			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
+				clear = false;
 			return;
+		}
 
 		msg->Send ();
 	}
