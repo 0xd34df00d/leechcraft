@@ -109,7 +109,7 @@ namespace Autopaste
 			return;
 		}
 
-		QString text = proxy->GetValue ("text").toString ();
+		const auto& text = proxy->GetValue ("text").toString ();
 
 		const int maxLines = XmlSettingsManager::Instance ()
 				.property ("LineCount").toInt ();
@@ -160,8 +160,10 @@ namespace Autopaste
 		{
 		case PasteDialog::Cancel:
 			proxy->CancelDefault ();
+			proxy->SetValue ("PreserveMessageEdit", true);
+			break;
 		case PasteDialog::No:
-			return;
+			break;
 		case PasteDialog::Yes:
 		{
 			auto service = dia.GetCreator () (entry);
@@ -170,6 +172,7 @@ namespace Autopaste
 
 			settings.setValue ("Service", dia.GetCreatorName ());
 			settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
+			break;
 		}
 		}
 	}
