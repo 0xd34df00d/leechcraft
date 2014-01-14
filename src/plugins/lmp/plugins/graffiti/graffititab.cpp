@@ -415,10 +415,22 @@ namespace Graffiti
 	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
 	{
 		const auto& path = FSModel_->filePath (index);
+		Ui_.PathLine_->setEditText (path);
 
 		SetPath (path);
+	}
 
+	void GraffitiTab::on_PathLine__activated (QString path)
+	{
+		if (path.startsWith ('~'))
+		{
+			path.replace (0, 1, QDir::homePath ());
+			Ui_.PathLine_->setEditText (path);
+		}
 
+		Ui_.DirectoryTree_->setCurrentIndex (FSModel_->index (path));
+
+		SetPath (path);
 	}
 
 	void GraffitiTab::currentFileChanged (const QModelIndex& index)
