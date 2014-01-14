@@ -61,9 +61,7 @@ namespace BirthdayNotifier
 				this,
 				SLOT (checkDates ()));
 
-		const int interval = XmlSettingsManager::Instance ().property ("NotifyNTimesPerDay").toInt ();
-		const int timeOutMSec = 24 * 60 * 60 * 1000 / qMax(1, qMin(interval, 24));
-		CheckTimer_->start (timeOutMSec);
+		notifyNTimesPerDaySettingsChanged ();
 	}
 
 	void Plugin::SecondInit ()
@@ -220,9 +218,11 @@ namespace BirthdayNotifier
 
 	void Plugin::notifyNTimesPerDaySettingsChanged ()
 	{
+		static const int kMSecPerDay = 24 * 60 * 60 * 1000;
+
 		CheckTimer_->stop ();
 		const int interval = XmlSettingsManager::Instance ().property ("NotifyNTimesPerDay").toInt ();
-		const int timeOutMSec = 24 * 60 * 60 * 1000 / qMax (1, qMin (interval, 24));
+		const int timeOutMSec = kMSecPerDay / (interval ? interval : 1);
 		CheckTimer_->start (timeOutMSec);
 	}
 }
