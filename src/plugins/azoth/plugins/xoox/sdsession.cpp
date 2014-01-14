@@ -139,19 +139,7 @@ namespace Xoox
 		if (info.Caps_.contains ("jabber:iq:register"))
 			result << QPair<QByteArray, QString> ("register", tr ("Register..."));
 		if (info.Caps_.contains ("http://jabber.org/protocol/commands"))
-		{
-			bool found = false;
-			Q_FOREACH (const auto& id, info.Identities_)
-				if (id.category () == "automation" &&
-						id.type () == "command-node")
-				{
-					found = true;
-					break;
-				}
-
-			if (found)
-				result << QPair<QByteArray, QString> ("execute-ad-hoc", tr ("Execute..."));
-		}
+			result << QPair<QByteArray, QString> ("execute-ad-hoc", tr ("Execute..."));
 		if (idHasCat ("conference"))
 			result << QPair<QByteArray, QString> ("join-conference", tr ("Join..."));
 
