@@ -137,7 +137,7 @@
 					<tooltip>Some themes have fixed-size font and font size setting doesn't affect them. Use this option to change their font size.</tooltip>
 				</item>
 				<item type="spinbox" property="MsgEditFontSize" default="5" minimum="5" maximum="72">
-					<label value="Font size:" />
+					<label value="Message editor font size:" />
 					<suffix value=" px" />
 					<specialValue value="system default" />
 				</item>
