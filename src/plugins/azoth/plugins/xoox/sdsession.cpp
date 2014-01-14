@@ -402,7 +402,9 @@ namespace Xoox
 		if (jid.isEmpty ())
 			return;
 
-		ExecuteCommandDialog *dia = new ExecuteCommandDialog (jid, info.Node_, Account_);
+		auto dia = info.Node_.isEmpty () ?
+				new ExecuteCommandDialog (jid, Account_) :
+				new ExecuteCommandDialog (jid, info.Node_, Account_);
 		dia->show ();
 		connect (dia,
 				SIGNAL (finished (int)),
