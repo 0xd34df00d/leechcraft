@@ -179,11 +179,8 @@ namespace Xoox
 			return;
 
 		QList<AdHocCommand> commands;
-		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
-		{
-			AdHocCommand cmd (item.name (), item.node ());
-			commands << cmd;
-		}
+		for (const auto& item : iq.items ())
+			commands.append ({ item.name (), item.node () });
 
 		emit gotCommands (iq.from (), commands);
 	}
