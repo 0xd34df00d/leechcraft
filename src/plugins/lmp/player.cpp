@@ -1331,6 +1331,8 @@ namespace LMP
 		{
 		case SourceState::Stopped:
 			emit songChanged ({});
+			if (!CurrentQueue_.contains (Source_->GetCurrentSource ()))
+				Source_->SetCurrentSource ({});
 			break;
 		case SourceState::Playing:
 			handleCurrentSourceChanged (Source_->GetCurrentSource ());
