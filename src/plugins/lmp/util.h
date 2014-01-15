@@ -29,15 +29,10 @@
 
 #pragma once
 
+#include <atomic>
 #include <QStringList>
 #include <QFileInfo>
 #include <interfaces/media/idiscographyprovider.h>
-
-namespace std
-{
-	template<typename T>
-	class atomic;
-}
 
 class QPixmap;
 class QPoint;
