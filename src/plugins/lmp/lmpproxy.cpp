@@ -57,9 +57,10 @@ namespace LMP
 		return FindAlbumArtPath (nearPath, !includeCollection);
 	}
 
-	QList<QFileInfo> LMPProxy::RecIterateInfo (const QString& path, bool followSymLinks) const
+	QList<QFileInfo> LMPProxy::RecIterateInfo (const QString& path,
+			bool followSymLinks, std::atomic<bool> *stopGuard) const
 	{
-		return LMP::RecIterateInfo (path, followSymLinks);
+		return LMP::RecIterateInfo (path, followSymLinks, stopGuard);
 	}
 
 	QMap<QString, std::function<QString (MediaInfo)>> LMPProxy::GetSubstGetters () const
