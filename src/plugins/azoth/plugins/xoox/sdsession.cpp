@@ -242,9 +242,17 @@ namespace Xoox
 				targetItem->setText (text);
 		}
 
-		QString tooltip = Qt::escape (targetItem->text ()) + "<br />";
+		auto normalize = [] (QString& text)
+		{
+			text.replace ("\n", "<br />")
+					.replace ("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+		};
 
-		const QString& mucDescr = GetMUCDescr (iq.form ());
+		QString tooltip = Qt::escape (targetItem->text ()) + "<br />";
+		normalize (tooltip);
+
+		auto mucDescr = GetMUCDescr (iq.form ());
+		normalize (mucDescr);
 		if (!mucDescr.isEmpty ())
 		{
 			tooltip += tr ("MUC description: %1.")
