@@ -76,64 +76,10 @@ namespace Graffiti
 	, IsChangingCurrent_ (false)
 	{
 		Ui_.setupUi (this);
-		new Util::ClearLineEditAddon (coreProxy, Ui_.Album_);
-		new Util::ClearLineEditAddon (coreProxy, Ui_.Artist_);
-		new Util::ClearLineEditAddon (coreProxy, Ui_.Title_);
-		new Util::ClearLineEditAddon (coreProxy, Ui_.Genre_);
 
-		FSModel_->setRootPath (QDir::homePath ());
-		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
-		FSModel_->setReadOnly (true);
-		Ui_.DirectoryTree_->setModel (FSModel_);
-
-		auto idx = FSModel_->index (QDir::homePath ());
-		while (idx.isValid ())
-		{
-			Ui_.DirectoryTree_->expand (idx);
-			idx = idx.parent ();
-		}
-
-		Ui_.FilesList_->setModel (FilesModel_);
-
-		connect (Ui_.FilesList_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (currentFileChanged (QModelIndex)));
-
-		Save_ = Toolbar_->addAction (tr ("Save"),
-				this, SLOT (save ()));
-		Save_->setProperty ("ActionIcon", "document-save");
-		Save_->setShortcut (QString ("Ctrl+S"));
-
-		Revert_ = Toolbar_->addAction (tr ("Revert"),
-				this, SLOT (revert ()));
-		Revert_->setProperty ("ActionIcon", "document-revert");
-
-		Toolbar_->addSeparator ();
-
-		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
-				this, SLOT (renameFiles ()));
-		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
-
-		Toolbar_->addSeparator ();
-
-		GetTags_ = Toolbar_->addAction (tr ("Fetch tags"),
-				this, SLOT (fetchTags ()));
-		GetTags_->setProperty ("ActionIcon", "download");
-
-		SplitCue_ = Toolbar_->addAction (tr ("Split CUE..."),
-				this, SLOT (splitCue ()));
-		SplitCue_->setProperty ("ActionIcon", "split");
-		SplitCue_->setEnabled (false);
-
-		Ui_.Genre_->SetSeparator (" / ");
-
-		auto model = new Util::TagsCompletionModel (this);
-		model->UpdateTags (Genres);
-		auto completer = new Util::TagsCompleter (Ui_.Genre_, this);
-		completer->OverrideModel (model);
-
-		Ui_.Genre_->AddSelector ();
+		SetupEdits ();
+		SetupViews ();
+		SetupToolbar ();
 
 		connect (FilesWatcher_,
 				SIGNAL (rereadFiles ()),
@@ -207,6 +153,73 @@ namespace Graffiti
 					{ return LMPProxy_->RecIterateInfo (path, true); }));
 
 		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
+	}
+
+	void GraffitiTab::SetupEdits ()
+	{
+		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Album_);
+		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Artist_);
+		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Title_);
+		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Genre_);
+		Ui_.Genre_->SetSeparator (" / ");
+
+		auto model = new Util::TagsCompletionModel (this);
+		model->UpdateTags (Genres);
+		auto completer = new Util::TagsCompleter (Ui_.Genre_, this);
+		completer->OverrideModel (model);
+
+		Ui_.Genre_->AddSelector ();
+	}
+
+	void GraffitiTab::SetupViews ()
+	{
+		FSModel_->setRootPath (QDir::homePath ());
+		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
+		FSModel_->setReadOnly (true);
+		Ui_.DirectoryTree_->setModel (FSModel_);
+
+		auto idx = FSModel_->index (QDir::homePath ());
+		while (idx.isValid ())
+		{
+			Ui_.DirectoryTree_->expand (idx);
+			idx = idx.parent ();
+		}
+
+		Ui_.FilesList_->setModel (FilesModel_);
+
+		connect (Ui_.FilesList_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (currentFileChanged (QModelIndex)));
+	}
+
+	void GraffitiTab::SetupToolbar ()
+	{
+		Save_ = Toolbar_->addAction (tr ("Save"),
+				this, SLOT (save ()));
+		Save_->setProperty ("ActionIcon", "document-save");
+		Save_->setShortcut (QString ("Ctrl+S"));
+
+		Revert_ = Toolbar_->addAction (tr ("Revert"),
+				this, SLOT (revert ()));
+		Revert_->setProperty ("ActionIcon", "document-revert");
+
+		Toolbar_->addSeparator ();
+
+		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
+				this, SLOT (renameFiles ()));
+		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
+
+		Toolbar_->addSeparator ();
+
+		GetTags_ = Toolbar_->addAction (tr ("Fetch tags"),
+				this, SLOT (fetchTags ()));
+		GetTags_->setProperty ("ActionIcon", "download");
+
+		SplitCue_ = Toolbar_->addAction (tr ("Split CUE..."),
+				this, SLOT (splitCue ()));
+		SplitCue_->setProperty ("ActionIcon", "split");
+		SplitCue_->setEnabled (false);
 	}
 
 	void GraffitiTab::RestorePathHistory ()

@@ -94,6 +94,10 @@ namespace Graffiti
 
 		void SetPath (const QString&);
 
+		void SetupEdits ();
+		void SetupViews ();
+		void SetupToolbar ();
+
 		void RestorePathHistory ();
 		void AddToPathHistory (const QString&);
 	private slots:
