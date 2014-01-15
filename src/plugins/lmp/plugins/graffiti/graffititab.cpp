@@ -33,6 +33,7 @@
 #include <QToolBar>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QProgressDialog>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QtDebug>
@@ -55,6 +56,7 @@
 #include "fileswatcher.h"
 #include "cuesplitter.h"
 #include "tagsfetchmanager.h"
+#include "reciterator.h"
 
 namespace LeechCraft
 {
@@ -143,14 +145,31 @@ namespace Graffiti
 		FilesModel_->Clear ();
 		FilesWatcher_->Clear ();
 
-		auto watcher = new QFutureWatcher<QList<QFileInfo>> ();
-		connect (watcher,
+		auto recIterator = new RecIterator (LMPProxy_, this);
+		connect (recIterator,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleIterateFinished ()));
+		connect (recIterator,
+				SIGNAL (canceled ()),
+				this,
+				SLOT (handleIterateCanceled ()));
 
-		watcher->setFuture (QtConcurrent::run ([this, path]
-					{ return LMPProxy_->RecIterateInfo (path, true); }));
+		auto progDialog = new QProgressDialog (this);
+		progDialog->setLabelText (tr ("Scanning path %1...")
+					.arg ("<em>" + path + "</em>"));
+		progDialog->setAttribute (Qt::WA_DeleteOnClose);
+		connect (recIterator,
+				SIGNAL (finished ()),
+				progDialog,
+				SLOT (close ()));
+		connect (progDialog,
+				SIGNAL (canceled ()),
+				recIterator,
+				SLOT (cancel ()));
+		progDialog->show ();
+
+		recIterator->Start (path);
 
 		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
 	}
@@ -528,10 +547,10 @@ namespace Graffiti
 
 	void GraffitiTab::handleIterateFinished ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<QList<QFileInfo>>*> (sender ());
-		watcher->deleteLater ();
+		auto recIterator = qobject_cast<RecIterator*> (sender ());
+		recIterator->deleteLater ();
 
-		const auto& files = watcher->result ();
+		const auto& files = recIterator->GetResult ();
 
 		FilesWatcher_->AddFiles (files);
 		FilesModel_->AddFiles (files);
@@ -559,6 +578,12 @@ namespace Graffiti
 				this,
 				SLOT (handleScanFinished ()));
 		scanWatcher->setFuture (QtConcurrent::run (std::function<QList<MediaInfo> ()> (worker)));
+	}
+
+	void GraffitiTab::handleIterateCanceled  ()
+	{
+		sender ()->deleteLater ();
+		setEnabled (true);
 	}
 
 	void GraffitiTab::handleScanFinished ()

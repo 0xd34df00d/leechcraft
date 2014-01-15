@@ -122,6 +122,7 @@ namespace Graffiti
 		void handleRereadFiles ();
 
 		void handleIterateFinished ();
+		void handleIterateCanceled ();
 		void handleScanFinished ();
 
 		void handleCueSplitError (const QString&);
