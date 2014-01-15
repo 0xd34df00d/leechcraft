@@ -36,6 +36,7 @@
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QtDebug>
+#include <QSettings>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <util/tags/tagscompletionmodel.h>
@@ -61,6 +62,8 @@ namespace LMP
 {
 namespace Graffiti
 {
+	const int MaxHistoryCount = 25;
+
 	GraffitiTab::GraffitiTab (ICoreProxy_ptr coreProxy, ILMPProxy_ptr proxy, const TabClassInfo& tc, QObject *plugin)
 	: CoreProxy_ (coreProxy)
 	, LMPProxy_ (proxy)
@@ -136,6 +139,8 @@ namespace Graffiti
 				SIGNAL (rereadFiles ()),
 				this,
 				SLOT (handleRereadFiles ()));
+
+		RestorePathHistory ();
 	}
 
 	TabClassInfo GraffitiTab::GetTabClassInfo () const
@@ -186,6 +191,8 @@ namespace Graffiti
 
 	void GraffitiTab::SetPath (const QString& path)
 	{
+		AddToPathHistory (path);
+
 		setEnabled (false);
 		FilesModel_->Clear ();
 		FilesWatcher_->Clear ();
@@ -200,6 +207,52 @@ namespace Graffiti
 					{ return LMPProxy_->RecIterateInfo (path, true); }));
 
 		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
+	}
+
+	void GraffitiTab::RestorePathHistory ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_Graffiti");
+		settings.beginGroup ("PathHistory");
+		const auto& paths = settings.value ("HistList").toStringList ();
+		settings.endGroup ();
+
+		Ui_.PathLine_->blockSignals (true);
+		for (const auto& item : paths)
+			if (QFile::exists (item))
+				Ui_.PathLine_->addItem (item);
+
+		Ui_.PathLine_->setCurrentIndex (-1);
+		Ui_.PathLine_->blockSignals (false);
+	}
+
+	void GraffitiTab::AddToPathHistory (const QString& path)
+	{
+		const auto sameIdx = Ui_.PathLine_->findText (path);
+		if (!sameIdx)
+			return;
+
+		Ui_.PathLine_->blockSignals (true);
+		if (sameIdx > 0)
+			Ui_.PathLine_->removeItem (sameIdx);
+
+		Ui_.PathLine_->insertItem (0, path);
+
+		while (Ui_.PathLine_->count () > MaxHistoryCount)
+			Ui_.PathLine_->removeItem (Ui_.PathLine_->count () - 1);
+
+		Ui_.PathLine_->setCurrentIndex (0);
+		Ui_.PathLine_->blockSignals (false);
+
+		QStringList paths;
+		for (int i = 0; i < Ui_.PathLine_->count (); ++i)
+			paths << Ui_.PathLine_->itemText (i);
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_Graffiti");
+		settings.beginGroup ("PathHistory");
+		settings.setValue ("HistList", paths);
+		settings.endGroup ();
 	}
 
 	void GraffitiTab::on_Artist__textChanged (const QString& artist)
@@ -415,12 +468,14 @@ namespace Graffiti
 	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
 	{
 		const auto& path = FSModel_->filePath (index);
+		Ui_.PathLine_->blockSignals (true);
 		Ui_.PathLine_->setEditText (path);
+		Ui_.PathLine_->blockSignals (false);
 
 		SetPath (path);
 	}
 
-	void GraffitiTab::on_PathLine__activated (QString path)
+	void GraffitiTab::on_PathLine__editTextChanged (QString path)
 	{
 		if (path.startsWith ('~'))
 		{

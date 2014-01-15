@@ -93,6 +93,9 @@ namespace Graffiti
 		void UpdateData (const T& newData, F getter);
 
 		void SetPath (const QString&);
+
+		void RestorePathHistory ();
+		void AddToPathHistory (const QString&);
 	private slots:
 		void on_Artist__textChanged (const QString&);
 		void on_Album__textChanged (const QString&);
@@ -109,7 +112,7 @@ namespace Graffiti
 		void handleTagsFetched (const QString&);
 
 		void on_DirectoryTree__activated (const QModelIndex&);
-		void on_PathLine__activated (QString);
+		void on_PathLine__editTextChanged (QString);
 
 		void currentFileChanged (const QModelIndex&);
 		void handleRereadFiles ();
