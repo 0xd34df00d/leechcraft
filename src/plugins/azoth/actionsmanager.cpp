@@ -379,10 +379,9 @@ namespace Azoth
 				return;
 			}
 
-			if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-			{
-				Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
-				Q_FOREACH (QObject *partObj, mucEntry->GetParticipants ())
+			const bool closeTabs = XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ();
+			if (closeTabs)
+				for (auto partObj : mucEntry->GetParticipants ())
 				{
 					ICLEntry *partEntry = qobject_cast<ICLEntry*> (partObj);
 					if (!partEntry)
@@ -396,9 +395,11 @@ namespace Azoth
 
 					Core::Instance ().GetChatTabsManager ()->CloseChat (partEntry);
 				}
-			}
 
 			mucEntry->Leave ();
+
+			if (closeTabs)
+				Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
 		}
 
 		void Reconnect (ICLEntry *entry)
