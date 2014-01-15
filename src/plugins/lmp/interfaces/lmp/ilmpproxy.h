@@ -31,18 +31,13 @@
 
 #include <functional>
 #include <memory>
+#include <atomic>
 #include <QtPlugin>
 #include <QFileInfo>
 #include <QMap>
 #include <QVariant>
 
 class QPixmap;
-
-namespace std
-{
-	template<typename T>
-	class atomic;
-}
 
 namespace LeechCraft
 {
