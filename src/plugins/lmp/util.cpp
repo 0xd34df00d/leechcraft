@@ -29,6 +29,7 @@
 
 #include "util.h"
 #include <algorithm>
+#include <atomic>
 #include <QDirIterator>
 #include <QPixmap>
 #include <QApplication>
@@ -43,7 +44,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks)
+	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks, std::atomic<bool> *stopFlag)
 	{
 		QStringList nameFilters;
 		nameFilters << "*.aiff"
@@ -66,10 +67,10 @@ namespace LMP
 		const QFileInfo dirInfo (dirPath);
 		if (dirInfo.isFile ())
 		{
-			Q_FOREACH (const auto& filter, nameFilters)
+			for (const auto& filter : nameFilters)
 				if (dirPath.endsWith (filter.mid (1), Qt::CaseInsensitive))
 					return { dirInfo };
-			return QList<QFileInfo> ();
+				return {};
 		}
 
 		auto filters = QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot;
@@ -78,8 +79,11 @@ namespace LMP
 
 		QList<QFileInfo> result;
 		const auto& list = QDir (dirPath).entryInfoList (nameFilters, filters);
-		Q_FOREACH (const QFileInfo& entryInfo, list)
+		for (const auto& entryInfo : list)
 		{
+			if (stopFlag && stopFlag->load (std::memory_order_relaxed))
+				return result;
+
 			const auto& path = entryInfo.absoluteFilePath ();
 			if (entryInfo.isSymLink () &&
 					entryInfo.symLinkTarget () == path)

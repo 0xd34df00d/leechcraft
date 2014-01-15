@@ -33,6 +33,12 @@
 #include <QFileInfo>
 #include <interfaces/media/idiscographyprovider.h>
 
+namespace std
+{
+	template<typename T>
+	class atomic;
+}
+
 class QPixmap;
 class QPoint;
 
@@ -42,7 +48,8 @@ namespace LMP
 {
 	struct MediaInfo;
 
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks = false);
+	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
+			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
 	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
 
 	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
