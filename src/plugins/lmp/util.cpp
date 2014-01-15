@@ -90,7 +90,7 @@ namespace LMP
 				continue;
 
 			if (entryInfo.isDir ())
-				result += RecIterateInfo (path, followSymlinks);
+				result += RecIterateInfo (path, followSymlinks, stopFlag);
 			else if (entryInfo.isFile ())
 				result += entryInfo;
 		}
