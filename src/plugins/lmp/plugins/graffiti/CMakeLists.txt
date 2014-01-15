@@ -22,6 +22,7 @@ set (GRAFFITI_SRCS
 	cuesplitter.cpp
 	progressmanager.cpp
 	tagsfetchmanager.cpp
+	reciterator.cpp
 	)
 set (GRAFFITI_FORMS
 	graffititab.ui
