@@ -480,7 +480,9 @@ namespace Graffiti
 		if (path.startsWith ('~'))
 		{
 			path.replace (0, 1, QDir::homePath ());
+			Ui_.PathLine_->blockSignals (true);
 			Ui_.PathLine_->setEditText (path);
+			Ui_.PathLine_->blockSignals (false);
 		}
 
 		Ui_.DirectoryTree_->setCurrentIndex (FSModel_->index (path));
