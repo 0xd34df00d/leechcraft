@@ -166,12 +166,16 @@ namespace Azoth
 
 	void FileSendDialog::on_FileBrowse__released ()
 	{
-		const QString& filename = QFileDialog::getOpenFileName (0,
-				tr ("Select file to send"));
+		const auto& filename = QFileDialog::getOpenFileName (0,
+				tr ("Select file to send"),
+				XmlSettingsManager::Instance ().Property ("LastFileSendDir", {}).toString ());
 		if (filename.isEmpty ())
 			return;
 
 		Ui_.FileEdit_->setText (filename);
+
+		const auto& dir = QFileInfo { filename }.absolutePath ();
+		XmlSettingsManager::Instance ().setProperty ("LastFileSendDir", dir);
 	}
 }
 }
