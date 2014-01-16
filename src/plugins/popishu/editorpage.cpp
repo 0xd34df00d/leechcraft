@@ -188,13 +188,6 @@ namespace Popishu
 		QString edit = tr ("Edit");
 		WindowMenus_ [edit] << Ui_.ActionReplace_;
 
-		QString file = tr ("File");
-		WindowMenus_ [file] << Ui_.ActionNew_;
-		WindowMenus_ [file] << Ui_.ActionOpen_;
-		WindowMenus_ [file] << RecentFilesMenu_->menuAction ();
-		WindowMenus_ [file] << Ui_.ActionSave_;
-		WindowMenus_ [file] << Ui_.ActionSaveAs_;
-
 		connect (Ui_.ActionShowEOL_,
 				SIGNAL (toggled (bool)),
 				Ui_.TextEditor_,
