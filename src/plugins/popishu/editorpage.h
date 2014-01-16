@@ -117,7 +117,10 @@ namespace Popishu
 		QString FixLanguage (const QString&) const;
 		void ShowConsole (bool);
 		void GroupActions (const QList<QAction*>&);
+
 		void RestoreRecentFiles ();
+		void SetupDefPairs ();
+
 		void PrependRecentFile (const QString&, bool = true);
 	signals:
 		void removeTab (QWidget*);

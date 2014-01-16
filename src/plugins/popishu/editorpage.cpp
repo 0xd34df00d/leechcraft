@@ -78,32 +78,8 @@ namespace Popishu
 	, WrappedObject_ (0)
 	, TemporaryDocument_ (false)
 	{
-#define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
-		DEFPAIR (Bash, sh);
-		DEFPAIR (CMake, cmake);
-		DEFPAIR (C++, cpp);
-		DEFPAIR (C++, h);
-		DEFPAIR (C++, cxx);
-		DEFPAIR (C++, hxx);
-		DEFPAIR (CSS, css);
-		DEFPAIR (Diff, diff);
-		DEFPAIR (Diff, patch);
-		DEFPAIR (HTML, htm);
-		DEFPAIR (HTML, html);
-		DEFPAIR (HTML, xhtml);
-		DEFPAIR (JavaScript, es);
-		DEFPAIR (JavaScript, js);
-		DEFPAIR (JavaScript, qs);
-#if QSCINTILLA_VERSION >= 0x020501
-		DEFPAIR (MatLab, mat);
-		DEFPAIR (Octave, m);
-#endif
-		DEFPAIR (Python, py);
-		DEFPAIR (Ruby, rb);
-		DEFPAIR (SQL, sql);
-		DEFPAIR (TeX, tex);
-		DEFPAIR (XML, xml);
-#undef DEFPAIR
+		SetupDefPairs ();
+
 		Ui_.setupUi (this);
 
 		Toolbar_->addAction (Ui_.ActionNew_);
@@ -809,6 +785,34 @@ namespace Popishu
 		std::reverse (recent.begin (), recent.end ());
 		Q_FOREACH (const QString& filePath, recent)
 			PrependRecentFile (filePath, false);
+	}
+
+	void EditorPage::SetupDefPairs ()
+	{
+#define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
+		DEFPAIR (Bash, sh);
+		DEFPAIR (CMake, cmake);
+		DEFPAIR (C++, cpp);
+		DEFPAIR (C++, h);
+		DEFPAIR (C++, cxx);
+		DEFPAIR (C++, hxx);
+		DEFPAIR (CSS, css);
+		DEFPAIR (Diff, diff);
+		DEFPAIR (Diff, patch);
+		DEFPAIR (HTML, htm);
+		DEFPAIR (HTML, html);
+		DEFPAIR (HTML, xhtml);
+		DEFPAIR (JavaScript, es);
+		DEFPAIR (JavaScript, js);
+		DEFPAIR (JavaScript, qs);
+		DEFPAIR (MatLab, mat);
+		DEFPAIR (Octave, m);
+		DEFPAIR (Python, py);
+		DEFPAIR (Ruby, rb);
+		DEFPAIR (SQL, sql);
+		DEFPAIR (TeX, tex);
+		DEFPAIR (XML, xml);
+#undef DEFPAIR
 	}
 
 	void EditorPage::PrependRecentFile (const QString& filePath, bool save)
