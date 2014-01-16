@@ -279,11 +279,6 @@ namespace Popishu
 		return S_MultiTabsParent_;
 	}
 
-	QList<QAction*> EditorPage::GetTabBarContextMenuActions () const
-	{
-		return QList<QAction*> ();
-	}
-
 	QMap<QString, QList<QAction*>> EditorPage::GetWindowMenus () const
 	{
 		return WindowMenus_;

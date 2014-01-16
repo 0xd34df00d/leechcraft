@@ -42,7 +42,7 @@ namespace LeechCraft
 namespace Popishu
 {
 	class EditorPage : public QWidget
-						, public ITabWidget
+					 , public ITabWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
@@ -73,7 +73,6 @@ namespace Popishu
 		void Remove ();
 		QToolBar* GetToolBar () const;
 		QObject* ParentMultiTabs ();
-		QList<QAction*> GetTabBarContextMenuActions () const;
 		QMap<QString, QList<QAction*>> GetWindowMenus () const;
 		TabClassInfo GetTabClassInfo () const;
 
