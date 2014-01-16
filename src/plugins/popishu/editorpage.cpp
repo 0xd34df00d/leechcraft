@@ -405,14 +405,14 @@ namespace Popishu
 		Qt::CaseSensitivity cs = dia.GetCaseSensitivity ();
 		switch (dia.GetScope ())
 		{
-		case ReplaceDialog::SAll:
+		case ReplaceDialog::Scope::All:
 		{
 			QString text = Ui_.TextEditor_->text ();
 			text.replace (before, after, cs);
 			Ui_.TextEditor_->setText (text);
 			break;
 		}
-		case ReplaceDialog::SSelected:
+		case ReplaceDialog::Scope::Selected:
 		{
 			QString text = Ui_.TextEditor_->selectedText ();
 			text.replace (before, after, cs);

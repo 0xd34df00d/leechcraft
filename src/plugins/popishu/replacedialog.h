@@ -42,10 +42,10 @@ namespace Popishu
 
 		Ui::ReplaceDialog Ui_;
 	public:
-		enum Scope
+		enum class Scope
 		{
-			SAll,
-			SSelected
+			All,
+			Selected
 		};
 
 		ReplaceDialog (QWidget* = 0);

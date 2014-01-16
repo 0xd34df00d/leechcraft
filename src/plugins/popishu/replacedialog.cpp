@@ -59,9 +59,9 @@ namespace Popishu
 	ReplaceDialog::Scope ReplaceDialog::GetScope () const
 	{
 		if (Ui_.ScopeSelected_->isChecked ())
-			return SSelected;
+			return Scope::Selected;
 		else
-			return SAll;
+			return Scope::All;
 	}
 }
 }
