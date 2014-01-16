@@ -98,6 +98,10 @@ namespace Popishu
 		Toolbar_->addAction (Ui_.ActionSave_);
 		Toolbar_->addAction (Ui_.ActionSaveAs_);
 
+		Toolbar_->addSeparator ();
+
+		Toolbar_->addAction (Ui_.ActionReplace_);
+
 		Ui_.TextEditor_->setAutoIndent (true);
 		Ui_.TextEditor_->setUtf8 (true);
 		Ui_.TextEditor_->setCaretLineBackgroundColor (palette ().color (QPalette::AlternateBase));
@@ -123,6 +127,43 @@ namespace Popishu
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (selectDoctype (QAction*)));
+
+		auto viewAction = new QAction (tr ("View"), this);
+		viewAction->setProperty ("ActionIcon", "view-choose");
+
+		auto viewMenu = new QMenu ();
+
+		auto viewButton = new QToolButton ();
+		viewButton->setDefaultAction (viewAction);
+		viewButton->setMenu (viewMenu);
+		viewButton->setPopupMode (QToolButton::InstantPopup);
+		Toolbar_->addWidget (viewButton);
+
+		QMenu *wsVis = new QMenu (tr ("Whitespace visibility"));
+		wsVis->addAction (Ui_.ActionWSInvisible_);
+		wsVis->addAction (Ui_.ActionWSVisible_);
+		wsVis->addAction (Ui_.ActionWSVisibleAfterIndent_);
+		GroupActions (wsVis->actions ());
+
+		QMenu *wrapMode = new QMenu (tr ("Wrapping mode"));
+		wrapMode->addAction (Ui_.ActionWrapNone_);
+		wrapMode->addAction (Ui_.ActionWrapWords_);
+		wrapMode->addAction (Ui_.ActionWrapCharacters_);
+		GroupActions (wrapMode->actions ());
+
+		viewMenu->addActions ({
+				Ui_.ActionEnableFolding_,
+				Ui_.ActionAutoIndent_,
+				Ui_.ActionShowLineNumbers_,
+				Util::CreateSeparator (this),
+				DoctypeMenu_->menuAction (),
+				wsVis->menuAction (),
+				wrapMode->menuAction (),
+				Util::CreateSeparator (this),
+				Ui_.ActionShowEOL_,
+				Ui_.ActionShowCaretLine_
+			});
+
 		connect (this,
 				SIGNAL (languageChanged (const QString&)),
 				this,
@@ -131,38 +172,6 @@ namespace Popishu
 				SIGNAL (languageChanged (const QString&)),
 				this,
 				SLOT (checkInterpreters (const QString&)));
-
-		QString editor = "view";
-		WindowMenus_ [editor] << Ui_.ActionEnableFolding_;
-		WindowMenus_ [editor] << Ui_.ActionAutoIndent_;
-		WindowMenus_ [editor] << Ui_.ActionShowLineNumbers_;
-
-		WindowMenus_ [editor] << Util::CreateSeparator (this);
-
-		WindowMenus_ [editor] << DoctypeMenu_->menuAction ();
-
-		QMenu *wsVis = new QMenu (tr ("Whitespace visibility"));
-		wsVis->addAction (Ui_.ActionWSInvisible_);
-		wsVis->addAction (Ui_.ActionWSVisible_);
-		wsVis->addAction (Ui_.ActionWSVisibleAfterIndent_);
-		WindowMenus_ [editor] << wsVis->menuAction ();
-		GroupActions (wsVis->actions ());
-
-		QMenu *wrapMode = new QMenu (tr ("Wrapping mode"));
-		wrapMode->addAction (Ui_.ActionWrapNone_);
-		wrapMode->addAction (Ui_.ActionWrapWords_);
-		wrapMode->addAction (Ui_.ActionWrapCharacters_);
-		WindowMenus_ [editor] << wrapMode->menuAction ();
-		GroupActions (wrapMode->actions ());
-
-		WindowMenus_ [editor] << Util::CreateSeparator (this);
-
-		WindowMenus_ [editor] << Ui_.ActionShowEOL_;
-		WindowMenus_ [editor] << Ui_.ActionShowCaretLine_;
-		WindowMenus_ [editor] << Util::CreateSeparator (this);
-
-		QString edit = tr ("Edit");
-		WindowMenus_ [edit] << Ui_.ActionReplace_;
 
 		connect (Ui_.ActionShowEOL_,
 				SIGNAL (toggled (bool)),
@@ -255,11 +264,6 @@ namespace Popishu
 	QObject* EditorPage::ParentMultiTabs ()
 	{
 		return S_MultiTabsParent_;
-	}
-
-	QMap<QString, QList<QAction*>> EditorPage::GetWindowMenus () const
-	{
-		return WindowMenus_;
 	}
 
 	TabClassInfo EditorPage::GetTabClassInfo () const
