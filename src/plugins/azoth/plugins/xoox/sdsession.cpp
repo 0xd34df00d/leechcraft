@@ -245,7 +245,7 @@ namespace Xoox
 		auto normalize = [] (QString& text)
 		{
 			text.replace ("\n", "<br />")
-					.remove ("\n")
+					.remove ("\r")
 					.replace ("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
 		};
 
