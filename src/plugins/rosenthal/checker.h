@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include <QObject>
 #include <interfaces/ispellcheckprovider.h>
 #include "hunspell/hunspell.hxx"
@@ -48,8 +49,12 @@ namespace Rosenthal
 		Q_OBJECT
 		Q_INTERFACES (ISpellChecker)
 
-		std::unique_ptr<Hunspell> Hunspell_;
-		QTextCodec *Codec_ = nullptr;
+		struct HunspellItem
+		{
+			std::unique_ptr<Hunspell> Hunspell_;
+			QTextCodec *Codec_ = nullptr;
+		};
+		std::vector<HunspellItem> Hunspells_;
 
 		const KnownDictsManager * const KnownMgr_;
 	public:

@@ -51,51 +51,50 @@ namespace Rosenthal
 
 	QStringList Checker::GetPropositions (const QString& word) const
 	{
-		if (!Hunspell_ || !Codec_)
-			return {};
-
-		const QByteArray& encoded = Codec_->fromUnicode (word);
-		if (Hunspell_->spell (encoded.data ()))
-			return QStringList ();
-
-		char **wlist = 0;
-		const int ns = Hunspell_->suggest (&wlist, encoded.data ());
-		if (!ns || !wlist)
-			return QStringList ();
-
 		QStringList result;
-		for (int i = 0; i < std::min (ns, 10); ++i)
-			result << Codec_->toUnicode (wlist [i]);
-		Hunspell_->free_list (&wlist, ns);
+		for (const auto& item : Hunspells_)
+		{
+			const QByteArray& encoded = item.Codec_->fromUnicode (word);
+			if (item.Hunspell_->spell (encoded.data ()))
+				continue;
+
+			char **wlist = 0;
+			const int ns = item.Hunspell_->suggest (&wlist, encoded.data ());
+			if (!ns || !wlist)
+				continue;
+
+			for (int i = 0; i < std::min (ns, 10); ++i)
+				result << item.Codec_->toUnicode (wlist [i]);
+			item.Hunspell_->free_list (&wlist, ns);
+		}
 
 		return result;
 	}
 
 	bool Checker::IsCorrect (const QString& word) const
 	{
-		if (!Hunspell_ || !Codec_)
-			return true;
-
-		const QByteArray& encoded = Codec_->fromUnicode (word);
-		return Hunspell_->spell (encoded.data ());
+		return std::any_of (Hunspells_.begin (), Hunspells_.end (),
+				[&word] (const HunspellItem& item)
+				{
+					return item.Hunspell_->spell (item.Codec_->fromUnicode (word).data ());
+				});
 	}
 
 	void Checker::setLanguages (const QStringList& languages)
 	{
-		Hunspell_.reset ();
+		Hunspells_.clear ();
 
-		const auto& primary = languages.value (0);
-		if (primary.isEmpty ())
-			return;
+		for (const auto& language : languages)
+		{
+			const auto& primaryPath = KnownMgr_->GetDictPath (language);
+			HunspellItem item;
+			item.Hunspell_.reset (new Hunspell ((primaryPath + ".aff").toLatin1 (),
+					(primaryPath + ".dic").toLatin1 ()));
+			item.Codec_ = QTextCodec::codecForName (item.Hunspell_->get_dic_encoding ());
 
-		const auto& primaryPath = KnownMgr_->GetDictPath (primary);
-
-		Hunspell_.reset (new Hunspell ((primaryPath + ".aff").toLatin1 (),
-				(primaryPath + ".dic").toLatin1 ()));
-		for (int i = 1; i < languages.size (); ++i)
-			Hunspell_->add_dic (KnownMgr_->GetDictPath (languages.at (i) + ".dic").toLatin1 ());
-
-		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
+			if (item.Codec_)
+				Hunspells_.push_back (std::move (item));
+		}
 	}
 }
 }
