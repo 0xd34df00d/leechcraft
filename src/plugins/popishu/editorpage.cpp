@@ -410,6 +410,7 @@ namespace Popishu
 			QString text = Ui_.TextEditor_->text ();
 			text.replace (before, after, cs);
 			Ui_.TextEditor_->setText (text);
+			break;
 		}
 		case ReplaceDialog::SSelected:
 		{
@@ -421,6 +422,7 @@ namespace Popishu
 			Ui_.TextEditor_->getSelection (&lineFrom, &indexFrom, &lineTo, &indexTo);
 			Ui_.TextEditor_->removeSelectedText ();
 			Ui_.TextEditor_->insertAt (text, lineFrom, indexFrom);
+			break;
 		}
 		}
 	}
