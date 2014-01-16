@@ -708,8 +708,7 @@ namespace Popishu
 		}
 
 		Filename_ = filename;
-		Ui_.TextEditor_->setText (QString::fromUtf8 (file
-					.readAll ().constData ()));
+		Ui_.TextEditor_->read (&file);
 
 		const auto& language = GetLanguage (Filename_);
 		const auto lexer = GetLexerByLanguage (language);
