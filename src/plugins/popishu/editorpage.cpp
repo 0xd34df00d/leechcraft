@@ -396,14 +396,14 @@ namespace Popishu
 
 	void EditorPage::on_ActionReplace__triggered ()
 	{
-		std::auto_ptr<ReplaceDialog> dia (new ReplaceDialog (this));
-		if (dia->exec () != QDialog::Accepted)
+		ReplaceDialog dia { this };
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		QString before = dia->GetBefore ();
-		QString after = dia->GetAfter ();
-		Qt::CaseSensitivity cs = dia->GetCaseSensitivity ();
-		switch (dia->GetScope ())
+		QString before = dia.GetBefore ();
+		QString after = dia.GetAfter ();
+		Qt::CaseSensitivity cs = dia.GetCaseSensitivity ();
+		switch (dia.GetScope ())
 		{
 		case ReplaceDialog::SAll:
 		{
