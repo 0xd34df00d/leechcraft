@@ -35,6 +35,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QMenu>
+#include <QToolButton>
 #include <QFileInfo>
 #include <QUrl>
 #include <Qsci/qscilexerbash.h>
@@ -106,7 +107,18 @@ namespace Popishu
 		Ui_.setupUi (this);
 
 		Toolbar_->addAction (Ui_.ActionNew_);
-		Toolbar_->addAction (Ui_.ActionOpen_);
+		Toolbar_->addSeparator ();
+
+		RecentFilesMenu_ = new QMenu (tr ("Recent files"));
+		RestoreRecentFiles ();
+
+		auto openButton = new QToolButton ();
+		openButton->setDefaultAction (Ui_.ActionOpen_);
+		openButton->setMenu (RecentFilesMenu_);
+		openButton->setPopupMode (QToolButton::MenuButtonPopup);
+
+		Toolbar_->addWidget (openButton);
+
 		Toolbar_->addAction (Ui_.ActionSave_);
 		Toolbar_->addAction (Ui_.ActionSaveAs_);
 
@@ -143,9 +155,6 @@ namespace Popishu
 				SIGNAL (languageChanged (const QString&)),
 				this,
 				SLOT (checkInterpreters (const QString&)));
-
-		RecentFilesMenu_ = new QMenu (tr ("Recent files"));
-		RestoreRecentFiles ();
 
 		QString editor = "view";
 		WindowMenus_ [editor] << Ui_.ActionEnableFolding_;
