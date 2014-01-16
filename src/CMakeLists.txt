@@ -210,6 +210,7 @@ option (ENABLE_NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PL
 option (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" ${WITH_PLUGINS})
 option (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" ${WITH_PLUGINS})
 option (ENABLE_POLEEMERY "Build Poleemery, the personal finances manager" ${WITH_PLUGINS})
+option (ENABLE_ROSENTHAL "Build Rosenthal, the Hunspell-based spell checker service plugin" ${WITH_PLUGINS})
 option (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
 option (ENABLE_SCROBLIBRE "Build ScrobLibre, multiaccount Scrobbler API 1.2 scrobbler" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS} "NOT WIN32" OFF)
@@ -447,6 +448,10 @@ endif ()
 
 if (ENABLE_POLEEMERY)
 	add_subdirectory (plugins/poleemery)
+endif ()
+
+if (ENABLE_ROSENTHAL)
+	add_subdirectory (plugins/rosenthal)
 endif ()
 
 if (ENABLE_SB2)
