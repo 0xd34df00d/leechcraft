@@ -66,7 +66,7 @@ namespace NetStoreManager
 		Ui_.FilesView_->setModel (ProxyModel_);
 		ProxyModel_->setSourceModel (TreeModel_);
 		TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Used space"), tr ("Modify") });
-		Ui_.FilesView_->header ()->setResizeMode (Columns::Name, QHeaderView::Interactive);
+		Ui_.FilesView_->header ()->setResizeMode (Columns::CName, QHeaderView::Interactive);
 
 		connect (Ui_.FilesView_->header (),
 				SIGNAL (sectionResized (int, int, int)),
@@ -352,6 +352,7 @@ namespace NetStoreManager
 					ListingRole::HashType);
 			name->setData (storageItem.IsDirectory_, ListingRole::IsDirectory);
 			name->setData (storageItem.IsTrashed_, ListingRole::InTrash);
+			name->setData (storageItem.Name_, SortRoles::SRName);
 			QIcon icon = proxy->GetIcon (storageItem.IsDirectory_ ?
 					"inode-directory" :
 					storageItem.MimeType_);
@@ -369,11 +370,15 @@ namespace NetStoreManager
 
 			QStandardItem *size = new QStandardItem (Util::MakePrettySize (storageItem
 					.IsDirectory_ ? folderSize : storageItem.Size_));
+			size->setData (storageItem.IsDirectory_ ? folderSize : storageItem.Size_,
+					SortRoles::SRSize);
+
 			size->setEditable (false);
 
 			QStandardItem *modify = new QStandardItem (storageItem.ModifyDate_
 					.toString ("dd.MM.yy hh:mm"));
 			modify->setEditable (false);
+			modify->setData (storageItem.ModifyDate_, SortRoles::SRModifyDate);
 
 			return { name, size, modify };
 		}
@@ -386,9 +391,9 @@ namespace NetStoreManager
 
 		ShowListItemsWithParent (LastParentID_, OpenTrash_->isChecked ());
 
-		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
+		Ui_.FilesView_->header ()->resizeSection (Columns::CName,
 				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
-						Ui_.FilesView_->header ()->sectionSize (Columns::Name)).toInt ());
+						Ui_.FilesView_->header ()->sectionSize (Columns::CName)).toInt ());
 	}
 
 	void ManagerTab::RequestFileListings (IStorageAccount *acc)
@@ -430,14 +435,14 @@ namespace NetStoreManager
 
 	QByteArray ManagerTab::GetParentIDInListViewMode () const
 	{
-		return ProxyModel_->index (0, Columns::Name).data (Qt::UserRole + 1)
+		return ProxyModel_->index (0, Columns::CName).data (Qt::UserRole + 1)
 				.toByteArray ();
 	}
 
 	QByteArray ManagerTab::GetCurrentID () const
 	{
 		QModelIndex idx = Ui_.FilesView_->currentIndex ();
-		idx = idx.sibling (idx.row (), Columns::Name);
+		idx = idx.sibling (idx.row (), Columns::CName);
 		return ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
 	}
 
@@ -632,7 +637,7 @@ namespace NetStoreManager
 	void ManagerTab::handleFilesViewSectionResized (int index,
 			int, int newSize)
 	{
-		if (index == Columns::Name)
+		if (index == Columns::CName)
 			XmlSettingsManager::Instance ().setProperty ("ViewSectionSize", newSize);
 	}
 
