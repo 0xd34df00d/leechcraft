@@ -45,6 +45,8 @@ namespace Rosenthal
 	{
 		Proxy_ = proxy;
 
+		Util::InstallTranslator ("rosenthal");
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"rosenthalsettings.xml");

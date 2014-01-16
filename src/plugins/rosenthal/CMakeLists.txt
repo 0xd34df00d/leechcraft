@@ -24,8 +24,8 @@ set (SRCS
 	knowndictsmanager.cpp
 	xmlsettingsmanager.cpp
 	)
-#CreateTrs("rosenthal" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("rosenthal" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrs("rosenthal" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("rosenthal" "en;ru_RU" "${SRCS}" "${FORMS}" "rosenthalsettings.xml")
 
 add_library (leechcraft_rosenthal SHARED
 	${COMPILED_TRANSLATIONS}
