@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,16 +31,27 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/ispellcheckprovider.h>
 
 namespace LeechCraft
 {
 namespace Rosenthal
 {
+	class KnownDictsManager;
+
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveSettings
+				 , public ISpellCheckProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IHaveSettings ISpellCheckProvider)
+
+		ICoreProxy_ptr Proxy_;
+
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		KnownDictsManager *KnownMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,6 +60,12 @@ namespace Rosenthal
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		ISpellChecker_ptr CreateSpellchecker ();
+	private slots:
+		void handlePushButtonClicked (const QString&);
 	};
 }
 }

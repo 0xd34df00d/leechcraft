@@ -40,8 +40,6 @@ class QStandardItem;
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Rosenthal
 {
 	class KnownDictsManager : public QObject
@@ -74,6 +72,5 @@ namespace Rosenthal
 	signals:
 		void languagesChanged (const QStringList&);
 	};
-}
 }
 }

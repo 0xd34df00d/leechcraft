@@ -27,78 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "checker.h"
-#include <algorithm>
-#include <QFile>
-#include <QTextCodec>
-#include <util/util.h>
-#include "knowndictsmanager.h"
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Rosenthal
 {
-	Checker::Checker (const KnownDictsManager *knownMgr, QObject *parent)
-	: QObject (parent)
-	, KnownMgr_ (knownMgr)
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		connect (knownMgr,
-				SIGNAL (languagesChanged (QStringList)),
-				this,
-				SLOT (setLanguages (QStringList)));
-		setLanguages (knownMgr->GetLanguages ());
+		Util::BaseSettingsManager::Init ();
 	}
 
-	QStringList Checker::GetPropositions (const QString& word) const
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
-		if (!Hunspell_ || !Codec_)
-			return {};
-
-		const QByteArray& encoded = Codec_->fromUnicode (word);
-		if (Hunspell_->spell (encoded.data ()))
-			return QStringList ();
-
-		char **wlist = 0;
-		const int ns = Hunspell_->suggest (&wlist, encoded.data ());
-		if (!ns || !wlist)
-			return QStringList ();
-
-		QStringList result;
-		for (int i = 0; i < std::min (ns, 10); ++i)
-			result << Codec_->toUnicode (wlist [i]);
-		Hunspell_->free_list (&wlist, ns);
-
-		return result;
+		static XmlSettingsManager xsm;
+		return xsm;
 	}
 
-	bool Checker::IsCorrect (const QString& word) const
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
-		if (!Hunspell_ || !Codec_)
-			return true;
-
-		const QByteArray& encoded = Codec_->fromUnicode (word);
-		return Hunspell_->spell (encoded.data ());
 	}
 
-	void Checker::setLanguages (const QStringList& languages)
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		Hunspell_.reset ();
-
-		const auto& primary = languages.value (0);
-		if (primary.isEmpty ())
-			return;
-
-		const auto& primaryPath = KnownMgr_->GetDictPath (primary);
-
-		Hunspell_.reset (new Hunspell ((primaryPath + ".aff").toLatin1 (),
-				(primaryPath + ".dic").toLatin1 ()));
-		for (int i = 1; i < languages.size (); ++i)
-			Hunspell_->add_dic (KnownMgr_->GetDictPath (languages.at (i) + ".dic").toLatin1 ());
-
-		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Rosenthal");
+		return settings;
 	}
-}
 }
 }

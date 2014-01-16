@@ -27,29 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ROSENTHAL_XMLSETTINGSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_ROSENTHAL_XMLSETTINGSMANAGER_H
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#pragma once
 
-namespace LeechCraft
-{
-namespace Azoth
-{
-namespace Rosenthal
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
+#include <memory>
+#include <QtPlugin>
 
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
-}
-}
-}
+class ISpellChecker
+{
+public:
+	virtual ~ISpellChecker () {}
 
-#endif
+	virtual bool IsCorrect (const QString&) const = 0;
+	virtual QStringList GetPropositions (const QString&) const = 0;
+};
+
+typedef std::shared_ptr<ISpellChecker> ISpellChecker_ptr;
+
+class ISpellCheckProvider
+{
+protected:
+	virtual ~ISpellCheckProvider () {}
+public:
+	virtual ISpellChecker_ptr CreateSpellchecker () = 0;
+};
+
+Q_DECLARE_INTERFACE (ISpellChecker, "org.LeechCraft.ISpellChecker/1.0");
+Q_DECLARE_INTERFACE (ISpellCheckProvider, "org.LeechCraft.ISpellCheckProvider/1.0");

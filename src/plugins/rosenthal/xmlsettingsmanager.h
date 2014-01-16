@@ -29,36 +29,22 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include "hunspell/hunspell.hxx"
-
-class QTextCodec;
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Rosenthal
 {
-	class KnownDictsManager;
-
-	class Checker : public QObject
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
-		std::unique_ptr<Hunspell> Hunspell_;
-		QTextCodec *Codec_ = nullptr;
-
-		const KnownDictsManager * const KnownMgr_;
+		XmlSettingsManager ();
 	public:
-		Checker (const KnownDictsManager*, QObject* = 0);
-
-		QStringList GetPropositions (const QString&) const;
-		bool IsCorrect (const QString&) const;
-	public slots:
-		void setLanguages (const QStringList&);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
-}
 }
 }

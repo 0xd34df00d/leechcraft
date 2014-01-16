@@ -32,6 +32,7 @@
 #include <memory>
 #include <QSyntaxHighlighter>
 #include <QTextFormat>
+#include <interfaces/ispellcheckprovider.h>
 
 namespace LeechCraft
 {
@@ -39,16 +40,14 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	class Checker;
-
 	class Highlighter : public QSyntaxHighlighter
 	{
 		Q_OBJECT
 
 		QTextCharFormat SpellCheckFormat_;
-		const Checker * const Checker_;
+		const ISpellChecker_ptr Checker_;
 	public:
-		Highlighter (const Checker*, QTextDocument*);
+		Highlighter (const ISpellChecker_ptr&, QTextDocument*);
 	protected:
 		void highlightBlock (const QString&);
 	};

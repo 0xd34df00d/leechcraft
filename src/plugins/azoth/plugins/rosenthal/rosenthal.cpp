@@ -35,13 +35,9 @@
 #include <QMenu>
 #include <QTranslator>
 #include <util/util.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ientitymanager.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "highlighter.h"
-#include "checker.h"
-#include "xmlsettingsmanager.h"
-#include "knowndictsmanager.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 
 namespace LeechCraft
 {
@@ -52,27 +48,20 @@ namespace Rosenthal
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
 		Translator_.reset (Util::InstallTranslator ("azoth_rosenthal"));
-
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
-		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"azothrosenthalsettings.xml");
-
-		connect (SettingsDialog_.get (),
-				SIGNAL (pushButtonClicked (QString)),
-				this,
-				SLOT (handlePushButtonClicked (QString)));
-
-		auto knownMgr = new KnownDictsManager;
-		SettingsDialog_->SetDataSource ("Dictionaries", knownMgr->GetModel ());
-		SettingsDialog_->SetDataSource ("PrimaryLanguage", knownMgr->GetEnabledModel ());
-
-		Checker_ = new Checker (knownMgr, this);
 	}
 
 	void Plugin::SecondInit ()
 	{
+		const auto& providers = Proxy_->GetPluginsManager ()->
+				GetAllCastableTo<ISpellCheckProvider*> ();
+		for (const auto prov : providers)
+			if ((Checker_ = prov->CreateSpellchecker ()))
+				break;
+
+		if (!Checker_)
+			qWarning () << Q_FUNC_INFO
+					<< "no spellchecker has been found, spell checking won't work";
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -82,8 +71,6 @@ namespace Rosenthal
 
 	void Plugin::Release ()
 	{
-		delete Checker_;
-		Checker_ = nullptr;
 	}
 
 	QString Plugin::GetName () const
@@ -109,13 +96,11 @@ namespace Rosenthal
 		return result;
 	}
 
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return SettingsDialog_;
-	}
-
 	bool Plugin::eventFilter (QObject *obj, QEvent *event)
 	{
+		if (!Checker_)
+			return QObject::eventFilter (obj, event);
+
 		QPoint eventPos;
 		if (event->type () == QEvent::ContextMenu)
 			eventPos = static_cast<QContextMenuEvent*> (event)->pos ();
@@ -168,28 +153,12 @@ namespace Rosenthal
 		return true;
 	}
 
-	void Plugin::handlePushButtonClicked (const QString& name)
-	{
-		if (name != "InstallDicts")
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown button"
-					<< name;
-			return;
-		}
-
-		auto e = Util::MakeEntity ("ListPackages",
-				QString (),
-				FromUserInitiated,
-				"x-leechcraft/package-manager-action");
-		e.Additional_ ["Tags"] = QStringList ("dicts");
-
-		Proxy_->GetEntityManager ()->HandleEntity (e);
-	}
-
 	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 			QObject *chatTab, QObject*, QWebView*)
 	{
+		if (!Checker_)
+			return;
+
 		QTextEdit *edit = 0;
 		QMetaObject::invokeMethod (chatTab,
 				"getMsgEdit",

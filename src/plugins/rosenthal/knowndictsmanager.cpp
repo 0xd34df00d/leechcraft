@@ -36,8 +36,6 @@
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Rosenthal
 {
 	namespace
@@ -199,6 +197,5 @@ namespace Rosenthal
 	{
 		emit languagesChanged (GetLanguages ());
 	}
-}
 }
 }

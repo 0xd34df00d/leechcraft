@@ -35,6 +35,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/ispellcheckprovider.h>
 
 class QWebView;
 class QTranslator;
@@ -51,17 +52,15 @@ namespace Rosenthal
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
-				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2)
 
 		ICoreProxy_ptr Proxy_;
 
 		std::shared_ptr<QTranslator> Translator_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
-		Checker *Checker_;
+		ISpellChecker_ptr Checker_;
 
 		QList<Highlighter*> Highlighters_;
 	public:
@@ -73,13 +72,9 @@ namespace Rosenthal
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private slots:
-		void handlePushButtonClicked (const QString&);
-
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 				QObject*,
 				QObject*,

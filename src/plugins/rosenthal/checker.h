@@ -27,36 +27,38 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
+#pragma once
+
+#include <memory>
+#include <QObject>
+#include <interfaces/ispellcheckprovider.h>
+#include "hunspell/hunspell.hxx"
+
+class QTextCodec;
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Rosenthal
 {
-	XmlSettingsManager::XmlSettingsManager ()
-	{
-		Util::BaseSettingsManager::Init ();
-	}
+	class KnownDictsManager;
 
-	XmlSettingsManager& XmlSettingsManager::Instance ()
+	class Checker : public QObject
+				  , public ISpellChecker
 	{
-		static XmlSettingsManager xsm;
-		return xsm;
-	}
+		Q_OBJECT
+		Q_INTERFACES (ISpellChecker)
 
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
-	}
+		std::unique_ptr<Hunspell> Hunspell_;
+		QTextCodec *Codec_ = nullptr;
 
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Rosenthal");
-		return settings;
-	}
-}
+		const KnownDictsManager * const KnownMgr_;
+	public:
+		Checker (const KnownDictsManager*, QObject* = 0);
+
+		QStringList GetPropositions (const QString&) const;
+		bool IsCorrect (const QString&) const;
+	public slots:
+		void setLanguages (const QStringList&);
+	};
 }
 }

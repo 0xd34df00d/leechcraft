@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "highlighter.h"
-#include "checker.h"
 
 namespace LeechCraft
 {
@@ -36,7 +35,7 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	Highlighter::Highlighter (const Checker *checker, QTextDocument *parent)
+	Highlighter::Highlighter (const ISpellChecker_ptr& checker, QTextDocument *parent)
 	: QSyntaxHighlighter (parent)
 	, Checker_ (checker)
 	{

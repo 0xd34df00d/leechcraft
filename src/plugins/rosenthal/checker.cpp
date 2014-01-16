@@ -27,95 +27,75 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "rosenthal.h"
-#include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ientitymanager.h>
-#include "xmlsettingsmanager.h"
-#include "knowndictsmanager.h"
 #include "checker.h"
+#include <algorithm>
+#include <QFile>
+#include <QTextCodec>
+#include <util/util.h>
+#include "knowndictsmanager.h"
 
 namespace LeechCraft
 {
 namespace Rosenthal
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	Checker::Checker (const KnownDictsManager *knownMgr, QObject *parent)
+	: QObject (parent)
+	, KnownMgr_ (knownMgr)
 	{
-		Proxy_ = proxy;
-
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
-		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"rosenthalsettings.xml");
-
-		connect (SettingsDialog_.get (),
-				SIGNAL (pushButtonClicked (QString)),
+		connect (knownMgr,
+				SIGNAL (languagesChanged (QStringList)),
 				this,
-				SLOT (handlePushButtonClicked (QString)));
-
-		KnownMgr_ = new KnownDictsManager;
-		SettingsDialog_->SetDataSource ("Dictionaries", KnownMgr_->GetModel ());
-		SettingsDialog_->SetDataSource ("PrimaryLanguage", KnownMgr_->GetEnabledModel ());
+				SLOT (setLanguages (QStringList)));
+		setLanguages (knownMgr->GetLanguages ());
 	}
 
-	void Plugin::SecondInit ()
+	QStringList Checker::GetPropositions (const QString& word) const
 	{
+		if (!Hunspell_ || !Codec_)
+			return {};
+
+		const QByteArray& encoded = Codec_->fromUnicode (word);
+		if (Hunspell_->spell (encoded.data ()))
+			return QStringList ();
+
+		char **wlist = 0;
+		const int ns = Hunspell_->suggest (&wlist, encoded.data ());
+		if (!ns || !wlist)
+			return QStringList ();
+
+		QStringList result;
+		for (int i = 0; i < std::min (ns, 10); ++i)
+			result << Codec_->toUnicode (wlist [i]);
+		Hunspell_->free_list (&wlist, ns);
+
+		return result;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	bool Checker::IsCorrect (const QString& word) const
 	{
-		return "org.LeechCraft.Rosenthal";
+		if (!Hunspell_ || !Codec_)
+			return true;
+
+		const QByteArray& encoded = Codec_->fromUnicode (word);
+		return Hunspell_->spell (encoded.data ());
 	}
 
-	void Plugin::Release ()
+	void Checker::setLanguages (const QStringList& languages)
 	{
-	}
+		Hunspell_.reset ();
 
-	QString Plugin::GetName () const
-	{
-		return "Rosenthal";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Spellchecker service module for other plugins to use.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return SettingsDialog_;
-	}
-
-	ISpellChecker_ptr Plugin::CreateSpellchecker ()
-	{
-		return std::shared_ptr<Checker> (new Checker (KnownMgr_));
-	}
-
-	void Plugin::handlePushButtonClicked (const QString& name)
-	{
-		if (name != "InstallDicts")
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown button"
-					<< name;
+		const auto& primary = languages.value (0);
+		if (primary.isEmpty ())
 			return;
-		}
 
-		auto e = Util::MakeEntity ("ListPackages",
-				QString (),
-				FromUserInitiated,
-				"x-leechcraft/package-manager-action");
-		e.Additional_ ["Tags"] = QStringList ("dicts");
+		const auto& primaryPath = KnownMgr_->GetDictPath (primary);
 
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		Hunspell_.reset (new Hunspell ((primaryPath + ".aff").toLatin1 (),
+				(primaryPath + ".dic").toLatin1 ()));
+		for (int i = 1; i < languages.size (); ++i)
+			Hunspell_->add_dic (KnownMgr_->GetDictPath (languages.at (i) + ".dic").toLatin1 ());
+
+		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_rosenthal, LeechCraft::Rosenthal::Plugin);
