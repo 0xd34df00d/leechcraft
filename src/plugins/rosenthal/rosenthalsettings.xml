@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="Azoth Rosenthal" />
+		<label value="Rosenthal" />
 		<groupbox>
 			<label value="Languages" />
 			<item type="combobox" property="PrimaryLanguage" mayHaveDataSource="true">
