@@ -168,7 +168,8 @@ namespace Azoth
 	{
 		const auto& filename = QFileDialog::getOpenFileName (0,
 				tr ("Select file to send"),
-				XmlSettingsManager::Instance ().Property ("LastFileSendDir", {}).toString ());
+				XmlSettingsManager::Instance ()
+						.Property ("LastFileSendDir", QDir::homePath ()).toString ());
 		if (filename.isEmpty ())
 			return;
 
