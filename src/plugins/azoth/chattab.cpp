@@ -2020,7 +2020,12 @@ namespace Azoth
 			const QString& reason = idx > 0 ?
 					text.mid (idx + 1)
 					: QString ();
+
 			mucEntry->Leave (reason);
+
+			if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+				Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
+
 			return true;
 		}
 		else if (text.startsWith ("/kick ") && mucPerms)
