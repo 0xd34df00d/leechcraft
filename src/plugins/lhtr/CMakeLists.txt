@@ -28,6 +28,7 @@ set (SRCS
 	finddialog.cpp
 	inserttabledialog.cpp
 	xmlsettingsmanager.cpp
+	htmlhighlighter.cpp
 	)
 set (FORMS
 	richeditorwidget.ui
