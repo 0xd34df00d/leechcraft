@@ -136,7 +136,7 @@ namespace LHTR
 				while (pos < blockLen)
 				{
 					const auto ch = block.at (pos++);
-					if (ch == ' ')
+					if (ch == ' ' && block.at (pos) != '/')
 					{
 						state = State::AttrName;
 						break;
