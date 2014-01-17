@@ -177,6 +177,7 @@ namespace LHTR
 						quoteChar = ch;
 				}
 				setFormat (start, pos - start, getFmt (Construct::AttrValue));
+				break;
 			}
 			}
 		}
