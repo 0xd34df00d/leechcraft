@@ -53,7 +53,7 @@ namespace Azoth
 	class IAccount;
 	class IMessage;
 	class ITransferManager;
-
+	class ContactDropFilter;
 	class MsgFormatterWidget;
 
 	class ChatTab : public QWidget
@@ -100,6 +100,7 @@ namespace Azoth
 		bool IsMUC_;
 		int PreviousTextHeight_;
 
+		ContactDropFilter *CDF_;
 		MsgFormatterWidget *MsgFormatter_;
 
 		ITransferManager *XferManager_;
@@ -163,10 +164,6 @@ namespace Azoth
 		void appendMessageText (const QString&);
 		void selectVariant (const QString&);
 		QTextEdit* getMsgEdit ();
-
-		void handleLocalImageDropped (const QImage&, const QUrl&);
-		void handleImageDropped (const QImage&);
-		void handleFilesDropped (const QList<QUrl>&);
 	private slots:
 		void on_MUCEventsButton__toggled (bool);
 		void handleSeparateMUCLog (bool initial = false);

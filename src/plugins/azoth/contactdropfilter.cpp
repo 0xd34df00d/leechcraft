@@ -30,14 +30,24 @@
 #include "contactdropfilter.h"
 #include <QDropEvent>
 #include <QImage>
+#include <QMessageBox>
 #include <QUrl>
+#include <QFileInfo>
+#include <QBuffer>
+#include <util/util.h>
+#include "interfaces/azoth/irichtextmessage.h"
+#include "core.h"
+#include "chattab.h"
+#include "transferjobmanager.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	ContactDropFilter::ContactDropFilter (QObject *parent)
-	: QObject (parent)
+	ContactDropFilter::ContactDropFilter (const QString& entryId, ChatTab *parent)
+	: QObject { parent }
+	, EntryId_ { entryId }
+	, ChatTab_ { parent }
 	{
 	}
 
@@ -46,21 +56,152 @@ namespace Azoth
 		if (e->type () != QEvent::Drop)
 			return false;
 
-		auto data = static_cast<QDropEvent*> (e)->mimeData ();
+		HandleDrop (static_cast<QDropEvent*> (e)->mimeData ());
+
+		return true;
+	}
+
+	void ContactDropFilter::HandleDrop (const QMimeData *data)
+	{
 		const auto& imgData = data->imageData ();
 
 		if (data->hasImage () && data->hasUrls () && data->urls ().size () == 1)
-			emit localImageDropped (imgData.value<QImage> (), data->urls ().value (0));
+			HandleLocalImageDropped (imgData.value<QImage> (), data->urls ().value (0));
 		else if (data->hasImage ())
-			emit imageDropped (imgData.value<QImage> ());
+			HandleImageDropped (imgData.value<QImage> ());
 		else if (data->hasUrls ())
 		{
 			const auto& urls = data->urls ();
 			if (!urls.isEmpty ())
-				emit filesDropped (urls);
+				HandleFilesDropped (urls);
+		}
+	}
+
+	namespace
+	{
+		template<typename T>
+		T* GetEntry (const QString& id)
+		{
+			QObject *obj = Core::Instance ().GetEntry (id);
+			if (!obj)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no entry for"
+						<< id;
+				return 0;
+			}
+
+			T *entry = qobject_cast<T*> (obj);
+			if (!entry)
+				qWarning () << Q_FUNC_INFO
+						<< "object"
+						<< obj
+						<< "doesn't implement the required interface";
+			return entry;
+		}
+	}
+
+	void ContactDropFilter::HandleLocalImageDropped (const QImage& image, const QUrl& url)
+	{
+		if (url.scheme () == "file")
+			HandleFilesDropped ({ url });
+		else
+		{
+			if (QMessageBox::question (ChatTab_,
+						"Sending image",
+						tr ("Would you like to send image %1 directly in chat? "
+							"Otherwise the link to it will be sent.")
+							.arg (QFileInfo { url.path () }.fileName ()),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			{
+				HandleImageDropped (image);
+				return;
+			}
+
+			auto entry = GetEntry<ICLEntry> (EntryId_);
+			if (!entry)
+				return;
+
+			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
+						IMessage::MTMUCMessage :
+						IMessage::MTChatMessage;
+			auto msgObj = entry->CreateMessage (msgType,
+					ChatTab_->GetSelectedVariant (),
+					url.toEncoded ());
+			auto msg = qobject_cast<IMessage*> (msgObj);
+			msg->Send ();
+		}
+	}
+
+	void ContactDropFilter::HandleImageDropped (const QImage& image)
+	{
+		auto entry = GetEntry<ICLEntry> (EntryId_);
+		if (!entry)
+			return;
+
+		const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
+					IMessage::MTMUCMessage :
+					IMessage::MTChatMessage;
+		auto msgObj = entry->CreateMessage (msgType,
+				ChatTab_->GetSelectedVariant (),
+				tr ("This message contains inline image, enable XHTML-IM to view it."));
+		auto msg = qobject_cast<IMessage*> (msgObj);
+
+		if (IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj))
+		{
+			QString asBase;
+			if (entry->GetEntryType () == ICLEntry::ETMUC)
+			{
+				QBuffer buf;
+				buf.open (QIODevice::ReadWrite);
+				image.save (&buf, "JPG", 60);
+				asBase = QString ("data:image/png;base64,%1")
+						.arg (QString (buf.buffer ().toBase64 ()));
+			}
+			else
+				asBase = Util::GetAsBase64Src (image);
+			const auto& body = "<img src='" + asBase + "'/>";
+			richMsg->SetRichBody (body);
 		}
 
+		msg->Send ();
+	}
+
+	bool ContactDropFilter::CheckImage (const QList<QUrl>& urls)
+	{
+		if (urls.size () != 1)
+			return false;
+
+		const auto& local = urls.at (0).toLocalFile ();
+		if (!QFile::exists (local))
+			return false;
+
+		const QImage img (local);
+		if (img.isNull ())
+			return false;
+
+		const QFileInfo fileInfo (local);
+
+		if (QMessageBox::question (ChatTab_,
+					"Sending image",
+					ChatTab::tr ("Would you like to send image %1 (%2) directly in chat? "
+						"Otherwise it will be sent as file.")
+						.arg (fileInfo.fileName ())
+						.arg (Util::MakePrettySize (fileInfo.size ())),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return false;
+
+		HandleImageDropped (img);
 		return true;
+	}
+
+	void ContactDropFilter::HandleFilesDropped (const QList<QUrl>& urls)
+	{
+		if (CheckImage (urls))
+			return;
+
+		Core::Instance ().GetTransferJobManager ()->
+				OfferURLs (GetEntry<ICLEntry> (EntryId_), urls);
 	}
 }
 }

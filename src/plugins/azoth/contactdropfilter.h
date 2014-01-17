@@ -31,6 +31,7 @@
 
 #include <QObject>
 
+class QMimeData;
 class QImage;
 class QUrl;
 
@@ -38,17 +39,25 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class ChatTab;
+
 	class ContactDropFilter : public QObject
 	{
 		Q_OBJECT
+
+		const QString EntryId_;
+		ChatTab * const ChatTab_;
 	public:
-		ContactDropFilter (QObject* = 0);
+		ContactDropFilter (const QString&, ChatTab*);
 
 		bool eventFilter (QObject*, QEvent*);
-	signals:
-		void localImageDropped (const QImage&, const QUrl&);
-		void imageDropped (const QImage&);
-		void filesDropped (const QList<QUrl>&);
+
+		void HandleDrop (const QMimeData*);
+	private:
+		bool CheckImage (const QList<QUrl>&);
+		void HandleLocalImageDropped (const QImage&, const QUrl&);
+		void HandleImageDropped (const QImage&);
+		void HandleFilesDropped (const QList<QUrl>&);
 	};
 }
 }
