@@ -402,13 +402,17 @@ namespace LMP
 	QList<int> LocalCollection::GetDynamicPlaylist (DynamicPlaylist type) const
 	{
 		QList<int> result;
-		const auto& keys = Track2Path_.keys ();
 		switch (type)
 		{
 		case DynamicPlaylist::Random50:
+		{
+			const auto& keys = Track2Path_.keys ();
+			if (keys.isEmpty ())
+				return {};
 			for (int i = 0; i < 50; ++i)
 				result << keys [qrand () % keys.size ()];
 			break;
+		}
 		case DynamicPlaylist::LovedTracks:
 			result = Storage_->GetLovedTracks ();
 			break;
