@@ -55,8 +55,7 @@ namespace Azoth
 		void HandleDrop (const QMimeData*);
 	private:
 		bool CheckImage (const QList<QUrl>&);
-		void HandleLocalImageDropped (const QImage&, const QUrl&);
-		void HandleImageDropped (const QImage&);
+		void HandleImageDropped (const QImage&, const QUrl&);
 		void HandleFilesDropped (const QList<QUrl>&);
 	};
 }
