@@ -42,6 +42,8 @@ namespace LHTR
 			Entity,
 			Tag,
 			Comment,
+			AttrName,
+			AttrValue,
 			MAX
 		};
 
@@ -52,7 +54,9 @@ namespace LHTR
 			NoState = -1,
 			Normal,
 			Comment,
-			Tag
+			Tag,
+			AttrName,
+			AttrValue
 		};
 	public:
 		HtmlHighlighter (QTextDocument*);

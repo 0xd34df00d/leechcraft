@@ -53,6 +53,14 @@ namespace LHTR
 		commentFormat.setForeground ({ { 128, 10, 74 } });
 		commentFormat.setFontItalic (true);
 		set (Construct::Comment, commentFormat);
+
+		QTextCharFormat attrNameFormat;
+		attrNameFormat.setForeground ({ { 10, 128, 10 } });
+		set (Construct::AttrName, attrNameFormat);
+
+		QTextCharFormat attrValueFormat;
+		attrValueFormat.setForeground ({ { 128, 10, 74 } });
+		set (Construct::AttrValue, attrValueFormat);
 	}
 
 	namespace
@@ -124,29 +132,51 @@ namespace LHTR
 			}
 			case State::Tag:
 			{
-				QChar quoteChar;
-
 				start = pos;
 				while (pos < blockLen)
 				{
-					const auto ch = block.at (pos);
-					if (quoteChar == ch)
-						quoteChar = {};
-					else if (quoteChar.isNull ())
+					const auto ch = block.at (pos++);
+					if (ch == ' ')
 					{
-						if (ch == '\'' || ch == '"')
-							quoteChar = ch;
-						else if (ch == '>')
-						{
-							++pos;
-							state = State::Normal;
-							break;
-						}
+						state = State::AttrName;
+						break;
 					}
-					++pos;
 				}
 
 				setFormat (start, pos - start, getFmt (Construct::Tag));
+				break;
+			}
+			case State::AttrName:
+			{
+				start = pos;
+				while (pos < blockLen)
+				{
+					const auto ch = block.at (pos++);
+					if (ch == '=')
+					{
+						state = State::AttrValue;
+						break;
+					}
+				}
+				setFormat (start, pos - start, getFmt (Construct::AttrName));
+				break;
+			}
+			case State::AttrValue:
+			{
+				start = pos;
+				QChar quoteChar;
+				while (pos < blockLen)
+				{
+					const auto ch = block.at (pos++);
+					if (quoteChar == ch)
+					{
+						state = State::Tag;
+						break;
+					}
+					else if (quoteChar.isNull ())
+						quoteChar = ch;
+				}
+				setFormat (start, pos - start, getFmt (Construct::AttrValue));
 			}
 			}
 		}
