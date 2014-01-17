@@ -141,6 +141,11 @@ namespace LHTR
 						state = State::AttrName;
 						break;
 					}
+					else if (ch == '>')
+					{
+						state = State::Normal;
+						break;
+					}
 				}
 
 				setFormat (start, pos - start, getFmt (Construct::Tag));
