@@ -57,6 +57,7 @@
 #include "finddialog.h"
 #include "inserttabledialog.h"
 #include "xmlsettingsmanager.h"
+#include "htmlhighlighter.h"
 
 namespace LeechCraft
 {
@@ -332,6 +333,8 @@ namespace LHTR
 				SLOT (toggleView ()));
 
 		SetContents ("", ContentType::HTML);
+
+		new HtmlHighlighter (Ui_.HTML_->document ());
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
