@@ -339,7 +339,8 @@ namespace LHTR
 		switch (type)
 		{
 		case ContentType::HTML:
-			SyncHTMLToView ();
+			if (Ui_.TabWidget_->currentIndex () != TabWidgetIdx::TWIHTMLView)
+				SyncHTMLToView ();
 			return Ui_.HTML_->toPlainText ();
 		case ContentType::PlainText:
 			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
