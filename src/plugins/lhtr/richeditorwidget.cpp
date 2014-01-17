@@ -120,6 +120,12 @@ namespace LHTR
 				return false;
 			}
 		};
+
+		enum TabWidgetIdx
+		{
+			TWIVisualView,
+			TWIHTMLView
+		};
 	}
 
 	RichEditorWidget::RichEditorWidget (ICoreProxy_ptr proxy, QWidget *parent)
@@ -798,10 +804,10 @@ namespace LHTR
 
 		switch (idx)
 		{
-		case 1:
+		case TabWidgetIdx::TWIHTMLView:
 			SyncHTMLToView ();
 			break;
-		case 0:
+		case TabWidgetIdx::TWIVisualView:
 			if (!HTMLDirty_)
 				return;
 
