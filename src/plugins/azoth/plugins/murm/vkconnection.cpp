@@ -471,8 +471,11 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::SetStatus (const QString& status)
+	void VkConnection::SetStatus (QString status)
 	{
+		if (status.isEmpty ())
+			status = Status_.StatusString_;
+
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
@@ -532,6 +535,7 @@ namespace Murm
 						SLOT (handleGotFriendLists ()));
 				return reply;
 			});
+		SetStatus (Status_.StatusString_);
 		AuthMgr_->GetAuthKey ();
 	}
 

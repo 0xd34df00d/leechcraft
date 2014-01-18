@@ -175,7 +175,7 @@ namespace Murm
 		void RequestChatInfo (qulonglong);
 		void RemoveChatUser (qulonglong chat, qulonglong user);
 
-		void SetStatus (const QString&);
+		void SetStatus (QString);
 
 		void SetStatus (const EntryStatus&);
 		EntryStatus GetStatus () const;
