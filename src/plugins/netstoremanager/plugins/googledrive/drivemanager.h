@@ -39,9 +39,6 @@
 #include <QVariant>
 #include <QNetworkReply>
 #include <interfaces/structures.h>
-#ifdef HAVE_MAGIC
-	#include <magic.h>
-#endif
 
 class QFile;
 
@@ -163,12 +160,9 @@ namespace GoogleDrive
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 		QHash<QNetworkReply*, QString> Reply2DownloadAccessToken_;
 		bool SecondRequestIfNoItems_;
-#ifdef HAVE_MAGIC
-		magic_t Magic_;
-#endif
+
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
-		~DriveManager ();
 
 		void RefreshListing ();
 		void RemoveEntry (const QByteArray& id);
