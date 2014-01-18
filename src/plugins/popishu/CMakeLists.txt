@@ -30,7 +30,6 @@ include_directories (
 	)
 set (SRCS
 	popishu.cpp
-	core.cpp
 	editorpage.cpp
 	xmlsettingsmanager.cpp
 	replacedialog.cpp
