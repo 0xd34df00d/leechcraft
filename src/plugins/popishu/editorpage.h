@@ -65,6 +65,8 @@ namespace Popishu
 		QtMsgHandler DefaultMsgHandler_;
 		QObject *WrappedObject_;
 		bool TemporaryDocument_;
+
+		bool TabRecoverSaveScheduled_ = false;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
@@ -102,7 +104,10 @@ namespace Popishu
 		void on_ActionWrapWords__triggered ();
 		void on_ActionWrapCharacters__triggered ();
 		void on_ActionReplace__triggered ();
+
 		void on_TextEditor__textChanged ();
+		void on_TextEditor__cursorPositionChanged (int, int);
+
 		void on_Inject__released ();
 		void on_Release__released ();
 
@@ -114,6 +119,8 @@ namespace Popishu
 		void checkProperDoctypeAction (const QString& language);
 
 		void handleRecentFileOpen ();
+
+		void tabRecoverSave ();
 	private:
 		void SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility);
 		bool Save ();
@@ -126,6 +133,8 @@ namespace Popishu
 
 		void RestoreRecentFiles ();
 		void SetupDefPairs ();
+
+		void ScheduleTabRecoverSave ();
 
 		void PrependRecentFile (const QString&, bool = true);
 	signals:

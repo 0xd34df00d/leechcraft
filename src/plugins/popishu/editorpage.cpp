@@ -456,6 +456,13 @@ namespace Popishu
 	void EditorPage::on_TextEditor__textChanged ()
 	{
 		Modified_ = true;
+
+		ScheduleTabRecoverSave ();
+	}
+
+	void EditorPage::on_TextEditor__cursorPositionChanged (int, int)
+	{
+		ScheduleTabRecoverSave ();
 	}
 
 	static QPlainTextEdit *S_TextEdit_ = 0;
@@ -678,6 +685,12 @@ namespace Popishu
 		Open (file);
 	}
 
+	void EditorPage::tabRecoverSave ()
+	{
+		TabRecoverSaveScheduled_ = false;
+		emit tabRecoverDataChanged ();
+	}
+
 	void EditorPage::SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility wv)
 	{
 		Ui_.TextEditor_->setWhitespaceVisibility (wv);
@@ -866,6 +879,17 @@ namespace Popishu
 		DEFPAIR (TeX, tex);
 		DEFPAIR (XML, xml);
 #undef DEFPAIR
+	}
+
+	void EditorPage::ScheduleTabRecoverSave ()
+	{
+		if (TabRecoverSaveScheduled_)
+			return;
+
+		TabRecoverSaveScheduled_ = true;
+		QTimer::singleShot (5000,
+				this,
+				SLOT (tabRecoverSave ()));
 	}
 
 	void EditorPage::PrependRecentFile (const QString& filePath, bool save)
