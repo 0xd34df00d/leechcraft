@@ -486,9 +486,12 @@ namespace Azoth
 		children += TabToolbar_.get ();
 		children += MUCEventLog_;
 		children += MsgFormatter_;
-		Q_FOREACH (auto child, children)
+		for (auto child : children)
 			if (child != Ui_.View_)
 				child->setEnabled (enabled);
+
+		if (enabled)
+			AddManagedActions (false);
 	}
 
 	QObject* ChatTab::GetCLEntry () const
