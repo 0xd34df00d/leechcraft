@@ -51,7 +51,6 @@ namespace Popishu
 		Core ();
 	public:
 		static Core& Instance ();
-		TabClassInfo GetTabClass () const;
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;

@@ -36,23 +36,12 @@ namespace Popishu
 {
 	Core::Core ()
 	{
-		TabClass_.TabClass_ = "Popishu";
-		TabClass_.VisibleName_ = "Popishu";
-		TabClass_.Description_ = tr ("The Popishu text editor");
-		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/popishu.svg");
-		TabClass_.Priority_ = 70;
-		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 	}
 
 	Core& Core::Instance ()
 	{
 		static Core c;
 		return c;
-	}
-
-	TabClassInfo Core::GetTabClass () const
-	{
-		return TabClass_;
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)

@@ -68,10 +68,9 @@ namespace LeechCraft
 {
 namespace Popishu
 {
-	QObject *EditorPage::S_MultiTabsParent_ = 0;
-
-	EditorPage::EditorPage (QWidget *parent)
-	: QWidget (parent)
+	EditorPage::EditorPage (const TabClassInfo& tc, QObject *parentPlugin)
+	: TC_ (tc)
+	, ParentPlugin_ (parentPlugin)
 	, Toolbar_ (new QToolBar)
 	, Modified_ (false)
 	, DoctypeDetected_ (false)
@@ -227,11 +226,6 @@ namespace Popishu
 					GetPluginsManager ()->ReleasePlugin (WrappedObject_);
 	}
 
-	void EditorPage::SetParentMultiTabs (QObject *parent)
-	{
-		S_MultiTabsParent_ = parent;
-	}
-
 	void EditorPage::Remove ()
 	{
 		if (Modified_ && !TemporaryDocument_)
@@ -264,12 +258,12 @@ namespace Popishu
 
 	QObject* EditorPage::ParentMultiTabs ()
 	{
-		return S_MultiTabsParent_;
+		return ParentPlugin_;
 	}
 
 	TabClassInfo EditorPage::GetTabClassInfo () const
 	{
-		return Core::Instance ().GetTabClass ();
+		return TC_;
 	}
 
 	QByteArray EditorPage::GetTabRecoverData () const

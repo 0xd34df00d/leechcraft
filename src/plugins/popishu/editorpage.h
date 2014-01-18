@@ -51,7 +51,8 @@ namespace Popishu
 
 		Ui::EditorPage Ui_;
 
-		static QObject* S_MultiTabsParent_;
+		const TabClassInfo TC_;
+		QObject * const ParentPlugin_;
 
 		std::unique_ptr<QToolBar> Toolbar_;
 		QMenu *DoctypeMenu_;
@@ -68,9 +69,7 @@ namespace Popishu
 
 		bool TabRecoverSaveScheduled_ = false;
 	public:
-		static void SetParentMultiTabs (QObject*);
-
-		EditorPage (QWidget* = 0);
+		EditorPage (const TabClassInfo&, QObject*);
 		virtual ~EditorPage ();
 
 		void Remove ();

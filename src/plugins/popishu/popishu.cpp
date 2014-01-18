@@ -43,9 +43,14 @@ namespace Popishu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		EditorPage::SetParentMultiTabs (this);
-
 		Util::InstallTranslator ("popishu");
+
+		TabClass_.TabClass_ = "Popishu";
+		TabClass_.VisibleName_ = "Popishu";
+		TabClass_.Description_ = tr ("The Popishu text editor");
+		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/popishu.svg");
+		TabClass_.Priority_ = 70;
+		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -85,9 +90,7 @@ namespace Popishu
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
-		TabClasses_t result;
-		result << Core::Instance ().GetTabClass ();
-		return result;
+		return { TabClass_ };
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
@@ -150,7 +153,7 @@ namespace Popishu
 
 	EditorPage* Plugin::MakeEditorPage ()
 	{
-		auto result = new EditorPage ();
+		auto result = new EditorPage (TabClass_, this);
 		connect (result,
 				SIGNAL (removeTab (QWidget*)),
 				this,
