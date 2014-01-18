@@ -178,7 +178,7 @@ namespace Popishu
 
 	void Plugin::AnnouncePage (EditorPage *page)
 	{
-		emit addNewTab ("Popishu", page);
+		emit addNewTab (page->GetTabRecoverName (), page);
 		emit raiseTab (page);
 		emit changeTabIcon (page, QIcon { "lcicons:/resources/images/popishu.svg" });
 	}
