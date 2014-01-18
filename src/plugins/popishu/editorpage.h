@@ -33,6 +33,7 @@
 #include <QHash>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "ui_editorpage.h"
 
 class QMenu;
@@ -43,9 +44,10 @@ namespace Popishu
 {
 	class EditorPage : public QWidget
 					 , public ITabWidget
+					 , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		Ui::EditorPage Ui_;
 
@@ -73,6 +75,12 @@ namespace Popishu
 		QToolBar* GetToolBar () const;
 		QObject* ParentMultiTabs ();
 		TabClassInfo GetTabClassInfo () const;
+
+		QByteArray GetTabRecoverData () const;
+		QIcon GetTabRecoverIcon () const;
+		QString GetTabRecoverName () const;
+
+		void RestoreState (QDataStream&);
 
 		void SetText (const QString&);
 		void SetLanguage (const QString&);
@@ -132,6 +140,8 @@ namespace Popishu
 		void gotEntity (const LeechCraft::Entity&);
 
 		void languageChanged (const QString& language);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }

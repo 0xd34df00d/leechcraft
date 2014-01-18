@@ -129,6 +129,25 @@ namespace Popishu
 		return XmlSettingsDialog_;
 	}
 
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		for (const auto& info : infos)
+		{
+			const auto page = MakeEditorPage ();
+			for (const auto& prop : info.DynProperties_)
+				page->setProperty (prop.first, prop.second);
+
+			QDataStream istr { info.Data_ };
+			QByteArray tabId;
+			istr >> tabId;
+
+			if (tabId == "EditorPage/1")
+				page->RestoreState (istr);
+
+			AnnouncePage (page);
+		}
+	}
+
 	EditorPage* Plugin::MakeEditorPage ()
 	{
 		auto result = new EditorPage ();

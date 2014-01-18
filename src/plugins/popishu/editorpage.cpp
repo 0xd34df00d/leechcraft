@@ -38,6 +38,7 @@
 #include <QToolButton>
 #include <QFileInfo>
 #include <QUrl>
+#include <QBuffer>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexercmake.h>
 #include <Qsci/qscilexercpp.h>
@@ -269,6 +270,54 @@ namespace Popishu
 	TabClassInfo EditorPage::GetTabClassInfo () const
 	{
 		return Core::Instance ().GetTabClass ();
+	}
+
+	QByteArray EditorPage::GetTabRecoverData () const
+	{
+		QByteArray result;
+
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			ostr << QByteArray { "EditorPage/1" }
+					<< Filename_;
+
+			ostr << (Modified_ ? Ui_.TextEditor_->text () : QString ());
+
+			qint32 line = 0, index = 0;
+			Ui_.TextEditor_->getCursorPosition (&line, &index);
+
+			ostr << line << index;
+		}
+
+		return result;
+	}
+
+	QIcon EditorPage::GetTabRecoverIcon () const
+	{
+		return GetTabClassInfo ().Icon_;
+	}
+
+	QString EditorPage::GetTabRecoverName () const
+	{
+		return Filename_.isEmpty () ?
+				"Popishu" :
+				QFileInfo { Filename_ }.fileName ();
+	}
+
+	void EditorPage::RestoreState (QDataStream& istr)
+	{
+		istr >> Filename_;
+		Open (Filename_);
+
+		QString text;
+		istr >> text;
+		Modified_ = !text.isEmpty ();
+		if (!text.isEmpty ())
+			Ui_.TextEditor_->setText (text);
+
+		qint32 line = 0, index = 0;
+		istr >> line >> index;
+		Ui_.TextEditor_->setCursorPosition (line, index);
 	}
 
 	void EditorPage::SetText (const QString& text)

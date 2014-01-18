@@ -34,6 +34,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ihaverecoverabletabs.h>
 
 class QTranslator;
 
@@ -41,14 +42,17 @@ namespace LeechCraft
 {
 namespace Popishu
 {
+	class EditorPage;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
 				 , public IEntityHandler
 				 , public IHaveSettings
+				 , public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings IHaveRecoverableTabs)
 
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 	public:
@@ -67,6 +71,8 @@ namespace Popishu
 		void Handle (Entity);
 
 		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+
+		void RecoverTabs (const QList<TabRecoverInfo>&);
 	private:
 		EditorPage* MakeEditorPage ();
 		void AnnouncePage (EditorPage*);
