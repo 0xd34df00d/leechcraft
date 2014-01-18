@@ -34,7 +34,6 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/structures.h>
 
 class QTranslator;
 
@@ -43,10 +42,10 @@ namespace LeechCraft
 namespace Popishu
 {
 	class Plugin : public QObject
-					, public IInfo
-					, public IHaveTabs
-					, public IEntityHandler
-					, public IHaveSettings
+				 , public IInfo
+				 , public IHaveTabs
+				 , public IEntityHandler
+				 , public IHaveSettings
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
@@ -68,6 +67,9 @@ namespace Popishu
 		void Handle (Entity);
 
 		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+	private:
+		EditorPage* MakeEditorPage ();
+		void AnnouncePage (EditorPage*);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

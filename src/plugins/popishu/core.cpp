@@ -64,55 +64,5 @@ namespace Popishu
 	{
 		return Proxy_;
 	}
-
-	EditorPage* Core::NewTabRequested ()
-	{
-		EditorPage *page = MakeEditorPage ();
-		emit addNewTab ("Popishu", page);
-		emit raiseTab (page);
-		emit changeTabIcon (page, QIcon ("lcicons:/resources/images/popishu.svg"));
-
-		return page;
-	}
-
-	void Core::Handle (const Entity& e)
-	{
-		EditorPage *page = NewTabRequested ();
-		page->SetText (e.Entity_.toString ());
-
-		QString language = e.Additional_ ["Language"].toString ();
-		bool isTempDocumnet = e.Additional_ ["IsTemporaryDocument"].toBool ();
-		if (!language.isEmpty ())
-			page->SetLanguage (language);
-		page->SetTemporaryDocument (isTempDocumnet);
-	}
-
-	EditorPage* Core::MakeEditorPage ()
-	{
-		EditorPage *result = new EditorPage ();
-		connect (result,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (result,
-				SIGNAL (changeTabName (QWidget*, const QString&)),
-				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
-		connect (result,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-		connect (result,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
-		connect (result,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		return result;
-	}
 }
 }

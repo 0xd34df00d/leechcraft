@@ -55,24 +55,6 @@ namespace Popishu
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-
-		EditorPage* NewTabRequested ();
-		void Handle (const Entity&);
-	private:
-		EditorPage* MakeEditorPage ();
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
-
-		void couldHandle (const LeechCraft::Entity&, bool*);
 	};
 }
 }
