@@ -34,6 +34,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_editorpage.h"
 
 class QMenu;
@@ -53,6 +54,7 @@ namespace Popishu
 
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
+		const ICoreProxy_ptr Proxy_;
 
 		std::unique_ptr<QToolBar> Toolbar_;
 		QMenu *DoctypeMenu_;
@@ -69,8 +71,8 @@ namespace Popishu
 
 		bool TabRecoverSaveScheduled_ = false;
 	public:
-		EditorPage (const TabClassInfo&, QObject*);
-		virtual ~EditorPage ();
+		EditorPage (const ICoreProxy_ptr& proxy, const TabClassInfo&, QObject*);
+		~EditorPage ();
 
 		void Remove ();
 		QToolBar* GetToolBar () const;

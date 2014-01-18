@@ -43,15 +43,5 @@ namespace Popishu
 		static Core c;
 		return c;
 	}
-
-	void Core::SetProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
-	}
-
-	ICoreProxy_ptr Core::GetProxy () const
-	{
-		return Proxy_;
-	}
 }
 }

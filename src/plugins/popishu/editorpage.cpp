@@ -68,9 +68,10 @@ namespace LeechCraft
 {
 namespace Popishu
 {
-	EditorPage::EditorPage (const TabClassInfo& tc, QObject *parentPlugin)
+	EditorPage::EditorPage (const ICoreProxy_ptr& proxy, const TabClassInfo& tc, QObject *parentPlugin)
 	: TC_ (tc)
 	, ParentPlugin_ (parentPlugin)
+	, Proxy_ (proxy)
 	, Toolbar_ (new QToolBar)
 	, Modified_ (false)
 	, DoctypeDetected_ (false)
@@ -222,8 +223,7 @@ namespace Popishu
 		if (DefaultMsgHandler_)
 			qInstallMsgHandler (DefaultMsgHandler_);
 		if (WrappedObject_)
-			Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->ReleasePlugin (WrappedObject_);
+			Proxy_->GetPluginsManager ()->ReleasePlugin (WrappedObject_);
 	}
 
 	void EditorPage::Remove ()
@@ -525,8 +525,7 @@ namespace Popishu
 
 		try
 		{
-			Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->InjectPlugin (WrappedObject_);
+			Proxy_->GetPluginsManager ()->InjectPlugin (WrappedObject_);
 		}
 		catch (const std::exception& e)
 		{
@@ -561,8 +560,7 @@ namespace Popishu
 
 		try
 		{
-			Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->ReleasePlugin (WrappedObject_);
+			Proxy_->GetPluginsManager ()->ReleasePlugin (WrappedObject_);
 		}
 		catch (const std::exception& e)
 		{

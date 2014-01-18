@@ -55,6 +55,7 @@ namespace Popishu
 		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings IHaveRecoverableTabs)
 
 		TabClassInfo TabClass_;
+		ICoreProxy_ptr Proxy_;
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);

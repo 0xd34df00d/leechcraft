@@ -45,15 +45,9 @@ namespace Popishu
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		TabClassInfo TabClass_;
-
 		Core ();
 	public:
 		static Core& Instance ();
-
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
 	};
 }
 }

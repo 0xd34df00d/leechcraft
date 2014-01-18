@@ -45,6 +45,8 @@ namespace Popishu
 	{
 		Util::InstallTranslator ("popishu");
 
+		Proxy_ = proxy;
+
 		TabClass_.TabClass_ = "Popishu";
 		TabClass_.VisibleName_ = "Popishu";
 		TabClass_.Description_ = tr ("The Popishu text editor");
@@ -55,8 +57,6 @@ namespace Popishu
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"popishusettings.xml");
-
-		Core::Instance ().SetProxy (proxy);
 	}
 
 	void Plugin::SecondInit ()
@@ -153,7 +153,7 @@ namespace Popishu
 
 	EditorPage* Plugin::MakeEditorPage ()
 	{
-		auto result = new EditorPage (TabClass_, this);
+		auto result = new EditorPage (Proxy_, TabClass_, this);
 		connect (result,
 				SIGNAL (removeTab (QWidget*)),
 				this,
