@@ -82,6 +82,13 @@ namespace SvcAuth
 
 	void VkAuthManager::GetAuthKey ()
 	{
+		if (SilentMode_)
+		{
+			PrioManagedQueues_.clear ();
+			ManagedQueues_.clear ();
+			return;
+		}
+
 		if (Token_.isEmpty () ||
 				ReceivedAt_.secsTo (QDateTime::currentDateTime ()) > ValidFor_)
 		{
@@ -125,6 +132,11 @@ namespace SvcAuth
 	void VkAuthManager::UnmanageQueue (VkAuthManager::PrioRequestQueue_ptr queue)
 	{
 		PrioManagedQueues_.removeAll (queue);
+	}
+
+	void VkAuthManager::SetSilentMode (bool silent)
+	{
+		SilentMode_ = silent;
 	}
 
 	void VkAuthManager::InvokeQueues (const QString& token)

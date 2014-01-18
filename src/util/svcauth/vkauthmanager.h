@@ -71,6 +71,8 @@ namespace SvcAuth
 
 		bool IsRequestScheduled_;
 		QTimer *ScheduleTimer_;
+
+		bool SilentMode_ = false;
 	public:
 		typedef QList<std::function<void (QString)>> RequestQueue_t;
 		typedef RequestQueue_t* RequestQueue_ptr;
@@ -92,6 +94,8 @@ namespace SvcAuth
 
 		void ManageQueue (PrioRequestQueue_ptr);
 		void UnmanageQueue (PrioRequestQueue_ptr);
+
+		void SetSilentMode (bool);
 	private:
 		void InvokeQueues (const QString&);
 
