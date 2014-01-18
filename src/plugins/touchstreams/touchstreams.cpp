@@ -37,6 +37,7 @@
 #include "audiosearch.h"
 #include "albumsmanager.h"
 #include "friendsmanager.h"
+#include "authclosehandler.h"
 
 namespace LeechCraft
 {
@@ -63,6 +64,11 @@ namespace TouchStreams
 				SIGNAL (cookiesChanged (QByteArray)),
 				this,
 				SLOT (saveCookies (QByteArray)));
+		new AuthCloseHandler (AuthMgr_);
+
+		const bool silent = XmlSettingsManager::Instance ()
+				.Property ("AuthSilentMode", false).toBool ();
+		AuthMgr_->SetSilentMode (silent);
 
 		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
 		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
@@ -151,8 +157,10 @@ namespace TouchStreams
 	{
 		if (name == "AllowRequestsTriggered")
 		{
+			AuthMgr_->SetSilentMode (false);
 			AuthMgr_->clearAuthData ();
 			AuthMgr_->reauth ();
+			XmlSettingsManager::Instance ().setProperty ("AuthSilentMode", false);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
