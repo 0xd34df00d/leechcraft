@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include "interfaces/azoth/azothcommon.h"
 
 class QAction;
 class QMenu;
@@ -39,6 +40,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class StatusChangeMenuManager;
 	class IAccount;
 	class ConsoleWidget;
 	class ServiceDiscoveryWidget;
@@ -51,6 +53,9 @@ namespace Azoth
 		QWidget *MW_;
 
 		QHash<IAccount*, ConsoleWidget*> Account2CW_;
+
+		StatusChangeMenuManager * const StatusMenuMgr_;
+		QMenu *MenuChangeStatus_;
 
 		QAction *AccountJoinConference_;
 		QAction *AccountManageBookmarks_;
@@ -69,9 +74,13 @@ namespace Azoth
 		AccountActionsManager (QWidget*, QObject* = 0);
 
 		QList<QAction*> GetMenuActions (QMenu*, QObject*);
+
+		QString GetStatusText (QAction*, State) const;
 	private:
+		QList<QAction*> AddMenuChangeStatus (QMenu*, QObject*);
 		QList<QAction*> AddBMActions (QMenu*, QObject*);
 	private slots:
+		void handleChangeStatusRequested ();
 		void joinAccountConference ();
 		void joinAccountConfFromBM ();
 		void manageAccountBookmarks ();

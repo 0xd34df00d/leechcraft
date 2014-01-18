@@ -64,7 +64,6 @@ namespace Azoth
 		QAction *ActionDeleteSelected_;
 		QToolBar *BottomBar_;
 
-		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
 
 		AccountActionsManager *AccountActsMgr_;

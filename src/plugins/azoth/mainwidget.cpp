@@ -165,10 +165,7 @@ namespace Azoth
 		MenuButton_->setIcon (MainMenu_->icon ());
 		MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
-		MenuChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
 		TrayChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
-
-		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
 
 		FastStatusButton_->setMenu (StatusMenuMgr_->CreateMenu (this, SLOT (fastStateChangeRequested ()), this));
 		FastStatusButton_->setPopupMode (QToolButton::InstantPopup);
@@ -445,28 +442,9 @@ namespace Azoth
 			break;
 		}
 		case Core::CLETAccount:
-		{
-			QVariant objVar = index.data (Core::CLRAccountObject);
-			actions << AccountActsMgr_->GetMenuActions (menu, objVar.value<QObject*> ());
-			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
-			{
-				if (act->isSeparator ())
-					continue;
-
-				act->setData (objVar);
-
-				QVariant stateVar = act->property ("Azoth/TargetState");
-				if (!stateVar.isNull ())
-				{
-					State state = stateVar.value<State> ();
-					act->setIcon (Core::Instance ().GetIconForState (state));
-				}
-			}
-			actions.prepend (Util::CreateSeparator (menu));
-			actions.prepend (MenuChangeStatus_->menuAction ());
-
+			actions << AccountActsMgr_->GetMenuActions (menu,
+					index.data (Core::CLRAccountObject).value<QObject*> ());
 			break;
-		}
 		default:
 			break;
 		}
@@ -481,20 +459,6 @@ namespace Azoth
 		menu->deleteLater ();
 	}
 
-	namespace
-	{
-		QString GetStatusText (QObject *object, State state)
-		{
-			const auto& textVar = object->property ("Azoth/TargetText");
-			if (!textVar.isNull ())
-				return textVar.toString ();
-
-			const auto& propName = "DefaultStatus" + QString::number (state);
-			return XmlSettingsManager::Instance ()
-					.property (propName.toLatin1 ()).toString ();
-		}
-	}
-
 	void MainWidget::handleChangeStatusRequested ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -506,42 +470,26 @@ namespace Azoth
 			return;
 		}
 
-		QObject *obj = action->data ().value<QObject*> ();
-		IAccount *acc = qobject_cast<IAccount*> (obj);
-		if (obj && !acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to cast"
-					<< obj
-					<< "to IAccount";
-			return;
-		}
-
 		QVariant stateVar = action->property ("Azoth/TargetState");
 		EntryStatus status;
 		if (!stateVar.isNull ())
 		{
 			const auto state = stateVar.value<State> ();
-			status = EntryStatus (state, GetStatusText (action, state));
+			status = EntryStatus (state, AccountActsMgr_->GetStatusText (action, state));
 		}
 		else
 		{
-			SetStatusDialog ssd (acc ? acc->GetAccountID () : "global", this);
+			SetStatusDialog ssd ("global", this);
 			if (ssd.exec () != QDialog::Accepted)
 				return;
 
 			status = EntryStatus (ssd.GetState (), ssd.GetStatusText ());
 		}
 
-		if (acc)
-			acc->ChangeState (status);
-		else
-		{
-			for (IAccount *acc : Core::Instance ().GetAccounts ())
-				if (acc->IsShownInRoster ())
-					acc->ChangeState (status);
-			updateFastStatusButton (status.State_);
-		}
+		for (IAccount *acc : Core::Instance ().GetAccounts ())
+			if (acc->IsShownInRoster ())
+				acc->ChangeState (status);
+		updateFastStatusButton (status.State_);
 	}
 
 	void MainWidget::fastStateChangeRequested ()
@@ -556,7 +504,8 @@ namespace Azoth
 		const auto state = stateVar.value<State> ();
 		updateFastStatusButton (state);
 
-		const EntryStatus status (state, GetStatusText (sender (), state));
+		const EntryStatus status (state,
+				AccountActsMgr_->GetStatusText (static_cast<QAction*> (sender ()), state));
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 			if (acc->IsShownInRoster ())
 				acc->ChangeState (status);
