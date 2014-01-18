@@ -69,6 +69,8 @@ namespace Azoth
 		AccountActionsManager (QWidget*, QObject* = 0);
 
 		QList<QAction*> GetMenuActions (QMenu*, QObject*);
+	private:
+		QList<QAction*> AddBMActions (QMenu*, QObject*);
 	private slots:
 		void joinAccountConference ();
 		void joinAccountConfFromBM ();

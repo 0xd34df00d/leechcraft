@@ -151,46 +151,8 @@ namespace Azoth
 
 		AccountJoinConference_->setEnabled (proto->GetFeatures () & IProtocol::PFMUCsJoinable);
 		actions << AccountJoinConference_;
-
-		if (qobject_cast<ISupportBookmarks*> (accObj))
-		{
-			auto supBms = qobject_cast<ISupportBookmarks*> (accObj);
-			QVariantList bms = supBms->GetBookmarkedMUCs ();
-			if (!bms.isEmpty ())
-			{
-				QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"), menu);
-				actions << bmsMenu->menuAction ();
-
-				for (auto mucObj : qobject_cast<IAccount*> (accObj)->GetCLEntries ())
-				{
-					IMUCEntry *muc = qobject_cast<IMUCEntry*> (mucObj);
-					if (!muc)
-						continue;
-
-					bms.removeAll (muc->GetIdentifyingData ());
-				}
-
-				for (const auto& bm : bms)
-				{
-					const QVariantMap& map = bm.toMap ();
-
-					auto name = map ["StoredName"].toString ();
-					const auto& hrName = map ["HumanReadableName"].toString ();
-					if (name.isEmpty ())
-						name = hrName;
-					QAction *act = bmsMenu->addAction (name);
-					act->setProperty ("Azoth/BMData", bm);
-					act->setProperty ("Azoth/AccountObject", QVariant::fromValue<QObject*> (accObj));
-					act->setToolTip (hrName);
-					connect (act,
-							SIGNAL (triggered ()),
-							this,
-							SLOT (joinAccountConfFromBM ()));
-				}
-			}
-
-			actions << AccountManageBookmarks_;
-		}
+		actions << AddBMActions (menu, accObj);
+		actions << AccountManageBookmarks_;
 		actions << Util::CreateSeparator (menu);
 
 		actions << AccountAddContact_;
@@ -240,6 +202,51 @@ namespace Azoth
 		for (auto act : actions)
 			act->setProperty ("Azoth/AccountObject",
 					QVariant::fromValue<QObject*> (accObj));
+
+		return actions;
+	}
+
+	QList<QAction*> AccountActionsManager::AddBMActions (QMenu *menu, QObject *accObj)
+	{
+		if (!qobject_cast<ISupportBookmarks*> (accObj))
+			return {};
+
+		auto supBms = qobject_cast<ISupportBookmarks*> (accObj);
+		auto bms = supBms->GetBookmarkedMUCs ();
+		if (bms.isEmpty ())
+			return {};
+
+		QList<QAction*> actions;
+
+		QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"), menu);
+		actions << bmsMenu->menuAction ();
+
+		for (auto mucObj : qobject_cast<IAccount*> (accObj)->GetCLEntries ())
+		{
+			IMUCEntry *muc = qobject_cast<IMUCEntry*> (mucObj);
+			if (!muc)
+				continue;
+
+			bms.removeAll (muc->GetIdentifyingData ());
+		}
+
+		for (const auto& bm : bms)
+		{
+			const QVariantMap& map = bm.toMap ();
+
+			auto name = map ["StoredName"].toString ();
+			const auto& hrName = map ["HumanReadableName"].toString ();
+			if (name.isEmpty ())
+				name = hrName;
+			QAction *act = bmsMenu->addAction (name);
+			act->setProperty ("Azoth/BMData", bm);
+			act->setProperty ("Azoth/AccountObject", QVariant::fromValue<QObject*> (accObj));
+			act->setToolTip (hrName);
+			connect (act,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (joinAccountConfFromBM ()));
+		}
 
 		return actions;
 	}
