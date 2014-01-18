@@ -221,7 +221,10 @@ namespace Azoth
 		void InitEntry ();
 		void CheckMUC ();
 		void HandleMUC ();
+
 		void InitExtraActions ();
+		void AddManagedActions (bool first);
+
 		void InitMsgEdit ();
 		void RegisterSettings ();
 

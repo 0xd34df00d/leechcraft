@@ -1618,17 +1618,33 @@ namespace Azoth
 		}
 #endif
 
+		AddManagedActions (true);
+	}
+
+	void ChatTab::AddManagedActions (bool first)
+	{
 		QList<QAction*> coreActions;
-		ActionsManager *manager = Core::Instance ().GetActionsManager ();
-		Q_FOREACH (QAction *action, manager->GetEntryActions (e))
+		const auto manager = Core::Instance ().GetActionsManager ();
+		for (const auto action : manager->GetEntryActions (GetEntry<ICLEntry> ()))
 			if (manager->GetAreasForAction (action).contains (ActionsManager::CLEAAToolbar))
 				coreActions << action;
 
-		if (!coreActions.isEmpty ())
+		if (!first)
 		{
-			TabToolbar_->addSeparator ();
-			TabToolbar_->addActions (coreActions);
+			const auto& toolbarActions = TabToolbar_->actions ();
+			for (auto i = coreActions.begin (); i != coreActions.end (); )
+				if (toolbarActions.contains (*i))
+					i = coreActions.erase (i);
+				else
+					++i;
 		}
+
+		if (coreActions.isEmpty ())
+			return;
+
+		if (!first)
+			TabToolbar_->addSeparator ();
+		TabToolbar_->addActions (coreActions);
 	}
 
 	void ChatTab::InitMsgEdit ()
