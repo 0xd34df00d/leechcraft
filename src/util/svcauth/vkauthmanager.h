@@ -108,8 +108,8 @@ namespace SvcAuth
 		void handleViewUrlChanged (const QUrl&);
 	signals:
 		void gotAuthKey (const QString&);
-
 		void cookiesChanged (const QByteArray&);
+		void authCanceled ();
 	};
 }
 }
