@@ -53,7 +53,8 @@ namespace Azoth
 	public:
 		StatusChangeMenuManager (QObject* = 0);
 
-		QMenu* CreateMenu (QObject *obj, const char *slot, QWidget *parent = 0);
+		QMenu* CreateMenu (QObject *obj, const char *slot, QWidget *parent = 0, bool autoupdate = true);
+		void UpdateCustomStatuses (QMenu*);
 	private slots:
 		void updateCustomStatuses ();
 		void handleMenuDestroyed ();
