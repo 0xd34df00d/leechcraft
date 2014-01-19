@@ -42,6 +42,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/util.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -271,11 +272,8 @@ namespace SB2
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, "quarks"))
 			result += ScanRootDir (QDir (cand));
 
-		QDir local = QDir::home ();
-		if (local.cd (".leechcraft") &&
-			local.cd ("data") &&
-			local.cd ("quarks"))
-			result += ScanRootDir (local);
+		const auto& local = Util::CreateIfNotExists ("data/quarks");
+		result += ScanRootDir (local);
 
 		auto pm = Proxy_->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<IQuarkComponentProvider*> ())
