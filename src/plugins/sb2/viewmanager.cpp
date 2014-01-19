@@ -200,6 +200,10 @@ namespace SB2
 				SIGNAL (quarksAdded (QList<QUrl>)),
 				this,
 				SLOT (handleQuarksAdded (QList<QUrl>)));
+		connect (watcher,
+				SIGNAL (quarksRemoved (QList<QUrl>)),
+				this,
+				SLOT (handleQuarksRemoved (QList<QUrl>)));
 	}
 
 	void ViewManager::RegisterInternalComponent (QuarkComponent_ptr c)
@@ -470,6 +474,17 @@ namespace SB2
 			QuarkComponent_ptr c { new QuarkComponent };
 			c->Url_ = url;
 			AddComponent (c);
+		}
+	}
+
+	void ViewManager::handleQuarksRemoved (const QList<QUrl>& urls)
+	{
+		qDebug () << Q_FUNC_INFO << urls;
+		for (const auto& url : urls)
+		{
+			const auto& id = Quark2Manager_ [url]->GetID ();
+			RemoveQuark (url);
+			RemoveFromRemoved (id);
 		}
 	}
 }
