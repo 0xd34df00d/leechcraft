@@ -127,6 +127,8 @@ class ViewSettingsManager;
 
 		void SaveQuarkOrder ();
 		void LoadQuarkOrder ();
+	private slots:
+		void handleQuarksAdded (const QList<QUrl>&);
 	};
 }
 }

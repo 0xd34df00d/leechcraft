@@ -52,6 +52,7 @@
 #include "viewgeometrymanager.h"
 #include "viewsettingsmanager.h"
 #include "viewpropsmanager.h"
+#include "dirwatcher.h"
 
 namespace LeechCraft
 {
@@ -193,6 +194,12 @@ namespace SB2
 	{
 		for (const auto& component : FindAllQuarks ())
 			AddComponent (component);
+
+		auto watcher = new DirWatcher (Util::CreateIfNotExists ("data/quarks"), this);
+		connect (watcher,
+				SIGNAL (quarksAdded (QList<QUrl>)),
+				this,
+				SLOT (handleQuarksAdded (QList<QUrl>)));
 	}
 
 	void ViewManager::RegisterInternalComponent (QuarkComponent_ptr c)
@@ -453,6 +460,17 @@ namespace SB2
 	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		return rootWM->GetWindowIndex (Window_);
+	}
+
+	void ViewManager::handleQuarksAdded (const QList<QUrl>& urls)
+	{
+		qDebug () << Q_FUNC_INFO << urls;
+		for (const auto& url : urls)
+		{
+			QuarkComponent_ptr c { new QuarkComponent };
+			c->Url_ = url;
+			AddComponent (c);
+		}
 	}
 }
 }
