@@ -196,6 +196,7 @@ namespace Graffiti
 		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
 		FSModel_->setReadOnly (true);
 		Ui_.DirectoryTree_->setModel (FSModel_);
+		Ui_.DirectoryTree_->sortByColumn (0, Qt::AscendingOrder);
 
 		auto idx = FSModel_->index (QDir::homePath ());
 		while (idx.isValid ())

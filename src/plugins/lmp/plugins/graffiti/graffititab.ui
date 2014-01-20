@@ -29,7 +29,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="DirectoryTree_"/>
+        <widget class="QTreeView" name="DirectoryTree_">
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
