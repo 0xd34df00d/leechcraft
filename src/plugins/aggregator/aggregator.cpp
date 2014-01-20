@@ -71,6 +71,9 @@
 #include "actionsstructs.h"
 #include "uistatepersist.h"
 #include "itemswidget.h"
+#include "channelsmodel.h"
+
+Q_DECLARE_METATYPE (QList<int>)
 
 namespace LeechCraft
 {
@@ -108,6 +111,7 @@ namespace Aggregator
 
 	void Aggregator::Init (ICoreProxy_ptr proxy)
 	{
+		qRegisterMetaTypeStreamOperators<QList<int>> ("QList<int>");
 		setProperty ("IsUnremoveable", true);
 
 		Impl_ = new Aggregator_Impl;
@@ -282,6 +286,30 @@ namespace Aggregator
 		currentChannelChanged ();
 
 		BuildID2ActionTupleMap ();
+		
+		Impl_->Ui_.Feeds_->header ()->setContextMenuPolicy (Qt::ActionsContextMenu);
+
+		QList<int> hiddenColumns = XmlSettingsManager::Instance ()->
+				property ("HiddenColumns").value<QList<int>> ();
+		Q_FOREACH (int column, hiddenColumns)
+			Impl_->Ui_.Feeds_->header ()->hideSection (column);
+
+		const QList<QPair<QString, int>>& pairs = Core::Instance ().GetRawChannelsModel ()->
+				GetHeaderName2ColumnList ();
+		typedef QPair<QString, int> Pair_t;
+		Q_FOREACH (const Pair_t& pair, pairs)
+		{
+			QAction *act = new QAction (pair.first, this);
+			act->setProperty ("ColumnIndex", pair.second);
+			act->setCheckable (true);
+			act->setChecked (!hiddenColumns.contains (pair.second));
+			Impl_->Ui_.Feeds_->header ()->addAction (act);
+			connect (act,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleColumnVisibilityActionTriggered ()));
+		}
+		
 	}
 
 	void Aggregator::SecondInit ()
@@ -997,6 +1025,35 @@ namespace Aggregator
 				SLOT (currentChannelChanged ()));
 		Impl_->Ui_.Feeds_->expandAll ();
 	}
+	
+	void Aggregator::handleColumnVisibilityActionTriggered ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+			return;
+
+		QHeaderView *header = Impl_->Ui_.Feeds_->header ();
+		if (!action->isChecked ())
+		{
+			if (header->hiddenSectionCount () == header->count () - 1)
+			{
+				action->setChecked (true);
+				return;
+			}
+			header->hideSection (action->property ("ColumnIndex").toInt ());
+		}
+		else
+			header->showSection (action->property ("ColumnIndex").toInt ());
+		
+		QList<int> columns;
+		for (int i = 0, size = header->count (); i < size; ++i)
+			if (header->isSectionHidden (i))
+				columns << i;
+
+		XmlSettingsManager::Instance ()->setProperty ("HiddenColumns", 
+				QVariant::fromValue (columns));
+	}
+
 }
 }
 

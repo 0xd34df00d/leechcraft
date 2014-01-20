@@ -291,5 +291,16 @@ namespace Aggregator
 	{
 		Menu_ = menu;
 	}
+	
+	QList<QPair<QString, int>> ChannelsModel::GetHeaderName2ColumnList () const
+	{
+		QList<QPair<QString, int>> result;
+		int i = 0;
+		Q_FOREACH (const QString& header, Headers_)
+			result << qMakePair<QString, int> (header, i++);
+		
+		return result;
+	}
+
 }
 }

@@ -82,6 +82,8 @@ namespace Aggregator
 		int GetUnreadItemsNumber () const;
 
 		void SetMenu (QMenu*);
+		QList<QPair<QString, int>> GetHeaderName2ColumnList () const;
+		
 	signals:
 		void channelDataUpdated (IDType_t id, IDType_t feedId);
 	};
