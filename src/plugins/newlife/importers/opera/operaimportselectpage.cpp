@@ -39,7 +39,6 @@
 #include <QUrl>
 #include <QDateTime>
 #include <QXmlStreamWriter>
-#include <boost/concept_check.hpp>
 #include <util/util.h>
 
 namespace LeechCraft
