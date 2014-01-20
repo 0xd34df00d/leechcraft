@@ -41,6 +41,7 @@
 #include <QTranslator>
 #include <QCursor>
 #include <QKeyEvent>
+#include <QInputDialog>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/tags/tagscompletionmodel.h>
@@ -225,6 +226,7 @@ namespace Aggregator
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
 		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
 		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRenameFeed_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
 		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveChannel_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
@@ -243,6 +245,7 @@ namespace Aggregator
 		contextMenu->addSeparator ();
 		contextMenu->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
 		contextMenu->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionRenameFeed_);
 		contextMenu->addSeparator ();
 		contextMenu->addAction (Impl_->ChannelActions_.ActionChannelSettings_);
 		contextMenu->addSeparator ();
@@ -715,6 +718,21 @@ namespace Aggregator
 		mb.setWindowModality (Qt::WindowModal);
 		if (mb.exec () == QMessageBox::Ok)
 			Core::Instance ().RemoveFeed (ds);
+	}
+
+	void Aggregator::on_ActionRenameFeed__triggered ()
+	{
+		QModelIndex ds = GetRelevantIndex ();
+
+		if (!ds.isValid ())
+			return;
+
+		const QString& newName = QInputDialog::getText (this, 
+				tr ("Rename feed"), tr ("New feed name"));
+		if (newName.isEmpty ())
+			return;
+		
+		Core::Instance ().RenameFeed (ds, newName);
 	}
 
 	void Aggregator::on_ActionRemoveChannel__triggered ()
