@@ -32,4 +32,10 @@ Item {
         style: Text.Outline
         styleColor: colorProxy.color_Panel_TopColor
     }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        onClicked: KBSwitch_proxy.setNextLanguage()
+   }
 }
