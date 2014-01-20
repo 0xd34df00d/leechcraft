@@ -61,6 +61,7 @@ namespace Aggregator
 	public:
 		QAction *ActionRemoveFeed_;
 		QAction *ActionUpdateSelectedFeed_;
+		QAction *ActionRenameFeed_;
 		QAction *ActionMarkChannelAsRead_;
 		QAction *ActionMarkChannelAsUnread_;
 		QAction *ActionRemoveChannel_;
