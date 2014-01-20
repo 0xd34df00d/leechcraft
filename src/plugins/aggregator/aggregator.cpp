@@ -111,7 +111,7 @@ namespace Aggregator
 
 	void Aggregator::Init (ICoreProxy_ptr proxy)
 	{
-		qRegisterMetaTypeStreamOperators<QList<int>>("QList<int>");
+		qRegisterMetaTypeStreamOperators<QList<int>> ("QList<int>");
 		setProperty ("IsUnremoveable", true);
 
 		Impl_ = new Aggregator_Impl;
@@ -1050,7 +1050,7 @@ namespace Aggregator
 				columns << i;
 
 		XmlSettingsManager::Instance ()->setProperty ("HiddenColumns", 
-				QVariant::fromValue<QList<int>> (columns));
+				QVariant::fromValue (columns));
 	}
 
 }

@@ -292,7 +292,7 @@ namespace Aggregator
 		Menu_ = menu;
 	}
 	
-	QList<QPair<QString, int>> ChannelsModel::GetHeaderName2ColumnList() const
+	QList<QPair<QString, int>> ChannelsModel::GetHeaderName2ColumnList () const
 	{
 		QList<QPair<QString, int>> result;
 		int i = 0;
