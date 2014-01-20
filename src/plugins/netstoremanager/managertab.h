@@ -56,9 +56,16 @@ namespace NetStoreManager
 
 	enum Columns
 	{
-		Name,
-		Size,
-		Modify
+		CName,
+		CSize,
+		CModify
+	};
+
+	enum SortRoles
+	{
+		SRName = Qt::UserRole + 1,
+		SRSize,
+		SRModifyDate
 	};
 
 	class ManagerTab : public QWidget
@@ -190,7 +197,7 @@ namespace NetStoreManager
 		void handleGotFileUrl (const QUrl& url, const QByteArray& id = QByteArray ());
 
 		void handleGotChanges (const QList<Change>& changes);
-		
+
 		void handleFilterTextChanged (const QString& text);
 
 	signals:
