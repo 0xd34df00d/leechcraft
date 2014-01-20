@@ -72,6 +72,7 @@
 #include "actionsstructs.h"
 #include "uistatepersist.h"
 #include "itemswidget.h"
+#include "channelsmodel.h"
 
 namespace LeechCraft
 {
@@ -722,16 +723,21 @@ namespace Aggregator
 
 	void Aggregator::on_ActionRenameFeed__triggered ()
 	{
-		QModelIndex ds = GetRelevantIndex ();
+		const auto& ds = GetRelevantIndex ();
 
 		if (!ds.isValid ())
 			return;
 
-		const QString& newName = QInputDialog::getText (this, 
-				tr ("Rename feed"), tr ("New feed name"));
+		const auto& current = ds.sibling (ds.row (), ChannelsModel::ColumnTitle)
+				.data ().toString ();
+		const QString& newName = QInputDialog::getText (this,
+				tr ("Rename feed"),
+				tr ("New feed name"),
+				QLineEdit::Normal,
+				current);
 		if (newName.isEmpty ())
 			return;
-		
+
 		Core::Instance ().RenameFeed (ds, newName);
 	}
 
