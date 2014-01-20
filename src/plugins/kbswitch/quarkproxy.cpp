@@ -50,10 +50,17 @@ namespace KBSwitch
 		return CurrentLangCode_;
 	}
 
+	void QuarkProxy::setNextLanguage ()
+	{
+		KBCtl::Instance ().EnableNextGroup ();
+	}
+
 	void QuarkProxy::handleGroupChanged (int group)
 	{
 		CurrentLangCode_ = KBCtl::Instance ().GetLayoutName (group);
 		emit currentLangCodeChanged ();
 	}
+
+
 }
 }

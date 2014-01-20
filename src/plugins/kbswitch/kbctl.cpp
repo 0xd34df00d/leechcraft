@@ -167,6 +167,17 @@ namespace KBSwitch
 		scheduleApply ();
 	}
 
+	void KBCtl::EnableNextGroup ()
+	{
+		const int count = GetEnabledGroups ().count ();
+		int group = GetCurrentGroup ();
+		if (group + 1 <= count)
+			++group;
+		else
+			group = 0;
+		XkbLockGroup (Display_, XkbUseCoreKbd, group);
+	}
+
 	int KBCtl::GetMaxEnabledGroups () const
 	{
 		return XkbNumKbdGroups;

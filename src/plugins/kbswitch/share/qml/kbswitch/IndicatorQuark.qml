@@ -7,6 +7,8 @@ Item {
     implicitWidth: parent.quarkBaseSize
     implicitHeight: parent.quarkBaseSize
 
+    signal changeLanguage()
+
     Image {
         anchors.fill: parent
         anchors.margins: parent.width / 10
@@ -32,4 +34,10 @@ Item {
         style: Text.Outline
         styleColor: colorProxy.color_Panel_TopColor
     }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        onClicked: KBSwitch_proxy.setNextLanguage()
+   }
 }
