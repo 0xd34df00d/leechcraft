@@ -60,7 +60,5 @@ namespace KBSwitch
 		CurrentLangCode_ = KBCtl::Instance ().GetLayoutName (group);
 		emit currentLangCodeChanged ();
 	}
-
-
 }
 }

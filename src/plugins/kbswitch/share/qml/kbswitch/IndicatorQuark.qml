@@ -7,8 +7,6 @@ Item {
     implicitWidth: parent.quarkBaseSize
     implicitHeight: parent.quarkBaseSize
 
-    signal changeLanguage()
-
     Image {
         anchors.fill: parent
         anchors.margins: parent.width / 10
