@@ -402,7 +402,6 @@ namespace Aggregator
 		Pools_.clear ();
 		ChannelsModel_->Clear ();
 
-
 		StorageBackend_.reset (new DumbStorage);
 
 		const QString& strType = XmlSettingsManager::Instance ()->
@@ -428,7 +427,7 @@ namespace Aggregator
 		emit storageChanged ();
 
 		const int feedsTable = 1;
-		const int channelsTable = 1;
+		const int channelsTable = 2;
 		const int itemsTable = 6;
 
 		if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->

@@ -77,6 +77,7 @@ namespace Aggregator
 		ChannelID_ = channel.ChannelID_;
 		FeedID_ = channel.FeedID_;
 		Title_ = channel.Title_;
+		DisplayTitle_ = channel.Title_;
 		Link_ = channel.Link_;
 		Description_ = channel.Description_;
 		LastBuild_ = channel.LastBuild_;
@@ -96,6 +97,7 @@ namespace Aggregator
 			FeedID_,
 			Author_,
 			Title_,
+			DisplayTitle_,
 			Link_,
 			Tags_,
 			LastBuild_,
@@ -132,9 +134,10 @@ namespace Aggregator
 
 	QDataStream& operator<< (QDataStream& out, const Channel& chan)
 	{
-		int version = 3;
+		int version = 4;
 		out << version
 			<< chan.Title_
+			<< chan.DisplayTitle_
 			<< chan.Link_
 			<< chan.Description_
 			<< chan.LastBuild_
@@ -154,7 +157,7 @@ namespace Aggregator
 	{
 		int version = 0;
 		in >> version;
-		if (version < 1 || version > 3)
+		if (version < 1 || version > 4)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -162,8 +165,12 @@ namespace Aggregator
 			return in;
 		}
 
-		in >> chan.Title_
-			>> chan.Link_
+		in >> chan.Title_;
+
+		if (version == 4)
+			in >> chan.DisplayTitle_;
+
+		in >> chan.Link_
 			>> chan.Description_
 			>> chan.LastBuild_
 			>> chan.Tags_

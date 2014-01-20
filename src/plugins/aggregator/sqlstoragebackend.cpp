@@ -187,9 +187,10 @@ namespace Aggregator
 		ChannelsShortSelector_.prepare ("SELECT "
 				"channel_id, "
 				"title, "
+				"display_title, "
 				"url, "
 				"tags, "
-				"last_build,"
+				"last_build, "
 				"favicon, "
 				"author "
 				"FROM channels "
@@ -207,7 +208,8 @@ namespace Aggregator
 				"author, "
 				"pixmap_url, "
 				"pixmap, "
-				"favicon "
+				"favicon, "
+				"display_title "
 				"FROM channels "
 				"WHERE channel_id = :channel_id "
 				"ORDER BY title");
@@ -313,6 +315,7 @@ namespace Aggregator
 				"feed_id, "
 				"url, "
 				"title, "
+				"display_title, "
 				"description, "
 				"last_build, "
 				"tags, "
@@ -326,6 +329,7 @@ namespace Aggregator
 				":feed_id, "
 				":url, "
 				":title, "
+				":display_title, "
 				":description, "
 				":last_build, "
 				":tags, "
@@ -1064,18 +1068,19 @@ namespace Aggregator
 			UnreadItemsCounter_.finish ();
 
 			QStringList tags = Core::Instance ().GetProxy ()->
-				GetTagsManager ()->Split (ChannelsShortSelector_.value (3).toString ());
-			ChannelShort sh =
+				GetTagsManager ()->Split (ChannelsShortSelector_.value (4).toString ());
+			ChannelShort sh
 			{
 				id,
 				feedId,
-				ChannelsShortSelector_.value (6).toString (),
+				ChannelsShortSelector_.value (7).toString (),
 				ChannelsShortSelector_.value (1).toString (),
 				ChannelsShortSelector_.value (2).toString (),
+				ChannelsShortSelector_.value (3).toString (),
 				tags,
-				ChannelsShortSelector_.value (4).toDateTime (),
+				ChannelsShortSelector_.value (5).toDateTime (),
 				UnserializePixmap (ChannelsShortSelector_
-						.value (5).toByteArray ()),
+						.value (6).toByteArray ()),
 				unread
 			};
 			shorts.push_back (sh);
@@ -1109,6 +1114,7 @@ namespace Aggregator
 				.value (8).toByteArray ());
 		channel->Favicon_ = UnserializePixmap (ChannelsFullSelector_
 				.value (9).toByteArray ());
+		channel->DisplayTitle_ = ChannelsFullSelector_.value (10).toString ();
 
 		ChannelsFullSelector_.finish ();
 
@@ -1536,6 +1542,7 @@ namespace Aggregator
 		InsertChannel_.bindValue (":feed_id", channel->FeedID_);
 		InsertChannel_.bindValue (":url", channel->Link_);
 		InsertChannel_.bindValue (":title", channel->Title_);
+		InsertChannel_.bindValue (":display_title", channel->DisplayTitle_);
 		InsertChannel_.bindValue (":description", channel->Description_);
 		InsertChannel_.bindValue (":last_build", channel->LastBuild_);
 		InsertChannel_.bindValue (":tags",
@@ -1810,9 +1817,17 @@ namespace Aggregator
 		return true;
 	}
 
-	bool SQLStorageBackend::UpdateChannelsStorage (int, int)
+	bool SQLStorageBackend::UpdateChannelsStorage (int oldV, int newV)
 	{
-		return true;
+		bool success = true;
+		while (oldV < newV)
+		{
+			success = RollChannelsStorage (++oldV);
+			if (!success)
+				break;
+		}
+
+		return success;
 	}
 
 	bool SQLStorageBackend::UpdateItemsStorage (int oldV, int newV)
@@ -1915,6 +1930,7 @@ namespace Aggregator
 					"feed_id BIGINT NOT NULL REFERENCES feeds ON DELETE CASCADE, "
 					"url TEXT, "
 					"title TEXT, "
+					"display_title TEXT, "
 					"description TEXT, "
 					"last_build TIMESTAMP, "
 					"tags TEXT, "
@@ -2287,6 +2303,42 @@ namespace Aggregator
 		return result;
 	}
 
+	bool SQLStorageBackend::RollChannelsStorage (int version)
+	{
+		qDebug () << Q_FUNC_INFO << version;
+		Util::DBLock lock (DB_);
+		try
+		{
+			lock.Init ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+			return false;
+		}
+
+		if (version == 2)
+		{
+			QSqlQuery updateQuery { DB_ };
+			if (!updateQuery.exec ("ALTER TABLE channels "
+					"ADD display_title TEXT;"))
+			{
+				Util::DBLock::DumpError (updateQuery);
+				return false;
+			}
+
+			if (!updateQuery.exec ("UPDATE channels SET display_title = title;"))
+			{
+				Util::DBLock::DumpError (updateQuery);
+				return false;
+			}
+		}
+
+		lock.Good ();
+
+		return true;
+	}
+
 	bool SQLStorageBackend::RollItemsStorage (int version)
 	{
 		Util::DBLock lock (DB_);
@@ -2306,21 +2358,21 @@ namespace Aggregator
 			if (!updateQuery.exec ("ALTER TABLE items "
 					"ADD num_comments SMALLINT"))
 			{
-				LeechCraft::Util::DBLock::DumpError (updateQuery);
+				Util::DBLock::DumpError (updateQuery);
 				return false;
 			}
 
 			if (!updateQuery.exec ("ALTER TABLE items "
 						"ADD comments_url TEXT"))
 			{
-				LeechCraft::Util::DBLock::DumpError (updateQuery);
+				Util::DBLock::DumpError (updateQuery);
 				return false;
 			}
 
 			if (!updateQuery.exec ("UPDATE items "
 						"SET num_comments = -1"))
 			{
-				LeechCraft::Util::DBLock::DumpError (updateQuery);
+				Util::DBLock::DumpError (updateQuery);
 				return false;
 			}
 		}
@@ -2330,7 +2382,7 @@ namespace Aggregator
 			if (!updateQuery.exec ("ALTER TABLE items "
 						"ADD comments_page_url TEXT"))
 			{
-				LeechCraft::Util::DBLock::DumpError (updateQuery);
+				Util::DBLock::DumpError (updateQuery);
 				return false;
 			}
 		}
