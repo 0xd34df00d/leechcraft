@@ -1333,10 +1333,6 @@ namespace LMP
 			if (!CurrentQueue_.contains (Source_->GetCurrentSource ()))
 				Source_->SetCurrentSource ({});
 			break;
-		case SourceState::Playing:
-			if (oldState != SourceState::Paused)
-				handleCurrentSourceChanged (Source_->GetCurrentSource ());
-			break;
 		default:
 			break;
 		}
