@@ -154,18 +154,27 @@ namespace Aggregator
 	{
 		int version = 0;
 		in >> version;
+		if (version < 1 || version > 3)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
+
+		in >> chan.Title_
+			>> chan.Link_
+			>> chan.Description_
+			>> chan.LastBuild_
+			>> chan.Tags_
+			>> chan.Language_
+			>> chan.Author_
+			>> chan.PixmapURL_;
+
 		if (version == 1)
 		{
 			quint32 size;
-			in >> chan.Title_
-				>> chan.Link_
-				>> chan.Description_
-				>> chan.LastBuild_
-				>> chan.Tags_
-				>> chan.Language_
-				>> chan.Author_
-				>> chan.PixmapURL_
-				>> chan.Pixmap_
+			in >> chan.Pixmap_
 				>> chan.Favicon_;
 			in >> size;
 			for (size_t i = 0; i < size; ++i)
@@ -175,19 +184,9 @@ namespace Aggregator
 				chan.Items_.push_back (it);
 			}
 		}
-		else if (version == 2 || version == 3)
+		else
 		{
-
 			quint32 size;
-			in >> chan.Title_
-				>> chan.Link_
-				>> chan.Description_
-				>> chan.LastBuild_
-				>> chan.Tags_
-				>> chan.Language_
-				>> chan.Author_
-				>> chan.PixmapURL_;
-
 			if (version == 3)
 				in >> chan.Pixmap_
 					>> chan.Favicon_;
@@ -208,6 +207,7 @@ namespace Aggregator
 				chan.Items_.push_back (it);
 			}
 		}
+
 		return in;
 	}
 }
