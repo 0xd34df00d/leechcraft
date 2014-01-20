@@ -586,8 +586,8 @@ namespace Aggregator
 					.arg (e.what ()));
 			return;
 		}
-		
-		channel.Title_ = newName;
+
+		channel.DisplayTitle_ = newName;
 		try
 		{
 			StorageBackend_->UpdateChannel (channel);
@@ -598,7 +598,7 @@ namespace Aggregator
 					<< e.what ();
 		}
 	}
-	
+
 	void Core::RemoveChannel (const QModelIndex& index)
 	{
 		if (!index.isValid ())

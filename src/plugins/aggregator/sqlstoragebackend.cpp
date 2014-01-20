@@ -379,7 +379,7 @@ namespace Aggregator
 		UpdateShortChannel_.prepare ("UPDATE channels SET "
 				"tags = :tags, "
 				"last_build = :last_build, "
-				"title = :title "
+				"display_title = :display_title "
 				"WHERE channel_id = :channel_id");
 
 		UpdateChannel_ = QSqlQuery (DB_);
@@ -392,7 +392,7 @@ namespace Aggregator
 				"pixmap_url = :pixmap_url, "
 				"pixmap = :pixmap, "
 				"favicon = :favicon, "
-				"title = :title, "
+				"display_title = :display_title "
 				"WHERE channel_id = :channel_id");
 
 		QString common = "DELETE FROM items "
@@ -1372,7 +1372,7 @@ namespace Aggregator
 		UpdateChannel_.bindValue (":pixmap_url", channel->PixmapURL_);
 		UpdateChannel_.bindValue (":pixmap", SerializePixmap (channel->Pixmap_));
 		UpdateChannel_.bindValue (":favicon", SerializePixmap (channel->Favicon_));
-		UpdateChannel_.bindValue (":title", channel->Title_);
+		UpdateChannel_.bindValue (":display_title", channel->DisplayTitle_);
 
 		if (!UpdateChannel_.exec ())
 		{
@@ -1419,7 +1419,7 @@ namespace Aggregator
 		UpdateShortChannel_.bindValue (":channel_id", channel.ChannelID_);
 		UpdateShortChannel_.bindValue (":last_build", channel.LastBuild_);
 		UpdateShortChannel_.bindValue (":tags", Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
-		UpdateShortChannel_.bindValue (":title", channel.Title_);
+		UpdateShortChannel_.bindValue (":display_title", channel.DisplayTitle_);
 
 		if (!UpdateShortChannel_.exec ())
 		{

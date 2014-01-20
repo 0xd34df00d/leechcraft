@@ -707,6 +707,7 @@ namespace Aggregator
 		UpdateChannel_.bindValue (6, channel->PixmapURL_);
 		UpdateChannel_.bindValue (7, SerializePixmap (channel->Pixmap_));
 		UpdateChannel_.bindValue (8, SerializePixmap (channel->Favicon_));
+		UpdateChannel_.bindValue (9, channel->DisplayTitle_);
 
 		if (!UpdateChannel_.exec ())
 		{
@@ -750,9 +751,10 @@ namespace Aggregator
 		}
 		ChannelFinder_.finish ();
 
-		UpdateShortChannel_.bindValue (0, channel.ChannelID_);
+		UpdateShortChannel_.bindValue (0, Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
 		UpdateShortChannel_.bindValue (1, channel.LastBuild_);
-		UpdateShortChannel_.bindValue (2, Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
+		UpdateShortChannel_.bindValue (2, channel.DisplayTitle_);
+		UpdateShortChannel_.bindValue (3, channel.ChannelID_);
 
 		if (!UpdateShortChannel_.exec ())
 		{
