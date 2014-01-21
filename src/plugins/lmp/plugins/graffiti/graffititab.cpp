@@ -192,7 +192,7 @@ namespace Graffiti
 
 	void GraffitiTab::SetupViews ()
 	{
-		FSModel_->setRootPath (QDir::homePath ());
+		FSModel_->setRootPath (QDir::rootPath ());
 		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
 		FSModel_->setReadOnly (true);
 		Ui_.DirectoryTree_->setModel (FSModel_);
