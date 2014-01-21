@@ -720,6 +720,7 @@ namespace Murm
 		Logger_ << "reauthing";
 		AuthMgr_->clearAuthData ();
 		LPManager_->ForceServerRequery ();
+		LPManager_->start ();
 		AuthMgr_->GetAuthKey ();
 	}
 
