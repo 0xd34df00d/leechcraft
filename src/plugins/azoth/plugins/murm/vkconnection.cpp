@@ -718,12 +718,9 @@ namespace Murm
 	void VkConnection::reauth ()
 	{
 		Logger_ << "reauthing";
-		auto status = GetStatus ();
-		SetStatus (EntryStatus { SOffline, {} });
-
 		AuthMgr_->clearAuthData ();
-
-		SetStatus (status);
+		LPManager_->ForceServerRequery ();
+		AuthMgr_->GetAuthKey ();
 	}
 
 	void VkConnection::rerunPrepared ()
