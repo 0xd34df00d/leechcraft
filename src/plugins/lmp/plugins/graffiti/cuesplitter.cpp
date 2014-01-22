@@ -101,7 +101,7 @@ namespace Graffiti
 			return str;
 		}
 
-		void HandleREM (QByteArray rem, Cue& result)
+		void HandleREM (QString rem, Cue& result)
 		{
 			rem = rem.mid (4);
 			if (rem.startsWith ("GENRE "))
@@ -156,13 +156,13 @@ namespace Graffiti
 		}
 
 		template<typename Iter>
-		Iter HandleFile (const QByteArray& line, Iter i, Iter end, Cue& result)
+		Iter HandleFile (const QString& line, Iter i, Iter end, Cue& result)
 		{
 			const auto startQuote = line.indexOf ('"');
 			const auto endQuote = line.lastIndexOf ('"');
 
 			File file;
-			file.Filename_ = QString::fromUtf8 (line.mid (startQuote + 1, endQuote - startQuote - 1));
+			file.Filename_ = line.mid (startQuote + 1, endQuote - startQuote - 1);
 
 			while (i != end)
 			{
@@ -202,9 +202,9 @@ namespace Graffiti
 
 			Cue result;
 			const auto& lines = file.readAll ().split ('\n');
-			for (auto i = lines.begin (), end= lines.end (); i != end; )
+			for (auto i = lines.begin (), end = lines.end (); i != end; )
 			{
-				const auto& line = i->trimmed ();
+				const auto& line = QString::fromUtf8 (i->trimmed ());
 
 				if (line.startsWith ("REM "))
 				{
@@ -213,12 +213,12 @@ namespace Graffiti
 				}
 				else if (line.startsWith ("PERFORMER "))
 				{
-					result.Performer_ = ChopQuotes (QString::fromUtf8 (line.mid (10)));
+					result.Performer_ = ChopQuotes (line.mid (10));
 					++i;
 				}
 				else if (line.startsWith ("TITLE "))
 				{
-					result.Album_ = ChopQuotes (QString::fromUtf8 (line.mid (6)));
+					result.Album_ = ChopQuotes (line.mid (6));
 					++i;
 				}
 				else if (line.startsWith ("FILE "))
