@@ -32,7 +32,7 @@ install (TARGETS leechcraft_${plug_lower} DESTINATION $${LC_PLUGINS_DEST})
 
 header_str = """/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2013  $author
+ * Copyright (C) 2014  $author
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -82,7 +82,7 @@ $interfaces_decls
 
 source_str = """/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2013  $author
+ * Copyright (C) 2014  $author
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
