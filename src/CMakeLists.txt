@@ -185,6 +185,7 @@ option (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 # New
 option (ENABLE_BLASQ "Build Blasq, client for cloud image storages like Picasa or Flickr" ${WITH_PLUGINS})
 option (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" ${WITH_PLUGINS})
+option (ENABLE_CPULOAD "Build CpuLoad for, well, monitoring the CPU load" ${WITH_PLUGINS})
 option (ENABLE_DEVMON "Build Devmon, the devices monitor plugin" ${WITH_PLUGINS})
 option (ENABLE_DLNIWE "Build DLNiwe, the DLNA server plugin" OFF)
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
@@ -520,6 +521,10 @@ endif ()
 
 if (ENABLE_CEMENTO)
 	add_subdirectory (plugins/cemento)
+endif ()
+
+if (ENABLE_CPULOAD)
+	add_subdirectory (plugins/cpuload)
 endif ()
 
 if (ENABLE_DEVMON)
