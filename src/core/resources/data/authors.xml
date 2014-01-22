@@ -148,10 +148,7 @@
 		<roles>
 			<role>Extensive and thorough testing.</role>
 		</roles>
-		<years>
-			<year>2012</year>
-			<year>2013</year>
-		</years>
+		<years start="2012" end="2014" />
 	</contrib>
 	<contrib type="contrib" name="" nick="Miha" jid="" email="miha@52.ru">
 		<roles>
