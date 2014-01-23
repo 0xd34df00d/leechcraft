@@ -120,7 +120,7 @@ public:
 	virtual QObject* GetPluginByID (const QByteArray& id) const = 0;
 
 	/** @brief Returns the library path from which plugin instance
-	 * object was loaded loaded.
+	 * \em object has been loaded.
 	 *
 	 * If the path could not be determined for some reason (for example,
 	 * if the plugin was injected or provided by a plugin adaptor, or if
@@ -179,7 +179,9 @@ public:
 	/** @brief Opens the settings page for the given plugin object.
 	 *
 	 * If the plugin doesn't implement IHaveSettings, this function
-	 * does nthing.
+	 * does nothing.
+	 *
+	 * @param[in] plugin The plugin for which to open the settings page.
 	 */
 	virtual void OpenSettings (QObject *plugin) = 0;
 };
