@@ -430,19 +430,20 @@ namespace Aggregator
 
 			UnreadItemsCounter_.finish ();
 
-			QStringList tags = Core::Instance ().GetProxy ()->
-				GetTagsManager ()->Split (ChannelsShortSelector_.value (3).toString ());
+			const auto& tags = Core::Instance ().GetProxy ()->
+				GetTagsManager ()->Split (ChannelsShortSelector_.value (4).toString ());
 			ChannelShort sh =
 			{
 				id,
 				feedId,
-				ChannelsShortSelector_.value (6).toString (),
+				ChannelsShortSelector_.value (7).toString (),
 				ChannelsShortSelector_.value (1).toString (),
 				ChannelsShortSelector_.value (2).toString (),
+				ChannelsShortSelector_.value (3).toString (),
 				tags,
-				ChannelsShortSelector_.value (4).toDateTime (),
+				ChannelsShortSelector_.value (5).toDateTime (),
 				UnserializePixmap (ChannelsShortSelector_
-						.value (5).toByteArray ()),
+						.value (6).toByteArray ()),
 				unread
 			};
 			shorts.push_back (sh);
@@ -476,6 +477,7 @@ namespace Aggregator
 				.value (8).toByteArray ());
 		channel->Favicon_ = UnserializePixmap (ChannelsFullSelector_
 				.value (9).toByteArray ());
+		channel->DisplayTitle_ = ChannelsFullSelector_.value (10).toString ();
 
 		ChannelsFullSelector_.finish ();
 
@@ -705,6 +707,7 @@ namespace Aggregator
 		UpdateChannel_.bindValue (6, channel->PixmapURL_);
 		UpdateChannel_.bindValue (7, SerializePixmap (channel->Pixmap_));
 		UpdateChannel_.bindValue (8, SerializePixmap (channel->Favicon_));
+		UpdateChannel_.bindValue (9, channel->DisplayTitle_);
 
 		if (!UpdateChannel_.exec ())
 		{
@@ -748,9 +751,10 @@ namespace Aggregator
 		}
 		ChannelFinder_.finish ();
 
-		UpdateShortChannel_.bindValue (0, channel.ChannelID_);
+		UpdateShortChannel_.bindValue (0, Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
 		UpdateShortChannel_.bindValue (1, channel.LastBuild_);
-		UpdateShortChannel_.bindValue (2, Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
+		UpdateShortChannel_.bindValue (2, channel.DisplayTitle_);
+		UpdateShortChannel_.bindValue (3, channel.ChannelID_);
 
 		if (!UpdateShortChannel_.exec ())
 		{
@@ -890,6 +894,7 @@ namespace Aggregator
 		InsertChannel_.bindValue (9, channel->PixmapURL_);
 		InsertChannel_.bindValue (10, SerializePixmap (channel->Pixmap_));
 		InsertChannel_.bindValue (11, SerializePixmap (channel->Favicon_));
+		InsertChannel_.bindValue (12, channel->DisplayTitle_);
 
 		if (!InsertChannel_.exec ())
 		{

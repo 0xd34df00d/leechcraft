@@ -90,7 +90,9 @@ namespace Aggregator
 			switch (index.column ())
 			{
 				case ColumnTitle:
-					return Channels_.at (row).Title_;
+					return Channels_.at (row).DisplayTitle_.isEmpty () ?
+							Channels_.at (row).Title_ :
+							Channels_.at (row).DisplayTitle_;
 				case ColumnUnread:
 					return Channels_.at (row).Unread_;
 				case ColumnLastBuild:
@@ -225,9 +227,10 @@ namespace Aggregator
 	void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 	{
 		auto idx = std::find (Channels_.begin (), Channels_.end (), cs);
+
 		if (idx == Channels_.end ())
 			return;
-		
+
 		*idx = cs;
 		int pos = std::distance (Channels_.begin (), idx);
 		emit dataChanged (index (pos, 0), index (pos, 2));

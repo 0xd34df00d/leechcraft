@@ -101,6 +101,8 @@ namespace CrashProcess
 
 		if (funcStartIdx != -1)
 			ParseFunction (text, funcStartIdx);
+		else
+			ParseFunction (text, numberEnd);
 	}
 
 	void Highlighter::ParseFunction (const QString& text, int funcStartIdx)

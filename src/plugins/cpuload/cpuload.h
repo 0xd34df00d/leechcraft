@@ -30,95 +30,25 @@
 #pragma once
 
 #include <QObject>
-#include <QStringList>
-#include <QHash>
-#include <QAbstractEventDispatcher>
-
-typedef struct _XDisplay Display;
-typedef union  _XEvent XEvent;
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
-namespace KBSwitch
+namespace CpuLoad
 {
-	class RulesStorage;
-
-	class KBCtl : public QObject
+	class Plugin : public QObject
+				 , public IInfo
 	{
 		Q_OBJECT
-
-		Display *Display_ = 0;
-		int XkbEventType_;
-
-		Qt::HANDLE Window_;
-		Qt::HANDLE NetActiveWinAtom_;
-
-		bool ExtWM_ = false;
-
-		QStringList Groups_;
-		QHash<QString, QString> Variants_;
-
-		QStringList Options_;
-
-		QHash<Qt::HANDLE, uchar> Win2Group_;
-
-		RulesStorage *Rules_;
-
-		bool ApplyScheduled_ = false;
-
-		const QAbstractEventDispatcher::EventFilter PrevFilter_;
-
-		KBCtl ();
+		Q_INTERFACES (IInfo)
 	public:
-		enum class SwitchPolicy
-		{
-			Global,
-			PerWindow
-		};
-	private:
-		SwitchPolicy Policy_;
-	public:
-		static KBCtl& Instance ();
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
 		void Release ();
-
-		void SetSwitchPolicy (SwitchPolicy);
-
-		int GetCurrentGroup () const;
-
-		const QStringList& GetEnabledGroups () const;
-		void SetEnabledGroups (QStringList);
-		QString GetGroupVariant (const QString&) const;
-		void SetGroupVariants (const QHash<QString, QString>&);
-		void EnableNextGroup ();
-
-		int GetMaxEnabledGroups () const;
-
-		QString GetLayoutName (int group) const;
-		QString GetLayoutDesc (int group) const;
-
-		void SetOptions (const QStringList&);
-
-		const RulesStorage* GetRulesStorage () const;
-
-		bool Filter (XEvent*);
-	private:
-		void HandleXkbEvent (XEvent*);
-		void SetWindowLayout (Qt::HANDLE);
-
-		void InitDisplay ();
-		void CheckExtWM ();
-		void SetupNonExtListeners ();
-
-		void UpdateGroupNames ();
-
-		void AssignWindow (Qt::HANDLE);
-
-		void ApplyKeyRepeat ();
-	public slots:
-		void scheduleApply ();
-		void apply ();
-	signals:
-		void groupChanged (int);
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 	};
 }
 }

@@ -153,7 +153,7 @@ namespace LMP
 		connect (Source_,
 				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
-				SLOT (handleStateChanged ()));
+				SLOT (handleStateChanged (SourceState, SourceState)));
 
 		connect (Source_,
 				SIGNAL (metaDataChanged ()),
@@ -1323,19 +1323,15 @@ namespace LMP
 		Source_->SetCurrentSource ({});
 	}
 
-	void Player::handleStateChanged ()
+	void Player::handleStateChanged (SourceState state, SourceState oldState)
 	{
-		const auto state = Source_->GetState ();
-		qDebug () << Q_FUNC_INFO << static_cast<int> (state);
+		qDebug () << Q_FUNC_INFO << static_cast<int> (state) << static_cast<int> (oldState);
 		switch (state)
 		{
 		case SourceState::Stopped:
 			emit songChanged ({});
 			if (!CurrentQueue_.contains (Source_->GetCurrentSource ()))
 				Source_->SetCurrentSource ({});
-			break;
-		case SourceState::Playing:
-			handleCurrentSourceChanged (Source_->GetCurrentSource ());
 			break;
 		default:
 			break;

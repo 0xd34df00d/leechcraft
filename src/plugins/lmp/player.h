@@ -207,7 +207,7 @@ namespace LMP
 		void postPlaylistCleanup (const QString&);
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();
-		void handleStateChanged ();
+		void handleStateChanged (SourceState, SourceState);
 		void handleCurrentSourceChanged (const AudioSource&);
 		void handleMetadata ();
 

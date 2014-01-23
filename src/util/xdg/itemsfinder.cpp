@@ -183,6 +183,7 @@ namespace XDG
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<Cat2Items_t>*> (sender ());
 		auto result = watcher->result ();
+		watcher->deleteLater ();
 		if (result == Items_)
 			return;
 

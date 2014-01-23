@@ -49,6 +49,7 @@ namespace Aggregator
 		IDType_t FeedID_;
 		QString Author_;
 		QString Title_;
+		QString DisplayTitle_;
 		QString Link_;
 		QStringList Tags_;
 		QDateTime LastBuild_;
@@ -61,6 +62,7 @@ namespace Aggregator
 		IDType_t ChannelID_;
 		IDType_t FeedID_;
 		QString Title_;
+		QString DisplayTitle_;
 		QString Link_;
 		QString Description_;
 		QDateTime LastBuild_;

@@ -402,7 +402,6 @@ namespace Aggregator
 		Pools_.clear ();
 		ChannelsModel_->Clear ();
 
-
 		StorageBackend_.reset (new DumbStorage);
 
 		const QString& strType = XmlSettingsManager::Instance ()->
@@ -428,7 +427,7 @@ namespace Aggregator
 		emit storageChanged ();
 
 		const int feedsTable = 1;
-		const int channelsTable = 1;
+		const int channelsTable = 2;
 		const int itemsTable = 6;
 
 		if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
@@ -568,6 +567,36 @@ namespace Aggregator
 		StorageBackend_->RemoveFeed (channel.FeedID_);
 
 		UpdateUnreadItemsNumber ();
+	}
+
+	void Core::RenameFeed (const QModelIndex& index, const QString& newName)
+	{
+		if (!index.isValid ())
+			return;
+
+		ChannelShort channel;
+		try
+		{
+			channel = ChannelsModel_->GetChannelForIndex (index);
+		}
+		catch (const std::exception& e)
+		{
+			ErrorNotification (tr ("Feed rename error"),
+					tr ("Could not rename the feed: %1")
+					.arg (e.what ()));
+			return;
+		}
+
+		channel.DisplayTitle_ = newName;
+		try
+		{
+			StorageBackend_->UpdateChannel (channel);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void Core::RemoveChannel (const QModelIndex& index)

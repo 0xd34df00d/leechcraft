@@ -30,95 +30,34 @@
 #pragma once
 
 #include <QObject>
-#include <QStringList>
-#include <QHash>
-#include <QAbstractEventDispatcher>
+#include <QDir>
+#include <QSet>
 
-typedef struct _XDisplay Display;
-typedef union  _XEvent XEvent;
+class QFileSystemWatcher;
+class QUrl;
 
 namespace LeechCraft
 {
-namespace KBSwitch
+namespace SB2
 {
-	class RulesStorage;
-
-	class KBCtl : public QObject
+	class DirWatcher : public QObject
 	{
 		Q_OBJECT
 
-		Display *Display_ = 0;
-		int XkbEventType_;
+		const QDir Watched_;
+		QFileSystemWatcher * const Watcher_;
 
-		Qt::HANDLE Window_;
-		Qt::HANDLE NetActiveWinAtom_;
+		bool NotifyScheduled_ = false;
 
-		bool ExtWM_ = false;
-
-		QStringList Groups_;
-		QHash<QString, QString> Variants_;
-
-		QStringList Options_;
-
-		QHash<Qt::HANDLE, uchar> Win2Group_;
-
-		RulesStorage *Rules_;
-
-		bool ApplyScheduled_ = false;
-
-		const QAbstractEventDispatcher::EventFilter PrevFilter_;
-
-		KBCtl ();
+		QSet<QString> LastQuarksList_;
 	public:
-		enum class SwitchPolicy
-		{
-			Global,
-			PerWindow
-		};
-	private:
-		SwitchPolicy Policy_;
-	public:
-		static KBCtl& Instance ();
-		void Release ();
-
-		void SetSwitchPolicy (SwitchPolicy);
-
-		int GetCurrentGroup () const;
-
-		const QStringList& GetEnabledGroups () const;
-		void SetEnabledGroups (QStringList);
-		QString GetGroupVariant (const QString&) const;
-		void SetGroupVariants (const QHash<QString, QString>&);
-		void EnableNextGroup ();
-
-		int GetMaxEnabledGroups () const;
-
-		QString GetLayoutName (int group) const;
-		QString GetLayoutDesc (int group) const;
-
-		void SetOptions (const QStringList&);
-
-		const RulesStorage* GetRulesStorage () const;
-
-		bool Filter (XEvent*);
-	private:
-		void HandleXkbEvent (XEvent*);
-		void SetWindowLayout (Qt::HANDLE);
-
-		void InitDisplay ();
-		void CheckExtWM ();
-		void SetupNonExtListeners ();
-
-		void UpdateGroupNames ();
-
-		void AssignWindow (Qt::HANDLE);
-
-		void ApplyKeyRepeat ();
-	public slots:
-		void scheduleApply ();
-		void apply ();
+		DirWatcher (const QDir&, QObject* = 0);
+	private slots:
+		void handleDirectoryChanged ();
+		void notifyChanges ();
 	signals:
-		void groupChanged (int);
+		void quarksAdded (const QList<QUrl>&);
+		void quarksRemoved (const QList<QUrl>&);
 	};
 }
 }

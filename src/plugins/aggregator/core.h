@@ -174,6 +174,7 @@ namespace Aggregator
 		void AddFeed (QString, const QStringList&,
 				FeedSettings_ptr = FeedSettings_ptr ());
 		void RemoveFeed (const QModelIndex&);
+		void RenameFeed (const QModelIndex& index, const QString& newName);
 		void RemoveChannel (const QModelIndex&);
 		ItemsWidget* GetReprWidget () const;
 

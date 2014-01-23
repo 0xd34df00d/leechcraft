@@ -606,6 +606,8 @@ namespace Aggregator
 		bool InitializeTables ();
 		QByteArray SerializePixmap (const QImage&) const;
 		QImage UnserializePixmap (const QByteArray&) const;
+
+		bool RollChannelsStorage (int);
 		bool RollItemsStorage (int);
 
 		void RemoveTables ();

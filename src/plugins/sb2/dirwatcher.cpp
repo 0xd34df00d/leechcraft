@@ -27,98 +27,74 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-#include <QAbstractEventDispatcher>
-
-typedef struct _XDisplay Display;
-typedef union  _XEvent XEvent;
+#include "dirwatcher.h"
+#include <QFileSystemWatcher>
+#include <QTimer>
+#include <QUrl>
 
 namespace LeechCraft
 {
-namespace KBSwitch
+namespace SB2
 {
-	class RulesStorage;
-
-	class KBCtl : public QObject
+	namespace
 	{
-		Q_OBJECT
-
-		Display *Display_ = 0;
-		int XkbEventType_;
-
-		Qt::HANDLE Window_;
-		Qt::HANDLE NetActiveWinAtom_;
-
-		bool ExtWM_ = false;
-
-		QStringList Groups_;
-		QHash<QString, QString> Variants_;
-
-		QStringList Options_;
-
-		QHash<Qt::HANDLE, uchar> Win2Group_;
-
-		RulesStorage *Rules_;
-
-		bool ApplyScheduled_ = false;
-
-		const QAbstractEventDispatcher::EventFilter PrevFilter_;
-
-		KBCtl ();
-	public:
-		enum class SwitchPolicy
+		QSet<QString> ScanQuarks (const QDir& dir)
 		{
-			Global,
-			PerWindow
+			QSet<QString> result;
+			for (const auto& entry : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
+			{
+				QDir quarkDir { dir };
+				quarkDir.cd (entry);
+				if (quarkDir.exists (entry + ".qml"))
+					result << entry;
+			}
+			return result;
+		}
+	}
+
+	DirWatcher::DirWatcher (const QDir& dir, QObject *parent)
+	: QObject { parent }
+	, Watched_ { dir }
+	, Watcher_ { new QFileSystemWatcher (parent) }
+	, LastQuarksList_ { ScanQuarks (dir) }
+	{
+		Watcher_->addPath (Watched_.absolutePath ());
+
+		connect (Watcher_,
+				SIGNAL (directoryChanged (QString)),
+				this,
+				SLOT (handleDirectoryChanged ()));
+	}
+
+	void DirWatcher::handleDirectoryChanged ()
+	{
+		if (NotifyScheduled_)
+			return;
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (notifyChanges ()));
+	}
+
+	void DirWatcher::notifyChanges ()
+	{
+		auto current = ScanQuarks (Watched_);
+		const auto& newQuarks = current - LastQuarksList_;
+		const auto& removedQuarks = LastQuarksList_ - current;
+		LastQuarksList_.swap (current);
+
+		auto toUrlList = [this] (const QSet<QString>& filenames) -> QList<QUrl>
+		{
+			QList<QUrl> result;
+			for (const auto& name : filenames)
+				result << QUrl::fromLocalFile (Watched_.absoluteFilePath (name + '/' + name + ".qml"));
+			return result;
 		};
-	private:
-		SwitchPolicy Policy_;
-	public:
-		static KBCtl& Instance ();
-		void Release ();
 
-		void SetSwitchPolicy (SwitchPolicy);
-
-		int GetCurrentGroup () const;
-
-		const QStringList& GetEnabledGroups () const;
-		void SetEnabledGroups (QStringList);
-		QString GetGroupVariant (const QString&) const;
-		void SetGroupVariants (const QHash<QString, QString>&);
-		void EnableNextGroup ();
-
-		int GetMaxEnabledGroups () const;
-
-		QString GetLayoutName (int group) const;
-		QString GetLayoutDesc (int group) const;
-
-		void SetOptions (const QStringList&);
-
-		const RulesStorage* GetRulesStorage () const;
-
-		bool Filter (XEvent*);
-	private:
-		void HandleXkbEvent (XEvent*);
-		void SetWindowLayout (Qt::HANDLE);
-
-		void InitDisplay ();
-		void CheckExtWM ();
-		void SetupNonExtListeners ();
-
-		void UpdateGroupNames ();
-
-		void AssignWindow (Qt::HANDLE);
-
-		void ApplyKeyRepeat ();
-	public slots:
-		void scheduleApply ();
-		void apply ();
-	signals:
-		void groupChanged (int);
-	};
+		if (!newQuarks.isEmpty ())
+			emit quarksAdded (toUrlList (newQuarks));
+		if (!removedQuarks.isEmpty ())
+			emit quarksRemoved (toUrlList (removedQuarks));
+	}
 }
 }

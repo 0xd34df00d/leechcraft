@@ -27,98 +27,45 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-#include <QAbstractEventDispatcher>
-
-typedef struct _XDisplay Display;
-typedef union  _XEvent XEvent;
+#include "cpuload.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace KBSwitch
+namespace CpuLoad
 {
-	class RulesStorage;
-
-	class KBCtl : public QObject
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Q_OBJECT
+	}
 
-		Display *Display_ = 0;
-		int XkbEventType_;
+	void Plugin::SecondInit ()
+	{
+	}
 
-		Qt::HANDLE Window_;
-		Qt::HANDLE NetActiveWinAtom_;
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.CpuLoad";
+	}
 
-		bool ExtWM_ = false;
+	void Plugin::Release ()
+	{
+	}
 
-		QStringList Groups_;
-		QHash<QString, QString> Variants_;
+	QString Plugin::GetName () const
+	{
+		return "CPU Load";
+	}
 
-		QStringList Options_;
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Quark for monitoring CPU load.");
+	}
 
-		QHash<Qt::HANDLE, uchar> Win2Group_;
-
-		RulesStorage *Rules_;
-
-		bool ApplyScheduled_ = false;
-
-		const QAbstractEventDispatcher::EventFilter PrevFilter_;
-
-		KBCtl ();
-	public:
-		enum class SwitchPolicy
-		{
-			Global,
-			PerWindow
-		};
-	private:
-		SwitchPolicy Policy_;
-	public:
-		static KBCtl& Instance ();
-		void Release ();
-
-		void SetSwitchPolicy (SwitchPolicy);
-
-		int GetCurrentGroup () const;
-
-		const QStringList& GetEnabledGroups () const;
-		void SetEnabledGroups (QStringList);
-		QString GetGroupVariant (const QString&) const;
-		void SetGroupVariants (const QHash<QString, QString>&);
-		void EnableNextGroup ();
-
-		int GetMaxEnabledGroups () const;
-
-		QString GetLayoutName (int group) const;
-		QString GetLayoutDesc (int group) const;
-
-		void SetOptions (const QStringList&);
-
-		const RulesStorage* GetRulesStorage () const;
-
-		bool Filter (XEvent*);
-	private:
-		void HandleXkbEvent (XEvent*);
-		void SetWindowLayout (Qt::HANDLE);
-
-		void InitDisplay ();
-		void CheckExtWM ();
-		void SetupNonExtListeners ();
-
-		void UpdateGroupNames ();
-
-		void AssignWindow (Qt::HANDLE);
-
-		void ApplyKeyRepeat ();
-	public slots:
-		void scheduleApply ();
-		void apply ();
-	signals:
-		void groupChanged (int);
-	};
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_cpuload, LeechCraft::CpuLoad::Plugin);

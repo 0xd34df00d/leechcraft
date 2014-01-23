@@ -42,6 +42,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/util.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -51,6 +52,7 @@
 #include "viewgeometrymanager.h"
 #include "viewsettingsmanager.h"
 #include "viewpropsmanager.h"
+#include "dirwatcher.h"
 
 namespace LeechCraft
 {
@@ -192,6 +194,16 @@ namespace SB2
 	{
 		for (const auto& component : FindAllQuarks ())
 			AddComponent (component);
+
+		auto watcher = new DirWatcher (Util::CreateIfNotExists ("data/quarks"), this);
+		connect (watcher,
+				SIGNAL (quarksAdded (QList<QUrl>)),
+				this,
+				SLOT (handleQuarksAdded (QList<QUrl>)));
+		connect (watcher,
+				SIGNAL (quarksRemoved (QList<QUrl>)),
+				this,
+				SLOT (handleQuarksRemoved (QList<QUrl>)));
 	}
 
 	void ViewManager::RegisterInternalComponent (QuarkComponent_ptr c)
@@ -271,11 +283,8 @@ namespace SB2
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, "quarks"))
 			result += ScanRootDir (QDir (cand));
 
-		QDir local = QDir::home ();
-		if (local.cd (".leechcraft") &&
-			local.cd ("data") &&
-			local.cd ("quarks"))
-			result += ScanRootDir (local);
+		const auto& local = Util::CreateIfNotExists ("data/quarks");
+		result += ScanRootDir (local);
 
 		auto pm = Proxy_->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<IQuarkComponentProvider*> ())
@@ -455,6 +464,28 @@ namespace SB2
 	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		return rootWM->GetWindowIndex (Window_);
+	}
+
+	void ViewManager::handleQuarksAdded (const QList<QUrl>& urls)
+	{
+		qDebug () << Q_FUNC_INFO << urls;
+		for (const auto& url : urls)
+		{
+			QuarkComponent_ptr c { new QuarkComponent };
+			c->Url_ = url;
+			AddComponent (c);
+		}
+	}
+
+	void ViewManager::handleQuarksRemoved (const QList<QUrl>& urls)
+	{
+		qDebug () << Q_FUNC_INFO << urls;
+		for (const auto& url : urls)
+		{
+			const auto& id = Quark2Manager_ [url]->GetID ();
+			RemoveQuark (url);
+			RemoveFromRemoved (id);
+		}
 	}
 }
 }

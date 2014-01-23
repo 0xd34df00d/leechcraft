@@ -718,12 +718,10 @@ namespace Murm
 	void VkConnection::reauth ()
 	{
 		Logger_ << "reauthing";
-		auto status = GetStatus ();
-		SetStatus (EntryStatus { SOffline, {} });
-
 		AuthMgr_->clearAuthData ();
-
-		SetStatus (status);
+		LPManager_->ForceServerRequery ();
+		LPManager_->start ();
+		AuthMgr_->GetAuthKey ();
 	}
 
 	void VkConnection::rerunPrepared ()
@@ -1035,6 +1033,7 @@ namespace Murm
 		}
 		respList.removeFirst ();
 
+		QList<MessageInfo> infos;
 		for (const auto& msgMapVar : respList)
 		{
 			const auto& map = msgMapVar.toMap ();
@@ -1044,7 +1043,7 @@ namespace Murm
 			if (map ["out"].toULongLong ())
 				flags |= MessageFlag::Outbox;
 
-			emit gotMessage ({
+			infos.append  ({
 					map ["mid"].toULongLong (),
 					map ["uid"].toULongLong (),
 					map ["body"].toString (),
@@ -1053,6 +1052,12 @@ namespace Murm
 					{}
 				});
 		}
+
+		std::sort (infos.begin (), infos.end (),
+				[] (const MessageInfo& m1, const MessageInfo& m2)
+					{ return m1.TS_ < m2.TS_; });
+		for (const auto& info : infos)
+			emit gotMessage (info);
 	}
 
 	void VkConnection::handleChatCreated ()
