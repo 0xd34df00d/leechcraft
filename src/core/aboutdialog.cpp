@@ -40,12 +40,12 @@ namespace LeechCraft
 	{
 		struct ContributorInfo
 		{
-			const QString Name_;
-			const QString Nick_;
-			const QString JID_;
-			const QString Email_;
-			const QStringList Roles_;
-			const QList<int> Years_;
+			QString Name_;
+			QString Nick_;
+			QString JID_;
+			QString Email_;
+			QStringList Roles_;
+			QList<int> Years_;
 
 			ContributorInfo (const QString& name, const QString& nick,
 					const QString& jid, const QString& email,
