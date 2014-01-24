@@ -41,6 +41,11 @@
  * The functions suitable to be represented as this type can be used as
  * callbacks in the data filters. That is, the result of the data
  * filtering will be passed to them instead of default processing.
+ *
+ * Data filter callbacks are better documented in the IDataFilter class
+ * documentation.
+ *
+ * @sa IDataFilter
  */
 typedef std::function<void (QVariant)> DataFilterCallback_f;
 
@@ -65,11 +70,19 @@ typedef std::function<void (QVariant)> DataFilterCallback_f;
  * key in the LeechCraft::Entity::Additional_ map with the ID of the
  * exact filter variant to use (if user has already selected it).
  *
+ * \subsection Data filter callbacks
+ *
  * The result of the data filter, if any, can be passed to the plugin
  * emitting the entity. For this the emitting plugin shall set the
  * callback function as the value of the \em DataFilterCallback
  * LeechCraft::Entity::Additional_ map. The function is expected to be an
- * object of type <code>DataFilterCallback_f</code>.
+ * object of type DataFilterCallback_f.
+ *
+ * @note Not all data filter plugins support callbacks. For example, it
+ * doesn't make sense for a Google web search data filter to pass the
+ * results page contents or URL to the callback. The behavior is expected
+ * to be sane enough, though, for the combination of the filtered entity
+ * and callback semantics to make sense.
  *
  * @sa Entity, IEntityHandler
  */
