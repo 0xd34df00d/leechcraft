@@ -56,7 +56,7 @@ namespace CpuLoad
 			return;
 		}
 
-		static const QByteArray cpuMarker { "cpu "};
+		static const QByteArray cpuMarker { "cpu" };
 
 		while (!file.atEnd ())
 		{
