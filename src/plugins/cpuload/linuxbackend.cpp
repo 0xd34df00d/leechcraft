@@ -87,17 +87,20 @@ namespace CpuLoad
 				};
 			};
 
-			const QList<LoadTypeInfo> cpuData
+			QMap<LoadPriority, LoadTypeInfo> cpuMap;
+			auto insertInfo = [&cpuMap, makeInfo] (int idx, LoadPriority prio, const QString& label)
 			{
-				makeInfo (1, LoadPriority::Medium, tr ("user")),
-				makeInfo (2, LoadPriority::Low, tr ("nice")),
-				makeInfo (3, LoadPriority::High, tr ("sys")),
-				makeInfo (5, LoadPriority::IO, tr ("IO"))
+				cpuMap [prio] = makeInfo (idx, prio, label);
 			};
+
+			insertInfo (1, LoadPriority::Medium, tr ("user"));
+			insertInfo (2, LoadPriority::Low, tr ("nice"));
+			insertInfo (3, LoadPriority::High, tr ("sys"));
+			insertInfo (5, LoadPriority::IO, tr ("IO"));
 
 			if (LastLoads_.size () <= cpuIdx)
 				LastLoads_.resize (cpuIdx + 1);
-			LastLoads_ [cpuIdx] = cpuData;
+			LastLoads_ [cpuIdx] = cpuMap;
 		}
 
 		const auto curCpuCount = GetCpuCount ();
@@ -110,7 +113,7 @@ namespace CpuLoad
 		return LastLoads_.size () - 1;
 	}
 
-	QList<LoadTypeInfo> LinuxBackend::GetLoads (int cpu) const
+	QMap<LoadPriority, LoadTypeInfo> LinuxBackend::GetLoads (int cpu) const
 	{
 		return LastLoads_.value (cpu + 1);
 	}

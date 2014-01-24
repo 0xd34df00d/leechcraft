@@ -33,6 +33,7 @@
 #include <QString>
 #include <QList>
 #include <QVector>
+#include <QMap>
 #include "structures.h"
 
 namespace LeechCraft
@@ -43,14 +44,14 @@ namespace CpuLoad
 	{
 		Q_OBJECT
 
-		QVector<QList<LoadTypeInfo>> LastLoads_;
+		QVector<QMap<LoadPriority, LoadTypeInfo>> LastLoads_;
 	public:
 		LinuxBackend (QObject* = 0);
 
 		void Update ();
 
 		int GetCpuCount () const;
-		QList<LoadTypeInfo> GetLoads (int cpu) const;
+		QMap<LoadPriority, LoadTypeInfo> GetLoads (int cpu) const;
 	signals:
 		void cpuCountChanged (int);
 	};
