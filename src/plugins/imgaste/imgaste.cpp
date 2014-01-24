@@ -108,7 +108,8 @@ namespace Imgaste
 		new Poster (FromString (e.Additional_ ["DataFilter"].toString ()),
 				buf.data (),
 				format,
-				Proxy_);
+				Proxy_,
+				e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ());
 	}
 
 	QString Plugin::GetFilterVerb () const

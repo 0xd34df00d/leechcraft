@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QMap>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/idatafilter.h>
 #include "hostingservice.h"
 
 class QNetworkReply;
@@ -52,11 +53,13 @@ namespace Imgaste
 		const HostingService Service_;
 		const Worker_ptr Worker_;
 		const ICoreProxy_ptr Proxy_;
+		const DataFilterCallback_f Callback_;
 	public:
 		Poster (HostingService service,
 				const QByteArray& data,
 				const QString& format,
 				ICoreProxy_ptr coreProxy,
+				DataFilterCallback_f = {},
 				QObject *parent = 0);
 	private slots:
 		void handleFinished ();

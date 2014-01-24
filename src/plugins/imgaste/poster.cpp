@@ -44,12 +44,14 @@ namespace Imgaste
 			const QByteArray& data,
 			const QString& format,
 			ICoreProxy_ptr proxy,
+			DataFilterCallback_f callback,
 			QObject *parent)
 	: QObject (parent)
 	, Reply_ (0)
 	, Service_ (service)
 	, Worker_ (MakeWorker (service))
 	, Proxy_ (proxy)
+	, Callback_ (callback)
 	{
 		Reply_ = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
 
@@ -65,9 +67,9 @@ namespace Imgaste
 
 	void Poster::handleFinished ()
 	{
-		QString result = Reply_->readAll ();
+		const auto& result = Reply_->readAll ();
 
-		QString pasteUrl = Worker_->GetLink (result, Reply_);
+		const auto& pasteUrl = Worker_->GetLink (result, Reply_);
 
 		auto em = Proxy_->GetEntityManager ();
 		if (pasteUrl.isEmpty ())
@@ -77,12 +79,17 @@ namespace Imgaste
 			return;
 		}
 
-		QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
-		QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
+		if (!Callback_)
+		{
+			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
+			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
 
-		QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-			.arg (pasteUrl);
-		em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
+			QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
+				.arg (pasteUrl);
+			em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
+		}
+		else
+			Callback_ (pasteUrl);
 
 		deleteLater ();
 	}
