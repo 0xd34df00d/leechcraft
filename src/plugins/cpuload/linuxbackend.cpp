@@ -58,9 +58,9 @@ namespace CpuLoad
 
 		static const QByteArray cpuMarker { "cpu" };
 
-		while (!file.atEnd ())
+		for (const auto& line : file.readAll ().split ('\n'))
 		{
-			const auto& elems = file.readLine ().split (' ');
+			const auto& elems = line.split (' ');
 			const auto& id = elems.value (0);
 			if (!id.startsWith (cpuMarker))
 				continue;
