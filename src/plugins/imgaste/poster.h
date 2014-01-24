@@ -53,9 +53,11 @@ namespace Imgaste
 		const Worker_ptr Worker_;
 		const ICoreProxy_ptr Proxy_;
 	public:
-		Poster (HostingService,
-				const QByteArray&, const QString&,
-				ICoreProxy_ptr, QObject* = 0);
+		Poster (HostingService service,
+				const QByteArray& data,
+				const QString& format,
+				ICoreProxy_ptr coreProxy,
+				QObject *parent = 0);
 	private slots:
 		void handleFinished ();
 		void handleError ();

@@ -41,8 +41,10 @@ namespace LeechCraft
 namespace Imgaste
 {
 	Poster::Poster (HostingService service,
-			const QByteArray& data, const QString& format,
-			ICoreProxy_ptr proxy, QObject *parent)
+			const QByteArray& data,
+			const QString& format,
+			ICoreProxy_ptr proxy,
+			QObject *parent)
 	: QObject (parent)
 	, Reply_ (0)
 	, Service_ (service)
