@@ -68,6 +68,7 @@ namespace Imgaste
 	void Poster::handleFinished ()
 	{
 		const auto& result = Reply_->readAll ();
+		Reply_->deleteLater ();
 
 		const auto& pasteUrl = Worker_->GetLink (result, Reply_);
 
@@ -98,6 +99,7 @@ namespace Imgaste
 	{
 		qWarning () << Q_FUNC_INFO
 			<< Reply_->errorString ();
+		Reply_->deleteLater ();
 
 		QString text = tr ("Image upload failed: %1")
 							.arg (Reply_->errorString ());
