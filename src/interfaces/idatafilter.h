@@ -29,10 +29,20 @@
 
 #pragma once
 
+#include <functional>
 #include <QtPlugin>
 #include <QString>
 #include <QList>
 #include <QIcon>
+#include <QMetaType>
+
+/** @brief The type to be used as a data filter callback.
+ *
+ * The functions suitable to be represented as this type can be used as
+ * callbacks in the data filters. That is, the result of the data
+ * filtering will be passed to them instead of default processing.
+ */
+typedef std::function<void (QVariant)> DataFilterCallback_f;
 
 /** @brief Base interface for data filter plugins.
  *
@@ -51,9 +61,15 @@
  * IEntityHandler, considering (and accepting) entities with MIME
  * "x-leechcraft/data-filter-request". Such entities will contain the
  * entity to filter (like, a piece of text or an image) in the
- * Entity::Entity_ field and may contain the "DataFilter" key in the
- * Entity::Additional_ map with the ID of the exact filter variant
- * to use (if user has already selected it).
+ * LeechCraft::Entity::Entity_ field and may contain the "DataFilter"
+ * key in the LeechCraft::Entity::Additional_ map with the ID of the
+ * exact filter variant to use (if user has already selected it).
+ *
+ * The result of the data filter, if any, can be passed to the plugin
+ * emitting the entity. For this the emitting plugin shall set the
+ * callback function as the value of the \em DataFilterCallback
+ * LeechCraft::Entity::Additional_ map. The function is expected to be an
+ * object of type <code>DataFilterCallback_f</code>.
  *
  * @sa Entity, IEntityHandler
  */
@@ -105,4 +121,5 @@ public:
 	virtual QList<FilterVariant> GetFilterVariants () const = 0;
 };
 
+Q_DECLARE_METATYPE (DataFilterCallback_f)
 Q_DECLARE_INTERFACE (IDataFilter, "org.Deviant.LeechCraft.IDataFilter/1.0");
