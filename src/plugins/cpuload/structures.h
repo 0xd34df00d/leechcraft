@@ -29,30 +29,26 @@
 
 #pragma once
 
-#include <QObject>
 #include <QString>
-#include <QList>
-#include <QVector>
-#include "structures.h"
 
 namespace LeechCraft
 {
 namespace CpuLoad
 {
-	class LinuxBackend : public QObject
+	enum class LoadPriority
 	{
-		Q_OBJECT
-
-		QVector<QList<LoadTypeInfo>> LastLoads_;
-	public:
-		LinuxBackend (QObject* = 0);
-
-		void Update ();
-
-		int GetCpuCount () const;
-		QList<LoadTypeInfo> GetLoads (int cpu) const;
-	signals:
-		void cpuCountChanged (int);
+		High,
+		Medium,
+		Low,
+		IO
 	};
+
+	struct LoadTypeInfo
+	{
+		QString Label_;
+		LoadPriority Priority_;
+		double LoadPercentage_;
+	};
+
 }
 }
