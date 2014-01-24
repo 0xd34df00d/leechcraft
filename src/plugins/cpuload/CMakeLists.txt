@@ -10,6 +10,7 @@ include_directories (
 	)
 set (SRCS
 	cpuload.cpp
+	linuxbackend.cpp
 	)
 #CreateTrs("cpuload" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("cpuload" "en;ru_RU" "${SRCS}" "${FORMS}" "")
