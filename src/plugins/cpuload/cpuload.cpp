@@ -29,13 +29,23 @@
 
 #include "cpuload.h"
 #include <QIcon>
+#include <QAbstractItemModel>
+#include "linuxbackend.h"
+#include "backendproxy.h"
 
 namespace LeechCraft
 {
 namespace CpuLoad
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
+		auto backend = new LinuxBackend;
+
+		CpuQuark_.reset (new QuarkComponent { "cpuload", "CpuLoadQuark.qml" });
+
+		auto backendProxy = new BackendProxy { backend };
+		CpuQuark_->DynamicProps_.append ({ "CpuLoad_proxy", backendProxy });
+		CpuQuark_->DynamicProps_.append ({ "CpuLoad_model", backendProxy->GetModel () });
 	}
 
 	void Plugin::SecondInit ()
@@ -64,6 +74,11 @@ namespace CpuLoad
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { CpuQuark_ };
 	}
 }
 }

@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
@@ -38,9 +39,12 @@ namespace CpuLoad
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IQuarkComponentProvider)
+
+		QuarkComponent_ptr CpuQuark_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,6 +53,8 @@ namespace CpuLoad
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QuarkComponents_t GetComponents () const;
 	};
 }
 }
