@@ -94,7 +94,12 @@ namespace CpuLoad
 
 			QVector<long> cpuVec;
 			for (const auto& elem : elems.mid (1))
-				cpuVec << elem.toLong ();
+			{
+				bool ok = false;
+				const auto num = elem.toLong (&ok);
+				if (ok)
+					cpuVec << num;
+			}
 
 			if (LastCummulative_.size () <= cpuIdx)
 				LastCummulative_.resize (cpuIdx + 1);
