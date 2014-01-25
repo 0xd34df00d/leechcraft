@@ -11,7 +11,7 @@ Rectangle {
     ListView {
         id: cpusView
 
-        width: rootRect.parent.childAt()quarkBaseSize
+        width: rootRect.parent.quarkBaseSize
         height: parent.length
         interactive: false
 
@@ -26,28 +26,51 @@ Rectangle {
         }
 
         delegate: Item {
+            height: cpusView.height
+            width: 10
+
             Rectangle {
+                id: highPercRect
                 height: cpusView.height * loadObj.highPercentage
-                width: 10
+                width: parent.width
                 color: "red"
+
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
             }
 
             Rectangle {
+                id: mediumPercRect
                 height: cpusView.height * loadObj.mediumPercentage
-                width: 10
+                width: parent.width
                 color: "blue"
+
+                anchors.bottom: highPercRect.top
+                anchors.left: parent.left
+                anchors.right: parent.right
             }
 
             Rectangle {
+                id: lowPercRect
                 height: cpusView.height * loadObj.lowPercentage
-                width: 10
+                width: parent.width
                 color: "yellow"
+
+                anchors.bottom: mediumPercRect.top
+                anchors.left: parent.left
+                anchors.right: parent.right
             }
 
             Rectangle {
+                id: ioPercRect
                 height: cpusView.height * loadObj.ioPercentage
-                width: 10
+                width: parent.width
                 color: "green"
+
+                anchors.bottom: lowPercRect.top
+                anchors.left: parent.left
+                anchors.right: parent.right
             }
         }
     }

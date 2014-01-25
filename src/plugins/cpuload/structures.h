@@ -49,6 +49,5 @@ namespace CpuLoad
 		LoadPriority Priority_;
 		double LoadPercentage_;
 	};
-
 }
 }
