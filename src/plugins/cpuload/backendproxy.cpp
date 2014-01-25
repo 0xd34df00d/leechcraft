@@ -106,7 +106,7 @@ namespace CpuLoad
 
 			auto modelItem = new QStandardItem;
 			modelItem->setData (i, CpusModel::CpuIdxRole);
-			modelItem->setData (QVariant::fromValue<QObject*> (obj), CpusModel::CpuIdxRole);
+			modelItem->setData (QVariant::fromValue<QObject*> (obj), CpusModel::CpuLoadObj);
 
 			Model_->appendRow (modelItem);
 		}
