@@ -11,6 +11,7 @@ include_directories (
 set (SRCS
 	cpuload.cpp
 	linuxbackend.cpp
+	backendproxy.cpp
 	cpuloadproxyobj.cpp
 	)
 #CreateTrs("cpuload" "en;ru_RU" COMPILED_TRANSLATIONS)
