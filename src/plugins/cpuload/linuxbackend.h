@@ -44,7 +44,8 @@ namespace CpuLoad
 	{
 		Q_OBJECT
 
-		QVector<QMap<LoadPriority, LoadTypeInfo>> LastLoads_;
+		QVector<QMap<LoadPriority, LoadTypeInfo>> Loads_;
+		QVector<QVector<long>> LastCummulative_;
 	public:
 		LinuxBackend (QObject* = 0);
 

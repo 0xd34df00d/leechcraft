@@ -41,10 +41,30 @@ namespace CpuLoad
 	{
 	}
 
+	namespace
+	{
+		QString Prio2Label (LoadPriority prio)
+		{
+			switch (prio)
+			{
+			case LoadPriority::IO:
+				return QObject::tr ("IO");
+			case LoadPriority::Low:
+				return QObject::tr ("nice");
+			case LoadPriority::Medium:
+				return QObject::tr ("user");
+			case LoadPriority::High:
+				return QObject::tr ("system");
+			}
+		}
+	}
+
 	void LinuxBackend::Update ()
 	{
 		const int prevCpuCount = GetCpuCount ();
-		LastLoads_.clear ();
+
+		decltype (LastCummulative_) savedLast;
+		std::swap (savedLast, LastCummulative_);
 
 		QFile file { "/proc/stat" };
 		if (!file.open (QIODevice::ReadOnly))
@@ -72,50 +92,59 @@ namespace CpuLoad
 			if (!ok)
 				continue;
 
-			const auto total = elems.value (1).toLong () +
-					elems.value (2).toLong () +
-					elems.value (3).toLong () +
-					elems.value (4).toLong ();
+			QVector<long> cpuVec;
+			for (const auto& elem : elems.mid (1))
+				cpuVec << elem.toLong ();
 
-			auto makeInfo = [&elems, total] (int idx, LoadPriority prio, const QString& label) -> LoadTypeInfo
-			{
-				return
-				{
-					label,
-					prio,
-					static_cast<double> (elems.value (idx).toLong ()) / total
-				};
-			};
-
-			QMap<LoadPriority, LoadTypeInfo> cpuMap;
-			auto insertInfo = [&cpuMap, makeInfo] (int idx, LoadPriority prio, const QString& label)
-			{
-				cpuMap [prio] = makeInfo (idx, prio, label);
-			};
-
-			insertInfo (1, LoadPriority::Medium, tr ("user"));
-			insertInfo (2, LoadPriority::Low, tr ("nice"));
-			insertInfo (3, LoadPriority::High, tr ("sys"));
-			insertInfo (5, LoadPriority::IO, tr ("IO"));
-
-			if (LastLoads_.size () <= cpuIdx)
-				LastLoads_.resize (cpuIdx + 1);
-			LastLoads_ [cpuIdx] = cpuMap;
+			if (LastCummulative_.size () <= cpuIdx)
+				LastCummulative_.resize (cpuIdx + 1);
+			LastCummulative_ [cpuIdx] = cpuVec;
 		}
 
 		const auto curCpuCount = GetCpuCount ();
 		if (curCpuCount != prevCpuCount)
+		{
 			emit cpuCountChanged (curCpuCount);
+			return;
+		}
+
+		Loads_.clear ();
+		Loads_.resize (LastCummulative_.size ());
+
+		for (int i = 0; i < curCpuCount + 1; ++i)
+		{
+			auto& cpuLoad = Loads_ [i];
+
+			auto lastCpuStats = LastCummulative_ [i];
+			const auto& prevCpuStats = savedLast [i];
+			for (int j = 0; j < lastCpuStats.size (); ++j)
+				lastCpuStats [j] -= prevCpuStats [j];
+
+			const auto total = lastCpuStats [0] + lastCpuStats [1] + lastCpuStats [2] + lastCpuStats [3] + lastCpuStats [4];
+
+			qDebug () << "cpu" << i << lastCpuStats;
+			auto setLoadPart = [&cpuLoad, total, &lastCpuStats, i] (int idx, LoadPriority prio)
+			{
+				const auto& thisLoad = static_cast<double> (lastCpuStats [idx]) / total;
+				cpuLoad [prio] = LoadTypeInfo { Prio2Label (prio), prio, thisLoad };
+				qDebug () << static_cast<int> (prio) << thisLoad;
+			};
+
+			setLoadPart (4, LoadPriority::IO);
+			setLoadPart (1, LoadPriority::Low);
+			setLoadPart (0, LoadPriority::Medium);
+			setLoadPart (2, LoadPriority::High);
+		}
 	}
 
 	int LinuxBackend::GetCpuCount () const
 	{
-		return LastLoads_.size () - 1;
+		return Loads_.size () - 1;
 	}
 
 	QMap<LoadPriority, LoadTypeInfo> LinuxBackend::GetLoads (int cpu) const
 	{
-		return LastLoads_.value (cpu + 1);
+		return Loads_.value (cpu + 1);
 	}
 
 }
