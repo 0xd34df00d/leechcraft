@@ -8,12 +8,16 @@ Rectangle {
     implicitWidth: viewOrient == "vertical" ? parent.quarkBaseSize : length
     implicitHeight: viewOrient == "vertical" ? length : parent.quarkBaseSize
 
+    color: "transparent"
+
     ListView {
         id: cpusView
 
-        width: rootRect.parent.quarkBaseSize
-        height: parent.length
+        width: parent.length
+        height: rootRect.parent.quarkBaseSize
         interactive: false
+
+        orientation: ListView.Horizontal
 
         model: CpuLoad_model
 
@@ -25,52 +29,52 @@ Rectangle {
             angle: viewOrient == "horizontal" ? 0 : 180
         }
 
-        delegate: Item {
+        delegate: Rectangle {
+            id: delegateRoot
+
             height: cpusView.height
             width: 10
+
+            color: "transparent"
 
             Rectangle {
                 id: highPercRect
                 height: cpusView.height * loadObj.highPercentage
-                width: parent.width
+                width: delegateRoot.width
                 color: "red"
 
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors.bottom: delegateRoot.bottom
+                anchors.left: delegateRoot.left
             }
 
             Rectangle {
                 id: mediumPercRect
                 height: cpusView.height * loadObj.mediumPercentage
-                width: parent.width
+                width: delegateRoot.width
                 color: "blue"
 
                 anchors.bottom: highPercRect.top
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors.left: delegateRoot.left
             }
 
             Rectangle {
                 id: lowPercRect
                 height: cpusView.height * loadObj.lowPercentage
-                width: parent.width
+                width: delegateRoot.width
                 color: "yellow"
 
                 anchors.bottom: mediumPercRect.top
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors.left: delegateRoot.left
             }
 
             Rectangle {
                 id: ioPercRect
                 height: cpusView.height * loadObj.ioPercentage
-                width: parent.width
+                width: delegateRoot.width
                 color: "green"
 
                 anchors.bottom: lowPercRect.top
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors.left: delegateRoot.left
             }
         }
     }
