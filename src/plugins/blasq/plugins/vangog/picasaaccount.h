@@ -144,6 +144,7 @@ namespace Vangog
 	signals:
 		void accountChanged (PicasaAccount *acc);
 		void doneUpdating () override;
+		void itemUploaded (const UploadItem&);
 	};
 }
 }

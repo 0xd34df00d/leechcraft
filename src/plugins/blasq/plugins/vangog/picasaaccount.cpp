@@ -91,10 +91,15 @@ namespace Vangog
 				SIGNAL (gotError (int, QString)),
 				this,
 				SLOT (handleGotError (int, QString)));
+
 		connect (UploadManager_,
 				SIGNAL (gotError (int, QString)),
 				this,
 				SLOT (handleGotError (int, QString)));
+		connect (UploadManager_,
+				SIGNAL (itemUploaded (UploadItem)),
+				this,
+				SIGNAL (itemUploaded (UploadItem)));
 	}
 
 	ICoreProxy_ptr PicasaAccount::GetProxy () const

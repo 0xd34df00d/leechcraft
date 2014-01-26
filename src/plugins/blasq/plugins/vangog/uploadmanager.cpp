@@ -77,8 +77,9 @@ namespace Vangog
 										<< file->errorString ();
 								return;
 							}
-							QNetworkReply *reply = Proxy_->GetNetworkAccessManager ()->
+							auto reply = Proxy_->GetNetworkAccessManager ()->
 									post (request, file);
+							Reply2Item_ [reply] = item;
 							file->setParent (reply);
 							connect (reply,
 									SIGNAL (uploadProgress (qint64, qint64)),
@@ -107,6 +108,8 @@ namespace Vangog
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		Account_->ImageUploadResponse (reply->readAll ());
 		reply->deleteLater ();
+
+		emit itemUploaded (Reply2Item_.take (reply));
 	}
 
 	void UploadManager::handleNetworkError (QNetworkReply::NetworkError error)
