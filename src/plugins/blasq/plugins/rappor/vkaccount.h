@@ -129,7 +129,7 @@ namespace Rappor
 	signals:
 		void accountChanged (VkAccount*);
 
-		void itemUploaded (const UploadItem&);
+		void itemUploaded (const UploadItem&, const QUrl&);
 
 		void doneUpdating ();
 	};

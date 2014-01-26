@@ -222,7 +222,8 @@ namespace Rappor
 					}, this);
 			});
 
-		emit itemUploaded (item);
+		// TODO remember to add url
+		emit itemUploaded (item, {});
 	}
 }
 }

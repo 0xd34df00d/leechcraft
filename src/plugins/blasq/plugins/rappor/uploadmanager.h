@@ -33,6 +33,8 @@
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
 
+class QUrl;
+
 namespace LeechCraft
 {
 namespace Util
@@ -74,7 +76,7 @@ namespace Rappor
 		void handlePhotosUploaded ();
 		void handlePhotosSaved ();
 	signals:
-		void itemUploaded (const UploadItem&);
+		void itemUploaded (const UploadItem&, const QUrl&);
 	};
 }
 }
