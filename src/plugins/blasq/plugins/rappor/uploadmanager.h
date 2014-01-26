@@ -60,6 +60,8 @@ namespace Rappor
 		QHash<QNetworkReply*, QList<UploadItem>> PhotoUpload2QueueTail_;
 		QHash<QNetworkReply*, QString> PhotoUpload2Server_;
 		QHash<QNetworkReply*, UploadItem> PhotoUpload2Info_;
+
+		QHash<QNetworkReply*, UploadItem> PhotoSave2Info_;
 	public:
 		UploadManager (Util::QueueManager *reqQueue, ICoreProxy_ptr, VkAccount *acc);
 
@@ -71,6 +73,8 @@ namespace Rappor
 		void handlePhotosUploadProgress (qint64, qint64);
 		void handlePhotosUploaded ();
 		void handlePhotosSaved ();
+	signals:
+		void itemUploaded (const UploadItem&);
 	};
 }
 }

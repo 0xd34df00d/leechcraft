@@ -166,9 +166,11 @@ namespace Rappor
 				if (!info.Description_.isEmpty ())
 					saveUrl.addQueryItem ("caption", info.Description_);
 
-				RequestQueue_->Schedule ([this, saveUrl]
+				RequestQueue_->Schedule ([this, saveUrl, info]
 					{
-						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (saveUrl)),
+						const auto req = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (saveUrl));
+						PhotoSave2Info_ [req] = info;
+						connect (req,
 								SIGNAL (finished ()),
 								this,
 								SLOT (handlePhotosSaved ()));
@@ -180,6 +182,8 @@ namespace Rappor
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
+
+		const auto& item = PhotoSave2Info_.take (reply);
 
 		const auto& data = reply->readAll ();
 		QDomDocument doc;
@@ -217,6 +221,8 @@ namespace Rappor
 								SLOT (handlePhotosInfosFetched ()));
 					}, this);
 			});
+
+		emit itemUploaded (item);
 	}
 }
 }
