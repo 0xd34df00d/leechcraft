@@ -99,6 +99,8 @@ namespace CpuLoad
 		if (Backend_->GetCpuCount () <= 0)
 			return;
 
+		QList<QStandardItem*> newItems;
+
 		for (int i = -1; i < Backend_->GetCpuCount (); ++i)
 		{
 			auto obj = new CpuLoadProxyObj { Backend_->GetLoads (i) };
@@ -107,9 +109,10 @@ namespace CpuLoad
 			auto modelItem = new QStandardItem;
 			modelItem->setData (i, CpusModel::CpuIdxRole);
 			modelItem->setData (QVariant::fromValue<QObject*> (obj), CpusModel::CpuLoadObj);
-
-			Model_->appendRow (modelItem);
+			newItems << modelItem;
 		}
+
+		Model_->invisibleRootItem ()->appendRows (newItems);
 	}
 }
 }
