@@ -59,52 +59,62 @@ namespace CpuLoad
 		}
 	}
 
+	namespace
+	{
+		Cummulative_t ReadProcStat ()
+		{
+			QFile file { "/proc/stat" };
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot open"
+						<< file.fileName ()
+						<< file.errorString ();
+				return {};
+			}
+
+			static const QByteArray cpuMarker { "cpu" };
+
+			Cummulative_t result;
+
+			for (const auto& line : file.readAll ().split ('\n'))
+			{
+				const auto& elems = line.split (' ');
+				const auto& id = elems.value (0);
+				if (!id.startsWith (cpuMarker))
+					continue;
+
+				bool ok = true;
+				const auto cpuIdx = id == cpuMarker ?
+						0 :
+						(id.mid (cpuMarker.size ()).toInt (&ok) + 1);
+				if (!ok)
+					continue;
+
+				QVector<long> cpuVec;
+				for (const auto& elem : elems.mid (1))
+				{
+					bool ok = false;
+					const auto num = elem.toLong (&ok);
+					if (ok)
+						cpuVec << num;
+				}
+
+				if (result.size () <= cpuIdx)
+					result.resize (cpuIdx + 1);
+				result [cpuIdx] = cpuVec;
+			}
+
+			return result;
+		}
+	}
+
 	void LinuxBackend::Update ()
 	{
 		const int prevCpuCount = GetCpuCount ();
 
-		decltype (LastCummulative_) savedLast;
+		auto savedLast = ReadProcStat ();
 		std::swap (savedLast, LastCummulative_);
-
-		QFile file { "/proc/stat" };
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open"
-					<< file.fileName ()
-					<< file.errorString ();
-			return;
-		}
-
-		static const QByteArray cpuMarker { "cpu" };
-
-		for (const auto& line : file.readAll ().split ('\n'))
-		{
-			const auto& elems = line.split (' ');
-			const auto& id = elems.value (0);
-			if (!id.startsWith (cpuMarker))
-				continue;
-
-			bool ok = true;
-			const auto cpuIdx = id == cpuMarker ?
-					0 :
-					(id.mid (cpuMarker.size ()).toInt (&ok) + 1);
-			if (!ok)
-				continue;
-
-			QVector<long> cpuVec;
-			for (const auto& elem : elems.mid (1))
-			{
-				bool ok = false;
-				const auto num = elem.toLong (&ok);
-				if (ok)
-					cpuVec << num;
-			}
-
-			if (LastCummulative_.size () <= cpuIdx)
-				LastCummulative_.resize (cpuIdx + 1);
-			LastCummulative_ [cpuIdx] = cpuVec;
-		}
 
 		const auto curCpuCount = GetCpuCount ();
 		if (curCpuCount != prevCpuCount)

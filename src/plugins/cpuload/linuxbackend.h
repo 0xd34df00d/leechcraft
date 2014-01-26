@@ -40,12 +40,15 @@ namespace LeechCraft
 {
 namespace CpuLoad
 {
+	typedef QVector<QVector<long>> Cummulative_t;
+
 	class LinuxBackend : public QObject
 	{
 		Q_OBJECT
 
 		QVector<QMap<LoadPriority, LoadTypeInfo>> Loads_;
-		QVector<QVector<long>> LastCummulative_;
+
+		Cummulative_t LastCummulative_;
 	public:
 		LinuxBackend (QObject* = 0);
 
