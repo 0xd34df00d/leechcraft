@@ -900,7 +900,7 @@ namespace DeathNote
 		AllPhotosItem_->appendRow (CreatePhotoItem (pic));
 		emit doneUpdating ();
 
-		emit itemUploaded (item);
+		emit itemUploaded (item, pic.Url_);
 	}
 
 	void FotoBilderAccount::handleUploadPrepareFinished ()
