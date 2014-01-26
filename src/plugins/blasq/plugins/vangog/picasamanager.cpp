@@ -638,14 +638,17 @@ namespace Vangog
 		RequestAccessToken ();
 	}
 
-	void PicasaManager::handleImageUploaded (const QByteArray& content)
+	Photo PicasaManager::handleImageUploaded (const QByteArray& content)
 	{
 		QDomDocument document;
 		if (CreateDomDocument (content, document).isEmpty ())
-			return;
+			return {};
 
-		emit gotPhoto (ParsePhotos (document).value (0));
+		const auto& photo = ParsePhotos (document).value (0);
+		emit gotPhoto (photo);
 		RequestAccessToken ();
+
+		return photo;
 	}
 
 	void PicasaManager::handleNetworkError (QNetworkReply::NetworkError error)

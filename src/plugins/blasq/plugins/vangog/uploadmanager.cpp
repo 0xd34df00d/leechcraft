@@ -106,10 +106,8 @@ namespace Vangog
 	void UploadManager::handleUploadFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		Account_->ImageUploadResponse (reply->readAll ());
+		Account_->ImageUploadResponse (reply->readAll (), Reply2Item_.take (reply));
 		reply->deleteLater ();
-
-		emit itemUploaded (Reply2Item_.take (reply));
 	}
 
 	void UploadManager::handleNetworkError (QNetworkReply::NetworkError error)

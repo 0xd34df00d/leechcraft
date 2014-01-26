@@ -70,7 +70,6 @@ namespace Vangog
 
 	signals:
 		void gotError (int errorCode, const QString& errorString);
-		void itemUploaded (const UploadItem&);
 	};
 }
 }

@@ -96,10 +96,6 @@ namespace Vangog
 				SIGNAL (gotError (int, QString)),
 				this,
 				SLOT (handleGotError (int, QString)));
-		connect (UploadManager_,
-				SIGNAL (itemUploaded (UploadItem)),
-				this,
-				SIGNAL (itemUploaded (UploadItem)));
 	}
 
 	ICoreProxy_ptr PicasaAccount::GetProxy () const
@@ -297,9 +293,10 @@ namespace Vangog
 		UploadManager_->Upload (albumId, paths);
 	}
 
-	void PicasaAccount::ImageUploadResponse (const QByteArray& content)
+	void PicasaAccount::ImageUploadResponse (const QByteArray& content, const UploadItem& item)
 	{
-		PicasaManager_->handleImageUploaded (content);
+		const auto& photo = PicasaManager_->handleImageUploaded (content);
+		emit itemUploaded (item, photo.Url_);
 	}
 
 	bool PicasaAccount::TryToEnterLoginIfNoExists ()

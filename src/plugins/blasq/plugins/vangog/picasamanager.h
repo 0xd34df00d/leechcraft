@@ -101,8 +101,7 @@ namespace Vangog
 		void handleCreateAlbumFinished ();
 		void handleNetworkError (QNetworkReply::NetworkError error);
 	public slots:
-		void handleImageUploaded (const QByteArray& image = QByteArray ());
-
+		Photo handleImageUploaded (const QByteArray& image = QByteArray ());
 	signals:
 		void gotAlbums (const QList<Album>& albums);
 		void gotAlbum (const Album album);
