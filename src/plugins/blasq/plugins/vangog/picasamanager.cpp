@@ -638,20 +638,9 @@ namespace Vangog
 		RequestAccessToken ();
 	}
 
-	void PicasaManager::handleImageUploaded (const QByteArray& response)
+	void PicasaManager::handleImageUploaded (const QByteArray& content)
 	{
-		QByteArray content;
 		QDomDocument document;
-		if (!response.isEmpty ())
-			content = response;
-		else
-		{
-			auto reply = qobject_cast<QNetworkReply*> (sender ());
-			if (!reply)
-				return;
-			content = reply->readAll ();
-		}
-
 		if (CreateDomDocument (content, document).isEmpty ())
 			return;
 
