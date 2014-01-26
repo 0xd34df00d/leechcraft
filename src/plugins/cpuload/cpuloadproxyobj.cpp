@@ -43,10 +43,6 @@ namespace CpuLoad
 	void CpuLoadProxyObj::Set (const QMap<LoadPriority, LoadTypeInfo>& infos)
 	{
 		Infos_ = infos;
-		qDebug () << Q_FUNC_INFO;
-		for (const auto& info : infos)
-			qDebug () << info.LoadPercentage_;
-
 		emit percentagesChanged ();
 	}
 

@@ -127,12 +127,10 @@ namespace CpuLoad
 
 			const auto total = lastCpuStats [0] + lastCpuStats [1] + lastCpuStats [2] + lastCpuStats [3] + lastCpuStats [4];
 
-			qDebug () << "cpu" << i << lastCpuStats;
 			auto setLoadPart = [&cpuLoad, total, &lastCpuStats, i] (int idx, LoadPriority prio)
 			{
 				const auto& thisLoad = static_cast<double> (lastCpuStats [idx]) / total;
 				cpuLoad [prio] = LoadTypeInfo { Prio2Label (prio), prio, thisLoad };
-				qDebug () << static_cast<int> (prio) << thisLoad;
 			};
 
 			setLoadPart (4, LoadPriority::IO);
