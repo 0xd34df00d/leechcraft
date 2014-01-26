@@ -29,52 +29,106 @@ Rectangle {
             angle: viewOrient == "horizontal" ? 0 : 180
         }
 
-        delegate: Rectangle {
-            id: delegateRoot
-
+        delegate: Item {
             height: cpusView.height
             width: 10
 
-            color: "transparent"
-
             Rectangle {
-                id: highPercRect
-                height: cpusView.height * loadObj.highPercentage
-                width: delegateRoot.width
-                color: "red"
+                id: delegateRoot
 
-                anchors.bottom: delegateRoot.bottom
-                anchors.left: delegateRoot.left
-            }
+                transform: [
+                    Rotation {
+                        origin { x: height / 2; y: height / 2 }
+                        angle: -90
+                    }
+                ]
 
-            Rectangle {
-                id: mediumPercRect
-                height: cpusView.height * loadObj.mediumPercentage
-                width: delegateRoot.width
-                color: "blue"
+                height: parent.width
+                width: parent.height
 
-                anchors.bottom: highPercRect.top
-                anchors.left: delegateRoot.left
-            }
+                color: "transparent"
 
-            Rectangle {
-                id: lowPercRect
-                height: cpusView.height * loadObj.lowPercentage
-                width: delegateRoot.width
-                color: "yellow"
+                Rectangle {
+                    id: highPercRect
+                    width: cpusView.height * loadObj.highPercentage
+                    height: delegateRoot.height
 
-                anchors.bottom: mediumPercRect.top
-                anchors.left: delegateRoot.left
-            }
+                    border.width: 1
+                    border.color: "red"
 
-            Rectangle {
-                id: ioPercRect
-                height: cpusView.height * loadObj.ioPercentage
-                width: delegateRoot.width
-                color: "green"
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0
+                            color: Qt.lighter("red", 1.5)
+                        }
+                        GradientStop {
+                            position: 1
+                            color: Qt.darker("red", 1.5)
+                        }
+                    }
 
-                anchors.bottom: lowPercRect.top
-                anchors.left: delegateRoot.left
+                    anchors.bottom: delegateRoot.bottom
+                }
+
+                Rectangle {
+                    id: mediumPercRect
+                    width: cpusView.height * loadObj.mediumPercentage
+                    height: delegateRoot.height
+
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0
+                            color: Qt.lighter("blue", 1.5)
+                        }
+                        GradientStop {
+                            position: 1
+                            color: Qt.darker("blue", 1.5)
+                        }
+                    }
+
+                    anchors.left: highPercRect.right
+                    anchors.bottom: delegateRoot.bottom
+                }
+
+                Rectangle {
+                    id: lowPercRect
+                    width: cpusView.height * loadObj.lowPercentage
+                    height: delegateRoot.height
+
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0
+                            color: Qt.lighter("yellow", 1.5)
+                        }
+                        GradientStop {
+                            position: 1
+                            color: Qt.darker("yellow", 1.5)
+                        }
+                    }
+
+                    anchors.left: mediumPercRect.right
+                    anchors.bottom: delegateRoot.bottom
+                }
+
+                Rectangle {
+                    id: ioPercRect
+                    width: cpusView.height * loadObj.ioPercentage
+                    height: delegateRoot.height
+
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0
+                            color: Qt.lighter("green", 1.5)
+                        }
+                        GradientStop {
+                            position: 1
+                            color: Qt.darker("green", 1.5)
+                        }
+                    }
+
+                    anchors.left: lowPercRect.right
+                    anchors.bottom: delegateRoot.bottom
+                }
             }
         }
     }
