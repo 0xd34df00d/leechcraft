@@ -136,6 +136,7 @@ namespace DeathNote
 		void accountChanged (FotoBilderAccount *acc);
 		void doneUpdating () override;
 		void networkError (QNetworkReply::NetworkError err, const QString& errString);
+		void itemUploaded (const UploadItem&);
 	};
 }
 }

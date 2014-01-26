@@ -893,10 +893,14 @@ namespace DeathNote
 		if (IsErrorReply (content))
 			return;
 
+		const auto& item = Reply2UploadItem_.take (reply);
+
 		auto pic = ParseUploadedPictureResponse (document);
-		pic.Title_ = QFileInfo (Reply2UploadItem_.take (reply).FilePath_).fileName ();
+		pic.Title_ = QFileInfo (item.FilePath_).fileName ();
 		AllPhotosItem_->appendRow (CreatePhotoItem (pic));
 		emit doneUpdating ();
+
+		emit itemUploaded (item);
 	}
 
 	void FotoBilderAccount::handleUploadPrepareFinished ()
