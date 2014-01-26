@@ -44,9 +44,9 @@ namespace CpuLoad
 		Q_OBJECT
 
 		Q_PROPERTY (double ioPercentage READ GetIoPercentage NOTIFY percentagesChanged)
-		Q_PROPERTY (double lowPercentage READ GetIoPercentage NOTIFY percentagesChanged)
-		Q_PROPERTY (double mediumPercentage READ GetIoPercentage NOTIFY percentagesChanged)
-		Q_PROPERTY (double highPercentage READ GetIoPercentage NOTIFY percentagesChanged)
+		Q_PROPERTY (double lowPercentage READ GetLowPercentage NOTIFY percentagesChanged)
+		Q_PROPERTY (double mediumPercentage READ GetMediumPercentage NOTIFY percentagesChanged)
+		Q_PROPERTY (double highPercentage READ GetHighPercentage NOTIFY percentagesChanged)
 
 		QMap<LoadPriority, LoadTypeInfo> Infos_;
 	public:
