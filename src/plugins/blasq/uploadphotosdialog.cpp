@@ -95,6 +95,19 @@ namespace Blasq
 		return items;
 	}
 
+	void UploadPhotosDialog::SetFiles (const QList<UploadItem>& items)
+	{
+		for (const auto& item : items)
+			AppendPhotoItem (item);
+		validate ();
+	}
+
+	void UploadPhotosDialog::LockFiles ()
+	{
+		Ui_.AddPhotoButton_->setEnabled (false);
+		Ui_.RemovePhotoButton_->setEnabled (false);
+	}
+
 	void UploadPhotosDialog::on_SelectAlbumButton__released ()
 	{
 		SelectAlbumDialog dia (Acc_);
