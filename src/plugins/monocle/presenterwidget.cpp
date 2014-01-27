@@ -56,6 +56,9 @@ namespace Monocle
 		QTimer::singleShot (50,
 				this,
 				SLOT (delayedShowInit ()));
+		QTimer::singleShot (500,
+				this,
+				SLOT (delayedShowInit ()));
 	}
 
 	void PresenterWidget::NavigateTo (int page)
