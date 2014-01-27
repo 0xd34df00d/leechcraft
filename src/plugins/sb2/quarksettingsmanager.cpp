@@ -67,6 +67,29 @@ namespace SB2
 		settings->endGroup ();
 	}
 
+	namespace
+	{
+		bool TryDouble (QVariant& val)
+		{
+			bool ok = false;
+			const auto& tempVal = val.toDouble (&ok);
+			if (ok)
+				val = tempVal;
+
+			return ok;
+		}
+
+		bool TryInt (QVariant& val)
+		{
+			bool ok = false;
+			const auto& tempVal = val.toInt (&ok);
+			if (ok)
+				val = tempVal;
+
+			return ok;
+		}
+	}
+
 	void QuarkSettingsManager::PropertyChanged (const QString& name, const QVariant& srcVal)
 	{
 		QVariant val = srcVal;
@@ -75,12 +98,7 @@ namespace SB2
 			if (val == "true" || val == "false")
 				val = val.toBool ();
 			else
-			{
-				bool ok = false;
-				auto tempVal = val.toDouble (&ok);
-				if (ok)
-					val = tempVal;
-			}
+				TryDouble (val) || TryInt (val);
 		}
 		Ctx_->setContextProperty (name.toUtf8 ().constData (), val);
 	}
