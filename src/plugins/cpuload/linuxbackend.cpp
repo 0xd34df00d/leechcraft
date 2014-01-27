@@ -85,9 +85,7 @@ namespace CpuLoad
 					continue;
 
 				bool ok = true;
-				const auto cpuIdx = id == cpuMarker ?
-						0 :
-						(id.mid (cpuMarker.size ()).toInt (&ok) + 1);
+				const auto cpuIdx = id.mid (cpuMarker.size ()).toInt (&ok);
 				if (!ok)
 					continue;
 
@@ -126,7 +124,9 @@ namespace CpuLoad
 		Loads_.clear ();
 		Loads_.resize (LastCummulative_.size ());
 
-		for (int i = 0; i < curCpuCount + 1; ++i)
+		qDebug () << curCpuCount;
+
+		for (int i = 0; i < curCpuCount; ++i)
 		{
 			auto& cpuLoad = Loads_ [i];
 
@@ -152,12 +152,12 @@ namespace CpuLoad
 
 	int LinuxBackend::GetCpuCount () const
 	{
-		return Loads_.size () - 1;
+		return Loads_.size ();
 	}
 
 	QMap<LoadPriority, LoadTypeInfo> LinuxBackend::GetLoads (int cpu) const
 	{
-		return Loads_.value (cpu + 1);
+		return Loads_.value (cpu);
 	}
 
 }

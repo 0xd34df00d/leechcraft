@@ -83,11 +83,11 @@ namespace CpuLoad
 		Backend_->Update ();
 
 		const auto rc = Model_->rowCount ();
-		if (rc == Backend_->GetCpuCount () + 1)
+		if (rc == Backend_->GetCpuCount ())
 		{
 			if (Backend_->GetCpuCount () > 0)
-				for (int i = -1; i < Backend_->GetCpuCount (); ++i)
-					ModelPropObjs_.at (i + 1)->Set (Backend_->GetLoads (i));
+				for (int i = 0; i < Backend_->GetCpuCount (); ++i)
+					ModelPropObjs_.at (i)->Set (Backend_->GetLoads (i));
 
 			return;
 		}
@@ -101,7 +101,7 @@ namespace CpuLoad
 
 		QList<QStandardItem*> newItems;
 
-		for (int i = -1; i < Backend_->GetCpuCount (); ++i)
+		for (int i = 0; i < Backend_->GetCpuCount (); ++i)
 		{
 			auto obj = new CpuLoadProxyObj { Backend_->GetLoads (i) };
 			ModelPropObjs_ << obj;
