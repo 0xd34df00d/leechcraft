@@ -24,6 +24,7 @@ set (SRCS
 	uploadphotosdialog.cpp
 	selectalbumdialog.cpp
 	photosproxymodel.cpp
+	datafilteruploader.cpp
 	)
 set (FORMS
 	accountswidget.ui
