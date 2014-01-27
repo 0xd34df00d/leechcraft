@@ -68,6 +68,7 @@ namespace Blasq
 		const QList<IAccount*>& GetAccounts () const;
 
 		int GetAccountIndex (const QByteArray&) const;
+		IAccount* GetAccount (const QByteArray&) const;
 
 		void RemoveAccount (const QModelIndex&);
 	private:
