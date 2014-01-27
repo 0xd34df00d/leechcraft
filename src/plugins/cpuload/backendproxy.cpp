@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "backendproxy.h"
-#include <QTimer>
 #include <QStandardItemModel>
 #include <QtDebug>
 #include "linuxbackend.h"
@@ -63,14 +62,8 @@ namespace CpuLoad
 	BackendProxy::BackendProxy (LinuxBackend *backend)
 	: QObject { backend }
 	, Backend_ { backend }
-	, UpdateTimer_ { new QTimer { this } }
 	, Model_ { new CpusModel { this } }
 	{
-		connect (UpdateTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (update ()));
-		UpdateTimer_->start (1000);
 	}
 
 	QAbstractItemModel* BackendProxy::GetModel () const

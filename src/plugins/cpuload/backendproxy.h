@@ -31,7 +31,6 @@
 
 #include <QObject>
 
-class QTimer;
 class QStandardItemModel;
 class QAbstractItemModel;
 
@@ -47,7 +46,6 @@ namespace CpuLoad
 		Q_OBJECT
 
 		LinuxBackend * const Backend_;
-		QTimer * const UpdateTimer_;
 
 		QStandardItemModel * const Model_;
 		QList<CpuLoadProxyObj*> ModelPropObjs_;
@@ -55,7 +53,7 @@ namespace CpuLoad
 		BackendProxy (LinuxBackend*);
 
 		QAbstractItemModel* GetModel () const;
-	private slots:
+	public slots:
 		void update ();
 	};
 }

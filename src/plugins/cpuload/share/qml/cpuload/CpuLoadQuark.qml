@@ -10,6 +10,14 @@ Rectangle {
 
     color: "transparent"
 
+    Timer {
+        interval: CpuLoad_updateInterval
+        running: true
+        repeat: true
+
+        onTriggered: CpuLoad_proxy.update()
+    }
+
     ListView {
         id: cpusView
 
