@@ -104,6 +104,24 @@ namespace Blasq
 		SetSelectedCollection (dia.GetSelectedCollection ());
 	}
 
+	void UploadPhotosDialog::AppendPhotoItem (const UploadItem& uploadItem)
+	{
+		const QPixmap orig { uploadItem.FilePath_ };
+		const auto& scaled = orig.scaled (Ui_.PhotosView_->iconSize (),
+				Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+		const QFileInfo finfo { uploadItem.FilePath_ };
+
+		auto item = new QStandardItem { scaled, finfo.fileName () };
+		item->setEditable (false);
+		item->setData (uploadItem.FilePath_, Role::Filepath);
+
+		auto sizeItem = new QStandardItem (Util::MakePrettySize (finfo.size ()));
+		sizeItem->setEditable (false);
+
+		FilesModel_->appendRow ({ item, sizeItem, new QStandardItem { uploadItem.Description_ } });
+	}
+
 	void UploadPhotosDialog::on_AddPhotoButton__released ()
 	{
 		const auto& filenames = QFileDialog::getOpenFileNames (this,
@@ -112,22 +130,7 @@ namespace Blasq
 				tr ("Images (*.jpg *.png *.gif);;All files (*.*)"));
 
 		for (const auto& filename : filenames)
-		{
-			const QPixmap orig (filename);
-			const auto& scaled = orig.scaled (Ui_.PhotosView_->iconSize (),
-					Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-			const QFileInfo finfo (filename);
-
-			auto item = new QStandardItem (scaled, finfo.fileName ());
-			item->setEditable (false);
-			item->setData (filename, Role::Filepath);
-
-			auto sizeItem = new QStandardItem (Util::MakePrettySize (finfo.size ()));
-			sizeItem->setEditable (false);
-
-			FilesModel_->appendRow ({ item, sizeItem, new QStandardItem });
-		}
+			AppendPhotoItem ({ filename, {} });
 
 		validate ();
 	}
