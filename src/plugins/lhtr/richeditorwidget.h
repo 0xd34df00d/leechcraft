@@ -91,6 +91,7 @@ namespace LHTR
 	private:
 		void InternalSetBgColor (const QColor&, ContentType);
 
+		void SetupImageMenu ();
 		void SetupTableMenu ();
 
 		void ExecCommand (const QString&, QString = QString ());
@@ -129,6 +130,8 @@ namespace LHTR
 
 		void handleInsertLink ();
 		void handleInsertImage ();
+		void handleCollectionImageChosen ();
+		void handleInsertImageFromCollection ();
 
 		void handleFind ();
 		void handleReplace ();

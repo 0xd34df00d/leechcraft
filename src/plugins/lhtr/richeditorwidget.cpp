@@ -52,6 +52,8 @@
 
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/data/iimgsource.h>
 #include "hyperlinkdialog.h"
 #include "imagedialog.h"
 #include "finddialog.h"
@@ -313,11 +315,7 @@ namespace LHTR
 					SLOT (handleInsertLink ()));
 		InsertLink_->setProperty ("ActionIcon", "insert-link");
 
-		InsertImage_ = ViewBar_->addAction (tr ("Insert image..."),
-					this,
-					SLOT (handleInsertImage ()));
-		InsertImage_->setProperty ("ActionIcon", "insert-image");
-
+		SetupImageMenu ();
 		SetupTableMenu ();
 
 		setupJS ();
@@ -517,6 +515,40 @@ namespace LHTR
 		auto palette = widget->palette ();
 		palette.setColor (QPalette::Base, color);
 		widget->setPalette (palette);
+	}
+
+	void RichEditorWidget::SetupImageMenu ()
+	{
+		auto imagesMenu = new QMenu (tr ("Insert image..."), this);
+
+		auto imagesButton = new QToolButton;
+		imagesButton->setMenu (imagesMenu);
+		imagesButton->setPopupMode (QToolButton::InstantPopup);
+		imagesButton->setIcon (Proxy_->GetIcon ("insert-image"));
+		ViewBar_->addWidget (imagesButton);
+
+		InsertImage_ = imagesMenu->addAction (tr ("Insert image by link..."),
+					this,
+					SLOT (handleInsertImage ()));
+
+		auto fromCollection = imagesMenu->addMenu (tr ("Insert image from collection"));
+
+		bool added = false;
+		for (const auto pluginObj : Proxy_->GetPluginsManager ()->GetAllCastableRoots<IImgSource*> ())
+		{
+			const auto plugin = qobject_cast<IImgSource*> (pluginObj);
+			for (const auto& service : plugin->GetServices ())
+			{
+				const auto act = fromCollection->addAction (service.Name_,
+						this,
+						SLOT (handleInsertImageFromCollection ()));
+				act->setProperty ("LHTR/Plugin", QVariant::fromValue (pluginObj));
+				act->setProperty ("LHTR/Service", service.ID_);
+				added = true;
+			}
+		}
+
+		fromCollection->setEnabled (added);
 	}
 
 	void RichEditorWidget::SetupTableMenu ()
@@ -1152,6 +1184,43 @@ namespace LHTR
 		w.writeEndElement ();
 
 		ExecCommand ("insertHTML", html);
+	}
+
+	void RichEditorWidget::handleCollectionImageChosen ()
+	{
+		const auto chooser = qobject_cast<IPendingImgSourceRequest*> (sender ());
+		for (const auto& image : chooser->GetInfos ())
+		{
+			QString html;
+
+			QXmlStreamWriter w (&html);
+			w.writeStartElement ("a");
+			w.writeAttribute ("href", image.Full_.toString ());
+
+			w.writeStartElement ("img");
+			w.writeAttribute ("src", image.Preview_.toString ());
+			w.writeAttribute ("alt", image.Title_);
+			w.writeAttribute ("width", QString::number (image.PreviewSize_.width ()));
+			w.writeAttribute ("height", QString::number (image.PreviewSize_.height ()));
+			w.writeEndElement ();
+
+			w.writeEndElement ();
+
+			ExecCommand ("insertHTML", html);
+		}
+	}
+
+	void RichEditorWidget::handleInsertImageFromCollection ()
+	{
+		const auto pluginObj = sender ()->property ("LHTR/Plugin").value<QObject*> ();
+		const auto& service = sender ()->property ("LHTR/Service").toByteArray ();
+
+		const auto plugin = qobject_cast<IImgSource*> (pluginObj);
+		const auto chooser = plugin->RequestImages (service);
+		connect (chooser->GetQObject (),
+				SIGNAL (ready ()),
+				this,
+				SLOT (handleCollectionImageChosen ()));
 	}
 
 	void RichEditorWidget::handleFind ()
