@@ -130,7 +130,7 @@ namespace TabsList
 		{
 			QList<QToolButton*> AllButtons_;
 			QString SearchText_;
-			
+
 			QTimer NumSelectTimer_;
 
 			Plugin * const Plugin_;
@@ -173,18 +173,14 @@ namespace TabsList
 					AllButtons_.last ()->setFocus ();
 					break;
 				case Qt::Key_Delete:
-					for (int i = 0; i < AllButtons_.size (); ++i)
-					{
-						const auto button = AllButtons_ [i];
-						if (!button->hasFocus ())
-							continue;
-
-						const auto ictw = button->defaultAction ()->
-								property ("ICTW").value<ICoreTabWidget*> ();
-						Widget_->deleteLater ();
-						Plugin_->RemoveTab (ictw, i);
-						break;
-					}
+					PerformWithFocusButton ([this] (int index) -> void
+						{
+							const auto button = AllButtons_ [index];
+							const auto ictw = button->defaultAction ()->
+									property ("ICTW").value<ICoreTabWidget*> ();
+							Widget_->deleteLater ();
+							Plugin_->RemoveTab (ictw, index);
+						});
 					break;
 				default:
 					break;
@@ -200,6 +196,14 @@ namespace TabsList
 				return false;
 			}
 		private:
+			template<typename T>
+			void PerformWithFocusButton (T action) const
+			{
+				for (int i = 0; i < AllButtons_.size (); ++i)
+					if (AllButtons_ [i]->hasFocus ())
+						action (i);
+			}
+
 			void FocusSearch ()
 			{
 				bool isNum = false;
@@ -221,19 +225,19 @@ namespace TabsList
 									0,
 									0);
 						}
-						
+
 						NumSelectTimer_.start (QApplication::keyboardInputInterval ());
 						connect (&NumSelectTimer_,
 								SIGNAL (timeout ()),
 								AllButtons_ [num],
 								SLOT (animateClick ()));
-						
+
 						AllButtons_ [num]->setFocus ();
 					}
-					
+
 					return;
 				}
-				
+
 				for (auto butt : AllButtons_)
 					if (butt->property ("OrigText").toString ()
 							.startsWith (SearchText_, Qt::CaseInsensitive))
