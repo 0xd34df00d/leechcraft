@@ -223,6 +223,16 @@ namespace Blasq
 		handleAccountChosen (accIdx);
 	}
 
+	void PhotosTab::SelectAccount (const QByteArray& id)
+	{
+		for (int i = 0; i < AccountsBox_->count (); ++i)
+			if (id == AccountsBox_->itemData (i, AccountsManager::Role::AccountId).toByteArray ())
+			{
+				handleAccountChosen (i);
+				return;
+			}
+	}
+
 	QModelIndex PhotosTab::GetSelectedImage () const
 	{
 		if (SelectedID_.isEmpty ())

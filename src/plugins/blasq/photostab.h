@@ -95,6 +95,8 @@ namespace Blasq
 		QByteArray GetTabRecoverData () const;
 
 		void RecoverState (QDataStream&);
+	
+		void SelectAccount (const QByteArray&);
 
 		QModelIndex GetSelectedImage () const;
 	private:
