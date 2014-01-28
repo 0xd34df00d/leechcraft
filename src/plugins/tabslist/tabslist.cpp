@@ -166,6 +166,17 @@ namespace TabsList
 						if (button->hasFocus ())
 							button->animateClick ();
 					return true;
+				case Qt::Key_PageUp:
+					PerformWithFocusButton ([this] (int idx)
+							{ AllButtons_ [std::max (0, idx - 5)]->setFocus (); });
+					break;
+				case Qt::Key_PageDown:
+					PerformWithFocusButton ([this] (int idx) -> void
+							{
+								const auto last = AllButtons_.size () - 1;
+								AllButtons_ [std::min (idx + 5, last)]->setFocus ();
+							});
+					break;
 				case Qt::Key_Home:
 					AllButtons_.first ()->setFocus ();
 					break;
