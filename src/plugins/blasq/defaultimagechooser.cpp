@@ -38,7 +38,7 @@ namespace LeechCraft
 {
 namespace Blasq
 {
-	DefaultImageChooser::DefaultImageChooser (AccountsManager *accMgr, const ICoreProxy_ptr& proxy)
+	DefaultImageChooser::DefaultImageChooser (AccountsManager *accMgr, const ICoreProxy_ptr& proxy, const QByteArray& accId)
 	: AccMgr_ (accMgr)
 	, Proxy_ (proxy)
 	, Photos_ (new PhotosTab (accMgr, proxy))
@@ -76,6 +76,9 @@ namespace Blasq
 				SIGNAL (rejected ()),
 				this,
 				SLOT (handleReject ()));
+
+		if (!accId.isEmpty ())
+			Photos_->SelectAccount (accId);
 	}
 
 	QObject* DefaultImageChooser::GetQObject ()

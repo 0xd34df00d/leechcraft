@@ -53,7 +53,7 @@ namespace Blasq
 
 		RemoteImageInfo Selected_;
 	public:
-		DefaultImageChooser (AccountsManager*, const ICoreProxy_ptr&);
+		DefaultImageChooser (AccountsManager*, const ICoreProxy_ptr&, const QByteArray& = {});
 
 		QObject* GetQObject ();
 		RemoteImageInfos_t GetInfos () const;
