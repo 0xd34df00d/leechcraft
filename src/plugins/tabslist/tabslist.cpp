@@ -273,7 +273,7 @@ namespace TabsList
 			return;
 
 		QWidget *widget = new QWidget (nullptr,
-				Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+				Qt::Popup | Qt::FramelessWindowHint);
 		widget->setAttribute (Qt::WA_TranslucentBackground);
 		widget->setWindowModality (Qt::ApplicationModal);
 
