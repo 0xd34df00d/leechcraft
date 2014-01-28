@@ -59,7 +59,8 @@ namespace Blasq
 		};
 		enum Role
 		{
-			AccountObj = Qt::UserRole + 1
+			AccountObj = Qt::UserRole + 1,
+			AccountId
 		};
 
 		AccountsManager (ServicesManager*, QObject* = 0);

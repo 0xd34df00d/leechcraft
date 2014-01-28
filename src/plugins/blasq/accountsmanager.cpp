@@ -104,6 +104,7 @@ namespace Blasq
 		{
 			item->setEditable (false);
 			item->setData (accVar, Role::AccountObj);
+			item->setData (acc->GetID (), Role::AccountId);
 		}
 		Model_->appendRow (row);
 
