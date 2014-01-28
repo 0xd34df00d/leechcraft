@@ -201,7 +201,10 @@ namespace TabsList
 			{
 				for (int i = 0; i < AllButtons_.size (); ++i)
 					if (AllButtons_ [i]->hasFocus ())
+					{
 						action (i);
+						return;
+					}
 			}
 
 			void FocusSearch ()
