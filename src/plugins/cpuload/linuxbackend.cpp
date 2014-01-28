@@ -37,7 +37,7 @@ namespace LeechCraft
 namespace CpuLoad
 {
 	LinuxBackend::LinuxBackend (QObject *parent)
-	: QObject (parent)
+	: Backend { parent }
 	{
 	}
 

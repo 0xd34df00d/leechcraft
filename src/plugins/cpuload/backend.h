@@ -27,85 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "backendproxy.h"
-#include <QStandardItemModel>
-#include <QtDebug>
-#include "backend.h"
-#include "cpuloadproxyobj.h"
+#pragma once
+
+#include <QObject>
+#include <QMap>
+#include "structures.h"
 
 namespace LeechCraft
 {
 namespace CpuLoad
 {
-	namespace
+	class Backend : public QObject
 	{
-		class CpusModel : public QStandardItemModel
-		{
-		public:
-			enum Role
-			{
-				CpuIdxRole = Qt::UserRole + 1,
-				CpuLoadObj
-			};
+	public:
+		Backend (QObject* = nullptr);
 
-			CpusModel (QObject *parent)
-			: QStandardItemModel { parent }
-			{
-				QHash<int, QByteArray> roleNames;
-				roleNames [CpuIdxRole] = "cpuIdx";
-				roleNames [CpuLoadObj] = "loadObj";
-				setRoleNames (roleNames);
-			}
-		};
-	}
+		virtual void Update () = 0;
 
-	BackendProxy::BackendProxy (Backend *backend)
-	: QObject { backend }
-	, Backend_ { backend }
-	, Model_ { new CpusModel { this } }
-	{
-	}
-
-	QAbstractItemModel* BackendProxy::GetModel () const
-	{
-		return Model_;
-	}
-
-	void BackendProxy::update ()
-	{
-		Backend_->Update ();
-
-		const auto rc = Model_->rowCount ();
-		if (rc == Backend_->GetCpuCount ())
-		{
-			if (Backend_->GetCpuCount () > 0)
-				for (int i = 0; i < Backend_->GetCpuCount (); ++i)
-					ModelPropObjs_.at (i)->Set (Backend_->GetLoads (i));
-
-			return;
-		}
-
-		Model_->removeRows (0, rc);
-		qDeleteAll (ModelPropObjs_);
-		ModelPropObjs_.clear ();
-
-		if (Backend_->GetCpuCount () <= 0)
-			return;
-
-		QList<QStandardItem*> newItems;
-
-		for (int i = 0; i < Backend_->GetCpuCount (); ++i)
-		{
-			auto obj = new CpuLoadProxyObj { Backend_->GetLoads (i) };
-			ModelPropObjs_ << obj;
-
-			auto modelItem = new QStandardItem;
-			modelItem->setData (i, CpusModel::CpuIdxRole);
-			modelItem->setData (QVariant::fromValue<QObject*> (obj), CpusModel::CpuLoadObj);
-			newItems << modelItem;
-		}
-
-		Model_->invisibleRootItem ()->appendRows (newItems);
-	}
+		virtual int GetCpuCount () const = 0;
+		virtual QMap<LoadPriority, LoadTypeInfo> GetLoads (int cpu) const = 0;
+	signals:
+		void cpuCountChanged (int);
+	};
 }
 }

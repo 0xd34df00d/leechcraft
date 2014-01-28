@@ -11,6 +11,7 @@ include_directories (
 	)
 set (SRCS
 	cpuload.cpp
+	backend.cpp
 	linuxbackend.cpp
 	backendproxy.cpp
 	cpuloadproxyobj.cpp

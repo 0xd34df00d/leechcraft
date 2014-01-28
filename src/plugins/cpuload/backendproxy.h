@@ -38,19 +38,19 @@ namespace LeechCraft
 {
 namespace CpuLoad
 {
-	class LinuxBackend;
+	class Backend;
 	class CpuLoadProxyObj;
 
 	class BackendProxy : public QObject
 	{
 		Q_OBJECT
 
-		LinuxBackend * const Backend_;
+		Backend * const Backend_;
 
 		QStandardItemModel * const Model_;
 		QList<CpuLoadProxyObj*> ModelPropObjs_;
 	public:
-		BackendProxy (LinuxBackend*);
+		BackendProxy (Backend*);
 
 		QAbstractItemModel* GetModel () const;
 	public slots:

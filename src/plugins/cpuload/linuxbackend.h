@@ -33,8 +33,7 @@
 #include <QString>
 #include <QList>
 #include <QVector>
-#include <QMap>
-#include "structures.h"
+#include "backend.h"
 
 namespace LeechCraft
 {
@@ -42,7 +41,7 @@ namespace CpuLoad
 {
 	typedef QVector<QVector<long>> Cummulative_t;
 
-	class LinuxBackend : public QObject
+	class LinuxBackend : public Backend
 	{
 		Q_OBJECT
 
@@ -50,14 +49,12 @@ namespace CpuLoad
 
 		Cummulative_t LastCummulative_;
 	public:
-		LinuxBackend (QObject* = 0);
+		LinuxBackend (QObject* = nullptr);
 
 		void Update ();
 
 		int GetCpuCount () const;
 		QMap<LoadPriority, LoadTypeInfo> GetLoads (int cpu) const;
-	signals:
-		void cpuCountChanged (int);
 	};
 }
 }
