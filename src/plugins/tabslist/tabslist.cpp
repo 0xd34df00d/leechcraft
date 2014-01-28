@@ -312,28 +312,7 @@ namespace TabsList
 					button->sizePolicy ().verticalPolicy ());
 			button->setProperty ("OrigText", origText);
 
-			auto delAction = new QAction (deleteIcon, tr ("Close tab"), this);
-			delAction->setToolTip (delAction->text ());
-			delAction->setProperty ("TabIndex", i);
-			delAction->setProperty ("ICTW", QVariant::fromValue<ICoreTabWidget*> (tw));
-			connect (delAction,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (removeTab ()));
-			connect (delAction,
-					SIGNAL (triggered ()),
-					widget,
-					SLOT (deleteLater ()));
-
-			auto delButton = new QToolButton ();
-			delButton->setDefaultAction (delAction);
-			delButton->setToolButtonStyle (Qt::ToolButtonIconOnly);
-
-			auto horLay = new QHBoxLayout;
-			horLay->addWidget (button);
-			horLay->addWidget (delButton);
-
-			layout->addLayout (horLay);
+			layout->addWidget (button);
 
 			if (currentIdx == i)
 				toFocus = button;
@@ -365,13 +344,6 @@ namespace TabsList
 		const int idx = sender ()->property ("TabIndex").toInt ();
 		const auto ictw = sender ()->property ("ICTW").value<ICoreTabWidget*> ();
 		ictw->setCurrentTab (idx);
-	}
-
-	void Plugin::removeTab ()
-	{
-		const int idx = sender ()->property ("TabIndex").toInt ();
-		const auto ictw = sender ()->property ("ICTW").value<ICoreTabWidget*> ();
-		RemoveTab (ictw, idx);
 	}
 }
 }
