@@ -64,7 +64,7 @@ namespace Blogique
 			GetInfo (),
 			GetIcon (),
 			50,
-			TabFeatures (TFOpenableByRequest | TFSuggestOpening)
+			TFOpenableByRequest | TFSuggestOpening
 		};
 		TabClasses_ << tabClass;
 
