@@ -130,6 +130,7 @@ namespace TouchStreams
 				{
 					if (auto rc = AlbumsRootItem_->rowCount ())
 						AlbumsRootItem_->removeRows (0, rc);
+					Albums_.clear ();
 					refetchAlbums ();
 					return item;
 				}
