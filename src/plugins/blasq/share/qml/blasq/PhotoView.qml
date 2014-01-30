@@ -142,12 +142,12 @@ Rectangle {
             height: collectionThumbsView.cellHeight
 
             onTriggered: {
-                if (itemType == Blasq.ImageItem) {
+                if (itemType != Blasq.ImageItem) {
+                    rootRect.albumSelected(collectionVisualModel.modelIndex(index))
+                } else {
                     rootRect.showImage(original)
                     rootRect.imageSelected(imageId)
                     rootRect.currentImageId = imageId
-                } else {
-                    rootRect.albumSelected(collectionVisualModel.modelIndex(index))
                 }
             }
 
