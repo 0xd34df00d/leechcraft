@@ -160,7 +160,7 @@ Rectangle {
                 anchors.topMargin: collectionThumbsView.vertMargin
                 anchors.bottomMargin: collectionThumbsView.vertMargin
 
-                property bool isCurrent: imageId == rootRect.currentImageId
+                property bool isCurrent: imageId == rootRect.currentImageId || isSelected
 
                 radius: 5
                 gradient: Gradient {
