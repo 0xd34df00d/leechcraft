@@ -1833,9 +1833,10 @@ namespace Azoth
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
 
-		const bool isActiveChat =  Core::Instance ()
+		const bool isActiveChat = Core::Instance ()
 				.GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ());
-		if (!LastDateTime_.isNull () && !IsSameDay (LastDateTime_, msg))
+
+		if (!LastDateTime_.isNull () && !IsSameDay (LastDateTime_, msg) && parent)
 		{
 			auto datetime = msg->GetDateTime ();
 			const auto& thisDate = datetime.date ();
