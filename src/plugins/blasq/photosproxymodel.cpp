@@ -114,6 +114,15 @@ namespace Blasq
 		SupportsDeletes_ = qobject_cast<ISupportDeletes*> (accObj);
 	}
 
+	void PhotosProxyModel::EmitDataChanged (const QModelIndexList& idxs)
+	{
+		for (const auto& idx : idxs)
+		{
+			const auto& mapped = mapFromSource (idx);
+			emit dataChanged (mapped, mapped);
+		}
+	}
+
 	void PhotosProxyModel::handleRowsInserted (const QModelIndex& parent, int from, int)
 	{
 		if (from >= ItemsInCollage)

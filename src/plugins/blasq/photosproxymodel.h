@@ -48,6 +48,8 @@ namespace Blasq
 		void setSourceModel (QAbstractItemModel *sourceModel) override;
 
 		void SetCurrentAccount (QObject*);
+	private:
+		void EmitDataChanged (const QModelIndexList&);
 	private slots:
 		void handleRowsInserted (const QModelIndex&, int, int);
 	};
