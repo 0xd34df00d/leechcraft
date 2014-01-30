@@ -85,6 +85,7 @@ namespace Blasq
 				QVariant::fromValue<QObject*> (ProxyModel_));
 		rootCtx->setContextProperty ("listingMode", "false");
 		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
+		rootCtx->setContextProperty ("imageSelectionMode", tc.TabClass_.isEmpty ());
 
 		auto engine = Ui_.ImagesView_->engine ();
 		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
