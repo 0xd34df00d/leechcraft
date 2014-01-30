@@ -27,6 +27,7 @@ Rectangle {
 
     signal singleImageMode(bool mode)
     signal imageSelected(string id)
+    signal toggleSelectionSet(string id)
     signal imageOpenRequested(variant url)
     signal imageDownloadRequested(variant url)
     signal copyURLRequested(variant url)
@@ -251,12 +252,29 @@ Rectangle {
                             openInBrowserAction.isHovered ||
                             downloadOriginalAction.isHovered ||
                             copyURLAction.isHovered ||
-                            deleteAction.isHovered
+                            deleteAction.isHovered ||
+                            selectionAction.isHovered
 
                 Column {
                     anchors.top: parent.top
                     anchors.right: parent.right
                     visible: itemType == Blasq.ImageItem
+
+                    ActionButton {
+                        id: selectionAction
+
+                        width: 24
+                        height: width
+
+                        visible: imageSelectionMode
+                        opacity: itemRect.isHovered ? 1 : 0
+
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: isSelected ? "image://ThemeIcons/list-remove" : "image://ThemeIcons/list-add"
+                        textTooltip: isSelected ? qsTr("Add to the selection") : qsTr ("Remove from the selection")
+                        onTriggered: rootRect.toggleSelectionSet(imageId)
+                    }
 
                     ActionButton {
                         id: openInBrowserAction
