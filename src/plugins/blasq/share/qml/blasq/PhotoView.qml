@@ -169,12 +169,14 @@ Rectangle {
                         color: itemRect.isCurrent ?
                                 colorProxy.color_TextBox_HighlightTopColor :
                                 colorProxy.color_TextBox_TopColor
+                        Behavior on color { PropertyAnimation {} }
                     }
                     GradientStop {
                         position: 1
                         color: itemRect.isCurrent ?
                                 colorProxy.color_TextBox_HighlightBottomColor :
                                 colorProxy.color_TextBox_BottomColor
+                        Behavior on color { PropertyAnimation {} }
                     }
                 }
 
