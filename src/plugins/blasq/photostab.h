@@ -80,6 +80,8 @@ namespace Blasq
 		QString SelectedID_;
 		QString SelectedCollection_;
 
+		QStringList SelectedIDsSet_;
+
 		bool SingleImageMode_ = false;
 	public:
 		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
@@ -95,7 +97,7 @@ namespace Blasq
 		QByteArray GetTabRecoverData () const;
 
 		void RecoverState (QDataStream&);
-	
+
 		void SelectAccount (const QByteArray&);
 
 		QModelIndex GetSelectedImage () const;
@@ -125,6 +127,7 @@ namespace Blasq
 		void handleUploadRequested ();
 
 		void handleImageSelected (const QString&);
+		void handleToggleSelectionSet (const QString&);
 		void handleImageOpenRequested (const QVariant&);
 		void handleImageOpenRequested ();
 		void handleImageDownloadRequested (const QVariant&);

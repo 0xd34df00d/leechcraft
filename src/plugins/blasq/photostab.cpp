@@ -108,6 +108,10 @@ namespace Blasq
 				this,
 				SLOT (handleImageSelected (QString)));
 		connect (rootObj,
+				SIGNAL (toggleSelectionSet (QString)),
+				this,
+				SLOT (handleToggleSelectionSet (QString)));
+		connect (rootObj,
 				SIGNAL (imageOpenRequested (QVariant)),
 				this,
 				SLOT (handleImageOpenRequested (QVariant)));
@@ -524,6 +528,19 @@ namespace Blasq
 	void PhotosTab::handleImageSelected (const QString& id)
 	{
 		SelectedID_ = id;
+	}
+
+	void PhotosTab::handleToggleSelectionSet (const QString& id)
+	{
+		const auto& idxs = ImageID2Indexes (id);
+
+		if (SelectedIDsSet_.removeAll (id))
+			ProxyModel_->RemoveSelected (id, idxs);
+		else
+		{
+			SelectedIDsSet_ << id;
+			ProxyModel_->AddSelected (id, idxs);
+		}
 	}
 
 	void PhotosTab::handleImageOpenRequested (const QVariant& var)
