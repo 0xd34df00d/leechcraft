@@ -264,6 +264,7 @@ Rectangle {
                         width: 24
                         height: width
 
+                        visible: !imageSelectionMode
                         opacity: itemRect.isHovered ? 1 : 0
                         Behavior on opacity { PropertyAnimation {} }
 
@@ -278,6 +279,7 @@ Rectangle {
                         width: 24
                         height: width
 
+                        visible: !imageSelectionMode
                         opacity: itemRect.isHovered ? 1 : 0
                         Behavior on opacity { PropertyAnimation {} }
 
@@ -292,6 +294,7 @@ Rectangle {
                         width: 24
                         height: width
 
+                        visible: !imageSelectionMode
                         opacity: itemRect.isHovered ? 1 : 0
                         Behavior on opacity { PropertyAnimation {} }
 
@@ -306,6 +309,7 @@ Rectangle {
                         width: 24
                         height: width
 
+                        visible: !imageSelectionMode
                         opacity: itemRect.isHovered && supportsDeletes ? 1 : 0
                         Behavior on opacity { PropertyAnimation {} }
 
