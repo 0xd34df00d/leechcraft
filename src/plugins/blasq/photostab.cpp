@@ -325,6 +325,30 @@ namespace Blasq
 		return {};
 	}
 
+	namespace
+	{
+		QModelIndexList ScanIndex (const QString& id, const QModelIndex& parent, QAbstractItemModel * const model)
+		{
+			QModelIndexList result;
+
+			for (auto i = 0; i < model->rowCount (parent); ++i)
+			{
+				const auto& idx = model->index (i, 0, parent);
+				if (idx.data (CollectionRole::Type).toInt () != ItemType::Image)
+					result += ScanIndex (id, idx, model);
+				else if (idx.data (CollectionRole::ID).toString () == id)
+					result += idx;
+			}
+
+			return result;
+		}
+	}
+
+	QModelIndexList PhotosTab::ImageID2Indexes (const QString& id) const
+	{
+		return ScanIndex (id, {}, CurAcc_->GetCollectionsModel ());
+	}
+
 	QByteArray PhotosTab::GetUniSettingName () const
 	{
 		return SingleImageMode_ ? "ZoomSliderValue" : "ScaleSliderValue";

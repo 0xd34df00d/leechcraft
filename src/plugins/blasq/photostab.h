@@ -104,7 +104,9 @@ namespace Blasq
 
 		void HandleImageSelected (const QModelIndex&);
 		void HandleCollectionSelected (const QModelIndex&);
+
 		QModelIndex ImageID2Index (const QString&) const;
+		QModelIndexList ImageID2Indexes (const QString&) const;
 
 		QByteArray GetUniSettingName () const;
 
