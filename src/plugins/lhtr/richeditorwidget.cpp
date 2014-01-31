@@ -1189,11 +1189,12 @@ namespace LHTR
 	void RichEditorWidget::handleCollectionImageChosen ()
 	{
 		const auto chooser = qobject_cast<IPendingImgSourceRequest*> (sender ());
+
+		QString html;
+		QXmlStreamWriter w (&html);
+		w.writeStartElement ("span");
 		for (const auto& image : chooser->GetInfos ())
 		{
-			QString html;
-
-			QXmlStreamWriter w (&html);
 			w.writeStartElement ("a");
 			w.writeAttribute ("href", image.Full_.toString ());
 
@@ -1205,9 +1206,10 @@ namespace LHTR
 			w.writeEndElement ();
 
 			w.writeEndElement ();
-
-			ExecCommand ("insertHTML", html);
 		}
+		w.writeEndElement ();
+
+		ExecCommand ("insertHTML", html);
 	}
 
 	void RichEditorWidget::handleInsertImageFromCollection ()
