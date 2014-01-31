@@ -238,12 +238,16 @@ namespace Blasq
 			}
 	}
 
-	QModelIndex PhotosTab::GetSelectedImage () const
+	QModelIndexList PhotosTab::GetSelectedImages () const
 	{
-		if (SelectedID_.isEmpty ())
-			return {};
+		QModelIndexList result;
+		for (const auto& id : SelectedIDsSet_)
+			result << ImageID2Index (id);
 
-		return ImageID2Index (SelectedID_);
+		if (!SelectedID_.isEmpty () && !SelectedIDsSet_.contains (SelectedID_))
+			result << ImageID2Index (SelectedID_);
+
+		return result;
 	}
 
 	void PhotosTab::AddScaleSlider ()

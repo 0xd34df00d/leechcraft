@@ -88,26 +88,21 @@ namespace Blasq
 
 	RemoteImageInfos_t DefaultImageChooser::GetInfos () const
 	{
-		if (Selected_.Full_.isValid ())
-			return { Selected_ };
-		else
-			return {};
+		return Selected_;
 	}
 
 	void DefaultImageChooser::handleAccept ()
 	{
-		const auto& index = Photos_->GetSelectedImage ();
-		if (index.isValid ())
-			Selected_ = RemoteImageInfo
-			{
-				index.data (CollectionRole::Original).toUrl (),
-				index.data (CollectionRole::OriginalSize).toSize (),
-				index.data (CollectionRole::MediumThumb).toUrl (),
-				index.data (CollectionRole::MediumThumbSize).toSize (),
-				index.data (CollectionRole::SmallThumb).toUrl (),
-				index.data (CollectionRole::SmallThumbSize).toSize (),
-				index.data (CollectionRole::Name).toString ()
-			};
+		for (const auto& index : Photos_->GetSelectedImages ())
+			Selected_.append ({
+					index.data (CollectionRole::Original).toUrl (),
+					index.data (CollectionRole::OriginalSize).toSize (),
+					index.data (CollectionRole::MediumThumb).toUrl (),
+					index.data (CollectionRole::MediumThumbSize).toSize (),
+					index.data (CollectionRole::SmallThumb).toUrl (),
+					index.data (CollectionRole::SmallThumbSize).toSize (),
+					index.data (CollectionRole::Name).toString ()
+				});
 
 		emit ready ();
 

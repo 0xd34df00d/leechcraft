@@ -100,7 +100,7 @@ namespace Blasq
 
 		void SelectAccount (const QByteArray&);
 
-		QModelIndex GetSelectedImage () const;
+		QModelIndexList GetSelectedImages () const;
 	private:
 		void AddScaleSlider ();
 
