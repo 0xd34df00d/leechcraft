@@ -56,6 +56,11 @@ namespace CpuLoad
 			case LoadPriority::High:
 				return QObject::tr ("system");
 			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown priority"
+					<< static_cast<int> (prio);
+			return "unknown";
 		}
 	}
 
