@@ -1198,6 +1198,9 @@ namespace LHTR
 		QString html;
 		QXmlStreamWriter w (&html);
 		w.writeStartElement ("span");
+
+		bool writeBR = dia.GetPlacement () == ImageCollectionDialog::Placement::Under;
+
 		for (const auto& image : dia.GetInfos ())
 		{
 			w.writeStartElement ("a");
@@ -1211,6 +1214,9 @@ namespace LHTR
 			w.writeEndElement ();
 
 			w.writeEndElement ();
+
+			if (writeBR)
+				w.writeEmptyElement ("br");
 		}
 		w.writeEndElement ();
 
