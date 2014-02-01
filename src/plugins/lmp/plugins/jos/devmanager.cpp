@@ -153,7 +153,8 @@ namespace jOS
 						total
 					}
 				},
-				{ "aac", "alac", "mp3" }
+				{ "aac", "alac", "mp3" },
+				-1
 			};
 		}
 

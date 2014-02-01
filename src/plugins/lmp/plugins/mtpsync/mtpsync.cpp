@@ -502,13 +502,23 @@ namespace MTPSync
 			const auto& devName = QString::fromUtf8 (LIBMTP_Get_Manufacturername (device)) + " " +
 					QString::fromUtf8 (LIBMTP_Get_Modelname (device)) + " " +
 					LIBMTP_Get_Friendlyname (device);
+
+
+			int battPercentage = -1;
+			uint8_t maxBattLevel = 0, curBattLevel = 0;
+			if (!LIBMTP_Get_Batterylevel (device, &maxBattLevel, &curBattLevel) && curBattLevel)
+				battPercentage = 100 * curBattLevel / maxBattLevel;
+
+			qDebug () << Q_FUNC_INFO << curBattLevel << maxBattLevel << battPercentage;
+
 			return
 			{
 				LIBMTP_Get_Serialnumber (device),
 				LIBMTP_Get_Manufacturername (device),
 				devName.simplified ().trimmed (),
 				GetPartitions (device),
-				GetSupportedFormats (device)
+				GetSupportedFormats (device),
+				battPercentage
 			};
 		}
 

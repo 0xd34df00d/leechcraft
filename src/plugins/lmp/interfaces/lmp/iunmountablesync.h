@@ -56,6 +56,8 @@ namespace LMP
 		QList<UnmountablePartition> Partitions_;
 		QStringList SupportedFormats_;
 
+		int BatteryCharge_;
+
 		inline bool operator== (const UnmountableDevInfo& other) const
 		{
 			return ID_ == other.ID_;
