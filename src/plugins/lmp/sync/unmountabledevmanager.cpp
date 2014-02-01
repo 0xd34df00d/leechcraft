@@ -97,7 +97,11 @@ namespace LMP
 			auto mgr = qobject_cast<IUnmountableSync*> (mgrObj);
 			for (const auto& device : mgr->AvailableDevices ())
 			{
-				auto item = new QStandardItem (device.Name_);
+				auto name = device.Name_;
+				if (device.BatteryCharge_ >= 0)
+					name += " (" + tr ("%1% charged").arg (device.BatteryCharge_) + ")";
+
+				auto item = new QStandardItem (name);
 				item->setData (QVariant::fromValue (mgrObj), Roles::ManagerObj);
 				item->setData (device.ID_, CommonDevRole::DevPersistentID);
 				item->setData (QVariant::fromValue (device), Roles::DeviceInfo);
