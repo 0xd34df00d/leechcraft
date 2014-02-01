@@ -1201,6 +1201,20 @@ namespace LHTR
 
 		bool writeBR = dia.GetPlacement () == ImageCollectionDialog::Placement::Under;
 
+		switch (dia.GetWrapping ())
+		{
+		case ImageCollectionDialog::Wrapping::Right:
+			w.writeAttribute ("style", "float: right");
+			writeBR = true;
+			break;
+		case ImageCollectionDialog::Wrapping::Left:
+			w.writeAttribute ("style", "float: left");
+			writeBR = true;
+			break;
+		case ImageCollectionDialog::Wrapping::None:
+			break;
+		}
+
 		for (const auto& image : dia.GetInfos ())
 		{
 			w.writeStartElement ("a");
