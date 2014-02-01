@@ -614,6 +614,10 @@ namespace MTPSync
 			Subscribe2Devs ();
 			FirstPoll_ = false;
 		}
+
+		QTimer::singleShot (120000,
+				this,
+				SLOT (pollDevices ()));
 	}
 
 	void Plugin::handleRowsInserted (const QModelIndex& parent, int start, int end)
