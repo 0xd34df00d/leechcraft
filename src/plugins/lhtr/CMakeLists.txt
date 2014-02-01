@@ -30,6 +30,7 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	htmlhighlighter.cpp
 	imagecollectiondialog.cpp
+	imageinfosmodel.cpp
 	)
 set (FORMS
 	richeditorwidget.ui

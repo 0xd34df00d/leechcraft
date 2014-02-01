@@ -27,63 +27,42 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "imagecollectiondialog.h"
-#include <map>
-#include <functional>
-#include <QtDebug>
-#include "imageinfosmodel.h"
+#pragma once
+
+#include <QAbstractItemModel>
+#include <QStringList>
+#include <interfaces/data/iimgsource.h>
 
 namespace LeechCraft
 {
 namespace LHTR
 {
-	ImageCollectionDialog::ImageCollectionDialog (const RemoteImageInfos_t& infos, QWidget *parent)
-	: QDialog { parent }
-	, Infos_ { infos }
+	class ImageInfosModel : public QAbstractItemModel
 	{
-		Ui_.setupUi (this);
+		Q_OBJECT
 
-		auto model = new ImageInfosModel (Infos_, this);
-		Ui_.Images_->setModel (model);
-	}
+		RemoteImageInfos_t& Infos_;
+		const QStringList Columns_;
 
-	RemoteImageInfos_t ImageCollectionDialog::GetInfos () const
-	{
-		return Infos_;
-	}
-
-	ImageCollectionDialog::Placement ImageCollectionDialog::GetPlacement () const
-	{
-		switch (Ui_.ImagePlacement_->currentIndex ())
+		enum Column
 		{
-		case 0:
-			return Placement::Next;
-		case 1:
-			return Placement::Under;
-		}
+			CImage,
+			CSize,
+			CAlt
+		};
+	public:
+		ImageInfosModel (RemoteImageInfos_t& infos, QObject *parent);
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown placement index"
-				<< Ui_.ImagePlacement_->currentIndex ();
-		return Placement::Next;
-	}
+		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
+		QModelIndex parent (const QModelIndex& child) const;
+		int rowCount (const QModelIndex& parent = QModelIndex()) const;
+		int columnCount (const QModelIndex& parent = QModelIndex()) const;
 
-	ImageCollectionDialog::Wrapping ImageCollectionDialog::GetWrapping () const
-	{
-		switch (Ui_.TextWrapping_->currentIndex ())
-		{
-		case 0:
-			return Wrapping::None;
-		case 1:
-			return Wrapping::Left;
-		case 2:
-			return Wrapping::Right;
-		}
+		QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown text wrapping"
-				<< Ui_.TextWrapping_->currentIndex ();
-		return Wrapping::None;
-	}
+		Qt::ItemFlags flags (const QModelIndex& index) const;
+		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+		bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+	};
 }
 }
