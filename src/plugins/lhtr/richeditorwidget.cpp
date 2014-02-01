@@ -60,6 +60,7 @@
 #include "inserttabledialog.h"
 #include "xmlsettingsmanager.h"
 #include "htmlhighlighter.h"
+#include "imagecollectiondialog.h"
 
 namespace LeechCraft
 {
@@ -1190,10 +1191,14 @@ namespace LHTR
 	{
 		const auto chooser = qobject_cast<IPendingImgSourceRequest*> (sender ());
 
+		ImageCollectionDialog dia { chooser->GetInfos (), Proxy_, this };
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
 		QString html;
 		QXmlStreamWriter w (&html);
 		w.writeStartElement ("span");
-		for (const auto& image : chooser->GetInfos ())
+		for (const auto& image : dia.GetInfos ())
 		{
 			w.writeStartElement ("a");
 			w.writeAttribute ("href", image.Full_.toString ());
