@@ -1199,19 +1199,41 @@ namespace LHTR
 		QXmlStreamWriter w (&html);
 		w.writeStartElement ("span");
 
-		switch (dia.GetWrapping ())
+		bool displayBlock = false;
+		QString floatPos;
+		QString align;
+		switch (dia.GetPosition ())
 		{
-		case ImageCollectionDialog::Wrapping::Right:
-			w.writeAttribute ("style", "float: right");
-			writeBR = true;
+		case ImageCollectionDialog::Position::Center:
+			align = "center";
+			displayBlock = true;
 			break;
-		case ImageCollectionDialog::Wrapping::Left:
-			w.writeAttribute ("style", "float: left");
-			writeBR = true;
+		case ImageCollectionDialog::Position::Right:
+			displayBlock = true;
+			align = "right";
 			break;
-		case ImageCollectionDialog::Wrapping::None:
+		case ImageCollectionDialog::Position::Left:
+			displayBlock = true;
+			align = "left";
+			break;
+		case ImageCollectionDialog::Position::RightWrap:
+			floatPos = "right";
+			break;
+		case ImageCollectionDialog::Position::LeftWrap:
+			floatPos = "left";
 			break;
 		}
+
+		QStringList styleElems;
+		if (displayBlock)
+			styleElems << "display: block";
+		if (!floatPos.isEmpty ())
+			styleElems << "float: " + floatPos;
+		if (!align.isEmpty ())
+			styleElems << "text-align: " + align;
+
+		if (!styleElems.isEmpty ())
+			w.writeAttribute ("style", styleElems.join ("; "));
 
 		for (const auto& image : dia.GetInfos ())
 		{

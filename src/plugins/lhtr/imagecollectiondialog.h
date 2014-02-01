@@ -46,24 +46,19 @@ namespace LHTR
 
 		RemoteImageInfos_t Infos_;
 	public:
-		enum class Wrapping
+		enum class Position
 		{
-			None,
+			Center,
 			Left,
-			Right
-		};
-
-		enum class Placement
-		{
-			Next,
-			Under
+			Right,
+			LeftWrap,
+			RightWrap
 		};
 
 		ImageCollectionDialog (const RemoteImageInfos_t&, ICoreProxy_ptr, QWidget* = nullptr);
 
 		RemoteImageInfos_t GetInfos () const;
-		Placement GetPlacement () const;
-		Wrapping GetWrapping () const;
+		Position GetPosition () const;
 	};
 }
 }

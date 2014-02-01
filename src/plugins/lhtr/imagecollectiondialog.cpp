@@ -52,38 +52,26 @@ namespace LHTR
 		return Infos_;
 	}
 
-	ImageCollectionDialog::Placement ImageCollectionDialog::GetPlacement () const
+	ImageCollectionDialog::Position ImageCollectionDialog::GetPosition () const
 	{
-		switch (Ui_.ImagePlacement_->currentIndex ())
+		switch (Ui_.Position_->currentIndex ())
 		{
 		case 0:
-			return Placement::Next;
+			return Position::Center;
 		case 1:
-			return Placement::Under;
-		}
-
-		qWarning () << Q_FUNC_INFO
-				<< "unknown placement index"
-				<< Ui_.ImagePlacement_->currentIndex ();
-		return Placement::Next;
-	}
-
-	ImageCollectionDialog::Wrapping ImageCollectionDialog::GetWrapping () const
-	{
-		switch (Ui_.TextWrapping_->currentIndex ())
-		{
-		case 0:
-			return Wrapping::None;
-		case 1:
-			return Wrapping::Left;
+			return Position::Left;
 		case 2:
-			return Wrapping::Right;
+			return Position::Right;
+		case 3:
+			return Position::LeftWrap;
+		case 4:
+			return Position::RightWrap;
 		}
 
 		qWarning () << Q_FUNC_INFO
-				<< "unknown text wrapping"
-				<< Ui_.TextWrapping_->currentIndex ();
-		return Wrapping::None;
+				<< "unknown position"
+				<< Ui_.Position_->currentIndex ();
+		return Position::Center;
 	}
 }
 }
