@@ -32,6 +32,7 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <interfaces/data/iimgsource.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -41,8 +42,12 @@ namespace LHTR
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
 		RemoteImageInfos_t& Infos_;
 		const QStringList Columns_;
+
+		QVector<QImage> Images_;
+		QMap<QNetworkReply*, int> Reply2Image_;
 
 		enum Column
 		{
@@ -51,7 +56,7 @@ namespace LHTR
 			CAlt
 		};
 	public:
-		ImageInfosModel (RemoteImageInfos_t& infos, QObject *parent);
+		ImageInfosModel (RemoteImageInfos_t& infos, ICoreProxy_ptr, QObject *parent);
 
 		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex parent (const QModelIndex& child) const;
@@ -63,6 +68,10 @@ namespace LHTR
 		Qt::ItemFlags flags (const QModelIndex& index) const;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 		bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+	private:
+		void FetchImage (int);
+	private slots:
+		void handleImageFetched ();
 	};
 }
 }

@@ -28,17 +28,22 @@
  **********************************************************************/
 
 #include "imageinfosmodel.h"
-
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QNetworkAccessManager>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace LHTR
 {
-	ImageInfosModel::ImageInfosModel (RemoteImageInfos_t& infos, QObject* parent)
+	ImageInfosModel::ImageInfosModel (RemoteImageInfos_t& infos, ICoreProxy_ptr proxy, QObject* parent)
 	: QAbstractItemModel { parent }
+	, Proxy_ { proxy }
 	, Infos_ (infos)
 	, Columns_ { tr ("Image"), tr ("Size"), tr ("Alt") }
 	{
+		Images_.resize (infos.size ());
 	}
 
 	QModelIndex ImageInfosModel::index (int row, int column, const QModelIndex& parent) const
@@ -90,8 +95,12 @@ namespace LHTR
 				{
 					{
 						Qt::DecorationRole,
-						[this] () -> QVariant
+						[this, &index] () -> QVariant
 						{
+							if (!Images_.at (index.row ()).isNull ())
+								return Images_.at (index.row ());
+
+							FetchImage (index.row ());
 							return {};
 						}
 					}
@@ -139,6 +148,45 @@ namespace LHTR
 		Infos_ [index.row ()].Title_ = value.toString ();
 		emit dataChanged (index, index);
 		return true;
+	}
+
+	void ImageInfosModel::FetchImage (int row)
+	{
+		const auto& info = Infos_.at (row);
+
+		const auto nam = Proxy_->GetNetworkAccessManager ();
+		for (const auto& url : { info.Thumb_, info.Preview_, info.Full_ })
+		{
+			if (!url.isValid ())
+				continue;
+
+			const auto reply = nam->get (QNetworkRequest { url });
+			Reply2Image_ [reply] = row;
+			connect (reply,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handleImageFetched ()));
+		}
+	}
+
+	void ImageInfosModel::handleImageFetched ()
+	{
+		const auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto idx = Reply2Image_.take (reply);
+
+		QImage image;
+		if (!image.loadFromData (reply->readAll ()))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot read data from"
+					<< reply->request ().url ();
+			return;
+		}
+
+		Images_ [idx] = image.scaledToHeight (128, Qt::SmoothTransformation);
+
+		const auto& modelIdx = index (idx, Column::CImage);
+		emit dataChanged (modelIdx, modelIdx);
 	}
 }
 }

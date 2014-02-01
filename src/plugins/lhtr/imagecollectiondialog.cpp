@@ -37,13 +37,13 @@ namespace LeechCraft
 {
 namespace LHTR
 {
-	ImageCollectionDialog::ImageCollectionDialog (const RemoteImageInfos_t& infos, QWidget *parent)
+	ImageCollectionDialog::ImageCollectionDialog (const RemoteImageInfos_t& infos, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDialog { parent }
 	, Infos_ { infos }
 	{
 		Ui_.setupUi (this);
 
-		auto model = new ImageInfosModel (Infos_, this);
+		auto model = new ImageInfosModel (Infos_, proxy, this);
 		Ui_.Images_->setModel (model);
 	}
 

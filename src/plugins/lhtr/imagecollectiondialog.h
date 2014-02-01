@@ -31,6 +31,7 @@
 
 #include <QDialog>
 #include <interfaces/data/iimgsource.h>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_imagecollectiondialog.h"
 
 namespace LeechCraft
@@ -58,7 +59,7 @@ namespace LHTR
 			Under
 		};
 
-		ImageCollectionDialog (const RemoteImageInfos_t&, QWidget* = nullptr);
+		ImageCollectionDialog (const RemoteImageInfos_t&, ICoreProxy_ptr, QWidget* = nullptr);
 
 		RemoteImageInfos_t GetInfos () const;
 		Placement GetPlacement () const;
