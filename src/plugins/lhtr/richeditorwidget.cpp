@@ -1199,8 +1199,6 @@ namespace LHTR
 		QXmlStreamWriter w (&html);
 		w.writeStartElement ("span");
 
-		bool writeBR = dia.GetPlacement () == ImageCollectionDialog::Placement::Under;
-
 		switch (dia.GetWrapping ())
 		{
 		case ImageCollectionDialog::Wrapping::Right:
@@ -1229,8 +1227,7 @@ namespace LHTR
 
 			w.writeEndElement ();
 
-			if (writeBR)
-				w.writeEmptyElement ("br");
+			w.writeEmptyElement ("br");
 		}
 		w.writeEndElement ();
 
