@@ -58,7 +58,10 @@ namespace LHTR
 			int columnCount (const QModelIndex& parent = QModelIndex()) const;
 
 			QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+
+			Qt::ItemFlags flags (const QModelIndex& index) const;
 			QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+			bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 		};
 
 		InfosModel::InfosModel (RemoteImageInfos_t& infos, QObject* parent)
@@ -96,6 +99,14 @@ namespace LHTR
 			return orientation != Qt::Horizontal || role != Qt::DisplayRole ?
 					QVariant {} :
 					Columns_.at (section);
+		}
+
+		Qt::ItemFlags InfosModel::flags (const QModelIndex& index) const
+		{
+			auto flags = QAbstractItemModel::flags (index);
+			if (index.column () == Column::CAlt)
+				flags |= Qt::ItemFlag::ItemIsEditable;
+			return flags;
 		}
 
 		QVariant InfosModel::data (const QModelIndex& index, int role) const
@@ -136,6 +147,10 @@ namespace LHTR
 						{
 							Qt::DisplayRole,
 							[&info] { return info.Title_; }
+						},
+						{
+							Qt::EditRole,
+							[&info] { return info.Title_; }
 						}
 					}
 				}
@@ -144,6 +159,16 @@ namespace LHTR
 			const auto& roleMap = map.find (static_cast<Column> (index.column ()))->second;
 			const auto& roleIt = roleMap.find (role);
 			return roleIt == roleMap.end () ? QVariant {} : roleIt->second ();
+		}
+
+		bool InfosModel::setData (const QModelIndex& index, const QVariant& value, int)
+		{
+			if (index.column () != Column::CAlt)
+				return false;
+
+			Infos_ [index.row ()].Title_ = value.toString ();
+			emit dataChanged (index, index);
+			return true;
 		}
 	}
 
