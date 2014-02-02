@@ -192,9 +192,16 @@ namespace Lastfmscrobble
 		Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
 
 		connect (Scrobbler_.get (),
-				SIGNAL (status (int)),
+				SIGNAL (nowPlayingError (int, QString)),
 				this,
-				SIGNAL (status (int)));
+				SLOT (handleNPError (int, QString)));
+	}
+
+	void LastFMSubmitter::handleNPError (int code, const QString& msg)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< code
+				<< msg;
 	}
 
 	void LastFMSubmitter::cacheAndSubmit ()

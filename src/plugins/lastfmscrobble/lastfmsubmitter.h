@@ -91,6 +91,7 @@ namespace Lastfmscrobble
 		void submit ();
 		void handleAuthenticated ();
 	private slots:
+		void handleNPError (int, const QString&);
 		void cacheAndSubmit ();
 	signals:
 		void status (int code);
