@@ -40,6 +40,7 @@
 #include <QDesktopWidget>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
@@ -455,13 +456,16 @@ namespace Blasq
 		QMenu menu;
 		if (isImage)
 		{
-			menu.addAction (Proxy_->GetIcon ("go-jump-locationbar"), tr ("Open in browser"),
+			menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("go-jump-locationbar"),
+					tr ("Open in browser"),
 					this,
 					SLOT (handleImageOpenRequested ()));
-			menu.addAction (Proxy_->GetIcon ("download"), tr ("Download original"),
+			menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("download"),
+					tr ("Download original"),
 					this,
 					SLOT (handleImageDownloadRequested ()));
-			menu.addAction (Proxy_->GetIcon ("edit-copy"), tr ("Copy image URL"),
+			menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("edit-copy"),
+					tr ("Copy image URL"),
 					this,
 					SLOT (handleCopyURLRequested ()));
 		}
@@ -470,14 +474,16 @@ namespace Blasq
 		{
 			if ((isColl && isd->SupportsFeature (DeleteFeature::DeleteCollections)) ||
 				(isImage && isd->SupportsFeature (DeleteFeature::DeleteImages)))
-				menu.addAction (Proxy_->GetIcon ("list-remove"), tr ("Delete"),
+				menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("list-remove"),
+						tr ("Delete"),
 						this,
 						SLOT (handleDeleteRequested ()));
 		}
 
 		if (auto isu = qobject_cast<ISupportUploads*> (CurAccObj_))
 			if (isColl || (isAll && !isu->HasUploadFeature (ISupportUploads::Feature::RequiresAlbumOnUpload)))
-				menu.addAction (Proxy_->GetIcon ("svn-commit"), tr ("Upload"),
+				menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("svn-commit"),
+						tr ("Upload"),
 						this,
 						SLOT (handleUploadRequested ()));
 
