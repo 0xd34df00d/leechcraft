@@ -83,6 +83,11 @@ namespace LeechCraft
 		IconThemeEngine::Instance ().UpdateIconset (actions);
 	}
 
+	IIconThemeManager* CoreProxy::GetIconThemeManager() const
+	{
+		return &IconThemeEngine::Instance ();
+	}
+
 	IColorThemeManager* CoreProxy::GetColorThemeManager () const
 	{
 		return &ColorThemeEngine::Instance ();
