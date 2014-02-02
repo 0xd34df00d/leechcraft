@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
+#include "interfaces/core/iiconthememanager.h"
 #include "xdg.h"
 #include "item.h"
 
@@ -97,7 +98,7 @@ namespace XDG
 			if (name.endsWith (".png") || name.endsWith (".svg"))
 				name.chop (4);
 
-			auto result = proxy->GetIcon (name);
+			auto result = proxy->GetIconThemeManager ()->GetIcon (name);
 			if (!result.isNull ())
 				return result;
 

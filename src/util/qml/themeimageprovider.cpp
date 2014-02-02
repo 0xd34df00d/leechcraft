@@ -29,6 +29,7 @@
 
 #include "themeimageprovider.h"
 #include <QIcon>
+#include "interfaces/core/iiconthememanager.h"
 
 namespace LeechCraft
 {
@@ -41,7 +42,7 @@ namespace Util
 
 	QIcon ThemeImageProvider::GetIcon (const QStringList& list)
 	{
-		return Proxy_->GetIcon (list.value (0));
+		return Proxy_->GetIconThemeManager ()->GetIcon (list.value (0));
 	}
 }
 }

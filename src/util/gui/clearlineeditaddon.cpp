@@ -32,6 +32,7 @@
 #include <QToolButton>
 #include <QApplication>
 #include <QStyle>
+#include "interfaces/core/iiconthememanager.h"
 
 namespace LeechCraft
 {
@@ -43,7 +44,7 @@ namespace Util
 	, Edit_ (edit)
 	{
 		const bool isRtl = QApplication::layoutDirection () == Qt::RightToLeft;
-		const auto& icon = proxy->GetIcon (isRtl ?
+		const auto& icon = proxy->GetIconThemeManager ()->GetIcon (isRtl ?
 				"edit-clear-locationbar-ltr" :
 				"edit-clear-locationbar-rtl");
 
