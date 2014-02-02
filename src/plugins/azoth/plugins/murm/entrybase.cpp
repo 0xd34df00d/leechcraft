@@ -29,6 +29,7 @@
 
 #include "entrybase.h"
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/azothutil.h>
 #include "vkaccount.h"
 #include "vkmessage.h"
@@ -128,7 +129,7 @@ namespace Murm
 
 			auto addImage = [&proxy, &result] (const QString& icon, const QString& name) -> void
 			{
-				const auto& px = proxy->GetIcon (icon).pixmap (16, 16);
+				const auto& px = proxy->GetIconThemeManager ()->GetIcon (icon).pixmap (16, 16);
 				const auto& data = LeechCraft::Util::GetAsBase64Src (px.toImage ());
 				result += "<img src='" + data + "' width='16' height='16' alt='" + name + "' title='" + name + "' />";
 			};
