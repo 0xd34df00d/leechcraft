@@ -41,6 +41,7 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
@@ -203,7 +204,7 @@ namespace Azoth
 				{
 					tr ("Show all users list"),
 					{ "Alt+C" },
-					Core::Instance ().GetProxy ()->GetIcon ("system-users")
+					Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("system-users")
 				},
 				listShortcut);
 	}
@@ -267,7 +268,7 @@ namespace Azoth
 		auto addBottomAct = [this] (QAction *act)
 		{
 			const QString& icon = act->property ("ActionIcon").toString ();
-			act->setIcon (Core::Instance ().GetProxy ()->GetIcon (icon));
+			act->setIcon (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (icon));
 			BottomBar_->addAction (act);
 		};
 		addBottomAct (addContact);

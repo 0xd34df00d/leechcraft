@@ -49,6 +49,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imessage.h"
 #include "interfaces/azoth/irichtextmessage.h"
@@ -186,7 +187,8 @@ namespace Azoth
 		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events"), this));
 		Ui_.EventsButton_->hide ();
 
-		Ui_.SendButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("key-enter"));
+		Ui_.SendButton_->setIcon (Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("key-enter"));
 		connect (Ui_.SendButton_,
 				SIGNAL (released ()),
 				this,

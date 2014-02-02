@@ -34,6 +34,7 @@
 #include <QMessageBox>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/iprotocol.h"
@@ -187,9 +188,9 @@ namespace Azoth
 		if (!accActions.isEmpty ())
 		{
 			actions += accActions;
-			auto proxy = Core::Instance ().GetProxy ();
+			auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
 			for (auto action : actions)
-				action->setIcon (proxy->GetIcon (action->property ("ActionIcon").toString ()));
+				action->setIcon (mgr->GetIcon (action->property ("ActionIcon").toString ()));
 			actions << Util::CreateSeparator (menu);
 		}
 

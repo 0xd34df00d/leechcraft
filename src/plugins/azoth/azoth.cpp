@@ -43,6 +43,7 @@
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
@@ -305,35 +306,35 @@ namespace Azoth
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.ClearChat",
 				ActionInfo (tr ("Clear chat window"),
 						QString ("Ctrl+L"),
-						proxy->GetIcon ("edit-clear-history")));
+						proxy->GetIconThemeManager ()->GetIcon ("edit-clear-history")));
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.ScrollHistoryBack",
 				ActionInfo (tr ("Prepend messages from history"),
 						QKeySequence::StandardKey::Back,
-						proxy->GetIcon ("go-previous")));
+						proxy->GetIconThemeManager ()->GetIcon ("go-previous")));
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.QuoteSelected",
 				ActionInfo (tr ("Quote selected in chat tab"),
 						QString ("Ctrl+Q"),
-						proxy->GetIcon ("mail-reply-sender")));
+						proxy->GetIconThemeManager ()->GetIcon ("mail-reply-sender")));
 
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.LeaveMUC",
 				ActionInfo (tr ("Leave"),
 						QString (),
-						proxy->GetIcon ("irc-close-channel")));
+						proxy->GetIconThemeManager ()->GetIcon ("irc-close-channel")));
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.MUCUsers",
 				ActionInfo (tr ("Show MUC users list"),
 						QString ("Ctrl+M"),
-						proxy->GetIcon ("irc-close-channel")));
+						proxy->GetIconThemeManager ()->GetIcon ("irc-close-channel")));
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.OpenLastLink",
 				ActionInfo (tr ("Open last link in chat"),
 						QString ("Ctrl+O"),
-						proxy->GetIcon ("document-open-remote")));
+						proxy->GetIconThemeManager ()->GetIcon ("document-open-remote")));
 
 		sm->RegisterGlobalShortcut ("org.LeechCraft.Azoth.ShowNextUnread",
 				&Core::Instance (), SLOT (handleShowNextUnread ()),
 				{
 					tr ("Show next unread message (global shortcut)"),
 					QString ("Ctrl+Alt+Shift+M"),
-					proxy->GetIcon ("mail-unread-new")
+					proxy->GetIconThemeManager ()->GetIcon ("mail-unread-new")
 				});
 
 		sm->RegisterActionInfo ("org.Azoth.TextEdit.DeleteWord",

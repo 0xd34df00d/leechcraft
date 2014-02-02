@@ -46,6 +46,7 @@
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/an/constants.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucperms.h"
@@ -702,7 +703,7 @@ namespace Azoth
 
 		result.removeAll (0);
 
-		Core::Instance ().GetProxy ()->UpdateIconset (result);
+		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset (result);
 
 		return result;
 	}
@@ -812,7 +813,7 @@ namespace Azoth
 
 		setter (AfterRolesNames);
 
-		Core::Instance ().GetProxy ()->UpdateIconset (result);
+		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset (result);
 
 		return result;
 	}
