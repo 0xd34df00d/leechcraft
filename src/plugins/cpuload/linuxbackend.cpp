@@ -129,8 +129,6 @@ namespace CpuLoad
 		Loads_.clear ();
 		Loads_.resize (LastCummulative_.size ());
 
-		qDebug () << curCpuCount;
-
 		for (int i = 0; i < curCpuCount; ++i)
 		{
 			auto& cpuLoad = Loads_ [i];
