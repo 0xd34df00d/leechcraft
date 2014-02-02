@@ -29,50 +29,38 @@
 
 #pragma once
 
-#include <QObject>
-#include <QMap>
 #include <QString>
-#include <QDir>
-#include <QHash>
-#include <QIcon>
-#include "../interfaces/core/iiconthememanager.h"
+#include <QList>
 
-class QIcon;
 class QAction;
-class QPushButton;
-class QTabWidget;
-class QFile;
+class QIcon;
 
-namespace LeechCraft
+class IIconThemeManager
 {
-	class IconThemeEngine : public QObject
-						  , public IIconThemeManager
-	{
-		Q_OBJECT
-		Q_INTERFACES (IIconThemeManager)
+protected:
+	virtual ~IIconThemeManager () {}
+public:
+	/** @brief Returns the current theme's icon for the given on and off
+	 * states.
+	 *
+	 * @param[in] on The name of the icon in the "on" state.
+	 * @param[in] off The name of the icon in the "off" state, if any.
+	 * @return The QIcon object created from image files which could be
+	 * obtained via GetIconPath().
+	 *
+	 * @sa GetIconPath
+	 */
+	virtual QIcon GetIcon (const QString& on, const QString& off = QString ()) const = 0;
 
-		QString OldIconSet_;
-		QStringList IconSets_;
-
-		mutable QHash<QPair<QString, QString>, QIcon> IconCache_;
-
-		IconThemeEngine ();
-	public:
-		static IconThemeEngine& Instance ();
-
-		QIcon GetIcon (const QString&, const QString&) const;
-		void UpdateIconset (const QList<QAction*>&);
-		void UpdateIconset (const QList<QPushButton*>&);
-		void UpdateIconset (const QList<QTabWidget*>&);
-		QStringList ListIcons () const;
-	protected:
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		template<typename T>
-		void SetIcon (T);
-		void FindIconSets ();
-		void FindIcons ();
-	private slots:
-		void flushCaches ();
-	};
+	/** @brief Updates the icons of the given actions.
+	 *
+	 * This function sets or updates the icons of \em actions according
+	 * to the current iconset. This function also registers the actions
+	 * so that they are automatically updated when the iconset changes.
+	 *
+	 * @param[in] actions The list of actions to update.
+	 */
+	virtual void UpdateIconset (const QList<QAction*>& actions) = 0;
 };
+
+Q_DECLARE_INTERFACE (IIconThemeManager, "org.LeechCraft.IIconThemeManager/1.0");
