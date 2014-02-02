@@ -30,6 +30,7 @@
 #include "systemtrayhandler.h"
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <QMenu>
 #include <QPainter>
 #include <QApplication>
@@ -86,7 +87,8 @@ namespace AdvancedNotifications
 						break;
 				}
 
-				pixmap = proxy->GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
+				pixmap = proxy->GetIconThemeManager ()->
+						GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
 			}
 			return pixmap;
 		}
