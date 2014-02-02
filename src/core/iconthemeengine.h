@@ -58,9 +58,9 @@ namespace LeechCraft
 		static IconThemeEngine& Instance ();
 
 		QIcon GetIcon (const QString&, const QString&) const;
-		void UpdateIconSet (const QList<QAction*>&);
-		void UpdateIconSet (const QList<QPushButton*>&);
-		void UpdateIconSet (const QList<QTabWidget*>&);
+		void UpdateIconset (const QList<QAction*>&);
+		void UpdateIconset (const QList<QPushButton*>&);
+		void UpdateIconset (const QList<QTabWidget*>&);
 		QStringList ListIcons () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);

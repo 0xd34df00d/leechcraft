@@ -386,8 +386,8 @@ namespace LeechCraft
 
 	void CoreInstanceObject::updateIconSet ()
 	{
-		IconThemeEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
-		IconThemeEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
+		IconThemeEngine::Instance ().UpdateIconset (findChildren<QAction*> ());
+		IconThemeEngine::Instance ().UpdateIconset (findChildren<QTabWidget*> ());
 	}
 
 	void CoreInstanceObject::updateColorTheme ()

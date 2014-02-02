@@ -80,7 +80,7 @@ namespace LeechCraft
 
 	void CoreProxy::UpdateIconset (const QList<QAction*>& actions) const
 	{
-		IconThemeEngine::Instance ().UpdateIconSet (actions);
+		IconThemeEngine::Instance ().UpdateIconset (actions);
 	}
 
 	IColorThemeManager* CoreProxy::GetColorThemeManager () const
@@ -139,7 +139,7 @@ namespace LeechCraft
 
 	void CoreProxy::RegisterSkinnable (QAction *act)
 	{
-		IconThemeEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
+		IconThemeEngine::Instance ().UpdateIconset (QList<QAction*> () << act);
 	}
 
 	bool CoreProxy::IsShuttingDown ()

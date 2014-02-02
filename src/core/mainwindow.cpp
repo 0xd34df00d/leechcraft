@@ -241,7 +241,7 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& men
 			MenuButton_->menu ()->insertMenu (MenuTools_->menuAction (), menu);
 		}
 
-		IconThemeEngine::Instance ().UpdateIconSet (menus [menuName]);
+		IconThemeEngine::Instance ().UpdateIconset (menus [menuName]);
 	}
 }
 
@@ -692,7 +692,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 		if (actions.isEmpty ())
 			continue;
 
-		IconThemeEngine::Instance ().UpdateIconSet (actions);
+		IconThemeEngine::Instance ().UpdateIconset (actions);
 
 		QLBar_->addSeparator ();
 		QLBar_->addActions (actions);
@@ -719,7 +719,7 @@ void LeechCraft::MainWindow::FillTray ()
 	Q_FOREACH (auto o, trayMenus)
 	{
 		const auto& actions = o->GetActions (ActionsEmbedPlace::TrayMenu);
-		IconThemeEngine::Instance ().UpdateIconSet (actions);
+		IconThemeEngine::Instance ().UpdateIconset (actions);
 		iconMenu->addActions (actions);
 		if (actions.size ())
 			iconMenu->addSeparator ();
@@ -748,7 +748,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 				GetAllCastableTo<IActionsExporter*> ())
 	{
 		const auto& acts = e->GetActions (ActionsEmbedPlace::ToolsMenu);
-		IconThemeEngine::Instance ().UpdateIconSet (acts);
+		IconThemeEngine::Instance ().UpdateIconset (acts);
 		MenuTools_->addActions (acts);
 		if (acts.size ())
 			MenuTools_->addSeparator ();
