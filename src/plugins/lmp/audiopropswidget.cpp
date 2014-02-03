@@ -67,6 +67,7 @@
 #include <taglib/wavproperties.h>
 #include <taglib/trueaudioproperties.h>
 #include <taglib/wavpackproperties.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "localfileresolver.h"
 #include "core.h"
 
@@ -82,7 +83,8 @@ namespace LMP
 		Ui_.PropsView_->setModel (PropsModel_);
 
 		auto copy = new QAction (tr ("Copy"), this);
-		copy->setIcon (Core::Instance ().GetProxy ()->GetIcon ("edit-copy"));
+		copy->setIcon (Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("edit-copy"));
 		connect (copy,
 				SIGNAL (triggered ()),
 				this,

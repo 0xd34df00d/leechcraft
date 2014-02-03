@@ -43,6 +43,7 @@
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "biopropproxy.h"
 #include "core.h"
 #include "util.h"
@@ -179,7 +180,8 @@ namespace LMP
 					Qt::UniqueConnection);
 
 		auto fetcher = qobject_cast<Media::IPendingDisco*> (sender ());
-		const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2);
+		const auto& icon = Core::Instance ().GetProxy ()->GetIconThemeManager ()->
+				GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2);
 		for (const auto& release : fetcher->GetReleases ())
 		{
 			if (FindAlbumItem (release.Name_))

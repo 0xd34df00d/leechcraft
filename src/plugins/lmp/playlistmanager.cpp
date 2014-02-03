@@ -32,7 +32,7 @@
 #include <QStandardItemModel>
 #include <QTimer>
 #include <QMimeData>
-#include <boost/graph/graph_concepts.hpp>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"
@@ -200,7 +200,7 @@ namespace LMP
 
 	boost::optional<MediaInfo> PlaylistManager::TryResolveMediaInfo (const QUrl& url) const
 	{
-		Q_FOREACH (auto provObj, PlaylistProviders_)
+		for (auto provObj : PlaylistProviders_)
 		{
 			auto prov = qobject_cast<IPlaylistProvider*> (provObj);
 			auto info = prov->GetURLInfo (url);
@@ -218,8 +218,9 @@ namespace LMP
 		while (StaticRoot_->rowCount ())
 			StaticRoot_->removeRow (0);
 
-		const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("view-media-playlist");
-		Q_FOREACH (const auto& name, Static_->EnumerateCustomPlaylists ())
+		const auto& icon = Core::Instance ().GetProxy ()->
+				GetIconThemeManager ()->GetIcon ("view-media-playlist");
+		for (const auto& name : Static_->EnumerateCustomPlaylists ())
 		{
 			auto item = new QStandardItem (icon, name);
 			item->setData (PlaylistTypes::Static, Roles::PlaylistType);

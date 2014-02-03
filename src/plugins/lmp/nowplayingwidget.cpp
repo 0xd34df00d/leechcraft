@@ -30,6 +30,7 @@
 #include "nowplayingwidget.h"
 #include <algorithm>
 #include <QMouseEvent>
+#include <interfaces/core/iiconthememanager.h>
 #include "mediainfo.h"
 #include "core.h"
 #include "localcollection.h"
@@ -53,8 +54,9 @@ namespace LMP
 		auto coverGetter = [this] () { return CurrentInfo_.LocalPath_; };
 		Ui_.Art_->installEventFilter (new AALabelEventFilter (coverGetter, this));
 
-		Ui_.PrevLyricsButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("go-previous"));
-		Ui_.NextLyricsButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("go-next"));
+		auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+		Ui_.PrevLyricsButton_->setIcon (mgr->GetIcon ("go-previous"));
+		Ui_.NextLyricsButton_->setIcon (mgr->GetIcon ("go-next"));
 
 		updateLyricsSwitcher ();
 

@@ -32,6 +32,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "player.h"
 #include "mediainfo.h"
 #include "core.h"
@@ -164,7 +165,8 @@ namespace LMP
 
 		if (index.data (Player::Role::IsStop).toBool ())
 		{
-			const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("media-playback-stop");
+			const auto& icon = Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("media-playback-stop");
 			const auto& px = icon.pixmap (option.rect.size ());
 			style->drawItemPixmap (painter, option.rect, Qt::AlignLeft | Qt::AlignVCenter, px);
 

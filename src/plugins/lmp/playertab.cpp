@@ -47,6 +47,7 @@
 #include <interfaces/media/ipendingsimilarartists.h>
 #include <interfaces/media/ilyricsfinder.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "player.h"
 #include "util.h"
 #include "core.h"
@@ -291,7 +292,8 @@ namespace LMP
 
 		auto mkButton = [this] (const QString& title, const QString& iconName)
 		{
-			const auto& icon = Core::Instance ().GetProxy ()->GetIcon (iconName);
+			const auto& icon = Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon (iconName);
 
 			auto but = new QListWidgetItem (title);
 			NavButtons_->addItem (but);
@@ -622,12 +624,13 @@ namespace LMP
 	{
 		QIcon GetIconFromState (SourceState state)
 		{
+			const auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
 			switch (state)
 			{
 			case SourceState::Playing:
-				return Core::Instance ().GetProxy ()->GetIcon ("media-playback-start");
+				return mgr->GetIcon ("media-playback-start");
 			case SourceState::Paused:
-				return Core::Instance ().GetProxy ()->GetIcon ("media-playback-pause");
+				return mgr->GetIcon ("media-playback-pause");
 			default:
 				return QIcon ();
 			}

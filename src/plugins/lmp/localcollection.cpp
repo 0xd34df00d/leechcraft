@@ -38,6 +38,7 @@
 #include <QtConcurrentRun>
 #include <QTimer>
 #include <QtDebug>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include "localcollectionstorage.h"
 #include "core.h"
@@ -147,7 +148,8 @@ namespace LMP
 
 	void LocalCollection::FinalizeInit ()
 	{
-		ArtistIcon_ = Core::Instance ().GetProxy ()->GetIcon ("view-media-artist");
+		ArtistIcon_ = Core::Instance ().GetProxy ()->
+				GetIconThemeManager ()->GetIcon ("view-media-artist");
 	}
 
 	bool LocalCollection::IsReady () const
