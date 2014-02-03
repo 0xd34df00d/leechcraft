@@ -32,6 +32,7 @@
 #include <QGraphicsEffect>
 #include <QtDeclarative>
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "accountslistwidget.h"
 #include "blogiquewidget.h"
 #include "commentswidget.h"
@@ -89,7 +90,7 @@ namespace Blogique
 				this,
 				SIGNAL (changeTabName (QWidget*, QString)));
 
-		ExportAction_ = new QAction (proxy->GetIcon ("document-export"),
+		ExportAction_ = new QAction (proxy->GetIconThemeManager ()->GetIcon ("document-export"),
 				tr ("Export blog"), this);
 		connect (ExportAction_,
 				SIGNAL (triggered ()),

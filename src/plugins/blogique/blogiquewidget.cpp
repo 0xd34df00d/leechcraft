@@ -47,6 +47,7 @@
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/imwproxy.h>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
@@ -406,7 +407,8 @@ namespace Blogique
 		if (index > AccountsBox_->count ())
 			index = -1;
 
-		AccountsBox_->addItem (Core::Instance ().GetCoreProxy ()->GetIcon ("list-add"),
+		AccountsBox_->addItem (Core::Instance ().GetCoreProxy ()->
+					GetIconThemeManager ()->GetIcon ("list-add"),
 				tr ("Add new account..."));
 
 		AccountsBoxAction_ = ToolBar_->addWidget (AccountsBox_);
