@@ -37,6 +37,7 @@
 #include <QtDebug>
 #include <qjson/parser.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/svcauth/vkcaptchadialog.h>
 #include <util/queuemanager.h>
@@ -296,7 +297,7 @@ namespace TouchStreams
 			auto userItem = mgr->GetRootItem ();
 			userItem->setText (name);
 			userItem->setData (QUrl::fromEncoded (map ["photo"].toByteArray ()), PhotoUrlRole);
-			userItem->setIcon (Proxy_->GetIcon ("user-identity"));
+			userItem->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("user-identity"));
 			Root_->appendRow (userItem);
 			Friend2Item_ [id] = userItem;
 
