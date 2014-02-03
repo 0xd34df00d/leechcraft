@@ -281,8 +281,6 @@ namespace TabsList
 		layout->setSpacing (1);
 		layout->setContentsMargins (1, 1, 1, 1);
 
-		const QIcon deleteIcon = Proxy_->GetIcon ("tab-close");
-
 		const int currentIdx = tw->CurrentIndex ();
 		QToolButton *toFocus = 0;
 		QList<QToolButton*> allButtons;
