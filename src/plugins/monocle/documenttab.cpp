@@ -55,6 +55,7 @@
 #include <util/gui/findnotification.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "interfaces/monocle/ihavetoc.h"
 #include "interfaces/monocle/ihavetextcontent.h"
 #include "interfaces/monocle/isupportannotations.h"
@@ -139,17 +140,17 @@ namespace Monocle
 
 		new FileWatcher (this);
 
-		auto proxy = Core::Instance ().GetProxy ();
-		const auto& tocIcon = proxy->GetIcon ("view-table-of-contents-ltr");
+		const auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+		const auto& tocIcon = mgr->GetIcon ("view-table-of-contents-ltr");
 
 		auto dockTabWidget = new QTabWidget;
 		dockTabWidget->setTabPosition (QTabWidget::West);
 		dockTabWidget->addTab (TOCWidget_,
 				tocIcon, tr ("Table of contents"));
 		dockTabWidget->addTab (BMWidget_,
-				proxy->GetIcon ("favorites"), tr ("Bookmarks"));
+				mgr->GetIcon ("favorites"), tr ("Bookmarks"));
 		dockTabWidget->addTab (ThumbsWidget_,
-				proxy->GetIcon ("view-preview"), tr ("Thumbnails"));
+				mgr->GetIcon ("view-preview"), tr ("Thumbnails"));
 
 		connect (ThumbsWidget_,
 				SIGNAL (pageClicked (int)),
