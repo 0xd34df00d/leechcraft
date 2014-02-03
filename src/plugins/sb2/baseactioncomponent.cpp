@@ -35,6 +35,7 @@
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <util/qml/widthiconprovider.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "sbview.h"
 
 namespace LeechCraft
@@ -89,8 +90,11 @@ namespace SB2
 			auto act = Actions_ [id];
 			auto icon = act->icon ();
 			if (icon.isNull ())
-				icon = Proxy_->GetIcon (act->property ("ActionIcon").toString (),
+			{
+				const auto mgr = Proxy_->GetIconThemeManager ();
+				icon = mgr->GetIcon (act->property ("ActionIcon").toString (),
 						act->property ("ActionIconOff").toString ());
+			}
 			return icon;
 		}
 

@@ -38,6 +38,7 @@
 #include <QDir>
 #include <qjson/parser.h>
 #include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarksettingsmanager.h"
@@ -83,7 +84,7 @@ namespace SB2
 	, SettingsManager_ (0)
 	, ID_ (QFileInfo (URL_.path ()).fileName ())
 	, Name_ (ID_)
-	, Icon_ (proxy->GetIcon ("applications-science"))
+	, Icon_ (proxy->GetIconThemeManager ()->GetIcon ("applications-science"))
 	{
 		ParseManifest ();
 
@@ -227,7 +228,7 @@ namespace SB2
 
 	bool QuarkManager::TryTheme (const QString& iconName)
 	{
-		const auto& icon = Proxy_->GetIcon (iconName);
+		const auto& icon = Proxy_->GetIconThemeManager ()->GetIcon (iconName);
 		const auto& px = icon.pixmap (IconSize, IconSize);
 		if (px.isNull ())
 			return false;
