@@ -41,6 +41,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/ihavetabs.h>
 
 Q_DECLARE_METATYPE (ICoreTabWidget*)
@@ -105,9 +106,10 @@ namespace TabsList
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 	{
 		QMap<QString, ActionInfo> result;
+		const auto& iconName = ShowList_->property ("ActionIcon").toString ();
 		result ["ShowList"] = ActionInfo (ShowList_->text (),
 				ShowList_->shortcut (),
-				Proxy_->GetIcon (ShowList_->property ("ActionIcon").toString ()));
+				Proxy_->GetIconThemeManager ()->GetIcon (iconName));
 		return result;
 	}
 
