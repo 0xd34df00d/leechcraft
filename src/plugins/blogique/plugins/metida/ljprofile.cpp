@@ -33,6 +33,7 @@
 #include <QDir>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include "ljaccount.h"
 #include "core.h"
@@ -58,13 +59,15 @@ namespace Metida
 
 	QList<QPair<QIcon, QString>> LJProfile::GetPostingTargets () const
 	{
+		const auto mgr = Core::Instance ().GetCoreProxy ()->GetIconThemeManager ();
+
 		QList<QPair<QIcon, QString>> targets;
-		const QIcon& icon = Core::Instance ().GetCoreProxy ()->GetIcon ("system-users");
+		const auto& icon = mgr->GetIcon ("system-users");
 		IAccount *acc = qobject_cast<IAccount*> (ParentAccount_);
 		if (!acc)
 			return targets;
 
-		targets.append ({ Core::Instance ().GetCoreProxy ()->GetIcon ("im-user"),
+		targets.append ({ mgr->GetIcon ("im-user"),
 				acc->GetOurLogin () });
 		for (const auto& community : ProfileData_.Communities_)
 			targets.append ({ icon, community });
@@ -99,9 +102,9 @@ namespace Metida
 			else
 				ProfileData_.Friends_.replace (index, friendEntry);
 		}
-		
+
 		std::sort (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (), CompareFriends);
-		
+
 		handleProfileUpdate (ProfileData_);
 		emit profileUpdated ();
 	}
