@@ -43,6 +43,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"
@@ -596,7 +597,7 @@ namespace Poshuku
 
 		QBuffer ib;
 		ib.open (QIODevice::ReadWrite);
-		QPixmap px = Core::Instance ().GetProxy ()->
+		const auto& px = Core::Instance ().GetProxy ()->GetIconThemeManager ()->
 				GetIcon ("dialog-error").pixmap (32, 32);
 		px.save (&ib, "PNG");
 

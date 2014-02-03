@@ -36,6 +36,7 @@
 #include <util/models/treeitem.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "poshuku.h"
@@ -259,7 +260,7 @@ namespace Poshuku
 				<< QString ("");
 			TreeItem *folder = new TreeItem (data, RootItem_);
 			folder->ModifyData (0,
-					Core::Instance ().GetProxy ()->GetIcon ("document-open-folder"),
+					Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("document-open-folder"),
 					Qt::DecorationRole);
 			RootItem_->AppendChild (folder);
 		}

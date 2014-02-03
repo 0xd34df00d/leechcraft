@@ -70,6 +70,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -160,12 +161,12 @@ namespace Poshuku
 		Reload_ = WebView_->pageAction (QWebPage::Reload);
 		Reload_->setProperty ("ActionIcon", "view-refresh");
 		Reload_->setIcon (Core::Instance ()
-				.GetProxy ()->GetIcon ("view-refresh"));
+				.GetProxy ()->GetIconThemeManager ()->GetIcon ("view-refresh"));
 
 		Stop_ = WebView_->pageAction (QWebPage::Stop);
 		Stop_->setProperty ("ActionIcon", "process-stop");
 		Stop_->setIcon (Core::Instance ()
-				.GetProxy ()->GetIcon ("process-stop"));
+				.GetProxy ()->GetIconThemeManager ()->GetIcon ("process-stop"));
 
 		ReloadStop_ = new QAction (this);
 		handleLoadProgress (0);
@@ -1251,7 +1252,8 @@ namespace Poshuku
 			const auto& item = items.at (i);
 			if (!item.isValid ())
 				continue;
-			auto act = BackMenu_->addAction (Core::Instance ().GetIcon (item.url ()), item.title ());
+			auto act = BackMenu_->addAction (Core::Instance ().GetIcon (item.url ()),
+					item.title ());
 			act->setToolTip (item.url ().toString ());
 			act->setData (i);
 
@@ -1268,7 +1270,8 @@ namespace Poshuku
 			const auto& item = items.at (i);
 			if (!item.isValid ())
 				continue;
-			auto act = ForwardMenu_->addAction (Core::Instance ().GetIcon (item.url ()), item.title ());
+			auto act = ForwardMenu_->addAction (Core::Instance ().GetIcon (item.url ()),
+					item.title ());
 			act->setToolTip (item.url ().toString ());
 			act->setData (i);
 
@@ -1784,12 +1787,9 @@ namespace Poshuku
 				qWarning () << Q_FUNC_INFO
 						<< GetURLEdit ()
 						<< "isn't an IAddressBar object";
-			else
-			{
-				QToolButton *btn = iab->GetButtonFromAction (Add2Favorites_);
-				if (btn)
-					btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("list-remove"));
-			}
+			else if (auto btn = iab->GetButtonFromAction (Add2Favorites_))
+				btn->setIcon (Core::Instance ().GetProxy ()->
+						GetIconThemeManager ()->GetIcon ("list-remove"));
 		}
 		else
 		{
@@ -1802,12 +1802,9 @@ namespace Poshuku
 				qWarning () << Q_FUNC_INFO
 						<< GetURLEdit ()
 						<< "isn't an IAddressBar object";
-			else
-			{
-				QToolButton *btn = iab->GetButtonFromAction (Add2Favorites_);
-				if (btn)
-					btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("bookmark-new"));
-			}
+			else if (auto btn = iab->GetButtonFromAction (Add2Favorites_))
+				btn->setIcon (Core::Instance ().GetProxy ()->
+						GetIconThemeManager ()->GetIcon ("bookmark-new"));
 		}
 	}
 
