@@ -76,7 +76,7 @@ namespace LeechCraft
 	, Filter_ (new SMFilterProxyModel (this))
 	{
 		Filter_->setDynamicSortFilter (true);
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("Shortcut") << tr ("Alternate"));
+		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Shortcut"), tr ("Alternate") });
 		Filter_->setSourceModel (Model_);
 		Filter_->sort (0);
 
