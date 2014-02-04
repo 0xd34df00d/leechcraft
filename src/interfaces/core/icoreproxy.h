@@ -104,28 +104,6 @@ public:
 	 */
 	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
 
-	/** @brief Returns the current theme's icon for the given on and off
-	 * states.
-	 *
-	 * @param[in] on The name of the icon in the "on" state.
-	 * @param[in] off The name of the icon in the "off" state, if any.
-	 * @return The QIcon object created from image files which could be
-	 * obtained via GetIconPath().
-	 *
-	 * @sa GetIconPath
-	 */
-	virtual QIcon GetIcon (const QString& on, const QString& off = QString ()) const = 0;
-
-	/** @brief Updates the icons of the given actions.
-	 *
-	 * This function sets or updates the icons of \em actions according
-	 * to the current iconset. This function also registers the actions
-	 * so that they are automatically updated when the iconset changes.
-	 *
-	 * @param[in] actions The list of actions to update.
-	 */
-	virtual void UpdateIconset (const QList<QAction*>& actions) const = 0;
-
 	/** @brief Returns the icon theme manager.
 	 *
 	 * @return The icon manager.
