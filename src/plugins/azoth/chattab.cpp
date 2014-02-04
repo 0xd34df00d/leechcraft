@@ -623,14 +623,11 @@ namespace Azoth
 		if (!me)
 			return;
 
-		/* TODO enable depending on whether we have enough rights to
-		 * change the subject. And, if we don't, set the SubjEdit_ to
-		 * readOnly() mode.
-		 */
+		Ui_.SubjEdit_->setReadOnly (!me->CanChangeSubject ());
 		Ui_.SubjEdit_->setText (me->GetMUCSubject ());
 	}
 
-	void ChatTab::on_SubjChange__released()
+	void ChatTab::on_SubjChange__released ()
 	{
 		Ui_.SubjectButton_->setChecked (false);
 
