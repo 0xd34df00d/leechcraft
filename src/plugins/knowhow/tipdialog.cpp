@@ -31,6 +31,7 @@
 #include <QDomDocument>
 #include <util/util.h>
 #include <util/resourceloader.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -79,8 +80,10 @@ namespace KnowHow
 				.Property ("StdTipIndex", -1).toInt () + 1;
 
 		Ui_.setupUi (this);
-		Ui_.Forward_->setIcon (Proxy_->GetIcon ("go-next"));
-		Ui_.Backward_->setIcon (Proxy_->GetIcon ("go-previous"));
+
+		const auto mgr = Proxy_->GetIconThemeManager ();
+		Ui_.Forward_->setIcon (mgr->GetIcon ("go-next"));
+		Ui_.Backward_->setIcon (mgr->GetIcon ("go-previous"));
 
 		ShowForIdx (idx);
 
