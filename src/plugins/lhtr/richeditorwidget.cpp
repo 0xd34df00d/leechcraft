@@ -1191,8 +1191,11 @@ namespace LHTR
 	void RichEditorWidget::handleCollectionImageChosen ()
 	{
 		const auto chooser = qobject_cast<IPendingImgSourceRequest*> (sender ());
+		const auto& rawInfos = chooser->GetInfos ();
+		if (rawInfos.isEmpty ())
+			return;
 
-		ImageCollectionDialog dia { chooser->GetInfos (), Proxy_, this };
+		ImageCollectionDialog dia { rawInfos, Proxy_, this };
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
