@@ -154,47 +154,48 @@ namespace LeechCraft
 #else
 		const auto sysModifier = Qt::ALT;
 #endif
+		const auto iconMgr = CoreProxy ().GetIconThemeManager ();
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
 				{
 					tr ("Switch to previously active tab"),
 					sysModifier + Qt::Key_Space,
-					CoreProxy ().GetIcon ("edit-undo")
+					iconMgr->GetIcon ("edit-undo")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("FullScreen",
 				{
 					tr ("Toggle fullscreen"),
 					QString ("F11"),
-					CoreProxy ().GetIcon ("view-fullscreen")
+					iconMgr->GetIcon ("view-fullscreen")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("CloseTab",
 				{
 					tr ("Close tab"),
 					QString ("Ctrl+W"),
-					CoreProxy ().GetIcon ("tab-close")
+					iconMgr->GetIcon ("tab-close")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToLeftTab",
 				{
 					tr ("Switch to tab to the left"),
 					QString ("Ctrl+PgUp"),
-					CoreProxy ().GetIcon ("go-previous")
+					iconMgr->GetIcon ("go-previous")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToRightTab",
 				{
 					tr ("Switch to tab to the right"),
 					QString ("Ctrl+PgDown"),
-					CoreProxy ().GetIcon ("go-next")
+					iconMgr->GetIcon ("go-next")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("Settings",
 				{
 					tr ("Settings"),
 					QString ("Ctrl+P"),
-					CoreProxy ().GetIcon ("configure")
+					iconMgr->GetIcon ("configure")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("Quit",
 				{
 					tr ("Quit LeechCraft"),
 					QString ("F10"),
-					CoreProxy ().GetIcon ("application-exit")
+					iconMgr->GetIcon ("application-exit")
 				});
 
 		Classes_ << SettingsTab_->GetTabClassInfo ();

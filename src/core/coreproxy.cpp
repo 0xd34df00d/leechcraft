@@ -73,16 +73,6 @@ namespace LeechCraft
 		return Core::Instance ().GetRootWindowsManager ();
 	}
 
-	QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
-	{
-		return IconThemeEngine::Instance ().GetIcon (icon, iconOff);
-	}
-
-	void CoreProxy::UpdateIconset (const QList<QAction*>& actions) const
-	{
-		IconThemeEngine::Instance ().UpdateIconset (actions);
-	}
-
 	IIconThemeManager* CoreProxy::GetIconThemeManager() const
 	{
 		return &IconThemeEngine::Instance ();
