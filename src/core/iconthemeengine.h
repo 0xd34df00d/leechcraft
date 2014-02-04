@@ -64,6 +64,9 @@ namespace LeechCraft
 		void UpdateIconset (const QList<QAction*>&);
 		void UpdateIconset (const QList<QPushButton*>&);
 		void UpdateIconset (const QList<QTabWidget*>&);
+
+		void ManageWidget (QWidget*);
+
 		QStringList ListIcons () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);

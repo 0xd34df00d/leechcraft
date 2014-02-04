@@ -40,6 +40,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
+#include "childactioneventfilter.h"
 #include "util/util.h"
 
 using namespace LeechCraft;
@@ -148,6 +149,15 @@ void IconThemeEngine::UpdateIconset (const QList<QTabWidget*>& tabs)
 				name != icons.end (); ++name, ++tab)
 			(*i)->setTabIcon (tab, GetIcon (*name, QString ()));
 	}
+}
+
+void IconThemeEngine::ManageWidget (QWidget *widget)
+{
+	UpdateIconset (widget->findChildren<QAction*> ());
+	UpdateIconset (widget->findChildren<QPushButton*> ());
+	UpdateIconset (widget->findChildren<QTabWidget*> ());
+
+	widget->installEventFilter (new ChildActionEventFilter (widget));
 }
 
 QStringList IconThemeEngine::ListIcons () const

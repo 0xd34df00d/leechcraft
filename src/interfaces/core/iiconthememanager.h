@@ -61,6 +61,15 @@ public:
 	 * @param[in] actions The list of actions to update.
 	 */
 	virtual void UpdateIconset (const QList<QAction*>& actions) = 0;
+
+	/** @brief Watches the given widget recursively and its child actions.
+	 *
+	 * This function merely installs the event filter on the given widget
+	 * to watch for new actions or action changes.
+	 *
+	 * @param[in] widget The widget to manage.
+	 */
+	virtual void ManageWidget (QWidget *widget) = 0;
 };
 
 Q_DECLARE_INTERFACE (IIconThemeManager, "org.LeechCraft.IIconThemeManager/1.0");
