@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "deptreebuilder.h"
 #include "core.h"
 
@@ -181,14 +182,16 @@ namespace LackMan
 		PendingModel_->clear ();
 		RootItemForAction_.clear ();
 
+		const auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+
 		RootItemForAction_ [Action::Install] =
-				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("list-add"),
+				new QStandardItem (mgr->GetIcon ("list-add"),
 						tr ("To be installed"));
 		RootItemForAction_ [Action::Remove] =
-				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("list-remove"),
+				new QStandardItem (mgr->GetIcon ("list-remove"),
 						tr ("To be removed"));
 		RootItemForAction_ [Action::Update] =
-				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("system-software-update"),
+				new QStandardItem (mgr->GetIcon ("system-software-update"),
 						tr ("To be updated"));
 
 		for (int i = Action::Install; i < Action::MAX; ++i)

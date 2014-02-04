@@ -38,6 +38,7 @@
 #include <util/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
 #include "packagesmodel.h"
@@ -256,24 +257,25 @@ namespace LackMan
 
 	QIcon Core::GetIconForLPI (const ListPackageInfo& packageInfo)
 	{
+		const auto mgr = Proxy_->GetIconThemeManager ();
 		QIcon result;
 		switch (packageInfo.Type_)
 		{
 		case PackageInfo::TPlugin:
-			result = Proxy_->GetIcon ("preferences-plugin");
+			result = mgr->GetIcon ("preferences-plugin");
 			break;
 		case PackageInfo::TIconset:
-			result = Proxy_->GetIcon ("preferences-desktop-icons");
+			result = mgr->GetIcon ("preferences-desktop-icons");
 			break;
 		case PackageInfo::TTranslation:
-			result = Proxy_->GetIcon ("preferences-desktop-locale");
+			result = mgr->GetIcon ("preferences-desktop-locale");
 			break;
 		case PackageInfo::TData:
 		case PackageInfo::TQuark:
-			result = Proxy_->GetIcon ("package-x-generic");
+			result = mgr->GetIcon ("package-x-generic");
 			break;
 		case PackageInfo::TTheme:
-			result = Proxy_->GetIcon ("preferences-desktop-theme");
+			result = mgr->GetIcon ("preferences-desktop-theme");
 			break;
 		}
 		return result;
