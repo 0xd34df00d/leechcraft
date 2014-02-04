@@ -36,6 +36,7 @@
 #include <util/xdg/xdg.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 
 namespace LeechCraft
 {
@@ -237,7 +238,7 @@ namespace Laughty
 
 		QPixmap result;
 
-		auto icon = Proxy_->GetIcon (appIcon);
+		auto icon = Proxy_->GetIconThemeManager ()->GetIcon (appIcon);
 		if (!icon.isNull ())
 		{
 			const auto& sizes = icon.availableSizes ();
