@@ -35,6 +35,7 @@
 #include <QIcon>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -146,7 +147,8 @@ namespace Glance
 		QPixmap px (Pixmap_);
 		QPainter p (&px);
 
-		QIcon closeIcon = Core::Instance ().GetProxy ()->GetIcon ("window-close");
+		const auto& closeIcon = Core::Instance ().GetProxy ()->
+				GetIconThemeManager ()->GetIcon ("window-close");
 		closeIcon.paint (&p, CloseButtonRect_, Qt::AlignCenter, selected ? QIcon::Selected : QIcon::Normal);
 
 		p.end ();

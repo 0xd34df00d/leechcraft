@@ -36,6 +36,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "glanceshower.h"
 
@@ -120,9 +121,12 @@ namespace Glance
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 	{
 		QMap<QString, ActionInfo> result;
+
+		const auto& iconName = ActionGlance_->property ("ActionIcon").toString ();
 		result ["ShowList"] = ActionInfo (ActionGlance_->text (),
 				ActionGlance_->shortcut (),
-				Proxy_->GetIcon (ActionGlance_->property ("ActionIcon").toString ()));
+				Proxy_->GetIconThemeManager ()->GetIcon (iconName));
+
 		return result;
 	}
 
