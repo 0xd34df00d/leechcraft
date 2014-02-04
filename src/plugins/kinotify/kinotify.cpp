@@ -36,6 +36,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "kinotifywidget.h"
 #include "xmlsettingsmanager.h"
 #include "fswinwatcher.h"
@@ -180,7 +181,7 @@ namespace Kinotify
 				break;
 		}
 
-		const QIcon& icon = Proxy_->GetIcon (mi);
+		const QIcon& icon = Proxy_->GetIconThemeManager ()->GetIcon (mi);
 		const QPixmap& px = icon.pixmap (QSize (128, 128));
 		notificationWidget->SetContent (header, text, QString ());
 
