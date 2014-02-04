@@ -29,6 +29,7 @@
 
 #include "coreproxywrapper.h"
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "shortcutproxywrapper.h"
 #include "pluginsmanagerwrapper.h"
 #include "tagsmanagerwrapper.h"
@@ -59,7 +60,7 @@ namespace Qrosp
 
 	QIcon CoreProxyWrapper::GetIcon (const QString& on, const QString& off) const
 	{
-		return Proxy_->GetIcon (on, off);
+		return Proxy_->GetIconThemeManager ()->GetIcon (on, off);
 	}
 
 	QMainWindow* CoreProxyWrapper::GetMainWindow () const
