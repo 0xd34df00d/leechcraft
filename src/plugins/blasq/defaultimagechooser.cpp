@@ -32,6 +32,7 @@
 #include <QToolBar>
 #include <QDialogButtonBox>
 #include <QDesktopWidget>
+#include <interfaces/core/iiconthememanager.h>
 #include "photostab.h"
 #include "interfaces/blasq/collection.h"
 
@@ -46,6 +47,8 @@ namespace Blasq
 	{
 		auto dialog = new QDialog ();
 		dialog->setWindowTitle (tr ("Choose an image to insert"));
+
+		proxy->GetIconThemeManager ()->ManageWidget (dialog);
 
 		auto lay = new QVBoxLayout ();
 		dialog->setLayout (lay);
