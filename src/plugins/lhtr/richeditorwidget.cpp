@@ -53,6 +53,7 @@
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/data/iimgsource.h>
 #include "hyperlinkdialog.h"
 #include "imagedialog.h"
@@ -267,7 +268,7 @@ namespace LHTR
 		ViewBar_->addSeparator ();
 
 		QMenu *headMenu = new QMenu (tr ("Headings"));
-		headMenu->setIcon (Proxy_->GetIcon ("view-list-details"));
+		headMenu->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("view-list-details"));
 		ViewBar_->addAction (headMenu->menuAction ());
 		for (int i = 1; i <= 6; ++i)
 		{
@@ -525,7 +526,7 @@ namespace LHTR
 		auto imagesButton = new QToolButton;
 		imagesButton->setMenu (imagesMenu);
 		imagesButton->setPopupMode (QToolButton::InstantPopup);
-		imagesButton->setIcon (Proxy_->GetIcon ("insert-image"));
+		imagesButton->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("insert-image"));
 		ViewBar_->addWidget (imagesButton);
 
 		InsertImage_ = imagesMenu->addAction (tr ("Insert image by link..."),
@@ -559,7 +560,7 @@ namespace LHTR
 		auto tablesButton = new QToolButton;
 		tablesButton->setMenu (tablesMenu);
 		tablesButton->setPopupMode (QToolButton::InstantPopup);
-		tablesButton->setIcon (Proxy_->GetIcon ("view-form-table"));
+		tablesButton->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("view-form-table"));
 		ViewBar_->addWidget (tablesButton);
 
 		auto table = tablesMenu->addAction (tr ("Insert table..."),
