@@ -217,6 +217,11 @@ namespace Murm
 		return {};
 	}
 
+	bool VkChatEntry::CanChangeSubject () const
+	{
+		return false;
+	}
+
 	void VkChatEntry::SetMUCSubject (const QString&)
 	{
 	}

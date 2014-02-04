@@ -100,6 +100,15 @@ namespace Azoth
 		 */
 		virtual void SetMUCSubject (const QString& subject) = 0;
 
+		/** @brief Returns whether MUC subject can be changed.
+		 *
+		 * This function should return whether our user can change this
+		 * MUC's subject.
+		 *
+		 * @return Whether the MUC subject can be changed by the user.
+		 */
+		virtual bool CanChangeSubject () const = 0;
+
 		/** @brief The list of participants of this MUC.
 		 *
 		 * If the protocol plugin chooses to return info about

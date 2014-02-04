@@ -127,7 +127,12 @@ namespace Acetamide
 
 	QString IrcServerCLEntry::GetMUCSubject () const
 	{
-		return QString ();
+		return {};
+	}
+
+	bool IrcServerCLEntry::CanChangeSubject () const
+	{
+		return false;
 	}
 
 	void IrcServerCLEntry::SetMUCSubject (const QString&)

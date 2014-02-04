@@ -250,6 +250,11 @@ namespace Acetamide
 		return ICH_->GetMUCSubject ();
 	}
 
+	bool ChannelCLEntry::CanChangeSubject () const
+	{
+		return false;
+	}
+
 	void ChannelCLEntry::SetMUCSubject (const QString& subject)
 	{
 		ICH_->SetTopic (subject);

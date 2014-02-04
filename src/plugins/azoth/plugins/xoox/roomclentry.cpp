@@ -253,6 +253,11 @@ namespace Xoox
 		return RH_->GetSubject ();
 	}
 
+	bool RoomCLEntry::CanChangeSubject () const
+	{
+		return RH_->GetRoom ()->allowedActions () & QXmppMucRoom::SubjectAction;
+	}
+
 	void RoomCLEntry::SetMUCSubject (const QString& subj)
 	{
 		RH_->SetSubject (subj);
@@ -443,10 +448,8 @@ namespace Xoox
 			return false;
 		}
 
-		const QXmppMucItem::Role ourRole =
-				RH_->GetSelf ()->GetRole ();
-		const QXmppMucItem::Affiliation ourAff =
-				RH_->GetSelf ()->GetAffiliation ();
+		const auto ourRole = RH_->GetSelf ()->GetRole ();
+		const auto ourAff = RH_->GetSelf ()->GetAffiliation ();
 
 		if (permClass == "permclass_role")
 			return MayChange (ourRole, ourAff, entry, Role2Str_.key (perm));

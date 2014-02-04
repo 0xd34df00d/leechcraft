@@ -82,6 +82,7 @@ namespace Murm
 
 		MUCFeatures GetMUCFeatures () const;
 		QString GetMUCSubject () const;
+		bool CanChangeSubject () const;
 		void SetMUCSubject (const QString& subject);
 		QList<QObject*> GetParticipants ();
 		bool IsAutojoined () const;

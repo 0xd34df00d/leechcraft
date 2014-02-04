@@ -76,6 +76,7 @@ namespace Acetamide
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;
 		QString GetMUCSubject () const;
+		bool CanChangeSubject () const;
 		void SetMUCSubject (const QString&);
 		QList<QObject*> GetParticipants ();
 		bool IsAutojoined () const;
