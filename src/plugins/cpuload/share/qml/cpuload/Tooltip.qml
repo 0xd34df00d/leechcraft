@@ -36,7 +36,7 @@ Rectangle {
         anchors.fill: parent
 
         delegate: Item {
-            width: 600
+            width: 400
             height: 100
 
             Plot {

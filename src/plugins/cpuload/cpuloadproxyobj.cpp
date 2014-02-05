@@ -35,7 +35,7 @@ namespace LeechCraft
 {
 namespace CpuLoad
 {
-	const auto HistCount = 200;
+	const auto HistCount = 400;
 
 	CpuLoadProxyObj::CpuLoadProxyObj (const QMap<LoadPriority, LoadTypeInfo>& infos)
 	{
