@@ -35,6 +35,8 @@ namespace LeechCraft
 {
 namespace CpuLoad
 {
+	const auto HistCount = 200;
+
 	CpuLoadProxyObj::CpuLoadProxyObj (const QMap<LoadPriority, LoadTypeInfo>& infos)
 	{
 		Set (infos);
@@ -44,6 +46,15 @@ namespace CpuLoad
 	{
 		Infos_ = infos;
 		emit percentagesChanged ();
+
+		for (auto i = infos.begin (), end = infos.end (); i != end; ++i)
+		{
+			auto& arr = History_ [i.key ()];
+			arr << i.value ().LoadPercentage_ * 100;
+			if (arr.size () > HistCount)
+				arr.removeFirst ();
+		}
+		emit histChanged ();
 	}
 
 	double CpuLoadProxyObj::GetIoPercentage () const
@@ -64,6 +75,35 @@ namespace CpuLoad
 	double CpuLoadProxyObj::GetHighPercentage () const
 	{
 		return Infos_ [LoadPriority::High].LoadPercentage_;
+	}
+
+	QList<QPointF> CpuLoadProxyObj::GetIoHist () const
+	{
+		return GetHist (LoadPriority::IO);
+	}
+
+	QList<QPointF> CpuLoadProxyObj::GetLowHist () const
+	{
+		return GetHist (LoadPriority::Low);
+	}
+
+	QList<QPointF> CpuLoadProxyObj::GetMediumHist () const
+	{
+		return GetHist (LoadPriority::Medium);
+	}
+
+	QList<QPointF> CpuLoadProxyObj::GetHighHist () const
+	{
+		return GetHist (LoadPriority::High);
+	}
+
+	QList<QPointF> CpuLoadProxyObj::GetHist (LoadPriority key) const
+	{
+		QList<QPointF> result;
+		int i = 0;
+		for (const auto pt : History_ [key])
+			result.push_back ({ static_cast<double> (i++), pt });
+		return result;
 	}
 }
 }
