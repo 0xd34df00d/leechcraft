@@ -57,6 +57,8 @@ namespace Util
 		Q_PROPERTY (QString leftAxisTitle READ GetLeftAxisTitle WRITE SetLeftAxisTitle NOTIFY leftAxisTitleChanged)
 		Q_PROPERTY (QString bottomAxisTitle READ GetBottomAxisTitle WRITE SetBottomAxisTitle NOTIFY bottomAxisTitleChanged)
 
+		Q_PROPERTY (QString plotTitle READ GetPlotTitle WRITE SetPlotTitle NOTIFY plotTitleChanged)
+
 		QList<QPointF> Points_;
 
 		struct PointsSet
@@ -81,6 +83,8 @@ namespace Util
 
 		QString LeftAxisTitle_;
 		QString BottomAxisTitle_;
+
+		QString PlotTitle_;
 	public:
 		PlotItem (QDeclarativeItem* = 0);
 
@@ -116,6 +120,9 @@ namespace Util
 		QString GetBottomAxisTitle () const;
 		void SetBottomAxisTitle (const QString&);
 
+		QString GetPlotTitle () const;
+		void SetPlotTitle (const QString&);
+
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 	private:
 		template<typename T>
@@ -139,6 +146,8 @@ namespace Util
 
 		void leftAxisTitleChanged ();
 		void bottomAxisTitleChanged ();
+
+		void plotTitleChanged ();
 	};
 }
 }
