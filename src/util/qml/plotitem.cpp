@@ -197,6 +197,7 @@ namespace Util
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
 		QwtPlot plot;
+		plot.setFrameShape (QFrame::NoFrame);
 		plot.enableAxis (QwtPlot::yLeft, LeftAxisEnabled_);
 		plot.enableAxis (QwtPlot::xBottom, BottomAxisEnabled_);
 		plot.setAxisTitle (QwtPlot::yLeft, LeftAxisTitle_);
