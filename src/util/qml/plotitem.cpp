@@ -214,6 +214,16 @@ namespace Util
 		SetNewValue (bg, BackgroundColor_, [this] { emit backgroundChanged (); });
 	}
 
+	QColor PlotItem::GetTextColor () const
+	{
+		return TextColor_;
+	}
+
+	void PlotItem::SetTextColor (const QColor& color)
+	{
+		SetNewValue (color, TextColor_, [this] { emit textColorChanged (); });
+	}
+
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
 		QwtPlot plot;
@@ -224,12 +234,19 @@ namespace Util
 		plot.setAxisTitle (QwtPlot::xBottom, BottomAxisTitle_);
 		plot.resize (option->rect.size ());
 
-		if (BackgroundColor_.isValid ())
+		auto setPaletteColor = [&plot] (const QColor& color, QPalette::ColorRole role) -> void
 		{
+			if (!color.isValid ())
+				return;
+
 			auto pal = plot.palette ();
-			pal.setColor (QPalette::Window, { BackgroundColor_ });
+			pal.setColor (role, { color });
 			plot.setPalette (pal);
-		}
+		};
+
+		setPaletteColor (BackgroundColor_, QPalette::Window);
+		setPaletteColor (TextColor_, QPalette::WindowText);
+		setPaletteColor (TextColor_, QPalette::Text);
 
 		if (!PlotTitle_.isEmpty ())
 			plot.setTitle (QwtText { PlotTitle_ });

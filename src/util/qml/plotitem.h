@@ -60,6 +60,7 @@ namespace Util
 		Q_PROPERTY (QString plotTitle READ GetPlotTitle WRITE SetPlotTitle NOTIFY plotTitleChanged)
 
 		Q_PROPERTY (QColor background READ GetBackground WRITE SetBackground NOTIFY backgroundChanged)
+		Q_PROPERTY (QColor textColor READ GetTextColor WRITE SetTextColor NOTIFY textColorChanged)
 
 		QList<QPointF> Points_;
 
@@ -89,6 +90,7 @@ namespace Util
 		QString PlotTitle_;
 
 		QColor BackgroundColor_;
+		QColor TextColor_;
 	public:
 		PlotItem (QDeclarativeItem* = 0);
 
@@ -129,6 +131,8 @@ namespace Util
 
 		QColor GetBackground () const;
 		void SetBackground (const QColor&);
+		QColor GetTextColor () const;
+		void SetTextColor (const QColor&);
 
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 	private:
@@ -157,6 +161,7 @@ namespace Util
 		void plotTitleChanged ();
 
 		void backgroundChanged ();
+		void textColorChanged ();
 	};
 }
 }
