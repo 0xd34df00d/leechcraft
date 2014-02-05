@@ -35,12 +35,38 @@ Rectangle {
 
         anchors.fill: parent
 
-        delegate: Item {
+        delegate: Rectangle {
             width: 400
-            height: 100
+            height: plot.height + cpuLabel.height
+
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: colorProxy.color_TextBox_TopColor
+                }
+                GradientStop {
+                    position: 1
+                    color: colorProxy.color_TextBox_BottomColor
+                }
+            }
+
+            Text {
+                id: cpuLabel
+                text: "CPU " + cpuIdx
+
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                color: colorProxy.color_TextBox_TitleTextColor
+            }
 
             Plot {
-                anchors.fill: parent
+                id: plot
+
+                anchors.top: cpuLabel.bottom
+
+                width: parent.width
+                height: 100
 
                 multipoints: [
                         { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
@@ -57,6 +83,8 @@ Rectangle {
                 maxYValue: 100
 
                 alpha: 1
+                background: "transparent"
+                textColor: colorProxy.color_TextBox_TextColor
             }
         }
     }
