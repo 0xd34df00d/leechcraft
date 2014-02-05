@@ -10,6 +10,8 @@ Rectangle {
 
     color: "transparent"
 
+    Common { id: commonJS }
+
     Timer {
         interval: CpuLoad_updateInterval
         running: true
@@ -35,6 +37,27 @@ Rectangle {
             axis { x: 1; y: 1; z: 0 }
 
             angle: viewOrient == "horizontal" ? 0 : 180
+        }
+
+        MouseArea {
+            anchors.fill: parent
+
+            property variant tooltip: null
+
+            onEntered: {
+                var global = commonJS.getTooltipPos(rootRect);
+                var params = {
+                    "x": global.x,
+                    "y": global.y,
+                    "existing": "ignore",
+                    "loadModel": CpuLoad_model,
+                    "cpuProxy": CpuLoad_proxy,
+                    "colorProxy": colorProxy
+                };
+                tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
+            }
+
+            hoverEnabled: true
         }
 
         delegate: Item {

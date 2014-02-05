@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QPointF>
 #include "structures.h"
 
 namespace LeechCraft
@@ -48,7 +49,13 @@ namespace CpuLoad
 		Q_PROPERTY (double mediumPercentage READ GetMediumPercentage NOTIFY percentagesChanged)
 		Q_PROPERTY (double highPercentage READ GetHighPercentage NOTIFY percentagesChanged)
 
+		Q_PROPERTY (QList<QPointF> ioHist READ GetIoHist NOTIFY histChanged)
+		Q_PROPERTY (QList<QPointF> lowHist READ GetLowHist NOTIFY histChanged)
+		Q_PROPERTY (QList<QPointF> mediumHist READ GetMediumHist NOTIFY histChanged)
+		Q_PROPERTY (QList<QPointF> highHist READ GetHighHist NOTIFY histChanged)
+
 		QMap<LoadPriority, LoadTypeInfo> Infos_;
+		QMap<LoadPriority, QList<double>> History_;
 	public:
 		CpuLoadProxyObj (const QMap<LoadPriority, LoadTypeInfo>&);
 
@@ -58,8 +65,16 @@ namespace CpuLoad
 		double GetLowPercentage () const;
 		double GetMediumPercentage () const;
 		double GetHighPercentage () const;
+
+		QList<QPointF> GetIoHist () const;
+		QList<QPointF> GetLowHist () const;
+		QList<QPointF> GetMediumHist () const;
+		QList<QPointF> GetHighHist () const;
+	private:
+		QList<QPointF> GetHist (LoadPriority) const;
 	signals:
 		void percentagesChanged ();
+		void histChanged ();
 	};
 }
 }

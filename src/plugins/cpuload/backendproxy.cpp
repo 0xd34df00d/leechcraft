@@ -107,5 +107,12 @@ namespace CpuLoad
 
 		Model_->invisibleRootItem ()->appendRows (newItems);
 	}
+
+	QList<QPointF> BackendProxy::sumPoints (QList<QPointF> list, const QList<QPointF>& other)
+	{
+		for (auto i = 0; i < list.size (); ++i)
+			list [i].ry () += other [i].y ();
+		return list;
+	}
 }
 }

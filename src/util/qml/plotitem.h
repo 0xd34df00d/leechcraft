@@ -42,12 +42,15 @@ namespace Util
 
 		Q_PROPERTY (QList<QPointF> points READ GetPoints WRITE SetPoints NOTIFY pointsChanged)
 
+		Q_PROPERTY (QVariant multipoints READ GetMultipoints WRITE SetMultipoints NOTIFY multipointsChanged)
+
 		Q_PROPERTY (double minYValue READ GetMinYValue WRITE SetMinYValue NOTIFY minYValueChanged)
 		Q_PROPERTY (double maxYValue READ GetMaxYValue WRITE SetMaxYValue NOTIFY maxYValueChanged)
 
 		Q_PROPERTY (bool yGridEnabled READ GetYGridEnabled WRITE SetYGridEnabled NOTIFY yGridChanged)
 		Q_PROPERTY (bool yMinorGridEnabled READ GetYMinorGridEnabled WRITE SetYMinorGridEnabled NOTIFY yMinorGridChanged)
 
+		Q_PROPERTY (double alpha READ GetAlpha WRITE SetAlpha NOTIFY alphaChanged)
 		Q_PROPERTY (QColor color READ GetColor WRITE SetColor NOTIFY colorChanged)
 		Q_PROPERTY (bool leftAxisEnabled READ GetLeftAxisEnabled WRITE SetLeftAxisEnabled NOTIFY leftAxisEnabledChanged)
 		Q_PROPERTY (bool bottomAxisEnabled READ GetBottomAxisEnabled WRITE SetBottomAxisEnabled NOTIFY bottomAxisEnabledChanged)
@@ -56,11 +59,20 @@ namespace Util
 
 		QList<QPointF> Points_;
 
+		struct PointsSet
+		{
+			QColor Color_;
+			QList<QPointF> Points_;
+		};
+		QList<PointsSet> Multipoints_;
+
 		double MinYValue_ = -1;
 		double MaxYValue_ = -1;
 
 		bool YGridEnabled_ = false;
 		bool YMinorGridEnabled_ = false;
+
+		double Alpha_ = 0;
 
 		QColor Color_;
 
@@ -75,6 +87,9 @@ namespace Util
 		QList<QPointF> GetPoints () const;
 		void SetPoints (const QList<QPointF>&);
 
+		QVariant GetMultipoints () const;
+		void SetMultipoints (const QVariant&);
+
 		double GetMinYValue () const;
 		void SetMinYValue (double);
 		double GetMaxYValue () const;
@@ -84,6 +99,9 @@ namespace Util
 		void SetYGridEnabled (bool);
 		bool GetYMinorGridEnabled () const;
 		void SetYMinorGridEnabled (bool);
+
+		double GetAlpha () const;
+		void SetAlpha (double);
 
 		QColor GetColor () const;
 		void SetColor (const QColor&);
@@ -104,12 +122,15 @@ namespace Util
 		void SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier);
 	signals:
 		void pointsChanged ();
+		void multipointsChanged ();
 
 		void minYValueChanged ();
 		void maxYValueChanged ();
 
 		void yGridChanged ();
 		void yMinorGridChanged ();
+
+		void alphaChanged ();
 
 		void colorChanged ();
 
