@@ -48,6 +48,7 @@ namespace Util
 		Q_PROPERTY (bool yGridEnabled READ GetYGridEnabled WRITE SetYGridEnabled NOTIFY yGridChanged)
 		Q_PROPERTY (bool yMinorGridEnabled READ GetYMinorGridEnabled WRITE SetYMinorGridEnabled NOTIFY yMinorGridChanged)
 
+		Q_PROPERTY (double alpha READ GetAlpha WRITE SetAlpha NOTIFY alphaChanged)
 		Q_PROPERTY (QColor color READ GetColor WRITE SetColor NOTIFY colorChanged)
 		Q_PROPERTY (bool leftAxisEnabled READ GetLeftAxisEnabled WRITE SetLeftAxisEnabled NOTIFY leftAxisEnabledChanged)
 		Q_PROPERTY (bool bottomAxisEnabled READ GetBottomAxisEnabled WRITE SetBottomAxisEnabled NOTIFY bottomAxisEnabledChanged)
@@ -61,6 +62,8 @@ namespace Util
 
 		bool YGridEnabled_ = false;
 		bool YMinorGridEnabled_ = false;
+
+		double Alpha_ = 0;
 
 		QColor Color_;
 
@@ -84,6 +87,9 @@ namespace Util
 		void SetYGridEnabled (bool);
 		bool GetYMinorGridEnabled () const;
 		void SetYMinorGridEnabled (bool);
+
+		double GetAlpha () const;
+		void SetAlpha (double);
 
 		QColor GetColor () const;
 		void SetColor (const QColor&);
@@ -110,6 +116,8 @@ namespace Util
 
 		void yGridChanged ();
 		void yMinorGridChanged ();
+
+		void alphaChanged ();
 
 		void colorChanged ();
 

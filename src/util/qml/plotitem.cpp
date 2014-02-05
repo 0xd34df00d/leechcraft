@@ -104,6 +104,17 @@ namespace Util
 		SetNewValue (val, YMinorGridEnabled_, [this] { emit yMinorGridChanged (); });
 	}
 
+	double PlotItem::GetAlpha () const
+	{
+		return Alpha_;
+	}
+
+	void PlotItem::SetAlpha (double a)
+	{
+		Alpha_ = a;
+		emit alphaChanged ();
+	}
+
 	QColor PlotItem::GetColor () const
 	{
 		return Color_;
@@ -191,8 +202,8 @@ namespace Util
 
 		curve.setPen (QPen (Color_));
 		auto transpColor = Color_;
-		transpColor.setAlpha (20);
 		curve.setBrush (transpColor);
+			transpColor.setAlphaF (Alpha_);
 
 		curve.setRenderHint (QwtPlotItem::RenderAntialiased);
 		curve.attach (&plot);
