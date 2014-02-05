@@ -4,7 +4,7 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
     width: 400
-    height: 100 * loadView.count
+    height: loadView.contentHeight
 
     smooth: true
     radius: 5
