@@ -30,11 +30,14 @@
 #include "plotitem.h"
 #include <cmath>
 #include <limits>
+#include <vector>
+#include <memory>
 #include <QStyleOption>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_grid.h>
+#include <util.h>
 
 Q_DECLARE_METATYPE (QList<QPointF>)
 
@@ -61,6 +64,32 @@ namespace Util
 
 		Points_ = pts;
 		emit pointsChanged ();
+		update ();
+	}
+
+	QVariant PlotItem::GetMultipoints () const
+	{
+		QVariantList result;
+		for (const auto& set : Multipoints_)
+			result << Util::MakeMap<QString, QVariant> ({
+					{ "color", QVariant { set.Color_ } },
+					{ "points", QVariant::fromValue (set.Points_) }
+				});
+		return result;
+	}
+
+	void PlotItem::SetMultipoints (const QVariant& variant)
+	{
+		Multipoints_.clear ();
+
+		for (const auto& set : variant.toList ())
+		{
+			const auto& map = set.toMap ();
+			Multipoints_.append ({
+					map ["color"].toString (),
+					map ["points"].value<QList<QPointF>> ()
+				});
+		}
 		update ();
 	}
 
@@ -198,17 +227,25 @@ namespace Util
 			grid->attach (&plot);
 		}
 
-		QwtPlotCurve curve;
+		auto items = Multipoints_;
+		if (items.isEmpty ())
+			items.push_back ({ Color_, Points_ });
 
-		curve.setPen (QPen (Color_));
-		auto transpColor = Color_;
-		curve.setBrush (transpColor);
+		std::vector<std::unique_ptr<QwtPlotCurve>> curves;
+		for (const auto& item : items)
+		{
+			auto curve = new QwtPlotCurve;
+
+			curve->setPen (QPen (item.Color_));
+			auto transpColor = item.Color_;
 			transpColor.setAlphaF (Alpha_);
+			curve->setBrush (transpColor);
 
-		curve.setRenderHint (QwtPlotItem::RenderAntialiased);
-		curve.attach (&plot);
+			curve->setRenderHint (QwtPlotItem::RenderAntialiased);
+			curve->attach (&plot);
 
-		curve.setSamples (Points_.toVector ());
+			curve->setSamples (item.Points_.toVector ());
+		}
 		plot.replot ();
 
 		QwtPlotRenderer {}.render (&plot, painter, option->rect);

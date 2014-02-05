@@ -42,6 +42,8 @@ namespace Util
 
 		Q_PROPERTY (QList<QPointF> points READ GetPoints WRITE SetPoints NOTIFY pointsChanged)
 
+		Q_PROPERTY (QVariant multipoints READ GetMultipoints WRITE SetMultipoints NOTIFY multipointsChanged)
+
 		Q_PROPERTY (double minYValue READ GetMinYValue WRITE SetMinYValue NOTIFY minYValueChanged)
 		Q_PROPERTY (double maxYValue READ GetMaxYValue WRITE SetMaxYValue NOTIFY maxYValueChanged)
 
@@ -56,6 +58,13 @@ namespace Util
 		Q_PROPERTY (QString bottomAxisTitle READ GetBottomAxisTitle WRITE SetBottomAxisTitle NOTIFY bottomAxisTitleChanged)
 
 		QList<QPointF> Points_;
+
+		struct PointsSet
+		{
+			QColor Color_;
+			QList<QPointF> Points_;
+		};
+		QList<PointsSet> Multipoints_;
 
 		double MinYValue_ = -1;
 		double MaxYValue_ = -1;
@@ -77,6 +86,9 @@ namespace Util
 
 		QList<QPointF> GetPoints () const;
 		void SetPoints (const QList<QPointF>&);
+
+		QVariant GetMultipoints () const;
+		void SetMultipoints (const QVariant&);
 
 		double GetMinYValue () const;
 		void SetMinYValue (double);
@@ -110,6 +122,7 @@ namespace Util
 		void SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier);
 	signals:
 		void pointsChanged ();
+		void multipointsChanged ();
 
 		void minYValueChanged ();
 		void maxYValueChanged ();
