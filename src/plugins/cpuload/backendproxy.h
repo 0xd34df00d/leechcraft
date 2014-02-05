@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPointF>
 
 class QStandardItemModel;
 class QAbstractItemModel;
@@ -55,6 +56,7 @@ namespace CpuLoad
 		QAbstractItemModel* GetModel () const;
 	public slots:
 		void update ();
+		QList<QPointF> sumPoints (QList<QPointF>, const QList<QPointF>&);
 	};
 }
 }
