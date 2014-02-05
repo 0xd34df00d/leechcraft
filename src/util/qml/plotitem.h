@@ -59,6 +59,8 @@ namespace Util
 
 		Q_PROPERTY (QString plotTitle READ GetPlotTitle WRITE SetPlotTitle NOTIFY plotTitleChanged)
 
+		Q_PROPERTY (QColor background READ GetBackground WRITE SetBackground NOTIFY backgroundChanged)
+
 		QList<QPointF> Points_;
 
 		struct PointsSet
@@ -85,6 +87,8 @@ namespace Util
 		QString BottomAxisTitle_;
 
 		QString PlotTitle_;
+
+		QColor BackgroundColor_;
 	public:
 		PlotItem (QDeclarativeItem* = 0);
 
@@ -123,6 +127,9 @@ namespace Util
 		QString GetPlotTitle () const;
 		void SetPlotTitle (const QString&);
 
+		QColor GetBackground () const;
+		void SetBackground (const QColor&);
+
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 	private:
 		template<typename T>
@@ -148,6 +155,8 @@ namespace Util
 		void bottomAxisTitleChanged ();
 
 		void plotTitleChanged ();
+
+		void backgroundChanged ();
 	};
 }
 }
