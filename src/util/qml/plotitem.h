@@ -72,7 +72,7 @@ namespace Util
 		bool YGridEnabled_ = false;
 		bool YMinorGridEnabled_ = false;
 
-		double Alpha_ = 0;
+		double Alpha_ = 0.3;
 
 		QColor Color_;
 
