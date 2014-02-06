@@ -170,7 +170,11 @@ namespace KBSwitch
 	void KBCtl::EnableNextGroup ()
 	{
 		const int count = GetEnabledGroups ().count ();
-		const int group = (GetCurrentGroup () + 1) % count;
+		EnableGroup ((GetCurrentGroup () + 1) % count);
+	}
+
+	void KBCtl::EnableGroup (int group)
+	{
 		XkbLockGroup (Display_, XkbUseCoreKbd, group);
 	}
 

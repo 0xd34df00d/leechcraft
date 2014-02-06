@@ -90,6 +90,7 @@ namespace KBSwitch
 		QString GetGroupVariant (const QString&) const;
 		void SetGroupVariants (const QHash<QString, QString>&);
 		void EnableNextGroup ();
+		void EnableGroup (int);
 
 		int GetMaxEnabledGroups () const;
 
