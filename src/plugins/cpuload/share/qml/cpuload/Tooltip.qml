@@ -3,8 +3,8 @@ import org.LC.common 1.0
 
 Rectangle {
     id: rootRect
-    width: 400
-    height: loadView.contentHeight
+    width: loadView.cellWidth * 2
+    height: loadView.cellHeight * Math.ceil(loadView.count / 2)
 
     smooth: true
     radius: 5
@@ -28,16 +28,21 @@ Rectangle {
         return first;
     }
 
-    ListView {
+    GridView {
         id: loadView
 
         model: loadModel
 
         anchors.fill: parent
 
+        cellWidth: 400
+        cellHeight: 100
+
+        property int desiredRows: Math.ceil(Math.sqrt(count))
+
         delegate: Rectangle {
             width: 400
-            height: plot.height + cpuLabel.height
+            height: plot.height
 
             gradient: Gradient {
                 GradientStop {
@@ -50,20 +55,10 @@ Rectangle {
                 }
             }
 
-            Text {
-                id: cpuLabel
-                text: "CPU " + cpuIdx
-
-                anchors.top: parent.top
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                color: colorProxy.color_TextBox_TitleTextColor
-            }
-
             Plot {
                 id: plot
 
-                anchors.top: cpuLabel.bottom
+                anchors.top: parent.top
 
                 width: parent.width
                 height: 100
@@ -85,6 +80,18 @@ Rectangle {
                 alpha: 1
                 background: "transparent"
                 textColor: colorProxy.color_TextBox_TextColor
+            }
+
+            Text {
+                id: cpuLabel
+                text: "CPU " + cpuIdx
+
+                anchors.top: plot.top
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                color: colorProxy.color_TextBox_TitleTextColor
+
+                font.bold: true
             }
         }
     }

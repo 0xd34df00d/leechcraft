@@ -170,8 +170,21 @@ namespace KBSwitch
 	void KBCtl::EnableNextGroup ()
 	{
 		const int count = GetEnabledGroups ().count ();
-		const int group = (GetCurrentGroup () + 1) % count;
+		EnableGroup ((GetCurrentGroup () + 1) % count);
+	}
+
+	void KBCtl::EnableGroup (int group)
+	{
 		XkbLockGroup (Display_, XkbUseCoreKbd, group);
+
+		/* What an utter crap X11 is actually. The group doesn't get
+		 * updated by the line above until we make another request to
+		 * the X server, which this line basically does.
+		 *
+		 * Dunno why I'm writing this as I don't write comments for code
+		 * at all. Probably for easy grepping by "crap" or "X!1".
+		 */
+		GetCurrentGroup ();
 	}
 
 	int KBCtl::GetMaxEnabledGroups () const
@@ -269,6 +282,10 @@ namespace KBSwitch
 
 		const auto group = Win2Group_ [window];
 		XkbLockGroup (Display_, XkbUseCoreKbd, group);
+
+		/* See comments in SetGroup() for details of X11 crappiness.
+		 */
+		GetCurrentGroup ();
 	}
 
 	void KBCtl::InitDisplay ()

@@ -300,7 +300,7 @@ namespace Murm
 						replacement += "<div style='text-align:right'>";
 						replacement += tr ("Posted on: %1")
 								.arg (repost.PostDate_.toString ());
-						replacement += "<br/";
+						replacement += "<br/>";
 						replacement += tr ("%n like(s)", 0, repost.Likes_);
 						replacement += "; ";
 						replacement += tr ("%n repost(s)", 0, repost.Reposts_);

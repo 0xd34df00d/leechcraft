@@ -36,6 +36,14 @@ Item {
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
-        onClicked: KBSwitch_proxy.setNextLanguage()
+
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+        onPressed: {
+            if (pressedButtons & Qt.LeftButton)
+                KBSwitch_proxy.setNextLanguage();
+            else
+                KBSwitch_proxy.contextMenuRequested();
+        }
    }
 }
