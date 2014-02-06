@@ -78,6 +78,9 @@ namespace KBSwitch
 	private:
 		SwitchPolicy Policy_;
 	public:
+		KBCtl (const KBCtl&) = delete;
+		KBCtl& operator= (const KBCtl&) = delete;
+
 		static KBCtl& Instance ();
 		void Release ();
 
