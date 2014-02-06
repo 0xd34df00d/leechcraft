@@ -150,7 +150,7 @@ namespace LHTR
 		return true;
 	}
 
-	void ImageInfosModel::FetchImage (int row)
+	void ImageInfosModel::FetchImage (int row) const
 	{
 		const auto& info = Infos_.at (row);
 

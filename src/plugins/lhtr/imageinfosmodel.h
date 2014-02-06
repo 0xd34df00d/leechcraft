@@ -47,7 +47,7 @@ namespace LHTR
 		const QStringList Columns_;
 
 		QVector<QImage> Images_;
-		QMap<QNetworkReply*, int> Reply2Image_;
+		mutable QMap<QNetworkReply*, int> Reply2Image_;
 
 		enum Column
 		{
@@ -69,7 +69,7 @@ namespace LHTR
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 		bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 	private:
-		void FetchImage (int);
+		void FetchImage (int) const;
 	private slots:
 		void handleImageFetched ();
 	};
