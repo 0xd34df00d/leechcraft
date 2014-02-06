@@ -33,6 +33,7 @@
 #include <vector>
 #include <memory>
 #include <QStyleOption>
+#include <QColor>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_renderer.h>
@@ -72,7 +73,7 @@ namespace Util
 		QVariantList result;
 		for (const auto& set : Multipoints_)
 			result << Util::MakeMap<QString, QVariant> ({
-					{ "color", QVariant { set.Color_ } },
+					{ "color", QVariant::fromValue (set.Color_) },
 					{ "points", QVariant::fromValue (set.Points_) }
 				});
 		return result;
