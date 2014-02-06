@@ -61,12 +61,16 @@ namespace KBSwitch
 	{
 		QMenu menu;
 
-		const auto& enabled = KBCtl::Instance ().GetEnabledGroups ();
-		const auto curGrpIdx = KBCtl::Instance ().GetCurrentGroup ();
+		auto& kbctl = KBCtl::Instance ();
+		const auto& enabled = kbctl.GetEnabledGroups ();
+		const auto curGrpIdx = kbctl.GetCurrentGroup ();
 
 		for (int i = 0; i < enabled.size (); ++i)
 		{
-			const auto act = menu.addAction (enabled.at (i),
+			const auto& actionName = QString ("%1 (%2)")
+					.arg (kbctl.GetLayoutDesc (i))
+					.arg (enabled.at (i));
+			const auto act = menu.addAction (actionName,
 					this,
 					SLOT (handleGroupSelectAction ()));
 			if (curGrpIdx == i)
