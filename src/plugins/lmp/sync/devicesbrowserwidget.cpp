@@ -104,36 +104,29 @@ namespace LMP
 		DevUploadModel_->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
 		Ui_.OurCollection_->setModel (DevUploadModel_);
 
-		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (uploadLog (QString)),
-				this,
-				SLOT (appendUpLog (QString)));
+		auto connectManager = [this] (SyncManagerBase *manager) -> void
+		{
+			connect (manager,
+					SIGNAL (uploadLog (QString)),
+					this,
+					SLOT (appendUpLog (QString)));
 
-		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleTranscodingProgress (int, int)));
-		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleUploadProgress (int, int)));
-		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (singleUploadProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleSingleUploadProgress (int, int)));
+			connect (manager,
+					SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
+					this,
+					SLOT (handleTranscodingProgress (int, int)));
+			connect (manager,
+					SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
+					this,
+					SLOT (handleUploadProgress (int, int)));
+			connect (manager,
+					SIGNAL (singleUploadProgress (int, int, SyncManagerBase*)),
+					this,
+					SLOT (handleSingleUploadProgress (int, int)));
+		};
 
-		connect (Core::Instance ().GetSyncUnmountableManager (),
-				SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleTranscodingProgress (int, int)));
-		connect (Core::Instance ().GetSyncUnmountableManager (),
-				SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleUploadProgress (int, int)));
-		connect (Core::Instance ().GetSyncUnmountableManager (),
-				SIGNAL (singleUploadProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleSingleUploadProgress (int, int)));
+		connectManager (Core::Instance ().GetSyncManager ());
+		connectManager (Core::Instance ().GetSyncUnmountableManager ());
 
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
