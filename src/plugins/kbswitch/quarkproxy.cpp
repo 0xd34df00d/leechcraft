@@ -30,7 +30,9 @@
 #include "quarkproxy.h"
 #include <QCursor>
 #include <QMenu>
+#include <QIcon>
 #include <QtDebug>
+#include <util/sys/paths.h>
 #include "kbctl.h"
 
 namespace LeechCraft
@@ -70,7 +72,12 @@ namespace KBSwitch
 			const auto& actionName = QString ("%1 (%2)")
 					.arg (kbctl.GetLayoutDesc (i))
 					.arg (enabled.at (i));
-			const auto act = menu.addAction (actionName,
+
+			const auto& iconPath = Util::GetSysPath (Util::SysPath::Share,
+					"global_icons/flags", enabled.at (i) + ".png");
+
+			const auto act = menu.addAction (QIcon { iconPath },
+					actionName,
 					this,
 					SLOT (handleGroupSelectAction ()));
 			act->setCheckable (true);
