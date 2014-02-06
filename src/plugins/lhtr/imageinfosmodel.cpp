@@ -64,7 +64,7 @@ namespace LHTR
 		return parent.isValid () ? 0 : Infos_.size ();
 	}
 
-	int ImageInfosModel::columnCount (const QModelIndex& parent) const
+	int ImageInfosModel::columnCount (const QModelIndex&) const
 	{
 		return Columns_.size ();
 	}
