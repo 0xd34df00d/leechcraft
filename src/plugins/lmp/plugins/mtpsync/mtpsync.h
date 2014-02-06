@@ -38,7 +38,6 @@
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/iunmountablesync.h>
 
-class QTimer;
 class QAbstractItemModel;
 class QModelIndex;
 
@@ -77,11 +76,8 @@ namespace MTPSync
 		struct DeviceCacheEntry
 		{
 			std::shared_ptr<LIBMTP_mtpdevice_t> Device_;
-			QDateTime LastAccess_;
 		};
 		QHash<QByteArray, DeviceCacheEntry> DevicesCache_;
-
-		QTimer *CacheEvictTimer_;
 
 		struct UploadQueueItem
 		{

@@ -48,20 +48,11 @@ namespace LMP
 {
 namespace MTPSync
 {
-	const int CacheLifetime = 300 * 1000;
-
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
 
 		LIBMTP_Init ();
-
-		CacheEvictTimer_ = new QTimer (this);
-		connect (CacheEvictTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (clearCaches ()));
-		CacheEvictTimer_->setInterval (CacheLifetime);
 
 		QTimer::singleShot (5000,
 				this,
@@ -160,7 +151,7 @@ namespace MTPSync
 				qDebug () << "matching against" << serial;
 				if (serial == devId)
 				{
-					DevicesCache_ [devId] = DeviceCacheEntry { std::move (device), {} };
+					DevicesCache_ [devId] = DeviceCacheEntry { std::move (device) };
 					found = true;
 					break;
 				}
@@ -179,12 +170,8 @@ namespace MTPSync
 			}
 		}
 
-		auto& entry = DevicesCache_ [devId];
+		const auto& entry = DevicesCache_ [devId];
 		UploadTo (entry.Device_.get (), storageId, localPath, origPath);
-		entry.LastAccess_ = QDateTime::currentDateTime ();
-
-		if (CacheEvictTimer_->isActive ())
-			CacheEvictTimer_->stop ();
 	}
 
 	void Plugin::Refresh ()
@@ -579,9 +566,6 @@ namespace MTPSync
 
 		LIBMTP_destroy_track_t (info.Track_);
 
-		if (!CacheEvictTimer_->isActive ())
-			CacheEvictTimer_->stop ();
-
 		emit uploadFinished (info.LocalPath_, QFile::NoError, {});
 	}
 
@@ -664,8 +648,6 @@ namespace MTPSync
 		if (parent.isValid ())
 			return;
 
-		clearCaches ();
-
 		bool changed = false;
 		for (auto i = start; i <= end; ++i)
 		{
@@ -677,33 +659,17 @@ namespace MTPSync
 			const auto pos = std::find_if (Infos_.begin (), Infos_.end (),
 					[&busnum, &devnum] (const USBDevInfo& info)
 						{ return info.Busnum_ == busnum && info.Devnum_ == devnum; });
-			if (pos != Infos_.end ())
-			{
-				Infos_.erase (pos);
-				changed = true;
-			}
+			if (pos == Infos_.end ())
+				continue;
+
+			DevicesCache_.remove (pos->Info_.ID_);
+
+			Infos_.erase (pos);
+			changed = true;
 		}
 
 		if (changed)
 			emit availableDevicesChanged ();
-	}
-
-	void Plugin::clearCaches ()
-	{
-		const auto& now = QDateTime::currentDateTime ();
-		for (auto i = DevicesCache_.begin (); i != DevicesCache_.end (); )
-		{
-			if (i->LastAccess_.secsTo (now) > CacheLifetime)
-			{
-				qDebug () << Q_FUNC_INFO << "erased";
-				i = DevicesCache_.erase (i);
-			}
-			else
-				++i;
-		}
-
-		if (DevicesCache_.isEmpty ())
-			CacheEvictTimer_->stop ();
 	}
 }
 }
