@@ -73,6 +73,7 @@ namespace KBSwitch
 			const auto act = menu.addAction (actionName,
 					this,
 					SLOT (handleGroupSelectAction ()));
+			act->setCheckable (true);
 			if (curGrpIdx == i)
 				act->setChecked (true);
 			act->setProperty ("KBSwitch/GrpIdx", i);
