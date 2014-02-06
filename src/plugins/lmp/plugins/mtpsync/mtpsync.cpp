@@ -449,7 +449,16 @@ namespace MTPSync
 				{ LIBMTP_FILETYPE_OGG, "ogg" },
 				{ LIBMTP_FILETYPE_ASF, "asf" },
 				{ LIBMTP_FILETYPE_AAC, "aac" },
-				{ LIBMTP_FILETYPE_FLAC, "flac" }
+				{ LIBMTP_FILETYPE_FLAC, "flac" },
+				{ LIBMTP_FILETYPE_WMA, "wma" },
+
+				// uninteresting formats go here
+				{ LIBMTP_FILETYPE_FOLDER, {} },
+				{ LIBMTP_FILETYPE_WMV, {} },
+				{ LIBMTP_FILETYPE_AVI, {} },
+				{ LIBMTP_FILETYPE_MPEG, {} },
+				{ LIBMTP_FILETYPE_JPEG, {} }
+
 			};
 
 			QStringList result;
@@ -471,6 +480,8 @@ namespace MTPSync
 				result << pos->second;
 			}
 			free (formats);
+
+			result.removeAll ({});
 
 			return result;
 		}
