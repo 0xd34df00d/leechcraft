@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "quarkproxy.h"
+#include <QCursor>
+#include <QMenu>
 #include <QtDebug>
 #include "kbctl.h"
 
@@ -53,6 +55,32 @@ namespace KBSwitch
 	void QuarkProxy::setNextLanguage ()
 	{
 		KBCtl::Instance ().EnableNextGroup ();
+	}
+
+	void QuarkProxy::contextMenuRequested ()
+	{
+		QMenu menu;
+
+		const auto& enabled = KBCtl::Instance ().GetEnabledGroups ();
+		const auto curGrpIdx = KBCtl::Instance ().GetCurrentGroup ();
+
+		for (int i = 0; i < enabled.size (); ++i)
+		{
+			const auto act = menu.addAction (enabled.at (i),
+					this,
+					SLOT (handleGroupSelectAction ()));
+			if (curGrpIdx == i)
+				act->setChecked (true);
+			act->setProperty ("KBSwitch/GrpIdx", i);
+		}
+
+		menu.exec (QCursor::pos ());
+	}
+
+	void QuarkProxy::handleGroupSelectAction ()
+	{
+		const auto grpIdx = sender ()->property ("KBSwitch/GrpIdx").toInt ();
+		KBCtl::Instance ().EnableGroup (grpIdx);
 	}
 
 	void QuarkProxy::handleGroupChanged (int group)
