@@ -251,9 +251,6 @@ namespace Util
 		if (!PlotTitle_.isEmpty ())
 			plot.setTitle (QwtText { PlotTitle_ });
 
-		plot.setAxisAutoScale (QwtPlot::xBottom, false);
-		plot.setAxisScale (QwtPlot::xBottom, 0, Points_.size ());
-
 		if (MinYValue_ < MaxYValue_)
 		{
 			plot.setAxisAutoScale (QwtPlot::yLeft, false);
@@ -278,6 +275,10 @@ namespace Util
 		auto items = Multipoints_;
 		if (items.isEmpty ())
 			items.push_back ({ Color_, Points_ });
+
+		const auto ptsCount = items.first ().Points_.size ();
+		if (ptsCount)
+			plot.setAxisScale (QwtPlot::xBottom, 0, ptsCount - 1);
 
 		std::vector<std::unique_ptr<QwtPlotCurve>> curves;
 		for (const auto& item : items)
