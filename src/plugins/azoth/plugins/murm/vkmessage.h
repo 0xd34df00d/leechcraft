@@ -77,6 +77,8 @@ namespace Murm
 		bool IsRead () const;
 		void SetRead ();
 
+		QString GetRawBody () const;
+
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
