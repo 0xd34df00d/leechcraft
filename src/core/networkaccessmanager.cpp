@@ -30,6 +30,7 @@
 #include "networkaccessmanager.h"
 #include <stdexcept>
 #include <algorithm>
+#include <memory>
 #include <QNetworkRequest>
 #include <QDir>
 #include <QFile>
@@ -270,47 +271,53 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	const auto& urlString = url.toString ();
 	const auto& host = url.host ();
 
+	std::shared_ptr<void> guard {
+			nullptr,
+			[&settings] (void*) { settings.endGroup (); }
+		};
+
 	if (keys.contains (urlString))
 	{
 		if (settings.value (urlString).toBool ())
 			reply->ignoreSslErrors ();
+
+		return;
 	}
 	else if (keys.contains (host))
 	{
 		if (settings.value (host).toBool ())
 			reply->ignoreSslErrors ();
+
+		return;
 	}
-	else
+
+	QPointer<QNetworkReply> repGuarded (reply);
+	QString msg = tr ("<code>%1</code><br />has SSL errors."
+			" What do you want to do?")
+		.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, 300));
+
+	SslErrorsDialog errDialog { new SslErrorsDialog () };
+	errDialog.Update (msg, errors);
+
+	const bool ignore = errDialog.exec () == QDialog::Accepted;
+	const auto choice = errDialog.GetRememberChoice ();
+
+	if (choice != SslErrorsDialog::RCNot)
 	{
-		QPointer<QNetworkReply> repGuarded (reply);
-		QString msg = tr ("<code>%1</code><br />has SSL errors."
-				" What do you want to do?")
-			.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, 300));
-
-		std::auto_ptr<SslErrorsDialog> errDialog (new SslErrorsDialog ());
-		errDialog->Update (msg, errors);
-
-		bool ignore = (errDialog->exec () == QDialog::Accepted);
-		SslErrorsDialog::RememberChoice choice = errDialog->GetRememberChoice ();
-
-		if (choice != SslErrorsDialog::RCNot)
-		{
-			if (choice == SslErrorsDialog::RCFile)
-				settings.setValue (urlString, ignore);
-			else
-				settings.setValue (host, ignore);
-		}
-
-		if (ignore)
-		{
-			if (repGuarded)
-				repGuarded->ignoreSslErrors ();
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "reply destructed while in errors dialog";
-		}
+		if (choice == SslErrorsDialog::RCFile)
+			settings.setValue (urlString, ignore);
+		else
+			settings.setValue (host, ignore);
 	}
-	settings.endGroup ();
+
+	if (ignore)
+	{
+		if (repGuarded)
+			repGuarded->ignoreSslErrors ();
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "reply destructed while in errors dialog";
+	}
 }
 
 void LeechCraft::NetworkAccessManager::saveCookies () const
