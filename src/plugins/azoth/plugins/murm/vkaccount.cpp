@@ -184,7 +184,7 @@ namespace Murm
 	{
 		QPointer<VkMessage> safeMsg { msg };
 		Conn_->SendMessage (entry->GetInfo ().ID_,
-				msg->GetBody (),
+				msg->GetRawBody (),
 				[safeMsg] (qulonglong id)
 				{
 					if (safeMsg)
@@ -197,7 +197,7 @@ namespace Murm
 	{
 		QPointer<VkMessage> safeMsg { msg };
 		Conn_->SendMessage (entry->GetInfo ().ChatID_,
-				msg->GetBody (),
+				msg->GetRawBody (),
 				[safeMsg] (qulonglong id)
 				{
 					if (safeMsg)
