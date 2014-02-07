@@ -323,14 +323,16 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		return;
 	}
 
-	const auto choice = errDialog.GetRememberChoice ();
-
-	if (choice != SslErrorsDialog::RCNot)
+	switch (errDialog.GetRememberChoice ())
 	{
-		if (choice == SslErrorsDialog::RCFile)
-			settings.setValue (urlString, ignore);
-		else
-			settings.setValue (host, ignore);
+	case SslErrorsDialog::RCFile:
+		settings.setValue (urlString, ignore);
+		break;
+	case SslErrorsDialog::RCHost:
+		settings.setValue (host, ignore);
+		break;
+	default:
+		break;
 	}
 
 	if (ignore)
