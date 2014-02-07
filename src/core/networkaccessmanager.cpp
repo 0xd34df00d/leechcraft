@@ -70,11 +70,9 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			SLOT (handleAuthentication (const QNetworkProxy&,
 					QAuthenticator*)));
 	connect (this,
-			SIGNAL (sslErrors (QNetworkReply*,
-					const QList<QSslError>&)),
+			SIGNAL (sslErrors (QNetworkReply*, QList<QSslError>)),
 			this,
-			SLOT (handleSslErrors (QNetworkReply*,
-					const QList<QSslError>&)));
+			SLOT (handleSslErrors (QNetworkReply*, QList<QSslError>)));
 
 	CookieJar_ = new CustomCookieJar (this);
 	setCookieJar (CookieJar_);
