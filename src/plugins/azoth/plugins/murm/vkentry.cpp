@@ -115,7 +115,7 @@ namespace Murm
 
 	void VkEntry::Send (VkMessage *msg)
 	{
-		Account_->Send (this, msg);
+		Account_->Send (GetInfo ().ID_, VkConnection::MessageType::Dialog, msg);
 	}
 
 	void VkEntry::SetSelf ()

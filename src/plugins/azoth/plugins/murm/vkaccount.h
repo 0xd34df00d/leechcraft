@@ -37,6 +37,7 @@
 #include <interfaces/azoth/isupportnonroster.h>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
+#include "vkconnection.h"
 
 namespace LeechCraft
 {
@@ -108,8 +109,7 @@ namespace Murm
 
 		void Init ();
 
-		void Send (VkEntry*, VkMessage*);
-		void Send (VkChatEntry*, VkMessage*);
+		void Send (qulonglong, VkConnection::MessageType, VkMessage*);
 		void CreateChat (const QString&, const QList<VkEntry*>&);
 		VkEntry* GetEntry (qulonglong) const;
 		VkEntry* GetSelf () const;

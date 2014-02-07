@@ -180,30 +180,17 @@ namespace Murm
 		handleMarkOnline ();
 	}
 
-	void VkAccount::Send (VkEntry *entry, VkMessage *msg)
+	void VkAccount::Send (qulonglong to, VkConnection::MessageType type, VkMessage *msg)
 	{
 		QPointer<VkMessage> safeMsg { msg };
-		Conn_->SendMessage (entry->GetInfo ().ID_,
+		Conn_->SendMessage (to,
 				msg->GetRawBody (),
 				[safeMsg] (qulonglong id)
 				{
 					if (safeMsg)
 						safeMsg->SetID (id);
 				},
-				VkConnection::MessageType::Dialog);
-	}
-
-	void VkAccount::Send (VkChatEntry *entry, VkMessage *msg)
-	{
-		QPointer<VkMessage> safeMsg { msg };
-		Conn_->SendMessage (entry->GetInfo ().ChatID_,
-				msg->GetRawBody (),
-				[safeMsg] (qulonglong id)
-				{
-					if (safeMsg)
-						safeMsg->SetID (id);
-				},
-				VkConnection::MessageType::Chat);
+				type);
 	}
 
 	void VkAccount::CreateChat (const QString& name, const QList<VkEntry*>& entries)

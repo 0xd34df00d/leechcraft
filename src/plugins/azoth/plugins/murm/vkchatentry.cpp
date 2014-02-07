@@ -52,7 +52,7 @@ namespace Murm
 
 	void VkChatEntry::Send (VkMessage *msg)
 	{
-		Account_->Send (this, msg);
+		Account_->Send (GetInfo ().ChatID_, VkConnection::MessageType::Chat, msg);
 	}
 
 	void VkChatEntry::HandleMessage (const MessageInfo& info)
