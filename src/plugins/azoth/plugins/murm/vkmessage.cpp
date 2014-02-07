@@ -119,7 +119,9 @@ namespace Murm
 
 	QString VkMessage::GetBody () const
 	{
-		return Body_;
+		auto result = Body_;
+		result.replace ('<', "&lt;");
+		return result;
 	}
 
 	void VkMessage::SetBody (const QString& body)
