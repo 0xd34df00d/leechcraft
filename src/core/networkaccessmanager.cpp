@@ -291,7 +291,6 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		return;
 	}
 
-	QPointer<QNetworkReply> repGuarded (reply);
 	QString msg = tr ("<code>%1</code><br />has SSL errors."
 			" What do you want to do?")
 		.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, 300));
@@ -299,7 +298,31 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	SslErrorsDialog errDialog { new SslErrorsDialog () };
 	errDialog.Update (msg, errors);
 
+	connect (reply,
+			SIGNAL (error (QNetworkReply::NetworkError)),
+			&errDialog,
+			SLOT (reject ()));
+	connect (reply,
+			SIGNAL (finished ()),
+			&errDialog,
+			SLOT (reject ()));
+
 	const bool ignore = errDialog.exec () == QDialog::Accepted;
+
+	if (reply->isFinished ())
+		return;
+
+	switch (reply->error ())
+	{
+	case QNetworkReply::SslHandshakeFailedError:
+		qWarning () << Q_FUNC_INFO
+				<< "got SSL handshake error in handleSslErrors, but let's try to continue";
+	case QNetworkReply::NoError:
+		break;
+	default:
+		return;
+	}
+
 	const auto choice = errDialog.GetRememberChoice ();
 
 	if (choice != SslErrorsDialog::RCNot)
@@ -311,13 +334,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	}
 
 	if (ignore)
-	{
-		if (repGuarded)
-			repGuarded->ignoreSslErrors ();
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "reply destructed while in errors dialog";
-	}
+		reply->ignoreSslErrors ();
 }
 
 void LeechCraft::NetworkAccessManager::saveCookies () const
