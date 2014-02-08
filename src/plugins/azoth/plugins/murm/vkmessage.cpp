@@ -121,7 +121,8 @@ namespace Murm
 	QString VkMessage::GetBody () const
 	{
 		auto result = Body_;
-		result.replace ('<', "&lt;");
+		if (IsOurs_)
+			result.replace ('<', "&lt;");
 		return result;
 	}
 
