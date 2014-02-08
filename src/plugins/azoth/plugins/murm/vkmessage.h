@@ -64,8 +64,10 @@ namespace Murm
 		qulonglong ID_ = -1;
 
 		bool IsRead_ = Dir_ == DOut || Type_ != MessageType::MTChatMessage;
+
+		const bool IsOurs_;
 	public:
-		VkMessage (Direction, MessageType, EntryBase*, EntryBase* = nullptr);
+		VkMessage (bool isOurs, Direction, MessageType, EntryBase*, EntryBase* = nullptr);
 
 		QObject* GetQObject ();
 		void Send ();
