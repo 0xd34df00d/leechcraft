@@ -646,8 +646,8 @@ namespace LHTR
 		void TryFixHTML (QString& html)
 		{
 #ifdef WITH_HTMLTIDY
-			TidyBuffer output { };
-			TidyBuffer errbuf { };
+			TidyBuffer output {};
+			TidyBuffer errbuf {};
 
 			auto tdoc = tidyCreate ();
 
