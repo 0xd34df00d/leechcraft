@@ -1199,6 +1199,8 @@ namespace LHTR
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
+		const bool linkPreviews = dia.PreviewsAreLinks ();
+
 		QString html;
 		QXmlStreamWriter w (&html);
 		w.writeStartElement ("span");
@@ -1241,8 +1243,11 @@ namespace LHTR
 
 		for (const auto& image : dia.GetInfos ())
 		{
-			w.writeStartElement ("a");
-			w.writeAttribute ("href", image.Full_.toString ());
+			if (linkPreviews)
+			{
+				w.writeStartElement ("a");
+				w.writeAttribute ("href", image.Full_.toString ());
+			}
 
 			w.writeStartElement ("img");
 			w.writeAttribute ("src", image.Preview_.toString ());
@@ -1251,7 +1256,8 @@ namespace LHTR
 			w.writeAttribute ("height", QString::number (image.PreviewSize_.height ()));
 			w.writeEndElement ();
 
-			w.writeEndElement ();
+			if (linkPreviews)
+				w.writeEndElement ();
 
 			w.writeEmptyElement ("br");
 		}

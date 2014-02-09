@@ -59,6 +59,7 @@ namespace LHTR
 
 		RemoteImageInfos_t GetInfos () const;
 		Position GetPosition () const;
+		bool PreviewsAreLinks () const;
 	};
 }
 }

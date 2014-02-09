@@ -73,5 +73,10 @@ namespace LHTR
 				<< Ui_.Position_->currentIndex ();
 		return Position::Center;
 	}
+
+	bool ImageCollectionDialog::PreviewsAreLinks () const
+	{
+		return Ui_.PreviewsAreLinks_->checkState () == Qt::Checked;
+	}
 }
 }
