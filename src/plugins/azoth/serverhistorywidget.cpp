@@ -30,6 +30,9 @@
 #include "serverhistorywidget.h"
 #include <QtDebug>
 #include <interfaces/azoth/ihaveserverhistory.h>
+#include "proxyobject.h"
+#include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -91,8 +94,34 @@ namespace Azoth
 
 		Ui_.MessagesView_->clear ();
 
+		const auto& bgColor = palette ().color (QPalette::Base);
+		const auto& colors = Core::Instance ().GenerateColors ("hash", bgColor);
+
+		QString preNick = XmlSettingsManager::Instance ().property ("PreNickText").toString ();
+		QString postNick = XmlSettingsManager::Instance ().property ("PostNickText").toString ();
+		preNick.replace ('<', "&lt;");
+		postNick.replace ('<', "&lt;");
+
 		for (const auto& message : messages)
-			Ui_.MessagesView_->append (message.Body_);
+		{
+			const auto& color = Core::Instance ().GetNickColor (message.Nick_, colors);
+
+			auto msgText = message.Body_;
+			msgText.replace ('<', "&lt;");
+			ProxyObject {}.FormatLinks (msgText);
+			msgText.replace ('\n', "<br/>");
+
+			QString html = "[" + message.TS_.toString () + "] " + preNick;
+			html += "<font color='" + color + "'>" + message.Nick_ + "</font> ";
+			html += postNick + ' ' + msgText;
+
+			html.prepend (QString ("<font color='#") +
+					(message.Dir_ == IMessage::DIn ? "0000dd" : "dd0000") +
+					"'>");
+			html += "</font>";
+
+			Ui_.MessagesView_->append (html);
+		}
 	}
 
 	void ServerHistoryWidget::on_ContactsView__activated (const QModelIndex& index)
