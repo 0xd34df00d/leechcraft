@@ -49,6 +49,12 @@ namespace Azoth
 
 	typedef QList<SrvHistMessage> SrvHistMessages_t;
 
+	enum ServerHistoryRole
+	{
+		LastMessageDate = Qt::UserRole + 1,
+		ServerHistoryRoleMax
+	};
+
 	class IHaveServerHistory
 	{
 	public:
