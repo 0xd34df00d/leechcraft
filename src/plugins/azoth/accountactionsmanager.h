@@ -45,6 +45,7 @@ namespace Azoth
 	class ConsoleWidget;
 	class ServiceDiscoveryWidget;
 	class MicroblogsTab;
+	class ServerHistoryWidget;
 
 	class AccountActionsManager : public QObject
 	{
@@ -61,6 +62,7 @@ namespace Azoth
 		QAction *AccountManageBookmarks_;
 		QAction *AccountAddContact_;
 		QAction *AccountOpenNonRosterChat_;
+		QAction *AccountOpenServerHistory_;
 		QAction *AccountViewMicroblogs_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
@@ -87,6 +89,7 @@ namespace Azoth
 		void manageAccountBookmarks ();
 		void addAccountContact ();
 		void handleOpenNonRoster ();
+		void handleOpenServerHistory ();
 		void handleAccountMicroblogs ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();
@@ -102,6 +105,7 @@ namespace Azoth
 		void gotConsoleWidget (ConsoleWidget*);
 		void gotSDWidget (ServiceDiscoveryWidget*);
 		void gotMicroblogsTab (MicroblogsTab*);
+		void gotServerHistoryTab (ServerHistoryWidget*);
 	};
 }
 }

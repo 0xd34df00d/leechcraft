@@ -64,6 +64,7 @@
 #include "colorlisteditorwidget.h"
 #include "customstatusesmanager.h"
 #include "accountactionsmanager.h"
+#include "serverhistorywidget.h"
 
 namespace LeechCraft
 {
@@ -376,6 +377,10 @@ namespace Azoth
 				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
 				this,
 				SLOT (handleMicroblogsTab (MicroblogsTab*)));
+		connect (accActsMgr,
+				SIGNAL (gotServerHistoryTab (ServerHistoryWidget*)),
+				this,
+				SLOT (handleServerHistoryTab (ServerHistoryWidget*)));
 	}
 
 	void Plugin::InitSettings ()
@@ -568,12 +573,24 @@ namespace Azoth
 			0,
 			TFEmpty
 		};
+
 		TabClassInfo microblogsTab =
 		{
 			"MicroblogsTab",
 			tr ("Microblogs"),
 			tr ("Microblogs where protocol/account supports that"),
 			QIcon (),
+			0,
+			TFEmpty
+		};
+		MicroblogsTab::SetTabData (this, microblogsTab);
+
+		ServerHistoryTC_ =
+		{
+			"ServerHistoryTab",
+			tr ("Server history"),
+			tr ("Server history browser for protocols and accounts supporting this feature"),
+			{},
 			0,
 			TFEmpty
 		};
@@ -584,8 +601,7 @@ namespace Azoth
 		TabClasses_ << sdTab;
 		TabClasses_ << consoleTab;
 		TabClasses_ << microblogsTab;
-
-		MicroblogsTab::SetTabData (this, microblogsTab);
+		TabClasses_ << ServerHistoryTC_;
 	}
 
 	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
@@ -606,6 +622,18 @@ namespace Azoth
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tr ("Microblogs"), tab);
 		emit raiseTab (tab);
+	}
+
+	void Plugin::handleServerHistoryTab (ServerHistoryWidget *widget)
+	{
+		connect (widget,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		widget->SetTabInfo (this, ServerHistoryTC_);
+
+		emit addNewTab (tr ("Microblogs"), widget);
+		emit raiseTab (widget);
 	}
 
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
