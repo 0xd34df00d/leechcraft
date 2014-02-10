@@ -30,7 +30,11 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
+#include <QModelIndex>
+#include <interfaces/azoth/ihaveserverhistory.h>
 
+class QNetworkReply;
 class QAbstractItemModel;
 class QStandardItemModel;
 
@@ -53,16 +57,27 @@ namespace Murm
 		int LastOffset_ = 0;
 
 		bool IsRefreshing_ = false;
+
+		struct RequestState
+		{
+			QModelIndex Index_;
+			int Offset_;
+		};
+		QHash<QNetworkReply*, RequestState> MsgRequestState_;
 	public:
 		ServerHistoryManager (VkAccount*);
 
 		QAbstractItemModel* GetModel () const;
+		void RequestHistory (const QModelIndex&, int, int);
 	private:
 		void Request (int);
 	public slots:
 		void refresh ();
 	private slots:
+		void handleGotHistory ();
 		void handleGotMessagesList ();
+	signals:
+		void serverHistoryFetched (const QModelIndex&, int, const SrvHistMessages_t&);
 	};
 }
 }

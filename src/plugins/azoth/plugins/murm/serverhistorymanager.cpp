@@ -43,7 +43,15 @@ namespace Azoth
 {
 namespace Murm
 {
-	const auto DlgChunkCount = 100;
+	namespace
+	{
+		const auto DlgChunkCount = 100;
+
+		enum CustomHistRole
+		{
+			UserUid = ServerHistoryRole::ServerHistoryRoleMax
+		};
+	}
 
 	ServerHistoryManager::ServerHistoryManager (VkAccount *acc)
 	: QObject { acc }
@@ -58,11 +66,45 @@ namespace Murm
 		return ContactsModel_;
 	}
 
+	void ServerHistoryManager::RequestHistory (const QModelIndex& index, int offset, int count)
+	{
+		if (count > 100)
+			count = 100;
+
+		const auto nam = Acc_->GetCoreProxy ()->GetNetworkAccessManager ();
+
+		const auto uid = index.data (CustomHistRole::UserUid).toULongLong ();
+
+		auto getter = [count, offset, nam, uid, index, this]
+				(const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.getHistory");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("uid", QString::number (uid));
+				url.addQueryItem ("count", QString::number (count));
+				url.addQueryItem ("offset", QString::number (offset));
+				VkConnection::AddParams (url, params);
+
+				LastOffset_ = offset;
+
+				auto reply = nam->get (QNetworkRequest (url));
+				MsgRequestState_ [reply] = RequestState { index, offset };
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotHistory ()));
+				return reply;
+			};
+
+		Acc_->GetConnection ()->QueueRequest (getter);
+	}
+
 	void ServerHistoryManager::Request (int offset)
 	{
 		const auto nam = Acc_->GetCoreProxy ()->GetNetworkAccessManager ();
 
-		auto getter = [offset, nam, this] (const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
+		auto getter = [offset, nam, this]
+				(const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.getDialogs");
 				url.addQueryItem ("access_token", key);
@@ -95,6 +137,43 @@ namespace Murm
 
 		MsgCount_ = -1;
 		Request (0);
+	}
+
+	void ServerHistoryManager::handleGotHistory ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& reqContext = MsgRequestState_.take (reply);
+
+		const auto& data = reply->readAll ();
+		bool ok = true;
+		const auto& varmap = QJson::Parser {}.parse (data).toMap ();
+		if (!ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			return;
+		}
+
+		SrvHistMessages_t messages;
+		for (const auto& var : varmap ["response"].toList ())
+		{
+			const auto& map = var.toMap ();
+
+			const auto dir = map ["out"].toInt () ?
+					IMessage::DOut :
+					IMessage::DIn;
+
+			messages.append ({
+					dir,
+					map ["body"].toString (),
+					QDateTime::fromTime_t (map ["date"].toULongLong ())
+				});
+		}
+
+		emit serverHistoryFetched (reqContext.Index_, reqContext.Offset_, messages);
 	}
 
 	void ServerHistoryManager::handleGotMessagesList ()
@@ -158,6 +237,7 @@ namespace Murm
 			auto item = new QStandardItem (entry->GetEntryName ());
 			item->setEditable (false);
 			item->setData (QDateTime::fromTime_t (ts), ServerHistoryRole::LastMessageDate);
+			item->setData (uid, CustomHistRole::UserUid);
 			ContactsModel_->appendRow (item);
 		}
 
