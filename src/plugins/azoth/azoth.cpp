@@ -632,7 +632,7 @@ namespace Azoth
 				SIGNAL (removeTab (QWidget*)));
 		widget->SetTabInfo (this, ServerHistoryTC_);
 
-		emit addNewTab (tr ("Microblogs"), widget);
+		emit addNewTab (ServerHistoryTC_.VisibleName_, widget);
 		emit raiseTab (widget);
 	}
 
