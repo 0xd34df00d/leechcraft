@@ -837,9 +837,11 @@ namespace NetStoreManager
 
 		const QString& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select file for upload"),
-				QDir::homePath ());
+				XmlSettingsManager::Instance ().Property ("DirUploadFrom", QDir::homePath ()).toString ());
 		if (filename.isEmpty ())
 			return;
+		XmlSettingsManager::Instance ().setProperty ("DirUploadFrom",
+				QFileInfo (filename).dir ().absolutePath ());
 
 		emit uploadRequested (acc, filename, GetParentIDInListViewMode ());
 	}
