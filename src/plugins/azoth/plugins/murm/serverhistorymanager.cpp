@@ -181,9 +181,7 @@ namespace Murm
 				});
 		}
 
-		std::sort (messages.begin (), messages.end (),
-				[] (const SrvHistMessage& l, const SrvHistMessage& r)
-					{ return l.TS_ < r.TS_; });
+		std::reverse (messages.begin (), messages.end ());
 
 		emit serverHistoryFetched (reqContext.Index_, reqContext.Offset_, messages);
 	}
