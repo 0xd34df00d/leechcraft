@@ -40,6 +40,7 @@ namespace Azoth
 {
 	ServerHistoryWidget::ServerHistoryWidget (QObject *account, QWidget *parent)
 	: QWidget { parent }
+	, Toolbar_ { new QToolBar { this } }
 	, AccObj_ { account }
 	, IHSH_ { qobject_cast<IHaveServerHistory*> (account) }
 	{
@@ -59,6 +60,14 @@ namespace Azoth
 				SIGNAL (serverHistoryFetched (QModelIndex, int, SrvHistMessages_t)),
 				this,
 				SLOT (handleFetched (QModelIndex, int, SrvHistMessages_t)));
+
+		auto prevAct = Toolbar_->addAction (tr ("Previous page"),
+				this, SLOT (navigatePrevious ()));
+		prevAct->setProperty ("ActionIcon", "go-previous");
+
+		auto nextAct = Toolbar_->addAction (tr ("Next page"),
+				this, SLOT (navigateNext ()));
+		nextAct->setProperty ("ActionIcon", "go-next");
 	}
 
 	void ServerHistoryWidget::SetTabInfo (QObject *plugin, const TabClassInfo& tc)
@@ -84,13 +93,21 @@ namespace Azoth
 
 	QToolBar* ServerHistoryWidget::GetToolBar () const
 	{
-		return nullptr;
+		return Toolbar_;
+	}
+
+	int ServerHistoryWidget::GetReqMsgCount () const
+	{
+		return std::max (20, FirstMsgCount_);
 	}
 
 	void ServerHistoryWidget::handleFetched (const QModelIndex& index, int offset, const SrvHistMessages_t& messages)
 	{
 		if (index != Ui_.ContactsView_->currentIndex ())
 			return;
+
+		if (FirstMsgCount_ == -1)
+			FirstMsgCount_ = messages.size ();
 
 		Ui_.MessagesView_->clear ();
 
@@ -125,7 +142,23 @@ namespace Azoth
 
 	void ServerHistoryWidget::on_ContactsView__activated (const QModelIndex& index)
 	{
-		IHSH_->FetchServerHistory (index, 0, 50);
+		CurrentOffset_ = 0;
+		FirstMsgCount_ = -1;
+		IHSH_->FetchServerHistory (index, CurrentOffset_, 50);
+	}
+
+	void ServerHistoryWidget::navigatePrevious ()
+	{
+		CurrentOffset_ += GetReqMsgCount ();
+		IHSH_->FetchServerHistory (Ui_.ContactsView_->currentIndex (),
+				CurrentOffset_, GetReqMsgCount ());
+	}
+
+	void ServerHistoryWidget::navigateNext ()
+	{
+		CurrentOffset_ = std::max (CurrentOffset_ - GetReqMsgCount (), 0);
+		IHSH_->FetchServerHistory (Ui_.ContactsView_->currentIndex (),
+				CurrentOffset_, GetReqMsgCount ());
 	}
 }
 }

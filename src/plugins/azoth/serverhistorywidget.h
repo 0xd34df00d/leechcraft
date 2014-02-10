@@ -51,8 +51,13 @@ namespace Azoth
 
 		Ui::ServerHistoryWidget Ui_;
 
+		QToolBar * const Toolbar_;
+
 		QObject * const AccObj_;
 		IHaveServerHistory * const IHSH_;
+
+		int CurrentOffset_ = 0;
+		int FirstMsgCount_ = -1;
 	public:
 		ServerHistoryWidget (QObject*, QWidget* = nullptr);
 
@@ -62,9 +67,13 @@ namespace Azoth
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		int GetReqMsgCount () const;
 	private slots:
 		void handleFetched (const QModelIndex&, int, const SrvHistMessages_t&);
 		void on_ContactsView__activated (const QModelIndex&);
+		void navigatePrevious ();
+		void navigateNext ();
 	signals:
 		void removeTab (QWidget*);
 
