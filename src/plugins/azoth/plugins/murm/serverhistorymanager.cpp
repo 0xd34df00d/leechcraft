@@ -33,6 +33,7 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <qjson/parser.h>
+#include <interfaces/azoth/ihaveserverhistory.h>
 #include "vkaccount.h"
 #include "vkentry.h"
 
@@ -156,6 +157,7 @@ namespace Murm
 
 			auto item = new QStandardItem (entry->GetEntryName ());
 			item->setEditable (false);
+			item->setData (QDateTime::fromTime_t (ts), ServerHistoryRole::LastMessageDate);
 			ContactsModel_->appendRow (item);
 		}
 
