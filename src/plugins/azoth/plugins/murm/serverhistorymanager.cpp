@@ -162,6 +162,8 @@ namespace Murm
 		for (const auto& var : varmap ["response"].toList ())
 		{
 			const auto& map = var.toMap ();
+			if (map.isEmpty ())
+				continue;
 
 			const auto dir = map ["out"].toInt () ?
 					IMessage::DOut :
