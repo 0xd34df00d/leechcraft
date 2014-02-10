@@ -169,9 +169,13 @@ namespace Murm
 					IMessage::DOut :
 					IMessage::DIn;
 
+			const auto& username = dir == IMessage::DIn ?
+					reqContext.Index_.data (CustomHistRole::UserName).toString () :
+					Acc_->GetSelf ()->GetEntryName ();
+
 			messages.append ({
 					dir,
-					reqContext.Index_.data (CustomHistRole::UserName).toString (),
+					username,
 					map ["body"].toString (),
 					QDateTime::fromTime_t (map ["date"].toULongLong ())
 				});
