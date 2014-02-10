@@ -37,11 +37,12 @@ namespace Azoth
 {
 	ServerHistoryWidget::ServerHistoryWidget (QObject *account, QWidget *parent)
 	: QWidget { parent }
+	, AccObj_ { account }
+	, IHSH_ { qobject_cast<IHaveServerHistory*> (account) }
 	{
 		Ui_.setupUi (this);
 
-		const auto ihsh = qobject_cast<IHaveServerHistory*> (account);
-		if (!ihsh)
+		if (!IHSH_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "account doesn't implement IHaveServerHistory"
@@ -49,7 +50,12 @@ namespace Azoth
 			return;
 		}
 
-		Ui_.ContactsView_->setModel (ihsh->GetServerContactsModel ());
+		Ui_.ContactsView_->setModel (IHSH_->GetServerContactsModel ());
+
+		connect (AccObj_,
+				SIGNAL (serverHistoryFetched (QModelIndex, int, SrvHistMessages_t)),
+				this,
+				SLOT (handleFetched (QModelIndex, int, SrvHistMessages_t)));
 	}
 
 	void ServerHistoryWidget::SetTabInfo (QObject *plugin, const TabClassInfo& tc)
@@ -76,6 +82,22 @@ namespace Azoth
 	QToolBar* ServerHistoryWidget::GetToolBar () const
 	{
 		return nullptr;
+	}
+
+	void ServerHistoryWidget::handleFetched (const QModelIndex& index, int offset, const SrvHistMessages_t& messages)
+	{
+		if (index != Ui_.ContactsView_->currentIndex ())
+			return;
+
+		Ui_.MessagesView_->clear ();
+
+		for (const auto& message : messages)
+			Ui_.MessagesView_->append (message.Body_);
+	}
+
+	void ServerHistoryWidget::on_ContactsView__activated (const QModelIndex& index)
+	{
+		IHSH_->FetchServerHistory (index, 0, 50);
 	}
 }
 }

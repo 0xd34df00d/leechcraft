@@ -31,12 +31,15 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "interfaces/azoth/ihaveserverhistory.h"
 #include "ui_serverhistorywidget.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	class IHaveServerHistory;
+
 	class ServerHistoryWidget : public QWidget
 							  , public ITabWidget
 	{
@@ -47,6 +50,9 @@ namespace Azoth
 		TabClassInfo TC_;
 
 		Ui::ServerHistoryWidget Ui_;
+
+		QObject * const AccObj_;
+		IHaveServerHistory * const IHSH_;
 	public:
 		ServerHistoryWidget (QObject*, QWidget* = nullptr);
 
@@ -56,8 +62,13 @@ namespace Azoth
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void handleFetched (const QModelIndex&, int, const SrvHistMessages_t&);
+		void on_ContactsView__activated (const QModelIndex&);
 	signals:
 		void removeTab (QWidget*);
+
+		void serverHistoryFetched (const QModelIndex&, int, const SrvHistMessages_t&);
 	};
 }
 }
