@@ -458,15 +458,7 @@ namespace Murm
 		return entry;
 	}
 
-	void VkAccount::handleSelfInfo (const UserInfo& info)
-	{
-		handleUsers ({ info });
-
-		SelfEntry_ = Entries_ [info.ID_];
-		SelfEntry_->SetSelf ();
-	}
-
-	void VkAccount::handleUsers (const QList<UserInfo>& infos)
+	bool VkAccount::CreateUsers (const QList<UserInfo>& infos)
 	{
 		QList<QObject*> newEntries;
 		QSet<int> newCountries;
@@ -493,7 +485,20 @@ namespace Murm
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);
 
-		if (hadNew)
+		return hadNew;
+	}
+
+	void VkAccount::handleSelfInfo (const UserInfo& info)
+	{
+		CreateUsers ({ info });
+
+		SelfEntry_ = Entries_ [info.ID_];
+		SelfEntry_->SetSelf ();
+	}
+
+	void VkAccount::handleUsers (const QList<UserInfo>& infos)
+	{
+		if (CreateUsers (infos))
 			TryPendingMessages ();
 	}
 

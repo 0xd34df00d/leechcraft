@@ -156,6 +156,8 @@ namespace Murm
 	private:
 		void TryPendingMessages ();
 		VkEntry* CreateNonRosterItem (qulonglong);
+
+		bool CreateUsers (const QList<UserInfo>&);
 	private slots:
 		void handleSelfInfo (const UserInfo&);
 		void handleUsers (const QList<UserInfo>&);
