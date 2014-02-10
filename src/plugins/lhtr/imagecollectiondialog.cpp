@@ -37,7 +37,8 @@ namespace LeechCraft
 {
 namespace LHTR
 {
-	ImageCollectionDialog::ImageCollectionDialog (const RemoteImageInfos_t& infos, ICoreProxy_ptr proxy, QWidget *parent)
+	ImageCollectionDialog::ImageCollectionDialog (const RemoteImageInfos_t& infos,
+			ICoreProxy_ptr proxy, QWidget *parent)
 	: QDialog { parent }
 	, Infos_ { infos }
 	{
@@ -45,6 +46,27 @@ namespace LHTR
 
 		auto model = new ImageInfosModel (Infos_, proxy, this);
 		Ui_.Images_->setModel (model);
+
+		if (infos.isEmpty ())
+			return;
+
+		const auto& sample = infos.first ();
+
+		const auto addSize = [this] (const QSize& size,
+				const QString& str, PreviewSize enumValue) -> void
+		{
+			if (size.isValid ())
+			{
+				Ui_.PreviewSize_->addItem (str
+						.arg (size.width ())
+						.arg (size.height ()));
+				Sizes_ << enumValue;
+			}
+		};
+
+		addSize (sample.ThumbSize_, trUtf8 ("Thumbnail (%1×%2)"), PreviewSize::Thumb);
+		addSize (sample.PreviewSize_, trUtf8 ("Preview (%1×%2)"), PreviewSize::Preview);
+		addSize (sample.FullSize_, trUtf8 ("Full (%1×%2)"), PreviewSize::Full);
 	}
 
 	RemoteImageInfos_t ImageCollectionDialog::GetInfos () const
@@ -77,6 +99,11 @@ namespace LHTR
 	bool ImageCollectionDialog::PreviewsAreLinks () const
 	{
 		return Ui_.PreviewsAreLinks_->checkState () == Qt::Checked;
+	}
+
+	ImageCollectionDialog::PreviewSize ImageCollectionDialog::GetPreviewSize () const
+	{
+		return Sizes_.value (Ui_.PreviewSize_->currentIndex (), PreviewSize::None);
 	}
 }
 }
