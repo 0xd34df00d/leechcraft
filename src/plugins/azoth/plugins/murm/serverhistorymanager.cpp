@@ -49,7 +49,8 @@ namespace Murm
 
 		enum CustomHistRole
 		{
-			UserUid = ServerHistoryRole::ServerHistoryRoleMax
+			UserUid = ServerHistoryRole::ServerHistoryRoleMax,
+			UserName
 		};
 	}
 
@@ -168,6 +169,7 @@ namespace Murm
 
 			messages.append ({
 					dir,
+					reqContext.Index_.data (CustomHistRole::UserName).toString (),
 					map ["body"].toString (),
 					QDateTime::fromTime_t (map ["date"].toULongLong ())
 				});
@@ -238,6 +240,7 @@ namespace Murm
 			item->setEditable (false);
 			item->setData (QDateTime::fromTime_t (ts), ServerHistoryRole::LastMessageDate);
 			item->setData (uid, CustomHistRole::UserUid);
+			item->setData (entry->GetEntryName (), CustomHistRole::UserName);
 			ContactsModel_->appendRow (item);
 		}
 
