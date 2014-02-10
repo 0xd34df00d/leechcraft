@@ -114,6 +114,7 @@ namespace Azoth
 		QList<ANFieldData> GetANFields () const;
 	private :
 		void InitShortcuts ();
+		void InitAccActsMgr ();
 		void InitSettings ();
 		void InitMW ();
 		void InitSignals ();

@@ -66,9 +66,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	AccountActionsManager::AccountActionsManager (QWidget *mw, QObject *parent)
+	AccountActionsManager::AccountActionsManager (QObject *parent)
 	: QObject (parent)
-	, MW_ (mw)
 	, StatusMenuMgr_ (new StatusChangeMenuManager (this))
 	, MenuChangeStatus_ (StatusMenuMgr_->CreateMenu (this,
 				SLOT (handleChangeStatusRequested ()), nullptr, false))
@@ -148,6 +147,11 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAccountModify ()));
+	}
+
+	void AccountActionsManager::SetMainWidget (QWidget *mw)
+	{
+		MW_ = mw;
 	}
 
 	QList<QAction*> AccountActionsManager::GetMenuActions (QMenu *menu, QObject *accObj)

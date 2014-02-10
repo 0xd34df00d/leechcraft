@@ -50,7 +50,7 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		QWidget *MW_;
+		QWidget *MW_ = nullptr;
 
 		QHash<IAccount*, ConsoleWidget*> Account2CW_;
 
@@ -71,8 +71,9 @@ namespace Azoth
 		QAction *AccountRename_;
 		QAction *AccountModify_;
 	public:
-		AccountActionsManager (QWidget*, QObject* = 0);
+		AccountActionsManager (QObject* = 0);
 
+		void SetMainWidget (QWidget*);
 		QList<QAction*> GetMenuActions (QMenu*, QObject*);
 
 		QString GetStatusText (QAction*, State) const;

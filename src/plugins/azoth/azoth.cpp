@@ -63,6 +63,7 @@
 #include "chatstyleoptionmanager.h"
 #include "colorlisteditorwidget.h"
 #include "customstatusesmanager.h"
+#include "accountactionsmanager.h"
 
 namespace LeechCraft
 {
@@ -78,9 +79,7 @@ namespace Azoth
 
 		Core::Instance ().SetProxy (proxy);
 		InitShortcuts ();
-
-		MW_ = new MainWidget ();
-
+		InitAccActsMgr ();
 		InitSettings ();
 		InitSignals ();
 		InitTabClasses ();
@@ -360,6 +359,25 @@ namespace Azoth
 			);
 	}
 
+	void Plugin::InitAccActsMgr ()
+	{
+		auto accActsMgr = new AccountActionsManager ();
+		MW_ = new MainWidget (accActsMgr);
+		accActsMgr->SetMainWidget (MW_);
+		connect (accActsMgr,
+				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
+				this,
+				SLOT (handleConsoleWidget (ConsoleWidget*)));
+		connect (accActsMgr,
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
+		connect (accActsMgr,
+				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
+				this,
+				SLOT (handleMicroblogsTab (MicroblogsTab*)));
+	}
+
 	void Plugin::InitSettings ()
 	{
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
@@ -495,18 +513,6 @@ namespace Azoth
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
-		connect (MW_,
-				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
-				this,
-				SLOT (handleConsoleWidget (ConsoleWidget*)));
-		connect (MW_,
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
-				this,
-				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
-		connect (MW_,
-				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
-				this,
-				SLOT (handleMicroblogsTab (MicroblogsTab*)));
 	}
 
 	void Plugin::InitTabClasses ()

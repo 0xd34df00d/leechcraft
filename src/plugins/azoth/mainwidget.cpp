@@ -64,8 +64,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	MainWidget::MainWidget (QWidget *parent)
+	MainWidget::MainWidget (AccountActionsManager *accActsMgr, QWidget *parent)
 	: QWidget (parent)
+	, AccountActsMgr_ (accActsMgr)
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel (this))
@@ -73,22 +74,8 @@ namespace Azoth
 	, ActionCLMode_ (new QAction (tr ("CL mode"), this))
 	, ActionShowOffline_ (0)
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
-	, AccountActsMgr_ (new AccountActionsManager (this, this))
 	, StatusMenuMgr_ (new StatusChangeMenuManager (this))
 	{
-		connect (AccountActsMgr_,
-				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
-				this,
-				SIGNAL (gotConsoleWidget (ConsoleWidget*)));
-		connect (AccountActsMgr_,
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
-				this,
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)));
-		connect (AccountActsMgr_,
-				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
-				this,
-				SIGNAL (gotMicroblogsTab (MicroblogsTab*)));
-
 		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
 
 		MainMenu_->setIcon (QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg"));
