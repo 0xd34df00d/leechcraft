@@ -44,6 +44,7 @@ namespace NetStoreManager
 	enum ListingRole
 	{
 		ID = Qt::UserRole + 20,
+		ParentID,
 		InTrash,
 		IsDirectory,
 		ModifiedDate,

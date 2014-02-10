@@ -438,7 +438,7 @@ namespace NetStoreManager
 
 	QByteArray ManagerTab::GetParentIDInListViewMode () const
 	{
-		return ProxyModel_->index (0, Columns::CName).data (Qt::UserRole + 1)
+		return ProxyModel_->index (0, Columns::CName).data (ListingRole::ParentID)
 				.toByteArray ();
 	}
 
@@ -488,7 +488,7 @@ namespace NetStoreManager
 		{
 			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIconThemeManager ()->GetIcon ("go-up"), "..");
 			upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
-			upLevel->setData (parentId);
+			upLevel->setData (parentId, ListingRole::ParentID);
 			TreeModel_->appendRow ({ upLevel });
 		}
 
