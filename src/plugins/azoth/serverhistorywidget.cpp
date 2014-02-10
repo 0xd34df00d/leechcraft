@@ -107,7 +107,6 @@ namespace Azoth
 			const auto& color = Core::Instance ().GetNickColor (message.Nick_, colors);
 
 			auto msgText = message.Body_;
-			msgText.replace ('<', "&lt;");
 			ProxyObject {}.FormatLinks (msgText);
 			msgText.replace ('\n', "<br/>");
 
