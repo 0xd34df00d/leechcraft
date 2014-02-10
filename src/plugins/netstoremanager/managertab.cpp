@@ -547,6 +547,8 @@ namespace NetStoreManager
 			return;
 		}
 
+		QByteArray parentId = GetParentIDInListViewMode ();
+
 		const QString& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select file for upload"),
 				XmlSettingsManager::Instance ().Property ("DirUploadFrom", QDir::homePath ()).toString ());
@@ -555,8 +557,6 @@ namespace NetStoreManager
 
 		XmlSettingsManager::Instance ().setProperty ("DirUploadFrom",
 				QFileInfo (filename).dir ().absolutePath ());
-		QByteArray parentId;
-		parentId = GetParentIDInListViewMode ();
 
 		emit uploadRequested (acc, filename, parentId);
 	}
@@ -835,6 +835,7 @@ namespace NetStoreManager
 		if (!(sfl->GetListingOps () & ListingOp::DirectorySupport))
 			return;
 
+		QByteArray parentId = GetParentIDInListViewMode ();
 		const QString& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select file for upload"),
 				XmlSettingsManager::Instance ().Property ("DirUploadFrom", QDir::homePath ()).toString ());
@@ -843,7 +844,7 @@ namespace NetStoreManager
 		XmlSettingsManager::Instance ().setProperty ("DirUploadFrom",
 				QFileInfo (filename).dir ().absolutePath ());
 
-		emit uploadRequested (acc, filename, GetParentIDInListViewMode ());
+		emit uploadRequested (acc, filename, parentId);
 	}
 
 	void ManagerTab::flDownload ()

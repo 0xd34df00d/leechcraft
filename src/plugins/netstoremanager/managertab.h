@@ -63,7 +63,7 @@ namespace NetStoreManager
 
 	enum SortRoles
 	{
-		SRName = Qt::UserRole + 1,
+		SRName = Qt::UserRole + 50,
 		SRSize,
 		SRModifyDate
 	};
