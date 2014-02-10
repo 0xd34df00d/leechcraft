@@ -30,7 +30,6 @@
 #pragma once
 
 #include "ui_operaimportselectpage.h"
-#include <memory>
 #include <QWizardPage>
 
 namespace LeechCraft

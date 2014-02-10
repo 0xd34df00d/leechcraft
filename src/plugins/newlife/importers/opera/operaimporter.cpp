@@ -44,19 +44,17 @@ namespace Importers
 
 	QStringList OperaImporter::GetNames () const
 	{
-		return QStringList ("Opera");
+		return { "Opera" };
 	}
 
 	QList<QIcon> OperaImporter::GetIcons () const
 	{
-		return QList<QIcon> () << QIcon (":/resources/images/apps/opera.svg");
+		return { QIcon (":/resources/images/apps/opera.svg") };
 	}
 
 	QList<QWizardPage*> OperaImporter::GetWizardPages () const
 	{
-		QList<QWizardPage*> result;
-		result << ImportSelectPage_;
-		return result;
+		return { ImportSelectPage_ };
 	}
 }
 }

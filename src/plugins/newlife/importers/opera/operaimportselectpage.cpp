@@ -66,9 +66,9 @@ namespace Importers
 				SLOT (handleAccepted ()));
 
 		connect (this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				wizard (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void OperaImportSelectPage::checkImportDataAvailable (int index)
