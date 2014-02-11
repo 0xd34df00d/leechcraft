@@ -438,7 +438,7 @@ namespace NetStoreManager
 
 	QByteArray ManagerTab::GetParentIDInListViewMode () const
 	{
-		return ProxyModel_->index (0, Columns::CName).data (Qt::UserRole + 1)
+		return ProxyModel_->index (0, Columns::CName).data (ListingRole::ParentID)
 				.toByteArray ();
 	}
 
@@ -488,7 +488,7 @@ namespace NetStoreManager
 		{
 			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIconThemeManager ()->GetIcon ("go-up"), "..");
 			upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
-			upLevel->setData (parentId);
+			upLevel->setData (parentId, ListingRole::ParentID);
 			TreeModel_->appendRow ({ upLevel });
 		}
 
@@ -547,6 +547,8 @@ namespace NetStoreManager
 			return;
 		}
 
+		QByteArray parentId = GetParentIDInListViewMode ();
+
 		const QString& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select file for upload"),
 				XmlSettingsManager::Instance ().Property ("DirUploadFrom", QDir::homePath ()).toString ());
@@ -555,8 +557,6 @@ namespace NetStoreManager
 
 		XmlSettingsManager::Instance ().setProperty ("DirUploadFrom",
 				QFileInfo (filename).dir ().absolutePath ());
-		QByteArray parentId;
-		parentId = GetParentIDInListViewMode ();
 
 		emit uploadRequested (acc, filename, parentId);
 	}
@@ -835,13 +835,16 @@ namespace NetStoreManager
 		if (!(sfl->GetListingOps () & ListingOp::DirectorySupport))
 			return;
 
+		QByteArray parentId = GetParentIDInListViewMode ();
 		const QString& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select file for upload"),
-				QDir::homePath ());
+				XmlSettingsManager::Instance ().Property ("DirUploadFrom", QDir::homePath ()).toString ());
 		if (filename.isEmpty ())
 			return;
+		XmlSettingsManager::Instance ().setProperty ("DirUploadFrom",
+				QFileInfo (filename).dir ().absolutePath ());
 
-		emit uploadRequested (acc, filename, GetParentIDInListViewMode ());
+		emit uploadRequested (acc, filename, parentId);
 	}
 
 	void ManagerTab::flDownload ()
