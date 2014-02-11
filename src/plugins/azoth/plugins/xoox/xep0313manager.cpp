@@ -81,7 +81,6 @@ namespace Xoox
 
 	void Xep0313Manager::HandlePrefs (const QDomElement& element)
 	{
-		qDebug () << Q_FUNC_INFO;
 		Xep0313PrefIq iq;
 		iq.parse (element);
 		emit gotPrefs (iq);

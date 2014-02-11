@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "xep0313prefsdialog.h"
-#include <QtDebug>
 #include "xep0313manager.h"
 #include "xep0313prefiq.h"
 
@@ -72,7 +71,6 @@ namespace Xoox
 
 	void Xep0313PrefsDialog::handlePrefs (const Xep0313PrefIq& iq)
 	{
-		qDebug () << Q_FUNC_INFO << static_cast<int> (iq.GetDefaultPolicy ());
 		Ui_.DefaultMode_->setCurrentIndex (static_cast<int> (iq.GetDefaultPolicy ()));
 
 		Ui_.Always_->setPlainText (iq.GetAllowed ().join ("\n"));
