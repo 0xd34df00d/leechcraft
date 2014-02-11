@@ -125,9 +125,9 @@ namespace Murm
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
 
 		connect (ServHistMgr_,
-				SIGNAL (serverHistoryFetched (QModelIndex, int, SrvHistMessages_t)),
+				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
 				this,
-				SIGNAL (serverHistoryFetched (QModelIndex, int, SrvHistMessages_t)));
+				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -468,9 +468,9 @@ namespace Murm
 		return ServHistMgr_->GetModel ();
 	}
 
-	void VkAccount::FetchServerHistory (const QModelIndex& contact, int offset, int count)
+	void VkAccount::FetchServerHistory (const QModelIndex& contact, const QByteArray& startId, int count)
 	{
-		ServHistMgr_->RequestHistory (contact, offset, count);
+		ServHistMgr_->RequestHistory (contact, startId.toInt (), count);
 	}
 
 	void VkAccount::TryPendingMessages ()

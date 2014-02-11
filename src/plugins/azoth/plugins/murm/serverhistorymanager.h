@@ -77,7 +77,8 @@ namespace Murm
 		void handleGotHistory ();
 		void handleGotMessagesList ();
 	signals:
-		void serverHistoryFetched (const QModelIndex&, int, const SrvHistMessages_t&);
+		void serverHistoryFetched (const QModelIndex&,
+				const QByteArray&, const SrvHistMessages_t&);
 	};
 }
 }

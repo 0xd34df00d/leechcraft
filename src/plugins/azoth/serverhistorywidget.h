@@ -56,7 +56,8 @@ namespace Azoth
 		QObject * const AccObj_;
 		IHaveServerHistory * const IHSH_;
 
-		int CurrentOffset_ = 0;
+		QByteArray CurrentID_;
+		QByteArray MaxID_;
 		int FirstMsgCount_ = -1;
 	public:
 		ServerHistoryWidget (QObject*, QWidget* = nullptr);
@@ -70,7 +71,7 @@ namespace Azoth
 	private:
 		int GetReqMsgCount () const;
 	private slots:
-		void handleFetched (const QModelIndex&, int, const SrvHistMessages_t&);
+		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
 		void on_ContactsView__activated (const QModelIndex&);
 		void navigatePrevious ();
 		void navigateNext ();

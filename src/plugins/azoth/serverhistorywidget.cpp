@@ -57,9 +57,9 @@ namespace Azoth
 		Ui_.ContactsView_->setModel (IHSH_->GetServerContactsModel ());
 
 		connect (AccObj_,
-				SIGNAL (serverHistoryFetched (QModelIndex, int, SrvHistMessages_t)),
+				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
 				this,
-				SLOT (handleFetched (QModelIndex, int, SrvHistMessages_t)));
+				SLOT (handleFetched (QModelIndex, QByteArray, SrvHistMessages_t)));
 
 		auto prevAct = Toolbar_->addAction (tr ("Previous page"),
 				this, SLOT (navigatePrevious ()));
@@ -101,13 +101,16 @@ namespace Azoth
 		return std::max (20, FirstMsgCount_);
 	}
 
-	void ServerHistoryWidget::handleFetched (const QModelIndex& index, int offset, const SrvHistMessages_t& messages)
+	void ServerHistoryWidget::handleFetched (const QModelIndex& index,
+			const QByteArray& startId, const SrvHistMessages_t& messages)
 	{
 		if (index != Ui_.ContactsView_->currentIndex ())
 			return;
 
 		if (FirstMsgCount_ == -1)
 			FirstMsgCount_ = messages.size ();
+
+		CurrentID_ = startId;
 
 		Ui_.MessagesView_->clear ();
 
@@ -138,27 +141,28 @@ namespace Azoth
 
 			Ui_.MessagesView_->append (html);
 		}
+
+		MaxID_ = messages.value (0).ID_;
 	}
 
 	void ServerHistoryWidget::on_ContactsView__activated (const QModelIndex& index)
 	{
-		CurrentOffset_ = 0;
+		CurrentID_ = "-1";
+		MaxID_ = "-1";
 		FirstMsgCount_ = -1;
-		IHSH_->FetchServerHistory (index, CurrentOffset_, 50);
+		IHSH_->FetchServerHistory (index, CurrentID_, 50);
 	}
 
 	void ServerHistoryWidget::navigatePrevious ()
 	{
-		CurrentOffset_ += GetReqMsgCount ();
 		IHSH_->FetchServerHistory (Ui_.ContactsView_->currentIndex (),
-				CurrentOffset_, GetReqMsgCount ());
+				MaxID_, GetReqMsgCount ());
 	}
 
 	void ServerHistoryWidget::navigateNext ()
 	{
-		CurrentOffset_ = std::max (CurrentOffset_ - GetReqMsgCount (), 0);
 		IHSH_->FetchServerHistory (Ui_.ContactsView_->currentIndex (),
-				CurrentOffset_, GetReqMsgCount ());
+				CurrentID_, -GetReqMsgCount ());
 	}
 }
 }
