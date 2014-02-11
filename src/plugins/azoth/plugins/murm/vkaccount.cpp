@@ -445,6 +445,24 @@ namespace Murm
 		return entry;
 	}
 
+	bool VkAccount::HasFeature (ServerHistoryFeature feature) const
+	{
+		switch (feature)
+		{
+		case ServerHistoryFeature::Configurable:
+			return false;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown feature"
+				<< static_cast<int> (feature);
+		return false;
+	}
+
+	void VkAccount::OpenServerHistoryConfiguration ()
+	{
+	}
+
 	QAbstractItemModel* VkAccount::GetServerContactsModel () const
 	{
 		return ServHistMgr_->GetModel ();

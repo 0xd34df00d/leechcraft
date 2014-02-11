@@ -159,6 +159,8 @@ namespace Murm
 
 		QObject* CreateNonRosterItem (const QString&);
 
+		bool HasFeature (ServerHistoryFeature) const;
+		void OpenServerHistoryConfiguration ();
 		QAbstractItemModel* GetServerContactsModel () const;
 		void FetchServerHistory (const QModelIndex& contact, int offset, int count);
 	private:

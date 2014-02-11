@@ -56,10 +56,19 @@ namespace Azoth
 		ServerHistoryRoleMax
 	};
 
+	enum class ServerHistoryFeature
+	{
+		Configurable
+	};
+
 	class IHaveServerHistory
 	{
 	public:
 		virtual ~IHaveServerHistory () {}
+
+		virtual bool HasFeature (ServerHistoryFeature) const = 0;
+
+		virtual void OpenServerHistoryConfiguration () = 0;
 
 		virtual QAbstractItemModel* GetServerContactsModel () const = 0;
 
