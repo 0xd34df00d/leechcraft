@@ -57,6 +57,7 @@ namespace Xoox
 		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
 
 		bool HasServerFeatures () const;
+		QStringList GetServerFeatures () const;
 		QString GetBytestreamsProxy () const;
 	private:
 		void HandleItems (const QXmppDiscoveryIq&);

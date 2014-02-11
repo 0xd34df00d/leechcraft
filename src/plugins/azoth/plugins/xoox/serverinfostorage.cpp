@@ -56,6 +56,11 @@ namespace Xoox
 		return !ServerFeatures_.isEmpty ();
 	}
 
+	QStringList ServerInfoStorage::GetServerFeatures () const
+	{
+		return ServerFeatures_;
+	}
+
 	QString ServerInfoStorage::GetBytestreamsProxy () const
 	{
 		return BytestreamsProxy_;
