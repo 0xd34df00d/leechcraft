@@ -76,8 +76,6 @@ namespace Azoth
 		void navigateNext ();
 	signals:
 		void removeTab (QWidget*);
-
-		void serverHistoryFetched (const QModelIndex&, int, const SrvHistMessages_t&);
 	};
 }
 }
