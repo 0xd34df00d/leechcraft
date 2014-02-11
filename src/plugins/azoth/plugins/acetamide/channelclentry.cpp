@@ -252,6 +252,9 @@ namespace Acetamide
 
 	bool ChannelCLEntry::CanChangeSubject () const
 	{
+		if (!ICH_->GetChannelModes ().InviteMode_)
+			return true;
+
 		return false;
 	}
 
