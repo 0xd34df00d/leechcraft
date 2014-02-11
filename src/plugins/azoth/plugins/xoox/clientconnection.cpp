@@ -89,6 +89,7 @@
 #include "xmlsettingsmanager.h"
 #include "inforequestpolicymanager.h"
 #include "captchamanager.h"
+#include "xep0313manager.h"
 
 namespace LeechCraft
 {
@@ -123,6 +124,7 @@ namespace Xoox
 	, RIEXManager_ (new RIEXManager)
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
+	, Xep0313Manager_ (new Xep0313Manager)
 	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
@@ -210,6 +212,7 @@ namespace Xoox
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this));
+		Client_->addExtension (Xep0313Manager_);
 
 		AnnotationsManager_ = new AnnotationsManager (this);
 
@@ -557,6 +560,11 @@ namespace Xoox
 	SDManager* ClientConnection::GetSDManager () const
 	{
 		return SDManager_;
+	}
+
+	Xep0313Manager* ClientConnection::GetXep0313Manager () const
+	{
+		return Xep0313Manager_;
 	}
 
 	InfoRequestPolicyManager* ClientConnection::GetInfoReqPolicyManager () const

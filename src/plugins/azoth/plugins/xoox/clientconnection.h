@@ -85,6 +85,7 @@ namespace Xoox
 	class UserAvatarManager;
 	class MsgArchivingManager;
 	class SDManager;
+	class Xep0313Manager;
 
 	class InfoRequestPolicyManager;
 	class ClientConnectionErrorMgr;
@@ -126,6 +127,7 @@ namespace Xoox
 		RIEXManager *RIEXManager_;
 		MsgArchivingManager *MsgArchivingManager_;
 		SDManager *SDManager_;
+		Xep0313Manager *Xep0313Manager_;
 
 		CryptHandler *CryptHandler_;
 		ClientConnectionErrorMgr *ErrorMgr_;
@@ -219,6 +221,7 @@ namespace Xoox
 		UserAvatarManager* GetUserAvatarManager () const;
 		RIEXManager* GetRIEXManager () const;
 		SDManager* GetSDManager () const;
+		Xep0313Manager* GetXep0313Manager () const;
 
 		InfoRequestPolicyManager* GetInfoReqPolicyManager () const;
 
