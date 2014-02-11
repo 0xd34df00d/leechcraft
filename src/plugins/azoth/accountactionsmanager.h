@@ -63,6 +63,7 @@ namespace Azoth
 		QAction *AccountAddContact_;
 		QAction *AccountOpenNonRosterChat_;
 		QAction *AccountOpenServerHistory_;
+		QAction *AccountConfigServerHistory_;
 		QAction *AccountViewMicroblogs_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
@@ -90,6 +91,7 @@ namespace Azoth
 		void addAccountContact ();
 		void handleOpenNonRoster ();
 		void handleOpenServerHistory ();
+		void handleConfigServerHistory ();
 		void handleAccountMicroblogs ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();

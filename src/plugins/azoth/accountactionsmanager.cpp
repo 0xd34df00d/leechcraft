@@ -77,7 +77,8 @@ namespace Azoth
 	, AccountManageBookmarks_ (new QAction (tr ("Manage bookmarks..."), this))
 	, AccountAddContact_ (new QAction (tr ("Add contact..."), this))
 	, AccountOpenNonRosterChat_ (new QAction (tr ("Chat with non-CL contact"), this))
-	, AccountOpenServerHistory_ (new QAction (tr ("Open server history"), this))
+	, AccountOpenServerHistory_ (new QAction (tr ("Open server history..."), this))
+	, AccountConfigServerHistory_ (new QAction (tr ("Configure server history..."), this))
 	, AccountViewMicroblogs_ (new QAction (tr ("View microblogs..."), this))
 	, AccountSetActivity_ (new QAction (tr ("Set activity..."), this))
 	, AccountSetMood_ (new QAction (tr ("Set mood..."), this))
@@ -118,6 +119,10 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleOpenServerHistory ()));
+		connect (AccountConfigServerHistory_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleConfigServerHistory ()));
 		connect (AccountViewMicroblogs_,
 				SIGNAL (triggered ()),
 				this,
@@ -181,9 +186,13 @@ namespace Azoth
 			actions << AccountOpenNonRosterChat_;
 		actions << Util::CreateSeparator (menu);
 
-		if (qobject_cast<IHaveServerHistory*> (accObj))
+		if (const auto ihsh = qobject_cast<IHaveServerHistory*> (accObj))
 		{
 			actions << AccountOpenServerHistory_;
+
+			if (ihsh->HasFeature (ServerHistoryFeature::Configurable))
+				actions << AccountConfigServerHistory_;
+
 			actions << Util::CreateSeparator (menu);
 		}
 
@@ -476,6 +485,13 @@ namespace Azoth
 			return;
 
 		emit gotServerHistoryTab (new ServerHistoryWidget (obj));
+	}
+
+	void AccountActionsManager::handleConfigServerHistory ()
+	{
+		const auto obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		const auto ihsh = qobject_cast<IHaveServerHistory*> (obj);
+		ihsh->OpenServerHistoryConfiguration ();
 	}
 
 	void AccountActionsManager::handleAccountMicroblogs ()
