@@ -102,6 +102,7 @@ set (XOOX_SRCS
 	xep0313manager.cpp
 	xep0313prefiq.cpp
 	xep0313prefsdialog.cpp
+	xep0313modelmanager.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
