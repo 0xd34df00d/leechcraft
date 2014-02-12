@@ -1134,6 +1134,8 @@ namespace Xoox
 			HandleRIEX (msg.from (), AwaitingRIEXItems_.take (msg.from ()), msg.body ());
 			return;
 		}
+		else if (Xep0313Manager_->CheckMessage (msg))
+			return;
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
 		else if (JID2CLEntry_.contains (jid))
