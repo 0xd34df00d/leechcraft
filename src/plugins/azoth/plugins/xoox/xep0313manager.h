@@ -51,6 +51,8 @@ namespace Xoox
 
 		void RequestPrefs ();
 		void SetPrefs (const Xep0313PrefIq&);
+
+		void RequestHistory (const QString& jid, QString baseId, int count);
 	private:
 		void HandlePrefs (const QDomElement&);
 	signals:

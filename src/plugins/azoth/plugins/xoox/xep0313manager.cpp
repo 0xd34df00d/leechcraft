@@ -31,6 +31,7 @@
 #include <QDomDocument>
 #include <QXmppClient.h>
 #include "xep0313prefiq.h"
+#include "xep0313reqiq.h"
 
 namespace LeechCraft
 {
@@ -77,6 +78,23 @@ namespace Xoox
 		auto updateIq = iq;
 		updateIq.setType (QXmppIq::Set);
 		client ()->sendPacket (updateIq);
+	}
+
+	void Xep0313Manager::RequestHistory (const QString& jid, QString baseId, int count)
+	{
+		if (baseId == "-1")
+			baseId = "";
+
+		Xep0313ReqIq iq
+		{
+			jid,
+			baseId,
+			std::abs (count),
+			count > 0 ?
+					Xep0313ReqIq::Direction::Before :
+					Xep0313ReqIq::Direction::After
+		};
+		client ()->sendPacket (iq);
 	}
 
 	void Xep0313Manager::HandlePrefs (const QDomElement& element)
