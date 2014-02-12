@@ -115,7 +115,7 @@ namespace Azoth
 	void ServerHistoryWidget::handleFetched (const QModelIndex& index,
 			const QByteArray& startId, const SrvHistMessages_t& messages)
 	{
-		if (index != ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ()))
+		if (index.row () != ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ()).row ())
 			return;
 
 		if (FirstMsgCount_ == -1)
