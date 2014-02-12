@@ -29,45 +29,55 @@
 
 #pragma once
 
-#include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include <QWidget>
+#include <interfaces/ihavetabs.h>
+#include "interfaces/azoth/ihaveserverhistory.h"
+#include "ui_serverhistorywidget.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
-{
-	class AccountSettingsHolder;
-	class ClientConnection;
+	class IHaveServerHistory;
 
-	class ServerInfoStorage : public QObject
+	class ServerHistoryWidget : public QWidget
+							  , public ITabWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (ITabWidget)
 
-		ClientConnection *Conn_;
-		AccountSettingsHolder *Settings_;
-		QString PreviousJID_;
-		QString Server_;
+		QObject *PluginObj_;
+		TabClassInfo TC_;
 
-		QStringList ServerFeatures_;
+		Ui::ServerHistoryWidget Ui_;
 
-		QString BytestreamsProxy_;
+		QToolBar * const Toolbar_;
+
+		QObject * const AccObj_;
+		IHaveServerHistory * const IHSH_;
+
+		int CurrentOffset_ = 0;
+		int FirstMsgCount_ = -1;
 	public:
-		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
+		ServerHistoryWidget (QObject*, QWidget* = nullptr);
 
-		bool HasServerFeatures () const;
-		QStringList GetServerFeatures () const;
-		QString GetBytestreamsProxy () const;
+		void SetTabInfo (QObject*, const TabClassInfo&);
+
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	private:
-		void HandleItems (const QXmppDiscoveryIq&);
-		void HandleServerInfo (const QXmppDiscoveryIq&);
-		void HandleItemInfo (const QXmppDiscoveryIq&);
+		int GetReqMsgCount () const;
 	private slots:
-		void handleConnected ();
+		void handleFetched (const QModelIndex&, int, const SrvHistMessages_t&);
+		void on_ContactsView__activated (const QModelIndex&);
+		void navigatePrevious ();
+		void navigateNext ();
 	signals:
-		void bytestreamsProxyChanged (const QString&);
+		void removeTab (QWidget*);
+
+		void serverHistoryFetched (const QModelIndex&, int, const SrvHistMessages_t&);
 	};
-}
 }
 }

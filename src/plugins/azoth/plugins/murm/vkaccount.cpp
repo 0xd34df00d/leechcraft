@@ -44,6 +44,7 @@
 #include "vkchatentry.h"
 #include "logger.h"
 #include "accountconfigdialog.h"
+#include "serverhistorymanager.h"
 
 namespace LeechCraft
 {
@@ -63,6 +64,7 @@ namespace Murm
 	, Conn_ (new VkConnection (name, cookies, proxy, *Logger_))
 	, GroupsMgr_ (new GroupsManager (Conn_))
 	, GeoResolver_ (new GeoResolver (Conn_, this))
+	, ServHistMgr_ (new ServerHistoryManager (this))
 	{
 		connect (Conn_,
 				SIGNAL (cookiesChanged ()),
@@ -121,6 +123,11 @@ namespace Murm
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)),
 				this,
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
+
+		connect (ServHistMgr_,
+				SIGNAL (serverHistoryFetched (QModelIndex, int, SrvHistMessages_t)),
+				this,
+				SIGNAL (serverHistoryFetched (QModelIndex, int, SrvHistMessages_t)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -438,6 +445,34 @@ namespace Murm
 		return entry;
 	}
 
+	bool VkAccount::HasFeature (ServerHistoryFeature feature) const
+	{
+		switch (feature)
+		{
+		case ServerHistoryFeature::Configurable:
+			return false;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown feature"
+				<< static_cast<int> (feature);
+		return false;
+	}
+
+	void VkAccount::OpenServerHistoryConfiguration ()
+	{
+	}
+
+	QAbstractItemModel* VkAccount::GetServerContactsModel () const
+	{
+		return ServHistMgr_->GetModel ();
+	}
+
+	void VkAccount::FetchServerHistory (const QModelIndex& contact, int offset, int count)
+	{
+		ServHistMgr_->RequestHistory (contact, offset, count);
+	}
+
 	void VkAccount::TryPendingMessages ()
 	{
 		decltype (PendingMessages_) pending;
@@ -458,15 +493,7 @@ namespace Murm
 		return entry;
 	}
 
-	void VkAccount::handleSelfInfo (const UserInfo& info)
-	{
-		handleUsers ({ info });
-
-		SelfEntry_ = Entries_ [info.ID_];
-		SelfEntry_->SetSelf ();
-	}
-
-	void VkAccount::handleUsers (const QList<UserInfo>& infos)
+	bool VkAccount::CreateUsers (const QList<UserInfo>& infos)
 	{
 		QList<QObject*> newEntries;
 		QSet<int> newCountries;
@@ -493,8 +520,24 @@ namespace Murm
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);
 
-		if (hadNew)
+		return hadNew;
+	}
+
+	void VkAccount::handleSelfInfo (const UserInfo& info)
+	{
+		CreateUsers ({ info });
+
+		SelfEntry_ = Entries_ [info.ID_];
+		SelfEntry_->SetSelf ();
+	}
+
+	void VkAccount::handleUsers (const QList<UserInfo>& infos)
+	{
+		if (CreateUsers (infos))
+		{
 			TryPendingMessages ();
+			ServHistMgr_->refresh ();
+		}
 	}
 
 	void VkAccount::handleNRIList (const QList<qulonglong>& ids)

@@ -252,7 +252,8 @@ namespace Acetamide
 
 	bool ChannelCLEntry::CanChangeSubject () const
 	{
-		return false;
+		return !ICH_->GetChannelModes ().InviteMode_ ||
+				ICH_->GetSelf ()->HighestRole () >= Operator;
 	}
 
 	void ChannelCLEntry::SetMUCSubject (const QString& subject)

@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include <QDialog>
+#include "ui_xep0313prefsdialog.h"
 
 namespace LeechCraft
 {
@@ -38,35 +38,20 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class AccountSettingsHolder;
-	class ClientConnection;
+	class Xep0313Manager;
+	class Xep0313PrefIq;
 
-	class ServerInfoStorage : public QObject
+	class Xep0313PrefsDialog : public QDialog
 	{
 		Q_OBJECT
 
-		ClientConnection *Conn_;
-		AccountSettingsHolder *Settings_;
-		QString PreviousJID_;
-		QString Server_;
-
-		QStringList ServerFeatures_;
-
-		QString BytestreamsProxy_;
+		Ui::Xep0313PrefsDialog Ui_;
+		Xep0313Manager * const Manager_;
 	public:
-		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
-
-		bool HasServerFeatures () const;
-		QStringList GetServerFeatures () const;
-		QString GetBytestreamsProxy () const;
-	private:
-		void HandleItems (const QXmppDiscoveryIq&);
-		void HandleServerInfo (const QXmppDiscoveryIq&);
-		void HandleItemInfo (const QXmppDiscoveryIq&);
+		Xep0313PrefsDialog (Xep0313Manager*, QWidget* = nullptr);
 	private slots:
-		void handleConnected ();
-	signals:
-		void bytestreamsProxyChanged (const QString&);
+		void updatePrefs ();
+		void handlePrefs (const Xep0313PrefIq&);
 	};
 }
 }

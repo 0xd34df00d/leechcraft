@@ -47,6 +47,7 @@
 #include "interfaces/azoth/ihavemicroblogs.h"
 #include "interfaces/azoth/iregmanagedaccount.h"
 #include "interfaces/azoth/isupportnonroster.h"
+#include "interfaces/azoth/ihaveserverhistory.h"
 #include "core.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
@@ -61,14 +62,14 @@
 #include "statuschangemenumanager.h"
 #include "setstatusdialog.h"
 #include "xmlsettingsmanager.h"
+#include "serverhistorywidget.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	AccountActionsManager::AccountActionsManager (QWidget *mw, QObject *parent)
+	AccountActionsManager::AccountActionsManager (QObject *parent)
 	: QObject (parent)
-	, MW_ (mw)
 	, StatusMenuMgr_ (new StatusChangeMenuManager (this))
 	, MenuChangeStatus_ (StatusMenuMgr_->CreateMenu (this,
 				SLOT (handleChangeStatusRequested ()), nullptr, false))
@@ -76,6 +77,8 @@ namespace Azoth
 	, AccountManageBookmarks_ (new QAction (tr ("Manage bookmarks..."), this))
 	, AccountAddContact_ (new QAction (tr ("Add contact..."), this))
 	, AccountOpenNonRosterChat_ (new QAction (tr ("Chat with non-CL contact"), this))
+	, AccountOpenServerHistory_ (new QAction (tr ("Open server history..."), this))
+	, AccountConfigServerHistory_ (new QAction (tr ("Configure server history..."), this))
 	, AccountViewMicroblogs_ (new QAction (tr ("View microblogs..."), this))
 	, AccountSetActivity_ (new QAction (tr ("Set activity..."), this))
 	, AccountSetMood_ (new QAction (tr ("Set mood..."), this))
@@ -112,6 +115,14 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleOpenNonRoster ()));
+		connect (AccountOpenServerHistory_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOpenServerHistory ()));
+		connect (AccountConfigServerHistory_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleConfigServerHistory ()));
 		connect (AccountViewMicroblogs_,
 				SIGNAL (triggered ()),
 				this,
@@ -150,6 +161,11 @@ namespace Azoth
 				SLOT (handleAccountModify ()));
 	}
 
+	void AccountActionsManager::SetMainWidget (QWidget *mw)
+	{
+		MW_ = mw;
+	}
+
 	QList<QAction*> AccountActionsManager::GetMenuActions (QMenu *menu, QObject *accObj)
 	{
 		QList<QAction*> actions;
@@ -169,6 +185,16 @@ namespace Azoth
 		if (qobject_cast<ISupportNonRoster*> (accObj))
 			actions << AccountOpenNonRosterChat_;
 		actions << Util::CreateSeparator (menu);
+
+		if (const auto ihsh = qobject_cast<IHaveServerHistory*> (accObj))
+		{
+			actions << AccountOpenServerHistory_;
+
+			if (ihsh->HasFeature (ServerHistoryFeature::Configurable))
+				actions << AccountConfigServerHistory_;
+
+			actions << Util::CreateSeparator (menu);
+		}
 
 		if (qobject_cast<IHaveMicroblogs*> (accObj))
 		{
@@ -449,6 +475,23 @@ namespace Azoth
 
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
+	}
+
+	void AccountActionsManager::handleOpenServerHistory ()
+	{
+		const auto obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		const auto ihsh = qobject_cast<IHaveServerHistory*> (obj);
+		if (!ihsh)
+			return;
+
+		emit gotServerHistoryTab (new ServerHistoryWidget (obj));
+	}
+
+	void AccountActionsManager::handleConfigServerHistory ()
+	{
+		const auto obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		const auto ihsh = qobject_cast<IHaveServerHistory*> (obj);
+		ihsh->OpenServerHistoryConfiguration ();
 	}
 
 	void AccountActionsManager::handleAccountMicroblogs ()

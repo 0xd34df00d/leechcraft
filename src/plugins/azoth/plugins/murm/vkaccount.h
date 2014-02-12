@@ -35,6 +35,7 @@
 #include <interfaces/azoth/iextselfinfoaccount.h>
 #include <interfaces/azoth/ihaveconsole.h>
 #include <interfaces/azoth/isupportnonroster.h>
+#include <interfaces/azoth/ihaveserverhistory.h>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
 #include "vkconnection.h"
@@ -55,6 +56,7 @@ namespace Murm
 	class GroupsManager;
 	class Logger;
 	class AccountConfigDialog;
+	class ServerHistoryManager;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -62,13 +64,15 @@ namespace Murm
 					, public IExtSelfInfoAccount
 					, public IHaveConsole
 					, public ISupportNonRoster
+					, public IHaveServerHistory
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::ISupportTune
 				LeechCraft::Azoth::IExtSelfInfoAccount
 				LeechCraft::Azoth::IHaveConsole
-				LeechCraft::Azoth::ISupportNonRoster)
+				LeechCraft::Azoth::ISupportNonRoster
+				LeechCraft::Azoth::IHaveServerHistory)
 
 		const ICoreProxy_ptr CoreProxy_;
 
@@ -84,6 +88,7 @@ namespace Murm
 		VkConnection * const Conn_;
 		GroupsManager * const GroupsMgr_;
 		GeoResolver * const GeoResolver_;
+		ServerHistoryManager * const ServHistMgr_;
 
 		VkEntry *SelfEntry_ = nullptr;
 		QHash<qulonglong, VkEntry*> Entries_;
@@ -153,9 +158,16 @@ namespace Murm
 		void SetConsoleEnabled (bool);
 
 		QObject* CreateNonRosterItem (const QString&);
+
+		bool HasFeature (ServerHistoryFeature) const;
+		void OpenServerHistoryConfiguration ();
+		QAbstractItemModel* GetServerContactsModel () const;
+		void FetchServerHistory (const QModelIndex& contact, int offset, int count);
 	private:
 		void TryPendingMessages ();
 		VkEntry* CreateNonRosterItem (qulonglong);
+
+		bool CreateUsers (const QList<UserInfo>&);
 	private slots:
 		void handleSelfInfo (const UserInfo&);
 		void handleUsers (const QList<UserInfo>&);
@@ -195,6 +207,8 @@ namespace Murm
 		void accountChanged (VkAccount*);
 
 		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
+
+		void serverHistoryFetched (const QModelIndex&, int, const SrvHistMessages_t&);
 	};
 }
 }

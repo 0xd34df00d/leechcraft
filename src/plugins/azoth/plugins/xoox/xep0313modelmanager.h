@@ -29,44 +29,41 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include <QMap>
+
+class QModelIndex;
+class QAbstractItemModel;
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+class ICLEntry;
+
 namespace Xoox
 {
-	class AccountSettingsHolder;
-	class ClientConnection;
+	class GlooxAccount;
 
-	class ServerInfoStorage : public QObject
+	class Xep0313ModelManager : public QObject
 	{
 		Q_OBJECT
 
-		ClientConnection *Conn_;
-		AccountSettingsHolder *Settings_;
-		QString PreviousJID_;
-		QString Server_;
-
-		QStringList ServerFeatures_;
-
-		QString BytestreamsProxy_;
+		QStandardItemModel * const Model_;
+		QMap<QString, QStandardItem*> Jid2Item_;
 	public:
-		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
+		Xep0313ModelManager (GlooxAccount*);
 
-		bool HasServerFeatures () const;
-		QStringList GetServerFeatures () const;
-		QString GetBytestreamsProxy () const;
+		QAbstractItemModel* GetModel () const;
+		QString Index2Jid (const QModelIndex&) const;
 	private:
-		void HandleItems (const QXmppDiscoveryIq&);
-		void HandleServerInfo (const QXmppDiscoveryIq&);
-		void HandleItemInfo (const QXmppDiscoveryIq&);
+		void PerformWithEntries (const QList<QObject*>&, const std::function<void (ICLEntry*)>&);
 	private slots:
-		void handleConnected ();
-	signals:
-		void bytestreamsProxyChanged (const QString&);
+		void handleGotCLItems (const QList<QObject*>&);
+		void handleRemovedCLItems (const QList<QObject*>&);
 	};
 }
 }

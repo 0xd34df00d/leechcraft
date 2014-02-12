@@ -153,6 +153,7 @@ set (SRCS
 	groupremovedialog.cpp
 	coremessage.cpp
 	dummymsgmanager.cpp
+	serverhistorywidget.cpp
 	)
 set (FORMS
 	mainwidget.ui
@@ -184,6 +185,7 @@ set (FORMS
 	userslistwidget.ui
 	advancedpermchangedialog.ui
 	groupremovedialog.ui
+	serverhistorywidget.ui
 	)
 set (RESOURCES azothresources.qrc)
 

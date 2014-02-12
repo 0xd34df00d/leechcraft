@@ -29,45 +29,57 @@
 
 #pragma once
 
-#include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include <QList>
+#include <QtPlugin>
+#include "imessage.h"
+
+class QModelIndex;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
-{
-	class AccountSettingsHolder;
-	class ClientConnection;
-
-	class ServerInfoStorage : public QObject
+	struct SrvHistMessage
 	{
-		Q_OBJECT
+		IMessage::Direction Dir_;
+		QString Nick_;
+		QString Body_;
+		QDateTime TS_;
+	};
 
-		ClientConnection *Conn_;
-		AccountSettingsHolder *Settings_;
-		QString PreviousJID_;
-		QString Server_;
+	typedef QList<SrvHistMessage> SrvHistMessages_t;
 
-		QStringList ServerFeatures_;
+	enum ServerHistoryRole
+	{
+		LastMessageDate = Qt::UserRole + 1,
+		ServerHistoryRoleMax
+	};
 
-		QString BytestreamsProxy_;
+	enum class ServerHistoryFeature
+	{
+		Configurable
+	};
+
+	class IHaveServerHistory
+	{
 	public:
-		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
+		virtual ~IHaveServerHistory () {}
 
-		bool HasServerFeatures () const;
-		QStringList GetServerFeatures () const;
-		QString GetBytestreamsProxy () const;
-	private:
-		void HandleItems (const QXmppDiscoveryIq&);
-		void HandleServerInfo (const QXmppDiscoveryIq&);
-		void HandleItemInfo (const QXmppDiscoveryIq&);
-	private slots:
-		void handleConnected ();
-	signals:
-		void bytestreamsProxyChanged (const QString&);
+		virtual bool HasFeature (ServerHistoryFeature) const = 0;
+
+		virtual void OpenServerHistoryConfiguration () = 0;
+
+		virtual QAbstractItemModel* GetServerContactsModel () const = 0;
+
+		virtual void FetchServerHistory (const QModelIndex& contact,
+				int offset, int count) = 0;
+	protected:
+		virtual void serverHistoryFetched (const QModelIndex& contact,
+				int offset, const SrvHistMessages_t& messages) = 0;
 	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveServerHistory,
+		"org.LeechCraft.Azoth.IHaveServerHistory/1.0");

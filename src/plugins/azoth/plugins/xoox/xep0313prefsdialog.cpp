@@ -27,10 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include "xep0313prefsdialog.h"
+#include "xep0313manager.h"
+#include "xep0313prefiq.h"
 
 namespace LeechCraft
 {
@@ -38,36 +37,45 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class AccountSettingsHolder;
-	class ClientConnection;
-
-	class ServerInfoStorage : public QObject
+	Xep0313PrefsDialog::Xep0313PrefsDialog (Xep0313Manager *mgr, QWidget *parent)
+	: QDialog { parent }
+	, Manager_ { mgr }
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
 
-		ClientConnection *Conn_;
-		AccountSettingsHolder *Settings_;
-		QString PreviousJID_;
-		QString Server_;
+		connect (mgr,
+				SIGNAL (gotPrefs (Xep0313PrefIq)),
+				this,
+				SLOT (handlePrefs (Xep0313PrefIq)));
+		mgr->RequestPrefs ();
 
-		QStringList ServerFeatures_;
+		connect (this,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (updatePrefs ()));
 
-		QString BytestreamsProxy_;
-	public:
-		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
+		setAttribute (Qt::WA_DeleteOnClose);
+	}
 
-		bool HasServerFeatures () const;
-		QStringList GetServerFeatures () const;
-		QString GetBytestreamsProxy () const;
-	private:
-		void HandleItems (const QXmppDiscoveryIq&);
-		void HandleServerInfo (const QXmppDiscoveryIq&);
-		void HandleItemInfo (const QXmppDiscoveryIq&);
-	private slots:
-		void handleConnected ();
-	signals:
-		void bytestreamsProxyChanged (const QString&);
-	};
+	void Xep0313PrefsDialog::updatePrefs ()
+	{
+		Xep0313PrefIq iq;
+		const auto idx = Ui_.DefaultMode_->currentIndex ();
+		iq.SetDefaultPolicy (static_cast<Xep0313PrefIq::DefaultPolicy> (idx));
+
+		iq.SetAllowed (Ui_.Always_->toPlainText ().split ('\n', QString::SkipEmptyParts));
+		iq.SetForbidden (Ui_.Never_->toPlainText ().split ('\n', QString::SkipEmptyParts));
+
+		Manager_->SetPrefs (iq);
+	}
+
+	void Xep0313PrefsDialog::handlePrefs (const Xep0313PrefIq& iq)
+	{
+		Ui_.DefaultMode_->setCurrentIndex (static_cast<int> (iq.GetDefaultPolicy ()));
+
+		Ui_.Always_->setPlainText (iq.GetAllowed ().join ("\n"));
+		Ui_.Never_->setPlainText (iq.GetForbidden ().join ("\n"));
+	}
 }
 }
 }

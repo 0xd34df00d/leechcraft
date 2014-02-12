@@ -30,43 +30,54 @@
 #pragma once
 
 #include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include <QHash>
+#include <QModelIndex>
+#include <interfaces/azoth/ihaveserverhistory.h>
+
+class QNetworkReply;
+class QAbstractItemModel;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
+namespace Murm
 {
-	class AccountSettingsHolder;
-	class ClientConnection;
+	class VkAccount;
 
-	class ServerInfoStorage : public QObject
+	class ServerHistoryManager : public QObject
 	{
 		Q_OBJECT
 
-		ClientConnection *Conn_;
-		AccountSettingsHolder *Settings_;
-		QString PreviousJID_;
-		QString Server_;
+		VkAccount * const Acc_;
+		QStandardItemModel * const ContactsModel_;
 
-		QStringList ServerFeatures_;
+		int MsgCount_ = -1;
+		int LastOffset_ = 0;
 
-		QString BytestreamsProxy_;
+		bool IsRefreshing_ = false;
+
+		struct RequestState
+		{
+			QModelIndex Index_;
+			int Offset_;
+		};
+		QHash<QNetworkReply*, RequestState> MsgRequestState_;
 	public:
-		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
+		ServerHistoryManager (VkAccount*);
 
-		bool HasServerFeatures () const;
-		QStringList GetServerFeatures () const;
-		QString GetBytestreamsProxy () const;
+		QAbstractItemModel* GetModel () const;
+		void RequestHistory (const QModelIndex&, int, int);
 	private:
-		void HandleItems (const QXmppDiscoveryIq&);
-		void HandleServerInfo (const QXmppDiscoveryIq&);
-		void HandleItemInfo (const QXmppDiscoveryIq&);
+		void Request (int);
+	public slots:
+		void refresh ();
 	private slots:
-		void handleConnected ();
+		void handleGotHistory ();
+		void handleGotMessagesList ();
 	signals:
-		void bytestreamsProxyChanged (const QString&);
+		void serverHistoryFetched (const QModelIndex&, int, const SrvHistMessages_t&);
 	};
 }
 }

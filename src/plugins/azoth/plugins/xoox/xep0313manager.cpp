@@ -27,10 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include "xep0313manager.h"
+#include <QDomDocument>
+#include <QXmppClient.h>
+#include "xep0313prefiq.h"
 
 namespace LeechCraft
 {
@@ -38,36 +38,53 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class AccountSettingsHolder;
-	class ClientConnection;
+	const QString NsMam = "urn:xmpp:mam:tmp";
 
-	class ServerInfoStorage : public QObject
+	bool Xep0313Manager::Supports0313 (const QStringList& features)
 	{
-		Q_OBJECT
+		return features.contains (NsMam);
+	}
 
-		ClientConnection *Conn_;
-		AccountSettingsHolder *Settings_;
-		QString PreviousJID_;
-		QString Server_;
+	QString Xep0313Manager::GetNsUri ()
+	{
+		return NsMam;
+	}
 
-		QStringList ServerFeatures_;
+	QStringList Xep0313Manager::discoveryFeatures () const
+	{
+		return { NsMam };
+	}
 
-		QString BytestreamsProxy_;
-	public:
-		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
+	bool Xep0313Manager::handleStanza (const QDomElement& element)
+	{
+		if (element.tagName () == "iq" &&
+				element.firstChildElement ("prefs").namespaceURI () == NsMam)
+		{
+			HandlePrefs (element);
+			return true;
+		}
 
-		bool HasServerFeatures () const;
-		QStringList GetServerFeatures () const;
-		QString GetBytestreamsProxy () const;
-	private:
-		void HandleItems (const QXmppDiscoveryIq&);
-		void HandleServerInfo (const QXmppDiscoveryIq&);
-		void HandleItemInfo (const QXmppDiscoveryIq&);
-	private slots:
-		void handleConnected ();
-	signals:
-		void bytestreamsProxyChanged (const QString&);
-	};
+		return false;
+	}
+
+	void Xep0313Manager::RequestPrefs ()
+	{
+		client ()->sendPacket (Xep0313PrefIq {});
+	}
+
+	void Xep0313Manager::SetPrefs (const Xep0313PrefIq& iq)
+	{
+		auto updateIq = iq;
+		updateIq.setType (QXmppIq::Set);
+		client ()->sendPacket (updateIq);
+	}
+
+	void Xep0313Manager::HandlePrefs (const QDomElement& element)
+	{
+		Xep0313PrefIq iq;
+		iq.parse (element);
+		emit gotPrefs (iq);
+	}
 }
 }
 }

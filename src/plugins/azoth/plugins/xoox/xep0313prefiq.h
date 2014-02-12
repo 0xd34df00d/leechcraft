@@ -29,8 +29,7 @@
 
 #pragma once
 
-#include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include <QXmppIq.h>
 
 namespace LeechCraft
 {
@@ -38,35 +37,33 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class AccountSettingsHolder;
-	class ClientConnection;
-
-	class ServerInfoStorage : public QObject
+	class Xep0313PrefIq : public QXmppIq
 	{
-		Q_OBJECT
-
-		ClientConnection *Conn_;
-		AccountSettingsHolder *Settings_;
-		QString PreviousJID_;
-		QString Server_;
-
-		QStringList ServerFeatures_;
-
-		QString BytestreamsProxy_;
+		QStringList Allowed_;
+		QStringList Forbidden_;
 	public:
-		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
-
-		bool HasServerFeatures () const;
-		QStringList GetServerFeatures () const;
-		QString GetBytestreamsProxy () const;
+		enum class DefaultPolicy
+		{
+			Always,
+			Never,
+			Roster
+		};
 	private:
-		void HandleItems (const QXmppDiscoveryIq&);
-		void HandleServerInfo (const QXmppDiscoveryIq&);
-		void HandleItemInfo (const QXmppDiscoveryIq&);
-	private slots:
-		void handleConnected ();
-	signals:
-		void bytestreamsProxyChanged (const QString&);
+		DefaultPolicy Policy_;
+	public:
+		Xep0313PrefIq (Type type = QXmppIq::Get);
+
+		QStringList GetAllowed () const;
+		void SetAllowed (const QStringList&);
+
+		QStringList GetForbidden () const;
+		void SetForbidden (const QStringList&);
+
+		DefaultPolicy GetDefaultPolicy () const;
+		void SetDefaultPolicy (DefaultPolicy);
+	protected:
+		void parseElementFromChild (const QDomElement&);
+		void toXmlElementFromChild (QXmlStreamWriter*) const;
 	};
 }
 }

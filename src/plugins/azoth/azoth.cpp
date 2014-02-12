@@ -63,6 +63,8 @@
 #include "chatstyleoptionmanager.h"
 #include "colorlisteditorwidget.h"
 #include "customstatusesmanager.h"
+#include "accountactionsmanager.h"
+#include "serverhistorywidget.h"
 
 namespace LeechCraft
 {
@@ -78,9 +80,7 @@ namespace Azoth
 
 		Core::Instance ().SetProxy (proxy);
 		InitShortcuts ();
-
-		MW_ = new MainWidget ();
-
+		InitAccActsMgr ();
 		InitSettings ();
 		InitSignals ();
 		InitTabClasses ();
@@ -360,6 +360,29 @@ namespace Azoth
 			);
 	}
 
+	void Plugin::InitAccActsMgr ()
+	{
+		auto accActsMgr = new AccountActionsManager ();
+		MW_ = new MainWidget (accActsMgr);
+		accActsMgr->SetMainWidget (MW_);
+		connect (accActsMgr,
+				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
+				this,
+				SLOT (handleConsoleWidget (ConsoleWidget*)));
+		connect (accActsMgr,
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
+		connect (accActsMgr,
+				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
+				this,
+				SLOT (handleMicroblogsTab (MicroblogsTab*)));
+		connect (accActsMgr,
+				SIGNAL (gotServerHistoryTab (ServerHistoryWidget*)),
+				this,
+				SLOT (handleServerHistoryTab (ServerHistoryWidget*)));
+	}
+
 	void Plugin::InitSettings ()
 	{
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
@@ -495,18 +518,6 @@ namespace Azoth
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
-		connect (MW_,
-				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
-				this,
-				SLOT (handleConsoleWidget (ConsoleWidget*)));
-		connect (MW_,
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
-				this,
-				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
-		connect (MW_,
-				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
-				this,
-				SLOT (handleMicroblogsTab (MicroblogsTab*)));
 	}
 
 	void Plugin::InitTabClasses ()
@@ -562,12 +573,24 @@ namespace Azoth
 			0,
 			TFEmpty
 		};
+
 		TabClassInfo microblogsTab =
 		{
 			"MicroblogsTab",
 			tr ("Microblogs"),
 			tr ("Microblogs where protocol/account supports that"),
 			QIcon (),
+			0,
+			TFEmpty
+		};
+		MicroblogsTab::SetTabData (this, microblogsTab);
+
+		ServerHistoryTC_ =
+		{
+			"ServerHistoryTab",
+			tr ("Server history"),
+			tr ("Server history browser for protocols and accounts supporting this feature"),
+			{},
 			0,
 			TFEmpty
 		};
@@ -578,8 +601,7 @@ namespace Azoth
 		TabClasses_ << sdTab;
 		TabClasses_ << consoleTab;
 		TabClasses_ << microblogsTab;
-
-		MicroblogsTab::SetTabData (this, microblogsTab);
+		TabClasses_ << ServerHistoryTC_;
 	}
 
 	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
@@ -600,6 +622,18 @@ namespace Azoth
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tr ("Microblogs"), tab);
 		emit raiseTab (tab);
+	}
+
+	void Plugin::handleServerHistoryTab (ServerHistoryWidget *widget)
+	{
+		connect (widget,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		widget->SetTabInfo (this, ServerHistoryTC_);
+
+		emit addNewTab (ServerHistoryTC_.VisibleName_, widget);
+		emit raiseTab (widget);
 	}
 
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
