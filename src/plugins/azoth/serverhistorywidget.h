@@ -34,6 +34,8 @@
 #include "interfaces/azoth/ihaveserverhistory.h"
 #include "ui_serverhistorywidget.h"
 
+class QSortFilterProxyModel;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -59,6 +61,8 @@ namespace Azoth
 		QByteArray CurrentID_;
 		QByteArray MaxID_;
 		int FirstMsgCount_ = -1;
+
+		QSortFilterProxyModel * const ContactsFilter_;
 	public:
 		ServerHistoryWidget (QObject*, QWidget* = nullptr);
 

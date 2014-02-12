@@ -29,6 +29,7 @@
 
 #include "serverhistorywidget.h"
 #include <QtDebug>
+#include <QSortFilterProxyModel>
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include "proxyobject.h"
 #include "core.h"
@@ -43,6 +44,7 @@ namespace Azoth
 	, Toolbar_ { new QToolBar { this } }
 	, AccObj_ { account }
 	, IHSH_ { qobject_cast<IHaveServerHistory*> (account) }
+	, ContactsFilter_ { new QSortFilterProxyModel { this } }
 	{
 		Ui_.setupUi (this);
 
@@ -54,12 +56,21 @@ namespace Azoth
 			return;
 		}
 
-		Ui_.ContactsView_->setModel (IHSH_->GetServerContactsModel ());
+		ContactsFilter_->setDynamicSortFilter (true);
+		ContactsFilter_->setFilterCaseSensitivity (Qt::CaseInsensitive);
+		ContactsFilter_->setSourceModel (IHSH_->GetServerContactsModel ());
+
+		Ui_.ContactsView_->setModel (ContactsFilter_);
 
 		connect (AccObj_,
 				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
 				this,
 				SLOT (handleFetched (QModelIndex, QByteArray, SrvHistMessages_t)));
+
+		connect (Ui_.ContactsFilter_,
+				SIGNAL (textChanged (QString)),
+				ContactsFilter_,
+				SLOT (setFilterFixedString (QString)));
 
 		auto prevAct = Toolbar_->addAction (tr ("Previous page"),
 				this, SLOT (navigatePrevious ()));
@@ -104,7 +115,7 @@ namespace Azoth
 	void ServerHistoryWidget::handleFetched (const QModelIndex& index,
 			const QByteArray& startId, const SrvHistMessages_t& messages)
 	{
-		if (index != Ui_.ContactsView_->currentIndex ())
+		if (index != ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ()))
 			return;
 
 		if (FirstMsgCount_ == -1)
@@ -150,18 +161,20 @@ namespace Azoth
 		CurrentID_ = "-1";
 		MaxID_ = "-1";
 		FirstMsgCount_ = -1;
-		IHSH_->FetchServerHistory (index, CurrentID_, 50);
+		IHSH_->FetchServerHistory (ContactsFilter_->mapToSource (index), CurrentID_, 50);
 	}
 
 	void ServerHistoryWidget::navigatePrevious ()
 	{
-		IHSH_->FetchServerHistory (Ui_.ContactsView_->currentIndex (),
+		const auto& index = ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ());
+		IHSH_->FetchServerHistory (index,
 				MaxID_, GetReqMsgCount ());
 	}
 
 	void ServerHistoryWidget::navigateNext ()
 	{
-		IHSH_->FetchServerHistory (Ui_.ContactsView_->currentIndex (),
+		const auto& index = ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ());
+		IHSH_->FetchServerHistory (index,
 				CurrentID_, -GetReqMsgCount ());
 	}
 }
