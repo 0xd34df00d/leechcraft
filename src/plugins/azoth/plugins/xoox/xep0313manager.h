@@ -30,6 +30,9 @@
 #pragma once
 
 #include <QXmppClientExtension.h>
+#include <interfaces/azoth/ihaveserverhistory.h>
+
+class QXmppMessage;
 
 namespace LeechCraft
 {
@@ -42,6 +45,9 @@ namespace Xoox
 	class Xep0313Manager : public QXmppClientExtension
 	{
 		Q_OBJECT
+
+		QMap<QString, SrvHistMessages_t> Messages_;
+		QMap<QString, QString> LastId2Jid_;
 	public:
 		static bool Supports0313 (const QStringList& features);
 		static QString GetNsUri ();
@@ -53,10 +59,17 @@ namespace Xoox
 		void SetPrefs (const Xep0313PrefIq&);
 
 		void RequestHistory (const QString& jid, QString baseId, int count);
+		bool CheckMessage (const QXmppMessage& msg);
 	private:
+		void HandleMessage (const QXmppElement&);
+		void HandleHistoryQueryFinished (const QDomElement&);
+
 		void HandlePrefs (const QDomElement&);
 	signals:
 		void gotPrefs (const Xep0313PrefIq&);
+
+		void serverHistoryFetched (const QString&,
+				const QString&, const SrvHistMessages_t&);
 	};
 }
 }
