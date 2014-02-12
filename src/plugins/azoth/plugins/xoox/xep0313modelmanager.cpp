@@ -29,6 +29,7 @@
 
 #include "xep0313modelmanager.h"
 #include <QStandardItemModel>
+#include <QtDebug>
 #include "glooxaccount.h"
 
 namespace LeechCraft
@@ -62,6 +63,19 @@ namespace Xoox
 	{
 		const auto item = Model_->itemFromIndex (index.sibling (index.row (), 0));
 		return Jid2Item_.key (item);
+	}
+
+	QModelIndex Xep0313ModelManager::Jid2Index (const QString& jid) const
+	{
+		const auto item = Jid2Item_.value (jid);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no index for item"
+					<< item;
+			return {};
+		}
+		return item->index ();
 	}
 
 	void Xep0313ModelManager::PerformWithEntries (const QList<QObject*>& items, const std::function<void (ICLEntry*)>& f)
