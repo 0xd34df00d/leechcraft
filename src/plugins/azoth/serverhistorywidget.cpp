@@ -56,11 +56,17 @@ namespace Azoth
 			return;
 		}
 
-		ContactsFilter_->setDynamicSortFilter (true);
 		ContactsFilter_->setFilterCaseSensitivity (Qt::CaseInsensitive);
+
+		const auto& sortParams = IHSH_->GetSortParams ();
+		ContactsFilter_->setSortRole (sortParams.Role_);
+		ContactsFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
+
+		ContactsFilter_->setDynamicSortFilter (true);
 		ContactsFilter_->setSourceModel (IHSH_->GetServerContactsModel ());
 
 		Ui_.ContactsView_->setModel (ContactsFilter_);
+		Ui_.ContactsView_->sortByColumn (sortParams.Column_, sortParams.Order_);
 
 		connect (AccObj_,
 				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
