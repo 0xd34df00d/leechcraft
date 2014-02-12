@@ -228,6 +228,7 @@ namespace Xoox
 		void OpenServerHistoryConfiguration ();
 		QAbstractItemModel* GetServerContactsModel () const;
 		void FetchServerHistory (const QModelIndex&, const QByteArray&, int);
+		DefaultSortParams GetSortParams () const;
 
 #ifdef ENABLE_CRYPT
 		// ISupportPGP

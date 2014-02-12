@@ -714,6 +714,11 @@ namespace Xoox
 		ClientConnection_->GetXep0313Manager ()->RequestHistory (jid, startId, count);
 	}
 
+	DefaultSortParams GlooxAccount::GetSortParams () const
+	{
+		return { 0, Qt::DisplayRole, Qt::AscendingOrder };
+	}
+
 #ifdef ENABLE_CRYPT
 	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
 	{

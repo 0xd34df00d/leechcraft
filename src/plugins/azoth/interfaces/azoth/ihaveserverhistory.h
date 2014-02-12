@@ -62,6 +62,13 @@ namespace Azoth
 		Configurable
 	};
 
+	struct DefaultSortParams
+	{
+		int Column_;
+		int Role_;
+		Qt::SortOrder Order_;
+	};
+
 	class IHaveServerHistory
 	{
 	public:
@@ -75,6 +82,8 @@ namespace Azoth
 
 		virtual void FetchServerHistory (const QModelIndex& contact,
 				const QByteArray& startId, int count) = 0;
+
+		virtual DefaultSortParams GetSortParams () const = 0;
 	protected:
 		virtual void serverHistoryFetched (const QModelIndex& contact,
 				const QByteArray& startId, const SrvHistMessages_t& messages) = 0;

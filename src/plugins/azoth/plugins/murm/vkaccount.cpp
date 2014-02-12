@@ -473,6 +473,11 @@ namespace Murm
 		ServHistMgr_->RequestHistory (contact, startId.toInt (), count);
 	}
 
+	DefaultSortParams VkAccount::GetSortParams () const
+	{
+		return { 0, ServerHistoryRole::LastMessageDate, Qt::DescendingOrder };
+	}
+
 	void VkAccount::TryPendingMessages ()
 	{
 		decltype (PendingMessages_) pending;
