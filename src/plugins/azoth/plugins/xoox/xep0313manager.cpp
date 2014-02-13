@@ -94,6 +94,7 @@ namespace Xoox
 	{
 		if (baseId == "-1")
 			baseId = "";
+		qDebug () << Q_FUNC_INFO << jid << baseId << count;
 
 		Xep0313ReqIq iq
 		{
@@ -199,6 +200,9 @@ namespace Xoox
 
 		const auto& jid = LastId2Jid_.take (resultSet.last ());
 		auto messages = Messages_.take (jid);
+
+		qDebug () << Q_FUNC_INFO << resultSet.first () << resultSet.last () << messages.size ();
+
 		std::reverse (messages.begin (), messages.end ());
 		emit serverHistoryFetched (jid, resultSet.last (), messages);
 	}
