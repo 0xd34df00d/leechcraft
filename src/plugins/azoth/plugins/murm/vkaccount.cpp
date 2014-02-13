@@ -449,6 +449,8 @@ namespace Murm
 	{
 		switch (feature)
 		{
+		case ServerHistoryFeature::AccountSupportsHistory:
+			return true;
 		case ServerHistoryFeature::Configurable:
 			return false;
 		}

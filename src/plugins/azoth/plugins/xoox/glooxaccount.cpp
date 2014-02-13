@@ -686,6 +686,7 @@ namespace Xoox
 		const bool supportsMam = Xep0313Manager::Supports0313 (infoStorage->GetServerFeatures ());
 		switch (feature)
 		{
+		case ServerHistoryFeature::AccountSupportsHistory:
 		case ServerHistoryFeature::Configurable:
 			return supportsMam;
 		}
