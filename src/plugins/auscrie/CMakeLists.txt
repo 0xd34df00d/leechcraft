@@ -12,6 +12,7 @@ include_directories (
 set (SRCS
 	auscrie.cpp
 	shooterdialog.cpp
+	util.cpp
 	)
 set (FORMS
 	shooterdialog.ui

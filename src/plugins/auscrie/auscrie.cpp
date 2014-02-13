@@ -40,6 +40,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/ientityhandler.h>
 #include "shooterdialog.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -173,6 +174,9 @@ namespace Auscrie
 
 			auto ieh = qobject_cast<IEntityHandler*> (info.Object_);
 			ieh->Handle (e);
+
+			const auto iinfo = qobject_cast<IInfo*> (info.Object_);
+			SaveFilterState ({ iinfo->GetUniqueID (), info.Variant_ });
 
 			break;
 		}
