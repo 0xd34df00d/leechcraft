@@ -1270,8 +1270,9 @@ namespace Xoox
 		if (!qobject_cast<IProxyObject*> (proto->GetProxyObject ())->IsAutojoinAllowed ())
 			return;
 
-		const JoinQueueItem& it = JoinQueue_.takeFirst ();
-		emit gotRosterItems (QList<QObject*> () << JoinRoom (it.RoomJID_, it.Nickname_, it.AsAutojoin_));
+		const auto& it = JoinQueue_.takeFirst ();
+		if (const auto roomItem = JoinRoom (it.RoomJID_, it.Nickname_, it.AsAutojoin_))
+			emit gotRosterItems ({ roomItem });
 
 		if (!JoinQueue_.isEmpty ())
 			QTimer::singleShot (800,
