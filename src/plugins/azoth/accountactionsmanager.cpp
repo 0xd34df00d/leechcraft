@@ -188,7 +188,8 @@ namespace Azoth
 
 		if (const auto ihsh = qobject_cast<IHaveServerHistory*> (accObj))
 		{
-			actions << AccountOpenServerHistory_;
+			if (ihsh->HasFeature (ServerHistoryFeature::AccountSupportsHistory))
+				actions << AccountOpenServerHistory_;
 
 			if (ihsh->HasFeature (ServerHistoryFeature::Configurable))
 				actions << AccountConfigServerHistory_;
