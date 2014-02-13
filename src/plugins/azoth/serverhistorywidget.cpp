@@ -30,6 +30,7 @@
 #include "serverhistorywidget.h"
 #include <QtDebug>
 #include <QSortFilterProxyModel>
+#include <util/gui/clearlineeditaddon.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include "proxyobject.h"
 #include "core.h"
@@ -55,6 +56,8 @@ namespace Azoth
 					<< account;
 			return;
 		}
+
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.ContactsFilter_);
 
 		ContactsFilter_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 
