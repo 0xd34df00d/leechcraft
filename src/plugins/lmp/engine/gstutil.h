@@ -29,6 +29,11 @@
 
 #pragma once
 
+template<typename Key, typename T >
+class QMap;
+class QString;
+
+typedef struct _GstMessage GstMessage;
 typedef struct _GstElement GstElement;
 
 namespace LeechCraft
@@ -38,6 +43,9 @@ namespace LMP
 namespace GstUtil
 {
 	void AddGhostPad (GstElement *from, GstElement *to, const char *name);
+
+	typedef QMap<QString, QString> TagMap_t;
+	bool ParseTagMessage (GstMessage*, TagMap_t&);
 }
 }
 }
