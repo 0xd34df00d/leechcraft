@@ -41,12 +41,13 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class RecursiveDirWatcher;
+
 	class LocalCollectionWatcher : public QObject
 	{
 		Q_OBJECT
 
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
+		RecursiveDirWatcher * const Watcher_;
 
 		QList<QString> ScheduledDirs_;
 		QTimer *ScanTimer_;
@@ -58,7 +59,6 @@ namespace LMP
 	private:
 		void ScheduleDir (const QString&);
 	private slots:
-		void handleSubdirsCollected ();
 		void handleDirectoryChanged (const QString&);
 		void rescanQueue ();
 	};
