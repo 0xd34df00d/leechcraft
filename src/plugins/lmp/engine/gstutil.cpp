@@ -180,6 +180,11 @@ namespace GstUtil
 		gst_tag_list_foreach (tagList,
 				TagFunction,
 				&map);
+#if GST_VERSION_MAJOR < 1
+		gst_tag_list_free (tagList);
+#else
+		gst_tag_list_unref (tagList);
+#endif
 		return true;
 	}
 }
