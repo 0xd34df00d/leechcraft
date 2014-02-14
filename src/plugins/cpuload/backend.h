@@ -39,6 +39,7 @@ namespace CpuLoad
 {
 	class Backend : public QObject
 	{
+		Q_OBJECT
 	public:
 		Backend (QObject* = nullptr);
 
