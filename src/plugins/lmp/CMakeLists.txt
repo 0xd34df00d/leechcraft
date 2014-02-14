@@ -116,6 +116,7 @@ set (SRCS
 	engine/output.cpp
 	engine/path.cpp
 	engine/pathelement.cpp
+	engine/rganalyser.cpp
 	engine/rgfilter.cpp
 	engine/sourceobject.cpp
 	sync/cloudwidget.cpp
