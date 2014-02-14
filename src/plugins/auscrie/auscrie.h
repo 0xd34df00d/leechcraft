@@ -65,6 +65,7 @@ namespace Auscrie
 		void performAction ();
 		void shoot ();
 	private:
+		void MakeScreenshot (int);
 		QPixmap GetPixmap () const;
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);

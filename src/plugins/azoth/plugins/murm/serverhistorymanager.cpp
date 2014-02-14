@@ -69,6 +69,14 @@ namespace Murm
 
 	void ServerHistoryManager::RequestHistory (const QModelIndex& index, int offset, int count)
 	{
+		if (count < 0)
+		{
+			count = -count;
+			offset = std::max (offset - count, -1);
+		}
+		else
+			++offset;
+
 		if (count > 100)
 			count = 100;
 
@@ -175,15 +183,20 @@ namespace Murm
 
 			messages.append ({
 					dir,
+					{},
 					username,
 					map ["body"].toString (),
 					QDateTime::fromTime_t (map ["date"].toULongLong ())
 				});
 		}
 
+		for (int i = 0; i < messages.size (); ++i)
+			messages [i].ID_ = QByteArray::number (reqContext.Offset_ + i);
+
 		std::reverse (messages.begin (), messages.end ());
 
-		emit serverHistoryFetched (reqContext.Index_, reqContext.Offset_, messages);
+		emit serverHistoryFetched (reqContext.Index_,
+				QByteArray::number (reqContext.Offset_), messages);
 	}
 
 	void ServerHistoryManager::handleGotMessagesList ()

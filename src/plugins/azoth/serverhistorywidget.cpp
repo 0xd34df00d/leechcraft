@@ -29,6 +29,8 @@
 
 #include "serverhistorywidget.h"
 #include <QtDebug>
+#include <QSortFilterProxyModel>
+#include <util/gui/clearlineeditaddon.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include "proxyobject.h"
 #include "core.h"
@@ -43,6 +45,7 @@ namespace Azoth
 	, Toolbar_ { new QToolBar { this } }
 	, AccObj_ { account }
 	, IHSH_ { qobject_cast<IHaveServerHistory*> (account) }
+	, ContactsFilter_ { new QSortFilterProxyModel { this } }
 	{
 		Ui_.setupUi (this);
 
@@ -54,12 +57,29 @@ namespace Azoth
 			return;
 		}
 
-		Ui_.ContactsView_->setModel (IHSH_->GetServerContactsModel ());
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.ContactsFilter_);
+
+		ContactsFilter_->setFilterCaseSensitivity (Qt::CaseInsensitive);
+
+		const auto& sortParams = IHSH_->GetSortParams ();
+		ContactsFilter_->setSortRole (sortParams.Role_);
+		ContactsFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
+
+		ContactsFilter_->setDynamicSortFilter (true);
+		ContactsFilter_->setSourceModel (IHSH_->GetServerContactsModel ());
+
+		Ui_.ContactsView_->setModel (ContactsFilter_);
+		Ui_.ContactsView_->sortByColumn (sortParams.Column_, sortParams.Order_);
 
 		connect (AccObj_,
-				SIGNAL (serverHistoryFetched (QModelIndex, int, SrvHistMessages_t)),
+				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
 				this,
-				SLOT (handleFetched (QModelIndex, int, SrvHistMessages_t)));
+				SLOT (handleFetched (QModelIndex, QByteArray, SrvHistMessages_t)));
+
+		connect (Ui_.ContactsFilter_,
+				SIGNAL (textChanged (QString)),
+				ContactsFilter_,
+				SLOT (setFilterFixedString (QString)));
 
 		auto prevAct = Toolbar_->addAction (tr ("Previous page"),
 				this, SLOT (navigatePrevious ()));
@@ -101,13 +121,16 @@ namespace Azoth
 		return std::max (20, FirstMsgCount_);
 	}
 
-	void ServerHistoryWidget::handleFetched (const QModelIndex& index, int offset, const SrvHistMessages_t& messages)
+	void ServerHistoryWidget::handleFetched (const QModelIndex& index,
+			const QByteArray& startId, const SrvHistMessages_t& messages)
 	{
-		if (index != Ui_.ContactsView_->currentIndex ())
+		if (index.row () != ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ()).row ())
 			return;
 
 		if (FirstMsgCount_ == -1)
 			FirstMsgCount_ = messages.size ();
+
+		CurrentID_ = startId;
 
 		Ui_.MessagesView_->clear ();
 
@@ -138,27 +161,30 @@ namespace Azoth
 
 			Ui_.MessagesView_->append (html);
 		}
+
+		MaxID_ = messages.value (0).ID_;
 	}
 
 	void ServerHistoryWidget::on_ContactsView__activated (const QModelIndex& index)
 	{
-		CurrentOffset_ = 0;
+		CurrentID_ = "-1";
+		MaxID_ = "-1";
 		FirstMsgCount_ = -1;
-		IHSH_->FetchServerHistory (index, CurrentOffset_, 50);
+		IHSH_->FetchServerHistory (ContactsFilter_->mapToSource (index), CurrentID_, 50);
 	}
 
 	void ServerHistoryWidget::navigatePrevious ()
 	{
-		CurrentOffset_ += GetReqMsgCount ();
-		IHSH_->FetchServerHistory (Ui_.ContactsView_->currentIndex (),
-				CurrentOffset_, GetReqMsgCount ());
+		const auto& index = ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ());
+		IHSH_->FetchServerHistory (index,
+				MaxID_, GetReqMsgCount ());
 	}
 
 	void ServerHistoryWidget::navigateNext ()
 	{
-		CurrentOffset_ = std::max (CurrentOffset_ - GetReqMsgCount (), 0);
-		IHSH_->FetchServerHistory (Ui_.ContactsView_->currentIndex (),
-				CurrentOffset_, GetReqMsgCount ());
+		const auto& index = ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ());
+		IHSH_->FetchServerHistory (index,
+				CurrentID_, -GetReqMsgCount ());
 	}
 }
 }

@@ -29,58 +29,34 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "interfaces/azoth/ihaveserverhistory.h"
-#include "ui_serverhistorywidget.h"
-
-class QSortFilterProxyModel;
+#include <QXmppIq.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class IHaveServerHistory;
-
-	class ServerHistoryWidget : public QWidget
-							  , public ITabWidget
+namespace Xoox
+{
+	class Xep0313ReqIq : public QXmppIq
 	{
-		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
-
-		QObject *PluginObj_;
-		TabClassInfo TC_;
-
-		Ui::ServerHistoryWidget Ui_;
-
-		QToolBar * const Toolbar_;
-
-		QObject * const AccObj_;
-		IHaveServerHistory * const IHSH_;
-
-		QByteArray CurrentID_;
-		QByteArray MaxID_;
-		int FirstMsgCount_ = -1;
-
-		QSortFilterProxyModel * const ContactsFilter_;
+		QString JID_;
+		QString ItemId_;
+		int Count_;
 	public:
-		ServerHistoryWidget (QObject*, QWidget* = nullptr);
-
-		void SetTabInfo (QObject*, const TabClassInfo&);
-
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		enum class Direction
+		{
+			Unspecified,
+			Before,
+			After
+		};
 	private:
-		int GetReqMsgCount () const;
-	private slots:
-		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
-		void on_ContactsView__activated (const QModelIndex&);
-		void navigatePrevious ();
-		void navigateNext ();
-	signals:
-		void removeTab (QWidget*);
+		Direction Dir_ = Direction::Unspecified;
+	public:
+		Xep0313ReqIq (const QString&, const QString&, int, Direction);
+	protected:
+		void parseElementFromChild (const QDomElement&);
+		void toXmlElementFromChild (QXmlStreamWriter*) const;
 	};
+}
 }
 }

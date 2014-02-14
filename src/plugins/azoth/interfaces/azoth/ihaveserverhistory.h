@@ -43,6 +43,7 @@ namespace Azoth
 	struct SrvHistMessage
 	{
 		IMessage::Direction Dir_;
+		QByteArray ID_;
 		QString Nick_;
 		QString Body_;
 		QDateTime TS_;
@@ -58,7 +59,15 @@ namespace Azoth
 
 	enum class ServerHistoryFeature
 	{
+		AccountSupportsHistory,
 		Configurable
+	};
+
+	struct DefaultSortParams
+	{
+		int Column_;
+		int Role_;
+		Qt::SortOrder Order_;
 	};
 
 	class IHaveServerHistory
@@ -73,10 +82,12 @@ namespace Azoth
 		virtual QAbstractItemModel* GetServerContactsModel () const = 0;
 
 		virtual void FetchServerHistory (const QModelIndex& contact,
-				int offset, int count) = 0;
+				const QByteArray& startId, int count) = 0;
+
+		virtual DefaultSortParams GetSortParams () const = 0;
 	protected:
 		virtual void serverHistoryFetched (const QModelIndex& contact,
-				int offset, const SrvHistMessages_t& messages) = 0;
+				const QByteArray& startId, const SrvHistMessages_t& messages) = 0;
 	};
 }
 }

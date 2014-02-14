@@ -27,60 +27,38 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "interfaces/azoth/ihaveserverhistory.h"
-#include "ui_serverhistorywidget.h"
-
-class QSortFilterProxyModel;
+#include "util.h"
+#include <memory>
+#include <QSettings>
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Auscrie
 {
-	class IHaveServerHistory;
-
-	class ServerHistoryWidget : public QWidget
-							  , public ITabWidget
+	void SaveFilterState (const FilterState& data)
 	{
-		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Auscrie");
+		settings.beginGroup ("Filter");
+		settings.setValue ("PluginId", data.PluginId_);
+		settings.setValue ("Variant", data.Variant_);
+		settings.endGroup ();
+	}
 
-		QObject *PluginObj_;
-		TabClassInfo TC_;
+	FilterState RestoreFilterState ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Auscrie");
+		settings.beginGroup ("Filter");
+		auto endGroup = std::shared_ptr<void> (nullptr,
+				[&settings] (void*) { settings.endGroup (); });
 
-		Ui::ServerHistoryWidget Ui_;
-
-		QToolBar * const Toolbar_;
-
-		QObject * const AccObj_;
-		IHaveServerHistory * const IHSH_;
-
-		QByteArray CurrentID_;
-		QByteArray MaxID_;
-		int FirstMsgCount_ = -1;
-
-		QSortFilterProxyModel * const ContactsFilter_;
-	public:
-		ServerHistoryWidget (QObject*, QWidget* = nullptr);
-
-		void SetTabInfo (QObject*, const TabClassInfo&);
-
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
-	private:
-		int GetReqMsgCount () const;
-	private slots:
-		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
-		void on_ContactsView__activated (const QModelIndex&);
-		void navigatePrevious ();
-		void navigateNext ();
-	signals:
-		void removeTab (QWidget*);
-	};
+		return
+		{
+			settings.value ("PluginId").toByteArray (),
+			settings.value ("Variant").toByteArray ()
+		};
+	}
 }
 }

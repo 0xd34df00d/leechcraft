@@ -12,6 +12,7 @@ include_directories (
 set (SRCS
 	auscrie.cpp
 	shooterdialog.cpp
+	util.cpp
 	)
 set (FORMS
 	shooterdialog.ui
@@ -34,4 +35,3 @@ target_link_libraries (leechcraft_auscrie
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_auscrie DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

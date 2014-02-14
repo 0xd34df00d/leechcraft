@@ -59,6 +59,7 @@ namespace Xoox
 
 		QAbstractItemModel* GetModel () const;
 		QString Index2Jid (const QModelIndex&) const;
+		QModelIndex Jid2Index (const QString&) const;
 	private:
 		void PerformWithEntries (const QList<QObject*>&, const std::function<void (ICLEntry*)>&);
 	private slots:

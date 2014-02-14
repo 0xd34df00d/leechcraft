@@ -162,7 +162,8 @@ namespace Murm
 		bool HasFeature (ServerHistoryFeature) const;
 		void OpenServerHistoryConfiguration ();
 		QAbstractItemModel* GetServerContactsModel () const;
-		void FetchServerHistory (const QModelIndex& contact, int offset, int count);
+		void FetchServerHistory (const QModelIndex& contact, const QByteArray& startId, int count);
+		DefaultSortParams GetSortParams () const;
 	private:
 		void TryPendingMessages ();
 		VkEntry* CreateNonRosterItem (qulonglong);
@@ -208,7 +209,8 @@ namespace Murm
 
 		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 
-		void serverHistoryFetched (const QModelIndex&, int, const SrvHistMessages_t&);
+		void serverHistoryFetched (const QModelIndex&,
+				const QByteArray&, const SrvHistMessages_t&);
 	};
 }
 }

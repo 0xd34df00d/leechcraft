@@ -40,6 +40,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/ientityhandler.h>
 #include "shooterdialog.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -112,17 +113,12 @@ namespace Auscrie
 
 	void Plugin::showDialog ()
 	{
-		makeScreenshot ();
+		MakeScreenshot (0);
 	}
 
 	void Plugin::makeScreenshot ()
 	{
-		Dialog_->setVisible (!Dialog_->ShouldHide ());
-
-		ShotAction_->setEnabled (false);
-		QTimer::singleShot (std::max (Dialog_->GetTimeout () * 1000, 200),
-				this,
-				SLOT (shoot ()));
+		MakeScreenshot (Dialog_->GetTimeout () * 1000);
 	}
 
 	void Plugin::performAction ()
@@ -179,6 +175,9 @@ namespace Auscrie
 			auto ieh = qobject_cast<IEntityHandler*> (info.Object_);
 			ieh->Handle (e);
 
+			const auto iinfo = qobject_cast<IInfo*> (info.Object_);
+			SaveFilterState ({ iinfo->GetUniqueID (), info.Variant_ });
+
 			break;
 		}
 		}
@@ -191,6 +190,16 @@ namespace Auscrie
 		const QPixmap& pm = GetPixmap ();
 		Dialog_->show ();
 		Dialog_->SetScreenshot (pm);
+	}
+
+	void Plugin::MakeScreenshot (int timeout)
+	{
+		Dialog_->setVisible (!Dialog_->ShouldHide ());
+
+		ShotAction_->setEnabled (false);
+		QTimer::singleShot (std::max (timeout, 200),
+				this,
+				SLOT (shoot ()));
 	}
 
 	QPixmap Plugin::GetPixmap () const

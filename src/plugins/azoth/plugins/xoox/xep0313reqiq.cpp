@@ -27,60 +27,86 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "interfaces/azoth/ihaveserverhistory.h"
-#include "ui_serverhistorywidget.h"
-
-class QSortFilterProxyModel;
+#include "xep0313reqiq.h"
+#include <QDomElement>
+#include <QtDebug>
+#include <QXmppResultSet.h>
+#include "xep0313manager.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class IHaveServerHistory;
-
-	class ServerHistoryWidget : public QWidget
-							  , public ITabWidget
+namespace Xoox
+{
+	Xep0313ReqIq::Xep0313ReqIq (const QString& jid, const QString& startId, int count, Direction dir)
+	: QXmppIq { QXmppIq::Get }
+	, JID_ { jid }
+	, ItemId_ { startId }
+	, Count_ { count }
+	, Dir_ { dir }
 	{
-		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+	}
 
-		QObject *PluginObj_;
-		TabClassInfo TC_;
+	void Xep0313ReqIq::parseElementFromChild (const QDomElement& element)
+	{
+		QXmppIq::parseElementFromChild (element);
 
-		Ui::ServerHistoryWidget Ui_;
+		const auto& queryElem = element.firstChildElement ("query");
+		JID_ = queryElem.firstChildElement ("with").text ();
 
-		QToolBar * const Toolbar_;
+		QXmppResultSetQuery q;
+		q.parse (queryElem.firstChildElement ("set"));
 
-		QObject * const AccObj_;
-		IHaveServerHistory * const IHSH_;
+		Count_ = q.max ();
 
-		QByteArray CurrentID_;
-		QByteArray MaxID_;
-		int FirstMsgCount_ = -1;
+		Dir_ = Direction::Unspecified;
+		if (!q.after ().isNull ())
+		{
+			ItemId_ = q.after ().toLatin1 ();
+			Dir_ = Direction::After;
+		}
+		else if (!q.before ().isNull ())
+		{
+			ItemId_ = q.before ().toLatin1 ();
+			Dir_ = Direction::Before;
+		}
+	}
 
-		QSortFilterProxyModel * const ContactsFilter_;
-	public:
-		ServerHistoryWidget (QObject*, QWidget* = nullptr);
+	void Xep0313ReqIq::toXmlElementFromChild (QXmlStreamWriter *writer) const
+	{
+		QXmppIq::toXmlElementFromChild (writer);
 
-		void SetTabInfo (QObject*, const TabClassInfo&);
+		writer->writeStartElement ("query");
+		writer->writeAttribute ("xmlns", Xep0313Manager::GetNsUri ());
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
-	private:
-		int GetReqMsgCount () const;
-	private slots:
-		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
-		void on_ContactsView__activated (const QModelIndex&);
-		void navigatePrevious ();
-		void navigateNext ();
-	signals:
-		void removeTab (QWidget*);
-	};
+		if (!JID_.isEmpty ())
+			writer->writeTextElement ("with", JID_);
+
+		if (Count_ > 0 || !ItemId_.isNull ())
+		{
+			QXmppResultSetQuery q;
+			if (Count_ > 0)
+				q.setMax (Count_);
+			if (!ItemId_.isNull ())
+			{
+				switch (Dir_)
+				{
+				case Direction::After:
+					q.setAfter (ItemId_);
+					break;
+				case Direction::Before:
+					q.setBefore (ItemId_);
+					break;
+				default:
+					break;
+				}
+			}
+			q.toXml (writer);
+		}
+
+		writer->writeEndElement ();
+	}
+}
 }
 }
