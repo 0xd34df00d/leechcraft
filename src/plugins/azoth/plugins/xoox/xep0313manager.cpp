@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "xep0313manager.h"
+#include <cstdlib>
 #include <QDomDocument>
 #include <QXmppClient.h>
 #include <QXmppMessage.h>
