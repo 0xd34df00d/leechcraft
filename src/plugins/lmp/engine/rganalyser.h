@@ -29,38 +29,63 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <QHash>
-#include <QSet>
-#include <QStringList>
+#include <QMap>
 
-class QFileSystemWatcher;
-class QTimer;
+typedef struct _GstMessage GstMessage;
+typedef struct _GstElement GstElement;
+typedef std::shared_ptr<GstMessage> GstMessage_ptr;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class RecursiveDirWatcher;
+	struct TrackRgResult
+	{
+		QString TrackPath_;
+		double TrackGain_;
+		double TrackPeak_;
+	};
 
-	class LocalCollectionWatcher : public QObject
+	struct AlbumRgResult
+	{
+		double AlbumGain_;
+		double AlbumPeak_;
+
+		QList<TrackRgResult> Tracks_;
+	};
+
+	class LightPopThread;
+
+	class RgAnalyser : public QObject
 	{
 		Q_OBJECT
 
-		RecursiveDirWatcher * const Watcher_;
+		AlbumRgResult Result_;
 
-		QList<QString> ScheduledDirs_;
-		QTimer *ScanTimer_;
+		GstElement * const Pipeline_;
+
+		GstElement * const SinkBin_;
+		GstElement * const AConvert_;
+		GstElement * const AResample_;
+		GstElement * const RGAnalysis_;
+		GstElement * const Fakesink_;
+
+		LightPopThread * const PopThread_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
+		RgAnalyser (const QStringList&, QObject* = nullptr);
+		~RgAnalyser ();
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
+		bool IsFinished () const;
+		const AlbumRgResult& GetResult () const;
 	private:
-		void ScheduleDir (const QString&);
+		void HandleTagMsg (GstMessage*);
+		void HandleErrorMsg (GstMessage*);
 	private slots:
-		void handleDirectoryChanged (const QString&);
-		void rescanQueue ();
+		void handleMessage (GstMessage_ptr);
+	signals:
+		void finished ();
 	};
 }
 }

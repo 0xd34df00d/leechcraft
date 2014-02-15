@@ -27,40 +27,72 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QHash>
-#include <QSet>
+#include "recursivedirwatcher_generic.h"
+#include <QFileSystemWatcher>
 #include <QStringList>
-
-class QFileSystemWatcher;
-class QTimer;
+#include <QDir>
+#include <QFutureWatcher>
+#include <QtConcurrentRun>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class RecursiveDirWatcher;
-
-	class LocalCollectionWatcher : public QObject
+	namespace
 	{
-		Q_OBJECT
+		QStringList CollectSubdirs (const QString& path)
+		{
+			QDir dir (path);
+			const auto& list = dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot);
 
-		RecursiveDirWatcher * const Watcher_;
+			QStringList result (path);
+			std::for_each (list.begin (), list.end (),
+					[&dir, &result] (decltype (list.front ()) item)
+						{ result += CollectSubdirs (dir.filePath (item)); });
+			return result;
+		}
+	}
 
-		QList<QString> ScheduledDirs_;
-		QTimer *ScanTimer_;
-	public:
-		LocalCollectionWatcher (QObject* = 0);
+	RecursiveDirWatcherImpl::RecursiveDirWatcherImpl (QObject *parent)
+	: QObject { parent }
+	, Watcher_ { new QFileSystemWatcher { this } }
+	{
+		connect (Watcher_,
+				SIGNAL (directoryChanged (QString)),
+				this,
+				SIGNAL (directoryChanged (QString)));
+	}
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private:
-		void ScheduleDir (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
-		void rescanQueue ();
-	};
+	void RecursiveDirWatcherImpl::AddRoot (const QString& root)
+	{
+		qDebug () << Q_FUNC_INFO << "scanning" << root;
+		auto watcher = new QFutureWatcher<QStringList> ();
+		watcher->setProperty ("Path", root);
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleSubdirsCollected ()));
+
+		watcher->setFuture (QtConcurrent::run (CollectSubdirs, root));
+	}
+
+	void RecursiveDirWatcherImpl::RemoveRoot (const QString& root)
+	{
+		Watcher_->removePaths (Dir2Subdirs_.take (root));
+	}
+
+	void RecursiveDirWatcherImpl::handleSubdirsCollected ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
+		if (!watcher)
+			return;
+
+		watcher->deleteLater ();
+
+		const auto& paths = watcher->result ();
+		const auto& path = watcher->property ("Path").toString ();
+		Dir2Subdirs_ [path] = paths;
+		Watcher_->addPaths (paths);
+	}
 }
 }

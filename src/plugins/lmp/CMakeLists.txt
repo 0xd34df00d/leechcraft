@@ -109,12 +109,14 @@ set (SRCS
 	stdartistactionsmanager.cpp
 	notificationplayer.cpp
 	effectsmanager.cpp
+	recursivedirwatcher.cpp
 	engine/audiosource.cpp
 	engine/filterelement.cpp
 	engine/gstutil.cpp
 	engine/output.cpp
 	engine/path.cpp
 	engine/pathelement.cpp
+	engine/rganalyser.cpp
 	engine/rgfilter.cpp
 	engine/sourceobject.cpp
 	sync/cloudwidget.cpp
@@ -168,6 +170,10 @@ CreateTrs ("lmp" "en;es;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp" "en;ru_RU" "${SRCS}" "${FORMS}" "lmpsettings.xml")
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+
+if (NOT APPLE)
+	set (SRCS ${SRCS} recursivedirwatcher_generic.cpp)
+endif ()
 
 add_library (leechcraft_lmp SHARED
 	${COMPILED_TRANSLATIONS}

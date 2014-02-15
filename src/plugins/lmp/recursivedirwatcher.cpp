@@ -27,40 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QHash>
-#include <QSet>
-#include <QStringList>
-
-class QFileSystemWatcher;
-class QTimer;
+#include "recursivedirwatcher.h"
+#include "recursivedirwatcher_generic.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class RecursiveDirWatcher;
-
-	class LocalCollectionWatcher : public QObject
+	RecursiveDirWatcher::RecursiveDirWatcher (QObject *parent)
+	: QObject { parent }
+	, Impl_ { new RecursiveDirWatcherImpl { this } }
 	{
-		Q_OBJECT
+	}
 
-		RecursiveDirWatcher * const Watcher_;
+	void RecursiveDirWatcher::AddRoot (const QString& root)
+	{
+		Impl_->AddRoot (root);
+	}
 
-		QList<QString> ScheduledDirs_;
-		QTimer *ScanTimer_;
-	public:
-		LocalCollectionWatcher (QObject* = 0);
-
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private:
-		void ScheduleDir (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
-		void rescanQueue ();
-	};
+	void RecursiveDirWatcher::RemoveRoot (const QString& root)
+	{
+		Impl_->RemoveRoot (root);
+	}
 }
 }

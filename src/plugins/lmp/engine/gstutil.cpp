@@ -28,7 +28,20 @@
  **********************************************************************/
 
 #include "gstutil.h"
+#include <QMap>
+#include <QString>
+#include <QTextCodec>
+#include <QtDebug>
+
+#ifdef WITH_LIBGUESS
+extern "C"
+{
+#include <libguess/libguess.h>
+}
+#endif
+
 #include "../gstfix.h"
+#include "../xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -43,6 +56,136 @@ namespace GstUtil
 		gst_pad_set_active (ghostPad, TRUE);
 		gst_element_add_pad (to, ghostPad);
 		gst_object_unref (pad);
+	}
+
+	namespace
+	{
+		void FixEncoding (QString& out, const gchar *origStr)
+		{
+#ifdef WITH_LIBGUESS
+			const auto& cp1252 = QTextCodec::codecForName ("CP-1252")->fromUnicode (origStr);
+			if (cp1252.isEmpty ())
+				return;
+
+			const auto region = XmlSettingsManager::Instance ()
+					.property ("TagsRecodingRegion").toString ();
+			const auto encoding = libguess_determine_encoding (cp1252.constData (),
+					cp1252.size (), region.toUtf8 ().constData ());
+			if (!encoding)
+				return;
+
+			auto codec = QTextCodec::codecForName (encoding);
+			if (!codec)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no codec for encoding"
+						<< encoding;
+				return;
+			}
+
+			const auto& proper = codec->toUnicode (cp1252.constData ());
+			if (proper.isEmpty ())
+				return;
+
+			int origQCount = 0;
+			while (*origStr)
+				if (*(origStr++) == '?')
+					++origQCount;
+
+			if (origQCount >= proper.count ('?'))
+				out = proper;
+#else
+			Q_UNUSED (out);
+			Q_UNUSED (origStr);
+#endif
+		}
+
+		void TagFunction (const GstTagList *list, const gchar *tag, gpointer data)
+		{
+			auto& map = *static_cast<TagMap_t*> (data);
+
+			const auto& tagName = QString::fromUtf8 (tag).toLower ();
+			auto& valList = map [tagName];
+
+			switch (gst_tag_get_type (tag))
+			{
+			case G_TYPE_STRING:
+			{
+				gchar *str = nullptr;
+				gst_tag_list_get_string (list, tag, &str);
+				valList = QString::fromUtf8 (str);
+
+				const auto recodingEnabled = XmlSettingsManager::Instance ()
+						.property ("EnableTagsRecoding").toBool ();
+				if (recodingEnabled &&
+						(tagName == "title" || tagName == "album" || tagName == "artist"))
+					FixEncoding (valList, str);
+
+				g_free (str);
+				break;
+			}
+			case G_TYPE_BOOLEAN:
+			{
+				int val = 0;
+				gst_tag_list_get_boolean (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			case G_TYPE_INT:
+			{
+				int val = 0;
+				gst_tag_list_get_int (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			case G_TYPE_UINT:
+			{
+				uint val = 0;
+				gst_tag_list_get_uint (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			case G_TYPE_FLOAT:
+			{
+				float val = 0;
+				gst_tag_list_get_float (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			case G_TYPE_DOUBLE:
+			{
+				double val = 0;
+				gst_tag_list_get_double (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unhandled tag type"
+						<< gst_tag_get_type (tag)
+						<< "for"
+						<< tag;
+				break;
+			}
+		}
+	}
+
+	bool ParseTagMessage (GstMessage *msg, TagMap_t& map)
+	{
+		GstTagList *tagList = nullptr;
+		gst_message_parse_tag (msg, &tagList);
+		if (!tagList)
+			return false;
+
+		gst_tag_list_foreach (tagList,
+				TagFunction,
+				&map);
+#if GST_VERSION_MAJOR < 1
+		gst_tag_list_free (tagList);
+#else
+		gst_tag_list_unref (tagList);
+#endif
+		return true;
 	}
 }
 }

@@ -30,37 +30,25 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
-#include <QSet>
-#include <QStringList>
-
-class QFileSystemWatcher;
-class QTimer;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class RecursiveDirWatcher;
+	class RecursiveDirWatcherImpl;
 
-	class LocalCollectionWatcher : public QObject
+	class RecursiveDirWatcher : public QObject
 	{
 		Q_OBJECT
 
-		RecursiveDirWatcher * const Watcher_;
-
-		QList<QString> ScheduledDirs_;
-		QTimer *ScanTimer_;
+		RecursiveDirWatcherImpl * const Impl_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
+		RecursiveDirWatcher (QObject* = nullptr);
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private:
-		void ScheduleDir (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
-		void rescanQueue ();
+		void AddRoot (const QString&);
+		void RemoveRoot (const QString&);
+	signals:
+		void directoryChanged (const QString&);
 	};
 }
 }
