@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QMap>
+#include <QStringList>
 
 typedef struct _GstMessage GstMessage;
 typedef struct _GstElement GstElement;
@@ -62,6 +63,9 @@ namespace LMP
 	{
 		Q_OBJECT
 
+		QStringList Paths_;
+		QString CurrentPath_;
+
 		AlbumRgResult Result_;
 
 		GstElement * const Pipeline_;
@@ -80,8 +84,11 @@ namespace LMP
 		bool IsFinished () const;
 		const AlbumRgResult& GetResult () const;
 	private:
+		void CheckFinish ();
+
 		void HandleTagMsg (GstMessage*);
 		void HandleErrorMsg (GstMessage*);
+		void HandleEosMsg (GstMessage*);
 	private slots:
 		void handleMessage (GstMessage_ptr);
 	signals:

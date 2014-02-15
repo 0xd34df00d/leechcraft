@@ -80,6 +80,7 @@ namespace LMP
 
 	RgAnalyser::RgAnalyser (const QStringList& paths, QObject *parent)
 	: QObject { parent }
+	, Paths_ { paths }
 	, Pipeline_ { gst_element_factory_make ("playbin2", nullptr) }
 	, SinkBin_ { gst_bin_new (nullptr) }
 	, AConvert_ { gst_element_factory_make ("audioconvert", nullptr) }
@@ -101,10 +102,9 @@ namespace LMP
 		gst_object_unref (pad);
 
 		g_object_set (GST_OBJECT (RGAnalysis_), "num-tracks", paths.size (), nullptr);
-		g_object_set (GST_OBJECT (Pipeline_), "uri",
-				QUrl::fromLocalFile (paths.value (0)).toEncoded ().constData (), nullptr);
 		g_object_set (GST_OBJECT (Pipeline_), "audio-sink", SinkBin_, nullptr);
-		gst_element_set_state (Pipeline_, GST_STATE_PLAYING);
+
+		CheckFinish ();
 
 		PopThread_->start ();
 	}
@@ -119,10 +119,34 @@ namespace LMP
 		return Result_;
 	}
 
+	void RgAnalyser::CheckFinish ()
+	{
+		if (Paths_.isEmpty ())
+		{
+			emit finished ();
+			return;
+		}
+
+		CurrentPath_ = Paths_.takeFirst ();
+		qDebug () << Q_FUNC_INFO << CurrentPath_;
+
+		gst_element_set_state (Pipeline_, GST_STATE_NULL);
+
+		const auto& url = QUrl::fromLocalFile (CurrentPath_);
+		g_object_set (GST_OBJECT (Pipeline_), "uri",
+				url.toEncoded ().constData (), nullptr);
+		gst_element_set_state (Pipeline_, GST_STATE_PLAYING);
+	}
+
 	void RgAnalyser::HandleTagMsg (GstMessage *msg)
 	{
 		GstUtil::TagMap_t map;
 		GstUtil::ParseTagMessage (msg, map);
+	}
+
+	void RgAnalyser::HandleEosMsg (GstMessage*)
+	{
+		CheckFinish ();
 	}
 
 	void RgAnalyser::HandleErrorMsg (GstMessage *msg)
@@ -158,6 +182,9 @@ namespace LMP
 			break;
 		case GST_MESSAGE_ERROR:
 			HandleErrorMsg (message);
+			break;
+		case GST_MESSAGE_EOS:
+			HandleEosMsg (message);
 			break;
 		default:
 			break;
