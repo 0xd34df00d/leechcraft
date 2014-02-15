@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "rganalyser.h"
+#include <functional>
 #include <QStringList>
 #include <QThread>
 #include <QMetaType>
@@ -146,6 +147,21 @@ namespace LMP
 	{
 		GstUtil::TagMap_t map;
 		GstUtil::ParseTagMessage (msg, map);
+
+		auto trySet = [&map, this] (const QString& key, std::function<void (double)> setter) -> bool
+		{
+			const auto contains = map.contains (key);
+			if (contains)
+				setter (map [key].toDouble ());
+			return contains;
+		};
+		trySet ("replaygain-album-gain", [this] (double val) { Result_.AlbumGain_ = val; });
+		trySet ("replaygain-album-peak", [this] (double val) { Result_.AlbumPeak_ = val; });
+
+		TrackRgResult track { CurrentPath_, 0, 0 };
+		if (trySet ("replaygain-track-gain", [&track] (double val) { track.TrackGain_ = val; }) &&
+			trySet ("replaygain-track-peak", [&track] (double val) { track.TrackPeak_ = val; }))
+			Result_.Tracks_ << track;
 	}
 
 	void RgAnalyser::HandleEosMsg (GstMessage*)
