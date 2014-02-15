@@ -27,32 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "recursivedirwatcher.h"
+#pragma once
 
-#ifdef Q_OS_MAC
-#include "recursivedirwatcher_mac.h"
-#else
-#include "recursivedirwatcher_generic.h"
-#endif
+#include <QObject>
+#include <QStringList>
+
+typedef struct __FSEventStream *FSEventStreamRef;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	RecursiveDirWatcher::RecursiveDirWatcher (QObject *parent)
-	: QObject { parent }
-	, Impl_ { new RecursiveDirWatcherImpl { this } }
+	class RecursiveDirWatcherImpl : public QObject
 	{
-	}
+		Q_OBJECT
 
-	void RecursiveDirWatcher::AddRoot (const QString& root)
-	{
-		Impl_->AddRoot (root);
-	}
+		QStringList Dirs_;
+		FSEventStreamRef EvStream_ = 0;
+		quint64 MaxEventId_ = 0;
+		bool IsRestarting_ = false;
+	public:
+		RecursiveDirWatcherImpl (QObject*);
+		~RecursiveDirWatcherImpl ();
 
-	void RecursiveDirWatcher::RemoveRoot (const QString& root)
-	{
-		Impl_->RemoveRoot (root);
-	}
+		void AddRoot (const QString&);
+		void RemoveRoot (const QString&);
+
+		void Notify (quint64, const QString&);
+	private:
+		bool IsRunning () const;
+
+		void Start ();
+		void Stop ();
+	signals:
+		void directoryChanged (const QString&);
+	};
 }
 }
