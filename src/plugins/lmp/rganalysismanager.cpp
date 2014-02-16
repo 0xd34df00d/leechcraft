@@ -49,8 +49,24 @@ namespace LMP
 	void RgAnalysisManager::handleAnalysed ()
 	{
 		const auto& result = CurrentAnalyser_->GetResult ();
-		CurrentAnalyser_.reset ();
 
+		for (const auto& track : result.Tracks_)
+		{
+			const auto id = Coll_->FindTrack (track.TrackPath_);
+			if (id == -1)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot find track"
+						<< track.TrackPath_;
+				continue;
+			}
+
+			Coll_->GetStorage ()->SetRgTrackInfo (id,
+					track.TrackPeak_, track.TrackGain_,
+					result.AlbumPeak_, result.AlbumGain_);
+		}
+
+		CurrentAnalyser_.reset ();
 		rotateQueue ();
 	}
 
@@ -63,8 +79,7 @@ namespace LMP
 		for (const auto& track : AlbumsQueue_.takeFirst ()->Tracks_)
 			paths << track.FilePath_;
 
-		qDebug () << Q_FUNC_INFO << paths;
-		CurrentAnalyser_.reset (new RgAnalyser (paths, this));
+		CurrentAnalyser_.reset (new RgAnalyser { paths, this });
 		connect (CurrentAnalyser_.get (),
 				SIGNAL (finished ()),
 				this,
@@ -73,6 +88,7 @@ namespace LMP
 
 	void RgAnalysisManager::handleScanFinished ()
 	{
+		qDebug () << Q_FUNC_INFO;
 		QSet<int> albums;
 		for (const auto track : Coll_->GetStorage ()->GetOutdatedRgTracks ())
 			albums << Coll_->GetTrackAlbumId (track);
@@ -82,8 +98,7 @@ namespace LMP
 		for (auto albumId : albums)
 			AlbumsQueue_ << Coll_->GetAlbum (albumId);
 
-		qDebug () << Q_FUNC_INFO
-				<< AlbumsQueue_.size ()
+		qDebug () << AlbumsQueue_.size ()
 				<< "albums to rescan";
 		if (wasEmpty)
 			rotateQueue ();
