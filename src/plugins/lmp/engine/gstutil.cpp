@@ -160,11 +160,6 @@ namespace GstUtil
 				break;
 			}
 			default:
-				qWarning () << Q_FUNC_INFO
-						<< "unhandled tag type"
-						<< gst_tag_get_type (tag)
-						<< "for"
-						<< tag;
 				break;
 			}
 		}
