@@ -110,6 +110,7 @@ set (SRCS
 	notificationplayer.cpp
 	effectsmanager.cpp
 	recursivedirwatcher.cpp
+	rganalysismanager.cpp
 	engine/audiosource.cpp
 	engine/filterelement.cpp
 	engine/gstutil.cpp
