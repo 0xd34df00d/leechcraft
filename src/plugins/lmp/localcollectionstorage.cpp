@@ -746,6 +746,16 @@ namespace LMP
 				"TrackID INTEGER UNIQUE NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE, "
 				"MTime TIMESTAMP NOT NULL"
 				");");
+		table2query << QueryPair_t ("rgdata",
+				"CREATE TABLE rgdata ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"TrackId INTEGER UNIQUE NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE, "
+				"LastMTime TIMESTAMP NOT NULL, "
+				"TrackGain DOUBLE NOT NULL, "
+				"TrackPeak DOUBLE NOT NULL, "
+				"AlbumGain DOUBLE NOT NULL, "
+				"AlbumPeak DOUBLE NOT NULL "
+				");");
 
 		Util::DBLock lock (DB_);
 
