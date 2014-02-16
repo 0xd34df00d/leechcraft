@@ -64,10 +64,10 @@ namespace LMP
 		QStringList RootPaths_;
 
 		QIcon ArtistIcon_;
-		LocalCollectionStorage *Storage_;
-		QStandardItemModel *CollectionModel_;
-		QSortFilterProxyModel *Sorter_;
-		LocalCollectionWatcher *FilesWatcher_;
+		LocalCollectionStorage * const Storage_;
+		QStandardItemModel * const CollectionModel_;
+		QSortFilterProxyModel * const Sorter_;
+		LocalCollectionWatcher * const FilesWatcher_;
 
 		AlbumArtManager *AlbumArtMgr_;
 
