@@ -151,6 +151,12 @@ namespace LMP
 		void ClearQueue ();
 
 		void HandleAboutToFinish ();
+
+		void SetupSource ();
+
+		void AddToPath (Path*);
+		void SetSink (GstElement*);
+	private:
 		void HandleErrorMsg (GstMessage*);
 		void HandleTagMsg (GstMessage*);
 		void HandleBufferingMsg (GstMessage*);
@@ -158,10 +164,6 @@ namespace LMP
 		void HandleElementMsg (GstMessage*);
 		void HandleEosMsg (GstMessage*);
 		void HandleStreamStatusMsg (GstMessage*);
-		void SetupSource ();
-
-		void AddToPath (Path*);
-		void SetSink (GstElement*);
 	private slots:
 		void handleMessage (GstMessage_ptr);
 		void updateTotalTime ();

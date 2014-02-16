@@ -424,6 +424,57 @@ namespace LMP
 		NextSource_.Clear ();
 	}
 
+	void SourceObject::SetupSource ()
+	{
+		GstElement *src;
+		g_object_get (Dec_, "source", &src, nullptr);
+
+		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
+			return;
+
+		std::shared_ptr<void> soupRankGuard (nullptr,
+				[&] (void*) -> void
+				{
+					if (PrevSoupRank_)
+					{
+						SetSoupRank (PrevSoupRank_);
+						PrevSoupRank_ = 0;
+					}
+				});
+
+		if (!g_object_class_find_property (G_OBJECT_GET_CLASS (src), "user-agent"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "user-agent property not found for"
+					<< CurrentSource_.ToUrl ()
+					<< (QString ("|") + G_OBJECT_TYPE_NAME (src) + "|")
+					<< "soup rank:"
+					<< GetRank ("souphttpsrc")
+					<< "webkit rank:"
+					<< GetRank ("WebKitWebSrc");
+			return;
+		}
+
+		const auto& str = QString ("LeechCraft LMP/%1 (%2)")
+				.arg (Core::Instance ().GetProxy ()->GetVersion ())
+				.arg (gst_version_string ());
+		qDebug () << Q_FUNC_INFO
+				<< "setting user-agent to"
+				<< str;
+		g_object_set (src, "user-agent", str.toUtf8 ().constData (), nullptr);
+	}
+
+	void SourceObject::AddToPath (Path *path)
+	{
+		path->SetPipeline (Dec_);
+		Path_ = path;
+	}
+
+	void SourceObject::SetSink (GstElement *bin)
+	{
+		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
+	}
+
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
 	{
 		GError *gerror = nullptr;
@@ -616,57 +667,6 @@ namespace LMP
 
 	void SourceObject::HandleStreamStatusMsg (GstMessage*)
 	{
-	}
-
-	void SourceObject::SetupSource ()
-	{
-		GstElement *src;
-		g_object_get (Dec_, "source", &src, nullptr);
-
-		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
-			return;
-
-		std::shared_ptr<void> soupRankGuard (nullptr,
-				[&] (void*) -> void
-				{
-					if (PrevSoupRank_)
-					{
-						SetSoupRank (PrevSoupRank_);
-						PrevSoupRank_ = 0;
-					}
-				});
-
-		if (!g_object_class_find_property (G_OBJECT_GET_CLASS (src), "user-agent"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "user-agent property not found for"
-					<< CurrentSource_.ToUrl ()
-					<< (QString ("|") + G_OBJECT_TYPE_NAME (src) + "|")
-					<< "soup rank:"
-					<< GetRank ("souphttpsrc")
-					<< "webkit rank:"
-					<< GetRank ("WebKitWebSrc");
-			return;
-		}
-
-		const auto& str = QString ("LeechCraft LMP/%1 (%2)")
-				.arg (Core::Instance ().GetProxy ()->GetVersion ())
-				.arg (gst_version_string ());
-		qDebug () << Q_FUNC_INFO
-				<< "setting user-agent to"
-				<< str;
-		g_object_set (src, "user-agent", str.toUtf8 ().constData (), nullptr);
-	}
-
-	void SourceObject::AddToPath (Path *path)
-	{
-		path->SetPipeline (Dec_);
-		Path_ = path;
-	}
-
-	void SourceObject::SetSink (GstElement *bin)
-	{
-		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
 	}
 
 	void SourceObject::handleMessage (GstMessage_ptr msgPtr)
