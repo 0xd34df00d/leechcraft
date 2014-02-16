@@ -683,6 +683,9 @@ namespace LMP
 				"		:play_date"
 				");");
 
+		GetFileIdMTime_ = QSqlQuery (DB_);
+		GetFileIdMTime_.prepare ("SELECT MTime FROM fileTimes WHERE fileTimes.TrackID = :track_id;");
+
 		GetFileMTime_ = QSqlQuery (DB_);
 		GetFileMTime_.prepare ("SELECT MTime FROM fileTimes, tracks WHERE tracks.Path = :filepath AND tracks.Id = fileTimes.TrackID;");
 

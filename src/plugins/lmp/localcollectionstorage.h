@@ -69,6 +69,7 @@ namespace LMP
 		QSqlQuery SetTrackStats_;
 		QSqlQuery UpdateTrackStats_;
 
+		QSqlQuery GetFileIdMTime_;
 		QSqlQuery GetFileMTime_;
 		QSqlQuery SetFileMTime_;
 
