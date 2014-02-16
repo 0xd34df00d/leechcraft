@@ -77,13 +77,16 @@ namespace LMP
 		for (const auto track : Coll_->GetStorage ()->GetOutdatedRgTracks ())
 			albums << Coll_->GetTrackAlbumId (track);
 
+		const bool wasEmpty = AlbumsQueue_.isEmpty ();
+
 		for (auto albumId : albums)
 			AlbumsQueue_ << Coll_->GetAlbum (albumId);
 
 		qDebug () << Q_FUNC_INFO
 				<< AlbumsQueue_.size ()
 				<< "albums to rescan";
-		rotateQueue ();
+		if (wasEmpty)
+			rotateQueue ();
 	}
 }
 }
