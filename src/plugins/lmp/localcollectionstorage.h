@@ -76,6 +76,8 @@ namespace LMP
 		QSqlQuery GetLovedBanned_;
 		QSqlQuery SetLovedBanned_;
 		QSqlQuery RemoveLovedBanned_;
+
+		QSqlQuery GetOutdatedRgData_;
 	public:
 		struct LoadResult
 		{
@@ -112,6 +114,8 @@ namespace LMP
 		void ClearTrackLovedBanned (int);
 		QList<int> GetLovedTracks ();
 		QList<int> GetBannedTracks ();
+
+		QList<int> GetOutdatedRgTracks ();
 	private:
 		void MarkLovedBanned (int, int);
 		QList<int> GetLovedBanned (int);

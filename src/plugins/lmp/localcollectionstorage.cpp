@@ -405,6 +405,20 @@ namespace LMP
 		return GetLovedBanned (BannedStateID);
 	}
 
+	QList<int> LocalCollectionStorage::GetOutdatedRgTracks ()
+	{
+		if (!GetOutdatedRgData_.exec ())
+		{
+			Util::DBLock::DumpError (GetOutdatedRgData_);
+			throw std::runtime_error ("cannot fetch outdated track RG data");
+		}
+
+		QList<int> result;
+		while (GetOutdatedRgData_.next ())
+			result << GetOutdatedRgData_.value (0).toInt ();
+		return result;
+	}
+
 	void LocalCollectionStorage::MarkLovedBanned (int trackId, int state)
 	{
 		SetLovedBanned_.bindValue (":track_id", trackId);
@@ -684,6 +698,9 @@ namespace LMP
 
 		RemoveLovedBanned_ = QSqlQuery (DB_);
 		RemoveLovedBanned_.prepare ("DELETE FROM lovedBanned WHERE TrackId = :track_id;");
+
+		GetOutdatedRgData_ = QSqlQuery (DB_);
+		GetOutdatedRgData_.prepare ("SELECT fileTimes.TrackID FROM fileTimes LEFT OUTER JOIN rgdata ON fileTimes.TrackId = rgdata.TrackId WHERE fileTimes.MTime != rgdata.LastMTime OR rgdata.LastMTime IS NULL;");
 	}
 
 	void LocalCollectionStorage::CreateTables ()
