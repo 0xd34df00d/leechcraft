@@ -139,6 +139,8 @@ namespace LMP
 
 	void RgAnalyser::CheckFinish ()
 	{
+		gst_element_set_state (Pipeline_, GST_STATE_NULL);
+
 		if (Paths_.isEmpty ())
 		{
 			emit finished ();
@@ -147,8 +149,6 @@ namespace LMP
 
 		CurrentPath_ = Paths_.takeFirst ();
 		qDebug () << Q_FUNC_INFO << CurrentPath_;
-
-		gst_element_set_state (Pipeline_, GST_STATE_NULL);
 
 		const auto& url = QUrl::fromLocalFile (CurrentPath_);
 		g_object_set (GST_OBJECT (Pipeline_), "uri",
