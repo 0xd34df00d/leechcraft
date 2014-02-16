@@ -419,6 +419,36 @@ namespace LMP
 		return result;
 	}
 
+	void LocalCollectionStorage::SetRgTrackInfo (int trackId,
+			double trackPeak, double trackGain,
+			double albumPeak, double albumGain)
+	{
+		GetFileIdMTime_.bindValue (":track_id", trackId);
+		if (!GetFileIdMTime_.exec ())
+		{
+			Util::DBLock::DumpError (GetFileIdMTime_);
+			throw std::runtime_error ("cannot get file mtime");
+		}
+
+		const auto& mtime = GetFileIdMTime_.next () ?
+				GetFileIdMTime_.value (0).toDateTime () :
+				QDateTime ();
+		GetFileIdMTime_.finish ();
+
+		SetTrackRgData_.bindValue (":track_id", trackId);
+		SetTrackRgData_.bindValue (":mtime", mtime);
+		SetTrackRgData_.bindValue (":track_gain", trackGain);
+		SetTrackRgData_.bindValue (":track_peak", trackPeak);
+		SetTrackRgData_.bindValue (":album_gain", albumGain);
+		SetTrackRgData_.bindValue (":album_peak", albumPeak);
+
+		if (!SetTrackRgData_.exec ())
+		{
+			Util::DBLock::DumpError (SetTrackRgData_);
+			throw std::runtime_error ("cannot set track RG data");
+		}
+	}
+
 	void LocalCollectionStorage::MarkLovedBanned (int trackId, int state)
 	{
 		SetLovedBanned_.bindValue (":track_id", trackId);
@@ -704,6 +734,12 @@ namespace LMP
 
 		GetOutdatedRgData_ = QSqlQuery (DB_);
 		GetOutdatedRgData_.prepare ("SELECT fileTimes.TrackID FROM fileTimes LEFT OUTER JOIN rgdata ON fileTimes.TrackId = rgdata.TrackId WHERE fileTimes.MTime != rgdata.LastMTime OR rgdata.LastMTime IS NULL;");
+
+		SetTrackRgData_ = QSqlQuery (DB_);
+		SetTrackRgData_.prepare ("INSERT OR REPLACE INTO rgdata "
+				"(TrackId, LastMTime, TrackGain, TrackPeak, AlbumGain, AlbumPeak)"
+				" VALUES "
+				"(:track_id, :mtime, :track_gain, :track_peak, :album_gain, :album_peak);");
 	}
 
 	void LocalCollectionStorage::CreateTables ()
