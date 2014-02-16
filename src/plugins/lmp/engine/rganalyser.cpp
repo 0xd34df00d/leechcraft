@@ -29,6 +29,7 @@
 
 #include "rganalyser.h"
 #include <functional>
+#include <atomic>
 #include <QStringList>
 #include <QThread>
 #include <QMetaType>
@@ -45,9 +46,13 @@ namespace LMP
 	{
 		GstBus * const Bus_;
 		QObject * const Handler_;
+
+		std::atomic_bool ShouldStop_ { false };
 	public:
 		LightPopThread (GstBus*, QObject*);
 		~LightPopThread ();
+
+		void Stop ();
 	protected:
 		void run ();
 	};
@@ -64,9 +69,14 @@ namespace LMP
 		gst_object_unref (Bus_);
 	}
 
+	void LightPopThread::Stop ()
+	{
+		ShouldStop_ = true;
+	}
+
 	void LightPopThread::run ()
 	{
-		while (true)
+		while (!ShouldStop_)
 		{
 			const auto msg = gst_bus_timed_pop (Bus_, GST_SECOND);
 			if (!msg)
@@ -116,6 +126,9 @@ namespace LMP
 
 	RgAnalyser::~RgAnalyser ()
 	{
+		PopThread_->Stop ();
+		PopThread_->wait (2000);
+
 		gst_object_unref (Pipeline_);
 	}
 
