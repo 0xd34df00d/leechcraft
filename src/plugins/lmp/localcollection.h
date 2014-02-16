@@ -161,6 +161,7 @@ namespace LMP
 		Collection::Album_ptr GetAlbum (int albumId) const;
 
 		int FindTrack (const QString& path) const;
+		int GetTrackAlbumId (int trackId) const;
 		Collection::Album_ptr GetTrackAlbum (int trackId) const;
 		QVariant GetTrackData (int trackId, Role) const;
 
