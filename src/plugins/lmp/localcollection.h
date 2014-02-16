@@ -140,6 +140,8 @@ namespace LMP
 
 		AlbumArtManager* GetAlbumArtManager () const;
 
+		LocalCollectionStorage* GetStorage () const;
+
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);
 		void Enqueue (const QList<QModelIndex>&, Player*);

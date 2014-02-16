@@ -162,6 +162,11 @@ namespace LMP
 		return AlbumArtMgr_;
 	}
 
+	LocalCollectionStorage* LocalCollection::GetStorage () const
+	{
+		return Storage_;
+	}
+
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
 	{
 		return Sorter_;
