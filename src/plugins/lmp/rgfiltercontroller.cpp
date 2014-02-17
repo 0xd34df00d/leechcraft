@@ -29,7 +29,9 @@
 
 #include "rgfiltercontroller.h"
 #include "engine/path.h"
+#include "engine/sourceobject.h"
 #include "xmlsettingsmanager.h"
+#include "localcollectionstorage.h"
 
 namespace LeechCraft
 {
@@ -49,6 +51,13 @@ namespace LMP
 		XmlSettingsManager::Instance ().RegisterObject (rgProps, this, "setRG");
 		setRG ();
 
+		const auto srcObj = path->GetSourceObject ();
+		connect (srcObj,
+				SIGNAL (currentSourceChanged (AudioSource)),
+				this,
+				SLOT (updateRGData (AudioSource)));
+		updateRGData (srcObj->GetCurrentSource ());
+
 		RGFilter_->InsertInto (Path_);
 	}
 
@@ -63,6 +72,19 @@ namespace LMP
 		RGFilter_->SetAlbumMode (xsm.property ("RGAlbumMode").toBool ());
 		RGFilter_->SetPreamp (xsm.property ("RGPreamp").toDouble ());
 		RGFilter_->SetLimiterEnabled (xsm.property ("RGLimiting").toBool ());
+	}
+
+	void RGFilterController::updateRGData (const AudioSource& source)
+	{
+		if (!source.IsLocalFile ())
+		{
+			RGFilter_->SetRG ({});
+			return;
+		}
+
+		LocalCollectionStorage storage;
+		const auto& data = storage.GetRgTrackInfo (source.GetLocalPath ());
+		RGFilter_->SetRG (data);
 	}
 }
 }

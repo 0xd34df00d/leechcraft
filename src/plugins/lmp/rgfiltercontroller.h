@@ -38,6 +38,7 @@ namespace LeechCraft
 namespace LMP
 {
 	class Path;
+	class AudioSource;
 
 	class RGFilterController : public QObject
 	{
@@ -50,6 +51,7 @@ namespace LMP
 		~RGFilterController ();
 	private slots:
 		void setRG ();
+		void updateRGData (const AudioSource&);
 	};
 }
 }
