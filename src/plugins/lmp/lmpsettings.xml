@@ -130,6 +130,9 @@
 	</page>
 	<page>
 		<label value="Collection" />
+		<item type="checkbox" property="AutobuildRG" default="false">
+			<label value="Automatically calculate ReplayGain data for tracks in collection" />
+		</item>
 		<groupbox>
 			<label value="Root paths" />
 			<item type="dataview" property="RootPathsView" />
