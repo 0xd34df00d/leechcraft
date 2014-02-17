@@ -36,6 +36,7 @@
 #include <util/util.h>
 #include <util/dblock.h>
 #include "util.h"
+#include "engine/rgfilter.h"
 
 namespace LeechCraft
 {
@@ -419,9 +420,7 @@ namespace LMP
 		return result;
 	}
 
-	void LocalCollectionStorage::SetRgTrackInfo (int trackId,
-			double trackPeak, double trackGain,
-			double albumPeak, double albumGain)
+	void LocalCollectionStorage::SetRgTrackInfo (int trackId, const RGData& data)
 	{
 		GetFileIdMTime_.bindValue (":track_id", trackId);
 		if (!GetFileIdMTime_.exec ())
@@ -437,10 +436,10 @@ namespace LMP
 
 		SetTrackRgData_.bindValue (":track_id", trackId);
 		SetTrackRgData_.bindValue (":mtime", mtime);
-		SetTrackRgData_.bindValue (":track_gain", trackGain);
-		SetTrackRgData_.bindValue (":track_peak", trackPeak);
-		SetTrackRgData_.bindValue (":album_gain", albumGain);
-		SetTrackRgData_.bindValue (":album_peak", albumPeak);
+		SetTrackRgData_.bindValue (":track_gain", data.TrackGain_);
+		SetTrackRgData_.bindValue (":track_peak", data.TrackPeak_);
+		SetTrackRgData_.bindValue (":album_gain", data.AlbumGain_);
+		SetTrackRgData_.bindValue (":album_peak", data.AlbumPeak_);
 
 		if (!SetTrackRgData_.exec ())
 		{

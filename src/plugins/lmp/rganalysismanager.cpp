@@ -31,6 +31,7 @@
 #include "localcollection.h"
 #include "localcollectionstorage.h"
 #include "engine/rganalyser.h"
+#include "engine/rgfilter.h"
 
 namespace LeechCraft
 {
@@ -62,8 +63,12 @@ namespace LMP
 			}
 
 			Coll_->GetStorage ()->SetRgTrackInfo (id,
-					track.TrackPeak_, track.TrackGain_,
-					result.AlbumPeak_, result.AlbumGain_);
+					{
+						track.TrackGain_,
+						track.TrackPeak_,
+						result.AlbumGain_,
+						result.AlbumPeak_
+					});
 		}
 
 		CurrentAnalyser_.reset ();

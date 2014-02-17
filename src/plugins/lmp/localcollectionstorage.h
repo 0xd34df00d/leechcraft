@@ -40,6 +40,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	struct RGData;
+
 	class LocalCollectionStorage : public QObject
 	{
 		Q_OBJECT
@@ -118,7 +120,7 @@ namespace LMP
 		QList<int> GetBannedTracks ();
 
 		QList<int> GetOutdatedRgTracks ();
-		void SetRgTrackInfo (int, double trackPeak, double trackGain, double albumPeak, double albumGain);
+		void SetRgTrackInfo (int, const RGData&);
 	private:
 		void MarkLovedBanned (int, int);
 		QList<int> GetLovedBanned (int);
