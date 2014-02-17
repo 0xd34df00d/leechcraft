@@ -30,6 +30,7 @@
 #include "effectsmanager.h"
 #include "engine/rgfilter.h"
 #include "xmlsettingsmanager.h"
+#include "rgfiltercontroller.h"
 
 namespace LeechCraft
 {
@@ -39,14 +40,7 @@ namespace LMP
 	: QObject (parent)
 	, Path_ (path)
 	{
-		const QList<QByteArray> rgProps
-		{
-			"EnableRG",
-			"RGAlbumMode",
-			"RGLimiting",
-			"RGPreamp"
-		};
-		XmlSettingsManager::Instance ().RegisterObject (rgProps, this, "setRG");
+		XmlSettingsManager::Instance ().RegisterObject ("EnableRG", this, "setRG");
 		setRG ();
 	}
 
@@ -54,26 +48,10 @@ namespace LMP
 	{
 		const auto& xsm = XmlSettingsManager::Instance ();
 		const auto enable = xsm.property ("EnableRG").toBool ();
-		if (!enable)
-		{
-			if (RGFilter_)
-			{
-				RGFilter_->RemoveFrom (Path_);
-				RGFilter_.reset ();
-			}
-
-			return;
-		}
-
-		if (!RGFilter_)
-		{
-			RGFilter_.reset (new RGFilter);
-			RGFilter_->InsertInto (Path_);
-		}
-
-		RGFilter_->SetAlbumMode (xsm.property ("RGAlbumMode").toBool ());
-		RGFilter_->SetPreamp (xsm.property ("RGPreamp").toDouble ());
-		RGFilter_->SetLimiterEnabled (xsm.property ("RGLimiting").toBool ());
+		if (!enable && RGFilter_)
+			RGFilter_.reset ();
+		else if (enable && !RGFilter_)
+			RGFilter_.reset (new RGFilterController { Path_ });
 	}
 }
 }

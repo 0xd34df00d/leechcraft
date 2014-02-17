@@ -27,29 +27,42 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
+#include "rgfiltercontroller.h"
+#include "engine/path.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class Path;
-	class RGFilterController;
-
-	class EffectsManager : public QObject
+	RGFilterController::RGFilterController (Path *path, QObject *parent)
+	: QObject { parent }
+	, RGFilter_ { new RGFilter }
+	, Path_ { path }
 	{
-		Q_OBJECT
+		const QList<QByteArray> rgProps
+		{
+			"RGAlbumMode",
+			"RGLimiting",
+			"RGPreamp"
+		};
+		XmlSettingsManager::Instance ().RegisterObject (rgProps, this, "setRG");
+		setRG ();
 
-		Path * const Path_;
+		RGFilter_->InsertInto (Path_);
+	}
 
-		std::shared_ptr<RGFilterController> RGFilter_;
-	public:
-		EffectsManager (Path*, QObject* = 0);
-	private slots:
-		void setRG ();
-	};
+	RGFilterController::~RGFilterController ()
+	{
+		RGFilter_->RemoveFrom (Path_);
+	}
+
+	void RGFilterController::setRG ()
+	{
+		const auto& xsm = XmlSettingsManager::Instance ();
+		RGFilter_->SetAlbumMode (xsm.property ("RGAlbumMode").toBool ());
+		RGFilter_->SetPreamp (xsm.property ("RGPreamp").toDouble ());
+		RGFilter_->SetLimiterEnabled (xsm.property ("RGLimiting").toBool ());
+	}
 }
 }

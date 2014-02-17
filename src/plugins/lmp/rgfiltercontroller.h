@@ -31,23 +31,23 @@
 
 #include <memory>
 #include <QObject>
+#include "engine/rgfilter.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
 	class Path;
-	class RGFilterController;
 
-	class EffectsManager : public QObject
+	class RGFilterController : public QObject
 	{
 		Q_OBJECT
 
+		std::unique_ptr<RGFilter> RGFilter_;
 		Path * const Path_;
-
-		std::shared_ptr<RGFilterController> RGFilter_;
 	public:
-		EffectsManager (Path*, QObject* = 0);
+		RGFilterController (Path*, QObject* = nullptr);
+		~RGFilterController ();
 	private slots:
 		void setRG ();
 	};
