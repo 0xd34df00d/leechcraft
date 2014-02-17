@@ -77,6 +77,8 @@ namespace LMP
 		GstElement * const Fakesink_;
 
 		LightPopThread * const PopThread_;
+
+		bool IsDraining_ = false;
 	public:
 		RgAnalyser (const QStringList&, QObject* = nullptr);
 		~RgAnalyser ();
