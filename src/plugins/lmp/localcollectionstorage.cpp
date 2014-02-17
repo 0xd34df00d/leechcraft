@@ -37,6 +37,7 @@
 #include <util/dblock.h>
 #include "util.h"
 #include "engine/rgfilter.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -843,6 +844,9 @@ namespace LMP
 				"AlbumPeak DOUBLE NOT NULL "
 				");");
 
+		QSqlQuery { DB_ }.exec ("PRAGMA defer_foreign_keys = ON;");
+		QSqlQuery { DB_ }.exec ("PRAGMA foreign_keys = OFF;");
+
 		Util::DBLock lock (DB_);
 
 		lock.Init ();
@@ -859,9 +863,40 @@ namespace LMP
 				}
 			}
 
+		if (XmlSettingsManager::Instance ().Property ("TracksTableVersion", 1).toInt () < 2)
+		{
+			const QString query = "CREATE TABLE tracks2 ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"ArtistID INTEGER NOT NULL REFERENCES artists (Id) ON DELETE CASCADE, "
+				"AlbumId NOT NULL REFERENCES albums (Id) ON DELETE CASCADE, "
+				"Path TEXT NOT NULL UNIQUE, "
+				"Name TEXT NOT NULL, "
+				"TrackNumber INTEGER, "
+				"Length INTEGER "
+				");";
+
+			QSqlQuery q { DB_ };
+			if (!q.exec (query))
+			{
+				Util::DBLock::DumpError (q);
+				throw std::runtime_error ("cannot create tracks2");
+			}
+
+			if (!q.exec ("INSERT OR IGNORE INTO tracks2 SELECT * FROM tracks;") ||
+				!q.exec ("DROP TABLE tracks;") ||
+				!q.exec ("ALTER TABLE tracks2 RENAME TO tracks;"))
+			{
+				Util::DBLock::DumpError (q);
+				throw std::runtime_error ("cannot copy data from tracks2");
+			}
+			XmlSettingsManager::Instance ().setProperty ("TracksTableVersion", 2);
+		}
+
 		QSqlQuery (DB_).exec ("CREATE UNIQUE INDEX IF NOT EXISTS index_tracksPaths ON tracks (Path);");
 
 		lock.Good ();
+
+		QSqlQuery { DB_ }.exec ("PRAGMA foreign_keys = ON;");
 	}
 }
 }
