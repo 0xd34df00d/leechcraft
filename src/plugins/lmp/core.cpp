@@ -45,6 +45,7 @@
 #include "previewhandler.h"
 #include "progressmanager.h"
 #include "radiomanager.h"
+#include "rganalysismanager.h"
 
 namespace LeechCraft
 {
@@ -65,6 +66,8 @@ namespace LMP
 		ProgressManager_->AddSyncManager (SyncManager_);
 		ProgressManager_->AddSyncManager (SyncUnmountableManager_);
 		ProgressManager_->AddSyncManager (CloudUpMgr_);
+
+		new RgAnalysisManager (Collection_, this);
 	}
 
 	Core& Core::Instance ()
