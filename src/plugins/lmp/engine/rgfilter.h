@@ -46,10 +46,13 @@ namespace LMP
 	class RGFilter : public FilterElement
 	{
 		GstElement * const Elem_;
+		GstElement * const TagInject_;
 		GstElement * const RGVol_;
 		GstElement * const RGLimiter_;
 	public:
 		RGFilter ();
+
+		void SetRG (const RGData&);
 
 		void SetAlbumMode (bool);
 		void SetLimiterEnabled (bool);
