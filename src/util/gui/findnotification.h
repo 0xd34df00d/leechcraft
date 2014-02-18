@@ -69,6 +69,11 @@ namespace Util
 	 * -# Optionally a couple of QShortCuts or QActions can be created
 	 *    and connected to findNext() and findPrevious() slots to support
 	 *    shortcuts for the corresponding actions.
+	 *
+	 * The FindNotificationWk class provides some utilities to aid
+	 * integrating this class with a QWebPage.
+	 *
+	 * @sa FindNotificationWk
 	 */
 	class UTIL_API FindNotification : public PageNotification
 	{
