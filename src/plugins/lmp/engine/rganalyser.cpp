@@ -233,6 +233,11 @@ namespace LMP
 		gst_element_set_state (Pipeline_, GST_STATE_NULL);
 		PopThread_->Resume ();
 
+		const auto trackInfoPos = std::find_if (Result_.Tracks_.begin (), Result_.Tracks_.end (),
+				[this] (const TrackRgResult& info) { return info.TrackPath_ == CurrentPath_; });
+		if (trackInfoPos == Result_.Tracks_.end ())
+			Result_.Tracks_.append ({ CurrentPath_, 0, 0 });
+
 		CheckFinish ();
 	}
 
