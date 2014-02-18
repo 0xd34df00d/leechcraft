@@ -35,6 +35,8 @@
 #include <QMetaType>
 #include <QtDebug>
 #include <QUrl>
+#include <QWaitCondition>
+#include <QMutex>
 #include "gstutil.h"
 #include "../gstfix.h"
 
@@ -48,11 +50,15 @@ namespace LMP
 		QObject * const Handler_;
 
 		std::atomic_bool ShouldStop_ { false };
+
+		QMutex PauseMutex_;
+		QWaitCondition PauseWC_;
 	public:
 		LightPopThread (GstBus*, QObject*);
 		~LightPopThread ();
 
 		void Stop ();
+		void Resume ();
 	protected:
 		void run ();
 	};
@@ -74,6 +80,11 @@ namespace LMP
 		ShouldStop_ = true;
 	}
 
+	void LightPopThread::Resume ()
+	{
+		PauseWC_.wakeOne ();
+	}
+
 	void LightPopThread::run ()
 	{
 		while (!ShouldStop_)
@@ -86,6 +97,12 @@ namespace LMP
 					"handleMessage",
 					Qt::QueuedConnection,
 					Q_ARG (GstMessage_ptr, std::shared_ptr<GstMessage> (msg, gst_message_unref)));
+
+			if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR)
+			{
+				QMutexLocker locker { &PauseMutex_ };
+				PauseWC_.wait (&PauseMutex_);
+			}
 		}
 	}
 
@@ -202,6 +219,26 @@ namespace LMP
 				<< code
 				<< msgStr
 				<< debugStr;
+
+
+		if (IsDraining_)
+			return;
+
+		IsDraining_ = true;
+		const auto bus = gst_pipeline_get_bus (GST_PIPELINE (Pipeline_));
+		while (const auto msg = gst_bus_timed_pop (bus, 0.01 * GST_SECOND))
+			handleMessage (std::shared_ptr<GstMessage> (msg, gst_message_unref));
+		IsDraining_ = false;
+
+		gst_element_set_state (Pipeline_, GST_STATE_NULL);
+		PopThread_->Resume ();
+
+		const auto trackInfoPos = std::find_if (Result_.Tracks_.begin (), Result_.Tracks_.end (),
+				[this] (const TrackRgResult& info) { return info.TrackPath_ == CurrentPath_; });
+		if (trackInfoPos == Result_.Tracks_.end ())
+			Result_.Tracks_.append ({ CurrentPath_, 0, 0 });
+
+		CheckFinish ();
 	}
 
 	void RgAnalyser::handleMessage (GstMessage_ptr msgPtr)

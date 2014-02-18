@@ -377,14 +377,6 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleFind ()));
-		connect (FindNext_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleFindNext ()));
-		connect (FindPrevious_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleFindPrevious ()));
 		connect (ScreenSave_,
 				SIGNAL (triggered ()),
 				this,
@@ -530,15 +522,19 @@ namespace Poshuku
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (updateBookmarksState (bool)));
-		FindDialog_ = new FindDialog (Ui_.WebFrame_);
+
+		FindDialog_ = new FindDialog (WebView_);
 		FindDialog_->hide ();
+		connect (FindNext_,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (findNext ()));
+		connect (FindPrevious_,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (findPrevious ()));
 
-		connect (FindDialog_,
-				SIGNAL (next (const QString&, QWebPage::FindFlags)),
-				this,
-				SLOT (findText (const QString&, QWebPage::FindFlags)));
-
-		RememberDialog_ = new PasswordRemember (Ui_.WebFrame_);
+		RememberDialog_ = new PasswordRemember (WebView_);
 		RememberDialog_->hide ();
 
 		connect (WebView_,
@@ -1078,49 +1074,6 @@ namespace Poshuku
 			FindDialog_->SetText (act->data ().toString ());
 		FindDialog_->show ();
 		FindDialog_->setFocus ();
-	}
-
-	void BrowserWidget::handleFindNext ()
-	{
-		const auto& text = FindDialog_->GetText ();
-		if (text.isEmpty ())
-			return;
-
-		findText (text, FindDialog_->GetPageFlags () |
-				QWebPage::FindWrapsAroundDocument);
-	}
-
-	void BrowserWidget::handleFindPrevious ()
-	{
-		const auto& text = FindDialog_->GetText ();
-		if (text.isEmpty ())
-			return;
-
-		findText (text, FindDialog_->GetPageFlags () |
-				QWebPage::FindBackward |
-				QWebPage::FindWrapsAroundDocument);
-	}
-
-	void BrowserWidget::findText (const QString& thtext,
-			QWebPage::FindFlags flags)
-	{
-		QString text = thtext;
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookFindText (proxy, this, text, flags);
-		if (proxy->IsCancelled ())
-			return;
-
-		proxy->FillValue ("text", text);
-
-		if (PreviousFindText_ != text)
-		{
-			QWebPage::FindFlags nflags = flags | QWebPage::HighlightAllOccurrences;
-			WebView_->page ()->findText (QString (), nflags);
-			WebView_->page ()->findText (text, nflags);
-			PreviousFindText_ = text;
-		}
-		bool found = WebView_->page ()->findText (text, flags);
-		FindDialog_->SetSuccessful (found);
 	}
 
 	void BrowserWidget::handleViewPrint (QWebFrame *frame)

@@ -38,10 +38,12 @@ namespace Util
 	PageNotification::PageNotification (QWidget *widget)
 	: QWidget (widget)
 	{
-		QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (widget->layout ());
+		auto lay = qobject_cast<QVBoxLayout*> (widget->parentWidget ()->layout ());
 		if (!lay)
 			throw std::runtime_error ("Passed parent object has no QVBoxLayout");
-		lay->addWidget (this);
+
+		const auto idx = lay->indexOf (widget);
+		lay->insertWidget (idx + 1, this);
 	}
 }
 }

@@ -46,6 +46,7 @@
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
+#include <util/gui/findnotificationwk.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -193,6 +194,9 @@ namespace Azoth
 				SIGNAL (released ()),
 				this,
 				SLOT (messageSend ()));
+
+		ChatFinder_ = new Util::FindNotificationWk (Core::Instance ().GetProxy (), Ui_.View_);
+		ChatFinder_->hide ();
 
 		BuildBasicActions ();
 
@@ -1460,6 +1464,18 @@ namespace Azoth
 		auto shortcut = new QShortcut (openLinkInfo.Seqs_.value (0),
 				this, SLOT (handleOpenLastLink ()), 0, Qt::WidgetWithChildrenShortcut);
 		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
+
+		auto findShortcut = new QShortcut (this);
+		findShortcut->setContext (Qt::WidgetWithChildrenShortcut);
+		findShortcut->setKey (QString ("Ctrl+F"));
+		connect (findShortcut,
+				SIGNAL (activated ()),
+				ChatFinder_,
+				SLOT (show ()));
+		connect (findShortcut,
+				SIGNAL (activated ()),
+				ChatFinder_,
+				SLOT (setFocus ()));
 	}
 
 	void ChatTab::InitEntry ()

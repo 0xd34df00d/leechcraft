@@ -36,6 +36,7 @@ set (SRCS
 	gui/autoresizemixin.cpp
 	gui/clearlineeditaddon.cpp
 	gui/findnotification.cpp
+	gui/findnotificationwk.cpp
 	gui/flowlayout.cpp
 	gui/pagenotification.cpp
 	gui/selectablebrowser.cpp

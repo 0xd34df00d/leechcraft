@@ -49,9 +49,8 @@ namespace Util
 	 * searching and closing the notification, as well as convenience
 	 * slots findNext() and findPrevious().
 	 *
-	 * The notification will automatically embed into a QVBoxLayout of
-	 * its parent widget at the bottom, like in Poshuku or Monocle
-	 * plugins.
+	 * The widget will automatically be embedded into the layout of
+	 * the parent widget of \em near after the \em near widget.
 	 *
 	 * This class is typically used as following:
 	 * -# It's subclassed, and an implementation of handleNext() function
@@ -70,6 +69,11 @@ namespace Util
 	 * -# Optionally a couple of QShortCuts or QActions can be created
 	 *    and connected to findNext() and findPrevious() slots to support
 	 *    shortcuts for the corresponding actions.
+	 *
+	 * The FindNotificationWk class provides some utilities to aid
+	 * integrating this class with a QWebPage.
+	 *
+	 * @sa FindNotificationWk
 	 */
 	class UTIL_API FindNotification : public PageNotification
 	{
@@ -97,7 +101,7 @@ namespace Util
 		};
 		Q_DECLARE_FLAGS (FindFlags, FindFlag)
 
-		/** @brief Creates the search widget and embeds into parent layout.
+		/** @brief Creates the search widget in parent layout of \em near.
 		 *
 		 * Embedding is done only if possible — that is, if parent's
 		 * layout is QVBoxLayout. Otherwise one should place this widget
@@ -105,9 +109,9 @@ namespace Util
 		 *
 		 * @param[in] proxy The core proxy to be used by this find
 		 * notification.
-		 * @param[in] parent The parent widget to embed into.
+		 * @param[in] near The widget near which to embed.
 		 */
-		FindNotification (ICoreProxy_ptr proxy, QWidget *parent);
+		FindNotification (ICoreProxy_ptr proxy, QWidget *near);
 		~FindNotification ();
 
 		/** @brief Sets the text in the find field.

@@ -182,9 +182,6 @@ namespace Poshuku
 		void handleReloadPeriodically ();
 		void handleAdd2Favorites ();
 		void handleFind ();
-		void handleFindNext ();
-		void handleFindPrevious ();
-		void findText (const QString&, QWebPage::FindFlags);
 		void handleViewPrint (QWebFrame*);
 		void handlePrinting ();
 		void handlePrintingWithPreview ();
@@ -228,10 +225,6 @@ namespace Poshuku
 		void tabRecoverDataChanged ();
 
 		// Hook support
-		void hookFindText (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget,
-				QString findText,
-				QWebPage::FindFlags findFlags);
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QObject *browserWidget);
