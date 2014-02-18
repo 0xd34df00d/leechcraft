@@ -98,7 +98,6 @@ namespace CrashProcess
 
 	void CrashDialog::SetInteractionAllowed (bool allowed)
 	{
-		Ui_.TraceDisplay_->setEnabled (allowed);
 		Ui_.Reload_->setEnabled (allowed);
 		Ui_.Copy_->setEnabled (allowed);
 		Ui_.Save_->setEnabled (allowed);
