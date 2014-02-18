@@ -530,7 +530,7 @@ namespace Poshuku
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (updateBookmarksState (bool)));
-		FindDialog_ = new FindDialog (Ui_.WebFrame_);
+		FindDialog_ = new FindDialog (WebView_);
 		FindDialog_->hide ();
 
 		connect (FindDialog_,
@@ -538,7 +538,7 @@ namespace Poshuku
 				this,
 				SLOT (findText (const QString&, QWebPage::FindFlags)));
 
-		RememberDialog_ = new PasswordRemember (Ui_.WebFrame_);
+		RememberDialog_ = new PasswordRemember (WebView_);
 		RememberDialog_->hide ();
 
 		connect (WebView_,

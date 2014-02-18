@@ -133,7 +133,7 @@ namespace Monocle
 				SLOT (handleNavigateRequested (QString, int, double, double)));
 		FormManager_ = new FormManager (Ui_.PagesView_, this);
 
-		FindDialog_ = new FindDialog (SearchHandler_, this);
+		FindDialog_ = new FindDialog (SearchHandler_, Ui_.PagesView_);
 		FindDialog_->hide ();
 
 		SetupToolbar ();
