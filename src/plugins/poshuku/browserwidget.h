@@ -182,8 +182,6 @@ namespace Poshuku
 		void handleReloadPeriodically ();
 		void handleAdd2Favorites ();
 		void handleFind ();
-		void handleFindNext ();
-		void handleFindPrevious ();
 		void findText (const QString&, QWebPage::FindFlags);
 		void handleViewPrint (QWebFrame*);
 		void handlePrinting ();
