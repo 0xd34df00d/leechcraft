@@ -44,6 +44,11 @@ class QTextBrowser;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class FindNotificationWk;
+}
+
 namespace Azoth
 {
 	struct EntryStatus;
@@ -109,6 +114,8 @@ namespace Azoth
 
 		ChatPartState PreviousState_;
 		QString LastLink_;
+
+		Util::FindNotificationWk *ChatFinder_;
 
 		bool IsCurrent_;
 	public:
