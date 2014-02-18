@@ -29,24 +29,17 @@
 
 #pragma once
 
-#include <qwebpage.h>
-#include <util/gui/findnotification.h>
+#include <util/gui/findnotificationwk.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class FindDialog : public Util::FindNotification
+	class FindDialog : public Util::FindNotificationWk
 	{
 		Q_OBJECT
 	public:
-		FindDialog (QWidget*);
-
-		QWebPage::FindFlags GetPageFlags () const;
-	protected:
-		void handleNext (const QString&, FindFlags);
-	signals:
-		void next (const QString&, QWebPage::FindFlags);
+		FindDialog (QWebView*);
 	};
 }
 }

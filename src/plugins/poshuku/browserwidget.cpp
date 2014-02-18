@@ -1076,28 +1076,6 @@ namespace Poshuku
 		FindDialog_->setFocus ();
 	}
 
-	void BrowserWidget::findText (const QString& thtext,
-			QWebPage::FindFlags flags)
-	{
-		QString text = thtext;
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookFindText (proxy, this, text, flags);
-		if (proxy->IsCancelled ())
-			return;
-
-		proxy->FillValue ("text", text);
-
-		if (PreviousFindText_ != text)
-		{
-			QWebPage::FindFlags nflags = flags | QWebPage::HighlightAllOccurrences;
-			WebView_->page ()->findText (QString (), nflags);
-			WebView_->page ()->findText (text, nflags);
-			PreviousFindText_ = text;
-		}
-		bool found = WebView_->page ()->findText (text, flags);
-		FindDialog_->SetSuccessful (found);
-	}
-
 	void BrowserWidget::handleViewPrint (QWebFrame *frame)
 	{
 		PrintImpl (false, frame);
