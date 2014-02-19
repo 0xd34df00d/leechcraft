@@ -68,6 +68,8 @@ namespace LMP
 				{
 					if (str.startsWith ("the ", Qt::CaseInsensitive))
 						str = str.mid (4);
+					if (str.startsWith ("a ", Qt::CaseInsensitive))
+						str = str.mid (2);
 				};
 
 				chopStr (leftStr);
