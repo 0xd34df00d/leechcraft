@@ -1667,19 +1667,14 @@ namespace Azoth
 
 	void ChatTab::InitMsgEdit ()
 	{
-#ifndef Q_OS_MAC
-		const auto histModifier = Qt::CTRL;
-#else
-		const auto histModifier = Qt::ALT;
-#endif
-		QShortcut *histUp = new QShortcut (histModifier + Qt::Key_Up,
+		QShortcut *histUp = new QShortcut (Qt::CTRL + Qt::Key_Up,
 				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
 		connect (histUp,
 				SIGNAL (activated ()),
 				this,
 				SLOT (handleHistoryUp ()));
 
-		QShortcut *histDown = new QShortcut (histModifier + Qt::Key_Down,
+		QShortcut *histDown = new QShortcut (Qt::CTRL + Qt::Key_Down,
 				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
 		connect (histDown,
 				SIGNAL (activated ()),

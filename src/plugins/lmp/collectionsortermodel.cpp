@@ -68,6 +68,8 @@ namespace LMP
 				{
 					if (str.startsWith ("the ", Qt::CaseInsensitive))
 						str = str.mid (4);
+					if (str.startsWith ("a ", Qt::CaseInsensitive))
+						str = str.mid (2);
 				};
 
 				chopStr (leftStr);
@@ -108,6 +110,7 @@ namespace LMP
 			return false;
 		}
 	}
+
 	CollectionSorterModel::CollectionSorterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
 	, UseThe_ (true)

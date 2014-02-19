@@ -39,23 +39,35 @@ Rectangle {
             angle: viewOrient == "horizontal" ? 0 : 180
         }
 
-        MouseArea {
+        TimedHoverArea {
             anchors.fill: parent
 
             property variant tooltip: null
+            property bool closeOnExit: true
 
-            onEntered: {
+            hoverInTimeout: commonHoverInTimeout
+
+            onHoverInTimedOut: {
                 var global = commonJS.getTooltipPos(rootRect);
                 var params = {
                     "x": global.x,
                     "y": global.y,
-                    "existing": "ignore",
                     "loadModel": CpuLoad_model,
                     "cpuProxy": CpuLoad_proxy,
                     "colorProxy": colorProxy
                 };
                 tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
+                closeOnExit = true;
             }
+
+            onAreaExited: {
+                if (tooltip != null && closeOnExit) {
+                    tooltip.closeRequested();
+                    tooltip = null;
+                }
+            }
+
+            onReleased: closeOnExit = false
 
             hoverEnabled: true
         }

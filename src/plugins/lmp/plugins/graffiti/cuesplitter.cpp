@@ -243,6 +243,35 @@ namespace Graffiti
 		return CueFile_;
 	}
 
+	namespace
+	{
+		QString FindFile (const QString& file, const QDir& dir)
+		{
+			if (dir.exists (file))
+				return dir.absoluteFilePath (file);
+
+			const auto& listing = dir.entryList (QDir::Files);
+
+			auto candPos = std::find_if (listing.begin (), listing.end (),
+					[&file] (const QString& item)
+					{
+						return !QString::compare (item, file, Qt::CaseInsensitive);
+					});
+			if (candPos != listing.end ())
+				return dir.absoluteFilePath (*candPos);
+
+			candPos = std::find_if (listing.begin (), listing.end (),
+					[&file] (const QString& item)
+					{
+						return !QString::compare (item.section ('.', 0, -2),
+								file.section ('.', 0, -2),
+								Qt::CaseInsensitive);
+					});
+
+			return candPos == listing.end () ? QString () : *candPos;
+		}
+	}
+
 	void CueSplitter::split ()
 	{
 		const auto& cue = ParseCue (QDir (Dir_).absoluteFilePath (CueFile_));
@@ -277,8 +306,9 @@ namespace Graffiti
 
 		for (const auto& file : cue.Files_)
 		{
-			const QDir dir (Dir_);
-			if (!dir.exists (file.Filename_))
+			const QDir dir { Dir_ };
+			const auto& path = FindFile (file.Filename_, dir);
+			if (path.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO
 						<< file.Filename_
@@ -286,8 +316,6 @@ namespace Graffiti
 				emit error (tr ("No such file %1.").arg (file.Filename_));
 				continue;
 			}
-
-			const auto& path = dir.absoluteFilePath (file.Filename_);
 
 			for (const auto& track : file.Tracks_)
 				SplitQueue_.append ({

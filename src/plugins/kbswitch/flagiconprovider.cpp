@@ -29,6 +29,7 @@
 
 #include "flagiconprovider.h"
 #include <QImage>
+#include <QIcon>
 #include <util/sys/paths.h>
 
 namespace LeechCraft
@@ -40,9 +41,13 @@ namespace KBSwitch
 	{
 	}
 
-	QPixmap FlagIconProvider::requestPixmap (const QString& id, QSize *actual, const QSize&)
+	QPixmap FlagIconProvider::requestPixmap (const QString& id, QSize *actual, const QSize& requested)
 	{
 		QPixmap px (Util::GetSysPath (Util::SysPath::Share, "global_icons/flags", id + ".png"));
+
+		if (px.isNull ())
+			px = QIcon::fromTheme ("preferences-desktop-keyboard").pixmap (requested);
+
 		if (actual)
 			*actual = px.size ();
 		return px;
