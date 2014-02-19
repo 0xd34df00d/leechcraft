@@ -35,6 +35,7 @@ int main (int argc, char **argv)
 	Q_UNUSED (author);
 
 	LeechCraft::Application::setAttribute (Qt::AA_X11InitThreads);
+	LeechCraft::Application::setAttribute (Qt::AA_MacDontSwapCtrlAndMeta);
 
 	LeechCraft::Application app (argc, argv);
 	return app.exec ();
