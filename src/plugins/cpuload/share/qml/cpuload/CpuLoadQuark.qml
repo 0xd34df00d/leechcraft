@@ -43,6 +43,7 @@ Rectangle {
             anchors.fill: parent
 
             property variant tooltip: null
+            property bool closeOnExit: true
 
             hoverInTimeout: commonHoverInTimeout
 
@@ -56,7 +57,17 @@ Rectangle {
                     "colorProxy": colorProxy
                 };
                 tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
+                closeOnExit = true;
             }
+
+            onAreaExited: {
+                if (tooltip != null && closeOnExit) {
+                    tooltip.closeRequested();
+                    tooltip = null;
+                }
+            }
+
+            onReleased: closeOnExit = false
 
             hoverEnabled: true
         }
