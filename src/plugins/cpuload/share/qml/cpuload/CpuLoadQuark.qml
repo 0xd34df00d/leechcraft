@@ -39,12 +39,14 @@ Rectangle {
             angle: viewOrient == "horizontal" ? 0 : 180
         }
 
-        MouseArea {
+        TimedHoverArea {
             anchors.fill: parent
 
             property variant tooltip: null
 
-            onEntered: {
+            hoverInTimeout: commonHoverInTimeout
+
+            onHoverInTimedOut: {
                 var global = commonJS.getTooltipPos(rootRect);
                 var params = {
                     "x": global.x,
