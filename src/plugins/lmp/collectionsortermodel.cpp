@@ -110,6 +110,7 @@ namespace LMP
 			return false;
 		}
 	}
+
 	CollectionSorterModel::CollectionSorterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
 	, UseThe_ (true)
