@@ -49,7 +49,6 @@ Rectangle {
                 var params = {
                     "x": global.x,
                     "y": global.y,
-                    "existing": "ignore",
                     "loadModel": CpuLoad_model,
                     "cpuProxy": CpuLoad_proxy,
                     "colorProxy": colorProxy
