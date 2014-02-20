@@ -80,7 +80,7 @@ namespace LMP
 #endif
 
 		gint argc = 1;
-		gchar *argvarr [] = { "leechcraft", nullptr };
+		gchar *argvarr [] = { g_strdup ("leechcraft"), nullptr };
 		gchar **argv = argvarr;
 		gst_init (&argc, &argv);
 
