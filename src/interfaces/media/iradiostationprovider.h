@@ -95,7 +95,14 @@ namespace Media
 		 *
 		 * Items of this type should provide RadioItemRole::TracksInfos.
 		 */
-		SingleTrack
+		SingleTrack,
+
+		/** @brief An action.
+		 *
+		 * Items of this type represent an action, like "Sign in to radio"
+		 * or something.
+		 */
+		RadioAction
 	};
 
 	/** @brief Custom user roles for the items in the model.

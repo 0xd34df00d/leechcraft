@@ -216,6 +216,8 @@ namespace LMP
 		case Media::RadioType::None:
 			return;
 		case Media::RadioType::Predefined:
+		case Media::RadioType::CustomAddableStreams:
+		case Media::RadioType::RadioAction:
 			break;
 		case Media::RadioType::SimilarArtists:
 			param = QInputDialog::getText (0,
