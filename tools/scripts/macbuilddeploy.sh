@@ -11,6 +11,8 @@ cp -Rv /usr/local/Cellar/qt/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
 mkdir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/gstreamer-1.0/* $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/libgst* $TARGET/leechcraft.app/Contents/Frameworks
+install -v /usr/local/lib/gio/modules/*.so $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
+cp -Rv /usr/local/share/glib-2.0/schemas $TARGET/leechcraft.app/Contents/Frameworks
 $BASEDIR/replacepath.py --old /usr/local/lib/libgstreamer --new @executable_path/../Frameworks/libgstreamer --dir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 $BASEDIR/replacepath.py --old /usr/local/lib/libgobject --new @executable_path/../Frameworks/libgobject --dir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 $BASEDIR/replacepath.py --old /usr/local/lib/libglib --new @executable_path/../Frameworks/libglib --dir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
@@ -29,5 +31,5 @@ for GST in $TARGET/leechcraft.app/Contents/PlugIns/gstreamer/lib*.so; do
 		install_name_tool -change $LIB @executable_path/../Frameworks/$(basename $LIB) $GST
 	done
 done
-sudo macdeployqt $TARGET/leechcraft.app -verbose=2 -dmg
+sudo macdeployqt $TARGET/leechcraft.app -verbose=2
 #DYLD_PRINT_LIBRARIES_POST_LAUNCH=1 $TARGET/leechcraft.app/Contents/MacOs/leechcraft
