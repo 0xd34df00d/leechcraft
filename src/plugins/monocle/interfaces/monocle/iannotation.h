@@ -54,14 +54,14 @@ namespace Monocle
 		virtual QRectF GetBoundary () const = 0;
 
 		virtual AnnotationType GetAnnotationType () const = 0;
+
+		virtual QString GetText () const = 0;
 	};
 
 	class ITextAnnotation : public IAnnotation
 	{
 	public:
 		virtual ~ITextAnnotation () {}
-
-		virtual QString GetText () const = 0;
 
 		virtual bool IsInline () const = 0;
 	};
