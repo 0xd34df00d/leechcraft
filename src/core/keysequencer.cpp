@@ -75,7 +75,7 @@ void KeySequencer::keyPressEvent (QKeyEvent *event)
 
 	const QKeySequence ts (code);
 
-	Ui_.Shortcut_->setText (ts.toString ());
+	Ui_.Shortcut_->setText (ts.toString (QKeySequence::NativeText));
 	QDialog::keyPressEvent (event);
 }
 
