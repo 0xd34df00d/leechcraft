@@ -52,7 +52,7 @@ namespace TouchStreams
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");
 
-		Queue_ = new Util::QueueManager (10000);
+		Queue_ = new Util::QueueManager (1000);
 
 		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("TouchStreams",
 				"3298289",
