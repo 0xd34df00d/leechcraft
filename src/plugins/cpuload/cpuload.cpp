@@ -39,7 +39,14 @@ namespace CpuLoad
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+#ifdef Q_OS_LINUX
 		auto backend = new LinuxBackend;
+#else
+		Backend *backend = nullptr;
+#endif
+
+		if (!backend)
+			return;
 
 		CpuQuark_.reset (new QuarkComponent { "cpuload", "CpuLoadQuark.qml" });
 
@@ -78,7 +85,10 @@ namespace CpuLoad
 
 	QuarkComponents_t Plugin::GetComponents () const
 	{
-		return { CpuQuark_ };
+		if (CpuQuark_)
+			return { CpuQuark_ };
+		else
+			return {};
 	}
 }
 }
