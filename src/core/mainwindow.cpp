@@ -768,6 +768,12 @@ void LeechCraft::MainWindow::FillToolMenu ()
 
 void LeechCraft::MainWindow::InitializeShortcuts ()
 {
+#ifndef Q_OS_MAC
+	const auto sysModifier = Qt::CTRL;
+#else
+	const auto sysModifier = Qt::ALT;
+#endif
+
 	auto rootWM = Core::Instance ().GetRootWindowsManager ();
 	auto tm = rootWM->GetTabManager (this);
 
@@ -781,11 +787,11 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateRight ()));
-	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Tab), this),
+	connect (new QShortcut (QKeySequence (sysModifier + Qt::Key_Tab), this),
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateRight ()));
-	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::SHIFT + Qt::Key_Tab), this),
+	connect (new QShortcut (QKeySequence (sysModifier + Qt::SHIFT + Qt::Key_Tab), this),
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateLeft ()));
@@ -808,7 +814,7 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			Ui_.MainTabWidget_,
 			SLOT (handleNewTabShortcutActivated ()));
 
-	auto prevTabSC = new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Space), this);
+	auto prevTabSC = new QShortcut (QKeySequence (sysModifier + Qt::Key_Space), this);
 	sm->RegisterShortcut ("SwitchToPrevTab", ActionInfo (), prevTabSC);
 	connect (prevTabSC,
 			SIGNAL (activated ()),
