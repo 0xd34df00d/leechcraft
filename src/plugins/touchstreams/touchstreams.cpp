@@ -65,7 +65,6 @@ namespace TouchStreams
 				SIGNAL (cookiesChanged (QByteArray)),
 				this,
 				SLOT (saveCookies (QByteArray)));
-		new AuthCloseHandler (AuthMgr_);
 
 		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
 		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
