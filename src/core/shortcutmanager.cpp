@@ -165,8 +165,8 @@ namespace LeechCraft
 
 			QList<QStandardItem*> itemRow;
 			itemRow << first;
-			itemRow << new QStandardItem (sequences.value (0).toString ());
-			itemRow << new QStandardItem (sequences.value (1).toString ());
+			itemRow << new QStandardItem (sequences.value (0).toString (QKeySequence::NativeText));
+			itemRow << new QStandardItem (sequences.value (1).toString (QKeySequence::NativeText));
 			deEdit (itemRow);
 			parentRow.at (0)->appendRow (itemRow);
 
@@ -245,7 +245,7 @@ namespace LeechCraft
 
 		for (int i = 0; i < numSeqs; ++i)
 			Model_->itemFromIndex (index.sibling (index.row (), i + 1))->
-					setText (newSeqs.value (i).toString ());
+					setText (newSeqs.value (i).toString (QKeySequence::NativeText));
 	}
 
 	void ShortcutManager::accept ()
@@ -295,7 +295,7 @@ namespace LeechCraft
 				item->setData (seq, Roles::Sequence);
 				item->setData (QVariant (), Roles::OldSequence);
 
-				objectItem->child (j, 1)->setText (seq.toString ());
+				objectItem->child (j, 1)->setText (seq.toString (QKeySequence::NativeText));
 			}
 		}
 	}

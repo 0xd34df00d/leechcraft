@@ -149,11 +149,16 @@ namespace LeechCraft
 
 	void CoreInstanceObject::Init (ICoreProxy_ptr)
 	{
+#ifndef Q_OS_MAC
+		const auto sysModifier = Qt::CTRL;
+#else
+		const auto sysModifier = Qt::ALT;
+#endif
 		const auto iconMgr = CoreProxy ().GetIconThemeManager ();
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
 				{
 					tr ("Switch to previously active tab"),
-					Qt::CTRL + Qt::Key_Space,
+					sysModifier + Qt::Key_Space,
 					iconMgr->GetIcon ("edit-undo")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("FullScreen",
