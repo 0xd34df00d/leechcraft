@@ -207,6 +207,7 @@ namespace SvcAuth
 
 		InvokeQueues (Token_);
 		emit gotAuthKey (Token_);
+		emit justAuthenticated ();
 
 		return true;
 	}

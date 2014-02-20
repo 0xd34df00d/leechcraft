@@ -117,6 +117,7 @@ namespace SvcAuth
 		void gotAuthKey (const QString&);
 		void cookiesChanged (const QByteArray&);
 		void authCanceled ();
+		void justAuthenticated ();
 	};
 }
 }
