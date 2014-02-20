@@ -32,6 +32,9 @@
 #include <memory>
 #include <QtPlugin>
 
+class QRectF;
+class QDateTime;
+
 namespace LeechCraft
 {
 namespace Monocle
@@ -39,7 +42,8 @@ namespace Monocle
 	enum class AnnotationType
 	{
 		Text,
-		Highlight
+		Highlight,
+		Other
 	};
 
 	class IAnnotation
@@ -66,7 +70,15 @@ namespace Monocle
 		virtual bool IsInline () const = 0;
 	};
 
+	class IHighlightAnnotation : public IAnnotation
+	{
+	public:
+		virtual ~IHighlightAnnotation () {}
+	};
+
 	typedef std::shared_ptr<IAnnotation> IAnnotation_ptr;
+	typedef std::shared_ptr<ITextAnnotation> ITextAnnotation_ptr;
+	typedef std::shared_ptr<IHighlightAnnotation> IHighlightAnnotation_ptr;
 }
 }
 
@@ -74,3 +86,5 @@ Q_DECLARE_INTERFACE (LeechCraft::Monocle::IAnnotation,
 		"org.LeechCraft.Monocle.IAnnotation/1.0");
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::ITextAnnotation,
 		"org.LeechCraft.Monocle.ITextAnnotation/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHighlightAnnotation,
+		"org.LeechCraft.Monocle.IHighlightAnnotation/1.0");
