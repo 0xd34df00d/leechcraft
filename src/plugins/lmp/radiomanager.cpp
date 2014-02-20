@@ -209,11 +209,15 @@ namespace LMP
 		}
 
 		QString param;
-		switch (item->data (Media::RadioItemRole::ItemType).toInt ())
+
+		const auto intRadioType = item->data (Media::RadioItemRole::ItemType).toInt ();
+		switch (static_cast<Media::RadioType> (intRadioType))
 		{
 		case Media::RadioType::None:
 			return;
 		case Media::RadioType::Predefined:
+		case Media::RadioType::CustomAddableStreams:
+		case Media::RadioType::RadioAction:
 			break;
 		case Media::RadioType::SimilarArtists:
 			param = QInputDialog::getText (0,
