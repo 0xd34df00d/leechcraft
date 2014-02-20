@@ -18,6 +18,7 @@ set (SRCS
 	document.cpp
 	links.cpp
 	fields.cpp
+	annotations.cpp
 	)
 
 set (PDF_RESOURCES pdfresources.qrc)
