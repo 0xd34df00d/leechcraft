@@ -84,6 +84,11 @@ namespace TouchStreams
 				SLOT (refetchAlbums ()));
 
 		AuthMgr_->ManageQueue (&RequestQueue_);
+
+		connect (AuthMgr_,
+				SIGNAL (justAuthenticated ()),
+				this,
+				SLOT (refetchAlbums ()));
 	}
 
 	AlbumsManager::AlbumsManager (qlonglong id, const QVariant& albums, const QVariant& tracks,
@@ -242,6 +247,17 @@ namespace TouchStreams
 
 	void AlbumsManager::refetchAlbums ()
 	{
+		if (!AuthMgr_->HadAuthentication ())
+		{
+			auto item = new QStandardItem (tr ("Authenticate"));
+			item->setEditable (false);
+			item->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("emblem-locked"));
+			item->setData ("auth", Media::RadioItemRole::RadioID);
+			item->setData (Media::RadioType::RadioAction, Media::RadioItemRole::ItemType);
+			AlbumsRootItem_->appendRow (item);
+			return;
+		}
+
 		RequestQueue_.append ({
 				[this] (const QString& key) -> void
 				{

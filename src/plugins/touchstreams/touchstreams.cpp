@@ -29,6 +29,7 @@
 
 #include "touchstreams.h"
 #include <QIcon>
+#include <QStandardItem>
 #include <util/queuemanager.h>
 #include <util/util.h>
 #include <util/svcauth/vkauthmanager.h>
@@ -65,10 +66,6 @@ namespace TouchStreams
 				this,
 				SLOT (saveCookies (QByteArray)));
 		new AuthCloseHandler (AuthMgr_);
-
-		const bool silent = XmlSettingsManager::Instance ()
-				.Property ("AuthSilentMode", false).toBool ();
-		AuthMgr_->SetSilentMode (silent);
 
 		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
 		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
@@ -142,8 +139,14 @@ namespace TouchStreams
 		return { AlbumsMgr_->GetRootItem (), FriendsMgr_->GetRootItem () };
 	}
 
-	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem*, const QString&)
+	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem *item, const QString&)
 	{
+		if (item->data (Media::RadioItemRole::RadioID).toString () == "auth")
+		{
+			AuthMgr_->clearAuthData ();
+			AuthMgr_->reauth ();
+		}
+
 		return {};
 	}
 
@@ -160,7 +163,6 @@ namespace TouchStreams
 			AuthMgr_->SetSilentMode (false);
 			AuthMgr_->clearAuthData ();
 			AuthMgr_->reauth ();
-			XmlSettingsManager::Instance ().setProperty ("AuthSilentMode", false);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
