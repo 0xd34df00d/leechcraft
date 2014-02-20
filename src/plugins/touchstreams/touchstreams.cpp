@@ -69,11 +69,6 @@ namespace TouchStreams
 
 		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
 		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
-
-		connect (XSD_.get (),
-				SIGNAL (pushButtonClicked (QString)),
-				this,
-				SLOT (handlePushButton (QString)));
 	}
 
 	void Plugin::SecondInit ()
@@ -154,20 +149,6 @@ namespace TouchStreams
 	{
 		AlbumsMgr_->RefreshItems (items);
 		FriendsMgr_->RefreshItems (items);
-	}
-
-	void Plugin::handlePushButton (const QString& name)
-	{
-		if (name == "AllowRequestsTriggered")
-		{
-			AuthMgr_->SetSilentMode (false);
-			AuthMgr_->clearAuthData ();
-			AuthMgr_->reauth ();
-		}
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "unknown name"
-					<< name;
 	}
 
 	void Plugin::saveCookies (const QByteArray& cookies)

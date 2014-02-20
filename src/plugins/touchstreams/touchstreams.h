@@ -91,7 +91,6 @@ namespace TouchStreams
 		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
 		void RefreshItems (const QList<QStandardItem*>&);
 	private slots:
-		void handlePushButton (const QString&);
 		void saveCookies (const QByteArray&);
 	};
 }
