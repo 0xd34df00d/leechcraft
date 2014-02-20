@@ -51,6 +51,8 @@ namespace Monocle
 
 		virtual QDateTime GetDate () const = 0;
 
+		virtual QRectF GetBoundary () const = 0;
+
 		virtual AnnotationType GetAnnotationType () const = 0;
 	};
 
