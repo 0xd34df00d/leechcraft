@@ -80,6 +80,16 @@ namespace SvcAuth
 				SLOT (execScheduledRequest ()));
 	}
 
+	bool VkAuthManager::IsAuthenticated () const
+	{
+		return !Token_.isEmpty () && ReceivedAt_.secsTo (QDateTime::currentDateTime ()) < ValidFor_;
+	}
+
+	bool VkAuthManager::HadAuthentication () const
+	{
+		return !Token_.isEmpty () || !Cookies_->allCookies ().isEmpty ();
+	}
+
 	void VkAuthManager::GetAuthKey ()
 	{
 		if (SilentMode_)
@@ -89,8 +99,7 @@ namespace SvcAuth
 			return;
 		}
 
-		if (Token_.isEmpty () ||
-				ReceivedAt_.secsTo (QDateTime::currentDateTime ()) > ValidFor_)
+		if (!IsAuthenticated ())
 		{
 			RequestAuthKey ();
 			return;

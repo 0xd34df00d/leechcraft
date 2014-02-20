@@ -87,6 +87,9 @@ namespace SvcAuth
 				const QStringList& scope, const QByteArray& cookies,
 				ICoreProxy_ptr, QueueManager* = nullptr, QObject* = nullptr);
 
+		bool IsAuthenticated () const;
+		bool HadAuthentication () const;
+
 		void GetAuthKey ();
 
 		void ManageQueue (RequestQueue_ptr);
