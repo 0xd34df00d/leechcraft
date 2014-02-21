@@ -98,6 +98,8 @@ namespace PDF
 		HighlightAnnotation (Poppler::HighlightAnnotation*);
 
 		AnnotationType GetAnnotationType () const;
+
+		QList<QPolygonF> GetPolygons () const;
 	};
 }
 }

@@ -34,6 +34,7 @@
 
 class QRectF;
 class QDateTime;
+class QPolygonF;
 
 namespace LeechCraft
 {
@@ -74,6 +75,8 @@ namespace Monocle
 	{
 	public:
 		virtual ~IHighlightAnnotation () {}
+
+		virtual QList<QPolygonF> GetPolygons () const = 0;
 	};
 
 	typedef std::shared_ptr<IAnnotation> IAnnotation_ptr;

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "annotations.h"
+#include <QPolygonF>
 #include <poppler-annotation.h>
 
 namespace LeechCraft
@@ -69,12 +70,22 @@ namespace PDF
 	: AnnotationBase { ann }
 	, HighAnn_ { ann }
 	{
-		const auto& quads = HighAnn_->highlightQuads ();
 	}
 
 	AnnotationType HighlightAnnotation::GetAnnotationType () const
 	{
 		return AnnotationType::Highlight;
+	}
+
+	QList<QPolygonF> HighlightAnnotation::GetPolygons () const
+	{
+		QList<QPolygonF> result;
+		for (const auto& quad : HighAnn_->highlightQuads ())
+		{
+			const auto pts = quad.points;
+			result.append ({ { pts [0], pts [1], pts [2], pts [3] } });
+		}
+		return result;
 	}
 }
 }
