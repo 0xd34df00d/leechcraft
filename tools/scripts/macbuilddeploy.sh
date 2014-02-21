@@ -32,4 +32,8 @@ for GST in $TARGET/leechcraft.app/Contents/PlugIns/gstreamer/lib*.so; do
 	done
 done
 sudo macdeployqt $TARGET/leechcraft.app -verbose=2
+
+cd $BASEDIR
+cat Makefile.in | sed s/LC_VERSION/$(git describe)/ > Makefile
+make
 #DYLD_PRINT_LIBRARIES_POST_LAUNCH=1 $TARGET/leechcraft.app/Contents/MacOs/leechcraft
