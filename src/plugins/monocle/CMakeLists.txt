@@ -53,6 +53,8 @@ set (SRCS
 	textsearchhandler.cpp
 	formmanager.cpp
 	arbitraryrotationwidget.cpp
+	linkitem.cpp
+	linksmanager.cpp
 	)
 set (FORMS
 	documenttab.ui
