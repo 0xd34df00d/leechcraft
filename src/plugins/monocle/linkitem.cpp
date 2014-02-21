@@ -30,6 +30,7 @@
 #include "linkitem.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
+#include <QPen>
 
 namespace LeechCraft
 {
@@ -40,6 +41,8 @@ namespace Monocle
 	, Link_ { link }
 	{
 		setCursor (Qt::PointingHandCursor);
+		setPen (Qt::NoPen);
+		setFlag (QGraphicsItem::ItemHasNoContents);
 	}
 
 	void LinkItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
