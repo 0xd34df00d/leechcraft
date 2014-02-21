@@ -246,10 +246,14 @@ namespace Monocle
 
 	bool PageGraphicsItem::IsDisplayed () const
 	{
+		const auto& thisMapped = mapToScene (boundingRect ()).boundingRect ();
+
 		for (auto view : scene ()->views ())
 		{
-			const auto& items = view->items (view->viewport ()->rect ());
-			if (std::find (items.begin (), items.end (), this) != items.end ())
+			const auto& rect = view->viewport ()->rect ();
+			const auto& mapped = view->mapToScene (rect).boundingRect ();
+
+			if (mapped.intersects (thisMapped))
 				return true;
 		}
 
