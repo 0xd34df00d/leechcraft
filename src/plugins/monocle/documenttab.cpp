@@ -79,6 +79,7 @@
 #include "textsearchhandler.h"
 #include "formmanager.h"
 #include "arbitraryrotationwidget.h"
+#include "linksmanager.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -112,6 +113,7 @@ namespace Monocle
 	, LayoutManager_ (0)
 	, SearchHandler_ (0)
 	, FormManager_ (0)
+	, LinksManager_ (0)
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
 	, TOCWidget_ (new TOCWidget ())
 	, BMWidget_ (new BookmarksWidget (this))
@@ -131,7 +133,9 @@ namespace Monocle
 				SIGNAL (navigateRequested (QString, int, double, double)),
 				this,
 				SLOT (handleNavigateRequested (QString, int, double, double)));
+
 		FormManager_ = new FormManager (Ui_.PagesView_, this);
+		LinksManager_ = new LinksManager (Ui_.PagesView_, this);
 
 		FindDialog_ = new FindDialog (SearchHandler_, Ui_.PagesView_);
 		FindDialog_->hide ();
@@ -406,6 +410,7 @@ namespace Monocle
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
 		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
 		FormManager_->HandleDoc (CurrentDoc_, Pages_);
+		LinksManager_->HandleDoc (CurrentDoc_, Pages_);
 
 		recoverDocState (state);
 		Relayout ();
