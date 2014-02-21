@@ -38,6 +38,7 @@
 #include <poppler-version.h>
 #include "links.h"
 #include "fields.h"
+#include "annotations.h"
 
 namespace LeechCraft
 {
@@ -146,9 +147,17 @@ namespace PDF
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
 		if (!page)
-			return QList<IAnnotation_ptr> ();
+			return {};
 
-		return QList<IAnnotation_ptr> ();
+		QList<IAnnotation_ptr> annotations;
+		for (const auto ann : page->annotations ())
+			if (const auto wrapper = MakeAnnotation (ann))
+				annotations << wrapper;
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unhandled"
+						<< ann->subType ();
+		return annotations;
 	}
 
 	IFormFields_t Document::GetFormFields (int pageNum)
