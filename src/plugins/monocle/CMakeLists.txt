@@ -53,6 +53,8 @@ set (SRCS
 	textsearchhandler.cpp
 	formmanager.cpp
 	arbitraryrotationwidget.cpp
+	annmanager.cpp
+	annitem.cpp
 	linkitem.cpp
 	linksmanager.cpp
 	)
