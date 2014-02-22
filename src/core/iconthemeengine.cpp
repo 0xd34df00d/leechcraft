@@ -45,8 +45,6 @@
 
 using namespace LeechCraft;
 
-const int MaxIconSize = 32;
-
 IconThemeEngine::IconThemeEngine ()
 {
 	QTimer *timer = new QTimer (this);
