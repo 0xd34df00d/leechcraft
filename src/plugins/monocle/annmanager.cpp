@@ -30,6 +30,7 @@
 #include "annmanager.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QStandardItemModel>
 #include <QtDebug>
 #include "interfaces/monocle/isupportannotations.h"
 #include "interfaces/monocle/iannotation.h"
@@ -44,16 +45,33 @@ namespace Monocle
 	: QObject { parent }
 	, View_ { view }
 	, Scene_ { view->scene () }
+	, AnnModel_ { new QStandardItemModel { this } }
 	{
 	}
 
 	void AnnManager::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
 	{
+		if (const auto rc = AnnModel_->rowCount ())
+			AnnModel_->removeRows (0, rc);
+
 		const auto isa = qobject_cast<ISupportAnnotations*> (doc->GetQObject ());
 		if (!isa)
 			return;
 
 		for (auto page : pages)
+		{
+			QStandardItem *pageItem = nullptr;
+			auto createItem = [&pageItem, page, this] () -> void
+			{
+				if (pageItem)
+					return;
+
+				pageItem = new QStandardItem (tr ("Page %1")
+							.arg (page->GetPageNum () + 1));
+				pageItem->setEditable (false);
+				AnnModel_->appendRow (pageItem);
+			};
+
 			for (const auto& ann : isa->GetAnnotations (page->GetPageNum ()))
 			{
 				const auto item = MakeItem (ann, page);
@@ -75,7 +93,25 @@ namespace Monocle
 
 				page->RegisterChildRect (item->GetItem (), targetRect,
 						[item] (const QRectF& rect) { item->UpdateRect (rect); });
+
+				auto annItem = new QStandardItem (ann->GetText ());
+				annItem->setToolTip (ann->GetText ());
+				annItem->setEditable (false);
+
+				auto subItem = new QStandardItem (ann->GetText ());
+				subItem->setToolTip (ann->GetText ());
+				subItem->setEditable (false);
+				annItem->appendRow (subItem);
+
+				createItem ();
+				pageItem->appendRow (annItem);
 			}
+		}
+	}
+
+	QAbstractItemModel* AnnManager::GetModel () const
+	{
+		return AnnModel_;
 	}
 }
 }

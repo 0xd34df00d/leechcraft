@@ -32,6 +32,8 @@
 #include <QObject>
 #include "interfaces/monocle/idocument.h"
 
+class QAbstractItemModel;
+class QStandardItemModel;
 class QGraphicsScene;
 class QGraphicsView;
 
@@ -47,10 +49,14 @@ namespace Monocle
 
 		QGraphicsView * const View_;
 		QGraphicsScene * const Scene_;
+
+		QStandardItemModel * const AnnModel_;
 	public:
 		AnnManager (QGraphicsView*, QObject* = 0);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+
+		QAbstractItemModel* GetModel () const;
 	};
 }
 }
