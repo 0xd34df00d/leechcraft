@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
 #include "interfaces/monocle/iannotation.h"
@@ -39,13 +40,17 @@ namespace Monocle
 {
 	class AnnBaseItem
 	{
+	public:
+		typedef std::function<void (IAnnotation_ptr)> Handler_f;
 	protected:
 		const IAnnotation_ptr BaseAnn_;
+		Handler_f Handler_;
 	public:
 		AnnBaseItem (const IAnnotation_ptr&);
 
 		QGraphicsItem* GetItem ();
 
+		void SetHandler (const Handler_f&);
 
 		virtual void UpdateRect (const QRectF& rect) = 0;
 	};
@@ -71,10 +76,9 @@ namespace Monocle
 
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
 		{
-			if ((event->pos () - PressedPos_).manhattanLength () < 4)
-			{
-				// TODO
-			}
+			if (Handler_ &&
+					(event->pos () - PressedPos_).manhattanLength () < 4)
+				Handler_ (BaseAnn_);
 		}
 	};
 

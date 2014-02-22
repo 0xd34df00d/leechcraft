@@ -47,6 +47,11 @@ namespace Monocle
 		return dynamic_cast<QGraphicsItem*> (this);
 	}
 
+	void AnnBaseItem::SetHandler (const Handler_f& handler)
+	{
+		Handler_ = handler;
+	}
+
 	AnnBaseItem* MakeItem (const IAnnotation_ptr& ann, QGraphicsItem *parent)
 	{
 		switch (ann->GetAnnotationType ())
