@@ -42,15 +42,10 @@ namespace Monocle
 	protected:
 		const IAnnotation_ptr BaseAnn_;
 	public:
-		AnnBaseItem (const IAnnotation_ptr& ann)
-		: BaseAnn_ { ann }
-		{
-		}
+		AnnBaseItem (const IAnnotation_ptr&);
 
-		QGraphicsItem* GetItem ()
-		{
-			return dynamic_cast<QGraphicsItem*> (this);
-		}
+		QGraphicsItem* GetItem ();
+
 
 		virtual void UpdateRect (const QRectF& rect) = 0;
 	};

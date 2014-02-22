@@ -37,6 +37,16 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	AnnBaseItem::AnnBaseItem (const IAnnotation_ptr& ann)
+	: BaseAnn_ { ann }
+	{
+	}
+
+	QGraphicsItem* AnnBaseItem::GetItem ()
+	{
+		return dynamic_cast<QGraphicsItem*> (this);
+	}
+
 	AnnBaseItem* MakeItem (const IAnnotation_ptr& ann, QGraphicsItem *parent)
 	{
 		switch (ann->GetAnnotationType ())
