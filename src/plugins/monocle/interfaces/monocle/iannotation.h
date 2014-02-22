@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QtPlugin>
+#include <QMetaType>
 
 class QRectF;
 class QDateTime;
@@ -91,3 +92,5 @@ Q_DECLARE_INTERFACE (LeechCraft::Monocle::ITextAnnotation,
 		"org.LeechCraft.Monocle.ITextAnnotation/1.0");
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHighlightAnnotation,
 		"org.LeechCraft.Monocle.IHighlightAnnotation/1.0");
+
+Q_DECLARE_METATYPE (LeechCraft::Monocle::IAnnotation_ptr)
