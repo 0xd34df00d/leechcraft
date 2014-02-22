@@ -39,7 +39,7 @@ namespace LeechCraft
 namespace Blasq
 {
 	class AccountsManager;
-	class UploadItem;
+	struct UploadItem;
 
 	class DataFilterUploader : public QObject
 	{
