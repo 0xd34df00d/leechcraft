@@ -55,6 +55,7 @@ set (SRCS
 	arbitraryrotationwidget.cpp
 	annmanager.cpp
 	annitem.cpp
+	anntreedelegate.cpp
 	linkitem.cpp
 	linksmanager.cpp
 	)
