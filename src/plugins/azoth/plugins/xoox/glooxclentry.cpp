@@ -213,13 +213,15 @@ namespace Xoox
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
-		ICLEntry::Features result = FSupportsAuth |
-				FSupportsGrouping;
-		if (Account_->GetClientConnection ()->
-				GetClient ()->rosterManager().getRosterBareJids ().contains (GetJID ()))
-			result |= FSupportsRenames | FPermanentEntry;
-		else
-			result |= FSessionEntry;
+		ICLEntry::Features result = FSupportsAuth | FSupportsGrouping;
+
+		auto& rm = Account_->GetClientConnection ()->GetClient ()->rosterManager ();
+		const bool isPerm = ODS_ || rm.getRosterBareJids ().contains (GetJID ());
+
+		result |= isPerm ?
+				FSupportsRenames | FPermanentEntry :
+				FSessionEntry;
+
 		return result;
 	}
 
