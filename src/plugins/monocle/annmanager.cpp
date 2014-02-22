@@ -54,6 +54,8 @@ namespace Monocle
 		if (const auto rc = AnnModel_->rowCount ())
 			AnnModel_->removeRows (0, rc);
 
+		AnnHash_.clear ();
+
 		const auto isa = qobject_cast<ISupportAnnotations*> (doc->GetQObject ());
 		if (!isa)
 			return;
@@ -68,6 +70,7 @@ namespace Monocle
 
 				pageItem = new QStandardItem (tr ("Page %1")
 							.arg (page->GetPageNum () + 1));
+				pageItem->setData (ItemTypes::PageItem, Role::ItemType);
 				pageItem->setEditable (false);
 				AnnModel_->appendRow (pageItem);
 			};
@@ -83,6 +86,12 @@ namespace Monocle
 					continue;
 				}
 
+				item->SetHandler ([this] (const IAnnotation_ptr& ann) -> void
+						{
+							if (const auto item = AnnHash_ [ann])
+								emit annotationSelected (item->index ());
+						});
+
 				const auto& docRect = page->MapToDoc (page->boundingRect ());
 				const auto& rect = ann->GetBoundary ();
 
@@ -97,12 +106,17 @@ namespace Monocle
 				auto annItem = new QStandardItem (ann->GetText ());
 				annItem->setToolTip (ann->GetText ());
 				annItem->setEditable (false);
+				annItem->setData (ItemTypes::AnnHeaderItem, Role::ItemType);
 
 				auto subItem = new QStandardItem (ann->GetText ());
 				subItem->setToolTip (ann->GetText ());
 				subItem->setEditable (false);
-				annItem->appendRow (subItem);
+				subItem->setData (QVariant::fromValue (ann), Role::Annotation);
+				subItem->setData (ItemTypes::AnnItem, Role::ItemType);
 
+				AnnHash_ [ann] = subItem;
+
+				annItem->appendRow (subItem);
 				createItem ();
 				pageItem->appendRow (annItem);
 			}

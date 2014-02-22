@@ -30,10 +30,14 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
 #include "interfaces/monocle/idocument.h"
+#include "interfaces/monocle/iannotation.h"
 
 class QAbstractItemModel;
+class QModelIndex;
 class QStandardItemModel;
+class QStandardItem;
 class QGraphicsScene;
 class QGraphicsView;
 
@@ -51,12 +55,28 @@ namespace Monocle
 		QGraphicsScene * const Scene_;
 
 		QStandardItemModel * const AnnModel_;
+		QMap<IAnnotation_ptr, QStandardItem*> AnnHash_;
 	public:
+		enum Role
+		{
+			ItemType = Qt::UserRole + 1,
+			Annotation
+		};
+
+		enum ItemTypes
+		{
+			PageItem,
+			AnnHeaderItem,
+			AnnItem
+		};
+
 		AnnManager (QGraphicsView*, QObject* = 0);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 
 		QAbstractItemModel* GetModel () const;
+	signals:
+		void annotationSelected (const QModelIndex&);
 	};
 }
 }
