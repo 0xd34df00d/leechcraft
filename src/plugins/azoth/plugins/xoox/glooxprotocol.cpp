@@ -61,7 +61,7 @@ namespace Xoox
 
 	GlooxProtocol::~GlooxProtocol ()
 	{
-		Q_FOREACH (auto acc, Accounts_)
+		for (auto acc : Accounts_)
 		{
 			acc->Release ();
 			emit accountRemoved (acc);
