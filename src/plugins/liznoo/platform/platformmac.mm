@@ -218,6 +218,13 @@ namespace Liznoo
 		CFMutableDictionaryRef properties = nullptr;
 		IORegistryEntryCreateCFProperties (entry, &properties, nullptr, 0);
 
+		if (!properties)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get properties";
+			return;
+		}
+
 		/*
 		const void **keys = new const void* [CFDictionaryGetCount (properties)];
 		CFDictionaryGetKeysAndValues (properties, keys, nullptr);
