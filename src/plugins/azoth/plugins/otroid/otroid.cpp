@@ -274,7 +274,8 @@ namespace OTRoid
 			{
 				static_cast<Plugin*> (opData)->InjectMsg (QString::fromUtf8 (accountname),
 						QString::fromUtf8 (username),
-						QString::fromUtf8 (msg), false, IMessage::DIn);
+						QString::fromUtf8 (msg), false, IMessage::DIn,
+						IMessage::MTServiceMessage);
 				return 0;
 			};
 #endif
