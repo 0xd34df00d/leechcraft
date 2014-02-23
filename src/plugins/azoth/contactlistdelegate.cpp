@@ -202,7 +202,12 @@ namespace Azoth
 				sourceIndex = proxyModel->mapToSource (sourceIndex);
 			}
 
-			return { visibleCount, model->rowCount (sourceIndex) };
+			if (model->rowCount (sourceIndex) != visibleCount)
+				return { visibleCount, model->rowCount (sourceIndex) };
+
+			const auto numOnline = index.data (Core::CLRNumOnline).toInt ();
+
+			return { numOnline, visibleCount };
 		}
 	}
 
