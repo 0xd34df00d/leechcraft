@@ -1455,7 +1455,7 @@ namespace Azoth
 	void Core::RebuildTooltip (ICLEntry *entry)
 	{
 		const QString& tip = MakeTooltipString (entry);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			item->setToolTip (tip);
 	}
 
@@ -1524,7 +1524,7 @@ namespace Azoth
 					Qt::QueuedConnection,
 					Q_ARG (QPointer<QObject>, entry->GetQObject ()));
 
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 		{
 			ItemIconManager_->SetIcon (item, icon.get ());
 			RecalculateOnlineForCat (item->parent ());
@@ -1563,13 +1563,13 @@ namespace Azoth
 		const QString& filename = XmlSettingsManager::Instance ()
 				.property ("StatusIcons").toString () + "/file";
 		Util::QIODevice_ptr fileIcon = ResourceLoaders_ [RLTStatusIconLoader]->GetIconDevice (filename, true);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			ItemIconManager_->SetIcon (item, fileIcon.get ());
 	}
 
 	void Core::IncreaseUnreadCount (ICLEntry* entry, int amount)
 	{
-		for (auto item : Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			{
 				int prevValue = item->data (CLRUnreadMsgCount).toInt ();
 				item->setData (std::max (0, prevValue + amount), CLRUnreadMsgCount);
@@ -2270,7 +2270,7 @@ namespace Azoth
 						.property ("OpenTabsForAutojoin").toBool ();
 				if (open || !mucEntry->IsAutojoined ())
 				{
-					QStandardItem *item = Entry2Items_ [entry].first ();
+					auto item = Entry2Items_.value (entry).first ();
 					OpenChat (CLModel_->indexFromItem (item));
 				}
 			}
@@ -2299,7 +2299,7 @@ namespace Azoth
 
 			ChatTabsManager_->HandleEntryRemoved (entry);
 
-			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			for (auto item : Entry2Items_.value (entry))
 				RemoveCLItem (item);
 
 			Entry2Items_.remove (entry);
@@ -2433,7 +2433,7 @@ namespace Azoth
 			return;
 		}
 
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			item->setText (newName);
 
 		if (entry->Variants ().size ())
@@ -2457,7 +2457,7 @@ namespace Azoth
 		if (!Entry2Items_.contains (entry))
 			return;
 
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 		{
 			const QString& oldCat = item->data (CLREntryCategory).toString ();
 			if (newGroups.removeAll (oldCat))
@@ -2466,15 +2466,12 @@ namespace Azoth
 			RemoveCLItem (item);
 		}
 
-		if (newGroups.isEmpty () && Entry2Items_ [entry].size ())
+		if (newGroups.isEmpty () && !Entry2Items_.value (entry).isEmpty ())
 			return;
 
-		QStandardItem *accItem =
-				GetAccountItem (entry->GetParentAccount ());
+		auto accItem = GetAccountItem (entry->GetParentAccount ());
 
-		QList<QStandardItem*> catItems =
-				GetCategoriesItems (newGroups, accItem);
-		Q_FOREACH (QStandardItem *catItem, catItems)
+		for (auto catItem : GetCategoriesItems (newGroups, accItem))
 			AddEntryTo (entry, catItem);
 
 		HandleStatusChanged (entry->GetStatus (), entry, QString ());
@@ -2497,7 +2494,7 @@ namespace Azoth
 			return;
 
 		const QString& name = mucPerms->GetAffName (entryObj);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			item->setData (name, CLRAffiliation);
 
 		if (rebuildTooltip)
@@ -2630,7 +2627,8 @@ namespace Azoth
 				parentCL :
 				other;
 		BuildNotification (e, entry);
-		QStandardItem *someItem = Entry2Items_ [entry].value (0);
+
+		auto someItem = Entry2Items_.value (entry).value (0);
 		const int count = someItem ?
 				someItem->data (CLRUnreadMsgCount).toInt () :
 				0;
@@ -3011,7 +3009,7 @@ namespace Azoth
 			if (!State2IconCache_.contains (state))
 				State2IconCache_ [state] = GetIconPathForState (state);
 
-			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			for (auto item : Entry2Items_.value (entry))
 			{
 				Util::QIODevice_ptr dev = State2IconCache_ [state];
 				ItemIconManager_->SetIcon (item, dev.get ());
@@ -3051,7 +3049,7 @@ namespace Azoth
 			return;
 		}
 
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			item->setText (entry->GetEntryName ());
 	}
 
@@ -3060,7 +3058,7 @@ namespace Azoth
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto& entryID = entry->GetEntryID ();
 
-		for (QStandardItem *item : Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 		{
 			item->setData (0, CLRUnreadMsgCount);
 			RecalculateUnreadForParents (item);
