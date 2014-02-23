@@ -2183,9 +2183,8 @@ namespace Azoth
 
 	void Core::handleAccountRemoved (QObject *account)
 	{
-		IAccount *accFace =
-				qobject_cast<IAccount*> (account);
-				if (!accFace)
+		auto accFace = qobject_cast<IAccount*> (account);
+		if (!accFace)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "account doesn't implement IAccount*"
@@ -2211,7 +2210,7 @@ namespace Azoth
 			}
 		}
 
-		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
+		for (auto entry : Entry2Items_.keys ())
 			if (entry->GetParentAccount () == account)
 				Entry2Items_.remove (entry);
 
