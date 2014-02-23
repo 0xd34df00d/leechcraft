@@ -27,34 +27,41 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/structures.h>
-
-class QUrl;
+#include "linksmanager.h"
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include "linkitem.h"
+#include "pagegraphicsitem.h"
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace Monocle
 {
-	class AccountsManager;
-	struct UploadItem;
-
-	class DataFilterUploader : public QObject
+	LinksManager::LinksManager (QGraphicsView *view, QObject *parent)
+	: QObject { parent }
+	, View_ { view }
+	, Scene_ { view->scene () }
 	{
-		Q_OBJECT
+	}
 
-		AccountsManager * const AccMgr_;
-		const Entity Entity_;
-		QString UploadFileName_;
-	public:
-		DataFilterUploader (const Entity&, AccountsManager*, QObject* = nullptr);
-	private:
-		void SelectAcc ();
-		void UploadToAcc (const QByteArray&);
-	private slots:
-		void checkItemUploaded (const UploadItem&, const QUrl&);
-	};
+	void LinksManager::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
+	{
+		for (auto page : pages)
+			for (const auto& link : doc->GetPageLinks (page->GetPageNum ()))
+			{
+				auto item = new LinkItem (link, page);
+
+				const auto& docRect = page->MapToDoc (page->boundingRect ());
+				const auto& rect = link->GetArea ();
+
+				QRectF targetRect (rect.x () * docRect.width (),
+						rect.y () * docRect.height (),
+						rect.width () * docRect.width (),
+						rect.height () * docRect.height ());
+
+				page->RegisterChildRect (item, targetRect,
+						[item] (const QRectF& rect) { item->setRect (rect); });
+			}
+	}
 }
 }

@@ -51,8 +51,6 @@ namespace Monocle
 	: QGraphicsPixmapItem (parent)
 	, Doc_ (doc)
 	, PageNum_ (page)
-	, IsHoverLink_ (false)
-	, Links_ (Doc_->GetPageLinks (PageNum_))
 	, XScale_ (1)
 	, YScale_ (1)
 	, Invalid_ (true)
@@ -60,9 +58,7 @@ namespace Monocle
 	{
 		setTransformationMode (Qt::SmoothTransformation);
 		setPixmap (QPixmap (Doc_->GetPageSize (page)));
-
-		if (!Links_.isEmpty ())
-			setAcceptHoverEvents (true);
+		setAcceptHoverEvents (true);
 	}
 
 	PageGraphicsItem::~PageGraphicsItem ()
@@ -190,7 +186,6 @@ namespace Monocle
 				const auto& img = Doc_->RenderPage (PageNum_, XScale_, YScale_);
 				setPixmap (QPixmap::fromImage (img));
 			}
-			LayoutLinks ();
 			Invalid_ = false;
 
 			Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
@@ -200,50 +195,14 @@ namespace Monocle
 		Core::Instance ().GetPixmapCacheManager ()->PixmapPainted (this);
 	}
 
-	void PageGraphicsItem::hoverMoveEvent (QGraphicsSceneHoverEvent *event)
-	{
-		if (!IsHoverLink_ && FindLink (event->pos ()))
-		{
-			QApplication::setOverrideCursor (QCursor (Qt::PointingHandCursor));
-			IsHoverLink_ = true;
-		}
-		else if (IsHoverLink_ && !FindLink (event->pos ()))
-		{
-			QApplication::restoreOverrideCursor ();
-			IsHoverLink_ = false;
-		}
-
-		QGraphicsItem::hoverMoveEvent (event);
-	}
-
-	void PageGraphicsItem::hoverLeaveEvent (QGraphicsSceneHoverEvent *event)
-	{
-		if (IsHoverLink_)
-			QApplication::restoreOverrideCursor ();
-
-		QGraphicsItem::hoverLeaveEvent (event);
-	}
-
 	void PageGraphicsItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
 	{
-		PressedLink_ = FindLink (event->pos ());
-		if (PressedLink_ || ReleaseHandler_)
-			return;
-
-		QGraphicsItem::mousePressEvent (event);
+		if (!ReleaseHandler_)
+			QGraphicsItem::mousePressEvent (event);
 	}
 
 	void PageGraphicsItem::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
 	{
-		auto relLink = FindLink (event->pos ());
-		const bool handle = relLink && relLink == PressedLink_;
-		PressedLink_ = ILink_ptr ();
-		if (handle)
-		{
-			relLink->Execute ();
-			return;
-		}
-
 		QGraphicsItem::mouseReleaseEvent (event);
 		if (ReleaseHandler_)
 			ReleaseHandler_ (PageNum_, event->pos ());
@@ -285,36 +244,16 @@ namespace Monocle
 		rotateMenu.exec (event->screenPos ());
 	}
 
-	void PageGraphicsItem::LayoutLinks ()
-	{
-		Rect2Link_.clear ();
-
-		const auto& rect = boundingRect ();
-		const auto width = rect.width ();
-		const auto height = rect.height ();
-		for (auto link : Links_)
-		{
-			const auto& area = link->GetArea ();
-			const QRect linkRect (width * area.left (), height * area.top (),
-					width * area.width (), height * area.height ());
-			Rect2Link_ << qMakePair (linkRect, link);
-		}
-	}
-
-	ILink_ptr PageGraphicsItem::FindLink (const QPointF& point)
-	{
-		for (const auto& pair : Rect2Link_)
-			if (pair.first.contains (point.toPoint ()))
-				return pair.second;
-		return ILink_ptr ();
-	}
-
 	bool PageGraphicsItem::IsDisplayed () const
 	{
+		const auto& thisMapped = mapToScene (boundingRect ()).boundingRect ();
+
 		for (auto view : scene ()->views ())
 		{
-			const auto& items = view->items (view->viewport ()->rect ());
-			if (std::find (items.begin (), items.end (), this) != items.end ())
+			const auto& rect = view->viewport ()->rect ();
+			const auto& mapped = view->mapToScene (rect).boundingRect ();
+
+			if (mapped.intersects (thisMapped))
 				return true;
 		}
 

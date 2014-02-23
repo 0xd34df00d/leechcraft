@@ -27,34 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/structures.h>
-
-class QUrl;
+#include "linkitem.h"
+#include <QGraphicsSceneMouseEvent>
+#include <QCursor>
+#include <QPen>
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace Monocle
 {
-	class AccountsManager;
-	struct UploadItem;
-
-	class DataFilterUploader : public QObject
+	LinkItem::LinkItem (const ILink_ptr& link, QGraphicsItem *parent)
+	: QGraphicsRectItem { parent }
+	, Link_ { link }
 	{
-		Q_OBJECT
+		setCursor (Qt::PointingHandCursor);
+		setPen (Qt::NoPen);
+		setFlag (QGraphicsItem::ItemHasNoContents);
+	}
 
-		AccountsManager * const AccMgr_;
-		const Entity Entity_;
-		QString UploadFileName_;
-	public:
-		DataFilterUploader (const Entity&, AccountsManager*, QObject* = nullptr);
-	private:
-		void SelectAcc ();
-		void UploadToAcc (const QByteArray&);
-	private slots:
-		void checkItemUploaded (const UploadItem&, const QUrl&);
-	};
+	void LinkItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
+	{
+		PressedPos_ = event->pos ();
+	}
+
+	void LinkItem::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
+	{
+		if ((event->pos () - PressedPos_).manhattanLength () < 4)
+			Link_->Execute ();
+	}
 }
 }

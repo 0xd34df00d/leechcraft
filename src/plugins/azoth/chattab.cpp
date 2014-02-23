@@ -924,17 +924,20 @@ namespace Azoth
 		}
 
 		auto entry = GetEntry<ICLEntry> ();
+
+		const bool isActiveChat = Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry);
+
 		bool shouldReformat = false;
 		if (Core::Instance ().ShouldCountUnread (entry, msg))
 		{
 			++NumUnreadMsgs_;
 			shouldReformat = true;
 		}
-		else
+		else if (isActiveChat)
 			GetEntry<ICLEntry> ()->MarkMsgsRead ();
 
 		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
-				!Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry) &&
+				!isActiveChat &&
 				!HadHighlight_)
 		{
 			HadHighlight_ = Core::Instance ().IsHighlightMessage (msg);

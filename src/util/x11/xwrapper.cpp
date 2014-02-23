@@ -47,12 +47,10 @@ namespace LeechCraft
 {
 namespace Util
 {
-	const int SourceNormal = 1;
 	const int SourcePager = 2;
 
 	const int StateRemove = 0;
 	const int StateAdd = 1;
-	const int StateToggle = 1;
 
 	namespace
 	{

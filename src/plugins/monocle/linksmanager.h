@@ -30,31 +30,27 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/structures.h>
+#include "interfaces/monocle/idocument.h"
 
-class QUrl;
+class QGraphicsView;
+class QGraphicsScene;
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace Monocle
 {
-	class AccountsManager;
-	struct UploadItem;
+	class PageGraphicsItem;
 
-	class DataFilterUploader : public QObject
+	class LinksManager : public QObject
 	{
 		Q_OBJECT
 
-		AccountsManager * const AccMgr_;
-		const Entity Entity_;
-		QString UploadFileName_;
+		QGraphicsView * const View_;
+		QGraphicsScene * const Scene_;
 	public:
-		DataFilterUploader (const Entity&, AccountsManager*, QObject* = nullptr);
-	private:
-		void SelectAcc ();
-		void UploadToAcc (const QByteArray&);
-	private slots:
-		void checkItemUploaded (const UploadItem&, const QUrl&);
+		LinksManager (QGraphicsView*, QObject* = 0);
+
+		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 	};
 }
 }

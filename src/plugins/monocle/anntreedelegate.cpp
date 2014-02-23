@@ -27,34 +27,15 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/structures.h>
-
-class QUrl;
+#include "anntreedelegate.h"
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace Monocle
 {
-	class AccountsManager;
-	struct UploadItem;
-
-	class DataFilterUploader : public QObject
+	AnnTreeDelegate::AnnTreeDelegate (QObject *parent)
+	: QStyledItemDelegate { parent }
 	{
-		Q_OBJECT
-
-		AccountsManager * const AccMgr_;
-		const Entity Entity_;
-		QString UploadFileName_;
-	public:
-		DataFilterUploader (const Entity&, AccountsManager*, QObject* = nullptr);
-	private:
-		void SelectAcc ();
-		void UploadToAcc (const QByteArray&);
-	private slots:
-		void checkItemUploaded (const UploadItem&, const QUrl&);
-	};
+	}
 }
 }

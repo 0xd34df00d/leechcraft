@@ -42,8 +42,6 @@ namespace LeechCraft
 {
 namespace Mellonetray
 {
-	const int Dim = 32;
-
 	IconHandler::IconHandler (QGraphicsItem *item)
 	: QGraphicsWidget (item)
 	, Proxy_ (0)

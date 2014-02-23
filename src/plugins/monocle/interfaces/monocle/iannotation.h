@@ -31,9 +31,11 @@
 
 #include <memory>
 #include <QtPlugin>
+#include <QMetaType>
 
 class QRectF;
 class QDateTime;
+class QPolygonF;
 
 namespace LeechCraft
 {
@@ -74,6 +76,8 @@ namespace Monocle
 	{
 	public:
 		virtual ~IHighlightAnnotation () {}
+
+		virtual QList<QPolygonF> GetPolygons () const = 0;
 	};
 
 	typedef std::shared_ptr<IAnnotation> IAnnotation_ptr;
@@ -88,3 +92,5 @@ Q_DECLARE_INTERFACE (LeechCraft::Monocle::ITextAnnotation,
 		"org.LeechCraft.Monocle.ITextAnnotation/1.0");
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHighlightAnnotation,
 		"org.LeechCraft.Monocle.IHighlightAnnotation/1.0");
+
+Q_DECLARE_METATYPE (LeechCraft::Monocle::IAnnotation_ptr)

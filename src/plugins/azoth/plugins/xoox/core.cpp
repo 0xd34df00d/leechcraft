@@ -259,16 +259,15 @@ namespace Xoox
 		w.writeStartDocument ();
 		w.writeStartElement ("roster");
 		w.writeAttribute ("formatversion", "1");
-		Q_FOREACH (QObject *accObj,
-				GlooxProtocol_->GetRegisteredAccounts ())
+		for (auto accObj : GlooxProtocol_->GetRegisteredAccounts ())
 		{
-			IAccount *acc = qobject_cast<IAccount*> (accObj);
+			auto acc = qobject_cast<IAccount*> (accObj);
 			w.writeStartElement ("account");
 				w.writeTextElement ("id", acc->GetAccountID ());
 				w.writeStartElement ("entries");
-				Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+				for (auto entryObj : acc->GetCLEntries ())
 				{
-					GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+					const auto entry = qobject_cast<GlooxCLEntry*> (entryObj);
 					if (!entry ||
 							(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 						continue;

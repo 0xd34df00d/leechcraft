@@ -30,31 +30,53 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/structures.h>
+#include <QMap>
+#include "interfaces/monocle/idocument.h"
+#include "interfaces/monocle/iannotation.h"
 
-class QUrl;
+class QAbstractItemModel;
+class QModelIndex;
+class QStandardItemModel;
+class QStandardItem;
+class QGraphicsScene;
+class QGraphicsView;
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace Monocle
 {
-	class AccountsManager;
-	struct UploadItem;
+	class PageGraphicsItem;
 
-	class DataFilterUploader : public QObject
+	class AnnManager : public QObject
 	{
 		Q_OBJECT
 
-		AccountsManager * const AccMgr_;
-		const Entity Entity_;
-		QString UploadFileName_;
+		QGraphicsView * const View_;
+		QGraphicsScene * const Scene_;
+
+		QStandardItemModel * const AnnModel_;
+		QMap<IAnnotation_ptr, QStandardItem*> AnnHash_;
 	public:
-		DataFilterUploader (const Entity&, AccountsManager*, QObject* = nullptr);
-	private:
-		void SelectAcc ();
-		void UploadToAcc (const QByteArray&);
-	private slots:
-		void checkItemUploaded (const UploadItem&, const QUrl&);
+		enum Role
+		{
+			ItemType = Qt::UserRole + 1,
+			Annotation
+		};
+
+		enum ItemTypes
+		{
+			PageItem,
+			AnnHeaderItem,
+			AnnItem
+		};
+
+		AnnManager (QGraphicsView*, QObject* = 0);
+
+		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+
+		QAbstractItemModel* GetModel () const;
+	signals:
+		void annotationSelected (const QModelIndex&);
 	};
 }
 }

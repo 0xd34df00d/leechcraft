@@ -29,32 +29,23 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/structures.h>
-
-class QUrl;
+#include <QGraphicsRectItem>
+#include "interfaces/monocle/ilink.h"
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace Monocle
 {
-	class AccountsManager;
-	struct UploadItem;
-
-	class DataFilterUploader : public QObject
+	class LinkItem : public QGraphicsRectItem
 	{
-		Q_OBJECT
+		const ILink_ptr Link_;
 
-		AccountsManager * const AccMgr_;
-		const Entity Entity_;
-		QString UploadFileName_;
+		QPointF PressedPos_;
 	public:
-		DataFilterUploader (const Entity&, AccountsManager*, QObject* = nullptr);
-	private:
-		void SelectAcc ();
-		void UploadToAcc (const QByteArray&);
-	private slots:
-		void checkItemUploaded (const UploadItem&, const QUrl&);
+		LinkItem (const ILink_ptr&, QGraphicsItem*);
+	protected:
+		void mousePressEvent (QGraphicsSceneMouseEvent*);
+		void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
 	};
 }
 }

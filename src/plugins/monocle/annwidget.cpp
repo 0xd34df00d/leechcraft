@@ -27,34 +27,44 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/structures.h>
-
-class QUrl;
+#include "annwidget.h"
+#include "annmanager.h"
+#include "anntreedelegate.h"
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace Monocle
 {
-	class AccountsManager;
-	struct UploadItem;
-
-	class DataFilterUploader : public QObject
+	AnnWidget::AnnWidget (AnnManager *mgr, QWidget *parent)
+	: QWidget { parent }
+	, Mgr_ { mgr }
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
 
-		AccountsManager * const AccMgr_;
-		const Entity Entity_;
-		QString UploadFileName_;
-	public:
-		DataFilterUploader (const Entity&, AccountsManager*, QObject* = nullptr);
-	private:
-		void SelectAcc ();
-		void UploadToAcc (const QByteArray&);
-	private slots:
-		void checkItemUploaded (const UploadItem&, const QUrl&);
-	};
+		Ui_.AnnTree_->setItemDelegate (new AnnTreeDelegate (this));
+		Ui_.AnnTree_->setModel (Mgr_->GetModel ());
+
+		connect (Mgr_,
+				SIGNAL (annotationSelected (QModelIndex)),
+				this,
+				SLOT (focusOnAnnotation (QModelIndex)));
+	}
+
+	void AnnWidget::focusOnAnnotation (const QModelIndex& index)
+	{
+		QList<QModelIndex> expandList;
+		auto parent = index.parent ();
+		while (parent.isValid ())
+		{
+			expandList << parent;
+			parent = parent.parent ();
+		}
+
+		for (const auto& idx : expandList)
+			Ui_.AnnTree_->expand (idx);
+
+		Ui_.AnnTree_->setCurrentIndex (index);
+		Ui_.AnnTree_->selectionModel ()->select (index, QItemSelectionModel::SelectCurrent);
+	}
 }
 }

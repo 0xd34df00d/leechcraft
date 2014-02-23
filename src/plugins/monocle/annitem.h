@@ -29,32 +29,86 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/structures.h>
-
-class QUrl;
+#include <functional>
+#include <QGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
+#include "interfaces/monocle/iannotation.h"
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace Monocle
 {
-	class AccountsManager;
-	struct UploadItem;
-
-	class DataFilterUploader : public QObject
+	class AnnBaseItem
 	{
-		Q_OBJECT
-
-		AccountsManager * const AccMgr_;
-		const Entity Entity_;
-		QString UploadFileName_;
 	public:
-		DataFilterUploader (const Entity&, AccountsManager*, QObject* = nullptr);
+		typedef std::function<void (IAnnotation_ptr)> Handler_f;
+	protected:
+		const IAnnotation_ptr BaseAnn_;
+		Handler_f Handler_;
+	public:
+		AnnBaseItem (const IAnnotation_ptr&);
+
+		QGraphicsItem* GetItem ();
+
+		void SetHandler (const Handler_f&);
+
+		virtual void UpdateRect (const QRectF& rect) = 0;
+	};
+
+	AnnBaseItem* MakeItem (const IAnnotation_ptr&, QGraphicsItem*);
+
+	template<typename T>
+	class AnnBaseGraphicsItem : public AnnBaseItem
+							  , public T
+	{
+		QPointF PressedPos_;
+	public:
+		AnnBaseGraphicsItem (const IAnnotation_ptr& ann, QGraphicsItem *parent)
+		: AnnBaseItem { ann }
+		, T { parent }
+		{
+		}
+	protected:
+		void mousePressEvent (QGraphicsSceneMouseEvent *event)
+		{
+			PressedPos_ = event->pos ();
+		}
+
+		void mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
+		{
+			if (Handler_ &&
+					(event->pos () - PressedPos_).manhattanLength () < 4)
+				Handler_ (BaseAnn_);
+		}
+	};
+
+	class TextAnnItem : public AnnBaseGraphicsItem<QGraphicsRectItem>
+	{
+		const ITextAnnotation_ptr Ann_;
+	public:
+		TextAnnItem (const ITextAnnotation_ptr&, QGraphicsItem*);
+
+		void UpdateRect (const QRectF& rect);
+	};
+
+	class HighAnnItem : public AnnBaseGraphicsItem<QGraphicsItemGroup>
+	{
+		const IHighlightAnnotation_ptr Ann_;
+
+		struct PolyData
+		{
+			QPolygonF Poly_;
+			QGraphicsPolygonItem *Item_;
+		};
+		const QList<PolyData> Polys_;
+
+		QRectF Bounding_;
+	public:
+		HighAnnItem (const IHighlightAnnotation_ptr&, QGraphicsItem*);
+
+		void UpdateRect (const QRectF& rect);
 	private:
-		void SelectAcc ();
-		void UploadToAcc (const QByteArray&);
-	private slots:
-		void checkItemUploaded (const UploadItem&, const QUrl&);
+		static QList<PolyData> ToPolyData (const QList<QPolygonF>&);
 	};
 }
 }

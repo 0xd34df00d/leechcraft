@@ -29,32 +29,25 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/structures.h>
-
-class QUrl;
+#include <QWidget>
+#include "ui_annwidget.h"
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace Monocle
 {
-	class AccountsManager;
-	struct UploadItem;
+	class AnnManager;
 
-	class DataFilterUploader : public QObject
+	class AnnWidget : public QWidget
 	{
 		Q_OBJECT
 
-		AccountsManager * const AccMgr_;
-		const Entity Entity_;
-		QString UploadFileName_;
+		Ui::AnnWidget Ui_;
+		AnnManager * const Mgr_;
 	public:
-		DataFilterUploader (const Entity&, AccountsManager*, QObject* = nullptr);
-	private:
-		void SelectAcc ();
-		void UploadToAcc (const QByteArray&);
+		AnnWidget (AnnManager*, QWidget* = nullptr);
 	private slots:
-		void checkItemUploaded (const UploadItem&, const QUrl&);
+		void focusOnAnnotation (const QModelIndex&);
 	};
 }
 }

@@ -47,7 +47,6 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	const int CContactShift = 20;
 	const int CPadding = 2;
 
 	ContactListDelegate::ContactListDelegate (QTreeView* parent)
