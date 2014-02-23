@@ -188,12 +188,30 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		QPair<int, int> GetCounts (const QModelIndex& index)
+		{
+			const int visibleCount = index.model ()->rowCount (index);
+
+			auto model = index.model ();
+			auto sourceIndex = index;
+			while (auto proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
+			{
+				model = proxyModel->sourceModel ();
+				sourceIndex = proxyModel->mapToSource (sourceIndex);
+			}
+
+			return { visibleCount, model->rowCount (sourceIndex) };
+		}
+	}
+
 	void ContactListDelegate::DrawCategory (QPainter *painter,
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
 		const QRect& r = o.rect;
 
-		QStyle *style = o.widget ?
+		auto style = o.widget ?
 				o.widget->style () :
 				QApplication::style ();
 
@@ -230,19 +248,11 @@ namespace Azoth
 		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
 		const int rem = r.width () - textWidth;
 
-		const int visibleCount = index.model ()->rowCount (index);
-
-		const QAbstractItemModel *model = index.model ();
-		QModelIndex sourceIndex = index;
-		while (const QAbstractProxyModel *proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
-		{
-			model = proxyModel->sourceModel ();
-			sourceIndex = proxyModel->mapToSource (sourceIndex);
-		}
+		const auto& counts = GetCounts (index);
 
 		const QString& str = QString (" %1/%2 ")
-				.arg (visibleCount)
-				.arg (model->rowCount (sourceIndex));
+				.arg (counts.first)
+				.arg (counts.second);
 
 		painter->save ();
 
