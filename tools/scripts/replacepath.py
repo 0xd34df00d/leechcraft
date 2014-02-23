@@ -79,8 +79,11 @@ def process_dir(args, dirname, filelist):
         is_gst_tool = 0
         if -1 < filename.find('gst-'):
             is_gst_tool = 1
+        is_lc_tool = 0
+        if -1 < filename.find('leechcraft') or -1 < filename.find('lc-'):
+            is_lc_tool = 1
         ext = parts[1]
-        if ext == '.dylib' or ext == '.so' or is_gst_tool:
+        if ext == '.dylib' or ext == '.so' or is_gst_tool or is_lc_tool:
             fn = os.path.join(dirname, filename)
             process_file(args[0], args[1], filename, fn)
 

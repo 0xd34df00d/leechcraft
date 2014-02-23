@@ -236,11 +236,14 @@ namespace LeechCraft
 			item->setData (item->data (Roles::Sequence), Roles::OldSequence);
 
 		const int numSeqs = 2;
+
 		auto newSeqs = item->data (Roles::Sequence).value<QKeySequences_t> ();
 		while (newSeqs.size () < numSeqs)
 			newSeqs << QKeySequence ();
+
 		newSeqs [std::max (prIndex.column () - 1, 0)] = dia.GetResult ();
 		newSeqs.removeAll (QKeySequence ());
+
 		item->setData (QVariant::fromValue<QKeySequences_t> (newSeqs), Roles::Sequence);
 
 		for (int i = 0; i < numSeqs; ++i)
