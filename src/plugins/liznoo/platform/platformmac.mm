@@ -266,6 +266,7 @@ namespace Liznoo
 			emit batteryInfoUpdated (bi);
 		}
 
+		CFRelease (properties);
 	}
 }
 }
