@@ -38,6 +38,8 @@ class KeySequencer : public QDialog
 
 	Ui::KeySequencer Ui_;
 	QKeySequence Result_;
+
+	int LastCode_;
 public:
 	KeySequencer (const QString&, QWidget* = 0);
 	QKeySequence GetResult () const;
