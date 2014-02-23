@@ -1362,8 +1362,7 @@ namespace Azoth
 
 		const QStringList& variants = entry->Variants ();
 
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
-		if (mucEntry)
+		if (auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ()))
 		{
 			const QString& jid = mucEntry->GetRealID (entry->GetQObject ());
 			tip += "<br />" + tr ("Real ID:") + ' ';
@@ -1374,15 +1373,14 @@ namespace Azoth
 		if (mucPerms)
 		{
 			tip += "<hr />";
-			const QMap<QByteArray, QList<QByteArray>>& perms =
-					mucPerms->GetPerms (entry->GetQObject ());
-			Q_FOREACH (const QByteArray& permClass, perms.keys ())
+			const auto& perms = mucPerms->GetPerms (entry->GetQObject ());
+			for (const auto& permClass : perms.keys ())
 			{
 				tip += mucPerms->GetUserString (permClass);
 				tip += ": ";
 
 				QStringList users;
-				Q_FOREACH (const QByteArray& perm, perms [permClass])
+				for (const auto& perm : perms [permClass])
 					users << mucPerms->GetUserString (perm);
 				tip += users.join ("; ");
 				tip += "<br />";
@@ -1408,7 +1406,7 @@ namespace Azoth
 
 		for (const QString& variant : variants)
 		{
-			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
+			const auto& info = entry->GetClientInfo (variant);
 			if (info.isEmpty ())
 				continue;
 
