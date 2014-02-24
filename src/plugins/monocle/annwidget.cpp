@@ -41,7 +41,7 @@ namespace Monocle
 	{
 		Ui_.setupUi (this);
 
-		Ui_.AnnTree_->setItemDelegate (new AnnTreeDelegate (this));
+		Ui_.AnnTree_->setItemDelegate (new AnnTreeDelegate { Ui_.AnnTree_, this });
 		Ui_.AnnTree_->setModel (Mgr_->GetModel ());
 
 		connect (Mgr_,

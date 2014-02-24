@@ -28,14 +28,70 @@
  **********************************************************************/
 
 #include "anntreedelegate.h"
+#include <QTextLayout>
+#include <QStaticText>
+#include <QTreeView>
+#include <QtDebug>
+#include "annmanager.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	AnnTreeDelegate::AnnTreeDelegate (QObject *parent)
+	AnnTreeDelegate::AnnTreeDelegate (QTreeView *view, QObject *parent)
 	: QStyledItemDelegate { parent }
+	, View_ { view }
 	{
+	}
+
+	void AnnTreeDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+	{
+		if (index.data (AnnManager::Role::ItemType) != AnnManager::ItemTypes::AnnItem)
+		{
+			QStyledItemDelegate::paint (painter, option, index);
+			return;
+		}
+
+		const auto leading = option.fontMetrics.leading ();
+		qreal textHeight = 0;
+		QTextLayout lay (index.data ().toString (), option.font);
+		lay.beginLayout ();
+		while (true)
+		{
+			auto line = lay.createLine ();
+			if (!line.isValid ())
+				break;
+
+			textHeight += leading;
+			line.setLineWidth (option.rect.width ());
+			line.setPosition ({ 0, textHeight });
+			textHeight += line.height ();
+		}
+		lay.endLayout ();
+
+		lay.draw (painter, option.rect.topLeft ());
+	}
+
+	QSize AnnTreeDelegate::sizeHint (const QStyleOptionViewItem& opt, const QModelIndex& index) const
+	{
+		if (index.data (AnnManager::Role::ItemType) != AnnManager::ItemTypes::AnnItem)
+			return QStyledItemDelegate::sizeHint (opt, index);
+
+		auto option = opt;
+		option.initFrom (View_);
+
+		auto parent = index;
+		while (parent.isValid ())
+		{
+			option.rect.setWidth (option.rect.width () - View_->indentation ());
+			parent = parent.parent ();
+		}
+
+		QStaticText text;
+		text.setText (index.data ().toString ());
+		text.setTextWidth (option.rect.width ());
+
+		return { option.rect.width (), static_cast<int> (text.size ().height ()) };
 	}
 }
 }

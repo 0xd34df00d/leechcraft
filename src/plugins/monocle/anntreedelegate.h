@@ -31,14 +31,20 @@
 
 #include <QStyledItemDelegate>
 
+class QTreeView;
+
 namespace LeechCraft
 {
 namespace Monocle
 {
 	class AnnTreeDelegate : public QStyledItemDelegate
 	{
+		QTreeView * const View_;
 	public:
-		AnnTreeDelegate (QObject*);
+		AnnTreeDelegate (QTreeView*, QObject*);
+
+		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
 	};
 }
 }
