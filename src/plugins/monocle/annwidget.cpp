@@ -56,7 +56,7 @@ namespace Monocle
 		auto parent = index.parent ();
 		while (parent.isValid ())
 		{
-			expandList << parent;
+			expandList.prepend (parent);
 			parent = parent.parent ();
 		}
 
