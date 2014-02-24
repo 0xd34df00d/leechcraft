@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
+#include <interfaces/azoth/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
 #include "vkmessage.h"
@@ -479,6 +480,8 @@ namespace Murm
 
 	void VkEntry::MarkMsgsRead ()
 	{
+		Account_->GetParentProtocol ()->GetAzothProxy ()->MarkMessagesAsRead (this);
+
 		if (!HasUnread_)
 			return;
 

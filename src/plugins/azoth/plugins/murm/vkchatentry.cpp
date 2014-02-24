@@ -30,6 +30,7 @@
 #include "vkchatentry.h"
 #include <QStringList>
 #include <QtDebug>
+#include <interfaces/azoth/iproxyobject.h>
 #include "vkaccount.h"
 #include "vkentry.h"
 #include "vkmessage.h"
@@ -201,6 +202,7 @@ namespace Murm
 
 	void VkChatEntry::MarkMsgsRead ()
 	{
+		Account_->GetParentProtocol ()->GetAzothProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void VkChatEntry::ChatTabClosed ()
