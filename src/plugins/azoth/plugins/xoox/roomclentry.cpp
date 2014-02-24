@@ -39,6 +39,7 @@
 #include "roompublicmessage.h"
 #include "roomhandler.h"
 #include "roomconfigwidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -233,6 +234,7 @@ namespace Xoox
 
 	void RoomCLEntry::MarkMsgsRead ()
 	{
+		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void RoomCLEntry::ChatTabClosed ()
