@@ -94,6 +94,7 @@ namespace Azoth
 
 		void handleCatRenameTriggered ();
 		void handleSendGroupMsgTriggered ();
+		void handleMarkAllTriggered ();
 		void handleRemoveChildrenTriggered ();
 
 		void handleManageBookmarks ();
