@@ -40,9 +40,10 @@ namespace Azoth
 {
 namespace Murm
 {
-	VkProtocol::VkProtocol (ICoreProxy_ptr proxy, QObject *plugin)
+	VkProtocol::VkProtocol (ICoreProxy_ptr proxy, IProxyObject *azothProxy, QObject *plugin)
 	: QObject (plugin)
 	, Proxy_ (proxy)
+	, AzothProxy_ (azothProxy)
 	, Plugin_ (plugin)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -55,6 +56,11 @@ namespace Murm
 				AddAccount (acc);
 		}
 		settings.endGroup ();
+	}
+
+	IProxyObject* VkProtocol::GetAzothProxy () const
+	{
+		return AzothProxy_;
 	}
 
 	QObject* VkProtocol::GetQObject ()
