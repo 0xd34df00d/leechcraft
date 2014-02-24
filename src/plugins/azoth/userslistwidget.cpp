@@ -48,8 +48,7 @@ namespace Azoth
 
 	UsersListWidget::UsersListWidget (const QList<QObject*>& parts,
 			std::function<QString (ICLEntry*)> nameGetter, QWidget *parent)
-	: QDialog (parent,
-			static_cast<Qt::WindowFlags> (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint))
+	: QDialog (parent, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint)
 	, Filter_ (new QSortFilterProxyModel (this))
 	, PartsModel_ (new QStandardItemModel (this))
 	{
