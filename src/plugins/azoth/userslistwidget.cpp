@@ -88,7 +88,8 @@ namespace Azoth
 		Ui_.ListView_->setFocusProxy (Ui_.FilterLine_);
 		Ui_.ListView_->setFocus ();
 
-		new KeyboardRosterFixer (Ui_.FilterLine_, Ui_.ListView_, this);
+		auto fixer = new KeyboardRosterFixer (Ui_.FilterLine_, Ui_.ListView_, this);
+		fixer->SetInterceptEnter (false);
 	}
 
 	QObject* UsersListWidget::GetActivatedParticipant () const
