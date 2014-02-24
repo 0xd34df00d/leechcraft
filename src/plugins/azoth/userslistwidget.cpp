@@ -83,6 +83,10 @@ namespace Azoth
 				SIGNAL (activated (QModelIndex)),
 				this,
 				SLOT (accept ()));
+		connect (Ui_.FilterLine_,
+				SIGNAL (returnPressed ()),
+				this,
+				SLOT (accept ()));
 		Ui_.ListView_->setCurrentIndex (Filter_->index (0, 0));
 
 		Ui_.ListView_->setFocusProxy (Ui_.FilterLine_);
