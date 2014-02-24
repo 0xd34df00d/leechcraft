@@ -248,7 +248,7 @@ namespace Murm
 		return this;
 	}
 
-	QObject* VkAccount::GetParentProtocol () const
+	VkProtocol* VkAccount::GetParentProtocol () const
 	{
 		return Proto_;
 	}
