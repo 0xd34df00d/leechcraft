@@ -31,6 +31,7 @@
 #include <QTextLayout>
 #include <QStaticText>
 #include <QTreeView>
+#include <QPainter>
 #include <QtDebug>
 #include "annmanager.h"
 
@@ -52,24 +53,9 @@ namespace Monocle
 			return;
 		}
 
-		const auto leading = option.fontMetrics.leading ();
-		qreal textHeight = 0;
-		QTextLayout lay (index.data ().toString (), option.font);
-		lay.beginLayout ();
-		while (true)
-		{
-			auto line = lay.createLine ();
-			if (!line.isValid ())
-				break;
-
-			textHeight += leading;
-			line.setLineWidth (option.rect.width ());
-			line.setPosition ({ 0, textHeight });
-			textHeight += line.height ();
-		}
-		lay.endLayout ();
-
-		lay.draw (painter, option.rect.topLeft ());
+		QStaticText text { GetText (index) };
+		text.setTextWidth (option.rect.width ());
+		painter->drawStaticText (option.rect.topLeft (), text);
 	}
 
 	QSize AnnTreeDelegate::sizeHint (const QStyleOptionViewItem& opt, const QModelIndex& index) const
@@ -87,11 +73,15 @@ namespace Monocle
 			parent = parent.parent ();
 		}
 
-		QStaticText text;
-		text.setText (index.data ().toString ());
+		QStaticText text { GetText (index) };
 		text.setTextWidth (option.rect.width ());
 
 		return { option.rect.width (), static_cast<int> (text.size ().height ()) };
+	}
+
+	QString AnnTreeDelegate::GetText (const QModelIndex& index) const
+	{
+		return index.data ().toString ();
 	}
 }
 }
