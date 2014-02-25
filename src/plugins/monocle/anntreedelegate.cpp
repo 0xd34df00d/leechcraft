@@ -31,6 +31,7 @@
 #include <QTreeView>
 #include <QPainter>
 #include <QTextDocument>
+#include <QApplication>
 #include <QEvent>
 #include "annmanager.h"
 
@@ -45,13 +46,21 @@ namespace Monocle
 		View_->viewport ()->installEventFilter (this);
 	}
 
-	void AnnTreeDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+	void AnnTreeDelegate::paint (QPainter *painter, const QStyleOptionViewItem& opt, const QModelIndex& index) const
 	{
 		if (index.data (AnnManager::Role::ItemType) != AnnManager::ItemTypes::AnnItem)
 		{
-			QStyledItemDelegate::paint (painter, option, index);
+			QStyledItemDelegate::paint (painter, opt, index);
 			return;
 		}
+
+		QStyleOptionViewItemV4 option = opt;
+
+		auto style = option.widget ?
+				option.widget->style () :
+				QApplication::style ();
+
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 
 		QTextDocument text;
 		text.setTextWidth (option.rect.width ());
