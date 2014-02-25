@@ -46,6 +46,7 @@ namespace LeechCraft
 namespace Monocle
 {
 	class PageGraphicsItem;
+	class AnnBaseItem;
 
 	class AnnManager : public QObject
 	{
@@ -55,7 +56,9 @@ namespace Monocle
 		QGraphicsScene * const Scene_;
 
 		QStandardItemModel * const AnnModel_;
-		QMap<IAnnotation_ptr, QStandardItem*> AnnHash_;
+		QMap<IAnnotation_ptr, QStandardItem*> Ann2Item_;
+
+		QMap<IAnnotation_ptr, AnnBaseItem*> Ann2GraphicsItem_;
 	public:
 		enum Role
 		{
@@ -75,6 +78,8 @@ namespace Monocle
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 
 		QAbstractItemModel* GetModel () const;
+	private:
+		void SelectAnnotation (const IAnnotation_ptr&);
 	signals:
 		void annotationSelected (const QModelIndex&);
 	};

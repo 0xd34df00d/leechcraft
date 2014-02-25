@@ -54,7 +54,8 @@ namespace Monocle
 		if (const auto rc = AnnModel_->rowCount ())
 			AnnModel_->removeRows (0, rc);
 
-		AnnHash_.clear ();
+		Ann2Item_.clear ();
+		Ann2GraphicsItem_.clear ();
 
 		const auto isa = qobject_cast<ISupportAnnotations*> (doc->GetQObject ());
 		if (!isa)
@@ -86,10 +87,14 @@ namespace Monocle
 					continue;
 				}
 
+				Ann2GraphicsItem_ [ann] = item;
+
 				item->SetHandler ([this] (const IAnnotation_ptr& ann) -> void
 						{
-							if (const auto item = AnnHash_ [ann])
+							if (const auto item = Ann2Item_ [ann])
 								emit annotationSelected (item->index ());
+
+							SelectAnnotation (ann);
 						});
 
 				const auto& docRect = page->MapToDoc (page->boundingRect ());
@@ -114,7 +119,7 @@ namespace Monocle
 				subItem->setData (QVariant::fromValue (ann), Role::Annotation);
 				subItem->setData (ItemTypes::AnnItem, Role::ItemType);
 
-				AnnHash_ [ann] = subItem;
+				Ann2Item_ [ann] = subItem;
 
 				annItem->appendRow (subItem);
 				createItem ();
@@ -126,6 +131,26 @@ namespace Monocle
 	QAbstractItemModel* AnnManager::GetModel () const
 	{
 		return AnnModel_;
+	}
+
+	void AnnManager::SelectAnnotation (const IAnnotation_ptr& ann)
+	{
+		const auto modelItem = Ann2Item_ [ann];
+		if (!modelItem)
+			return;
+
+		const auto graphicsItem = Ann2GraphicsItem_ [ann];
+		if (graphicsItem->IsSelected ())
+			return;
+
+		for (const auto& item : Ann2GraphicsItem_)
+			if (item->IsSelected ())
+			{
+				item->SetSelected (false);
+				break;
+			}
+
+		graphicsItem->SetSelected (true);
 	}
 }
 }
