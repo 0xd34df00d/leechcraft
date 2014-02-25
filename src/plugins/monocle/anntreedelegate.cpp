@@ -87,7 +87,15 @@ namespace Monocle
 
 	QString AnnTreeDelegate::GetText (const QModelIndex& index) const
 	{
-		return index.data ().toString ();
+		const auto& ann = index.data (AnnManager::Role::Annotation).value<IAnnotation_ptr> ();
+
+		return QString ("<strong>%1</strong>: %2<br/>"
+				"<strong>%3</strong>: %4<hr/>")
+					.arg (tr ("Author"))
+					.arg (ann->GetAuthor ())
+					.arg (tr ("Date"))
+					.arg (ann->GetDate ().toString (Qt::DefaultLocaleShortDate)) +
+				ann->GetText ();
 	}
 }
 }
