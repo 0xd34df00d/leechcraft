@@ -29,9 +29,11 @@
 
 #pragma once
 
+#include <memory>
 #include <QStyledItemDelegate>
 
 class QTreeView;
+class QTextDocument;
 
 namespace LeechCraft
 {
@@ -48,6 +50,7 @@ namespace Monocle
 
 		bool eventFilter (QObject*, QEvent*);
 	private:
+		std::shared_ptr<QTextDocument> GetDoc (const QModelIndex&, int) const;
 		QString GetText (const QModelIndex&) const;
 	};
 }

@@ -39,6 +39,8 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	const int DocMargin = 4;
+
 	AnnTreeDelegate::AnnTreeDelegate (QTreeView *view, QObject *parent)
 	: QStyledItemDelegate { parent }
 	, View_ { view }
@@ -62,14 +64,10 @@ namespace Monocle
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 
-		QTextDocument text;
-		text.setTextWidth (option.rect.width ());
-		text.setDocumentMargin (0);
-		text.setHtml (GetText (index));
 
 		painter->save ();
 		painter->translate (option.rect.topLeft ());
-		text.drawContents (painter);
+		GetDoc (index, option.rect.width ())->drawContents (painter);
 		painter->restore ();
 	}
 
@@ -88,11 +86,12 @@ namespace Monocle
 			parent = parent.parent ();
 		}
 
-		QTextDocument text;
-		text.setTextWidth (option.rect.width ());
-		text.setDocumentMargin (0);
-		text.setHtml (GetText (index));
-		return { option.rect.width (), static_cast<int> (text.size ().height ()) };
+		const auto& doc = GetDoc (index, option.rect.width ());
+		return
+		{
+			option.rect.width (),
+			static_cast<int> (std::ceil (doc->size ().height ()))
+		};
 	}
 
 	bool AnnTreeDelegate::eventFilter (QObject *obj, QEvent *event)
@@ -115,6 +114,15 @@ namespace Monocle
 				emit sizeHintChanged (index);
 
 		return QStyledItemDelegate::eventFilter (obj, event);
+	}
+
+	std::shared_ptr<QTextDocument> AnnTreeDelegate::GetDoc (const QModelIndex& index, int width) const
+	{
+		auto text = new QTextDocument;
+		text->setTextWidth (width);
+		text->setDocumentMargin (DocMargin);
+		text->setHtml (GetText (index));
+		return std::shared_ptr<QTextDocument> { text };
 	}
 
 	QString AnnTreeDelegate::GetText (const QModelIndex& index) const
