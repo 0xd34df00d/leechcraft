@@ -162,6 +162,14 @@ namespace Monocle
 		if (!ann)
 			return;
 
+		const auto item = Ann2GraphicsItem_.value (ann);
+		if (!item)
+			return;
+
+		const auto graphicsItem = item->GetItem ();
+		const auto& mapped = graphicsItem->scenePos ();
+		View_->SmoothCenterOn (mapped.x (), mapped.y ());
+
 		SelectAnnotation (ann);
 	}
 }
