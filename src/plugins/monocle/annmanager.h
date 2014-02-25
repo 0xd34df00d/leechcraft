@@ -80,6 +80,8 @@ namespace Monocle
 		QAbstractItemModel* GetModel () const;
 	private:
 		void SelectAnnotation (const IAnnotation_ptr&);
+	public slots:
+		void selectAnnotation (const QModelIndex&);
 	signals:
 		void annotationSelected (const QModelIndex&);
 	};

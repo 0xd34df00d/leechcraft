@@ -152,5 +152,17 @@ namespace Monocle
 
 		graphicsItem->SetSelected (true);
 	}
+
+	void AnnManager::selectAnnotation (const QModelIndex& idx)
+	{
+		if (idx.data (Role::ItemType).toInt () != ItemTypes::AnnItem)
+			return;
+
+		const auto& ann = idx.data (Role::Annotation).value<IAnnotation_ptr> ();
+		if (!ann)
+			return;
+
+		SelectAnnotation (ann);
+	}
 }
 }
