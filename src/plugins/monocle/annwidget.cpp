@@ -48,6 +48,10 @@ namespace Monocle
 				SIGNAL (annotationSelected (QModelIndex)),
 				this,
 				SLOT (focusOnAnnotation (QModelIndex)));
+		connect (Ui_.AnnTree_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				Mgr_,
+				SLOT (selectAnnotation (QModelIndex)));
 	}
 
 	void AnnWidget::focusOnAnnotation (const QModelIndex& index)
