@@ -39,12 +39,12 @@ class QModelIndex;
 class QStandardItemModel;
 class QStandardItem;
 class QGraphicsScene;
-class QGraphicsView;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
+	class PagesView;
 	class PageGraphicsItem;
 	class AnnBaseItem;
 
@@ -52,7 +52,7 @@ namespace Monocle
 	{
 		Q_OBJECT
 
-		QGraphicsView * const View_;
+		PagesView * const View_;
 		QGraphicsScene * const Scene_;
 
 		QStandardItemModel * const AnnModel_;
@@ -73,7 +73,7 @@ namespace Monocle
 			AnnItem
 		};
 
-		AnnManager (QGraphicsView*, QObject* = 0);
+		AnnManager (PagesView*, QObject* = 0);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 

@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "annmanager.h"
-#include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QStandardItemModel>
 #include <QtDebug>
@@ -36,12 +35,13 @@
 #include "interfaces/monocle/iannotation.h"
 #include "pagegraphicsitem.h"
 #include "annitem.h"
+#include "pagesview.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	AnnManager::AnnManager (QGraphicsView *view, QObject *parent)
+	AnnManager::AnnManager (PagesView *view, QObject *parent)
 	: QObject { parent }
 	, View_ { view }
 	, Scene_ { view->scene () }
