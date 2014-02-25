@@ -93,7 +93,7 @@ namespace PDF
 
 		QString GetTextContent (int, const QRect&);
 
-		QList<IAnnotation_ptr> GetAnnotations (int) const;
+		QList<IAnnotation_ptr> GetAnnotations (int);
 
 		IFormFields_t GetFormFields (int);
 

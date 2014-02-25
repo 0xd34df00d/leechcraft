@@ -44,7 +44,7 @@ namespace Monocle
 	public:
 		virtual ~ISupportAnnotations () {}
 
-		virtual QList<IAnnotation_ptr> GetAnnotations (int page) const = 0;
+		virtual QList<IAnnotation_ptr> GetAnnotations (int page) = 0;
 	};
 }
 }
