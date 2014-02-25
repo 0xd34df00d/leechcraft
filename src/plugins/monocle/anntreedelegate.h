@@ -45,6 +45,8 @@ namespace Monocle
 
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
+
+		bool eventFilter (QObject*, QEvent*);
 	private:
 		QString GetText (const QModelIndex&) const;
 	};

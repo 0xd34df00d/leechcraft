@@ -31,7 +31,7 @@
 #include <QTreeView>
 #include <QPainter>
 #include <QTextDocument>
-#include <QtDebug>
+#include <QEvent>
 #include "annmanager.h"
 
 namespace LeechCraft
@@ -42,6 +42,7 @@ namespace Monocle
 	: QStyledItemDelegate { parent }
 	, View_ { view }
 	{
+		View_->viewport ()->installEventFilter (this);
 	}
 
 	void AnnTreeDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -83,6 +84,28 @@ namespace Monocle
 		text.setDocumentMargin (0);
 		text.setHtml (GetText (index));
 		return { option.rect.width (), static_cast<int> (text.size ().height ()) };
+	}
+
+	bool AnnTreeDelegate::eventFilter (QObject *obj, QEvent *event)
+	{
+		if (event->type () != QEvent::Resize)
+			return QStyledItemDelegate::eventFilter (obj, event);
+
+		auto model = View_->model ();
+
+		QList<QModelIndex> queue { {} };
+		for (int i = 0; i < queue.size (); ++i)
+		{
+			const auto& idx = queue.at (i);
+			for (auto j = 0; j < model->rowCount (idx); ++j)
+				queue << model->index (j, 0, idx);
+		}
+
+		for (const auto& index : queue)
+			if (index.data (AnnManager::Role::ItemType) == AnnManager::ItemTypes::AnnItem)
+				emit sizeHintChanged (index);
+
+		return QStyledItemDelegate::eventFilter (obj, event);
 	}
 
 	QString AnnTreeDelegate::GetText (const QModelIndex& index) const
