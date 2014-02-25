@@ -45,12 +45,16 @@ namespace Monocle
 	protected:
 		const IAnnotation_ptr BaseAnn_;
 		Handler_f Handler_;
+
+		bool IsSelected_ = false;
 	public:
 		AnnBaseItem (const IAnnotation_ptr&);
 
 		QGraphicsItem* GetItem ();
-
 		void SetHandler (const Handler_f&);
+
+		bool IsSelected () const;
+		virtual void SetSelected (bool) = 0;
 
 		virtual void UpdateRect (const QRectF& rect) = 0;
 	};
@@ -88,6 +92,8 @@ namespace Monocle
 	public:
 		TextAnnItem (const ITextAnnotation_ptr&, QGraphicsItem*);
 
+		void SetSelected (bool);
+
 		void UpdateRect (const QRectF& rect);
 	};
 
@@ -105,6 +111,8 @@ namespace Monocle
 		QRectF Bounding_;
 	public:
 		HighAnnItem (const IHighlightAnnotation_ptr&, QGraphicsItem*);
+
+		void SetSelected (bool);
 
 		void UpdateRect (const QRectF& rect);
 	private:

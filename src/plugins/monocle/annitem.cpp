@@ -52,6 +52,16 @@ namespace Monocle
 		Handler_ = handler;
 	}
 
+	bool AnnBaseItem::IsSelected () const
+	{
+		return IsSelected_;
+	}
+
+	void AnnBaseItem::SetSelected (bool selected)
+	{
+		IsSelected_ = selected;
+	}
+
 	AnnBaseItem* MakeItem (const IAnnotation_ptr& ann, QGraphicsItem *parent)
 	{
 		switch (ann->GetAnnotationType ())
@@ -75,6 +85,13 @@ namespace Monocle
 	{
 	}
 
+	void TextAnnItem::SetSelected (bool selected)
+	{
+		AnnBaseItem::SetSelected (selected);
+
+		setPen (selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen);
+	}
+
 	void TextAnnItem::UpdateRect (const QRectF& rect)
 	{
 		setRect (rect);
@@ -93,6 +110,19 @@ namespace Monocle
 			Bounding_ |= data.Poly_.boundingRect ();
 
 			data.Item_->setCursor (Qt::PointingHandCursor);
+		}
+	}
+
+	void HighAnnItem::SetSelected (bool selected)
+	{
+		AnnBaseItem::SetSelected (selected);
+
+		const auto& pen = selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen;
+		const auto& brush = selected ? QBrush { QColor { 255, 213, 0, 64 } } : QBrush {};
+		for (const auto& data : Polys_)
+		{
+			data.Item_->setPen (pen);
+			data.Item_->setBrush (brush);
 		}
 	}
 
