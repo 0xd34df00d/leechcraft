@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "anntreedelegate.h"
+#include <cmath>
 #include <QTreeView>
 #include <QPainter>
 #include <QTextDocument>
@@ -56,8 +57,12 @@ namespace Monocle
 			return;
 		}
 
+		painter->save ();
+		painter->translate (-View_->indentation (), 0);
+
 		QStyleOptionViewItemV4 option = opt;
 
+		option.rect.setWidth (option.rect.width () + View_->indentation () / 2);
 		auto style = option.widget ?
 				option.widget->style () :
 				QApplication::style ();
@@ -69,6 +74,8 @@ namespace Monocle
 		painter->translate (option.rect.topLeft ());
 		GetDoc (index, option.rect.width ())->drawContents (painter);
 		painter->restore ();
+
+		painter->restore ();
 	}
 
 	QSize AnnTreeDelegate::sizeHint (const QStyleOptionViewItem& opt, const QModelIndex& index) const
@@ -79,7 +86,7 @@ namespace Monocle
 		auto option = opt;
 		option.initFrom (View_->viewport ());
 
-		auto parent = index;
+		auto parent = index.parent ();
 		while (parent.isValid ())
 		{
 			option.rect.setWidth (option.rect.width () - View_->indentation ());
