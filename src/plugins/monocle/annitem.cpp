@@ -128,6 +128,7 @@ namespace Monocle
 
 	void HighAnnItem::UpdateRect (const QRectF& rect)
 	{
+		setPos (rect.topLeft ());
 		for (auto data : Polys_)
 		{
 			auto poly = data.Poly_;
@@ -137,8 +138,8 @@ namespace Monocle
 
 			const auto xScale = rect.width () / Bounding_.width ();
 			const auto yScale = rect.height () / Bounding_.height ();
-			const auto xTran = rect.x () - Bounding_.x () * xScale;
-			const auto yTran = rect.y () - Bounding_.y () * yScale;
+			const auto xTran = rect.x () - Bounding_.x () * xScale - rect.left ();
+			const auto yTran = rect.y () - Bounding_.y () * yScale - rect.top ();
 
 			data.Item_->setPolygon (poly * QMatrix { xScale, 0, 0, yScale, xTran, yTran });
 		}
