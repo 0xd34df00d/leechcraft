@@ -49,7 +49,8 @@ namespace Monocle
 		View_->viewport ()->installEventFilter (this);
 	}
 
-	void AnnTreeDelegate::paint (QPainter *painter, const QStyleOptionViewItem& opt, const QModelIndex& index) const
+	void AnnTreeDelegate::paint (QPainter *painter,
+			const QStyleOptionViewItem& opt, const QModelIndex& index) const
 	{
 		if (index.data (AnnManager::Role::ItemType) != AnnManager::ItemTypes::AnnItem)
 		{
@@ -63,12 +64,15 @@ namespace Monocle
 		QStyleOptionViewItemV4 option = opt;
 
 		option.rect.setWidth (option.rect.width () + View_->indentation () / 2);
-		auto style = option.widget ?
-				option.widget->style () :
-				QApplication::style ();
 
+		painter->fillRect (option.rect, QColor { 255, 234, 0 });
+		const auto& oldPen = painter->pen ();
+		painter->setPen ({ QColor { 255, 213, 0 }, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin });
+		painter->drawRect (option.rect);
+		painter->setPen (oldPen);
+
+		const auto style = option.widget ? option.widget->style () : QApplication::style ();
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
-
 
 		painter->save ();
 		painter->translate (option.rect.topLeft ());
