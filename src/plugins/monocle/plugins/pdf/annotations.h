@@ -45,7 +45,9 @@ namespace Monocle
 {
 namespace PDF
 {
-	IAnnotation_ptr MakeAnnotation (Poppler::Annotation*);
+	class Document;
+
+	IAnnotation_ptr MakeAnnotation (Document*, Poppler::Annotation*);
 
 	template<typename T>
 	class AnnotationBase : public T

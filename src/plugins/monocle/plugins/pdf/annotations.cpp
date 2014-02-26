@@ -37,7 +37,7 @@ namespace Monocle
 {
 namespace PDF
 {
-	IAnnotation_ptr MakeAnnotation (Poppler::Annotation *ann)
+	IAnnotation_ptr MakeAnnotation (Document *doc, Poppler::Annotation *ann)
 	{
 		switch (ann->subType ())
 		{
