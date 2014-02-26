@@ -32,6 +32,7 @@
 #include <memory>
 #include <QtPlugin>
 #include <QMetaType>
+#include "ilink.h"
 
 class QRectF;
 class QDateTime;
@@ -45,6 +46,7 @@ namespace Monocle
 	{
 		Text,
 		Highlight,
+		Link,
 		Other
 	};
 
@@ -80,9 +82,18 @@ namespace Monocle
 		virtual QList<QPolygonF> GetPolygons () const = 0;
 	};
 
+	class ILinkAnnotation : public IAnnotation
+	{
+	public:
+		virtual ~ILinkAnnotation () {}
+
+		virtual ILink_ptr GetLink () const = 0;
+	};
+
 	typedef std::shared_ptr<IAnnotation> IAnnotation_ptr;
 	typedef std::shared_ptr<ITextAnnotation> ITextAnnotation_ptr;
 	typedef std::shared_ptr<IHighlightAnnotation> IHighlightAnnotation_ptr;
+	typedef std::shared_ptr<ILinkAnnotation> ILinkAnnotation_ptr;
 }
 }
 
@@ -92,5 +103,7 @@ Q_DECLARE_INTERFACE (LeechCraft::Monocle::ITextAnnotation,
 		"org.LeechCraft.Monocle.ITextAnnotation/1.0");
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHighlightAnnotation,
 		"org.LeechCraft.Monocle.IHighlightAnnotation/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::ILinkAnnotation,
+		"org.LeechCraft.Monocle.ILinkAnnotation/1.0");
 
 Q_DECLARE_METATYPE (LeechCraft::Monocle::IAnnotation_ptr)
