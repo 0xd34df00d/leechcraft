@@ -141,5 +141,10 @@ namespace Monocle
 			result.append ({ poly, new QGraphicsPolygonItem });
 		return result;
 	}
+
+	LinkAnnItem::LinkAnnItem (const ILinkAnnotation_ptr& ann, QGraphicsItem *item)
+	: AnnRectGraphicsItem { ann, ann->GetLink (), item }
+	{
+	}
 }
 }
