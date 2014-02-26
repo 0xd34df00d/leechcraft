@@ -77,6 +77,8 @@ namespace Monocle
 		void mousePressEvent (QGraphicsSceneMouseEvent *event)
 		{
 			PressedPos_ = event->pos ();
+			T::mousePressEvent (event);
+			event->accept ();
 		}
 
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
@@ -84,6 +86,8 @@ namespace Monocle
 			if (Handler_ &&
 					(event->pos () - PressedPos_).manhattanLength () < 4)
 				Handler_ (BaseAnn_);
+
+			T::mouseReleaseEvent (event);
 		}
 	};
 
