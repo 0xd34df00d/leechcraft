@@ -33,7 +33,7 @@
 #include <QPainter>
 #include <QTextDocument>
 #include <QApplication>
-#include <QEvent>
+#include <QResizeEvent>
 #include "annmanager.h"
 
 namespace LeechCraft
@@ -113,6 +113,13 @@ namespace Monocle
 	{
 		if (event->type () != QEvent::Resize)
 			return QStyledItemDelegate::eventFilter (obj, event);
+
+		auto resize = static_cast<QResizeEvent*> (event);
+		const auto width = resize->size ().width ();
+		if (width == PrevWidth_)
+			return QStyledItemDelegate::eventFilter (obj, event);
+
+		PrevWidth_ = width;
 
 		auto model = View_->model ();
 

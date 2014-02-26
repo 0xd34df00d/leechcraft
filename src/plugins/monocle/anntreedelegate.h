@@ -42,6 +42,7 @@ namespace Monocle
 	class AnnTreeDelegate : public QStyledItemDelegate
 	{
 		QTreeView * const View_;
+		int PrevWidth_ = -1;
 	public:
 		AnnTreeDelegate (QTreeView*, QObject*);
 
