@@ -69,6 +69,8 @@ namespace Monocle
 			return new TextAnnItem (std::dynamic_pointer_cast<ITextAnnotation> (ann), parent);
 		case AnnotationType::Highlight:
 			return new HighAnnItem (std::dynamic_pointer_cast<IHighlightAnnotation> (ann), parent);
+		case AnnotationType::Link:
+			return new LinkAnnItem (std::dynamic_pointer_cast<ILinkAnnotation> (ann), parent);
 		case AnnotationType::Other:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown annotation type with contents"

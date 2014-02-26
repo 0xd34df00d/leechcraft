@@ -34,6 +34,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPen>
 #include "interfaces/monocle/iannotation.h"
+#include "linkitem.h"
 
 namespace LeechCraft
 {
@@ -133,6 +134,12 @@ namespace Monocle
 		void UpdateRect (const QRectF& rect);
 	private:
 		static QList<PolyData> ToPolyData (const QList<QPolygonF>&);
+	};
+
+	class LinkAnnItem : public AnnRectGraphicsItem<LinkItem>
+	{
+	public:
+		LinkAnnItem (const ILinkAnnotation_ptr&, QGraphicsItem*);
 	};
 }
 }
