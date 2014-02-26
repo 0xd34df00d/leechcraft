@@ -30,6 +30,7 @@
 #include "annotations.h"
 #include <QPolygonF>
 #include <poppler-annotation.h>
+#include "links.h"
 
 namespace LeechCraft
 {
@@ -45,6 +46,8 @@ namespace PDF
 			return IAnnotation_ptr { new TextAnnotation (dynamic_cast<Poppler::TextAnnotation*> (ann)) };
 		case Poppler::Annotation::SubType::AHighlight:
 			return IAnnotation_ptr { new HighlightAnnotation (dynamic_cast<Poppler::HighlightAnnotation*> (ann)) };
+		case Poppler::Annotation::SubType::ALink:
+			return IAnnotation_ptr { new LinkAnnotation (doc, dynamic_cast<Poppler::LinkAnnotation*> (ann)) };
 		default:
 			return {};
 		}
@@ -86,6 +89,23 @@ namespace PDF
 			result.append ({ { pts [0], pts [1], pts [2], pts [3] } });
 		}
 		return result;
+	}
+
+	LinkAnnotation::LinkAnnotation (Document *doc, Poppler::LinkAnnotation *ann)
+	: AnnotationBase { ann }
+	, LinkAnn_ { ann }
+	, Link_ { new Link { doc, LinkAnn_->linkDestination (), {} } }
+	{
+	}
+
+	AnnotationType LinkAnnotation::GetAnnotationType () const
+	{
+		return AnnotationType::Link;
+	}
+
+	ILink_ptr LinkAnnotation::GetLink () const
+	{
+		return Link_;
 	}
 }
 }

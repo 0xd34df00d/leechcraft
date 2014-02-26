@@ -89,7 +89,6 @@ namespace PDF
 		TextAnnotation (Poppler::TextAnnotation*);
 
 		AnnotationType GetAnnotationType () const;
-
 		bool IsInline () const;
 	};
 
@@ -100,8 +99,18 @@ namespace PDF
 		HighlightAnnotation (Poppler::HighlightAnnotation*);
 
 		AnnotationType GetAnnotationType () const;
-
 		QList<QPolygonF> GetPolygons () const;
+	};
+
+	class LinkAnnotation : public AnnotationBase<ILinkAnnotation>
+	{
+		Poppler::LinkAnnotation * const LinkAnn_;
+		ILink_ptr Link_;
+	public:
+		LinkAnnotation (Document*, Poppler::LinkAnnotation*);
+
+		AnnotationType GetAnnotationType () const;
+		ILink_ptr GetLink () const;
 	};
 }
 }
