@@ -60,6 +60,8 @@ namespace PDF
 
 		bool CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
+
+		bool IsThreaded () const;
 	};
 }
 }

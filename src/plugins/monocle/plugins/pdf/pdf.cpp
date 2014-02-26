@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "pdf.h"
-#include "document.h"
 #include <QIcon>
+#include <poppler-version.h>
+#include "document.h"
 
 namespace LeechCraft
 {
@@ -85,6 +86,15 @@ namespace PDF
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
 		return IDocument_ptr (new Document (file, this));
+	}
+
+	bool Plugin::IsThreaded () const
+	{
+#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 24
+		return true;
+#else
+		return false;
+#endif
 	}
 }
 }
