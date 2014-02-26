@@ -290,6 +290,8 @@ namespace Monocle
 
 		const auto& img = watcher->result ();
 		setPixmap (QPixmap::fromImage (img));
+
+		Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
 	}
 }
 }
