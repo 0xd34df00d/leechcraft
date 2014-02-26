@@ -69,9 +69,10 @@ namespace Monocle
 	{
 		QPointF PressedPos_;
 	public:
-		AnnBaseGraphicsItem (const IAnnotation_ptr& ann, QGraphicsItem *parent)
+		template<typename... TArgs>
+		AnnBaseGraphicsItem (const IAnnotation_ptr& ann, TArgs... args)
 		: AnnBaseItem { ann }
-		, T { parent }
+		, T { args... }
 		{
 		}
 	protected:
