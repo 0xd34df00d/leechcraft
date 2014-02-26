@@ -168,11 +168,8 @@ namespace Monocle
 						this,
 						SLOT (handlePixmapRendered ()));
 
-				std::function<QImage ()> worker ([this] ()
-						{
-							return Doc_->RenderPage (PageNum_, XScale_, YScale_);
-						});
-				watcher->setFuture (QtConcurrent::run (worker));
+				watcher->setFuture (QtConcurrent::run ([this]
+						{ return Doc_->RenderPage (PageNum_, XScale_, YScale_); }));
 
 				auto size = Doc_->GetPageSize (PageNum_);
 				size.rwidth () *= XScale_;
