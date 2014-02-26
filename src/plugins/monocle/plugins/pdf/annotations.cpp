@@ -29,6 +29,7 @@
 
 #include "annotations.h"
 #include <QPolygonF>
+#include <QtDebug>
 #include <poppler-annotation.h>
 #include <poppler-version.h>
 #include "links.h"
@@ -55,8 +56,14 @@ namespace PDF
 				return std::make_shared<LinkAnnotation> (doc, dynamic_cast<Poppler::LinkAnnotation*> (ann));
 #endif
 		default:
-			return {};
+			break;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown"
+				<< ann->subType ();
+
+		return {};
 	}
 
 	TextAnnotation::TextAnnotation (Poppler::TextAnnotation *ann)

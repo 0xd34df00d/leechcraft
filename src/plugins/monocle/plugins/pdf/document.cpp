@@ -153,10 +153,6 @@ namespace PDF
 		for (const auto ann : page->annotations ())
 			if (const auto wrapper = MakeAnnotation (this, ann))
 				annotations << wrapper;
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "unhandled"
-						<< ann->subType ();
 		return annotations;
 	}
 
