@@ -81,7 +81,6 @@ namespace Monocle
 	}
 
 	TextAnnItem::TextAnnItem (const ITextAnnotation_ptr& ann, QGraphicsItem *parent)
-	: AnnBaseGraphicsItem { ann, parent }
 	{
 	}
 
@@ -99,8 +98,7 @@ namespace Monocle
 
 	HighAnnItem::HighAnnItem (const IHighlightAnnotation_ptr& ann, QGraphicsItem *parent)
 	: AnnBaseGraphicsItem { ann, parent }
-	, Ann_ { ann }
-	, Polys_ { ToPolyData (Ann_->GetPolygons ()) }
+	, Polys_ { ToPolyData (ann->GetPolygons ()) }
 	{
 		for (const auto& data : Polys_)
 		{

@@ -88,7 +88,6 @@ namespace Monocle
 
 	class TextAnnItem : public AnnBaseGraphicsItem<QGraphicsRectItem>
 	{
-		const ITextAnnotation_ptr Ann_;
 	public:
 		TextAnnItem (const ITextAnnotation_ptr&, QGraphicsItem*);
 
@@ -99,7 +98,6 @@ namespace Monocle
 
 	class HighAnnItem : public AnnBaseGraphicsItem<QGraphicsItemGroup>
 	{
-		const IHighlightAnnotation_ptr Ann_;
 
 		struct PolyData
 		{
