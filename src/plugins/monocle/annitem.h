@@ -32,6 +32,7 @@
 #include <functional>
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QPen>
 #include "interfaces/monocle/iannotation.h"
 
 namespace LeechCraft
@@ -86,19 +87,32 @@ namespace Monocle
 		}
 	};
 
-	class TextAnnItem : public AnnBaseGraphicsItem<QGraphicsRectItem>
+	template<typename T>
+	class AnnRectGraphicsItem : public AnnBaseGraphicsItem<T>
 	{
 	public:
-		TextAnnItem (const ITextAnnotation_ptr&, QGraphicsItem*);
+		using AnnBaseGraphicsItem<T>::AnnBaseGraphicsItem;
 
-		void SetSelected (bool);
+		void SetSelected (bool selected)
+		{
+			AnnBaseItem::SetSelected (selected);
+			T::setPen (selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen);
+		}
 
-		void UpdateRect (const QRectF& rect);
+		void UpdateRect (const QRectF& rect)
+		{
+			T::setRect (rect);
+		}
+	};
+
+	class TextAnnItem : public AnnRectGraphicsItem<QGraphicsRectItem>
+	{
+	public:
+		using AnnRectGraphicsItem<QGraphicsRectItem>::AnnRectGraphicsItem;
 	};
 
 	class HighAnnItem : public AnnBaseGraphicsItem<QGraphicsItemGroup>
 	{
-
 		struct PolyData
 		{
 			QPolygonF Poly_;

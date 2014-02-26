@@ -29,7 +29,6 @@
 
 #include "annitem.h"
 #include <QBrush>
-#include <QPen>
 #include <QCursor>
 #include <QtDebug>
 
@@ -77,23 +76,13 @@ namespace Monocle
 			return nullptr;
 		}
 
+		qWarning () << Q_FUNC_INFO
+				<< "unhandled annotation type "
+				<< static_cast<int> (ann->GetAnnotationType ())
+				<< "with contents"
+				<< ann->GetText ();
+
 		return nullptr;
-	}
-
-	TextAnnItem::TextAnnItem (const ITextAnnotation_ptr& ann, QGraphicsItem *parent)
-	{
-	}
-
-	void TextAnnItem::SetSelected (bool selected)
-	{
-		AnnBaseItem::SetSelected (selected);
-
-		setPen (selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen);
-	}
-
-	void TextAnnItem::UpdateRect (const QRectF& rect)
-	{
-		setRect (rect);
 	}
 
 	HighAnnItem::HighAnnItem (const IHighlightAnnotation_ptr& ann, QGraphicsItem *parent)
