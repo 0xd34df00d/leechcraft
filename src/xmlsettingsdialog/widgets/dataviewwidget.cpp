@@ -36,6 +36,8 @@ namespace LeechCraft
 	{
 		Ui_.setupUi (this);
 
+		setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 		connect (Ui_.Add_,
 				SIGNAL (released ()),
 				this,
