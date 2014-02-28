@@ -46,8 +46,9 @@ namespace Xoox
 
 	bool InfoRequestPolicyManager::IsRequestAllowed (InfoRequest req, EntryBase *entry) const
 	{
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		switch (entry->GetEntryType ())
 		{
+		case ICLEntry::ETPrivateChat:
 			switch (req)
 			{
 			case InfoRequest::Version:
@@ -66,6 +67,22 @@ namespace Xoox
 					return false;
 				break;
 			}
+			break;
+		case ICLEntry::ETChat:
+			switch (req)
+			{
+			case InfoRequest::Version:
+				if (!XmlSettingsManager::Instance ().property ("RequestVersion").toBool ())
+					return false;
+				break;
+			case InfoRequest::VCard:
+				if (!XmlSettingsManager::Instance ().property ("RequestVCards").toBool ())
+					return false;
+				break;
+			}
+			break;
+		default:
+			break;
 		}
 
 		return true;
