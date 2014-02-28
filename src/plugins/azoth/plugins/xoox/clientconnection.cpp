@@ -926,7 +926,7 @@ namespace Xoox
 	void ClientConnection::handleConnected ()
 	{
 		IsConnected_ = true;
-		emit statusChanged (EntryStatus (LastState_.State_, LastState_.Status_));
+		emit statusChanged ({ LastState_.State_, LastState_.Status_ });
 
 		Client_->vCardManager ().requestVCard (OurBareJID_);
 
@@ -938,7 +938,7 @@ namespace Xoox
 
 		AnnotationsManager_->refetchNotes ();
 
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+		for (auto rh : RoomHandlers_)
 			rh->Join ();
 
 		PrivacyListsManager_->QueryLists ();
