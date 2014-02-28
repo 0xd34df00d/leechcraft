@@ -33,6 +33,7 @@
 #include <QXmppMucIq.h>
 #include <interfaces/azoth/azothcommon.h>
 
+class QXmppMessage;
 class QDomElement;
 class QWidget;
 class QXmppDataForm;
@@ -61,6 +62,8 @@ namespace XooxUtil
 
 	bool CheckUserFeature (EntryBase *entry,
 			const QString& variant, const QString& feature);
+
+	QXmppMessage Forwarded2Message (const QXmppElement& wrapper);
 
 	EntryStatus PresenceToStatus (const QXmppPresence& pres);
 
