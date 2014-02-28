@@ -30,6 +30,8 @@
 #include "carbonsmanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
+#include <QXmppMessage.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -90,6 +92,31 @@ namespace Xoox
 	bool CarbonsManager::IsEnabled () const
 	{
 		return LastConfirmedState_;
+	}
+
+	bool CarbonsManager::CheckMessage (const QXmppMessage& msg)
+	{
+		for (const auto& extension : msg.extensions ())
+		{
+			const auto& tag = extension.tagName ();
+			if ((tag == "received" || tag == "sent") &&
+				extension.attribute ("xmlns") == NsCarbons)
+			{
+				HandleMessage (extension);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	void CarbonsManager::HandleMessage (const QXmppElement& extElem)
+	{
+		const auto& msg = XooxUtil::Forwarded2Message (extElem);
+		if (msg.to ().isEmpty ())
+			return;
+
+		emit gotMessage (msg);
 	}
 }
 }

@@ -31,6 +31,8 @@
 
 #include <QXmppClientExtension.h>
 
+class QXmppMessage;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -51,9 +53,15 @@ namespace Xoox
 
 		void SetEnabled (bool);
 		bool IsEnabled () const;
+
+		bool CheckMessage (const QXmppMessage&);
+	private:
+		void HandleMessage (const QXmppElement&);
 	signals:
 		void stateChanged (bool);
 		void stateChangeError (const QXmppIq&);
+
+		void gotMessage (const QXmppMessage&);
 	};
 }
 }
