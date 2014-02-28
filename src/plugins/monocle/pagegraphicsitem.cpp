@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "pagegraphicsitem.h"
+#include <limits>
 #include <QtDebug>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
@@ -78,6 +79,10 @@ namespace Monocle
 
 	void PageGraphicsItem::SetScale (double xs, double ys)
 	{
+		if (std::abs (xs - XScale_) < std::numeric_limits<double>::epsilon () &&
+			std::abs (ys - YScale_) < std::numeric_limits<double>::epsilon ())
+			return;
+
 		XScale_ = xs;
 		YScale_ = ys;
 
