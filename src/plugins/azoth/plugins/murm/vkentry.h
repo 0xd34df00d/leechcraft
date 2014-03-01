@@ -87,6 +87,7 @@ namespace Murm
 
 		void RegisterIn (VkChatEntry*);
 		void UnregisterIn (VkChatEntry*);
+		void ReemitGroups ();
 
 		VkMessage* FindMessage (qulonglong) const;
 		void HandleMessage (MessageInfo);

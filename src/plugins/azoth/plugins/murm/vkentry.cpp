@@ -142,13 +142,18 @@ namespace Murm
 			return;
 
 		Chats_ << chat;
-		emit groupsChanged (Groups ());
+		ReemitGroups ();
 	}
 
 	void VkEntry::UnregisterIn (VkChatEntry *chat)
 	{
 		if (Chats_.removeAll (chat))
-			emit groupsChanged (Groups ());
+			ReemitGroups ();
+	}
+
+	void VkEntry::ReemitGroups ()
+	{
+		emit groupsChanged (Groups ());
 	}
 
 	VkMessage* VkEntry::FindMessage (qulonglong id) const
