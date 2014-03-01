@@ -454,6 +454,28 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::AddChatUser (qulonglong chat, qulonglong user)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.addChatUser");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("chat_id", QString::number (chat));
+				url.addQueryItem ("user_id", QString::number (user));
+
+				AddParams (url, params);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::RemoveChatUser (qulonglong chat, qulonglong user)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -462,7 +484,7 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.removeChatUser");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("chat_id", QString::number (chat));
-				url.addQueryItem ("uid", QString::number (user));
+				url.addQueryItem ("user_id", QString::number (user));
 
 				AddParams (url, params);
 
