@@ -124,7 +124,7 @@ namespace Murm
 
 	ICLEntry::Features VkChatEntry::GetEntryFeatures () const
 	{
-		return FSessionEntry;
+		return FSessionEntry | FSupportsRenames;
 	}
 
 	ICLEntry::EntryType VkChatEntry::GetEntryType () const
@@ -137,9 +137,9 @@ namespace Murm
 		return Info_.Title_;
 	}
 
-	void VkChatEntry::SetEntryName (const QString&)
+	void VkChatEntry::SetEntryName (const QString& title)
 	{
-		// TODO
+		Account_->GetConnection ()->SetChatTitle (Info_.ChatID_, title);
 	}
 
 	QString VkChatEntry::GetEntryID () const
