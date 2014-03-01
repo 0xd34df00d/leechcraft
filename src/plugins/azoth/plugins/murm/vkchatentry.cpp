@@ -287,9 +287,20 @@ namespace Murm
 		return {};
 	}
 
-	void VkChatEntry::InviteToMUC (const QString& userId, const QString& msg)
+	void VkChatEntry::InviteToMUC (const QString& userId, const QString&)
 	{
-		// TODO
+		bool ok = false;
+		const auto numericId = userId.toULongLong (&ok);
+
+		if (!ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect user id"
+					<< userId;
+			return;
+		}
+
+		Account_->GetConnection ()->AddChatUser (Info_.ChatID_, numericId);
 	}
 }
 }
