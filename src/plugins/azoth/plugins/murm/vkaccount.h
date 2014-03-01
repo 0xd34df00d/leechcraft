@@ -177,6 +177,7 @@ namespace Murm
 		void handleMessage (const MessageInfo&);
 		void handleTypingNotification (qulonglong);
 
+		void handleMucChanged (qulonglong);
 		void handleGotChatInfo (const ChatInfo&);
 		void handleChatUserRemoved (qulonglong, qulonglong);
 

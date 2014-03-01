@@ -106,6 +106,10 @@ namespace Murm
 				SIGNAL (statusChanged (EntryStatus)));
 
 		connect (Conn_,
+				SIGNAL (mucChanged (qulonglong)),
+				this,
+				SLOT (handleMucChanged (qulonglong)));
+		connect (Conn_,
 				SIGNAL (gotChatInfo (ChatInfo)),
 				this,
 				SLOT (handleGotChatInfo (ChatInfo)));
@@ -690,6 +694,11 @@ namespace Murm
 		emit accountChanged (this);
 
 		AccConfigDia_->deleteLater ();
+	}
+
+	void VkAccount::handleMucChanged (qulonglong chat)
+	{
+		Conn_->RequestChatInfo (chat);
 	}
 
 	void VkAccount::handleGotChatInfo (const ChatInfo& info)
