@@ -69,6 +69,7 @@ namespace Blasq
 				tr ("Please select the account to use while uploading the photo:"),
 				accNames,
 				0,
+				false,
 				&ok);
 
 		if (!ok)
