@@ -104,7 +104,13 @@ namespace Murm
 
 		Info_ = info;
 		if (titleChanged)
+		{
 			emit nameChanged (GetEntryName ());
+
+			for (auto id : Info_.Users_)
+				if (auto entry = Account_->GetEntry (id))
+					entry->ReemitGroups ();
+		}
 	}
 
 	void VkChatEntry::HandleAdded (qulonglong id)
