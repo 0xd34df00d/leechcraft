@@ -471,6 +471,28 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::SetChatTitle (qulonglong chat, const QString& title)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.editChat");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("chat_id", QString::number (chat));
+				url.addQueryItem ("title", title);
+
+				AddParams (url, params);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::SetStatus (QString status)
 	{
 		if (status.isEmpty ())

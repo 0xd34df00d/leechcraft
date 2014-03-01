@@ -174,6 +174,7 @@ namespace Murm
 		void CreateChat (const QString&, const QList<qulonglong>&);
 		void RequestChatInfo (qulonglong);
 		void RemoveChatUser (qulonglong chat, qulonglong user);
+		void SetChatTitle (qulonglong, const QString&);
 
 		void SetStatus (QString);
 
