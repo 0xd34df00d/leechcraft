@@ -251,6 +251,8 @@ namespace Murm
 
 		void userStateChanged (qulonglong uid, bool online);
 
+		void mucChanged (qulonglong);
+
 		void captchaNeeded (const QString& sid, const QUrl& url);
 	};
 }
