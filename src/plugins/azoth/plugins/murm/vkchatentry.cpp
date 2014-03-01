@@ -95,7 +95,7 @@ namespace Murm
 	{
 		for (auto id : info.Users_)
 			if (!Info_.Users_.contains (id))
-				HandleRemoved (id);
+				HandleAdded (id);
 		for (auto id : Info_.Users_)
 			if (!info.Users_.contains (id))
 				HandleRemoved (id);
@@ -105,6 +105,12 @@ namespace Murm
 		Info_ = info;
 		if (titleChanged)
 			emit nameChanged (GetEntryName ());
+	}
+
+	void VkChatEntry::HandleAdded (qulonglong id)
+	{
+		if (auto entry = Account_->GetEntry (id))
+			entry->RegisterIn (this);
 	}
 
 	void VkChatEntry::HandleRemoved (qulonglong id)
