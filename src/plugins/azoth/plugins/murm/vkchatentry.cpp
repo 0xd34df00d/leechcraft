@@ -98,8 +98,7 @@ namespace Murm
 				HandleRemoved (id);
 		for (auto id : Info_.Users_)
 			if (!info.Users_.contains (id))
-				if (auto entry = Account_->GetEntry (id))
-					entry->UnregisterIn (this);
+				HandleRemoved (id);
 
 		const bool titleChanged = info.Title_ != Info_.Title_;
 
@@ -119,7 +118,7 @@ namespace Murm
 			emit removeEntry (this);
 		}
 		else if (auto entry = Account_->GetEntry (id))
-			entry->RegisterIn (this);
+			entry->UnregisterIn (this);
 	}
 
 	ICLEntry::Features VkChatEntry::GetEntryFeatures () const
