@@ -114,6 +114,10 @@ namespace Murm
 		Dispatcher_ [61] = [this] (const QVariantList& items)
 			{ emit gotTypingNotification (items.value (1).toULongLong ()); };
 
+		// Stuff has been read, we don't care
+		Dispatcher_ [6] = [this] (const QVariantList&) {};
+		Dispatcher_ [7] = [this] (const QVariantList&) {};
+
 		Dispatcher_ [101] = [this] (const QVariantList&) {};	// unknown stuff
 
 		MarkOnlineTimer_->setInterval (12 * 60 * 1000);
