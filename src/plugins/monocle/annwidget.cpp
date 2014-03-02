@@ -41,13 +41,17 @@ namespace Monocle
 	{
 		Ui_.setupUi (this);
 
-		Ui_.AnnTree_->setItemDelegate (new AnnTreeDelegate (this));
+		Ui_.AnnTree_->setItemDelegate (new AnnTreeDelegate { Ui_.AnnTree_, this });
 		Ui_.AnnTree_->setModel (Mgr_->GetModel ());
 
 		connect (Mgr_,
 				SIGNAL (annotationSelected (QModelIndex)),
 				this,
 				SLOT (focusOnAnnotation (QModelIndex)));
+		connect (Ui_.AnnTree_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				Mgr_,
+				SLOT (selectAnnotation (QModelIndex)));
 	}
 
 	void AnnWidget::focusOnAnnotation (const QModelIndex& index)
@@ -56,7 +60,7 @@ namespace Monocle
 		auto parent = index.parent ();
 		while (parent.isValid ())
 		{
-			expandList << parent;
+			expandList.prepend (parent);
 			parent = parent.parent ();
 		}
 

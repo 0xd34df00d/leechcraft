@@ -32,7 +32,9 @@
 #include <functional>
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QPen>
 #include "interfaces/monocle/iannotation.h"
+#include "linkitem.h"
 
 namespace LeechCraft
 {
@@ -45,12 +47,16 @@ namespace Monocle
 	protected:
 		const IAnnotation_ptr BaseAnn_;
 		Handler_f Handler_;
+
+		bool IsSelected_ = false;
 	public:
 		AnnBaseItem (const IAnnotation_ptr&);
 
 		QGraphicsItem* GetItem ();
-
 		void SetHandler (const Handler_f&);
+
+		bool IsSelected () const;
+		virtual void SetSelected (bool) = 0;
 
 		virtual void UpdateRect (const QRectF& rect) = 0;
 	};
@@ -63,15 +69,18 @@ namespace Monocle
 	{
 		QPointF PressedPos_;
 	public:
-		AnnBaseGraphicsItem (const IAnnotation_ptr& ann, QGraphicsItem *parent)
+		template<typename... TArgs>
+		AnnBaseGraphicsItem (const IAnnotation_ptr& ann, TArgs... args)
 		: AnnBaseItem { ann }
-		, T { parent }
+		, T { args... }
 		{
 		}
 	protected:
 		void mousePressEvent (QGraphicsSceneMouseEvent *event)
 		{
 			PressedPos_ = event->pos ();
+			T::mousePressEvent (event);
+			event->accept ();
 		}
 
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
@@ -79,22 +88,37 @@ namespace Monocle
 			if (Handler_ &&
 					(event->pos () - PressedPos_).manhattanLength () < 4)
 				Handler_ (BaseAnn_);
+
+			T::mouseReleaseEvent (event);
 		}
 	};
 
-	class TextAnnItem : public AnnBaseGraphicsItem<QGraphicsRectItem>
+	template<typename T>
+	class AnnRectGraphicsItem : public AnnBaseGraphicsItem<T>
 	{
-		const ITextAnnotation_ptr Ann_;
 	public:
-		TextAnnItem (const ITextAnnotation_ptr&, QGraphicsItem*);
+		using AnnBaseGraphicsItem<T>::AnnBaseGraphicsItem;
 
-		void UpdateRect (const QRectF& rect);
+		void SetSelected (bool selected)
+		{
+			AnnBaseItem::SetSelected (selected);
+			T::setPen (selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen);
+		}
+
+		void UpdateRect (const QRectF& rect)
+		{
+			T::setRect (rect);
+		}
+	};
+
+	class TextAnnItem : public AnnRectGraphicsItem<QGraphicsRectItem>
+	{
+	public:
+		using AnnRectGraphicsItem<QGraphicsRectItem>::AnnRectGraphicsItem;
 	};
 
 	class HighAnnItem : public AnnBaseGraphicsItem<QGraphicsItemGroup>
 	{
-		const IHighlightAnnotation_ptr Ann_;
-
 		struct PolyData
 		{
 			QPolygonF Poly_;
@@ -106,9 +130,17 @@ namespace Monocle
 	public:
 		HighAnnItem (const IHighlightAnnotation_ptr&, QGraphicsItem*);
 
+		void SetSelected (bool);
+
 		void UpdateRect (const QRectF& rect);
 	private:
 		static QList<PolyData> ToPolyData (const QList<QPolygonF>&);
+	};
+
+	class LinkAnnItem : public AnnRectGraphicsItem<LinkItem>
+	{
+	public:
+		LinkAnnItem (const ILinkAnnotation_ptr&, QGraphicsItem*);
 	};
 }
 }

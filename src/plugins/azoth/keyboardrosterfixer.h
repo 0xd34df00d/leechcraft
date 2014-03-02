@@ -42,9 +42,12 @@ namespace Azoth
 	{
 		QLineEdit * const Edit_;
 		QTreeView * const View_;
-		bool IsSearching_;
+		bool IsSearching_ = false;
+		bool InterceptEnter_ = true;
 	public:
 		KeyboardRosterFixer (QLineEdit*, QTreeView*, QObject* = 0);
+
+		void SetInterceptEnter (bool);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	};

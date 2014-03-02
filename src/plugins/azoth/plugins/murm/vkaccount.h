@@ -38,6 +38,7 @@
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
+#include "vkprotocol.h"
 #include "vkconnection.h"
 
 namespace LeechCraft
@@ -49,7 +50,6 @@ namespace Murm
 	class VkEntry;
 	class VkChatEntry;
 	class VkMessage;
-	class VkProtocol;
 	class VkConnection;
 	class PhotoStorage;
 	class GeoResolver;
@@ -126,7 +126,7 @@ namespace Murm
 		GroupsManager* GetGroupsManager () const;
 
 		QObject* GetQObject ();
-		QObject* GetParentProtocol () const;
+		VkProtocol* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
 
@@ -177,6 +177,7 @@ namespace Murm
 		void handleMessage (const MessageInfo&);
 		void handleTypingNotification (qulonglong);
 
+		void handleMucChanged (qulonglong);
 		void handleGotChatInfo (const ChatInfo&);
 		void handleChatUserRemoved (qulonglong, qulonglong);
 

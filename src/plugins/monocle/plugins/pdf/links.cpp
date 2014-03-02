@@ -43,6 +43,12 @@ namespace PDF
 	{
 	}
 
+	Link::Link (Document *doc, Poppler::Link *link, const std::shared_ptr<void>& ptr)
+	: Doc_ (doc)
+	, Link_ (ptr, link)
+	{
+	}
+
 	LinkType Link::GetLinkType () const
 	{
 		switch (Link_->linkType ())

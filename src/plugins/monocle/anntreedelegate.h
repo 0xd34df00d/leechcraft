@@ -29,7 +29,11 @@
 
 #pragma once
 
+#include <memory>
 #include <QStyledItemDelegate>
+
+class QTreeView;
+class QTextDocument;
 
 namespace LeechCraft
 {
@@ -37,8 +41,18 @@ namespace Monocle
 {
 	class AnnTreeDelegate : public QStyledItemDelegate
 	{
+		QTreeView * const View_;
+		int PrevWidth_ = -1;
 	public:
-		AnnTreeDelegate (QObject*);
+		AnnTreeDelegate (QTreeView*, QObject*);
+
+		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
+
+		bool eventFilter (QObject*, QEvent*);
+	private:
+		std::shared_ptr<QTextDocument> GetDoc (const QModelIndex&, int) const;
+		QString GetText (const QModelIndex&) const;
 	};
 }
 }

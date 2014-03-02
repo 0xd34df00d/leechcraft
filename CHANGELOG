@@ -1,6 +1,174 @@
 This file lists only more or less major changes, refer to `git log` for
 the rest.
 
+!!! 0.6.65
+* New plugins:
+	* CpuLoad - cpu load monitoring quark.
+* [Core] Key sequencer fixes.
+* [Core] Use native strings for shortcuts in UI.
+* [Core] Properly handle reply finishing while in SSL errors handler.
+* [Core] Compact ranges in About dialog.
+* [Aggregator] Support renaming feeds.
+* [AnHero] Don't disable trace display.
+* [AnHero] Highlight functions without address.
+* [AnHero] Wait only for crash handler process.
+* [Auscrie] Save last used data filter.
+* [Auscrie] Show dialog on shoot action immediately.
+* [Azoth] Support plugins with server history like XMPP or VKontakte.
+* [Azoth] Support sending images via IDataFilter plugins.
+* [Azoth] Better image sending dialog.
+* [Azoth] Added "Mark all messages as read" group action.
+* [Azoth] Fixed Enter button in All users list on Mac. 
+* [Azoth] Fix logic leading segfault in Xoox on leaving.
+* [Azoth] Hide smiles tooltip on tab change.
+* [Azoth] Added chat window text search.
+* [Azoth] Make subj field read only if it can't be changed.
+* [Azoth] Mark messages as read only if tab is current.
+* [Azoth] Non-delayed sort model invalidation, workaround for a dreaded Qt bug.
+* [Azoth] Remember last file path in file send dialog.
+* [Azoth] Respect OpenTabOnNewMsg for highlight messages.
+* [Azoth] Show Online/Full count if no filtering at all.
+* [Azoth] Support manual status menus updating for #1514.
+* [Azoth] Check for parent in date messages, avoids a crash.
+* [Azoth] Close conf on /leave as well.
+* [Azoth] Close smiles chooser on Esc.
+* [Azoth] Configurable font size in msg edit, closes #1492.
+* [Azoth] More dbg output on invalid CL entry.
+* [Azoth] Show state icon in UsersListWidget.
+* [Azoth AP] Set "PreserveMessageEdit" if cancelled.
+* [Azoth Astrality] Fixed include path.
+* [Azoth Herbicide] Show multilines below for #1476.
+* [Azoth Murm] Support server history.
+* [Azoth Murm] Fixed handling of '<' in outgoing messages.
+* [Azoth Murm] Fix a segfault on slow sends.
+* [Azoth Murm] Offline messages are shown in proper order now.
+* [Azoth Murm] Support renaming multiuser chats.
+* [Azoth Murm] Support inviting users to multiuser chats.
+* [Azoth OTRoid] Fixed OTRv3 support.
+* [Azoth Rosenthal] Moved checking code to a separate plugin.
+* [Azoth Xoox] Support Message Archive Management (XEP-0313).
+* [Azoth Xoox] Support disabling requesting vcards and versions.
+* [Azoth Xoox] Don't clear the cached roster if shutting down without going ever online.
+* [Azoth Xoox] Normalize \r, \n and \t.
+* [Azoth Xoox] Don't check for Ad-Hoc identity on the root node.
+* [Azoth Xoox] Request the Ad-Hoc commands if node is empty.
+* [Azoth Xoox] Don't emit null ptr in handleAutojoinQueue, fixes a crash.
+* [Azoth Xoox] Implement RoomCLEntry::MarkMsgsRead().
+* [Blasq] Finally implement IImgSource to provide images to other plugins like LHTR.
+* [Blasq] Implement IDataFilter to support uploading images from other plugins.
+* [CSTP] Handle POST operations.
+* [CSTP] Pass task params to the task object.
+* [CSTP] Properly set the Referer field.
+* [CSTP] Properly update the Referer URL on redirections.
+* [CSTP] Set Origin header.
+* [DeadLyrics] Don't really use the reply object after deleteLater().
+* [DeadLyrics] Fixed crash with fast track changing in LMP.
+* [Imgaste] A little bit cleaner code.
+* [Imgaste] Support IDataFilter callbacks.
+* [Imgaste] We were probably leaking replies.
+* [KBSwitch] Context menu for the indicator.
+* [KBSwitch] Support changing language by mouse click.
+* [KBSwitch] Fallback icon for the quark, fixes #1519.
+* [KT] Don't cache images in QML.
+* [LackMan] Space key toggles the state of a package now.
+* [LackMan] vim-like package list navigation.
+* [LackMan] Added (un)install/upgrade actions to view context menu.
+* [LackMan] Select All/None in packages tree menu.
+* [LackMan] Delayed fetch list updating to speed things up.
+* [LackMan] Refactored tab into a separate class.
+* [LastFMScrobble] Properly connect to submitter error signal.
+* [LHTR] Support IImgSource for inserting images from e.g. Blasq.
+* [LHTR] Added HTML highlighter for the HTML view.
+* [LHTR] Don't sync HTML to View if there are parse errors.
+* [Liznoo] Avoid leaking battery props on Mac.
+* [Liznoo] Don't segfault on Mac if there is no battery.
+* [LMP] Added ReplayGain filter effect.
+* [LMP] Support automatic scanning files in local collection to compute ReplayGain info.
+* [LMP] Support dynamic pipeline manipulation.
+* [LMP] Added Delete shortcut for playlists mgr widget.
+* [LMP] Own recursive dir watcher to avoid starving file descriptors on Mac.
+* [LMP] Avoid leaking tags messages.
+* [LMP] Better error handling.
+* [LMP] Better error messages when mask expanding fails.
+* [LMP] Clear source after stop if it's not in queue.
+* [LMP] Detect charge percentage in IUnmountableSync devs.
+* [LMP] Don't convert const char* to char*.
+* [LMP] Don't emit stateChanged() if it hasn't been changed.
+* [LMP] Don't handleSourceChanged() on playback.
+* [LMP] Don't transcode the video stream.
+* [LMP] Recursive directory iteration is now cancellable.
+* [LMP] Fix saving disabled sorting in playlist.
+* [LMP] Fix segfault on empty collection in dynamic playlists.
+* [LMP] Ignore "a " prefix in The-ignore mode as well.
+* [LMP] It's ok to pass a playlist to Enqueue on DnD.
+* [LMP] Notify UI about mask expansion issues.
+* [LMP] Playing state change should notify about the song.
+* [LMP] Playlist Delete shortcut should have widget context.
+* [LMP] Properly restore sync format and bitrate type.
+* [LMP] Remove TC row from the hash after finish, avoids a memory leak.
+* [LMP] Save current source in custom playlists.
+* [LMP] Set current source on enqueueing iff it was empty.
+* [LMP] Set more env vars for gstreamer on Mac.
+* [LMP] Shorter SourceObject destruction wait.
+* [LMP] Skip to next track on SourceNotFound error instead of stopping playback.
+* [LMP] Support metadata in m3u for #1474.
+* [LMP] Unref the playbin on destruction, avoids a memory leak.
+* [LMP] Update old source state after new emitting it.
+* [LMP] Use encoded URLs for m3u playlists.
+* [LMP] Use taglib for tags copying on transcoding.
+* [LMP] When stream changes metadata obviously changes as well.
+* [LMP] Zero-initialize length, year & track num.
+* [LMP] Added GetAll method to the MPRIS Props adaptor.
+* [LMP] xesam:artist should be a QStringList.
+* [LMP Graffiti] Support cancelling recursive iteration.
+* [LMP Graffiti] Added path line edit with history.
+* [LMP Graffiti] Add sorting to dir list.
+* [LMP Graffiti] Better CUE image search.
+* [LMP Graffiti] Properly handle Unicode in CUEs.
+* [LMP Graffiti] Set / as root path for watcher.
+* [LMP MTPSync] Avoid timer-based cache eviction.
+* [LMP MTPSync] Don't warn about some common formats.
+* [Monocle] Support documents with annotations.
+* [Monocle] Fixed IsDisplayed() performance on big documents with lots of annotations.
+* [Monocle] Added bigger timeout on presenter showing.
+* [Monocle PDF] Support annotations.
+* [Monocle PDF] Threaded rendering on Poppler ≥0.24.
+* [MZ] Bigger request queue.
+* [MZ] Remove '!' from artist names.
+* [NewLife] Support Opera import.
+* [NSM] Add prefix for roles and fill item with sorting data.
+* [NSM] Fix uploading files to root dir.
+* [NSM] Improve sorting.
+* [NSM] Save last upload directory.
+* [NSM GDrive] migrate to Util::MimeDetector.
+* [Popishu] Support recoverable tabs.
+* [Popishu] Added Recently Opened Files menu.
+* [Popishu] Got rid of window menus at all.
+* [Poshuku] Pass Referer and Operation in unsupported content.
+* [Rosenthal] Support multiple dictionaries.
+* [Rosenthal] Moved spellchecker logic from Azoth Rosenthal.
+* [SB2] Detect just installed quarks without restarting LC.
+* [SB2] Workaround for Ubuntu Qt crappiness.
+* [SB2] Check for unhovered tab class before deleting the tabs list.
+* [SB2] Don't cache images.
+* [TL] Close on outside clicks, fixes #1521.
+* [TL] Handle PgUp/PgDown keys.
+* [TL] Removed the Delete button.
+* [TS] Use "Authenticate" item to auth instead of being noisy.
+* [TS] Fix one more segfault possibility.
+* [TS] Proper members initialization for AlbumInfo.
+* [TS] Set proper context name.
+* [TS] Shorter queue (1 sec instead of 10).
+* [TS] Clear albums map as well on refresh, fixes a crash.
+* [Util] Avoid leaking futures in ItemFinder.
+* [Util] Fixed parsing /etc/os-release.
+* [Util] VkAuthManager now supports silent mode.
+* [Vrooby] Fixed mounting from other plugins in UDisks2.
+* [Tools] Add gio and gconf schemas to the bundle.
+* [Tools] Fix various paths in gstreamer plugins.
+* [Tools] Know about lc tools in replacepath.py.
+* [Tools] Mac bundle building now automated.
+
 !!! 0.6.60
 * New plugins:
 	* Azoth Murm - VK support for Azoth.

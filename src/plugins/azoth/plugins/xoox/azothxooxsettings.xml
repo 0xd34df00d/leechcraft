@@ -19,6 +19,12 @@
 			<item type="checkbox" property="RequestVCardsInMUCs" default="true">
 				<label value="Request participant VCards in MUCs" />
 			</item>
+			<item type="checkbox" property="RequestVersion" default="true">
+				<label value="Request contacts versions" />
+			</item>
+			<item type="checkbox" property="RequestVCards" default="true">
+				<label value="Request contacts VCards" />
+			</item>
 		</groupbox>
 	</page>
 </settings>

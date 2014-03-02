@@ -29,81 +29,40 @@
 
 #pragma once
 
-#include <memory>
-#include <QtPlugin>
-#include <QMetaType>
-#include "ilink.h"
+#include <QXmppClientExtension.h>
 
-class QRectF;
-class QDateTime;
-class QPolygonF;
+class QXmppMessage;
 
 namespace LeechCraft
 {
-namespace Monocle
+namespace Azoth
 {
-	enum class AnnotationType
+namespace Xoox
+{
+	class CarbonsManager : public QXmppClientExtension
 	{
-		Text,
-		Highlight,
-		Link,
-		Other
-	};
+		Q_OBJECT
 
-	class IAnnotation
-	{
+		QString LastReqId_;
+		bool LastReqState_;
+
+		bool LastConfirmedState_ = false;
 	public:
-		virtual ~IAnnotation () {}
+		QStringList discoveryFeatures () const;
+		bool handleStanza (const QDomElement& stanza);
 
-		virtual QString GetAuthor () const = 0;
+		void SetEnabled (bool);
+		bool IsEnabled () const;
 
-		virtual QDateTime GetDate () const = 0;
+		bool CheckMessage (const QXmppMessage&);
+	private:
+		void HandleMessage (const QXmppElement&);
+	signals:
+		void stateChanged (bool);
+		void stateChangeError (const QXmppIq&);
 
-		virtual QRectF GetBoundary () const = 0;
-
-		virtual AnnotationType GetAnnotationType () const = 0;
-
-		virtual QString GetText () const = 0;
+		void gotMessage (const QXmppMessage&);
 	};
-
-	class ITextAnnotation : public IAnnotation
-	{
-	public:
-		virtual ~ITextAnnotation () {}
-
-		virtual bool IsInline () const = 0;
-	};
-
-	class IHighlightAnnotation : public IAnnotation
-	{
-	public:
-		virtual ~IHighlightAnnotation () {}
-
-		virtual QList<QPolygonF> GetPolygons () const = 0;
-	};
-
-	class ILinkAnnotation : public IAnnotation
-	{
-	public:
-		virtual ~ILinkAnnotation () {}
-
-		virtual ILink_ptr GetLink () const = 0;
-	};
-
-	typedef std::shared_ptr<IAnnotation> IAnnotation_ptr;
-	typedef std::shared_ptr<ITextAnnotation> ITextAnnotation_ptr;
-	typedef std::shared_ptr<IHighlightAnnotation> IHighlightAnnotation_ptr;
-	typedef std::shared_ptr<ILinkAnnotation> ILinkAnnotation_ptr;
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IAnnotation,
-		"org.LeechCraft.Monocle.IAnnotation/1.0");
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ITextAnnotation,
-		"org.LeechCraft.Monocle.ITextAnnotation/1.0");
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHighlightAnnotation,
-		"org.LeechCraft.Monocle.IHighlightAnnotation/1.0");
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ILinkAnnotation,
-		"org.LeechCraft.Monocle.ILinkAnnotation/1.0");
-
-Q_DECLARE_METATYPE (LeechCraft::Monocle::IAnnotation_ptr)
+}

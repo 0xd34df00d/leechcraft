@@ -56,6 +56,7 @@ namespace Murm
 				LeechCraft::Azoth::IProtocolPlugin)
 
 		VkProtocol *Proto_;
+		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);

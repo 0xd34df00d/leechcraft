@@ -143,7 +143,7 @@ namespace PDF
 		return page->text (rect);
 	}
 
-	QList<IAnnotation_ptr> Document::GetAnnotations (int pageNum) const
+	QList<IAnnotation_ptr> Document::GetAnnotations (int pageNum)
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
 		if (!page)
@@ -151,12 +151,8 @@ namespace PDF
 
 		QList<IAnnotation_ptr> annotations;
 		for (const auto ann : page->annotations ())
-			if (const auto wrapper = MakeAnnotation (ann))
+			if (const auto wrapper = MakeAnnotation (this, ann))
 				annotations << wrapper;
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "unhandled"
-						<< ann->subType ();
 		return annotations;
 	}
 

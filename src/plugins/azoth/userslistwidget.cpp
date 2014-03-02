@@ -48,8 +48,7 @@ namespace Azoth
 
 	UsersListWidget::UsersListWidget (const QList<QObject*>& parts,
 			std::function<QString (ICLEntry*)> nameGetter, QWidget *parent)
-	: QDialog (parent,
-			static_cast<Qt::WindowFlags> (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint))
+	: QDialog (parent, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint)
 	, Filter_ (new QSortFilterProxyModel (this))
 	, PartsModel_ (new QStandardItemModel (this))
 	{
@@ -84,12 +83,17 @@ namespace Azoth
 				SIGNAL (activated (QModelIndex)),
 				this,
 				SLOT (accept ()));
+		connect (Ui_.FilterLine_,
+				SIGNAL (returnPressed ()),
+				this,
+				SLOT (accept ()));
 		Ui_.ListView_->setCurrentIndex (Filter_->index (0, 0));
 
 		Ui_.ListView_->setFocusProxy (Ui_.FilterLine_);
 		Ui_.ListView_->setFocus ();
 
-		new KeyboardRosterFixer (Ui_.FilterLine_, Ui_.ListView_, this);
+		auto fixer = new KeyboardRosterFixer (Ui_.FilterLine_, Ui_.ListView_, this);
+		fixer->SetInterceptEnter (false);
 	}
 
 	QObject* UsersListWidget::GetActivatedParticipant () const

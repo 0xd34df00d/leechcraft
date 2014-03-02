@@ -29,7 +29,6 @@
 
 #include "annitem.h"
 #include <QBrush>
-#include <QPen>
 #include <QCursor>
 #include <QtDebug>
 
@@ -52,6 +51,16 @@ namespace Monocle
 		Handler_ = handler;
 	}
 
+	bool AnnBaseItem::IsSelected () const
+	{
+		return IsSelected_;
+	}
+
+	void AnnBaseItem::SetSelected (bool selected)
+	{
+		IsSelected_ = selected;
+	}
+
 	AnnBaseItem* MakeItem (const IAnnotation_ptr& ann, QGraphicsItem *parent)
 	{
 		switch (ann->GetAnnotationType ())
@@ -60,6 +69,8 @@ namespace Monocle
 			return new TextAnnItem (std::dynamic_pointer_cast<ITextAnnotation> (ann), parent);
 		case AnnotationType::Highlight:
 			return new HighAnnItem (std::dynamic_pointer_cast<IHighlightAnnotation> (ann), parent);
+		case AnnotationType::Link:
+			return new LinkAnnItem (std::dynamic_pointer_cast<ILinkAnnotation> (ann), parent);
 		case AnnotationType::Other:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown annotation type with contents"
@@ -67,23 +78,18 @@ namespace Monocle
 			return nullptr;
 		}
 
+		qWarning () << Q_FUNC_INFO
+				<< "unhandled annotation type "
+				<< static_cast<int> (ann->GetAnnotationType ())
+				<< "with contents"
+				<< ann->GetText ();
+
 		return nullptr;
-	}
-
-	TextAnnItem::TextAnnItem (const ITextAnnotation_ptr& ann, QGraphicsItem *parent)
-	: AnnBaseGraphicsItem { ann, parent }
-	{
-	}
-
-	void TextAnnItem::UpdateRect (const QRectF& rect)
-	{
-		setRect (rect);
 	}
 
 	HighAnnItem::HighAnnItem (const IHighlightAnnotation_ptr& ann, QGraphicsItem *parent)
 	: AnnBaseGraphicsItem { ann, parent }
-	, Ann_ { ann }
-	, Polys_ { ToPolyData (Ann_->GetPolygons ()) }
+	, Polys_ { ToPolyData (ann->GetPolygons ()) }
 	{
 		for (const auto& data : Polys_)
 		{
@@ -96,8 +102,22 @@ namespace Monocle
 		}
 	}
 
+	void HighAnnItem::SetSelected (bool selected)
+	{
+		AnnBaseItem::SetSelected (selected);
+
+		const auto& pen = selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen;
+		const auto& brush = selected ? QBrush { QColor { 255, 213, 0, 64 } } : QBrush {};
+		for (const auto& data : Polys_)
+		{
+			data.Item_->setPen (pen);
+			data.Item_->setBrush (brush);
+		}
+	}
+
 	void HighAnnItem::UpdateRect (const QRectF& rect)
 	{
+		setPos (rect.topLeft ());
 		for (auto data : Polys_)
 		{
 			auto poly = data.Poly_;
@@ -107,8 +127,8 @@ namespace Monocle
 
 			const auto xScale = rect.width () / Bounding_.width ();
 			const auto yScale = rect.height () / Bounding_.height ();
-			const auto xTran = rect.x () - Bounding_.x () * xScale;
-			const auto yTran = rect.y () - Bounding_.y () * yScale;
+			const auto xTran = rect.x () - Bounding_.x () * xScale - rect.left ();
+			const auto yTran = rect.y () - Bounding_.y () * yScale - rect.top ();
 
 			data.Item_->setPolygon (poly * QMatrix { xScale, 0, 0, yScale, xTran, yTran });
 		}
@@ -120,6 +140,11 @@ namespace Monocle
 		for (const auto& poly : polys)
 			result.append ({ poly, new QGraphicsPolygonItem });
 		return result;
+	}
+
+	LinkAnnItem::LinkAnnItem (const ILinkAnnotation_ptr& ann, QGraphicsItem *item)
+	: AnnRectGraphicsItem { ann, ann->GetLink (), item }
+	{
 	}
 }
 }

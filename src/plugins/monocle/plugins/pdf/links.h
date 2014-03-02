@@ -52,6 +52,7 @@ namespace PDF
 		std::shared_ptr<Poppler::Link> Link_;
 	public:
 		explicit Link (Document*, Poppler::Link*);
+		explicit Link (Document*, Poppler::Link*, const std::shared_ptr<void>&);
 
 		LinkType GetLinkType () const;
 		QRectF GetArea () const;

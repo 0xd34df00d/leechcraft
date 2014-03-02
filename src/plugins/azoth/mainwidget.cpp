@@ -408,8 +408,7 @@ namespace Azoth
 			actions << rename;
 
 			QList<QVariant> entries;
-			for (int i = 0, cnt = index.model ()->rowCount (index);
-					i < cnt; ++i)
+			for (int i = 0, cnt = index.model ()->rowCount (index); i < cnt; ++i)
 				entries << index.child (i, 0).data (Core::CLREntryObject);
 
 			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
@@ -419,6 +418,17 @@ namespace Azoth
 					this,
 					SLOT (handleSendGroupMsgTriggered ()));
 			actions << sendMsg;
+
+			if (index.data (Core::CLRUnreadMsgCount).toInt ())
+			{
+				auto markAll = new QAction (tr ("Mark all messages as read"), menu);
+				markAll->setProperty ("Azoth/Entries", entries);
+				connect (markAll,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleMarkAllTriggered ()));
+				actions << markAll;
+			}
 
 			QAction *removeChildren = new QAction (tr ("Remove group's participants"), menu);
 			removeChildren->setProperty ("Azoth/Entries", entries);
@@ -602,6 +612,12 @@ namespace Azoth
 		auto dlg = new GroupSendDialog (entries, this);
 		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
 		dlg->show ();
+	}
+
+	void MainWidget::handleMarkAllTriggered ()
+	{
+		for (const auto entry : GetEntriesFromSender (sender ()))
+			qobject_cast<ICLEntry*> (entry)->MarkMsgsRead ();
 	}
 
 	void MainWidget::handleRemoveChildrenTriggered ()

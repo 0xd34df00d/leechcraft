@@ -39,6 +39,7 @@
 #include "roompublicmessage.h"
 #include "roomhandler.h"
 #include "roomconfigwidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -46,10 +47,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	namespace
-	{
-	}
-
 	RoomCLEntry::RoomCLEntry (RoomHandler *rh, bool isAutojoined, GlooxAccount *account)
 	: QObject (rh)
 	, IsAutojoined_ (isAutojoined)
@@ -237,6 +234,7 @@ namespace Xoox
 
 	void RoomCLEntry::MarkMsgsRead ()
 	{
+		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void RoomCLEntry::ChatTabClosed ()

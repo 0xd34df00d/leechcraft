@@ -39,23 +39,26 @@ class QModelIndex;
 class QStandardItemModel;
 class QStandardItem;
 class QGraphicsScene;
-class QGraphicsView;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
+	class PagesView;
 	class PageGraphicsItem;
+	class AnnBaseItem;
 
 	class AnnManager : public QObject
 	{
 		Q_OBJECT
 
-		QGraphicsView * const View_;
+		PagesView * const View_;
 		QGraphicsScene * const Scene_;
 
 		QStandardItemModel * const AnnModel_;
-		QMap<IAnnotation_ptr, QStandardItem*> AnnHash_;
+		QMap<IAnnotation_ptr, QStandardItem*> Ann2Item_;
+
+		QMap<IAnnotation_ptr, AnnBaseItem*> Ann2GraphicsItem_;
 	public:
 		enum Role
 		{
@@ -70,11 +73,15 @@ namespace Monocle
 			AnnItem
 		};
 
-		AnnManager (QGraphicsView*, QObject* = 0);
+		AnnManager (PagesView*, QObject* = 0);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 
 		QAbstractItemModel* GetModel () const;
+	private:
+		void SelectAnnotation (const IAnnotation_ptr&);
+	public slots:
+		void selectAnnotation (const QModelIndex&);
 	signals:
 		void annotationSelected (const QModelIndex&);
 	};

@@ -173,7 +173,9 @@ namespace Murm
 
 		void CreateChat (const QString&, const QList<qulonglong>&);
 		void RequestChatInfo (qulonglong);
+		void AddChatUser (qulonglong chat, qulonglong user);
 		void RemoveChatUser (qulonglong chat, qulonglong user);
+		void SetChatTitle (qulonglong, const QString&);
 
 		void SetStatus (QString);
 
@@ -228,6 +230,8 @@ namespace Murm
 		void handleMessageInfoFetched ();
 		void handlePhotoInfosFetched ();
 
+		void handleScopeSettingsChanged ();
+
 		void saveCookies (const QByteArray&);
 	signals:
 		void statusChanged (EntryStatus);
@@ -249,6 +253,8 @@ namespace Murm
 		void chatUserRemoved (qulonglong, qulonglong);
 
 		void userStateChanged (qulonglong uid, bool online);
+
+		void mucChanged (qulonglong);
 
 		void captchaNeeded (const QString& sid, const QUrl& url);
 	};

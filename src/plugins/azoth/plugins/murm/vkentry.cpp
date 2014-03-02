@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
+#include <interfaces/azoth/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
 #include "vkmessage.h"
@@ -141,13 +142,18 @@ namespace Murm
 			return;
 
 		Chats_ << chat;
-		emit groupsChanged (Groups ());
+		ReemitGroups ();
 	}
 
 	void VkEntry::UnregisterIn (VkChatEntry *chat)
 	{
 		if (Chats_.removeAll (chat))
-			emit groupsChanged (Groups ());
+			ReemitGroups ();
+	}
+
+	void VkEntry::ReemitGroups ()
+	{
+		emit groupsChanged (Groups ());
 	}
 
 	VkMessage* VkEntry::FindMessage (qulonglong id) const
@@ -479,6 +485,8 @@ namespace Murm
 
 	void VkEntry::MarkMsgsRead ()
 	{
+		Account_->GetParentProtocol ()->GetAzothProxy ()->MarkMessagesAsRead (this);
+
 		if (!HasUnread_)
 			return;
 

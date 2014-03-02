@@ -52,9 +52,11 @@ namespace Monocle
 	class TOCWidget;
 	class BookmarksWidget;
 	class ThumbsWidget;
+	class AnnWidget;
 	class FindDialog;
 	class FormManager;
 	class LinksManager;
+	class AnnManager;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -86,12 +88,14 @@ namespace Monocle
 		PagesLayoutManager *LayoutManager_;
 		TextSearchHandler *SearchHandler_;
 		FormManager *FormManager_;
+		AnnManager *AnnManager_;
 		LinksManager *LinksManager_;
 
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
 		BookmarksWidget *BMWidget_;
 		ThumbsWidget *ThumbsWidget_;
+		AnnWidget *AnnWidget_;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;

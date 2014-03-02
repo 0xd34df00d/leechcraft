@@ -49,11 +49,6 @@ namespace Monocle
 	, Scene_ (view->scene ())
 	, LayMode_ (LayoutMode::OnePage)
 	, ScaleMode_ (ScaleMode::FitWidth)
-	, FixedScale_ (1)
-	, RelayoutScheduled_ (false)
-	, HorMargin_ (0)
-	, VertMargin_ (0)
-	, Rotation_ (0)
 	{
 		connect (View_,
 				SIGNAL (sizeChanged ()),

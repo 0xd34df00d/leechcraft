@@ -45,7 +45,9 @@ namespace Monocle
 {
 namespace PDF
 {
-	IAnnotation_ptr MakeAnnotation (Poppler::Annotation*);
+	class Document;
+
+	IAnnotation_ptr MakeAnnotation (Document*, Poppler::Annotation*);
 
 	template<typename T>
 	class AnnotationBase : public T
@@ -87,7 +89,6 @@ namespace PDF
 		TextAnnotation (Poppler::TextAnnotation*);
 
 		AnnotationType GetAnnotationType () const;
-
 		bool IsInline () const;
 	};
 
@@ -98,8 +99,18 @@ namespace PDF
 		HighlightAnnotation (Poppler::HighlightAnnotation*);
 
 		AnnotationType GetAnnotationType () const;
-
 		QList<QPolygonF> GetPolygons () const;
+	};
+
+	class LinkAnnotation : public AnnotationBase<ILinkAnnotation>
+	{
+		Poppler::LinkAnnotation * const LinkAnn_;
+		ILink_ptr Link_;
+	public:
+		LinkAnnotation (Document*, Poppler::LinkAnnotation*);
+
+		AnnotationType GetAnnotationType () const;
+		ILink_ptr GetLink () const;
 	};
 }
 }

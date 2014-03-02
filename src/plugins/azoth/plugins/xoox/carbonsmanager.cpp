@@ -27,83 +27,97 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QtPlugin>
-#include <QMetaType>
-#include "ilink.h"
-
-class QRectF;
-class QDateTime;
-class QPolygonF;
+#include "carbonsmanager.h"
+#include <QDomElement>
+#include <QXmppClient.h>
+#include <QXmppMessage.h>
+#include "util.h"
 
 namespace LeechCraft
 {
-namespace Monocle
+namespace Azoth
 {
-	enum class AnnotationType
+namespace Xoox
+{
+	namespace
 	{
-		Text,
-		Highlight,
-		Link,
-		Other
-	};
+		const QString NsCarbons { "urn:xmpp:carbons:2" };
+	}
 
-	class IAnnotation
+	QStringList CarbonsManager::discoveryFeatures () const
 	{
-	public:
-		virtual ~IAnnotation () {}
+		return { NsCarbons };
+	}
 
-		virtual QString GetAuthor () const = 0;
-
-		virtual QDateTime GetDate () const = 0;
-
-		virtual QRectF GetBoundary () const = 0;
-
-		virtual AnnotationType GetAnnotationType () const = 0;
-
-		virtual QString GetText () const = 0;
-	};
-
-	class ITextAnnotation : public IAnnotation
+	bool CarbonsManager::handleStanza (const QDomElement& stanza)
 	{
-	public:
-		virtual ~ITextAnnotation () {}
+		if (stanza.tagName () == "iq" &&
+				stanza.attribute ("id") == LastReqId_)
+		{
+			LastReqId_.clear ();
 
-		virtual bool IsInline () const = 0;
-	};
+			if (stanza.attribute ("type") == "result")
+			{
+				LastConfirmedState_ = LastReqState_;
+				emit stateChanged (LastConfirmedState_);
+			}
+			else
+			{
+				QXmppIq iq;
+				iq.parse (stanza);
+				emit stateChangeError (iq);
+			}
 
-	class IHighlightAnnotation : public IAnnotation
+			return true;
+		}
+
+		return false;
+	}
+
+	void CarbonsManager::SetEnabled (bool enabled)
 	{
-	public:
-		virtual ~IHighlightAnnotation () {}
+		QXmppIq iq { QXmppIq::Set };
 
-		virtual QList<QPolygonF> GetPolygons () const = 0;
-	};
+		QXmppElement elem;
+		elem.setTagName (enabled ? "enable" : "disable");
+		elem.setAttribute ("xmlns", NsCarbons);
+		iq.setExtensions ({ elem });
 
-	class ILinkAnnotation : public IAnnotation
+		client ()->sendPacket (iq);
+
+		LastReqId_ = iq.id ();
+		LastReqState_ = enabled;
+	}
+
+	bool CarbonsManager::IsEnabled () const
 	{
-	public:
-		virtual ~ILinkAnnotation () {}
+		return LastConfirmedState_;
+	}
 
-		virtual ILink_ptr GetLink () const = 0;
-	};
+	bool CarbonsManager::CheckMessage (const QXmppMessage& msg)
+	{
+		for (const auto& extension : msg.extensions ())
+		{
+			const auto& tag = extension.tagName ();
+			if ((tag == "received" || tag == "sent") &&
+				extension.attribute ("xmlns") == NsCarbons)
+			{
+				HandleMessage (extension);
+				return true;
+			}
+		}
 
-	typedef std::shared_ptr<IAnnotation> IAnnotation_ptr;
-	typedef std::shared_ptr<ITextAnnotation> ITextAnnotation_ptr;
-	typedef std::shared_ptr<IHighlightAnnotation> IHighlightAnnotation_ptr;
-	typedef std::shared_ptr<ILinkAnnotation> ILinkAnnotation_ptr;
+		return false;
+	}
+
+	void CarbonsManager::HandleMessage (const QXmppElement& extElem)
+	{
+		const auto& msg = XooxUtil::Forwarded2Message (extElem);
+		if (msg.to ().isEmpty ())
+			return;
+
+		emit gotMessage (msg);
+	}
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IAnnotation,
-		"org.LeechCraft.Monocle.IAnnotation/1.0");
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ITextAnnotation,
-		"org.LeechCraft.Monocle.ITextAnnotation/1.0");
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHighlightAnnotation,
-		"org.LeechCraft.Monocle.IHighlightAnnotation/1.0");
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ILinkAnnotation,
-		"org.LeechCraft.Monocle.ILinkAnnotation/1.0");
-
-Q_DECLARE_METATYPE (LeechCraft::Monocle::IAnnotation_ptr)
+}

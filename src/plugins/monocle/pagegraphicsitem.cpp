@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "pagegraphicsitem.h"
+#include <limits>
 #include <QtDebug>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
@@ -78,6 +79,10 @@ namespace Monocle
 
 	void PageGraphicsItem::SetScale (double xs, double ys)
 	{
+		if (std::abs (xs - XScale_) < std::numeric_limits<double>::epsilon () &&
+			std::abs (ys - YScale_) < std::numeric_limits<double>::epsilon ())
+			return;
+
 		XScale_ = xs;
 		YScale_ = ys;
 
@@ -168,11 +173,8 @@ namespace Monocle
 						this,
 						SLOT (handlePixmapRendered ()));
 
-				std::function<QImage ()> worker ([this] ()
-						{
-							return Doc_->RenderPage (PageNum_, XScale_, YScale_);
-						});
-				watcher->setFuture (QtConcurrent::run (worker));
+				watcher->setFuture (QtConcurrent::run ([this]
+						{ return Doc_->RenderPage (PageNum_, XScale_, YScale_); }));
 
 				auto size = Doc_->GetPageSize (PageNum_);
 				size.rwidth () *= XScale_;
