@@ -31,6 +31,8 @@
 
 #include <QtGlobal>
 
+#ifdef __clang__
+
 #pragma clang diagnostic push
 
 #ifndef Q_OS_MAC
@@ -40,3 +42,9 @@
 #include <gst/gst.h>
 
 #pragma clang diagnostic pop
+
+#else
+
+#include <gst/gst.h>
+
+#endif
