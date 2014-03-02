@@ -82,7 +82,8 @@ namespace SvcAuth
 
 	bool VkAuthManager::IsAuthenticated () const
 	{
-		return !Token_.isEmpty () && ReceivedAt_.secsTo (QDateTime::currentDateTime ()) < ValidFor_;
+		return !Token_.isEmpty () &&
+			(!ValidFor_ || ReceivedAt_.secsTo (QDateTime::currentDateTime ()) < ValidFor_);
 	}
 
 	bool VkAuthManager::HadAuthentication () const
