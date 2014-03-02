@@ -134,6 +134,9 @@ namespace Murm
 				SIGNAL (timeout ()),
 				this,
 				SLOT (markOnline ()));
+
+		XmlSettingsManager::Instance ().RegisterObject ("RequireOffline",
+				this, "handleScopeSettingsChanged");
 	}
 
 	const QByteArray& VkConnection::GetCookies () const
@@ -1383,6 +1386,11 @@ namespace Murm
 			result << PhotoMap2Info (item.toMap ());
 
 		setter (result);
+	}
+
+	void VkConnection::handleScopeSettingsChanged ()
+	{
+		AuthMgr_->UpdateScope (GetPerms ());
 	}
 
 	void VkConnection::saveCookies (const QByteArray& cookies)

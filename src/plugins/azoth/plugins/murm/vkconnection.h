@@ -230,6 +230,8 @@ namespace Murm
 		void handleMessageInfoFetched ();
 		void handlePhotoInfosFetched ();
 
+		void handleScopeSettingsChanged ();
+
 		void saveCookies (const QByteArray&);
 	signals:
 		void statusChanged (EntryStatus);
