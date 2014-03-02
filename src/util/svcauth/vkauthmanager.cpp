@@ -66,7 +66,8 @@ namespace SvcAuth
 	, Queue_ (queueMgr)
 	, ValidFor_ (0)
 	, IsRequesting_ (false)
-	, URL_ (URLFromClientID (id, scope))
+	, ID_ (id)
+	, URL_ (URLFromClientID (ID_, scope))
 	, IsRequestScheduled_ (false)
 	, ScheduleTimer_ (new QTimer (this))
 	{
@@ -89,6 +90,18 @@ namespace SvcAuth
 	bool VkAuthManager::HadAuthentication () const
 	{
 		return !Token_.isEmpty () || !Cookies_->allCookies ().isEmpty ();
+	}
+
+	void VkAuthManager::UpdateScope (const QStringList& scope)
+	{
+		const auto& newUrl = URLFromClientID (ID_, scope);
+		if (URL_ == newUrl)
+			return;
+
+		URL_ = newUrl;
+		Token_.clear ();
+		ReceivedAt_ = QDateTime ();
+		ValidFor_ = 0;
 	}
 
 	void VkAuthManager::GetAuthKey ()
