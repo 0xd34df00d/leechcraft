@@ -38,6 +38,7 @@
 #include <util/queuemanager.h>
 #include "longpollmanager.h"
 #include "logger.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -49,12 +50,20 @@ namespace Murm
 	{
 		const QString UserFields = "first_name,last_name,nickname,photo,photo_big,sex,"
 				"bdate,city,country,timezone,contacts,education";
+
+		QStringList GetPerms ()
+		{
+			QStringList result { "messages", "notifications", "friends", "status", "photos" };
+			if (XmlSettingsManager::Instance ().property ("RequireOffline").toBool ())
+				result << "offline";
+			return result;
+		}
 	}
 
 	VkConnection::VkConnection (const QString& name,
 			const QByteArray& cookies, ICoreProxy_ptr proxy, Logger& logger)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager (name, "3778319",
-			{ "messages", "notifications", "friends", "status", "photos" },
+			GetPerms (),
 			cookies, proxy, nullptr, this))
 	, Proxy_ (proxy)
 	, Logger_ (logger)

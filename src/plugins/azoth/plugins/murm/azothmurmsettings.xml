@@ -9,5 +9,11 @@
 				<tooltip>The following variables are allowed: $name, $nick, $surname.</tooltip>
 			</item>
 		</groupbox>
+		<groupbox>
+			<label value="Connection" />
+			<item type="checkbox" property="RequireOffline" default="false">
+				<label value="Require Offline permissions to avoid reauthentification on IP change" />
+			</item>
+		</groupbox>
 	</page>
 </settings>
