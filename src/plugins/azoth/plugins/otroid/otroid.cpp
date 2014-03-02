@@ -150,6 +150,10 @@ namespace OTRoid
 
 			if (!msg.isEmpty ())
 			{
+				if (message)
+					msg += " " + Plugin::tr ("Original OTR message: %1.")
+							.arg (QString::fromUtf8 (message));
+
 				plugin->InjectMsg (QString::fromUtf8 (context->accountname),
 						QString::fromUtf8 (context->username),
 						msg, false, IMessage::DIn,
