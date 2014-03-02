@@ -110,7 +110,7 @@ namespace OTRoid
 
 #if OTRL_VERSION_MAJOR >= 4
 		void HandleMsgEvent (void *opData, OtrlMessageEvent event,
-				ConnContext *context, const char *message, gcry_error_t)
+				ConnContext *context, const char *message, gcry_error_t err)
 		{
 			qDebug () << Q_FUNC_INFO
 					<< event
@@ -145,6 +145,33 @@ namespace OTRoid
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_MALFORMED:
 				msg = Plugin::tr ("Received message contains malformed data.");
+				break;
+			case OTRL_MSGEVENT_ENCRYPTION_ERROR:
+				msg = Plugin::tr ("OTR encryption error, the message has not been sent.");
+				break;
+			case OTRL_MSGEVENT_ENCRYPTION_REQUIRED:
+				msg = Plugin::tr ("Trying to send unencrypted message while our policy requires OTR encryption.");
+				break;
+			case OTRL_MSGEVENT_SETUP_ERROR:
+				msg = Plugin::tr ("Private conversation could not be set up. Error %1, source %2.")
+						.arg (QString::fromUtf8 (gcry_strerror (err)))
+						.arg (QString::fromUtf8 (gcry_strsource (err)));
+				break;
+			case OTRL_MSGEVENT_MSG_REFLECTED:
+				msg = Plugin::tr ("Received our own OTR message.");
+				break;
+			case OTRL_MSGEVENT_MSG_RESENT:
+				msg = Plugin::tr ("The previous message has been resent.");
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_FOR_OTHER_INSTANCE:
+				msg = Plugin::tr ("Received (and discarded) message for other client instance.");
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_GENERAL_ERR:
+				msg = Plugin::tr ("Received general OTR error.");
+				break;
+			case OTRL_MSGEVENT_LOG_HEARTBEAT_RCVD:
+			case OTRL_MSGEVENT_LOG_HEARTBEAT_SENT:
+			case OTRL_MSGEVENT_NONE:
 				break;
 			}
 
