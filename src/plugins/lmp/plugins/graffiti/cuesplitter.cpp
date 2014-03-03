@@ -104,10 +104,18 @@ namespace Graffiti
 		void HandleREM (QString rem, Cue& result)
 		{
 			rem = rem.mid (4);
-			if (rem.startsWith ("GENRE "))
-				result.Genre_ = rem.mid (6);
-			else if (rem.startsWith ("DATE "))
-				result.Date_ = rem.mid (5).toInt ();
+
+			const QList<QPair<QString, std::function<void (QString)>>> setters ({
+					{ "GENRE", [&result] (const QString& val) { result.Genre_ = val; } },
+					{ "DATE", [&result] (const QString& val) { result.Date_ = val.toInt (); } },
+				});
+
+			for (const auto& key : setters)
+				if (rem.startsWith (key.first))
+				{
+					key.second (rem.mid (key.first.size () + 1));
+					break;
+				}
 		}
 
 		template<typename Iter>
