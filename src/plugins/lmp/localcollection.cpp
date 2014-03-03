@@ -223,7 +223,6 @@ namespace LMP
 				this,
 				SLOT (handleIterateFinished ()));
 		watcher->setProperty ("Path", path);
-		watcher->setProperty ("IsRoot", root);
 
 		if (root)
 			AddRootPaths (QStringList (path));
