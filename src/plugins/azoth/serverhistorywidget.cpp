@@ -184,7 +184,10 @@ namespace Azoth
 
 	void ServerHistoryWidget::on_MessagesView__anchorClicked (const QUrl& url)
 	{
-		Core::Instance ().HandleURLGeneric (url, true);
+		const auto& current = Ui_.ContactsView_->currentIndex ();
+		const auto entryObj = current.data (ServerHistoryRole::CLEntry).value<QObject*> ();
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		Core::Instance ().HandleURLGeneric (url, true, entry);
 	}
 
 	void ServerHistoryWidget::navigatePrevious ()
