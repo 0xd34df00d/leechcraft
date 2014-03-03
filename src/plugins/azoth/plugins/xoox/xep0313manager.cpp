@@ -146,7 +146,7 @@ namespace Xoox
 			otherJid = message.to ().section ('/', 0, 0);
 		}
 
-		const SrvHistMessage msg { dir, id.toUtf8 (), {}, message.body (), message.stamp () };
+		const SrvHistMessage msg { dir, id.toUtf8 (), {}, message.body (), message.stamp (), message.xhtml () };
 		Messages_ [otherJid] << msg;
 		LastId2Jid_ [id] = otherJid;
 	}
