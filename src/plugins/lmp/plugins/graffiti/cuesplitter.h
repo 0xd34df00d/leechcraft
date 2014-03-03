@@ -59,6 +59,7 @@ namespace Graffiti
 			QString Title_;
 			int Date_;
 			QString Genre_;
+			QString DiscId_;
 		};
 		QList<SplitQueueItem> SplitQueue_;
 
