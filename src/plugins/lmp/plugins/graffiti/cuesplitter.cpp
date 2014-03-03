@@ -386,6 +386,7 @@ namespace Graffiti
 		addTag ("TRACKNUMBER", QString::number (item.Index_));
 		addTag ("GENRE", item.Genre_);
 		addTag ("DATE", item.Date_ > 0 ? QString::number (item.Date_) : QString ());
+		addTag ("DISCID", item.DiscId_);
 
 		args << item.SourceFile_ << "-o" << item.TargetFile_;
 
