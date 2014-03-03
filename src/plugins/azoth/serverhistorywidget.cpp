@@ -151,9 +151,13 @@ namespace Azoth
 		{
 			const auto& color = Core::Instance ().GetNickColor (message.Nick_, colors);
 
-			auto msgText = message.Body_;
-			ProxyObject {}.FormatLinks (msgText);
-			msgText.replace ('\n', "<br/>");
+			auto msgText = message.RichBody_;
+			if (msgText.isEmpty ())
+			{
+				msgText = message.Body_;
+				ProxyObject {}.FormatLinks (msgText);
+				msgText.replace ('\n', "<br/>");
+			}
 
 			QString html = "[" + message.TS_.toString () + "] " + preNick;
 			html += "<font color='" + color + "'>" + message.Nick_ + "</font> ";
