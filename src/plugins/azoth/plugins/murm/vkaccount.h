@@ -99,6 +99,7 @@ namespace Murm
 		bool PublishTune_ = false;
 		bool EnableFileLog_ = false;
 		bool MarkAsOnline_ = false;
+		bool UpdateStatus_ = false;
 
 		QPointer<AccountConfigDialog> AccConfigDia_;
 

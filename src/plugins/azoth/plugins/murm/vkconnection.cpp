@@ -557,7 +557,7 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::SetStatus (const EntryStatus& status)
+	void VkConnection::SetStatus (const EntryStatus& status, bool updateString)
 	{
 		Logger_ (IHaveConsole::PacketDirection::Out) << "setting status" << status.State_;
 		LPManager_->ForceServerRequery ();
@@ -597,7 +597,10 @@ namespace Murm
 						SLOT (handleGotFriendLists ()));
 				return reply;
 			});
-		SetStatus (Status_.StatusString_);
+
+		if (updateString)
+			SetStatus (Status_.StatusString_);
+
 		AuthMgr_->GetAuthKey ();
 	}
 

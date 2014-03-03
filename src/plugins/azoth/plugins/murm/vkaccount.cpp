@@ -139,13 +139,14 @@ namespace Murm
 		QByteArray result;
 		QDataStream out (&result, QIODevice::WriteOnly);
 
-		out << static_cast<quint8> (3)
+		out << static_cast<quint8> (4)
 				<< ID_
 				<< Name_
 				<< Conn_->GetCookies ()
 				<< EnableFileLog_
 				<< PublishTune_
-				<< MarkAsOnline_;
+				<< MarkAsOnline_
+				<< UpdateStatus_;
 
 		return result;
 	}
@@ -179,6 +180,8 @@ namespace Murm
 					>> acc->PublishTune_;
 		if (version >= 3)
 			in >> acc->MarkAsOnline_;
+		if (version >= 4)
+			in >> acc->UpdateStatus_;
 
 		acc->Init ();
 
@@ -311,6 +314,7 @@ namespace Murm
 		dia->SetFileLogEnabled (EnableFileLog_);
 		dia->SetPublishTuneEnabled (PublishTune_);
 		dia->SetMarkAsOnline (MarkAsOnline_);
+		dia->SetUpdateStatusEnabled (UpdateStatus_);
 
 		connect (dia,
 				SIGNAL (reauthRequested ()),
@@ -336,7 +340,7 @@ namespace Murm
 
 	void VkAccount::ChangeState (const EntryStatus& status)
 	{
-		Conn_->SetStatus (status);
+		Conn_->SetStatus (status, UpdateStatus_);
 	}
 
 	void VkAccount::Authorize (QObject*)
@@ -690,6 +694,8 @@ namespace Murm
 		handleMarkOnline ();
 
 		PublishTune_ = AccConfigDia_->GetPublishTuneEnabled ();
+
+		UpdateStatus_ = AccConfigDia_->GetUpdateStatusEnabled ();
 
 		emit accountChanged (this);
 

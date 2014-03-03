@@ -56,6 +56,16 @@ namespace Murm
 		Ui_.KeepFileLog_->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
 	}
 
+	bool AccountConfigDialog::GetUpdateStatusEnabled () const
+	{
+		return Ui_.UpdateStatus_->checkState () == Qt::Checked;
+	}
+
+	void AccountConfigDialog::SetUpdateStatusEnabled (bool enabled)
+	{
+		Ui_.UpdateStatus_->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
+	}
+
 	bool AccountConfigDialog::GetPublishTuneEnabled () const
 	{
 		return Ui_.PublishTune_->checkState () == Qt::Checked;

@@ -179,7 +179,7 @@ namespace Murm
 
 		void SetStatus (QString);
 
-		void SetStatus (const EntryStatus&);
+		void SetStatus (const EntryStatus&, bool updateString);
 		EntryStatus GetStatus () const;
 
 		void SetMarkingOnlineEnabled (bool);
