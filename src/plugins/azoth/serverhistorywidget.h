@@ -77,6 +77,7 @@ namespace Azoth
 	private slots:
 		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
 		void on_ContactsView__activated (const QModelIndex&);
+		void on_MessagesView__anchorClicked (const QUrl&);
 		void navigatePrevious ();
 		void navigateNext ();
 	signals:

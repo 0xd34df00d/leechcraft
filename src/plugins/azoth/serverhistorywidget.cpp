@@ -182,6 +182,11 @@ namespace Azoth
 		IHSH_->FetchServerHistory (ContactsFilter_->mapToSource (index), CurrentID_, MaxMsgCount);
 	}
 
+	void ServerHistoryWidget::on_MessagesView__anchorClicked (const QUrl& url)
+	{
+		Core::Instance ().HandleURLGeneric (url, true);
+	}
+
 	void ServerHistoryWidget::navigatePrevious ()
 	{
 		const auto& index = ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ());
