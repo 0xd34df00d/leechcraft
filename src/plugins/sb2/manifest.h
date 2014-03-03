@@ -29,47 +29,34 @@
 
 #pragma once
 
-#include <QObject>
-#include <QUrl>
+#include <QStringList>
 #include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/iquarkcomponentprovider.h>
-#include "manifest.h"
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class ViewManager;
-	class QuarkSettingsManager;
-
-	class QuarkManager : public QObject
+	class Manifest
 	{
-		ViewManager * const ViewMgr_;
-		ICoreProxy_ptr Proxy_;
+		const QString QuarkPath_;
 
-		const QuarkComponent_ptr Component_;
-		const QUrl URL_;
-
-		Util::XmlSettingsDialog_ptr XSD_;
-		QuarkSettingsManager *SettingsManager_;
-
-		const Manifest Manifest_;
+		QString ID_;
+		QString Name_;
+		QIcon Icon_;
+		QString Description_;
+		QStringList Areas_;
 	public:
-		QuarkManager (QuarkComponent_ptr, ViewManager*, ICoreProxy_ptr);
+		Manifest (const QString&);
 
-		const Manifest& GetManifest () const;
-		bool IsValidArea () const;
-
-		bool HasSettings () const;
-		void ShowSettings ();
+		QString GetID () const;
+		QString GetName () const;
+		QIcon GetIcon () const;
+		QString GetDescription () const;
+		QStringList GetAreas () const;
 	private:
-		QString GetSuffixedName (const QString&) const;
-
-		void CreateSettings ();
+		bool TryFullImage (const QString&);
+		bool TryTheme (const QString&);
+		bool TryLC (const QString&);
 	};
-
-	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;
 }
 }
