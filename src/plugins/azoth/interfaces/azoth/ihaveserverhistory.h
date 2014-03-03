@@ -56,6 +56,7 @@ namespace Azoth
 	enum ServerHistoryRole
 	{
 		LastMessageDate = Qt::UserRole + 1,
+		CLEntry,
 		ServerHistoryRoleMax
 	};
 
