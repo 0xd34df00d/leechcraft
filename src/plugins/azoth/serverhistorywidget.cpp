@@ -40,6 +40,11 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	namespace
+	{
+		const auto MaxMsgCount = 25;
+	}
+
 	ServerHistoryWidget::ServerHistoryWidget (QObject *account, QWidget *parent)
 	: QWidget { parent }
 	, Toolbar_ { new QToolBar { this } }
@@ -170,7 +175,7 @@ namespace Azoth
 		CurrentID_ = "-1";
 		MaxID_ = "-1";
 		FirstMsgCount_ = -1;
-		IHSH_->FetchServerHistory (ContactsFilter_->mapToSource (index), CurrentID_, 50);
+		IHSH_->FetchServerHistory (ContactsFilter_->mapToSource (index), CurrentID_, MaxMsgCount);
 	}
 
 	void ServerHistoryWidget::navigatePrevious ()
