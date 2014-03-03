@@ -47,6 +47,8 @@ namespace Azoth
 		QString Nick_;
 		QString Body_;
 		QDateTime TS_;
+
+		QString RichBody_;
 	};
 
 	typedef QList<SrvHistMessage> SrvHistMessages_t;
