@@ -43,6 +43,10 @@ namespace LMP
 	: QObject { parent }
 	, Impl_ { new RecursiveDirWatcherImpl { this } }
 	{
+		connect (Impl_,
+				SIGNAL (directoryChanged (QString)),
+				this,
+				SIGNAL (directoryChanged (QString)));
 	}
 
 	void RecursiveDirWatcher::AddRoot (const QString& root)
