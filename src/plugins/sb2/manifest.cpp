@@ -76,10 +76,11 @@ namespace SB2
 		if (varMap.contains ("quarkID"))
 			ID_ = varMap ["quarkID"].toString ();
 
+		IsHiddenByDefault_ = !varMap.value ("defaultVisibility", true).toBool ();
+
 		if (varMap.contains ("icon"))
 		{
 			const auto& iconName = varMap ["icon"].toString ();
-
 			TryFullImage (iconName) || TryTheme (iconName) || TryLC (iconName);
 		}
 	}
@@ -107,6 +108,11 @@ namespace SB2
 	QStringList Manifest::GetAreas () const
 	{
 		return Areas_;
+	}
+
+	bool Manifest::IsHiddenByDefault () const
+	{
+		return IsHiddenByDefault_;
 	}
 
 	bool Manifest::TryFullImage (const QString& iconName)

@@ -45,6 +45,7 @@ namespace SB2
 		QIcon Icon_;
 		QString Description_;
 		QStringList Areas_;
+		bool IsHiddenByDefault_ = true;
 	public:
 		Manifest (const QString&);
 
@@ -53,6 +54,7 @@ namespace SB2
 		QIcon GetIcon () const;
 		QString GetDescription () const;
 		QStringList GetAreas () const;
+		bool IsHiddenByDefault () const;
 	private:
 		bool TryFullImage (const QString&);
 		bool TryTheme (const QString&);
