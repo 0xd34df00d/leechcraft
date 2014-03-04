@@ -2,5 +2,6 @@
     "quarkID": "org.LeechCraft.HotSensors.HSQuark",
     "quarkName": "Temperature sensors",
     "icon": "dialog-information",
-    "areas": [ "panel" ]
+    "areas": [ "panel" ],
+    "defaultVisibility": false
 }
