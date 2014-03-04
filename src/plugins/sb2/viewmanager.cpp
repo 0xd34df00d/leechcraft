@@ -204,6 +204,8 @@ namespace SB2
 				SIGNAL (quarksRemoved (QList<QUrl>)),
 				this,
 				SLOT (handleQuarksRemoved (QList<QUrl>)));
+
+		SaveQuarkOrder ();
 	}
 
 	void ViewManager::RegisterInternalComponent (QuarkComponent_ptr c)
@@ -230,6 +232,8 @@ namespace SB2
 
 		auto mgr = Quark2Manager_.take (url);
 		AddToRemoved (mgr->GetManifest ().GetID ());
+
+		SaveQuarkOrder ();
 	}
 
 	void ViewManager::RemoveQuark (const QString& id)
@@ -260,6 +264,8 @@ namespace SB2
 		RemoveFromRemoved (manager->GetManifest ().GetID ());
 
 		AddComponent (component, manager, true);
+
+		SaveQuarkOrder ();
 	}
 
 	void ViewManager::MoveQuark (int from, int to)
