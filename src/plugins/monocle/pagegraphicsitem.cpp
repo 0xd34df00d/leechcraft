@@ -29,6 +29,7 @@
 
 #include "pagegraphicsitem.h"
 #include <limits>
+#include <cmath>
 #include <QtDebug>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
