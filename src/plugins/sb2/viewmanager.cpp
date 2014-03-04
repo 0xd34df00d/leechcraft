@@ -193,7 +193,7 @@ namespace SB2
 	void ViewManager::SecondInit ()
 	{
 		for (const auto& component : FindAllQuarks ())
-			AddComponent (component);
+			AddComponent (component, false);
 
 		auto watcher = new DirWatcher (Util::CreateIfNotExists ("data/quarks"), this);
 		connect (watcher,
@@ -259,7 +259,7 @@ namespace SB2
 
 		RemoveFromRemoved (manager->GetManifest ().GetID ());
 
-		AddComponent (component, manager);
+		AddComponent (component, manager, true);
 	}
 
 	void ViewManager::MoveQuark (int from, int to)
@@ -333,7 +333,7 @@ namespace SB2
 		return result;
 	}
 
-	void ViewManager::AddComponent (QuarkComponent_ptr comp)
+	void ViewManager::AddComponent (QuarkComponent_ptr comp, bool force)
 	{
 		QuarkManager_ptr mgr;
 		try
@@ -347,18 +347,21 @@ namespace SB2
 			return;
 		}
 
-		AddComponent (comp, mgr);
+		AddComponent (comp, mgr, force);
 	}
 
-	void ViewManager::AddComponent (QuarkComponent_ptr comp, QuarkManager_ptr mgr)
+	void ViewManager::AddComponent (QuarkComponent_ptr comp, QuarkManager_ptr mgr, bool force)
 	{
 		if (!mgr->IsValidArea ())
 			return;
 
 		const auto& quarkId = mgr->GetManifest ().GetID ();
 
-		if (RemovedIDs_.contains (quarkId))
-			return;
+		if (!force)
+		{
+			if (RemovedIDs_.contains (quarkId))
+				return;
+		}
 
 		Quark2Manager_ [comp->Url_] = mgr;
 
@@ -475,7 +478,7 @@ namespace SB2
 		{
 			QuarkComponent_ptr c { new QuarkComponent };
 			c->Url_ = url;
-			AddComponent (c);
+			AddComponent (c, false);
 		}
 	}
 
