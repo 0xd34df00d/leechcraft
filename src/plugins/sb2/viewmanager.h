@@ -54,8 +54,7 @@ namespace Util
 
 namespace SB2
 {
-
-class ViewSettingsManager;
+	class ViewSettingsManager;
 	class SBView;
 	class QuarkManager;
 	class ViewGeometryManager;
@@ -115,8 +114,8 @@ class ViewSettingsManager;
 
 		std::shared_ptr<QSettings> GetSettings () const;
 	private:
-		void AddComponent (QuarkComponent_ptr);
-		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr);
+		void AddComponent (QuarkComponent_ptr, bool forceAdd);
+		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr, bool forceAdd);
 		QuarkComponents_t ScanRootDir (const QDir&) const;
 
 		void AddToRemoved (const QString&);

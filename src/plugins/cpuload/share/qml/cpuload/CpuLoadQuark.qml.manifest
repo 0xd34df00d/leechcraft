@@ -2,5 +2,6 @@
     "quarkID": "org.LeechCraft.CpuLoad.CpuLoadQuark",
     "quarkName": "CPU load",
     "icon": "dialog-information",
-    "areas": [ "panel" ]
+    "areas": [ "panel" ],
+    "defaultVisibility": false
 }
