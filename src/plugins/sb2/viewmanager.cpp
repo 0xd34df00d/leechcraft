@@ -365,6 +365,10 @@ namespace SB2
 
 		if (!force)
 		{
+			if (mgr->GetManifest ().IsHiddenByDefault () &&
+					!PreviousQuarkOrder_.contains (quarkId))
+				return;
+
 			if (RemovedIDs_.contains (quarkId))
 				return;
 		}
