@@ -94,7 +94,7 @@ void Idle::start()
 	}
 
 	// poll every second (use a lower value if you need more accuracy)
-	d->checkTimer.start(1000);
+	d->checkTimer.start(10000);
 }
 
 void Idle::stop()
