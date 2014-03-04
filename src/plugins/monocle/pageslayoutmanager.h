@@ -60,14 +60,14 @@ namespace Monocle
 		LayoutMode LayMode_;
 
 		ScaleMode ScaleMode_;
-		double FixedScale_;
+		double FixedScale_ = 1;
 
-		bool RelayoutScheduled_;
+		bool RelayoutScheduled_ = false;
 
-		double HorMargin_;
-		double VertMargin_;
+		double HorMargin_ = 0;
+		double VertMargin_ = 0;
 
-		double Rotation_;
+		double Rotation_ = 0;
 	public:
 		PagesLayoutManager (PagesView*, QObject* = 0);
 

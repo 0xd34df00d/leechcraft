@@ -38,6 +38,7 @@
 #include <util/queuemanager.h>
 #include "longpollmanager.h"
 #include "logger.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -49,12 +50,20 @@ namespace Murm
 	{
 		const QString UserFields = "first_name,last_name,nickname,photo,photo_big,sex,"
 				"bdate,city,country,timezone,contacts,education";
+
+		QStringList GetPerms ()
+		{
+			QStringList result { "messages", "notifications", "friends", "status", "photos" };
+			if (XmlSettingsManager::Instance ().property ("RequireOffline").toBool ())
+				result << "offline";
+			return result;
+		}
 	}
 
 	VkConnection::VkConnection (const QString& name,
 			const QByteArray& cookies, ICoreProxy_ptr proxy, Logger& logger)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager (name, "3778319",
-			{ "messages", "notifications", "friends", "status", "photos" },
+			GetPerms (),
 			cookies, proxy, nullptr, this))
 	, Proxy_ (proxy)
 	, Logger_ (logger)
@@ -109,8 +118,14 @@ namespace Murm
 			{ emit userStateChanged (items.value (1).toLongLong () * -1, true); };
 		Dispatcher_ [9] = [this] (const QVariantList& items)
 			{ emit userStateChanged (items.value (1).toLongLong () * -1, false); };
+		Dispatcher_ [51] = [this] (const QVariantList& items)
+			{ emit mucChanged (items.value (1).toLongLong ()); };
 		Dispatcher_ [61] = [this] (const QVariantList& items)
 			{ emit gotTypingNotification (items.value (1).toULongLong ()); };
+
+		// Stuff has been read, we don't care
+		Dispatcher_ [6] = [this] (const QVariantList&) {};
+		Dispatcher_ [7] = [this] (const QVariantList&) {};
 
 		Dispatcher_ [101] = [this] (const QVariantList&) {};	// unknown stuff
 
@@ -119,6 +134,9 @@ namespace Murm
 				SIGNAL (timeout ()),
 				this,
 				SLOT (markOnline ()));
+
+		XmlSettingsManager::Instance ().RegisterObject ("RequireOffline",
+				this, "handleScopeSettingsChanged");
 	}
 
 	const QByteArray& VkConnection::GetCookies () const
@@ -448,6 +466,28 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::AddChatUser (qulonglong chat, qulonglong user)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.addChatUser");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("chat_id", QString::number (chat));
+				url.addQueryItem ("user_id", QString::number (user));
+
+				AddParams (url, params);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::RemoveChatUser (qulonglong chat, qulonglong user)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -456,7 +496,7 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.removeChatUser");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("chat_id", QString::number (chat));
-				url.addQueryItem ("uid", QString::number (user));
+				url.addQueryItem ("user_id", QString::number (user));
 
 				AddParams (url, params);
 
@@ -466,6 +506,28 @@ namespace Murm
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleChatUserRemoved ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkConnection::SetChatTitle (qulonglong chat, const QString& title)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.editChat");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("chat_id", QString::number (chat));
+				url.addQueryItem ("title", title);
+
+				AddParams (url, params);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
 				return reply;
 			});
 		AuthMgr_->GetAuthKey ();
@@ -495,7 +557,7 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::SetStatus (const EntryStatus& status)
+	void VkConnection::SetStatus (const EntryStatus& status, bool updateString)
 	{
 		Logger_ (IHaveConsole::PacketDirection::Out) << "setting status" << status.State_;
 		LPManager_->ForceServerRequery ();
@@ -535,7 +597,10 @@ namespace Murm
 						SLOT (handleGotFriendLists ()));
 				return reply;
 			});
-		SetStatus (Status_.StatusString_);
+
+		if (updateString)
+			SetStatus (Status_.StatusString_);
+
 		AuthMgr_->GetAuthKey ();
 	}
 
@@ -1324,6 +1389,11 @@ namespace Murm
 			result << PhotoMap2Info (item.toMap ());
 
 		setter (result);
+	}
+
+	void VkConnection::handleScopeSettingsChanged ()
+	{
+		AuthMgr_->UpdateScope (GetPerms ());
 	}
 
 	void VkConnection::saveCookies (const QByteArray& cookies)

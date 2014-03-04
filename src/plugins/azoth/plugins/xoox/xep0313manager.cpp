@@ -35,6 +35,7 @@
 #include <QXmppResultSet.h>
 #include "xep0313prefiq.h"
 #include "xep0313reqiq.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -112,52 +113,21 @@ namespace Xoox
 	bool Xep0313Manager::CheckMessage (const QXmppMessage& msg)
 	{
 		for (const auto& extension : msg.extensions ())
-		{
 			if (extension.tagName () == "result" &&
 					extension.attribute ("xmlns") == NsMam)
 			{
 				HandleMessage (extension);
 				return true;
 			}
-		}
 
 		return false;
-	}
-
-	namespace
-	{
-		QXmppMessage GetMessage (const QXmppElement& resultExt)
-		{
-			const auto& forwardedElem = resultExt.firstChildElement ("forwarded");
-			if (forwardedElem.isNull ())
-				return {};
-
-			auto messageElem = forwardedElem.firstChildElement ("message");
-			if (messageElem.isNull ())
-				return {};
-
-			auto delayElem = forwardedElem.firstChildElement ("delay");
-			if (!delayElem.isNull ())
-				messageElem.appendChild (delayElem);
-
-			QByteArray data;
-			QXmlStreamWriter w (&data);
-			messageElem.toXml (&w);
-
-			QDomDocument doc;
-			doc.setContent (data, true);
-
-			QXmppMessage original;
-			original.parse (doc.documentElement ());
-			return original;
-		}
 	}
 
 	void Xep0313Manager::HandleMessage (const QXmppElement& resultExt)
 	{
 		const auto& id = resultExt.attribute ("id");
 
-		const auto& message = GetMessage (resultExt);
+		const auto& message = XooxUtil::Forwarded2Message (resultExt);
 		if (message.to ().isEmpty ())
 			return;
 
@@ -176,7 +146,7 @@ namespace Xoox
 			otherJid = message.to ().section ('/', 0, 0);
 		}
 
-		const SrvHistMessage msg { dir, id.toUtf8 (), {}, message.body (), message.stamp () };
+		const SrvHistMessage msg { dir, id.toUtf8 (), {}, message.body (), message.stamp (), message.xhtml () };
 		Messages_ [otherJid] << msg;
 		LastId2Jid_ [id] = otherJid;
 	}
@@ -204,7 +174,8 @@ namespace Xoox
 
 		qDebug () << Q_FUNC_INFO << resultSet.first () << resultSet.last () << messages.size ();
 
-		std::reverse (messages.begin (), messages.end ());
+		if (messages.first ().TS_ > messages.last ().TS_)
+			std::reverse (messages.begin (), messages.end ());
 		emit serverHistoryFetched (jid, resultSet.last (), messages);
 	}
 

@@ -122,7 +122,8 @@ namespace LMP
 		const bool wasEmpty = AlbumsQueue_.isEmpty ();
 
 		for (auto albumId : albums)
-			AlbumsQueue_ << Coll_->GetAlbum (albumId);
+			if (const auto& album = Coll_->GetAlbum (albumId))
+				AlbumsQueue_ << album;
 
 		qDebug () << AlbumsQueue_.size ()
 				<< "albums to rescan";

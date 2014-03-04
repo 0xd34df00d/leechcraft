@@ -27,61 +27,97 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "interfaces/azoth/ihaveserverhistory.h"
-#include "ui_serverhistorywidget.h"
-
-class QSortFilterProxyModel;
+#include "carbonsmanager.h"
+#include <QDomElement>
+#include <QXmppClient.h>
+#include <QXmppMessage.h>
+#include "util.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class IHaveServerHistory;
-
-	class ServerHistoryWidget : public QWidget
-							  , public ITabWidget
+namespace Xoox
+{
+	namespace
 	{
-		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		const QString NsCarbons { "urn:xmpp:carbons:2" };
+	}
 
-		QObject *PluginObj_;
-		TabClassInfo TC_;
+	QStringList CarbonsManager::discoveryFeatures () const
+	{
+		return { NsCarbons };
+	}
 
-		Ui::ServerHistoryWidget Ui_;
+	bool CarbonsManager::handleStanza (const QDomElement& stanza)
+	{
+		if (stanza.tagName () == "iq" &&
+				stanza.attribute ("id") == LastReqId_)
+		{
+			LastReqId_.clear ();
 
-		QToolBar * const Toolbar_;
+			if (stanza.attribute ("type") == "result")
+			{
+				LastConfirmedState_ = LastReqState_;
+				emit stateChanged (LastConfirmedState_);
+			}
+			else
+			{
+				QXmppIq iq;
+				iq.parse (stanza);
+				emit stateChangeError (iq);
+			}
 
-		QObject * const AccObj_;
-		IHaveServerHistory * const IHSH_;
+			return true;
+		}
 
-		QByteArray CurrentID_;
-		QByteArray MaxID_;
-		int FirstMsgCount_ = -1;
+		return false;
+	}
 
-		QSortFilterProxyModel * const ContactsFilter_;
-	public:
-		ServerHistoryWidget (QObject*, QWidget* = nullptr);
+	void CarbonsManager::SetEnabled (bool enabled)
+	{
+		QXmppIq iq { QXmppIq::Set };
 
-		void SetTabInfo (QObject*, const TabClassInfo&);
+		QXmppElement elem;
+		elem.setTagName (enabled ? "enable" : "disable");
+		elem.setAttribute ("xmlns", NsCarbons);
+		iq.setExtensions ({ elem });
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
-	private:
-		int GetReqMsgCount () const;
-	private slots:
-		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
-		void on_ContactsView__activated (const QModelIndex&);
-		void on_MessagesView__anchorClicked (const QUrl&);
-		void navigatePrevious ();
-		void navigateNext ();
-	signals:
-		void removeTab (QWidget*);
-	};
+		client ()->sendPacket (iq);
+
+		LastReqId_ = iq.id ();
+		LastReqState_ = enabled;
+	}
+
+	bool CarbonsManager::IsEnabled () const
+	{
+		return LastConfirmedState_;
+	}
+
+	bool CarbonsManager::CheckMessage (const QXmppMessage& msg)
+	{
+		for (const auto& extension : msg.extensions ())
+		{
+			const auto& tag = extension.tagName ();
+			if ((tag == "received" || tag == "sent") &&
+				extension.attribute ("xmlns") == NsCarbons)
+			{
+				HandleMessage (extension);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	void CarbonsManager::HandleMessage (const QXmppElement& extElem)
+	{
+		const auto& msg = XooxUtil::Forwarded2Message (extElem);
+		if (msg.to ().isEmpty ())
+			return;
+
+		emit gotMessage (msg);
+	}
+}
 }
 }

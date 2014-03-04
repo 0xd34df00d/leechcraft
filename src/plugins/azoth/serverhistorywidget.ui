@@ -59,6 +59,9 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="openLinks">
+       <bool>false</bool>
+      </property>
      </widget>
     </widget>
    </item>

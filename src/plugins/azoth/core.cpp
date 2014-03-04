@@ -494,9 +494,9 @@ namespace Azoth
 	void Core::HandleURL (const QUrl& url, ICLEntry *source)
 	{
 		QList<QObject*> accounts;
-		Q_FOREACH (QObject *obj, ProtocolPlugins_)
+		for (auto obj : ProtocolPlugins_)
 		{
-			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
+			auto protoPlug = qobject_cast<IProtocolPlugin*> (obj);
 			if (!protoPlug)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -506,15 +506,15 @@ namespace Azoth
 				continue;
 			}
 
-			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
+			for (auto protoObj : protoPlug->GetProtocols ())
 			{
-				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
+				auto handler = qobject_cast<IURIHandler*> (protoObj);
 				if (!handler)
 					continue;
 				if (!handler->SupportsURI (url))
 					continue;
 
-				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+				auto proto = qobject_cast<IProtocol*> (protoObj);
 				if (!proto)
 				{
 					qWarning () << Q_FUNC_INFO
@@ -555,6 +555,30 @@ namespace Azoth
 
 		QObject *selProto = qobject_cast<IAccount*> (selected)->GetParentProtocol ();
 		qobject_cast<IURIHandler*> (selProto)->HandleURI (url, selected);
+	}
+
+	void Core::HandleURLGeneric (QUrl url, bool raise, ICLEntry *source)
+	{
+		if (Core::Instance ().CouldHandleURL (url))
+		{
+			Core::Instance ().HandleURL (url, source);
+			return;
+		}
+
+		if (url.scheme () == "file")
+			return;
+
+		if (url.scheme ().isEmpty () &&
+				url.host ().isEmpty () &&
+				url.path ().startsWith ("www."))
+			url = "http://" + url.toString ();
+
+		auto e = Util::MakeEntity (url,
+				{},
+				FromUserInitiated | OnlyHandle);
+		if (!raise)
+			e.Additional_ ["BackgroundHandle"] = true;
+		Core::Instance ().SendEntity (e);
 	}
 
 	const QObjectList& Core::GetProtocolPlugins () const

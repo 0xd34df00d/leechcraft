@@ -67,7 +67,9 @@ namespace SvcAuth
 		qint32 ValidFor_;
 
 		bool IsRequesting_;
-		const QUrl URL_;
+
+		const QString ID_;
+		QUrl URL_;
 
 		bool IsRequestScheduled_;
 		QTimer *ScheduleTimer_;
@@ -89,6 +91,8 @@ namespace SvcAuth
 
 		bool IsAuthenticated () const;
 		bool HadAuthentication () const;
+
+		void UpdateScope (const QStringList&);
 
 		void GetAuthKey ();
 

@@ -229,7 +229,7 @@ namespace SB2
 		}
 
 		auto mgr = Quark2Manager_.take (url);
-		AddToRemoved (mgr->GetID ());
+		AddToRemoved (mgr->GetManifest ().GetID ());
 	}
 
 	void ViewManager::RemoveQuark (const QString& id)
@@ -249,7 +249,7 @@ namespace SB2
 			return;
 
 		auto mgr = Quark2Manager_.take (url);
-		AddToRemoved (mgr->GetID ());
+		AddToRemoved (mgr->GetManifest ().GetID ());
 	}
 
 	void ViewManager::UnhideQuark (QuarkComponent_ptr component, QuarkManager_ptr manager)
@@ -257,7 +257,7 @@ namespace SB2
 		if (!manager)
 			return;
 
-		RemoveFromRemoved (manager->GetID ());
+		RemoveFromRemoved (manager->GetManifest ().GetID ());
 
 		AddComponent (component, manager);
 	}
@@ -355,7 +355,9 @@ namespace SB2
 		if (!mgr->IsValidArea ())
 			return;
 
-		if (RemovedIDs_.contains (mgr->GetID ()))
+		const auto& quarkId = mgr->GetManifest ().GetID ();
+
+		if (RemovedIDs_.contains (quarkId))
 			return;
 
 		Quark2Manager_ [comp->Url_] = mgr;
@@ -363,9 +365,9 @@ namespace SB2
 		auto item = new QStandardItem;
 		item->setData (comp->Url_, ViewItemsModel::Role::SourceURL);
 		item->setData (mgr->HasSettings (), ViewItemsModel::Role::QuarkHasSettings);
-		item->setData (mgr->GetID (), ViewItemsModel::Role::QuarkClass);
+		item->setData (quarkId, ViewItemsModel::Role::QuarkClass);
 
-		const int pos = PreviousQuarkOrder_.indexOf (mgr->GetID ());
+		const int pos = PreviousQuarkOrder_.indexOf (quarkId);
 		if (pos == -1 || pos == PreviousQuarkOrder_.size () - 1)
 			ViewItemsModel_->appendRow (item);
 		else
@@ -482,7 +484,7 @@ namespace SB2
 		qDebug () << Q_FUNC_INFO << urls;
 		for (const auto& url : urls)
 		{
-			const auto& id = Quark2Manager_ [url]->GetID ();
+			const auto& id = Quark2Manager_ [url]->GetManifest ().GetID ();
 			RemoveQuark (url);
 			RemoveFromRemoved (id);
 		}

@@ -80,6 +80,7 @@ namespace Graffiti
 
 			int Date_;
 			QString Genre_;
+			QString DiscId_;
 
 			QList<File> Files_;
 
@@ -104,10 +105,19 @@ namespace Graffiti
 		void HandleREM (QString rem, Cue& result)
 		{
 			rem = rem.mid (4);
-			if (rem.startsWith ("GENRE "))
-				result.Genre_ = rem.mid (6);
-			else if (rem.startsWith ("DATE "))
-				result.Date_ = rem.mid (5).toInt ();
+
+			const QList<QPair<QString, std::function<void (QString)>>> setters ({
+					{ "GENRE", [&result] (const QString& val) { result.Genre_ = val; } },
+					{ "DATE", [&result] (const QString& val) { result.Date_ = val.toInt (); } },
+					{ "DISCID", [&result] (const QString& val) { result.DiscId_ = val; } }
+				});
+
+			for (const auto& key : setters)
+				if (rem.startsWith (key.first))
+				{
+					key.second (rem.mid (key.first.size () + 1));
+					break;
+				}
 		}
 
 		template<typename Iter>
@@ -275,7 +285,7 @@ namespace Graffiti
 	void CueSplitter::split ()
 	{
 		const auto& cue = ParseCue (QDir (Dir_).absoluteFilePath (CueFile_));
-		qDebug () << cue.IsValid () << cue.Album_ << cue.Performer_ << cue.Date_;
+		qDebug () << cue.IsValid () << cue.Album_ << cue.Performer_ << cue.Date_ << cue.DiscId_;
 		for (const auto& file : cue.Files_)
 		{
 			qDebug () << "\t" << file.Filename_;
@@ -328,7 +338,8 @@ namespace Graffiti
 						cue.Album_,
 						track.Title_,
 						cue.Date_,
-						cue.Genre_
+						cue.Genre_,
+						cue.DiscId_
 					});
 		}
 
@@ -375,6 +386,7 @@ namespace Graffiti
 		addTag ("TRACKNUMBER", QString::number (item.Index_));
 		addTag ("GENRE", item.Genre_);
 		addTag ("DATE", item.Date_ > 0 ? QString::number (item.Date_) : QString ());
+		addTag ("DISCID", item.DiscId_);
 
 		args << item.SourceFile_ << "-o" << item.TargetFile_;
 

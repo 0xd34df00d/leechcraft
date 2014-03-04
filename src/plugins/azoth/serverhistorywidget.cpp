@@ -40,6 +40,11 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	namespace
+	{
+		const auto MaxMsgCount = 25;
+	}
+
 	ServerHistoryWidget::ServerHistoryWidget (QObject *account, QWidget *parent)
 	: QWidget { parent }
 	, Toolbar_ { new QToolBar { this } }
@@ -146,9 +151,13 @@ namespace Azoth
 		{
 			const auto& color = Core::Instance ().GetNickColor (message.Nick_, colors);
 
-			auto msgText = message.Body_;
-			ProxyObject {}.FormatLinks (msgText);
-			msgText.replace ('\n', "<br/>");
+			auto msgText = message.RichBody_;
+			if (msgText.isEmpty ())
+			{
+				msgText = Qt::escape (message.Body_);
+				ProxyObject {}.FormatLinks (msgText);
+				msgText.replace ('\n', "<br/>");
+			}
 
 			QString html = "[" + message.TS_.toString () + "] " + preNick;
 			html += "<font color='" + color + "'>" + message.Nick_ + "</font> ";
@@ -170,7 +179,15 @@ namespace Azoth
 		CurrentID_ = "-1";
 		MaxID_ = "-1";
 		FirstMsgCount_ = -1;
-		IHSH_->FetchServerHistory (ContactsFilter_->mapToSource (index), CurrentID_, 50);
+		IHSH_->FetchServerHistory (ContactsFilter_->mapToSource (index), CurrentID_, MaxMsgCount);
+	}
+
+	void ServerHistoryWidget::on_MessagesView__anchorClicked (const QUrl& url)
+	{
+		const auto& current = Ui_.ContactsView_->currentIndex ();
+		const auto entryObj = current.data (ServerHistoryRole::CLEntry).value<QObject*> ();
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		Core::Instance ().HandleURLGeneric (url, true, entry);
 	}
 
 	void ServerHistoryWidget::navigatePrevious ()

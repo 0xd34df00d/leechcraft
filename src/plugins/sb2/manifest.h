@@ -29,59 +29,34 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "interfaces/azoth/ihaveserverhistory.h"
-#include "ui_serverhistorywidget.h"
-
-class QSortFilterProxyModel;
+#include <QStringList>
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace SB2
 {
-	class IHaveServerHistory;
-
-	class ServerHistoryWidget : public QWidget
-							  , public ITabWidget
+	class Manifest
 	{
-		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		const QString QuarkPath_;
 
-		QObject *PluginObj_;
-		TabClassInfo TC_;
-
-		Ui::ServerHistoryWidget Ui_;
-
-		QToolBar * const Toolbar_;
-
-		QObject * const AccObj_;
-		IHaveServerHistory * const IHSH_;
-
-		QByteArray CurrentID_;
-		QByteArray MaxID_;
-		int FirstMsgCount_ = -1;
-
-		QSortFilterProxyModel * const ContactsFilter_;
+		QString ID_;
+		QString Name_;
+		QIcon Icon_;
+		QString Description_;
+		QStringList Areas_;
 	public:
-		ServerHistoryWidget (QObject*, QWidget* = nullptr);
+		Manifest (const QString&);
 
-		void SetTabInfo (QObject*, const TabClassInfo&);
-
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		QString GetID () const;
+		QString GetName () const;
+		QIcon GetIcon () const;
+		QString GetDescription () const;
+		QStringList GetAreas () const;
 	private:
-		int GetReqMsgCount () const;
-	private slots:
-		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
-		void on_ContactsView__activated (const QModelIndex&);
-		void on_MessagesView__anchorClicked (const QUrl&);
-		void navigatePrevious ();
-		void navigateNext ();
-	signals:
-		void removeTab (QWidget*);
+		bool TryFullImage (const QString&);
+		bool TryTheme (const QString&);
+		bool TryLC (const QString&);
 	};
 }
 }

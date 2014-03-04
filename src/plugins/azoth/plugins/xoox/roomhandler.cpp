@@ -425,9 +425,15 @@ namespace Xoox
 					emit gotPendingForm (df, msg.from ());
 			}
 			else
+			{
+				QString str;
+				QXmlStreamWriter w (&str);
+				w.setAutoFormatting (true);
+				elem.toXml (&w);
 				qWarning () << Q_FUNC_INFO
 						<< "unhandled <x> element"
-						<< xmlns;
+						<< str;
+			}
 		}
 
 		const bool existed = Nick2Entry_.contains (nick);

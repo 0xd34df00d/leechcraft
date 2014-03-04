@@ -78,7 +78,8 @@ namespace Xoox
 		return item->index ();
 	}
 
-	void Xep0313ModelManager::PerformWithEntries (const QList<QObject*>& items, const std::function<void (ICLEntry*)>& f)
+	void Xep0313ModelManager::PerformWithEntries (const QList<QObject*>& items,
+			const std::function<void (ICLEntry*)>& f)
 	{
 		for (auto itemObj : items)
 		{
@@ -105,7 +106,11 @@ namespace Xoox
 						new QStandardItem (jid)
 					};
 					for (auto item : row)
+					{
 						item->setEditable (false);
+						item->setData (QVariant::fromValue (entry->GetQObject ()),
+								ServerHistoryRole::CLEntry);
+					}
 					Jid2Item_ [jid] = row.first ();
 
 					Model_->appendRow (row);

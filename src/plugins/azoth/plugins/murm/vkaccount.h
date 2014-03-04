@@ -99,6 +99,7 @@ namespace Murm
 		bool PublishTune_ = false;
 		bool EnableFileLog_ = false;
 		bool MarkAsOnline_ = false;
+		bool UpdateStatus_ = false;
 
 		QPointer<AccountConfigDialog> AccConfigDia_;
 
@@ -177,6 +178,7 @@ namespace Murm
 		void handleMessage (const MessageInfo&);
 		void handleTypingNotification (qulonglong);
 
+		void handleMucChanged (qulonglong);
 		void handleGotChatInfo (const ChatInfo&);
 		void handleChatUserRemoved (qulonglong, qulonglong);
 

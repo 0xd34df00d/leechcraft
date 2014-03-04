@@ -49,6 +49,9 @@ namespace Murm
 		bool GetFileLogEnabled () const;
 		void SetFileLogEnabled (bool);
 
+		bool GetUpdateStatusEnabled () const;
+		void SetUpdateStatusEnabled (bool);
+
 		bool GetPublishTuneEnabled () const;
 		void SetPublishTuneEnabled (bool);
 

@@ -186,7 +186,8 @@ namespace Murm
 					{},
 					username,
 					map ["body"].toString (),
-					QDateTime::fromTime_t (map ["date"].toULongLong ())
+					QDateTime::fromTime_t (map ["date"].toULongLong ()),
+					{}
 				});
 		}
 

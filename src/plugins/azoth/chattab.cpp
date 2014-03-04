@@ -1100,26 +1100,7 @@ namespace Azoth
 	{
 		if (url.scheme () != "azoth")
 		{
-			if (Core::Instance ().CouldHandleURL (url))
-			{
-				Core::Instance ().HandleURL (url, GetEntry<ICLEntry> ());
-				return;
-			}
-
-			if (url.scheme () == "file")
-				return;
-
-			if (url.scheme ().isEmpty () &&
-					url.host ().isEmpty () &&
-					url.path ().startsWith ("www."))
-				url = "http://" + url.toString ();
-
-			Entity e = Util::MakeEntity (url,
-					QString (),
-					FromUserInitiated | OnlyHandle);
-			if (!raise)
-				e.Additional_ ["BackgroundHandle"] = true;
-			Core::Instance ().SendEntity (e);
+			Core::Instance ().HandleURLGeneric (url, raise, GetEntry<ICLEntry> ());
 			return;
 		}
 

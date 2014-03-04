@@ -29,59 +29,40 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "interfaces/azoth/ihaveserverhistory.h"
-#include "ui_serverhistorywidget.h"
+#include <QXmppClientExtension.h>
 
-class QSortFilterProxyModel;
+class QXmppMessage;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class IHaveServerHistory;
-
-	class ServerHistoryWidget : public QWidget
-							  , public ITabWidget
+namespace Xoox
+{
+	class CarbonsManager : public QXmppClientExtension
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
 
-		QObject *PluginObj_;
-		TabClassInfo TC_;
+		QString LastReqId_;
+		bool LastReqState_;
 
-		Ui::ServerHistoryWidget Ui_;
-
-		QToolBar * const Toolbar_;
-
-		QObject * const AccObj_;
-		IHaveServerHistory * const IHSH_;
-
-		QByteArray CurrentID_;
-		QByteArray MaxID_;
-		int FirstMsgCount_ = -1;
-
-		QSortFilterProxyModel * const ContactsFilter_;
+		bool LastConfirmedState_ = false;
 	public:
-		ServerHistoryWidget (QObject*, QWidget* = nullptr);
+		QStringList discoveryFeatures () const;
+		bool handleStanza (const QDomElement& stanza);
 
-		void SetTabInfo (QObject*, const TabClassInfo&);
+		void SetEnabled (bool);
+		bool IsEnabled () const;
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		bool CheckMessage (const QXmppMessage&);
 	private:
-		int GetReqMsgCount () const;
-	private slots:
-		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
-		void on_ContactsView__activated (const QModelIndex&);
-		void on_MessagesView__anchorClicked (const QUrl&);
-		void navigatePrevious ();
-		void navigateNext ();
+		void HandleMessage (const QXmppElement&);
 	signals:
-		void removeTab (QWidget*);
+		void stateChanged (bool);
+		void stateChangeError (const QXmppIq&);
+
+		void gotMessage (const QXmppMessage&);
 	};
+}
 }
 }

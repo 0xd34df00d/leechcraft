@@ -73,10 +73,13 @@ namespace SB2
 		{
 			auto quarkMgr = manager->GetAddedQuarkManager (quark);
 			auto item = new QStandardItem;
-			item->setData (quarkMgr->GetName (), Util::UnhideListModel::Roles::ItemName);
-			item->setData (quarkMgr->GetDescription (), Util::UnhideListModel::Roles::ItemDescription);
-			item->setData (quarkMgr->GetID (), Util::UnhideListModel::Roles::ItemClass);
-			item->setData (Util::GetAsBase64Src (quarkMgr->GetIcon ().pixmap (32, 32).toImage ()),
+
+			const auto& manifest = quarkMgr->GetManifest ();
+
+			item->setData (manifest.GetName (), Util::UnhideListModel::Roles::ItemName);
+			item->setData (manifest.GetDescription (), Util::UnhideListModel::Roles::ItemDescription);
+			item->setData (manifest.GetID (), Util::UnhideListModel::Roles::ItemClass);
+			item->setData (Util::GetAsBase64Src (manifest.GetIcon ().pixmap (32, 32).toImage ()),
 					Util::UnhideListModel::Roles::ItemIcon);
 			Model_->appendRow (item);
 		}

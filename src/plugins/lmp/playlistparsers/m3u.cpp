@@ -72,19 +72,21 @@ namespace M3U
 		Playlist result;
 		while (!file.atEnd ())
 		{
-			auto src = QString::fromUtf8 (file.readLine ().trimmed ());
-			if (src.startsWith ('#'))
+			const auto& line = file.readLine ().trimmed ();
+			if (line.startsWith ('#'))
 			{
-				const auto& pair = ParseMetadata (src);
+				const auto& pair = ParseMetadata (line);
 				if (!pair.first.isEmpty ())
 					lastMetadata [pair.first] = pair.second;
 				continue;
 			}
 
+			const auto& url = QUrl::fromEncoded (line);
+			auto src = QString::fromUtf8 (line);
+
 			const auto mdGuard = std::shared_ptr<void> (nullptr,
 					[&lastMetadata] (void*) { lastMetadata.clear (); });
 
-			QUrl url (src);
 #ifdef Q_OS_WIN32
 			if (url.scheme ().size () > 1)
 #else
@@ -125,7 +127,7 @@ namespace M3U
 		{
 			for (auto i = item.Additional_.begin (); i != item.Additional_.end (); ++i)
 				file.write (("#" + i.key () + "=" + i.value ().toString () + "\n").toUtf8 ());
-			file.write (item.Source_.ToUrl ().toString ().toUtf8 ());
+			file.write (item.Source_.ToUrl ().toEncoded ());
 			file.write ("\n");
 		}
 	}

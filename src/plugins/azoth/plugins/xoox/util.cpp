@@ -308,6 +308,34 @@ namespace XooxUtil
 		return feats.contains (feature);
 	}
 
+	QXmppMessage Forwarded2Message (const QXmppElement& wrapper)
+	{
+		const auto& forwardedElem = wrapper.tagName () == "forwarded" ?
+				wrapper :
+				wrapper.firstChildElement ("forwarded");
+		if (forwardedElem.isNull ())
+			return {};
+
+		auto messageElem = forwardedElem.firstChildElement ("message");
+		if (messageElem.isNull ())
+			return {};
+
+		auto delayElem = forwardedElem.firstChildElement ("delay");
+		if (!delayElem.isNull ())
+			messageElem.appendChild (delayElem);
+
+		QByteArray data;
+		QXmlStreamWriter w (&data);
+		messageElem.toXml (&w);
+
+		QDomDocument doc;
+		doc.setContent (data, true);
+
+		QXmppMessage original;
+		original.parse (doc.documentElement ());
+		return original;
+	}
+
 	EntryStatus PresenceToStatus (const QXmppPresence& pres)
 	{
 		EntryStatus st (static_cast<State> (pres.availableStatusType () + 1), pres.statusText ());

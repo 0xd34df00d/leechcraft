@@ -35,6 +35,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/iquarkcomponentprovider.h>
+#include "manifest.h"
 
 namespace LeechCraft
 {
@@ -54,30 +55,17 @@ namespace SB2
 		Util::XmlSettingsDialog_ptr XSD_;
 		QuarkSettingsManager *SettingsManager_;
 
-		QString ID_;
-		QString Name_;
-		QIcon Icon_;
-		QString Description_;
-		QStringList Areas_;
+		const Manifest Manifest_;
 	public:
 		QuarkManager (QuarkComponent_ptr, ViewManager*, ICoreProxy_ptr);
 
-		QString GetID () const;
-		QString GetName () const;
-		QIcon GetIcon () const;
-		QString GetDescription () const;
-
+		const Manifest& GetManifest () const;
 		bool IsValidArea () const;
 
 		bool HasSettings () const;
 		void ShowSettings ();
 	private:
 		QString GetSuffixedName (const QString&) const;
-		void ParseManifest ();
-
-		bool TryFullImage (const QString&);
-		bool TryTheme (const QString&);
-		bool TryLC (const QString&);
 
 		void CreateSettings ();
 	};

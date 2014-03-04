@@ -388,6 +388,7 @@ namespace Util
 		while (!gbox.isNull ())
 		{
 			QGroupBox *box = new QGroupBox (GetLabel (gbox));
+			box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
 			QGridLayout *groupLayout = new QGridLayout ();
 			groupLayout->setContentsMargins (2, 2, 2, 2);
 			box->setLayout (groupLayout);

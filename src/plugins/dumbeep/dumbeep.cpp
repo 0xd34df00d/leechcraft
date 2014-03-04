@@ -129,7 +129,7 @@ namespace Dumbeep
 		if (XmlSettingsManager::Instance ().property ("PreferPhonon").toBool ())
 		{
 #ifdef WITH_PHONON
-			auto obj = Phonon::createPlayer (Phonon::NotificationCategory, path);
+			auto obj = Phonon::createPlayer (Phonon::NotificationCategory, QUrl::fromLocalFile (path));
 			obj->play ();
 			connect (obj,
 					SIGNAL (finished ()),

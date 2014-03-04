@@ -35,6 +35,7 @@
 #include <QSet>
 #include <QIcon>
 #include <QDateTime>
+#include <QUrl>
 #ifdef ENABLE_CRYPT
 #include <QtCrypto>
 #endif
@@ -214,7 +215,8 @@ namespace Azoth
 		void Handle (Entity);
 
 		bool CouldHandleURL (const QUrl&) const;
-		void HandleURL (const QUrl&, ICLEntry* = 0);
+		void HandleURL (const QUrl&, ICLEntry* = nullptr);
+		void HandleURLGeneric (QUrl, bool raise, ICLEntry* = nullptr);
 
 		const QObjectList& GetProtocolPlugins () const;
 
