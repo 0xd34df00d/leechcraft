@@ -58,6 +58,9 @@ Rectangle {
                 width: rootRect.itemSize
 
                 points: pointsList
+
+                minYValue: 0
+                maxYValue: Math.max(maxTemp, critTemp)
             }
 
             Text {
@@ -79,6 +82,8 @@ Rectangle {
                         "existing": "ignore",
                         "srcPtsList": pointsList,
                         "colorProxy": colorProxy,
+                        "maxTemp": maxTemp,
+                        "critTemp": critTemp,
                         "sensorName": sensorName
                     };
                     tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);

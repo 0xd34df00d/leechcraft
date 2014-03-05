@@ -44,6 +44,9 @@ Rectangle {
 
         points: pointsList
 
+        minYValue: 0
+        maxYValue: Math.max(maxTemp, critTemp)
+
         leftAxisEnabled: true
         leftAxisTitle: qsTr ("Temperature, °C")
         yGridEnabled: true
