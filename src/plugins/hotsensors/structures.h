@@ -41,6 +41,8 @@ namespace HotSensors
 	{
 		QString Name_;
 		double Value_;
+		double Max_;
+		double Crit_;
 	};
 
 	typedef QList<Reading> Readings_t;

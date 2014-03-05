@@ -130,7 +130,7 @@ namespace HotSensors
 			double value = 0;
 			sensors_get_value (&chipName, feature.SF_.SF_, &value);
 
-			readings.append ({ feature.Name_, value });
+			readings.append ({ feature.Name_, value, feature.Max_, feature.Crit_ });
 		}
 		emit gotReadings (readings);
 	}
