@@ -72,14 +72,6 @@ namespace HotSensors
 
 		QList<QStandardItem*> items;
 
-		struct PendingSetInfo
-		{
-			QStandardItem *Item_;
-			const QString Temp_;
-			const QUrl URL_;
-			const QString Name_;
-			const QByteArray SVG_;
-		};
 		for (auto i = history.begin (); i != history.end (); ++i)
 		{
 			const auto& name = i.key ();
