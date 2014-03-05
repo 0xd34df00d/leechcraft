@@ -89,10 +89,15 @@ namespace HotSensors
 				int sfnr = 0;
 				const sensors_subfeature *subfeature = 0;
 
-				StoredTemp temp;
-				temp.Name_ = QString ("%1/%2")
-						.arg (chipName->prefix)
-						.arg (sensors_get_label (chipName, feature));
+				StoredTemp temp
+				{
+					100,
+					100,
+					{},
+					QString ("%1/%2")
+							.arg (chipName->prefix)
+							.arg (sensors_get_label (chipName, feature)),
+				};
 				while ((subfeature = sensors_get_all_subfeatures (chipName, feature, &sfnr)))
 				{
 					switch (subfeature->type)
