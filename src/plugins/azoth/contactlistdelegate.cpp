@@ -383,8 +383,8 @@ namespace Azoth
 
 		for (const auto& icon : clientIcons)
 		{
-			p.drawPixmap (QPoint (currentShift, (sHeight - stateIconPx.height ()) / 2),
-					icon.pixmap (clientIconSize, clientIconSize));
+			const auto& px = icon.pixmap (clientIconSize, clientIconSize);
+			p.drawPixmap (QPoint { currentShift, (sHeight - px.size ().height ()) / 2 }, px);
 			currentShift += clientIconSize + CPadding;
 		}
 
@@ -471,7 +471,6 @@ namespace Azoth
 
 		return clientIcons;
 	}
-
 
 	void ContactListDelegate::LoadSystemIcon (const QString& name,
 			QList<QIcon>& clientIcons) const
