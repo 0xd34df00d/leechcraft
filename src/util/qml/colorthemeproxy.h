@@ -70,47 +70,47 @@ namespace Util
 	 * Using the added object is pretty easy too:
 	 * \code{.qml}
 	 * Rectangle {
-	 *		anchors.fill: parent
-	 *		radius: 5
-	 *		smooth: true
-	 *		border.color: colorProxy.color_TextBox_BorderColor
-	 *		border.width: 1
-	 *		gradient: Gradient {
-	 *			GradientStop {
-	 *				position: 0
-	 *				id: upperStop
-	 *				color: colorProxy.color_TextBox_TopColor
-	 *			}
-	 *			GradientStop {
-	 *				position: 1
-	 *				id: lowerStop
-	 *				color: colorProxy.color_TextBox_BottomColor
-	 *			}
-	 *		}
-	 *	}
-	 * \endcode
+	 		anchors.fill: parent
+	 		radius: 5
+	 		smooth: true
+	 		border.color: colorProxy.color_TextBox_BorderColor
+	 		border.width: 1
+	 		gradient: Gradient {
+	 			GradientStop {
+	 				position: 0
+	 				id: upperStop
+	 				color: colorProxy.color_TextBox_TopColor
+	 			}
+	 			GradientStop {
+	 				position: 1
+	 				id: lowerStop
+	 				color: colorProxy.color_TextBox_BottomColor
+	 			}
+	 		}
+	 	}
+	   \endcode
 	 *
 	 * The colors can also be used in the states and dynamic elements,
 	 * for example:
 	 * \code{.qml}
-	 * states: [
-	 *		State {
-	 *			name: "hovered"
-	 *			PropertyChanges { target: tabRect; border.color: colorProxy.color_TextBox_HighlightBorderColor }
-	 *			PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
-	 *			PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
-	 *		}
-	 *	]
-	 *	transitions: [
-	 *		Transition {
-	 *			from: ""
-	 *			to: "hovered"
-	 *			reversible: true
-	 *			PropertyAnimation { properties: "border.color"; duration: 200 }
-	 *			PropertyAnimation { properties: "color"; duration: 200 }
-	 *		}
-	 *	]
-	 * \endcode
+	  states: [
+	 		State {
+	 			name: "hovered"
+	 			PropertyChanges { target: tabRect; border.color: colorProxy.color_TextBox_HighlightBorderColor }
+	 			PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
+	 			PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
+	 		}
+	 	]
+	 	transitions: [
+	 		Transition {
+	 			from: ""
+	 			to: "hovered"
+	 			reversible: true
+	 			PropertyAnimation { properties: "border.color"; duration: 200 }
+	 			PropertyAnimation { properties: "color"; duration: 200 }
+	 		}
+	 	]
+	   \endcode
 	 *
 	 * Good examples of color proxy usage are in LMP and SB2 plugins,
 	 * for example.
