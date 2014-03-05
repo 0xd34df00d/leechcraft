@@ -29,6 +29,7 @@
 
 #include "pagegraphicsitem.h"
 #include <limits>
+#include <cmath>
 #include <QtDebug>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
@@ -295,6 +296,8 @@ namespace Monocle
 
 		const auto& img = watcher->result ();
 		setPixmap (QPixmap::fromImage (img));
+
+		Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
 	}
 }
 }
