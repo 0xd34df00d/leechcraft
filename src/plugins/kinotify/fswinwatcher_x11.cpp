@@ -31,7 +31,6 @@
 #include <QX11Info>
 #include <QMainWindow>
 #include <X11/Xlib.h>
-#include <X11/extensions/randr.h>
 #include <interfaces/core/irootwindowsmanager.h>
 
 namespace LeechCraft
