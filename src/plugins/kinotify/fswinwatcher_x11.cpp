@@ -80,6 +80,5 @@ namespace Kinotify
 
 		return screenWidth == width && screenHeight == height;
 	}
-
 }
 }
