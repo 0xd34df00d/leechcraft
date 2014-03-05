@@ -42,7 +42,9 @@ namespace HotSensors
 		{
 			LastTemp = Qt::UserRole + 1,
 			SensorName,
-			PointsList
+			PointsList,
+			MaxTemp,
+			CritTemp
 		};
 
 		SensorsGraphModel (QObject*);
