@@ -11,7 +11,7 @@ Rectangle {
 
     signal closeRequested()
 
-    property variant pointsList
+    property variant pointsList: srcPtsList
 
     gradient: Gradient {
         GradientStop {

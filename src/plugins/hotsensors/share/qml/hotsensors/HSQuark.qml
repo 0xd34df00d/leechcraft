@@ -77,7 +77,7 @@ Rectangle {
                         "x": global.x,
                         "y": global.y,
                         "existing": "ignore",
-                        "pointsList": pointsList,
+                        "srcPtsList": pointsList,
                         "colorProxy": colorProxy,
                         "sensorName": sensorName
                     };
