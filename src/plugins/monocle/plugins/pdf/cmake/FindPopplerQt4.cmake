@@ -18,10 +18,14 @@
 if (UNIX)
 	find_package(PkgConfig)
 	pkg_check_modules(PC_POPPLERQT4 QUIET poppler-qt4)
-	
+
 	set(POPPLER_QT4_DEFINITIONS ${PC_POPPLERQT4_CFLAGS_OTHER})
 endif ()
 
+find_path (POPPLER_CPP_INCLUDE_DIR
+	NAMES poppler-version.h
+	PATHS ${POPPLER_DIR}/include
+	PATH_SUFFIXES poppler/cpp cpp/src)
 
 find_path (POPPLER_QT4_INCLUDE_DIR
 	NAMES poppler-qt4.h
@@ -38,20 +42,20 @@ find_library(POPPLER_QT4_LIBRARY
 
 set(POPPLER_QT4_LIBRARIES ${POPPLER_QT4_LIBRARY})
 
-if (POPPLER_QT4_INCLUDE_DIR AND POPPLER_QT4_LIBRARIES)
+if (POPPLER_QT4_INCLUDE_DIR AND POPPLER_CPP_INCLUDE_DIR AND POPPLER_QT4_LIBRARIES)
   set(POPPLER_QT4_FOUND TRUE)
 else ()
   set(POPPLER_QT4_FOUND FALSE)
 endif ()
-  
+
 if (POPPLER_QT4_FOUND)
   if (NOT PopplerQt4_FIND_QUIETLY)
-    message(STATUS "Found poppler-qt4: library: ${POPPLER_QT4_LIBRARIES}, include path: ${POPPLER_QT4_INCLUDE_DIR}")
+    message(STATUS "Found poppler-qt4: library: ${POPPLER_QT4_LIBRARIES}, include path: ${POPPLER_QT4_INCLUDE_DIR}; cpp include path: ${POPPLER_CPP_INCLUDE_DIR}")
   endif ()
 else ()
   if (PopplerQt4_FIND_REQUIRED)
-    message(FATAL_ERROR "Could NOT find poppler-qt4")
+    message(FATAL_ERROR "Could NOT find poppler-qt4, make sure both poppler-qt4 and poppler-cpp are installed")
   endif ()
 endif ()
-  
+
 mark_as_advanced(POPPLER_QT4_INCLUDE_DIR POPPLER_QT4_LIBRARIES)
