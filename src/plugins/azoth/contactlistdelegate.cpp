@@ -172,7 +172,7 @@ namespace Azoth
 		if (!avatarImg.isNull ())
 		{
 			pxDraw.rx () -= avatarImg.width ();
-			const QPoint& delta = QPoint (0, (iconSize - avatarImg.height ()) / 2);
+			const QPoint delta { 0, (r.height () - avatarImg.height ()) / 2 };
 			painter->drawPixmap (pxDraw + delta,
 					QPixmap::fromImage (avatarImg));
 			pxDraw.rx () -= CPadding;
@@ -183,7 +183,7 @@ namespace Azoth
 			const int size = std::min (16, iconSize);
 			const QPixmap& px = accIcon.pixmap (size, size);
 			pxDraw.rx () -= px.width ();
-			const QPoint& delta = QPoint (0, (iconSize - px.height ()) / 2);
+			const QPoint delta { 0, (r.height () - px.height ()) / 2 };
 			painter->drawPixmap (pxDraw + delta, px);
 		}
 	}
