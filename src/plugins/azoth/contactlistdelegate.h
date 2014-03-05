@@ -68,6 +68,9 @@ namespace Azoth
 				QStyleOptionViewItemV4, const QModelIndex&) const;
 		void DrawContact (QPainter*,
 				QStyleOptionViewItemV4, const QModelIndex&) const;
+
+		QList<QIcon> GetContactIcons (const QModelIndex&, ICLEntry*, const QStringList&) const;
+
 		void LoadSystemIcon (const QString&, QList<QIcon>&) const;
 	private slots:
 		void handleShowAvatarsChanged ();
