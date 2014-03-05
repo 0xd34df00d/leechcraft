@@ -86,12 +86,12 @@ namespace HotSensors
 
 			QList<QPointF> points;
 			for (const auto& item : *i)
-				points.append ({ static_cast<qreal> (points.size ()), item });
+				points.append ({ static_cast<qreal> (points.size ()), item.Value_ });
 
 			const bool isKnownSensor = existing.contains (name);
 			auto item = isKnownSensor ? existing.take (name) : new QStandardItem;
 
-			const auto lastTemp = i->isEmpty () ? 0 : static_cast<int> (i->last ());
+			const auto lastTemp = i->isEmpty () ? 0 : static_cast<int> (i->last ().Value_);
 			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
 			item->setData (name, SensorsGraphModel::SensorName);
 			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);

@@ -47,6 +47,6 @@ namespace HotSensors
 
 	typedef QList<Reading> Readings_t;
 
-	typedef QMap<QString, QList<double>> ReadingsHistory_t;
+	typedef QMap<QString, QList<Reading>> ReadingsHistory_t;
 }
 }

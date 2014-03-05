@@ -53,7 +53,7 @@ namespace HotSensors
 		for (const auto& r : readings)
 		{
 			auto& vec = History_ [r.Name_];
-			vec << r.Value_;
+			vec << r;
 			if (vec.size () >= 100)
 				vec.pop_front ();
 		}
