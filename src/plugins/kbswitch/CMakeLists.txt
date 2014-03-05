@@ -4,6 +4,17 @@ include (InitLCPlugin OPTIONAL)
 
 find_package (X11 REQUIRED)
 
+if (NOT X11_Xlib_INCLUDE_PATH OR
+	NOT X11_Xutil_INCLUDE_PATH OR
+	NOT X11_Xkblib_INCLUDE_PATH OR
+	NOT X11_Xaccessrules_INCLUDE_PATH)
+	message (STATUS "Xlib: ${X11_Xlib_INCLUDE_PATH}")
+	message (STATUS "Xutil: ${X11_Xutil_INCLUDE_PATH}")
+	message (STATUS "XKBlib.h: ${X11_Xkblib_INCLUDE_PATH}")
+	message (STATUS "XKBrules.h: ${X11_Xaccessrules_INCLUDE_PATH}")
+	message (FATAL_ERROR "Could NOT find all required X11 libraries")
+endif ()
+
 set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 include_directories (
