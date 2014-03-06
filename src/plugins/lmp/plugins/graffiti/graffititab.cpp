@@ -211,6 +211,11 @@ namespace Graffiti
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (currentFileChanged (QModelIndex)));
+
+		connect (Ui_.PathLine_,
+				SIGNAL (activated (QString)),
+				this,
+				SLOT (handlePathLine ()));
 	}
 
 	void GraffitiTab::SetupToolbar ()
@@ -508,8 +513,10 @@ namespace Graffiti
 		SetPath (path);
 	}
 
-	void GraffitiTab::on_PathLine__editTextChanged (QString path)
+	void GraffitiTab::handlePathLine ()
 	{
+		qDebug () << Q_FUNC_INFO;
+		QString path = Ui_.PathLine_->currentText ();
 		if (path.startsWith ('~'))
 		{
 			path.replace (0, 1, QDir::homePath ());

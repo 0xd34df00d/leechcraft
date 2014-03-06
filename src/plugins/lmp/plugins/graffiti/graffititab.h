@@ -116,7 +116,7 @@ namespace Graffiti
 		void handleTagsFetched (const QString&);
 
 		void on_DirectoryTree__activated (const QModelIndex&);
-		void on_PathLine__editTextChanged (QString);
+		void handlePathLine ();
 
 		void currentFileChanged (const QModelIndex&);
 		void handleRereadFiles ();
