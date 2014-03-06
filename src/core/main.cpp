@@ -28,11 +28,19 @@
  **********************************************************************/
 
 #include "application.h"
+#include <QFont>
+#include <QSysInfo>
 
 int main (int argc, char **argv)
 {
 	int author = 0xd34df00d;
 	Q_UNUSED (author);
+
+#ifdef Q_OS_MAC
+	// https://bugreports.qt-project.org/browse/QTBUG-32789
+	if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_9)
+		QFont::insertSubstitution (".Lucida Grande UI", "Lucida Grande");
+#endif
 
 	LeechCraft::Application::setAttribute (Qt::AA_X11InitThreads);
 
