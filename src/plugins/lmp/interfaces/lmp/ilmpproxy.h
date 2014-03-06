@@ -47,6 +47,13 @@ namespace LMP
 	class ITagResolver;
 	struct MediaInfo;
 
+	enum SubstitutionFlag
+	{
+		SFNone,
+		SFSafeFilesystem
+	};
+	Q_DECLARE_FLAGS (SubstitutionFlags, SubstitutionFlag);
+
 	class ILMPProxy
 	{
 	public:
@@ -66,11 +73,13 @@ namespace LMP
 
 		virtual QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const = 0;
 
-		virtual QString PerformSubstitutions (QString mask, const MediaInfo& info) const = 0;
+		virtual QString PerformSubstitutions (QString mask,
+				const MediaInfo& info, SubstitutionFlags flags = SFNone) const = 0;
 	};
 
 	typedef std::shared_ptr<ILMPProxy> ILMPProxy_Ptr;
 }
 }
 
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::SubstitutionFlags)
 Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPProxy, "org.LeechCraft.LMP.ILMPProxy/1.0");

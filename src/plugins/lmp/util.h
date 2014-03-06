@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QFileInfo>
 #include <interfaces/media/idiscographyprovider.h>
+#include "interfaces/lmp/ilmpproxy.h"
 
 class QPixmap;
 class QPoint;
@@ -54,7 +55,8 @@ namespace LMP
 
 	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
 	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
-	QString PerformSubstitutions (QString mask, const MediaInfo& info);
+
+	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
 
 	bool ShouldRememberProvs ();
 

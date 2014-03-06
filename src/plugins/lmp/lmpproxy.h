@@ -50,7 +50,7 @@ namespace LMP
 		QList<QFileInfo> RecIterateInfo (const QString&, bool, std::atomic<bool>*) const;
 		QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const;
 		QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const;
-		QString PerformSubstitutions (QString mask, const MediaInfo& info) const;
+		QString PerformSubstitutions (QString, const MediaInfo&, SubstitutionFlags) const;
 	};
 }
 }

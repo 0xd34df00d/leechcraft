@@ -203,11 +203,19 @@ namespace LMP
 			});
 	}
 
-	QString PerformSubstitutions (QString mask, const MediaInfo& info)
+	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags flags)
 	{
 		const auto& getters = GetSubstGetters ();
 		for (const auto& key : getters.keys ())
 			mask.replace (key, getters [key] (info));
+
+		if (flags & SubstitutionFlag::SFSafeFilesystem)
+		{
+			mask.replace ('/', '_');
+			mask.replace ('?', '_');
+			mask.replace ('*', '_');
+		}
+
 		return mask;
 	}
 

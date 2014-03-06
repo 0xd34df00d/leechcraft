@@ -73,9 +73,10 @@ namespace LMP
 		return LMP::GetSubstSetters ();
 	}
 
-	QString LMPProxy::PerformSubstitutions (QString mask, const MediaInfo& info) const
+	QString LMPProxy::PerformSubstitutions (QString mask,
+			const MediaInfo& info, SubstitutionFlags flags) const
 	{
-		return LMP::PerformSubstitutions (mask, info);
+		return LMP::PerformSubstitutions (mask, info, flags);
 	}
 }
 }
