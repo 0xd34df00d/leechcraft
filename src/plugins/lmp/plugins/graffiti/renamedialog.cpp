@@ -125,7 +125,8 @@ namespace Graffiti
 		int row = 0;
 		for (auto& info : Infos_)
 		{
-			info.second = Proxy_->PerformSubstitutions (pattern, info.first);
+			info.second = Proxy_->PerformSubstitutions (pattern,
+					info.first, SubstitutionFlag::SFSafeFilesystem);
 			if (!hasExtension)
 				info.second += '.' + QFileInfo (info.first.LocalPath_).suffix ();
 
