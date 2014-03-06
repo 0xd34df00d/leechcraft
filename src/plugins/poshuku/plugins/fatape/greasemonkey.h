@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QSettings>
@@ -50,9 +51,10 @@ namespace FatApe
 		QWebFrame *Frame_;
 		IProxyObject *Proxy_;
 		UserScript Script_;
-		QSettings Storage_;
 	public:
 		GreaseMonkey (QWebFrame *frame, IProxyObject *proxy, const UserScript& script);
+	private:
+		std::shared_ptr<QSettings> GetStorage () const;
 	public slots:
 		void addStyle (const QString& css);
 		void deleteValue (const QString& name);

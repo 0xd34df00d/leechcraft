@@ -45,12 +45,23 @@ namespace FatApe
 	: Frame_ (frame)
 	, Proxy_ (proxy)
 	, Script_ (script)
-	, Storage_ (QCoreApplication::organizationName (),
-		QCoreApplication::applicationName () + "_Poshuku_FatApe")
 	{
-		Storage_.beginGroup (QString ("storage/%1/%2")
-				.arg (qHash (Script_.Namespace ()))
-				.arg (Script_.Name ()));
+	}
+
+	std::shared_ptr<QSettings> GreaseMonkey::GetStorage () const
+	{
+		const auto& orgName = QCoreApplication::organizationName ();
+		const auto& sName = QCoreApplication::applicationName () + "_Poshuku_FatApe_Storage";
+		std::shared_ptr<QSettings> settings { new QSettings { orgName, sName },
+			[] (QSettings *settings)
+			{
+					settings->endGroup ();
+					settings->endGroup ();
+					delete settings;
+			} };
+		settings->beginGroup (QString::number (qHash (Script_.Namespace ())));
+		settings->beginGroup (QString::number (qHash (Script_.Name ())));
+		return settings;
 	}
 
 	void GreaseMonkey::addStyle (const QString& css)
@@ -63,7 +74,7 @@ namespace FatApe
 	void GreaseMonkey::deleteValue (const QString& name)
 	{
 		qDebug () << Q_FUNC_INFO << name;
-		Storage_.remove (name);
+		GetStorage ()->remove (name);
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name)
@@ -75,18 +86,18 @@ namespace FatApe
 	QVariant GreaseMonkey::getValue (const QString& name, QVariant defVal)
 	{
 		qDebug () << Q_FUNC_INFO << name << "with" << defVal;
-		return Storage_.value (name, defVal);
+		return GetStorage ()->value (name, defVal);
 	}
 
 	QVariant GreaseMonkey::listValues ()
 	{
-		return Storage_.allKeys ();
+		return GetStorage ()->allKeys ();
 	}
 
 	void GreaseMonkey::setValue (const QString& name, QVariant value)
 	{
 		qDebug () << Q_FUNC_INFO << name << "to" << value;
-		Storage_.setValue (name, value);
+		GetStorage ()->setValue (name, value);
 	}
 
 	void GreaseMonkey::openInTab (const QString& url)
