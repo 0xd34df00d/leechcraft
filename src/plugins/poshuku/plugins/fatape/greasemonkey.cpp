@@ -94,7 +94,7 @@ namespace FatApe
 	{
 		QFile resource (Script_.GetResourcePath (resourceName));
 
-		return resource.open (QFile::ReadOnly) ? 
+		return resource.open (QFile::ReadOnly) ?
 			QTextStream (&resource).readAll () :
 			QString ();
 	}
@@ -108,16 +108,16 @@ namespace FatApe
 				.arg (Script_.Name ())
 				.arg (resourceName)).toString ();
 		QFile resource (Script_.GetResourcePath (resourceName));
-		
+
 		return resource.open (QFile::ReadOnly) ?
 			QString ("data:%1;base64,%2")
 				.arg (mimeType)
 				.arg (QString (resource.readAll ().toBase64 ())
-						//The result is a base64 encoded URI, which is then also URI encoded, 
-						//as suggested by Wikipedia(http://en.wikipedia.org/wiki/Base64#URL_applications), 
+						//The result is a base64 encoded URI, which is then also URI encoded,
+						//as suggested by Wikipedia(http://en.wikipedia.org/wiki/Base64#URL_applications),
 						//because of "+" and "/" characters in the base64 alphabet.
 						//http://wiki.greasespot.net/GM_getResourceURL#Returns
-						.replace ("+", "%2B")  
+						.replace ("+", "%2B")
 						.replace ("/", "%2F")) :
 			QString ();
 	}

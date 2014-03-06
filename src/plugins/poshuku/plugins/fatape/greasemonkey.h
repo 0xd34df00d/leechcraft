@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <QSettings>
@@ -67,4 +67,3 @@ namespace FatApe
 }
 }
 }
-#endif
