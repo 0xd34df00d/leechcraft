@@ -33,6 +33,7 @@
 #include <QHash>
 #include <QTextStream>
 #include <QWebElement>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -61,16 +62,19 @@ namespace FatApe
 
 	void GreaseMonkey::deleteValue (const QString& name)
 	{
+		qDebug () << Q_FUNC_INFO << name;
 		Storage_.remove (name);
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name)
 	{
+		qDebug () << Q_FUNC_INFO << name;
 		return getValue (name, QVariant ());
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name, QVariant defVal)
 	{
+		qDebug () << Q_FUNC_INFO << name << "with" << defVal;
 		return Storage_.value (name, defVal);
 	}
 
@@ -81,6 +85,7 @@ namespace FatApe
 
 	void GreaseMonkey::setValue (const QString& name, QVariant value)
 	{
+		qDebug () << Q_FUNC_INFO << name << "to" << value;
 		Storage_.setValue (name, value);
 	}
 
