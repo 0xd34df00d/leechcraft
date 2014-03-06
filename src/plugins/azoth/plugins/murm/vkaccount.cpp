@@ -157,7 +157,7 @@ namespace Murm
 
 		quint8 version = 0;
 		in >> version;
-		if (version < 1 || version > 3)
+		if (version < 1 || version > 4)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
