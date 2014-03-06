@@ -15,67 +15,57 @@
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="27"/>
+        <source>Update VKontakte status according to Azoth status</source>
+        <translation>Обновлять статус В Контакте согласно статусу Azoth</translation>
+    </message>
+    <message>
+        <location filename="accountconfigdialog.ui" line="34"/>
         <source>Publish tune to status</source>
         <translation>Публиковать проигрываемую мелодию в статус</translation>
     </message>
     <message>
-        <location filename="accountconfigdialog.ui" line="34"/>
+        <location filename="accountconfigdialog.ui" line="41"/>
         <source>Mark as online</source>
         <translation>Помечать как присутствующий на сайте</translation>
     </message>
     <message>
-        <location filename="accountconfigdialog.ui" line="56"/>
+        <location filename="accountconfigdialog.ui" line="63"/>
         <source>Reauth</source>
         <translation>Переаутентифицироваться</translation>
     </message>
 </context>
 <context>
-    <name>CaptchaDialog</name>
+    <name>LeechCraft::Azoth::Murm</name>
     <message>
-        <location filename="captchadialog.ui" line="14"/>
-        <source>CAPTCHA required</source>
-        <translation>Требуется CAPTCHA</translation>
-    </message>
-    <message>
-        <location filename="captchadialog.ui" line="20"/>
-        <source>Image:</source>
-        <translation>Изображение:</translation>
-    </message>
-    <message>
-        <location filename="captchadialog.ui" line="27"/>
-        <source>loading...</source>
-        <translation>загрузка…</translation>
-    </message>
-    <message>
-        <location filename="captchadialog.ui" line="34"/>
-        <source>Text:</source>
-        <translation>Текст:</translation>
+        <location filename="serverhistorymanager.cpp" line="62"/>
+        <source>Contact</source>
+        <translation>Контакт</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Murm::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="140"/>
+        <location filename="entrybase.cpp" line="141"/>
         <source>Enqueue</source>
         <translation>Добавить в очередь</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="144"/>
+        <location filename="entrybase.cpp" line="145"/>
         <source>Play</source>
         <translation>Проиграть</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="148"/>
+        <location filename="entrybase.cpp" line="149"/>
         <source>Download</source>
         <translation>Скачать</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="300"/>
+        <location filename="entrybase.cpp" line="301"/>
         <source>Posted on: %1</source>
         <translation>Опубликовано: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="303"/>
+        <location filename="entrybase.cpp" line="304"/>
         <source>%n like(s)</source>
         <translation>
             <numerusform>%n пользователю это нравится</numerusform>
@@ -84,7 +74,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="305"/>
+        <location filename="entrybase.cpp" line="306"/>
         <source>%n repost(s)</source>
         <translation>
             <numerusform>%n пользователь опубликовал это у себя</numerusform>
@@ -96,7 +86,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::Plugin</name>
     <message>
-        <location filename="murm.cpp" line="73"/>
+        <location filename="murm.cpp" line="75"/>
         <source>Native support for the VKontakte messaging protocol.</source>
         <translation>Прямая поддержка обмена сообщениями В Контакте.</translation>
     </message>
@@ -117,12 +107,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="273"/>
+        <location filename="vkaccount.cpp" line="284"/>
         <source>me</source>
         <translation>я</translation>
     </message>
     <message>
-        <location filename="vkaccount.cpp" line="427"/>
+        <location filename="vkaccount.cpp" line="439"/>
         <source>%1 is invalid VKontake ID</source>
         <translation>%1 — неправильный ID В Контакте</translation>
     </message>
@@ -130,12 +120,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkChatEntry</name>
     <message>
-        <location filename="vkchatentry.cpp" line="156"/>
+        <location filename="vkchatentry.cpp" line="168"/>
         <source>Chats</source>
         <translation>Чаты</translation>
     </message>
     <message>
-        <location filename="vkchatentry.cpp" line="259"/>
+        <location filename="vkchatentry.cpp" line="277"/>
         <source>Participants of %1</source>
         <translation>Участники %1</translation>
     </message>
@@ -143,22 +133,22 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkEntry</name>
     <message>
-        <location filename="vkentry.cpp" line="105"/>
+        <location filename="vkentry.cpp" line="106"/>
         <source>%1 is now on the site again</source>
         <translation>%1 снова на сайте</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="106"/>
+        <location filename="vkentry.cpp" line="107"/>
         <source>%1 has left the site</source>
         <translation>%1 покинул(а) сайт</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="394"/>
+        <location filename="vkentry.cpp" line="406"/>
         <source>Self contact</source>
         <translation>Я</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="397"/>
+        <location filename="vkentry.cpp" line="409"/>
         <source>Non-friends</source>
         <translation>Недрузья</translation>
     </message>
@@ -166,7 +156,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkProtocol</name>
     <message>
-        <location filename="vkprotocol.cpp" line="85"/>
+        <location filename="vkprotocol.cpp" line="91"/>
         <source>VKontakte</source>
         <translation>В Контакте</translation>
     </message>
@@ -278,6 +268,16 @@
         <location filename="dummy.cpp" line="5"/>
         <source>The following variables are allowed: $name, $nick, $surname.</source>
         <translation>Разрешены следующие переменные: $name, $nick, $surname.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Connection</source>
+        <translation>Соединение</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Require Offline permissions to avoid reauthentification on IP change</source>
+        <translation>Требовать уровня доступа «offline» во избежание реаутентификации при смене IP</translation>
     </message>
 </context>
 </TS>
