@@ -152,6 +152,8 @@ namespace LMP
 	, ActionShowTrackProps_ (0)
 	, ActionShowAlbumArt_ (0)
 	{
+		qRegisterMetaType<QItemSelection> ("QItemSelection");
+
 		Ui_.setupUi (this);
 
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.SearchPlaylist_);
@@ -221,6 +223,11 @@ namespace LMP
 				Qt::QueuedConnection);
 		connect (model,
 				SIGNAL (modelReset ()),
+				this,
+				SLOT (updateStatsLabel ()),
+				Qt::QueuedConnection);
+		connect (Ui_.Playlist_->selectionModel (),
+				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
 				this,
 				SLOT (updateStatsLabel ()),
 				Qt::QueuedConnection);
@@ -941,8 +948,25 @@ namespace LMP
 					idx.data (Player::Role::Info).value<MediaInfo> ().Length_;
 		}
 
-		Ui_.StatsLabel_->setText (tr ("%n track(s), total duration: %1", 0, tracksCount)
-					.arg (Util::MakeTimeFromLong (length)));
+		QModelIndexList selectedTracks;
+		for (const auto& idx : Ui_.Playlist_->selectionModel ()->selectedRows ())
+			if (!model->rowCount (idx))
+				selectedTracks << idx;
+
+		int selectedLength = 0;
+		if (selectedTracks.size () > 1)
+			for (const auto& idx : selectedTracks)
+				selectedLength += idx.data (Player::Role::Info).value<MediaInfo> ().Length_;
+
+		QString text;
+		if (selectedLength > 0)
+			text = tr ("%n track(s), total duration: %1; selected duration: %2", 0, tracksCount)
+					.arg (Util::MakeTimeFromLong (length))
+					.arg (Util::MakeTimeFromLong (selectedLength));
+		else
+			text = tr ("%n track(s), total duration: %1", 0, tracksCount)
+					.arg (Util::MakeTimeFromLong (length));
+		Ui_.StatsLabel_->setText (text);
 	}
 }
 }
