@@ -142,6 +142,10 @@ namespace WebAccess
 				return Wt::WDateTime::fromTime_t (var.toDateTime ().toTime_t ());
 			case QVariant::String:
 				return ToW (var.toString ());
+			case QVariant::Double:
+				return var.toDouble ();
+			case QVariant::Int:
+				return var.toInt ();
 			default:
 				if (var.canConvert<double> ())
 					return var.toDouble ();
