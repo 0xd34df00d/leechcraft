@@ -43,6 +43,7 @@
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
 #include "readchannelsfilter.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -50,14 +51,6 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	namespace
-	{
-		Wt::WString ToW (const QString& str)
-		{
-			return Wt::WString (str.toUtf8 ().constData (), Wt::CharEncoding::UTF8);
-		}
-	}
-
 	AggregatorApp::AggregatorApp (IProxyObject *ap, ICoreProxy_ptr cp,
 			const Wt::WEnvironment& environment)
 	: WApplication (environment)

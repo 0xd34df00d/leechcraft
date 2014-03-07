@@ -12,6 +12,7 @@ set (WEBACCESS_SRCS
 	servermanager.cpp
 	aggregatorapp.cpp
 	readchannelsfilter.cpp
+	util.cpp
 	)
 
 add_library (leechcraft_aggregator_webaccess SHARED
