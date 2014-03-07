@@ -270,9 +270,9 @@ namespace Monocle
 			item->SetScale (scale, scale);
 		}
 
-		double currentY = 0;
-		double lastWidth = 0;
-		double lastHeight = 0;
+		qreal currentY = 0;
+		qreal lastWidth = 0;
+		qreal lastHeight = 0;
 		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
 		{
 			auto page = Pages_ [i];
