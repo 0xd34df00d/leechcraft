@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "readchannelsfilter.h"
+#include <QtDebug>
 #include "aggregatorapp.h"
 
 namespace LeechCraft
@@ -57,7 +58,19 @@ namespace WebAccess
 			if (idx.isValid ())
 			{
 				const auto data = idx.data (AggregatorApp::ChannelRole::UnreadCount);
-				return boost::any_cast<int> (data) > 0;
+				try
+				{
+					return boost::any_cast<int> (data) > 0;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot get unread count"
+							<< e.what ()
+							<< "; stored:"
+							<< data.type ().name ();
+					return true;
+				}
 			}
 		}
 		return Wt::WSortFilterProxyModel::filterAcceptRow (row, parent);
