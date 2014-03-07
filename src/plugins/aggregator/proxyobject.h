@@ -104,6 +104,7 @@ namespace Aggregator
 		 */
 		void AddItem (Item_ptr item);
 
+		QAbstractItemModel* GetChannelsModel () const;
 		QList<Channel_ptr> GetAllChannels () const;
 		int CountUnreadItems (IDType_t) const;
 		QList<Item_ptr> GetChannelItems (IDType_t) const;

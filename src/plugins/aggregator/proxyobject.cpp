@@ -29,6 +29,7 @@
 
 #include "proxyobject.h"
 #include "core.h"
+#include "channelsmodel.h"
 
 namespace LeechCraft
 {
@@ -101,6 +102,11 @@ namespace Aggregator
 		FixItemID (item);
 
 		Core::Instance ().GetStorageBackend ()->AddItem (item);
+	}
+
+	QAbstractItemModel* ProxyObject::GetChannelsModel () const
+	{
+		return Core::Instance ().GetRawChannelsModel ();
 	}
 
 	QList<Channel_ptr> ProxyObject::GetAllChannels () const

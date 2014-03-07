@@ -27,10 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
-#define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
+#pragma once
+
 #include <memory>
 #include "common.h"
+
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
@@ -53,6 +55,7 @@ namespace Aggregator
 		virtual void AddChannel (Channel_ptr) = 0;
 		virtual void AddItem (Item_ptr) = 0;
 
+		virtual QAbstractItemModel* GetChannelsModel () const = 0;
 		virtual QList<Channel_ptr> GetAllChannels () const = 0;
 		virtual int CountUnreadItems (IDType_t) const = 0;
 		virtual QList<Item_ptr> GetChannelItems (IDType_t) const = 0;
@@ -64,5 +67,3 @@ namespace Aggregator
 
 Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IProxyObject,
 		"org.Deviant.LeechCraft.Aggregator.IProxyObject/1.0");
-
-#endif
