@@ -12,6 +12,7 @@ set (WEBACCESS_SRCS
 	servermanager.cpp
 	aggregatorapp.cpp
 	readchannelsfilter.cpp
+	q2wproxymodel.cpp
 	util.cpp
 	)
 
