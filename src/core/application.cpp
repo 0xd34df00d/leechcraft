@@ -318,7 +318,7 @@ namespace LeechCraft
 	void Application::InitiateRestart ()
 	{
 		QStringList arguments = Arguments_;
-		arguments << "-restart";
+		arguments << "--restart";
 		QProcess::startDetached (applicationFilePath (), arguments);
 
 		qApp->quit ();
