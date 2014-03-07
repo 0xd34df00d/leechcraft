@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "proxyobject.h"
-#include <boost/foreach.hpp>
 #include "core.h"
 
 namespace LeechCraft
@@ -49,7 +48,7 @@ namespace Aggregator
 
 			item->ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
 
-			BOOST_FOREACH (Enclosure& enc, item->Enclosures_)
+			for (auto& enc : item->Enclosures_)
 				enc.ItemID_ = item->ItemID_;
 		}
 
@@ -59,7 +58,7 @@ namespace Aggregator
 				return;
 
 			channel->ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
-			Q_FOREACH (Item_ptr item, channel->Items_)
+			for (const auto& item : channel->Items_)
 			{
 				item->ChannelID_ = channel->ChannelID_;
 
@@ -74,7 +73,7 @@ namespace Aggregator
 
 			feed->FeedID_ = Core::Instance ().GetPool (PTFeed).GetID ();
 
-			Q_FOREACH (Channel_ptr channel, feed->Channels_)
+			for (const auto& channel : feed->Channels_)
 			{
 				channel->FeedID_ = feed->FeedID_;
 
