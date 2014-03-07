@@ -44,6 +44,7 @@
 #include <interfaces/aggregator/channel.h>
 #include "readchannelsfilter.h"
 #include "util.h"
+#include "q2wproxymodel.h"
 
 namespace LeechCraft
 {
@@ -56,32 +57,20 @@ namespace WebAccess
 	: WApplication (environment)
 	, AP_ (ap)
 	, CP_ (cp)
-	, ChannelsModel_ (new Wt::WStandardItemModel (0, 2, this))
+	, ChannelsModel_ (new Q2WProxyModel (ap->GetChannelsModel ()))
 	, ChannelsFilter_ (new ReadChannelsFilter (this))
 	, ItemsModel_ (new Wt::WStandardItemModel (0, 2, this))
 	{
+		ChannelsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
+				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount }
+			}));
+
 		ChannelsFilter_->setSourceModel (ChannelsModel_);
 
 		setTitle ("Aggregator WebAccess");
 		setLoadingIndicator (new Wt::WOverlayLoadingIndicator ());
 
 		SetupUI ();
-
-		Q_FOREACH (Channel_ptr channel, AP_->GetAllChannels ())
-		{
-			const auto unreadCount = AP_->CountUnreadItems (channel->ChannelID_);
-
-			auto title = new Wt::WStandardItem (ToW (channel->Title_));
-			title->setIcon (Util::GetAsBase64Src (channel->Pixmap_).toStdString ());
-			title->setData (channel->ChannelID_, ChannelRole::CID);
-			title->setData (channel->FeedID_, ChannelRole::FID);
-			title->setData (unreadCount, ChannelRole::UnreadCount);
-
-			auto unread = new Wt::WStandardItem (ToW (QString::number (unreadCount)));
-			unread->setData (channel->ChannelID_, ChannelRole::CID);
-
-			ChannelsModel_->appendRow ({ title, unread });
-		}
 	}
 
 	void AggregatorApp::HandleChannelClicked (const Wt::WModelIndex& idx)

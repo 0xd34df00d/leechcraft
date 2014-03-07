@@ -41,6 +41,7 @@ class IProxyObject;
 
 namespace WebAccess
 {
+	class Q2WProxyModel;
 	class ReadChannelsFilter;
 
 	class AggregatorApp : public Wt::WApplication
@@ -48,7 +49,7 @@ namespace WebAccess
 		IProxyObject *AP_;
 		ICoreProxy_ptr CP_;
 
-		Wt::WStandardItemModel *ChannelsModel_;
+		Q2WProxyModel *ChannelsModel_;
 		ReadChannelsFilter *ChannelsFilter_;
 		Wt::WStandardItemModel *ItemsModel_;
 
