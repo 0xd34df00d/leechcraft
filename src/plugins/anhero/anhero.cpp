@@ -166,7 +166,7 @@ namespace AnHero
 	{
 		Util::InstallTranslator ("anhero");
 
-		const auto& args = QApplication::arguments ();
+		auto args = QApplication::arguments ();
 		if (args.contains ("-noanhero"))
 			return;
 
@@ -174,6 +174,8 @@ namespace AnHero
 		if (!QFile::exists ("/usr/bin/gdb"))
 			return;
 #endif
+
+		args.removeFirst ();
 
 		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
 		AppDir_ = QCoreApplication::applicationDirPath ().toUtf8 ();
