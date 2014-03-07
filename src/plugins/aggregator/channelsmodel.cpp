@@ -165,6 +165,8 @@ namespace Aggregator
 		}
 		else if (role == LeechCraft::RoleTags)
 			return Channels_.at (row).Tags_;
+		else if (role == ChannelRoles::UnreadCount)
+			return Channels_.at (row).Unread_;
 		else
 			return QVariant ();
 	}
