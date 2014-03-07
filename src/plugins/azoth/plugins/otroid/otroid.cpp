@@ -489,6 +489,8 @@ namespace OTRoid
 
 		IsGenerating_ = true;
 
+		const char *keysFile = GetOTRFilename ("privkey");
+
 		QEventLoop loop;
 		QFutureWatcher<gcry_error_t> watcher;
 		connect (&watcher,
@@ -496,7 +498,7 @@ namespace OTRoid
 				&loop,
 				SLOT (quit ()));
 		auto future = QtConcurrent::run (otrl_privkey_generate,
-				UserState_, GetOTRFilename ("privkey"), accName, proto);
+				UserState_, keysFile, accName, proto);
 		watcher.setFuture (future);
 
 		loop.exec ();
