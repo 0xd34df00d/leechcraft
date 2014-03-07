@@ -22,6 +22,8 @@ add_library (leechcraft_aggregator_webaccess SHARED
 target_link_libraries (leechcraft_aggregator_webaccess
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${Wt_LIBRARIES}
+	${Wt_LIBRARY}
+	${Wt_EXT_LIBRARY}
+	${Wt_HTTP_LIBRARY}
 	)
 install (TARGETS leechcraft_aggregator_webaccess DESTINATION ${LC_PLUGINS_DEST})
