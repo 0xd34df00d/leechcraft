@@ -13,15 +13,6 @@ set (WEBACCESS_SRCS
 	aggregatorapp.cpp
 	readchannelsfilter.cpp
 	)
-set (WEBACCESS_HEADERS
-	webaccess.h
-	servermanager.h
-	aggregatorapp.h
-	readchannelsfilter.h
-	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (WEBACCESS_MOC_SRCS ${WEBACCESS_HEADERS})
-endif ()
 
 add_library (leechcraft_aggregator_webaccess SHARED
 	${WEBACCESS_COMPILED_TRANSLATIONS}
