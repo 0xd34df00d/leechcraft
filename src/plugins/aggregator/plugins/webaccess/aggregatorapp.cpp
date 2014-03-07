@@ -134,8 +134,8 @@ namespace WebAccess
 		auto showReadChannels = new Wt::WCheckBox (ToW (QObject::tr ("Include read channels")));
 		showReadChannels->setToolTip (ToW (QObject::tr ("Also display channels that have no unread items.")));
 		showReadChannels->setChecked (false);
-		showReadChannels->checked ().connect ([ChannelsFilter_] (Wt::NoClass) { ChannelsFilter_->SetHideRead (false); });
-		showReadChannels->unChecked ().connect ([ChannelsFilter_] (Wt::NoClass) { ChannelsFilter_->SetHideRead (true); });
+		showReadChannels->checked ().connect ([this] (Wt::NoClass) { ChannelsFilter_->SetHideRead (false); });
+		showReadChannels->unChecked ().connect ([this] (Wt::NoClass) { ChannelsFilter_->SetHideRead (true); });
 		leftPaneLay->addWidget (showReadChannels);
 
 		auto channelsTree = new Wt::WTreeView ();
