@@ -120,7 +120,8 @@ namespace WebAccess
 		if (!index.isValid ())
 			return {};
 
-		if (!index.internalPointer ())
+		if (!index.internalPointer () ||
+				index.internalPointer () == Root_.get ())
 			return {};
 
 		const auto child = static_cast<ModelItem*> (index.internalPointer ());
