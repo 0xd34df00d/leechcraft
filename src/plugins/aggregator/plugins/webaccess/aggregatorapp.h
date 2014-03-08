@@ -33,6 +33,8 @@
 #include <Wt/WModelIndex>
 #include <interfaces/core/icoreproxy.h>
 
+class QThread;
+
 namespace LeechCraft
 {
 namespace Aggregator
@@ -48,6 +50,8 @@ namespace WebAccess
 	{
 		IProxyObject *AP_;
 		ICoreProxy_ptr CP_;
+
+		QThread * const ObjsThread_;
 
 		Q2WProxyModel *ChannelsModel_;
 		ReadChannelsFilter *ChannelsFilter_;
@@ -74,6 +78,7 @@ namespace WebAccess
 		};
 
 		AggregatorApp (IProxyObject*, ICoreProxy_ptr, const Wt::WEnvironment& environment);
+		~AggregatorApp ();
 	private:
 		void HandleChannelClicked (const Wt::WModelIndex&);
 		void HandleItemClicked (const Wt::WModelIndex&);

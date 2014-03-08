@@ -29,6 +29,7 @@
 
 #include "aggregatorapp.h"
 #include <QObject>
+#include <QThread>
 #include <QtDebug>
 #include <Wt/WText>
 #include <Wt/WContainerWidget>
@@ -57,13 +58,23 @@ namespace WebAccess
 	: WApplication (environment)
 	, AP_ (ap)
 	, CP_ (cp)
+	, ObjsThread_ (new QThread)
 	, ChannelsModel_ (new Q2WProxyModel (ap->GetChannelsModel ()))
 	, ChannelsFilter_ (new ReadChannelsFilter (this))
 	, ItemsModel_ (new Wt::WStandardItemModel (0, 2, this))
 	{
 		ChannelsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
-				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount }
+				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount },
+				{ ChannelRole::CID, Aggregator::ChannelRoles::ChannelID }
 			}));
+
+		ChannelsModel_->moveToThread (ObjsThread_);
+		QObject::connect (ObjsThread_,
+				SIGNAL (finished ()),
+				ChannelsModel_,
+				SLOT (deleteLater ()));
+
+		ObjsThread_->start ();
 
 		ChannelsFilter_->setSourceModel (ChannelsModel_);
 
@@ -73,12 +84,21 @@ namespace WebAccess
 		SetupUI ();
 	}
 
+	AggregatorApp::~AggregatorApp ()
+	{
+		ObjsThread_->quit ();
+		ObjsThread_->wait (1000);
+		if (!ObjsThread_->isFinished ())
+			ObjsThread_->terminate ();
+		delete ObjsThread_;
+	}
+
 	void AggregatorApp::HandleChannelClicked (const Wt::WModelIndex& idx)
 	{
 		ItemsModel_->clear ();
 		ItemView_->setText (Wt::WString ());
 
-		const IDType_t& cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
+		const auto cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
 		Q_FOREACH (Item_ptr item, AP_->GetChannelItems (cid))
 		{
 			if (!item->Unread_)
