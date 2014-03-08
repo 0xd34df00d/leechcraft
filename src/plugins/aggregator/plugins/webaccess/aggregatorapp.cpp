@@ -102,6 +102,8 @@ namespace WebAccess
 		setLoadingIndicator (new Wt::WOverlayLoadingIndicator ());
 
 		SetupUI ();
+
+		enableUpdates (true);
 	}
 
 	AggregatorApp::~AggregatorApp ()
