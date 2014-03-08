@@ -64,6 +64,11 @@ namespace WebAccess
 		{
 		}
 
+		ModelItem_ptr GetChild (int row) const
+		{
+			return Children_.value (row);
+		}
+
 		ModelItem* EnsureChild (int row)
 		{
 			if (Children_.value (row))
@@ -186,6 +191,30 @@ namespace WebAccess
 				Root_.get ();
 		const auto& srcIdx = ptr->GetIndex ();
 		return srcIdx.sibling (index.row (), index.column ());
+	}
+
+	Wt::WModelIndex Q2WProxyModel::Q2WIdx (const QModelIndex& index) const
+	{
+		struct Info
+		{
+			QModelIndex Idx_;
+		};
+		QList<Info> parentsRows;
+
+		auto parent = index;
+		while (parent.isValid ())
+		{
+			parentsRows.prepend ({ parent });
+			parent = parent.parent ();
+		}
+		parentsRows.removeFirst ();
+
+		auto current = Root_;
+		for (const auto& info : parentsRows)
+			if (!(current = current->GetChild (info.Idx_.row ())))
+				return {};
+
+		return createIndex (index.row (), index.column (), current.get ());
 	}
 
 	int Q2WProxyModel::WtRole2Qt (int role) const

@@ -68,6 +68,7 @@ namespace WebAccess
 	private:
 		int WtRole2Qt (int) const;
 		QModelIndex W2QIdx (const Wt::WModelIndex&) const;
+		Wt::WModelIndex Q2WIdx (const QModelIndex&) const;
 	};
 }
 }
