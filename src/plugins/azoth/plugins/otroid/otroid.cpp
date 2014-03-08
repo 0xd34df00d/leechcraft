@@ -44,6 +44,10 @@ extern "C"
 #include <libotr/message.h>
 #include <libotr/proto.h>
 
+#ifndef OTRL_PRIVKEY_FPRINT_HUMAN_LEN
+#define OTRL_PRIVKEY_FPRINT_HUMAN_LEN 45
+#endif
+
 #if OTRL_VERSION_MAJOR >= 4
 #include <libotr/instag.h>
 #endif
@@ -198,7 +202,7 @@ namespace OTRoid
 				const char *accountname, const char*,
 				const char *username, unsigned char fingerprint [20])
 		{
-			char fpHash [45];
+			char fpHash [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 			otrl_privkey_hash_to_human (fpHash, fingerprint);
 			QString hrHash (fpHash); // human readable fingerprint
 
@@ -485,6 +489,8 @@ namespace OTRoid
 
 		IsGenerating_ = true;
 
+		const char *keysFile = GetOTRFilename ("privkey");
+
 		QEventLoop loop;
 		QFutureWatcher<gcry_error_t> watcher;
 		connect (&watcher,
@@ -492,14 +498,14 @@ namespace OTRoid
 				&loop,
 				SLOT (quit ()));
 		auto future = QtConcurrent::run (otrl_privkey_generate,
-				UserState_, GetOTRFilename ("privkey"), accName, proto);
+				UserState_, keysFile, accName, proto);
 		watcher.setFuture (future);
 
 		loop.exec ();
 
 		IsGenerating_ = false;
 
-		char fingerprint [45];
+		char fingerprint [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 		if (!otrl_privkey_fingerprint (UserState_, fingerprint, accName, proto))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -769,7 +775,7 @@ namespace OTRoid
 					   message, false, IMessage::DIn, IMessage::MTServiceMessage);
 		}
 
-		char fingerprint [45];
+		char fingerprint [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 		if (!otrl_privkey_fingerprint (UserState_, fingerprint,
 				accId.constData (), protoId.constData ()))
 			CreatePrivkey (accId.constData (), protoId.constData());
