@@ -53,12 +53,32 @@ namespace Aggregator
 {
 namespace WebAccess
 {
+	namespace
+	{
+		class WittyThread : public QThread
+		{
+			Wt::WApplication * const App_;
+		public:
+			WittyThread (Wt::WApplication *app)
+			: App_ { app }
+			{
+			}
+		protected:
+			void run ()
+			{
+				App_->attachThread (true);
+				QThread::run ();
+				App_->attachThread (false);
+			}
+		};
+	}
+
 	AggregatorApp::AggregatorApp (IProxyObject *ap, ICoreProxy_ptr cp,
 			const Wt::WEnvironment& environment)
 	: WApplication (environment)
 	, AP_ (ap)
 	, CP_ (cp)
-	, ObjsThread_ (new QThread)
+	, ObjsThread_ (new WittyThread (this))
 	, ChannelsModel_ (new Q2WProxyModel (ap->GetChannelsModel ()))
 	, ChannelsFilter_ (new ReadChannelsFilter (this))
 	, ItemsModel_ (new Wt::WStandardItemModel (0, 2, this))
