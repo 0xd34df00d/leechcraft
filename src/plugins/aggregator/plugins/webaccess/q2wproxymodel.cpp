@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QDateTime>
 #include <Wt/WDateTime>
+#include <WApplication>
 #include "util.h"
 
 namespace LeechCraft
@@ -98,11 +99,16 @@ namespace WebAccess
 		}
 	};
 
-	Q2WProxyModel::Q2WProxyModel (QAbstractItemModel *src, QObject *parent)
-	: QObject { parent }
+	Q2WProxyModel::Q2WProxyModel (QAbstractItemModel *src, WObject *parent)
+	: Wt::WAbstractItemModel { parent }
 	, Src_ { src }
 	, Root_ { new ModelItem { src } }
 	{
+		connect (src,
+				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleDataChanged (QModelIndex, QModelIndex)),
+				Qt::QueuedConnection);
 	}
 
 	void Q2WProxyModel::SetRoleMappings (const QMap<int, int>& mapping)
@@ -226,6 +232,18 @@ namespace WebAccess
 		}
 
 		return Mapping_.value (role, -1);
+	}
+
+	void Q2WProxyModel::handleDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)
+	{
+		const auto& wtl = Q2WIdx (topLeft);
+		const auto& wbr = Q2WIdx (bottomRight);
+		if (!wtl.isValid () || !wbr.isValid ())
+			return;
+
+		Wt::WApplication::UpdateLock lock (Wt::WApplication::instance ());
+		dataChanged () (wtl, wbr);
+		Wt::WApplication::instance ()->triggerUpdate ();
 	}
 }
 }

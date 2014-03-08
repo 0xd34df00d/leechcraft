@@ -56,7 +56,7 @@ namespace WebAccess
 
 		QMap<int, int> Mapping_;
 	public:
-		Q2WProxyModel (QAbstractItemModel*, QObject* = nullptr);
+		Q2WProxyModel (QAbstractItemModel*, WObject* = nullptr);
 
 		void SetRoleMappings (const QMap<int, int>&);
 
@@ -69,6 +69,8 @@ namespace WebAccess
 		int WtRole2Qt (int) const;
 		QModelIndex W2QIdx (const Wt::WModelIndex&) const;
 		Wt::WModelIndex Q2WIdx (const QModelIndex&) const;
+	private Q_SLOTS:
+		void handleDataChanged (const QModelIndex&, const QModelIndex&);
 	};
 }
 }
