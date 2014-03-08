@@ -1,7 +1,7 @@
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package (Wt REQUIRED)
-add_definitions (-DQT_NO_KEYWORDS)
+add_definitions (-DQT_NO_KEYWORDS -DWT_NO_SLOT_MACROS)
 
 include_directories (${AGGREGATOR_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
