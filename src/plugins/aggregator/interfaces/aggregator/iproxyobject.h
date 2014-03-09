@@ -59,6 +59,8 @@ namespace Aggregator
 		virtual QList<Channel_ptr> GetAllChannels () const = 0;
 		virtual int CountUnreadItems (IDType_t) const = 0;
 		virtual QList<Item_ptr> GetChannelItems (IDType_t) const = 0;
+
+		virtual QAbstractItemModel* CreateItemsModel () const = 0;
 	};
 
 	typedef std::shared_ptr<IProxyObject> IProxyObject_ptr;

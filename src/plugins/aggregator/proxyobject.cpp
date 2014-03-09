@@ -30,6 +30,7 @@
 #include "proxyobject.h"
 #include "core.h"
 #include "channelsmodel.h"
+#include "itemslistmodel.h"
 
 namespace LeechCraft
 {
@@ -132,6 +133,11 @@ namespace Aggregator
 		items_container_t items;
 		Core::Instance ().GetStorageBackend ()->GetItems (items, channelId);
 		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
+	}
+
+	QAbstractItemModel* ProxyObject::CreateItemsModel () const
+	{
+		return new ItemsListModel;
 	}
 }
 }
