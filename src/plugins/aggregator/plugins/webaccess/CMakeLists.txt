@@ -14,6 +14,7 @@ set (WEBACCESS_SRCS
 	readchannelsfilter.cpp
 	q2wproxymodel.cpp
 	util.cpp
+	serverupdater.cpp
 	)
 
 add_library (leechcraft_aggregator_webaccess SHARED
