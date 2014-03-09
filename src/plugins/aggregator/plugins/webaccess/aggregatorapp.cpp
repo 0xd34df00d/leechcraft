@@ -166,6 +166,7 @@ namespace WebAccess
 
 	void AggregatorApp::SetupUI ()
 	{
+		setTheme (new Wt::WCssTheme ("polished"));
 		auto rootLay = new Wt::WBoxLayout (Wt::WBoxLayout::LeftToRight);
 		root ()->setLayout (rootLay);
 
