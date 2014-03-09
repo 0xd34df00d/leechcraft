@@ -69,6 +69,7 @@ namespace WebAccess
 		Wt::WModelIndex parent (const Wt::WModelIndex& index) const;
 		boost::any data (const Wt::WModelIndex& index, int role) const;
 		Wt::WModelIndex index (int row, int column, const Wt::WModelIndex& parent) const;
+		boost::any headerData (int section, Wt::Orientation orientation, int role) const;
 	private:
 		int WtRole2Qt (int) const;
 		QModelIndex W2QIdx (const Wt::WModelIndex&) const;

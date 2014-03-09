@@ -199,6 +199,14 @@ namespace WebAccess
 		return createIndex (row, column, parentPtr->EnsureChild (row));
 	}
 
+	boost::any Q2WProxyModel::headerData (int section, Wt::Orientation orientation, int role) const
+	{
+		if (orientation != Wt::Horizontal || role != Wt::DisplayRole)
+			return Wt::WAbstractItemModel::headerData (section, orientation, role);
+
+		return Variant2Any (Src_->headerData (section, Qt::Horizontal, Qt::DisplayRole));
+	}
+
 	QModelIndex Q2WProxyModel::W2QIdx (const Wt::WModelIndex& index) const
 	{
 		if (!index.isValid ())
