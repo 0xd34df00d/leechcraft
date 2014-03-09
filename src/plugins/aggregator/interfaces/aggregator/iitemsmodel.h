@@ -29,62 +29,30 @@
 
 #pragma once
 
-#include <QAbstractItemModel>
-#include <QStringList>
-#include <QSet>
-#include <QPair>
-#include <QIcon>
-#include "interfaces/aggregator/iitemsmodel.h"
-#include "item.h"
+#include <Qt>
+#include "common.h"
+
+class QModelIndex;
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	class ItemsListModel : public QAbstractItemModel
-						 , public IItemsModel
+	class IItemsModel
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Aggregator::IItemsModel)
-
-		QStringList ItemHeaders_;
-		items_shorts_t CurrentItems_;
-		int CurrentRow_;
-		IDType_t CurrentChannel_;
-
-		const QIcon StarredIcon_;
-		const QIcon UnreadIcon_;
-		const QIcon ReadIcon_;
 	public:
-		ItemsListModel (QObject* = 0);
+		virtual ~IItemsModel () {}
 
-		int GetSelectedRow () const;
-		const IDType_t& GetCurrentChannel () const;
-		void SetCurrentChannel (const IDType_t&);
-		void Selected (const QModelIndex&);
-		void MarkItemReadStatus (const QModelIndex&, bool);
-		const ItemShort& GetItem (const QModelIndex&) const;
-		const items_shorts_t& GetAllItems () const;
-		bool IsItemRead (int) const;
-		QStringList GetCategories (int) const;
-		void Reset (const IDType_t&);
-		void Reset (const QList<IDType_t>&);
-		void RemoveItems (QSet<IDType_t>);
-		void ItemDataUpdated (Item_ptr);
+		enum ItemRole
+		{
+			IsRead = Qt::UserRole + 1
+		};
 
-		int columnCount (const QModelIndex& = QModelIndex ()) const;
-		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& = QModelIndex ()) const;
-	public slots:
-		void reset (const IDType_t&);
-		void selected (const QModelIndex&);
-	private slots:
-		void handleChannelRemoved (IDType_t);
-		void handleItemsRemoved (const QSet<IDType_t>&);
+		virtual void reset (const IDType_t&) = 0;
+		virtual void selected (const QModelIndex&) = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IItemsModel,
+		"org.Deviant.LeechCraft.Aggregator.IItemsModel/1.0");
