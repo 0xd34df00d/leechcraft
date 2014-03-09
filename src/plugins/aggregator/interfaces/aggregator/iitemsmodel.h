@@ -45,7 +45,8 @@ namespace Aggregator
 
 		enum ItemRole
 		{
-			IsRead = Qt::UserRole + 1
+			IsRead = Qt::UserRole + 1,
+			ItemId
 		};
 
 		virtual void reset (const IDType_t&) = 0;

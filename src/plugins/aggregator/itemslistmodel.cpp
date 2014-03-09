@@ -382,6 +382,8 @@ namespace Aggregator
 		}
 		else if (role == ItemRole::IsRead)
 			return !CurrentItems_ [index.row ()].Unread_;
+		else if (role == ItemRole::ItemId)
+			return CurrentItems_ [index.row ()].ItemID_;
 		else
 			return QVariant ();
 	}
