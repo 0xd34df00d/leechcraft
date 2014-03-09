@@ -47,7 +47,6 @@ namespace WebAccess
 {
 	class ServerManager
 	{
-		IProxyObject *AggProxy_;
 		ICoreProxy_ptr CoreProxy_;
 
 		std::shared_ptr<Wt::WServer> Server_;

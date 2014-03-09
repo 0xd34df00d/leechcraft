@@ -78,8 +78,7 @@ namespace WebAccess
 	}
 
 	ServerManager::ServerManager (IProxyObject *proxy, ICoreProxy_ptr coreProxy)
-	: AggProxy_ (proxy)
-	, CoreProxy_ (coreProxy)
+	: CoreProxy_ (coreProxy)
 	, Server_ (new Wt::WServer ())
 	{
 		ArgcGenerator gen;
