@@ -33,7 +33,7 @@
 #include <QtDebug>
 #include <QDateTime>
 #include <Wt/WDateTime>
-#include <WApplication>
+#include <Wt/WApplication>
 #include "util.h"
 
 namespace LeechCraft
@@ -110,6 +110,16 @@ namespace WebAccess
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleDataChanged (QModelIndex, QModelIndex)),
+				Qt::QueuedConnection);
+		connect (src,
+				SIGNAL (modelAboutToBeReset ()),
+				this,
+				SLOT (handleModelAboutToBeReset ()),
+				Qt::QueuedConnection);
+		connect (src,
+				SIGNAL (modelReset ()),
+				this,
+				SLOT (handleModelReset ()),
 				Qt::QueuedConnection);
 	}
 
@@ -245,6 +255,18 @@ namespace WebAccess
 
 		Wt::WApplication::UpdateLock lock { App_ };
 		dataChanged () (wtl, wbr);
+
+		Update_ ();
+	}
+
+	void Q2WProxyModel::handleModelAboutToBeReset ()
+	{
+	}
+
+	void Q2WProxyModel::handleModelReset ()
+	{
+		Wt::WApplication::UpdateLock lock { App_ };
+		modelReset () ();
 
 		Update_ ();
 	}

@@ -75,6 +75,8 @@ namespace WebAccess
 		Wt::WModelIndex Q2WIdx (const QModelIndex&) const;
 	private Q_SLOTS:
 		void handleDataChanged (const QModelIndex&, const QModelIndex&);
+		void handleModelAboutToBeReset ();
+		void handleModelReset ();
 	};
 }
 }
