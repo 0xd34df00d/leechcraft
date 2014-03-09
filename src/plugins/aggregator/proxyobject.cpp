@@ -135,6 +135,11 @@ namespace Aggregator
 		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
 	}
 
+	Item_ptr ProxyObject::GetItem (IDType_t id) const
+	{
+		return Core::Instance ().GetStorageBackend ()->GetItem (id);
+	}
+
 	QAbstractItemModel* ProxyObject::CreateItemsModel () const
 	{
 		return new ItemsListModel;

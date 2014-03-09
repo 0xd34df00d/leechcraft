@@ -109,6 +109,7 @@ namespace Aggregator
 		int CountUnreadItems (IDType_t) const;
 		QList<Item_ptr> GetChannelItems (IDType_t) const;
 
+		Item_ptr GetItem (IDType_t) const;
 		QAbstractItemModel* CreateItemsModel () const;
 	};
 }
