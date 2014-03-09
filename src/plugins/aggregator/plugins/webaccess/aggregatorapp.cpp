@@ -89,6 +89,9 @@ namespace WebAccess
 				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount },
 				{ ChannelRole::CID, Aggregator::ChannelRoles::ChannelID }
 			}));
+		ItemsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
+				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId }
+			}));
 
 		auto initThread = [this] (QObject *obj) -> void
 		{
@@ -145,13 +148,19 @@ namespace WebAccess
 
 	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx)
 	{
-		auto titleIdx = idx.model ()->index (idx.row (), 0);
-		auto pubDate = idx.model ()->index (idx.row (), 1);
+		if (!idx.isValid ())
+			return;
+
+		const auto itemId = boost::any_cast<IDType_t> (idx.data (ItemRole::IID));
+		const auto& item = AP_->GetItem (itemId);
+		if (!item)
+			return;
+
 		auto text = Wt::WString ("<div><a href='{1}' target='_blank'>{2}</a><br />{3}<br /><hr/>{4}</div>")
-				.arg (boost::any_cast<Wt::WString> (titleIdx.data (ItemRole::Link)))
-				.arg (boost::any_cast<Wt::WString> (titleIdx.data ()))
-				.arg (boost::any_cast<Wt::WString> (pubDate.data ()))
-				.arg (boost::any_cast<Wt::WString> (titleIdx.data (ItemRole::Text)));
+				.arg (ToW (item->Link_))
+				.arg (ToW (item->Title_))
+				.arg (ToW (item->PubDate_.toString ()))
+				.arg (ToW (item->Description_));
 		ItemView_->setText (text);
 	}
 
@@ -187,6 +196,7 @@ namespace WebAccess
 		rightPaneLay->addWidget (ItemsTable_, 2, Wt::AlignJustify);
 
 		ItemView_ = new Wt::WText ();
+		ItemView_->setTextFormat (Wt::XHTMLUnsafeText);
 		rightPaneLay->addWidget (ItemView_, 5);
 	}
 }
