@@ -43,6 +43,7 @@
 #include <util/util.h>
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
+#include <interfaces/aggregator/iitemsmodel.h>
 #include "readchannelsfilter.h"
 #include "util.h"
 #include "q2wproxymodel.h"
@@ -79,9 +80,10 @@ namespace WebAccess
 	, AP_ (ap)
 	, CP_ (cp)
 	, ObjsThread_ (new WittyThread (this))
-	, ChannelsModel_ (new Q2WProxyModel (ap->GetChannelsModel ()))
+	, ChannelsModel_ (new Q2WProxyModel (AP_->GetChannelsModel (), this))
 	, ChannelsFilter_ (new ReadChannelsFilter (this))
-	, ItemsModel_ (new Wt::WStandardItemModel (0, 2, this))
+	, SourceItemModel_ (AP_->CreateItemsModel ())
+	, ItemsModel_ (new Q2WProxyModel (SourceItemModel_, this))
 	{
 		ChannelsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
 				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount },
@@ -97,6 +99,8 @@ namespace WebAccess
 					SLOT (deleteLater ()));
 		};
 		initThread (ChannelsModel_);
+		initThread (SourceItemModel_);
+		initThread (ItemsModel_);
 
 		ObjsThread_->start ();
 
@@ -121,26 +125,12 @@ namespace WebAccess
 
 	void AggregatorApp::HandleChannelClicked (const Wt::WModelIndex& idx)
 	{
-		ItemsModel_->clear ();
-		ItemView_->setText (Wt::WString ());
+		ItemView_->setText ({});
 
 		const auto cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
-		Q_FOREACH (Item_ptr item, AP_->GetChannelItems (cid))
-		{
-			if (!item->Unread_)
-				continue;
 
-			auto title = new Wt::WStandardItem (ToW (item->Title_));
-			title->setData (item->ItemID_, ItemRole::IID);
-			title->setData (item->ChannelID_, ItemRole::ParentCh);
-			title->setData (item->Unread_, ItemRole::IsUnread);
-			title->setData (ToW (item->Link_), ItemRole::Link);
-			title->setData (ToW (item->Description_), ItemRole::Text);
-
-			auto date = new Wt::WStandardItem (ToW (item->PubDate_.toString ()));
-
-			ItemsModel_->insertRow (0, { title, date });
-		}
+		const auto iim = qobject_cast<IItemsModel*> (SourceItemModel_);
+		iim->reset (cid);
 
 		ItemsTable_->setColumnWidth (0, Wt::WLength (500, Wt::WLength::Pixel));
 		ItemsTable_->setColumnWidth (1, Wt::WLength (180, Wt::WLength::Pixel));

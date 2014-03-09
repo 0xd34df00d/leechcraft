@@ -55,7 +55,9 @@ namespace WebAccess
 
 		Q2WProxyModel *ChannelsModel_;
 		ReadChannelsFilter *ChannelsFilter_;
-		Wt::WStandardItemModel *ItemsModel_;
+
+		QAbstractItemModel * const SourceItemModel_;
+		Q2WProxyModel *ItemsModel_;
 
 		Wt::WTableView *ItemsTable_;
 
