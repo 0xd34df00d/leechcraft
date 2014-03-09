@@ -88,11 +88,15 @@ namespace WebAccess
 				{ ChannelRole::CID, Aggregator::ChannelRoles::ChannelID }
 			}));
 
-		ChannelsModel_->moveToThread (ObjsThread_);
-		QObject::connect (ObjsThread_,
-				SIGNAL (finished ()),
-				ChannelsModel_,
-				SLOT (deleteLater ()));
+		auto initThread = [this] (QObject *obj) -> void
+		{
+			obj->moveToThread (ObjsThread_);
+			QObject::connect (ObjsThread_,
+					SIGNAL (finished ()),
+					obj,
+					SLOT (deleteLater ()));
+		};
+		initThread (ChannelsModel_);
 
 		ObjsThread_->start ();
 
