@@ -99,10 +99,12 @@ namespace WebAccess
 		}
 	};
 
-	Q2WProxyModel::Q2WProxyModel (QAbstractItemModel *src, WObject *parent)
-	: Wt::WAbstractItemModel { parent }
+	Q2WProxyModel::Q2WProxyModel (QAbstractItemModel *src, Wt::WApplication *app)
+	: Wt::WAbstractItemModel { }
 	, Src_ { src }
 	, Root_ { new ModelItem { src } }
+	, App_ { app }
+	, Update_ { app }
 	{
 		connect (src,
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
@@ -241,9 +243,10 @@ namespace WebAccess
 		if (!wtl.isValid () || !wbr.isValid ())
 			return;
 
-		Wt::WApplication::UpdateLock lock (Wt::WApplication::instance ());
+		Wt::WApplication::UpdateLock lock { App_ };
 		dataChanged () (wtl, wbr);
-		Wt::WApplication::instance ()->triggerUpdate ();
+
+		Update_ ();
 	}
 }
 }

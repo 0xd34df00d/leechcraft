@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QMap>
 #include <WAbstractItemModel>
+#include "serverupdater.h"
 
 class QAbstractItemModel;
 class QModelIndex;
@@ -55,8 +56,11 @@ namespace WebAccess
 		ModelItem_ptr Root_;
 
 		QMap<int, int> Mapping_;
+
+		Wt::WApplication * const App_;
+		ServerUpdater Update_;
 	public:
-		Q2WProxyModel (QAbstractItemModel*, WObject* = nullptr);
+		Q2WProxyModel (QAbstractItemModel*, Wt::WApplication*);
 
 		void SetRoleMappings (const QMap<int, int>&);
 
