@@ -116,10 +116,17 @@ namespace WebAccess
 
 	AggregatorApp::~AggregatorApp ()
 	{
+		delete ChannelsFilter_;
+
 		ObjsThread_->quit ();
 		ObjsThread_->wait (1000);
 		if (!ObjsThread_->isFinished ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "objects thread hasn't finished yet, terminating...";
 			ObjsThread_->terminate ();
+		}
+
 		delete ObjsThread_;
 	}
 
