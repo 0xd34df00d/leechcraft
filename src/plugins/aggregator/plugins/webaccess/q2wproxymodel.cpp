@@ -170,6 +170,8 @@ namespace WebAccess
 				return var.toDouble ();
 			case QVariant::Int:
 				return var.toInt ();
+			case QVariant::ULongLong:
+				return var.toULongLong ();
 			default:
 				if (var.canConvert<double> ())
 					return var.toDouble ();
