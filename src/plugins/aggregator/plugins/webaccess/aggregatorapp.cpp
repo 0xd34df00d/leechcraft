@@ -182,6 +182,7 @@ namespace WebAccess
 
 		auto channelsTree = new Wt::WTreeView ();
 		channelsTree->setModel (ChannelsFilter_);
+		channelsTree->setSelectionMode (Wt::SingleSelection);
 		channelsTree->clicked ().connect (this, &AggregatorApp::HandleChannelClicked);
 		channelsTree->setAlternatingRowColors (true);
 		leftPaneLay->addWidget (channelsTree, 1, Wt::AlignTop);
@@ -194,6 +195,7 @@ namespace WebAccess
 		ItemsTable_->clicked ().connect (this, &AggregatorApp::HandleItemClicked);
 		ItemsTable_->setAlternatingRowColors (true);
 		ItemsTable_->setWidth (Wt::WLength (100, Wt::WLength::Percentage));
+		ItemsTable_->setSelectionMode (Wt::SingleSelection);
 		rightPaneLay->addWidget (ItemsTable_, 2, Wt::AlignJustify);
 
 		ItemView_ = new Wt::WText ();
