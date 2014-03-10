@@ -60,8 +60,6 @@ namespace Acetamide
 		IrcAccount *Account_;
 		VCardDialog *VCardDialog_;
 
-		bool HasUnreadMsgs_;
-
 	public:
 		EntryBase (IrcAccount* = 0);
 		virtual ~EntryBase ();
@@ -88,9 +86,6 @@ namespace Acetamide
 		void SetAvatar (const QImage&);
 		void SetRawInfo (const QString&);
 		void SetInfo (const WhoIsMessage& msg);
-
-		bool HasUnreadMsgs () const;
-		QList<IrcMessage*> GetUnreadMessages () const;
 
 	signals:
 		void gotMessage (QObject*);

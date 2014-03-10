@@ -749,11 +749,6 @@ namespace Acetamide
 	{
 		ChannelParticipantEntry_ptr entry (new ChannelParticipantEntry (nick,
 				this, CM_->GetAccount ()));
-		connect (entry.get (),
-				SIGNAL (chatTabClosed ()),
-				this,
-				SLOT (handleChatTabClosed ()),
-				Qt::QueuedConnection);
 		if (announce)
 			CM_->GetAccount ()->handleGotRosterItems ({ entry.get () });
 		return entry;
@@ -778,22 +773,6 @@ namespace Acetamide
 	{
 		CM_->CTCPRequest (cmd, ChannelOptions_.ChannelName_.toLower ());
 	}
-
-	void ChannelHandler::handleChatTabClosed ()
-	{
-		auto entry = qobject_cast<ChannelParticipantEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a ChannelParticipantEntry";
-			return;
-		}
-
-		if (entry->GetStatus (QString ()).State_ == SOffline)
-			RemoveUserFromChannel (entry->GetEntryName ());
-	}
-
 };
 };
 };

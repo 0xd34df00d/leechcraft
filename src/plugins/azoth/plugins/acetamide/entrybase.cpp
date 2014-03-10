@@ -48,7 +48,6 @@ namespace Acetamide
 	: QObject (account)
 	, Account_ (account)
 	, VCardDialog_ (0)
-	, HasUnreadMsgs_ (false)
 	{
 	}
 
@@ -124,9 +123,6 @@ namespace Acetamide
 
 	void EntryBase::MarkMsgsRead ()
 	{
-		HasUnreadMsgs_ = false;
-		UnreadMessages_.clear ();
-
 		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
 	}
 
@@ -137,12 +133,6 @@ namespace Acetamide
 
 	void EntryBase::HandleMessage (IrcMessage *msg)
 	{
-		if (msg->GetMessageType () == IMessage::MTChatMessage)
-		{
-			HasUnreadMsgs_ = true;
-			UnreadMessages_ << msg;
-		}
-
 		msg->SetOtherPart (this);
 		IrcProtocol *proto = qobject_cast<IrcProtocol*> (Account_->
 				GetParentProtocol ());
@@ -176,16 +166,6 @@ namespace Acetamide
 	{
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (msg);
-	}
-
-	bool EntryBase::HasUnreadMsgs () const
-	{
-		return HasUnreadMsgs_;
-	}
-
-	QList<IrcMessage*> EntryBase::GetUnreadMessages () const
-	{
-		return UnreadMessages_;
 	}
 };
 };
