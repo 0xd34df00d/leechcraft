@@ -165,6 +165,9 @@ namespace WebAccess
 	void AggregatorApp::SetupUI ()
 	{
 		setTheme (new Wt::WCssTheme ("polished"));
+
+		styleSheet ().addRule (".unreadItem", "font-weight: bold;");
+
 		auto rootLay = new Wt::WBoxLayout (Wt::WBoxLayout::LeftToRight);
 		root ()->setLayout (rootLay);
 
