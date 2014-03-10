@@ -40,6 +40,7 @@
 #include <Wt/WStandardItemModel>
 #include <Wt/WStandardItem>
 #include <Wt/WOverlayLoadingIndicator>
+#include <Wt/WCssTheme>
 #include <util/util.h>
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
