@@ -142,9 +142,6 @@ namespace WebAccess
 
 		const auto iim = qobject_cast<IItemsModel*> (SourceItemModel_);
 		iim->reset (cid);
-
-		ItemsTable_->setColumnWidth (0, Wt::WLength (500, Wt::WLength::Pixel));
-		ItemsTable_->setColumnWidth (1, Wt::WLength (180, Wt::WLength::Pixel));
 	}
 
 	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx)
@@ -195,7 +192,7 @@ namespace WebAccess
 		ItemsTable_->setModel (ItemsModel_);
 		ItemsTable_->clicked ().connect (this, &AggregatorApp::HandleItemClicked);
 		ItemsTable_->setAlternatingRowColors (true);
-		ItemsTable_->setWidth (Wt::WLength (100, Wt::WLength::Percentage));
+		ItemsTable_->setColumnWidth (0, { 550, Wt::WLength::Pixel });
 		ItemsTable_->setSelectionMode (Wt::SingleSelection);
 		rightPaneLay->addWidget (ItemsTable_, 2, Wt::AlignJustify);
 
