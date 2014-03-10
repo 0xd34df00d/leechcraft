@@ -176,6 +176,7 @@ namespace WebAccess
 	void AggregatorApp::SetupUI ()
 	{
 		setTheme (new Wt::WCssTheme ("polished"));
+		setLocale ({ QLocale {}.name ().toUtf8 ().constData () });
 
 		styleSheet ().addRule (".unreadItem", "font-weight: bold;");
 
