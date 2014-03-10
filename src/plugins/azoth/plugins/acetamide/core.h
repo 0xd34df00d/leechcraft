@@ -40,6 +40,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Acetamide
 {
 
@@ -68,6 +70,7 @@ namespace Acetamide
 		QList<QObject*> GetProtocols () const;
 
 		void SetPluginProxy (QObject*);
+		IProxyObject* GetPluginProxy () const;
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 		void SendEntity (const Entity&);
