@@ -128,6 +128,11 @@ namespace WebAccess
 		Mapping_ = mapping;
 	}
 
+	void Q2WProxyModel::AddDataMorphism (const Morphism_t& morphism)
+	{
+		Morphisms_ << morphism;
+	}
+
 	int Q2WProxyModel::columnCount (const Wt::WModelIndex& parent) const
 	{
 		return Src_->columnCount (W2QIdx (parent));
@@ -187,6 +192,14 @@ namespace WebAccess
 	boost::any Q2WProxyModel::data (const Wt::WModelIndex& index, int role) const
 	{
 		const auto& src = W2QIdx (index);
+
+		for (const auto& m : Morphisms_)
+		{
+			const auto& result = m (src, role);
+			if (!result.empty ())
+				return result;
+		}
+
 		return Variant2Any (src.data (WtRole2Qt (role)));
 	}
 

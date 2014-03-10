@@ -60,9 +60,14 @@ namespace WebAccess
 		Wt::WApplication * const App_;
 		ServerUpdater Update_;
 	public:
+		typedef std::function<boost::any (QModelIndex, int)> Morphism_t;
+	private:
+		QList<Morphism_t> Morphisms_;
+	public:
 		Q2WProxyModel (QAbstractItemModel*, Wt::WApplication*);
 
 		void SetRoleMappings (const QMap<int, int>&);
+		void AddDataMorphism (const Morphism_t&);
 
 		int columnCount (const Wt::WModelIndex& parent) const;
 		int rowCount (const Wt::WModelIndex& parent) const;
