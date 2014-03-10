@@ -160,6 +160,7 @@ namespace Acetamide
 		void handleWhoWas (const QString& nick);
 		void handleWho (const QString& nick);
 		void handleCTCPRequest (const QStringList& cmd);
+		void handleChatTabClosed ();
 	signals:
 		void updateChanModes (const ChannelModes&);
 	};

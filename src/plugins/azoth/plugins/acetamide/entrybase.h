@@ -103,6 +103,8 @@ namespace Acetamide
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void chatTabClosed ();
 	};
 };
 };

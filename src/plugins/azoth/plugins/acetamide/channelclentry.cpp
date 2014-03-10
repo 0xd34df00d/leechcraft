@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "channelclentry.h"
+#include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "channelhandler.h"
 #include "channelpublicmessage.h"
@@ -210,6 +211,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::MarkMsgsRead ()
 	{
+		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void ChannelCLEntry::ChatTabClosed ()
