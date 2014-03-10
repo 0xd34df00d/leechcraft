@@ -304,16 +304,18 @@ namespace Blogique
 		{
 			DummyTextEditor *dummy = new DummyTextEditor (this);
 			PostEdit_ = qobject_cast<IEditorWidget*> (dummy);
-			if (!PostEdit_)
+			if (PostEdit_)
+			{
+				connect (dummy,
+						SIGNAL (textChanged ()),
+						this,
+						SLOT (handleEntryChanged ()));
+				PostEditWidget_ = dummy;
+				editFrameLay->setContentsMargins (4, 4, 4, 4);
+				editFrameLay->addWidget (dummy);
+			}
+			else
 				delete dummy;
-
-			connect (dummy,
-					SIGNAL (textChanged ()),
-					this,
-					SLOT (handleEntryChanged ()));
-			PostEditWidget_ = dummy;
-			editFrameLay->setContentsMargins (4, 4, 4, 4);
-			editFrameLay->addWidget (dummy);
 		}
 
 		Q_FOREACH (ITextEditor *plug, plugs)
