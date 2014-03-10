@@ -90,9 +90,20 @@ namespace WebAccess
 				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount },
 				{ ChannelRole::CID, Aggregator::ChannelRoles::ChannelID }
 			}));
+
 		ItemsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
 				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId }
 			}));
+		ItemsModel_->AddDataMorphism ([] (const QModelIndex& idx, int role) -> boost::any
+			{
+				if (role != Wt::StyleClassRole)
+					return {};
+
+				if (!idx.data (Aggregator::IItemsModel::ItemRole::IsRead).toBool ())
+					return Wt::WString ("unreadItem");
+
+				return {};
+			});
 
 		auto initThread = [this] (QObject *obj) -> void
 		{
