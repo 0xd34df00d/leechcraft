@@ -36,7 +36,6 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDateTime>
-#include <boost/concept_check.hpp>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include "connection.h"
