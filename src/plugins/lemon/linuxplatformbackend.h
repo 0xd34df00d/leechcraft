@@ -41,8 +41,8 @@ namespace Lemon
 	{
 		Q_OBJECT
 
-		nl_sock *Rtsock_;
-		nl_cache *LinkCache_;
+		nl_sock *Rtsock_ = nullptr;
+		nl_cache *LinkCache_ = nullptr;
 
 		struct DevInfo
 		{
