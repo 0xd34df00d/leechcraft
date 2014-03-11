@@ -45,6 +45,7 @@
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
 #include <interfaces/aggregator/iitemsmodel.h>
+#include <util/aggregator/itemsmodeldecorator.h>
 #include "readchannelsfilter.h"
 #include "util.h"
 #include "q2wproxymodel.h"
@@ -151,8 +152,7 @@ namespace WebAccess
 
 		const auto cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
 
-		const auto iim = qobject_cast<IItemsModel*> (SourceItemModel_);
-		iim->reset (cid);
+		ItemsModelDecorator { SourceItemModel_ }.Reset (cid);
 	}
 
 	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx)

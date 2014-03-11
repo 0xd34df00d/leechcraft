@@ -29,6 +29,7 @@ target_link_libraries (leechcraft_aggregator_webaccess
 	${Wt_LIBRARY}
 	${Wt_EXT_LIBRARY}
 	${Wt_HTTP_LIBRARY}
+	leechcraft_aggregator_util
 	)
 install (TARGETS leechcraft_aggregator_webaccess DESTINATION ${LC_PLUGINS_DEST})
 install (FILES aggregatorwebaccesssettings.xml DESTINATION ${LC_SETTINGS_DEST})
