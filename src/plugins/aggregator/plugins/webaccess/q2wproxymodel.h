@@ -69,6 +69,8 @@ namespace WebAccess
 		void SetRoleMappings (const QMap<int, int>&);
 		void AddDataMorphism (const Morphism_t&);
 
+		QModelIndex MapToSource (const Wt::WModelIndex&) const;
+
 		int columnCount (const Wt::WModelIndex& parent) const;
 		int rowCount (const Wt::WModelIndex& parent) const;
 		Wt::WModelIndex parent (const Wt::WModelIndex& index) const;

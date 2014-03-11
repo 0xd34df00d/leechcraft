@@ -155,6 +155,11 @@ namespace WebAccess
 		Morphisms_ << morphism;
 	}
 
+	QModelIndex Q2WProxyModel::MapToSource (const Wt::WModelIndex& index) const
+	{
+		return W2QIdx (index);
+	}
+
 	int Q2WProxyModel::columnCount (const Wt::WModelIndex& parent) const
 	{
 		return Src_->columnCount (W2QIdx (parent));
