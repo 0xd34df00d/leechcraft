@@ -160,6 +160,9 @@ namespace WebAccess
 		if (!idx.isValid ())
 			return;
 
+		const auto& src = ItemsModel_->MapToSource (idx);
+		ItemsModelDecorator { SourceItemModel_ }.Selected (src);
+
 		const auto itemId = boost::any_cast<IDType_t> (idx.data (ItemRole::IID));
 		const auto& item = AP_->GetItem (itemId);
 		if (!item)
