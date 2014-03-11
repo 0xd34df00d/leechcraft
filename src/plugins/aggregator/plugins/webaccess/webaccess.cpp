@@ -30,7 +30,9 @@
 #include "webaccess.h"
 #include <QIcon>
 #include <interfaces/aggregator/iproxyobject.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "servermanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -41,6 +43,9 @@ namespace WebAccess
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "aggregatorwebaccesssettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -77,6 +82,11 @@ namespace WebAccess
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Aggregator.GeneralPlugin/1.0";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	void Plugin::initPlugin (QObject *proxy)

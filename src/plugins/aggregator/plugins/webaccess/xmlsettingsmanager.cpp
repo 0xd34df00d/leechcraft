@@ -27,16 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QUrl>
-#include <QDir>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/aggregator/item.h>
-#include <interfaces/core/ihookproxy.h>
-#include <interfaces/ihavesettings.h>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -44,37 +36,28 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	class ServerManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Util::BaseSettingsManager::Init ();
+	}
 
-		ICoreProxy_ptr Proxy_;
-		std::shared_ptr<ServerManager> SM_;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		Util::XmlSettingsDialog_ptr XSD_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings =
+			new QSettings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Aggregator_WebAccess");
+		return settings;
+	}
 
-		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	public Q_SLOTS:
-		void initPlugin (QObject*);
-	Q_SIGNALS:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }
 }

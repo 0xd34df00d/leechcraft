@@ -15,6 +15,7 @@ set (WEBACCESS_SRCS
 	q2wproxymodel.cpp
 	util.cpp
 	serverupdater.cpp
+	xmlsettingsmanager.cpp
 	)
 
 add_library (leechcraft_aggregator_webaccess SHARED
@@ -30,3 +31,4 @@ target_link_libraries (leechcraft_aggregator_webaccess
 	${Wt_HTTP_LIBRARY}
 	)
 install (TARGETS leechcraft_aggregator_webaccess DESTINATION ${LC_PLUGINS_DEST})
+install (FILES aggregatorwebaccesssettings.xml DESTINATION ${LC_SETTINGS_DEST})

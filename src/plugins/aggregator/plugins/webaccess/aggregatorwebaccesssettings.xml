@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Aggregator WebAccess" />
+		<item type="spinbox" property="ListenPort" default="9010" minimum="1025" maximum="65535">
+			<label value="Listen port:" />
+		</item>
+	</page>
+</settings>
+
