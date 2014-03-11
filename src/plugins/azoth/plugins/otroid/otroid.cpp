@@ -254,11 +254,11 @@ namespace OTRoid
 
 		UserState_ = otrl_userstate_create ();
 
-		otrl_privkey_read (UserState_, GetOTRFilename ("privkey"));
+		otrl_privkey_read (UserState_, GetOTRFilename ("privkey").constData ());
 		otrl_privkey_read_fingerprints (UserState_,
-				GetOTRFilename ("fingerprints"), NULL, NULL);
+				GetOTRFilename ("fingerprints").constData (), NULL, NULL);
 #if OTRL_VERSION_MAJOR >= 4
-		otrl_instag_read (UserState_, GetOTRFilename ("instags"));
+		otrl_instag_read (UserState_, GetOTRFilename ("instags").constData ());
 #endif
 
 		memset (&OtrOps_, 0, sizeof (OtrOps_));
@@ -423,7 +423,8 @@ namespace OTRoid
 
 	void Plugin::WriteFingerprints ()
 	{
-		otrl_privkey_write_fingerprints (UserState_, GetOTRFilename ("fingerprints"));
+		otrl_privkey_write_fingerprints (UserState_,
+				GetOTRFilename ("fingerprints").constData ());
 	}
 
 	QString Plugin::GetAccountName (const QString& accId)
@@ -489,7 +490,7 @@ namespace OTRoid
 
 		IsGenerating_ = true;
 
-		const char *keysFile = GetOTRFilename ("privkey");
+		const auto keysFile = GetOTRFilename ("privkey");
 
 		QEventLoop loop;
 		QFutureWatcher<gcry_error_t> watcher;
@@ -498,7 +499,7 @@ namespace OTRoid
 				&loop,
 				SLOT (quit ()));
 		auto future = QtConcurrent::run (otrl_privkey_generate,
-				UserState_, keysFile, accName, proto);
+				UserState_, keysFile.constData (), accName, proto);
 		watcher.setFuture (future);
 
 		loop.exec ();
@@ -521,7 +522,8 @@ namespace OTRoid
 #if OTRL_VERSION_MAJOR >= 4
 	void Plugin::CreateInstag (const char *accName, const char *proto)
 	{
-		otrl_instag_generate (UserState_, GetOTRFilename ("instags"), accName, proto);
+		otrl_instag_generate (UserState_,
+				GetOTRFilename ("instags").constData (), accName, proto);
 	}
 
 	void Plugin::SetPollTimerInterval (unsigned int seconds)
@@ -722,9 +724,9 @@ namespace OTRoid
 		otrl_message_free (newMsg);
 	}
 
-	const char* Plugin::GetOTRFilename (const QString& fname) const
+	QByteArray Plugin::GetOTRFilename (const QString& fname) const
 	{
-		return OtrDir_.absoluteFilePath (fname).toUtf8 ().constData ();
+		return OtrDir_.absoluteFilePath (fname).toUtf8 ();
 	}
 
 	void Plugin::CreateActions (QObject *entry)
