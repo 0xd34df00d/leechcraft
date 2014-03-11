@@ -83,6 +83,8 @@ namespace LMP
 		QSqlQuery GetOutdatedRgData_;
 		QSqlQuery GetTrackRgData_;
 		QSqlQuery SetTrackRgData_;
+
+		QSqlQuery AppendToPlayHistory_;
 	public:
 		struct LoadResult
 		{

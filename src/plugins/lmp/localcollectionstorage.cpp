@@ -333,10 +333,17 @@ namespace LMP
 
 	void LocalCollectionStorage::RecordTrackPlayed (int trackId)
 	{
+		const auto& date = QDateTime::currentDateTime ();
+
+		AppendToPlayHistory_.bindValue (":track_id", trackId);
+		AppendToPlayHistory_.bindValue (":date", date);
+
+		if (!AppendToPlayHistory_.exec ())
+			Util::DBLock::DumpError (AppendToPlayHistory_);
+
 		UpdateTrackStats_.bindValue (":track_id", trackId);
 		UpdateTrackStats_.bindValue (":track_id_pc", trackId);
 		UpdateTrackStats_.bindValue (":track_id_add", trackId);
-		const auto& date = QDateTime::currentDateTime ();
 		UpdateTrackStats_.bindValue (":add_date", date);
 		UpdateTrackStats_.bindValue (":play_date", date);
 
@@ -771,6 +778,10 @@ namespace LMP
 				"(TrackId, LastMTime, TrackGain, TrackPeak, AlbumGain, AlbumPeak)"
 				" VALUES "
 				"(:track_id, :mtime, :track_gain, :track_peak, :album_gain, :album_peak);");
+
+		AppendToPlayHistory_ = QSqlQuery (DB_);
+		AppendToPlayHistory_.prepare ("INSERT INTO playhistory "
+				"(TrackId, Date) VALUES (:track_id, :date);");
 	}
 
 	void LocalCollectionStorage::CreateTables ()
@@ -842,6 +853,12 @@ namespace LMP
 				"TrackPeak DOUBLE NOT NULL, "
 				"AlbumGain DOUBLE NOT NULL, "
 				"AlbumPeak DOUBLE NOT NULL "
+				");");
+		table2query << QueryPair_t ("playhistory",
+				"CREATE TABLE playhistory ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"TrackId INTEGER NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE, "
+				"Date TIMESTAMP"
 				");");
 
 		QSqlQuery { DB_ }.exec ("PRAGMA defer_foreign_keys = ON;");
