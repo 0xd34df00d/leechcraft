@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_BASESETTINGSMANAGER_H
-#define XMLSETTINGSDIALOG_BASESETTINGSMANAGER_H
+#pragma once
+
 #include <memory>
 #include <QMap>
 #include <QPair>
@@ -196,11 +196,9 @@ namespace Util
 		virtual void PropertyChanged (const QString&, const QVariant&);
 
 		virtual Settings_ptr GetSettings () const;
-	private slots:
+	private Q_SLOTS:
 		void scheduleCleanup ();
 		void cleanupObjects ();
 	};
 }
 }
-
-#endif

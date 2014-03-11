@@ -252,14 +252,14 @@ namespace Util
 		void SetValue (QWidget*, const QVariant&);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
-	public slots:
+	public Q_SLOTS:
 		virtual void accept ();
 		virtual void reject ();
-	private slots:
+	private Q_SLOTS:
 		void handleCustomDestroyed ();
 		void handleMoreThisStuffRequested ();
 		void handlePushButtonReleased ();
-	signals:
+	Q_SIGNALS:
 		XMLSETTINGSMANAGER_API void pushButtonClicked (const QString&);
 		XMLSETTINGSMANAGER_API void moreThisStuffRequested (const QString&);
 	};
