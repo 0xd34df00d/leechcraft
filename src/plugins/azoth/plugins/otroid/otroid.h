@@ -112,7 +112,7 @@ namespace OTRoid
 		void SetPollTimerInterval (unsigned int seconds);
 #endif
 	private:
-		const char* GetOTRFilename (const QString&) const;
+		QByteArray GetOTRFilename (const QString&) const;
 		void CreateActions (QObject*);
 	public slots:
 		void initPlugin (QObject*);

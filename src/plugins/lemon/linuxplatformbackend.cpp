@@ -64,6 +64,9 @@ namespace Lemon
 
 	void LinuxPlatformBackend::update (const QStringList& devices)
 	{
+		if (!LinkCache_)
+			return;
+
 		nl_cache_refill (Rtsock_, LinkCache_);
 
 		for (const auto& devName : devices)
