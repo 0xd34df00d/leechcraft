@@ -111,6 +111,18 @@ namespace WebAccess
 				this,
 				SLOT (handleDataChanged (QModelIndex, QModelIndex)),
 				Qt::QueuedConnection);
+
+		connect (src,
+				SIGNAL (rowsAboutToBeInserted (QModelIndex, int, int)),
+				this,
+				SLOT (handleRowsAboutToBeInserted (QModelIndex, int, int)),
+				Qt::QueuedConnection);
+		connect (src,
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				this,
+				SLOT (handleRowsInserted (QModelIndex, int, int)),
+				Qt::QueuedConnection);
+
 		connect (src,
 				SIGNAL (modelAboutToBeReset ()),
 				this,
@@ -280,6 +292,24 @@ namespace WebAccess
 		dataChanged () (wtl, wbr);
 
 		Update_ ();
+	}
+
+	void Q2WProxyModel::handleRowsAboutToBeInserted (const QModelIndex& srcParent, int first, int last)
+	{
+		const auto& parent = Q2WIdx (srcParent);
+		if (!parent.isValid ())
+			return;
+
+		rowsAboutToBeInserted () (parent, first, last);
+	}
+
+	void Q2WProxyModel::handleRowsInserted (const QModelIndex& srcParent, int first, int last)
+	{
+		const auto& parent = Q2WIdx (srcParent);
+		if (!parent.isValid ())
+			return;
+
+		rowsInserted () (parent, first, last);
 	}
 
 	void Q2WProxyModel::handleModelAboutToBeReset ()
