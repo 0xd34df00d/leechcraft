@@ -122,6 +122,16 @@ namespace WebAccess
 				this,
 				SLOT (handleRowsInserted (QModelIndex, int, int)),
 				Qt::QueuedConnection);
+		connect (src,
+				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
+				this,
+				SLOT (handleRowsAboutToBeRemoved (QModelIndex, int, int)),
+				Qt::QueuedConnection);
+		connect (src,
+				SIGNAL (rowsRemoved (QModelIndex, int, int)),
+				this,
+				SLOT (handleRowsRemoved (QModelIndex, int, int)),
+				Qt::QueuedConnection);
 
 		connect (src,
 				SIGNAL (modelAboutToBeReset ()),
@@ -310,6 +320,24 @@ namespace WebAccess
 			return;
 
 		rowsInserted () (parent, first, last);
+	}
+
+	void Q2WProxyModel::handleRowsAboutToBeRemoved (const QModelIndex& srcParent, int first, int last)
+	{
+		const auto& parent = Q2WIdx (srcParent);
+		if (!parent.isValid ())
+			return;
+
+		rowsAboutToBeRemoved () (parent, first, last);
+	}
+
+	void Q2WProxyModel::handleRowsRemoved (const QModelIndex& srcParent, int first, int last)
+	{
+		const auto& parent = Q2WIdx (srcParent);
+		if (!parent.isValid ())
+			return;
+
+		rowsRemoved () (parent, first, last);
 	}
 
 	void Q2WProxyModel::handleModelAboutToBeReset ()

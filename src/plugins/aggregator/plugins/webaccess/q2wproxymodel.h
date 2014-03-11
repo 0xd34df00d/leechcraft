@@ -85,6 +85,9 @@ namespace WebAccess
 		void handleRowsAboutToBeInserted (const QModelIndex&, int, int);
 		void handleRowsInserted (const QModelIndex&, int, int);
 
+		void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
+		void handleRowsRemoved (const QModelIndex&, int, int);
+
 		void handleModelAboutToBeReset ();
 		void handleModelReset ();
 	};
