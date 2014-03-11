@@ -45,13 +45,17 @@ class IProxyObject;
 
 namespace WebAccess
 {
-	class ServerManager
+	class ServerManager : public QObject
 	{
+		Q_OBJECT
+
 		ICoreProxy_ptr CoreProxy_;
 
 		std::shared_ptr<Wt::WServer> Server_;
 	public:
 		ServerManager (IProxyObject*, ICoreProxy_ptr);
+	private Q_SLOTS:
+		void reconfigureServer ();
 	};
 }
 }

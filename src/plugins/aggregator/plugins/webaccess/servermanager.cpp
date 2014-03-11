@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <Wt/WServer>
 #include "aggregatorapp.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -81,14 +82,28 @@ namespace WebAccess
 	: CoreProxy_ (coreProxy)
 	, Server_ (new Wt::WServer ())
 	{
-		ArgcGenerator gen;
-		gen.AddParm ("--docroot", "/usr/share/Wt;/favicon.ico,/resources,/style");
-		gen.AddParm ("--http-address", "0.0.0.0");
-		gen.AddParm ("--http-port", "9001");
-		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
 		Server_->addEntryPoint (Wt::Application,
 				[proxy, coreProxy] (const Wt::WEnvironment& we)
 					{ return new AggregatorApp (proxy, coreProxy, we); });
+
+		reconfigureServer ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("ListenPort", this, "reconfigureServer");
+	}
+
+	void ServerManager::reconfigureServer ()
+	{
+		const auto port = XmlSettingsManager::Instance ().property ("ListenPort").toInt ();
+
+		ArgcGenerator gen;
+		gen.AddParm ("--docroot", "/usr/share/Wt;/favicon.ico,/resources,/style");
+		gen.AddParm ("--http-address", "0.0.0.0");
+		gen.AddParm ("--http-port", QString::number (port));
+		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
+
+		if (Server_->isRunning ())
+			Server_->stop ();
+
 		Server_->start ();
 	}
 }
