@@ -65,7 +65,7 @@ namespace WebAccess
 			{
 				char **result = new char* [GetArgc () + 1];
 				int i = 0;
-				Q_FOREACH (const QString& parm, Parms_)
+				for (const auto& parm : Parms_)
 				{
 					result [i] = new char [parm.size ()];
 					std::strcpy (result [i], parm.toLatin1 ());
