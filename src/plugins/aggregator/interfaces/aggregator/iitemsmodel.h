@@ -49,8 +49,8 @@ namespace Aggregator
 			ItemId
 		};
 
-		virtual void reset (const IDType_t&) = 0;
-		virtual void selected (const QModelIndex&) = 0;
+		virtual void Reset (const IDType_t&) = 0;
+		virtual void Selected (const QModelIndex&) = 0;
 	};
 }
 }

@@ -79,9 +79,6 @@ namespace Aggregator
 		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 		QModelIndex parent (const QModelIndex&) const;
 		int rowCount (const QModelIndex& = QModelIndex ()) const;
-	public slots:
-		void reset (const IDType_t&);
-		void selected (const QModelIndex&);
 	private slots:
 		void handleChannelRemoved (IDType_t);
 		void handleItemsRemoved (const QSet<IDType_t>&);

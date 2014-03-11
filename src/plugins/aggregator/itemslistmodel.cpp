@@ -419,16 +419,6 @@ namespace Aggregator
 		return parent.isValid () ? 0 : CurrentItems_.size ();
 	}
 
-	void ItemsListModel::reset (const IDType_t& type)
-	{
-		Reset (type);
-	}
-
-	void ItemsListModel::selected (const QModelIndex& index)
-	{
-		Selected (index);
-	}
-
 	void ItemsListModel::handleChannelRemoved (IDType_t id)
 	{
 		if (id != CurrentChannel_)
