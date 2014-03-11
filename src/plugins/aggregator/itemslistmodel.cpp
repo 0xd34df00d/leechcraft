@@ -59,6 +59,11 @@ namespace Aggregator
 				SIGNAL (itemsRemoved (QSet<IDType_t>)),
 				this,
 				SLOT (handleItemsRemoved (QSet<IDType_t>)));
+
+		connect (Core::Instance ().GetStorageBackend (),
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				this,
+				SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)));
 	}
 
 	int ItemsListModel::GetSelectedRow () const
@@ -439,6 +444,29 @@ namespace Aggregator
 	void ItemsListModel::handleItemsRemoved (const QSet<IDType_t>& items)
 	{
 		RemoveItems (items);
+	}
+
+	void ItemsListModel::handleItemDataUpdated (const Item_ptr& item, const Channel_ptr& channel)
+	{
+		if (channel->ChannelID_ != CurrentChannel_)
+			return;
+
+		const auto itemId = item->ItemID_;
+		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
+				[itemId] (const ItemShort& itemShort) { return itemShort.ItemID_ == itemId; });
+		if (pos == CurrentItems_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown item updated for channel"
+					<< channel->ChannelID_
+					<< channel->Title_;
+			return;
+		}
+
+		*pos = item->ToShort ();
+
+		const auto row = std::distance (CurrentItems_.begin (), pos);
+		emit dataChanged (index (row, 0), index (row, columnCount () - 1));
 	}
 }
 }

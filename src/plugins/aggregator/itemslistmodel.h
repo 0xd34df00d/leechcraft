@@ -36,6 +36,7 @@
 #include <QIcon>
 #include "interfaces/aggregator/iitemsmodel.h"
 #include "item.h"
+#include "channel.h"
 
 namespace LeechCraft
 {
@@ -85,6 +86,8 @@ namespace Aggregator
 	private slots:
 		void handleChannelRemoved (IDType_t);
 		void handleItemsRemoved (const QSet<IDType_t>&);
+
+		void handleItemDataUpdated (const Item_ptr&, const Channel_ptr&);
 	};
 }
 }
