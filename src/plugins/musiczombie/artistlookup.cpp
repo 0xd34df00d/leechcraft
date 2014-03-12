@@ -58,7 +58,7 @@ namespace MusicZombie
 				this,
 				SLOT (handleFinished ()));
 		connect (reply,
-				SIGNAL(error (QNetworkReply::NetworkError)),
+				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
 				SLOT (handleError ()));
 	}
