@@ -237,9 +237,11 @@ namespace WebAccess
 
 		ItemView_ = new Wt::WText ();
 		ItemView_->setTextFormat (Wt::XHTMLUnsafeText);
-		ItemView_->addStyleClass ("Wt-itemview");
 
-		rightPaneLay->addWidget (ItemView_, 5);
+		auto itemPanel = new Wt::WPanel ();
+		itemPanel->setCentralWidget (ItemView_);
+
+		rightPaneLay->addWidget (itemPanel, 5);
 	}
 }
 }
