@@ -33,6 +33,7 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QDomDocument>
+#include <QDate>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -88,9 +89,35 @@ namespace MusicZombie
 			return;
 		}
 
-		const auto& artist = artists.firstChildElement ("artist");
-		const auto& id = artist.attribute ("id");
-		emit gotID (id);
+		QMap<int, QString> span2id;
+
+		const auto curYear = QDate::currentDate ().year ();
+
+		auto artist = artists.firstChildElement ("artist");
+		while (!artist.isNull () && artist.attribute ("score").toInt () > 75)
+		{
+			const auto& spanElem = artist.firstChildElement ("life-span");
+
+			const auto beginYear = spanElem.firstChildElement ("begin")
+					.text ().simplified ().toInt ();
+
+			const auto& endYearElem = spanElem.firstChildElement ("end");
+			const auto endYear = endYearElem.isNull () ?
+					curYear :
+					endYearElem.text ().simplified ().toInt ();
+
+			span2id [endYear - beginYear] = artist.attribute ("id");
+
+			artist = artist.nextSiblingElement ("artist");
+		}
+
+		qDebug () << Q_FUNC_INFO
+				<< "choices:"
+				<< span2id;
+
+		if (span2id.isEmpty ())
+			span2id [0] = artists.firstChildElement ("artist").attribute ("id");
+		emit gotID (span2id.values ().last ());
 	}
 
 	void ArtistLookup::handleError ()
