@@ -229,10 +229,12 @@ namespace WebAccess
 
 		ItemsTable_ = new Wt::WTableView ();
 		ItemsTable_->setModel (ItemsModel_);
-		ItemsTable_->clicked ().connect (this, &AggregatorApp::HandleItemClicked);
+		ItemsTable_->mouseWentUp ().connect (this, &AggregatorApp::HandleItemClicked);
 		ItemsTable_->setAlternatingRowColors (true);
 		ItemsTable_->setColumnWidth (0, { 550, Wt::WLength::Pixel });
 		ItemsTable_->setSelectionMode (Wt::SingleSelection);
+		ItemsTable_->setAttributeValue ("oncontextmenu",
+				"event.cancelBubble = true; event.returnValue = false; return false;");
 		rightPaneLay->addWidget (ItemsTable_, 2, Wt::AlignJustify);
 
 		ItemView_ = new Wt::WText ();
