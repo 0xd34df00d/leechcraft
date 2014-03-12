@@ -70,7 +70,7 @@ namespace MusicZombie
 
 		const auto& data = reply->readAll ();
 		QDomDocument doc;
-		if (!doc.setContent (data))
+		if (!doc.setContent (data, true))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to parse reply"
