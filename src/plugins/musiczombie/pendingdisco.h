@@ -55,24 +55,18 @@ namespace MusicZombie
 
 		QNetworkAccessManager *NAM_;
 		QList<Media::ReleaseInfo> Releases_;
-		int PendingReleases_;
 	public:
 		PendingDisco (Util::QueueManager*, const QString&, const QString&, QNetworkAccessManager*, QObject* = 0);
 
 		QObject* GetQObject ();
 
 		QList<Media::ReleaseInfo> GetReleases () const;
-	private:
-		void DecrementPending ();
 	private slots:
 		void handleGotID (const QString&);
 		void handleIDError ();
 
 		void handleLookupFinished ();
 		void handleLookupError ();
-
-		void handleReleaseLookupFinished ();
-		void handleReleaseLookupError ();
 	signals:
 		void ready ();
 		void error (const QString&);

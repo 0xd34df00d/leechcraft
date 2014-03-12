@@ -49,7 +49,6 @@ namespace MusicZombie
 	, ReleaseName_ (release.toLower ())
 	, Queue_ (queue)
 	, NAM_ (nam)
-	, PendingReleases_ (0)
 	{
 		Queue_->Schedule ([this, artist, nam] () -> void
 			{
@@ -77,15 +76,6 @@ namespace MusicZombie
 	QList<Media::ReleaseInfo> PendingDisco::GetReleases () const
 	{
 		return Releases_;
-	}
-
-	void PendingDisco::DecrementPending ()
-	{
-		if (!--PendingReleases_)
-		{
-			emit ready ();
-			deleteLater ();
-		}
 	}
 
 	void PendingDisco::handleGotID (const QString& id)
@@ -227,51 +217,6 @@ namespace MusicZombie
 				<< reply->errorString ();
 		emit error (tr ("Error performing artist lookup: %1.")
 					.arg (reply->errorString ()));
-	}
-
-	void PendingDisco::handleReleaseLookupFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		std::shared_ptr<void> decrementGuard (nullptr, [this] (void*) { DecrementPending (); });
-
-		const auto& data = reply->readAll ();
-		QDomDocument doc;
-		if (!doc.setContent (data))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to parse"
-					<< data;
-		}
-
-		const auto& releaseElem = doc.documentElement ().firstChildElement ("release");
-		const auto& id = releaseElem.attribute ("id");
-		auto pos = std::find_if (Releases_.begin (), Releases_.end (),
-				[id] (decltype (Releases_.at (0)) release)
-					{ return release.ID_ == id; });
-		if (pos == Releases_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "release"
-					<< id
-					<< "not found";
-			return;
-		}
-
-		const auto& mediumElem = releaseElem.firstChildElement ("medium-list").firstChildElement ("medium");
-		ParseMediumList (*pos, mediumElem);
-	}
-
-	void PendingDisco::handleReleaseLookupError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		qWarning () << Q_FUNC_INFO
-				<< "error looking release stuff up"
-				<< reply->errorString ();
-		DecrementPending ();
 	}
 }
 }
