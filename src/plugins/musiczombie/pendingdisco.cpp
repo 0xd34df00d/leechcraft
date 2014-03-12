@@ -90,7 +90,7 @@ namespace MusicZombie
 
 	void PendingDisco::handleGotID (const QString& id)
 	{
-		const auto urlStr = "http://musicbrainz.org/ws/2/artist/" + id + "?inc=releases";
+		const auto urlStr = "http://musicbrainz.org/ws/2/release?limit=100&inc=recordings&status=official&artist=" + id;
 
 		Queue_->Schedule ([this, urlStr] () -> void
 			{
@@ -160,7 +160,6 @@ namespace MusicZombie
 
 		auto releaseElem = doc
 				.documentElement ()
-				.firstChildElement ("artist")
 				.firstChildElement ("release-list")
 				.firstChildElement ("release");
 		while (!releaseElem.isNull ())
@@ -187,14 +186,18 @@ namespace MusicZombie
 			if (!ReleaseName_.isEmpty () && title.toLower () != ReleaseName_)
 				continue;
 
-			infos [title] [elemText ("country")] =
+			Media::ReleaseInfo info
 			{
 				releaseElem.attribute ("id"),
 				title,
 				date,
 				Media::ReleaseInfo::Type::Standard,
-				QList<QList<Media::ReleaseTrackInfo>> ()
+				{}
 			};
+			const auto& mediumListElem = releaseElem.firstChildElement ("medium-list");
+			ParseMediumList (info, mediumListElem.firstChildElement ("medium"));
+
+			infos [title] [elemText ("country")] = info;
 		}
 
 		for (const auto& key : infos.keys ())
@@ -204,28 +207,14 @@ namespace MusicZombie
 					countries ["US"] :
 					countries.values ().first ();
 			Releases_ << release;
-
-			++PendingReleases_;
-
-			const auto urlStr = "http://musicbrainz.org/ws/2/release/" + release.ID_ + "?inc=recordings";
-
-			Queue_->Schedule ([this, urlStr] () -> void
-				{
-					auto reply = NAM_->get (QNetworkRequest (QUrl (urlStr)));
-					connect (reply,
-							SIGNAL (finished ()),
-							this,
-							SLOT (handleReleaseLookupFinished ()));
-					connect (reply,
-							SIGNAL (error (QNetworkReply::NetworkError)),
-							this,
-							SLOT (handleReleaseLookupError ()));
-				}, this);
 		}
 
 		std::sort (Releases_.begin (), Releases_.end (),
 				[] (decltype (Releases_.at (0)) left, decltype (Releases_.at (0)) right)
 					{ return left.Year_ < right.Year_; });
+
+		emit ready ();
+		deleteLater ();
 	}
 
 	void PendingDisco::handleLookupError ()
