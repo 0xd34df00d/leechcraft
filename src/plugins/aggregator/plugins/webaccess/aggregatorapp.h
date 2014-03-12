@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <Wt/WApplication>
 #include <Wt/WModelIndex>
 #include <interfaces/core/icoreproxy.h>
@@ -49,6 +50,8 @@ namespace WebAccess
 
 	class AggregatorApp : public Wt::WApplication
 	{
+		Q_DECLARE_TR_FUNCTIONS (AggregatorApp)
+
 		IProxyObject *AP_;
 		ICoreProxy_ptr CP_;
 

@@ -41,6 +41,8 @@
 #include <Wt/WStandardItemModel>
 #include <Wt/WStandardItem>
 #include <Wt/WOverlayLoadingIndicator>
+#include <Wt/WPanel>
+#include <Wt/WPopupMenu>
 #include <Wt/WCssTheme>
 #include <util/util.h>
 #include <interfaces/aggregator/iproxyobject.h>
@@ -298,6 +300,14 @@ namespace WebAccess
 	void AggregatorApp::ShowItemMenu (const QModelIndex&,
 			const Item_ptr& item, const Wt::WMouseEvent& event)
 	{
+		Wt::WPopupMenu menu;
+		if (item->Unread_)
+			menu.addItem (ToW (tr ("Mark as read")))->
+					triggered ().connect (WF ([this, &item] { AP_->SetItemRead (item->ItemID_, true); }));
+		else
+			menu.addItem (ToW (tr ("Mark as unread")))->
+					triggered ().connect (WF ([this, &item] { AP_->SetItemRead (item->ItemID_, false); }));
+		menu.exec (event);
 	}
 
 	void AggregatorApp::SetupUI ()
