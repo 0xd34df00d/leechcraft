@@ -140,6 +140,18 @@ namespace Aggregator
 		return Core::Instance ().GetStorageBackend ()->GetItem (id);
 	}
 
+	void ProxyObject::SetItemRead (IDType_t id, bool read) const
+	{
+		const auto sb = Core::Instance ().GetStorageBackend ();
+
+		auto item = sb->GetItem (id);
+		if (!item)
+			return;
+
+		item->Unread_ = !read;
+		sb->UpdateItem (item);
+	}
+
 	QAbstractItemModel* ProxyObject::CreateItemsModel () const
 	{
 		return new ItemsListModel;

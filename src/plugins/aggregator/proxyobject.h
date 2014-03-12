@@ -110,6 +110,8 @@ namespace Aggregator
 		QList<Item_ptr> GetChannelItems (IDType_t) const;
 
 		Item_ptr GetItem (IDType_t) const;
+		void SetItemRead (IDType_t, bool) const;
+
 		QAbstractItemModel* CreateItemsModel () const;
 	};
 }

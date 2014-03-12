@@ -61,6 +61,7 @@ namespace Aggregator
 		virtual QList<Item_ptr> GetChannelItems (IDType_t) const = 0;
 
 		virtual Item_ptr GetItem (IDType_t) const = 0;
+		virtual void SetItemRead (IDType_t, bool) const = 0;
 
 		virtual QAbstractItemModel* CreateItemsModel () const = 0;
 	};
