@@ -112,6 +112,34 @@ namespace MusicZombie
 		deleteLater ();
 	}
 
+	namespace
+	{
+		void ParseMediumList (Media::ReleaseInfo& release, QDomElement mediumElem)
+		{
+			while (!mediumElem.isNull ())
+			{
+				auto trackElem = mediumElem.firstChildElement ("track-list").firstChildElement ("track");
+
+				QList<Media::ReleaseTrackInfo> tracks;
+				while (!trackElem.isNull ())
+				{
+					const int num = trackElem.firstChildElement ("number").text ().toInt ();
+
+					const auto& recElem = trackElem.firstChildElement ("recording");
+					const auto& title = recElem.firstChildElement ("title").text ();
+					const int length = recElem.firstChildElement ("length").text ().toInt () / 1000;
+
+					tracks.push_back ({ num, title, length });
+					trackElem = trackElem.nextSiblingElement ("track");
+				}
+
+				release.TrackInfos_ << tracks;
+
+				mediumElem = mediumElem.nextSiblingElement ("medium");
+			}
+		}
+	}
+
 	void PendingDisco::handleLookupFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -242,29 +270,8 @@ namespace MusicZombie
 			return;
 		}
 
-		auto& release = *pos;
-		auto mediumElem = releaseElem.firstChildElement ("medium-list").firstChildElement ("medium");
-		while (!mediumElem.isNull ())
-		{
-			auto trackElem = mediumElem.firstChildElement ("track-list").firstChildElement ("track");
-
-			QList<Media::ReleaseTrackInfo> tracks;
-			while (!trackElem.isNull ())
-			{
-				const int num = trackElem.firstChildElement ("number").text ().toInt ();
-
-				const auto& recElem = trackElem.firstChildElement ("recording");
-				const auto& title = recElem.firstChildElement ("title").text ();
-				const int length = recElem.firstChildElement ("length").text ().toInt () / 1000;
-
-				tracks.push_back ({ num, title, length });
-				trackElem = trackElem.nextSiblingElement ("track");
-			}
-
-			release.TrackInfos_ << tracks;
-
-			mediumElem = mediumElem.nextSiblingElement ("medium");
-		}
+		const auto& mediumElem = releaseElem.firstChildElement ("medium-list").firstChildElement ("medium");
+		ParseMediumList (*pos, mediumElem);
 	}
 
 	void PendingDisco::handleReleaseLookupError ()
