@@ -50,7 +50,7 @@ public:
 	 *
 	 * @sa GetIconPath
 	 */
-	virtual QIcon GetIcon (const QString& on, const QString& off = QString ()) const = 0;
+	virtual QIcon GetIcon (const QString& on, const QString& off = QString ()) = 0;
 
 	/** @brief Updates the icons of the given actions.
 	 *

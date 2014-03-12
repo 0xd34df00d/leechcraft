@@ -72,7 +72,7 @@ IconThemeEngine& IconThemeEngine::Instance ()
 	return e;
 }
 
-QIcon IconThemeEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff) const
+QIcon IconThemeEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff)
 {
 	const QPair<QString, QString>& namePair = qMakePair (actionIcon, actionIconOff);
 	if (IconCache_.contains (namePair))
