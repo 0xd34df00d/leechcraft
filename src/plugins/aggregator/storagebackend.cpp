@@ -65,7 +65,7 @@ namespace Aggregator
 	{
 	}
 
-	std::shared_ptr<StorageBackend> StorageBackend::Create (const QString& strType, const QString& id)
+	StorageBackend_ptr StorageBackend::Create (const QString& strType, const QString& id)
 	{
 		StorageBackend::Type type;
 		if (strType == "SQLite")
@@ -81,19 +81,18 @@ namespace Aggregator
 		return Create (type, id);
 	}
 
-	std::shared_ptr<StorageBackend> StorageBackend::Create (Type type, const QString& id)
+	StorageBackend_ptr StorageBackend::Create (Type type, const QString& id)
 	{
-		std::shared_ptr<StorageBackend> result;
 		switch (type)
 		{
 			case SBSQLite:
 			case SBPostgres:
-				result.reset (new SQLStorageBackend (type, id));
-				break;
+				return std::make_shared<SQLStorageBackend> (type, id);
 			case SBMysql:
-				result.reset (new SQLStorageBackendMysql (type, id));
+				return std::make_shared<SQLStorageBackendMysql> (type, id);
 		}
-		return result;
+
+		return {};
 	}
 }
 }

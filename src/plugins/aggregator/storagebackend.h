@@ -39,6 +39,9 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	class StorageBackend;
+	typedef std::shared_ptr<StorageBackend> StorageBackend_ptr;
+
 	/** @brief Abstract base class for storage backends.
 	 *
 	 * Specifies interface for all storage backends. Includes functions for
@@ -65,8 +68,8 @@ namespace Aggregator
 		StorageBackend (QObject* = 0);
 		virtual ~StorageBackend ();
 
-		static std::shared_ptr<StorageBackend> Create (const QString&, const QString& = QString ());
-		static std::shared_ptr<StorageBackend> Create (Type, const QString& = QString ());
+		static StorageBackend_ptr Create (const QString&, const QString& = QString ());
+		static StorageBackend_ptr Create (Type, const QString& = QString ());
 
 		static QString LoadQuery (const QString&, const QString&);
 
