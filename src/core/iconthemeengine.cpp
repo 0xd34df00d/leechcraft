@@ -74,22 +74,31 @@ IconThemeEngine& IconThemeEngine::Instance ()
 
 QIcon IconThemeEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff)
 {
-	const QPair<QString, QString>& namePair = qMakePair (actionIcon, actionIconOff);
-	if (IconCache_.contains (namePair))
-		return IconCache_ [namePair];
+	const auto& namePair = qMakePair (actionIcon, actionIconOff);
+
+	{
+		QReadLocker locker { &IconCacheLock_ };
+		if (IconCache_.contains (namePair))
+			return IconCache_ [namePair];
+	}
 
 	if (QIcon::hasThemeIcon (actionIcon) &&
 			(actionIconOff.isEmpty () ||
 			 QIcon::hasThemeIcon (actionIconOff)))
 	{
-		QIcon result = QIcon::fromTheme (actionIcon);
+		auto result = QIcon::fromTheme (actionIcon);
 		if (!actionIconOff.isEmpty ())
 		{
-			const QIcon& off = QIcon::fromTheme (actionIconOff);
-			Q_FOREACH (const QSize& size, off.availableSizes ())
+			const auto& off = QIcon::fromTheme (actionIconOff);
+			for (const auto& size : off.availableSizes ())
 				result.addPixmap (off.pixmap (size, QIcon::Normal, QIcon::On));
 		}
-		IconCache_ [namePair] = result;
+
+		{
+			QWriteLocker locker { &IconCacheLock_ };
+			IconCache_ [namePair] = result;
+		}
+
 		return result;
 	}
 
