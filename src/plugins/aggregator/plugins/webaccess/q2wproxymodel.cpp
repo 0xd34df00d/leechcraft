@@ -32,8 +32,10 @@
 #include <QVector>
 #include <QtDebug>
 #include <QDateTime>
+#include <QIcon>
 #include <Wt/WDateTime>
 #include <Wt/WApplication>
+#include <util/util.h>
 #include "util.h"
 
 namespace LeechCraft
@@ -190,6 +192,8 @@ namespace WebAccess
 
 	namespace
 	{
+		const int IconSize = 16;
+
 		boost::any Variant2Any (const QVariant& var)
 		{
 			switch (var.type ())
@@ -204,6 +208,14 @@ namespace WebAccess
 				return var.toInt ();
 			case QVariant::ULongLong:
 				return var.toULongLong ();
+			case QVariant::Icon:
+			{
+				const auto& icon = var.value<QIcon> ();
+				if (icon.isNull ())
+					return {};
+
+				return ToW (Util::GetAsBase64Src (icon.pixmap (IconSize, IconSize).toImage ()));
+			}
 			default:
 				if (var.canConvert<double> ())
 					return var.toDouble ();
@@ -291,6 +303,8 @@ namespace WebAccess
 		{
 		case Wt::DisplayRole:
 			return Qt::DisplayRole;
+		case Wt::DecorationRole:
+			return Qt::DecorationRole;
 		}
 
 		return Mapping_.value (role, -1);
