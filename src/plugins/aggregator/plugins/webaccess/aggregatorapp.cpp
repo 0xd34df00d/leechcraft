@@ -155,18 +155,34 @@ namespace WebAccess
 		ItemsModelDecorator { SourceItemModel_ }.Reset (cid);
 	}
 
-	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx)
+	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx,
+			const Wt::WMouseEvent& event)
 	{
 		if (!idx.isValid ())
 			return;
 
 		const auto& src = ItemsModel_->MapToSource (idx);
-		ItemsModelDecorator { SourceItemModel_ }.Selected (src);
-
 		const auto itemId = boost::any_cast<IDType_t> (idx.data (ItemRole::IID));
 		const auto& item = AP_->GetItem (itemId);
 		if (!item)
 			return;
+
+		switch (event.button ())
+		{
+		case Wt::WMouseEvent::LeftButton:
+			ShowItem (src, item);
+			break;
+		case Wt::WMouseEvent::RightButton:
+			ShowItemMenu (src, item, event);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void AggregatorApp::ShowItem (const QModelIndex& src, const Item_ptr& item)
+	{
+		ItemsModelDecorator { SourceItemModel_ }.Selected (src);
 
 		auto text = Wt::WString ("<div><a href='{1}' target='_blank'>{2}</a><br />{3}<br /><hr/>{4}</div>")
 				.arg (ToW (item->Link_))
@@ -174,6 +190,11 @@ namespace WebAccess
 				.arg (ToW (item->PubDate_.toString ()))
 				.arg (ToW (item->Description_));
 		ItemView_->setText (text);
+	}
+
+	void AggregatorApp::ShowItemMenu (const QModelIndex&,
+			const Item_ptr& item, const Wt::WMouseEvent& event)
+	{
 	}
 
 	void AggregatorApp::SetupUI ()

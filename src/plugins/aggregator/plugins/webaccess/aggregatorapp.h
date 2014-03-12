@@ -32,6 +32,7 @@
 #include <Wt/WApplication>
 #include <Wt/WModelIndex>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/aggregator/item.h>
 
 class QThread;
 
@@ -79,7 +80,11 @@ namespace WebAccess
 		~AggregatorApp ();
 	private:
 		void HandleChannelClicked (const Wt::WModelIndex&);
-		void HandleItemClicked (const Wt::WModelIndex&);
+		void HandleItemClicked (const Wt::WModelIndex&, const Wt::WMouseEvent&);
+
+		void ShowItem (const QModelIndex&, const Item_ptr&);
+		void ShowItemMenu (const QModelIndex&, const Item_ptr&, const Wt::WMouseEvent&);
+
 		void SetupUI ();
 	};
 }
