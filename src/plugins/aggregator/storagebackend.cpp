@@ -33,6 +33,7 @@
 #include <QDebug>
 #include "sqlstoragebackend.h"
 #include "sqlstoragebackend_mysql.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -61,10 +62,6 @@ namespace Aggregator
 	{
 	}
 
-	StorageBackend::~StorageBackend ()
-	{
-	}
-
 	StorageBackend_ptr StorageBackend::Create (const QString& strType, const QString& id)
 	{
 		StorageBackend::Type type;
@@ -83,16 +80,23 @@ namespace Aggregator
 
 	StorageBackend_ptr StorageBackend::Create (Type type, const QString& id)
 	{
+		StorageBackend_ptr result;
 		switch (type)
 		{
 			case SBSQLite:
 			case SBPostgres:
-				return std::make_shared<SQLStorageBackend> (type, id);
+				result = std::make_shared<SQLStorageBackend> (type, id);
+				break;
 			case SBMysql:
-				return std::make_shared<SQLStorageBackendMysql> (type, id);
+				result = std::make_shared<SQLStorageBackendMysql> (type, id);
+				break;
 		}
+		qDebug () << Q_FUNC_INFO
+				<< "created connection";
 
-		return {};
+		StorageBackendManager::Instance ().Register (result);
+
+		return result;
 	}
 }
 }
