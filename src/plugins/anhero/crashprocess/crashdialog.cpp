@@ -55,7 +55,6 @@ namespace CrashProcess
 		Ui_.setupUi (this);
 
 		Ui_.InfoLabel_->setText (tr ("Unfortunately LeechCraft has crashed. This is the info we could collect:"));
-		Ui_.RestartBox_->setEnabled (!Info_.ExecLine_.isEmpty ());
 
 		QFont traceFont ("Terminus");
 		traceFont.setStyleHint (QFont::TypeWriter);
