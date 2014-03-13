@@ -278,24 +278,27 @@ namespace LMP
 		NavButtons_ = new QListWidget ();
 		NavButtons_->hide ();
 		NavButtons_->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Expanding);
-		NavButtons_->setFixedWidth (70);
 		NavButtons_->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
 		NavButtons_->setFrameShape (QFrame::NoFrame);
 		NavButtons_->setFrameShadow (QFrame::Plain);
-		NavButtons_->setIconSize (QSize (24, 24));
+
+		const QSize iconSize { 48, 48 };
+
+		NavButtons_->setIconSize (iconSize);
+		NavButtons_->setGridSize (iconSize + QSize { 8, 8 });
 		NavButtons_->setViewMode (QListView::IconMode);
-		NavButtons_->setWordWrap (true);
-		NavButtons_->setGridSize (QSize (70, 65));
 		NavButtons_->setMovement (QListView::Static);
 		NavButtons_->setFlow (QListView::TopToBottom);
 		new PaletteFixerFilter (NavButtons_);
+
+		NavButtons_->setFixedWidth (NavButtons_->gridSize ().width () + 5);
 
 		auto mkButton = [this] (const QString& title, const QString& iconName)
 		{
 			const auto& icon = Core::Instance ().GetProxy ()->
 					GetIconThemeManager ()->GetIcon (iconName);
 
-			auto but = new QListWidgetItem (title);
+			auto but = new QListWidgetItem ();
 			NavButtons_->addItem (but);
 			but->setToolTip (title);
 			but->setSizeHint (NavButtons_->gridSize ());
