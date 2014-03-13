@@ -36,6 +36,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -55,12 +56,12 @@ namespace Aggregator
 				SIGNAL (channelRemoved (IDType_t)),
 				this,
 				SLOT (handleChannelRemoved (IDType_t)));
-		connect (&Core::Instance (),
+
+		connect (&StorageBackendManager::Instance (),
 				SIGNAL (itemsRemoved (QSet<IDType_t>)),
 				this,
 				SLOT (handleItemsRemoved (QSet<IDType_t>)));
-
-		connect (Core::Instance ().GetStorageBackend (),
+		connect (&StorageBackendManager::Instance (),
 				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
 				this,
 				SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)));

@@ -71,6 +71,7 @@
 #include "dbupdatethreadworker.h"
 #include "tovarmaps.h"
 #include "dumbstorage.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -83,7 +84,7 @@ namespace Aggregator
 	, ChannelsFilterModel_ (0)
 	, Initialized_ (false)
 	, ReprWidget_ (0)
-	, PluginManager_ (new PluginManager)
+	, PluginManager_ (nullptr)
 	, DBUpThread_ (new DBUpdateThread (this))
 	, ShortcutMgr_ (nullptr)
 	{
@@ -97,7 +98,6 @@ namespace Aggregator
 		qRegisterMetaType<channels_container_t> ("channels_container_t");
 		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
 
-		PluginManager_->RegisterHookable (this);
 	}
 
 	Core& Core::Instance ()
@@ -305,8 +305,6 @@ namespace Aggregator
 		if (!ReinitStorage ())
 			result = false;
 
-		PluginManager_->RegisterHookable (StorageBackend_.get ());
-
 		ChannelsFilterModel_ = new ChannelsFilterModel ();
 		ChannelsFilterModel_->setSourceModel (ChannelsModel_);
 		ChannelsFilterModel_->setFilterKeyColumn (0);
@@ -320,26 +318,17 @@ namespace Aggregator
 				Qt::QueuedConnection);
 		DBUpThread_->start (QThread::LowestPriority);
 
-		connect (StorageBackend_.get (),
+		connect (&StorageBackendManager::Instance (),
 				SIGNAL (channelDataUpdated (Channel_ptr)),
 				this,
 				SLOT (handleChannelDataUpdated (Channel_ptr)),
 				Qt::QueuedConnection);
-		connect (StorageBackend_.get (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				this,
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)));
 
 		ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 		ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
 		ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
 		ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
 		ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
-
-		connect (ChannelsModel_,
-				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
-				this,
-				SIGNAL (channelDataUpdated (IDType_t, IDType_t)));
 
 		ReprWidget_ = new ItemsWidget ();
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
@@ -393,6 +382,11 @@ namespace Aggregator
 			RegisterObject ("ShowIconInTray", this, "showIconInTrayChanged");
 		UpdateUnreadItemsNumber ();
 		Initialized_ = true;
+
+		PluginManager_ = new PluginManager ();
+		PluginManager_->RegisterHookable (this);
+
+		PluginManager_->RegisterHookable (StorageBackend_.get ());
 
 		return result;
 	}
@@ -473,11 +467,6 @@ namespace Aggregator
 			pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
 			Pools_ [static_cast<PoolType> (type)] = pool;
 		}
-
-		connect (StorageBackend_.get (),
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
-				this,
-				SIGNAL (itemsRemoved (QSet<IDType_t>)));
 
 		return true;
 	}
@@ -1463,16 +1452,6 @@ namespace Aggregator
 	void Core::handleDBUpThreadStarted ()
 	{
 		connect (DBUpThread_->GetWorker (),
-				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
-				this,
-				SLOT (handleDBUpChannelDataUpdated (IDType_t, IDType_t)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
-				this,
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
 				SIGNAL (gotNewChannel (ChannelShort)),
 				this,
 				SLOT (handleDBUpGotNewChannel (ChannelShort)),
@@ -1483,30 +1462,9 @@ namespace Aggregator
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				Qt::QueuedConnection);
 		connect (DBUpThread_->GetWorker (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				this,
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
 				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
 				this,
 				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
-	}
-
-	void Core::handleDBUpChannelDataUpdated (IDType_t id, IDType_t feedId)
-	{
-		emit channelDataUpdated (id, feedId);
-		try
-		{
-			auto ch = StorageBackend_->GetChannel (id, feedId);
-			handleChannelDataUpdated (ch);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got"
-					<< e.what ();
-		}
 	}
 
 	void Core::handleDBUpGotNewChannel (const ChannelShort& chSh)

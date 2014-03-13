@@ -50,6 +50,7 @@
 #include "itemslistmodel.h"
 #include "channelsmodel.h"
 #include "uistatepersist.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -202,7 +203,7 @@ namespace Aggregator
 
 		currentItemChanged ();
 
-		connect (&Core::Instance (),
+		connect (&StorageBackendManager::Instance (),
 				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
 				this,
 				SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)),

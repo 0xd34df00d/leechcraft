@@ -62,14 +62,9 @@ namespace Aggregator
 	public slots:
 		void toggleChannelUnread (IDType_t channel, bool state);
 		void updateFeed (channels_container_t channels, QString url);
-	private slots:
-		void handleChannelDataUpdated (Channel_ptr);
 	signals:
-		void channelDataUpdated (IDType_t channelId, IDType_t feedId);
 		void gotNewChannel (const ChannelShort&);
 		void gotEntity (const LeechCraft::Entity&);
-		void itemDataUpdated (Item_ptr, Channel_ptr);
-		void itemsRemoved (const QSet<IDType_t>&);
 
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);

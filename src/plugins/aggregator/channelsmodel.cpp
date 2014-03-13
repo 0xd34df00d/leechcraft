@@ -238,7 +238,6 @@ namespace Aggregator
 		*idx = cs;
 		int pos = std::distance (Channels_.begin (), idx);
 		emit dataChanged (index (pos, 0), index (pos, 2));
-		emit channelDataUpdated (cs.ChannelID_, cs.FeedID_);
 	}
 
 	ChannelShort& ChannelsModel::GetChannelForIndex (const QModelIndex& index)

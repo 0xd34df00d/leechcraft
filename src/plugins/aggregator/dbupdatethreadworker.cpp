@@ -66,19 +66,6 @@ namespace Aggregator
 		}
 
 		SB_->Prepare ();
-
-		connect (SB_.get (),
-				SIGNAL (channelDataUpdated (Channel_ptr)),
-				this,
-				SLOT (handleChannelDataUpdated (Channel_ptr)));
-		connect (SB_.get (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				this,
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)));
-		connect (SB_.get (),
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
-				this,
-				SIGNAL (itemsRemoved (QSet<IDType_t>)));
 	}
 
 	Feed::FeedSettings DBUpdateThreadWorker::GetFeedSettings (IDType_t feedId)
@@ -299,11 +286,6 @@ namespace Aggregator
 
 			NotifyUpdates (newItems, updatedItems, channel);
 		}
-	}
-
-	void DBUpdateThreadWorker::handleChannelDataUpdated (Channel_ptr ch)
-	{
-		emit channelDataUpdated (ch->ChannelID_, ch->FeedID_);
 	}
 }
 }

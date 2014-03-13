@@ -251,7 +251,6 @@ namespace Aggregator
 		void rotateUpdatesQueue ();
 
 		void handleDBUpThreadStarted ();
-		void handleDBUpChannelDataUpdated (IDType_t, IDType_t);
 		void handleDBUpGotNewChannel (const ChannelShort&);
 	private:
 		void UpdateUnreadItemsNumber () const;
@@ -267,13 +266,10 @@ namespace Aggregator
 		void HandleProvider (QObject*, int);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
-		void channelDataUpdated (IDType_t id, IDType_t feedId);
 		void unreadNumberChanged (int) const;
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
-		void itemDataUpdated (Item_ptr, Channel_ptr);
-		void itemsRemoved (const QSet<IDType_t>&);
 
 		void storageChanged ();
 
