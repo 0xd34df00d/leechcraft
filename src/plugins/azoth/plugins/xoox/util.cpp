@@ -37,6 +37,7 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QXmppPresence.h>
+#include <QXmppUtils.h>
 #include "entrybase.h"
 #include "core.h"
 #include "capsdatabase.h"
@@ -316,23 +317,22 @@ namespace XooxUtil
 		if (forwardedElem.isNull ())
 			return {};
 
-		auto messageElem = forwardedElem.firstChildElement ("message");
+		const auto& messageElem = forwardedElem.firstChildElement ("message");
 		if (messageElem.isNull ())
 			return {};
 
+		QXmppMessage original;
+#ifndef I_HAVE_OLD_QXMPP
+		original.parse (messageElem.sourceDomElement ());
+#else
+#warning You won't have good forwarded messages, Message Archive Management and Message Carbons will look like crap.
+		original.parse (XmppElem2DomElem (messageElem));
+#endif
+
 		auto delayElem = forwardedElem.firstChildElement ("delay");
 		if (!delayElem.isNull ())
-			messageElem.appendChild (delayElem);
+			original.setStamp (QXmppUtils::datetimeFromString (delayElem.attribute ("stamp")));
 
-		QByteArray data;
-		QXmlStreamWriter w (&data);
-		messageElem.toXml (&w);
-
-		QDomDocument doc;
-		doc.setContent (data, true);
-
-		QXmppMessage original;
-		original.parse (doc.documentElement ());
 		return original;
 	}
 
