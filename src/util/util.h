@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_UTIL_H
-#define UTIL_UTIL_H
+#pragma once
+
 #include "utilconfig.h"
 #include <QString>
 #include <QDir>
@@ -393,8 +393,16 @@ namespace LeechCraft
 				result [pair.first] = pair.second;
 			return result;
 		}
+
+		/** @brief Converts the \em handle to an integer.
+		 *
+		 * Different handles are mapped to different integers. This way
+		 * a handle can be used, for example, as a part of a DB
+		 * connection ID string.
+		 *
+		 * @param[in] handle The handle to convert.
+		 * @return The integer representation of the handle.
+		 */
+		unsigned long Handle2Num (Qt::HANDLE handle);
 	};
 };
-
-#endif
-
