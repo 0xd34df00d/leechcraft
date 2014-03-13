@@ -34,6 +34,7 @@
 #include <QString>
 #include <QDir>
 #include <QHash>
+#include <QReadWriteLock>
 #include <QIcon>
 #include "../interfaces/core/iiconthememanager.h"
 
@@ -54,13 +55,14 @@ namespace LeechCraft
 		QString OldIconSet_;
 		QStringList IconSets_;
 
-		mutable QHash<QPair<QString, QString>, QIcon> IconCache_;
+		QReadWriteLock IconCacheLock_;
+		QHash<QPair<QString, QString>, QIcon> IconCache_;
 
 		IconThemeEngine ();
 	public:
 		static IconThemeEngine& Instance ();
 
-		QIcon GetIcon (const QString&, const QString&) const;
+		QIcon GetIcon (const QString&, const QString&);
 		void UpdateIconset (const QList<QAction*>&);
 		void UpdateIconset (const QList<QPushButton*>&);
 		void UpdateIconset (const QList<QTabWidget*>&);
