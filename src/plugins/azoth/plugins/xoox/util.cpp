@@ -256,7 +256,7 @@ namespace XooxUtil
 		elem.toXml (&w);
 
 		QDomDocument doc;
-		doc.setContent (arr);
+		doc.setContent (arr, true);
 		return doc.documentElement ();
 	}
 
