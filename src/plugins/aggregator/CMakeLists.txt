@@ -68,6 +68,7 @@ set (SRCS
 	dbupdatethreadworker.cpp
 	tovarmaps.cpp
 	dumbstorage.cpp
+	storagebackendmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui
