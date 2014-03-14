@@ -86,6 +86,7 @@ namespace Xoox
 	class MsgArchivingManager;
 	class SDManager;
 	class Xep0313Manager;
+	class CarbonsManager;
 
 	class InfoRequestPolicyManager;
 	class ClientConnectionErrorMgr;
@@ -128,6 +129,7 @@ namespace Xoox
 		MsgArchivingManager *MsgArchivingManager_;
 		SDManager *SDManager_;
 		Xep0313Manager *Xep0313Manager_;
+		CarbonsManager *CarbonsManager_;
 
 		CryptHandler *CryptHandler_;
 		ClientConnectionErrorMgr *ErrorMgr_;
@@ -288,6 +290,7 @@ namespace Xoox
 		void handleVersionReceived (const QXmppVersionIq&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (QXmppMessage);
+		void handleCarbonsMessage (const QXmppMessage&);
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handlePEPAvatarUpdated (const QString&, const QImage&);
 		void handleMessageDelivered (const QString&, const QString&);

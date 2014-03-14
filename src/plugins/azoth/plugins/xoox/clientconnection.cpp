@@ -90,6 +90,7 @@
 #include "inforequestpolicymanager.h"
 #include "captchamanager.h"
 #include "xep0313manager.h"
+#include "carbonsmanager.h"
 
 namespace LeechCraft
 {
@@ -125,6 +126,7 @@ namespace Xoox
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager)
+	, CarbonsManager_ (new CarbonsManager)
 	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
@@ -213,6 +215,12 @@ namespace Xoox
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this));
 		Client_->addExtension (Xep0313Manager_);
+		Client_->addExtension (CarbonsManager_);
+
+		connect (CarbonsManager_,
+				SIGNAL (gotMessage (QXmppMessage)),
+				this,
+				SLOT (handleCarbonsMessage (QXmppMessage)));
 
 		AnnotationsManager_ = new AnnotationsManager (this);
 
@@ -942,6 +950,8 @@ namespace Xoox
 			rh->Join ();
 
 		PrivacyListsManager_->QueryLists ();
+
+		CarbonsManager_->SetEnabled (true);
 	}
 
 	void ClientConnection::handleDisconnected ()
@@ -1134,7 +1144,8 @@ namespace Xoox
 			HandleRIEX (msg.from (), AwaitingRIEXItems_.take (msg.from ()), msg.body ());
 			return;
 		}
-		else if (Xep0313Manager_->CheckMessage (msg))
+		else if (Xep0313Manager_->CheckMessage (msg) ||
+				CarbonsManager_->CheckMessage (msg))
 			return;
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
@@ -1144,7 +1155,7 @@ namespace Xoox
 			OfflineMsgQueue_ << msg;
 		else if (jid == OurBareJID_)
 		{
-			Q_FOREACH (const QXmppExtendedAddress& address, msg.extendedAddresses ())
+			for (const auto& address : msg.extendedAddresses ())
 			{
 				if (address.type () == "ofrom" && !address.jid ().isEmpty ())
 				{
@@ -1165,6 +1176,36 @@ namespace Xoox
 			CreateEntry (jid);
 			handleMessageReceived (msg);
 		}
+	}
+
+	void ClientConnection::handleCarbonsMessage (const QXmppMessage& msg)
+	{
+		if (msg.from () == OurJID_ || msg.to () == OurJID_)
+			return;
+
+		QString jid;
+		QString resource;
+		Split (msg.from (), &jid, &resource);
+
+		if (jid != OurBareJID_)
+		{
+			handleMessageReceived (msg);
+			return;
+		}
+
+		if (msg.body ().isEmpty ())
+			return;
+
+		Split (msg.to (), &jid, &resource);
+		auto gm = new GlooxMessage (IMessage::MTChatMessage, IMessage::DOut,
+				jid, resource, this);
+		gm->SetBody (msg.body ());
+		gm->SetRichBody (msg.xhtml ());
+		gm->SetDateTime (msg.stamp ().isValid () ? msg.stamp () : QDateTime::currentDateTime ());
+		if (!JID2CLEntry_.contains (jid))
+			CreateEntry (jid);
+
+		JID2CLEntry_ [jid]->HandleMessage (gm);
 	}
 
 	void ClientConnection::handlePEPEvent (const QString& from, PEPEventBase *event)
