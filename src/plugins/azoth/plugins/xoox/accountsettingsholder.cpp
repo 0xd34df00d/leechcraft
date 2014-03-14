@@ -146,6 +146,8 @@ namespace Xoox
 				>> TurnUser_
 				>> TurnPass_;
 		}
+		if (version >= 9)
+			in >> EnableMessageCarbons_;
 	}
 
 	void AccountSettingsHolder::OpenConfigDialog ()
@@ -451,6 +453,22 @@ namespace Xoox
 		TurnUser_ = user;
 		TurnPass_ = pass;
 		emit turnSettingsChanged ();
+	}
+
+	bool AccountSettingsHolder::IsMessageCarbonsEnabled () const
+	{
+		return EnableMessageCarbons_;
+	}
+
+	void AccountSettingsHolder::SetMessageCarbonsEnabled (bool enabled)
+	{
+		if (EnableMessageCarbons_ == enabled)
+			return;
+
+		EnableMessageCarbons_ = enabled;
+		emit accountSettingsChanged ();
+
+		emit messageCarbonsSettingsChanged ();
 	}
 
 	void AccountSettingsHolder::scheduleReconnect ()

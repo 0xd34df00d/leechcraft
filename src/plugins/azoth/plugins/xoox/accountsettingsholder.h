@@ -77,6 +77,8 @@ namespace Xoox
 		int TurnPort_;
 		QString TurnUser_;
 		QString TurnPass_;
+
+		bool EnableMessageCarbons_ = true;
 	public:
 		AccountSettingsHolder (GlooxAccount* = 0);
 
@@ -136,6 +138,9 @@ namespace Xoox
 		QString GetTurnUser () const;
 		QString GetTurnPass () const;
 		void SetTurnParams (const QString& host, int port, const QString& user, const QString& pass);
+
+		bool IsMessageCarbonsEnabled () const;
+		void SetMessageCarbonsEnabled (bool);
 	private slots:
 		void scheduleReconnect ();
 		void handleReconnect ();
@@ -150,6 +155,7 @@ namespace Xoox
 		void fileLogChanged (bool);
 		void priorityChanged (int);
 		void tlsModeChanged (QXmppConfiguration::StreamSecurityMode);
+		void messageCarbonsSettingsChanged ();
 
 		void fileTransferSettingsChanged ();
 
