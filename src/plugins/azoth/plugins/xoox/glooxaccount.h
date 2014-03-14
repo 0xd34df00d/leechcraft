@@ -143,6 +143,7 @@ namespace Xoox
 
 		QAction *SelfVCardAction_;
 		QAction *PrivacyDialogAction_;
+		QAction *CarbonsAction_;
 
 		Xep0313ModelManager * const Xep0313ModelMgr_;
 	public:
@@ -270,6 +271,7 @@ namespace Xoox
 		void feedClientPassword ();
 		void showSelfVCard ();
 		void showPrivacyDialog ();
+		void handleCarbonsToggled (bool);
 		void handleServerHistoryFetched (const QString&,
 				const QString&, SrvHistMessages_t);
 #ifdef ENABLE_MEDIACALLS

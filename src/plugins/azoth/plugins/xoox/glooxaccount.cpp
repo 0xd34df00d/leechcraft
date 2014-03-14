@@ -90,10 +90,16 @@ namespace Xoox
 	, SettingsHolder_ (new AccountSettingsHolder (this))
 	, SelfVCardAction_ (new QAction (tr ("Self VCard..."), this))
 	, PrivacyDialogAction_ (new QAction (tr ("Privacy lists..."), this))
+	, CarbonsAction_ (new QAction (tr ("Enable message carbons"), this))
 	, Xep0313ModelMgr_ (new Xep0313ModelManager (this))
 	{
 		SelfVCardAction_->setProperty ("ActionIcon", "text-x-vcard");
 		PrivacyDialogAction_->setProperty ("ActionIcon", "emblem-locked");
+		CarbonsAction_->setProperty ("ActionIcon", "edit-copy");
+
+		CarbonsAction_->setCheckable (true);
+		CarbonsAction_->setToolTip (tr ("Deliver messages from conversations on "
+					"other resources to this resource as well."));
 
 		connect (SelfVCardAction_,
 				SIGNAL (triggered ()),
@@ -103,6 +109,10 @@ namespace Xoox
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showPrivacyDialog ()));
+		connect (CarbonsAction_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleCarbonsToggled (bool)));
 
 		connect (SettingsHolder_,
 				SIGNAL (accountSettingsChanged ()),
@@ -195,6 +205,8 @@ namespace Xoox
 #endif
 
 		regenAccountIcon (SettingsHolder_->GetJID ());
+
+		CarbonsAction_->setChecked (SettingsHolder_->IsMessageCarbonsEnabled ());
 	}
 
 	void GlooxAccount::Release ()
@@ -253,10 +265,7 @@ namespace Xoox
 
 	QList<QAction*> GlooxAccount::GetActions () const
 	{
-		QList<QAction*> result;
-		result << SelfVCardAction_;
-		result << PrivacyDialogAction_;
-		return result;
+		return { SelfVCardAction_, PrivacyDialogAction_, CarbonsAction_ };
 	}
 
 	void GlooxAccount::QueryInfo (const QString& entryId)
@@ -876,7 +885,7 @@ namespace Xoox
 
 	QByteArray GlooxAccount::Serialize () const
 	{
-		quint16 version = 8;
+		quint16 version = 9;
 
 		QByteArray result;
 		{
@@ -896,7 +905,7 @@ namespace Xoox
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 8)
+		if (version < 1 || version > 9)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -996,9 +1005,14 @@ namespace Xoox
 
 	void GlooxAccount::showPrivacyDialog ()
 	{
-		PrivacyListsManager *mgr = ClientConnection_->GetPrivacyListsManager ();
-		PrivacyListsConfigDialog *plcd = new PrivacyListsConfigDialog (mgr);
+		auto mgr = ClientConnection_->GetPrivacyListsManager ();
+		auto plcd = new PrivacyListsConfigDialog (mgr);
 		plcd->show ();
+	}
+
+	void GlooxAccount::handleCarbonsToggled (bool toggled)
+	{
+		SettingsHolder_->SetMessageCarbonsEnabled (toggled);
 	}
 
 	void GlooxAccount::handleServerHistoryFetched (const QString& jid,

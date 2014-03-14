@@ -314,6 +314,8 @@ namespace Xoox
 		void updateCallSettings ();
 		void handleDetectedBSProxy (const QString&);
 
+		void handleMessageCarbonsSettingsChanged ();
+
 		void handleVersionSettingsChanged ();
 	private:
 		void ScheduleFetchVCard (const QString&, bool);

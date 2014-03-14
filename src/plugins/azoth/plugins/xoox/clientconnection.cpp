@@ -360,6 +360,11 @@ namespace Xoox
 				SIGNAL (bytestreamsProxyChanged (QString)),
 				this,
 				SLOT (handleDetectedBSProxy (QString)));
+
+		connect (Settings_,
+				SIGNAL (messageCarbonsSettingsChanged ()),
+				this,
+				SLOT (handleMessageCarbonsSettingsChanged ()));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -951,7 +956,7 @@ namespace Xoox
 
 		PrivacyListsManager_->QueryLists ();
 
-		CarbonsManager_->SetEnabled (true);
+		handleMessageCarbonsSettingsChanged ();
 	}
 
 	void ClientConnection::handleDisconnected ()
@@ -1512,6 +1517,11 @@ namespace Xoox
 			return;
 
 		GetTransferManager ()->setProxy (proxy);
+	}
+
+	void ClientConnection::handleMessageCarbonsSettingsChanged ()
+	{
+		CarbonsManager_->SetEnabled (Settings_->IsMessageCarbonsEnabled ());
 	}
 
 	void ClientConnection::handleVersionSettingsChanged ()
