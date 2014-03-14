@@ -938,8 +938,6 @@ namespace Xoox
 		else if (jid.contains ("facebook") ||
 				jid.contains ("fb.com"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg");
-		else if (jid.contains ("vk.com"))
-			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/vk.svg");
 		else if (jid.contains ("odnoklassniki"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/odnoklassniki.svg");
 	}
