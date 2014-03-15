@@ -84,7 +84,7 @@ typedef std::function<void (QVariant)> DataFilterCallback_f;
  * to be sane enough, though, for the combination of the filtered entity
  * and callback semantics to make sense.
  *
- * @sa Entity, IEntityHandler
+ * @sa LeechCraft::Entity, IEntityHandler
  * @sa DataFilterCallback_f
  */
 class Q_DECL_EXPORT IDataFilter
