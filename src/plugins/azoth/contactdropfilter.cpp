@@ -174,6 +174,11 @@ namespace Azoth
 				});
 		}
 
+		PerformChoice (choiceItems, functions);
+	}
+
+	void ContactDropFilter::PerformChoice (const QStringList& choiceItems, const QList< std::function<void ()>>& functions)
+	{
 		bool ok = false;
 		const auto& choice = QInputDialog::getItem (ChatTab_,
 				tr ("Send image"),
