@@ -36,6 +36,10 @@
 #include <QFileInfo>
 #include <QBuffer>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/idatafilter.h>
+#include <interfaces/ientityhandler.h>
 #include "interfaces/azoth/irichtextmessage.h"
 #include "core.h"
 #include "chattab.h"
@@ -145,6 +149,66 @@ namespace Azoth
 			auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Send ();
 		}
+
+		void CollectDataFilters (QStringList& choiceItems,
+				QList<std::function<void ()>>& functions,
+				const QImage& image, const QString& entryId, const QString& variant)
+		{
+			const auto& entity = Util::MakeEntity (image,
+					{},
+					TaskParameter::NoParameters,
+					"x-leechcraft/data-filter-request");
+
+			auto prevChoices = choiceItems;
+			choiceItems.clear ();
+			auto prevFunctions = functions;
+			functions.clear ();
+
+			auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
+			for (const auto obj : em->GetPossibleHandlers (entity))
+			{
+				const auto idf = qobject_cast<IDataFilter*> (obj);
+
+				const auto& verb = idf->GetFilterVerb ();
+
+				for (const auto& var : idf->GetFilterVariants ())
+				{
+					choiceItems << verb + ": " + var.Name_;
+
+					auto thisEnt = entity;
+					thisEnt.Additional_ ["DataFilter"] = verb;
+					thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue (DataFilterCallback_f {
+								[entryId, variant] (const QVariant& var) -> void
+								{
+									const auto& url = var.toUrl ();
+									if (url.isEmpty ())
+										return;
+
+									auto entry = GetEntry<ICLEntry> (entryId);
+									if (!entry)
+										return;
+
+									const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
+												IMessage::MTMUCMessage :
+												IMessage::MTChatMessage;
+									auto msgObj = entry->CreateMessage (msgType,
+											variant,
+											url.toString ());
+									auto msg = qobject_cast<IMessage*> (msgObj);
+									msg->Send ();
+								}
+							});
+
+					functions.append ([thisEnt, obj]
+							{
+								qobject_cast<IEntityHandler*> (obj)->Handle (thisEnt);
+							});
+				}
+			}
+
+			choiceItems << prevChoices;
+			functions << prevFunctions;
+		}
 	}
 
 	void ContactDropFilter::HandleImageDropped (const QImage& image, const QUrl& url)
@@ -172,6 +236,9 @@ namespace Azoth
 					Core::Instance ().GetTransferJobManager ()->
 							OfferURLs (GetEntry<ICLEntry> (EntryId_), { url });
 				});
+
+			CollectDataFilters (choiceItems, functions, image,
+					EntryId_, ChatTab_->GetSelectedVariant ());
 		}
 
 		PerformChoice (choiceItems, functions);
