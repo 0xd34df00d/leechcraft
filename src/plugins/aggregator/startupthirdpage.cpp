@@ -137,6 +137,72 @@ namespace Aggregator
 				setProperty ("StartupVersion", 3);
 	}
 
+	namespace
+	{
+		QStringList ParseTags (const QDomElement& feedElem)
+		{
+			QStringList result;
+
+			auto tagElem = feedElem.firstChildElement ("tags").firstChildElement ("tag");
+			while (!tagElem.isNull ())
+			{
+				result << tagElem.text ();
+				tagElem = tagElem.nextSiblingElement ("tag");
+			}
+
+			return result;
+		}
+	}
+
+	void StartupThirdPage::ParseFeedsSets ()
+	{
+		QFile file (":/resources/data/default_feeds.xml");
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open feeds resource file:"
+					<< file.errorString ();
+			return;
+		}
+
+		QDomDocument doc;
+		QString msg;
+		int line = 0;
+		int col = 0;
+		if (!doc.setContent (&file, &msg, &line, &col))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse feed resource file:"
+					<< msg
+					<< "on"
+					<< line
+					<< col;
+			return;
+		}
+
+		auto setElem = doc.documentElement ().firstChildElement ("set");
+		while (!setElem.isNull ())
+		{
+			auto& set = Sets_ [setElem.attribute ("lang", "general")];
+
+			auto feedElem = setElem.firstChildElement ("feed");
+			while (!feedElem.isNull ())
+			{
+				FeedInfo info
+				{
+					feedElem.firstChildElement ("name").text (),
+					ParseTags (feedElem).join ("; "),
+					feedElem.firstChildElement ("url").text ()
+				};
+				set << info;
+
+				feedElem = feedElem.nextSiblingElement ("feed");
+			}
+
+			setElem = setElem.nextSiblingElement ();
+		}
+	}
+
 	void StartupThirdPage::Populate (const QString& title)
 	{
 		FeedInfos_t engines = Sets_ [title];

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_STARTUPTHIRDPAGE_H
-#define PLUGINS_AGGREGATOR_STARTUPTHIRDPAGE_H
+#pragma once
+
 #include <QWizardPage>
 #include "ui_startupthirdpage.h"
 
@@ -56,6 +56,7 @@ namespace Aggregator
 
 		void initializePage ();
 	private:
+		void ParseFeedsSets ();
 		void Populate (const QString&);
 	private slots:
 		void handleAccepted ();
@@ -65,5 +66,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif
