@@ -134,7 +134,7 @@ namespace Aggregator
 				FeedInfo info
 				{
 					feedElem.firstChildElement ("name").text (),
-					ParseTags (feedElem).join ("; "),
+					ParseTags (feedElem),
 					feedElem.firstChildElement ("url").text ()
 				};
 				set << info;
@@ -161,7 +161,7 @@ namespace Aggregator
 
 			QLineEdit *edit = new QLineEdit (Ui_.Tree_);
 			edit->setFrame (false);
-			edit->setText (info.DefaultTags_);
+			edit->setText (info.DefaultTags_.join ("; "));
 			Ui_.Tree_->setItemWidget (item, 1, edit);
 		}
 	}

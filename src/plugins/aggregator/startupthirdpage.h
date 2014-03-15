@@ -45,7 +45,7 @@ namespace Aggregator
 		struct FeedInfo
 		{
 			QString Name_;
-			QString DefaultTags_;
+			QStringList DefaultTags_;
 			QString URL_;
 		};
 
