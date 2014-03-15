@@ -52,9 +52,6 @@ namespace Aggregator
 		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Slashdot"),
 				"it; news; software; science; world",
 				"http://rss.slashdot.org/Slashdot/slashdot");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Qt Labs Blogs"),
-				"it; qt; news; blogs; programming",
-				"http://labs.trolltech.com/blogs/feed/atom/");
 		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("euronews RSS feed"),
 				"news; world",
 				"http://feeds.feedburner.com/euronews/en/home/");
@@ -73,9 +70,6 @@ namespace Aggregator
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости LeechCraft.org"),
 				"it; blogs; software",
 				"http://leechcraft.org/ru/rss.xml");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Linux.org.ru: Новости"),
-				"it; news; software",
-				"http://feeds.feedburner.com/org/LOR");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("OpenNews.opennet.ru: Основная лента"),
 				"it; news; software",
 				"http://www.opennet.ru/opennews/opennews_6.rss");
@@ -97,21 +91,12 @@ namespace Aggregator
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("3Dnews - Новости Hardware"),
 				"it; news; hardware",
 				"http://www.3dnews.ru/news/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("MEMBRANA: Люди. Идеи. Технологии."),
-				"news; science; world",
-				"http://feeds.feedburner.com/membrana_ru");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Яндекс.Новости"),
 				"news; world",
 				"http://news.yandex.ru/index.rss");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Lenta.Ru"),
 				"news",
 				"http://lenta.ru/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Bash.Org.Ru"),
-				"fun",
-				"http://bash.org.ru/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("iBash.Org.Ru"),
-				"fun; it",
-				"http://ibash.org.ru/rss.xml");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("WeLinux.ru"),
 				"it; linux",
 				"http://feeds.feedburner.com/welinux");
