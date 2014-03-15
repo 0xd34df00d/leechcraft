@@ -30,6 +30,7 @@
 #include "startupthirdpage.h"
 #include <QLineEdit>
 #include <QTextCodec>
+#include <QDomDocument>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -49,57 +50,7 @@ namespace Aggregator
 	StartupThirdPage::StartupThirdPage (QWidget *parent)
 	: QWizardPage (parent)
 	{
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Slashdot"),
-				"it; news; software; science; world",
-				"http://rss.slashdot.org/Slashdot/slashdot");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("euronews RSS feed"),
-				"news; world",
-				"http://feeds.feedburner.com/euronews/en/home/");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("TechCrunch"),
-				"news; it",
-				"http://feedproxy.google.com/TechCrunch");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Wired.com"),
-				"news; it",
-				"http://feeds.wired.com/wired/index");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("IBM DeveloperWorks"),
-				"it; programming",
-				"http://www.ibm.com/developerworks/views/linux/rss/libraryview.jsp");
-		Sets_ ["en"] << FeedInfo (QString::fromUtf8 ("LeechCraft.org News"),
-				"it; blogs; software",
-				"http://leechcraft.org/rss.xml");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости LeechCraft.org"),
-				"it; blogs; software",
-				"http://leechcraft.org/ru/rss.xml");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("OpenNews.opennet.ru: Основная лента"),
-				"it; news; software",
-				"http://www.opennet.ru/opennews/opennews_6.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("CNews.ru"),
-				"it; news",
-				"http://www.cnews.ru/news.xml");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Хабрахабр"),
-				"it; news; blogs",
-				"http://habrahabr.ru/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости: Hardware на iXBT.com"),
-				"it; news; hardware",
-				"http://www.ixbt.com/export/hardnews.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости: Software на iXBT.com"),
-				"it; news; software",
-				"http://www.ixbt.com/export/softnews.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Статьи на iXBT.com"),
-				"it",
-				"http://www.ixbt.com/export/articles.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("3Dnews - Новости Hardware"),
-				"it; news; hardware",
-				"http://www.3dnews.ru/news/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Яндекс.Новости"),
-				"news; world",
-				"http://news.yandex.ru/index.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Lenta.Ru"),
-				"news",
-				"http://lenta.ru/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("WeLinux.ru"),
-				"it; linux",
-				"http://feeds.feedburner.com/welinux");
+		ParseFeedsSets ();
 
 		Ui_.setupUi (this);
 		Ui_.Tree_->header ()->setResizeMode (0, QHeaderView::ResizeToContents);

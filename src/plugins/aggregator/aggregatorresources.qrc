@@ -2,6 +2,7 @@
   <qresource prefix="/" >
     <file>resources/images/aggregator.svg</file>
     <file>resources/images/rss.png</file>
+    <file>resources/data/default_feeds.xml</file>
     <file>resources/sql/mysql/ChannelDateTrimmer_query.sql</file>
     <file>resources/sql/mysql/ChannelFinder_query.sql</file>
     <file>resources/sql/mysql/ChannelIDFromTitle_query.sql</file>
