@@ -41,14 +41,14 @@ namespace Aggregator
 		Q_OBJECT
 
 		Ui::StartupThirdPageWidget Ui_;
+
 		struct FeedInfo
 		{
 			QString Name_;
 			QString DefaultTags_;
 			QString URL_;
-
-			FeedInfo (const QString&, const QString&, const QString&);
 		};
+
 		typedef QList<FeedInfo> FeedInfos_t;
 		QMap<QString, FeedInfos_t> Sets_;
 	public:

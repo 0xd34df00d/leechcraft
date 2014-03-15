@@ -39,14 +39,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	StartupThirdPage::FeedInfo::FeedInfo (const QString& name,
-			const QString& tags, const QString& url)
-	: Name_ (name)
-	, DefaultTags_ (tags)
-	, URL_ (url)
-	{
-	}
-
 	StartupThirdPage::StartupThirdPage (QWidget *parent)
 	: QWizardPage (parent)
 	{
