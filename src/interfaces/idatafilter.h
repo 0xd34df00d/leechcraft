@@ -76,7 +76,7 @@ typedef std::function<void (QVariant)> DataFilterCallback_f;
  * emitting the entity. For this the emitting plugin shall set the
  * callback function as the value of the \em DataFilterCallback
  * LeechCraft::Entity::Additional_ map. The function is expected to be an
- * object of type DataFilterCallback_f.
+ * object of type ::DataFilterCallback_f.
  *
  * @note Not all data filter plugins support callbacks. For example, it
  * doesn't make sense for a Google web search data filter to pass the
@@ -85,6 +85,7 @@ typedef std::function<void (QVariant)> DataFilterCallback_f;
  * and callback semantics to make sense.
  *
  * @sa Entity, IEntityHandler
+ * @sa DataFilterCallback_f
  */
 class Q_DECL_EXPORT IDataFilter
 {
