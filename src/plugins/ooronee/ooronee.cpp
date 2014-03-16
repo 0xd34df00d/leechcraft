@@ -29,6 +29,8 @@
 
 #include "ooronee.h"
 #include <QIcon>
+#include <QtDeclarative>
+#include "droparea.h"
 
 namespace LeechCraft
 {
@@ -36,6 +38,9 @@ namespace Ooronee
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qmlRegisterType<DropArea> ("org.LC.Ooronee", 1, 0, "DropArea");
+
+		Quark_.reset (new QuarkComponent { "ooronee", "OoroneeQuark.qml" });
 	}
 
 	void Plugin::SecondInit ()
@@ -64,6 +69,11 @@ namespace Ooronee
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { Quark_ };
 	}
 }
 }
