@@ -51,7 +51,9 @@ namespace SB2
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open manifest file"
-					<< file.errorString ();
+					<< file.errorString ()
+					<< "for quark"
+					<< path;
 			return;
 		}
 
