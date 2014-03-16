@@ -27,67 +27,34 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "ooronee.h"
-#include <QIcon>
-#include <QtDeclarative>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "xmlsettingsmanager.h"
-#include "droparea.h"
-#include "quarkproxy.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
 namespace Ooronee
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class QuarkProxy : public QObject
 	{
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "ooroneesettings.xml");
+		Q_OBJECT
 
-		qmlRegisterType<DropArea> ("org.LC.Ooronee", 1, 0, "DropArea");
+		const ICoreProxy_ptr Proxy_;
 
-		Quark_.reset (new QuarkComponent { "ooronee", "OoroneeQuark.qml" });
-		Quark_->DynamicProps_.append ({ "Ooronee_Proxy", new QuarkProxy { proxy } });
-	}
+		struct VarInfo
+		{
+			QString HumanReadable_;
 
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Ooronee";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Ooronee";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Provides a quark for handling image and text droppend onto it via other data filter plugins.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
-
-	QuarkComponents_t Plugin::GetComponents () const
-	{
-		return { Quark_ };
-	}
+			QObject *Obj_;
+			QString Variant_;
+		};
+	public:
+		QuarkProxy (ICoreProxy_ptr);
+	private:
+		void HandleVariants (Entity, const QList<VarInfo>&);
+	public slots:
+		void handleText (const QString&);
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_ooronee, LeechCraft::Ooronee::Plugin);

@@ -15,6 +15,6 @@ Rectangle {
 
     DropArea {
         anchors.fill: parent
-        onTextDropped: console.log(text)
+        onTextDropped: Ooronee_Proxy.handleText(text)
     }
 }

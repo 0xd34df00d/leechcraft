@@ -12,6 +12,7 @@ include_directories (
 set (SRCS
 	ooronee.cpp
 	droparea.cpp
+	quarkproxy.cpp
 	xmlsettingsmanager.cpp
 	)
 #CreateTrs("ooronee" "en;ru_RU" COMPILED_TRANSLATIONS)
