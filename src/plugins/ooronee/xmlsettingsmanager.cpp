@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,39 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iquarkcomponentprovider.h>
-#include <interfaces/ihavesettings.h>
+#include "xmlsettingsmanager.h"
+#include <QApplication>
 
 namespace LeechCraft
 {
 namespace Ooronee
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
-				 , public IQuarkComponentProvider
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
+		Util::BaseSettingsManager::Init ();
+	}
 
-		Util::XmlSettingsDialog_ptr XSD_;
-		QuarkComponent_ptr Quark_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 
-		QuarkComponents_t GetComponents () const;
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Ooronee");
+		return settings;
+	}
 }
 }

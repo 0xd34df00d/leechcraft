@@ -30,6 +30,8 @@
 #include "ooronee.h"
 #include <QIcon>
 #include <QtDeclarative>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 #include "droparea.h"
 
 namespace LeechCraft
@@ -38,6 +40,9 @@ namespace Ooronee
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "ooroneesettings.xml");
+
 		qmlRegisterType<DropArea> ("org.LC.Ooronee", 1, 0, "DropArea");
 
 		Quark_.reset (new QuarkComponent { "ooronee", "OoroneeQuark.qml" });
@@ -69,6 +74,11 @@ namespace Ooronee
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	QuarkComponents_t Plugin::GetComponents () const

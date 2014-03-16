@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,37 +29,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iquarkcomponentprovider.h>
-#include <interfaces/ihavesettings.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Ooronee
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
-				 , public IQuarkComponentProvider
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
 
-		Util::XmlSettingsDialog_ptr XSD_;
-		QuarkComponent_ptr Quark_;
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		QuarkComponents_t GetComponents () const;
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
