@@ -210,6 +210,7 @@ option (ENABLE_MUSICZOMBIE "Build MusicZombie, MusicBrainz.org client" ${WITH_PL
 option (ENABLE_NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PLUGINS})
 option (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" ${WITH_PLUGINS})
 option (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" ${WITH_PLUGINS})
+option (ENABLE_OORONEE "Build Ooronee, a quark for handling text and images dropped on it" ${WITH_PLUGINS})
 option (ENABLE_POLEEMERY "Build Poleemery, the personal finances manager" ${WITH_PLUGINS})
 option (ENABLE_ROSENTHAL "Build Rosenthal, the Hunspell-based spell checker service plugin" ${WITH_PLUGINS})
 option (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
@@ -569,6 +570,10 @@ endif ()
 
 if (ENABLE_OTLOZHU)
 	add_subdirectory (plugins/otlozhu)
+endif ()
+
+if (ENABLE_OORONEE)
+	add_subdirectory (plugins/ooronee)
 endif ()
 
 if (ENABLE_IMGASTE)
