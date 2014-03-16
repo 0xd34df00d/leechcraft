@@ -103,6 +103,12 @@ namespace LeechCraft
 		 * Util::SysPath::QML location under the given \em subdir and
 		 * \em filename.
 		 *
+		 * For example, if a plugin installs its quark file
+		 * \em QuarkName.qml contained in directory \em pluginName via
+		 * \code install (DIRECTORY pluginName DESTINATION ${LC_QML_DEST}) \endcode
+		 * then proper QuarkComponent will be initialized by calling
+		 * \code{.cpp} QuarkComponent { "pluginName", "QuarkName.qml" } \endcode.
+		 *
 		 * @sa Util::GetSysPath()
 		 */
 		QuarkComponent (const QString& subdir, const QString& filename)
