@@ -11,6 +11,7 @@ include_directories (
 	)
 set (SRCS
 	ooronee.cpp
+	droparea.cpp
 	)
 #CreateTrs("ooronee" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("ooronee" "en;ru_RU" "${SRCS}" "${FORMS}" "")
