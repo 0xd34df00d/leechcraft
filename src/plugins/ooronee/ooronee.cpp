@@ -63,7 +63,7 @@ namespace Ooronee
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("");
+		return tr ("Provides a quark for handling image and text droppend onto it via other data filter plugins.");
 	}
 
 	QIcon Plugin::GetIcon () const
