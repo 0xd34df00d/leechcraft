@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_ooronee)
 include (InitLCPlugin OPTIONAL)
 
+set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
