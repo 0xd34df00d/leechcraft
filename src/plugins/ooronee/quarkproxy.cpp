@@ -54,7 +54,7 @@ namespace Ooronee
 		bool ok = false;
 		const auto& selected = QInputDialog::getItem (nullptr,
 				tr ("Handle text"),
-				tr ("Select the data filter to handle the text just pasted:"),
+				tr ("Select the data filter to handle the dropped text:"),
 				strings,
 				0,
 				false,
@@ -75,6 +75,11 @@ namespace Ooronee
 
 		entity.Additional_ ["DataFilter"] = varInfo.Variant_;
 		qobject_cast<IEntityHandler*> (varInfo.Obj_)->Handle (entity);
+
+		XmlSettingsManager::Instance ().setProperty ("PrevHandlerText",
+				qobject_cast<IInfo*> (varInfo.Obj_)->GetUniqueID ());
+		XmlSettingsManager::Instance ().setProperty ("PrevVariantText",
+				varInfo.Variant_);
 	}
 
 	void QuarkProxy::handleText (const QString& text)
