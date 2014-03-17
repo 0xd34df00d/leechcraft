@@ -52,9 +52,11 @@ namespace Ooronee
 	public:
 		QuarkProxy (ICoreProxy_ptr);
 	private:
-		void HandleVariants (Entity, const QList<VarInfo>&);
+		void Handle (const QVariant&, const QByteArray&, bool);
+		void HandleVariantsMenu (const QVariant&, const QByteArray&);
+		void HandleVariantsDialog (Entity, const QStringList&, const QList<VarInfo>&, const QByteArray&);
 	public slots:
-		void handleText (const QString&);
+		void handle (const QVariant&, bool);
 	};
 }
 }

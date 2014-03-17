@@ -30,6 +30,7 @@
 #include "quarkproxy.h"
 #include <QInputDialog>
 #include <util/util.h>
+#include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/idatafilter.h>
@@ -45,51 +46,23 @@ namespace Ooronee
 	{
 	}
 
-	void QuarkProxy::HandleVariants (Entity entity, const QList<VarInfo>& varInfos)
+	void QuarkProxy::Handle (const QVariant& data, const QByteArray& typeId, bool menuSelect)
 	{
-		QStringList strings;
-		for (const auto& info : varInfos)
-			strings << info.HumanReadable_;
-
-		bool ok = false;
-		const auto& selected = QInputDialog::getItem (nullptr,
-				tr ("Handle text"),
-				tr ("Select the data filter to handle the dropped text:"),
-				strings,
-				0,
-				false,
-				&ok);
-		if (!ok)
-			return;
-
-		const auto idx = strings.indexOf (selected);
-		if (idx < 0)
+		if (menuSelect)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot find"
-					<< idx;
+			HandleVariantsMenu (data, typeId);
 			return;
 		}
 
-		const auto& varInfo = varInfos.at (idx);
+		const auto getId = [&typeId, &menuSelect] (const QByteArray& prefix) -> QByteArray
+		{
+			return XmlSettingsManager::Instance ()
+				.Property (prefix + typeId, {}).toByteArray ();
+		};
+		const auto& prevPluginId = getId ("PrevHandler");
+		const auto& prevVariantId = getId ("PrevVariant");
 
-		entity.Additional_ ["DataFilter"] = varInfo.Variant_;
-		qobject_cast<IEntityHandler*> (varInfo.Obj_)->Handle (entity);
-
-		XmlSettingsManager::Instance ().setProperty ("PrevHandlerText",
-				qobject_cast<IInfo*> (varInfo.Obj_)->GetUniqueID ());
-		XmlSettingsManager::Instance ().setProperty ("PrevVariantText",
-				varInfo.Variant_);
-	}
-
-	void QuarkProxy::handleText (const QString& text)
-	{
-		const auto& prevPluginId = XmlSettingsManager::Instance ()
-				.Property ("PrevHandlerText", {}).toByteArray ();
-		const auto& prevVariantId = XmlSettingsManager::Instance ()
-				.Property ("PrevVariantText", {}).toByteArray ();
-
-		auto entity = Util::MakeEntity (text,
+		auto entity = Util::MakeEntity (data,
 				{},
 				TaskParameter::NoParameters,
 				"x-leechcraft/data-filter-request");
@@ -121,7 +94,56 @@ namespace Ooronee
 			}
 		}
 
-		HandleVariants (entity, varInfos);
+		QStringList strings;
+		for (const auto& info : varInfos)
+			strings << info.HumanReadable_;
+
+		HandleVariantsDialog (entity, strings, varInfos, typeId);
+	}
+
+	void QuarkProxy::HandleVariantsMenu (const QVariant& data, const QByteArray& typeId)
+	{
+		QMenu menu;
+		Util::StdDataFilterMenuCreator creator { data, Proxy_->GetEntityManager (), &menu };
+		menu.exec (QCursor::pos ());
+	}
+
+	void QuarkProxy::HandleVariantsDialog (Entity entity, const QStringList& strings, const QList<VarInfo>& varInfos, const QByteArray& typeId)
+	{
+		bool ok = false;
+		const auto& selected = QInputDialog::getItem (nullptr,
+				tr ("Handle text"),
+				tr ("Select the data filter to handle the dropped text:"),
+				strings,
+				0,
+				false,
+				&ok);
+		if (!ok)
+			return;
+
+		const auto idx = strings.indexOf (selected);
+		if (idx < 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot find"
+					<< idx;
+			return;
+		}
+
+		const auto& varInfo = varInfos.at (idx);
+
+		entity.Additional_ ["DataFilter"] = varInfo.Variant_;
+		qobject_cast<IEntityHandler*> (varInfo.Obj_)->Handle (entity);
+
+		XmlSettingsManager::Instance ().setProperty ("PrevHandler" + typeId,
+				qobject_cast<IInfo*> (varInfo.Obj_)->GetUniqueID ());
+		XmlSettingsManager::Instance ().setProperty ("PrevVariant" + typeId,
+				varInfo.Variant_);
+	}
+
+	void QuarkProxy::handle (const QVariant& data, bool menuSelect)
+	{
+		Handle (data, data.canConvert<QImage> () ? "Image" : "Text", menuSelect);
 	}
 }
 }

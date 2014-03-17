@@ -13,8 +13,41 @@ Rectangle {
     border.width: 1
     radius: width / 8
 
+    property variant hoverTime: null
+
+    Timer {
+        id: startTimer
+
+        interval: 1000
+
+        property variant data
+        property bool hasTriggered: false
+
+        onTriggered: {
+            hasTriggered = true;
+            Ooronee_Proxy.handle(data, true);
+        }
+    }
+
     DropArea {
         anchors.fill: parent
-        onTextDropped: Ooronee_Proxy.handleText(text)
+
+        onDataDropped: {
+            if (startTimer.hasTriggered) {
+                startTimer.hasTriggered = false;
+                return;
+            }
+
+            Ooronee_Proxy.handle(data, false);
+        }
+
+        onDragEntered: {
+            startTimer.data = data
+            startTimer.start()
+        }
+        onDragLeft: {
+            startTimer.hasTriggered = false;
+            startTimer.stop()
+        }
     }
 }
