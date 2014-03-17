@@ -58,16 +58,19 @@ namespace Ooronee
 	void DropArea::dragEnterEvent (QGraphicsSceneDragDropEvent *event)
 	{
 		auto data = event->mimeData ();
-		if (data->hasImage () || data->hasText ())
-		{
-			event->acceptProposedAction ();
-			setCursor (Qt::DragCopyCursor);
-		}
+		if (!(data->hasImage () || data->hasText ()))
+			return;
+
+		event->acceptProposedAction ();
+		setCursor (Qt::DragCopyCursor);
+
+		emit dragEntered ();
 	}
 
 	void DropArea::dragLeaveEvent (QGraphicsSceneDragDropEvent*)
 	{
 		unsetCursor ();
+		emit dragLeft ();
 	}
 
 	void DropArea::dropEvent (QGraphicsSceneDragDropEvent *event)

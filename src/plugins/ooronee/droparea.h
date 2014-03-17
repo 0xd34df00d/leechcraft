@@ -51,8 +51,11 @@ namespace Ooronee
 	signals:
 		void acceptingDropsChanged (bool);
 
-		void imageDropped (const QVariant& image);
+		void dragEntered ();
+		void dragLeft ();
+
 		void textDropped (const QString& text);
+		void imageDropped (const QVariant& image);
 	};
 }
 }
