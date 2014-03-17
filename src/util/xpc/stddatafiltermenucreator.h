@@ -44,7 +44,7 @@ namespace Util
 	{
 		Q_OBJECT
 
-		IEntityManager *EntityMgr_;
+		IEntityManager * const EntityMgr_;
 	public:
 		UTIL_API StdDataFilterMenuCreator (const QVariant&, IEntityManager*, QMenu*);
 	private slots:
