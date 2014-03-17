@@ -557,7 +557,11 @@ namespace Azoth
 		proxy->SetValue ("text", text);
 		emit hookMessageWillCreated (proxy, this, e->GetQObject (), type, variant);
 		if (proxy->IsCancelled ())
+		{
+			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
+				clear = false;
 			return;
+		}
 
 		int intType = type;
 		proxy->FillValue ("type", intType);
