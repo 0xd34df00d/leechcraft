@@ -64,7 +64,9 @@ namespace Ooronee
 		event->acceptProposedAction ();
 		setCursor (Qt::DragCopyCursor);
 
-		emit dragEntered ();
+		emit dragEntered (data->hasImage () ?
+				data->imageData () :
+				data->text ());
 	}
 
 	void DropArea::dragLeaveEvent (QGraphicsSceneDragDropEvent*)

@@ -51,7 +51,7 @@ namespace Ooronee
 	signals:
 		void acceptingDropsChanged (bool);
 
-		void dragEntered ();
+		void dragEntered (const QVariant& data);
 		void dragLeft ();
 
 		void dataDropped (const QVariant& data);
