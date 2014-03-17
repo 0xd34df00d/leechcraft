@@ -40,7 +40,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class StdDataFilterMenuCreator : public QObject
+	class UTIL_API StdDataFilterMenuCreator : public QObject
 	{
 		Q_OBJECT
 
@@ -49,10 +49,10 @@ namespace Util
 		QByteArray ChosenPlugin_;
 		QByteArray ChosenVariant_;
 	public:
-		UTIL_API StdDataFilterMenuCreator (const QVariant&, IEntityManager*, QMenu*);
+		StdDataFilterMenuCreator (const QVariant&, IEntityManager*, QMenu*);
 
-		UTIL_API const QByteArray& GetChosenPlugin () const;
-		UTIL_API const QByteArray& GetChosenVariant () const;
+		const QByteArray& GetChosenPlugin () const;
+		const QByteArray& GetChosenVariant () const;
 	private slots:
 		void handleDataFilterAction ();
 	};

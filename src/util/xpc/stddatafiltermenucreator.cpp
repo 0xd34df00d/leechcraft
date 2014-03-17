@@ -63,7 +63,7 @@ namespace Util
 	{
 		auto entity = MakeEntity (dataVar,
 				QString (),
-				static_cast<TaskParameters> (FromUserInitiated) | OnlyHandle,
+				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/data-filter-request");
 		for (auto plugin : em->GetPossibleHandlers (entity))
 		{
