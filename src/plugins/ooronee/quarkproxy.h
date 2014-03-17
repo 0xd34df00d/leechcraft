@@ -47,7 +47,7 @@ namespace Ooronee
 			QString HumanReadable_;
 
 			QObject *Obj_;
-			QString Variant_;
+			QByteArray Variant_;
 		};
 	public:
 		QuarkProxy (ICoreProxy_ptr);
