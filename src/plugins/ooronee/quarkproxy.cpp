@@ -135,10 +135,14 @@ namespace Ooronee
 		entity.Additional_ ["DataFilter"] = varInfo.Variant_;
 		qobject_cast<IEntityHandler*> (varInfo.Obj_)->Handle (entity);
 
-		XmlSettingsManager::Instance ().setProperty ("PrevHandler" + typeId,
-				qobject_cast<IInfo*> (varInfo.Obj_)->GetUniqueID ());
-		XmlSettingsManager::Instance ().setProperty ("PrevVariant" + typeId,
-				varInfo.Variant_);
+		SaveUsed (qobject_cast<IInfo*> (varInfo.Obj_)->GetUniqueID (), varInfo.Variant_, typeId);
+	}
+
+	void QuarkProxy::SaveUsed (const QByteArray& plugin,
+			const QByteArray& variant, const QByteArray& typeId)
+	{
+		XmlSettingsManager::Instance ().setProperty ("PrevHandler" + typeId, plugin);
+		XmlSettingsManager::Instance ().setProperty ("PrevVariant" + typeId, variant);
 	}
 
 	void QuarkProxy::handle (const QVariant& data, bool menuSelect)

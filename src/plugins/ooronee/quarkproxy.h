@@ -55,6 +55,8 @@ namespace Ooronee
 		void Handle (const QVariant&, const QByteArray&, bool);
 		void HandleVariantsMenu (const QVariant&, const QByteArray&);
 		void HandleVariantsDialog (Entity, const QStringList&, const QList<VarInfo>&, const QByteArray&);
+
+		void SaveUsed (const QByteArray&, const QByteArray&, const QByteArray&);
 	public slots:
 		void handle (const QVariant&, bool);
 	};
