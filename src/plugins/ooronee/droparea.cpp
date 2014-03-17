@@ -78,10 +78,9 @@ namespace Ooronee
 		unsetCursor ();
 
 		const auto data = event->mimeData ();
-		if (data->hasImage ())
-			emit imageDropped (data->imageData ());
-		else if (data->hasText ())
-			emit textDropped (data->text ());
+		emit dataDropped (data->hasImage () ?
+				data->imageData () :
+				data->text ());
 	}
 }
 }

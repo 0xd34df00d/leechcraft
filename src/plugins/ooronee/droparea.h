@@ -54,8 +54,7 @@ namespace Ooronee
 		void dragEntered ();
 		void dragLeft ();
 
-		void textDropped (const QString& text);
-		void imageDropped (const QVariant& image);
+		void dataDropped (const QVariant& data);
 	};
 }
 }
