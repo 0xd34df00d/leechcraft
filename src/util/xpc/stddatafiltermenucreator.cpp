@@ -97,6 +97,16 @@ namespace Util
 		}
 	}
 
+	const QByteArray& StdDataFilterMenuCreator::GetChosenPlugin () const
+	{
+		return ChosenPlugin_;
+	}
+
+	const QByteArray& StdDataFilterMenuCreator::GetChosenVariant () const
+	{
+		return ChosenVariant_;
+	}
+
 	void StdDataFilterMenuCreator::handleDataFilterAction ()
 	{
 		auto action = qobject_cast<QAction*> (sender ());
@@ -105,6 +115,9 @@ namespace Util
 		auto entity = data.Entity_;
 		entity.Additional_ ["DataFilter"] = data.VarID_;
 		EntityMgr_->HandleEntity (entity, data.Plugin_);
+
+		ChosenPlugin_ = qobject_cast<IInfo*> (data.Plugin_)->GetUniqueID ();
+		ChosenVariant_ = data.VarID_;
 	}
 }
 }

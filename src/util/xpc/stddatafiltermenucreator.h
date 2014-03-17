@@ -45,8 +45,14 @@ namespace Util
 		Q_OBJECT
 
 		IEntityManager * const EntityMgr_;
+
+		QByteArray ChosenPlugin_;
+		QByteArray ChosenVariant_;
 	public:
 		UTIL_API StdDataFilterMenuCreator (const QVariant&, IEntityManager*, QMenu*);
+
+		UTIL_API const QByteArray& GetChosenPlugin () const;
+		UTIL_API const QByteArray& GetChosenVariant () const;
 	private slots:
 		void handleDataFilterAction ();
 	};
