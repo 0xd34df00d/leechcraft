@@ -28,3 +28,4 @@ target_link_libraries (leechcraft_ooronee
 	)
 install (TARGETS leechcraft_ooronee DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/ooronee DESTINATION ${LC_QML_DEST})
+install (FILES ooroneesettings.xml DESTINATION ${LC_SETTINGS_DEST})
