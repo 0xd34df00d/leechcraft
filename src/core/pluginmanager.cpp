@@ -844,8 +844,15 @@ namespace LeechCraft
 
 			return {};
 		};
-		auto fails = QtConcurrent::mapped (PluginContainers_,
-				std::function<boost::optional<Checks::Fail> (Loaders::IPluginLoader_ptr)> (thrCheck)).results ();
+
+		QList<boost::optional<Checks::Fail>> fails;
+		if (!DBusMode_)
+			fails = QtConcurrent::mapped (PluginContainers_,
+					std::function<boost::optional<Checks::Fail> (Loaders::IPluginLoader_ptr)> (thrCheck)).results ();
+		else
+			for (const auto loader : PluginContainers_)
+				fails << thrCheck (loader);
+
 		for (int i = fails.size () - 1; i >= 0; --i)
 			if (fails [i])
 			{
