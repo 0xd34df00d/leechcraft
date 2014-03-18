@@ -394,6 +394,8 @@ namespace OTRoid
 			if (!msg)
 				return;
 
+			msg->SetOTRMessage (true);
+
 			msg->Send ();
 		}
 		else
