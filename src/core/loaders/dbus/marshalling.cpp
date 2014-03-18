@@ -71,13 +71,18 @@ QDBusArgument& operator<< (QDBusArgument& arg, const QIcon& icon)
 		QDataStream ostr (&ba, QIODevice::WriteOnly);
 		ostr << icon;
 	}
-	return arg << ba;
+	arg.beginStructure ();
+	arg << ba;
+	arg.endStructure ();
+	return arg;
 }
 
 const QDBusArgument& operator>> (const QDBusArgument& arg, QIcon& icon)
 {
+	arg.beginStructure ();
 	QByteArray ba;
 	arg >> ba;
+	arg.endStructure ();
 
 	{
 		QDataStream istr (ba);
