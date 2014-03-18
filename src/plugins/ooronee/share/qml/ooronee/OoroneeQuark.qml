@@ -23,7 +23,7 @@ Rectangle {
     Timer {
         id: startTimer
 
-        interval: 1000
+        interval: Ooronee_Proxy.hoverTimeout
 
         property variant data
         property bool hasTriggered: false

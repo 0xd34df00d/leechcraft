@@ -44,6 +44,13 @@ namespace Ooronee
 	QuarkProxy::QuarkProxy (ICoreProxy_ptr proxy)
 	: Proxy_ { proxy }
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("HoverTimeout",
+				this, "hoverTimeoutChanged");
+	}
+
+	int QuarkProxy::GetHoverTimeout () const
+	{
+		return XmlSettingsManager::Instance ().property ("HoverTimeout").toInt ();
 	}
 
 	void QuarkProxy::Handle (const QVariant& data, const QByteArray& typeId, bool menuSelect)

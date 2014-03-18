@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
+		<label value="Ooronee" />
+		<item type="spinbox" property="HoverTimeout" default="1000" minimum="100" maximum="5000" step="100">
+			<label value="Hover timeout before showing the handlers menu:" />
+			<suffix value=" ms" />
+		</item>
 	</page>
 </settings>

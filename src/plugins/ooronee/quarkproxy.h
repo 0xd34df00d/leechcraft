@@ -49,8 +49,12 @@ namespace Ooronee
 			QObject *Obj_;
 			QByteArray Variant_;
 		};
+
+		Q_PROPERTY (int hoverTimeout READ GetHoverTimeout NOTIFY hoverTimeoutChanged)
 	public:
 		QuarkProxy (ICoreProxy_ptr);
+
+		int GetHoverTimeout () const;
 	private:
 		void Handle (const QVariant&, const QByteArray&, bool);
 		void HandleVariantsMenu (const QVariant&, const QByteArray&);
@@ -59,6 +63,8 @@ namespace Ooronee
 		void SaveUsed (const QByteArray&, const QByteArray&, const QByteArray&);
 	public slots:
 		void handle (const QVariant&, bool);
+	signals:
+		void hoverTimeoutChanged ();
 	};
 }
 }
