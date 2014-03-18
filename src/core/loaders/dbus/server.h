@@ -52,6 +52,8 @@ namespace DBus
 
 		Q_INVOKABLE bool Load (const QString& path);
 		Q_INVOKABLE bool Unload (const QString& path);
+
+		Q_INVOKABLE void SetLcIconsPaths (const QStringList&);
 	};
 }
 }

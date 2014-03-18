@@ -134,5 +134,11 @@ namespace DBus
 	{
 		return Loader_->Unload ();
 	}
+
+	void Server::SetLcIconsPaths (const QStringList& paths)
+	{
+		for (const auto& path : paths)
+			QDir::addSearchPath ("lcicons", path);
+	}
 }
 }
