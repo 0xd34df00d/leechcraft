@@ -64,10 +64,19 @@ namespace Loaders
 		srv.listen (QString ("lc_waiter_%1").arg (Proc_->pid ()));
 
 		if (!Proc_->waitForStarted ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot start proc";
 			return false;
+		}
 
 		if (!srv.waitForNewConnection (1000))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "time out waiting for connection"
+					<< Filename_;
 			return false;
+		}
 
 		const auto& serviceName = QString ("org.LeechCraft.Wrapper_%1").arg (Proc_->pid ());
 		CtrlIface_.reset (new QDBusInterface (serviceName,
@@ -101,7 +110,11 @@ namespace Loaders
 	QObject* DBusPluginLoader::Instance ()
 	{
 		if (!IsLoaded () && !Load ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null instance";
 			return 0;
+		}
 
 		return Wrapper_.get ();
 	}
