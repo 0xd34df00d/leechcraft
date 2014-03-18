@@ -3,22 +3,31 @@ the rest.
 
 !!! 0.6.65
 * New plugins:
-	* CpuLoad - cpu load monitoring quark.
+	* CpuLoad — cpu load monitoring quark.
+	* Ooronee — pastebin/datafilter API quark.
 * [Core] Key sequencer fixes.
 * [Core] Use native strings for shortcuts in UI.
 * [Core] Properly handle reply finishing while in SSL errors handler.
 * [Core] Compact ranges in About dialog.
+* [Core] Fix font issues on Mac OS X 10.9.
+* [Core] Pass --restart instead of -restart.
+* [Core] Thread-safe IconThemeEngine.
 * [Aggregator] Support renaming feeds.
+* [Aggregator] Slight refactoring and better plugin API.
+* [Aggregator] Removed some old/outdated news feeds.
 * [AnHero] Don't disable trace display.
 * [AnHero] Highlight functions without address.
 * [AnHero] Wait only for crash handler process.
+* [AnHero] Print strerror() if exec() failed.
+* [AnHero] Strip off first argument.
+* [AnHero] Use --restart flag instead of shell kludge.
 * [Auscrie] Save last used data filter.
 * [Auscrie] Show dialog on shoot action immediately.
 * [Azoth] Support plugins with server history like XMPP or VKontakte.
 * [Azoth] Support sending images via IDataFilter plugins.
 * [Azoth] Better image sending dialog.
 * [Azoth] Added "Mark all messages as read" group action.
-* [Azoth] Fixed Enter button in All users list on Mac. 
+* [Azoth] Fixed Enter button in All users list on Mac.
 * [Azoth] Fix logic leading segfault in Xoox on leaving.
 * [Azoth] Hide smiles tooltip on tab change.
 * [Azoth] Added chat window text search.
@@ -35,8 +44,13 @@ the rest.
 * [Azoth] Configurable font size in msg edit, closes #1492.
 * [Azoth] More dbg output on invalid CL entry.
 * [Azoth] Show state icon in UsersListWidget.
+* [Azoth] Fixed misaligned client icons in contacts.
+* [Azoth] Fixed misaligned icons in accounts rows.
 * [Azoth AP] Set "PreserveMessageEdit" if cancelled.
 * [Azoth Astrality] Fixed include path.
+* [Azoth Acetamide] Properly handle network connectivity issues.
+* [Azoth Autoidler] Changed poll timeout from 1 second to 10 to conserver power.
+* [Azoth Autoidler] Use ApplicationServices to get idle time on Mac.
 * [Azoth Herbicide] Show multilines below for #1476.
 * [Azoth Murm] Support server history.
 * [Azoth Murm] Fixed handling of '<' in outgoing messages.
@@ -44,10 +58,17 @@ the rest.
 * [Azoth Murm] Offline messages are shown in proper order now.
 * [Azoth Murm] Support renaming multiuser chats.
 * [Azoth Murm] Support inviting users to multiuser chats.
+* [Azoth Murm] Advertise self contact.
+* [Azoth Murm] Added option to disable status string publication.
+* [Azoth Murm] Optionally request offline permissions.
 * [Azoth OTRoid] Fixed OTRv3 support.
+* [Azoth OTRoid] Fixed use-after-free due to object lifetime.
+* [Azoth OTRoid] Handle all error messages.
+* [Azoth OTRoid] Mark messages as OTR on handling.
 * [Azoth Rosenthal] Moved checking code to a separate plugin.
 * [Azoth Xoox] Support Message Archive Management (XEP-0313).
-* [Azoth Xoox] Support disabling requesting vcards and versions.
+* [Azoth Xoox] Support message carbons (XEP-0280).
+* [Azoth Xoox] Support disabling requesting vcards and versions at all.
 * [Azoth Xoox] Don't clear the cached roster if shutting down without going ever online.
 * [Azoth Xoox] Normalize \r, \n and \t.
 * [Azoth Xoox] Don't check for Ad-Hoc identity on the root node.
@@ -56,6 +77,7 @@ the rest.
 * [Azoth Xoox] Implement RoomCLEntry::MarkMsgsRead().
 * [Blasq] Finally implement IImgSource to provide images to other plugins like LHTR.
 * [Blasq] Implement IDataFilter to support uploading images from other plugins.
+* [Blogique] fix Use-after-free in BlogiqueWidget.
 * [CSTP] Handle POST operations.
 * [CSTP] Pass task params to the task object.
 * [CSTP] Properly set the Referer field.
@@ -63,12 +85,18 @@ the rest.
 * [CSTP] Set Origin header.
 * [DeadLyrics] Don't really use the reply object after deleteLater().
 * [DeadLyrics] Fixed crash with fast track changing in LMP.
+* [HotSensors] Added max/crit temperatures as ranges.
+* [HotSensors] Added FindSensors.cmake.
 * [Imgaste] A little bit cleaner code.
 * [Imgaste] Support IDataFilter callbacks.
 * [Imgaste] We were probably leaking replies.
 * [KBSwitch] Context menu for the indicator.
 * [KBSwitch] Support changing language by mouse click.
 * [KBSwitch] Fallback icon for the quark, fixes #1519.
+* [KBSwitch] Check if X11 libraries are found.
+* [Kinotify] Fixed action buttons alignment & rendering.
+* [Kinotify] Removed unneeded Xrandr include.
+* [Kinotify] Use sans-serif fonts.
 * [KT] Don't cache images in QML.
 * [LackMan] Space key toggles the state of a package now.
 * [LackMan] vim-like package list navigation.
@@ -77,6 +105,8 @@ the rest.
 * [LackMan] Delayed fetch list updating to speed things up.
 * [LackMan] Refactored tab into a separate class.
 * [LastFMScrobble] Properly connect to submitter error signal.
+* [Lemon] Check if cache is available and has been alloc'd.
+* [Lemon] Hide quark by default.
 * [LHTR] Support IImgSource for inserting images from e.g. Blasq.
 * [LHTR] Added HTML highlighter for the HTML view.
 * [LHTR] Don't sync HTML to View if there are parse errors.
@@ -87,6 +117,9 @@ the rest.
 * [LMP] Support dynamic pipeline manipulation.
 * [LMP] Added Delete shortcut for playlists mgr widget.
 * [LMP] Own recursive dir watcher to avoid starving file descriptors on Mac.
+* [LMP] Bigger icons and no titles in navbar.
+* [LMP] Calculate selected tracks duration.
+* [LMP] Added full play history/statistics table.
 * [LMP] Avoid leaking tags messages.
 * [LMP] Better error handling.
 * [LMP] Better error messages when mask expanding fails.
@@ -126,6 +159,7 @@ the rest.
 * [LMP Graffiti] Better CUE image search.
 * [LMP Graffiti] Properly handle Unicode in CUEs.
 * [LMP Graffiti] Set / as root path for watcher.
+* [LMP Graffiti] Handle DISCID.
 * [LMP MTPSync] Avoid timer-based cache eviction.
 * [LMP MTPSync] Don't warn about some common formats.
 * [Monocle] Support documents with annotations.
@@ -133,6 +167,10 @@ the rest.
 * [Monocle] Added bigger timeout on presenter showing.
 * [Monocle PDF] Support annotations.
 * [Monocle PDF] Threaded rendering on Poppler ≥0.24.
+* [Monocle PDF] Properly find poppler-cpp component.
+* [MZ] Artist browsing w/ releases instead of lookups, avoids a request per album.
+* [MZ] If several artists match select longest by timespans.
+* [MZ] Added FindChromaprint.cmake.
 * [MZ] Bigger request queue.
 * [MZ] Remove '!' from artist names.
 * [NewLife] Support Opera import.
@@ -145,8 +183,10 @@ the rest.
 * [Popishu] Added Recently Opened Files menu.
 * [Popishu] Got rid of window menus at all.
 * [Poshuku] Pass Referer and Operation in unsupported content.
+* [Poshuku FA] Immediate storage sync.
 * [Rosenthal] Support multiple dictionaries.
 * [Rosenthal] Moved spellchecker logic from Azoth Rosenthal.
+* [SB2] Support quarks hidden by default.
 * [SB2] Detect just installed quarks without restarting LC.
 * [SB2] Workaround for Ubuntu Qt crappiness.
 * [SB2] Check for unhovered tab class before deleting the tabs list.
@@ -163,6 +203,7 @@ the rest.
 * [Util] Avoid leaking futures in ItemFinder.
 * [Util] Fixed parsing /etc/os-release.
 * [Util] VkAuthManager now supports silent mode.
+* [Util] Support infinite tokens in VkAuthManager.
 * [Vrooby] Fixed mounting from other plugins in UDisks2.
 * [Tools] Add gio and gconf schemas to the bundle.
 * [Tools] Fix various paths in gstreamer plugins.
