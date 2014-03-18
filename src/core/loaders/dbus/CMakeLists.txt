@@ -2,6 +2,7 @@ set (SRCS
 	pluginwrapper.cpp
 	server.cpp
 	marshalling.cpp
+	infoserverwrapper.cpp
 	../ipluginloader.cpp
 	../sopluginloader.cpp
 	)

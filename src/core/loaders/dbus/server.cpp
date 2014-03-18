@@ -42,6 +42,7 @@
 #include <QtDebug>
 #include "../sopluginloader.h"
 #include "marshalling.h"
+#include "infoserverwrapper.h"
 
 namespace LeechCraft
 {
@@ -110,12 +111,22 @@ namespace DBus
 
 	bool Server::Load (const QString& path)
 	{
+		qDebug () << Q_FUNC_INFO << path;
 		Loader_.reset (new Loaders::SOPluginLoader (path));
 		if (!Loader_->Load ())
 			return false;
 
+		qDebug () << "done";
 		QDBusConnection::sessionBus ().registerObject ("/org/LeechCraft/Plugin",
 				Loader_->Instance (), QDBusConnection::ExportAllContents);
+
+		if (auto ii = qobject_cast<IInfo*> (Loader_->Instance ()))
+		{
+			auto w = new InfoServerWrapper { ii };
+			QDBusConnection::sessionBus ().registerObject ("/org/LeechCraft/Info",
+					w, QDBusConnection::ExportAllContents);
+		}
+
 		return true;
 	}
 
