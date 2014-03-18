@@ -29,6 +29,7 @@
 
 #include "dbuspluginloader.h"
 #include <QProcess>
+#include <QDir>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QLocalServer>
@@ -85,11 +86,14 @@ namespace Loaders
 
 		QDBusReply<bool> reply = CtrlIface_->call ("Load", Filename_);
 		IsLoaded_ = reply.value ();
+		if (!IsLoaded_)
+			return false;
 
-		if (IsLoaded_)
-			Wrapper_.reset (new DBusWrapper (serviceName));
+		Wrapper_.reset (new DBusWrapper (serviceName));
 
-		return IsLoaded_;
+		CtrlIface_->call ("SetLcIconsPaths", QDir::searchPaths ("lcicons"));
+
+		return true;
 	}
 
 	bool DBusPluginLoader::Unload ()
