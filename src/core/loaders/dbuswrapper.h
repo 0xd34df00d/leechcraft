@@ -46,6 +46,8 @@ namespace Loaders
 
 		const QString Service_;
 		std::shared_ptr<QDBusInterface> IFace_;
+
+		std::shared_ptr<QDBusInterface> Info_;
 	public:
 		explicit DBusWrapper (const QString& service);
 

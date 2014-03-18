@@ -36,43 +36,45 @@ namespace LeechCraft
 namespace Loaders
 {
 	DBusWrapper::DBusWrapper (const QString& service)
-	: Service_ (service)
-	, IFace_ (new QDBusInterface (service, "/org/LeechCraft/Plugin"))
+	: Service_ { service }
+	, IFace_ { new QDBusInterface { service, "/org/LeechCraft/Plugin" } }
+	, Info_ { new QDBusInterface { service, "/org/LeechCraft/Info" } }
 	{
 	}
 
 	void DBusWrapper::Init (ICoreProxy_ptr proxy)
 	{
+		Info_->call ("Init");
 	}
 
 	void DBusWrapper::SecondInit ()
 	{
-		IFace_->call ("SecondInit");
+		Info_->call ("SecondInit");
 	}
 
 	void DBusWrapper::Release ()
 	{
-		IFace_->call ("Release");
+		Info_->call ("Release");
 	}
 
 	QByteArray DBusWrapper::GetUniqueID () const
 	{
-		return QDBusReply<QByteArray> (IFace_->call ("GetUniqueID")).value ();
+		return QDBusReply<QByteArray> (Info_->call ("GetUniqueID")).value ();
 	}
 
 	QString DBusWrapper::GetName () const
 	{
-		return QDBusReply<QString> (IFace_->call ("GetName")).value ();
+		return QDBusReply<QString> (Info_->call ("GetName")).value ();
 	}
 
 	QString DBusWrapper::GetInfo () const
 	{
-		return QDBusReply<QString> (IFace_->call ("GetInfo")).value ();
+		return QDBusReply<QString> (Info_->call ("GetInfo")).value ();
 	}
 
 	QIcon DBusWrapper::GetIcon () const
 	{
-		return QDBusReply<QIcon> (IFace_->call ("GetIcon")).value ();
+		return QDBusReply<QIcon> (Info_->call ("GetIcon")).value ();
 	}
 }
 }
