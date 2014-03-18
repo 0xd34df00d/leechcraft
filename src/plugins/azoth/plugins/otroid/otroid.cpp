@@ -657,12 +657,13 @@ namespace OTRoid
 
 		if (ignore || newMsg)
 		{
+			msg->SetOTRMessage (true);
+
 			if (!Entry2Action_.contains (entryObj))
 				CreateActions (entryObj);
 			if (!tlv)
 				Entry2Action_ [entryObj]->setChecked (true);
 		}
-
 	}
 
 	void Plugin::hookMessageCreated (IHookProxy_ptr proxy, QObject*, QObject *msgObj)
@@ -719,6 +720,7 @@ namespace OTRoid
 		{
 			Msg2OrigText_ [msgObj] = msg->GetBody ();
 			msg->SetBody (QString::fromUtf8 (newMsg));
+			msg->SetOTRMessage (true);
 		}
 
 		otrl_message_free (newMsg);
