@@ -15,6 +15,11 @@ Rectangle {
 
     property variant hoverTime: null
 
+    Image {
+        anchors.fill: parent
+        source: "image://ThemeIcons/edit-paste"
+    }
+
     Timer {
         id: startTimer
 
