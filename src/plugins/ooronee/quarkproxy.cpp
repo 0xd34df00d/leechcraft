@@ -114,12 +114,18 @@ namespace Ooronee
 		Util::StdDataFilterMenuCreator creator { data, Proxy_->GetEntityManager (), &menu };
 		menu.exec (QCursor::pos ());
 
+		if (menu.actions ().isEmpty ())
+			return;
+
 		SaveUsed (creator.GetChosenPlugin (), creator.GetChosenVariant (), typeId);
 	}
 
 	void QuarkProxy::HandleVariantsDialog (Entity entity,
 			const QStringList& strings, const QList<VarInfo>& varInfos, const QByteArray& typeId)
 	{
+		if (varInfos.isEmpty ())
+			return;
+
 		bool ok = false;
 		const auto& selected = QInputDialog::getItem (nullptr,
 				tr ("Handle text"),
