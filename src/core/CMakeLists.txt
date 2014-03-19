@@ -107,6 +107,7 @@ if (UNIX AND NOT APPLE)
 		loaders/dbuspluginloader.cpp
 		loaders/dbuswrapper.cpp
 		loaders/dbus/marshalling.cpp
+		loaders/dbus/coreproxyserverwrapper.cpp
 	)
 endif ()
 
