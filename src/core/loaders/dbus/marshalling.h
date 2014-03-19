@@ -59,6 +59,14 @@ namespace DBus
 		Q_OBJECT
 
 		quint64 Counter_;
+	public:
+		struct ObjectDataInfo
+		{
+			QString Service_;
+			QDBusObjectPath Path_;
+		};
+	private:
+		QHash<QObject*, ObjectDataInfo> Registered_;
 
 		ObjectManager ();
 
@@ -66,12 +74,6 @@ namespace DBus
 		ObjectManager (ObjectManager&&) = delete;
 	public:
 		static ObjectManager& Instance ();
-
-		struct ObjectDataInfo
-		{
-			QString Service_;
-			QDBusObjectPath Path_;
-		};
 
 		template<typename T>
 		ObjectDataInfo RegisterObject (std::shared_ptr<T>);
@@ -86,6 +88,8 @@ namespace DBus
 		void Wrap (T&, const ObjectDataInfo&);
 
 		void Wrap (QObject*&, const ObjectDataInfo&);
+	private slots:
+		void handleObjectDestroyed (QObject*);
 	};
 }
 }
