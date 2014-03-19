@@ -130,13 +130,7 @@ namespace DBus
 			return {};
 		}
 
-		const auto info = RegisterObject (dynamic_cast<QObject*> (t));
-		return info;
-	}
 
-	auto ObjectManager::RegisterObject (QObject *obj) -> ObjectDataInfo
-	{
-		return {};
 	}
 
 	template<typename T>

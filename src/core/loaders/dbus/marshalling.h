@@ -81,8 +81,6 @@ namespace DBus
 		template<typename T>
 		ObjectDataInfo RegisterObject (T);
 
-		ObjectDataInfo RegisterObject (QObject*);
-
 		template<typename T>
 		void Wrap (std::shared_ptr<T>&, const ObjectDataInfo&);
 
