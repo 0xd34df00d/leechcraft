@@ -50,7 +50,7 @@ namespace Loaders
 		DBus::RegisterTypes ();
 
 		auto sb = QDBusConnection::sessionBus ();
-		const QString serviceName ("org.LeechCraft.MainInstance");
+		const QString serviceName { "org.LeechCraft.MainInstance" };
 
 		if (!sb.interface ()->isServiceRegistered (serviceName))
 			qDebug () << "registering primary service..." << sb.registerService (serviceName);
