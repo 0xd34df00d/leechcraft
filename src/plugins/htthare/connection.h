@@ -65,7 +65,7 @@ namespace HttHare
 
 		void Start ();
 	private:
-		void HandleHeader (const boost::system::error_code&, ulong);
+		void HandleHeader (const boost::system::error_code&, unsigned long);
 	};
 
 	typedef std::shared_ptr<Connection> Connection_ptr;

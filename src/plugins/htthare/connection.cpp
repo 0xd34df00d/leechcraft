@@ -81,7 +81,7 @@ namespace HttHare
 					{ conn->HandleHeader (ec, transferred); }));
 	}
 
-	void Connection::HandleHeader (const boost::system::error_code&, ulong transferred)
+	void Connection::HandleHeader (const boost::system::error_code&, unsigned long transferred)
 	{
 		QByteArray data;
 		data.resize (transferred);
