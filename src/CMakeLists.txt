@@ -185,6 +185,7 @@ option (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 # New
 option (ENABLE_BLASQ "Build Blasq, client for cloud image storages like Picasa or Flickr" ${WITH_PLUGINS})
 option (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" ${WITH_PLUGINS})
+option (ENABLE_CERTMGR "Build CertMgr for managing SSL certificates" ${WITH_PLUGINS})
 option (ENABLE_CPULOAD "Build CpuLoad for, well, monitoring the CPU load" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_DEVMON "Build Devmon, the devices monitor plugin" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 option (ENABLE_DLNIWE "Build DLNiwe, the DLNA server plugin" OFF)
@@ -526,6 +527,10 @@ endif ()
 
 if (ENABLE_CPULOAD)
 	add_subdirectory (plugins/cpuload)
+endif ()
+
+if (ENABLE_CERTMGR)
+	add_subdirectory (plugins/certmgr)
 endif ()
 
 if (ENABLE_DEVMON)
