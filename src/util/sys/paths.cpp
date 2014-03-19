@@ -47,20 +47,15 @@ namespace Util
 		switch (path)
 		{
 		case SysPath::QML:
-#ifdef Q_OS_WIN32
-			candidates << QApplication::applicationDirPath () + "/share/qml/" + suffix;
-#elif defined (Q_OS_MAC)
-			candidates << QApplication::applicationDirPath () + "/../Resources/share/qml/" + suffix;
-#else
-			candidates << "/usr/local/share/leechcraft/qml/" + suffix
-					<< "/usr/share/leechcraft/qml/" + suffix;
-#endif
-			return candidates;
+			return GetPathCandidates (SysPath::Share, "qml/" + suffix);
 		case SysPath::Share:
 #ifdef Q_OS_WIN32
 			candidates << QApplication::applicationDirPath () + "/share/" + suffix;
 #elif defined (Q_OS_MAC)
-			candidates << QApplication::applicationDirPath () + "/../Resources/share/" + suffix;
+			if (QApplication::arguments ().contains ("-nobundle"))
+				candidates << "/usr/local/share/leechcraft/" + suffix;
+			else
+				candidates << QApplication::applicationDirPath () + "/../Resources/share/" + suffix;
 #else
 			candidates << "/usr/local/share/leechcraft/" + suffix
 					<< "/usr/share/leechcraft/" + suffix;

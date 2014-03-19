@@ -55,13 +55,16 @@ IconThemeEngine::IconThemeEngine ()
 	timer->start (60000);
 
 #ifdef Q_OS_WIN32
-	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/icons/"));
+	QIcon::setThemeSearchPaths ({ qApp->applicationDirPath () + "/icons/" });
 #elif defined (Q_OS_MAC)
-	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/../Resources/icons/"));
+	if (QApplication::arguments ().contains ("-nobundle"))
+		QIcon::setThemeSearchPaths ({ "/usr/local/kde4/share/icons/" });
+	else
+		QIcon::setThemeSearchPaths ({ qApp->applicationDirPath () + "/../Resources/icons/" });
 #endif
 
 	const QDir& dir = Util::CreateIfNotExists ("/icons/");
-	QIcon::setThemeSearchPaths (QStringList (dir.absolutePath ()) + QIcon::themeSearchPaths ());
+	QIcon::setThemeSearchPaths (QStringList { dir.absolutePath () } + QIcon::themeSearchPaths ());
 
 	FindIconSets ();
 }

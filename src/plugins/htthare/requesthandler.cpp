@@ -28,7 +28,15 @@
  **********************************************************************/
 
 #include "requesthandler.h"
+
+#ifdef Q_OS_LINUX
 #include <sys/sendfile.h>
+#elif defined (Q_OS_MAC)
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/uio.h>
+#endif
+
 #include <errno.h>
 #include <QList>
 #include <QString>
@@ -291,8 +299,21 @@ namespace HttHare
 				for (qint64 toTransfer = CurrentRange_.second - CurrentRange_.first + 1; toTransfer > 0; )
 				{
 					off_t offset = CurrentRange_.first;
+#ifdef Q_OS_LINUX
 					const auto rc = sendfile (Sock_.native_handle (),
 							File_->handle (), &offset, toTransfer);
+#elif defined (Q_OS_MAC)
+					// Some glue code to make it work like in Linux,
+					// where the amount of transferred data is returned
+					// from sendfile().
+					auto transferred = toTransfer;
+					auto rc = sendfile (File_->handle (),
+							Sock_.native_handle (),
+							offset, &transferred,
+							nullptr, 0);
+					if (!rc)
+						rc = transferred;
+#endif
 					ec = boost::system::error_code (rc < 0 ? errno : 0,
 							boost::asio::error::get_system_category ());
 

@@ -68,7 +68,9 @@ if (GPTOOLS_CPU_AND_MEM)
 	set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -ltcmalloc_and_profiler")
 endif ()
 
-if (UNIX AND NOT APPLE)
+option (APPLE_UNBUNDLE "Don't adjust for bundle structure on Mac OS X" OFF)
+
+if (UNIX AND (NOT APPLE OR APPLE_UNBUNDLE))
 	if (NOT LIBDIR)
 		set (LIBDIR "lib${LIB_SUFFIX}")
 	endif ()

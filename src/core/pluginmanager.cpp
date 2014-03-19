@@ -674,7 +674,10 @@ namespace LeechCraft
 #ifdef Q_OS_WIN32
 		ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
 #elif defined (Q_OS_MAC)
-		ScanDir (QApplication::applicationDirPath () + "/../PlugIns");
+		if (QApplication::arguments ().contains ("-nobundle"))
+			ScanDir ("/usr/local/lib/leechcraft/plugins");
+		else
+			ScanDir (QApplication::applicationDirPath () + "/../PlugIns");
 #else
 		QString libdir (PLUGINS_LIBDIR);
 	#if defined (INSTALL_PREFIX)
