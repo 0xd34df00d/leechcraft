@@ -130,7 +130,7 @@ namespace DBus
 		return true;
 	}
 
-	bool Server::Unload (const QString& path)
+	bool Server::Unload (const QString&)
 	{
 		return Loader_->Unload ();
 	}
