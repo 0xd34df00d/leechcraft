@@ -10,6 +10,7 @@ include_directories (
 	)
 set (SRCS
 	certmgr.cpp
+	xmlsettingsmanager.cpp
 	)
 #CreateTrs("certmgr" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("certmgr" "en;ru_RU" "${SRCS}" "${FORMS}" "certmgrsettings.xml")

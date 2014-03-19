@@ -27,56 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "certmgr.h"
-#include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "xmlsettingsmanager.h"
+#pragma once
+
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace CertMgr
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Proxy_ = proxy;
+		Q_OBJECT
 
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "certmgrsettings.xml");
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.CertMgr";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "CertMgr";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("SSL certificates manager.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_certmgr, LeechCraft::CertMgr::Plugin);
