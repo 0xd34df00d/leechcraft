@@ -116,6 +116,9 @@ namespace DBus
 	template<typename T>
 	auto ObjectManager::RegisterObject (std::shared_ptr<T> obj) -> ObjectDataInfo
 	{
+		if (!obj)
+			return {};
+
 		return RegisterObject (obj.get ());
 	}
 
