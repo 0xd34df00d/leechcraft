@@ -27,69 +27,56 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <QMetaType>
-#include <QDBusObjectPath>
-
-class QDBusArgument;
-
-class ICoreProxy;
-
-typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
-
-Q_DECLARE_METATYPE (QIcon)
-
-QDBusArgument& operator<< (QDBusArgument&, const ICoreProxy_ptr&);
-const QDBusArgument& operator>> (const QDBusArgument&, ICoreProxy_ptr&);
-
-QDBusArgument& operator<< (QDBusArgument&, const QIcon&);
-const QDBusArgument& operator>> (const QDBusArgument&, QIcon&);
+#include "certmgr.h"
+#include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-namespace DBus
+namespace CertMgr
 {
-	void RegisterTypes ();
-
-	class ObjectManager : public QObject
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Q_OBJECT
+		Proxy_ = proxy;
 
-		quint64 Counter_;
-	public:
-		struct ObjectDataInfo
-		{
-			QString Service_;
-			QDBusObjectPath Path_;
-		};
-	private:
-		QHash<QObject*, ObjectDataInfo> Registered_;
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "certmgrsettings.xml");
+	}
 
-		ObjectManager ();
+	void Plugin::SecondInit ()
+	{
+	}
 
-		ObjectManager (const ObjectManager&) = delete;
-		ObjectManager (ObjectManager&&) = delete;
-	public:
-		static ObjectManager& Instance ();
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.CertMgr";
+	}
 
-		template<typename T>
-		ObjectDataInfo RegisterObject (std::shared_ptr<T>);
+	void Plugin::Release ()
+	{
+	}
 
-		template<typename T>
-		ObjectDataInfo RegisterObject (T);
+	QString Plugin::GetName () const
+	{
+		return "CertMgr";
+	}
 
-		template<typename T>
-		void Wrap (std::shared_ptr<T>&, const ObjectDataInfo&);
+	QString Plugin::GetInfo () const
+	{
+		return tr ("SSL certificates manager.");
+	}
 
-		template<typename T>
-		void Wrap (T&, const ObjectDataInfo&);
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
 
-		void Wrap (QObject*&, const ObjectDataInfo&);
-	private slots:
-		void handleObjectDestroyed (QObject*);
-	};
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
+	}
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_certmgr, LeechCraft::CertMgr::Plugin);

@@ -32,6 +32,7 @@
 #include <QDir>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QDBusConnectionInterface>
 #include <QLocalServer>
 #include <interfaces/iinfo.h>
 #include "dbuswrapper.h"
@@ -47,6 +48,12 @@ namespace Loaders
 	, Proc_ (new QProcess)
 	{
 		DBus::RegisterTypes ();
+
+		auto sb = QDBusConnection::sessionBus ();
+		const QString serviceName { "org.LeechCraft.MainInstance" };
+
+		if (!sb.interface ()->isServiceRegistered (serviceName))
+			qDebug () << "registering primary service..." << sb.registerService (serviceName);
 	}
 
 	quint64 DBusPluginLoader::GetAPILevel ()

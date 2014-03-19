@@ -30,6 +30,7 @@
 #include "dbuswrapper.h"
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -44,7 +45,9 @@ namespace Loaders
 
 	void DBusWrapper::Init (ICoreProxy_ptr proxy)
 	{
-		Info_->call ("Init");
+		qDebug () << Q_FUNC_INFO;
+		Info_->call ("Init", QVariant::fromValue (proxy));
+		qDebug () << "done";
 	}
 
 	void DBusWrapper::SecondInit ()

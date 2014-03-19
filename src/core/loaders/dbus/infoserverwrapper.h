@@ -37,7 +37,7 @@ namespace LeechCraft
 namespace DBus
 {
 	class InfoServerWrapper : public QObject
-					  , public IInfo
+							, public IInfo
 	{
 		Q_OBJECT
 		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.IInfo")

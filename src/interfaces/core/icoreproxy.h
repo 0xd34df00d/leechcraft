@@ -27,9 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_CORE_ICOREPROXY_H
-#define INTERFACES_CORE_ICOREPROXY_H
+#pragma once
+
 #include <memory>
+#include <QMetaType>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QTabBar>
 
@@ -229,6 +230,5 @@ public:
 
 typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
 
+Q_DECLARE_METATYPE (ICoreProxy_ptr)
 Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
-
-#endif

@@ -29,67 +29,33 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <QMetaType>
-#include <QDBusObjectPath>
-
-class QDBusArgument;
-
-class ICoreProxy;
-
-typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
-
-Q_DECLARE_METATYPE (QIcon)
-
-QDBusArgument& operator<< (QDBusArgument&, const ICoreProxy_ptr&);
-const QDBusArgument& operator>> (const QDBusArgument&, ICoreProxy_ptr&);
-
-QDBusArgument& operator<< (QDBusArgument&, const QIcon&);
-const QDBusArgument& operator>> (const QDBusArgument&, QIcon&);
+#include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
-namespace DBus
+namespace CertMgr
 {
-	void RegisterTypes ();
-
-	class ObjectManager : public QObject
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-
-		quint64 Counter_;
+		Q_INTERFACES (IInfo IHaveSettings)
+	
+		ICoreProxy_ptr Proxy_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
-		struct ObjectDataInfo
-		{
-			QString Service_;
-			QDBusObjectPath Path_;
-		};
-	private:
-		QHash<QObject*, ObjectDataInfo> Registered_;
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		ObjectManager ();
-
-		ObjectManager (const ObjectManager&) = delete;
-		ObjectManager (ObjectManager&&) = delete;
-	public:
-		static ObjectManager& Instance ();
-
-		template<typename T>
-		ObjectDataInfo RegisterObject (std::shared_ptr<T>);
-
-		template<typename T>
-		ObjectDataInfo RegisterObject (T);
-
-		template<typename T>
-		void Wrap (std::shared_ptr<T>&, const ObjectDataInfo&);
-
-		template<typename T>
-		void Wrap (T&, const ObjectDataInfo&);
-
-		void Wrap (QObject*&, const ObjectDataInfo&);
-	private slots:
-		void handleObjectDestroyed (QObject*);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	};
 }
 }
