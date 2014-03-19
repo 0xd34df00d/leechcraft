@@ -88,6 +88,8 @@ namespace Util
 				"/../Resources/settings/" + basename))
 			filename = QApplication::applicationDirPath () +
 					"/../Resources/settings/" + basename;
+		else if (QFile::exists (QString ("/usr/local/share/leechcraft/settings/") + basename))
+			filename = QString ("/usr/local/share/leechcraft/settings/") + basename;
 	#elif defined (INSTALL_PREFIX)
 		else if (QFile::exists (QString (INSTALL_PREFIX "/share/leechcraft/settings/") + basename))
 			filename = QString (INSTALL_PREFIX "/share/leechcraft/settings/") + basename;

@@ -70,13 +70,16 @@ namespace LMP
 						QCoreApplication::applicationDirPath ().toUtf8 () + relpath);
 		};
 
-		updateEnv ("GST_PLUGIN_SYSTEM_PATH", "/../PlugIns/gstreamer");
-		updateEnv ("GST_PLUGIN_SCANNER", "gst-plugin-scanner");
-		updateEnv ("GTK_PATH", "/../Frameworks");
-		updateEnv ("GIO_EXTRA_MODULES", "/../PlugIns/gstreamer");
-		updateEnv ("GSETTINGS_SCHEMA_DIR", "/../Frameworks/schemas");
+		if (!QApplication::arguments ().contains ("-nobundle"))
+		{
+			updateEnv ("GST_PLUGIN_SYSTEM_PATH", "/../PlugIns/gstreamer");
+			updateEnv ("GST_PLUGIN_SCANNER", "gst-plugin-scanner");
+			updateEnv ("GTK_PATH", "/../Frameworks");
+			updateEnv ("GIO_EXTRA_MODULES", "/../PlugIns/gstreamer");
+			updateEnv ("GSETTINGS_SCHEMA_DIR", "/../Frameworks/schemas");
 
-		qputenv ("GST_REGISTRY_FORK", "no");
+			qputenv ("GST_REGISTRY_FORK", "no");
+		}
 #endif
 
 		gint argc = 1;

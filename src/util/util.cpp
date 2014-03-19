@@ -160,7 +160,11 @@ QTranslator* LeechCraft::Util::LoadTranslator (const QString& baseName,
 			transl->load (filename,
 					QCoreApplication::applicationDirPath () + "/translations"))
 #elif defined (Q_OS_MAC)
+	const auto tryLocal = QApplication::arguments ().contains ("-nobundle");
 	if (transl->load (filename, ":/") ||
+			(tryLocal &&
+				transl->load (filename,
+						QString ("/usr/local/share/%1/translations").arg (appName))) ||
 			transl->load (filename,
 					QCoreApplication::applicationDirPath () + "/../Resources/translations"))
 #elif defined (INSTALL_PREFIX)
