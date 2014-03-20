@@ -11,12 +11,20 @@ include_directories (
 set (SRCS
 	certmgr.cpp
 	xmlsettingsmanager.cpp
+	acceptedrejecteddialog.cpp
 	)
+set (FORMS
+	acceptedrejecteddialog.ui
+	)
+
+QT4_WRAP_UI (UIS_H ${FORMS})
+
 #CreateTrs("certmgr" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("certmgr" "en;ru_RU" "${SRCS}" "${FORMS}" "certmgrsettings.xml")
 
 add_library (leechcraft_certmgr SHARED
 	${COMPILED_TRANSLATIONS}
+	${UIS_H}
 	${SRCS}
 	)
 target_link_libraries (leechcraft_certmgr
