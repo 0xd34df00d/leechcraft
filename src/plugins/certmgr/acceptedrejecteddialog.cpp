@@ -30,6 +30,7 @@
 #include "acceptedrejecteddialog.h"
 #include <algorithm>
 #include <QStandardItemModel>
+#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -74,6 +75,33 @@ namespace CertMgr
 				item->setEditable (false);
 
 			Model_->appendRow (row);
+		}
+	}
+
+	void AcceptedRejectedDialog::on_RemoveButton__released ()
+	{
+		auto selected = Ui_.View_->selectionModel ()->selectedRows ();
+		if (selected.isEmpty ())
+			return;
+
+		if (QMessageBox::question (this,
+					tr ("Remove exceptions"),
+					tr ("Are you sure you want to remove %n address(es)?",
+						0, selected.size ()),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			return;
+
+		std::sort (selected.begin (), selected.end (),
+				[] (const QModelIndex& i1, const QModelIndex& i2)
+					{ return i1.row () > i2.row (); });
+
+		for (const auto& item : selected)
+		{
+			const auto& title = item.sibling (item.row (), 0).data ().toString ();
+
+			CoreSettings_.remove (title);
+
+			Model_->removeRow (item.row ());
 		}
 	}
 }

@@ -55,6 +55,8 @@ namespace CertMgr
 		~AcceptedRejectedDialog ();
 	private:
 		void PopulateModel ();
+	private slots:
+		void on_RemoveButton__released ();
 	};
 }
 }
