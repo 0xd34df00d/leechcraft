@@ -29,22 +29,4 @@
 
 #pragma once
 
-#include <QtGlobal>
-
-#ifdef __clang__
-
-#pragma clang diagnostic push
-
-#ifndef Q_OS_MAC
-#pragma clang diagnostic ignored "-Wdeprecated-register"
-#endif
-
 #include <gst/gst.h>
-
-#pragma clang diagnostic pop
-
-#else
-
-#include <gst/gst.h>
-
-#endif
