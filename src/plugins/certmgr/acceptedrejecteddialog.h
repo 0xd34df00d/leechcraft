@@ -57,6 +57,7 @@ namespace CertMgr
 		void PopulateModel ();
 	private slots:
 		void on_RemoveButton__released ();
+		void handleSelectionChanged ();
 	};
 }
 }

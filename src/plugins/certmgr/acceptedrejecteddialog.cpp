@@ -49,6 +49,12 @@ namespace CertMgr
 
 		Ui_.setupUi (this);
 		Ui_.View_->setModel (Model_);
+
+		connect (Ui_.View_->selectionModel (),
+				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
+				this,
+				SLOT (handleSelectionChanged ()));
+		handleSelectionChanged ();
 	}
 
 	AcceptedRejectedDialog::~AcceptedRejectedDialog ()
@@ -103,6 +109,12 @@ namespace CertMgr
 
 			Model_->removeRow (item.row ());
 		}
+	}
+
+	void AcceptedRejectedDialog::handleSelectionChanged ()
+	{
+		const auto& selected = Ui_.View_->selectionModel ()->selectedRows ();
+		Ui_.RemoveButton_->setEnabled (!selected.isEmpty ());
 	}
 }
 }
