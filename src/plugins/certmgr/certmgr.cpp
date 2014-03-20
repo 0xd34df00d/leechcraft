@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
+#include "acceptedrejecteddialog.h"
 
 namespace LeechCraft
 {
@@ -42,6 +43,11 @@ namespace CertMgr
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "certmgrsettings.xml");
+
+		connect (XSD_.get (),
+				SIGNAL (pushButtonClicked (QString)),
+				this,
+				SLOT (handleSettingsButton (QString)));
 	}
 
 	void Plugin::SecondInit ()
@@ -75,6 +81,19 @@ namespace CertMgr
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	void Plugin::handleSettingsButton (const QString& button)
+	{
+		if (button == "AcceptedRejected")
+		{
+			auto dia = new AcceptedRejectedDialog { Proxy_ };
+			dia->show ();
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown button"
+					<< button;
 	}
 }
 }

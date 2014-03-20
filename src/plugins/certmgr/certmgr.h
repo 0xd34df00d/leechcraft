@@ -43,7 +43,7 @@ namespace CertMgr
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
-	
+
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
@@ -56,6 +56,8 @@ namespace CertMgr
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private slots:
+		void handleSettingsButton (const QString&);
 	};
 }
 }
