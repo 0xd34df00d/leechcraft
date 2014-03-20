@@ -50,6 +50,10 @@ namespace CertMgr
 
 		void AddCert (const QSslCertificate&);
 		void RemoveCert (const QSslCertificate&);
+
+		const QList<QSslCertificate>& GetLocalCerts () const;
+		const QList<QSslCertificate>& GetDefaultCerts () const;
+		bool IsBlacklisted (const QSslCertificate&) const;
 	private:
 		void RegenAllowed ();
 		void ResetSocketDefault ();

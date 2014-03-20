@@ -78,6 +78,21 @@ namespace CertMgr
 			ResetSocketDefault ();
 	}
 
+	const QList<QSslCertificate>& Manager::GetLocalCerts () const
+	{
+		return Locals_;
+	}
+
+	const QList<QSslCertificate>& Manager::GetDefaultCerts () const
+	{
+		return Defaults_;
+	}
+
+	bool Manager::IsBlacklisted (const QSslCertificate& cert) const
+	{
+		return Blacklist_.contains (cert);
+	}
+
 	void Manager::RegenAllowed ()
 	{
 		AllowedDefaults_.clear ();
