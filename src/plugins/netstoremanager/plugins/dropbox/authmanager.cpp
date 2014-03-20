@@ -34,10 +34,10 @@
 #include <QNetworkReply>
 #include <QMainWindow>
 #include <qjson/parser.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include "account.h"
 #include "core.h"
-#include <interfaces/core/irootwindowsmanager.h>
 
 namespace LeechCraft
 {
@@ -62,7 +62,7 @@ namespace DBox
 		Entity e = Util::MakeEntity (url,
 				QString (),
 				FromUserInitiated | OnlyHandle);
-		emit gotEntity (e);
+		Core::Instance ().SendEntity (e);
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 		InputDialog_ = new QInputDialog (rootWM->GetPreferredWindow (), Qt::Widget);
@@ -107,8 +107,7 @@ namespace DBox
 	{
 		InputDialog_->deleteLater ();
 		Account *acc = Dialog2Account_.take (InputDialog_);
-		std::shared_ptr<void> guard (static_cast<void*> (0),
-				[this] (void*) { InputDialog_ = 0; });
+		std::shared_ptr<void> guard (nullptr, [this] (void*) { InputDialog_ = 0; });
 
 		if (code == QDialog::Rejected)
 			return;

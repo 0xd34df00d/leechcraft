@@ -91,7 +91,7 @@ namespace DBox
 		const QString DirectoryId_;
 
 		Account *Account_;
-		QQueue<std::function<void (void)>> ApiCallQueue_;
+		QQueue<std::function<void ()>> ApiCallQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 		QHash<QNetworkReply*, QString> Reply2ParentId_;

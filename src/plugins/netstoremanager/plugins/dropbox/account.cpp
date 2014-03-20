@@ -152,7 +152,7 @@ namespace DBox
 		if (id.isNull ())
 			return;
 
-		bool directLinkAvailable = id.startsWith ("/Public");
+		const bool directLinkAvailable = id.startsWith ("/Public");
 		if (directLinkAvailable)
 		{
 			//Remove /Public from second params
@@ -176,9 +176,9 @@ namespace DBox
 		mbox.addButton (&dropboxShareLink, QMessageBox::YesRole);
 		mbox.addButton (&dropboxPreviewLink, QMessageBox::AcceptRole);
 
-		if (mbox.exec () == QMessageBox::Cancel)
-			return;
-		else if (mbox.clickedButton () == &dropboxShareLink)
+		mbox.exec ();
+
+		if (mbox.clickedButton () == &dropboxShareLink)
 			DriveManager_->ShareEntry (id, ShareType::Share);
 		else if (mbox.clickedButton () == &dropboxPreviewLink)
 			DriveManager_->ShareEntry (id, ShareType::Preview);
@@ -240,7 +240,7 @@ namespace DBox
 	{
 	}
 
-	QByteArray Account::Serialize ()
+	QByteArray Account::Serialize () const
 	{
 		QByteArray result;
 		QDataStream str (&result, QIODevice::WriteOnly);

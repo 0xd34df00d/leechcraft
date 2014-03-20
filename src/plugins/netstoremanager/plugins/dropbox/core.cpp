@@ -28,9 +28,10 @@
  **********************************************************************/
 
 #include "core.h"
-#include <util/util.h>
 #include <QDesktopServices>
 #include <QUrl>
+#include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -60,7 +61,7 @@ namespace DBox
 
 	void Core::SendEntity (const LeechCraft::Entity& e)
 	{
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Core::DelegateEntity (const LeechCraft::Entity& e,

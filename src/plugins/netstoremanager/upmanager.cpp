@@ -113,7 +113,7 @@ namespace NetStoreManager
 
 			if (qobject_cast<ISupportFileListings*> (accObj))
 				connect (accObj,
-						 SIGNAL (gotFileUrl (QUrl, QByteArray)),
+						SIGNAL (gotFileUrl (QUrl, QByteArray)),
 						this,
 						SLOT (handleGotURL (QUrl, QByteArray)));
 		}

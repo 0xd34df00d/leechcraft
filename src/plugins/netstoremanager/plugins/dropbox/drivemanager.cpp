@@ -34,10 +34,10 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <interfaces/core/irootwindowsmanager.h>
-#include <util/util.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
+#include <interfaces/core/irootwindowsmanager.h>
+#include <util/util.h>
 #include "account.h"
 #include "chunkiodevice.h"
 #include "core.h"
@@ -129,7 +129,7 @@ namespace DBox
 				{ DownloadFile (id, filepath, tp, silent, open); };
 	}
 
-	std::shared_ptr< void > DriveManager::MakeRunnerGuard ()
+	std::shared_ptr<void> DriveManager::MakeRunnerGuard ()
 	{
 		const bool shouldRun = ApiCallQueue_.isEmpty ();
 		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*)
@@ -481,7 +481,7 @@ namespace DBox
 
 		SecondRequestIfNoItems_ = true;
 		QList<DBoxItem> resList;
-		Q_FOREACH (const auto& item, resMap ["contents"].toList ())
+		for (const auto& item : resMap ["contents"].toList ())
 		{
 			const auto& driveItem = CreateDBoxItem (item);
 
@@ -568,7 +568,7 @@ namespace DBox
 		reply->deleteLater ();
 
 		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		QJson::Parser ().parse (reply->readAll (), &ok);
 		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -589,7 +589,7 @@ namespace DBox
 		reply->deleteLater ();
 
 		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		QJson::Parser ().parse (reply->readAll (), &ok);
 		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -620,16 +620,17 @@ namespace DBox
 		const auto& map = res.toMap ();
 		const auto& id = map ["id"].toString ();
 
-		if (!map.contains ("error"))
+		if (map.contains ("error"))
 		{
-			qDebug () << Q_FUNC_INFO
-					<< "file uploaded successfully";
-			emit gotNewItem (CreateDBoxItem (res));
-			emit finished (id, Reply2FilePath_.take (reply));
+			ParseError (map);
 			return;
 		}
+		
+		qDebug () << Q_FUNC_INFO
+				<< "file uploaded successfully";
+		emit gotNewItem (CreateDBoxItem (res));
+		emit finished (id, Reply2FilePath_.take (reply));
 
-		 ParseError (map);
 	}
 
 	void DriveManager::handleChunkUploadFinished ()
@@ -688,7 +689,7 @@ namespace DBox
 			emit uploadProgress (uploaded + offset, fi.size (), path);
 	}
 
-	void DriveManager::handleUploadError (QNetworkReply::NetworkError error)
+	void DriveManager::handleUploadError (QNetworkReply::NetworkError)
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)

@@ -56,7 +56,7 @@ namespace DBox
 				LeechCraft::NetStoreManager::ISupportFileListings)
 
 
-		QObject *ParentPlugin_;
+		QObject * const ParentPlugin_;
 		QString Name_;
 		QString AccessToken_;
 		QString UserID_;
@@ -67,7 +67,7 @@ namespace DBox
 		QHash<QString, DBoxItem> Items_;
 
 	public:
-		Account (const QString& name, QObject *parentPlugin = 0);
+		Account (const QString& name, QObject *parentPlugin);
 
 		QObject* GetQObject ();
 		QObject* GetParentPlugin () const;
@@ -98,7 +98,7 @@ namespace DBox
 		void Rename (const QByteArray& id, const QString& newName);
 		void RequestChanges ();
 
-		QByteArray Serialize ();
+		QByteArray Serialize () const;
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);
 
 		bool IsTrusted () const;
