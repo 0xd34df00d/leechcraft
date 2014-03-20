@@ -41,6 +41,8 @@ namespace CertMgr
 	{
 		Proxy_ = proxy;
 
+		Manager_.reset (new Manager);
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "certmgrsettings.xml");
 
@@ -61,6 +63,7 @@ namespace CertMgr
 
 	void Plugin::Release ()
 	{
+		Manager_.reset ();
 	}
 
 	QString Plugin::GetName () const

@@ -29,9 +29,11 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
+#include "manager.h"
 
 namespace LeechCraft
 {
@@ -46,6 +48,8 @@ namespace CertMgr
 
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		std::unique_ptr<Manager> Manager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
