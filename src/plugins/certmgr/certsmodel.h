@@ -56,6 +56,8 @@ namespace CertMgr
 		void RemoveCert (const QSslCertificate&);
 
 		void ResetCerts (const QList<QSslCertificate>&);
+
+		QModelIndex FindCertificate (const QSslCertificate&) const;
 	private:
 		CertsDict_t::iterator GetListPosForCert (const QSslCertificate&);
 		CertsDict_t::const_iterator GetListPosForCert (const QSslCertificate&) const;

@@ -244,6 +244,20 @@ namespace CertMgr
 		endResetModel ();
 	}
 
+	QModelIndex CertsModel::FindCertificate (const QSslCertificate& cert) const
+	{
+		const auto listPos = GetListPosForCert (cert);
+		if (listPos == Issuer2Certs_.end ())
+			return {};
+
+		const auto certIdx = listPos->second.indexOf (cert);
+		if (certIdx == -1)
+			return {};
+
+		const auto& parent = index (std::distance (Issuer2Certs_.begin (), listPos), 0, {});
+		return index (certIdx, 0, parent);
+	}
+
 	namespace
 	{
 		QString GetIssuerName (const QSslCertificate& cert)
