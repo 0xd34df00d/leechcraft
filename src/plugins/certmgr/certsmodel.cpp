@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "certsmodel.h"
+#include <QDateTime>
+#include <QStringList>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -82,6 +84,85 @@ namespace CertMgr
 				0;
 	}
 
+	namespace
+	{
+		QString MakeTooltip (const QSslCertificate& cert)
+		{
+			QString result;
+
+			auto add = [&result, &cert] (const QString& name, const QString& val) -> void
+			{
+				if (val.isEmpty ())
+					return;
+
+				result += "<tr><td align='right'>" + name + ": </td>";
+				result += "<td>" + val + "</td></tr>";
+			};
+
+			auto addStdFields = [&add] (std::function<QString (QSslCertificate::SubjectInfo)> getter) -> void
+			{
+				add (CertsModel::tr ("Organization"),
+						getter (QSslCertificate::Organization));
+				add (CertsModel::tr ("Unit"),
+						getter (QSslCertificate::OrganizationalUnitName));
+				add (CertsModel::tr ("Common name"),
+						getter (QSslCertificate::CommonName));
+				add (CertsModel::tr ("Locality"),
+						getter (QSslCertificate::LocalityName));
+				add (CertsModel::tr ("State"),
+						getter (QSslCertificate::StateOrProvinceName));
+				add (CertsModel::tr ("Country"),
+						getter (QSslCertificate::CountryName));
+			};
+
+			result += "<strong>" + CertsModel::tr ("Issuee") + ":</strong>";
+			result += "<table style='border: none'>";
+			addStdFields ([&cert] (QSslCertificate::SubjectInfo info)
+						{ return cert.subjectInfo (info); });
+
+			add (CertsModel::tr ("Serial number"), cert.serialNumber ());
+			result += "</table><br />";
+
+			result += "<strong>" + CertsModel::tr ("Issuer") + ":</strong>";
+			result += "<table style='border: none'>";
+			addStdFields ([&cert] (QSslCertificate::SubjectInfo info)
+						{ return cert.issuerInfo (info); });
+			result += "</table><br />";
+
+			result += "<strong>" + CertsModel::tr ("Dates") + ":</strong>";
+			result += "<table style='border: none'>";
+			add (CertsModel::tr ("Valid since"),
+					QLocale {}.toString (cert.effectiveDate (), QLocale::ShortFormat));
+			add (CertsModel::tr ("Valid until"),
+					QLocale {}.toString (cert.expiryDate (), QLocale::ShortFormat));
+			result += "</table><br />";
+
+			const auto& subjs = cert.alternateSubjectNames ();
+			if (!subjs.isEmpty ())
+			{
+				result += "<strong>" + CertsModel::tr ("Alternate names") + ":</strong>";
+
+				for (auto key : subjs.keys ())
+				{
+					QString name;
+					switch (key)
+					{
+					case QSsl::DnsEntry:
+						name = CertsModel::tr ("DNS");
+						break;
+					case QSsl::EmailEntry:
+						name = CertsModel::tr ("Email");
+						break;
+					}
+
+					add (name, QStringList { subjs.values (key) }.join ("; "));
+				}
+			}
+
+			return result;
+		}
+	}
+
 	QVariant CertsModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
@@ -116,6 +197,8 @@ namespace CertMgr
 			else
 				return org;
 		}
+		case Qt::ToolTipRole:
+			return MakeTooltip (cert);
 		default:
 			return {};
 		}
