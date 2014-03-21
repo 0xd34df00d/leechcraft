@@ -40,10 +40,21 @@ namespace LeechCraft
 namespace CertMgr
 {
 	Manager::Manager ()
-	: Defaults_ { QSslSocket::systemCaCertificates () }
-	, SystemCertsModel_ { new CertsModel { this } }
+	: SystemCertsModel_ { new CertsModel { this } }
 	, LocalCertsModel_ { new CertsModel { this } }
 	{
+		const auto& systems = QSslSocket::systemCaCertificates ();
+		QSet<QByteArray> serializedCerts;
+		for (const auto& cert : systems)
+		{
+			const auto& pem = cert.toPem ();
+			if (serializedCerts.contains (pem))
+				continue;
+
+			serializedCerts << pem;
+			Defaults_ << cert;
+		}
+
 		RegenAllowed ();
 
 		ResetSocketDefault ();
