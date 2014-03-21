@@ -327,7 +327,7 @@ namespace StandardStyles
 			IsLastMsgRead_ [frame] = isRead;
 		}
 
-		elem.appendInside (QString ("<div class='%1' style='word-break: break-all;'>%2</div>")
+		elem.appendInside (QString ("<div class='%1' style='word-wrap: break-word;'>%2</div>")
 					.arg (divClass)
 					.arg (string));
 		return true;
