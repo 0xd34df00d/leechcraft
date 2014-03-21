@@ -122,6 +122,19 @@ namespace CertMgr
 
 	void CertsModel::RemoveCert (const QSslCertificate& cert)
 	{
+		const auto pos = GetListPosForCert (cert);
+		if (pos == Issuer2Certs_.end ())
+			return;
+
+		const auto certIdx = pos->second.indexOf (cert);
+		if (certIdx == -1)
+			return;
+
+		const auto& parentIndex = index (std::distance (Issuer2Certs_.begin (), pos), 0, {});
+
+		beginRemoveRows (parentIndex, certIdx, certIdx);
+		pos->second.removeAt (certIdx);
+		endRemoveRows ();
 	}
 
 	void CertsModel::ResetCerts (const QList<QSslCertificate>& certs)
