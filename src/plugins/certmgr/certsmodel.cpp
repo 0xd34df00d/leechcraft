@@ -103,7 +103,19 @@ namespace CertMgr
 		switch (role)
 		{
 		case Qt::DisplayRole:
-			return cert.subjectInfo (QSslCertificate::CommonName);
+		{
+			const auto& name = cert.subjectInfo (QSslCertificate::CommonName);
+			const auto& org = cert.subjectInfo (QSslCertificate::Organization);
+
+			if (!name.isEmpty () && !org.isEmpty ())
+				return QString ("%1 (%2)")
+						.arg (name)
+						.arg (org);
+			else if (!name.isEmpty ())
+				return name;
+			else
+				return org;
+		}
 		default:
 			return {};
 		}
