@@ -394,7 +394,7 @@ namespace OTRoid
 			if (!msg)
 				return;
 
-			msg->SetOTRMessage (true);
+			msg->ToggleOTRMessage (true);
 
 			msg->Send ();
 		}
@@ -659,7 +659,7 @@ namespace OTRoid
 
 		if (ignore || newMsg)
 		{
-			msg->SetOTRMessage (true);
+			msg->ToggleOTRMessage (true);
 
 			if (!Entry2Action_.contains (entryObj))
 				CreateActions (entryObj);
@@ -722,7 +722,7 @@ namespace OTRoid
 		{
 			Msg2OrigText_ [msgObj] = msg->GetBody ();
 			msg->SetBody (QString::fromUtf8 (newMsg));
-			msg->SetOTRMessage (true);
+			msg->ToggleOTRMessage (true);
 		}
 
 		otrl_message_free (newMsg);

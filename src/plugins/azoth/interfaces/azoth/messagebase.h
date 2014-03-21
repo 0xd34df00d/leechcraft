@@ -38,7 +38,7 @@ namespace Azoth
 	protected:
 		bool IsOTR_ = false;
 	public:
-		void SetOTRMessage (bool otr)
+		void ToggleOTRMessage (bool otr)
 		{
 			IsOTR_ = otr;
 		}
