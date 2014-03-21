@@ -33,6 +33,7 @@
 #include <QSslSocket>
 #include <QtDebug>
 #include <util/util.h>
+#include "certsmodel.h"
 
 namespace LeechCraft
 {
@@ -40,10 +41,15 @@ namespace CertMgr
 {
 	Manager::Manager ()
 	: Defaults_ { QSslSocket::systemCaCertificates () }
+	, SystemCertsModel_ { new CertsModel { this } }
+	, LocalCertsModel_ { new CertsModel { this } }
 	{
 		RegenAllowed ();
 
 		ResetSocketDefault ();
+
+		SystemCertsModel_->ResetCerts (AllowedDefaults_);
+		LocalCertsModel_->ResetCerts (Locals_);
 	}
 
 	void Manager::AddCert (const QSslCertificate& cert)
@@ -53,6 +59,8 @@ namespace CertMgr
 
 		Locals_ << cert;
 		SaveLocals ();
+
+		LocalCertsModel_->AddCert (cert);
 
 		ResetSocketDefault ();
 	}
@@ -76,6 +84,16 @@ namespace CertMgr
 
 		if (changed)
 			ResetSocketDefault ();
+	}
+
+	QAbstractItemModel* Manager::GetSystemModel () const
+	{
+		return SystemCertsModel_;
+	}
+
+	QAbstractItemModel* Manager::GetLocalModel () const
+	{
+		return LocalCertsModel_;
 	}
 
 	const QList<QSslCertificate>& Manager::GetLocalCerts () const
