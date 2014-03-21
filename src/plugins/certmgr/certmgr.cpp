@@ -91,6 +91,7 @@ namespace CertMgr
 		if (button == "AcceptedRejected")
 		{
 			auto dia = new AcceptedRejectedDialog { Proxy_ };
+			dia->setAttribute (Qt::WA_DeleteOnClose);
 			dia->show ();
 		}
 		else
