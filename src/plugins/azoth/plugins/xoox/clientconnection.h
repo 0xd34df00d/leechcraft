@@ -289,8 +289,10 @@ namespace Xoox
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handleVersionReceived (const QXmppVersionIq&);
 		void handlePresenceChanged (const QXmppPresence&);
-		void handleMessageReceived (QXmppMessage);
+
+		void handleMessageReceived (QXmppMessage, bool forwarded = false);
 		void handleCarbonsMessage (const QXmppMessage&);
+
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handlePEPAvatarUpdated (const QString&, const QImage&);
 		void handleMessageDelivered (const QString&, const QString&);
