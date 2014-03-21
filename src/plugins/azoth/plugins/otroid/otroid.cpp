@@ -591,6 +591,16 @@ namespace OTRoid
 			return;
 		}
 
+		if (msg->IsForwarded ())
+		{
+			if (msg->GetBody ().startsWith ("?OTR"))
+			{
+				proxy->CancelDefault ();
+				msgObj->setProperty ("Azoth/HiddenMessage", true);
+			}
+			return;
+		}
+
 		if (msg->GetDirection () == IMessage::DOut &&
 				Msg2OrigText_.contains (msgObj))
 		{
