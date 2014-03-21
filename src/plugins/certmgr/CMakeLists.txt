@@ -14,6 +14,7 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	acceptedrejecteddialog.cpp
 	manager.cpp
+	certsmodel.cpp
 	)
 set (FORMS
 	acceptedrejecteddialog.ui
