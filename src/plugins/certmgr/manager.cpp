@@ -59,7 +59,7 @@ namespace CertMgr
 
 		ResetSocketDefault ();
 
-		SystemCertsModel_->ResetCerts (AllowedDefaults_);
+		SystemCertsModel_->ResetCerts (Defaults_);
 		LocalCertsModel_->ResetCerts (Locals_);
 	}
 
