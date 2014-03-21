@@ -67,23 +67,13 @@ namespace CertMgr
 
 	void Manager::RemoveCert (const QSslCertificate& cert)
 	{
-		bool changed = false;
+		if (!Locals_.removeOne (cert))
+			return;
 
-		if (Locals_.removeOne (cert))
-		{
-			SaveLocals ();
-			changed = true;
-		}
+		LocalCertsModel_->RemoveCert (cert);
 
-		if (AllowedDefaults_.removeOne (cert))
-		{
-			Blacklist_ << cert;
-			SaveBlacklist ();
-			changed = true;
-		}
-
-		if (changed)
-			ResetSocketDefault ();
+		SaveLocals ();
+		ResetSocketDefault ();
 	}
 
 	QAbstractItemModel* Manager::GetSystemModel () const
