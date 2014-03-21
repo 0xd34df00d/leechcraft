@@ -57,7 +57,9 @@ namespace CertMgr
 
 		void ResetCerts (const QList<QSslCertificate>&);
 	private:
-		CertsDict_t::iterator CreateListPosForCert(const QSslCertificate&);
+		CertsDict_t::iterator GetListPosForCert (const QSslCertificate&);
+
+		CertsDict_t::iterator CreateListPosForCert (const QSslCertificate&);
 		QList<QSslCertificate>& CreateListForCert (const QSslCertificate&);
 	};
 }

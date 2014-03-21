@@ -136,11 +136,37 @@ namespace CertMgr
 		endResetModel ();
 	}
 
+	namespace
+	{
+		QString GetIssuerName (const QSslCertificate& cert)
+		{
+			auto issuer = cert.issuerInfo (QSslCertificate::Organization);
+			if (issuer.isEmpty ())
+				issuer = cert.issuerInfo (QSslCertificate::CommonName);
+
+			return issuer;
+		}
+	}
+
+	auto CertsModel::GetListPosForCert (const QSslCertificate& cert) -> CertsDict_t::iterator
+	{
+		const auto& issuer = GetIssuerName (cert);
+
+		const auto pos = std::lower_bound (Issuer2Certs_.begin (), Issuer2Certs_.end (), issuer,
+				[] (decltype (Issuer2Certs_.at (0)) item, const QString& issuer)
+					{ return QString::localeAwareCompare (item.first.toLower (), issuer.toLower ()) < 0; });
+
+		if (pos == Issuer2Certs_.end ())
+			return pos;
+
+		return pos->first.toLower () == issuer.toLower () ?
+				pos :
+				Issuer2Certs_.end ();
+	}
+
 	auto CertsModel::CreateListPosForCert (const QSslCertificate& cert) -> CertsDict_t::iterator
 	{
-		auto issuer = cert.issuerInfo (QSslCertificate::Organization);
-		if (issuer.isEmpty ())
-			issuer = cert.issuerInfo (QSslCertificate::CommonName);
+		const auto& issuer = GetIssuerName (cert);
 
 		auto pos = std::lower_bound (Issuer2Certs_.begin (), Issuer2Certs_.end (), issuer,
 				[] (decltype (Issuer2Certs_.at (0)) item, const QString& issuer)
