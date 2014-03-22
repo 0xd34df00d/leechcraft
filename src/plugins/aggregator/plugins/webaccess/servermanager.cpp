@@ -30,6 +30,7 @@
 #include "servermanager.h"
 #include <cstring>
 #include <QStringList>
+#include <QtDebug>
 #include <Wt/WServer>
 #include "aggregatorapp.h"
 #include "xmlsettingsmanager.h"
@@ -95,6 +96,7 @@ namespace WebAccess
 	{
 		const auto port = XmlSettingsManager::Instance ().property ("ListenPort").toInt ();
 
+		qDebug () << Q_FUNC_INFO << "starting server at" << port;
 		ArgcGenerator gen;
 		gen.AddParm ("--docroot", "/usr/share/Wt;/favicon.ico,/resources,/style");
 		gen.AddParm ("--http-address", "0.0.0.0");
@@ -102,9 +104,28 @@ namespace WebAccess
 		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
 
 		if (Server_->isRunning ())
-			Server_->stop ();
+		{
+			try
+			{
+				Server_->stop ();
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< e.what ();
+			}
+		}
 
-		Server_->start ();
+		try
+		{
+			Server_->start ();
+
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 }
 }
