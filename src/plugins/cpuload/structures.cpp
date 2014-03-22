@@ -27,29 +27,23 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QString>
+#include "structures.h"
 
 namespace LeechCraft
 {
 namespace CpuLoad
 {
-	enum class LoadPriority
+	LoadTypeInfo& LoadTypeInfo::operator-= (const LoadTypeInfo& other)
 	{
-		High,
-		Medium,
-		Low,
-		IO
-	};
+		LoadPercentage_ -= other.LoadPercentage_;
+		return *this;
+	}
 
-	struct LoadTypeInfo
+	LoadTypeInfo operator- (const LoadTypeInfo& left, const LoadTypeInfo& right)
 	{
-		double LoadPercentage_;
-
-		LoadTypeInfo& operator-= (const LoadTypeInfo&);
-	};
-
-	LoadTypeInfo operator- (const LoadTypeInfo&,  const LoadTypeInfo&);
+		LoadTypeInfo res = left;
+		res -= right;
+		return res;
+	}
 }
 }

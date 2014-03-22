@@ -15,6 +15,7 @@ set (SRCS
 	linuxbackend.cpp
 	backendproxy.cpp
 	cpuloadproxyobj.cpp
+	structures.cpp
 	)
 #CreateTrs("cpuload" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("cpuload" "en;ru_RU" "${SRCS}" "${FORMS}" "")
