@@ -199,6 +199,8 @@ namespace CertMgr
 		}
 		case Qt::ToolTipRole:
 			return MakeTooltip (cert);
+		case CertificateRole:
+			return QVariant::fromValue (cert);
 		default:
 			return {};
 		}

@@ -33,6 +33,8 @@
 #include <QAbstractItemModel>
 #include <QSslCertificate>
 
+Q_DECLARE_METATYPE (QSslCertificate)
+
 namespace LeechCraft
 {
 namespace CertMgr
@@ -42,6 +44,11 @@ namespace CertMgr
 		typedef QList<QPair<QString, QList<QSslCertificate>>> CertsDict_t;
 		CertsDict_t Issuer2Certs_;
 	public:
+		enum Role
+		{
+			CertificateRole = Qt::UserRole + 1
+		};
+
 		typedef std::shared_ptr<void> ModifyGuard_t;
 
 		CertsModel (QObject* = 0);
