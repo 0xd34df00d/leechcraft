@@ -118,6 +118,21 @@ namespace CertMgr
 		return Blacklist_.contains (cert);
 	}
 
+	void Manager::ToggleBlacklist (const QSslCertificate& cert, bool blacklist)
+	{
+		if ((blacklist && Blacklist_.contains (cert)) ||
+			(!blacklist && !Blacklist_.removeAll (cert)))
+			return;
+
+		if (blacklist)
+			Blacklist_ << cert;
+
+		SystemCertsModel_->SetBlacklisted (cert, blacklist);
+
+		RegenAllowed ();
+		ResetSocketDefault ();
+	}
+
 	void Manager::RegenAllowed ()
 	{
 		AllowedDefaults_.clear ();
