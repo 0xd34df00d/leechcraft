@@ -27,78 +27,23 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "cpuload.h"
-#include <QIcon>
-#include <QAbstractItemModel>
-
-#ifdef Q_OS_LINUX
-#include "linuxbackend.h"
-#elif defined (Q_OS_MAC)
-#include "macbackend.h"
-#endif
-
-#include "backendproxy.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
 namespace CpuLoad
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	LoadTypeInfo& LoadTypeInfo::operator-= (const LoadTypeInfo& other)
 	{
-#ifdef Q_OS_LINUX
-		auto backend = new LinuxBackend;
-#elif defined (Q_OS_MAC)
-		auto backend = new MacBackend;
-#else
-		Backend *backend = nullptr;
-#endif
-
-		if (!backend)
-			return;
-
-		CpuQuark_.reset (new QuarkComponent { "cpuload", "CpuLoadQuark.qml" });
-
-		auto backendProxy = new BackendProxy { backend };
-		CpuQuark_->DynamicProps_.append ({ "CpuLoad_proxy", backendProxy });
-		CpuQuark_->DynamicProps_.append ({ "CpuLoad_model", backendProxy->GetModel () });
+		LoadPercentage_ -= other.LoadPercentage_;
+		return *this;
 	}
 
-	void Plugin::SecondInit ()
+	LoadTypeInfo operator- (const LoadTypeInfo& left, const LoadTypeInfo& right)
 	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.CpuLoad";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "CPU Load";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Quark for monitoring CPU load.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QuarkComponents_t Plugin::GetComponents () const
-	{
-		if (CpuQuark_)
-			return { CpuQuark_ };
-		else
-			return {};
+		LoadTypeInfo res = left;
+		res -= right;
+		return res;
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_cpuload, LeechCraft::CpuLoad::Plugin);
