@@ -55,6 +55,12 @@ namespace CertMgr
 			Defaults_ << cert;
 		}
 
+		LoadLocals ();
+		LoadBlacklist ();
+
+		for (const auto& cert : Blacklist_)
+			SystemCertsModel_->SetBlacklisted (cert, true);
+
 		RegenAllowed ();
 
 		ResetSocketDefault ();
