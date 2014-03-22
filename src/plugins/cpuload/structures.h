@@ -40,7 +40,10 @@ namespace CpuLoad
 		High,
 		Medium,
 		Low,
-		IO
+		IO,
+
+		// This one for completeness
+		Idle
 	};
 
 	struct LoadTypeInfo
