@@ -15,9 +15,11 @@ set (SRCS
 	acceptedrejecteddialog.cpp
 	manager.cpp
 	certsmodel.cpp
+	managerdialog.cpp
 	)
 set (FORMS
 	acceptedrejecteddialog.ui
+	managerdialog.ui
 	)
 
 QT4_WRAP_UI (UIS_H ${FORMS})
