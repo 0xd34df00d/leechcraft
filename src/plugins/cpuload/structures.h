@@ -45,7 +45,6 @@ namespace CpuLoad
 
 	struct LoadTypeInfo
 	{
-		LoadPriority Priority_;
 		double LoadPercentage_;
 	};
 }
