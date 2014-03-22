@@ -12,11 +12,19 @@ include_directories (
 set (SRCS
 	cpuload.cpp
 	backend.cpp
-	linuxbackend.cpp
 	backendproxy.cpp
 	cpuloadproxyobj.cpp
 	structures.cpp
 	)
+
+if (APPLE)
+	set (SRCS ${SRCS} macbackend.mm)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	set (SRCS ${SRCS} linuxbackend.cpp)
+else ()
+	message (STATUS "CpuLoad: unsupported platform")
+endif ()
+
 #CreateTrs("cpuload" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("cpuload" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
