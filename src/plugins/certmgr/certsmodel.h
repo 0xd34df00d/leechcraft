@@ -43,6 +43,8 @@ namespace CertMgr
 	{
 		typedef QList<QPair<QString, QList<QSslCertificate>>> CertsDict_t;
 		CertsDict_t Issuer2Certs_;
+
+		QList<QSslCertificate> Blacklisted_;
 	public:
 		enum Role
 		{
@@ -65,6 +67,8 @@ namespace CertMgr
 		void ResetCerts (const QList<QSslCertificate>&);
 
 		QModelIndex FindCertificate (const QSslCertificate&) const;
+
+		void SetBlacklisted (const QSslCertificate&, bool blacklisted);
 	private:
 		CertsDict_t::iterator GetListPosForCert (const QSslCertificate&);
 		CertsDict_t::const_iterator GetListPosForCert (const QSslCertificate&) const;

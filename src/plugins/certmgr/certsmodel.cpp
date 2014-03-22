@@ -30,6 +30,9 @@
 #include "certsmodel.h"
 #include <QDateTime>
 #include <QStringList>
+#include <QBrush>
+#include <QApplication>
+#include <QPalette>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -199,6 +202,13 @@ namespace CertMgr
 		}
 		case Qt::ToolTipRole:
 			return MakeTooltip (cert);
+		case Qt::ForegroundRole:
+		{
+			const auto colorGroup = Blacklisted_.contains (cert) ?
+					QPalette::Disabled :
+					QPalette::Normal;
+			return QBrush { qApp->palette ().color (colorGroup, QPalette::WindowText) };
+		}
 		case CertificateRole:
 			return QVariant::fromValue (cert);
 		default:
@@ -258,6 +268,20 @@ namespace CertMgr
 
 		const auto& parent = index (std::distance (Issuer2Certs_.begin (), listPos), 0, {});
 		return index (certIdx, 0, parent);
+	}
+
+	void CertsModel::SetBlacklisted (const QSslCertificate& cert, bool blacklisted)
+	{
+		if (blacklisted)
+			Blacklisted_ << cert;
+		else
+			Blacklisted_.removeAll (cert);
+
+		const auto& idx = FindCertificate (cert);
+		if (!idx.isValid ())
+			return;
+
+		emit dataChanged (idx, idx);
 	}
 
 	namespace
