@@ -45,7 +45,6 @@ namespace CpuLoad
 
 	struct LoadTypeInfo
 	{
-		QString Label_;
 		LoadPriority Priority_;
 		double LoadPercentage_;
 	};
