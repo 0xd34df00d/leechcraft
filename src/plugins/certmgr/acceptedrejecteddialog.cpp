@@ -92,7 +92,7 @@ namespace CertMgr
 
 		if (QMessageBox::question (this,
 					tr ("Remove exceptions"),
-					tr ("Are you sure you want to remove %n address(es)?",
+					tr ("Are you sure you want to remove %n exception(s)?",
 						0, selected.size ()),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;

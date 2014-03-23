@@ -94,7 +94,7 @@ namespace CertMgr
 				QFileInfo { paths.value (0) }.isDir ())
 			QMessageBox::information (this,
 					tr ("Certificates import"),
-					tr ("%n certificate(s) were added.", nullptr, numAdded));
+					tr ("%n certificate(s) were added.", 0, numAdded));
 	}
 
 	void ManagerDialog::on_RemoveLocal__released ()
