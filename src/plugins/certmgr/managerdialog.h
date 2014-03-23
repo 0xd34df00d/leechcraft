@@ -46,10 +46,16 @@ namespace CertMgr
 
 		Ui::ManagerDialog Ui_;
 		Manager * const Manager_;
+
+		enum class CertPart
+		{
+			System,
+			Local
+		};
 	public:
 		ManagerDialog (Manager*, QWidget* = 0);
 	private:
-		QSslCertificate GetSelectedSystemCert () const;
+		QSslCertificate GetSelectedCert (CertPart) const;
 	private slots:
 		void on_Enable__released ();
 		void on_Disable__released ();

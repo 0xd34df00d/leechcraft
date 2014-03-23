@@ -50,27 +50,41 @@ namespace CertMgr
 		updateSystemButtons ();
 	}
 
-	QSslCertificate ManagerDialog::GetSelectedSystemCert () const
+	QSslCertificate ManagerDialog::GetSelectedCert (CertPart part) const
 	{
-		const auto& selected = Ui_.SystemTree_->selectionModel ()->selectedRows ();
+		QTreeView *view = nullptr;
+		switch (part)
+		{
+		case CertPart::System:
+			view = Ui_.SystemTree_;
+			break;
+		case CertPart::Local:
+			view = Ui_.LocalTree_;
+			break;
+		}
+
+		if (!view)
+			return {};
+
+		const auto& selected = view->selectionModel ()->selectedRows ();
 		return selected.value (0).data (CertsModel::CertificateRole).value<QSslCertificate> ();
 	}
 
 	void ManagerDialog::on_Enable__released ()
 	{
-		Manager_->ToggleBlacklist (GetSelectedSystemCert (), false);
+		Manager_->ToggleBlacklist (GetSelectedCert (CertPart::System), false);
 		updateSystemButtons ();
 	}
 
 	void ManagerDialog::on_Disable__released ()
 	{
-		Manager_->ToggleBlacklist (GetSelectedSystemCert (), true);
+		Manager_->ToggleBlacklist (GetSelectedCert (CertPart::System), true);
 		updateSystemButtons ();
 	}
 
 	void ManagerDialog::updateSystemButtons ()
 	{
-		const auto& cert = GetSelectedSystemCert ();
+		const auto& cert = GetSelectedCert (CertPart::System);
 
 		if (cert.isNull ())
 		{
