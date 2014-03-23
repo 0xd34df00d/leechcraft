@@ -5,5 +5,8 @@
 		<item type="pushbutton" name="AcceptedRejected">
 			<label value="Accepted/rejected connections" />
 		</item>
+		<item type="pushbutton" name="Certificates">
+			<label value="Certificates" />
+		</item>
 	</page>
 </settings>

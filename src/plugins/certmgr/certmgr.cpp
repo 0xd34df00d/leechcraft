@@ -32,6 +32,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "acceptedrejecteddialog.h"
+#include "managerdialog.h"
 
 namespace LeechCraft
 {
@@ -91,6 +92,12 @@ namespace CertMgr
 		if (button == "AcceptedRejected")
 		{
 			auto dia = new AcceptedRejectedDialog { Proxy_ };
+			dia->setAttribute (Qt::WA_DeleteOnClose);
+			dia->show ();
+		}
+		else if (button == "Certificates")
+		{
+			auto dia = new ManagerDialog { Manager_.get () };
 			dia->setAttribute (Qt::WA_DeleteOnClose);
 			dia->show ();
 		}
