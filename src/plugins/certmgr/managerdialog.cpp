@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "managerdialog.h"
+#include <QFileDialog>
+#include <QMessageBox>
 #include "manager.h"
 #include "certsmodel.h"
 
@@ -68,6 +70,36 @@ namespace CertMgr
 
 		const auto& selected = view->selectionModel ()->selectedRows ();
 		return selected.value (0).data (CertsModel::CertificateRole).value<QSslCertificate> ();
+	}
+
+	void ManagerDialog::on_AddLocal__released ()
+	{
+		const auto& paths = QFileDialog::getOpenFileNames (this,
+				tr ("Select certificate files"),
+				QDir::homePath (),
+				"Certificates (*.crt);;All files (*)");
+		if (paths.isEmpty ())
+			return;
+
+		QList<QSslCertificate> certs;
+		for (const auto& path : paths)
+		{
+			certs << QSslCertificate::fromPath (path, QSsl::Pem);
+			certs << QSslCertificate::fromPath (path, QSsl::Der);
+		}
+
+		const auto numAdded = Manager_->AddCerts (certs);
+
+		if (paths.size () > 1 ||
+				QFileInfo { paths.value (0) }.isDir ())
+			QMessageBox::information (this,
+					tr ("Certificates import"),
+					tr ("%n certificate(s) were added.", nullptr, numAdded));
+	}
+
+	void ManagerDialog::on_RemoveLocal__released ()
+	{
+		Manager_->RemoveCert (GetSelectedCert (CertPart::Local));
 	}
 
 	void ManagerDialog::on_Enable__released ()

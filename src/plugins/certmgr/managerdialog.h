@@ -57,6 +57,9 @@ namespace CertMgr
 	private:
 		QSslCertificate GetSelectedCert (CertPart) const;
 	private slots:
+		void on_AddLocal__released ();
+		void on_RemoveLocal__released ();
+
 		void on_Enable__released ();
 		void on_Disable__released ();
 		void updateSystemButtons ();
