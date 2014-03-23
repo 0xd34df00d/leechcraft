@@ -39,14 +39,14 @@ namespace HotSensors
 {
 	struct StoredTemp;
 
-	class SensorsManager : public QObject
+	class LmSensorsBackend : public QObject
 	{
 		Q_OBJECT
 
 		QList<StoredTemp> Features_;
 	public:
-		SensorsManager (QObject* = 0);
-		~SensorsManager ();
+		LmSensorsBackend (QObject* = 0);
+		~LmSensorsBackend ();
 	private:
 		void EnumerateSensors ();
 	private slots:

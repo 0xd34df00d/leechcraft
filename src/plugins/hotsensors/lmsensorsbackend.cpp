@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sensorsmanager.h"
+#include "lmsensorsbackend.h"
 #include <QTimer>
 #include <QtDebug>
 
@@ -80,7 +80,7 @@ namespace HotSensors
 		return { Prefix_.data (), Bus_, Addr_, Path_.data () };
 	}
 
-	SensorsManager::SensorsManager (QObject *parent)
+	LmSensorsBackend::LmSensorsBackend (QObject *parent)
 	: QObject (parent)
 	{
 		sensors_init (nullptr);
@@ -95,12 +95,12 @@ namespace HotSensors
 				SLOT (readTemperatures ()));
 	}
 
-	SensorsManager::~SensorsManager ()
+	LmSensorsBackend::~LmSensorsBackend ()
 	{
 		sensors_cleanup ();
 	}
 
-	void SensorsManager::EnumerateSensors ()
+	void LmSensorsBackend::EnumerateSensors ()
 	{
 		int nr = 0;
 		const sensors_chip_name *chipName = 0;
@@ -147,7 +147,7 @@ namespace HotSensors
 		}
 	}
 
-	void SensorsManager::readTemperatures ()
+	void LmSensorsBackend::readTemperatures ()
 	{
 		Readings_t readings;
 		for (auto feature : Features_)

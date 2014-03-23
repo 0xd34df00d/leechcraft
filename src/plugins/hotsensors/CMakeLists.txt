@@ -16,7 +16,7 @@ include_directories (
 	)
 set (SRCS
 	hotsensors.cpp
-	sensorsmanager.cpp
+	lmsensorsbackend.cpp
 	historymanager.cpp
 	plotmanager.cpp
 	sensorsgraphmodel.cpp
