@@ -28,8 +28,8 @@
  **********************************************************************/
 
 #include "lmsensorsbackend.h"
-#include <QTimer>
 #include <QtDebug>
+#include <sensors/sensors.h>
 
 namespace LeechCraft
 {
@@ -81,18 +81,11 @@ namespace HotSensors
 	}
 
 	LmSensorsBackend::LmSensorsBackend (QObject *parent)
-	: QObject (parent)
+	: Backend (parent)
 	{
 		sensors_init (nullptr);
 
 		EnumerateSensors ();
-
-		auto timer = new QTimer (this);
-		timer->start (1000);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (readTemperatures ()));
 	}
 
 	LmSensorsBackend::~LmSensorsBackend ()
@@ -147,7 +140,7 @@ namespace HotSensors
 		}
 	}
 
-	void LmSensorsBackend::readTemperatures ()
+	void LmSensorsBackend::update ()
 	{
 		Readings_t readings;
 		for (auto feature : Features_)

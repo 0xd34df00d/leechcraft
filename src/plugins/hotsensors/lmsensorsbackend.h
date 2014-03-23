@@ -29,9 +29,7 @@
 
 #pragma once
 
-#include <QObject>
-#include <sensors/sensors.h>
-#include "structures.h"
+#include "backend.h"
 
 namespace LeechCraft
 {
@@ -39,7 +37,7 @@ namespace HotSensors
 {
 	struct StoredTemp;
 
-	class LmSensorsBackend : public QObject
+	class LmSensorsBackend : public Backend
 	{
 		Q_OBJECT
 
@@ -49,10 +47,8 @@ namespace HotSensors
 		~LmSensorsBackend ();
 	private:
 		void EnumerateSensors ();
-	private slots:
-		void readTemperatures ();
-	signals:
-		void gotReadings (const Readings_t&);
+	public slots:
+		void update ();
 	};
 }
 }
