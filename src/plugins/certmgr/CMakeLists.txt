@@ -24,7 +24,7 @@ set (FORMS
 
 QT4_WRAP_UI (UIS_H ${FORMS})
 
-#CreateTrs("certmgr" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("certmgr" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("certmgr" "en;ru_RU" "${SRCS}" "${FORMS}" "certmgrsettings.xml")
 
 add_library (leechcraft_certmgr SHARED

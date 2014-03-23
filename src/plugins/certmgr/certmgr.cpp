@@ -29,6 +29,7 @@
 
 #include "certmgr.h"
 #include <QIcon>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "acceptedrejecteddialog.h"
@@ -41,6 +42,8 @@ namespace CertMgr
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		Util::InstallTranslator ("certmgr");
 
 		Manager_.reset (new Manager);
 
