@@ -120,6 +120,9 @@ namespace CertMgr
 
 	void Manager::ToggleBlacklist (const QSslCertificate& cert, bool blacklist)
 	{
+		if (cert.isNull ())
+			return;
+
 		if ((blacklist && Blacklist_.contains (cert)) ||
 			(!blacklist && !Blacklist_.removeAll (cert)))
 			return;
