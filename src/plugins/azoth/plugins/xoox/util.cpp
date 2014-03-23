@@ -325,7 +325,7 @@ namespace XooxUtil
 #ifndef I_HAVE_OLD_QXMPP
 		original.parse (messageElem.sourceDomElement ());
 #else
-#warning You won't have good forwarded messages, Message Archive Management and Message Carbons will look like crap.
+#warning "You won't have good forwarded messages, Message Archive Management and Message Carbons will look like crap."
 		original.parse (XmppElem2DomElem (messageElem));
 #endif
 
