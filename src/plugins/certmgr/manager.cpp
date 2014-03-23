@@ -69,17 +69,29 @@ namespace CertMgr
 		LocalCertsModel_->ResetCerts (Locals_);
 	}
 
-	void Manager::AddCert (const QSslCertificate& cert)
+	int Manager::AddCerts (const QList<QSslCertificate>& certs)
 	{
-		if (Defaults_.contains (cert) || Locals_.contains (cert))
-			return;
+		int added = 0;
+		for (const auto& cert : certs)
+		{
+			if (cert.isNull ())
+				continue;
 
-		Locals_ << cert;
+			if (Defaults_.contains (cert) || Locals_.contains (cert))
+				continue;
+
+			Locals_ << cert;
+			LocalCertsModel_->AddCert (cert);
+			++added;
+		}
+
+		if (!added)
+			return 0;
+
 		SaveLocals ();
-
-		LocalCertsModel_->AddCert (cert);
-
 		ResetSocketDefault ();
+
+		return added;
 	}
 
 	void Manager::RemoveCert (const QSslCertificate& cert)

@@ -55,7 +55,7 @@ namespace CertMgr
 	public:
 		Manager ();
 
-		void AddCert (const QSslCertificate&);
+		int AddCerts (const QList<QSslCertificate>&);
 		void RemoveCert (const QSslCertificate&);
 
 		QAbstractItemModel* GetSystemModel () const;
