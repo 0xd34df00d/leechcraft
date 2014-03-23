@@ -21,6 +21,7 @@ set (SRCS
 	plotmanager.cpp
 	sensorsgraphmodel.cpp
 	contextwrapper.cpp
+	backend.cpp
 	)
 CreateTrs("hotsensors" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("hotsensors" "en;ru_RU" "${SRCS}" "${FORMS}" "")
