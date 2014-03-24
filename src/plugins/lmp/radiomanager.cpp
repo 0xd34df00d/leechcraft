@@ -54,6 +54,19 @@ namespace LMP
 			PileObject = Media::RadioItemRole::MaxRadioRole + 1
 		};
 
+		namespace
+		{
+			template<typename T>
+			void Serialize (QMimeData *mimeData, const QString& name, const T& t)
+			{
+				QByteArray infosData;
+				QDataStream ostr (&infosData, QIODevice::WriteOnly);
+				ostr << t;
+
+				mimeData->setData (name, infosData);
+			}
+		}
+
 		class RadioModel : public QStandardItemModel
 		{
 			RadioManager * const Manager_;
@@ -90,11 +103,7 @@ namespace LMP
 				auto result = new QMimeData;
 				result->setUrls (urls);
 
-				QByteArray infosData;
-				QDataStream ostr (&infosData, QIODevice::WriteOnly);
-				ostr << infos;
-
-				result->setData ("x-leechcraft-lmp/media-info-list", infosData);
+				Serialize (result, "x-leechcraft-lmp/media-info-list", infos);
 
 				return result;
 			}
