@@ -36,6 +36,8 @@
 #include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/icoreproxy.h>
 
 Q_DECLARE_METATYPE (QSet<QString>);
 
@@ -45,13 +47,20 @@ namespace Azoth
 {
 namespace Depester
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("azoth_depester");
 		qRegisterMetaType<QSet<QString>> ("QSet<QString>");
 		qRegisterMetaTypeStreamOperators<QSet<QString>> ("QSet<QString>");
 
 		LoadIgnores ();
+
+		const auto iconMgr = proxy->GetIconThemeManager ();
+
+		auto changeHandler = [this, iconMgr] { IgnoredIcon_ = iconMgr->GetIcon ("irc-unvoice"); };
+		changeHandler ();
+
+		iconMgr->RegisterChangeHandler (changeHandler);
 	}
 
 	void Plugin::SecondInit ()
@@ -188,8 +197,7 @@ namespace Depester
 
 	void Plugin::handleIgnoreEntry (bool ignore)
 	{
-		QObject *entryObj = sender ()->
-				property ("Azoth/Depester/Entry").value<QObject*> ();
+		QObject *entryObj = sender ()->property ("Azoth/Depester/Entry").value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 			return;
@@ -215,6 +223,19 @@ namespace Depester
 		}
 
 		SaveIgnores ();
+	}
+
+	void Plugin::hookCollectContactIcons (IHookProxy_ptr, QObject *entryObj, QList<QIcon>& icons)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+
+		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+			return;
+
+		if (!IgnoredNicks_.contains (entry->GetEntryName ()))
+			return;
+
+		icons.prepend (IgnoredIcon_);
 	}
 
 	void Plugin::handleNameChanged (const QString& name)

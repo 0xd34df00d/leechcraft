@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_DEPESTER_DEPESTER_H
-#define PLUGINS_AZOTH_PLUGINS_DEPESTER_DEPESTER_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
@@ -53,6 +53,8 @@ namespace Depester
 		QHash<QObject*, QAction*> Entry2ActionIgnore_;
 		QHash<QObject*, QString> Entry2Nick_;
 		QSet<QString> IgnoredNicks_;
+
+		QIcon IgnoredIcon_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -82,6 +84,8 @@ namespace Depester
 				QObject *message);
 		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+
+		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&);
 	private slots:
 		void handleIgnoreEntry (bool);
 		void handleNameChanged (const QString&);
@@ -89,5 +93,3 @@ namespace Depester
 }
 }
 }
-
-#endif
