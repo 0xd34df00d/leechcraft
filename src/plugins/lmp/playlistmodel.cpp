@@ -67,6 +67,46 @@ namespace LMP
 		return result;
 	}
 
+	namespace
+	{
+		QList<AudioSource> GetSources (const QMimeData *data)
+		{
+			QList<AudioSource> sources;
+			for (const auto& url : data->urls ())
+			{
+				if (url.scheme () != "file")
+				{
+					sources << AudioSource (url);
+					continue;
+				}
+
+				const auto& localPath = url.toLocalFile ();
+				if (QFileInfo (localPath).isFile ())
+				{
+					sources << AudioSource (localPath);
+					continue;
+				}
+
+				for (const auto& path : RecIterate (localPath, true))
+					sources << AudioSource (path);
+			}
+
+			return sources;
+		}
+
+		QList<MediaInfo> GetInfos (const QMimeData *data)
+		{
+			const auto& serialized = data->data ("x-leechcraft-lmp/media-info-list");
+			if (serialized.isEmpty ())
+				return {};
+
+			QDataStream stream { serialized };
+			QList<MediaInfo> result;
+			stream >> result;
+			return result;
+		}
+	}
+
 	bool PlaylistModel::dropMimeData (const QMimeData *data,
 			Qt::DropAction action, int row, int, const QModelIndex& parent)
 	{
@@ -76,26 +116,12 @@ namespace LMP
 		if (!data->hasUrls ())
 			return false;
 
-		const auto& urls = data->urls ();
-		QList<AudioSource> sources;
-		for (const auto& url : urls)
-		{
-			if (url.scheme () != "file")
-			{
-				sources << AudioSource (url);
-				continue;
-			}
+		const auto& sources = GetSources (data);
+		const auto& infos = GetInfos (data);
 
-			const auto& localPath = url.toLocalFile ();
-			if (QFileInfo (localPath).isFile ())
-			{
-				sources << AudioSource (localPath);
-				continue;
-			}
-
-			for (const auto& path : RecIterate (localPath, true))
-				sources << AudioSource (path);
-		}
+		if (infos.size () == sources.size ())
+			for (int i = 0; i < sources.size (); ++i)
+				Player_->PrepareURLInfo (sources.at (i).ToUrl (), infos.at (i));
 
 		auto afterIdx = row >= 0 ?
 				parent.child (row, 0) :

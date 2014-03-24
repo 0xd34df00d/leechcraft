@@ -63,7 +63,7 @@ namespace LMP
 
 			QStringList mimeTypes () const
 			{
-				return QStringList ("text/uri-list");
+				return { "text/uri-list" };
 			}
 
 			QMimeData* mimeData (const QModelIndexList& indexes) const
