@@ -263,6 +263,9 @@ namespace LMP
 
 	void Player::Enqueue (const QList<AudioSource>& sources, EnqueueFlags flags)
 	{
+		if (CurrentQueue_.isEmpty ())
+			emit shouldClearFiltering ();
+
 		if (flags & EnqueueReplace)
 		{
 			PlaylistModel_->clear ();

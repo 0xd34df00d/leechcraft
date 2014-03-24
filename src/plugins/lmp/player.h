@@ -224,6 +224,8 @@ namespace LMP
 		void bufferStatusChanged (int);
 
 		void playerAvailable (bool);
+
+		void shouldClearFiltering ();
 	};
 }
 }
