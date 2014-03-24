@@ -182,7 +182,11 @@ namespace VelvetBird
 
 		PurpleIdleUiOps IdleOps =
 		{
-			[] () { return time_t (); }
+			[] () { return time_t (); },
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
 		};
 
 		PurpleAccountUiOps AccUiOps =
@@ -229,21 +233,29 @@ namespace VelvetBird
 
 		PurpleBlistUiOps BListUiOps =
 		{
-			NULL,
-			NULL,
+			nullptr,
+			nullptr,
 			[] (PurpleBuddyList *list) { static_cast<ProtoManager*> (list->ui_data)->Show (list); },
 			[] (PurpleBuddyList *list, PurpleBlistNode *node)
 				{ static_cast<ProtoManager*> (list->ui_data)->Update (list, node); },
 			[] (PurpleBuddyList *list, PurpleBlistNode *node)
 				{ static_cast<ProtoManager*> (list->ui_data)->Remove (list, node); },
-			NULL
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
 		};
 
 		PurpleConversationUiOps ConvUiOps =
 		{
-			NULL,
-			NULL,
-			NULL,
+			nullptr,
+			nullptr,
+			nullptr,
 			[] (PurpleConversation *conv, const char *who, const char *message, PurpleMessageFlags flags, time_t mtime)
 			{
 				if (conv->ui_data)
@@ -256,19 +268,37 @@ namespace VelvetBird
 			{
 				qDebug () << Q_FUNC_INFO << name << alias << message;
 			},
-			NULL
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
 		};
 
 		PurpleNotifyUiOps NotifyUiOps
 		{
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			NULL
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
 			[] (PurpleConnection*, const char*, PurpleNotifyUserInfo*) -> void* { qDebug () << Q_FUNC_INFO; return 0; },
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
 		};
 	}
 
