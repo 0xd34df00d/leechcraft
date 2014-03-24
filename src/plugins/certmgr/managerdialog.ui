@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -45,7 +45,9 @@
             <string>Enable</string>
            </property>
            <property name="icon">
-            <iconset theme="dialog-ok"/>
+            <iconset theme="dialog-ok">
+             <normaloff/>
+            </iconset>
            </property>
           </widget>
          </item>
@@ -55,7 +57,9 @@
             <string>Disable</string>
            </property>
            <property name="icon">
-            <iconset theme="dialog-cancel"/>
+            <iconset theme="dialog-cancel">
+             <normaloff/>
+            </iconset>
            </property>
           </widget>
          </item>
@@ -95,7 +99,9 @@
             <string>Add...</string>
            </property>
            <property name="icon">
-            <iconset theme="list-add"/>
+            <iconset theme="list-add">
+             <normaloff/>
+            </iconset>
            </property>
           </widget>
          </item>
@@ -105,7 +111,9 @@
             <string>Remove</string>
            </property>
            <property name="icon">
-            <iconset theme="list-remove"/>
+            <iconset theme="list-remove">
+             <normaloff/>
+            </iconset>
            </property>
           </widget>
          </item>
