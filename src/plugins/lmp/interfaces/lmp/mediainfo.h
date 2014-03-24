@@ -86,6 +86,9 @@ namespace LMP
 	{
 		return !(l == r);
 	}
+
+	QDataStream& operator<< (QDataStream&, const MediaInfo&);
+	QDataStream& operator>> (QDataStream&, MediaInfo&);
 }
 }
 
