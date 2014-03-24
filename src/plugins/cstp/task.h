@@ -27,10 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_CSTP_TASK_H
-#define PLUGINS_CSTP_TASK_H
-#include <list>
-#include <boost/intrusive_ptr.hpp>
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QUrl>
@@ -89,6 +87,8 @@ namespace CSTP
 		void RecalculateSpeed ();
 		void HandleMetadataRedirection ();
 		void HandleMetadataFilename ();
+
+		void Cleanup ();
 	private slots:
 		void handleDataTransferProgress (qint64, qint64);
 		void redirectedConstruction (const QByteArray&);
@@ -106,5 +106,3 @@ namespace CSTP
 	};
 }
 }
-
-#endif
