@@ -252,7 +252,7 @@ namespace VelvetBird
 					static_cast<Account*> (conv->account->ui_data)->
 							HandleConvLessMessage (conv, who, message, flags, mtime);
 			},
-			[] (PurpleConversation *conv, const char *name, const char *alias, const char *message, PurpleMessageFlags flags, time_t mtime)
+			[] (PurpleConversation*, const char *name, const char *alias, const char *message, PurpleMessageFlags, time_t)
 			{
 				qDebug () << Q_FUNC_INFO << name << alias << message;
 			},
@@ -267,8 +267,8 @@ namespace VelvetBird
 			NULL,
 			NULL,
 			NULL,
-			[] (PurpleConnection *gc, const char *who, PurpleNotifyUserInfo *user_info) -> void* { qDebug () << Q_FUNC_INFO; return 0; },
 			NULL
+			[] (PurpleConnection*, const char*, PurpleNotifyUserInfo*) -> void* { qDebug () << Q_FUNC_INFO; return 0; },
 		};
 	}
 
