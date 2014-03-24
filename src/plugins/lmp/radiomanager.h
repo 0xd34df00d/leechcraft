@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <interfaces/media/iradiostation.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -74,6 +75,8 @@ namespace LMP
 		void HandleWokeUp ();
 
 		QList<Media::AudioInfo> GetSources (const QModelIndex&) const;
+
+		Media::IRadioStation_ptr GetRadioStation (const QString&) const;
 	private:
 		void InitProvider (QObject*);
 		void HandlePile (QStandardItem*, QObject*);

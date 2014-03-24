@@ -348,6 +348,37 @@ namespace LMP
 		}
 	}
 
+	Media::IRadioStation_ptr RadioManager::GetRadioStation (const QString& radioId) const
+	{
+		if (radioId.isEmpty ())
+			return {};
+
+		QList<QStandardItem*> items { StationsModel_->invisibleRootItem () };
+		for (int i = 0; i < items.size (); ++i)
+		{
+			const auto item = items.at (i);
+
+			if (item->data (Media::RadioItemRole::RadioID).toString () == radioId)
+			{
+				const auto root = GetRootItem (item);
+				if (!Root2Prov_.contains (root))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no root item for radio"
+							<< radioId;
+					return {};
+				}
+
+				return Root2Prov_ [root]->GetRadioStation (item, {});
+			}
+
+			for (int j = 0; j < item->rowCount (); ++j)
+				items << item->child (j);
+		}
+
+		return {};
+	}
+
 	void RadioManager::InitProvider (QObject *provObj)
 	{
 		auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
