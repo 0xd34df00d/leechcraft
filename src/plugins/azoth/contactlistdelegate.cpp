@@ -35,6 +35,7 @@
 #include <QAbstractProxyModel>
 #include <QTreeView>
 #include <util/resourceloader.h>
+#include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/isupportgeolocation.h"
 #include "interfaces/azoth/iaccount.h"
@@ -79,6 +80,8 @@ namespace Azoth
 				this, "handleHighlightGroupsChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("RosterContactHeight",
 				this, "handleContactHeightChanged");
+
+		Core::Instance ().RegisterHookable (this);
 	}
 
 	void ContactListDelegate::paint (QPainter *painter,
@@ -394,9 +397,10 @@ namespace Azoth
 	QList<QIcon> ContactListDelegate::GetContactIcons (const QModelIndex& index,
 			ICLEntry *entry, const QStringList& vars) const
 	{
+		QList<QIcon> clientIcons;
+
 		const bool isMUC = entry->GetEntryType () == ICLEntry::ETMUC;
 
-		QList<QIcon> clientIcons;
 		if (!isMUC && ShowClientIcons_)
 		{
 			const auto& iconsMap = Core::Instance ().GetClientIconForEntry (entry);
@@ -418,7 +422,11 @@ namespace Azoth
 		}
 
 		if (vars.isEmpty ())
+		{
+			emit hookCollectContactIcons (IHookProxy_ptr { new Util::DefaultHookProxy },
+					entry->GetQObject (), clientIcons);
 			return clientIcons;
+		}
 
 		const auto& addInfo = entry->GetClientInfo (vars.first ());
 		if (addInfo.contains ("user_activity"))
@@ -468,6 +476,9 @@ namespace Azoth
 			if (!info.isEmpty ())
 				LoadSystemIcon ("/geolocation", clientIcons);
 		}
+
+		emit hookCollectContactIcons (IHookProxy_ptr { new Util::DefaultHookProxy },
+				entry->GetQObject (), clientIcons);
 
 		return clientIcons;
 	}

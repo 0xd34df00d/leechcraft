@@ -57,6 +57,8 @@ namespace Azoth
 				QObject *entry,
 				QWebView *webView);
 
+		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
+
 		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr proxy,
 				QObject *source,
 				QObject *target);

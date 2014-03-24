@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
-#define PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
+#pragma once
+
 #include <QStyledItemDelegate>
 #include "core.h"
 
@@ -81,8 +81,8 @@ namespace Azoth
 		void handleShowStatusesChanged ();
 		void handleHighlightGroupsChanged ();
 		void handleContactHeightChanged ();
+	signals:
+		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 	};
 }
 }
-
-#endif
