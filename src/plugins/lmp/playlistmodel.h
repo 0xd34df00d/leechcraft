@@ -47,6 +47,9 @@ namespace LMP
 		QMimeData* mimeData (const QModelIndexList&) const;
 		bool dropMimeData (const QMimeData*, Qt::DropAction, int, int, const QModelIndex&);
 		Qt::DropActions supportedDropActions () const;
+	private:
+		void HandleRadios (const QMimeData*);
+		void HandleDroppedUrls (const QMimeData*, int row, const QModelIndex& parent);
 	};
 }
 }

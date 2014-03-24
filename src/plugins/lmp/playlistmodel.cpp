@@ -33,6 +33,8 @@
 #include "playlistparsers/playlistfactory.h"
 #include "player.h"
 #include "util.h"
+#include "core.h"
+#include "radiomanager.h"
 
 namespace LeechCraft
 {
@@ -113,9 +115,36 @@ namespace LMP
 		if (action == Qt::IgnoreAction)
 			return true;
 
-		if (!data->hasUrls ())
-			return false;
+		if (data->hasUrls ())
+			HandleDroppedUrls (data, row, parent);
 
+		HandleRadios (data);
+
+		return true;
+	}
+
+	Qt::DropActions PlaylistModel::supportedDropActions () const
+	{
+		return Qt::CopyAction | Qt::MoveAction;
+	}
+
+	void PlaylistModel::HandleRadios (const QMimeData *data)
+	{
+		QStringList radioIds;
+
+		QDataStream stream { data->data ("x-leechcraft-lmp/radio-ids") };
+		stream >> radioIds;
+
+		for (const auto& radioId : radioIds)
+			if (const auto station = Core::Instance ().GetRadioManager ()->GetRadioStation (radioId))
+			{
+				Player_->SetRadioStation (station);
+				break;
+			}
+	}
+
+	void PlaylistModel::HandleDroppedUrls (const QMimeData *data, int row, const QModelIndex& parent)
+	{
 		const auto& sources = GetSources (data);
 		const auto& infos = GetInfos (data);
 
@@ -147,12 +176,6 @@ namespace LMP
 		}
 
 		Player_->Enqueue (existingQueue, Player::EnqueueReplace | Player::EnqueueSort);
-		return true;
-	}
-
-	Qt::DropActions PlaylistModel::supportedDropActions () const
-	{
-		return Qt::CopyAction | Qt::MoveAction;
 	}
 }
 }
