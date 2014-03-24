@@ -51,9 +51,9 @@ namespace VelvetBird
 			{
 				uiInfo = g_hash_table_new (g_str_hash, g_str_equal);
 				auto localUiInfo = uiInfo;
-				auto add = [localUiInfo] (char *name, char *value)
+				auto add = [localUiInfo] (const char *name, const char *value)
 				{
-					g_hash_table_insert (localUiInfo, name, value);
+					g_hash_table_insert (localUiInfo, g_strdup (name), g_strdup (value));
 				};
 				add ("name", "LeechCraft VelvetBird");
 				add ("version", "dummy");
