@@ -236,24 +236,13 @@ namespace LMP
 		case Media::RadioType::TracksList:
 		case Media::RadioType::SingleTrack:
 		{
-			const auto& infosVar = item->data (Media::RadioItemRole::TracksInfos);
-
 			QList<AudioSource> sources;
-			for (const auto& info : infosVar.value<QList<Media::AudioInfo>> ())
+			for (const auto& info : GetSources (index))
 			{
 				const auto& url = info.Other_ ["URL"].toUrl ();
-				if (!url.isValid ())
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "ignoring invalid URL"
-							<< info.Other_;
-					continue;
-				}
-
 				player->PrepareURLInfo (url, MediaInfo::FromAudioInfo (info));
 				sources << url;
 			}
-
 			player->Enqueue (sources, Player::EnqueueNone);
 			return;
 		}
@@ -269,6 +258,38 @@ namespace LMP
 			QTimer::singleShot (15000,
 					this,
 					SLOT (refreshAll ()));
+	}
+
+	QList<Media::AudioInfo> RadioManager::GetSources (const QModelIndex& index) const
+	{
+		const auto intRadioType = index.data (Media::RadioItemRole::ItemType).toInt ();
+		switch (static_cast<Media::RadioType> (intRadioType))
+		{
+		case Media::RadioType::TracksList:
+		case Media::RadioType::SingleTrack:
+		{
+			QList<Media::AudioInfo> result;
+
+			const auto& infosVar = index.data (Media::RadioItemRole::TracksInfos);
+			for (const auto& info : infosVar.value<QList<Media::AudioInfo>> ())
+			{
+				const auto& url = info.Other_ ["URL"].toUrl ();
+				if (!url.isValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "ignoring invalid URL"
+							<< info.Other_;
+					continue;
+				}
+
+				result << info;
+			}
+
+			return result;
+		}
+		default:
+			return {};
+		}
 	}
 
 	void RadioManager::InitProvider (QObject *provObj)
