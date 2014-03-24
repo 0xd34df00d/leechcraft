@@ -50,7 +50,8 @@ namespace CSTP
 	class Task : public QObject
 	{
 		Q_OBJECT
-		std::auto_ptr<QNetworkReply> Reply_;
+
+		std::unique_ptr<QNetworkReply, std::function<void (QNetworkReply*)>> Reply_;
 		QUrl URL_;
 		QTime StartTime_;
 		qint64 Done_, Total_, FileSizeAtStart_;
