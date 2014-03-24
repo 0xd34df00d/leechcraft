@@ -29,41 +29,26 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iquarkcomponentprovider.h>
+#include "backend.h"
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	class Backend;
-	class HistoryManager;
-	class PlotManager;
+	struct StoredTemp;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IQuarkComponentProvider
+	class LmSensorsBackend : public Backend
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
-		std::shared_ptr<Backend> SensorsMgr_;
-		std::unique_ptr<HistoryManager> HistoryMgr_;
-		std::unique_ptr<PlotManager> PlotMgr_;
-
-		QuarkComponent ComponentTemplate_;
+		QList<StoredTemp> Features_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QuarkComponents_t GetComponents () const;
+		LmSensorsBackend (QObject* = 0);
+		~LmSensorsBackend ();
+	private:
+		void EnumerateSensors ();
+	public slots:
+		void update ();
 	};
 }
 }

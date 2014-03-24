@@ -27,14 +27,41 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sensorsmanager.h"
-#include <QTimer>
+#include "lmsensorsbackend.h"
 #include <QtDebug>
+#include <sensors/sensors.h>
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
+	struct StoredChipName
+	{
+		QByteArray Prefix_;
+		sensors_bus_id Bus_;
+		int Addr_;
+		QByteArray Path_;
+
+		StoredChipName ();
+		StoredChipName (const sensors_chip_name*);
+
+		sensors_chip_name ToSensorsChip ();
+	};
+
+	struct StoredSubfeature
+	{
+		StoredChipName Chip_;
+		int SF_;
+	};
+
+	struct StoredTemp
+	{
+		double Max_;
+		double Crit_;
+		StoredSubfeature SF_;
+		QString Name_;
+	};
+
 	StoredChipName::StoredChipName ()
 	: Addr_ (0)
 	{
@@ -53,27 +80,20 @@ namespace HotSensors
 		return { Prefix_.data (), Bus_, Addr_, Path_.data () };
 	}
 
-	SensorsManager::SensorsManager (QObject *parent)
-	: QObject (parent)
+	LmSensorsBackend::LmSensorsBackend (QObject *parent)
+	: Backend (parent)
 	{
 		sensors_init (nullptr);
 
 		EnumerateSensors ();
-
-		auto timer = new QTimer (this);
-		timer->start (1000);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (readTemperatures ()));
 	}
 
-	SensorsManager::~SensorsManager ()
+	LmSensorsBackend::~LmSensorsBackend ()
 	{
 		sensors_cleanup ();
 	}
 
-	void SensorsManager::EnumerateSensors ()
+	void LmSensorsBackend::EnumerateSensors ()
 	{
 		int nr = 0;
 		const sensors_chip_name *chipName = 0;
@@ -120,7 +140,7 @@ namespace HotSensors
 		}
 	}
 
-	void SensorsManager::readTemperatures ()
+	void LmSensorsBackend::update ()
 	{
 		Readings_t readings;
 		for (auto feature : Features_)

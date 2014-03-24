@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
@@ -42,20 +41,16 @@ namespace LeechCraft
 {
 namespace HotSensors
 {
-	class SensorsManager;
-
 	class PlotManager : public QObject
 	{
 		Q_OBJECT
 
 		const ICoreProxy_ptr Proxy_;
 
-		std::weak_ptr<SensorsManager> SensorsMgr_;
-		QStandardItemModel *Model_;
-
+		QStandardItemModel * const Model_;
 		int UpdateCounter_;
 	public:
-		PlotManager (std::weak_ptr<SensorsManager>, ICoreProxy_ptr, QObject* = 0);
+		PlotManager (ICoreProxy_ptr, QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
 

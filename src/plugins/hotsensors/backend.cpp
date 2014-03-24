@@ -27,43 +27,22 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iquarkcomponentprovider.h>
+#include "backend.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	class Backend;
-	class HistoryManager;
-	class PlotManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IQuarkComponentProvider
+	Backend::Backend (QObject *parent)
+	: QObject { parent }
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IQuarkComponentProvider)
-
-		std::shared_ptr<Backend> SensorsMgr_;
-		std::unique_ptr<HistoryManager> HistoryMgr_;
-		std::unique_ptr<PlotManager> PlotMgr_;
-
-		QuarkComponent ComponentTemplate_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QuarkComponents_t GetComponents () const;
-	};
+		auto timer = new QTimer { this };
+		timer->start (1000);
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (update ()));
+	}
 }
 }
