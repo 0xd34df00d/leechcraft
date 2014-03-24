@@ -44,6 +44,7 @@
 #include <Wt/WPanel>
 #include <Wt/WPopupMenu>
 #include <Wt/WCssTheme>
+#include <Wt/WScrollArea>
 #include <util/util.h>
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
@@ -353,8 +354,13 @@ namespace WebAccess
 		ItemView_ = new Wt::WText ();
 		ItemView_->setTextFormat (Wt::XHTMLUnsafeText);
 
+		auto scrollArea = new Wt::WScrollArea;
+		scrollArea->setHorizontalScrollBarPolicy (Wt::WScrollArea::ScrollBarAlwaysOff);
+		scrollArea->setVerticalScrollBarPolicy (Wt::WScrollArea::ScrollBarAsNeeded);
+		scrollArea->setWidget (ItemView_);
+
 		auto itemPanel = new Wt::WPanel ();
-		itemPanel->setCentralWidget (ItemView_);
+		itemPanel->setCentralWidget (scrollArea);
 
 		rightPaneLay->addWidget (itemPanel, 5);
 	}
