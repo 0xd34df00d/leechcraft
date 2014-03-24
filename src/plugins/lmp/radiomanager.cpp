@@ -80,7 +80,12 @@ namespace LMP
 
 			QStringList mimeTypes () const
 			{
-				return { "text/uri-list" };
+				return
+				{
+					"text/uri-list",
+					"x-leechcraft-lmp/media-info-list",
+					"x-leechcraft-lmp/radio-ids"
+				};
 			}
 
 			QMimeData* mimeData (const QModelIndexList& indexes) const
@@ -88,22 +93,39 @@ namespace LMP
 				QList<QUrl> urls;
 				QList<MediaInfo> infos;
 
+				QStringList stationsIds;
+
 				for (const auto& index : indexes)
-					for (const auto& info : Manager_->GetSources (index))
+				{
+					const auto type = index.data (Media::RadioItemRole::ItemType).toInt ();
+					switch (static_cast<Media::RadioType> (type))
 					{
-						urls << info.Other_ ["URL"].toUrl ();
-						infos << MediaInfo::FromAudioInfo (info);
+					case Media::RadioType::Predefined:
+					case Media::RadioType::CustomAddableStreams:
+						stationsIds << index.data (Media::RadioItemRole::RadioID).toString ();
+						break;
+					case Media::RadioType::TracksList:
+					case Media::RadioType::SingleTrack:
+						for (const auto& info : Manager_->GetSources (index))
+						{
+							urls << info.Other_ ["URL"].toUrl ();
+							infos << MediaInfo::FromAudioInfo (info);
+						}
+					default:
+						break;
 					}
+				}
 
 				urls.removeAll ({});
 
-				if (urls.isEmpty ())
+				if (urls.isEmpty () && stationsIds.isEmpty ())
 					return nullptr;
 
 				auto result = new QMimeData;
 				result->setUrls (urls);
 
 				Serialize (result, "x-leechcraft-lmp/media-info-list", infos);
+				Serialize (result, "x-leechcraft-lmp/radio-ids", stationsIds);
 
 				return result;
 			}
