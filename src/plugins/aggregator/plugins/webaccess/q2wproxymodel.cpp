@@ -199,6 +199,8 @@ namespace WebAccess
 		{
 			switch (var.type ())
 			{
+			case QVariant::Bool:
+				return var.toBool ();
 			case QVariant::DateTime:
 				return Wt::WDateTime::fromTime_t (var.toDateTime ().toTime_t ());
 			case QVariant::String:
