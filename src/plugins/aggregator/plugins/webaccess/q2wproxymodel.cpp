@@ -275,6 +275,9 @@ namespace WebAccess
 
 	Wt::WModelIndex Q2WProxyModel::Q2WIdx (const QModelIndex& index) const
 	{
+		if (!index.isValid ())
+			return {};
+
 		struct Info
 		{
 			QModelIndex Idx_;
