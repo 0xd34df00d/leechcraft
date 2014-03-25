@@ -28,7 +28,6 @@ add_library (leechcraft_aggregator_webaccess SHARED
 	${WEBACCESS_MOC_SRCS}
 	)
 target_link_libraries (leechcraft_aggregator_webaccess
-	${WEBACCESS_COMPILED_TRANSLATIONS}
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${Wt_LIBRARY}
