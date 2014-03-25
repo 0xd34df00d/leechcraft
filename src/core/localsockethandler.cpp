@@ -61,8 +61,15 @@ namespace LeechCraft
 	void LocalSocketHandler::handleNewLocalServerConnection ()
 	{
 		std::unique_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
-		while (!socket->bytesAvailable ())
-			socket->waitForReadyRead (1000);
+		if (!socket->bytesAvailable ())
+			socket->waitForReadyRead (2000);
+
+		if (!socket->bytesAvailable ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no data read from the socket";
+			return;
+		}
 
 		QByteArray read = socket->readAll ();
 		QDataStream in (read);
