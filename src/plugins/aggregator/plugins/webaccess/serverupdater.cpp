@@ -48,6 +48,11 @@ namespace WebAccess
 		Wt::WServer::instance ()->post (Session_,
 				[this] { App_->triggerUpdate (); });
 	}
+
+	void ServerUpdater::operator() (const std::function<void ()>& f) const
+	{
+		Wt::WServer::instance ()->post (Session_, f);
+	}
 }
 }
 }

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 
 namespace Wt
 {
@@ -50,6 +51,7 @@ namespace WebAccess
 		ServerUpdater (Wt::WApplication*);
 
 		void operator() () const;
+		void operator() (const std::function<void ()>&) const;
 	};
 }
 }
