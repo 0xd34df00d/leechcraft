@@ -60,10 +60,8 @@ namespace LeechCraft
 
 	void LocalSocketHandler::handleNewLocalServerConnection ()
 	{
-		std::auto_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
-		// I think 100 msecs would be more than enough for the local
-		// connections.
-		if (!socket->bytesAvailable ())
+		std::unique_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
+		while (!socket->bytesAvailable ())
 			socket->waitForReadyRead (1000);
 
 		QByteArray read = socket->readAll ();
