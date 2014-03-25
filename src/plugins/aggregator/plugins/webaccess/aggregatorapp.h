@@ -47,6 +47,7 @@ namespace WebAccess
 {
 	class Q2WProxyModel;
 	class ReadChannelsFilter;
+	class ReadItemsFilter;
 
 	class AggregatorApp : public Wt::WApplication
 	{
@@ -62,6 +63,7 @@ namespace WebAccess
 
 		QAbstractItemModel * const SourceItemModel_;
 		Q2WProxyModel *ItemsModel_;
+		ReadItemsFilter *ItemsFilter_;
 
 		Wt::WTableView *ItemsTable_;
 

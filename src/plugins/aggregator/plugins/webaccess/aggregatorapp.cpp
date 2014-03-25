@@ -52,6 +52,7 @@
 #include "readchannelsfilter.h"
 #include "util.h"
 #include "q2wproxymodel.h"
+#include "readitemsfilter.h"
 #include "wf.h"
 
 namespace LeechCraft
@@ -82,14 +83,15 @@ namespace WebAccess
 
 	AggregatorApp::AggregatorApp (IProxyObject *ap, ICoreProxy_ptr cp,
 			const Wt::WEnvironment& environment)
-	: WApplication (environment)
-	, AP_ (ap)
-	, CP_ (cp)
-	, ObjsThread_ (new WittyThread (this))
-	, ChannelsModel_ (new Q2WProxyModel (AP_->GetChannelsModel (), this))
-	, ChannelsFilter_ (new ReadChannelsFilter (this))
-	, SourceItemModel_ (AP_->CreateItemsModel ())
-	, ItemsModel_ (new Q2WProxyModel (SourceItemModel_, this))
+	: WApplication { environment }
+	, AP_ { ap }
+	, CP_ { cp }
+	, ObjsThread_ { new WittyThread (this) }
+	, ChannelsModel_ { new Q2WProxyModel { AP_->GetChannelsModel (), this } }
+	, ChannelsFilter_ { new ReadChannelsFilter { this } }
+	, SourceItemModel_ { AP_->CreateItemsModel () }
+	, ItemsModel_ { new Q2WProxyModel { SourceItemModel_, this } }
+	, ItemsFilter_ { new ReadItemsFilter { this }}
 	{
 		ChannelsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
 				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount },
@@ -126,6 +128,7 @@ namespace WebAccess
 		ObjsThread_->start ();
 
 		ChannelsFilter_->setSourceModel (ChannelsModel_);
+		ItemsFilter_->setSourceModel (ItemsModel_);
 
 		setTitle ("Aggregator WebAccess");
 		setLoadingIndicator (new Wt::WOverlayLoadingIndicator ());
@@ -138,6 +141,7 @@ namespace WebAccess
 	AggregatorApp::~AggregatorApp ()
 	{
 		delete ChannelsFilter_;
+		delete ItemsFilter_;
 
 		ObjsThread_->quit ();
 		ObjsThread_->wait (1000);
@@ -157,6 +161,7 @@ namespace WebAccess
 
 		const auto cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
 
+		ItemsFilter_->ClearCurrentItem ();
 		ItemsModelDecorator { SourceItemModel_ }.Reset (cid);
 	}
 
@@ -166,11 +171,13 @@ namespace WebAccess
 		if (!idx.isValid ())
 			return;
 
-		const auto& src = ItemsModel_->MapToSource (idx);
+		const auto& src = ItemsModel_->MapToSource (ItemsFilter_->mapToSource (idx));
 		const auto itemId = boost::any_cast<IDType_t> (idx.data (ItemRole::IID));
 		const auto& item = AP_->GetItem (itemId);
 		if (!item)
 			return;
+
+		ItemsFilter_->SetCurrentItem (itemId);
 
 		switch (event.button ())
 		{
@@ -223,8 +230,8 @@ namespace WebAccess
 		auto leftPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
 		rootLay->addLayout (leftPaneLay, 2);
 
-		auto showReadChannels = new Wt::WCheckBox (ToW (QObject::tr ("Include read channels")));
-		showReadChannels->setToolTip (ToW (QObject::tr ("Also display channels that have no unread items.")));
+		auto showReadChannels = new Wt::WCheckBox (ToW (tr ("Include read channels")));
+		showReadChannels->setToolTip (ToW (tr ("Also display channels that have no unread items.")));
 		showReadChannels->setChecked (false);
 		showReadChannels->checked ().connect (WF ([this] { ChannelsFilter_->SetHideRead (false); }));
 		showReadChannels->unChecked ().connect (WF ([this] { ChannelsFilter_->SetHideRead (true); }));
@@ -240,8 +247,14 @@ namespace WebAccess
 		auto rightPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
 		rootLay->addLayout (rightPaneLay, 7);
 
+		auto showReadItems = new Wt::WCheckBox (ToW (tr ("Show read items")));
+		showReadItems->setChecked (false);
+		showReadItems->checked ().connect (WF ([this] { ItemsFilter_->SetHideRead (false); }));
+		showReadItems->unChecked ().connect (WF ([this] { ItemsFilter_->SetHideRead (true); }));
+		rightPaneLay->addWidget (showReadItems);
+
 		ItemsTable_ = new Wt::WTableView ();
-		ItemsTable_->setModel (ItemsModel_);
+		ItemsTable_->setModel (ItemsFilter_);
 		ItemsTable_->mouseWentUp ().connect (this, &AggregatorApp::HandleItemClicked);
 		ItemsTable_->setAlternatingRowColors (true);
 		ItemsTable_->setColumnWidth (0, { 550, Wt::WLength::Pixel });
