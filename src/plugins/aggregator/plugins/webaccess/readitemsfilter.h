@@ -42,6 +42,7 @@ namespace WebAccess
 	{
 		bool HideRead_ = true;
 
+		QList<IDType_t> Prevs_;
 		IDType_t CurrentId_ = static_cast<IDType_t> (-1);
 	public:
 		ReadItemsFilter (WObject* = nullptr);
@@ -49,9 +50,11 @@ namespace WebAccess
 		void SetHideRead (bool);
 
 		void SetCurrentItem (IDType_t);
+		void ClearCurrentItem ();
 	protected:
 		bool filterAcceptRow (int, const Wt::WModelIndex&) const;
 	private:
+		void PullOnePrev ();
 		void Invalidate ();
 	};
 }

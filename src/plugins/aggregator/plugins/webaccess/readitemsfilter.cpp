@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "readitemsfilter.h"
+#include <Wt/WTimer>
 #include "aggregatorapp.h"
 #include "wf.h"
 
@@ -54,9 +55,18 @@ namespace WebAccess
 		if (id == CurrentId_)
 			return;
 
+		if (Prevs_.isEmpty ())
+			Wt::WTimer::singleShot (500, WF ([this] { PullOnePrev (); }));
+
+		Prevs_ << CurrentId_;
 		CurrentId_ = id;
 
 		Invalidate ();
+	}
+
+	void ReadItemsFilter::ClearCurrentItem ()
+	{
+		SetCurrentItem (static_cast<IDType_t> (-1));
 	}
 
 	bool ReadItemsFilter::filterAcceptRow (int row, const Wt::WModelIndex& parent) const
@@ -68,8 +78,9 @@ namespace WebAccess
 			{
 				try
 				{
-					const auto id = idx.data (AggregatorApp::ItemRole::IID);
-					if (boost::any_cast<IDType_t> (id) != CurrentId_)
+					const auto idAny = idx.data (AggregatorApp::ItemRole::IID);
+					const auto id = boost::any_cast<IDType_t> (idAny);
+					if (id != CurrentId_ && !Prevs_.contains (id))
 					{
 						const auto data = idx.data (AggregatorApp::ItemRole::IsRead);
 						if (boost::any_cast<bool> (data))
@@ -87,6 +98,18 @@ namespace WebAccess
 		}
 
 		return Wt::WSortFilterProxyModel::filterAcceptRow (row, parent);
+	}
+
+	void ReadItemsFilter::PullOnePrev ()
+	{
+		if (Prevs_.isEmpty ())
+			return;
+
+		Prevs_.removeFirst ();
+		Invalidate ();
+
+		if (!Prevs_.isEmpty ())
+			Wt::WTimer::singleShot (500, WF ([this] { PullOnePrev (); }));
 	}
 
 	void ReadItemsFilter::Invalidate ()
