@@ -108,43 +108,44 @@ namespace WebAccess
 	, App_ { app }
 	, Update_ { app }
 	{
+		const auto type = Qt::DirectConnection;
 		connect (src,
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleDataChanged (QModelIndex, QModelIndex)),
-				Qt::QueuedConnection);
+				type);
 
 		connect (src,
 				SIGNAL (rowsAboutToBeInserted (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsAboutToBeInserted (QModelIndex, int, int)),
-				Qt::QueuedConnection);
+				type);
 		connect (src,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsInserted (QModelIndex, int, int)),
-				Qt::QueuedConnection);
+				type);
 		connect (src,
 				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsAboutToBeRemoved (QModelIndex, int, int)),
-				Qt::QueuedConnection);
+				type);
 		connect (src,
 				SIGNAL (rowsRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsRemoved (QModelIndex, int, int)),
-				Qt::QueuedConnection);
+				type);
 
 		connect (src,
 				SIGNAL (modelAboutToBeReset ()),
 				this,
 				SLOT (handleModelAboutToBeReset ()),
-				Qt::QueuedConnection);
+				type);
 		connect (src,
 				SIGNAL (modelReset ()),
 				this,
 				SLOT (handleModelReset ()),
-				Qt::QueuedConnection);
+				type);
 	}
 
 	void Q2WProxyModel::SetRoleMappings (const QMap<int, int>& mapping)
