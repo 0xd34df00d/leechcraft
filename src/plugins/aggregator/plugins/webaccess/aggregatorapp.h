@@ -76,7 +76,8 @@ namespace WebAccess
 
 		enum ItemRole
 		{
-			IID = Wt::UserRole + 1
+			IID = Wt::UserRole + 1,
+			IsRead
 		};
 
 		AggregatorApp (IProxyObject*, ICoreProxy_ptr, const Wt::WEnvironment& environment);

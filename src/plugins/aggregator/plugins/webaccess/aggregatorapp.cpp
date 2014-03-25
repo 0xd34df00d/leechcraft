@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "aggregatorapp.h"
-#include <tuple>
 #include <QObject>
 #include <QThread>
 #include <QtDebug>
@@ -53,6 +52,7 @@
 #include "readchannelsfilter.h"
 #include "util.h"
 #include "q2wproxymodel.h"
+#include "wf.h"
 
 namespace LeechCraft
 {
@@ -97,7 +97,8 @@ namespace WebAccess
 			}));
 
 		ItemsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
-				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId }
+				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId },
+				{ ItemRole::IsRead, Aggregator::IItemsModel::ItemRole::IsRead }
 			}));
 		ItemsModel_->AddDataMorphism ([] (const QModelIndex& idx, int role) -> boost::any
 			{
