@@ -91,8 +91,7 @@ namespace WebAccess
 
 	void ReadItemsFilter::Invalidate ()
 	{
-		setFilterRole (Wt::EditRole);
-		setFilterRole (Wt::DisplayRole);
+		setFilterRegExp (".*");
 	}
 }
 }
