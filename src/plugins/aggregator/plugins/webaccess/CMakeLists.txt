@@ -19,12 +19,16 @@ set (WEBACCESS_SRCS
 	xmlsettingsmanager.cpp
 	)
 
+#CreateTrs ("aggregator_webaccess" "en;ru_RU" WEBACCESS_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("aggregator_webaccess" "en;ru_RU" "${WEBACCESS_SRCS}" "" "aggregatorwebaccesssettings.xml")
+
 add_library (leechcraft_aggregator_webaccess SHARED
 	${WEBACCESS_COMPILED_TRANSLATIONS}
 	${WEBACCESS_SRCS}
 	${WEBACCESS_MOC_SRCS}
 	)
 target_link_libraries (leechcraft_aggregator_webaccess
+	${WEBACCESS_COMPILED_TRANSLATIONS}
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${Wt_LIBRARY}
