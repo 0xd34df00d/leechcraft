@@ -365,12 +365,22 @@ namespace WebAccess
 
 	void Q2WProxyModel::handleModelAboutToBeReset ()
 	{
+		if ((LastModelResetRC_ = rowCount ({})))
+			rowsAboutToBeRemoved () ({}, 0, LastModelResetRC_ - 1);
 	}
 
 	void Q2WProxyModel::handleModelReset ()
 	{
-		Wt::WApplication::UpdateLock lock { App_ };
-		modelReset () ();
+		if (LastModelResetRC_)
+			rowsRemoved () ({}, 0, LastModelResetRC_);
+
+		LastModelResetRC_ = 0;
+
+		if (const auto rc = rowCount ({}))
+		{
+			rowsAboutToBeInserted () ({}, 0, rc - 1);
+			rowsInserted () ({}, 0, rc - 1);
+		}
 
 		Update_ ();
 	}

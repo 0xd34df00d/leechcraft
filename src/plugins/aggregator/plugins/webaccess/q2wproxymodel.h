@@ -59,6 +59,8 @@ namespace WebAccess
 
 		Wt::WApplication * const App_;
 		ServerUpdater Update_;
+
+		int LastModelResetRC_;
 	public:
 		typedef std::function<boost::any (QModelIndex, int)> Morphism_t;
 	private:
