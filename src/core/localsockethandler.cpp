@@ -68,7 +68,9 @@ namespace LeechCraft
 		QDataStream in (read);
 		QStringList arguments;
 		in >> arguments;
-		arguments.removeFirst ();
+
+		if (!arguments.isEmpty ())
+			arguments.removeFirst ();
 
 		qDebug () << Q_FUNC_INFO << arguments;
 
