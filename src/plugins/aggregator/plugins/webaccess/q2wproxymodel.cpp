@@ -284,6 +284,29 @@ namespace WebAccess
 		return Variant2Any (Src_->headerData (section, Qt::Horizontal, Qt::DisplayRole));
 	}
 
+	void* Q2WProxyModel::toRawIndex (const Wt::WModelIndex& index) const
+	{
+		return index.internalPointer () ? index.internalPointer () : Root_.get ();
+	}
+
+	Wt::WModelIndex Q2WProxyModel::fromRawIndex (void *rawIndex) const
+	{
+		if (rawIndex == Root_.get ())
+			return {};
+
+		auto items = Root_->GetChildren ();
+		for (int i = 0; i < items.size (); ++i)
+		{
+			auto thisItem = items.at (i);
+			if (thisItem.get () == rawIndex)
+				return createIndex (thisItem->GetRow (), 0, thisItem.get ());
+
+			items << thisItem->GetChildren ();
+		}
+
+		return {};
+	}
+
 	QModelIndex Q2WProxyModel::W2QIdx (const Wt::WModelIndex& index) const
 	{
 		if (!index.isValid ())

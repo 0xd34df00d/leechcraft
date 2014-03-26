@@ -79,6 +79,9 @@ namespace WebAccess
 		boost::any data (const Wt::WModelIndex& index, int role) const override;
 		Wt::WModelIndex index (int row, int column, const Wt::WModelIndex& parent) const override;
 		boost::any headerData (int section, Wt::Orientation orientation, int role) const override;
+
+		void* toRawIndex (const Wt::WModelIndex& index) const override;
+		Wt::WModelIndex fromRawIndex (void* rawIndex) const override;
 	private:
 		int WtRole2Qt (int) const;
 		QModelIndex W2QIdx (const Wt::WModelIndex&) const;
