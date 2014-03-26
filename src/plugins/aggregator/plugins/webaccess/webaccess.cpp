@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <interfaces/aggregator/iproxyobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "servermanager.h"
 #include "xmlsettingsmanager.h"
 
@@ -43,6 +44,8 @@ namespace WebAccess
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		Util::InstallTranslator ("aggregator_webaccess");
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "aggregatorwebaccesssettings.xml");
