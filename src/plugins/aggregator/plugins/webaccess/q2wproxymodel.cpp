@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "q2wproxymodel.h"
+#include <iterator>
 #include <QAbstractItemModel>
 #include <QVector>
 #include <QtDebug>
@@ -46,6 +47,8 @@ namespace WebAccess
 {
 	typedef std::weak_ptr<ModelItem> ModelItem_wtr;
 	typedef QVector<ModelItem_ptr> ModelItemsList_t;
+
+	typedef std::shared_ptr<const ModelItem> ModelItem_cptr;
 
 	class ModelItem : public std::enable_shared_from_this<ModelItem>
 	{
@@ -70,6 +73,11 @@ namespace WebAccess
 		ModelItem_ptr GetChild (int row) const
 		{
 			return Children_.value (row);
+		}
+
+		const ModelItemsList_t& GetChildren () const
+		{
+			return Children_;
 		}
 
 		ModelItem* EnsureChild (int row)
@@ -98,6 +106,19 @@ namespace WebAccess
 		int GetRow (const ModelItem_ptr& item) const
 		{
 			return Children_.indexOf (item);
+		}
+
+		int GetRow (const ModelItem_cptr& item) const
+		{
+			const auto pos = std::find (Children_.begin (), Children_.end (), item);
+			return pos == Children_.end () ?
+					-1 :
+					std::distance (Children_.begin (), pos);
+		}
+
+		int GetRow () const
+		{
+			return Parent_.lock ()->GetRow (shared_from_this ());
 		}
 	};
 
@@ -187,8 +208,7 @@ namespace WebAccess
 		if (parentItem == Root_)
 			return {};
 
-		const auto parentParent = parentItem->GetParent ();
-		return createIndex (parentParent->GetRow (parentItem), 0, parentItem.get ());
+		return createIndex (parentItem->GetRow (), 0, parentItem.get ());
 	}
 
 	namespace
