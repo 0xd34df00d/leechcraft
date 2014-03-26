@@ -1049,6 +1049,8 @@ namespace Aggregator
 
 		lock.Good ();
 
+		emit itemsRemoved ({ items });
+
 		for (const auto& cid : modifiedChannels)
 		{
 			try
