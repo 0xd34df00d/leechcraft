@@ -70,7 +70,7 @@ namespace Aggregator
 		QStringList GetCategories (int) const;
 		void Reset (const IDType_t&);
 		void Reset (const QList<IDType_t>&);
-		void RemoveItems (QSet<IDType_t>);
+		void RemoveItems (const QSet<IDType_t>&);
 		void ItemDataUpdated (Item_ptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;

@@ -150,7 +150,7 @@ namespace Aggregator
 		endResetModel ();
 	}
 
-	void ItemsListModel::RemoveItems (QSet<IDType_t> ids)
+	void ItemsListModel::RemoveItems (const QSet<IDType_t>& ids)
 	{
 		if (ids.isEmpty ())
 			return;
@@ -160,8 +160,10 @@ namespace Aggregator
 		if (shouldReset)
 			beginResetModel ();
 
+		int remainingCount = ids.size ();
+
 		for (auto i = CurrentItems_.begin ();
-				i != CurrentItems_.end () && !ids.isEmpty (); )
+				i != CurrentItems_.end () && remainingCount; )
 		{
 			if (!ids.contains (i->ItemID_))
 			{
@@ -169,13 +171,15 @@ namespace Aggregator
 				continue;
 			}
 
-			ids.remove (i->ItemID_);
 			if (!shouldReset)
 			{
 				const size_t dist = std::distance (CurrentItems_.begin (), i);
 				beginRemoveRows (QModelIndex (), dist, dist);
 			}
+
 			i = CurrentItems_.erase (i);
+			--remainingCount;
+
 			if (!shouldReset)
 			{
 				endRemoveRows ();
