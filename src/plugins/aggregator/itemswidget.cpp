@@ -203,12 +203,6 @@ namespace Aggregator
 
 		currentItemChanged ();
 
-		connect (&StorageBackendManager::Instance (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				this,
-				SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)),
-				Qt::QueuedConnection);
-
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector",
 				this, "selectorVisiblityChanged");
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView",
@@ -1142,20 +1136,6 @@ namespace Aggregator
 		return result;
 	}
 
-	// TODO move this connection to the ItemsListModel
-	void ItemsWidget::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
-	{
-		if (Impl_->CurrentItemsModel_->GetCurrentChannel () == channel->ChannelID_)
-			Impl_->CurrentItemsModel_->ItemDataUpdated (item);
-		else
-			Q_FOREACH (std::shared_ptr<ItemsListModel> m, Impl_->SupplementaryModels_)
-				if (m->GetCurrentChannel () == channel->ChannelID_)
-				{
-					m->ItemDataUpdated (item);
-					break;
-				}
-	}
-
 	void ItemsWidget::invalidateMergeMode ()
 	{
 		if (Impl_->MergeMode_)
@@ -1243,8 +1223,8 @@ namespace Aggregator
 				[&ids] (QAbstractItemModel *model)
 					{ qobject_cast<ItemsListModel*> (model)->RemoveItems (ids); });
 
-		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
-		Q_FOREACH (IDType_t id, ids)
+		const auto sb = Core::Instance ().GetStorageBackend ();
+		for (auto id : ids)
 			sb->RemoveItem (id);
 	}
 
