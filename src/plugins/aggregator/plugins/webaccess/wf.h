@@ -38,108 +38,104 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	namespace
+	template<size_t...>
+	struct Seq {};
+
+	template<size_t N, size_t... S>
+	struct Gen : Gen<N - 1, N - 1, S...> {};
+
+	template<size_t... S>
+	struct Gen<0, S...>
 	{
-		template<size_t...>
-		struct Seq {};
+		typedef Seq<S...> type;
+	};
 
-		template<size_t N, size_t... S>
-		struct Gen : Gen<N - 1, N - 1, S...> {};
-
-		template<size_t... S>
-		struct Gen<0, S...>
-		{
-			typedef Seq<S...> type;
-		};
-
-		template<typename F, typename Tuple, size_t... S>
-		constexpr bool AppliableHelper (int, Seq<S...>, decltype ((*static_cast<F*> (nullptr)) (std::get<S> (Tuple {})...)) * = nullptr)
-		{
-			return true;
-		}
-
-		template<typename F, typename Tuple, size_t... S>
-		constexpr bool AppliableHelper (char, Seq<S...>)
-		{
-			return false;
-		}
-
-		template<typename F, typename Tuple>
-		struct Appliable
-		{
-			constexpr static bool value = AppliableHelper<F, Tuple> (1, typename Gen<std::tuple_size<Tuple>::value>::type {});
-		};
-
-		template<typename... Args>
-		struct CutoffOne;
-
-		template<typename Arg, typename Arg2, typename... Rest>
-		struct CutoffOne<Arg, Arg2, Rest...>
-		{
-			typedef decltype (std::tuple_cat (std::tuple<typename std::decay<Arg>::type> { Arg {} }, typename CutoffOne<Arg2, Rest...>::type {})) type;
-		};
-
-		template<typename Last>
-		struct CutoffOne<Last>
-		{
-			typedef std::tuple<> type;
-		};
-
-		template<>
-		struct CutoffOne<>
-		{
-			typedef std::tuple<> type;
-		};
-
-		template<template<typename... Args> class MetaF, typename Tuple, size_t... S>
-		MetaF<decltype (std::get<S> (Tuple {}))...> PerformWithTupleTypesImpl (Seq<S...>)
-		{
-			return {};
-		}
-
-		template<template<typename... Args> class MetaF, typename Tuple>
-		struct PerformWithTupleTypes
-		{
-			typedef typename decltype (PerformWithTupleTypesImpl<MetaF, Tuple> (typename Gen<std::tuple_size<Tuple>::value>::type {}))::type type;
-		};
-
-		template<typename F, typename ArgsTuple>
-		struct FArgCount
-		{
-			constexpr static size_t value ()
-			{
-				return Appliable<F, ArgsTuple>::value ?
-						std::tuple_size<ArgsTuple>::value :
-							(std::tuple_size<ArgsTuple>::value ? FArgCount<F, typename PerformWithTupleTypes<CutoffOne, ArgsTuple>::type>::value () : 0);
-			}
-		};
-
-		template<typename F>
-		struct WFImpl
-		{
-			F F_;
-
-			template<typename Tuple, size_t... S>
-			void CallHelper (const Tuple& tuple, Seq<S...>)
-			{
-				F_ (std::get<S> (tuple)...);
-			}
-
-			template<typename... Args>
-			void operator() (Args... args)
-			{
-				constexpr auto argCount = FArgCount<F, std::tuple<Args...>>::value ();
-				CallHelper (std::make_tuple (args...), typename Gen<argCount>::type {});
-			}
-		};
-
-		template<typename F>
-		WFImpl<F> WF (const F& f)
-		{
-			return { f };
-		}
+	template<typename F, typename Tuple, size_t... S>
+	constexpr bool AppliableHelper (int, Seq<S...>, decltype ((*static_cast<F*> (nullptr)) (std::get<S> (Tuple {})...)) * = nullptr)
+	{
+		return true;
 	}
 
+	template<typename F, typename Tuple, size_t... S>
+	constexpr bool AppliableHelper (char, Seq<S...>)
+	{
+		return false;
+	}
+
+	template<typename F, typename Tuple>
+	struct Appliable
+	{
+		constexpr static bool value = AppliableHelper<F, Tuple> (1, typename Gen<std::tuple_size<Tuple>::value>::type {});
+	};
+
+	template<typename... Args>
+	struct CutoffOne;
+
+	template<typename Arg, typename Arg2, typename... Rest>
+	struct CutoffOne<Arg, Arg2, Rest...>
+	{
+		typedef decltype (std::tuple_cat (std::tuple<typename std::decay<Arg>::type> { Arg {} }, typename CutoffOne<Arg2, Rest...>::type {})) type;
+	};
+
+	template<typename Last>
+	struct CutoffOne<Last>
+	{
+		typedef std::tuple<> type;
+	};
+
+	template<>
+	struct CutoffOne<>
+	{
+		typedef std::tuple<> type;
+	};
+
+	template<template<typename... Args> class MetaF, typename Tuple, size_t... S>
+	MetaF<decltype (std::get<S> (Tuple {}))...> PerformWithTupleTypesImpl (Seq<S...>)
+	{
+		return {};
+	}
+
+	template<template<typename... Args> class MetaF, typename Tuple>
+	struct PerformWithTupleTypes
+	{
+		typedef typename decltype (PerformWithTupleTypesImpl<MetaF, Tuple> (typename Gen<std::tuple_size<Tuple>::value>::type {}))::type type;
+	};
+
+	template<typename F, typename ArgsTuple>
+	struct FArgCount
+	{
+		constexpr static size_t value ()
+		{
+			return Appliable<F, ArgsTuple>::value ?
+					std::tuple_size<ArgsTuple>::value :
+						(std::tuple_size<ArgsTuple>::value ? FArgCount<F, typename PerformWithTupleTypes<CutoffOne, ArgsTuple>::type>::value () : 0);
+		}
+	};
+
+	template<typename F>
+	struct WFImpl
+	{
+		F F_;
+
+		template<typename Tuple, size_t... S>
+		void CallHelper (const Tuple& tuple, Seq<S...>)
+		{
+			F_ (std::get<S> (tuple)...);
+		}
+
+		template<typename... Args>
+		void operator() (Args... args)
+		{
+			constexpr auto argCount = FArgCount<F, std::tuple<Args...>>::value ();
+			CallHelper (std::make_tuple (args...), typename Gen<argCount>::type {});
+		}
+	};
+
+	template<typename F>
+	WFImpl<F> WF (const F& f)
+	{
+		return { f };
+	}
 }
 }
 }
