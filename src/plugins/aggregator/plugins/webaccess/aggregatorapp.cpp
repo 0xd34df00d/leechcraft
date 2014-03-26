@@ -70,6 +70,7 @@ namespace WebAccess
 			WittyThread (Wt::WApplication *app)
 			: App_ { app }
 			{
+				setObjectName ("Aggregator WebAccess (Wt Thread)");
 			}
 		protected:
 			void run ()
