@@ -129,7 +129,7 @@ namespace Aggregator
 	{
 	}
 
-	void DumbStorage::RemoveItem (const IDType_t&)
+	void DumbStorage::RemoveItems (const QSet<IDType_t>&)
 	{
 	}
 

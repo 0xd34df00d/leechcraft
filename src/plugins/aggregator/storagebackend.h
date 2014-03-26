@@ -316,15 +316,15 @@ namespace Aggregator
 
 		/** @brief Removes an already existing item.
 		 *
-		 * This function would emit channelDataUpdated() signal after it
-		 * finishes.
+		 * This function emits channelDataUpdated() and itemsRemoved()
+		 * signals if it removes all the items successfully.
 		 *
-		 * If the specified item doesn't exist, this function should do
-		 * nothing.
+		 * If some of the specified items don't exist, this function
+		 * merely ignores them..
 		 *
-		 * @param[in] id ID of the item that should be removed.
+		 * @param[in] ids IDs of the items that should be removed.
 		 */
-		virtual void RemoveItem (const IDType_t& id) = 0;
+		virtual void RemoveItems (const QSet<IDType_t>& ids) = 0;
 
 		/** @brief Removes an already existing channel.
 		 *

@@ -1223,9 +1223,7 @@ namespace Aggregator
 				[&ids] (QAbstractItemModel *model)
 					{ qobject_cast<ItemsListModel*> (model)->RemoveItems (ids); });
 
-		const auto sb = Core::Instance ().GetStorageBackend ();
-		for (auto id : ids)
-			sb->RemoveItem (id);
+		Core::Instance ().GetStorageBackend ()->RemoveItems (ids);
 	}
 
 	void ItemsWidget::on_ActionPrevUnreadItem__triggered ()
