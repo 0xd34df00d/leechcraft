@@ -1217,12 +1217,6 @@ namespace Aggregator
 			return;
 
 		Impl_->Ui_.Items_->clearSelection ();
-
-		const auto& models = Impl_->ItemLists_->GetAllModels ();
-		std::for_each (models.begin (), models.end (),
-				[&ids] (QAbstractItemModel *model)
-					{ qobject_cast<ItemsListModel*> (model)->RemoveItems (ids); });
-
 		Core::Instance ().GetStorageBackend ()->RemoveItems (ids);
 	}
 
