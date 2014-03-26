@@ -1236,6 +1236,8 @@ namespace Aggregator
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
+		Impl_->Ui_.Items_->clearSelection ();
+
 		const auto& models = Impl_->ItemLists_->GetAllModels ();
 		std::for_each (models.begin (), models.end (),
 				[&ids] (QAbstractItemModel *model)
