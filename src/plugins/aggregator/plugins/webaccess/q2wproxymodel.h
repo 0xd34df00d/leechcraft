@@ -73,12 +73,12 @@ namespace WebAccess
 
 		QModelIndex MapToSource (const Wt::WModelIndex&) const;
 
-		int columnCount (const Wt::WModelIndex& parent) const;
-		int rowCount (const Wt::WModelIndex& parent) const;
-		Wt::WModelIndex parent (const Wt::WModelIndex& index) const;
-		boost::any data (const Wt::WModelIndex& index, int role) const;
-		Wt::WModelIndex index (int row, int column, const Wt::WModelIndex& parent) const;
-		boost::any headerData (int section, Wt::Orientation orientation, int role) const;
+		int columnCount (const Wt::WModelIndex& parent) const override;
+		int rowCount (const Wt::WModelIndex& parent) const override;
+		Wt::WModelIndex parent (const Wt::WModelIndex& index) const override;
+		boost::any data (const Wt::WModelIndex& index, int role) const override;
+		Wt::WModelIndex index (int row, int column, const Wt::WModelIndex& parent) const override;
+		boost::any headerData (int section, Wt::Orientation orientation, int role) const override;
 	private:
 		int WtRole2Qt (int) const;
 		QModelIndex W2QIdx (const Wt::WModelIndex&) const;
