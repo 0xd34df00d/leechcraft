@@ -177,6 +177,15 @@ namespace CrashProcess
 			Ui_.TraceDisplay_->append (line);
 	}
 
+	void CrashDialog::handleError (QProcess::ExitStatus, int code, QProcess::ProcessError error, const QString& errorStr)
+	{
+		Ui_.TraceDisplay_->append ("\n\nGDB crashed :(");
+		Ui_.TraceDisplay_->append (tr ("Exit code: %1; error code: %2; error string: %3.")
+				.arg (code)
+				.arg (error)
+				.arg (errorStr));
+	}
+
 	void CrashDialog::clearGdb ()
 	{
 		GdbLauncher_.reset ();
@@ -197,6 +206,10 @@ namespace CrashProcess
 				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
 				SLOT (handleFinished (int, QProcess::ExitStatus)));
+		connect (GdbLauncher_.get (),
+				SIGNAL (error (QProcess::ExitStatus, int, QProcess::ProcessError, QString)),
+				this,
+				SLOT (handleError (QProcess::ExitStatus, int, QProcess::ProcessError, QString)));
 
 		Ui_.TraceDisplay_->append ("=== SYSTEM INFO ===");
 		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (Info_.Signal_));
