@@ -27,8 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_MERGEMODEL_H
-#define UTIL_MERGEMODEL_H
+#pragma once
+
+#include <memory>
 #include <QPointer>
 #include <QAbstractProxyModel>
 #include <QStringList>
@@ -38,6 +39,9 @@ namespace LeechCraft
 {
 	namespace Util
 	{
+		class ModelItem;
+		typedef std::shared_ptr<ModelItem> ModelItem_ptr;
+
 		/** Merges data from multiple source models into one resulting
 		 * model and provides means to lookup models by row, get
 		 * starting rows for a model etc.
@@ -59,12 +63,13 @@ namespace LeechCraft
 			models_t Models_;
 		private:
 			QStringList Headers_;
+
+			ModelItem_ptr Root_;
 		public:
 			typedef models_t::iterator iterator;
 			typedef models_t::const_iterator const_iterator;
 
 			MergeModel (const QStringList&, QObject* = 0);
-			virtual ~MergeModel ();
 
 			virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 			virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
@@ -206,6 +211,8 @@ namespace LeechCraft
 			virtual void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
 			virtual void handleRowsInserted (const QModelIndex&, int, int);
 			virtual void handleRowsRemoved (const QModelIndex&, int, int);
+			virtual void handleModelAboutToBeReset ();
+			virtual void handleModelReset ();
 		protected:
 			/** This virtual function could be overridden to provide
 			 * custom filtering facilities. If the row in the model
@@ -217,8 +224,5 @@ namespace LeechCraft
 		private:
 			int RowCount (QAbstractItemModel*) const;
 		};
-	};
-};
-
-#endif
-
+	}
+}
