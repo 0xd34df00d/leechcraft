@@ -234,7 +234,7 @@ namespace Util
 	QModelIndex MergeModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))
-			return QModelIndex ();
+			return {};
 
 		auto parentItem = parent.isValid () ?
 				static_cast<ModelItem*> (parent.internalPointer ()) :
@@ -292,7 +292,7 @@ namespace Util
 			}
 		}
 
-		return currentItem->GetIndex ();
+		return createIndex (currentItem->GetRow (), sourceIndex.column (), currentItem.get ());
 	}
 
 	QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
