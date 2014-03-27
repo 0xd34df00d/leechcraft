@@ -267,9 +267,9 @@ namespace LMP
 		auto collection = Core::Instance ().GetLocalCollection ();
 
 		QModelIndexList mapped;
-		Q_FOREACH (const auto& src, idxs)
+		for (const auto& src : idxs)
 		{
-			const QModelIndex& index = CollectionFilterModel_->mapToSource (src);
+			const auto& index = CollectionFilterModel_->mapToSource (src);
 			if (index.isValid ())
 				mapped << index;
 		}
