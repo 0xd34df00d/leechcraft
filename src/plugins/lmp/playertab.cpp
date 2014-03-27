@@ -435,8 +435,8 @@ namespace LMP
 	void PlayerTab::SetupCollection ()
 	{
 		Ui_.CollectionTree_->setItemDelegate (new CollectionDelegate (Ui_.CollectionTree_));
-		auto collection = Core::Instance ().GetLocalCollection ();
-		CollectionFilterModel_->setSourceModel (collection->GetCollectionModel ());
+		auto collMgr = Core::Instance ().GetCollectionsManager ();
+		CollectionFilterModel_->setSourceModel (collMgr->GetModel ());
 		Ui_.CollectionTree_->setModel (CollectionFilterModel_);
 
 		QAction *addToPlaylist = new QAction (tr ("Add to playlist"), this);

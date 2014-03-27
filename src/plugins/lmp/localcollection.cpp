@@ -48,7 +48,6 @@
 #include "albumartmanager.h"
 #include "xmlsettingsmanager.h"
 #include "localcollectionwatcher.h"
-#include "collectionsortermodel.h"
 
 namespace LeechCraft
 {
@@ -79,13 +78,11 @@ namespace LMP
 
 			QStringList mimeTypes () const
 			{
-				return QStringList ("text/uri-list");
+				return { "text/uri-list" };
 			}
 
 			QMimeData* mimeData (const QModelIndexList& indexes) const
 			{
-				auto result = new QMimeData;
-
 				QList<QUrl> urls;
 				for (const auto& index : indexes)
 				{
@@ -93,9 +90,11 @@ namespace LMP
 					std::transform (paths.begin (), paths.end (), std::back_inserter (urls),
 							[] (const QString& path) { return QUrl::fromLocalFile (path); });
 				}
+				if (urls.isEmpty ())
+					return nullptr;
 
+				auto result = new QMimeData;
 				result->setUrls (urls);
-
 				return result;
 			}
 		};
@@ -106,7 +105,6 @@ namespace LMP
 	, IsReady_ (false)
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new CollectionDraggableModel (this))
-	, Sorter_ (new CollectionSorterModel (this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
@@ -129,7 +127,7 @@ namespace LMP
 				this,
 				SLOT (handleLoadFinished ()));
 		auto worker = [] () { return LocalCollectionStorage ().Load (); };
-		auto future = QtConcurrent::run (std::function<LocalCollectionStorage::LoadResult ()> (worker));
+		auto future = QtConcurrent::run (worker);
 		loadWatcher->setFuture (future);
 
 		auto& xsd = XmlSettingsManager::Instance ();
@@ -140,10 +138,6 @@ namespace LMP
 				SIGNAL (rootPathsChanged (QStringList)),
 				this,
 				SLOT (saveRootPaths ()));
-
-		Sorter_->setSourceModel (CollectionModel_);
-		Sorter_->setDynamicSortFilter (true);
-		Sorter_->sort (0);
 	}
 
 	void LocalCollection::FinalizeInit ()
@@ -169,19 +163,19 @@ namespace LMP
 
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
 	{
-		return Sorter_;
+		return CollectionModel_;
 	}
 
 	void LocalCollection::Enqueue (const QModelIndex& index, Player *player)
 	{
-		player->Enqueue (CollectPaths (index, Sorter_));
+		player->Enqueue (CollectPaths (index, CollectionModel_));
 	}
 
 	void LocalCollection::Enqueue (const QList<QModelIndex>& indexes, Player *player)
 	{
 		const auto& paths = std::accumulate (indexes.begin (), indexes.end (), QStringList (),
 				[this] (const QStringList& paths, decltype (indexes.front ()) item)
-					{ return paths + CollectPaths (item, Sorter_); });
+					{ return paths + CollectPaths (item, CollectionModel_); });
 		player->Enqueue (paths);
 	}
 

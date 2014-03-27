@@ -42,7 +42,6 @@ class QStandardItemModel;
 class QStandardItem;
 class QAbstractItemModel;
 class QModelIndex;
-class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -66,10 +65,9 @@ namespace LMP
 		QIcon ArtistIcon_;
 		LocalCollectionStorage * const Storage_;
 		QStandardItemModel * const CollectionModel_;
-		QSortFilterProxyModel * const Sorter_;
 		LocalCollectionWatcher * const FilesWatcher_;
 
-		AlbumArtManager *AlbumArtMgr_;
+		AlbumArtManager * const AlbumArtMgr_;
 
 		Collection::Artists_t Artists_;
 
