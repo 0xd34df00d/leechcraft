@@ -112,6 +112,7 @@ set (SRCS
 	recursivedirwatcher.cpp
 	rganalysismanager.cpp
 	rgfiltercontroller.cpp
+	collectionsmanager.cpp
 	engine/audiosource.cpp
 	engine/filterelement.cpp
 	engine/gstutil.cpp
