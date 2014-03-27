@@ -181,19 +181,6 @@ namespace LMP
 		return CollectionModel_;
 	}
 
-	void LocalCollection::Enqueue (const QModelIndex& index, Player *player)
-	{
-		player->Enqueue (CollectPaths (index, CollectionModel_));
-	}
-
-	void LocalCollection::Enqueue (const QList<QModelIndex>& indexes, Player *player)
-	{
-		const auto& paths = std::accumulate (indexes.begin (), indexes.end (), QStringList (),
-				[this] (const QStringList& paths, decltype (indexes.front ()) item)
-					{ return paths + CollectPaths (item, CollectionModel_); });
-		player->Enqueue (paths);
-	}
-
 	void LocalCollection::Clear ()
 	{
 		Storage_->Clear ();
