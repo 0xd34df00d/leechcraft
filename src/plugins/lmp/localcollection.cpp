@@ -68,11 +68,11 @@ namespace LMP
 			return paths;
 		}
 
-		class CollectionDraggableModel : public CollectionSorterModel
+		class CollectionDraggableModel : public QStandardItemModel
 		{
 		public:
 			CollectionDraggableModel (LocalCollection *parent)
-			: CollectionSorterModel (parent)
+			: QStandardItemModel (parent)
 			{
 				setSupportedDragActions (Qt::CopyAction);
 			}
@@ -84,10 +84,10 @@ namespace LMP
 
 			QMimeData* mimeData (const QModelIndexList& indexes) const
 			{
-				QMimeData *result = new QMimeData;
+				auto result = new QMimeData;
 
 				QList<QUrl> urls;
-				Q_FOREACH (const auto& index, indexes)
+				for (const auto& index : indexes)
 				{
 					const auto& paths = CollectPaths (index, this);
 					std::transform (paths.begin (), paths.end (), std::back_inserter (urls),
@@ -105,8 +105,8 @@ namespace LMP
 	: QObject (parent)
 	, IsReady_ (false)
 	, Storage_ (new LocalCollectionStorage (this))
-	, CollectionModel_ (new QStandardItemModel (this))
-	, Sorter_ (new CollectionDraggableModel (this))
+	, CollectionModel_ (new CollectionDraggableModel (this))
+	, Sorter_ (new CollectionSorterModel (this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
