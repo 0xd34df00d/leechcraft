@@ -113,6 +113,7 @@ set (SRCS
 	rganalysismanager.cpp
 	rgfiltercontroller.cpp
 	collectionsmanager.cpp
+	collectionwidget.cpp
 	engine/audiosource.cpp
 	engine/filterelement.cpp
 	engine/gstutil.cpp
@@ -164,6 +165,7 @@ set (FORMS
 	volumeslider.ui
 	seekslider.ui
 	radiocustomdialog.ui
+	collectionwidget.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui
