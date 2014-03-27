@@ -146,7 +146,7 @@ namespace CrashProcess
 		}
 	}
 
-	void CrashDialog::handleFinished (int code)
+	void CrashDialog::handleFinished (int code, QProcess::ExitStatus)
 	{
 		QTimer::singleShot (0,
 				this,
@@ -194,9 +194,9 @@ namespace CrashProcess
 				this,
 				SLOT (appendTrace (QString)));
 		connect (GdbLauncher_.get (),
-				SIGNAL (finished (int)),
+				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
-				SLOT (handleFinished (int)));
+				SLOT (handleFinished (int, QProcess::ExitStatus)));
 
 		Ui_.TraceDisplay_->append ("=== SYSTEM INFO ===");
 		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (Info_.Signal_));

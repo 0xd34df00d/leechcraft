@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QProcess>
 
 class QProcess;
 
@@ -52,7 +53,7 @@ namespace CrashProcess
 		void consumeStdout ();
 	signals:
 		void gotOutput (const QString&);
-		void finished (int);
+		void finished (int, QProcess::ExitStatus);
 	};
 }
 }
