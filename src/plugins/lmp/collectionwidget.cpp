@@ -264,7 +264,6 @@ namespace LMP
 	void CollectionWidget::loadFromCollection ()
 	{
 		const auto& idxs = Ui_.CollectionTree_->selectionModel ()->selectedRows ();
-		auto collection = Core::Instance ().GetLocalCollection ();
 
 		QModelIndexList mapped;
 		for (const auto& src : idxs)
@@ -274,7 +273,7 @@ namespace LMP
 				mapped << index;
 		}
 
-		collection->Enqueue (mapped, Player_);
+		Core::Instance ().GetCollectionsManager ()->Enqueue (mapped, Player_);
 	}
 
 	void CollectionWidget::handleCollectionItemSelected (const QModelIndex& index)

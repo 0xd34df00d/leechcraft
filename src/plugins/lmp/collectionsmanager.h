@@ -31,6 +31,7 @@
 
 #include <QObject>
 
+class QModelIndex;
 class QAbstractItemModel;
 class QStandardItemModel;
 class QSortFilterProxyModel;
@@ -43,6 +44,8 @@ namespace Util
 }
 namespace LMP
 {
+	class Player;
+
 	class CollectionsManager : public QObject
 	{
 		Q_OBJECT
@@ -55,6 +58,8 @@ namespace LMP
 		void Add (QAbstractItemModel*);
 
 		QAbstractItemModel* GetModel () const;
+
+		void Enqueue (const QList<QModelIndex>&, Player*);
 	};
 }
 }
