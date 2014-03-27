@@ -79,6 +79,9 @@ namespace LeechCraft
 			virtual QModelIndex parent (const QModelIndex&) const;
 			virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
+			QStringList mimeTypes () const;
+			QMimeData* mimeData (const QModelIndexList&) const;
+
 			/** Returns the model index in the MergeModel given the
 			 * index from the source model.
 			 *

@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include <algorithm>
-#include <typeinfo>
 #include <stdexcept>
+#include <QMimeData>
+#include <QUrl>
 #include <QtDebug>
 #include "mergemodel.h"
 
@@ -263,6 +264,53 @@ namespace Util
 
 		const auto item = static_cast<ModelItem*> (parent.internalPointer ());
 		return item->GetModel ()->rowCount (item->GetIndex ());
+	}
+
+	QStringList MergeModel::mimeTypes () const
+	{
+		QStringList result;
+		for (const auto model : GetAllModels ())
+			for (const auto& type : model->mimeTypes ())
+				if (!result.contains (type))
+					result << type;
+		return result;
+	}
+
+	namespace
+	{
+		void Merge (QMimeData *out, const QMimeData *sub)
+		{
+			for (const auto& format : sub->formats ())
+				if (format != "text/uri-list" && !out->hasFormat (format))
+					out->setData (format, sub->data (format));
+
+			out->setUrls (out->urls () + sub->urls ());
+		}
+	}
+
+	QMimeData* MergeModel::mimeData (const QModelIndexList& indexes) const
+	{
+		QMimeData *result = nullptr;
+
+		for (const auto& index : indexes)
+		{
+			const auto& src = mapToSource (index);
+
+			const auto subresult = src.model ()->mimeData ({ src });
+
+			if (!subresult)
+				continue;
+
+			if (!result)
+				result = subresult;
+			else
+			{
+				Merge (result, subresult);
+				delete subresult;
+			}
+		}
+
+		return result;
 	}
 
 	QModelIndex MergeModel::mapFromSource (const QModelIndex& sourceIndex) const
