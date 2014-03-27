@@ -98,6 +98,11 @@ namespace CrashProcess
 				<< Proc_->error ()
 				<< "str:"
 				<< Proc_->errorString ();
+
+		emit error (Proc_->exitStatus (),
+				Proc_->exitCode (),
+				Proc_->error (),
+				Proc_->errorString ());
 	}
 
 	void GDBLauncher::consumeStdout ()

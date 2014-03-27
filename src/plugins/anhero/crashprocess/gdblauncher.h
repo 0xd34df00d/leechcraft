@@ -54,6 +54,7 @@ namespace CrashProcess
 	signals:
 		void gotOutput (const QString&);
 		void finished (int, QProcess::ExitStatus);
+		void error (QProcess::ExitStatus, int, QProcess::ProcessError, const QString&);
 	};
 }
 }
