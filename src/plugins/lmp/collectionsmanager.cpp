@@ -29,6 +29,7 @@
 
 #include "collectionsmanager.h"
 #include <QStandardItemModel>
+#include <util/models/mergemodel.h>
 #include "collectionsortermodel.h"
 
 namespace LeechCraft
@@ -37,16 +38,17 @@ namespace LMP
 {
 	CollectionsManager::CollectionsManager (QObject *parent)
 	: QObject { parent }
+	, Model_ { new Util::MergeModel { { "Column" }, this } }
 	, Sorter_ { new CollectionSorterModel { this } }
 	{
+		Sorter_->setSourceModel (Model_);
 		Sorter_->setDynamicSortFilter (true);
 		Sorter_->sort (0);
 	}
 
 	void CollectionsManager::Add (QAbstractItemModel *model)
 	{
-		Model_ = model;
-		Sorter_->setSourceModel (Model_);
+		Model_->AddModel (model);
 	}
 
 	QAbstractItemModel* CollectionsManager::GetModel () const

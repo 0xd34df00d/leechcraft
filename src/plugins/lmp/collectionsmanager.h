@@ -37,13 +37,17 @@ class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class MergeModel;
+}
 namespace LMP
 {
 	class CollectionsManager : public QObject
 	{
 		Q_OBJECT
 
-		QAbstractItemModel *Model_;
+		Util::MergeModel * const Model_;
 		QSortFilterProxyModel * const Sorter_;
 	public:
 		CollectionsManager (QObject* = nullptr);
