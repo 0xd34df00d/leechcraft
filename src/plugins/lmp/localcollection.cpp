@@ -40,6 +40,7 @@
 #include <QtDebug>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
+#include "interfaces/lmp/icollectionmodel.h"
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -68,6 +69,7 @@ namespace LMP
 		}
 
 		class CollectionDraggableModel : public QStandardItemModel
+									   , public ICollectionModel
 		{
 		public:
 			CollectionDraggableModel (LocalCollection *parent)
@@ -95,6 +97,19 @@ namespace LMP
 
 				auto result = new QMimeData;
 				result->setUrls (urls);
+				return result;
+			}
+
+			QList<QUrl> ToSourceUrls (const QList<QModelIndex>& indexes) const
+			{
+				const auto& paths = std::accumulate (indexes.begin (), indexes.end (), QStringList {},
+						[this] (const QStringList& paths, decltype (indexes.front ()) item)
+							{ return paths + CollectPaths (item, this); });
+
+				QList<QUrl> result;
+				result.reserve (paths.size ());
+				for (const auto& path : paths)
+					result << QUrl::fromLocalFile (path);
 				return result;
 			}
 		};
