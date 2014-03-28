@@ -30,7 +30,7 @@
 #include "collectiondelegate.h"
 #include <QPainter>
 #include <QApplication>
-#include "localcollection.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {
@@ -49,7 +49,7 @@ namespace LMP
 	void CollectionDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
 	{
-		const int type = index.data (LocalCollection::Role::Node).toInt ();
+		const int type = index.data (LocalCollectionModel::Role::Node).toInt ();
 
 		QStyleOptionViewItemV4 option = optionOld;
 
@@ -63,7 +63,7 @@ namespace LMP
 			option.backgroundBrush = QBrush (grad);
 		}
 
-		if (type != LocalCollection::NodeType::Album)
+		if (type != LocalCollectionModel::NodeType::Album)
 			PaintOther (painter, option, index);
 		else
 			PaintAlbum (painter, option, index);
@@ -72,7 +72,7 @@ namespace LMP
 	QSize CollectionDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		QSize result = QStyledItemDelegate::sizeHint (option, index);
-		if (index.data (LocalCollection::Role::Node).toInt () == LocalCollection::NodeType::Album)
+		if (index.data (LocalCollectionModel::Role::Node).toInt () == LocalCollectionModel::NodeType::Album)
 			result.setHeight (std::max (result.height (), IconSize));
 		return result;
 	}
@@ -135,7 +135,7 @@ namespace LMP
 	void CollectionDelegate::PaintAlbum (QPainter *painter,
 			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
-		const QString& path = index.data (LocalCollection::Role::AlbumArt).value<QString> ();
+		const QString& path = index.data (LocalCollectionModel::Role::AlbumArt).value<QString> ();
 		QPixmap *cached = PXCache_ [path];
 		QPixmap px = cached ? *cached : QPixmap (path);
 		const bool special = !px.isNull ();

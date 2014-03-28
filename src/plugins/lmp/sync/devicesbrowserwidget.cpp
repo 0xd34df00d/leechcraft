@@ -41,6 +41,7 @@
 #include <interfaces/lmp/iunmountablesync.h>
 #include "core.h"
 #include "localcollection.h"
+#include "localcollectionmodel.h"
 #include "uploadmodel.h"
 #include "syncmanager.h"
 #include "transcodingparams.h"
@@ -255,7 +256,7 @@ namespace LMP
 		QStringList paths;
 		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
 				[] (const QModelIndex& idx)
-					{ return idx.data (LocalCollection::Role::TrackPath).toString (); });
+					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
 		Ui_.UploadLog_->clear ();
@@ -274,7 +275,7 @@ namespace LMP
 		QStringList paths;
 		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
 				[] (const QModelIndex& idx)
-					{ return idx.data (LocalCollection::Role::TrackPath).toString (); });
+					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
 		auto syncer = qobject_cast<IUnmountableSync*> (UnmountableMgr_->GetDeviceManager (idx));

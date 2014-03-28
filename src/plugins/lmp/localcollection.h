@@ -49,8 +49,9 @@ namespace LMP
 {
 	class AlbumArtManager;
 	class LocalCollectionStorage;
-	class Player;
 	class LocalCollectionWatcher;
+	class LocalCollectionModel;
+	class Player;
 
 	class LocalCollection : public QObject
 						  , public ILocalCollection
@@ -62,9 +63,8 @@ namespace LMP
 
 		QStringList RootPaths_;
 
-		QIcon ArtistIcon_;
 		LocalCollectionStorage * const Storage_;
-		QStandardItemModel * const CollectionModel_;
+		LocalCollectionModel * const CollectionModel_;
 		LocalCollectionWatcher * const FilesWatcher_;
 
 		AlbumArtManager * const AlbumArtMgr_;
@@ -79,10 +79,6 @@ namespace LMP
 		QHash<int, Collection::Album_ptr> AlbumID2Album_;
 		QHash<int, int> AlbumID2ArtistID_;
 
-		QHash<int, QStandardItem*> Artist2Item_;
-		QHash<int, QStandardItem*> Album2Item_;
-		QHash<int, QStandardItem*> Track2Item_;
-
 		QFutureWatcher<MediaInfo> *Watcher_;
 		QList<QSet<QString>> NewPathsQueue_;
 
@@ -90,27 +86,6 @@ namespace LMP
 		int UpdateNewAlbums_;
 		int UpdateNewTracks_;
 	public:
-		enum NodeType
-		{
-			Artist,
-			Album,
-			Track
-		};
-
-		enum Role
-		{
-			Node = Qt::UserRole + 1,
-			ArtistName,
-			AlbumYear,
-			AlbumName,
-			AlbumArt,
-			TrackNumber,
-			TrackTitle,
-			TrackPath,
-			TrackGenres,
-			TrackLength
-		};
-
 		enum class DynamicPlaylist
 		{
 			Random50,
@@ -137,10 +112,8 @@ namespace LMP
 		bool IsReady () const;
 
 		AlbumArtManager* GetAlbumArtManager () const;
-
 		LocalCollectionStorage* GetStorage () const;
-
-		QAbstractItemModel* GetCollectionModel () const;
+		LocalCollectionModel* GetCollectionModel () const;
 
 		void Clear ();
 
@@ -160,7 +133,6 @@ namespace LMP
 		int FindTrack (const QString& path) const;
 		int GetTrackAlbumId (int trackId) const;
 		Collection::Album_ptr GetTrackAlbum (int trackId) const;
-		QVariant GetTrackData (int trackId, Role) const;
 
 		QList<int> GetDynamicPlaylist (DynamicPlaylist) const;
 		QStringList TrackList2PathList (const QList<int>&) const;

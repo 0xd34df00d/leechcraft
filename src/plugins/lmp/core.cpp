@@ -47,6 +47,7 @@
 #include "progressmanager.h"
 #include "radiomanager.h"
 #include "rganalysismanager.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {

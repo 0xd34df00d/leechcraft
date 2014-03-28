@@ -34,6 +34,7 @@
 #include <util/util.h>
 #include "core.h"
 #include "localcollection.h"
+#include "localcollectionmodel.h"
 #include "palettefixerfilter.h"
 #include "collectiondelegate.h"
 #include "audiopropswidget.h"
@@ -58,11 +59,11 @@ namespace LMP
 			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 			{
 				const auto& source = sourceModel ()->index (sourceRow, 0, sourceParent);
-				const auto type = source.data (LocalCollection::Role::Node).toInt ();
+				const auto type = source.data (LocalCollectionModel::Role::Node).toInt ();
 
 				const auto& pattern = filterRegExp ().pattern ();
 
-				if (type != LocalCollection::NodeType::Track)
+				if (type != LocalCollectionModel::NodeType::Track)
 					for (int i = 0, rc = sourceModel ()->rowCount (source); i < rc; ++i)
 						if (filterAcceptsRow (i, source))
 							return true;
@@ -169,7 +170,7 @@ namespace LMP
 	void CollectionWidget::showCollectionTrackProps ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& info = index.data (LocalCollection::Role::TrackPath).toString ();
+		const auto& info = index.data (LocalCollectionModel::Role::TrackPath).toString ();
 		if (info.isEmpty ())
 			return;
 
@@ -179,7 +180,7 @@ namespace LMP
 	void CollectionWidget::showCollectionAlbumArt ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& path = index.data (LocalCollection::Role::AlbumArt).toString ();
+		const auto& path = index.data (LocalCollectionModel::Role::AlbumArt).toString ();
 		if (path.isEmpty ())
 			return;
 
@@ -191,8 +192,8 @@ namespace LMP
 		auto aamgr = Core::Instance ().GetLocalCollection ()->GetAlbumArtManager ();
 
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& album = index.data (LocalCollection::Role::AlbumName).toString ();
-		const auto& artist= index.data (LocalCollection::Role::ArtistName).toString ();
+		const auto& album = index.data (LocalCollectionModel::Role::AlbumName).toString ();
+		const auto& artist= index.data (LocalCollectionModel::Role::ArtistName).toString ();
 
 		auto dia = new AlbumArtManagerDialog (artist, album, aamgr, this);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
@@ -221,7 +222,7 @@ namespace LMP
 	void CollectionWidget::handleCollectionRemove ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& paths = CollectFromModel<QString> (index, LocalCollection::Role::TrackPath);
+		const auto& paths = CollectFromModel<QString> (index, LocalCollectionModel::Role::TrackPath);
 		if (paths.isEmpty ())
 			return;
 
@@ -244,7 +245,7 @@ namespace LMP
 	void CollectionWidget::handleCollectionDelete ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& paths = CollectFromModel<QString> (index, LocalCollection::Role::TrackPath);
+		const auto& paths = CollectFromModel<QString> (index, LocalCollectionModel::Role::TrackPath);
 		if (paths.isEmpty ())
 			return;
 
@@ -278,10 +279,10 @@ namespace LMP
 
 	void CollectionWidget::handleCollectionItemSelected (const QModelIndex& index)
 	{
-		const int nodeType = index.data (LocalCollection::Role::Node).value<int> ();
-		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollection::NodeType::Track);
-		CollectionShowAlbumArt_->setEnabled (nodeType == LocalCollection::NodeType::Album);
-		CollectionShowAAManager_->setEnabled (nodeType == LocalCollection::NodeType::Album);
+		const int nodeType = index.data (LocalCollectionModel::Role::Node).value<int> ();
+		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollectionModel::NodeType::Track);
+		CollectionShowAlbumArt_->setEnabled (nodeType == LocalCollectionModel::NodeType::Album);
+		CollectionShowAAManager_->setEnabled (nodeType == LocalCollectionModel::NodeType::Album);
 	}
 
 	void CollectionWidget::handleScanProgress (int progress)

@@ -30,6 +30,8 @@
 #include "localcollectionmodel.h"
 #include <QUrl>
 #include <QMimeData>
+#include <interfaces/core/iiconthememanager.h>
+#include "core.h"
 #include "localcollection.h"
 
 namespace LeechCraft
@@ -51,9 +53,9 @@ namespace LMP
 	{
 		QStringList CollectPaths (const QModelIndex& index, const QAbstractItemModel *model)
 		{
-			const auto type = index.data (LocalCollection::Role::Node).toInt ();
-			if (type == LocalCollection::NodeType::Track)
-				return QStringList (index.data (LocalCollection::Role::TrackPath).toString ());
+			const auto type = index.data (LocalCollectionModel::Role::Node).toInt ();
+			if (type == LocalCollectionModel::NodeType::Track)
+				return { index.data (LocalCollectionModel::Role::TrackPath).toString () };
 
 			QStringList paths;
 			for (int i = 0; i < model->rowCount (index); ++i)
@@ -90,6 +92,124 @@ namespace LMP
 		for (const auto& path : paths)
 			result << QUrl::fromLocalFile (path);
 		return result;
+	}
+
+	void LocalCollectionModel::FinalizeInit ()
+	{
+		ArtistIcon_ = Core::Instance ().GetProxy ()->
+				GetIconThemeManager ()->GetIcon ("view-media-artist");
+	}
+
+	namespace
+	{
+		template<typename T, typename U, typename Init, typename Parent>
+		QStandardItem* GetItem (T& c, U idx, Init f, Parent parent)
+		{
+			auto item = c [idx];
+			if (item)
+				return item;
+
+			item = new QStandardItem ();
+			item->setEditable (false);
+			f (item);
+			parent->appendRow (item);
+			c [idx] = item;
+			return item;
+		}
+	}
+
+	void LocalCollectionModel::AddArtists (const Collection::Artists_t& artists)
+	{
+		for (const auto& artist : artists)
+		{
+			auto artistItem = GetItem (Artist2Item_,
+					artist.ID_,
+					[this, &artist] (QStandardItem *item)
+					{
+						item->setIcon (ArtistIcon_);
+						item->setText (artist.Name_);
+						item->setData (artist.Name_, Role::ArtistName);
+						item->setData (NodeType::Artist, Role::Node);
+					},
+					this);
+			for (auto album : artist.Albums_)
+			{
+				auto albumItem = GetItem (Album2Item_,
+						album->ID_,
+						[album, artist] (QStandardItem *item)
+						{
+							item->setText (QString::fromUtf8 ("%1 — %2")
+									.arg (album->Year_)
+									.arg (album->Name_));
+							item->setData (album->Year_, Role::AlbumYear);
+							item->setData (album->Name_, Role::AlbumName);
+							item->setData (artist.Name_, Role::ArtistName);
+							item->setData (NodeType::Album, Role::Node);
+							if (!album->CoverPath_.isEmpty ())
+								item->setData (album->CoverPath_, Role::AlbumArt);
+						},
+						artistItem);
+
+				for (const auto& track : album->Tracks_)
+				{
+					const QString& name = QString::fromUtf8 ("%1 — %2")
+							.arg (track.Number_)
+							.arg (track.Name_);
+					auto item = new QStandardItem (name);
+					item->setEditable (false);
+					item->setData (album->Year_, Role::AlbumYear);
+					item->setData (album->Name_, Role::AlbumName);
+					item->setData (artist.Name_, Role::ArtistName);
+					item->setData (track.Number_, Role::TrackNumber);
+					item->setData (track.Name_, Role::TrackTitle);
+					item->setData (track.FilePath_, Role::TrackPath);
+					item->setData (track.Genres_, Role::TrackGenres);
+					item->setData (track.Length_, Role::TrackLength);
+					item->setData (NodeType::Track, Role::Node);
+					albumItem->appendRow (item);
+
+					Track2Item_ [track.ID_] = item;
+				}
+			}
+		}
+	}
+
+	void LocalCollectionModel::Clear ()
+	{
+		clear ();
+
+		Artist2Item_.clear ();
+		Album2Item_.clear ();
+		Track2Item_.clear ();
+	}
+
+	void LocalCollectionModel::RemoveTrack (int id)
+	{
+		auto item = Track2Item_.take (id);
+		item->parent ()->removeRow (item->row ());
+	}
+
+	void LocalCollectionModel::RemoveAlbum (int id)
+	{
+		auto item = Album2Item_.take (id);
+		item->parent ()->removeRow (item->row ());
+	}
+
+	QVariant LocalCollectionModel::GetTrackData (int trackId, LocalCollectionModel::Role role) const
+	{
+		const auto item = Track2Item_.value (trackId);
+		return item ? item->data (role) : QVariant ();
+	}
+
+	void LocalCollectionModel::RemoveArtist (int id)
+	{
+		removeRow (Artist2Item_.take (id)->row ());
+	}
+
+	void LocalCollectionModel::SetAlbumArt (int id, const QString& path)
+	{
+		if (Album2Item_.contains (id))
+			Album2Item_ [id]->setData (path, Role::AlbumArt);
 	}
 }
 }

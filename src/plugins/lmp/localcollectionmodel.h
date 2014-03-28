@@ -30,7 +30,9 @@
 #pragma once
 
 #include <QStandardItemModel>
+#include <QHash>
 #include "interfaces/lmp/icollectionmodel.h"
+#include "interfaces/lmp/collectiontypes.h"
 
 namespace LeechCraft
 {
@@ -40,13 +42,51 @@ namespace LMP
 							   , public ICollectionModel
 	{
 		Q_OBJECT
+
+		QIcon ArtistIcon_;
+
+		QHash<int, QStandardItem*> Artist2Item_;
+		QHash<int, QStandardItem*> Album2Item_;
+		QHash<int, QStandardItem*> Track2Item_;
 	public:
+		enum NodeType
+		{
+			Artist,
+			Album,
+			Track
+		};
+
+		enum Role
+		{
+			Node = Qt::UserRole + 1,
+			ArtistName,
+			AlbumYear,
+			AlbumName,
+			AlbumArt,
+			TrackNumber,
+			TrackTitle,
+			TrackPath,
+			TrackGenres,
+			TrackLength
+		};
+
 		LocalCollectionModel (QObject*);
 
 		QStringList mimeTypes () const;
 		QMimeData* mimeData (const QModelIndexList&) const;
 
 		QList<QUrl> ToSourceUrls (const QList<QModelIndex>&) const;
+
+		void FinalizeInit ();
+
+		void AddArtists (const Collection::Artists_t&);
+		void Clear ();
+		void RemoveTrack (int);
+		void RemoveAlbum (int);
+		void RemoveArtist (int);
+
+		void SetAlbumArt (int, const QString&);
+		QVariant GetTrackData (int trackId, Role) const;
 	};
 }
 }

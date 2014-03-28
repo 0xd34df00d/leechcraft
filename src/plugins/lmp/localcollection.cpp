@@ -37,7 +37,6 @@
 #include <QtConcurrentRun>
 #include <QTimer>
 #include <QtDebug>
-#include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include "localcollectionstorage.h"
 #include "core.h"
@@ -95,8 +94,7 @@ namespace LMP
 
 	void LocalCollection::FinalizeInit ()
 	{
-		ArtistIcon_ = Core::Instance ().GetProxy ()->
-				GetIconThemeManager ()->GetIcon ("view-media-artist");
+		CollectionModel_->FinalizeInit ();
 	}
 
 	bool LocalCollection::IsReady () const
@@ -114,7 +112,7 @@ namespace LMP
 		return Storage_;
 	}
 
-	QAbstractItemModel* LocalCollection::GetCollectionModel () const
+	LocalCollectionModel* LocalCollection::GetCollectionModel () const
 	{
 		return CollectionModel_;
 	}
@@ -122,7 +120,7 @@ namespace LMP
 	void LocalCollection::Clear ()
 	{
 		Storage_->Clear ();
-		CollectionModel_->clear ();
+		CollectionModel_->Clear ();
 		Artists_.clear ();
 		PresentPaths_.clear ();
 
@@ -132,10 +130,6 @@ namespace LMP
 		Track2Album_.clear ();
 		AlbumID2Album_.clear ();
 		AlbumID2ArtistID_.clear ();
-
-		Artist2Item_.clear ();
-		Album2Item_.clear ();
-		Track2Item_.clear ();
 
 		RemoveRootPaths (RootPaths_);
 	}
@@ -309,8 +303,7 @@ namespace LMP
 
 	void LocalCollection::SetAlbumArt (int id, const QString& path)
 	{
-		if (Album2Item_.contains (id))
-			Album2Item_ [id]->setData (path, Role::AlbumArt);
+		CollectionModel_->SetAlbumArt (id, path);
 
 		if (AlbumID2Album_.contains (id))
 			AlbumID2Album_ [id]->CoverPath_ = path;
@@ -336,12 +329,6 @@ namespace LMP
 	Collection::Album_ptr LocalCollection::GetTrackAlbum (int trackId) const
 	{
 		return AlbumID2Album_ [Track2Album_ [trackId]];
-	}
-
-	QVariant LocalCollection::GetTrackData (int trackId, Role role) const
-	{
-		auto item = Track2Item_ [trackId];
-		return item ? item->data (role) : QVariant ();
 	}
 
 	QList<int> LocalCollection::GetDynamicPlaylist (DynamicPlaylist type) const
@@ -470,30 +457,12 @@ namespace LMP
 			auto stats = GetTrackStats (path);
 			RemoveTrack (path);
 
-			const auto& newArts = Storage_->AddToCollection (QList<MediaInfo> () << info);
+			const auto& newArts = Storage_->AddToCollection ({ info });
 			HandleNewArtists (newArts);
 
 			const auto newTrackIdx = FindTrack (path);
 			stats.TrackID_ = newTrackIdx;
 			Storage_->SetTrackStats (stats);
-		}
-	}
-
-	namespace
-	{
-		template<typename T, typename U, typename Init, typename Parent>
-		QStandardItem* GetItem (T& c, U idx, Init f, Parent parent)
-		{
-			auto item = c [idx];
-			if (item)
-				return item;
-
-			item = new QStandardItem ();
-			item->setEditable (false);
-			f (item);
-			parent->appendRow (item);
-			c [idx] = item;
-			return item;
 		}
 	}
 
@@ -519,43 +488,15 @@ namespace LMP
 
 		const auto autoFetchAA = XmlSettingsManager::Instance ()
 				.property ("AutoFetchAlbumArt").toBool ();
-
 		for (const auto& artist : artists)
 		{
 			albumCount += artist.Albums_.size ();
-
-			auto artistItem = GetItem (Artist2Item_,
-					artist.ID_,
-					[this, &artist] (QStandardItem *item)
-					{
-						item->setIcon (ArtistIcon_);
-						item->setText (artist.Name_);
-						item->setData (artist.Name_, Role::ArtistName);
-						item->setData (NodeType::Artist, Role::Node);
-					},
-					CollectionModel_);
 			for (auto album : artist.Albums_)
 			{
 				trackCount += album->Tracks_.size ();
 
 				if (autoFetchAA)
 					AlbumArtMgr_->CheckAlbumArt (artist, album);
-
-				auto albumItem = GetItem (Album2Item_,
-						album->ID_,
-						[album, artist] (QStandardItem *item)
-						{
-							item->setText (QString::fromUtf8 ("%1 — %2")
-									.arg (album->Year_)
-									.arg (album->Name_));
-							item->setData (album->Year_, Role::AlbumYear);
-							item->setData (album->Name_, Role::AlbumName);
-							item->setData (artist.Name_, Role::ArtistName);
-							item->setData (NodeType::Album, Role::Node);
-							if (!album->CoverPath_.isEmpty ())
-								item->setData (album->CoverPath_, Role::AlbumArt);
-						},
-						artistItem);
 
 				if (AlbumID2Album_.contains (album->ID_))
 					AlbumID2Album_ [album->ID_]->Tracks_ << album->Tracks_;
@@ -567,31 +508,15 @@ namespace LMP
 
 				for (const auto& track : album->Tracks_)
 				{
-					const QString& name = QString::fromUtf8 ("%1 — %2")
-							.arg (track.Number_)
-							.arg (track.Name_);
-					auto item = new QStandardItem (name);
-					item->setEditable (false);
-					item->setData (album->Year_, Role::AlbumYear);
-					item->setData (album->Name_, Role::AlbumName);
-					item->setData (artist.Name_, Role::ArtistName);
-					item->setData (track.Number_, Role::TrackNumber);
-					item->setData (track.Name_, Role::TrackTitle);
-					item->setData (track.FilePath_, Role::TrackPath);
-					item->setData (track.Genres_, Role::TrackGenres);
-					item->setData (track.Length_, Role::TrackLength);
-					item->setData (NodeType::Track, Role::Node);
-					albumItem->appendRow (item);
-
 					Path2Track_ [track.FilePath_] = track.ID_;
 					Track2Path_ [track.ID_] = track.FilePath_;
 
 					Track2Album_ [track.ID_] = album->ID_;
-
-					Track2Item_ [track.ID_] = item;
 				}
 			}
 		}
+
+		CollectionModel_->AddArtists (artists);
 
 		if (shouldEmit &&
 				trackCount)
@@ -621,8 +546,7 @@ namespace LMP
 			throw;
 		}
 
-		auto item = Track2Item_.take (id);
-		item->parent ()->removeRow (item->row ());
+		CollectionModel_->RemoveTrack (id);
 
 		Path2Track_.remove (path);
 		Track2Path_.remove (id);
@@ -657,8 +581,7 @@ namespace LMP
 		AlbumID2Album_.remove (id);
 		AlbumID2ArtistID_.remove (id);
 
-		auto item = Album2Item_.take (id);
-		item->parent ()->removeRow (item->row ());
+		CollectionModel_->RemoveAlbum (id);
 
 		for (auto i = Artists_.begin (); i != Artists_.end (); )
 		{
@@ -695,7 +618,7 @@ namespace LMP
 			throw;
 		}
 
-		CollectionModel_->removeRow (Artist2Item_.take (id)->row ());
+		CollectionModel_->RemoveArtist (id);
 		return Artists_.erase (pos);
 	}
 

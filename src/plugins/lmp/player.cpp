@@ -54,6 +54,7 @@
 #include "engine/output.h"
 #include "engine/path.h"
 #include "effectsmanager.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {
@@ -691,13 +692,22 @@ namespace LMP
 				return { source, info };
 			}
 
-			info.Artist_ = collection->GetTrackData (trackId, LocalCollection::Role::ArtistName).toString ();
-			info.Album_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumName).toString ();
-			info.Title_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackTitle).toString ();
-			info.Genres_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackGenres).toStringList ();
-			info.Length_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackLength).toInt ();
-			info.Year_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumYear).toInt ();
-			info.TrackNumber_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackNumber).toInt ();
+			const auto model = collection->GetCollectionModel ();
+
+			info.Artist_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::ArtistName).toString ();
+			info.Album_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::AlbumName).toString ();
+			info.Title_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackTitle).toString ();
+			info.Genres_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackGenres).toStringList ();
+			info.Length_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackLength).toInt ();
+			info.Year_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::AlbumYear).toInt ();
+			info.TrackNumber_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackNumber).toInt ();
 
 			return { source, info };
 		}
