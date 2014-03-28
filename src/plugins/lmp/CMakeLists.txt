@@ -114,6 +114,7 @@ set (SRCS
 	rgfiltercontroller.cpp
 	collectionsmanager.cpp
 	collectionwidget.cpp
+	localcollectionmodel.cpp
 	engine/audiosource.cpp
 	engine/filterelement.cpp
 	engine/gstutil.cpp

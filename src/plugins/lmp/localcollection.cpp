@@ -33,14 +33,12 @@
 #include <numeric>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-#include <QMimeData>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 #include <QTimer>
 #include <QtDebug>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
-#include "interfaces/lmp/icollectionmodel.h"
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -49,77 +47,17 @@
 #include "albumartmanager.h"
 #include "xmlsettingsmanager.h"
 #include "localcollectionwatcher.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
-	{
-		QStringList CollectPaths (const QModelIndex& index, const QAbstractItemModel *model)
-		{
-			const auto type = index.data (LocalCollection::Role::Node).toInt ();
-			if (type == LocalCollection::NodeType::Track)
-				return QStringList (index.data (LocalCollection::Role::TrackPath).toString ());
-
-			QStringList paths;
-			for (int i = 0; i < model->rowCount (index); ++i)
-				paths += CollectPaths (model->index (i, 0, index), model);
-			return paths;
-		}
-
-		class CollectionDraggableModel : public QStandardItemModel
-									   , public ICollectionModel
-		{
-		public:
-			CollectionDraggableModel (LocalCollection *parent)
-			: QStandardItemModel (parent)
-			{
-				setSupportedDragActions (Qt::CopyAction);
-			}
-
-			QStringList mimeTypes () const
-			{
-				return { "text/uri-list" };
-			}
-
-			QMimeData* mimeData (const QModelIndexList& indexes) const
-			{
-				QList<QUrl> urls;
-				for (const auto& index : indexes)
-				{
-					const auto& paths = CollectPaths (index, this);
-					std::transform (paths.begin (), paths.end (), std::back_inserter (urls),
-							[] (const QString& path) { return QUrl::fromLocalFile (path); });
-				}
-				if (urls.isEmpty ())
-					return nullptr;
-
-				auto result = new QMimeData;
-				result->setUrls (urls);
-				return result;
-			}
-
-			QList<QUrl> ToSourceUrls (const QList<QModelIndex>& indexes) const
-			{
-				const auto& paths = std::accumulate (indexes.begin (), indexes.end (), QStringList {},
-						[this] (const QStringList& paths, decltype (indexes.front ()) item)
-							{ return paths + CollectPaths (item, this); });
-
-				QList<QUrl> result;
-				result.reserve (paths.size ());
-				for (const auto& path : paths)
-					result << QUrl::fromLocalFile (path);
-				return result;
-			}
-		};
-	}
-
 	LocalCollection::LocalCollection (QObject *parent)
 	: QObject (parent)
 	, IsReady_ (false)
 	, Storage_ (new LocalCollectionStorage (this))
-	, CollectionModel_ (new CollectionDraggableModel (this))
+	, CollectionModel_ (new LocalCollectionModel (this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
