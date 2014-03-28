@@ -136,6 +136,12 @@ namespace Util
 			return SrcIdx_;
 		}
 
+		void RefreshIndex (int modelStartingRow)
+		{
+			if (SrcIdx_.isValid ())
+				SrcIdx_ = Model_->index (GetRow () - modelStartingRow, 0, Parent_.lock ()->GetIndex ());
+		}
+
 		QAbstractItemModel* GetModel () const
 		{
 			return Model_;
