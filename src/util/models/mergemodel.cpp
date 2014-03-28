@@ -96,6 +96,11 @@ namespace Util
 			return Children_;
 		}
 
+		int GetRowCount () const
+		{
+			return Children_.size ();
+		}
+
 		ModelItem* EnsureChild (int row)
 		{
 			if (Children_.value (row))
@@ -266,7 +271,7 @@ namespace Util
 	int MergeModel::rowCount (const QModelIndex& parent) const
 	{
 		if (!parent.isValid ())
-			return Root_->GetChildren ().size ();
+			return Root_->GetRowCount ();
 
 		const auto item = static_cast<ModelItem*> (parent.internalPointer ());
 		return item->GetModel ()->rowCount (item->GetIndex ());
