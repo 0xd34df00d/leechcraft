@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "localcollectionmodel.h"
+#include <numeric>
 #include <QUrl>
 #include <QMimeData>
 #include <interfaces/core/iiconthememanager.h>
