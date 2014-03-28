@@ -38,6 +38,7 @@
 #include <QVBoxLayout>
 #include <QXmppPresence.h>
 #include <QXmppUtils.h>
+#include <QXmppGlobal.h>
 #include "entrybase.h"
 #include "core.h"
 #include "capsdatabase.h"
@@ -328,7 +329,7 @@ namespace XooxUtil
 			return {};
 
 		QXmppMessage original;
-#ifndef I_HAVE_OLD_QXMPP
+#if QXMPP_VERSION >= 0x000800
 		original.parse (messageElem.sourceDomElement ());
 #else
 #warning "You won't have good forwarded messages, Message Archive Management and Message Carbons will look like crap."

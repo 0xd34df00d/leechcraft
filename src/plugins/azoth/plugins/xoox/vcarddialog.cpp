@@ -33,6 +33,8 @@
 #include <QBuffer>
 #include <QCryptographicHash>
 #include <QXmppVCardManager.h>
+#include <QXmppGlobal.h>
+#include <util/gui/util.h>
 #include "entrybase.h"
 #include "glooxaccount.h"
 #include "clientconnection.h"
@@ -41,7 +43,6 @@
 #include "useravatarmanager.h"
 #include "vcardlisteditdialog.h"
 #include "accountsettingsholder.h"
-#include <util/gui/util.h>
 
 namespace LeechCraft
 {
@@ -124,7 +125,7 @@ namespace Xoox
 
 		Ui_.About_->setPlainText (vcard.description ());
 
-#ifndef I_HAVE_OLD_QXMPP
+#if QXMPP_VERSION >= 0x000800
 		const auto& orgInfo = vcard.organization ();
 		Ui_.OrgName_->setText (orgInfo.organization ());
 		Ui_.OrgUnit_->setText (orgInfo.unit ());
@@ -339,7 +340,7 @@ namespace Xoox
 		VCard_.setDescription (Ui_.About_->toPlainText ());
 		VCard_.setEmail (QString ());
 
-#ifndef I_HAVE_OLD_QXMPP
+#if QXMPP_VERSION >= 0x000800
 		QXmppVCardOrganization orgInfo;
 		orgInfo.setOrganization (Ui_.OrgName_->text ());
 		orgInfo.setUnit (Ui_.OrgUnit_->text ());
