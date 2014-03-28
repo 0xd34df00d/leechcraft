@@ -584,7 +584,16 @@ namespace Util
 				Root_.get ();
 		const auto& item = rawItem->shared_from_this ();
 
-		item->EraseChildren (item->begin () + startingRow + first, item->begin () + startingRow + last + 1);
+		auto it = item->EraseChildren (item->begin () + startingRow + first,
+				item->begin () + startingRow + last + 1);
+
+		for ( ; it < item->end (); ++it)
+		{
+			if ((*it)->GetModel () != model)
+				break;
+
+			(*it)->RefreshIndex (startingRow);
+		}
 	}
 
 	void MergeModel::handleRowsInserted (const QModelIndex& parent, int first, int last)
@@ -601,7 +610,22 @@ namespace Util
 		const auto& item = rawItem->shared_from_this ();
 
 		for ( ; first <= last; ++first)
-			item->InsertChild (startingRow + first, model, model->index (first, 0, parent), item);
+		{
+			const auto& srcIdx = model->index (first, 0, parent);
+			item->InsertChild (startingRow + first, model, srcIdx, item);
+		}
+
+		++last;
+		last += startingRow;
+
+		for (int rc = item->GetRowCount (); last < rc; ++last)
+		{
+			const auto child = item->GetChild (last);
+			if (child->GetModel () != model)
+				break;
+
+			child->RefreshIndex (startingRow);
+		}
 
 		endInsertRows ();
 	}
