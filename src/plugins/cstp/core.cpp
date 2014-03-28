@@ -392,7 +392,10 @@ namespace CSTP
 	QVariant Core::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
-			return QVariant ();
+			return {};
+
+		if (index.row () >= ActiveTasks_.size ())
+			return {};
 
 		if (role == Qt::DisplayRole)
 		{
