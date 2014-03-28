@@ -40,10 +40,7 @@ namespace LMP
 	struct CallbackData
 	{
 		Path * const Path_;
-		GstElement * const Elem_;
 		guint ID_;
-
-		const Path::Action Action_;
 	};
 
 	Path::Path (SourceObject *source, Output *output, QObject *parent)
@@ -186,78 +183,88 @@ namespace LMP
 
 	void Path::InsertElement (GstElement *elem)
 	{
-		Perform (elem, Action::Add);
+		Queue_.append ({ elem, Action::Add });
+		if (Queue_.size () == 1)
+			RotateQueue ();
 	}
 
 	void Path::RemoveElement (GstElement *elem)
 	{
-		Perform (elem, Action::Remove);
+		Queue_.append ({ elem, Action::Remove });
+		if (Queue_.size () == 1)
+			RotateQueue ();
 	}
 
 	void Path::FinalizeAction (CallbackData *cbData)
 	{
-		const auto elem = cbData->Elem_;
-
 		auto deleteGuard = std::shared_ptr<CallbackData> (cbData);
-
-		switch (cbData->Action_)
+		for (const auto& item : Queue_)
 		{
-		case Path::Action::Add:
-		{
-			gst_bin_add (GST_BIN (GetWholeOut ()), elem);
+			const auto elem = item.Elem_;
 
-			qDebug () << "unlinking...";
-			gst_element_unlink (NextWholeElems_.at (0), NextWholeElems_.at (1));
-
-			qDebug () << "linking...";
-			gst_element_link_many (NextWholeElems_.at (0), elem, NextWholeElems_.at (1), nullptr);
-
-			GstState wholeCurrent, pending;
-			gst_element_get_state (GetWholeOut (), &wholeCurrent, &pending, GST_SECOND);
-			gst_element_set_state (elem, std::max (wholeCurrent, pending));
-
-			NextWholeElems_.insert (1, elem);
-
-			break;
-		}
-		case Path::Action::Remove:
-		{
-			const auto idx = NextWholeElems_.indexOf (elem);
-			if (idx == -1)
+			switch (item.Act_)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "element not found";
-				return;
-			}
-			if (!idx || idx == NextWholeElems_.size () - 1)
+			case Path::Action::Add:
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot remove side element";
-				return;
+				gst_bin_add (GST_BIN (GetWholeOut ()), elem);
+
+				qDebug () << "unlinking...";
+				gst_element_unlink (NextWholeElems_.at (0), NextWholeElems_.at (1));
+
+				qDebug () << "linking...";
+				gst_element_link_many (NextWholeElems_.at (0), elem, NextWholeElems_.at (1), nullptr);
+
+				GstState wholeCurrent, pending;
+				gst_element_get_state (GetWholeOut (), &wholeCurrent, &pending, GST_SECOND);
+				gst_element_set_state (elem, std::max (wholeCurrent, pending));
+
+				NextWholeElems_.insert (1, elem);
+
+				break;
 			}
+			case Path::Action::Remove:
+			{
+				const auto idx = NextWholeElems_.indexOf (elem);
+				if (idx == -1)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "element not found";
+					return;
+				}
+				if (!idx || idx == NextWholeElems_.size () - 1)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot remove side element";
+					return;
+				}
 
-			const auto prev = NextWholeElems_.at (idx - 1);
-			const auto next = NextWholeElems_.at (idx + 1);
+				const auto prev = NextWholeElems_.at (idx - 1);
+				const auto next = NextWholeElems_.at (idx + 1);
 
-			gst_element_unlink_many (prev, elem, next, nullptr);
-			gst_element_link (prev, next);
+				gst_element_unlink_many (prev, elem, next, nullptr);
+				gst_element_link (prev, next);
 
-			gst_element_set_state (elem, GST_STATE_NULL);
+				gst_element_set_state (elem, GST_STATE_NULL);
 
-			gst_bin_remove (GST_BIN (GetWholeOut ()), elem);
+				gst_bin_remove (GST_BIN (GetWholeOut ()), elem);
 
-			NextWholeElems_.removeAt (idx);
-			break;
+				NextWholeElems_.removeAt (idx);
+				break;
+			}
+			}
 		}
-		}
+
+		Queue_.clear ();
 	}
 
-	void Path::Perform (GstElement *elem, Action action)
+	void Path::RotateQueue ()
 	{
-		auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
-		qDebug () << Q_FUNC_INFO << elem << srcpad;
+		if (Queue_.isEmpty ())
+			return;
 
-		auto data = new CallbackData { this, elem, 0, action };
+		auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
+
+		auto data = new CallbackData { this, 0 };
 #if GST_VERSION_MAJOR < 1
 		data->ID_ = gst_pad_add_data_probe (srcpad, G_CALLBACK (ProbeHandler), data);
 #else

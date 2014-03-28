@@ -60,6 +60,13 @@ namespace LMP
 		};
 
 		friend struct CallbackData;
+
+		struct QueueItem
+		{
+			GstElement *Elem_;
+			Action Act_;
+		};
+		QList<QueueItem> Queue_;
 	public:
 		Path (SourceObject*, Output*, QObject* = 0);
 		~Path ();
@@ -80,7 +87,7 @@ namespace LMP
 
 		void FinalizeAction (CallbackData*);
 	private:
-		void Perform (GstElement*, Action);
+		void RotateQueue ();
 	};
 }
 }
