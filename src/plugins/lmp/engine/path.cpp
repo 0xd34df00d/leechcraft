@@ -215,7 +215,7 @@ namespace LMP
 				gst_element_link_many (NextWholeElems_.at (0), elem, NextWholeElems_.at (1), nullptr);
 
 				GstState wholeCurrent, pending;
-				gst_element_get_state (GetWholeOut (), &wholeCurrent, &pending, GST_SECOND);
+				gst_element_get_state (GetWholeOut (), &wholeCurrent, &pending, 0.1 * GST_SECOND);
 				gst_element_set_state (elem, std::max (wholeCurrent, pending));
 
 				NextWholeElems_.insert (1, elem);
