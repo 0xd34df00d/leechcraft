@@ -53,7 +53,6 @@ namespace Acetamide
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
 	protected:
 		QList<QObject*> AllMessages_;
-		QList<IrcMessage*> UnreadMessages_;
 		EntryStatus CurrentStatus_;
 		QList<QAction*> Actions_;
 
