@@ -94,7 +94,13 @@ namespace LMP
 		{
 			if (line.mid (4) == "/")
 			{
-				socket->write ("HTTP/1.0 200 OK\r\n\r\n");
+				Write (socket,
+					{
+						"HTTP/1.0 200 OK",
+						"Content-Type: audio/ogg",
+						"Cache-Control: no-cache",
+						"Server: LeechCraft LMP"
+					});
 				emit gotClient (socket->socketDescriptor ());
 			}
 			else
