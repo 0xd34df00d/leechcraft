@@ -46,6 +46,20 @@ namespace LMP
 				SLOT (handleNewConnection ()));
 	}
 
+	namespace
+	{
+		void Write (QTcpSocket *socket, const QList<QByteArray>& strings)
+		{
+			for (const auto& string : strings)
+			{
+				socket->write (string);
+				socket->write ("\r\n");
+			}
+
+			socket->write ("\r\n");
+		}
+	}
+
 	void HttpServer::HandleSocket (QTcpSocket *socket)
 	{
 		disconnect (socket,
@@ -68,9 +82,9 @@ namespace LMP
 		if (line.startsWith ("HEAD "))
 		{
 			const auto& str = line.mid (5) == "/" ?
-					"HTTP/1.0 200 OK\n\r\n" :
-					"HTTP/1.0 404 Not Found\r\n\r\n";
-			socket->write (str);
+					"HTTP/1.0 200 OK" :
+					"HTTP/1.0 404 Not Found";
+			Write (socket, { str });
 			connect (socket,
 					SIGNAL (bytesWritten (qint64)),
 					socket,
@@ -85,7 +99,7 @@ namespace LMP
 			}
 			else
 			{
-				socket->write ("HTTP/1.0 404 Not Found\r\n\r\n");
+				Write (socket, { "HTTP/1.0 404 Not Found" });
 				connect (socket,
 						SIGNAL (bytesWritten (qint64)),
 						socket,
@@ -94,7 +108,7 @@ namespace LMP
 		}
 		else
 		{
-			socket->write ("HTTP/1.0 400 Bad Request\r\n\r\n");
+			Write (socket, { "HTTP/1.0 400 Bad Request" });
 			connect (socket,
 					SIGNAL (bytesWritten (qint64)),
 					socket,
