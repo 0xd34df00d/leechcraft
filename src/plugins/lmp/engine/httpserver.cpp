@@ -63,7 +63,7 @@ namespace LMP
 	void HttpServer::HandleSocket (QTcpSocket *socket)
 	{
 		disconnect (socket,
-				0,
+				SIGNAL (readyRead ()),
 				this,
 				0);
 
