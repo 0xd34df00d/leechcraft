@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
 
 class QTcpServer;
 class QTcpSocket;
@@ -43,6 +44,8 @@ namespace LMP
 		Q_OBJECT
 
 		QTcpServer * const Server_;
+
+		QMap<QTcpSocket*, int> Socket2FD_;
 	public:
 		HttpServer (QObject* = nullptr);
 	private:
@@ -51,8 +54,10 @@ namespace LMP
 		void tryReadLine ();
 
 		void handleNewConnection ();
+		void handleDisconnected ();
 	signals:
 		void gotClient (int);
+		void clientDisconnected (int);
 	};
 }
 }

@@ -101,6 +101,9 @@ namespace LMP
 						"Cache-Control: no-cache",
 						"Server: LeechCraft LMP"
 					});
+
+				Socket2FD_ [socket] = socket->socketDescriptor ();
+
 				emit gotClient (socket->socketDescriptor ());
 			}
 			else
@@ -131,7 +134,20 @@ namespace LMP
 	void HttpServer::handleNewConnection ()
 	{
 		const auto socket = Server_->nextPendingConnection ();
+		connect (socket,
+				SIGNAL (disconnected ()),
+				this,
+				SLOT (handleDisconnected ()));
 		HandleSocket (socket);
+	}
+
+	void HttpServer::handleDisconnected ()
+	{
+		const auto sock = qobject_cast<QTcpSocket*> (sender ());
+		sock->deleteLater ();
+
+		if (Socket2FD_.contains (sock))
+			emit clientDisconnected (Socket2FD_.take (sock));
 	}
 }
 }
