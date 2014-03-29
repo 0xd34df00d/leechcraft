@@ -123,6 +123,7 @@ set (SRCS
 	engine/pathelement.cpp
 	engine/rganalyser.cpp
 	engine/rgfilter.cpp
+	engine/httpserver.cpp
 	engine/sourceobject.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
