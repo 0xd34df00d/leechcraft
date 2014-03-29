@@ -53,11 +53,13 @@ namespace Acetamide
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
 	protected:
 		QList<QObject*> AllMessages_;
+		QList<IrcMessage*> UnreadMessages_;
 		EntryStatus CurrentStatus_;
 		QList<QAction*> Actions_;
 
 		IrcAccount *Account_;
 		VCardDialog *VCardDialog_;
+
 	public:
 		EntryBase (IrcAccount* = 0);
 		virtual ~EntryBase ();
@@ -72,6 +74,7 @@ namespace Acetamide
 		QString GetRawInfo () const;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+
 		void MarkMsgsRead ();
 		void ChatTabClosed ();
 
@@ -83,6 +86,7 @@ namespace Acetamide
 		void SetAvatar (const QImage&);
 		void SetRawInfo (const QString&);
 		void SetInfo (const WhoIsMessage& msg);
+
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
@@ -94,6 +98,8 @@ namespace Acetamide
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void chatTabClosed ();
 	};
 };
 };

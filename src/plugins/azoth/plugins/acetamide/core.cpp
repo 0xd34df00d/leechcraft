@@ -82,6 +82,11 @@ namespace Acetamide
 		PluginProxy_ = proxy;
 	}
 
+	IProxyObject* Core::GetPluginProxy () const
+	{
+		return qobject_cast<IProxyObject*> (PluginProxy_);
+	}
+
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
