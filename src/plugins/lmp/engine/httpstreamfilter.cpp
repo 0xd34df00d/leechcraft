@@ -41,9 +41,11 @@ namespace LMP
 	HttpStreamFilter::HttpStreamFilter ()
 	: Elem_ { gst_bin_new ("httpstreambin") }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
+	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, StreamQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, Encoder_ { gst_element_factory_make ("vorbisenc", nullptr) }
+	, Muxer_ { gst_element_factory_make ("oggmux", nullptr) }
 	, MSS_ { gst_element_factory_make ("multifdsink", nullptr) }
 	, Server_ { new HttpServer { this } }
 	{
@@ -51,26 +53,16 @@ namespace LMP
 			qWarning () << Q_FUNC_INFO
 					<< "cannot create multisocketsink";
 
-		g_object_set (StreamQueue_, "leaky", 1, nullptr);
-
 		const auto convIn = gst_element_factory_make ("audioconvert", nullptr);
-		const auto muxer = gst_element_factory_make ("oggmux", nullptr);
 
-		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, StreamQueue_, Encoder_, MSS_, convIn, muxer, nullptr);
+		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, StreamQueue_, Encoder_, convIn, Muxer_, nullptr);
 
-		auto teeSrcPadTemplate = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d");
-		TeeAudioPad_ = gst_element_request_pad (Tee_, teeSrcPadTemplate, nullptr, nullptr);
-		TeeVideoPad_ = gst_element_request_pad (Tee_, teeSrcPadTemplate, nullptr, nullptr);
-
+		TeeAudioPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
 		auto audioPad = gst_element_get_static_pad (AudioQueue_, "sink");
 		gst_pad_link (TeeAudioPad_, audioPad);
 		gst_object_unref (audioPad);
 
-		auto videoPad = gst_element_get_static_pad (StreamQueue_, "sink");
-		gst_pad_link (TeeVideoPad_, videoPad);
-		gst_object_unref (videoPad);
-
-		gst_element_link_many (StreamQueue_, convIn, Encoder_, muxer, MSS_, nullptr);
+		gst_element_link_many (StreamQueue_, convIn, Encoder_, Muxer_, nullptr);
 		g_object_set (G_OBJECT (MSS_),
 				"unit-type", GST_FORMAT_TIME,
 				"units-max", static_cast<gint64> (7 * GST_SECOND),
@@ -98,9 +90,6 @@ namespace LMP
 		gst_element_release_request_pad (Tee_, TeeAudioPad_);
 		gst_object_unref (TeeAudioPad_);
 
-		gst_element_release_request_pad (Tee_, TeeVideoPad_);
-		gst_object_unref (TeeVideoPad_);
-
 		gst_object_unref (Elem_);
 	}
 
@@ -112,6 +101,34 @@ namespace LMP
 	void HttpStreamFilter::PostAdd (Path *path)
 	{
 		path->AddSyncHandler ([this] (GstBus*, GstMessage *msg) { return HandleError (msg); });
+	}
+
+	void HttpStreamFilter::CreatePad ()
+	{
+		gst_bin_add (GST_BIN (Elem_), MSS_);
+		gst_element_link (Muxer_, MSS_);
+
+		TeeStreamPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
+		auto streamPad = gst_element_get_static_pad (StreamQueue_, "sink");
+		gst_pad_link (TeeStreamPad_, streamPad);
+		gst_object_unref (streamPad);
+
+		gst_element_sync_state_with_parent (MSS_);
+	}
+
+	void HttpStreamFilter::DestroyPad ()
+	{
+		gst_element_unlink (Muxer_, MSS_);
+		gst_bin_remove (GST_BIN (Elem_), MSS_);
+
+		auto streamPad = gst_element_get_static_pad (StreamQueue_, "sink");
+		gst_pad_unlink (TeeStreamPad_, streamPad);
+		gst_object_unref (streamPad);
+
+		gst_element_release_request_pad (Tee_, TeeStreamPad_);
+		gst_object_unref (TeeStreamPad_);
+
+		TeeStreamPad_ = nullptr;
 	}
 
 	int HttpStreamFilter::HandleError (GstMessage *msg)
@@ -131,13 +148,18 @@ namespace LMP
 
 	void HttpStreamFilter::handleClient (int socket)
 	{
-		g_object_set (StreamQueue_, "leaky", 0, nullptr);
+		if (!ClientsCount_++)
+			CreatePad ();
+
 		g_signal_emit_by_name (MSS_, "add", socket);
 	}
 
 	void HttpStreamFilter::handleClientDisconnected (int socket)
 	{
-		qDebug () << Q_FUNC_INFO << socket;
+		g_signal_emit_by_name (MSS_, "remove", socket);
+
+		if (!--ClientsCount_)
+			DestroyPad ();
 	}
 }
 }

@@ -34,6 +34,7 @@
 
 typedef struct _GstPad GstPad;
 typedef struct _GstMessage GstMessage;
+typedef struct _GstPadTemplate GstPadTemplate;
 
 namespace LeechCraft
 {
@@ -49,17 +50,24 @@ namespace LMP
 		GstElement * const Elem_;
 
 		GstElement * const Tee_;
+
+		GstPadTemplate * const TeeTemplate_;
+
 		GstElement * const AudioQueue_;
 		GstElement * const StreamQueue_;
 
 		GstElement * const Encoder_;
+
+		GstElement * const Muxer_;
 
 		GstElement * const MSS_;
 
 		HttpServer * const Server_;
 
 		GstPad *TeeAudioPad_;
-		GstPad *TeeVideoPad_;
+		GstPad *TeeStreamPad_ = nullptr;
+
+		int ClientsCount_ = 0;
 	public:
 		HttpStreamFilter ();
 		~HttpStreamFilter ();
@@ -67,6 +75,9 @@ namespace LMP
 		GstElement* GetElement () const;
 		void PostAdd (Path*);
 	private:
+		void CreatePad ();
+		void DestroyPad ();
+
 		int HandleError (GstMessage*);
 	private slots:
 		void handleClient (int);
