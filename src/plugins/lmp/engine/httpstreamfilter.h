@@ -33,6 +33,7 @@
 #include "filterelement.h"
 
 typedef struct _GstPad GstPad;
+typedef struct _GstMessage GstMessage;
 
 namespace LeechCraft
 {
@@ -64,6 +65,9 @@ namespace LMP
 		~HttpStreamFilter ();
 	protected:
 		GstElement* GetElement () const;
+		void PostAdd (Path*);
+	private:
+		int HandleError (GstMessage*);
 	private slots:
 		void handleClient (int);
 		void handleClientDisconnected (int);

@@ -32,6 +32,7 @@
 #include "../gstfix.h"
 #include "gstutil.h"
 #include "httpserver.h"
+#include "path.h"
 
 namespace LeechCraft
 {
@@ -108,6 +109,26 @@ namespace LMP
 		return Elem_;
 	}
 
+	void HttpStreamFilter::PostAdd (Path *path)
+	{
+		path->AddSyncHandler ([this] (GstBus*, GstMessage *msg) { return HandleError (msg); });
+	}
+
+	int HttpStreamFilter::HandleError (GstMessage *msg)
+	{
+		if (GST_MESSAGE_TYPE (msg) != GST_MESSAGE_ERROR)
+			return GST_BUS_PASS;
+
+		if (QList<GstElement*> { StreamQueue_, Encoder_, MSS_ }.contains (GST_ELEMENT (msg->src)))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "detected stream error";
+			return GST_BUS_DROP;
+		}
+
+		return GST_BUS_PASS;
+	}
+
 	void HttpStreamFilter::handleClient (int socket)
 	{
 		g_object_set (StreamQueue_, "leaky", 0, nullptr);
@@ -118,6 +139,5 @@ namespace LMP
 	{
 		qDebug () << Q_FUNC_INFO << socket;
 	}
-
 }
 }
