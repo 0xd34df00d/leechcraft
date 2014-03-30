@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	AddressesModelManager::AddressesModelManager (BaseSettingsManager *bsm, QObject *parent)
+	AddressesModelManager::AddressesModelManager (BaseSettingsManager *bsm, int defaultPort, QObject *parent)
 	: QObject { parent }
 	, Model_ { new QStandardItemModel { this } }
 	, BSM_ { bsm }
@@ -65,7 +65,7 @@ namespace Util
 			if (std::any_of (std::begin (locals), std::end (locals),
 					[&addr] (decltype (*std::begin (locals)) subnet)
 						{ return addr.isInSubnet (subnet); }))
-				defaultAddrs.push_back ({ addr.toString (), "14801" });
+				defaultAddrs.push_back ({ addr.toString (), QString::number (defaultPort) });
 		}
 
 		const auto& addrs = BSM_->Property ("ListenAddresses",

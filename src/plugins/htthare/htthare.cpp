@@ -47,7 +47,7 @@ namespace HttHare
 
 		Util::AddressesModelManager::RegisterTypes ();
 
-		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), this);
+		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), 14801, this);
 		connect (AddrMgr_,
 				SIGNAL (addressesChanged ()),
 				this,

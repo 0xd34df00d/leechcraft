@@ -52,7 +52,7 @@ namespace Util
 		QStandardItemModel * const Model_;
 		BaseSettingsManager * const BSM_;
 	public:
-		AddressesModelManager (BaseSettingsManager*, QObject* = 0);
+		AddressesModelManager (BaseSettingsManager*, int defaultPort, QObject* = 0);
 
 		static void RegisterTypes ();
 

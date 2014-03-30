@@ -48,7 +48,7 @@ namespace WebAccess
 
 		Util::AddressesModelManager::RegisterTypes ();
 
-		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), this);
+		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), 9001, this);
 
 		Util::InstallTranslator ("aggregator_webaccess");
 
