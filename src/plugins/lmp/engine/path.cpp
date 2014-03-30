@@ -181,6 +181,11 @@ namespace LMP
 		}
 	}
 
+	void Path::AddSyncHandler (const SyncHandler_f& handler)
+	{
+		SrcObj_->AddSyncHandler (handler);
+	}
+
 	void Path::InsertElement (GstElement *elem)
 	{
 		Queue_.append ({ elem, Action::Add });

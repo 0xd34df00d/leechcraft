@@ -160,6 +160,14 @@ namespace LMP
 				SLOT (handleTick ()));
 		timer->start (1000);
 
+		gst_bus_set_sync_handler (gst_pipeline_get_bus (GST_PIPELINE (Dec_)),
+				[] (GstBus *bus, GstMessage *msg, gpointer udata)
+				{
+					return static_cast<GstBusSyncReply> (static_cast<SourceObject*> (udata)->
+								HandleSyncMessage (bus, msg));
+				},
+				this);
+
 		PopThread_->start (QThread::LowestPriority);
 	}
 
@@ -475,6 +483,11 @@ namespace LMP
 		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
 	}
 
+	void SourceObject::AddSyncHandler (const SyncHandler_f& handler)
+	{
+		SyncHandlers_ << handler;
+	}
+
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
 	{
 		GError *gerror = nullptr;
@@ -667,6 +680,18 @@ namespace LMP
 
 	void SourceObject::HandleStreamStatusMsg (GstMessage*)
 	{
+	}
+
+	int SourceObject::HandleSyncMessage (GstBus *bus, GstMessage *msg)
+	{
+		for (const auto& handler : SyncHandlers_)
+		{
+			const auto res = handler (bus, msg);
+			if (res == GST_BUS_DROP)
+				return res;
+		}
+
+		return GST_BUS_PASS;
 	}
 
 	void SourceObject::handleMessage (GstMessage_ptr msgPtr)

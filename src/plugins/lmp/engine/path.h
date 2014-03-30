@@ -32,6 +32,8 @@
 #include <QObject>
 
 typedef struct _GstElement GstElement;
+typedef struct _GstMessage GstMessage;
+typedef struct _GstBus GstBus;
 
 namespace LeechCraft
 {
@@ -40,6 +42,8 @@ namespace LMP
 	class SourceObject;
 	class Output;
 	struct CallbackData;
+
+	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
 
 	class Path : public QObject
 	{
@@ -81,6 +85,8 @@ namespace LMP
 		void SetOutputBin (GstElement*);
 
 		SourceObject* GetSourceObject () const;
+
+		void AddSyncHandler (const SyncHandler_f&);
 
 		void InsertElement (GstElement*);
 		void RemoveElement (GstElement*);
