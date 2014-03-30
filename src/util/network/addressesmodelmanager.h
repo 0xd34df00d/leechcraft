@@ -61,12 +61,12 @@ namespace Util
 	private:
 		void SaveSettings () const;
 		void AppendRow (const QPair<QString, QString>&);
-	private slots:
+	private Q_SLOTS:
 		void updateAvailInterfaces ();
-	public slots:
+	public Q_SLOTS:
 		void addRequested (const QString&, const QVariantList&);
 		void removeRequested (const QString&, const QModelIndexList&);
-	signals:
+	Q_SIGNALS:
 		void addressesChanged ();
 	};
 }
