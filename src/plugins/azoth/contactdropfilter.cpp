@@ -73,7 +73,7 @@ namespace Azoth
 		const auto& urls = data->urls ();
 		if (data->hasImage () && urls.size () <= 1)
 			HandleImageDropped (imgData.value<QImage> (), urls.value (0));
-		else if (data->hasUrls () && !urls.isEmpty ())
+		else if (!urls.isEmpty ())
 			HandleFilesDropped (urls);
 	}
 
