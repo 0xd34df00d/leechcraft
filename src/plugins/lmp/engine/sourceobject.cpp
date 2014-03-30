@@ -166,7 +166,12 @@ namespace LMP
 					return static_cast<GstBusSyncReply> (static_cast<SourceObject*> (udata)->
 								HandleSyncMessage (bus, msg));
 				},
+#if GST_VERSION_MAJOR < 1
 				this);
+#else
+				this,
+				nullptr);
+#endif
 
 		PopThread_->start (QThread::LowestPriority);
 	}
