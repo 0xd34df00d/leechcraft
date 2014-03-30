@@ -42,11 +42,17 @@ namespace LMP
 	void FilterElement::InsertInto (Path *path)
 	{
 		path->InsertElement (GetElement ());
+
+		PostAdd (path);
 	}
 
 	void FilterElement::RemoveFrom (Path *path)
 	{
 		path->RemoveElement (GetElement ());
+	}
+
+	void FilterElement::PostAdd (Path*)
+	{
 	}
 }
 }

@@ -45,6 +45,7 @@ namespace LMP
 		void InsertInto (Path*);
 		void RemoveFrom (Path*);
 	protected:
+		virtual void PostAdd (Path*);
 		virtual GstElement* GetElement () const = 0;
 	};
 }
