@@ -27,36 +27,83 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QStandardItemModel>
-#include <interfaces/core/ihookproxy.h>
+#include "dndutil.h"
+#include <QString>
+#include <QList>
+#include <QDataStream>
+#include <QMimeData>
+#include "interfaces/azoth/iclentry.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class CLModel : public QStandardItemModel
+namespace DndUtil
+{
+	const QString CLEntryFormat = "x-leechcraft/azoth-cl-entry";
+
+	QString GetFormatId ()
 	{
-		Q_OBJECT
-	public:
-		CLModel (QObject* = 0);
+		return CLEntryFormat;
+	}
 
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList&) const;
-		bool dropMimeData (const QMimeData*, Qt::DropAction,
-				int, int, const QModelIndex&);
-		Qt::DropActions supportedDropActions () const;
-	private:
-		bool PerformHooks (const QMimeData*, int, const QModelIndex&);
-		bool CheckHookDnDEntry2Entry (const QMimeData*, int, const QModelIndex&);
+	QByteArray Encode (const QList<MimeContactInfo>& entries, QMimeData *data)
+	{
+		QByteArray encoded;
+		QDataStream stream (&encoded, QIODevice::WriteOnly);
+		for (const auto info : entries)
+			stream << info.Entry_->GetEntryID () << info.Group_;
 
-		bool TryInvite (const QMimeData*, int, const QModelIndex&);
-		bool TryDropContact (const QMimeData*, int, const QModelIndex&);
-		bool TryDropFile (const QMimeData*, const QModelIndex&);
-	signals:
-		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr,
-				QObject*, QObject*);
-	};
+		if (data)
+			data->setData (CLEntryFormat, encoded);
+
+		return encoded;
+	}
+
+	QObject* DecodeEntryObj (const QMimeData *mime)
+	{
+		QDataStream stream (mime->data (CLEntryFormat));
+		QString sid;
+		stream >> sid;
+
+		return Core::Instance ().GetEntry (sid);
+	}
+
+	QList<QObject*> DecodeEntryObjs (const QMimeData *mime)
+	{
+		QList<QObject*> result;
+		for (const auto& info : DecodeMimeInfos (mime))
+			result << info.Entry_->GetQObject ();
+		return result;
+	}
+
+	QList<MimeContactInfo> DecodeMimeInfos (const QMimeData *mime)
+	{
+		QList<MimeContactInfo> result;
+
+		QDataStream stream (mime->data (CLEntryFormat));
+		while (!stream.atEnd ())
+		{
+			QString id;
+			QString group;
+			stream >> id >> group;
+
+			const auto entryObj = Core::Instance ().GetEntry (id);
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
+			if (!entry)
+				continue;
+
+			result.append ({ entry, group });
+		}
+
+		return result;
+	}
+
+	bool HasContacts (const QMimeData *data)
+	{
+		return data->hasFormat (CLEntryFormat);
+	}
+}
 }
 }

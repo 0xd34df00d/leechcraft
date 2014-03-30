@@ -29,34 +29,36 @@
 
 #pragma once
 
-#include <QStandardItemModel>
-#include <interfaces/core/ihookproxy.h>
+#include <QString>
+
+template<typename T>
+class QList;
+
+class QMimeData;
+class QObject;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class CLModel : public QStandardItemModel
+class ICLEntry;
+
+namespace DndUtil
+{
+	QString GetFormatId ();
+
+	struct MimeContactInfo
 	{
-		Q_OBJECT
-	public:
-		CLModel (QObject* = 0);
-
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList&) const;
-		bool dropMimeData (const QMimeData*, Qt::DropAction,
-				int, int, const QModelIndex&);
-		Qt::DropActions supportedDropActions () const;
-	private:
-		bool PerformHooks (const QMimeData*, int, const QModelIndex&);
-		bool CheckHookDnDEntry2Entry (const QMimeData*, int, const QModelIndex&);
-
-		bool TryInvite (const QMimeData*, int, const QModelIndex&);
-		bool TryDropContact (const QMimeData*, int, const QModelIndex&);
-		bool TryDropFile (const QMimeData*, const QModelIndex&);
-	signals:
-		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr,
-				QObject*, QObject*);
+		ICLEntry *Entry_;
+		QString Group_;
 	};
+
+	QByteArray Encode (const QList<MimeContactInfo>&, QMimeData*);
+	QObject* DecodeEntryObj (const QMimeData*);
+	QList<QObject*> DecodeEntryObjs (const QMimeData*);
+	QList<MimeContactInfo> DecodeMimeInfos (const QMimeData*);
+
+	bool HasContacts (const QMimeData*);
+}
 }
 }

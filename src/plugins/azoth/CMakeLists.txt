@@ -147,6 +147,7 @@ set (SRCS
 	coremessage.cpp
 	dummymsgmanager.cpp
 	serverhistorywidget.cpp
+	dndutil.cpp
 	)
 set (FORMS
 	mainwidget.ui
