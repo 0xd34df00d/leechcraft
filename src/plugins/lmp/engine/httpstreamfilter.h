@@ -66,6 +66,7 @@ namespace LMP
 		GstElement* GetElement () const;
 	private slots:
 		void handleClient (int);
+		void handleClientDisconnected (int);
 	};
 }
 }

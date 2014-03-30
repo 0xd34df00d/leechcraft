@@ -86,6 +86,10 @@ namespace LMP
 				SIGNAL (gotClient (int)),
 				this,
 				SLOT (handleClient (int)));
+		connect (Server_,
+				SIGNAL (clientDisconnected (int)),
+				this,
+				SLOT (handleClientDisconnected (int)));
 	}
 
 	HttpStreamFilter::~HttpStreamFilter ()
@@ -109,5 +113,11 @@ namespace LMP
 		g_object_set (StreamQueue_, "leaky", 0, nullptr);
 		g_signal_emit_by_name (MSS_, "add", socket);
 	}
+
+	void HttpStreamFilter::handleClientDisconnected (int socket)
+	{
+		qDebug () << Q_FUNC_INFO << socket;
+	}
+
 }
 }
