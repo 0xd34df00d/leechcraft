@@ -32,6 +32,7 @@
 #include <interfaces/aggregator/iproxyobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <util/network/addressesmodelmanager.h>
 #include "servermanager.h"
 #include "xmlsettingsmanager.h"
 
@@ -45,10 +46,16 @@ namespace WebAccess
 	{
 		Proxy_ = proxy;
 
+		Util::AddressesModelManager::RegisterTypes ();
+
+		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), this);
+
 		Util::InstallTranslator ("aggregator_webaccess");
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "aggregatorwebaccesssettings.xml");
+
+		XSD_->SetDataSource ("AddressesDataView", AddrMgr_->GetModel ());
 	}
 
 	void Plugin::SecondInit ()
@@ -96,7 +103,7 @@ namespace WebAccess
 	{
 		try
 		{
-			SM_.reset (new ServerManager (qobject_cast<IProxyObject*> (proxy), Proxy_));
+			SM_.reset (new ServerManager (qobject_cast<IProxyObject*> (proxy), Proxy_, AddrMgr_));
 		}
 		catch (const std::exception& e)
 		{
