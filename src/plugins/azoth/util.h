@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_UTIL_H
-#define PLUGINS_AZOTH_UTIL_H
+#pragma once
 
 class QString;
 class QWidget;
@@ -50,5 +49,3 @@ namespace Azoth
 	void DenyAuthForEntry (ICLEntry*);
 }
 }
-
-#endif
