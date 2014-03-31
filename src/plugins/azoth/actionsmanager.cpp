@@ -368,7 +368,7 @@ namespace Azoth
 			if (dia.exec () != QDialog::Accepted)
 				return;
 
-			const auto mucEntryObj = Core::Instance ().GetEntry (dia.GetID ());
+			const auto mucEntryObj = FindByHRId (account, dia.GetID ());
 			const auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryObj);
 			if (!mucEntry)
 			{
