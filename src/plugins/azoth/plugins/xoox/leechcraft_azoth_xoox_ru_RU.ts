@@ -367,6 +367,19 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Azoth::Xoox</name>
+    <message>
+        <location filename="xep0313modelmanager.cpp" line="45"/>
+        <source>Entry name</source>
+        <translation>Имя контакта</translation>
+    </message>
+    <message>
+        <location filename="xep0313modelmanager.cpp" line="45"/>
+        <source>JID</source>
+        <translation>JID</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Xoox::AdHocCommandServer</name>
     <message>
         <location filename="adhoccommandserver.cpp" line="64"/>
@@ -452,17 +465,17 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="454"/>
+        <location filename="clientconnection.cpp" line="470"/>
         <source>This room is already joined.</source>
         <translation>Вы уже в этой комнате.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="890"/>
+        <location filename="clientconnection.cpp" line="915"/>
         <source>Data form from %1</source>
         <translation>Форма от %1</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="893"/>
+        <location filename="clientconnection.cpp" line="918"/>
         <source>You have received dataform from %1:</source>
         <translation>Вы получили форму от %1:</translation>
     </message>
@@ -741,32 +754,42 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="87"/>
+        <location filename="glooxaccount.cpp" line="91"/>
         <source>Self VCard...</source>
         <translation>Собственный VCard...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="88"/>
+        <location filename="glooxaccount.cpp" line="92"/>
         <source>Privacy lists...</source>
         <translation>Списки приватности...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="473"/>
+        <location filename="glooxaccount.cpp" line="93"/>
+        <source>Enable message carbons</source>
+        <translation>Включить копирование сообщений</translation>
+    </message>
+    <message>
+        <location filename="glooxaccount.cpp" line="101"/>
+        <source>Deliver messages from conversations on other resources to this resource as well.</source>
+        <translation>Копировать на этот ресурс все сообщения из разговоров на других ресурсах.</translation>
+    </message>
+    <message>
+        <location filename="glooxaccount.cpp" line="492"/>
         <source>Why would you call yourself?</source>
         <translation>Почему вы хотите позвонить себе?</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="725"/>
+        <location filename="glooxaccount.cpp" line="784"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
         <translation>Невозможно включить шифрование для контакта %1: не задан ключ.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="734"/>
+        <location filename="glooxaccount.cpp" line="793"/>
         <source>Unable to change encryption state for %1.</source>
         <translation>Невозможно изменить состояние шифрования для %1.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="762"/>
+        <location filename="glooxaccount.cpp" line="821"/>
         <source>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</source>
         <translation>Невозможно присоединиться к тому, что уже добавлено в контакт-лист. Вы желаете удалить %1 из ростера и попробовать снова?</translation>
     </message>
@@ -797,22 +820,22 @@
         <translation>Добавить этого пользователя в активный список приватности (не все серверы это поддерживают).</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="274"/>
+        <location filename="glooxclentry.cpp" line="276"/>
         <source>Unauthorized users</source>
         <translation>Неавторизованные пользователи</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="370"/>
+        <location filename="glooxclentry.cpp" line="372"/>
         <source>Login</source>
         <translation>Зайти</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="378"/>
+        <location filename="glooxclentry.cpp" line="380"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="386"/>
+        <location filename="glooxclentry.cpp" line="388"/>
         <source>Gateway preferences...</source>
         <translation>Настройки транспорта...</translation>
     </message>
@@ -1135,72 +1158,72 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomCLEntry</name>
     <message>
-        <location filename="roomclentry.cpp" line="87"/>
+        <location filename="roomclentry.cpp" line="84"/>
         <source>Role</source>
         <translation>Роль</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="88"/>
+        <location filename="roomclentry.cpp" line="85"/>
         <source>Affiliation</source>
         <translation>Членство</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="89"/>
+        <location filename="roomclentry.cpp" line="86"/>
         <source>Kicked</source>
         <translation>Кикнутый</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="90"/>
+        <location filename="roomclentry.cpp" line="87"/>
         <source>Visitor</source>
         <translation>Гость</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="91"/>
+        <location filename="roomclentry.cpp" line="88"/>
         <source>Participant</source>
         <translation>Участник</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="92"/>
+        <location filename="roomclentry.cpp" line="89"/>
         <source>Moderator</source>
         <translation>Модератор</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="93"/>
+        <location filename="roomclentry.cpp" line="90"/>
         <source>Banned</source>
         <translation>Забаненный</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="94"/>
+        <location filename="roomclentry.cpp" line="91"/>
         <source>None</source>
         <translation>Без членства</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="95"/>
+        <location filename="roomclentry.cpp" line="92"/>
         <source>Member</source>
         <translation>Член</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="96"/>
+        <location filename="roomclentry.cpp" line="93"/>
         <source>Admin</source>
         <translation>Админ</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="97"/>
+        <location filename="roomclentry.cpp" line="94"/>
         <source>Owner</source>
         <translation>Владелец</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="155"/>
+        <location filename="roomclentry.cpp" line="152"/>
         <source>Multiuser chatrooms</source>
         <translation>Конференции</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="206"/>
+        <location filename="roomclentry.cpp" line="203"/>
         <source>Request voice</source>
         <translation>Запросить голос</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="293"/>
+        <location filename="roomclentry.cpp" line="296"/>
         <source>%1 participants</source>
         <translation>Участники %1</translation>
     </message>
@@ -1353,7 +1376,7 @@
         <translation>нет сообщения</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="461"/>
+        <location filename="roomhandler.cpp" line="467"/>
         <source>%1 changed subject to %2</source>
         <translation>%1 изменил тему на %2</translation>
     </message>
@@ -1391,77 +1414,77 @@
         <translation>Зарегистрироваться...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="153"/>
+        <location filename="sdsession.cpp" line="142"/>
         <source>Execute...</source>
         <translation>Выполнить...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="156"/>
+        <location filename="sdsession.cpp" line="144"/>
         <source>Join...</source>
         <translation>Присоединиться...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="158"/>
+        <location filename="sdsession.cpp" line="146"/>
         <source>Refresh...</source>
         <translation>Обновить...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="262"/>
+        <location filename="sdsession.cpp" line="259"/>
         <source>MUC description: %1.</source>
         <translation>Описание комнаты: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="276"/>
+        <location filename="sdsession.cpp" line="273"/>
         <source>OS: %1.</source>
         <translation>ОС: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="277"/>
+        <location filename="sdsession.cpp" line="274"/>
         <source>OS version: %1.</source>
         <translation>Версия ОС: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="278"/>
+        <location filename="sdsession.cpp" line="275"/>
         <source>Software: %1.</source>
         <translation>ПО: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="279"/>
+        <location filename="sdsession.cpp" line="276"/>
         <source>Software version: %1.</source>
         <translation>Версия ПО: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="281"/>
+        <location filename="sdsession.cpp" line="278"/>
         <source>Version:</source>
         <translation>Версия:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="286"/>
+        <location filename="sdsession.cpp" line="283"/>
         <source>Identities:</source>
         <translation>Сущности:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="294"/>
+        <location filename="sdsession.cpp" line="291"/>
         <source>Identity name:</source>
         <translation>Имя сущности:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="295"/>
+        <location filename="sdsession.cpp" line="292"/>
         <source>Category:</source>
         <translation>Категория:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="296"/>
+        <location filename="sdsession.cpp" line="293"/>
         <source>Type:</source>
         <translation>Тип:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="297"/>
+        <location filename="sdsession.cpp" line="294"/>
         <source>Language:</source>
         <translation>Язык:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="307"/>
+        <location filename="sdsession.cpp" line="304"/>
         <source>Capabilities:</source>
         <translation>Возможности:</translation>
     </message>
@@ -1485,131 +1508,131 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::VCardDialog</name>
     <message>
-        <location filename="vcarddialog.cpp" line="312"/>
+        <location filename="vcarddialog.cpp" line="315"/>
         <source>Capabilities</source>
         <translation>Возможности</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="107"/>
+        <location filename="vcarddialog.cpp" line="108"/>
         <source>VCard for %1</source>
         <translation>VCard для %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="177"/>
-        <location filename="vcarddialog.cpp" line="202"/>
-        <location filename="vcarddialog.cpp" line="235"/>
-        <location filename="vcarddialog.cpp" line="377"/>
-        <location filename="vcarddialog.cpp" line="431"/>
+        <location filename="vcarddialog.cpp" line="180"/>
+        <location filename="vcarddialog.cpp" line="205"/>
+        <location filename="vcarddialog.cpp" line="238"/>
+        <location filename="vcarddialog.cpp" line="383"/>
+        <location filename="vcarddialog.cpp" line="437"/>
         <source>preferred</source>
         <translation>предпочтительно</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="179"/>
-        <location filename="vcarddialog.cpp" line="204"/>
-        <location filename="vcarddialog.cpp" line="229"/>
-        <location filename="vcarddialog.cpp" line="378"/>
-        <location filename="vcarddialog.cpp" line="432"/>
+        <location filename="vcarddialog.cpp" line="182"/>
+        <location filename="vcarddialog.cpp" line="207"/>
+        <location filename="vcarddialog.cpp" line="232"/>
+        <location filename="vcarddialog.cpp" line="384"/>
+        <location filename="vcarddialog.cpp" line="438"/>
         <source>home</source>
         <translation>домашний</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="181"/>
-        <location filename="vcarddialog.cpp" line="206"/>
-        <location filename="vcarddialog.cpp" line="231"/>
-        <location filename="vcarddialog.cpp" line="379"/>
-        <location filename="vcarddialog.cpp" line="433"/>
+        <location filename="vcarddialog.cpp" line="184"/>
+        <location filename="vcarddialog.cpp" line="209"/>
+        <location filename="vcarddialog.cpp" line="234"/>
+        <location filename="vcarddialog.cpp" line="385"/>
+        <location filename="vcarddialog.cpp" line="439"/>
         <source>work</source>
         <translation>рабочий</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="183"/>
-        <location filename="vcarddialog.cpp" line="380"/>
+        <location filename="vcarddialog.cpp" line="186"/>
+        <location filename="vcarddialog.cpp" line="386"/>
         <source>cell</source>
         <translation>мобильный</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="164"/>
+        <location filename="vcarddialog.cpp" line="167"/>
         <source>No photo</source>
         <translation>Нет фото</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="142"/>
+        <location filename="vcarddialog.cpp" line="145"/>
         <source>%1&apos;s avatar</source>
         <translation>Аватар %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="233"/>
+        <location filename="vcarddialog.cpp" line="236"/>
         <source>postal</source>
         <translation>почтовый код</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="240"/>
+        <location filename="vcarddialog.cpp" line="243"/>
         <source>Address %1:</source>
         <translation>Адрес %1:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="242"/>
+        <location filename="vcarddialog.cpp" line="245"/>
         <source>Address %1 (%2):</source>
         <translation>Адрес %1 (%2):</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="253"/>
+        <location filename="vcarddialog.cpp" line="256"/>
         <source>Country: %1</source>
         <translation>Страна: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="254"/>
+        <location filename="vcarddialog.cpp" line="257"/>
         <source>Region: %1</source>
         <translation>Регион: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="255"/>
+        <location filename="vcarddialog.cpp" line="258"/>
         <source>Locality: %1</source>
         <comment>User&apos;s locality</comment>
         <translation>Местоположение: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="256"/>
+        <location filename="vcarddialog.cpp" line="259"/>
         <source>Street: %1</source>
         <translation>Улица: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="257"/>
+        <location filename="vcarddialog.cpp" line="260"/>
         <source>Postal code: %1</source>
         <translation>Почтовый код: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="305"/>
+        <location filename="vcarddialog.cpp" line="308"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="306"/>
+        <location filename="vcarddialog.cpp" line="309"/>
         <source>Version</source>
         <translation>Версия</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="307"/>
+        <location filename="vcarddialog.cpp" line="310"/>
         <source>OS</source>
         <translation>ОС</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="391"/>
+        <location filename="vcarddialog.cpp" line="397"/>
         <source>VCard phones</source>
         <translation>Телефоны VCard</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="445"/>
+        <location filename="vcarddialog.cpp" line="451"/>
         <source>VCard emails</source>
         <translation>Адреса электронной почты VCard</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="484"/>
+        <location filename="vcarddialog.cpp" line="490"/>
         <source>Choose new photo</source>
         <translation>Выбор нового фото</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="486"/>
+        <location filename="vcarddialog.cpp" line="492"/>
         <source>Images (*.png *.jpg *.jpeg *.gif *.bmp);;All files (*.*)</source>
         <translation>Изображения (*.png *.jpg *.jpeg *.gif *.bmp);;Все файлы (*.*)</translation>
     </message>
@@ -1786,53 +1809,53 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="57"/>
+        <location filename="util.cpp" line="59"/>
         <source>guest</source>
         <translation>гость</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="59"/>
+        <location filename="util.cpp" line="61"/>
         <source>visitor</source>
         <translation>посетитель</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="61"/>
+        <location filename="util.cpp" line="63"/>
         <source>participant</source>
         <translation>участник</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="63"/>
+        <location filename="util.cpp" line="65"/>
         <source>moderator</source>
         <translation>модератор</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="65"/>
-        <location filename="util.cpp" line="84"/>
+        <location filename="util.cpp" line="67"/>
+        <location filename="util.cpp" line="86"/>
         <source>unspecified</source>
         <translation>не указано</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="74"/>
+        <location filename="util.cpp" line="76"/>
         <source>outcast</source>
         <translation>изгой</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="76"/>
+        <location filename="util.cpp" line="78"/>
         <source>newcomer</source>
         <translation>новенький</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="78"/>
+        <location filename="util.cpp" line="80"/>
         <source>member</source>
         <translation>член</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="80"/>
+        <location filename="util.cpp" line="82"/>
         <source>admin</source>
         <translation>админ</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="82"/>
+        <location filename="util.cpp" line="84"/>
         <source>owner</source>
         <translation>владелец</translation>
     </message>
@@ -1998,6 +2021,54 @@
     </message>
 </context>
 <context>
+    <name>Xep0313PrefsDialog</name>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="14"/>
+        <source>Message archiving preferences</source>
+        <translation>Настройки архивирования сообщений</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="22"/>
+        <source>Default mode:</source>
+        <translation>Режим по умолчанию:</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="30"/>
+        <source>always</source>
+        <translation>всегда</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="35"/>
+        <source>never</source>
+        <translation>никогда</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="40"/>
+        <source>roster only</source>
+        <translation>только ростер</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="56"/>
+        <source>Per-JID configuration</source>
+        <translation>Настройки отдельных JID&apos;ов</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="62"/>
+        <source>Always:</source>
+        <translation>Всегда:</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="72"/>
+        <source>Never:</source>
+        <translation>Никогда:</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="82"/>
+        <source>Enter custom JIDs, one per line:</source>
+        <translation>Введите отдельные JID&apos;ы, один на строку:</translation>
+    </message>
+</context>
+<context>
     <name>azothxooxsettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
@@ -2033,6 +2104,16 @@
         <location filename="dummy.cpp" line="8"/>
         <source>Request participant VCards in MUCs</source>
         <translation>Запрашивать VCard&apos;ы участников в конференциях</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>Request contacts versions</source>
+        <translation>Запрашивать версии контактов</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>Request contacts VCards</source>
+        <translation>Запрашивать VCard&apos;ы контактов</translation>
     </message>
 </context>
 </TS>
