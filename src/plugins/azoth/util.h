@@ -31,6 +31,7 @@
 
 class QString;
 class QWidget;
+class QObject;
 
 namespace LeechCraft
 {
@@ -39,6 +40,7 @@ struct Entity;
 namespace Azoth
 {
 	class ICLEntry;
+	class IAccount;
 
 	void BuildNotification (Entity&, ICLEntry*);
 	QString GetActivityIconName (const QString&, const QString&);
@@ -47,5 +49,7 @@ namespace Azoth
 
 	void AuthorizeEntry (ICLEntry*);
 	void DenyAuthForEntry (ICLEntry*);
+
+	QObject* FindByHRId (IAccount*, const QString&);
 }
 }
