@@ -704,7 +704,8 @@ namespace Azoth
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		proxy->SetReturnValue (QVariantList ());
 		emit hookEntryActionsRequested (proxy, entry->GetQObject ());
-		Q_FOREACH (const QVariant& var, proxy->GetReturnValue ().toList ())
+
+		for (const auto& var : proxy->GetReturnValue ().toList ())
 		{
 			QObject *obj = var.value<QObject*> ();
 			QAction *act = qobject_cast<QAction*> (obj);
@@ -715,7 +716,7 @@ namespace Azoth
 
 			proxy.reset (new Util::DefaultHookProxy);
 			emit hookEntryActionAreasRequested (proxy, act, entry->GetQObject ());
-			Q_FOREACH (const QString& place, proxy->GetReturnValue ().toStringList ())
+			for (const auto& place : proxy->GetReturnValue ().toStringList ())
 			{
 				if (place == "contactListContextMenu")
 					Action2Areas_ [act] << CLEAAContactListCtxtMenu;
