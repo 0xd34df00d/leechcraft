@@ -545,6 +545,12 @@ namespace ChatHistory
 
 		Core::Instance ()->ClearHistory (CurrentAccount_, CurrentEntry_);
 
+		Ui_.Contacts_->clearSelection ();
+		if (const auto item = FindContactItem (CurrentEntry_))
+			ContactsModel_->removeRow (item->row ());
+
+		CurrentEntry_.clear ();
+
 		Backpages_ = 0;
 		RequestLogs ();
 	}
