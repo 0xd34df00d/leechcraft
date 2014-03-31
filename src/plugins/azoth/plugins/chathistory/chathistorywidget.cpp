@@ -547,9 +547,10 @@ namespace ChatHistory
 
 		Ui_.Contacts_->clearSelection ();
 		if (const auto item = FindContactItem (CurrentEntry_))
+		{
+			CurrentEntry_.clear ();
 			ContactsModel_->removeRow (item->row ());
-
-		CurrentEntry_.clear ();
+		}
 
 		Backpages_ = 0;
 		RequestLogs ();
