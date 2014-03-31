@@ -76,6 +76,8 @@ namespace ChatHistory
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
 
 		QHash<QString, QHash<QString, QPointer<QObject>>> RequestedLogs_;
+
+		QAction *SeparatorAction_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
