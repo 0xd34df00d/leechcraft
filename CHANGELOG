@@ -3,7 +3,8 @@ the rest.
 
 !!! 0.6.65
 * New plugins:
-	* CpuLoad — cpu load monitoring quark.
+	* CertMgr — SSL certificates manager.
+	* CpuLoad — CPU load monitoring quark.
 	* Ooronee — pastebin/datafilter API quark.
 * [Core] Key sequencer fixes.
 * [Core] Use native strings for shortcuts in UI.
@@ -12,6 +13,7 @@ the rest.
 * [Core] Fix font issues on Mac OS X 10.9.
 * [Core] Pass --restart instead of -restart.
 * [Core] Thread-safe IconThemeEngine.
+* [Overall] Support unbundled installs on Mac.
 * [Aggregator] Support renaming feeds.
 * [Aggregator] Slight refactoring and better plugin API.
 * [Aggregator] Removed some old/outdated news feeds.
@@ -21,6 +23,7 @@ the rest.
 * [AnHero] Print strerror() if exec() failed.
 * [AnHero] Strip off first argument.
 * [AnHero] Use --restart flag instead of shell kludge.
+* [AnHero] Handle gdb errors.
 * [Auscrie] Save last used data filter.
 * [Auscrie] Show dialog on shoot action immediately.
 * [Azoth] Support plugins with server history like XMPP or VKontakte.
@@ -46,11 +49,15 @@ the rest.
 * [Azoth] Show state icon in UsersListWidget.
 * [Azoth] Fixed misaligned client icons in contacts.
 * [Azoth] Fixed misaligned icons in accounts rows.
+* [Azoth] Added an action to entry CL menu for inviting entry to MUCs.
+* [Azoth] Don't suggest sending non-local URLs on DnD.
+* [Azoth] Support dropping entries on MUC tabs (and vice versa).
 * [Azoth AP] Set "PreserveMessageEdit" if cancelled.
 * [Azoth Astrality] Fixed include path.
 * [Azoth Acetamide] Properly handle network connectivity issues.
 * [Azoth Autoidler] Changed poll timeout from 1 second to 10 to conserver power.
 * [Azoth Autoidler] Use ApplicationServices to get idle time on Mac.
+* [Azoth Depester] Show muted icon near ignored contacts.
 * [Azoth Herbicide] Show multilines below for #1476.
 * [Azoth Murm] Support server history.
 * [Azoth Murm] Fixed handling of '<' in outgoing messages.
@@ -65,7 +72,10 @@ the rest.
 * [Azoth OTRoid] Fixed use-after-free due to object lifetime.
 * [Azoth OTRoid] Handle all error messages.
 * [Azoth OTRoid] Mark messages as OTR on handling.
+* [Azoth OTRoid] Ignore forwarded messages.
 * [Azoth Rosenthal] Moved checking code to a separate plugin.
+* [Azoth SS] Set word break, fixes horizontal scrolling.
+* [Azoth VB] Fixed several compile-time warnings.
 * [Azoth Xoox] Support Message Archive Management (XEP-0313).
 * [Azoth Xoox] Support message carbons (XEP-0280).
 * [Azoth Xoox] Support disabling requesting vcards and versions at all.
@@ -75,6 +85,9 @@ the rest.
 * [Azoth Xoox] Request the Ad-Hoc commands if node is empty.
 * [Azoth Xoox] Don't emit null ptr in handleAutojoinQueue, fixes a crash.
 * [Azoth Xoox] Implement RoomCLEntry::MarkMsgsRead().
+* [Azoth Xoox] Support Description field on current QXmpp.
+* [Azoth Xoox] Support organizations info with newer QXmpp.
+* [Azoth Xoox] Added caps for: jabber.el, eyecu, sawim.
 * [Blasq] Finally implement IImgSource to provide images to other plugins like LHTR.
 * [Blasq] Implement IDataFilter to support uploading images from other plugins.
 * [Blogique] fix Use-after-free in BlogiqueWidget.
@@ -83,6 +96,7 @@ the rest.
 * [CSTP] Properly set the Referer field.
 * [CSTP] Properly update the Referer URL on redirections.
 * [CSTP] Set Origin header.
+* [CSTP] Fixed ugly crash with erroneous replies.
 * [DeadLyrics] Don't really use the reply object after deleteLater().
 * [DeadLyrics] Fixed crash with fast track changing in LMP.
 * [HotSensors] Added max/crit temperatures as ranges.
@@ -153,6 +167,8 @@ the rest.
 * [LMP] Zero-initialize length, year & track num.
 * [LMP] Added GetAll method to the MPRIS Props adaptor.
 * [LMP] xesam:artist should be a QStringList.
+* [LMP] Support DnD for radios.
+* [LMP] Collection models refactoring preparing for multiple collections.
 * [LMP Graffiti] Support cancelling recursive iteration.
 * [LMP Graffiti] Added path line edit with history.
 * [LMP Graffiti] Add sorting to dir list.
@@ -204,6 +220,7 @@ the rest.
 * [Util] Fixed parsing /etc/os-release.
 * [Util] VkAuthManager now supports silent mode.
 * [Util] Support infinite tokens in VkAuthManager.
+* [Util] Support hierarchical models in MergeModel.
 * [Vrooby] Fixed mounting from other plugins in UDisks2.
 * [Tools] Add gio and gconf schemas to the bundle.
 * [Tools] Fix various paths in gstreamer plugins.

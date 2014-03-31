@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 
 typedef struct _GstElement GstElement;
