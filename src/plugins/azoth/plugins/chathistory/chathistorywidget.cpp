@@ -536,9 +536,10 @@ namespace ChatHistory
 		if (CurrentAccount_.isEmpty () ||
 				CurrentEntry_.isEmpty ())
 			return;
+
 		if (QMessageBox::question (0, "LeechCraft",
 					tr ("Are you sure you wish to delete chat history with %1?")
-						.arg (CurrentEntry_),
+						.arg (EntryID2NameCache_.value (CurrentEntry_, CurrentEntry_)),
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
