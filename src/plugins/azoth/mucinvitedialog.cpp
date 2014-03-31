@@ -50,6 +50,7 @@ namespace Azoth
 			break;
 		case ListType::ListMucs:
 			requestedType = ICLEntry::ETMUC;
+			Ui_.InviteeLabel_->setText ("Conferences:");
 			break;
 		}
 
