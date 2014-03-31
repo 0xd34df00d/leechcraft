@@ -231,6 +231,7 @@ namespace ChatHistory
 			QStandardItem *item = new QStandardItem (name);
 			item->setData (user, MRIDRole);
 			item->setToolTip (name);
+			item->setEditable (false);
 			ContactsModel_->appendRow (item);
 
 			if (!ourFocus && user == focusId)
