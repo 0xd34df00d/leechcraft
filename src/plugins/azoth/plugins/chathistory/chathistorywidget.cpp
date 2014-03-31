@@ -556,6 +556,18 @@ namespace ChatHistory
 				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
 	}
 
+	QStandardItem* ChatHistoryWidget::FindContactItem (const QString& id) const
+	{
+		for (auto i = 0; i < ContactsModel_->rowCount (); ++i)
+		{
+			const auto item = ContactsModel_->item (i);
+			if (item->data (MRIDRole).toString () == id)
+				return item;
+		}
+
+		return nullptr;
+	}
+
 	void ChatHistoryWidget::ShowLoading ()
 	{
 		const auto& html = "<html><head/><body><span style='color:#666666'>" +

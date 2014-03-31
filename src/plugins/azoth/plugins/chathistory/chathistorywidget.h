@@ -34,6 +34,7 @@
 #include "ui_chathistorywidget.h"
 
 class QStandardItemModel;
+class QStandardItem;
 class QSortFilterProxyModel;
 
 namespace LeechCraft
@@ -111,6 +112,8 @@ namespace ChatHistory
 
 		void on_HistView__anchorClicked (const QUrl&);
 	private:
+		QStandardItem* FindContactItem (const QString&) const;
+
 		void ShowLoading ();
 		void UpdateDates ();
 		void RequestLogs ();
