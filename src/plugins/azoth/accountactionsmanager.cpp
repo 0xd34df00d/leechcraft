@@ -92,6 +92,7 @@ namespace Azoth
 		AccountJoinConference_->setProperty ("ActionIcon", "irc-join-channel");
 		AccountManageBookmarks_->setProperty ("ActionIcon", "bookmarks-organize");
 		AccountAddContact_->setProperty ("ActionIcon", "list-add-user");
+		AccountOpenServerHistory_->setProperty ("ActionIcon", "network-server-database");
 		AccountSetMood_->setProperty ("ActionIcon", "face-smile");
 		AccountSD_->setProperty ("ActionIcon", "services");
 		AccountConsole_->setProperty ("ActionIcon", "utilities-terminal");
