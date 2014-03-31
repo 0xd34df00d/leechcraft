@@ -41,6 +41,7 @@
 #include <interfaces/idatafilter.h>
 #include <interfaces/ientityhandler.h>
 #include "interfaces/azoth/irichtextmessage.h"
+#include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "chattab.h"
 #include "transferjobmanager.h"
@@ -291,6 +292,22 @@ namespace Azoth
 		return true;
 	}
 
+	namespace
+	{
+		bool CanEntryBeInvited (ICLEntry *thisEntry, ICLEntry *entry)
+		{
+			const bool isMuc = thisEntry->GetEntryType () == ICLEntry::ETMUC;
+
+			const auto entryAcc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			const auto thisAcc = qobject_cast<IAccount*> (thisEntry->GetParentAccount ());
+			if (thisAcc->GetParentProtocol () != entryAcc->GetParentProtocol ())
+				return false;
+
+			const bool isThatMuc = entry->GetEntryType () == ICLEntry::ETMUC;
+			return isThatMuc != isMuc;
+		}
+	}
+
 	void ContactDropFilter::HandleContactsDropped (const QMimeData *data)
 	{
 		const auto thisEntry = GetEntry<ICLEntry> (EntryId_);
@@ -298,14 +315,10 @@ namespace Azoth
 
 		auto entries = DndUtil::DecodeEntryObjs (data);
 		entries.erase (std::remove_if (entries.begin (), entries.end (),
-					[isMuc, thisEntry] (QObject *entryObj)
+					[thisEntry] (QObject *entryObj)
 					{
-						auto entry = qobject_cast<ICLEntry*> (entryObj);
-						if (entry->GetParentAccount () != thisEntry->GetParentAccount ())
-							return true;
-
-						const bool isThatMuc = entry->GetEntryType () == ICLEntry::ETMUC;
-						return isThatMuc == isMuc;
+						return !CanEntryBeInvited (thisEntry,
+								qobject_cast<ICLEntry*> (entryObj));
 					}),
 				entries.end ());
 
