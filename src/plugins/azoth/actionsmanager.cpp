@@ -629,9 +629,9 @@ namespace Azoth
 			},
 			{ "inviteToMuc", SingleEntryActor_f (InviteToMuc) },
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
+			{ "sep_beforemuc", {} },
 			{ "changenick", MultiEntryActor_f (ChangeNick) },
 			{ "invite", SingleEntryActor_f (Invite) },
-			{ "leave", SingleEntryActor_f (Leave) },
 			{ "reconnect", SingleEntryActor_f (Reconnect) },
 			{
 				"addtobm",
@@ -652,6 +652,7 @@ namespace Azoth
 						tab->ShowUsersList ();
 					})
 			},
+			{ "leave", SingleEntryActor_f (Leave) },
 			{ "authorize", SingleEntryActor_f (AuthorizeEntry) },
 			{ "denyauth", SingleEntryActor_f (DenyAuthForEntry) }
 		};
@@ -1144,6 +1145,10 @@ namespace Azoth
 		}
 		else if (entry->GetEntryType () == ICLEntry::ETMUC)
 		{
+			auto sepBeforeMuc = Util::CreateSeparator (entry->GetQObject ());
+			Entry2Actions_ [entry] ["sep_beforemuc"] = sepBeforeMuc;
+			Action2Areas_ [sepBeforeMuc] << CLEAAContactListCtxtMenu;
+
 			QAction *changeNick = new QAction (tr ("Change nickname..."), entry->GetQObject ());
 			changeNick->setProperty ("ActionIcon", "user-properties");
 			Entry2Actions_ [entry] ["changenick"] = changeNick;
