@@ -46,7 +46,6 @@
 #include "chattab.h"
 #include "transferjobmanager.h"
 #include "dndutil.h"
-#include "mucinvitedialog.h"
 
 namespace LeechCraft
 {
@@ -345,9 +344,15 @@ namespace Azoth
 					.arg (muc->GetEntryName ());
 		}
 
+		bool ok = false;
 		auto reason = QInputDialog::getText (nullptr,
 				tr ("Invite to a MUC"),
-				text);
+				text,
+				QLineEdit::Normal,
+				{},
+				&ok);
+		if (!ok)
+			return;
 
 		if (isMuc)
 		{
