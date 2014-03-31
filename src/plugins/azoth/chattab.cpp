@@ -819,7 +819,7 @@ namespace Azoth
 		if (LastLink_.isEmpty ())
 			return;
 
-		const auto& e = Util::MakeEntity (QUrl (LastLink_), QString (), static_cast<TaskParameters> (FromUserInitiated | OnlyHandle));
+		const auto& e = Util::MakeEntity (QUrl (LastLink_), {}, FromUserInitiated | OnlyHandle);
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 

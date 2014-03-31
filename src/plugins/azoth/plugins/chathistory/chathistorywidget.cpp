@@ -559,7 +559,7 @@ namespace ChatHistory
 	{
 		emit gotEntity (Util::MakeEntity (url,
 				QString (),
-				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
+				FromUserInitiated | OnlyHandle));
 	}
 
 	QStandardItem* ChatHistoryWidget::FindContactItem (const QString& id) const

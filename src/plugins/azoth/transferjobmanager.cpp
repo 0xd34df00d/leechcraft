@@ -504,8 +504,8 @@ namespace Azoth
 				state == TSFinished)
 		{
 			const Entity& e = Util::MakeEntity (QUrl::fromLocalFile (job->GetName ()),
-					QString (),
-					static_cast<TaskParameters> (IsDownloaded | FromUserInitiated | OnlyHandle));
+					{},
+					IsDownloaded | FromUserInitiated | OnlyHandle);
 			Core::Instance ().SendEntity (e);
 		}
 	}
