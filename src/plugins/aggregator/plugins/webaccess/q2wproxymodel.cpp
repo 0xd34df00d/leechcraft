@@ -360,7 +360,7 @@ namespace WebAccess
 		Wt::WApplication::UpdateLock lock { App_ };
 
 		if (LastModelResetRC_)
-			rowsRemoved () ({}, 0, LastModelResetRC_);
+			rowsRemoved () ({}, 0, LastModelResetRC_ - 1);
 
 		LastModelResetRC_ = 0;
 
