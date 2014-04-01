@@ -143,7 +143,7 @@ namespace Acetamide
 
 	QString ChannelPublicMessage::GetBody () const
 	{
-		return Qt::escape (Message_);
+		return Message_;
 	}
 
 	void ChannelPublicMessage::SetBody (const QString& msg)
