@@ -969,6 +969,22 @@ namespace LMP
 		return {};
 	}
 
+	void Player::MarkAsCurrent (QStandardItem *curItem)
+	{
+		if (curItem)
+			curItem->setData (true, Role::IsCurrent);
+		for (auto item : Items_)
+		{
+			if (item == curItem)
+				continue;
+			if (item->data (Role::IsCurrent).toBool ())
+			{
+				item->setData (false, Role::IsCurrent);
+				break;
+			}
+		}
+	}
+
 	void Player::play (const QModelIndex& index)
 	{
 		if (CurrentStation_)
@@ -1365,9 +1381,6 @@ namespace LMP
 		else if (Items_.contains (source))
 			curItem = Items_ [source];
 
-		if (curItem)
-			curItem->setData (true, Role::IsCurrent);
-
 		if (Url2Info_.contains (source.ToUrl ()))
 		{
 			const auto& info = Url2Info_ [source.ToUrl ()];
@@ -1381,16 +1394,7 @@ namespace LMP
 		if (curItem)
 			emit indexChanged (PlaylistModel_->indexFromItem (curItem));
 
-		for (auto item : Items_)
-		{
-			if (item == curItem)
-				continue;
-			if (item->data (Role::IsCurrent).toBool ())
-			{
-				item->setData (false, Role::IsCurrent);
-				break;
-			}
-		}
+		MarkAsCurrent (curItem);
 
 		handleMetadata ();
 

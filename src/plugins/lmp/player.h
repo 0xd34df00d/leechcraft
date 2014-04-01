@@ -185,7 +185,10 @@ namespace LMP
 		template<typename T>
 		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,
 				std::function<T (AudioSource)>) const;
+
 		AudioSource GetNextSource (const AudioSource&);
+
+		void MarkAsCurrent (QStandardItem*);
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();
