@@ -158,7 +158,7 @@ namespace Acetamide
 
 	QString IrcMessage::GetBody () const
 	{
-		return Qt::escape (Message_.Body_);
+		return Message_.Body_;
 	}
 
 	void IrcMessage::SetBody (const QString& body)
