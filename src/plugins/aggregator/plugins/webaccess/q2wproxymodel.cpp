@@ -310,6 +310,15 @@ namespace WebAccess
 		if (!parent.isValid ())
 			return;
 
+		const auto rawItem = static_cast<Util::ModelItem*> (parent.internalPointer ());
+		const auto item = rawItem->shared_from_this ();
+
+		for ( ; first <= last; ++first)
+			item->InsertChild (first, Src_, Src_->index (first, 0, srcParent), item);
+
+		for ( ; first < item->GetRowCount (); ++first)
+			item->GetChild (first)->RefreshIndex (0);
+
 		rowsInserted () (parent, first, last);
 	}
 
@@ -320,6 +329,13 @@ namespace WebAccess
 			return;
 
 		rowsAboutToBeRemoved () (parent, first, last);
+
+		const auto rawItem = static_cast<Util::ModelItem*> (parent.internalPointer ());
+		const auto item = rawItem->shared_from_this ();
+
+		auto next = item->EraseChildren (item->begin () + first, item->begin () + last + 1);
+		for ( ; next != item->end (); ++next)
+			(*next)->RefreshIndex (0);
 	}
 
 	void Q2WProxyModel::handleRowsRemoved (const QModelIndex& srcParent, int first, int last)
