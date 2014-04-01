@@ -394,57 +394,57 @@ namespace CSTP
 		if (!index.isValid ())
 			return {};
 
-		if (index.row () >= ActiveTasks_.size ())
+		if (index.row () >= static_cast<int> (ActiveTasks_.size ()))
 			return {};
 
 		if (role == Qt::DisplayRole)
 		{
-			TaskDescr td = TaskAt (index.row ());
+			const auto& td = TaskAt (index.row ());
 			const auto& task = td.Task_;
 			switch (index.column ())
 			{
-				case HURL:
-					return task->GetURL ();
-				case HState:
-					{
-						if (td.ErrorFlag_)
-							return task->GetErrorString ();
+			case HURL:
+				return task->GetURL ();
+			case HState:
+			{
+				if (td.ErrorFlag_)
+					return task->GetErrorString ();
 
-						if (!task->IsRunning ())
-							return QVariant ();
-
-						qint64 done = task->GetDone (),
-								total = task->GetTotal ();
-						double speed = task->GetSpeed ();
-
-						qint64 rem = (total - done) / speed;
-
-						return tr ("%1 (ETA: %2)")
-							.arg (task->GetState ())
-							.arg (Util::MakeTimeFromLong (rem));
-					}
-				case HProgress:
-					{
-						qint64 done = task->GetDone (),
-								total = task->GetTotal ();
-						int progress = total ? done * 100 / total : 0;
-						if (done > -1)
-						{
-							if (total > -1)
-								return QString (tr ("%1% (%2 of %3 at %4)"))
-									.arg (progress)
-									.arg (Util::MakePrettySize (done))
-									.arg (Util::MakePrettySize (total))
-									.arg (Util::MakePrettySize (task->GetSpeed ()) + tr ("/s"));
-							else
-								return QString ("%1")
-									.arg (Util::MakePrettySize (done));
-						}
-						else
-							return QString ("");
-					}
-				default:
+				if (!task->IsRunning ())
 					return QVariant ();
+
+				qint64 done = task->GetDone (),
+						total = task->GetTotal ();
+				double speed = task->GetSpeed ();
+
+				qint64 rem = (total - done) / speed;
+
+				return tr ("%1 (ETA: %2)")
+					.arg (task->GetState ())
+					.arg (Util::MakeTimeFromLong (rem));
+			}
+			case HProgress:
+			{
+				qint64 done = task->GetDone ();
+				qint64 total = task->GetTotal ();
+				int progress = total ? done * 100 / total : 0;
+				if (done > -1)
+				{
+					if (total > -1)
+						return QString (tr ("%1% (%2 of %3 at %4)"))
+							.arg (progress)
+							.arg (Util::MakePrettySize (done))
+							.arg (Util::MakePrettySize (total))
+							.arg (Util::MakePrettySize (task->GetSpeed ()) + tr ("/s"));
+					else
+						return QString ("%1")
+							.arg (Util::MakePrettySize (done));
+				}
+				else
+					return QString ("");
+			}
+			default:
+				return QVariant ();
 			}
 		}
 		else if (role == LeechCraft::RoleControls)
