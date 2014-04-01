@@ -343,8 +343,6 @@ namespace LMP
 
 	void SourceObject::SetCurrentSource (const AudioSource& source)
 	{
-		NextSource_.Clear ();
-
 		IsSeeking_ = false;
 
 		CurrentSource_ = source;
@@ -356,6 +354,8 @@ namespace LMP
 
 		auto path = source.ToUrl ().toEncoded ();
 		g_object_set (G_OBJECT (Dec_), "uri", path.constData (), nullptr);
+
+		NextSource_.Clear ();
 	}
 
 	void SourceObject::PrepareNextSource (const AudioSource& source)
