@@ -23,7 +23,7 @@ if (WIN32)
 	add_definitions (-DNTDDI_VERSION=0x0600)
 endif ()
 if (UNIX OR (WIN32 AND MINGW))
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -std=c++0x")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -std=c++0x -Wall")
 
 	if (NOT APPLE)
 		set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
@@ -31,7 +31,7 @@ if (UNIX OR (WIN32 AND MINGW))
 	endif ()
 
 	if (EXTRA_WARNINGS)
-		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 	endif ()
 
 	if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") OR ENABLE_CLANG_QUIRKS)
