@@ -38,6 +38,7 @@
 #include <QApplication>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -1338,10 +1339,21 @@ namespace LMP
 					Qt::QueuedConnection,
 					Q_ARG (QString, path));
 
-		if (HandleCurrentStop (current))
-			return;
-
 		const auto& next = GetNextSource (current);
+
+		if (HandleCurrentStop (current))
+		{
+			if (!next.IsEmpty ())
+				new Util::DelayedExecutor
+				{
+					[this, next] { Source_->SetCurrentSource (next); },
+					1000
+				};
+
+			MarkAsCurrent (Items_.value (next));
+			return;
+		}
+
 		if (!next.IsEmpty ())
 			Source_->PrepareNextSource (next);
 	}
