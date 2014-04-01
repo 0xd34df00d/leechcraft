@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QMap>
 #include <WAbstractItemModel>
+#include <util/models/modelitem.h>
 #include "serverupdater.h"
 
 class QAbstractItemModel;
@@ -44,16 +45,13 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	class ModelItem;
-	typedef std::shared_ptr<ModelItem> ModelItem_ptr;
-
 	class Q2WProxyModel : public QObject
 						, public Wt::WAbstractItemModel
 	{
 		Q_OBJECT
 
 		QAbstractItemModel * const Src_;
-		ModelItem_ptr Root_;
+		Util::ModelItem_ptr Root_;
 
 		QMap<int, int> Mapping_;
 

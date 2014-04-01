@@ -45,87 +45,10 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	typedef std::weak_ptr<ModelItem> ModelItem_wtr;
-	typedef QVector<ModelItem_ptr> ModelItemsList_t;
-
-	typedef std::shared_ptr<const ModelItem> ModelItem_cptr;
-
-	class ModelItem : public std::enable_shared_from_this<ModelItem>
-	{
-		ModelItem_wtr Parent_;
-		ModelItemsList_t Children_;
-
-		QAbstractItemModel *Model_;
-		QModelIndex SrcIdx_;
-	public:
-		ModelItem (QAbstractItemModel *model)
-		: Model_ { model }
-		{
-		}
-
-		ModelItem (QAbstractItemModel *model, const QModelIndex& idx, const ModelItem_wtr& parent)
-		: Parent_ { parent }
-		, Model_ { model }
-		, SrcIdx_ { idx }
-		{
-		}
-
-		ModelItem_ptr GetChild (int row) const
-		{
-			return Children_.value (row);
-		}
-
-		const ModelItemsList_t& GetChildren () const
-		{
-			return Children_;
-		}
-
-		ModelItem* EnsureChild (int row)
-		{
-			if (Children_.value (row))
-				return Children_.at (row).get ();
-
-			if (Children_.size () <= row)
-				Children_.resize (row + 1);
-
-			const auto& childIdx = Model_->index (row, 0, SrcIdx_);
-			Children_ [row].reset (new ModelItem { Model_, childIdx, shared_from_this () });
-			return Children_.at (row).get ();
-		}
-
-		const QModelIndex& GetIndex () const
-		{
-			return SrcIdx_;
-		}
-
-		ModelItem_ptr GetParent () const
-		{
-			return Parent_.lock ();
-		}
-
-		int GetRow (const ModelItem_ptr& item) const
-		{
-			return Children_.indexOf (item);
-		}
-
-		int GetRow (const ModelItem_cptr& item) const
-		{
-			const auto pos = std::find (Children_.begin (), Children_.end (), item);
-			return pos == Children_.end () ?
-					-1 :
-					std::distance (Children_.begin (), pos);
-		}
-
-		int GetRow () const
-		{
-			return Parent_.lock ()->GetRow (shared_from_this ());
-		}
-	};
-
 	Q2WProxyModel::Q2WProxyModel (QAbstractItemModel *src, Wt::WApplication *app)
 	: Wt::WAbstractItemModel { }
 	, Src_ { src }
-	, Root_ { new ModelItem { src } }
+	, Root_ { new Util::ModelItem { src, {}, {} } }
 	, App_ { app }
 	, Update_ { app }
 	{
@@ -203,7 +126,7 @@ namespace WebAccess
 				index.internalPointer () == Root_.get ())
 			return {};
 
-		const auto child = static_cast<ModelItem*> (index.internalPointer ());
+		const auto child = static_cast<Util::ModelItem*> (index.internalPointer ());
 		const auto parentItem = child->GetParent ();
 		if (parentItem == Root_)
 			return {};
@@ -271,7 +194,7 @@ namespace WebAccess
 			return {};
 
 		const auto parentPtr = parent.internalPointer () ?
-				static_cast<ModelItem*> (parent.internalPointer ()) :
+				static_cast<Util::ModelItem*> (parent.internalPointer ()) :
 				Root_.get ();
 		return createIndex (row, column, parentPtr->EnsureChild (row));
 	}
@@ -313,7 +236,7 @@ namespace WebAccess
 			return {};
 
 		const auto ptr = index.internalPointer () ?
-				static_cast<ModelItem*> (index.internalPointer ()) :
+				static_cast<Util::ModelItem*> (index.internalPointer ()) :
 				Root_.get ();
 		const auto& srcIdx = ptr->GetIndex ();
 		return srcIdx.sibling (index.row (), index.column ());
