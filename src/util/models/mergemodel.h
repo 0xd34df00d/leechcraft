@@ -34,14 +34,12 @@
 #include <QAbstractProxyModel>
 #include <QStringList>
 #include <util/utilconfig.h>
+#include "modelitem.h"
 
 namespace LeechCraft
 {
 	namespace Util
 	{
-		class ModelItem;
-		typedef std::shared_ptr<ModelItem> ModelItem_ptr;
-
 		/** Merges data from multiple source models into one resulting
 		 * model and provides means to lookup models by row, get
 		 * starting rows for a model etc.
