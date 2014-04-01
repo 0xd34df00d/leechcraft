@@ -1324,14 +1324,15 @@ namespace LMP
 
 	void Player::handleUpdateSourceQueue ()
 	{
+		const auto& current = Source_->GetCurrentSource ();
+
 		if (CurrentStation_)
 		{
-			Url2Info_.remove (Source_->GetCurrentSource ().ToUrl ());
+			Url2Info_.remove (current.ToUrl ());
 			CurrentStation_->RequestNewStream ();
 			return;
 		}
 
-		const auto& current = Source_->GetCurrentSource ();
 		const auto& path = current.GetLocalPath ();
 		if (!path.isEmpty ())
 			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
