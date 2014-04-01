@@ -343,6 +343,8 @@ namespace LMP
 
 	void SourceObject::SetCurrentSource (const AudioSource& source)
 	{
+		NextSource_.Clear ();
+
 		IsSeeking_ = false;
 
 		CurrentSource_ = source;
@@ -379,7 +381,6 @@ namespace LMP
 				return;
 
 			SetCurrentSource (NextSource_);
-			NextSource_.Clear ();
 		}
 
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_PLAYING);
@@ -434,7 +435,6 @@ namespace LMP
 		}
 
 		SetCurrentSource (NextSource_);
-		NextSource_.Clear ();
 	}
 
 	void SourceObject::SetupSource ()
