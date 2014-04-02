@@ -335,24 +335,26 @@ namespace Azoth
 		Save ();
 	}
 
-	void BookmarksManagerDialog::on_AddButton__released ()
+	QStandardItem* BookmarksManagerDialog::on_AddButton__released ()
 	{
 		if (!CurrentEditor_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no editor available";
-			return;
+			return nullptr;
 		}
 
-		QStandardItem *selected = GetSelectedItem ();
-		const QVariantMap& data = selected ?
+		const auto selected = GetSelectedItem ();
+		const auto& data = selected ?
 				selected->data ().toMap () :
 				CurrentEditor_->GetIdentifyingData ();
 
-		QStandardItem *item = new QStandardItem (data.value ("HumanReadableName").toString ());
+		const auto item = new QStandardItem (data.value ("HumanReadableName").toString ());
 		item->setData (data);
 		BMModel_->appendRow (item);
 		Ui_.BookmarksTree_->setCurrentIndex (BMModel_->indexFromItem (item));
+
+		return item;
 	}
 
 	void BookmarksManagerDialog::on_ApplyButton__released ()
