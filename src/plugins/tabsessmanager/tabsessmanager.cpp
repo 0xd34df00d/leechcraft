@@ -250,18 +250,10 @@ namespace TabSessManager
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto windowIndex = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (widget));
 
-		if (windowIndex < 0)
+		if (windowIndex < 0 || windowIndex >= Tabs_.size ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown window index for"
-					<< widget;
-			return;
-		}
-
-		if (windowIndex >= Tabs_.size ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "window index out of bounds for"
 					<< widget;
 			return;
 		}
