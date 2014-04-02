@@ -165,11 +165,9 @@ namespace Azoth
 			return;
 		}
 
-		if (CurrentEditor_)
-			CurrentEditor_->SetIdentifyingData (data);
-		on_AddButton__released ();
-		if (CurrentEditor_)
-			CurrentEditor_->SetIdentifyingData (data);
+		const auto item = on_AddButton__released ();
+		item->setText (data.value ("HumanReadableName").toString ());
+		CurrentEditor_->SetIdentifyingData (data);
 	}
 
 	void BookmarksManagerDialog::on_AccountBox__currentIndexChanged (int index)
@@ -214,6 +212,7 @@ namespace Azoth
 			delete item->widget ();
 			delete item;
 		}
+
 		QWidget *w = supBms->GetMUCBookmarkEditorWidget ();
 		delete CurrentEditor_;
 		CurrentEditor_ = qobject_cast<IMUCBookmarkEditorWidget*> (w);
