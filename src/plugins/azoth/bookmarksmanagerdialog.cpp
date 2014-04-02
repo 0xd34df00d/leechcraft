@@ -117,9 +117,26 @@ namespace Azoth
 		return false;
 	}
 
+	namespace
+	{
+		QVariantMap GetIdentifyingData (QObject *entryObj)
+		{
+			const auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
+			if (!mucEntry)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "object doesn't implement IMUCEntry"
+						<< entryObj;
+				return {};
+			}
+
+			return mucEntry->GetIdentifyingData ();
+		}
+	}
+
 	void BookmarksManagerDialog::SuggestSaving (QObject *entryObj)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -128,34 +145,7 @@ namespace Azoth
 			return;
 		}
 
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entryObj);
-		if (!mucEntry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "object doesn't implement IMUCEntry"
-					<< entryObj;
-			return;
-		}
-
-		const QVariantMap& data = mucEntry->GetIdentifyingData ();
-		if (data.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty identifying data returned by"
-					<< entryObj;
-			return;
-		}
-
-		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		bool found = false;
-		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
-			if (account == Ui_.AccountBox_->itemData (i).value<IAccount*> ())
-			{
-				Ui_.AccountBox_->setCurrentIndex (i);
-				on_AccountBox__currentIndexChanged (i);
-				found = true;
-				break;
-			}
+		const bool found = FocusOn (qobject_cast<IAccount*> (entry->GetParentAccount ()));
 
 		if (!found)
 		{
@@ -163,6 +153,15 @@ namespace Azoth
 					<< "unable to find parent protocol for entry"
 					<< entryObj
 					<< entry->GetEntryID ();
+			return;
+		}
+
+		const auto& data = GetIdentifyingData (entryObj);
+		if (data.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty identifying data returned by"
+					<< entryObj;
 			return;
 		}
 
