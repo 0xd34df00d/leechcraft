@@ -244,6 +244,9 @@ namespace TabSessManager
 
 	void Plugin::handleNewTab (const QString&, QWidget *widget)
 	{
+		if (HasTab (widget))
+			return;
+
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto windowIndex = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (widget));
 
