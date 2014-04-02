@@ -57,18 +57,18 @@ namespace Azoth
 				this,
 				SLOT (handleCurrentBMChanged (const QModelIndex&, const QModelIndex&)));
 
-		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
+		for (auto proto : Core::Instance ().GetProtocols ())
 		{
-			QWidget *widget = proto->GetMUCJoinWidget ();
-			IMUCJoinWidget *joiner = qobject_cast<IMUCJoinWidget*> (widget);
+			const auto widget = proto->GetMUCJoinWidget ();
+			const auto joiner = qobject_cast<IMUCJoinWidget*> (widget);
 			if (!joiner)
 				continue;
 
 			Proto2Joiner_ [proto->GetProtocolID ()] = joiner;
 
-			Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
+			for (auto accObj : proto->GetRegisteredAccounts ())
 			{
-				IAccount *account = qobject_cast<IAccount*> (accObj);
+				const auto account = qobject_cast<IAccount*> (accObj);
 				if (!account)
 				{
 					qWarning () << Q_FUNC_INFO
@@ -83,7 +83,7 @@ namespace Azoth
 					continue;
 
 				Ui_.AccountBox_->addItem (account->GetAccountName (),
-						QVariant::fromValue<IAccount*> (account));
+						QVariant::fromValue (account));
 
 				connect (accObj,
 						SIGNAL (bookmarksChanged ()),
