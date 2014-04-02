@@ -80,6 +80,8 @@ namespace TabSessManager
 	private:
 		QByteArray GetCurrentSession () const;
 		void AddCustomSession (const QString&);
+
+		bool HasTab (QWidget*) const;
 	public slots:
 		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
 				int index,

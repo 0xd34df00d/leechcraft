@@ -223,6 +223,16 @@ namespace TabSessManager
 		act->setProperty ("TabSessManager/SessName", name);
 	}
 
+	bool Plugin::HasTab (QWidget *widget) const
+	{
+		return std::any_of (Tabs_.begin (), Tabs_.end (),
+				[widget] (const QList<QObject*>& list)
+				{
+					return std::any_of (list.begin (), list.end (),
+							[widget] (QObject *obj) { return obj == widget; });
+				});
+	}
+
 	void Plugin::hookTabIsRemoving (IHookProxy_ptr, int index, int windowId)
 	{
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
