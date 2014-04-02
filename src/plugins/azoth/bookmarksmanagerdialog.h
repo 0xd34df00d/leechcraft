@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_BOOKMARKSMANAGERDIALOG_H
-#define PLUGINS_AZOTH_BOOKMARKSMANAGERDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include <QMap>
 #include "ui_bookmarksmanagerdialog.h"
@@ -56,7 +56,7 @@ namespace Azoth
 		BookmarksManagerDialog (QWidget* = 0);
 		~BookmarksManagerDialog ();
 
-		void FocusOn (IAccount*);
+		bool FocusOn (IAccount*);
 		void SuggestSaving (QObject*);
 	private:
 		void Save ();
@@ -74,5 +74,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

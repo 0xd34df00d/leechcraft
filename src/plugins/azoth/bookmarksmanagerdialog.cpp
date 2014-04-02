@@ -102,17 +102,19 @@ namespace Azoth
 		qDeleteAll (Proto2Joiner_.values ());
 	}
 
-	void BookmarksManagerDialog::FocusOn (IAccount *acc)
+	bool BookmarksManagerDialog::FocusOn (IAccount *acc)
 	{
-		const QVariant& accVar =
-				QVariant::fromValue<IAccount*> (acc);
+		const auto& accVar = QVariant::fromValue<IAccount*> (acc);
 
 		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
 			if (Ui_.AccountBox_->itemData (i) == accVar)
 			{
 				Ui_.AccountBox_->setCurrentIndex (i);
-				break;
+				on_AccountBox__currentIndexChanged (i);
+				return true;
 			}
+
+		return false;
 	}
 
 	void BookmarksManagerDialog::SuggestSaving (QObject *entryObj)
