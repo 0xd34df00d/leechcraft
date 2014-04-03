@@ -84,15 +84,11 @@ namespace Monocle
 
 	QSize AnnTreeDelegate::sizeHint (const QStyleOptionViewItem& opt, const QModelIndex& index) const
 	{
+		if (index.data (AnnManager::Role::ItemType) != AnnManager::ItemTypes::AnnItem)
+			return QStyledItemDelegate::sizeHint (opt, index);
+
 		QStyleOptionViewItemV4 option = opt;
 		initStyleOption (&option, index);
-
-		if (index.data (AnnManager::Role::ItemType) != AnnManager::ItemTypes::AnnItem)
-			return
-			{
-				option.rect.width (),
-				option.fontMetrics.height ()
-			};
 
 		auto parent = index.parent ();
 		while (parent.isValid ())
