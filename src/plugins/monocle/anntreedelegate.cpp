@@ -62,8 +62,7 @@ namespace Monocle
 		painter->translate (-View_->indentation (), 0);
 
 		QStyleOptionViewItemV4 option = opt;
-
-		option.rect.setWidth (option.rect.width () + View_->indentation () / 2);
+		option.rect.setWidth (option.rect.width () + option.decorationSize.width ());
 
 		painter->fillRect (option.rect, QColor { 255, 234, 0 });
 		const auto& oldPen = painter->pen ();
