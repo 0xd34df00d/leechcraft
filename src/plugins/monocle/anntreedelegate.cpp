@@ -99,6 +99,9 @@ namespace Monocle
 			parent = parent.parent ();
 		}
 
+		const auto style = option.widget->style ();
+
+		width -= style->pixelMetric (QStyle::PM_LayoutLeftMargin);
 		const auto& doc = GetDoc (index, width);
 		return
 		{
