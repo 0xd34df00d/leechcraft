@@ -91,17 +91,19 @@ namespace Monocle
 		option.initFrom (option.widget);
 		initStyleOption (&option, index);
 
+		auto width = option.rect.width ();
+
 		auto parent = index.parent ();
 		while (parent.isValid ())
 		{
-			option.rect.setWidth (option.rect.width () - View_->indentation ());
+			width -= View_->indentation ();
 			parent = parent.parent ();
 		}
 
-		const auto& doc = GetDoc (index, option.rect.width ());
+		const auto& doc = GetDoc (index, width);
 		return
 		{
-			option.rect.width (),
+			width,
 			static_cast<int> (std::ceil (doc->size ().height ()))
 		};
 	}
