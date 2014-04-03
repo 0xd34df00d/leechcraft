@@ -3,9 +3,11 @@ the rest.
 
 !!! 0.6.65
 * New plugins:
+	* Aggregator WebAccess — web interface for Aggregator.
 	* CertMgr — SSL certificates manager.
 	* CpuLoad — CPU load monitoring quark.
 	* Ooronee — pastebin/datafilter API quark.
+	* Rosenthal — spell check core.
 * [Core] Key sequencer fixes.
 * [Core] Use native strings for shortcuts in UI.
 * [Core] Properly handle reply finishing while in SSL errors handler.
@@ -216,6 +218,7 @@ the rest.
 * [TS] Set proper context name.
 * [TS] Shorter queue (1 sec instead of 10).
 * [TS] Clear albums map as well on refresh, fixes a crash.
+* [TSM] Fixed saving same tab multiple times.
 * [Util] Avoid leaking futures in ItemFinder.
 * [Util] Fixed parsing /etc/os-release.
 * [Util] VkAuthManager now supports silent mode.
