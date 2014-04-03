@@ -87,7 +87,7 @@ namespace Monocle
 			return QStyledItemDelegate::sizeHint (opt, index);
 
 		QStyleOptionViewItemV4 option = opt;
-		option.initFrom (option.widget);
+		option.initFrom (View_->viewport ());
 		initStyleOption (&option, index);
 
 		auto width = option.rect.width ();
