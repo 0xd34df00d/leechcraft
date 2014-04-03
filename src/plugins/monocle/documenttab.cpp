@@ -526,7 +526,6 @@ namespace Monocle
 		{
 			auto resizeEv = static_cast<QResizeEvent*> (event);
 			const auto width = resizeEv->size ().width ();
-			qDebug () << "filter" << width;
 			XmlSettingsManager::Instance ().setProperty ("DockWidgetWidth", width);
 			break;
 		}
