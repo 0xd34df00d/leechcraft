@@ -73,19 +73,45 @@
 <context>
     <name>LeechCraft::Monocle</name>
     <message>
-        <location filename="documenttab.cpp" line="143"/>
+        <location filename="documenttab.cpp" line="160"/>
         <source>Table of contents</source>
         <translation>Table of contents</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="145"/>
+        <location filename="documenttab.cpp" line="162"/>
         <source>Bookmarks</source>
         <translation>Bookmarks</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="147"/>
+        <location filename="documenttab.cpp" line="164"/>
         <source>Thumbnails</source>
         <translation>Thumbnails</translation>
+    </message>
+    <message>
+        <location filename="documenttab.cpp" line="166"/>
+        <source>Annotations</source>
+        <translation>Annotations</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Monocle::AnnManager</name>
+    <message>
+        <location filename="annmanager.cpp" line="72"/>
+        <source>Page %1</source>
+        <translation>Page %1</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Monocle::AnnTreeDelegate</name>
+    <message>
+        <location filename="anntreedelegate.cpp" line="156"/>
+        <source>Author</source>
+        <translation>Author</translation>
+    </message>
+    <message>
+        <location filename="anntreedelegate.cpp" line="158"/>
+        <source>Date</source>
+        <translation>Date</translation>
     </message>
 </context>
 <context>
@@ -127,157 +153,157 @@
 <context>
     <name>LeechCraft::Monocle::DocumentTab</name>
     <message>
-        <location filename="documenttab.cpp" line="488"/>
+        <location filename="documenttab.cpp" line="546"/>
         <source>Open...</source>
         <translation>Open...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="513"/>
+        <location filename="documenttab.cpp" line="571"/>
         <source>Rotate 90 degrees counter-clockwise</source>
         <translation>Rotate 90° counter-clockwise</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="517"/>
+        <location filename="documenttab.cpp" line="575"/>
         <source>Rotate 90 degrees clockwise</source>
         <translation>Rotate 90° clockwise</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="521"/>
+        <location filename="documenttab.cpp" line="579"/>
         <source>Rotate arbitrarily...</source>
         <translation>Rotate arbitrarily...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="552"/>
+        <location filename="documenttab.cpp" line="610"/>
         <source>Print...</source>
         <translation>Print...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="560"/>
+        <location filename="documenttab.cpp" line="618"/>
         <source>Save</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="570"/>
+        <location filename="documenttab.cpp" line="628"/>
         <source>Export as PDF...</source>
         <translation>Export as PDF...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="581"/>
+        <location filename="documenttab.cpp" line="639"/>
         <source>Find...</source>
         <translation>Find...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="600"/>
+        <location filename="documenttab.cpp" line="658"/>
         <source>Presentation...</source>
         <translation>Presentation...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="610"/>
+        <location filename="documenttab.cpp" line="668"/>
         <source>Previous page</source>
         <translation>Previous page</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="639"/>
+        <location filename="documenttab.cpp" line="697"/>
         <source>Next page</source>
         <translation>Next page</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="650"/>
+        <location filename="documenttab.cpp" line="708"/>
         <source>Fit width</source>
         <translation>Fit width</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="651"/>
+        <location filename="documenttab.cpp" line="709"/>
         <source>Fit page</source>
         <translation>Fit page</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="662"/>
+        <location filename="documenttab.cpp" line="720"/>
         <source>Zoom out</source>
         <translation>Zoom out</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="671"/>
+        <location filename="documenttab.cpp" line="729"/>
         <source>Zoom in</source>
         <translation>Zoom in</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="685"/>
+        <location filename="documenttab.cpp" line="743"/>
         <source>One page</source>
         <translation>One page</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="696"/>
+        <location filename="documenttab.cpp" line="754"/>
         <source>Two pages</source>
         <translation>Two pages</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="709"/>
+        <location filename="documenttab.cpp" line="767"/>
         <source>Move mode</source>
         <translation>Move mode</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="720"/>
+        <location filename="documenttab.cpp" line="778"/>
         <source>Selection mode</source>
         <translation>Selection mode</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="957"/>
+        <location filename="documenttab.cpp" line="1015"/>
         <source>Can&apos;t save document: %1.</source>
         <translation>Can&apos;t save document: %1.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="975"/>
+        <location filename="documenttab.cpp" line="1033"/>
         <source>Export to PDF</source>
         <translation>Export to PDF</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="1280"/>
+        <location filename="documenttab.cpp" line="1338"/>
         <source>Save selection as</source>
         <translation>Save selection as</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="1282"/>
+        <location filename="documenttab.cpp" line="1340"/>
         <source>PNG images (*.png)</source>
         <translation>PNG images (*.png)</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="361"/>
+        <location filename="documenttab.cpp" line="394"/>
         <source>Unable to open document %1.</source>
         <translation>Unable to open document %1.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="113"/>
+        <location filename="documenttab.cpp" line="120"/>
         <source>Monocle dock</source>
         <translation>Monocle dock</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="441"/>
+        <location filename="documenttab.cpp" line="476"/>
         <source>Save selection as image...</source>
         <translation>Save selection as image...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="732"/>
+        <location filename="documenttab.cpp" line="790"/>
         <source>Document info...</source>
         <translation>Document info...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="919"/>
+        <location filename="documenttab.cpp" line="977"/>
         <source>Seems like file %1 doesn&apos;t exist anymore.</source>
         <translation>Seems like file %1 doesn&apos;t exist anymore.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="932"/>
+        <location filename="documenttab.cpp" line="990"/>
         <source>Select file</source>
         <translation>Select file</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="437"/>
+        <location filename="documenttab.cpp" line="472"/>
         <source>Copy selection as image</source>
         <translation>Copy selection as image</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="455"/>
+        <location filename="documenttab.cpp" line="490"/>
         <source>Copy selection as text</source>
         <translation>Copy selection as text</translation>
     </message>
@@ -285,17 +311,17 @@
 <context>
     <name>LeechCraft::Monocle::PageGraphicsItem</name>
     <message>
-        <location filename="pagegraphicsitem.cpp" line="256"/>
+        <location filename="pagegraphicsitem.cpp" line="218"/>
         <source>Rotate 90 degrees counter-clockwise</source>
         <translation>Rotate 90° counter-clockwise</translation>
     </message>
     <message>
-        <location filename="pagegraphicsitem.cpp" line="260"/>
+        <location filename="pagegraphicsitem.cpp" line="222"/>
         <source>Rotate 90 degrees clockwise</source>
         <translation>Rotate 90° clockwise</translation>
     </message>
     <message>
-        <location filename="pagegraphicsitem.cpp" line="264"/>
+        <location filename="pagegraphicsitem.cpp" line="226"/>
         <source>Rotate arbitrarily...</source>
         <translation>Rotate arbitrarily...</translation>
     </message>
