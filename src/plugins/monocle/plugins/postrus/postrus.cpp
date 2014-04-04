@@ -29,6 +29,7 @@
 
 #include "postrus.h"
 #include <QIcon>
+#include <util/sys/mimedetector.h>
 #include "document.h"
 
 namespace LeechCraft
@@ -78,7 +79,8 @@ namespace Postrus
 
 	bool Plugin::CanLoadDocument (const QString& file)
 	{
-		return Document (file, this).IsValid ();
+		const auto& mime = Util::MimeDetector {} (file);
+		return mime == "application/postscript";
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
