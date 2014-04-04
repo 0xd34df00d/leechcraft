@@ -72,6 +72,8 @@ namespace Azoth
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		void SelectEntry (ICLEntry*);
 	private:
 		int GetReqMsgCount () const;
 	private slots:
