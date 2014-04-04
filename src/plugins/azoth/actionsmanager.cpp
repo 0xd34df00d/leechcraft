@@ -61,6 +61,7 @@
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
+#include "interfaces/azoth/ihaveserverhistory.h"
 #include "pgpkeyselectiondialog.h"
 #endif
 
@@ -80,6 +81,7 @@
 #include "filesenddialog.h"
 #include "advancedpermchangedialog.h"
 #include "proxyobject.h"
+#include "serverhistorywidget.h"
 
 typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> SingleEntryActor_f;
 typedef std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)> SingleEntryActorWManager_f;
@@ -257,6 +259,21 @@ namespace Azoth
 			const auto& id = GetMUCRealID (entry);
 			QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
 			QApplication::clipboard ()->setText (id, QClipboard::Selection);
+		}
+
+		void ViewServerHistory (ICLEntry *entry, ActionsManager *mgr)
+		{
+			const auto accObj = entry->GetParentAccount ();
+			const auto ihsh = qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ());
+			if (!ihsh || !ihsh->HasFeature (ServerHistoryFeature::AccountSupportsHistory))
+				return;
+
+			auto widget = new ServerHistoryWidget (accObj);
+			widget->SelectEntry (entry);
+
+			QMetaObject::invokeMethod (mgr,
+					"gotServerHistoryTab",
+					Q_ARG (ServerHistoryWidget*, widget));
 		}
 
 #ifdef ENABLE_CRYPT
@@ -616,6 +633,7 @@ namespace Azoth
 			{ "add_contact", SingleEntryActor_f (AddContactFromMUC) },
 			{ "copy_muc_id", SingleEntryActor_f (CopyMUCParticipantID) },
 			{ "sep_afterjid", {} },
+			{ "view_server_history", SingleEntryActorWManager_f (ViewServerHistory) },
 #ifdef ENABLE_CRYPT
 			{ "managepgp", SingleEntryActor_f (ManagePGP) },
 #endif
@@ -1036,6 +1054,15 @@ namespace Azoth
 					this, SLOT (handleActionNotifyBecomesOnline ()));
 		}
 
+		if (qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ()))
+		{
+			auto openHistory = new QAction (tr ("Open server history..."), entry->GetQObject ());
+			openHistory->setToolTip (tr ("View server history log with this contact"));
+			openHistory->setProperty ("ActionIcon", "network-server-database");
+			Entry2Actions_ [entry] ["view_server_history"] = openHistory;
+			Action2Areas_ [openHistory] << CLEAAContactListCtxtMenu;
+		}
+
 #ifdef ENABLE_CRYPT
 		if (qobject_cast<ISupportPGP*> (entry->GetParentAccount ()))
 		{
@@ -1293,6 +1320,12 @@ namespace Azoth
 		}
 
 		Entry2Actions_ [entry] ["rename"]->setEnabled (entry->GetEntryFeatures () & ICLEntry::FSupportsRenames);
+
+		if (const auto ihsh = qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ()))
+		{
+			const bool supports = ihsh->HasFeature (ServerHistoryFeature::AccountSupportsHistory);
+			Entry2Actions_ [entry] ["view_server_history"]->setEnabled (supports);
+		}
 
 		if (advEntry)
 		{
