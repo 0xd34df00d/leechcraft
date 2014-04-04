@@ -40,6 +40,9 @@ namespace Monocle
 	public:
 		virtual ~IRedirectProxy () {}
 
+		virtual QObject* GetQObject () = 0;
+
+		virtual QString GetRedirectSource () const = 0;
 		virtual QString GetRedirectTarget () const = 0;
 		virtual QString GetRedirectedMime () const = 0;
 	protected:

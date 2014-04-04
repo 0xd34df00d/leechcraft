@@ -145,10 +145,13 @@ namespace Monocle
 			else
 				return nullptr;
 		}
-		else
+		else if (!redirectors.isEmpty ())
 		{
-			return nullptr;
+			const auto backend = qobject_cast<IBackendPlugin*> (redirectors.first ());
+			return new CoreLoadProxy { backend->GetRedirection (path) };
 		}
+		else
+			return nullptr;
 	}
 
 	PixmapCacheManager* Core::GetPixmapCacheManager () const

@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include "interfaces/monocle/idocument.h"
+#include "interfaces/monocle/ibackendplugin.h"
 
 namespace LeechCraft
 {
@@ -42,11 +43,15 @@ namespace Monocle
 
 		const QString SourcePath_;
 		IDocument_ptr Doc_;
+		IRedirectProxy_ptr Proxy_;
 	public:
 		CoreLoadProxy (const IDocument_ptr&);
+		CoreLoadProxy (const IRedirectProxy_ptr&);
 
 		IDocument_ptr GetDocument () const;
 	private slots:
+		void handleRedirected (const QString& target);
+		void handleSubproxy (const IDocument_ptr&, const QString&);
 		void emitReady ();
 	signals:
 		void ready (IDocument_ptr, const QString&);
