@@ -82,13 +82,14 @@
 #include "proxyobject.h"
 
 typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> SingleEntryActor_f;
+typedef std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)> SingleEntryActorWManager_f;
 typedef std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> MultiEntryActor_f;
 
 struct None
 {
 };
 
-typedef boost::variant<None, SingleEntryActor_f, MultiEntryActor_f> EntryActor_f;
+typedef boost::variant<None, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f> EntryActor_f;
 Q_DECLARE_METATYPE (EntryActor_f);
 
 typedef QList<LeechCraft::Azoth::ICLEntry*> EntriesList_t;
@@ -1335,9 +1336,11 @@ namespace Azoth
 		struct EntryCallVisitor : public boost::static_visitor<void>
 		{
 			const QList<ICLEntry*>& Entries_;
+			ActionsManager * const Manager_;
 
-			EntryCallVisitor (const QList<ICLEntry*>& es)
-			: Entries_ (es)
+			EntryCallVisitor (const QList<ICLEntry*>& es, ActionsManager *manager)
+			: Entries_ { es }
+			, Manager_ { manager }
 			{
 			}
 
@@ -1345,6 +1348,12 @@ namespace Azoth
 			{
 				for (const auto& entry : Entries_)
 					actor (entry);
+			}
+
+			void operator() (const SingleEntryActorWManager_f& actor) const
+			{
+				for (const auto& entry : Entries_)
+					actor (entry, Manager_);
 			}
 
 			void operator() (const MultiEntryActor_f& actor) const
@@ -1395,7 +1404,7 @@ namespace Azoth
 			return;
 		}
 
-		boost::apply_visitor (EntryCallVisitor (entries), function);
+		boost::apply_visitor (EntryCallVisitor { entries, this }, function);
 	}
 
 	void ActionsManager::handleActionGrantAuthTriggered()
