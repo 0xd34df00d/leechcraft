@@ -64,8 +64,6 @@ namespace Monocle
 
 	void CoreLoadProxy::handleRedirected (const QString& target)
 	{
-		Proxy_.reset ();
-
 		auto subProxy = Core::Instance ().LoadDocument (target);
 		if (!subProxy)
 			emit ready (Doc_, SourcePath_);
