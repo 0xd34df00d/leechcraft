@@ -30,7 +30,6 @@
 #include "postrus.h"
 #include <QIcon>
 #include <util/sys/mimedetector.h>
-#include "document.h"
 
 namespace LeechCraft
 {
@@ -81,13 +80,13 @@ namespace Postrus
 	{
 		const auto& mime = Util::MimeDetector {} (file);
 		return mime == "application/postscript" ?
-				LoadCheckResult::Can :
+				LoadCheckResult::Redirect :
 				LoadCheckResult::Cannot;
 	}
 
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
+	IDocument_ptr Plugin::LoadDocument (const QString&)
 	{
-		return IDocument_ptr (new Document (file, this));
+		return {};
 	}
 
 	IRedirectProxy_ptr Plugin::GetRedirection (const QString& filename)
