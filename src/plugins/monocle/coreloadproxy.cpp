@@ -66,7 +66,10 @@ namespace Monocle
 	{
 		auto subProxy = Core::Instance ().LoadDocument (target);
 		if (!subProxy)
-			emit ready (Doc_, SourcePath_);
+		{
+			emitReady ();
+			return;
+		}
 
 		connect (subProxy,
 				SIGNAL (ready (IDocument_ptr, QString)),
