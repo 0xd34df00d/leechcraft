@@ -76,7 +76,7 @@ namespace Azoth
 		int GetReqMsgCount () const;
 	private slots:
 		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
-		void on_ContactsView__activated (const QModelIndex&);
+		void on_ContactsView__clicked (const QModelIndex&);
 		void on_MessagesView__anchorClicked (const QUrl&);
 		void navigatePrevious ();
 		void navigateNext ();

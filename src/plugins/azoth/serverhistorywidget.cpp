@@ -174,7 +174,7 @@ namespace Azoth
 		MaxID_ = messages.value (0).ID_;
 	}
 
-	void ServerHistoryWidget::on_ContactsView__activated (const QModelIndex& index)
+	void ServerHistoryWidget::on_ContactsView__clicked (const QModelIndex& index)
 	{
 		CurrentID_ = "-1";
 		MaxID_ = "-1";
