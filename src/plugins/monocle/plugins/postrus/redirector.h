@@ -27,80 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "postrus.h"
-#include <QIcon>
-#include <util/sys/mimedetector.h>
-#include "redirector.h"
+#pragma once
 
+#include <QObject>
+#include <interfaces/monocle/iredirectproxy.h>
+
+class QProcess;
 namespace LeechCraft
 {
 namespace Monocle
 {
 namespace Postrus
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	class Redirector : public QObject
+					 , public IRedirectProxy
 	{
-	}
+		Q_OBJECT
 
-	void Plugin::SecondInit ()
-	{
-	}
+		const QString Source_;
+		QProcess * const Process_;
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Monocle.Postrus";
-	}
+		QString Target_;
+	public:
+		Redirector (const QString&);
 
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Monocle Postrus";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("PostScript backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
-	{
-		const auto& mime = Util::MimeDetector {} (file);
-		return mime == "application/postscript" ?
-				LoadCheckResult::Redirect :
-				LoadCheckResult::Cannot;
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString&)
-	{
-		return {};
-	}
-
-	IRedirectProxy_ptr Plugin::GetRedirection (const QString& filename)
-	{
-		return IRedirectProxy_ptr { new Redirector { filename }};
-	}
-
-	QStringList Plugin::GetSupportedMimes () const
-	{
-		return { "application/postscript" };
-	}
+		QObject* GetQObject ();
+		QString GetRedirectSource () const;
+		QString GetRedirectTarget () const;
+		QString GetRedirectedMime () const;
+	private slots:
+		void startConverting ();
+		void handleFinished ();
+	signals:
+		void ready (const QString& target);
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_postrus, LeechCraft::Monocle::Postrus::Plugin);

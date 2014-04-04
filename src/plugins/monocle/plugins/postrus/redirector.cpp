@@ -27,10 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "postrus.h"
-#include <QIcon>
-#include <util/sys/mimedetector.h>
 #include "redirector.h"
+#include <QTimer>
+#include <QProcess>
+#include <QTemporaryFile>
+#include <QtDebug>
+#include <QDir>
 
 namespace LeechCraft
 {
@@ -38,69 +40,59 @@ namespace Monocle
 {
 namespace Postrus
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	Redirector::Redirector (const QString& src)
+	: Source_ { src }
+	, Process_ { new QProcess { this } }
 	{
+		QTimer::singleShot (0,
+				this,
+				SLOT (startConverting ()));
 	}
 
-	void Plugin::SecondInit ()
+	QObject* Redirector::GetQObject ()
 	{
+		return this;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	QString Redirector::GetRedirectSource () const
 	{
-		return "org.LeechCraft.Monocle.Postrus";
+		return Source_;
 	}
 
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Monocle Postrus";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("PostScript backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
-	{
-		const auto& mime = Util::MimeDetector {} (file);
-		return mime == "application/postscript" ?
-				LoadCheckResult::Redirect :
-				LoadCheckResult::Cannot;
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString&)
+	QString Redirector::GetRedirectTarget () const
 	{
 		return {};
 	}
 
-	IRedirectProxy_ptr Plugin::GetRedirection (const QString& filename)
+	QString Redirector::GetRedirectedMime () const
 	{
-		return IRedirectProxy_ptr { new Redirector { filename }};
+		return "application/pdf";
 	}
 
-	QStringList Plugin::GetSupportedMimes () const
+	void Redirector::startConverting ()
 	{
-		return { "application/postscript" };
+		{
+			QTemporaryFile file { QDir::tempPath () + "/lc_monocle_postrus.XXXXXX.pdf" };
+			file.open ();
+			Target_ = file.fileName ();
+		}
+
+		qDebug () << Q_FUNC_INFO
+				<< Source_
+				<< Target_;
+		Process_->start ("ps2pdf", { Source_, Target_ });
+		connect (Process_,
+				SIGNAL (finished (int)),
+				this,
+				SLOT (handleFinished ()));
+	}
+
+	void Redirector::handleFinished ()
+	{
+		qDebug () << Q_FUNC_INFO;
+
+		emit ready (Target_);
 	}
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_postrus, LeechCraft::Monocle::Postrus::Plugin);
