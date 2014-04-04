@@ -31,12 +31,13 @@
 #include <algorithm>
 #include <QFile>
 #include <interfaces/iplugin2.h>
+#include "interfaces/monocle/iredirectproxy.h"
 #include "pixmapcachemanager.h"
 #include "recentlyopenedmanager.h"
 #include "defaultbackendmanager.h"
 #include "docstatemanager.h"
 #include "bookmarksmanager.h"
-#include "interfaces/monocle/iredirectproxy.h"
+#include "coreloadproxy.h"
 
 namespace LeechCraft
 {
@@ -113,10 +114,10 @@ namespace Monocle
 				});
 	}
 
-	IDocument_ptr Core::LoadDocument (const QString& path)
+	CoreLoadProxy* Core::LoadDocument (const QString& path)
 	{
 		if (!QFile::exists (path))
-			return IDocument_ptr ();
+			return nullptr;
 
 		decltype (Backends_) loaders;
 		decltype (Backends_) redirectors;
@@ -135,15 +136,19 @@ namespace Monocle
 			}
 		}
 
-		if (loaders.isEmpty ())
-			return IDocument_ptr ();
-		else if (loaders.size () == 1)
-			return qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
-
-		auto backend = DefaultBackendManager_->GetBackend (loaders);
-		return backend ?
-				qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path) :
-				IDocument_ptr ();
+		if (loaders.size () == 1)
+			return new CoreLoadProxy { qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path) };
+		else if (!loaders.isEmpty ())
+		{
+			if (const auto backend = DefaultBackendManager_->GetBackend (loaders))
+				return new CoreLoadProxy { qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path) };
+			else
+				return nullptr;
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	PixmapCacheManager* Core::GetPixmapCacheManager () const

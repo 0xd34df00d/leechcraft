@@ -82,6 +82,7 @@
 #include "arbitraryrotationwidget.h"
 #include "linksmanager.h"
 #include "annwidget.h"
+#include "coreloadproxy.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -384,7 +385,7 @@ namespace Monocle
 			saveState ();
 
 		auto document = Core::Instance ().LoadDocument (path);
-		if (!document || !document->IsValid ())
+		if (!document)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to navigate to"
@@ -396,73 +397,10 @@ namespace Monocle
 			return false;
 		}
 
-		const auto& state = Core::Instance ()
-				.GetDocStateManager ()->GetState (QFileInfo (path).fileName ());
-
-		Core::Instance ().GetROManager ()->RecordOpened (path);
-
-		Scene_.clear ();
-		Pages_.clear ();
-
-		CurrentDoc_ = document;
-		CurrentDocPath_ = path;
-		const auto& title = QFileInfo (path).fileName ();
-		emit changeTabName (this, title);
-
-		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
-		{
-			auto item = new PageGraphicsItem (CurrentDoc_, i);
-			Scene_.addItem (item);
-			Pages_ << item;
-		}
-
-		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
-		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
-		FormManager_->HandleDoc (CurrentDoc_, Pages_);
-		AnnManager_->HandleDoc (CurrentDoc_, Pages_);
-		LinksManager_->HandleDoc (CurrentDoc_, Pages_);
-
-		recoverDocState (state);
-		Relayout ();
-		SetCurrentPage (state.CurrentPage_, true);
-
-		checkCurrentPageChange (true);
-
-		auto docObj = CurrentDoc_->GetQObject ();
-
-		auto toc = qobject_cast<IHaveTOC*> (docObj);
-		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
-
-		connect (docObj,
-				SIGNAL (navigateRequested (QString, int, double, double)),
+		connect (document,
+				SIGNAL (ready (IDocument_ptr, QString)),
 				this,
-				SLOT (handleNavigateRequested (QString, int, double, double)),
-				Qt::QueuedConnection);
-		connect (docObj,
-				SIGNAL (printRequested (QList<int>)),
-				this,
-				SLOT (handlePrintRequested ()),
-				Qt::QueuedConnection);
-
-		emit fileLoaded (path);
-
-		emit tabRecoverDataChanged ();
-
-		if (qobject_cast<IDynamicDocument*> (docObj))
-			connect (docObj,
-					SIGNAL (pageContentsChanged (int)),
-					this,
-					SLOT (handlePageContentsChanged (int)));
-
-		BMWidget_->HandleDoc (CurrentDoc_);
-		ThumbsWidget_->HandleDoc (CurrentDoc_);
-
-		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (docObj));
-
-		auto saveable = qobject_cast<ISaveableDocument*> (docObj);
-		SaveAction_->setEnabled (saveable && saveable->CanSave ().CanSave_);
-
-		ExportPDFAction_->setEnabled (qobject_cast<ISupportPainting*> (docObj));
+				SLOT (handleLoaderReady (IDocument_ptr, QString)));
 
 		return true;
 	}
@@ -888,6 +826,89 @@ namespace Monocle
 		}
 
 		emit pagesVisibilityChanged (rects);
+	}
+
+	void DocumentTab::handleLoaderReady (const IDocument_ptr& document, const QString& path)
+	{
+		if (!document || !document->IsValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to navigate to"
+					<< path;
+			QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("Unable to open document %1.")
+						.arg ("<em>" + path + "</em>"));
+			return;
+		}
+
+		const auto& state = Core::Instance ()
+				.GetDocStateManager ()->GetState (QFileInfo (path).fileName ());
+
+		Core::Instance ().GetROManager ()->RecordOpened (path);
+
+		Scene_.clear ();
+		Pages_.clear ();
+
+		CurrentDoc_ = document;
+		CurrentDocPath_ = path;
+		const auto& title = QFileInfo (path).fileName ();
+		emit changeTabName (this, title);
+
+		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
+		{
+			auto item = new PageGraphicsItem (CurrentDoc_, i);
+			Scene_.addItem (item);
+			Pages_ << item;
+		}
+
+		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
+		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
+		FormManager_->HandleDoc (CurrentDoc_, Pages_);
+		AnnManager_->HandleDoc (CurrentDoc_, Pages_);
+		LinksManager_->HandleDoc (CurrentDoc_, Pages_);
+
+		recoverDocState (state);
+		Relayout ();
+		SetCurrentPage (state.CurrentPage_, true);
+
+		checkCurrentPageChange (true);
+
+		auto docObj = CurrentDoc_->GetQObject ();
+
+		auto toc = qobject_cast<IHaveTOC*> (docObj);
+		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
+
+		connect (docObj,
+				SIGNAL (navigateRequested (QString, int, double, double)),
+				this,
+				SLOT (handleNavigateRequested (QString, int, double, double)),
+				Qt::QueuedConnection);
+		connect (docObj,
+				SIGNAL (printRequested (QList<int>)),
+				this,
+				SLOT (handlePrintRequested ()),
+				Qt::QueuedConnection);
+
+		emit fileLoaded (path);
+
+		emit tabRecoverDataChanged ();
+
+		if (qobject_cast<IDynamicDocument*> (docObj))
+			connect (docObj,
+					SIGNAL (pageContentsChanged (int)),
+					this,
+					SLOT (handlePageContentsChanged (int)));
+
+		BMWidget_->HandleDoc (CurrentDoc_);
+		ThumbsWidget_->HandleDoc (CurrentDoc_);
+
+		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (docObj));
+
+		auto saveable = qobject_cast<ISaveableDocument*> (docObj);
+		SaveAction_->setEnabled (saveable && saveable->CanSave ().CanSave_);
+
+		ExportPDFAction_->setEnabled (qobject_cast<ISupportPainting*> (docObj));
 	}
 
 	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)

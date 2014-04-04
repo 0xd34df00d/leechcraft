@@ -42,6 +42,7 @@ namespace Monocle
 	class DefaultBackendManager;
 	class DocStateManager;
 	class BookmarksManager;
+	class CoreLoadProxy;
 
 	class Core : public QObject
 	{
@@ -67,7 +68,7 @@ namespace Monocle
 
 		bool CanHandleMime (const QString&);
 		bool CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
+		CoreLoadProxy* LoadDocument (const QString&);
 
 		PixmapCacheManager* GetPixmapCacheManager () const;
 		RecentlyOpenedManager* GetROManager () const;
