@@ -76,9 +76,12 @@ namespace Monocle
 
 	bool Core::CanLoadDocument (const QString& path)
 	{
-		Q_FOREACH (auto backend, Backends_)
-			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
+		for (auto backend : Backends_)
+		{
+			const auto ibp = qobject_cast<IBackendPlugin*> (backend);
+			if (ibp->CanLoadDocument (path) == IBackendPlugin::LoadCheckResult::Can)
 				return true;
+		}
 
 		return false;
 	}
@@ -89,9 +92,21 @@ namespace Monocle
 			return IDocument_ptr ();
 
 		decltype (Backends_) loaders;
-		Q_FOREACH (auto backend, Backends_)
-			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
+		decltype (Backends_) redirectors;
+		for (auto backend : Backends_)
+		{
+			switch (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
+			{
+			case IBackendPlugin::LoadCheckResult::Can:
 				loaders << backend;
+				break;
+			case IBackendPlugin::LoadCheckResult::Redirect:
+				redirectors << backend;
+				break;
+			case IBackendPlugin::LoadCheckResult::Cannot:
+				break;
+			}
+		}
 
 		if (loaders.isEmpty ())
 			return IDocument_ptr ();

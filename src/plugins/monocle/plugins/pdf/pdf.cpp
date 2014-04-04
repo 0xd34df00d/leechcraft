@@ -78,9 +78,11 @@ namespace PDF
 		return result;
 	}
 
-	bool Plugin::CanLoadDocument (const QString& file)
+	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
-		return Document (file, this).IsValid ();
+		return Document (file, this).IsValid () ?
+				LoadCheckResult::Can :
+				LoadCheckResult::Cannot;
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)

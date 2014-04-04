@@ -77,10 +77,12 @@ namespace Postrus
 		return result;
 	}
 
-	bool Plugin::CanLoadDocument (const QString& file)
+	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
 		const auto& mime = Util::MimeDetector {} (file);
-		return mime == "application/postscript";
+		return mime == "application/postscript" ?
+				LoadCheckResult::Can :
+				LoadCheckResult::Cannot;
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)

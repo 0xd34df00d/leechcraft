@@ -93,9 +93,11 @@ namespace Seen
 		return result;
 	}
 
-	bool Plugin::CanLoadDocument (const QString& file)
+	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
-		return file.toLower ().endsWith (".djvu");
+		return file.toLower ().endsWith (".djvu") ?
+				LoadCheckResult::Can :
+				LoadCheckResult::Cannot;
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)

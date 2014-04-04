@@ -37,6 +37,8 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	class IRedirectProxy;
+
 	/** @brief Basic interface for format backends plugins for Monocle.
 	 *
 	 * This interface should be implemented by plugins that provide
@@ -52,24 +54,36 @@ namespace Monocle
 		 */
 		virtual ~IBackendPlugin () {}
 
+		/** @TODO
+		 */
+		enum class LoadCheckResult
+		{
+			Cannot,
+			Can,
+			Redirect
+		};
+
 		/** @brief Checks whether the given document can be loaded.
 		 *
-		 * This method should return <code>true</code> if the document
-		 * can possibly be loaded and <code>false</code> otherwise.
+		 * This method should return #LoadCheckResult::Can if the document
+		 * can possibly be loaded, #LoadCheckResult::Cannot if it can't be
+		 * loaded at all, and #LoadCheckResult::Redirect if the document
+		 * can be preprocessed and converted to some other format probably
+		 * loadable by another Monocle plugin.
 		 *
 		 * The cheaper this function is, the better. It is discouraged to
 		 * check by extension, though.
 		 *
 		 * It is OK to return nullptr or invalid document from
-		 * LoadDocument() even if this method returns <code>true</code>
-		 * for a given document.
+		 * LoadDocument() even if this method returns
+		 * #LoadCheckResult::Can for a given \em filename.
 		 *
 		 * @param[filename] in Path to the document to check.
 		 * @return Whether the document at \em filename can be loaded.
 		 *
 		 * @sa LoadDocument()
 		 */
-		virtual bool CanLoadDocument (const QString& filename) = 0;
+		virtual LoadCheckResult CanLoadDocument (const QString& filename) = 0;
 
 		/** @brief Loads the given document.
 		 *
@@ -92,6 +106,14 @@ namespace Monocle
 		 * @sa LoadDocument(), IDocument
 		 */
 		virtual IDocument_ptr LoadDocument (const QString& filename) = 0;
+
+		/** @TODO
+		 */
+		virtual IRedirectProxy* GetRedirection (const QString& filename)
+		{
+			Q_UNUSED (filename)
+			return nullptr;
+		}
 
 		/** @brief Returns true whether the backend is threaded.
 		 *
