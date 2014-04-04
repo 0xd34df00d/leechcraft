@@ -65,6 +65,7 @@ namespace Monocle
 
 		void AddPlugin (QObject*);
 
+		bool CanHandleMime (const QString&);
 		bool CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
 

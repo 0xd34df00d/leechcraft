@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <algorithm>
 #include <QFile>
 #include <interfaces/iplugin2.h>
 #include "pixmapcachemanager.h"
@@ -72,6 +73,16 @@ namespace Monocle
 		const auto& classes = plugin2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.Monocle.IBackendPlugin"))
 			Backends_ << pluginObj;
+	}
+
+	bool Core::CanHandleMime (const QString& mime)
+	{
+		return std::any_of (Backends_.begin (), Backends_.end (),
+				[&mime] (QObject *plugin)
+				{
+					return qobject_cast<IBackendPlugin*> (plugin)->
+							GetSupportedMimes ().contains (mime);
+				});
 	}
 
 	bool Core::CanLoadDocument (const QString& path)
