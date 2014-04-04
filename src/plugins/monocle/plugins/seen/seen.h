@@ -67,6 +67,7 @@ namespace Seen
 
 		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
+		QStringList GetSupportedMimes () const;
 	private slots:
 		void checkMessageQueue ();
 	};

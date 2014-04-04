@@ -88,6 +88,11 @@ namespace Mu
 	{
 		return IDocument_ptr (new Document (file, MuCtx_, this));
 	}
+
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/pdf" };
+	}
 }
 }
 }

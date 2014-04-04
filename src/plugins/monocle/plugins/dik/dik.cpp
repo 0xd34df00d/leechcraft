@@ -90,6 +90,11 @@ namespace Dik
 	{
 		return IDocument_ptr (new Document (file, this));
 	}
+
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/x-mobipocket-ebook", "application/x-mobipocket" };
+	}
 }
 }
 }

@@ -87,6 +87,11 @@ namespace FXB
 	{
 		return IDocument_ptr (new Document (file, this));
 	}
+
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/x-fictionbook+xml", "application/x-fictionbook" };
+	}
 }
 }
 }

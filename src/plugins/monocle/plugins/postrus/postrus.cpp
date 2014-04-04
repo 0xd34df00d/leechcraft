@@ -89,6 +89,11 @@ namespace Postrus
 	{
 		return IDocument_ptr (new Document (file, this));
 	}
+
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/postscript" };
+	}
 }
 }
 }

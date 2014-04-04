@@ -90,6 +90,11 @@ namespace PDF
 		return IDocument_ptr (new Document (file, this));
 	}
 
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/pdf" };
+	}
+
 	bool Plugin::IsThreaded () const
 	{
 #if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 24

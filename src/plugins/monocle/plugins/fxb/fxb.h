@@ -60,6 +60,7 @@ namespace FXB
 
 		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
+		QStringList GetSupportedMimes () const;
 	};
 }
 }

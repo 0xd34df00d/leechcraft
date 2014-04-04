@@ -115,6 +115,21 @@ namespace Monocle
 			return nullptr;
 		}
 
+		/** @brief Returns the list MIME types supported by the backend.
+		 *
+		 * The returned MIME type is only considered when dealing with
+		 * redirections. CanLoadDocument() and LoadDocument() methods can
+		 * still be called on a file whose MIME isn't contained in the
+		 * returned list.
+		 *
+		 * CanLoadDocument() and LoadDocument() can reject loading a
+		 * document even if its MIME is contained in the list returned by
+		 * this method.
+		 *
+		 * @return The list of MIMEs the backend supports.
+		 */
+		virtual QStringList GetSupportedMimes () const = 0;
+
 		/** @brief Returns true whether the backend is threaded.
 		 *
 		 * This function returns true if the implementation supports
