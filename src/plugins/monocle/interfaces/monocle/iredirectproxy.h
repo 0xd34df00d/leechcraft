@@ -29,40 +29,24 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/monocle/ibackendplugin.h>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-namespace Postrus
-{
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IBackendPlugin
+	class IRedirectProxy
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		virtual ~IRedirectProxy () {}
 
-		QSet<QByteArray> GetPluginClasses () const;
-
-		LoadCheckResult CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
-		IRedirectProxy_ptr GetRedirection (const QString&);
-		QStringList GetSupportedMimes () const;
+		virtual QString GetRedirectTarget () const = 0;
+		virtual QString GetRedirectedMime () const = 0;
+	protected:
+		virtual void ready (const QString& target) = 0;
 	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::IRedirectProxy,
+		"org.LeechCraft.Monocle.IRedirectProxy/1.0");

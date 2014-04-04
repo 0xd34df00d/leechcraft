@@ -90,6 +90,11 @@ namespace Postrus
 		return IDocument_ptr (new Document (file, this));
 	}
 
+	IRedirectProxy_ptr Plugin::GetRedirection (const QString& filename)
+	{
+		return {};
+	}
+
 	QStringList Plugin::GetSupportedMimes () const
 	{
 		return { "application/postscript" };

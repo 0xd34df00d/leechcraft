@@ -38,6 +38,7 @@ namespace LeechCraft
 namespace Monocle
 {
 	class IRedirectProxy;
+	typedef std::shared_ptr<IRedirectProxy> IRedirectProxy_ptr;
 
 	/** @brief Basic interface for format backends plugins for Monocle.
 	 *
@@ -109,10 +110,10 @@ namespace Monocle
 
 		/** @TODO
 		 */
-		virtual IRedirectProxy* GetRedirection (const QString& filename)
+		virtual IRedirectProxy_ptr GetRedirection (const QString& filename)
 		{
 			Q_UNUSED (filename)
-			return nullptr;
+			return {};
 		}
 
 		/** @brief Returns the list MIME types supported by the backend.
