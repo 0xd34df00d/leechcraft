@@ -36,6 +36,7 @@
 #include "defaultbackendmanager.h"
 #include "docstatemanager.h"
 #include "bookmarksmanager.h"
+#include "interfaces/monocle/iredirectproxy.h"
 
 namespace LeechCraft
 {
@@ -87,14 +88,29 @@ namespace Monocle
 
 	bool Core::CanLoadDocument (const QString& path)
 	{
+		decltype (Backends_) redirectors;
 		for (auto backend : Backends_)
 		{
 			const auto ibp = qobject_cast<IBackendPlugin*> (backend);
-			if (ibp->CanLoadDocument (path) == IBackendPlugin::LoadCheckResult::Can)
+			switch (ibp->CanLoadDocument (path))
+			{
+			case IBackendPlugin::LoadCheckResult::Can:
 				return true;
+			case IBackendPlugin::LoadCheckResult::Redirect:
+				redirectors << backend;
+				break;
+			case IBackendPlugin::LoadCheckResult::Cannot:
+				break;
+			}
 		}
 
-		return false;
+		return std::any_of (redirectors.begin (), redirectors.end (),
+				[&path, this] (QObject *redirectorObj) -> bool
+				{
+					const auto redirector = qobject_cast<IBackendPlugin*> (redirectorObj);
+					const auto redirect = redirector->GetRedirection (path);
+					return CanHandleMime (redirect->GetRedirectedMime ());
+				});
 	}
 
 	IDocument_ptr Core::LoadDocument (const QString& path)
