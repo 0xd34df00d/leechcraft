@@ -46,6 +46,13 @@ namespace Monocle
 	 * format backends for Monocle document reader — that is, for those
 	 * plugins that can load documents.
 	 *
+	 * Some backends only convert a document from their format to another
+	 * format, probably supported by another Monocle plugin. This is
+	 * called a redirection, and the backend should return
+	 * #LoadCheckResult::Redirect from CanLoadDocument() for such
+	 * documents. The backend should also return a valid redirect proxy
+	 * from the GetRedirection() method.
+	 *
 	 * @sa IDocument
 	 */
 	class IBackendPlugin
@@ -55,12 +62,24 @@ namespace Monocle
 		 */
 		virtual ~IBackendPlugin () {}
 
-		/** @TODO
+		/** @brief Describes the result of checking whether a file can be
+		 * loaded.
+		 *
+		 * @sa CanLoadDocument()
 		 */
 		enum class LoadCheckResult
 		{
+			/** @brief The file cannot be loaded by this backend.
+			 */
 			Cannot,
+
+			/** @brief The file can be loaded by this backend.
+			 */
 			Can,
+
+			/** @brief The file cannot be loaded by this backend, but can
+			 * be converted to another format.
+			 */
 			Redirect
 		};
 
@@ -79,10 +98,15 @@ namespace Monocle
 		 * LoadDocument() even if this method returns
 		 * #LoadCheckResult::Can for a given \em filename.
 		 *
+		 * If this function returns #LoadCheckResult::Redirect, then
+		 * the GetRedirection() method should return a non-null redirect
+		 * proxy.
+		 *
 		 * @param[in] filename Path to the document to check.
 		 * @return Whether the document at \em filename can be loaded.
 		 *
 		 * @sa LoadDocument()
+		 * @sa GetRedirection()
 		 */
 		virtual LoadCheckResult CanLoadDocument (const QString& filename) = 0;
 
@@ -105,11 +129,25 @@ namespace Monocle
 		 * or invalid document if an error has occurred.
 		 *
 		 * @sa CanLoadDocument()
+		 * @sa GetRedirection()
 		 * @sa IDocument
 		 */
 		virtual IDocument_ptr LoadDocument (const QString& filename) = 0;
 
-		/** @TODO
+		/** @brief Returns the redirection proxy for the given document.
+		 *
+		 * This function should return a redirect proxy for the document
+		 * at \em filename, or a null pointer if the document cannot be
+		 * redirected (for example, if it is invalid).
+		 *
+		 * The default implementation simply does nothing and returns a
+		 * null pointer.
+		 *
+		 * @param[in] filename The document to redirect.
+		 * @return The redirect proxy for \em filename, or null pointer.
+		 *
+		 * @sa LoadDocument()
+		 * @sa IRedirectProxy
 		 */
 		virtual IRedirectProxy_ptr GetRedirection (const QString& filename)
 		{
