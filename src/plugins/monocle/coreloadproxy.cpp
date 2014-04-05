@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include "interfaces/monocle/iredirectproxy.h"
 #include "core.h"
+#include "converteddoccleaner.h"
 
 namespace LeechCraft
 {
@@ -88,6 +89,7 @@ namespace Monocle
 					<< path;
 
 		Doc_ = doc;
+		new ConvertedDocCleaner { Doc_ };
 
 		emitReady ();
 	}
