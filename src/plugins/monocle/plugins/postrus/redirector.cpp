@@ -80,7 +80,7 @@ namespace Postrus
 		qDebug () << Q_FUNC_INFO
 				<< Source_
 				<< Target_;
-		Process_->start ("ps2pdf", { Source_, Target_ });
+		Process_->start ("ps2pdf", { "-dPDFSETTINGS=/prepress", "-dEmbedAllFonts=true", "-dSubsetFonts=false", "-r600", Source_, Target_ });
 		connect (Process_,
 				SIGNAL (finished (int)),
 				this,
