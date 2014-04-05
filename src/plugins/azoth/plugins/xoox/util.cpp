@@ -108,6 +108,7 @@ namespace XooxUtil
 				Node2ClientID_ ["http://fatal-bot.spb.ru/caps"] = "fatal-bot";
 				Node2ClientID_ ["http://fatal-dev.ru/bot/caps"] = "fatal-bot";
 				Node2ClientID_ ["http://isida-bot.com"] = "isida-bot";
+				Node2ClientID_ ["httр://jabga.ru/"] = "jtalk";
 				Node2ClientID_ ["http://jabiru.mzet.net/caps"] = "jabiru";
 				Node2ClientID_ ["http://jasmineicq.ru/caps"] = "jasmine";
 				Node2ClientID_ ["http://jimm.net.ru/caps"] = "jimm";
@@ -131,6 +132,7 @@ namespace XooxUtil
 				Node2ClientID_ ["http://sawim.ru/caps"] = "sawim";
 				Node2ClientID_ ["http://sip-communicator.org"] = "sip-communicator";
 				Node2ClientID_ ["http://spectrum.im/transport"] = "spectrum";
+				Node2ClientID_ ["httр://stranger.kiev.ua/caps"] = "jtalk";
 				Node2ClientID_ ["http://swift.im"] = "swift";
 				Node2ClientID_ ["http://talk.google.com/xmpp/bot/caps"] = "talk.google.com";
 				Node2ClientID_ ["http://talkgadget.google.com/client/caps"] = "talkgadget.google.com";
@@ -142,6 +144,7 @@ namespace XooxUtil
 				Node2ClientID_ ["http://www.apple.com/ichat/caps"] = "ichat";
 				Node2ClientID_ ["http://www.google.com/xmpp/client/caps"] = "talk.google.com";
 				Node2ClientID_ ["http://www.eyecu.ru"] = "eyecu";
+				Node2ClientID_ ["httр://www.freq-bot.net/"] = "freqbot";
 				Node2ClientID_ ["http://www.igniterealtime.org/projects/smack/"] = "smack";
 				Node2ClientID_ ["http://www.lonelycatgames.com/slick/caps"] = "slick";
 				Node2ClientID_ ["https://www.jappix.com/"] = "jappix";
@@ -193,6 +196,7 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://fatal-bot.spb.ru/caps"] = "Fatal-bot";
 				Node2ClientHR_ ["http://fatal-dev.ru/bot/caps"] = "Fatal-bot";
 				Node2ClientHR_ ["http://isida-bot.com"] = "iSida Bot";
+				Node2ClientHR_ ["httр://jabga.ru/"] = "Fin jabber";
 				Node2ClientHR_ ["http://jabiru.mzet.net/caps"] = "Jabiru";
 				Node2ClientHR_ ["http://jasmineicq.ru/caps"] = "Jasmine";
 				Node2ClientHR_ ["http://jimm.net.ru/caps"] = "Jimm";
@@ -216,6 +220,7 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://sawim.ru/caps"] = "Sawim";
 				Node2ClientHR_ ["http://sip-communicator.org"] = "SIP Communicator";
 				Node2ClientHR_ ["http://spectrum.im/transport"] = "Spectrum XMPP Gateway";
+				Node2ClientHR_ ["httр://stranger.kiev.ua/caps"] = "Fin Jimm";
 				Node2ClientHR_ ["http://swift.im"] = "Swift";
 				Node2ClientHR_ ["http://talk.google.com/xmpp/bot/caps"] = "Google Talk";
 				Node2ClientHR_ ["http://talkgadget.google.com/client/caps"] = "Google Talk gadget";
@@ -227,6 +232,7 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://www.apple.com/ichat/caps"] = "iChat";
 				Node2ClientHR_ ["http://www.google.com/xmpp/client/caps"] = "Google Talk";
 				Node2ClientHR_ ["http://www.eyecu.ru"] = "EyeCU";
+				Node2ClientHR_ ["httр://www.freq-bot.net/"] = "freQ bot";
 				Node2ClientHR_ ["http://www.igniterealtime.org/projects/smack/"] = "Smack XMPP library";
 				Node2ClientHR_ ["http://www.lonelycatgames.com/slick/caps"] = "Slick";
 				Node2ClientHR_ ["https://www.jappix.com/"] = "Jappix";
