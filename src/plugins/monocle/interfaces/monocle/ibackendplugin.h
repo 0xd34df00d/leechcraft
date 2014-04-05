@@ -49,7 +49,7 @@ namespace Monocle
 	 * Some backends only convert a document from their format to another
 	 * format, probably supported by another Monocle plugin. This is
 	 * called a redirection, and the backend should return
-	 * #LoadCheckResult::Redirect from CanLoadDocument() for such
+	 * ::LoadCheckResult::Redirect from CanLoadDocument() for such
 	 * documents. The backend should also return a valid redirect proxy
 	 * from the GetRedirection() method.
 	 *
@@ -85,9 +85,9 @@ namespace Monocle
 
 		/** @brief Checks whether the given document can be loaded.
 		 *
-		 * This method should return #LoadCheckResult::Can if the document
-		 * can possibly be loaded, #LoadCheckResult::Cannot if it can't be
-		 * loaded at all, and #LoadCheckResult::Redirect if the document
+		 * This method should return ::LoadCheckResult::Can if the document
+		 * can possibly be loaded, ::LoadCheckResult::Cannot if it can't be
+		 * loaded at all, and ::LoadCheckResult::Redirect if the document
 		 * can be preprocessed and converted to some other format probably
 		 * loadable by another Monocle plugin.
 		 *
@@ -96,9 +96,9 @@ namespace Monocle
 		 *
 		 * It is OK to return nullptr or invalid document from
 		 * LoadDocument() even if this method returns
-		 * #LoadCheckResult::Can for a given \em filename.
+		 * ::LoadCheckResult::Can for a given \em filename.
 		 *
-		 * If this function returns #LoadCheckResult::Redirect, then
+		 * If this function returns ::LoadCheckResult::Redirect, then
 		 * the GetRedirection() method should return a non-null redirect
 		 * proxy.
 		 *
