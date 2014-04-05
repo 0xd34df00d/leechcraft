@@ -31,7 +31,6 @@ target_link_libraries (leechcraft_aggregator_webaccess
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${Wt_LIBRARY}
-	${Wt_EXT_LIBRARY}
 	${Wt_HTTP_LIBRARY}
 	leechcraft_aggregator_util
 	)
