@@ -60,6 +60,7 @@ set (SRCS
 	linkitem.cpp
 	linksmanager.cpp
 	coreloadproxy.cpp
+	converteddoccleaner.cpp
 	)
 set (FORMS
 	documenttab.ui
