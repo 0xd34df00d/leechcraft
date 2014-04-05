@@ -79,7 +79,7 @@ namespace Monocle
 		 * LoadDocument() even if this method returns
 		 * #LoadCheckResult::Can for a given \em filename.
 		 *
-		 * @param[filename] in Path to the document to check.
+		 * @param[in] filename Path to the document to check.
 		 * @return Whether the document at \em filename can be loaded.
 		 *
 		 * @sa LoadDocument()
@@ -100,11 +100,12 @@ namespace Monocle
 		 * even if CanLoadDocument() returned <code>true</code> for this
 		 * \em filename,
 		 *
-		 * @param[filename] in The document to load.
+		 * @param[in] filename The document to load.
 		 * @return The document object for \em filename, or null pointer,
 		 * or invalid document if an error has occurred.
 		 *
-		 * @sa LoadDocument(), IDocument
+		 * @sa CanLoadDocument()
+		 * @sa IDocument
 		 */
 		virtual IDocument_ptr LoadDocument (const QString& filename) = 0;
 
