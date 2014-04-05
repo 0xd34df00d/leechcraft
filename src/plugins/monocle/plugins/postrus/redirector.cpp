@@ -89,7 +89,12 @@ namespace Postrus
 
 	void Redirector::handleFinished ()
 	{
-		qDebug () << Q_FUNC_INFO;
+		qDebug () << Q_FUNC_INFO
+				<< Process_->exitStatus ()
+				<< Process_->exitCode ();
+		if (Process_->exitCode ())
+			qWarning () << Q_FUNC_INFO
+					<< Process_->readAllStandardError ();
 
 		emit ready (Target_);
 	}
