@@ -137,18 +137,25 @@ namespace Monocle
 		}
 
 		if (loaders.size () == 1)
-			return new CoreLoadProxy { qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path) };
+		{
+			const auto doc = qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
+			return doc ? new CoreLoadProxy { doc } : nullptr;
+		}
 		else if (!loaders.isEmpty ())
 		{
 			if (const auto backend = DefaultBackendManager_->GetBackend (loaders))
-				return new CoreLoadProxy { qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path) };
+			{
+				const auto doc = qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path);
+				return doc ? new CoreLoadProxy { doc } : nullptr;
+			}
 			else
 				return nullptr;
 		}
 		else if (!redirectors.isEmpty ())
 		{
 			const auto backend = qobject_cast<IBackendPlugin*> (redirectors.first ());
-			return new CoreLoadProxy { backend->GetRedirection (path) };
+			const auto redir = backend->GetRedirection (path);
+			return redir ? new CoreLoadProxy { redir } : nullptr;
 		}
 		else
 			return nullptr;
