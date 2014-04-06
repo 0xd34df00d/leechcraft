@@ -1,0 +1,29 @@
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_lmp_httstream)
+include (InitLCPlugin OPTIONAL)
+
+include_directories (${LMP_INCLUDE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+	)
+
+set (HTTSTREAM_SRCS
+	httstream.cpp
+	)
+
+#CreateTrs ("lmp_httstream" "en;ru_RU" HTTSTREAM_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("lmp_httstream" "en;ru_RU" "${HTTSTREAM_SRCS}" "${HTTSTREAM_FORMS}" "lmphttstreamsettings.xml")
+
+add_library (leechcraft_lmp_httstream SHARED
+	${HTTSTREAM_COMPILED_TRANSLATIONS}
+	${HTTSTREAM_SRCS}
+	)
+target_link_libraries (leechcraft_lmp_httstream
+	${QT_LIBRARIES}
+	${LEECHCRAFT_LIBRARIES}
+	)
+
+install (TARGETS leechcraft_lmp_httstream DESTINATION ${LC_PLUGINS_DEST})
+install (FILES lmphttstreamsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${HTTSTREAM_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
