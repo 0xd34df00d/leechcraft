@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QObject>
-#include "filterelement.h"
+#include "interfaces/lmp/ifilterelement.h"
 
 typedef struct _GstPad GstPad;
 typedef struct _GstMessage GstMessage;
@@ -43,7 +43,7 @@ namespace LMP
 	class HttpServer;
 
 	class HttpStreamFilter : public QObject
-						   , public FilterElement
+						   , public IFilterElement
 	{
 		Q_OBJECT
 

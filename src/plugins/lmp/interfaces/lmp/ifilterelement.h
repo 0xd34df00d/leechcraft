@@ -29,7 +29,7 @@
 
 #pragma once
 
-typedef struct _GstElement GstElement;
+#include "interfaces/lmp/ipath.h"
 
 namespace LeechCraft
 {
@@ -37,15 +37,24 @@ namespace LMP
 {
 	class IPath;
 
-	class FilterElement
+	class IFilterElement
 	{
 	public:
-		FilterElement ();
+		void InsertInto (IPath *path)
+		{
+			path->InsertElement (GetElement ());
+			PostAdd (path);
+		}
 
-		void InsertInto (IPath*);
-		void RemoveFrom (IPath*);
+		void RemoveFrom (IPath *path)
+		{
+			path->RemoveElement (GetElement ());
+		}
 	protected:
-		virtual void PostAdd (IPath*);
+		virtual void PostAdd (IPath*)
+		{
+		}
+
 		virtual GstElement* GetElement () const = 0;
 	};
 }

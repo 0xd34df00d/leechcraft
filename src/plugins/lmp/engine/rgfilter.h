@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include "filterelement.h"
+#include "interfaces/lmp/ifilterelement.h"
 
 namespace LeechCraft
 {
@@ -43,7 +43,7 @@ namespace LMP
 		double AlbumPeak_;
 	};
 
-	class RGFilter : public FilterElement
+	class RGFilter : public IFilterElement
 	{
 		GstElement * const Elem_;
 		GstElement * const TagInject_;

@@ -116,7 +116,6 @@ set (SRCS
 	collectionwidget.cpp
 	localcollectionmodel.cpp
 	engine/audiosource.cpp
-	engine/filterelement.cpp
 	engine/gstutil.cpp
 	engine/output.cpp
 	engine/path.cpp
