@@ -29,12 +29,8 @@
 
 #pragma once
 
-#include <functional>
 #include <QObject>
-
-typedef struct _GstElement GstElement;
-typedef struct _GstMessage GstMessage;
-typedef struct _GstBus GstBus;
+#include "interfaces/lmp/ipath.h"
 
 namespace LeechCraft
 {
@@ -47,6 +43,7 @@ namespace LMP
 	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
 
 	class Path : public QObject
+			   , public IPath
 	{
 		SourceObject * const SrcObj_;
 

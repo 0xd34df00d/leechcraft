@@ -29,7 +29,7 @@
 
 #include "filterelement.h"
 #include "../gstfix.h"
-#include "path.h"
+#include "interfaces/lmp/ipath.h"
 
 namespace LeechCraft
 {
@@ -39,19 +39,19 @@ namespace LMP
 	{
 	}
 
-	void FilterElement::InsertInto (Path *path)
+	void FilterElement::InsertInto (IPath *path)
 	{
 		path->InsertElement (GetElement ());
 
 		PostAdd (path);
 	}
 
-	void FilterElement::RemoveFrom (Path *path)
+	void FilterElement::RemoveFrom (IPath *path)
 	{
 		path->RemoveElement (GetElement ());
 	}
 
-	void FilterElement::PostAdd (Path*)
+	void FilterElement::PostAdd (IPath*)
 	{
 	}
 }

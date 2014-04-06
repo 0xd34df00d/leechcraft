@@ -29,24 +29,25 @@
 
 #pragma once
 
+#include <functional>
+
 typedef struct _GstElement GstElement;
+typedef struct _GstMessage GstMessage;
+typedef struct _GstBus GstBus;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class IPath;
+	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
 
-	class FilterElement
+	class IPath
 	{
 	public:
-		FilterElement ();
+		virtual void AddSyncHandler (const SyncHandler_f&) = 0;
 
-		void InsertInto (IPath*);
-		void RemoveFrom (IPath*);
-	protected:
-		virtual void PostAdd (IPath*);
-		virtual GstElement* GetElement () const = 0;
+		virtual void InsertElement (GstElement*) = 0;
+		virtual void RemoveElement (GstElement*) = 0;
 	};
 }
 }

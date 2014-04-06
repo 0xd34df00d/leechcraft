@@ -98,7 +98,7 @@ namespace LMP
 		return Elem_;
 	}
 
-	void HttpStreamFilter::PostAdd (Path *path)
+	void HttpStreamFilter::PostAdd (IPath *path)
 	{
 		path->AddSyncHandler ([this] (GstBus*, GstMessage *msg) { return HandleError (msg); });
 	}

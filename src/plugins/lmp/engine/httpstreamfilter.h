@@ -73,7 +73,7 @@ namespace LMP
 		~HttpStreamFilter ();
 	protected:
 		GstElement* GetElement () const;
-		void PostAdd (Path*);
+		void PostAdd (IPath*) override;
 	private:
 		void CreatePad ();
 		void DestroyPad ();
