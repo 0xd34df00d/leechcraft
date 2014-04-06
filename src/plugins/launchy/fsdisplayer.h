@@ -55,7 +55,7 @@ namespace Launchy
 	class FSDisplayer : public QObject
 	{
 		Q_OBJECT
-		Q_PROPERTY (QString appFilterText READ GetAppFilterText WRITE SetAppFilterText NOTIFY appFilterTextChanged);
+		Q_PROPERTY (QString appFilterText READ GetAppFilterText WRITE SetAppFilterText NOTIFY appFilterTextChanged)
 
 		const ICoreProxy_ptr Proxy_;
 		Util::XDG::ItemsFinder * const Finder_;

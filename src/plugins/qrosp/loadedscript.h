@@ -45,8 +45,8 @@ namespace Qrosp
 					   , public IScript
 	{
 		Q_OBJECT
-		Q_INTERFACES (IScript);
-		
+		Q_INTERFACES (IScript)
+
 		Qross::Action * const ScriptAction_;
 		bool Imported_ = false;
 	public:

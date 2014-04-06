@@ -53,7 +53,7 @@ namespace Choroid
 					 , public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
+		Q_INTERFACES (ITabWidget)
 
 		const TabClassInfo TabClass_;
 		QObject *Parent_;

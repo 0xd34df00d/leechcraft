@@ -44,9 +44,9 @@ namespace DBusManager
 	{
 		Q_OBJECT
 
-		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.General");
-		Q_PROPERTY (QString OrganizationName READ GetOrganizationName);
-		Q_PROPERTY (QString ApplicationName READ GetApplicationName);
+		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.General")
+		Q_PROPERTY (QString OrganizationName READ GetOrganizationName)
+		Q_PROPERTY (QString ApplicationName READ GetApplicationName)
 
 		General *General_;
 	public:

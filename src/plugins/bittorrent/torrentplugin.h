@@ -95,7 +95,7 @@ namespace LeechCraft
 						IHaveTabs
 						IStartupWizard
 						IActionsExporter
-						IHaveDiagInfo);
+						IHaveDiagInfo)
 
 				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;

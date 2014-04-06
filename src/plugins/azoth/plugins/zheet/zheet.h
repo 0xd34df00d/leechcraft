@@ -45,7 +45,7 @@ namespace Zheet
 					, public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

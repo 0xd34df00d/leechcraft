@@ -44,7 +44,7 @@ namespace Zheet
 					  , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
 		QList<MSNAccount*> Accounts_;
 	public:

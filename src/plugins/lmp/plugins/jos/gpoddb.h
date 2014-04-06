@@ -45,7 +45,7 @@ namespace jOS
 {
 	class GpodDb : public QObject
 	{
-		Itdb_iTunesDB *DB_ = nullptr;;
+		Itdb_iTunesDB *DB_ = nullptr;
 		const QString LocalPath_;
 	public:
 		GpodDb (const QString& localPath, QObject* = 0);

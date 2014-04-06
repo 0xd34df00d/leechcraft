@@ -39,7 +39,7 @@ namespace Blogique
 	{
 		Q_OBJECT
 
-		Q_PROPERTY (int count READ GetCount NOTIFY countChanged);
+		Q_PROPERTY (int count READ GetCount NOTIFY countChanged)
 	public:
 		explicit TagsProxyModel (QObject *parent = 0);
 

@@ -43,11 +43,11 @@ namespace Qrosp
 
 		mutable Entity E_;
 
-		Q_PROPERTY (QVariant Entity READ GetEntity WRITE SetEntity);
-		Q_PROPERTY (QString Location READ GetLocation WRITE SetLocation);
-		Q_PROPERTY (QString Mime READ GetMime WRITE SetMime);
-		Q_PROPERTY (TaskParameters Parameters READ GetParameters WRITE SetParameters);
-		Q_PROPERTY (QVariantMap Additional READ GetAdditional WRITE SetAdditional);
+		Q_PROPERTY (QVariant Entity READ GetEntity WRITE SetEntity)
+		Q_PROPERTY (QString Location READ GetLocation WRITE SetLocation)
+		Q_PROPERTY (QString Mime READ GetMime WRITE SetMime)
+		Q_PROPERTY (TaskParameters Parameters READ GetParameters WRITE SetParameters)
+		Q_PROPERTY (QVariantMap Additional READ GetAdditional WRITE SetAdditional)
 	public:
 		EntityWrapper ();
 		EntityWrapper (const EntityWrapper&);

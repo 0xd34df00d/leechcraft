@@ -39,7 +39,7 @@ namespace Blasq
 	class EnumsProxy : public QObject
 	{
 		Q_OBJECT
-		Q_ENUMS (ItemTypeProxy);
+		Q_ENUMS (ItemTypeProxy)
 	public:
 		enum ItemTypeProxy
 		{
