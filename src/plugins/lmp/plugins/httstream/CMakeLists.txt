@@ -25,5 +25,5 @@ target_link_libraries (leechcraft_lmp_httstream
 	)
 
 install (TARGETS leechcraft_lmp_httstream DESTINATION ${LC_PLUGINS_DEST})
-install (FILES lmphttstreamsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+#install (FILES lmphttstreamsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${HTTSTREAM_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
