@@ -35,9 +35,9 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QThread>
+#include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "path.h"
-#include "gstutil.h"
 #include "../gstfix.h"
 #include "../core.h"
 #include "../xmlsettingsmanager.h"
@@ -573,7 +573,11 @@ namespace LMP
 	void SourceObject::HandleTagMsg (GstMessage *msg)
 	{
 		const auto oldMetadata = Metadata_;
-		if (!GstUtil::ParseTagMessage (msg, Metadata_))
+		const auto& region = XmlSettingsManager::Instance ()
+				.property ("TagsRecodingRegion").toString ();
+		const bool isEnabled = XmlSettingsManager::Instance ()
+				.property ("EnableTagsRecoding").toBool ();
+		if (!GstUtil::ParseTagMessage (msg, Metadata_, isEnabled ? region : QString ()))
 			return;
 
 		auto merge = [this] (const QString& oldName, const QString& stdName, bool emptyOnly)

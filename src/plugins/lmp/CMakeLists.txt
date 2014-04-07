@@ -43,6 +43,7 @@ include_directories (
 	)
 set (COMMON_SRCS
 	mediainfo.cpp
+	util/lmp/gstutil.cpp
 	)
 add_library (leechcraft_lmp_common STATIC
 	${COMMON_SRCS}
@@ -117,14 +118,11 @@ set (SRCS
 	localcollectionmodel.cpp
 	filtersettingsmanager.cpp
 	engine/audiosource.cpp
-	engine/gstutil.cpp
 	engine/output.cpp
 	engine/path.cpp
 	engine/pathelement.cpp
 	engine/rganalyser.cpp
 	engine/rgfilter.cpp
-	engine/httpstreamfilter.cpp
-	engine/httpserver.cpp
 	engine/sourceobject.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp

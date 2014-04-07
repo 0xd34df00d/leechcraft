@@ -40,8 +40,8 @@ extern "C"
 }
 #endif
 
-#include "../gstfix.h"
-#include "../xmlsettingsmanager.h"
+#include <gst/gst.h>
+#include "../../xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -60,15 +60,13 @@ namespace GstUtil
 
 	namespace
 	{
-		void FixEncoding (QString& out, const gchar *origStr)
+		void FixEncoding (QString& out, const gchar *origStr, const QString& region)
 		{
 #ifdef WITH_LIBGUESS
 			const auto& cp1252 = QTextCodec::codecForName ("CP-1252")->fromUnicode (origStr);
 			if (cp1252.isEmpty ())
 				return;
 
-			const auto region = XmlSettingsManager::Instance ()
-					.property ("TagsRecodingRegion").toString ();
 			const auto encoding = libguess_determine_encoding (cp1252.constData (),
 					cp1252.size (), region.toUtf8 ().constData ());
 			if (!encoding)
@@ -100,9 +98,16 @@ namespace GstUtil
 #endif
 		}
 
-		void TagFunction (const GstTagList *list, const gchar *tag, gpointer data)
+		struct TagFunctionData
 		{
-			auto& map = *static_cast<TagMap_t*> (data);
+			TagMap_t& Map_;
+			QString Region_;
+		};
+
+		void TagFunction (const GstTagList *list, const gchar *tag, gpointer rawData)
+		{
+			const auto& data = static_cast<TagFunctionData*> (rawData);
+			auto& map = data->Map_;
 
 			const auto& tagName = QString::fromUtf8 (tag).toLower ();
 			auto& valList = map [tagName];
@@ -115,11 +120,10 @@ namespace GstUtil
 				gst_tag_list_get_string (list, tag, &str);
 				valList = QString::fromUtf8 (str);
 
-				const auto recodingEnabled = XmlSettingsManager::Instance ()
-						.property ("EnableTagsRecoding").toBool ();
+				const auto recodingEnabled = !data->Region_.isEmpty ();
 				if (recodingEnabled &&
 						(tagName == "title" || tagName == "album" || tagName == "artist"))
-					FixEncoding (valList, str);
+					FixEncoding (valList, str, data->Region_);
 
 				g_free (str);
 				break;
@@ -165,16 +169,18 @@ namespace GstUtil
 		}
 	}
 
-	bool ParseTagMessage (GstMessage *msg, TagMap_t& map)
+	bool ParseTagMessage (GstMessage *msg, TagMap_t& map, const QString& region)
 	{
 		GstTagList *tagList = nullptr;
 		gst_message_parse_tag (msg, &tagList);
 		if (!tagList)
 			return false;
 
+		TagFunctionData data { map, region };
+
 		gst_tag_list_foreach (tagList,
 				TagFunction,
-				&map);
+				&data);
 #if GST_VERSION_MAJOR < 1
 		gst_tag_list_free (tagList);
 #else

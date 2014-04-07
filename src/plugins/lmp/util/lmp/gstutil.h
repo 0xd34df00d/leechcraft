@@ -45,7 +45,7 @@ namespace GstUtil
 	void AddGhostPad (GstElement *from, GstElement *to, const char *name);
 
 	typedef QMap<QString, QString> TagMap_t;
-	bool ParseTagMessage (GstMessage*, TagMap_t&);
+	bool ParseTagMessage (GstMessage *msg, TagMap_t& tags, const QString& region);
 }
 }
 }

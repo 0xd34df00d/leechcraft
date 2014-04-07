@@ -35,9 +35,9 @@
 #include <QMap>
 #include <QMutex>
 #include <QWaitCondition>
+#include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "pathelement.h"
-#include "gstutil.h"
 #include "path.h"
 
 typedef struct _GstElement GstElement;

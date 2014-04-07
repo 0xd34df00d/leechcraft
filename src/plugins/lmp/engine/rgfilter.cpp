@@ -29,8 +29,8 @@
 
 #include "rgfilter.h"
 #include <QStringList>
+#include "util/lmp/gstutil.h"
 #include "../gstfix.h"
-#include "gstutil.h"
 #include "rgfiltercontroller.h"
 
 namespace LeechCraft

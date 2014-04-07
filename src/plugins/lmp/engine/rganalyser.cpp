@@ -37,8 +37,9 @@
 #include <QUrl>
 #include <QWaitCondition>
 #include <QMutex>
-#include "gstutil.h"
+#include "util/lmp/gstutil.h"
 #include "../gstfix.h"
+#include "../xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -176,7 +177,12 @@ namespace LMP
 	void RgAnalyser::HandleTagMsg (GstMessage *msg)
 	{
 		GstUtil::TagMap_t map;
-		GstUtil::ParseTagMessage (msg, map);
+
+		const auto& region = XmlSettingsManager::Instance ()
+				.property ("TagsRecodingRegion").toString ();
+		const bool isEnabled = XmlSettingsManager::Instance ()
+				.property ("EnableTagsRecoding").toBool ();
+		GstUtil::ParseTagMessage (msg, map, isEnabled ? region : QString ());
 
 		auto trySet = [&map, this] (const QString& key, std::function<void (double)> setter) -> bool
 		{
