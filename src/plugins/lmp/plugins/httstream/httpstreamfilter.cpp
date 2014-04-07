@@ -115,6 +115,11 @@ namespace HttStream
 		return Configurator_;
 	}
 
+	void HttpStreamFilter::SetQuality (double val)
+	{
+		g_object_set (G_OBJECT (Encoder_), "quality", val, nullptr);
+	}
+
 	GstElement* HttpStreamFilter::GetElement () const
 	{
 		return Elem_;

@@ -83,6 +83,7 @@ namespace HttStream
 		QByteArray GetInstanceId () const;
 		IFilterConfigurator* GetConfigurator () const;
 
+		void SetQuality (double);
 	protected:
 		GstElement* GetElement () const;
 		void PostAdd (IPath*) override;
