@@ -85,6 +85,7 @@ set (SRCS
 	xpc/stdanfields.cpp
 	xpc/stddatafiltermenucreator.cpp
 	xpc/util.cpp
+	xsd/util.cpp
 	util.cpp
 	dblock.cpp
 	backendselector.cpp
