@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QVariantList>
+#include <QModelIndexList>
 #include <QIcon>
 #include "interfaces/lmp/ifilterelement.h"
 
@@ -92,6 +93,7 @@ namespace LMP
 		void SaveFilters () const;
 	public slots:
 		void addRequested (const QString&, const QVariantList&);
+		void removeRequested (const QString&, const QModelIndexList&);
 
 		void customButtonPressed (const QString&, const QByteArray&, int);
 	};

@@ -190,6 +190,30 @@ namespace LMP
 		const auto elem = RestoreFilter (effectPos, {});
 		elem->GetConfigurator ()->OpenDialog ();
 
+		UpdateHeaders ();
+		SaveFilters ();
+	}
+
+	void EffectsManager::removeRequested (const QString&, const QModelIndexList& indexes)
+	{
+		for (const auto& index : indexes)
+		{
+			const auto elem = Filters_.takeAt (index.row ());
+			if (!elem)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "invalid row"
+						<< index
+						<< "of"
+						<< Filters_.size ();
+				continue;
+			}
+
+			elem->RemoveFrom (Path_);
+			delete elem;
+
+			Model_->removeRow (index.row ());
+		}
 
 		UpdateHeaders ();
 		SaveFilters ();
