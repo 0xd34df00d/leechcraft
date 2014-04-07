@@ -301,13 +301,6 @@ namespace LeechCraft
 	void ItemHandlerDataView::handleModifyRequested ()
 	{
 		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
-		if (!view)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a DataViewWidget"
-					<< sender ();
-			return;
-		}
 
 		const auto& selected = view->GetCurrentIndex ();
 		if (!selected.isValid ())
@@ -336,13 +329,6 @@ namespace LeechCraft
 	void ItemHandlerDataView::handleRemoveRequested ()
 	{
 		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
-		if (!view)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a DataViewWidget"
-					<< sender ();
-			return;
-		}
 		if (!view->GetModel ())
 		{
 			qWarning () << Q_FUNC_INFO
