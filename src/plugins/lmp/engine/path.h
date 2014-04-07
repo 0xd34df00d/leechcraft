@@ -38,7 +38,6 @@ namespace LMP
 {
 	class SourceObject;
 	class Output;
-	struct CallbackData;
 
 	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
 
@@ -60,8 +59,6 @@ namespace LMP
 			Add,
 			Remove
 		};
-
-		friend struct CallbackData;
 
 		struct QueueItem
 		{
@@ -89,7 +86,7 @@ namespace LMP
 		void InsertElement (GstElement*);
 		void RemoveElement (GstElement*);
 
-		void FinalizeAction (CallbackData*);
+		void FinalizeAction ();
 	private:
 		void RotateQueue ();
 	};

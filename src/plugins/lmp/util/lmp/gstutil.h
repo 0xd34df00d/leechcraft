@@ -29,12 +29,15 @@
 
 #pragma once
 
+#include <functional>
+
 template<typename Key, typename T >
 class QMap;
 class QString;
 
 typedef struct _GstMessage GstMessage;
 typedef struct _GstElement GstElement;
+typedef struct _GstPad GstPad;
 
 namespace LeechCraft
 {
@@ -46,6 +49,8 @@ namespace GstUtil
 
 	typedef QMap<QString, QString> TagMap_t;
 	bool ParseTagMessage (GstMessage *msg, TagMap_t& tags, const QString& region);
+
+	void PerformWProbe (GstPad *srcpad, GstPad *sinkpad, const std::function<void ()>& functor);
 }
 }
 }

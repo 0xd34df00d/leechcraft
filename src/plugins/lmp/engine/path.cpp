@@ -37,12 +37,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	struct CallbackData
-	{
-		Path * const Path_;
-		guint ID_;
-	};
-
 	Path::Path (SourceObject *source, Output *output, QObject *parent)
 	: QObject (parent)
 	, SrcObj_ (source)
@@ -115,72 +109,6 @@ namespace LMP
 		return SrcObj_;
 	}
 
-	namespace
-	{
-#if GST_VERSION_MAJOR < 1
-		gboolean EventProbeHandler (GstPad *pad, GstEvent *event, CallbackData *cbData)
-		{
-			if (GST_EVENT_TYPE (event) != GST_EVENT_EOS)
-				return TRUE;
-#else
-		GstPadProbeReturn EventProbeHandler (GstPad *pad, GstPadProbeInfo *info, gpointer cbDataPtr)
-		{
-			if (GST_EVENT_TYPE (GST_PAD_PROBE_INFO_DATA (info)) != GST_EVENT_EOS)
-				return GST_PAD_PROBE_OK;
-
-			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
-#endif
-			qDebug () << Q_FUNC_INFO << "eos";
-#if GST_VERSION_MAJOR < 1
-			gst_pad_remove_event_probe (pad, cbData->ID_);
-#else
-			gst_pad_remove_probe (pad, cbData->ID_);
-#endif
-
-			cbData->Path_->FinalizeAction (cbData);
-
-#if GST_VERSION_MAJOR < 1
-			return FALSE;
-#else
-			return GST_PAD_PROBE_DROP;
-#endif
-		}
-
-#if GST_VERSION_MAJOR < 1
-		gboolean ProbeHandler (GstPad *pad, GstMiniObject*, CallbackData *cbData)
-		{
-#else
-		GstPadProbeReturn ProbeHandler (GstPad *pad, GstPadProbeInfo*, gpointer cbDataPtr)
-		{
-			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
-#endif
-			qDebug () << Q_FUNC_INFO;
-#if GST_VERSION_MAJOR < 1
-			gst_pad_remove_data_probe (pad, cbData->ID_);
-#else
-			gst_pad_remove_probe (pad, cbData->ID_);
-#endif
-
-#if GST_VERSION_MAJOR < 1
-			cbData->ID_ = gst_pad_add_event_probe (pad, G_CALLBACK (EventProbeHandler), cbData);
-#else
-			cbData->ID_ = gst_pad_add_probe (pad,
-					static_cast<GstPadProbeType> (GST_PAD_PROBE_TYPE_BLOCK | GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM),
-					EventProbeHandler, cbData, nullptr);
-#endif
-
-			const auto sinkpad = gst_element_get_static_pad (cbData->Path_->GetOutPlaceholder (), "sink");
-			gst_pad_send_event (sinkpad, gst_event_new_eos ());
-			gst_object_unref (sinkpad);
-
-#if GST_VERSION_MAJOR < 1
-			return TRUE;
-#else
-			return GST_PAD_PROBE_OK;
-#endif
-		}
-	}
-
 	void Path::AddSyncHandler (const SyncHandler_f& handler)
 	{
 		SrcObj_->AddSyncHandler (handler);
@@ -200,9 +128,8 @@ namespace LMP
 			RotateQueue ();
 	}
 
-	void Path::FinalizeAction (CallbackData *cbData)
+	void Path::FinalizeAction ()
 	{
-		auto deleteGuard = std::shared_ptr<CallbackData> (cbData);
 		for (const auto& item : Queue_)
 		{
 			const auto elem = item.Elem_;
@@ -267,15 +194,10 @@ namespace LMP
 		if (Queue_.isEmpty ())
 			return;
 
-		auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
+		const auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
+		const auto sinkpad = gst_element_get_static_pad (GetOutPlaceholder (), "sink");
 
-		auto data = new CallbackData { this, 0 };
-#if GST_VERSION_MAJOR < 1
-		data->ID_ = gst_pad_add_data_probe (srcpad, G_CALLBACK (ProbeHandler), data);
-#else
-		data->ID_ = gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
-				ProbeHandler, data, nullptr);
-#endif
+		GstUtil::PerformWProbe (srcpad, sinkpad, [this] { FinalizeAction (); });
 	}
 }
 }
