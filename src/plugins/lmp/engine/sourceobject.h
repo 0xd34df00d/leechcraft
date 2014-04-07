@@ -170,6 +170,7 @@ namespace LMP
 		void HandleElementMsg (GstMessage*);
 		void HandleEosMsg (GstMessage*);
 		void HandleStreamStatusMsg (GstMessage*);
+		void HandleWarningMsg (GstMessage*);
 
 		int HandleSyncMessage (GstBus*, GstMessage*);
 	private slots:

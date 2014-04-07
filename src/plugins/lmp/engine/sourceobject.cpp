@@ -691,6 +691,24 @@ namespace LMP
 	{
 	}
 
+	void SourceObject::HandleWarningMsg (GstMessage *msg)
+	{
+		GError *gerror = nullptr;
+		gchar *debug = nullptr;
+		gst_message_parse_warning (msg, &gerror, &debug);
+
+		const auto& msgStr = QString::fromUtf8 (gerror->message);
+		const auto& debugStr = QString::fromUtf8 (debug);
+
+		const auto code = gerror->code;
+		const auto domain = gerror->domain;
+
+		g_error_free (gerror);
+		g_free (debug);
+
+		qDebug () << Q_FUNC_INFO << code << domain << msgStr << debugStr;
+	}
+
 	int SourceObject::HandleSyncMessage (GstBus *bus, GstMessage *msg)
 	{
 		for (const auto& handler : SyncHandlers_)
@@ -737,6 +755,9 @@ namespace LMP
 			break;
 		case GST_MESSAGE_STREAM_STATUS:
 			HandleStreamStatusMsg (message);
+			break;
+		case GST_MESSAGE_WARNING:
+			HandleWarningMsg (message);
 			break;
 		case GST_MESSAGE_LATENCY:
 			gst_bin_recalculate_latency (GST_BIN (Dec_));
