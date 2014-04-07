@@ -31,6 +31,8 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/lmp/ifilterplugin.h>
 
 namespace LeechCraft
 {
@@ -40,9 +42,11 @@ namespace HttStream
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IPlugin2
+				 , public IFilterPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::LMP::IFilterPlugin)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -51,6 +55,10 @@ namespace HttStream
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QSet<QByteArray> GetPluginClasses () const;
+
+		QList<EffectInfo> GetEffects () const;
 	};
 }
 }

@@ -66,6 +66,18 @@ namespace HttStream
 	{
 		return {};
 	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.LMP.FiltersProvider";
+		return result;
+	}
+
+	QList<EffectInfo> Plugin::GetEffects () const
+	{
+		return {};
+	}
 }
 }
 }
