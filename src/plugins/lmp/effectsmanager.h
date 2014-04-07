@@ -79,6 +79,8 @@ namespace LMP
 		void UpdateHeaders ();
 	public slots:
 		void addRequested (const QString&, const QVariantList&);
+
+		void customButtonPressed (const QString&, const QByteArray&, int);
 	};
 }
 }

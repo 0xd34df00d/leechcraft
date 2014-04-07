@@ -107,7 +107,6 @@ namespace LMP
 
 	void RGFilterController::setRG ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		RGFilter_->SetAlbumMode (FSM_->property ("RGAlbumMode").toBool ());
 		RGFilter_->SetPreamp (FSM_->property ("RGPreamp").toDouble ());
 		RGFilter_->SetLimiterEnabled (FSM_->property ("RGLimiting").toBool ());

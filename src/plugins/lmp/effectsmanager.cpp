@@ -124,5 +124,21 @@ namespace LMP
 
 		UpdateHeaders ();
 	}
+
+	void EffectsManager::customButtonPressed (const QString&, const QByteArray&, int row)
+	{
+		const auto filter = Filters_.value (row);
+		if (!filter)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid row"
+					<< row
+					<< "of"
+					<< Filters_.size ();
+			return;
+		}
+
+		filter->GetConfigurator ()->OpenDialog ();
+	}
 }
 }
