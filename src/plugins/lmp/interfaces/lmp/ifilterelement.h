@@ -43,6 +43,8 @@ namespace LMP
 	class IFilterElement
 	{
 	public:
+		virtual ~IFilterElement () {}
+
 		virtual QByteArray GetEffectId () const = 0;
 		virtual QByteArray GetInstanceId () const = 0;
 
