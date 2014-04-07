@@ -33,6 +33,7 @@
 #include <QVBoxLayout>
 #include <QtDebug>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/xsd/util.h>
 #include "util/lmp/filtersettingsmanager.h"
 #include "engine/path.h"
 #include "engine/sourceobject.h"
@@ -71,38 +72,7 @@ namespace LMP
 
 	void RGFilterController::OpenDialog ()
 	{
-		auto lay = new QVBoxLayout;
-
-		auto xsd = new Util::XmlSettingsDialog;
-		xsd->RegisterObject (FSM_, "lmpfilterrgsettings.xml");
-		lay->addWidget (xsd);
-
-		auto bbox = new QDialogButtonBox { QDialogButtonBox::Ok | QDialogButtonBox::Cancel };
-		lay->addWidget (bbox);
-
-		auto dia = new QDialog;
-		dia->setLayout (lay);
-
-		connect (bbox,
-				SIGNAL (accepted ()),
-				xsd,
-				SLOT (accept ()));
-		connect (bbox,
-				SIGNAL (rejected ()),
-				xsd,
-				SLOT (reject ()));
-		connect (bbox,
-				SIGNAL (accepted ()),
-				dia,
-				SLOT (accept ()));
-		connect (bbox,
-				SIGNAL (rejected ()),
-				dia,
-				SLOT (reject ()));
-
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->setWindowTitle (tr ("ReplayGain configuration"));
-		dia->show ();
+		Util::OpenXSD (tr ("ReplayGain configuration"), "lmpfilterrgsettings.xml", FSM_);
 	}
 
 	void RGFilterController::setRG ()
