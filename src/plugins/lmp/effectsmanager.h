@@ -76,6 +76,7 @@ namespace LMP
 
 		void RegisterEffect (const EffectInfo&);
 	private:
+		IFilterElement* RestoreFilter (const QList<EffectInfo>::const_iterator, const QByteArray&);
 		void UpdateHeaders ();
 	public slots:
 		void addRequested (const QString&, const QVariantList&);

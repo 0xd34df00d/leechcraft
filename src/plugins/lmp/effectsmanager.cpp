@@ -71,6 +71,21 @@ namespace LMP
 		UpdateHeaders ();
 	}
 
+	IFilterElement* EffectsManager::RestoreFilter (const QList<EffectInfo>::const_iterator effectPos, const QByteArray& instanceId)
+	{
+		auto modelItem = new QStandardItem { effectPos->Name_ };
+		modelItem->setEditable (false);
+		modelItem->setIcon (effectPos->Icon_);
+		Model_->appendRow (modelItem);
+
+		const auto elem = effectPos->EffectFactory_ (instanceId, Path_);
+		elem->InsertInto (Path_);
+
+		Filters_ << elem;
+
+		return elem;
+	}
+
 	void EffectsManager::UpdateHeaders ()
 	{
 		QVariantList items;
@@ -111,16 +126,9 @@ namespace LMP
 			return;
 		}
 
-		auto modelItem = new QStandardItem { effectPos->Name_ };
-		modelItem->setEditable (false);
-		modelItem->setIcon (effectPos->Icon_);
-		Model_->appendRow (modelItem);
-
-		const auto elem = effectPos->EffectFactory_ ({}, Path_);
-		elem->InsertInto (Path_);
+		const auto elem = RestoreFilter (effectPos, {});
 		elem->GetConfigurator ()->OpenDialog ();
 
-		Filters_ << elem;
 
 		UpdateHeaders ();
 	}
