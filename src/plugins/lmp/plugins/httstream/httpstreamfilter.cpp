@@ -28,10 +28,13 @@
  **********************************************************************/
 
 #include "httpstreamfilter.h"
+#include <QUuid>
 #include <QtDebug>
 #include <gst/gst.h>
+#include "interfaces/lmp/ifilterconfigurator.h"
 #include "util/lmp/gstutil.h"
 #include "httpserver.h"
+#include "filterconfigurator.h"
 
 namespace LeechCraft
 {
@@ -39,8 +42,11 @@ namespace LMP
 {
 namespace HttStream
 {
-	HttpStreamFilter::HttpStreamFilter ()
-	: Elem_ { gst_bin_new ("httpstreambin") }
+	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId, const QByteArray& instanceId)
+	: FilterId_ { filterId }
+	, InstanceId_ { instanceId.isEmpty () ? QUuid::createUuid ().toByteArray () : instanceId }
+	, Configurator_ { new FilterConfigurator { instanceId, this } }
+	, Elem_ { gst_bin_new ("httpstreambin") }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
 	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
@@ -92,6 +98,21 @@ namespace HttStream
 		gst_object_unref (TeeAudioPad_);
 
 		gst_object_unref (Elem_);
+	}
+
+	QByteArray HttpStreamFilter::GetEffectId () const
+	{
+		return FilterId_;
+	}
+
+	QByteArray HttpStreamFilter::GetInstanceId () const
+	{
+		return InstanceId_;
+	}
+
+	IFilterConfigurator* HttpStreamFilter::GetConfigurator () const
+	{
+		return Configurator_;
 	}
 
 	GstElement* HttpStreamFilter::GetElement () const

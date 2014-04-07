@@ -43,11 +43,16 @@ namespace LMP
 namespace HttStream
 {
 	class HttpServer;
+	class FilterConfigurator;
 
 	class HttpStreamFilter : public QObject
 						   , public IFilterElement
 	{
 		Q_OBJECT
+
+		const QByteArray FilterId_;
+		const QByteArray InstanceId_;
+		FilterConfigurator * const Configurator_;
 
 		GstElement * const Elem_;
 
@@ -71,8 +76,13 @@ namespace HttStream
 
 		int ClientsCount_ = 0;
 	public:
-		HttpStreamFilter ();
+		HttpStreamFilter (const QByteArray& filterId, const QByteArray& instanceId);
 		~HttpStreamFilter ();
+
+		QByteArray GetEffectId () const;
+		QByteArray GetInstanceId () const;
+		IFilterConfigurator* GetConfigurator () const;
+
 	protected:
 		GstElement* GetElement () const;
 		void PostAdd (IPath*) override;
