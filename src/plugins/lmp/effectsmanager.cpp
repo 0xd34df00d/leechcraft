@@ -35,12 +35,33 @@
 #include "engine/path.h"
 #include "engine/rgfilter.h"
 #include "xmlsettingsmanager.h"
-#include "rgfiltercontroller.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	QDataStream& operator<< (QDataStream& out, const SavedFilterInfo& info)
+	{
+		out << static_cast<quint8> (1)
+				<< info.FilterId_
+				<< info.InstanceId_;
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, SavedFilterInfo& info)
+	{
+		quint8 version = 0;
+
+		in >> version;
+		if (version != 1)
+			return in;
+
+		in >> info.FilterId_
+				>> info.InstanceId_;
+
+		return in;
+	}
+
 	EffectsManager::EffectsManager (Path *path, QObject *parent)
 	: QObject { parent }
 	, Model_ { new QStandardItemModel { this } }

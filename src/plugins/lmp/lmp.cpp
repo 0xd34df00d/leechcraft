@@ -91,6 +91,11 @@ namespace LMP
 		qRegisterMetaType<QList<QPair<QString, QUrl>>> ("QList<QPair<QString, QUrl>>");
 		qRegisterMetaTypeStreamOperators<QList<QPair<QString, QUrl>>> ();
 
+		qRegisterMetaType<SavedFilterInfo> ("LeechCraft::LMP::SavedFilterInfo");
+		qRegisterMetaTypeStreamOperators<SavedFilterInfo> ();
+		qRegisterMetaType<QList<SavedFilterInfo>> ("QList<LeechCraft::LMP::SavedFilterInfo>");
+		qRegisterMetaTypeStreamOperators<QList<SavedFilterInfo>> ();
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
 

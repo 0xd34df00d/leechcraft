@@ -57,6 +57,15 @@ namespace LMP
 		std::function<IFilterElement* (const QByteArray&, IPath*)> EffectFactory_;
 	};
 
+	struct SavedFilterInfo
+	{
+		QByteArray FilterId_;
+		QByteArray InstanceId_;
+	};
+
+	QDataStream& operator<< (QDataStream&, const SavedFilterInfo&);
+	QDataStream& operator>> (QDataStream&, SavedFilterInfo&);
+
 	class EffectsManager : public QObject
 	{
 		Q_OBJECT
@@ -85,3 +94,6 @@ namespace LMP
 	};
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::LMP::SavedFilterInfo)
+Q_DECLARE_METATYPE (QList<LeechCraft::LMP::SavedFilterInfo>)
