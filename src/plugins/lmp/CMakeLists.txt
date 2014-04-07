@@ -115,6 +115,7 @@ set (SRCS
 	collectionsmanager.cpp
 	collectionwidget.cpp
 	localcollectionmodel.cpp
+	filtersettingsmanager.cpp
 	engine/audiosource.cpp
 	engine/gstutil.cpp
 	engine/output.cpp
