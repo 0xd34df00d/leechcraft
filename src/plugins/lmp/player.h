@@ -134,6 +134,7 @@ namespace LMP
 		QAbstractItemModel* GetPlaylistModel () const;
 		SourceObject* GetSourceObject () const;
 		Output* GetAudioOutput () const;
+		Path* GetPath () const;
 
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);

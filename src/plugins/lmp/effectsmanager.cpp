@@ -28,6 +28,11 @@
  **********************************************************************/
 
 #include "effectsmanager.h"
+#include <QStandardItemModel>
+#include <QtDebug>
+#include <xmlsettingsdialog/datasourceroles.h>
+#include "interfaces/lmp/ifilterconfigurator.h"
+#include "engine/path.h"
 #include "engine/rgfilter.h"
 #include "xmlsettingsmanager.h"
 #include "rgfiltercontroller.h"
@@ -37,21 +42,87 @@ namespace LeechCraft
 namespace LMP
 {
 	EffectsManager::EffectsManager (Path *path, QObject *parent)
-	: QObject (parent)
-	, Path_ (path)
+	: QObject { parent }
+	, Model_ { new QStandardItemModel { this } }
+	, Path_ { path }
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("EnableRG", this, "setRG");
-		setRG ();
+		Model_->setHorizontalHeaderLabels ({ tr ("Effect"), });
+		Model_->horizontalHeaderItem (0)->setData (DataSources::DataFieldType::Enum,
+				DataSources::DataSourceRole::FieldType);
+
+		RegisterEffect ({
+				"org.LeechCraft.LMP.RG",
+				"ReplayGain",
+				{},
+				true,
+				[path] (const QByteArray&, IPath*) { return new RGFilter { path }; }
+			});
 	}
 
-	void EffectsManager::setRG ()
+	QAbstractItemModel* EffectsManager::GetEffectsModel () const
 	{
-		const auto& xsm = XmlSettingsManager::Instance ();
-		const auto enable = xsm.property ("EnableRG").toBool ();
-		if (!enable && RGFilter_)
-			RGFilter_.reset ();
-		else if (enable && !RGFilter_)
-			RGFilter_.reset (new RGFilterController { Path_ });
+		return Model_;
+	}
+
+	void EffectsManager::RegisterEffect (const EffectInfo& info)
+	{
+		RegisteredEffects_ << info;
+
+		UpdateHeaders ();
+	}
+
+	void EffectsManager::UpdateHeaders ()
+	{
+		QVariantList items;
+		for (const auto& effect : RegisteredEffects_)
+		{
+			const auto& id = effect.ID_;
+
+			if (effect.IsSingleton_ &&
+					std::any_of (Filters_.begin (), Filters_.end (),
+							[&id] (IFilterElement *elem)
+							{
+								return elem->GetEffectId () == id;
+							}))
+				continue;
+
+			QVariantMap map;
+			map ["Icon"] = QVariant::fromValue (effect.Icon_);
+			map ["Name"] = effect.Name_;
+			map ["ID"] = id;
+			items << map;
+		}
+
+		Model_->horizontalHeaderItem (0)->setData (items,
+				DataSources::DataSourceRole::FieldValues);
+	}
+
+	void EffectsManager::addRequested (const QString&, const QVariantList& datas)
+	{
+		const auto& id = datas.value (0).toByteArray ();
+		const auto effectPos = std::find_if (RegisteredEffects_.begin (), RegisteredEffects_.end (),
+				[&id] (const EffectInfo& info) { return info.ID_ == id; });
+		if (effectPos == RegisteredEffects_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "effect"
+					<< id
+					<< "not found";
+			return;
+		}
+
+		auto modelItem = new QStandardItem { effectPos->Name_ };
+		modelItem->setEditable (false);
+		modelItem->setIcon (effectPos->Icon_);
+		Model_->appendRow (modelItem);
+
+		const auto elem = effectPos->EffectFactory_ ({}, Path_);
+		elem->InsertInto (Path_);
+		elem->GetConfigurator ()->OpenDialog ();
+
+		Filters_ << elem;
+
+		UpdateHeaders ();
 	}
 }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="ReplayGain" />
+		<item type="checkbox" property="RGAlbumMode" default="true">
+			<label value="Album mode" />
+		</item>
+		<item type="checkbox" property="RGLimiting" default="true">
+			<label value="Limiting" />
+		</item>
+		<item type="doublespinbox" property="RGPreamp" default="0" minimum="-60" maximum="60">
+			<label value="Preamp:" />
+			<suffix value=" dB" />
+		</item>
+	</page>
+</settings>

@@ -28,19 +28,24 @@
  **********************************************************************/
 
 #include "rgfiltercontroller.h"
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+#include <QtDebug>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "engine/path.h"
 #include "engine/sourceobject.h"
-#include "xmlsettingsmanager.h"
 #include "localcollectionstorage.h"
+#include "filtersettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	RGFilterController::RGFilterController (Path *path, QObject *parent)
-	: QObject { parent }
-	, RGFilter_ { new RGFilter }
+	RGFilterController::RGFilterController (RGFilter *filter, Path *path)
+	: RGFilter_ { filter }
 	, Path_ { path }
+	, FSM_ { new FilterSettingsManager { "ReplayGain", this } }
 	{
 		const QList<QByteArray> rgProps
 		{
@@ -48,7 +53,7 @@ namespace LMP
 			"RGLimiting",
 			"RGPreamp"
 		};
-		XmlSettingsManager::Instance ().RegisterObject (rgProps, this, "setRG");
+		FSM_->RegisterObject (rgProps, this, "setRG");
 		setRG ();
 
 		const auto srcObj = path->GetSourceObject ();
@@ -57,21 +62,55 @@ namespace LMP
 				this,
 				SLOT (updateRGData (AudioSource)));
 		updateRGData (srcObj->GetCurrentSource ());
-
-		RGFilter_->InsertInto (Path_);
 	}
 
-	RGFilterController::~RGFilterController ()
+	QObject* RGFilterController::GetQObject ()
 	{
-		RGFilter_->RemoveFrom (Path_);
+		return this;
+	}
+
+	void RGFilterController::OpenDialog ()
+	{
+		auto lay = new QVBoxLayout;
+
+		auto xsd = new Util::XmlSettingsDialog;
+		xsd->RegisterObject (FSM_, "lmpfilterrgsettings.xml");
+		lay->addWidget (xsd);
+
+		auto bbox = new QDialogButtonBox { QDialogButtonBox::Ok | QDialogButtonBox::Cancel };
+		lay->addWidget (bbox);
+
+		auto dia = new QDialog;
+		dia->setLayout (lay);
+
+		connect (bbox,
+				SIGNAL (accepted ()),
+				xsd,
+				SLOT (accept ()));
+		connect (bbox,
+				SIGNAL (rejected ()),
+				xsd,
+				SLOT (reject ()));
+		connect (bbox,
+				SIGNAL (accepted ()),
+				dia,
+				SLOT (accept ()));
+		connect (bbox,
+				SIGNAL (rejected ()),
+				dia,
+				SLOT (reject ()));
+
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->setWindowTitle (tr ("ReplayGain configuration"));
+		dia->show ();
 	}
 
 	void RGFilterController::setRG ()
 	{
-		const auto& xsm = XmlSettingsManager::Instance ();
-		RGFilter_->SetAlbumMode (xsm.property ("RGAlbumMode").toBool ());
-		RGFilter_->SetPreamp (xsm.property ("RGPreamp").toDouble ());
-		RGFilter_->SetLimiterEnabled (xsm.property ("RGLimiting").toBool ());
+		qDebug () << Q_FUNC_INFO;
+		RGFilter_->SetAlbumMode (FSM_->property ("RGAlbumMode").toBool ());
+		RGFilter_->SetPreamp (FSM_->property ("RGPreamp").toDouble ());
+		RGFilter_->SetLimiterEnabled (FSM_->property ("RGLimiting").toBool ());
 	}
 
 	void RGFilterController::updateRGData (const AudioSource& source)

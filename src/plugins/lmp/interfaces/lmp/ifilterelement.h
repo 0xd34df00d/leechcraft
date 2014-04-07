@@ -31,15 +31,21 @@
 
 #include "interfaces/lmp/ipath.h"
 
+class QByteArray;
+
 namespace LeechCraft
 {
 namespace LMP
 {
 	class IPath;
+	class IFilterConfigurator;
 
 	class IFilterElement
 	{
 	public:
+		virtual QByteArray GetEffectId () const = 0;
+		virtual IFilterConfigurator* GetConfigurator () const = 0;
+
 		void InsertInto (IPath *path)
 		{
 			path->InsertElement (GetElement ());

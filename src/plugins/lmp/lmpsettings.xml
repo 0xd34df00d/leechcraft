@@ -112,20 +112,8 @@
 	<page>
 		<label value="Effects" />
 		<tab>
-			<label value="ReplayGain" />
-			<item type="checkbox" property="EnableRG" default="false">
-				<label value="Enable ReplayGain" />
-			</item>
-			<item type="checkbox" property="RGAlbumMode" default="true">
-				<label value="Album mode" />
-			</item>
-			<item type="checkbox" property="RGLimiting" default="true">
-				<label value="Limiting" />
-			</item>
-			<item type="doublespinbox" property="RGPreamp" default="0" minimum="-60" maximum="60">
-				<label value="Preamp:" />
-				<suffix value=" dB" />
-			</item>
+			<label value="Effects manager" />
+			<item type="dataview" property="EffectsView" />
 		</tab>
 	</page>
 	<page>

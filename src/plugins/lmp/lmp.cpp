@@ -50,6 +50,7 @@
 #include "volumenotifycontroller.h"
 #include "radiomanager.h"
 #include "notificationplayer.h"
+#include "effectsmanager.h"
 
 typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
@@ -150,6 +151,9 @@ namespace LMP
 				SIGNAL (artistBrowseRequested (QString)),
 				this,
 				SLOT (handleArtistBrowseRequested (QString)));
+
+		const auto effectsMgr = new EffectsManager (PlayerTab_->GetPlayer ()->GetPath (), this);
+		XSD_->SetDataSource ("EffectsView", effectsMgr->GetEffectsModel ());
 
 		connect (PlayerTab_,
 				SIGNAL (fullRaiseRequested ()),

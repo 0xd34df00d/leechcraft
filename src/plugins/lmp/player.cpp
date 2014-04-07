@@ -54,7 +54,6 @@
 #include "engine/audiosource.h"
 #include "engine/output.h"
 #include "engine/path.h"
-#include "effectsmanager.h"
 #include "localcollectionmodel.h"
 
 namespace LeechCraft
@@ -130,8 +129,6 @@ namespace LMP
 		qRegisterMetaType<QList<AudioSource>> ("QList<AudioSource>");
 		qRegisterMetaType<StringPair_t> ("StringPair_t");
 
-		new EffectsManager (Path_, this);
-
 		connect (Source_,
 				SIGNAL (currentSourceChanged (AudioSource)),
 				this,
@@ -194,6 +191,11 @@ namespace LMP
 	Output* Player::GetAudioOutput () const
 	{
 		return Output_;
+	}
+
+	Path* Player::GetPath () const
+	{
+		return Path_;
 	}
 
 	Player::PlayMode Player::GetPlayMode () const

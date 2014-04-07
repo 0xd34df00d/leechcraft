@@ -31,25 +31,54 @@
 
 #include <memory>
 #include <QObject>
+#include <QVariantList>
+#include <QIcon>
+#include "interfaces/lmp/ifilterelement.h"
+
+class QStandardItemModel;
+class QAbstractItemModel;
+class QByteArray;
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	class IPath;
 	class Path;
 	class RGFilterController;
+
+	struct EffectInfo
+	{
+		QByteArray ID_;
+		QString Name_;
+		QIcon Icon_;
+		bool IsSingleton_;
+
+		std::function<IFilterElement* (const QByteArray&, IPath*)> EffectFactory_;
+	};
 
 	class EffectsManager : public QObject
 	{
 		Q_OBJECT
 
+		QStandardItemModel * const Model_;
+
 		Path * const Path_;
 
 		std::shared_ptr<RGFilterController> RGFilter_;
+
+		QList<EffectInfo> RegisteredEffects_;
+		QList<IFilterElement*> Filters_;
 	public:
 		EffectsManager (Path*, QObject* = 0);
-	private slots:
-		void setRG ();
+
+		QAbstractItemModel* GetEffectsModel () const;
+
+		void RegisterEffect (const EffectInfo&);
+	private:
+		void UpdateHeaders ();
+	public slots:
+		void addRequested (const QString&, const QVariantList&);
 	};
 }
 }
