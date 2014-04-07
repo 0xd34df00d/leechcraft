@@ -65,11 +65,6 @@ namespace LMP
 		updateRGData (srcObj->GetCurrentSource ());
 	}
 
-	QObject* RGFilterController::GetQObject ()
-	{
-		return this;
-	}
-
 	void RGFilterController::OpenDialog ()
 	{
 		Util::OpenXSD (tr ("ReplayGain configuration"), "lmpfilterrgsettings.xml", FSM_);

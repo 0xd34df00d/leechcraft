@@ -54,7 +54,6 @@ namespace LMP
 	public:
 		RGFilterController (RGFilter*, Path*);
 
-		QObject* GetQObject ();
 		void OpenDialog ();
 	private slots:
 		void setRG ();

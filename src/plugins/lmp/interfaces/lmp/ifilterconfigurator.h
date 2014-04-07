@@ -43,8 +43,6 @@ namespace LMP
 	public:
 		virtual ~IFilterConfigurator () {}
 
-		virtual QObject* GetQObject () = 0;
-
 		virtual void OpenDialog () = 0;
 	};
 }
