@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="HTTP streaming" />
+		<item type="doublespinbox" property="EncQuality" minimum="0" maximum="1" step="0.1" default="0.5">
+			<label value="Quality:" />
+		</item>
+	</page>
+</settings>
+

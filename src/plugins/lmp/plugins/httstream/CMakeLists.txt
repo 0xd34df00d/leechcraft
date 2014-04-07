@@ -12,10 +12,11 @@ set (HTTSTREAM_SRCS
 	httstream.cpp
 	httpserver.cpp
 	httpstreamfilter.cpp
+	filterconfigurator.cpp
 	)
 
 #CreateTrs ("lmp_httstream" "en;ru_RU" HTTSTREAM_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("lmp_httstream" "en;ru_RU" "${HTTSTREAM_SRCS}" "${HTTSTREAM_FORMS}" "lmphttstreamsettings.xml")
+CreateTrsUpTarget("lmp_httstream" "en;ru_RU" "${HTTSTREAM_SRCS}" "${HTTSTREAM_FORMS}" "lmphttstreamfiltersettings.xml")
 
 add_library (leechcraft_lmp_httstream SHARED
 	${HTTSTREAM_COMPILED_TRANSLATIONS}
@@ -24,8 +25,9 @@ add_library (leechcraft_lmp_httstream SHARED
 target_link_libraries (leechcraft_lmp_httstream
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	leechcraft_lmp_common
 	)
 
 install (TARGETS leechcraft_lmp_httstream DESTINATION ${LC_PLUGINS_DEST})
-#install (FILES lmphttstreamsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES lmphttstreamfiltersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${HTTSTREAM_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
