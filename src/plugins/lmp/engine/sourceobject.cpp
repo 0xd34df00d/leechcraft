@@ -738,6 +738,9 @@ namespace LMP
 		case GST_MESSAGE_STREAM_STATUS:
 			HandleStreamStatusMsg (message);
 			break;
+		case GST_MESSAGE_LATENCY:
+			gst_bin_recalculate_latency (GST_BIN (Dec_));
+			break;
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_STREAM_START:
 			emit currentSourceChanged (CurrentSource_);
