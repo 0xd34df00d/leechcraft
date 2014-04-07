@@ -29,67 +29,31 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QVariantList>
-#include <QModelIndexList>
-#include <QIcon>
-#include "interfaces/lmp/ifilterelement.h"
-#include "interfaces/lmp/ifilterplugin.h"
-
-class QStandardItemModel;
-class QAbstractItemModel;
-class QByteArray;
+#include <QtPlugin>
+#include "ifilterelement.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class IPath;
-	class Path;
-	class RGFilterController;
-
-	struct SavedFilterInfo
+	struct EffectInfo
 	{
-		QByteArray FilterId_;
-		QByteArray InstanceId_;
+		QByteArray ID_;
+		QString Name_;
+		QIcon Icon_;
+		bool IsSingleton_;
+
+		std::function<IFilterElement* (const QByteArray&, IPath*)> EffectFactory_;
 	};
 
-	QDataStream& operator<< (QDataStream&, const SavedFilterInfo&);
-	QDataStream& operator>> (QDataStream&, SavedFilterInfo&);
-
-	class EffectsManager : public QObject
+	class IFilterPlugin
 	{
-		Q_OBJECT
-
-		QStandardItemModel * const Model_;
-
-		Path * const Path_;
-
-		std::shared_ptr<RGFilterController> RGFilter_;
-
-		QList<EffectInfo> RegisteredEffects_;
-		QList<IFilterElement*> Filters_;
 	public:
-		EffectsManager (Path*, QObject* = 0);
+		virtual ~IFilterPlugin () {}
 
-		QAbstractItemModel* GetEffectsModel () const;
-
-		void RegisterEffect (const EffectInfo&);
-
-		void RegisteringFinished ();
-	private:
-		IFilterElement* RestoreFilter (const QList<EffectInfo>::const_iterator, const QByteArray&);
-		void UpdateHeaders ();
-		void SaveFilters () const;
-	public slots:
-		void addRequested (const QString&, const QVariantList&);
-		void removeRequested (const QString&, const QModelIndexList&);
-
-		void customButtonPressed (const QString&, const QByteArray&, int);
+		virtual QList<EffectInfo> GetEffects () const = 0;
 	};
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LMP::SavedFilterInfo)
-Q_DECLARE_METATYPE (QList<LeechCraft::LMP::SavedFilterInfo>)
+Q_DECLARE_INTERFACE (LeechCraft::LMP::IFilterPlugin, "org.LeechCraft.LMP.IFilterPlugin/1.0");
