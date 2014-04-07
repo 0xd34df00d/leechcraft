@@ -67,6 +67,18 @@ namespace LeechCraft
 		Ui_.Remove_->setEnabled (false);
 	}
 
+	void DataViewWidget::AddCustomButton (const QByteArray& id, const QString& text)
+	{
+		auto button = new QPushButton (text);
+		button->setProperty ("XSD/Id", id);
+		Ui_.ButtonsLayout_->insertWidget (Ui_.ButtonsLayout_->count () - 1, button);
+
+		connect (button,
+				SIGNAL (released ()),
+				this,
+				SLOT (handleCustomButtonReleased ()));
+	}
+
 	void DataViewWidget::SetModel (QAbstractItemModel *model)
 	{
 		Ui_.View_->setModel (model);
@@ -85,5 +97,11 @@ namespace LeechCraft
 	QModelIndexList DataViewWidget::GetSelectedRows () const
 	{
 		return Ui_.View_->selectionModel ()->selectedRows ();
+	}
+
+	void DataViewWidget::handleCustomButtonReleased ()
+	{
+		auto button = qobject_cast<QPushButton*> (sender ());
+		emit customButtonReleased (button->property ("XSD/Id").toByteArray ());
 	}
 }

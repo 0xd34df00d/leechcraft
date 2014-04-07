@@ -18,7 +18,7 @@
     <widget class="QTreeView" name="View_"/>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="ButtonsLayout_">
      <item>
       <widget class="QPushButton" name="Add_">
        <property name="text">
@@ -41,7 +41,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="verticalSpacer">
+      <spacer name="Spacer_">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>

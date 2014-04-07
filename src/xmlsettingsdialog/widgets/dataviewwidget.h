@@ -46,13 +46,19 @@ namespace LeechCraft
 		void DisableModification ();
 		void DisableRemoval ();
 
+		void AddCustomButton (const QByteArray& id, const QString& text);
+
 		void SetModel (QAbstractItemModel*);
 		QAbstractItemModel* GetModel () const;
 		QModelIndex GetCurrentIndex () const;
 		QModelIndexList GetSelectedRows () const;
+	private slots:
+		void handleCustomButtonReleased ();
 	signals:
 		void addRequested ();
 		void modifyRequested ();
 		void removeRequested ();
+
+		void customButtonReleased (const QByteArray&);
 	};
 }
