@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_DATASOURCEROLES_H
-#define XMLSETTINGSDIALOG_DATASOURCEROLES_H
+#pragma once
+
 #include <Qt>
 
 namespace LeechCraft
@@ -52,5 +52,3 @@ namespace LeechCraft
 		};
 	}
 }
-
-#endif
