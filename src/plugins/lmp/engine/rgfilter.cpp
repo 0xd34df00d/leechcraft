@@ -59,6 +59,11 @@ namespace LMP
 		return "org.LeechCraft.LMP.RG";
 	}
 
+	QByteArray RGFilter::GetInstanceId () const
+	{
+		return GetEffectId ();
+	}
+
 	IFilterConfigurator* RGFilter::GetConfigurator () const
 	{
 		return Controller_.get ();

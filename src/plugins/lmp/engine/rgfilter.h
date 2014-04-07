@@ -60,6 +60,7 @@ namespace LMP
 		RGFilter (Path*);
 
 		QByteArray GetEffectId () const;
+		QByteArray GetInstanceId () const;
 		IFilterConfigurator* GetConfigurator () const;
 
 		void SetRG (const RGData&);

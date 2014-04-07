@@ -44,6 +44,8 @@ namespace LMP
 	{
 	public:
 		virtual QByteArray GetEffectId () const = 0;
+		virtual QByteArray GetInstanceId () const = 0;
+
 		virtual IFilterConfigurator* GetConfigurator () const = 0;
 
 		void InsertInto (IPath *path)
