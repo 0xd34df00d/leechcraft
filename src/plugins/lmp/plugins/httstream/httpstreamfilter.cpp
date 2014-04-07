@@ -29,10 +29,9 @@
 
 #include "httpstreamfilter.h"
 #include <QtDebug>
-#include "../gstfix.h"
-#include "gstutil.h"
+#include <gst/gst.h>
+#include "util/lmp/gstutil.h"
 #include "httpserver.h"
-#include "path.h"
 
 namespace LeechCraft
 {

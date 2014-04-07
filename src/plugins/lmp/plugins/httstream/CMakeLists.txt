@@ -10,6 +10,8 @@ include_directories (${LMP_INCLUDE_DIR}
 
 set (HTTSTREAM_SRCS
 	httstream.cpp
+	httpserver.cpp
+	httpstreamfilter.cpp
 	)
 
 #CreateTrs ("lmp_httstream" "en;ru_RU" HTTSTREAM_COMPILED_TRANSLATIONS)
