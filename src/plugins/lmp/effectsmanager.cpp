@@ -92,6 +92,32 @@ namespace LMP
 		UpdateHeaders ();
 	}
 
+	void EffectsManager::RegisteringFinished ()
+	{
+		const auto& data = XmlSettingsManager::Instance ()
+				.property ("AddedFilters").value<QList<SavedFilterInfo>> ();
+
+		for (const auto& filter : data)
+		{
+			const auto& id = filter.FilterId_;
+			const auto effectPos = std::find_if (RegisteredEffects_.begin (), RegisteredEffects_.end (),
+					[&id] (const EffectInfo& info) { return info.ID_ == id; });
+
+			if (effectPos == RegisteredEffects_.end ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot recover filter"
+						<< id
+						<< "; not available";
+				continue;
+			}
+
+			RestoreFilter (effectPos, filter.InstanceId_);
+		}
+
+		UpdateHeaders ();
+	}
+
 	IFilterElement* EffectsManager::RestoreFilter (const QList<EffectInfo>::const_iterator effectPos, const QByteArray& instanceId)
 	{
 		auto modelItem = new QStandardItem { effectPos->Name_ };
@@ -133,6 +159,20 @@ namespace LMP
 				DataSources::DataSourceRole::FieldValues);
 	}
 
+	void EffectsManager::SaveFilters () const
+	{
+		QList<SavedFilterInfo> data;
+		for (const auto filter : Filters_)
+		{
+			const auto& filterId = filter->GetEffectId ();
+			const auto& instanceId = filter->GetInstanceId ();
+
+			data.append ({ filterId, instanceId });
+		}
+
+		XmlSettingsManager::Instance ().setProperty ("AddedFilters", QVariant::fromValue (data));
+	}
+
 	void EffectsManager::addRequested (const QString&, const QVariantList& datas)
 	{
 		const auto& id = datas.value (0).toByteArray ();
@@ -152,6 +192,7 @@ namespace LMP
 
 
 		UpdateHeaders ();
+		SaveFilters ();
 	}
 
 	void EffectsManager::customButtonPressed (const QString&, const QByteArray&, int row)

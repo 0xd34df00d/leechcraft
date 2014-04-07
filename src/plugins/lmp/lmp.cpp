@@ -157,8 +157,8 @@ namespace LMP
 				this,
 				SLOT (handleArtistBrowseRequested (QString)));
 
-		const auto effectsMgr = new EffectsManager (PlayerTab_->GetPlayer ()->GetPath (), this);
-		XSD_->SetDataSource ("EffectsView", effectsMgr->GetEffectsModel ());
+		EffectsMgr_ = new EffectsManager (PlayerTab_->GetPlayer ()->GetPath (), this);
+		XSD_->SetDataSource ("EffectsView", EffectsMgr_->GetEffectsModel ());
 
 		connect (PlayerTab_,
 				SIGNAL (fullRaiseRequested ()),
@@ -189,6 +189,8 @@ namespace LMP
 
 		Core::Instance ().InitWithOtherPlugins ();
 		PlayerTab_->InitWithOtherPlugins ();
+
+		EffectsMgr_->RegisteringFinished ();
 	}
 
 	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)

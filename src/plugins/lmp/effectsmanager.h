@@ -84,9 +84,12 @@ namespace LMP
 		QAbstractItemModel* GetEffectsModel () const;
 
 		void RegisterEffect (const EffectInfo&);
+
+		void RegisteringFinished ();
 	private:
 		IFilterElement* RestoreFilter (const QList<EffectInfo>::const_iterator, const QByteArray&);
 		void UpdateHeaders ();
+		void SaveFilters () const;
 	public slots:
 		void addRequested (const QString&, const QVariantList&);
 
