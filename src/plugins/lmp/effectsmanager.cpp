@@ -88,8 +88,6 @@ namespace LMP
 	void EffectsManager::RegisterEffect (const EffectInfo& info)
 	{
 		RegisteredEffects_ << info;
-
-		UpdateHeaders ();
 	}
 
 	void EffectsManager::RegisteringFinished ()
