@@ -33,10 +33,10 @@
 #include <QVBoxLayout>
 #include <QtDebug>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "util/lmp/filtersettingsmanager.h"
 #include "engine/path.h"
 #include "engine/sourceobject.h"
 #include "localcollectionstorage.h"
-#include "filtersettingsmanager.h"
 
 namespace LeechCraft
 {
