@@ -35,6 +35,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+namespace HttStream
+{
 	HttpServer::HttpServer (QObject *parent)
 	: QObject { parent }
 	, Server_ { new QTcpServer { this } }
@@ -149,5 +151,6 @@ namespace LMP
 		if (Socket2FD_.contains (sock))
 			emit clientDisconnected (Socket2FD_.take (sock));
 	}
+}
 }
 }

@@ -37,6 +37,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+namespace HttStream
+{
 	HttpStreamFilter::HttpStreamFilter ()
 	: Elem_ { gst_bin_new ("httpstreambin") }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
@@ -160,5 +162,6 @@ namespace LMP
 		if (!--ClientsCount_)
 			DestroyPad ();
 	}
+}
 }
 }

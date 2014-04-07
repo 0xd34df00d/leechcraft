@@ -40,6 +40,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+namespace HttStream
+{
 	class HttpServer;
 
 	class HttpStreamFilter : public QObject
@@ -83,5 +85,6 @@ namespace LMP
 		void handleClient (int);
 		void handleClientDisconnected (int);
 	};
+}
 }
 }
