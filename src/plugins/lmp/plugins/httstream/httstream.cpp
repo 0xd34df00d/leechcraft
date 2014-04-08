@@ -74,6 +74,10 @@ namespace HttStream
 		return result;
 	}
 
+	void Plugin::SetLMPProxy (ILMPProxy_ptr)
+	{
+	}
+
 	QList<EffectInfo> Plugin::GetEffects () const
 	{
 		return {};
