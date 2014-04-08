@@ -62,14 +62,14 @@ namespace HttStream
 
 		const auto convIn = gst_element_factory_make ("audioconvert", nullptr);
 
-		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, StreamQueue_, Encoder_, convIn, Muxer_, nullptr);
+		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, StreamQueue_, Encoder_, convIn, Muxer_, MSS_, nullptr);
 
 		TeeAudioPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
 		auto audioPad = gst_element_get_static_pad (AudioQueue_, "sink");
 		gst_pad_link (TeeAudioPad_, audioPad);
 		gst_object_unref (audioPad);
 
-		gst_element_link_many (StreamQueue_, convIn, Encoder_, Muxer_, nullptr);
+		gst_element_link_many (StreamQueue_, convIn, Encoder_, Muxer_, MSS_, nullptr);
 		g_object_set (G_OBJECT (MSS_),
 				"unit-type", GST_FORMAT_TIME,
 				"units-max", static_cast<gint64> (7 * GST_SECOND),
@@ -77,6 +77,7 @@ namespace HttStream
 				"recover-policy", 3,
 				"timeout", static_cast<gint64> (10 * GST_SECOND),
 				"sync-method", 1,
+				"async", FALSE,
 				nullptr);
 
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
@@ -132,22 +133,15 @@ namespace HttStream
 
 	void HttpStreamFilter::CreatePad ()
 	{
-		gst_bin_add (GST_BIN (Elem_), MSS_);
-		gst_element_link (Muxer_, MSS_);
-
+		qDebug () << Q_FUNC_INFO;
 		TeeStreamPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
 		auto streamPad = gst_element_get_static_pad (StreamQueue_, "sink");
 		gst_pad_link (TeeStreamPad_, streamPad);
 		gst_object_unref (streamPad);
-
-		gst_element_sync_state_with_parent (MSS_);
 	}
 
 	void HttpStreamFilter::DestroyPad ()
 	{
-		gst_element_unlink (Muxer_, MSS_);
-		gst_bin_remove (GST_BIN (Elem_), MSS_);
-
 		auto streamPad = gst_element_get_static_pad (StreamQueue_, "sink");
 		gst_pad_unlink (TeeStreamPad_, streamPad);
 		gst_object_unref (streamPad);
