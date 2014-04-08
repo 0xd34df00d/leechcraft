@@ -382,6 +382,7 @@ namespace LMP
 		result << "org.LeechCraft.LMP.CollectionSync";
 		result << "org.LeechCraft.LMP.CloudStorage";
 		result << "org.LeechCraft.LMP.PlaylistProvider";
+		result << "org.LeechCraft.LMP.FiltersProvider";
 		return result;
 	}
 
