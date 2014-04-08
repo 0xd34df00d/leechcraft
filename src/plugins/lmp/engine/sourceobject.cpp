@@ -493,6 +493,11 @@ namespace LMP
 		SyncHandlers_ << handler;
 	}
 
+	void SourceObject::AddAsyncHandler (const AsyncHandler_f& handler)
+	{
+		AsyncHandlers_ << handler;
+	}
+
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
 	{
 		GError *gerror = nullptr;
@@ -724,6 +729,9 @@ namespace LMP
 	void SourceObject::handleMessage (GstMessage_ptr msgPtr)
 	{
 		const auto message = msgPtr.get ();
+
+		for (const auto& handler : AsyncHandlers_)
+			handler (message);
 
 		switch (GST_MESSAGE_TYPE (message))
 		{

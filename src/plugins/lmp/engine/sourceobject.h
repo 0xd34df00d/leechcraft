@@ -110,6 +110,7 @@ namespace LMP
 		GstUtil::TagMap_t Metadata_;
 
 		QList<SyncHandler_f> SyncHandlers_;
+		QList<AsyncHandler_f> AsyncHandlers_;
 	public:
 		enum class Metadata
 		{
@@ -162,6 +163,7 @@ namespace LMP
 		void SetSink (GstElement*);
 
 		void AddSyncHandler (const SyncHandler_f&);
+		void AddAsyncHandler (const AsyncHandler_f&);
 	private:
 		void HandleErrorMsg (GstMessage*);
 		void HandleTagMsg (GstMessage*);
