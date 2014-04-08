@@ -78,6 +78,7 @@ namespace HttStream
 				"timeout", static_cast<gint64> (10 * GST_SECOND),
 				"sync-method", 1,
 				"async", FALSE,
+				"sync", FALSE,
 				nullptr);
 
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
