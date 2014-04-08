@@ -82,6 +82,7 @@ namespace LMP
 		SourceObject* GetSourceObject () const;
 
 		void AddSyncHandler (const SyncHandler_f&);
+		void AddAsyncHandler (const AsyncHandler_f&);
 
 		void InsertElement (GstElement*);
 		void RemoveElement (GstElement*);
