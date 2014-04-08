@@ -272,6 +272,13 @@ namespace GstUtil
 				ProbeHandler, data, nullptr);
 #endif
 	}
+
+	void DebugPrintState (GstElement *elem, GstClockTime time)
+	{
+		GstState state, pending;
+		gst_element_get_state (elem, &state, &pending, time);
+		qDebug () << state << pending;
+	}
 }
 }
 }

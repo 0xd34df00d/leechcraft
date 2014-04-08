@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <gst/gstclock.h>
 
 template<typename Key, typename T >
 class QMap;
@@ -51,6 +52,8 @@ namespace GstUtil
 	bool ParseTagMessage (GstMessage *msg, TagMap_t& tags, const QString& region);
 
 	void PerformWProbe (GstPad *srcpad, GstPad *sinkpad, const std::function<void ()>& functor);
+
+	void DebugPrintState (GstElement*, GstClockTime = 0.1 * GST_SECOND);
 }
 }
 }
