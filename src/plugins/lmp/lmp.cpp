@@ -389,6 +389,10 @@ namespace LMP
 	void Plugin::AddPlugin (QObject *plugin)
 	{
 		Core::Instance ().AddPlugin (plugin);
+
+		if (const auto ifp = qobject_cast<IFilterPlugin*> (plugin))
+			for (const auto& effect : ifp->GetEffects ())
+				EffectsMgr_->RegisterEffect (effect);
 	}
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
