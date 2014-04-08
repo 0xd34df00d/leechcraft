@@ -49,6 +49,7 @@ namespace HttStream
 
 		const QString InstanceId_;
 		FilterSettingsManager * const FSM_;
+		HttpStreamFilter * const Filter_;
 	public:
 		FilterConfigurator (const QString&, HttpStreamFilter*);
 

@@ -45,6 +45,7 @@ namespace HttStream
 	: QObject { parent }
 	, InstanceId_ { instanceId }
 	, FSM_ { new FilterSettingsManager { instanceId, this } }
+	, Filter_ { parent }
 	{
 		Util::XmlSettingsDialog dia;
 		dia.RegisterObject (FSM_, "lmphttstreamfiltersettings.xml");
@@ -61,7 +62,8 @@ namespace HttStream
 	void FilterConfigurator::handleEncQualityChanged ()
 	{
 		const auto quality = FSM_->property ("EncQuality").toDouble ();
-		qDebug () << Q_FUNC_INFO << quality;
+		Filter_->SetQuality (quality);
+
 	}
 }
 }
