@@ -55,6 +55,7 @@ namespace Util
 		AddressesModelManager (BaseSettingsManager*, int defaultPort, QObject* = 0);
 
 		static void RegisterTypes ();
+		static AddrList_t GetDefaultAddresses (int defaultPort = 0);
 
 		QAbstractItemModel* GetModel () const;
 		AddrList_t GetAddresses () const;

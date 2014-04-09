@@ -50,6 +50,21 @@ namespace Util
 
 		updateAvailInterfaces ();
 
+		const auto& addrs = BSM_->Property ("ListenAddresses",
+				QVariant::fromValue (GetDefaultAddresses (defaultPort))).value<AddrList_t> ();
+		qDebug () << Q_FUNC_INFO << addrs;
+		for (const auto& addr : addrs)
+			AppendRow (addr);
+	}
+
+	void AddressesModelManager::RegisterTypes ()
+	{
+		qRegisterMetaType<AddrList_t> ("LeechCraft::Util::AddrList_t");
+		qRegisterMetaTypeStreamOperators<AddrList_t> ();
+	}
+
+	AddrList_t AddressesModelManager::GetDefaultAddresses (int defaultPort)
+	{
 		AddrList_t defaultAddrs;
 		const auto locals
 		{
@@ -67,18 +82,7 @@ namespace Util
 						{ return addr.isInSubnet (subnet); }))
 				defaultAddrs.push_back ({ addr.toString (), QString::number (defaultPort) });
 		}
-
-		const auto& addrs = BSM_->Property ("ListenAddresses",
-				QVariant::fromValue (defaultAddrs)).value<AddrList_t> ();
-		qDebug () << Q_FUNC_INFO << addrs;
-		for (const auto& addr : addrs)
-			AppendRow (addr);
-	}
-
-	void AddressesModelManager::RegisterTypes ()
-	{
-		qRegisterMetaType<AddrList_t> ("LeechCraft::Util::AddrList_t");
-		qRegisterMetaTypeStreamOperators<AddrList_t> ();
+		return defaultAddrs;
 	}
 
 	QAbstractItemModel* AddressesModelManager::GetModel () const
