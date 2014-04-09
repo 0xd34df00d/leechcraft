@@ -52,6 +52,8 @@ namespace HttStream
 		QMap<QTcpSocket*, int> Socket2FD_;
 	public:
 		HttpServer (QObject* = nullptr);
+
+		QList<int> GetConnectedFDs () const;
 	private:
 		void HandleSocket (QTcpSocket*);
 	private slots:
