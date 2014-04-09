@@ -468,28 +468,28 @@ namespace Acetamide
 		{
 			const bool isPrivate = entry->IsPrivateChat ();
 			const QString nick = entry->GetEntryName ();
-			const auto& participants = CM_->GetParticipantsByNick (nick);
-
-			if (participants.count () == 1)
-			{
-				CM_->GetAccount ()->handleEntryRemoved (entry.get ());
-				if (isPrivate)
-					CM_->CreateServerParticipantEntry (nick);
-			}
-			else
-			{
-				CM_->GetAccount ()->handleEntryRemoved (entry.get ());
-				Nick2Entry_.remove (nick);
-				Q_FOREACH (QObject *entryObj, participants.values ())
-				{
-					if (participants.key (entryObj) == ChannelOptions_.ChannelName_)
-						continue;
-
-					CM_->GetChannelHandler (participants.key (entryObj))->RemoveUserFromChannel (nick);
-					CM_->GetChannelHandler (participants.key (entryObj))->
-							GetParticipantEntry (nick)->SetStatus (EntryStatus (SOnline, ""));
-				}
-			}
+// 			const auto& participants = CM_->GetParticipantsByNick (nick);
+// 
+// 			if (participants.count () == 1)
+// 			{
+			CM_->GetAccount ()->handleEntryRemoved (entry.get ());
+			if (isPrivate)
+				CM_->CreateServerParticipantEntry (nick);
+// 			}
+// 			else
+// 			{
+// 				CM_->GetAccount ()->handleEntryRemoved (entry.get ());
+// 				Nick2Entry_.remove (nick);
+// 				Q_FOREACH (QObject *entryObj, participants.values ())
+// 				{
+// 					if (participants.key (entryObj) == ChannelOptions_.ChannelName_)
+// 						continue;
+// 
+// 					CM_->GetChannelHandler (participants.key (entryObj))->RemoveUserFromChannel (nick);
+// 					CM_->GetChannelHandler (participants.key (entryObj))->
+// 							GetParticipantEntry (nick)->SetStatus (EntryStatus (SOnline, ""));
+// 				}
+// 			}
 		}
 		Nick2Entry_.clear ();
 
