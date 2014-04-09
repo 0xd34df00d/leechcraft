@@ -26,6 +26,9 @@ target_link_libraries (leechcraft_lmp_httstream
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	leechcraft_lmp_common
+	${GSTREAMER_LIBRARIES}
+	${GLIB2_LIBRARIES}
+	${LIBXML2_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_lmp_httstream DESTINATION ${LC_PLUGINS_DEST})
