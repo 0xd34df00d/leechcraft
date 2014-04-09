@@ -75,7 +75,6 @@ namespace HttStream
 				"units-max", static_cast<gint64> (7 * GST_SECOND),
 				"units-soft-max", static_cast<gint64> (3 * GST_SECOND),
 				"recover-policy", 3,
-				"timeout", static_cast<gint64> (10 * GST_SECOND),
 				"sync-method", 1,
 				"async", FALSE,
 				"sync", FALSE,
