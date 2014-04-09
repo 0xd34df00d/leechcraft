@@ -104,7 +104,10 @@ namespace HttStream
 						"Server: LeechCraft LMP"
 					});
 
-				Socket2FD_ [socket] = socket->socketDescriptor ();
+				{
+					QWriteLocker locker { &MapLock_ };
+					Socket2FD_ [socket] = socket->socketDescriptor ();
+				}
 
 				emit gotClient (socket->socketDescriptor ());
 			}
@@ -148,8 +151,16 @@ namespace HttStream
 		const auto sock = qobject_cast<QTcpSocket*> (sender ());
 		sock->deleteLater ();
 
-		if (Socket2FD_.contains (sock))
-			emit clientDisconnected (Socket2FD_.take (sock));
+		int sockFd = 0;
+		QWriteLocker lock { &MapLock_ };
+		{
+			if (!Socket2FD_.contains (sock))
+				return;
+
+			sockFd = Socket2FD_.take (sock);
+		}
+
+		emit clientDisconnected (sockFd);
 	}
 }
 }
