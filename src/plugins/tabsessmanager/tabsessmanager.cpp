@@ -223,6 +223,16 @@ namespace TabSessManager
 		act->setProperty ("TabSessManager/SessName", name);
 	}
 
+	bool Plugin::HasTab (QWidget *widget) const
+	{
+		return std::any_of (Tabs_.begin (), Tabs_.end (),
+				[widget] (const QList<QObject*>& list)
+				{
+					return std::any_of (list.begin (), list.end (),
+							[widget] (QObject *obj) { return obj == widget; });
+				});
+	}
+
 	void Plugin::hookTabIsRemoving (IHookProxy_ptr, int index, int windowId)
 	{
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
@@ -234,21 +244,16 @@ namespace TabSessManager
 
 	void Plugin::handleNewTab (const QString&, QWidget *widget)
 	{
+		if (HasTab (widget))
+			return;
+
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto windowIndex = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (widget));
 
-		if (windowIndex < 0)
+		if (windowIndex < 0 || windowIndex >= Tabs_.size ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown window index for"
-					<< widget;
-			return;
-		}
-
-		if (windowIndex >= Tabs_.size ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "window index out of bounds for"
 					<< widget;
 			return;
 		}

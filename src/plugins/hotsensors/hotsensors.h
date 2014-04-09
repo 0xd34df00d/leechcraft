@@ -38,7 +38,7 @@ namespace LeechCraft
 {
 namespace HotSensors
 {
-	class SensorsManager;
+	class Backend;
 	class HistoryManager;
 	class PlotManager;
 
@@ -49,7 +49,7 @@ namespace HotSensors
 		Q_OBJECT
 		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
-		std::shared_ptr<SensorsManager> SensorsMgr_;
+		std::shared_ptr<Backend> SensorsMgr_;
 		std::unique_ptr<HistoryManager> HistoryMgr_;
 		std::unique_ptr<PlotManager> PlotMgr_;
 

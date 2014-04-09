@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CLMODEL_H
-#define PLUGINS_AZOTH_CLMODEL_H
+#pragma once
+
 #include <QStandardItemModel>
 #include <interfaces/core/ihookproxy.h>
 
@@ -60,5 +60,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

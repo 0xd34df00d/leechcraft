@@ -30,8 +30,7 @@
 #pragma once
 
 #include <QObject>
-
-typedef struct _GstElement GstElement;
+#include "interfaces/lmp/ipath.h"
 
 namespace LeechCraft
 {
@@ -39,9 +38,11 @@ namespace LMP
 {
 	class SourceObject;
 	class Output;
-	struct CallbackData;
+
+	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
 
 	class Path : public QObject
+			   , public IPath
 	{
 		SourceObject * const SrcObj_;
 
@@ -59,7 +60,12 @@ namespace LMP
 			Remove
 		};
 
-		friend struct CallbackData;
+		struct QueueItem
+		{
+			GstElement *Elem_;
+			Action Act_;
+		};
+		QList<QueueItem> Queue_;
 	public:
 		Path (SourceObject*, Output*, QObject* = 0);
 		~Path ();
@@ -75,12 +81,15 @@ namespace LMP
 
 		SourceObject* GetSourceObject () const;
 
+		void AddSyncHandler (const SyncHandler_f&);
+		void AddAsyncHandler (const AsyncHandler_f&);
+
 		void InsertElement (GstElement*);
 		void RemoveElement (GstElement*);
 
-		void FinalizeAction (CallbackData*);
+		void FinalizeAction ();
 	private:
-		void Perform (GstElement*, Action);
+		void RotateQueue ();
 	};
 }
 }

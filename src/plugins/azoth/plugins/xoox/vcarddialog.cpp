@@ -33,6 +33,8 @@
 #include <QBuffer>
 #include <QCryptographicHash>
 #include <QXmppVCardManager.h>
+#include <QXmppGlobal.h>
+#include <util/gui/util.h>
 #include "entrybase.h"
 #include "glooxaccount.h"
 #include "clientconnection.h"
@@ -41,7 +43,6 @@
 #include "useravatarmanager.h"
 #include "vcardlisteditdialog.h"
 #include "accountsettingsholder.h"
-#include <util/gui/util.h>
 
 namespace LeechCraft
 {
@@ -122,13 +123,15 @@ namespace Xoox
 
 		SetPixmapLabel (QPixmap::fromImage (QImage::fromData (vcard.photo ())));
 
-		/* TODO wait until newer QXmpp
-		Ui_.OrgName_->setText (vcard.orgName ());
-		Ui_.OrgUnit_->setText (vcard.orgUnit ());
-		Ui_.Title_->setText (vcard.title ());
-		Ui_.Role_->setText (vcard.role ());
-		Ui_.About_->setPlainText (vcard.desc ());
-		*/
+		Ui_.About_->setPlainText (vcard.description ());
+
+#if QXMPP_VERSION >= 0x000800
+		const auto& orgInfo = vcard.organization ();
+		Ui_.OrgName_->setText (orgInfo.organization ());
+		Ui_.OrgUnit_->setText (orgInfo.unit ());
+		Ui_.Title_->setText (orgInfo.title ());
+		Ui_.Role_->setText (orgInfo.role ());
+#endif
 	}
 
 	bool VCardDialog::eventFilter (QObject *object, QEvent *event)
@@ -334,14 +337,17 @@ namespace Xoox
 		VCard_.setNickName (Ui_.EditNick_->text ());
 		VCard_.setBirthday (Ui_.EditBirthday_->date ());
 		VCard_.setUrl (Ui_.EditURL_->text ());
-		/* TODO wait for newer QXmpp
-		VCard_.setOrgName (Ui_.OrgName_->text ());
-		VCard_.setOrgUnit (Ui_.OrgUnit_->text ());
-		VCard_.setTitle (Ui_.Title_->text ());
-		VCard_.setRole (Ui_.Role_->text ());
-		VCard_.setDesc (Ui_.About_->toPlainText ());
-		*/
+		VCard_.setDescription (Ui_.About_->toPlainText ());
 		VCard_.setEmail (QString ());
+
+#if QXMPP_VERSION >= 0x000800
+		QXmppVCardOrganization orgInfo;
+		orgInfo.setOrganization (Ui_.OrgName_->text ());
+		orgInfo.setUnit (Ui_.OrgUnit_->text ());
+		orgInfo.setTitle (Ui_.Title_->text ());
+		orgInfo.setRole (Ui_.Role_->text ());
+		VCard_.setOrganization (orgInfo);
+#endif
 
 		const QPixmap *px = Ui_.LabelPhoto_->pixmap ();
 		if (px)

@@ -52,7 +52,7 @@ namespace Zheet
 					  , public ITransferJob
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferJob);
+		Q_INTERFACES (LeechCraft::Azoth::ITransferJob)
 
 		uint ID_;
 		MSNAccount *A_;

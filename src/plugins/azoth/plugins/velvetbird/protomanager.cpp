@@ -51,9 +51,9 @@ namespace VelvetBird
 			{
 				uiInfo = g_hash_table_new (g_str_hash, g_str_equal);
 				auto localUiInfo = uiInfo;
-				auto add = [localUiInfo] (char *name, char *value)
+				auto add = [localUiInfo] (const char *name, const char *value)
 				{
-					g_hash_table_insert (localUiInfo, name, value);
+					g_hash_table_insert (localUiInfo, g_strdup (name), g_strdup (value));
 				};
 				add ("name", "LeechCraft VelvetBird");
 				add ("version", "dummy");
@@ -182,7 +182,11 @@ namespace VelvetBird
 
 		PurpleIdleUiOps IdleOps =
 		{
-			[] () { return time_t (); }
+			[] () { return time_t (); },
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
 		};
 
 		PurpleAccountUiOps AccUiOps =
@@ -229,21 +233,29 @@ namespace VelvetBird
 
 		PurpleBlistUiOps BListUiOps =
 		{
-			NULL,
-			NULL,
+			nullptr,
+			nullptr,
 			[] (PurpleBuddyList *list) { static_cast<ProtoManager*> (list->ui_data)->Show (list); },
 			[] (PurpleBuddyList *list, PurpleBlistNode *node)
 				{ static_cast<ProtoManager*> (list->ui_data)->Update (list, node); },
 			[] (PurpleBuddyList *list, PurpleBlistNode *node)
 				{ static_cast<ProtoManager*> (list->ui_data)->Remove (list, node); },
-			NULL
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
 		};
 
 		PurpleConversationUiOps ConvUiOps =
 		{
-			NULL,
-			NULL,
-			NULL,
+			nullptr,
+			nullptr,
+			nullptr,
 			[] (PurpleConversation *conv, const char *who, const char *message, PurpleMessageFlags flags, time_t mtime)
 			{
 				if (conv->ui_data)
@@ -252,23 +264,41 @@ namespace VelvetBird
 					static_cast<Account*> (conv->account->ui_data)->
 							HandleConvLessMessage (conv, who, message, flags, mtime);
 			},
-			[] (PurpleConversation *conv, const char *name, const char *alias, const char *message, PurpleMessageFlags flags, time_t mtime)
+			[] (PurpleConversation*, const char *name, const char *alias, const char *message, PurpleMessageFlags, time_t)
 			{
 				qDebug () << Q_FUNC_INFO << name << alias << message;
 			},
-			NULL
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
 		};
 
 		PurpleNotifyUiOps NotifyUiOps
 		{
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			[] (PurpleConnection *gc, const char *who, PurpleNotifyUserInfo *user_info) -> void* { qDebug () << Q_FUNC_INFO; return 0; },
-			NULL
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			[] (PurpleConnection*, const char*, PurpleNotifyUserInfo*) -> void* { qDebug () << Q_FUNC_INFO; return 0; },
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
 		};
 	}
 

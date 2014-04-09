@@ -32,6 +32,7 @@
 #include <boost/optional.hpp>
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
+#include "collectionsmanager.h"
 
 class QUrl;
 
@@ -52,6 +53,7 @@ namespace LMP
 	class PreviewHandler;
 	class ProgressManager;
 	class RadioManager;
+	class CollectionsManager;
 
 	class Core : public QObject
 	{
@@ -60,7 +62,10 @@ namespace LMP
 		ICoreProxy_ptr Proxy_;
 
 		LocalFileResolver *Resolver_;
+
 		LocalCollection *Collection_;
+		CollectionsManager *CollectionsManager_;
+
 		PlaylistManager *PLManager_;
 
 		SyncManager *SyncManager_;
@@ -99,6 +104,7 @@ namespace LMP
 
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
+		CollectionsManager* GetCollectionsManager () const;
 		PlaylistManager* GetPlaylistManager () const;
 		SyncManager* GetSyncManager () const;
 		SyncUnmountableManager* GetSyncUnmountableManager () const;

@@ -59,6 +59,8 @@ set (SRCS
 	anntreedelegate.cpp
 	linkitem.cpp
 	linksmanager.cpp
+	coreloadproxy.cpp
+	converteddoccleaner.cpp
 	)
 set (FORMS
 	documenttab.ui

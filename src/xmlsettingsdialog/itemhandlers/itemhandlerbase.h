@@ -58,13 +58,16 @@ namespace LeechCraft
 		virtual bool CanHandle (const QDomElement& element) const = 0;
 
 		/** @brief Creates the representation widget for the given
-		 * element and parent widget pwidget.
+		 * element and parent widget \em pwidget.
 		 *
 		 * The created widget's property "ItemHandler" should point to
-		 * the class that created in in order to retrieve it later.
+		 * the class that created it in order to retrieve it later.
 		 *
-		 * pwidget is guaranteed to have a layout, and the layout is
+		 * \em pwidget is guaranteed to have a layout, and the layout is
 		 * QGridLayout.
+		 *
+		 * The created widget should invoke the updatePreferences() slot
+		 * when the user changes the value represented by the widget.
 		 *
 		 * @param[in] element The element to make representation for.
 		 * @param[in] pwidget The parent widget of the representation
@@ -75,9 +78,9 @@ namespace LeechCraft
 		/** @brief Return the value of the given element and given
 		 * predefined value.
 		 *
-		 * This function should inspect the given element and return
-		 * a QVariant containing its value. If value is given and it is
-		 * valid and sensible for this widget, it should be considered
+		 * This function should inspect the given \em element and return
+		 * a QVariant containing its value. If \em value is given and it
+		 * is valid and sensible for this widget, it should be considered
 		 * instead.
 		 *
 		 * @param[in] element The element to retrieve value for.
@@ -90,6 +93,9 @@ namespace LeechCraft
 
 		/** @brief Sets the value for the widget created earlier.
 		 *
+		 * This method should update the \em widget so that it represents
+		 * the given \em value.
+		 *
 		 * @param[in] widget The widget created earlier by the call to
 		 * Handle().
 		 * @param[in] value The value that should be set for this
@@ -99,8 +105,8 @@ namespace LeechCraft
 
 		/** @brief Update the value of the given element.
 		 *
-		 * This function should update the current default value of the
-		 * given element to a new value.
+		 * This function should update the current default \em value of
+		 * the given \em element to a new value.
 		 *
 		 * @param[in,out] element The element which should be updated.
 		 * @param[in] value The new value for this element.
@@ -122,9 +128,9 @@ namespace LeechCraft
 		/** @brief Returns the value of the object.
 		 *
 		 * This function should return a correct value, assuming that
-		 * object is really a pointer to a widget created earlier in
-		 * Handle() function by this item handler. So it's safe to
-		 * qobject_cast.
+		 * \em object is a pointer to a widget created earlier by the
+		 * Handle() function of this item handler, so it's safe to
+		 * <code>qobject_cast<WidgetType*> (object)</code>.
 		 *
 		 * @param[in] object Pointer to a widget previously created by
 		 * this item handler.
@@ -137,6 +143,12 @@ namespace LeechCraft
 		Prop2NewValue_t ChangedProperties_;
 		Util::XmlSettingsDialog *XSD_;
 	protected slots:
+		/** @brief This slot should be invoked when created widget
+		 * changes value.
+		 *
+		 * This slot should be invoked by the widgets created in the
+		 * Handle() method whenever they change their value.
+		 */
 		virtual void updatePreferences ();
 	};
 

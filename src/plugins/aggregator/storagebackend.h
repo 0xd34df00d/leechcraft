@@ -316,15 +316,15 @@ namespace Aggregator
 
 		/** @brief Removes an already existing item.
 		 *
-		 * This function would emit channelDataUpdated() signal after it
-		 * finishes.
+		 * This function emits channelDataUpdated() and itemsRemoved()
+		 * signals if it removes all the items successfully.
 		 *
-		 * If the specified item doesn't exist, this function should do
-		 * nothing.
+		 * If some of the specified items don't exist, this function
+		 * merely ignores them..
 		 *
-		 * @param[in] id ID of the item that should be removed.
+		 * @param[in] ids IDs of the items that should be removed.
 		 */
-		virtual void RemoveItem (const IDType_t& id) = 0;
+		virtual void RemoveItems (const QSet<IDType_t>& ids) = 0;
 
 		/** @brief Removes an already existing channel.
 		 *
@@ -408,7 +408,13 @@ namespace Aggregator
 		 *
 		 * This signal is emitted when a channel is updated.
 		 *
+		 * @warning StorageBackendManager::channelDataUpdated() should
+		 * be used instead as it collects the signal from all
+		 * instantiated storage managers.
+		 *
 		 * @param[out] channel Pointer to the updated channel.
+		 *
+		 * @sa StorageBackendManager
 		 */
 		void channelDataUpdated (Channel_ptr channel) const;
 
@@ -416,15 +422,30 @@ namespace Aggregator
 		 *
 		 * This signal is emitted when a single item is updated.
 		 *
+		 * @warning StorageBackendManager::itemDataUpdated() should
+		 * be used instead as it collects the signal from all
+		 * instantiated storage managers.
+		 *
 		 * @param[out] item Pointer to the updated item.
 		 * @param[out] channel Pointer to the channel containing updated
 		 * item.
+		 *
+		 * @sa StorageBackendManager
 		 */
 		void itemDataUpdated (Item_ptr item, Channel_ptr channel) const;
 
 		/** @brief Notifies that a number of items was removed.
+		 *
+		 * @warning StorageBackendManager::itemsRemoved() should
+		 * be used instead as it collects the signal from all
+		 * instantiated storage managers.
+		 *
+		 * @param[out] items The set of IDs of items that have been
+		 * removed.
+		 *
+		 * @sa StorageBackendManager
 		 */
-		void itemsRemoved (const QSet<IDType_t>&) const;
+		void itemsRemoved (const QSet<IDType_t>& items) const;
 
 		/** @brief Should be emitted whenever a full item is loaded.
 		 *

@@ -39,11 +39,23 @@ namespace Monocle
 	class IAnnotation;
 	typedef std::shared_ptr<IAnnotation> IAnnotation_ptr;
 
+	/** @brief Interface for documents supporting annotations.
+	 *
+	 * If the document format can contain annotations, this interface
+	 * should be implemented.
+	 *
+	 * @sa IAnnotation
+	 */
 	class ISupportAnnotations
 	{
 	public:
 		virtual ~ISupportAnnotations () {}
 
+		/** @brief Returns the list of annotations on the given page.
+		 *
+		 * @param[in] page The page to query.
+		 * @return The list of annotations on the \em page.
+		 */
 		virtual QList<IAnnotation_ptr> GetAnnotations (int page) = 0;
 	};
 }

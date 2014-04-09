@@ -2,9 +2,7 @@
 <settings>
 	<page>
 		<label value="Aggregator WebAccess" />
-		<item type="spinbox" property="ListenPort" default="9010" minimum="1025" maximum="65535">
-			<label value="Listen port:" />
-		</item>
+		<item type="dataview" property="AddressesDataView" modifyEnabled="false" />
 	</page>
 </settings>
 

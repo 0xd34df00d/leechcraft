@@ -48,8 +48,18 @@ namespace LeechCraft
 {
 namespace CSTP
 {
+	namespace
+	{
+		void LateDelete (QNetworkReply *rep)
+		{
+			if (rep)
+				rep->deleteLater ();
+		}
+	}
+
 	Task::Task (const QUrl& url, const QVariantMap& params)
-	: URL_ (url)
+	: Reply_ (nullptr, &LateDelete)
+	, URL_ (url)
 	, Done_ (-1)
 	, Total_ (0)
 	, FileSizeAtStart_ (-1)
@@ -69,7 +79,7 @@ namespace CSTP
 	}
 
 	Task::Task (QNetworkReply *reply)
-	: Reply_ (reply)
+	: Reply_ (reply, &LateDelete)
 	, Done_ (-1)
 	, Total_ (0)
 	, FileSizeAtStart_ (-1)
@@ -402,6 +412,20 @@ namespace CSTP
 		}
 	}
 
+	void Task::Cleanup ()
+	{
+		if (!Reply_)
+			return;
+
+		Core::Instance ().RemoveFinishedReply (Reply_.get ());
+
+		disconnect (Reply_.get (),
+				0,
+				this,
+				0);
+		Reply_.reset ();
+	}
+
 	void Task::handleDataTransferProgress (qint64 done, qint64 total)
 	{
 		Done_ = done;
@@ -530,21 +554,13 @@ namespace CSTP
 
 	void Task::handleFinished ()
 	{
-		Core::Instance ().RemoveFinishedReply (Reply_.get ());
-
-		if (Reply_.get ())
-			disconnect (Reply_.get (),
-					0,
-					this,
-					0);
-
-		if (Reply_.get ())
-			Reply_.release ()->deleteLater ();
+		Cleanup ();
 		emit done (false);
 	}
 
 	void Task::handleError ()
 	{
+		Cleanup ();
 		emit done (true);
 	}
 }

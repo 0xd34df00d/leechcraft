@@ -60,7 +60,7 @@ namespace Aggregator
 		void UpdateChannel (const ChannelShort&);
 		void UpdateItem (Item_ptr);
 		void UpdateItem (const ItemShort&);
-		void RemoveItem (const IDType_t&);
+		void RemoveItems (const QSet<IDType_t>&);
 		void RemoveChannel (const IDType_t&);
 		void RemoveFeed (const IDType_t&);
 		bool UpdateFeedsStorage (int, int);

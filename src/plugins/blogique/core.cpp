@@ -357,13 +357,14 @@ namespace Blogique
 					QString (" <a href=\"%1\">%1</a>\n")
 						.arg (entries.value (0).EntryUrl_.toString ()),
 				Priority::PInfo_);
-		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
+
+		auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open Link"),
 				[this, entries] ()
 				{
-					Entity urlEntity = Util::MakeEntity (entries.value (0).EntryUrl_,
-							QString (),
-							static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+					auto urlEntity = Util::MakeEntity (entries.value (0).EntryUrl_,
+							{},
+							OnlyHandle | FromUserInitiated);
 					SendEntity (urlEntity);
 				});
 		emit gotEntity (e);

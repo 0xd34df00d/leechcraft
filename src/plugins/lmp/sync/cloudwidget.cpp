@@ -36,6 +36,7 @@
 #include "sync/transcodingparams.h"
 #include "core.h"
 #include "localcollection.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {
@@ -133,7 +134,7 @@ namespace LMP
 		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
 		QStringList paths;
 		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
-				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
+				[] (const QModelIndex& idx) { return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
 		Ui_.UploadLog_->clear ();

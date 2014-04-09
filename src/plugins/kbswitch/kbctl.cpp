@@ -344,7 +344,7 @@ namespace KBSwitch
 		XkbGetControls (Display_, XkbAllControlsMask, desc);
 		XkbGetNames (Display_, XkbSymbolsNameMask | XkbGroupNamesMask, desc);
 
-		if (!desc->names || !desc->names->groups)
+		if (!desc->names)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "cannot get names";

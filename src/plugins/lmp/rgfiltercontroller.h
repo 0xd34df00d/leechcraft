@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include "interfaces/lmp/ifilterconfigurator.h"
 #include "engine/rgfilter.h"
 
 namespace LeechCraft
@@ -39,16 +40,21 @@ namespace LMP
 {
 	class Path;
 	class AudioSource;
+	class RGFilter;
+	class FilterSettingsManager;
 
 	class RGFilterController : public QObject
+							 , public IFilterConfigurator
 	{
 		Q_OBJECT
 
-		std::unique_ptr<RGFilter> RGFilter_;
+		RGFilter * const RGFilter_;
 		Path * const Path_;
+		FilterSettingsManager * const FSM_;
 	public:
-		RGFilterController (Path*, QObject* = nullptr);
-		~RGFilterController ();
+		RGFilterController (RGFilter*, Path*);
+
+		void OpenDialog ();
 	private slots:
 		void setRG ();
 		void updateRGData (const AudioSource&);

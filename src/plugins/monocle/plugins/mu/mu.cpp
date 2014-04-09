@@ -77,14 +77,21 @@ namespace Mu
 		return result;
 	}
 
-	bool Plugin::CanLoadDocument (const QString& file)
+	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
-		return file.toLower ().endsWith (".pdf");
+		return file.toLower ().endsWith (".pdf") ?
+				LoadCheckResult::Can :
+				LoadCheckResult::Cannot;
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
 		return IDocument_ptr (new Document (file, MuCtx_, this));
+	}
+
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/pdf" };
 	}
 }
 }

@@ -54,7 +54,8 @@ namespace Aggregator
 	signals:
 		/** @brief Notifies about updated channel information.
 		 *
-		 * TODO document
+		 * This signal is emitted whenever a channel is updated by any of
+		 * the instantiated StorageBackend objects.
 		 *
 		 * @param[out] channel Pointer to the updated channel.
 		 */
@@ -62,7 +63,8 @@ namespace Aggregator
 
 		/** @brief Notifies about updated item information.
 		 *
-		 * TODO document
+		 * This signal is emitted whenever an item is updated by any of
+		 * the instantiated StorageBackend objects.
 		 *
 		 * @param[out] item Pointer to the updated item.
 		 * @param[out] channel Pointer to the channel containing updated
@@ -72,7 +74,11 @@ namespace Aggregator
 
 		/** @brief Notifies that a number of items was removed.
 		 *
-		 * TODO document
+		 * This signal is emitted whenever items are removed is updated by
+		 * any of the instantiated StorageBackend objects.
+		 *
+		 * @param[out] items The set of IDs of items that have been
+		 * removed.
 		 */
 		void itemsRemoved (const QSet<IDType_t>&) const;
 	};

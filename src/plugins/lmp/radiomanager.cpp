@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QTimer>
+#include <QMimeData>
 #include <QtDebug>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/iaudiopile.h>
@@ -52,11 +53,88 @@ namespace LMP
 		{
 			PileObject = Media::RadioItemRole::MaxRadioRole + 1
 		};
+
+		namespace
+		{
+			template<typename T>
+			void Serialize (QMimeData *mimeData, const QString& name, const T& t)
+			{
+				QByteArray infosData;
+				QDataStream ostr (&infosData, QIODevice::WriteOnly);
+				ostr << t;
+
+				mimeData->setData (name, infosData);
+			}
+		}
+
+		class RadioModel : public QStandardItemModel
+		{
+			RadioManager * const Manager_;
+		public:
+			RadioModel (RadioManager *manager)
+			: QStandardItemModel { manager }
+			, Manager_ { manager }
+			{
+				setSupportedDragActions (Qt::CopyAction | Qt::MoveAction);
+			}
+
+			QStringList mimeTypes () const
+			{
+				return
+				{
+					"text/uri-list",
+					"x-leechcraft-lmp/media-info-list",
+					"x-leechcraft-lmp/radio-ids"
+				};
+			}
+
+			QMimeData* mimeData (const QModelIndexList& indexes) const
+			{
+				QList<QUrl> urls;
+				QList<MediaInfo> infos;
+
+				QStringList stationsIds;
+
+				for (const auto& index : indexes)
+				{
+					const auto type = index.data (Media::RadioItemRole::ItemType).toInt ();
+					switch (static_cast<Media::RadioType> (type))
+					{
+					case Media::RadioType::Predefined:
+					case Media::RadioType::CustomAddableStreams:
+						stationsIds << index.data (Media::RadioItemRole::RadioID).toString ();
+						break;
+					case Media::RadioType::TracksList:
+					case Media::RadioType::SingleTrack:
+						for (const auto& info : Manager_->GetSources (index))
+						{
+							urls << info.Other_ ["URL"].toUrl ();
+							infos << MediaInfo::FromAudioInfo (info);
+						}
+					default:
+						break;
+					}
+				}
+
+				urls.removeAll ({});
+
+				if (urls.isEmpty () && stationsIds.isEmpty ())
+					return nullptr;
+
+				auto result = new QMimeData;
+				result->setUrls (urls);
+
+				Serialize (result, "x-leechcraft-lmp/media-info-list", infos);
+				Serialize (result, "x-leechcraft-lmp/radio-ids", stationsIds);
+
+				return result;
+			}
+		};
 	}
 
 	RadioManager::RadioManager (QObject *parent)
 	: QObject (parent)
-	, StationsModel_ (new QStandardItemModel (this))
+	, StationsModel_ (new RadioModel (this))
 	, AutoRefreshTimer_ (new QTimer (this))
 	{
 		XmlSettingsManager::Instance ().RegisterObject ({ "AutoRefreshRadios",
@@ -236,24 +314,13 @@ namespace LMP
 		case Media::RadioType::TracksList:
 		case Media::RadioType::SingleTrack:
 		{
-			const auto& infosVar = item->data (Media::RadioItemRole::TracksInfos);
-
 			QList<AudioSource> sources;
-			for (const auto& info : infosVar.value<QList<Media::AudioInfo>> ())
+			for (const auto& info : GetSources (index))
 			{
 				const auto& url = info.Other_ ["URL"].toUrl ();
-				if (!url.isValid ())
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "ignoring invalid URL"
-							<< info.Other_;
-					continue;
-				}
-
 				player->PrepareURLInfo (url, MediaInfo::FromAudioInfo (info));
 				sources << url;
 			}
-
 			player->Enqueue (sources, Player::EnqueueNone);
 			return;
 		}
@@ -269,6 +336,69 @@ namespace LMP
 			QTimer::singleShot (15000,
 					this,
 					SLOT (refreshAll ()));
+	}
+
+	QList<Media::AudioInfo> RadioManager::GetSources (const QModelIndex& index) const
+	{
+		const auto intRadioType = index.data (Media::RadioItemRole::ItemType).toInt ();
+		switch (static_cast<Media::RadioType> (intRadioType))
+		{
+		case Media::RadioType::TracksList:
+		case Media::RadioType::SingleTrack:
+		{
+			QList<Media::AudioInfo> result;
+
+			const auto& infosVar = index.data (Media::RadioItemRole::TracksInfos);
+			for (const auto& info : infosVar.value<QList<Media::AudioInfo>> ())
+			{
+				const auto& url = info.Other_ ["URL"].toUrl ();
+				if (!url.isValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "ignoring invalid URL"
+							<< info.Other_;
+					continue;
+				}
+
+				result << info;
+			}
+
+			return result;
+		}
+		default:
+			return {};
+		}
+	}
+
+	Media::IRadioStation_ptr RadioManager::GetRadioStation (const QString& radioId) const
+	{
+		if (radioId.isEmpty ())
+			return {};
+
+		QList<QStandardItem*> items { StationsModel_->invisibleRootItem () };
+		for (int i = 0; i < items.size (); ++i)
+		{
+			const auto item = items.at (i);
+
+			if (item->data (Media::RadioItemRole::RadioID).toString () == radioId)
+			{
+				const auto root = GetRootItem (item);
+				if (!Root2Prov_.contains (root))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no root item for radio"
+							<< radioId;
+					return {};
+				}
+
+				return Root2Prov_ [root]->GetRadioStation (item, {});
+			}
+
+			for (int j = 0; j < item->rowCount (); ++j)
+				items << item->child (j);
+		}
+
+		return {};
 	}
 
 	void RadioManager::InitProvider (QObject *provObj)

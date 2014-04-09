@@ -28,19 +28,25 @@
  **********************************************************************/
 
 #include "rgfiltercontroller.h"
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+#include <QtDebug>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/xsd/util.h>
+#include "util/lmp/filtersettingsmanager.h"
 #include "engine/path.h"
 #include "engine/sourceobject.h"
-#include "xmlsettingsmanager.h"
 #include "localcollectionstorage.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	RGFilterController::RGFilterController (Path *path, QObject *parent)
-	: QObject { parent }
-	, RGFilter_ { new RGFilter }
+	RGFilterController::RGFilterController (RGFilter *filter, Path *path)
+	: RGFilter_ { filter }
 	, Path_ { path }
+	, FSM_ { new FilterSettingsManager { "ReplayGain", this } }
 	{
 		const QList<QByteArray> rgProps
 		{
@@ -48,7 +54,7 @@ namespace LMP
 			"RGLimiting",
 			"RGPreamp"
 		};
-		XmlSettingsManager::Instance ().RegisterObject (rgProps, this, "setRG");
+		FSM_->RegisterObject (rgProps, this, "setRG");
 		setRG ();
 
 		const auto srcObj = path->GetSourceObject ();
@@ -57,21 +63,18 @@ namespace LMP
 				this,
 				SLOT (updateRGData (AudioSource)));
 		updateRGData (srcObj->GetCurrentSource ());
-
-		RGFilter_->InsertInto (Path_);
 	}
 
-	RGFilterController::~RGFilterController ()
+	void RGFilterController::OpenDialog ()
 	{
-		RGFilter_->RemoveFrom (Path_);
+		Util::OpenXSD (tr ("ReplayGain configuration"), "lmpfilterrgsettings.xml", FSM_);
 	}
 
 	void RGFilterController::setRG ()
 	{
-		const auto& xsm = XmlSettingsManager::Instance ();
-		RGFilter_->SetAlbumMode (xsm.property ("RGAlbumMode").toBool ());
-		RGFilter_->SetPreamp (xsm.property ("RGPreamp").toDouble ());
-		RGFilter_->SetLimiterEnabled (xsm.property ("RGLimiting").toBool ());
+		RGFilter_->SetAlbumMode (FSM_->property ("RGAlbumMode").toBool ());
+		RGFilter_->SetPreamp (FSM_->property ("RGPreamp").toDouble ());
+		RGFilter_->SetLimiterEnabled (FSM_->property ("RGLimiting").toBool ());
 	}
 
 	void RGFilterController::updateRGData (const AudioSource& source)

@@ -147,6 +147,7 @@ set (SRCS
 	coremessage.cpp
 	dummymsgmanager.cpp
 	serverhistorywidget.cpp
+	dndutil.cpp
 	)
 set (FORMS
 	mainwidget.ui
@@ -238,7 +239,6 @@ option (ENABLE_AZOTH_MODNOK "Build Modnok for rendering and displaying LaTeX for
 option (ENABLE_AZOTH_MURM "Build Murm, special plugin for extensive VKontakte messaging support" ON)
 option (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
 option (ENABLE_AZOTH_OTROID "Build OTRoid for supporting Off-the-Record messaging" OFF)
-option (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service" ON)
 option (ENABLE_AZOTH_ROSENTHAL "Build Rosenthal, spellchecker plugin for Azoth" ON)
 option (ENABLE_AZOTH_SHX "Build ShX, shell command runner" ON)
 option (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
@@ -308,9 +308,6 @@ if (ENABLE_AZOTH_NATIVEEMOTICONS)
 endif ()
 if (ENABLE_AZOTH_OTROID)
 	add_subdirectory (plugins/otroid)
-endif ()
-if (ENABLE_AZOTH_P100Q)
-	add_subdirectory (plugins/p100q)
 endif ()
 if (ENABLE_AZOTH_ROSENTHAL)
 	add_subdirectory (plugins/rosenthal)

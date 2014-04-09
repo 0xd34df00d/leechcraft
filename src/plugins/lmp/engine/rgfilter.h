@@ -29,12 +29,17 @@
 
 #pragma once
 
-#include "filterelement.h"
+#include <memory>
+#include <QObject>
+#include "interfaces/lmp/ifilterelement.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	class Path;
+	class RGFilterController;
+
 	struct RGData
 	{
 		double TrackGain_;
@@ -43,14 +48,20 @@ namespace LMP
 		double AlbumPeak_;
 	};
 
-	class RGFilter : public FilterElement
+	class RGFilter : public IFilterElement
 	{
 		GstElement * const Elem_;
 		GstElement * const TagInject_;
 		GstElement * const RGVol_;
 		GstElement * const RGLimiter_;
+
+		const std::shared_ptr<RGFilterController> Controller_;
 	public:
-		RGFilter ();
+		RGFilter (Path*);
+
+		QByteArray GetEffectId () const;
+		QByteArray GetInstanceId () const;
+		IFilterConfigurator* GetConfigurator () const;
 
 		void SetRG (const RGData&);
 

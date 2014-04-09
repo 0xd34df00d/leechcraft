@@ -72,9 +72,9 @@ namespace CrashProcess
 				this,
 				SLOT (consumeStdout ()));
 		connect (Proc_,
-				SIGNAL (finished (int,QProcess::ExitStatus)),
+				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
-				SIGNAL (finished (int)));
+				SIGNAL (finished (int, QProcess::ExitStatus)));
 	}
 
 	GDBLauncher::~GDBLauncher ()
@@ -98,6 +98,11 @@ namespace CrashProcess
 				<< Proc_->error ()
 				<< "str:"
 				<< Proc_->errorString ();
+
+		emit error (Proc_->exitStatus (),
+				Proc_->exitCode (),
+				Proc_->error (),
+				Proc_->errorString ());
 	}
 
 	void GDBLauncher::consumeStdout ()

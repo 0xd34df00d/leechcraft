@@ -37,8 +37,10 @@ namespace Azoth
 	{
 	protected:
 		bool IsOTR_ = false;
+
+		bool IsForwarded_ = false;
 	public:
-		void SetOTRMessage (bool otr)
+		void ToggleOTRMessage (bool otr)
 		{
 			IsOTR_ = otr;
 		}
@@ -46,6 +48,16 @@ namespace Azoth
 		bool IsOTRMessage () const
 		{
 			return IsOTR_;
+		}
+
+		void ToggleForwarded (bool forwarded)
+		{
+			IsForwarded_ = forwarded;
+		}
+
+		bool IsForwarded () const
+		{
+			return IsForwarded_;
 		}
 	};
 }

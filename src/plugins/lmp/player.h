@@ -134,6 +134,7 @@ namespace LMP
 		QAbstractItemModel* GetPlaylistModel () const;
 		SourceObject* GetSourceObject () const;
 		Output* GetAudioOutput () const;
+		Path* GetPath () const;
 
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
@@ -185,7 +186,10 @@ namespace LMP
 		template<typename T>
 		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,
 				std::function<T (AudioSource)>) const;
+
 		AudioSource GetNextSource (const AudioSource&);
+
+		void MarkAsCurrent (QStandardItem*);
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();
@@ -224,6 +228,8 @@ namespace LMP
 		void bufferStatusChanged (int);
 
 		void playerAvailable (bool);
+
+		void shouldClearFiltering ();
 	};
 }
 }

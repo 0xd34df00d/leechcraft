@@ -99,6 +99,11 @@ void Idle::stop()
 	d->checkTimer.stop();
 }
 
+int Idle::interval() const
+{
+	return d->checkTimer.interval();
+}
+
 void Idle::doCheck()
 {
 	int i = 0;

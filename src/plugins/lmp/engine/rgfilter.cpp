@@ -29,18 +29,20 @@
 
 #include "rgfilter.h"
 #include <QStringList>
+#include "util/lmp/gstutil.h"
 #include "../gstfix.h"
-#include "gstutil.h"
+#include "rgfiltercontroller.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	RGFilter::RGFilter ()
+	RGFilter::RGFilter (Path *path)
 	: Elem_ (gst_bin_new ("rgbin"))
 	, TagInject_ (gst_element_factory_make ("taginject", "taginject"))
 	, RGVol_ (gst_element_factory_make ("rgvolume", "rgvol"))
 	, RGLimiter_ (gst_element_factory_make ("rglimiter", "rglim"))
+	, Controller_ (new RGFilterController (this, path))
 	{
 		const auto convIn = gst_element_factory_make ("audioconvert", "convIn");
 		const auto convOut = gst_element_factory_make ("audioconvert", "convOut");
@@ -50,6 +52,21 @@ namespace LMP
 
 		GstUtil::AddGhostPad (convIn, Elem_, "sink");
 		GstUtil::AddGhostPad (convOut, Elem_, "src");
+	}
+
+	QByteArray RGFilter::GetEffectId () const
+	{
+		return "org.LeechCraft.LMP.RG";
+	}
+
+	QByteArray RGFilter::GetInstanceId () const
+	{
+		return GetEffectId ();
+	}
+
+	IFilterConfigurator* RGFilter::GetConfigurator () const
+	{
+		return Controller_.get ();
 	}
 
 	void RGFilter::SetRG (const RGData& data)

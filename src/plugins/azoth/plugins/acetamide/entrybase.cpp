@@ -123,10 +123,12 @@ namespace Acetamide
 
 	void EntryBase::MarkMsgsRead ()
 	{
+		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void EntryBase::ChatTabClosed ()
 	{
+		emit chatTabClosed ();
 	}
 
 	void EntryBase::HandleMessage (IrcMessage *msg)
@@ -165,7 +167,6 @@ namespace Acetamide
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (msg);
 	}
-
 };
 };
 };

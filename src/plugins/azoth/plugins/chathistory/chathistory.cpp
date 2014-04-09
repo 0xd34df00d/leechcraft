@@ -72,6 +72,9 @@ namespace ChatHistory
 				this,
 				SLOT (handleHistoryRequested ()));
 
+		SeparatorAction_ = Util::CreateSeparator (this);
+		SeparatorAction_->property ("Azoth/ChatHistory/IsGood").toBool ();
+
 		connect (Core::Instance ().get (),
 				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
 				this,
@@ -254,7 +257,8 @@ namespace ChatHistory
 			Entry2ActionEnableHistory_ [entry] = action;
 		}
 
-		QList<QVariant> list = proxy->GetReturnValue ().toList ();
+		auto list = proxy->GetReturnValue ().toList ();
+		list << QVariant::fromValue<QObject*> (SeparatorAction_);
 		list << QVariant::fromValue<QObject*> (Entry2ActionHistory_ [entry]);
 		list << QVariant::fromValue<QObject*> (Entry2ActionEnableHistory_ [entry]);
 		proxy->SetReturnValue (list);

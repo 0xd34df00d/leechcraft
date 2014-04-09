@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERDATAVIEW_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERDATAVIEW_H
+#pragma once
+
 #include "itemhandlerbase.h"
 #include <QHash>
 
@@ -57,11 +57,13 @@ namespace LeechCraft
 		void SetDataSource (const QString&, QAbstractItemModel*);
 
 		QVariantList GetAddVariants (QAbstractItemModel*, const QVariantList& = QVariantList ());
+
+		void AddCustomButtons (const QDomElement&, DataViewWidget*);
 	private slots:
 		void handleAddRequested ();
 		void handleModifyRequested ();
 		void handleRemoveRequested ();
+
+		void handleCustomButton (const QByteArray&);
 	};
 }
-
-#endif

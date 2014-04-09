@@ -32,10 +32,14 @@
 #include <QObject>
 #include <QSslCertificate>
 
+class QAbstractItemModel;
+
 namespace LeechCraft
 {
 namespace CertMgr
 {
+	class CertsModel;
+
 	class Manager : public QObject
 	{
 		Q_OBJECT
@@ -45,15 +49,23 @@ namespace CertMgr
 		QList<QSslCertificate> AllowedDefaults_;
 
 		QList<QSslCertificate> Locals_;
+
+		CertsModel * const SystemCertsModel_;
+		CertsModel * const LocalCertsModel_;
 	public:
 		Manager ();
 
-		void AddCert (const QSslCertificate&);
+		int AddCerts (const QList<QSslCertificate>&);
 		void RemoveCert (const QSslCertificate&);
+
+		QAbstractItemModel* GetSystemModel () const;
+		QAbstractItemModel* GetLocalModel () const;
 
 		const QList<QSslCertificate>& GetLocalCerts () const;
 		const QList<QSslCertificate>& GetDefaultCerts () const;
+
 		bool IsBlacklisted (const QSslCertificate&) const;
+		void ToggleBlacklist (const QSslCertificate&, bool blacklist);
 	private:
 		void RegenAllowed ();
 		void ResetSocketDefault ();

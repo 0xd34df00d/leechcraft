@@ -121,6 +121,26 @@ namespace Azoth
 		return Toolbar_;
 	}
 
+	void ServerHistoryWidget::SelectEntry (ICLEntry *entry)
+	{
+		const auto entryObj = entry->GetQObject ();
+
+		const auto model = IHSH_->GetServerContactsModel ();
+		for (int i = 0; i < model->rowCount (); ++i)
+		{
+			const auto& idx = model->index (i, 0);
+			if (idx.data (ServerHistoryRole::CLEntry).value<QObject*> () == entryObj)
+			{
+				const auto& mapped = ContactsFilter_->mapFromSource (idx);
+				if (!mapped.isValid ())
+					return;
+
+				Ui_.ContactsView_->setCurrentIndex (mapped);
+				on_ContactsView__clicked (mapped);
+			}
+		}
+	}
+
 	int ServerHistoryWidget::GetReqMsgCount () const
 	{
 		return std::max (20, FirstMsgCount_);
@@ -174,7 +194,7 @@ namespace Azoth
 		MaxID_ = messages.value (0).ID_;
 	}
 
-	void ServerHistoryWidget::on_ContactsView__activated (const QModelIndex& index)
+	void ServerHistoryWidget::on_ContactsView__clicked (const QModelIndex& index)
 	{
 		CurrentID_ = "-1";
 		MaxID_ = "-1";

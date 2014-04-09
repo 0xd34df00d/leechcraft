@@ -37,15 +37,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	struct CallbackData
-	{
-		Path * const Path_;
-		GstElement * const Elem_;
-		guint ID_;
-
-		const Path::Action Action_;
-	};
-
 	Path::Path (SourceObject *source, Output *output, QObject *parent)
 	: QObject (parent)
 	, SrcObj_ (source)
@@ -118,152 +109,100 @@ namespace LMP
 		return SrcObj_;
 	}
 
-	namespace
+	void Path::AddSyncHandler (const SyncHandler_f& handler)
 	{
-#if GST_VERSION_MAJOR < 1
-		gboolean EventProbeHandler (GstPad *pad, GstEvent *event, CallbackData *cbData)
-		{
-			if (GST_EVENT_TYPE (event) != GST_EVENT_EOS)
-				return TRUE;
-#else
-		GstPadProbeReturn EventProbeHandler (GstPad *pad, GstPadProbeInfo *info, gpointer cbDataPtr)
-		{
-			if (GST_EVENT_TYPE (GST_PAD_PROBE_INFO_DATA (info)) != GST_EVENT_EOS)
-				return GST_PAD_PROBE_OK;
+		SrcObj_->AddSyncHandler (handler);
+	}
 
-			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
-#endif
-			qDebug () << Q_FUNC_INFO << "eos";
-#if GST_VERSION_MAJOR < 1
-			gst_pad_remove_event_probe (pad, cbData->ID_);
-#else
-			gst_pad_remove_probe (pad, cbData->ID_);
-#endif
-
-			cbData->Path_->FinalizeAction (cbData);
-
-#if GST_VERSION_MAJOR < 1
-			return FALSE;
-#else
-			return GST_PAD_PROBE_DROP;
-#endif
-		}
-
-#if GST_VERSION_MAJOR < 1
-		gboolean ProbeHandler (GstPad *pad, GstMiniObject*, CallbackData *cbData)
-		{
-#else
-		GstPadProbeReturn ProbeHandler (GstPad *pad, GstPadProbeInfo*, gpointer cbDataPtr)
-		{
-			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
-#endif
-			qDebug () << Q_FUNC_INFO;
-#if GST_VERSION_MAJOR < 1
-			gst_pad_remove_data_probe (pad, cbData->ID_);
-#else
-			gst_pad_remove_probe (pad, cbData->ID_);
-#endif
-
-#if GST_VERSION_MAJOR < 1
-			cbData->ID_ = gst_pad_add_event_probe (pad, G_CALLBACK (EventProbeHandler), cbData);
-#else
-			cbData->ID_ = gst_pad_add_probe (pad,
-					static_cast<GstPadProbeType> (GST_PAD_PROBE_TYPE_BLOCK | GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM),
-					EventProbeHandler, cbData, nullptr);
-#endif
-
-			const auto sinkpad = gst_element_get_static_pad (cbData->Path_->GetOutPlaceholder (), "sink");
-			gst_pad_send_event (sinkpad, gst_event_new_eos ());
-			gst_object_unref (sinkpad);
-
-#if GST_VERSION_MAJOR < 1
-			return TRUE;
-#else
-			return GST_PAD_PROBE_OK;
-#endif
-		}
+	void Path::AddAsyncHandler (const AsyncHandler_f& handler)
+	{
+		SrcObj_->AddAsyncHandler (handler);
 	}
 
 	void Path::InsertElement (GstElement *elem)
 	{
-		Perform (elem, Action::Add);
+		Queue_.append ({ elem, Action::Add });
+		if (Queue_.size () == 1)
+			RotateQueue ();
 	}
 
 	void Path::RemoveElement (GstElement *elem)
 	{
-		Perform (elem, Action::Remove);
+		Queue_.append ({ elem, Action::Remove });
+		if (Queue_.size () == 1)
+			RotateQueue ();
 	}
 
-	void Path::FinalizeAction (CallbackData *cbData)
+	void Path::FinalizeAction ()
 	{
-		const auto elem = cbData->Elem_;
-
-		auto deleteGuard = std::shared_ptr<CallbackData> (cbData);
-
-		switch (cbData->Action_)
+		for (const auto& item : Queue_)
 		{
-		case Path::Action::Add:
-		{
-			gst_bin_add (GST_BIN (GetWholeOut ()), elem);
+			const auto elem = item.Elem_;
 
-			qDebug () << "unlinking...";
-			gst_element_unlink (NextWholeElems_.at (0), NextWholeElems_.at (1));
-
-			qDebug () << "linking...";
-			gst_element_link_many (NextWholeElems_.at (0), elem, NextWholeElems_.at (1), nullptr);
-
-			GstState wholeCurrent, pending;
-			gst_element_get_state (GetWholeOut (), &wholeCurrent, &pending, GST_SECOND);
-			gst_element_set_state (elem, std::max (wholeCurrent, pending));
-
-			NextWholeElems_.insert (1, elem);
-
-			break;
-		}
-		case Path::Action::Remove:
-		{
-			const auto idx = NextWholeElems_.indexOf (elem);
-			if (idx == -1)
+			switch (item.Act_)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "element not found";
-				return;
-			}
-			if (!idx || idx == NextWholeElems_.size () - 1)
+			case Path::Action::Add:
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot remove side element";
-				return;
+				gst_bin_add (GST_BIN (GetWholeOut ()), elem);
+
+				qDebug () << "unlinking...";
+				gst_element_unlink (NextWholeElems_.at (0), NextWholeElems_.at (1));
+
+				qDebug () << "linking...";
+				gst_element_link_many (NextWholeElems_.at (0), elem, NextWholeElems_.at (1), nullptr);
+
+				GstState wholeCurrent, pending;
+				gst_element_get_state (GetWholeOut (), &wholeCurrent, &pending, 0.1 * GST_SECOND);
+				gst_element_set_state (elem, std::max (wholeCurrent, pending));
+
+				NextWholeElems_.insert (1, elem);
+
+				break;
 			}
+			case Path::Action::Remove:
+			{
+				const auto idx = NextWholeElems_.indexOf (elem);
+				if (idx == -1)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "element not found";
+					return;
+				}
+				if (!idx || idx == NextWholeElems_.size () - 1)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot remove side element";
+					return;
+				}
 
-			const auto prev = NextWholeElems_.at (idx - 1);
-			const auto next = NextWholeElems_.at (idx + 1);
+				const auto prev = NextWholeElems_.at (idx - 1);
+				const auto next = NextWholeElems_.at (idx + 1);
 
-			gst_element_unlink_many (prev, elem, next, nullptr);
-			gst_element_link (prev, next);
+				gst_element_unlink_many (prev, elem, next, nullptr);
+				gst_element_link (prev, next);
 
-			gst_element_set_state (elem, GST_STATE_NULL);
+				gst_element_set_state (elem, GST_STATE_NULL);
 
-			gst_bin_remove (GST_BIN (GetWholeOut ()), elem);
+				gst_bin_remove (GST_BIN (GetWholeOut ()), elem);
 
-			NextWholeElems_.removeAt (idx);
-			break;
+				NextWholeElems_.removeAt (idx);
+				break;
+			}
+			}
 		}
-		}
+
+		Queue_.clear ();
 	}
 
-	void Path::Perform (GstElement *elem, Action action)
+	void Path::RotateQueue ()
 	{
-		auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
-		qDebug () << Q_FUNC_INFO << elem << srcpad;
+		if (Queue_.isEmpty ())
+			return;
 
-		auto data = new CallbackData { this, elem, 0, action };
-#if GST_VERSION_MAJOR < 1
-		data->ID_ = gst_pad_add_data_probe (srcpad, G_CALLBACK (ProbeHandler), data);
-#else
-		data->ID_ = gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
-				ProbeHandler, data, nullptr);
-#endif
+		const auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
+		const auto sinkpad = gst_element_get_static_pad (GetOutPlaceholder (), "sink");
+
+		GstUtil::PerformWProbe (srcpad, sinkpad, [this] { FinalizeAction (); });
 	}
 }
 }

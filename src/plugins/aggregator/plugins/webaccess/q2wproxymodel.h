@@ -32,7 +32,12 @@
 #include <memory>
 #include <QObject>
 #include <QMap>
+
+#ifndef Q_MOC_RUN // see https://bugreports.qt-project.org/browse/QTBUG-22829
 #include <WAbstractItemModel>
+#endif
+
+#include <util/models/modelitem.h>
 #include "serverupdater.h"
 
 class QAbstractItemModel;
@@ -44,21 +49,20 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	class ModelItem;
-	typedef std::shared_ptr<ModelItem> ModelItem_ptr;
-
 	class Q2WProxyModel : public QObject
 						, public Wt::WAbstractItemModel
 	{
 		Q_OBJECT
 
 		QAbstractItemModel * const Src_;
-		ModelItem_ptr Root_;
+		Util::ModelItem_ptr Root_;
 
 		QMap<int, int> Mapping_;
 
 		Wt::WApplication * const App_;
 		ServerUpdater Update_;
+
+		int LastModelResetRC_;
 	public:
 		typedef std::function<boost::any (QModelIndex, int)> Morphism_t;
 	private:
@@ -71,12 +75,15 @@ namespace WebAccess
 
 		QModelIndex MapToSource (const Wt::WModelIndex&) const;
 
-		int columnCount (const Wt::WModelIndex& parent) const;
-		int rowCount (const Wt::WModelIndex& parent) const;
-		Wt::WModelIndex parent (const Wt::WModelIndex& index) const;
-		boost::any data (const Wt::WModelIndex& index, int role) const;
-		Wt::WModelIndex index (int row, int column, const Wt::WModelIndex& parent) const;
-		boost::any headerData (int section, Wt::Orientation orientation, int role) const;
+		int columnCount (const Wt::WModelIndex& parent) const override;
+		int rowCount (const Wt::WModelIndex& parent) const override;
+		Wt::WModelIndex parent (const Wt::WModelIndex& index) const override;
+		boost::any data (const Wt::WModelIndex& index, int role) const override;
+		Wt::WModelIndex index (int row, int column, const Wt::WModelIndex& parent) const override;
+		boost::any headerData (int section, Wt::Orientation orientation, int role) const override;
+
+		void* toRawIndex (const Wt::WModelIndex& index) const override;
+		Wt::WModelIndex fromRawIndex (void* rawIndex) const override;
 	private:
 		int WtRole2Qt (int) const;
 		QModelIndex W2QIdx (const Wt::WModelIndex&) const;

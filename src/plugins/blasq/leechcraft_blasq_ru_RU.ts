@@ -28,9 +28,22 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Blasq::DataFilterUploader</name>
+    <message>
+        <location filename="datafilteruploader.cpp" line="68"/>
+        <source>Select account</source>
+        <translation>Выбор учётной записи</translation>
+    </message>
+    <message>
+        <location filename="datafilteruploader.cpp" line="69"/>
+        <source>Please select the account to use while uploading the photo:</source>
+        <translation>Выберите учётную запись для загрузки фотографии:</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Blasq::DefaultImageChooser</name>
     <message>
-        <location filename="defaultimagechooser.cpp" line="47"/>
+        <location filename="defaultimagechooser.cpp" line="49"/>
         <source>Choose an image to insert</source>
         <translation>Выбор изображения для вставки</translation>
     </message>
@@ -46,32 +59,32 @@
 <context>
     <name>LeechCraft::Blasq::PhotosTab</name>
     <message>
-        <location filename="photostab.cpp" line="140"/>
+        <location filename="photostab.cpp" line="147"/>
         <source>Upload photos...</source>
         <translation>Загрузить фото…</translation>
     </message>
     <message>
-        <location filename="photostab.cpp" line="414"/>
+        <location filename="photostab.cpp" line="460"/>
         <source>Open in browser</source>
         <translation>Открыть в браузере</translation>
     </message>
     <message>
-        <location filename="photostab.cpp" line="417"/>
+        <location filename="photostab.cpp" line="464"/>
         <source>Download original</source>
         <translation>Сохранить оригинал</translation>
     </message>
     <message>
-        <location filename="photostab.cpp" line="420"/>
+        <location filename="photostab.cpp" line="468"/>
         <source>Copy image URL</source>
         <translation>Скопировать URL изображения</translation>
     </message>
     <message>
-        <location filename="photostab.cpp" line="429"/>
+        <location filename="photostab.cpp" line="478"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="photostab.cpp" line="436"/>
+        <location filename="photostab.cpp" line="486"/>
         <source>Upload</source>
         <translation>Загрузить</translation>
     </message>
@@ -79,19 +92,29 @@
 <context>
     <name>LeechCraft::Blasq::Plugin</name>
     <message>
-        <location filename="blasq.cpp" line="66"/>
+        <location filename="blasq.cpp" line="70"/>
         <source>Blasq</source>
         <translation>Blasq</translation>
     </message>
     <message>
-        <location filename="blasq.cpp" line="67"/>
+        <location filename="blasq.cpp" line="71"/>
         <source>All the photos stored in the cloud</source>
         <translation>Все фотографии, хранящиеся в облаке</translation>
     </message>
     <message>
-        <location filename="blasq.cpp" line="98"/>
+        <location filename="blasq.cpp" line="102"/>
         <source>Client for cloud image storage services like Flickr or Picasa.</source>
         <translation>Клиент для облачных хранилищ изображений вроде Flickr или Picasa.</translation>
+    </message>
+    <message>
+        <location filename="blasq.cpp" line="191"/>
+        <source>Upload image to cloud</source>
+        <translation>Загрузить изображение в облако</translation>
+    </message>
+    <message>
+        <location filename="blasq.cpp" line="208"/>
+        <source>Upload image to account %1 at %2.</source>
+        <translation>Загрузить изображение в учётную запись %1 на %2.</translation>
     </message>
 </context>
 <context>
@@ -112,12 +135,12 @@
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="uploadphotosdialog.cpp" line="110"/>
+        <location filename="uploadphotosdialog.cpp" line="141"/>
         <source>Select photos to upload</source>
         <translation>Выберите фото для загрузки</translation>
     </message>
     <message>
-        <location filename="uploadphotosdialog.cpp" line="112"/>
+        <location filename="uploadphotosdialog.cpp" line="143"/>
         <source>Images (*.jpg *.png *.gif);;All files (*.*)</source>
         <translation>Изображения (*.jpg *.png *.gif);;Все файлы (*.*)</translation>
     </message>

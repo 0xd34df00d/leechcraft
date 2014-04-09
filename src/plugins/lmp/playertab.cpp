@@ -33,14 +33,12 @@
 #include <QToolBar>
 #include <QFileDialog>
 #include <QStandardItemModel>
-#include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QDialogButtonBox>
 #include <QListWidget>
 #include <QTabBar>
 #include <QMessageBox>
 #include <util/util.h>
-#include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
@@ -52,12 +50,10 @@
 #include "util.h"
 #include "core.h"
 #include "localcollection.h"
-#include "collectiondelegate.h"
 #include "xmlsettingsmanager.h"
 #include "aalabeleventfilter.h"
 #include "nowplayingpixmaphandler.h"
 #include "previewhandler.h"
-#include "albumartmanagerdialog.h"
 #include "engine/sourceobject.h"
 #include "engine/output.h"
 #include "volumeslider.h"
@@ -72,39 +68,10 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
-	{
-		class CollectionFilterModel : public QSortFilterProxyModel
-		{
-		public:
-			CollectionFilterModel (QObject *parent = 0)
-			: QSortFilterProxyModel (parent)
-			{
-				setDynamicSortFilter (true);
-			}
-		protected:
-			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
-			{
-				const auto& source = sourceModel ()->index (sourceRow, 0, sourceParent);
-				const auto type = source.data (LocalCollection::Role::Node).toInt ();
-
-				const auto& pattern = filterRegExp ().pattern ();
-
-				if (type != LocalCollection::NodeType::Track)
-					for (int i = 0, rc = sourceModel ()->rowCount (source); i < rc; ++i)
-						if (filterAcceptsRow (i, source))
-							return true;
-
-				return source.data ().toString ().contains (pattern, Qt::CaseInsensitive);
-			}
-		};
-	}
-
 	PlayerTab::PlayerTab (const TabClassInfo& info, QObject *plugin, QWidget *parent)
 	: QWidget (parent)
 	, Plugin_ (plugin)
 	, TC_ (info)
-	, CollectionFilterModel_ (new CollectionFilterModel (this))
 	, Player_ (Core::Instance ().GetPlayer ())
 	, PreviewHandler_ (Core::Instance ().GetPreviewHandler ())
 	, TabToolbar_ (new QToolBar ())
@@ -125,8 +92,6 @@ namespace LMP
 					Ui_.NPArt_->setPixmap (scaled);
 					Ui_.NPArt_->setProperty ("LMP/CoverPath", path);
 				});
-
-		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.CollectionFilter_);
 
 		SetupNavButtons ();
 
@@ -151,19 +116,6 @@ namespace LMP
 				SIGNAL (indexChanged (QModelIndex)),
 				Ui_.Playlist_,
 				SLOT (focusIndex (QModelIndex)));
-		connect (Core::Instance ().GetLocalCollection (),
-				SIGNAL (scanStarted (int)),
-				Ui_.ScanProgress_,
-				SLOT (setMaximum (int)));
-		connect (Core::Instance ().GetLocalCollection (),
-				SIGNAL (scanProgressChanged (int)),
-				this,
-				SLOT (handleScanProgress (int)));
-		connect (Core::Instance ().GetLocalCollection (),
-				SIGNAL (scanFinished ()),
-				Ui_.ScanProgress_,
-				SLOT (hide ()));
-		Ui_.ScanProgress_->hide ();
 
 		TrayIcon_ = new LMPSystemTrayIcon (QIcon ("lcicons:/lmp/resources/images/lmp.svg"), this);
 		connect (Player_,
@@ -171,7 +123,6 @@ namespace LMP
 				TrayIcon_,
 				SLOT (handleSongChanged (const MediaInfo&)));
 		SetupToolbar ();
-		SetupCollection ();
 		Ui_.PLManagerWidget_->SetPlayer (Player_);
 
 		Ui_.Playlist_->SetPlayer (Player_);
@@ -201,8 +152,6 @@ namespace LMP
 				SIGNAL (previewRequested (QString, QString, int)),
 				PreviewHandler_,
 				SLOT (previewTrack (QString, QString, int)));
-
-		new PaletteFixerFilter (Ui_.CollectionTree_);
 
 #ifdef ENABLE_MPRIS
 		new MPRIS::Instance (this, Player_);
@@ -430,78 +379,6 @@ namespace LMP
 		TrayMenu_->addSeparator ();
 		TrayMenu_->addAction (closeLMP);
 		TrayIcon_->setContextMenu (TrayMenu_);
-	}
-
-	void PlayerTab::SetupCollection ()
-	{
-		Ui_.CollectionTree_->setItemDelegate (new CollectionDelegate (Ui_.CollectionTree_));
-		auto collection = Core::Instance ().GetLocalCollection ();
-		CollectionFilterModel_->setSourceModel (collection->GetCollectionModel ());
-		Ui_.CollectionTree_->setModel (CollectionFilterModel_);
-
-		QAction *addToPlaylist = new QAction (tr ("Add to playlist"), this);
-		addToPlaylist->setProperty ("ActionIcon", "list-add");
-		connect (addToPlaylist,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (loadFromCollection ()));
-		Ui_.CollectionTree_->addAction (addToPlaylist);
-
-		CollectionShowTrackProps_ = new QAction (tr ("Show track properties"), Ui_.CollectionTree_);
-		CollectionShowTrackProps_->setProperty ("ActionIcon", "document-properties");
-		connect (CollectionShowTrackProps_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showCollectionTrackProps ()));
-		Ui_.CollectionTree_->addAction (CollectionShowTrackProps_);
-
-		CollectionShowAlbumArt_ = new QAction (tr ("Show album art"), Ui_.CollectionTree_);
-		CollectionShowAlbumArt_->setProperty ("ActionIcon", "media-optical");
-		connect (CollectionShowAlbumArt_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showCollectionAlbumArt ()));
-		Ui_.CollectionTree_->addAction (CollectionShowAlbumArt_);
-
-		CollectionShowAAManager_ = new QAction (tr ("Album art manager..."), Ui_.CollectionTree_);
-		connect (CollectionShowAAManager_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showAlbumArtManager ()));
-		Ui_.CollectionTree_->addAction (CollectionShowAAManager_);
-
-		Ui_.CollectionTree_->addAction (Util::CreateSeparator (Ui_.CollectionTree_));
-
-		CollectionRemove_ = new QAction (tr ("Remove from collection..."), Ui_.CollectionTree_);
-		CollectionRemove_->setProperty ("ActionIcon", "list-remove");
-		connect (CollectionRemove_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleCollectionRemove ()));
-		Ui_.CollectionTree_->addAction (CollectionRemove_);
-
-		CollectionDelete_ = new QAction (tr ("Delete from disk..."), Ui_.CollectionTree_);
-		CollectionDelete_->setProperty ("ActionIcon", "edit-delete");
-		connect (CollectionDelete_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleCollectionDelete ()));
-		Ui_.CollectionTree_->addAction (CollectionDelete_);
-
-		connect (Ui_.CollectionTree_,
-				SIGNAL (doubleClicked (QModelIndex)),
-				this,
-				SLOT (loadFromCollection ()));
-
-		connect (Ui_.CollectionTree_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleCollectionItemSelected (QModelIndex)));
-
-		connect (Ui_.CollectionFilter_,
-				SIGNAL (textChanged (QString)),
-				CollectionFilterModel_,
-				SLOT (setFilterFixedString (QString)));
 	}
 
 	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
@@ -775,138 +652,6 @@ namespace LMP
 
 		for (const auto& item : results.Items_)
 			Ui_.NPWidget_->SetLyrics (item);
-	}
-
-	void PlayerTab::handleScanProgress (int progress)
-	{
-		if (progress >= Ui_.ScanProgress_->maximum ())
-		{
-			Ui_.ScanProgress_->hide ();
-			return;
-		}
-
-		if (!Ui_.ScanProgress_->isVisible ())
-			Ui_.ScanProgress_->show ();
-		Ui_.ScanProgress_->setValue (progress);
-	}
-
-	void PlayerTab::showCollectionTrackProps ()
-	{
-		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& info = index.data (LocalCollection::Role::TrackPath).toString ();
-		if (info.isEmpty ())
-			return;
-
-		AudioPropsWidget::MakeDialog ()->SetProps (info);
-	}
-
-	void PlayerTab::showCollectionAlbumArt ()
-	{
-		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& path = index.data (LocalCollection::Role::AlbumArt).toString ();
-		if (path.isEmpty ())
-			return;
-
-		ShowAlbumArt (path, QCursor::pos ());
-	}
-
-	void PlayerTab::showAlbumArtManager ()
-	{
-		auto aamgr = Core::Instance ().GetLocalCollection ()->GetAlbumArtManager ();
-
-		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& album = index.data (LocalCollection::Role::AlbumName).toString ();
-		const auto& artist= index.data (LocalCollection::Role::ArtistName).toString ();
-
-		auto dia = new AlbumArtManagerDialog (artist, album, aamgr, this);
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->show ();
-	}
-
-	namespace
-	{
-		template<typename T>
-		QList<T> CollectFromModel (const QModelIndex& root, int role)
-		{
-			QList<T> result;
-
-			const auto& var = root.data (role);
-			if (!var.isNull ())
-				result << var.value<T> ();
-
-			auto model = root.model ();
-			for (int i = 0; i < model->rowCount (root); ++i)
-				result += CollectFromModel<T> (root.child (i, 0), role);
-
-			return result;
-		}
-	}
-
-	void PlayerTab::handleCollectionRemove ()
-	{
-		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& paths = CollectFromModel<QString> (index, LocalCollection::Role::TrackPath);
-		if (paths.isEmpty ())
-			return;
-
-		auto response = QMessageBox::question (this,
-				"LeechCraft",
-				tr ("Are you sure you want to remove %n track(s) from your collection?<br/><br/>"
-					"Please note that if tracks remain on your disk they will be re-added next "
-					"time collection is scanned, but you will lose the statistics.",
-					0,
-					paths.size ()),
-					QMessageBox::Yes | QMessageBox::No);
-		if (response != QMessageBox::Yes)
-			return;
-
-		auto collection = Core::Instance ().GetLocalCollection ();
-		Q_FOREACH (const auto& path, paths)
-			collection->RemoveTrack (path);
-	}
-
-	void PlayerTab::handleCollectionDelete ()
-	{
-		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& paths = CollectFromModel<QString> (index, LocalCollection::Role::TrackPath);
-		if (paths.isEmpty ())
-			return;
-
-		auto response = QMessageBox::question (this,
-				"LeechCraft",
-				tr ("Are you sure you want to erase %n track(s)? This action cannot be undone.",
-					0,
-					paths.size ()),
-					QMessageBox::Yes | QMessageBox::No);
-		if (response != QMessageBox::Yes)
-			return;
-
-		Q_FOREACH (const auto& path, paths)
-			QFile::remove (path);
-	}
-
-	void PlayerTab::loadFromCollection ()
-	{
-		const auto& idxs = Ui_.CollectionTree_->selectionModel ()->selectedRows ();
-		auto collection = Core::Instance ().GetLocalCollection ();
-
-		QModelIndexList mapped;
-		Q_FOREACH (const auto& src, idxs)
-		{
-			const QModelIndex& index = CollectionFilterModel_->mapToSource (src);
-			if (index.isValid ())
-				mapped << index;
-		}
-
-		collection->Enqueue (mapped, Player_);
-	}
-
-	void PlayerTab::handleCollectionItemSelected (const QModelIndex& index)
-	{
-		const int nodeType = index.data (LocalCollection::Role::Node).value<int> ();
-		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollection::NodeType::Track);
-		CollectionShowAlbumArt_->setEnabled (nodeType == LocalCollection::NodeType::Album);
-		CollectionShowAAManager_->setEnabled (nodeType == LocalCollection::NodeType::Album);
 	}
 
 	void PlayerTab::handlePlayerAvailable (bool available)

@@ -773,7 +773,6 @@ namespace Acetamide
 	{
 		CM_->CTCPRequest (cmd, ChannelOptions_.ChannelName_.toLower ());
 	}
-
 };
 };
 };

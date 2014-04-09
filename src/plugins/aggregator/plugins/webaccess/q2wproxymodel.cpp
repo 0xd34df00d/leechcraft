@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "q2wproxymodel.h"
+#include <iterator>
 #include <QAbstractItemModel>
 #include <QVector>
 #include <QtDebug>
@@ -44,107 +45,51 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	typedef std::weak_ptr<ModelItem> ModelItem_wtr;
-	typedef QVector<ModelItem_ptr> ModelItemsList_t;
-
-	class ModelItem : public std::enable_shared_from_this<ModelItem>
-	{
-		ModelItem_wtr Parent_;
-		ModelItemsList_t Children_;
-
-		QAbstractItemModel *Model_;
-		QModelIndex SrcIdx_;
-	public:
-		ModelItem (QAbstractItemModel *model)
-		: Model_ { model }
-		{
-		}
-
-		ModelItem (QAbstractItemModel *model, const QModelIndex& idx, const ModelItem_wtr& parent)
-		: Parent_ { parent }
-		, Model_ { model }
-		, SrcIdx_ { idx }
-		{
-		}
-
-		ModelItem_ptr GetChild (int row) const
-		{
-			return Children_.value (row);
-		}
-
-		ModelItem* EnsureChild (int row)
-		{
-			if (Children_.value (row))
-				return Children_.at (row).get ();
-
-			if (Children_.size () <= row)
-				Children_.resize (row + 1);
-
-			const auto& childIdx = Model_->index (row, 0, SrcIdx_);
-			Children_ [row].reset (new ModelItem { Model_, childIdx, shared_from_this () });
-			return Children_.at (row).get ();
-		}
-
-		const QModelIndex& GetIndex () const
-		{
-			return SrcIdx_;
-		}
-
-		ModelItem_ptr GetParent () const
-		{
-			return Parent_.lock ();
-		}
-
-		int GetRow (const ModelItem_ptr& item) const
-		{
-			return Children_.indexOf (item);
-		}
-	};
-
 	Q2WProxyModel::Q2WProxyModel (QAbstractItemModel *src, Wt::WApplication *app)
 	: Wt::WAbstractItemModel { }
 	, Src_ { src }
-	, Root_ { new ModelItem { src } }
+	, Root_ { new Util::ModelItem { src, {}, {} } }
 	, App_ { app }
 	, Update_ { app }
 	{
+		const auto type = Qt::DirectConnection;
 		connect (src,
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleDataChanged (QModelIndex, QModelIndex)),
-				Qt::QueuedConnection);
+				type);
 
 		connect (src,
 				SIGNAL (rowsAboutToBeInserted (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsAboutToBeInserted (QModelIndex, int, int)),
-				Qt::QueuedConnection);
+				type);
 		connect (src,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsInserted (QModelIndex, int, int)),
-				Qt::QueuedConnection);
+				type);
 		connect (src,
 				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsAboutToBeRemoved (QModelIndex, int, int)),
-				Qt::QueuedConnection);
+				type);
 		connect (src,
 				SIGNAL (rowsRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsRemoved (QModelIndex, int, int)),
-				Qt::QueuedConnection);
+				type);
 
 		connect (src,
 				SIGNAL (modelAboutToBeReset ()),
 				this,
 				SLOT (handleModelAboutToBeReset ()),
-				Qt::QueuedConnection);
+				type);
 		connect (src,
 				SIGNAL (modelReset ()),
 				this,
 				SLOT (handleModelReset ()),
-				Qt::QueuedConnection);
+				type);
 	}
 
 	void Q2WProxyModel::SetRoleMappings (const QMap<int, int>& mapping)
@@ -181,13 +126,12 @@ namespace WebAccess
 				index.internalPointer () == Root_.get ())
 			return {};
 
-		const auto child = static_cast<ModelItem*> (index.internalPointer ());
+		const auto child = static_cast<Util::ModelItem*> (index.internalPointer ());
 		const auto parentItem = child->GetParent ();
 		if (parentItem == Root_)
 			return {};
 
-		const auto parentParent = parentItem->GetParent ();
-		return createIndex (parentParent->GetRow (parentItem), 0, parentItem.get ());
+		return createIndex (parentItem->GetRow (), 0, parentItem.get ());
 	}
 
 	namespace
@@ -198,6 +142,8 @@ namespace WebAccess
 		{
 			switch (var.type ())
 			{
+			case QVariant::Bool:
+				return var.toBool ();
 			case QVariant::DateTime:
 				return Wt::WDateTime::fromTime_t (var.toDateTime ().toTime_t ());
 			case QVariant::String:
@@ -248,7 +194,7 @@ namespace WebAccess
 			return {};
 
 		const auto parentPtr = parent.internalPointer () ?
-				static_cast<ModelItem*> (parent.internalPointer ()) :
+				static_cast<Util::ModelItem*> (parent.internalPointer ()) :
 				Root_.get ();
 		return createIndex (row, column, parentPtr->EnsureChild (row));
 	}
@@ -261,13 +207,36 @@ namespace WebAccess
 		return Variant2Any (Src_->headerData (section, Qt::Horizontal, Qt::DisplayRole));
 	}
 
+	void* Q2WProxyModel::toRawIndex (const Wt::WModelIndex& index) const
+	{
+		return index.internalPointer () ? index.internalPointer () : Root_.get ();
+	}
+
+	Wt::WModelIndex Q2WProxyModel::fromRawIndex (void *rawIndex) const
+	{
+		if (rawIndex == Root_.get ())
+			return {};
+
+		auto items = Root_->GetChildren ();
+		for (int i = 0; i < items.size (); ++i)
+		{
+			auto thisItem = items.at (i);
+			if (thisItem.get () == rawIndex)
+				return createIndex (thisItem->GetRow (), 0, thisItem.get ());
+
+			items << thisItem->GetChildren ();
+		}
+
+		return {};
+	}
+
 	QModelIndex Q2WProxyModel::W2QIdx (const Wt::WModelIndex& index) const
 	{
 		if (!index.isValid ())
 			return {};
 
 		const auto ptr = index.internalPointer () ?
-				static_cast<ModelItem*> (index.internalPointer ()) :
+				static_cast<Util::ModelItem*> (index.internalPointer ()) :
 				Root_.get ();
 		const auto& srcIdx = ptr->GetIndex ();
 		return srcIdx.sibling (index.row (), index.column ());
@@ -275,6 +244,9 @@ namespace WebAccess
 
 	Wt::WModelIndex Q2WProxyModel::Q2WIdx (const QModelIndex& index) const
 	{
+		if (!index.isValid ())
+			return {};
+
 		struct Info
 		{
 			QModelIndex Idx_;
@@ -338,6 +310,15 @@ namespace WebAccess
 		if (!parent.isValid ())
 			return;
 
+		const auto rawItem = static_cast<Util::ModelItem*> (parent.internalPointer ());
+		const auto item = rawItem->shared_from_this ();
+
+		for ( ; first <= last; ++first)
+			item->InsertChild (first, Src_, Src_->index (first, 0, srcParent), item);
+
+		for ( ; first < item->GetRowCount (); ++first)
+			item->GetChild (first)->RefreshIndex (0);
+
 		rowsInserted () (parent, first, last);
 	}
 
@@ -348,6 +329,13 @@ namespace WebAccess
 			return;
 
 		rowsAboutToBeRemoved () (parent, first, last);
+
+		const auto rawItem = static_cast<Util::ModelItem*> (parent.internalPointer ());
+		const auto item = rawItem->shared_from_this ();
+
+		auto next = item->EraseChildren (item->begin () + first, item->begin () + last + 1);
+		for ( ; next != item->end (); ++next)
+			(*next)->RefreshIndex (0);
 	}
 
 	void Q2WProxyModel::handleRowsRemoved (const QModelIndex& srcParent, int first, int last)
@@ -361,12 +349,26 @@ namespace WebAccess
 
 	void Q2WProxyModel::handleModelAboutToBeReset ()
 	{
+		Wt::WApplication::UpdateLock lock { App_ };
+
+		if ((LastModelResetRC_ = rowCount ({})))
+			rowsAboutToBeRemoved () ({}, 0, LastModelResetRC_ - 1);
 	}
 
 	void Q2WProxyModel::handleModelReset ()
 	{
 		Wt::WApplication::UpdateLock lock { App_ };
-		modelReset () ();
+
+		if (LastModelResetRC_)
+			rowsRemoved () ({}, 0, LastModelResetRC_ - 1);
+
+		LastModelResetRC_ = 0;
+
+		if (const auto rc = rowCount ({}))
+		{
+			rowsAboutToBeInserted () ({}, 0, rc - 1);
+			rowsInserted () ({}, 0, rc - 1);
+		}
 
 		Update_ ();
 	}

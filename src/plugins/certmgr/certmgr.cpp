@@ -29,9 +29,11 @@
 
 #include "certmgr.h"
 #include <QIcon>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "acceptedrejecteddialog.h"
+#include "managerdialog.h"
 
 namespace LeechCraft
 {
@@ -40,6 +42,8 @@ namespace CertMgr
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		Util::InstallTranslator ("certmgr");
 
 		Manager_.reset (new Manager);
 
@@ -91,6 +95,13 @@ namespace CertMgr
 		if (button == "AcceptedRejected")
 		{
 			auto dia = new AcceptedRejectedDialog { Proxy_ };
+			dia->setAttribute (Qt::WA_DeleteOnClose);
+			dia->show ();
+		}
+		else if (button == "Certificates")
+		{
+			auto dia = new ManagerDialog { Manager_.get () };
+			dia->setAttribute (Qt::WA_DeleteOnClose);
 			dia->show ();
 		}
 		else

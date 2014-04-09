@@ -238,6 +238,11 @@ namespace LMP
 					PlaylistFilter_));
 
 		new PaletteFixerFilter (Ui_.Playlist_);
+
+		connect (player,
+				SIGNAL (shouldClearFiltering ()),
+				Ui_.SearchPlaylist_,
+				SLOT (clear ()));
 	}
 
 	void PlaylistWidget::InitToolbarActions ()

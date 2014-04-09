@@ -344,7 +344,7 @@ namespace Azoth
 		if (!index.isValid ())
 			return;
 
-		ActionsManager *manager = Core::Instance ().GetActionsManager ();
+		const auto manager = Core::Instance ().GetActionsManager ();
 
 		QMenu *menu = new QMenu (tr ("Entry context menu"));
 		QList<QAction*> actions;

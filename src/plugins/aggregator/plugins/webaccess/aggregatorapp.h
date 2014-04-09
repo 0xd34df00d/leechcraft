@@ -47,6 +47,7 @@ namespace WebAccess
 {
 	class Q2WProxyModel;
 	class ReadChannelsFilter;
+	class ReadItemsFilter;
 
 	class AggregatorApp : public Wt::WApplication
 	{
@@ -62,6 +63,7 @@ namespace WebAccess
 
 		QAbstractItemModel * const SourceItemModel_;
 		Q2WProxyModel *ItemsModel_;
+		ReadItemsFilter *ItemsFilter_;
 
 		Wt::WTableView *ItemsTable_;
 
@@ -76,7 +78,8 @@ namespace WebAccess
 
 		enum ItemRole
 		{
-			IID = Wt::UserRole + 1
+			IID = Wt::UserRole + 1,
+			IsRead
 		};
 
 		AggregatorApp (IProxyObject*, ICoreProxy_ptr, const Wt::WEnvironment& environment);

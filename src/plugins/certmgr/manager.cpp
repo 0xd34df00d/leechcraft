@@ -33,49 +33,86 @@
 #include <QSslSocket>
 #include <QtDebug>
 #include <util/util.h>
+#include "certsmodel.h"
 
 namespace LeechCraft
 {
 namespace CertMgr
 {
 	Manager::Manager ()
-	: Defaults_ { QSslSocket::systemCaCertificates () }
+	: SystemCertsModel_ { new CertsModel { this } }
+	, LocalCertsModel_ { new CertsModel { this } }
 	{
+		const auto& systems = QSslSocket::systemCaCertificates ();
+		QSet<QByteArray> serializedCerts;
+		for (const auto& cert : systems)
+		{
+			const auto& pem = cert.toPem ();
+			if (serializedCerts.contains (pem))
+				continue;
+
+			serializedCerts << pem;
+			Defaults_ << cert;
+		}
+
+		LoadLocals ();
+		LoadBlacklist ();
+
+		for (const auto& cert : Blacklist_)
+			SystemCertsModel_->SetBlacklisted (cert, true);
+
 		RegenAllowed ();
 
 		ResetSocketDefault ();
+
+		SystemCertsModel_->ResetCerts (Defaults_);
+		LocalCertsModel_->ResetCerts (Locals_);
 	}
 
-	void Manager::AddCert (const QSslCertificate& cert)
+	int Manager::AddCerts (const QList<QSslCertificate>& certs)
 	{
-		if (Defaults_.contains (cert) || Locals_.contains (cert))
-			return;
+		int added = 0;
+		for (const auto& cert : certs)
+		{
+			if (cert.isNull ())
+				continue;
 
-		Locals_ << cert;
+			if (Defaults_.contains (cert) || Locals_.contains (cert))
+				continue;
+
+			Locals_ << cert;
+			LocalCertsModel_->AddCert (cert);
+			++added;
+		}
+
+		if (!added)
+			return 0;
+
 		SaveLocals ();
-
 		ResetSocketDefault ();
+
+		return added;
 	}
 
 	void Manager::RemoveCert (const QSslCertificate& cert)
 	{
-		bool changed = false;
+		if (!Locals_.removeOne (cert))
+			return;
 
-		if (Locals_.removeOne (cert))
-		{
-			SaveLocals ();
-			changed = true;
-		}
+		LocalCertsModel_->RemoveCert (cert);
 
-		if (AllowedDefaults_.removeOne (cert))
-		{
-			Blacklist_ << cert;
-			SaveBlacklist ();
-			changed = true;
-		}
+		SaveLocals ();
+		ResetSocketDefault ();
+	}
 
-		if (changed)
-			ResetSocketDefault ();
+	QAbstractItemModel* Manager::GetSystemModel () const
+	{
+		return SystemCertsModel_;
+	}
+
+	QAbstractItemModel* Manager::GetLocalModel () const
+	{
+		return LocalCertsModel_;
 	}
 
 	const QList<QSslCertificate>& Manager::GetLocalCerts () const
@@ -91,6 +128,24 @@ namespace CertMgr
 	bool Manager::IsBlacklisted (const QSslCertificate& cert) const
 	{
 		return Blacklist_.contains (cert);
+	}
+
+	void Manager::ToggleBlacklist (const QSslCertificate& cert, bool blacklist)
+	{
+		if (cert.isNull ())
+			return;
+
+		if ((blacklist && Blacklist_.contains (cert)) ||
+			(!blacklist && !Blacklist_.removeAll (cert)))
+			return;
+
+		if (blacklist)
+			Blacklist_ << cert;
+
+		SystemCertsModel_->SetBlacklisted (cert, blacklist);
+
+		RegenAllowed ();
+		ResetSocketDefault ();
 	}
 
 	void Manager::RegenAllowed ()

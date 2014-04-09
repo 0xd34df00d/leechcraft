@@ -40,14 +40,19 @@ namespace CpuLoad
 		High,
 		Medium,
 		Low,
-		IO
+		IO,
+
+		// This one for completeness
+		Idle
 	};
 
 	struct LoadTypeInfo
 	{
-		QString Label_;
-		LoadPriority Priority_;
 		double LoadPercentage_;
+
+		LoadTypeInfo& operator-= (const LoadTypeInfo&);
 	};
+
+	LoadTypeInfo operator- (const LoadTypeInfo&,  const LoadTypeInfo&);
 }
 }

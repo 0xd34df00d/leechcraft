@@ -91,7 +91,7 @@ namespace LMP
 
 	void BioWidget::SetCurrentArtist (const QString& artist)
 	{
-		if (artist == CurrentArtist_)
+		if (artist.isEmpty () || artist == CurrentArtist_)
 			return;
 
 		CurrentArtist_ = artist;

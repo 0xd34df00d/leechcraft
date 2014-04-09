@@ -367,6 +367,19 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Azoth::Xoox</name>
+    <message>
+        <location filename="xep0313modelmanager.cpp" line="45"/>
+        <source>Entry name</source>
+        <translation>Entry name</translation>
+    </message>
+    <message>
+        <location filename="xep0313modelmanager.cpp" line="45"/>
+        <source>JID</source>
+        <translation>JID</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Xoox::AdHocCommandServer</name>
     <message>
         <location filename="adhoccommandserver.cpp" line="64"/>
@@ -452,17 +465,17 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="454"/>
+        <location filename="clientconnection.cpp" line="470"/>
         <source>This room is already joined.</source>
         <translation>This room is already joined.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="890"/>
+        <location filename="clientconnection.cpp" line="915"/>
         <source>Data form from %1</source>
         <translation>Data form from %1</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="893"/>
+        <location filename="clientconnection.cpp" line="918"/>
         <source>You have received dataform from %1:</source>
         <translation>You have received dataform from %1:</translation>
     </message>
@@ -741,32 +754,42 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="87"/>
+        <location filename="glooxaccount.cpp" line="91"/>
         <source>Self VCard...</source>
         <translation>Self VCard...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="88"/>
+        <location filename="glooxaccount.cpp" line="92"/>
         <source>Privacy lists...</source>
         <translation>Privacy lists...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="473"/>
+        <location filename="glooxaccount.cpp" line="93"/>
+        <source>Enable message carbons</source>
+        <translation>Enable message carbons</translation>
+    </message>
+    <message>
+        <location filename="glooxaccount.cpp" line="101"/>
+        <source>Deliver messages from conversations on other resources to this resource as well.</source>
+        <translation>Deliver messages from conversations on other resources to this resource as well.</translation>
+    </message>
+    <message>
+        <location filename="glooxaccount.cpp" line="492"/>
         <source>Why would you call yourself?</source>
         <translation>Why would you call yourself?</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="725"/>
+        <location filename="glooxaccount.cpp" line="784"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
         <translation>Unable to enable encryption for entry %1: no key has been set.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="734"/>
+        <location filename="glooxaccount.cpp" line="793"/>
         <source>Unable to change encryption state for %1.</source>
         <translation>Unable to change encryption state for %1.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="762"/>
+        <location filename="glooxaccount.cpp" line="821"/>
         <source>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</source>
         <translation>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</translation>
     </message>
@@ -797,22 +820,22 @@
         <translation>Add this user to the active privacy list (not all servers support this feature).</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="274"/>
+        <location filename="glooxclentry.cpp" line="276"/>
         <source>Unauthorized users</source>
         <translation>Unauthorized users</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="370"/>
+        <location filename="glooxclentry.cpp" line="372"/>
         <source>Login</source>
         <translation>Login</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="378"/>
+        <location filename="glooxclentry.cpp" line="380"/>
         <source>Logout</source>
         <translation>Logout</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="386"/>
+        <location filename="glooxclentry.cpp" line="388"/>
         <source>Gateway preferences...</source>
         <translation>Gateway preferences...</translation>
     </message>
@@ -1135,72 +1158,72 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomCLEntry</name>
     <message>
-        <location filename="roomclentry.cpp" line="87"/>
+        <location filename="roomclentry.cpp" line="84"/>
         <source>Role</source>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="88"/>
+        <location filename="roomclentry.cpp" line="85"/>
         <source>Affiliation</source>
         <translation>Affiliation</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="89"/>
+        <location filename="roomclentry.cpp" line="86"/>
         <source>Kicked</source>
         <translation>Kicked</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="90"/>
+        <location filename="roomclentry.cpp" line="87"/>
         <source>Visitor</source>
         <translation>Visitor</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="91"/>
+        <location filename="roomclentry.cpp" line="88"/>
         <source>Participant</source>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="92"/>
+        <location filename="roomclentry.cpp" line="89"/>
         <source>Moderator</source>
         <translation>Moderator</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="93"/>
+        <location filename="roomclentry.cpp" line="90"/>
         <source>Banned</source>
         <translation>Banned</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="94"/>
+        <location filename="roomclentry.cpp" line="91"/>
         <source>None</source>
         <translation>None</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="95"/>
+        <location filename="roomclentry.cpp" line="92"/>
         <source>Member</source>
         <translation>Member</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="96"/>
+        <location filename="roomclentry.cpp" line="93"/>
         <source>Admin</source>
         <translation>Admin</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="97"/>
+        <location filename="roomclentry.cpp" line="94"/>
         <source>Owner</source>
         <translation>Owner</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="155"/>
+        <location filename="roomclentry.cpp" line="152"/>
         <source>Multiuser chatrooms</source>
         <translation>Multiuser chatrooms</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="206"/>
+        <location filename="roomclentry.cpp" line="203"/>
         <source>Request voice</source>
         <translation>Request voice</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="293"/>
+        <location filename="roomclentry.cpp" line="296"/>
         <source>%1 participants</source>
         <translation>%1 participants</translation>
     </message>
@@ -1353,7 +1376,7 @@
         <translation>no message</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="461"/>
+        <location filename="roomhandler.cpp" line="467"/>
         <source>%1 changed subject to %2</source>
         <translation>%1 changed subject to %2</translation>
     </message>
@@ -1391,77 +1414,77 @@
         <translation>Register...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="153"/>
+        <location filename="sdsession.cpp" line="142"/>
         <source>Execute...</source>
         <translation>Execute...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="156"/>
+        <location filename="sdsession.cpp" line="144"/>
         <source>Join...</source>
         <translation>Join...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="158"/>
+        <location filename="sdsession.cpp" line="146"/>
         <source>Refresh...</source>
         <translation>Refresh...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="262"/>
+        <location filename="sdsession.cpp" line="259"/>
         <source>MUC description: %1.</source>
         <translation>MUC description: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="276"/>
+        <location filename="sdsession.cpp" line="273"/>
         <source>OS: %1.</source>
         <translation>OS: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="277"/>
+        <location filename="sdsession.cpp" line="274"/>
         <source>OS version: %1.</source>
         <translation>OS version: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="278"/>
+        <location filename="sdsession.cpp" line="275"/>
         <source>Software: %1.</source>
         <translation>Software: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="279"/>
+        <location filename="sdsession.cpp" line="276"/>
         <source>Software version: %1.</source>
         <translation>Software version: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="281"/>
+        <location filename="sdsession.cpp" line="278"/>
         <source>Version:</source>
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="286"/>
+        <location filename="sdsession.cpp" line="283"/>
         <source>Identities:</source>
         <translation>Identities:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="294"/>
+        <location filename="sdsession.cpp" line="291"/>
         <source>Identity name:</source>
         <translation>Identity name:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="295"/>
+        <location filename="sdsession.cpp" line="292"/>
         <source>Category:</source>
         <translation>Category:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="296"/>
+        <location filename="sdsession.cpp" line="293"/>
         <source>Type:</source>
         <translation>Type:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="297"/>
+        <location filename="sdsession.cpp" line="294"/>
         <source>Language:</source>
         <translation>Language:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="307"/>
+        <location filename="sdsession.cpp" line="304"/>
         <source>Capabilities:</source>
         <translation>Capabilities:</translation>
     </message>
@@ -1485,131 +1508,131 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::VCardDialog</name>
     <message>
-        <location filename="vcarddialog.cpp" line="312"/>
+        <location filename="vcarddialog.cpp" line="315"/>
         <source>Capabilities</source>
         <translation>Capabilities</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="107"/>
+        <location filename="vcarddialog.cpp" line="108"/>
         <source>VCard for %1</source>
         <translation>VCard for %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="177"/>
-        <location filename="vcarddialog.cpp" line="202"/>
-        <location filename="vcarddialog.cpp" line="235"/>
-        <location filename="vcarddialog.cpp" line="377"/>
-        <location filename="vcarddialog.cpp" line="431"/>
+        <location filename="vcarddialog.cpp" line="180"/>
+        <location filename="vcarddialog.cpp" line="205"/>
+        <location filename="vcarddialog.cpp" line="238"/>
+        <location filename="vcarddialog.cpp" line="383"/>
+        <location filename="vcarddialog.cpp" line="437"/>
         <source>preferred</source>
         <translation>preferred</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="179"/>
-        <location filename="vcarddialog.cpp" line="204"/>
-        <location filename="vcarddialog.cpp" line="229"/>
-        <location filename="vcarddialog.cpp" line="378"/>
-        <location filename="vcarddialog.cpp" line="432"/>
+        <location filename="vcarddialog.cpp" line="182"/>
+        <location filename="vcarddialog.cpp" line="207"/>
+        <location filename="vcarddialog.cpp" line="232"/>
+        <location filename="vcarddialog.cpp" line="384"/>
+        <location filename="vcarddialog.cpp" line="438"/>
         <source>home</source>
         <translation>home</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="181"/>
-        <location filename="vcarddialog.cpp" line="206"/>
-        <location filename="vcarddialog.cpp" line="231"/>
-        <location filename="vcarddialog.cpp" line="379"/>
-        <location filename="vcarddialog.cpp" line="433"/>
+        <location filename="vcarddialog.cpp" line="184"/>
+        <location filename="vcarddialog.cpp" line="209"/>
+        <location filename="vcarddialog.cpp" line="234"/>
+        <location filename="vcarddialog.cpp" line="385"/>
+        <location filename="vcarddialog.cpp" line="439"/>
         <source>work</source>
         <translation>work</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="183"/>
-        <location filename="vcarddialog.cpp" line="380"/>
+        <location filename="vcarddialog.cpp" line="186"/>
+        <location filename="vcarddialog.cpp" line="386"/>
         <source>cell</source>
         <translation>cell</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="164"/>
+        <location filename="vcarddialog.cpp" line="167"/>
         <source>No photo</source>
         <translation>No photo</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="142"/>
+        <location filename="vcarddialog.cpp" line="145"/>
         <source>%1&apos;s avatar</source>
         <translation>%1&apos;s avatar</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="233"/>
+        <location filename="vcarddialog.cpp" line="236"/>
         <source>postal</source>
         <translation>postal</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="240"/>
+        <location filename="vcarddialog.cpp" line="243"/>
         <source>Address %1:</source>
         <translation>Address %1:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="242"/>
+        <location filename="vcarddialog.cpp" line="245"/>
         <source>Address %1 (%2):</source>
         <translation>Address %1 (%2):</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="253"/>
+        <location filename="vcarddialog.cpp" line="256"/>
         <source>Country: %1</source>
         <translation>Country: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="254"/>
+        <location filename="vcarddialog.cpp" line="257"/>
         <source>Region: %1</source>
         <translation>Region: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="255"/>
+        <location filename="vcarddialog.cpp" line="258"/>
         <source>Locality: %1</source>
         <comment>User&apos;s locality</comment>
         <translation>Locality: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="256"/>
+        <location filename="vcarddialog.cpp" line="259"/>
         <source>Street: %1</source>
         <translation>Street: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="257"/>
+        <location filename="vcarddialog.cpp" line="260"/>
         <source>Postal code: %1</source>
         <translation>Postal code: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="305"/>
+        <location filename="vcarddialog.cpp" line="308"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="306"/>
+        <location filename="vcarddialog.cpp" line="309"/>
         <source>Version</source>
         <translation>Version</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="307"/>
+        <location filename="vcarddialog.cpp" line="310"/>
         <source>OS</source>
         <translation>OS</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="391"/>
+        <location filename="vcarddialog.cpp" line="397"/>
         <source>VCard phones</source>
         <translation>VCard phones</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="445"/>
+        <location filename="vcarddialog.cpp" line="451"/>
         <source>VCard emails</source>
         <translation>VCard emails</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="484"/>
+        <location filename="vcarddialog.cpp" line="490"/>
         <source>Choose new photo</source>
         <translation>Choose new photo</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="486"/>
+        <location filename="vcarddialog.cpp" line="492"/>
         <source>Images (*.png *.jpg *.jpeg *.gif *.bmp);;All files (*.*)</source>
         <translation>Images (*.png *.jpg *.jpeg *.gif *.bmp);;All files (*.*)</translation>
     </message>
@@ -1786,53 +1809,53 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="57"/>
+        <location filename="util.cpp" line="59"/>
         <source>guest</source>
         <translation>guest</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="59"/>
+        <location filename="util.cpp" line="61"/>
         <source>visitor</source>
         <translation>visitor</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="61"/>
+        <location filename="util.cpp" line="63"/>
         <source>participant</source>
         <translation>participant</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="63"/>
+        <location filename="util.cpp" line="65"/>
         <source>moderator</source>
         <translation>moderator</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="65"/>
-        <location filename="util.cpp" line="84"/>
+        <location filename="util.cpp" line="67"/>
+        <location filename="util.cpp" line="86"/>
         <source>unspecified</source>
         <translation>unspecified</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="74"/>
+        <location filename="util.cpp" line="76"/>
         <source>outcast</source>
         <translation>outcast</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="76"/>
+        <location filename="util.cpp" line="78"/>
         <source>newcomer</source>
         <translation>newcomer</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="78"/>
+        <location filename="util.cpp" line="80"/>
         <source>member</source>
         <translation>member</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="80"/>
+        <location filename="util.cpp" line="82"/>
         <source>admin</source>
         <translation>admin</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="82"/>
+        <location filename="util.cpp" line="84"/>
         <source>owner</source>
         <translation>owner</translation>
     </message>
@@ -1998,6 +2021,54 @@
     </message>
 </context>
 <context>
+    <name>Xep0313PrefsDialog</name>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="14"/>
+        <source>Message archiving preferences</source>
+        <translation>Message archiving preferences</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="22"/>
+        <source>Default mode:</source>
+        <translation>Default mode:</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="30"/>
+        <source>always</source>
+        <translation>always</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="35"/>
+        <source>never</source>
+        <translation>never</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="40"/>
+        <source>roster only</source>
+        <translation>roster only</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="56"/>
+        <source>Per-JID configuration</source>
+        <translation>Per-JID configuration</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="62"/>
+        <source>Always:</source>
+        <translation>Always:</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="72"/>
+        <source>Never:</source>
+        <translation>Never:</translation>
+    </message>
+    <message>
+        <location filename="xep0313prefsdialog.ui" line="82"/>
+        <source>Enter custom JIDs, one per line:</source>
+        <translation>Enter custom JIDs, one per line:</translation>
+    </message>
+</context>
+<context>
     <name>azothxooxsettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
@@ -2033,6 +2104,16 @@
         <location filename="dummy.cpp" line="8"/>
         <source>Request participant VCards in MUCs</source>
         <translation>Request participant VCards in MUCs</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>Request contacts versions</source>
+        <translation>Request contacts versions</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>Request contacts VCards</source>
+        <translation>Request contacts VCards</translation>
     </message>
 </context>
 </TS>

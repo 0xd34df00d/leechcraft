@@ -144,12 +144,6 @@ endif ()
 add_definitions (${DEFINITIONS})
 set (CMAKE_AUTOMOC_MOC_OPTIONS ${CMAKE_AUTOMOC_MOC_OPTIONS} ${DEFINITIONS})
 
-option (I_HAVE_OLD_QXMPP "Enable if you have old non-freshiest release of QXmpp. Semantics may vary." OFF)
-
-if (I_HAVE_OLD_QXMPP)
-	add_definitions (-DI_HAVE_OLD_QXMPP)
-endif ()
-
 CreateTrs ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("azoth_xoox" "en;ru_RU" "${XOOX_SRCS}" "${XOOX_FORMS}" "azothxooxsettings.xml")
 QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})

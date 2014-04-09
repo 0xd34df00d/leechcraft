@@ -241,7 +241,7 @@ namespace Azoth
 
 		/** Returns contact list entry with the given id. The id is the
 		 * same as returned by ICLEntry::GetEntryID(). If no such entry
-		 * entry could be found, NULL is returned.
+		 * could be found, NULL is returned.
 		 */
 		QObject* GetEntry (const QString& id) const;
 

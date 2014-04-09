@@ -170,6 +170,11 @@ void IconThemeEngine::ManageWidget (QWidget *widget)
 	widget->installEventFilter (new ChildActionEventFilter (widget));
 }
 
+void IconThemeEngine::RegisterChangeHandler (const std::function<void ()>& function)
+{
+	Handlers_ << function;
+}
+
 QStringList IconThemeEngine::ListIcons () const
 {
 	return IconSets_;
@@ -226,6 +231,9 @@ void IconThemeEngine::FindIcons ()
 
 		flushCaches ();
 		OldIconSet_ = iconSet;
+
+		for (const auto& handler : Handlers_)
+			handler ();
 	}
 }
 

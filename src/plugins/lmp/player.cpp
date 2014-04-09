@@ -38,6 +38,7 @@
 #include <QApplication>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -53,7 +54,7 @@
 #include "engine/audiosource.h"
 #include "engine/output.h"
 #include "engine/path.h"
-#include "effectsmanager.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {
@@ -128,8 +129,6 @@ namespace LMP
 		qRegisterMetaType<QList<AudioSource>> ("QList<AudioSource>");
 		qRegisterMetaType<StringPair_t> ("StringPair_t");
 
-		new EffectsManager (Path_, this);
-
 		connect (Source_,
 				SIGNAL (currentSourceChanged (AudioSource)),
 				this,
@@ -192,6 +191,11 @@ namespace LMP
 	Output* Player::GetAudioOutput () const
 	{
 		return Output_;
+	}
+
+	Path* Player::GetPath () const
+	{
+		return Path_;
 	}
 
 	Player::PlayMode Player::GetPlayMode () const
@@ -263,6 +267,9 @@ namespace LMP
 
 	void Player::Enqueue (const QList<AudioSource>& sources, EnqueueFlags flags)
 	{
+		if (CurrentQueue_.isEmpty ())
+			emit shouldClearFiltering ();
+
 		if (flags & EnqueueReplace)
 		{
 			PlaylistModel_->clear ();
@@ -688,13 +695,22 @@ namespace LMP
 				return { source, info };
 			}
 
-			info.Artist_ = collection->GetTrackData (trackId, LocalCollection::Role::ArtistName).toString ();
-			info.Album_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumName).toString ();
-			info.Title_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackTitle).toString ();
-			info.Genres_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackGenres).toStringList ();
-			info.Length_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackLength).toInt ();
-			info.Year_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumYear).toInt ();
-			info.TrackNumber_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackNumber).toInt ();
+			const auto model = collection->GetCollectionModel ();
+
+			info.Artist_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::ArtistName).toString ();
+			info.Album_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::AlbumName).toString ();
+			info.Title_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackTitle).toString ();
+			info.Genres_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackGenres).toStringList ();
+			info.Length_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackLength).toInt ();
+			info.Year_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::AlbumYear).toInt ();
+			info.TrackNumber_ = model->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackNumber).toInt ();
 
 			return { source, info };
 		}
@@ -954,6 +970,22 @@ namespace LMP
 		}
 
 		return {};
+	}
+
+	void Player::MarkAsCurrent (QStandardItem *curItem)
+	{
+		if (curItem)
+			curItem->setData (true, Role::IsCurrent);
+		for (auto item : Items_)
+		{
+			if (item == curItem)
+				continue;
+			if (item->data (Role::IsCurrent).toBool ())
+			{
+				item->setData (false, Role::IsCurrent);
+				break;
+			}
+		}
 	}
 
 	void Player::play (const QModelIndex& index)
@@ -1294,14 +1326,15 @@ namespace LMP
 
 	void Player::handleUpdateSourceQueue ()
 	{
+		const auto& current = Source_->GetCurrentSource ();
+
 		if (CurrentStation_)
 		{
-			Url2Info_.remove (Source_->GetCurrentSource ().ToUrl ());
+			Url2Info_.remove (current.ToUrl ());
 			CurrentStation_->RequestNewStream ();
 			return;
 		}
 
-		const auto& current = Source_->GetCurrentSource ();
 		const auto& path = current.GetLocalPath ();
 		if (!path.isEmpty ())
 			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
@@ -1309,10 +1342,21 @@ namespace LMP
 					Qt::QueuedConnection,
 					Q_ARG (QString, path));
 
-		if (HandleCurrentStop (current))
-			return;
-
 		const auto& next = GetNextSource (current);
+
+		if (HandleCurrentStop (current))
+		{
+			if (!next.IsEmpty ())
+				new Util::DelayedExecutor
+				{
+					[this, next] { Source_->SetCurrentSource (next); },
+					1000
+				};
+
+			MarkAsCurrent (Items_.value (next));
+			return;
+		}
+
 		if (!next.IsEmpty ())
 			Source_->PrepareNextSource (next);
 	}
@@ -1352,9 +1396,6 @@ namespace LMP
 		else if (Items_.contains (source))
 			curItem = Items_ [source];
 
-		if (curItem)
-			curItem->setData (true, Role::IsCurrent);
-
 		if (Url2Info_.contains (source.ToUrl ()))
 		{
 			const auto& info = Url2Info_ [source.ToUrl ()];
@@ -1368,16 +1409,7 @@ namespace LMP
 		if (curItem)
 			emit indexChanged (PlaylistModel_->indexFromItem (curItem));
 
-		for (auto item : Items_)
-		{
-			if (item == curItem)
-				continue;
-			if (item->data (Role::IsCurrent).toBool ())
-			{
-				item->setData (false, Role::IsCurrent);
-				break;
-			}
-		}
+		MarkAsCurrent (curItem);
 
 		handleMetadata ();
 

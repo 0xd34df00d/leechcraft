@@ -30,7 +30,13 @@
 #include "cpuload.h"
 #include <QIcon>
 #include <QAbstractItemModel>
+
+#ifdef Q_OS_LINUX
 #include "linuxbackend.h"
+#elif defined (Q_OS_MAC)
+#include "macbackend.h"
+#endif
+
 #include "backendproxy.h"
 
 namespace LeechCraft
@@ -41,6 +47,8 @@ namespace CpuLoad
 	{
 #ifdef Q_OS_LINUX
 		auto backend = new LinuxBackend;
+#elif defined (Q_OS_MAC)
+		auto backend = new MacBackend;
 #else
 		Backend *backend = nullptr;
 #endif

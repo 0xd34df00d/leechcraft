@@ -45,7 +45,7 @@ namespace DBusManager
 	{
 		Q_OBJECT
 
-		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.Tasks");
+		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.Tasks")
 
 		Tasks *Tasks_;
 	public:

@@ -51,7 +51,7 @@ namespace vGrabber
 					, public IFindProxy
 	{
 		Q_OBJECT
-		Q_INTERFACES (IFindProxy);
+		Q_INTERFACES (IFindProxy)
 
 		QList<QObject*> Downloaders_;
 	protected:

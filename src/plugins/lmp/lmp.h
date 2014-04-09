@@ -45,6 +45,7 @@ namespace LeechCraft
 namespace LMP
 {
 	class PlayerTab;
+	class EffectsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -80,6 +81,8 @@ namespace LMP
 
 		QMap<QString, Entity> GlobAction2Entity_;
 		QMap<QString, ActionInfo> GlobAction2Info_;
+
+		EffectsManager *EffectsMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

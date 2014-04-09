@@ -46,7 +46,7 @@ namespace Zheet
 						  , public ITransferManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferManager);
+		Q_INTERFACES (LeechCraft::Azoth::ITransferManager)
 
 		MSNAccount *A_;
 		Callbacks *CB_;

@@ -35,13 +35,15 @@
 #include <QMap>
 #include <QMutex>
 #include <QWaitCondition>
+#include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "pathelement.h"
-#include "gstutil.h"
+#include "path.h"
 
 typedef struct _GstElement GstElement;
 typedef struct _GstPad GstPad;
 typedef struct _GstMessage GstMessage;
+typedef struct _GstBus GstBus;
 
 typedef std::shared_ptr<GstMessage> GstMessage_ptr;
 
@@ -106,6 +108,9 @@ namespace LMP
 
 		MsgPopThread *PopThread_;
 		GstUtil::TagMap_t Metadata_;
+
+		QList<SyncHandler_f> SyncHandlers_;
+		QList<AsyncHandler_f> AsyncHandlers_;
 	public:
 		enum class Metadata
 		{
@@ -156,6 +161,9 @@ namespace LMP
 
 		void AddToPath (Path*);
 		void SetSink (GstElement*);
+
+		void AddSyncHandler (const SyncHandler_f&);
+		void AddAsyncHandler (const AsyncHandler_f&);
 	private:
 		void HandleErrorMsg (GstMessage*);
 		void HandleTagMsg (GstMessage*);
@@ -164,6 +172,9 @@ namespace LMP
 		void HandleElementMsg (GstMessage*);
 		void HandleEosMsg (GstMessage*);
 		void HandleStreamStatusMsg (GstMessage*);
+		void HandleWarningMsg (GstMessage*);
+
+		int HandleSyncMessage (GstBus*, GstMessage*);
 	private slots:
 		void handleMessage (GstMessage_ptr);
 		void updateTotalTime ();

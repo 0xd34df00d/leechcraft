@@ -193,7 +193,6 @@ namespace HotStreams
 			clearRoot (item);
 			Root2Fetcher_ [item] (item);
 		}
-
 	}
 
 	void Plugin::refreshRadios ()

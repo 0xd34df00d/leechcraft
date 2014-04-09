@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>452</width>
-    <height>92</height>
+    <height>93</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
    </property>
    <item row="0" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="InviteeLabel_">
      <property name="text">
       <string>Invitee:</string>
      </property>

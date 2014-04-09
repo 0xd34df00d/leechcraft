@@ -54,7 +54,7 @@ namespace Zheet
 						, public IAdvancedCLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAdvancedCLEntry);
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAdvancedCLEntry)
 
 		MSNAccount *Account_;
 

@@ -60,6 +60,7 @@ namespace Azoth
 		void HandleImageDropped (const QImage&, const QUrl&);
 		void PerformChoice (const QStringList&, const QList<std::function<void ()>>&);
 
+		void HandleContactsDropped (const QMimeData*);
 		void HandleFilesDropped (const QList<QUrl>&);
 	};
 }

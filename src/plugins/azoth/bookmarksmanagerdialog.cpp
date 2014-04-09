@@ -57,18 +57,18 @@ namespace Azoth
 				this,
 				SLOT (handleCurrentBMChanged (const QModelIndex&, const QModelIndex&)));
 
-		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
+		for (auto proto : Core::Instance ().GetProtocols ())
 		{
-			QWidget *widget = proto->GetMUCJoinWidget ();
-			IMUCJoinWidget *joiner = qobject_cast<IMUCJoinWidget*> (widget);
+			const auto widget = proto->GetMUCJoinWidget ();
+			const auto joiner = qobject_cast<IMUCJoinWidget*> (widget);
 			if (!joiner)
 				continue;
 
 			Proto2Joiner_ [proto->GetProtocolID ()] = joiner;
 
-			Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
+			for (auto accObj : proto->GetRegisteredAccounts ())
 			{
-				IAccount *account = qobject_cast<IAccount*> (accObj);
+				const auto account = qobject_cast<IAccount*> (accObj);
 				if (!account)
 				{
 					qWarning () << Q_FUNC_INFO
@@ -83,7 +83,7 @@ namespace Azoth
 					continue;
 
 				Ui_.AccountBox_->addItem (account->GetAccountName (),
-						QVariant::fromValue<IAccount*> (account));
+						QVariant::fromValue (account));
 
 				connect (accObj,
 						SIGNAL (bookmarksChanged ()),
@@ -102,22 +102,41 @@ namespace Azoth
 		qDeleteAll (Proto2Joiner_.values ());
 	}
 
-	void BookmarksManagerDialog::FocusOn (IAccount *acc)
+	bool BookmarksManagerDialog::FocusOn (IAccount *acc)
 	{
-		const QVariant& accVar =
-				QVariant::fromValue<IAccount*> (acc);
+		const auto& accVar = QVariant::fromValue<IAccount*> (acc);
 
 		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
 			if (Ui_.AccountBox_->itemData (i) == accVar)
 			{
 				Ui_.AccountBox_->setCurrentIndex (i);
-				break;
+				on_AccountBox__currentIndexChanged (i);
+				return true;
 			}
+
+		return false;
+	}
+
+	namespace
+	{
+		QVariantMap GetIdentifyingData (QObject *entryObj)
+		{
+			const auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
+			if (!mucEntry)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "object doesn't implement IMUCEntry"
+						<< entryObj;
+				return {};
+			}
+
+			return mucEntry->GetIdentifyingData ();
+		}
 	}
 
 	void BookmarksManagerDialog::SuggestSaving (QObject *entryObj)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -126,34 +145,7 @@ namespace Azoth
 			return;
 		}
 
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entryObj);
-		if (!mucEntry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "object doesn't implement IMUCEntry"
-					<< entryObj;
-			return;
-		}
-
-		const QVariantMap& data = mucEntry->GetIdentifyingData ();
-		if (data.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty identifying data returned by"
-					<< entryObj;
-			return;
-		}
-
-		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		bool found = false;
-		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
-			if (account == Ui_.AccountBox_->itemData (i).value<IAccount*> ())
-			{
-				Ui_.AccountBox_->setCurrentIndex (i);
-				on_AccountBox__currentIndexChanged (i);
-				found = true;
-				break;
-			}
+		const bool found = FocusOn (qobject_cast<IAccount*> (entry->GetParentAccount ()));
 
 		if (!found)
 		{
@@ -164,11 +156,18 @@ namespace Azoth
 			return;
 		}
 
-		if (CurrentEditor_)
-			CurrentEditor_->SetIdentifyingData (data);
-		on_AddButton__released ();
-		if (CurrentEditor_)
-			CurrentEditor_->SetIdentifyingData (data);
+		const auto& data = GetIdentifyingData (entryObj);
+		if (data.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty identifying data returned by"
+					<< entryObj;
+			return;
+		}
+
+		const auto item = on_AddButton__released ();
+		item->setText (data.value ("HumanReadableName").toString ());
+		CurrentEditor_->SetIdentifyingData (data);
 	}
 
 	void BookmarksManagerDialog::on_AccountBox__currentIndexChanged (int index)
@@ -213,6 +212,7 @@ namespace Azoth
 			delete item->widget ();
 			delete item;
 		}
+
 		QWidget *w = supBms->GetMUCBookmarkEditorWidget ();
 		delete CurrentEditor_;
 		CurrentEditor_ = qobject_cast<IMUCBookmarkEditorWidget*> (w);
@@ -333,24 +333,26 @@ namespace Azoth
 		Save ();
 	}
 
-	void BookmarksManagerDialog::on_AddButton__released ()
+	QStandardItem* BookmarksManagerDialog::on_AddButton__released ()
 	{
 		if (!CurrentEditor_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no editor available";
-			return;
+			return nullptr;
 		}
 
-		QStandardItem *selected = GetSelectedItem ();
-		const QVariantMap& data = selected ?
+		const auto selected = GetSelectedItem ();
+		const auto& data = selected ?
 				selected->data ().toMap () :
 				CurrentEditor_->GetIdentifyingData ();
 
-		QStandardItem *item = new QStandardItem (data.value ("HumanReadableName").toString ());
+		const auto item = new QStandardItem (data.value ("HumanReadableName").toString ());
 		item->setData (data);
 		BMModel_->appendRow (item);
 		Ui_.BookmarksTree_->setCurrentIndex (BMModel_->indexFromItem (item));
+
+		return item;
 	}
 
 	void BookmarksManagerDialog::on_ApplyButton__released ()

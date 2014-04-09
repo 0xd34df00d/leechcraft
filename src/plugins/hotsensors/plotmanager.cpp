@@ -42,10 +42,9 @@ namespace LeechCraft
 {
 namespace HotSensors
 {
-	PlotManager::PlotManager (std::weak_ptr<SensorsManager> mgr, ICoreProxy_ptr proxy, QObject *parent)
+	PlotManager::PlotManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
-	, SensorsMgr_ (mgr)
 	, Model_ (new SensorsGraphModel (this))
 	, UpdateCounter_ (0)
 	{

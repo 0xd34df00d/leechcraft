@@ -43,7 +43,7 @@ namespace Choroid
 				 , public IHaveTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs);
+		Q_INTERFACES (IInfo IHaveTabs)
 
 		ICoreProxy_ptr Proxy_;
 		TabClassInfo TabInfo_;

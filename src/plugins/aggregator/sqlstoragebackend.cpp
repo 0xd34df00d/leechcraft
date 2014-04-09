@@ -1648,31 +1648,8 @@ namespace Aggregator
 		}
 	}
 
-	void SQLStorageBackend::RemoveItem (const IDType_t& itemId)
+	void SQLStorageBackend::RemoveItems (const QSet<IDType_t>& items)
 	{
-		boost::optional<IDType_t> cid;
-		try
-		{
-			Item_ptr item = GetItem (itemId);
-			cid = item->ChannelID_;
-		}
-		catch (const ItemNotFoundError&)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "tried to delete item"
-					<< itemId
-					<< ", but it doesn't exist already";
-			return;
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to obtain more info on"
-					<< itemId
-					<< "so won't update channel data"
-					<< e.what ();
-		}
-
 		Util::DBLock lock (DB_);
 		try
 		{
@@ -1684,44 +1661,73 @@ namespace Aggregator
 			return;
 		}
 
-		if (!PerformRemove (RemoveEnclosures_, itemId) ||
-				!PerformRemove (RemoveMediaRSS_, itemId) ||
-				!PerformRemove (RemoveMediaRSSThumbnails_, itemId) ||
-				!PerformRemove (RemoveMediaRSSCredits_, itemId) ||
-				!PerformRemove (RemoveMediaRSSComments_, itemId) ||
-				!PerformRemove (RemoveMediaRSSPeerLinks_, itemId) ||
-				!PerformRemove (RemoveMediaRSSScenes_, itemId))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "a Remove* query failed";
-			return;
-		}
-
-		RemoveItem_.bindValue (":item_id", itemId);
-
-		if (!RemoveItem_.exec ())
-		{
-			Util::DBLock::DumpError (RemoveItem_);
-			return;
-		}
-
-		RemoveItem_.finish ();
-
-		lock.Good ();
-
-		if (cid)
+		QList<IDType_t> modifiedChannels;
+		for (const auto itemId : items)
 		{
 			try
 			{
-				Channel_ptr channel = GetChannel (*cid,
-						FindParentFeedForChannel (*cid));
+				const auto cid = GetItem (itemId)->ChannelID_;
+				if (!modifiedChannels.contains (cid))
+					modifiedChannels << cid;
+			}
+			catch (const ItemNotFoundError&)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "tried to delete item"
+						<< itemId
+						<< ", but it doesn't exist already";
+				continue;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to obtain more info on"
+						<< itemId
+						<< "so won't update channel data"
+						<< e.what ();
+			}
+
+			if (!PerformRemove (RemoveEnclosures_, itemId) ||
+					!PerformRemove (RemoveMediaRSS_, itemId) ||
+					!PerformRemove (RemoveMediaRSSThumbnails_, itemId) ||
+					!PerformRemove (RemoveMediaRSSCredits_, itemId) ||
+					!PerformRemove (RemoveMediaRSSComments_, itemId) ||
+					!PerformRemove (RemoveMediaRSSPeerLinks_, itemId) ||
+					!PerformRemove (RemoveMediaRSSScenes_, itemId))
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "a Remove* query failed";
+				return;
+			}
+
+			RemoveItem_.bindValue (":item_id", itemId);
+
+			if (!RemoveItem_.exec ())
+			{
+				Util::DBLock::DumpError (RemoveItem_);
+				return;
+			}
+
+			RemoveItem_.finish ();
+		}
+
+		lock.Good ();
+
+		emit itemsRemoved ({ items });
+
+		for (const auto& cid : modifiedChannels)
+		{
+			try
+			{
+				Channel_ptr channel = GetChannel (cid,
+						FindParentFeedForChannel (cid));
 				emit channelDataUpdated (channel);
 			}
 			catch (const ChannelNotFoundError&)
 			{
 				qWarning () << Q_FUNC_INFO
 					<< "channel not found"
-					<< *cid;
+					<< cid;
 			}
 		}
 	}

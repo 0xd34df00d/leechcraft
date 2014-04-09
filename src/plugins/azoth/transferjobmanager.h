@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_TRANSFERJOBMANAGER_H
-#define PLUGINS_AZOTH_TRANSFERJOBMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QHash>
 #include <QModelIndex>
@@ -78,7 +78,7 @@ namespace Azoth
 		void DenyJob (QObject*);
 		QAbstractItemModel* GetSummaryModel () const;
 
-		bool OfferURLs (ICLEntry *entry, const QList<QUrl>& urls);
+		bool OfferURLs (ICLEntry *entry, QList<QUrl> urls);
 	private:
 		QString CheckSavePath (QString);
 		void HandleDeoffer (QObject*);
@@ -93,5 +93,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

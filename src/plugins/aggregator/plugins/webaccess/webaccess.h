@@ -40,6 +40,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class AddressesModelManager;
+}
+
 namespace Aggregator
 {
 namespace WebAccess
@@ -58,6 +63,8 @@ namespace WebAccess
 		std::shared_ptr<ServerManager> SM_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		Util::AddressesModelManager *AddrMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

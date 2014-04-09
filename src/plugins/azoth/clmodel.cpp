@@ -38,13 +38,12 @@
 #include "core.h"
 #include "transferjobmanager.h"
 #include "mucinvitedialog.h"
+#include "dndutil.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	const QString CLEntryFormat = "x-leechcraft/azoth-cl-entry";
-
 	CLModel::CLModel (QObject *parent)
 	: QStandardItemModel (parent)
 	{
@@ -52,41 +51,35 @@ namespace Azoth
 
 	QStringList CLModel::mimeTypes () const
 	{
-		return QStringList (CLEntryFormat) << "text/uri-list" << "text/plain";
+		return { DndUtil::GetFormatId (), "text/uri-list", "text/plain" };
 	}
 
 	QMimeData* CLModel::mimeData (const QModelIndexList& indexes) const
 	{
 		QMimeData *result = new QMimeData;
 
-		QByteArray encoded;
-		QDataStream stream (&encoded, QIODevice::WriteOnly);
-
 		QStringList names;
 		QList<QUrl> urls;
+		QList<DndUtil::MimeContactInfo> entries;
 
 		for (const auto& index : indexes)
 		{
 			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 				continue;
 
-			QObject *entryObj = index
-					.data (Core::CLREntryObject).value<QObject*> ();
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+			auto entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
+			auto entry = qobject_cast<ICLEntry*> (entryObj);
 			if (!entry)
 				continue;
 
-			const QString& thisGroup = index.parent ()
-					.data (Core::CLREntryCategory).toString ();
+			const auto& thisGroup = index.parent ().data (Core::CLREntryCategory).toString ();
 
-			stream << entry->GetEntryID () << thisGroup;
-
+			entries.append ({ entry, thisGroup });
 			names << entry->GetEntryName ();
-
 			urls << QUrl (entry->GetHumanReadableID ());
 		}
 
-		result->setData (CLEntryFormat, encoded);
+		DndUtil::Encode (entries, result);
 		result->setText (names.join ("; "));
 		result->setUrls (urls);
 
@@ -96,7 +89,6 @@ namespace Azoth
 	bool CLModel::dropMimeData (const QMimeData *mime,
 			Qt::DropAction action, int row, int, const QModelIndex& parent)
 	{
-		qDebug () << "drop" << mime->formats () << action;
 		if (action == Qt::IgnoreAction)
 			return true;
 
@@ -132,15 +124,11 @@ namespace Azoth
 	bool CLModel::CheckHookDnDEntry2Entry (const QMimeData *mime, int row, const QModelIndex& parent)
 	{
 		if (row != -1 ||
-				!mime->hasFormat (CLEntryFormat) ||
+				!DndUtil::HasContacts (mime) ||
 				parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 			return false;
 
-		QDataStream stream (mime->data (CLEntryFormat));
-		QString sid;
-		stream >> sid;
-
-		QObject *source = Core::Instance ().GetEntry (sid);
+		const auto source = DndUtil::DecodeEntryObj (mime);
 		if (!source)
 			return false;
 
@@ -153,7 +141,7 @@ namespace Azoth
 
 	bool CLModel::TryInvite (const QMimeData *mime, int, const QModelIndex& parent)
 	{
-		if (!mime->hasFormat (CLEntryFormat))
+		if (!DndUtil::HasContacts (mime))
 			return false;
 
 		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
@@ -165,14 +153,8 @@ namespace Azoth
 
 		bool accepted = false;
 
-		QDataStream stream (mime->data (CLEntryFormat));
-		while (!stream.atEnd ())
+		for (const auto& serializedObj : DndUtil::DecodeEntryObjs (mime))
 		{
-			QString id;
-			QString group;
-			stream >> id >> group;
-
-			const auto serializedObj = Core::Instance ().GetEntry (id);
 			const auto serializedEntry = qobject_cast<ICLEntry*> (serializedObj);
 			if (!serializedEntry)
 				continue;
@@ -197,7 +179,7 @@ namespace Azoth
 
 	bool CLModel::TryDropContact (const QMimeData *mime, int row, const QModelIndex& parent)
 	{
-		if (!mime->hasFormat (CLEntryFormat))
+		if (!DndUtil::HasContacts (mime))
 			return false;
 
 		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETAccount)
@@ -208,25 +190,17 @@ namespace Azoth
 		if (!acc)
 			return false;
 
-		const QString& newGrp = parent.child (row, 0)
-				.data (Core::CLREntryCategory).toString ();
+		const auto& newGrp = parent.child (row, 0).data (Core::CLREntryCategory).toString ();
 
-		QDataStream stream (mime->data (CLEntryFormat));
-		while (!stream.atEnd ())
+		for (const auto& info : DndUtil::DecodeMimeInfos (mime))
 		{
-			QString id;
-			QString oldGroup;
-			stream >> id >> oldGroup;
+			const auto entry = info.Entry_;
+			const auto& oldGroup = info.Group_;
 
 			if (oldGroup == newGrp)
 				continue;
 
-			QObject *entryObj = Core::Instance ().GetEntry (id);
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry)
-				continue;
-
-			QStringList groups = entry->Groups ();
+			auto groups = entry->Groups ();
 			groups.removeAll (oldGroup);
 			groups << newGrp;
 
@@ -240,7 +214,7 @@ namespace Azoth
 	{
 		// If MIME has CLEntryFormat, it's another serialized entry, we probably
 		// don't want to send it.
-		if (mime->hasFormat (CLEntryFormat))
+		if (DndUtil::HasContacts (mime))
 			return false;
 
 		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)

@@ -43,7 +43,7 @@ namespace Qrosp
 	class HookProxyWrapper : public QObject
 	{
 		Q_OBJECT
-		Q_PROPERTY (QVariant ReturnValue READ GetReturnValue WRITE SetReturnValue);
+		Q_PROPERTY (QVariant ReturnValue READ GetReturnValue WRITE SetReturnValue)
 
 		IHookProxy_ptr Proxy_;
 	public:

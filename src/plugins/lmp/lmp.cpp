@@ -50,6 +50,7 @@
 #include "volumenotifycontroller.h"
 #include "radiomanager.h"
 #include "notificationplayer.h"
+#include "effectsmanager.h"
 
 typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
@@ -89,6 +90,11 @@ namespace LMP
 
 		qRegisterMetaType<QList<QPair<QString, QUrl>>> ("QList<QPair<QString, QUrl>>");
 		qRegisterMetaTypeStreamOperators<QList<QPair<QString, QUrl>>> ();
+
+		qRegisterMetaType<SavedFilterInfo> ("LeechCraft::LMP::SavedFilterInfo");
+		qRegisterMetaTypeStreamOperators<SavedFilterInfo> ();
+		qRegisterMetaType<QList<SavedFilterInfo>> ("QList<LeechCraft::LMP::SavedFilterInfo>");
+		qRegisterMetaTypeStreamOperators<QList<SavedFilterInfo>> ();
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
@@ -151,6 +157,9 @@ namespace LMP
 				this,
 				SLOT (handleArtistBrowseRequested (QString)));
 
+		EffectsMgr_ = new EffectsManager (PlayerTab_->GetPlayer ()->GetPath (), this);
+		XSD_->SetDataSource ("EffectsView", EffectsMgr_->GetEffectsModel ());
+
 		connect (PlayerTab_,
 				SIGNAL (fullRaiseRequested ()),
 				this,
@@ -180,6 +189,8 @@ namespace LMP
 
 		Core::Instance ().InitWithOtherPlugins ();
 		PlayerTab_->InitWithOtherPlugins ();
+
+		EffectsMgr_->RegisteringFinished ();
 	}
 
 	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
@@ -371,12 +382,17 @@ namespace LMP
 		result << "org.LeechCraft.LMP.CollectionSync";
 		result << "org.LeechCraft.LMP.CloudStorage";
 		result << "org.LeechCraft.LMP.PlaylistProvider";
+		result << "org.LeechCraft.LMP.FiltersProvider";
 		return result;
 	}
 
 	void Plugin::AddPlugin (QObject *plugin)
 	{
 		Core::Instance ().AddPlugin (plugin);
+
+		if (const auto ifp = qobject_cast<IFilterPlugin*> (plugin))
+			for (const auto& effect : ifp->GetEffects ())
+				EffectsMgr_->RegisterEffect (effect);
 	}
 
 	QAbstractItemModel* Plugin::GetRepresentation () const

@@ -58,6 +58,8 @@ namespace LeechCraft
 		QReadWriteLock IconCacheLock_;
 		QHash<QPair<QString, QString>, QIcon> IconCache_;
 
+		QList<std::function<void ()>> Handlers_;
+
 		IconThemeEngine ();
 	public:
 		static IconThemeEngine& Instance ();
@@ -68,6 +70,8 @@ namespace LeechCraft
 		void UpdateIconset (const QList<QTabWidget*>&);
 
 		void ManageWidget (QWidget*);
+
+		void RegisterChangeHandler (const std::function<void ()>&);
 
 		QStringList ListIcons () const;
 	protected:

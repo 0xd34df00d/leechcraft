@@ -130,5 +130,17 @@ namespace Azoth
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());
 		Core::Instance ().SendEntity (e);
 	}
+
+	QObject* FindByHRId (IAccount *acc, const QString& hrId)
+	{
+		const auto& allEntries = acc->GetCLEntries ();
+		const auto pos = std::find_if (allEntries.begin (), allEntries.end (),
+				[&hrId] (QObject *obj)
+				{
+					return qobject_cast<ICLEntry*> (obj)->GetHumanReadableID () == hrId;
+				});
+
+		return pos == allEntries.end () ? nullptr : *pos;
+	}
 }
 }

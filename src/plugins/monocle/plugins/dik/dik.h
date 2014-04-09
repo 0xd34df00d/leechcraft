@@ -58,8 +58,9 @@ namespace Dik
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		bool CanLoadDocument (const QString&);
+		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
+		QStringList GetSupportedMimes () const;
 	};
 }
 }

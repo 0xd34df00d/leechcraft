@@ -39,6 +39,11 @@ namespace Wt
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class AddressesModelManager;
+}
+
 namespace Aggregator
 {
 class IProxyObject;
@@ -52,8 +57,10 @@ namespace WebAccess
 		ICoreProxy_ptr CoreProxy_;
 
 		std::shared_ptr<Wt::WServer> Server_;
+
+		Util::AddressesModelManager * const AddrMgr_;
 	public:
-		ServerManager (IProxyObject*, ICoreProxy_ptr);
+		ServerManager (IProxyObject*, ICoreProxy_ptr, Util::AddressesModelManager*);
 	private Q_SLOTS:
 		void reconfigureServer ();
 	};

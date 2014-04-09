@@ -33,6 +33,8 @@
 #include "playlistparsers/playlistfactory.h"
 #include "player.h"
 #include "util.h"
+#include "core.h"
+#include "radiomanager.h"
 
 namespace LeechCraft
 {
@@ -67,35 +69,88 @@ namespace LMP
 		return result;
 	}
 
+	namespace
+	{
+		QList<AudioSource> GetSources (const QMimeData *data)
+		{
+			QList<AudioSource> sources;
+			for (const auto& url : data->urls ())
+			{
+				if (url.scheme () != "file")
+				{
+					sources << AudioSource (url);
+					continue;
+				}
+
+				const auto& localPath = url.toLocalFile ();
+				if (QFileInfo (localPath).isFile ())
+				{
+					sources << AudioSource (localPath);
+					continue;
+				}
+
+				for (const auto& path : RecIterate (localPath, true))
+					sources << AudioSource (path);
+			}
+
+			return sources;
+		}
+
+		QList<MediaInfo> GetInfos (const QMimeData *data)
+		{
+			const auto& serialized = data->data ("x-leechcraft-lmp/media-info-list");
+			if (serialized.isEmpty ())
+				return {};
+
+			QDataStream stream { serialized };
+			QList<MediaInfo> result;
+			stream >> result;
+			return result;
+		}
+	}
+
 	bool PlaylistModel::dropMimeData (const QMimeData *data,
 			Qt::DropAction action, int row, int, const QModelIndex& parent)
 	{
 		if (action == Qt::IgnoreAction)
 			return true;
 
-		if (!data->hasUrls ())
-			return false;
+		if (data->hasUrls ())
+			HandleDroppedUrls (data, row, parent);
 
-		const auto& urls = data->urls ();
-		QList<AudioSource> sources;
-		for (const auto& url : urls)
-		{
-			if (url.scheme () != "file")
+		HandleRadios (data);
+
+		return true;
+	}
+
+	Qt::DropActions PlaylistModel::supportedDropActions () const
+	{
+		return Qt::CopyAction | Qt::MoveAction;
+	}
+
+	void PlaylistModel::HandleRadios (const QMimeData *data)
+	{
+		QStringList radioIds;
+
+		QDataStream stream { data->data ("x-leechcraft-lmp/radio-ids") };
+		stream >> radioIds;
+
+		for (const auto& radioId : radioIds)
+			if (const auto station = Core::Instance ().GetRadioManager ()->GetRadioStation (radioId))
 			{
-				sources << AudioSource (url);
-				continue;
+				Player_->SetRadioStation (station);
+				break;
 			}
+	}
 
-			const auto& localPath = url.toLocalFile ();
-			if (QFileInfo (localPath).isFile ())
-			{
-				sources << AudioSource (localPath);
-				continue;
-			}
+	void PlaylistModel::HandleDroppedUrls (const QMimeData *data, int row, const QModelIndex& parent)
+	{
+		const auto& sources = GetSources (data);
+		const auto& infos = GetInfos (data);
 
-			for (const auto& path : RecIterate (localPath, true))
-				sources << AudioSource (path);
-		}
+		if (infos.size () == sources.size ())
+			for (int i = 0; i < sources.size (); ++i)
+				Player_->PrepareURLInfo (sources.at (i).ToUrl (), infos.at (i));
 
 		auto afterIdx = row >= 0 ?
 				parent.child (row, 0) :
@@ -121,12 +176,6 @@ namespace LMP
 		}
 
 		Player_->Enqueue (existingQueue, Player::EnqueueReplace | Player::EnqueueSort);
-		return true;
-	}
-
-	Qt::DropActions PlaylistModel::supportedDropActions () const
-	{
-		return Qt::CopyAction | Qt::MoveAction;
 	}
 }
 }

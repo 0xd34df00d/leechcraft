@@ -93,8 +93,8 @@ namespace NetStoreManager
 
 	void FilesWatcherInotify::HandleNotification (int descriptor)
 	{
-		char buffer [BufferLength_];
-		ssize_t length = read (descriptor, buffer, BufferLength_);
+		std::unique_ptr<char[]> buffer (new char [BufferLength_]);
+		ssize_t length = read (descriptor, buffer.get (), BufferLength_);
 		if (length < 0)
 		{
 			qDebug () << "read error";

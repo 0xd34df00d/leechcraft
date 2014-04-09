@@ -31,6 +31,7 @@
 #include <interfaces/lmp/iunmountablesync.h>
 #include "core.h"
 #include "localcollection.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {
@@ -71,8 +72,10 @@ namespace LMP
 			if (trackId < 0)
 				continue;
 
-			const auto trackNumber = coll->GetTrackData (trackId, LocalCollection::Role::TrackNumber).toInt ();
-			const auto& trackTitle = coll->GetTrackData (trackId, LocalCollection::Role::TrackTitle).toString ();
+			const auto trackNumber = coll->GetCollectionModel ()->
+					GetTrackData (trackId, LocalCollectionModel::Role::TrackNumber).toInt ();
+			const auto& trackTitle = coll->GetCollectionModel ()->
+					GetTrackData (trackId, LocalCollectionModel::Role::TrackTitle).toString ();
 
 			const auto album = coll->GetTrackAlbum (trackId);
 			if (!album)

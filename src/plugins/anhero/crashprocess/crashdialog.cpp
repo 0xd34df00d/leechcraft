@@ -126,8 +126,7 @@ namespace CrashProcess
 		auto cmdlist = CmdLine_.split (' ', QString::SkipEmptyParts);
 		cmdlist << "--restart";
 
-		if (!CmdLine_.isEmpty () &&
-				Ui_.RestartBox_->checkState () == Qt::Checked)
+		if (Ui_.RestartBox_->checkState () == Qt::Checked)
 			QProcess::startDetached (Info_.Path_, cmdlist);
 
 		QDialog::done (res);
@@ -147,7 +146,7 @@ namespace CrashProcess
 		}
 	}
 
-	void CrashDialog::handleFinished (int code)
+	void CrashDialog::handleFinished (int code, QProcess::ExitStatus)
 	{
 		QTimer::singleShot (0,
 				this,
@@ -178,6 +177,15 @@ namespace CrashProcess
 			Ui_.TraceDisplay_->append (line);
 	}
 
+	void CrashDialog::handleError (QProcess::ExitStatus, int code, QProcess::ProcessError error, const QString& errorStr)
+	{
+		Ui_.TraceDisplay_->append ("\n\nGDB crashed :(");
+		Ui_.TraceDisplay_->append (tr ("Exit code: %1; error code: %2; error string: %3.")
+				.arg (code)
+				.arg (error)
+				.arg (errorStr));
+	}
+
 	void CrashDialog::clearGdb ()
 	{
 		GdbLauncher_.reset ();
@@ -195,9 +203,13 @@ namespace CrashProcess
 				this,
 				SLOT (appendTrace (QString)));
 		connect (GdbLauncher_.get (),
-				SIGNAL (finished (int)),
+				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
-				SLOT (handleFinished (int)));
+				SLOT (handleFinished (int, QProcess::ExitStatus)));
+		connect (GdbLauncher_.get (),
+				SIGNAL (error (QProcess::ExitStatus, int, QProcess::ProcessError, QString)),
+				this,
+				SLOT (handleError (QProcess::ExitStatus, int, QProcess::ProcessError, QString)));
 
 		Ui_.TraceDisplay_->append ("=== SYSTEM INFO ===");
 		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (Info_.Signal_));

@@ -1136,8 +1136,8 @@ namespace Blogique
 			return;
 
 		Core::Instance ().SendEntity (Util::MakeEntity (EntryUrl_,
-				QString (),
-				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
+				{},
+				FromUserInitiated | OnlyHandle));
 	}
 
 	void BlogiqueWidget::on_PreviewPost__triggered ()

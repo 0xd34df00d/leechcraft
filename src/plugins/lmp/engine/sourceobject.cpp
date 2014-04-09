@@ -35,9 +35,9 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QThread>
+#include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "path.h"
-#include "gstutil.h"
 #include "../gstfix.h"
 #include "../core.h"
 #include "../xmlsettingsmanager.h"
@@ -159,6 +159,19 @@ namespace LMP
 				this,
 				SLOT (handleTick ()));
 		timer->start (1000);
+
+		gst_bus_set_sync_handler (gst_pipeline_get_bus (GST_PIPELINE (Dec_)),
+				[] (GstBus *bus, GstMessage *msg, gpointer udata)
+				{
+					return static_cast<GstBusSyncReply> (static_cast<SourceObject*> (udata)->
+								HandleSyncMessage (bus, msg));
+				},
+#if GST_VERSION_MAJOR < 1
+				this);
+#else
+				this,
+				nullptr);
+#endif
 
 		PopThread_->start (QThread::LowestPriority);
 	}
@@ -341,6 +354,8 @@ namespace LMP
 
 		auto path = source.ToUrl ().toEncoded ();
 		g_object_set (G_OBJECT (Dec_), "uri", path.constData (), nullptr);
+
+		NextSource_.Clear ();
 	}
 
 	void SourceObject::PrepareNextSource (const AudioSource& source)
@@ -366,7 +381,6 @@ namespace LMP
 				return;
 
 			SetCurrentSource (NextSource_);
-			NextSource_.Clear ();
 		}
 
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_PLAYING);
@@ -421,7 +435,6 @@ namespace LMP
 		}
 
 		SetCurrentSource (NextSource_);
-		NextSource_.Clear ();
 	}
 
 	void SourceObject::SetupSource ()
@@ -473,6 +486,16 @@ namespace LMP
 	void SourceObject::SetSink (GstElement *bin)
 	{
 		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
+	}
+
+	void SourceObject::AddSyncHandler (const SyncHandler_f& handler)
+	{
+		SyncHandlers_ << handler;
+	}
+
+	void SourceObject::AddAsyncHandler (const AsyncHandler_f& handler)
+	{
+		AsyncHandlers_ << handler;
 	}
 
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
@@ -555,7 +578,11 @@ namespace LMP
 	void SourceObject::HandleTagMsg (GstMessage *msg)
 	{
 		const auto oldMetadata = Metadata_;
-		if (!GstUtil::ParseTagMessage (msg, Metadata_))
+		const auto& region = XmlSettingsManager::Instance ()
+				.property ("TagsRecodingRegion").toString ();
+		const bool isEnabled = XmlSettingsManager::Instance ()
+				.property ("EnableTagsRecoding").toBool ();
+		if (!GstUtil::ParseTagMessage (msg, Metadata_, isEnabled ? region : QString ()))
 			return;
 
 		auto merge = [this] (const QString& oldName, const QString& stdName, bool emptyOnly)
@@ -669,9 +696,42 @@ namespace LMP
 	{
 	}
 
+	void SourceObject::HandleWarningMsg (GstMessage *msg)
+	{
+		GError *gerror = nullptr;
+		gchar *debug = nullptr;
+		gst_message_parse_warning (msg, &gerror, &debug);
+
+		const auto& msgStr = QString::fromUtf8 (gerror->message);
+		const auto& debugStr = QString::fromUtf8 (debug);
+
+		const auto code = gerror->code;
+		const auto domain = gerror->domain;
+
+		g_error_free (gerror);
+		g_free (debug);
+
+		qDebug () << Q_FUNC_INFO << code << domain << msgStr << debugStr;
+	}
+
+	int SourceObject::HandleSyncMessage (GstBus *bus, GstMessage *msg)
+	{
+		for (const auto& handler : SyncHandlers_)
+		{
+			const auto res = handler (bus, msg);
+			if (res == GST_BUS_DROP)
+				return res;
+		}
+
+		return GST_BUS_PASS;
+	}
+
 	void SourceObject::handleMessage (GstMessage_ptr msgPtr)
 	{
 		const auto message = msgPtr.get ();
+
+		for (const auto& handler : AsyncHandlers_)
+			handler (message);
 
 		switch (GST_MESSAGE_TYPE (message))
 		{
@@ -703,6 +763,12 @@ namespace LMP
 			break;
 		case GST_MESSAGE_STREAM_STATUS:
 			HandleStreamStatusMsg (message);
+			break;
+		case GST_MESSAGE_WARNING:
+			HandleWarningMsg (message);
+			break;
+		case GST_MESSAGE_LATENCY:
+			gst_bin_recalculate_latency (GST_BIN (Dec_));
 			break;
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_STREAM_START:

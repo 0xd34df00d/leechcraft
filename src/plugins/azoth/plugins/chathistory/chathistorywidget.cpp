@@ -231,6 +231,7 @@ namespace ChatHistory
 			QStandardItem *item = new QStandardItem (name);
 			item->setData (user, MRIDRole);
 			item->setToolTip (name);
+			item->setEditable (false);
 			ContactsModel_->appendRow (item);
 
 			if (!ourFocus && user == focusId)
@@ -535,13 +536,21 @@ namespace ChatHistory
 		if (CurrentAccount_.isEmpty () ||
 				CurrentEntry_.isEmpty ())
 			return;
+
 		if (QMessageBox::question (0, "LeechCraft",
 					tr ("Are you sure you wish to delete chat history with %1?")
-						.arg (CurrentEntry_),
+						.arg (EntryID2NameCache_.value (CurrentEntry_, CurrentEntry_)),
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
 		Core::Instance ()->ClearHistory (CurrentAccount_, CurrentEntry_);
+
+		Ui_.Contacts_->clearSelection ();
+		if (const auto item = FindContactItem (CurrentEntry_))
+		{
+			CurrentEntry_.clear ();
+			ContactsModel_->removeRow (item->row ());
+		}
 
 		Backpages_ = 0;
 		RequestLogs ();
@@ -551,7 +560,19 @@ namespace ChatHistory
 	{
 		emit gotEntity (Util::MakeEntity (url,
 				QString (),
-				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
+				FromUserInitiated | OnlyHandle));
+	}
+
+	QStandardItem* ChatHistoryWidget::FindContactItem (const QString& id) const
+	{
+		for (auto i = 0; i < ContactsModel_->rowCount (); ++i)
+		{
+			const auto item = ContactsModel_->item (i);
+			if (item->data (MRIDRole).toString () == id)
+				return item;
+		}
+
+		return nullptr;
 	}
 
 	void ChatHistoryWidget::ShowLoading ()

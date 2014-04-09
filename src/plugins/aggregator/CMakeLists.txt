@@ -73,7 +73,6 @@ set (SRCS
 set (FORMS
 	mainwidget.ui
 	addfeed.ui
-	itembucket.ui
 	regexpmatcherui.ui
 	singleregexp.ui
 	importopml.ui

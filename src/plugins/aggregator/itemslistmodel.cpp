@@ -150,7 +150,7 @@ namespace Aggregator
 		endResetModel ();
 	}
 
-	void ItemsListModel::RemoveItems (QSet<IDType_t> ids)
+	void ItemsListModel::RemoveItems (const QSet<IDType_t>& ids)
 	{
 		if (ids.isEmpty ())
 			return;
@@ -160,8 +160,10 @@ namespace Aggregator
 		if (shouldReset)
 			beginResetModel ();
 
+		int remainingCount = ids.size ();
+
 		for (auto i = CurrentItems_.begin ();
-				i != CurrentItems_.end () && !ids.isEmpty (); )
+				i != CurrentItems_.end () && remainingCount; )
 		{
 			if (!ids.contains (i->ItemID_))
 			{
@@ -169,13 +171,15 @@ namespace Aggregator
 				continue;
 			}
 
-			ids.remove (i->ItemID_);
 			if (!shouldReset)
 			{
 				const size_t dist = std::distance (CurrentItems_.begin (), i);
 				beginRemoveRows (QModelIndex (), dist, dist);
 			}
+
 			i = CurrentItems_.erase (i);
+			--remainingCount;
+
 			if (!shouldReset)
 			{
 				endRemoveRows ();
@@ -189,18 +193,14 @@ namespace Aggregator
 
 	void ItemsListModel::ItemDataUpdated (Item_ptr item)
 	{
-		ItemShort is = item->ToShort ();
+		const auto& is = item->ToShort ();
 
-		auto pos = CurrentItems_.end ();
-
-		for (auto i = CurrentItems_.begin (),
-				end = CurrentItems_.end (); i != end; ++i)
-			if (is.Title_ == i->Title_ &&
-					is.URL_ == i->URL_)
-			{
-				pos = i;
-				break;
-			}
+		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
+				[&item] (const ItemShort& itemShort)
+				{
+					return item->ItemID_ == itemShort.ItemID_ ||
+							(item->Title_ == itemShort.Title_ && item->Link_ == itemShort.URL_);
+				});
 
 		// Item is new
 		if (pos == CurrentItems_.end ())
@@ -452,22 +452,7 @@ namespace Aggregator
 		if (channel->ChannelID_ != CurrentChannel_)
 			return;
 
-		const auto itemId = item->ItemID_;
-		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
-				[itemId] (const ItemShort& itemShort) { return itemShort.ItemID_ == itemId; });
-		if (pos == CurrentItems_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown item updated for channel"
-					<< channel->ChannelID_
-					<< channel->Title_;
-			return;
-		}
-
-		*pos = item->ToShort ();
-
-		const auto row = std::distance (CurrentItems_.begin (), pos);
-		emit dataChanged (index (row, 0), index (row, columnCount () - 1));
+		ItemDataUpdated (item);
 	}
 }
 }

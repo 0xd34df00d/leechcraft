@@ -30,7 +30,9 @@
 #include "servermanager.h"
 #include <cstring>
 #include <QStringList>
+#include <QtDebug>
 #include <Wt/WServer>
+#include <util/network/addressesmodelmanager.h>
 #include "aggregatorapp.h"
 #include "xmlsettingsmanager.h"
 
@@ -78,33 +80,60 @@ namespace WebAccess
 		};
 	}
 
-	ServerManager::ServerManager (IProxyObject *proxy, ICoreProxy_ptr coreProxy)
-	: CoreProxy_ (coreProxy)
-	, Server_ (new Wt::WServer ())
+	ServerManager::ServerManager (IProxyObject *proxy,
+			ICoreProxy_ptr coreProxy,
+			Util::AddressesModelManager *manager)
+	: CoreProxy_ { coreProxy }
+	, Server_ { new Wt::WServer }
+	, AddrMgr_ { manager }
 	{
 		Server_->addEntryPoint (Wt::Application,
 				[proxy, coreProxy] (const Wt::WEnvironment& we)
 					{ return new AggregatorApp (proxy, coreProxy, we); });
 
+		connect (AddrMgr_,
+				SIGNAL (addressesChanged ()),
+				this,
+				SLOT (reconfigureServer ()));
 		reconfigureServer ();
-
-		XmlSettingsManager::Instance ().RegisterObject ("ListenPort", this, "reconfigureServer");
 	}
 
 	void ServerManager::reconfigureServer ()
 	{
-		const auto port = XmlSettingsManager::Instance ().property ("ListenPort").toInt ();
+		const auto& addresses = AddrMgr_->GetAddresses ();
 
+		qDebug () << Q_FUNC_INFO << "starting server at" << addresses;
 		ArgcGenerator gen;
 		gen.AddParm ("--docroot", "/usr/share/Wt;/favicon.ico,/resources,/style");
-		gen.AddParm ("--http-address", "0.0.0.0");
-		gen.AddParm ("--http-port", QString::number (port));
+
+		const auto& addr = addresses.value (0);
+		gen.AddParm ("--http-address", addr.first);
+		gen.AddParm ("--http-port", addr.second);
 		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
 
 		if (Server_->isRunning ())
-			Server_->stop ();
+		{
+			try
+			{
+				Server_->stop ();
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< e.what ();
+			}
+		}
 
-		Server_->start ();
+		try
+		{
+			Server_->start ();
+
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 }
 }

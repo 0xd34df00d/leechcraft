@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QDialog>
+#include <QProcess>
 #include "ui_crashdialog.h"
 #include "appinfo.h"
 
@@ -63,7 +64,8 @@ namespace CrashProcess
 		void done (int);
 	private slots:
 		void appendTrace (const QString&);
-		void handleFinished (int);
+		void handleFinished (int, QProcess::ExitStatus);
+		void handleError (QProcess::ExitStatus, int, QProcess::ProcessError, const QString&);
 		void clearGdb ();
 
 		void reload ();

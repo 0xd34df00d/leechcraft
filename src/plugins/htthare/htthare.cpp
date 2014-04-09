@@ -33,9 +33,9 @@
 #include <QTimer>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <util/network/addressesmodelmanager.h>
 #include "server.h"
 #include "xmlsettingsmanager.h"
-#include "addressesmodelmanager.h"
 
 namespace LeechCraft
 {
@@ -45,10 +45,9 @@ namespace HttHare
 	{
 		Util::InstallTranslator ("htthare");
 
-		qRegisterMetaType<AddrList_t> ("LeechCraft::HttHare::AddrList_t");
-		qRegisterMetaTypeStreamOperators<AddrList_t> ();
+		Util::AddressesModelManager::RegisterTypes ();
 
-		AddrMgr_ = new AddressesModelManager (this);
+		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), 14801, this);
 		connect (AddrMgr_,
 				SIGNAL (addressesChanged ()),
 				this,

@@ -65,6 +65,7 @@
 #include "customstatusesmanager.h"
 #include "accountactionsmanager.h"
 #include "serverhistorywidget.h"
+#include "actionsmanager.h"
 
 namespace LeechCraft
 {
@@ -79,6 +80,12 @@ namespace Azoth
 		SearchWidget::SetParentMultiTabs (this);
 
 		Core::Instance ().SetProxy (proxy);
+
+		connect (Core::Instance ().GetActionsManager (),
+				SIGNAL (gotServerHistoryTab (ServerHistoryWidget*)),
+				this,
+				SLOT (handleServerHistoryTab (ServerHistoryWidget*)));
+
 		InitShortcuts ();
 		InitAccActsMgr ();
 		InitSettings ();

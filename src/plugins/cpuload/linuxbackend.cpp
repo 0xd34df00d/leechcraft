@@ -43,29 +43,6 @@ namespace CpuLoad
 
 	namespace
 	{
-		QString Prio2Label (LoadPriority prio)
-		{
-			switch (prio)
-			{
-			case LoadPriority::IO:
-				return QObject::tr ("IO");
-			case LoadPriority::Low:
-				return QObject::tr ("nice");
-			case LoadPriority::Medium:
-				return QObject::tr ("user");
-			case LoadPriority::High:
-				return QObject::tr ("system");
-			}
-
-			qWarning () << Q_FUNC_INFO
-					<< "unknown priority"
-					<< static_cast<int> (prio);
-			return "unknown";
-		}
-	}
-
-	namespace
-	{
 		Cummulative_t ReadProcStat ()
 		{
 			QFile file { "/proc/stat" };
@@ -143,7 +120,7 @@ namespace CpuLoad
 			auto setLoadPart = [&cpuLoad, total, &lastCpuStats, i] (int idx, LoadPriority prio) -> void
 			{
 				const auto& thisLoad = static_cast<double> (lastCpuStats [idx]) / total;
-				cpuLoad [prio] = LoadTypeInfo { Prio2Label (prio), prio, thisLoad };
+				cpuLoad [prio] = LoadTypeInfo { thisLoad };
 			};
 
 			setLoadPart (4, LoadPriority::IO);

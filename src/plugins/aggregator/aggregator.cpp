@@ -732,7 +732,7 @@ namespace Aggregator
 				.data ().toString ();
 		const QString& newName = QInputDialog::getText (this,
 				tr ("Rename feed"),
-				tr ("New feed name"),
+				tr ("New feed name:"),
 				QLineEdit::Normal,
 				current);
 		if (newName.isEmpty ())

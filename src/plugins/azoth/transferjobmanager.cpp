@@ -253,15 +253,29 @@ namespace Azoth
 		return SummaryModel_;
 	}
 
-	bool TransferJobManager::OfferURLs (ICLEntry *entry, const QList<QUrl>& urls)
+	namespace
+	{
+		void CleanupUrls (QList<QUrl>& urls)
+		{
+			for (auto i = urls.begin (); i != urls.end (); )
+				if (!i->isLocalFile ())
+					i = urls.erase (i);
+				else
+					++i;
+		}
+	}
+
+	bool TransferJobManager::OfferURLs (ICLEntry *entry, QList<QUrl> urls)
 	{
 		if (entry->Variants ().isEmpty ())
 			return false;
 
-		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		ITransferManager *mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (!mgr)
 			return false;
+
+		CleanupUrls (urls);
 
 		if (urls.isEmpty ())
 			return false;
@@ -280,7 +294,7 @@ namespace Azoth
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return false;
 
-		Q_FOREACH (const QUrl& url, urls)
+		for (const auto& url : urls)
 		{
 			const QString& path = url.toLocalFile ();
 			if (!QFileInfo (path).exists ())
@@ -490,8 +504,8 @@ namespace Azoth
 				state == TSFinished)
 		{
 			const Entity& e = Util::MakeEntity (QUrl::fromLocalFile (job->GetName ()),
-					QString (),
-					static_cast<TaskParameters> (IsDownloaded | FromUserInitiated | OnlyHandle));
+					{},
+					IsDownloaded | FromUserInitiated | OnlyHandle);
 			Core::Instance ().SendEntity (e);
 		}
 	}

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QStandardItemModel>
 #include <interfaces/iplugin2.h>
 #include "localfileresolver.h"
 #include "localcollection.h"
@@ -46,6 +47,7 @@
 #include "progressmanager.h"
 #include "radiomanager.h"
 #include "rganalysismanager.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {
@@ -54,6 +56,7 @@ namespace LMP
 	Core::Core ()
 	: Resolver_ (new LocalFileResolver)
 	, Collection_ (new LocalCollection)
+	, CollectionsManager_ (new CollectionsManager)
 	, PLManager_ (new PlaylistManager)
 	, SyncManager_ (new SyncManager)
 	, SyncUnmountableManager_ (new SyncUnmountableManager)
@@ -68,6 +71,8 @@ namespace LMP
 		ProgressManager_->AddSyncManager (CloudUpMgr_);
 
 		new RgAnalysisManager (Collection_, this);
+
+		CollectionsManager_->Add (Collection_->GetCollectionModel ());
 	}
 
 	Core& Core::Instance ()
@@ -154,6 +159,11 @@ namespace LMP
 	LocalCollection* Core::GetLocalCollection () const
 	{
 		return Collection_;
+	}
+
+	CollectionsManager* Core::GetCollectionsManager () const
+	{
+		return CollectionsManager_;
 	}
 
 	PlaylistManager* Core::GetPlaylistManager () const

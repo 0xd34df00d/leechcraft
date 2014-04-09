@@ -47,7 +47,9 @@ set (SRCS
 	models/listmodel.cpp
 	models/mergemodel.cpp
 	models/modeliterator.cpp
+	models/modelitem.cpp
 	models/treeitem.cpp
+	network/addressesmodelmanager.cpp
 	network/customcookiejar.cpp
 	network/customnetworkreply.cpp
 	network/networkdiskcache.cpp
@@ -83,6 +85,7 @@ set (SRCS
 	xpc/stdanfields.cpp
 	xpc/stddatafiltermenucreator.cpp
 	xpc/util.cpp
+	xsd/util.cpp
 	util.cpp
 	dblock.cpp
 	backendselector.cpp

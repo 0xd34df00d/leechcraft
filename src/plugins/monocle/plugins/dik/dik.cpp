@@ -76,16 +76,24 @@ namespace Dik
 		return result;
 	}
 
-	bool Plugin::CanLoadDocument (const QString& file)
+	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
 		const auto& lower = file.toLower ();
-		return lower.endsWith (".mobi") ||
+		const bool isGood = lower.endsWith (".mobi") ||
 				lower.endsWith (".prc");
+		return isGood ?
+				LoadCheckResult::Can :
+				LoadCheckResult::Cannot;
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
 		return IDocument_ptr (new Document (file, this));
+	}
+
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/x-mobipocket-ebook", "application/x-mobipocket" };
 	}
 }
 }

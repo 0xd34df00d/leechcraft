@@ -1115,14 +1115,16 @@ namespace Xoox
 	{
 		void HandleMessageForEntry (EntryBase *entry,
 				const QXmppMessage& msg, const QString& resource,
-				ClientConnection *conn)
+				ClientConnection *conn,
+				bool forwarded)
 		{
 			if (msg.state ())
 				entry->UpdateChatState (msg.state (), resource);
 
 			if (!msg.body ().isEmpty ())
 			{
-				GlooxMessage *gm = new GlooxMessage (msg, conn);
+				auto gm = new GlooxMessage (msg, conn);
+				gm->ToggleForwarded (forwarded);
 				entry->HandleMessage (gm);
 			}
 
@@ -1131,7 +1133,7 @@ namespace Xoox
 		}
 	}
 
-	void ClientConnection::handleMessageReceived (QXmppMessage msg)
+	void ClientConnection::handleMessageReceived (QXmppMessage msg, bool forwarded)
 	{
 		if (msg.type () == QXmppMessage::Error)
 		{
@@ -1159,7 +1161,7 @@ namespace Xoox
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
 		else if (JID2CLEntry_.contains (jid))
-			HandleMessageForEntry (JID2CLEntry_ [jid], msg, resource, this);
+			HandleMessageForEntry (JID2CLEntry_ [jid], msg, resource, this, forwarded);
 		else if (!Client_->rosterManager ().isRosterReceived ())
 			OfflineMsgQueue_ << msg;
 		else if (jid == OurBareJID_)
@@ -1169,11 +1171,11 @@ namespace Xoox
 				if (address.type () == "ofrom" && !address.jid ().isEmpty ())
 				{
 					msg.setFrom (address.jid ());
-					handleMessageReceived (msg);
+					handleMessageReceived (msg, true);
 					return;
 				}
 			}
-			HandleMessageForEntry (SelfContact_, msg, resource, this);
+			HandleMessageForEntry (SelfContact_, msg, resource, this, forwarded);
 		}
 		else if (msg.mucInvitationJid ().isEmpty ())
 		{
@@ -1198,7 +1200,7 @@ namespace Xoox
 
 		if (jid != OurBareJID_)
 		{
-			handleMessageReceived (msg);
+			handleMessageReceived (msg, true);
 			return;
 		}
 

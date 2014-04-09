@@ -28,431 +28,513 @@
  **********************************************************************/
 
 #include <algorithm>
-#include <typeinfo>
 #include <stdexcept>
+#include <QMimeData>
+#include <QUrl>
 #include <QtDebug>
 #include "mergemodel.h"
 
-using namespace LeechCraft::Util;
-
-MergeModel::MergeModel (const QStringList& headers, QObject *parent)
-: QAbstractItemModel (parent)
-, DefaultAcceptsRowImpl_ (false)
-, Headers_ (headers)
+namespace LeechCraft
 {
-}
-
-MergeModel::~MergeModel ()
+namespace Util
 {
-}
-
-int MergeModel::columnCount (const QModelIndex& index) const
-{
-	if (index.isValid ())
+	MergeModel::MergeModel (const QStringList& headers, QObject *parent)
+	: QAbstractItemModel (parent)
+	, DefaultAcceptsRowImpl_ (false)
+	, Headers_ (headers)
+	, Root_ (new ModelItem)
 	{
-		QModelIndex mapped = mapToSource (index);
-		return mapped.model ()->columnCount (mapped);
 	}
-	else
-		return Headers_.size ();
-}
 
-QVariant MergeModel::headerData (int column, Qt::Orientation orient, int role) const
-{
-	if (orient != Qt::Horizontal || role != Qt::DisplayRole)
-		return QVariant ();
-
-	return Headers_.at (column);
-}
-
-QVariant MergeModel::data (const QModelIndex& index, int role) const
-{
-	if (!index.isValid ())
-		return QVariant ();
-
-	try
+	int MergeModel::columnCount (const QModelIndex& index) const
 	{
-		return mapToSource (index).data (role);
+		if (index.isValid ())
+		{
+			const auto& mapped = mapToSource (index);
+			return mapped.model ()->columnCount (mapped);
+		}
+		else
+			return Headers_.size ();
 	}
-	catch (const std::exception& e)
+
+	QVariant MergeModel::headerData (int column, Qt::Orientation orient, int role) const
 	{
-		qWarning () << Q_FUNC_INFO
-				<< e.what ();
-		return {};
+		if (orient != Qt::Horizontal || role != Qt::DisplayRole)
+			return QVariant ();
+
+		return Headers_.at (column);
 	}
-}
 
-Qt::ItemFlags MergeModel::flags (const QModelIndex& index) const
-{
-	try
+	QVariant MergeModel::data (const QModelIndex& index, int role) const
 	{
-		return mapToSource (index).flags ();
+		if (!index.isValid ())
+			return QVariant ();
+
+		try
+		{
+			return mapToSource (index).data (role);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return {};
+		}
 	}
-	catch (const std::exception& e)
+
+	Qt::ItemFlags MergeModel::flags (const QModelIndex& index) const
 	{
-		qWarning () << Q_FUNC_INFO
-				<< e.what ();
-		return {};
+		try
+		{
+			return mapToSource (index).flags ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return {};
+		}
 	}
-}
 
-QModelIndex MergeModel::index (int row, int column, const QModelIndex& parent) const
-{
-	if (parent.isValid () || !hasIndex (row, column))
-		return QModelIndex ();
-	else
-		return createIndex (row, column);
-}
-
-QModelIndex MergeModel::parent (const QModelIndex&) const
-{
-	// here goes blocker for hierarchical #1
-	return QModelIndex ();
-}
-
-int MergeModel::rowCount (const QModelIndex& parent) const
-{
-	if (!parent.isValid ())
+	QModelIndex MergeModel::index (int row, int column, const QModelIndex& parent) const
 	{
-		int result = 0;
-		for (models_t::const_iterator i = Models_.begin (),
-				end = Models_.end ();
-				i != end; ++i)
-			result += RowCount (*i);
+		if (!hasIndex (row, column, parent))
+			return {};
+
+		auto parentItem = parent.isValid () ?
+				static_cast<ModelItem*> (parent.internalPointer ()) :
+				Root_.get ();
+
+		return createIndex (row, column, parentItem->EnsureChild (row));
+	}
+
+	QModelIndex MergeModel::parent (const QModelIndex& index) const
+	{
+		if (!index.isValid () || index.internalPointer () == Root_.get ())
+			return {};
+
+		auto item = static_cast<ModelItem*> (index.internalPointer ());
+		auto parent = item->GetParent ();
+		if (parent == Root_)
+			return {};
+
+		return createIndex (parent->GetRow (), 0, parent.get ());
+	}
+
+	int MergeModel::rowCount (const QModelIndex& parent) const
+	{
+		if (!parent.isValid ())
+			return Root_->GetRowCount ();
+
+		const auto item = static_cast<ModelItem*> (parent.internalPointer ());
+		return item->GetModel ()->rowCount (item->GetIndex ());
+	}
+
+	QStringList MergeModel::mimeTypes () const
+	{
+		QStringList result;
+		for (const auto model : GetAllModels ())
+			for (const auto& type : model->mimeTypes ())
+				if (!result.contains (type))
+					result << type;
 		return result;
 	}
 
-	try
+	namespace
 	{
-		const auto& mapped = mapToSource (parent);
-		return mapped.model ()->rowCount (mapped);
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< e.what ();
-		return 0;
-	}
-}
+		void Merge (QMimeData *out, const QMimeData *sub)
+		{
+			for (const auto& format : sub->formats ())
+				if (format != "text/uri-list" && !out->hasFormat (format))
+					out->setData (format, sub->data (format));
 
-QModelIndex MergeModel::mapFromSource (const QModelIndex& sourceIndex) const
-{
-	if (!sourceIndex.isValid ())
-		return QModelIndex ();
-
-	const QAbstractItemModel *model = sourceIndex.model ();
-	const_iterator moditer = FindModel (model);
-
-	int startingRow = GetStartingRow (moditer);
-
-	int sourceRow = sourceIndex.row ();
-	int sourceColumn = sourceIndex.column ();
-	void *sourcePtr = sourceIndex.internalPointer ();
-	quint32 sourceId = sourceIndex.internalId ();
-
-	if (sourcePtr)
-		return createIndex (sourceRow + startingRow, sourceColumn, sourcePtr);
-	else
-		return createIndex (sourceRow + startingRow, sourceColumn, sourceId);
-}
-
-QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
-{
-	if (!proxyIndex.isValid ())
-		return QModelIndex ();
-
-	int proxyRow = proxyIndex.row ();
-	int proxyColumn = proxyIndex.column ();
-	const_iterator modIter;
-	int startingRow = 0;
-	try
-	{
-		// here goes blocker for hierarchical #2 (cause of startingRow)
-		modIter = GetModelForRow (proxyRow, &startingRow);
-	}
-	catch (const std::runtime_error& e)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< objectName ()
-				<< proxyIndex
-				<< e.what ()
-				<< Models_;
-		throw;
+			out->setUrls (out->urls () + sub->urls ());
+		}
 	}
 
-	return (*modIter)->index (proxyRow - startingRow, proxyColumn, QModelIndex ());
-}
-
-void MergeModel::setSourceModel (QAbstractItemModel*)
-{
-	throw std::runtime_error ("You should not set source model via setSourceModel()");
-}
-
-void MergeModel::SetHeaders (const QStringList& headers)
-{
-	Headers_ = headers;
-}
-
-void MergeModel::AddModel (QAbstractItemModel *model)
-{
-	if (!model)
-		return;
-
-	int rows = RowCount (model);
-	bool wouldInsert = false;
-	if (rows > 0)
-		wouldInsert = true;
-
-	if (wouldInsert)
-		beginInsertRows (QModelIndex (), rowCount (), rowCount () + rows - 1);
-	Models_.push_back (model);
-	connect (model,
-			SIGNAL (columnsAboutToBeInserted (const QModelIndex&, int, int)),
-			this,
-			SLOT (handleColumnsAboutToBeInserted (const QModelIndex&, int, int)));
-	connect (model,
-			SIGNAL (columnsAboutToBeRemoved (const QModelIndex&, int, int)),
-			this,
-			SLOT (handleColumnsAboutToBeRemoved (const QModelIndex&, int, int)));
-	connect (model,
-			SIGNAL (columnsInserted (const QModelIndex&, int, int)),
-			this,
-			SLOT (handleColumnsInserted (const QModelIndex&, int, int)));
-	connect (model,
-			SIGNAL (columnsRemoved (const QModelIndex&, int, int)),
-			this,
-			SLOT (handleColumnsRemoved (const QModelIndex&, int, int)));
-	connect (model,
-			SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
-			this,
-			SLOT (handleDataChanged (const QModelIndex&, const QModelIndex&)));
-	connect (model,
-			SIGNAL (layoutAboutToBeChanged ()),
-			this,
-			SIGNAL (layoutAboutToBeChanged ()));
-	connect (model,
-			SIGNAL (layoutChanged ()),
-			this,
-			SIGNAL (layoutChanged ()));
-	connect (model,
-			SIGNAL (modelAboutToBeReset ()),
-			this,
-			SIGNAL (modelAboutToBeReset ()));
-	connect (model,
-			SIGNAL (modelReset ()),
-			this,
-			SIGNAL (modelReset ()));
-	connect (model,
-			SIGNAL (rowsAboutToBeInserted (const QModelIndex&, int, int)),
-			this,
-			SLOT (handleRowsAboutToBeInserted (const QModelIndex&, int, int)));
-	connect (model,
-			SIGNAL (rowsAboutToBeRemoved (const QModelIndex&, int, int)),
-			this,
-			SLOT (handleRowsAboutToBeRemoved (const QModelIndex&, int, int)));
-	connect (model,
-			SIGNAL (rowsInserted (const QModelIndex&, int, int)),
-			this,
-			SLOT (handleRowsInserted (const QModelIndex&, int, int)));
-	connect (model,
-			SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
-			this,
-			SLOT (handleRowsRemoved (const QModelIndex&, int, int)));
-	if (wouldInsert)
-		endInsertRows ();
-}
-
-MergeModel::const_iterator MergeModel::FindModel (const QAbstractItemModel *model) const
-{
-	return std::find (Models_.begin (), Models_.end (), model);
-}
-
-MergeModel::iterator MergeModel::FindModel (const QAbstractItemModel *model)
-{
-	return std::find (Models_.begin (), Models_.end (), model);
-}
-
-void MergeModel::RemoveModel (QAbstractItemModel *model)
-{
-	models_t::iterator i = FindModel (model);
-
-	if (i == Models_.end ())
+	QMimeData* MergeModel::mimeData (const QModelIndexList& indexes) const
 	{
-		qWarning () << Q_FUNC_INFO << "not found model" << model;
-		return;
+		QMimeData *result = nullptr;
+
+		for (const auto& index : indexes)
+		{
+			const auto& src = mapToSource (index);
+
+			const auto subresult = src.model ()->mimeData ({ src });
+
+			if (!subresult)
+				continue;
+
+			if (!result)
+				result = subresult;
+			else
+			{
+				Merge (result, subresult);
+				delete subresult;
+			}
+		}
+
+		return result;
 	}
 
-	int rows = RowCount (model);
-	bool wouldRemove = false;
-	if (rows > 0)
-		wouldRemove = true;
-
-	if (wouldRemove)
+	QModelIndex MergeModel::mapFromSource (const QModelIndex& sourceIndex) const
 	{
-		int startingRow = GetStartingRow (i);
-		beginRemoveRows (QModelIndex (), startingRow, startingRow + rows - 1);
+		if (!sourceIndex.isValid ())
+			return {};
+
+		QList<QModelIndex> hier;
+		auto parent = sourceIndex;
+		while (parent.isValid ())
+		{
+			hier.prepend (parent);
+			parent = parent.parent ();
+		}
+
+		auto currentItem = Root_;
+		for (const auto& idx : hier)
+		{
+			currentItem = currentItem->FindChild (idx);
+			if (!currentItem)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no next item for"
+						<< idx
+						<< hier;
+				return {};
+			}
+		}
+
+		return createIndex (currentItem->GetRow (), sourceIndex.column (), currentItem.get ());
 	}
-	Models_.erase (i);
-	if (wouldRemove)
-		endRemoveRows ();
-}
 
-size_t MergeModel::Size () const
-{
-	return Models_.size ();
-}
-
-int MergeModel::GetStartingRow (MergeModel::const_iterator it) const
-{
-	int result = 0;
-	for (models_t::const_iterator i = Models_.begin (); i != it; ++i)
-		result += RowCount (*i);
-	return result;
-}
-
-MergeModel::const_iterator MergeModel::GetModelForRow (int row, int *starting) const
-{
-	int counter = 0;
-	if (starting)
-		*starting = 0;
-	for (models_t::const_iterator i = Models_.begin (),
-			end = Models_.end (); i != end; ++i)
+	QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
 	{
-		counter += RowCount (*i);
-		if (counter > row)
-			return i;
+		const auto item = proxyIndex.isValid () ?
+				static_cast<ModelItem*> (proxyIndex.internalPointer ()) :
+				Root_.get ();
+
+		const auto& srcIdx = item->GetIndex ();
+		return srcIdx.sibling (srcIdx.row (), proxyIndex.column ());
+	}
+
+	void MergeModel::setSourceModel (QAbstractItemModel*)
+	{
+		throw std::runtime_error ("You should not set source model via setSourceModel()");
+	}
+
+	void MergeModel::SetHeaders (const QStringList& headers)
+	{
+		Headers_ = headers;
+	}
+
+	void MergeModel::AddModel (QAbstractItemModel *model)
+	{
+		if (!model)
+			return;
+
+		Models_.push_back (model);
+
+		connect (model,
+				SIGNAL (columnsAboutToBeInserted (const QModelIndex&, int, int)),
+				this,
+				SLOT (handleColumnsAboutToBeInserted (const QModelIndex&, int, int)));
+		connect (model,
+				SIGNAL (columnsAboutToBeRemoved (const QModelIndex&, int, int)),
+				this,
+				SLOT (handleColumnsAboutToBeRemoved (const QModelIndex&, int, int)));
+		connect (model,
+				SIGNAL (columnsInserted (const QModelIndex&, int, int)),
+				this,
+				SLOT (handleColumnsInserted (const QModelIndex&, int, int)));
+		connect (model,
+				SIGNAL (columnsRemoved (const QModelIndex&, int, int)),
+				this,
+				SLOT (handleColumnsRemoved (const QModelIndex&, int, int)));
+		connect (model,
+				SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+				this,
+				SLOT (handleDataChanged (const QModelIndex&, const QModelIndex&)));
+		connect (model,
+				SIGNAL (layoutAboutToBeChanged ()),
+				this,
+				SLOT (handleModelAboutToBeReset ()));
+		connect (model,
+				SIGNAL (layoutChanged ()),
+				this,
+				SLOT (handleModelReset ()));
+		connect (model,
+				SIGNAL (modelAboutToBeReset ()),
+				this,
+				SLOT (handleModelAboutToBeReset ()));
+		connect (model,
+				SIGNAL (modelReset ()),
+				this,
+				SLOT (handleModelReset ()));
+		connect (model,
+				SIGNAL (rowsAboutToBeInserted (const QModelIndex&, int, int)),
+				this,
+				SLOT (handleRowsAboutToBeInserted (const QModelIndex&, int, int)));
+		connect (model,
+				SIGNAL (rowsAboutToBeRemoved (const QModelIndex&, int, int)),
+				this,
+				SLOT (handleRowsAboutToBeRemoved (const QModelIndex&, int, int)));
+		connect (model,
+				SIGNAL (rowsInserted (const QModelIndex&, int, int)),
+				this,
+				SLOT (handleRowsInserted (const QModelIndex&, int, int)));
+		connect (model,
+				SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
+				this,
+				SLOT (handleRowsRemoved (const QModelIndex&, int, int)));
+
+		if (const auto rc = model->rowCount ())
+		{
+			beginInsertRows ({}, rowCount ({}), rowCount ({}) + rc - 1);
+
+			for (auto i = 0; i < rc; ++i)
+				Root_->AppendChild (model, model->index (i, 0), Root_);
+
+			endInsertRows ();
+		}
+	}
+
+	MergeModel::const_iterator MergeModel::FindModel (const QAbstractItemModel *model) const
+	{
+		return std::find (Models_.begin (), Models_.end (), model);
+	}
+
+	MergeModel::iterator MergeModel::FindModel (const QAbstractItemModel *model)
+	{
+		return std::find (Models_.begin (), Models_.end (), model);
+	}
+
+	void MergeModel::RemoveModel (QAbstractItemModel *model)
+	{
+		auto i = FindModel (model);
+
+		if (i == Models_.end ())
+		{
+			qWarning () << Q_FUNC_INFO << "not found model" << model;
+			return;
+		}
+
+		for (auto r = Root_->begin (); r != Root_->end (); )
+			if ((*r)->GetModel () == model)
+			{
+				const auto idx = std::distance (Root_->begin (), r);
+
+				beginRemoveRows ({}, idx, idx);
+				r = Root_->EraseChild (r);
+				endRemoveRows ();
+			}
+			else
+				++r;
+	}
+
+	size_t MergeModel::Size () const
+	{
+		return Models_.size ();
+	}
+
+	int MergeModel::GetStartingRow (MergeModel::const_iterator it) const
+	{
+		int result = 0;
+		for (auto i = Models_.begin (); i != it; ++i)
+			result += (*i)->rowCount ({});
+		return result;
+	}
+
+	MergeModel::const_iterator MergeModel::GetModelForRow (int row, int *starting) const
+	{
+		const auto child = Root_->GetChild (row);
+		const auto it = FindModel (child->GetModel ());
+
 		if (starting)
-			*starting = counter;
-	}
-	QString msg = Q_FUNC_INFO;
-	msg += ": not found ";
-	msg += QString::number (row);
-	throw std::runtime_error (qPrintable (msg));
-}
+			*starting = GetStartingRow (it);
 
-MergeModel::iterator MergeModel::GetModelForRow (int row, int *starting)
-{
-	int counter = 0;
-	if (starting)
-		*starting = 0;
-	for (models_t::iterator i = Models_.begin (),
-			end = Models_.end (); i != end; ++i)
+		return it;
+	}
+
+	MergeModel::iterator MergeModel::GetModelForRow (int row, int *starting)
 	{
-		counter += RowCount (*i);
-		if (counter > row)
-			return i;
+		const auto child = Root_->GetChild (row);
+		const auto it = FindModel (child->GetModel ());
+
 		if (starting)
-			*starting = counter;
+			*starting = GetStartingRow (it);
+
+		return it;
 	}
-	QString msg = Q_FUNC_INFO;
-	msg += ": not found ";
-	msg += QString::number (row);
-	throw std::runtime_error (qPrintable (msg));
-}
 
-QList<QAbstractItemModel*> MergeModel::GetAllModels () const
-{
-	QList<QAbstractItemModel*> result;
-	Q_FOREACH (QPointer<QAbstractItemModel> p, Models_)
-		if (p)
-			result << p.data ();
-	return result;
-}
-
-void MergeModel::handleColumnsAboutToBeInserted (const QModelIndex&, int, int)
-{
-	qWarning () << "model" << sender ()
-		<< "called handleColumnsAboutToBeInserted, ignoring it";
-	return;
-}
-
-void MergeModel::handleColumnsAboutToBeRemoved (const QModelIndex&, int, int)
-{
-	qWarning () << "model" << sender ()
-		<< "called handleColumnsAboutToBeRemoved, ignoring it";
-	return;
-}
-
-void MergeModel::handleColumnsInserted (const QModelIndex&, int, int)
-{
-	qWarning () << "model" << sender ()
-		<< "called handleColumnsInserted, ignoring it";
-	return;
-}
-
-void MergeModel::handleColumnsRemoved (const QModelIndex&, int, int)
-{
-	qWarning () << "model" << sender ()
-		<< "called handleColumnsRemoved, ignoring it";
-	return;
-}
-
-void MergeModel::handleDataChanged (const QModelIndex& topLeft,
-		const QModelIndex& bottomRight)
-{
-	emit dataChanged (mapFromSource (topLeft), mapFromSource (bottomRight));
-}
-
-void MergeModel::handleRowsAboutToBeInserted (const QModelIndex& parent,
-		int first, int last)
-{
-	QAbstractItemModel *model = static_cast<QAbstractItemModel*> (sender ());
-	int startingRow = GetStartingRow (FindModel (model));
-	beginInsertRows (mapFromSource (parent),
-			first + startingRow, last + startingRow);
-}
-
-void MergeModel::handleRowsAboutToBeRemoved (const QModelIndex& parent,
-		int first, int last)
-{
-	QAbstractItemModel *model = static_cast<QAbstractItemModel*> (sender ());
-	int startingRow = GetStartingRow (FindModel (model));
-	try
+	QList<QAbstractItemModel*> MergeModel::GetAllModels () const
 	{
-		beginRemoveRows (mapFromSource (parent),
+		QList<QAbstractItemModel*> result;
+		for (auto p : Models_)
+			if (p)
+				result << p.data ();
+		return result;
+	}
+
+	void MergeModel::handleColumnsAboutToBeInserted (const QModelIndex&, int, int)
+	{
+		qWarning () << "model" << sender ()
+			<< "called handleColumnsAboutToBeInserted, ignoring it";
+		return;
+	}
+
+	void MergeModel::handleColumnsAboutToBeRemoved (const QModelIndex&, int, int)
+	{
+		qWarning () << "model" << sender ()
+			<< "called handleColumnsAboutToBeRemoved, ignoring it";
+		return;
+	}
+
+	void MergeModel::handleColumnsInserted (const QModelIndex&, int, int)
+	{
+		qWarning () << "model" << sender ()
+			<< "called handleColumnsInserted, ignoring it";
+		return;
+	}
+
+	void MergeModel::handleColumnsRemoved (const QModelIndex&, int, int)
+	{
+		qWarning () << "model" << sender ()
+			<< "called handleColumnsRemoved, ignoring it";
+		return;
+	}
+
+	void MergeModel::handleDataChanged (const QModelIndex& topLeft,
+			const QModelIndex& bottomRight)
+	{
+		emit dataChanged (mapFromSource (topLeft), mapFromSource (bottomRight));
+	}
+
+	void MergeModel::handleRowsAboutToBeInserted (const QModelIndex& parent,
+			int first, int last)
+	{
+		const auto model = static_cast<QAbstractItemModel*> (sender ());
+
+		const auto startingRow = parent.isValid () ?
+				0 :
+				GetStartingRow (FindModel (model));
+		beginInsertRows (mapFromSource (parent),
 				first + startingRow, last + startingRow);
 	}
-	catch (const std::exception& e)
+
+	void MergeModel::handleRowsAboutToBeRemoved (const QModelIndex& parent,
+			int first, int last)
 	{
-		qWarning () << Q_FUNC_INFO
-			<< e.what ()
-			<< objectName ()
-			<< first
-			<< last
-			<< startingRow;
-		throw;
+		auto model = static_cast<QAbstractItemModel*> (sender ());
+
+		const auto startingRow = parent.isValid () ?
+				0 :
+				GetStartingRow (FindModel (model));
+		beginRemoveRows (mapFromSource (parent),
+				first + startingRow, last + startingRow);
+
+		const auto rawItem = parent.isValid () ?
+				static_cast<ModelItem*> (mapFromSource (parent).internalPointer ()) :
+				Root_.get ();
+		const auto& item = rawItem->shared_from_this ();
+
+		auto it = item->EraseChildren (item->begin () + startingRow + first,
+				item->begin () + startingRow + last + 1);
+
+		for ( ; it < item->end (); ++it)
+		{
+			if ((*it)->GetModel () != model)
+				break;
+
+			(*it)->RefreshIndex (startingRow);
+		}
+	}
+
+	void MergeModel::handleRowsInserted (const QModelIndex& parent, int first, int last)
+	{
+		const auto model = static_cast<QAbstractItemModel*> (sender ());
+
+		const auto startingRow = parent.isValid () ?
+				0 :
+				GetStartingRow (FindModel (model));
+
+		const auto rawItem = parent.isValid () ?
+				static_cast<ModelItem*> (mapFromSource (parent).internalPointer ()) :
+				Root_.get ();
+		const auto& item = rawItem->shared_from_this ();
+
+		for ( ; first <= last; ++first)
+		{
+			const auto& srcIdx = model->index (first, 0, parent);
+			item->InsertChild (startingRow + first, model, srcIdx, item);
+		}
+
+		++last;
+		last += startingRow;
+
+		for (int rc = item->GetRowCount (); last < rc; ++last)
+		{
+			const auto child = item->GetChild (last);
+			if (child->GetModel () != model)
+				break;
+
+			child->RefreshIndex (startingRow);
+		}
+
+		endInsertRows ();
+	}
+
+	void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
+	{
+		endRemoveRows ();
+	}
+
+	void MergeModel::handleModelAboutToBeReset ()
+	{
+		const auto model = static_cast<QAbstractItemModel*> (sender ());
+		if (const auto rc = model->rowCount ())
+		{
+			const auto startingRow = GetStartingRow (FindModel (model));
+			beginRemoveRows ({}, startingRow, rc + startingRow - 1);
+			Root_->EraseChildren (Root_->begin () + startingRow, Root_->begin () + startingRow + rc);
+			endRemoveRows ();
+		}
+	}
+
+	void MergeModel::handleModelReset ()
+	{
+		const auto model = static_cast<QAbstractItemModel*> (sender ());
+		if (const auto rc = model->rowCount ())
+		{
+			const auto startingRow = GetStartingRow (FindModel (model));
+
+			beginInsertRows ({}, startingRow, rc + startingRow - 1);
+
+			for (int i = 0; i < rc; ++i)
+				Root_->InsertChild (startingRow + i, model, model->index (i, 0, {}), Root_);
+
+			endInsertRows ();
+		}
+	}
+
+	bool MergeModel::AcceptsRow (QAbstractItemModel*, int) const
+	{
+		DefaultAcceptsRowImpl_ = true;
+		return true;
+	}
+
+	int MergeModel::RowCount (QAbstractItemModel *model) const
+	{
+		if (!model)
+			return 0;
+
+		int orig = model->rowCount ();
+		if (DefaultAcceptsRowImpl_)
+			return orig;
+
+		int result = 0;
+		for (int i = 0; i < orig; ++i)
+			result += AcceptsRow (model, i) ? 1 : 0;
+		return result;
 	}
 }
-
-void MergeModel::handleRowsInserted (const QModelIndex&, int, int)
-{
-	endInsertRows ();
 }
-
-void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
-{
-	qDebug () << Q_FUNC_INFO;
-	endRemoveRows ();
-}
-
-bool MergeModel::AcceptsRow (QAbstractItemModel*, int) const
-{
-	DefaultAcceptsRowImpl_ = true;
-	return true;
-}
-
-int MergeModel::RowCount (QAbstractItemModel *model) const
-{
-	if (!model)
-		return 0;
-
-	int orig = model->rowCount ();
-	if (DefaultAcceptsRowImpl_)
-		return orig;
-
-	int result = 0;
-	for (int i = 0; i < orig; ++i)
-		result += AcceptsRow (model, i) ? 1 : 0;
-	return result;
-}
-

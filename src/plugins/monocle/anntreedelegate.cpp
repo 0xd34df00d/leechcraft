@@ -62,8 +62,7 @@ namespace Monocle
 		painter->translate (-View_->indentation (), 0);
 
 		QStyleOptionViewItemV4 option = opt;
-
-		option.rect.setWidth (option.rect.width () + View_->indentation () / 2);
+		option.rect.setWidth (option.rect.width () + option.decorationSize.width ());
 
 		painter->fillRect (option.rect, QColor { 255, 234, 0 });
 		const auto& oldPen = painter->pen ();
@@ -84,27 +83,29 @@ namespace Monocle
 
 	QSize AnnTreeDelegate::sizeHint (const QStyleOptionViewItem& opt, const QModelIndex& index) const
 	{
+		if (index.data (AnnManager::Role::ItemType) != AnnManager::ItemTypes::AnnItem)
+			return QStyledItemDelegate::sizeHint (opt, index);
+
 		QStyleOptionViewItemV4 option = opt;
+		option.initFrom (View_->viewport ());
 		initStyleOption (&option, index);
 
-		if (index.data (AnnManager::Role::ItemType) != AnnManager::ItemTypes::AnnItem)
-			return
-			{
-				option.rect.width (),
-				option.fontMetrics.height ()
-			};
+		auto width = option.rect.width ();
 
 		auto parent = index.parent ();
 		while (parent.isValid ())
 		{
-			option.rect.setWidth (option.rect.width () - View_->indentation ());
+			width -= View_->indentation ();
 			parent = parent.parent ();
 		}
 
-		const auto& doc = GetDoc (index, option.rect.width ());
+		const auto style = option.widget->style ();
+
+		width -= style->pixelMetric (QStyle::PM_LayoutLeftMargin);
+		const auto& doc = GetDoc (index, width);
 		return
 		{
-			option.rect.width (),
+			width,
 			static_cast<int> (std::ceil (doc->size ().height ()))
 		};
 	}
@@ -157,7 +158,7 @@ namespace Monocle
 					.arg (ann->GetAuthor ())
 					.arg (tr ("Date"))
 					.arg (ann->GetDate ().toString (Qt::DefaultLocaleShortDate)) +
-				ann->GetText ();
+				Qt::escape (ann->GetText ());
 	}
 }
 }

@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "aggregatorapp.h"
-#include <tuple>
 #include <QObject>
 #include <QThread>
 #include <QtDebug>
@@ -44,6 +43,7 @@
 #include <Wt/WPanel>
 #include <Wt/WPopupMenu>
 #include <Wt/WCssTheme>
+#include <Wt/WScrollArea>
 #include <util/util.h>
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
@@ -52,6 +52,8 @@
 #include "readchannelsfilter.h"
 #include "util.h"
 #include "q2wproxymodel.h"
+#include "readitemsfilter.h"
+#include "wf.h"
 
 namespace LeechCraft
 {
@@ -68,6 +70,7 @@ namespace WebAccess
 			WittyThread (Wt::WApplication *app)
 			: App_ { app }
 			{
+				setObjectName ("Aggregator WebAccess (Wt Thread)");
 			}
 		protected:
 			void run ()
@@ -81,14 +84,15 @@ namespace WebAccess
 
 	AggregatorApp::AggregatorApp (IProxyObject *ap, ICoreProxy_ptr cp,
 			const Wt::WEnvironment& environment)
-	: WApplication (environment)
-	, AP_ (ap)
-	, CP_ (cp)
-	, ObjsThread_ (new WittyThread (this))
-	, ChannelsModel_ (new Q2WProxyModel (AP_->GetChannelsModel (), this))
-	, ChannelsFilter_ (new ReadChannelsFilter (this))
-	, SourceItemModel_ (AP_->CreateItemsModel ())
-	, ItemsModel_ (new Q2WProxyModel (SourceItemModel_, this))
+	: WApplication { environment }
+	, AP_ { ap }
+	, CP_ { cp }
+	, ObjsThread_ { new WittyThread (this) }
+	, ChannelsModel_ { new Q2WProxyModel { AP_->GetChannelsModel (), this } }
+	, ChannelsFilter_ { new ReadChannelsFilter { this } }
+	, SourceItemModel_ { AP_->CreateItemsModel () }
+	, ItemsModel_ { new Q2WProxyModel { SourceItemModel_, this } }
+	, ItemsFilter_ { new ReadItemsFilter { this }}
 	{
 		ChannelsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
 				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount },
@@ -96,7 +100,8 @@ namespace WebAccess
 			}));
 
 		ItemsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
-				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId }
+				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId },
+				{ ItemRole::IsRead, Aggregator::IItemsModel::ItemRole::IsRead }
 			}));
 		ItemsModel_->AddDataMorphism ([] (const QModelIndex& idx, int role) -> boost::any
 			{
@@ -124,6 +129,7 @@ namespace WebAccess
 		ObjsThread_->start ();
 
 		ChannelsFilter_->setSourceModel (ChannelsModel_);
+		ItemsFilter_->setSourceModel (ItemsModel_);
 
 		setTitle ("Aggregator WebAccess");
 		setLoadingIndicator (new Wt::WOverlayLoadingIndicator ());
@@ -136,6 +142,7 @@ namespace WebAccess
 	AggregatorApp::~AggregatorApp ()
 	{
 		delete ChannelsFilter_;
+		delete ItemsFilter_;
 
 		ObjsThread_->quit ();
 		ObjsThread_->wait (1000);
@@ -155,6 +162,7 @@ namespace WebAccess
 
 		const auto cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
 
+		ItemsFilter_->ClearCurrentItem ();
 		ItemsModelDecorator { SourceItemModel_ }.Reset (cid);
 	}
 
@@ -164,11 +172,13 @@ namespace WebAccess
 		if (!idx.isValid ())
 			return;
 
-		const auto& src = ItemsModel_->MapToSource (idx);
+		const auto& src = ItemsModel_->MapToSource (ItemsFilter_->mapToSource (idx));
 		const auto itemId = boost::any_cast<IDType_t> (idx.data (ItemRole::IID));
 		const auto& item = AP_->GetItem (itemId);
 		if (!item)
 			return;
+
+		ItemsFilter_->SetCurrentItem (itemId);
 
 		switch (event.button ())
 		{
@@ -180,108 +190,6 @@ namespace WebAccess
 			break;
 		default:
 			break;
-		}
-	}
-
-	namespace
-	{
-		template<size_t...>
-		struct Seq {};
-
-		template<size_t N, size_t... S>
-		struct Gen : Gen<N - 1, N - 1, S...> {};
-
-		template<size_t... S>
-		struct Gen<0, S...>
-		{
-			typedef Seq<S...> type;
-		};
-
-		template<typename F, typename Tuple, size_t... S>
-		constexpr bool AppliableHelper (int, Seq<S...>, decltype ((*static_cast<F*> (nullptr)) (std::get<S> (Tuple {})...)) * = nullptr)
-		{
-			return true;
-		}
-
-		template<typename F, typename Tuple, size_t... S>
-		constexpr bool AppliableHelper (char, Seq<S...>)
-		{
-			return false;
-		}
-
-		template<typename F, typename Tuple>
-		struct Appliable
-		{
-			constexpr static bool value = AppliableHelper<F, Tuple> (1, typename Gen<std::tuple_size<Tuple>::value>::type {});
-		};
-
-		template<typename... Args>
-		struct CutoffOne;
-
-		template<typename Arg, typename Arg2, typename... Rest>
-		struct CutoffOne<Arg, Arg2, Rest...>
-		{
-			typedef decltype (std::tuple_cat (std::tuple<typename std::decay<Arg>::type> { Arg {} }, typename CutoffOne<Arg2, Rest...>::type {})) type;
-		};
-
-		template<typename Last>
-		struct CutoffOne<Last>
-		{
-			typedef std::tuple<> type;
-		};
-
-		template<>
-		struct CutoffOne<>
-		{
-			typedef std::tuple<> type;
-		};
-
-		template<template<typename... Args> class MetaF, typename Tuple, size_t... S>
-		MetaF<decltype (std::get<S> (Tuple {}))...> PerformWithTupleTypesImpl (Seq<S...>)
-		{
-			return {};
-		}
-
-		template<template<typename... Args> class MetaF, typename Tuple>
-		struct PerformWithTupleTypes
-		{
-			typedef typename decltype (PerformWithTupleTypesImpl<MetaF, Tuple> (typename Gen<std::tuple_size<Tuple>::value>::type {}))::type type;
-		};
-
-		template<typename F, typename ArgsTuple>
-		struct FArgCount
-		{
-			constexpr static size_t value ()
-			{
-				return Appliable<F, ArgsTuple>::value ?
-						std::tuple_size<ArgsTuple>::value :
-							(std::tuple_size<ArgsTuple>::value ? FArgCount<F, typename PerformWithTupleTypes<CutoffOne, ArgsTuple>::type>::value () : 0);
-			}
-		};
-
-		template<typename F>
-		struct WFImpl
-		{
-			F F_;
-
-			template<typename Tuple, size_t... S>
-			void CallHelper (const Tuple& tuple, Seq<S...>)
-			{
-				F_ (std::get<S> (tuple)...);
-			}
-
-			template<typename... Args>
-			void operator() (Args... args)
-			{
-				constexpr auto argCount = FArgCount<F, std::tuple<Args...>>::value ();
-				CallHelper (std::make_tuple (args...), typename Gen<argCount>::type {});
-			}
-		};
-
-		template<typename F>
-		WFImpl<F> WF (const F& f)
-		{
-			return { f };
 		}
 	}
 
@@ -323,8 +231,8 @@ namespace WebAccess
 		auto leftPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
 		rootLay->addLayout (leftPaneLay, 2);
 
-		auto showReadChannels = new Wt::WCheckBox (ToW (QObject::tr ("Include read channels")));
-		showReadChannels->setToolTip (ToW (QObject::tr ("Also display channels that have no unread items.")));
+		auto showReadChannels = new Wt::WCheckBox (ToW (tr ("Include read channels")));
+		showReadChannels->setToolTip (ToW (tr ("Also display channels that have no unread items.")));
 		showReadChannels->setChecked (false);
 		showReadChannels->checked ().connect (WF ([this] { ChannelsFilter_->SetHideRead (false); }));
 		showReadChannels->unChecked ().connect (WF ([this] { ChannelsFilter_->SetHideRead (true); }));
@@ -340,8 +248,14 @@ namespace WebAccess
 		auto rightPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
 		rootLay->addLayout (rightPaneLay, 7);
 
+		auto showReadItems = new Wt::WCheckBox (ToW (tr ("Show read items")));
+		showReadItems->setChecked (false);
+		showReadItems->checked ().connect (WF ([this] { ItemsFilter_->SetHideRead (false); }));
+		showReadItems->unChecked ().connect (WF ([this] { ItemsFilter_->SetHideRead (true); }));
+		rightPaneLay->addWidget (showReadItems);
+
 		ItemsTable_ = new Wt::WTableView ();
-		ItemsTable_->setModel (ItemsModel_);
+		ItemsTable_->setModel (ItemsFilter_);
 		ItemsTable_->mouseWentUp ().connect (this, &AggregatorApp::HandleItemClicked);
 		ItemsTable_->setAlternatingRowColors (true);
 		ItemsTable_->setColumnWidth (0, { 550, Wt::WLength::Pixel });
@@ -353,8 +267,13 @@ namespace WebAccess
 		ItemView_ = new Wt::WText ();
 		ItemView_->setTextFormat (Wt::XHTMLUnsafeText);
 
+		auto scrollArea = new Wt::WScrollArea;
+		scrollArea->setHorizontalScrollBarPolicy (Wt::WScrollArea::ScrollBarAlwaysOff);
+		scrollArea->setVerticalScrollBarPolicy (Wt::WScrollArea::ScrollBarAsNeeded);
+		scrollArea->setWidget (ItemView_);
+
 		auto itemPanel = new Wt::WPanel ();
-		itemPanel->setCentralWidget (ItemView_);
+		itemPanel->setCentralWidget (scrollArea);
 
 		rightPaneLay->addWidget (itemPanel, 5);
 	}

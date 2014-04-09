@@ -421,9 +421,7 @@ namespace Azoth
 		{
 			const auto& id = entry->GetHumanReadableID ();
 			data->setText (id);
-#if QT_VERSION >= 0x040800
 			data->setUrls ({ id });
-#endif
 		}
 	}
 
@@ -432,7 +430,6 @@ namespace Azoth
 		auto data = event->mimeData ();
 		if (data->hasText ())
 			event->acceptProposedAction ();
-#if QT_VERSION >= 0x040800
 		else if (data->hasUrls ())
 		{
 			for (const auto& url : data->urls ())
@@ -443,12 +440,11 @@ namespace Azoth
 					break;
 				}
 		}
-#endif
 	}
 
 	void ChatTab::HandleDrop (QDropEvent *event)
 	{
-		auto data = event->mimeData ();
+		const auto data = event->mimeData ();
 		if (data->hasUrls () || data->hasImage ())
 			CDF_->HandleDrop (data);
 		else if (data->hasText ())
@@ -823,7 +819,7 @@ namespace Azoth
 		if (LastLink_.isEmpty ())
 			return;
 
-		const auto& e = Util::MakeEntity (QUrl (LastLink_), QString (), static_cast<TaskParameters> (FromUserInitiated | OnlyHandle));
+		const auto& e = Util::MakeEntity (QUrl (LastLink_), {}, FromUserInitiated | OnlyHandle);
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 

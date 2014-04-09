@@ -165,8 +165,8 @@ namespace Azoth
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
 		const Entity& e = Util::MakeEntity (action->data (),
-				QString (),
-				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+				{},
+				OnlyHandle | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
 	}
 
@@ -191,8 +191,8 @@ namespace Azoth
 			url = "http://" + url.toString ();
 
 		const Entity& e = Util::MakeEntity (url,
-				QString (),
-				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+				{},
+				OnlyHandle | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
 	}
 

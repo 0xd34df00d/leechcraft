@@ -36,18 +36,29 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	MUCInviteDialog::MUCInviteDialog (IAccount *acc, QWidget *parent)
+	MUCInviteDialog::MUCInviteDialog (IAccount *acc, ListType type, QWidget *parent)
 	: QDialog (parent)
 	, ManualMode_ (false)
 	{
 		Ui_.setupUi (this);
 		Ui_.Invitee_->setInsertPolicy (QComboBox::NoInsert);
 
-		Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+		ICLEntry::EntryType requestedType = ICLEntry::ETChat;
+		switch (type)
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		case ListType::ListEntries:
+			break;
+		case ListType::ListMucs:
+			requestedType = ICLEntry::ETMUC;
+			Ui_.InviteeLabel_->setText ("Conferences:");
+			break;
+		}
+
+		for (auto entryObj : acc->GetCLEntries ())
+		{
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 			if (!entry ||
-					entry->GetEntryType () != ICLEntry::ETChat)
+					entry->GetEntryType () != requestedType)
 				continue;
 
 			const QString& id = entry->GetHumanReadableID ();

@@ -41,9 +41,11 @@
 #include <interfaces/idatafilter.h>
 #include <interfaces/ientityhandler.h>
 #include "interfaces/azoth/irichtextmessage.h"
+#include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "chattab.h"
 #include "transferjobmanager.h"
+#include "dndutil.h"
 
 namespace LeechCraft
 {
@@ -73,7 +75,9 @@ namespace Azoth
 		const auto& urls = data->urls ();
 		if (data->hasImage () && urls.size () <= 1)
 			HandleImageDropped (imgData.value<QImage> (), urls.value (0));
-		else if (data->hasUrls () && !urls.isEmpty ())
+		else if (DndUtil::HasContacts (data))
+			HandleContactsDropped (data);
+		else if (!urls.isEmpty ())
 			HandleFilesDropped (urls);
 	}
 
@@ -285,6 +289,88 @@ namespace Azoth
 
 		HandleImageDropped (img, urls.at (0));
 		return true;
+	}
+
+	namespace
+	{
+		bool CanEntryBeInvited (ICLEntry *thisEntry, ICLEntry *entry)
+		{
+			const bool isMuc = thisEntry->GetEntryType () == ICLEntry::ETMUC;
+
+			const auto entryAcc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			const auto thisAcc = qobject_cast<IAccount*> (thisEntry->GetParentAccount ());
+			if (thisAcc->GetParentProtocol () != entryAcc->GetParentProtocol ())
+				return false;
+
+			const bool isThatMuc = entry->GetEntryType () == ICLEntry::ETMUC;
+			return isThatMuc != isMuc;
+		}
+	}
+
+	void ContactDropFilter::HandleContactsDropped (const QMimeData *data)
+	{
+		const auto thisEntry = GetEntry<ICLEntry> (EntryId_);
+		const bool isMuc = thisEntry->GetEntryType () == ICLEntry::ETMUC;
+
+		auto entries = DndUtil::DecodeEntryObjs (data);
+		entries.erase (std::remove_if (entries.begin (), entries.end (),
+					[thisEntry] (QObject *entryObj)
+					{
+						return !CanEntryBeInvited (thisEntry,
+								qobject_cast<ICLEntry*> (entryObj));
+					}),
+				entries.end ());
+
+		if (entries.isEmpty ())
+			return;
+
+		QString text;
+		if (entries.size () > 1)
+			text = isMuc ?
+					tr ("Enter reason to invite %n contact(s) to %1:", 0, entries.size ())
+						.arg (thisEntry->GetEntryName ()) :
+					tr ("Enter reason to invite %1 to %n conference(s):", 0, entries.size ())
+						.arg (thisEntry->GetEntryName ());
+		else
+		{
+			const auto muc = isMuc ?
+					thisEntry :
+					qobject_cast<ICLEntry*> (entries.first ());
+			const auto entry = isMuc ?
+					qobject_cast<ICLEntry*> (entries.first ()) :
+					thisEntry;
+			text = tr ("Enter reason to invite %1 to %2:")
+					.arg (entry->GetEntryName ())
+					.arg (muc->GetEntryName ());
+		}
+
+		bool ok = false;
+		auto reason = QInputDialog::getText (nullptr,
+				tr ("Invite to a MUC"),
+				text,
+				QLineEdit::Normal,
+				{},
+				&ok);
+		if (!ok)
+			return;
+
+		if (isMuc)
+		{
+			const auto muc = qobject_cast<IMUCEntry*> (thisEntry->GetQObject ());
+
+			for (const auto& entry : entries)
+				muc->InviteToMUC (qobject_cast<ICLEntry*> (entry)->GetHumanReadableID (), reason);
+		}
+		else
+		{
+			const auto thisId = thisEntry->GetHumanReadableID ();
+
+			for (const auto& mucEntryObj : entries)
+			{
+				const auto muc = qobject_cast<IMUCEntry*> (mucEntryObj);
+				muc->InviteToMUC (thisId, reason);
+			}
+		}
 	}
 
 	void ContactDropFilter::HandleFilesDropped (const QList<QUrl>& urls)

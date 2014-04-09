@@ -127,8 +127,6 @@ namespace Aggregator
 		QString ToHtml (const Item_ptr&);
 		void RestoreSplitter ();
 		QModelIndexList GetSelected () const;
-	public slots:
-		void handleItemDataUpdated (Item_ptr, Channel_ptr);
 	private slots:
 		void invalidateMergeMode ();
 		void on_ActionHideReadItems__triggered ();

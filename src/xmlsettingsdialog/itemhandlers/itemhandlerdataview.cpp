@@ -77,6 +77,8 @@ namespace LeechCraft
 		if (item.attribute ("removeEnabled") == "false")
 			view->DisableRemoval ();
 
+		AddCustomButtons (item, view);
+
 		QString prop = item.attribute ("property");
 
 		view->setObjectName (prop);
@@ -272,16 +274,28 @@ namespace LeechCraft
 		return datas;
 	}
 
+	void ItemHandlerDataView::AddCustomButtons (const QDomElement& item, DataViewWidget *view)
+	{
+		auto elem = item.firstChildElement ("button");
+		while (!elem.isNull ())
+		{
+			const auto& text = XSD_->GetLabel (elem);
+			const auto& id = elem.attribute ("id").toUtf8 ();
+
+			view->AddCustomButton (id, text);
+
+			elem = elem.nextSiblingElement ("button");
+		}
+
+		connect (view,
+				SIGNAL (customButtonReleased (QByteArray)),
+				this,
+				SLOT (handleCustomButton (QByteArray)));
+	}
+
 	void ItemHandlerDataView::handleAddRequested ()
 	{
 		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
-		if (!view)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a DataViewWidget"
-					<< sender ();
-			return;
-		}
 
 		auto model = view->GetModel ();
 		const auto& datas = GetAddVariants (model);
@@ -301,13 +315,6 @@ namespace LeechCraft
 	void ItemHandlerDataView::handleModifyRequested ()
 	{
 		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
-		if (!view)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a DataViewWidget"
-					<< sender ();
-			return;
-		}
 
 		const auto& selected = view->GetCurrentIndex ();
 		if (!selected.isValid ())
@@ -336,13 +343,6 @@ namespace LeechCraft
 	void ItemHandlerDataView::handleRemoveRequested ()
 	{
 		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
-		if (!view)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a DataViewWidget"
-					<< sender ();
-			return;
-		}
 		if (!view->GetModel ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -367,5 +367,32 @@ namespace LeechCraft
 					<< "invokeMethod on "
 					<< model->parent ()
 					<< " for \"removeRequested\" failed";
+	}
+
+	void ItemHandlerDataView::handleCustomButton (const QByteArray& id)
+	{
+		const auto view = qobject_cast<DataViewWidget*> (sender ());
+		if (!view->GetModel ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "model isn't ready";
+			return;
+		}
+
+		const auto& selected = view->GetCurrentIndex ();
+		if (!selected.isValid ())
+			return;
+
+		const auto model = view->GetModel ();
+
+		if (!QMetaObject::invokeMethod (model->parent (),
+					"customButtonPressed",
+					Q_ARG (QString, view->objectName ()),
+					Q_ARG (QByteArray, id),
+					Q_ARG (int, selected.row ())))
+			qWarning () << Q_FUNC_INFO
+					<< "invokeMethod on "
+					<< model->parent ()
+					<< " for \"handleCustomButton\" failed";
 	}
 }
