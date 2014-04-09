@@ -53,6 +53,8 @@ namespace HttStream
 	public:
 		HttpServer (QObject* = nullptr);
 
+		void SetAddress (const QString&, int);
+
 		QList<int> GetConnectedFDs () const;
 	private:
 		void HandleSocket (QTcpSocket*);

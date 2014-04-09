@@ -41,11 +41,35 @@ namespace HttStream
 	: QObject { parent }
 	, Server_ { new QTcpServer { this } }
 	{
-		Server_->listen (QHostAddress::Any, 9005);
 		connect (Server_,
 				SIGNAL (newConnection ()),
 				this,
 				SLOT (handleNewConnection ()));
+	}
+
+	void HttpServer::SetAddress (const QString& host, int port)
+	{
+		if (Server_->serverAddress () == QHostAddress { host } &&
+				Server_->serverPort () == port)
+			return;
+
+		qDebug () << Q_FUNC_INFO << host << port;
+
+		if (Server_->isListening ())
+		{
+			qDebug () << "server is already listening, stopping...";
+			Server_->close ();
+		}
+
+		if (!Server_->listen (QHostAddress { host }, port))
+		{
+			const auto& msg = Server_->errorString ();
+			qWarning () << Q_FUNC_INFO
+					<< "cannot listen on"
+					<< host
+					<< port
+					<< msg;
+		}
 	}
 
 	QList<int> HttpServer::GetConnectedFDs () const
