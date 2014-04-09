@@ -30,6 +30,7 @@
 #include "httpstreamfilter.h"
 #include <QUuid>
 #include <QtDebug>
+#include <QTimer>
 #include <gst/gst.h>
 #include "interfaces/lmp/ifilterconfigurator.h"
 #include "util/lmp/gstutil.h"
@@ -42,6 +43,14 @@ namespace LMP
 {
 namespace HttStream
 {
+	namespace
+	{
+		void CbRemoved (void*, gint fd, int reason, gpointer udata)
+		{
+			static_cast<HttpStreamFilter*> (udata)->HandleRemoved (fd, reason);
+		}
+	}
+
 	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId, const QByteArray& instanceId)
 	: FilterId_ { filterId }
 	, InstanceId_ { instanceId.isEmpty () ? QUuid::createUuid ().toByteArray () : instanceId }
@@ -91,6 +100,8 @@ namespace HttStream
 				SIGNAL (clientDisconnected (int)),
 				this,
 				SLOT (handleClientDisconnected (int)));
+
+		g_signal_connect (MSS_, "client-removed", G_CALLBACK (CbRemoved), this);
 	}
 
 	HttpStreamFilter::~HttpStreamFilter ()
@@ -119,6 +130,30 @@ namespace HttStream
 	void HttpStreamFilter::SetQuality (double val)
 	{
 		g_object_set (G_OBJECT (Encoder_), "quality", val, nullptr);
+	}
+
+	namespace
+	{
+		// http://cgit.collabora.com/git/user/kakaroto/gst-plugins-base.git/plain/gst/tcp/gstmultihandlesink.c
+		const int GST_CLIENT_STATUS_OK = 0;
+		const int GST_CLIENT_STATUS_CLOSED = 1;
+		const int GST_CLIENT_STATUS_REMOVED = 2;
+	}
+
+	void HttpStreamFilter::HandleRemoved (int fd, int reason)
+	{
+		if (reason != GST_CLIENT_STATUS_REMOVED)
+			return;
+
+		qDebug () << Q_FUNC_INFO
+				<< "detected client removal because of"
+				<< reason
+				<< "; scheduling readd...";
+
+		QMetaObject::invokeMethod (this,
+				"readdFd",
+				Qt::QueuedConnection,
+				Q_ARG (int, fd));
 	}
 
 	GstElement* HttpStreamFilter::GetElement () const
@@ -165,6 +200,11 @@ namespace HttStream
 		}
 
 		return GST_BUS_PASS;
+	}
+
+	void HttpStreamFilter::readdFd (int fd)
+	{
+		g_signal_emit_by_name (MSS_, "add", fd);
 	}
 
 	void HttpStreamFilter::handleClient (int socket)
