@@ -51,7 +51,7 @@ namespace Util
 		updateAvailInterfaces ();
 
 		const auto& addrs = BSM_->Property ("ListenAddresses",
-				QVariant::fromValue (GetDefaultAddresses (defaultPort))).value<AddrList_t> ();
+				QVariant::fromValue (GetLocalAddresses (defaultPort))).value<AddrList_t> ();
 		qDebug () << Q_FUNC_INFO << addrs;
 		for (const auto& addr : addrs)
 			AppendRow (addr);
@@ -63,7 +63,7 @@ namespace Util
 		qRegisterMetaTypeStreamOperators<AddrList_t> ();
 	}
 
-	AddrList_t AddressesModelManager::GetDefaultAddresses (int defaultPort)
+	AddrList_t AddressesModelManager::GetLocalAddresses (int defaultPort)
 	{
 		AddrList_t defaultAddrs;
 		const auto locals
@@ -72,17 +72,25 @@ namespace Util
 			QHostAddress::parseSubnet ("172.16.0.0/12"),
 			QHostAddress::parseSubnet ("192.168.0.0/16")
 		};
-		for (const auto& addr : QNetworkInterface::allAddresses ())
-		{
-			if (!addr.scopeId ().isEmpty ())
-				continue;
-
+		for (const auto& addr : GetAllAddresses ())
 			if (std::any_of (std::begin (locals), std::end (locals),
 					[&addr] (decltype (*std::begin (locals)) subnet)
 						{ return addr.isInSubnet (subnet); }))
 				defaultAddrs.push_back ({ addr.toString (), QString::number (defaultPort) });
-		}
 		return defaultAddrs;
+	}
+
+	QList<QHostAddress> AddressesModelManager::GetAllAddresses ()
+	{
+		QList<QHostAddress> result;
+		for (const auto& addr : QNetworkInterface::allAddresses ())
+			if (addr.scopeId ().isEmpty ())
+				result << addr;
+
+		if (!result.contains (QHostAddress::Any))
+			result << QHostAddress::Any;
+
+		return result;
 	}
 
 	QAbstractItemModel* AddressesModelManager::GetModel () const

@@ -34,6 +34,7 @@
 #include <QModelIndexList>
 #include <util/utilconfig.h>
 
+class QHostAddress;
 class QStandardItemModel;
 class QStandardItem;
 
@@ -55,7 +56,8 @@ namespace Util
 		AddressesModelManager (BaseSettingsManager*, int defaultPort, QObject* = 0);
 
 		static void RegisterTypes ();
-		static AddrList_t GetDefaultAddresses (int defaultPort = 0);
+		static AddrList_t GetLocalAddresses (int defaultPort = 0);
+		static QList<QHostAddress> GetAllAddresses ();
 
 		QAbstractItemModel* GetModel () const;
 		AddrList_t GetAddresses () const;
