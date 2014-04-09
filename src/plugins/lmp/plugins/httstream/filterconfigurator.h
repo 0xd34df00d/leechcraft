@@ -34,6 +34,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+class XmlSettingsDialog;
+}
+
 namespace LMP
 {
 class FilterSettingsManager;
@@ -54,7 +59,10 @@ namespace HttStream
 		FilterConfigurator (const QString&, HttpStreamFilter*);
 
 		void OpenDialog ();
+	private:
+		void FillAddressModel (Util::XmlSettingsDialog*);
 	private slots:
+		void handleAddressChanged ();
 		void handleEncQualityChanged ();
 	};
 }

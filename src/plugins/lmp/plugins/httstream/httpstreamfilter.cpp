@@ -132,6 +132,11 @@ namespace HttStream
 		g_object_set (G_OBJECT (Encoder_), "quality", val, nullptr);
 	}
 
+	void HttpStreamFilter::SetAddress (const QString& host, int port)
+	{
+		Server_->SetAddress (host, port);
+	}
+
 	namespace
 	{
 		// http://cgit.collabora.com/git/user/kakaroto/gst-plugins-base.git/plain/gst/tcp/gstmultihandlesink.c

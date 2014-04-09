@@ -84,6 +84,7 @@ namespace HttStream
 		IFilterConfigurator* GetConfigurator () const;
 
 		void SetQuality (double);
+		void SetAddress (const QString&, int);
 
 		void HandleRemoved (int, int);
 	protected:
