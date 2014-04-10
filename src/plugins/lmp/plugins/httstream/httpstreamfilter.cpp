@@ -106,10 +106,6 @@ namespace HttStream
 
 	HttpStreamFilter::~HttpStreamFilter ()
 	{
-		gst_element_release_request_pad (Tee_, TeeAudioPad_);
-		gst_object_unref (TeeAudioPad_);
-
-		gst_object_unref (Elem_);
 	}
 
 	QByteArray HttpStreamFilter::GetEffectId () const
