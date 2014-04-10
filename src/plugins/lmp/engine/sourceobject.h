@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <type_traits>
 #include <QObject>
 #include <QStringList>
 #include <QMap>
@@ -79,6 +80,52 @@ namespace LMP
 	class MsgPopThread;
 
 	class Path;
+
+	class HandlerContainerBase : public QObject
+	{
+		Q_OBJECT
+	protected slots:
+		virtual void objectDestroyed () = 0;
+	};
+
+	template<typename T>
+	class HandlerContainer : public HandlerContainerBase
+	{
+		QMap<QObject*, QList<T>> Dependents_;
+	public:
+		void AddHandler (const T& handler, QObject *dependent)
+		{
+			Dependents_ [dependent] << handler;
+
+			connect (dependent,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (objectDestroyed ()));
+		}
+
+		template<typename Reducer, typename... Args>
+		auto operator() (Reducer r, decltype (r (T {} (Args {}...), T {} (Args {}...))) init, Args... args) -> decltype (r (T {} (args...), T {} (args...)))
+		{
+			for (const auto& sublist : Dependents_)
+				for (const auto& item : sublist)
+					init = r (init, item (args...));
+
+			return init;
+		}
+
+		template<typename... Args>
+		auto operator() (Args... args) -> typename std::enable_if<std::is_same<void, decltype (T {} (args...))>::value, void>::type
+		{
+			for (const auto& sublist : Dependents_)
+				for (const auto& item : sublist)
+					item (args...);
+		}
+	private:
+		void objectDestroyed ()
+		{
+			Dependents_.remove (sender ());
+		}
+	};
 
 	class SourceObject : public QObject
 	{
