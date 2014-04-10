@@ -81,8 +81,8 @@ namespace LMP
 
 		SourceObject* GetSourceObject () const;
 
-		void AddSyncHandler (const SyncHandler_f&);
-		void AddAsyncHandler (const AsyncHandler_f&);
+		void AddSyncHandler (const SyncHandler_f&, QObject*);
+		void AddAsyncHandler (const AsyncHandler_f&, QObject*);
 
 		void InsertElement (GstElement*);
 		void RemoveElement (GstElement*);

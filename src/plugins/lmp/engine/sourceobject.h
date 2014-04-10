@@ -156,8 +156,8 @@ namespace LMP
 		MsgPopThread *PopThread_;
 		GstUtil::TagMap_t Metadata_;
 
-		QList<SyncHandler_f> SyncHandlers_;
-		QList<AsyncHandler_f> AsyncHandlers_;
+		HandlerContainer<SyncHandler_f> SyncHandlers_;
+		HandlerContainer<AsyncHandler_f> AsyncHandlers_;
 	public:
 		enum class Metadata
 		{
@@ -209,8 +209,8 @@ namespace LMP
 		void AddToPath (Path*);
 		void SetSink (GstElement*);
 
-		void AddSyncHandler (const SyncHandler_f&);
-		void AddAsyncHandler (const AsyncHandler_f&);
+		void AddSyncHandler (const SyncHandler_f&, QObject*);
+		void AddAsyncHandler (const AsyncHandler_f&, QObject*);
 	private:
 		void HandleErrorMsg (GstMessage*);
 		void HandleTagMsg (GstMessage*);

@@ -168,7 +168,7 @@ namespace HttStream
 
 	void HttpStreamFilter::PostAdd (IPath *path)
 	{
-		path->AddSyncHandler ([this] (GstBus*, GstMessage *msg) { return HandleError (msg); });
+		path->AddSyncHandler ([this] (GstBus*, GstMessage *msg) { return HandleError (msg); }, this);
 	}
 
 	void HttpStreamFilter::CreatePad ()

@@ -32,6 +32,7 @@
 #include <atomic>
 #include <map>
 #include <stdexcept>
+#include <algorithm>
 #include <QtDebug>
 #include <QTimer>
 #include <QThread>
@@ -488,14 +489,14 @@ namespace LMP
 		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
 	}
 
-	void SourceObject::AddSyncHandler (const SyncHandler_f& handler)
+	void SourceObject::AddSyncHandler (const SyncHandler_f& handler, QObject *dependent)
 	{
-		SyncHandlers_ << handler;
+		SyncHandlers_.AddHandler (handler, dependent);
 	}
 
-	void SourceObject::AddAsyncHandler (const AsyncHandler_f& handler)
+	void SourceObject::AddAsyncHandler (const AsyncHandler_f& handler, QObject *dependent)
 	{
-		AsyncHandlers_ << handler;
+		AsyncHandlers_.AddHandler (handler, dependent);
 	}
 
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
@@ -716,22 +717,16 @@ namespace LMP
 
 	int SourceObject::HandleSyncMessage (GstBus *bus, GstMessage *msg)
 	{
-		for (const auto& handler : SyncHandlers_)
-		{
-			const auto res = handler (bus, msg);
-			if (res == GST_BUS_DROP)
-				return res;
-		}
-
-		return GST_BUS_PASS;
+		return SyncHandlers_ ([] (int a, int b) { return std::min (a, b); },
+				static_cast<int> (GST_BUS_PASS),
+				bus, msg);
 	}
 
 	void SourceObject::handleMessage (GstMessage_ptr msgPtr)
 	{
 		const auto message = msgPtr.get ();
 
-		for (const auto& handler : AsyncHandlers_)
-			handler (message);
+		AsyncHandlers_ (message);
 
 		switch (GST_MESSAGE_TYPE (message))
 		{
