@@ -248,16 +248,20 @@ namespace Azoth
 				QString entryId;
 				QVariantMap data;
 				QByteArray accountId;
+				QString text;
 				str >> entryId
 					>> data
-					>> accountId;
+					>> accountId
+					>> text;
 
-				if (auto entry = Core::Instance ().GetEntry (entryId))
-				{
-					auto mgr = Core::Instance ().GetChatTabsManager ();
-					mgr->OpenChat (qobject_cast<ICLEntry*> (entry), false, recInfo.DynProperties_);
-				}
-				else
+				ChatTabsManager::RestoreChatInfo info;
+				info.Props_ = recInfo.DynProperties_;
+				info.EntryID_ = entryId;
+				info.MsgText_ = text;
+
+				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos ({ info });
+
+				if (!Core::Instance ().GetEntry (entryId))
 				{
 					auto acc = Core::Instance ().GetAccount (accountId);
 					if (!acc)

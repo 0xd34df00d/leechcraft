@@ -297,9 +297,10 @@ namespace Azoth
 			Entry2Tab_ [muc->GetEntryID ()]->HandleMUCParticipantsChanged ();
 	}
 
-	void ChatTabsManager::RestoreChat (const ChatTabsManager::RestoreChatInfo& info, QObject *entryObj)
+	void ChatTabsManager::RestoreChat (const RestoreChatInfo& info, QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
+
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
