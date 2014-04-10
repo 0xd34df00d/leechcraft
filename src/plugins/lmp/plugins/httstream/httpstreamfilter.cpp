@@ -136,8 +136,6 @@ namespace HttStream
 	namespace
 	{
 		// http://cgit.collabora.com/git/user/kakaroto/gst-plugins-base.git/plain/gst/tcp/gstmultihandlesink.c
-		const int GST_CLIENT_STATUS_OK = 0;
-		const int GST_CLIENT_STATUS_CLOSED = 1;
 		const int GST_CLIENT_STATUS_REMOVED = 2;
 	}
 
