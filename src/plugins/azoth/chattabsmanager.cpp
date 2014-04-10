@@ -308,7 +308,10 @@ namespace Azoth
 			return;
 		}
 		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, false, info.Props_));
-		tab->selectVariant (info.Variant_);
+
+		if (!info.Variant_.isEmpty ())
+			tab->selectVariant (info.Variant_);
+
 		tab->prepareMessageText (info.MsgText_);
 	}
 
