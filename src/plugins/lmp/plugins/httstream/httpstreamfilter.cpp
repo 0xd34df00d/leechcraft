@@ -55,7 +55,7 @@ namespace HttStream
 	: FilterId_ { filterId }
 	, InstanceId_ { instanceId.isEmpty () ? QUuid::createUuid ().toByteArray () : instanceId }
 	, Configurator_ { new FilterConfigurator { instanceId, this } }
-	, Elem_ { gst_bin_new ("httpstreambin") }
+	, Elem_ { gst_bin_new (nullptr) }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
 	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
