@@ -28,9 +28,12 @@
  **********************************************************************/
 
 #include "filterconfigurator.h"
+#include <QStringListModel>
 #include <QTimer>
+#include <QHostAddress>
 #include <QtDebug>
 #include <util/xsd/util.h>
+#include <util/network/addressesmodelmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "util/lmp/filtersettingsmanager.h"
 #include "httpstreamfilter.h"
@@ -49,21 +52,45 @@ namespace HttStream
 	{
 		Util::XmlSettingsDialog dia;
 		dia.RegisterObject (FSM_, "lmphttstreamfiltersettings.xml");
+		FillAddressModel (&dia);
 
 		FSM_->RegisterObject ("EncQuality", this, "handleEncQualityChanged");
-		QTimer::singleShot (0, this, SLOT (handleEncQualityChanged ()));
+		QTimer::singleShot (0,
+				this,
+				SLOT (handleEncQualityChanged ()));
+
+		FSM_->RegisterObject ({ "Address", "Port" }, this, "handleAddressChanged");
+		QTimer::singleShot (0,
+				this,
+				SLOT (handleAddressChanged ()));
 	}
 
 	void FilterConfigurator::OpenDialog ()
 	{
-		Util::OpenXSD (tr ("HTTP streaming settings"), "lmphttstreamfiltersettings.xml", FSM_);
+		const auto xsd = Util::OpenXSD (tr ("HTTP streaming settings"), "lmphttstreamfiltersettings.xml", FSM_);
+		FillAddressModel (xsd);
+	}
+
+	void FilterConfigurator::FillAddressModel (Util::XmlSettingsDialog *xsd)
+	{
+		QStringList addresses;
+		for (const auto& addr : Util::AddressesModelManager::GetAllAddresses ())
+			addresses << addr.toString ();
+		qDebug () << Q_FUNC_INFO << addresses;
+		xsd->SetDataSource ("Address", new QStringListModel { addresses, xsd });
+	}
+
+	void FilterConfigurator::handleAddressChanged ()
+	{
+		const auto& addr = FSM_->property ("Address").toString ();
+		const auto port = FSM_->property ("Port").toInt ();
+		Filter_->SetAddress (addr, port);
 	}
 
 	void FilterConfigurator::handleEncQualityChanged ()
 	{
 		const auto quality = FSM_->property ("EncQuality").toDouble ();
 		Filter_->SetQuality (quality);
-
 	}
 }
 }

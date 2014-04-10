@@ -30,6 +30,7 @@
 #include "httpstreamfilter.h"
 #include <QUuid>
 #include <QtDebug>
+#include <QTimer>
 #include <gst/gst.h>
 #include "interfaces/lmp/ifilterconfigurator.h"
 #include "util/lmp/gstutil.h"
@@ -42,11 +43,19 @@ namespace LMP
 {
 namespace HttStream
 {
+	namespace
+	{
+		void CbRemoved (void*, gint fd, int reason, gpointer udata)
+		{
+			static_cast<HttpStreamFilter*> (udata)->HandleRemoved (fd, reason);
+		}
+	}
+
 	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId, const QByteArray& instanceId)
 	: FilterId_ { filterId }
 	, InstanceId_ { instanceId.isEmpty () ? QUuid::createUuid ().toByteArray () : instanceId }
 	, Configurator_ { new FilterConfigurator { instanceId, this } }
-	, Elem_ { gst_bin_new ("httpstreambin") }
+	, Elem_ { gst_bin_new (nullptr) }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
 	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
@@ -75,9 +84,9 @@ namespace HttStream
 				"units-max", static_cast<gint64> (7 * GST_SECOND),
 				"units-soft-max", static_cast<gint64> (3 * GST_SECOND),
 				"recover-policy", 3,
-				"timeout", static_cast<gint64> (10 * GST_SECOND),
 				"sync-method", 1,
 				"async", FALSE,
+				"sync", FALSE,
 				nullptr);
 
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
@@ -91,14 +100,12 @@ namespace HttStream
 				SIGNAL (clientDisconnected (int)),
 				this,
 				SLOT (handleClientDisconnected (int)));
+
+		g_signal_connect (MSS_, "client-removed", G_CALLBACK (CbRemoved), this);
 	}
 
 	HttpStreamFilter::~HttpStreamFilter ()
 	{
-		gst_element_release_request_pad (Tee_, TeeAudioPad_);
-		gst_object_unref (TeeAudioPad_);
-
-		gst_object_unref (Elem_);
 	}
 
 	QByteArray HttpStreamFilter::GetEffectId () const
@@ -121,6 +128,33 @@ namespace HttStream
 		g_object_set (G_OBJECT (Encoder_), "quality", val, nullptr);
 	}
 
+	void HttpStreamFilter::SetAddress (const QString& host, int port)
+	{
+		Server_->SetAddress (host, port);
+	}
+
+	namespace
+	{
+		// http://cgit.collabora.com/git/user/kakaroto/gst-plugins-base.git/plain/gst/tcp/gstmultihandlesink.c
+		const int GST_CLIENT_STATUS_REMOVED = 2;
+	}
+
+	void HttpStreamFilter::HandleRemoved (int fd, int reason)
+	{
+		if (reason != GST_CLIENT_STATUS_REMOVED)
+			return;
+
+		qDebug () << Q_FUNC_INFO
+				<< "detected client removal because of"
+				<< reason
+				<< "; scheduling readd...";
+
+		QMetaObject::invokeMethod (this,
+				"readdFd",
+				Qt::QueuedConnection,
+				Q_ARG (int, fd));
+	}
+
 	GstElement* HttpStreamFilter::GetElement () const
 	{
 		return Elem_;
@@ -128,7 +162,7 @@ namespace HttStream
 
 	void HttpStreamFilter::PostAdd (IPath *path)
 	{
-		path->AddSyncHandler ([this] (GstBus*, GstMessage *msg) { return HandleError (msg); });
+		path->AddSyncHandler ([this] (GstBus*, GstMessage *msg) { return HandleError (msg); }, this);
 	}
 
 	void HttpStreamFilter::CreatePad ()
@@ -165,6 +199,11 @@ namespace HttStream
 		}
 
 		return GST_BUS_PASS;
+	}
+
+	void HttpStreamFilter::readdFd (int fd)
+	{
+		g_signal_emit_by_name (MSS_, "add", fd);
 	}
 
 	void HttpStreamFilter::handleClient (int socket)

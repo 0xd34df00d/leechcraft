@@ -89,9 +89,9 @@ namespace Dolozhee
 	QString BugReportPage::GetText () const
 	{
 		QString result = Ui_.ShortDesc_->toPlainText () + "\n\n";
+		result += "*STR:*\n" + Ui_.STR_->toPlainText () + "\n\n";
 		result += "*Expected result:*\n" + Ui_.ER_->toPlainText () + "\n\n";
 		result += "*Actual result:*\n" + Ui_.AR_->toPlainText () + "\n\n";
-		result += "*STR:*\n" + Ui_.STR_->toPlainText () + "\n\n";
 
 		result += "*System information:*\n";
 		result += GetFormattedVersionString (Proxy_);

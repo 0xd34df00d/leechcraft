@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "httstream.h"
+#include "httpstreamfilter.h"
 
 namespace LeechCraft
 {
@@ -80,7 +81,23 @@ namespace HttStream
 
 	QList<EffectInfo> Plugin::GetEffects () const
 	{
-		return {};
+		return
+		{
+			{
+				GetUniqueID () + ".Filter",
+				tr ("HTTP streaming"),
+				{},
+				false,
+				[this] (const QByteArray& instance, IPath*) -> IFilterElement*
+				{
+					return new HttpStreamFilter
+						{
+							GetUniqueID () + ".Filter",
+							instance
+						};
+				}
+			}
+		};
 	}
 }
 }

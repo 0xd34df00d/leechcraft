@@ -41,11 +41,47 @@ namespace HttStream
 	: QObject { parent }
 	, Server_ { new QTcpServer { this } }
 	{
-		Server_->listen (QHostAddress::Any, 9005);
 		connect (Server_,
 				SIGNAL (newConnection ()),
 				this,
 				SLOT (handleNewConnection ()));
+	}
+
+	void HttpServer::SetAddress (const QString& host, int port)
+	{
+		if (Server_->serverAddress () == QHostAddress { host } &&
+				Server_->serverPort () == port)
+			return;
+
+		qDebug () << Q_FUNC_INFO << host << port;
+
+		if (Server_->isListening ())
+		{
+			qDebug () << "server is already listening, stopping...";
+			Server_->close ();
+		}
+
+		if (!Server_->listen (QHostAddress { host }, port))
+		{
+			const auto& msg = Server_->errorString ();
+			qWarning () << Q_FUNC_INFO
+					<< "cannot listen on"
+					<< host
+					<< port
+					<< msg;
+		}
+	}
+
+	QList<int> HttpServer::GetConnectedFDs () const
+	{
+		decltype (Socket2FD_) map;
+
+		{
+			QReadLocker locker { &MapLock_};
+			map = Socket2FD_;
+		}
+
+		return map.values ();
 	}
 
 	namespace
@@ -104,7 +140,10 @@ namespace HttStream
 						"Server: LeechCraft LMP"
 					});
 
-				Socket2FD_ [socket] = socket->socketDescriptor ();
+				{
+					QWriteLocker locker { &MapLock_ };
+					Socket2FD_ [socket] = socket->socketDescriptor ();
+				}
 
 				emit gotClient (socket->socketDescriptor ());
 			}
@@ -148,8 +187,16 @@ namespace HttStream
 		const auto sock = qobject_cast<QTcpSocket*> (sender ());
 		sock->deleteLater ();
 
-		if (Socket2FD_.contains (sock))
-			emit clientDisconnected (Socket2FD_.take (sock));
+		int sockFd = 0;
+		QWriteLocker lock { &MapLock_ };
+		{
+			if (!Socket2FD_.contains (sock))
+				return;
+
+			sockFd = Socket2FD_.take (sock);
+		}
+
+		emit clientDisconnected (sockFd);
 	}
 }
 }

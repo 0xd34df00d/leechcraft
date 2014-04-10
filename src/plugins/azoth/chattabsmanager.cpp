@@ -250,7 +250,7 @@ namespace Azoth
 
 	void ChatTabsManager::EnqueueRestoreInfos (const QList<RestoreChatInfo>& infos)
 	{
-		Q_FOREACH (const RestoreChatInfo& info, infos)
+		for (const RestoreChatInfo& info : infos)
 		{
 			auto entryObj = Core::Instance ().GetEntry (info.EntryID_);
 			qDebug () << Q_FUNC_INFO << info.EntryID_ << entryObj;
@@ -297,9 +297,10 @@ namespace Azoth
 			Entry2Tab_ [muc->GetEntryID ()]->HandleMUCParticipantsChanged ();
 	}
 
-	void ChatTabsManager::RestoreChat (const ChatTabsManager::RestoreChatInfo& info, QObject *entryObj)
+	void ChatTabsManager::RestoreChat (const RestoreChatInfo& info, QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
+
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -308,7 +309,10 @@ namespace Azoth
 			return;
 		}
 		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, false, info.Props_));
-		tab->selectVariant (info.Variant_);
+
+		if (!info.Variant_.isEmpty ())
+			tab->selectVariant (info.Variant_);
+
 		tab->prepareMessageText (info.MsgText_);
 	}
 
@@ -342,7 +346,7 @@ namespace Azoth
 			QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto& id = entry->GetHumanReadableID ();
+		const auto& id = entry->GetEntryID ();
 		if (!RestoreInfo_.contains (id))
 			return;
 

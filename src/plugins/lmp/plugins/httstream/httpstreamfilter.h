@@ -84,6 +84,9 @@ namespace HttStream
 		IFilterConfigurator* GetConfigurator () const;
 
 		void SetQuality (double);
+		void SetAddress (const QString&, int);
+
+		void HandleRemoved (int, int);
 	protected:
 		GstElement* GetElement () const;
 		void PostAdd (IPath*) override;
@@ -93,6 +96,8 @@ namespace HttStream
 
 		int HandleError (GstMessage*);
 	private slots:
+		void readdFd (int);
+
 		void handleClient (int);
 		void handleClientDisconnected (int);
 	};

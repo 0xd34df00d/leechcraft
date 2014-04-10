@@ -391,8 +391,9 @@ namespace Azoth
 		else
 			stream << QByteArray ("chattab2")
 					<< entry->GetEntryID ()
-					<< GetSelectedVariant ()
-					<< Ui_.MsgEdit_->toPlainText ();
+					<< GetSelectedVariant ();
+
+		stream << Ui_.MsgEdit_->toPlainText ();
 
 		return result;
 	}

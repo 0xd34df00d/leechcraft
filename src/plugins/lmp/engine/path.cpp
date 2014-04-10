@@ -109,9 +109,14 @@ namespace LMP
 		return SrcObj_;
 	}
 
-	void Path::AddSyncHandler (const SyncHandler_f& handler)
+	void Path::AddSyncHandler (const SyncHandler_f& handler, QObject *dependent)
 	{
-		SrcObj_->AddSyncHandler (handler);
+		SrcObj_->AddSyncHandler (handler, dependent);
+	}
+
+	void Path::AddAsyncHandler (const AsyncHandler_f& handler, QObject *dependent)
+	{
+		SrcObj_->AddAsyncHandler (handler, dependent);
 	}
 
 	void Path::InsertElement (GstElement *elem)

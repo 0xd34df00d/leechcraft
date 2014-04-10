@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QReadWriteLock>
 
 class QTcpServer;
 class QTcpSocket;
@@ -47,9 +48,14 @@ namespace HttStream
 
 		QTcpServer * const Server_;
 
+		mutable QReadWriteLock MapLock_;
 		QMap<QTcpSocket*, int> Socket2FD_;
 	public:
 		HttpServer (QObject* = nullptr);
+
+		void SetAddress (const QString&, int);
+
+		QList<int> GetConnectedFDs () const;
 	private:
 		void HandleSocket (QTcpSocket*);
 	private slots:
