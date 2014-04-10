@@ -241,9 +241,7 @@ namespace Azoth
 				if (context == "chattab2")
 					str >> info.MsgText_;
 
-				QList<ChatTabsManager::RestoreChatInfo> infos;
-				infos << info;
-				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos (infos);
+				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos ({ info });
 			}
 			else if (context == "muctab2")
 			{

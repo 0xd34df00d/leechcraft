@@ -250,7 +250,7 @@ namespace Azoth
 
 	void ChatTabsManager::EnqueueRestoreInfos (const QList<RestoreChatInfo>& infos)
 	{
-		Q_FOREACH (const RestoreChatInfo& info, infos)
+		for (const RestoreChatInfo& info : infos)
 		{
 			auto entryObj = Core::Instance ().GetEntry (info.EntryID_);
 			qDebug () << Q_FUNC_INFO << info.EntryID_ << entryObj;
