@@ -345,7 +345,7 @@ namespace Azoth
 			QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto& id = entry->GetHumanReadableID ();
+		const auto& id = entry->GetEntryID ();
 		if (!RestoreInfo_.contains (id))
 			return;
 
