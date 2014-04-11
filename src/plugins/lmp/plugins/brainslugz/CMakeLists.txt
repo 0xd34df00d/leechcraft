@@ -10,6 +10,7 @@ include_directories (${LMP_INCLUDE_DIR}
 
 set (BRAINSLUGZ_SRCS
 	brainslugz.cpp
+	checktab.cpp
 	)
 
 #CreateTrs ("lmp_brainslugz" "en;ru_RU" BRAINSLUGZ_COMPILED_TRANSLATIONS)
