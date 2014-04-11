@@ -12,6 +12,7 @@ set (BRAINSLUGZ_SRCS
 	brainslugz.cpp
 	checktab.cpp
 	checkmodel.cpp
+	checker.cpp
 	)
 
 set (BRAINSLUGZ_FORMS
