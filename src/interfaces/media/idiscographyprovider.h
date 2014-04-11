@@ -140,7 +140,7 @@ namespace Media
 		 *
 		 * This function returns the found releases, or an empty list if
 		 * no releases are found, an error has occurred or search isn't
-		 * completed yet..
+		 * completed yet.
 		 *
 		 * @return The fetched artist biography.
 		 */
