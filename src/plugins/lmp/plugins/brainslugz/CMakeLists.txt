@@ -11,6 +11,7 @@ include_directories (${LMP_INCLUDE_DIR}
 set (BRAINSLUGZ_SRCS
 	brainslugz.cpp
 	checktab.cpp
+	checkmodel.cpp
 	)
 
 set (BRAINSLUGZ_FORMS
