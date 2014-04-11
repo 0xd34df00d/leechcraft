@@ -13,12 +13,17 @@ set (BRAINSLUGZ_SRCS
 	checktab.cpp
 	)
 
+set (BRAINSLUGZ_FORMS
+	checktab.ui
+	)
+QT4_WRAP_UI (BRAINSLUGZ_UIS_H ${BRAINSLUGZ_FORMS})
 #CreateTrs ("lmp_brainslugz" "en;ru_RU" BRAINSLUGZ_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp_brainslugz" "en;ru_RU" "${BRAINSLUGZ_SRCS}" "${BRAINSLUGZ_FORMS}" "")
 
 add_library (leechcraft_lmp_brainslugz SHARED
 	${BRAINSLUGZ_COMPILED_TRANSLATIONS}
 	${BRAINSLUGZ_SRCS}
+	${BRAINSLUGZ_UIS_H}
 	)
 target_link_libraries (leechcraft_lmp_brainslugz
 	${QT_LIBRARIES}

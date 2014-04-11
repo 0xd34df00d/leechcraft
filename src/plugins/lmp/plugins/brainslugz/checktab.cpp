@@ -39,6 +39,7 @@ namespace BrainSlugz
 	: TC_ (tc)
 	, Plugin_ { plugin }
 	{
+		Ui_.setupUi (this);
 	}
 
 	TabClassInfo CheckTab::GetTabClassInfo () const

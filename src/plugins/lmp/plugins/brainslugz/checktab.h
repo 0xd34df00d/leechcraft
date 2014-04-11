@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "ui_checktab.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,8 @@ namespace BrainSlugz
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
+
+		Ui::CheckTab Ui_;
 
 		const TabClassInfo TC_;
 		QObject * const Plugin_;
