@@ -33,3 +33,4 @@ target_link_libraries (leechcraft_lmp_brainslugz
 
 install (TARGETS leechcraft_lmp_brainslugz DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${BRAINSLUGZ_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (DIRECTORY share/qml/lmp DESTINATION ${LC_QML_DEST})
