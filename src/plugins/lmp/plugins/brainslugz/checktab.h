@@ -31,6 +31,8 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/lmp/ilmpplugin.h>
 #include "ui_checktab.h"
 
 namespace LeechCraft
@@ -39,6 +41,8 @@ namespace LMP
 {
 namespace BrainSlugz
 {
+	class CheckModel;
+
 	class CheckTab : public QWidget
 				   , public ITabWidget
 	{
@@ -47,10 +51,14 @@ namespace BrainSlugz
 
 		Ui::CheckTab Ui_;
 
+		const ILMPProxy_ptr LmpProxy_;
 		const TabClassInfo TC_;
 		QObject * const Plugin_;
+
+		CheckModel * const Model_;
 	public:
-		CheckTab (const TabClassInfo& tc, QObject *plugin);
+		CheckTab (const ILMPProxy_ptr&, const ICoreProxy_ptr&,
+				const TabClassInfo& tc, QObject *plugin);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();

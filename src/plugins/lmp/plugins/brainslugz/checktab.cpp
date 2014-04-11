@@ -28,6 +28,13 @@
  **********************************************************************/
 
 #include "checktab.h"
+#include <QStandardItemModel>
+#include <QDeclarativeContext>
+#include <util/sys/paths.h>
+#include <util/qml/colorthemeproxy.h>
+#include <interfaces/lmp/ilmpproxy.h>
+#include <interfaces/lmp/ilocalcollection.h>
+#include "checkmodel.h"
 
 namespace LeechCraft
 {
@@ -35,11 +42,22 @@ namespace LMP
 {
 namespace BrainSlugz
 {
-	CheckTab::CheckTab (const TabClassInfo& tc, QObject* plugin)
-	: TC_ (tc)
+	CheckTab::CheckTab (const ILMPProxy_ptr& lmpProxy,
+			const ICoreProxy_ptr& coreProxy,
+			const TabClassInfo& tc,
+			QObject* plugin)
+	: LmpProxy_ { lmpProxy }
+	, TC_ (tc)
 	, Plugin_ { plugin }
+	, Model_ { new CheckModel { lmpProxy->GetLocalCollection ()->GetAllArtists (), this } }
 	{
 		Ui_.setupUi (this);
+
+		Ui_.CheckView_->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy { coreProxy->GetColorThemeManager (), this });
+
+		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
+		Ui_.CheckView_->setSource (QUrl::fromLocalFile (filename));
 	}
 
 	TabClassInfo CheckTab::GetTabClassInfo () const
