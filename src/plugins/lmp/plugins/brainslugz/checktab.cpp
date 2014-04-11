@@ -53,8 +53,10 @@ namespace BrainSlugz
 	{
 		Ui_.setupUi (this);
 
-		Ui_.CheckView_->rootContext ()->setContextProperty ("colorProxy",
+		const auto root = Ui_.CheckView_->rootContext ();
+		root->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy { coreProxy->GetColorThemeManager (), this });
+		root->setContextProperty ("artistsModel", Model_);
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
 		Ui_.CheckView_->setSource (QUrl::fromLocalFile (filename));
