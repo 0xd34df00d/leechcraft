@@ -52,7 +52,7 @@ namespace BrainSlugz
 			ScheduledToCheck
 		};
 
-		CheckModel (Collection::Artists_t, QObject*);
+		CheckModel (const Collection::Artists_t&, QObject*);
 	public slots:
 		void setArtistScheduled (int, bool);
 	};
