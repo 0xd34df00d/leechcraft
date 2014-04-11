@@ -69,3 +69,5 @@ namespace BrainSlugz
 }
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_lmp_brainslugz, LeechCraft::LMP::BrainSlugz::Plugin)
