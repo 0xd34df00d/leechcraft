@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "checkmodel.h"
+#include <algorithm>
 
 namespace LeechCraft
 {
@@ -35,7 +36,7 @@ namespace LMP
 {
 namespace BrainSlugz
 {
-	CheckModel::CheckModel (const Collection::Artists_t& artists, QObject *parent)
+	CheckModel::CheckModel (Collection::Artists_t artists, QObject *parent)
 	: QStandardItemModel { parent }
 	{
 		QHash<int, QByteArray> roleNames;
@@ -43,6 +44,12 @@ namespace BrainSlugz
 		roleNames [Role::ArtistName] = "artistName";
 		roleNames [Role::ScheduledToCheck] = "scheduled";
 		setRoleNames (roleNames);
+
+		std::sort (artists.begin (), artists.end (),
+				[] (const Collection::Artist& left, const Collection::Artist& right)
+				{
+					return QString::localeAwareCompare (left.Name_, right.Name_) < 0;
+				});
 
 		for (const auto& artist : artists)
 		{
