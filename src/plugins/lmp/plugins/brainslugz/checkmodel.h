@@ -34,6 +34,11 @@
 #include <QSet>
 #include <interfaces/lmp/collectiontypes.h>
 
+namespace Media
+{
+struct ReleaseInfo;
+}
+
 namespace LeechCraft
 {
 namespace LMP
@@ -53,6 +58,9 @@ namespace BrainSlugz
 		};
 
 		CheckModel (const Collection::Artists_t&, QObject*);
+
+		void SetMissingReleases (const QList<Media::ReleaseInfo>&, const Collection::Artist&);
+		void MarkNoNews (const Collection::Artist&);
 	public slots:
 		void setArtistScheduled (int, bool);
 	};

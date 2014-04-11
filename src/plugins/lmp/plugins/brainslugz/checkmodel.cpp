@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "checkmodel.h"
+#include <QtDebug>
+#include <interfaces/media/idiscographyprovider.h>
 
 namespace LeechCraft
 {
@@ -57,6 +59,28 @@ namespace BrainSlugz
 
 			Scheduled_ << artist.ID_;
 		}
+	}
+
+	void CheckModel::SetMissingReleases (const QList<Media::ReleaseInfo>& releases, const Collection::Artist& artist)
+	{
+		qDebug () << Q_FUNC_INFO << artist.Name_ << releases.size ();
+		for (const auto& release : releases)
+		{
+		}
+	}
+
+	void CheckModel::MarkNoNews (const Collection::Artist& artist)
+	{
+		const auto item = Artist2Item_.take (artist.ID_);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no item for artist"
+					<< artist.Name_;
+			return;
+		}
+
+		removeRow (item->row ());
 	}
 
 	void CheckModel::setArtistScheduled (int id, bool scheduled)
