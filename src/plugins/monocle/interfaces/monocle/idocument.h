@@ -93,7 +93,7 @@ namespace Monocle
 	 * @sa IBackendPlugin::LoadDocument()
 	 * @sa IDynamicDocument, IHaveTextContent, ISaveableDocument
 	 * @sa ISearchableDocument, ISupportAnnotations, ISupportForms
-	 * @sa IHaveToc, ISupportPainting
+	 * @sa IHaveTOC, ISupportPainting
 	 */
 	class IDocument
 	{

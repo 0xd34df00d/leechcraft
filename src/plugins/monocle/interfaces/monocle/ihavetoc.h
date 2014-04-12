@@ -57,6 +57,7 @@ namespace Monocle
 		/** @brief The human-readable name of the entry.
 		 */
 		QString Name_;
+
 		/** @brief Child items of this entry.
 		 */
 		TOCEntryLevel_t ChildLevel_;

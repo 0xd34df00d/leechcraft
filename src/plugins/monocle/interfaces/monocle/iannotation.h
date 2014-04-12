@@ -48,19 +48,19 @@ namespace Monocle
 	{
 		/** @brief A simple text annotation.
 		 *
-		 * The corresponding interface is #ITextAnnotation.
+		 * The corresponding interface is ITextAnnotation.
 		 */
 		Text,
 
 		/** @brief A highlighted block in the text.
 		 *
-		 * The corresponding interface is #IHighlightAnnotation.
+		 * The corresponding interface is IHighlightAnnotation.
 		 */
 		Highlight,
 
 		/** @brief An annotation with a link.
 		 *
-		 * The corresponding interface is #ILinkAnnotation.
+		 * The corresponding interface is ILinkAnnotation.
 		 */
 		Link,
 
@@ -145,7 +145,7 @@ namespace Monocle
 		 * (0; 0) is the top left corner, and (1; 1) is the bottom right
 		 * corner.
 		 *
-		 * The #IAnnotation::GetBoundary() should return the bounding
+		 * The IAnnotation::GetBoundary() should return the bounding
 		 * rect of this polygon.
 		 *
 		 * @return The shape of the highlight on the page in page coordinates.
@@ -157,7 +157,7 @@ namespace Monocle
 	 *
 	 * Please note that there shouldn't be link annotations that contain
 	 * links equivalent to the ones returned from the
-	 * #IDocument::GetPageLinks() method.
+	 * IDocument::GetPageLinks() method.
 	 */
 	class ILinkAnnotation : public IAnnotation
 	{

@@ -49,9 +49,9 @@ namespace Monocle
 	 * Some backends only convert a document from their format to another
 	 * format, probably supported by another Monocle plugin. This is
 	 * called a redirection, and the backend should return
-	 * ::LoadCheckResult::Redirect from CanLoadDocument() for such
-	 * documents. The backend should also return a valid redirect proxy
-	 * from the GetRedirection() method.
+	 * LoadCheckResult::Redirect from the CanLoadDocument() method for
+	 * such documents. The backend should also return a valid redirect
+	 * proxy from the GetRedirection() method in this case.
 	 *
 	 * @sa IDocument
 	 */
