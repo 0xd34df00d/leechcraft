@@ -84,6 +84,7 @@ namespace BrainSlugz
 		root->setContextProperty ("artistsModel", Model_);
 		root->setContextProperty ("checkedModel", CheckedModel_);
 		root->setContextProperty ("uncheckedModel", UncheckedModel_);
+		root->setContextProperty ("checkingState", "");
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
 		Ui_.CheckView_->setSource (QUrl::fromLocalFile (filename));
