@@ -54,8 +54,11 @@ namespace BrainSlugz
 		Ui::CheckTab Ui_;
 
 		const ILMPProxy_ptr LmpProxy_;
+		const ICoreProxy_ptr CoreProxy_;
 		const TabClassInfo TC_;
 		QObject * const Plugin_;
+
+		QToolBar * const Toolbar_;
 
 		CheckModel * const Model_;
 		QSortFilterProxyModel * const CheckedModel_;
@@ -68,6 +71,10 @@ namespace BrainSlugz
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		void SetupToolbar ();
+	private slots:
+		void handleStart ();
 	signals:
 		void removeTab (QWidget*);
 	};

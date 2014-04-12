@@ -29,6 +29,7 @@
 
 #include "checktab.h"
 #include <QStandardItemModel>
+#include <QToolBar>
 #include <QDeclarativeContext>
 #include <QSortFilterProxyModel>
 #include <util/sys/paths.h>
@@ -36,6 +37,7 @@
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilocalcollection.h>
 #include "checkmodel.h"
+#include "checker.h"
 
 namespace LeechCraft
 {
@@ -70,8 +72,10 @@ namespace BrainSlugz
 			const TabClassInfo& tc,
 			QObject* plugin)
 	: LmpProxy_ { lmpProxy }
+	, CoreProxy_ { coreProxy }
 	, TC_ (tc)
 	, Plugin_ { plugin }
+	, Toolbar_ { new QToolBar { this } }
 	, Model_ { new CheckModel { lmpProxy->GetLocalCollection ()->GetAllArtists (), this } }
 	, CheckedModel_ { new CheckFilterModel { Model_, true, this } }
 	, UncheckedModel_ { new CheckFilterModel { Model_, false, this } }
@@ -88,6 +92,8 @@ namespace BrainSlugz
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
 		Ui_.CheckView_->setSource (QUrl::fromLocalFile (filename));
+
+		SetupToolbar ();
 	}
 
 	TabClassInfo CheckTab::GetTabClassInfo () const
@@ -107,7 +113,24 @@ namespace BrainSlugz
 
 	QToolBar* CheckTab::GetToolBar () const
 	{
-		return nullptr;
+		return Toolbar_;
+	}
+
+	void CheckTab::SetupToolbar ()
+	{
+		const auto startAction = Toolbar_->addAction (tr ("Start"));
+		startAction->setProperty ("ActionIcon", "system-run");
+		connect (startAction,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleStart ()));
+	}
+
+	void CheckTab::handleStart ()
+	{
+		new Checker { Model_, LmpProxy_, CoreProxy_ };
+
+		Ui_.CheckView_->rootContext ()->setContextProperty ("checkingState", "checking");
 	}
 }
 }
