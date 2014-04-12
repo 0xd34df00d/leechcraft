@@ -68,6 +68,10 @@ namespace LMP
 
 	Playlist& Playlist::Append (const PlaylistItem& item)
 	{
+		if (std::any_of (Playlist_.begin (), Playlist_.end (),
+					[&item] (const PlaylistItem& other)
+						{ return other.Source_ == item.Source_; }))
+			return *this;
 		Playlist_ << item;
 		return *this;
 	}
