@@ -74,13 +74,14 @@ namespace LMP
 
 	Playlist& Playlist::operator+= (const AudioSource& src)
 	{
-		Playlist_.append ({ src, {} });
+		Append ({ src, {} });
 		return *this;
 	}
 
 	Playlist& Playlist::operator+= (const Playlist& playlist)
 	{
-		Playlist_ << playlist.Playlist_;
+		for (const auto& item : playlist.Playlist_)
+			Append (item);
 		return *this;
 	}
 
