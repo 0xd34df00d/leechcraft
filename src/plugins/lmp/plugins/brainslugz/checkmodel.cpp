@@ -44,6 +44,7 @@ namespace BrainSlugz
 		roleNames [Role::ArtistId] = "artistId";
 		roleNames [Role::ArtistName] = "artistName";
 		roleNames [Role::ScheduledToCheck] = "scheduled";
+		roleNames [Role::IsChecked] = "isChecked";
 		setRoleNames (roleNames);
 
 		for (const auto& artist : artists)
@@ -53,6 +54,7 @@ namespace BrainSlugz
 			item->setData (artist.ID_, Role::ArtistId);
 			item->setData (artist.Name_, Role::ArtistName);
 			item->setData (true, Role::ScheduledToCheck);
+			item->setData (false, Role::IsChecked);
 			appendRow (item);
 
 			Artist2Item_ [artist.ID_] = item;
@@ -64,6 +66,18 @@ namespace BrainSlugz
 	void CheckModel::SetMissingReleases (const QList<Media::ReleaseInfo>& releases, const Collection::Artist& artist)
 	{
 		qDebug () << Q_FUNC_INFO << artist.Name_ << releases.size ();
+
+		const auto item = Artist2Item_.value (artist.ID_);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no item for artist"
+					<< artist.Name_;
+			return;
+		}
+
+		item->setData (true, Role::IsChecked);
+
 		for (const auto& release : releases)
 		{
 		}

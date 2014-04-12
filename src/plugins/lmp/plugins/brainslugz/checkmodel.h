@@ -54,7 +54,8 @@ namespace BrainSlugz
 		{
 			ArtistId = Qt::UserRole + 1,
 			ArtistName,
-			ScheduledToCheck
+			ScheduledToCheck,
+			IsChecked
 		};
 
 		CheckModel (const Collection::Artists_t&, QObject*);
