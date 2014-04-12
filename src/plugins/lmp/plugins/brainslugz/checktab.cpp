@@ -30,6 +30,7 @@
 #include "checktab.h"
 #include <QStandardItemModel>
 #include <QDeclarativeContext>
+#include <QSortFilterProxyModel>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <interfaces/lmp/ilmpproxy.h>
@@ -42,6 +43,28 @@ namespace LMP
 {
 namespace BrainSlugz
 {
+	namespace
+	{
+		class CheckFilterModel : public QSortFilterProxyModel
+		{
+			const bool ShouldBeChecked_;
+		public:
+			CheckFilterModel (QAbstractItemModel *source, bool shouldBeChecked, QObject *parent)
+			: QSortFilterProxyModel { parent }
+			, ShouldBeChecked_ { shouldBeChecked }
+			{
+				setSourceModel (source);
+				setDynamicSortFilter (true);
+			}
+		protected:
+			bool filterAcceptsRow (int row, const QModelIndex&) const
+			{
+				const auto idx = sourceModel ()->index (row, 0);
+				return idx.data (CheckModel::IsChecked).toBool () == ShouldBeChecked_;
+			}
+		};
+	}
+
 	CheckTab::CheckTab (const ILMPProxy_ptr& lmpProxy,
 			const ICoreProxy_ptr& coreProxy,
 			const TabClassInfo& tc,
@@ -50,6 +73,8 @@ namespace BrainSlugz
 	, TC_ (tc)
 	, Plugin_ { plugin }
 	, Model_ { new CheckModel { lmpProxy->GetLocalCollection ()->GetAllArtists (), this } }
+	, CheckedModel_ { new CheckFilterModel { Model_, true, this } }
+	, UncheckedModel_ { new CheckFilterModel { Model_, false, this } }
 	{
 		Ui_.setupUi (this);
 
@@ -57,6 +82,8 @@ namespace BrainSlugz
 		root->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy { coreProxy->GetColorThemeManager (), this });
 		root->setContextProperty ("artistsModel", Model_);
+		root->setContextProperty ("checkedModel", CheckedModel_);
+		root->setContextProperty ("uncheckedModel", UncheckedModel_);
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
 		Ui_.CheckView_->setSource (QUrl::fromLocalFile (filename));

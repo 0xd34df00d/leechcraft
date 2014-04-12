@@ -35,6 +35,8 @@
 #include <interfaces/lmp/ilmpplugin.h>
 #include "ui_checktab.h"
 
+class QSortFilterProxyModel;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -56,6 +58,8 @@ namespace BrainSlugz
 		QObject * const Plugin_;
 
 		CheckModel * const Model_;
+		QSortFilterProxyModel * const CheckedModel_;
+		QSortFilterProxyModel * const UncheckedModel_;
 	public:
 		CheckTab (const ILMPProxy_ptr&, const ICoreProxy_ptr&,
 				const TabClassInfo& tc, QObject *plugin);
