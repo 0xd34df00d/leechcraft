@@ -48,6 +48,8 @@ namespace BrainSlugz
 	class CheckModel : public QStandardItemModel
 	{
 		QHash<int, QStandardItem*> Artist2Item_;
+		QHash<int, QStandardItemModel*> Artist2Submodel_;
+
 		QSet<int> Scheduled_;
 	public:
 		enum Role
@@ -55,7 +57,8 @@ namespace BrainSlugz
 			ArtistId = Qt::UserRole + 1,
 			ArtistName,
 			ScheduledToCheck,
-			IsChecked
+			IsChecked,
+			Releases
 		};
 
 		CheckModel (const Collection::Artists_t&, QObject*);

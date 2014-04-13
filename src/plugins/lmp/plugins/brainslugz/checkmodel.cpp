@@ -37,6 +37,28 @@ namespace LMP
 {
 namespace BrainSlugz
 {
+	namespace
+	{
+		class ReleasesSubmodel : public QStandardItemModel
+		{
+		public:
+			enum Role
+			{
+				ReleaseName = Qt::UserRole + 1,
+				ReleaseYear
+			};
+
+			ReleasesSubmodel (QObject *parent)
+			: QStandardItemModel { parent }
+			{
+				QHash<int, QByteArray> roleNames;
+				roleNames [ReleaseName] = "releaseName";
+				roleNames [ReleaseYear] = "releaseYear";
+				setRoleNames (roleNames);
+			}
+		};
+	}
+
 	CheckModel::CheckModel (const Collection::Artists_t& artists, QObject *parent)
 	: QStandardItemModel { parent }
 	{
@@ -45,25 +67,31 @@ namespace BrainSlugz
 		roleNames [Role::ArtistName] = "artistName";
 		roleNames [Role::ScheduledToCheck] = "scheduled";
 		roleNames [Role::IsChecked] = "isChecked";
+		roleNames [Role::Releases] = "releases";
 		setRoleNames (roleNames);
 
 		for (const auto& artist : artists)
 		{
-			auto item = new QStandardItem (artist.Name_);
-			item->setEditable (false);
+			auto item = new QStandardItem { artist.Name_ };
 			item->setData (artist.ID_, Role::ArtistId);
 			item->setData (artist.Name_, Role::ArtistName);
 			item->setData (true, Role::ScheduledToCheck);
 			item->setData (false, Role::IsChecked);
+
+			const auto submodel = new ReleasesSubmodel { this };
+			item->setData (QVariant::fromValue<QObject*> (submodel), Role::Releases);
+
 			appendRow (item);
 
+			Artist2Submodel_ [artist.ID_] = submodel;
 			Artist2Item_ [artist.ID_] = item;
 
 			Scheduled_ << artist.ID_;
 		}
 	}
 
-	void CheckModel::SetMissingReleases (const QList<Media::ReleaseInfo>& releases, const Collection::Artist& artist)
+	void CheckModel::SetMissingReleases (const QList<Media::ReleaseInfo>& releases,
+			const Collection::Artist& artist)
 	{
 		qDebug () << Q_FUNC_INFO << artist.Name_ << releases.size ();
 
@@ -76,11 +104,16 @@ namespace BrainSlugz
 			return;
 		}
 
-		item->setData (true, Role::IsChecked);
-
+		const auto model = Artist2Submodel_.value (artist.ID_);
 		for (const auto& release : releases)
 		{
+			auto item = new QStandardItem;
+			item->setData (release.Name_, ReleasesSubmodel::ReleaseName);
+			item->setData (release.Year_, ReleasesSubmodel::ReleaseYear);
+			model->appendRow (item);
 		}
+
+		item->setData (true, Role::IsChecked);
 	}
 
 	void CheckModel::MarkNoNews (const Collection::Artist& artist)
@@ -95,6 +128,7 @@ namespace BrainSlugz
 		}
 
 		removeRow (item->row ());
+		Artist2Submodel_.take (artist.ID_)->deleteLater ();
 	}
 
 	void CheckModel::setArtistScheduled (int id, bool scheduled)
