@@ -33,6 +33,7 @@
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/collectiontypes.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/media/idiscographyprovider.h>
 
 namespace Media
 {
@@ -56,10 +57,12 @@ namespace BrainSlugz
 
 		const ILMPProxy_ptr LmpProxy_;
 
+		const QList<Media::ReleaseInfo::Type> Types_;
+
 		Collection::Artists_t Artists_;
 		Collection::Artist Current_;
 	public:
-		Checker (CheckModel*,
+		Checker (CheckModel*, const QList<Media::ReleaseInfo::Type>&,
 				const ILMPProxy_ptr&, const ICoreProxy_ptr&, QObject* = nullptr);
 	private:
 		void HandleReady ();

@@ -31,7 +31,6 @@
 #include <algorithm>
 #include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilocalcollection.h>
 #include "checkmodel.h"
@@ -43,6 +42,7 @@ namespace LMP
 namespace BrainSlugz
 {
 	Checker::Checker (CheckModel *model,
+			const QList<Media::ReleaseInfo::Type>& types,
 			const ILMPProxy_ptr& lmpProxy,
 			const ICoreProxy_ptr& coreProxy,
 			QObject *parent)
@@ -51,6 +51,7 @@ namespace BrainSlugz
 	, Provider_ { coreProxy->GetPluginsManager ()->
 				GetAllCastableTo<Media::IDiscographyProvider*> ().value (0) }
 	, LmpProxy_ { lmpProxy }
+	, Types_ { types }
 	, Artists_ { lmpProxy->GetLocalCollection ()->GetAllArtists () }
 	{
 		if (!Provider_)

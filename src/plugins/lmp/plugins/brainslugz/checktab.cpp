@@ -128,7 +128,18 @@ namespace BrainSlugz
 
 	void CheckTab::handleStart ()
 	{
-		new Checker { Model_, LmpProxy_, CoreProxy_ };
+		QList<Media::ReleaseInfo::Type> types;
+
+		auto check = [&types] (QCheckBox *box, Media::ReleaseInfo::Type type)
+		{
+			if (box->checkState () == Qt::Checked)
+				types << type;
+		};
+		check (Ui_.Album_, Media::ReleaseInfo::Type::Standard);
+		check (Ui_.EP_, Media::ReleaseInfo::Type::EP);
+		check (Ui_.Single_, Media::ReleaseInfo::Type::Single);
+
+		new Checker { Model_, types, LmpProxy_, CoreProxy_ };
 
 		Ui_.CheckView_->rootContext ()->setContextProperty ("checkingState", "checking");
 	}
