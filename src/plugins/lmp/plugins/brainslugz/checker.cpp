@@ -72,6 +72,12 @@ namespace BrainSlugz
 	void Checker::handleDiscoReady ()
 	{
 		auto releases = qobject_cast<Media::IPendingDisco*> (sender ())->GetReleases ();
+		releases.erase (std::remove_if (releases.begin (), releases.end (),
+					[this] (const Media::ReleaseInfo& info)
+					{
+						return !Types_.contains (info.Type_);
+					}),
+				releases.end ());
 
 		bool foundSome = false;
 
