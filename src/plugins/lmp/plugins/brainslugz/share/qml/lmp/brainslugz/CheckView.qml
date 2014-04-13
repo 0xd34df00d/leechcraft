@@ -120,7 +120,6 @@ Rectangle {
 
             height: 2 * artistNameLabel.paintedHeight
             width: artistsView.width
-            opacity: 0
 
             Text {
                 id: artistNameLabel
@@ -135,10 +134,6 @@ Rectangle {
                 elide: Text.ElideRight
             }
 
-            ListView.onAdd: ParallelAnimation {
-                NumberAnimation { target: artistsDelegate; property: "opacity"; to: 1; duration: 500; easing.type: Easing.OutCubic }
-                NumberAnimation { target: artistsDelegate; property: "width"; from:0; to: artistsView.width; duration: 500; easing.type: Easing.OutCubic }
-            }
         }
     }
 }
