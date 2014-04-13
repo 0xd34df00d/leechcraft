@@ -118,7 +118,13 @@ Rectangle {
             border.color: colorProxy.color_TextBox_BorderColor
             smooth: true
 
-            height: 2 * artistNameLabel.paintedHeight
+            height: {
+                if (!releasesView.width)
+                    return artistNameLabel.height;
+                var releasesInRow = Math.floor(releasesView.width / releasesView.cellWidth);
+                var rows = Math.ceil(releasesView.count / releasesInRow);
+                return artistNameLabel.height + rows * releasesView.cellHeight;
+            }
             width: artistsView.width
 
             Text {
@@ -127,13 +133,56 @@ Rectangle {
                 font.bold: true
                 font.pointSize: 12
                 color: colorProxy.color_TextBox_TitleTextColor
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.leftMargin: 5
                 width: parent.width
                 elide: Text.ElideRight
             }
 
+            GridView {
+                id: releasesView
+                anchors.top: artistNameLabel.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+
+                interactive: false
+
+                model: releases
+
+                cellWidth: 150
+                cellHeight: 150
+
+                delegate: Rectangle {
+                    width: releasesView.cellWidth
+                    height: releasesView.cellHeight
+                    color: "transparent"
+
+                    Text {
+                        id: releaseNameLabel
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+
+                        text: releaseName
+                        color: colorProxy.color_TextBox_TextColor
+                        horizontalAlignment: Text.AlignHCenter
+                        wrapMode: Text.Wrap
+                    }
+
+                    Text {
+                        id: releaseYearLabel
+                        anchors.top: releaseNameLabel.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+
+                        text: releaseYear
+                        color: colorProxy.color_TextBox_Aux2TextColor
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
+            }
         }
     }
 }
