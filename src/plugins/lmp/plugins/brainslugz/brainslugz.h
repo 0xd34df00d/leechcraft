@@ -32,6 +32,8 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/lmp/ilmpplugin.h>
 
 namespace LeechCraft
 {
@@ -41,9 +43,17 @@ namespace BrainSlugz
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveTabs
+				 , public IPlugin2
+				 , public ILMPPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IHaveTabs IPlugin2 LeechCraft::LMP::ILMPPlugin)
+
+		TabClassInfo CheckTC_;
+
+		ICoreProxy_ptr CoreProxy_;
+		ILMPProxy_ptr LmpProxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -52,6 +62,20 @@ namespace BrainSlugz
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+
+		QSet<QByteArray> GetPluginClasses () const;
+
+		void SetLMPProxy (ILMPProxy_ptr);
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
 }
 }

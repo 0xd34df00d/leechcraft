@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "brainslugz.h"
+#include "checktab.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,17 @@ namespace BrainSlugz
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		CoreProxy_ = proxy;
+
+		CheckTC_ = TabClassInfo
+		{
+			GetUniqueID () + ".CheckTab",
+			GetName (),
+			tr ("Tab allowing one to check if their collection misses some albums."),
+			GetIcon (),
+			0,
+			TFOpenableByRequest
+		};
 	}
 
 	void Plugin::SecondInit ()
@@ -65,6 +77,41 @@ namespace BrainSlugz
 	QIcon Plugin::GetIcon () const
 	{
 		return {};
+	}
+
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		return { CheckTC_ };
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.LMP.General";
+		return result;
+	}
+
+	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
+	{
+		LmpProxy_ = proxy;
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& tc)
+	{
+		if (tc == CheckTC_.TabClass_)
+		{
+			auto tab = new CheckTab { LmpProxy_, CoreProxy_, CheckTC_, this };
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+			emit addNewTab ("BrainSlugz", tab);
+			emit raiseTab (tab);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tc;
 	}
 }
 }
