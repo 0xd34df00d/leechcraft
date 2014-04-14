@@ -30,6 +30,8 @@
 #include "checkmodel.h"
 #include <functional>
 #include <QtDebug>
+#include <QFutureWatcher>
+#include <QtConcurrentRun>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -152,9 +154,21 @@ namespace BrainSlugz
 				[item, proxy] () -> void
 				{
 					const auto& image = proxy->GetImages ().value (0);
-					if (!image.isNull ())
-						item->setData (Util::GetAsBase64Src (image),
-								ReleasesSubmodel::ReleaseArt);
+					if (image.isNull ())
+						return;
+
+					auto watcher = new QFutureWatcher<QString>;
+					watcher->setFuture (QtConcurrent::run ([image]
+							{
+								return Util::GetAsBase64Src (image.scaled (AASize, AASize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+							}));
+
+					new Util::OneTimeRunner
+					{
+						[watcher, item] { item->setData (watcher->result (), ReleasesSubmodel::ReleaseArt); },
+						watcher,
+						SIGNAL (finished ())
+					};
 				},
 				proxy->GetQObject (),
 				SIGNAL (ready (Media::AlbumInfo, QList<QImage>))
