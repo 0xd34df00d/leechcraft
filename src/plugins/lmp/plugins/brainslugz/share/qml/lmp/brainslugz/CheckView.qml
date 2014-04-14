@@ -45,7 +45,7 @@ Rectangle {
         model: uncheckedModel
 
         cellWidth: 250
-        cellHeight: 100
+        cellHeight: 250
 
         delegate: Rectangle {
             id: gridDelegate
@@ -69,16 +69,35 @@ Rectangle {
             width: artistsToCheckView.cellWidth
             height: artistsToCheckView.cellHeight
 
+            Image {
+                id: artistImage
+                source: artistImageUrl
+
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 30
+                anchors.rightMargin: 30
+                height: width
+
+                smooth: true
+                fillMode: Image.PreserveAspectFit
+
+                cache: false
+            }
+
             Text {
                 text: artistName
                 font.bold: true
                 font.pointSize: 12
                 color: colorProxy.color_TextBox_TitleTextColor
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.top: artistImage.bottom
+                anchors.topMargin: 10
                 anchors.left: parent.left
-                anchors.leftMargin: 5
+                anchors.right: parent.right
                 width: parent.width
                 elide: Text.ElideRight
+                horizontalAlignment: Text.AlignHCenter
             }
 
             GridView.onRemove: SequentialAnimation {
@@ -123,7 +142,7 @@ Rectangle {
                     return artistNameLabel.height;
                 var releasesInRow = Math.floor(releasesView.width / releasesView.cellWidth);
                 var rows = Math.ceil(releasesView.count / releasesInRow);
-                return artistNameLabel.height + rows * releasesView.cellHeight;
+                return artistNameLabel.height + rows * releasesView.cellHeight + releasesView.anchors.topMargin;
             }
             width: artistsView.width
 
@@ -135,14 +154,15 @@ Rectangle {
                 color: colorProxy.color_TextBox_TitleTextColor
                 anchors.top: parent.top
                 anchors.left: parent.left
-                anchors.leftMargin: 5
                 width: parent.width
                 elide: Text.ElideRight
+                horizontalAlignment: Text.AlignHCenter
             }
 
             GridView {
                 id: releasesView
                 anchors.top: artistNameLabel.bottom
+                anchors.topMargin: 10
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
