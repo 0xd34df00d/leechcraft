@@ -31,9 +31,11 @@
 #include <QStandardItemModel>
 #include <QToolBar>
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <QSortFilterProxyModel>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilocalcollection.h>
 #include "checkmodel.h"
@@ -81,6 +83,11 @@ namespace BrainSlugz
 	, UncheckedModel_ { new CheckFilterModel { Model_, false, this } }
 	{
 		Ui_.setupUi (this);
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			Ui_.CheckView_->engine ()->addImportPath (cand);
+		Ui_.CheckView_->engine ()->addImageProvider ("ThemeIcons",
+				new Util::ThemeImageProvider { coreProxy });
 
 		const auto root = Ui_.CheckView_->rootContext ();
 		root->setContextProperty ("colorProxy",
