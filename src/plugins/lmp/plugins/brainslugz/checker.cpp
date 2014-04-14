@@ -107,7 +107,7 @@ namespace BrainSlugz
 			const auto pos = std::find_if (releases.begin (), releases.end (),
 					[&albumPtr] (const Media::ReleaseInfo& release)
 					{
-						return std::abs (albumPtr->Year_ - release.Year_) <= 1 &&
+						return std::abs (albumPtr->Year_ - release.Year_) <= 2 &&
 								!AlbumNamesEqual (albumPtr->Name_, release.Name_);
 					});
 
