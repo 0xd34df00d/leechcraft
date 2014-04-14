@@ -62,6 +62,7 @@ set (SRCS
 	qml/unhidelistmodel.cpp
 	qml/unhidelistviewbase.cpp
 	qml/widthiconprovider.cpp
+	sll/onetimerunner.cpp
 	svcauth/vkauthmanager.cpp
 	svcauth/vkcaptchadialog.cpp
 	sys/mimedetector.cpp
