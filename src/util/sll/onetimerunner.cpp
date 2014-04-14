@@ -47,6 +47,17 @@ namespace Util
 				SLOT (run ()));
 	}
 
+	OneTimeRunner::OneTimeRunner (const std::function<void ()>& func,
+			QObject *sender, const std::initializer_list<const char*>& signalsList)
+	: Func_ { func }
+	{
+		for (const auto signal : signalsList)
+			connect (sender,
+					signal,
+					this,
+					SLOT (run ()));
+	}
+
 	void OneTimeRunner::run ()
 	{
 		Func_ ();

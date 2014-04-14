@@ -44,7 +44,10 @@ namespace Util
 		std::function<void ()> Func_;
 	public:
 		OneTimeRunner (const std::function<void ()>& func);
-		OneTimeRunner (const std::function<void ()>& func, QObject *sender, const char *signal);
+		OneTimeRunner (const std::function<void ()>& func,
+				QObject *sender, const char *signal);
+		OneTimeRunner (const std::function<void ()>& func,
+				QObject *sender, const std::initializer_list<const char*>& signalsList);
 	public slots:
 		void run ();
 	};
