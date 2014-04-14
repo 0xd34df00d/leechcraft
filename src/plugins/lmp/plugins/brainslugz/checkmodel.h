@@ -51,6 +51,8 @@ namespace BrainSlugz
 		QHash<int, QStandardItemModel*> Artist2Submodel_;
 
 		QSet<int> Scheduled_;
+
+		const Collection::Artists_t AllArtists_;
 	public:
 		enum Role
 		{
@@ -62,6 +64,8 @@ namespace BrainSlugz
 		};
 
 		CheckModel (const Collection::Artists_t&, QObject*);
+
+		Collection::Artists_t GetSelectedArtists () const;
 
 		void SetMissingReleases (const QList<Media::ReleaseInfo>&, const Collection::Artist&);
 		void MarkNoNews (const Collection::Artist&);

@@ -61,6 +61,7 @@ namespace BrainSlugz
 
 	CheckModel::CheckModel (const Collection::Artists_t& artists, QObject *parent)
 	: QStandardItemModel { parent }
+	, AllArtists_ { artists }
 	{
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::ArtistId] = "artistId";
@@ -88,6 +89,18 @@ namespace BrainSlugz
 
 			Scheduled_ << artist.ID_;
 		}
+	}
+
+	Collection::Artists_t CheckModel::GetSelectedArtists () const
+	{
+		Collection::Artists_t result = AllArtists_;
+		result.erase (std::remove_if (result.begin (), result.end (),
+					[this] (const Collection::Artist& artist)
+					{
+						return !Scheduled_.contains (artist.ID_);
+					}),
+				result.end ());
+		return result;
 	}
 
 	void CheckModel::SetMissingReleases (const QList<Media::ReleaseInfo>& releases,
