@@ -77,9 +77,8 @@ namespace BrainSlugz
 	, AllArtists_ { artists }
 	, DefaultAlbumIcon_ { Util::GetAsBase64Src (proxy->GetIconThemeManager ()->
 					GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2).toImage ()) }
-	, AAProvObj_ { proxy->GetPluginsManager ()->
-				GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0) }
-	, AAProv_ { qobject_cast<Media::IAlbumArtProvider*> (AAProvObj_) }
+	, AAProv_ { proxy->GetPluginsManager ()->
+				GetAllCastableTo<Media::IAlbumArtProvider*> ().value (0) }
 	{
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::ArtistId] = "artistId";
