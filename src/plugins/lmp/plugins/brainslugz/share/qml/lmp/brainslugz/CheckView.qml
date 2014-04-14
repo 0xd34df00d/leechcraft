@@ -151,24 +151,44 @@ Rectangle {
 
                 model: releases
 
-                cellWidth: 150
-                cellHeight: 150
+                cellWidth: 190
+                cellHeight: 190
 
                 delegate: Rectangle {
                     width: releasesView.cellWidth
                     height: releasesView.cellHeight
                     color: "transparent"
 
+                    Image {
+                        id: releaseArtImage
+                        source: releaseArt
+
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: 30
+                        anchors.rightMargin: 30
+                        height: width
+
+                        smooth: true
+                        fillMode: Image.PreserveAspectFit
+
+                        cache: false
+                    }
+
                     Text {
                         id: releaseNameLabel
-                        anchors.top: parent.top
+                        anchors.top: releaseArtImage.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
 
                         text: releaseName
                         color: colorProxy.color_TextBox_TextColor
                         horizontalAlignment: Text.AlignHCenter
+
                         wrapMode: Text.Wrap
+                        maximumLineCount: 2
+                        elide: Text.ElideRight
                     }
 
                     Text {
