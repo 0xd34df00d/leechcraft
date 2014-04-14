@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import Effects 1.0
+import org.LC.common 1.0
 
 Rectangle {
     id: rootRect
@@ -98,6 +99,20 @@ Rectangle {
                 width: parent.width
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
+            }
+
+            ActionButton {
+                id: removeButton
+
+                anchors.top: parent.top
+                anchors.topMargin: 8
+                anchors.right: parent.right
+                anchors.rightMargin: 8
+                width: 32
+                height: width
+
+                actionIconURL: scheduled ? "image://ThemeIcons/list-remove" : "image://ThemeIcons/list-add"
+                onTriggered: artistsModel.setArtistScheduled(artistId, !scheduled)
             }
 
             GridView.onRemove: SequentialAnimation {
