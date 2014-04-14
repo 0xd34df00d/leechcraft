@@ -75,7 +75,9 @@ namespace BrainSlugz
 		void CleanupAlbumName (QString& name)
 		{
 			name.remove ("EP");
-			name.remove ("()");
+
+			for (auto c : { '(', ')', ',', '.' })
+				name.remove (c);
 			name = name.trimmed ().simplified ();
 		}
 
