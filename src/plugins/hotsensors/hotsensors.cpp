@@ -36,6 +36,8 @@
 
 #ifdef Q_OS_LINUX
 #include "lmsensorsbackend.h"
+#elif defined (Q_OS_MAC)
+#include "macosbackend.h"
 #endif
 
 #include "historymanager.h"
@@ -53,6 +55,8 @@ namespace HotSensors
 
 #ifdef Q_OS_LINUX
 		SensorsMgr_.reset (new LmSensorsBackend (this));
+#elif defined (Q_OS_MAC)
+		SensorsMgr_.reset (new MacOsBackend (this));
 #endif
 
 		if (SensorsMgr_)
