@@ -111,7 +111,7 @@ namespace BrainSlugz
 					[&albumPtr] (const Media::ReleaseInfo& release)
 					{
 						return std::abs (static_cast<double> (albumPtr->Year_ - release.Year_)) <= 2 &&
-								!AlbumNamesEqual (albumPtr->Name_, release.Name_);
+								AlbumNamesEqual (albumPtr->Name_, release.Name_);
 					});
 
 			if (pos == releases.end ())
