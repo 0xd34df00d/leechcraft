@@ -52,7 +52,7 @@ namespace BrainSlugz
 				GetAllCastableTo<Media::IDiscographyProvider*> ().value (0) }
 	, LmpProxy_ { lmpProxy }
 	, Types_ { types }
-	, Artists_ { lmpProxy->GetLocalCollection ()->GetAllArtists () }
+	, Artists_ { Model_->GetSelectedArtists () }
 	{
 		if (!Provider_)
 		{
