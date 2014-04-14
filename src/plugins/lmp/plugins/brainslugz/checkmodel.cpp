@@ -73,6 +73,10 @@ namespace BrainSlugz
 
 		for (const auto& artist : artists)
 		{
+			if (artist.Name_.contains (" vs. ") ||
+					artist.Name_.contains (" with "))
+				continue;
+
 			auto item = new QStandardItem { artist.Name_ };
 			item->setData (artist.ID_, Role::ArtistId);
 			item->setData (artist.Name_, Role::ArtistName);
