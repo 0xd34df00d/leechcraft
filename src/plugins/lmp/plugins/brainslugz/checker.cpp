@@ -69,6 +69,27 @@ namespace BrainSlugz
 	{
 	}
 
+	namespace
+	{
+		void CleanupAlbumName (QString& name)
+		{
+			name.remove ("EP");
+			name.remove ("()");
+			name = name.trimmed ().simplified ();
+		}
+
+		bool AlbumNamesEqual (QString name1, QString name2)
+		{
+			if (!QString::compare (name1, name2, Qt::CaseInsensitive))
+				return true;
+
+			CleanupAlbumName (name1);
+			CleanupAlbumName (name2);
+
+			return !QString::compare (name1, name2, Qt::CaseInsensitive);
+		}
+	}
+
 	void Checker::handleDiscoReady ()
 	{
 		auto releases = qobject_cast<Media::IPendingDisco*> (sender ())->GetReleases ();
@@ -87,7 +108,7 @@ namespace BrainSlugz
 					[&albumPtr] (const Media::ReleaseInfo& release)
 					{
 						return std::abs (albumPtr->Year_ - release.Year_) <= 1 &&
-								!QString::compare (albumPtr->Name_, release.Name_, Qt::CaseInsensitive);
+								!AlbumNamesEqual (albumPtr->Name_, release.Name_);
 					});
 
 			if (pos == releases.end ())
