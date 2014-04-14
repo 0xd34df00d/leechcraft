@@ -27,41 +27,94 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <atomic>
-#include <QStringList>
-#include <QFileInfo>
-#include <interfaces/media/idiscographyprovider.h>
-#include "interfaces/lmp/ilmpproxy.h"
-
-class QPixmap;
-class QPoint;
+#include "brainslugz.h"
+#include "checktab.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
+namespace BrainSlugz
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
+	{
+		CoreProxy_ = proxy;
 
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
-			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
-	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
+		CheckTC_ = TabClassInfo
+		{
+			GetUniqueID () + ".CheckTab",
+			GetName (),
+			tr ("Tab allowing one to check if their collection misses some albums."),
+			GetIcon (),
+			0,
+			TFOpenableByRequest
+		};
+	}
 
-	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
-	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
+	void Plugin::SecondInit ()
+	{
+	}
 
-	void ShowAlbumArt (const QString& near, const QPoint& pos);
+	void Plugin::Release ()
+	{
+	}
 
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.LMP.BrainSlugz";
+	}
 
-	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
+	QString Plugin::GetName () const
+	{
+		return "LMP BrainSlugz";
+	}
 
-	bool ShouldRememberProvs ();
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Check if your collection misses some albums or EPs!");
+	}
 
-	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
+	QIcon Plugin::GetIcon () const
+	{
+		return {};
+	}
 
-	bool CompareArtists (QString, QString, bool withoutThe);
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		return { CheckTC_ };
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.LMP.General";
+		return result;
+	}
+
+	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
+	{
+		LmpProxy_ = proxy;
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& tc)
+	{
+		if (tc == CheckTC_.TabClass_)
+		{
+			auto tab = new CheckTab { LmpProxy_, CoreProxy_, CheckTC_, this };
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+			emit addNewTab ("BrainSlugz", tab);
+			emit raiseTab (tab);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tc;
+	}
 }
 }
+}
+
+LC_EXPORT_PLUGIN (leechcraft_lmp_brainslugz, LeechCraft::LMP::BrainSlugz::Plugin)

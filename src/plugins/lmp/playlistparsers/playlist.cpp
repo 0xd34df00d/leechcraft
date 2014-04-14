@@ -68,19 +68,24 @@ namespace LMP
 
 	Playlist& Playlist::Append (const PlaylistItem& item)
 	{
+		if (std::any_of (Playlist_.begin (), Playlist_.end (),
+					[&item] (const PlaylistItem& other)
+						{ return other.Source_ == item.Source_; }))
+			return *this;
 		Playlist_ << item;
 		return *this;
 	}
 
 	Playlist& Playlist::operator+= (const AudioSource& src)
 	{
-		Playlist_.append ({ src, {} });
+		Append ({ src, {} });
 		return *this;
 	}
 
 	Playlist& Playlist::operator+= (const Playlist& playlist)
 	{
-		Playlist_ << playlist.Playlist_;
+		for (const auto& item : playlist.Playlist_)
+			Append (item);
 		return *this;
 	}
 

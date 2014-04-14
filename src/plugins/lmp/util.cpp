@@ -253,5 +253,24 @@ namespace LMP
 		}
 		return trackTooltip;
 	}
+
+	bool CompareArtists (QString leftStr, QString rightStr, bool withoutThe)
+	{
+		if (withoutThe)
+		{
+			auto chopStr = [] (QString& str)
+			{
+				if (str.startsWith ("the ", Qt::CaseInsensitive))
+					str = str.mid (4);
+				if (str.startsWith ("a ", Qt::CaseInsensitive))
+					str = str.mid (2);
+			};
+
+			chopStr (leftStr);
+			chopStr (rightStr);
+		}
+
+		return QString::localeAwareCompare (leftStr, rightStr) < 0;
+	}
 }
 }

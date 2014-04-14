@@ -29,39 +29,49 @@
 
 #pragma once
 
-#include <atomic>
-#include <QStringList>
-#include <QFileInfo>
+#include <QObject>
+#include <interfaces/lmp/ilmpplugin.h>
+#include <interfaces/lmp/collectiontypes.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/media/idiscographyprovider.h>
-#include "interfaces/lmp/ilmpproxy.h"
 
-class QPixmap;
-class QPoint;
+namespace Media
+{
+class IDiscographyProvider;
+}
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
+namespace BrainSlugz
+{
+	class CheckModel;
 
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
-			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
-	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
+	class Checker : public QObject
+	{
+		Q_OBJECT
 
-	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
-	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
+		CheckModel * const Model_;
+		Media::IDiscographyProvider * const Provider_;
 
-	void ShowAlbumArt (const QString& near, const QPoint& pos);
+		const ILMPProxy_ptr LmpProxy_;
 
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
+		const QList<Media::ReleaseInfo::Type> Types_;
 
-	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
+		Collection::Artists_t Artists_;
+		Collection::Artist Current_;
+	public:
+		Checker (CheckModel*, const QList<Media::ReleaseInfo::Type>&,
+				const ILMPProxy_ptr&, const ICoreProxy_ptr&, QObject* = nullptr);
+	private:
+		void HandleReady ();
+	private slots:
+		void handleDiscoReady ();
+		void handleDiscoError ();
 
-	bool ShouldRememberProvs ();
-
-	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
-
-	bool CompareArtists (QString, QString, bool withoutThe);
+		void rotateQueue ();
+	};
+}
 }
 }

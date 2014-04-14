@@ -29,39 +29,54 @@
 
 #pragma once
 
-#include <atomic>
-#include <QStringList>
-#include <QFileInfo>
-#include <interfaces/media/idiscographyprovider.h>
-#include "interfaces/lmp/ilmpproxy.h"
-
-class QPixmap;
-class QPoint;
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/lmp/ilmpplugin.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
+namespace BrainSlugz
+{
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IHaveTabs
+				 , public IPlugin2
+				 , public ILMPPlugin
+	{
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveTabs IPlugin2 LeechCraft::LMP::ILMPPlugin)
 
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
-			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
-	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
+		TabClassInfo CheckTC_;
 
-	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
-	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
+		ICoreProxy_ptr CoreProxy_;
+		ILMPProxy_ptr LmpProxy_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-	void ShowAlbumArt (const QString& near, const QPoint& pos);
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
+		QSet<QByteArray> GetPluginClasses () const;
 
-	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
-
-	bool ShouldRememberProvs ();
-
-	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
-
-	bool CompareArtists (QString, QString, bool withoutThe);
+		void SetLMPProxy (ILMPProxy_ptr);
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
+	};
+}
 }
 }

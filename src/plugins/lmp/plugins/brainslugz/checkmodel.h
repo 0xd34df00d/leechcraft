@@ -29,39 +29,45 @@
 
 #pragma once
 
-#include <atomic>
-#include <QStringList>
-#include <QFileInfo>
-#include <interfaces/media/idiscographyprovider.h>
-#include "interfaces/lmp/ilmpproxy.h"
+#include <QStandardItemModel>
+#include <QHash>
+#include <QSet>
+#include <interfaces/lmp/collectiontypes.h>
 
-class QPixmap;
-class QPoint;
+namespace Media
+{
+struct ReleaseInfo;
+}
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
+namespace BrainSlugz
+{
+	class CheckModel : public QStandardItemModel
+	{
+		QHash<int, QStandardItem*> Artist2Item_;
+		QHash<int, QStandardItemModel*> Artist2Submodel_;
 
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
-			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
-	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
+		QSet<int> Scheduled_;
+	public:
+		enum Role
+		{
+			ArtistId = Qt::UserRole + 1,
+			ArtistName,
+			ScheduledToCheck,
+			IsChecked,
+			Releases
+		};
 
-	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
-	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
+		CheckModel (const Collection::Artists_t&, QObject*);
 
-	void ShowAlbumArt (const QString& near, const QPoint& pos);
-
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
-
-	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
-
-	bool ShouldRememberProvs ();
-
-	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
-
-	bool CompareArtists (QString, QString, bool withoutThe);
+		void SetMissingReleases (const QList<Media::ReleaseInfo>&, const Collection::Artist&);
+		void MarkNoNews (const Collection::Artist&);
+	public slots:
+		void setArtistScheduled (int, bool);
+	};
+}
 }
 }

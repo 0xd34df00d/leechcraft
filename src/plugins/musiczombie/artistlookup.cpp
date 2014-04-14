@@ -49,9 +49,10 @@ namespace MusicZombie
 	}
 
 	ArtistLookup::ArtistLookup (const QString& name, QNetworkAccessManager *nam, QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
+	, Name_ { name }
 	{
-		QUrl url ("http://www.musicbrainz.org/ws/2/artist/");
+		QUrl url { "http://www.musicbrainz.org/ws/2/artist/" };
 		url.addQueryItem ("query", "artist:" + NormalizeName (name));
 		auto reply = nam->get (QNetworkRequest (url));
 		connect (reply,
@@ -112,7 +113,9 @@ namespace MusicZombie
 		}
 
 		qDebug () << Q_FUNC_INFO
-				<< "choices:"
+				<< "choices for"
+				<< Name_
+				<< ":"
 				<< span2id;
 
 		if (span2id.isEmpty ())

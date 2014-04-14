@@ -50,12 +50,12 @@ namespace Monocle
 	 * IDocument::GetQObject() method to get an object of this class as a
 	 * QObject and connect to those signals:
 	 * \code
-	 * IDynamicDocument *idd;
-	 * connect (dynamic_cast<IDocument*> (idd)->GetQObject (),
-	 *         SIGNAL (pageSizeChanged (int)),
-	 *         this,
-	 *         SLOT (handlePageSizeChanged (int)));
-	 * \endcode
+		IDynamicDocument *idd = ...;
+		connect (dynamic_cast<IDocument*> (idd)->GetQObject (),
+				SIGNAL (pageSizeChanged (int)),
+				this,
+				SLOT (handlePageSizeChanged (int)));
+	   \endcode
 	 */
 	class IDynamicDocument
 	{

@@ -29,39 +29,55 @@
 
 #pragma once
 
-#include <atomic>
-#include <QStringList>
-#include <QFileInfo>
-#include <interfaces/media/idiscographyprovider.h>
-#include "interfaces/lmp/ilmpproxy.h"
+#include <QWidget>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/lmp/ilmpplugin.h>
+#include "ui_checktab.h"
 
-class QPixmap;
-class QPoint;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
+namespace BrainSlugz
+{
+	class CheckModel;
 
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
-			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
-	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
+	class CheckTab : public QWidget
+				   , public ITabWidget
+	{
+		Q_OBJECT
+		Q_INTERFACES (ITabWidget)
 
-	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
-	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
+		Ui::CheckTab Ui_;
 
-	void ShowAlbumArt (const QString& near, const QPoint& pos);
+		const ILMPProxy_ptr LmpProxy_;
+		const ICoreProxy_ptr CoreProxy_;
+		const TabClassInfo TC_;
+		QObject * const Plugin_;
 
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
+		QToolBar * const Toolbar_;
 
-	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
+		CheckModel * const Model_;
+		QSortFilterProxyModel * const CheckedModel_;
+		QSortFilterProxyModel * const UncheckedModel_;
+	public:
+		CheckTab (const ILMPProxy_ptr&, const ICoreProxy_ptr&,
+				const TabClassInfo& tc, QObject *plugin);
 
-	bool ShouldRememberProvs ();
-
-	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
-
-	bool CompareArtists (QString, QString, bool withoutThe);
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
+	private:
+		void SetupToolbar ();
+	private slots:
+		void handleStart ();
+	signals:
+		void removeTab (QWidget*);
+	};
+}
 }
 }
