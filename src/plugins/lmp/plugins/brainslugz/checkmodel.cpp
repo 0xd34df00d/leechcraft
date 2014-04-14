@@ -28,8 +28,14 @@
  **********************************************************************/
 
 #include "checkmodel.h"
+#include <functional>
 #include <QtDebug>
 #include <interfaces/media/idiscographyprovider.h>
+#include <interfaces/media/ialbumartprovider.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <util/util.h>
+#include <util/sll/onetimerunner.h>
 
 namespace LeechCraft
 {
@@ -39,13 +45,16 @@ namespace BrainSlugz
 {
 	namespace
 	{
+		const int AASize = 130;
+
 		class ReleasesSubmodel : public QStandardItemModel
 		{
 		public:
 			enum Role
 			{
 				ReleaseName = Qt::UserRole + 1,
-				ReleaseYear
+				ReleaseYear,
+				ReleaseArt
 			};
 
 			ReleasesSubmodel (QObject *parent)
@@ -54,14 +63,21 @@ namespace BrainSlugz
 				QHash<int, QByteArray> roleNames;
 				roleNames [ReleaseName] = "releaseName";
 				roleNames [ReleaseYear] = "releaseYear";
+				roleNames [ReleaseArt] = "releaseArt";
 				setRoleNames (roleNames);
 			}
 		};
 	}
 
-	CheckModel::CheckModel (const Collection::Artists_t& artists, QObject *parent)
+	CheckModel::CheckModel (const Collection::Artists_t& artists,
+			const ICoreProxy_ptr& proxy, QObject *parent)
 	: QStandardItemModel { parent }
 	, AllArtists_ { artists }
+	, DefaultAlbumIcon_ { Util::GetAsBase64Src (proxy->GetIconThemeManager ()->
+					GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2).toImage ()) }
+	, AAProvObj_ { proxy->GetPluginsManager ()->
+				GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0) }
+	, AAProv_ { qobject_cast<Media::IAlbumArtProvider*> (AAProvObj_) }
 	{
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::ArtistId] = "artistId";
@@ -127,7 +143,22 @@ namespace BrainSlugz
 			auto item = new QStandardItem;
 			item->setData (release.Name_, ReleasesSubmodel::ReleaseName);
 			item->setData (release.Year_, ReleasesSubmodel::ReleaseYear);
+			item->setData (DefaultAlbumIcon_, ReleasesSubmodel::ReleaseArt);
 			model->appendRow (item);
+
+			const auto proxy = AAProv_->RequestAlbumArt ({ artist.Name_, release.Name_ });
+			new Util::OneTimeRunner
+			{
+				[item, proxy] () -> void
+				{
+					const auto& image = proxy->GetImages ().value (0);
+					if (!image.isNull ())
+						item->setData (Util::GetAsBase64Src (image),
+								ReleasesSubmodel::ReleaseArt);
+				},
+				proxy->GetQObject (),
+				SIGNAL (ready (Media::AlbumInfo, QList<QImage>))
+			};
 		}
 
 		item->setData (true, Role::IsChecked);

@@ -33,10 +33,13 @@
 #include <QHash>
 #include <QSet>
 #include <interfaces/lmp/collectiontypes.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace Media
 {
 struct ReleaseInfo;
+
+class IAlbumArtProvider;
 }
 
 namespace LeechCraft
@@ -53,6 +56,11 @@ namespace BrainSlugz
 		QSet<int> Scheduled_;
 
 		const Collection::Artists_t AllArtists_;
+		const QString DefaultAlbumIcon_;
+
+		QObject * const AAProvObj_;
+		Media::IAlbumArtProvider * const AAProv_;
+		QHash<QString, int> PendingArtArtists_;
 	public:
 		enum Role
 		{
