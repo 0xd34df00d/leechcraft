@@ -40,6 +40,7 @@ namespace Media
 struct ReleaseInfo;
 
 class IAlbumArtProvider;
+class IArtistBioFetcher;
 }
 
 namespace LeechCraft
@@ -57,9 +58,10 @@ namespace BrainSlugz
 
 		const Collection::Artists_t AllArtists_;
 		const QString DefaultAlbumIcon_;
+		const QString DefaultArtistIcon_;
 
 		Media::IAlbumArtProvider * const AAProv_;
-		QHash<QString, int> PendingArtArtists_;
+		Media::IArtistBioFetcher * const BioProv_;
 	public:
 		enum Role
 		{
@@ -67,6 +69,7 @@ namespace BrainSlugz
 			ArtistName,
 			ScheduledToCheck,
 			IsChecked,
+			ArtistImage,
 			Releases
 		};
 

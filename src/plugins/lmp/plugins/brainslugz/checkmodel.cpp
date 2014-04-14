@@ -34,6 +34,7 @@
 #include <QtConcurrentRun>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
+#include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
@@ -48,6 +49,7 @@ namespace BrainSlugz
 	namespace
 	{
 		const int AASize = 130;
+		const int ArtistSize = 190;
 
 		class ReleasesSubmodel : public QStandardItemModel
 		{
@@ -69,22 +71,31 @@ namespace BrainSlugz
 				setRoleNames (roleNames);
 			}
 		};
+
+		QString GetIcon (const ICoreProxy_ptr& proxy, const QString& name, int size)
+		{
+			return Util::GetAsBase64Src (proxy->GetIconThemeManager ()->
+						GetIcon (name).pixmap (size, size).toImage ());
+		}
 	}
 
 	CheckModel::CheckModel (const Collection::Artists_t& artists,
 			const ICoreProxy_ptr& proxy, QObject *parent)
 	: QStandardItemModel { parent }
 	, AllArtists_ { artists }
-	, DefaultAlbumIcon_ { Util::GetAsBase64Src (proxy->GetIconThemeManager ()->
-					GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2).toImage ()) }
+	, DefaultAlbumIcon_ { GetIcon (proxy, "media-optical", AASize * 2) }
+	, DefaultArtistIcon_ { GetIcon (proxy, "view-media-artist", ArtistSize * 2) }
 	, AAProv_ { proxy->GetPluginsManager ()->
 				GetAllCastableTo<Media::IAlbumArtProvider*> ().value (0) }
+	, BioProv_ { proxy->GetPluginsManager ()->
+				GetAllCastableTo<Media::IArtistBioFetcher*> ().value (0) }
 	{
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::ArtistId] = "artistId";
 		roleNames [Role::ArtistName] = "artistName";
 		roleNames [Role::ScheduledToCheck] = "scheduled";
 		roleNames [Role::IsChecked] = "isChecked";
+		roleNames [Role::ArtistImage] = "artistImageUrl";
 		roleNames [Role::Releases] = "releases";
 		setRoleNames (roleNames);
 
@@ -99,6 +110,7 @@ namespace BrainSlugz
 			item->setData (artist.Name_, Role::ArtistName);
 			item->setData (true, Role::ScheduledToCheck);
 			item->setData (false, Role::IsChecked);
+			item->setData (DefaultArtistIcon_, Role::ArtistImage);
 
 			const auto submodel = new ReleasesSubmodel { this };
 			item->setData (QVariant::fromValue<QObject*> (submodel), Role::Releases);
@@ -109,6 +121,21 @@ namespace BrainSlugz
 			Artist2Item_ [artist.ID_] = item;
 
 			Scheduled_ << artist.ID_;
+
+			const auto proxy = BioProv_->RequestArtistBio (artist.Name_);
+			new Util::OneTimeRunner
+			{
+				[item, proxy] () -> void
+				{
+					const auto& url = proxy->GetArtistBio ().BasicInfo_.LargeImage_;
+					item->setData (url, Role::ArtistImage);
+				},
+				proxy->GetQObject (),
+				{
+					SIGNAL (ready ()),
+					SIGNAL (error ())
+				}
+			};
 		}
 	}
 
