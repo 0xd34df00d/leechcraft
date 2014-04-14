@@ -42,6 +42,7 @@ namespace Lastfmscrobble
 	AlbumArtFetcher::AlbumArtFetcher (const Media::AlbumInfo& albumInfo, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, Info_ (albumInfo)
 	{
 		QMap<QString, QString> params;
 		params ["artist"] = albumInfo.Artist_;
@@ -55,6 +56,21 @@ namespace Lastfmscrobble
 				SLOT (handleReplyFinished ()));
 	}
 
+	QObject* AlbumArtFetcher::GetQObject ()
+	{
+		return this;
+	}
+
+	Media::AlbumInfo AlbumArtFetcher::GetAlbumInfo () const
+	{
+		return Info_;
+	}
+
+	QList<QImage> AlbumArtFetcher::GetImages () const
+	{
+		return { Image_ };
+	}
+
 	void AlbumArtFetcher::handleReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -64,7 +80,7 @@ namespace Lastfmscrobble
 		QDomDocument doc;
 		if (!doc.setContent (reply->readAll ()))
 		{
-			emit gotAlbumArt (albumInfo, QList<QImage> ());
+			emit ready (Info_, {});
 			deleteLater ();
 			return;
 		}
@@ -102,7 +118,7 @@ namespace Lastfmscrobble
 			}
 		}
 
-		emit gotAlbumArt (albumInfo, QList<QImage> ());
+		emit ready (Info_, {});
 		deleteLater ();
 	}
 
@@ -113,10 +129,8 @@ namespace Lastfmscrobble
 		deleteLater ();
 
 		auto albumInfo = reply->property ("AlbumInfo").value<Media::AlbumInfo> ();
-		QImage image;
-		image.loadFromData (reply->readAll ());
-		if (!image.isNull ())
-			emit gotAlbumArt (albumInfo, QList<QImage> () << image);
+		Image_.loadFromData (reply->readAll ());
+		emit ready (Info_, { Image_ });
 	}
 }
 }

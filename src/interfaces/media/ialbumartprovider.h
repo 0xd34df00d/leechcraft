@@ -65,6 +65,21 @@ namespace Media
 		return qHash (info.Album_.toUtf8 () + '\0' + info.Artist_.toUtf8 ());
 	}
 
+	/** @TODO
+	 */
+	class IPendingAlbumArt
+	{
+	public:
+		virtual ~IPendingAlbumArt () {}
+
+		virtual QObject* GetQObject () = 0;
+
+		virtual AlbumInfo GetAlbumInfo () const = 0;
+		virtual QList<QImage> GetImages () const = 0;
+	protected:
+		virtual void ready (const AlbumInfo&, const QList<QImage>&) = 0;
+	};
+
 	/** @brief Interface for plugins that can search for album art.
 	 *
 	 * Plugins that can search for album art (like on Amazon or Last.FM)
@@ -87,23 +102,18 @@ namespace Media
 
 		/** @brief Initiates search for album art of the given album.
 		 *
+		 * This function initiates searching for the album art of the
+		 * given \em album and returns a search proxy that can be used to
+		 * be notified when the search finishes.
+		 *
 		 * @param[in] album The information about the album.
+		 * @return The pending search object that will emit
+		 * IPendingAlbumArt::ready() signal once ready.
 		 */
-		virtual void RequestAlbumArt (const AlbumInfo& album) const = 0;
-	protected:
-		/** @brief Emitted when album art for the given album is
-		 * available.
-		 *
-		 * This signal should be emitted by the implementation even if
-		 * no album art is found for the given album.
-		 *
-		 * @param[in] album The album for which the album art is found.
-		 * @param[in] arts The list of album covers that were found. The
-		 * list may be empty.
-		 */
-		virtual void gotAlbumArt (const AlbumInfo& album, const QList<QImage>& arts) = 0;
+		virtual IPendingAlbumArt* RequestAlbumArt (const AlbumInfo& album) const = 0;
 	};
 }
 
 Q_DECLARE_METATYPE (Media::AlbumInfo);
 Q_DECLARE_INTERFACE (Media::IAlbumArtProvider, "org.LeechCraft.Media.IAlbumArtProvider/1.0");
+Q_DECLARE_INTERFACE (Media::IPendingAlbumArt, "org.LeechCraft.Media.IPendingAlbumArt/1.0");

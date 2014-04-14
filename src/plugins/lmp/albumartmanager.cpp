@@ -127,15 +127,14 @@ namespace LMP
 		const auto& task = Queue_.takeFirst ();
 		for (auto provObj : provs)
 		{
-			auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
-			prov->RequestAlbumArt (task.Info_);
-			connect (provObj,
-					SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
+			const auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
+			const auto proxy = prov->RequestAlbumArt (task.Info_);
+			connect (proxy->GetQObject (),
+					SIGNAL (ready (Media::AlbumInfo, QList<QImage>)),
 					this,
 					task.PreviewMode_ ?
 							SIGNAL (gotImages (Media::AlbumInfo, QList<QImage>)) :
-							SLOT (handleGotAlbumArt (Media::AlbumInfo, QList<QImage>)),
-					Qt::UniqueConnection);
+							SLOT (handleGotAlbumArt (Media::AlbumInfo, QList<QImage>)));
 		}
 		if (!provs.isEmpty ())
 			NumRequests_ [task.Info_] = provs.size ();

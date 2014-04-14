@@ -101,7 +101,7 @@ namespace Lastfmscrobble
 		void BanCurrentTrack ();
 
 		QString GetAlbumArtProviderName () const;
-		void RequestAlbumArt (const Media::AlbumInfo& album) const;
+		Media::IPendingAlbumArt* RequestAlbumArt (const Media::AlbumInfo& album) const;
 
 		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
 
@@ -125,8 +125,6 @@ namespace Lastfmscrobble
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
-		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 

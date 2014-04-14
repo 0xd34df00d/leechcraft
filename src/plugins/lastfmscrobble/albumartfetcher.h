@@ -38,17 +38,26 @@ namespace LeechCraft
 namespace Lastfmscrobble
 {
 	class AlbumArtFetcher : public QObject
+						  , public Media::IPendingAlbumArt
 	{
 		Q_OBJECT
+		Q_INTERFACES (Media::IPendingAlbumArt)
 
-		ICoreProxy_ptr Proxy_;
+		const ICoreProxy_ptr Proxy_;
+
+		const Media::AlbumInfo Info_;
+		QImage Image_;
 	public:
 		AlbumArtFetcher (const Media::AlbumInfo&, ICoreProxy_ptr, QObject* = 0);
+
+		QObject* GetQObject ();
+		Media::AlbumInfo GetAlbumInfo () const;
+		QList<QImage> GetImages () const;
 	private slots:
 		void handleReplyFinished ();
 		void handleImageReplyFinished ();
 	signals:
-		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+		void ready (const Media::AlbumInfo&, const QList<QImage>&);
 	};
 }
 }

@@ -169,15 +169,9 @@ namespace LMP
 
 	void BioViewManager::handleDiscographyReady ()
 	{
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		auto aaProvObj = pm->GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0);
-		auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
-		if (aaProvObj)
-			connect (aaProvObj,
-					SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
-					this,
-					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QImage>)),
-					Qt::UniqueConnection);
+		const auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		const auto aaProvObj = pm->GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0);
+		const auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
 
 		auto fetcher = qobject_cast<Media::IPendingDisco*> (sender ());
 		const auto& icon = Core::Instance ().GetProxy ()->GetIconThemeManager ()->
@@ -201,7 +195,11 @@ namespace LMP
 
 			DiscoModel_->appendRow (item);
 
-			aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
+			const auto proxy = aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
+			connect (proxy->GetQObject (),
+					SIGNAL (ready (Media::AlbumInfo, QList<QImage>)),
+					this,
+					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QImage>)));
 		}
 	}
 

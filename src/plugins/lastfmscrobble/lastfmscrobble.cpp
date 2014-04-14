@@ -172,13 +172,9 @@ namespace Lastfmscrobble
 		return GetServiceName ();
 	}
 
-	void Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	Media::IPendingAlbumArt* Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
 	{
-		auto fetcher = new AlbumArtFetcher (album, Proxy_);
-		connect (fetcher,
-				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
-				this,
-				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)));
+		return new AlbumArtFetcher (album, Proxy_);
 	}
 
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
