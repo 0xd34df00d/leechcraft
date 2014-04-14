@@ -29,6 +29,7 @@
 
 #include "checker.h"
 #include <algorithm>
+#include <cmath>
 #include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilmpproxy.h>
@@ -107,7 +108,7 @@ namespace BrainSlugz
 			const auto pos = std::find_if (releases.begin (), releases.end (),
 					[&albumPtr] (const Media::ReleaseInfo& release)
 					{
-						return std::abs (albumPtr->Year_ - release.Year_) <= 2 &&
+						return std::abs (static_cast<double> (albumPtr->Year_ - release.Year_)) <= 2 &&
 								!AlbumNamesEqual (albumPtr->Name_, release.Name_);
 					});
 

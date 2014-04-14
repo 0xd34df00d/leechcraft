@@ -27,89 +27,91 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "hotsensors.h"
-#include <QIcon>
-#include <QAbstractItemModel>
-#include <QtDeclarative>
-#include <util/util.h>
-#include <util/sys/paths.h>
-
-#ifdef Q_OS_LINUX
-#include "lmsensorsbackend.h"
-#elif defined (Q_OS_MAC)
 #include "macosbackend.h"
-#endif
-
-#include "historymanager.h"
-#include "plotmanager.h"
+#include <QtDebug>
+#include <IOKit/IOKitLib.h>
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	namespace
 	{
-		Util::InstallTranslator ("hotsensors");
+		class SMC
+		{
+			bool Valid_ = false;
+			io_connect_t Conn_;
+		public:
+			SMC ();
+			~SMC ();
 
-		HistoryMgr_.reset (new HistoryManager (this));
+			SMC (const SMC&) = delete;
+			SMC& operator= (const SMC&) = delete;
 
-#ifdef Q_OS_LINUX
-		SensorsMgr_.reset (new LmSensorsBackend (this));
-#elif defined (Q_OS_MAC)
-		SensorsMgr_.reset (new MacOsBackend (this));
-#endif
+			double GetTemp (const char *key);
+		};
 
-		if (SensorsMgr_)
-			connect (SensorsMgr_.get (),
-					SIGNAL (gotReadings (Readings_t)),
-					HistoryMgr_.get (),
-					SLOT (handleReadings (Readings_t)));
+		SMC::SMC ()
+		{
+			mach_port_t masterPort;
+			auto result = IOMasterPort (MACH_PORT_NULL, &masterPort);
 
-		PlotMgr_.reset (new PlotManager (proxy, this));
-		connect (HistoryMgr_.get (),
-				SIGNAL (historyChanged (ReadingsHistory_t)),
-				PlotMgr_.get (),
-				SLOT (handleHistoryUpdated (ReadingsHistory_t)));
+			if (result != kIOReturnSuccess)
+				return;
 
-		ComponentTemplate_ = QuarkComponent ("hotsensors", "HSQuark.qml");
+			auto matchingDict = IOServiceMatching ("AppleSMC");
+
+			io_iterator_t iterator;
+			result = IOServiceGetMatchingServices (masterPort, matchingDict, &iterator);
+			if (result != kIOReturnSuccess)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no matching services:"
+						<< result;
+				return;
+			}
+
+			const auto device = IOIteratorNext (iterator);
+			IOObjectRelease (iterator);
+
+			if (!device)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no SMC found";
+				return;
+			}
+
+			result = IOServiceOpen (device, mach_task_self (), 0, &Conn_);
+			IOObjectRelease (device);
+			if (result != kIOReturnSuccess)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot open service:"
+						<< result;
+				return;
+			}
+
+			Valid_ = true;
+		}
+
+		SMC::~SMC ()
+		{
+			IOServiceClose (Conn_);
+		}
+
+		double SMC::GetTemp (const char *key)
+		{
+		}
 	}
 
-	void Plugin::SecondInit ()
+	MacOsBackend::MacOsBackend (QObject *parent)
+	: Backend { parent }
 	{
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	void MacOsBackend::update ()
 	{
-		return "org.LeechCraft.HotSensors";
-	}
-
-	void Plugin::Release ()
-	{
-		SensorsMgr_.reset ();
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "HotSensors";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Temperature sensors information quark.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QuarkComponents_t Plugin::GetComponents () const
-	{
-		QuarkComponent_ptr component (new QuarkComponent (ComponentTemplate_));
-		component->ContextProps_.append ({ "HS_plotManager", PlotMgr_->CreateContextWrapper () });
-		return { component };
+		SMC smc;
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_hotsensors, LeechCraft::HotSensors::Plugin);
