@@ -51,6 +51,8 @@ namespace BrainSlugz
 {
 	class CheckModel : public QStandardItemModel
 	{
+		Q_OBJECT
+
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItemModel*> Artist2Submodel_;
 
