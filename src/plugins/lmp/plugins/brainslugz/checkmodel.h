@@ -63,7 +63,7 @@ namespace BrainSlugz
 			Releases
 		};
 
-		CheckModel (const Collection::Artists_t&, QObject*);
+		CheckModel (const Collection::Artists_t&, const ICoreProxy_ptr&, QObject*);
 
 		Collection::Artists_t GetSelectedArtists () const;
 
