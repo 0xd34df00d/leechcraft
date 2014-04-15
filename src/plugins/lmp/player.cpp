@@ -1049,7 +1049,6 @@ namespace LMP
 		if (CurrentStation_)
 		{
 			Source_->Clear ();
-			qApp->processEvents ();
 			CurrentStation_->RequestNewStream ();
 			return;
 		}
