@@ -32,8 +32,10 @@
 #include <QDir>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QThread>
 #include <QtDebug>
 #include <util/dblock.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -58,40 +60,43 @@ namespace Poshuku
 				break;
 		}
 
-		DB_ = QSqlDatabase::addDatabase (strType, "PoshukuConnection");
+		DB_ = QSqlDatabase::addDatabase (strType,
+					QString ("PoshukuConnection_%1_%2")
+						.arg (qrand ())
+						.arg (Util::Handle2Num (QThread::currentThreadId ())));
 		switch (Type_)
 		{
-			case SBSQLite:
-				{
-					QDir dir = QDir::home ();
-					dir.cd (".leechcraft");
-					dir.cd ("poshuku");
-					DB_.setDatabaseName (dir.filePath ("poshuku.db"));
-				}
-				break;
-			case SBPostgres:
-				{
-					DB_.setDatabaseName (XmlSettingsManager::Instance ()->
-							property ("PostgresDBName").toString ());
-					DB_.setHostName (XmlSettingsManager::Instance ()->
-							property ("PostgresHostname").toString ());
-					DB_.setPort (XmlSettingsManager::Instance ()->
-							property ("PostgresPort").toInt ());
-					DB_.setUserName (XmlSettingsManager::Instance ()->
-							property ("PostgresUsername").toString ());
-					DB_.setPassword (XmlSettingsManager::Instance ()->
-							property ("PostgresPassword").toString ());
-				}
-				break;
-			case SBMysql:
-				qWarning () << Q_FUNC_INFO
-						<< "it's not MySQL";
-				break;
+		case SBSQLite:
+		{
+			QDir dir = QDir::home ();
+			dir.cd (".leechcraft");
+			dir.cd ("poshuku");
+			DB_.setDatabaseName (dir.filePath ("poshuku.db"));
+			break;
+		}
+		case SBPostgres:
+		{
+			DB_.setDatabaseName (XmlSettingsManager::Instance ()->
+					property ("PostgresDBName").toString ());
+			DB_.setHostName (XmlSettingsManager::Instance ()->
+					property ("PostgresHostname").toString ());
+			DB_.setPort (XmlSettingsManager::Instance ()->
+					property ("PostgresPort").toInt ());
+			DB_.setUserName (XmlSettingsManager::Instance ()->
+					property ("PostgresUsername").toString ());
+			DB_.setPassword (XmlSettingsManager::Instance ()->
+					property ("PostgresPassword").toString ());
+			break;
+		}
+		case SBMysql:
+			qWarning () << Q_FUNC_INFO
+					<< "it's not MySQL";
+			break;
 		}
 
 		if (!DB_.open ())
 		{
-			LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
+			Util::DBLock::DumpError (DB_.lastError ());
 			throw std::runtime_error (QString ("Could not initialize database: %1")
 					.arg (DB_.lastError ().text ()).toUtf8 ().constData ());
 		}
