@@ -124,24 +124,9 @@ namespace Poshuku
 			throw std::runtime_error ("could not create necessary directories for Poshuku");
 		}
 
-		StorageBackend::Type type;
-		QString strType = XmlSettingsManager::Instance ()->
-			property ("StorageType").toString ();
-		if (strType == "SQLite")
-			type = StorageBackend::SBSQLite;
-		else if (strType == "PostgreSQL")
-			type = StorageBackend::SBPostgres;
-		else if (strType == "MySQL")
-			type = StorageBackend::SBMysql;
-		else
-			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
-						.arg (strType)));
-
-		std::shared_ptr<StorageBackend> sb;
 		try
 		{
-			sb = StorageBackend::Create (type);
-			sb->Prepare ();
+			StorageBackend_ = StorageBackend::Create ();
 		}
 		catch (const std::runtime_error& s)
 		{
@@ -154,9 +139,6 @@ namespace Poshuku
 			emit error (tr ("Poshuku: general storage initialization error."));
 			throw;
 		}
-
-		StorageBackend_ = sb;
-		StorageBackend_->Prepare ();
 
 		HistoryModel_.reset (new HistoryModel (this));
 		connect (StorageBackend_.get (),
