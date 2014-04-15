@@ -80,6 +80,7 @@ Rectangle {
                 source: artistImageUrl
 
                 anchors.top: parent.top
+                anchors.topMargin: 10
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.leftMargin: 30
