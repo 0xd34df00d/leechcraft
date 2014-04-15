@@ -130,8 +130,11 @@ namespace BrainSlugz
 			const auto proxy = BioProv_->RequestArtistBio (artist.Name_, false);
 			new Util::OneTimeRunner
 			{
-				[item, proxy] () -> void
+				[this, artist, item, proxy] () -> void
 				{
+					if (!Artist2Item_.contains (artist.ID_))
+						return;
+
 					const auto& url = proxy->GetArtistBio ().BasicInfo_.LargeImage_;
 					item->setData (url, Role::ArtistImage);
 				},
