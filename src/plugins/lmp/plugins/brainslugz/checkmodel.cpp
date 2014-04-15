@@ -232,6 +232,20 @@ namespace BrainSlugz
 		}
 	}
 
+	void CheckModel::selectAll ()
+	{
+		for (const auto& artist : AllArtists_)
+			if (!Scheduled_.contains (artist.ID_))
+				setArtistScheduled (artist.ID_, true);
+	}
+
+	void CheckModel::selectNone ()
+	{
+		for (const auto& artist : AllArtists_)
+			if (Scheduled_.contains (artist.ID_))
+				setArtistScheduled (artist.ID_, false);
+	}
+
 	void CheckModel::setArtistScheduled (int id, bool scheduled)
 	{
 		if (!Artist2Item_.contains (id))

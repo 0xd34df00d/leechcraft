@@ -73,6 +73,8 @@ namespace BrainSlugz
 	private:
 		void SetupToolbar ();
 	private slots:
+		void on_SelectAll__released ();
+		void on_SelectNone__released ();
 		void handleStart ();
 	signals:
 		void removeTab (QWidget*);

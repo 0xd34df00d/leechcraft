@@ -130,6 +130,16 @@ namespace BrainSlugz
 				SLOT (handleStart ()));
 	}
 
+	void CheckTab::on_SelectAll__released ()
+	{
+		Model_->selectAll ();
+	}
+
+	void CheckTab::on_SelectNone__released ()
+	{
+		Model_->selectNone ();
+	}
+
 	void CheckTab::handleStart ()
 	{
 		QList<Media::ReleaseInfo::Type> types;

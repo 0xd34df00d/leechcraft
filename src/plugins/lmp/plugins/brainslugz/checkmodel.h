@@ -86,6 +86,8 @@ namespace BrainSlugz
 
 		void RemoveUnscheduled ();
 	public slots:
+		void selectAll ();
+		void selectNone ();
 		void setArtistScheduled (int, bool);
 	};
 }
