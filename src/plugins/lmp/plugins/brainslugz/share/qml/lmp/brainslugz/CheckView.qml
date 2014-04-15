@@ -105,7 +105,8 @@ Rectangle {
             }
 
             ActionButton {
-                id: removeButton
+                id: toggleButton
+                visible: rootRect.state == ""
 
                 anchors.top: parent.top
                 anchors.topMargin: 8
