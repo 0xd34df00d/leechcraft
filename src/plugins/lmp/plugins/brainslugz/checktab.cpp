@@ -146,6 +146,7 @@ namespace BrainSlugz
 		check (Ui_.EP_, Media::ReleaseInfo::Type::EP);
 		check (Ui_.Single_, Media::ReleaseInfo::Type::Single);
 
+		Model_->RemoveUnscheduled ();
 		new Checker { Model_, types, LmpProxy_, CoreProxy_ };
 
 		Ui_.CheckView_->rootContext ()->setContextProperty ("checkingState", "checking");
