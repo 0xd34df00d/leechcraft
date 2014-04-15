@@ -121,7 +121,7 @@ Rectangle {
 
             GridView.onRemove: SequentialAnimation {
                 PropertyAction { target: gridDelegate; property: "GridView.delayRemove"; value: true }
-                NumberAnimation { target: gridDelegate; property: "width"; to: 0; duration: 500; easing.type: Easing.InCubic }
+                NumberAnimation { target: gridDelegate; property: "scale"; to: 0; duration: 500; easing.type: Easing.InCubic }
                 PropertyAction { target: gridDelegate; property: "GridView.delayRemove"; value: false }
             }
         }
