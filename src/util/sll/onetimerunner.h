@@ -43,11 +43,15 @@ namespace Util
 
 		std::function<void ()> Func_;
 	public:
-		OneTimeRunner (const std::function<void ()>& func);
+		OneTimeRunner (const std::function<void ()>& func, QObject *parent);
 		OneTimeRunner (const std::function<void ()>& func,
-				QObject *sender, const char *signal);
+				QObject *sender,
+				const char *signal,
+				QObject *parent);
 		OneTimeRunner (const std::function<void ()>& func,
-				QObject *sender, const std::initializer_list<const char*>& signalsList);
+				QObject *sender,
+				const std::initializer_list<const char*>& signalsList,
+				QObject *parent);
 	public slots:
 		void run ();
 	};

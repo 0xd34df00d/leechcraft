@@ -142,7 +142,8 @@ namespace BrainSlugz
 				{
 					SIGNAL (ready ()),
 					SIGNAL (error ())
-				}
+				},
+				this
 			};
 		}
 	}
@@ -185,7 +186,7 @@ namespace BrainSlugz
 			const auto proxy = AAProv_->RequestAlbumArt ({ artist.Name_, release.Name_ });
 			new Util::OneTimeRunner
 			{
-				[item, proxy] () -> void
+				[this, item, proxy] () -> void
 				{
 					const auto& image = proxy->GetImages ().value (0);
 					if (image.isNull ())
@@ -201,11 +202,13 @@ namespace BrainSlugz
 					{
 						[watcher, item] { item->setData (watcher->result (), ReleasesSubmodel::ReleaseArt); },
 						watcher,
-						SIGNAL (finished ())
+						SIGNAL (finished ()),
+						this
 					};
 				},
 				proxy->GetQObject (),
-				SIGNAL (ready (Media::AlbumInfo, QList<QImage>))
+				SIGNAL (ready (Media::AlbumInfo, QList<QImage>)),
+				this
 			};
 		}
 
