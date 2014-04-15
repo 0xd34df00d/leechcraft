@@ -234,6 +234,9 @@ namespace BrainSlugz
 
 	void CheckModel::setArtistScheduled (int id, bool scheduled)
 	{
+		if (!Artist2Item_.contains (id))
+			return;
+
 		Artist2Item_ [id]->setData (scheduled, Role::ScheduledToCheck);
 
 		if (scheduled)
