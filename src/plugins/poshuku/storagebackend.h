@@ -31,7 +31,7 @@
 #define PLUGINS_POSHUKU_STORAGEBACKEND_H
 #include <memory>
 #include <QObject>
-#include "historymodel.h"
+#include "interfaces/poshuku/poshukutypes.h"
 #include "favoritesmodel.h"
 #include "pageformsdata.h"
 

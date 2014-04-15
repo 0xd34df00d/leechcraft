@@ -35,6 +35,7 @@
 #include <QStringList>
 #include <QDateTime>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/poshuku/poshukutypes.h>
 
 class QTimer;
 class QAction;
@@ -48,15 +49,6 @@ namespace Util
 
 namespace Poshuku
 {
-	struct HistoryItem
-	{
-		QString Title_;
-		QDateTime DateTime_;
-		QString URL_;
-	};
-
-	typedef QList<HistoryItem> history_items_t;
-
 	class HistoryModel : public QAbstractItemModel
 	{
 		Q_OBJECT
