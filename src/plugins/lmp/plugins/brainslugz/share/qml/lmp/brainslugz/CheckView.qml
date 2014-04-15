@@ -43,7 +43,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         width: parent.width
 
-        model: uncheckedModel
+        model: artistsModel
 
         cellWidth: 250
         cellHeight: 250
@@ -55,13 +55,16 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: colorProxy.color_TextBox_TopColor
+                    color: Qt.tint(colorProxy.color_TextBox_TopColor, gridDelegate.tintColor)
                 }
                 GradientStop {
                     position: 1
-                    color: colorProxy.color_TextBox_BottomColor
+                    color: Qt.tint(colorProxy.color_TextBox_BottomColor, gridDelegate.tintColor)
                 }
             }
+
+            property color tintColor: !isChecked ? "#00000000" : (missingCount ? "#20ff0000" : "#2000ff00")
+            Behavior on tintColor { PropertyAnimation { duration: 500 } }
 
             border.width: 1
             border.color: colorProxy.color_TextBox_BorderColor

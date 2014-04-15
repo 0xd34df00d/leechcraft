@@ -49,13 +49,11 @@ namespace BrainSlugz
 {
 	namespace
 	{
-		class CheckFilterModel : public QSortFilterProxyModel
+		class MissingModel : public QSortFilterProxyModel
 		{
-			const bool ShouldBeChecked_;
 		public:
-			CheckFilterModel (QAbstractItemModel *source, bool shouldBeChecked, QObject *parent)
+			MissingModel (QAbstractItemModel *source, QObject *parent)
 			: QSortFilterProxyModel { parent }
-			, ShouldBeChecked_ { shouldBeChecked }
 			{
 				setSourceModel (source);
 				setDynamicSortFilter (true);
@@ -63,8 +61,8 @@ namespace BrainSlugz
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex&) const
 			{
-				const auto idx = sourceModel ()->index (row, 0);
-				return idx.data (CheckModel::IsChecked).toBool () == ShouldBeChecked_;
+				const auto& idx = sourceModel ()->index (row, 0);
+				return idx.data (CheckModel::MissingCount).toInt ();
 			}
 		};
 	}
@@ -79,8 +77,7 @@ namespace BrainSlugz
 	, Plugin_ { plugin }
 	, Toolbar_ { new QToolBar { this } }
 	, Model_ { new CheckModel { lmpProxy->GetLocalCollection ()->GetAllArtists (), coreProxy, this } }
-	, CheckedModel_ { new CheckFilterModel { Model_, true, this } }
-	, UncheckedModel_ { new CheckFilterModel { Model_, false, this } }
+	, CheckedModel_ { new MissingModel { Model_, this } }
 	{
 		Ui_.setupUi (this);
 
@@ -94,7 +91,6 @@ namespace BrainSlugz
 				new Util::ColorThemeProxy { coreProxy->GetColorThemeManager (), this });
 		root->setContextProperty ("artistsModel", Model_);
 		root->setContextProperty ("checkedModel", CheckedModel_);
-		root->setContextProperty ("uncheckedModel", UncheckedModel_);
 		root->setContextProperty ("checkingState", "");
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");

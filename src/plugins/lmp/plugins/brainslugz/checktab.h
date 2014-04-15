@@ -61,8 +61,7 @@ namespace BrainSlugz
 		QToolBar * const Toolbar_;
 
 		CheckModel * const Model_;
-		QSortFilterProxyModel * const CheckedModel_;
-		QSortFilterProxyModel * const UncheckedModel_;
+		QAbstractItemModel * const CheckedModel_;
 	public:
 		CheckTab (const ILMPProxy_ptr&, const ICoreProxy_ptr&,
 				const TabClassInfo& tc, QObject *plugin);
