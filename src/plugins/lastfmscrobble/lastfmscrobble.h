@@ -113,7 +113,7 @@ namespace Lastfmscrobble
 
 		void RequestRecentReleases (int, bool);
 
-		Media::IPendingArtistBio* RequestArtistBio (const QString&);
+		Media::IPendingArtistBio* RequestArtistBio (const QString&, bool);
 
 		void UpdateRecommendedEvents ();
 		void AttendEvent (qint64, Media::EventAttendType);

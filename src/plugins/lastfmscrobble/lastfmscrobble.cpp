@@ -227,9 +227,9 @@ namespace Lastfmscrobble
 				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)));
 	}
 
-	Media::IPendingArtistBio* Plugin::RequestArtistBio (const QString& artist)
+	Media::IPendingArtistBio* Plugin::RequestArtistBio (const QString& artist, bool addImages)
 	{
-		return new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), this);
+		return new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), addImages, this);
 	}
 
 	void Plugin::UpdateRecommendedEvents ()
