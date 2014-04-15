@@ -72,7 +72,9 @@ namespace BrainSlugz
 			ScheduledToCheck,
 			IsChecked,
 			ArtistImage,
-			Releases
+			Releases,
+			MissingCount,
+			PresentCount
 		};
 
 		CheckModel (const Collection::Artists_t&, const ICoreProxy_ptr&, QObject*);

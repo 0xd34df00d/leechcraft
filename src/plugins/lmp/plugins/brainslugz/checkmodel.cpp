@@ -97,12 +97,15 @@ namespace BrainSlugz
 		roleNames [Role::IsChecked] = "isChecked";
 		roleNames [Role::ArtistImage] = "artistImageUrl";
 		roleNames [Role::Releases] = "releases";
+		roleNames [Role::MissingCount] = "missingCount";
+		roleNames [Role::PresentCount] = "presentCount";
 		setRoleNames (roleNames);
 
 		for (const auto& artist : artists)
 		{
 			if (artist.Name_.contains (" vs. ") ||
-					artist.Name_.contains (" with "))
+					artist.Name_.contains (" with ") ||
+					artist.Albums_.isEmpty ())
 				continue;
 
 			auto item = new QStandardItem { artist.Name_ };
@@ -111,6 +114,8 @@ namespace BrainSlugz
 			item->setData (true, Role::ScheduledToCheck);
 			item->setData (false, Role::IsChecked);
 			item->setData (DefaultArtistIcon_, Role::ArtistImage);
+			item->setData (0, Role::MissingCount);
+			item->setData (artist.Albums_.size (), Role::PresentCount);
 
 			const auto submodel = new ReleasesSubmodel { this };
 			item->setData (QVariant::fromValue<QObject*> (submodel), Role::Releases);
@@ -201,6 +206,7 @@ namespace BrainSlugz
 			};
 		}
 
+		item->setData (releases.size (), Role::MissingCount);
 		item->setData (true, Role::IsChecked);
 	}
 
