@@ -72,15 +72,19 @@ namespace BrainSlugz
 
 	namespace
 	{
+		void CleanupPunctuation (QString& name)
+		{
+			for (auto c : { '(', ')', ',', '.' })
+				name.remove (c);
+			name = name.trimmed ().simplified ();
+		}
+
 		void CleanupAlbumName (QString& name)
 		{
 			name.remove ("EP");
 			name.remove (" the ", Qt::CaseInsensitive);
 			if (name.startsWith ("the ", Qt::CaseInsensitive))
 				name = name.mid (4);
-
-			for (auto c : { '(', ')', ',', '.' })
-				name.remove (c);
 			name = name.trimmed ().simplified ();
 		}
 
@@ -90,8 +94,11 @@ namespace BrainSlugz
 		{
 			auto name1 = albumPtr->Name_.toLower ();
 			auto name2 = release.Name_.toLower ();
-			if (std::abs (static_cast<double> (albumPtr->Year_ - release.Year_)) <= MaxYearDiff &&
-					name1 == name2)
+
+			CleanupPunctuation (name1);
+			CleanupPunctuation (name2);
+
+			if (name1 == name2)
 				return true;
 
 			CleanupAlbumName (name1);
@@ -138,6 +145,8 @@ namespace BrainSlugz
 			qWarning () << Q_FUNC_INFO
 					<< "we probably found something different for"
 					<< Current_.Name_;
+			for (const auto& release : releases)
+				qWarning () << "\t" << release.Year_ << release.Name_;
 			Model_->MarkNoNews (Current_);
 		}
 		else if (releases.isEmpty ())
