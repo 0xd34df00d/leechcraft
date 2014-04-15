@@ -219,6 +219,23 @@ namespace BrainSlugz
 		Artist2Submodel_.take (artist.ID_)->deleteLater ();
 	}
 
+	void CheckModel::RemoveUnscheduled ()
+	{
+		for (const auto& artist : AllArtists_)
+		{
+			if (Scheduled_.contains (artist.ID_))
+				continue;
+
+			const auto item = Artist2Item_.take (artist.ID_);
+			if (!item)
+				continue;
+
+			Artist2Submodel_.take (artist.ID_)->deleteLater ();
+
+			removeRow (item->row ());
+		}
+	}
+
 	void CheckModel::setArtistScheduled (int id, bool scheduled)
 	{
 		Artist2Item_ [id]->setData (scheduled, Role::ScheduledToCheck);

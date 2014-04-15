@@ -81,6 +81,8 @@ namespace BrainSlugz
 
 		void SetMissingReleases (const QList<Media::ReleaseInfo>&, const Collection::Artist&);
 		void MarkNoNews (const Collection::Artist&);
+
+		void RemoveUnscheduled ();
 	public slots:
 		void setArtistScheduled (int, bool);
 	};
