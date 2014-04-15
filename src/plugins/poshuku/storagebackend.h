@@ -58,6 +58,7 @@ namespace Poshuku
 		StorageBackend (QObject* = 0);
 		virtual ~StorageBackend ();
 		static std::shared_ptr<StorageBackend> Create (Type);
+		static std::shared_ptr<StorageBackend> Create ();
 
 		/** @brief Do post-initialization.
 			*
