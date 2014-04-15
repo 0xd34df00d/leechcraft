@@ -75,21 +75,34 @@ namespace BrainSlugz
 		void CleanupAlbumName (QString& name)
 		{
 			name.remove ("EP");
+			name.remove (" the ", Qt::CaseInsensitive);
+			if (name.startsWith ("the ", Qt::CaseInsensitive))
+				name = name.mid (4);
 
 			for (auto c : { '(', ')', ',', '.' })
 				name.remove (c);
 			name = name.trimmed ().simplified ();
 		}
 
-		bool AlbumNamesEqual (QString name1, QString name2)
+		const int MaxYearDiff = 4;
+
+		bool IsSameRelease (const Collection::Album_ptr& albumPtr, const Media::ReleaseInfo& release)
 		{
-			if (!QString::compare (name1, name2, Qt::CaseInsensitive))
+			auto name1 = albumPtr->Name_.toLower ();
+			auto name2 = release.Name_.toLower ();
+			if (std::abs (static_cast<double> (albumPtr->Year_ - release.Year_)) <= MaxYearDiff &&
+					name1 == name2)
 				return true;
 
 			CleanupAlbumName (name1);
 			CleanupAlbumName (name2);
 
-			return !QString::compare (name1, name2, Qt::CaseInsensitive);
+			if (albumPtr->Year_ == release.Year_ &&
+					(name1.contains (name2) || name2.contains (name1)))
+				return true;
+
+			return std::abs (static_cast<double> (albumPtr->Year_ - release.Year_)) <= MaxYearDiff &&
+					name1 == name2;
 		}
 	}
 
@@ -110,8 +123,7 @@ namespace BrainSlugz
 			const auto pos = std::find_if (releases.begin (), releases.end (),
 					[&albumPtr] (const Media::ReleaseInfo& release)
 					{
-						return std::abs (static_cast<double> (albumPtr->Year_ - release.Year_)) <= 2 &&
-								AlbumNamesEqual (albumPtr->Name_, release.Name_);
+						return IsSameRelease (albumPtr, release);
 					});
 
 			if (pos == releases.end ())
