@@ -127,7 +127,7 @@ namespace BrainSlugz
 
 			Scheduled_ << artist.ID_;
 
-			const auto proxy = BioProv_->RequestArtistBio (artist.Name_);
+			const auto proxy = BioProv_->RequestArtistBio (artist.Name_, false);
 			new Util::OneTimeRunner
 			{
 				[item, proxy] () -> void
