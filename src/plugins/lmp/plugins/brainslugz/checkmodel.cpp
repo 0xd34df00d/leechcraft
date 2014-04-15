@@ -212,17 +212,7 @@ namespace BrainSlugz
 
 	void CheckModel::MarkNoNews (const Collection::Artist& artist)
 	{
-		const auto item = Artist2Item_.take (artist.ID_);
-		if (!item)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no item for artist"
-					<< artist.Name_;
-			return;
-		}
-
-		removeRow (item->row ());
-		Artist2Submodel_.take (artist.ID_)->deleteLater ();
+		SetMissingReleases ({}, artist);
 	}
 
 	void CheckModel::RemoveUnscheduled ()
