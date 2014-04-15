@@ -63,7 +63,9 @@ Rectangle {
                 }
             }
 
-            property color tintColor: !isChecked ? "#00000000" : (missingCount ? "#20ff0000" : "#2000ff00")
+            property color tintColor: !isChecked ? "#00000000" :
+                            (missingCount > presentCount ? "#20ff0000" :
+                                    (missingCount ? "#20ffff00" : "#2000ff00"))
             Behavior on tintColor { PropertyAnimation { duration: 500 } }
 
             border.width: 1
