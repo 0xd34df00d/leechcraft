@@ -131,9 +131,6 @@ option (ENABLE_POSHUKU_FUA "Build user agent customization plugin for Poshuku br
 option (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku browser" ON)
 option (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
 
-if (ENABLE_POSHUKU_POGOOGLUE)
-	message (WARNING "ENABLE_POSHUKU_POGOOGLUE option is removed, so is Poshuku Pogooglue plugin. Use the global Pogooglue plugin instead.")
-endif ()
 
 if (ENABLE_POSHUKU_AUTOSEARCH)
 	add_subdirectory (plugins/autosearch)
