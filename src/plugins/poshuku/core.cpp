@@ -357,7 +357,7 @@ namespace Poshuku
 			return 0;
 
 		BrowserWidget *widget = new BrowserWidget ();
-		widget->InitShortcuts ();
+		widget->FinalizeInit ();
 		Widgets_.push_back (widget);
 
 		Q_FOREACH (const auto& pair, props)
@@ -396,7 +396,7 @@ namespace Poshuku
 
 		BrowserWidget *widget = new BrowserWidget ();
 		widget->Deown ();
-		widget->InitShortcuts ();
+		widget->FinalizeInit ();
 		SetupConnections (widget);
 		return widget;
 	}

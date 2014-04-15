@@ -143,6 +143,17 @@ namespace Poshuku
 		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr proxy,
 				QString title, QString url);
 
+		/** @brief Called when a new browser widget is created and
+		 * initialized.
+		 *
+		 * @param proxy The standard hook proxy object.
+		 * @param view The QWebView of the browser widget.
+		 * @param browserWidget The browser widget itself.
+		 */
+		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
+				QObject *browserWidget);
+
 		/** @brief Called inside QWebPage::chooseFile().
 		 *
 		 * This hook is called when the web content requests a a file

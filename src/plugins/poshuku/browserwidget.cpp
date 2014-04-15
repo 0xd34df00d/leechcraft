@@ -563,7 +563,7 @@ namespace Poshuku
 		Own_ = false;
 	}
 
-	void BrowserWidget::InitShortcuts ()
+	void BrowserWidget::FinalizeInit ()
 	{
 		IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
 		QObject *object = Core::Instance ().parent ();
@@ -586,6 +586,12 @@ namespace Poshuku
 		ZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomIn_"));
 		ZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomOut_"));
 		ZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomReset_"));
+
+		if (Own_)
+		{
+			IHookProxy_ptr proxy { new Util::DefaultHookProxy };
+			emit hookBrowserWidgetInitialized (proxy, WebView_, this);
+		}
 	}
 
 	CustomWebView* BrowserWidget::GetView () const

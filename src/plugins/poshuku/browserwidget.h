@@ -126,7 +126,7 @@ namespace Poshuku
 		static void SetParentMultiTabs (QObject*);
 
 		void Deown ();
-		void InitShortcuts ();
+		void FinalizeInit ();
 
 		CustomWebView* GetView () const;
 		QLineEdit* GetURLEdit () const;
@@ -225,6 +225,9 @@ namespace Poshuku
 		void tabRecoverDataChanged ();
 
 		// Hook support
+		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
+				QObject *browserWidget);
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QObject *browserWidget);

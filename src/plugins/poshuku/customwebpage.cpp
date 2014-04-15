@@ -732,23 +732,23 @@ namespace Poshuku
 		case QWebPage::WebBrowserWindow:
 			return Core::Instance ().NewURL (QUrl ())->GetView ()->page ();
 		case QWebPage::WebModalDialog:
-			{
-				BrowserWidget *widget = new BrowserWidget (view ());
-				widget->InitShortcuts ();
-				widget->setWindowFlags (Qt::Dialog);
-				widget->setAttribute (Qt::WA_DeleteOnClose);
-				widget->setWindowModality (Qt::ApplicationModal);
-				connect (widget,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				connect (widget,
-						SIGNAL (titleChanged (const QString&)),
-						widget,
-						SLOT (setWindowTitle (const QString&)));
-				widget->show ();
-				return widget->GetView ()->page ();
-			}
+		{
+			BrowserWidget *widget = new BrowserWidget (view ());
+			widget->FinalizeInit ();
+			widget->setWindowFlags (Qt::Dialog);
+			widget->setAttribute (Qt::WA_DeleteOnClose);
+			widget->setWindowModality (Qt::ApplicationModal);
+			connect (widget,
+					SIGNAL (gotEntity (const LeechCraft::Entity&)),
+					&Core::Instance (),
+					SIGNAL (gotEntity (const LeechCraft::Entity&)));
+			connect (widget,
+					SIGNAL (titleChanged (const QString&)),
+					widget,
+					SLOT (setWindowTitle (const QString&)));
+			widget->show ();
+			return widget->GetView ()->page ();
+		}
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
