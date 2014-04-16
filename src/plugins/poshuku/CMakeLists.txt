@@ -130,7 +130,7 @@ option (ENABLE_POSHUKU_FILESCHEME "Build support of local file browsing for Posh
 option (ENABLE_POSHUKU_FUA "Build user agent customization plugin for Poshuku browser" ON)
 option (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku browser" ON)
 option (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
-
+option (ENABLE_POSHUKU_SPEEDDIAL "Build Speed Dial support module" ON)
 
 if (ENABLE_POSHUKU_AUTOSEARCH)
 	add_subdirectory (plugins/autosearch)
@@ -152,4 +152,7 @@ if (ENABLE_POSHUKU_FILESCHEME)
 endif ()
 if (ENABLE_POSHUKU_ONLINEBOOKMARKS)
 	add_subdirectory (plugins/onlinebookmarks)
+endif ()
+if (ENABLE_POSHUKU_SPEEDDIAL)
+	add_subdirectory (plugins/speeddial)
 endif ()
