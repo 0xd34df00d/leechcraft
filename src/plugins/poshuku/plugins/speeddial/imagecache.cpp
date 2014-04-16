@@ -88,6 +88,11 @@ namespace SpeedDial
 		Url2Page_.remove (url);
 
 		page->setViewportSize (RenderSize);
+
+		const auto frame = page->mainFrame ();
+		frame->setScrollBarPolicy (Qt::Vertical, Qt::ScrollBarAlwaysOff);
+		frame->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+
 		QImage image { page->viewportSize (), QImage::Format_ARGB32 };
 		QPainter painter { &image };
 
