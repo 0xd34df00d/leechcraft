@@ -201,8 +201,6 @@ namespace SpeedDial
 		w.writeEndElement ();
 
 		View_->setContent (html.toUtf8 (), "application/xhtml+xml");
-
-		deleteLater ();
 	}
 
 	void ViewHandler::handleSnapshot (const QUrl& url, const QImage& image)
