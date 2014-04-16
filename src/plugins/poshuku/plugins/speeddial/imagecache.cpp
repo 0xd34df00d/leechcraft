@@ -42,8 +42,8 @@ namespace Poshuku
 {
 namespace SpeedDial
 {
-	const QSize ThumbSize { 144, 90 };
-	const QSize RenderSize = ThumbSize * 10;
+	const QSize RenderSize { 1280, 800 };
+	const QSize ThumbSize = RenderSize / 5;
 
 	ImageCache::ImageCache ()
 	: CacheDir_ { Util::GetUserDir (Util::UserDir::Cache, "poshuku/speeddial/snapshots") }
