@@ -111,6 +111,10 @@ namespace SpeedDial
 	, PoshukuProxy_ { proxy }
 	, LoadWatcher_ { new QFutureWatcher<TopList_t> { this } }
 	{
+		connect (View_,
+				SIGNAL (loadStarted ()),
+				this,
+				SLOT (handleLoadStarted ()));
 		connect (LoadWatcher_,
 				SIGNAL (finished ()),
 				this,
@@ -127,10 +131,23 @@ namespace SpeedDial
 				SLOT (handleSnapshot (QUrl, QImage)));
 	}
 
+	void ViewHandler::handleLoadStarted ()
+	{
+		IsLoading_ = true;
+	}
+
 	void ViewHandler::handleLoaded ()
 	{
 		const auto& items = LoadWatcher_->result ();
+		LoadWatcher_->deleteLater ();
+
 		if (static_cast<size_t> (items.size ()) < Rows * Cols)
+		{
+			deleteLater ();
+			return;
+		}
+
+		if (IsLoading_)
 		{
 			deleteLater ();
 			return;

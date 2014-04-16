@@ -61,9 +61,13 @@ namespace SpeedDial
 		IProxyObject * const PoshukuProxy_;
 
 		QFutureWatcher<TopList_t> * const LoadWatcher_;
+
+		bool IsLoading_ = false;
 	public:
 		ViewHandler (QWebView*, ImageCache*, IProxyObject*);
 	private slots:
+		void handleLoadStarted ();
+
 		void handleLoaded ();
 		void handleSnapshot (const QUrl&, const QImage&);
 	};
