@@ -52,12 +52,12 @@ namespace SpeedDial
 
 	QImage ImageCache::GetSnapshot (const QUrl& url)
 	{
-		const auto& filename = QString::number (qHash (url));
+		const auto& filename = QString::number (qHash (url)) + ".png";
 		if (CacheDir_.exists (filename))
 		{
-			QImage result;
-			result.load (filename, "PNG");
-			return result;
+			QImage result { CacheDir_.filePath (filename) };
+			if (!result.isNull ())
+				return result;
 		}
 
 		if (Url2Page_.contains (url))
@@ -93,7 +93,7 @@ namespace SpeedDial
 
 		const auto& thumb = image.scaled (ThumbSize,
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		thumb.save (CacheDir_.filePath (QString::number (qHash (url))), "PNG", 0);
+		thumb.save (CacheDir_.filePath (QString::number (qHash (url))) + ".png");
 
 		emit gotSnapshot (url, thumb);
 	}
