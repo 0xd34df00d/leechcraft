@@ -104,9 +104,11 @@ namespace SpeedDial
 	const size_t Rows = 2;
 	const size_t Cols = 4;
 
-	ViewHandler::ViewHandler (QWebView *view, ImageCache *cache, IProxyObject *proxy)
+	ViewHandler::ViewHandler (QWebView *view,
+			QObject *browser, ImageCache *cache, IProxyObject *proxy)
 	: QObject { view }
 	, View_ { view }
+	, BrowserWidget_ { browser }
 	, ImageCache_ { cache }
 	, PoshukuProxy_ { proxy }
 	, LoadWatcher_ { new QFutureWatcher<TopList_t> { this } }
@@ -229,6 +231,8 @@ namespace SpeedDial
 		w.writeEndElement ();
 
 		View_->setContent (html.toUtf8 (), "application/xhtml+xml");
+
+		QMetaObject::invokeMethod (BrowserWidget_, "focusLineEdit", Qt::QueuedConnection);
 	}
 
 	void ViewHandler::handleSnapshot (const QUrl& url, const QImage& image)

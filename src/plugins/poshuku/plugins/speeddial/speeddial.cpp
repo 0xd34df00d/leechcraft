@@ -87,9 +87,9 @@ namespace SpeedDial
 
 	void Plugin::hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
 			QWebView *view,
-			QObject*)
+			QObject *browserWidget)
 	{
-		new ViewHandler { view, Cache_, PoshukuProxy_ };
+		new ViewHandler { view, browserWidget, Cache_, PoshukuProxy_ };
 	}
 }
 }

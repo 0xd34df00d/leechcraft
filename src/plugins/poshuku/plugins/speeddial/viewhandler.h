@@ -57,6 +57,7 @@ namespace SpeedDial
 		Q_OBJECT
 
 		QWebView * const View_;
+		QObject * const BrowserWidget_;
 		ImageCache * const ImageCache_;
 		IProxyObject * const PoshukuProxy_;
 
@@ -64,7 +65,7 @@ namespace SpeedDial
 
 		bool IsLoading_ = false;
 	public:
-		ViewHandler (QWebView*, ImageCache*, IProxyObject*);
+		ViewHandler (QWebView*, QObject*, ImageCache*, IProxyObject*);
 	private slots:
 		void handleLoadStarted ();
 
