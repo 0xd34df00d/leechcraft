@@ -65,6 +65,10 @@ namespace SpeedDial
 			return {};
 
 		const auto page = new QWebPage;
+		const auto frame = page->mainFrame ();
+		frame->setScrollBarPolicy (Qt::Vertical, Qt::ScrollBarAlwaysOff);
+		frame->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+		page->setViewportSize (RenderSize);
 		page->setNetworkAccessManager (Proxy_->GetNetworkAccessManager ());
 		connect (page,
 				SIGNAL (loadFinished (bool)),
@@ -88,12 +92,6 @@ namespace SpeedDial
 
 		const auto& url = Page2Url_.take (page);
 		Url2Page_.remove (url);
-
-		page->setViewportSize (RenderSize);
-
-		const auto frame = page->mainFrame ();
-		frame->setScrollBarPolicy (Qt::Vertical, Qt::ScrollBarAlwaysOff);
-		frame->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 
 		QImage image { page->viewportSize (), QImage::Format_ARGB32 };
 		QPainter painter { &image };
