@@ -65,6 +65,7 @@ namespace SpeedDial
 			return {};
 
 		const auto page = new QWebPage;
+		page->setNetworkAccessManager (Proxy_->GetNetworkAccessManager ());
 		connect (page,
 				SIGNAL (loadFinished (bool)),
 				this,
