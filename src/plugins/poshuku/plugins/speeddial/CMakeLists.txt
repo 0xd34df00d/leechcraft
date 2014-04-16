@@ -3,6 +3,7 @@ include_directories (${POSHUKU_INCLUDE_DIR}
 set (SPEEDDIAL_SRCS
 	speeddial.cpp
 	viewhandler.cpp
+	imagecache.cpp
 	)
 set (SPEEDDIAL_RESOURCES
 	)
