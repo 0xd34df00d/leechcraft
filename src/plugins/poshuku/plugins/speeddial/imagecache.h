@@ -32,6 +32,7 @@
 #include <QDir>
 #include <QMap>
 #include <QUrl>
+#include <interfaces/core/icoreproxy.h>
 
 class QSize;
 class QWebPage;
@@ -48,10 +49,12 @@ namespace SpeedDial
 		Q_OBJECT
 
 		const QDir CacheDir_;
+		const ICoreProxy_ptr Proxy_;
+
 		QMap<QWebPage*, QUrl> Page2Url_;
 		QMap<QUrl, QWebPage*> Url2Page_;
 	public:
-		ImageCache ();
+		ImageCache (const ICoreProxy_ptr&);
 
 		QImage GetSnapshot (const QUrl&);
 		QSize GetThumbSize () const;

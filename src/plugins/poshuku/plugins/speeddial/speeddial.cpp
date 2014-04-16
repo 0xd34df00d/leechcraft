@@ -39,9 +39,9 @@ namespace Poshuku
 {
 namespace SpeedDial
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Cache_ = new ImageCache;
+		Cache_ = new ImageCache { proxy };
 	}
 
 	void Plugin::SecondInit ()
