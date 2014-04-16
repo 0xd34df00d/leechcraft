@@ -37,6 +37,8 @@ template<typename T>
 class QFutureWatcher;
 
 class QWebView;
+class QUrl;
+class QImage;
 
 namespace LeechCraft
 {
@@ -63,6 +65,7 @@ namespace SpeedDial
 		ViewHandler (QWebView*, ImageCache*, IProxyObject*);
 	private slots:
 		void handleLoaded ();
+		void handleSnapshot (const QUrl&, const QImage&);
 	};
 }
 }

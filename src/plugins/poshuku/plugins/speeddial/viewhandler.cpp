@@ -32,9 +32,13 @@
 #include <QHash>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
+#include <QWebFrame>
+#include <QWebElement>
+#include <QXmlStreamWriter>
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include <util/util.h>
+#include "imagecache.h"
 
 namespace LeechCraft
 {
@@ -116,6 +120,11 @@ namespace SpeedDial
 						const auto& sb = PoshukuProxy_->CreateStorageBackend ();
 						return GetTopUrls (sb, Rows * Cols);
 					}));
+
+		connect (ImageCache_,
+				SIGNAL (gotSnapshot (QUrl, QImage)),
+				this,
+				SLOT (handleSnapshot (QUrl, QImage)));
 	}
 
 	void ViewHandler::handleLoaded ()
@@ -127,31 +136,81 @@ namespace SpeedDial
 			return;
 		}
 
+		const auto& thumbSize = ImageCache_->GetThumbSize ();
+
 		QString html;
 		html += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
-		html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>" + tr ("Speed dial") + "</title></head><body>";
 
-		html += "<table>";
-		for (size_t r = 0; r < Rows; ++r)
-		{
-			html += "<tr>";
-			for (size_t c = 0; c < Cols; ++c)
-			{
-				const auto& item = items.at (r * Cols + c);
+		QXmlStreamWriter w (&html);
+		w.writeStartElement ("html");
+		w.writeAttribute ("xmlns", "http://www.w3.org/1999/xhtml");
+			w.writeStartElement ("head");
+				w.writeTextElement ("title", tr ("Speed dial"));
+				w.writeTextElement ("style", R"delim(
+						.centered {
+							margin-left: auto;
+							margin-right: auto;
+						}
 
-				html += "<td>";
-				html += "<img src='" + Util::GetAsBase64Src ({}) + "' />";
-				html += "<br />";
-				html += item.second;
-				html += "</td>";
-			}
-			html += "</tr>";
-		}
-		html += "</table>";
+						.thumbimage {
+							display: block;
+							border: 1px solid black;
+						}
 
-		html += "</body></html>";
+						.thumbtext {
+							white-space: nowrap;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							margin: 20px;
+							text-align: center;
+						}
+					)delim");
+			w.writeEndElement ();
+			w.writeStartElement ("body");
+				w.writeStartElement ("table");
+				w.writeAttribute ("class", "centered");
+
+				for (size_t r = 0; r < Rows; ++r)
+				{
+					w.writeStartElement ("tr");
+					for (size_t c = 0; c < Cols; ++c)
+					{
+						const auto& item = items.at (r * Cols + c);
+						const auto& image = ImageCache_->GetSnapshot (item.first);
+
+						w.writeStartElement ("td");
+						w.writeAttribute ("style", "max-width: " + QString::number (thumbSize.width () + 20) + "px");
+						w.writeStartElement ("img");
+						w.writeAttribute ("src", Util::GetAsBase64Src (image));
+						w.writeAttribute ("id", item.first);
+						w.writeAttribute ("width", QString::number (thumbSize.width ()));
+						w.writeAttribute ("height", QString::number (thumbSize.height ()));
+						w.writeAttribute ("class", "thumbimage centered");
+						w.writeEndElement ();
+						w.writeStartElement ("p");
+						w.writeAttribute ("class", "thumbtext");
+						w.writeCharacters (item.second);
+						w.writeEndElement ();
+						w.writeEndElement ();
+					}
+					w.writeEndElement ();
+				}
+
+				w.writeEndElement ();
+			w.writeEndElement ();
+		w.writeEndElement ();
 
 		View_->setContent (html.toUtf8 (), "application/xhtml+xml");
+
+		deleteLater ();
+	}
+
+	void ViewHandler::handleSnapshot (const QUrl& url, const QImage& image)
+	{
+		const auto& elemId = QString::number (qHash (url));
+		auto elem = View_->page ()->mainFrame ()->findFirstElement ("img[id='" + elemId + "']");
+
+		elem.setAttribute ("src", Util::GetAsBase64Src (image));
 	}
 }
 }
