@@ -75,6 +75,11 @@ namespace SpeedDial
 		return {};
 	}
 
+	QSize ImageCache::GetThumbSize () const
+	{
+		return ThumbSize;
+	}
+
 	void ImageCache::handleLoadFinished ()
 	{
 		const auto page = qobject_cast<QWebPage*> (sender ());

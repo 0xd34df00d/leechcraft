@@ -33,6 +33,7 @@
 #include <QMap>
 #include <QUrl>
 
+class QSize;
 class QWebPage;
 class QImage;
 
@@ -53,6 +54,7 @@ namespace SpeedDial
 		ImageCache ();
 
 		QImage GetSnapshot (const QUrl&);
+		QSize GetThumbSize () const;
 	private slots:
 		void handleLoadFinished ();
 	signals:
