@@ -34,6 +34,7 @@
 #include <QFutureWatcher>
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -96,6 +97,9 @@ namespace SpeedDial
 		}
 	}
 
+	const size_t Rows = 2;
+	const size_t Cols = 4;
+
 	ViewHandler::ViewHandler (QWebView *view, IProxyObject *proxy)
 	: QObject { view }
 	, View_ { view }
@@ -109,15 +113,44 @@ namespace SpeedDial
 		LoadWatcher_->setFuture (QtConcurrent::run ([this] () -> TopList_t
 					{
 						const auto& sb = PoshukuProxy_->CreateStorageBackend ();
-
-						const auto& items = GetTopUrls (sb, 8);
-						return items;
+						return GetTopUrls (sb, Rows * Cols);
 					}));
 	}
 
 	void ViewHandler::handleLoaded ()
 	{
 		const auto& items = LoadWatcher_->result ();
+		if (static_cast<size_t> (items.size ()) < Rows * Cols)
+		{
+			deleteLater ();
+			return;
+		}
+
+		QString html;
+		html += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
+		html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>" + tr ("Speed dial") + "</title></head><body>";
+
+		html += "<table>";
+		for (size_t r = 0; r < Rows; ++r)
+		{
+			html += "<tr>";
+			for (size_t c = 0; c < Cols; ++c)
+			{
+				const auto& item = items.at (r * Cols + c);
+
+				html += "<td>";
+				html += "<img src='" + Util::GetAsBase64Src ({}) + "' />";
+				html += "<br />";
+				html += item.second;
+				html += "</td>";
+			}
+			html += "</tr>";
+		}
+		html += "</table>";
+
+		html += "</body></html>";
+
+		View_->setContent (html.toUtf8 (), "application/xhtml+xml");
 	}
 }
 }
