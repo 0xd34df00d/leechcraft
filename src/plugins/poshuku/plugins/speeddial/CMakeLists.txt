@@ -2,6 +2,7 @@ include_directories (${POSHUKU_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR})
 set (SPEEDDIAL_SRCS
 	speeddial.cpp
+	viewhandler.cpp
 	)
 set (SPEEDDIAL_RESOURCES
 	)

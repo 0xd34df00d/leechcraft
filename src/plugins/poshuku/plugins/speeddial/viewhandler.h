@@ -27,69 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "speeddial.h"
-#include <vector>
-#include <interfaces/poshuku/iproxyobject.h>
-#include "viewhandler.h"
+#pragma once
+
+#include <QObject>
+#include <QPair>
+#include <QList>
+
+template<typename T>
+class QFutureWatcher;
+
+class QWebView;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
+class IProxyObject;
+
 namespace SpeedDial
 {
-	void Plugin::Init (ICoreProxy_ptr)
-	{
-	}
+	typedef QList<QPair<QString, QString>> TopList_t;
 
-	void Plugin::SecondInit ()
+	class ViewHandler : public QObject
 	{
-	}
+		Q_OBJECT
 
-	void Plugin::Release ()
-	{
-	}
+		QWebView * const View_;
+		IProxyObject * const PoshukuProxy_;
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Poshuku.SpeedDial";
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Poshuku SpeedDial";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Adds a special speed dial page.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Poshuku.Plugins/1.0";
-		return result;
-	}
-
-	void Plugin::initPlugin (QObject *object)
-	{
-		PoshukuProxy_ = qobject_cast<IProxyObject*> (object);
-	}
-
-	void Plugin::hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
-			QWebView *view,
-			QObject*)
-	{
-		new ViewHandler { view, PoshukuProxy_ };
-	}
+		QFutureWatcher<TopList_t> * const LoadWatcher_;
+	public:
+		ViewHandler (QWebView*, IProxyObject*);
+	private slots:
+		void handleLoaded ();
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_poshuku_speeddial, LeechCraft::Poshuku::SpeedDial::Plugin);
