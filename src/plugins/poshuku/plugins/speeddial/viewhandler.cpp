@@ -193,7 +193,12 @@ namespace SpeedDial
 					for (size_t c = 0; c < Cols; ++c)
 					{
 						const auto& item = items.at (r * Cols + c);
-						const auto& image = ImageCache_->GetSnapshot (item.first);
+						auto image = ImageCache_->GetSnapshot (item.first);
+						if (image.isNull ())
+						{
+							image = QImage { thumbSize, QImage::Format_ARGB32 };
+							image.fill (Qt::transparent);
+						}
 
 						w.writeStartElement ("td");
 							w.writeAttribute ("style",
