@@ -100,9 +100,10 @@ namespace SpeedDial
 	const size_t Rows = 2;
 	const size_t Cols = 4;
 
-	ViewHandler::ViewHandler (QWebView *view, IProxyObject *proxy)
+	ViewHandler::ViewHandler (QWebView *view, ImageCache *cache, IProxyObject *proxy)
 	: QObject { view }
 	, View_ { view }
+	, ImageCache_ { cache }
 	, PoshukuProxy_ { proxy }
 	, LoadWatcher_ { new QFutureWatcher<TopList_t> { this } }
 	{

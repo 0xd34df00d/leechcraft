@@ -45,6 +45,8 @@ class IProxyObject;
 
 namespace SpeedDial
 {
+	class ImageCache;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -53,6 +55,7 @@ namespace SpeedDial
 		Q_INTERFACES (IInfo IPlugin2)
 
 		IProxyObject *PoshukuProxy_;
+		ImageCache *Cache_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

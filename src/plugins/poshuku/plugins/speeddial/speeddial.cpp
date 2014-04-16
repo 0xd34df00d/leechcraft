@@ -31,6 +31,7 @@
 #include <vector>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "viewhandler.h"
+#include "imagecache.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,7 @@ namespace SpeedDial
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Cache_ = new ImageCache;
 	}
 
 	void Plugin::SecondInit ()
@@ -48,6 +50,7 @@ namespace SpeedDial
 
 	void Plugin::Release ()
 	{
+		delete Cache_;
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -86,7 +89,7 @@ namespace SpeedDial
 			QWebView *view,
 			QObject*)
 	{
-		new ViewHandler { view, PoshukuProxy_ };
+		new ViewHandler { view, Cache_, PoshukuProxy_ };
 	}
 }
 }

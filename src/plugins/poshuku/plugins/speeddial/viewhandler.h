@@ -46,6 +46,8 @@ class IProxyObject;
 
 namespace SpeedDial
 {
+	class ImageCache;
+
 	typedef QList<QPair<QString, QString>> TopList_t;
 
 	class ViewHandler : public QObject
@@ -53,11 +55,12 @@ namespace SpeedDial
 		Q_OBJECT
 
 		QWebView * const View_;
+		ImageCache * const ImageCache_;
 		IProxyObject * const PoshukuProxy_;
 
 		QFutureWatcher<TopList_t> * const LoadWatcher_;
 	public:
-		ViewHandler (QWebView*, IProxyObject*);
+		ViewHandler (QWebView*, ImageCache*, IProxyObject*);
 	private slots:
 		void handleLoaded ();
 	};
