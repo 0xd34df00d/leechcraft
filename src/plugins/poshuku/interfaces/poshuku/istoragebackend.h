@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include "interfaces/poshuku/poshukutypes.h"
 
 namespace LeechCraft
