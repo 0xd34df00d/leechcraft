@@ -179,10 +179,11 @@ namespace SpeedDial
 						const auto& image = ImageCache_->GetSnapshot (item.first);
 
 						w.writeStartElement ("td");
-						w.writeAttribute ("style", "max-width: " + QString::number (thumbSize.width () + 20) + "px");
+						w.writeAttribute ("style",
+								"max-width: " + QString::number (thumbSize.width () + 20) + "px");
 						w.writeStartElement ("img");
 						w.writeAttribute ("src", Util::GetAsBase64Src (image));
-						w.writeAttribute ("id", item.first);
+						w.writeAttribute ("id", QString::number (qHash (QUrl { item.first })));
 						w.writeAttribute ("width", QString::number (thumbSize.width ()));
 						w.writeAttribute ("height", QString::number (thumbSize.height ()));
 						w.writeAttribute ("class", "thumbimage centered");
