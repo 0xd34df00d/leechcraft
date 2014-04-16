@@ -34,6 +34,8 @@
 #include <QFileInfo>
 #include <util/utilconfig.h>
 
+class QDir;
+
 namespace LeechCraft
 {
 namespace Util
@@ -143,5 +145,16 @@ namespace Util
 	 */
 	UTIL_API QString FindInSystemPath (const QString& name, const QStringList& paths,
 			const std::function<bool (QFileInfo)>& filter = std::function<bool (QFileInfo)> ());
+
+	/** @brief Describes various user-specific paths.
+	 */
+	enum class UserDir
+	{
+		/** @brief Cache for volatile data.
+		 */
+		Cache
+	};
+
+	UTIL_API QDir GetUserDir (UserDir dir, const QString& subpath);
 }
 }

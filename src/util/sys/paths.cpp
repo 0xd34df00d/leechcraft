@@ -28,11 +28,15 @@
  **********************************************************************/
 
 #include "paths.h"
+#include <stdexcept>
 #include <QFile>
 #if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
 #include <QApplication>
 #endif
 #include <QtDebug>
+#include <QDir>
+#include <QDesktopServices>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -103,6 +107,31 @@ namespace Util
 		}
 
 		return {};
+	}
+
+	QDir GetUserDir (UserDir dir, const QString& subpath)
+	{
+		QString path;
+		switch (dir)
+		{
+		case UserDir::Cache:
+			path = QDesktopServices::storageLocation (QDesktopServices::CacheLocation);
+			break;
+		}
+
+		if (path.isEmpty ())
+			throw std::runtime_error ("cannot get root path");
+
+		if (!path.endsWith ('/'))
+			path += '/';
+		path += "leechcraft/";
+		path += subpath;
+
+		if (!QDir {}.exists (path) &&
+				!QDir {}.mkpath (path))
+			throw std::runtime_error ("cannot create path " + path.toStdString ());
+
+		return { path };
 	}
 }
 }
