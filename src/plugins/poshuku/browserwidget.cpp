@@ -1374,9 +1374,11 @@ namespace Poshuku
 			{
 			}
 
-			void WriteColored (const QString& color, const QString& text, bool pad)
+			void WriteColored (const QString& color, const QString& text, int pad)
 			{
-				const auto& padStr = (pad ? "; margin-left: 1em;" : QString ());
+				const auto& padStr = pad ?
+						("; margin-left: " + QString::number (pad) + "em;") :
+						QString ();
 
 				W_.writeStartElement ("span");
 				W_.writeAttribute ("style", "color:" + color + padStr);
@@ -1400,10 +1402,10 @@ namespace Poshuku
 				{
 					const auto& attrNode = attrs.item (i).toAttr ();
 
-					WriteColored ("#994500", " " + attrNode.name (), false);
-					WriteColored ("#881280", "=\"", false);
-					WriteColored ("#1A1AA6", attrNode.value (), false);
-					WriteColored ("#881280", "\"", false);
+					WriteColored ("#994500", " " + attrNode.name (), 0);
+					WriteColored ("#881280", "=\"", 0);
+					WriteColored ("#1A1AA6", attrNode.value (), 0);
+					WriteColored ("#881280", "\"", 0);
 				}
 
 				bool hasChildren = false;
@@ -1433,17 +1435,17 @@ namespace Poshuku
 					{
 					case QDomDocument::TextNode:
 						childrenize ();
-						WriteColored ("#000000", child.toText ().data (), true);
+						WriteColored ("#000000", child.toText ().data (), 1);
 						W_.writeEmptyElement ("br");
 						break;
 					case QDomDocument::CDATASectionNode:
 						childrenize ();
-						WriteColored ("#000000", "<![CDATA[ " + child.toCDATASection ().data () + " ]]>", true);
+						WriteColored ("#000000", "<![CDATA[ " + child.toCDATASection ().data () + " ]]>", 1);
 						W_.writeEmptyElement ("br");
 						break;
 					case QDomDocument::CommentNode:
 						childrenize ();
-						WriteColored ("#00BB00", "<!--" + child.toComment ().data () + "-->", true);
+						WriteColored ("#00BB00", "<!--" + child.toComment ().data () + "-->", 1);
 						W_.writeEmptyElement ("br");
 						break;
 					case QDomNode::ElementNode:
@@ -1457,7 +1459,7 @@ namespace Poshuku
 						W_.writeStartElement ("div");
 						W_.writeAttribute ("style", "color: #007700; margin-left: 1em;");
 						W_.writeCharacters ("<?" + instr.target () + " ");
-						WriteColored ("#994500", instr.data (), false);
+						WriteColored ("#994500", instr.data (), 0);
 						W_.writeCharacters ("?>");
 						W_.writeEndElement ();
 						break;
