@@ -46,6 +46,12 @@ namespace Poshuku
 {
 namespace SpeedDial
 {
+	struct LoadResult
+	{
+		TopList_t TopPages_;
+		TopList_t TopHosts_;
+	};
+
 	namespace
 	{
 		double GetScore (const QDateTime& then, const QDateTime& now)
@@ -53,22 +59,20 @@ namespace SpeedDial
 			return std::log (std::max (then.daysTo (now) + 1, 1));
 		}
 
-		void Compactify (std::vector<std::pair<QString, int>>& vec, size_t count)
+		template<typename T>
+		std::vector<std::pair<typename T::key_type, typename T::mapped_type>> GetSortedVec (const T& t)
 		{
-			while (vec.size () > count)
-			{
-				const auto& last = vec.back ();
-				vec.pop_back ();
+			decltype (GetSortedVec (T {})) vec;
+			for (auto i = t.begin (), end = t.end (); i != end; ++i)
+				vec.emplace_back (i.key (), i.value ());
 
-				const auto pos = std::find_if (vec.begin (), vec.end (),
-						[last] (decltype (*vec.cbegin ()) item)
-							{ return last.first.startsWith (item.first); });
-				if (pos != vec.end ())
-					pos->second += last.second;
-			}
+			std::sort (vec.begin (), vec.end (),
+					[] (decltype (*vec.cbegin ()) left, decltype (*vec.cbegin ()) right)
+						{ return left.second > right.second; });
+			return vec;
 		}
 
-		TopList_t GetTopUrls (const IStorageBackend_ptr& sb, size_t count)
+		LoadResult GetTopUrls (const IStorageBackend_ptr& sb, size_t count)
 		{
 			history_items_t items;
 			sb->LoadHistory (items);
@@ -76,18 +80,21 @@ namespace SpeedDial
 			const auto& now = QDateTime::currentDateTime ();
 
 			QHash<QString, double> url2score;
+			QHash<QStringRef, double> host2score;
 			for (const auto& item : items)
-				url2score [item.URL_] += GetScore (item.DateTime_, now);
+			{
+				const auto score = GetScore (item.DateTime_, now);
+				url2score [item.URL_] += score;
 
-			std::vector<std::pair<QString, int>> vec;
-			for (auto i = url2score.begin (), end = url2score.end (); i != end; ++i)
-				vec.emplace_back (i.key (), i.value ());
+				const auto startPos = item.URL_.indexOf ("//") + 2;
+				const auto endPos = item.URL_.indexOf ('/', startPos);
+				if (startPos >= 0 && endPos > startPos)
+					host2score [item.URL_.leftRef (endPos)] += score;
+			}
+			const auto& vec = GetSortedVec (url2score);
+			const auto& otherVec = GetSortedVec (host2score);
 
-			std::sort (vec.begin (), vec.end (),
-					[] (decltype (*vec.cbegin ()) left, decltype (*vec.cbegin ()) right)
-						{ return left.second > right.second; });
-
-			TopList_t result;
+			TopList_t topPages;
 			for (size_t i = 0; i < std::min (vec.size (), count); ++i)
 			{
 				const auto& url = vec [i].first;
@@ -95,9 +102,17 @@ namespace SpeedDial
 				const auto& item = std::find_if (items.begin (), items.end (),
 						[&url] (const HistoryItem& item) { return item.URL_ == url; });
 
-				result.append ({ url, item->Title_ });
+				topPages.append ({ url, item->Title_ });
 			}
-			return result;
+
+			TopList_t topSites;
+			for (size_t i = 0; i < std::min (otherVec.size (), count); ++i)
+			{
+				const auto& url = otherVec [i].first.toString ();
+				topSites.append ({ url, url });
+			}
+
+			return { topPages, topSites };
 		}
 	}
 
@@ -111,7 +126,7 @@ namespace SpeedDial
 	, BrowserWidget_ { browser }
 	, ImageCache_ { cache }
 	, PoshukuProxy_ { proxy }
-	, LoadWatcher_ { new QFutureWatcher<TopList_t> { this } }
+	, LoadWatcher_ { new QFutureWatcher<LoadResult> { this } }
 	{
 		connect (View_,
 				SIGNAL (loadStarted ()),
@@ -121,7 +136,7 @@ namespace SpeedDial
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleLoaded ()));
-		LoadWatcher_->setFuture (QtConcurrent::run ([this] () -> TopList_t
+		LoadWatcher_->setFuture (QtConcurrent::run ([this] () -> LoadResult
 					{
 						const auto& sb = PoshukuProxy_->CreateStorageBackend ();
 						return GetTopUrls (sb, Rows * Cols);
@@ -140,10 +155,10 @@ namespace SpeedDial
 
 	void ViewHandler::handleLoaded ()
 	{
-		const auto& items = LoadWatcher_->result ();
+		const auto& result = LoadWatcher_->result ();
 		LoadWatcher_->deleteLater ();
 
-		if (static_cast<size_t> (items.size ()) < Rows * Cols)
+		if (static_cast<size_t> (result.TopPages_.size ()) < Rows * Cols)
 		{
 			deleteLater ();
 			return;
@@ -184,7 +199,7 @@ namespace SpeedDial
 					)delim");
 			w.writeEndElement ();
 			w.writeStartElement ("body");
-				WriteTable (w, items, Rows, Cols);
+				WriteTable (w, result.TopPages_, Rows, Cols);
 			w.writeEndElement ();
 		w.writeEndElement ();
 
