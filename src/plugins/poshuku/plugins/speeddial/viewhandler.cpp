@@ -203,6 +203,9 @@ namespace SpeedDial
 			w.writeEndElement ();
 			w.writeStartElement ("body");
 				WriteTable (w, result.TopPages_, Rows, Cols, tr ("Top pages"));
+
+				if (static_cast<size_t> (result.TopHosts_.size ()) >= Rows * Cols)
+					WriteTable (w, result.TopHosts_, Rows, Cols, tr ("Top sites"));
 			w.writeEndElement ();
 		w.writeEndElement ();
 
