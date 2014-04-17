@@ -35,6 +35,7 @@
 #include <QWebFrame>
 #include <QPainter>
 #include <util/sys/paths.h>
+#include <util/delayedexecutor.h>
 
 namespace LeechCraft
 {
@@ -70,12 +71,13 @@ namespace SpeedDial
 		frame->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 		page->setViewportSize (RenderSize);
 		page->setNetworkAccessManager (Proxy_->GetNetworkAccessManager ());
+		Page2Url_ [page] = url;
+		Url2Page_ [url] = page;
 		connect (page,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (handleLoadFinished ()));
-		Page2Url_ [page] = url;
-		Url2Page_ [url] = page;
+
 		page->mainFrame ()->load (url);
 
 		return {};
@@ -86,11 +88,11 @@ namespace SpeedDial
 		return ThumbSize;
 	}
 
-	void ImageCache::handleLoadFinished ()
+	void ImageCache::Render (QWebPage *page)
 	{
-		const auto page = qobject_cast<QWebPage*> (sender ());
-
 		const auto& url = Page2Url_.take (page);
+		if (url.isEmpty ())
+			return;
 		Url2Page_.remove (url);
 
 		QImage image { page->viewportSize (), QImage::Format_ARGB32 };
@@ -106,6 +108,17 @@ namespace SpeedDial
 		thumb.save (CacheDir_.filePath (QString::number (qHash (url))) + ".png");
 
 		emit gotSnapshot (url, thumb);
+	}
+
+	void ImageCache::handleLoadFinished ()
+	{
+		const auto page = qobject_cast<QWebPage*> (sender ());
+
+		new Util::DelayedExecutor
+		{
+			[this, page] { Render (page); },
+			1000
+		};
 	}
 }
 }
