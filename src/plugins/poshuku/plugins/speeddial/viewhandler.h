@@ -36,6 +36,7 @@
 template<typename T>
 class QFutureWatcher;
 
+class QXmlStreamWriter;
 class QWebView;
 class QUrl;
 class QImage;
@@ -66,6 +67,8 @@ namespace SpeedDial
 		bool IsLoading_ = false;
 	public:
 		ViewHandler (QWebView*, QObject*, ImageCache*, IProxyObject*);
+	private:
+		void WriteTable (QXmlStreamWriter&, const TopList_t&, size_t, size_t);
 	private slots:
 		void handleLoadStarted ();
 

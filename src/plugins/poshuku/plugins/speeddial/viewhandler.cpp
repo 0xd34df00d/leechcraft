@@ -155,8 +155,6 @@ namespace SpeedDial
 			return;
 		}
 
-		const auto& thumbSize = ImageCache_->GetThumbSize ();
-
 		QString html;
 		html += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
 
@@ -186,53 +184,60 @@ namespace SpeedDial
 					)delim");
 			w.writeEndElement ();
 			w.writeStartElement ("body");
-				w.writeStartElement ("table");
-				w.writeAttribute ("class", "centered");
-
-				for (size_t r = 0; r < Rows; ++r)
-				{
-					w.writeStartElement ("tr");
-					for (size_t c = 0; c < Cols; ++c)
-					{
-						const auto& item = items.at (r * Cols + c);
-						auto image = ImageCache_->GetSnapshot (item.first);
-						if (image.isNull ())
-						{
-							image = QImage { thumbSize, QImage::Format_ARGB32 };
-							image.fill (Qt::transparent);
-						}
-
-						w.writeStartElement ("td");
-							w.writeAttribute ("style",
-									"max-width: " + QString::number (thumbSize.width () + 20) + "px");
-							w.writeStartElement ("a");
-								w.writeAttribute ("href", item.first);
-
-								w.writeStartElement ("img");
-									w.writeAttribute ("src", Util::GetAsBase64Src (image));
-									w.writeAttribute ("id", QString::number (qHash (QUrl { item.first })));
-									w.writeAttribute ("width", QString::number (thumbSize.width ()));
-									w.writeAttribute ("height", QString::number (thumbSize.height ()));
-									w.writeAttribute ("class", "thumbimage centered");
-								w.writeEndElement ();
-
-								w.writeStartElement ("p");
-									w.writeAttribute ("class", "thumbtext");
-									w.writeCharacters (item.second);
-								w.writeEndElement ();
-							w.writeEndElement ();
-						w.writeEndElement ();
-					}
-					w.writeEndElement ();
-				}
-
-				w.writeEndElement ();
+				WriteTable (w, items, Rows, Cols);
 			w.writeEndElement ();
 		w.writeEndElement ();
 
 		View_->setContent (html.toUtf8 (), "application/xhtml+xml");
 
 		QMetaObject::invokeMethod (BrowserWidget_, "focusLineEdit", Qt::QueuedConnection);
+	}
+
+	void ViewHandler::WriteTable (QXmlStreamWriter& w, const TopList_t& items, size_t rows, size_t cols)
+	{
+		const auto& thumbSize = ImageCache_->GetThumbSize ();
+
+		w.writeStartElement ("table");
+		w.writeAttribute ("class", "centered");
+
+		for (size_t r = 0; r < rows; ++r)
+		{
+			w.writeStartElement ("tr");
+			for (size_t c = 0; c < cols; ++c)
+			{
+				const auto& item = items.at (r * cols + c);
+				auto image = ImageCache_->GetSnapshot (item.first);
+				if (image.isNull ())
+				{
+					image = QImage { thumbSize, QImage::Format_ARGB32 };
+					image.fill (Qt::transparent);
+				}
+
+				w.writeStartElement ("td");
+					w.writeAttribute ("style",
+							"max-width: " + QString::number (thumbSize.width () + 20) + "px");
+					w.writeStartElement ("a");
+						w.writeAttribute ("href", item.first);
+
+						w.writeStartElement ("img");
+							w.writeAttribute ("src", Util::GetAsBase64Src (image));
+							w.writeAttribute ("id", QString::number (qHash (QUrl { item.first })));
+							w.writeAttribute ("width", QString::number (thumbSize.width ()));
+							w.writeAttribute ("height", QString::number (thumbSize.height ()));
+							w.writeAttribute ("class", "thumbimage centered");
+						w.writeEndElement ();
+
+						w.writeStartElement ("p");
+							w.writeAttribute ("class", "thumbtext");
+							w.writeCharacters (item.second);
+						w.writeEndElement ();
+					w.writeEndElement ();
+				w.writeEndElement ();
+			}
+			w.writeEndElement ();
+		}
+
+		w.writeEndElement ();
 	}
 
 	void ViewHandler::handleSnapshot (const QUrl& url, const QImage& image)
