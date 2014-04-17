@@ -258,9 +258,10 @@ namespace SpeedDial
 	void ViewHandler::handleSnapshot (const QUrl& url, const QImage& image)
 	{
 		const auto& elemId = QString::number (qHash (url));
-		auto elem = View_->page ()->mainFrame ()->findFirstElement ("img[id='" + elemId + "']");
+		const auto& elems = View_->page ()->mainFrame ()->findAllElements ("img[id='" + elemId + "']");
 
-		elem.setAttribute ("src", Util::GetAsBase64Src (image));
+		for (auto elem : elems.toList ())
+			elem.setAttribute ("src", Util::GetAsBase64Src (image));
 	}
 }
 }
