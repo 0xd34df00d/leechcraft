@@ -106,7 +106,7 @@ namespace Laughty
 		}
 
 		Entity e;
-		if (hints.value ("transient", false).toBool () || !expire_timeout)
+		if (hints.value ("transient", false).toBool () || expire_timeout)
 			e = Util::MakeNotification (app_name, summary, prio);
 		else
 		{
