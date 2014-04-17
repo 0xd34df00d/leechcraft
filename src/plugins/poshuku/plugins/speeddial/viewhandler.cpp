@@ -89,10 +89,20 @@ namespace SpeedDial
 				const auto startPos = item.URL_.indexOf ("//") + 2;
 				const auto endPos = item.URL_.indexOf ('/', startPos);
 				if (startPos >= 0 && endPos > startPos)
-					host2score [item.URL_.leftRef (endPos)] += score;
+					host2score [item.URL_.leftRef (endPos + 1)] += score;
 			}
+			const auto& hostsVec = GetSortedVec (host2score);
+
+			TopList_t topSites;
+			for (size_t i = 0; i < std::min (hostsVec.size (), count); ++i)
+			{
+				const auto& url = hostsVec [i].first.toString ();
+				topSites.append ({ url, url });
+
+				url2score.remove (url);
+			}
+
 			const auto& vec = GetSortedVec (url2score);
-			const auto& otherVec = GetSortedVec (host2score);
 
 			TopList_t topPages;
 			for (size_t i = 0; i < std::min (vec.size (), count); ++i)
@@ -103,13 +113,6 @@ namespace SpeedDial
 						[&url] (const HistoryItem& item) { return item.URL_ == url; });
 
 				topPages.append ({ url, item->Title_ });
-			}
-
-			TopList_t topSites;
-			for (size_t i = 0; i < std::min (otherVec.size (), count); ++i)
-			{
-				const auto& url = otherVec [i].first.toString ();
-				topSites.append ({ url, url });
 			}
 
 			return { topPages, topSites };
