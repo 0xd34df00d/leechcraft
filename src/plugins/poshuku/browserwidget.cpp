@@ -1453,6 +1453,8 @@ namespace Poshuku
 					case QDomNode::AttributeNode:
 					case QDomNode::CharacterDataNode:
 					case QDomNode::BaseNode:
+					case QDomNode::DocumentFragmentNode:
+					case QDomNode::DocumentNode:
 						break;
 					}
 					child = child.nextSibling ();
