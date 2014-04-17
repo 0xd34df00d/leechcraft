@@ -1455,6 +1455,8 @@ namespace Poshuku
 					case QDomNode::BaseNode:
 					case QDomNode::DocumentFragmentNode:
 					case QDomNode::DocumentNode:
+						qWarning () << "unexpected node type"
+								<< child.nodeType ();
 						break;
 					}
 					child = child.nextSibling ();
