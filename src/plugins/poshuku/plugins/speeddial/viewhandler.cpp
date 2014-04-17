@@ -215,6 +215,8 @@ namespace SpeedDial
 		w.writeStartElement ("table");
 		w.writeAttribute ("class", "centered");
 
+		const auto& tdWidthStr = QString::number (thumbSize.width () + 20) + "px";
+
 		for (size_t r = 0; r < rows; ++r)
 		{
 			w.writeStartElement ("tr");
@@ -230,7 +232,8 @@ namespace SpeedDial
 
 				w.writeStartElement ("td");
 					w.writeAttribute ("style",
-							"max-width: " + QString::number (thumbSize.width () + 20) + "px");
+							QString { "max-width: %1; min-width: %1; width: %1;" }
+									.arg (tdWidthStr));
 					w.writeStartElement ("a");
 						w.writeAttribute ("href", item.first);
 
