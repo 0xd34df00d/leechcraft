@@ -1370,7 +1370,7 @@ namespace Poshuku
 			QXmlStreamWriter& W_;
 		public:
 			HtmlWriter (QXmlStreamWriter& w)
-			: W_ { w }
+			: W_ (w)
 			{
 			}
 
