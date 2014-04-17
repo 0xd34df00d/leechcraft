@@ -1388,6 +1388,24 @@ namespace Poshuku
 
 			void ToHtml (const QDomDocument& doc)
 			{
+				const auto& doctype = doc.doctype ();
+				if (!doctype.name ().isEmpty ())
+				{
+					W_.writeStartElement ("div");
+					W_.writeAttribute ("style", "color: #964B00; margin-left: 1em;");
+					W_.writeCharacters ("<!DOCTYPE ");
+
+					WriteColored ("#000000", doctype.name (), 0);
+					W_.writeCharacters (" ");
+					WriteColored ("#881280", '"' + doctype.publicId () + '"', 0);
+					W_.writeEmptyElement ("br");
+					WriteColored ("#881280", '"' + doctype.systemId () + '"', 2);
+
+					W_.writeCharacters (">");
+
+					W_.writeEndElement ();
+				}
+
 				ToHtmlChildren (doc, [] {});
 			}
 
