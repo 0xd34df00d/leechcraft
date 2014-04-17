@@ -199,7 +199,7 @@ namespace SpeedDial
 					)delim");
 			w.writeEndElement ();
 			w.writeStartElement ("body");
-				WriteTable (w, result.TopPages_, Rows, Cols);
+				WriteTable (w, result.TopPages_, Rows, Cols, tr ("Top pages"));
 			w.writeEndElement ();
 		w.writeEndElement ();
 
@@ -208,12 +208,20 @@ namespace SpeedDial
 		QMetaObject::invokeMethod (BrowserWidget_, "focusLineEdit", Qt::QueuedConnection);
 	}
 
-	void ViewHandler::WriteTable (QXmlStreamWriter& w, const TopList_t& items, size_t rows, size_t cols)
+	void ViewHandler::WriteTable (QXmlStreamWriter& w, const TopList_t& items,
+			size_t rows, size_t cols, const QString& heading)
 	{
 		const auto& thumbSize = ImageCache_->GetThumbSize ();
 
 		w.writeStartElement ("table");
 		w.writeAttribute ("class", "centered");
+		w.writeAttribute ("style", "margin-top: 10px");
+
+		w.writeStartElement ("th");
+		w.writeAttribute ("style", "text-align: center; font-size: 1.5em;");
+		w.writeAttribute ("colspan", QString::number (cols));
+		w.writeCharacters (heading);
+		w.writeEndElement ();
 
 		const auto& tdWidthStr = QString::number (thumbSize.width () + 20) + "px";
 
