@@ -1450,6 +1450,18 @@ namespace Poshuku
 						childrenize ();
 						ToHtml (child.toElement ());
 						break;
+					case QDomNode::ProcessingInstructionNode:
+					{
+						childrenize ();
+						const auto& instr = child.toProcessingInstruction ();
+						W_.writeStartElement ("div");
+						W_.writeAttribute ("style", "color: #007700; margin-left: 1em;");
+						W_.writeCharacters ("<?" + instr.target () + " ");
+						WriteColored ("#994500", instr.data (), false);
+						W_.writeCharacters ("?>");
+						W_.writeEndElement ();
+						break;
+					}
 					case QDomNode::AttributeNode:
 					case QDomNode::CharacterDataNode:
 					case QDomNode::BaseNode:
