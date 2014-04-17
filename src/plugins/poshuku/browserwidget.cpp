@@ -1482,11 +1482,15 @@ namespace Poshuku
 						W_.writeEndElement ();
 						break;
 					}
+					case QDomNode::DocumentTypeNode:
+					case QDomNode::EntityNode:
+					case QDomNode::EntityReferenceNode:
 					case QDomNode::AttributeNode:
 					case QDomNode::CharacterDataNode:
 					case QDomNode::BaseNode:
 					case QDomNode::DocumentFragmentNode:
 					case QDomNode::DocumentNode:
+					case QDomNode::NotationNode:
 						qWarning () << "unexpected node type"
 								<< child.nodeType ();
 						break;
