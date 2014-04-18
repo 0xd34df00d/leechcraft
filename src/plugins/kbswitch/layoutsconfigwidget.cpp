@@ -166,13 +166,15 @@ namespace KBSwitch
 		const auto& enabledGroups = KBCtl::Instance ().GetEnabledGroups ();
 
 		QList<QStringList> enabled;
-		for (const auto& name : enabledGroups)
+		for (auto i = 0; i != enabledGroups.size (); ++i)
 		{
+			const auto& name = enabledGroups.at (i);
+
 			const QStringList enabledRow
 			{
 				name,
 				layouts.value (name),
-				KBCtl::Instance ().GetGroupVariant (name)
+				KBCtl::Instance ().GetGroupVariant (i)
 			};
 			enabled << enabledRow;
 		}
@@ -185,15 +187,14 @@ namespace KBSwitch
 	void LayoutsConfigWidget::accept ()
 	{
 		QStringList codes;
-		QHash<QString, QString> variants;
+		QStringList variants;
 		for (int i = 0; i < EnabledModel_->rowCount (); ++i)
 		{
 			const auto& code = EnabledModel_->item (i, EnabledColumn::EnabledCode)->text ();
 			codes << code;
 
 			const auto& variant = EnabledModel_->item (i, EnabledColumn::EnabledVariant)->text ();
-			if (!variant.isEmpty ())
-				variants [code] = variant;
+			variants << variant;
 		}
 		KBCtl::Instance ().SetEnabledGroups (codes);
 		KBCtl::Instance ().SetGroupVariants (variants);

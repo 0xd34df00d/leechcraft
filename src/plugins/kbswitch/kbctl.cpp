@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "kbctl.h"
+#include <algorithm>
 #include <QtDebug>
 #include <QTimer>
 #include <QProcess>
@@ -84,15 +85,8 @@ namespace KBSwitch
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_KBSwitch");
 		settings.beginGroup ("Groups");
-		auto enabledGroups = settings.childKeys ();
-		if (!enabledGroups.isEmpty ())
-		{
-			Variants_.clear ();
-			for (const auto& group : enabledGroups)
-				Variants_ [group] = settings.value (group).toString ();
-
-			SetEnabledGroups (enabledGroups);
-		}
+		SetEnabledGroups (settings.value ("Groups").toStringList ());
+		SetGroupVariants (settings.value ("Variants").toStringList ());
 		settings.endGroup ();
 
 		XmlSettingsManager::Instance ().RegisterObject ({
@@ -148,22 +142,14 @@ namespace KBSwitch
 		scheduleApply ();
 	}
 
-	QString KBCtl::GetGroupVariant (const QString& group) const
+	QString KBCtl::GetGroupVariant (int groupIdx) const
 	{
-		return Variants_ [group];
+		return Variants_.value (groupIdx);
 	}
 
-	void KBCtl::SetGroupVariants (const QHash<QString, QString>& variants)
+	void KBCtl::SetGroupVariants (const QStringList& variants)
 	{
 		Variants_ = variants;
-		for (auto i = Variants_.begin (); i != Variants_.end (); )
-		{
-			if (i->isEmpty ())
-				i = Variants_.erase (i);
-			else
-				++i;
-		}
-
 		scheduleApply ();
 	}
 
@@ -371,13 +357,13 @@ namespace KBSwitch
 			{
 				const auto& grp = layoutsD2N [str];
 				Groups_ << grp;
-				Variants_.remove (grp);
+				Variants_ << QString ();
 			}
 			else if (!varredLayouts [str].first.isEmpty ())
 			{
 				const auto& grp = varredLayouts [str];
 				Groups_ << grp.first;
-				Variants_ [grp.first] = grp.second;
+				Variants_ << grp.second;
 			}
 			else
 			{
@@ -445,8 +431,8 @@ namespace KBSwitch
 				QCoreApplication::applicationName () + "_KBSwitch");
 		settings.beginGroup ("Groups");
 		settings.remove ("");
-		for (const auto& group : Groups_)
-			settings.setValue (group, Variants_.value (group));
+		settings.setValue ("Groups", Groups_);
+		settings.setValue ("Variants", Variants_);
 		settings.endGroup ();
 
 		if (!XmlSettingsManager::Instance ()
@@ -470,14 +456,10 @@ namespace KBSwitch
 			args << "-option"
 					<< Options_.join (",");
 
-		if (!Variants_.isEmpty ())
-		{
-			QStringList variants;
-			for (const auto& group : Groups_)
-				variants << Variants_.value (group);
+		if (std::any_of (Variants_.begin (), Variants_.end (),
+				[] (const QString& str) { return !str.isEmpty (); }))
 			args << "-variant"
-					<< variants.join (",");
-		}
+					<< Variants_.join (",");
 
 		qDebug () << Q_FUNC_INFO << args;
 		QProcess::startDetached ("setxkbmap", args);
