@@ -171,13 +171,14 @@ namespace KBSwitch
 			const QStringList enabledRow
 			{
 				name,
-				layouts.take (name),
+				layouts.value (name),
 				KBCtl::Instance ().GetGroupVariant (name)
 			};
 			enabled << enabledRow;
 		}
 
-		SetList (ToSortedList (layouts), AvailableModel_);
+		Layouts_ = ToSortedList (layouts);
+		SetList (Layouts_, AvailableModel_);
 		SetList (enabled, EnabledModel_);
 	}
 
@@ -209,7 +210,7 @@ namespace KBSwitch
 		if (!toEnableIdx.isValid ())
 			return;
 
-		auto row = AvailableModel_->takeRow (toEnableIdx.row ());
+		auto row = List2Row (Layouts_.value (toEnableIdx.row ()));
 		row << new QStandardItem;
 		EnabledModel_->appendRow (row);
 	}
@@ -220,15 +221,7 @@ namespace KBSwitch
 		if (!toDisableIdx.isValid ())
 			return;
 
-		auto row = EnabledModel_->takeRow (toDisableIdx.row ());
-		delete row.takeLast ();
-
-		auto pos = std::upper_bound (Util::ModelIterator (AvailableModel_, 0),
-				Util::ModelIterator (AvailableModel_, AvailableModel_->rowCount ()),
-				row.first ()->text (),
-				[] (const QString& code, const QModelIndex& mi)
-					{ return code < mi.data ().toString (); });
-		AvailableModel_->insertRow (pos.GetRow (), row);
+		EnabledModel_->removeRow (toDisableIdx.row ());
 	}
 
 	void LayoutsConfigWidget::updateActionsState ()

@@ -45,6 +45,8 @@ namespace KBSwitch
 		Ui::LayoutsConfigWidget Ui_;
 		QStandardItemModel *AvailableModel_;
 		QStandardItemModel *EnabledModel_;
+
+		QList<QStringList> Layouts_;
 	public:
 		enum EnabledColumn
 		{
