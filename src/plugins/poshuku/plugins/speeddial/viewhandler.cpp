@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "viewhandler.h"
+#include <cmath>
 #include <QWebView>
 #include <QHash>
 #include <QtConcurrentRun>
