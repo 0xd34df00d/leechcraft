@@ -44,9 +44,17 @@ namespace XDG
 
 	QPixmap GetAppPixmap (const QString& name)
 	{
+		const auto prefixes
+		{
+			"/usr/share/pixmaps/",
+			"/usr/local/share/pixmaps/",
+			"/usr/share/icons/hicolor/",
+			"/usr/local/share/icons/hicolor/",
+			"/usr/share/applications",
+			"/usr/local/share/applications"
+		};
 		for (auto ext : { ".png", ".svg", ".xpm", ".jpg", "" })
-			for (auto prefix : { "/usr/share/pixmaps/", "/usr/local/share/pixmaps/",
-						"/usr/share/icons/hicolor/", "/usr/local/share/icons/hicolor/" })
+			for (auto prefix : prefixes)
 				if (QFile::exists (prefix + name + ext))
 					return { prefix + name + ext };
 
