@@ -29,9 +29,9 @@
 
 #include "acceptedrejecteddialog.h"
 #include <algorithm>
-#include <QStandardItemModel>
 #include <QMessageBox>
 #include "exceptionsmodel.h"
+#include "exceptionsdelegate.h"
 
 namespace LeechCraft
 {
@@ -50,6 +50,7 @@ namespace CertMgr
 
 		Ui_.setupUi (this);
 		Ui_.View_->setModel (Model_);
+		Ui_.View_->setItemDelegate (new ExceptionsDelegate);
 
 		connect (Ui_.View_->selectionModel (),
 				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
