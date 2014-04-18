@@ -57,23 +57,27 @@ namespace KBSwitch
 			return result;
 		}
 
-		void SetList (const QList<QStringList>& lists, QStandardItemModel *model)
+		QList<QStandardItem*> List2Row (const QStringList& list)
 		{
 			FlagIconProvider flagProv;
 
+			QList<QStandardItem*> row;
+			for (const auto& item : list)
+				row << new QStandardItem (item);
+
+			const auto& img = flagProv.requestPixmap (list.at (0), nullptr, {});
+			row.first ()->setIcon ({ img });
+
+			row.value (0)->setEditable (false);
+			row.value (1)->setEditable (false);
+
+			return row;
+		}
+
+		void SetList (const QList<QStringList>& lists, QStandardItemModel *model)
+		{
 			for (const auto& list : lists)
-			{
-				QList<QStandardItem*> row;
-				for (const auto& item : list)
-					row << new QStandardItem (item);
-
-				const auto& img = flagProv.requestPixmap (list.at (0), nullptr, {});
-				row.first ()->setIcon ({ img });
-
-				row.value (0)->setEditable (false);
-				row.value (1)->setEditable (false);
-				model->appendRow (row);
-			}
+				model->appendRow (List2Row (list));
 		}
 
 		class EnabledItemDelegate : public QStyledItemDelegate
