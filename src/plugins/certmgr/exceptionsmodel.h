@@ -29,35 +29,36 @@
 
 #pragma once
 
-#include <QDialog>
-#include <QSettings>
-#include <interfaces/core/icoreproxy.h>
-#include "ui_acceptedrejecteddialog.h"
+#include <QStandardItemModel>
+
+class QSettings;
 
 namespace LeechCraft
 {
 namespace CertMgr
 {
-	class ExceptionsModel;
-
-	class AcceptedRejectedDialog : public QDialog
+	class ExceptionsModel : public QStandardItemModel
 	{
 		Q_OBJECT
 
-		Ui::AcceptedRejectedDialog Ui_;
-
-		const ICoreProxy_ptr Proxy_;
-
-		QSettings CoreSettings_;
-		ExceptionsModel * const Model_;
+		QSettings& Settings_;
 	public:
-		AcceptedRejectedDialog (ICoreProxy_ptr);
-		~AcceptedRejectedDialog ();
-	private:
-		void PopulateModel ();
-	private slots:
-		void on_RemoveButton__released ();
-		void handleSelectionChanged ();
+		enum Column
+		{
+			Name,
+			Status
+		};
+
+		enum Role
+		{
+			IsAllowed = Qt::UserRole + 1
+		};
+
+		ExceptionsModel (QSettings&, QObject*);
+
+		void Add (const QString&, bool);
+
+		bool setData (const QModelIndex&, const QVariant&, int);
 	};
 }
 }

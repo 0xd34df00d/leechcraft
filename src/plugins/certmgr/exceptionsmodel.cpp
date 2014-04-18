@@ -27,37 +27,47 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QDialog>
+#include "exceptionsmodel.h"
 #include <QSettings>
-#include <interfaces/core/icoreproxy.h>
-#include "ui_acceptedrejecteddialog.h"
 
 namespace LeechCraft
 {
 namespace CertMgr
 {
-	class ExceptionsModel;
-
-	class AcceptedRejectedDialog : public QDialog
+	ExceptionsModel::ExceptionsModel (QSettings& settings, QObject *parent)
+	: QStandardItemModel { parent }
+	, Settings_ (settings)
 	{
-		Q_OBJECT
+	}
 
-		Ui::AcceptedRejectedDialog Ui_;
+	void ExceptionsModel::Add (const QString& key, bool val)
+	{
+		QList<QStandardItem*> row
+		{
+			new QStandardItem { key },
+			new QStandardItem { val ? tr ("allow") : tr ("deny") }
+		};
 
-		const ICoreProxy_ptr Proxy_;
+		row.at (ExceptionsModel::Name)->setEditable (false);
+		row.at (ExceptionsModel::Status)->setData (val, ExceptionsModel::IsAllowed);
 
-		QSettings CoreSettings_;
-		ExceptionsModel * const Model_;
-	public:
-		AcceptedRejectedDialog (ICoreProxy_ptr);
-		~AcceptedRejectedDialog ();
-	private:
-		void PopulateModel ();
-	private slots:
-		void on_RemoveButton__released ();
-		void handleSelectionChanged ();
-	};
+		appendRow (row);
+	}
+
+	bool ExceptionsModel::setData (const QModelIndex& index, const QVariant& value, int role)
+	{
+		if (index.column () != ExceptionsModel::Status)
+			return QStandardItemModel::setData (index, value, role);
+
+		const auto val = value.toBool ();
+		itemFromIndex (index)->setText (val ?
+					tr ("allow") :
+					tr ("deny"));
+
+		const auto& keyIndex = index.sibling (index.row (), Column::Name);
+		Settings_.setValue (keyIndex.data ().toString (), val);
+
+		return true;
+	}
 }
 }

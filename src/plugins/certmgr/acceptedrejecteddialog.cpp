@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include "exceptionsmodel.h"
 
 namespace LeechCraft
 {
@@ -38,9 +39,9 @@ namespace CertMgr
 {
 	AcceptedRejectedDialog::AcceptedRejectedDialog (ICoreProxy_ptr proxy)
 	: Proxy_ { proxy }
-	, Model_ { new QStandardItemModel { this } }
 	, CoreSettings_ { QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () }
+	, Model_ { new ExceptionsModel { CoreSettings_, this } }
 	{
 		CoreSettings_.beginGroup ("SSL exceptions");
 
@@ -68,20 +69,7 @@ namespace CertMgr
 		std::sort (keys.begin (), keys.end ());
 
 		for (const auto& key : keys)
-		{
-			const auto val = CoreSettings_.value (key).toBool ();
-
-			QList<QStandardItem*> row
-			{
-				new QStandardItem { key },
-				new QStandardItem { val ? tr ("allow") : tr ("deny") }
-			};
-
-			for (auto item : row)
-				item->setEditable (false);
-
-			Model_->appendRow (row);
-		}
+			Model_->Add (key, CoreSettings_.value (key).toBool ());
 	}
 
 	void AcceptedRejectedDialog::on_RemoveButton__released ()
