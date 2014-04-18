@@ -36,6 +36,7 @@
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/qml/standardnamfactory.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilocalcollection.h>
 #include "checkmodel.h"
@@ -92,6 +93,13 @@ namespace BrainSlugz
 		root->setContextProperty ("artistsModel", Model_);
 		root->setContextProperty ("checkedModel", CheckedModel_);
 		root->setContextProperty ("checkingState", "");
+
+		new Util::StandardNAMFactory
+		{
+			"lmp/qml",
+			[] { return 50 * 1024 * 1024; },
+			Ui_.CheckView_->engine ()
+		};
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
 		Ui_.CheckView_->setSource (QUrl::fromLocalFile (filename));
