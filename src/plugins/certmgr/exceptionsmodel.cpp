@@ -60,9 +60,12 @@ namespace CertMgr
 			return QStandardItemModel::setData (index, value, role);
 
 		const auto val = value.toBool ();
-		itemFromIndex (index)->setText (val ?
+
+		const auto item = itemFromIndex (index);
+		item->setText (val ?
 					tr ("allow") :
 					tr ("deny"));
+		item->setData (val, ExceptionsModel::IsAllowed);
 
 		const auto& keyIndex = index.sibling (index.row (), Column::Name);
 		Settings_.setValue (keyIndex.data ().toString (), val);
