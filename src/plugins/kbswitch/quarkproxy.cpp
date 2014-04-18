@@ -69,9 +69,13 @@ namespace KBSwitch
 
 		for (int i = 0; i < enabled.size (); ++i)
 		{
-			const auto& actionName = QString ("%1 (%2)")
+			auto actionName = QString ("%1 (%2)")
 					.arg (kbctl.GetLayoutDesc (i))
 					.arg (enabled.at (i));
+
+			const auto& variant = kbctl.GetGroupVariant (i);
+			if (!variant.isEmpty ())
+				actionName += " (" + variant + ")";
 
 			const auto& iconPath = Util::GetSysPath (Util::SysPath::Share,
 					"global_icons/flags", enabled.at (i) + ".png");
