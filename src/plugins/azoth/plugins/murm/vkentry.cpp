@@ -85,7 +85,7 @@ namespace Murm
 				.RegisterObject ("EntryNameFormat", this, "handleEntryNameFormat");
 	}
 
-	void VkEntry::UpdateInfo (const UserInfo& info)
+	void VkEntry::UpdateInfo (const UserInfo& info, bool spontaneous)
 	{
 		const bool updateStatus = info.IsOnline_ != Info_.IsOnline_;
 		const bool updateName = info.FirstName_ != Info_.FirstName_ ||
@@ -100,12 +100,15 @@ namespace Murm
 			emit statusChanged (GetStatus (""), "");
 			emit availableVariantsChanged (Variants ());
 
-			auto msg = new VkMessage (false, IMessage::DIn, IMessage::MTStatusMessage, this);
-			const auto& entryName = GetEntryName ();
-			msg->SetBody (info.IsOnline_ ?
-					tr ("%1 is now on the site again").arg (entryName) :
-					tr ("%1 has left the site").arg (entryName));
-			Store (msg);
+			if (spontaneous)
+			{
+				auto msg = new VkMessage (false, IMessage::DIn, IMessage::MTStatusMessage, this);
+				const auto& entryName = GetEntryName ();
+				msg->SetBody (info.IsOnline_ ?
+						tr ("%1 is now on the site again").arg (entryName) :
+						tr ("%1 has left the site").arg (entryName));
+				Store (msg);
+			}
 		}
 	}
 
