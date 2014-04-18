@@ -36,6 +36,7 @@
 template<typename T>
 class QFutureWatcher;
 
+class QXmlStreamWriter;
 class QWebView;
 class QUrl;
 class QImage;
@@ -52,6 +53,8 @@ namespace SpeedDial
 
 	typedef QList<QPair<QString, QString>> TopList_t;
 
+	struct LoadResult;
+
 	class ViewHandler : public QObject
 	{
 		Q_OBJECT
@@ -61,11 +64,13 @@ namespace SpeedDial
 		ImageCache * const ImageCache_;
 		IProxyObject * const PoshukuProxy_;
 
-		QFutureWatcher<TopList_t> * const LoadWatcher_;
+		QFutureWatcher<LoadResult> * const LoadWatcher_;
 
 		bool IsLoading_ = false;
 	public:
 		ViewHandler (QWebView*, QObject*, ImageCache*, IProxyObject*);
+	private:
+		void WriteTable (QXmlStreamWriter&, const TopList_t&, size_t, size_t, const QString&);
 	private slots:
 		void handleLoadStarted ();
 

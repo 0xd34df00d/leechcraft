@@ -58,6 +58,8 @@ namespace SpeedDial
 
 		QImage GetSnapshot (const QUrl&);
 		QSize GetThumbSize () const;
+	private:
+		void Render (QWebPage*);
 	private slots:
 		void handleLoadFinished ();
 	signals:

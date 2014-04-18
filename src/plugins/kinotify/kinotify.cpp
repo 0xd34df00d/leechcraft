@@ -138,8 +138,9 @@ namespace Kinotify
 		if (sameDataPos != ActiveNotifications_.end () && sameIdPos == ActiveNotifications_.end ())
 				return;
 
-		int timeout = Proxy_->GetSettingsManager ()->
-				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+		const auto defaultTimeout = XmlSettingsManager::Instance ()->
+				property ("MessageTimeout").toInt () * 1000;
+		const auto timeout = e.Additional_.value ("NotificationTimeout", defaultTimeout).toInt ();
 
 		auto notificationWidget = new KinotifyWidget (Proxy_, timeout);
 		notificationWidget->SetID (notifyId);

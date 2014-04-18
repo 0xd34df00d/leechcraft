@@ -49,7 +49,6 @@ namespace Lastfmscrobble
 		params ["album"] = albumInfo.Album_;
 		params ["autocorrect"] = "1";
 		auto reply = Request ("album.getInfo", proxy->GetNetworkAccessManager (), params);
-		reply->setProperty ("AlbumInfo", QVariant::fromValue (albumInfo));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -76,7 +75,6 @@ namespace Lastfmscrobble
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& albumInfo = reply->property ("AlbumInfo").value<Media::AlbumInfo> ();
 		QDomDocument doc;
 		if (!doc.setContent (reply->readAll ()))
 		{
@@ -128,7 +126,6 @@ namespace Lastfmscrobble
 		reply->deleteLater ();
 		deleteLater ();
 
-		auto albumInfo = reply->property ("AlbumInfo").value<Media::AlbumInfo> ();
 		Image_.loadFromData (reply->readAll ());
 		emit ready (Info_, { Image_ });
 	}
