@@ -93,7 +93,7 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 
-		new Util::StandardNAMFactory ("lmp/cache",
+		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
 				Ui_.View_->engine ());
 

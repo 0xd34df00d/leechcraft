@@ -92,7 +92,7 @@ namespace Blasq
 		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine->addImportPath (cand);
-		new Util::StandardNAMFactory ("blasq/cache",
+		new Util::StandardNAMFactory ("blasq/qml",
 			[]
 			{
 				return XmlSettingsManager::Instance ()

@@ -94,7 +94,7 @@ namespace LMP
 		Ui_.HypesView_->engine ()->addImageProvider ("sysIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
-		new Util::StandardNAMFactory ("lmp/cache",
+		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
 				Ui_.HypesView_->engine ());
 
