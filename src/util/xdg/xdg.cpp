@@ -49,9 +49,7 @@ namespace XDG
 			"/usr/share/pixmaps/",
 			"/usr/local/share/pixmaps/",
 			"/usr/share/icons/hicolor/",
-			"/usr/local/share/icons/hicolor/",
-			"/usr/share/applications",
-			"/usr/local/share/applications"
+			"/usr/local/share/icons/hicolor/"
 		};
 		for (auto ext : { ".png", ".svg", ".xpm", ".jpg", "" })
 			for (auto prefix : prefixes)
