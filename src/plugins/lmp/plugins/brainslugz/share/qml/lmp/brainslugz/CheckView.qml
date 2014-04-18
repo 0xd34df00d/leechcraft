@@ -89,8 +89,6 @@ Rectangle {
 
                 smooth: true
                 fillMode: Image.PreserveAspectFit
-
-                cache: false
             }
 
             Text {
