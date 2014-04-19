@@ -58,6 +58,8 @@ namespace CertMgr
 	private slots:
 		void on_RemoveButton__released ();
 		void handleSelectionChanged ();
+
+		void adjustWidths ();
 	};
 }
 }

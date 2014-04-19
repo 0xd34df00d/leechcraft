@@ -30,6 +30,7 @@
 #include "acceptedrejecteddialog.h"
 #include <algorithm>
 #include <QMessageBox>
+#include <QTimer>
 #include "exceptionsmodel.h"
 #include "exceptionsdelegate.h"
 
@@ -51,6 +52,10 @@ namespace CertMgr
 		Ui_.setupUi (this);
 		Ui_.View_->setModel (Model_);
 		Ui_.View_->setItemDelegate (new ExceptionsDelegate);
+
+		QTimer::singleShot (0,
+				this,
+				SLOT (adjustWidths ()));
 
 		connect (Ui_.View_->selectionModel (),
 				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
@@ -104,6 +109,14 @@ namespace CertMgr
 	{
 		const auto& selected = Ui_.View_->selectionModel ()->selectedRows ();
 		Ui_.RemoveButton_->setEnabled (!selected.isEmpty ());
+	}
+
+	void AcceptedRejectedDialog::adjustWidths ()
+	{
+		const auto totalWidth = Ui_.View_->viewport ()->width ();
+		const auto statusWidth = 150;
+		Ui_.View_->setColumnWidth (ExceptionsModel::Name, totalWidth - statusWidth);
+		Ui_.View_->setColumnWidth (ExceptionsModel::Status, statusWidth);
 	}
 }
 }
