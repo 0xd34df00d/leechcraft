@@ -56,23 +56,19 @@ namespace CertMgr
 		appendRow (row);
 	}
 
-	bool ExceptionsModel::setData (const QModelIndex& index, const QVariant& value, int role)
+	void ExceptionsModel::ToggleState (const QModelIndex& index)
 	{
-		if (index.column () != ExceptionsModel::Status)
-			return QStandardItemModel::setData (index, value, role);
+		const auto& statusIdx = index.sibling (index.row (), Column::Status);
 
-		const auto val = value.toBool ();
-
-		const auto item = itemFromIndex (index);
-		item->setText (val ?
+		const auto newVal = !statusIdx.data (IsAllowed).toBool ();
+		const auto item = itemFromIndex (statusIdx);
+		item->setText (newVal ?
 					tr ("allow") :
 					tr ("deny"));
-		item->setData (val, ExceptionsModel::IsAllowed);
+		item->setData (newVal, IsAllowed);
 
 		const auto& keyIndex = index.sibling (index.row (), Column::Name);
-		Settings_.setValue (keyIndex.data ().toString (), val);
-
-		return true;
+		Settings_.setValue (keyIndex.data ().toString (), newVal);
 	}
 }
 }

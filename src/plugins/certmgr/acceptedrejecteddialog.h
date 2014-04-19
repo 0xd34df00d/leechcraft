@@ -59,6 +59,7 @@ namespace CertMgr
 		void on_RemoveButton__released ();
 		void handleSelectionChanged ();
 
+		void toggleState (const QModelIndex&);
 		void adjustWidths ();
 	};
 }

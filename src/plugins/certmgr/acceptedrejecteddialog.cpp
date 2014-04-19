@@ -51,6 +51,11 @@ namespace CertMgr
 		Ui_.setupUi (this);
 		Ui_.View_->setModel (Model_);
 
+		connect (Ui_.View_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				this,
+				SLOT (toggleState (QModelIndex)));
+
 		QTimer::singleShot (0,
 				this,
 				SLOT (adjustWidths ()));
@@ -107,6 +112,11 @@ namespace CertMgr
 	{
 		const auto& selected = Ui_.View_->selectionModel ()->selectedRows ();
 		Ui_.RemoveButton_->setEnabled (!selected.isEmpty ());
+	}
+
+	void AcceptedRejectedDialog::toggleState (const QModelIndex& index)
+	{
+		Model_->ToggleState (index);
 	}
 
 	void AcceptedRejectedDialog::adjustWidths ()
