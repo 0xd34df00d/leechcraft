@@ -32,8 +32,8 @@
 #include <QObject>
 #include <QVariantList>
 #include <QUrl>
+#include <QModelIndexList>
 
-class QAbstractItemModel;
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -62,6 +62,8 @@ namespace SpeedDial
 		void Add (const Addr_t&);
 	public slots:
 		void addRequested (const QString&, const QVariantList&);
+		void modifyRequested (const QString&, int, const QVariantList&);
+		void removeRequested (const QString&, const QModelIndexList&);
 	};
 }
 }

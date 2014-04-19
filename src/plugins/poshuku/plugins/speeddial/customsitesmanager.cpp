@@ -105,6 +105,22 @@ namespace SpeedDial
 		Add ({ datas.value (0).toString (), QUrl { datas.value (1).toString () } });
 		SaveSettings ();
 	}
+
+	void CustomSitesManager::modifyRequested (const QString&, int row, const QVariantList& datas)
+	{
+		Model_->item (row, 0)->setText (datas.value (0).toString ());
+		Model_->item (row, 1)->setText (datas.value (1).toString ());
+
+		SaveSettings ();
+	}
+
+	void CustomSitesManager::removeRequested (const QString&, const QModelIndexList& list)
+	{
+		for (const auto& item : list)
+			Model_->removeRow (item.row ());
+
+		SaveSettings ();
+	}
 }
 }
 }
