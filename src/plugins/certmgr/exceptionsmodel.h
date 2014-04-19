@@ -56,8 +56,11 @@ namespace CertMgr
 
 		ExceptionsModel (QSettings&, QObject*);
 
-		void Add (const QString&, bool);
+		void Populate ();
+
 		void ToggleState (const QModelIndex&);
+	private:
+		void Add (const QString&, bool);
 	};
 }
 }

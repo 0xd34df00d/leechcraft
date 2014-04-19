@@ -46,7 +46,7 @@ namespace CertMgr
 		CoreSettings_.beginGroup ("SSL exceptions");
 
 		Model_->setHorizontalHeaderLabels ({ tr ("Address"), tr ("State") });
-		PopulateModel ();
+		Model_->Populate ();
 
 		Ui_.setupUi (this);
 		Ui_.View_->setModel (Model_);
@@ -70,15 +70,6 @@ namespace CertMgr
 	AcceptedRejectedDialog::~AcceptedRejectedDialog ()
 	{
 		CoreSettings_.endGroup ();
-	}
-
-	void AcceptedRejectedDialog::PopulateModel ()
-	{
-		auto keys = CoreSettings_.allKeys ();
-		std::sort (keys.begin (), keys.end ());
-
-		for (const auto& key : keys)
-			Model_->Add (key, CoreSettings_.value (key).toBool ());
 	}
 
 	void AcceptedRejectedDialog::on_RemoveButton__released ()

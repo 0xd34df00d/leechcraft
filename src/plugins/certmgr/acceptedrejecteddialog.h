@@ -53,8 +53,6 @@ namespace CertMgr
 	public:
 		AcceptedRejectedDialog (ICoreProxy_ptr);
 		~AcceptedRejectedDialog ();
-	private:
-		void PopulateModel ();
 	private slots:
 		void on_RemoveButton__released ();
 		void handleSelectionChanged ();

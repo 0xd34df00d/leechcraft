@@ -40,20 +40,13 @@ namespace CertMgr
 	{
 	}
 
-	void ExceptionsModel::Add (const QString& key, bool val)
+	void ExceptionsModel::Populate ()
 	{
-		QList<QStandardItem*> row
-		{
-			new QStandardItem { key },
-			new QStandardItem { val ? tr ("allow") : tr ("deny") }
-		};
+		auto keys = Settings_.allKeys ();
+		std::sort (keys.begin (), keys.end ());
 
-		for (auto item : row)
-			item->setEditable (false);
-
-		row.at (ExceptionsModel::Status)->setData (val, ExceptionsModel::IsAllowed);
-
-		appendRow (row);
+		for (const auto& key : keys)
+			Add (key, Settings_.value (key).toBool ());
 	}
 
 	void ExceptionsModel::ToggleState (const QModelIndex& index)
@@ -69,6 +62,22 @@ namespace CertMgr
 
 		const auto& keyIndex = index.sibling (index.row (), Column::Name);
 		Settings_.setValue (keyIndex.data ().toString (), newVal);
+	}
+
+	void ExceptionsModel::Add (const QString& key, bool val)
+	{
+		QList<QStandardItem*> row
+		{
+			new QStandardItem { key },
+			new QStandardItem { val ? tr ("allow") : tr ("deny") }
+		};
+
+		for (auto item : row)
+			item->setEditable (false);
+
+		row.at (ExceptionsModel::Status)->setData (val, ExceptionsModel::IsAllowed);
+
+		appendRow (row);
 	}
 }
 }
