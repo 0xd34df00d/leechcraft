@@ -85,10 +85,10 @@ namespace Monocle
 	 * method to get an object of this class as a QObject and connect to
 	 * those signals.
 	 *
-	 * The document can also implement IDynamicDocument, IHaveTextContent,
-	 * ISaveableDocument, ISearchableDocument, ISupportAnnotations,
-	 * IHaveToc and ISupportForms. The interface names are pretty
-	 * obvious. See them for the details.
+	 * There are also other interfaces for extended functionality like
+	 * documents that can be changed and saved, the documents containing
+	 * annotations and so on. See the <em>See also</em> section for the
+	 * details.
 	 *
 	 * @sa IBackendPlugin::LoadDocument()
 	 * @sa IDynamicDocument, IHaveTextContent, ISaveableDocument
@@ -137,7 +137,7 @@ namespace Monocle
 		 */
 		virtual DocumentInfo GetDocumentInfo () const = 0;
 
-		/** @brief Returns the number of pages i this document.
+		/** @brief Returns the number of pages in this document.
 		 *
 		 * @return The number of pages in this document.
 		 */
@@ -164,10 +164,9 @@ namespace Monocle
 		 * and <em>y</em> axises correspondingly. That is, the image's
 		 * size should be equal to the following:
 		 * \code
-		 * auto size = GetPageSize (page);
-		 * size.rwidth () *= xScale;
-		 * size.rheight () *= yscale;
-		 * \endcode
+			auto size = GetPageSize (page);
+			size.rwidth () *= xScale;
+			size.rheight () *= yscale;\endcode
 		 *
 		 * @param[in] page The index of the page to render.
 		 * @param[in] xScale The scale of the <em>x</em> axis.
@@ -181,6 +180,9 @@ namespace Monocle
 		 * If the format doesn't support links, an empty list should be
 		 * returned.
 		 *
+		 * The ownership of the returned links objects is passed to the
+		 * caller.
+		 *
 		 * @param[in] page The page index to query.
 		 *
 		 * @sa ILink
@@ -189,8 +191,11 @@ namespace Monocle
 
 		/** @brief Returns the URL of the document.
 		 *
-		 * This method should return the URL of the document which has
-		 * been opened.
+		 * This method should return the URL of this document. URLs on
+		 * the local filesystem should obviously have the <em>file</em>
+		 * scheme.
+		 *
+		 * @return The URL of this document.
 		 */
 		virtual QUrl GetDocURL () const = 0;
 	protected:

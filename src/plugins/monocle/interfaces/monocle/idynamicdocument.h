@@ -64,7 +64,7 @@ namespace Monocle
 		 */
 		virtual ~IDynamicDocument () {}
 	protected:
-		/** @brief Emitted when the size of the given page is changed.
+		/** @brief Emitted when the size of the given \em page is changed.
 		 *
 		 * The signal is emitted after the new size is known, so
 		 * <code>IDocument::GetPageSize(page)</code> should already
@@ -74,7 +74,7 @@ namespace Monocle
 		 */
 		virtual void pageSizeChanged (int page) = 0;
 
-		/** @brief Emitted when contents of the given page are changed.
+		/** @brief Emitted when contents of the given \em page are changed.
 		 *
 		 * The \em page should typically be re-rendered after this signal.
 		 *
