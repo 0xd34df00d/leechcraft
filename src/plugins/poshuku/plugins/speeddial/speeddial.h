@@ -34,6 +34,8 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/ihavesettings.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 class QWebView;
 
@@ -50,12 +52,15 @@ namespace SpeedDial
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		IProxyObject *PoshukuProxy_;
 		ImageCache *Cache_;
+
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -66,6 +71,8 @@ namespace SpeedDial
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void initPlugin (QObject*);
 

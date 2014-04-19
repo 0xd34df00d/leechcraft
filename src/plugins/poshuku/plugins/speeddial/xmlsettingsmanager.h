@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2010-2011  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,12 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "speeddial.h"
-#include <vector>
-#include <interfaces/poshuku/iproxyobject.h>
-#include "viewhandler.h"
-#include "imagecache.h"
-#include "xmlsettingsmanager.h"
+#pragma once
+
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -40,68 +37,18 @@ namespace Poshuku
 {
 namespace SpeedDial
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Cache_ = new ImageCache { proxy };
+		Q_OBJECT
 
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuspeeddialsettings.xml");
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	void Plugin::Release ()
-	{
-		delete Cache_;
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Poshuku.SpeedDial";
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Poshuku SpeedDial";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Adds a special speed dial page.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Poshuku.Plugins/1.0";
-		return result;
-	}
-
-	void Plugin::initPlugin (QObject *object)
-	{
-		PoshukuProxy_ = qobject_cast<IProxyObject*> (object);
-	}
-
-	void Plugin::hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
-			QWebView *view,
-			QObject *browserWidget)
-	{
-		new ViewHandler { view, browserWidget, Cache_, PoshukuProxy_ };
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
+		XmlSettingsManager ();
+	protected:
+		virtual void EndSettings (QSettings*) const;
+		virtual QSettings *BeginSettings () const;
+	public:
+		static XmlSettingsManager& Instance ();
+	};
 }
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_speeddial, LeechCraft::Poshuku::SpeedDial::Plugin);

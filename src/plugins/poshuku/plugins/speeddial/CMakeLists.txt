@@ -4,11 +4,12 @@ set (SPEEDDIAL_SRCS
 	speeddial.cpp
 	viewhandler.cpp
 	imagecache.cpp
+	xmlsettingsmanager.cpp
 	)
 set (SPEEDDIAL_RESOURCES
 	)
 #CreateTrs ("poshuku_speeddial" "en;ru_RU" SPEEDDIAL_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("poshuku_speeddial" "en;ru_RU" "${SPEEDDIAL_SRCS}" "" "")
+CreateTrsUpTarget("poshuku_speeddial" "en;ru_RU" "${SPEEDDIAL_SRCS}" "" "poshukuspeeddialsettings.xml")
 
 QT4_ADD_RESOURCES (SPEEDDIAL_RCCS ${SPEEDDIAL_RESOURCES})
 add_library (leechcraft_poshuku_speeddial SHARED
@@ -22,3 +23,4 @@ target_link_libraries (leechcraft_poshuku_speeddial
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_poshuku_speeddial DESTINATION ${LC_PLUGINS_DEST})
+install (FILES poshukuspeeddialsettings.xml DESTINATION ${LC_SETTINGS_DEST})
