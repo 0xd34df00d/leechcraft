@@ -200,6 +200,11 @@ namespace SpeedDial
 							margin: 20px;
 							text-align: center;
 						}
+
+						.sdlink {
+							text-decoration: none;
+							color: "#222";
+						}
 					)delim");
 			w.writeEndElement ();
 			w.writeStartElement ("body");
@@ -251,6 +256,7 @@ namespace SpeedDial
 									.arg (tdWidthStr));
 					w.writeStartElement ("a");
 						w.writeAttribute ("href", item.first);
+						w.writeAttribute ("class", "sdlink");
 
 						w.writeStartElement ("img");
 							w.writeAttribute ("src", Util::GetAsBase64Src (image));
