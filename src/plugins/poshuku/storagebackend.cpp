@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "storagebackend.h"
+#include <stdexcept>
 #include "sqlstoragebackend.h"
 #include "sqlstoragebackend_mysql.h"
 #include "xmlsettingsmanager.h"
