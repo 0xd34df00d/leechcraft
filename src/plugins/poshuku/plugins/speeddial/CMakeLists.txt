@@ -4,6 +4,7 @@ set (SPEEDDIAL_SRCS
 	speeddial.cpp
 	viewhandler.cpp
 	imagecache.cpp
+	customsitesmanager.cpp
 	xmlsettingsmanager.cpp
 	)
 set (SPEEDDIAL_RESOURCES

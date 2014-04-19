@@ -27,13 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "speeddial.h"
-#include <vector>
-#include <interfaces/poshuku/iproxyobject.h>
-#include "viewhandler.h"
-#include "imagecache.h"
-#include "customsitesmanager.h"
-#include "xmlsettingsmanager.h"
+#pragma once
+
+#include <QObject>
+#include <QVariantList>
+#include <QUrl>
+
+class QAbstractItemModel;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -41,71 +42,29 @@ namespace Poshuku
 {
 namespace SpeedDial
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	typedef QPair<QString, QUrl> Addr_t;
+	typedef QList<Addr_t> AddrList_t;
+
+	class CustomSitesManager : public QObject
 	{
-		Cache_ = new ImageCache { proxy };
+		Q_OBJECT
 
-		qRegisterMetaType<AddrList_t> ("LeechCraft::Poshuku::SpeedDial::AddrList_t");
-		qRegisterMetaTypeStreamOperators<AddrList_t> ();
+		QStandardItemModel * const Model_;
+	public:
+		CustomSitesManager ();
 
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuspeeddialsettings.xml");
-	}
+		QAbstractItemModel* GetModel () const;
+		AddrList_t GetAddresses () const;
+	private:
+		void LoadSettings ();
+		void SaveSettings ();
 
-	void Plugin::SecondInit ()
-	{
-	}
-
-	void Plugin::Release ()
-	{
-		delete Cache_;
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Poshuku.SpeedDial";
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Poshuku SpeedDial";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Adds a special speed dial page.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Poshuku.Plugins/1.0";
-		return result;
-	}
-
-	void Plugin::initPlugin (QObject *object)
-	{
-		PoshukuProxy_ = qobject_cast<IProxyObject*> (object);
-	}
-
-	void Plugin::hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
-			QWebView *view,
-			QObject *browserWidget)
-	{
-		new ViewHandler { view, browserWidget, Cache_, PoshukuProxy_ };
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
+		void Add (const Addr_t&);
+	public slots:
+		void addRequested (const QString&, const QVariantList&);
+	};
 }
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_speeddial, LeechCraft::Poshuku::SpeedDial::Plugin);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::SpeedDial::AddrList_t)

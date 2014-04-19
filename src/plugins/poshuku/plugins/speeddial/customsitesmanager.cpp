@@ -27,13 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "speeddial.h"
-#include <vector>
-#include <interfaces/poshuku/iproxyobject.h>
-#include "viewhandler.h"
-#include "imagecache.h"
 #include "customsitesmanager.h"
 #include "xmlsettingsmanager.h"
+#include <QStandardItemModel>
+#include <QtDebug>
+#include <xmlsettingsdialog/datasourceroles.h>
 
 namespace LeechCraft
 {
@@ -41,71 +39,72 @@ namespace Poshuku
 {
 namespace SpeedDial
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	CustomSitesManager::CustomSitesManager ()
+	: Model_ { new QStandardItemModel { this } }
 	{
-		Cache_ = new ImageCache { proxy };
+		Model_->setHorizontalHeaderLabels ({ tr ("Site name"), "URL" });
+		Model_->horizontalHeaderItem (0)->setData (DataSources::DataFieldType::String,
+				DataSources::DataSourceRole::FieldType);
+		Model_->horizontalHeaderItem (1)->setData (DataSources::DataFieldType::Url,
+				DataSources::DataSourceRole::FieldType);
 
-		qRegisterMetaType<AddrList_t> ("LeechCraft::Poshuku::SpeedDial::AddrList_t");
-		qRegisterMetaTypeStreamOperators<AddrList_t> ();
-
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuspeeddialsettings.xml");
+		LoadSettings ();
 	}
 
-	void Plugin::SecondInit ()
+	QAbstractItemModel* CustomSitesManager::GetModel () const
 	{
+		return Model_;
 	}
 
-	void Plugin::Release ()
+	AddrList_t CustomSitesManager::GetAddresses () const
 	{
-		delete Cache_;
-	}
+		AddrList_t result;
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Poshuku.SpeedDial";
-	}
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			const QUrl url { Model_->item (i, 1)->text () };
+			const auto& name = Model_->item (i, 0)->text ();
 
-	QString Plugin::GetName () const
-	{
-		return "Poshuku SpeedDial";
-	}
+			result.append ({ name, url });
+		}
 
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Adds a special speed dial page.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
 	}
 
-	void Plugin::initPlugin (QObject *object)
+	void CustomSitesManager::LoadSettings ()
 	{
-		PoshukuProxy_ = qobject_cast<IProxyObject*> (object);
+		const auto& addrs = XmlSettingsManager::Instance ()
+				.property ("Addresses").value<AddrList_t> ();
+
+		for (const auto& addr : addrs)
+			Add (addr);
 	}
 
-	void Plugin::hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
-			QWebView *view,
-			QObject *browserWidget)
+	void CustomSitesManager::SaveSettings ()
 	{
-		new ViewHandler { view, browserWidget, Cache_, PoshukuProxy_ };
+		const auto& variant = QVariant::fromValue (GetAddresses ());
+		XmlSettingsManager::Instance ().setProperty ("Addresses", variant);
 	}
 
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	void CustomSitesManager::Add (const Addr_t& addr)
 	{
-		return XSD_;
+		QList<QStandardItem*> row
+		{
+			new QStandardItem (addr.first),
+			new QStandardItem (addr.second.toString ())
+		};
+
+		for (auto item : row)
+			item->setEditable (false);
+
+		Model_->appendRow (row);
+	}
+
+	void CustomSitesManager::addRequested (const QString&, const QVariantList& datas)
+	{
+		Add ({ datas.value (0).toString (), QUrl { datas.value (1).toString () } });
+		SaveSettings ();
 	}
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_poshuku_speeddial, LeechCraft::Poshuku::SpeedDial::Plugin);
