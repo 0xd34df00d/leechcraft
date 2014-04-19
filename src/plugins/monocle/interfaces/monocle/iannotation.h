@@ -88,7 +88,10 @@ namespace Monocle
 		 */
 		virtual QString GetAuthor () const = 0;
 
-		/** @brief Returns the date of the annotation.
+		/** @brief Returns the date the annotation was created.
+		 *
+		 * If the date is unknown or not applicable, an invalid QDateTime
+		 * object should be returned.
 		 *
 		 * @return The timestamp of the annotation.
 		 */
@@ -127,6 +130,9 @@ namespace Monocle
 
 		/** @brief Returns whether this is an inline annotation.
 		 *
+		 * Inline annotation should rather be displayed right on the
+		 * document.
+		 *
 		 * @return Whether this is an inline annotation.
 		 */
 		virtual bool IsInline () const = 0;
@@ -141,12 +147,18 @@ namespace Monocle
 
 		/** @brief Returns the shape of the highlight.
 		 *
-		 * The points in the polygon should be in page coordinates, where
+		 * The shape of a single annotation is comprised of a list of
+		 * polygons, each expected to be a closed shape. The polygons in
+		 * the returned list can have both empty and non-empty pairwise
+		 * intersections.
+		 *
+		 * The points in the polygons should be in page coordinates, where
 		 * (0; 0) is the top left corner, and (1; 1) is the bottom right
 		 * corner.
 		 *
 		 * The IAnnotation::GetBoundary() should return the bounding
-		 * rect of this polygon.
+		 * rectangle of the bounding rectangles of the polygons in the
+		 * returned list.
 		 *
 		 * @return The shape of the highlight on the page in page coordinates.
 		 */
@@ -157,7 +169,11 @@ namespace Monocle
 	 *
 	 * Please note that there shouldn't be link annotations that contain
 	 * links equivalent to the ones returned from the
-	 * IDocument::GetPageLinks() method.
+	 * IDocument::GetPageLinks() method. The corresponding links should
+	 * be returned from the latter method.
+	 *
+	 * @sa ILink
+	 * @sa IDocument::GetPageLinks()
 	 */
 	class ILinkAnnotation : public IAnnotation
 	{
