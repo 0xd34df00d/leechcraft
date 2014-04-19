@@ -48,7 +48,9 @@ namespace CertMgr
 			new QStandardItem { val ? tr ("allow") : tr ("deny") }
 		};
 
-		row.at (ExceptionsModel::Name)->setEditable (false);
+		for (auto item : row)
+			item->setEditable (false);
+
 		row.at (ExceptionsModel::Status)->setData (val, ExceptionsModel::IsAllowed);
 
 		appendRow (row);

@@ -17,7 +17,6 @@ set (SRCS
 	certsmodel.cpp
 	managerdialog.cpp
 	exceptionsmodel.cpp
-	exceptionsdelegate.cpp
 	)
 set (FORMS
 	acceptedrejecteddialog.ui

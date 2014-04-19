@@ -32,7 +32,6 @@
 #include <QMessageBox>
 #include <QTimer>
 #include "exceptionsmodel.h"
-#include "exceptionsdelegate.h"
 
 namespace LeechCraft
 {
@@ -51,7 +50,6 @@ namespace CertMgr
 
 		Ui_.setupUi (this);
 		Ui_.View_->setModel (Model_);
-		Ui_.View_->setItemDelegate (new ExceptionsDelegate);
 
 		QTimer::singleShot (0,
 				this,
