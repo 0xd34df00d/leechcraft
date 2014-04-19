@@ -708,14 +708,10 @@ namespace LHTR
 
 	QString RichEditorWidget::ExpandCustomTags (QString html) const
 	{
+		TryFixHTML (html);
+		html.remove ('\n');
+
 		QDomDocument doc;
-#ifdef WITH_HTMLTIDY
-		if (!doc.setContent (html))
-		{
-			TryFixHTML (html);
-			html.remove ('\n');
-		}
-#endif
 		if (!doc.setContent (html))
 		{
 			qWarning () << Q_FUNC_INFO
