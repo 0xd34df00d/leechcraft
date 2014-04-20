@@ -134,7 +134,9 @@ namespace MusicZombie
 		reply->deleteLater ();
 
 		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
+				<< Name_
+				<< reply->errorString ()
+				<< reply->readAll ();
 		emit networkError ();
 	}
 }
