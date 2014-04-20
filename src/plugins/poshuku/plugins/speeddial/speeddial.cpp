@@ -100,7 +100,7 @@ namespace SpeedDial
 			QWebView *view,
 			QObject *browserWidget)
 	{
-		new ViewHandler { view, browserWidget, Cache_, PoshukuProxy_ };
+		new ViewHandler { view, browserWidget, Cache_, CustomSites_, PoshukuProxy_ };
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

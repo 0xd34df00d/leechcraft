@@ -50,6 +50,7 @@ class IProxyObject;
 namespace SpeedDial
 {
 	class ImageCache;
+	class CustomSitesManager;
 
 	typedef QList<QPair<QUrl, QString>> TopList_t;
 
@@ -68,8 +69,9 @@ namespace SpeedDial
 
 		bool IsLoading_ = false;
 	public:
-		ViewHandler (QWebView*, QObject*, ImageCache*, IProxyObject*);
+		ViewHandler (QWebView*, QObject*, ImageCache*, CustomSitesManager*, IProxyObject*);
 	private:
+		void LoadStatistics ();
 		void WriteTables (const QList<QPair<QString, TopList_t>>&);
 		void WriteTable (QXmlStreamWriter&, const TopList_t&, size_t, size_t, const QString&);
 	private slots:

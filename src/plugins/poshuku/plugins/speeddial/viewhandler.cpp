@@ -40,6 +40,8 @@
 #include <interfaces/poshuku/iproxyobject.h>
 #include <util/util.h>
 #include "imagecache.h"
+#include "xmlsettingsmanager.h"
+#include "customsitesmanager.h"
 
 namespace LeechCraft
 {
@@ -124,13 +126,26 @@ namespace SpeedDial
 	const size_t Cols = 4;
 
 	ViewHandler::ViewHandler (QWebView *view,
-			QObject *browser, ImageCache *cache, IProxyObject *proxy)
+			QObject *browser, ImageCache *cache, CustomSitesManager *customManager, IProxyObject *proxy)
 	: QObject { view }
 	, View_ { view }
 	, BrowserWidget_ { browser }
 	, ImageCache_ { cache }
 	, PoshukuProxy_ { proxy }
 	, LoadWatcher_ { new QFutureWatcher<LoadResult> { this } }
+	{
+		connect (ImageCache_,
+				SIGNAL (gotSnapshot (QUrl, QImage)),
+				this,
+				SLOT (handleSnapshot (QUrl, QImage)));
+
+		if (XmlSettingsManager::Instance ().property ("UseStaticList").toBool ())
+			WriteTables ({ { {}, customManager->GetTopList () } });
+		else
+			LoadStatistics ();
+	}
+
+	void ViewHandler::LoadStatistics ()
 	{
 		connect (View_,
 				SIGNAL (loadStarted ()),
@@ -145,11 +160,6 @@ namespace SpeedDial
 						const auto& sb = PoshukuProxy_->CreateStorageBackend ();
 						return GetTopUrls (sb, Rows * Cols);
 					}));
-
-		connect (ImageCache_,
-				SIGNAL (gotSnapshot (QUrl, QImage)),
-				this,
-				SLOT (handleSnapshot (QUrl, QImage)));
 	}
 
 	void ViewHandler::handleLoadStarted ()
