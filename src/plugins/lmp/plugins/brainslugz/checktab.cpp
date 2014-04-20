@@ -160,6 +160,10 @@ namespace BrainSlugz
 		check (Ui_.Album_, Media::ReleaseInfo::Type::Standard);
 		check (Ui_.EP_, Media::ReleaseInfo::Type::EP);
 		check (Ui_.Single_, Media::ReleaseInfo::Type::Single);
+		check (Ui_.Compilation_, Media::ReleaseInfo::Type::Compilation);
+		check (Ui_.Live_, Media::ReleaseInfo::Type::Live);
+		check (Ui_.Soundtrack_, Media::ReleaseInfo::Type::Soundtrack);
+		check (Ui_.Other_, Media::ReleaseInfo::Type::Other);
 
 		Model_->RemoveUnscheduled ();
 

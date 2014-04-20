@@ -65,7 +65,35 @@
            <string>Single</string>
           </property>
           <property name="checked">
-           <bool>true</bool>
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="Compilation_">
+          <property name="text">
+           <string>Compilation</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="Live_">
+          <property name="text">
+           <string>Live</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="Soundtrack_">
+          <property name="text">
+           <string>Soundtrack</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="Other_">
+          <property name="text">
+           <string>Other</string>
           </property>
          </widget>
         </item>
