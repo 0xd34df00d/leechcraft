@@ -98,6 +98,8 @@ namespace MusicZombie
 
 	void PendingDisco::handleIDError ()
 	{
+		qWarning () << Q_FUNC_INFO
+				<< "error getting MBID";
 		emit error (tr ("Error getting artist MBID."));
 		deleteLater ();
 	}
