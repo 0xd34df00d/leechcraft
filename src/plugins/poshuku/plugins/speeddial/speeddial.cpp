@@ -50,6 +50,9 @@ namespace SpeedDial
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuspeeddialsettings.xml");
+
+		CustomSites_ = new CustomSitesManager;
+		XSD_->SetDataSource ("SitesView", CustomSites_->GetModel ());
 	}
 
 	void Plugin::SecondInit ()

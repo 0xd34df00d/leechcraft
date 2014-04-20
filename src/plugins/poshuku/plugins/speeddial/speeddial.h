@@ -48,6 +48,7 @@ class IProxyObject;
 namespace SpeedDial
 {
 	class ImageCache;
+	class CustomSitesManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -59,6 +60,7 @@ namespace SpeedDial
 
 		IProxyObject *PoshukuProxy_;
 		ImageCache *Cache_;
+		CustomSitesManager *CustomSites_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
