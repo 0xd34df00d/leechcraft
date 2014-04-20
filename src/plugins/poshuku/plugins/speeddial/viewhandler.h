@@ -70,6 +70,7 @@ namespace SpeedDial
 	public:
 		ViewHandler (QWebView*, QObject*, ImageCache*, IProxyObject*);
 	private:
+		void WriteTables (const QList<QPair<QString, TopList_t>>&);
 		void WriteTable (QXmlStreamWriter&, const TopList_t&, size_t, size_t, const QString&);
 	private slots:
 		void handleLoadStarted ();
