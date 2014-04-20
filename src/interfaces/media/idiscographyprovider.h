@@ -89,6 +89,18 @@ namespace Media
 			 */
 			Single,
 
+			/** @brief A compilation.
+			 */
+			Compilation,
+
+			/** @brief A live release.
+			 */
+			Live,
+
+			/** @brief A soundtrack.
+			 */
+			Soundtrack,
+
 			/** @brief Some other release type currently unrecognized by
 			 * LeechCraft.
 			 */
