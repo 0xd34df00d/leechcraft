@@ -248,6 +248,9 @@ namespace SpeedDial
 			w.writeStartElement ("tr");
 			for (size_t c = 0; c < cols; ++c)
 			{
+				if (r * cols + c >= static_cast<size_t> (items.size ()))
+					continue;
+
 				const auto& item = items.at (r * cols + c);
 				auto image = ImageCache_->GetSnapshot (item.first);
 				if (image.isNull ())
