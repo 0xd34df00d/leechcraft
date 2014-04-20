@@ -51,7 +51,7 @@ namespace SpeedDial
 {
 	class ImageCache;
 
-	typedef QList<QPair<QString, QString>> TopList_t;
+	typedef QList<QPair<QUrl, QString>> TopList_t;
 
 	struct LoadResult;
 

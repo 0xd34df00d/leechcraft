@@ -255,7 +255,7 @@ namespace SpeedDial
 							QString { "max-width: %1; min-width: %1; width: %1;" }
 									.arg (tdWidthStr));
 					w.writeStartElement ("a");
-						w.writeAttribute ("href", item.first);
+						w.writeAttribute ("href", item.first.toEncoded ());
 						w.writeAttribute ("class", "sdlink");
 
 						w.writeStartElement ("img");
