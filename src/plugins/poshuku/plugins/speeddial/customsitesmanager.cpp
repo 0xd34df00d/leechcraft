@@ -56,6 +56,14 @@ namespace SpeedDial
 		return Model_;
 	}
 
+	TopList_t CustomSitesManager::GetTopList () const
+	{
+		TopList_t result;
+		for (const auto& addr : GetAddresses ())
+			result.append ({ addr.second, addr.first });
+		return result;
+	}
+
 	AddrList_t CustomSitesManager::GetAddresses () const
 	{
 		AddrList_t result;

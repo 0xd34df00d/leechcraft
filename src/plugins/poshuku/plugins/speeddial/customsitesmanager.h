@@ -33,6 +33,7 @@
 #include <QVariantList>
 #include <QUrl>
 #include <QModelIndexList>
+#include "viewhandler.h"
 
 class QStandardItemModel;
 
@@ -54,8 +55,9 @@ namespace SpeedDial
 		CustomSitesManager ();
 
 		QAbstractItemModel* GetModel () const;
-		AddrList_t GetAddresses () const;
+		TopList_t GetTopList () const;
 	private:
+		AddrList_t GetAddresses () const;
 		void LoadSettings ();
 		void SaveSettings ();
 
