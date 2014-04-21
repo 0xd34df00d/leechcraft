@@ -36,6 +36,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/sys/paths.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -109,7 +110,7 @@ namespace LMP
 		root->setContextProperty ("topsText", tr ("Show tops"));
 		root->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
-		Ui_.HypesView_->setSource (QUrl ("qrc:/lmp/resources/qml/HypesView.qml"));
+		Ui_.HypesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,
 				SIGNAL (activated (int)),

@@ -37,6 +37,7 @@
 #include <interfaces/iinfo.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/sys/paths.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -103,7 +104,7 @@ namespace LMP
 		Ui_.View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
 		Ui_.View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
-		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/EventsView.qml"));
+		Ui_.View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "EventsView.qml"));
 
 		connect (Ui_.View_->rootObject (),
 				SIGNAL (attendSure (int)),

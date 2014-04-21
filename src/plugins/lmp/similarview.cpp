@@ -31,6 +31,7 @@
 #include <QDeclarativeEngine>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/sys/paths.h>
 #include "similarviewmanager.h"
 #include "core.h"
 
@@ -49,7 +50,7 @@ namespace LMP
 				[] { return 50 * 1024 * 1024; },
 				engine ());
 
-		setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
+		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "SimilarView.qml"));
 		Manager_->InitWithSource ();
 	}
 

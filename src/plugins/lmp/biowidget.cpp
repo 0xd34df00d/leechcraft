@@ -31,6 +31,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/sys/paths.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -54,7 +55,7 @@ namespace LMP
 				Ui_.View_->engine ());
 
 		Manager_ = new BioViewManager (Ui_.View_, this);
-		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/BioView.qml"));
+		Ui_.View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "BioView.qml"));
 		Manager_->InitWithSource ();
 
 		const auto& lastProv = XmlSettingsManager::Instance ()
