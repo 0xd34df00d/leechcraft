@@ -237,7 +237,7 @@ Rectangle {
                         smooth: true
                         fillMode: Image.PreserveAspectFit
 
-                        cache: false
+                        asynchronous: false
                     }
 
                     Text {
