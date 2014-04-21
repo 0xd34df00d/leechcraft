@@ -35,6 +35,7 @@
 #endif
 #include <QtDebug>
 #include <QDir>
+#include <QUrl>
 #include <QDesktopServices>
 #include <util/util.h>
 
@@ -84,6 +85,11 @@ namespace Util
 				<< suffix
 				<< filename;
 		return QString ();
+	}
+
+	QUrl GetSysPathUrl (SysPath path, const QString& subfolder, const QString& filename)
+	{
+		return QUrl::fromLocalFile (GetSysPath (path, subfolder, filename));
 	}
 
 	QStringList GetSystemPaths ()

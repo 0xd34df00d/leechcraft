@@ -35,6 +35,7 @@
 #include <util/utilconfig.h>
 
 class QDir;
+class QUrl;
 
 namespace LeechCraft
 {
@@ -115,8 +116,26 @@ namespace Util
 	 * \em subfolder, or an empty string if there is no such file.
 	 *
 	 * @sa GetPathCandidates()
+	 * @sa GetSysPathUrl()
 	 */
 	UTIL_API QString GetSysPath (SysPath path, const QString& subfolder, const QString& filename);
+
+	/** @brief Returns path to the file in the given root path and subfolder.
+	 *
+	 * This function behaves exactly like GetSysPath(), but it returns
+	 * the path as QUrl via the <code>QUrl::fromLocalFile</code>, so it
+	 * is suitable, for example, for QML views.
+	 *
+	 * @param[in] path The identifier of the root path.
+	 * @param[in] subfolder The subfolder inside the \em path.
+	 * @param[in] filename The filename inside the \em path +
+	 * \em subfolder.
+	 * @return Path to the \em filename located in \em path +
+	 * \em subfolder, or an empty URL if there is no such file.
+	 *
+	 * @sa GetSysPath()
+	 */
+	UTIL_API QUrl GetSysPathUrl (SysPath path, const QString& subfolder, const QString& filename);
 
 	/** @brief Returns the components of the system PATH variable.
 	 *
