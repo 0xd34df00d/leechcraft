@@ -129,6 +129,9 @@ namespace KBSwitch
 
 	void KBCtl::SetEnabledGroups (QStringList groups)
 	{
+		if (groups.isEmpty ())
+			return;
+
 		if (groups.contains ("us") && groups.at (0) != "us")
 		{
 			groups.removeAll ("us");
@@ -149,6 +152,9 @@ namespace KBSwitch
 
 	void KBCtl::SetGroupVariants (const QStringList& variants)
 	{
+		if (variants.isEmpty ())
+			return;
+
 		Variants_ = variants;
 		scheduleApply ();
 	}
@@ -377,8 +383,6 @@ namespace KBSwitch
 		delete [] result;
 
 		XkbFreeNames (desc, XkbSymbolsNameMask | XkbGroupNamesMask, True);
-
-		qDebug () << Q_FUNC_INFO << Groups_;
 	}
 
 	void KBCtl::AssignWindow (Qt::HANDLE window)
