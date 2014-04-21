@@ -67,12 +67,11 @@ namespace LMP
 		void Request (Media::IArtistBioFetcher*, const QString&);
 	private:
 		QStandardItem* FindAlbumItem (const QString&) const;
-		void SetAlbumImage (const QString&, const QImage&);
+		void SetAlbumImage (const QString&, const QUrl&);
 	private slots:
 		void handleBioReady ();
 		void handleDiscographyReady ();
-		void handleAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
-		void handleImageScaled ();
+		void handleAlbumArt (const Media::AlbumInfo&, const QList<QUrl>&);
 
 		void handleAlbumPreviewRequested (int);
 	signals:

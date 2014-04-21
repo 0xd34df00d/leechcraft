@@ -144,7 +144,7 @@ namespace LMP
 		return 0;
 	}
 
-	void BioViewManager::SetAlbumImage (const QString& album, const QImage& img)
+	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img)
 	{
 		auto item = FindAlbumItem (album);
 		if (!item)
@@ -155,7 +155,7 @@ namespace LMP
 			return;
 		}
 
-		item->setData (Util::GetAsBase64Src (img), DiscoModel::Roles::AlbumImage);
+		item->setData (img, DiscoModel::Roles::AlbumImage);
 	}
 
 	void BioViewManager::handleBioReady ()
@@ -197,50 +197,19 @@ namespace LMP
 
 			const auto proxy = aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
 			connect (proxy->GetQObject (),
-					SIGNAL (ready (Media::AlbumInfo, QList<QImage>)),
+					SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
 					this,
-					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QImage>)));
+					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QUrl>)));
 		}
 	}
 
-	namespace
+	void BioViewManager::handleAlbumArt (const Media::AlbumInfo& info, const QList<QUrl>& images)
 	{
-		struct ScaleResult
-		{
-			QImage Image_;
-			QString Album_;
-		};
-	}
-
-	void BioViewManager::handleAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
-	{
+		sender ()->deleteLater ();
 		if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
 			return;
 
-		auto img = images.first ();
-		if (img.width () <= AASize)
-		{
-			SetAlbumImage (info.Album_, img);
-			return;
-		}
-
-		auto watcher = new QFutureWatcher<ScaleResult> ();
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleImageScaled ()));
-
-		watcher->setFuture (QtConcurrent::run ([img, info] () -> ScaleResult
-				{ return { img.scaled (AASize, AASize, Qt::KeepAspectRatio, Qt::SmoothTransformation), info.Album_ }; }));
-	}
-
-	void BioViewManager::handleImageScaled ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<ScaleResult>*> (sender ());
-		watcher->deleteLater ();
-
-		const auto& result = watcher->result ();
-		SetAlbumImage (result.Album_, result.Image_);
+		SetAlbumImage (info.Album_, images.first ());
 	}
 
 	void BioViewManager::handleAlbumPreviewRequested (int index)
