@@ -35,6 +35,8 @@
 #include <QHash>
 #include <QMetaType>
 
+class QUrl;
+
 namespace Media
 {
 	/** @brief Information about an album used in IAlbumArtProvider.
@@ -76,8 +78,10 @@ namespace Media
 
 		virtual AlbumInfo GetAlbumInfo () const = 0;
 		virtual QList<QImage> GetImages () const = 0;
+		virtual QList<QUrl> GetImageUrls () const = 0;
 	protected:
 		virtual void ready (const AlbumInfo&, const QList<QImage>&) = 0;
+		virtual void urlsReady (const AlbumInfo&, const QList<QUrl>&) = 0;
 	};
 
 	/** @brief Interface for plugins that can search for album art.
