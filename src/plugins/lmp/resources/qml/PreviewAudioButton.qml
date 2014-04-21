@@ -8,7 +8,7 @@ Image {
     smooth: true
     fillMode: Image.PreserveAspectFit
 
-    source: "image://sysIcons/media-playback-start"
+    source: "image://ThemeIcons/media-playback-start"
 
     cache: false
 

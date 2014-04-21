@@ -8,7 +8,7 @@ Image {
     smooth: true
     fillMode: Image.PreserveAspectFit
 
-    source: "image://sysIcons/dialog-information"
+    source: "image://ThemeIcons/dialog-information"
 
     cache: false
 

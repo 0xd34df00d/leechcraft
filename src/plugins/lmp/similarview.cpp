@@ -42,7 +42,7 @@ namespace LMP
 	: QDeclarativeView (parent)
 	, Manager_ (new SimilarViewManager (this, this))
 	{
-		engine ()->addImageProvider ("sysIcons",
+		engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
 		new Util::StandardNAMFactory ("lmp/qml",

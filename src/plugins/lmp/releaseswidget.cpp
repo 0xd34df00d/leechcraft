@@ -92,7 +92,7 @@ namespace LMP
 				[] { return 50 * 1024 * 1024; },
 				Ui_.ReleasesView_->engine ());
 
-		Ui_.ReleasesView_->engine ()->addImageProvider ("sysIcons",
+		Ui_.ReleasesView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("colorProxy",

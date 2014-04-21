@@ -93,7 +93,7 @@ namespace LMP
 		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		View_->engine ()->addImageProvider ("sysIcons", new Util::ThemeImageProvider (proxy));
+		View_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);

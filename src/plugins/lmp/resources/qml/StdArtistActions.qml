@@ -26,7 +26,7 @@ Row {
         smooth: true
         fillMode: Image.PreserveAspectFit
 
-        source: "image://sysIcons/bookmark-new"
+        source: "image://ThemeIcons/bookmark-new"
         visible: rootRow.bookmarkVisible
 
         cache: false

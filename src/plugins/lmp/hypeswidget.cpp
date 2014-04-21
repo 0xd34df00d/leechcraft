@@ -91,7 +91,7 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 
-		Ui_.HypesView_->engine ()->addImageProvider ("sysIcons",
+		Ui_.HypesView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
 		new Util::StandardNAMFactory ("lmp/qml",
