@@ -51,6 +51,8 @@ namespace LMP
 		QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const;
 		QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const;
 		QString PerformSubstitutions (QString, const MediaInfo&, SubstitutionFlags) const;
+
+		void PreviewRelease (const QString& artist, const QString& release, const QList< QPair< QString, int > >& tracks) const;
 	};
 }
 }

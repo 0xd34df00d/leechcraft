@@ -75,6 +75,9 @@ namespace LMP
 
 		virtual QString PerformSubstitutions (QString mask,
 				const MediaInfo& info, SubstitutionFlags flags = SFNone) const = 0;
+
+		virtual void PreviewRelease (const QString& artist, const QString& release,
+				const QList<QPair<QString, int>>& tracks) const = 0;
 	};
 
 	typedef std::shared_ptr<ILMPProxy> ILMPProxy_Ptr;
