@@ -39,7 +39,6 @@
 namespace Media
 {
 struct ReleaseInfo;
-
 class IAlbumArtProvider;
 class IArtistBioFetcher;
 }
@@ -54,10 +53,13 @@ namespace BrainSlugz
 	{
 		Q_OBJECT
 
+
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItemModel*> Artist2Submodel_;
 
 		QSet<int> Scheduled_;
+
+		QMap<int, QList<Media::ReleaseInfo>> Artist2Missings_;
 
 		const Collection::Artists_t AllArtists_;
 		const ILMPProxy_ptr Proxy_;
@@ -92,6 +94,8 @@ namespace BrainSlugz
 		void selectAll ();
 		void selectNone ();
 		void setArtistScheduled (int, bool);
+
+		void previewRelease (int artistId, int releaseIdx);
 	};
 }
 }

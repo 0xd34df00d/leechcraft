@@ -176,6 +176,8 @@ namespace BrainSlugz
 			return;
 		}
 
+		Artist2Missings_ [artist.ID_] = releases;
+
 		const auto model = Artist2Submodel_.value (artist.ID_);
 		for (const auto& release : releases)
 		{
@@ -265,6 +267,35 @@ namespace BrainSlugz
 			Scheduled_ << id;
 		else
 			Scheduled_.remove (id);
+	}
+
+	void CheckModel::previewRelease (int artistId, int releaseIdx)
+	{
+		const auto& release = Artist2Missings_.value (artistId).value (releaseIdx);
+		if (release.ID_.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown release for"
+					<< artistId
+					<< releaseIdx;
+			return;
+		}
+
+		if (!Artist2Item_.contains (artistId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown artist ID"
+					<< artistId;
+			return;
+		}
+
+		const auto& artist = Artist2Item_ [artistId]->data (Role::ArtistName).toString ();
+
+		QList<QPair<QString, int>> tracks;
+		for (const auto& infoList : release.TrackInfos_)
+			for (const auto& info : infoList)
+				tracks.append ({ info.Name_, info.Length_ });
+		Proxy_->PreviewRelease (artist, release.Name_, tracks);
 	}
 }
 }
