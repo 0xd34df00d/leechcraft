@@ -33,6 +33,7 @@
 #include <QHash>
 #include <QSet>
 #include <interfaces/lmp/collectiontypes.h>
+#include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/core/icoreproxy.h>
 
 namespace Media
@@ -59,6 +60,7 @@ namespace BrainSlugz
 		QSet<int> Scheduled_;
 
 		const Collection::Artists_t AllArtists_;
+		const ILMPProxy_ptr Proxy_;
 		const QString DefaultAlbumIcon_;
 		const QString DefaultArtistIcon_;
 
@@ -77,7 +79,8 @@ namespace BrainSlugz
 			PresentCount
 		};
 
-		CheckModel (const Collection::Artists_t&, const ICoreProxy_ptr&, QObject*);
+		CheckModel (const Collection::Artists_t&,
+				const ICoreProxy_ptr&, const ILMPProxy_ptr&, QObject*);
 
 		Collection::Artists_t GetSelectedArtists () const;
 

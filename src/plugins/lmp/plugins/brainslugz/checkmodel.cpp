@@ -37,6 +37,7 @@
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/lmp/ilmpproxy.h>
 #include <util/util.h>
 #include <util/sll/onetimerunner.h>
 
@@ -80,9 +81,10 @@ namespace BrainSlugz
 	}
 
 	CheckModel::CheckModel (const Collection::Artists_t& artists,
-			const ICoreProxy_ptr& proxy, QObject *parent)
+			const ICoreProxy_ptr& proxy, const ILMPProxy_ptr& lmpProxy, QObject *parent)
 	: QStandardItemModel { parent }
 	, AllArtists_ { artists }
+	, Proxy_ { lmpProxy }
 	, DefaultAlbumIcon_ { GetIcon (proxy, "media-optical", AASize * 2) }
 	, DefaultArtistIcon_ { GetIcon (proxy, "view-media-artist", ArtistSize * 2) }
 	, AAProv_ { proxy->GetPluginsManager ()->

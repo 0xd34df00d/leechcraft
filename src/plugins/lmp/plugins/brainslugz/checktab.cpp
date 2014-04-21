@@ -77,7 +77,8 @@ namespace BrainSlugz
 	, TC_ (tc)
 	, Plugin_ { plugin }
 	, Toolbar_ { new QToolBar { this } }
-	, Model_ { new CheckModel { lmpProxy->GetLocalCollection ()->GetAllArtists (), coreProxy, this } }
+	, Model_ { new CheckModel { lmpProxy->GetLocalCollection ()->GetAllArtists (),
+				coreProxy, lmpProxy, this } }
 	, CheckedModel_ { new MissingModel { Model_, this } }
 	{
 		Ui_.setupUi (this);
