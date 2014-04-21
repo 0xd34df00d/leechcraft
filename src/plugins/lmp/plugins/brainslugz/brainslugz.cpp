@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "brainslugz.h"
+#include <util/util.h>
 #include "checktab.h"
 
 namespace LeechCraft
@@ -38,13 +39,15 @@ namespace BrainSlugz
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("lmp_brainslugz");
+
 		CoreProxy_ = proxy;
 
 		CheckTC_ = TabClassInfo
 		{
 			GetUniqueID () + ".CheckTab",
 			GetName (),
-			tr ("Tab allowing one to check if their collection misses some albums."),
+			GetInfo (),
 			GetIcon (),
 			0,
 			TFOpenableByRequest

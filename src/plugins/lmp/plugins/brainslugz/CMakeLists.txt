@@ -19,7 +19,7 @@ set (BRAINSLUGZ_FORMS
 	checktab.ui
 	)
 QT4_WRAP_UI (BRAINSLUGZ_UIS_H ${BRAINSLUGZ_FORMS})
-#CreateTrs ("lmp_brainslugz" "en;ru_RU" BRAINSLUGZ_COMPILED_TRANSLATIONS)
+CreateTrs ("lmp_brainslugz" "en;ru_RU" BRAINSLUGZ_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp_brainslugz" "en;ru_RU" "${BRAINSLUGZ_SRCS}" "${BRAINSLUGZ_FORMS}" "")
 
 add_library (leechcraft_lmp_brainslugz SHARED
