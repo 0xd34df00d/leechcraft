@@ -74,8 +74,10 @@ namespace BrainSlugz
 	{
 		void CleanupPunctuation (QString& name)
 		{
-			for (auto c : { '(', ')', ',', '.' })
+			for (auto c : { '(', ')', ',', '.', ':' })
 				name.remove (c);
+			for (auto str : { QString::fromUtf8 ("—") })
+				name.remove (str);
 			name = name.trimmed ().simplified ();
 		}
 
