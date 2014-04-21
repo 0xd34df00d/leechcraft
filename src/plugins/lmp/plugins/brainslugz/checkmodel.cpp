@@ -192,26 +192,15 @@ namespace BrainSlugz
 			{
 				[this, item, proxy] () -> void
 				{
-					const auto& image = proxy->GetImages ().value (0);
-					if (image.isNull ())
+					proxy->GetQObject ()->deleteLater ();
+					const auto& url = proxy->GetImageUrls ().value (0);
+					if (url.isEmpty ())
 						return;
 
-					auto watcher = new QFutureWatcher<QString>;
-					watcher->setFuture (QtConcurrent::run ([image]
-							{
-								return Util::GetAsBase64Src (image.scaled (AASize, AASize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-							}));
-
-					new Util::OneTimeRunner
-					{
-						[watcher, item] { item->setData (watcher->result (), ReleasesSubmodel::ReleaseArt); },
-						watcher,
-						SIGNAL (finished ()),
-						this
-					};
+					item->setData (url, ReleasesSubmodel::ReleaseArt);
 				},
 				proxy->GetQObject (),
-				SIGNAL (ready (Media::AlbumInfo, QList<QImage>)),
+				SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
 				this
 			};
 		}
