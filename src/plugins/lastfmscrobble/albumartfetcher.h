@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/media/ialbumartprovider.h>
 
@@ -46,6 +47,7 @@ namespace Lastfmscrobble
 		const ICoreProxy_ptr Proxy_;
 
 		const Media::AlbumInfo Info_;
+		QUrl ImageUrl_;
 		QImage Image_;
 	public:
 		AlbumArtFetcher (const Media::AlbumInfo&, ICoreProxy_ptr, QObject* = 0);
@@ -53,11 +55,13 @@ namespace Lastfmscrobble
 		QObject* GetQObject ();
 		Media::AlbumInfo GetAlbumInfo () const;
 		QList<QImage> GetImages () const;
+		QList<QUrl> GetImageUrls () const;
 	private slots:
 		void handleReplyFinished ();
 		void handleImageReplyFinished ();
 	signals:
 		void ready (const Media::AlbumInfo&, const QList<QImage>&);
+		void urlsReady (const Media::AlbumInfo&, const QList<QUrl>&);
 	};
 }
 }

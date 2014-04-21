@@ -65,6 +65,11 @@ namespace Lastfmscrobble
 		return Info_;
 	}
 
+	QList<QUrl> AlbumArtFetcher::GetImageUrls () const
+	{
+		return { ImageUrl_ };
+	}
+
 	QList<QImage> AlbumArtFetcher::GetImages () const
 	{
 		return { Image_ };
@@ -104,7 +109,10 @@ namespace Lastfmscrobble
 				if (text.isEmpty ())
 					continue;
 
-				QNetworkRequest req (QUrl (elem.text ()));
+				ImageUrl_ = QUrl (elem.text ());
+				emit urlsReady (Info_, { ImageUrl_ });
+
+				QNetworkRequest req (ImageUrl_);
 				req.setPriority (QNetworkRequest::LowPriority);
 				auto imageReply = Proxy_->GetNetworkAccessManager ()->get (req);
 				imageReply->setProperty ("AlbumInfo", reply->property ("AlbumInfo"));
@@ -112,6 +120,10 @@ namespace Lastfmscrobble
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleImageReplyFinished ()));
+				connect (this,
+						SIGNAL (destroyed ()),
+						imageReply,
+						SLOT (deleteLater ()));
 				return;
 			}
 		}
