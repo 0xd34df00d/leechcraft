@@ -74,7 +74,7 @@ namespace Dolle
 		return result;
 	}
 
-	QList<INotificationHandler*> Plugin::GetNotificationHandlers () const
+	QList<INotificationHandler_ptr> Plugin::GetNotificationHandlers () const
 	{
 		return {};
 	}

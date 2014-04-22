@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QtPlugin>
 
 namespace LeechCraft
@@ -37,7 +38,7 @@ struct Entity;
 
 namespace AdvancedNotifications
 {
-	struct INotificationRule;
+	class INotificationRule;
 
 	class INotificationHandler
 	{
@@ -47,6 +48,8 @@ namespace AdvancedNotifications
 		virtual NotificationMethod GetHandlerMethod () const = 0;
 		virtual void Handle (const Entity&, const INotificationRule&) = 0;
 	};
+
+	typedef std::shared_ptr<INotificationHandler> INotificationHandler_ptr;
 }
 }
 

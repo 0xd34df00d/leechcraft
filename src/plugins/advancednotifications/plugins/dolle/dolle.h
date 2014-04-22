@@ -61,7 +61,7 @@ namespace Dolle
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		QList<INotificationHandler*> GetNotificationHandlers () const;
+		QList<INotificationHandler_ptr> GetNotificationHandlers () const;
 	};
 }
 }

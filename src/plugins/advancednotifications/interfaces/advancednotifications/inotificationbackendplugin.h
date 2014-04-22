@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QList>
 #include <QtPlugin>
 
@@ -38,12 +39,14 @@ namespace AdvancedNotifications
 {
 	class INotificationHandler;
 
+	typedef std::shared_ptr<INotificationHandler> INotificationHandler_ptr;
+
 	class INotificationBackendPlugin
 	{
 	public:
 		virtual ~INotificationBackendPlugin () {}
 
-		virtual QList<INotificationHandler*> GetNotificationHandlers () const = 0;
+		virtual QList<INotificationHandler_ptr> GetNotificationHandlers () const = 0;
 	};
 }
 }
