@@ -48,7 +48,9 @@ static void SetDockBadgeImpl (const QString& text)
 
 namespace LeechCraft
 {
-namespace Pierre
+namespace AdvancedNotifications
+{
+namespace Dolle
 {
 namespace DU
 {
@@ -56,6 +58,7 @@ namespace DU
 	{
 		SetDockBadgeImpl (text);
 	}
+}
 }
 }
 }

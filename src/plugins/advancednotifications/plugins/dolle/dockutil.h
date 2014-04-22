@@ -33,11 +33,14 @@ class QString;
 
 namespace LeechCraft
 {
-namespace Pierre
+namespace AdvancedNotifications
+{
+namespace Dolle
 {
 namespace DU
 {
 	void SetDockBadge (const QString&);
+}
 }
 }
 }
