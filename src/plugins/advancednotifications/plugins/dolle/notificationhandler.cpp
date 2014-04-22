@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "notificationhandler.h"
+#include <algorithm>
 #include <QtDebug>
+#include <interfaces/structures.h>
 #include <interfaces/advancednotifications/types.h>
 
 namespace LeechCraft
@@ -42,9 +44,22 @@ namespace Dolle
 		return NMTray;
 	}
 
-	void NotificationHandler::Handle (const Entity&, const INotificationRule&)
+	void NotificationHandler::Handle (const Entity& e, const INotificationRule&)
 	{
-		qDebug () << Q_FUNC_INFO;
+		const QString& cat = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
+		const QString& eventId = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
+
+		if (cat != "org.LC.AdvNotifications.Cancel")
+		{
+			if (const int delta = e.Additional_.value ("org.LC.AdvNotifications.DeltaCount", 0).toInt ())
+				Counts_ [eventId] += delta;
+			else
+				Counts_ [eventId] = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
+		}
+		else if (!Counts_.remove (eventId))
+			return;
+
+		const auto total = std::accumulate (Counts_.begin (), Counts_.end (), 0);
 	}
 }
 }
