@@ -42,7 +42,8 @@ namespace AdvancedNotifications
 		NMTray = 0x02,
 		NMAudio = 0x04,
 		NMCommand = 0x08,
-		NMUrgentHint = 0x10
+		NMUrgentHint = 0x10,
+		NMSystemDependent = 0x20
 	};
 
 	Q_DECLARE_FLAGS (NotificationMethods, NotificationMethod);

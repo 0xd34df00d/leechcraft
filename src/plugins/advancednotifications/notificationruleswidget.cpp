@@ -148,6 +148,8 @@ namespace AdvancedNotifications
 			methods |= NMCommand;
 		if (Ui_.NotifyUrgent_->checkState () == Qt::Checked)
 			methods |= NMUrgentHint;
+		if (Ui_.NotifySystemDependent_->checkState () == Qt::Checked)
+			methods |= NMSystemDependent;
 		rule.SetMethods (methods);
 
 		rule.SetFieldMatches (Matches_);
@@ -321,6 +323,8 @@ namespace AdvancedNotifications
 		Ui_.NotifyCmd_->setCheckState ((methods & NMCommand) ?
 				Qt::Checked : Qt::Unchecked);
 		Ui_.NotifyUrgent_->setCheckState ((methods & NMUrgentHint) ?
+				Qt::Checked : Qt::Unchecked);
+		Ui_.NotifySystemDependent_->setCheckState ((methods & NMSystemDependent) ?
 				Qt::Checked : Qt::Unchecked);
 
 		ResetMatchesModel ();

@@ -234,7 +234,7 @@ namespace AdvancedNotifications
 			<< IsSingleShot_
 			<< static_cast<quint16> (FieldMatches_.size ());
 
-		Q_FOREACH (const FieldMatch& match, FieldMatches_)
+		for (const auto& match : FieldMatches_)
 			match.Save (stream);
 	}
 
