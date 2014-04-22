@@ -157,7 +157,7 @@ namespace AdvancedNotifications
 		const auto ip2 = qobject_cast<IPlugin2*> (obj);
 		const auto& classes = ip2->GetPluginClasses ();
 
-		if (classes.contains (GetUniqueID () + ".NotificationBackend"))
+		if (classes.contains (GetUniqueID () + ".NotificationsBackend"))
 		{
 			const auto inbp = qobject_cast<INotificationBackendPlugin*> (obj);
 			for (const auto& handler : inbp->GetNotificationHandlers ())
