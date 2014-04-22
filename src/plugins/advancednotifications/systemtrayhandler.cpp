@@ -249,7 +249,6 @@ namespace AdvancedNotifications
 		QSet<QSystemTrayIcon*> visibleIcons;
 		QSet<QAction*> actsUpd;
 
-		int eventCount = 0;
 		for (const auto& event : Events_.keys ())
 		{
 			const EventData& data = Events_ [event];
@@ -274,15 +273,7 @@ namespace AdvancedNotifications
 			if (icon)
 				UpdateMenu (icon->contextMenu (), event, data);
 			UpdateMenu (action->menu (), event, data);
-
-			eventCount += data.Count_;
 		}
-
-		const auto& entity = Util::MakeEntity (eventCount,
-				QString (),
-				LeechCraft::Internal,
-				"x-leechcraft/notification-event-count-info");
-		Core::Instance ().SendEntity (entity);
 
 #ifdef HAVE_QML
 		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
