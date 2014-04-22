@@ -37,6 +37,8 @@ namespace AdvancedNotifications
 	{
 	public:
 		virtual ~INotificationRule () {}
+
+		virtual bool IsNull () const = 0;
 	};
 }
 }
