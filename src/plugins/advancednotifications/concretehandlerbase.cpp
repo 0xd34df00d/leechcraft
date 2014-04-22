@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "concretehandlerbase.h"
+#include "notificationrule.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,11 @@ namespace AdvancedNotifications
 	void ConcreteHandlerBase::SetGeneralHandler (GeneralHandler *gh)
 	{
 		GH_ = gh;
+	}
+
+	void ConcreteHandlerBase::Handle (const Entity& e, const INotificationRule& rule)
+	{
+		Handle (e, dynamic_cast<const NotificationRule&> (rule));
 	}
 }
 }
