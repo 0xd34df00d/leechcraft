@@ -27,6 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include <QFlags>
 
-#include "interfaces/advancednotifications/types.h"
+namespace LeechCraft
+{
+namespace AdvancedNotifications
+{
+	enum NotificationMethod
+	{
+		NMNone = 0x00,
+		NMVisual = 0x01,
+		NMTray = 0x02,
+		NMAudio = 0x04,
+		NMCommand = 0x08,
+		NMUrgentHint = 0x10
+	};
+
+	Q_DECLARE_FLAGS (NotificationMethods, NotificationMethod);
+}
+}
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AdvancedNotifications::NotificationMethods);
