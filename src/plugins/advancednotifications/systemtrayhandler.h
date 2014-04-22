@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
+#pragma once
+
 #include <QMap>
 #include <QStringList>
 #include <QPixmap>
@@ -92,5 +92,3 @@ namespace AdvancedNotifications
 	};
 }
 }
-
-#endif

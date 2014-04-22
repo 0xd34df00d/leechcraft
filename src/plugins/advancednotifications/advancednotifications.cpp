@@ -135,12 +135,12 @@ namespace AdvancedNotifications
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
 	{
-		return QList<QAction*> ();
+		return {};
 	}
 
 	QuarkComponents_t Plugin::GetComponents () const
 	{
-		return QuarkComponents_t () << Component_;
+		return { Component_ };
 	}
 }
 }

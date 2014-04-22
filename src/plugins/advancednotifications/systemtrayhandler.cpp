@@ -250,7 +250,7 @@ namespace AdvancedNotifications
 		QSet<QAction*> actsUpd;
 
 		int eventCount = 0;
-		Q_FOREACH (const QString& event, Events_.keys ())
+		for (const auto& event : Events_.keys ())
 		{
 			const EventData& data = Events_ [event];
 

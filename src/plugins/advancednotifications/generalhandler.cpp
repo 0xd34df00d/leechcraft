@@ -53,7 +53,7 @@ namespace AdvancedNotifications
 		Handlers_ << ConcreteHandlerBase_ptr (new CmdRunHandler);
 		Handlers_ << ConcreteHandlerBase_ptr (new WMUrgentHandler);
 
-		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
+		for (const auto& handler : Handlers_)
 			handler->SetGeneralHandler (this);
 
 		connect (Handlers_.first ().get (),

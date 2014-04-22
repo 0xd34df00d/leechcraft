@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULE_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULE_H
+#pragma once
+
 #include <QStringList>
 #include <QMetaType>
 #include "common.h"
@@ -145,5 +145,3 @@ namespace AdvancedNotifications
 
 Q_DECLARE_METATYPE (LeechCraft::AdvancedNotifications::NotificationRule);
 Q_DECLARE_METATYPE (QList<LeechCraft::AdvancedNotifications::NotificationRule>);
-
-#endif
