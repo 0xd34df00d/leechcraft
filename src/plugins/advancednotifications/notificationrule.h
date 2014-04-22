@@ -33,6 +33,7 @@
 #include <QMetaType>
 #include "common.h"
 #include "fieldmatch.h"
+#include "interfaces/advancednotifications/inotificationrule.h"
 
 class QDataStream;
 
@@ -73,7 +74,7 @@ namespace AdvancedNotifications
 
 	bool operator== (const CmdParams&, const CmdParams&);
 
-	class NotificationRule
+	class NotificationRule : public INotificationRule
 	{
 		QString Name_;
 		QString Category_;
