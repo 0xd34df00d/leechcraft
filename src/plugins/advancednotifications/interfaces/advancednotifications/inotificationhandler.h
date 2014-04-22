@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QtPlugin>
+#include "types.h"
 
 namespace LeechCraft
 {
