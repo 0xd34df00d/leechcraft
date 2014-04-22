@@ -27,6 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#pragma once
+
 #include <QFlags>
 
 namespace LeechCraft
