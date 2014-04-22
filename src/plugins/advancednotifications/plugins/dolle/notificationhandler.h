@@ -27,8 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dolle.h"
-#include "notificationhandler.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/advancednotifications/inotificationhandler.h>
 
 namespace LeechCraft
 {
@@ -36,51 +38,15 @@ namespace AdvancedNotifications
 {
 namespace Dolle
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	class NotificationHandler : public QObject
+							  , public INotificationHandler
 	{
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.AdvancedNotifications.Dolle";
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "AdvancedNotifications Dolle";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("OS X notifications backend.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return {};
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.AdvancedNotifications.NotificationsBackend";
-		return result;
-	}
-
-	QList<INotificationHandler_ptr> Plugin::GetNotificationHandlers () const
-	{
-		return { INotificationHandler_ptr { new NotificationHandler } };
-	}
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::AdvancedNotifications::INotificationHandler)
+	public:
+		NotificationMethod GetHandlerMethod () const;
+		void Handle (const Entity&, const INotificationRule&);
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_advancednotifications_dolle, LeechCraft::AdvancedNotifications::Dolle::Plugin);

@@ -10,6 +10,7 @@ include_directories (${LMP_INCLUDE_DIR}
 
 set (DOLLE_SRCS
 	dolle.cpp
+	notificationhandler.cpp
 	)
 #CreateTrs ("advancednotifications_dolle" "en;ru_RU" DOLLE_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("advancednotifications_dolle" "en;ru_RU" "${DOLLE_SRCS}" "${DOLLE_FORMS}" "")
