@@ -89,7 +89,7 @@ namespace AdvancedNotifications
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
 		{
 			for (const auto& handler : Handlers_)
-				handler->Handle (e, {});
+				handler->Handle (e, NotificationRule {});
 			return;
 		}
 
