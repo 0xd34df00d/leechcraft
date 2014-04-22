@@ -29,8 +29,8 @@
 
 #include "advancednotifications.h"
 #include <QIcon>
-#include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/iplugin2.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
@@ -41,6 +41,7 @@
 #include "core.h"
 #include "rulesmanager.h"
 #include "quarkproxy.h"
+#include "interfaces/advancednotifications/inotificationbackendplugin.h"
 
 namespace LeechCraft
 {
@@ -153,7 +154,15 @@ namespace AdvancedNotifications
 
 	void Plugin::AddPlugin (QObject *obj)
 	{
-		qDebug () << Q_FUNC_INFO << obj;
+		const auto ip2 = qobject_cast<IPlugin2*> (obj);
+		const auto& classes = ip2->GetPluginClasses ();
+
+		if (classes.contains (GetUniqueID () + ".NotificationBackend"))
+		{
+			const auto inbp = qobject_cast<INotificationBackendPlugin*> (obj);
+			for (const auto& handler : inbp->GetNotificationHandlers ())
+				GeneralHandler_->RegisterHandler (handler);
+		}
 	}
 }
 }
