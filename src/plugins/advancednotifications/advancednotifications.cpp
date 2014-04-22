@@ -29,6 +29,7 @@
 
 #include "advancednotifications.h"
 #include <QIcon>
+#include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
@@ -141,6 +142,18 @@ namespace AdvancedNotifications
 	QuarkComponents_t Plugin::GetComponents () const
 	{
 		return { Component_ };
+	}
+
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << GetUniqueID () + ".NotificationsBackend";
+		return result;
+	}
+
+	void Plugin::AddPlugin (QObject *obj)
+	{
+		qDebug () << Q_FUNC_INFO << obj;
 	}
 }
 }
