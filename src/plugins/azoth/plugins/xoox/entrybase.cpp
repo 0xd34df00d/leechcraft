@@ -39,6 +39,7 @@
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
 #include <QXmppDiscoveryManager.h>
+#include <QXmppGlobal.h>
 #include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
@@ -553,6 +554,11 @@ namespace Xoox
 
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard, bool initial)
 	{
+#if QXMPP_VERSION >= 0x000801
+		if (vcard == VCardIq_)
+			return;
+#endif
+
 		VCardIq_ = vcard;
 		VCardPhotoHash_ = VCardIq_.photo ().isEmpty () ?
 				QByteArray () :
