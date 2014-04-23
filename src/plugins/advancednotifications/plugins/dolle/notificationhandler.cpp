@@ -28,10 +28,11 @@
  **********************************************************************/
 
 #include "notificationhandler.h"
-#include <algorithm>
+#include <numeric>
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/advancednotifications/types.h>
+#include "dockutil.h"
 
 namespace LeechCraft
 {
@@ -60,6 +61,7 @@ namespace Dolle
 			return;
 
 		const auto total = std::accumulate (Counts_.begin (), Counts_.end (), 0);
+		DU::SetDockBadge (total ? QString::number (total) : QString {});
 	}
 }
 }
