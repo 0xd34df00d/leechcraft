@@ -33,7 +33,10 @@
 #include <QCoreApplication>
 #include <QIcon>
 #include <QTranslator>
+#include <QFutureWatcher>
+#include <QtConcurrentRun>
 #include <util/util.h>
+#include <util/sll/onetimerunner.h>
 #include <interfaces/azoth/iclentry.h>
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::LastSeen::LastHash_t);
@@ -120,13 +123,49 @@ namespace LastSeen
 		SaveScheduled_ = true;
 	}
 
+	namespace
+	{
+		struct LoadResult
+		{
+			LastHash_t Avail_;
+			LastHash_t Online_;
+			LastHash_t StatusChange_;
+		};
+	}
+
 	void Plugin::Load ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_LastSeen");
-		LastAvailable_ = settings.value ("LastAvailable").value<LastHash_t> ();
-		LastOnline_ = settings.value ("LastOnline").value<LastHash_t> ();
-		LastStatusChange_ = settings.value ("LastStatusChange").value<LastHash_t> ();
+		qDebug () << Q_FUNC_INFO;
+		auto watcher = new QFutureWatcher<LoadResult> ();
+		watcher->setFuture (QtConcurrent::run ([] () -> LoadResult
+				{
+					QSettings settings (QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "_Azoth_LastSeen");
+					const auto& avail = settings.value ("LastAvailable").value<LastHash_t> ();
+					const auto& online = settings.value ("LastOnline").value<LastHash_t> ();
+					const auto& status = settings.value ("LastStatusChange").value<LastHash_t> ();
+
+					return { avail, online, status };
+				}));
+
+		new Util::OneTimeRunner
+		{
+			[this, watcher] ()
+			{
+				const auto& result = watcher->result ();
+				watcher->deleteLater ();
+
+				LastAvailable_ = result.Avail_;
+				LastOnline_ = result.Online_;
+				LastStatusChange_ = result.StatusChange_;
+				qDebug () << "LastSeen loading done";
+
+				IsLoaded_ = true;
+			},
+			watcher,
+			SIGNAL (finished ()),
+			watcher
+		};
 	}
 
 	void Plugin::save ()
@@ -142,7 +181,7 @@ namespace LastSeen
 
 	void Plugin::hookEntryStatusChanged (IHookProxy_ptr, QObject *entryObj, QString)
 	{
-		if (!IsGoodEntry (entryObj))
+		if (!IsLoaded_ || !IsGoodEntry (entryObj))
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);

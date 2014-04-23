@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_LASTSEEN_LASTSEEN_H
-#define PLUGINS_AZOTH_PLUGINS_LASTSEEN_LASTSEEN_H
+#pragma once
+
 #include <QObject>
 #include <QDateTime>
 #include <interfaces/iinfo.h>
@@ -59,6 +59,8 @@ namespace LastSeen
 		LastHash_t LastStatusChange_;
 
 		bool SaveScheduled_;
+
+		bool IsLoaded_ = false;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -84,5 +86,3 @@ namespace LastSeen
 }
 }
 }
-
-#endif
