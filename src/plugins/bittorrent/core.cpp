@@ -825,15 +825,18 @@ namespace BitTorrent
 		try
 		{
 			libtorrent::add_torrent_params atp;
-			atp.auto_managed = true;
 			atp.storage_mode = GetCurrentStorageMode ();
-			atp.paused = (params & NoAutostart);
-			atp.duplicate_is_error = true;
 #if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			atp.url = magnet.toStdString ();
+			if (params & NoAutostart)
+				atp.flags |= libtorrent::add_torrent_params::flag_paused;
+			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 			handle = Session_->add_torrent (atp);
 #else
+			atp.duplicate_is_error = true;
+			atp.auto_managed = true;
+			atp.paused = (params & NoAutostart);
 			atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
 			handle = libtorrent::add_magnet_uri (*Session_,
 					magnet.toStdString (),
