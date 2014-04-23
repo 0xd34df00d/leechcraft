@@ -348,7 +348,7 @@ namespace Poshuku
 										aArgs.concat(Array.prototype.slice.call(arguments)));
 					};
 
-				fNOP.prototype = this.prototype;
+				fNOP.prototype = this.prototype || {};
 				fBound.prototype = new fNOP();
 
 				return fBound;
