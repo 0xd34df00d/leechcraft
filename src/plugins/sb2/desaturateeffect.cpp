@@ -60,6 +60,12 @@ namespace SB2
 
 	void DesaturateEffect::draw (QPainter *painter)
 	{
+		if (std::fabs (Strength_) < 0.001)
+		{
+			drawSource (painter);
+			return;
+		}
+
 		QPoint offset;
 		auto px = sourcePixmap (Qt::DeviceCoordinates, &offset);
 
