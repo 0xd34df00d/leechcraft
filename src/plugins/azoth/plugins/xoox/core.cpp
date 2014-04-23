@@ -285,9 +285,9 @@ namespace Xoox
 	void Core::handleItemsAdded (const QList<QObject*>& items)
 	{
 		bool shouldSave = false;
-		Q_FOREACH (QObject *clEntry, items)
+		for (auto clEntry : items)
 		{
-			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (clEntry);
+			auto entry = qobject_cast<GlooxCLEntry*> (clEntry);
 			if (!entry ||
 					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 				continue;
@@ -302,7 +302,7 @@ namespace Xoox
 		}
 
 		if (shouldSave)
-			saveRoster ();
+			ScheduleSaveRoster (5000);
 	}
 
 	void Core::saveAvatarFor (GlooxCLEntry *entry)
