@@ -1844,13 +1844,18 @@ namespace BitTorrent
 			atp.storage_mode = GetCurrentStorageMode ();
 #if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = path.string ();
+			if (!automanaged)
+				atp.flags &= ~libtorrent::add_torrent_params::flag_auto_managed;
+			if (pause)
+				atp.flags |= libtorrent::add_torrent_params::flag_paused;
+			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 #else
 			atp.save_path = path;
-#endif
 			atp.auto_managed = automanaged;
 			atp.paused = pause;
-			atp.resume_data = new std::vector<char>;
 			atp.duplicate_is_error = true;
+#endif
+			atp.resume_data = new std::vector<char>;
 			std::copy (resumeData.constData (),
 					resumeData.constData () + resumeData.size (),
 					std::back_inserter (*atp.resume_data));
