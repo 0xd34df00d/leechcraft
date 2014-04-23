@@ -61,6 +61,7 @@ namespace LastSeen
 		bool SaveScheduled_;
 
 		bool IsLoaded_ = false;
+		bool IsSaving_ = false;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

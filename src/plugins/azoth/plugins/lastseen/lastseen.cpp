@@ -110,6 +110,8 @@ namespace LastSeen
 
 			return true;
 		}
+
+		const int SaveTimeout = 3000;
 	}
 
 	void Plugin::ScheduleSave ()
@@ -117,9 +119,10 @@ namespace LastSeen
 		if (SaveScheduled_)
 			return;
 
-		QTimer::singleShot (3000,
-				this,
-				SLOT (save ()));
+		if (!IsSaving_)
+			QTimer::singleShot (SaveTimeout,
+					this,
+					SLOT (save ()));
 		SaveScheduled_ = true;
 	}
 
@@ -135,7 +138,6 @@ namespace LastSeen
 
 	void Plugin::Load ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		auto watcher = new QFutureWatcher<LoadResult> ();
 		watcher->setFuture (QtConcurrent::run ([] () -> LoadResult
 				{
@@ -158,7 +160,6 @@ namespace LastSeen
 				LastAvailable_ = result.Avail_;
 				LastOnline_ = result.Online_;
 				LastStatusChange_ = result.StatusChange_;
-				qDebug () << "LastSeen loading done";
 
 				IsLoaded_ = true;
 			},
@@ -170,13 +171,39 @@ namespace LastSeen
 
 	void Plugin::save ()
 	{
-		SaveScheduled_ = false;
+		if (IsSaving_)
+			return;
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_LastSeen");
-		settings.setValue ("LastAvailable", QVariant::fromValue (LastAvailable_));
-		settings.setValue ("LastOnline", QVariant::fromValue (LastOnline_));
-		settings.setValue ("LastStatusChange", QVariant::fromValue (LastStatusChange_));
+		SaveScheduled_ = false;
+		IsSaving_ = true;
+
+		LoadResult res { LastAvailable_, LastOnline_, LastStatusChange_ };
+
+		auto watcher = new QFutureWatcher<void> ();
+		watcher->setFuture (QtConcurrent::run ([this, res] () -> void
+				{
+					QSettings settings (QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "_Azoth_LastSeen");
+					settings.setValue ("LastAvailable", QVariant::fromValue (res.Avail_));
+					settings.setValue ("LastOnline", QVariant::fromValue (res.Online_));
+					settings.setValue ("LastStatusChange", QVariant::fromValue (res.StatusChange_));
+				}));
+		new Util::OneTimeRunner
+		{
+			[this, watcher] () -> void
+			{
+				watcher->deleteLater ();
+				IsSaving_ = false;
+
+				if (SaveScheduled_)
+					QTimer::singleShot (SaveTimeout,
+							this,
+							SLOT (save ()));
+			},
+			watcher,
+			SIGNAL (finished ()),
+			watcher
+		};
 	}
 
 	void Plugin::hookEntryStatusChanged (IHookProxy_ptr, QObject *entryObj, QString)
