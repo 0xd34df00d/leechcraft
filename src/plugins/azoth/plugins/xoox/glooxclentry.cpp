@@ -129,7 +129,7 @@ namespace Xoox
 			BareJID_ = ods->ID_;
 		}
 
-		SetVCard (ods->VCardIq_);
+		SetVCard (ods->VCardIq_, true);
 
 		Initialize ();
 	}
