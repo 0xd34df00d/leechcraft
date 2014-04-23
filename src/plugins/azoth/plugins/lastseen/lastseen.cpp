@@ -111,7 +111,7 @@ namespace LastSeen
 			return true;
 		}
 
-		const int SaveTimeout = 3000;
+		const int SaveTimeout = 60 * 1000;
 	}
 
 	void Plugin::ScheduleSave ()
