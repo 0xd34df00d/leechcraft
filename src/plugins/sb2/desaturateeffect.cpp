@@ -72,24 +72,34 @@ namespace SB2
 		const auto restoreTransform = painter->worldTransform ();
 		painter->setWorldTransform (QTransform ());
 
-		if (std::fabs (Strength_) >= std::numeric_limits<qreal>::epsilon ())
+		auto img = px.toImage ();
+		switch (img.format ())
 		{
-			auto img = px.toImage ();
-			for (int y = 0; y < img.height (); ++y)
-				for (int x = 0; x < img.width (); ++x)
-				{
-					const auto color = img.pixel (x, y);
-					const auto grayPart = qGray (color) * Strength_;
-					const auto r = qRed (color) * (1 - Strength_) + grayPart;
-					const auto g = qGreen (color) * (1 - Strength_) + grayPart;
-					const auto b = qBlue (color) * (1 - Strength_) + grayPart;
-					img.setPixel (x, y, qRgba (r, g, b, qAlpha (color)));
-				}
-
-			painter->drawImage (offset, img);
+		case QImage::Format_ARGB32:
+		case QImage::Format_ARGB32_Premultiplied:
+			break;
+		default:
+			img = img.convertToFormat (QImage::Format_ARGB32);
+			break;
 		}
-		else
-			painter->drawPixmap (offset, px);
+
+		const auto height = img.height ();
+		const auto width = img.width ();
+		for (int y = 0; y < height; ++y)
+		{
+			const auto scanline = reinterpret_cast<QRgb*> (img.scanLine (y));
+			for (int x = 0; x < width; ++x)
+			{
+				auto& color = scanline [x];
+				const auto grayPart = qGray (color) * Strength_;
+				const auto r = qRed (color) * (1 - Strength_) + grayPart;
+				const auto g = qGreen (color) * (1 - Strength_) + grayPart;
+				const auto b = qBlue (color) * (1 - Strength_) + grayPart;
+				color = qRgba (r, g, b, qAlpha (color));
+			}
+		}
+
+		painter->drawImage (offset, img);
 
 		painter->setWorldTransform (restoreTransform);
 	}
