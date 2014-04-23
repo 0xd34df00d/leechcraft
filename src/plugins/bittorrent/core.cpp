@@ -894,15 +894,20 @@ namespace BitTorrent
 		{
 			libtorrent::add_torrent_params atp;
 			atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
-			atp.auto_managed = autoManaged;
 			atp.storage_mode = GetCurrentStorageMode ();
-			atp.paused = tryLive || (params & NoAutostart);
 #if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = std::string (path.toUtf8 ().constData ());
+			if (!autoManaged)
+				atp.flags &= ~libtorrent::add_torrent_params::flag_auto_managed;
+			if (tryLive || (params & NoAutostart))
+				atp.flags |= libtorrent::add_torrent_params::flag_paused;
+			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 #else
 			atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
-#endif
 			atp.duplicate_is_error = true;
+			atp.paused = tryLive || (params & NoAutostart);
+			atp.auto_managed = autoManaged;
+#endif
 			handle = Session_->add_torrent (atp);
 			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
 				handle.resolve_countries (true);
