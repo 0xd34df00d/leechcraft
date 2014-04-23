@@ -578,7 +578,8 @@ namespace Xoox
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
 
-		if (!initial)
+		if (!initial &&
+				GetEntryType () == ICLEntry::ETChat)
 			Core::Instance ().ScheduleSaveRoster (10000);
 
 		emit vcardUpdated ();
