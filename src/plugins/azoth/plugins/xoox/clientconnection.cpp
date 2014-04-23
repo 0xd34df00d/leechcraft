@@ -278,11 +278,6 @@ namespace Xoox
 				this,
 				SLOT (handleRosterChanged (const QString&)));
 		connect (&Client_->rosterManager (),
-				SIGNAL (itemAdded (const QString&)),
-				&Core::Instance (),
-				SLOT (saveRoster ()),
-				Qt::QueuedConnection);
-		connect (&Client_->rosterManager (),
 				SIGNAL (itemRemoved (const QString&)),
 				this,
 				SLOT (handleRosterItemRemoved (const QString&)));
