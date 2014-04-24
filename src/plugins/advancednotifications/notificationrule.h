@@ -31,6 +31,7 @@
 
 #include <QStringList>
 #include <QMetaType>
+#include <QColor>
 #include "common.h"
 #include "fieldmatch.h"
 #include "interfaces/advancednotifications/inotificationrule.h"
@@ -91,6 +92,8 @@ namespace AdvancedNotifications
 
 		bool IsEnabled_;
 		bool IsSingleShot_;
+
+		QColor Color_ { Qt::red };
 	public:
 		NotificationRule ();
 		NotificationRule (const QString& name,
@@ -132,6 +135,9 @@ namespace AdvancedNotifications
 
 		bool IsSingleShot () const;
 		void SetSingleShot (bool);
+
+		QColor GetColor () const;
+		void SetColor (const QColor&);
 
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);

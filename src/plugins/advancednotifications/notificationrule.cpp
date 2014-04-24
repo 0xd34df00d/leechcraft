@@ -220,9 +220,19 @@ namespace AdvancedNotifications
 		FieldMatches_ << match;
 	}
 
+	QColor NotificationRule::GetColor () const
+	{
+		return Color_;
+	}
+
+	void NotificationRule::SetColor (const QColor& color)
+	{
+		Color_ = color;
+	}
+
 	void NotificationRule::Save (QDataStream& stream) const
 	{
-		stream << static_cast<quint8> (3)
+		stream << static_cast<quint8> (4)
 			<< Name_
 			<< Category_
 			<< Types_
@@ -232,6 +242,7 @@ namespace AdvancedNotifications
 			<< CmdParams_.Args_
 			<< IsEnabled_
 			<< IsSingleShot_
+			<< Color_
 			<< static_cast<quint16> (FieldMatches_.size ());
 
 		for (const auto& match : FieldMatches_)
@@ -242,7 +253,7 @@ namespace AdvancedNotifications
 	{
 		quint8 version = 0;
 		stream >> version;
-		if (version < 1 || version > 3)
+		if (version < 1 || version > 4)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -270,6 +281,9 @@ namespace AdvancedNotifications
 			IsSingleShot_ = false;
 		}
 
+		if (version >= 4)
+			stream >> Color_;
+
 		Methods_ = static_cast<NotificationMethods> (methods);
 
 		quint16 numMatches = 0;
@@ -295,7 +309,8 @@ namespace AdvancedNotifications
 			r1.GetVisualParams () == r2.GetVisualParams () &&
 			r1.GetAudioParams () == r2.GetAudioParams () &&
 			r1.GetTrayParams () == r2.GetTrayParams () &&
-			r1.GetCmdParams () == r2.GetCmdParams ();
+			r1.GetCmdParams () == r2.GetCmdParams () &&
+			r1.GetColor () == r2.GetColor ();
 	}
 
 	bool operator!= (const NotificationRule& r1, const NotificationRule& r2)
@@ -317,6 +332,7 @@ namespace AdvancedNotifications
 		qDebug () << (r1.GetAudioParams () == r2.GetAudioParams ());
 		qDebug () << (r1.GetTrayParams () == r2.GetTrayParams ());
 		qDebug () << (r1.GetCmdParams () == r2.GetCmdParams ());
+		qDebug () << (r1.GetColor () == r2.GetColor ());
 	}
 }
 }
