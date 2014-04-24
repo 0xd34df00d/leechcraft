@@ -35,6 +35,7 @@ include_directories (${Boost_INCLUDE_DIRS}
 set (SRCS
 	gui/autoresizemixin.cpp
 	gui/clearlineeditaddon.cpp
+	gui/colorbutton.cpp
 	gui/findnotification.cpp
 	gui/findnotificationwk.cpp
 	gui/flowlayout.cpp
