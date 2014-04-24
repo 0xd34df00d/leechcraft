@@ -32,6 +32,7 @@
 #include "notificationruleswidget.h"
 #include "typedmatchers.h"
 #include "rulesmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -122,6 +123,24 @@ namespace AdvancedNotifications
 		}
 
 		return result;
+	}
+
+	QString Core::GetAbsoluteAudioPath (const QString& fname) const
+	{
+		if (fname.contains ('/'))
+			return fname;
+
+		const QString& option = XmlSettingsManager::Instance ()
+				.property ("AudioTheme").toString ();
+		const QString& base = option + '/' + fname;
+
+		QStringList pathVariants;
+		pathVariants << base + ".ogg"
+				<< base + ".wav"
+				<< base + ".flac"
+				<< base + ".mp3";
+
+		return GetAudioThemeLoader ()->GetPath (pathVariants);
 	}
 
 	void Core::SendEntity (const Entity& e)

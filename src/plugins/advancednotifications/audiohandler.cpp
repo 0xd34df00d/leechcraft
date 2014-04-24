@@ -57,19 +57,7 @@ namespace AdvancedNotifications
 			return;
 
 		if (!fname.contains ('/'))
-		{
-			const QString& option = XmlSettingsManager::Instance ()
-					.property ("AudioTheme").toString ();
-			const QString& base = option + '/' + fname;
-
-			QStringList pathVariants;
-			pathVariants << base + ".ogg"
-					<< base + ".wav"
-					<< base + ".flac"
-					<< base + ".mp3";
-
-			fname = Core::Instance ().GetAudioThemeLoader ()->GetPath (pathVariants);
-		}
+			fname = Core::Instance ().GetAbsoluteAudioPath (fname);
 
 		const auto& now = QDateTime::currentDateTime ();
 		if (LastNotify_ [fname].msecsTo (now) < 1000)
