@@ -1014,6 +1014,7 @@ namespace LMP
 		}
 
 		Source_->Stop ();
+		Source_->ClearQueue ();
 		const auto& source = index.data (Role::Source).value<AudioSource> ();
 		Source_->SetCurrentSource (source);
 		Source_->Play ();
