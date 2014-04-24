@@ -318,21 +318,33 @@ namespace AdvancedNotifications
 		return !(r1 == r2);
 	}
 
+	namespace
+	{
+		template<typename T>
+		void DebugSingle (const NotificationRule& r1, const NotificationRule& r2, T method)
+		{
+			const auto eq = (r1.*method) () == (r2.*method) ();
+			qDebug () << eq;
+			if (!eq)
+				qDebug () << (r1.*method) () << (r2.*method) ();
+		}
+	}
+
 	void DebugEquals (const NotificationRule& r1, const NotificationRule& r2)
 	{
 		qDebug () << Q_FUNC_INFO;
-		qDebug () << (r1.GetMethods () == r2.GetMethods ());
-		qDebug () << (r1.IsEnabled () == r2.IsEnabled ());
-		qDebug () << (r1.IsSingleShot () == r2.IsSingleShot ());
-		qDebug () << (r1.GetName () == r2.GetName ());
-		qDebug () << (r1.GetCategory () == r2.GetCategory ());
-		qDebug () << (r1.GetTypes () == r2.GetTypes ());
-		qDebug () << (r1.GetFieldMatches () == r2.GetFieldMatches ());
-		qDebug () << (r1.GetVisualParams () == r2.GetVisualParams ());
-		qDebug () << (r1.GetAudioParams () == r2.GetAudioParams ());
-		qDebug () << (r1.GetTrayParams () == r2.GetTrayParams ());
-		qDebug () << (r1.GetCmdParams () == r2.GetCmdParams ());
-		qDebug () << (r1.GetColor () == r2.GetColor ());
+		DebugSingle (r1, r2, &NotificationRule::GetMethods);
+		DebugSingle (r1, r2, &NotificationRule::IsEnabled);
+		DebugSingle (r1, r2, &NotificationRule::IsSingleShot);
+		DebugSingle (r1, r2, &NotificationRule::GetName);
+		DebugSingle (r1, r2, &NotificationRule::GetCategory);
+		DebugSingle (r1, r2, &NotificationRule::GetTypes);
+		DebugSingle (r1, r2, &NotificationRule::GetFieldMatches);
+		DebugSingle (r1, r2, &NotificationRule::GetVisualParams);
+		DebugSingle (r1, r2, &NotificationRule::GetAudioParams);
+		DebugSingle (r1, r2, &NotificationRule::GetTrayParams);
+		DebugSingle (r1, r2, &NotificationRule::GetCmdParams);
+		DebugSingle (r1, r2, &NotificationRule::GetColor);
 	}
 }
 }
