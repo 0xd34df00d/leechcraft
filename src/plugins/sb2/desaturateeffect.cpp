@@ -79,6 +79,7 @@ namespace SB2
 			img = img.convertToFormat (QImage::Format_ARGB32);
 			break;
 		}
+		img.detach ();
 
 		const auto height = img.height ();
 		const auto width = img.width ();
