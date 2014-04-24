@@ -26,20 +26,12 @@ set (SRCS
 	restoresessiondialog.cpp
 	recinfo.cpp
 	)
-set (HEADERS
-	tabsessmanager.h
-	restoresessiondialog.h
-	recinfo.h
-	)
 set (FORMS
 	restoresessiondialog.ui
 	)
 CreateTrs ("tabsessmanager" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("tabsessmanager" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 
 add_library (leechcraft_tabsessmanager SHARED
@@ -53,4 +45,3 @@ target_link_libraries (leechcraft_tabsessmanager
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_tabsessmanager DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
