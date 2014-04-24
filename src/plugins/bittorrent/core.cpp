@@ -470,11 +470,18 @@ namespace BitTorrent
 			return QVariant ();
 
 		const auto& h = Handles_.at (row).Handle_;
+		if (!Handle2Status_.contains (h))
+		{
 #if LIBTORRENT_VERSION_NUM >= 1600
-		const auto& status = h.status (0);
+			const auto& status = h.status (0);
 #else
-		const auto& status = h.status ();
+			const auto& status = h.status ();
 #endif
+
+			Handle2Status_ [h] = status;
+		}
+
+		const auto& status = Handle2Status_ [h];
 
 		switch (role)
 		{
@@ -1475,6 +1482,28 @@ namespace BitTorrent
 		LiveStreamManager_->PieceRead (a);
 	}
 
+	void Core::UpdateStatus (const std::vector<libtorrent::torrent_status>& statuses)
+	{
+		for (const auto& status : statuses)
+		{
+			const auto handle = status.handle;
+			Handle2Status_ [handle] = handle.status (0);
+
+			const auto pos = std::find_if (Handles_.begin (), Handles_.end (),
+					HandleFinder { handle });
+
+			if (pos == Handles_.end ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown handle";
+				continue;
+			}
+
+			const auto row = std::distance (Handles_.begin (), pos);
+			emit dataChanged (index (row, 0), index (row, columnCount () - 1));
+		}
+	}
+
 	void Core::MoveUp (const std::vector<int>& selections)
 	{
 		if (!selections.size ())
@@ -2410,6 +2439,11 @@ namespace BitTorrent
 		{
 			Core::Instance ()->PieceRead (a);
 		}
+
+		void operator() (const libtorrent::state_update_alert& a) const
+		{
+			Core::Instance ()->UpdateStatus (a.status);
+		}
 	};
 
 #undef __LLEECHCRAFT_API
@@ -2441,6 +2475,7 @@ namespace BitTorrent
 					, libtorrent::file_error_alert
 					, libtorrent::file_rename_failed_alert
 					, libtorrent::read_piece_alert
+					, libtorrent::state_update_alert
 					> alertHandler (a, sd);
 				Q_UNUSED (alertHandler);
 			}
@@ -2840,12 +2875,17 @@ namespace BitTorrent
 
 	void Core::updateRows ()
 	{
-		if (rowCount ())
-			emit dataChanged (index (0, 0), index (rowCount () - 1, columnCount () - 1));
+		if (!rowCount ())
+			return;
+
+		Session_->post_torrent_updates ();
+		QTimer::singleShot (200,
+				this,
+				SLOT (queryLibtorrentForWarnings ()));
 	}
-};
-};
-};
+}
+}
+}
 
 namespace libtorrent
 {
