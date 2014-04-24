@@ -49,10 +49,10 @@ namespace SB2
 
 	void DesaturateEffect::SetStrength (qreal strength)
 	{
-		if (std::fabs (strength - Strength_) < std::numeric_limits<qreal>::epsilon ())
+		if (std::fabs (static_cast<float> (strength) - Strength_) < std::numeric_limits<qreal>::epsilon ())
 			return;
 
-		Strength_ = strength;
+		Strength_ = static_cast<float> (strength);
 		emit strengthChanged ();
 
 		update ();
