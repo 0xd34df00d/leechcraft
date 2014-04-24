@@ -169,6 +169,8 @@ namespace AdvancedNotifications
 		rule.SetEnabled (curIdx.sibling (curIdx.row (), 0).data (Qt::CheckStateRole) == Qt::Checked);
 		rule.SetSingleShot (Ui_.RuleSingleShot_->checkState () == Qt::Checked);
 
+		rule.SetColor (Ui_.ColorButton_->GetColor ());
+
 		return rule;
 	}
 
@@ -362,6 +364,8 @@ namespace AdvancedNotifications
 		Ui_.RuleSingleShot_->setChecked (rule.IsSingleShot () ?
 					Qt::Checked :
 					Qt::Unchecked);
+
+		Ui_.ColorButton_->SetColor (rule.GetColor ());
 	}
 
 	void NotificationRulesWidget::on_AddRule__released ()
