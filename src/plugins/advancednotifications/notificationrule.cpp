@@ -336,3 +336,33 @@ namespace AdvancedNotifications
 	}
 }
 }
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::FieldMatch& match)
+{
+	dbg.nospace () << "FieldMatch (for: " << match.GetPluginID () << "; field: " << match.GetFieldName () << ")";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::VisualParams&)
+{
+	dbg.nospace () << "VisualParams ()";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::AudioParams& params)
+{
+	dbg.nospace () << "AudioParams (file: " << params.Filename_ << ")";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::TrayParams&)
+{
+	dbg.nospace () << "TrayParams ()";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::CmdParams& params)
+{
+	dbg.nospace () << "CmdParams (command: " << params.Cmd_ << "; args: " << params.Args_ << ")";
+	return dbg.space ();
+}
