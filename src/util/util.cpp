@@ -119,16 +119,28 @@ QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
 
 	switch (strNum)
 	{
-		case 0:
-			return QString::number (size, 'f', 1) + QObject::tr (" b");
-		case 1:
-			return QString::number (size, 'f', 1) + QObject::tr (" KiB");
-		case 2:
-			return QString::number (size, 'f', 1) + QObject::tr (" MiB");
-		case 3:
-			return QString::number (size, 'f', 1) + QObject::tr (" GiB");
-		default:
-			return "unknown";
+	case 0:
+	{
+		static const QString unit = QObject::tr (" b");
+		return QString::number (size, 'f', 1) + unit;
+	}
+	case 1:
+	{
+		static const QString unit = QObject::tr (" KiB");
+		return QString::number (size, 'f', 1) + unit;
+	}
+	case 2:
+	{
+		static const QString unit = QObject::tr (" MiB");
+		return QString::number (size, 'f', 1) + unit;
+	}
+	case 3:
+	{
+		static const QString unit = QObject::tr (" GiB");
+		return QString::number (size, 'f', 1) + unit;
+	}
+	default:
+		return "unknown";
 	}
 }
 
