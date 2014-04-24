@@ -67,10 +67,7 @@ namespace SB2
 		}
 
 		QPoint offset;
-		auto px = sourcePixmap (Qt::DeviceCoordinates, &offset);
-
-		const auto restoreTransform = painter->worldTransform ();
-		painter->setWorldTransform (QTransform ());
+		const auto& px = sourcePixmap (Qt::LogicalCoordinates, &offset);
 
 		auto img = px.toImage ();
 		switch (img.format ())
@@ -100,8 +97,6 @@ namespace SB2
 		}
 
 		painter->drawImage (offset, img);
-
-		painter->setWorldTransform (restoreTransform);
 	}
 }
 }
