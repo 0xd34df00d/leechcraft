@@ -39,6 +39,8 @@ namespace AdvancedNotifications
 		virtual ~INotificationRule () {}
 
 		virtual bool IsNull () const = 0;
+
+		virtual QColor GetColor () const = 0;
 	};
 }
 }
