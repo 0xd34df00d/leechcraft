@@ -286,7 +286,7 @@ namespace BitTorrent
 				SIGNAL (timeout ()),
 				this,
 				SLOT (checkFinished ()));
-		FinishedTimer_->start (2000);
+		FinishedTimer_->start (10000);
 
 		connect (WarningWatchdog_.get (),
 				SIGNAL (timeout ()),
