@@ -133,10 +133,10 @@ namespace Kinotify
 		const auto& text = e.Additional_ ["Text"].toString ();
 		const auto sameDataPos =
 				std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
-						[&header, &text, &notifyId] (KinotifyWidget *w)
+						[&header, &text] (KinotifyWidget *w)
 							{ return w->GetTitle () == header && w->GetBody () == text; });
 		if (sameDataPos != ActiveNotifications_.end () && sameIdPos == ActiveNotifications_.end ())
-				return;
+			return;
 
 		const auto defaultTimeout = XmlSettingsManager::Instance ()->
 				property ("MessageTimeout").toInt () * 1000;
