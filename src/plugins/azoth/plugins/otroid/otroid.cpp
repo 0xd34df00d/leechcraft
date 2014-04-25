@@ -61,6 +61,7 @@ extern "C"
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
 #include <util/util.h>
+#include "authenticator.h"
 
 namespace LeechCraft
 {
@@ -113,6 +114,14 @@ namespace OTRoid
 		}
 
 #if OTRL_VERSION_MAJOR >= 4
+		void HandleSmpEvent (void *opData, OtrlSMPEvent smpEvent,
+				ConnContext *context, unsigned short progressPercent,
+				char *question)
+		{
+			static_cast<Plugin*> (opData)->HandleSmpEvent (smpEvent,
+					context, progressPercent, QString::fromUtf8 (question));
+		}
+
 		void HandleMsgEvent (void *opData, OtrlMessageEvent event,
 				ConnContext *context, const char *message, gcry_error_t err)
 		{
@@ -290,6 +299,7 @@ namespace OTRoid
 		OtrOps_.gone_insecure = &OTR::HandleGoneInsecure;
 		OtrOps_.still_secure = &OTR::HandleStillSecure;
 #if OTRL_VERSION_MAJOR >= 4
+		OtrOps_.handle_smp_event = &OTR::HandleSmpEvent;
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
 		OtrOps_.timer_control = &OTR::TimerControl;
 
@@ -535,6 +545,53 @@ namespace OTRoid
 
 		if (seconds)
 			PollTimer_->start (seconds * 1000);
+	}
+
+	void Plugin::HandleSmpEvent (OtrlSMPEvent smpEvent,
+			ConnContext *context, unsigned short progressPercent, const QString& question)
+	{
+		qDebug () << Q_FUNC_INFO << smpEvent << progressPercent << question;
+
+		const auto entryObj = AzothProxy_->GetEntry (context->username, context->accountname);
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such entry"
+					<< context->username
+					<< context->accountname;
+			return;
+		}
+
+		if (!Auths_.contains (entry))
+		{
+			const auto auth = new Authenticator { entry };
+			connect (auth,
+					SIGNAL (abortSmp (ConnContext*)),
+					this,
+					SLOT (handleAbortSmp (ConnContext*)));
+			connect (auth,
+					SIGNAL (gotReply (SmpMethod, QString, ConnContext*)),
+					this,
+					SLOT (handleGotSmpReply (SmpMethod, QString, ConnContext*)));
+			Auths_ [entry] = auth;
+		}
+
+		const auto auth = Auths_ [entry];
+
+		switch (smpEvent)
+		{
+		case OTRL_SMPEVENT_ASK_FOR_SECRET:
+			auth->AskFor (SmpMethod::SharedSecret, question, context);
+			break;
+		case OTRL_SMPEVENT_ASK_FOR_ANSWER:
+			auth->AskFor (SmpMethod::Question, question, context);
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown SMP event";
+			break;
+		}
 	}
 #endif
 
@@ -802,6 +859,20 @@ namespace OTRoid
 	}
 
 #if OTRL_VERSION_MAJOR >= 4
+	void Plugin::handleGotSmpReply (SmpMethod, const QString& reply, ConnContext *context)
+	{
+		const auto& replyUtf = reply.toUtf8 ();
+		const auto data = replyUtf.constData ();
+
+		otrl_message_respond_smp (UserState_, &OtrOps_, this, context,
+				reinterpret_cast<const unsigned char*> (data), reply.size ());
+	}
+
+	void Plugin::handleAbortSmp (ConnContext *context)
+	{
+		otrl_message_abort_smp (UserState_, &OtrOps_, this, context);
+	}
+
 	void Plugin::pollOTR ()
 	{
 		otrl_message_poll (UserState_, &OtrOps_, this);

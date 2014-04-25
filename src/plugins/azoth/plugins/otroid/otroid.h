@@ -54,6 +54,9 @@ class ICLEntry;
 
 namespace OTRoid
 {
+	class Authenticator;
+	enum class SmpMethod;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -77,6 +80,7 @@ namespace OTRoid
 
 		bool IsGenerating_ = false;
 
+		QHash<ICLEntry*, Authenticator*> Auths_;
 #if OTRL_VERSION_MAJOR >= 4
 		QTimer *PollTimer_;
 #endif
@@ -110,6 +114,7 @@ namespace OTRoid
 		void CreateInstag (const char*, const char*);
 
 		void SetPollTimerInterval (unsigned int seconds);
+		void HandleSmpEvent (OtrlSMPEvent, ConnContext*, unsigned short, const QString&);
 #endif
 	private:
 		QByteArray GetOTRFilename (const QString&) const;
@@ -133,6 +138,9 @@ namespace OTRoid
 		void handleOtrAction ();
 
 #if OTRL_VERSION_MAJOR >= 4
+		void handleGotSmpReply (SmpMethod, const QString&, ConnContext*);
+		void handleAbortSmp (ConnContext*);
+
 		void pollOTR ();
 #endif
 	signals:
