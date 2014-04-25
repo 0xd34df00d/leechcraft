@@ -827,7 +827,7 @@ namespace OTRoid
 		const auto& auth = std::make_shared<QAction> (tr ("Authenticate the contact"), this);
 		auth->setProperty ("Azoth/OTRoid/IsGood", true);
 		auth->setProperty ("Azoth/OTRoid/Areas",
-				QStringList { "contactListContextMenu", "tabContextMenu", "toolbar" });
+				QStringList { "contactListContextMenu" });
 		auth->setProperty ("Azoth/OTRoid/Entry", QVariant::fromValue (entry));
 		connect (auth.get (),
 				SIGNAL (triggered ()),
