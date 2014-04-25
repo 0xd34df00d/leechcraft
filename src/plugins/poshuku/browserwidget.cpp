@@ -925,32 +925,31 @@ namespace Poshuku
 
 		proxy->FillValue ("preview", preview);
 
-		std::auto_ptr<QPrinter> printer (new QPrinter ());
+		QPrinter printer;
 
-		QPrintDialog *dialog = new QPrintDialog (printer.get (), this);
-		dialog->setWindowTitle (tr ("Print web page"));
+		QPrintDialog dialog (&printer, this);
+		dialog.setWindowTitle (tr ("Print web page"));
 		/* TODO
 		if (!WebView_->selectedText ().isEmpty ())
 			dialog->addEnabledOption (QAbstractPrintDialog::PrintSelection);
 		*/
 
-		if (dialog->exec () != QDialog::Accepted)
+		if (dialog.exec () != QDialog::Accepted)
 			return;
 
 		if (preview)
 		{
-			QPrintPreviewDialog *prevDialog =
-				new QPrintPreviewDialog (printer.get (), this);
-			connect (prevDialog,
+			QPrintPreviewDialog prevDialog (&printer, this);
+			connect (&prevDialog,
 					SIGNAL (paintRequested (QPrinter*)),
 					frame,
 					SLOT (print (QPrinter*)));
 
-			if (prevDialog->exec () != QDialog::Accepted)
+			if (prevDialog.exec () != QDialog::Accepted)
 				return;
 		}
-
-		frame->print (printer.get ());
+		else
+			frame->print (&printer);
 	}
 
 	void BrowserWidget::SetActualReloadInterval (const QTime& value)
