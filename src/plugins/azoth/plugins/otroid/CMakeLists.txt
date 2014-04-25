@@ -18,16 +18,22 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (OTROID_SRCS
 	otroid.cpp
 	authenticator.cpp
+	initiateauthdialog.cpp
+	)
+set (OTROID_FORMS
+	initiateauthdialog.ui
 	)
 set (OTROID_RESOURCES azothotroidresources.qrc)
 CreateTrs ("azoth_otroid" "en;ru_RU;uk_UA" OTROID_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_otroid" "en;ru_RU" "${OTROID_SRCS}" "" "")
 QT4_ADD_RESOURCES (OTROID_RCCS ${OTROID_RESOURCES})
+QT4_WRAP_UI (OTROID_UIS_H ${OTROID_FORMS})
 
 add_library (leechcraft_azoth_otroid SHARED
 	${OTROID_COMPILED_TRANSLATIONS}
 	${OTROID_SRCS}
 	${OTROID_RCCS}
+	${OTROID_UIS_H}
 	)
 target_link_libraries (leechcraft_azoth_otroid
 	${QT_LIBRARIES}
