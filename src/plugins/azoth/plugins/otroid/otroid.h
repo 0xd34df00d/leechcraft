@@ -70,7 +70,6 @@ namespace OTRoid
 		OtrlMessageAppOps OtrOps_;
 
 		QHash<QObject*, QAction*> Entry2Action_;
-		QHash<QAction*, QObject*> Action2Entry_;
 
 		QHash<QObject*, QString> Msg2OrigText_;
 

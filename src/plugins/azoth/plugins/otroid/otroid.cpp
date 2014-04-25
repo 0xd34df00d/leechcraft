@@ -614,7 +614,6 @@ namespace OTRoid
 			QObject *entry)
 	{
 		auto act = Entry2Action_.take (entry);
-		Action2Entry_.remove (act);
 		delete act;
 	}
 
@@ -806,20 +805,20 @@ namespace OTRoid
 		otr->setCheckable (true);
 		otr->setIcon (GetIcon ());
 		otr->setProperty ("Azoth/OTRoid/IsGood", true);
+		otr->setProperty ("Azoth/OTRoid/Entry", QVariant::fromValue (entry));
 		connect (otr,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleOtrAction ()));
 
 		Entry2Action_ [entry] = otr;
-		Action2Entry_ [otr] = entry;
 	}
 
 	void Plugin::handleOtrAction ()
 	{
 		auto act = qobject_cast<QAction*> (sender ());
 
-		auto entryObj = Action2Entry_ [act];
+		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		const auto& accId = acc->GetAccountID ();
