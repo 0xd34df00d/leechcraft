@@ -134,6 +134,7 @@ Rectangle {
 
         anchors.top: parent.top
         anchors.left: artistsToCheckView.right
+        anchors.leftMargin: 10
         anchors.bottom: parent.bottom
         anchors.right: parent.right
 
