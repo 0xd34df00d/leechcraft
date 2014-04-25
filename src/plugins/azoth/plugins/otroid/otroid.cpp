@@ -564,20 +564,9 @@ namespace OTRoid
 		}
 
 		if (!Auths_.contains (entry))
-		{
-			const auto auth = new Authenticator { entry };
-			connect (auth,
-					SIGNAL (abortSmp (ConnContext*)),
-					this,
-					SLOT (handleAbortSmp (ConnContext*)));
-			connect (auth,
-					SIGNAL (gotReply (SmpMethod, QString, ConnContext*)),
-					this,
-					SLOT (handleGotSmpReply (SmpMethod, QString, ConnContext*)));
-			Auths_ [entry] = auth;
-		}
+			CreateAuthForEntry (entry);
 
-		const auto auth = Auths_ [entry];
+		const auto auth = Auths_.value (entry);
 
 		switch (smpEvent)
 		{
@@ -592,6 +581,20 @@ namespace OTRoid
 					<< "unknown SMP event";
 			break;
 		}
+	}
+
+	void Plugin::CreateAuthForEntry (ICLEntry *entry)
+	{
+		const auto auth = new Authenticator { entry };
+		connect (auth,
+				SIGNAL (abortSmp (ConnContext*)),
+				this,
+				SLOT (handleAbortSmp (ConnContext*)));
+		connect (auth,
+				SIGNAL (gotReply (SmpMethod, QString, ConnContext*)),
+				this,
+				SLOT (handleGotSmpReply (SmpMethod, QString, ConnContext*)));
+		Auths_ [entry] = auth;
 	}
 #endif
 
