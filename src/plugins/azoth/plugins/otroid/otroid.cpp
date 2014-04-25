@@ -634,7 +634,7 @@ namespace OTRoid
 		auto list = proxy->GetReturnValue ().toList ();
 
 		const auto& actions = Entry2Action_.value (entry);
-		for (const auto action : { actions.ToggleOtr_ })
+		for (const auto action : { actions.ToggleOtr_, actions.Authenticate_ })
 			list << QVariant::fromValue<QObject*> (action.get ());
 
 		proxy->SetReturnValue (list);
