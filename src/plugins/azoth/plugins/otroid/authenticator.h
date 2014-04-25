@@ -58,9 +58,11 @@ namespace OTRoid
 		~Authenticator ();
 
 		void AskFor (SmpMethod, const QString&, ConnContext*);
+		void Initiate ();
 	signals:
 		void gotReply (SmpMethod, const QString&, ConnContext*);
 		void abortSmp (ConnContext*);
+		void initiateRequested (ICLEntry*, SmpMethod, const QString&, const QString&);
 
 		void destroyingAuth (ICLEntry*);
 	};

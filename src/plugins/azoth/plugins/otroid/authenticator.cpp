@@ -30,6 +30,7 @@
 #include "authenticator.h"
 #include <QInputDialog>
 #include <interfaces/azoth/iclentry.h>
+#include "initiateauthdialog.h"
 
 namespace LeechCraft
 {
@@ -78,6 +79,18 @@ namespace OTRoid
 		}
 
 		emit gotReply (method, reply, context);
+	}
+
+	void Authenticator::Initiate ()
+	{
+		InitiateAuthDialog dia { Entry_ };
+		if (dia.exec () != QDialog::Accepted)
+		{
+			deleteLater ();
+			return;
+		}
+
+		emit initiateRequested (Entry_, dia.GetMethod (), dia.GetQuestion (), dia.GetAnswer ());
 	}
 }
 }

@@ -72,6 +72,7 @@ namespace OTRoid
 		struct EntryActions
 		{
 			std::shared_ptr<QAction> ToggleOtr_;
+			std::shared_ptr<QAction> Authenticate_;
 		};
 		QHash<QObject*, EntryActions> Entry2Action_;
 
@@ -143,8 +144,10 @@ namespace OTRoid
 				QObject *message);
 	private slots:
 		void handleOtrAction ();
-
+		void handleAuthRequested ();
 #if OTRL_VERSION_MAJOR >= 4
+		void startAuth (ICLEntry*, SmpMethod, const QString&, const QString&);
+
 		void handleGotSmpReply (SmpMethod, const QString&, ConnContext*);
 		void handleAbortSmp (ConnContext*);
 

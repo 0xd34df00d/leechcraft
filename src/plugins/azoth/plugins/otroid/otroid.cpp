@@ -594,6 +594,10 @@ namespace OTRoid
 				SIGNAL (gotReply (SmpMethod, QString, ConnContext*)),
 				this,
 				SLOT (handleGotSmpReply (SmpMethod, QString, ConnContext*)));
+		connect (auth,
+				SIGNAL (initiateRequested (ICLEntry*, SmpMethod, QString, QString)),
+				this,
+				SLOT (startAuth (ICLEntry*, SmpMethod, QString, QString)));
 		Auths_ [entry] = auth;
 	}
 #endif
@@ -820,7 +824,17 @@ namespace OTRoid
 				this,
 				SLOT (handleOtrAction ()));
 
-		Entry2Action_ [entry] = EntryActions { otr };
+		const auto& auth = std::make_shared<QAction> (tr ("Authenticate the contact"), this);
+		auth->setProperty ("Azoth/OTRoid/IsGood", true);
+		auth->setProperty ("Azoth/OTRoid/Areas",
+				QStringList { "contactListContextMenu", "tabContextMenu", "toolbar" });
+		auth->setProperty ("Azoth/OTRoid/Entry", QVariant::fromValue (entry));
+		connect (auth.get (),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAuthRequested ()));
+
+		Entry2Action_ [entry] = EntryActions { otr, auth };
 	}
 
 	void Plugin::handleOtrAction ()
@@ -866,7 +880,53 @@ namespace OTRoid
 		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::DOut);
 	}
 
+	void Plugin::handleAuthRequested ()
+	{
+		auto act = qobject_cast<QAction*> (sender ());
+
+		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+
+		if (!Auths_.contains (entry))
+			CreateAuthForEntry (entry);
+
+		const auto auth = Auths_.value (entry);
+		auth->Initiate ();
+	}
+
 #if OTRL_VERSION_MAJOR >= 4
+	void Plugin::startAuth (ICLEntry *entry, SmpMethod method,
+			const QString& questionStr, const QString& answerStr)
+	{
+		const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+
+		const auto context = otrl_context_find (UserState_,
+				entry->GetEntryID ().toUtf8 ().constData (),
+				acc->GetAccountID ().constData (),
+				proto->GetProtocolID ().constData (),
+				OTRL_INSTAG_BEST,
+				true,
+				nullptr, nullptr, nullptr);
+
+		const auto& question = questionStr.toUtf8 ();
+		const auto& answer = answerStr.toUtf8 ();
+		switch (method)
+		{
+		case SmpMethod::Question:
+			otrl_message_initiate_smp_q (UserState_, &OtrOps_, this,
+					context,
+					question.constData (),
+					reinterpret_cast<const unsigned char*> (answer.constData ()), answer.size ());
+			break;
+		case SmpMethod::SharedSecret:
+			otrl_message_initiate_smp (UserState_, &OtrOps_, this,
+					context,
+					reinterpret_cast<const unsigned char*> (answer.constData ()), answer.size ());
+			break;
+		}
+	}
+
 	void Plugin::handleGotSmpReply (SmpMethod, const QString& reply, ConnContext *context)
 	{
 		const auto& replyUtf = reply.toUtf8 ();
