@@ -262,7 +262,12 @@ namespace Poshuku
 			folder->ModifyData (0,
 					Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("document-open-folder"),
 					Qt::DecorationRole);
+
+			if (announce)
+				beginInsertRows ({}, RootItem_->ChildCount (), RootItem_->ChildCount ());
 			RootItem_->AppendChild (folder);
+			if (announce)
+				endInsertRows ();
 		}
 
 		QList<QVariant> data;
