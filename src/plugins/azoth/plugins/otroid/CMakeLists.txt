@@ -17,6 +17,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	)
 set (OTROID_SRCS
 	otroid.cpp
+	authenticator.cpp
 	)
 set (OTROID_RESOURCES azothotroidresources.qrc)
 CreateTrs ("azoth_otroid" "en;ru_RU;uk_UA" OTROID_COMPILED_TRANSLATIONS)
