@@ -69,7 +69,11 @@ namespace OTRoid
 		OtrlUserState UserState_;
 		OtrlMessageAppOps OtrOps_;
 
-		QHash<QObject*, QAction*> Entry2Action_;
+		struct EntryActions
+		{
+			std::shared_ptr<QAction> ToggleOtr_;
+		};
+		QHash<QObject*, EntryActions> Entry2Action_;
 
 		QHash<QObject*, QString> Msg2OrigText_;
 

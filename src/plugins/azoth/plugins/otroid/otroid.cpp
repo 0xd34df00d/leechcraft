@@ -606,15 +606,14 @@ namespace OTRoid
 		if (!action->property ("Azoth/OTRoid/IsGood").toBool ())
 			return;
 
-		const QStringList ours { "contactListContextMenu", "tabContextMenu", "toolbar" };
+		const auto& ours = action->property ("Azoth/OTRoid/Areas").toStringList ();
 		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
 	}
 
 	void Plugin::hookEntryActionsRemoved (IHookProxy_ptr,
 			QObject *entry)
 	{
-		auto act = Entry2Action_.take (entry);
-		delete act;
+		Entry2Action_.remove (entry);
 	}
 
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
@@ -625,8 +624,12 @@ namespace OTRoid
 		if (!Entry2Action_.contains (entry))
 			CreateActions (entry);
 
-		QList<QVariant> list = proxy->GetReturnValue ().toList ();
-		list << QVariant::fromValue<QObject*> (Entry2Action_ [entry]);
+		auto list = proxy->GetReturnValue ().toList ();
+
+		const auto& actions = Entry2Action_.value (entry);
+		for (const auto action : { actions.ToggleOtr_ })
+			list << QVariant::fromValue<QObject*> (action.get ());
+
 		proxy->SetReturnValue (list);
 	}
 
@@ -729,8 +732,9 @@ namespace OTRoid
 
 			if (!Entry2Action_.contains (entryObj))
 				CreateActions (entryObj);
+
 			if (!tlv)
-				Entry2Action_ [entryObj]->setChecked (true);
+				Entry2Action_ [entryObj].ToggleOtr_->setChecked (true);
 		}
 	}
 
@@ -750,7 +754,7 @@ namespace OTRoid
 
 		QObject *entryObj = msg->OtherPart ();
 		if (!Entry2Action_.contains (entryObj) ||
-				!Entry2Action_ [entryObj]->isChecked ())
+				!Entry2Action_ [entryObj].ToggleOtr_->isChecked ())
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -801,17 +805,19 @@ namespace OTRoid
 
 	void Plugin::CreateActions (QObject *entry)
 	{
-		QAction *otr = new QAction (tr ("Enable OTR"), this);
+		const auto& otr = std::make_shared<QAction> (tr ("Enable OTR"), this);
 		otr->setCheckable (true);
 		otr->setIcon (GetIcon ());
 		otr->setProperty ("Azoth/OTRoid/IsGood", true);
+		otr->setProperty ("Azoth/OTRoid/Areas",
+				QStringList { "contactListContextMenu", "tabContextMenu", "toolbar" });
 		otr->setProperty ("Azoth/OTRoid/Entry", QVariant::fromValue (entry));
-		connect (otr,
+		connect (otr.get (),
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleOtrAction ()));
 
-		Entry2Action_ [entry] = otr;
+		Entry2Action_ [entry] = EntryActions { otr };
 	}
 
 	void Plugin::handleOtrAction ()
