@@ -53,6 +53,7 @@
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/gui/findnotification.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -165,6 +166,17 @@ namespace Monocle
 				mgr->GetIcon ("view-preview"), tr ("Thumbnails"));
 		dockTabWidget->addTab (AnnWidget_,
 				mgr->GetIcon ("view-pim-notes"), tr ("Annotations"));
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, dockTabWidget]
+			{
+				dockTabWidget->setCurrentWidget (AnnWidget_);
+			},
+			AnnManager_,
+			SIGNAL (annotationSelected (QModelIndex)),
+			this
+		};
 
 		connect (ThumbsWidget_,
 				SIGNAL (pageClicked (int)),
