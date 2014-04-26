@@ -31,8 +31,10 @@
 #include <QMenu>
 #include <QClipboard>
 #include <util/sll/onetimerunner.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "annmanager.h"
 #include "anntreedelegate.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -64,9 +66,10 @@ namespace Monocle
 				idx.data (AnnManager::Role::ItemType).toInt () == AnnManager::ItemTypes::PageItem)
 			return;
 
-		QMenu menu;
+		const auto itm = Core::Instance ().GetProxy ()->GetIconThemeManager ();
 
-		auto action = menu.addAction (tr ("Copy annotation text"));
+		QMenu menu;
+		auto action = menu.addAction (itm->GetIcon ("edit-copy"), tr ("Copy annotation text"));
 		new Util::OneTimeRunner
 		{
 			[&idx] () -> void
