@@ -155,10 +155,10 @@ namespace AdvancedNotifications
 		rule.SetFieldMatches (Matches_);
 
 		const int audioIdx = Ui_.AudioFile_->currentIndex ();
-		const auto& audioFile = audioIdx >= 0 ?
+		const QString& audioFile = audioIdx >= 0 ?
 				Ui_.AudioFile_->itemText (audioIdx) :
 				QString ();
-		rule.SetAudioParams (AudioParams (Core::Instance ().GetAbsoluteAudioPath (audioFile)));
+		rule.SetAudioParams (AudioParams (audioFile));
 
 		QStringList cmdArgs;
 		for (int i = 0; i < Ui_.CommandArgsTree_->topLevelItemCount (); ++i)
