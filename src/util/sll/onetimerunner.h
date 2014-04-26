@@ -29,31 +29,12 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <util/utilconfig.h>
+#include "slotclosure.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API OneTimeRunner : public QObject
-	{
-		Q_OBJECT
-
-		std::function<void ()> Func_;
-	public:
-		OneTimeRunner (const std::function<void ()>& func, QObject *parent);
-		OneTimeRunner (const std::function<void ()>& func,
-				QObject *sender,
-				const char *signal,
-				QObject *parent);
-		OneTimeRunner (const std::function<void ()>& func,
-				QObject *sender,
-				const std::initializer_list<const char*>& signalsList,
-				QObject *parent);
-	public slots:
-		void run ();
-	};
+	using OneTimeRunner = SlotClosure<DeleteLaterPolicy>;
 }
 }
