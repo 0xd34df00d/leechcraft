@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "httstream.h"
+#include <util/util.h>
 #include "httpstreamfilter.h"
 
 namespace LeechCraft
@@ -38,6 +39,7 @@ namespace HttStream
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("lmp_httstream");
 	}
 
 	void Plugin::SecondInit ()

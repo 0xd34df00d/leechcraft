@@ -16,7 +16,7 @@ set (HTTSTREAM_SRCS
 	filterconfigurator.cpp
 	)
 
-#CreateTrs ("lmp_httstream" "en;ru_RU" HTTSTREAM_COMPILED_TRANSLATIONS)
+CreateTrs ("lmp_httstream" "en;ru_RU" HTTSTREAM_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp_httstream" "en;ru_RU" "${HTTSTREAM_SRCS}" "${HTTSTREAM_FORMS}" "lmphttstreamfiltersettings.xml")
 
 add_library (leechcraft_lmp_httstream SHARED
