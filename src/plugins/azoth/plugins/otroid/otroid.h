@@ -144,8 +144,8 @@ namespace OTRoid
 				QObject *message);
 	private slots:
 		void handleOtrAction ();
-		void handleAuthRequested ();
 #if OTRL_VERSION_MAJOR >= 4
+		void handleAuthRequested ();
 		void startAuth (ICLEntry*, SmpMethod, const QString&, const QString&);
 
 		void handleGotSmpReply (SmpMethod, const QString&, ConnContext*);

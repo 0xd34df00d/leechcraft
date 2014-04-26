@@ -633,8 +633,15 @@ namespace OTRoid
 
 		auto list = proxy->GetReturnValue ().toList ();
 
-		const auto& actions = Entry2Action_.value (entry);
-		for (const auto action : { actions.ToggleOtr_, actions.Authenticate_ })
+		const auto& actionsStruct = Entry2Action_.value (entry);
+		const auto actions
+		{
+			actionsStruct.ToggleOtr_,
+#if OTRL_VERSION_MAJOR >= 4
+			actionsStruct.Authenticate_
+#endif
+		};
+		for (const auto action : actions)
 			list << QVariant::fromValue<QObject*> (action.get ());
 
 		proxy->SetReturnValue (list);
@@ -824,17 +831,26 @@ namespace OTRoid
 				this,
 				SLOT (handleOtrAction ()));
 
+#if OTRL_VERSION_MAJOR >= 4
 		const auto& auth = std::make_shared<QAction> (tr ("Authenticate the contact"), this);
 		auth->setProperty ("Azoth/OTRoid/IsGood", true);
-		auth->setProperty ("Azoth/OTRoid/Areas",
-				QStringList { "contactListContextMenu" });
+		auth->setProperty ("Azoth/OTRoid/Areas", QStringList { "contactListContextMenu" });
 		auth->setProperty ("Azoth/OTRoid/Entry", QVariant::fromValue (entry));
 		connect (auth.get (),
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAuthRequested ()));
+#endif
 
-		Entry2Action_ [entry] = EntryActions { otr, auth };
+		Entry2Action_ [entry] = EntryActions
+		{
+			otr,
+#if OTRL_VERSION_MAJOR >= 4
+			auth
+#else
+			{}
+#endif
+		};
 	}
 
 	void Plugin::handleOtrAction ()
@@ -880,6 +896,7 @@ namespace OTRoid
 		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::DOut);
 	}
 
+#if OTRL_VERSION_MAJOR >= 4
 	void Plugin::handleAuthRequested ()
 	{
 		auto act = qobject_cast<QAction*> (sender ());
@@ -894,7 +911,6 @@ namespace OTRoid
 		auth->Initiate ();
 	}
 
-#if OTRL_VERSION_MAJOR >= 4
 	void Plugin::startAuth (ICLEntry *entry, SmpMethod method,
 			const QString& questionStr, const QString& answerStr)
 	{
