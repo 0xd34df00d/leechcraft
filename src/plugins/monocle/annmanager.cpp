@@ -111,6 +111,7 @@ namespace Monocle
 				auto annItem = new QStandardItem (ann->GetText ());
 				annItem->setToolTip (ann->GetText ());
 				annItem->setEditable (false);
+				annItem->setData (QVariant::fromValue (ann), Role::Annotation);
 				annItem->setData (ItemTypes::AnnHeaderItem, Role::ItemType);
 
 				auto subItem = new QStandardItem (ann->GetText ());
