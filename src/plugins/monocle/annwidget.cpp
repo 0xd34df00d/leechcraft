@@ -28,6 +28,9 @@
  **********************************************************************/
 
 #include "annwidget.h"
+#include <QMenu>
+#include <QClipboard>
+#include <util/sll/onetimerunner.h>
 #include "annmanager.h"
 #include "anntreedelegate.h"
 
@@ -52,6 +55,31 @@ namespace Monocle
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				Mgr_,
 				SLOT (selectAnnotation (QModelIndex)));
+	}
+
+	void AnnWidget::on_AnnTree__customContextMenuRequested (const QPoint& point)
+	{
+		const auto& idx = Ui_.AnnTree_->indexAt (point);
+		if (!idx.isValid () ||
+				idx.data (AnnManager::Role::ItemType).toInt () == AnnManager::ItemTypes::PageItem)
+			return;
+
+		QMenu menu;
+
+		auto action = menu.addAction (tr ("Copy annotation text"));
+		new Util::OneTimeRunner
+		{
+			[&idx] () -> void
+			{
+				const auto& ann = idx.data (AnnManager::Role::Annotation).value<IAnnotation_ptr> ();
+				qApp->clipboard ()->setText (ann->GetText ());
+			},
+			action,
+			SIGNAL (triggered ()),
+			&menu
+		};
+
+		menu.exec (Ui_.AnnTree_->viewport ()->mapToGlobal (point));
 	}
 
 	void AnnWidget::focusOnAnnotation (const QModelIndex& index)

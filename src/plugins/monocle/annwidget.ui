@@ -19,6 +19,9 @@
    </property>
    <item>
     <widget class="QTreeView" name="AnnTree_">
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
      <property name="rootIsDecorated">
       <bool>true</bool>
      </property>

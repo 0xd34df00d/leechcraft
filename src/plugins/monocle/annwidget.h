@@ -47,6 +47,7 @@ namespace Monocle
 	public:
 		AnnWidget (AnnManager*, QWidget* = nullptr);
 	private slots:
+		void on_AnnTree__customContextMenuRequested (const QPoint&);
 		void focusOnAnnotation (const QModelIndex&);
 	};
 }
