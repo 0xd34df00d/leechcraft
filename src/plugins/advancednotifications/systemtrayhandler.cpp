@@ -360,12 +360,12 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::UpdateSysTrayIcon (QSystemTrayIcon *trayIcon)
 	{
-		UpdateIcon<QSystemTrayIcon*> (trayIcon, Category2Icon_.key (trayIcon));
+		UpdateIcon (trayIcon, Category2Icon_.key (trayIcon));
 	}
 
 	void SystemTrayHandler::UpdateTrayAction (QAction *action)
 	{
-		UpdateIcon<QAction*> (action, Category2Action_.key (action));
+		UpdateIcon (action, Category2Action_.key (action));
 	}
 
 	void SystemTrayHandler::handleActionTriggered ()
