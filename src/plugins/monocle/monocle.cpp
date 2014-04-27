@@ -33,6 +33,7 @@
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "documenttab.h"
@@ -67,6 +68,18 @@ namespace Monocle
 
 		const auto sm = Core::Instance ().GetShortcutManager ();
 		sm->SetObject (this);
+		sm->RegisterActionInfo ("org.LeechCraft.Monocle.PrevAnn",
+				{
+					tr ("Go to previous annotation"),
+					QKeySequence {},
+					proxy->GetIconThemeManager ()->GetIcon ("go-previous")
+				});
+		sm->RegisterActionInfo ("org.LeechCraft.Monocle.NextAnn",
+				{
+					tr ("Go to next annotation"),
+					QKeySequence {},
+					proxy->GetIconThemeManager ()->GetIcon ("go-next")
+				});
 	}
 
 	void Plugin::SecondInit ()

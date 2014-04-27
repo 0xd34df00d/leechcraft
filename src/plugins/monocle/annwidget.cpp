@@ -32,6 +32,7 @@
 #include <QClipboard>
 #include <QToolBar>
 #include <util/sll/onetimerunner.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "annmanager.h"
 #include "anntreedelegate.h"
@@ -47,13 +48,17 @@ namespace Monocle
 	{
 		Ui_.setupUi (this);
 
+		const auto sm = Core::Instance ().GetShortcutManager ();
 		auto toolbar = new QToolBar;
 		auto prevAct = toolbar->addAction (tr ("Previous annotation"),
 				mgr, SLOT (selectPrev ()));
 		prevAct->setProperty ("ActionIcon", "go-previous");
+		sm->RegisterAction ("org.LeechCraft.Monocle.PrevAnn", prevAct);
+
 		auto nextAct = toolbar->addAction (tr ("Next annotation"),
 				mgr, SLOT (selectNext ()));
 		nextAct->setProperty ("ActionIcon", "go-next");
+		sm->RegisterAction ("org.LeechCraft.Monocle.NextAnn", nextAct);
 
 		const auto treeIdx = Ui_.AnnWidgetLayout_->indexOf (Ui_.AnnTree_);
 		Ui_.AnnWidgetLayout_->insertWidget (treeIdx, toolbar);
