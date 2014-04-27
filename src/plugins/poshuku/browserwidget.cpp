@@ -926,13 +926,6 @@ namespace Poshuku
 		proxy->FillValue ("preview", preview);
 
 		QPrinter printer;
-
-		QPrintDialog dialog (&printer, this);
-		dialog.setWindowTitle (tr ("Print web page"));
-
-		if (dialog.exec () != QDialog::Accepted)
-			return;
-
 		if (preview)
 		{
 			QPrintPreviewDialog prevDialog (&printer, this);
@@ -945,7 +938,15 @@ namespace Poshuku
 				return;
 		}
 		else
+		{
+			QPrintDialog dialog (&printer, this);
+			dialog.setWindowTitle (tr ("Print web page"));
+
+			if (dialog.exec () != QDialog::Accepted)
+				return;
+
 			frame->print (&printer);
+		}
 	}
 
 	void BrowserWidget::SetActualReloadInterval (const QTime& value)
