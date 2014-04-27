@@ -35,6 +35,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+class ShortcutManager;
+}
+
 namespace Monocle
 {
 	class RecentlyOpenedManager;
@@ -57,6 +62,8 @@ namespace Monocle
 		DocStateManager *DocStateManager_;
 		BookmarksManager *BookmarksManager_;
 
+		Util::ShortcutManager *ShortcutMgr_;
+
 		Core ();
 	public:
 		static Core& Instance ();
@@ -75,6 +82,8 @@ namespace Monocle
 		DefaultBackendManager* GetDefaultBackendManager () const;
 		DocStateManager* GetDocStateManager () const;
 		BookmarksManager* GetBookmarksManager () const;
+
+		Util::ShortcutManager* GetShortcutManager () const;
 	};
 }
 }
