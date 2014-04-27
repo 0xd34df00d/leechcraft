@@ -400,8 +400,11 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::dismissNotification (const QString& event)
 	{
-		if (Events_.remove (event))
-			RebuildState ();
+		if (!Events_.contains (event))
+			return;
+
+		const auto canceller = Events_.value (event).Canceller_;
+		Core::Instance ().SendEntity (canceller);
 	}
 
 	namespace
