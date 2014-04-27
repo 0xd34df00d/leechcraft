@@ -79,6 +79,8 @@ namespace Monocle
 
 		QAbstractItemModel* GetModel () const;
 	private:
+		void EmitSelected (const IAnnotation_ptr&);
+		void CenterOn (const IAnnotation_ptr&);
 		void SelectAnnotation (const IAnnotation_ptr&);
 	public slots:
 		void selectAnnotation (const QModelIndex&);

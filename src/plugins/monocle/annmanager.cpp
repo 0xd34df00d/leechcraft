@@ -91,9 +91,7 @@ namespace Monocle
 
 				item->SetHandler ([this] (const IAnnotation_ptr& ann) -> void
 						{
-							if (const auto item = Ann2Item_ [ann])
-								emit annotationSelected (item->index ());
-
+							EmitSelected (ann);
 							SelectAnnotation (ann);
 						});
 
@@ -134,6 +132,23 @@ namespace Monocle
 		return AnnModel_;
 	}
 
+	void AnnManager::EmitSelected (const IAnnotation_ptr& ann)
+	{
+		if (const auto item = Ann2Item_ [ann])
+			emit annotationSelected (item->index ());
+	}
+
+	void AnnManager::CenterOn (const IAnnotation_ptr& ann)
+	{
+		const auto item = Ann2GraphicsItem_.value (ann);
+		if (!item)
+			return;
+
+		const auto graphicsItem = item->GetItem ();
+		const auto& mapped = graphicsItem->scenePos ();
+		View_->SmoothCenterOn (mapped.x (), mapped.y ());
+	}
+
 	void AnnManager::SelectAnnotation (const IAnnotation_ptr& ann)
 	{
 		const auto modelItem = Ann2Item_ [ann];
@@ -163,14 +178,7 @@ namespace Monocle
 		if (!ann)
 			return;
 
-		const auto item = Ann2GraphicsItem_.value (ann);
-		if (!item)
-			return;
-
-		const auto graphicsItem = item->GetItem ();
-		const auto& mapped = graphicsItem->scenePos ();
-		View_->SmoothCenterOn (mapped.x (), mapped.y ());
-
+		CenterOn (ann);
 		SelectAnnotation (ann);
 	}
 }
