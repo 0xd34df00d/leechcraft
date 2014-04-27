@@ -929,10 +929,6 @@ namespace Poshuku
 
 		QPrintDialog dialog (&printer, this);
 		dialog.setWindowTitle (tr ("Print web page"));
-		/* TODO
-		if (!WebView_->selectedText ().isEmpty ())
-			dialog->addEnabledOption (QAbstractPrintDialog::PrintSelection);
-		*/
 
 		if (dialog.exec () != QDialog::Accepted)
 			return;
