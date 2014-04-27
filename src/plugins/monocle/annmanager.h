@@ -59,6 +59,9 @@ namespace Monocle
 		QMap<IAnnotation_ptr, QStandardItem*> Ann2Item_;
 
 		QMap<IAnnotation_ptr, AnnBaseItem*> Ann2GraphicsItem_;
+
+		QList<IAnnotation_ptr> Annotations_;
+		int CurrentAnn_ = -1;
 	public:
 		enum Role
 		{

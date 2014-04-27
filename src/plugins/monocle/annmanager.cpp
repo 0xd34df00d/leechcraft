@@ -56,6 +56,8 @@ namespace Monocle
 
 		Ann2Item_.clear ();
 		Ann2GraphicsItem_.clear ();
+		Annotations_.clear ();
+		CurrentAnn_ = -1;
 
 		const auto isa = qobject_cast<ISupportAnnotations*> (doc->GetQObject ());
 		if (!isa)
@@ -86,6 +88,8 @@ namespace Monocle
 							<< static_cast<int> (ann->GetAnnotationType ());
 					continue;
 				}
+
+				Annotations_ << ann;
 
 				Ann2GraphicsItem_ [ann] = item;
 
@@ -167,6 +171,7 @@ namespace Monocle
 			}
 
 		graphicsItem->SetSelected (true);
+		CurrentAnn_ = Annotations_.indexOf (ann);
 	}
 
 	void AnnManager::selectAnnotation (const QModelIndex& idx)
