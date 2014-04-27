@@ -30,6 +30,7 @@
 #include "annwidget.h"
 #include <QMenu>
 #include <QClipboard>
+#include <QToolBar>
 #include <util/sll/onetimerunner.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "annmanager.h"
@@ -45,6 +46,17 @@ namespace Monocle
 	, Mgr_ { mgr }
 	{
 		Ui_.setupUi (this);
+
+		auto toolbar = new QToolBar;
+		auto prevAct = toolbar->addAction (tr ("Previous annotation"),
+				mgr, SLOT (selectPrev ()));
+		prevAct->setProperty ("ActionIcon", "go-previous");
+		auto nextAct = toolbar->addAction (tr ("Next annotation"),
+				mgr, SLOT (selectNext ()));
+		nextAct->setProperty ("ActionIcon", "go-next");
+
+		const auto treeIdx = Ui_.AnnWidgetLayout_->indexOf (Ui_.AnnTree_);
+		Ui_.AnnWidgetLayout_->insertWidget (treeIdx, toolbar);
 
 		Ui_.AnnTree_->setItemDelegate (new AnnTreeDelegate { Ui_.AnnTree_, this });
 		Ui_.AnnTree_->setModel (Mgr_->GetModel ());

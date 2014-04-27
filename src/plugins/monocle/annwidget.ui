@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="AnnWidgetLayout_">
    <property name="margin">
     <number>0</number>
    </property>
