@@ -174,6 +174,36 @@ namespace Monocle
 		CurrentAnn_ = Annotations_.indexOf (ann);
 	}
 
+	void AnnManager::selectPrev ()
+	{
+		if (CurrentAnn_ == -1 || Annotations_.size () < 2)
+			return;
+
+		if (--CurrentAnn_ < 0)
+			CurrentAnn_ = Annotations_.size () - 1;
+
+		const auto& ann = Annotations_.at (CurrentAnn_);
+
+		EmitSelected (ann);
+		CenterOn (ann);
+		SelectAnnotation (ann);
+	}
+
+	void AnnManager::selectNext ()
+	{
+		if (CurrentAnn_ == -1 || Annotations_.size () < 2)
+			return;
+
+		if (++CurrentAnn_ >= Annotations_.size ())
+			CurrentAnn_ = 0;
+
+		const auto& ann = Annotations_.at (CurrentAnn_);
+
+		EmitSelected (ann);
+		CenterOn (ann);
+		SelectAnnotation (ann);
+	}
+
 	void AnnManager::selectAnnotation (const QModelIndex& idx)
 	{
 		if (idx.data (Role::ItemType).toInt () != ItemTypes::AnnItem)

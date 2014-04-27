@@ -86,6 +86,8 @@ namespace Monocle
 		void CenterOn (const IAnnotation_ptr&);
 		void SelectAnnotation (const IAnnotation_ptr&);
 	public slots:
+		void selectPrev ();
+		void selectNext ();
 		void selectAnnotation (const QModelIndex&);
 	signals:
 		void annotationSelected (const QModelIndex&);
