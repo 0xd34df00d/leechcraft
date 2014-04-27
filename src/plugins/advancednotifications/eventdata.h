@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_EVENTDATA_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_EVENTDATA_H
+#pragma once
+
 #include <QStringList>
 #include <QPixmap>
 #include <interfaces/structures.h>
@@ -49,8 +49,8 @@ namespace AdvancedNotifications
 
 		QObject_ptr HandlingObject_;
 		QStringList Actions_;
+
+		Entity Canceller_;
 	};
 }
 }
-
-#endif

@@ -112,6 +112,7 @@ namespace AdvancedNotifications
 				data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
 				data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
 				data.Actions_ = e.Additional_ ["NotificationActions"].toStringList ();
+				data.Canceller_ = Util::MakeANCancel (e);
 				Events_ [eventId] = data;
 			}
 
