@@ -101,6 +101,7 @@ namespace Otlozhu
 				this,
 				SLOT (handleRemoveTodoRequested ()));
 		Bar_->addAction (removeTodo);
+		Ui_.TodoTree_->addAction (addTodo);
 		Ui_.TodoTree_->addAction (removeTodo);
 		Ui_.TodoTree_->addAction (Util::CreateSeparator (Ui_.TodoTree_));
 
