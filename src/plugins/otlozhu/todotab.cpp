@@ -92,8 +92,9 @@ namespace Otlozhu
 				this,
 				SLOT (handleAddTodoRequested ()));
 		Bar_->addAction (addTodo);
+		Ui_.TodoTree_->addAction (addTodo);
 
-		QAction *removeTodo = new QAction (tr ("Remove"), this);
+		QAction *removeTodo = new QAction (tr ("Remove todo"), this);
 		removeTodo->setProperty ("ActionIcon", "list-remove");
 		removeTodo->setShortcut (Qt::Key_Delete);
 		connect (removeTodo,
@@ -101,8 +102,16 @@ namespace Otlozhu
 				this,
 				SLOT (handleRemoveTodoRequested ()));
 		Bar_->addAction (removeTodo);
-		Ui_.TodoTree_->addAction (addTodo);
 		Ui_.TodoTree_->addAction (removeTodo);
+
+		QAction *cloneTodo = new QAction (tr ("Clone todo"), this);
+		cloneTodo->setProperty ("ActionIcon", "edit-copy");
+		connect (cloneTodo,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCloneTodoRequested ()));
+		Ui_.TodoTree_->addAction (cloneTodo);
+
 		Ui_.TodoTree_->addAction (Util::CreateSeparator (Ui_.TodoTree_));
 
 		for (int i = 0; i <= 100; i += 10)
@@ -227,6 +236,28 @@ namespace Otlozhu
 
 		const QString& id = index.data (StorageModel::Roles::ItemID).toString ();
 		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->RemoveItem (id);
+	}
+
+	void TodoTab::handleCloneTodoRequested ()
+	{
+		const QModelIndex& index = Ui_.TodoTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		const auto& itemId = index.data (StorageModel::Roles::ItemID).toString ();
+		const auto& item = Core::Instance ().GetTodoManager ()->
+				GetTodoStorage ()->GetItemByID (itemId);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get item with"
+					<< itemId;
+			return;
+		}
+
+		TodoItem_ptr clone { new TodoItem };
+		clone->CopyFrom (item);
+		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->AddItem (clone);
 	}
 
 	void TodoTab::handleEditCommentRequested ()
