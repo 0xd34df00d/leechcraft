@@ -30,6 +30,7 @@ set (SRCS
 	icalgenerator.cpp
 	icalparser.cpp
 	itemsmergedialog.cpp
+	editcommentdialog.cpp
 	)
 
 set (LARETZ_LIB)
@@ -47,6 +48,7 @@ set (FORMS
 	todotab.ui
 	addtododialog.ui
 	itemsmergedialog.ui
+	editcommentdialog.ui
 	)
 set (RESOURCES otlozhuresources.qrc)
 
