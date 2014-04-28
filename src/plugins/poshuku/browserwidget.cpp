@@ -61,6 +61,7 @@
 #include <QCursor>
 #include <qwebhistory.h>
 #include <qwebelement.h>
+#include <QWebInspector>
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
@@ -117,6 +118,9 @@ namespace Poshuku
 		WebView_ = new CustomWebView;
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+		WebInspector_ = new QWebInspector;
+		WebInspector_->setPage (WebView_->page ());
 
 		WebView_->SetBrowserWidget (this);
 		connect (WebView_,
@@ -179,7 +183,6 @@ namespace Poshuku
 		NotifyWhenFinished_->setProperty ("ActionIcon", "preferences-desktop-notification");
 		NotifyWhenFinished_->setChecked (XmlSettingsManager::Instance ()->
 				property ("NotifyFinishedByDefault").toBool ());
-
 
 		Add2Favorites_ = new QAction (tr ("Bookmark..."), this);
 		Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
@@ -546,6 +549,7 @@ namespace Poshuku
 
 	BrowserWidget::~BrowserWidget ()
 	{
+		WebInspector_->hide ();
 		if (Own_)
 			Core::Instance ().Unregister (this);
 

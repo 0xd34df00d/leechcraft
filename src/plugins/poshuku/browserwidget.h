@@ -48,6 +48,7 @@ class QDataStream;
 class QShortcut;
 class QWebFrame;
 class QLabel;
+class QWebInspector;
 
 namespace LeechCraft
 {
@@ -116,6 +117,8 @@ namespace Poshuku
 
 		CustomWebView *WebView_;
 		QLabel *LinkTextItem_;
+
+		QWebInspector *WebInspector_;
 
 		static QObject* S_MultiTabsParent_;
 
