@@ -234,14 +234,17 @@ namespace Otlozhu
 			return;
 
 		const auto& title = ProxyModel_->data (index, StorageModel::Roles::ItemTitle).toString ();
-		auto comment = ProxyModel_->data (index, StorageModel::Roles::ItemComment).toString ();
-		comment = QInputDialog::getText (this,
+		const auto& comment = ProxyModel_->data (index, StorageModel::Roles::ItemComment).toString ();
+		const auto& newComment = QInputDialog::getText (this,
 				"Otlozhu",
 				tr ("Enter new comment for item %1:")
 					.arg (title),
 				QLineEdit::Normal,
 				comment);
-		ProxyModel_->setData (index, comment, StorageModel::Roles::ItemComment);
+		if (newComment == comment)
+			return;
+
+		ProxyModel_->setData (index, newComment, StorageModel::Roles::ItemComment);
 	}
 
 	void TodoTab::handleSetDueDateRequested ()
