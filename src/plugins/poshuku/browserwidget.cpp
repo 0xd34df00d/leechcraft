@@ -113,7 +113,7 @@ namespace Poshuku
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 		Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
 		Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
-		Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
+		Ui_.Splitter_->setSizes ({ 0, 1000 });
 
 		WebView_ = new CustomWebView;
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
