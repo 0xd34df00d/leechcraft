@@ -56,16 +56,11 @@
      <property name="text">
       <string>Close</string>
      </property>
-     <property name="shortcut">
-      <string notr="true">Esc</string>
-     </property>
     </widget>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>CloseButton_</sender>
@@ -74,8 +69,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>513</x>
-     <y>30</y>
+     <x>511</x>
+     <y>29</y>
     </hint>
     <hint type="destinationlabel">
      <x>359</x>

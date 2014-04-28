@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "findnotification.h"
+#include <QShortcut>
 #include "clearlineeditaddon.h"
 #include "ui_findnotification.h"
 
@@ -42,6 +43,9 @@ namespace Util
 		Ui_->setupUi (this);
 
 		setFocusProxy (Ui_->Pattern_);
+
+		auto sc = new QShortcut (QString ("Esc"), this, SLOT (reject ()));
+		sc->setContext (Qt::WidgetWithChildrenShortcut);
 
 		new Util::ClearLineEditAddon (proxy, Ui_->Pattern_);
 	}
