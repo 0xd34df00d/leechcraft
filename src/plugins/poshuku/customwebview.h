@@ -91,6 +91,7 @@ namespace Poshuku
 	private slots:
 		void remakeURL (const QUrl&);
 		void handleLoadFinished (bool);
+		void handleFrameState (QWebFrame*, QWebHistoryItem*);
 		void openLinkHere ();
 		void openLinkInNewTab ();
 		void saveLink ();

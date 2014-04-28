@@ -37,6 +37,7 @@
 #include <QClipboard>
 #include <QFile>
 #include <QWebElement>
+#include <QWebHistory>
 #include <QTextCodec>
 #include <QWindowsStyle>
 #include <QFileDialog>
@@ -44,6 +45,7 @@
 #include <util/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/stddatafiltermenucreator.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
 #include "core.h"
@@ -101,6 +103,11 @@ namespace Poshuku
 				SIGNAL (loadingURL (const QUrl&)),
 				this,
 				SLOT (remakeURL (const QUrl&)));
+		connect (page,
+				SIGNAL (saveFrameStateRequested (QWebFrame*, QWebHistoryItem*)),
+				this,
+				SLOT (handleFrameState (QWebFrame*, QWebHistoryItem*)),
+				Qt::QueuedConnection);
 
 		connect (this,
 				SIGNAL (loadFinished (bool)),
@@ -560,6 +567,13 @@ namespace Poshuku
 	{
 		if (ok)
 			remakeURL (url ());
+	}
+
+	void CustomWebView::handleFrameState (QWebFrame*, QWebHistoryItem*)
+	{
+		const auto& histUrl = page ()->history ()->currentItem ().url ();
+		if (histUrl != url ())
+			remakeURL (histUrl);
 	}
 
 	void CustomWebView::openLinkHere ()
