@@ -331,9 +331,9 @@ namespace ChatHistory
 			const bool isSearchRes = SearchResultPosition_ == PerPageAmount_ - Amount_;
 			if (isChat && !isSearchRes)
 			{
-				html.prepend (QString ("<font color=\"#") +
-						(map ["Direction"] == "IN" ? "0000dd" : "dd0000") +
-						"\">");
+				const auto& color = Core::Instance ()->
+						GetPluginProxy ()->GetNickColor (map ["Direction"].toString (), colors);
+				html.prepend ("<font color=\"" + color + "\">");
 				html += "</font>";
 			}
 			else if (isSearchRes)
