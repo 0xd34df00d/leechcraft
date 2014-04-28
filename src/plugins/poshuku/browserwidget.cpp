@@ -113,7 +113,6 @@ namespace Poshuku
 		Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
 		Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
 		Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
-		Ui_.Progress_->hide ();
 
 		WebView_ = new CustomWebView;
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
