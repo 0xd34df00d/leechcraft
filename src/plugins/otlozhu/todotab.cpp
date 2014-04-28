@@ -45,6 +45,7 @@
 #include "icalgenerator.h"
 #include "icalparser.h"
 #include "itemsmergedialog.h"
+#include "editcommentdialog.h"
 
 namespace LeechCraft
 {
@@ -235,12 +236,12 @@ namespace Otlozhu
 
 		const auto& title = ProxyModel_->data (index, StorageModel::Roles::ItemTitle).toString ();
 		const auto& comment = ProxyModel_->data (index, StorageModel::Roles::ItemComment).toString ();
-		const auto& newComment = QInputDialog::getText (this,
-				"Otlozhu",
-				tr ("Enter new comment for item %1:")
-					.arg (title),
-				QLineEdit::Normal,
-				comment);
+
+		EditCommentDialog dia { title, comment, this };
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& newComment = dia.GetComment ();
 		if (newComment == comment)
 			return;
 
