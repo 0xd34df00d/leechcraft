@@ -34,6 +34,8 @@
 #include <QContextMenuEvent>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QToolButton>
+#include "gui/lineeditbuttonmanager.h"
 #include "tagscompletionmodel.h"
 #include "tagscompleter.h"
 
@@ -46,6 +48,20 @@ namespace Util
 	, Completer_ (0)
 	, Separator_ ("; ")
 	{
+		auto mgr = new LineEditButtonManager { this };
+
+		auto button = new QToolButton { this };
+		button->setIconSize ({ 16, 16 });
+		button->setIcon (QIcon::fromTheme ("mail-tagged"));
+		button->setCursor (Qt::ArrowCursor);
+		button->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
+
+		mgr->Add (button);
+
+		connect (button,
+				SIGNAL (clicked ()),
+				this,
+				SLOT (showSelector ()));
 	}
 
 	void TagsLineEdit::AddSelector ()
@@ -127,6 +143,12 @@ namespace Util
 		setText (tags.join (Separator_));
 
 		emit tagsChosen ();
+	}
+
+	void TagsLineEdit::showSelector ()
+	{
+		CategorySelector_->move (QCursor::pos ());
+		CategorySelector_->show ();
 	}
 
 	void TagsLineEdit::keyPressEvent (QKeyEvent *e)

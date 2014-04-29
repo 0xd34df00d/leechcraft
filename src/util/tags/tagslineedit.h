@@ -120,6 +120,7 @@ namespace Util
 		void setTags (const QStringList& tags);
 	private slots:
 		void handleSelectionChanged (const QStringList&);
+		void showSelector ();
 	protected:
 		virtual void keyPressEvent (QKeyEvent*);
 		virtual void focusInEvent (QFocusEvent*);
