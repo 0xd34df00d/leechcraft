@@ -175,6 +175,11 @@ namespace LMP
 #endif
 
 		PopThread_->start (QThread::LowestPriority);
+
+		connect (this,
+				SIGNAL (currentSourceChanged (AudioSource)),
+				this,
+				SLOT (setActualSource (AudioSource)));
 	}
 
 	SourceObject::~SourceObject ()
@@ -784,6 +789,11 @@ namespace LMP
 	void SourceObject::handleTick ()
 	{
 		emit tick (GetCurrentTime ());
+	}
+
+	void SourceObject::setActualSource (const AudioSource& source)
+	{
+		ActualSource_ = source;
 	}
 }
 }

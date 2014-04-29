@@ -140,6 +140,8 @@ namespace LMP
 		AudioSource CurrentSource_;
 		AudioSource NextSource_;
 
+		AudioSource ActualSource_;
+
 		QMutex NextSrcMutex_;
 		QWaitCondition NextSrcWC_;
 
@@ -226,6 +228,8 @@ namespace LMP
 		void handleMessage (GstMessage_ptr);
 		void updateTotalTime ();
 		void handleTick ();
+
+		void setActualSource (const AudioSource&);
 	signals:
 		void stateChanged (SourceState, SourceState);
 		void currentSourceChanged (const AudioSource&);
