@@ -84,7 +84,7 @@ namespace Otlozhu
 				SLOT (enableTagsMode ()));
 		Ui_.TodoTree_->setModel (ProxyModel_);
 
-		QAction *addTodo = new QAction (tr ("Add todo..."), this);
+		QAction *addTodo = new QAction (tr ("Add task..."), this);
 		addTodo->setProperty ("ActionIcon", "list-add");
 		addTodo->setShortcut (Qt::Key_Insert);
 		connect (addTodo,
@@ -94,7 +94,7 @@ namespace Otlozhu
 		Bar_->addAction (addTodo);
 		Ui_.TodoTree_->addAction (addTodo);
 
-		QAction *removeTodo = new QAction (tr ("Remove todo"), this);
+		QAction *removeTodo = new QAction (tr ("Remove task"), this);
 		removeTodo->setProperty ("ActionIcon", "list-remove");
 		removeTodo->setShortcut (Qt::Key_Delete);
 		connect (removeTodo,
@@ -104,7 +104,7 @@ namespace Otlozhu
 		Bar_->addAction (removeTodo);
 		Ui_.TodoTree_->addAction (removeTodo);
 
-		QAction *cloneTodo = new QAction (tr ("Clone todo"), this);
+		QAction *cloneTodo = new QAction (tr ("Clone task"), this);
 		cloneTodo->setProperty ("ActionIcon", "edit-copy");
 		connect (cloneTodo,
 				SIGNAL (triggered ()),
@@ -340,7 +340,7 @@ namespace Otlozhu
 	void TodoTab::handleImport ()
 	{
 		const QString& filename = QFileDialog::getOpenFileName (this,
-				tr ("Import todos"),
+				tr ("Import tasks"),
 				QDir::homePath (),
 				tr ("iCalendar files (*.ics)"));
 
