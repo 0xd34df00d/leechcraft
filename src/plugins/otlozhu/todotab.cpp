@@ -46,6 +46,7 @@
 #include "icalparser.h"
 #include "itemsmergedialog.h"
 #include "editcommentdialog.h"
+#include "editdatedialog.h"
 
 namespace LeechCraft
 {
@@ -303,31 +304,17 @@ namespace Otlozhu
 		if (!index.isValid ())
 			return;
 
-		QDateTime dt = index.data (StorageModel::Roles::ItemDueDate).toDateTime ();
+		const auto& dt = index.data (StorageModel::Roles::ItemDueDate).toDateTime ();
 
-		QDialog dia (this);
+		EditDateDialog dia { dt, this };
 		dia.setWindowTitle (tr ("Select due date"));
-		dia.setLayout (new QVBoxLayout);
-		QCalendarWidget *w = new QCalendarWidget;
-		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-		dia.layout ()->addWidget (w);
-		dia.layout ()->addWidget (box);
-		connect (box,
-				SIGNAL (accepted ()),
-				&dia,
-				SLOT (accept ()));
-		connect (box,
-				SIGNAL (rejected ()),
-				&dia,
-				SLOT (reject ()));
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		dt.setDate (w->selectedDate ());
-		if (QDateTime::currentDateTime ().daysTo (dt) > 1)
-			dt.setTime (QTime ());
+		if (dt == dia.GetDateTime ())
+			return;
 
-		ProxyModel_->setData (index, dt, StorageModel::Roles::ItemDueDate);
+		ProxyModel_->setData (index, dia.GetDateTime (), StorageModel::Roles::ItemDueDate);
 	}
 
 	void TodoTab::handleQuickProgress ()
