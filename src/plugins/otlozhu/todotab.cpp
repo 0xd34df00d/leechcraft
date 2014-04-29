@@ -151,6 +151,9 @@ namespace Otlozhu
 					SLOT (handleSetDueDateRequested ()));
 			delay->setProperty ("Otlozhu/Delay", delays.at (i));
 			DueDateMenu_->addAction (delay);
+
+			if (!delays.at (i))
+				DueDateMenu_->addSeparator ();
 		}
 
 		QAction *customDueDate = new QAction (tr ("Custom..."), this);
