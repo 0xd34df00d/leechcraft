@@ -520,7 +520,7 @@ namespace LMP
 		void UpdateIcon (T iconable, SourceState state, std::function<QSize (T)> iconSizeGetter)
 		{
 			QIcon icon = GetIconFromState (state);
-			QIcon baseIcon = icon.isNull() ?
+			QIcon baseIcon = icon.isNull () ?
 				QIcon ("lcicons:/lmp/resources/images/lmp.svg") :
 				iconable->icon ();
 
