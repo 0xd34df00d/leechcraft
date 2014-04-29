@@ -46,9 +46,9 @@ namespace Util
 	 *
 	 * Using this class is as simple as this:
 	 * \code
-	 * QLineEdit *edit = ...; // or some QLineEdit-derived class
-	 * new ClearLineEditAddon (proxy, edit); // proxy is the one passed to IInfo::Init()
-	 * \endcode
+		QLineEdit *edit = ...; // or some QLineEdit-derived class
+		new ClearLineEditAddon (proxy, edit); // proxy is the one passed to IInfo::Init()
+	   \endcode
 	 *
 	 * The constructor takes a pointer to the proxy object that is passed
 	 * to IInfo::Init() method of the plugin instance object and the
