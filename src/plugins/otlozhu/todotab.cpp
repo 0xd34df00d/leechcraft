@@ -309,7 +309,7 @@ namespace Otlozhu
 		dia.setWindowTitle (tr ("Select due date"));
 		dia.setLayout (new QVBoxLayout);
 		QCalendarWidget *w = new QCalendarWidget;
-		QDialogButtonBox *box = new QDialogButtonBox;
+		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		dia.layout ()->addWidget (w);
 		dia.layout ()->addWidget (box);
 		connect (box,
