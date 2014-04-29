@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QWidget>
 #include <QtDebug>
+#include <QUrl>
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"
 
@@ -63,6 +64,8 @@ namespace AdvancedNotifications
 			return TypedMatcherBase_ptr (new StringMatcher (ToTList<QString> (fieldData.AllowedValues_)));
 		case QVariant::StringList:
 			return TypedMatcherBase_ptr (new StringListMatcher (ToTList<QString> (fieldData.AllowedValues_)));
+		case QVariant::Url:
+			return TypedMatcherBase_ptr (new UrlMatcher ());
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
@@ -247,6 +250,29 @@ namespace AdvancedNotifications
 		return Value_.Contains_ ?
 				QObject::tr ("contains element matching %1").arg (p) :
 				QObject::tr ("doesn't contain element matching %1").arg (p);
+	}
+
+	UrlMatcher::UrlMatcher ()
+	{
+	}
+
+	bool UrlMatcher::Match (const QVariant& var) const
+	{
+		if (!var.canConvert<QUrl> ())
+			return false;
+
+		const auto& url = var.toUrl ();
+		const auto contains = url.toString ().indexOf (Value_.Rx_) != -1 ||
+				QString::fromUtf8 (url.toEncoded ()).indexOf (Value_.Rx_) != -1;
+		return contains == Value_.Contains_;
+	}
+
+	QString UrlMatcher::GetHRDescription () const
+	{
+		const QString& p = Value_.Rx_.pattern ();
+		return Value_.Contains_ ?
+				QObject::tr ("matches URL or pattern `%1`").arg (p) :
+				QObject::tr ("doesn't match URL or pattern `%1`").arg (p);
 	}
 
 	IntMatcher::IntMatcher ()

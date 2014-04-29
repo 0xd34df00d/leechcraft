@@ -107,6 +107,16 @@ namespace AdvancedNotifications
 		QString GetHRDescription () const;
 	};
 
+	class UrlMatcher : public StringLikeMatcher
+	{
+	public:
+		UrlMatcher ();
+
+		bool Match (const QVariant&) const;
+
+		QString GetHRDescription () const;
+	};
+
 	class IntMatcher : public TypedMatcherBase
 	{
 		ANIntFieldValue Value_;
