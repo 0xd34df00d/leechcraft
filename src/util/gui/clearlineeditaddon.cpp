@@ -32,6 +32,7 @@
 #include <QToolButton>
 #include <QApplication>
 #include <QStyle>
+#include "lineeditbuttonmanager.h"
 #include "interfaces/core/iiconthememanager.h"
 
 namespace LeechCraft
@@ -63,37 +64,10 @@ namespace Util
 				this,
 				SLOT (updateButton (QString)));
 
-		const auto& buttonSH = Button_->sizeHint ();
-
-		const int frameWidth = edit->style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
-		edit->setStyleSheet (QString ("QLineEdit { padding-right: %1px; }")
-					.arg (buttonSH.width () + frameWidth + 1));
-		const auto msz = edit->minimumSizeHint ();
-		edit->setMinimumSize (qMax (msz.width (), buttonSH.height () + frameWidth * 2 + 2),
-						qMax (msz.height(), buttonSH.height () + frameWidth * 2 + 2));
-
-		UpdatePos ();
-
-		edit->installEventFilter (this);
 		updateButton (edit->text ());
-	}
 
-	bool ClearLineEditAddon::eventFilter (QObject *obj, QEvent *event)
-	{
-		if (event->type () == QEvent::Resize ||
-			event->type () == QEvent::Move)
-			UpdatePos ();
-
-		return QObject::eventFilter (obj, event);
-	}
-
-	void ClearLineEditAddon::UpdatePos ()
-	{
-		const auto& hint = Button_->sizeHint ();
-		const auto& rect = Edit_->rect ();
-		const int frameWidth = Edit_->style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
-		Button_->move (rect.right () - frameWidth - hint.width (),
-				(rect.bottom () + 1 - hint.height ()) / 2);
+		auto mgr = new LineEditButtonManager (edit);
+		mgr->Add (Button_);
 	}
 
 	void ClearLineEditAddon::updateButton (const QString& text)

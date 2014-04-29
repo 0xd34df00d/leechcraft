@@ -72,10 +72,6 @@ namespace Util
 		 * edit takes ownership of the addon.
 		 */
 		ClearLineEditAddon (ICoreProxy_ptr proxy, QLineEdit *edit);
-	protected:
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		void UpdatePos ();
 	private slots:
 		void updateButton (const QString&);
 	};
