@@ -303,6 +303,11 @@ namespace LMP
 				GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
 	}
 
+	AudioSource SourceObject::GetActualSource () const
+	{
+		return ActualSource_;
+	}
+
 	AudioSource SourceObject::GetCurrentSource () const
 	{
 		return CurrentSource_;
