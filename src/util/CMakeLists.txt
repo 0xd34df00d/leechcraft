@@ -39,6 +39,7 @@ set (SRCS
 	gui/findnotification.cpp
 	gui/findnotificationwk.cpp
 	gui/flowlayout.cpp
+	gui/lineeditbuttonmanager.cpp
 	gui/pagenotification.cpp
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
