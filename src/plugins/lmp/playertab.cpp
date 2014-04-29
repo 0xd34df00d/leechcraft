@@ -529,6 +529,8 @@ namespace LMP
 				iconable->icon ();
 
 			QPixmap px = baseIcon.pixmap (iconSize);
+			if (px.isNull ())
+				px = QPixmap (iconSize);
 
 			if (!icon.isNull ())
 			{
