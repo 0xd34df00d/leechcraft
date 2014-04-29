@@ -40,6 +40,12 @@ namespace LeechCraft
 namespace Util
 {
 	ClearLineEditAddon::ClearLineEditAddon (ICoreProxy_ptr proxy, QLineEdit *edit)
+	: ClearLineEditAddon { proxy, edit, new LineEditButtonManager { edit } }
+	{
+	}
+
+	ClearLineEditAddon::ClearLineEditAddon (ICoreProxy_ptr proxy,
+			QLineEdit *edit, LineEditButtonManager *mgr)
 	: QObject (edit)
 	, Button_ (new QToolButton (edit))
 	, Edit_ (edit)
@@ -66,7 +72,6 @@ namespace Util
 
 		updateButton (edit->text ());
 
-		auto mgr = new LineEditButtonManager (edit);
 		mgr->Add (Button_);
 	}
 
