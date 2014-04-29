@@ -519,12 +519,14 @@ namespace LMP
 		template<typename T>
 		void UpdateIcon (T iconable, SourceState state, std::function<QSize (T)> iconSizeGetter)
 		{
+			const QSize& iconSize = iconSizeGetter (iconable);
+			if (iconSize.isEmpty ())
+				return;
+
 			QIcon icon = GetIconFromState (state);
 			QIcon baseIcon = icon.isNull () ?
 				QIcon ("lcicons:/lmp/resources/images/lmp.svg") :
 				iconable->icon ();
-
-			const QSize& iconSize = iconSizeGetter (iconable);
 
 			QPixmap px = baseIcon.pixmap (iconSize);
 
