@@ -48,7 +48,7 @@ namespace Util
 							AN::Field::MediaPlayerURL,
 							QObject::tr ("File URL"),
 							QObject::tr ("URL to the file being played."),
-							QVariant::String,
+							QVariant::Url,
 							{
 								AN::TypeMediaPlaybackStatus
 							}
