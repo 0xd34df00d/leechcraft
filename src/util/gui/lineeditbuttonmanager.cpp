@@ -57,10 +57,6 @@ namespace Util
 		Edit_->setStyleSheet (QString ("QLineEdit { padding-right: %1px; }")
 					.arg (Pad_));
 
-		const auto& msz = Edit_->minimumSizeHint ();
-		Edit_->setMinimumSize (qMax (msz.width (), buttonSH.width () + FrameWidth_ * 2 + 2),
-						qMax (msz.height(), buttonSH.height () + FrameWidth_ * 2 + 2));
-
 		UpdatePos ();
 	}
 
