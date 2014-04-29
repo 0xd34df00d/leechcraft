@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>479</width>
-    <height>296</height>
+    <width>487</width>
+    <height>341</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,6 +25,12 @@
     <widget class="QLabel" name="TaskNameLabel_">
      <property name="text">
       <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
      </property>
     </widget>
    </item>
