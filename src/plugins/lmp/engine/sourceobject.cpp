@@ -310,7 +310,7 @@ namespace LMP
 
 	AudioSource SourceObject::GetCurrentSource () const
 	{
-		return CurrentSource_;
+		return ActualSource_;
 	}
 
 	namespace
