@@ -37,20 +37,53 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief A button for choosing a color.
+	 *
+	 * This class provides a button that can be used to choose a color.
+	 */
 	class UTIL_API ColorButton : public QPushButton
 	{
 		Q_OBJECT
 
 		QColor Color_;
 	public:
-		ColorButton (QWidget* = 0);
+		/** @brief Constructs the button with the given \em parent.
+		 *
+		 * @param[in] parent The parent widget for the button.
+		 */
+		ColorButton (QWidget *parent = 0);
 
+		/** @brief Returns the current color represented by this button.
+		 *
+		 * The default value for the color is black.
+		 *
+		 * @return The currently set color.
+		 *
+		 * @sa SetColor()
+		 */
 		QColor GetColor () const;
-		void SetColor (const QColor&);
+
+		/** @brief Sets the color represented by this button.
+		 *
+		 * Sets the \em color of this button and emits the colorChanged()
+		 * signal if the color has been changed.
+		 *
+		 * @param[in] color The new color to be represented by this
+		 * button.
+		 *
+		 * @sa SetColor(), colorChanged()
+		 */
+		void SetColor (const QColor& color);
 	private slots:
 		void handleSelector ();
 	signals:
-		void colorChanged (const QColor&);
+		/** @brief Emitted when the color is changed.
+		 *
+		 * @param[out] color The new color represented by this button.
+		 *
+		 * @sa SetColor()
+		 */
+		void colorChanged (const QColor& color);
 	};
 }
 }
