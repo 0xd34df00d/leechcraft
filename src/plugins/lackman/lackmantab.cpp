@@ -102,6 +102,7 @@ namespace LackMan
 		FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_->setSortCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_->setSourceModel (TypeFilter_);
+		FilterString_->setFilterKeyColumn (PackagesModel::Columns::Name);
 		FilterString_->sort (PackagesModel::Columns::Name);
 
 		Ui_.PackagesTree_->setModel (FilterString_);
