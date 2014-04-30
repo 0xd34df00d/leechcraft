@@ -175,11 +175,6 @@ namespace LMP
 #endif
 
 		PopThread_->start (QThread::LowestPriority);
-
-		connect (this,
-				SIGNAL (currentSourceChanged (AudioSource)),
-				this,
-				SLOT (setActualSource (AudioSource)));
 	}
 
 	SourceObject::~SourceObject ()
@@ -690,6 +685,7 @@ namespace LMP
 			qDebug () << Q_FUNC_INFO << uri;
 			g_free (uri);
 
+			setActualSource (CurrentSource_);
 			emit currentSourceChanged (CurrentSource_);
 		}
 #else
@@ -777,6 +773,7 @@ namespace LMP
 			break;
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_STREAM_START:
+			setActualSource (CurrentSource_);
 			emit currentSourceChanged (CurrentSource_);
 			break;
 #endif
