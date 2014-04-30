@@ -552,7 +552,7 @@ namespace LMP
 
 	MediaInfo Player::GetCurrentMediaInfo () const
 	{
-		const auto& source = Source_->GetCurrentSource ();
+		const auto& source = Source_->GetActualSource ();
 		if (source.IsEmpty ())
 			return MediaInfo ();
 
@@ -588,7 +588,7 @@ namespace LMP
 		info.Genres_ << Source_->GetMetadata (SourceObject::Metadata::Genre);
 		info.TrackNumber_ = Source_->GetMetadata (SourceObject::Metadata::Tracknumber).toInt ();
 		info.Length_ = Source_->GetTotalTime () / 1000;
-		info.LocalPath_ = Source_->GetCurrentSource ().ToUrl ().toString ();
+		info.LocalPath_ = Source_->GetActualSource ().ToUrl ().toString ();
 
 		if (info.Artist_.isEmpty () && info.Title_.contains (" - "))
 		{
