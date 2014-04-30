@@ -844,7 +844,7 @@ namespace LMP
 				"org.LeechCraft.LMP.PlaybackStatus", {}, 0, 1, str);
 		e.Mime_ += "+advanced";
 		e.Additional_ [AN::Field::MediaPlaybackStatus] = stateStr;
-		e.Additional_ [AN::Field::MediaPlayerURL] = Source_->GetCurrentSource ().ToUrl ();
+		e.Additional_ [AN::Field::MediaPlayerURL] = Source_->GetActualSource ().ToUrl ();
 
 		e.Additional_ [AN::Field::MediaArtist] = mediaInfo.Artist_;
 		e.Additional_ [AN::Field::MediaAlbum] = mediaInfo.Album_;
