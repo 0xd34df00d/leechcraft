@@ -41,6 +41,8 @@ namespace Util
 {
 	class UTIL_API LineEditButtonManager : public QObject
 	{
+		Q_OBJECT
+
 		QLineEdit * const Edit_;
 		const int FrameWidth_;
 
