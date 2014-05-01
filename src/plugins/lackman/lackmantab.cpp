@@ -33,6 +33,8 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
+#include <util/gui/clearlineeditaddon.h>
+#include <util/gui/lineeditbuttonmanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
@@ -59,9 +61,13 @@ namespace LackMan
 	{
 		Ui_.setupUi (this);
 
+		auto searchLineButtonMgr = new Util::LineEditButtonManager { Ui_.SearchLine_ };
+
 		auto tc = new Util::TagsCompleter (Ui_.SearchLine_);
 		tc->OverrideModel (TagsModel_);
-		Ui_.SearchLine_->AddSelector ();
+		Ui_.SearchLine_->AddSelector (searchLineButtonMgr);
+
+		new Util::ClearLineEditAddon { Core::Instance ().GetProxy (), Ui_.SearchLine_, searchLineButtonMgr };
 
 		auto selector = new Util::CategorySelector ();
 		selector->setWindowFlags (0);
