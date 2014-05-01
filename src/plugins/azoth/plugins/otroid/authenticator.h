@@ -53,6 +53,8 @@ namespace OTRoid
 		Q_OBJECT
 
 		ICLEntry * const Entry_;
+		const QString HrId_;
+		const QString Name_;
 	public:
 		Authenticator (ICLEntry*);
 		~Authenticator ();
