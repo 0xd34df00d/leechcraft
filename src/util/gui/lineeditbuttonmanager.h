@@ -39,6 +39,21 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Manages additional overlay buttons in a QLineEdit.
+	 *
+	 * This class manages custom buttons (like "Clear") on a QLineEdit or
+	 * a derived class. Particularly, it lays outs the buttons next to
+	 * each other and updates their positions when the managed line edit
+	 * is moved or resized.
+	 *
+	 * Only one LineEditButtonManager can be installed on a single
+	 * QLineEdit. Installing more than one manager will result in an
+	 * exception thrown from the constructor.
+	 *
+	 * The managed line edit owns the created LineEditButtonManager.
+	 *
+	 * @sa ClearLineEditAddon
+	 */
 	class UTIL_API LineEditButtonManager : public QObject
 	{
 		Q_OBJECT
@@ -50,9 +65,24 @@ namespace Util
 
 		QList<QToolButton*> Buttons_;
 	public:
-		LineEditButtonManager (QLineEdit*);
+		/** @brief Constructs the manager for the line \em edit.
+		 *
+		 * Constructs the LineEditButtonManager managing the given line
+		 * \em edit.
+		 *
+		 * \em edit becomes the owner of the manager.
+		 *
+		 * @param[in] edit The line edit to manage.
+		 * @exception std::runtime_error the line edit is already managed
+		 * by another LineEditButtonManager instance.
+		 */
+		LineEditButtonManager (QLineEdit *edit);
 
-		void Add (QToolButton*);
+		/** @brief Adds a \em button to the line edit.
+		 *
+		 * @param[in] button The button to add to the managed line edit.
+		 */
+		void Add (QToolButton *button);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
