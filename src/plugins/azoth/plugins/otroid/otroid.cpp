@@ -576,6 +576,14 @@ namespace OTRoid
 		case OTRL_SMPEVENT_ASK_FOR_ANSWER:
 			auth->AskFor (SmpMethod::Question, question, context);
 			break;
+		case OTRL_SMPEVENT_ERROR:
+		case OTRL_SMPEVENT_ABORT:
+		case OTRL_SMPEVENT_FAILURE:
+			auth->Failed ();
+			break;
+		case OTRL_SMPEVENT_CHEATED:
+			auth->Cheated ();
+			break;
 		case OTRL_SMPEVENT_IN_PROGRESS:
 			break;
 		default:

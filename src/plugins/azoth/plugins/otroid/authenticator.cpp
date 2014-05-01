@@ -29,6 +29,7 @@
 
 #include "authenticator.h"
 #include <QInputDialog>
+#include <QMessageBox>
 #include <interfaces/azoth/iclentry.h>
 #include "initiateauthdialog.h"
 
@@ -92,6 +93,24 @@ namespace OTRoid
 		}
 
 		emit initiateRequested (Entry_, dia.GetMethod (), dia.GetQuestion (), dia.GetAnswer ());
+	}
+
+	void Authenticator::Failed ()
+	{
+		QMessageBox::critical (nullptr,
+				tr ("OTR authentication"),
+				tr ("Failed to authenticate %1 (%2).")
+						.arg (Name_)
+						.arg (HrId_));
+	}
+
+	void Authenticator::Cheated ()
+	{
+		QMessageBox::critical (nullptr,
+				tr ("OTR authentication"),
+				tr ("Failed to authenticate %1 (%2): cheating detected.")
+						.arg (Name_)
+						.arg (HrId_));
 	}
 }
 }
