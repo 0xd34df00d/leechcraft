@@ -576,6 +576,8 @@ namespace OTRoid
 		case OTRL_SMPEVENT_ASK_FOR_ANSWER:
 			auth->AskFor (SmpMethod::Question, question, context);
 			break;
+		case OTRL_SMPEVENT_IN_PROGRESS:
+			break;
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown SMP event";
