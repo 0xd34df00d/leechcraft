@@ -909,6 +909,18 @@ namespace OTRoid
 		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 
+		if (!Entry2Action_ [entryObj].ToggleOtr_->isChecked ())
+		{
+			if (QMessageBox::question (nullptr,
+						"LeechCraft",
+						tr ("You need to start a private conversation before authentication "
+							"can take place. Do you want to start it?"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return;
+
+			SetOtrState (entry, true);
+		}
+
 		if (!Auths_.contains (entry))
 			CreateAuthForEntry (entry);
 
