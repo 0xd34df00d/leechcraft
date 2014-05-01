@@ -853,19 +853,15 @@ namespace OTRoid
 		};
 	}
 
-	void Plugin::handleOtrAction ()
+	void Plugin::SetOtrState (ICLEntry *entry, bool enable)
 	{
-		auto act = qobject_cast<QAction*> (sender ());
-
-		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
-		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		const auto& accId = acc->GetAccountID ();
 
 		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 		const auto& protoId = proto->GetProtocolID ();
 
-		if (!act->isChecked ())
+		if (!enable)
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
 					accId.constData (), protoId.constData (),
@@ -894,6 +890,15 @@ namespace OTRoid
 		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accId.constData (),
 					OTRL_POLICY_DEFAULT), free);
 		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::DOut);
+	}
+
+	void Plugin::handleOtrAction ()
+	{
+		auto act = qobject_cast<QAction*> (sender ());
+
+		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
+
+		SetOtrState (qobject_cast<ICLEntry*> (entryObj), act->isChecked ());
 	}
 
 #if OTRL_VERSION_MAJOR >= 4

@@ -124,6 +124,8 @@ namespace OTRoid
 		QByteArray GetOTRFilename (const QString&) const;
 		void CreateActions (QObject*);
 
+		void SetOtrState (ICLEntry*, bool);
+
 #if OTRL_VERSION_MAJOR >= 4
 		void CreateAuthForEntry (ICLEntry*);
 #endif
