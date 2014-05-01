@@ -50,7 +50,7 @@ namespace Util
 	{
 	}
 
-	void TagsLineEdit::AddSelector ()
+	void TagsLineEdit::AddSelector (LineEditButtonManager *mgr)
 	{
 		CategorySelector_.reset (new CategorySelector (parentWidget ()));
 		CategorySelector_->SetSeparator (Separator_);
@@ -79,7 +79,8 @@ namespace Util
 				CategorySelector_.get (),
 				SLOT (lineTextChanged (const QString&)));
 
-		auto mgr = new LineEditButtonManager { this };
+		if (!mgr)
+			mgr = new LineEditButtonManager { this };
 
 		auto button = new QToolButton { this };
 		button->setIconSize ({ 16, 16 });

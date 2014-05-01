@@ -39,6 +39,7 @@ namespace LeechCraft
 namespace Util
 {
 	class TagsCompleter;
+	class LineEditButtonManager;
 
 	/** @brief A line edit class suitable for use with TagsCompleter.
 	 *
@@ -71,9 +72,17 @@ namespace Util
 		 * Because this function uses the completion model, it should be
 		 * used after a TagsCompleter has been set on this line edit.
 		 *
+		 * This function also creates an overlay button to aid user in
+		 * selecting tags. The passed \em manager object is used (if it
+		 * is not nullptr), otherwise a new LineEditButtonManager is
+		 * created internally to manage this line edit.
+		 *
+		 * @param[in] manager The line edit buttons manager to use, or
+		 * nullptr to create one.
+		 *
 		 * @sa TagsCompleter
 		 */
-		void AddSelector ();
+		void AddSelector (LineEditButtonManager *manager = nullptr);
 
 		/** @brief Returns the separator for the tags.
 		 *
