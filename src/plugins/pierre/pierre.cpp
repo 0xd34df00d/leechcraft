@@ -40,6 +40,7 @@
 #include <interfaces/imwproxy.h>
 #include <interfaces/iactionsexporter.h>
 #include "fullscreen.h"
+#include "reopenhandler.h"
 
 extern void qt_mac_set_dock_menu (QMenu*);
 
@@ -53,6 +54,9 @@ namespace Pierre
 
 		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (0);
+
+		if (!RH ::InitReopenHandler (this))
+			qWarning () << Q_FUNC_INFO << "InitReopenHandler failed.";
 	}
 
 	void Plugin::SecondInit ()
@@ -74,6 +78,7 @@ namespace Pierre
 
 	void Plugin::Release ()
 	{
+		RH::Shutdown ();
 	}
 
 	QString Plugin::GetName () const
@@ -169,6 +174,19 @@ namespace Pierre
 					this,
 					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
 					Qt::UniqueConnection);
+	}
+
+	void Plugin::reopenRequested ()
+	{
+		IRootWindowsManager* const rootWM = Proxy_->GetRootWindowsManager ();
+
+		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+		{
+			QMainWindow* const mainWindow = rootWM->GetMainWindow (i);
+			QMetaObject::invokeMethod (mainWindow,
+									   "showMain",
+									   Qt::QueuedConnection);
+		}
 	}
 }
 }

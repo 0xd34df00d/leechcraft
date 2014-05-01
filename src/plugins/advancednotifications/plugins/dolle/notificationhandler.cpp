@@ -31,6 +31,7 @@
 #include <numeric>
 #include <QtDebug>
 #include <interfaces/structures.h>
+#include <interfaces/advancednotifications/inotificationrule.h>
 #include <interfaces/advancednotifications/types.h>
 #include "dockutil.h"
 
@@ -45,23 +46,41 @@ namespace Dolle
 		return NMTray;
 	}
 
-	void NotificationHandler::Handle (const Entity& e, const INotificationRule&)
+	void NotificationHandler::Handle (const Entity& e, const INotificationRule& rule)
 	{
 		const QString& cat = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
 		const QString& eventId = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
 
+		NotificationData& data = Counts_ [cat];
+
 		if (cat != "org.LC.AdvNotifications.Cancel")
 		{
 			if (const int delta = e.Additional_.value ("org.LC.AdvNotifications.DeltaCount", 0).toInt ())
-				Counts_ [eventId] += delta;
+				data.Counts_ [eventId] += delta;
 			else
-				Counts_ [eventId] = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
+				data.Counts_ [eventId] = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
 		}
-		else if (!Counts_.remove (eventId))
-			return;
+		else
+		{
+			QMutableMapIterator<QString, NotificationData> it (Counts_);
+			bool removed = false;
+			while (it.hasNext () && !removed)
+			{
+				NotificationData& nd = it.next ().value ();
+				if (nd.Counts_.remove (eventId))
+				{
+					removed = true;
+				}
+			}
+			if (!removed)
+				return;
+		}
 
-		const auto total = std::accumulate (Counts_.begin (), Counts_.end (), 0);
-		DU::SetDockBadge (total ? QString::number (total) : QString {});
+		data.Color_ = rule.GetColor ();
+		data.Total_ = std::accumulate (data.Counts_.constBegin (), data.Counts_.constEnd (), 0);
+
+		DU::SetDockBadges (Counts_.values ());
+
 	}
 }
 }

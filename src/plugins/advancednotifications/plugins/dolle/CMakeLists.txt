@@ -12,6 +12,7 @@ set (DOLLE_SRCS
 	dolle.cpp
 	notificationhandler.cpp
 	dockutil.mm
+	lcbadgeview.mm
 	)
 #CreateTrs ("advancednotifications_dolle" "en;ru_RU" DOLLE_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("advancednotifications_dolle" "en;ru_RU" "${DOLLE_SRCS}" "${DOLLE_FORMS}" "")

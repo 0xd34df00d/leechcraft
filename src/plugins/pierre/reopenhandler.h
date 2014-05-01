@@ -29,22 +29,16 @@
 
 #pragma once
 
-#include <QList>
-#include "notificationdata.h"
-
+class QObject;
 
 namespace LeechCraft
 {
-namespace AdvancedNotifications
+namespace Pierre
 {
-namespace Dolle
+namespace RH
 {
-namespace DU
-{
-	bool SetDockBadges (const QList<NotificationData>& badges);
-
-	void InstallBadgeView ();
-}
+bool InitReopenHandler (QObject*);
+void Shutdown ();
 }
 }
 }

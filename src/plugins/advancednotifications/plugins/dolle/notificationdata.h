@@ -29,9 +29,9 @@
 
 #pragma once
 
-#include <QList>
-#include "notificationdata.h"
-
+#include <QColor>
+#include <QHash>
+#include <QString>
 
 namespace LeechCraft
 {
@@ -39,12 +39,12 @@ namespace AdvancedNotifications
 {
 namespace Dolle
 {
-namespace DU
-{
-	bool SetDockBadges (const QList<NotificationData>& badges);
-
-	void InstallBadgeView ();
-}
+	struct NotificationData
+	{
+		QColor Color_ = Qt::red;
+		QHash<QString, int> Counts_;
+		int Total_ = 0;
+	};
 }
 }
 }

@@ -28,7 +28,12 @@
  **********************************************************************/
 
 #include "dolle.h"
+#include <QMainWindow>
+#include <QMetaObject>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "notificationhandler.h"
+#include "dockutil.h"
 
 namespace LeechCraft
 {
@@ -38,6 +43,7 @@ namespace Dolle
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		DU::InstallBadgeView ();
 	}
 
 	void Plugin::SecondInit ()

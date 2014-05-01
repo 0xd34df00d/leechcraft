@@ -29,22 +29,17 @@
 
 #pragma once
 
-#include <QList>
-#include "notificationdata.h"
+#import <AppKit/NSView.h>
 
+@interface LCBadgeView : NSView
+{
+	NSArray* badges;
+	NSArray* colors;
+}
 
-namespace LeechCraft
-{
-namespace AdvancedNotifications
-{
-namespace Dolle
-{
-namespace DU
-{
-	bool SetDockBadges (const QList<NotificationData>& badges);
-
-	void InstallBadgeView ();
-}
-}
-}
-}
+- (BOOL)displayBadges: (NSArray*)b andColors: (NSArray*)c;
+- (void)drawRect: (NSRect)rect;
+- (NSString*)elideString: (NSString*)s forWidth: (CGFloat)width outSize: (NSSize*)pSize;
+- (int)maxBadges;
+- (NSArray*)getGradientColorsForColor: (NSColor*)initialColor;
+@end
