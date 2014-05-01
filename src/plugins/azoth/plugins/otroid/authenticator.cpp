@@ -64,7 +64,9 @@ namespace OTRoid
 			str += " <em>" + question + "</em>";
 			break;
 		case SmpMethod::SharedSecret:
-			str = tr ("%1 (%2) wants to authenticate with you via a shared secret.");
+			str = tr ("%1 (%2) wants to authenticate with you via a shared secret.")
+					.arg (name)
+					.arg (hrId);
 			break;
 		}
 
