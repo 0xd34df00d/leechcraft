@@ -30,15 +30,31 @@
 #include "dockutil.h"
 #include <numeric>
 
-#include <AppKit/NSDockTile.h>
-#include <AppKit/NSColor.h>
-#include <Foundation/NSString.h>
+#import <AppKit/NSDockTile.h>
+#import <AppKit/NSColor.h>
+#import <Foundation/NSString.h>
 #import "lcbadgeview.h"
 
 namespace
 {
 
-static LCBadgeView* gView;
+LCBadgeView* GetBadgeView ()
+{
+	static LCBadgeView *view;
+	if (view)
+		return view;
+
+	NSDockTile *dockTile = [NSApp dockTile];
+	NSView *contentView = [dockTile contentView];
+	NSSize size = contentView ? [contentView bounds].size : [dockTile size];
+
+	view = [[LCBadgeView alloc] initWithFrame: NSMakeRect (0, 0, size.width, size.height)];
+	[dockTile setContentView: view];
+	[dockTile display];
+
+	return view;
+}
+
 
 static NSString* toNsString (const QString& text)
 {
@@ -58,43 +74,28 @@ namespace DU
 {
 	void InstallBadgeView ()
 	{
-		if (gView)
-			return;
-
-		NSDockTile* dockTile = [NSApp dockTile];
-		NSView* view = [dockTile contentView];
-		NSSize size = view ? [view bounds].size : [dockTile size];
-		NSRect rect;
-		rect.origin.x = rect.origin.y = .0f;
-		rect.size = size;
-
-		gView = [[LCBadgeView alloc] initWithFrame: rect];
-		[dockTile setContentView: gView];
-		[dockTile display];
+		GetBadgeView ();
 	}
 
 	bool SetDockBadges (const QList<NotificationData>& badges)
 	{
 		typedef QList<QPair<QString, QColor>> BadgePairs;
 
-		if (!gView)
+		auto view = GetBadgeView ();
+		if (!view)
 			return false;
 
 		BadgePairs badgePairs;
 
-		auto badgesCount = std::count_if (badges.constBegin (), badges.constEnd (), [] (const NotificationData& d)
-		{
-			return d.Total_ > 0;
-		});
+		auto badgesCount = std::count_if (badges.constBegin (), badges.constEnd (),
+				[] (const NotificationData& d) { return d.Total_ > 0; });
 
-		if (badgesCount > [gView maxBadges])
+		if (badgesCount > [view maxBadges])
 		{
-			const auto total = std::accumulate (badges.constBegin (), badges.constEnd (), 0, [](int s, const NotificationData& d)
-			{
-				return s + d.Total_;
-			});
+			const auto total = std::accumulate (badges.constBegin (), badges.constEnd (), 0,
+					[] (int s, const NotificationData& d) { return s + d.Total_; });
 
-			badgePairs << qMakePair (QString::number (total), QColor (Qt::red));
+			badgePairs.append ({ QString::number (total), QColor (Qt::red) });
 			badgesCount = 1;
 		}
 		else
@@ -105,25 +106,24 @@ namespace DU
 				if (!total)
 					continue;
 
-				badgePairs << qMakePair (QString::number (total), data.Color_);
+				badgePairs.append ({ QString::number (total), data.Color_ });
 			}
 		}
 
-		NSMutableArray* labelsArray = [NSMutableArray arrayWithCapacity: badgesCount];
-		NSMutableArray* colorsArray = [NSMutableArray arrayWithCapacity: badgesCount];
+		NSMutableArray *labelsArray = [NSMutableArray arrayWithCapacity: badgesCount];
+		NSMutableArray *colorsArray = [NSMutableArray arrayWithCapacity: badgesCount];
 
-		for (const auto& b: badgePairs)
+		for (const auto& b : badgePairs)
 		{
-			[labelsArray addObject: toNsString(b.first)];
+			[labelsArray addObject: toNsString (b.first)];
 			[colorsArray addObject: [NSColor colorWithCalibratedRed:b.second.redF ()
 															  green:b.second.greenF ()
 															   blue:b.second.blueF ()
 															  alpha:b.second.alphaF ()]];
 		}
 
-		return [gView displayBadges: labelsArray andColors:colorsArray] == YES;
+		return [view displayBadges: labelsArray andColors: colorsArray] == YES;
 	}
-
 }
 }
 }

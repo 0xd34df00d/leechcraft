@@ -51,7 +51,7 @@ namespace Dolle
 		const QString& cat = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
 		const QString& eventId = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
 
-		NotificationData& data = Counts_ [cat];
+		auto& data = Counts_ [cat];
 
 		if (cat != "org.LC.AdvNotifications.Cancel")
 		{
@@ -62,15 +62,13 @@ namespace Dolle
 		}
 		else
 		{
-			QMutableMapIterator<QString, NotificationData> it (Counts_);
+			QMutableMapIterator<QString, NotificationData> it { Counts_ };
 			bool removed = false;
 			while (it.hasNext () && !removed)
 			{
 				NotificationData& nd = it.next ().value ();
 				if (nd.Counts_.remove (eventId))
-				{
 					removed = true;
-				}
 			}
 			if (!removed)
 				return;
@@ -80,7 +78,6 @@ namespace Dolle
 		data.Total_ = std::accumulate (data.Counts_.constBegin (), data.Counts_.constEnd (), 0);
 
 		DU::SetDockBadges (Counts_.values ());
-
 	}
 }
 }

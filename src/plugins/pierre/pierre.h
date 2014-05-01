@@ -74,7 +74,6 @@ namespace Pierre
 		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
 		void handleWindow (int);
 		void fillMenu ();
-		void reopenRequested ();
 	};
 }
 }

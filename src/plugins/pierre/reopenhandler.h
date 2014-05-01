@@ -29,16 +29,25 @@
 
 #pragma once
 
-class QObject;
+#include <interfaces/iinfo.h>
+
 
 namespace LeechCraft
 {
 namespace Pierre
 {
-namespace RH
+
+class ReopenHandler
 {
-bool InitReopenHandler (QObject*);
-void Shutdown ();
-}
+	ICoreProxy_ptr Proxy_;
+
+	ReopenHandler ();
+public:
+	static ReopenHandler& Instance ();
+
+	void SetCoreProxy (const ICoreProxy_ptr&);
+	void Triggered ();
+};
+
 }
 }

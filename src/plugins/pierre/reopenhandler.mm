@@ -1,59 +1,56 @@
 #include "reopenhandler.h"
-#include <QMetaObject>
-#include <QPointer>
-#include <AppKit/NSApplication.h>
+#include <QDebug>
+#import <AppKit/NSApplication.h>
 #import <objc/runtime.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/imwproxy.h>
+
 
 namespace
 {
-static QPointer<QObject> gPlugin;
-
-static void dockClickHandler(id self, SEL _cmd)
+static void dockClickHandler(id, SEL)
 {
-	Q_UNUSED (self);
-	Q_UNUSED (_cmd);
-
-	if (!gPlugin)
-	{
-		return;
-	}
-	QMetaObject::invokeMethod (gPlugin.data (),
-							   "reopenRequested",
-							   Qt::QueuedConnection);
+	LeechCraft::Pierre::ReopenHandler::Instance ().Triggered ();
 }
-
 }
 
 namespace LeechCraft
 {
 namespace Pierre
 {
-namespace RH
-{
 
-bool InitReopenHandler (QObject* pPlugin)
+ReopenHandler::ReopenHandler ()
 {
 	Class cls = [[[NSApplication sharedApplication] delegate] class];
 
-	static bool methodAdded;
-	if (!methodAdded)
-	{
-		SEL sel = @selector (applicationShouldHandleReopen:hasVisibleWindows:);
-		Method m0 = class_getInstanceMethod (cls, sel);
-		if (!class_addMethod (cls, sel, (IMP) dockClickHandler, method_getTypeEncoding(m0)))
-			return false;
-		methodAdded = true;
-	}
-
-	gPlugin = pPlugin;
-	return true;
+	SEL sel = @selector (applicationShouldHandleReopen:hasVisibleWindows:);
+	Method m0 = class_getInstanceMethod (cls, sel);
+	if (!class_addMethod (cls, sel, (IMP) dockClickHandler, method_getTypeEncoding(m0)))
+		qWarning () << Q_FUNC_INFO << "class_addMethod() failed.";
 }
 
-void Shutdown ()
+ReopenHandler& ReopenHandler::Instance ()
 {
-	gPlugin = nullptr;
+	static ReopenHandler instance;
+	return instance;
 }
 
+void ReopenHandler::SetCoreProxy (const ICoreProxy_ptr& proxy)
+{
+	Proxy_ = proxy;
 }
+
+void ReopenHandler::Triggered ()
+{
+	IRootWindowsManager * const rootWM = Proxy_->GetRootWindowsManager ();
+
+	for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+	{
+		IMWProxy * const mwProxy = rootWM->GetMWProxy (i);
+		mwProxy->ShowMain ();
+	}
+}
+
 }
 }

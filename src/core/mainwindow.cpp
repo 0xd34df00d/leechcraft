@@ -618,9 +618,7 @@ void LeechCraft::MainWindow::showHideMain ()
 {
 	IsShown_ = !IsShown_;
 	if (IsShown_)
-	{
 		showMain ();
-	}
 	else
 		hide ();
 }
