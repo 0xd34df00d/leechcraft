@@ -27,46 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_TREEITEM_H
-#define UTIL_TREEITEM_H
-#include <QList>
-#include <QVector>
-#include <QMap>
-#include <QVariant>
-#include "modelsconfig.h"
+#pragma once
 
-namespace LeechCraft
-{
-	namespace Util
-	{
-		class TreeItem
-		{
-			QList<TreeItem*> Children_;
-			QMap<int, QVector<QVariant>> Data_;
-			TreeItem *Parent_;
-		public:
-			UTIL_MODELS_API TreeItem (const QList<QVariant>&, TreeItem *parent = 0);
-			UTIL_MODELS_API ~TreeItem ();
+#include <QtGlobal>
 
-			UTIL_MODELS_API void AppendChild (TreeItem*);
-			UTIL_MODELS_API void PrependChild (TreeItem*);
-			UTIL_MODELS_API void InsertChild (int, TreeItem*);
-			UTIL_MODELS_API int ChildPosition (const TreeItem*) const;
-			UTIL_MODELS_API void RemoveChild (int);
-			UTIL_MODELS_API TreeItem* Child (int) const;
-			UTIL_MODELS_API int ChildCount () const;
-			UTIL_MODELS_API int ColumnCount (int = Qt::DisplayRole) const;
-			UTIL_MODELS_API QVariant Data (int, int = Qt::DisplayRole) const;
-			UTIL_MODELS_API void ModifyData (int, const QVariant&, int = Qt::DisplayRole);
-			UTIL_MODELS_API const TreeItem* Parent () const;
-			UTIL_MODELS_API TreeItem* Parent ();
-			UTIL_MODELS_API int Row () const;
-		};
-	};
-};
-
-UTIL_MODELS_API QDebug operator<< (QDebug, const LeechCraft::Util::TreeItem&);
-UTIL_MODELS_API QDebug operator<< (QDebug, const LeechCraft::Util::TreeItem* const);
-
+#if defined(leechcraft_util_models_EXPORTS)
+#  define UTIL_MODELS_API Q_DECL_EXPORT
+#else
+#  define UTIL_MODELS_API Q_DECL_IMPORT
 #endif
-

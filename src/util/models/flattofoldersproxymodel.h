@@ -33,7 +33,7 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QMultiHash>
-#include <util/utilconfig.h>
+#include "modelsconfig.h"
 
 class ITagsManager;
 
@@ -44,7 +44,7 @@ namespace LeechCraft
 
 	namespace Util
 	{
-		class UTIL_API FlatToFoldersProxyModel : public QAbstractItemModel
+		class UTIL_MODELS_API FlatToFoldersProxyModel : public QAbstractItemModel
 		{
 			Q_OBJECT
 

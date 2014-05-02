@@ -33,7 +33,7 @@
 #include <QPointer>
 #include <QAbstractProxyModel>
 #include <QStringList>
-#include <util/utilconfig.h>
+#include "modelsconfig.h"
 #include "modelitem.h"
 
 namespace LeechCraft
@@ -51,7 +51,7 @@ namespace LeechCraft
 		 * Seems like it would never support it at least someone would
 		 * try to implement it.
 		 */
-		class UTIL_API MergeModel : public QAbstractItemModel
+		class UTIL_MODELS_API MergeModel : public QAbstractItemModel
 		{
 			Q_OBJECT
 
