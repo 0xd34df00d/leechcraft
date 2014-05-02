@@ -368,7 +368,7 @@ namespace Azoth
 	{
 		QStringList result;
 
-		if (body.size () > 1024)
+		if (body.size () > 10 * 1024)
 			return result;
 
 		int pos = 0;
