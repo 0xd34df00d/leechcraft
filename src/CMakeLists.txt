@@ -131,7 +131,11 @@ if (CMAKE_INSTALL_PREFIX AND NOT STANDARD_PREFIX)
 	add_definitions (-DINSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
 endif ()
 
-set (CMAKE_AUTOMOC TRUE)
+if (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
+	message (STATUS "CMake 2.8.6 or greater found, enabling automoc...")
+	set (CMAKE_AUTOMOC TRUE)
+	set (LC_NO_MOC TRUE)
+endif ()
 
 set (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 set (LEECHCRAFT_LIBRARIES leechcraft-util leechcraft-xsd)
