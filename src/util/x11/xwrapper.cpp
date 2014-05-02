@@ -656,11 +656,11 @@ namespace Util
 		if (screen < 0 || screen >= dw->screenCount ())
 			screen = dw->primaryScreen ();
 
-		auto available = dw->screenGeometry (screen);
-		const auto deskGeom = dw->rect ();
-
 		if (dw->isVirtualDesktop ())
 			screen = DefaultScreen (Display_);
+
+		auto available = dw->screenGeometry (screen);
+		const auto deskGeom = dw->rect ();
 
 		for (const auto wid : GetWindows ())
 		{
