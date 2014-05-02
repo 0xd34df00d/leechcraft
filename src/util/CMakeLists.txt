@@ -32,32 +32,7 @@ include_directories (${Boost_INCLUDE_DIRS}
 	${QWT_INCLUDE_DIRS}
 	..)
 
-set (MODELS_SRCS
-	models/flattenfiltermodel.cpp
-	models/flattofoldersproxymodel.cpp
-	models/listmodel.cpp
-	models/mergemodel.cpp
-	models/modeliterator.cpp
-	models/modelitem.cpp
-	models/treeitem.cpp
-	)
-
-foreach (SRC ${MODEL_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
-endforeach ()
-
-add_library (leechcraft-util-models SHARED
-	${MODELS_SRCS}
-	)
-target_link_libraries (leechcraft-util-models
-	${QT_LIBRARIES}
-	)
-set_property (TARGET leechcraft-util-models PROPERTY SOVERSION 0.6.65)
-install (TARGETS leechcraft-util-models DESTINATION ${LIBDIR})
-
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-util-models Widgets)
-endif ()
+add_subdirectory (models)
 
 set (SRCS
 	gui/autoresizemixin.cpp
