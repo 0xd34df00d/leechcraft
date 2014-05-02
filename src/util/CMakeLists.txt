@@ -152,7 +152,7 @@ target_link_libraries (leechcraft-util
 	${ADDITIONAL_LIBS}
 	leechcraft-xsd
 	)
-set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.5.0)
+set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.6.65)
 install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
 
 if (USE_QT5)
