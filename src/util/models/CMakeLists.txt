@@ -8,7 +8,7 @@ set (MODELS_SRCS
 	treeitem.cpp
 	)
 
-foreach (SRC ${MODEL_SRCS})
+foreach (SRC ${MODELS_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/models/${SRC}")
 endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
