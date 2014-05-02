@@ -33,6 +33,7 @@ include_directories (${Boost_INCLUDE_DIRS}
 	..)
 
 add_subdirectory (models)
+add_subdirectory (network)
 
 set (SRCS
 	gui/autoresizemixin.cpp
@@ -46,11 +47,6 @@ set (SRCS
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
-	network/addressesmodelmanager.cpp
-	network/customcookiejar.cpp
-	network/customnetworkreply.cpp
-	network/networkdiskcache.cpp
-	network/socketerrorstrings.cpp
 	qml/colorthemeproxy.cpp
 	qml/settableiconprovider.cpp
 	qml/standardnamfactory.cpp

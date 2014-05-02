@@ -8,10 +8,12 @@ if (LEECHCRAFT_INCLUDE_DIR)
 endif ()
 find_library(_LEECHCRAFT_UTIL NAMES leechcraft-util)
 find_library(_LEECHCRAFT_UTIL_MODELS NAMES leechcraft-util-models)
+find_library(_LEECHCRAFT_UTIL_NETWORK NAMES leechcraft-util-network)
 find_library(_LEECHCRAFT_XSD NAMES leechcraft-xsd)
 set (LEECHCRAFT_LIBRARIES
 	${_LEECHCRAFT_UTIL}
 	${_LEECHCRAFT_UTIL_MODELS}
+	${_LEECHCRAFT_UTIL_NETWORK}
 	${_LEECHCRAFT_XSD})
 set (LEECHCRAFT_USE_FILE "${CMAKE_MODULE_PATH}/UseLeechCraft.cmake")
 

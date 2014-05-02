@@ -32,7 +32,7 @@
 #include <QNetworkDiskCache>
 #include <QMutex>
 #include <QHash>
-#include <util/utilconfig.h>
+#include "networkconfig.h"
 
 template<typename T>
 class QFutureWatcher;
@@ -41,7 +41,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API NetworkDiskCache : public QNetworkDiskCache
+	class UTIL_NETWORK_API NetworkDiskCache : public QNetworkDiskCache
 	{
 		Q_OBJECT
 
