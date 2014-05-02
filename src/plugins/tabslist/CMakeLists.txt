@@ -24,13 +24,7 @@ include_directories (
 set (SRCS
 	tabslist.cpp
 	)
-set (HEADERS
-	tabslist.h
-	)
 CreateTrs ("tabslist" "en;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
 set (TABSLIST_RESOURCES tabslistresources.qrc)
 QT4_ADD_RESOURCES (TABSLIST_RCCS ${TABSLIST_RESOURCES})
@@ -39,7 +33,6 @@ add_library (leechcraft_tabslist SHARED
 	${TABSLIST_RCCS}
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 target_link_libraries (leechcraft_tabslist
 	${QT_LIBRARIES}
