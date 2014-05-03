@@ -25,6 +25,7 @@ add_subdirectory (shortcuts)
 add_subdirectory (sll)
 add_subdirectory (svcauth)
 add_subdirectory (sys)
+add_subdirectory (tags)
 
 set (SRCS
 	gui/autoresizemixin.cpp
@@ -44,11 +45,6 @@ set (SRCS
 	xdg/itemsfinder.cpp
 	xdg/itemtypes.cpp
 	xdg/xdg.cpp
-	tags/categoryselector.cpp
-	tags/tagscompleter.cpp
-	tags/tagscompletionmodel.cpp
-	tags/tagslineedit.cpp
-	tags/tagsfiltermodel.cpp
 	xpc/basehookinterconnector.cpp
 	xpc/defaulthookproxy.cpp
 	xpc/notificationactionhandler.cpp

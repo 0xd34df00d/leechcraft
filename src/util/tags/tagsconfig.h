@@ -29,44 +29,10 @@
 
 #pragma once
 
-#include <QStringListModel>
-#include <QStringList>
-#include "tagsconfig.h"
+#include <QtGlobal>
 
-namespace LeechCraft
-{
-namespace Util
-{
-	/** @brief A QStringListModel providing additional methods for tags.
-	 *
-	 * This model is basically a QStringListModel with additional methods
-	 * for easy working with tags.
-	 */
-	class UTIL_TAGS_API TagsCompletionModel : public QStringListModel
-	{
-		Q_OBJECT
-	public:
-		/** @brief Creates the model with the given parent.
-		 *
-		 * @param[in] parent The parent object of this model.
-		 */
-		TagsCompletionModel (QObject *parent = 0);
-
-		/** @brief Adds new tags to the list of tags.
-		 *
-		 * This method adds the \em newTags to the already existing list
-		 * of tags avoiding duplicates and emits the tagsUpdated()
-		 * signal.
-		 *
-		 * @param[in] newTags The new tags to append to this model.
-		 */
-		void UpdateTags (const QStringList& newTags);
-	signals:
-		/** @brief Emitted when tags are updated via UpdateTags().
-		 *
-		 * @param[in] allTags All tags in this model.
-		 */
-		void tagsUpdated (const QStringList& allTags);
-	};
-}
-}
+#if defined(leechcraft_util_tags_EXPORTS)
+#  define UTIL_TAGS_API Q_DECL_EXPORT
+#else
+#  define UTIL_TAGS_API Q_DECL_IMPORT
+#endif

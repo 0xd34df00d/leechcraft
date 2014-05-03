@@ -31,7 +31,7 @@
 
 #include <memory>
 #include <QLineEdit>
-#include <util/utilconfig.h>
+#include "tagsconfig.h"
 #include "categoryselector.h"
 
 namespace LeechCraft
@@ -48,7 +48,7 @@ namespace Util
 	 *
 	 * @sa TagsCompleter
 	 */
-	class UTIL_API TagsLineEdit : public QLineEdit
+	class UTIL_TAGS_API TagsLineEdit : public QLineEdit
 	{
 		Q_OBJECT
 

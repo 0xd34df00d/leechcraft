@@ -27,10 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_CATEGORYSELECTOR_H
-#define UTIL_CATEGORYSELECTOR_H
+#pragma once
+
 #include <QTreeWidget>
-#include <util/utilconfig.h>
+#include "tagsconfig.h"
 
 class QStringList;
 class QString;
@@ -59,7 +59,7 @@ namespace LeechCraft
 		 * slots selectAll() and selectNone() which could be used to mark all
 		 * and no elements in the list respectively.
 		 */
-		class UTIL_API CategorySelector : public QTreeWidget
+		class UTIL_TAGS_API CategorySelector : public QTreeWidget
 		{
 			Q_OBJECT
 
@@ -112,7 +112,7 @@ namespace LeechCraft
 			 *
 			 * @sa SetSeparator()
 			 */
-			UTIL_API QString GetSeparator () const;
+			UTIL_TAGS_API QString GetSeparator () const;
 
 			/** @brief Sets the separator for the tags.
 			 *
@@ -120,7 +120,7 @@ namespace LeechCraft
 			 *
 			 * @sa GetSeparator()
 			 */
-			UTIL_API void SetSeparator (const QString&);
+			UTIL_TAGS_API void SetSeparator (const QString&);
 		protected:
 			/** @brief Checks whether after the move event the selector
 			 * won't be beoynd the screen. if it would, moves back.
@@ -165,8 +165,5 @@ namespace LeechCraft
 			 */
 			void tagsSelectionChanged (const QStringList& newSelections);
 		};
-	};
-};
-
-#endif
-
+	}
+}
