@@ -39,7 +39,7 @@
 #ifdef ENABLE_CRYPT
 #include <QtCrypto>
 #endif
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/iinfo.h>

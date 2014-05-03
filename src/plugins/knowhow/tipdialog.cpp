@@ -30,7 +30,7 @@
 #include "tipdialog.h"
 #include <QDomDocument>
 #include <util/util.h>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
 

@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "activitydialog.h"
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -45,7 +45,7 @@ namespace Azoth
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		
+
 		const char *genAct [] =
 		{
 			QT_TR_NOOP ("doing_chores"),
@@ -60,7 +60,7 @@ namespace Azoth
 			QT_TR_NOOP ("traveling"),
 			QT_TR_NOOP ("working")
 		};
-		
+
 		const char *specAct [] =
 		{
 			QT_TR_NOOP ("buying_groceries"),
@@ -137,14 +137,14 @@ namespace Azoth
 		for (size_t i = 0, pos = 0; pos < sizeof (sizes) / sizeof (sizes [0]); ++pos)
 			for (int j = 0; j < sizes [pos]; ++j, ++i)
 				Gen2Specific_ [genAct [pos]] << specAct [i];
-		
+
 		Util::ResourceLoader *rl = Core::Instance ()
 				.GetResourceLoader (Core::RLTActivityIconLoader);
 		const QString& theme = XmlSettingsManager::Instance ()
 				.property ("ActivityIcons").toString () + '/';
-				
+
 		Ui_.General_->addItem (tr ("<clear>"));
-		
+
 		for (size_t i = 0; i < sizeof (genAct) / sizeof (genAct [0]); ++i)
 		{
 			QIcon icon (rl->GetIconPath (theme + genAct [i]));
@@ -174,21 +174,21 @@ namespace Azoth
 		const int idx = std::max (0, Ui_.Specific_->findData (specific));
 		Ui_.Specific_->setCurrentIndex (idx);
 	}
-	
+
 	QString ActivityDialog::GetText () const
 	{
 		return Ui_.Text_->text ();
 	}
-	
+
 	void ActivityDialog::SetText (const QString& text)
 	{
 		Ui_.Text_->setText (text);
 	}
-	
+
 	void ActivityDialog::on_General__currentIndexChanged (int idx)
 	{
 		Ui_.Specific_->clear ();
-		
+
 		Util::ResourceLoader *rl = Core::Instance ()
 				.GetResourceLoader (Core::RLTActivityIconLoader);
 

@@ -42,7 +42,6 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <QtDebug>
-#include <util/resourceloader.h>
 #include <util/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/xpc/defaulthookproxy.h>

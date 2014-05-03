@@ -45,7 +45,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "interfaces/azoth/imucjoinwidget.h"

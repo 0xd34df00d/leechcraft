@@ -32,7 +32,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/iplugin2.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include "generalhandler.h"

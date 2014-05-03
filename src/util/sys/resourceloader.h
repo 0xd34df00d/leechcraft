@@ -35,7 +35,7 @@
 #include <QDir>
 #include <QCache>
 #include <QPixmap>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;

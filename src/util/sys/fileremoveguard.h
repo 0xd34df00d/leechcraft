@@ -27,10 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_FILEREMOVEGUARD_H
-#define UTIL_FILEREMOVEGUARD_H
+#pragma once
+
 #include <QFile>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
@@ -61,5 +61,3 @@ namespace LeechCraft
 		};
 	}
 }
-
-#endif

@@ -61,8 +61,10 @@ set (SRCS
 	sll/slotclosure.cpp
 	svcauth/vkauthmanager.cpp
 	svcauth/vkcaptchadialog.cpp
+	sys/fileremoveguard.cpp
 	sys/mimedetector.cpp
 	sys/paths.cpp
+	sys/resourceloader.cpp
 	sys/sysinfo.cpp
 	xdg/desktopparser.cpp
 	xdg/item.cpp
@@ -87,9 +89,7 @@ set (SRCS
 	dblock.cpp
 	backendselector.cpp
 	structuresops.cpp
-	fileremoveguard.cpp
 	exceptions.cpp
-	resourceloader.cpp
 	shortcuts/shortcutmanager.cpp
 	)
 set (FORMS

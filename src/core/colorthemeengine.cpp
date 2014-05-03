@@ -37,7 +37,7 @@
 #include <QDir>
 #include <QtDebug>
 #include <QSettings>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include "core.h"
 #include "rootwindowsmanager.h"
 
