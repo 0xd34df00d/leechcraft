@@ -30,7 +30,7 @@
 #include "touchstreams.h"
 #include <QIcon>
 #include <QStandardItem>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include <util/util.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>

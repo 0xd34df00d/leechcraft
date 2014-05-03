@@ -55,7 +55,9 @@ set (SRCS
 	qml/unhidelistmodel.cpp
 	qml/unhidelistviewbase.cpp
 	qml/widthiconprovider.cpp
+	sll/delayedexecutor.cpp
 	sll/onetimerunner.cpp
+	sll/queuemanager.cpp
 	sll/slotclosure.cpp
 	svcauth/vkauthmanager.cpp
 	svcauth/vkcaptchadialog.cpp
@@ -88,8 +90,6 @@ set (SRCS
 	fileremoveguard.cpp
 	exceptions.cpp
 	resourceloader.cpp
-	queuemanager.cpp
-	delayedexecutor.cpp
 	shortcuts/shortcutmanager.cpp
 	)
 set (FORMS

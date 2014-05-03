@@ -38,7 +38,7 @@
 #include <QApplication>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/delayedexecutor.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"

@@ -35,7 +35,7 @@
 #include <QDateTime>
 #include <QPointer>
 #include <QPair>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 class QTimer;
 

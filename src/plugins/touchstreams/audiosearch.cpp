@@ -34,7 +34,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include <util/svcauth/vkauthmanager.h>
 
 namespace LeechCraft
