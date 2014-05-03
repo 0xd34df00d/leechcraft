@@ -143,6 +143,7 @@ set (LEECHCRAFT_LIBRARIES
 		leechcraft-util-models
 		leechcraft-util-network
 		leechcraft-util-qml
+		leechcraft-util-shortcuts
 		leechcraft-xsd)
 
 set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")

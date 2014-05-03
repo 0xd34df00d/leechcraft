@@ -29,6 +29,7 @@ include_directories (${Boost_INCLUDE_DIRS}
 add_subdirectory (models)
 add_subdirectory (network)
 add_subdirectory (qml)
+add_subdirectory (shortcuts)
 
 set (SRCS
 	gui/autoresizemixin.cpp
@@ -77,7 +78,6 @@ set (SRCS
 	backendselector.cpp
 	structuresops.cpp
 	exceptions.cpp
-	shortcuts/shortcutmanager.cpp
 	)
 set (FORMS
 	backendselector.ui

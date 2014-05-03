@@ -31,9 +31,10 @@
 
 #include <QObject>
 #include <QHash>
-#include <util/utilconfig.h>
+#include "shortcutsconfig.h"
 #include "interfaces/ihaveshortcuts.h"
 #include "interfaces/core/icoreproxy.h"
+#include "interfaces/structures.h"
 
 class QAction;
 class QShortcut;
@@ -69,7 +70,7 @@ namespace Util
 	 *
 	 * @sa IHaveShortcuts
 	 */
-	class UTIL_API ShortcutManager : public QObject
+	class UTIL_SHORTCUTS_API ShortcutManager : public QObject
 	{
 		Q_OBJECT
 
