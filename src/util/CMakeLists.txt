@@ -26,6 +26,7 @@ add_subdirectory (sll)
 add_subdirectory (svcauth)
 add_subdirectory (sys)
 add_subdirectory (tags)
+add_subdirectory (xdg)
 
 set (SRCS
 	gui/autoresizemixin.cpp
@@ -39,12 +40,6 @@ set (SRCS
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
-	xdg/desktopparser.cpp
-	xdg/item.cpp
-	xdg/itemsdatabase.cpp
-	xdg/itemsfinder.cpp
-	xdg/itemtypes.cpp
-	xdg/xdg.cpp
 	xpc/basehookinterconnector.cpp
 	xpc/defaulthookproxy.cpp
 	xpc/notificationactionhandler.cpp

@@ -29,29 +29,10 @@
 
 #pragma once
 
-#include "xdgconfig.h"
+#include <QtGlobal>
 
-template<typename T>
-class QSet;
-
-template<typename T>
-class QList;
-
-namespace LeechCraft
-{
-namespace Util
-{
-namespace XDG
-{
-	enum class Type
-	{
-		Other,
-		Application,
-		URL,
-		Dir
-	};
-
-	UTIL_XDG_API QSet<QString> ToPaths (const QList<Type>&);
-}
-}
-}
+#if defined(leechcraft_util_xdg_EXPORTS)
+#  define UTIL_XDG_API Q_DECL_EXPORT
+#else
+#  define UTIL_XDG_API Q_DECL_IMPORT
+#endif
