@@ -36,5 +36,3 @@
 #else
 #  define UTIL_QML_API Q_DECL_IMPORT
 #endif
-
-
