@@ -19,12 +19,6 @@ endif ()
 option (WITH_X11 "Enable X11 support on Linux" ON)
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
 
-if (WITH_QWT)
-	find_package (Qwt REQUIRED)
-	set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${QWT_LIBRARIES})
-	add_definitions (-DWITH_QWT)
-endif ()
-
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -34,6 +28,7 @@ include_directories (${Boost_INCLUDE_DIRS}
 
 add_subdirectory (models)
 add_subdirectory (network)
+add_subdirectory (qml)
 
 set (SRCS
 	gui/autoresizemixin.cpp
@@ -47,14 +42,6 @@ set (SRCS
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
-	qml/colorthemeproxy.cpp
-	qml/settableiconprovider.cpp
-	qml/standardnamfactory.cpp
-	qml/themeimageprovider.cpp
-	qml/tooltipitem.cpp
-	qml/unhidelistmodel.cpp
-	qml/unhidelistviewbase.cpp
-	qml/widthiconprovider.cpp
 	sll/delayedexecutor.cpp
 	sll/onetimerunner.cpp
 	sll/queuemanager.cpp
@@ -114,10 +101,6 @@ if (WITH_X11 AND NOT APPLE)
 	endif ()
 endif ()
 
-if (WITH_QWT)
-	set (SRCS ${SRCS} qml/plotitem.cpp)
-endif ()
-
 foreach (SRC ${SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
 endforeach ()
@@ -147,5 +130,5 @@ set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.6.65)
 install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
 
 if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-util Declarative Network Xml Sql Widgets)
+	QT5_USE_MODULES (leechcraft-util Xml Sql Widgets)
 endif ()

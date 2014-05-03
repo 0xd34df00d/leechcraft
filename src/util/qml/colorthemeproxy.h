@@ -31,7 +31,7 @@
 
 #include <QObject>
 #include <QColor>
-#include <util/utilconfig.h>
+#include "qmlconfig.h"
 
 class IColorThemeManager;
 
@@ -123,7 +123,7 @@ namespace Util
 	 * @sa IInfo
 	 * @sa IColorThemeManager
 	 */
-	class UTIL_API ColorThemeProxy : public QObject
+	class UTIL_QML_API ColorThemeProxy : public QObject
 	{
 		Q_OBJECT
 

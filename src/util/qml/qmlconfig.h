@@ -29,25 +29,12 @@
 
 #pragma once
 
-#include <QStandardItemModel>
-#include "qmlconfig.h"
+#include <QtGlobal>
 
-namespace LeechCraft
-{
-namespace Util
-{
-	class UTIL_QML_API UnhideListModel : public QStandardItemModel
-	{
-	public:
-		enum Roles
-		{
-			ItemClass = Qt::UserRole + 1,
-			ItemName,
-			ItemDescription,
-			ItemIcon
-		};
+#if defined(leechcraft_util_qml_EXPORTS)
+#  define UTIL_QML_API Q_DECL_EXPORT
+#else
+#  define UTIL_QML_API Q_DECL_IMPORT
+#endif
 
-		UnhideListModel (QObject*);
-	};
-}
-}
+
