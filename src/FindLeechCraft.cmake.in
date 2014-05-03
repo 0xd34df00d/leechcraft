@@ -12,6 +12,7 @@ find_library(_LEECHCRAFT_UTIL_NETWORK NAMES leechcraft-util-network)
 find_library(_LEECHCRAFT_UTIL_QML NAMES leechcraft-util-qml)
 find_library(_LEECHCRAFT_UTIL_SHORTCUTS NAMES leechcraft-util-shortcuts)
 find_library(_LEECHCRAFT_UTIL_SLL NAMES leechcraft-util-sll)
+find_library(_LEECHCRAFT_UTIL_SVCAUTH NAMES leechcraft-util-svcauth)
 find_library(_LEECHCRAFT_XSD NAMES leechcraft-xsd)
 set (LEECHCRAFT_LIBRARIES
 	${_LEECHCRAFT_UTIL}
@@ -20,6 +21,7 @@ set (LEECHCRAFT_LIBRARIES
 	${_LEECHCRAFT_UTIL_QML}
 	${_LEECHCRAFT_UTIL_SHORTCUTS}
 	${_LEECHCRAFT_UTIL_SLL}
+	${_LEECHCRAFT_UTIL_SVCAUTH}
 	${_LEECHCRAFT_XSD})
 set (LEECHCRAFT_USE_FILE "${CMAKE_MODULE_PATH}/UseLeechCraft.cmake")
 

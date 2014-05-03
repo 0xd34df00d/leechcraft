@@ -31,6 +31,7 @@ add_subdirectory (network)
 add_subdirectory (qml)
 add_subdirectory (shortcuts)
 add_subdirectory (sll)
+add_subdirectory (svcauth)
 
 set (SRCS
 	gui/autoresizemixin.cpp
@@ -44,8 +45,6 @@ set (SRCS
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
-	svcauth/vkauthmanager.cpp
-	svcauth/vkcaptchadialog.cpp
 	sys/fileremoveguard.cpp
 	sys/mimedetector.cpp
 	sys/paths.cpp
@@ -79,7 +78,6 @@ set (SRCS
 set (FORMS
 	backendselector.ui
 	gui/findnotification.ui
-	svcauth/vkcaptchadialog.ui
 	)
 if (USE_QT5)
 	qt5_wrap_ui (UIS_H ${FORMS})

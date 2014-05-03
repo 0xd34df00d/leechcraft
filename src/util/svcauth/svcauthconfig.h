@@ -29,43 +29,10 @@
 
 #pragma once
 
-#include <QDialog>
-#include <QVariantMap>
-#include "svcauthconfig.h"
+#include <QtGlobal>
 
-class QNetworkAccessManager;
-class QUrl;
-
-namespace Ui
-{
-	class VkCaptchaDialog;
-}
-
-namespace LeechCraft
-{
-namespace Util
-{
-namespace SvcAuth
-{
-	class UTIL_SVCAUTH_API VkCaptchaDialog : public QDialog
-	{
-		Q_OBJECT
-
-		Ui::VkCaptchaDialog * const Ui_;
-
-		const QString Cid_;
-	public:
-		VkCaptchaDialog (const QVariantMap& errorMap, QNetworkAccessManager*, QWidget* = 0);
-		VkCaptchaDialog (const QUrl&, const QString&, QNetworkAccessManager*, QWidget* = 0);
-
-		void SetContextName (const QString&);
-
-		void done (int) override;
-	private slots:
-		void handleGotImage ();
-	signals:
-		void gotCaptcha (const QString& cid, const QString& value);
-	};
-}
-}
-}
+#if defined(leechcraft_util_svcauth_EXPORTS)
+#  define UTIL_SVCAUTH_API Q_DECL_EXPORT
+#else
+#  define UTIL_SVCAUTH_API Q_DECL_IMPORT
+#endif
