@@ -30,6 +30,7 @@ add_subdirectory (models)
 add_subdirectory (network)
 add_subdirectory (qml)
 add_subdirectory (shortcuts)
+add_subdirectory (sll)
 
 set (SRCS
 	gui/autoresizemixin.cpp
@@ -43,10 +44,6 @@ set (SRCS
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
-	sll/delayedexecutor.cpp
-	sll/onetimerunner.cpp
-	sll/queuemanager.cpp
-	sll/slotclosure.cpp
 	svcauth/vkauthmanager.cpp
 	svcauth/vkcaptchadialog.cpp
 	sys/fileremoveguard.cpp

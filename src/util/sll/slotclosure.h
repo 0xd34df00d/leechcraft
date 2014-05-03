@@ -31,13 +31,13 @@
 
 #include <functional>
 #include <QObject>
-#include <util/utilconfig.h>
+#include "sllconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API SlotClosureBase : public QObject
+	class UTIL_SLL_API SlotClosureBase : public QObject
 	{
 		Q_OBJECT
 

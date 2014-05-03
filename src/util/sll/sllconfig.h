@@ -29,25 +29,10 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include "sllconfig.h"
+#include <QtGlobal>
 
-namespace LeechCraft
-{
-namespace Util
-{
-	class UTIL_SLL_API DelayedExecutor : QObject
-	{
-		Q_OBJECT
-	public:
-		typedef std::function<void ()> Actor_f;
-	private:
-		const Actor_f Actor_;
-	public:
-		DelayedExecutor (Actor_f actor, int timeout);
-	private slots:
-		void handleTimeout ();
-	};
-}
-}
+#if defined(leechcraft_util_sll_EXPORTS)
+#  define UTIL_SLL_API Q_DECL_EXPORT
+#else
+#  define UTIL_SLL_API Q_DECL_IMPORT
+#endif
