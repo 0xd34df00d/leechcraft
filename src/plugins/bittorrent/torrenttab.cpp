@@ -34,6 +34,7 @@
 #include <QSortFilterProxyModel>
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/gui/lineeditbuttonmanager.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -76,14 +77,15 @@ namespace BitTorrent
 		header->resizeSection (Core::Columns::ColumnID, fm.width ("999"));
 		header->resizeSection (Core::Columns::ColumnName, fm.width ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv") * 1.3);
 
-		new Util::ClearLineEditAddon (Core::Instance ()->GetProxy (), Ui_.SearchLine_);
-
+		auto buttonMgr = new Util::LineEditButtonManager (Ui_.SearchLine_);
 		new Util::TagsCompleter (Ui_.SearchLine_);
-		Ui_.SearchLine_->AddSelector ();
+		Ui_.SearchLine_->AddSelector (buttonMgr);
+		new Util::ClearLineEditAddon (Core::Instance ()->GetProxy (), Ui_.SearchLine_, buttonMgr);
 		connect (Ui_.SearchLine_,
 				SIGNAL (textChanged (QString)),
 				ViewFilter_,
 				SLOT (setFilterFixedString (QString)));
+
 		connect (Ui_.TorrentStateFilter_,
 				SIGNAL (currentIndexChanged (int)),
 				ViewFilter_,
