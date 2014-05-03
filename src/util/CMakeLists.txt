@@ -8,13 +8,6 @@ if (NOT USE_QT5)
 endif ()
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package (MAGIC)
-if (MAGIC_FOUND)
-	add_definitions (-DHAVE_MAGIC)
-else ()
-	set (MAGIC_INCLUDE_DIRS)
-	set (MAGIC_LIBRARIES)
-endif ()
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
@@ -22,7 +15,6 @@ option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${MAGIC_INCLUDE_DIRS}
 	${QWT_INCLUDE_DIRS}
 	..)
 
@@ -32,6 +24,7 @@ add_subdirectory (qml)
 add_subdirectory (shortcuts)
 add_subdirectory (sll)
 add_subdirectory (svcauth)
+add_subdirectory (sys)
 
 set (SRCS
 	gui/autoresizemixin.cpp
@@ -45,11 +38,6 @@ set (SRCS
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
-	sys/fileremoveguard.cpp
-	sys/mimedetector.cpp
-	sys/paths.cpp
-	sys/resourceloader.cpp
-	sys/sysinfo.cpp
 	xdg/desktopparser.cpp
 	xdg/item.cpp
 	xdg/itemsdatabase.cpp
@@ -117,7 +105,6 @@ add_library (leechcraft-util SHARED
 	)
 target_link_libraries (leechcraft-util
 	${QT_LIBRARIES}
-	${MAGIC_LIBRARIES}
 	${ADDITIONAL_LIBS}
 	leechcraft-xsd
 	)

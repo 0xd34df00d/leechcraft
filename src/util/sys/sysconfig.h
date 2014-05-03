@@ -29,35 +29,10 @@
 
 #pragma once
 
-#include <QFile>
-#include "sysconfig.h"
+#include <QtGlobal>
 
-namespace LeechCraft
-{
-	namespace Util
-	{
-		/** @brief QFile removing itself from file system on destruction.
-		 *
-		 * Makes sure that the file represented by this object is
-		 * removed when the corresponding instance of this class is
-		 * destructed. Useful to automatically remove temporary files,
-		 * for example.
-		 */
-		class UTIL_SYS_API FileRemoveGuard : public QFile
-		{
-		public:
-			/** @brief Constructs this file with the given path.
-			 *
-			 * @param[in] path The file path to construct with.
-			 */
-			FileRemoveGuard (const QString& path);
-
-			/** @brief Removes the file.
-			 *
-			 * Tries to close and remove the file represented by this
-			 * object.
-			 */
-			virtual ~FileRemoveGuard ();
-		};
-	}
-}
+#if defined(leechcraft_util_sys_EXPORTS)
+#  define UTIL_SYS_API Q_DECL_EXPORT
+#else
+#  define UTIL_SYS_API Q_DECL_IMPORT
+#endif

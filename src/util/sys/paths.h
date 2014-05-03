@@ -32,7 +32,7 @@
 #include <functional>
 #include <QStringList>
 #include <QFileInfo>
-#include <util/utilconfig.h>
+#include "sysconfig.h"
 
 class QDir;
 class QUrl;
@@ -88,7 +88,7 @@ namespace Util
 	 *
 	 * @sa GetSysPath()
 	 */
-	UTIL_API QStringList GetPathCandidates (SysPath path, QString subfolder);
+	UTIL_SYS_API QStringList GetPathCandidates (SysPath path, QString subfolder);
 
 	/** @brief Returns path to the file in the given root path and subfolder.
 	 *
@@ -118,7 +118,7 @@ namespace Util
 	 * @sa GetPathCandidates()
 	 * @sa GetSysPathUrl()
 	 */
-	UTIL_API QString GetSysPath (SysPath path, const QString& subfolder, const QString& filename);
+	UTIL_SYS_API QString GetSysPath (SysPath path, const QString& subfolder, const QString& filename);
 
 	/** @brief Returns path to the file in the given root path and subfolder.
 	 *
@@ -135,7 +135,7 @@ namespace Util
 	 *
 	 * @sa GetSysPath()
 	 */
-	UTIL_API QUrl GetSysPathUrl (SysPath path, const QString& subfolder, const QString& filename);
+	UTIL_SYS_API QUrl GetSysPathUrl (SysPath path, const QString& subfolder, const QString& filename);
 
 	/** @brief Returns the components of the system PATH variable.
 	 *
@@ -146,7 +146,7 @@ namespace Util
 	 *
 	 * @sa FindInSystemPath()
 	 */
-	UTIL_API QStringList GetSystemPaths ();
+	UTIL_SYS_API QStringList GetSystemPaths ();
 
 	/** @brief Searches for a file in system paths according to a filter.
 	 *
@@ -162,7 +162,7 @@ namespace Util
 	 * @param[in] filter The filter function for the candidates.
 	 * @return The full path to the first found file or an empty string.
 	 */
-	UTIL_API QString FindInSystemPath (const QString& name, const QStringList& paths,
+	UTIL_SYS_API QString FindInSystemPath (const QString& name, const QStringList& paths,
 			const std::function<bool (QFileInfo)>& filter = std::function<bool (QFileInfo)> ());
 
 	/** @brief Describes various user-specific paths.
@@ -174,6 +174,6 @@ namespace Util
 		Cache
 	};
 
-	UTIL_API QDir GetUserDir (UserDir dir, const QString& subpath);
+	UTIL_SYS_API QDir GetUserDir (UserDir dir, const QString& subpath);
 }
 }

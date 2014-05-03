@@ -146,6 +146,7 @@ set (LEECHCRAFT_LIBRARIES
 		leechcraft-util-shortcuts
 		leechcraft-util-sll
 		leechcraft-util-svcauth
+		leechcraft-util-sys
 		leechcraft-xsd)
 
 set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")

@@ -30,7 +30,7 @@
 #pragma once
 
 #include <memory>
-#include <util/utilconfig.h>
+#include "sysconfig.h"
 
 class QString;
 class QByteArray;
@@ -45,10 +45,10 @@ namespace Util
 	{
 		std::shared_ptr<MimeDetectorImpl> Impl_;
 	public:
-		UTIL_API MimeDetector ();
+		UTIL_SYS_API MimeDetector ();
 
-		UTIL_API QByteArray Detect (const QString&);
-		UTIL_API QByteArray operator() (const QString&);
+		UTIL_SYS_API QByteArray Detect (const QString&);
+		UTIL_SYS_API QByteArray operator() (const QString&);
 	};
 }
 }
