@@ -15,7 +15,6 @@ option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${QWT_INCLUDE_DIRS}
 	..)
 
 add_subdirectory (db)

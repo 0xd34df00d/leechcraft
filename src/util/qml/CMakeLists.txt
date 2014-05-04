@@ -13,6 +13,8 @@ if (WITH_QWT)
 	set (QML_SRCS ${QML_SRCS} plotitem.cpp)
 endif ()
 
+include_directories (${QWT_INCLUDE_DIRS})
+
 if (WITH_QWT)
 	find_package (Qwt REQUIRED)
 	set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${QWT_LIBRARIES})
