@@ -47,7 +47,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <util/tags/tagscompletionmodel.h>
-#include <util/backendselector.h>
+#include <util/db/backendselector.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"

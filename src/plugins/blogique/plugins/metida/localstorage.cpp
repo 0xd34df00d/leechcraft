@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include <QSqlError>
 #include <util/util.h>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
 
 namespace LeechCraft
 {

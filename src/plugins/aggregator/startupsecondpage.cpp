@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 #include "startupsecondpage.h"
-#include <util/backendselector.h>
+#include <util/db/backendselector.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

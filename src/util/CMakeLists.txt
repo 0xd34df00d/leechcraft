@@ -43,14 +43,14 @@ set (SRCS
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
 	util.cpp
-	dblock.cpp
-	backendselector.cpp
+	db/dblock.cpp
+	db/backendselector.cpp
 	structuresops.cpp
 	exceptions.cpp
 	)
 set (FORMS
-	backendselector.ui
 	gui/findnotification.ui
+	db/backendselector.ui
 	)
 if (USE_QT5)
 	qt5_wrap_ui (UIS_H ${FORMS})
