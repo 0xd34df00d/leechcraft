@@ -31,6 +31,25 @@ add_subdirectory (xdg)
 add_subdirectory (xpc)
 add_subdirectory (xsd)
 
+set (LEECHCRAFT_UTIL_LIBRARIES
+	${LEECHCRAFT_UTIL_LIBRARIES}
+	leechcraft-util
+	leechcraft-util-db
+	leechcraft-util-models
+	leechcraft-util-network
+	leechcraft-util-qml
+	leechcraft-util-shortcuts
+	leechcraft-util-sll
+	leechcraft-util-svcauth
+	leechcraft-util-sys
+	leechcraft-util-tags
+	leechcraft-util-xdg
+	leechcraft-util-xpc
+	leechcraft-util-xsd
+	)
+
+set (LEECHCRAFT_UTIL_LIBRARIES ${LEECHCRAFT_UTIL_LIBRARIES} PARENT_SCOPE)
+
 set (SRCS
 	gui/autoresizemixin.cpp
 	gui/clearlineeditaddon.cpp
