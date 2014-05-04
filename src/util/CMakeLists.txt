@@ -89,7 +89,6 @@ add_library (leechcraft-util SHARED
 target_link_libraries (leechcraft-util
 	${QT_LIBRARIES}
 	${ADDITIONAL_LIBS}
-	leechcraft-xsd
 	)
 set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.6.65)
 install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
