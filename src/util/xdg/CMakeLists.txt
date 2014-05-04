@@ -17,7 +17,6 @@ add_library (leechcraft-util-xdg SHARED
 	)
 target_link_libraries (leechcraft-util-xdg
 	${QT_LIBRARIES}
-	${MAGIC_LIBRARIES}
 	)
 set_property (TARGET leechcraft-util-xdg PROPERTY SOVERSION 0.6.65)
 install (TARGETS leechcraft-util-xdg DESTINATION ${LIBDIR})

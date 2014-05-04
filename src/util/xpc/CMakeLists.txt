@@ -18,7 +18,6 @@ add_library (leechcraft-util-xpc SHARED
 	)
 target_link_libraries (leechcraft-util-xpc
 	${QT_LIBRARIES}
-	${MAGIC_LIBRARIES}
 	)
 set_property (TARGET leechcraft-util-xpc PROPERTY SOVERSION 0.6.65)
 install (TARGETS leechcraft-util-xpc DESTINATION ${LIBDIR})
