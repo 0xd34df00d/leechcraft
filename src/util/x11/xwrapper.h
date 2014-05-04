@@ -35,7 +35,7 @@
 #include <QHash>
 #include <QAbstractEventDispatcher>
 #include <X11/Xdefs.h>
-#include <util/utilconfig.h>
+#include "x11config.h"
 #include "winflags.h"
 
 class QIcon;
@@ -51,7 +51,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API XWrapper : public QObject
+	class UTIL_X11_API XWrapper : public QObject
 	{
 		Q_OBJECT
 

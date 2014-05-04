@@ -34,7 +34,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <util/util.h>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
 #include "oral.h"
 
 namespace LeechCraft

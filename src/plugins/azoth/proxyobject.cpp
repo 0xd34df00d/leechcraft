@@ -368,6 +368,9 @@ namespace Azoth
 	{
 		QStringList result;
 
+		if (body.size () > 10 * 1024)
+			return result;
+
 		int pos = 0;
 		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
 		{

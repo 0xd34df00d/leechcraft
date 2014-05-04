@@ -31,7 +31,7 @@
 
 #include "widthiconprovider.h"
 #include <interfaces/core/icoreproxy.h>
-#include <util/utilconfig.h>
+#include "qmlconfig.h"
 
 namespace LeechCraft
 {
@@ -74,7 +74,7 @@ namespace Util
 	 * In this case there is no need to add width parameter manually,
 	 * ActionButton will take care of it.
 	 */
-	class UTIL_API ThemeImageProvider : public WidthIconProvider
+	class UTIL_QML_API ThemeImageProvider : public WidthIconProvider
 	{
 		ICoreProxy_ptr Proxy_;
 	public:

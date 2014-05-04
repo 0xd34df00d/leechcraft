@@ -37,7 +37,7 @@
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <util/xpc/stdanfields.h>
 #include "xmlsettingsmanager.h"

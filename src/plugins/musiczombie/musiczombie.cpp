@@ -30,7 +30,7 @@
 #include "musiczombie.h"
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include <util/util.h>
 #include "pendingdisco.h"
 

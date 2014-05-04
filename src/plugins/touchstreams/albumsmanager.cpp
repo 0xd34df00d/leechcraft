@@ -37,7 +37,7 @@
 #include <QtDebug>
 #include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/core/iiconthememanager.h>

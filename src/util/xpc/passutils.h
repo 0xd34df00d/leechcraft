@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
+#include "xpcconfig.h"
 
 class QString;
 class QObject;
@@ -73,7 +73,7 @@ namespace Util
 	 *
 	 * @sa SavePassword()
 	 */
-	UTIL_API QString GetPassword (const QString& keyName,
+	UTIL_XPC_API QString GetPassword (const QString& keyName,
 			const QString& dialogText,
 			QObject *emitter,
 			bool useStore = true);
@@ -102,7 +102,7 @@ namespace Util
 	 *
 	 * @sa GetPassword()
 	 */
-	UTIL_API void SavePassword (const QString& password,
+	UTIL_XPC_API void SavePassword (const QString& password,
 			const QString& keyName,
 			QObject *emitter);
 }

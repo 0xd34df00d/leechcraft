@@ -34,7 +34,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <util/util.h>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 

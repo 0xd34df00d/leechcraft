@@ -30,13 +30,13 @@
 #pragma once
 
 #include <QAbstractItemModel>
-#include <util/utilconfig.h>
+#include "modelsconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API FlattenFilterModel : public QAbstractItemModel
+	class UTIL_MODELS_API FlattenFilterModel : public QAbstractItemModel
 	{
 		Q_OBJECT
 	protected:

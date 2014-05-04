@@ -29,7 +29,7 @@
 
 #include "baseemoticonssource.h"
 #include <QtDebug>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 
 namespace LeechCraft
 {
@@ -44,17 +44,17 @@ namespace NativeEmoticons
 		EmoLoader_->AddGlobalPrefix ();
 		EmoLoader_->AddLocalPrefix ();
 	}
-	
+
 	QAbstractItemModel* BaseEmoticonsSource::GetOptionsModel () const
 	{
 		return EmoLoader_->GetSubElemModel ();
 	}
-	
+
 	QSet<QString> BaseEmoticonsSource::GetEmoticonStrings (const QString& pack) const
 	{
 		return ParseFile (pack).keys ().toSet ();
 	}
-	
+
 	QHash<QImage, QString> BaseEmoticonsSource::GetReprImages (const QString& pack) const
 	{
 		QHash<QImage, QString> result;
@@ -75,19 +75,19 @@ namespace NativeEmoticons
 						<< fullPath;
 				continue;
 			}
-			
+
 			result [img] = hash.key (imgPath);
 		}
-		
+
 		return result;
 	}
-	
+
 	QByteArray BaseEmoticonsSource::GetImage (const QString& pack, const QString& smile) const
 	{
 		const String2Filename_t& hash = ParseFile (pack);
 		if (!hash.contains (smile))
 			return QByteArray ();
-		
+
 		const QString& path = EmoLoader_->GetIconPath (pack + "/" + hash [smile]);
 		QFile file (path);
 		if (!file.open (QIODevice::ReadOnly))
@@ -101,7 +101,7 @@ namespace NativeEmoticons
 					<< file.errorString ();
 			return QByteArray ();
 		}
-		
+
 		return file.readAll ();
 	}
 }

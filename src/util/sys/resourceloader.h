@@ -27,15 +27,15 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_RESOURCELOADER_H
-#define UTIL_RESOURCELOADER_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QDir>
 #include <QCache>
 #include <QPixmap>
-#include "utilconfig.h"
+#include "sysconfig.h"
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -89,7 +89,7 @@ namespace LeechCraft
 		 * deadlocks in directory watcher may prevent LeechCrat from
 		 * shutting down completely.
 		 */
-		class UTIL_API ResourceLoader : public QObject
+		class UTIL_SYS_API ResourceLoader : public QObject
 		{
 			Q_OBJECT
 
@@ -347,5 +347,3 @@ namespace LeechCraft
 		};
 	}
 }
-
-#endif

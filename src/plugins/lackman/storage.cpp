@@ -31,7 +31,7 @@
 #include <stdexcept>
 #include <QDir>
 #include <QSqlError>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
 #include <util/util.h>
 #include "repoinfo.h"
 #include "core.h"

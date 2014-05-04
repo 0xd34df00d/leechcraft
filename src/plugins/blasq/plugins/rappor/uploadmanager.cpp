@@ -37,7 +37,7 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <qjson/parser.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include "vkaccount.h"
 
 namespace LeechCraft

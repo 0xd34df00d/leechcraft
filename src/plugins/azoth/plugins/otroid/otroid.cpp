@@ -576,6 +576,16 @@ namespace OTRoid
 		case OTRL_SMPEVENT_ASK_FOR_ANSWER:
 			auth->AskFor (SmpMethod::Question, question, context);
 			break;
+		case OTRL_SMPEVENT_ERROR:
+		case OTRL_SMPEVENT_ABORT:
+		case OTRL_SMPEVENT_FAILURE:
+			auth->Failed ();
+			break;
+		case OTRL_SMPEVENT_CHEATED:
+			auth->Cheated ();
+			break;
+		case OTRL_SMPEVENT_IN_PROGRESS:
+			break;
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown SMP event";
@@ -853,19 +863,15 @@ namespace OTRoid
 		};
 	}
 
-	void Plugin::handleOtrAction ()
+	void Plugin::SetOtrState (ICLEntry *entry, bool enable)
 	{
-		auto act = qobject_cast<QAction*> (sender ());
-
-		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
-		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		const auto& accId = acc->GetAccountID ();
 
 		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 		const auto& protoId = proto->GetProtocolID ();
 
-		if (!act->isChecked ())
+		if (!enable)
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
 					accId.constData (), protoId.constData (),
@@ -896,6 +902,15 @@ namespace OTRoid
 		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::DOut);
 	}
 
+	void Plugin::handleOtrAction ()
+	{
+		auto act = qobject_cast<QAction*> (sender ());
+
+		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
+
+		SetOtrState (qobject_cast<ICLEntry*> (entryObj), act->isChecked ());
+	}
+
 #if OTRL_VERSION_MAJOR >= 4
 	void Plugin::handleAuthRequested ()
 	{
@@ -903,6 +918,18 @@ namespace OTRoid
 
 		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
+
+		if (!Entry2Action_ [entryObj].ToggleOtr_->isChecked ())
+		{
+			if (QMessageBox::question (nullptr,
+						"LeechCraft",
+						tr ("You need to start a private conversation before authentication "
+							"can take place. Do you want to start it?"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return;
+
+			SetOtrState (entry, true);
+		}
 
 		if (!Auths_.contains (entry))
 			CreateAuthForEntry (entry);

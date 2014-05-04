@@ -8,124 +8,59 @@ if (NOT USE_QT5)
 endif ()
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package (MAGIC)
-if (MAGIC_FOUND)
-	add_definitions (-DHAVE_MAGIC)
-else ()
-	set (MAGIC_INCLUDE_DIRS)
-	set (MAGIC_LIBRARIES)
-endif ()
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
 
-if (WITH_QWT)
-	find_package (Qwt REQUIRED)
-	set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${QWT_LIBRARIES})
-	add_definitions (-DWITH_QWT)
-endif ()
-
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${MAGIC_INCLUDE_DIRS}
-	${QWT_INCLUDE_DIRS}
 	..)
 
+add_subdirectory (db)
+add_subdirectory (gui)
+add_subdirectory (models)
+add_subdirectory (network)
+add_subdirectory (qml)
+add_subdirectory (shortcuts)
+add_subdirectory (sll)
+add_subdirectory (svcauth)
+add_subdirectory (sys)
+add_subdirectory (tags)
+add_subdirectory (xdg)
+add_subdirectory (xpc)
+add_subdirectory (xsd)
+
+if (WITH_X11)
+	add_subdirectory (x11)
+	set (LEECHCRAFT_UTIL_LIBRARIES leechcraft-util-x11)
+endif ()
+
+set (LEECHCRAFT_UTIL_LIBRARIES
+	${LEECHCRAFT_UTIL_LIBRARIES}
+	leechcraft-util
+	leechcraft-util-db
+	leechcraft-util-gui
+	leechcraft-util-models
+	leechcraft-util-network
+	leechcraft-util-qml
+	leechcraft-util-shortcuts
+	leechcraft-util-sll
+	leechcraft-util-svcauth
+	leechcraft-util-sys
+	leechcraft-util-tags
+	leechcraft-util-xdg
+	leechcraft-util-xpc
+	leechcraft-util-xsd
+	)
+
+set (LEECHCRAFT_UTIL_LIBRARIES ${LEECHCRAFT_UTIL_LIBRARIES} PARENT_SCOPE)
+
 set (SRCS
-	gui/autoresizemixin.cpp
-	gui/clearlineeditaddon.cpp
-	gui/colorbutton.cpp
-	gui/findnotification.cpp
-	gui/findnotificationwk.cpp
-	gui/flowlayout.cpp
-	gui/lineeditbuttonmanager.cpp
-	gui/pagenotification.cpp
-	gui/selectablebrowser.cpp
-	gui/unhoverdeletemixin.cpp
-	gui/util.cpp
-	models/flattenfiltermodel.cpp
-	models/flattofoldersproxymodel.cpp
-	models/listmodel.cpp
-	models/mergemodel.cpp
-	models/modeliterator.cpp
-	models/modelitem.cpp
-	models/treeitem.cpp
-	network/addressesmodelmanager.cpp
-	network/customcookiejar.cpp
-	network/customnetworkreply.cpp
-	network/networkdiskcache.cpp
-	network/socketerrorstrings.cpp
-	qml/colorthemeproxy.cpp
-	qml/settableiconprovider.cpp
-	qml/standardnamfactory.cpp
-	qml/themeimageprovider.cpp
-	qml/tooltipitem.cpp
-	qml/unhidelistmodel.cpp
-	qml/unhidelistviewbase.cpp
-	qml/widthiconprovider.cpp
-	sll/onetimerunner.cpp
-	sll/slotclosure.cpp
-	svcauth/vkauthmanager.cpp
-	svcauth/vkcaptchadialog.cpp
-	sys/mimedetector.cpp
-	sys/paths.cpp
-	sys/sysinfo.cpp
-	xdg/desktopparser.cpp
-	xdg/item.cpp
-	xdg/itemsdatabase.cpp
-	xdg/itemsfinder.cpp
-	xdg/itemtypes.cpp
-	xdg/xdg.cpp
-	tags/categoryselector.cpp
-	tags/tagscompleter.cpp
-	tags/tagscompletionmodel.cpp
-	tags/tagslineedit.cpp
-	tags/tagsfiltermodel.cpp
-	xpc/basehookinterconnector.cpp
-	xpc/defaulthookproxy.cpp
-	xpc/notificationactionhandler.cpp
-	xpc/passutils.cpp
-	xpc/stdanfields.cpp
-	xpc/stddatafiltermenucreator.cpp
-	xpc/util.cpp
-	xsd/util.cpp
 	util.cpp
-	dblock.cpp
-	backendselector.cpp
 	structuresops.cpp
-	fileremoveguard.cpp
 	exceptions.cpp
-	resourceloader.cpp
-	queuemanager.cpp
-	delayedexecutor.cpp
-	shortcuts/shortcutmanager.cpp
 	)
-set (FORMS
-	backendselector.ui
-	gui/findnotification.ui
-	svcauth/vkcaptchadialog.ui
-	)
-if (USE_QT5)
-	qt5_wrap_ui (UIS_H ${FORMS})
-else ()
-	QT4_WRAP_UI (UIS_H ${FORMS})
-endif ()
-
-if (WITH_X11 AND NOT APPLE)
-	find_package (X11)
-
-	if (X11_FOUND)
-		add_definitions (-DHAVE_X11)
-		set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${X11_X11_LIB})
-
-		set (SRCS ${SRCS} x11/xwrapper.cpp)
-	endif ()
-endif ()
-
-if (WITH_QWT)
-	set (SRCS ${SRCS} qml/plotitem.cpp)
-endif ()
 
 foreach (SRC ${SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
@@ -144,17 +79,14 @@ add_definitions(-DQT_GUI_LIB)
 
 add_library (leechcraft-util SHARED
 	${SRCS}
-	${UIS_H}
 	)
 target_link_libraries (leechcraft-util
 	${QT_LIBRARIES}
-	${MAGIC_LIBRARIES}
 	${ADDITIONAL_LIBS}
-	leechcraft-xsd
 	)
-set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.5.0)
+set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.6.65)
 install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
 
 if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-util Declarative Network Xml Sql Widgets)
+	QT5_USE_MODULES (leechcraft-util Xml Sql Widgets)
 endif ()

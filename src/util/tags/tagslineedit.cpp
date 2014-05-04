@@ -48,23 +48,9 @@ namespace Util
 	, Completer_ (0)
 	, Separator_ ("; ")
 	{
-		auto mgr = new LineEditButtonManager { this };
-
-		auto button = new QToolButton { this };
-		button->setIconSize ({ 16, 16 });
-		button->setIcon (QIcon::fromTheme ("mail-tagged"));
-		button->setCursor (Qt::ArrowCursor);
-		button->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
-
-		mgr->Add (button);
-
-		connect (button,
-				SIGNAL (clicked ()),
-				this,
-				SLOT (showSelector ()));
 	}
 
-	void TagsLineEdit::AddSelector ()
+	void TagsLineEdit::AddSelector (LineEditButtonManager *mgr)
 	{
 		CategorySelector_.reset (new CategorySelector (parentWidget ()));
 		CategorySelector_->SetSeparator (Separator_);
@@ -92,6 +78,22 @@ namespace Util
 				SIGNAL (textChanged (const QString&)),
 				CategorySelector_.get (),
 				SLOT (lineTextChanged (const QString&)));
+
+		if (!mgr)
+			mgr = new LineEditButtonManager { this };
+
+		auto button = new QToolButton { this };
+		button->setIconSize ({ 16, 16 });
+		button->setIcon (QIcon::fromTheme ("mail-tagged"));
+		button->setCursor (Qt::ArrowCursor);
+		button->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
+
+		mgr->Add (button);
+
+		connect (button,
+				SIGNAL (clicked ()),
+				this,
+				SLOT (showSelector ()));
 	}
 
 	QString TagsLineEdit::GetSeparator () const

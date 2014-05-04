@@ -27,39 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_FILEREMOVEGUARD_H
-#define UTIL_FILEREMOVEGUARD_H
-#include <QFile>
-#include "utilconfig.h"
+#pragma once
 
-namespace LeechCraft
-{
-	namespace Util
-	{
-		/** @brief QFile removing itself from file system on destruction.
-		 *
-		 * Makes sure that the file represented by this object is
-		 * removed when the corresponding instance of this class is
-		 * destructed. Useful to automatically remove temporary files,
-		 * for example.
-		 */
-		class UTIL_API FileRemoveGuard : public QFile
-		{
-		public:
-			/** @brief Constructs this file with the given path.
-			 *
-			 * @param[in] path The file path to construct with.
-			 */
-			FileRemoveGuard (const QString& path);
+#include <QtGlobal>
 
-			/** @brief Removes the file.
-			 *
-			 * Tries to close and remove the file represented by this
-			 * object.
-			 */
-			virtual ~FileRemoveGuard ();
-		};
-	}
-}
-
+#if defined(leechcraft_util_qml_EXPORTS)
+#  define UTIL_QML_API Q_DECL_EXPORT
+#else
+#  define UTIL_QML_API Q_DECL_IMPORT
 #endif

@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
+#include "xdgconfig.h"
 
 template<typename T>
 class QSet;
@@ -51,7 +51,7 @@ namespace XDG
 		Dir
 	};
 
-	UTIL_API QSet<QString> ToPaths (const QList<Type>&);
+	UTIL_XDG_API QSet<QString> ToPaths (const QList<Type>&);
 }
 }
 }

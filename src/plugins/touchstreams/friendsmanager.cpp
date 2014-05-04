@@ -40,7 +40,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/svcauth/vkcaptchadialog.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include <util/util.h>
 #include "albumsmanager.h"
 #include "xmlsettingsmanager.h"

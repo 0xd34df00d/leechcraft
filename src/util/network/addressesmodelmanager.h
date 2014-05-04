@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QVariantList>
 #include <QModelIndexList>
-#include <util/utilconfig.h>
+#include "networkconfig.h"
 
 class QHostAddress;
 class QStandardItemModel;
@@ -46,7 +46,7 @@ namespace Util
 
 	typedef QList<QPair<QString, QString>> AddrList_t;
 
-	class UTIL_API AddressesModelManager : public QObject
+	class UTIL_NETWORK_API AddressesModelManager : public QObject
 	{
 		Q_OBJECT
 

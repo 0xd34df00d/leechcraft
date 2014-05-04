@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_CONFIG_H
-#define UTIL_CONFIG_H
+#pragma once
+
 #include <QtGlobal>
 
 #if defined(leechcraft_util_EXPORTS)
@@ -36,6 +36,3 @@
 #else
 #  define UTIL_API Q_DECL_IMPORT
 #endif
-
-#endif
-

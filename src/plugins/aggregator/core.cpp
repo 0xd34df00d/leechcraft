@@ -45,7 +45,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/models/mergemodel.h>
 #include <util/util.h>
-#include <util/fileremoveguard.h>
+#include <util/sys/fileremoveguard.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "core.h"

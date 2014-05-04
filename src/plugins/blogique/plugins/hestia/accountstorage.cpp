@@ -31,7 +31,7 @@
 #include <stdexcept>
 #include <QSqlError>
 #include <QSqlRecord>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
 #include <util/util.h>
 #include "localblogaccount.h"
 

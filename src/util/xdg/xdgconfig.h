@@ -29,25 +29,10 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <util/utilconfig.h>
+#include <QtGlobal>
 
-namespace LeechCraft
-{
-namespace Util
-{
-	class UTIL_API DelayedExecutor : QObject
-	{
-		Q_OBJECT
-	public:
-		typedef std::function<void ()> Actor_f;
-	private:
-		const Actor_f Actor_;
-	public:
-		DelayedExecutor (Actor_f actor, int timeout);
-	private slots:
-		void handleTimeout ();
-	};
-}
-}
+#if defined(leechcraft_util_xdg_EXPORTS)
+#  define UTIL_XDG_API Q_DECL_EXPORT
+#else
+#  define UTIL_XDG_API Q_DECL_IMPORT
+#endif

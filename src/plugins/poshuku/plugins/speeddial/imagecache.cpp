@@ -35,7 +35,7 @@
 #include <QWebFrame>
 #include <QPainter>
 #include <util/sys/paths.h>
-#include <util/delayedexecutor.h>
+#include <util/sll/delayedexecutor.h>
 
 namespace LeechCraft
 {

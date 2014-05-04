@@ -31,7 +31,7 @@
 #define UTIL_FLOWLAYOUT_H
 #include <QLayout>
 #include <QStyle>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 namespace LeechCraft
 {
@@ -42,7 +42,7 @@ namespace Util
 	 * Flow layout arranges child items in a dynamic wrappable row, much
 	 * like QML's GridView.
 	 */
-	class UTIL_API FlowLayout : public QLayout
+	class UTIL_GUI_API FlowLayout : public QLayout
 	{
 		QList<QLayoutItem*> ItemList_;
 		int HSpace_;

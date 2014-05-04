@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QObject>
-#include <util/utilconfig.h>
+#include "xpcconfig.h"
 
 class QVariant;
 class IEntityManager;
@@ -40,7 +40,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API StdDataFilterMenuCreator : public QObject
+	class UTIL_XPC_API StdDataFilterMenuCreator : public QObject
 	{
 		Q_OBJECT
 

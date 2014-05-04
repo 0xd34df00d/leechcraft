@@ -31,7 +31,7 @@
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>

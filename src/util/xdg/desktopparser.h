@@ -31,7 +31,7 @@
 
 #include <QHash>
 #include <QStringList>
-#include <util/utilconfig.h>
+#include "xdgconfig.h"
 
 namespace LeechCraft
 {
@@ -51,7 +51,7 @@ namespace XDG
 		typedef QHash<QString, LangValue_t> Group_t;
 		typedef QHash<QString, Group_t> Result_t;
 
-		UTIL_API Result_t operator() (const QByteArray&);
+		UTIL_XDG_API Result_t operator() (const QByteArray&);
 	};
 }
 }

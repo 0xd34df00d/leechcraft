@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QDeclarativeImageProvider>
-#include <util/utilconfig.h>
+#include "qmlconfig.h"
 
 class QIcon;
 
@@ -62,7 +62,7 @@ namespace Util
 	 *
 	 * @sa ThemeImageProvider
 	 */
-	class UTIL_API WidthIconProvider : public QDeclarativeImageProvider
+	class UTIL_QML_API WidthIconProvider : public QDeclarativeImageProvider
 	{
 	public:
 		WidthIconProvider ();

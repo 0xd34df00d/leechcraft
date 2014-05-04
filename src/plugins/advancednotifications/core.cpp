@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "core.h"
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include "notificationruleswidget.h"
 #include "typedmatchers.h"
 #include "rulesmanager.h"

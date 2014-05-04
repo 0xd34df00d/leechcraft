@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
 #include <interfaces/core/icoreproxy.h>
+#include "guiconfig.h"
 #include "pagenotification.h"
 
 namespace Ui
@@ -75,7 +75,7 @@ namespace Util
 	 *
 	 * @sa FindNotificationWk
 	 */
-	class UTIL_API FindNotification : public PageNotification
+	class UTIL_GUI_API FindNotification : public PageNotification
 	{
 		Q_OBJECT
 

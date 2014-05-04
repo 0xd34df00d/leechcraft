@@ -51,7 +51,7 @@ namespace Util
 	 * simple as just instantiating an object, passing the needed
 	 * QWebView instance to its constructor.
 	 */
-	class UTIL_API FindNotificationWk : public FindNotification
+	class UTIL_GUI_API FindNotificationWk : public FindNotification
 	{
 		QWebView * const WebView_;
 		QString PreviousFindText_;

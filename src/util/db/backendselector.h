@@ -27,10 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_BACKENDSELECTOR_H
-#define UTIL_BACKENDSELECTOR_H
+#pragma once
+
 #include <QWidget>
-#include "utilconfig.h"
+#include "dbconfig.h"
 
 namespace Ui
 {
@@ -79,7 +79,7 @@ namespace LeechCraft
 		 * These settings are also queried when constructing the
 		 * selector to use them as default ones.
 		 */
-		class UTIL_API BackendSelector : public QWidget
+		class UTIL_DB_API BackendSelector : public QWidget
 		{
 			Q_OBJECT
 
@@ -115,6 +115,3 @@ namespace LeechCraft
 		};
 	};
 };
-
-#endif
-

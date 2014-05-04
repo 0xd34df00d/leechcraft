@@ -27,12 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_DBLOCK_H
-#define UTIL_DBLOCK_H
-#include "utilconfig.h"
+#pragma once
+
 #include <QMutex>
 #include <QString>
 #include <QSet>
+#include "dbconfig.h"
 
 class QSqlError;
 class QSqlQuery;
@@ -79,13 +79,13 @@ namespace LeechCraft
 			 * @param[in] database Non-const reference to the database to be
 			 * guarded.
 			 */
-			UTIL_API DBLock (QSqlDatabase& database);
+			UTIL_DB_API DBLock (QSqlDatabase& database);
 			/** @brief Destructor.
 			 *
 			 * Ends the transaction if the lock is in a correct state. If Good()
 			 * was called, it commits the transaction, otherwise rolls back.
 			 */
-			UTIL_API ~DBLock ();
+			UTIL_DB_API ~DBLock ();
 
 			/** @brief Initializes the transaction.
 			 *
@@ -94,28 +94,25 @@ namespace LeechCraft
 			 *
 			 * @throw std::runtime_error
 			 */
-			UTIL_API void Init ();
+			UTIL_DB_API void Init ();
 			/** @brief Notifies the lock about successful higher-level
 			 * operations.
 			 *
 			 * Calling this function makes the lock to commit the transaction
 			 * upon destruction instead of rolling back.
 			 */
-			UTIL_API void Good ();
+			UTIL_DB_API void Good ();
 
 			/** @brief Dumps the error to the qWarning() stream.
 			 *
 			 * @param[in] error The error class.
 			 */
-			UTIL_API static void DumpError (const QSqlError& error);
+			UTIL_DB_API static void DumpError (const QSqlError& error);
 			/** @brief Dumps the error to the qWarning() stream.
 			 *
 			 * @param[in] query The query that should be dumped.
 			 */
-			UTIL_API static void DumpError (const QSqlQuery& query);
+			UTIL_DB_API static void DumpError (const QSqlQuery& query);
 		};
 	};
 };
-
-#endif
-

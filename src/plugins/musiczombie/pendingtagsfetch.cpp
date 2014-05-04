@@ -35,7 +35,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QDomDocument>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include "chroma.h"
 
 namespace LeechCraft

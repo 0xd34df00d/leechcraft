@@ -36,7 +36,7 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <QPointer>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include <util/util.h>
 #include "artistlookup.h"
 

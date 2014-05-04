@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "mooddialog.h"
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -45,7 +45,7 @@ namespace Azoth
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		
+
 		const char* moodStr[] =
 		{
 			QT_TR_NOOP ("afraid"),
@@ -133,46 +133,46 @@ namespace Azoth
 			QT_TR_NOOP ("weak"),
 			QT_TR_NOOP ("worried")
 		};
-		
+
 		Util::ResourceLoader *rl = Core::Instance ()
 				.GetResourceLoader (Core::RLTMoodIconLoader);
 		const QString& theme = XmlSettingsManager::Instance ()
 				.property ("MoodIcons").toString () + '/';
-				
+
 		Ui_.Mood_->addItem (tr ("<clear>"));
-		
+
 		QMap<QString, QPair<QVariant, QIcon>> list;
-		
+
 		for (uint i = 0; i < sizeof (moodStr) / sizeof (moodStr [0]); ++i)
 		{
 			QString name (moodStr [i]);
 			name [0] = name.at (0).toUpper ();
 			QIcon icon (rl->GetIconPath (theme + name));
-			
+
 			list [tr (moodStr [i])] = qMakePair<QVariant, QIcon> (QString (moodStr [i]), icon);
 		}
-		
+
 		Q_FOREACH (const QString& key, list.keys ())
 			Ui_.Mood_->addItem (list [key].second,
 					key, list [key].first);
 	}
-	
+
 	QString MoodDialog::GetMood () const
 	{
 		return Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toString ();
 	}
-	
+
 	void MoodDialog::SetMood (const QString& mood)
 	{
 		const int idx = std::max (0, Ui_.Mood_->findData (mood));
 		Ui_.Mood_->setCurrentIndex (idx);
 	}
-	
+
 	QString MoodDialog::GetText () const
 	{
 		return Ui_.Text_->text ();
 	}
-	
+
 	void MoodDialog::SetText (const QString& text)
 	{
 		Ui_.Text_->setText (text);

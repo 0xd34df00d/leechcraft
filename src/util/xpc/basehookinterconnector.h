@@ -31,7 +31,7 @@
 
 #include <QObject>
 #include <QList>
-#include <util/utilconfig.h>
+#include "xpcconfig.h"
 
 namespace LeechCraft
 {
@@ -63,7 +63,7 @@ namespace Util
 	 * Please note that second and third steps can be done in arbitrary
 	 * order and even be interleaved.
 	 */
-	class UTIL_API BaseHookInterconnector : public QObject
+	class UTIL_XPC_API BaseHookInterconnector : public QObject
 	{
 		Q_OBJECT
 	protected:

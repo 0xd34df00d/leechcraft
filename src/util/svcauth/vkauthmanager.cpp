@@ -35,7 +35,7 @@
 #include <QEvent>
 #include <QWebView>
 #include <util/network/customcookiejar.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 
 namespace LeechCraft
 {
