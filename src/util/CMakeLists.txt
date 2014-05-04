@@ -28,6 +28,7 @@ add_subdirectory (sys)
 add_subdirectory (tags)
 add_subdirectory (xdg)
 add_subdirectory (xpc)
+add_subdirectory (xsd)
 
 set (SRCS
 	gui/autoresizemixin.cpp
@@ -41,7 +42,6 @@ set (SRCS
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
-	xsd/util.cpp
 	util.cpp
 	dblock.cpp
 	backendselector.cpp
