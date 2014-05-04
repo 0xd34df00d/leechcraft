@@ -1,3 +1,11 @@
+if (WITH_QWT)
+	find_package (Qwt REQUIRED)
+	set (ADDITIONAL_LIBS ${QWT_LIBRARIES})
+	add_definitions (-DWITH_QWT)
+
+	include_directories (${QWT_INCLUDE_DIRS})
+endif ()
+
 set (QML_SRCS
 	colorthemeproxy.cpp
 	settableiconprovider.cpp
@@ -11,14 +19,6 @@ set (QML_SRCS
 
 if (WITH_QWT)
 	set (QML_SRCS ${QML_SRCS} plotitem.cpp)
-endif ()
-
-include_directories (${QWT_INCLUDE_DIRS})
-
-if (WITH_QWT)
-	find_package (Qwt REQUIRED)
-	set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${QWT_LIBRARIES})
-	add_definitions (-DWITH_QWT)
 endif ()
 
 foreach (SRC ${QML_SRCS})
@@ -39,4 +39,3 @@ install (TARGETS leechcraft-util-qml DESTINATION ${LIBDIR})
 if (USE_QT5)
 	QT5_USE_MODULES (leechcraft-util-qml Declarative Network)
 endif ()
-
