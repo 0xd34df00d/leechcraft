@@ -31,6 +31,11 @@ add_subdirectory (xdg)
 add_subdirectory (xpc)
 add_subdirectory (xsd)
 
+if (WITH_X11)
+	add_subdirectory (x11)
+	set (LEECHCRAFT_UTIL_LIBRARIES leechcraft-util-x11)
+endif ()
+
 set (LEECHCRAFT_UTIL_LIBRARIES
 	${LEECHCRAFT_UTIL_LIBRARIES}
 	leechcraft-util
@@ -76,14 +81,6 @@ else ()
 endif ()
 
 if (WITH_X11 AND NOT APPLE)
-	find_package (X11)
-
-	if (X11_FOUND)
-		add_definitions (-DHAVE_X11)
-		set (ADDITIONAL_LIBS ${ADDITIONAL_LIBS} ${X11_X11_LIB})
-
-		set (SRCS ${SRCS} x11/xwrapper.cpp)
-	endif ()
 endif ()
 
 foreach (SRC ${SRCS})
