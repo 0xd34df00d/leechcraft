@@ -33,7 +33,7 @@
 #include <QObject>
 #include <QPoint>
 #include <QRect>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 class QWidget;
 
@@ -84,7 +84,7 @@ namespace Util
 		 * the \em widget should be fitted.
 		 * @param[in] widget The widget to fit.
 		 */
-		UTIL_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWidget *widget);
+		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWidget *widget);
 
 		/** @brief Listens for resize events and refits the widget.
 		 */

@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QObject>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 class QToolButton;
 class QLineEdit;
@@ -54,7 +54,7 @@ namespace Util
 	 *
 	 * @sa ClearLineEditAddon
 	 */
-	class UTIL_API LineEditButtonManager : public QObject
+	class UTIL_GUI_API LineEditButtonManager : public QObject
 	{
 		Q_OBJECT
 

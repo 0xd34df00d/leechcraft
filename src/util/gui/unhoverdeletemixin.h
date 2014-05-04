@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QObject>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 class QTimer;
 
@@ -72,7 +72,7 @@ namespace Util
 		 * @param[in] slot The slot to call when enough time has passed
 		 * since mouse leave. By default it is <code>deleteLater()</code>.
 		 */
-		UTIL_API UnhoverDeleteMixin (QWidget *parent, const char *slot = SLOT (deleteLater ()));
+		UTIL_GUI_API UnhoverDeleteMixin (QWidget *parent, const char *slot = SLOT (deleteLater ()));
 
 		/** @brief Manually starts the timer.
 		 *
@@ -86,7 +86,7 @@ namespace Util
 		 *
 		 * @sa Stop()
 		 */
-		void UTIL_API Start (int timeout = 1200);
+		void UTIL_GUI_API Start (int timeout = 1200);
 
 		/** @brief Stops the previously started timer.
 		 *
@@ -104,7 +104,7 @@ namespace Util
 		 *
 		 * @sa Start()
 		 */
-		void UTIL_API Stop ();
+		void UTIL_GUI_API Stop ();
 
 		/** @brief Ignores the next leave event.
 		 *
@@ -113,7 +113,7 @@ namespace Util
 		 * deletion of the widget upon receiving the corresponding
 		 * leave event.
 		 */
-		void UTIL_API IgnoreNext ();
+		void UTIL_GUI_API IgnoreNext ();
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	};

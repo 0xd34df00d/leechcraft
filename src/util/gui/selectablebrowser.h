@@ -33,7 +33,7 @@
 #include <QWidget>
 #include <QTextBrowser>
 #include <interfaces/iwebbrowser.h>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 namespace LeechCraft
 {
@@ -50,7 +50,7 @@ namespace LeechCraft
 		 * isn't as new and uncommon as it was a couple of years ago, so
 		 * in most cases it's easier to just embed a QWebView.
 		 */
-		class UTIL_API SelectableBrowser : public QWidget
+		class UTIL_GUI_API SelectableBrowser : public QWidget
 		{
 			Q_OBJECT
 

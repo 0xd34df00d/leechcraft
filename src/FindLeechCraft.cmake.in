@@ -9,6 +9,7 @@ endif ()
 
 find_library(_LEECHCRAFT_UTIL NAMES leechcraft-util)
 find_library(_LEECHCRAFT_UTIL_DB NAMES leechcraft-util-db)
+find_library(_LEECHCRAFT_UTIL_GUI NAMES leechcraft-util-gui)
 find_library(_LEECHCRAFT_UTIL_MODELS NAMES leechcraft-util-models)
 find_library(_LEECHCRAFT_UTIL_NETWORK NAMES leechcraft-util-network)
 find_library(_LEECHCRAFT_UTIL_QML NAMES leechcraft-util-qml)
@@ -31,6 +32,7 @@ find_library(_LEECHCRAFT_XSD NAMES leechcraft-xsd)
 set (LEECHCRAFT_LIBRARIES
 	${_LEECHCRAFT_UTIL}
 	${_LEECHCRAFT_UTIL_DB}
+	${_LEECHCRAFT_UTIL_GUI}
 	${_LEECHCRAFT_UTIL_MODELS}
 	${_LEECHCRAFT_UTIL_NETWORK}
 	${_LEECHCRAFT_UTIL_QML}

@@ -18,6 +18,7 @@ include_directories (${Boost_INCLUDE_DIRS}
 	..)
 
 add_subdirectory (db)
+add_subdirectory (gui)
 add_subdirectory (models)
 add_subdirectory (network)
 add_subdirectory (qml)
@@ -39,6 +40,7 @@ set (LEECHCRAFT_UTIL_LIBRARIES
 	${LEECHCRAFT_UTIL_LIBRARIES}
 	leechcraft-util
 	leechcraft-util-db
+	leechcraft-util-gui
 	leechcraft-util-models
 	leechcraft-util-network
 	leechcraft-util-qml
@@ -55,32 +57,10 @@ set (LEECHCRAFT_UTIL_LIBRARIES
 set (LEECHCRAFT_UTIL_LIBRARIES ${LEECHCRAFT_UTIL_LIBRARIES} PARENT_SCOPE)
 
 set (SRCS
-	gui/autoresizemixin.cpp
-	gui/clearlineeditaddon.cpp
-	gui/colorbutton.cpp
-	gui/findnotification.cpp
-	gui/findnotificationwk.cpp
-	gui/flowlayout.cpp
-	gui/lineeditbuttonmanager.cpp
-	gui/pagenotification.cpp
-	gui/selectablebrowser.cpp
-	gui/unhoverdeletemixin.cpp
-	gui/util.cpp
 	util.cpp
 	structuresops.cpp
 	exceptions.cpp
 	)
-set (FORMS
-	gui/findnotification.ui
-	)
-if (USE_QT5)
-	qt5_wrap_ui (UIS_H ${FORMS})
-else ()
-	QT4_WRAP_UI (UIS_H ${FORMS})
-endif ()
-
-if (WITH_X11 AND NOT APPLE)
-endif ()
 
 foreach (SRC ${SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
@@ -99,7 +79,6 @@ add_definitions(-DQT_GUI_LIB)
 
 add_library (leechcraft-util SHARED
 	${SRCS}
-	${UIS_H}
 	)
 target_link_libraries (leechcraft-util
 	${QT_LIBRARIES}

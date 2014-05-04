@@ -31,7 +31,7 @@
 
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 class QLineEdit;
 class QToolButton;
@@ -59,7 +59,7 @@ namespace Util
 	 *
 	 * @sa IInfo::Init()
 	 */
-	class UTIL_API ClearLineEditAddon : public QObject
+	class UTIL_GUI_API ClearLineEditAddon : public QObject
 	{
 		Q_OBJECT
 

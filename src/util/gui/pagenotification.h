@@ -30,13 +30,13 @@
 #pragma once
 
 #include <QWidget>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API PageNotification : public QWidget
+	class UTIL_GUI_API PageNotification : public QWidget
 	{
 	public:
 		PageNotification (QWidget*);

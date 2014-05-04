@@ -27,48 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_FLOWLAYOUT_H
-#define UTIL_FLOWLAYOUT_H
-#include <QLayout>
-#include <QStyle>
-#include "guiconfig.h"
+#pragma once
 
-namespace LeechCraft
-{
-namespace Util
-{
-	/** @brief A simple flow layout implementation.
-	 *
-	 * Flow layout arranges child items in a dynamic wrappable row, much
-	 * like QML's GridView.
-	 */
-	class UTIL_GUI_API FlowLayout : public QLayout
-	{
-		QList<QLayoutItem*> ItemList_;
-		int HSpace_;
-		int VSpace_;
-	public:
-		FlowLayout (QWidget*, int = -1, int = -1, int = -1);
-		FlowLayout (int = -1, int = -1, int = -1);
-		virtual ~FlowLayout ();
+#include <QtGlobal>
 
-		void addItem (QLayoutItem*);
-		int horizontalSpacing () const;
-		int verticalSpacing () const;
-		Qt::Orientations expandingDirections () const;
-		bool hasHeightForWidth () const;
-		int heightForWidth (int) const;
-		int count () const;
-		QLayoutItem* itemAt (int) const;
-		QLayoutItem* takeAt (int);
-		QSize minimumSize () const;
-		void setGeometry (const QRect&);
-		QSize sizeHint () const;
-	private:
-		int DoLayout (const QRect&, bool) const;
-		int SmartSpacing (QStyle::PixelMetric) const;
-	};
-}
-}
-
+#if defined(leechcraft_util_gui_EXPORTS)
+#  define UTIL_GUI_API Q_DECL_EXPORT
+#else
+#  define UTIL_GUI_API Q_DECL_IMPORT
 #endif
