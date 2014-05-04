@@ -29,10 +29,10 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
 #include <interfaces/structures.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/ianemitter.h>
+#include "xpcconfig.h"
 
 class IEntityManager;
 
@@ -78,13 +78,13 @@ namespace Util
 	 *
 	 * @sa MakeANCancel()
 	 */
-	UTIL_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
+	UTIL_XPC_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QString& senderID, const QString& cat, const QString& type,
 			const QString& id, const QStringList& visualPath,
 			int delta = 1, int count = 0,
 			const QString& fullText = QString (), const QString& extendedText = QString ());
 
-	UTIL_API Entity MakeANRule (const QString& title,
+	UTIL_XPC_API Entity MakeANRule (const QString& title,
 			const QString& senderID, const QString& cat, const QStringList& types,
 			AN::NotifyFlags = AN::NotifyNone,
 			const QList<QPair<QString, ANFieldValue>>& fields = {});
@@ -104,6 +104,6 @@ namespace Util
 	 * @param[in] manager The manager used to get the plugins.
 	 * @return The list of data filters that can handle \em data.
 	 */
-	UTIL_API QList<QObject*> GetDataFilters (const QVariant& data, IEntityManager *manager);
+	UTIL_XPC_API QList<QObject*> GetDataFilters (const QVariant& data, IEntityManager *manager);
 }
 }

@@ -149,6 +149,7 @@ set (LEECHCRAFT_LIBRARIES
 		leechcraft-util-sys
 		leechcraft-util-tags
 		leechcraft-util-xdg
+		leechcraft-util-xpc
 		leechcraft-xsd)
 
 set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")

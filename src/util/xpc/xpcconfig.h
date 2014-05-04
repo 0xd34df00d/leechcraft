@@ -29,32 +29,10 @@
 
 #pragma once
 
-#include <QObject>
-#include "xpcconfig.h"
+#include <QtGlobal>
 
-class QVariant;
-class IEntityManager;
-class QMenu;
-
-namespace LeechCraft
-{
-namespace Util
-{
-	class UTIL_XPC_API StdDataFilterMenuCreator : public QObject
-	{
-		Q_OBJECT
-
-		IEntityManager * const EntityMgr_;
-
-		QByteArray ChosenPlugin_;
-		QByteArray ChosenVariant_;
-	public:
-		StdDataFilterMenuCreator (const QVariant&, IEntityManager*, QMenu*);
-
-		const QByteArray& GetChosenPlugin () const;
-		const QByteArray& GetChosenVariant () const;
-	private slots:
-		void handleDataFilterAction ();
-	};
-}
-}
+#if defined(leechcraft_util_xpc_EXPORTS)
+#  define UTIL_XPC_API Q_DECL_EXPORT
+#else
+#  define UTIL_XPC_API Q_DECL_IMPORT
+#endif
