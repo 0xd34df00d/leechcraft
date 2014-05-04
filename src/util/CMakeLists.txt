@@ -18,6 +18,7 @@ include_directories (${Boost_INCLUDE_DIRS}
 	${QWT_INCLUDE_DIRS}
 	..)
 
+add_subdirectory (db)
 add_subdirectory (models)
 add_subdirectory (network)
 add_subdirectory (qml)
@@ -43,14 +44,11 @@ set (SRCS
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
 	util.cpp
-	db/dblock.cpp
-	db/backendselector.cpp
 	structuresops.cpp
 	exceptions.cpp
 	)
 set (FORMS
 	gui/findnotification.ui
-	db/backendselector.ui
 	)
 if (USE_QT5)
 	qt5_wrap_ui (UIS_H ${FORMS})

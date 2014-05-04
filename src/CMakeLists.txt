@@ -140,6 +140,7 @@ endif ()
 set (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 set (LEECHCRAFT_LIBRARIES
 		leechcraft-util
+		leechcraft-util-db
 		leechcraft-util-models
 		leechcraft-util-network
 		leechcraft-util-qml
