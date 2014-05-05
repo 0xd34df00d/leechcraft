@@ -33,8 +33,10 @@
 #include <QStringList>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <util/util.h>
+#include <QDir>
+#include <QtDebug>
 #include <util/db/dblock.h>
+#include <util/sys/paths.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 

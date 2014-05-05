@@ -31,8 +31,9 @@
 #include <stdexcept>
 #include <QDir>
 #include <QSqlError>
+#include <QtDebug>
 #include <util/db/dblock.h>
-#include <util/util.h>
+#include <util/sys/paths.h>
 #include "repoinfo.h"
 #include "core.h"
 

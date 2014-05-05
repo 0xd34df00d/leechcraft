@@ -32,6 +32,7 @@
 #include <QAction>
 #include <QTimer>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "fileattachpage.h"

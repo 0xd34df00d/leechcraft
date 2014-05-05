@@ -31,6 +31,7 @@
 #include <QFile>
 #include <QTimer>
 #include <util/util.h>
+#include <util/sys/paths.h>
 
 Q_DECLARE_METATYPE (QXmppDiscoveryIq::Identity);
 

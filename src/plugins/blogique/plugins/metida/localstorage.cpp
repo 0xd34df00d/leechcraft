@@ -33,6 +33,7 @@
 #include <QSqlError>
 #include <util/util.h>
 #include <util/db/dblock.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {

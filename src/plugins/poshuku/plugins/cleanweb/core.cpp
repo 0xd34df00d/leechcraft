@@ -50,6 +50,7 @@
 #include <qwebview.h>
 #include <util/util.h>
 #include <util/network/customnetworkreply.h>
+#include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"

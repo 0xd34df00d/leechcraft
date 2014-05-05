@@ -33,8 +33,9 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <util/util.h>
+#include <QtDebug>
 #include <util/sll/queuemanager.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {

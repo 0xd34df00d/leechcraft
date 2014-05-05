@@ -40,6 +40,7 @@
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/idownload.h>
 
 Q_DECLARE_METATYPE (QList<QUrl>);

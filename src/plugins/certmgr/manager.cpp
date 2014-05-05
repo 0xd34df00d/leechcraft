@@ -33,6 +33,7 @@
 #include <QSslSocket>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "certsmodel.h"
 
 namespace LeechCraft

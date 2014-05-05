@@ -47,6 +47,7 @@
 #include <util/util.h>
 #include <util/network/socketerrorstrings.h>
 #include <util/sys/sysinfo.h>
+#include <util/sys/paths.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>

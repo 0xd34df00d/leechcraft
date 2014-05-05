@@ -31,6 +31,7 @@
 #include <stdexcept>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -65,11 +66,11 @@ namespace LackMan
 
 		Entity e = Util::MakeEntity (url,
 				location,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
 		int id = -1;
 		QObject *pr;

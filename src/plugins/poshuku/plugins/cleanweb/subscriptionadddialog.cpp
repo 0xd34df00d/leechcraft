@@ -33,6 +33,7 @@
 #include <QDir>
 #include <QUrl>
 #include <util/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {

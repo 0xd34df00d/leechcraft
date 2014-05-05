@@ -38,6 +38,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <util/util.h>
 #include <util/gui/selectablebrowser.h>
+#include <util/sys/paths.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 

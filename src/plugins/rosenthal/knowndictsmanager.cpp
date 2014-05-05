@@ -32,6 +32,7 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

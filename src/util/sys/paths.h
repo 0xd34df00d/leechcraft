@@ -179,5 +179,28 @@ namespace Util
 	};
 
 	UTIL_SYS_API QDir GetUserDir (UserDir dir, const QString& subpath);
+
+	/** @brief Creates a path if it doesn't exist.
+	 *
+	 * Creates a relative path ~/.leechcraft/path and throws an
+	 * exception if this could not be done or if such path already
+	 * exists and it is not readable.
+	 *
+	 * @param[in] path The path to create.
+	 * @return The newly created dir.
+	 * @exception std::runtime_error Throws if the path could not be
+	 * created.
+	 */
+	UTIL_SYS_API QDir CreateIfNotExists (QString path);
+
+	/** @brief Returns a temporary filename.
+	 *
+	 * This function returns a name of a temporary file that could
+	 * be created, not creating the file itself.
+	 *
+	 * @param[in] pattern Pattern of the filename.
+	 * @return The filename.
+	 */
+	UTIL_SYS_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
 }
 }

@@ -32,6 +32,7 @@
 #include <QSslSocket>
 #include <QTcpServer>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "core.h"
 #include "msnaccount.h"
 #include "zheetutil.h"

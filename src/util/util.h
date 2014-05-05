@@ -174,29 +174,6 @@ namespace LeechCraft
 		 */
 		UTIL_API QString GetLanguage ();
 
-		/** @brief Creates a path if it doesn't exist.
-		 *
-		 * Creates a relative path ~/.leechcraft/path and throws an
-		 * exception if this could not be done or if such path already
-		 * exists and it is not readable.
-		 *
-		 * @param[in] path The path to create.
-		 * @return The newly created dir.
-		 * @exception std::runtime_error Throws if the path could not be
-		 * created.
-		 */
-		UTIL_API QDir CreateIfNotExists (const QString& path);
-
-		/** @brief Returns a temporary filename.
-		 *
-		 * This function returns a name of a temporary file that could
-		 * be created, not createing the file itself.
-		 *
-		 * @param[in] pattern Pattern of the filename.
-		 * @return The filename.
-		 */
-		UTIL_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
-
 		/** @brief An utility function to make a Entity.
 		 *
 		 * Creates a Entity that wraps the given entity from

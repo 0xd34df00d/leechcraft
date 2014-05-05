@@ -37,7 +37,6 @@
 #include <QLocale>
 #include <QFile>
 #include <QDir>
-#include <QTemporaryFile>
 #include <QTime>
 #include <QSettings>
 #include <QTextCodec>
@@ -259,35 +258,6 @@ QString LeechCraft::Util::GetInternetLocaleName (const QLocale& locale)
 QString LeechCraft::Util::GetLanguage ()
 {
 	return GetLocaleName ().left (2);
-}
-
-QDir LeechCraft::Util::CreateIfNotExists (const QString& opath)
-{
-	QString path = opath;
-
-	QDir home = QDir::home ();
-	path.prepend (".leechcraft/");
-
-	if (!home.exists (path) &&
-			!home.mkpath (path))
-		throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
-					.arg (QDir::toNativeSeparators (home.filePath (path)))));
-
-	if (home.cd (path))
-		return home;
-	else
-		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
-					.arg (QDir::toNativeSeparators (home.filePath (path)))));
-}
-
-QString LeechCraft::Util::GetTemporaryName (const QString& pattern)
-{
-	QTemporaryFile file (QDir::tempPath () + "/" + pattern);
-	file.open ();
-	QString name = file.fileName ();
-	file.close ();
-	file.remove ();
-	return name;
 }
 
 LeechCraft::Entity LeechCraft::Util::MakeEntity (const QVariant& entity,

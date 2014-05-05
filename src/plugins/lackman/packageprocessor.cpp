@@ -33,6 +33,7 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "core.h"
 #include "externalresourcemanager.h"
 #include "storage.h"

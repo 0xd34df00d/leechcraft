@@ -29,6 +29,7 @@
 
 #include "avatarsstorage.h"
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include <QTimer>
 
 namespace LeechCraft
