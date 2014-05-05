@@ -187,18 +187,6 @@ namespace LeechCraft
 		 */
 		UTIL_API QDir CreateIfNotExists (const QString& path);
 
-		/** @brief Returns the path relative to user directory.
-		 *
-		 * Returns a QDir object that represents the ~/.leechcraft/path
-		 * or throws an exceptions if this path doesn't exist.
-		 *
-		 * @param[in] path The path to return relative to ~/.leechcraft
-		 * @return The QDir object for that path.
-		 * @exception std::runtime_error Throws if the path doesn't
-		 * exist.
-		 */
-		UTIL_API QDir GetUserDir (const QString& path);
-
 		/** @brief Returns a temporary filename.
 		 *
 		 * This function returns a name of a temporary file that could
