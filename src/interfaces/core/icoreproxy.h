@@ -201,12 +201,6 @@ public:
 	 */
 	virtual QString GetVersion () const = 0;
 
-	/** @brief Returns the pointer to itself as QObject*.
-	 *
-	 * Just to avoid nasty reinterpret_casts.
-	 */
-	virtual QObject* GetSelf () = 0;
-
 	/** @brief Registers the given action as having skinnable icons.
 	 *
 	 * Registers the given action so that it automatically gets its icon

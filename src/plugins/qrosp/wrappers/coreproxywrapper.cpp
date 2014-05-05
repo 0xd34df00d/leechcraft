@@ -97,10 +97,5 @@ namespace Qrosp
 	{
 		return new PluginsManagerWrapper (Proxy_->GetPluginsManager ());
 	}
-
-	QObject* CoreProxyWrapper::GetSelf ()
-	{
-		return Proxy_->GetSelf ();
-	}
 }
 }
