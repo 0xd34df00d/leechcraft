@@ -79,7 +79,7 @@ namespace DBus
 		ObjectDataInfo RegisterObject (std::shared_ptr<T>);
 
 		template<typename T>
-		ObjectDataInfo RegisterObject (T);
+		ObjectDataInfo RegisterObject (T*);
 
 		template<typename T>
 		void Wrap (std::shared_ptr<T>&, const ObjectDataInfo&);
