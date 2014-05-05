@@ -108,6 +108,7 @@ if (UNIX AND NOT APPLE)
 		loaders/infoproxy.cpp
 		loaders/dbus/marshalling.cpp
 		loaders/dbus/coreproxyserverwrapper.cpp
+		loaders/dbus/coreproxyproxy.cpp
 	)
 endif ()
 
