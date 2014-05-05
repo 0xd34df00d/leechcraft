@@ -1039,7 +1039,7 @@ namespace Xoox
 		if (jid.isEmpty ())
 			jid = OurBareJID_;
 
-		Q_FOREACH (auto f, VCardFetchCallbacks_.take (jid))
+		for (const auto& f : VCardFetchCallbacks_.take (jid))
 			f (vcard);
 
 		if (JID2CLEntry_.contains (jid))
