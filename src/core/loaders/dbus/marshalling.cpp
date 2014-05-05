@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include "coreproxyserverwrapper.h"
+#include "coreproxyproxy.h"
 
 QDBusArgument& operator<< (QDBusArgument& arg,
 		const LeechCraft::DBus::ObjectManager::ObjectDataInfo& info)
@@ -111,6 +112,18 @@ namespace DBus
 				new CoreProxyServerWrapper (w, wObj);
 			}
 		};
+
+		template<typename T>
+		struct ProxyCreator;
+
+		template<>
+		struct ProxyCreator<ICoreProxy>
+		{
+			static ICoreProxy* Create (const ObjectManager::ObjectDataInfo& info)
+			{
+				return new CoreProxyProxy { info.Service_, info.Path_ };
+			}
+		};
 	}
 
 	void RegisterTypes ()
@@ -176,13 +189,17 @@ namespace DBus
 	}
 
 	template<typename T>
-	void ObjectManager::Wrap (std::shared_ptr<T>& obj, const ObjectManager::ObjectDataInfo& info)
+	void ObjectManager::Wrap (std::shared_ptr<T>& obj, const ObjectDataInfo& info)
 	{
+		T *rawObj;
+		Wrap (rawObj, info);
+		obj.reset (rawObj);
 	}
 
 	template<typename T>
-	void ObjectManager::Wrap (T& obj, const ObjectManager::ObjectDataInfo& info)
+	void ObjectManager::Wrap (T*& obj, const ObjectDataInfo& info)
 	{
+		obj = ProxyCreator<T>::Create (info);
 	}
 
 	void ObjectManager::handleObjectDestroyed (QObject *obj)

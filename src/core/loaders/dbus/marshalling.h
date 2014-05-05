@@ -85,9 +85,7 @@ namespace DBus
 		void Wrap (std::shared_ptr<T>&, const ObjectDataInfo&);
 
 		template<typename T>
-		void Wrap (T&, const ObjectDataInfo&);
-
-		void Wrap (QObject*&, const ObjectDataInfo&);
+		void Wrap (T*&, const ObjectDataInfo&);
 	private slots:
 		void handleObjectDestroyed (QObject*);
 	};
