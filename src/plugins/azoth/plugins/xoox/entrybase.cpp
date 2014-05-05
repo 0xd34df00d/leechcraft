@@ -534,7 +534,7 @@ namespace Xoox
 
 	void EntryBase::SetAvatar (const QByteArray& data)
 	{
-		if (!data.size ())
+		if (data.isEmpty ())
 			SetAvatar (QImage ());
 		else
 			SetAvatar (QImage::fromData (data));
