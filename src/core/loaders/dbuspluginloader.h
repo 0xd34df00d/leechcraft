@@ -29,8 +29,9 @@
 
 #pragma once
 
-#include "ipluginloader.h"
+#include <QObject>
 #include <QString>
+#include "ipluginloader.h"
 
 class QProcess;
 class QDBusInterface;
@@ -41,8 +42,11 @@ namespace Loaders
 {
 	class InfoProxy;
 
-	class DBusPluginLoader : public IPluginLoader
+	class DBusPluginLoader : public QObject
+						   , public IPluginLoader
 	{
+		Q_OBJECT
+
 		const QString Filename_;
 		bool IsLoaded_;
 
@@ -61,6 +65,8 @@ namespace Loaders
 		bool IsLoaded () const;
 		QString GetFileName () const;
 		QString GetErrorString () const;
+	private slots:
+		void handleProcFinished ();
 	};
 }
 }

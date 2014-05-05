@@ -54,6 +54,11 @@ namespace Loaders
 
 		if (!sb.interface ()->isServiceRegistered (serviceName))
 			qDebug () << "registering primary service..." << sb.registerService (serviceName);
+
+		connect (Proc_.get (),
+				SIGNAL (finished (int, QProcess::ExitStatus)),
+				this,
+				SLOT (handleProcFinished ()));
 	}
 
 	quint64 DBusPluginLoader::GetAPILevel ()
@@ -93,6 +98,10 @@ namespace Loaders
 
 		QDBusReply<bool> reply = CtrlIface_->call ("Load", Filename_);
 		IsLoaded_ = reply.value ();
+		qDebug () << Q_FUNC_INFO
+				<< GetFileName ()
+				<< "is loaded?"
+				<< IsLoaded_;
 		if (!IsLoaded_)
 			return false;
 
@@ -143,6 +152,13 @@ namespace Loaders
 	QString DBusPluginLoader::GetErrorString () const
 	{
 		return {};
+	}
+
+	void DBusPluginLoader::handleProcFinished ()
+	{
+		qDebug () << Q_FUNC_INFO << Proc_->exitCode () << Proc_->exitStatus ();
+		qDebug () << Proc_->readAllStandardOutput ();
+		qDebug () << Proc_->readAllStandardError ();
 	}
 }
 }
