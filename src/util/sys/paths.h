@@ -171,7 +171,11 @@ namespace Util
 	{
 		/** @brief Cache for volatile data.
 		 */
-		Cache
+		Cache,
+
+		/** @brief Root LeechCraft directory (something like ~/.leechcraft).
+		 */
+		LC
 	};
 
 	UTIL_SYS_API QDir GetUserDir (UserDir dir, const QString& subpath);

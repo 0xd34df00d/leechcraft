@@ -123,6 +123,8 @@ namespace Util
 		case UserDir::Cache:
 			path = QDesktopServices::storageLocation (QDesktopServices::CacheLocation);
 			break;
+		case UserDir::LC:
+			break;
 		}
 
 		if (path.isEmpty ())
@@ -130,7 +132,8 @@ namespace Util
 
 		if (!path.endsWith ('/'))
 			path += '/';
-		path += "leechcraft/";
+		if (dir != UserDir::LC)
+			path += "leechcraft/";
 		path += subpath;
 
 		if (!QDir {}.exists (path) &&
