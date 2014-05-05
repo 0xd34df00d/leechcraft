@@ -113,7 +113,11 @@ namespace Xoox
 		}
 
 		if (auto dEvent = dynamic_cast<UserAvatarData*> (event))
-			emit avatarUpdated (from, dEvent->GetImage ());
+		{
+			const auto& image = dEvent->GetImage ();
+			if (!image.isNull ())
+				emit avatarUpdated (from, dEvent->GetImage ());
+		}
 	}
 
 	void UserAvatarManager::handleHTTPFinished ()
