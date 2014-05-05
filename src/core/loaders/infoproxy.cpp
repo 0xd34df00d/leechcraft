@@ -27,37 +27,57 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-
-class QDBusInterface;
+#include "infoproxy.h"
+#include <QDBusInterface>
+#include <QDBusReply>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Loaders
 {
-	class DBusWrapper : public QObject
-					  , public IInfo
+	InfoProxy::InfoProxy (const QString& service)
+	: Service_ { service }
+	, IFace_ { new QDBusInterface { service, "/org/LeechCraft/Plugin" } }
+	, Info_ { new QDBusInterface { service, "/org/LeechCraft/Info" } }
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
+	}
 
-		const QString Service_;
-		std::shared_ptr<QDBusInterface> IFace_;
+	void InfoProxy::Init (ICoreProxy_ptr proxy)
+	{
+		qDebug () << Q_FUNC_INFO;
+		Info_->call ("Init", QVariant::fromValue (proxy));
+		qDebug () << "done";
+	}
 
-		std::shared_ptr<QDBusInterface> Info_;
-	public:
-		explicit DBusWrapper (const QString& service);
+	void InfoProxy::SecondInit ()
+	{
+		Info_->call ("SecondInit");
+	}
 
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	};
+	void InfoProxy::Release ()
+	{
+		Info_->call ("Release");
+	}
+
+	QByteArray InfoProxy::GetUniqueID () const
+	{
+		return QDBusReply<QByteArray> (Info_->call ("GetUniqueID")).value ();
+	}
+
+	QString InfoProxy::GetName () const
+	{
+		return QDBusReply<QString> (Info_->call ("GetName")).value ();
+	}
+
+	QString InfoProxy::GetInfo () const
+	{
+		return QDBusReply<QString> (Info_->call ("GetInfo")).value ();
+	}
+
+	QIcon InfoProxy::GetIcon () const
+	{
+		return QDBusReply<QIcon> (Info_->call ("GetIcon")).value ();
+	}
 }
 }

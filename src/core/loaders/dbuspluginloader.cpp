@@ -35,7 +35,7 @@
 #include <QDBusConnectionInterface>
 #include <QLocalServer>
 #include <interfaces/iinfo.h>
-#include "dbuswrapper.h"
+#include "infoproxy.h"
 #include "dbus/marshalling.h"
 
 namespace LeechCraft
@@ -96,7 +96,7 @@ namespace Loaders
 		if (!IsLoaded_)
 			return false;
 
-		Wrapper_.reset (new DBusWrapper (serviceName));
+		Wrapper_.reset (new InfoProxy (serviceName));
 
 		CtrlIface_->call ("SetLcIconsPaths", QDir::searchPaths ("lcicons"));
 

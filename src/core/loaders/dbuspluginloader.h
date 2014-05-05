@@ -39,7 +39,7 @@ namespace LeechCraft
 {
 namespace Loaders
 {
-	class DBusWrapper;
+	class InfoProxy;
 
 	class DBusPluginLoader : public IPluginLoader
 	{
@@ -48,7 +48,7 @@ namespace Loaders
 
 		std::shared_ptr<QProcess> Proc_;
 		std::shared_ptr<QDBusInterface> CtrlIface_;
-		std::shared_ptr<DBusWrapper> Wrapper_;
+		std::shared_ptr<InfoProxy> Wrapper_;
 	public:
 		DBusPluginLoader (const QString&);
 

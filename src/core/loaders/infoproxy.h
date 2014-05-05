@@ -27,57 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dbuswrapper.h"
-#include <QDBusInterface>
-#include <QDBusReply>
-#include <interfaces/core/icoreproxy.h>
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+
+class QDBusInterface;
 
 namespace LeechCraft
 {
 namespace Loaders
 {
-	DBusWrapper::DBusWrapper (const QString& service)
-	: Service_ { service }
-	, IFace_ { new QDBusInterface { service, "/org/LeechCraft/Plugin" } }
-	, Info_ { new QDBusInterface { service, "/org/LeechCraft/Info" } }
+	class InfoProxy : public QObject
+					, public IInfo
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (IInfo)
 
-	void DBusWrapper::Init (ICoreProxy_ptr proxy)
-	{
-		qDebug () << Q_FUNC_INFO;
-		Info_->call ("Init", QVariant::fromValue (proxy));
-		qDebug () << "done";
-	}
+		const QString Service_;
+		std::shared_ptr<QDBusInterface> IFace_;
 
-	void DBusWrapper::SecondInit ()
-	{
-		Info_->call ("SecondInit");
-	}
+		std::shared_ptr<QDBusInterface> Info_;
+	public:
+		explicit InfoProxy (const QString& service);
 
-	void DBusWrapper::Release ()
-	{
-		Info_->call ("Release");
-	}
-
-	QByteArray DBusWrapper::GetUniqueID () const
-	{
-		return QDBusReply<QByteArray> (Info_->call ("GetUniqueID")).value ();
-	}
-
-	QString DBusWrapper::GetName () const
-	{
-		return QDBusReply<QString> (Info_->call ("GetName")).value ();
-	}
-
-	QString DBusWrapper::GetInfo () const
-	{
-		return QDBusReply<QString> (Info_->call ("GetInfo")).value ();
-	}
-
-	QIcon DBusWrapper::GetIcon () const
-	{
-		return QDBusReply<QIcon> (Info_->call ("GetIcon")).value ();
-	}
+		void Init (ICoreProxy_ptr proxy);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+	};
 }
 }
