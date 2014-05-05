@@ -81,7 +81,7 @@ namespace Xoox
 			return;
 		}
 
-		image.save (&file, "PNG", 100);
+		image.save (&file, "PNG", 0);
 	}
 
 	QImage AvatarsStorage::GetAvatar (const QByteArray& hash) const
