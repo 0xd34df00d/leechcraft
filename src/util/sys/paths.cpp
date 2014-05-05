@@ -125,6 +125,7 @@ namespace Util
 			path = QDesktopServices::storageLocation (QDesktopServices::CacheLocation);
 			break;
 		case UserDir::LC:
+			path = QDir::home ().path () + "/.leechcraft/";
 			break;
 		}
 
