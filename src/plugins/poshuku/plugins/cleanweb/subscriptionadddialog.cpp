@@ -48,7 +48,7 @@ namespace CleanWeb
 		QDir subscrListFileDir;
 		try
 		{
-			subscrListFileDir = Util::GetUserDir ("data/poshuku/cleanweb/");
+			subscrListFileDir = Util::CreateIfNotExists ("data/poshuku/cleanweb/");
 		}
 		catch (const std::exception& e)
 		{
