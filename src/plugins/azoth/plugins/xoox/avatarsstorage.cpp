@@ -28,9 +28,10 @@
  **********************************************************************/
 
 #include "avatarsstorage.h"
-#include <util/util.h>
-#include <util/sys/paths.h>
 #include <QTimer>
+#include <QImage>
+#include <QtDebug>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -39,11 +40,13 @@ namespace Azoth
 namespace Xoox
 {
 	AvatarsStorage::AvatarsStorage (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
+	, AvatarsDir_ { Util::GetUserDir (Util::UserDir::Cache, "azoth/xoox/hashed_avatars") }
 	{
-		AvatarsDir_ = Util::CreateIfNotExists ("azoth/xoox/hashed_avatars");
+		QTimer::singleShot (30000,
+				this,
+				SLOT (collectOldAvatars ()));
 
-		QTimer::singleShot (30000, this, SLOT (collectOldAvatars ()));
 	}
 
 	/** The clients are free to not call this function if they know the avatar is
