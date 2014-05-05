@@ -30,6 +30,7 @@
 #include "avatarsstorage.h"
 #include <QTimer>
 #include <QImage>
+#include <QtConcurrentRun>
 #include <QtDebug>
 #include <util/sys/paths.h>
 
@@ -47,6 +48,16 @@ namespace Xoox
 				this,
 				SLOT (collectOldAvatars ()));
 
+		// Remove later
+		QtConcurrent::run ([] () -> void
+				{
+					auto dir = Util::CreateIfNotExists ("azoth/xoox/hashed_avatars");
+					for (const auto& file : dir.entryList (QDir::Files))
+						dir.remove (file);
+
+					dir.cdUp ();
+					dir.rmdir ("hashed_avatars");
+				});
 	}
 
 	/** The clients are free to not call this function if they know the avatar is
