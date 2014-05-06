@@ -388,6 +388,32 @@ namespace Azoth
 		Core::Instance ().SendEntity (e);
 	}
 
+	namespace
+	{
+		QString XferError2Str (TransferError error)
+		{
+			switch (error)
+			{
+			case TEAborted:
+				return TransferJobManager::tr ("Transfer aborted.");
+			case TEFileAccessError:
+				return TransferJobManager::tr ("Error accessing file.");
+			case TEFileCorruptError:
+				return TransferJobManager::tr ("File is corrupted.");
+			case TEProtocolError:
+				return TransferJobManager::tr ("Protocol error.");
+			case TENoError:
+				return TransferJobManager::tr ("No error.");
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown error"
+					<< error;
+
+			return {};
+		}
+	}
+
 	void TransferJobManager::handleXferError (TransferError error, const QString& message)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (sender ());
@@ -403,34 +429,13 @@ namespace Azoth
 
 		const QString& other = GetContactName (job->GetSourceID ());
 
-		QString str;
-		if (job->GetDirection () == TDIn)
-			str = tr ("Unable to transfer file from %1.")
-					.arg (other);
-		else
-			str = tr ("Unable to transfer file to %1.")
-					.arg (other);
+		auto str = job->GetDirection () == TDIn ?
+			tr ("Unable to transfer file from %1.")
+				.arg (other) :
+			tr ("Unable to transfer file to %1.")
+				.arg (other);
 
-		str += " ";
-
-		switch (error)
-		{
-		case TEAborted:
-			str += tr ("Transfer aborted.");
-			break;
-		case TEFileAccessError:
-			str += tr ("Error accessing file.");
-			break;
-		case TEFileCorruptError:
-			str += tr ("File is corrupted.");
-			break;
-		case TEProtocolError:
-			str += tr ("Protocol error.");
-			break;
-		case TENoError:
-			str += tr ("No error.");
-			break;
-		}
+		str += " " + XferError2Str (error);
 
 		if (!message.isEmpty ())
 			str += " " + message;
