@@ -33,6 +33,7 @@
 #include <PendingReady>
 #include <PendingAccount>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "accountregfirstpage.h"
 #include "accountwrapper.h"
 

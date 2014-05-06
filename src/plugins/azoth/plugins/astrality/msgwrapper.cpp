@@ -29,7 +29,7 @@
 
 #include "msgwrapper.h"
 #include <PendingSendMessage>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "entrywrapper.h"
 
 namespace LeechCraft
