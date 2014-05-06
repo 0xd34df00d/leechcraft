@@ -345,7 +345,8 @@ namespace Azoth
 		if (job->GetDirection () != TDIn)
 			return;
 
-		const auto& openEntity = Util::MakeEntity (QUrl::fromLocalFile (path + '/' + job->GetName ()),
+		const auto& fileUrl = QUrl::fromLocalFile (path + '/' + job->GetName ());
+		const auto& openEntity = Util::MakeEntity (fileUrl,
 				{},
 				IsDownloaded | FromUserInitiated | OnlyHandle);
 		auto opener = [openEntity] { Core::Instance ().SendEntity (openEntity); };
@@ -373,6 +374,8 @@ namespace Azoth
 				{ entry->GetEntryName (), job->GetName () });
 		auto nh = new Util::NotificationActionHandler { e, this };
 		nh->AddFunction (tr ("Open"), opener);
+		nh->AddFunction (tr ("Open externally"),
+				[fileUrl] { QDesktopServices::openUrl (fileUrl); });
 
 		Core::Instance ().SendEntity (e);
 	}
