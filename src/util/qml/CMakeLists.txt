@@ -32,6 +32,9 @@ add_library (leechcraft-util-qml SHARED
 target_link_libraries (leechcraft-util-qml
 	${QT_LIBRARIES}
 	${ADDITIONAL_LIBS}
+	leechcraft-util-gui
+	leechcraft-util-network
+	leechcraft-util-sys
 	)
 set_property (TARGET leechcraft-util-qml PROPERTY SOVERSION 0.6.65)
 install (TARGETS leechcraft-util-qml DESTINATION ${LIBDIR})
