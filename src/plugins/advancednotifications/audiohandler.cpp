@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "audiohandler.h"
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/sys/resourceloader.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

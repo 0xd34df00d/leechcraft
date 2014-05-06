@@ -61,6 +61,7 @@ extern "C"
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include "authenticator.h"
 

@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "searchtext.h"
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include "core.h"
 

@@ -30,7 +30,7 @@
 #include "util.h"
 #include <QString>
 #include <QWizard>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>

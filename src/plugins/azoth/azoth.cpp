@@ -47,6 +47,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/resourceloader.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "core.h"

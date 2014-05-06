@@ -34,7 +34,7 @@
 #include <QNetworkReply>
 #include <QMainWindow>
 #include <qjson/parser.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "picasaaccount.h"

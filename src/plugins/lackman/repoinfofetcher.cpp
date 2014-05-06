@@ -30,7 +30,7 @@
 #include "repoinfofetcher.h"
 #include <QTimer>
 #include <util/sys/paths.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "xmlparsers.h"
 

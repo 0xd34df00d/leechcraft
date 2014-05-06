@@ -32,7 +32,9 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QStandardItemModel>
+#include <QDir>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>

@@ -38,6 +38,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "gstfix.h"
 #include "playertab.h"
 #include "player.h"

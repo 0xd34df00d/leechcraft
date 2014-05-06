@@ -35,6 +35,7 @@
 #include <QtDebug>
 #include <util/models/treeitem.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "core.h"
 
 using namespace LeechCraft::Util;

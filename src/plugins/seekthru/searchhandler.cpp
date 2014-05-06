@@ -36,7 +36,7 @@
 #include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/gui/selectablebrowser.h>
 #include <util/sys/paths.h>
 #include "core.h"

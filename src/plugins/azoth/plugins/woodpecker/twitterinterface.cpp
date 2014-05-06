@@ -34,7 +34,7 @@
 #include <QDebug>
 #include <qjson/parser.h>
 #include <QtKOAuth/QtKOAuth>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 

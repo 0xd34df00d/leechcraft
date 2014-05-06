@@ -38,10 +38,12 @@
 #include <QtDebug>
 #include <QUuid>
 #include <QXmlQuery>
+#include <QFileInfo>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/passutils.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "albumsettingsdialog.h"
 #include "fotobilderservice.h"
 

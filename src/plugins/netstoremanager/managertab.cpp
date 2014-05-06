@@ -40,6 +40,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "accountsmanager.h"

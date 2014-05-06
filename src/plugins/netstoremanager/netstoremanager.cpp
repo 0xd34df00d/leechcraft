@@ -32,6 +32,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "managertab.h"

@@ -43,6 +43,7 @@
 #include <QClipboard>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>

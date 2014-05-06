@@ -33,7 +33,7 @@
 #include <QDomElement>
 #include <QDateTime>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "importwizard.h"
 #include "imhistimporterbase.h"
 

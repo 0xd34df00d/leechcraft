@@ -39,7 +39,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <QMetaMethod>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/devices/deviceroles.h>
 #include "udisks2types.h"
 

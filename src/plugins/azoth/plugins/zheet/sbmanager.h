@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QHash>
 #include <QSet>
+#include <interfaces/an/ianemitter.h>
 #include <msn/util.h>
 
 namespace MSN

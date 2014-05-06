@@ -33,7 +33,7 @@
 #include <QGraphicsObject>
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/themeimageprovider.h>

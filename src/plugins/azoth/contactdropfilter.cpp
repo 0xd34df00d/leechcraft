@@ -36,6 +36,7 @@
 #include <QFileInfo>
 #include <QBuffer>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/idatafilter.h>

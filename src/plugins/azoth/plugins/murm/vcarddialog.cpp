@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "vcarddialog.h"
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "structures.h"
 #include "photostorage.h"

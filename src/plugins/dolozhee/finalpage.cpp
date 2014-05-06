@@ -31,7 +31,8 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <QDomDocument>
-#include <util/util.h>
+#include <QFileInfo>
+#include <util/xpc/util.h>
 #include <util/sys/mimedetector.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"

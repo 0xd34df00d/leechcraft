@@ -42,7 +42,7 @@
 #include <QWindowsStyle>
 #include <QFileDialog>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>

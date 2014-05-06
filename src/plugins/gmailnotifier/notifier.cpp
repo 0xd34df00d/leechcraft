@@ -29,7 +29,7 @@
 
 #include "notifier.h"
 #include <QTextDocument>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 

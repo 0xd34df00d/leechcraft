@@ -32,7 +32,7 @@
 #include <QWebFrame>
 #include <QTextEdit>
 #include <interfaces/core/ientitymanager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {

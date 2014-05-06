@@ -37,7 +37,7 @@
 #include <QXmlQuery>
 #include <QDesktopServices>
 #include <util/sys/sysinfo.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "utils.h"

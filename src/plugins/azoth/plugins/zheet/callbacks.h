@@ -34,6 +34,7 @@
 #include <QSet>
 #include <QMap>
 #include <QFile>
+#include <interfaces/an/ianemitter.h>
 #include <msn/connection.h>
 #include <msn/notificationserver.h>
 #include <msn/externals.h>
@@ -177,7 +178,7 @@ namespace Zheet
 
 		void initialEmailNotification (int total, int unread);
 		void newEmailNotification (const QString& from, const QString& subj);
-		
+
 		void fileTransferProgress (uint sess, quint64 done, quint64 total);
 		void fileTransferFailed (uint sess);
 		void fileTransferFinished (uint sess);

@@ -39,7 +39,7 @@
 #include <qwebframe.h>
 #include <qwebelement.h>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "ruleoptiondialog.h"
 #include "lineparser.h"
 #include "core.h"

@@ -30,6 +30,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_TRANSFERMANAGER_H
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_TRANSFERMANAGER_H
 #include <QObject>
+#include <interfaces/an/ianemitter.h>
 #include <msn/util.h>
 #include <interfaces/azoth/itransfermanager.h>
 

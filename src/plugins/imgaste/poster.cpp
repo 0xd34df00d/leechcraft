@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {

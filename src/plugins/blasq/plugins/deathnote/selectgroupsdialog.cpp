@@ -36,7 +36,7 @@
 #include <QXmlQuery>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/blasq/iservice.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include "fotobilderaccount.h"
 

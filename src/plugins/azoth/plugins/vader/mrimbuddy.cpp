@@ -32,7 +32,7 @@
 #include <QImage>
 #include <QAction>
 #include <QInputDialog>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/azothutil.h>
 #include "proto/headers.h"
 #include "proto/connection.h"

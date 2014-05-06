@@ -34,6 +34,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/tags/tagscompleter.h>
 #include "core.h"
 #include "todomanager.h"

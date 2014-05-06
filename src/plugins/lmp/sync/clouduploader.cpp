@@ -31,7 +31,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <QFileInfo>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "../core.h"
 
 namespace LeechCraft

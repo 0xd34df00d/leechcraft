@@ -43,7 +43,7 @@
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/itagsfetcher.h>

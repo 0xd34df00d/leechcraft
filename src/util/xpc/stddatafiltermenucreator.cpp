@@ -33,7 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
-#include "../util.h"
+#include "util.h"
 
 namespace LeechCraft
 {

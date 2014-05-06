@@ -31,7 +31,7 @@
 #include "ljaccount.h"
 #include <QtDebug>
 #include <util/xpc/passutils.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include "core.h"
 #include "ljaccountconfigurationwidget.h"

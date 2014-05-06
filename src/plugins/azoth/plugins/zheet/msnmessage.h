@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
+#include <interfaces/an/ianemitter.h>
 
 namespace MSN
 {

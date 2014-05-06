@@ -43,7 +43,7 @@
 #include <QTextBrowser>
 #include <QDesktopWidget>
 #include <util/xpc/defaulthookproxy.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
 #include <util/gui/findnotificationwk.h>

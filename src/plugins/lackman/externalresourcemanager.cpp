@@ -30,7 +30,7 @@
 #include "externalresourcemanager.h"
 #include <stdexcept>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/sys/paths.h>
 
 namespace LeechCraft

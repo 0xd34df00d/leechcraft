@@ -31,7 +31,7 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>

@@ -41,6 +41,7 @@
 #include <QXmppDiscoveryManager.h>
 #include <QXmppGlobal.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxmessage.h"

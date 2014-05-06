@@ -31,7 +31,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QXmppDiscoveryManager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "clientconnection.h"
 #include "util.h"

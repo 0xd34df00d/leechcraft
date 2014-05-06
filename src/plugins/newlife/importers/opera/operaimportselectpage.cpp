@@ -37,9 +37,10 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QUrl>
+#include <QDir>
 #include <QDateTime>
 #include <QXmlStreamWriter>
-#include <util/util.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {
@@ -99,7 +100,7 @@ namespace Importers
 			QFile oldHistoryFile (path);
 			if (!oldHistoryFile.exists () || !oldHistoryFile.open (QIODevice::ReadOnly))
 				continue;
-			
+
 			while (!oldHistoryFile.atEnd ())
 			{
 				const auto& line = oldHistoryFile.readLine ().trimmed ();
@@ -114,7 +115,7 @@ namespace Importers
 				}
 			}
 		}
-		
+
 		{
 			QString historyDbPath;
 #ifdef Q_OS_WIN
@@ -152,7 +153,7 @@ namespace Importers
 			QSqlDatabase::database ("Import history connection").close ();
 			QSqlDatabase::removeDatabase ("Import history connection");
 		}
-		
+
 		return history;
 	}
 
@@ -171,7 +172,7 @@ namespace Importers
 			QFile oldBookmarksFile (path);
 			if (!oldBookmarksFile.exists () || !oldBookmarksFile.open (QIODevice::ReadOnly))
 				continue;
-				
+
 			while (!oldBookmarksFile.atEnd ())
 			{
 				const auto& line = oldBookmarksFile.readLine ().trimmed ();
@@ -187,13 +188,13 @@ namespace Importers
 				}
 			}
 		}
-		
+
 		{
 			QString bookmarksDbPath;
 #ifdef Q_OS_WIN
 			bookmarksDbPath = QDir::homePath () + "/Application Data/Opera Software/Opera Stable/favorites.db";
 #endif
-			
+
 			if (bookmarksDbPath.isEmpty () || !QFileInfo (bookmarksDbPath).exists ())
 				return bookmarks;
 
@@ -221,7 +222,7 @@ namespace Importers
 					bookmarks.push_back (record);
 				}
 			}
-			
+
 			QSqlDatabase::database ("Import bookmarks connection").close ();
 			QSqlDatabase::removeDatabase ("Import bookmarks connection");
 		}

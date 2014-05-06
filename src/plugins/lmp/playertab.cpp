@@ -38,7 +38,7 @@
 #include <QListWidget>
 #include <QTabBar>
 #include <QMessageBox>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>

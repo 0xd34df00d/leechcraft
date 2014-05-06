@@ -33,7 +33,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
