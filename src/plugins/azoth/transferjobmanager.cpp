@@ -229,6 +229,7 @@ namespace Azoth
 
 		HandleJob (jobObj);
 
+		Job2SavePath_ [job] = path;
 		job->Accept (path);
 	}
 
@@ -340,10 +341,11 @@ namespace Azoth
 
 	void TransferJobManager::HandleTaskFinished (ITransferJob *job)
 	{
+		const auto& path = Job2SavePath_.take (job);
 		if (job->GetDirection () != TDIn)
 			return;
 
-		const auto& openEntity = Util::MakeEntity (QUrl::fromLocalFile (job->GetName ()),
+		const auto& openEntity = Util::MakeEntity (QUrl::fromLocalFile (path + '/' + job->GetName ()),
 				{},
 				IsDownloaded | FromUserInitiated | OnlyHandle);
 		auto opener = [openEntity] { Core::Instance ().SendEntity (openEntity); };

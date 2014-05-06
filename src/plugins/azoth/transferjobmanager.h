@@ -62,6 +62,7 @@ namespace Azoth
 		ObjectDictionary_t Object2Progress_;
 
 		QHash<QString, QObjectList> Entry2Incoming_;
+		QHash<ITransferJob*, QString> Job2SavePath_;
 
 		QModelIndex Selected_;
 		QToolBar *ReprBar_;
