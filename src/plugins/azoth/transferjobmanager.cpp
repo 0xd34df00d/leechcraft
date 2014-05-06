@@ -372,7 +372,7 @@ namespace Azoth
 				"org.LC.Plugins.Azoth.IncomingFileFinished/" + entry->GetEntryID () + "/" + job->GetName (),
 				{ entry->GetEntryName (), job->GetName () });
 		auto nh = new Util::NotificationActionHandler { e, this };
-		nh->AddFunction ("Open file", opener);
+		nh->AddFunction (tr ("Open"), opener);
 
 		Core::Instance ().SendEntity (e);
 	}
@@ -421,8 +421,8 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncFile;
 
 		auto nh = new Util::NotificationActionHandler { e, this };
-		nh->AddFunction ("Accept", [this, jobObj] () { AcceptJob (jobObj, {}); });
-		nh->AddFunction ("Deny", [this, jobObj] () { DenyJob (jobObj); });
+		nh->AddFunction (tr ("Accept"), [this, jobObj] () { AcceptJob (jobObj, {}); });
+		nh->AddFunction (tr ("Deny"), [this, jobObj] () { DenyJob (jobObj); });
 		nh->AddDependentObject (jobObj);
 
 		Core::Instance ().SendEntity (e);
