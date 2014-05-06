@@ -342,10 +342,12 @@ namespace Azoth
 		if (job->GetDirection () != TDIn)
 			return;
 
-		const auto& e = Util::MakeEntity (QUrl::fromLocalFile (job->GetName ()),
+		const auto& openEntity = Util::MakeEntity (QUrl::fromLocalFile (job->GetName ()),
 				{},
 				IsDownloaded | FromUserInitiated | OnlyHandle);
-		Core::Instance ().SendEntity (e);
+		auto opener = [openEntity] { Core::Instance ().SendEntity (openEntity); };
+		if (XmlSettingsManager::Instance ().property ("AutoOpenIncomingFiles").toBool ())
+			opener ();
 	}
 
 	void TransferJobManager::handleFileOffered (QObject *jobObj)
