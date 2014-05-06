@@ -39,6 +39,7 @@
 #include <interfaces/an/constants.h>
 #include <util/util.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/xpc/util.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
@@ -348,6 +349,30 @@ namespace Azoth
 		auto opener = [openEntity] { Core::Instance ().SendEntity (openEntity); };
 		if (XmlSettingsManager::Instance ().property ("AutoOpenIncomingFiles").toBool ())
 			opener ();
+
+		const auto entry = GetContact (job->GetSourceID ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown contact for"
+					<< job->GetSourceID ();
+			return;
+		}
+
+		auto e = Util::MakeAN ("Azoth",
+				tr ("Received file from %1: %2.")
+					.arg (entry->GetEntryName ())
+					.arg (QFileInfo { job->GetName () }.fileName ()),
+				PInfo_,
+				"org.LeechCraft.Azoth",
+				AN::CatDownloads,
+				AN::TypeDownloadFinished,
+				"org.LC.Plugins.Azoth.IncomingFileFinished/" + entry->GetEntryID () + "/" + job->GetName (),
+				{ entry->GetEntryName (), job->GetName () });
+		auto nh = new Util::NotificationActionHandler { e, this };
+		nh->AddFunction ("Open file", opener);
+
+		Core::Instance ().SendEntity (e);
 	}
 
 	void TransferJobManager::handleFileOffered (QObject *jobObj)
