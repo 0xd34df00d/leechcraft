@@ -82,6 +82,8 @@ namespace Azoth
 	private:
 		QString CheckSavePath (QString);
 		void HandleDeoffer (QObject*);
+
+		void HandleTaskFinished (ITransferJob*);
 	private slots:
 		void handleFileOffered (QObject*);
 		void handleXferError (TransferError, const QString&);

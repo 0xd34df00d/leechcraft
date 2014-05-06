@@ -337,6 +337,17 @@ namespace Azoth
 		}
 	}
 
+	void TransferJobManager::HandleTaskFinished (ITransferJob *job)
+	{
+		if (job->GetDirection () != TDIn)
+			return;
+
+		const auto& e = Util::MakeEntity (QUrl::fromLocalFile (job->GetName ()),
+				{},
+				IsDownloaded | FromUserInitiated | OnlyHandle);
+		Core::Instance ().SendEntity (e);
+	}
+
 	void TransferJobManager::handleFileOffered (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
@@ -491,27 +502,22 @@ namespace Azoth
 			HandleDeoffer (sender ());
 
 		if (state != TSFinished)
+		{
 			Object2Status_ [sender ()]->setText (status);
+
+			const Entity& e = Util::MakeNotification ("Azoth",
+					msg,
+					PInfo_);
+			Core::Instance ().SendEntity (e);
+		}
 		else
 		{
 			SummaryModel_->removeRow (Object2Status_ [sender ()]->row ());
 			Object2Status_.remove (sender ());
 			Object2Progress_.remove (sender ());
 			sender ()->deleteLater ();
-		}
 
-		const Entity& e = Util::MakeNotification ("Azoth",
-				msg,
-				PInfo_);
-		Core::Instance ().SendEntity (e);
-
-		if (job->GetDirection () == TDIn &&
-				state == TSFinished)
-		{
-			const Entity& e = Util::MakeEntity (QUrl::fromLocalFile (job->GetName ()),
-					{},
-					IsDownloaded | FromUserInitiated | OnlyHandle);
-			Core::Instance ().SendEntity (e);
+			HandleTaskFinished (job);
 		}
 	}
 
