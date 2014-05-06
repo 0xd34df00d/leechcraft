@@ -31,7 +31,7 @@ add_subdirectory (xdg)
 add_subdirectory (xpc)
 add_subdirectory (xsd)
 
-if (WITH_X11)
+if (WITH_X11 AND NOT APPLE)
 	add_subdirectory (x11)
 	set (LEECHCRAFT_UTIL_LIBRARIES leechcraft-util-x11)
 endif ()
