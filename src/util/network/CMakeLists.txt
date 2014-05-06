@@ -16,6 +16,7 @@ add_library (leechcraft-util-network SHARED
 	)
 target_link_libraries (leechcraft-util-network
 	${QT_LIBRARIES}
+	leechcraft-util-sys
 	)
 set_property (TARGET leechcraft-util-network PROPERTY SOVERSION 0.6.65)
 install (TARGETS leechcraft-util-network DESTINATION ${LIBDIR})
