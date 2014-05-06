@@ -1490,11 +1490,7 @@ namespace Azoth
 				{
 					{
 						"org.LC.Plugins.Azoth.SourceID",
-						ANStringFieldValue
-						{
-							QRegExp { entry->GetEntryID (), Qt::CaseSensitive, QRegExp::FixedString },
-							true
-						}
+						ANStringFieldValue { entry->GetEntryID () }
 					}
 				});
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
