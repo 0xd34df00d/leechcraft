@@ -384,7 +384,7 @@ namespace Azoth
 		BuildNotification (e, entry);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
-		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = (QStringList (entry->GetEntryName ()) << job->GetName ());
+		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList { entry->GetEntryName (), job->GetName () };
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = job->GetComment ().isEmpty () ?
 				tr ("Incoming file") :
@@ -392,9 +392,8 @@ namespace Azoth
 					.arg ("<br />" + job->GetComment ());
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncFile;
 
-		Util::NotificationActionHandler *nh =
-				new Util::NotificationActionHandler (e, this);
-		nh->AddFunction ("Accept", [this, jobObj] () { AcceptJob (jobObj, QString ()); });
+		auto nh = new Util::NotificationActionHandler { e, this };
+		nh->AddFunction ("Accept", [this, jobObj] () { AcceptJob (jobObj, {}); });
 		nh->AddFunction ("Deny", [this, jobObj] () { DenyJob (jobObj); });
 		nh->AddDependentObject (jobObj);
 
