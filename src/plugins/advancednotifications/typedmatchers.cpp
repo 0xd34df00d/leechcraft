@@ -75,7 +75,7 @@ namespace AdvancedNotifications
 	}
 
 	StringLikeMatcher::StringLikeMatcher (const QStringList& variants)
-	: Value_ { {}, true }
+	: Value_ { {} }
 	, Allowed_ (variants)
 	{
 	}
