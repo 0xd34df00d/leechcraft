@@ -40,6 +40,7 @@
 #include <util/xpc/stdanfields.h>
 #include "core.h"
 #include "typedmatchers.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -239,6 +240,9 @@ namespace AdvancedNotifications
 		RulesModel_->insertRow (0, RuleToRow (rule));
 
 		SaveSettings ();
+
+		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+		emit focusOnRule (RulesModel_->index (0, 0));
 	}
 
 	void RulesManager::LoadDefaultRules (int version)
