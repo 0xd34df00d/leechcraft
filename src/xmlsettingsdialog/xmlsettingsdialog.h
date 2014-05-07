@@ -259,6 +259,7 @@ namespace Util
 		void handleCustomDestroyed ();
 		void handleMoreThisStuffRequested ();
 		void handlePushButtonReleased ();
+		void handleShowPageRequested (Util::BaseSettingsManager*, const QString&);
 	Q_SIGNALS:
 		XMLSETTINGSMANAGER_API void pushButtonClicked (const QString&);
 		XMLSETTINGSMANAGER_API void moreThisStuffRequested (const QString&);
