@@ -812,11 +812,11 @@ namespace LMP
 		CurrentStation_.reset ();
 	}
 
-	void Player::EmitStateChange ()
+	void Player::EmitStateChange (SourceState state)
 	{
 		QString stateStr;
 		QString hrStateStr;
-		switch (Source_->GetState ())
+		switch (state)
 		{
 		case SourceState::Paused:
 			stateStr = "Paused";
@@ -1382,7 +1382,7 @@ namespace LMP
 
 		SavePlayState (false);
 
-		EmitStateChange ();
+		EmitStateChange (state);
 	}
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)
@@ -1412,7 +1412,7 @@ namespace LMP
 
 		handleMetadata ();
 
-		EmitStateChange ();
+		EmitStateChange (Source_->GetState ());
 	}
 
 	void Player::handleMetadata ()
@@ -1439,7 +1439,7 @@ namespace LMP
 
 		LastPhononMediaInfo_ = info;
 
-		EmitStateChange ();
+		EmitStateChange (Source_->GetState ());
 	}
 
 	void Player::handleSourceError (const QString& sourceText, SourceError error)
