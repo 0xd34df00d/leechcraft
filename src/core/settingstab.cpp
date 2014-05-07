@@ -144,11 +144,11 @@ namespace LeechCraft
 
 		const auto& obj2groups = BuildGroups (settables);
 		QSet<QPair<QString, QString>> allGroups;
-		Q_FOREACH (auto list, obj2groups.values ())
+		for (const auto& list : obj2groups)
 			allGroups += QSet<QPair<QString, QString>>::fromList (list);
 
 		QMap<QString, QGroupBox*> group2box;
-		Q_FOREACH (auto pair, allGroups)
+		for (const auto& pair : allGroups)
 		{
 			QGroupBox *box = new QGroupBox (pair.first);
 			box->setLayout (new Util::FlowLayout);
@@ -165,17 +165,17 @@ namespace LeechCraft
 		if (keys.removeAll ("LeechCraft"))
 			keys.prepend ("LeechCraft");
 
-		Q_FOREACH (const QString& key, keys)
+		for (const auto& key : keys)
 			Ui_.ListContents_->layout ()->addWidget (group2box [key]);
 
 		QMap<QString, QList<QToolButton*>> group2buttons;
-		Q_FOREACH (QObject *obj, settables)
+		for (auto obj : settables)
 		{
 			IInfo *ii = qobject_cast<IInfo*> (obj);
 			const QIcon& icon = ii->GetIcon ().isNull () ?
 					QIcon ("lcicons:/resources/images/defaultpluginicon.svg") :
 					ii->GetIcon ();
-			Q_FOREACH (auto pair, obj2groups [obj])
+			for (const auto& pair : obj2groups [obj])
 			{
 				QToolButton *butt = new QToolButton;
 				butt->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
