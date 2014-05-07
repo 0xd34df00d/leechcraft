@@ -197,6 +197,15 @@ namespace LeechCraft
 				group2box [pair.first]->layout ()->addWidget (butt);
 				group2buttons [pair.first] << butt;
 			}
+
+			const auto ihs = qobject_cast<IHaveSettings*> (obj);
+			const auto& dialog = ihs->GetSettingsDialog ();
+			SettingsManager2SettableRoot_ [dialog->GetManagerObject ()] = obj;
+
+			connect (dialog.get (),
+					SIGNAL (showPageRequested (Util::BaseSettingsManager*, QString)),
+					this,
+					SLOT (handleShowPageRequested (Util::BaseSettingsManager*)));
 		}
 
 		qobject_cast<QBoxLayout*> (Ui_.ListContents_->layout ())->addStretch ();
@@ -424,6 +433,21 @@ namespace LeechCraft
 		}
 
 		handleBackRequested ();
+		showSettingsFor (obj);
+	}
+
+	void SettingsTab::handleShowPageRequested (Util::BaseSettingsManager *bsm)
+	{
+		const auto obj = SettingsManager2SettableRoot_.value (bsm);
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown object for manager"
+					<< bsm;
+			return;
+		}
+
+		Core::Instance ().GetCoreInstanceObject ()->TabOpenRequested (GetTabClassInfo ().TabClass_);
 		showSettingsFor (obj);
 	}
 
