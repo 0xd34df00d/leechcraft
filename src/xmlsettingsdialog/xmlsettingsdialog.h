@@ -262,6 +262,7 @@ namespace Util
 	Q_SIGNALS:
 		XMLSETTINGSMANAGER_API void pushButtonClicked (const QString&);
 		XMLSETTINGSMANAGER_API void moreThisStuffRequested (const QString&);
+		XMLSETTINGSMANAGER_API void showPageRequested (Util::BaseSettingsManager*, const QString&);
 	};
 
 	typedef std::shared_ptr<XmlSettingsDialog> XmlSettingsDialog_ptr;

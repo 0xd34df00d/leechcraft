@@ -150,6 +150,11 @@ namespace Util
 		obj->installEventFilter (this);
 
 		UpdateXml (true);
+
+		connect (obj,
+				SIGNAL (showPageRequested (Util::BaseSettingsManager*, QString)),
+				this,
+				SIGNAL (showPageRequested (Util::BaseSettingsManager*, QString)));
 	}
 
 	BaseSettingsManager* XmlSettingsDialog::GetManagerObject () const
