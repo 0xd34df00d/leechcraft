@@ -88,6 +88,11 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleItemSelected (QModelIndex, QModelIndex)));
 
+		connect (rm,
+				SIGNAL (focusOnRule (QModelIndex)),
+				this,
+				SLOT (selectRule (QModelIndex)));
+
 		const auto& cat2hr = RM_->GetCategory2HR ();
 		for (const QString& cat : cat2hr.keys ())
 			Ui_.EventCat_->addItem (cat2hr [cat], cat);
@@ -358,6 +363,13 @@ namespace AdvancedNotifications
 					Qt::Unchecked);
 
 		Ui_.ColorButton_->SetColor (rule.GetColor ());
+	}
+
+	void NotificationRulesWidget::selectRule (const QModelIndex& index)
+	{
+		Ui_.RulesTree_->selectionModel ()->select (index,
+				QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
+		Ui_.RulesTree_->setCurrentIndex (index);
 	}
 
 	void NotificationRulesWidget::on_AddRule__released ()

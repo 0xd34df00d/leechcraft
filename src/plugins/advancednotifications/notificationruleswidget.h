@@ -73,6 +73,7 @@ namespace AdvancedNotifications
 		QString GetArgumentText ();
 	private slots:
 		void handleItemSelected (const QModelIndex&, const QModelIndex&);
+		void selectRule (const QModelIndex&);
 
 		void on_AddRule__released ();
 		void on_UpdateRule__released ();

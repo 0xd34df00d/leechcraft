@@ -83,6 +83,8 @@ namespace AdvancedNotifications
 		QVariant getRulesModel () const;
 	private slots:
 		void handleItemChanged (QStandardItem*);
+	signals:
+		void focusOnRule (const QModelIndex&);
 	};
 }
 }
