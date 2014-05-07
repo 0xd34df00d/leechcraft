@@ -43,7 +43,10 @@
 #include <QSortFilterProxyModel>
 #include <QTimer>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -56,7 +59,6 @@
 #include "util.h"
 #include "palettefixerfilter.h"
 #include "engine/sourceobject.h"
-#include <interfaces/core/iiconthememanager.h>
 
 namespace LeechCraft
 {
@@ -535,6 +537,12 @@ namespace LMP
 				this,
 				SLOT (showAlbumArt ()));
 
+		TrackActions_ = new QMenu (tr ("Track actions"));
+		TrackActions_->addAction (tr ("Perform action after this track starts..."),
+				this, SLOT (initPerformAfterTrackStart ()));
+		TrackActions_->addAction (tr ("Perform action after this track stops..."),
+				this, SLOT (initPerformAfterTrackStop ()));
+
 		ActionToggleSearch_ = new QAction (tr ("Toggle search field"), Ui_.Playlist_);
 		ActionToggleSearch_->setShortcut (QKeySequence::Find);
 		ActionToggleSearch_->setCheckable (true);
@@ -629,6 +637,8 @@ namespace LMP
 			if (oneShotPosVar.toInt () < Player_->GetOneShotQueueSize () - 1)
 				menu->addAction (ActionMoveOneShotDown_);
 		}
+
+		menu->addMenu (TrackActions_);
 
 		menu->addSeparator ();
 
@@ -812,6 +822,67 @@ namespace LMP
 		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 
 		ShowAlbumArt (info.LocalPath_, QCursor::pos ());
+	}
+
+	namespace
+	{
+		void EmitStateRule (const QModelIndex& index, const QString& state, const QString& nameTempl)
+		{
+			const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
+
+			auto url = info.Additional_.value ("URL").toUrl ();
+			if (url.isEmpty ())
+				url = QUrl::fromLocalFile (info.LocalPath_);
+
+			const auto& e = Util::MakeANRule (nameTempl
+						.arg (info.Title_)
+						.arg (info.Artist_),
+					"org.LeechCraft.LMP",
+					AN::CatMediaPlayer,
+					{ AN::TypeMediaPlaybackStatus },
+					AN::NotifySingleShot,
+					{
+						{
+							AN::Field::MediaPlaybackStatus,
+							ANStringFieldValue { state }
+						},
+						{
+							AN::Field::MediaArtist,
+							ANStringFieldValue { info.Artist_ }
+						},
+						{
+							AN::Field::MediaAlbum,
+							ANStringFieldValue { info.Album_ }
+						},
+						{
+							AN::Field::MediaTitle,
+							ANStringFieldValue { info.Title_ }
+						},
+						{
+							AN::Field::MediaLength,
+							ANIntFieldValue { info.Length_, ANIntFieldValue::OEqual }
+						},
+						{
+							AN::Field::MediaPlayerURL,
+							ANStringFieldValue { url.toEncoded () }
+						}
+					});
+			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		}
+	}
+
+	void PlaylistWidget::initPerformAfterTrackStart ()
+	{
+		EmitStateRule (Ui_.Playlist_->currentIndex (),
+				"Playing",
+				 tr ("Perform when %1 by %2 starts playing"));
+	}
+
+	void PlaylistWidget::initPerformAfterTrackStop ()
+	{
+		EmitStateRule (Ui_.Playlist_->currentIndex (),
+				"Stopped",
+				tr ("Perform when %1 by %2 stops playing"));
 	}
 
 	void PlaylistWidget::handleMoveUp ()
