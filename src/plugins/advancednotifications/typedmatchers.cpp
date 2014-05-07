@@ -323,6 +323,9 @@ namespace AdvancedNotifications
 
 	QString IntMatcher::GetHRDescription () const
 	{
+		if (Value_.Ops_ == ANIntFieldValue::OEqual)
+			return QObject::tr ("equals to %1").arg (Value_.Boundary_);
+
 		QString op;
 		if ((Value_.Ops_ & ANIntFieldValue::OGreater))
 			op += ">";
