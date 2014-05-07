@@ -178,21 +178,13 @@ namespace AdvancedNotifications
 	{
 		QList<ANFieldData> GetPluginFields (const QByteArray& pluginId)
 		{
-			QList<ANFieldData> fields;
 			if (pluginId.isEmpty ())
-				return Util::GetStdANFields ({});
-			else
-			{
-				auto pObj = Core::Instance ().GetProxy ()->
-						GetPluginsManager ()->GetPluginByID (pluginId);
-				auto iae = qobject_cast<IANEmitter*> (pObj);
-				if (!iae)
-					qWarning () << Q_FUNC_INFO
-							<< pObj
-							<< "doesn't implement IANEmitter";
-				else
-					return iae->GetANFields ();
-			}
+				return {};
+
+			auto pObj = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetPluginByID (pluginId);
+			if (auto iae = qobject_cast<IANEmitter*> (pObj))
+				return iae->GetANFields ();
 
 			return {};
 		}
@@ -202,7 +194,7 @@ namespace AdvancedNotifications
 	{
 		auto fieldName = match.GetFieldName ();
 
-		const auto& fields = GetPluginFields (match.GetPluginID ().toUtf8 ());
+		const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.GetPluginID ().toUtf8 ());
 
 		const auto pos = std::find_if (fields.begin (), fields.end (),
 				[&fieldName] (decltype (fields.front ()) field) { return field.ID_ == fieldName; });
