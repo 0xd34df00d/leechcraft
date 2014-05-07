@@ -37,6 +37,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <util/xpc/stdanfields.h>
 #include "core.h"
 #include "typedmatchers.h"
 
@@ -210,23 +211,28 @@ namespace AdvancedNotifications
 			}
 		}
 
+		auto stdFieldData = Util::GetStdANFields (category);
+		for (const auto& type : types)
+			stdFieldData += Util::GetStdANFields (type);
+
 		if (auto iane = qobject_cast<IANEmitter*> (plugin))
 			for (const auto& field : iane->GetANFields ())
 			{
 				qDebug () << "testing" << field.EventTypes_ << "against" << typeSet;
-				if (field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
-					continue;
+				if (!field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
+					stdFieldData << field;
+			}
 
-				if (e.Additional_.contains (field.ID_))
-				{
-					const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
-					valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
+		for (const auto& field : stdFieldData)
+			if (e.Additional_.contains (field.ID_))
+			{
+				const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
+				valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
 
-					FieldMatch fieldMatch (field.Type_, valMatcher);
-					fieldMatch.SetPluginID (sender);
-					fieldMatch.SetFieldName (field.ID_);
-					rule.AddFieldMatch (fieldMatch);
-				}
+				FieldMatch fieldMatch (field.Type_, valMatcher);
+				fieldMatch.SetPluginID (sender);
+				fieldMatch.SetFieldName (field.ID_);
+				rule.AddFieldMatch (fieldMatch);
 			}
 
 		Rules_.prepend (rule);
