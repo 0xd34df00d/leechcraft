@@ -59,14 +59,6 @@ namespace OTRoid
 	{
 	}
 
-	void FPManager::ReloadAll ()
-	{
-		Account2User2Fp_.clear ();
-		Model_->clear ();
-
-		HandleNew (nullptr, nullptr, nullptr, nullptr);
-	}
-
 	namespace
 	{
 		QStandardItem* MakeAccountItem (IProxyObject *proxy, const QString& accId)
@@ -171,6 +163,18 @@ namespace OTRoid
 	FPInfos_t FPManager::GetFingerprints (const QString& accId, const QString& userId) const
 	{
 		return Account2User2Fp_.value (accId).Entries_.value (userId).FPs_;
+	}
+
+	void FPManager::reloadAll ()
+	{
+		Account2User2Fp_.clear ();
+		Model_->clear ();
+
+		const int count = HandleNew (nullptr, nullptr, nullptr, nullptr);
+		qDebug () << Q_FUNC_INFO
+				<< "reloaded"
+				<< count
+				<< "fps";
 	}
 }
 }

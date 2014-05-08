@@ -79,10 +79,11 @@ namespace OTRoid
 	public:
 		FPManager (const OtrlUserState, IProxyObject*, QObject* = 0);
 
-		void ReloadAll ();
 		int HandleNew (const char*, const char*, const char*, unsigned char [20]);
 
 		FPInfos_t GetFingerprints (const QString& accId, const QString& userId) const;
+	public slots:
+		void reloadAll ();
 	};
 }
 }
