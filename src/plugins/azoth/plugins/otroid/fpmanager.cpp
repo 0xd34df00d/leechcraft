@@ -77,6 +77,7 @@ namespace OTRoid
 
 			auto item = new QStandardItem { acc->GetAccountName () };
 			item->setEditable (false);
+			item->setData (FPManager::TypeAcc, FPManager::RoleType);
 			// TODO icon
 
 			return item;
@@ -104,7 +105,10 @@ namespace OTRoid
 				new QStandardItem { "0" }
 			};
 			for (auto item : result)
+			{
 				item->setEditable (false);
+				item->setData (FPManager::TypeEntry, FPManager::RoleType);
+			}
 			return result;
 		}
 	}
@@ -161,6 +165,7 @@ namespace OTRoid
 
 				auto fpItem = new QStandardItem { fpHashStr };
 				fpItem->setEditable (false);
+				fpItem->setData (FPManager::TypeFP, FPManager::RoleType);
 				entryInfo.EntryItems_.at (0)->appendRow (fpItem);
 			}
 			entryInfo.EntryItems_.at (ColumnKeysCount)->setText (QString::number (fpCount));

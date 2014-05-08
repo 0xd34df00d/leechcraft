@@ -87,6 +87,18 @@ namespace OTRoid
 			ColumnKeysCount
 		};
 	public:
+		enum Role
+		{
+			RoleType = Qt::UserRole + 1
+		};
+
+		enum Type
+		{
+			TypeAcc,
+			TypeEntry,
+			TypeFP
+		};
+
 		FPManager (const OtrlUserState, IProxyObject*, QObject* = 0);
 
 		int HandleNew (const char*, const char*, const char*, unsigned char [20]);
