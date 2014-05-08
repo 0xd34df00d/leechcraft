@@ -55,6 +55,7 @@ class ICLEntry;
 namespace OTRoid
 {
 	class Authenticator;
+	class FPManager;
 	enum class SmpMethod;
 
 	class Plugin : public QObject
@@ -65,6 +66,8 @@ namespace OTRoid
 		Q_INTERFACES (IInfo IPlugin2)
 
 		IProxyObject *AzothProxy_;
+
+		FPManager *FPManager_;
 
 		OtrlUserState UserState_;
 		OtrlMessageAppOps OtrOps_;
@@ -102,6 +105,8 @@ namespace OTRoid
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		FPManager* GetFPManager () const;
 
 		int IsLoggedIn (const QString& accId, const QString& entryId);
 		void InjectMsg (const QString& accId, const QString& entryId,

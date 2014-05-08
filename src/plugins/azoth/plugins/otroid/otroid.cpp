@@ -64,6 +64,7 @@ extern "C"
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include "authenticator.h"
+#include "fpmanager.h"
 
 namespace LeechCraft
 {
@@ -210,7 +211,7 @@ namespace OTRoid
 #endif
 
 		void HandleNewFingerprint (void *opData, OtrlUserState,
-				const char *accountname, const char*,
+				const char *accountname, const char *protoname,
 				const char *username, unsigned char fingerprint [20])
 		{
 			char fpHash [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
@@ -225,6 +226,8 @@ namespace OTRoid
 			plugin->InjectMsg (QString::fromUtf8 (accountname),
 					QString::fromUtf8 (username),
 					msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+
+			plugin->GetFPManager ()->HandleNew (accountname, protoname, username, fingerprint);
 		}
 
 		void HandleGoneSecure (void *opData, ConnContext *context)
@@ -271,6 +274,9 @@ namespace OTRoid
 #if OTRL_VERSION_MAJOR >= 4
 		otrl_instag_read (UserState_, GetOTRFilename ("instags").constData ());
 #endif
+
+		FPManager_ = new FPManager (UserState_);
+		FPManager_->ReloadAll ();
 
 		memset (&OtrOps_, 0, sizeof (OtrOps_));
 		OtrOps_.policy = [] (void*, ConnContext*) { return OtrlPolicy { OTRL_POLICY_DEFAULT }; };
@@ -363,6 +369,11 @@ namespace OTRoid
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
+	}
+
+	FPManager* Plugin::GetFPManager () const
+	{
+		return FPManager_;
 	}
 
 	int Plugin::IsLoggedIn (const QString& accId, const QString& entryId)
