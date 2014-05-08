@@ -124,7 +124,6 @@ namespace OTRoid
 		void Notify (const QString& accId, const QString& entryId,
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
-		void WriteFingerprints ();
 		QString GetAccountName (const QString& accId);
 		QString GetVisibleEntryName (const QString& accId, const QString& entryId);
 
@@ -160,6 +159,8 @@ namespace OTRoid
 				QObject *chatTab,
 				QObject *message);
 	private slots:
+		void writeFingerprints ();
+
 		void handleOtrAction ();
 #if OTRL_VERSION_MAJOR >= 4
 		void handleAuthRequested ();

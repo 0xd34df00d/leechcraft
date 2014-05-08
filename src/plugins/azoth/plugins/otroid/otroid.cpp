@@ -294,7 +294,7 @@ namespace OTRoid
 		OtrOps_.update_context_list = [] (void*) {};
 		OtrOps_.new_fingerprint = &OTR::HandleNewFingerprint;
 		OtrOps_.write_fingerprints = [] (void *opData)
-				{ static_cast<Plugin*> (opData)->WriteFingerprints (); };
+				{ static_cast<Plugin*> (opData)->writeFingerprints (); };
 		OtrOps_.account_name = [] (void *opData, const char *acc, const char*) -> const char*
 				{
 					const auto& name = static_cast<Plugin*> (opData)->
@@ -452,12 +452,6 @@ namespace OTRoid
 			text += "<br />" + sec;
 
 		emit gotEntity (Util::MakeNotification (title, text, prio));
-	}
-
-	void Plugin::WriteFingerprints ()
-	{
-		otrl_privkey_write_fingerprints (UserState_,
-				GetOTRFilename ("fingerprints").constData ());
 	}
 
 	QString Plugin::GetAccountName (const QString& accId)
@@ -958,6 +952,12 @@ namespace OTRoid
 		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accId.constData (),
 					OTRL_POLICY_DEFAULT), free);
 		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::DOut);
+	}
+
+	void Plugin::writeFingerprints ()
+	{
+		otrl_privkey_write_fingerprints (UserState_,
+				GetOTRFilename ("fingerprints").constData ());
 	}
 
 	void Plugin::handleOtrAction ()
