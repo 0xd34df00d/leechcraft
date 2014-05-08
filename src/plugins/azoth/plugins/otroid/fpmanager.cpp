@@ -129,8 +129,8 @@ namespace OTRoid
 					strcmp (account, context->accountname)))
 				continue;
 
-			const auto& accStr = QString::fromUtf8 (account);
-			const auto& userStr = QString::fromUtf8 (user);
+			const auto& accStr = QString::fromUtf8 (context->accountname);
+			const auto& userStr = QString::fromUtf8 (context->username);
 
 			auto& accInfo = Account2User2Fp_ [accStr];
 			if (!accInfo.AccItem_)
