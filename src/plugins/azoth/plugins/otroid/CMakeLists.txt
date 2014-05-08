@@ -19,6 +19,7 @@ set (OTROID_SRCS
 	otroid.cpp
 	authenticator.cpp
 	initiateauthdialog.cpp
+	fpmanager.cpp
 	)
 set (OTROID_FORMS
 	initiateauthdialog.ui
