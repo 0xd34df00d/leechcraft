@@ -63,8 +63,10 @@ extern "C"
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "authenticator.h"
 #include "fpmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -263,6 +265,9 @@ namespace OTRoid
 	{
 		Util::InstallTranslator ("azoth_otroid");
 
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothotroidsettings.xml");
+
 		OTRL_INIT;
 
 		OtrDir_ = Util::CreateIfNotExists ("azoth/otr/");
@@ -367,6 +372,11 @@ namespace OTRoid
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	FPManager* Plugin::GetFPManager () const

@@ -41,6 +41,7 @@ extern "C"
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/imessage.h>
 
@@ -61,11 +62,14 @@ namespace OTRoid
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		IProxyObject *AzothProxy_;
+
+		Util::XmlSettingsDialog_ptr XSD_;
 
 		FPManager *FPManager_ = nullptr;
 
@@ -105,6 +109,8 @@ namespace OTRoid
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		FPManager* GetFPManager () const;
 
