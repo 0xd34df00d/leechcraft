@@ -170,6 +170,7 @@ namespace OTRoid
 
 				auto fpItem = new QStandardItem { fpHashStr };
 				fpItem->setEditable (false);
+				fpItem->setFont (QFont { "Monospace" });
 				fpItem->setData (FPManager::TypeFP, FPManager::RoleType);
 				fpItem->setData (QByteArray { reinterpret_cast<char*> (fp->fingerprint), 20 },
 						FPManager::RoleSourceFP);
