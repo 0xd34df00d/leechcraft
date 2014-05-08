@@ -227,7 +227,8 @@ namespace OTRoid
 					QString::fromUtf8 (username),
 					msg, false, IMessage::DIn, IMessage::MTServiceMessage);
 
-			plugin->GetFPManager ()->HandleNew (accountname, protoname, username, fingerprint);
+			if (auto fpm = plugin->GetFPManager ())
+				fpm->HandleNew (accountname, protoname, username, fingerprint);
 		}
 
 		void HandleGoneSecure (void *opData, ConnContext *context)
@@ -274,9 +275,6 @@ namespace OTRoid
 #if OTRL_VERSION_MAJOR >= 4
 		otrl_instag_read (UserState_, GetOTRFilename ("instags").constData ());
 #endif
-
-		FPManager_ = new FPManager (UserState_);
-		FPManager_->ReloadAll ();
 
 		memset (&OtrOps_, 0, sizeof (OtrOps_));
 		OtrOps_.policy = [] (void*, ConnContext*) { return OtrlPolicy { OTRL_POLICY_DEFAULT }; };
@@ -628,6 +626,9 @@ namespace OTRoid
 	void Plugin::initPlugin (QObject *obj)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (obj);
+
+		FPManager_ = new FPManager (UserState_, AzothProxy_);
+		FPManager_->ReloadAll ();
 	}
 
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,

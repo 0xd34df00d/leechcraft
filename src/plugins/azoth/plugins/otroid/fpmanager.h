@@ -41,6 +41,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace OTRoid
 {
 	struct FPInfo
@@ -56,10 +58,11 @@ namespace OTRoid
 		Q_OBJECT
 
 		const OtrlUserState UserState_;
+		IProxyObject * const AzothProxy_;
 
 		QHash<QString, QHash<QString, FPInfos_t>> Account2User2Fp_;
 	public:
-		FPManager (const OtrlUserState, QObject* = 0);
+		FPManager (const OtrlUserState, IProxyObject*, QObject* = 0);
 
 		void ReloadAll ();
 		int HandleNew (const char*, const char*, const char*, unsigned char [20]);

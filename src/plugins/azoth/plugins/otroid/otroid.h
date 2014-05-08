@@ -67,7 +67,7 @@ namespace OTRoid
 
 		IProxyObject *AzothProxy_;
 
-		FPManager *FPManager_;
+		FPManager *FPManager_ = nullptr;
 
 		OtrlUserState UserState_;
 		OtrlMessageAppOps OtrOps_;

@@ -46,9 +46,10 @@ namespace Azoth
 {
 namespace OTRoid
 {
-	FPManager::FPManager (const OtrlUserState state, QObject *parent)
+	FPManager::FPManager (const OtrlUserState state, IProxyObject *azothProxy, QObject *parent)
 	: QObject { parent }
 	, UserState_ { state }
+	, AzothProxy_ { azothProxy }
 	{
 	}
 
