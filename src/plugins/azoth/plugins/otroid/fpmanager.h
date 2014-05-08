@@ -37,6 +37,7 @@ extern "C"
 #include <libotr/proto.h>
 }
 
+class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;
 
@@ -84,6 +85,8 @@ namespace OTRoid
 		int HandleNew (const char*, const char*, const char*, unsigned char [20]);
 
 		FPInfos_t GetFingerprints (const QString& accId, const QString& userId) const;
+
+		QAbstractItemModel* GetModel () const;
 	public slots:
 		void reloadAll ();
 		void scheduleReload ();

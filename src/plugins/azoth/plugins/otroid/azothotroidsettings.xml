@@ -2,5 +2,9 @@
 <settings>
 	<page>
 		<label value="Azoth OTRoid" />
+		<tab>
+			<label value="Known fingerprints" />
+			<item type="dataview" property="KnownFPs" />
+		</tab>
 	</page>
 </settings>

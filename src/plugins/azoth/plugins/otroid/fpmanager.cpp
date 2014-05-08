@@ -166,6 +166,11 @@ namespace OTRoid
 		return Account2User2Fp_.value (accId).Entries_.value (userId).FPs_;
 	}
 
+	QAbstractItemModel* FPManager::GetModel () const
+	{
+		return Model_;
+	}
+
 	void FPManager::reloadAll ()
 	{
 		Account2User2Fp_.clear ();

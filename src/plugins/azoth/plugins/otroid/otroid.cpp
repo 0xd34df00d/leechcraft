@@ -639,6 +639,8 @@ namespace OTRoid
 
 		FPManager_ = new FPManager (UserState_, AzothProxy_);
 		FPManager_->reloadAll ();
+
+		XSD_->SetDataSource ("KnownFPs", FPManager_->GetModel ());
 	}
 
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
