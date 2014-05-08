@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "fpmanager.h"
+#include <QStandardItemModel>
+#include <QtDebug>
 
 extern "C"
 {
@@ -40,6 +42,9 @@ extern "C"
 #endif
 }
 
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -50,14 +55,64 @@ namespace OTRoid
 	: QObject { parent }
 	, UserState_ { state }
 	, AzothProxy_ { azothProxy }
+	, Model_ { new QStandardItemModel { this } }
 	{
 	}
 
 	void FPManager::ReloadAll ()
 	{
 		Account2User2Fp_.clear ();
+		Model_->clear ();
 
 		HandleNew (nullptr, nullptr, nullptr, nullptr);
+	}
+
+	namespace
+	{
+		QStandardItem* MakeAccountItem (IProxyObject *proxy, const QString& accId)
+		{
+			const auto accObj = proxy->GetAccount (accId);
+			if (!accObj)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no account for"
+						<< accId;
+				return nullptr;
+			}
+
+			const auto acc = qobject_cast<IAccount*> (accObj);
+
+			auto item = new QStandardItem { acc->GetAccountName () };
+			item->setEditable (false);
+			// TODO icon
+
+			return item;
+		}
+
+		QList<QStandardItem*> MakeEntryItems (IProxyObject *proxy,
+				const QString& accId, const QString& entryId)
+		{
+			const auto entryObj = proxy->GetEntry (entryId, accId);
+			if (!entryObj)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no entry for"
+						<< accId
+						<< entryId;
+				return {};
+			}
+
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
+
+			QList<QStandardItem*> result
+			{
+				new QStandardItem { entry->GetEntryName () },
+				new QStandardItem { entry->GetHumanReadableID () }
+			};
+			for (auto item : result)
+				item->setEditable (false);
+			return result;
+		}
 	}
 
 	int FPManager::HandleNew (const char *account,
@@ -77,7 +132,29 @@ namespace OTRoid
 			const auto& accStr = QString::fromUtf8 (account);
 			const auto& userStr = QString::fromUtf8 (user);
 
-			auto& fpInfos = Account2User2Fp_ [accStr] [userStr];
+			auto& accInfo = Account2User2Fp_ [accStr];
+			if (!accInfo.AccItem_)
+			{
+				if ((accInfo.AccItem_ = MakeAccountItem (AzothProxy_, accStr)))
+					Model_->appendRow (accInfo.AccItem_);
+				else
+					continue;
+			}
+
+			auto& entryInfo = accInfo.Entries_ [userStr] ;
+			if (entryInfo.EntryItems_.isEmpty ())
+			{
+				entryInfo.EntryItems_ = MakeEntryItems (AzothProxy_, accStr, userStr);
+
+				if (!entryInfo.EntryItems_.isEmpty ())
+					accInfo.AccItem_->appendRow (entryInfo.EntryItems_);
+				else
+					continue;
+			}
+			else if (auto rc = entryInfo.EntryItems_.at (0)->rowCount ())
+				entryInfo.EntryItems_.at (0)->removeRows (0, rc);
+
+			auto& fpInfos = entryInfo.FPs_;
 			fpInfos.clear ();
 
 			for (auto fp = context->fingerprint_root.next; fp; ++count, fp = fp->next)
@@ -93,7 +170,7 @@ namespace OTRoid
 
 	FPInfos_t FPManager::GetFingerprints (const QString& accId, const QString& userId) const
 	{
-		return Account2User2Fp_.value (accId).value (userId);
+		return Account2User2Fp_.value (accId).Entries_.value (userId).FPs_;
 	}
 }
 }

@@ -37,6 +37,9 @@ extern "C"
 #include <libotr/proto.h>
 }
 
+class QStandardItemModel;
+class QStandardItem;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -59,8 +62,20 @@ namespace OTRoid
 
 		const OtrlUserState UserState_;
 		IProxyObject * const AzothProxy_;
+		QStandardItemModel * const Model_;
 
-		QHash<QString, QHash<QString, FPInfos_t>> Account2User2Fp_;
+		struct EntryState
+		{
+			QList<QStandardItem*> EntryItems_;
+			FPInfos_t FPs_;
+		};
+
+		struct AccState
+		{
+			QStandardItem *AccItem_ = nullptr;
+			QHash<QString, EntryState> Entries_;
+		};
+		QHash<QString, AccState> Account2User2Fp_;
 	public:
 		FPManager (const OtrlUserState, IProxyObject*, QObject* = 0);
 
