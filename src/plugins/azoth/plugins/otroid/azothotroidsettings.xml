@@ -4,7 +4,7 @@
 		<label value="Azoth OTRoid" />
 		<tab>
 			<label value="Known fingerprints" />
-			<item type="dataview" property="KnownFPs">
+			<item type="dataview" property="KnownFPs" addEnabled="false" modifyEnabled="false" resizeToContents="true">
 				<button id="refresh">
 					<label value="Refresh" />
 				</button>
