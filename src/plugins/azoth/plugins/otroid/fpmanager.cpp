@@ -29,6 +29,7 @@
 
 #include "fpmanager.h"
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <QtDebug>
 #include <QTimer>
 
@@ -170,6 +171,8 @@ namespace OTRoid
 				auto fpItem = new QStandardItem { fpHashStr };
 				fpItem->setEditable (false);
 				fpItem->setData (FPManager::TypeFP, FPManager::RoleType);
+				fpItem->setData (QByteArray { reinterpret_cast<char*> (fp->fingerprint), 20 },
+						FPManager::RoleSourceFP);
 				entryInfo.EntryItems_.at (0)->appendRow (fpItem);
 			}
 			entryInfo.EntryItems_.at (ColumnKeysCount)->setText (QString::number (fpCount));
@@ -213,6 +216,103 @@ namespace OTRoid
 		QTimer::singleShot (2000,
 				this,
 				SLOT (reloadAll ()));
+	}
+
+	namespace
+	{
+		QModelIndexList CollectLeafs (const QModelIndex& index)
+		{
+			const auto model = index.model ();
+
+			QModelIndexList result;
+			switch (index.data (FPManager::RoleType).toInt ())
+			{
+			case FPManager::TypeFP:
+				result << index;
+				break;
+			case FPManager::TypeEntry:
+			case FPManager::TypeAcc:
+				for (int i = 0; i < model->rowCount (index); ++i)
+					result = CollectLeafs (model->index (i, 0, index)) + result;
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unknown item type"
+						<< index.data (FPManager::RoleType);
+				break;
+			}
+
+			return result;
+		}
+	}
+
+	void FPManager::removeRequested (const QString&, const QModelIndexList& srcIndexes)
+	{
+		QModelIndexList toRemove;
+		for (const auto& index : srcIndexes)
+			toRemove << CollectLeafs (index.sibling (index.row (), 0));
+
+		if (QMessageBox::question (nullptr,
+					tr ("Confirm fingerprints deletion"),
+					tr ("Are you sure you want to delete %n fingerprint(s)?", 0, toRemove.size ()),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		for (const auto& index : toRemove)
+		{
+			const auto item = Model_->itemFromIndex (index);
+			if (!item)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no item for index"
+						<< index;
+				continue;
+			}
+
+			const auto parent = item->parent ();
+
+			const auto& entryId = parent->data (RoleEntryId).toString ().toUtf8 ();
+			const auto& accId = parent->data (RoleAccId).toString ().toUtf8 ();
+			const auto& protoId = parent->data (RoleProtoId).toString ().toUtf8 ();
+			const auto context = otrl_context_find (UserState_,
+					entryId.constData (),
+					accId.constData (),
+					protoId.constData (),
+#if OTRL_VERSION_MAJOR >= 4
+					OTRL_INSTAG_BEST,
+#endif
+					false, nullptr, nullptr, nullptr);
+
+			const auto fp = context ?
+					otrl_context_find_fingerprint (context,
+							reinterpret_cast<unsigned char*> (item->data (RoleSourceFP).toByteArray ().data ()),
+							false,
+							nullptr) :
+					nullptr;
+			if (fp)
+			{
+				if (context->active_fingerprint == fp)
+					otrl_context_force_finished (context);
+
+				otrl_context_forget_fingerprint (fp, true);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "fingerprint for"
+						<< entryId
+						<< accId
+						<< protoId
+						<< context
+						<< item->data (RoleSourceFP).toByteArray ().toHex ()
+						<< "not found";
+
+			parent->removeRow (item->row ());
+
+			if (!parent->rowCount ())
+				parent->parent ()->removeRow (parent->row ());
+		}
+
+		emit fingerprintsChanged ();
 	}
 
 	void FPManager::customButtonPressed (const QString&, const QByteArray& id, int)

@@ -632,7 +632,11 @@ namespace OTRoid
 		AzothProxy_ = qobject_cast<IProxyObject*> (obj);
 
 		FPManager_ = new FPManager (UserState_, AzothProxy_);
-		FPManager_->reloadAll ();
+
+		connect (FPManager_,
+				SIGNAL (fingerprintsChanged ()),
+				this,
+				SLOT (writeFingerprints ()));
 
 		XSD_->SetDataSource ("KnownFPs", FPManager_->GetModel ());
 	}

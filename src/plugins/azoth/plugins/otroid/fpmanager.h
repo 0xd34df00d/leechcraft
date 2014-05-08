@@ -31,13 +31,13 @@
 
 #include <QObject>
 #include <QHash>
+#include <QModelIndex>
 
 extern "C"
 {
 #include <libotr/proto.h>
 }
 
-class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;
 
@@ -92,7 +92,8 @@ namespace OTRoid
 			RoleType = Qt::UserRole + 1,
 			RoleEntryId,
 			RoleAccId,
-			RoleProtoId
+			RoleProtoId,
+			RoleSourceFP
 		};
 
 		enum Type
@@ -113,7 +114,10 @@ namespace OTRoid
 		void reloadAll ();
 		void scheduleReload ();
 	private slots:
+		void removeRequested (const QString&, const QModelIndexList&);
 		void customButtonPressed (const QString&, const QByteArray&, int);
+	signals:
+		void fingerprintsChanged ();
 	};
 }
 }
