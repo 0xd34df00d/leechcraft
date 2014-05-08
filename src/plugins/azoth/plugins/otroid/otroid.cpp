@@ -648,13 +648,12 @@ namespace OTRoid
 		const auto& actionsStruct = Entry2Action_.value (entry);
 		const auto actions
 		{
-			actionsStruct.ToggleOtr_,
-#if OTRL_VERSION_MAJOR >= 4
-			actionsStruct.Authenticate_
-#endif
+			actionsStruct.ToggleOtr_.get (),
+			actionsStruct.ToggleOtrCtx_.get (),
+			actionsStruct.CtxMenu_->menuAction ()
 		};
 		for (const auto action : actions)
-			list << QVariant::fromValue<QObject*> (action.get ());
+			list << QVariant::fromValue<QObject*> (action);
 
 		proxy->SetReturnValue (list);
 	}
@@ -831,17 +830,44 @@ namespace OTRoid
 
 	void Plugin::CreateActions (QObject *entry)
 	{
-		const auto& otr = std::make_shared<QAction> (tr ("Enable OTR"), this);
-		otr->setCheckable (true);
-		otr->setIcon (GetIcon ());
-		otr->setProperty ("Azoth/OTRoid/IsGood", true);
-		otr->setProperty ("Azoth/OTRoid/Areas",
-				QStringList { "contactListContextMenu", "tabContextMenu", "toolbar" });
-		otr->setProperty ("Azoth/OTRoid/Entry", QVariant::fromValue (entry));
+		auto makeOtrAction = [entry, this] () -> std::shared_ptr<QAction>
+		{
+			const auto& otr = std::make_shared<QAction> (tr ("Enable OTR"), this);
+			otr->setCheckable (true);
+			otr->setIcon (GetIcon ());
+			otr->setProperty ("Azoth/OTRoid/IsGood", true);
+			otr->setProperty ("Azoth/OTRoid/Entry", QVariant::fromValue (entry));
+			return otr;
+		};
+
+		const auto& otr = makeOtrAction ();
+		otr->setProperty ("Azoth/OTRoid/Areas", QStringList { "tabContextMenu", "toolbar" });
 		connect (otr.get (),
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleOtrAction ()));
+
+		const auto& otrCtx = makeOtrAction ();
+		otrCtx->setProperty ("Azoth/OTRoid/Areas", QStringList { "contactListContextMenu" });
+		connect (otrCtx.get (),
+				SIGNAL (toggled (bool)),
+				otr.get (),
+				SLOT (setChecked (bool)));
+		connect (otrCtx.get (),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOtrAction ()));
+		connect (otr.get (),
+				SIGNAL (toggled (bool)),
+				otrCtx.get (),
+				SLOT (setChecked (bool)));
+
+		const auto& buttonMenu = std::make_shared<QMenu> ();
+		otr->setMenu (buttonMenu.get ());
+
+		const auto& ctxMenu = std::make_shared<QMenu> (tr ("OTR"));
+		ctxMenu->setProperty ("Azoth/OTRoid/IsGood", true);
+		ctxMenu->setProperty ("Azoth/OTRoid/Areas", QStringList { "contactListContextMenu" });
 
 #if OTRL_VERSION_MAJOR >= 4
 		const auto& auth = std::make_shared<QAction> (tr ("Authenticate the contact"), this);
@@ -852,11 +878,17 @@ namespace OTRoid
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAuthRequested ()));
+
+		buttonMenu->addAction (auth.get ());
+		ctxMenu->addAction (auth.get ());
 #endif
 
 		Entry2Action_ [entry] = EntryActions
 		{
+			ctxMenu,
+			buttonMenu,
 			otr,
+			otrCtx,
 #if OTRL_VERSION_MAJOR >= 4
 			auth
 #else

@@ -71,7 +71,11 @@ namespace OTRoid
 
 		struct EntryActions
 		{
+			std::shared_ptr<QMenu> CtxMenu_;
+			std::shared_ptr<QMenu> ButtonMenu_;
+
 			std::shared_ptr<QAction> ToggleOtr_;
+			std::shared_ptr<QAction> ToggleOtrCtx_;
 			std::shared_ptr<QAction> Authenticate_;
 		};
 		QHash<QObject*, EntryActions> Entry2Action_;
