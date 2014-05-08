@@ -84,7 +84,7 @@ namespace OTRoid
 		}
 
 		QList<QStandardItem*> MakeEntryItems (IProxyObject *proxy,
-				const QString& accId, const QString& entryId)
+				const QString& accId, const QString& entryId, const QString& protoId)
 		{
 			const auto entryObj = proxy->GetEntry (entryId, accId);
 			if (!entryObj)
@@ -108,6 +108,9 @@ namespace OTRoid
 			{
 				item->setEditable (false);
 				item->setData (FPManager::TypeEntry, FPManager::RoleType);
+				item->setData (entryId, FPManager::RoleEntryId);
+				item->setData (accId, FPManager::RoleAccId);
+				item->setData (protoId, FPManager::RoleProtoId);
 			}
 			return result;
 		}
@@ -129,6 +132,7 @@ namespace OTRoid
 
 			const auto& accStr = QString::fromUtf8 (context->accountname);
 			const auto& userStr = QString::fromUtf8 (context->username);
+			const auto& protoStr = QString::fromUtf8 (context->protocol);
 
 			auto& accInfo = Account2User2Fp_ [accStr];
 			if (!accInfo.AccItem_)
@@ -142,7 +146,7 @@ namespace OTRoid
 			auto& entryInfo = accInfo.Entries_ [userStr] ;
 			if (entryInfo.EntryItems_.isEmpty ())
 			{
-				entryInfo.EntryItems_ = MakeEntryItems (AzothProxy_, accStr, userStr);
+				entryInfo.EntryItems_ = MakeEntryItems (AzothProxy_, accStr, userStr, protoStr);
 
 				if (!entryInfo.EntryItems_.isEmpty ())
 					accInfo.AccItem_->appendRow (entryInfo.EntryItems_);

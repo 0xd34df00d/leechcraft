@@ -89,7 +89,10 @@ namespace OTRoid
 	public:
 		enum Role
 		{
-			RoleType = Qt::UserRole + 1
+			RoleType = Qt::UserRole + 1,
+			RoleEntryId,
+			RoleAccId,
+			RoleProtoId
 		};
 
 		enum Type
