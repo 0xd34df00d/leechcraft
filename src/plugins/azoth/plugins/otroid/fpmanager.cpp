@@ -195,6 +195,12 @@ namespace OTRoid
 				this,
 				SLOT (reoad ()));
 	}
+
+	void FPManager::customButtonPressed (const QString&, const QByteArray& id, int)
+	{
+		if (id == "refresh")
+			reloadAll ();
+	}
 }
 }
 }

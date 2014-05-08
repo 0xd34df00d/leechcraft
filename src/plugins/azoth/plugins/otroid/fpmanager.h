@@ -90,6 +90,8 @@ namespace OTRoid
 	public slots:
 		void reloadAll ();
 		void scheduleReload ();
+	private slots:
+		void customButtonPressed (const QString&, const QByteArray&, int);
 	};
 }
 }
