@@ -30,6 +30,7 @@
 #include "fpmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <QTimer>
 
 extern "C"
 {
@@ -175,6 +176,19 @@ namespace OTRoid
 				<< "reloaded"
 				<< count
 				<< "fps";
+
+		ReloadScheduled_ = false;
+	}
+
+	void FPManager::scheduleReload ()
+	{
+		if (ReloadScheduled_)
+			return;
+
+		ReloadScheduled_ = true;
+		QTimer::singleShot (2000,
+				this,
+				SLOT (reoad ()));
 	}
 }
 }

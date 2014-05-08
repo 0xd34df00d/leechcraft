@@ -76,6 +76,8 @@ namespace OTRoid
 			QHash<QString, EntryState> Entries_;
 		};
 		QHash<QString, AccState> Account2User2Fp_;
+
+		bool ReloadScheduled_ = false;
 	public:
 		FPManager (const OtrlUserState, IProxyObject*, QObject* = 0);
 
@@ -84,6 +86,7 @@ namespace OTRoid
 		FPInfos_t GetFingerprints (const QString& accId, const QString& userId) const;
 	public slots:
 		void reloadAll ();
+		void scheduleReload ();
 	};
 }
 }

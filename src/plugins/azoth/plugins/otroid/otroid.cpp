@@ -638,7 +638,7 @@ namespace OTRoid
 		AzothProxy_ = qobject_cast<IProxyObject*> (obj);
 
 		FPManager_ = new FPManager (UserState_, AzothProxy_);
-		FPManager_->ReloadAll ();
+		FPManager_->reloadAll ();
 	}
 
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
