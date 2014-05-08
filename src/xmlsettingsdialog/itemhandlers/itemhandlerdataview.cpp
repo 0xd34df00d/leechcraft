@@ -380,16 +380,13 @@ namespace LeechCraft
 		}
 
 		const auto& selected = view->GetCurrentIndex ();
-		if (!selected.isValid ())
-			return;
-
 		const auto model = view->GetModel ();
 
 		if (!QMetaObject::invokeMethod (model->parent (),
 					"customButtonPressed",
 					Q_ARG (QString, view->objectName ()),
 					Q_ARG (QByteArray, id),
-					Q_ARG (int, selected.row ())))
+					Q_ARG (int, selected.isValid () ? selected.row () : -1)))
 			qWarning () << Q_FUNC_INFO
 					<< "invokeMethod on "
 					<< model->parent ()
