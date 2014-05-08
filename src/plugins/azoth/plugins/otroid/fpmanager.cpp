@@ -100,7 +100,8 @@ namespace OTRoid
 			QList<QStandardItem*> result
 			{
 				new QStandardItem { entry->GetEntryName () },
-				new QStandardItem { entry->GetHumanReadableID () }
+				new QStandardItem { entry->GetHumanReadableID () },
+				new QStandardItem { "0" }
 			};
 			for (auto item : result)
 				item->setEditable (false);
@@ -150,12 +151,20 @@ namespace OTRoid
 			auto& fpInfos = entryInfo.FPs_;
 			fpInfos.clear ();
 
-			for (auto fp = context->fingerprint_root.next; fp; ++count, fp = fp->next)
+			int fpCount = 0;
+			for (auto fp = context->fingerprint_root.next; fp; ++fpCount, fp = fp->next)
 			{
 				char fpHash [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 				otrl_privkey_hash_to_human (fpHash, fp->fingerprint);
-				fpInfos.append ({ QString { fpHash }, QString::fromUtf8 (fp->trust) });
+				QString fpHashStr { fpHash };
+				fpInfos.append ({ fpHashStr, QString::fromUtf8 (fp->trust) });
+
+				auto fpItem = new QStandardItem { fpHashStr };
+				fpItem->setEditable (false);
+				entryInfo.EntryItems_.at (0)->appendRow (fpItem);
 			}
+			entryInfo.EntryItems_.at (ColumnKeysCount)->setText (QString::number (fpCount));
+			count += fpCount;
 		}
 
 		return count;
@@ -175,6 +184,7 @@ namespace OTRoid
 	{
 		Account2User2Fp_.clear ();
 		Model_->clear ();
+		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Entry ID"), tr ("Keys count") });
 
 		const int count = HandleNew (nullptr, nullptr, nullptr, nullptr);
 		qDebug () << Q_FUNC_INFO

@@ -79,6 +79,13 @@ namespace OTRoid
 		QHash<QString, AccState> Account2User2Fp_;
 
 		bool ReloadScheduled_ = false;
+
+		enum Column
+		{
+			ColumnEntryName,
+			ColumnEntryID,
+			ColumnKeysCount
+		};
 	public:
 		FPManager (const OtrlUserState, IProxyObject*, QObject* = 0);
 
