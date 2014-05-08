@@ -193,7 +193,7 @@ namespace OTRoid
 		ReloadScheduled_ = true;
 		QTimer::singleShot (2000,
 				this,
-				SLOT (reoad ()));
+				SLOT (reloadAll ()));
 	}
 
 	void FPManager::customButtonPressed (const QString&, const QByteArray& id, int)
