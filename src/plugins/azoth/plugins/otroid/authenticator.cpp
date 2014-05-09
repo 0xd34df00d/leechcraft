@@ -112,6 +112,15 @@ namespace OTRoid
 						.arg (Name_)
 						.arg (HrId_));
 	}
+
+	void Authenticator::Success ()
+	{
+		QMessageBox::information (nullptr,
+				tr ("OTR authentication"),
+				tr ("Congratulations! Contact %1 (%2) authenticated successfully!")
+						.arg (Name_)
+						.arg (HrId_));
+	}
 }
 }
 }

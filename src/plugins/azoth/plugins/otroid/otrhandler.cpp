@@ -742,6 +742,9 @@ namespace OTRoid
 		case OTRL_SMPEVENT_CHEATED:
 			auth->Cheated ();
 			break;
+		case OTRL_SMPEVENT_SUCCESS:
+			auth->Success ();
+			break;
 		case OTRL_SMPEVENT_IN_PROGRESS:
 			break;
 		default:
