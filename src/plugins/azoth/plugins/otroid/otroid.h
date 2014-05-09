@@ -48,6 +48,7 @@ class ICLEntry;
 namespace OTRoid
 {
 	class FPManager;
+	class PrivKeyManager;
 	class OtrHandler;
 
 	class Plugin : public QObject
@@ -65,6 +66,7 @@ namespace OTRoid
 
 		OtrHandler *OtrHandler_ = nullptr;
 		FPManager *FPManager_ = nullptr;
+		PrivKeyManager *PKManager_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

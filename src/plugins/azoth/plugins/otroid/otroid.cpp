@@ -45,9 +45,10 @@ extern "C"
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "fpmanager.h"
 #include "xmlsettingsmanager.h"
 #include "otrhandler.h"
+#include "fpmanager.h"
+#include "privkeymanager.h"
 
 namespace LeechCraft
 {
@@ -124,8 +125,10 @@ namespace OTRoid
 				SIGNAL (fingerprintsChanged ()),
 				OtrHandler_,
 				SLOT (writeFingerprints ()));
-
 		XSD_->SetDataSource ("KnownFPs", FPManager_->GetModel ());
+
+		PKManager_ = new PrivKeyManager (OtrHandler_->GetUserState (), AzothProxy_);
+		XSD_->SetDataSource ("PrivKeys", PKManager_->GetModel ());
 	}
 
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,

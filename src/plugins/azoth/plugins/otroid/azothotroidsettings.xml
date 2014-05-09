@@ -10,5 +10,13 @@
 				</button>
 			</item>
 		</tab>
+		<tab>
+			<label value="Private keys" />
+			<item type="dataview" property="PrivKeys" addEnabled="false" modifyEnabled="false" resizeToContents="true">
+				<button id="refresh">
+					<label value="Refresh" />
+				</button>
+			</item>
+		</tab>
 	</page>
 </settings>
