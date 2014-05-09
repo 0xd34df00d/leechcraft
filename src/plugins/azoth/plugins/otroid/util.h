@@ -29,11 +29,17 @@
 
 #pragma once
 
+extern "C"
+{
+#include <libotr/proto.h>
+}
+
 #ifndef OTRL_PRIVKEY_FPRINT_HUMAN_LEN
 #define OTRL_PRIVKEY_FPRINT_HUMAN_LEN 45
 #endif
 
 class QIcon;
+class QString;
 
 namespace LeechCraft
 {
@@ -44,6 +50,8 @@ class IAccount;
 namespace OTRoid
 {
 	QIcon GetAccountIcon (IAccount*);
+
+	void WriteKeys (OtrlUserState, const QString&);
 }
 }
 }
