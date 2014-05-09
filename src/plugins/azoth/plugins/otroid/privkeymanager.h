@@ -60,6 +60,12 @@ namespace OTRoid
 			ColumnAccName,
 			ColumnKey
 		};
+
+		enum Roles
+		{
+			RoleAccId = Qt::UserRole + 1,
+			RoleProtoId
+		};
 	public:
 		PrivKeyManager (const OtrlUserState, IProxyObject*);
 
@@ -67,7 +73,10 @@ namespace OTRoid
 	public slots:
 		void reloadAll ();
 	private slots:
+		void removeRequested (const QString&, QModelIndexList);
 		void customButtonPressed (const QString&, const QByteArray&, int);
+	signals:
+		void keysChanged ();
 	};
 }
 }
