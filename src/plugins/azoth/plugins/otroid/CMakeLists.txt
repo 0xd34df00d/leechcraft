@@ -23,6 +23,7 @@ set (OTROID_SRCS
 	fpmanager.cpp
 	privkeymanager.cpp
 	xmlsettingsmanager.cpp
+	util.cpp
 	)
 set (OTROID_FORMS
 	initiateauthdialog.ui

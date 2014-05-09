@@ -27,23 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#ifndef OTRL_PRIVKEY_FPRINT_HUMAN_LEN
-#define OTRL_PRIVKEY_FPRINT_HUMAN_LEN 45
-#endif
-
-class QIcon;
+#include "util.h"
+#include <QIcon>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/iextselfinfoaccount.h>
+#include <interfaces/azoth/iprotocol.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class IAccount;
-
 namespace OTRoid
 {
-	QIcon GetAccountIcon (IAccount*);
+	QIcon GetAccountIcon (IAccount *account)
+	{
+		const auto accObj = account->GetQObject ();
+
+		const auto extSelf = qobject_cast<IExtSelfInfoAccount*> (accObj);
+		auto icon = extSelf ? extSelf->GetAccountIcon () : QIcon {};
+
+		if (icon.isNull ())
+			icon = qobject_cast<IProtocol*> (account->GetParentProtocol ())->GetProtocolIcon ();
+
+		return icon;
+	}
 }
 }
 }
