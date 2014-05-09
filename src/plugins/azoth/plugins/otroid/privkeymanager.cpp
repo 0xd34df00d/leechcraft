@@ -84,6 +84,12 @@ namespace OTRoid
 			Model_->appendRow (row);
 		}
 	}
+
+	void PrivKeyManager::customButtonPressed (const QString&, const QByteArray& id, int)
+	{
+		if (id == "refresh")
+			reloadAll ();
+	}
 }
 }
 }

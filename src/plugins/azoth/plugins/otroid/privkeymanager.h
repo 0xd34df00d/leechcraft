@@ -60,6 +60,8 @@ namespace OTRoid
 		QAbstractItemModel* GetModel () const;
 	public slots:
 		void reloadAll ();
+	private slots:
+		void customButtonPressed (const QString&, const QByteArray&, int);
 	};
 }
 }
