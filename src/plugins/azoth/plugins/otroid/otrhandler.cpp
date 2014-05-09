@@ -776,6 +776,11 @@ namespace OTRoid
 				GetOTRFilename ("fingerprints").constData ());
 	}
 
+	void OtrHandler::writeKeys ()
+	{
+		WriteKeys (UserState_, GetOTRFilename ("privkey"));
+	}
+
 	void OtrHandler::handleOtrAction ()
 	{
 		auto act = qobject_cast<QAction*> (sender ());

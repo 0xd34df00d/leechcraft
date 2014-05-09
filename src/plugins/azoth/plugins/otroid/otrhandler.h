@@ -137,6 +137,7 @@ namespace OTRoid
 #endif
 	private slots:
 		void writeFingerprints ();
+		void writeKeys ();
 
 		void handleOtrAction ();
 #if OTRL_VERSION_MAJOR >= 4
