@@ -958,10 +958,8 @@ namespace OTRoid
 	void OtrHandler::handleGotSmpReply (SmpMethod, const QString& reply, ConnContext *context)
 	{
 		const auto& replyUtf = reply.toUtf8 ();
-		const auto data = replyUtf.constData ();
-
 		otrl_message_respond_smp (UserState_, &OtrOps_, this, context,
-				reinterpret_cast<const unsigned char*> (data), replyUtf.size ());
+				reinterpret_cast<const unsigned char*> (replyUtf.constData ()), replyUtf.size ());
 	}
 
 	void OtrHandler::handleAbortSmp (ConnContext *context)
