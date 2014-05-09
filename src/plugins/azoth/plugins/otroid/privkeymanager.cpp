@@ -87,7 +87,7 @@ namespace OTRoid
 
 			QList<QStandardItem*> row
 			{
-				new QStandardItem { acc->GetAccountName () },
+				new QStandardItem { GetAccountIcon (acc), acc->GetAccountName () },
 				new QStandardItem { hash }
 			};
 

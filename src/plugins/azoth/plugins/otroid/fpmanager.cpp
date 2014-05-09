@@ -73,11 +73,9 @@ namespace OTRoid
 
 			const auto acc = qobject_cast<IAccount*> (accObj);
 
-			auto item = new QStandardItem { acc->GetAccountName () };
+			auto item = new QStandardItem { GetAccountIcon (acc), acc->GetAccountName () };
 			item->setEditable (false);
 			item->setData (FPManager::TypeAcc, FPManager::RoleType);
-			// TODO icon
-
 			return item;
 		}
 
