@@ -128,6 +128,10 @@ namespace OTRoid
 		XSD_->SetDataSource ("KnownFPs", FPManager_->GetModel ());
 
 		PKManager_ = new PrivKeyManager (OtrHandler_->GetUserState (), AzothProxy_);
+		connect (PKManager_,
+				SIGNAL (keysChanged ()),
+				OtrHandler_,
+				SLOT (writeKeys ()));
 		XSD_->SetDataSource ("PrivKeys", PKManager_->GetModel ());
 	}
 

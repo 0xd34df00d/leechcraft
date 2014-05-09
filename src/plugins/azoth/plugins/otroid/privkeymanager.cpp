@@ -147,6 +147,7 @@ namespace OTRoid
 			otrl_privkey_forget (pkey);
 		}
 
+		reloadAll ();
 		emit keysChanged ();
 	}
 
