@@ -21,6 +21,7 @@ set (OTROID_SRCS
 	authenticator.cpp
 	initiateauthdialog.cpp
 	fpmanager.cpp
+	privkeymanager.cpp
 	xmlsettingsmanager.cpp
 	)
 set (OTROID_FORMS
