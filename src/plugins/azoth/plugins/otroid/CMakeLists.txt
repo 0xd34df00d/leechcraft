@@ -17,6 +17,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	)
 set (OTROID_SRCS
 	otroid.cpp
+	otrhandler.cpp
 	authenticator.cpp
 	initiateauthdialog.cpp
 	fpmanager.cpp
