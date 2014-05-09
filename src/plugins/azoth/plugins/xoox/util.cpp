@@ -108,6 +108,7 @@ namespace XooxUtil
 				Node2ClientID_ ["http://fatal-bot.spb.ru/caps"] = "fatal-bot";
 				Node2ClientID_ ["http://fatal-dev.ru/bot/caps"] = "fatal-bot";
 				Node2ClientID_ ["http://isida-bot.com"] = "isida-bot";
+				Node2ClientID_ ["http://isida-bot.com/4"] = "isida-bot";
 				Node2ClientID_ ["httр://jabga.ru"] = "jtalk";
 				Node2ClientID_ ["http://jabiru.mzet.net/caps"] = "jabiru";
 				Node2ClientID_ ["http://jasmineicq.ru/caps"] = "jasmine";
@@ -196,6 +197,7 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://fatal-bot.spb.ru/caps"] = "Fatal-bot";
 				Node2ClientHR_ ["http://fatal-dev.ru/bot/caps"] = "Fatal-bot";
 				Node2ClientHR_ ["http://isida-bot.com"] = "iSida Bot";
+				Node2ClientHR_ ["http://isida-bot.com/4"] = "iSida Bot";
 				Node2ClientHR_ ["httр://jabga.ru"] = "Fin jabber";
 				Node2ClientHR_ ["http://jabiru.mzet.net/caps"] = "Jabiru";
 				Node2ClientHR_ ["http://jasmineicq.ru/caps"] = "Jasmine";
