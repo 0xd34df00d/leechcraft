@@ -89,6 +89,9 @@ namespace OTRoid
 
 			for (auto item : row)
 				item->setEditable (false);
+
+			row.value (ColumnKey)->setFont (QFont { "Monospace" });
+
 			Model_->appendRow (row);
 		}
 	}

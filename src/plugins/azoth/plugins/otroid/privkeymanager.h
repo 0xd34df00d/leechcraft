@@ -54,6 +54,12 @@ namespace OTRoid
 		const OtrlUserState UserState_;
 		IProxyObject * const AzothProxy_;
 		QStandardItemModel * const Model_;
+
+		enum Columns
+		{
+			ColumnAccName,
+			ColumnKey
+		};
 	public:
 		PrivKeyManager (const OtrlUserState, IProxyObject*);
 
