@@ -49,10 +49,6 @@ extern "C"
 #include <libotr/message.h>
 #include <libotr/proto.h>
 
-#ifndef OTRL_PRIVKEY_FPRINT_HUMAN_LEN
-#define OTRL_PRIVKEY_FPRINT_HUMAN_LEN 45
-#endif
-
 #if OTRL_VERSION_MAJOR >= 4
 #include <libotr/instag.h>
 #endif
@@ -64,6 +60,7 @@ extern "C"
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/core/ientitymanager.h>
+#include "util.h"
 
 namespace LeechCraft
 {

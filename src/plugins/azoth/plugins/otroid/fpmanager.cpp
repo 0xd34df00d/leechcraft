@@ -38,14 +38,11 @@ extern "C"
 #include <libotr/context.h>
 #include <libotr/proto.h>
 #include <libotr/privkey.h>
-
-#ifndef OTRL_PRIVKEY_FPRINT_HUMAN_LEN
-#define OTRL_PRIVKEY_FPRINT_HUMAN_LEN 45
-#endif
 }
 
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
+#include "util.h"
 
 namespace LeechCraft
 {
