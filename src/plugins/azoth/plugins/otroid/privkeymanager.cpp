@@ -62,6 +62,7 @@ namespace OTRoid
 		Model_->clear ();
 		Model_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Private key") });
 
+		QHash<QString, QString> accId2key;
 		for (auto pkey = UserState_->privkey_root; pkey; pkey = pkey->next)
 		{
 			char fpHash [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
@@ -69,16 +70,23 @@ namespace OTRoid
 						fpHash, pkey->accountname, pkey->protocol))
 				continue;
 
-			const auto accObj = AzothProxy_->GetAccount (QString::fromUtf8 (pkey->accountname));
+			accId2key [QString::fromUtf8 (pkey->accountname)] = QString::fromUtf8 (fpHash);
+		}
+
+		for (const auto accObj : AzothProxy_->GetAllAccounts ())
+		{
 			const auto acc = qobject_cast<IAccount*> (accObj);
 			if (!acc)
 				continue;
 
+			const auto& hash = accId2key.value (acc->GetAccountID ());
+
 			QList<QStandardItem*> row
 			{
 				new QStandardItem { acc->GetAccountName () },
-				new QStandardItem { QString { fpHash } }
+				new QStandardItem { hash }
 			};
+
 			for (auto item : row)
 				item->setEditable (false);
 			Model_->appendRow (row);
