@@ -40,6 +40,8 @@
 #include <util/xpc/util.h>
 #include <util/sll/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/an/ianrulesstorage.h>
 #include "core.h"
 #include "mediainfo.h"
 #include "localfileresolver.h"
@@ -1124,6 +1126,75 @@ namespace LMP
 		auto watcher = dynamic_cast<QFutureWatcher<QList<QPair<AudioSource, MediaInfo>>>*> (sender ());
 		continueAfterSorted (watcher->result ());
 		emit playerAvailable (true);
+	}
+
+	namespace
+	{
+		QList<Entity> GetRelevantRules ()
+		{
+			const auto plugMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
+
+			QList<Entity> result;
+			for (auto storage : plugMgr->GetAllCastableTo<IANRulesStorage*> ())
+				result += storage->GetAllRules (AN::CatMediaPlayer);
+			return result;
+		}
+
+		bool MatchesRule (const MediaInfo& info, const Entity& rule)
+		{
+			auto url = info.Additional_.value ("URL").toUrl ();
+			if (url.isEmpty ())
+				url = QUrl::fromLocalFile (info.LocalPath_);
+
+			const QList<QPair<QString, ANFieldValue>> fields
+			{
+				{
+					AN::Field::MediaArtist,
+					ANStringFieldValue { info.Artist_ }
+				},
+				{
+					AN::Field::MediaAlbum,
+					ANStringFieldValue { info.Album_ }
+				},
+				{
+					AN::Field::MediaTitle,
+					ANStringFieldValue { info.Title_ }
+				},
+				{
+					AN::Field::MediaLength,
+					ANIntFieldValue { info.Length_, ANIntFieldValue::OEqual }
+				},
+				{
+					AN::Field::MediaPlayerURL,
+					ANStringFieldValue { url.toEncoded () }
+				}
+			};
+
+			const auto& map = rule.Additional_;
+			bool hadAtLeastOne = false;
+			for (const auto& field : fields)
+			{
+				if (!map.contains (field.first))
+					continue;
+
+				hadAtLeastOne = true;
+
+				const auto& value = map.value (field.first).value<ANFieldValue> ();
+				if (!(value == field.second))
+					return false;
+			}
+
+			return hadAtLeastOne;
+		}
+
+		QList<Entity> FindMatching (const MediaInfo& info, const QList<Entity>& rules)
+		{
+			QList<Entity> result;
+			for (const auto& rule : rules)
+				if (MatchesRule (info, rule))
+					result << rule;
+			return result;
+		}
 	}
 
 	void Player::continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>& sources)
