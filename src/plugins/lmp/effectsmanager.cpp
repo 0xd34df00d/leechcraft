@@ -29,6 +29,7 @@
 
 #include "effectsmanager.h"
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <QtDebug>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include "interfaces/lmp/ifilterconfigurator.h"
@@ -186,7 +187,8 @@ namespace LMP
 		}
 
 		const auto elem = RestoreFilter (effectPos, {});
-		elem->GetConfigurator ()->OpenDialog ();
+		if (const auto conf = elem->GetConfigurator ())
+			conf->OpenDialog ();
 
 		UpdateHeaders ();
 		SaveFilters ();
@@ -230,7 +232,16 @@ namespace LMP
 			return;
 		}
 
-		filter->GetConfigurator ()->OpenDialog ();
+		if (const auto conf = filter->GetConfigurator ())
+			conf->OpenDialog ();
+		else
+		{
+			const auto& name = Model_->item (row)->text ();
+			QMessageBox::warning (nullptr,
+					tr ("Effects configuration"),
+					tr ("Seems like %1 doesn't have any settings to configure.")
+						.arg ("<em>" + name + "</em>"));
+		}
 	}
 }
 }
