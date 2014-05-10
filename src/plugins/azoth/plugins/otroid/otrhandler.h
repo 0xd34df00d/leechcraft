@@ -119,7 +119,7 @@ namespace OTRoid
 		QString GetAccountName (const QString& accId);
 		QString GetVisibleEntryName (const QString& accId, const QString& entryId);
 
-		void CreatePrivkey (const char*, const char*);
+		void CreatePrivkey (const char*, const char*, bool confirm = true);
 #if OTRL_VERSION_MAJOR >= 4
 		void CreateInstag (const char*, const char*);
 

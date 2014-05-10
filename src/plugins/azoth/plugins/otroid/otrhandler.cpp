@@ -638,12 +638,12 @@ namespace OTRoid
 		return GetVisibleEntryNameImpl (entry);
 	}
 
-	void OtrHandler::CreatePrivkey (const char *accName, const char *proto)
+	void OtrHandler::CreatePrivkey (const char *accName, const char *proto, bool confirm)
 	{
 		if (IsGenerating_)
 			return;
 
-		if (QMessageBox::question (nullptr,
+		if (confirm && QMessageBox::question (nullptr,
 				"Azoth OTRoid",
 				tr ("Private keys for account %1 need to be generated. This takes quite some "
 					"time (from a few seconds to a couple of minutes), and while you can use "
