@@ -257,6 +257,7 @@ namespace AdvancedNotifications
 			auto e = Util::MakeEntity (rule.GetName (), {}, {}, {});
 			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = rule.GetCategory ();
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = QStringList { rule.GetTypes ().toList () };
+			e.Additional_ ["org.LC.AdvNotifications.AssocColor"] = rule.GetColor ();
 
 			for (const auto& fieldMatch : rule.GetFieldMatches ())
 			{
