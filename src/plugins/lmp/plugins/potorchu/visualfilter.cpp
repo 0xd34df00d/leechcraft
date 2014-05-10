@@ -75,18 +75,19 @@ namespace Potorchu
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, VisQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, Visualizer_ { gst_element_factory_make ("synaescope", nullptr) }
-	, XSink_ { gst_element_factory_make ("ximagesink", nullptr) }
+	, XSink_ { gst_element_factory_make ("xvimagesink", nullptr) }
 	{
 		const auto convIn = gst_element_factory_make ("audioconvert", nullptr);
+		const auto color = gst_element_factory_make ("colorspace", nullptr);
 
-		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, VisQueue_, convIn, Visualizer_, XSink_, nullptr);
+		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, VisQueue_, convIn, Visualizer_, color, XSink_, nullptr);
 
 		TeeAudioPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
 		auto audioPad = gst_element_get_static_pad (AudioQueue_, "sink");
 		gst_pad_link (TeeAudioPad_, audioPad);
 		gst_object_unref (audioPad);
 
-		gst_element_link_many (VisQueue_, convIn, Visualizer_, XSink_, nullptr);
+		gst_element_link_many (VisQueue_, convIn, Visualizer_, color, XSink_, nullptr);
 
 		auto win = new QWidget;
 		win->resize (800, 600);
