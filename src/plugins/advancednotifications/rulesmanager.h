@@ -65,6 +65,7 @@ namespace AdvancedNotifications
 		void UpdateRule (const QModelIndex&, const NotificationRule&);
 
 		void HandleEntity (const Entity&);
+		void SuggestRuleConfiguration (const Entity&);
 		QList<Entity> GetAllRules (const QString&) const;
 	private:
 		void LoadDefaultRules (int = -1);

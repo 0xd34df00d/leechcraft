@@ -169,6 +169,11 @@ namespace AdvancedNotifications
 	{
 		return Core::Instance ().GetRulesManager ()->GetAllRules (category);
 	}
+
+	void Plugin::RequestRuleConfiguration (const Entity& rule)
+	{
+		Core::Instance ().GetRulesManager ()->SuggestRuleConfiguration (rule);
+	}
 }
 }
 

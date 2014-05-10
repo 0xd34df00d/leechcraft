@@ -246,15 +246,26 @@ namespace AdvancedNotifications
 		emit focusOnRule (RulesModel_->index (0, 0));
 	}
 
+	void RulesManager::SuggestRuleConfiguration (const Entity& rule)
+	{
+		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+
+		const auto id = rule.Additional_ ["org.LC.AdvNotifications.RuleID"].toInt ();
+		emit focusOnRule (RulesModel_->index (id, 0));
+	}
+
 	QList<Entity> RulesManager::GetAllRules (const QString& category) const
 	{
 		QList<Entity> result;
-		for (const auto& rule : Rules_)
+		for (int i = 0; i < Rules_.size (); ++i)
 		{
+			const auto& rule = Rules_.at (i);
 			if (rule.GetCategory () != category)
 				continue;
 
 			auto e = Util::MakeEntity (rule.GetName (), {}, {}, {});
+			e.Additional_ ["org.LC.AdvNotifications.RuleID"] = i;
+			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.AdvancedNotifications";
 			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = rule.GetCategory ();
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = QStringList { rule.GetTypes ().toList () };
 			e.Additional_ ["org.LC.AdvNotifications.AssocColor"] = rule.GetColor ();
