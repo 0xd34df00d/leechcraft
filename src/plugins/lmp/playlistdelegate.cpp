@@ -150,6 +150,10 @@ namespace LMP
 			auto ruleRect = option.rect;
 			ruleRect.setWidth (rectWidth);
 
+			const auto& color = rule.Additional_ ["org.LC.AdvNotifications.AssocColor"].value<QColor> ();
+			if (color.isValid ())
+				painter->setPen (color);
+
 			style->drawItemText (painter,
 					ruleRect,
 					Qt::AlignCenter,
