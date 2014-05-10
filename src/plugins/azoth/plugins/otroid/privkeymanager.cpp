@@ -74,7 +74,7 @@ namespace OTRoid
 			if (QMessageBox::question (nullptr,
 						tr ("Private keys generation"),
 						tr ("Account %1 already has a private key, do you want to generate a new one?")
-							.arg (nameItem->text ()),
+							.arg ("<em>" + nameItem->text () + "</em>"),
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 				return;
 
