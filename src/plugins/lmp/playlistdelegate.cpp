@@ -37,6 +37,8 @@
 #include "mediainfo.h"
 #include "core.h"
 
+Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
+
 namespace LeechCraft
 {
 namespace LMP
@@ -131,6 +133,36 @@ namespace LMP
 		option.rect.adjust (oneShotRect.width () + Padding, 0, 0, 0);
 	}
 
+	void PlaylistDelegate::PaintRules (const QVariant& rulesVar,
+			QStyleOptionViewItemV4& option, QPainter *painter, QStyle *style) const
+	{
+		if (!rulesVar.isValid ())
+			return;
+
+		static const QString flagSym = QString::fromUtf8 ("⚑");
+		const auto flagWidth = option.fontMetrics.width (flagSym);
+		const auto rectWidth = std::max (flagWidth + 2 * Padding, option.rect.height ());
+
+		for (const auto& rule : rulesVar.value<QList<Entity>> ())
+		{
+			painter->save ();
+
+			auto ruleRect = option.rect;
+			ruleRect.setWidth (rectWidth);
+
+			style->drawItemText (painter,
+					ruleRect,
+					Qt::AlignCenter,
+					option.palette,
+					true,
+					flagSym);
+
+			painter->restore ();
+
+			option.rect.adjust (ruleRect.width () + Padding, 0, 0, 0);
+		}
+	}
+
 	void PlaylistDelegate::PaintTrack (QPainter *painter,
 			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
@@ -177,6 +209,8 @@ namespace LMP
 
 			option.rect.adjust (px.width () + Padding, 0, 0, 0);
 		}
+
+		PaintRules (index.data (Player::Role::MatchingRules), option, painter, style);
 
 		QString lengthText = Util::MakeTimeFromLong (info.Length_);
 		if (lengthText.startsWith ("00:"))
