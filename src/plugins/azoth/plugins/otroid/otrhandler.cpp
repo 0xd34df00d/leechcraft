@@ -688,6 +688,8 @@ namespace OTRoid
 			return;
 		}
 
+		emit privKeysChanged ();
+
 		QMessageBox::information (nullptr,
 				"Azoth OTRoid",
 				tr ("Keys are generated. Thanks for your patience."));

@@ -151,6 +151,8 @@ namespace OTRoid
 
 		void pollOTR ();
 #endif
+	signals:
+		void privKeysChanged ();
 	};
 }
 }
