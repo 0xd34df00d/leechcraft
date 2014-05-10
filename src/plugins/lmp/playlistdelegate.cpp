@@ -99,6 +99,38 @@ namespace LMP
 		return QSize (width, std::max (height, 32));
 	}
 
+	void PlaylistDelegate::PaintOneShot (const QVariant& oneShotPosVar,
+			QStyleOptionViewItemV4& option, QPainter *painter, QStyle *style, bool drawSelected) const
+	{
+		if (!oneShotPosVar.isValid ())
+			return;
+
+		const auto& text = QString::number (oneShotPosVar.toInt () + 1);
+		const auto& textWidth = option.fontMetrics.width (text);
+
+		auto oneShotRect = option.rect;
+		oneShotRect.setWidth (std::max (textWidth + 2 * Padding, oneShotRect.height ()));
+
+		painter->save ();
+		painter->setRenderHint (QPainter::Antialiasing);
+		painter->setRenderHint (QPainter::HighQualityAntialiasing);
+		painter->setBrush (option.palette.brush (drawSelected ?
+					QPalette::Highlight :
+					QPalette::Button));
+		painter->setPen (option.palette.color (QPalette::ButtonText));
+		painter->drawEllipse (oneShotRect);
+		painter->restore ();
+
+		style->drawItemText (painter,
+				oneShotRect,
+				Qt::AlignCenter,
+				option.palette,
+				true,
+				text);
+
+		option.rect.adjust (oneShotRect.width () + Padding, 0, 0, 0);
+	}
+
 	void PlaylistDelegate::PaintTrack (QPainter *painter,
 			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
@@ -134,34 +166,7 @@ namespace LMP
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &bgOpt, painter, option.widget);
 
-		const auto& oneShotPosVar = index.data (Player::Role::OneShotPos);
-		if (oneShotPosVar.isValid ())
-		{
-			const auto& text = QString::number (oneShotPosVar.toInt () + 1);
-			const auto& textWidth = option.fontMetrics.width (text);
-
-			auto oneShotRect = option.rect;
-			oneShotRect.setWidth (std::max (textWidth + 2 * Padding, oneShotRect.height ()));
-
-			painter->save ();
-			painter->setRenderHint (QPainter::Antialiasing);
-			painter->setRenderHint (QPainter::HighQualityAntialiasing);
-			painter->setBrush (option.palette.brush (drawSelected ?
-						QPalette::Highlight :
-						QPalette::Button));
-			painter->setPen (option.palette.color (QPalette::ButtonText));
-			painter->drawEllipse (oneShotRect);
-			painter->restore ();
-
-			style->drawItemText (painter,
-					oneShotRect,
-					Qt::AlignCenter,
-					option.palette,
-					true,
-					text);
-
-			option.rect.adjust (oneShotRect.width () + Padding, 0, 0, 0);
-		}
+		PaintOneShot (index.data (Player::Role::OneShotPos), option, painter, style, drawSelected);
 
 		if (index.data (Player::Role::IsStop).toBool ())
 		{
