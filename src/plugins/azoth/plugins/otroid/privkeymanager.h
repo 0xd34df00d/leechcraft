@@ -70,6 +70,8 @@ namespace OTRoid
 		PrivKeyManager (const OtrlUserState, IProxyObject*);
 
 		QAbstractItemModel* GetModel () const;
+	private:
+		void GenerateRequested (int);
 	public slots:
 		void reloadAll ();
 	private slots:
@@ -77,6 +79,7 @@ namespace OTRoid
 		void customButtonPressed (const QString&, const QByteArray&, int);
 	signals:
 		void keysChanged ();
+		void keysGenerationRequested (const QString&, const QString&);
 	};
 }
 }

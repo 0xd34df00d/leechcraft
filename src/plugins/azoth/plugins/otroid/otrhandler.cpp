@@ -781,6 +781,11 @@ namespace OTRoid
 		WriteKeys (UserState_, GetOTRFilename ("privkey"));
 	}
 
+	void OtrHandler::generateKeys (const QString& acc, const QString& proto)
+	{
+		CreatePrivkey (acc.toUtf8 ().constData (), proto.toUtf8 ().constData (), false);
+	}
+
 	void OtrHandler::handleOtrAction ()
 	{
 		auto act = qobject_cast<QAction*> (sender ());

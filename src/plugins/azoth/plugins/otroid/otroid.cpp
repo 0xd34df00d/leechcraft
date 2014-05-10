@@ -132,6 +132,10 @@ namespace OTRoid
 				SIGNAL (keysChanged ()),
 				OtrHandler_,
 				SLOT (writeKeys ()));
+		connect (PKManager_,
+				SIGNAL (keysGenerationRequested (QString, QString)),
+				OtrHandler_,
+				SLOT (generateKeys (QString, QString)));
 		XSD_->SetDataSource ("PrivKeys", PKManager_->GetModel ());
 	}
 

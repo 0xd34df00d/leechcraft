@@ -60,6 +60,27 @@ namespace OTRoid
 		return Model_;
 	}
 
+	void PrivKeyManager::GenerateRequested (int row)
+	{
+		const auto nameItem = Model_->item (row, ColumnAccName);
+		const auto item = Model_->item (row, ColumnKey);
+		if (!item)
+			return;
+
+		const auto& accId = item->data (RoleAccId).toString ();
+		const auto& protoId = item->data (RoleProtoId).toString ();
+
+		if (!item->text ().isEmpty ())
+			if (QMessageBox::question (nullptr,
+						tr ("Private keys generation"),
+						tr ("Account %1 already has a private key, do you want to generate a new one?")
+							.arg (nameItem->text ()),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return;
+
+		emit keysGenerationRequested (accId, protoId);
+	}
+
 	void PrivKeyManager::reloadAll ()
 	{
 		Model_->clear ();
@@ -151,10 +172,12 @@ namespace OTRoid
 		emit keysChanged ();
 	}
 
-	void PrivKeyManager::customButtonPressed (const QString&, const QByteArray& id, int)
+	void PrivKeyManager::customButtonPressed (const QString&, const QByteArray& id, int row)
 	{
 		if (id == "refresh")
 			reloadAll ();
+		else if (id == "generate")
+			GenerateRequested (row);
 	}
 }
 }

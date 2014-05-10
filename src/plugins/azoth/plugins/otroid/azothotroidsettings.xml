@@ -13,6 +13,9 @@
 		<tab>
 			<label value="Private keys" />
 			<item type="dataview" property="PrivKeys" addEnabled="false" modifyEnabled="false" resizeToContents="true">
+				<button id="generate">
+					<label value="Generate key" />
+				</button>
 				<button id="refresh">
 					<label value="Refresh" />
 				</button>

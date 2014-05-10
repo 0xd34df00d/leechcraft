@@ -139,6 +139,7 @@ namespace OTRoid
 		void writeFingerprints ();
 		void writeKeys ();
 
+		void generateKeys (const QString&, const QString&);
 	private slots:
 		void handleOtrAction ();
 #if OTRL_VERSION_MAJOR >= 4
