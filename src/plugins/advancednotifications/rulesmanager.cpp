@@ -38,6 +38,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/stdanfields.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "typedmatchers.h"
 #include "xmlsettingsmanager.h"
@@ -243,6 +244,29 @@ namespace AdvancedNotifications
 
 		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
 		emit focusOnRule (RulesModel_->index (0, 0));
+	}
+
+	QList<Entity> RulesManager::GetAllRules (const QString& category) const
+	{
+		QList<Entity> result;
+		for (const auto& rule : Rules_)
+		{
+			if (rule.GetCategory () != category)
+				continue;
+
+			auto e = Util::MakeEntity (rule.GetName (), {}, {}, {});
+			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = rule.GetCategory ();
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = QStringList { rule.GetTypes ().toList () };
+
+			for (const auto& fieldMatch : rule.GetFieldMatches ())
+			{
+				const auto& matcher = fieldMatch.GetMatcher ();
+				e.Additional_ [fieldMatch.GetFieldName ()] = QVariant::fromValue (matcher->GetValue ());
+			}
+
+			result << e;
+		}
+		return result;
 	}
 
 	void RulesManager::LoadDefaultRules (int version)
