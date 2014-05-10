@@ -135,10 +135,11 @@ namespace OTRoid
 #if OTRL_VERSION_MAJOR >= 4
 		void CreateAuthForEntry (ICLEntry*);
 #endif
-	private slots:
+	public slots:
 		void writeFingerprints ();
 		void writeKeys ();
 
+	private slots:
 		void handleOtrAction ();
 #if OTRL_VERSION_MAJOR >= 4
 		void handleAuthRequested ();
