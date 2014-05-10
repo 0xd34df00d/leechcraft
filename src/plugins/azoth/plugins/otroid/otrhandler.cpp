@@ -643,6 +643,7 @@ namespace OTRoid
 		if (IsGenerating_)
 			return;
 
+		const auto& hrAccName = GetAccountName (QString::fromUtf8 (accName));
 		if (confirm && QMessageBox::question (nullptr,
 				"Azoth OTRoid",
 				tr ("Private keys for account %1 need to be generated. This takes quite some "
@@ -651,9 +652,15 @@ namespace OTRoid
 					"until keys are generated. You will be notified when this process finishes. "
 					"Do you want to generate keys now?"
 					"<br /><br />You can also move mouse randomily to help generating entropy.")
-					.arg (GetAccountName (QString::fromUtf8 (accName))),
+					.arg (hrAccName),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
+
+		const auto& notify = Util::MakeNotification ("Azoth OTRoid",
+				tr ("Keys for account %1 are now being generated...")
+					.arg ("<em>" + hrAccName + "</em>"),
+				PInfo_);
+		CoreProxy_->GetEntityManager ()->HandleEntity (notify);
 
 		IsGenerating_ = true;
 
