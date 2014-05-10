@@ -10,6 +10,7 @@ include_directories (${LMP_INCLUDE_DIR}
 
 set (POTORCHU_SRCS
 	potorchu.cpp
+	visualfilter.cpp
 	)
 
 #CreateTrs ("lmp_potorchu" "en;ru_RU" POTORCHU_COMPILED_TRANSLATIONS)
