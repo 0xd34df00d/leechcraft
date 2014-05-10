@@ -117,7 +117,8 @@ namespace LMP
 			Info,
 			AlbumArt,
 			AlbumLength,
-			OneShotPos
+			OneShotPos,
+			MatchingRules
 		};
 
 		enum EnqueueFlag

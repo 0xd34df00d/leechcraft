@@ -58,6 +58,8 @@
 #include "engine/path.h"
 #include "localcollectionmodel.h"
 
+Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
+
 namespace LeechCraft
 {
 namespace LMP
@@ -625,29 +627,6 @@ namespace LMP
 
 	namespace
 	{
-		void FillItem (QStandardItem *item, const MediaInfo& info)
-		{
-			QString text;
-			if (!info.IsUseless ())
-			{
-				text = XmlSettingsManager::Instance ()
-						.property ("SingleTrackDisplayMask").toString ();
-
-				text = PerformSubstitutions (text, info).simplified ();
-				text.replace ("- -", "-");
-				if (text.startsWith ("- "))
-					text = text.mid (2);
-				if (text.endsWith (" -"))
-					text.chop (2);
-			}
-			else
-				text = QFileInfo (info.LocalPath_).fileName ();
-
-			item->setText (text);
-
-			item->setData (QVariant::fromValue (info), Player::Role::Info);
-		}
-
 		QStandardItem* MakeAlbumItem (const MediaInfo& info)
 		{
 			auto albumItem = new QStandardItem (QString ("%1 - %2")
@@ -665,10 +644,7 @@ namespace LMP
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
 		}
-	}
 
-	namespace
-	{
 		QPair<AudioSource, MediaInfo> PairResolve (const AudioSource& source)
 		{
 			MediaInfo info;
@@ -1195,6 +1171,33 @@ namespace LMP
 					result << rule;
 			return result;
 		}
+
+		void FillItem (QStandardItem *item, const MediaInfo& info, const QList<Entity>& rules)
+		{
+			QString text;
+			if (!info.IsUseless ())
+			{
+				text = XmlSettingsManager::Instance ()
+						.property ("SingleTrackDisplayMask").toString ();
+
+				text = PerformSubstitutions (text, info).simplified ();
+				text.replace ("- -", "-");
+				if (text.startsWith ("- "))
+					text = text.mid (2);
+				if (text.endsWith (" -"))
+					text.chop (2);
+			}
+			else
+				text = QFileInfo (info.LocalPath_).fileName ();
+
+			item->setText (text);
+
+			item->setData (QVariant::fromValue (info), Player::Role::Info);
+
+			const auto& matching = FindMatching (info, rules);
+			item->setData (matching.isEmpty () ? QVariant {} : QVariant::fromValue (matching),
+					Player::Role::MatchingRules);
+		}
 	}
 
 	void Player::continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>& sources)
@@ -1205,6 +1208,8 @@ namespace LMP
 		PlaylistModel_->blockSignals (true);
 
 		QString prevAlbumRoot;
+
+		const auto& rules = GetRelevantRules ();
 
 		for (const auto& sourcePair : sources)
 		{
@@ -1235,7 +1240,7 @@ namespace LMP
 					info = Url2Info_ [url];
 
 				if (info)
-					FillItem (item, *info);
+					FillItem (item, *info, rules);
 				else
 					item->setText (url.toString ());
 
@@ -1247,7 +1252,7 @@ namespace LMP
 				const auto& info = sourcePair.second;
 
 				const auto& albumID = info.Album_;
-				FillItem (item, info);
+				FillItem (item, info, rules);
 				if (albumID != prevAlbumRoot ||
 						AlbumRoots_ [albumID].isEmpty ())
 				{
@@ -1507,7 +1512,7 @@ namespace LMP
 			emit songInfoUpdated (info);
 		else
 		{
-			FillItem (curItem, info);
+			FillItem (curItem, info, {});
 			emit songChanged (info);
 		}
 
