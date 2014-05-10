@@ -47,6 +47,8 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/an/ianrulesstorage.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -59,6 +61,8 @@
 #include "util.h"
 #include "palettefixerfilter.h"
 #include "engine/sourceobject.h"
+
+Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
 
 namespace LeechCraft
 {
@@ -543,6 +547,12 @@ namespace LMP
 		TrackActions_->addAction (tr ("Perform action after this track stops..."),
 				this, SLOT (initPerformAfterTrackStop ()));
 
+		ExistingTrackActions_ = TrackActions_->addMenu (tr ("Existing"));
+		connect (ExistingTrackActions_,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (handleExistingTrackAction (QAction*)));
+
 		ActionToggleSearch_ = new QAction (tr ("Toggle search field"), Ui_.Playlist_);
 		ActionToggleSearch_->setShortcut (QKeySequence::Find);
 		ActionToggleSearch_->setCheckable (true);
@@ -639,6 +649,15 @@ namespace LMP
 		}
 
 		menu->addMenu (TrackActions_);
+		const auto& existingRules = idx.data (Player::Role::MatchingRules).value<QList<Entity>> ();
+		ExistingTrackActions_->menuAction ()->setVisible (!existingRules.isEmpty ());
+
+		ExistingTrackActions_->clear ();
+		for (const auto& rule : existingRules)
+		{
+			const auto action = ExistingTrackActions_->addAction (rule.Entity_.toString ());
+			action->setProperty ("LMP/SourceRule", QVariant::fromValue (rule));
+		}
 
 		menu->addSeparator ();
 
@@ -883,6 +902,26 @@ namespace LMP
 		EmitStateRule (Ui_.Playlist_->currentIndex (),
 				"Stopped",
 				tr ("Perform when %1 by %2 stops playing"));
+	}
+
+	void PlaylistWidget::handleExistingTrackAction (QAction *action)
+	{
+		const auto& rule = action->property ("LMP/SourceRule").value<Entity> ();
+		const auto& pluginId = rule.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
+
+		const auto pluginMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		const auto pluginObj = pluginMgr->GetPluginByID (pluginId);
+		if (!pluginObj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "plugin"
+					<< pluginId
+					<< "not found";
+			return;
+		}
+
+		const auto irs = qobject_cast<IANRulesStorage*> (pluginObj);
+		irs->RequestRuleConfiguration (rule);
 	}
 
 	void PlaylistWidget::handleMoveUp ()
