@@ -49,6 +49,8 @@ namespace Potorchu
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::LMP::ILMPPlugin LeechCraft::LMP::IFilterPlugin)
+
+		ILMPProxy_ptr LmpProxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -74,8 +74,9 @@ namespace Potorchu
 		return result;
 	}
 
-	void Plugin::SetLMPProxy (ILMPProxy_ptr)
+	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
 	{
+		LmpProxy_ = proxy;
 	}
 
 	QList<EffectInfo> Plugin::GetEffects () const
