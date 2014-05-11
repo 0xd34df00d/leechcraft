@@ -44,6 +44,7 @@ namespace LMP
 	class ILocalCollection;
 	class ITagResolver;
 	class ILMPUtilProxy;
+	class ILMPGuiProxy;
 
 	class ILMPProxy
 	{
@@ -55,6 +56,8 @@ namespace LMP
 		virtual ITagResolver* GetTagResolver () const = 0;
 
 		virtual const ILMPUtilProxy* GetUtilProxy () const = 0;
+
+		virtual const ILMPGuiProxy* GetGuiProxy () const = 0;
 
 		virtual void PreviewRelease (const QString& artist, const QString& release,
 				const QList<QPair<QString, int>>& tracks) const = 0;
