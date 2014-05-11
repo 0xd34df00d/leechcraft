@@ -622,6 +622,16 @@ namespace LackMan
 
 		for (const auto& version : pInfo.Versions_)
 		{
+			if (FindPackage (pInfo.Name_, version) != -1)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "package"
+						<< pInfo.Name_
+						<< version
+						<< "is already present, skipping...";
+				continue;
+			}
+
 			QueryAddPackage_.bindValue (":name", pInfo.Name_);
 			QueryAddPackage_.bindValue (":version", version);
 			Exec (QueryAddPackage_);
