@@ -33,7 +33,7 @@
 #include <QTimer>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include <util/network/addressesmodelmanager.h>
+#include <util/xsd/addressesmodelmanager.h>
 #include "server.h"
 #include "xmlsettingsmanager.h"
 

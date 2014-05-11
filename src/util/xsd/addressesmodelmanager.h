@@ -33,7 +33,7 @@
 #include <QVariantList>
 #include <QModelIndexList>
 #include <util/network/addresses.h>
-#include "networkconfig.h"
+#include "xsdconfig.h"
 
 class QHostAddress;
 class QStandardItemModel;
@@ -45,7 +45,7 @@ namespace Util
 {
 	class BaseSettingsManager;
 
-	class UTIL_NETWORK_API AddressesModelManager : public QObject
+	class UTIL_XSD_API AddressesModelManager : public QObject
 	{
 		Q_OBJECT
 

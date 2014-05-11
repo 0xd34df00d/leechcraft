@@ -1,4 +1,5 @@
 set (XSD_SRCS
+	addressesmodelmanager.cpp
 	util.cpp
 	)
 
