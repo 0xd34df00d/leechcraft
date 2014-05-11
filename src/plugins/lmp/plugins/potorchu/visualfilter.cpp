@@ -39,6 +39,8 @@
 #endif
 
 #include <util/lmp/gstutil.h>
+#include <interfaces/lmp/ilmpguiproxy.h>
+#include "viswidget.h"
 
 namespace LeechCraft
 {
@@ -78,8 +80,10 @@ namespace Potorchu
 		}
 	}
 
-	VisualFilter::VisualFilter (const QByteArray& effectId)
+	VisualFilter::VisualFilter (const QByteArray& effectId, const ILMPProxy_ptr& proxy)
 	: EffectId_ { effectId }
+	, LmpProxy_ { proxy }
+	, Widget_ { new VisWidget }
 	, Elem_ { gst_bin_new ("visualbin") }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
 	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
@@ -100,10 +104,7 @@ namespace Potorchu
 
 		gst_element_link_many (VisQueue_, convIn, Visualizer_, color, XSink_, nullptr);
 
-		auto win = new QWidget;
-		win->resize (800, 600);
-		win->show ();
-
+		Widget_->resize (800, 600);
 
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");

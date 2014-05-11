@@ -29,8 +29,10 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/lmp/ifilterelement.h>
+#include <interfaces/lmp/ilmpproxy.h>
 
 typedef struct _GstPad GstPad;
 typedef struct _GstPadTemplate GstPadTemplate;
@@ -41,12 +43,17 @@ namespace LMP
 {
 namespace Potorchu
 {
+	class VisWidget;
+
 	class VisualFilter : public QObject
 					   , public IFilterElement
 	{
 		Q_OBJECT
 
 		const QByteArray EffectId_;
+		const ILMPProxy_ptr LmpProxy_;
+
+		const std::shared_ptr<VisWidget> Widget_;
 
 		GstElement * const Elem_;
 		GstElement * const Tee_;
@@ -59,7 +66,7 @@ namespace Potorchu
 		GstPad *TeeAudioPad_;
 		GstPad *TeeVisPad_ = nullptr;
 	public:
-		VisualFilter (const QByteArray&);
+		VisualFilter (const QByteArray&, const ILMPProxy_ptr&);
 
 		QByteArray GetEffectId () const;
 		QByteArray GetInstanceId () const;
