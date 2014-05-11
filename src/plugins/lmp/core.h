@@ -54,6 +54,7 @@ namespace LMP
 	class ProgressManager;
 	class RadioManager;
 	class CollectionsManager;
+	class LMPProxy;
 
 	class Core : public QObject
 	{
@@ -79,6 +80,8 @@ namespace LMP
 		Player *Player_;
 		PreviewHandler *PreviewMgr_;
 
+		std::shared_ptr<LMPProxy> LmpProxy_;
+
 		QObjectList SyncPlugins_;
 		QObjectList CloudPlugins_;
 
@@ -97,6 +100,8 @@ namespace LMP
 
 		void PostInit ();
 		void InitWithOtherPlugins ();
+
+		const std::shared_ptr<LMPProxy>& GetLmpProxy () const;
 
 		void AddPlugin (QObject*);
 		QObjectList GetSyncPlugins () const;
