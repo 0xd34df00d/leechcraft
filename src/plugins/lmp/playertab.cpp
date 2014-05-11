@@ -204,6 +204,11 @@ namespace LMP
 		return "LMP";
 	}
 
+	void PlayerTab::AddNPTab (const QString& tabName, QWidget *widget)
+	{
+		Ui_.NPWidget_->AddTab (tabName, widget);
+	}
+
 	void PlayerTab::InitWithOtherPlugins ()
 	{
 		handleSongChanged (MediaInfo ());

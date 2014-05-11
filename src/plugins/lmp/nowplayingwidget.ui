@@ -161,7 +161,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QTabWidget" name="CurrentSongStack_">
+    <widget class="QTabWidget" name="CurrentSongTabs_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>

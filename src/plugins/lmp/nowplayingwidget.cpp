@@ -66,6 +66,11 @@ namespace LMP
 				SIGNAL (gotArtistImage (QString, QUrl)));
 	}
 
+	void NowPlayingWidget::AddTab (const QString& tabName, QWidget *widget)
+	{
+		Ui_.CurrentSongTabs_->addTab (widget, tabName);
+	}
+
 	void NowPlayingWidget::SetSimilarArtists (Media::SimilarityInfos_t infos)
 	{
 		LastInfos_ = infos;
