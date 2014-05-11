@@ -73,12 +73,16 @@ namespace LMP
 		Q_INTERFACES (LeechCraft::LMP::ILMPProxy)
 
 		LMPUtilProxy UtilProxy_;
+		LMPGuiProxy GuiProxy_;
 	public:
 		ILocalCollection* GetLocalCollection () const;
 		ITagResolver* GetTagResolver () const;
 		const ILMPUtilProxy* GetUtilProxy () const;
+		const ILMPGuiProxy* GetGuiProxy () const;
+		LMPGuiProxy* GetGuiProxy ();
 
-		void PreviewRelease (const QString& artist, const QString& release, const QList< QPair< QString, int > >& tracks) const;
+		void PreviewRelease (const QString& artist, const QString& release,
+				const QList<QPair<QString, int>>& tracks) const;
 	};
 }
 }

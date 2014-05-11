@@ -92,6 +92,16 @@ namespace LMP
 		return &UtilProxy_;
 	}
 
+	const ILMPGuiProxy* LMPProxy::GetGuiProxy () const
+	{
+		return &GuiProxy_;
+	}
+
+	LMPGuiProxy* LMPProxy::GetGuiProxy ()
+	{
+		return &GuiProxy_;
+	}
+
 	void LMPProxy::PreviewRelease (const QString& artist,
 			const QString& release, const QList<QPair<QString, int>>& tracks) const
 	{
