@@ -31,26 +31,36 @@
 
 #include <QObject>
 #include "interfaces/lmp/ilmpproxy.h"
+#include "interfaces/lmp/ilmputilproxy.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class LMPProxy : public QObject
-				   , public ILMPProxy
+	class LMPUtilProxy : public QObject
+					   , public ILMPUtilProxy
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ILMPProxy)
+		Q_INTERFACES (LeechCraft::LMP::ILMPUtilProxy)
 	public:
-		LMPProxy ();
-
-		ILocalCollection* GetLocalCollection () const;
-		ITagResolver* GetTagResolver () const;
 		QString FindAlbumArt (const QString&, bool) const;
 		QList<QFileInfo> RecIterateInfo (const QString&, bool, std::atomic<bool>*) const;
 		QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const;
 		QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const;
 		QString PerformSubstitutions (QString, const MediaInfo&, SubstitutionFlags) const;
+	};
+
+	class LMPProxy : public QObject
+				   , public ILMPProxy
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::LMP::ILMPProxy)
+
+		LMPUtilProxy UtilProxy_;
+	public:
+		ILocalCollection* GetLocalCollection () const;
+		ITagResolver* GetTagResolver () const;
+		const ILMPUtilProxy* GetUtilProxy () const;
 
 		void PreviewRelease (const QString& artist, const QString& release, const QList< QPair< QString, int > >& tracks) const;
 	};

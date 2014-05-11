@@ -29,15 +29,14 @@
 
 #pragma once
 
+#include <functional>
 #include <atomic>
-#include <QStringList>
+#include <QtPlugin>
 #include <QFileInfo>
-#include <interfaces/media/idiscographyprovider.h>
-#include "interfaces/lmp/ilmpproxy.h"
-#include "interfaces/lmp/ilmputilproxy.h"
+#include <QMap>
+#include <QVariant>
 
 class QPixmap;
-class QPoint;
 
 namespace LeechCraft
 {
@@ -45,24 +44,33 @@ namespace LMP
 {
 	struct MediaInfo;
 
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
-			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
-	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
+	enum SubstitutionFlag
+	{
+		SFNone,
+		SFSafeFilesystem
+	};
+	Q_DECLARE_FLAGS (SubstitutionFlags, SubstitutionFlag);
 
-	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
-	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
+	class ILMPUtilProxy
+	{
+	public:
+		virtual ~ILMPUtilProxy () {}
 
-	void ShowAlbumArt (const QString& near, const QPoint& pos);
+		virtual QString FindAlbumArt (const QString& near, bool includeCollection = true) const = 0;
 
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
+		virtual QList<QFileInfo> RecIterateInfo (const QString& dirPath,
+				bool followSymlinks = false,
+				std::atomic<bool> *stopGuard = nullptr) const = 0;
 
-	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
+		virtual QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const = 0;
 
-	bool ShouldRememberProvs ();
+		virtual QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const = 0;
 
-	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
-
-	bool CompareArtists (QString, QString, bool withoutThe);
+		virtual QString PerformSubstitutions (QString mask,
+				const MediaInfo& info, SubstitutionFlags flags = SFNone) const = 0;
+	};
 }
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::SubstitutionFlags)
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPUtilProxy, "org.LeechCraft.LMP.ILMPUtilProxy/1.0");

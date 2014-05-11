@@ -122,7 +122,7 @@ namespace LMP
 			return;
 		}
 
-		ilmpPlug->SetLMPProxy (ILMPProxy_Ptr (new LMPProxy ()));
+		ilmpPlug->SetLMPProxy (ILMPProxy_ptr (new LMPProxy ()));
 
 		const auto& classes = ip2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&

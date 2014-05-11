@@ -31,6 +31,7 @@
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <interfaces/lmp/ilmpproxy.h>
+#include <interfaces/lmp/ilmputilproxy.h>
 
 namespace LeechCraft
 {
@@ -54,7 +55,7 @@ namespace Graffiti
 				SLOT (handleImplFinished ()));
 
 		const auto& future = QtConcurrent::run ([this, path]
-				{ return LMPProxy_->RecIterateInfo (path, true, &StopFlag_); });
+				{ return LMPProxy_->GetUtilProxy ()->RecIterateInfo (path, true, &StopFlag_); });
 		watcher->setFuture (future);
 	}
 

@@ -38,6 +38,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <interfaces/lmp/ilmpproxy.h>
+#include <interfaces/lmp/ilmputilproxy.h>
 #include "xmlsettingsmanager.h"
 
 typedef std::shared_ptr<QFile> QFile_ptr;
@@ -191,7 +192,7 @@ namespace DumbSync
 				this,
 				SLOT (handleCopyFinished ()));
 
-		const auto& artPath = LMPProxy_->FindAlbumArt (origLocalPath);
+		const auto& artPath = LMPProxy_->GetUtilProxy ()->FindAlbumArt (origLocalPath);
 		std::function<WorkerThreadResult (void)> copier = [target, localPath, artPath] () -> WorkerThreadResult
 				{
 					QFile_ptr file (new QFile (localPath));

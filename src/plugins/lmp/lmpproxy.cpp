@@ -39,8 +39,31 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	LMPProxy::LMPProxy ()
+	QString LMPUtilProxy::FindAlbumArt (const QString& nearPath, bool includeCollection) const
 	{
+		return FindAlbumArtPath (nearPath, !includeCollection);
+	}
+
+	QList<QFileInfo> LMPUtilProxy::RecIterateInfo (const QString& path,
+			bool followSymLinks, std::atomic<bool> *stopGuard) const
+	{
+		return LMP::RecIterateInfo (path, followSymLinks, stopGuard);
+	}
+
+	QMap<QString, std::function<QString (MediaInfo)>> LMPUtilProxy::GetSubstGetters () const
+	{
+		return LMP::GetSubstGetters ();
+	}
+
+	QMap<QString, std::function<void (MediaInfo&, QString)>> LMPUtilProxy::GetSubstSetters () const
+	{
+		return LMP::GetSubstSetters ();
+	}
+
+	QString LMPUtilProxy::PerformSubstitutions (QString mask,
+			const MediaInfo& info, SubstitutionFlags flags) const
+	{
+		return LMP::PerformSubstitutions (mask, info, flags);
 	}
 
 	ILocalCollection* LMPProxy::GetLocalCollection () const
@@ -53,31 +76,9 @@ namespace LMP
 		return Core::Instance ().GetLocalFileResolver ();
 	}
 
-	QString LMPProxy::FindAlbumArt (const QString& nearPath, bool includeCollection) const
+	const ILMPUtilProxy* LMPProxy::GetUtilProxy () const
 	{
-		return FindAlbumArtPath (nearPath, !includeCollection);
-	}
-
-	QList<QFileInfo> LMPProxy::RecIterateInfo (const QString& path,
-			bool followSymLinks, std::atomic<bool> *stopGuard) const
-	{
-		return LMP::RecIterateInfo (path, followSymLinks, stopGuard);
-	}
-
-	QMap<QString, std::function<QString (MediaInfo)>> LMPProxy::GetSubstGetters () const
-	{
-		return LMP::GetSubstGetters ();
-	}
-
-	QMap<QString, std::function<void (MediaInfo&, QString)>> LMPProxy::GetSubstSetters () const
-	{
-		return LMP::GetSubstSetters ();
-	}
-
-	QString LMPProxy::PerformSubstitutions (QString mask,
-			const MediaInfo& info, SubstitutionFlags flags) const
-	{
-		return LMP::PerformSubstitutions (mask, info, flags);
+		return &UtilProxy_;
 	}
 
 	void LMPProxy::PreviewRelease (const QString& artist,
