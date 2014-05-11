@@ -29,45 +29,23 @@
 
 #pragma once
 
-#include <QObject>
-#include <QVariantList>
-#include <QModelIndexList>
-#include <util/network/addresses.h>
+#include <QList>
+#include <QPair>
+#include <QString>
+#include <QMetaType>
 #include "networkconfig.h"
 
 class QHostAddress;
-class QStandardItemModel;
-class QStandardItem;
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class BaseSettingsManager;
+	typedef QList<QPair<QString, QString>> AddrList_t;
 
-	class UTIL_NETWORK_API AddressesModelManager : public QObject
-	{
-		Q_OBJECT
-
-		QStandardItemModel * const Model_;
-		BaseSettingsManager * const BSM_;
-	public:
-		AddressesModelManager (BaseSettingsManager*, int defaultPort, QObject* = 0);
-
-		static void RegisterTypes ();
-
-		QAbstractItemModel* GetModel () const;
-		AddrList_t GetAddresses () const;
-	private:
-		void SaveSettings () const;
-		void AppendRow (const QPair<QString, QString>&);
-	private Q_SLOTS:
-		void updateAvailInterfaces ();
-	public Q_SLOTS:
-		void addRequested (const QString&, const QVariantList&);
-		void removeRequested (const QString&, const QModelIndexList&);
-	Q_SIGNALS:
-		void addressesChanged ();
-	};
+	UTIL_NETWORK_API AddrList_t GetLocalAddresses (int defaultPort = 0);
+	UTIL_NETWORK_API QList<QHostAddress> GetAllAddresses ();
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Util::AddrList_t)

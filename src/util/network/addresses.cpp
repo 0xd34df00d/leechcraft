@@ -27,47 +27,43 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QVariantList>
-#include <QModelIndexList>
-#include <util/network/addresses.h>
-#include "networkconfig.h"
-
-class QHostAddress;
-class QStandardItemModel;
-class QStandardItem;
+#include "addresses.h"
+#include <QHostAddress>
+#include <QNetworkInterface>
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class BaseSettingsManager;
-
-	class UTIL_NETWORK_API AddressesModelManager : public QObject
+	AddrList_t GetLocalAddresses (int defaultPort)
 	{
-		Q_OBJECT
+		AddrList_t defaultAddrs;
+		const auto locals
+		{
+			QHostAddress::parseSubnet ("10.0.0.0/8"),
+			QHostAddress::parseSubnet ("172.16.0.0/12"),
+			QHostAddress::parseSubnet ("192.168.0.0/16")
+		};
+		for (const auto& addr : GetAllAddresses ())
+			if (std::any_of (std::begin (locals), std::end (locals),
+					[&addr] (decltype (*std::begin (locals)) subnet)
+						{ return addr.isInSubnet (subnet); }))
+				defaultAddrs.push_back ({ addr.toString (), QString::number (defaultPort) });
+		return defaultAddrs;
+	}
 
-		QStandardItemModel * const Model_;
-		BaseSettingsManager * const BSM_;
-	public:
-		AddressesModelManager (BaseSettingsManager*, int defaultPort, QObject* = 0);
+	QList<QHostAddress> GetAllAddresses ()
+	{
+		QList<QHostAddress> result;
+		for (const auto& addr : QNetworkInterface::allAddresses ())
+			if (addr.scopeId ().isEmpty ())
+				result << addr;
 
-		static void RegisterTypes ();
+		if (!result.contains (QHostAddress::Any))
+			result << QHostAddress::Any;
 
-		QAbstractItemModel* GetModel () const;
-		AddrList_t GetAddresses () const;
-	private:
-		void SaveSettings () const;
-		void AppendRow (const QPair<QString, QString>&);
-	private Q_SLOTS:
-		void updateAvailInterfaces ();
-	public Q_SLOTS:
-		void addRequested (const QString&, const QVariantList&);
-		void removeRequested (const QString&, const QModelIndexList&);
-	Q_SIGNALS:
-		void addressesChanged ();
-	};
+		return result;
+	}
+
 }
 }

@@ -1,4 +1,5 @@
 set (NETWORK_SRCS
+	addresses.cpp
 	addressesmodelmanager.cpp
 	customcookiejar.cpp
 	customnetworkreply.cpp
