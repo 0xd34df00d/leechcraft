@@ -50,7 +50,12 @@ namespace Potorchu
 	{
 		void EnumerateVisualizers ()
 		{
-			const auto list = gst_registry_feature_filter (gst_registry_get_default (),
+#if GST_CHECK_VERSION (1, 0, 0)
+			const auto registry = gst_registry_get ();
+#else
+			const auto registry = gst_registry_get_default ();
+#endif
+			const auto list = gst_registry_feature_filter (registry,
 					[] (GstPluginFeature *feature, gpointer) -> gboolean
 					{
 						if (!GST_IS_ELEMENT_FACTORY (feature))
