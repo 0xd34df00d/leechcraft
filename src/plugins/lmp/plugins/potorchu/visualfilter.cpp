@@ -31,7 +31,13 @@
 #include <QtDebug>
 #include <QWidget>
 #include <gst/gst.h>
+
+#if GST_CHECK_VERSION (1, 0, 0)
+#include <gst/video/videooverlay.h>
+#else
 #include <gst/interfaces/xoverlay.h>
+#endif
+
 #include <util/lmp/gstutil.h>
 
 namespace LeechCraft
@@ -93,7 +99,11 @@ namespace Potorchu
 		win->resize (800, 600);
 		win->show ();
 
+#if GST_CHECK_VERSION (1, 0, 0)
+		gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (XSink_), win->winId ());
+#else
 		gst_x_overlay_set_window_handle (GST_X_OVERLAY (XSink_), win->winId ());
+#endif
 
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");
