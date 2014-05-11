@@ -66,6 +66,8 @@ namespace Potorchu
 		IFilterConfigurator* GetConfigurator () const;
 	protected:
 		GstElement* GetElement () const;
+	private:
+		void SetOverlay ();
 	};
 }
 }

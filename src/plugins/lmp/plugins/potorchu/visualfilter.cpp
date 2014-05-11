@@ -104,11 +104,6 @@ namespace Potorchu
 		win->resize (800, 600);
 		win->show ();
 
-#if GST_CHECK_VERSION (1, 0, 0)
-		gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (XSink_), win->winId ());
-#else
-		gst_x_overlay_set_window_handle (GST_X_OVERLAY (XSink_), win->winId ());
-#endif
 
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");
@@ -137,6 +132,15 @@ namespace Potorchu
 	GstElement* VisualFilter::GetElement () const
 	{
 		return Elem_;
+	}
+
+	void VisualFilter::SetOverlay ()
+	{
+#if GST_CHECK_VERSION (1, 0, 0)
+		gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (XSink_), Widget_->GetVisWinId ());
+#else
+		gst_x_overlay_set_window_handle (GST_X_OVERLAY (XSink_), Widget_->GetVisWinId ());
+#endif
 	}
 }
 }
