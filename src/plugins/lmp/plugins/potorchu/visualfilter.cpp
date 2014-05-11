@@ -136,6 +136,27 @@ namespace Potorchu
 		return Elem_;
 	}
 
+	void VisualFilter::PostAdd (IPath *path)
+	{
+		path->AddSyncHandler ([this] (GstBus*, GstMessage *message)
+				{
+					if (GST_MESSAGE_TYPE (message) != GST_MESSAGE_ELEMENT)
+						return GST_BUS_PASS;
+
+					if (!gst_structure_has_name (message->structure, "prepare-xwindow-id"))
+						return GST_BUS_PASS;
+
+					SetOverlay ();
+
+					gst_message_unref (message);
+
+					return GST_BUS_DROP;
+				},
+				this);
+
+		SetOverlay ();
+	}
+
 	void VisualFilter::SetOverlay ()
 	{
 #if GST_CHECK_VERSION (1, 0, 0)

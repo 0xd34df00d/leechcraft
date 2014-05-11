@@ -72,6 +72,7 @@ namespace Potorchu
 		QByteArray GetInstanceId () const;
 		IFilterConfigurator* GetConfigurator () const;
 	protected:
+		void PostAdd (IPath*) override;
 		GstElement* GetElement () const;
 	private:
 		void SetOverlay ();
