@@ -37,10 +37,20 @@ namespace
 static const int kMaxBadgesDisplayed = 6;
 static const int kRowsInOneColumn = 3;
 static const CGFloat kLabelsDyOffset = 10;
+static const int kFontSize = 24;
 
 }
 
 @implementation LCBadgeView
+
+- (void)dealloc
+{
+	if (badges)
+		[badges release];
+	if (colors)
+		[colors release];
+	[super dealloc];
+}
 
 - (BOOL)displayBadges: (NSArray*)b andColors: (NSArray*)c
 {
@@ -131,7 +141,7 @@ static const CGFloat kLabelsDyOffset = 10;
 										   badgeSize.width,
 										   badgeSize.height);
 
-			NSRect badgeWithBorderRect = CGRectInset (badgeRect, -badgeBorderDx, -2);
+			NSRect badgeWithBorderRect = CGRectInset (badgeRect, -badgeBorderDx, -1.5);
 			const CGFloat maxX = CGRectGetMaxX (badgeWithBorderRect) + 0.1;
 			const CGFloat maxY = CGRectGetMaxY (badgeWithBorderRect) + 0.1;
 
@@ -158,17 +168,28 @@ static const CGFloat kLabelsDyOffset = 10;
 			if (!CGRectContainsRect (boundary, badgeWithBorderRect))
 				break;
 
+			[NSGraphicsContext saveGraphicsState];
+
+			NSShadow* shadow = [[[NSShadow alloc] init] autorelease];
+			shadow.shadowColor = [[NSColor blackColor] colorWithAlphaComponent:0.4];
+			shadow.shadowBlurRadius = 1;
+			shadow.shadowOffset = NSMakeSize (0, -1);
+			[shadow set];
+
+			[NSGraphicsContext restoreGraphicsState];
+
 			NSBezierPath* path = [NSBezierPath bezierPathWithRoundedRect: badgeWithBorderRect
-																 xRadius: badgeWithBorderRect.size.height / 2.0
-																 yRadius: badgeWithBorderRect.size.height / 2.0];
+																 xRadius: badgeSize.height / 2.0
+																 yRadius: badgeSize.height / 2.0];
 
 			NSArray* gradientColors = [self getGradientColorsForColor: badgeColor];
 			NSGradient* gradient = [[NSGradient alloc] initWithStartingColor: [gradientColors objectAtIndex: 0]
 																 endingColor: [gradientColors objectAtIndex: 1]];
 
 			[gradient drawInBezierPath: path angle: -90.0];
+			[gradient release];
 
-			NSMutableParagraphStyle* paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+			NSMutableParagraphStyle* paragraphStyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
 			[paragraphStyle setAlignment: NSCenterTextAlignment];
 
 			const CGFloat brightness =
@@ -183,7 +204,7 @@ static const CGFloat kLabelsDyOffset = 10;
 			NSDictionary* textAttributes = @{
 					NSForegroundColorAttributeName: textColor,
 					NSParagraphStyleAttributeName: paragraphStyle,
-					NSFontAttributeName: [NSFont systemFontOfSize: 25]
+					NSFontAttributeName: [NSFont systemFontOfSize: kFontSize]
 			};
 			[badge drawInRect: badgeRect withAttributes: textAttributes];
 			yOffset -= kLabelsDyOffset;
@@ -198,7 +219,7 @@ static const CGFloat kLabelsDyOffset = 10;
 
 	static NSString* const elidePrefix = @"#";
 	static const NSUInteger elideLen = [elidePrefix length];
-	static NSDictionary* const attrs = [@{NSFontAttributeName: [NSFont systemFontOfSize: 25]} retain];
+	static NSDictionary* const attrs = [@{NSFontAttributeName: [NSFont systemFontOfSize: kFontSize]} retain];
 
 	NSSize sz = [s sizeWithAttributes: attrs];
 	const auto borderDx = sz.height / 2.0;
@@ -230,7 +251,7 @@ static const CGFloat kLabelsDyOffset = 10;
 			*stop = YES;
 		}
 	}];
-	return [result copy];
+	return [[result copy] autorelease];
 }
 
 - (int)maxBadges
@@ -245,23 +266,14 @@ static const CGFloat kLabelsDyOffset = 10;
 	CGFloat br = 0.0;
 	CGFloat alp = 0.0;
 
-	[initialColor getHue:&hue saturation:&sat brightness:&br alpha:&alp];
+	[initialColor getHue: &hue saturation: &sat brightness: &br alpha: &alp];
 
-	NSColor* c1 = nil;
-	NSColor* c2 = nil;
-
-	const CGFloat shiftBr = 0.1;
-	if (br - shiftBr < 0)
-	{
-		c1 = initialColor;
-		c2 = [NSColor colorWithCalibratedHue:hue saturation:sat brightness:std::min (br + shiftBr, 1.0) alpha:alp];
-	}
-	else
-	{
-		c1 = [NSColor colorWithCalibratedHue:hue saturation:sat brightness:std::max (br-shiftBr, 0.0) alpha:alp];
-		c2 = [NSColor colorWithCalibratedHue:hue saturation:sat brightness:std::min (br+shiftBr, 1.0) alpha:alp];
-	}
-	return @[c2, c1];
+	sat /= 1.8;
+	br = std::max (0.0, br - 0.08);
+	NSColor * cUp = [NSColor colorWithCalibratedHue: hue saturation: sat brightness: br alpha: alp];
+	NSColor * cDown = [initialColor shadowWithLevel: 0.25];
+	
+	return @[cUp, cDown];
 }
 
 @end

@@ -37,6 +37,7 @@
 	NSArray* colors;
 }
 
+- (void)dealloc;
 - (BOOL)displayBadges: (NSArray*)b andColors: (NSArray*)c;
 - (void)drawRect: (NSRect)rect;
 - (NSString*)elideString: (NSString*)s forWidth: (CGFloat)width outSize: (NSSize*)pSize;
