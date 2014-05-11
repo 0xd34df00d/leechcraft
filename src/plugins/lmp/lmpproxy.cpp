@@ -33,6 +33,7 @@
 #include "localcollection.h"
 #include "localfileresolver.h"
 #include "previewhandler.h"
+#include "playertab.h"
 #include "util.h"
 
 namespace LeechCraft
@@ -64,6 +65,16 @@ namespace LMP
 			const MediaInfo& info, SubstitutionFlags flags) const
 	{
 		return LMP::PerformSubstitutions (mask, info, flags);
+	}
+
+	void LMPGuiProxy::SetPlayerTab (PlayerTab *tab)
+	{
+		PlayerTab_ = tab;
+	}
+
+	void LMPGuiProxy::AddCurrentSongTab (const QString& title, QWidget *widget) const
+	{
+		PlayerTab_->AddNPTab (title, widget);
 	}
 
 	ILocalCollection* LMPProxy::GetLocalCollection () const
