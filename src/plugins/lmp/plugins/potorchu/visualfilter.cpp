@@ -105,6 +105,7 @@ namespace Potorchu
 		gst_element_link_many (VisQueue_, convIn, Visualizer_, color, XSink_, nullptr);
 
 		Widget_->resize (800, 600);
+		proxy->GetGuiProxy ()->AddCurrentSongTab (tr ("Visualization"), Widget_.get ());
 
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");
