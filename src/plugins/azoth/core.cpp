@@ -931,7 +931,8 @@ namespace Azoth
 					c.unicode ();
 			hash += nick.length ();
 		}
-		const auto& nc = colors.at (std::abs (hash) % colors.size ());
+		hash = std::abs (hash);
+		const auto& nc = colors.at (hash % colors.size ());
 		return nc.name ();
 	}
 
