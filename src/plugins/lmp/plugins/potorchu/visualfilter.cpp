@@ -94,9 +94,9 @@ namespace Potorchu
 				VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
 		gst_element_link_many (VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
 
-		auto teeVisPad = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
+		TeeVisPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
 		auto streamPad = gst_element_get_static_pad (VisQueue_, "sink");
-		gst_pad_link (teeVisPad, streamPad);
+		gst_pad_link (TeeVisPad_, streamPad);
 		gst_object_unref (streamPad);
 	}
 
