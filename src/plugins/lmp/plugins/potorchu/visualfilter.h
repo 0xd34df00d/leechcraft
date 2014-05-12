@@ -60,6 +60,7 @@ namespace Potorchu
 		GstPad *TeeVisPad_ = nullptr;
 	public:
 		VisBranch (GstElement *elem, GstElement *tee, GstPadTemplate *teeTemplate);
+		~VisBranch ();
 
 		GstElement* GetXSink () const;
 	};

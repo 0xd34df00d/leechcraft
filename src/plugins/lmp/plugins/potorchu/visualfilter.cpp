@@ -100,6 +100,21 @@ namespace Potorchu
 		gst_object_unref (streamPad);
 	}
 
+	VisBranch::~VisBranch ()
+	{
+		auto streamPad = gst_element_get_static_pad (VisQueue_, "sink");
+		gst_pad_unlink (TeeVisPad_, streamPad);
+		gst_element_release_request_pad (Tee_, TeeVisPad_);
+		gst_object_unref (streamPad);
+
+		gst_element_unlink_many (VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
+		for (auto elem : { VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_ })
+		{
+			gst_element_set_state (elem, GST_STATE_NULL);
+			gst_bin_remove (GST_BIN (Elem_), elem);
+		}
+	}
+
 	GstElement* VisBranch::GetXSink () const
 	{
 		return XSink_;
