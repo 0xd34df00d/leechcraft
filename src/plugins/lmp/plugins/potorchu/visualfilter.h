@@ -60,7 +60,9 @@ namespace Potorchu
 		GstPadTemplate * const TeeTemplate_;
 		GstElement * const AudioQueue_;
 		GstElement * const VisQueue_;
+		GstElement * const VisConverter_;
 		GstElement *Visualizer_;
+		GstElement * const VisColorspace_;
 		GstElement * const XSink_;
 
 		GstPad *TeeAudioPad_;
