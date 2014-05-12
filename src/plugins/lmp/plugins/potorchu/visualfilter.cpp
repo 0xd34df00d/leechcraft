@@ -104,8 +104,8 @@ namespace Potorchu
 		{
 			[this] () -> void
 			{
-				for (auto elem : { VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_ })
-					gst_element_sync_state_with_parent (elem);
+				if (!SyncedStates_)
+					SyncStates ();
 			},
 			0
 		};
@@ -124,6 +124,13 @@ namespace Potorchu
 			gst_element_set_state (elem, GST_STATE_NULL);
 			gst_bin_remove (GST_BIN (Elem_), elem);
 		}
+	}
+
+	void VisBranch::SyncStates ()
+	{
+		SyncedStates_ = true;
+		for (auto elem : { VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_ })
+			gst_element_sync_state_with_parent (elem);
 	}
 
 	GstElement* VisBranch::GetXSink () const

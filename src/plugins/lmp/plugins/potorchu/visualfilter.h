@@ -58,9 +58,13 @@ namespace Potorchu
 		GstElement * const XSink_;
 
 		GstPad *TeeVisPad_ = nullptr;
+
+		bool SyncedStates_ = false;
 	public:
 		VisBranch (GstElement *elem, GstElement *tee, GstPadTemplate *teeTemplate);
 		~VisBranch ();
+
+		void SyncStates ();
 
 		GstElement* GetXSink () const;
 	};
