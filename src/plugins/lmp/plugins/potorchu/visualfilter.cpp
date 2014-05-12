@@ -88,7 +88,7 @@ namespace Potorchu
 	, VisConverter_ { gst_element_factory_make ("audioconvert", nullptr) }
 	, Visualizer_ { gst_element_factory_make ("synaescope", nullptr) }
 	, VisColorspace_ { gst_element_factory_make ("colorspace", nullptr) }
-	, XSink_ { gst_element_factory_make ("xvimagesink", nullptr) }
+	, XSink_ { gst_element_factory_make ("ximagesink", nullptr) }
 	{
 		gst_bin_add_many (GST_BIN (Elem_),
 				VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
