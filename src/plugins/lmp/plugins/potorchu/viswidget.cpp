@@ -29,6 +29,7 @@
 
 #include "viswidget.h"
 #include <QVBoxLayout>
+#include <QMouseEvent>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -45,6 +46,22 @@ namespace Potorchu
 	WId VisWidget::GetVisWinId () const
 	{
 		return winId ();
+	}
+
+	void VisWidget::mouseReleaseEvent (QMouseEvent *event)
+	{
+		switch (event->button ())
+		{
+		case Qt::LeftButton:
+			emit nextVis ();
+			break;
+		case Qt::RightButton:
+			emit prevVis ();
+			break;
+		default:
+			QWidget::mouseReleaseEvent (event);
+			break;
+		}
 	}
 }
 }

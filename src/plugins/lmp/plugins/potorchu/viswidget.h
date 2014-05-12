@@ -39,10 +39,16 @@ namespace Potorchu
 {
 	class VisWidget : public QWidget
 	{
+		Q_OBJECT
 	public:
 		VisWidget (QWidget* = 0);
 
 		WId GetVisWinId () const;
+	protected:
+		void mouseReleaseEvent (QMouseEvent*);
+	signals:
+		void prevVis ();
+		void nextVis ();
 	};
 }
 }
