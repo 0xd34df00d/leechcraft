@@ -214,33 +214,8 @@ namespace Potorchu
 
 	void VisualFilter::handleNextVis ()
 	{
-		/*
-		auto streamPad = gst_element_get_static_pad (VisQueue_, "sink");
-
-		gst_pad_unlink (TeeVisPad_, streamPad);
-		gst_element_release_request_pad (Tee_, TeeVisPad_);
-		gst_element_unlink (VisConverter_, Visualizer_);
-		gst_element_unlink (Visualizer_, VisColorspace_);
-
-		gst_element_set_state (Visualizer_, GST_STATE_NULL);
-
-		gst_bin_remove (GST_BIN (Elem_), Visualizer_);
-
-		Visualizer_ = gst_element_factory_make ("synaescope", nullptr);
-
-		gst_bin_add (GST_BIN (Elem_), Visualizer_);
-
-		gst_element_link (VisConverter_, Visualizer_);
-		gst_element_link (Visualizer_, VisColorspace_);
-		TeeVisPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
-		gst_pad_link (TeeVisPad_, streamPad);
-
-		gst_element_sync_state_with_parent (Visualizer_);
-
-		gst_object_unref (streamPad);
-
-		SetOverlay ();
-		*/
+		VisBranch_.reset ();
+		VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_ });
 	}
 }
 }
