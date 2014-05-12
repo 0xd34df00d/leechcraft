@@ -771,6 +771,8 @@ namespace LMP
 		case GST_MESSAGE_LATENCY:
 			gst_bin_recalculate_latency (GST_BIN (Dec_));
 			break;
+		case GST_MESSAGE_QOS:
+			break;
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_STREAM_START:
 			setActualSource (CurrentSource_);
