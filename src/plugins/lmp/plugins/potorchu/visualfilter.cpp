@@ -158,8 +158,6 @@ namespace Potorchu
 					return GST_BUS_DROP;
 				},
 				this);
-
-		SetOverlay ();
 	}
 
 	void VisualFilter::SetOverlay ()
