@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "potorchu.h"
+#include "visualfilter.h"
 
 namespace LeechCraft
 {
@@ -81,7 +82,23 @@ namespace Potorchu
 
 	QList<EffectInfo> Plugin::GetEffects () const
 	{
-		return {};
+		return
+		{
+			{
+				GetUniqueID () + ".Filter",
+				tr ("Visual effects"),
+				{},
+				false,
+				[this] (const QByteArray&, IPath*) -> IFilterElement*
+				{
+					return new VisualFilter
+						{
+							GetUniqueID () + ".Filter",
+							LmpProxy_
+						};
+				}
+			}
+		};
 	}
 }
 }
