@@ -87,6 +87,8 @@ namespace Potorchu
 		GstPad *TeeAudioPad_;
 
 		std::unique_ptr<VisBranch> VisBranch_;
+
+		IPath *Path_;
 	public:
 		VisualFilter (const QByteArray&, const ILMPProxy_ptr&);
 

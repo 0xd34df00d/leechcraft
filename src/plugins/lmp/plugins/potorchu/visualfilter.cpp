@@ -191,6 +191,7 @@ namespace Potorchu
 
 	void VisualFilter::PostAdd (IPath *path)
 	{
+		Path_ = path;
 		path->AddSyncHandler ([this] (GstBus*, GstMessage *message)
 				{
 #if GST_CHECK_VERSION (1, 0, 0)
@@ -227,7 +228,13 @@ namespace Potorchu
 	void VisualFilter::handleNextVis ()
 	{
 		VisBranch_.reset ();
-		VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_ });
+
+
+		Path_->PerformWProbe ([this] () -> void
+				{
+					VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_ });
+					VisBranch_->SyncStates ();
+				});
 	}
 }
 }
