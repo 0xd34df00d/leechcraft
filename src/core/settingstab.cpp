@@ -345,8 +345,8 @@ namespace LeechCraft
 		if (!ihs)
 			return;
 
+		handleBackRequested ();
 		Toolbar_->clear ();
-		Item2Page_.clear ();
 
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 		Ui_.SectionName_->setText (tr ("Settings for %1")
@@ -417,7 +417,6 @@ namespace LeechCraft
 			return;
 		}
 
-		handleBackRequested ();
 		showSettingsFor (obj);
 	}
 
@@ -432,7 +431,6 @@ namespace LeechCraft
 			return;
 		}
 
-		handleBackRequested ();
 		showSettingsFor (obj);
 	}
 
