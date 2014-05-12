@@ -135,6 +135,7 @@ namespace SysInfo
 
 	namespace
 	{
+#ifndef Q_OS_MAC
 		void Normalize (QString& osName)
 		{
 			auto trimQuotes = [&osName]
@@ -151,6 +152,7 @@ namespace SysInfo
 
 			trimQuotes ();
 		}
+#endif
 	}
 
 	QPair<QString, QString> GetOSNameSplit ()
