@@ -50,6 +50,8 @@ namespace LMP
 
 		virtual void InsertElement (GstElement*) = 0;
 		virtual void RemoveElement (GstElement*) = 0;
+
+		virtual void PerformWProbe (const std::function<void ()>&) = 0;
 	};
 }
 }
