@@ -155,6 +155,11 @@ namespace Potorchu
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");
 
 		VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_ });
+
+		connect (Widget_.get (),
+				SIGNAL (nextVis ()),
+				this,
+				SLOT (handleNextVis ()));
 	}
 
 	QByteArray VisualFilter::GetEffectId () const
