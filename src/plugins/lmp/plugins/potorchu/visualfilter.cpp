@@ -38,6 +38,7 @@
 #include <gst/interfaces/xoverlay.h>
 #endif
 
+#include <util/sll/delayedexecutor.h>
 #include <util/lmp/gstutil.h>
 #include <interfaces/lmp/ilmpguiproxy.h>
 #include "viswidget.h"
@@ -98,6 +99,16 @@ namespace Potorchu
 		auto streamPad = gst_element_get_static_pad (VisQueue_, "sink");
 		gst_pad_link (TeeVisPad_, streamPad);
 		gst_object_unref (streamPad);
+
+		new Util::DelayedExecutor
+		{
+			[this] () -> void
+			{
+				for (auto elem : { VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_ })
+					gst_element_sync_state_with_parent (elem);
+			},
+			0
+		};
 	}
 
 	VisBranch::~VisBranch ()
