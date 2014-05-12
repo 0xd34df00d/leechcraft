@@ -195,6 +195,9 @@ namespace HttStream
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "detected stream error";
+
+			gst_message_unref (msg);
+
 			return GST_BUS_DROP;
 		}
 
