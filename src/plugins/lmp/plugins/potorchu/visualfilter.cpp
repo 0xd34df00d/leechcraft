@@ -173,6 +173,10 @@ namespace Potorchu
 				SIGNAL (nextVis ()),
 				this,
 				SLOT (handleNextVis ()));
+		connect (Widget_.get (),
+				SIGNAL (prevVis ()),
+				this,
+				SLOT (handlePrevVis ()));
 	}
 
 	QByteArray VisualFilter::GetEffectId () const
@@ -231,17 +235,28 @@ namespace Potorchu
 #endif
 	}
 
-	void VisualFilter::handleNextVis ()
+	void VisualFilter::SetVisualizer ()
 	{
 		VisBranch_.reset ();
-
-		CurFact_ = (CurFact_ + 1) % Factories_.size ();
 
 		Path_->PerformWProbe ([this] () -> void
 				{
 					VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_, Factories_.at (CurFact_) });
 					VisBranch_->SyncStates ();
 				});
+	}
+
+	void VisualFilter::handleNextVis ()
+	{
+		CurFact_ = (CurFact_ + 1) % Factories_.size ();
+		SetVisualizer ();
+	}
+
+	void VisualFilter::handlePrevVis ()
+	{
+		if (--CurFact_ < 0)
+			CurFact_ = Factories_.size () - 1;
+		SetVisualizer ();
 	}
 }
 }

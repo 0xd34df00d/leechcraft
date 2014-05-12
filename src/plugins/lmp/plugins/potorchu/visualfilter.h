@@ -105,7 +105,9 @@ namespace Potorchu
 		GstElement* GetElement () const;
 	private:
 		void SetOverlay ();
+		void SetVisualizer ();
 	private slots:
+		void handlePrevVis ();
 		void handleNextVis ();
 	};
 }
