@@ -36,6 +36,7 @@
 
 typedef struct _GstPad GstPad;
 typedef struct _GstPadTemplate GstPadTemplate;
+typedef struct _GstElementFactory GstElementFactory;
 
 namespace LeechCraft
 {
@@ -61,7 +62,8 @@ namespace Potorchu
 
 		bool SyncedStates_ = false;
 	public:
-		VisBranch (GstElement *elem, GstElement *tee, GstPadTemplate *teeTemplate);
+		VisBranch (GstElement *elem, GstElement *tee,
+				GstPadTemplate *teeTemplate, GstElementFactory *factory);
 		~VisBranch ();
 
 		void SyncStates ();
@@ -89,6 +91,9 @@ namespace Potorchu
 		std::unique_ptr<VisBranch> VisBranch_;
 
 		IPath *Path_;
+
+		const QList<GstElementFactory*> Factories_;
+		int CurFact_ = 0;
 	public:
 		VisualFilter (const QByteArray&, const ILMPProxy_ptr&);
 

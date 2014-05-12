@@ -86,13 +86,13 @@ namespace Potorchu
 		}
 	}
 
-	VisBranch::VisBranch (GstElement *elem, GstElement *tee, GstPadTemplate *teeTemplate)
+	VisBranch::VisBranch (GstElement *elem, GstElement *tee, GstPadTemplate *teeTemplate, GstElementFactory *factory)
 	: Elem_ { elem }
 	, Tee_ { tee }
 	, TeeTemplate_ { teeTemplate }
 	, VisQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, VisConverter_ { gst_element_factory_make ("audioconvert", nullptr) }
-	, Visualizer_ { gst_element_factory_make ("synaescope", nullptr) }
+	, Visualizer_ { gst_element_factory_create (factory, nullptr) }
 	, VisColorspace_ { gst_element_factory_make ("colorspace", nullptr) }
 	, XSink_ { gst_element_factory_make ("ximagesink", nullptr) }
 	{
@@ -151,6 +151,7 @@ namespace Potorchu
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
 	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
+	, Factories_ { EnumerateVisualizers () }
 	{
 		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, nullptr);
 
@@ -166,7 +167,7 @@ namespace Potorchu
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");
 
-		VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_ });
+		VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_, Factories_.at (CurFact_) });
 
 		connect (Widget_.get (),
 				SIGNAL (nextVis ()),
@@ -234,10 +235,11 @@ namespace Potorchu
 	{
 		VisBranch_.reset ();
 
+		CurFact_ = (CurFact_ + 1) % Factories_.size ();
 
 		Path_->PerformWProbe ([this] () -> void
 				{
-					VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_ });
+					VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_, Factories_.at (CurFact_) });
 					VisBranch_->SyncStates ();
 				});
 	}
