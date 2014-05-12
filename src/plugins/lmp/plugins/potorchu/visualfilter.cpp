@@ -140,11 +140,16 @@ namespace Potorchu
 	{
 		path->AddSyncHandler ([this] (GstBus*, GstMessage *message)
 				{
+#if GST_CHECK_VERSION (1, 0, 0)
+					if (!gst_is_video_overlay_prepare_window_handle_message (message))
+						return GST_BUS_PASS;
+#else
 					if (GST_MESSAGE_TYPE (message) != GST_MESSAGE_ELEMENT)
 						return GST_BUS_PASS;
 
 					if (!gst_structure_has_name (message->structure, "prepare-xwindow-id"))
 						return GST_BUS_PASS;
+#endif
 
 					SetOverlay ();
 
