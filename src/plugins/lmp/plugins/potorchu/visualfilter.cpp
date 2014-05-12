@@ -51,7 +51,7 @@ namespace Potorchu
 {
 	namespace
 	{
-		void EnumerateVisualizers ()
+		QList<GstElementFactory*> EnumerateVisualizers ()
 		{
 #if GST_CHECK_VERSION (1, 0, 0)
 			const auto registry = gst_registry_get ();
@@ -71,13 +71,18 @@ namespace Potorchu
 					false,
 					nullptr);
 
+			QList<GstElementFactory*> result;
 			for (auto item = list; item; item = g_list_next (item))
 			{
 				const auto factory = GST_ELEMENT_FACTORY (item->data);
+				result << factory;
 				qDebug () << gst_element_factory_get_longname (factory);
+
 			}
 
 			gst_plugin_feature_list_free (list);
+
+			return result;
 		}
 	}
 
