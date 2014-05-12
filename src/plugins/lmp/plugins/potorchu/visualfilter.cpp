@@ -80,6 +80,31 @@ namespace Potorchu
 		}
 	}
 
+	VisBranch::VisBranch (GstElement *elem, GstElement *tee, GstPadTemplate *teeTemplate)
+	: Elem_ { elem }
+	, Tee_ { tee }
+	, TeeTemplate_ { teeTemplate }
+	, VisQueue_ { gst_element_factory_make ("queue", nullptr) }
+	, VisConverter_ { gst_element_factory_make ("audioconvert", nullptr) }
+	, Visualizer_ { gst_element_factory_make ("synaescope", nullptr) }
+	, VisColorspace_ { gst_element_factory_make ("colorspace", nullptr) }
+	, XSink_ { gst_element_factory_make ("xvimagesink", nullptr) }
+	{
+		gst_bin_add_many (GST_BIN (Elem_),
+				VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
+		gst_element_link_many (VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
+
+		auto teeVisPad = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
+		auto streamPad = gst_element_get_static_pad (VisQueue_, "sink");
+		gst_pad_link (teeVisPad, streamPad);
+		gst_object_unref (streamPad);
+	}
+
+	GstElement* VisBranch::GetXSink () const
+	{
+		return XSink_;
+	}
+
 	VisualFilter::VisualFilter (const QByteArray& effectId, const ILMPProxy_ptr& proxy)
 	: EffectId_ { effectId }
 	, LmpProxy_ { proxy }
@@ -88,33 +113,22 @@ namespace Potorchu
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
 	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
-	, VisQueue_ { gst_element_factory_make ("queue", nullptr) }
-	, VisConverter_ { gst_element_factory_make ("audioconvert", nullptr) }
-	, Visualizer_ { gst_element_factory_make ("synaescope", nullptr) }
-	, VisColorspace_ { gst_element_factory_make ("colorspace", nullptr) }
-	, XSink_ { gst_element_factory_make ("xvimagesink", nullptr) }
 	{
-		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_,
-				VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
+		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, nullptr);
 
 		TeeAudioPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
 		auto audioPad = gst_element_get_static_pad (AudioQueue_, "sink");
 		gst_pad_link (TeeAudioPad_, audioPad);
 		gst_object_unref (audioPad);
 
-		gst_element_link_many (VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
-
 		Widget_->resize (800, 600);
 		Widget_->show ();
-		proxy->GetGuiProxy ()->AddCurrentSongTab (tr ("Visualization"), Widget_.get ());
+		//proxy->GetGuiProxy ()->AddCurrentSongTab (tr ("Visualization"), Widget_.get ());
 
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");
 
-		auto teeVisPad = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
-		auto streamPad = gst_element_get_static_pad (VisQueue_, "sink");
-		gst_pad_link (teeVisPad, streamPad);
-		gst_object_unref (streamPad);
+		VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_ });
 	}
 
 	QByteArray VisualFilter::GetEffectId () const
@@ -163,15 +177,18 @@ namespace Potorchu
 
 	void VisualFilter::SetOverlay ()
 	{
+		auto sink = VisBranch_->GetXSink ();
+
 #if GST_CHECK_VERSION (1, 0, 0)
-		gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (XSink_), Widget_->GetVisWinId ());
+		gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (sink), Widget_->GetVisWinId ());
 #else
-		gst_x_overlay_set_window_handle (GST_X_OVERLAY (XSink_), Widget_->GetVisWinId ());
+		gst_x_overlay_set_window_handle (GST_X_OVERLAY (sink), Widget_->GetVisWinId ());
 #endif
 	}
 
 	void VisualFilter::handleNextVis ()
 	{
+		/*
 		auto streamPad = gst_element_get_static_pad (VisQueue_, "sink");
 
 		gst_pad_unlink (TeeVisPad_, streamPad);
@@ -197,6 +214,7 @@ namespace Potorchu
 		gst_object_unref (streamPad);
 
 		SetOverlay ();
+		*/
 	}
 }
 }

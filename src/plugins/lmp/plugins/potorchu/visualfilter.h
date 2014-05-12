@@ -45,6 +45,25 @@ namespace Potorchu
 {
 	class VisWidget;
 
+	class VisBranch
+	{
+		GstElement * const Elem_;
+		GstElement * const Tee_;
+		GstPadTemplate * const TeeTemplate_;
+
+		GstElement * const VisQueue_;
+		GstElement * const VisConverter_;
+		GstElement *Visualizer_;
+		GstElement * const VisColorspace_;
+		GstElement * const XSink_;
+
+		GstPad *TeeVisPad_ = nullptr;
+	public:
+		VisBranch (GstElement *elem, GstElement *tee, GstPadTemplate *teeTemplate);
+
+		GstElement* GetXSink () const;
+	};
+
 	class VisualFilter : public QObject
 					   , public IFilterElement
 	{
@@ -59,14 +78,10 @@ namespace Potorchu
 		GstElement * const Tee_;
 		GstPadTemplate * const TeeTemplate_;
 		GstElement * const AudioQueue_;
-		GstElement * const VisQueue_;
-		GstElement * const VisConverter_;
-		GstElement *Visualizer_;
-		GstElement * const VisColorspace_;
-		GstElement * const XSink_;
 
 		GstPad *TeeAudioPad_;
-		GstPad *TeeVisPad_ = nullptr;
+
+		std::unique_ptr<VisBranch> VisBranch_;
 	public:
 		VisualFilter (const QByteArray&, const ILMPProxy_ptr&);
 
