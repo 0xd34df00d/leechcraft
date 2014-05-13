@@ -139,6 +139,7 @@ namespace XooxUtil
 				Node2ClientID_ ["http://talkgadget.google.com/client/caps"] = "talkgadget.google.com";
 				Node2ClientID_ ["http://telepathy.freedesktop.org/caps"] = "telepathy.freedesktop.org";
 				Node2ClientID_ ["http://trillian.im/caps"] = "trillian";
+				Node2ClientID_ ["http://v4.isida-bot.com"] = "isida-bot4";
 				Node2ClientID_ ["http://vacuum-im.googlecode.com"] = "vacuum";
 				Node2ClientID_ ["http://www.android.com/gtalk/client/caps"] = "android";
 				Node2ClientID_ ["http://www.android.com/gtalk/client/caps2"] = "android";
@@ -228,6 +229,7 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://talkgadget.google.com/client/caps"] = "Google Talk gadget";
 				Node2ClientHR_ ["http://telepathy.freedesktop.org/caps"] = "Telepathy";
 				Node2ClientHR_ ["http://trillian.im/caps"] = "Trillian";
+				Node2ClientHR_ ["http://v4.isida-bot.com"] = "iSida Bot 4";
 				Node2ClientHR_ ["http://vacuum-im.googlecode.com"] = "Vacuum-IM";
 				Node2ClientHR_ ["http://www.android.com/gtalk/client/caps"] = "Android";
 				Node2ClientHR_ ["http://www.android.com/gtalk/client/caps2"] = "Android";
