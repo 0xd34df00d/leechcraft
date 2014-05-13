@@ -108,7 +108,7 @@ namespace XooxUtil
 				Node2ClientID_ ["http://fatal-bot.spb.ru/caps"] = "fatal-bot";
 				Node2ClientID_ ["http://fatal-dev.ru/bot/caps"] = "fatal-bot";
 				Node2ClientID_ ["http://isida-bot.com"] = "isida-bot";
-				Node2ClientID_ ["http://isida-bot.com/4"] = "isida-bot";
+				Node2ClientID_ ["http://isida-bot.com/4"] = "isida-bot4";
 				Node2ClientID_ ["httр://jabga.ru"] = "jtalk";
 				Node2ClientID_ ["http://jabiru.mzet.net/caps"] = "jabiru";
 				Node2ClientID_ ["http://jasmineicq.ru/caps"] = "jasmine";
