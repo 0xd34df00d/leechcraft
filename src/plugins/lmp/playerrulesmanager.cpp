@@ -135,6 +135,13 @@ namespace LMP
 
 	void PlayerRulesManager::InitializePlugins ()
 	{
+		const auto plugMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		for (auto storage : plugMgr->GetAllCastableRoots<IANRulesStorage*> ())
+			connect (storage,
+					SIGNAL (rulesChanged ()),
+					this,
+					SLOT (handleRulesChanged ()));
+
 		refillRules ();
 
 		ReapplyRules (ManagedItems_, Rules_);
@@ -194,6 +201,12 @@ namespace LMP
 		const auto plugMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		for (auto storage : plugMgr->GetAllCastableTo<IANRulesStorage*> ())
 			Rules_ += storage->GetAllRules (AN::CatMediaPlayer);
+	}
+
+	void PlayerRulesManager::handleRulesChanged ()
+	{
+		refillRules ();
+		ReapplyRules (ManagedItems_, Rules_);
 	}
 }
 }

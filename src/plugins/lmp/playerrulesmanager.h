@@ -60,6 +60,8 @@ namespace LMP
 		void handleReset ();
 
 		void refillRules ();
+
+		void handleRulesChanged ();
 	};
 }
 }
