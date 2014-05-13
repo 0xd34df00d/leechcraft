@@ -77,6 +77,11 @@ namespace AdvancedNotifications
 		Component_->StaticProps_.push_back ({ "AN_quarkTooltip", tr ("Toggle Advanced Notifications rules...") });
 		Component_->DynamicProps_.push_back ({ "AN_rulesManager", Core::Instance ().GetRulesManager () });
 		Component_->DynamicProps_.push_back ({ "AN_proxy", new QuarkProxy });
+
+		connect (Core::Instance ().GetRulesManager (),
+				SIGNAL (rulesChanged ()),
+				this,
+				SIGNAL (rulesChanged ()));
 	}
 
 	void Plugin::SecondInit ()

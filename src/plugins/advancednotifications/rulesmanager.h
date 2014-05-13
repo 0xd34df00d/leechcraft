@@ -87,6 +87,8 @@ namespace AdvancedNotifications
 		void handleItemChanged (QStandardItem*);
 	signals:
 		void focusOnRule (const QModelIndex&);
+
+		void rulesChanged () const;
 	};
 }
 }

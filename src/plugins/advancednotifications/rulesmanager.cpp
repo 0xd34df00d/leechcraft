@@ -412,6 +412,8 @@ namespace AdvancedNotifications
 		settings.beginGroup ("rules");
 		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule>> (Rules_));
 		settings.endGroup ();
+
+		emit rulesChanged ();
 	}
 
 	QList<QStandardItem*> RulesManager::RuleToRow (const NotificationRule& rule) const
