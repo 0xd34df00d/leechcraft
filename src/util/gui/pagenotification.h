@@ -36,10 +36,25 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief A horizontal widget embedding into the parent layout of
+	 * the passed \em parent widget.
+	 *
+	 * This is a base class for FindNotification, for example.
+	 *
+	 * @ingroup GuiUtil
+	 */
 	class UTIL_GUI_API PageNotification : public QWidget
 	{
 	public:
-		PageNotification (QWidget*);
+		/** @brief Creates the widget embedding into the parent layout of
+		 * the \em parent widget.
+		 *
+		 * The \em parent widget is expected to be contained in a
+		 * QVBoxLayout.
+		 *
+		 * @param[in] parent The widget whose parent layout should be used.
+		 */
+		PageNotification (QWidget *parent);
 	};
 }
 }
