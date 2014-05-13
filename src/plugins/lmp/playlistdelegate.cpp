@@ -140,6 +140,8 @@ namespace LMP
 			return;
 
 		static const QString flagSym = QString::fromUtf8 ("⚑");
+		static const QString disabledFlagSym = QString::fromUtf8 ("⚐");
+
 		const auto flagWidth = option.fontMetrics.width (flagSym);
 		const auto rectWidth = std::max (flagWidth + 2 * Padding, option.rect.height ());
 
@@ -154,12 +156,14 @@ namespace LMP
 			if (color.isValid ())
 				painter->setPen (color);
 
+			const auto isEnabled = rule.Additional_ ["org.LC.AdvNotifications.IsEnabled"].toBool ();
+
 			style->drawItemText (painter,
 					ruleRect,
 					Qt::AlignCenter,
 					option.palette,
 					true,
-					flagSym);
+					isEnabled ? flagSym : disabledFlagSym);
 
 			painter->restore ();
 
