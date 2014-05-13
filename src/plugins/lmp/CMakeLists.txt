@@ -120,6 +120,7 @@ set (SRCS
 	collectionsmanager.cpp
 	collectionwidget.cpp
 	localcollectionmodel.cpp
+	playerrulesmanager.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
