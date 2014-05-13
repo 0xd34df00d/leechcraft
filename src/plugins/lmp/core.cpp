@@ -107,6 +107,7 @@ namespace LMP
 
 	void Core::InitWithOtherPlugins ()
 	{
+		Player_->InitWithOtherPlugins ();
 		RadioManager_->InitProviders ();
 	}
 
