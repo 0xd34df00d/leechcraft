@@ -269,6 +269,7 @@ namespace AdvancedNotifications
 			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = rule.GetCategory ();
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = QStringList { rule.GetTypes ().toList () };
 			e.Additional_ ["org.LC.AdvNotifications.AssocColor"] = rule.GetColor ();
+			e.Additional_ ["org.LC.AdvNotifications.IsEnabled"] = rule.IsEnabled ();
 
 			for (const auto& fieldMatch : rule.GetFieldMatches ())
 			{
