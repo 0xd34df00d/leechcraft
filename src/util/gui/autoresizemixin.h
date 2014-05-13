@@ -60,6 +60,8 @@ namespace Util
 	 * The rectangle into which the widget should be embedded is obtained
 	 * via a functor returning the rectangle. The functor is invoked each
 	 * time the widget is to be refit.
+	 *
+	 * @ingroup GuiUtil
 	 */
 	class AutoResizeMixin : public QObject
 	{

@@ -36,3 +36,6 @@
 #else
 #  define UTIL_GUI_API Q_DECL_IMPORT
 #endif
+
+/** @defgroup GuiUtil The GUI utilities
+ */
