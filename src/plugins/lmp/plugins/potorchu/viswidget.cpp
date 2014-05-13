@@ -43,9 +43,29 @@ namespace Potorchu
 	{
 	}
 
+	void VisWidget::EnsureWinId ()
+	{
+		ensurePolished ();
+
+		WindowId_ = winId ();
+	}
+
 	WId VisWidget::GetVisWinId () const
 	{
-		return winId ();
+		return WindowId_;
+	}
+
+	bool VisWidget::event (QEvent *event)
+	{
+		if (event->type () == QEvent::WinIdChange)
+		{
+			WindowId_ = winId ();
+			qDebug () << Q_FUNC_INFO
+					<< "window ID changed"
+					<< WindowId_;
+		}
+
+		return QWidget::event (event);
 	}
 
 	void VisWidget::mouseReleaseEvent (QMouseEvent *event)
