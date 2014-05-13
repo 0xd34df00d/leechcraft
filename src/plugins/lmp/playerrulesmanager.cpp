@@ -62,13 +62,6 @@ namespace LMP
 				SLOT (handleReset ()));
 	}
 
-	void PlayerRulesManager::InitializePlugins ()
-	{
-		refillRules ();
-
-		ReapplyRules ();
-	}
-
 	namespace
 	{
 		bool MatchesRule (const MediaInfo& info, const Entity& rule)
@@ -126,18 +119,25 @@ namespace LMP
 					result << rule;
 			return result;
 		}
+
+		void ReapplyRules (const QList<QStandardItem*>& items, const QList<Entity>& rules)
+		{
+			for (const auto item : items)
+			{
+				const auto& info = item->data (Player::Role::Info).value<MediaInfo> ();
+
+				const auto& matching = FindMatching (info, rules);
+				item->setData (matching.isEmpty () ? QVariant {} : QVariant::fromValue (matching),
+						Player::Role::MatchingRules);
+			}
+		}
 	}
 
-	void PlayerRulesManager::ReapplyRules ()
+	void PlayerRulesManager::InitializePlugins ()
 	{
-		for (const auto item : ManagedItems_)
-		{
-			const auto& info = item->data (Player::Role::Info).value<MediaInfo> ();
+		refillRules ();
 
-			const auto& matching = FindMatching (info, Rules_);
-			item->setData (matching.isEmpty () ? QVariant {} : QVariant::fromValue (matching),
-					Player::Role::MatchingRules);
-		}
+		ReapplyRules (ManagedItems_, Rules_);
 	}
 
 	void PlayerRulesManager::insertRows (const QModelIndex& parent, int first, int last)
@@ -146,19 +146,21 @@ namespace LMP
 		for (int i = first; i <= last; ++i)
 			list << Model_->itemFromIndex (Model_->index (i, 0, parent));
 
+		QList<QStandardItem*> newItems;
 		for (int i = 0; i < list.size (); ++i)
 		{
 			const auto item = list.at (i);
 
 			if (!item->data (Player::IsAlbum).toBool ())
-				ManagedItems_ << item;
+				newItems << item;
 
 			for (int j = 0; j < item->rowCount (); ++j)
 				list << item->child (j);
 		}
 
-		qDebug () << Q_FUNC_INFO << ManagedItems_.size ();
-		ReapplyRules ();
+		ReapplyRules (newItems, Rules_);
+
+		ManagedItems_ += newItems;
 	}
 
 	void PlayerRulesManager::removeRows (const QModelIndex& parent, int first, int last)

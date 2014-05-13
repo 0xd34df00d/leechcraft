@@ -54,8 +54,6 @@ namespace LMP
 		PlayerRulesManager (QStandardItemModel*, QObject* = 0);
 
 		void InitializePlugins ();
-	private:
-		void ReapplyRules ();
 	private slots:
 		void insertRows (const QModelIndex&, int, int);
 		void removeRows (const QModelIndex&, int, int);
