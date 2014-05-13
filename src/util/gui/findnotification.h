@@ -50,7 +50,8 @@ namespace Util
 	 * slots findNext() and findPrevious().
 	 *
 	 * The widget will automatically be embedded into the layout of
-	 * the parent widget of \em near after the \em near widget.
+	 * the parent widget of \em near after the \em near widget (which is
+	 * passed to the constructor).
 	 *
 	 * This class is typically used as following:
 	 * -# It's subclassed, and an implementation of handleNext() function
@@ -74,6 +75,8 @@ namespace Util
 	 * integrating this class with a QWebPage.
 	 *
 	 * @sa FindNotificationWk
+	 *
+	 * @ingroup GuiUtil
 	 */
 	class UTIL_GUI_API FindNotification : public PageNotification
 	{

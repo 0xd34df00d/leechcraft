@@ -49,6 +49,8 @@ namespace LeechCraft
 		 * Currently using this class is generally discouraged. QtWebKit
 		 * isn't as new and uncommon as it was a couple of years ago, so
 		 * in most cases it's easier to just embed a QWebView.
+		 *
+		 * @ingroup GuiUtil
 		 */
 		class UTIL_GUI_API SelectableBrowser : public QWidget
 		{

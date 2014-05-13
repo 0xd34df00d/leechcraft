@@ -82,6 +82,8 @@ namespace Util
 	 * @return The new top left position of the rectangle.
 	 *
 	 * @sa FitRect()
+	 *
+	 * @ingroup GuiUtil
 	 */
 	UTIL_GUI_API QPoint FitRectScreen (QPoint pos, const QSize& size,
 			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
@@ -109,6 +111,8 @@ namespace Util
 	 * @return The new top left position of the rectangle.
 	 *
 	 * @sa FitRectScreen()
+	 *
+	 * @ingroup GuiUtil
 	 */
 	UTIL_GUI_API QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
 			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
@@ -127,6 +131,8 @@ namespace Util
 	 * @param[in] pixmap The pixmap to show.
 	 * @param[in] pos The position where the dialog should be shown.
 	 * @return The created dialog.
+	 *
+	 * @ingroup GuiUtil
 	 */
 	UTIL_GUI_API QLabel* ShowPixmapLabel (const QPixmap& pixmap, const QPoint& pos = QPoint ());
 }

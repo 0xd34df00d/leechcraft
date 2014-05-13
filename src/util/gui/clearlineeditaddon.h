@@ -58,6 +58,7 @@ namespace Util
 	 * need to keep track of it or explicitly delete it.
 	 *
 	 * @sa IInfo::Init()
+
 	 * @ingroup GuiUtil
 	 */
 	class UTIL_GUI_API ClearLineEditAddon : public QObject

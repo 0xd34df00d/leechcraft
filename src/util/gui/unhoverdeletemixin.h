@@ -56,6 +56,8 @@ namespace Util
 	 * The widget on which this mixin is constructed takes ownership of
 	 * this class, so there is no need to keep it around or delete it
 	 * explicitly.
+	 *
+	 * @ingroup GuiUtil
 	 */
 	class UnhoverDeleteMixin : public QObject
 	{

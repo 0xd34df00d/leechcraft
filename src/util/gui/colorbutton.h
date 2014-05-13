@@ -40,6 +40,8 @@ namespace Util
 	/** @brief A button for choosing a color.
 	 *
 	 * This class provides a button that can be used to choose a color.
+	 *
+	 * @ingroup GuiUtil
 	 */
 	class UTIL_GUI_API ColorButton : public QPushButton
 	{

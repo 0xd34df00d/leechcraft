@@ -41,6 +41,8 @@ namespace Util
 	 *
 	 * Flow layout arranges child items in a dynamic wrappable row, much
 	 * like QML's GridView.
+	 *
+	 * @ingroup GuiUtil
 	 */
 	class UTIL_GUI_API FlowLayout : public QLayout
 	{
