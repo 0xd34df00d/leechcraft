@@ -47,6 +47,8 @@ public:
 	virtual QList<LeechCraft::Entity> GetAllRules (const QString& category) const = 0;
 
 	virtual void RequestRuleConfiguration (const LeechCraft::Entity& rule) = 0;
+protected:
+	virtual void rulesChanged () = 0;
 };
 
 Q_DECLARE_INTERFACE (IANRulesStorage, "org.LeechCraft.IANRulesStorage/1.0");

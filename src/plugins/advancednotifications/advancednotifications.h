@@ -95,6 +95,8 @@ namespace AdvancedNotifications
 		void gotEntity (const LeechCraft::Entity&);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+
+		void rulesChanged ();
 	};
 }
 }
