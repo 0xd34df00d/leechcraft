@@ -118,7 +118,6 @@ namespace AdvancedNotifications
 				RulesManager_->SetRuleEnabled (rule, false);
 
 			result << rule;
-			break;
 		}
 
 		return result;
