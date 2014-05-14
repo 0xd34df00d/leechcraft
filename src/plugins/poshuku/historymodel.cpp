@@ -33,7 +33,6 @@
 #include <QVariant>
 #include <QAction>
 #include <QtDebug>
-#include <util/models/treeitem.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -45,8 +44,6 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	using LeechCraft::Util::TreeItem;
-
 	namespace
 	{
 		/** Returns the number of the section for the given date.
@@ -108,16 +105,12 @@ namespace Poshuku
 	};
 
 	HistoryModel::HistoryModel (QObject *parent)
-	: QAbstractItemModel (parent)
+	: QStandardItemModel { parent }
 	{
-		QList<QVariant> headers;
-		headers << tr ("Title")
-			<< tr ("URL")
-			<< tr ("Date");
+		setHorizontalHeaderLabels ({tr ("Title"), tr ("URL"), tr ("Date") });
 		QTimer::singleShot (0,
 				this,
 				SLOT (loadData ()));
-		RootItem_ = new TreeItem (headers);
 
 		GarbageTimer_ = new QTimer (this);
 		GarbageTimer_->start (15 * 60 * 1000);
@@ -125,89 +118,6 @@ namespace Poshuku
 				SIGNAL (timeout ()),
 				this,
 				SLOT (collectGarbage ()));
-	}
-
-	HistoryModel::~HistoryModel ()
-	{
-		delete RootItem_;
-	}
-
-	int HistoryModel::columnCount (const QModelIndex& index) const
-	{
-		if (index.isValid ())
-			return static_cast<TreeItem*> (index.internalPointer ())->ColumnCount ();
-		else
-			return RootItem_->ColumnCount ();
-	}
-
-	QVariant HistoryModel::data (const QModelIndex& index, int role) const
-	{
-		if (!index.isValid ())
-			return QVariant ();
-
-		return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), role);
-	}
-
-	Qt::ItemFlags HistoryModel::flags (const QModelIndex&) const
-	{
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	}
-
-	QVariant HistoryModel::headerData (int h, Qt::Orientation orient,
-			int role) const
-	{
-		if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-			return RootItem_->Data (h);
-
-		return QVariant ();
-	}
-
-	QModelIndex HistoryModel::index (int row, int col,
-			const QModelIndex& parent) const
-	{
-		if (!hasIndex (row, col, parent))
-			return QModelIndex ();
-
-		TreeItem *parentItem;
-
-		if (!parent.isValid ())
-			parentItem = RootItem_;
-		else
-			parentItem = static_cast<TreeItem*> (parent.internalPointer ());
-
-		TreeItem *childItem = parentItem->Child (row);
-		if (childItem)
-			return createIndex (row, col, childItem);
-		else
-			return QModelIndex ();
-	}
-
-	QModelIndex HistoryModel::parent (const QModelIndex& index) const
-	{
-		if (!index.isValid ())
-			return QModelIndex ();
-
-		TreeItem *childItem = static_cast<TreeItem*> (index.internalPointer ()),
-					*parentItem = childItem->Parent ();
-
-		if (parentItem == RootItem_)
-			return QModelIndex ();
-
-		return createIndex (parentItem->Row (), 0, parentItem);
-	}
-
-	int HistoryModel::rowCount (const QModelIndex& parent) const
-	{
-		TreeItem *parentItem;
-		if (parent.column () > 0)
-			return 0;
-
-		if (!parent.isValid ())
-			parentItem = RootItem_;
-		else
-			parentItem = static_cast<TreeItem*> (parent.internalPointer ());
-
-		return parentItem->ChildCount ();
 	}
 
 	void HistoryModel::addItem (QString title, QString url,
@@ -239,7 +149,7 @@ namespace Poshuku
 	QList<QMap<QString, QVariant>> HistoryModel::getItemsMap () const
 	{
 		QList<QMap<QString, QVariant>> result;
-		Q_FOREACH (const HistoryItem& item, Items_)
+		for (const auto& item : Items_)
 		{
 			QMap<QString, QVariant> map;
 			map ["Title"] = item.Title_;
@@ -250,53 +160,47 @@ namespace Poshuku
 		return result;
 	}
 
-	void HistoryModel::Add (const HistoryItem& item, bool announce, int section)
+	void HistoryModel::Add (const HistoryItem& histItem, int section)
 	{
-		while (section >= RootItem_->ChildCount ())
+		while (section >= rowCount ())
 		{
-			QList<QVariant> data;
-			data << SectionName (RootItem_->ChildCount ())
-				<< QString ("")
-				<< QString ("");
-			TreeItem *folder = new TreeItem (data, RootItem_);
-			folder->ModifyData (0,
-					Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("document-open-folder"),
-					Qt::DecorationRole);
+			const auto& folderIcon = Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("document-open-folder");
 
-			if (announce)
-				beginInsertRows ({}, RootItem_->ChildCount (), RootItem_->ChildCount ());
-			RootItem_->AppendChild (folder);
-			if (announce)
-				endInsertRows ();
+			const QList<QStandardItem*> sectItems
+			{
+				new QStandardItem { folderIcon, SectionName (rowCount ()) },
+				new QStandardItem,
+				new QStandardItem
+			};
+			for (const auto item : sectItems)
+				item->setEditable (false);
+
+			appendRow (sectItems);
 		}
 
-		QList<QVariant> data;
-		data << item.Title_
-			<< item.URL_
-			<< item.DateTime_;
-
-		TreeItem *folder = RootItem_->Child (section);
-		TreeItem *thisItem = new TreeItem (data, folder);
-
-		if (announce)
-			beginInsertRows (index (section, 0), 0, 0);
-		folder->AppendChild (thisItem);
-		if (announce)
-			endInsertRows ();
-
-		QIcon icon = Core::Instance ().GetIcon (QUrl (item.URL_));
-		thisItem->ModifyData (0,
-				icon, Qt::DecorationRole);
+		const auto icon = Core::Instance ().GetIcon (QUrl { histItem.URL_ });
+		auto normalizeText = [] (QString text)
+		{
+			return text.trimmed ().replace ('\n', ' ');
+		};
+		const QList<QStandardItem*> items
+		{
+			new QStandardItem { icon, normalizeText (histItem.Title_) },
+			new QStandardItem { normalizeText (histItem.URL_) },
+			new QStandardItem { QLocale {}.toString (histItem.DateTime_, QLocale::ShortFormat) }
+		};
+		for (const auto item : items)
+			item->setEditable (false);
+		item (section)->appendRow (items);
 	}
 
 	void HistoryModel::loadData ()
 	{
 		collectGarbage ();
 
-		beginResetModel ();
-
-		while (RootItem_->ChildCount ())
-			RootItem_->RemoveChild (0);
+		if (const auto rc = rowCount ())
+			removeRows (0, rc);
 
 		Items_.clear ();
 		Core::Instance ().GetStorageBackend ()->LoadHistory (Items_);
@@ -315,15 +219,13 @@ namespace Poshuku
 
 		const auto& now = QDateTime::currentDateTime ();
 		for (const auto& item : Items_)
-			Add (item, false, SectionNumber (item.DateTime_, now));
-
-		endResetModel ();
+			Add (item, SectionNumber (item.DateTime_, now));
 	}
 
 	void HistoryModel::handleItemAdded (const HistoryItem& item)
 	{
 		Items_.push_back (item);
-		Add (item, true, SectionNumber (item.DateTime_));
+		Add (item, SectionNumber (item.DateTime_));
 	}
 
 	void HistoryModel::collectGarbage ()
