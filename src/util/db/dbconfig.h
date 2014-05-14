@@ -36,3 +36,8 @@
 #else
 #  define UTIL_DB_API Q_DECL_IMPORT
 #endif
+
+/** @defgroup DbUtil The DB utilities
+ *
+ * @brief General widgets and classes for databases.
+ */
