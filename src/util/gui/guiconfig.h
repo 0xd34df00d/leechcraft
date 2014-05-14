@@ -38,4 +38,6 @@
 #endif
 
 /** @defgroup GuiUtil The GUI utilities
+ *
+ * @brief General GUI widgets and classes.
  */
