@@ -601,7 +601,8 @@ namespace ChatHistory
 	void ChatHistoryWidget::RequestSearch ()
 	{
 		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_,
-				PreviousSearchText_, SearchShift_);
+				PreviousSearchText_, SearchShift_,
+				FindBox_->GetFlags () & ChatFindBox::FindCaseSensitively);
 	}
 }
 }

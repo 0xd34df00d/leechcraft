@@ -114,7 +114,7 @@ namespace ChatHistory
 		void getChatLogs (const QString& accountId,
 				const QString& entryId, int backpages, int amount);
 		void search (const QString& accountId, const QString& entryId,
-				const QString& text, int shift);
+				const QString& text, int shift, bool cs);
 		void searchDate (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void getDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void clearHistory (const QString& accountId, const QString& entryId);

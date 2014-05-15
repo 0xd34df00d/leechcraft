@@ -747,15 +747,15 @@ namespace ChatHistory
 	}
 
 	void Storage::search (const QString& accountId,
-			const QString& entryId, const QString& text, int shift)
+			const QString& entryId, const QString& text, int shift, bool cs)
 	{
 		RawSearchResult res;
 		if (!accountId.isEmpty () && !entryId.isEmpty ())
-			res = Search (accountId, entryId, text, shift, false);
+			res = Search (accountId, entryId, text, shift, cs);
 		else if (!accountId.isEmpty ())
-			res = Search (accountId, text, shift, false);
+			res = Search (accountId, text, shift, cs);
 		else
-			res = Search (text, shift, false);
+			res = Search (text, shift, cs);
 
 		if (res.Date_.isNull ())
 		{
