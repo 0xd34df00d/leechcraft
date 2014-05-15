@@ -38,9 +38,12 @@
 
 class QPixmap;
 class QPoint;
+class QColor;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace LMP
 {
 	struct MediaInfo;
@@ -64,5 +67,7 @@ namespace LMP
 	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
 
 	bool CompareArtists (QString, QString, bool withoutThe);
+
+	QPair<QString, QColor> GetRuleSymbol (const Entity&);
 }
 }

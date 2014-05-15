@@ -272,5 +272,16 @@ namespace LMP
 
 		return QString::localeAwareCompare (leftStr, rightStr) < 0;
 	}
+
+	QPair<QString, QColor> GetRuleSymbol (const Entity& rule)
+	{
+		static const QString flagSym = QString::fromUtf8 ("⚑");
+		static const QString disabledFlagSym = QString::fromUtf8 ("⚐");
+
+		const auto& color = rule.Additional_ ["org.LC.AdvNotifications.AssocColor"].value<QColor> ();
+		const auto isEnabled = rule.Additional_ ["org.LC.AdvNotifications.IsEnabled"].toBool ();
+
+		return { isEnabled ? flagSym : disabledFlagSym, color };
+	}
 }
 }
