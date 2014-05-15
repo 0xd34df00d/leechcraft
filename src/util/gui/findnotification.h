@@ -88,19 +88,20 @@ namespace Util
 		 */
 		enum FindFlag
 		{
+			FindNoFlags = 0x0,
 			/** Search should be performed case sensitively.
 			 */
-			FindCaseSensitively,
+			FindCaseSensitively = 0x1,
 
 			/** Search should be performed in the reverse direction.
 			 */
-			FindBackwards,
+			FindBackwards = 0x2,
 
 			/** Search should continue from the beginning when the end is
 			 * reached (or from the end if the beginning is reached and
 			 * FindBackwards is also set).
 			 */
-			FindWrapsAround
+			FindWrapsAround = 0x4
 		};
 		Q_DECLARE_FLAGS (FindFlags, FindFlag)
 
