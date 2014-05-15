@@ -70,6 +70,7 @@ namespace DeadLyrics
 				const ConcreteSiteDesc&, ICoreProxy_ptr proxy, QObject* = 0);
 	private slots:
 		void handleReplyFinished ();
+		void handleReplyError ();
 	signals:
 		void gotLyrics (const Media::LyricsResults&);
 	};
