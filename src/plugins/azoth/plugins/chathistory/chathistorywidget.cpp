@@ -369,15 +369,9 @@ namespace ChatHistory
 	void ChatHistoryWidget::handleGotSearchPosition (const QString& accountId,
 			const QString& entryId, int position)
 	{
-		/* TODO
-		const bool wideSearch = Ui_.SearchType_->currentIndex ();
-		if (!wideSearch)
-		{
-			if (accountId != CurrentAccount_ ||
-					entryId != CurrentEntry_)
-				return;
-		}
-		*/
+		if (accountId != CurrentAccount_ ||
+				entryId != CurrentEntry_)
+			return;
 
 		if (!position)
 		{
