@@ -104,7 +104,6 @@ namespace ChatHistory
 
 		void on_AccountBox__currentIndexChanged (int);
 		void handleContactSelected (const QModelIndex&);
-		void on_HistorySearch__returnPressed ();
 
 		void on_Calendar__currentPageChanged ();
 		void on_Calendar__activated (const QDate&);

@@ -466,18 +466,6 @@ namespace ChatHistory
 		UpdateDates ();
 	}
 
-	/* TODO
-	void ChatHistoryWidget::on_SearchType__currentIndexChanged ()
-	{
-		if (!Ui_.HistorySearch_->text ().isEmpty ())
-		{
-			SearchShift_ = 0;
-			PreviousSearchText_.clear ();
-			on_HistorySearch__returnPressed ();
-		}
-	}
-	*/
-
 	void ChatHistoryWidget::on_Calendar__currentPageChanged ()
 	{
 		UpdateDates ();
@@ -612,14 +600,6 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::RequestSearch ()
 	{
-		/* TODO
-		const QString& entryStr = Ui_.SearchType_->currentIndex () > 0 ?
-				QString () :
-				CurrentEntry_;
-		const QString& accStr = Ui_.SearchType_->currentIndex () > 1 ?
-				QString () :
-				CurrentAccount_;
-				*/
 		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_,
 				PreviousSearchText_, SearchShift_);
 	}
