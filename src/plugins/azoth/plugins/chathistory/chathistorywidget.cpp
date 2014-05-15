@@ -76,6 +76,7 @@ namespace ChatHistory
 				SIGNAL (next (QString, ChatFindBox::FindFlags)),
 				this,
 				SLOT (handleNext (QString, ChatFindBox::FindFlags)));
+		FindBox_->SetEscCloses (false);
 
 		auto proxy = Core::Instance ()->GetCoreProxy ();
 		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
