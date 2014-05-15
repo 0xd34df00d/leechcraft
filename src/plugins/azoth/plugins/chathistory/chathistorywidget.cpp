@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
+#include <QShortcut>
 #include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ientitymanager.h>
@@ -77,6 +78,9 @@ namespace ChatHistory
 				this,
 				SLOT (handleNext (QString, ChatFindBox::FindFlags)));
 		FindBox_->SetEscCloses (false);
+
+		new QShortcut (QString ("F3"), FindBox_, SLOT (findNext ()));
+		new QShortcut (QString ("Shift+F3"), FindBox_, SLOT (findPrevious ()));
 
 		auto proxy = Core::Instance ()->GetCoreProxy ();
 		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
