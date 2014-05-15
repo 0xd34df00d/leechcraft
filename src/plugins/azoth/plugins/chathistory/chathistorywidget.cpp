@@ -381,7 +381,7 @@ namespace ChatHistory
 
 		if (!position)
 		{
-			if (!(FindBox_->GetFlags () & ChatFindBox::FindWrapsAround))
+			if (!(FindBox_->GetFlags () & ChatFindBox::FindWrapsAround) || !SearchShift_)
 				QMessageBox::warning (this,
 						"LeechCraft",
 						tr ("No more search results for %1.")
