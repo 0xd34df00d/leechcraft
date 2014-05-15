@@ -157,9 +157,16 @@ namespace Util
 		/** @brief Search for the next occurrence of the current search.
 		 */
 		void findNext ();
+
 		/** @brief Search for the previous occurrence of the current search.
 		 */
 		void findPrevious ();
+
+		/** @brief Clears the text in the find field.
+		 *
+		 * This is equivalent to <code>SetText ({})</code>.
+		 */
+		void clear ();
 	private slots:
 		void on_Pattern__textChanged (const QString&);
 		void on_FindButton__released ();
