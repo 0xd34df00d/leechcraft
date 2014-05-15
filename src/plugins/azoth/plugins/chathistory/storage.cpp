@@ -410,7 +410,7 @@ namespace ChatHistory
 	{
 		std::shared_ptr<void> CleanupQueryGuard (QSqlQuery& query)
 		{
-			return std::shared_ptr<void> (static_cast<void*> (0), [&query] (void*) { query.finish (); });
+			return std::shared_ptr<void> (nullptr, [&query] (void*) { query.finish (); });
 		}
 	}
 
