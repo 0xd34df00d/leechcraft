@@ -33,6 +33,7 @@
 #include <QMessageBox>
 #include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -375,10 +376,23 @@ namespace ChatHistory
 
 		if (!position)
 		{
-			QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("No more search results for %1.")
-						.arg (PreviousSearchText_));
+			if (!(FindBox_->GetFlags () & ChatFindBox::FindWrapsAround))
+				QMessageBox::warning (this,
+						"LeechCraft",
+						tr ("No more search results for %1.")
+							.arg ("<em>" + PreviousSearchText_ + "</em>"));
+			else
+			{
+				SearchShift_ = 0;
+
+				const auto& e = Util::MakeNotification ("Azoth ChatHistory",
+						tr ("No more search results for %1, searching from the beginning now.")
+							.arg ("<em>" + PreviousSearchText_ + "</em>"),
+						PInfo_);
+				Core::Instance ()->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
+
+				RequestSearch ();
+			}
 			return;
 		}
 
