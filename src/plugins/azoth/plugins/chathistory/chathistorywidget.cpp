@@ -396,7 +396,7 @@ namespace ChatHistory
 						PInfo_);
 				Core::Instance ()->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 
-				RequestSearch ();
+				RequestSearch (FindBox_->GetFlags ());
 			}
 			return;
 		}
@@ -519,7 +519,7 @@ namespace ChatHistory
 		else
 			SearchShift_ = std::max (SearchShift_ - 1, 0);
 
-		RequestSearch ();
+		RequestSearch (flags);
 	}
 
 	void ChatHistoryWidget::previousHistory ()
@@ -611,11 +611,11 @@ namespace ChatHistory
 				CurrentEntry_, Backpages_, PerPageAmount_);
 	}
 
-	void ChatHistoryWidget::RequestSearch ()
+	void ChatHistoryWidget::RequestSearch (ChatFindBox::FindFlags flags)
 	{
 		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_,
 				PreviousSearchText_, SearchShift_,
-				FindBox_->GetFlags () & ChatFindBox::FindCaseSensitively);
+				flags & ChatFindBox::FindCaseSensitively);
 	}
 }
 }

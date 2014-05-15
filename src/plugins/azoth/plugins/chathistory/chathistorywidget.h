@@ -120,7 +120,7 @@ namespace ChatHistory
 		void ShowLoading ();
 		void UpdateDates ();
 		void RequestLogs ();
-		void RequestSearch ();
+		void RequestSearch (ChatFindBox::FindFlags);
 	signals:
 		void removeSelf (QWidget*);
 
