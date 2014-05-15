@@ -27,10 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "chatfindbox.h"
 #include "ui_chathistorywidget.h"
 
 class QStandardItemModel;
@@ -48,6 +49,7 @@ class ICLEntry;
 namespace ChatHistory
 {
 	class Plugin;
+	class ChatFindBox;
 
 	class ChatHistoryWidget : public QWidget
 							, public ITabWidget
@@ -77,6 +79,8 @@ namespace ChatHistory
 
 		static Plugin *S_ParentMultiTabs_;
 
+		ChatFindBox *FindBox_;
+
 		enum ModelRoles
 		{
 			MRIDRole = Qt::UserRole + 1
@@ -101,11 +105,11 @@ namespace ChatHistory
 		void on_AccountBox__currentIndexChanged (int);
 		void handleContactSelected (const QModelIndex&);
 		void on_HistorySearch__returnPressed ();
-		void on_SearchType__currentIndexChanged ();
 
 		void on_Calendar__currentPageChanged ();
 		void on_Calendar__activated (const QDate&);
 
+		void handleNext (const QString&, ChatFindBox::FindFlags);
 		void previousHistory ();
 		void nextHistory ();
 		void clearHistory ();
@@ -126,5 +130,3 @@ namespace ChatHistory
 }
 }
 }
-
-#endif

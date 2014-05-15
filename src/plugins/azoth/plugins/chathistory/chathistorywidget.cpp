@@ -70,9 +70,14 @@ namespace ChatHistory
 		Ui_.VertSplitter_->setStretchFactor (0, 0);
 		Ui_.VertSplitter_->setStretchFactor (1, 4);
 
+		FindBox_ = new ChatFindBox (Core::Instance ()->GetCoreProxy (), Ui_.HistView_);
+		connect (FindBox_,
+				SIGNAL (next (QString, ChatFindBox::FindFlags)),
+				this,
+				SLOT (handleNext (QString, ChatFindBox::FindFlags)));
+
 		auto proxy = Core::Instance ()->GetCoreProxy ();
 		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
-		new Util::ClearLineEditAddon (proxy, Ui_.HistorySearch_);
 
 		SortFilter_->setDynamicSortFilter (true);
 		SortFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
@@ -364,6 +369,7 @@ namespace ChatHistory
 	void ChatHistoryWidget::handleGotSearchPosition (const QString& accountId,
 			const QString& entryId, int position)
 	{
+		/* TODO
 		const bool wideSearch = Ui_.SearchType_->currentIndex ();
 		if (!wideSearch)
 		{
@@ -371,6 +377,7 @@ namespace ChatHistory
 					entryId != CurrentEntry_)
 				return;
 		}
+		*/
 
 		if (!position)
 		{
@@ -459,31 +466,7 @@ namespace ChatHistory
 		UpdateDates ();
 	}
 
-	void ChatHistoryWidget::on_HistorySearch__returnPressed ()
-	{
-		ShowLoading ();
-
-		const QString& text = Ui_.HistorySearch_->text ();
-		if (text.isEmpty ())
-		{
-			PreviousSearchText_.clear ();
-			Backpages_ = 0;
-			SearchResultPosition_ = -1;
-			RequestLogs ();
-			return;
-		}
-
-		if (text == PreviousSearchText_)
-			++SearchShift_;
-		else
-		{
-			SearchShift_ = 0;
-			PreviousSearchText_ = text;
-		}
-
-		RequestSearch ();
-	}
-
+	/* TODO
 	void ChatHistoryWidget::on_SearchType__currentIndexChanged ()
 	{
 		if (!Ui_.HistorySearch_->text ().isEmpty ())
@@ -493,6 +476,7 @@ namespace ChatHistory
 			on_HistorySearch__returnPressed ();
 		}
 	}
+	*/
 
 	void ChatHistoryWidget::on_Calendar__currentPageChanged ()
 	{
@@ -507,8 +491,34 @@ namespace ChatHistory
 		ShowLoading ();
 
 		PreviousSearchText_.clear ();
-		Ui_.HistorySearch_->clear ();
+		FindBox_->clear ();
 		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_, QDateTime (date));
+	}
+
+	void ChatHistoryWidget::handleNext (const QString& text, ChatFindBox::FindFlags flags)
+	{
+		ShowLoading ();
+
+		if (text.isEmpty ())
+		{
+			PreviousSearchText_.clear ();
+			Backpages_ = 0;
+			SearchResultPosition_ = -1;
+			RequestLogs ();
+			return;
+		}
+
+		if (text != PreviousSearchText_)
+		{
+			SearchShift_ = 0;
+			PreviousSearchText_ = text;
+		}
+		else if (!(flags & ChatFindBox::FindBackwards))
+			++SearchShift_;
+		else
+			SearchShift_ = std::max (SearchShift_ - 1, 0);
+
+		RequestSearch ();
 	}
 
 	void ChatHistoryWidget::previousHistory ()
@@ -602,13 +612,16 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::RequestSearch ()
 	{
+		/* TODO
 		const QString& entryStr = Ui_.SearchType_->currentIndex () > 0 ?
 				QString () :
 				CurrentEntry_;
 		const QString& accStr = Ui_.SearchType_->currentIndex () > 1 ?
 				QString () :
 				CurrentAccount_;
-		Core::Instance ()->Search (accStr, entryStr, PreviousSearchText_, SearchShift_);
+				*/
+		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_,
+				PreviousSearchText_, SearchShift_);
 	}
 }
 }
