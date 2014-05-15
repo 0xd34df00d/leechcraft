@@ -33,6 +33,8 @@
 #include "guiconfig.h"
 #include "pagenotification.h"
 
+class QShortcut;
+
 namespace Ui
 {
 	class FindNotification;
@@ -82,7 +84,8 @@ namespace Util
 	{
 		Q_OBJECT
 
-		Ui::FindNotification *Ui_;
+		Ui::FindNotification * const Ui_;
+		QShortcut * const EscShortcut_;
 	public:
 		/** Various options controlling the search behavior.
 		 */
@@ -117,6 +120,12 @@ namespace Util
 		 */
 		FindNotification (ICoreProxy_ptr proxy, QWidget *near);
 		~FindNotification ();
+
+		/** @brief Sets whether Esc closes the widget.
+		 *
+		 * @param[in] close Whether pressing Esc button closes the widget.
+		 */
+		void SetEscCloses (bool close);
 
 		/** @brief Sets the text in the find field.
 		 *
