@@ -42,6 +42,7 @@
 #include <QKeyEvent>
 #include <QSortFilterProxyModel>
 #include <QTimer>
+#include <QPainter>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
@@ -619,6 +620,29 @@ namespace LMP
 				QAbstractItemView::PositionAtCenter);
 	}
 
+	namespace
+	{
+		QIcon SymbolToIcon (const QPair<QString, QColor>& symb, const QFontMetrics& fm)
+		{
+			const auto& rect = fm.boundingRect (symb.first);
+
+			QPixmap px { rect.size () };
+			px.fill (Qt::transparent);
+			{
+				QPainter painter { &px };
+				if (symb.second.isValid ())
+					painter.setPen (symb.second);
+				painter.drawText (QRect { { 0, 0 }, rect.size () },
+						Qt::AlignCenter | Qt::AlignHCenter,
+						symb.first);
+			}
+
+			QIcon icon;
+			icon.addPixmap (px);
+			return icon;
+		}
+	}
+
 	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)
 	{
 		const auto& idx = Ui_.Playlist_->indexAt (pos);
@@ -657,6 +681,9 @@ namespace LMP
 		{
 			const auto action = ExistingTrackActions_->addAction (rule.Entity_.toString ());
 			action->setProperty ("LMP/SourceRule", QVariant::fromValue (rule));
+
+			const auto& symbol = GetRuleSymbol (rule);
+			action->setIcon (SymbolToIcon (symbol, menu->fontMetrics ()));
 		}
 
 		menu->addSeparator ();
