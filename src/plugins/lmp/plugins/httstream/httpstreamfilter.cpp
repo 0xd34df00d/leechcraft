@@ -186,6 +186,16 @@ namespace HttStream
 		TeeStreamPad_ = nullptr;
 	}
 
+	void HttpStreamFilter::HandleFirstClientConnected ()
+	{
+		CreatePad ();
+	}
+
+	void HttpStreamFilter::HandleLastClientDisconnected ()
+	{
+		DestroyPad ();
+	}
+
 	int HttpStreamFilter::HandleError (GstMessage *msg)
 	{
 		if (GST_MESSAGE_TYPE (msg) != GST_MESSAGE_ERROR)
@@ -212,7 +222,7 @@ namespace HttStream
 	void HttpStreamFilter::handleClient (int socket)
 	{
 		if (!ClientsCount_++)
-			CreatePad ();
+			HandleFirstClientConnected ();
 
 		g_signal_emit_by_name (MSS_, "add", socket);
 	}
@@ -222,7 +232,7 @@ namespace HttStream
 		g_signal_emit_by_name (MSS_, "remove", socket);
 
 		if (!--ClientsCount_)
-			DestroyPad ();
+			HandleLastClientDisconnected ();
 	}
 }
 }

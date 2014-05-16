@@ -94,6 +94,9 @@ namespace HttStream
 		void CreatePad ();
 		void DestroyPad ();
 
+		void HandleFirstClientConnected ();
+		void HandleLastClientDisconnected ();
+
 		int HandleError (GstMessage*);
 	private slots:
 		void readdFd (int);
