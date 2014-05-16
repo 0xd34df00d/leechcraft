@@ -208,6 +208,33 @@ namespace LMP
 		return OldState_;
 	}
 
+	void SourceObject::SetState (SourceState state)
+	{
+		if (state == OldState_)
+			return;
+
+		switch (state)
+		{
+		case SourceState::Stopped:
+			Stop ();
+			break;
+		case SourceState::Paused:
+			Pause ();
+			break;
+		case SourceState::Buffering:
+			qWarning () << Q_FUNC_INFO
+					<< "`buffering` is quite a bad state to be in, falling through to Playing";
+		case SourceState::Playing:
+			Play ();
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "erroneous state"
+					<< static_cast<int> (state);
+			break;
+		}
+	}
+
 	QString SourceObject::GetErrorString () const
 	{
 		return {};

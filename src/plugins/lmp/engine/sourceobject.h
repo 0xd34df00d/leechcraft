@@ -175,7 +175,9 @@ namespace LMP
 		SourceObject& operator= (const SourceObject&) = delete;
 
 		bool IsSeekable () const;
+
 		SourceState GetState () const;
+		void SetState (SourceState);
 
 		QString GetErrorString () const;
 

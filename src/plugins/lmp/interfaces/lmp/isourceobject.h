@@ -48,6 +48,7 @@ namespace LMP
 		virtual ~ISourceObject () {}
 
 		virtual SourceState GetState () const = 0;
+		virtual void SetState (SourceState) = 0;
 	};
 }
 }
