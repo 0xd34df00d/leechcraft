@@ -96,33 +96,24 @@ namespace LeechCraft
 				if (!index.isValid ())
 					return QVariant ();
 
-				if (AdditionDialog_)
+				const auto item = static_cast<TreeItem*> (index.internalPointer ());
+				switch (role)
 				{
-					if (role == Qt::CheckStateRole &&
-							index.column () == 0)
-						return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), role);
-					else if (role == Qt::DisplayRole)
-						return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
-					else
-						return QVariant ();
+				case Qt::DisplayRole:
+				case Qt::DecorationRole:
+				case Qt::CheckStateRole:
+					return item->Data (index.column (), role);
+				case RoleSize:
+				case RoleProgress:
+				{
+					double result = item->Data (0, role).toDouble ();
+					if (result < 0)
+						result = 0;
+					return result;
 				}
-				else
-					switch (role)
-					{
-						case Qt::DisplayRole:
-							return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
-						case RoleSize:
-						case RoleProgress:
-							{
-								double result = static_cast<TreeItem*> (index.internalPointer ())->
-									Data (0, role).toDouble ();
-								if (result < 0)
-									result = 0;
-								return result;
-							}
-						default:
-							return QVariant ();
-					}
+				default:
+					return {};
+				}
 			}
 
 			Qt::ItemFlags TorrentFilesModel::flags (const QModelIndex& index) const
