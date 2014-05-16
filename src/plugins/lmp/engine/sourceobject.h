@@ -37,10 +37,10 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include "interfaces/lmp/isourceobject.h"
+#include "interfaces/lmp/ipath.h"
 #include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "pathelement.h"
-#include "path.h"
 
 typedef struct _GstElement GstElement;
 typedef struct _GstPad GstPad;
@@ -55,6 +55,7 @@ namespace LMP
 {
 	class AudioSource;
 	class Path;
+	class MsgPopThread;
 
 	enum class SourceError
 	{
@@ -68,10 +69,6 @@ namespace LMP
 		Music,
 		Notification
 	};
-
-	class MsgPopThread;
-
-	class Path;
 
 	class HandlerContainerBase : public QObject
 	{
