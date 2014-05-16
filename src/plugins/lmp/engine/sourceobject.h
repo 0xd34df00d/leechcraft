@@ -36,6 +36,7 @@
 #include <QMap>
 #include <QMutex>
 #include <QWaitCondition>
+#include "interfaces/lmp/isourceobject.h"
 #include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "pathelement.h"
@@ -60,15 +61,6 @@ namespace LMP
 		MissingPlugin,
 		SourceNotFound,
 		Other
-	};
-
-	enum class SourceState
-	{
-		Error,
-		Stopped,
-		Paused,
-		Buffering,
-		Playing
 	};
 
 	enum class Category
@@ -128,6 +120,7 @@ namespace LMP
 	};
 
 	class SourceObject : public QObject
+					   , public ISourceObject
 	{
 		Q_OBJECT
 
