@@ -43,7 +43,27 @@ namespace Util
 {
 	typedef QList<QPair<QString, QString>> AddrList_t;
 
-	UTIL_NETWORK_API AddrList_t GetLocalAddresses (int defaultPort = 0);
+	/** @brief Returns all local addresses.
+	 *
+	 * This function returns all local addresses in the UP state,
+	 * serialized into a human-readable string and paired with the given
+	 * given \em port.
+	 *
+	 * The local addresses are the ones in the following subnets:
+	 * - 10.0.0.0/8
+	 * - 172.16.0.0/12
+	 * - 192.168.0.0/16
+	 *
+	 * @param[in] port The port to pair.
+	 *
+	 * @return The local addresses.
+	 */
+	UTIL_NETWORK_API AddrList_t GetLocalAddresses (int port = 0);
+
+	/** @brief Returns all addresses likely accessible "from the outside".
+	 *
+	 * @return All accessible addresses.
+	 */
 	UTIL_NETWORK_API QList<QHostAddress> GetAllAddresses ();
 }
 }
