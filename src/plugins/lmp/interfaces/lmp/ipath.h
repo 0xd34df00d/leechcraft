@@ -42,6 +42,8 @@ namespace LMP
 	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
 	typedef std::function<void (GstMessage*)> AsyncHandler_f;
 
+	class ISourceObject;
+
 	class IPath
 	{
 	public:
@@ -52,6 +54,8 @@ namespace LMP
 		virtual void RemoveElement (GstElement*) = 0;
 
 		virtual void PerformWProbe (const std::function<void ()>&) = 0;
+
+		virtual ISourceObject* GetSourceObject () const = 0;
 	};
 }
 }

@@ -30,13 +30,13 @@
 #pragma once
 
 #include <QObject>
+#include "sourceobject.h"
 #include "interfaces/lmp/ipath.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class SourceObject;
 	class Output;
 
 	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
