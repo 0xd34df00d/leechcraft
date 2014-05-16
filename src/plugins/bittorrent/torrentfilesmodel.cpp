@@ -36,6 +36,8 @@
 #include <util/models/treeitem.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 
 using namespace LeechCraft::Util;
@@ -551,6 +553,10 @@ namespace LeechCraft
 				if (AdditionDialog_)
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
                 item->ModifyData (0, QString::fromUtf8 (parentPath.string ().c_str ()), RawDataRole);
+				const auto& icon = Core::Instance ()->GetProxy ()->
+						GetIconThemeManager ()->GetIcon ("document-open-folder");
+				item->ModifyData (0, icon, Qt::DecorationRole);
+
 				parent->AppendChild (item);
 				Path2TreeItem_ [parentPath] = item;
 			}
