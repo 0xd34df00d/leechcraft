@@ -57,12 +57,16 @@ namespace Util
 	 * @param[in] port The port to pair.
 	 *
 	 * @return The local addresses.
+	 *
+	 * @ingroup NetworkUtil
 	 */
 	UTIL_NETWORK_API AddrList_t GetLocalAddresses (int port = 0);
 
 	/** @brief Returns all addresses likely accessible "from the outside".
 	 *
 	 * @return All accessible addresses.
+	 *
+	 * @ingroup NetworkUtil
 	 */
 	UTIL_NETWORK_API QList<QHostAddress> GetAllAddresses ();
 }

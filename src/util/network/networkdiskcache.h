@@ -51,6 +51,8 @@ namespace Util
 	 * also triggered manually via the collectGarbage() slot.
 	 *
 	 * The garbage is collected until cache takes 90% of its maximum size.
+	 *
+	 * @ingroup NetworkUtil
 	 */
 	class UTIL_NETWORK_API NetworkDiskCache : public QNetworkDiskCache
 	{
