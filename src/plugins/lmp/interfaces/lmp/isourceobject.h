@@ -51,6 +51,8 @@ namespace LMP
 
 		virtual SourceState GetState () const = 0;
 		virtual void SetState (SourceState) = 0;
+	protected:
+		void stateChanged (SourceState, SourceState);
 	};
 }
 }
