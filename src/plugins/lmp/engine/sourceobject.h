@@ -171,6 +171,8 @@ namespace LMP
 		SourceObject (const SourceObject&) = delete;
 		SourceObject& operator= (const SourceObject&) = delete;
 
+		QObject* GetQObject ();
+
 		bool IsSeekable () const;
 
 		SourceState GetState () const;

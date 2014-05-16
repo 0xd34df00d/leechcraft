@@ -189,6 +189,11 @@ namespace LMP
 		gst_object_unref (Dec_);
 	}
 
+	QObject* SourceObject::GetQObject ()
+	{
+		return this;
+	}
+
 	bool SourceObject::IsSeekable () const
 	{
 		std::shared_ptr<GstQuery> query (gst_query_new_seeking (GST_FORMAT_TIME), gst_query_unref);

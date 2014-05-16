@@ -47,6 +47,8 @@ namespace LMP
 	public:
 		virtual ~ISourceObject () {}
 
+		virtual QObject* GetQObject () = 0;
+
 		virtual SourceState GetState () const = 0;
 		virtual void SetState (SourceState) = 0;
 	};
