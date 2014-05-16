@@ -50,6 +50,8 @@ namespace LeechCraft
 		 * Currently it doesn't support hierarchical source models.
 		 * Seems like it would never support it at least someone would
 		 * try to implement it.
+		 *
+		 * @ingroup ModelUtil
 		 */
 		class UTIL_MODELS_API MergeModel : public QAbstractItemModel
 		{
