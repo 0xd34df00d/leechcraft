@@ -36,6 +36,7 @@
 #include <util/models/treeitem.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sys/extensionsdata.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
@@ -354,6 +355,8 @@ namespace LeechCraft
 				FilesInTorrent_ = infos.size ();
 				Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
 
+				const auto& inst = Util::ExtensionsData::Instance ();
+
 				for (int i = 0; i < infos.size (); ++i)
 				{
 					FileInfo fi = infos.at (i);
@@ -379,6 +382,8 @@ namespace LeechCraft
 					item->ModifyData (1, i, RolePath);
 					item->ModifyData (0, static_cast<qulonglong> (fi.Size_), RoleSize);
 					item->ModifyData (0, fi.Progress_, RoleProgress);
+					item->ModifyData (0, inst.GetExtIcon (pathStr.section ('.', -1)),
+							Qt::DecorationRole);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [fi.Path_] = item;
 					Path2OriginalPosition_ [fi.Path_] = i;
@@ -553,6 +558,7 @@ namespace LeechCraft
 				if (AdditionDialog_)
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
                 item->ModifyData (0, QString::fromUtf8 (parentPath.string ().c_str ()), RawDataRole);
+
 				const auto& icon = Core::Instance ()->GetProxy ()->
 						GetIconThemeManager ()->GetIcon ("document-open-folder");
 				item->ModifyData (0, icon, Qt::DecorationRole);
