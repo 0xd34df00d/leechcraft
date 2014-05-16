@@ -138,12 +138,13 @@ namespace Util
 
 	QIcon ExtensionsDataImpl::GetMimeIcon (const QString& mime) const
 	{
-		const auto& iconName = Details_->IconsMappings_.value (mime);
-		qDebug () << mime << iconName;
+		auto iconName = Details_->IconsMappings_.value (mime);
 		if (iconName.isEmpty ())
-			return QIcon::fromTheme ("unknown");
+			iconName = mime.section ('/', 0, 0) + "-x-generic";
 
 		auto result = QIcon::fromTheme (iconName);
+		if (result.isNull ())
+			result = QIcon::fromTheme (mime.section ('/', 0, 0) + "-x-generic");
 		if (result.isNull ())
 			result = QIcon::fromTheme ("unknown");
 		return result;
