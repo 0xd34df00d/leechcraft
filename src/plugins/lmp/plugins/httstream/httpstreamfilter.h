@@ -52,6 +52,8 @@ namespace HttStream
 
 		const QByteArray FilterId_;
 		const QByteArray InstanceId_;
+		IPath * const Path_;
+
 		FilterConfigurator * const Configurator_;
 
 		GstElement * const Elem_;
@@ -76,7 +78,8 @@ namespace HttStream
 
 		int ClientsCount_ = 0;
 	public:
-		HttpStreamFilter (const QByteArray& filterId, const QByteArray& instanceId);
+		HttpStreamFilter (const QByteArray& filterId,
+				const QByteArray& instanceId, IPath *path);
 		~HttpStreamFilter ();
 
 		QByteArray GetEffectId () const;

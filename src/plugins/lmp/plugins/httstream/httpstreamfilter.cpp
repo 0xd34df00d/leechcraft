@@ -51,9 +51,11 @@ namespace HttStream
 		}
 	}
 
-	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId, const QByteArray& instanceId)
+	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId,
+			const QByteArray& instanceId, IPath *path)
 	: FilterId_ { filterId }
 	, InstanceId_ { instanceId.isEmpty () ? QUuid::createUuid ().toByteArray () : instanceId }
+	, Path_ { path }
 	, Configurator_ { new FilterConfigurator { instanceId, this } }
 	, Elem_ { gst_bin_new (nullptr) }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
