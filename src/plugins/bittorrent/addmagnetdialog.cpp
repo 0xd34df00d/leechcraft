@@ -34,6 +34,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -69,6 +70,10 @@ namespace BitTorrent
 
 		if (!text.isEmpty ())
 			Ui_.Magnet_->setText (text);
+
+		const auto& dir = XmlSettingsManager::Instance ()->
+				property ("LastSaveDirectory").toString ();
+		Ui_.SavePath_->setText (dir);
 	}
 
 	QString AddMagnetDialog::GetLink () const
