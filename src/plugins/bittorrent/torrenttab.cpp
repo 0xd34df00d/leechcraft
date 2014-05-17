@@ -47,6 +47,7 @@
 #include "trackerschanger.h"
 #include "movetorrentfiles.h"
 #include "tabviewproxymodel.h"
+#include "addmagnetdialog.h"
 
 namespace LeechCraft
 {
@@ -98,6 +99,13 @@ namespace BitTorrent
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleOpenTorrentTriggered ()));
+
+		AddMagnet_ = new QAction (tr ("Add magnet link..."), Toolbar_);
+		AddMagnet_->setProperty ("ActionIcon", "document-open-remote");
+		connect (AddMagnet_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAddMagnetTriggered ()));
 
 		CreateTorrent_ = new QAction (tr ("Create torrent..."), Toolbar_);
 		CreateTorrent_->setProperty ("ActionIcon", "document-new");
@@ -216,6 +224,7 @@ namespace BitTorrent
 				SLOT (handleMakeMagnetLinkTriggered ()));
 
 		Toolbar_->addAction (OpenTorrent_);
+		Toolbar_->addAction (AddMagnet_);
 		Toolbar_->addAction (RemoveTorrent_);
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (Resume_);
@@ -349,6 +358,19 @@ namespace BitTorrent
 				tryLive,
 				files,
 				tp);
+
+		setActionsEnabled ();
+	}
+
+	void TorrentTab::handleAddMagnetTriggered ()
+	{
+		AddMagnetDialog dia;
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		Core::Instance ()->AddMagnet (dia.GetLink (),
+				dia.GetPath (),
+				dia.GetTags ());
 
 		setActionsEnabled ();
 	}
