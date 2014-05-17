@@ -105,6 +105,8 @@ namespace HttStream
 
 		int HandleError (GstMessage*);
 	private slots:
+		void checkCreatePad (SourceState);
+
 		void readdFd (int);
 
 		void handleClient (int);

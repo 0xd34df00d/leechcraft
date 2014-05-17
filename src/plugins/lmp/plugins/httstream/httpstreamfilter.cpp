@@ -192,8 +192,23 @@ namespace HttStream
 	{
 		const auto source = Path_->GetSourceObject ();
 		StateOnFirst_ = source->GetState ();
-		CreatePad ();
+
+		if (StateOnFirst_ == SourceState::Playing)
+		{
+			CreatePad ();
+			return true;
+		}
+		else
+		{
+			connect (source->GetQObject (),
+					SIGNAL (stateChanged (SourceState, SourceState)),
+					this,
+					SLOT (checkCreatePad (SourceState)));
+
 			source->SetState (SourceState::Playing);
+
+			return false;
+		}
 	}
 
 	void HttpStreamFilter::HandleLastClientDisconnected ()
@@ -220,6 +235,18 @@ namespace HttStream
 		}
 
 		return GST_BUS_PASS;
+	}
+
+	void HttpStreamFilter::checkCreatePad (SourceState state)
+	{
+		if (state != SourceState::Playing)
+			return;
+
+		disconnect (Path_->GetSourceObject ()->GetQObject (),
+				SIGNAL (stateChanged (SourceState, SourceState)),
+				this,
+				SLOT (checkCreatePad (SourceState)));
+		CreatePad ();
 	}
 
 	void HttpStreamFilter::readdFd (int fd)
