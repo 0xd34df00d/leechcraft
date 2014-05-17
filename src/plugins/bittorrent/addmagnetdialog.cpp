@@ -29,6 +29,7 @@
 
 #include "addmagnetdialog.h"
 #include <QClipboard>
+#include <QFileDialog>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -88,6 +89,19 @@ namespace BitTorrent
 		for (const auto& tag : tm->Split (Ui_.Tags_->text ()))
 			result << tm->GetID (tag);
 		return result;
+	}
+
+	void AddMagnetDialog::on_BrowseButton__released()
+	{
+		const auto& dir = QFileDialog::getExistingDirectory (this,
+				tr ("Select save directory"),
+				Ui_.SavePath_->text (),
+				0);
+		if (dir.isEmpty ())
+			return;
+
+		XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
+		Ui_.SavePath_->setText (dir);
 	}
 }
 }

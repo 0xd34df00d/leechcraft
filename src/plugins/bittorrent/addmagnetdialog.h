@@ -49,6 +49,8 @@ namespace BitTorrent
 		QString GetLink () const;
 		QString GetPath () const;
 		QStringList GetTags () const;
+	private slots:
+		void on_BrowseButton__released ();
 	};
 }
 }

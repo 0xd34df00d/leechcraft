@@ -37,7 +37,7 @@
       <widget class="QLineEdit" name="SavePath_"/>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="BrowseButton_">
        <property name="text">
         <string>Browse...</string>
        </property>
