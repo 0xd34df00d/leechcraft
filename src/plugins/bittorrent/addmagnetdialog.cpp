@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "addmagnetdialog.h"
+#include <QClipboard>
+#include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
@@ -38,10 +40,34 @@ namespace Plugins
 {
 namespace BitTorrent
 {
+	namespace
+	{
+		QString CheckClipboard (QClipboard::Mode mode)
+		{
+			auto url = QUrl::fromUserInput (qApp->clipboard ()->text (mode));
+			if (!url.isValid () || url.scheme () != "magnet")
+				return {};
+
+			const auto& queryItems = url.queryItems ();
+			for (const auto& item : queryItems)
+				if (item.first == "xt" && item.second.startsWith ("urn:btih:"))
+					return url.toString ();
+
+			return {};
+		}
+	}
+
 	AddMagnetDialog::AddMagnetDialog (QWidget *parent)
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
+
+		auto text = CheckClipboard (QClipboard::Clipboard);
+		if (text.isEmpty ())
+			text = CheckClipboard (QClipboard::Selection);
+
+		if (!text.isEmpty ())
+			Ui_.Magnet_->setText (text);
 	}
 
 	QString AddMagnetDialog::GetLink () const
