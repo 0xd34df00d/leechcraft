@@ -71,9 +71,6 @@ namespace LackMan
 
 	void PendingManager::ToggleUpdate (int id, bool enable)
 	{
-		if (ScheduledForAction_ [Action::Update].contains (id))
-			return;
-
 		if (enable)
 			EnablePackageInto (id, Action::Update);
 		else

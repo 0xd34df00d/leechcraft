@@ -39,7 +39,9 @@
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
 #include <QXmppDiscoveryManager.h>
+#include <QXmppGlobal.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxmessage.h"
@@ -533,7 +535,7 @@ namespace Xoox
 
 	void EntryBase::SetAvatar (const QByteArray& data)
 	{
-		if (!data.size ())
+		if (data.isEmpty ())
 			SetAvatar (QImage ());
 		else
 			SetAvatar (QImage::fromData (data));
@@ -553,6 +555,11 @@ namespace Xoox
 
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard, bool initial)
 	{
+#if QXMPP_VERSION >= 0x000801
+		if (vcard == VCardIq_)
+			return;
+#endif
+
 		VCardIq_ = vcard;
 		VCardPhotoHash_ = VCardIq_.photo ().isEmpty () ?
 				QByteArray () :
@@ -572,7 +579,8 @@ namespace Xoox
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
 
-		if (!initial)
+		if (!initial &&
+				GetEntryType () == ICLEntry::ETChat)
 			Core::Instance ().ScheduleSaveRoster (10000);
 
 		emit vcardUpdated ();

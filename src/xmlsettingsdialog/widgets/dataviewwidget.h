@@ -52,6 +52,8 @@ namespace LeechCraft
 		QAbstractItemModel* GetModel () const;
 		QModelIndex GetCurrentIndex () const;
 		QModelIndexList GetSelectedRows () const;
+	public slots:
+		void resizeColumns ();
 	private slots:
 		void handleCustomButtonReleased ();
 	signals:

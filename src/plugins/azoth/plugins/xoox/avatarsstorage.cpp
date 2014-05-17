@@ -28,8 +28,12 @@
  **********************************************************************/
 
 #include "avatarsstorage.h"
-#include <util/util.h>
+#include <memory>
 #include <QTimer>
+#include <QImage>
+#include <QtConcurrentRun>
+#include <QtDebug>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -38,11 +42,23 @@ namespace Azoth
 namespace Xoox
 {
 	AvatarsStorage::AvatarsStorage (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
+	, AvatarsDir_ { Util::GetUserDir (Util::UserDir::Cache, "azoth/xoox/hashed_avatars") }
 	{
-		AvatarsDir_ = Util::CreateIfNotExists ("azoth/xoox/hashed_avatars");
+		QTimer::singleShot (30000,
+				this,
+				SLOT (collectOldAvatars ()));
 
-		QTimer::singleShot (30000, this, SLOT (collectOldAvatars ()));
+		// Remove later
+		QtConcurrent::run ([] () -> void
+				{
+					auto dir = Util::CreateIfNotExists ("azoth/xoox/hashed_avatars");
+					for (const auto& file : dir.entryList (QDir::Files))
+						dir.remove (file);
+
+					dir.cdUp ();
+					dir.rmdir ("hashed_avatars");
+				});
 	}
 
 	/** The clients are free to not call this function if they know the avatar is
@@ -53,20 +69,20 @@ namespace Xoox
 	 */
 	void AvatarsStorage::StoreAvatar (const QImage& image, const QByteArray& hash)
 	{
-		QFile file (AvatarsDir_.absoluteFilePath (hash));
-		if (file.exists () && file.size ())
+		auto file = std::make_shared<QFile> (AvatarsDir_.absoluteFilePath (hash));
+		if (file->exists () && file->size ())
 			return;
 
-		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+		if (!file->open (QIODevice::WriteOnly | QIODevice::Truncate))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open file"
-					<< file.fileName ()
+					<< file->fileName ()
 					<< "for writing";
 			return;
 		}
 
-		image.save (&file, "PNG", 100);
+		QtConcurrent::run ([file, image] { image.save (file.get (), "PNG", 0); });
 	}
 
 	QImage AvatarsStorage::GetAvatar (const QByteArray& hash) const

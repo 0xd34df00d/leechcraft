@@ -101,8 +101,7 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 
 	try
 	{
-		CreateIfNotExists ("core/cache");
-		auto cache = new Util::NetworkDiskCache ("core/cache", this);
+		auto cache = new Util::NetworkDiskCache ("core", this);
 		setCache (cache);
 
 		XmlSettingsManager::Instance ()->RegisterObject ("CacheSize",

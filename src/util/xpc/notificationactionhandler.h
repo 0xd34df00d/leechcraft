@@ -32,7 +32,7 @@
 #include <functional>
 #include <QObject>
 #include <interfaces/structures.h>
-#include <util/utilconfig.h>
+#include "xpcconfig.h"
 
 namespace LeechCraft
 {
@@ -90,7 +90,7 @@ namespace Util
 		 *
 		 * @param[in] entity The entity to add actions to.
 		 */
-		UTIL_API NotificationActionHandler (Entity& entity, QObject* = 0);
+		UTIL_XPC_API NotificationActionHandler (Entity& entity, QObject* = 0);
 
 		/** @brief Adds an action with the given name.
 		 *
@@ -102,13 +102,13 @@ namespace Util
 		 * @param[in] action The functor to invoke when the user selects
 		 * the action.
 		 */
-		UTIL_API void AddFunction (const QString& name, Callback_t action);
+		UTIL_XPC_API void AddFunction (const QString& name, Callback_t action);
 
 		/** @brief Adds an object as a dependent object.
 		 *
 		 * @param[in] object The object actions in this handler depend upon.
 		 */
-		UTIL_API void AddDependentObject (QObject *object);
+		UTIL_XPC_API void AddDependentObject (QObject *object);
 	public slots:
 		void notificationActionTriggered (int);
 	};

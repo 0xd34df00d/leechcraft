@@ -65,6 +65,7 @@ namespace LeechCraft
 				QAction *Remove_;
 
 				bool WriteScheduled_;
+				bool WritePending_ = false;
 
 				enum Shortcuts
 				{

@@ -38,6 +38,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "gstfix.h"
 #include "playertab.h"
 #include "player.h"
@@ -51,6 +52,7 @@
 #include "radiomanager.h"
 #include "notificationplayer.h"
 #include "effectsmanager.h"
+#include "lmpproxy.h"
 
 typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
@@ -131,6 +133,8 @@ namespace LMP
 		XSD_->SetDataSource ("RootPathsView", mgr->GetModel ());
 
 		PlayerTab_ = new PlayerTab (PlayerTC_, this);
+
+		Core::Instance ().GetLmpProxy ()->GetGuiProxy ()->SetPlayerTab (PlayerTab_);
 
 		connect (PlayerTab_,
 				SIGNAL (removeTab (QWidget*)),

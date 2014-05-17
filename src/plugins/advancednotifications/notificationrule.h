@@ -27,14 +27,17 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULE_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULE_H
+#pragma once
+
 #include <QStringList>
 #include <QMetaType>
+#include <QColor>
 #include "common.h"
 #include "fieldmatch.h"
+#include "interfaces/advancednotifications/inotificationrule.h"
 
 class QDataStream;
+class QDebug;
 
 namespace LeechCraft
 {
@@ -73,7 +76,7 @@ namespace AdvancedNotifications
 
 	bool operator== (const CmdParams&, const CmdParams&);
 
-	class NotificationRule
+	class NotificationRule : public INotificationRule
 	{
 		QString Name_;
 		QString Category_;
@@ -90,6 +93,8 @@ namespace AdvancedNotifications
 
 		bool IsEnabled_;
 		bool IsSingleShot_;
+
+		QColor Color_ { Qt::red };
 	public:
 		NotificationRule ();
 		NotificationRule (const QString& name,
@@ -132,6 +137,9 @@ namespace AdvancedNotifications
 		bool IsSingleShot () const;
 		void SetSingleShot (bool);
 
+		QColor GetColor () const;
+		void SetColor (const QColor&);
+
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);
 	};
@@ -143,7 +151,11 @@ namespace AdvancedNotifications
 }
 }
 
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::FieldMatch&);
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::VisualParams&);
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::AudioParams&);
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::TrayParams&);
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::CmdParams&);
+
 Q_DECLARE_METATYPE (LeechCraft::AdvancedNotifications::NotificationRule);
 Q_DECLARE_METATYPE (QList<LeechCraft::AdvancedNotifications::NotificationRule>);
-
-#endif

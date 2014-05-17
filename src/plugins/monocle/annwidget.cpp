@@ -28,8 +28,15 @@
  **********************************************************************/
 
 #include "annwidget.h"
+#include <QMenu>
+#include <QClipboard>
+#include <QToolBar>
+#include <util/sll/onetimerunner.h>
+#include <util/shortcuts/shortcutmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "annmanager.h"
 #include "anntreedelegate.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -40,6 +47,21 @@ namespace Monocle
 	, Mgr_ { mgr }
 	{
 		Ui_.setupUi (this);
+
+		const auto sm = Core::Instance ().GetShortcutManager ();
+		auto toolbar = new QToolBar;
+		auto prevAct = toolbar->addAction (tr ("Previous annotation"),
+				mgr, SLOT (selectPrev ()));
+		prevAct->setProperty ("ActionIcon", "go-previous");
+		sm->RegisterAction ("org.LeechCraft.Monocle.PrevAnn", prevAct);
+
+		auto nextAct = toolbar->addAction (tr ("Next annotation"),
+				mgr, SLOT (selectNext ()));
+		nextAct->setProperty ("ActionIcon", "go-next");
+		sm->RegisterAction ("org.LeechCraft.Monocle.NextAnn", nextAct);
+
+		const auto treeIdx = Ui_.AnnWidgetLayout_->indexOf (Ui_.AnnTree_);
+		Ui_.AnnWidgetLayout_->insertWidget (treeIdx, toolbar);
 
 		Ui_.AnnTree_->setItemDelegate (new AnnTreeDelegate { Ui_.AnnTree_, this });
 		Ui_.AnnTree_->setModel (Mgr_->GetModel ());
@@ -52,6 +74,32 @@ namespace Monocle
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				Mgr_,
 				SLOT (selectAnnotation (QModelIndex)));
+	}
+
+	void AnnWidget::on_AnnTree__customContextMenuRequested (const QPoint& point)
+	{
+		const auto& idx = Ui_.AnnTree_->indexAt (point);
+		if (!idx.isValid () ||
+				idx.data (AnnManager::Role::ItemType).toInt () == AnnManager::ItemTypes::PageItem)
+			return;
+
+		const auto itm = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+
+		QMenu menu;
+		auto action = menu.addAction (itm->GetIcon ("edit-copy"), tr ("Copy annotation text"));
+		new Util::OneTimeRunner
+		{
+			[&idx] () -> void
+			{
+				const auto& ann = idx.data (AnnManager::Role::Annotation).value<IAnnotation_ptr> ();
+				qApp->clipboard ()->setText (ann->GetText ());
+			},
+			action,
+			SIGNAL (triggered ()),
+			&menu
+		};
+
+		menu.exec (Ui_.AnnTree_->viewport ()->mapToGlobal (point));
 	}
 
 	void AnnWidget::focusOnAnnotation (const QModelIndex& index)

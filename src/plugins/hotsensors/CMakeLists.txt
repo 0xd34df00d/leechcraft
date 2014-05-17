@@ -23,6 +23,8 @@ set (SRCS
 set (ADDITIONAL_LIBS)
 
 if (APPLE)
+	set (SRCS ${SRCS} macosbackend.cpp)
+	set (ADDITIONAL_LIBS "-framework IOKit;-framework CoreFoundation")
 elseif (UNIX)
 	find_package (Sensors)
 

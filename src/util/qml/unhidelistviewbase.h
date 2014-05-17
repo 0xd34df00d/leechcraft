@@ -31,8 +31,8 @@
 
 #include <QDeclarativeView>
 #include <QList>
-#include <util/utilconfig.h>
 #include <interfaces/core/icoreproxy.h>
+#include "qmlconfig.h"
 
 class QStandardItem;
 class QStandardItemModel;
@@ -41,7 +41,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API UnhideListViewBase : public QDeclarativeView
+	class UTIL_QML_API UnhideListViewBase : public QDeclarativeView
 	{
 		Q_OBJECT
 	protected:

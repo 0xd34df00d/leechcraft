@@ -51,11 +51,13 @@ namespace HttStream
 		}
 	}
 
-	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId, const QByteArray& instanceId)
+	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId,
+			const QByteArray& instanceId, IPath *path)
 	: FilterId_ { filterId }
 	, InstanceId_ { instanceId.isEmpty () ? QUuid::createUuid ().toByteArray () : instanceId }
+	, Path_ { path }
 	, Configurator_ { new FilterConfigurator { instanceId, this } }
-	, Elem_ { gst_bin_new ("httpstreambin") }
+	, Elem_ { gst_bin_new (nullptr) }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
 	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
@@ -106,10 +108,6 @@ namespace HttStream
 
 	HttpStreamFilter::~HttpStreamFilter ()
 	{
-		gst_element_release_request_pad (Tee_, TeeAudioPad_);
-		gst_object_unref (TeeAudioPad_);
-
-		gst_object_unref (Elem_);
 	}
 
 	QByteArray HttpStreamFilter::GetEffectId () const
@@ -140,8 +138,6 @@ namespace HttStream
 	namespace
 	{
 		// http://cgit.collabora.com/git/user/kakaroto/gst-plugins-base.git/plain/gst/tcp/gstmultihandlesink.c
-		const int GST_CLIENT_STATUS_OK = 0;
-		const int GST_CLIENT_STATUS_CLOSED = 1;
 		const int GST_CLIENT_STATUS_REMOVED = 2;
 	}
 
@@ -168,7 +164,7 @@ namespace HttStream
 
 	void HttpStreamFilter::PostAdd (IPath *path)
 	{
-		path->AddSyncHandler ([this] (GstBus*, GstMessage *msg) { return HandleError (msg); });
+		path->AddSyncHandler ([this] (GstBus*, GstMessage *msg) { return HandleError (msg); }, this);
 	}
 
 	void HttpStreamFilter::CreatePad ()
@@ -192,6 +188,16 @@ namespace HttStream
 		TeeStreamPad_ = nullptr;
 	}
 
+	void HttpStreamFilter::HandleFirstClientConnected ()
+	{
+		CreatePad ();
+	}
+
+	void HttpStreamFilter::HandleLastClientDisconnected ()
+	{
+		DestroyPad ();
+	}
+
 	int HttpStreamFilter::HandleError (GstMessage *msg)
 	{
 		if (GST_MESSAGE_TYPE (msg) != GST_MESSAGE_ERROR)
@@ -201,6 +207,9 @@ namespace HttStream
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "detected stream error";
+
+			gst_message_unref (msg);
+
 			return GST_BUS_DROP;
 		}
 
@@ -215,7 +224,7 @@ namespace HttStream
 	void HttpStreamFilter::handleClient (int socket)
 	{
 		if (!ClientsCount_++)
-			CreatePad ();
+			HandleFirstClientConnected ();
 
 		g_signal_emit_by_name (MSS_, "add", socket);
 	}
@@ -225,7 +234,7 @@ namespace HttStream
 		g_signal_emit_by_name (MSS_, "remove", socket);
 
 		if (!--ClientsCount_)
-			DestroyPad ();
+			HandleLastClientDisconnected ();
 	}
 }
 }

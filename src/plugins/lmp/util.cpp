@@ -253,5 +253,35 @@ namespace LMP
 		}
 		return trackTooltip;
 	}
+
+	bool CompareArtists (QString leftStr, QString rightStr, bool withoutThe)
+	{
+		if (withoutThe)
+		{
+			auto chopStr = [] (QString& str)
+			{
+				if (str.startsWith ("the ", Qt::CaseInsensitive))
+					str = str.mid (4);
+				if (str.startsWith ("a ", Qt::CaseInsensitive))
+					str = str.mid (2);
+			};
+
+			chopStr (leftStr);
+			chopStr (rightStr);
+		}
+
+		return QString::localeAwareCompare (leftStr, rightStr) < 0;
+	}
+
+	QPair<QString, QColor> GetRuleSymbol (const Entity& rule)
+	{
+		static const QString flagSym = QString::fromUtf8 ("⚑");
+		static const QString disabledFlagSym = QString::fromUtf8 ("⚐");
+
+		const auto& color = rule.Additional_ ["org.LC.AdvNotifications.AssocColor"].value<QColor> ();
+		const auto isEnabled = rule.Additional_ ["org.LC.AdvNotifications.IsEnabled"].toBool ();
+
+		return { isEnabled ? flagSym : disabledFlagSym, color };
+	}
 }
 }

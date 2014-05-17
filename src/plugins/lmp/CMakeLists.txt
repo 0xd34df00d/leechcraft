@@ -120,6 +120,7 @@ set (SRCS
 	collectionsmanager.cpp
 	collectionwidget.cpp
 	localcollectionmodel.cpp
+	playerrulesmanager.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
@@ -215,18 +216,24 @@ target_link_libraries (leechcraft_lmp
 install (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES lmpfilterrgsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/qml/lmp DESTINATION ${LC_QML_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-lmp.desktop DESTINATION share/applications)
 endif ()
 
+option (ENABLE_LMP_BRAINSLUGZ "Enable BrainSlugz, plugin for checking collection completeness" ON)
 option (ENABLE_LMP_DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
 option (ENABLE_LMP_GRAFFITI "Enable Graffiti for manipulating audio file tags" ON)
 option (ENABLE_LMP_HTTSTREAM "Enable HttStream for streaming music from LMP via HTTP" ON)
 option (ENABLE_LMP_JOS "Enable jOS for synchronizing with iOS devices" OFF)
 option (ENABLE_LMP_MP3TUNES "Enable plugin for syncing and using the mp3tunes.com service" ON)
 option (ENABLE_LMP_MTPSYNC "Enable plugin for syncing with MTP devices" OFF)
+option (ENABLE_LMP_POTORCHU "Enable visualization effects plugin" ON)
 
+if (ENABLE_LMP_BRAINSLUGZ)
+	add_subdirectory (plugins/brainslugz)
+endif ()
 if (ENABLE_LMP_DUMBSYNC)
 	add_subdirectory (plugins/dumbsync)
 endif ()
@@ -245,3 +252,6 @@ endif ()
 if (ENABLE_LMP_MTPSYNC)
 	add_subdirectory (plugins/mtpsync)
 endif ()
+if (ENABLE_LMP_POTORCHU)
+	add_subdirectory(plugins/potorchu)
+endiF (ENABLE_LMP_POTORCHU)

@@ -89,6 +89,18 @@ namespace Media
 			 */
 			Single,
 
+			/** @brief A compilation.
+			 */
+			Compilation,
+
+			/** @brief A live release.
+			 */
+			Live,
+
+			/** @brief A soundtrack.
+			 */
+			Soundtrack,
+
 			/** @brief Some other release type currently unrecognized by
 			 * LeechCraft.
 			 */
@@ -140,7 +152,7 @@ namespace Media
 		 *
 		 * This function returns the found releases, or an empty list if
 		 * no releases are found, an error has occurred or search isn't
-		 * completed yet..
+		 * completed yet.
 		 *
 		 * @return The fetched artist biography.
 		 */

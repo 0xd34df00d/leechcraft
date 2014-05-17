@@ -33,6 +33,7 @@
 #include <QDir>
 #include <QUrl>
 #include <util/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -48,7 +49,7 @@ namespace CleanWeb
 		QDir subscrListFileDir;
 		try
 		{
-			subscrListFileDir = Util::GetUserDir ("data/poshuku/cleanweb/");
+			subscrListFileDir = Util::CreateIfNotExists ("data/poshuku/cleanweb/");
 		}
 		catch (const std::exception& e)
 		{

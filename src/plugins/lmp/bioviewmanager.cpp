@@ -93,7 +93,7 @@ namespace LMP
 		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		View_->engine ()->addImageProvider ("sysIcons", new Util::ThemeImageProvider (proxy));
+		View_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);
@@ -144,7 +144,7 @@ namespace LMP
 		return 0;
 	}
 
-	void BioViewManager::SetAlbumImage (const QString& album, const QImage& img)
+	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img)
 	{
 		auto item = FindAlbumItem (album);
 		if (!item)
@@ -155,7 +155,7 @@ namespace LMP
 			return;
 		}
 
-		item->setData (Util::GetAsBase64Src (img), DiscoModel::Roles::AlbumImage);
+		item->setData (img, DiscoModel::Roles::AlbumImage);
 	}
 
 	void BioViewManager::handleBioReady ()
@@ -169,15 +169,9 @@ namespace LMP
 
 	void BioViewManager::handleDiscographyReady ()
 	{
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		auto aaProvObj = pm->GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0);
-		auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
-		if (aaProvObj)
-			connect (aaProvObj,
-					SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
-					this,
-					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QImage>)),
-					Qt::UniqueConnection);
+		const auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		const auto aaProvObj = pm->GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0);
+		const auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
 
 		auto fetcher = qobject_cast<Media::IPendingDisco*> (sender ());
 		const auto& icon = Core::Instance ().GetProxy ()->GetIconThemeManager ()->
@@ -201,48 +195,21 @@ namespace LMP
 
 			DiscoModel_->appendRow (item);
 
-			aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
+			const auto proxy = aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
+			connect (proxy->GetQObject (),
+					SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
+					this,
+					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QUrl>)));
 		}
 	}
 
-	namespace
+	void BioViewManager::handleAlbumArt (const Media::AlbumInfo& info, const QList<QUrl>& images)
 	{
-		struct ScaleResult
-		{
-			QImage Image_;
-			QString Album_;
-		};
-	}
-
-	void BioViewManager::handleAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
-	{
+		sender ()->deleteLater ();
 		if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
 			return;
 
-		auto img = images.first ();
-		if (img.width () <= AASize)
-		{
-			SetAlbumImage (info.Album_, img);
-			return;
-		}
-
-		auto watcher = new QFutureWatcher<ScaleResult> ();
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleImageScaled ()));
-
-		watcher->setFuture (QtConcurrent::run ([img, info] () -> ScaleResult
-				{ return { img.scaled (AASize, AASize, Qt::KeepAspectRatio, Qt::SmoothTransformation), info.Album_ }; }));
-	}
-
-	void BioViewManager::handleImageScaled ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<ScaleResult>*> (sender ());
-		watcher->deleteLater ();
-
-		const auto& result = watcher->result ();
-		SetAlbumImage (result.Album_, result.Image_);
+		SetAlbumImage (info.Album_, images.first ());
 	}
 
 	void BioViewManager::handleAlbumPreviewRequested (int index)

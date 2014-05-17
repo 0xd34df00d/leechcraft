@@ -71,8 +71,6 @@ namespace LeechCraft
 		QStringList PluginLoadErrors_;
 		mutable QMap<QByteArray, QObject*> PluginID2PluginCache_;
 
-		QDir IconsDir_;
-
 		std::shared_ptr<PluginTreeBuilder> PluginTreeBuilder_;
 
 		mutable bool CacheValid_;

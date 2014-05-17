@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "staticplaylistmanager.h"
-#include <util/util.h>
+#include <util/sys/paths.h>
 #include "playlistparsers/m3u.h"
 
 namespace LeechCraft

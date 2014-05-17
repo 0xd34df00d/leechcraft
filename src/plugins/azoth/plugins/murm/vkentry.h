@@ -76,7 +76,7 @@ namespace Murm
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 
-		void UpdateInfo (const UserInfo&);
+		void UpdateInfo (const UserInfo&, bool spontaneous = true);
 		const UserInfo& GetInfo () const;
 
 		void Send (VkMessage*);

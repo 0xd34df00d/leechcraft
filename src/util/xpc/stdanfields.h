@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
+#include "xpcconfig.h"
 
 template<typename T>
 class QList;
@@ -41,6 +41,6 @@ struct ANFieldData;
 
 namespace Util
 {
-	UTIL_API QList<ANFieldData> GetStdANFields (const QString& category);
+	UTIL_XPC_API QList<ANFieldData> GetStdANFields (const QString& category);
 }
 }

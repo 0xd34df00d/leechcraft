@@ -32,7 +32,7 @@
 #include <QNetworkCookieJar>
 #include <QByteArray>
 #include <QRegExp>
-#include <util/utilconfig.h>
+#include "networkconfig.h"
 
 namespace LeechCraft
 {
@@ -42,8 +42,10 @@ namespace Util
 	 *
 	 * Allows one to filter tracking cookies, filter duplicate cookies
 	 * and has unlimited storage period.
+	 *
+	 * @ingroup NetworkUtil
 	 */
-	class UTIL_API CustomCookieJar : public QNetworkCookieJar
+	class UTIL_NETWORK_API CustomCookieJar : public QNetworkCookieJar
 	{
 		Q_OBJECT
 

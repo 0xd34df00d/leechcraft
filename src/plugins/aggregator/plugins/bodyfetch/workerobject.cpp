@@ -39,6 +39,7 @@
 #include <QtDebug>
 #include <interfaces/iscriptloader.h>
 #include <util/util.h>
+#include <util/sys/paths.h>
 
 uint qHash (IScript_ptr script)
 {

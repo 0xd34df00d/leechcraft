@@ -48,6 +48,7 @@ class QDataStream;
 class QShortcut;
 class QWebFrame;
 class QLabel;
+class QWebInspector;
 
 namespace LeechCraft
 {
@@ -117,6 +118,8 @@ namespace Poshuku
 		CustomWebView *WebView_;
 		QLabel *LinkTextItem_;
 
+		QWebInspector *WebInspector_;
+
 		static QObject* S_MultiTabsParent_;
 
 		friend class CustomWebView;
@@ -126,7 +129,7 @@ namespace Poshuku
 		static void SetParentMultiTabs (QObject*);
 
 		void Deown ();
-		void InitShortcuts ();
+		void FinalizeInit ();
 
 		CustomWebView* GetView () const;
 		QLineEdit* GetURLEdit () const;
@@ -225,6 +228,9 @@ namespace Poshuku
 		void tabRecoverDataChanged ();
 
 		// Hook support
+		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
+				QObject *browserWidget);
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QObject *browserWidget);

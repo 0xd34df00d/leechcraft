@@ -11,17 +11,10 @@ include_directories (
 set (SRCS
 	cemento.cpp
 	)
-set (HEADERS
-	cemento.h
-	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
 add_library (leechcraft_cemento SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 target_link_libraries (leechcraft_cemento
 	${QT_LIBRARIES}

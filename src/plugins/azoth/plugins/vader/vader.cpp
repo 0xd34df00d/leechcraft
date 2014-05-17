@@ -32,6 +32,7 @@
 #include <QAction>
 #include <QUrl>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "mrimprotocol.h"

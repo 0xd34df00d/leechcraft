@@ -34,7 +34,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <interfaces/core/iiconthememanager.h>
-#include <util/util.h>
+#include <util/sys/paths.h>
 #include "ljaccount.h"
 #include "core.h"
 #include "profilewidget.h"
@@ -207,7 +207,7 @@ namespace Metida
 		if (!acc)
 			return;
 		const QByteArray filename = acc->GetAccountID ().toBase64 ().replace ('/', '_');
-		const QDir& avatarDir = Util::CreateIfNotExists ("blogique/metida/avatars");
+		const QDir& avatarDir = Util::GetUserDir (Util::UserDir::Cache, "blogique/metida/avatars");
 
 		const QString& path = avatarDir.absoluteFilePath (filename);
 		QFile file (path);
@@ -230,7 +230,7 @@ namespace Metida
 
 		const QByteArray filename = (acc->GetAccountID () + id.toUtf8 ())
 				.toBase64 ().replace ('/', '_');
-		const QDir& avatarDir = Util::CreateIfNotExists ("blogique/metida/avatars");
+		const QDir& avatarDir = Util::GetUserDir (Util::UserDir::Cache, "blogique/metida/avatars");
 
 		const QString& path = avatarDir.absoluteFilePath (filename);
 		QFile file (path);

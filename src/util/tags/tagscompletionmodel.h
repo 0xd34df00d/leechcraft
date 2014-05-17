@@ -31,7 +31,7 @@
 
 #include <QStringListModel>
 #include <QStringList>
-#include <util/utilconfig.h>
+#include "tagsconfig.h"
 
 namespace LeechCraft
 {
@@ -42,7 +42,7 @@ namespace Util
 	 * This model is basically a QStringListModel with additional methods
 	 * for easy working with tags.
 	 */
-	class UTIL_API TagsCompletionModel : public QStringListModel
+	class UTIL_TAGS_API TagsCompletionModel : public QStringListModel
 	{
 		Q_OBJECT
 	public:

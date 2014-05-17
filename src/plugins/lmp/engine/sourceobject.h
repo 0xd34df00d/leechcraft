@@ -30,15 +30,17 @@
 #pragma once
 
 #include <memory>
+#include <type_traits>
 #include <QObject>
 #include <QStringList>
 #include <QMap>
 #include <QMutex>
 #include <QWaitCondition>
+#include "interfaces/lmp/isourceobject.h"
+#include "interfaces/lmp/ipath.h"
 #include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "pathelement.h"
-#include "path.h"
 
 typedef struct _GstElement GstElement;
 typedef struct _GstPad GstPad;
@@ -53,6 +55,7 @@ namespace LMP
 {
 	class AudioSource;
 	class Path;
+	class MsgPopThread;
 
 	enum class SourceError
 	{
@@ -61,26 +64,60 @@ namespace LMP
 		Other
 	};
 
-	enum class SourceState
-	{
-		Error,
-		Stopped,
-		Paused,
-		Buffering,
-		Playing
-	};
-
 	enum class Category
 	{
 		Music,
 		Notification
 	};
 
-	class MsgPopThread;
+	class HandlerContainerBase : public QObject
+	{
+		Q_OBJECT
+	protected slots:
+		virtual void objectDestroyed () = 0;
+	};
 
-	class Path;
+	template<typename T>
+	class HandlerContainer : public HandlerContainerBase
+	{
+		QMap<QObject*, QList<T>> Dependents_;
+	public:
+		void AddHandler (const T& handler, QObject *dependent)
+		{
+			Dependents_ [dependent] << handler;
+
+			connect (dependent,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (objectDestroyed ()));
+		}
+
+		template<typename Reducer, typename... Args>
+		auto operator() (Reducer r, decltype (r (T {} (Args {}...), T {} (Args {}...))) init, Args... args) -> decltype (r (T {} (args...), T {} (args...)))
+		{
+			for (const auto& sublist : Dependents_)
+				for (const auto& item : sublist)
+					init = r (init, item (args...));
+
+			return init;
+		}
+
+		template<typename... Args>
+		auto operator() (Args... args) -> typename std::enable_if<std::is_same<void, decltype (T {} (args...))>::value, void>::type
+		{
+			for (const auto& sublist : Dependents_)
+				for (const auto& item : sublist)
+					item (args...);
+		}
+	private:
+		void objectDestroyed ()
+		{
+			Dependents_.remove (sender ());
+		}
+	};
 
 	class SourceObject : public QObject
+					   , public ISourceObject
 	{
 		Q_OBJECT
 
@@ -92,6 +129,8 @@ namespace LMP
 
 		AudioSource CurrentSource_;
 		AudioSource NextSource_;
+
+		AudioSource ActualSource_;
 
 		QMutex NextSrcMutex_;
 		QWaitCondition NextSrcWC_;
@@ -109,8 +148,8 @@ namespace LMP
 		MsgPopThread *PopThread_;
 		GstUtil::TagMap_t Metadata_;
 
-		QList<SyncHandler_f> SyncHandlers_;
-		QList<AsyncHandler_f> AsyncHandlers_;
+		HandlerContainer<SyncHandler_f> SyncHandlers_;
+		HandlerContainer<AsyncHandler_f> AsyncHandlers_;
 	public:
 		enum class Metadata
 		{
@@ -132,8 +171,12 @@ namespace LMP
 		SourceObject (const SourceObject&) = delete;
 		SourceObject& operator= (const SourceObject&) = delete;
 
+		QObject* GetQObject ();
+
 		bool IsSeekable () const;
+
 		SourceState GetState () const;
+		void SetState (SourceState);
 
 		QString GetErrorString () const;
 
@@ -144,6 +187,7 @@ namespace LMP
 		qint64 GetTotalTime () const;
 		void Seek (qint64);
 
+		AudioSource GetActualSource () const;
 		AudioSource GetCurrentSource () const;
 		void SetCurrentSource (const AudioSource&);
 		void PrepareNextSource (const AudioSource&);
@@ -162,8 +206,8 @@ namespace LMP
 		void AddToPath (Path*);
 		void SetSink (GstElement*);
 
-		void AddSyncHandler (const SyncHandler_f&);
-		void AddAsyncHandler (const AsyncHandler_f&);
+		void AddSyncHandler (const SyncHandler_f&, QObject*);
+		void AddAsyncHandler (const AsyncHandler_f&, QObject*);
 	private:
 		void HandleErrorMsg (GstMessage*);
 		void HandleTagMsg (GstMessage*);
@@ -179,6 +223,8 @@ namespace LMP
 		void handleMessage (GstMessage_ptr);
 		void updateTotalTime ();
 		void handleTick ();
+
+		void setActualSource (const AudioSource&);
 	signals:
 		void stateChanged (SourceState, SourceState);
 		void currentSourceChanged (const AudioSource&);

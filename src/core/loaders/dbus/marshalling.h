@@ -79,15 +79,13 @@ namespace DBus
 		ObjectDataInfo RegisterObject (std::shared_ptr<T>);
 
 		template<typename T>
-		ObjectDataInfo RegisterObject (T);
+		ObjectDataInfo RegisterObject (T*);
 
 		template<typename T>
 		void Wrap (std::shared_ptr<T>&, const ObjectDataInfo&);
 
 		template<typename T>
-		void Wrap (T&, const ObjectDataInfo&);
-
-		void Wrap (QObject*&, const ObjectDataInfo&);
+		void Wrap (T*&, const ObjectDataInfo&);
 	private slots:
 		void handleObjectDestroyed (QObject*);
 	};

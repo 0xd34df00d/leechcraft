@@ -53,7 +53,7 @@ namespace Monocle
 	 * IRedirectProxy objects to get the MIME type, for example.
 	 *
 	 * @sa IBackendPlugin
-	 * @sa IBackendPlugin::GetRedirectProxy()
+	 * @sa IBackendPlugin::GetRedirection()
 	 */
 	class IRedirectProxy
 	{

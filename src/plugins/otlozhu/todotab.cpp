@@ -34,6 +34,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/tags/tagscompleter.h>
 #include "core.h"
 #include "todomanager.h"
@@ -45,6 +46,8 @@
 #include "icalgenerator.h"
 #include "icalparser.h"
 #include "itemsmergedialog.h"
+#include "editcommentdialog.h"
+#include "editdatedialog.h"
 
 namespace LeechCraft
 {
@@ -83,7 +86,7 @@ namespace Otlozhu
 				SLOT (enableTagsMode ()));
 		Ui_.TodoTree_->setModel (ProxyModel_);
 
-		QAction *addTodo = new QAction (tr ("Add todo..."), this);
+		QAction *addTodo = new QAction (tr ("Add task..."), this);
 		addTodo->setProperty ("ActionIcon", "list-add");
 		addTodo->setShortcut (Qt::Key_Insert);
 		connect (addTodo,
@@ -91,8 +94,9 @@ namespace Otlozhu
 				this,
 				SLOT (handleAddTodoRequested ()));
 		Bar_->addAction (addTodo);
+		Ui_.TodoTree_->addAction (addTodo);
 
-		QAction *removeTodo = new QAction (tr ("Remove"), this);
+		QAction *removeTodo = new QAction (tr ("Remove task"), this);
 		removeTodo->setProperty ("ActionIcon", "list-remove");
 		removeTodo->setShortcut (Qt::Key_Delete);
 		connect (removeTodo,
@@ -101,6 +105,15 @@ namespace Otlozhu
 				SLOT (handleRemoveTodoRequested ()));
 		Bar_->addAction (removeTodo);
 		Ui_.TodoTree_->addAction (removeTodo);
+
+		QAction *cloneTodo = new QAction (tr ("Clone task"), this);
+		cloneTodo->setProperty ("ActionIcon", "edit-copy");
+		connect (cloneTodo,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCloneTodoRequested ()));
+		Ui_.TodoTree_->addAction (cloneTodo);
+
 		Ui_.TodoTree_->addAction (Util::CreateSeparator (Ui_.TodoTree_));
 
 		for (int i = 0; i <= 100; i += 10)
@@ -140,6 +153,9 @@ namespace Otlozhu
 					SLOT (handleSetDueDateRequested ()));
 			delay->setProperty ("Otlozhu/Delay", delays.at (i));
 			DueDateMenu_->addAction (delay);
+
+			if (!delays.at (i))
+				DueDateMenu_->addSeparator ();
 		}
 
 		QAction *customDueDate = new QAction (tr ("Custom..."), this);
@@ -227,6 +243,28 @@ namespace Otlozhu
 		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->RemoveItem (id);
 	}
 
+	void TodoTab::handleCloneTodoRequested ()
+	{
+		const QModelIndex& index = Ui_.TodoTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		const auto& itemId = index.data (StorageModel::Roles::ItemID).toString ();
+		const auto& item = Core::Instance ().GetTodoManager ()->
+				GetTodoStorage ()->GetItemByID (itemId);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get item with"
+					<< itemId;
+			return;
+		}
+
+		TodoItem_ptr clone { new TodoItem };
+		clone->CopyFrom (item);
+		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->AddItem (clone);
+	}
+
 	void TodoTab::handleEditCommentRequested ()
 	{
 		const QModelIndex& index = Ui_.TodoTree_->currentIndex ();
@@ -234,14 +272,17 @@ namespace Otlozhu
 			return;
 
 		const auto& title = ProxyModel_->data (index, StorageModel::Roles::ItemTitle).toString ();
-		auto comment = ProxyModel_->data (index, StorageModel::Roles::ItemComment).toString ();
-		comment = QInputDialog::getText (this,
-				"Otlozhu",
-				tr ("Enter new comment for item %1:")
-					.arg (title),
-				QLineEdit::Normal,
-				comment);
-		ProxyModel_->setData (index, comment, StorageModel::Roles::ItemComment);
+		const auto& comment = ProxyModel_->data (index, StorageModel::Roles::ItemComment).toString ();
+
+		EditCommentDialog dia { title, comment, this };
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& newComment = dia.GetComment ();
+		if (newComment == comment)
+			return;
+
+		ProxyModel_->setData (index, newComment, StorageModel::Roles::ItemComment);
 	}
 
 	void TodoTab::handleSetDueDateRequested ()
@@ -264,31 +305,17 @@ namespace Otlozhu
 		if (!index.isValid ())
 			return;
 
-		QDateTime dt = index.data (StorageModel::Roles::ItemDueDate).toDateTime ();
+		const auto& dt = index.data (StorageModel::Roles::ItemDueDate).toDateTime ();
 
-		QDialog dia (this);
+		EditDateDialog dia { dt, this };
 		dia.setWindowTitle (tr ("Select due date"));
-		dia.setLayout (new QVBoxLayout);
-		QCalendarWidget *w = new QCalendarWidget;
-		QDialogButtonBox *box = new QDialogButtonBox;
-		dia.layout ()->addWidget (w);
-		dia.layout ()->addWidget (box);
-		connect (box,
-				SIGNAL (accepted ()),
-				&dia,
-				SLOT (accept ()));
-		connect (box,
-				SIGNAL (rejected ()),
-				&dia,
-				SLOT (reject ()));
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		dt.setDate (w->selectedDate ());
-		if (QDateTime::currentDateTime ().daysTo (dt) > 1)
-			dt.setTime (QTime ());
+		if (dt == dia.GetDateTime ())
+			return;
 
-		ProxyModel_->setData (index, dt, StorageModel::Roles::ItemDueDate);
+		ProxyModel_->setData (index, dia.GetDateTime (), StorageModel::Roles::ItemDueDate);
 	}
 
 	void TodoTab::handleQuickProgress ()
@@ -304,7 +331,7 @@ namespace Otlozhu
 	void TodoTab::handleImport ()
 	{
 		const QString& filename = QFileDialog::getOpenFileName (this,
-				tr ("Import todos"),
+				tr ("Import tasks"),
 				QDir::homePath (),
 				tr ("iCalendar files (*.ics)"));
 

@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QNetworkReply>
-#include <util/utilconfig.h>
+#include "networkconfig.h"
 
 namespace LeechCraft
 {
@@ -43,8 +43,10 @@ namespace Util
 	 * local filesystem to QNetworkAccessManager-enabled plugins, or that
 	 * just needs to provide a network reply with a predefined or
 	 * runtime-generated string.
+	 *
+	 * @ingroup NetworkUtil
 	 */
-	class UTIL_API CustomNetworkReply : public QNetworkReply
+	class UTIL_NETWORK_API CustomNetworkReply : public QNetworkReply
 	{
 		Q_OBJECT
 

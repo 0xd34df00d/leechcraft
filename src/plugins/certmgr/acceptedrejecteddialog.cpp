@@ -29,8 +29,9 @@
 
 #include "acceptedrejecteddialog.h"
 #include <algorithm>
-#include <QStandardItemModel>
 #include <QMessageBox>
+#include <QTimer>
+#include "exceptionsmodel.h"
 
 namespace LeechCraft
 {
@@ -38,17 +39,26 @@ namespace CertMgr
 {
 	AcceptedRejectedDialog::AcceptedRejectedDialog (ICoreProxy_ptr proxy)
 	: Proxy_ { proxy }
-	, Model_ { new QStandardItemModel { this } }
 	, CoreSettings_ { QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () }
+	, Model_ { new ExceptionsModel { CoreSettings_, this } }
 	{
 		CoreSettings_.beginGroup ("SSL exceptions");
 
 		Model_->setHorizontalHeaderLabels ({ tr ("Address"), tr ("State") });
-		PopulateModel ();
+		Model_->Populate ();
 
 		Ui_.setupUi (this);
 		Ui_.View_->setModel (Model_);
+
+		connect (Ui_.View_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				this,
+				SLOT (toggleState (QModelIndex)));
+
+		QTimer::singleShot (0,
+				this,
+				SLOT (adjustWidths ()));
 
 		connect (Ui_.View_->selectionModel (),
 				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
@@ -60,28 +70,6 @@ namespace CertMgr
 	AcceptedRejectedDialog::~AcceptedRejectedDialog ()
 	{
 		CoreSettings_.endGroup ();
-	}
-
-	void AcceptedRejectedDialog::PopulateModel ()
-	{
-		auto keys = CoreSettings_.allKeys ();
-		std::sort (keys.begin (), keys.end ());
-
-		for (const auto& key : keys)
-		{
-			const auto val = CoreSettings_.value (key).toBool ();
-
-			QList<QStandardItem*> row
-			{
-				new QStandardItem { key },
-				new QStandardItem { val ? tr ("allow") : tr ("deny") }
-			};
-
-			for (auto item : row)
-				item->setEditable (false);
-
-			Model_->appendRow (row);
-		}
 	}
 
 	void AcceptedRejectedDialog::on_RemoveButton__released ()
@@ -115,6 +103,19 @@ namespace CertMgr
 	{
 		const auto& selected = Ui_.View_->selectionModel ()->selectedRows ();
 		Ui_.RemoveButton_->setEnabled (!selected.isEmpty ());
+	}
+
+	void AcceptedRejectedDialog::toggleState (const QModelIndex& index)
+	{
+		Model_->ToggleState (index);
+	}
+
+	void AcceptedRejectedDialog::adjustWidths ()
+	{
+		const auto totalWidth = Ui_.View_->viewport ()->width ();
+		const auto statusWidth = 150;
+		Ui_.View_->setColumnWidth (ExceptionsModel::Name, totalWidth - statusWidth);
+		Ui_.View_->setColumnWidth (ExceptionsModel::Status, statusWidth);
 	}
 }
 }

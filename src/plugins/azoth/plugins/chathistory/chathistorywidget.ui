@@ -22,7 +22,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QComboBox" name="AccountBox_">
@@ -90,38 +90,8 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLineEdit" name="HistorySearch_">
-           <property name="placeholderText">
-            <string>History search...</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="SearchType_">
-           <item>
-            <property name="text">
-             <string>contact</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>account</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>everything</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
        <item>
         <widget class="QTextBrowser" name="HistView_">
          <property name="openLinks">

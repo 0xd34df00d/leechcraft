@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include "coreproxyserverwrapper.h"
+#include "coreproxyproxy.h"
 
 QDBusArgument& operator<< (QDBusArgument& arg,
 		const LeechCraft::DBus::ObjectManager::ObjectDataInfo& info)
@@ -111,6 +112,18 @@ namespace DBus
 				new CoreProxyServerWrapper (w, wObj);
 			}
 		};
+
+		template<typename T>
+		struct ProxyCreator;
+
+		template<>
+		struct ProxyCreator<ICoreProxy>
+		{
+			static ICoreProxy* Create (const ObjectManager::ObjectDataInfo& info)
+			{
+				return new CoreProxyProxy { info.Service_, info.Path_ };
+			}
+		};
 	}
 
 	void RegisterTypes ()
@@ -140,7 +153,7 @@ namespace DBus
 	}
 
 	template<typename T>
-	auto ObjectManager::RegisterObject (T t) -> ObjectDataInfo
+	auto ObjectManager::RegisterObject (T *t) -> ObjectDataInfo
 	{
 		const auto qobj = dynamic_cast<QObject*> (t);
 		if (!qobj)
@@ -158,7 +171,7 @@ namespace DBus
 				this,
 				SLOT (handleObjectDestroyed (QObject*)));
 
-		AdaptorCreator<typename std::remove_pointer<T>::type>::Create (t, qobj);
+		AdaptorCreator<T>::Create (t, qobj);
 
 		const QString path { "/org/LeechCraft/Object_" + QString::number (Counter_++) };
 		QDBusConnection::sessionBus ().registerObject (path,
@@ -176,13 +189,17 @@ namespace DBus
 	}
 
 	template<typename T>
-	void ObjectManager::Wrap (std::shared_ptr<T>& obj, const ObjectManager::ObjectDataInfo& info)
+	void ObjectManager::Wrap (std::shared_ptr<T>& obj, const ObjectDataInfo& info)
 	{
+		T *rawObj;
+		Wrap (rawObj, info);
+		obj.reset (rawObj);
 	}
 
 	template<typename T>
-	void ObjectManager::Wrap (T& obj, const ObjectManager::ObjectDataInfo& info)
+	void ObjectManager::Wrap (T*& obj, const ObjectDataInfo& info)
 	{
+		obj = ProxyCreator<T>::Create (info);
 	}
 
 	void ObjectManager::handleObjectDestroyed (QObject *obj)

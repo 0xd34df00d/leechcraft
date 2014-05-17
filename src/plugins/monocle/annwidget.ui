@@ -13,12 +13,15 @@
   <property name="windowTitle">
    <string/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="AnnWidgetLayout_">
    <property name="margin">
     <number>0</number>
    </property>
    <item>
     <widget class="QTreeView" name="AnnTree_">
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
      <property name="rootIsDecorated">
       <bool>true</bool>
      </property>

@@ -377,30 +377,22 @@ namespace Util
 
 	void MergeModel::handleColumnsAboutToBeInserted (const QModelIndex&, int, int)
 	{
-		qWarning () << "model" << sender ()
-			<< "called handleColumnsAboutToBeInserted, ignoring it";
-		return;
 	}
 
 	void MergeModel::handleColumnsAboutToBeRemoved (const QModelIndex&, int, int)
 	{
 		qWarning () << "model" << sender ()
 			<< "called handleColumnsAboutToBeRemoved, ignoring it";
-		return;
 	}
 
 	void MergeModel::handleColumnsInserted (const QModelIndex&, int, int)
 	{
-		qWarning () << "model" << sender ()
-			<< "called handleColumnsInserted, ignoring it";
-		return;
 	}
 
 	void MergeModel::handleColumnsRemoved (const QModelIndex&, int, int)
 	{
 		qWarning () << "model" << sender ()
 			<< "called handleColumnsRemoved, ignoring it";
-		return;
 	}
 
 	void MergeModel::handleDataChanged (const QModelIndex& topLeft,

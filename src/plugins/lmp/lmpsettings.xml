@@ -115,7 +115,7 @@
 			<label value="Effects manager" />
 			<item type="dataview" property="EffectsView" modifyEnabled="false">
 				<button id="Settings">
-					<label value="Filter settings" />
+					<label value="Effect settings" />
 				</button>
 			</item>
 		</tab>

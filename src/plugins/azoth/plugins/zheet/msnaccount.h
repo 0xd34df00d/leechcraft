@@ -31,6 +31,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNACCOUNT_H
 #include <QObject>
 #include <QSet>
+#include <interfaces/an/ianemitter.h>
 #include <msn/passport.h>
 #include <msn/util.h>
 #include <interfaces/azoth/iaccount.h>

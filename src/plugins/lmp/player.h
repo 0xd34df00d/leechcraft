@@ -55,6 +55,7 @@ namespace LMP
 	class SourceObject;
 	class Output;
 	class Path;
+	class PlayerRulesManager;
 	struct MediaInfo;
 	enum class SourceError;
 	enum class SourceState;
@@ -81,6 +82,8 @@ namespace LMP
 		Media::IRadioStation_ptr CurrentStation_;
 		QStandardItem *RadioItem_;
 		QHash<QUrl, MediaInfo> Url2Info_;
+
+		PlayerRulesManager * const RulesManager_;
 
 		MediaInfo LastPhononMediaInfo_;
 
@@ -117,7 +120,8 @@ namespace LMP
 			Info,
 			AlbumArt,
 			AlbumLength,
-			OneShotPos
+			OneShotPos,
+			MatchingRules
 		};
 
 		enum EnqueueFlag
@@ -130,6 +134,8 @@ namespace LMP
 		Q_DECLARE_FLAGS (EnqueueFlags, EnqueueFlag)
 
 		Player (QObject* = 0);
+
+		void InitWithOtherPlugins ();
 
 		QAbstractItemModel* GetPlaylistModel () const;
 		SourceObject* GetSourceObject () const;
@@ -181,7 +187,7 @@ namespace LMP
 
 		void UnsetRadio ();
 
-		void EmitStateChange ();
+		void EmitStateChange (SourceState);
 
 		template<typename T>
 		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,

@@ -35,7 +35,7 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <util/svcauth/vkauthmanager.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include "vkservice.h"
 #include "albumsettingsdialog.h"
 #include "uploadmanager.h"

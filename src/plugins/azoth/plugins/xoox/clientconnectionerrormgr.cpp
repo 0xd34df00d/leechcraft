@@ -29,7 +29,7 @@
 
 #include "clientconnectionerrormgr.h"
 #include <QTimer>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>
 #include "clientconnection.h"
 #include "core.h"

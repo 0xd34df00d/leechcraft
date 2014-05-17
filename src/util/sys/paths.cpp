@@ -28,11 +28,17 @@
  **********************************************************************/
 
 #include "paths.h"
+#include <stdexcept>
 #include <QFile>
+#include <QTemporaryFile>
 #if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
 #include <QApplication>
 #endif
 #include <QtDebug>
+#include <QDir>
+#include <QUrl>
+#include <QDesktopServices>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -82,6 +88,11 @@ namespace Util
 		return QString ();
 	}
 
+	QUrl GetSysPathUrl (SysPath path, const QString& subfolder, const QString& filename)
+	{
+		return QUrl::fromLocalFile (GetSysPath (path, subfolder, filename));
+	}
+
 	QStringList GetSystemPaths ()
 	{
 		return QString (qgetenv ("PATH")).split (":", QString::SkipEmptyParts);
@@ -103,6 +114,62 @@ namespace Util
 		}
 
 		return {};
+	}
+
+	QDir GetUserDir (UserDir dir, const QString& subpath)
+	{
+		QString path;
+		switch (dir)
+		{
+		case UserDir::Cache:
+			path = QDesktopServices::storageLocation (QDesktopServices::CacheLocation);
+			break;
+		case UserDir::LC:
+			path = QDir::home ().path () + "/.leechcraft/";
+			break;
+		}
+
+		if (path.isEmpty ())
+			throw std::runtime_error ("cannot get root path");
+
+		if (!path.endsWith ('/'))
+			path += '/';
+		if (dir != UserDir::LC)
+			path += "leechcraft/";
+		path += subpath;
+
+		if (!QDir {}.exists (path) &&
+				!QDir {}.mkpath (path))
+			throw std::runtime_error ("cannot create path " + path.toStdString ());
+
+		return { path };
+	}
+
+	QDir CreateIfNotExists (QString path)
+	{
+		auto home = QDir::home ();
+		path.prepend (".leechcraft/");
+
+		if (!home.exists (path) &&
+				!home.mkpath (path))
+			throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
+						.arg (QDir::toNativeSeparators (home.filePath (path)))));
+
+		if (home.cd (path))
+			return home;
+		else
+			throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
+						.arg (QDir::toNativeSeparators (home.filePath (path)))));
+	}
+
+	QString GetTemporaryName (const QString& pattern)
+	{
+		QTemporaryFile file (QDir::tempPath () + "/" + pattern);
+		file.open ();
+		QString name = file.fileName ();
+		file.close ();
+		file.remove ();
+		return name;
 	}
 }
 }

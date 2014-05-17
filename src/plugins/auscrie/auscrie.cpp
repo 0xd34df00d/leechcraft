@@ -36,6 +36,7 @@
 #include <QDesktopWidget>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/ientityhandler.h>

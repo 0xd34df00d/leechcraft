@@ -32,8 +32,9 @@
 #include <QXmlStreamWriter>
 #include <QDomDocument>
 #include <QTimer>
+#include <QDir>
 #include <QXmppLogger.h>
-#include <util/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"
@@ -285,9 +286,9 @@ namespace Xoox
 	void Core::handleItemsAdded (const QList<QObject*>& items)
 	{
 		bool shouldSave = false;
-		Q_FOREACH (QObject *clEntry, items)
+		for (auto clEntry : items)
 		{
-			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (clEntry);
+			auto entry = qobject_cast<GlooxCLEntry*> (clEntry);
 			if (!entry ||
 					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 				continue;
@@ -302,7 +303,7 @@ namespace Xoox
 		}
 
 		if (shouldSave)
-			saveRoster ();
+			ScheduleSaveRoster (5000);
 	}
 
 	void Core::saveAvatarFor (GlooxCLEntry *entry)

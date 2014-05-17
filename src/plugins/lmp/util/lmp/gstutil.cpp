@@ -251,8 +251,9 @@ namespace GstUtil
 					EventProbeHandler, cbData, nullptr);
 #endif
 
-			gst_pad_send_event (cbData->SinkPad_, gst_event_new_eos ());
-			gst_object_unref (cbData->SinkPad_);
+			const auto sinkpad = cbData->SinkPad_;
+			gst_pad_send_event (sinkpad, gst_event_new_eos ());
+			gst_object_unref (sinkpad);
 
 #if GST_VERSION_MAJOR < 1
 			return TRUE;

@@ -74,7 +74,7 @@ namespace Monocle
 	 * This is a base interface that should be implemented by all form
 	 * fields disregarding their type. Depending on the type of this
 	 * field returned by the GetType() method the corresponding class
-	 * should also implement other interfaces. See FormType documentation
+	 * should also implement other interfaces. See ::FormType documentation
 	 * for details.
 	 *
 	 * As a general rule, there is no "Apply" method in form interfaces.

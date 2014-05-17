@@ -32,7 +32,8 @@
 #include <vector>
 #include <QLocalSocket>
 #include <QUrl>
-#include "util/util.h"
+#include <QFile>
+#include "util/xpc/util.h"
 #include "interfaces/structures.h"
 #include "application.h"
 

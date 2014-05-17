@@ -45,7 +45,7 @@ namespace Poshuku
 	{
 		return Core::Instance ().GetFavoritesModel ();
 	}
-	
+
 	QObject* ProxyObject::OpenInNewTab (const QUrl& url, bool inverted) const
 	{
 		bool raise = XmlSettingsManager::Instance ()->
@@ -53,6 +53,11 @@ namespace Poshuku
 		if (inverted)
 			raise = !raise;
 		return Core::Instance ().NewURL (url, raise);
+	}
+
+	IStorageBackend_ptr ProxyObject::CreateStorageBackend ()
+	{
+		return StorageBackend::Create ();
 	}
 }
 }

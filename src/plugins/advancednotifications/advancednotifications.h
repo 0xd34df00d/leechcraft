@@ -36,6 +36,8 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/ipluginready.h>
+#include <interfaces/an/ianrulesstorage.h>
 
 namespace LeechCraft
 {
@@ -49,9 +51,17 @@ namespace AdvancedNotifications
 				 , public IHaveSettings
 				 , public IActionsExporter
 				 , public IQuarkComponentProvider
+				 , public IPluginReady
+				 , public IANRulesStorage
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler IHaveSettings IActionsExporter IQuarkComponentProvider)
+		Q_INTERFACES (IInfo
+				IEntityHandler
+				IHaveSettings
+				IActionsExporter
+				IQuarkComponentProvider
+				IPluginReady
+				IANRulesStorage)
 
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
@@ -75,10 +85,18 @@ namespace AdvancedNotifications
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 
 		QuarkComponents_t GetComponents () const;
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
+
+		QList<Entity> GetAllRules (const QString&) const;
+		void RequestRuleConfiguration (const Entity&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+
+		void rulesChanged ();
 	};
 }
 }

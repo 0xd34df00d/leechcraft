@@ -36,6 +36,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ihaveshortcuts.h>
 
 namespace LeechCraft
 {
@@ -50,6 +51,7 @@ namespace Monocle
 					, public IHaveTabs
 					, public IPluginReady
 					, public IHaveRecoverableTabs
+					, public IHaveShortcuts
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -57,7 +59,8 @@ namespace Monocle
 				IHaveSettings
 				IHaveTabs
 				IPluginReady
-				IHaveRecoverableTabs)
+				IHaveRecoverableTabs
+				IHaveShortcuts)
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
@@ -83,6 +86,9 @@ namespace Monocle
 		void AddPlugin (QObject*);
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
 	private:
 		void EmitTab (DocumentTab*);
 	signals:

@@ -32,6 +32,8 @@
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
 
+Q_DECLARE_METATYPE (QVariantList*);
+
 namespace LeechCraft
 {
 namespace Util
@@ -92,6 +94,68 @@ namespace Util
 		std::copy_if (handlers.begin (), handlers.end (), std::back_inserter (result),
 				[] (QObject *obj) { return qobject_cast<IDataFilter*> (obj); });
 		return result;
+	}
+
+	Entity MakeEntity (const QVariant& entity,
+			const QString& location,
+			TaskParameters tp,
+			const QString& mime)
+	{
+		Entity result;
+		result.Entity_ = entity;
+		result.Location_ = location;
+		result.Parameters_ = tp;
+		result.Mime_ = mime;
+		return result;
+	}
+
+	Entity MakeNotification (const QString& header,
+			const QString& text, Priority priority)
+	{
+		Entity result = MakeEntity (header,
+				QString (),
+				AutoAccept | OnlyHandle,
+				"x-leechcraft/notification");
+		result.Additional_ ["Text"] = text;
+		result.Additional_ ["Priority"] = priority;
+		return result;
+	}
+
+	Entity MakeANCancel (const Entity& event)
+	{
+		Entity e = MakeNotification (event.Entity_.toString (), QString (), PInfo_);
+		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = event.Additional_ ["org.LC.AdvNotifications.SenderID"];
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] = event.Additional_ ["org.LC.AdvNotifications.EventID"];
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+		return e;
+	}
+
+	Entity MakeANCancel (const QString& senderId, const QString& eventId)
+	{
+		Entity e = MakeNotification (QString (), QString (), PInfo_);
+		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderId;
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] = eventId;
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+		return e;
+	}
+
+	QVariantList GetPersistentData (const QList<QVariant>& keys,
+			QObject* object)
+	{
+		Entity e = MakeEntity (keys,
+				{},
+				Internal,
+				"x-leechcraft/data-persistent-load");
+		QVariantList values;
+		e.Additional_ ["Values"] = QVariant::fromValue<QVariantList*> (&values);
+
+		QMetaObject::invokeMethod (object,
+				"delegateEntity",
+				Q_ARG (LeechCraft::Entity, e),
+				Q_ARG (int*, 0),
+				Q_ARG (QObject**, 0));
+
+		return values;
 	}
 }
 }

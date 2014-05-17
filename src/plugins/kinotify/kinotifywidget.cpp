@@ -43,8 +43,8 @@
 #include <QFinalState>
 #include <QWebHitTestResult>
 #include <QMainWindow>
-#include <util/resourceloader.h>
-#include <util/util.h>
+#include <util/sys/resourceloader.h>
+#include <util/xpc/util.h>
 #include <util/gui/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>

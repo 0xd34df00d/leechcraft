@@ -38,10 +38,10 @@ namespace Util
 {
 namespace XDG
 {
-	class UTIL_API Item;
+	class UTIL_XDG_API Item;
 	typedef std::shared_ptr<Item> Item_ptr;
 
-	class UTIL_API ItemsFinder;
+	class UTIL_XDG_API ItemsFinder;
 }
 }
 }

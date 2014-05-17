@@ -32,6 +32,7 @@
 #include <atomic>
 #include <map>
 #include <stdexcept>
+#include <algorithm>
 #include <QtDebug>
 #include <QTimer>
 #include <QThread>
@@ -188,6 +189,11 @@ namespace LMP
 		gst_object_unref (Dec_);
 	}
 
+	QObject* SourceObject::GetQObject ()
+	{
+		return this;
+	}
+
 	bool SourceObject::IsSeekable () const
 	{
 		std::shared_ptr<GstQuery> query (gst_query_new_seeking (GST_FORMAT_TIME), gst_query_unref);
@@ -205,6 +211,33 @@ namespace LMP
 	SourceState SourceObject::GetState () const
 	{
 		return OldState_;
+	}
+
+	void SourceObject::SetState (SourceState state)
+	{
+		if (state == OldState_)
+			return;
+
+		switch (state)
+		{
+		case SourceState::Stopped:
+			Stop ();
+			break;
+		case SourceState::Paused:
+			Pause ();
+			break;
+		case SourceState::Buffering:
+			qWarning () << Q_FUNC_INFO
+					<< "`buffering` is quite a bad state to be in, falling through to Playing";
+		case SourceState::Playing:
+			Play ();
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "erroneous state"
+					<< static_cast<int> (state);
+			break;
+		}
 	}
 
 	QString SourceObject::GetErrorString () const
@@ -295,6 +328,11 @@ namespace LMP
 		gst_element_seek (GST_ELEMENT (Dec_), 1.0, GST_FORMAT_TIME,
 				GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, pos * GST_MSECOND,
 				GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
+	}
+
+	AudioSource SourceObject::GetActualSource () const
+	{
+		return ActualSource_;
 	}
 
 	AudioSource SourceObject::GetCurrentSource () const
@@ -488,14 +526,14 @@ namespace LMP
 		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
 	}
 
-	void SourceObject::AddSyncHandler (const SyncHandler_f& handler)
+	void SourceObject::AddSyncHandler (const SyncHandler_f& handler, QObject *dependent)
 	{
-		SyncHandlers_ << handler;
+		SyncHandlers_.AddHandler (handler, dependent);
 	}
 
-	void SourceObject::AddAsyncHandler (const AsyncHandler_f& handler)
+	void SourceObject::AddAsyncHandler (const AsyncHandler_f& handler, QObject *dependent)
 	{
-		AsyncHandlers_ << handler;
+		AsyncHandlers_.AddHandler (handler, dependent);
 	}
 
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
@@ -679,6 +717,7 @@ namespace LMP
 			qDebug () << Q_FUNC_INFO << uri;
 			g_free (uri);
 
+			setActualSource (CurrentSource_);
 			emit currentSourceChanged (CurrentSource_);
 		}
 #else
@@ -716,22 +755,16 @@ namespace LMP
 
 	int SourceObject::HandleSyncMessage (GstBus *bus, GstMessage *msg)
 	{
-		for (const auto& handler : SyncHandlers_)
-		{
-			const auto res = handler (bus, msg);
-			if (res == GST_BUS_DROP)
-				return res;
-		}
-
-		return GST_BUS_PASS;
+		return SyncHandlers_ ([] (int a, int b) { return std::min (a, b); },
+				static_cast<int> (GST_BUS_PASS),
+				bus, msg);
 	}
 
 	void SourceObject::handleMessage (GstMessage_ptr msgPtr)
 	{
 		const auto message = msgPtr.get ();
 
-		for (const auto& handler : AsyncHandlers_)
-			handler (message);
+		AsyncHandlers_ (message);
 
 		switch (GST_MESSAGE_TYPE (message))
 		{
@@ -770,8 +803,11 @@ namespace LMP
 		case GST_MESSAGE_LATENCY:
 			gst_bin_recalculate_latency (GST_BIN (Dec_));
 			break;
+		case GST_MESSAGE_QOS:
+			break;
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_STREAM_START:
+			setActualSource (CurrentSource_);
 			emit currentSourceChanged (CurrentSource_);
 			break;
 #endif
@@ -789,6 +825,11 @@ namespace LMP
 	void SourceObject::handleTick ()
 	{
 		emit tick (GetCurrentTime ());
+	}
+
+	void SourceObject::setActualSource (const AudioSource& source)
+	{
+		ActualSource_ = source;
 	}
 }
 }

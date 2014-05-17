@@ -30,15 +30,11 @@
 #pragma once
 
 #include <functional>
-#include <gst/gstclock.h>
+#include <gst/gst.h>
 
 template<typename Key, typename T >
 class QMap;
 class QString;
-
-typedef struct _GstMessage GstMessage;
-typedef struct _GstElement GstElement;
-typedef struct _GstPad GstPad;
 
 namespace LeechCraft
 {

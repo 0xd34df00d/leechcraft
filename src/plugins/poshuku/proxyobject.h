@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PROXYOBJECT_H
-#define PLUGINS_POSHUKU_PROXYOBJECT_H
+#pragma once
+
 #include <QObject>
 #include "interfaces/poshuku/iproxyobject.h"
 
@@ -45,8 +45,8 @@ namespace Poshuku
 		QObject* GetHistoryModel () const;
 		QObject* GetFavoritesModel () const;
 		QObject* OpenInNewTab (const QUrl&, bool) const;
+
+		IStorageBackend_ptr CreateStorageBackend ();
 	};
 }
 }
-
-#endif

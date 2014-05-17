@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+#pragma once
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
@@ -45,12 +44,11 @@ namespace OnlineBookmarks
 		XmlSettingsManager ();
 	protected:
 		virtual void EndSettings (QSettings*) const;
-		virtual QSettings *BeginSettings() const;
+		virtual QSettings *BeginSettings () const;
 	public:
-		static XmlSettingsManager *Instance ();
+		static XmlSettingsManager* Instance ();
 	};
 }
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H

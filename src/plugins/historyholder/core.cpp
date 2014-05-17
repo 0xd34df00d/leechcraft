@@ -39,8 +39,11 @@
 #include <QMainWindow>
 #include <QCoreApplication>
 #include <QTimer>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <util/structuresops.h>
 #include <util/util.h>
+#include <util/sll/onetimerunner.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "findproxy.h"
@@ -254,27 +257,50 @@ void Core::ScheduleWrite ()
 	if (WriteScheduled_)
 		return;
 
-	QTimer::singleShot (2000,
-			this,
-			SLOT (writeSettings ()));
+	if (!WritePending_)
+		QTimer::singleShot (2000,
+				this,
+				SLOT (writeSettings ()));
 	WriteScheduled_ = true;
 }
 
 void Core::writeSettings ()
 {
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_HistoryHolder");
-	settings.beginWriteArray ("History");
-	settings.remove ("");
-	int i = 0;
-	Q_FOREACH (HistoryEntry e, History_)
-	{
-		settings.setArrayIndex (i++);
-		settings.setValue ("Item", QVariant::fromValue<HistoryEntry> (e));
-	}
-	settings.endArray ();
-
+	auto history = History_;
 	WriteScheduled_ = false;
+
+	WritePending_ = true;
+
+	auto watcher = new QFutureWatcher<void> ();
+	watcher->setFuture (QtConcurrent::run ([history] () -> void
+			{
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_HistoryHolder");
+				settings.beginWriteArray ("History");
+				settings.remove ("");
+				int i = 0;
+				for (const auto& e : history)
+				{
+					settings.setArrayIndex (i++);
+					settings.setValue ("Item", QVariant::fromValue (e));
+				}
+				settings.endArray ();
+			}));
+
+	new Util::OneTimeRunner
+	{
+		[this, watcher]
+		{
+			watcher->deleteLater ();
+
+			WritePending_ = false;
+			if (WriteScheduled_)
+				writeSettings ();
+		},
+		watcher,
+		SIGNAL (finished ()),
+		watcher
+	};
 }
 
 void Core::remove ()

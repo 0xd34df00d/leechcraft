@@ -18,24 +18,6 @@ set (CLEANWEB_SRCS
 	lineparser.cpp
 	regexp.cpp
 	)
-set (CLEANWEB_HEADERS
-	cleanweb.h
-	core.h
-	xmlsettingsmanager.h
-	subscriptionsmanager.h
-	flashplaceholder.h
-	flashonclickplugin.h
-	flashonclickwhitelist.h
-	userfilters.h
-	userfiltersmodel.h
-	filter.h
-	ruleoptiondialog.h
-	wizardgenerator.h
-	startupfirstpage.h
-	subscriptionadddialog.h
-	lineparser.h
-	regexp.h
-	)
 set (CLEANWEB_FORMS
 	subscriptionsmanager.ui
 	flashplaceholder.ui
@@ -67,15 +49,11 @@ if (USE_POSHUKU_CLEANWEB_PCRE)
 	include_directories (${PCRE_INCLUDE_DIR})
 endif ()
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (CLEANWEB_MOC_SRCS ${CLEANWEB_HEADERS})
-endif ()
 QT4_WRAP_UI (CLEANWEB_UIS_H ${CLEANWEB_FORMS})
 QT4_ADD_RESOURCES (CLEANWEB_RCCS ${CLEANWEB_RESOURCES})
 add_library (leechcraft_poshuku_cleanweb SHARED
 	${CLEANWEB_COMPILED_TRANSLATIONS}
 	${CLEANWEB_SRCS}
-	${CLEANWEB_MOC_SRCS}
 	${CLEANWEB_UIS_H}
 	${CLEANWEB_RCCS}
 	)

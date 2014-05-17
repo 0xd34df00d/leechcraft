@@ -32,7 +32,7 @@
 #include <QFile>
 #include <QUrl>
 #include <QProcess>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "desktopparser.h"
 

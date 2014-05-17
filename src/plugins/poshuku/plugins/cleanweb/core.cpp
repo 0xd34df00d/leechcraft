@@ -38,6 +38,7 @@
 #include <QTimer>
 #include <QTextCodec>
 #include <QMessageBox>
+#include <QDir>
 #include <qwebframe.h>
 #include <qwebpage.h>
 #include <qwebelement.h>
@@ -47,9 +48,11 @@
 #include <QFutureWatcher>
 #include <QMenu>
 #include <QMainWindow>
+#include <QDir>
 #include <qwebview.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/network/customnetworkreply.h>
+#include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"

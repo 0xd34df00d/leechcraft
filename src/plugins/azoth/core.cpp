@@ -42,8 +42,8 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <QtDebug>
-#include <util/resourceloader.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -931,7 +931,8 @@ namespace Azoth
 					c.unicode ();
 			hash += nick.length ();
 		}
-		const auto& nc = colors.at (std::abs (hash) % colors.size ());
+		hash = std::abs (hash);
+		const auto& nc = colors.at (hash % colors.size ());
 		return nc.name ();
 	}
 

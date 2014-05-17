@@ -31,7 +31,9 @@
 #include <QIcon>
 #include <qurl.h>
 #include <util/util.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "documenttab.h"
@@ -63,6 +65,21 @@ namespace Monocle
 			55,
 			TFOpenableByRequest | TFSuggestOpening
 		};
+
+		const auto sm = Core::Instance ().GetShortcutManager ();
+		sm->SetObject (this);
+		sm->RegisterActionInfo ("org.LeechCraft.Monocle.PrevAnn",
+				{
+					tr ("Go to previous annotation"),
+					QKeySequence {},
+					proxy->GetIconThemeManager ()->GetIcon ("go-previous")
+				});
+		sm->RegisterActionInfo ("org.LeechCraft.Monocle.NextAnn",
+				{
+					tr ("Go to next annotation"),
+					QKeySequence {},
+					proxy->GetIconThemeManager ()->GetIcon ("go-next")
+				});
 	}
 
 	void Plugin::SecondInit ()
@@ -166,6 +183,16 @@ namespace Monocle
 
 			tab->RecoverState (info.Data_);
 		}
+	}
+
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return Core::Instance ().GetShortcutManager( )->GetActionInfo ();
+	}
+
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	{
+		Core::Instance ().GetShortcutManager ()->SetShortcut (id, sequences);
 	}
 
 	void Plugin::EmitTab (DocumentTab *tab)

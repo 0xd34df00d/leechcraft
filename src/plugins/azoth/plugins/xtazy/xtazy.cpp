@@ -169,7 +169,7 @@ namespace Xtazy
 	}
 
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-			QObject*,
+			QObject *chatTab,
 			QObject *entryObj,
 			int,
 			QString variant)
@@ -196,7 +196,18 @@ namespace Xtazy
 			}
 			else
 				text = XmlSettingsManager::Instance ().property ("NPCmdNoPlaying").toString ();
-			proxy->SetValue ("text", text);
+
+			if (XmlSettingsManager::Instance ().property ("SendTextImmediately").toBool ())
+				proxy->SetValue ("text", text);
+			else
+			{
+				proxy->CancelDefault ();
+
+				QMetaObject::invokeMethod (chatTab,
+						"prepareMessageText",
+						Qt::QueuedConnection,
+						Q_ARG (QString, text));
+			}
 		}
 		else if (text == "/sharesong" && song.Other_.contains ("URL"))
 			HandleShare (proxy, entryObj, variant, song.Other_ ["URL"].toUrl ());

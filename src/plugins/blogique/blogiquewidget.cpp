@@ -40,7 +40,7 @@
 #include <QStandardItemModel>
 #include <QWidgetAction>
 #include <QWebView>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>

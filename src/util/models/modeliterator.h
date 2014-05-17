@@ -30,13 +30,13 @@
 #pragma once
 
 #include <QModelIndex>
-#include <util/utilconfig.h>
+#include "modelsconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API ModelIterator
+	class UTIL_MODELS_API ModelIterator
 	{
 		QAbstractItemModel *Model_;
 		QModelIndex Parent_;

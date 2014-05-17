@@ -27,10 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_TAGSCOMPLETER_H
-#define UTIL_TAGSCOMPLETER_H
+#pragma once
+
 #include <QCompleter>
-#include <util/utilconfig.h>
+#include "tagsconfig.h"
 
 namespace LeechCraft
 {
@@ -59,7 +59,7 @@ namespace LeechCraft
 		{
 			Q_OBJECT
 
-			UTIL_API static QAbstractItemModel *CompletionModel_;
+			UTIL_TAGS_API static QAbstractItemModel *CompletionModel_;
 			friend class LeechCraft::TagsManager;
 
 			TagsLineEdit *Edit_;
@@ -72,7 +72,7 @@ namespace LeechCraft
 			 * completion.
 			 * @param[in] parent Parent object.
 			 */
-			UTIL_API TagsCompleter (TagsLineEdit *line,
+			UTIL_TAGS_API TagsCompleter (TagsLineEdit *line,
 					QObject *parent = 0);
 
 			/** @brief Replaces the model this completer works with.
@@ -84,7 +84,7 @@ namespace LeechCraft
 			 *
 			 * @param[in] model The model to use.
 			 */
-			UTIL_API void OverrideModel (QAbstractItemModel *model);
+			UTIL_TAGS_API void OverrideModel (QAbstractItemModel *model);
 
 			/** @brief Path splitter override.
 			 *
@@ -94,7 +94,7 @@ namespace LeechCraft
 			 * @param[in] path The tags sequence to split.
 			 * @return Splitted sequence.
 			 */
-			UTIL_API virtual QStringList splitPath (const QString& path) const;
+			UTIL_TAGS_API virtual QStringList splitPath (const QString& path) const;
 		protected:
 			static void SetModel (QAbstractItemModel *model)
 			{
@@ -103,6 +103,3 @@ namespace LeechCraft
 		};
 	};
 };
-
-#endif
-

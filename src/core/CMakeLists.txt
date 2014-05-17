@@ -105,9 +105,10 @@ if (UNIX AND NOT APPLE)
 	set (SRCS
 		${SRCS}
 		loaders/dbuspluginloader.cpp
-		loaders/dbuswrapper.cpp
+		loaders/infoproxy.cpp
 		loaders/dbus/marshalling.cpp
 		loaders/dbus/coreproxyserverwrapper.cpp
+		loaders/dbus/coreproxyproxy.cpp
 	)
 endif ()
 

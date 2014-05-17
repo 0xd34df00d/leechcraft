@@ -34,7 +34,7 @@
 #include <QMainWindow>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"

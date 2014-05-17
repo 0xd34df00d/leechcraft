@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QWidget>
 #include <QtDebug>
+#include <QUrl>
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"
 
@@ -63,6 +64,8 @@ namespace AdvancedNotifications
 			return TypedMatcherBase_ptr (new StringMatcher (ToTList<QString> (fieldData.AllowedValues_)));
 		case QVariant::StringList:
 			return TypedMatcherBase_ptr (new StringListMatcher (ToTList<QString> (fieldData.AllowedValues_)));
+		case QVariant::Url:
+			return TypedMatcherBase_ptr (new UrlMatcher ());
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
@@ -72,7 +75,7 @@ namespace AdvancedNotifications
 	}
 
 	StringLikeMatcher::StringLikeMatcher (const QStringList& variants)
-	: Value_ { {}, true }
+	: Value_ { {} }
 	, Allowed_ (variants)
 	{
 	}
@@ -118,6 +121,11 @@ namespace AdvancedNotifications
 	void StringLikeMatcher::SetValue (const ANFieldValue& value)
 	{
 		boost::apply_visitor (ValueSetVisitor<ANStringFieldValue> { Value_ }, value);
+	}
+
+	ANFieldValue StringLikeMatcher::GetValue () const
+	{
+		return Value_;
 	}
 
 	QWidget* StringLikeMatcher::GetConfigWidget ()
@@ -249,6 +257,29 @@ namespace AdvancedNotifications
 				QObject::tr ("doesn't contain element matching %1").arg (p);
 	}
 
+	UrlMatcher::UrlMatcher ()
+	{
+	}
+
+	bool UrlMatcher::Match (const QVariant& var) const
+	{
+		if (!var.canConvert<QUrl> ())
+			return false;
+
+		const auto& url = var.toUrl ();
+		const auto contains = url.toString ().indexOf (Value_.Rx_) != -1 ||
+				QString::fromUtf8 (url.toEncoded ()).indexOf (Value_.Rx_) != -1;
+		return contains == Value_.Contains_;
+	}
+
+	QString UrlMatcher::GetHRDescription () const
+	{
+		const QString& p = Value_.Rx_.pattern ();
+		return Value_.Contains_ ?
+				QObject::tr ("matches URL or pattern `%1`").arg (p) :
+				QObject::tr ("doesn't match URL or pattern `%1`").arg (p);
+	}
+
 	IntMatcher::IntMatcher ()
 	: Value_ { 0, ANIntFieldValue::OEqual }
 	{
@@ -278,6 +309,11 @@ namespace AdvancedNotifications
 		boost::apply_visitor (ValueSetVisitor<ANIntFieldValue> { Value_ }, value);
 	}
 
+	ANFieldValue IntMatcher::GetValue () const
+	{
+		return Value_;
+	}
+
 	bool IntMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<int> ())
@@ -297,6 +333,9 @@ namespace AdvancedNotifications
 
 	QString IntMatcher::GetHRDescription () const
 	{
+		if (Value_.Ops_ == ANIntFieldValue::OEqual)
+			return QObject::tr ("equals to %1").arg (Value_.Boundary_);
+
 		QString op;
 		if ((Value_.Ops_ & ANIntFieldValue::OGreater))
 			op += ">";

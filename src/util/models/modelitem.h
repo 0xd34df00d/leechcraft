@@ -32,7 +32,7 @@
 #include <memory>
 #include <QModelIndex>
 #include <QVector>
-#include <util/utilconfig.h>
+#include "modelsconfig.h"
 
 namespace LeechCraft
 {
@@ -45,7 +45,7 @@ namespace Util
 	typedef QVector<ModelItem_ptr> ModelItemsList_t;
 	typedef std::shared_ptr<const ModelItem> ModelItem_cptr;
 
-	class UTIL_API ModelItem : public std::enable_shared_from_this<ModelItem>
+	class UTIL_MODELS_API ModelItem : public std::enable_shared_from_this<ModelItem>
 	{
 		ModelItem_wtr Parent_;
 		ModelItemsList_t Children_;

@@ -42,14 +42,20 @@ namespace LMP
 	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
 	typedef std::function<void (GstMessage*)> AsyncHandler_f;
 
+	class ISourceObject;
+
 	class IPath
 	{
 	public:
-		virtual void AddSyncHandler (const SyncHandler_f&) = 0;
-		virtual void AddAsyncHandler (const AsyncHandler_f&) = 0;
+		virtual void AddSyncHandler (const SyncHandler_f& handler, QObject *dependent) = 0;
+		virtual void AddAsyncHandler (const AsyncHandler_f& handler, QObject *dependent) = 0;
 
 		virtual void InsertElement (GstElement*) = 0;
 		virtual void RemoveElement (GstElement*) = 0;
+
+		virtual void PerformWProbe (const std::function<void ()>&) = 0;
+
+		virtual ISourceObject* GetSourceObject () const = 0;
 	};
 }
 }

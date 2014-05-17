@@ -55,6 +55,8 @@ namespace LMP
 	public:
 		NowPlayingWidget (QWidget* = 0);
 
+		void AddTab (const QString&, QWidget*);
+
 		void SetSimilarArtists (Media::SimilarityInfos_t);
 		void SetLyrics (const Media::LyricsResultItem&);
 

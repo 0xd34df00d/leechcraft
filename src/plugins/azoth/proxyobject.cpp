@@ -30,7 +30,7 @@
 #include "proxyobject.h"
 #include <QInputDialog>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/sys/sysinfo.h>
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
@@ -367,6 +367,9 @@ namespace Azoth
 	QStringList ProxyObject::FindLinks (const QString& body)
 	{
 		QStringList result;
+
+		if (body.size () > 10 * 1024)
+			return result;
 
 		int pos = 0;
 		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)

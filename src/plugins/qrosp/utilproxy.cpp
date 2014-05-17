@@ -29,6 +29,8 @@
 
 #include "utilproxy.h"
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/structures.h>
 
 namespace LeechCraft

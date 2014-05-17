@@ -17,12 +17,12 @@
 <context>
     <name>LeechCraft::CertMgr</name>
     <message>
-        <location filename="acceptedrejecteddialog.cpp" line="47"/>
+        <location filename="acceptedrejecteddialog.cpp" line="49"/>
         <source>Address</source>
         <translation>Address</translation>
     </message>
     <message>
-        <location filename="acceptedrejecteddialog.cpp" line="47"/>
+        <location filename="acceptedrejecteddialog.cpp" line="49"/>
         <source>State</source>
         <translation>State</translation>
     </message>
@@ -30,22 +30,12 @@
 <context>
     <name>LeechCraft::CertMgr::AcceptedRejectedDialog</name>
     <message>
-        <location filename="acceptedrejecteddialog.cpp" line="77"/>
-        <source>allow</source>
-        <translation>allow</translation>
-    </message>
-    <message>
-        <location filename="acceptedrejecteddialog.cpp" line="77"/>
-        <source>deny</source>
-        <translation>deny</translation>
-    </message>
-    <message>
-        <location filename="acceptedrejecteddialog.cpp" line="94"/>
+        <location filename="acceptedrejecteddialog.cpp" line="88"/>
         <source>Remove exceptions</source>
         <translation>Remove exceptions</translation>
     </message>
     <message numerus="yes">
-        <location filename="acceptedrejecteddialog.cpp" line="95"/>
+        <location filename="acceptedrejecteddialog.cpp" line="89"/>
         <source>Are you sure you want to remove %n exception(s)?</source>
         <oldsource>Are you sure you want to remove %n address(es)?</oldsource>
         <translation>
@@ -133,6 +123,34 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::CertMgr::ExceptionsDelegate</name>
+    <message>
+        <location filename="exceptionsdelegate.cpp" line="44"/>
+        <source>allow</source>
+        <translation>allow</translation>
+    </message>
+    <message>
+        <location filename="exceptionsdelegate.cpp" line="45"/>
+        <source>deny</source>
+        <translation>deny</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::CertMgr::ExceptionsModel</name>
+    <message>
+        <location filename="exceptionsmodel.cpp" line="48"/>
+        <location filename="exceptionsmodel.cpp" line="66"/>
+        <source>allow</source>
+        <translation>allow</translation>
+    </message>
+    <message>
+        <location filename="exceptionsmodel.cpp" line="48"/>
+        <location filename="exceptionsmodel.cpp" line="67"/>
+        <source>deny</source>
+        <translation>deny</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::CertMgr::ManagerDialog</name>
     <message>
         <location filename="managerdialog.cpp" line="78"/>
@@ -179,22 +197,22 @@
         <translation>Enable</translation>
     </message>
     <message>
-        <location filename="managerdialog.ui" line="55"/>
+        <location filename="managerdialog.ui" line="57"/>
         <source>Disable</source>
         <translation>Disable</translation>
     </message>
     <message>
-        <location filename="managerdialog.ui" line="81"/>
+        <location filename="managerdialog.ui" line="85"/>
         <source>Local certificates</source>
         <translation>Local certificates</translation>
     </message>
     <message>
-        <location filename="managerdialog.ui" line="95"/>
+        <location filename="managerdialog.ui" line="99"/>
         <source>Add...</source>
         <translation>Add...</translation>
     </message>
     <message>
-        <location filename="managerdialog.ui" line="105"/>
+        <location filename="managerdialog.ui" line="111"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>

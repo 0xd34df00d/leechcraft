@@ -29,8 +29,9 @@
 
 #pragma once
 
-#include "ipluginloader.h"
+#include <QObject>
 #include <QString>
+#include "ipluginloader.h"
 
 class QProcess;
 class QDBusInterface;
@@ -39,16 +40,19 @@ namespace LeechCraft
 {
 namespace Loaders
 {
-	class DBusWrapper;
+	class InfoProxy;
 
-	class DBusPluginLoader : public IPluginLoader
+	class DBusPluginLoader : public QObject
+						   , public IPluginLoader
 	{
+		Q_OBJECT
+
 		const QString Filename_;
 		bool IsLoaded_;
 
 		std::shared_ptr<QProcess> Proc_;
 		std::shared_ptr<QDBusInterface> CtrlIface_;
-		std::shared_ptr<DBusWrapper> Wrapper_;
+		std::shared_ptr<InfoProxy> Wrapper_;
 	public:
 		DBusPluginLoader (const QString&);
 
@@ -61,6 +65,8 @@ namespace Loaders
 		bool IsLoaded () const;
 		QString GetFileName () const;
 		QString GetErrorString () const;
+	private slots:
+		void handleProcFinished ();
 	};
 }
 }

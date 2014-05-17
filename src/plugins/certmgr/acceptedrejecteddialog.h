@@ -34,12 +34,12 @@
 #include <interfaces/core/icoreproxy.h>
 #include "ui_acceptedrejecteddialog.h"
 
-class QStandardItemModel;
-
 namespace LeechCraft
 {
 namespace CertMgr
 {
+	class ExceptionsModel;
+
 	class AcceptedRejectedDialog : public QDialog
 	{
 		Q_OBJECT
@@ -48,16 +48,17 @@ namespace CertMgr
 
 		const ICoreProxy_ptr Proxy_;
 
-		QStandardItemModel * const Model_;
 		QSettings CoreSettings_;
+		ExceptionsModel * const Model_;
 	public:
 		AcceptedRejectedDialog (ICoreProxy_ptr);
 		~AcceptedRejectedDialog ();
-	private:
-		void PopulateModel ();
 	private slots:
 		void on_RemoveButton__released ();
 		void handleSelectionChanged ();
+
+		void toggleState (const QModelIndex&);
+		void adjustWidths ();
 	};
 }
 }

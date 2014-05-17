@@ -99,6 +99,13 @@ namespace LeechCraft
 		return Ui_.View_->selectionModel ()->selectedRows ();
 	}
 
+	void DataViewWidget::resizeColumns ()
+	{
+		Ui_.View_->expandAll ();
+		for (auto i = 0; i < GetModel ()->columnCount (); ++i)
+			Ui_.View_->resizeColumnToContents (i);
+	}
+
 	void DataViewWidget::handleCustomButtonReleased ()
 	{
 		auto button = qobject_cast<QPushButton*> (sender ());

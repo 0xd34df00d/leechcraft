@@ -67,6 +67,8 @@ namespace Otlozhu
 	private slots:
 		void handleAddTodoRequested ();
 		void handleRemoveTodoRequested ();
+		void handleCloneTodoRequested ();
+
 		void handleEditCommentRequested ();
 		void handleSetDueDateRequested ();
 		void handleSetCustomDueDateRequested ();

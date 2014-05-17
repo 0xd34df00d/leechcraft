@@ -30,7 +30,7 @@
 #include "mrimaccount.h"
 #include <QDataStream>
 #include <QUrl>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "proto/connection.h"
 #include "proto/message.h"

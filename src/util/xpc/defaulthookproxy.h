@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QMap>
-#include <util/utilconfig.h>
+#include "xpcconfig.h"
 #include "interfaces/iinfo.h"
 #include "interfaces/core/ihookproxy.h"
 
@@ -45,7 +45,7 @@ namespace Util
 	 *
 	 * @sa IHookProxy
 	 */
-	class UTIL_API DefaultHookProxy : public IHookProxy
+	class UTIL_XPC_API DefaultHookProxy : public IHookProxy
 	{
 		bool Cancelled_;
 		QVariant ReturnValue_;

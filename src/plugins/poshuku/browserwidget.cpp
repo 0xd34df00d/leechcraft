@@ -59,14 +59,18 @@
 #include <QDesktopServices>
 #include <QTextCodec>
 #include <QCursor>
+#include <QDomDocument>
+#include <QDomElement>
 #include <qwebhistory.h>
 #include <qwebelement.h>
+#include <QWebInspector>
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
 #include <QLabel>
 #include <QXmlStreamWriter>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <interfaces/core/icoreproxy.h>
@@ -112,12 +116,14 @@ namespace Poshuku
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 		Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
 		Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
-		Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
-		Ui_.Progress_->hide ();
+		Ui_.Splitter_->setSizes ({ 0, 1000 });
 
 		WebView_ = new CustomWebView;
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+		WebInspector_ = new QWebInspector;
+		WebInspector_->setPage (WebView_->page ());
 
 		WebView_->SetBrowserWidget (this);
 		connect (WebView_,
@@ -180,7 +186,6 @@ namespace Poshuku
 		NotifyWhenFinished_->setProperty ("ActionIcon", "preferences-desktop-notification");
 		NotifyWhenFinished_->setChecked (XmlSettingsManager::Instance ()->
 				property ("NotifyFinishedByDefault").toBool ());
-
 
 		Add2Favorites_ = new QAction (tr ("Bookmark..."), this);
 		Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
@@ -547,6 +552,7 @@ namespace Poshuku
 
 	BrowserWidget::~BrowserWidget ()
 	{
+		WebInspector_->hide ();
 		if (Own_)
 			Core::Instance ().Unregister (this);
 
@@ -563,7 +569,7 @@ namespace Poshuku
 		Own_ = false;
 	}
 
-	void BrowserWidget::InitShortcuts ()
+	void BrowserWidget::FinalizeInit ()
 	{
 		IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
 		QObject *object = Core::Instance ().parent ();
@@ -586,6 +592,12 @@ namespace Poshuku
 		ZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomIn_"));
 		ZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomOut_"));
 		ZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomReset_"));
+
+		if (Own_)
+		{
+			IHookProxy_ptr proxy { new Util::DefaultHookProxy };
+			emit hookBrowserWidgetInitialized (proxy, WebView_, this);
+		}
 	}
 
 	CustomWebView* BrowserWidget::GetView () const
@@ -919,32 +931,28 @@ namespace Poshuku
 
 		proxy->FillValue ("preview", preview);
 
-		std::auto_ptr<QPrinter> printer (new QPrinter ());
-
-		QPrintDialog *dialog = new QPrintDialog (printer.get (), this);
-		dialog->setWindowTitle (tr ("Print web page"));
-		/* TODO
-		if (!WebView_->selectedText ().isEmpty ())
-			dialog->addEnabledOption (QAbstractPrintDialog::PrintSelection);
-		*/
-
-		if (dialog->exec () != QDialog::Accepted)
-			return;
-
+		QPrinter printer;
 		if (preview)
 		{
-			QPrintPreviewDialog *prevDialog =
-				new QPrintPreviewDialog (printer.get (), this);
-			connect (prevDialog,
+			QPrintPreviewDialog prevDialog (&printer, this);
+			connect (&prevDialog,
 					SIGNAL (paintRequested (QPrinter*)),
 					frame,
 					SLOT (print (QPrinter*)));
 
-			if (prevDialog->exec () != QDialog::Accepted)
+			if (prevDialog.exec () != QDialog::Accepted)
 				return;
 		}
+		else
+		{
+			QPrintDialog dialog (&printer, this);
+			dialog.setWindowTitle (tr ("Print web page"));
 
-		frame->print (printer.get ());
+			if (dialog.exec () != QDialog::Accepted)
+				return;
+
+			frame->print (&printer);
+		}
 	}
 
 	void BrowserWidget::SetActualReloadInterval (const QTime& value)
@@ -1359,79 +1367,140 @@ namespace Poshuku
 
 	namespace
 	{
-		void ToHtml (const QDomElement& elem, QXmlStreamWriter& w)
+		class HtmlWriter
 		{
-			auto writeColored = [&w] (const QString& color, const QString& text, bool pad) -> void
+			QXmlStreamWriter& W_;
+		public:
+			HtmlWriter (QXmlStreamWriter& w)
+			: W_ (w)
 			{
-				const auto& padStr = (pad ? "; margin-left: 1em;" : QString ());
-
-				w.writeStartElement ("span");
-				w.writeAttribute ("style", "color:" + color + padStr);
-				w.writeCharacters (text);
-				w.writeEndElement ();
-			};
-
-			w.writeStartElement ("div");
-			w.writeAttribute ("style", "color: #881280; margin-left: 1em;");
-			w.writeCharacters ("<" + elem.tagName ());
-
-			const auto& attrs = elem.attributes ();
-			for (int i = 0; i < attrs.size (); ++i)
-			{
-				const auto& attrNode = attrs.item (i).toAttr ();
-
-				writeColored ("#994500", " " + attrNode.name (), false);
-				writeColored ("#881280", "=\"", false);
-				writeColored ("#1A1AA6", attrNode.value (), false);
-				writeColored ("#881280", "\"", false);
 			}
 
-			bool hasChildren = false;
-			auto childrenize = [&hasChildren, &w, writeColored] () -> void
+			void WriteColored (const QString& color, const QString& text, int pad)
 			{
-				if (hasChildren)
-					return;
+				const auto& padStr = pad ?
+						("; margin-left: " + QString::number (pad) + "em;") :
+						QString ();
 
-				hasChildren = true;
-				w.writeCharacters (">");
-				w.writeEmptyElement ("br");
-			};
+				W_.writeStartElement ("span");
+				W_.writeAttribute ("style", "color:" + color + padStr);
+				W_.writeCharacters (text);
+				W_.writeEndElement ();
+			}
 
-			auto child = elem.firstChild ();
-			while (!child.isNull ())
+			void ToHtml (const QDomDocument& doc)
 			{
-				switch (child.nodeType ())
+				const auto& doctype = doc.doctype ();
+				if (!doctype.name ().isEmpty ())
 				{
-				case QDomDocument::TextNode:
-					childrenize ();
-					writeColored ("#000000", child.toText ().data (), true);
-					w.writeEmptyElement ("br");
-					break;
-				case QDomDocument::CDATASectionNode:
-					childrenize ();
-					writeColored ("#000000", "<![CDATA[ " + child.toCDATASection ().data () + " ]]>", true);
-					w.writeEmptyElement ("br");
-					break;
-				case QDomDocument::CommentNode:
-					childrenize ();
-					writeColored ("#00BB00", "<!--" + child.toComment ().data () + "-->", true);
-					w.writeEmptyElement ("br");
-					break;
-				case QDomNode::ElementNode:
-					childrenize ();
-					ToHtml (child.toElement (), w);
-					break;
-				case QDomNode::AttributeNode:
-				case QDomNode::CharacterDataNode:
-				case QDomNode::BaseNode:
-					break;
+					W_.writeStartElement ("div");
+					W_.writeAttribute ("style", "color: #964B00; margin-left: 1em;");
+					W_.writeCharacters ("<!DOCTYPE ");
+
+					WriteColored ("#000000", doctype.name (), 0);
+					W_.writeCharacters (" ");
+					WriteColored ("#881280", '"' + doctype.publicId () + '"', 0);
+					W_.writeEmptyElement ("br");
+					WriteColored ("#881280", '"' + doctype.systemId () + '"', 2);
+
+					W_.writeCharacters (">");
+
+					W_.writeEndElement ();
 				}
-				child = child.nextSibling ();
+
+				ToHtmlChildren (doc, [] {});
 			}
 
-			w.writeCharacters (hasChildren ? ("</" + elem.tagName () + ">") : " />");
-			w.writeEndElement ();
-		}
+			void ToHtml (const QDomElement& elem)
+			{
+				W_.writeStartElement ("div");
+				W_.writeAttribute ("style", "color: #881280; margin-left: 1em;");
+				W_.writeCharacters ("<" + elem.tagName ());
+
+				const auto& attrs = elem.attributes ();
+				for (int i = 0; i < attrs.size (); ++i)
+				{
+					const auto& attrNode = attrs.item (i).toAttr ();
+
+					WriteColored ("#994500", " " + attrNode.name (), 0);
+					WriteColored ("#881280", "=\"", 0);
+					WriteColored ("#1A1AA6", attrNode.value (), 0);
+					WriteColored ("#881280", "\"", 0);
+				}
+
+				bool hasChildren = false;
+				auto childrenize = [this, &hasChildren] () -> void
+				{
+					if (hasChildren)
+						return;
+
+					hasChildren = true;
+					W_.writeCharacters (">");
+					W_.writeEmptyElement ("br");
+				};
+
+				ToHtmlChildren (elem, childrenize);
+
+				W_.writeCharacters (hasChildren ? ("</" + elem.tagName () + ">") : " />");
+				W_.writeEndElement ();
+			}
+
+			template<typename ChildrenizeCbType>
+			void ToHtmlChildren (const QDomNode& elem, const ChildrenizeCbType& childrenize)
+			{
+				auto child = elem.firstChild ();
+				while (!child.isNull ())
+				{
+					switch (child.nodeType ())
+					{
+					case QDomDocument::TextNode:
+						childrenize ();
+						WriteColored ("#000000", child.toText ().data (), 1);
+						W_.writeEmptyElement ("br");
+						break;
+					case QDomDocument::CDATASectionNode:
+						childrenize ();
+						WriteColored ("#000000", "<![CDATA[ " + child.toCDATASection ().data () + " ]]>", 1);
+						W_.writeEmptyElement ("br");
+						break;
+					case QDomDocument::CommentNode:
+						childrenize ();
+						WriteColored ("#00BB00", "<!--" + child.toComment ().data () + "-->", 1);
+						W_.writeEmptyElement ("br");
+						break;
+					case QDomNode::ElementNode:
+						childrenize ();
+						ToHtml (child.toElement ());
+						break;
+					case QDomNode::ProcessingInstructionNode:
+					{
+						childrenize ();
+						const auto& instr = child.toProcessingInstruction ();
+						W_.writeStartElement ("div");
+						W_.writeAttribute ("style", "color: #007700; margin-left: 1em;");
+						W_.writeCharacters ("<?" + instr.target () + " ");
+						WriteColored ("#994500", instr.data (), 0);
+						W_.writeCharacters ("?>");
+						W_.writeEndElement ();
+						break;
+					}
+					case QDomNode::DocumentTypeNode:
+					case QDomNode::EntityNode:
+					case QDomNode::EntityReferenceNode:
+					case QDomNode::AttributeNode:
+					case QDomNode::CharacterDataNode:
+					case QDomNode::BaseNode:
+					case QDomNode::DocumentFragmentNode:
+					case QDomNode::DocumentNode:
+					case QDomNode::NotationNode:
+						qWarning () << "unexpected node type"
+								<< child.nodeType ();
+						break;
+					}
+					child = child.nextSibling ();
+				}
+			}
+		};
 	}
 
 	void BrowserWidget::checkLoadedDocument ()
@@ -1463,7 +1532,7 @@ namespace Poshuku
 				w.writeEndElement ();
 				w.writeStartElement ("body");
 					w.writeAttribute ("style", "font-family:monospace;");
-					ToHtml (doc.documentElement (), w);
+					HtmlWriter { w }.ToHtml (doc);
 				w.writeEndElement ();
 			w.writeEndElement ();
 		w.writeEndDocument ();

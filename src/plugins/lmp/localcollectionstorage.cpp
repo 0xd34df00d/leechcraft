@@ -34,7 +34,8 @@
 #include <QFileInfo>
 #include <QThread>
 #include <util/util.h>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
+#include <util/sys/paths.h>
 #include "util.h"
 #include "engine/rgfilter.h"
 #include "xmlsettingsmanager.h"

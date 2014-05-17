@@ -34,7 +34,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
-#include <util/utilconfig.h>
+#include "svcauthconfig.h"
 
 class QTimer;
 
@@ -49,7 +49,7 @@ class CustomCookieJar;
 
 namespace SvcAuth
 {
-	class UTIL_API VkAuthManager : public QObject
+	class UTIL_SVCAUTH_API VkAuthManager : public QObject
 	{
 		Q_OBJECT
 

@@ -172,13 +172,9 @@ namespace Lastfmscrobble
 		return GetServiceName ();
 	}
 
-	void Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	Media::IPendingAlbumArt* Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
 	{
-		auto fetcher = new AlbumArtFetcher (album, Proxy_);
-		connect (fetcher,
-				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
-				this,
-				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)));
+		return new AlbumArtFetcher (album, Proxy_);
 	}
 
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
@@ -231,9 +227,9 @@ namespace Lastfmscrobble
 				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)));
 	}
 
-	Media::IPendingArtistBio* Plugin::RequestArtistBio (const QString& artist)
+	Media::IPendingArtistBio* Plugin::RequestArtistBio (const QString& artist, bool addImages)
 	{
-		return new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), this);
+		return new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), addImages, this);
 	}
 
 	void Plugin::UpdateRecommendedEvents ()

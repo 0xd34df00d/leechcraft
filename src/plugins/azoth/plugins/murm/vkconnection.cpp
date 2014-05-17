@@ -35,7 +35,7 @@
 #include <QTimer>
 #include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include "longpollmanager.h"
 #include "logger.h"
 #include "xmlsettingsmanager.h"

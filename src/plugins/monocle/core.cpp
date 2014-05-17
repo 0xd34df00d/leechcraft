@@ -30,6 +30,7 @@
 #include "core.h"
 #include <algorithm>
 #include <QFile>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/monocle/iredirectproxy.h"
 #include "pixmapcachemanager.h"
@@ -62,6 +63,8 @@ namespace Monocle
 	{
 		Proxy_ = proxy;
 		DefaultBackendManager_->LoadSettings ();
+
+		ShortcutMgr_ = new Util::ShortcutManager { proxy };
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -184,6 +187,11 @@ namespace Monocle
 	BookmarksManager* Core::GetBookmarksManager () const
 	{
 		return BookmarksManager_;
+	}
+
+	Util::ShortcutManager* Core::GetShortcutManager () const
+	{
+		return ShortcutMgr_;
 	}
 }
 }

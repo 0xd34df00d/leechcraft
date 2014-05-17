@@ -57,23 +57,27 @@ namespace KBSwitch
 			return result;
 		}
 
-		void SetList (const QList<QStringList>& lists, QStandardItemModel *model)
+		QList<QStandardItem*> List2Row (const QStringList& list)
 		{
 			FlagIconProvider flagProv;
 
+			QList<QStandardItem*> row;
+			for (const auto& item : list)
+				row << new QStandardItem (item);
+
+			const auto& img = flagProv.requestPixmap (list.at (0), nullptr, {});
+			row.first ()->setIcon ({ img });
+
+			row.value (0)->setEditable (false);
+			row.value (1)->setEditable (false);
+
+			return row;
+		}
+
+		void SetList (const QList<QStringList>& lists, QStandardItemModel *model)
+		{
 			for (const auto& list : lists)
-			{
-				QList<QStandardItem*> row;
-				for (const auto& item : list)
-					row << new QStandardItem (item);
-
-				const auto& img = flagProv.requestPixmap (list.at (0), nullptr, {});
-				row.first ()->setIcon ({ img });
-
-				row.value (0)->setEditable (false);
-				row.value (1)->setEditable (false);
-				model->appendRow (row);
-			}
+				model->appendRow (List2Row (list));
 		}
 
 		class EnabledItemDelegate : public QStyledItemDelegate
@@ -162,33 +166,35 @@ namespace KBSwitch
 		const auto& enabledGroups = KBCtl::Instance ().GetEnabledGroups ();
 
 		QList<QStringList> enabled;
-		for (const auto& name : enabledGroups)
+		for (auto i = 0; i != enabledGroups.size (); ++i)
 		{
+			const auto& name = enabledGroups.at (i);
+
 			const QStringList enabledRow
 			{
 				name,
-				layouts.take (name),
-				KBCtl::Instance ().GetGroupVariant (name)
+				layouts.value (name),
+				KBCtl::Instance ().GetGroupVariant (i)
 			};
 			enabled << enabledRow;
 		}
 
-		SetList (ToSortedList (layouts), AvailableModel_);
+		Layouts_ = ToSortedList (layouts);
+		SetList (Layouts_, AvailableModel_);
 		SetList (enabled, EnabledModel_);
 	}
 
 	void LayoutsConfigWidget::accept ()
 	{
 		QStringList codes;
-		QHash<QString, QString> variants;
+		QStringList variants;
 		for (int i = 0; i < EnabledModel_->rowCount (); ++i)
 		{
 			const auto& code = EnabledModel_->item (i, EnabledColumn::EnabledCode)->text ();
 			codes << code;
 
 			const auto& variant = EnabledModel_->item (i, EnabledColumn::EnabledVariant)->text ();
-			if (!variant.isEmpty ())
-				variants [code] = variant;
+			variants << variant;
 		}
 		KBCtl::Instance ().SetEnabledGroups (codes);
 		KBCtl::Instance ().SetGroupVariants (variants);
@@ -205,7 +211,7 @@ namespace KBSwitch
 		if (!toEnableIdx.isValid ())
 			return;
 
-		auto row = AvailableModel_->takeRow (toEnableIdx.row ());
+		auto row = List2Row (Layouts_.value (toEnableIdx.row ()));
 		row << new QStandardItem;
 		EnabledModel_->appendRow (row);
 	}
@@ -216,15 +222,7 @@ namespace KBSwitch
 		if (!toDisableIdx.isValid ())
 			return;
 
-		auto row = EnabledModel_->takeRow (toDisableIdx.row ());
-		delete row.takeLast ();
-
-		auto pos = std::upper_bound (Util::ModelIterator (AvailableModel_, 0),
-				Util::ModelIterator (AvailableModel_, AvailableModel_->rowCount ()),
-				row.first ()->text (),
-				[] (const QString& code, const QModelIndex& mi)
-					{ return code < mi.data ().toString (); });
-		AvailableModel_->insertRow (pos.GetRow (), row);
+		EnabledModel_->removeRow (toDisableIdx.row ());
 	}
 
 	void LayoutsConfigWidget::updateActionsState ()

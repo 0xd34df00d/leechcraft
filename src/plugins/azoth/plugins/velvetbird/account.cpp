@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <util/xpc/passutils.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "protocol.h"
 #include "util.h"

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "artistlookup.h"
+#include <memory>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -49,9 +50,10 @@ namespace MusicZombie
 	}
 
 	ArtistLookup::ArtistLookup (const QString& name, QNetworkAccessManager *nam, QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
+	, Name_ { name }
 	{
-		QUrl url ("http://www.musicbrainz.org/ws/2/artist/");
+		QUrl url { "http://www.musicbrainz.org/ws/2/artist/" };
 		url.addQueryItem ("query", "artist:" + NormalizeName (name));
 		auto reply = nam->get (QNetworkRequest (url));
 		connect (reply,
@@ -96,10 +98,16 @@ namespace MusicZombie
 		auto artist = artists.firstChildElement ("artist");
 		while (!artist.isNull () && artist.attribute ("score").toInt () > 75)
 		{
+			std::shared_ptr<void> artistGuard { nullptr,
+					[&artist] (void*) { artist = artist.nextSiblingElement ("artist"); } };
+
 			const auto& spanElem = artist.firstChildElement ("life-span");
 
-			const auto beginYear = spanElem.firstChildElement ("begin")
-					.text ().simplified ().toInt ();
+			const auto& beginYearElem = spanElem.firstChildElement ("begin");
+			if (beginYearElem.isNull ())
+				continue;
+
+			const auto beginYear = beginYearElem.text ().simplified ().toInt ();
 
 			const auto& endYearElem = spanElem.firstChildElement ("end");
 			const auto endYear = endYearElem.isNull () ?
@@ -107,12 +115,12 @@ namespace MusicZombie
 					endYearElem.text ().simplified ().toInt ();
 
 			span2id [endYear - beginYear] = artist.attribute ("id");
-
-			artist = artist.nextSiblingElement ("artist");
 		}
 
 		qDebug () << Q_FUNC_INFO
-				<< "choices:"
+				<< "choices for"
+				<< Name_
+				<< ":"
 				<< span2id;
 
 		if (span2id.isEmpty ())
@@ -126,7 +134,9 @@ namespace MusicZombie
 		reply->deleteLater ();
 
 		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
+				<< Name_
+				<< reply->errorString ()
+				<< reply->readAll ();
 		emit networkError ();
 	}
 }

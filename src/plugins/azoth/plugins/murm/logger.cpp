@@ -30,8 +30,9 @@
 #include "logger.h"
 #include <QDateTime>
 #include <QUrl>
+#include <QDir>
 #include <qjson/serializer.h>
-#include <util/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {

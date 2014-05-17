@@ -29,7 +29,7 @@
 
 #include "nativeemoticonssource.h"
 #include <QtDebug>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 
 namespace LeechCraft
 {
@@ -55,7 +55,7 @@ namespace NativeEmoticons
 					<< pack;
 			return QHash<QString, QString> ();
 		}
-		
+
 		if (!dev->open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -64,7 +64,7 @@ namespace NativeEmoticons
 					<< dev->errorString ();
 			return QHash<QString, QString> ();
 		}
-		
+
 		while (!dev->atEnd ())
 		{
 			const QByteArray& arr = dev->readLine (16384).trimmed ();
@@ -77,7 +77,7 @@ namespace NativeEmoticons
 						<< arr;
 				continue;
 			}
-			
+
 			QByteArray name = arr.left (idx);
 			if (name.endsWith (".png") || name.endsWith (".gif"))
 				name.chop (4);

@@ -31,6 +31,7 @@
 #include <QDeclarativeEngine>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/sys/paths.h>
 #include "similarviewmanager.h"
 #include "core.h"
 
@@ -42,14 +43,14 @@ namespace LMP
 	: QDeclarativeView (parent)
 	, Manager_ (new SimilarViewManager (this, this))
 	{
-		engine ()->addImageProvider ("sysIcons",
+		engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
-		new Util::StandardNAMFactory ("lmp/cache",
+		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
 				engine ());
 
-		setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
+		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "SimilarView.qml"));
 		Manager_->InitWithSource ();
 	}
 

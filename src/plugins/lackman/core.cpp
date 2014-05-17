@@ -36,6 +36,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>

@@ -41,7 +41,8 @@
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include "findproxy.h"
 #include "tagsasker.h"
 
@@ -235,13 +236,13 @@ namespace SeekThru
 
 	void Core::Add (const QUrl& url)
 	{
-		QString name = LeechCraft::Util::GetTemporaryName ();
-		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (url,
+		QString name = Util::GetTemporaryName ();
+		LeechCraft::Entity e = Util::MakeEntity (url,
 				name,
-				LeechCraft::Internal |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::NotPersistent);
+				Internal |
+					DoNotSaveInHistory |
+					DoNotNotifyUser |
+					NotPersistent);
 
 		int id = -1;
 		QObject *provider;

@@ -33,8 +33,9 @@
 #include <QDir>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <util/util.h>
-#include <util/dblock.h>
+#include <QtDebug>
+#include <util/db/dblock.h>
+#include <util/sys/paths.h>
 #include "oral.h"
 
 namespace LeechCraft

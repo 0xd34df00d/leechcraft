@@ -29,7 +29,7 @@
 
 #include "passwordremember.h"
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "core.h"
 
 namespace LeechCraft

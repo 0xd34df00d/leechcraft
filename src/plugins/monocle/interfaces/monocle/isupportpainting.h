@@ -37,9 +37,9 @@ namespace Monocle
 {
 	/** @brief Interface for documents supporting optimized painting.
 	 *
-	 * This interface should be implemented by #IDocument objects that can
+	 * This interface should be implemented by IDocument objects that can
 	 * paint better than putting the image returned by the
-	 * #IDocument::RenderPage() method to a QPainter.
+	 * IDocument::RenderPage() method to a QPainter.
 	 *
 	 * @sa IDocument
 	 */

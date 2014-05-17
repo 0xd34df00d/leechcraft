@@ -37,8 +37,8 @@
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <util/resourceloader.h>
-#include <util/util.h>
+#include <util/sys/resourceloader.h>
+#include <util/xpc/util.h>
 #include <util/xpc/stdanfields.h>
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
@@ -87,6 +87,11 @@ namespace AdvancedNotifications
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleItemSelected (QModelIndex, QModelIndex)));
+
+		connect (rm,
+				SIGNAL (focusOnRule (QModelIndex)),
+				this,
+				SLOT (selectRule (QModelIndex)));
 
 		const auto& cat2hr = RM_->GetCategory2HR ();
 		for (const QString& cat : cat2hr.keys ())
@@ -148,6 +153,8 @@ namespace AdvancedNotifications
 			methods |= NMCommand;
 		if (Ui_.NotifyUrgent_->checkState () == Qt::Checked)
 			methods |= NMUrgentHint;
+		if (Ui_.NotifySystemDependent_->checkState () == Qt::Checked)
+			methods |= NMSystemDependent;
 		rule.SetMethods (methods);
 
 		rule.SetFieldMatches (Matches_);
@@ -167,6 +174,8 @@ namespace AdvancedNotifications
 		rule.SetEnabled (curIdx.sibling (curIdx.row (), 0).data (Qt::CheckStateRole) == Qt::Checked);
 		rule.SetSingleShot (Ui_.RuleSingleShot_->checkState () == Qt::Checked);
 
+		rule.SetColor (Ui_.ColorButton_->GetColor ());
+
 		return rule;
 	}
 
@@ -174,21 +183,13 @@ namespace AdvancedNotifications
 	{
 		QList<ANFieldData> GetPluginFields (const QByteArray& pluginId)
 		{
-			QList<ANFieldData> fields;
 			if (pluginId.isEmpty ())
-				return Util::GetStdANFields ({});
-			else
-			{
-				auto pObj = Core::Instance ().GetProxy ()->
-						GetPluginsManager ()->GetPluginByID (pluginId);
-				auto iae = qobject_cast<IANEmitter*> (pObj);
-				if (!iae)
-					qWarning () << Q_FUNC_INFO
-							<< pObj
-							<< "doesn't implement IANEmitter";
-				else
-					return iae->GetANFields ();
-			}
+				return {};
+
+			auto pObj = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetPluginByID (pluginId);
+			if (auto iae = qobject_cast<IANEmitter*> (pObj))
+				return iae->GetANFields ();
 
 			return {};
 		}
@@ -198,7 +199,7 @@ namespace AdvancedNotifications
 	{
 		auto fieldName = match.GetFieldName ();
 
-		const auto& fields = GetPluginFields (match.GetPluginID ().toUtf8 ());
+		const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.GetPluginID ().toUtf8 ());
 
 		const auto pos = std::find_if (fields.begin (), fields.end (),
 				[&fieldName] (decltype (fields.front ()) field) { return field.ID_ == fieldName; });
@@ -322,6 +323,8 @@ namespace AdvancedNotifications
 				Qt::Checked : Qt::Unchecked);
 		Ui_.NotifyUrgent_->setCheckState ((methods & NMUrgentHint) ?
 				Qt::Checked : Qt::Unchecked);
+		Ui_.NotifySystemDependent_->setCheckState ((methods & NMSystemDependent) ?
+				Qt::Checked : Qt::Unchecked);
 
 		ResetMatchesModel ();
 		Matches_ = rule.GetFieldMatches ();
@@ -358,6 +361,15 @@ namespace AdvancedNotifications
 		Ui_.RuleSingleShot_->setChecked (rule.IsSingleShot () ?
 					Qt::Checked :
 					Qt::Unchecked);
+
+		Ui_.ColorButton_->SetColor (rule.GetColor ());
+	}
+
+	void NotificationRulesWidget::selectRule (const QModelIndex& index)
+	{
+		Ui_.RulesTree_->selectionModel ()->select (index,
+				QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
+		Ui_.RulesTree_->setCurrentIndex (index);
 	}
 
 	void NotificationRulesWidget::on_AddRule__released ()

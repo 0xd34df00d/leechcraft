@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "httstream.h"
+#include <util/util.h>
 #include "httpstreamfilter.h"
 
 namespace LeechCraft
@@ -38,6 +39,7 @@ namespace HttStream
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("lmp_httstream");
 	}
 
 	void Plugin::SecondInit ()
@@ -88,12 +90,13 @@ namespace HttStream
 				tr ("HTTP streaming"),
 				{},
 				false,
-				[this] (const QByteArray& instance, IPath*) -> IFilterElement*
+				[this] (const QByteArray& instance, IPath *path) -> IFilterElement*
 				{
 					return new HttpStreamFilter
 						{
 							GetUniqueID () + ".Filter",
-							instance
+							instance,
+							path
 						};
 				}
 			}

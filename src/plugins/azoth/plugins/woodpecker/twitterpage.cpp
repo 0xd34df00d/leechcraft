@@ -36,7 +36,7 @@
 #include <QCoreApplication>
 #include <qjson/parser.h>
 #include <interfaces/core/icoreproxy.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 

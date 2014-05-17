@@ -32,8 +32,10 @@
 #include <QDir>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QThread>
 #include <QtDebug>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -43,7 +45,10 @@ namespace Poshuku
 	SQLStorageBackendMysql::SQLStorageBackendMysql (StorageBackend::Type type)
 	: Type_ (type)
 	{
-		DB_ = QSqlDatabase::addDatabase ("QMYSQL", "PoshukuConnection");
+		DB_ = QSqlDatabase::addDatabase ("QMYSQL",
+					QString ("PoshukuConnection_%1_%2")
+						.arg (qrand ())
+						.arg (Util::Handle2Num (QThread::currentThreadId ())));
 		DB_.setDatabaseName (XmlSettingsManager::Instance ()->
 				property ("MySQLDBName").toString ());
 		DB_.setHostName (XmlSettingsManager::Instance ()->
@@ -67,7 +72,6 @@ namespace Poshuku
 
 	SQLStorageBackendMysql::~SQLStorageBackendMysql ()
 	{
-
 	}
 
 	void SQLStorageBackendMysql::Prepare ()

@@ -36,6 +36,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"

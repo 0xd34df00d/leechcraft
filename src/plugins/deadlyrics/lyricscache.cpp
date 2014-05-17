@@ -32,6 +32,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {

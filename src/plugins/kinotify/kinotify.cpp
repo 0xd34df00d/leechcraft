@@ -31,7 +31,7 @@
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
@@ -133,13 +133,14 @@ namespace Kinotify
 		const auto& text = e.Additional_ ["Text"].toString ();
 		const auto sameDataPos =
 				std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
-						[&header, &text, &notifyId] (KinotifyWidget *w)
+						[&header, &text] (KinotifyWidget *w)
 							{ return w->GetTitle () == header && w->GetBody () == text; });
 		if (sameDataPos != ActiveNotifications_.end () && sameIdPos == ActiveNotifications_.end ())
-				return;
+			return;
 
-		int timeout = Proxy_->GetSettingsManager ()->
-				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+		const auto defaultTimeout = XmlSettingsManager::Instance ()->
+				property ("MessageTimeout").toInt () * 1000;
+		const auto timeout = e.Additional_.value ("NotificationTimeout", defaultTimeout).toInt ();
 
 		auto notificationWidget = new KinotifyWidget (Proxy_, timeout);
 		notificationWidget->SetID (notifyId);

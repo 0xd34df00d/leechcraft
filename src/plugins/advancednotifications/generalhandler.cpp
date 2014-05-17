@@ -47,16 +47,20 @@ namespace AdvancedNotifications
 	GeneralHandler::GeneralHandler (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
 	{
-		Handlers_ << ConcreteHandlerBase_ptr (new SystemTrayHandler);
-		Handlers_ << ConcreteHandlerBase_ptr (new VisualHandler);
-		Handlers_ << ConcreteHandlerBase_ptr (new AudioHandler);
-		Handlers_ << ConcreteHandlerBase_ptr (new CmdRunHandler);
-		Handlers_ << ConcreteHandlerBase_ptr (new WMUrgentHandler);
+		QList<ConcreteHandlerBase_ptr> coreHandlers;
+		coreHandlers << ConcreteHandlerBase_ptr (new SystemTrayHandler);
+		coreHandlers << ConcreteHandlerBase_ptr (new VisualHandler);
+		coreHandlers << ConcreteHandlerBase_ptr (new AudioHandler);
+		coreHandlers << ConcreteHandlerBase_ptr (new CmdRunHandler);
+		coreHandlers << ConcreteHandlerBase_ptr (new WMUrgentHandler);
 
-		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
+		for (const auto& handler : coreHandlers)
+		{
 			handler->SetGeneralHandler (this);
+			Handlers_ << handler;
+		}
 
-		connect (Handlers_.first ().get (),
+		connect (coreHandlers.first ().get (),
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
 				this,
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
@@ -67,6 +71,11 @@ namespace AdvancedNotifications
 		Cat2IconName_ [AN::CatGeneric] = "preferences-desktop-notification-bell";
 		Cat2IconName_ [AN::CatPackageManager] = "system-software-update";
 		Cat2IconName_ [AN::CatMediaPlayer] = "applications-multimedia";
+	}
+
+	void GeneralHandler::RegisterHandler (const INotificationHandler_ptr& handler)
+	{
+		Handlers_ << handler;
 	}
 
 	void GeneralHandler::Handle (const Entity& e)
@@ -80,7 +89,7 @@ namespace AdvancedNotifications
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
 		{
 			for (const auto& handler : Handlers_)
-				handler->Handle (e, NotificationRule ());
+				handler->Handle (e, NotificationRule {});
 			return;
 		}
 

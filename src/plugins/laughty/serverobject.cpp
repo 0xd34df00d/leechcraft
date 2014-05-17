@@ -106,8 +106,13 @@ namespace Laughty
 		}
 
 		Entity e;
-		if (hints.value ("transient", false).toBool () == true)
+		if (hints.value ("transient", false).toBool () || expire_timeout)
+		{
 			e = Util::MakeNotification (app_name, summary, prio);
+
+			if (expire_timeout > 0)
+				e.Additional_ ["NotificationTimeout"] = expire_timeout;
+		}
 		else
 		{
 			const auto& catTypePair = GetCatTypePair (hints);
@@ -123,7 +128,6 @@ namespace Laughty
 					summary,
 					body);
 		}
-
 
 		HandleActions (e, id, actions, hints);
 		HandleSounds (hints);

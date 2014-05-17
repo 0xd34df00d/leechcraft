@@ -36,7 +36,8 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <QPointer>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
+#include <util/util.h>
 #include "artistlookup.h"
 
 namespace LeechCraft
@@ -80,7 +81,7 @@ namespace MusicZombie
 
 	void PendingDisco::handleGotID (const QString& id)
 	{
-		const auto urlStr = "http://musicbrainz.org/ws/2/release?limit=100&inc=recordings&status=official&artist=" + id;
+		const auto urlStr = "http://musicbrainz.org/ws/2/release?limit=100&inc=recordings+release-groups&status=official&artist=" + id;
 
 		Queue_->Schedule ([this, urlStr] () -> void
 			{
@@ -98,6 +99,8 @@ namespace MusicZombie
 
 	void PendingDisco::handleIDError ()
 	{
+		qWarning () << Q_FUNC_INFO
+				<< "error getting MBID";
 		emit error (tr ("Error getting artist MBID."));
 		deleteLater ();
 	}
@@ -127,6 +130,37 @@ namespace MusicZombie
 
 				mediumElem = mediumElem.nextSiblingElement ("medium");
 			}
+		}
+
+		Media::ReleaseInfo::Type GetReleaseType (const QDomElement& releaseElem)
+		{
+			const auto& elem = releaseElem.firstChildElement ("release-group");
+			if (elem.isNull ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "null element";
+				return Media::ReleaseInfo::Type::Other;
+			}
+
+			const auto& type = elem.attribute ("type");
+
+			static const auto& map = Util::MakeMap<QString, Media::ReleaseInfo::Type> ({
+						{ "Album", Media::ReleaseInfo::Type::Standard },
+						{ "EP", Media::ReleaseInfo::Type::EP },
+						{ "Single", Media::ReleaseInfo::Type::Single },
+						{ "Compilation", Media::ReleaseInfo::Type::Compilation },
+						{ "Live", Media::ReleaseInfo::Type::Live },
+						{ "Soundtrack", Media::ReleaseInfo::Type::Soundtrack },
+						{ "Other", Media::ReleaseInfo::Type::Other }
+					});
+
+			if (map.contains (type))
+				return map.value (type);
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown type:"
+					<< type;
+			return Media::ReleaseInfo::Type::Other;
 		}
 	}
 
@@ -181,7 +215,7 @@ namespace MusicZombie
 				releaseElem.attribute ("id"),
 				title,
 				date,
-				Media::ReleaseInfo::Type::Standard,
+				GetReleaseType (releaseElem),
 				{}
 			};
 			const auto& mediumListElem = releaseElem.firstChildElement ("medium-list");

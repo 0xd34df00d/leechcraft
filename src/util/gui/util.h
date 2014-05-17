@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QPoint>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 class QSize;
 class QRect;
@@ -82,8 +82,10 @@ namespace Util
 	 * @return The new top left position of the rectangle.
 	 *
 	 * @sa FitRect()
+	 *
+	 * @ingroup GuiUtil
 	 */
-	UTIL_API QPoint FitRectScreen (QPoint pos, const QSize& size,
+	UTIL_GUI_API QPoint FitRectScreen (QPoint pos, const QSize& size,
 			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
 
 	/** @brief Tries to fit a rectangle (like a dialog or popup) into geometry.
@@ -109,8 +111,10 @@ namespace Util
 	 * @return The new top left position of the rectangle.
 	 *
 	 * @sa FitRectScreen()
+	 *
+	 * @ingroup GuiUtil
 	 */
-	UTIL_API QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
+	UTIL_GUI_API QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
 			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
 
 	/** @brief Shows a pixmap at the given pos.
@@ -127,8 +131,10 @@ namespace Util
 	 * @param[in] pixmap The pixmap to show.
 	 * @param[in] pos The position where the dialog should be shown.
 	 * @return The created dialog.
+	 *
+	 * @ingroup GuiUtil
 	 */
-	UTIL_API QLabel* ShowPixmapLabel (const QPixmap& pixmap, const QPoint& pos = QPoint ());
+	UTIL_GUI_API QLabel* ShowPixmapLabel (const QPixmap& pixmap, const QPoint& pos = QPoint ());
 }
 }
 

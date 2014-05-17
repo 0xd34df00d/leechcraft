@@ -40,7 +40,7 @@
 #include <QTextBlock>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/gui/util.h>
 #include "core.h"
 #include "tweet.h"

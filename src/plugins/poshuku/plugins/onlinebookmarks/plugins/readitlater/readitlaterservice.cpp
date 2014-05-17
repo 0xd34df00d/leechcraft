@@ -32,7 +32,7 @@
 #include <QNetworkReply>
 #include <QSettings>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "readitlaterauthwidget.h"
 #include "readitlaterapi.h"
 #include "readitlateraccount.h"

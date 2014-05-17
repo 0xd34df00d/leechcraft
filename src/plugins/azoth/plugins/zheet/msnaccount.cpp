@@ -29,7 +29,7 @@
 
 #include "msnaccount.h"
 #include <msn/notificationserver.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "msnprotocol.h"
 #include "callbacks.h"

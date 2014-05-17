@@ -37,7 +37,7 @@
 #include <QtConcurrentRun>
 #include <QTimer>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -477,7 +477,16 @@ namespace LMP
 			const auto pos = std::find_if (Artists_.begin (), Artists_.end (),
 					[&artist] (decltype (artist) present) { return present.ID_ == artist.ID_; });
 			if (pos == Artists_.end ())
-				Artists_ += artist;
+			{
+				const auto pos = std::lower_bound (Artists_.begin (), Artists_.end (), artist,
+						[] (const Collection::Artist& a1, const Collection::Artist& a2)
+						{
+							return CompareArtists (a1.Name_, a2.Name_,
+									!XmlSettingsManager::Instance ()
+										.property ("SortWithThe").toBool ());
+						});
+				Artists_.insert (pos, artist);
+			}
 			else
 				pos->Albums_ << artist.Albums_;
 

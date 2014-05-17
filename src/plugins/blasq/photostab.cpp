@@ -45,7 +45,7 @@
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/network/networkdiskcache.h>
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
@@ -92,7 +92,7 @@ namespace Blasq
 		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine->addImportPath (cand);
-		new Util::StandardNAMFactory ("blasq/cache",
+		new Util::StandardNAMFactory ("blasq/qml",
 			[]
 			{
 				return XmlSettingsManager::Instance ()

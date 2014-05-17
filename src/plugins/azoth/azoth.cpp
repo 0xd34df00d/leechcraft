@@ -45,8 +45,9 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "core.h"
@@ -241,25 +242,27 @@ namespace Azoth
 				if (context == "chattab2")
 					str >> info.MsgText_;
 
-				QList<ChatTabsManager::RestoreChatInfo> infos;
-				infos << info;
-				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos (infos);
+				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos ({ info });
 			}
 			else if (context == "muctab2")
 			{
 				QString entryId;
 				QVariantMap data;
 				QByteArray accountId;
+				QString text;
 				str >> entryId
 					>> data
-					>> accountId;
+					>> accountId
+					>> text;
 
-				if (auto entry = Core::Instance ().GetEntry (entryId))
-				{
-					auto mgr = Core::Instance ().GetChatTabsManager ();
-					mgr->OpenChat (qobject_cast<ICLEntry*> (entry), false, recInfo.DynProperties_);
-				}
-				else
+				ChatTabsManager::RestoreChatInfo info;
+				info.Props_ = recInfo.DynProperties_;
+				info.EntryID_ = entryId;
+				info.MsgText_ = text;
+
+				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos ({ info });
+
+				if (!Core::Instance ().GetEntry (entryId))
 				{
 					auto acc = Core::Instance ().GetAccount (accountId);
 					if (!acc)

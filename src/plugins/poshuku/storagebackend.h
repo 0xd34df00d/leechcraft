@@ -31,7 +31,8 @@
 #define PLUGINS_POSHUKU_STORAGEBACKEND_H
 #include <memory>
 #include <QObject>
-#include "historymodel.h"
+#include "interfaces/poshuku/poshukutypes.h"
+#include "interfaces/poshuku/istoragebackend.h"
 #include "favoritesmodel.h"
 #include "pageformsdata.h"
 
@@ -45,8 +46,10 @@ namespace Poshuku
 		* storing the history, favorites, saved passwords etc.
 		*/
 	class StorageBackend : public QObject
+						 , public IStorageBackend
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Poshuku::IStorageBackend)
 	public:
 		enum Type
 		{
@@ -58,6 +61,7 @@ namespace Poshuku
 		StorageBackend (QObject* = 0);
 		virtual ~StorageBackend ();
 		static std::shared_ptr<StorageBackend> Create (Type);
+		static std::shared_ptr<StorageBackend> Create ();
 
 		/** @brief Do post-initialization.
 			*
@@ -65,16 +69,6 @@ namespace Poshuku
 			* checked and done, if required.
 			*/
 		virtual void Prepare () = 0;
-
-		/** @brief Get all the history items from the storage.
-			*
-			* Puts all the history items (HistoryItem) from the
-			* storage backend into the passed container.
-			*
-			* @param[out] items The container with items. They would be
-			* appended to the container.
-			*/
-		virtual void LoadHistory (history_items_t& items) const = 0;
 
 		/** @brief Get resembling history items from the storage.
 			*

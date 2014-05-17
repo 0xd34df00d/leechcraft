@@ -34,9 +34,10 @@
 #include <QMenu>
 #include <QPainter>
 #include <QApplication>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
+#include <util/util.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -112,6 +113,7 @@ namespace AdvancedNotifications
 				data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
 				data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
 				data.Actions_ = e.Additional_ ["NotificationActions"].toStringList ();
+				data.Canceller_ = Util::MakeANCancel (e);
 				Events_ [eventId] = data;
 			}
 
@@ -249,8 +251,7 @@ namespace AdvancedNotifications
 		QSet<QSystemTrayIcon*> visibleIcons;
 		QSet<QAction*> actsUpd;
 
-		int eventCount = 0;
-		Q_FOREACH (const QString& event, Events_.keys ())
+		for (const auto& event : Events_.keys ())
 		{
 			const EventData& data = Events_ [event];
 
@@ -274,15 +275,7 @@ namespace AdvancedNotifications
 			if (icon)
 				UpdateMenu (icon->contextMenu (), event, data);
 			UpdateMenu (action->menu (), event, data);
-
-			eventCount += data.Count_;
 		}
-
-		const auto& entity = Util::MakeEntity (eventCount,
-				QString (),
-				LeechCraft::Internal,
-				"x-leechcraft/notification-event-count-info");
-		Core::Instance ().SendEntity (entity);
 
 #ifdef HAVE_QML
 		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
@@ -369,12 +362,12 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::UpdateSysTrayIcon (QSystemTrayIcon *trayIcon)
 	{
-		UpdateIcon<QSystemTrayIcon*> (trayIcon, Category2Icon_.key (trayIcon));
+		UpdateIcon (trayIcon, Category2Icon_.key (trayIcon));
 	}
 
 	void SystemTrayHandler::UpdateTrayAction (QAction *action)
 	{
-		UpdateIcon<QAction*> (action, Category2Action_.key (action));
+		UpdateIcon (action, Category2Action_.key (action));
 	}
 
 	void SystemTrayHandler::handleActionTriggered ()
@@ -408,8 +401,11 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::dismissNotification (const QString& event)
 	{
-		if (Events_.remove (event))
-			RebuildState ();
+		if (!Events_.contains (event))
+			return;
+
+		const auto canceller = Events_.value (event).Canceller_;
+		Core::Instance ().SendEntity (canceller);
 	}
 
 	namespace

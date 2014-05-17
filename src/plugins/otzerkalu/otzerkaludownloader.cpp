@@ -32,7 +32,9 @@
 #include <QWebElement>
 #include <QWebPage>
 #include <QRegExp>
-#include <util/util.h>
+#include <QFileInfo>
+#include <QDir>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {

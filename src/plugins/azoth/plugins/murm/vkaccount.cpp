@@ -647,14 +647,23 @@ namespace Murm
 
 	void VkAccount::finishOffline ()
 	{
-		SelfEntry_ = nullptr;
+		if (!ChatEntries_.isEmpty ())
+		{
+			QList<QObject*> toRemove;
+			for (auto item : ChatEntries_)
+				toRemove << item;
+			emit removedCLItems (toRemove);
 
-		emit removedCLItems (GetCLEntries ());
-		qDeleteAll (Entries_);
-		Entries_.clear ();
+			qDeleteAll (ChatEntries_);
+			ChatEntries_.clear ();
+		}
 
-		qDeleteAll (ChatEntries_);
-		ChatEntries_.clear ();
+		for (auto entry : Entries_)
+		{
+			auto info = entry->GetInfo ();
+			info.IsOnline_ = false;
+			entry->UpdateInfo (info, false);
+		}
 	}
 
 	void VkAccount::handleCaptcha (const QString& cid, const QUrl& url)

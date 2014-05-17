@@ -59,6 +59,9 @@ namespace Monocle
 		QMap<IAnnotation_ptr, QStandardItem*> Ann2Item_;
 
 		QMap<IAnnotation_ptr, AnnBaseItem*> Ann2GraphicsItem_;
+
+		QList<IAnnotation_ptr> Annotations_;
+		int CurrentAnn_ = -1;
 	public:
 		enum Role
 		{
@@ -79,8 +82,12 @@ namespace Monocle
 
 		QAbstractItemModel* GetModel () const;
 	private:
+		void EmitSelected (const IAnnotation_ptr&);
+		void CenterOn (const IAnnotation_ptr&);
 		void SelectAnnotation (const IAnnotation_ptr&);
 	public slots:
+		void selectPrev ();
+		void selectNext ();
 		void selectAnnotation (const QModelIndex&);
 	signals:
 		void annotationSelected (const QModelIndex&);

@@ -31,10 +31,12 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QStandardItemModel>
+#include <QFileInfo>
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"

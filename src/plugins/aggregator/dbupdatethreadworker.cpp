@@ -31,7 +31,7 @@
 #include <stdexcept>
 #include <QUrl>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"

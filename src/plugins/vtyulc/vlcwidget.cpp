@@ -57,7 +57,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/core/ientitymanager.h>

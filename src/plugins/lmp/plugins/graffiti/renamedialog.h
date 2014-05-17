@@ -32,6 +32,7 @@
 #include <QDialog>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/mediainfo.h>
+#include <interfaces/lmp/ilmputilproxy.h>
 #include "ui_renamedialog.h"
 
 class QStandardItemModel;
@@ -46,8 +47,8 @@ namespace Graffiti
 	{
 		Q_OBJECT
 
-		const ILMPProxy_Ptr Proxy_;
-		decltype (ILMPProxy_Ptr ()->GetSubstGetters ()) Getters_;
+		const ILMPProxy_ptr Proxy_;
+		decltype (ILMPProxy_ptr {}->GetUtilProxy ()->GetSubstGetters ()) Getters_;
 
 		Ui::RenameDialog Ui_;
 
@@ -55,7 +56,7 @@ namespace Graffiti
 
 		QList<QPair<MediaInfo, QString>> Infos_;
 	public:
-		RenameDialog (ILMPProxy_Ptr, QWidget* = 0);
+		RenameDialog (ILMPProxy_ptr, QWidget* = 0);
 
 		void SetInfos (const QList<MediaInfo>&);
 	private:

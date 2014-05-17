@@ -31,6 +31,7 @@
 #include <functional>
 #include "localcollectionmodel.h"
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -59,24 +60,7 @@ namespace LMP
 
 		bool NameCompare (const QVariant& left, const QVariant& right, CompareFlags flags)
 		{
-			auto leftStr = left.toString ();
-			auto rightStr = right.toString ();
-
-			if (flags & WithoutThe)
-			{
-				auto chopStr = [] (QString& str)
-				{
-					if (str.startsWith ("the ", Qt::CaseInsensitive))
-						str = str.mid (4);
-					if (str.startsWith ("a ", Qt::CaseInsensitive))
-						str = str.mid (2);
-				};
-
-				chopStr (leftStr);
-				chopStr (rightStr);
-			}
-
-			return QString::localeAwareCompare (leftStr, rightStr) < 0;
+			return CompareArtists (left.toString (), right.toString (), flags & WithoutThe);
 		}
 
 		struct Comparators

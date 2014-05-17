@@ -41,6 +41,7 @@
 #include <laretz/operation.h>
 #include <laretz/opsummer.h>
 #include <util/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {

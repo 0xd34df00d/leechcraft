@@ -39,7 +39,7 @@
 #include <QSysInfo>
 #include <qwebelement.h>
 #include <qwebhistory.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -330,6 +330,31 @@ namespace Poshuku
 
 		frame->addToJavaScriptWindowObject ("JSProxy", JSProxy_.get ());
 		frame->addToJavaScriptWindowObject ("external", ExternalProxy_.get ());
+		frame->evaluateJavaScript (R"delim(
+			if (!Function.prototype.bind) {
+			Function.prototype.bind = function (oThis) {
+				if (typeof this !== "function") {
+				// closest thing possible to the ECMAScript 5 internal IsCallable function
+				throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+				}
+
+				var aArgs = Array.prototype.slice.call(arguments, 1),
+					fToBind = this,
+					fNOP = function () {},
+					fBound = function () {
+					return fToBind.apply(this instanceof fNOP && oThis
+											? this
+											: oThis,
+										aArgs.concat(Array.prototype.slice.call(arguments)));
+					};
+
+				fNOP.prototype = this.prototype || {};
+				fBound.prototype = new fNOP();
+
+				return fBound;
+			};
+			}
+		)delim");
 	}
 
 	void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)
@@ -707,23 +732,23 @@ namespace Poshuku
 		case QWebPage::WebBrowserWindow:
 			return Core::Instance ().NewURL (QUrl ())->GetView ()->page ();
 		case QWebPage::WebModalDialog:
-			{
-				BrowserWidget *widget = new BrowserWidget (view ());
-				widget->InitShortcuts ();
-				widget->setWindowFlags (Qt::Dialog);
-				widget->setAttribute (Qt::WA_DeleteOnClose);
-				widget->setWindowModality (Qt::ApplicationModal);
-				connect (widget,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				connect (widget,
-						SIGNAL (titleChanged (const QString&)),
-						widget,
-						SLOT (setWindowTitle (const QString&)));
-				widget->show ();
-				return widget->GetView ()->page ();
-			}
+		{
+			BrowserWidget *widget = new BrowserWidget (view ());
+			widget->FinalizeInit ();
+			widget->setWindowFlags (Qt::Dialog);
+			widget->setAttribute (Qt::WA_DeleteOnClose);
+			widget->setWindowModality (Qt::ApplicationModal);
+			connect (widget,
+					SIGNAL (gotEntity (const LeechCraft::Entity&)),
+					&Core::Instance (),
+					SIGNAL (gotEntity (const LeechCraft::Entity&)));
+			connect (widget,
+					SIGNAL (titleChanged (const QString&)),
+					widget,
+					SLOT (setWindowTitle (const QString&)));
+			widget->show ();
+			return widget->GetView ()->page ();
+		}
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"

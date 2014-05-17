@@ -38,7 +38,7 @@
 #include <QListWidget>
 #include <QTabBar>
 #include <QMessageBox>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
@@ -202,6 +202,11 @@ namespace LMP
 	QString PlayerTab::GetTabRecoverName () const
 	{
 		return "LMP";
+	}
+
+	void PlayerTab::AddNPTab (const QString& tabName, QWidget *widget)
+	{
+		Ui_.NPWidget_->AddTab (tabName, widget);
 	}
 
 	void PlayerTab::InitWithOtherPlugins ()
@@ -519,14 +524,18 @@ namespace LMP
 		template<typename T>
 		void UpdateIcon (T iconable, SourceState state, std::function<QSize (T)> iconSizeGetter)
 		{
+			const QSize& iconSize = iconSizeGetter (iconable);
+			if (iconSize.isEmpty ())
+				return;
+
 			QIcon icon = GetIconFromState (state);
-			QIcon baseIcon = icon.isNull() ?
+			QIcon baseIcon = icon.isNull () ?
 				QIcon ("lcicons:/lmp/resources/images/lmp.svg") :
 				iconable->icon ();
 
-			const QSize& iconSize = iconSizeGetter (iconable);
-
 			QPixmap px = baseIcon.pixmap (iconSize);
+			if (px.isNull ())
+				px = QPixmap (iconSize);
 
 			if (!icon.isNull ())
 			{

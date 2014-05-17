@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_STRUCTURES_H
-#define INTERFACES_STRUCTURES_H
+#pragma once
+
 #include <memory>
 #include <QPointer>
 #include <QMetaType>
@@ -38,7 +38,6 @@
 #include <QToolBar>
 #include <QMenu>
 #include <QtDebug>
-#include <util/idpool.h>
 
 class QMenu;
 class QIODevice;
@@ -156,8 +155,6 @@ namespace LeechCraft
 	 */
 	struct Entity
 	{
-		qint64 ID_;
-
 		/** @brief The entity that this object represents.
 		 *
 		 * In the context of entity delegation it represents the entity
@@ -227,11 +224,7 @@ namespace LeechCraft
 		 */
 		QMap<QString, QVariant> Additional_;
 
-		Entity ()
-		: ID_ (IDPool_.GetID ())
-		{}
-	protected:
-		UTIL_API static Util::IDPool<qint64> IDPool_;
+		Entity () {}
 	};
 
 	/** This enumeration describes the additional roles that may be
@@ -300,5 +293,3 @@ Q_DECLARE_METATYPE (QObject_ptr);
 Q_DECLARE_METATYPE (QPointer<QObject*>);
 Q_DECLARE_METATYPE (LeechCraft::TaskParameters);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
-
-#endif

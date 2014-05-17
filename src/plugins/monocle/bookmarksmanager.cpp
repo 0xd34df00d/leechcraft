@@ -32,6 +32,7 @@
 #include <QFileInfo>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "bookmark.h"
 
 namespace LeechCraft

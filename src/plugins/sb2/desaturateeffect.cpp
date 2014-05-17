@@ -49,10 +49,10 @@ namespace SB2
 
 	void DesaturateEffect::SetStrength (qreal strength)
 	{
-		if (std::fabs (strength - Strength_) < std::numeric_limits<qreal>::epsilon ())
+		if (std::fabs (static_cast<float> (strength) - Strength_) < std::numeric_limits<qreal>::epsilon ())
 			return;
 
-		Strength_ = strength;
+		Strength_ = static_cast<float> (strength);
 		emit strengthChanged ();
 
 		update ();
@@ -60,32 +60,44 @@ namespace SB2
 
 	void DesaturateEffect::draw (QPainter *painter)
 	{
-		QPoint offset;
-		auto px = sourcePixmap (Qt::DeviceCoordinates, &offset);
-
-		const auto restoreTransform = painter->worldTransform ();
-		painter->setWorldTransform (QTransform ());
-
-		if (std::fabs (Strength_) >= std::numeric_limits<qreal>::epsilon ())
+		if (std::fabs (Strength_) < 0.001)
 		{
-			auto img = px.toImage ();
-			for (int y = 0; y < img.height (); ++y)
-				for (int x = 0; x < img.width (); ++x)
-				{
-					const auto color = img.pixel (x, y);
-					const auto grayPart = qGray (color) * Strength_;
-					const auto r = qRed (color) * (1 - Strength_) + grayPart;
-					const auto g = qGreen (color) * (1 - Strength_) + grayPart;
-					const auto b = qBlue (color) * (1 - Strength_) + grayPart;
-					img.setPixel (x, y, qRgba (r, g, b, qAlpha (color)));
-				}
-
-			painter->drawImage (offset, img);
+			drawSource (painter);
+			return;
 		}
-		else
-			painter->drawPixmap (offset, px);
 
-		painter->setWorldTransform (restoreTransform);
+		QPoint offset;
+		const auto& px = sourcePixmap (Qt::LogicalCoordinates, &offset);
+
+		auto img = px.toImage ();
+		switch (img.format ())
+		{
+		case QImage::Format_ARGB32:
+		case QImage::Format_ARGB32_Premultiplied:
+			break;
+		default:
+			img = img.convertToFormat (QImage::Format_ARGB32);
+			break;
+		}
+		img.detach ();
+
+		const auto height = img.height ();
+		const auto width = img.width ();
+		for (int y = 0; y < height; ++y)
+		{
+			const auto scanline = reinterpret_cast<QRgb*> (img.scanLine (y));
+			for (int x = 0; x < width; ++x)
+			{
+				auto& color = scanline [x];
+				const auto grayPart = qGray (color) * Strength_;
+				const auto r = qRed (color) * (1 - Strength_) + grayPart;
+				const auto g = qGreen (color) * (1 - Strength_) + grayPart;
+				const auto b = qBlue (color) * (1 - Strength_) + grayPart;
+				color = qRgba (r, g, b, qAlpha (color));
+			}
+		}
+
+		painter->drawImage (offset, img);
 	}
 }
 }

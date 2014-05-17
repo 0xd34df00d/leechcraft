@@ -31,7 +31,9 @@
 #include <algorithm>
 #include <QSslSocket>
 #include <QTcpServer>
-#include <util/util.h>
+#include <QDir>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include "core.h"
 #include "msnaccount.h"
 #include "zheetutil.h"

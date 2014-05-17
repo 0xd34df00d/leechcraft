@@ -31,7 +31,7 @@
 #include "kopeteemoticonssource.h"
 #include <QtDebug>
 #include <QDomComment>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 
 namespace LeechCraft
 {

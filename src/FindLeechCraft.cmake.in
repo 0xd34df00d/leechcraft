@@ -6,9 +6,46 @@ find_path(LEECHCRAFT_INCLUDE_DIR NAMES leechcraft/config.h PATH ENV)
 if (LEECHCRAFT_INCLUDE_DIR)
 	set (LEECHCRAFT_INCLUDE_DIR "${LEECHCRAFT_INCLUDE_DIR}/leechcraft")
 endif ()
+
 find_library(_LEECHCRAFT_UTIL NAMES leechcraft-util)
+find_library(_LEECHCRAFT_UTIL_DB NAMES leechcraft-util-db)
+find_library(_LEECHCRAFT_UTIL_GUI NAMES leechcraft-util-gui)
+find_library(_LEECHCRAFT_UTIL_MODELS NAMES leechcraft-util-models)
+find_library(_LEECHCRAFT_UTIL_NETWORK NAMES leechcraft-util-network)
+find_library(_LEECHCRAFT_UTIL_QML NAMES leechcraft-util-qml)
+find_library(_LEECHCRAFT_UTIL_SHORTCUTS NAMES leechcraft-util-shortcuts)
+find_library(_LEECHCRAFT_UTIL_SLL NAMES leechcraft-util-sll)
+find_library(_LEECHCRAFT_UTIL_SVCAUTH NAMES leechcraft-util-svcauth)
+find_library(_LEECHCRAFT_UTIL_SYS NAMES leechcraft-util-sys)
+find_library(_LEECHCRAFT_UTIL_TAGS NAMES leechcraft-util-tags)
+find_library(_LEECHCRAFT_UTIL_XDG NAMES leechcraft-util-xdg)
+find_library(_LEECHCRAFT_UTIL_XPC NAMES leechcraft-util-xpc)
+find_library(_LEECHCRAFT_UTIL_XSD NAMES leechcraft-util-xsd)
+
+find_library(_LEECHCRAFT_UTIL_X11_OPT NAMES leechcraft-util-x11)
+set (_LEECHCRAFT_UTIL_X11)
+if (_LEECHCRAFT_UTIL_X11_OPT)
+	set (_LEECHCRAFT_UTIL_X11 "${_LEECHCRAFT_UTIL_X11_OPT}")
+endif ()
+
 find_library(_LEECHCRAFT_XSD NAMES leechcraft-xsd)
-set (LEECHCRAFT_LIBRARIES ${_LEECHCRAFT_UTIL} ${_LEECHCRAFT_XSD})
+set (LEECHCRAFT_LIBRARIES
+	${_LEECHCRAFT_UTIL}
+	${_LEECHCRAFT_UTIL_DB}
+	${_LEECHCRAFT_UTIL_GUI}
+	${_LEECHCRAFT_UTIL_MODELS}
+	${_LEECHCRAFT_UTIL_NETWORK}
+	${_LEECHCRAFT_UTIL_QML}
+	${_LEECHCRAFT_UTIL_SHORTCUTS}
+	${_LEECHCRAFT_UTIL_SLL}
+	${_LEECHCRAFT_UTIL_SVCAUTH}
+	${_LEECHCRAFT_UTIL_SYS}
+	${_LEECHCRAFT_UTIL_TAGS}
+	${_LEECHCRAFT_UTIL_X11}
+	${_LEECHCRAFT_UTIL_XDG}
+	${_LEECHCRAFT_UTIL_XPC}
+	${_LEECHCRAFT_UTIL_XSD}
+	${_LEECHCRAFT_XSD})
 set (LEECHCRAFT_USE_FILE "${CMAKE_MODULE_PATH}/UseLeechCraft.cmake")
 
 if(LEECHCRAFT_INCLUDE_DIR AND _LEECHCRAFT_UTIL AND _LEECHCRAFT_XSD)

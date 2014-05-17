@@ -28,7 +28,8 @@
  **********************************************************************/
 
 #include "syncmanagerbase.h"
-#include <util/util.h>
+#include <QFileInfo>
+#include <util/xpc/util.h>
 #include "transcodemanager.h"
 #include "../core.h"
 

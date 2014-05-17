@@ -32,7 +32,7 @@
 #include <QDomDocument>
 #include <QDateTime>
 #include <QDir>
-#include <util/util.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {

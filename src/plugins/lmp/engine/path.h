@@ -30,13 +30,13 @@
 #pragma once
 
 #include <QObject>
+#include "sourceobject.h"
 #include "interfaces/lmp/ipath.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class SourceObject;
 	class Output;
 
 	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
@@ -81,13 +81,15 @@ namespace LMP
 
 		SourceObject* GetSourceObject () const;
 
-		void AddSyncHandler (const SyncHandler_f&);
-		void AddAsyncHandler (const AsyncHandler_f&);
+		void AddSyncHandler (const SyncHandler_f&, QObject*);
+		void AddAsyncHandler (const AsyncHandler_f&, QObject*);
 
 		void InsertElement (GstElement*);
 		void RemoveElement (GstElement*);
 
 		void FinalizeAction ();
+
+		void PerformWProbe (const std::function<void ()>&);
 	private:
 		void RotateQueue ();
 	};

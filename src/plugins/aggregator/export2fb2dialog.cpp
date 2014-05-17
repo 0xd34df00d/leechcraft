@@ -39,7 +39,7 @@
 #include <QTextCursor>
 #include <QPrinter>
 #include <interfaces/structures.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/tags/categoryselector.h>
 #include "core.h"
 #include "channelsmodel.h"

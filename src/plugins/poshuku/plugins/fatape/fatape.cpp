@@ -36,6 +36,7 @@
 #include <QStringList>
 #include <QTranslator>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"

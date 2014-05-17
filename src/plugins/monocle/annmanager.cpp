@@ -56,6 +56,8 @@ namespace Monocle
 
 		Ann2Item_.clear ();
 		Ann2GraphicsItem_.clear ();
+		Annotations_.clear ();
+		CurrentAnn_ = -1;
 
 		const auto isa = qobject_cast<ISupportAnnotations*> (doc->GetQObject ());
 		if (!isa)
@@ -87,13 +89,13 @@ namespace Monocle
 					continue;
 				}
 
+				Annotations_ << ann;
+
 				Ann2GraphicsItem_ [ann] = item;
 
 				item->SetHandler ([this] (const IAnnotation_ptr& ann) -> void
 						{
-							if (const auto item = Ann2Item_ [ann])
-								emit annotationSelected (item->index ());
-
+							EmitSelected (ann);
 							SelectAnnotation (ann);
 						});
 
@@ -111,6 +113,7 @@ namespace Monocle
 				auto annItem = new QStandardItem (ann->GetText ());
 				annItem->setToolTip (ann->GetText ());
 				annItem->setEditable (false);
+				annItem->setData (QVariant::fromValue (ann), Role::Annotation);
 				annItem->setData (ItemTypes::AnnHeaderItem, Role::ItemType);
 
 				auto subItem = new QStandardItem (ann->GetText ());
@@ -133,6 +136,23 @@ namespace Monocle
 		return AnnModel_;
 	}
 
+	void AnnManager::EmitSelected (const IAnnotation_ptr& ann)
+	{
+		if (const auto item = Ann2Item_ [ann])
+			emit annotationSelected (item->index ());
+	}
+
+	void AnnManager::CenterOn (const IAnnotation_ptr& ann)
+	{
+		const auto item = Ann2GraphicsItem_.value (ann);
+		if (!item)
+			return;
+
+		const auto graphicsItem = item->GetItem ();
+		const auto& mapped = graphicsItem->scenePos ();
+		View_->SmoothCenterOn (mapped.x (), mapped.y ());
+	}
+
 	void AnnManager::SelectAnnotation (const IAnnotation_ptr& ann)
 	{
 		const auto modelItem = Ann2Item_ [ann];
@@ -151,6 +171,37 @@ namespace Monocle
 			}
 
 		graphicsItem->SetSelected (true);
+		CurrentAnn_ = Annotations_.indexOf (ann);
+	}
+
+	void AnnManager::selectPrev ()
+	{
+		if (CurrentAnn_ == -1 || Annotations_.size () < 2)
+			return;
+
+		if (--CurrentAnn_ < 0)
+			CurrentAnn_ = Annotations_.size () - 1;
+
+		const auto& ann = Annotations_.at (CurrentAnn_);
+
+		EmitSelected (ann);
+		CenterOn (ann);
+		SelectAnnotation (ann);
+	}
+
+	void AnnManager::selectNext ()
+	{
+		if (CurrentAnn_ == -1 || Annotations_.size () < 2)
+			return;
+
+		if (++CurrentAnn_ >= Annotations_.size ())
+			CurrentAnn_ = 0;
+
+		const auto& ann = Annotations_.at (CurrentAnn_);
+
+		EmitSelected (ann);
+		CenterOn (ann);
+		SelectAnnotation (ann);
 	}
 
 	void AnnManager::selectAnnotation (const QModelIndex& idx)
@@ -162,14 +213,7 @@ namespace Monocle
 		if (!ann)
 			return;
 
-		const auto item = Ann2GraphicsItem_.value (ann);
-		if (!item)
-			return;
-
-		const auto graphicsItem = item->GetItem ();
-		const auto& mapped = graphicsItem->scenePos ();
-		View_->SmoothCenterOn (mapped.x (), mapped.y ());
-
+		CenterOn (ann);
 		SelectAnnotation (ann);
 	}
 }

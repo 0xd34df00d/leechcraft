@@ -51,6 +51,7 @@
 #endif
 
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -708,14 +709,10 @@ namespace LHTR
 
 	QString RichEditorWidget::ExpandCustomTags (QString html) const
 	{
+		TryFixHTML (html);
+		html.remove ('\n');
+
 		QDomDocument doc;
-#ifdef WITH_HTMLTIDY
-		if (!doc.setContent (html))
-		{
-			TryFixHTML (html);
-			html.remove ('\n');
-		}
-#endif
 		if (!doc.setContent (html))
 		{
 			qWarning () << Q_FUNC_INFO

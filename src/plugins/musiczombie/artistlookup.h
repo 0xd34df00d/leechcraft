@@ -40,6 +40,8 @@ namespace MusicZombie
 	class ArtistLookup : public QObject
 	{
 		Q_OBJECT
+
+		const QString Name_;
 	public:
 		ArtistLookup (const QString&, QNetworkAccessManager*, QObject* = 0);
 	private slots:

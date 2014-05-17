@@ -31,6 +31,7 @@
 #include <QTimer>
 #include <QIcon>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/azoth/iclentry.h>

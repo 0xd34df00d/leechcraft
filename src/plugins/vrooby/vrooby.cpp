@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QAction>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
 

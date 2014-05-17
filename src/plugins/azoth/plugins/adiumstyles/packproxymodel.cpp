@@ -29,7 +29,7 @@
 
 #include "packproxymodel.h"
 #include <QtDebug>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 
 namespace LeechCraft
 {

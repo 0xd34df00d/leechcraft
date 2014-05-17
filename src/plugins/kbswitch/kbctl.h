@@ -56,7 +56,7 @@ namespace KBSwitch
 		bool ExtWM_ = false;
 
 		QStringList Groups_;
-		QHash<QString, QString> Variants_;
+		QStringList Variants_;
 
 		QStringList Options_;
 
@@ -90,8 +90,8 @@ namespace KBSwitch
 
 		const QStringList& GetEnabledGroups () const;
 		void SetEnabledGroups (QStringList);
-		QString GetGroupVariant (const QString&) const;
-		void SetGroupVariants (const QHash<QString, QString>&);
+		QString GetGroupVariant (int) const;
+		void SetGroupVariants (const QStringList&);
 		void EnableNextGroup ();
 		void EnableGroup (int);
 
