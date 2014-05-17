@@ -36,11 +36,6 @@
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class TagsLineEdit;
-};
-
 namespace Plugins
 {
 namespace BitTorrent

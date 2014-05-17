@@ -156,7 +156,7 @@ namespace BitTorrent
 		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
 
 		QStringList result;
-		Q_FOREACH (const auto& tag, tm->Split (TagsEdit_->text ()))
+		for (const auto& tag : tm->Split (TagsEdit_->text ()))
 			result << tm->GetID (tag);
 		return result;
 	}
