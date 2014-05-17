@@ -67,9 +67,6 @@ namespace BitTorrent
 				this,
 				SLOT (updateAvailableSpace ()));
 
-		QString dir = XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
-		Destination_->setText (dir);
-
 		QFontMetrics fm = fontMetrics ();
 		QHeaderView *header = FilesView_->header ();
 		header->resizeSection (0, fm.width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
@@ -85,6 +82,10 @@ namespace BitTorrent
 		Creator_->setText (tr ("<unknown>"));
 		Comment_->setText (tr ("<unknown>"));
 		Date_->setText (tr ("<unknown>"));
+
+		const auto& dir = XmlSettingsManager::Instance ()->
+				property ("LastSaveDirectory").toString ();
+		Destination_->setText (dir);
 
 		updateAvailableSpace ();
 	}
@@ -212,7 +213,7 @@ namespace BitTorrent
 
 	void AddTorrent::on_DestinationBrowse__released ()
 	{
-		QString dir = QFileDialog::getExistingDirectory (this,
+		const auto& dir = QFileDialog::getExistingDirectory (this,
 				tr ("Select save directory"),
 				Destination_->text (),
 				0);
