@@ -190,12 +190,18 @@ namespace HttStream
 
 	void HttpStreamFilter::HandleFirstClientConnected ()
 	{
+		const auto source = Path_->GetSourceObject ();
+		StateOnFirst_ = source->GetState ();
 		CreatePad ();
+			source->SetState (SourceState::Playing);
 	}
 
 	void HttpStreamFilter::HandleLastClientDisconnected ()
 	{
 		DestroyPad ();
+
+		if (StateOnFirst_ != SourceState::Playing)
+			Path_->GetSourceObject ()->SetState (SourceState::Paused);
 	}
 
 	int HttpStreamFilter::HandleError (GstMessage *msg)

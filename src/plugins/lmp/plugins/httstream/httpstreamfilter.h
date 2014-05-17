@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include "interfaces/lmp/ifilterelement.h"
+#include "interfaces/lmp/isourceobject.h"
 
 typedef struct _GstPad GstPad;
 typedef struct _GstMessage GstMessage;
@@ -77,6 +78,8 @@ namespace HttStream
 		GstPad *TeeStreamPad_ = nullptr;
 
 		int ClientsCount_ = 0;
+
+		SourceState StateOnFirst_ = SourceState::Error;
 	public:
 		HttpStreamFilter (const QByteArray& filterId,
 				const QByteArray& instanceId, IPath *path);
