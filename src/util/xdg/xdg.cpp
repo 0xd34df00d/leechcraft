@@ -47,14 +47,30 @@ namespace XDG
 		const auto prefixes
 		{
 			"/usr/share/pixmaps/",
-			"/usr/local/share/pixmaps/",
-			"/usr/share/icons/hicolor/",
-			"/usr/local/share/icons/hicolor/"
+			"/usr/local/share/pixmaps/"
 		};
+
+		const auto sizes { "192", "128", "96", "72", "64", "48", "36", "32" };
+		const QStringList themes
+		{
+			"/usr/local/share/icons/hicolor/",
+			"/usr/share/icons/hicolor/"
+		};
+
 		for (auto ext : { ".png", ".svg", ".xpm", ".jpg", "" })
+		{
 			for (auto prefix : prefixes)
 				if (QFile::exists (prefix + name + ext))
 					return { prefix + name + ext };
+
+			for (auto themeDir : themes)
+				for (const auto& size : sizes)
+				{
+					const auto& str = themeDir + size + 'x' + size + "/apps/" + name + ext;
+					if (QFile::exists (str))
+						return { str };
+				}
+		}
 
 		return {};
 	}

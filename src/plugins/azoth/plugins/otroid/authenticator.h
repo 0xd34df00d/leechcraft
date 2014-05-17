@@ -53,12 +53,18 @@ namespace OTRoid
 		Q_OBJECT
 
 		ICLEntry * const Entry_;
+		const QString HrId_;
+		const QString Name_;
 	public:
 		Authenticator (ICLEntry*);
 		~Authenticator ();
 
 		void AskFor (SmpMethod, const QString&, ConnContext*);
 		void Initiate ();
+
+		void Failed ();
+		void Cheated ();
+		void Success ();
 	signals:
 		void gotReply (SmpMethod, const QString&, ConnContext*);
 		void abortSmp (ConnContext*);

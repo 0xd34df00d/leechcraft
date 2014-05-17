@@ -30,7 +30,7 @@
 #include "stdartistactionsmanager.h"
 #include <QDeclarativeView>
 #include <QGraphicsObject>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "previewhandler.h"
 

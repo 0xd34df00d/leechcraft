@@ -37,7 +37,7 @@
 #include <QtConcurrentRun>
 #include <QTimer>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"

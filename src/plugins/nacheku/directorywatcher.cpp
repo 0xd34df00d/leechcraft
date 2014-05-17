@@ -31,7 +31,7 @@
 #include <QDir>
 #include <QTimer>
 #include <QUrl>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

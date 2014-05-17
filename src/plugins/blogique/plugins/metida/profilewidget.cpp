@@ -32,7 +32,10 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QStandardItemModel>
+#include <QDir>
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "ljprofile.h"
@@ -178,7 +181,7 @@ namespace Metida
 
 		Ui_.JournalName_->setText (data.FullName_);
 		IAccount *acc = qobject_cast<IAccount*> (Profile_->GetParentAccount ());
-		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
+		const QString& path = Util::GetUserDir (Util::UserDir::Cache, "blogique/metida/avatars")
 				.absoluteFilePath (acc->GetAccountID ().toBase64 ().replace ('/', '_'));
 		Ui_.JournalPic_->setPixmap (QPixmap (path));
 		ReFillModels ();

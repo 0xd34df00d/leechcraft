@@ -60,6 +60,7 @@ namespace AdvancedNotifications
 		virtual void Load (const QVariantMap&) = 0;
 
 		virtual void SetValue (const ANFieldValue&) = 0;
+		virtual ANFieldValue GetValue () const = 0;
 
 		virtual bool Match (const QVariant&) const = 0;
 
@@ -82,6 +83,7 @@ namespace AdvancedNotifications
 		void Load (const QVariantMap&);
 
 		void SetValue (const ANFieldValue&);
+		ANFieldValue GetValue () const;
 
 		QWidget* GetConfigWidget ();
 		void SyncToWidget ();
@@ -130,6 +132,7 @@ namespace AdvancedNotifications
 		void Load (const QVariantMap&);
 
 		void SetValue (const ANFieldValue&);
+		ANFieldValue GetValue () const;
 
 		bool Match (const QVariant&) const;
 

@@ -32,7 +32,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/iplugin2.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include "generalhandler.h"
@@ -77,6 +77,11 @@ namespace AdvancedNotifications
 		Component_->StaticProps_.push_back ({ "AN_quarkTooltip", tr ("Toggle Advanced Notifications rules...") });
 		Component_->DynamicProps_.push_back ({ "AN_rulesManager", Core::Instance ().GetRulesManager () });
 		Component_->DynamicProps_.push_back ({ "AN_proxy", new QuarkProxy });
+
+		connect (Core::Instance ().GetRulesManager (),
+				SIGNAL (rulesChanged ()),
+				this,
+				SIGNAL (rulesChanged ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -163,6 +168,16 @@ namespace AdvancedNotifications
 			for (const auto& handler : inbp->GetNotificationHandlers ())
 				GeneralHandler_->RegisterHandler (handler);
 		}
+	}
+
+	QList<Entity> Plugin::GetAllRules (const QString& category) const
+	{
+		return Core::Instance ().GetRulesManager ()->GetAllRules (category);
+	}
+
+	void Plugin::RequestRuleConfiguration (const Entity& rule)
+	{
+		Core::Instance ().GetRulesManager ()->SuggestRuleConfiguration (rule);
 	}
 }
 }

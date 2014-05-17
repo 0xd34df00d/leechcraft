@@ -42,7 +42,7 @@
 #include <util/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/delayedexecutor.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -1490,11 +1490,7 @@ namespace Azoth
 				{
 					{
 						"org.LC.Plugins.Azoth.SourceID",
-						ANStringFieldValue
-						{
-							QRegExp { entry->GetEntryID (), Qt::CaseSensitive, QRegExp::FixedString },
-							true
-						}
+						ANStringFieldValue { entry->GetEntryID () }
 					}
 				});
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);

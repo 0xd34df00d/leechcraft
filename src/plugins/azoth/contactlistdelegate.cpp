@@ -34,7 +34,7 @@
 #include <QApplication>
 #include <QAbstractProxyModel>
 #include <QTreeView>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/isupportgeolocation.h"

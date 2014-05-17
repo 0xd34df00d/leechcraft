@@ -40,6 +40,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "greasemonkey.h"
 #include "resourcedownloadhandler.h"
 

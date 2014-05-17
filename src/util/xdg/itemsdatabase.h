@@ -39,7 +39,7 @@ namespace Util
 {
 namespace XDG
 {
-	class UTIL_API ItemsDatabase : public ItemsFinder
+	class UTIL_XDG_API ItemsDatabase : public ItemsFinder
 	{
 		Q_OBJECT
 

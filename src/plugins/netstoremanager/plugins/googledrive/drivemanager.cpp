@@ -36,6 +36,7 @@
 #include <QMainWindow>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/sys/mimedetector.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>

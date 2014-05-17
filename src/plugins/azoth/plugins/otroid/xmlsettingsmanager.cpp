@@ -27,52 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QVariantList>
-#include <QModelIndexList>
-#include <util/utilconfig.h>
-
-class QHostAddress;
-class QStandardItemModel;
-class QStandardItem;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Util
+namespace Azoth
 {
-	class BaseSettingsManager;
-
-	typedef QList<QPair<QString, QString>> AddrList_t;
-
-	class UTIL_API AddressesModelManager : public QObject
+namespace OTRoid
+{
+	XmlSettingsManager::XmlSettingsManager ()
+	: Util::BaseSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-		QStandardItemModel * const Model_;
-		BaseSettingsManager * const BSM_;
-	public:
-		AddressesModelManager (BaseSettingsManager*, int defaultPort, QObject* = 0);
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
 
-		static void RegisterTypes ();
-		static AddrList_t GetLocalAddresses (int defaultPort = 0);
-		static QList<QHostAddress> GetAllAddresses ();
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		return new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () +
+					"_Azoth_OTRoid");
+	}
 
-		QAbstractItemModel* GetModel () const;
-		AddrList_t GetAddresses () const;
-	private:
-		void SaveSettings () const;
-		void AppendRow (const QPair<QString, QString>&);
-	private Q_SLOTS:
-		void updateAvailInterfaces ();
-	public Q_SLOTS:
-		void addRequested (const QString&, const QVariantList&);
-		void removeRequested (const QString&, const QModelIndexList&);
-	Q_SIGNALS:
-		void addressesChanged ();
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Util::AddrList_t)
+}

@@ -47,7 +47,7 @@
 #include <QInputDialog>
 #include <QMimeData>
 #include <QNetworkCookie>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/network/customcookiejar.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>

@@ -33,7 +33,7 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <QStyleFactory>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sys/paths.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>

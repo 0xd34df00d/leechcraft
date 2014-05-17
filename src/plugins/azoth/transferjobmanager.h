@@ -62,6 +62,7 @@ namespace Azoth
 		ObjectDictionary_t Object2Progress_;
 
 		QHash<QString, QObjectList> Entry2Incoming_;
+		QHash<ITransferJob*, QString> Job2SavePath_;
 
 		QModelIndex Selected_;
 		QToolBar *ReprBar_;
@@ -82,6 +83,8 @@ namespace Azoth
 	private:
 		QString CheckSavePath (QString);
 		void HandleDeoffer (QObject*);
+
+		void HandleTaskFinished (ITransferJob*);
 	private slots:
 		void handleFileOffered (QObject*);
 		void handleXferError (TransferError, const QString&);

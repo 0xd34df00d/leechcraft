@@ -29,10 +29,10 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
 #include <interfaces/structures.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/ianemitter.h>
+#include "xpcconfig.h"
 
 class IEntityManager;
 
@@ -78,13 +78,13 @@ namespace Util
 	 *
 	 * @sa MakeANCancel()
 	 */
-	UTIL_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
+	UTIL_XPC_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QString& senderID, const QString& cat, const QString& type,
 			const QString& id, const QStringList& visualPath,
 			int delta = 1, int count = 0,
 			const QString& fullText = QString (), const QString& extendedText = QString ());
 
-	UTIL_API Entity MakeANRule (const QString& title,
+	UTIL_XPC_API Entity MakeANRule (const QString& title,
 			const QString& senderID, const QString& cat, const QStringList& types,
 			AN::NotifyFlags = AN::NotifyNone,
 			const QList<QPair<QString, ANFieldValue>>& fields = {});
@@ -104,6 +104,87 @@ namespace Util
 	 * @param[in] manager The manager used to get the plugins.
 	 * @return The list of data filters that can handle \em data.
 	 */
-	UTIL_API QList<QObject*> GetDataFilters (const QVariant& data, IEntityManager *manager);
+	UTIL_XPC_API QList<QObject*> GetDataFilters (const QVariant& data, IEntityManager *manager);
+
+	/** @brief An utility function to make a Entity.
+	 *
+	 * Creates a Entity that wraps the given entity from
+	 * given location with parameterrs identified by tp and given
+	 * mime type (which is null by default).
+	 *
+	 * This function is provided for convenience and is equivalent
+	 * to manually filling the Entity.
+	 *
+	 * @param[in] entity The Entity_ field of the Entity.
+	 * @param[in] location The Location_ field of the Entity.
+	 * @param[in] tp The Params_ field of the Entity.
+	 * @param[in] mime The Mime_ field of the Entity.
+	 * @return The resulting Entity.
+	 *
+	 * @sa Entity, MakeNotification()
+	 */
+	UTIL_XPC_API Entity MakeEntity (const QVariant& entity,
+			const QString& location,
+			LeechCraft::TaskParameters tp,
+			const QString& mime = QString ());
+
+	/** @brief An utility function to make a Entity with
+	 * notification.
+	 *
+	 * Creates a Entity that holds information about
+	 * user-visible notification. These notifications have
+	 * "x-leechcraft/notification" MIME.
+	 *
+	 * You can further customize the returned Entity to suit
+	 * your exact needs. See the documentation for Entity
+	 * about such entities.
+	 *
+	 * @param[in] header The header of the notification.
+	 * @param[in] text The text of the notification.
+	 * @param[in] priority The priority level of the notification.
+	 * @return The Entity containing the corresponding
+	 * notification.
+	 *
+	 * @sa Entity, MakeEntity()
+	 */
+	UTIL_XPC_API Entity MakeNotification (const QString& header,
+			const QString& text,
+			Priority priority);
+
+	/** @brief Makes an event for canceling another Advanced
+	 * Notifications event.
+	 *
+	 * Creates an Entity that cancels a previously generated
+	 * Advanced Notifications event. The returned entity can be
+	 * then emitted to notify plugins that the given event has been
+	 * canceled.
+	 *
+	 * @param[in] event The event to cancel.
+	 * @return The Entity canceling the given event.
+	 */
+	UTIL_XPC_API Entity MakeANCancel (const Entity& event);
+
+	/** @brief Makes an event for canceling another Advanced
+	 * Notifications event.
+	 *
+	 * Creates an Entity that cancels a previously generated
+	 * Advanced Notifications event. The returned entity can be
+	 * then emitted to notify plugins that the given event has been
+	 * canceled.
+	 *
+	 * This function doesn't take a previously created entity as the
+	 * other overload does. Instead, it plainly creates the required
+	 * entity from the given senderId and eventId. They should match
+	 * those of the event in question.
+	 *
+	 * @param[in] senderId The ID of the sender of the event that is
+	 * to be canceled.
+	 * @param[in] eventId The ID of the event that is to be canceled.
+	 * @return The Entity canceling the given event.
+	 */
+	UTIL_XPC_API Entity MakeANCancel (const QString& senderId, const QString& eventId);
+
+	UTIL_XPC_API QVariantList GetPersistentData (const QList<QVariant>& keys,
+			QObject *object);
 }
 }

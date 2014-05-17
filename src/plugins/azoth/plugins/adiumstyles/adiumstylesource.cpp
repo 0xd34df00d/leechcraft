@@ -32,7 +32,7 @@
 #include <QWebElement>
 #include <QWebFrame>
 #include <QtDebug>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/imessage.h>

@@ -37,7 +37,6 @@
 #include <QLocale>
 #include <QFile>
 #include <QDir>
-#include <QTemporaryFile>
 #include <QTime>
 #include <QSettings>
 #include <QTextCodec>
@@ -48,9 +47,6 @@
 #include <QtDebug>
 
 Q_DECLARE_METATYPE (QList<QModelIndex>);
-Q_DECLARE_METATYPE (QVariantList*);
-
-UTIL_API LeechCraft::Util::IDPool<qint64> LeechCraft::Entity::IDPool_;
 
 QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
 {
@@ -261,95 +257,6 @@ QString LeechCraft::Util::GetLanguage ()
 	return GetLocaleName ().left (2);
 }
 
-QDir LeechCraft::Util::CreateIfNotExists (const QString& opath)
-{
-	QString path = opath;
-
-	QDir home = QDir::home ();
-	path.prepend (".leechcraft/");
-
-	if (!home.exists (path) &&
-			!home.mkpath (path))
-		throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
-					.arg (QDir::toNativeSeparators (home.filePath (path)))));
-
-	if (home.cd (path))
-		return home;
-	else
-		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
-					.arg (QDir::toNativeSeparators (home.filePath (path)))));
-}
-
-QDir LeechCraft::Util::GetUserDir (const QString& opath)
-{
-	QString path = opath;
-	QDir home = QDir::home ();
-	path.prepend (".leechcraft/");
-
-	if (!home.exists (path))
-		throw std::runtime_error (qPrintable (QString ("The specified path doesn't exist: %1")
-					.arg (QDir::toNativeSeparators (home.filePath (path)))));
-
-	if (home.cd (path))
-		return home;
-	else
-		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
-		.arg (QDir::toNativeSeparators (home.filePath (path)))));
-}
-
-QString LeechCraft::Util::GetTemporaryName (const QString& pattern)
-{
-	QTemporaryFile file (QDir::tempPath () + "/" + pattern);
-	file.open ();
-	QString name = file.fileName ();
-	file.close ();
-	file.remove ();
-	return name;
-}
-
-LeechCraft::Entity LeechCraft::Util::MakeEntity (const QVariant& entity,
-		const QString& location,
-		LeechCraft::TaskParameters tp,
-		const QString& mime)
-{
-	Entity result;
-	result.Entity_ = entity;
-	result.Location_ = location;
-	result.Parameters_ = tp;
-	result.Mime_ = mime;
-	return result;
-}
-
-LeechCraft::Entity LeechCraft::Util::MakeNotification (const QString& header,
-		const QString& text, Priority priority)
-{
-	Entity result = MakeEntity (header,
-			QString (),
-			AutoAccept | OnlyHandle,
-			"x-leechcraft/notification");
-	result.Additional_ ["Text"] = text;
-	result.Additional_ ["Priority"] = priority;
-	return result;
-}
-
-LeechCraft::Entity LeechCraft::Util::MakeANCancel (const LeechCraft::Entity& event)
-{
-	Entity e = MakeNotification (event.Entity_.toString (), QString (), PInfo_);
-	e.Additional_ ["org.LC.AdvNotifications.SenderID"] = event.Additional_ ["org.LC.AdvNotifications.SenderID"];
-	e.Additional_ ["org.LC.AdvNotifications.EventID"] = event.Additional_ ["org.LC.AdvNotifications.EventID"];
-	e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
-	return e;
-}
-
-LeechCraft::Entity LeechCraft::Util::MakeANCancel (const QString& senderId, const QString& eventId)
-{
-	Entity e = MakeNotification (QString (), QString (), PInfo_);
-	e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderId;
-	e.Additional_ ["org.LC.AdvNotifications.EventID"] = eventId;
-	e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
-	return e;
-}
-
 QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
 {
 	QAction *senderAct = qobject_cast<QAction*> (sender);
@@ -373,25 +280,6 @@ QAction* LeechCraft::Util::CreateSeparator (QObject *parent)
 	QAction *result = new QAction (parent);
 	result->setSeparator (true);
 	return result;
-}
-
-QVariantList LeechCraft::Util::GetPersistentData (const QList<QVariant>& keys,
-		QObject* object)
-{
-	Entity e = MakeEntity (keys,
-			QString (),
-			Internal,
-			"x-leechcraft/data-persistent-load");
-	QVariantList values;
-	e.Additional_ ["Values"] = QVariant::fromValue<QVariantList*> (&values);
-
-	QMetaObject::invokeMethod (object,
-			"delegateEntity",
-			Q_ARG (LeechCraft::Entity, e),
-			Q_ARG (int*, 0),
-			Q_ARG (QObject**, 0));
-
-	return values;
 }
 
 QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px,

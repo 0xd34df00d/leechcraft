@@ -31,7 +31,7 @@
 #include <QString>
 #include <QObject>
 #include <QInputDialog>
-#include "../util.h"
+#include <util/xpc/util.h>
 #include "interfaces/structures.h"
 
 namespace LeechCraft

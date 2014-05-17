@@ -35,7 +35,7 @@
 #include <QSettings>
 #include <QUrl>
 #include <QMap>
-#include <util/util.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {

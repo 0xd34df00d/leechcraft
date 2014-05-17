@@ -12,10 +12,6 @@ set (SRCS
 	choroid.cpp
 	choroidtab.cpp
 	)
-set (HEADERS
-	choroid.h
-	choroidtab.h
-	)
 set (FORMS
 	choroidtab.ui
 	)
@@ -27,9 +23,6 @@ set (FORMS
 #	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_choroid_ru_RU.qm
 #	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_choroid_en.qm
 #	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 
 #add_custom_command (OUTPUT
@@ -41,7 +34,6 @@ QT4_WRAP_UI (UIS_H ${FORMS})
 add_library (leechcraft_choroid SHARED
 #	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	)
 target_link_libraries (leechcraft_choroid

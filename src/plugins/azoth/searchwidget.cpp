@@ -29,7 +29,7 @@
 
 #include "searchwidget.h"
 #include <QTimer>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihavesearch.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"

@@ -31,7 +31,7 @@
 
 #include <functional>
 #include <QDeclarativeNetworkAccessManagerFactory>
-#include <util/utilconfig.h>
+#include "qmlconfig.h"
 
 class QDeclarativeEngine;
 
@@ -39,7 +39,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API StandardNAMFactory : public QDeclarativeNetworkAccessManagerFactory
+	class UTIL_QML_API StandardNAMFactory : public QDeclarativeNetworkAccessManagerFactory
 	{
 		const QString Subpath_;
 	public:

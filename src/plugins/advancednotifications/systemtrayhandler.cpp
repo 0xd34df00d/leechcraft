@@ -34,9 +34,10 @@
 #include <QMenu>
 #include <QPainter>
 #include <QApplication>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
+#include <util/util.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"

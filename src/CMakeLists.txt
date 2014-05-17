@@ -138,7 +138,13 @@ if (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
 endif ()
 
 set (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-set (LEECHCRAFT_LIBRARIES leechcraft-util leechcraft-xsd)
+
+add_subdirectory (util)
+add_subdirectory (xmlsettingsdialog)
+
+set (LEECHCRAFT_LIBRARIES
+		${LEECHCRAFT_UTIL_LIBRARIES}
+		leechcraft-xsd)
 
 set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")
 
@@ -672,8 +678,6 @@ endif ()
 configure_file (config.h.in config.h)
 configure_file (FindLeechCraft.cmake.in FindLeechCraft.cmake @ONLY)
 
-add_subdirectory (util)
-add_subdirectory (xmlsettingsdialog)
 add_subdirectory (core)
 
 option (BUILD_CODEGEN "Build LeechCraft bindings generator (development only)" OFF)

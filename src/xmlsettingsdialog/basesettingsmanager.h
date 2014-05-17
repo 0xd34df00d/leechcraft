@@ -168,6 +168,8 @@ namespace Util
 		 */
 		QVariant GetRawValue (const QString& path, const QVariant& def = QVariant ()) const;
 
+		void ShowSettingsPage (const QString& optionName);
+
 		void OptionSelected (const QByteArray&, const QVariant&);
 
 		std::shared_ptr<void> EnterInitMode ();
@@ -199,6 +201,8 @@ namespace Util
 	private Q_SLOTS:
 		void scheduleCleanup ();
 		void cleanupObjects ();
+	Q_SIGNALS:
+		void showPageRequested (Util::BaseSettingsManager*, const QString&);
 	};
 }
 }

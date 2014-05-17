@@ -75,7 +75,7 @@ namespace AdvancedNotifications
 	}
 
 	StringLikeMatcher::StringLikeMatcher (const QStringList& variants)
-	: Value_ { {}, true }
+	: Value_ { {} }
 	, Allowed_ (variants)
 	{
 	}
@@ -121,6 +121,11 @@ namespace AdvancedNotifications
 	void StringLikeMatcher::SetValue (const ANFieldValue& value)
 	{
 		boost::apply_visitor (ValueSetVisitor<ANStringFieldValue> { Value_ }, value);
+	}
+
+	ANFieldValue StringLikeMatcher::GetValue () const
+	{
+		return Value_;
 	}
 
 	QWidget* StringLikeMatcher::GetConfigWidget ()
@@ -304,6 +309,11 @@ namespace AdvancedNotifications
 		boost::apply_visitor (ValueSetVisitor<ANIntFieldValue> { Value_ }, value);
 	}
 
+	ANFieldValue IntMatcher::GetValue () const
+	{
+		return Value_;
+	}
+
 	bool IntMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<int> ())
@@ -323,6 +333,9 @@ namespace AdvancedNotifications
 
 	QString IntMatcher::GetHRDescription () const
 	{
+		if (Value_.Ops_ == ANIntFieldValue::OEqual)
+			return QObject::tr ("equals to %1").arg (Value_.Boundary_);
+
 		QString op;
 		if ((Value_.Ops_ & ANIntFieldValue::OGreater))
 			op += ">";

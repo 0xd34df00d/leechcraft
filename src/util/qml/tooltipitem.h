@@ -31,7 +31,7 @@
 
 #include <QDeclarativeItem>
 #include <QTimer>
-#include <util/utilconfig.h>
+#include "qmlconfig.h"
 
 namespace LeechCraft
 {
@@ -68,7 +68,7 @@ namespace Util
 	 *	}
 	 * \endcode
 	 */
-	class UTIL_API ToolTipItem : public QDeclarativeItem
+	class UTIL_QML_API ToolTipItem : public QDeclarativeItem
 	{
 		Q_OBJECT
 		Q_PROPERTY (QString text READ GetText WRITE SetText NOTIFY textChanged)

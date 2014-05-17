@@ -34,7 +34,7 @@
 #include <QDebug>
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
-#include <util/utilconfig.h>
+#include "xdgconfig.h"
 #include "itemtypes.h"
 
 namespace LeechCraft
@@ -47,7 +47,7 @@ namespace XDG
 
 	typedef std::shared_ptr<Item> Item_ptr;
 
-	class UTIL_API Item
+	class UTIL_XDG_API Item
 	{
 		QHash<QString, QString> Name_;
 		QHash<QString, QString> GenericName_;

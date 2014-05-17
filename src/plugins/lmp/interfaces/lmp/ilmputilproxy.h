@@ -27,39 +27,50 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_FILEREMOVEGUARD_H
-#define UTIL_FILEREMOVEGUARD_H
-#include <QFile>
-#include "utilconfig.h"
+#pragma once
+
+#include <functional>
+#include <atomic>
+#include <QtPlugin>
+#include <QFileInfo>
+#include <QMap>
+#include <QVariant>
+
+class QPixmap;
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		/** @brief QFile removing itself from file system on destruction.
-		 *
-		 * Makes sure that the file represented by this object is
-		 * removed when the corresponding instance of this class is
-		 * destructed. Useful to automatically remove temporary files,
-		 * for example.
-		 */
-		class UTIL_API FileRemoveGuard : public QFile
-		{
-		public:
-			/** @brief Constructs this file with the given path.
-			 *
-			 * @param[in] path The file path to construct with.
-			 */
-			FileRemoveGuard (const QString& path);
+namespace LMP
+{
+	struct MediaInfo;
 
-			/** @brief Removes the file.
-			 *
-			 * Tries to close and remove the file represented by this
-			 * object.
-			 */
-			virtual ~FileRemoveGuard ();
-		};
-	}
+	enum SubstitutionFlag
+	{
+		SFNone,
+		SFSafeFilesystem
+	};
+	Q_DECLARE_FLAGS (SubstitutionFlags, SubstitutionFlag);
+
+	class ILMPUtilProxy
+	{
+	public:
+		virtual ~ILMPUtilProxy () {}
+
+		virtual QString FindAlbumArt (const QString& near, bool includeCollection = true) const = 0;
+
+		virtual QList<QFileInfo> RecIterateInfo (const QString& dirPath,
+				bool followSymlinks = false,
+				std::atomic<bool> *stopGuard = nullptr) const = 0;
+
+		virtual QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const = 0;
+
+		virtual QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const = 0;
+
+		virtual QString PerformSubstitutions (QString mask,
+				const MediaInfo& info, SubstitutionFlags flags = SFNone) const = 0;
+	};
+}
 }
 
-#endif
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::SubstitutionFlags)
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPUtilProxy, "org.LeechCraft.LMP.ILMPUtilProxy/1.0");

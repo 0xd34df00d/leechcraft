@@ -39,10 +39,11 @@
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/util.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

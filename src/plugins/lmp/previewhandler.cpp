@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "previewhandler.h"
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>

@@ -30,6 +30,7 @@
 #include "clientconnection.h"
 #include <QTimer>
 #include <QHostAddress>
+#include <QDir>
 #include <QtDebug>
 #include <QXmppClient.h>
 #include <QXmppMucManager.h>
@@ -44,9 +45,10 @@
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCallManager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>
 #include <util/sys/sysinfo.h>
+#include <util/sys/paths.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -1038,7 +1040,7 @@ namespace Xoox
 		if (jid.isEmpty ())
 			jid = OurBareJID_;
 
-		Q_FOREACH (auto f, VCardFetchCallbacks_.take (jid))
+		for (const auto& f : VCardFetchCallbacks_.take (jid))
 			f (vcard);
 
 		if (JID2CLEntry_.contains (jid))

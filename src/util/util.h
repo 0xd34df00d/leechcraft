@@ -174,118 +174,6 @@ namespace LeechCraft
 		 */
 		UTIL_API QString GetLanguage ();
 
-		/** @brief Creates a path if it doesn't exist.
-		 *
-		 * Creates a relative path ~/.leechcraft/path and throws an
-		 * exception if this could not be done or if such path already
-		 * exists and it is not readable.
-		 *
-		 * @param[in] path The path to create.
-		 * @return The newly created dir.
-		 * @exception std::runtime_error Throws if the path could not be
-		 * created.
-		 */
-		UTIL_API QDir CreateIfNotExists (const QString& path);
-
-		/** @brief Returns the path relative to user directory.
-		 *
-		 * Returns a QDir object that represents the ~/.leechcraft/path
-		 * or throws an exceptions if this path doesn't exist.
-		 *
-		 * @param[in] path The path to return relative to ~/.leechcraft
-		 * @return The QDir object for that path.
-		 * @exception std::runtime_error Throws if the path doesn't
-		 * exist.
-		 */
-		UTIL_API QDir GetUserDir (const QString& path);
-
-		/** @brief Returns a temporary filename.
-		 *
-		 * This function returns a name of a temporary file that could
-		 * be created, not createing the file itself.
-		 *
-		 * @param[in] pattern Pattern of the filename.
-		 * @return The filename.
-		 */
-		UTIL_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
-
-		/** @brief An utility function to make a Entity.
-		 *
-		 * Creates a Entity that wraps the given entity from
-		 * given location with parameterrs identified by tp and given
-		 * mime type (which is null by default).
-		 *
-		 * This function is provided for convenience and is equivalent
-		 * to manually filling the Entity.
-		 *
-		 * @param[in] entity The Entity_ field of the Entity.
-		 * @param[in] location The Location_ field of the Entity.
-		 * @param[in] tp The Params_ field of the Entity.
-		 * @param[in] mime The Mime_ field of the Entity.
-		 * @return The resulting Entity.
-		 *
-		 * @sa Entity, MakeNotification()
-		 */
-		UTIL_API Entity MakeEntity (const QVariant& entity,
-				const QString& location,
-				LeechCraft::TaskParameters tp,
-				const QString& mime = QString ());
-
-		/** @brief An utility function to make a Entity with
-		 * notification.
-		 *
-		 * Creates a Entity that holds information about
-		 * user-visible notification. These notifications have
-		 * "x-leechcraft/notification" MIME.
-		 *
-		 * You can further customize the returned Entity to suit
-		 * your exact needs. See the documentation for Entity
-		 * about such entities.
-		 *
-		 * @param[in] header The header of the notification.
-		 * @param[in] text The text of the notification.
-		 * @param[in] priority The priority level of the notification.
-		 * @return The Entity containing the corresponding
-		 * notification.
-		 *
-		 * @sa Entity, MakeEntity()
-		 */
-		UTIL_API Entity MakeNotification (const QString& header,
-				const QString& text,
-				Priority priority);
-
-		/** @brief Makes an event for canceling another Advanced
-		 * Notifications event.
-		 *
-		 * Creates an Entity that cancels a previously generated
-		 * Advanced Notifications event. The returned entity can be
-		 * then emitted to notify plugins that the given event has been
-		 * canceled.
-		 *
-		 * @param[in] event The event to cancel.
-		 * @return The Entity canceling the given event.
-		 */
-		UTIL_API Entity MakeANCancel (const Entity& event);
-
-		/** @brief Makes an event for canceling another Advanced
-		 * Notifications event.
-		 *
-		 * Creates an Entity that cancels a previously generated
-		 * Advanced Notifications event. The returned entity can be
-		 * then emitted to notify plugins that the given event has been
-		 * canceled.
-		 *
-		 * This function doesn't take a previously created entity as the
-		 * other overload does. Instead, it plainly creates the required
-		 * entity from the given senderId and eventId. They should match
-		 * those of the event in question.
-		 *
-		 * @param[in] senderId The ID of the sender of the event that is
-		 * to be canceled.
-		 * @param[in] eventId The ID of the event that is to be canceled.
-		 * @return The Entity canceling the given event.
-		 */
-		UTIL_API Entity MakeANCancel (const QString& senderId, const QString& eventId);
 
 		UTIL_API QModelIndexList GetSummarySelectedRows (QObject *sender);
 
@@ -297,9 +185,6 @@ namespace LeechCraft
 		 * @return The separator action.
 		 */
 		UTIL_API QAction* CreateSeparator (QObject *parent);
-
-		UTIL_API QVariantList GetPersistentData (const QList<QVariant>& keys,
-				QObject *object);
 
 		UTIL_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen, const QBrush& brush);
 

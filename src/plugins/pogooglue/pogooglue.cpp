@@ -32,6 +32,7 @@
 #include <QIcon>
 #include <QUrl>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft

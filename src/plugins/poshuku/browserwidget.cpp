@@ -59,6 +59,8 @@
 #include <QDesktopServices>
 #include <QTextCodec>
 #include <QCursor>
+#include <QDomDocument>
+#include <QDomElement>
 #include <qwebhistory.h>
 #include <qwebelement.h>
 #include <QWebInspector>
@@ -68,6 +70,7 @@
 #include <QLabel>
 #include <QXmlStreamWriter>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <interfaces/core/icoreproxy.h>

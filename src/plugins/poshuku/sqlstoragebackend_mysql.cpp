@@ -34,7 +34,7 @@
 #include <QSqlError>
 #include <QThread>
 #include <QtDebug>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 

@@ -31,7 +31,7 @@
 
 #include <QDialog>
 #include <QVariantMap>
-#include <util/utilconfig.h>
+#include "svcauthconfig.h"
 
 class QNetworkAccessManager;
 class QUrl;
@@ -47,7 +47,7 @@ namespace Util
 {
 namespace SvcAuth
 {
-	class UTIL_API VkCaptchaDialog : public QDialog
+	class UTIL_SVCAUTH_API VkCaptchaDialog : public QDialog
 	{
 		Q_OBJECT
 

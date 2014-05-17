@@ -30,7 +30,7 @@
 #include "shortcutmanager.h"
 #include <QAction>
 #include <QShortcut>
-#include "util/util.h"
+#include <util/xpc/util.h>
 #include "interfaces/ihaveshortcuts.h"
 #include "interfaces/core/ientitymanager.h"
 #include "interfaces/core/iiconthememanager.h"

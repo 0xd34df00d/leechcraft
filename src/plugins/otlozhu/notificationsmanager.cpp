@@ -29,7 +29,7 @@
 
 #include "notificationsmanager.h"
 #include <QTimer>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/an/constants.h>
 #include "todostorage.h"
 

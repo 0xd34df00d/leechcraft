@@ -29,6 +29,7 @@
 
 #include "authenticator.h"
 #include <QInputDialog>
+#include <QMessageBox>
 #include <interfaces/azoth/iclentry.h>
 #include "initiateauthdialog.h"
 
@@ -41,6 +42,8 @@ namespace OTRoid
 	Authenticator::Authenticator (ICLEntry *entry)
 	: QObject { entry->GetQObject () }
 	, Entry_ { entry }
+	, HrId_ { Entry_->GetHumanReadableID () }
+	, Name_ { Entry_->GetEntryName () }
 	{
 	}
 
@@ -51,20 +54,19 @@ namespace OTRoid
 
 	void Authenticator::AskFor (SmpMethod method, const QString& question, ConnContext *context)
 	{
-		const auto& hrId = Entry_->GetHumanReadableID ();
-		const auto& name = Entry_->GetEntryName ();
-
 		QString str;
 		switch (method)
 		{
 		case SmpMethod::Question:
 			str = tr ("%1 (%2) wants to authenticate with you via a question. The question is:")
-					.arg (name)
-					.arg (hrId);
+					.arg (Name_)
+					.arg (HrId_);
 			str += " <em>" + question + "</em>";
 			break;
 		case SmpMethod::SharedSecret:
-			str = tr ("%1 (%2) wants to authenticate with you via a shared secret.");
+			str = tr ("%1 (%2) wants to authenticate with you via a shared secret.")
+					.arg (Name_)
+					.arg (HrId_);
 			break;
 		}
 
@@ -91,6 +93,33 @@ namespace OTRoid
 		}
 
 		emit initiateRequested (Entry_, dia.GetMethod (), dia.GetQuestion (), dia.GetAnswer ());
+	}
+
+	void Authenticator::Failed ()
+	{
+		QMessageBox::critical (nullptr,
+				tr ("OTR authentication"),
+				tr ("Failed to authenticate %1 (%2).")
+						.arg ("<em>" + Name_ + "</em>")
+						.arg ("<em>" + HrId_ + "</em>"));
+	}
+
+	void Authenticator::Cheated ()
+	{
+		QMessageBox::critical (nullptr,
+				tr ("OTR authentication"),
+				tr ("Failed to authenticate %1 (%2): cheating detected.")
+						.arg ("<em>" + Name_ + "</em>")
+						.arg ("<em>" + HrId_ + "</em>"));
+	}
+
+	void Authenticator::Success ()
+	{
+		QMessageBox::information (nullptr,
+				tr ("OTR authentication"),
+				tr ("Congratulations! Contact %1 (%2) authenticated successfully!")
+						.arg ("<em>" + Name_ + "</em>")
+						.arg ("<em>" + HrId_ + "</em>"));
 	}
 }
 }

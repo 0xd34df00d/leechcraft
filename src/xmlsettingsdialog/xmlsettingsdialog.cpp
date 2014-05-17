@@ -150,6 +150,11 @@ namespace Util
 		obj->installEventFilter (this);
 
 		UpdateXml (true);
+
+		connect (obj,
+				SIGNAL (showPageRequested (Util::BaseSettingsManager*, QString)),
+				this,
+				SLOT (handleShowPageRequested (Util::BaseSettingsManager*, QString)));
 	}
 
 	BaseSettingsManager* XmlSettingsDialog::GetManagerObject () const
@@ -705,7 +710,7 @@ namespace Util
 
 		HandlersManager_->ClearNewValues ();
 
-		Q_FOREACH (QWidget *widget, Customs_)
+		for (auto widget : Customs_)
 			QMetaObject::invokeMethod (widget, "accept");
 	}
 
@@ -747,6 +752,47 @@ namespace Util
 	void XmlSettingsDialog::handlePushButtonReleased ()
 	{
 		emit pushButtonClicked (sender ()->objectName ());
+	}
+
+	void XmlSettingsDialog::handleShowPageRequested (BaseSettingsManager *bsm, const QString& name)
+	{
+		emit showPageRequested (bsm, name);
+
+		if (name.isEmpty ())
+			return;
+
+		auto child = findChild<QWidget*> (name);
+		if (!child)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< Basename_
+					<< "cannot find child"
+					<< name;
+			return;
+		}
+
+		QWidget *lastTabChild = nullptr;
+
+		while (auto parent = child->parentWidget ())
+		{
+			std::shared_ptr<void> nextGuard
+			{
+				nullptr,
+				[&child, parent] (void*) { child = parent; }
+			};
+
+			const auto pgIdx = Pages_->indexOf (parent);
+			if (pgIdx >= 0)
+			{
+				Pages_->setCurrentIndex (pgIdx);
+				continue;
+			}
+
+			if (qobject_cast<QStackedWidget*> (parent))
+				lastTabChild = child;
+			else if (auto tw = qobject_cast<QTabWidget*> (parent))
+				tw->setCurrentWidget (lastTabChild);
+		}
 	}
 }
 }

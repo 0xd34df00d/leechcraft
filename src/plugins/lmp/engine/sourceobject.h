@@ -36,10 +36,11 @@
 #include <QMap>
 #include <QMutex>
 #include <QWaitCondition>
+#include "interfaces/lmp/isourceobject.h"
+#include "interfaces/lmp/ipath.h"
 #include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "pathelement.h"
-#include "path.h"
 
 typedef struct _GstElement GstElement;
 typedef struct _GstPad GstPad;
@@ -54,6 +55,7 @@ namespace LMP
 {
 	class AudioSource;
 	class Path;
+	class MsgPopThread;
 
 	enum class SourceError
 	{
@@ -62,24 +64,11 @@ namespace LMP
 		Other
 	};
 
-	enum class SourceState
-	{
-		Error,
-		Stopped,
-		Paused,
-		Buffering,
-		Playing
-	};
-
 	enum class Category
 	{
 		Music,
 		Notification
 	};
-
-	class MsgPopThread;
-
-	class Path;
 
 	class HandlerContainerBase : public QObject
 	{
@@ -128,6 +117,7 @@ namespace LMP
 	};
 
 	class SourceObject : public QObject
+					   , public ISourceObject
 	{
 		Q_OBJECT
 
@@ -181,8 +171,12 @@ namespace LMP
 		SourceObject (const SourceObject&) = delete;
 		SourceObject& operator= (const SourceObject&) = delete;
 
+		QObject* GetQObject ();
+
 		bool IsSeekable () const;
+
 		SourceState GetState () const;
+		void SetState (SourceState);
 
 		QString GetErrorString () const;
 

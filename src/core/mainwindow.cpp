@@ -40,7 +40,7 @@
 #include <QDockWidget>
 #include <QDesktopWidget>
 #include <QWidgetAction>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iactionsexporter.h>

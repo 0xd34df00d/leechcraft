@@ -34,7 +34,8 @@
 #include <QClipboard>
 #include <QMenu>
 #include <interfaces/structures.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include "categoriesselector.h"
 
 namespace LeechCraft
@@ -93,14 +94,13 @@ namespace vGrabber
 		QUrl url = GetURL ();
 
 		QString fname = Util::GetTemporaryName ();
-		Entity e =
-			Util::MakeEntity (url,
+		Entity e = Util::MakeEntity (url,
 				fname,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
 		int id = -1;
 		QObject *pr = 0;

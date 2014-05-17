@@ -66,7 +66,6 @@ namespace Qrosp
 		int GetID ();
 		void FreeID (int id);
 		QObject* GetPluginsManager () const;
-		QObject* GetSelf ();
 	};
 }
 }

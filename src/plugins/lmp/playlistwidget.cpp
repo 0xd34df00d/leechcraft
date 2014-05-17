@@ -42,8 +42,14 @@
 #include <QKeyEvent>
 #include <QSortFilterProxyModel>
 #include <QTimer>
+#include <QPainter>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/an/ianrulesstorage.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -56,7 +62,8 @@
 #include "util.h"
 #include "palettefixerfilter.h"
 #include "engine/sourceobject.h"
-#include <interfaces/core/iiconthememanager.h>
+
+Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
 
 namespace LeechCraft
 {
@@ -535,6 +542,18 @@ namespace LMP
 				this,
 				SLOT (showAlbumArt ()));
 
+		TrackActions_ = new QMenu (tr ("Track actions"));
+		TrackActions_->addAction (tr ("Perform action after this track starts..."),
+				this, SLOT (initPerformAfterTrackStart ()));
+		TrackActions_->addAction (tr ("Perform action after this track stops..."),
+				this, SLOT (initPerformAfterTrackStop ()));
+
+		ExistingTrackActions_ = TrackActions_->addMenu (tr ("Existing"));
+		connect (ExistingTrackActions_,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (handleExistingTrackAction (QAction*)));
+
 		ActionToggleSearch_ = new QAction (tr ("Toggle search field"), Ui_.Playlist_);
 		ActionToggleSearch_->setShortcut (QKeySequence::Find);
 		ActionToggleSearch_->setCheckable (true);
@@ -601,6 +620,29 @@ namespace LMP
 				QAbstractItemView::PositionAtCenter);
 	}
 
+	namespace
+	{
+		QIcon SymbolToIcon (const QPair<QString, QColor>& symb, const QFontMetrics& fm)
+		{
+			const auto& rect = fm.boundingRect (symb.first);
+
+			QPixmap px { rect.size () };
+			px.fill (Qt::transparent);
+			{
+				QPainter painter { &px };
+				if (symb.second.isValid ())
+					painter.setPen (symb.second);
+				painter.drawText (QRect { { 0, 0 }, rect.size () },
+						Qt::AlignCenter | Qt::AlignHCenter,
+						symb.first);
+			}
+
+			QIcon icon;
+			icon.addPixmap (px);
+			return icon;
+		}
+	}
+
 	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)
 	{
 		const auto& idx = Ui_.Playlist_->indexAt (pos);
@@ -628,6 +670,20 @@ namespace LMP
 				menu->addAction (ActionMoveOneShotUp_);
 			if (oneShotPosVar.toInt () < Player_->GetOneShotQueueSize () - 1)
 				menu->addAction (ActionMoveOneShotDown_);
+		}
+
+		menu->addMenu (TrackActions_);
+		const auto& existingRules = idx.data (Player::Role::MatchingRules).value<QList<Entity>> ();
+		ExistingTrackActions_->menuAction ()->setVisible (!existingRules.isEmpty ());
+
+		ExistingTrackActions_->clear ();
+		for (const auto& rule : existingRules)
+		{
+			const auto action = ExistingTrackActions_->addAction (rule.Entity_.toString ());
+			action->setProperty ("LMP/SourceRule", QVariant::fromValue (rule));
+
+			const auto& symbol = GetRuleSymbol (rule);
+			action->setIcon (SymbolToIcon (symbol, menu->fontMetrics ()));
 		}
 
 		menu->addSeparator ();
@@ -812,6 +868,87 @@ namespace LMP
 		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 
 		ShowAlbumArt (info.LocalPath_, QCursor::pos ());
+	}
+
+	namespace
+	{
+		void EmitStateRule (const QModelIndex& index, const QString& state, const QString& nameTempl)
+		{
+			const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
+
+			auto url = info.Additional_.value ("URL").toUrl ();
+			if (url.isEmpty ())
+				url = QUrl::fromLocalFile (info.LocalPath_);
+
+			const auto& e = Util::MakeANRule (nameTempl
+						.arg (info.Title_)
+						.arg (info.Artist_),
+					"org.LeechCraft.LMP",
+					AN::CatMediaPlayer,
+					{ AN::TypeMediaPlaybackStatus },
+					AN::NotifySingleShot,
+					{
+						{
+							AN::Field::MediaPlaybackStatus,
+							ANStringFieldValue { state }
+						},
+						{
+							AN::Field::MediaArtist,
+							ANStringFieldValue { info.Artist_ }
+						},
+						{
+							AN::Field::MediaAlbum,
+							ANStringFieldValue { info.Album_ }
+						},
+						{
+							AN::Field::MediaTitle,
+							ANStringFieldValue { info.Title_ }
+						},
+						{
+							AN::Field::MediaLength,
+							ANIntFieldValue { info.Length_, ANIntFieldValue::OEqual }
+						},
+						{
+							AN::Field::MediaPlayerURL,
+							ANStringFieldValue { url.toEncoded () }
+						}
+					});
+			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		}
+	}
+
+	void PlaylistWidget::initPerformAfterTrackStart ()
+	{
+		EmitStateRule (Ui_.Playlist_->currentIndex (),
+				"Playing",
+				 tr ("Perform when %1 by %2 starts playing"));
+	}
+
+	void PlaylistWidget::initPerformAfterTrackStop ()
+	{
+		EmitStateRule (Ui_.Playlist_->currentIndex (),
+				"Stopped",
+				tr ("Perform when %1 by %2 stops playing"));
+	}
+
+	void PlaylistWidget::handleExistingTrackAction (QAction *action)
+	{
+		const auto& rule = action->property ("LMP/SourceRule").value<Entity> ();
+		const auto& pluginId = rule.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
+
+		const auto pluginMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		const auto pluginObj = pluginMgr->GetPluginByID (pluginId);
+		if (!pluginObj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "plugin"
+					<< pluginId
+					<< "not found";
+			return;
+		}
+
+		const auto irs = qobject_cast<IANRulesStorage*> (pluginObj);
+		irs->RequestRuleConfiguration (rule);
 	}
 
 	void PlaylistWidget::handleMoveUp ()

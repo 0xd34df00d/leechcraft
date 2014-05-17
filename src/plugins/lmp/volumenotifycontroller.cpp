@@ -29,7 +29,7 @@
 
 #include "volumenotifycontroller.h"
 #include <QTimer>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "engine/output.h"
 #include "core.h"

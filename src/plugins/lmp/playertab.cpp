@@ -38,7 +38,7 @@
 #include <QListWidget>
 #include <QTabBar>
 #include <QMessageBox>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
@@ -202,6 +202,11 @@ namespace LMP
 	QString PlayerTab::GetTabRecoverName () const
 	{
 		return "LMP";
+	}
+
+	void PlayerTab::AddNPTab (const QString& tabName, QWidget *widget)
+	{
+		Ui_.NPWidget_->AddTab (tabName, widget);
 	}
 
 	void PlayerTab::InitWithOtherPlugins ()

@@ -27,81 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_LISTMODEL_H
-#define UTIL_LISTMODEL_H
-#include <QAbstractItemModel>
-#include <QStringList>
+#pragma once
+
+#include <QFile>
+#include "sysconfig.h"
 
 namespace LeechCraft
 {
 	namespace Util
 	{
-		class ListModelItem
+		/** @brief QFile removing itself from file system on destruction.
+		 *
+		 * Makes sure that the file represented by this object is
+		 * removed when the corresponding instance of this class is
+		 * destructed. Useful to automatically remove temporary files,
+		 * for example.
+		 */
+		class UTIL_SYS_API FileRemoveGuard : public QFile
 		{
 		public:
-			virtual ~ListModelItem () { }
+			/** @brief Constructs this file with the given path.
+			 *
+			 * @param[in] path The file path to construct with.
+			 */
+			FileRemoveGuard (const QString& path);
 
-			virtual QVariant Data (int, int) const = 0;
+			/** @brief Removes the file.
+			 *
+			 * Tries to close and remove the file represented by this
+			 * object.
+			 */
+			virtual ~FileRemoveGuard ();
 		};
-
-		class ListModel : public QAbstractItemModel
-		{
-			Q_OBJECT
-
-			QList<ListModelItem*> Items_;
-			QStringList Headers_;
-		public:
-			enum Roles
-			{
-				RolePointer = Qt::UserRole + 25
-			};
-
-			ListModel (const QStringList& = QStringList (), QObject* = 0);
-			virtual ~ListModel ();
-
-			int columnCount (const QModelIndex& = QModelIndex ()) const;
-			QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-			Qt::ItemFlags flags (const QModelIndex&) const;
-			QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-			QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-			QModelIndex parent (const QModelIndex&) const;
-			int rowCount (const QModelIndex& = QModelIndex ()) const;
-
-			void Insert (ListModelItem*, int = -1);
-			void Remove (ListModelItem*);
-			void Remove (int);
-			void Update (ListModelItem*);
-			void Update (int);
-
-			void Clear ();
-
-			void SetHeaders (const QStringList&);
-
-			template<typename T>
-				QList<T*> GetItems () const
-				{
-					QList<T*> result;
-					Q_FOREACH (ListModelItem *item, Items_)
-						result << static_cast<T*> (item);
-					return result;
-				}
-			
-			template<typename T>
-				T* GetItem (const QModelIndex& index) const
-				{
-					return GetItem<T> (index.row ());
-				}
-
-			template<typename T>
-				T* GetItem (int row) const
-				{
-					return static_cast<T*> (Items_.at (row));
-				}
-		};
-
-		template<> QList<ListModelItem*> ListModel::GetItems () const;
-	};
-};
-
-#endif
-
+	}
+}

@@ -42,6 +42,7 @@
 #include "xmlsettingsmanager.h"
 #include "childactioneventfilter.h"
 #include "util/util.h"
+#include "util/sys/paths.h"
 
 using namespace LeechCraft;
 

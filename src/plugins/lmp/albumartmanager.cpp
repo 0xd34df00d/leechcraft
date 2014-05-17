@@ -34,7 +34,8 @@
 #include <QtConcurrentRun>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>

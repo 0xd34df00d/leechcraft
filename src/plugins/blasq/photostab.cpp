@@ -45,7 +45,7 @@
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/network/networkdiskcache.h>
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"

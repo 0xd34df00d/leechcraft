@@ -30,7 +30,8 @@
 #include "videofindproxy.h"
 #include <QAction>
 #include <QTextCodec>
-#include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {

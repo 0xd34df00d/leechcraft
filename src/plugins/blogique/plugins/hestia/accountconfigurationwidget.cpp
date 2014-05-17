@@ -30,6 +30,7 @@
 #include "accountconfigurationwidget.h"
 #include <QFileDialog>
 #include <util/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {

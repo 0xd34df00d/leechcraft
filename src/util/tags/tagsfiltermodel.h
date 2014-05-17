@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QSortFilterProxyModel>
-#include <util/utilconfig.h>
+#include "tagsconfig.h"
 
 namespace LeechCraft
 {
@@ -49,7 +49,7 @@ namespace Util
 	 * separator, which is <em>;</em> by default but can be set via the
 	 * SetSeparator() method.
 	 */
-	class UTIL_API TagsFilterModel : public QSortFilterProxyModel
+	class UTIL_TAGS_API TagsFilterModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
 

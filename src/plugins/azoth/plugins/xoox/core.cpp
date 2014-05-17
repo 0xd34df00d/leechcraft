@@ -32,8 +32,9 @@
 #include <QXmlStreamWriter>
 #include <QDomDocument>
 #include <QTimer>
+#include <QDir>
 #include <QXmppLogger.h>
-#include <util/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"

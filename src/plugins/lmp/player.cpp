@@ -38,7 +38,7 @@
 #include <QApplication>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/delayedexecutor.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -55,6 +55,7 @@
 #include "engine/output.h"
 #include "engine/path.h"
 #include "localcollectionmodel.h"
+#include "playerrulesmanager.h"
 
 namespace LeechCraft
 {
@@ -123,6 +124,7 @@ namespace LMP
 	, Output_ (new Output (this))
 	, Path_ (new Path (Source_, Output_))
 	, RadioItem_ (nullptr)
+	, RulesManager_ (new PlayerRulesManager (PlaylistModel_, this))
 	, FirstPlaylistRestore_ (true)
 	, PlayMode_ (PlayMode::Sequential)
 	{
@@ -176,6 +178,11 @@ namespace LMP
 					SIGNAL (collectionReady ()),
 					this,
 					SLOT (restorePlaylist ()));
+	}
+
+	void Player::InitWithOtherPlugins ()
+	{
+		RulesManager_->InitializePlugins ();
 	}
 
 	QAbstractItemModel* Player::GetPlaylistModel () const
@@ -623,29 +630,6 @@ namespace LMP
 
 	namespace
 	{
-		void FillItem (QStandardItem *item, const MediaInfo& info)
-		{
-			QString text;
-			if (!info.IsUseless ())
-			{
-				text = XmlSettingsManager::Instance ()
-						.property ("SingleTrackDisplayMask").toString ();
-
-				text = PerformSubstitutions (text, info).simplified ();
-				text.replace ("- -", "-");
-				if (text.startsWith ("- "))
-					text = text.mid (2);
-				if (text.endsWith (" -"))
-					text.chop (2);
-			}
-			else
-				text = QFileInfo (info.LocalPath_).fileName ();
-
-			item->setText (text);
-
-			item->setData (QVariant::fromValue (info), Player::Role::Info);
-		}
-
 		QStandardItem* MakeAlbumItem (const MediaInfo& info)
 		{
 			auto albumItem = new QStandardItem (QString ("%1 - %2")
@@ -663,10 +647,7 @@ namespace LMP
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
 		}
-	}
 
-	namespace
-	{
 		QPair<AudioSource, MediaInfo> PairResolve (const AudioSource& source)
 		{
 			MediaInfo info;
@@ -812,11 +793,11 @@ namespace LMP
 		CurrentStation_.reset ();
 	}
 
-	void Player::EmitStateChange ()
+	void Player::EmitStateChange (SourceState state)
 	{
 		QString stateStr;
 		QString hrStateStr;
-		switch (Source_->GetState ())
+		switch (state)
 		{
 		case SourceState::Paused:
 			stateStr = "Paused";
@@ -1126,6 +1107,32 @@ namespace LMP
 		emit playerAvailable (true);
 	}
 
+	namespace
+	{
+		void FillItem (QStandardItem *item, const MediaInfo& info)
+		{
+			QString text;
+			if (!info.IsUseless ())
+			{
+				text = XmlSettingsManager::Instance ()
+						.property ("SingleTrackDisplayMask").toString ();
+
+				text = PerformSubstitutions (text, info).simplified ();
+				text.replace ("- -", "-");
+				if (text.startsWith ("- "))
+					text = text.mid (2);
+				if (text.endsWith (" -"))
+					text.chop (2);
+			}
+			else
+				text = QFileInfo (info.LocalPath_).fileName ();
+
+			item->setText (text);
+
+			item->setData (QVariant::fromValue (info), Player::Role::Info);
+		}
+	}
+
 	void Player::continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>& sources)
 	{
 		CurrentQueue_.clear ();
@@ -1134,6 +1141,8 @@ namespace LMP
 		PlaylistModel_->blockSignals (true);
 
 		QString prevAlbumRoot;
+
+		QList<QStandardItem*> managedRulesItems;
 
 		for (const auto& sourcePair : sources)
 		{
@@ -1174,6 +1183,8 @@ namespace LMP
 			case AudioSource::Type::File:
 			{
 				const auto& info = sourcePair.second;
+
+				managedRulesItems << item;
 
 				const auto& albumID = info.Album_;
 				FillItem (item, info);
@@ -1357,7 +1368,10 @@ namespace LMP
 		}
 
 		if (!next.IsEmpty ())
+		{
+			EmitStateChange (SourceState::Stopped);
 			Source_->PrepareNextSource (next);
+		}
 	}
 
 	void Player::handlePlaybackFinished ()
@@ -1382,7 +1396,7 @@ namespace LMP
 
 		SavePlayState (false);
 
-		EmitStateChange ();
+		EmitStateChange (state);
 	}
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)
@@ -1412,7 +1426,7 @@ namespace LMP
 
 		handleMetadata ();
 
-		EmitStateChange ();
+		EmitStateChange (Source_->GetState ());
 	}
 
 	void Player::handleMetadata ()
@@ -1439,7 +1453,7 @@ namespace LMP
 
 		LastPhononMediaInfo_ = info;
 
-		EmitStateChange ();
+		EmitStateChange (Source_->GetState ());
 	}
 
 	void Player::handleSourceError (const QString& sourceText, SourceError error)

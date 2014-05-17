@@ -35,7 +35,7 @@
 #include <QDateTime>
 #include <QPointer>
 #include <QPair>
-#include "utilconfig.h"
+#include "sllconfig.h"
 
 class QTimer;
 
@@ -54,7 +54,7 @@ namespace Util
 	 * This class manages execution of functors that should be called
 	 * with some minimal timeout between them.
 	 */
-	class UTIL_API QueueManager : public QObject
+	class UTIL_SLL_API QueueManager : public QObject
 	{
 		Q_OBJECT
 

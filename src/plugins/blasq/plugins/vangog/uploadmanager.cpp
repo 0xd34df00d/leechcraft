@@ -32,7 +32,7 @@
 #include <QNetworkRequest>
 #include <QFileInfo>
 #include <util/util.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include "picasaaccount.h"
 
 namespace LeechCraft

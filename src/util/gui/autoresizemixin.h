@@ -33,7 +33,7 @@
 #include <QObject>
 #include <QPoint>
 #include <QRect>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 class QWidget;
 
@@ -60,6 +60,8 @@ namespace Util
 	 * The rectangle into which the widget should be embedded is obtained
 	 * via a functor returning the rectangle. The functor is invoked each
 	 * time the widget is to be refit.
+	 *
+	 * @ingroup GuiUtil
 	 */
 	class AutoResizeMixin : public QObject
 	{
@@ -84,7 +86,7 @@ namespace Util
 		 * the \em widget should be fitted.
 		 * @param[in] widget The widget to fit.
 		 */
-		UTIL_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWidget *widget);
+		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWidget *widget);
 
 		/** @brief Listens for resize events and refits the widget.
 		 */

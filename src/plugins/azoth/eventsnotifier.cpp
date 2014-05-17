@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "eventsnotifier.h"
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

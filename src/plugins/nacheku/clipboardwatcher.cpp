@@ -31,7 +31,7 @@
 #include <QApplication>
 #include <QTimer>
 #include <QClipboard>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

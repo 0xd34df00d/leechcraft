@@ -31,6 +31,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNBUDDYENTRY_H
 #include <QObject>
 #include <QStringList>
+#include <interfaces/an/ianemitter.h>
 #include <msn/buddy.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iadvancedclentry.h>

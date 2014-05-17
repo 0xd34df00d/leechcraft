@@ -32,7 +32,7 @@
 #include <QClipboard>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
 

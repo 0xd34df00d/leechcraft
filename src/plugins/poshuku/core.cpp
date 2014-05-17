@@ -54,7 +54,7 @@
 #include <qwebhistory.h>
 #include <QtDebug>
 #include <QMainWindow>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/icoreproxy.h>

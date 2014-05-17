@@ -74,6 +74,9 @@ namespace LMP
 		QAction *ActionMoveDown_;
 		QAction *ActionMoveBottom_;
 
+		QMenu *TrackActions_;
+		QMenu *ExistingTrackActions_;
+
 		QAction *MoveUpButtonAction_;
 		QAction *MoveDownButtonAction_;
 
@@ -123,6 +126,10 @@ namespace LMP
 		void showTrackProps ();
 
 		void showAlbumArt ();
+
+		void initPerformAfterTrackStart ();
+		void initPerformAfterTrackStop ();
+		void handleExistingTrackAction (QAction*);
 
 		void handleMoveUp ();
 		void handleMoveTop ();

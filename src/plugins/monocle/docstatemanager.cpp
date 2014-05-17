@@ -32,6 +32,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "common.h"
 
 #if BOOST_VERSION >= 105000

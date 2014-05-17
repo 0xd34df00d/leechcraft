@@ -167,6 +167,12 @@ namespace LeechCraft
 		Operations Ops_;
 	};
 
+	inline bool operator== (const ANIntFieldValue& left, const ANIntFieldValue& right)
+	{
+		return left.Boundary_ == right.Boundary_ &&
+				left.Ops_ == right.Ops_;
+	}
+
 	/** @brief Describes a field with QString values.
 	 */
 	struct ANStringFieldValue
@@ -181,7 +187,43 @@ namespace LeechCraft
 		 * otherwise.
 		 */
 		bool Contains_;
+
+		/** @brief Constructs the field matcher.
+		 *
+		 * @param[in] rx The regexp to match.
+		 * @param[in] contains Whether the string should or should not
+		 * match \em rx.
+		 */
+		ANStringFieldValue (const QRegExp& rx, bool contains)
+		: Rx_ { rx }
+		, Contains_ { contains }
+		{
+		}
+
+		/** @brief Constructs the field matcher for the given \em str.
+		 *
+		 * This constructor constructs a field matcher that matches (or
+		 * does not match if \em contains is false) when the string in
+		 * question contains the \em str. It is analogous to the previous
+		 * constructor if the regular expression object is constructed as
+		 * <code>QRegExp { str, Qt::CaseSensitive, QRegExp::FixedString }</code>.
+		 *
+		 * @param[in] str The string that should be looked for.
+		 * @param[in] contains Whether the string should or should not
+		 * contain \em str.
+		 */
+		ANStringFieldValue (const QString& str, bool contains = true)
+		: Rx_ { str, Qt::CaseSensitive, QRegExp::FixedString }
+		, Contains_ { contains }
+		{
+		}
 	};
+
+	inline bool operator== (const ANStringFieldValue& left, const ANStringFieldValue& right)
+	{
+		return left.Contains_ == right.Contains_ &&
+				left.Rx_ == right.Rx_;
+	}
 
 	/** @brief A combination of all possible descriptions.
 	 */

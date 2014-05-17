@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
+#include "xsdconfig.h"
 
 class QString;
 
@@ -40,6 +40,6 @@ namespace Util
 	class XmlSettingsDialog;
 	class BaseSettingsManager;
 
-	UTIL_API XmlSettingsDialog* OpenXSD (const QString& title, const QString& filename, Util::BaseSettingsManager *bsm);
+	UTIL_XSD_API XmlSettingsDialog* OpenXSD (const QString& title, const QString& filename, Util::BaseSettingsManager *bsm);
 }
 }

@@ -32,7 +32,7 @@
 #include <functional>
 #include <QStringList>
 #include <QFileInfo>
-#include <util/utilconfig.h>
+#include "sysconfig.h"
 
 class QDir;
 class QUrl;
@@ -88,7 +88,7 @@ namespace Util
 	 *
 	 * @sa GetSysPath()
 	 */
-	UTIL_API QStringList GetPathCandidates (SysPath path, QString subfolder);
+	UTIL_SYS_API QStringList GetPathCandidates (SysPath path, QString subfolder);
 
 	/** @brief Returns path to the file in the given root path and subfolder.
 	 *
@@ -118,7 +118,7 @@ namespace Util
 	 * @sa GetPathCandidates()
 	 * @sa GetSysPathUrl()
 	 */
-	UTIL_API QString GetSysPath (SysPath path, const QString& subfolder, const QString& filename);
+	UTIL_SYS_API QString GetSysPath (SysPath path, const QString& subfolder, const QString& filename);
 
 	/** @brief Returns path to the file in the given root path and subfolder.
 	 *
@@ -135,7 +135,7 @@ namespace Util
 	 *
 	 * @sa GetSysPath()
 	 */
-	UTIL_API QUrl GetSysPathUrl (SysPath path, const QString& subfolder, const QString& filename);
+	UTIL_SYS_API QUrl GetSysPathUrl (SysPath path, const QString& subfolder, const QString& filename);
 
 	/** @brief Returns the components of the system PATH variable.
 	 *
@@ -146,7 +146,7 @@ namespace Util
 	 *
 	 * @sa FindInSystemPath()
 	 */
-	UTIL_API QStringList GetSystemPaths ();
+	UTIL_SYS_API QStringList GetSystemPaths ();
 
 	/** @brief Searches for a file in system paths according to a filter.
 	 *
@@ -162,7 +162,7 @@ namespace Util
 	 * @param[in] filter The filter function for the candidates.
 	 * @return The full path to the first found file or an empty string.
 	 */
-	UTIL_API QString FindInSystemPath (const QString& name, const QStringList& paths,
+	UTIL_SYS_API QString FindInSystemPath (const QString& name, const QStringList& paths,
 			const std::function<bool (QFileInfo)>& filter = std::function<bool (QFileInfo)> ());
 
 	/** @brief Describes various user-specific paths.
@@ -171,9 +171,36 @@ namespace Util
 	{
 		/** @brief Cache for volatile data.
 		 */
-		Cache
+		Cache,
+
+		/** @brief Root LeechCraft directory (something like ~/.leechcraft).
+		 */
+		LC
 	};
 
-	UTIL_API QDir GetUserDir (UserDir dir, const QString& subpath);
+	UTIL_SYS_API QDir GetUserDir (UserDir dir, const QString& subpath);
+
+	/** @brief Creates a path if it doesn't exist.
+	 *
+	 * Creates a relative path ~/.leechcraft/path and throws an
+	 * exception if this could not be done or if such path already
+	 * exists and it is not readable.
+	 *
+	 * @param[in] path The path to create.
+	 * @return The newly created dir.
+	 * @exception std::runtime_error Throws if the path could not be
+	 * created.
+	 */
+	UTIL_SYS_API QDir CreateIfNotExists (QString path);
+
+	/** @brief Returns a temporary filename.
+	 *
+	 * This function returns a name of a temporary file that could
+	 * be created, not creating the file itself.
+	 *
+	 * @param[in] pattern Pattern of the filename.
+	 * @return The filename.
+	 */
+	UTIL_SYS_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
 }
 }

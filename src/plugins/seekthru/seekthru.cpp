@@ -30,6 +30,7 @@
 #include "seekthru.h"
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

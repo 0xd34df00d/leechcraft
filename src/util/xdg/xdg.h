@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
+#include "xdgconfig.h"
 
 class QString;
 class QIcon;
@@ -41,8 +41,8 @@ namespace Util
 {
 namespace XDG
 {
-	UTIL_API QIcon GetAppIcon (const QString& iconName);
-	UTIL_API QPixmap GetAppPixmap (const QString& iconName);
+	UTIL_XDG_API QIcon GetAppIcon (const QString& iconName);
+	UTIL_XDG_API QPixmap GetAppPixmap (const QString& iconName);
 }
 }
 }

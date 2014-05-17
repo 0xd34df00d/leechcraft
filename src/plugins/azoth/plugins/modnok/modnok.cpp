@@ -35,6 +35,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/irichtextmessage.h>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 

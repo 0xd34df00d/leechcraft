@@ -34,7 +34,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QUrl>
-#include <util/util.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {

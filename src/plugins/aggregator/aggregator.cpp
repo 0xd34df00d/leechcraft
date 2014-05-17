@@ -48,7 +48,7 @@
 #include <util/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/tags/tagscompleter.h>
-#include <util/backendselector.h>
+#include <util/db/backendselector.h>
 #include <util/models/flattofoldersproxymodel.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>

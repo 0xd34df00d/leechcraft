@@ -33,7 +33,7 @@
 #include <QPointer>
 #include <QMenu>
 #include <QDesktopServices>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/icoreproxy.h>

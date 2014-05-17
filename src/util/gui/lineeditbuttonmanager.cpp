@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "lineeditbuttonmanager.h"
+#include <stdexcept>
 #include <QLineEdit>
 #include <QStyle>
 #include <QToolButton>
@@ -45,6 +46,17 @@ namespace Util
 	, Pad_ { 1 + FrameWidth_ }
 	{
 		edit->installEventFilter (this);
+
+		if (edit->findChildren<LineEditButtonManager*> ().size () > 1)
+		{
+			std::string str { "LineEditButtonManager is already installed on the edit" };
+
+			const auto& name = edit->objectName ();
+			if (!name.isEmpty ())
+				str += " " + name.toStdString ();
+
+			throw std::runtime_error (str);
+		}
 	}
 
 	void LineEditButtonManager::Add (QToolButton *button)

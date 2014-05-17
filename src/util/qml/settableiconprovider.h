@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API SettableIconProvider : public WidthIconProvider
+	class UTIL_QML_API SettableIconProvider : public WidthIconProvider
 	{
 		QHash<QStringList, QIcon> Icons_;
 	public:

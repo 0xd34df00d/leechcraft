@@ -29,7 +29,7 @@
 
 #include "quarkproxy.h"
 #include <QInputDialog>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>

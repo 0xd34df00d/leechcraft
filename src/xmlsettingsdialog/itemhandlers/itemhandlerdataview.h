@@ -54,7 +54,7 @@ namespace LeechCraft
 	protected:
 		QVariant GetObjectValue (QObject*) const;
 	private:
-		void SetDataSource (const QString&, QAbstractItemModel*);
+		void SetDataSource (const QString&, QAbstractItemModel*, bool);
 
 		QVariantList GetAddVariants (QAbstractItemModel*, const QVariantList& = QVariantList ());
 

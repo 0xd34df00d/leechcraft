@@ -43,7 +43,8 @@
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
-#include <util/util.h>
+#include <util/gui/lineeditbuttonmanager.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/itagsfetcher.h>
@@ -179,7 +180,9 @@ namespace Graffiti
 		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Album_);
 		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Artist_);
 		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Title_);
-		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Genre_);
+
+		auto genreMgr = new Util::LineEditButtonManager (Ui_.Genre_);
+
 		Ui_.Genre_->SetSeparator (" / ");
 
 		auto model = new Util::TagsCompletionModel (this);
@@ -187,7 +190,9 @@ namespace Graffiti
 		auto completer = new Util::TagsCompleter (Ui_.Genre_, this);
 		completer->OverrideModel (model);
 
-		Ui_.Genre_->AddSelector ();
+		Ui_.Genre_->AddSelector (genreMgr);
+
+		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Genre_, genreMgr);
 	}
 
 	void GraffitiTab::SetupViews ()

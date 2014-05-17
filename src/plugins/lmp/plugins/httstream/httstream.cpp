@@ -90,12 +90,13 @@ namespace HttStream
 				tr ("HTTP streaming"),
 				{},
 				false,
-				[this] (const QByteArray& instance, IPath*) -> IFilterElement*
+				[this] (const QByteArray& instance, IPath *path) -> IFilterElement*
 				{
 					return new HttpStreamFilter
 						{
 							GetUniqueID () + ".Filter",
-							instance
+							instance,
+							path
 						};
 				}
 			}

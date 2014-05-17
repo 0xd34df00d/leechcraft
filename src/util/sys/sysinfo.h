@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
 #include <QPair>
+#include "sysconfig.h"
 
 class QString;
 
@@ -44,13 +44,13 @@ namespace SysInfo
 	 *
 	 * @return The name and version of OS running LeechCraft.
 	 */
-	UTIL_API QString GetOSName ();
+	UTIL_SYS_API QString GetOSName ();
 
 	/** @brief Returns a pair of OS name and version.
 	 *
 	 * @return A pair consisting of operating system name and version.
 	 */
-	UTIL_API QPair<QString, QString> GetOSNameSplit ();
+	UTIL_SYS_API QPair<QString, QString> GetOSNameSplit ();
 }
 }
 }

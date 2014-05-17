@@ -72,8 +72,7 @@ namespace Xoox
 
 	void UserAvatarManager::handleEvent (const QString& from, PEPEventBase *event)
 	{
-		UserAvatarMetadata *mdEvent = dynamic_cast<UserAvatarMetadata*> (event);
-		if (mdEvent)
+		if (auto mdEvent = dynamic_cast<UserAvatarMetadata*> (event))
 		{
 			if (mdEvent->GetID ().isEmpty ())
 			{
@@ -113,9 +112,12 @@ namespace Xoox
 			return;
 		}
 
-		UserAvatarData *dEvent = dynamic_cast<UserAvatarData*> (event);
-		if (dEvent)
-			emit avatarUpdated (from, dEvent->GetImage ());
+		if (auto dEvent = dynamic_cast<UserAvatarData*> (event))
+		{
+			const auto& image = dEvent->GetImage ();
+			if (!image.isNull ())
+				emit avatarUpdated (from, dEvent->GetImage ());
+		}
 	}
 
 	void UserAvatarManager::handleHTTPFinished ()

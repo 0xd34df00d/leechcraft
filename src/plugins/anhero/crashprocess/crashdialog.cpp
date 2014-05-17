@@ -37,6 +37,7 @@
 #include <QTimer>
 #include <util/util.h>
 #include <util/sys/sysinfo.h>
+#include <util/sys/paths.h>
 #include "appinfo.h"
 #include "gdblauncher.h"
 #include "highlighter.h"

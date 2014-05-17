@@ -214,6 +214,9 @@
 			<item type="checkbox" property="AutoOpenFileDialogOnSend" default="true">
 				<label value="Open file choosing dialog automatically on file sending" />
 			</item>
+			<item type="checkbox" property="AutoOpenIncomingFiles" default="true">
+				<label value="Automatically open received files after transfer finishes" />
+			</item>
 			<item type="checkbox" property="UseAltNick" default="true">
 				<label value="Modify nick on conflicts in chat rooms" />
 				<tooltip>If enabled, the a string would be appended to your nick according to the next option. If disabled, nothing would happen.</tooltip>

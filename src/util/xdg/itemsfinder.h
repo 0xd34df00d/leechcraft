@@ -33,7 +33,7 @@
 #include <QObject>
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
-#include <util/utilconfig.h>
+#include "xdgconfig.h"
 
 namespace LeechCraft
 {
@@ -41,14 +41,14 @@ namespace Util
 {
 namespace XDG
 {
-	class UTIL_API Item;
+	class UTIL_XDG_API Item;
 	typedef std::shared_ptr<Item> Item_ptr;
 
 	enum class Type;
 
 	typedef QHash<QString, QList<Item_ptr>> Cat2Items_t;
 
-	class UTIL_API ItemsFinder : public QObject
+	class UTIL_XDG_API ItemsFinder : public QObject
 	{
 		Q_OBJECT
 

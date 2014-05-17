@@ -29,7 +29,7 @@
 
 #include "clientconnection.h"
 #include <QTextCodec>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "channelclentry.h"

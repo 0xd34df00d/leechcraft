@@ -38,8 +38,8 @@
 #include <QUuid>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/queuemanager.h>
-#include <util/util.h>
+#include <util/sll/queuemanager.h>
+#include <util/xpc/util.h>
 #include "albumsettingsdialog.h"
 #include "picasaservice.h"
 #include "uploadmanager.h"

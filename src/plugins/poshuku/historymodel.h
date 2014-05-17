@@ -27,13 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_HISTORYMODEL_H
-#define PLUGINS_POSHUKU_HISTORYMODEL_H
+#pragma once
+
 #include <deque>
 #include <vector>
-#include <QAbstractItemModel>
 #include <QStringList>
 #include <QDateTime>
+#include <QStandardItemModel>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/poshukutypes.h>
 
@@ -42,19 +42,13 @@ class QAction;
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class TreeItem;
-}
-
 namespace Poshuku
 {
-	class HistoryModel : public QAbstractItemModel
+	class HistoryModel : public QStandardItemModel
 	{
 		Q_OBJECT
 
 		QTimer *GarbageTimer_;
-		Util::TreeItem *RootItem_;
 		history_items_t Items_;
 	public:
 		enum Columns
@@ -65,21 +59,12 @@ namespace Poshuku
 		};
 
 		HistoryModel (QObject* = 0);
-		virtual ~HistoryModel ();
-
-		int columnCount (const QModelIndex& = QModelIndex ()) const;
-		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& = QModelIndex ()) const;
 	public slots:
 		void addItem (QString title, QString url,
 				QDateTime datetime, QObject *browserwidget = 0);
 		QList<QMap<QString, QVariant>> getItemsMap () const;
 	private:
-		void Add (const HistoryItem&, bool announce, int section);
+		void Add (const HistoryItem&, int section);
 	private slots:
 		void loadData ();
 		void collectGarbage ();
@@ -105,5 +90,3 @@ namespace Poshuku
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Poshuku::HistoryItem);
-
-#endif

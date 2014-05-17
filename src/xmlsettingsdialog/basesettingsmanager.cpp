@@ -110,6 +110,11 @@ namespace Util
 		return GetSettings ()->value (path, def);
 	}
 
+	void BaseSettingsManager::ShowSettingsPage (const QString& optionName)
+	{
+		emit showPageRequested (this, optionName);
+	}
+
 	void BaseSettingsManager::OptionSelected (const QByteArray& prop, const QVariant& val)
 	{
 		if (!SelectProps_.contains (prop))

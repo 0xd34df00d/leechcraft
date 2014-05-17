@@ -31,7 +31,7 @@
 
 #include <QPushButton>
 #include <QColor>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 namespace LeechCraft
 {
@@ -40,8 +40,10 @@ namespace Util
 	/** @brief A button for choosing a color.
 	 *
 	 * This class provides a button that can be used to choose a color.
+	 *
+	 * @ingroup GuiUtil
 	 */
-	class UTIL_API ColorButton : public QPushButton
+	class UTIL_GUI_API ColorButton : public QPushButton
 	{
 		Q_OBJECT
 

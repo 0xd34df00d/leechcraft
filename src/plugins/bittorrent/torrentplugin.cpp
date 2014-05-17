@@ -54,6 +54,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "core.h"
 #include "addtorrent.h"

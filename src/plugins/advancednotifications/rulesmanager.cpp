@@ -37,8 +37,11 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <util/xpc/stdanfields.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "typedmatchers.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -210,29 +213,73 @@ namespace AdvancedNotifications
 			}
 		}
 
+		auto stdFieldData = Util::GetStdANFields (category);
+		for (const auto& type : types)
+			stdFieldData += Util::GetStdANFields (type);
+
 		if (auto iane = qobject_cast<IANEmitter*> (plugin))
 			for (const auto& field : iane->GetANFields ())
 			{
 				qDebug () << "testing" << field.EventTypes_ << "against" << typeSet;
-				if (field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
-					continue;
+				if (!field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
+					stdFieldData << field;
+			}
 
-				if (e.Additional_.contains (field.ID_))
-				{
-					const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
-					valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
+		for (const auto& field : stdFieldData)
+			if (e.Additional_.contains (field.ID_))
+			{
+				const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
+				valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
 
-					FieldMatch fieldMatch (field.Type_, valMatcher);
-					fieldMatch.SetPluginID (sender);
-					fieldMatch.SetFieldName (field.ID_);
-					rule.AddFieldMatch (fieldMatch);
-				}
+				FieldMatch fieldMatch (field.Type_, valMatcher);
+				fieldMatch.SetPluginID (sender);
+				fieldMatch.SetFieldName (field.ID_);
+				rule.AddFieldMatch (fieldMatch);
 			}
 
 		Rules_.prepend (rule);
 		RulesModel_->insertRow (0, RuleToRow (rule));
 
 		SaveSettings ();
+
+		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+		emit focusOnRule (RulesModel_->index (0, 0));
+	}
+
+	void RulesManager::SuggestRuleConfiguration (const Entity& rule)
+	{
+		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+
+		const auto id = rule.Additional_ ["org.LC.AdvNotifications.RuleID"].toInt ();
+		emit focusOnRule (RulesModel_->index (id, 0));
+	}
+
+	QList<Entity> RulesManager::GetAllRules (const QString& category) const
+	{
+		QList<Entity> result;
+		for (int i = 0; i < Rules_.size (); ++i)
+		{
+			const auto& rule = Rules_.at (i);
+			if (rule.GetCategory () != category)
+				continue;
+
+			auto e = Util::MakeEntity (rule.GetName (), {}, {}, {});
+			e.Additional_ ["org.LC.AdvNotifications.RuleID"] = i;
+			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.AdvancedNotifications";
+			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = rule.GetCategory ();
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = QStringList { rule.GetTypes ().toList () };
+			e.Additional_ ["org.LC.AdvNotifications.AssocColor"] = rule.GetColor ();
+			e.Additional_ ["org.LC.AdvNotifications.IsEnabled"] = rule.IsEnabled ();
+
+			for (const auto& fieldMatch : rule.GetFieldMatches ())
+			{
+				const auto& matcher = fieldMatch.GetMatcher ();
+				e.Additional_ [fieldMatch.GetFieldName ()] = QVariant::fromValue (matcher->GetValue ());
+			}
+
+			result << e;
+		}
+		return result;
 	}
 
 	void RulesManager::LoadDefaultRules (int version)
@@ -365,6 +412,8 @@ namespace AdvancedNotifications
 		settings.beginGroup ("rules");
 		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule>> (Rules_));
 		settings.endGroup ();
+
+		emit rulesChanged ();
 	}
 
 	QList<QStandardItem*> RulesManager::RuleToRow (const NotificationRule& rule) const

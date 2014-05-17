@@ -29,35 +29,15 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include <QtGlobal>
 
-class QDBusInterface;
+#if defined(leechcraft_util_db_EXPORTS)
+#  define UTIL_DB_API Q_DECL_EXPORT
+#else
+#  define UTIL_DB_API Q_DECL_IMPORT
+#endif
 
-namespace LeechCraft
-{
-namespace Loaders
-{
-	class DBusWrapper : public QObject
-					  , public IInfo
-	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
-
-		const QString Service_;
-		std::shared_ptr<QDBusInterface> IFace_;
-
-		std::shared_ptr<QDBusInterface> Info_;
-	public:
-		explicit DBusWrapper (const QString& service);
-
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	};
-}
-}
+/** @defgroup DbUtil The DB utilities
+ *
+ * @brief General widgets and classes for databases.
+ */

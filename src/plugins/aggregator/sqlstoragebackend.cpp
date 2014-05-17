@@ -38,7 +38,7 @@
 #include <QVariant>
 #include <QSqlRecord>
 #include <util/util.h>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>

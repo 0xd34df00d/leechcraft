@@ -33,7 +33,7 @@
 #include <QVector>
 #include <QMap>
 #include <QVariant>
-#include <util/utilconfig.h>
+#include "modelsconfig.h"
 
 namespace LeechCraft
 {
@@ -45,28 +45,28 @@ namespace LeechCraft
 			QMap<int, QVector<QVariant>> Data_;
 			TreeItem *Parent_;
 		public:
-			UTIL_API TreeItem (const QList<QVariant>&, TreeItem *parent = 0);
-			UTIL_API ~TreeItem ();
+			UTIL_MODELS_API TreeItem (const QList<QVariant>&, TreeItem *parent = 0);
+			UTIL_MODELS_API ~TreeItem ();
 
-			UTIL_API void AppendChild (TreeItem*);
-			UTIL_API void PrependChild (TreeItem*);
-			UTIL_API void InsertChild (int, TreeItem*);
-			UTIL_API int ChildPosition (const TreeItem*) const;
-			UTIL_API void RemoveChild (int);
-			UTIL_API TreeItem* Child (int) const;
-			UTIL_API int ChildCount () const;
-			UTIL_API int ColumnCount (int = Qt::DisplayRole) const;
-			UTIL_API QVariant Data (int, int = Qt::DisplayRole) const;
-			UTIL_API void ModifyData (int, const QVariant&, int = Qt::DisplayRole);
-			UTIL_API const TreeItem* Parent () const;
-			UTIL_API TreeItem* Parent ();
-			UTIL_API int Row () const;
+			UTIL_MODELS_API void AppendChild (TreeItem*);
+			UTIL_MODELS_API void PrependChild (TreeItem*);
+			UTIL_MODELS_API void InsertChild (int, TreeItem*);
+			UTIL_MODELS_API int ChildPosition (const TreeItem*) const;
+			UTIL_MODELS_API void RemoveChild (int);
+			UTIL_MODELS_API TreeItem* Child (int) const;
+			UTIL_MODELS_API int ChildCount () const;
+			UTIL_MODELS_API int ColumnCount (int = Qt::DisplayRole) const;
+			UTIL_MODELS_API QVariant Data (int, int = Qt::DisplayRole) const;
+			UTIL_MODELS_API void ModifyData (int, const QVariant&, int = Qt::DisplayRole);
+			UTIL_MODELS_API const TreeItem* Parent () const;
+			UTIL_MODELS_API TreeItem* Parent ();
+			UTIL_MODELS_API int Row () const;
 		};
 	};
 };
 
-UTIL_API QDebug operator<< (QDebug, const LeechCraft::Util::TreeItem&);
-UTIL_API QDebug operator<< (QDebug, const LeechCraft::Util::TreeItem* const);
+UTIL_MODELS_API QDebug operator<< (QDebug, const LeechCraft::Util::TreeItem&);
+UTIL_MODELS_API QDebug operator<< (QDebug, const LeechCraft::Util::TreeItem* const);
 
 #endif
 
