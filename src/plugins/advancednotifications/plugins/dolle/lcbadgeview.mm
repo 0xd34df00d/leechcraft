@@ -136,7 +136,7 @@ static const int kFontSize = 24;
 			if (yOffset < 0.0)
 				break;
 
-			NSRect badgeRect = NSMakeRect (columnMaxX - badgeSize.width,
+			NSRect badgeRect = NSMakeRect (column == 0 ? columnMaxX - badgeSize.width : badgeBorderDx,
 										   yOffset,
 										   badgeSize.width,
 										   badgeSize.height);
