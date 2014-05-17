@@ -44,18 +44,24 @@ namespace BitTorrent
 {
 	namespace
 	{
-		QString CheckClipboard (QClipboard::Mode mode)
+		bool IsMagnet (const QString& link)
 		{
-			auto url = QUrl::fromUserInput (qApp->clipboard ()->text (mode));
+			const auto& url = QUrl::fromUserInput (link);
 			if (!url.isValid () || url.scheme () != "magnet")
-				return {};
+				return false;
 
 			const auto& queryItems = url.queryItems ();
 			for (const auto& item : queryItems)
 				if (item.first == "xt" && item.second.startsWith ("urn:btih:"))
-					return url.toString ();
+					return true;
 
-			return {};
+			return false;
+		}
+
+		QString CheckClipboard (QClipboard::Mode mode)
+		{
+			const auto& text = qApp->clipboard ()->text (mode);
+			return IsMagnet (text) ? text : QString {};
 		}
 	}
 
@@ -74,6 +80,16 @@ namespace BitTorrent
 		const auto& dir = XmlSettingsManager::Instance ()->
 				property ("LastSaveDirectory").toString ();
 		Ui_.SavePath_->setText (dir);
+
+		checkComplete ();
+		connect (Ui_.SavePath_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (checkComplete ()));
+		connect (Ui_.Magnet_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (checkComplete ()));
 	}
 
 	QString AddMagnetDialog::GetLink () const
@@ -107,6 +123,13 @@ namespace BitTorrent
 
 		XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
 		Ui_.SavePath_->setText (dir);
+	}
+
+	void AddMagnetDialog::checkComplete ()
+	{
+		const auto isComplete = !Ui_.SavePath_->text ().isEmpty () &&
+				IsMagnet (Ui_.Magnet_->text ());
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isComplete);
 	}
 }
 }

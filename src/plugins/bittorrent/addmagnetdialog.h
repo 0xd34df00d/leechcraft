@@ -51,6 +51,7 @@ namespace BitTorrent
 		QStringList GetTags () const;
 	private slots:
 		void on_BrowseButton__released ();
+		void checkComplete ();
 	};
 }
 }
