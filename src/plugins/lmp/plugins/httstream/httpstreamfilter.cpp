@@ -188,7 +188,7 @@ namespace HttStream
 		TeeStreamPad_ = nullptr;
 	}
 
-	void HttpStreamFilter::HandleFirstClientConnected ()
+	bool HttpStreamFilter::HandleFirstClientConnected ()
 	{
 		const auto source = Path_->GetSourceObject ();
 		StateOnFirst_ = source->GetState ();
@@ -247,6 +247,11 @@ namespace HttStream
 				this,
 				SLOT (checkCreatePad (SourceState)));
 		CreatePad ();
+
+		for (const auto sock : PendingSockets_)
+			g_signal_emit_by_name (MSS_, "add", sock);
+
+		PendingSockets_.clear ();
 	}
 
 	void HttpStreamFilter::readdFd (int fd)
@@ -256,10 +261,12 @@ namespace HttStream
 
 	void HttpStreamFilter::handleClient (int socket)
 	{
-		if (!ClientsCount_++)
-			HandleFirstClientConnected ();
+		if (ClientsCount_ || HandleFirstClientConnected ())
+			g_signal_emit_by_name (MSS_, "add", socket);
+		else
+			PendingSockets_ << socket;
 
-		g_signal_emit_by_name (MSS_, "add", socket);
+		++ClientsCount_;
 	}
 
 	void HttpStreamFilter::handleClientDisconnected (int socket)

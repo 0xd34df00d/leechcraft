@@ -80,6 +80,7 @@ namespace HttStream
 		int ClientsCount_ = 0;
 
 		SourceState StateOnFirst_ = SourceState::Error;
+		QList<int> PendingSockets_;
 	public:
 		HttpStreamFilter (const QByteArray& filterId,
 				const QByteArray& instanceId, IPath *path);
@@ -100,7 +101,7 @@ namespace HttStream
 		void CreatePad ();
 		void DestroyPad ();
 
-		void HandleFirstClientConnected ();
+		bool HandleFirstClientConnected ();
 		void HandleLastClientDisconnected ();
 
 		int HandleError (GstMessage*);
