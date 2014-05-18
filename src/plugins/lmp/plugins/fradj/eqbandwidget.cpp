@@ -58,6 +58,16 @@ namespace Fradj
 				SLOT (setGainBoxValue (int)));
 	}
 
+	void EqBandWidget::SetGain (double value)
+	{
+		Ui_.GainBox_->setValue (value);
+	}
+
+	double EqBandWidget::GetGain ()
+	{
+		return Ui_.GainBox_->value ();
+	}
+
 	void EqBandWidget::setGainSliderValue (double value)
 	{
 		disconnect (Ui_.GainSlider_,
