@@ -48,6 +48,16 @@ namespace Util
 		return result;
 	}
 
+	template<typename T1, typename T2,
+		template<typename U> class Container,
+		template<typename U1, typename U2> class Pair = QPair>
+	auto Zip (const Container<T1>& c1, const Container<T2>& c2) -> Container<Pair<T1, T2>>
+	{
+		return ZipWith (c1, c2,
+				[] (const T1& t1, const T2& t2) -> Pair<T1, T2>
+					{ return { t1, t2}; });
+	}
+
 	template<typename T, template<typename U> class Container, typename F>
 	auto Map (const Container<T>& c, F f) -> Container<decltype (f (T ()))>
 	{
