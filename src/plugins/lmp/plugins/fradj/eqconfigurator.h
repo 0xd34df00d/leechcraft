@@ -57,6 +57,7 @@ namespace Fradj
 		void OpenDialog ();
 	private:
 		QList<double> ReadGains () const;
+		void SaveGains (const QList<double>&) const;
 	};
 }
 }

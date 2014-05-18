@@ -66,6 +66,8 @@ namespace Fradj
 			return;
 
 		IEq_->SetGains (newGains);
+
+		SaveGains (newGains);
 	}
 
 	QList<double> EqConfigurator::ReadGains () const
@@ -90,6 +92,21 @@ namespace Fradj
 		settings.endGroup ();
 
 		return gains;
+	}
+
+	void EqConfigurator::SaveGains (const QList<double>& gains) const
+	{
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_Fadj" };
+		settings.beginGroup (ID_);
+		settings.beginWriteArray ("Gains");
+		for (int i = 0; i < gains.size (); ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("Gain", gains.at (i));
+		}
+		settings.endArray ();
+		settings.endGroup ();
 	}
 }
 }
