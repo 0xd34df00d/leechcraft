@@ -12,14 +12,20 @@ set (FRADJ_SRCS
 	fradj.cpp
 	eq10bandeffect.cpp
 	eqconfigurator.cpp
+	eqbandwidget.cpp
 	)
 
+set (FRADJ_FORMS
+	eqbandwidget.ui
+	)
+QT4_WRAP_UI (FRADJ_UIS_H ${FRADJ_FORMS})
 #CreateTrs ("lmp_fradj" "en;ru_RU" FRADJ_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp_fradj" "en;ru_RU" "${FRADJ_SRCS}" "${FRADJ_FORMS}" "lmpfradjfiltersettings.xml")
 
 add_library (leechcraft_lmp_fradj SHARED
 	${FRADJ_COMPILED_TRANSLATIONS}
 	${FRADJ_SRCS}
+	${FRADJ_UIS_H}
 	)
 target_link_libraries (leechcraft_lmp_fradj
 	${QT_LIBRARIES}
