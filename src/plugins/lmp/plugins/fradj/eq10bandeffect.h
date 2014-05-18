@@ -61,7 +61,7 @@ namespace Fradj
 		QByteArray GetInstanceId () const;
 		IFilterConfigurator* GetConfigurator () const;
 
-		const BandInfos_t& GetFixedBands () const;
+		BandInfos_t GetFixedBands () const;
 		void SetGains (const QList<double>& gains);
 	protected:
 		GstElement* GetElement () const;

@@ -45,7 +45,7 @@ namespace Fradj
 
 		virtual QByteArray GetEffectId () const = 0;
 
-		virtual const BandInfos_t& GetFixedBands () const = 0;
+		virtual BandInfos_t GetFixedBands () const = 0;
 
 		virtual void SetGains (const QList<double>& gains) = 0;
 	};

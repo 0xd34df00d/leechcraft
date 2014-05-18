@@ -60,7 +60,7 @@ namespace Fradj
 		return Configurator_;
 	}
 
-	const BandInfos_t& Eq10BandEffect::GetFixedBands () const
+	BandInfos_t Eq10BandEffect::GetFixedBands () const
 	{
 		return
 		{
