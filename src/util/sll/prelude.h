@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <type_traits>
 #include <iterator>
 
 namespace LeechCraft
@@ -36,9 +37,9 @@ namespace LeechCraft
 namespace Util
 {
 	template<typename T1, typename T2, template<typename U> class Container, typename F>
-	auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f) -> Container<decltype (f (T1 (), T2 ()))>
+	auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f) -> Container<typename std::result_of<F (T1, T2)>::type>
 	{
-		Container<decltype (f (T1 (), T2 ()))> result;
+		Container<typename std::result_of<F (T1, T2)>::type> result;
 
 		auto i1 = std::begin (c1), e1 = std::end (c1);
 		auto i2 = std::begin (c2), e2 = std::end (c2);
