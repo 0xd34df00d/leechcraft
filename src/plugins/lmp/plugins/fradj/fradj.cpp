@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "fradj.h"
+#include "eq10bandeffect.h"
 
 namespace LeechCraft
 {
@@ -80,11 +81,22 @@ namespace Fradj
 
 	QList<EffectInfo> Plugin::GetEffects () const
 	{
-		return {};
+		return
+		{
+			{
+				GetUniqueID () + ".10Band",
+				tr ("10-band equalizer"),
+				{},
+				true,
+				[this] (const QByteArray&, IPath*) -> IFilterElement*
+				{
+					return new Eq10BandEffect { GetUniqueID () + ".10Band" };
+				}
+			}
+		};
 	}
 }
 }
 }
 
 LC_EXPORT_PLUGIN (leechcraft_lmp_httstream, LeechCraft::LMP::Fradj::Plugin);
-
