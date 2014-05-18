@@ -53,6 +53,8 @@ namespace Fradj
 		EqConfigurator (QObject*);
 
 		void OpenDialog ();
+	private:
+		QList<double> ReadGains () const;
 	};
 }
 }

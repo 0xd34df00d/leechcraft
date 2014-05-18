@@ -28,6 +28,10 @@
  **********************************************************************/
 
 #include "eqconfigurator.h"
+#include <algorithm>
+#include <iterator>
+#include <QSettings>
+#include "eqconfiguratordialog.h"
 #include "iequalizer.h"
 
 namespace LeechCraft
@@ -46,6 +50,41 @@ namespace Fradj
 
 	void EqConfigurator::OpenDialog ()
 	{
+		const auto& gains = ReadGains ();
+
+		EqConfiguratorDialog dia { Bands_, gains };
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& newGains = dia.GetGains ();
+		if (newGains == gains)
+			return;
+
+		IEq_->SetGains (newGains);
+	}
+
+	QList<double> EqConfigurator::ReadGains () const
+	{
+		QList<double> gains;
+
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_Fadj" };
+		settings.beginGroup (ID_);
+		const int count = settings.beginReadArray ("Gains");
+
+		if (count)
+			for (int i = 0; i < count; ++i)
+			{
+				settings.setArrayIndex (i);
+				gains << settings.value ("Gain").toDouble ();
+			}
+		else
+			std::fill_n (std::back_inserter (gains), Bands_.size (), 0);
+
+		settings.endArray ();
+		settings.endGroup ();
+
+		return gains;
 	}
 }
 }
