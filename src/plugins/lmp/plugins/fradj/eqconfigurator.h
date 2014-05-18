@@ -39,15 +39,18 @@ namespace LMP
 {
 namespace Fradj
 {
+	class IEqualizer;
+
 	class EqConfigurator : public QObject
 						 , public IFilterConfigurator
 	{
 		Q_OBJECT
 
+		IEqualizer * const IEq_;
 		const QByteArray ID_;
 		BandInfos_t Bands_;
 	public:
-		EqConfigurator (const BandInfos_t&, const QByteArray&, QObject* = 0);
+		EqConfigurator (QObject*);
 
 		void OpenDialog ();
 	};

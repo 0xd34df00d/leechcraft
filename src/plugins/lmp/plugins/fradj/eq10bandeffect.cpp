@@ -37,27 +37,10 @@ namespace LMP
 {
 namespace Fradj
 {
-	namespace
-	{
-		const BandInfos_t TenBands
-		{
-			{ 29 },
-			{ 59 },
-			{ 119 },
-			{ 237 },
-			{ 474 },
-			{ 947 },
-			{ 1889 },
-			{ 3770 },
-			{ 7523 },
-			{ 15011 }
-		};
-	}
-
 	Eq10BandEffect::Eq10BandEffect (const QByteArray& filterId)
 	: FilterId_ { filterId }
 	, Equalizer_ { gst_element_factory_make ("equalizer-10bands", nullptr) }
-	, Configurator_ { new EqConfigurator { TenBands, FilterId_, this } }
+	, Configurator_ { new EqConfigurator { this } }
 	{
 	}
 

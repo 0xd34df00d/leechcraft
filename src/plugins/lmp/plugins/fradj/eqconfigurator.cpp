@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "eqconfigurator.h"
+#include "iequalizer.h"
 
 namespace LeechCraft
 {
@@ -35,11 +36,11 @@ namespace LMP
 {
 namespace Fradj
 {
-	EqConfigurator::EqConfigurator (const BandInfos_t& bands,
-			const QByteArray& id, QObject* parent)
+	EqConfigurator::EqConfigurator (QObject *parent)
 	: QObject { parent }
-	, ID_ { id }
-	, Bands_ { bands }
+	, IEq_ { dynamic_cast<IEqualizer*> (parent) }
+	, ID_ { IEq_->GetEffectId () }
+	, Bands_ { IEq_->GetFixedBands () }
 	{
 	}
 
