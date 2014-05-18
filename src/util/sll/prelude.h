@@ -33,7 +33,7 @@
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Util
 {
 	template<typename T1, typename T2, template<typename U> class Container, typename F>
 	auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f) -> Container<decltype (f (T1 (), T2 ()))>
@@ -57,3 +57,4 @@ namespace Poleemery
 	}
 }
 }
+
