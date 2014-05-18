@@ -12,12 +12,14 @@ set (FRADJ_SRCS
 	fradj.cpp
 	eq10bandeffect.cpp
 	eqconfigurator.cpp
+	eqconfiguratordialog.cpp
 	eqbandwidget.cpp
 	bandinfo.cpp
 	)
 
 set (FRADJ_FORMS
 	eqbandwidget.ui
+	eqconfiguratordialog.ui
 	)
 QT4_WRAP_UI (FRADJ_UIS_H ${FRADJ_FORMS})
 #CreateTrs ("lmp_fradj" "en;ru_RU" FRADJ_COMPILED_TRANSLATIONS)
