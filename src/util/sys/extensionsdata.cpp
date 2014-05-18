@@ -57,7 +57,7 @@ namespace Util
 
 	QIcon ExtensionsData::GetExtIcon (const QString& extension) const
 	{
-		return GetMimeIcon (GetMime (extension));
+		return Impl_ ? Impl_->GetExtIcon (extension) : QIcon {};
 	}
 
 	QIcon ExtensionsData::GetMimeIcon (const QString& mime) const

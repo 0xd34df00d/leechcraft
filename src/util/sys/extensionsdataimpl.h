@@ -47,6 +47,7 @@ namespace Util
 		ExtensionsDataImpl ();
 
 		const QHash<QString, QString>& GetMimeDatabase () const;
+		QIcon GetExtIcon (const QString& extension) const;
 		QIcon GetMimeIcon (const QString& mime) const;
 	};
 }
