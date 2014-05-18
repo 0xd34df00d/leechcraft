@@ -13,6 +13,7 @@ set (FRADJ_SRCS
 	eq10bandeffect.cpp
 	eqconfigurator.cpp
 	eqbandwidget.cpp
+	bandinfo.cpp
 	)
 
 set (FRADJ_FORMS
