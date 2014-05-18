@@ -75,7 +75,7 @@ namespace Fradj
 		QList<double> gains;
 
 		QSettings settings { QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_LMP_Fadj" };
+				QCoreApplication::applicationName () + "_LMP_Fradj" };
 		settings.beginGroup (ID_);
 		const int count = settings.beginReadArray ("Gains");
 
@@ -97,7 +97,7 @@ namespace Fradj
 	void EqConfigurator::SaveGains (const QList<double>& gains) const
 	{
 		QSettings settings { QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_LMP_Fadj" };
+				QCoreApplication::applicationName () + "_LMP_Fradj" };
 		settings.beginGroup (ID_);
 		settings.beginWriteArray ("Gains");
 		for (int i = 0; i < gains.size (); ++i)
