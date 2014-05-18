@@ -48,6 +48,11 @@ namespace Fradj
 	{
 	}
 
+	void EqConfigurator::Restore ()
+	{
+		IEq_->SetGains (ReadGains ());
+	}
+
 	void EqConfigurator::OpenDialog ()
 	{
 		const auto& gains = ReadGains ();

@@ -52,6 +52,8 @@ namespace Fradj
 	public:
 		EqConfigurator (QObject*);
 
+		void Restore ();
+
 		void OpenDialog ();
 	private:
 		QList<double> ReadGains () const;
