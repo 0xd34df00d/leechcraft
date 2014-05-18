@@ -42,12 +42,16 @@ namespace LMP
 {
 namespace Fradj
 {
+	class EqConfigurator;
+
 	class Eq10BandEffect : public QObject
 						 , public IFilterElement
 	{
 		const QByteArray FilterId_;
 
 		GstElement * const Equalizer_;
+
+		EqConfigurator * const Configurator_;
 	public:
 		Eq10BandEffect (const QByteArray& filterId);
 

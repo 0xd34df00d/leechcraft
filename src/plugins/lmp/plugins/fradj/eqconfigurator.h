@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/lmp/ifilterconfigurator.h>
+#include "bandinfo.h"
 
 namespace LeechCraft
 {
@@ -43,9 +44,9 @@ namespace Fradj
 	{
 		Q_OBJECT
 
-		const int BandCount_;
+		BandInfos_t Bands_;
 	public:
-		EqConfigurator (int, QObject* = 0);
+		EqConfigurator (const BandInfos_t&, QObject* = 0);
 
 		void OpenDialog ();
 	};

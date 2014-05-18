@@ -29,6 +29,7 @@
 
 #include "eq10bandeffect.h"
 #include <gst/gst.h>
+#include "eqconfigurator.h"
 
 namespace LeechCraft
 {
@@ -36,9 +37,27 @@ namespace LMP
 {
 namespace Fradj
 {
+	namespace
+	{
+		const BandInfos_t TenBands
+		{
+			{ 29 },
+			{ 59 },
+			{ 119 },
+			{ 237 },
+			{ 474 },
+			{ 947 },
+			{ 1889 },
+			{ 3770 },
+			{ 7523 },
+			{ 15011 }
+		};
+	}
+
 	Eq10BandEffect::Eq10BandEffect (const QByteArray& filterId)
 	: FilterId_ { filterId }
 	, Equalizer_ { gst_element_factory_make ("equalizer-10bands", nullptr) }
+	, Configurator_ { new EqConfigurator { TenBands, this } }
 	{
 	}
 
@@ -54,7 +73,7 @@ namespace Fradj
 
 	IFilterConfigurator* Eq10BandEffect::GetConfigurator () const
 	{
-		return nullptr;
+		return Configurator_;
 	}
 
 	GstElement* Eq10BandEffect::GetElement () const
