@@ -47,6 +47,9 @@ namespace Fradj
 		Ui::EqBandWidget Ui_;
 	public:
 		EqBandWidget (const BandInfo&, QWidget* = 0);
+	private slots:
+		void setGainSliderValue (double);
+		void setGainBoxValue (int);
 	};
 }
 }

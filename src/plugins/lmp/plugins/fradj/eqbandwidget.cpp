@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "eqbandwidget.h"
+#include <cmath>
 #include "bandinfo.h"
 
 namespace LeechCraft
@@ -46,6 +47,35 @@ namespace Fradj
 		QString suffix { " " };
 		suffix += info.Freq_ > 1000 ? tr ("kHz") : tr ("Hz");
 		Ui_.FreqBox_->setSuffix (suffix);
+
+		connect (Ui_.GainBox_,
+				SIGNAL (valueChanged (double)),
+				this,
+				SLOT (setGainSliderValue (double)));
+		connect (Ui_.GainSlider_,
+				SIGNAL (valueChanged (int)),
+				this,
+				SLOT (setGainBoxValue (int)));
+	}
+
+	void EqBandWidget::setGainSliderValue (double value)
+	{
+		disconnect (Ui_.GainSlider_,
+				SIGNAL (valueChanged (int)),
+				this,
+				SLOT (setGainBoxValue (int)));
+
+		Ui_.GainSlider_->setValue (std::round (value));
+
+		connect (Ui_.GainSlider_,
+				SIGNAL (valueChanged (int)),
+				this,
+				SLOT (setGainBoxValue (int)));
+	}
+
+	void EqBandWidget::setGainBoxValue (int value)
+	{
+		Ui_.GainBox_->setValue (value);
 	}
 }
 }
