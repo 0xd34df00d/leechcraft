@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "eqbandwidget.h"
+#include "bandinfo.h"
 
 namespace LeechCraft
 {
@@ -35,10 +36,16 @@ namespace LMP
 {
 namespace Fradj
 {
-	EqBandWidget::EqBandWidget (QWidget *parent)
+	EqBandWidget::EqBandWidget (const BandInfo& info, QWidget *parent)
 	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
+
+		Ui_.FreqBox_->setValue (info.Freq_ > 1000 ? info.Freq_ / 1000 : info.Freq_);
+
+		QString suffix { " " };
+		suffix += info.Freq_ > 1000 ? tr ("kHz") : tr ("Hz");
+		Ui_.FreqBox_->setSuffix (suffix);
 	}
 }
 }

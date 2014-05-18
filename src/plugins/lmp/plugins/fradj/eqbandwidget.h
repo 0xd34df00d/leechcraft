@@ -38,13 +38,15 @@ namespace LMP
 {
 namespace Fradj
 {
+	struct BandInfo;
+
 	class EqBandWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::EqBandWidget Ui_;
 	public:
-		EqBandWidget (QWidget* = 0);
+		EqBandWidget (const BandInfo&, QWidget* = 0);
 	};
 }
 }
