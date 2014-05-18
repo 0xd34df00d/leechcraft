@@ -29,6 +29,7 @@
 
 #include "dolle.h"
 #include "notificationhandler.h"
+#include "dockutil.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,7 @@ namespace Dolle
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		DU::InstallBadgeView ();
 	}
 
 	void Plugin::SecondInit ()

@@ -618,13 +618,19 @@ void LeechCraft::MainWindow::showHideMain ()
 {
 	IsShown_ = !IsShown_;
 	if (IsShown_)
-	{
-		show ();
-		activateWindow ();
-		raise ();
-	}
+		showMain ();
 	else
 		hide ();
+}
+
+void LeechCraft::MainWindow::showMain ()
+{
+	if (!IsShown_)
+		IsShown_ = true;
+
+	show ();
+	activateWindow ();
+	raise ();
 }
 
 void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)

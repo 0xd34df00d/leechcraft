@@ -109,6 +109,7 @@ namespace LeechCraft
 	public slots:
 		void catchError (QString);
 		void showHideMain ();
+		void showMain ();
 
 		void handleQuit ();
 	protected:

@@ -28,22 +28,37 @@
  **********************************************************************/
 
 #include "dockutil.h"
-#include <QString>
-#include <AppKit/NSApplication.h>
-#include <AppKit/NSDockTile.h>
-#include <Foundation/NSString.h>
+#include <numeric>
 
-static NSString* toNsString (const QString& text)
-{
-	auto utf8String = text.toUtf8 ().constData ();
-	return [[NSString alloc] initWithUTF8String: utf8String];
-}
+#import <AppKit/NSDockTile.h>
+#import <AppKit/NSColor.h>
+#import <Foundation/NSString.h>
+#import "lcbadgeview.h"
 
-static void SetDockBadgeImpl (const QString& text)
+namespace
 {
-	auto badgeString = toNsString (text);
-	[[NSApp dockTile] setBadgeLabel: badgeString];
-	[badgeString release];
+	LCBadgeView* GetBadgeView ()
+	{
+		static LCBadgeView *view = nullptr;
+		if (view)
+			return view;
+
+		NSDockTile *dockTile = [NSApp dockTile];
+		NSView *contentView = [dockTile contentView];
+		NSSize size = contentView ? [contentView bounds].size : [dockTile size];
+
+		view = [[LCBadgeView alloc] initWithFrame: NSMakeRect (0, 0, size.width, size.height)];
+		[dockTile setContentView: view];
+		[dockTile display];
+
+		return view;
+	}
+
+	static NSString* toNsString (const QString& text)
+	{
+		const auto& ba = text.toUtf8 ();
+		return [NSString stringWithUTF8String: ba.constData ()];
+	}
 }
 
 namespace LeechCraft
@@ -54,9 +69,55 @@ namespace Dolle
 {
 namespace DU
 {
-	void SetDockBadge (const QString& text)
+	void InstallBadgeView ()
 	{
-		SetDockBadgeImpl (text);
+		GetBadgeView ();
+	}
+
+	bool SetDockBadges (const QList<NotificationData>& badges)
+	{
+		typedef QList<QPair<QString, QColor>> BadgePairs;
+
+		auto view = GetBadgeView ();
+		if (!view)
+			return false;
+
+		BadgePairs badgePairs;
+
+		auto badgesCount = std::count_if (badges.constBegin (), badges.constEnd (),
+				[] (const NotificationData& d) { return d.Total_ > 0; });
+
+		if (badgesCount > [view maxBadges])
+		{
+			const auto total = std::accumulate (badges.constBegin (), badges.constEnd (), 0,
+					[] (int s, const NotificationData& d) { return s + d.Total_; });
+
+			badgePairs.append ({ QString::number (total), QColor (Qt::red) });
+			badgesCount = 1;
+		}
+		else
+		{
+			for (const NotificationData& data: badges)
+			{
+				const auto total = std::accumulate (data.Counts_.constBegin (), data.Counts_.constEnd (), 0);
+				if (!total)
+					continue;
+
+				badgePairs.append ({ QString::number (total), data.Color_ });
+			}
+		}
+		NSMutableArray *labelsArray = [NSMutableArray arrayWithCapacity: badgesCount];
+		NSMutableArray *colorsArray = [NSMutableArray arrayWithCapacity: badgesCount];
+		for (const auto& b : badgePairs)
+		{
+			[labelsArray addObject: toNsString (b.first)];
+			[colorsArray addObject: [NSColor colorWithCalibratedRed:b.second.redF ()
+															  green:b.second.greenF ()
+															   blue:b.second.blueF ()
+															  alpha:b.second.alphaF ()]];
+		}
+
+		return [view displayBadges: labelsArray andColors: colorsArray] == YES;
 	}
 }
 }
