@@ -10,6 +10,7 @@ include_directories (${LMP_INCLUDE_DIR}
 
 set (FRADJ_SRCS
 	fradj.cpp
+	eq10bandeffect.cpp
 	)
 
 #CreateTrs ("lmp_fradj" "en;ru_RU" FRADJ_COMPILED_TRANSLATIONS)
