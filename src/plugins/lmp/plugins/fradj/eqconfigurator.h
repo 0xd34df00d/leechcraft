@@ -44,9 +44,10 @@ namespace Fradj
 	{
 		Q_OBJECT
 
+		const QByteArray ID_;
 		BandInfos_t Bands_;
 	public:
-		EqConfigurator (const BandInfos_t&, QObject* = 0);
+		EqConfigurator (const BandInfos_t&, const QByteArray&, QObject* = 0);
 
 		void OpenDialog ();
 	};

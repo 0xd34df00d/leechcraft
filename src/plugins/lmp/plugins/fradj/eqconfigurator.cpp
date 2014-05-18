@@ -35,8 +35,10 @@ namespace LMP
 {
 namespace Fradj
 {
-	EqConfigurator::EqConfigurator (const BandInfos_t& bands, QObject* parent)
+	EqConfigurator::EqConfigurator (const BandInfos_t& bands,
+			const QByteArray& id, QObject* parent)
 	: QObject { parent }
+	, ID_ { id }
 	, Bands_ { bands }
 	{
 	}
