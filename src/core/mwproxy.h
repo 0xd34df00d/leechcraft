@@ -55,6 +55,7 @@ namespace LeechCraft
 		void AddSideWidget (QWidget*, WidgetArea);
 
 		void ToggleVisibility ();
+		void ShowMain ();
 
 		QMenu* GetMainMenu ();
 		void HideMainMenu ();

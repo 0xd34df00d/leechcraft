@@ -97,6 +97,11 @@ namespace LeechCraft
 		Win_->showHideMain ();
 	}
 
+	void MWProxy::ShowMain ()
+	{
+		Win_->showMain ();
+	}
+
 	QMenu* MWProxy::GetMainMenu ()
 	{
 		return Win_->GetMainMenu ();
