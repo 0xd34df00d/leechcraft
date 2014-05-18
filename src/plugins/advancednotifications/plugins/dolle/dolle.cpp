@@ -28,10 +28,6 @@
  **********************************************************************/
 
 #include "dolle.h"
-#include <QMainWindow>
-#include <QMetaObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/irootwindowsmanager.h>
 #include "notificationhandler.h"
 #include "dockutil.h"
 

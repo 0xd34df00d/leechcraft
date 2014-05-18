@@ -9,48 +9,46 @@
 
 namespace
 {
-static void dockClickHandler(id, SEL)
-{
-	LeechCraft::Pierre::ReopenHandler::Instance ().Triggered ();
-}
+	static void dockClickHandler(id, SEL)
+	{
+		LeechCraft::Pierre::ReopenHandler::Instance ().Triggered ();
+	}
 }
 
 namespace LeechCraft
 {
 namespace Pierre
 {
-
-ReopenHandler::ReopenHandler ()
-{
-	Class cls = [[[NSApplication sharedApplication] delegate] class];
-
-	SEL sel = @selector (applicationShouldHandleReopen:hasVisibleWindows:);
-	Method m0 = class_getInstanceMethod (cls, sel);
-	if (!class_addMethod (cls, sel, (IMP) dockClickHandler, method_getTypeEncoding(m0)))
-		qWarning () << Q_FUNC_INFO << "class_addMethod() failed.";
-}
-
-ReopenHandler& ReopenHandler::Instance ()
-{
-	static ReopenHandler instance;
-	return instance;
-}
-
-void ReopenHandler::SetCoreProxy (const ICoreProxy_ptr& proxy)
-{
-	Proxy_ = proxy;
-}
-
-void ReopenHandler::Triggered ()
-{
-	IRootWindowsManager * const rootWM = Proxy_->GetRootWindowsManager ();
-
-	for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+	ReopenHandler::ReopenHandler ()
 	{
-		IMWProxy * const mwProxy = rootWM->GetMWProxy (i);
-		mwProxy->ShowMain ();
-	}
-}
+		Class cls = [[[NSApplication sharedApplication] delegate] class];
 
+		SEL sel = @selector (applicationShouldHandleReopen:hasVisibleWindows:);
+		Method m0 = class_getInstanceMethod (cls, sel);
+		if (!class_addMethod (cls, sel, (IMP) dockClickHandler, method_getTypeEncoding(m0)))
+			qWarning () << Q_FUNC_INFO << "class_addMethod() failed.";
+	}
+
+	ReopenHandler& ReopenHandler::Instance ()
+	{
+		static ReopenHandler instance;
+		return instance;
+	}
+
+	void ReopenHandler::SetCoreProxy (const ICoreProxy_ptr& proxy)
+	{
+		Proxy_ = proxy;
+	}
+
+	void ReopenHandler::Triggered ()
+	{
+		IRootWindowsManager * const rootWM = Proxy_->GetRootWindowsManager ();
+
+		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+		{
+			IMWProxy * const mwProxy = rootWM->GetMWProxy (i);
+			mwProxy->ShowMain ();
+		}
+	}
 }
 }

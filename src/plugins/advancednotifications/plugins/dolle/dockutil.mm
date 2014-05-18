@@ -37,31 +37,28 @@
 
 namespace
 {
+	LCBadgeView* GetBadgeView ()
+	{
+		static LCBadgeView *view = nullptr;
+		if (view)
+			return view;
 
-LCBadgeView* GetBadgeView ()
-{
-	static LCBadgeView *view;
-	if (view)
+		NSDockTile *dockTile = [NSApp dockTile];
+		NSView *contentView = [dockTile contentView];
+		NSSize size = contentView ? [contentView bounds].size : [dockTile size];
+
+		view = [[LCBadgeView alloc] initWithFrame: NSMakeRect (0, 0, size.width, size.height)];
+		[dockTile setContentView: view];
+		[dockTile display];
+
 		return view;
+	}
 
-	NSDockTile *dockTile = [NSApp dockTile];
-	NSView *contentView = [dockTile contentView];
-	NSSize size = contentView ? [contentView bounds].size : [dockTile size];
-
-	view = [[LCBadgeView alloc] initWithFrame: NSMakeRect (0, 0, size.width, size.height)];
-	[dockTile setContentView: view];
-	[dockTile display];
-
-	return view;
-}
-
-
-static NSString* toNsString (const QString& text)
-{
-	const auto ba = text.toUtf8 ();
-	return [NSString stringWithUTF8String: ba.constData ()];
-}
-
+	static NSString* toNsString (const QString& text)
+	{
+		const auto& ba = text.toUtf8 ();
+		return [NSString stringWithUTF8String: ba.constData ()];
+	}
 }
 
 namespace LeechCraft
@@ -109,10 +106,8 @@ namespace DU
 				badgePairs.append ({ QString::number (total), data.Color_ });
 			}
 		}
-
 		NSMutableArray *labelsArray = [NSMutableArray arrayWithCapacity: badgesCount];
 		NSMutableArray *colorsArray = [NSMutableArray arrayWithCapacity: badgesCount];
-
 		for (const auto& b : badgePairs)
 		{
 			[labelsArray addObject: toNsString (b.first)];
