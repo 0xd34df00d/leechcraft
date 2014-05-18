@@ -27,9 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "eq10bandeffect.h"
-#include <gst/gst.h>
-#include "eqconfigurator.h"
+#pragma once
+#include "bandinfo.h"
+
+class QByteArray;
 
 namespace LeechCraft
 {
@@ -37,70 +38,17 @@ namespace LMP
 {
 namespace Fradj
 {
-	namespace
+	class IEqualizer
 	{
-		const BandInfos_t TenBands
-		{
-			{ 29 },
-			{ 59 },
-			{ 119 },
-			{ 237 },
-			{ 474 },
-			{ 947 },
-			{ 1889 },
-			{ 3770 },
-			{ 7523 },
-			{ 15011 }
-		};
-	}
+	public:
+		virtual ~IEqualizer () {}
 
-	Eq10BandEffect::Eq10BandEffect (const QByteArray& filterId)
-	: FilterId_ { filterId }
-	, Equalizer_ { gst_element_factory_make ("equalizer-10bands", nullptr) }
-	, Configurator_ { new EqConfigurator { TenBands, FilterId_, this } }
-	{
-	}
+		virtual QByteArray GetEffectId () const = 0;
 
-	QByteArray Eq10BandEffect::GetEffectId () const
-	{
-		return FilterId_;
-	}
+		virtual const BandInfos_t& GetFixedBands () const = 0;
 
-	QByteArray Eq10BandEffect::GetInstanceId () const
-	{
-		return FilterId_;
-	}
-
-	IFilterConfigurator* Eq10BandEffect::GetConfigurator () const
-	{
-		return Configurator_;
-	}
-
-	const BandInfos_t& Eq10BandEffect::GetFixedBands () const
-	{
-		return
-		{
-			{ 29 },
-			{ 59 },
-			{ 119 },
-			{ 237 },
-			{ 474 },
-			{ 947 },
-			{ 1889 },
-			{ 3770 },
-			{ 7523 },
-			{ 15011 }
-		};
-	}
-
-	void Eq10BandEffect::SetGains (const QList<double>& gains)
-	{
-	}
-
-	GstElement* Eq10BandEffect::GetElement () const
-	{
-		return Equalizer_;
-	}
+		virtual void SetGains (const QList<double>& gains) = 0;
+	};
 }
 }
 }

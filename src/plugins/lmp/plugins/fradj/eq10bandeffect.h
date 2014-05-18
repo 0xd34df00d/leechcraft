@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include "interfaces/lmp/ifilterelement.h"
+#include "iequalizer.h"
 
 typedef struct _GstPad GstPad;
 typedef struct _GstMessage GstMessage;
@@ -46,6 +47,7 @@ namespace Fradj
 
 	class Eq10BandEffect : public QObject
 						 , public IFilterElement
+						 , public IEqualizer
 	{
 		const QByteArray FilterId_;
 
@@ -58,6 +60,9 @@ namespace Fradj
 		QByteArray GetEffectId () const;
 		QByteArray GetInstanceId () const;
 		IFilterConfigurator* GetConfigurator () const;
+
+		const BandInfos_t& GetFixedBands () const;
+		void SetGains (const QList<double>& gains);
 	protected:
 		GstElement* GetElement () const;
 	};
