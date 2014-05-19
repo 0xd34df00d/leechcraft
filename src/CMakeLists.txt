@@ -711,6 +711,7 @@ install (DIRECTORY share/qml/common DESTINATION ${LC_QML_DEST}/org/LC)
 
 install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 if (UNIX AND NOT APPLE)
+	install (DIRECTORY cmake/ DESTINATION share/leechcraft/cmake)
 	install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
 	install (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 	install (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
