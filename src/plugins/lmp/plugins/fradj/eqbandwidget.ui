@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>87</width>
-    <height>287</height>
+    <height>256</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,12 @@
      </item>
      <item>
       <widget class="QSlider" name="GainSlider_">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>200</height>
+        </size>
+       </property>
        <property name="minimum">
         <number>-24</number>
        </property>

@@ -55,6 +55,8 @@ namespace Fradj
 	private slots:
 		void setGainSliderValue (double);
 		void setGainBoxValue (int);
+	signals:
+		void valueChanged (double);
 	};
 }
 }

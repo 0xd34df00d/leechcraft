@@ -53,11 +53,24 @@ namespace Fradj
 				SIGNAL (valueChanged (int)),
 				this,
 				SLOT (setGainBoxValue (int)));
+
+		connect (Ui_.GainBox_,
+				SIGNAL (valueChanged (double)),
+				this,
+				SIGNAL (valueChanged (double)));
 	}
 
 	void EqBandWidget::SetGain (double value)
 	{
+		disconnect (Ui_.GainBox_,
+				SIGNAL (valueChanged (double)),
+				this,
+				SIGNAL (valueChanged (double)));
 		Ui_.GainBox_->setValue (value);
+		connect (Ui_.GainBox_,
+				SIGNAL (valueChanged (double)),
+				this,
+				SIGNAL (valueChanged (double)));
 	}
 
 	double EqBandWidget::GetGain ()
