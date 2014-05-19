@@ -27,28 +27,36 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QHash>
-#include <QString>
-
-class QIcon;
+#include "extensionsdataimpl.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class ExtensionsDataImpl
+	struct ExtensionsDataImpl::Details
 	{
-		struct Details;
-		const std::shared_ptr<Details> Details_ {};
-	public:
-		ExtensionsDataImpl ();
-
-		const QHash<QString, QString>& GetMimeDatabase () const;
-		QIcon GetExtIcon (const QString& extension) const;
-		QIcon GetMimeIcon (const QString& mime) const;
+		QHash<QString, QString> MimeDatabase_;
 	};
+
+	ExtensionsDataImpl::ExtensionsDataImpl ()
+	: Details_ { new Details }
+	{
+	}
+
+	const QHash<QString, QString>& ExtensionsDataImpl::GetMimeDatabase () const
+	{
+		return Details_->MimeDatabase_;
+	}
+
+	QIcon ExtensionsDataImpl::GetExtIcon (const QString& extension) const
+	{
+		return {};
+	}
+
+	QIcon ExtensionsDataImpl::GetMimeIcon (const QString& mime) const
+	{
+		return {};
+	}
 }
 }

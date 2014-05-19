@@ -136,6 +136,11 @@ namespace Util
 		return Details_->MimeDatabase_;
 	}
 
+	QIcon ExtensionsDataImpl::GetExtIcon (const QString& extension) const
+	{
+		return GetMimeIcon (GetMimeDatabase ().value (extension));
+	}
+
 	QIcon ExtensionsDataImpl::GetMimeIcon (const QString& mime) const
 	{
 		auto iconName = Details_->IconsMappings_.value (mime);
