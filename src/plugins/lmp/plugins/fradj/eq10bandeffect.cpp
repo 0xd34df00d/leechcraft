@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "eq10bandeffect.h"
+#include <QStringList>
 #include <QtDebug>
 #include <gst/gst.h>
 #include "eqconfigurator.h"
@@ -76,6 +77,19 @@ namespace Fradj
 			{ 7523 },
 			{ 15011 }
 		};
+	}
+
+	QStringList Eq10BandEffect::GetPresets () const
+	{
+		QStringList result;
+		auto presets = gst_preset_get_preset_names (GST_PRESET (Equalizer_));
+		for (auto p = presets; *p; ++p)
+			result << QString::fromUtf8 (*p);
+		g_strfreev (presets);
+
+		result.sort ();
+
+		return result;
 	}
 
 	void Eq10BandEffect::SetGains (const QList<double>& gains)

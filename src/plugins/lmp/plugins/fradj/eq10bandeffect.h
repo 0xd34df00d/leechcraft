@@ -62,6 +62,7 @@ namespace Fradj
 		IFilterConfigurator* GetConfigurator () const;
 
 		BandInfos_t GetFixedBands () const;
+		QStringList GetPresets () const;
 		void SetGains (const QList<double>& gains);
 	protected:
 		GstElement* GetElement () const;
