@@ -40,12 +40,6 @@
          <height>200</height>
         </size>
        </property>
-       <property name="minimum">
-        <number>-24</number>
-       </property>
-       <property name="maximum">
-        <number>12</number>
-       </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>

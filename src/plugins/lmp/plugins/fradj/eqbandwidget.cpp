@@ -37,6 +37,11 @@ namespace LMP
 {
 namespace Fradj
 {
+	namespace
+	{
+		const double SliderPrecision = 10;
+	}
+
 	EqBandWidget::EqBandWidget (const BandInfo& info, QWidget *parent)
 	: QWidget { parent }
 	{
@@ -44,6 +49,9 @@ namespace Fradj
 
 		Ui_.FreqBox_->setValue (info.Freq_);
 		Ui_.FreqBox_->setSuffix (" " + tr ("Hz"));
+
+		Ui_.GainSlider_->setRange (Ui_.GainBox_->minimum () * SliderPrecision,
+				Ui_.GainBox_->maximum () * SliderPrecision);
 
 		connect (Ui_.GainBox_,
 				SIGNAL (valueChanged (double)),
@@ -90,7 +98,7 @@ namespace Fradj
 				this,
 				SLOT (setGainBoxValue (int)));
 
-		Ui_.GainSlider_->setValue (std::round (value));
+		Ui_.GainSlider_->setValue (std::round (value * SliderPrecision));
 
 		connect (Ui_.GainSlider_,
 				SIGNAL (valueChanged (int)),
@@ -100,7 +108,7 @@ namespace Fradj
 
 	void EqBandWidget::setGainBoxValue (int value)
 	{
-		Ui_.GainBox_->setValue (value);
+		Ui_.GainBox_->setValue (value / SliderPrecision);
 	}
 }
 }
