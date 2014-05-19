@@ -7,7 +7,7 @@ if (NOT USE_QT5)
 	include (${QT_USE_FILE})
 endif ()
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
