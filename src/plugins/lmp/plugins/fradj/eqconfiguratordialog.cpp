@@ -108,7 +108,11 @@ namespace Fradj
 		Ui_.DialogLayout_->insertWidget (Ui_.DialogLayout_->count () - 1, Plot_);
 
 		Plot_->setAxisTitle (QwtPlot::xBottom, tr ("Frequency, Hz"));
+#if QWT_VERSION >= 0x060100
 		Plot_->setAxisScaleEngine (QwtPlot::xBottom, new QwtLogScaleEngine { 2 });
+#else
+		Plot_->setAxisScaleEngine (QwtPlot::xBottom, new QwtLog10ScaleEngine);
+#endif
 
 		Plot_->setAxisAutoScale (QwtPlot::yLeft, false);
 		Plot_->setAxisScale (QwtPlot::yLeft, -24, 12);
