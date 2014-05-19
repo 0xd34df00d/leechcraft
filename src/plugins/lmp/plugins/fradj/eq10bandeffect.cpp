@@ -92,6 +92,22 @@ namespace Fradj
 		return result;
 	}
 
+	QList<double> Eq10BandEffect::GetGains () const
+	{
+		QList<double> result;
+
+		for (int i = 0, size = GetFixedBands ().size (); i < size; ++i)
+		{
+			const auto& optName = "band" + QByteArray::number (i);
+			gdouble value = 0;
+			g_object_get (Equalizer_, optName.constData (), &value, nullptr);
+
+			result << value;
+		}
+
+		return result;
+	}
+
 	void Eq10BandEffect::SetGains (const QList<double>& gains)
 	{
 		if (gains.size () != GetFixedBands ().size ())
