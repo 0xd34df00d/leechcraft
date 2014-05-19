@@ -50,6 +50,8 @@ namespace Fradj
 
 		void SetGain (double);
 		double GetGain ();
+
+		double GetFrequency () const;
 	private slots:
 		void setGainSliderValue (double);
 		void setGainBoxValue (int);

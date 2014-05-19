@@ -68,6 +68,11 @@ namespace Fradj
 		return Ui_.GainBox_->value ();
 	}
 
+	double EqBandWidget::GetFrequency () const
+	{
+		return Ui_.FreqBox_->value ();
+	}
+
 	void EqBandWidget::setGainSliderValue (double value)
 	{
 		disconnect (Ui_.GainSlider_,
