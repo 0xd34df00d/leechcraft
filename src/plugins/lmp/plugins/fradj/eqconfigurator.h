@@ -40,6 +40,7 @@ namespace LMP
 namespace Fradj
 {
 	class IEqualizer;
+	class EqConfiguratorDialog;
 
 	class EqConfigurator : public QObject
 						 , public IFilterConfigurator
@@ -58,6 +59,8 @@ namespace Fradj
 	private:
 		QList<double> ReadGains () const;
 		void SaveGains (const QList<double>&) const;
+	private slots:
+		void handlePresetRequested (EqConfiguratorDialog*, const QString&);
 	};
 }
 }

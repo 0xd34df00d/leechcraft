@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "eqconfiguratordialog.h"
-#include <util/sll/prelude.h>
+#include <QtDebug>
 #include "eqbandwidget.h"
 
 namespace LeechCraft
@@ -38,18 +38,21 @@ namespace LMP
 namespace Fradj
 {
 	EqConfiguratorDialog::EqConfiguratorDialog (const BandInfos_t& bands,
-			const QList<double>& gains, QWidget *parent)
+			const QList<double>& gains, const QStringList& presets, QWidget *parent)
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
+		Ui_.Preset_->addItems (presets);
+		Ui_.Preset_->setCurrentIndex (-1);
 
-		for (const auto& bandInfo : Util::Zip (bands, gains))
+		for (const auto& bandInfo : bands)
 		{
-			auto band = new EqBandWidget { bandInfo.first };
-			band->SetGain (bandInfo.second);
+			auto band = new EqBandWidget { bandInfo };
 			Ui_.BandsLayout_->addWidget (band);
 			Bands_ << band;
 		}
+
+		SetGains (gains);
 	}
 
 	QList<double> EqConfiguratorDialog::GetGains () const
@@ -58,6 +61,27 @@ namespace Fradj
 		for (auto widget : Bands_)
 			result << widget->GetGain ();
 		return result;
+	}
+
+	void EqConfiguratorDialog::SetGains (const QList<double>& gains)
+	{
+		if (gains.size () != Bands_.size ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "gains count"
+					<< gains.size ()
+					<< "doesn't equal to bands count"
+					<< Bands_.size ();
+			return;
+		}
+
+		for (int i = 0; i < gains.size (); ++i)
+			Bands_.at (i)->SetGain (gains.at (i));
+	}
+
+	void EqConfiguratorDialog::on_Preset__currentIndexChanged (const QString& preset)
+	{
+		emit presetRequested (this, preset);
 	}
 }
 }

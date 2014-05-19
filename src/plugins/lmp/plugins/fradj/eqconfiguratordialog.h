@@ -49,9 +49,17 @@ namespace Fradj
 
 		QList<EqBandWidget*> Bands_;
 	public:
-		EqConfiguratorDialog (const BandInfos_t&, const QList<double>&, QWidget* = 0);
+		EqConfiguratorDialog (const BandInfos_t&,
+				const QList<double>&,
+				const QStringList& presets,
+				QWidget* = 0);
 
 		QList<double> GetGains () const;
+		void SetGains (const QList<double>&);
+	private slots:
+		void on_Preset__currentIndexChanged (const QString&);
+	signals:
+		void presetRequested (EqConfiguratorDialog*, const QString&);
 	};
 }
 }

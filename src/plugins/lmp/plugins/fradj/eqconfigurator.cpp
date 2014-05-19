@@ -57,13 +57,14 @@ namespace Fradj
 	{
 		const auto& gains = ReadGains ();
 
-		EqConfiguratorDialog dia { Bands_, gains };
-		if (dia.exec () != QDialog::Accepted)
-			return;
+		EqConfiguratorDialog dia { Bands_, gains, IEq_->GetPresets () };
+		connect (&dia,
+				SIGNAL (presetRequested (EqConfiguratorDialog*, QString)),
+				this,
+				SLOT (handlePresetRequested (EqConfiguratorDialog*, QString)));
+		const auto isAccepted = dia.exec () == QDialog::Accepted;
 
-		const auto& newGains = dia.GetGains ();
-		if (newGains == gains)
-			return;
+		const auto& newGains = isAccepted ? dia.GetGains () : gains;
 
 		IEq_->SetGains (newGains);
 
@@ -107,6 +108,16 @@ namespace Fradj
 		}
 		settings.endArray ();
 		settings.endGroup ();
+	}
+
+	void EqConfigurator::handlePresetRequested (EqConfiguratorDialog *dialog, const QString& preset)
+	{
+		if (preset.isEmpty ())
+			return;
+
+		IEq_->SetPreset (preset);
+
+		dialog->SetGains (IEq_->GetGains ());
 	}
 }
 }
