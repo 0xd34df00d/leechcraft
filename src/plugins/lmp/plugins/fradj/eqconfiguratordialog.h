@@ -33,6 +33,9 @@
 #include "ui_eqconfiguratordialog.h"
 #include "bandinfo.h"
 
+class QwtPlot;
+class QwtPlotCurve;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -48,6 +51,11 @@ namespace Fradj
 		Ui::EqConfiguratorDialog Ui_;
 
 		QList<EqBandWidget*> Bands_;
+
+#ifdef WITH_QWT
+		QwtPlot * const Plot_;
+		QwtPlotCurve * const FreqCurve_;
+#endif
 	public:
 		EqConfiguratorDialog (const BandInfos_t&,
 				const QList<double>&,
@@ -56,7 +64,10 @@ namespace Fradj
 
 		QList<double> GetGains () const;
 		void SetGains (const QList<double>&);
+	private:
+		void SetupPlot ();
 	private slots:
+		void rebuildPlot ();
 		void on_Preset__currentIndexChanged (const QString&);
 	signals:
 		void presetRequested (EqConfiguratorDialog*, const QString&);

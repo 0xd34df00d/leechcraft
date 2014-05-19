@@ -29,6 +29,16 @@
 
 #include "eqconfiguratordialog.h"
 #include <QtDebug>
+
+#ifdef WITH_QWT
+#include <qwt_plot.h>
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_plot_grid.h>
+#include <qwt_scale_engine.h>
+#include <qwt_curve_fitter.h>
+#endif
+
 #include "eqbandwidget.h"
 
 namespace LeechCraft
@@ -40,6 +50,10 @@ namespace Fradj
 	EqConfiguratorDialog::EqConfiguratorDialog (const BandInfos_t& bands,
 			const QList<double>& gains, const QStringList& presets, QWidget *parent)
 	: QDialog { parent }
+#ifdef WITH_QWT
+	, Plot_ { new QwtPlot }
+	, FreqCurve_ { new QwtPlotCurve }
+#endif
 	{
 		Ui_.setupUi (this);
 		Ui_.Preset_->addItems (presets);
@@ -50,7 +64,14 @@ namespace Fradj
 			auto band = new EqBandWidget { bandInfo };
 			Ui_.BandsLayout_->addWidget (band);
 			Bands_ << band;
+
+			connect (band,
+					SIGNAL (valueChanged (double)),
+					this,
+					SLOT (rebuildPlot ()));
 		}
+
+		SetupPlot ();
 
 		SetGains (gains);
 	}
@@ -77,6 +98,57 @@ namespace Fradj
 
 		for (int i = 0; i < gains.size (); ++i)
 			Bands_.at (i)->SetGain (gains.at (i));
+
+		rebuildPlot ();
+	}
+
+	void EqConfiguratorDialog::SetupPlot ()
+	{
+#ifdef WITH_QWT
+		Ui_.DialogLayout_->insertWidget (Ui_.DialogLayout_->count () - 1, Plot_);
+
+		Plot_->setAxisTitle (QwtPlot::xBottom, tr ("Frequency, Hz"));
+		Plot_->setAxisScaleEngine (QwtPlot::xBottom, new QwtLogScaleEngine { 2 });
+
+		Plot_->setAxisAutoScale (QwtPlot::yLeft, false);
+		Plot_->setAxisScale (QwtPlot::yLeft, -24, 12);
+		Plot_->setAxisTitle (QwtPlot::yLeft, tr ("Gain, dB"));
+
+		FreqCurve_->setRenderHint (QwtPlotItem::RenderAntialiased);
+
+		FreqCurve_->setCurveAttribute (QwtPlotCurve::Fitted);
+		auto fitter = new QwtSplineCurveFitter;
+		FreqCurve_->setCurveFitter (fitter);
+
+		FreqCurve_->attach (Plot_);
+
+		auto grid = new QwtPlotGrid;
+		grid->enableXMin (true);
+#if QWT_VERSION >= 0x060100
+		grid->setMajorPen (QPen (Qt::gray, 1, Qt::DashLine));
+		grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
+#else
+		grid->setMajPen (QPen (Qt::gray, 1, Qt::DashLine));
+		grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+#endif
+		grid->attach (Plot_);
+#endif
+	}
+
+	void EqConfiguratorDialog::rebuildPlot ()
+	{
+#ifdef WITH_QWT
+		QVector<double> xData, yData;
+		for (const auto& band : Bands_)
+		{
+			xData << band->GetFrequency ();
+			yData << band->GetGain ();
+		}
+		Plot_->setAxisScale (QwtPlot::xBottom, xData.first (), xData.last ());
+		FreqCurve_->setSamples (xData, yData);
+
+		Plot_->replot ();
+#endif
 	}
 
 	void EqConfiguratorDialog::on_Preset__currentIndexChanged (const QString& preset)

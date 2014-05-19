@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Equalizer configuration</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="DialogLayout_">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -45,7 +45,7 @@
     <layout class="QHBoxLayout" name="BandsLayout_"/>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="ButtonBox_">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -59,7 +59,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
    <receiver>EqConfiguratorDialog</receiver>
    <slot>accept()</slot>
@@ -75,7 +75,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
    <receiver>EqConfiguratorDialog</receiver>
    <slot>reject()</slot>

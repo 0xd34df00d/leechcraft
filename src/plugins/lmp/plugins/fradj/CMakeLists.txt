@@ -2,10 +2,21 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lmp_fradj)
 include (InitLCPlugin OPTIONAL)
 
+set (ADDITIONAL_LIBRARIES)
+
+if (WITH_QWT)
+	add_definitions (-DWITH_QWT)
+	find_package (Qwt)
+
+	set (ADDITIONAL_LIBRARIES ${QWT_LIBRARIES})
+	include_directories (${QWT_INCLUDE_DIRS})
+endif (WITH_QWT)
+
 include_directories (${LMP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${QWT_INCLUDE_DIRS}
 	)
 
 set (FRADJ_SRCS
@@ -37,6 +48,7 @@ target_link_libraries (leechcraft_lmp_fradj
 	${GSTREAMER_LIBRARIES}
 	${GLIB2_LIBRARIES}
 	${LIBXML2_LIBRARIES}
+	${ADDITIONAL_LIBS}
 	)
 
 install (TARGETS leechcraft_lmp_fradj DESTINATION ${LC_PLUGINS_DEST})
