@@ -63,6 +63,7 @@ namespace Fradj
 
 		BandInfos_t GetFixedBands () const;
 		QStringList GetPresets () const;
+		void SetPreset (const QString&);
 		QList<double> GetGains () const;
 		void SetGains (const QList<double>&);
 	protected:

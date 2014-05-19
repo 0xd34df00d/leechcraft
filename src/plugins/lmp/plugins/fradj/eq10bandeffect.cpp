@@ -92,6 +92,11 @@ namespace Fradj
 		return result;
 	}
 
+	void Eq10BandEffect::SetPreset (const QString& preset)
+	{
+		gst_preset_load_preset (GST_PRESET (Equalizer_), preset.toUtf8 ().constData ());
+	}
+
 	QList<double> Eq10BandEffect::GetGains () const
 	{
 		QList<double> result;

@@ -50,6 +50,7 @@ namespace Fradj
 		virtual BandInfos_t GetFixedBands () const = 0;
 
 		virtual QStringList GetPresets () const = 0;
+		virtual void SetPreset (const QString&) = 0;
 
 		virtual QList<double> GetGains () const = 0;
 		virtual void SetGains (const QList<double>& gains) = 0;
