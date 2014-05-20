@@ -150,16 +150,15 @@ void IconThemeEngine::UpdateIconset (const QList<QTabWidget*>& tabs)
 {
 	FindIcons ();
 
-	for (QList<QTabWidget*>::const_iterator i = tabs.begin (),
-			end = tabs.end (); i != end; ++i)
+	for (const auto tw : tabs)
 	{
-		QStringList icons = (*i)->property ("TabIcons").toString ()
+		const auto& icons = tw->property ("TabIcons").toString ()
 			.split (" ", QString::SkipEmptyParts);
 
 		int tab = 0;
-		for (QStringList::const_iterator name = icons.begin ();
-				name != icons.end (); ++name, ++tab)
-			(*i)->setTabIcon (tab, GetIcon (*name, QString ()));
+		for (const auto& name : icons)
+			tw->setTabIcon (tab++, GetIcon (name, {}));
+	}
 }
 
 void IconThemeEngine::UpdateIconset (const QList<QToolButton*>& buttons)
