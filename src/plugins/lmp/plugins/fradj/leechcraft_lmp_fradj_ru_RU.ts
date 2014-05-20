@@ -19,7 +19,7 @@
     <message>
         <location filename="eqconfiguratordialog.ui" line="22"/>
         <source>Preset:</source>
-        <translation>Шаблон:</translation>
+        <translation>Схема:</translation>
     </message>
 </context>
 <context>
