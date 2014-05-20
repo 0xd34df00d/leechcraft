@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "fradj.h"
+#include <util/util.h>
 #include "eq10bandeffect.h"
 
 namespace LeechCraft
@@ -38,6 +39,7 @@ namespace Fradj
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("lmp_fradj");
 	}
 
 	void Plugin::SecondInit ()

@@ -33,7 +33,7 @@ set (FRADJ_FORMS
 	eqconfiguratordialog.ui
 	)
 QT4_WRAP_UI (FRADJ_UIS_H ${FRADJ_FORMS})
-#CreateTrs ("lmp_fradj" "en;ru_RU" FRADJ_COMPILED_TRANSLATIONS)
+CreateTrs ("lmp_fradj" "en;ru_RU" FRADJ_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp_fradj" "en;ru_RU" "${FRADJ_SRCS}" "${FRADJ_FORMS}" "")
 
 add_library (leechcraft_lmp_fradj SHARED
@@ -53,4 +53,3 @@ target_link_libraries (leechcraft_lmp_fradj
 
 install (TARGETS leechcraft_lmp_fradj DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpfradjfiltersettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${FRADJ_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
