@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "termtab.h"
+#include <QVBoxLayout>
+#include <qtermwidget.h>
 
 namespace LeechCraft
 {
@@ -36,7 +38,13 @@ namespace Eleeminator
 	TermTab::TermTab (const TabClassInfo& tc, QObject *plugin)
 	: TC_ (tc)
 	, ParentPlugin_ { plugin }
+	, Term_ { new QTermWidget { true } }
 	{
+		auto lay = new QVBoxLayout;
+		lay->setContentsMargins (0, 0, 0, 0);
+		setLayout (lay);
+
+		lay->addWidget (Term_);
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const

@@ -32,6 +32,8 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 
+class QTermWidget;
+
 namespace LeechCraft
 {
 namespace Eleeminator
@@ -44,6 +46,8 @@ namespace Eleeminator
 
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
+
+		QTermWidget * const Term_;
 	public:
 		TermTab (const TabClassInfo&, QObject*);
 
