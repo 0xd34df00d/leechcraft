@@ -88,6 +88,7 @@ namespace Eleeminator
 		{
 			auto tab = new TermTab { TermTabTC_, this };
 			emit addNewTab (TermTabTC_.VisibleName_, tab);
+			emit raiseTab (tab);
 
 			connect (tab,
 					SIGNAL (remove (QWidget*)),
