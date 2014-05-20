@@ -50,6 +50,8 @@ namespace Eleeminator
 		QToolBar * const Toolbar_;
 
 		QTermWidget * const Term_;
+
+		QString CurrentColorScheme_;
 	public:
 		TermTab (const TabClassInfo&, QObject*);
 
@@ -61,6 +63,9 @@ namespace Eleeminator
 		void SetupToolbar ();
 	private slots:
 		void setColorScheme (QAction*);
+		void previewColorScheme (QAction*);
+		void stopColorSchemePreview ();
+
 		void handleFinished ();
 	signals:
 		void remove (QWidget*);

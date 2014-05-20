@@ -89,6 +89,14 @@ namespace Eleeminator
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (setColorScheme (QAction*)));
+		connect (colorMenu,
+				SIGNAL (hovered (QAction*)),
+				this,
+				SLOT (previewColorScheme (QAction*)));
+		connect (colorMenu,
+				SIGNAL (aboutToHide ()),
+				this,
+				SLOT (stopColorSchemePreview ()));
 
 		const auto& lastScheme = XmlSettingsManager::Instance ()
 				.Property ("LastColorScheme", "Linux").toString ();
@@ -131,8 +139,28 @@ namespace Eleeminator
 		schemeAct->setChecked (true);
 
 		Term_->setColorScheme (colorScheme);
+		CurrentColorScheme_ = colorScheme;
 
 		XmlSettingsManager::Instance ().setProperty ("LastColorScheme", colorScheme);
+	}
+
+	void TermTab::previewColorScheme (QAction *schemeAct)
+	{
+		const auto& colorScheme = schemeAct->property ("ER/ColorScheme").toString ();
+		if (colorScheme.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty color scheme for"
+					<< schemeAct;
+			return;
+		}
+
+		Term_->setColorScheme (colorScheme);
+	}
+
+	void TermTab::stopColorSchemePreview ()
+	{
+		Term_->setColorScheme (CurrentColorScheme_);
 	}
 
 	void TermTab::handleFinished ()
