@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
@@ -38,9 +39,12 @@ namespace Eleeminator
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IHaveTabs)
+
+		TabClassInfo TermTabTC_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,6 +53,16 @@ namespace Eleeminator
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void raiseTab (QWidget*);
+		void removeTab (QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
 	};
 }
 }

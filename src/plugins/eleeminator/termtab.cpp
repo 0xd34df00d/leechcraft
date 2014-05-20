@@ -27,79 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "eleeminator.h"
-#include <QIcon>
-#include <QtDebug>
 #include "termtab.h"
 
 namespace LeechCraft
 {
 namespace Eleeminator
 {
-	void Plugin::Init (ICoreProxy_ptr)
-	{
-		TermTabTC_ =
-		{
-			GetUniqueID () + ".TermTab",
-			tr ("Terminal"),
-			tr ("Termianl emulator."),
-			GetIcon (),
-			15,
-			TFOpenableByRequest
-		};
-	}
-
-	void Plugin::SecondInit ()
+	TermTab::TermTab (const TabClassInfo& tc, QObject *plugin)
+	: TC_ (tc)
+	, ParentPlugin_ { plugin }
 	{
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	TabClassInfo TermTab::GetTabClassInfo () const
 	{
-		return "org.LeechCraft.Eleeminator";
+		return TC_;
 	}
 
-	void Plugin::Release ()
+	QObject* TermTab::ParentMultiTabs ()
 	{
+		return ParentPlugin_;
 	}
 
-	QString Plugin::GetName () const
+	QToolBar* TermTab::GetToolBar () const
 	{
-		return "Eleeminator";
+		return nullptr;
 	}
 
-	QString Plugin::GetInfo () const
+	void TermTab::Remove ()
 	{
-		return tr ("Embedded LeechCraft terminal emulator.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	TabClasses_t Plugin::GetTabClasses () const
-	{
-		return { TermTabTC_ };
-	}
-
-	void Plugin::TabOpenRequested (const QByteArray& tc)
-	{
-		if (tc == TermTabTC_.TabClass_)
-		{
-			auto tab = new TermTab { TermTabTC_, this };
-			emit addNewTab (TermTabTC_.VisibleName_, tab);
-
-			connect (tab,
-					SIGNAL (remove (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-		}
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "unknown tab class"
-					<< tc;
+		emit remove (this);
+		deleteLater ();
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_eleeminator, LeechCraft::Eleeminator::Plugin);
