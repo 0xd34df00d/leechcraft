@@ -34,7 +34,7 @@ set (FRADJ_FORMS
 	)
 QT4_WRAP_UI (FRADJ_UIS_H ${FRADJ_FORMS})
 #CreateTrs ("lmp_fradj" "en;ru_RU" FRADJ_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("lmp_fradj" "en;ru_RU" "${FRADJ_SRCS}" "${FRADJ_FORMS}" "lmpfradjfiltersettings.xml")
+CreateTrsUpTarget("lmp_fradj" "en;ru_RU" "${FRADJ_SRCS}" "${FRADJ_FORMS}" "")
 
 add_library (leechcraft_lmp_fradj SHARED
 	${FRADJ_COMPILED_TRANSLATIONS}
