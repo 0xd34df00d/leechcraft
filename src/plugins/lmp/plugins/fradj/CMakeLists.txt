@@ -52,4 +52,3 @@ target_link_libraries (leechcraft_lmp_fradj
 	)
 
 install (TARGETS leechcraft_lmp_fradj DESTINATION ${LC_PLUGINS_DEST})
-install (FILES lmpfradjfiltersettings.xml DESTINATION ${LC_SETTINGS_DEST})
