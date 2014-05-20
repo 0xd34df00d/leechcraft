@@ -55,6 +55,8 @@ namespace Eleeminator
 		QObject* ParentMultiTabs ();
 		QToolBar* GetToolBar () const;
 		void Remove ();
+	private slots:
+		void handleFinished ();
 	signals:
 		void remove (QWidget*);
 	};

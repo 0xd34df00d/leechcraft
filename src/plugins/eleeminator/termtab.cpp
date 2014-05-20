@@ -45,6 +45,11 @@ namespace Eleeminator
 		setLayout (lay);
 
 		lay->addWidget (Term_);
+
+		connect (Term_,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleFinished ()));
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
@@ -63,6 +68,11 @@ namespace Eleeminator
 	}
 
 	void TermTab::Remove ()
+	{
+		handleFinished ();
+	}
+
+	void TermTab::handleFinished ()
 	{
 		emit remove (this);
 		deleteLater ();
