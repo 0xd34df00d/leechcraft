@@ -50,6 +50,10 @@ namespace Eleeminator
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleFinished ()));
+
+		QTimer::singleShot (0,
+				Term_,
+				SLOT (setFocus ()));
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
