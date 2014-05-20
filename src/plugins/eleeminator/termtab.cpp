@@ -29,6 +29,11 @@
 
 #include "termtab.h"
 #include <QVBoxLayout>
+#include <QToolBar>
+#include <QMenu>
+#include <QAction>
+#include <QTimer>
+#include <QToolButton>
 #include <QtDebug>
 #include <qtermwidget.h>
 #include "xmlsettingsmanager.h"
