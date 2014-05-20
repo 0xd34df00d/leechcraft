@@ -29,7 +29,9 @@
 
 #include "termtab.h"
 #include <QVBoxLayout>
+#include <QtDebug>
 #include <qtermwidget.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +40,7 @@ namespace Eleeminator
 	TermTab::TermTab (const TabClassInfo& tc, QObject *plugin)
 	: TC_ (tc)
 	, ParentPlugin_ { plugin }
+	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
 	, Term_ { new QTermWidget { true } }
 	{
 		auto lay = new QVBoxLayout;
@@ -54,6 +57,8 @@ namespace Eleeminator
 		QTimer::singleShot (0,
 				Term_,
 				SLOT (setFocus ()));
+
+		SetupToolbar ();
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
@@ -68,12 +73,66 @@ namespace Eleeminator
 
 	QToolBar* TermTab::GetToolBar () const
 	{
-		return nullptr;
+		return Toolbar_;
 	}
 
 	void TermTab::Remove ()
 	{
 		handleFinished ();
+	}
+
+	void TermTab::SetupToolbar ()
+	{
+		auto colorMenu = new QMenu { tr ("Color scheme"), this };
+		colorMenu->menuAction ()->setProperty ("ActionIcon", "fill-color");
+		connect (colorMenu,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (setColorScheme (QAction*)));
+
+		const auto& lastScheme = XmlSettingsManager::Instance ()
+				.Property ("LastColorScheme", "Linux").toString ();
+
+		const auto colorActionGroup = new QActionGroup { colorMenu };
+		for (const auto& colorScheme : QTermWidget::availableColorSchemes ())
+		{
+			auto act = colorMenu->addAction (colorScheme);
+			act->setCheckable (true);
+			act->setProperty ("ER/ColorScheme", colorScheme);
+
+			if (colorScheme == lastScheme)
+			{
+				act->setChecked (true);
+				setColorScheme (act);
+			}
+
+			colorActionGroup->addAction (act);
+		}
+
+		auto colorButton = new QToolButton { Toolbar_ };
+		colorButton->setPopupMode (QToolButton::InstantPopup);
+		colorButton->setMenu (colorMenu);
+		colorButton->setProperty ("ActionIcon", "fill-color");
+
+		Toolbar_->addWidget (colorButton);
+	}
+
+	void TermTab::setColorScheme (QAction *schemeAct)
+	{
+		const auto& colorScheme = schemeAct->property ("ER/ColorScheme").toString ();
+		if (colorScheme.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty color scheme for"
+					<< schemeAct;
+			return;
+		}
+
+		schemeAct->setChecked (true);
+
+		Term_->setColorScheme (colorScheme);
+
+		XmlSettingsManager::Instance ().setProperty ("LastColorScheme", colorScheme);
 	}
 
 	void TermTab::handleFinished ()

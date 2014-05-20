@@ -47,6 +47,8 @@ namespace Eleeminator
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
 
+		QToolBar * const Toolbar_;
+
 		QTermWidget * const Term_;
 	public:
 		TermTab (const TabClassInfo&, QObject*);
@@ -55,7 +57,10 @@ namespace Eleeminator
 		QObject* ParentMultiTabs ();
 		QToolBar* GetToolBar () const;
 		void Remove ();
+	private:
+		void SetupToolbar ();
 	private slots:
+		void setColorScheme (QAction*);
 		void handleFinished ();
 	signals:
 		void remove (QWidget*);
