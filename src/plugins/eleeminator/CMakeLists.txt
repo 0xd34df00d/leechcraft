@@ -15,6 +15,7 @@ include_directories (
 set (SRCS
 	eleeminator.cpp
 	termtab.cpp
+	xmlsettingsmanager.cpp
 	)
 #CreateTrs("eleeminator" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("eleeminator" "en;ru_RU" "${SRCS}" "${FORMS}" "")
