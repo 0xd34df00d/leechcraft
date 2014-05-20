@@ -37,6 +37,7 @@
 #include <QFile>
 #include <QFileInfoList>
 #include <QApplication>
+#include <QToolButton>
 #include <QTimer>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
@@ -159,6 +160,16 @@ void IconThemeEngine::UpdateIconset (const QList<QTabWidget*>& tabs)
 		for (QStringList::const_iterator name = icons.begin ();
 				name != icons.end (); ++name, ++tab)
 			(*i)->setTabIcon (tab, GetIcon (*name, QString ()));
+}
+
+void IconThemeEngine::UpdateIconset (const QList<QToolButton*>& buttons)
+{
+	for (auto button : buttons)
+	{
+		if (!button->property ("ActionIcon").isValid ())
+			continue;
+
+		SetIcon (button);
 	}
 }
 

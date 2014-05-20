@@ -77,6 +77,8 @@ bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *event)
 				.UpdateIconset (child->findChildren<QPushButton*> ());
 			IconThemeEngine::Instance ()
 				.UpdateIconset (child->findChildren<QTabWidget*> ());
+			IconThemeEngine::Instance ()
+				.UpdateIconset (child->findChildren<QToolButton*> ());
 		}
 		return false;
 	}
