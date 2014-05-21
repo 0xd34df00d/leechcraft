@@ -37,6 +37,7 @@
 #include <QShortcut>
 #include <QtDebug>
 #include <qtermwidget.h>
+#include <util/sll/slotclosure.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -137,6 +138,15 @@ namespace Eleeminator
 	{
 		new QShortcut { QString { "Ctrl+Shift+C" }, Term_, SLOT (copyClipboard ()) };
 		new QShortcut { QString { "Ctrl+Shift+V" }, Term_, SLOT (pasteClipboard ()) };
+
+		auto closeSc = new QShortcut { QString { "Ctrl+Shift+W" }, Term_ };
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { Remove (); },
+			closeSc,
+			SIGNAL (activated ()),
+			this
+		};
 	}
 
 	void TermTab::setColorScheme (QAction *schemeAct)
