@@ -36,11 +36,15 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class CLTooltipManager;
+
 	class CLModel : public QStandardItemModel
 	{
 		Q_OBJECT
+
+		CLTooltipManager * const TooltipManager_;
 	public:
-		CLModel (QObject* = 0);
+		CLModel (CLTooltipManager*, QObject* = 0);
 
 		QStringList mimeTypes () const;
 		QMimeData* mimeData (const QModelIndexList&) const;

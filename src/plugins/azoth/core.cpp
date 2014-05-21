@@ -203,9 +203,9 @@ namespace Azoth
 	, KeyStoreMgr_ (new QCA::KeyStoreManager)
 	, QCAEventHandler_ (new QCA::EventHandler)
 #endif
-	, CLModel_ (new CLModel (this))
-	, ChatTabsManager_ (new ChatTabsManager (this))
 	, TooltipManager_ (new CLTooltipManager (Entry2Items_))
+	, CLModel_ (new CLModel (TooltipManager_, this))
+	, ChatTabsManager_ (new ChatTabsManager (this))
 	, ActionsManager_ (new ActionsManager (this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))

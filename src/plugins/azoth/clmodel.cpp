@@ -39,13 +39,15 @@
 #include "transferjobmanager.h"
 #include "mucinvitedialog.h"
 #include "dndutil.h"
+#include "cltooltipmanager.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	CLModel::CLModel (QObject *parent)
-	: QStandardItemModel (parent)
+	CLModel::CLModel (CLTooltipManager *manager, QObject *parent)
+	: QStandardItemModel { parent }
+	, TooltipManager_ { manager }
 	{
 	}
 
