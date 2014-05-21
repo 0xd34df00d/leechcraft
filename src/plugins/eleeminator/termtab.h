@@ -61,6 +61,7 @@ namespace Eleeminator
 		void Remove ();
 	private:
 		void SetupToolbar ();
+		void SetupShortcuts ();
 	private slots:
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);

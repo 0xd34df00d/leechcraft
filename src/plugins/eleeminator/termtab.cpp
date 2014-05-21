@@ -34,6 +34,7 @@
 #include <QAction>
 #include <QTimer>
 #include <QToolButton>
+#include <QShortcut>
 #include <QtDebug>
 #include <qtermwidget.h>
 #include "xmlsettingsmanager.h"
@@ -64,6 +65,7 @@ namespace Eleeminator
 				SLOT (setFocus ()));
 
 		SetupToolbar ();
+		SetupShortcuts ();
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
@@ -128,6 +130,12 @@ namespace Eleeminator
 		colorButton->setProperty ("ActionIcon", "fill-color");
 
 		Toolbar_->addWidget (colorButton);
+	}
+
+	void TermTab::SetupShortcuts ()
+	{
+		new QShortcut { QString { "Ctrl+Shift+C" }, Term_, SLOT (copyClipboard ()) };
+		new QShortcut { QString { "Ctrl+Shift+V" }, Term_, SLOT (pasteClipboard ()) };
 	}
 
 	void TermTab::setColorScheme (QAction *schemeAct)
