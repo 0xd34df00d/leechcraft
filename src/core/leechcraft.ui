@@ -108,9 +108,6 @@
    <property name="text">
     <string>Close tab</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+W</string>
-   </property>
   </action>
   <action name="ActionNewTab_">
    <property name="text">
