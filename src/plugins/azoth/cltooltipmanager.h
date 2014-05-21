@@ -34,6 +34,7 @@
 #include <QHash>
 #include <QCache>
 #include <QPointer>
+#include <QSet>
 #include <QImage>
 #include <interfaces/core/ihookproxy.h>
 
@@ -55,6 +56,8 @@ namespace Azoth
 		Entry2Items_t& Entry2Items_;
 
 		QCache<QImage, QString> Avatar2TooltipSrcCache_;
+
+		QSet<ICLEntry*> DirtyTooltips_;
 	public:
 		CLTooltipManager (Entry2Items_t&);
 

@@ -46,7 +46,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	CLTooltipManager::CLTooltipManager (Entry2Items_t& items)
-	: Entry2Items_ { items }
+	: Entry2Items_ (items)
 	, Avatar2TooltipSrcCache_ { 2 * 1024 * 1024 }
 	{
 	}
@@ -67,7 +67,7 @@ namespace Azoth
 
 	void CLTooltipManager::AddEntry (ICLEntry *clEntry)
 	{
-		RebuildTooltip (clEntry);
+		DirtyTooltips_ << clEntry;
 
 		connect (clEntry->GetQObject (),
 				SIGNAL (statusChanged (EntryStatus, QString)),
@@ -343,9 +343,14 @@ namespace Azoth
 
 	void CLTooltipManager::RebuildTooltip (ICLEntry *entry)
 	{
+		if (!DirtyTooltips_.contains (entry))
+			return;
+
 		const auto& tip = MakeTooltipString (entry);
 		for (auto item : Entry2Items_.value (entry))
 			item->setToolTip (tip);
+
+		DirtyTooltips_.remove (entry);
 	}
 
 	void CLTooltipManager::remakeTooltipForSender ()
@@ -359,7 +364,7 @@ namespace Azoth
 			return;
 		}
 
-		RebuildTooltip (entry);
+		DirtyTooltips_ << entry;
 	}
 }
 }

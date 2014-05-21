@@ -46,12 +46,16 @@ namespace Azoth
 	public:
 		CLModel (CLTooltipManager*, QObject* = 0);
 
+		QVariant data (const QModelIndex&, int) const;
+
 		QStringList mimeTypes () const;
 		QMimeData* mimeData (const QModelIndexList&) const;
 		bool dropMimeData (const QMimeData*, Qt::DropAction,
 				int, int, const QModelIndex&);
 		Qt::DropActions supportedDropActions () const;
 	private:
+		void CheckRequestUpdateTooltip (const QModelIndex&, int) const;
+
 		bool PerformHooks (const QMimeData*, int, const QModelIndex&);
 		bool CheckHookDnDEntry2Entry (const QMimeData*, int, const QModelIndex&);
 

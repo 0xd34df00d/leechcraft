@@ -51,6 +51,12 @@ namespace Azoth
 	{
 	}
 
+	QVariant CLModel::data (const QModelIndex& index, int role) const
+	{
+		CheckRequestUpdateTooltip (index, role);
+		return QStandardItemModel::data (index, role);
+	}
+
 	QStringList CLModel::mimeTypes () const
 	{
 		return { DndUtil::GetFormatId (), "text/uri-list", "text/plain" };
@@ -113,6 +119,22 @@ namespace Azoth
 	Qt::DropActions CLModel::supportedDropActions () const
 	{
 		return static_cast<Qt::DropActions> (Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+	}
+
+	void CLModel::CheckRequestUpdateTooltip (const QModelIndex& index, int role) const
+	{
+		if (role != Qt::ToolTipRole)
+			return;
+
+		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+			return;
+
+		const auto entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+			return;
+
+		TooltipManager_->RebuildTooltip (entry);
 	}
 
 	bool CLModel::PerformHooks (const QMimeData *mime, int row, const QModelIndex& parent)
