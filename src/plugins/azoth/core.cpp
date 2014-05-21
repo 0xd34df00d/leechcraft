@@ -1347,6 +1347,26 @@ namespace Azoth
 			if (length)
 				tip += " (" + Util::MakeTimeFromLong (length) + ")";
 		}
+
+		void FormatMucPerms (QString& tip, IMUCPerms *mucPerms, ICLEntry *entry)
+		{
+			if (!mucPerms)
+				return;
+
+			tip += "<hr />";
+			const auto& perms = mucPerms->GetPerms (entry->GetQObject ());
+			for (const auto& permClass : perms.keys ())
+			{
+				tip += mucPerms->GetUserString (permClass);
+				tip += ": ";
+
+				QStringList users;
+				for (const auto& perm : perms [permClass])
+					users << mucPerms->GetUserString (perm);
+				tip += users.join ("; ");
+				tip += "<br />";
+			}
+		}
 	}
 
 	QString Core::MakeTooltipString (ICLEntry *entry)
@@ -1401,23 +1421,7 @@ namespace Azoth
 			tip += jid.isEmpty () ? tr ("unknown") : Qt::escape (jid);
 		}
 
-		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
-		if (mucPerms)
-		{
-			tip += "<hr />";
-			const auto& perms = mucPerms->GetPerms (entry->GetQObject ());
-			for (const auto& permClass : perms.keys ())
-			{
-				tip += mucPerms->GetUserString (permClass);
-				tip += ": ";
-
-				QStringList users;
-				for (const auto& perm : perms [permClass])
-					users << mucPerms->GetUserString (perm);
-				tip += users.join ("; ");
-				tip += "<br />";
-			}
-		}
+		FormatMucPerms (tip, qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()), entry);
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		proxy->SetValue ("tooltip", tip);
