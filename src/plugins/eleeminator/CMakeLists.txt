@@ -17,7 +17,7 @@ set (SRCS
 	termtab.cpp
 	xmlsettingsmanager.cpp
 	)
-#CreateTrs("eleeminator" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("eleeminator" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("eleeminator" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_eleeminator SHARED

@@ -30,6 +30,7 @@
 #include "eleeminator.h"
 #include <QIcon>
 #include <QtDebug>
+#include <util/util.h>
 #include "termtab.h"
 
 namespace LeechCraft
@@ -38,6 +39,8 @@ namespace Eleeminator
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("eleeminator");
+
 		TermTabTC_ =
 		{
 			GetUniqueID () + ".TermTab",
