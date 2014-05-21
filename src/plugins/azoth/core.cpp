@@ -2082,6 +2082,8 @@ namespace Azoth
 					this,
 					0);
 
+			TooltipManager_->RemoveEntry (entry);
+
 			ChatTabsManager_->HandleEntryRemoved (entry);
 
 			for (auto item : Entry2Items_.value (entry))

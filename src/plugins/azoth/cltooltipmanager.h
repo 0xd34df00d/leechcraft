@@ -64,6 +64,7 @@ namespace Azoth
 		static QString Status2Str (const EntryStatus& status, IProxyObject *obj);
 
 		void AddEntry (ICLEntry*);
+		void RemoveEntry (ICLEntry*);
 
 		QString MakeTooltipString (ICLEntry*);
 

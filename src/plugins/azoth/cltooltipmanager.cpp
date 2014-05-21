@@ -123,6 +123,15 @@ namespace Azoth
 		}
 	}
 
+	void CLTooltipManager::RemoveEntry (ICLEntry *entry)
+	{
+		disconnect (entry->GetQObject (),
+				0,
+				this,
+				0);
+		DirtyTooltips_.remove (entry);
+	}
+
 	namespace
 	{
 		void FormatMood (QString& tip, const QMap<QString, QVariant>& moodInfo)
