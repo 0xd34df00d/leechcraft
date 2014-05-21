@@ -364,6 +364,9 @@ namespace Azoth
 			return;
 		}
 
+		for (auto item : Entry2Items_.value (entry))
+			item->setToolTip ({});
+
 		DirtyTooltips_ << entry;
 	}
 }
