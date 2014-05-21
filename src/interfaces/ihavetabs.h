@@ -93,6 +93,12 @@ namespace LeechCraft
 		 */
 		TFSuggestOpening = 1 << 3,
 
+		/** @brief The tab uses the standard tab close shortcut (Ctrl+W).
+		 *
+		 * Thus, when this tab is active, the tab close shortcut will be
+		 * disabled if it matches "Ctrl+W".
+		 */
+		TFOverridesTabClose = 1 << 4
 	};
 
 	Q_DECLARE_FLAGS (TabFeatures, LeechCraft::TabFeature);
