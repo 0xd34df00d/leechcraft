@@ -48,7 +48,7 @@ namespace Eleeminator
 			tr ("Termianl emulator."),
 			GetIcon (),
 			15,
-			TFOpenableByRequest
+			TFOpenableByRequest | TFOverridesTabClose
 		};
 	}
 
