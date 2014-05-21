@@ -940,8 +940,10 @@ namespace CleanWeb
 		if (!frame)
 			return;
 
-		qDebug () << Q_FUNC_INFO << frame;
-		const QUrl& frameUrl = frame->url ();
+		const QUrl& frameUrl = frame->url ().isEmpty () ?
+				frame->baseUrl () :
+				frame->url ();
+		qDebug () << Q_FUNC_INFO << frame << frameUrl;
 		const QString& urlStr = frameUrl.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
 		const QString& cinUrlStr = urlStr.toLower ();
