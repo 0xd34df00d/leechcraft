@@ -138,6 +138,7 @@ namespace LeechCraft
 		void handleToolButtonStyleChanged ();
 		void handleShowTrayIconChanged ();
 		void handleNewTabMenuRequested ();
+		void handleCurrentTabChanged (int);
 		void handleRestoreActionAdded (QAction*);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void handleWorkAreaResized (int);

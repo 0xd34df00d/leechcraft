@@ -350,6 +350,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SIGNAL (newTabMenuRequested ()),
 			this,
 			SLOT (handleNewTabMenuRequested ()));
+	connect (Ui_.MainTabWidget_,
+			SIGNAL (currentChanged (int)),
+			this,
+			SLOT (handleCurrentTabChanged (int)));
 
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
@@ -607,6 +611,26 @@ void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 	QMenu *ntmenu = Core::Instance ()
 			.GetNewTabMenuManager ()->GetNewTabMenu ();
 	ntmenu->popup (QCursor::pos ());
+}
+
+void MainWindow::handleCurrentTabChanged (int index)
+{
+	if (index == -1)
+		return;
+
+	if (CloseTabShortcut_->key () != QString ("Ctrl+W"))
+	{
+		CloseTabShortcut_->setEnabled (true);
+		return;
+	}
+
+	const auto widget = Ui_.MainTabWidget_->Widget (index);
+	const auto itw = qobject_cast<ITabWidget*> (widget);
+	const bool closeScEnabled = itw ?
+			!(itw->GetTabClassInfo ().Features_ & TabFeature::TFOverridesTabClose) :
+			true;
+
+	CloseTabShortcut_->setEnabled (closeScEnabled);
 }
 
 void MainWindow::handleRestoreActionAdded (QAction *act)
