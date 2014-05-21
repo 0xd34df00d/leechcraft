@@ -1290,10 +1290,15 @@ namespace Azoth
 	{
 		QString Status2Str (const EntryStatus& status, std::shared_ptr<IProxyObject> obj)
 		{
-			QString result = obj->StateToString (status.State_);
+			auto result = "<table><tr><td valign='middle'>" + obj->StateToString (status.State_);
 			const QString& statusString = Qt::escape (status.StatusString_);
 			if (!statusString.isEmpty ())
 				result += " (" + statusString + ")";
+
+			const auto& icon = Core::Instance ().GetIconForState (status.State_);
+			const auto& data = Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
+			result += "&nbsp;&nbsp;&nbsp;</td><td><img src='" + data + "' /></td></tr></table>";
+
 			return result;
 		}
 
