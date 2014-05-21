@@ -53,6 +53,7 @@
 #include <util/xpc/util.h>
 #include <util/network/customnetworkreply.h>
 #include <util/sys/paths.h>
+#include <util/sll/slotclosure.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
@@ -976,8 +977,17 @@ namespace CleanWeb
 						return { frame, 0, sels };
 					}));
 
-		for (auto childFrame : frame->childFrames ())
-			handleFrameLayout (childFrame);
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, frame] () -> void
+			{
+				for (auto childFrame : frame->childFrames ())
+					handleFrameLayout (childFrame);
+			},
+			frame,
+			SIGNAL (loadFinished (bool)),
+			frame
+		};
 	}
 
 	void Core::hidingElementsFound ()
