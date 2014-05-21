@@ -29,11 +29,13 @@
 
 #include "cltooltipmanager.h"
 #include <QTextDocument>
+#include <QStandardItem>
 #include <util/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucperms.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include "interfaces/azoth/iadvancedclentry.h"
 #include "core.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
@@ -61,6 +63,64 @@ namespace Azoth
 		result += "&nbsp;&nbsp;&nbsp;</td><td><img src='" + data + "' /></td></tr></table>";
 
 		return result;
+	}
+
+	void CLTooltipManager::AddEntry (ICLEntry *clEntry)
+	{
+		RebuildTooltip (clEntry);
+
+		connect (clEntry->GetQObject (),
+				SIGNAL (statusChanged (EntryStatus, QString)),
+				this,
+				SLOT (remakeTooltipForSender ()));
+		connect (clEntry->GetQObject (),
+				SIGNAL (availableVariantsChanged (QStringList)),
+				this,
+				SLOT (remakeTooltipForSender ()));
+		connect (clEntry->GetQObject (),
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SLOT (remakeTooltipForSender ()));
+		connect (clEntry->GetQObject (),
+				SIGNAL (nameChanged (const QString&)),
+				this,
+				SLOT (remakeTooltipForSender ()));
+		connect (clEntry->GetQObject (),
+				SIGNAL (groupsChanged (const QStringList&)),
+				this,
+				SLOT (remakeTooltipForSender ()));
+		connect (clEntry->GetQObject (),
+				SIGNAL (avatarChanged (const QImage&)),
+				this,
+				SLOT (remakeTooltipForSender ()));
+		connect (clEntry->GetQObject (),
+				SIGNAL (permsChanged ()),
+				this,
+				SLOT (remakeTooltipForSender ()));
+
+		if (qobject_cast<IAdvancedCLEntry*> (clEntry->GetQObject ()))
+		{
+			connect (clEntry->GetQObject (),
+					SIGNAL (attentionDrawn (const QString&, const QString&)),
+					this,
+					SLOT (remakeTooltipForSender ()));
+			connect (clEntry->GetQObject (),
+					SIGNAL (activityChanged (const QString&)),
+					this,
+					SLOT (remakeTooltipForSender ()));
+			connect (clEntry->GetQObject (),
+					SIGNAL (moodChanged (const QString&)),
+					this,
+					SLOT (remakeTooltipForSender ()));
+			connect (clEntry->GetQObject (),
+					SIGNAL (tuneChanged (const QString&)),
+					this,
+					SLOT (remakeTooltipForSender ()));
+			connect (clEntry->GetQObject (),
+					SIGNAL (locationChanged (const QString&)),
+					this,
+					SLOT (remakeTooltipForSender ()));
+		}
 	}
 
 	namespace
@@ -279,6 +339,27 @@ namespace Azoth
 		tip += "</td></tr></table>";
 
 		return tip;
+	}
+
+	void CLTooltipManager::RebuildTooltip (ICLEntry *entry)
+	{
+		const auto& tip = MakeTooltipString (entry);
+		for (auto item : Entry2Items_.value (entry))
+			item->setToolTip (tip);
+	}
+
+	void CLTooltipManager::remakeTooltipForSender ()
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "could not be casted to ICLEntry";
+			return;
+		}
+
+		RebuildTooltip (entry);
 	}
 }
 }

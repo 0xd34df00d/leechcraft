@@ -380,15 +380,13 @@ namespace Azoth
 		QStandardItem* GetAccountItem (const QObject *accountObj,
 				QMap<const QObject*, QStandardItem*>& accountItemCache);
 
-		void RebuildTooltip (ICLEntry *entry);
-
 		Entity BuildStatusNotification (const EntryStatus&,
 				ICLEntry*, const QString&);
 
 		/** Handles the event of status changes in a contact list entry.
 		 */
 		void HandleStatusChanged (const EntryStatus& status,
-				ICLEntry *entry, const QString& variant, bool asSignal = false, bool rebuildTooltip = true);
+				ICLEntry *entry, const QString& variant, bool asSignal = false);
 
 		/** Checks whether icon representing incoming file should be
 		 * drawn for the entry with the given id.
@@ -440,8 +438,6 @@ namespace Azoth
 	private slots:
 		void handleNewProtocols (const QList<QObject*>&);
 
-		void delayedRebuildTooltip (QPointer<QObject> entryObj);
-
 		/** Handles a new account. This account may be both a new one
 		 * (added as a result of user's actions) and already existing
 		 * one (in case it was just read from settings, for example).
@@ -488,11 +484,6 @@ namespace Azoth
 		 */
 		void handleVariantsChanged ();
 
-		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
-		 * variant.
-		 */
-		void handleEntryPEPEvent (const QString& variant);
-
 		/** Handles the event of name changes in plugin.
 		 */
 		void handleEntryNameChanged (const QString& newName);
@@ -508,9 +499,7 @@ namespace Azoth
 		 * If the passed entry is not NULL, it will be used, otherwise
 		 * sender() will be used.
 		 */
-		void handleEntryPermsChanged (ICLEntry *entry = 0, bool rebuildTooltip = true);
-
-		void remakeTooltipForSender ();
+		void handleEntryPermsChanged (ICLEntry *entry = 0);
 
 		/** Handles the message receival from contact list entries.
 		 */

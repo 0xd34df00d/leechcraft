@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QHash>
 #include <QCache>
+#include <QPointer>
 #include <QImage>
 #include <interfaces/core/ihookproxy.h>
 
@@ -59,7 +60,13 @@ namespace Azoth
 
 		static QString Status2Str (const EntryStatus& status, IProxyObject *obj);
 
+		void AddEntry (ICLEntry*);
+
 		QString MakeTooltipString (ICLEntry*);
+
+		void RebuildTooltip (ICLEntry *entry);
+	private slots:
+		void remakeTooltipForSender ();
 	signals:
 		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry) const;

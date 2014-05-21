@@ -1144,14 +1144,6 @@ namespace Azoth
 				this,
 				SLOT (handleEntryPermsChanged ()));
 		connect (clEntry->GetQObject (),
-				SIGNAL (entryGenerallyChanged ()),
-				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
-				SIGNAL (avatarChanged (const QImage&)),
-				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
@@ -1173,28 +1165,10 @@ namespace Azoth
 		}
 
 		if (qobject_cast<IAdvancedCLEntry*> (clEntry->GetQObject ()))
-		{
 			connect (clEntry->GetQObject (),
 					SIGNAL (attentionDrawn (const QString&, const QString&)),
 					this,
 					SLOT (handleAttentionDrawn (const QString&, const QString&)));
-			connect (clEntry->GetQObject (),
-					SIGNAL (activityChanged (const QString&)),
-					this,
-					SLOT (handleEntryPEPEvent (const QString&)));
-			connect (clEntry->GetQObject (),
-					SIGNAL (moodChanged (const QString&)),
-					this,
-					SLOT (handleEntryPEPEvent (const QString&)));
-			connect (clEntry->GetQObject (),
-					SIGNAL (tuneChanged (const QString&)),
-					this,
-					SLOT (handleEntryPEPEvent (const QString&)));
-			connect (clEntry->GetQObject (),
-					SIGNAL (locationChanged (const QString&)),
-					this,
-					SLOT (handleEntryPEPEvent (const QString&)));
-		}
 
 #ifdef ENABLE_CRYPT
 		if (!KeyStoreMgr_->isBusy ())
@@ -1221,12 +1195,12 @@ namespace Azoth
 			}
 		}
 
-		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString (), false, false);
+		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString (), false);
 
 		if (clEntry->GetEntryType () == ICLEntry::ETPrivateChat)
-			handleEntryPermsChanged (clEntry, false);
+			handleEntryPermsChanged (clEntry);
 
-		RebuildTooltip (clEntry);
+		TooltipManager_->AddEntry (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetQObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
@@ -1288,13 +1262,6 @@ namespace Azoth
 		}
 	}
 
-	void Core::RebuildTooltip (ICLEntry *entry)
-	{
-		const QString& tip = TooltipManager_->MakeTooltipString (entry);
-		for (auto item : Entry2Items_.value (entry))
-			item->setToolTip (tip);
-	}
-
 	Entity Core::BuildStatusNotification (const EntryStatus& entrySt,
 		ICLEntry *entry, const QString& variant)
 	{
@@ -1344,7 +1311,7 @@ namespace Azoth
 	}
 
 	void Core::HandleStatusChanged (const EntryStatus& status,
-			ICLEntry *entry, const QString& variant, bool asSignal, bool rebuildTooltip)
+			ICLEntry *entry, const QString& variant, bool asSignal)
 	{
 		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				entry->GetQObject (), variant);
@@ -1353,12 +1320,6 @@ namespace Azoth
 
 		const State state = entry->GetStatus ().State_;
 		Util::QIODevice_ptr icon = GetIconPathForState (state);
-
-		if (rebuildTooltip)
-			QMetaObject::invokeMethod (this,
-					"delayedRebuildTooltip",
-					Qt::QueuedConnection,
-					Q_ARG (QPointer<QObject>, entry->GetQObject ()));
 
 		for (auto item : Entry2Items_.value (entry))
 		{
@@ -1855,18 +1816,6 @@ namespace Azoth
 		}
 	}
 
-	void Core::delayedRebuildTooltip (QPointer<QObject> entryObj)
-	{
-		if (!entryObj)
-			return;
-
-		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-			return;
-
-		RebuildTooltip (entry);
-	}
-
 	void Core::addAccount (QObject *accObject)
 	{
 		IAccount *account = qobject_cast<IAccount*> (accObject);
@@ -2244,20 +2193,6 @@ namespace Azoth
 		HandleStatusChanged (entry->GetStatus (), entry, QString (), false);
 	}
 
-	void Core::handleEntryPEPEvent (const QString&)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a ICLEntry"
-					<< sender ();
-			return;
-		}
-
-		RebuildTooltip (entry);
-	}
-
 	void Core::handleEntryNameChanged (const QString& newName)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
@@ -2313,7 +2248,7 @@ namespace Azoth
 		HandleStatusChanged (entry->GetStatus (), entry, QString ());
 	}
 
-	void Core::handleEntryPermsChanged (ICLEntry *suggest, bool rebuildTooltip)
+	void Core::handleEntryPermsChanged (ICLEntry *suggest)
 	{
 		ICLEntry *entry = suggest ? suggest : qobject_cast<ICLEntry*> (sender ());
 		if (!entry)
@@ -2332,23 +2267,6 @@ namespace Azoth
 		const QString& name = mucPerms->GetAffName (entryObj);
 		for (auto item : Entry2Items_.value (entry))
 			item->setData (name, CLRAffiliation);
-
-		if (rebuildTooltip)
-			RebuildTooltip (entry);
-	}
-
-	void Core::remakeTooltipForSender ()
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-
-		RebuildTooltip (entry);
 	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)
