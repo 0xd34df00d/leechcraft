@@ -1348,6 +1348,8 @@ namespace Azoth
 	{
 		QString tip = "<table border='0'><tr><td>";
 
+		const auto& icons = GetClientIconForEntry (entry);
+
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 		{
 			const int avatarSize = 75;
@@ -1446,12 +1448,42 @@ namespace Azoth
 			if (!variant.isEmpty () || variants.size () > 1)
 				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
 
+			QString clientIconString;
+			if (!icons.value (variant).isNull ())
+			{
+				const auto& data = Util::GetAsBase64Src (icons.value (variant).pixmap (16, 16).toImage ());
+				clientIconString = "&nbsp;&nbsp;&nbsp;<img src='" + data + "'/>";
+			}
+
+			bool clientIconInserted = false;
+
 			if (info.contains ("client_name"))
+			{
 				tip += "<br />" + tr ("Using:") + ' ' + Qt::escape (info.value ("client_name").toString ());
+
+				if (!info.contains ("client_version"))
+				{
+					tip += clientIconString;
+					clientIconInserted = true;
+				}
+			}
 			if (info.contains ("client_version"))
+			{
 				tip += " " + Qt::escape (info.value ("client_version").toString ());
+
+				tip += clientIconString;
+				clientIconInserted = true;
+			}
 			if (info.contains ("client_remote_name"))
+			{
 				tip += "<br />" + tr ("Claiming:") + ' ' + Qt::escape (info.value ("client_remote_name").toString ());
+
+				if (!clientIconInserted)
+				{
+					tip += clientIconString;
+					clientIconInserted = true;
+				}
+			}
 			if (info.contains ("client_os"))
 				tip += "<br />" + tr ("OS:") + ' ' + Qt::escape (info.value ("client_os").toString ());
 
