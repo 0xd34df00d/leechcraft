@@ -1384,7 +1384,7 @@ namespace Azoth
 		}
 
 		tip += "<strong>" + Qt::escape (entry->GetEntryName ()) + "</strong>";
-		tip += "&nbsp;(<em>" + Qt::escape (entry->GetHumanReadableID ()) + "</em>)<br />";
+		tip += "&nbsp;(<em>" + Qt::escape (entry->GetHumanReadableID ()) + "</em>)";
 		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 		{
@@ -1448,7 +1448,7 @@ namespace Azoth
 				tip += "<strong>" + variant;
 				if (info.contains ("priority"))
 					tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
-				tip += "</strong><br />";
+				tip += "</strong>";
 			}
 			if (!variant.isEmpty () || variants.size () > 1)
 				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
