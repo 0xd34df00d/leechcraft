@@ -90,6 +90,7 @@
 #include "riexhandler.h"
 #include "customstatusesmanager.h"
 #include "customchatstylemanager.h"
+#include "cltooltipmanager.h"
 
 Q_DECLARE_METATYPE (QList<QColor>);
 Q_DECLARE_METATYPE (QPointer<QObject>);
@@ -204,8 +205,8 @@ namespace Azoth
 #endif
 	, CLModel_ (new CLModel (this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
+	, TooltipManager_ (new CLTooltipManager (Entry2Items_))
 	, ActionsManager_ (new ActionsManager (this))
-	, Avatar2TooltipSrcCache_ (2 * 1024 * 1024)
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
@@ -286,6 +287,7 @@ namespace Azoth
 		PluginManager_->RegisterHookable (this);
 		PluginManager_->RegisterHookable (CLModel_);
 		PluginManager_->RegisterHookable (ActionsManager_);
+		PluginManager_->RegisterHookable (TooltipManager_);
 
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
@@ -1286,241 +1288,9 @@ namespace Azoth
 		}
 	}
 
-	namespace
-	{
-		QString Status2Str (const EntryStatus& status, std::shared_ptr<IProxyObject> obj)
-		{
-			auto result = "<table><tr><td valign='middle'>" + obj->StateToString (status.State_);
-			const QString& statusString = Qt::escape (status.StatusString_);
-			if (!statusString.isEmpty ())
-				result += " (" + statusString + ")";
-
-			const auto& icon = Core::Instance ().GetIconForState (status.State_);
-			const auto& data = Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
-			result += "&nbsp;&nbsp;&nbsp;</td><td><img src='" + data + "' /></td></tr></table>";
-
-			return result;
-		}
-
-		void FormatMood (QString& tip, const QMap<QString, QVariant>& moodInfo)
-		{
-			tip += "<br />" + Core::tr ("Mood:") + ' ';
-			tip += MoodDialog::ToHumanReadable (moodInfo ["mood"].toString ());
-			const QString& text = moodInfo ["text"].toString ();
-			if (!text.isEmpty ())
-				tip += " (" + text + ")";
-		}
-
-		void FormatActivity (QString& tip, const QMap<QString, QVariant>& actInfo)
-		{
-			tip += "<br />" + Core::tr ("Activity:") + ' ';
-			tip += ActivityDialog::ToHumanReadable (actInfo ["general"].toString ());
-			const QString& specific = ActivityDialog::ToHumanReadable (actInfo ["specific"].toString ());
-			if (!specific.isEmpty ())
-				tip += " (" + specific + ")";
-			const QString& text = actInfo ["text"].toString ();
-			if (!text.isEmpty ())
-				tip += " (" + text + ")";
-		}
-
-		void FormatTune (QString& tip, const QMap<QString, QVariant>& tuneInfo)
-		{
-			const QString& artist = tuneInfo ["artist"].toString ();
-			const QString& source = tuneInfo ["source"].toString ();
-			const QString& title = tuneInfo ["title"].toString ();
-
-			tip += "<br />" + Core::tr ("Now listening to:") + ' ';
-			if (!artist.isEmpty () && !title.isEmpty ())
-				tip += "<em>" + artist + "</em>" +
-						QString::fromUtf8 (" — ") +
-						"<em>" + title + "</em>";
-			else if (!artist.isEmpty ())
-				tip += "<em>" + artist + "</em>";
-			else if (!title.isEmpty ())
-				tip += "<em>" + title + "</em>";
-
-			if (!source.isEmpty ())
-				tip += ' ' + Core::tr ("from") +
-						" <em>" + source + "</em>";
-
-			const int length = tuneInfo ["length"].toInt ();
-			if (length)
-				tip += " (" + Util::MakeTimeFromLong (length) + ")";
-		}
-
-		void FormatMucPerms (QString& tip, IMUCPerms *mucPerms, ICLEntry *entry)
-		{
-			if (!mucPerms)
-				return;
-
-			tip += "<hr />";
-			const auto& perms = mucPerms->GetPerms (entry->GetQObject ());
-			for (const auto& permClass : perms.keys ())
-			{
-				tip += mucPerms->GetUserString (permClass);
-				tip += ": ";
-
-				QStringList users;
-				for (const auto& perm : perms [permClass])
-					users << mucPerms->GetUserString (perm);
-				tip += users.join ("; ");
-				tip += "<br />";
-			}
-		}
-	}
-
-	QString Core::MakeTooltipString (ICLEntry *entry)
-	{
-		QString tip = "<table border='0'><tr><td>";
-
-		const auto& icons = GetClientIconForEntry (entry);
-
-		if (entry->GetEntryType () != ICLEntry::ETMUC)
-		{
-			const int avatarSize = 75;
-
-			auto avatar = entry->GetAvatar ();
-			if (avatar.isNull ())
-				avatar = GetDefaultAvatar (avatarSize);
-
-			QString data;
-			if (auto dataPtr = Avatar2TooltipSrcCache_ [avatar])
-				data = *dataPtr;
-			else
-			{
-				const int minAvatarSize = 32;
-
-				if (std::max (avatar.width (), avatar.height ()) > avatarSize)
-					avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::FastTransformation);
-				else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
-					avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-				data = Util::GetAsBase64Src (avatar);
-				Avatar2TooltipSrcCache_.insert (avatar, new QString (data), data.size ());
-			}
-
-			tip += "<img src='" + data + "' />";
-			tip += "</td><td>";
-		}
-
-		tip += "<strong>" + Qt::escape (entry->GetEntryName ()) + "</strong>";
-		tip += "&nbsp;(<em>" + Qt::escape (entry->GetHumanReadableID ()) + "</em>)";
-		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
-		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
-		{
-			tip += "<br />";
-			tip += tr ("In groups:") + ' ' + Qt::escape (entry->Groups ().join ("; "));
-		}
-
-		const QStringList& variants = entry->Variants ();
-
-		if (auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ()))
-		{
-			const QString& jid = mucEntry->GetRealID (entry->GetQObject ());
-			tip += "<br />" + tr ("Real ID:") + ' ';
-			tip += jid.isEmpty () ? tr ("unknown") : Qt::escape (jid);
-		}
-
-		FormatMucPerms (tip, qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()), entry);
-
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		proxy->SetValue ("tooltip", tip);
-		emit hookTooltipBeforeVariants (proxy, entry->GetQObject ());
-		proxy->FillValue ("tooltip", tip);
-
-		auto cleanupBR = [&tip] ()
-		{
-			tip = tip.trimmed ();
-			while (tip.endsWith ("<br />"))
-			{
-				tip.chop (6);
-				tip = tip.trimmed ();
-			}
-		};
-
-		cleanupBR ();
-
-		for (const QString& variant : variants)
-		{
-			const auto& info = entry->GetClientInfo (variant);
-			if (info.isEmpty ())
-				continue;
-
-			tip += "<hr />";
-			if (!variant.isEmpty ())
-			{
-				tip += "<strong>" + variant;
-				if (info.contains ("priority"))
-					tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
-				tip += "</strong>";
-			}
-			if (!variant.isEmpty () || variants.size () > 1)
-				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
-
-			QString clientIconString;
-			if (!icons.value (variant).isNull ())
-			{
-				const auto& data = Util::GetAsBase64Src (icons.value (variant).pixmap (16, 16).toImage ());
-				clientIconString = "&nbsp;&nbsp;&nbsp;<img src='" + data + "'/>";
-			}
-
-			bool clientIconInserted = false;
-
-			if (info.contains ("client_name"))
-			{
-				tip += "<br />" + tr ("Using:") + ' ' + Qt::escape (info.value ("client_name").toString ());
-
-				if (!info.contains ("client_version"))
-				{
-					tip += clientIconString;
-					clientIconInserted = true;
-				}
-			}
-			if (info.contains ("client_version"))
-			{
-				tip += " " + Qt::escape (info.value ("client_version").toString ());
-
-				tip += clientIconString;
-				clientIconInserted = true;
-			}
-			if (info.contains ("client_remote_name"))
-			{
-				tip += "<br />" + tr ("Claiming:") + ' ' + Qt::escape (info.value ("client_remote_name").toString ());
-
-				if (!clientIconInserted)
-				{
-					tip += clientIconString;
-					clientIconInserted = true;
-				}
-			}
-			if (info.contains ("client_os"))
-				tip += "<br />" + tr ("OS:") + ' ' + Qt::escape (info.value ("client_os").toString ());
-
-			if (info.contains ("user_mood"))
-				FormatMood (tip, info ["user_mood"].toMap ());
-			if (info.contains ("user_activity"))
-				FormatActivity (tip, info ["user_activity"].toMap ());
-			if (info.contains ("user_tune"))
-				FormatTune (tip, info ["user_tune"].toMap ());
-
-			if (info.contains ("custom_user_visible_map"))
-			{
-				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
-				for (const QString& key : map.keys ())
-					tip += "<br />" + key + ": " + Qt::escape (map [key].toString ()) + "<br />";
-			}
-		}
-
-		cleanupBR ();
-
-		tip += "</td></tr></table>";
-
-		return tip;
-	}
-
 	void Core::RebuildTooltip (ICLEntry *entry)
 	{
-		const QString& tip = MakeTooltipString (entry);
+		const QString& tip = TooltipManager_->MakeTooltipString (entry);
 		for (auto item : Entry2Items_.value (entry))
 			item->setToolTip (tip);
 	}
@@ -1543,7 +1313,7 @@ namespace Azoth
 			return Entity ();
 
 		const QString& name = entry->GetEntryName ();
-		const QString& status = Status2Str (entrySt, PluginProxyObject_);
+		const QString& status = CLTooltipManager::Status2Str (entrySt, PluginProxyObject_.get ());
 
 		const QString& text = variant.isEmpty () ?
 				Core::tr ("%1 is now %2.")

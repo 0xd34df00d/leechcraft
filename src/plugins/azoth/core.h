@@ -86,6 +86,7 @@ namespace Azoth
 	class CustomStatusesManager;
 	class ChatStyleOptionManager;
 	class CustomChatStyleManager;
+	class CLTooltipManager;
 
 	class Core : public QObject
 	{
@@ -119,6 +120,8 @@ namespace Azoth
 		typedef QHash<ICLEntry*, QList<QStandardItem*>> Entry2Items_t;
 		Entry2Items_t Entry2Items_;
 
+		CLTooltipManager * const TooltipManager_;
+
 		ActionsManager *ActionsManager_;
 
 		typedef QHash<QString, QObject*> ID2Entry_t;
@@ -129,8 +132,6 @@ namespace Azoth
 
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
-
-		QCache<QImage, QString> Avatar2TooltipSrcCache_;
 
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 
@@ -378,11 +379,6 @@ namespace Azoth
 		 */
 		QStandardItem* GetAccountItem (const QObject *accountObj,
 				QMap<const QObject*, QStandardItem*>& accountItemCache);
-
-		/** Creates the tooltip text for the roster entry to be shown in
-		 * the tree.
-		 */
-		QString MakeTooltipString (ICLEntry *entry);
 
 		void RebuildTooltip (ICLEntry *entry);
 
@@ -646,8 +642,6 @@ namespace Azoth
 				QObject *message);
 		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry) const;
 	};
 }
 }
