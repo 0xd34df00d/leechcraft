@@ -56,6 +56,8 @@ namespace Eleeminator
 
 		lay->addWidget (Term_);
 
+		Term_->setFlowControlEnabled (true);
+		Term_->setFlowControlWarningEnabled (true);
 		Term_->setScrollBarPosition (QTermWidget::ScrollBarRight);
 		connect (Term_,
 				SIGNAL (finished ()),
