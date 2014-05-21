@@ -55,6 +55,7 @@ namespace Eleeminator
 
 		lay->addWidget (Term_);
 
+		Term_->setScrollBarPosition (QTermWidget::ScrollBarRight);
 		connect (Term_,
 				SIGNAL (finished ()),
 				this,
