@@ -65,6 +65,7 @@ namespace HttStream
 
 		GstElement * const AudioQueue_;
 		GstElement * const StreamQueue_;
+		GstElement * const AConv_;
 
 		GstElement * const Encoder_;
 
@@ -100,6 +101,8 @@ namespace HttStream
 	private:
 		void CreatePad ();
 		void DestroyPad ();
+
+		std::vector<GstElement*> GetStreamBranchElements () const;
 
 		bool HandleFirstClientConnected ();
 		void HandleLastClientDisconnected ();
