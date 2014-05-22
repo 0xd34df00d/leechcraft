@@ -101,6 +101,8 @@ namespace LMP
 		QIcon GetTabRecoverIcon () const;
 		QString GetTabRecoverName () const;
 
+		void AddNPTab (const QString&, QWidget*);
+
 		void InitWithOtherPlugins ();
 	private:
 		void SetupNavButtons ();

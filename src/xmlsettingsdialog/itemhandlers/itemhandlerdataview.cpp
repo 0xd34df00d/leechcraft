@@ -77,6 +77,8 @@ namespace LeechCraft
 		if (item.attribute ("removeEnabled") == "false")
 			view->DisableRemoval ();
 
+		const bool resize = item.attribute ("resizeToContents") == "true";
+
 		AddCustomButtons (item, view);
 
 		QString prop = item.attribute ("property");
@@ -84,8 +86,8 @@ namespace LeechCraft
 		view->setObjectName (prop);
 
 		Factory_->RegisterDatasourceSetter (prop,
-				[this] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog*)
-					{ SetDataSource (str, m); });
+				[this, resize] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog*) -> void
+					{ SetDataSource (str, m, resize); });
 		Propname2DataView_ [prop] = view;
 
 		lay->addWidget (view, lay->rowCount (), 0, 1, 2);
@@ -109,9 +111,9 @@ namespace LeechCraft
 		return QVariant ();
 	}
 
-	void ItemHandlerDataView::SetDataSource (const QString& prop, QAbstractItemModel *model)
+	void ItemHandlerDataView::SetDataSource (const QString& prop, QAbstractItemModel *model, bool resize)
 	{
-		DataViewWidget *view = Propname2DataView_ [prop];
+		const auto view = Propname2DataView_ [prop];
 		if (!view)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -122,6 +124,18 @@ namespace LeechCraft
 		}
 
 		view->SetModel (model);
+
+		if (resize)
+		{
+			connect (model,
+					SIGNAL (rowsInserted (QModelIndex, int, int)),
+					view,
+					SLOT (resizeColumns ()));
+			connect (model,
+					SIGNAL (dataChanged (QModelIndex, QModelIndex)),
+					view,
+					SLOT (resizeColumns ()));
+		}
 	}
 
 	namespace
@@ -380,16 +394,13 @@ namespace LeechCraft
 		}
 
 		const auto& selected = view->GetCurrentIndex ();
-		if (!selected.isValid ())
-			return;
-
 		const auto model = view->GetModel ();
 
 		if (!QMetaObject::invokeMethod (model->parent (),
 					"customButtonPressed",
 					Q_ARG (QString, view->objectName ()),
 					Q_ARG (QByteArray, id),
-					Q_ARG (int, selected.row ())))
+					Q_ARG (int, selected.isValid () ? selected.row () : -1)))
 			qWarning () << Q_FUNC_INFO
 					<< "invokeMethod on "
 					<< model->parent ()

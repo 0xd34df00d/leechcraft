@@ -52,6 +52,7 @@ namespace BitTorrent
 
 		QToolBar *Toolbar_;
 		QAction *OpenTorrent_;
+		QAction *AddMagnet_;
 		QAction *RemoveTorrent_;
 		QAction *Resume_;
 		QAction *Stop_;
@@ -87,6 +88,7 @@ namespace BitTorrent
 		void on_TorrentsView__customContextMenuRequested (const QPoint&);
 
 		void handleOpenTorrentTriggered ();
+		void handleAddMagnetTriggered ();
 		void handleOpenMultipleTorrentsTriggered ();
 		void handleIPFilterTriggered ();
 		void handleCreateTorrentTriggered ();

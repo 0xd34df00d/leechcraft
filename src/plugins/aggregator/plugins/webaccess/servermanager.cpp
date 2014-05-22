@@ -32,7 +32,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <Wt/WServer>
-#include <util/network/addressesmodelmanager.h>
+#include <util/xsd/addressesmodelmanager.h>
 #include "aggregatorapp.h"
 #include "xmlsettingsmanager.h"
 

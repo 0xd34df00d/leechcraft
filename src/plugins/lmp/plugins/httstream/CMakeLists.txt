@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lmp_httstream)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTNETWORK TRUE)
 include_directories (${LMP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}

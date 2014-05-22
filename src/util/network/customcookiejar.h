@@ -42,6 +42,8 @@ namespace Util
 	 *
 	 * Allows one to filter tracking cookies, filter duplicate cookies
 	 * and has unlimited storage period.
+	 *
+	 * @ingroup NetworkUtil
 	 */
 	class UTIL_NETWORK_API CustomCookieJar : public QNetworkCookieJar
 	{

@@ -189,6 +189,11 @@ namespace LMP
 		gst_object_unref (Dec_);
 	}
 
+	QObject* SourceObject::GetQObject ()
+	{
+		return this;
+	}
+
 	bool SourceObject::IsSeekable () const
 	{
 		std::shared_ptr<GstQuery> query (gst_query_new_seeking (GST_FORMAT_TIME), gst_query_unref);
@@ -206,6 +211,33 @@ namespace LMP
 	SourceState SourceObject::GetState () const
 	{
 		return OldState_;
+	}
+
+	void SourceObject::SetState (SourceState state)
+	{
+		if (state == OldState_)
+			return;
+
+		switch (state)
+		{
+		case SourceState::Stopped:
+			Stop ();
+			break;
+		case SourceState::Paused:
+			Pause ();
+			break;
+		case SourceState::Buffering:
+			qWarning () << Q_FUNC_INFO
+					<< "`buffering` is quite a bad state to be in, falling through to Playing";
+		case SourceState::Playing:
+			Play ();
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "erroneous state"
+					<< static_cast<int> (state);
+			break;
+		}
 	}
 
 	QString SourceObject::GetErrorString () const
@@ -770,6 +802,8 @@ namespace LMP
 			break;
 		case GST_MESSAGE_LATENCY:
 			gst_bin_recalculate_latency (GST_BIN (Dec_));
+			break;
+		case GST_MESSAGE_QOS:
 			break;
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_STREAM_START:

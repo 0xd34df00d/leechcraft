@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "chattab.h"
+#include <cmath>
 #include <QWebFrame>
 #include <QWebElement>
 #include <QTextDocument>

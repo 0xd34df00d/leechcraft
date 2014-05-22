@@ -148,6 +148,7 @@ set (SRCS
 	dummymsgmanager.cpp
 	serverhistorywidget.cpp
 	dndutil.cpp
+	cltooltipmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui

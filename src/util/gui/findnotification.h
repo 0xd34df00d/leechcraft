@@ -33,6 +33,8 @@
 #include "guiconfig.h"
 #include "pagenotification.h"
 
+class QShortcut;
+
 namespace Ui
 {
 	class FindNotification;
@@ -50,7 +52,8 @@ namespace Util
 	 * slots findNext() and findPrevious().
 	 *
 	 * The widget will automatically be embedded into the layout of
-	 * the parent widget of \em near after the \em near widget.
+	 * the parent widget of \em near after the \em near widget (which is
+	 * passed to the constructor).
 	 *
 	 * This class is typically used as following:
 	 * -# It's subclassed, and an implementation of handleNext() function
@@ -74,30 +77,34 @@ namespace Util
 	 * integrating this class with a QWebPage.
 	 *
 	 * @sa FindNotificationWk
+	 *
+	 * @ingroup GuiUtil
 	 */
 	class UTIL_GUI_API FindNotification : public PageNotification
 	{
 		Q_OBJECT
 
-		Ui::FindNotification *Ui_;
+		Ui::FindNotification * const Ui_;
+		QShortcut * const EscShortcut_;
 	public:
 		/** Various options controlling the search behavior.
 		 */
 		enum FindFlag
 		{
+			FindNoFlags = 0x0,
 			/** Search should be performed case sensitively.
 			 */
-			FindCaseSensitively,
+			FindCaseSensitively = 0x1,
 
 			/** Search should be performed in the reverse direction.
 			 */
-			FindBackwards,
+			FindBackwards = 0x2,
 
 			/** Search should continue from the beginning when the end is
 			 * reached (or from the end if the beginning is reached and
 			 * FindBackwards is also set).
 			 */
-			FindWrapsAround
+			FindWrapsAround = 0x4
 		};
 		Q_DECLARE_FLAGS (FindFlags, FindFlag)
 
@@ -113,6 +120,12 @@ namespace Util
 		 */
 		FindNotification (ICoreProxy_ptr proxy, QWidget *near);
 		~FindNotification ();
+
+		/** @brief Sets whether Esc closes the widget.
+		 *
+		 * @param[in] close Whether pressing Esc button closes the widget.
+		 */
+		void SetEscCloses (bool close);
 
 		/** @brief Sets the text in the find field.
 		 *
@@ -154,9 +167,16 @@ namespace Util
 		/** @brief Search for the next occurrence of the current search.
 		 */
 		void findNext ();
+
 		/** @brief Search for the previous occurrence of the current search.
 		 */
 		void findPrevious ();
+
+		/** @brief Clears the text in the find field.
+		 *
+		 * This is equivalent to <code>SetText ({})</code>.
+		 */
+		void clear ();
 	private slots:
 		void on_Pattern__textChanged (const QString&);
 		void on_FindButton__released ();

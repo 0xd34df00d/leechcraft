@@ -46,8 +46,8 @@
 #include <QSqlQuery>
 #include <QVariant>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include "oraltypes.h"
-#include "prelude.h"
 
 typedef std::shared_ptr<QSqlQuery> QSqlQuery_ptr;
 
@@ -377,7 +377,7 @@ namespace oral
 			const auto& fieldName = removedFields.takeAt (index);
 			const auto& boundName = removedBoundFields.takeAt (index);
 
-			const auto& statements = ZipWith (removedFields, removedBoundFields,
+			const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
 					[] (const QString& s1, const QString& s2) -> QString
 						{ return s1 + " = " + s2; });
 
@@ -957,7 +957,7 @@ namespace oral
 		{
 			const QList<QString> types = boost::fusion::fold (T {}, QStringList {}, Types {});
 
-			auto statements = ZipWith (types, data.Fields_,
+			auto statements = Util::ZipWith (types, data.Fields_,
 					[] (const QString& type, const QString& field) -> QString { return field + " " + type; });
 			return "CREATE TABLE " + data.Table_ +  " (" + QStringList { statements }.join (", ") + ");";
 		}
@@ -1040,7 +1040,7 @@ namespace oral
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
 		const QList<QString> fields = detail::GetFieldsNames<T> {} ();
-		const QList<QString> boundFields = Map (fields, [] (const QString& str) -> QString { return ':' + str; });
+		const QList<QString> boundFields = Util::Map (fields, [] (const QString& str) -> QString { return ':' + str; });
 
 		const auto& table = T::ClassName ();
 

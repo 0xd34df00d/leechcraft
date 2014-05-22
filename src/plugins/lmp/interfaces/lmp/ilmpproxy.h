@@ -29,9 +29,7 @@
 
 #pragma once
 
-#include <functional>
 #include <memory>
-#include <atomic>
 #include <QtPlugin>
 #include <QFileInfo>
 #include <QMap>
@@ -45,14 +43,8 @@ namespace LMP
 {
 	class ILocalCollection;
 	class ITagResolver;
-	struct MediaInfo;
-
-	enum SubstitutionFlag
-	{
-		SFNone,
-		SFSafeFilesystem
-	};
-	Q_DECLARE_FLAGS (SubstitutionFlags, SubstitutionFlag);
+	class ILMPUtilProxy;
+	class ILMPGuiProxy;
 
 	class ILMPProxy
 	{
@@ -63,26 +55,16 @@ namespace LMP
 
 		virtual ITagResolver* GetTagResolver () const = 0;
 
-		virtual QString FindAlbumArt (const QString& near, bool includeCollection = true) const = 0;
+		virtual const ILMPUtilProxy* GetUtilProxy () const = 0;
 
-		virtual QList<QFileInfo> RecIterateInfo (const QString& dirPath,
-				bool followSymlinks = false,
-				std::atomic<bool> *stopGuard = nullptr) const = 0;
-
-		virtual QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const = 0;
-
-		virtual QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const = 0;
-
-		virtual QString PerformSubstitutions (QString mask,
-				const MediaInfo& info, SubstitutionFlags flags = SFNone) const = 0;
+		virtual const ILMPGuiProxy* GetGuiProxy () const = 0;
 
 		virtual void PreviewRelease (const QString& artist, const QString& release,
 				const QList<QPair<QString, int>>& tracks) const = 0;
 	};
 
-	typedef std::shared_ptr<ILMPProxy> ILMPProxy_Ptr;
+	typedef std::shared_ptr<ILMPProxy> ILMPProxy_ptr;
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::SubstitutionFlags)
 Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPProxy, "org.LeechCraft.LMP.ILMPProxy/1.0");

@@ -78,6 +78,8 @@ namespace LeechCraft
 		 *
 		 * These settings are also queried when constructing the
 		 * selector to use them as default ones.
+		 *
+		 * @ingroup DbUtil
 		 */
 		class UTIL_DB_API BackendSelector : public QWidget
 		{

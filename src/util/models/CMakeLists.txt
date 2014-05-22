@@ -1,7 +1,6 @@
 set (MODELS_SRCS
 	flattenfiltermodel.cpp
 	flattofoldersproxymodel.cpp
-	listmodel.cpp
 	mergemodel.cpp
 	modeliterator.cpp
 	modelitem.cpp

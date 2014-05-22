@@ -33,7 +33,7 @@
 #include <QHostAddress>
 #include <QtDebug>
 #include <util/xsd/util.h>
-#include <util/network/addressesmodelmanager.h>
+#include <util/network/addresses.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "util/lmp/filtersettingsmanager.h"
 #include "httpstreamfilter.h"
@@ -74,7 +74,7 @@ namespace HttStream
 	void FilterConfigurator::FillAddressModel (Util::XmlSettingsDialog *xsd)
 	{
 		QStringList addresses;
-		for (const auto& addr : Util::AddressesModelManager::GetAllAddresses ())
+		for (const auto& addr : Util::GetAllAddresses ())
 			addresses << addr.toString ();
 		qDebug () << Q_FUNC_INFO << addresses;
 		xsd->SetDataSource ("Address", new QStringListModel { addresses, xsd });

@@ -39,9 +39,8 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	Core::Core ()
-	: RulesManager_ (new RulesManager (this))
-	, NRW_ (0)
-	, AudioThemeLoader_ (new Util::ResourceLoader ("sounds/"))
+	: RulesManager_ { new RulesManager { this } }
+	, AudioThemeLoader_ { new Util::ResourceLoader { "sounds/" } }
 	{
 		AudioThemeLoader_->AddLocalPrefix ();
 		AudioThemeLoader_->AddGlobalPrefix ();
@@ -77,7 +76,7 @@ namespace AdvancedNotifications
 	NotificationRulesWidget* Core::GetNRW ()
 	{
 		if (!NRW_)
-			NRW_ = new NotificationRulesWidget (RulesManager_);
+			NRW_ = new NotificationRulesWidget { RulesManager_ };
 		return NRW_;
 	}
 
@@ -92,7 +91,7 @@ namespace AdvancedNotifications
 
 		QList<NotificationRule> result;
 
-		for (const NotificationRule& rule : RulesManager_->GetRulesList ())
+		for (const auto& rule : RulesManager_->GetRulesList ())
 		{
 			if (!rule.IsEnabled ())
 				continue;
@@ -119,7 +118,6 @@ namespace AdvancedNotifications
 				RulesManager_->SetRuleEnabled (rule, false);
 
 			result << rule;
-			break;
 		}
 
 		return result;
@@ -134,11 +132,13 @@ namespace AdvancedNotifications
 				.property ("AudioTheme").toString ();
 		const QString& base = option + '/' + fname;
 
-		QStringList pathVariants;
-		pathVariants << base + ".ogg"
-				<< base + ".wav"
-				<< base + ".flac"
-				<< base + ".mp3";
+		const QStringList pathVariants
+		{
+			base + ".ogg",
+			base + ".wav",
+			base + ".flac",
+			base + ".mp3"
+		};
 
 		return GetAudioThemeLoader ()->GetPath (pathVariants);
 	}

@@ -31,8 +31,10 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
+#include <QShortcut>
 #include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -70,9 +72,18 @@ namespace ChatHistory
 		Ui_.VertSplitter_->setStretchFactor (0, 0);
 		Ui_.VertSplitter_->setStretchFactor (1, 4);
 
+		FindBox_ = new ChatFindBox (Core::Instance ()->GetCoreProxy (), Ui_.HistView_);
+		connect (FindBox_,
+				SIGNAL (next (QString, ChatFindBox::FindFlags)),
+				this,
+				SLOT (handleNext (QString, ChatFindBox::FindFlags)));
+		FindBox_->SetEscCloses (false);
+
+		new QShortcut (QString ("F3"), FindBox_, SLOT (findNext ()));
+		new QShortcut (QString ("Shift+F3"), FindBox_, SLOT (findPrevious ()));
+
 		auto proxy = Core::Instance ()->GetCoreProxy ();
 		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
-		new Util::ClearLineEditAddon (proxy, Ui_.HistorySearch_);
 
 		SortFilter_->setDynamicSortFilter (true);
 		SortFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
@@ -364,20 +375,29 @@ namespace ChatHistory
 	void ChatHistoryWidget::handleGotSearchPosition (const QString& accountId,
 			const QString& entryId, int position)
 	{
-		const bool wideSearch = Ui_.SearchType_->currentIndex ();
-		if (!wideSearch)
-		{
-			if (accountId != CurrentAccount_ ||
-					entryId != CurrentEntry_)
-				return;
-		}
+		if (accountId != CurrentAccount_ ||
+				entryId != CurrentEntry_)
+			return;
 
 		if (!position)
 		{
-			QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("No more search results for %1.")
-						.arg (PreviousSearchText_));
+			if (!(FindBox_->GetFlags () & ChatFindBox::FindWrapsAround) || !SearchShift_)
+				QMessageBox::warning (this,
+						"LeechCraft",
+						tr ("No more search results for %1.")
+							.arg ("<em>" + PreviousSearchText_ + "</em>"));
+			else
+			{
+				SearchShift_ = 0;
+
+				const auto& e = Util::MakeNotification ("Azoth ChatHistory",
+						tr ("No more search results for %1, searching from the beginning now.")
+							.arg ("<em>" + PreviousSearchText_ + "</em>"),
+						PInfo_);
+				Core::Instance ()->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
+
+				RequestSearch (FindBox_->GetFlags ());
+			}
 			return;
 		}
 
@@ -459,41 +479,6 @@ namespace ChatHistory
 		UpdateDates ();
 	}
 
-	void ChatHistoryWidget::on_HistorySearch__returnPressed ()
-	{
-		ShowLoading ();
-
-		const QString& text = Ui_.HistorySearch_->text ();
-		if (text.isEmpty ())
-		{
-			PreviousSearchText_.clear ();
-			Backpages_ = 0;
-			SearchResultPosition_ = -1;
-			RequestLogs ();
-			return;
-		}
-
-		if (text == PreviousSearchText_)
-			++SearchShift_;
-		else
-		{
-			SearchShift_ = 0;
-			PreviousSearchText_ = text;
-		}
-
-		RequestSearch ();
-	}
-
-	void ChatHistoryWidget::on_SearchType__currentIndexChanged ()
-	{
-		if (!Ui_.HistorySearch_->text ().isEmpty ())
-		{
-			SearchShift_ = 0;
-			PreviousSearchText_.clear ();
-			on_HistorySearch__returnPressed ();
-		}
-	}
-
 	void ChatHistoryWidget::on_Calendar__currentPageChanged ()
 	{
 		UpdateDates ();
@@ -507,8 +492,34 @@ namespace ChatHistory
 		ShowLoading ();
 
 		PreviousSearchText_.clear ();
-		Ui_.HistorySearch_->clear ();
+		FindBox_->clear ();
 		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_, QDateTime (date));
+	}
+
+	void ChatHistoryWidget::handleNext (const QString& text, ChatFindBox::FindFlags flags)
+	{
+		ShowLoading ();
+
+		if (text.isEmpty ())
+		{
+			PreviousSearchText_.clear ();
+			Backpages_ = 0;
+			SearchResultPosition_ = -1;
+			RequestLogs ();
+			return;
+		}
+
+		if (text != PreviousSearchText_)
+		{
+			SearchShift_ = 0;
+			PreviousSearchText_ = text;
+		}
+		else if (!(flags & ChatFindBox::FindBackwards))
+			++SearchShift_;
+		else
+			SearchShift_ = std::max (SearchShift_ - 1, 0);
+
+		RequestSearch (flags);
 	}
 
 	void ChatHistoryWidget::previousHistory ()
@@ -600,15 +611,11 @@ namespace ChatHistory
 				CurrentEntry_, Backpages_, PerPageAmount_);
 	}
 
-	void ChatHistoryWidget::RequestSearch ()
+	void ChatHistoryWidget::RequestSearch (ChatFindBox::FindFlags flags)
 	{
-		const QString& entryStr = Ui_.SearchType_->currentIndex () > 0 ?
-				QString () :
-				CurrentEntry_;
-		const QString& accStr = Ui_.SearchType_->currentIndex () > 1 ?
-				QString () :
-				CurrentAccount_;
-		Core::Instance ()->Search (accStr, entryStr, PreviousSearchText_, SearchShift_);
+		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_,
+				PreviousSearchText_, SearchShift_,
+				flags & ChatFindBox::FindCaseSensitively);
 	}
 }
 }

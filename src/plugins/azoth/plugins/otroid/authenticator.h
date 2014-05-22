@@ -64,6 +64,7 @@ namespace OTRoid
 
 		void Failed ();
 		void Cheated ();
+		void Success ();
 	signals:
 		void gotReply (SmpMethod, const QString&, ConnContext*);
 		void abortSmp (ConnContext*);

@@ -123,6 +123,11 @@ namespace AdvancedNotifications
 		boost::apply_visitor (ValueSetVisitor<ANStringFieldValue> { Value_ }, value);
 	}
 
+	ANFieldValue StringLikeMatcher::GetValue () const
+	{
+		return Value_;
+	}
+
 	QWidget* StringLikeMatcher::GetConfigWidget ()
 	{
 		if (!CW_)
@@ -302,6 +307,11 @@ namespace AdvancedNotifications
 	void IntMatcher::SetValue (const ANFieldValue& value)
 	{
 		boost::apply_visitor (ValueSetVisitor<ANIntFieldValue> { Value_ }, value);
+	}
+
+	ANFieldValue IntMatcher::GetValue () const
+	{
+		return Value_;
 	}
 
 	bool IntMatcher::Match (const QVariant& var) const

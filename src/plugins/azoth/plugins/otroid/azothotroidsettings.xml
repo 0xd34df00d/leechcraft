@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth OTRoid" />
+		<tab>
+			<label value="Known fingerprints" />
+			<item type="dataview" property="KnownFPs" addEnabled="false" modifyEnabled="false" resizeToContents="true">
+				<button id="refresh">
+					<label value="Refresh" />
+				</button>
+			</item>
+		</tab>
+		<tab>
+			<label value="Private keys" />
+			<item type="dataview" property="PrivKeys" addEnabled="false" modifyEnabled="false" resizeToContents="true">
+				<button id="generate">
+					<label value="Generate key" />
+				</button>
+				<button id="refresh">
+					<label value="Refresh" />
+				</button>
+			</item>
+		</tab>
+	</page>
+</settings>

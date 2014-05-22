@@ -1,5 +1,5 @@
 set (NETWORK_SRCS
-	addressesmodelmanager.cpp
+	addresses.cpp
 	customcookiejar.cpp
 	customnetworkreply.cpp
 	networkdiskcache.cpp

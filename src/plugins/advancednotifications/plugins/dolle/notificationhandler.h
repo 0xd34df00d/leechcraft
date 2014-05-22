@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QMap>
 #include <interfaces/advancednotifications/inotificationhandler.h>
+#include "notificationdata.h"
 
 namespace LeechCraft
 {
@@ -45,7 +46,7 @@ namespace Dolle
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::AdvancedNotifications::INotificationHandler)
 
-		QMap<QString, int> Counts_;
+		QMap<QString, NotificationData> Counts_;
 	public:
 		NotificationMethod GetHandlerMethod () const override;
 		void Handle (const Entity&, const INotificationRule&) override;

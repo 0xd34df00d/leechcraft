@@ -16,6 +16,7 @@ set (CHATHISTORY_SRCS
 	chathistorywidget.cpp
 	storagethread.cpp
 	historymessage.cpp
+	chatfindbox.cpp
 	xmlsettingsmanager.cpp
 	)
 set (CHATHISTORY_FORMS
@@ -40,5 +41,4 @@ target_link_libraries (leechcraft_azoth_chathistory
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_chathistory DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${CHATHISTORY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES azothchathistorysettings.xml DESTINATION ${LC_SETTINGS_DEST})

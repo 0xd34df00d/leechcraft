@@ -41,6 +41,19 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief A thread-safe garbage-collected network disk cache.
+	 *
+	 * This class is thread-safe unlike the original QNetworkDiskCache,
+	 * thus it can be used from multiple threads simultaneously.
+	 *
+	 * Also, old cache data is automatically removed from the cache in a
+	 * background thread without blocking. The garbage collection can be
+	 * also triggered manually via the collectGarbage() slot.
+	 *
+	 * The garbage is collected until cache takes 90% of its maximum size.
+	 *
+	 * @ingroup NetworkUtil
+	 */
 	class UTIL_NETWORK_API NetworkDiskCache : public QNetworkDiskCache
 	{
 		Q_OBJECT
@@ -54,19 +67,68 @@ namespace Util
 		QHash<QIODevice*, QUrl> PendingDev2Url_;
 		QHash<QUrl, QList<QIODevice*>> PendingUrl2Devs_;
 	public:
-		NetworkDiskCache (const QString&, QObject* = 0);
+		/** @brief Constructs the new disk cache.
+		 *
+		 * The cache uses a subdirectory \em subpath in the \em network
+		 * directory of the user cache location.
+		 *
+		 * @param[in] subpath The subpath in cache user location.
+		 * @param[in] parent The parent object of this cache.
+		 *
+		 * @sa GetUserDir(), UserDir::Cache.
+		 */
+		NetworkDiskCache (const QString& subpath, QObject *parent = 0);
+
+		/** @brief Destroys the cache.
+		 *
+		 * Destroys the cache object, possibly blocking until the garbage
+		 * collector finishes if it is running.
+		 */
 		~NetworkDiskCache ();
 
+		/** @brief Reimplemented from QNetworkDiskCache.
+		 */
 		virtual qint64 cacheSize () const;
+
+		/** @brief Reimplemented from QNetworkDiskCache.
+		 */
 		virtual QIODevice* data (const QUrl& url);
+
+		/** @brief Reimplemented from QNetworkDiskCache.
+		 */
 		virtual void insert (QIODevice *device);
+
+		/** @brief Reimplemented from QNetworkDiskCache.
+		 */
 		virtual QNetworkCacheMetaData metaData (const QUrl& url);
+
+		/** @brief Reimplemented from QNetworkDiskCache.
+		 */
 		virtual QIODevice* prepare (const QNetworkCacheMetaData&);
+
+		/** @brief Reimplemented from QNetworkDiskCache.
+		 */
 		virtual bool remove (const QUrl& url);
+
+		/** @brief Reimplemented from QNetworkDiskCache.
+		 */
 		virtual void updateMetaData (const QNetworkCacheMetaData& metaData);
 	protected:
+		/** @brief Reimplemented from QNetworkDiskCache.
+		 *
+		 * Runs the garbage collector if required.
+		 *
+		 * @sa collectGarbage()
+		 */
 		virtual qint64 expire ();
 	public slots:
+		/** @brief Runs the garbage collector.
+		 *
+		 * This function initiates garbage collection in a background
+		 * thread and returns immediately.
+		 *
+		 * If a collector is already running, this function does nothing.
+		 */
 		void collectGarbage ();
 	private slots:
 		void handleCollectorFinished ();

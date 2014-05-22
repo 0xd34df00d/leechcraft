@@ -146,6 +146,10 @@ public:
 	 */
 	virtual void ToggleVisibility () = 0;
 
+	/** @brief Show/raise main window
+	 */
+	virtual void ShowMain () = 0;
+
 	/** @brief Returns the main LeechCraft menu.
 	 *
 	 * @return The main LeechCraft menu.

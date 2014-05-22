@@ -37,3 +37,7 @@
 #  define UTIL_NETWORK_API Q_DECL_IMPORT
 #endif
 
+/** @defgroup NetworkUtil The network utilities
+ *
+ * @brief Common network-related classes and functions.
+ */

@@ -30,17 +30,10 @@
 #pragma once
 
 #include <QObject>
-#include <QDir>
-
-extern "C"
-{
-#include <libotr/proto.h>
-#include <libotr/message.h>
-}
-
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/imessage.h>
 
@@ -54,40 +47,26 @@ class ICLEntry;
 
 namespace OTRoid
 {
-	class Authenticator;
-	enum class SmpMethod;
+	class FPManager;
+	class PrivKeyManager;
+	class OtrHandler;
 
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_;
 
-		OtrlUserState UserState_;
-		OtrlMessageAppOps OtrOps_;
+		Util::XmlSettingsDialog_ptr XSD_;
 
-		struct EntryActions
-		{
-			std::shared_ptr<QAction> ToggleOtr_;
-			std::shared_ptr<QAction> Authenticate_;
-		};
-		QHash<QObject*, EntryActions> Entry2Action_;
-
-		QHash<QObject*, QString> Msg2OrigText_;
-
-		QSet<QObject*> PendingInjectedMessages_;
-
-		QDir OtrDir_;
-
-		bool IsGenerating_ = false;
-
-		QHash<ICLEntry*, Authenticator*> Auths_;
-#if OTRL_VERSION_MAJOR >= 4
-		QTimer *PollTimer_;
-#endif
+		OtrHandler *OtrHandler_ = nullptr;
+		FPManager *FPManager_ = nullptr;
+		PrivKeyManager *PKManager_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -99,36 +78,9 @@ namespace OTRoid
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		int IsLoggedIn (const QString& accId, const QString& entryId);
-		void InjectMsg (const QString& accId, const QString& entryId,
-				const QString& msg, bool hidden, IMessage::Direction,
-				IMessage::MessageType = IMessage::MTChatMessage);
-		void InjectMsg (ICLEntry *entry,
-				const QString& msg, bool hidden, IMessage::Direction,
-				IMessage::MessageType = IMessage::MTChatMessage);
-		void Notify (const QString& accId, const QString& entryId,
-				Priority, const QString& title,
-				const QString& primary, const QString& secondary);
-		void WriteFingerprints ();
-		QString GetAccountName (const QString& accId);
-		QString GetVisibleEntryName (const QString& accId, const QString& entryId);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		void CreatePrivkey (const char*, const char*);
-#if OTRL_VERSION_MAJOR >= 4
-		void CreateInstag (const char*, const char*);
-
-		void SetPollTimerInterval (unsigned int seconds);
-		void HandleSmpEvent (OtrlSMPEvent, ConnContext*, unsigned short, const QString&);
-#endif
-	private:
-		QByteArray GetOTRFilename (const QString&) const;
-		void CreateActions (QObject*);
-
-		void SetOtrState (ICLEntry*, bool);
-
-#if OTRL_VERSION_MAJOR >= 4
-		void CreateAuthForEntry (ICLEntry*);
-#endif
+		FPManager* GetFPManager () const;
 	public slots:
 		void initPlugin (QObject*);
 
@@ -144,19 +96,6 @@ namespace OTRoid
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
-	private slots:
-		void handleOtrAction ();
-#if OTRL_VERSION_MAJOR >= 4
-		void handleAuthRequested ();
-		void startAuth (ICLEntry*, SmpMethod, const QString&, const QString&);
-
-		void handleGotSmpReply (SmpMethod, const QString&, ConnContext*);
-		void handleAbortSmp (ConnContext*);
-
-		void pollOTR ();
-#endif
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

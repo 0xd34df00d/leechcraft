@@ -167,6 +167,12 @@ namespace LeechCraft
 		Operations Ops_;
 	};
 
+	inline bool operator== (const ANIntFieldValue& left, const ANIntFieldValue& right)
+	{
+		return left.Boundary_ == right.Boundary_ &&
+				left.Ops_ == right.Ops_;
+	}
+
 	/** @brief Describes a field with QString values.
 	 */
 	struct ANStringFieldValue
@@ -212,6 +218,12 @@ namespace LeechCraft
 		{
 		}
 	};
+
+	inline bool operator== (const ANStringFieldValue& left, const ANStringFieldValue& right)
+	{
+		return left.Contains_ == right.Contains_ &&
+				left.Rx_ == right.Rx_;
+	}
 
 	/** @brief A combination of all possible descriptions.
 	 */

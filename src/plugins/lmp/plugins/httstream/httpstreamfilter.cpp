@@ -51,9 +51,11 @@ namespace HttStream
 		}
 	}
 
-	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId, const QByteArray& instanceId)
+	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId,
+			const QByteArray& instanceId, IPath *path)
 	: FilterId_ { filterId }
 	, InstanceId_ { instanceId.isEmpty () ? QUuid::createUuid ().toByteArray () : instanceId }
+	, Path_ { path }
 	, Configurator_ { new FilterConfigurator { instanceId, this } }
 	, Elem_ { gst_bin_new (nullptr) }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
@@ -186,6 +188,37 @@ namespace HttStream
 		TeeStreamPad_ = nullptr;
 	}
 
+	bool HttpStreamFilter::HandleFirstClientConnected ()
+	{
+		const auto source = Path_->GetSourceObject ();
+		StateOnFirst_ = source->GetState ();
+
+		if (StateOnFirst_ == SourceState::Playing)
+		{
+			CreatePad ();
+			return true;
+		}
+		else
+		{
+			connect (source->GetQObject (),
+					SIGNAL (stateChanged (SourceState, SourceState)),
+					this,
+					SLOT (checkCreatePad (SourceState)));
+
+			source->SetState (SourceState::Playing);
+
+			return false;
+		}
+	}
+
+	void HttpStreamFilter::HandleLastClientDisconnected ()
+	{
+		DestroyPad ();
+
+		if (StateOnFirst_ != SourceState::Playing)
+			Path_->GetSourceObject ()->SetState (SourceState::Paused);
+	}
+
 	int HttpStreamFilter::HandleError (GstMessage *msg)
 	{
 		if (GST_MESSAGE_TYPE (msg) != GST_MESSAGE_ERROR)
@@ -195,10 +228,30 @@ namespace HttStream
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "detected stream error";
+
+			gst_message_unref (msg);
+
 			return GST_BUS_DROP;
 		}
 
 		return GST_BUS_PASS;
+	}
+
+	void HttpStreamFilter::checkCreatePad (SourceState state)
+	{
+		if (state != SourceState::Playing)
+			return;
+
+		disconnect (Path_->GetSourceObject ()->GetQObject (),
+				SIGNAL (stateChanged (SourceState, SourceState)),
+				this,
+				SLOT (checkCreatePad (SourceState)));
+		CreatePad ();
+
+		for (const auto sock : PendingSockets_)
+			g_signal_emit_by_name (MSS_, "add", sock);
+
+		PendingSockets_.clear ();
 	}
 
 	void HttpStreamFilter::readdFd (int fd)
@@ -208,10 +261,12 @@ namespace HttStream
 
 	void HttpStreamFilter::handleClient (int socket)
 	{
-		if (!ClientsCount_++)
-			CreatePad ();
+		if (ClientsCount_ || HandleFirstClientConnected ())
+			g_signal_emit_by_name (MSS_, "add", socket);
+		else
+			PendingSockets_ << socket;
 
-		g_signal_emit_by_name (MSS_, "add", socket);
+		++ClientsCount_;
 	}
 
 	void HttpStreamFilter::handleClientDisconnected (int socket)
@@ -219,7 +274,7 @@ namespace HttStream
 		g_signal_emit_by_name (MSS_, "remove", socket);
 
 		if (!--ClientsCount_)
-			DestroyPad ();
+			HandleLastClientDisconnected ();
 	}
 }
 }

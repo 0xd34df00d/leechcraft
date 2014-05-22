@@ -17,15 +17,20 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	)
 set (OTROID_SRCS
 	otroid.cpp
+	otrhandler.cpp
 	authenticator.cpp
 	initiateauthdialog.cpp
+	fpmanager.cpp
+	privkeymanager.cpp
+	xmlsettingsmanager.cpp
+	util.cpp
 	)
 set (OTROID_FORMS
 	initiateauthdialog.ui
 	)
 set (OTROID_RESOURCES azothotroidresources.qrc)
 CreateTrs ("azoth_otroid" "en;ru_RU;uk_UA" OTROID_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("azoth_otroid" "en;ru_RU" "${OTROID_SRCS}" "" "")
+CreateTrsUpTarget ("azoth_otroid" "en;ru_RU" "${OTROID_SRCS}" "" "azothotroidsettings.xml")
 QT4_ADD_RESOURCES (OTROID_RCCS ${OTROID_RESOURCES})
 QT4_WRAP_UI (OTROID_UIS_H ${OTROID_FORMS})
 
@@ -42,4 +47,4 @@ target_link_libraries (leechcraft_azoth_otroid
 	leechcraft_azoth_common
 	)
 install (TARGETS leechcraft_azoth_otroid DESTINATION ${LC_PLUGINS_DEST})
-#install (FILES azothotroidsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES azothotroidsettings.xml DESTINATION ${LC_SETTINGS_DEST})

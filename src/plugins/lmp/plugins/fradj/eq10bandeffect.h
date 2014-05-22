@@ -30,49 +30,46 @@
 #pragma once
 
 #include <QObject>
-#include <QVariantList>
-#include <QModelIndexList>
-#include "networkconfig.h"
+#include "interfaces/lmp/ifilterelement.h"
+#include "iequalizer.h"
 
-class QHostAddress;
-class QStandardItemModel;
-class QStandardItem;
+typedef struct _GstPad GstPad;
+typedef struct _GstMessage GstMessage;
+typedef struct _GstPadTemplate GstPadTemplate;
 
 namespace LeechCraft
 {
-namespace Util
+namespace LMP
 {
-	class BaseSettingsManager;
+namespace Fradj
+{
+	class EqConfigurator;
 
-	typedef QList<QPair<QString, QString>> AddrList_t;
-
-	class UTIL_NETWORK_API AddressesModelManager : public QObject
+	class Eq10BandEffect : public QObject
+						 , public IFilterElement
+						 , public IEqualizer
 	{
-		Q_OBJECT
+		const QByteArray FilterId_;
 
-		QStandardItemModel * const Model_;
-		BaseSettingsManager * const BSM_;
+		GstElement * const Equalizer_;
+
+		EqConfigurator * const Configurator_;
 	public:
-		AddressesModelManager (BaseSettingsManager*, int defaultPort, QObject* = 0);
+		Eq10BandEffect (const QByteArray& filterId);
 
-		static void RegisterTypes ();
-		static AddrList_t GetLocalAddresses (int defaultPort = 0);
-		static QList<QHostAddress> GetAllAddresses ();
+		QByteArray GetEffectId () const;
+		QByteArray GetInstanceId () const;
+		IFilterConfigurator* GetConfigurator () const;
 
-		QAbstractItemModel* GetModel () const;
-		AddrList_t GetAddresses () const;
-	private:
-		void SaveSettings () const;
-		void AppendRow (const QPair<QString, QString>&);
-	private Q_SLOTS:
-		void updateAvailInterfaces ();
-	public Q_SLOTS:
-		void addRequested (const QString&, const QVariantList&);
-		void removeRequested (const QString&, const QModelIndexList&);
-	Q_SIGNALS:
-		void addressesChanged ();
+		BandInfos_t GetFixedBands () const;
+		QStringList GetPresets () const;
+		void SetPreset (const QString&);
+		QList<double> GetGains () const;
+		void SetGains (const QList<double>&);
+	protected:
+		GstElement* GetElement () const;
 	};
 }
 }
+}
 
-Q_DECLARE_METATYPE (LeechCraft::Util::AddrList_t)

@@ -32,7 +32,7 @@
 #include <interfaces/aggregator/iproxyobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include <util/network/addressesmodelmanager.h>
+#include <util/xsd/addressesmodelmanager.h>
 #include "servermanager.h"
 #include "xmlsettingsmanager.h"
 

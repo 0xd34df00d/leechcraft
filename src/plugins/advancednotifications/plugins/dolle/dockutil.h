@@ -29,7 +29,9 @@
 
 #pragma once
 
-class QString;
+#include <QList>
+#include "notificationdata.h"
+
 
 namespace LeechCraft
 {
@@ -39,7 +41,9 @@ namespace Dolle
 {
 namespace DU
 {
-	void SetDockBadge (const QString&);
+	bool SetDockBadges (const QList<NotificationData>& badges);
+
+	void InstallBadgeView ();
 }
 }
 }

@@ -30,6 +30,7 @@ add_library (leechcraft-util-svcauth SHARED
 target_link_libraries (leechcraft-util-svcauth
 	${QT_LIBRARIES}
 	leechcraft-util-network
+	leechcraft-util-sll
 	)
 set_property (TARGET leechcraft-util-svcauth PROPERTY SOVERSION 0.6.65)
 install (TARGETS leechcraft-util-svcauth DESTINATION ${LIBDIR})

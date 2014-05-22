@@ -65,6 +65,7 @@ namespace LMP
 	, RadioManager_ (new RadioManager)
 	, Player_ (0)
 	, PreviewMgr_ (0)
+	, LmpProxy_ (new LMPProxy)
 	{
 		ProgressManager_->AddSyncManager (SyncManager_);
 		ProgressManager_->AddSyncManager (SyncUnmountableManager_);
@@ -106,7 +107,13 @@ namespace LMP
 
 	void Core::InitWithOtherPlugins ()
 	{
+		Player_->InitWithOtherPlugins ();
 		RadioManager_->InitProviders ();
+	}
+
+	const std::shared_ptr<LMPProxy>& Core::GetLmpProxy () const
+	{
+		return LmpProxy_;
 	}
 
 	void Core::AddPlugin (QObject *pluginObj)
@@ -122,7 +129,7 @@ namespace LMP
 			return;
 		}
 
-		ilmpPlug->SetLMPProxy (ILMPProxy_Ptr (new LMPProxy ()));
+		ilmpPlug->SetLMPProxy (LmpProxy_);
 
 		const auto& classes = ip2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&

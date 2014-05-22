@@ -45,6 +45,8 @@ namespace Util
 	 *
 	 * @param[in] error The socket error to describe.
 	 * @return The human-readable localized error string.
+	 *
+	 * @ingroup NetworkUtil
 	 */
 	UTIL_NETWORK_API QString GetSocketErrorString (QAbstractSocket::SocketError error);
 }

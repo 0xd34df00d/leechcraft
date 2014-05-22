@@ -101,9 +101,9 @@ namespace ChatHistory
 		qint32 GetAccountID (const QString&);
 		void AddAccount (const QString& id);
 		RawSearchResult Search (const QString& accountId, const QString& entryId,
-				const QString& text, int shift);
-		RawSearchResult Search (const QString& accountId, const QString& text, int shift);
-		RawSearchResult Search (const QString& text, int shift);
+				const QString& text, int shift, bool cs);
+		RawSearchResult Search (const QString& accountId, const QString& text, int shift, bool cs);
+		RawSearchResult Search (const QString& text, int shift, bool cs);
 		void SearchDate (qint32, qint32, const QDateTime&);
 	public slots:
 		void regenUsersCache ();
@@ -114,7 +114,7 @@ namespace ChatHistory
 		void getChatLogs (const QString& accountId,
 				const QString& entryId, int backpages, int amount);
 		void search (const QString& accountId, const QString& entryId,
-				const QString& text, int shift);
+				const QString& text, int shift, bool cs);
 		void searchDate (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void getDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void clearHistory (const QString& accountId, const QString& entryId);

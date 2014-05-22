@@ -100,8 +100,8 @@ namespace OTRoid
 		QMessageBox::critical (nullptr,
 				tr ("OTR authentication"),
 				tr ("Failed to authenticate %1 (%2).")
-						.arg (Name_)
-						.arg (HrId_));
+						.arg ("<em>" + Name_ + "</em>")
+						.arg ("<em>" + HrId_ + "</em>"));
 	}
 
 	void Authenticator::Cheated ()
@@ -109,8 +109,17 @@ namespace OTRoid
 		QMessageBox::critical (nullptr,
 				tr ("OTR authentication"),
 				tr ("Failed to authenticate %1 (%2): cheating detected.")
-						.arg (Name_)
-						.arg (HrId_));
+						.arg ("<em>" + Name_ + "</em>")
+						.arg ("<em>" + HrId_ + "</em>"));
+	}
+
+	void Authenticator::Success ()
+	{
+		QMessageBox::information (nullptr,
+				tr ("OTR authentication"),
+				tr ("Congratulations! Contact %1 (%2) authenticated successfully!")
+						.arg ("<em>" + Name_ + "</em>")
+						.arg ("<em>" + HrId_ + "</em>"));
 	}
 }
 }

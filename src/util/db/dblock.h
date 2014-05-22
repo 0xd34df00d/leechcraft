@@ -56,6 +56,8 @@ namespace LeechCraft
 		 * but the transaction state isn't necesseraly in a correct state, and
 		 * correct means that the lock class is usable and the transaction state
 		 * is correct.
+		 *
+		 * @ingroup DbUtil
 		 */
 		class DBLock
 		{

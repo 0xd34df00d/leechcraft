@@ -29,11 +29,11 @@
 
 #include "operationsmanager.h"
 #include <QStandardItemModel>
+#include <util/sll/prelude.h>
 #include "storage.h"
 #include "entriesmodel.h"
 #include "core.h"
 #include "currenciesmanager.h"
-#include "prelude.h"
 
 namespace LeechCraft
 {
@@ -83,7 +83,7 @@ namespace Poleemery
 
 	QList<EntryWithBalance> OperationsManager::GetEntriesWBalance () const
 	{
-		return ZipWith (Model_->GetEntries (), Model_->GetSumInfos (),
+		return Util::ZipWith (Model_->GetEntries (), Model_->GetSumInfos (),
 					[] (EntryBase_ptr e, BalanceInfo i) { return EntryWithBalance { e, i }; });
 	}
 

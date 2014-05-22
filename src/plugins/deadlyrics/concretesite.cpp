@@ -238,7 +238,7 @@ namespace DeadLyrics
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
-				SLOT (deleteLater ()));
+				SLOT (handleReplyError ()));
 	}
 
 	void ConcreteSite::handleReplyFinished ()
@@ -288,6 +288,29 @@ namespace DeadLyrics
 
 		if (str.size () >= 100)
 			emit gotLyrics ({ Query_, { { Desc_.Name_, str } } });
+	}
+
+	void ConcreteSite::handleReplyError ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+
+		qWarning () << Q_FUNC_INFO
+				<< "query failed for"
+				<< reply->request ().url ();
+		qWarning () << "\terror:"
+				<< reply->error ()
+				<< reply->errorString ();
+		qWarning () << "\tdesc:"
+				<< Desc_.Name_
+				<< Desc_.URLTemplate_;
+
+		disconnect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleReplyFinished ()));
+
+		reply->deleteLater ();
+		deleteLater ();
 	}
 }
 }

@@ -38,6 +38,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/stdanfields.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "typedmatchers.h"
 #include "xmlsettingsmanager.h"
@@ -245,6 +246,42 @@ namespace AdvancedNotifications
 		emit focusOnRule (RulesModel_->index (0, 0));
 	}
 
+	void RulesManager::SuggestRuleConfiguration (const Entity& rule)
+	{
+		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+
+		const auto id = rule.Additional_ ["org.LC.AdvNotifications.RuleID"].toInt ();
+		emit focusOnRule (RulesModel_->index (id, 0));
+	}
+
+	QList<Entity> RulesManager::GetAllRules (const QString& category) const
+	{
+		QList<Entity> result;
+		for (int i = 0; i < Rules_.size (); ++i)
+		{
+			const auto& rule = Rules_.at (i);
+			if (rule.GetCategory () != category)
+				continue;
+
+			auto e = Util::MakeEntity (rule.GetName (), {}, {}, {});
+			e.Additional_ ["org.LC.AdvNotifications.RuleID"] = i;
+			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.AdvancedNotifications";
+			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = rule.GetCategory ();
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = QStringList { rule.GetTypes ().toList () };
+			e.Additional_ ["org.LC.AdvNotifications.AssocColor"] = rule.GetColor ();
+			e.Additional_ ["org.LC.AdvNotifications.IsEnabled"] = rule.IsEnabled ();
+
+			for (const auto& fieldMatch : rule.GetFieldMatches ())
+			{
+				const auto& matcher = fieldMatch.GetMatcher ();
+				e.Additional_ [fieldMatch.GetFieldName ()] = QVariant::fromValue (matcher->GetValue ());
+			}
+
+			result << e;
+		}
+		return result;
+	}
+
 	void RulesManager::LoadDefaultRules (int version)
 	{
 		if (version <= 0)
@@ -375,6 +412,8 @@ namespace AdvancedNotifications
 		settings.beginGroup ("rules");
 		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule>> (Rules_));
 		settings.endGroup ();
+
+		emit rulesChanged ();
 	}
 
 	QList<QStandardItem*> RulesManager::RuleToRow (const NotificationRule& rule) const

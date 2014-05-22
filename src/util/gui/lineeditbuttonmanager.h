@@ -53,6 +53,8 @@ namespace Util
 	 * The managed line edit owns the created LineEditButtonManager.
 	 *
 	 * @sa ClearLineEditAddon
+	 *
+	 * @ingroup GuiUtil
 	 */
 	class UTIL_GUI_API LineEditButtonManager : public QObject
 	{

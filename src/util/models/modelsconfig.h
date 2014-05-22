@@ -36,3 +36,8 @@
 #else
 #  define UTIL_MODELS_API Q_DECL_IMPORT
 #endif
+
+/** @defgroup ModelUtil The model utilities
+ *
+ * @brief Model-related classes for Qt's Model-View-Controller.
+ */

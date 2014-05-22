@@ -295,7 +295,6 @@ namespace CSTP
 
 	QString Task::GetErrorString () const
 	{
-		// TODO implement own translations for errors.
 		return Reply_.get () ? Reply_->errorString () : tr ("Task isn't initialized properly");
 	}
 

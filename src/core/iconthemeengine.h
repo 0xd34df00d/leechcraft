@@ -42,6 +42,7 @@ class QIcon;
 class QAction;
 class QPushButton;
 class QTabWidget;
+class QToolButton;
 class QFile;
 
 namespace LeechCraft
@@ -68,6 +69,7 @@ namespace LeechCraft
 		void UpdateIconset (const QList<QAction*>&);
 		void UpdateIconset (const QList<QPushButton*>&);
 		void UpdateIconset (const QList<QTabWidget*>&);
+		void UpdateIconset (const QList<QToolButton*>&);
 
 		void ManageWidget (QWidget*);
 

@@ -109,6 +109,7 @@ namespace LeechCraft
 	public slots:
 		void catchError (QString);
 		void showHideMain ();
+		void showMain ();
 
 		void handleQuit ();
 	protected:
@@ -137,6 +138,7 @@ namespace LeechCraft
 		void handleToolButtonStyleChanged ();
 		void handleShowTrayIconChanged ();
 		void handleNewTabMenuRequested ();
+		void handleCurrentTabChanged (int);
 		void handleRestoreActionAdded (QAction*);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void handleWorkAreaResized (int);

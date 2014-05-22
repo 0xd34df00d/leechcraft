@@ -64,6 +64,7 @@ set (SRCS
 	torrenttabwidget.cpp
 	tabviewproxymodel.cpp
 	notifymanager.cpp
+	addmagnetdialog.cpp
 	)
 
 set (FORMS
@@ -84,6 +85,7 @@ set (FORMS
 	singletrackerchanger.ui
 	torrenttab.ui
 	torrenttabwidget.ui
+	addmagnetdialog.ui
 	)
 
 set (RESOURCES bittorrentresources.qrc)
@@ -159,8 +161,7 @@ target_link_libraries (leechcraft_bittorrent
 	${LEECHCRAFT_LIBRARIES}
 	${CRYPTOLIB}
 )
-install (TARGETS  leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
 install (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-bittorrent.desktop DESTINATION share/applications)

@@ -39,13 +39,13 @@ namespace Util
 	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWidget *parent)
 	: Util::PageNotification (parent)
 	, Ui_ (new Ui::FindNotification)
+	, EscShortcut_ (new QShortcut (QString ("Esc"), this, SLOT (reject ())))
 	{
 		Ui_->setupUi (this);
 
 		setFocusProxy (Ui_->Pattern_);
 
-		auto sc = new QShortcut (QString ("Esc"), this, SLOT (reject ()));
-		sc->setContext (Qt::WidgetWithChildrenShortcut);
+		EscShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
 
 		new Util::ClearLineEditAddon (proxy, Ui_->Pattern_);
 	}
@@ -53,6 +53,11 @@ namespace Util
 	FindNotification::~FindNotification ()
 	{
 		delete Ui_;
+	}
+
+	void FindNotification::SetEscCloses (bool close)
+	{
+		EscShortcut_->setEnabled (close);
 	}
 
 	void FindNotification::SetText (const QString& text)
@@ -115,6 +120,11 @@ namespace Util
 			return;
 
 		handleNext (text, GetFlags () | FindBackwards);
+	}
+
+	void FindNotification::clear ()
+	{
+		SetText ({});
 	}
 
 	void FindNotification::on_Pattern__textChanged (const QString& newText)

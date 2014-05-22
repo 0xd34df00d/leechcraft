@@ -120,6 +120,7 @@ set (SRCS
 	collectionsmanager.cpp
 	collectionwidget.cpp
 	localcollectionmodel.cpp
+	playerrulesmanager.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
@@ -223,17 +224,22 @@ endif ()
 
 option (ENABLE_LMP_BRAINSLUGZ "Enable BrainSlugz, plugin for checking collection completeness" ON)
 option (ENABLE_LMP_DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
+option (ENABLE_LMP_FRADJ "Enable Fradj for multiband configurable equalizer" ON)
 option (ENABLE_LMP_GRAFFITI "Enable Graffiti for manipulating audio file tags" ON)
 option (ENABLE_LMP_HTTSTREAM "Enable HttStream for streaming music from LMP via HTTP" ON)
 option (ENABLE_LMP_JOS "Enable jOS for synchronizing with iOS devices" OFF)
 option (ENABLE_LMP_MP3TUNES "Enable plugin for syncing and using the mp3tunes.com service" ON)
 option (ENABLE_LMP_MTPSYNC "Enable plugin for syncing with MTP devices" OFF)
+option (ENABLE_LMP_POTORCHU "Enable visualization effects plugin" ON)
 
 if (ENABLE_LMP_BRAINSLUGZ)
 	add_subdirectory (plugins/brainslugz)
 endif ()
 if (ENABLE_LMP_DUMBSYNC)
 	add_subdirectory (plugins/dumbsync)
+endif ()
+if (ENABLE_LMP_FRADJ)
+	add_subdirectory (plugins/fradj)
 endif ()
 if (ENABLE_LMP_GRAFFITI)
 	add_subdirectory (plugins/graffiti)
@@ -250,3 +256,6 @@ endif ()
 if (ENABLE_LMP_MTPSYNC)
 	add_subdirectory (plugins/mtpsync)
 endif ()
+if (ENABLE_LMP_POTORCHU)
+	add_subdirectory(plugins/potorchu)
+endiF (ENABLE_LMP_POTORCHU)

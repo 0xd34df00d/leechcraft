@@ -27,81 +27,78 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_LISTMODEL_H
-#define UTIL_LISTMODEL_H
-#include <QAbstractItemModel>
-#include <QStringList>
+#include "fradj.h"
+#include <util/util.h>
+#include "eq10bandeffect.h"
 
 namespace LeechCraft
 {
-	namespace Util
+namespace LMP
+{
+namespace Fradj
+{
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		class ListModelItem
+		Util::InstallTranslator ("lmp_fradj");
+	}
+
+	void Plugin::SecondInit ()
+	{
+	}
+
+	void Plugin::Release ()
+	{
+	}
+
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.LMP.Fradj";
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "LMP FrAdj";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Configurable equalizer effect for LMP.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return {};
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.LMP.FiltersProvider";
+		return result;
+	}
+
+	void Plugin::SetLMPProxy (ILMPProxy_ptr)
+	{
+	}
+
+	QList<EffectInfo> Plugin::GetEffects () const
+	{
+		return
 		{
-		public:
-			virtual ~ListModelItem () { }
-
-			virtual QVariant Data (int, int) const = 0;
-		};
-
-		class ListModel : public QAbstractItemModel
-		{
-			Q_OBJECT
-
-			QList<ListModelItem*> Items_;
-			QStringList Headers_;
-		public:
-			enum Roles
 			{
-				RolePointer = Qt::UserRole + 25
-			};
-
-			ListModel (const QStringList& = QStringList (), QObject* = 0);
-			virtual ~ListModel ();
-
-			int columnCount (const QModelIndex& = QModelIndex ()) const;
-			QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-			Qt::ItemFlags flags (const QModelIndex&) const;
-			QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-			QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-			QModelIndex parent (const QModelIndex&) const;
-			int rowCount (const QModelIndex& = QModelIndex ()) const;
-
-			void Insert (ListModelItem*, int = -1);
-			void Remove (ListModelItem*);
-			void Remove (int);
-			void Update (ListModelItem*);
-			void Update (int);
-
-			void Clear ();
-
-			void SetHeaders (const QStringList&);
-
-			template<typename T>
-				QList<T*> GetItems () const
+				GetUniqueID () + ".10Band",
+				tr ("10-band equalizer"),
+				{},
+				true,
+				[this] (const QByteArray&, IPath*) -> IFilterElement*
 				{
-					QList<T*> result;
-					Q_FOREACH (ListModelItem *item, Items_)
-						result << static_cast<T*> (item);
-					return result;
+					return new Eq10BandEffect { GetUniqueID () + ".10Band" };
 				}
-			
-			template<typename T>
-				T* GetItem (const QModelIndex& index) const
-				{
-					return GetItem<T> (index.row ());
-				}
-
-			template<typename T>
-				T* GetItem (int row) const
-				{
-					return static_cast<T*> (Items_.at (row));
-				}
+			}
 		};
+	}
+}
+}
+}
 
-		template<> QList<ListModelItem*> ListModel::GetItems () const;
-	};
-};
-
-#endif
-
+LC_EXPORT_PLUGIN (leechcraft_lmp_httstream, LeechCraft::LMP::Fradj::Plugin);

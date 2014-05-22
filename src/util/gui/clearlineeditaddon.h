@@ -47,7 +47,7 @@ namespace Util
 	 * Using this class is as simple as this:
 	 * \code
 		QLineEdit *edit = ...; // or some QLineEdit-derived class
-		new ClearLineEditAddon (proxy, edit); // proxy is the one passed to IInfo::Init()
+		new ClearLineEditAddon { proxy, edit }; // proxy is the one passed to IInfo::Init()
 	   \endcode
 	 *
 	 * The constructor takes a pointer to the proxy object that is passed
@@ -58,6 +58,8 @@ namespace Util
 	 * need to keep track of it or explicitly delete it.
 	 *
 	 * @sa IInfo::Init()
+
+	 * @ingroup GuiUtil
 	 */
 	class UTIL_GUI_API ClearLineEditAddon : public QObject
 	{

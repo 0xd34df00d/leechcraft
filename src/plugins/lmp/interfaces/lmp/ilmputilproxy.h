@@ -29,31 +29,48 @@
 
 #pragma once
 
-#include <iterator>
+#include <functional>
+#include <atomic>
+#include <QtPlugin>
+#include <QFileInfo>
+#include <QMap>
+#include <QVariant>
+
+class QPixmap;
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace LMP
 {
-	template<typename T1, typename T2, template<typename U> class Container, typename F>
-	auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f) -> Container<decltype (f (T1 (), T2 ()))>
-	{
-		Container<decltype (f (T1 (), T2 ()))> result;
+	struct MediaInfo;
 
-		auto i1 = std::begin (c1), e1 = std::end (c1);
-		auto i2 = std::begin (c2), e2 = std::end (c2);
-		for ( ; i1 != e1 && i2 != e2; ++i1, ++i2)
-			result.push_back (f (*i1, *i2));
-		return result;
-	}
-
-	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> Container<decltype (f (T ()))>
+	enum SubstitutionFlag
 	{
-		Container<decltype (f (T ()))> result;
-		for (auto t : c)
-			result.push_back (f (t));
-		return result;
-	}
+		SFNone,
+		SFSafeFilesystem
+	};
+	Q_DECLARE_FLAGS (SubstitutionFlags, SubstitutionFlag);
+
+	class ILMPUtilProxy
+	{
+	public:
+		virtual ~ILMPUtilProxy () {}
+
+		virtual QString FindAlbumArt (const QString& near, bool includeCollection = true) const = 0;
+
+		virtual QList<QFileInfo> RecIterateInfo (const QString& dirPath,
+				bool followSymlinks = false,
+				std::atomic<bool> *stopGuard = nullptr) const = 0;
+
+		virtual QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const = 0;
+
+		virtual QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const = 0;
+
+		virtual QString PerformSubstitutions (QString mask,
+				const MediaInfo& info, SubstitutionFlags flags = SFNone) const = 0;
+	};
 }
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::SubstitutionFlags)
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPUtilProxy, "org.LeechCraft.LMP.ILMPUtilProxy/1.0");
