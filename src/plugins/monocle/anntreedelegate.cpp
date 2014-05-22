@@ -144,6 +144,7 @@ namespace Monocle
 		auto text = new QTextDocument;
 		text->setTextWidth (width);
 		text->setDocumentMargin (DocMargin);
+		text->setDefaultStyleSheet ("* { color: black; }");
 		text->setHtml (GetText (index));
 		return std::shared_ptr<QTextDocument> { text };
 	}
