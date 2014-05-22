@@ -17,12 +17,15 @@ set (SRCS
 	termtab.cpp
 	xmlsettingsmanager.cpp
 	)
+set (RESOURCES eleeminatorresources.qrc)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs("eleeminator" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("eleeminator" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_eleeminator SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${RCCS}
 	)
 target_link_libraries (leechcraft_eleeminator
 	${QT_LIBRARIES}
