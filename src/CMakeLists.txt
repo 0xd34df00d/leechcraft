@@ -226,7 +226,6 @@ option (ENABLE_POLEEMERY "Build Poleemery, the personal finances manager" ${WITH
 option (ENABLE_ROSENTHAL "Build Rosenthal, the Hunspell-based spell checker service plugin" ${WITH_PLUGINS})
 option (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
 option (ENABLE_SCROBLIBRE "Build ScrobLibre, multiaccount Scrobbler API 1.2 scrobbler" ${WITH_PLUGINS})
-cmake_dependent_option (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 cmake_dependent_option (ENABLE_SYSNOTIFY "Build Sysnotify for using D-Bus notification API" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 option (ENABLE_TEXTOGROOSE "Build Text-o-Groose, script-based lyrics fetcher" ${WITH_PLUGINS})
 option (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
@@ -629,12 +628,6 @@ endif ()
 
 if (ENABLE_VTYULC)
 	add_subdirectory (plugins/vtyulc)
-endif ()
-
-if (UNIX AND NOT APPLE)
-	if (ENABLE_SHAITAN)
-		add_subdirectory (plugins/shaitan)
-	endif ()
 endif ()
 
 if (UNIX AND NOT APPLE)
