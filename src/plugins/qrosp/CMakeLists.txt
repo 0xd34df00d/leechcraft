@@ -43,24 +43,6 @@ set (SRCS
 	wrappers/pluginsmanagerwrapper.cpp
 	wrappers/tagsmanagerwrapper.cpp
 	)
-set (HEADERS
-	qrosp.h
-	pluginmanager.h
-	wrapperobject.h
-	typesfactory.h
-	utilproxy.h
-	scriptloaderinstance.h
-	loadedscript.h
-	wrappers/coreproxywrapper.h
-	wrappers/hookproxywrapper.h
-	wrappers/entitywrapper.h
-	wrappers/shortcutproxywrapper.h
-	wrappers/pluginsmanagerwrapper.h
-	wrappers/tagsmanagerwrapper.h
-	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
 if (${QT_VERSION_MINOR} LESS 8)
 	set (SRCS ${SRCS} third-party/qmetaobjectbuilder.cpp)
@@ -75,7 +57,6 @@ endif ()
 add_library (leechcraft_qrosp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 target_link_libraries (leechcraft_qrosp
 	${QT_LIBRARIES}
