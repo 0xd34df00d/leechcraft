@@ -144,6 +144,7 @@ namespace Monocle
 		auto text = new QTextDocument;
 		text->setTextWidth (width);
 		text->setDocumentMargin (DocMargin);
+		text->setDefaultStyleSheet ("* { color: black; }");
 		text->setHtml (GetText (index));
 		return std::shared_ptr<QTextDocument> { text };
 	}
@@ -152,13 +153,14 @@ namespace Monocle
 	{
 		const auto& ann = index.data (AnnManager::Role::Annotation).value<IAnnotation_ptr> ();
 
-		return QString ("<strong>%1</strong>: %2<br/>"
+		return QString ("<html><body><strong>%1</strong>: %2<br/>"
 				"<strong>%3</strong>: %4<hr/>")
 					.arg (tr ("Author"))
 					.arg (ann->GetAuthor ())
 					.arg (tr ("Date"))
 					.arg (ann->GetDate ().toString (Qt::DefaultLocaleShortDate)) +
-				Qt::escape (ann->GetText ());
+				Qt::escape (ann->GetText ()) +
+				"</body></html>";
 	}
 }
 }
