@@ -94,6 +94,11 @@ namespace Eleeminator
 
 	void TermTab::SetupToolbar ()
 	{
+		SetupColorsButton ();
+	}
+
+	void TermTab::SetupColorsButton ()
+	{
 		auto colorMenu = new QMenu { tr ("Color scheme"), this };
 		colorMenu->menuAction ()->setProperty ("ActionIcon", "fill-color");
 		connect (colorMenu,
