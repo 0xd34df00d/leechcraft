@@ -37,8 +37,10 @@ namespace LeechCraft
 {
 namespace Eleeminator
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		Util::InstallTranslator ("eleeminator");
 
 		TermTabTC_ =
@@ -90,7 +92,7 @@ namespace Eleeminator
 	{
 		if (tc == TermTabTC_.TabClass_)
 		{
-			auto tab = new TermTab { TermTabTC_, this };
+			auto tab = new TermTab { Proxy_, TermTabTC_, this };
 			emit addNewTab (TermTabTC_.VisibleName_, tab);
 			emit raiseTab (tab);
 

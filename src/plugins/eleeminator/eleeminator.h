@@ -44,6 +44,7 @@ namespace Eleeminator
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs)
 
+		ICoreProxy_ptr Proxy_;
 		TabClassInfo TermTabTC_;
 	public:
 		void Init (ICoreProxy_ptr);

@@ -45,8 +45,10 @@ namespace LeechCraft
 {
 namespace Eleeminator
 {
-	TermTab::TermTab (const TabClassInfo& tc, QObject *plugin)
-	: TC_ (tc)
+	TermTab::TermTab (const ICoreProxy_ptr& proxy,
+			const TabClassInfo& tc, QObject *plugin)
+	: CoreProxy_ { proxy }
+	, TC_ (tc)
 	, ParentPlugin_ { plugin }
 	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
 	, Term_ { new QTermWidget { true } }

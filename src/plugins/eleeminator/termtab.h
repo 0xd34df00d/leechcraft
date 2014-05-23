@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
 
 class QTermWidget;
 
@@ -44,6 +45,7 @@ namespace Eleeminator
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
+		const ICoreProxy_ptr CoreProxy_;
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
 
@@ -53,7 +55,7 @@ namespace Eleeminator
 
 		QString CurrentColorScheme_;
 	public:
-		TermTab (const TabClassInfo&, QObject*);
+		TermTab (const ICoreProxy_ptr&, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
