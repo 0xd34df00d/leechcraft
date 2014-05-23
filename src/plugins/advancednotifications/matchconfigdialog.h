@@ -60,7 +60,9 @@ namespace AdvancedNotifications
 		MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>&, QWidget* = 0);
 
 		FieldMatch GetFieldMatch () const;
+		void SetFieldMatch (const FieldMatch&);
 	private:
+		int SelectPlugin (const QByteArray&, const QString&);
 		void AddFields (const QList<ANFieldData>&);
 	private slots:
 		void on_SourcePlugin__activated (int);
