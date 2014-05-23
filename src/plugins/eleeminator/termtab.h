@@ -74,6 +74,8 @@ namespace Eleeminator
 
 		void selectFont ();
 
+		void handleUrlActivated (const QUrl&);
+
 		void handleFinished ();
 	signals:
 		void remove (QWidget*);

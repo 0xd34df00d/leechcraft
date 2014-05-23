@@ -36,9 +36,12 @@
 #include <QToolButton>
 #include <QShortcut>
 #include <QFontDialog>
+#include <QUrl>
 #include <QtDebug>
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
+#include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -66,6 +69,11 @@ namespace Eleeminator
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleFinished ()));
+
+		connect (Term_,
+				SIGNAL (urlActivated (QUrl)),
+				this,
+				SLOT (handleUrlActivated (QUrl)));
 
 		auto savedFontVar = XmlSettingsManager::Instance ().property ("Font");
 		if (!savedFontVar.isNull () && savedFontVar.canConvert<QFont> ())
@@ -226,6 +234,12 @@ namespace Eleeminator
 		Term_->setTerminalFont (font);
 
 		XmlSettingsManager::Instance ().setProperty ("Font", QVariant::fromValue (font));
+	}
+
+	void TermTab::handleUrlActivated (const QUrl& url)
+	{
+		const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
+		CoreProxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 
 	void TermTab::handleFinished ()
