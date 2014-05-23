@@ -216,6 +216,11 @@ namespace AdvancedNotifications
 			case QRegExp::RegExp2:
 				Ui_->RegexType_->setCurrentIndex (2);
 				break;
+			case QRegExp::W3CXmlSchema11:
+				qWarning () << Q_FUNC_INFO
+						<< "unexpected regexp type"
+						<< Value_.Rx_.patternSyntax ();
+				break;
 			}
 		}
 		else
