@@ -65,8 +65,10 @@ namespace AdvancedNotifications
 		virtual bool Match (const QVariant&) const = 0;
 
 		virtual QString GetHRDescription () const = 0;
+
 		virtual QWidget* GetConfigWidget () = 0;
 		virtual void SyncToWidget () = 0;
+		virtual void SyncWidgetTo () = 0;
 	};
 
 	class StringLikeMatcher : public TypedMatcherBase
@@ -87,6 +89,7 @@ namespace AdvancedNotifications
 
 		QWidget* GetConfigWidget ();
 		void SyncToWidget ();
+		void SyncWidgetTo ();
 	};
 
 	class StringMatcher : public StringLikeMatcher
@@ -139,6 +142,7 @@ namespace AdvancedNotifications
 		QString GetHRDescription () const;
 		QWidget* GetConfigWidget ();
 		void SyncToWidget ();
+		void SyncWidgetTo ();
 	};
 }
 }
