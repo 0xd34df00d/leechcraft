@@ -106,15 +106,16 @@ namespace AdvancedNotifications
 	int MatchConfigDialog::SelectPlugin (const QByteArray& pluginId, const QString& fieldId)
 	{
 		int plugIdx = -1;
-		for (int i = 0; i < Ui_.SourcePlugin_->count (); ++i)
-		{
-			const auto plugin = Ui_.SourcePlugin_->itemData (i).value<QObject*> ();
-			if (plugin && qobject_cast<IInfo*> (plugin)->GetUniqueID () == pluginId)
+		if (!pluginId.isEmpty ())
+			for (int i = 0; i < Ui_.SourcePlugin_->count (); ++i)
 			{
-				plugIdx = i;
-				break;
+				const auto plugin = Ui_.SourcePlugin_->itemData (i).value<QObject*> ();
+				if (plugin && qobject_cast<IInfo*> (plugin)->GetUniqueID () == pluginId)
+				{
+					plugIdx = i;
+					break;
+				}
 			}
-		}
 
 		auto tryIdx = [this, &fieldId] (int idx) -> int
 		{
