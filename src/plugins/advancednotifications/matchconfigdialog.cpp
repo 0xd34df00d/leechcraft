@@ -72,8 +72,10 @@ namespace AdvancedNotifications
 
 		const auto& data = Ui_.FieldName_->itemData (fieldIdx).value<ANFieldData> ();
 
+		const auto plugin = Ui_.SourcePlugin_->itemData (sourceIdx).value<QObject*> ();
+
 		FieldMatch result (data.Type_, CurrentMatcher_);
-		result.SetPluginID (Ui_.SourcePlugin_->itemData (sourceIdx).toByteArray ());
+		result.SetPluginID (qobject_cast<IInfo*> (plugin)->GetUniqueID ());
 		result.SetFieldName (data.ID_);
 
 		return result;
