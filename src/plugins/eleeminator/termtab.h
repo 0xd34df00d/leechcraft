@@ -62,12 +62,15 @@ namespace Eleeminator
 	private:
 		void SetupToolbar ();
 		void SetupColorsButton ();
+		void SetupFontsButton ();
 
 		void SetupShortcuts ();
 	private slots:
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);
 		void stopColorSchemePreview ();
+
+		void selectFont ();
 
 		void handleFinished ();
 	signals:

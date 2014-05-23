@@ -35,6 +35,7 @@
 #include <QTimer>
 #include <QToolButton>
 #include <QShortcut>
+#include <QFontDialog>
 #include <QtDebug>
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
@@ -63,6 +64,10 @@ namespace Eleeminator
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleFinished ()));
+
+		auto savedFontVar = XmlSettingsManager::Instance ().property ("Font");
+		if (!savedFontVar.isNull () && savedFontVar.canConvert<QFont> ())
+			Term_->setTerminalFont (savedFontVar.value<QFont> ());
 
 		QTimer::singleShot (0,
 				Term_,
@@ -95,6 +100,7 @@ namespace Eleeminator
 	void TermTab::SetupToolbar ()
 	{
 		SetupColorsButton ();
+		SetupFontsButton ();
 	}
 
 	void TermTab::SetupColorsButton ()
@@ -139,6 +145,13 @@ namespace Eleeminator
 		colorButton->setProperty ("ActionIcon", "fill-color");
 
 		Toolbar_->addWidget (colorButton);
+	}
+
+	void TermTab::SetupFontsButton ()
+	{
+		const auto action = Toolbar_->addAction (tr ("Select font..."),
+				this, SLOT (selectFont ()));
+		action->setProperty ("ActionIcon", "preferences-desktop-font");
 	}
 
 	void TermTab::SetupShortcuts ()
@@ -192,6 +205,22 @@ namespace Eleeminator
 	void TermTab::stopColorSchemePreview ()
 	{
 		Term_->setColorScheme (CurrentColorScheme_);
+	}
+
+	void TermTab::selectFont ()
+	{
+		const auto& currentFont = Term_->getTerminalFont ();
+		auto savedFont = XmlSettingsManager::Instance ()
+				.Property ("Font", QVariant::fromValue (currentFont)).value<QFont> ();
+
+		bool ok = false;
+		auto font = QFontDialog::getFont (&ok, currentFont, this);
+		if (!ok)
+			return;
+
+		Term_->setTerminalFont (font);
+
+		XmlSettingsManager::Instance ().setProperty ("Font", QVariant::fromValue (font));
 	}
 
 	void TermTab::handleFinished ()
