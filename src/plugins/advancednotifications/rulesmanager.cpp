@@ -217,25 +217,30 @@ namespace AdvancedNotifications
 		for (const auto& type : types)
 			stdFieldData += Util::GetStdANFields (type);
 
-		if (auto iane = qobject_cast<IANEmitter*> (plugin))
-			for (const auto& field : iane->GetANFields ())
-			{
-				qDebug () << "testing" << field.EventTypes_ << "against" << typeSet;
-				if (!field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
-					stdFieldData << field;
-			}
-
-		for (const auto& field : stdFieldData)
+		auto tryAddFieldMatch = [&e, &rule, sender] (const ANFieldData& field, bool standard) -> void
+		{
 			if (e.Additional_.contains (field.ID_))
 			{
 				const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
 				valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
 
 				FieldMatch fieldMatch (field.Type_, valMatcher);
-				fieldMatch.SetPluginID (sender);
+				fieldMatch.SetPluginID (standard ? QString {} : sender);
 				fieldMatch.SetFieldName (field.ID_);
 				rule.AddFieldMatch (fieldMatch);
 			}
+		};
+		for (const auto& field : stdFieldData)
+			tryAddFieldMatch (field, true);
+
+		if (auto iane = qobject_cast<IANEmitter*> (plugin))
+			for (const auto& field : iane->GetANFields ())
+			{
+				qDebug () << "testing" << field.EventTypes_ << "against" << typeSet;
+				if (!field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
+					tryAddFieldMatch (field, false);
+			}
+
 
 		Rules_.prepend (rule);
 		RulesModel_->insertRow (0, RuleToRow (rule));
