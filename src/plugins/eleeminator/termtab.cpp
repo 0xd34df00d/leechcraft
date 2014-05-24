@@ -77,10 +77,7 @@ namespace Eleeminator
 
 		auto savedFontVar = XmlSettingsManager::Instance ().property ("Font");
 		if (!savedFontVar.isNull () && savedFontVar.canConvert<QFont> ())
-		{
-			auto savedFont = savedFontVar.value<QFont> ();
-			Term_->setTerminalFont (savedFont);
-		}
+			Term_->setTerminalFont (savedFontVar.value<QFont> ());
 
 		QTimer::singleShot (0,
 				Term_,
@@ -227,7 +224,7 @@ namespace Eleeminator
 				.Property ("Font", QVariant::fromValue (currentFont)).value<QFont> ();
 
 		bool ok = false;
-		auto font = QFontDialog::getFont (&ok, currentFont, this);
+		const auto& font = QFontDialog::getFont (&ok, currentFont, this);
 		if (!ok)
 			return;
 
