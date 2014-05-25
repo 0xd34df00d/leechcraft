@@ -76,18 +76,18 @@ namespace Xoox
 	QMap<QXmppMucItem::Affiliation, QStandardItem*> RoomConfigWidget::InitModel () const
 	{
 		PermsModel_->clear ();
-		PermsModel_->setHorizontalHeaderLabels (QStringList ("JID") << tr ("Reason"));
+		PermsModel_->setHorizontalHeaderLabels ({ ("JID"), tr ("Reason") });
 		QMap<QXmppMucItem::Affiliation, QStandardItem*> aff2cat;
 		aff2cat [QXmppMucItem::OutcastAffiliation] = new QStandardItem (tr ("Banned"));
 		aff2cat [QXmppMucItem::MemberAffiliation] = new QStandardItem (tr ("Members"));
 		aff2cat [QXmppMucItem::AdminAffiliation] = new QStandardItem (tr ("Admins"));
 		aff2cat [QXmppMucItem::OwnerAffiliation] = new QStandardItem (tr ("Owners"));
-		Q_FOREACH (QStandardItem *item, aff2cat.values ())
+		for (auto item : aff2cat)
 		{
 			QList<QStandardItem*> rootItems;
 			rootItems << item;
 			rootItems << new QStandardItem (tr ("Reason"));
-			Q_FOREACH (QStandardItem *t, rootItems)
+			for (auto t : rootItems)
 				t->setEditable (false);
 			PermsModel_->appendRow (rootItems);
 		}
@@ -182,7 +182,7 @@ namespace Xoox
 		SendItem (item);
 
 		if (item.affiliation () != QXmppMucItem::NoAffiliation)
-			handlePermsReceived (QList<QXmppMucItem> () << item);
+			handlePermsReceived ({ item });
 	}
 
 	void RoomConfigWidget::on_RemovePerm__released ()

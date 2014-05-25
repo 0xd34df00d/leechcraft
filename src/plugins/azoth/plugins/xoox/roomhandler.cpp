@@ -645,7 +645,7 @@ namespace Xoox
 				Qt::QueuedConnection);
 		Nick2Entry_ [nick] = entry;
 		if (announce)
-			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
+			Account_->handleGotRosterItems ({ entry.get () });
 		return entry;
 	}
 
@@ -677,7 +677,7 @@ namespace Xoox
 		entry->HandlePresence (pres, QString ());
 
 		if (!existed)
-			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
+			Account_->handleGotRosterItems ({ entry.get () });
 
 		MakeJoinMessage (pres, nick);
 	}
