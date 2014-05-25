@@ -201,6 +201,19 @@ namespace Xoox
 			emit messageDelivered ();
 	}
 
+	void GlooxMessage::SetVariant (const QString& variant)
+	{
+		if (variant == Variant_)
+			return;
+
+		Variant_ = variant;
+
+		if (Direction_ == DIn)
+			Message_.setFrom (Variant_.isEmpty () ?
+					BareJID_ :
+					(BareJID_ + '/' + Variant_));
+	}
+
 	QXmppMessage GlooxMessage::GetNativeMessage () const
 	{
 		return Message_;
