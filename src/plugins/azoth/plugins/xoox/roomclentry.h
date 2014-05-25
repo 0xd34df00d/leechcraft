@@ -37,6 +37,7 @@
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/imucperms.h>
 #include <interfaces/azoth/iconfigurablemuc.h>
+#include "roomparticipantentry.h"
 
 class QXmppBookmarkSet;
 
@@ -137,6 +138,8 @@ namespace Xoox
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
 		void AcceptConfiguration (QWidget*);
+
+		void MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to);
 
 		void HandleMessage (RoomPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);
