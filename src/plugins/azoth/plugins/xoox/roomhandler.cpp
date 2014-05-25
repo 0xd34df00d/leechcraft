@@ -603,6 +603,16 @@ namespace Xoox
 		return Room_;
 	}
 
+	void RoomHandler::HandleRenameStart (const RoomParticipantEntry_ptr& entry,
+			const QString& nick, const QString& newNick)
+	{
+		entry->SetEntryName (newNick);
+		Nick2Entry_ [newNick] = Nick2Entry_ [nick];
+		MakeNickChangeMessage (nick, newNick);
+		Nick2Entry_.remove (nick);
+		PendingNickChanges_ << newNick;
+	}
+
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
 	{
 		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
@@ -685,11 +695,7 @@ namespace Xoox
 		if (!item.nick ().isEmpty () &&
 				item.nick () != nick)
 		{
-			entry->SetEntryName (item.nick ());
-			Nick2Entry_ [item.nick ()] = Nick2Entry_ [nick];
-			MakeNickChangeMessage (nick, item.nick ());
-			Nick2Entry_.remove (nick);
-			PendingNickChanges_ << item.nick ();
+			HandleRenameStart (entry, nick, item.nick ());
 			return;
 		}
 		else if (pres.mucStatusCodes ().contains (301))
