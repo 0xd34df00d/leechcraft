@@ -208,12 +208,12 @@ namespace Xoox
 				.arg (oldNick)
 				.arg (newNick);
 
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
+		auto message = new RoomPublicMessage (msg,
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantNickChange,
-				GetParticipantEntry (oldNick));
+				GetParticipantEntry (newNick));
 		CLEntry_->HandleMessage (message);
 	}
 
