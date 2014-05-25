@@ -254,7 +254,6 @@ cmake_dependent_option (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer"
 option (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" OFF)
 
 # Defunct
-option (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 option (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 
 enable_testing ()
@@ -424,10 +423,6 @@ endif ()
 
 if (ENABLE_SHELLOPEN)
 	add_subdirectory (plugins/shellopen)
-endif ()
-
-if (ENABLE_JUFFED)
-	add_subdirectory (plugins/juffed)
 endif ()
 
 if (ENABLE_GMAILNOTIFIER)
