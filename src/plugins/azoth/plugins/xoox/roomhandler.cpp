@@ -607,10 +607,31 @@ namespace Xoox
 			const QString& nick, const QString& newNick)
 	{
 		entry->SetEntryName (newNick);
-		Nick2Entry_ [newNick] = Nick2Entry_ [nick];
+
+		const bool isMerge = Nick2Entry_.contains (newNick);
+		if (isMerge)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "detected rename-merge from"
+					<< nick
+					<< "to"
+					<< newNick;
+			const auto& otherEntry = Nick2Entry_.value (newNick);
+			otherEntry->StealMessagesFrom (entry.get ());
+
+			CLEntry_->MoveMessages (entry, otherEntry);
+		}
+		else
+			Nick2Entry_ [newNick] = Nick2Entry_ [nick];
+
 		MakeNickChangeMessage (nick, newNick);
+
+		if (!isMerge)
+			PendingNickChanges_ << newNick;
+		else
+			Account_->handleEntryRemoved (Nick2Entry_.value (nick).get ());
+
 		Nick2Entry_.remove (nick);
-		PendingNickChanges_ << newNick;
 	}
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
