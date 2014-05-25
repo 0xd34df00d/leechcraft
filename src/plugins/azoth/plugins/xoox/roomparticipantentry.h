@@ -47,6 +47,7 @@ namespace Xoox
 	class RoomHandler;
 
 	class RoomParticipantEntry : public EntryBase
+							   , public std::enable_shared_from_this<RoomParticipantEntry>
 	{
 		Q_OBJECT
 
@@ -76,6 +77,8 @@ namespace Xoox
 		QString GetJID () const;
 		QString GetRealJID () const;
 		QString GetNick () const;
+
+		void StealMessagesFrom (RoomParticipantEntry*);
 
 		void SetPhotoHash (const QByteArray&);
 
