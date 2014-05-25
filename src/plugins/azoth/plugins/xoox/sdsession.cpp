@@ -68,9 +68,9 @@ namespace Xoox
 				const QString& node)
 		{
 			QList<QStandardItem*> items;
-			Q_FOREACH (const QString& string, strings)
+			for (const auto& string : strings)
 			{
-				QStandardItem *item = new QStandardItem (string);
+				auto item = new QStandardItem (string);
 				items << item;
 				item->setEditable (false);
 			}
@@ -86,10 +86,10 @@ namespace Xoox
 		Query_ = query;
 
 		Model_->clear ();
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("JID") << tr ("Node"));
+		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("JID"), tr ("Node") });
 
 		auto items = AppendRow (Model_,
-				QStringList (query) << query << "",
+				{ query, query, "" },
 				query,
 				"");
 		JID2Node2Item_ [query] [""] = items.at (0);
@@ -281,7 +281,7 @@ namespace Xoox
 		}
 
 		tooltip += "<strong>" + tr ("Identities:") + "</strong><ul>";
-		Q_FOREACH (const auto& id, iq.identities ())
+		for (const auto& id : iq.identities ())
 		{
 			if (id.name ().isEmpty ())
 				continue;
@@ -297,7 +297,7 @@ namespace Xoox
 		}
 		tooltip += "</ul>";
 
-		const QStringList& caps = Account_->GetClientConnection ()->
+		const auto& caps = Account_->GetClientConnection ()->
 				GetCapsManager ()->GetCaps (iq.features ());
 		if (!caps.isEmpty ())
 		{
@@ -309,7 +309,7 @@ namespace Xoox
 
 		targetItem->setToolTip (tooltip);
 
-		ItemInfo info =
+		ItemInfo info
 		{
 			iq.features (),
 			iq.identities (),
@@ -321,7 +321,7 @@ namespace Xoox
 
 	void SDSession::HandleItems (const QXmppDiscoveryIq& iq)
 	{
-		QStandardItem *parentItem = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
+		auto parentItem = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
 		if (!parentItem)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -331,10 +331,10 @@ namespace Xoox
 		}
 
 		QPointer<SDSession> ptr (this);
-		Q_FOREACH (const auto& item, iq.items ())
+		for (const auto& item : iq.items ())
 		{
 			auto items = AppendRow (parentItem,
-					QStringList (item.name ()) << item.jid () << item.node (),
+					{ item.name (), item.jid (), item.node () },
 					item.jid (),
 					item.node ());
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);

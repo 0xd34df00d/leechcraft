@@ -149,7 +149,7 @@ namespace Xoox
 
 	QStringList RoomCLEntry::Groups () const
 	{
-		return QStringList () << tr ("Multiuser chatrooms");
+		return { tr ("Multiuser chatrooms") };
 	}
 
 	void RoomCLEntry::SetGroups (const QStringList&)
