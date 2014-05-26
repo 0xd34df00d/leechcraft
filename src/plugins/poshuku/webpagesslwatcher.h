@@ -31,8 +31,9 @@
 
 #include <QSet>
 #include <QNetworkAccessManager>
+#include <QWebPage>
+#include <interfaces/core/ihookproxy.h>
 
-class QWebPage;
 class QNetworkReply;
 class QUrl;
 
@@ -59,6 +60,14 @@ namespace Poshuku
 
 		void handleReplyCreated (QNetworkAccessManager::Operation,
 				const QNetworkRequest&, QNetworkReply*);
+
+		void resetStats ();
+
+		void handleNavigationRequest (LeechCraft::IHookProxy_ptr,
+				QWebPage*,
+				QWebFrame*,
+				const QNetworkRequest&,
+				QWebPage::NavigationType);
 	signals:
 		void sslStateChanged (WebPageSslWatcher*);
 	};

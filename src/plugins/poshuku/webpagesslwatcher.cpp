@@ -48,6 +48,18 @@ namespace Poshuku
 				this,
 				SLOT (handleReplyCreated (QNetworkAccessManager::Operation,
 						QNetworkRequest, QNetworkReply*)));
+		connect (page,
+				SIGNAL (hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr,
+						QWebPage*,
+						QWebFrame*,
+						const QNetworkRequest&,
+						QWebPage::NavigationType)),
+				this,
+				SLOT (handleNavigationRequest (LeechCraft::IHookProxy_ptr,
+						QWebPage*,
+						QWebFrame*,
+						const QNetworkRequest&,
+						QWebPage::NavigationType)));
 	}
 
 	void WebPageSslWatcher::handleReplyFinished ()
@@ -105,6 +117,26 @@ namespace Poshuku
 				SIGNAL (sslErrors (QList<QSslError>)),
 				this,
 				SLOT (handleSslErrors (QList<QSslError>)));
+	}
+
+	void WebPageSslWatcher::resetStats ()
+	{
+		qDebug () << Q_FUNC_INFO;
+		SslResources_.clear ();
+		NonSslResources_.clear ();
+		ErrSslResources_.clear ();
+
+		emit sslStateChanged (this);
+	}
+
+	void WebPageSslWatcher::handleNavigationRequest (IHookProxy_ptr,
+			QWebPage*, QWebFrame *frame, const QNetworkRequest&, QWebPage::NavigationType type)
+	{
+		if (frame != Page_->mainFrame () ||
+				type == QWebPage::NavigationTypeOther)
+			return;
+
+		resetStats ();
 	}
 }
 }
