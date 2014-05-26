@@ -103,10 +103,8 @@ namespace Poshuku
 		QAction *NotifyWhenFinished_;
 		QAction *HistoryAction_;
 		QAction *BookmarksAction_;
-		QAction *ExternalLinksAction_;
 		QPoint OnLoadPos_;
 		QMenu *ChangeEncoding_;
-		QMenu *ExternalLinks_;
 		FindDialog *FindDialog_;
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
@@ -197,8 +195,6 @@ namespace Poshuku
 		void handleBackHistoryAction ();
 		void handleForwardHistoryAction ();
 
-		void handleEntityAction ();
-		void checkLinkRels ();
 		void checkLoadedDocument ();
 
 		void setScrollPosition ();
@@ -208,7 +204,6 @@ namespace Poshuku
 		void handleChangeEncodingAboutToShow ();
 		void handleChangeEncodingTriggered (QAction*);
 		void updateLogicalPath ();
-		void showSendersMenu ();
 		void handleUrlChanged (const QString&);
 	signals:
 		void titleChanged (const QString&);

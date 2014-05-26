@@ -29,7 +29,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
+#include <QMenu>
 
 class QAction;
 
@@ -47,10 +49,17 @@ namespace Poshuku
 		CustomWebView * const View_;
 		ProgressLineEdit * const LineEdit_;
 		QAction * const Add2Favorites_;
+
+		const std::shared_ptr<QMenu> ExternalLinks_;
+		QAction * const ExternalLinksAction_;
 	public:
 		UrlEditButtonsManager (CustomWebView*, ProgressLineEdit*, QAction*);
 	private slots:
 		void checkPageAsFavorite (const QString&);
+
+		void checkLinkRels ();
+		void showSendersMenu ();
+
 		void updateBookmarksState ();
 	};
 }

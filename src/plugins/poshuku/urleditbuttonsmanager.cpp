@@ -29,9 +29,13 @@
 
 #include "urleditbuttonsmanager.h"
 #include <QToolButton>
+#include <QMenu>
 #include <qwebframe.h>
+#include <qwebelement.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "customwebview.h"
 #include "core.h"
 #include "progresslineedit.h"
@@ -46,7 +50,14 @@ namespace Poshuku
 	, View_ { view }
 	, LineEdit_ { edit }
 	, Add2Favorites_ { add2favs }
+	, ExternalLinks_ { new QMenu { } }
+	, ExternalLinksAction_ { new QAction { this } }
 	{
+		ExternalLinks_->menuAction ()->setText (tr ("External links"));
+
+		ExternalLinksAction_->setText ("External links");
+		ExternalLinksAction_->setProperty ("ActionIcon", "application-rss+xml");
+
 		connect (&Core::Instance (),
 				SIGNAL (bookmarkAdded (const QString&)),
 				this,
@@ -63,6 +74,10 @@ namespace Poshuku
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (updateBookmarksState ()));
+		connect (View_,
+				SIGNAL (loadFinished (bool)),
+				this,
+				SLOT (checkLinkRels ()));
 
 		LineEdit_->InsertAction (Add2Favorites_, 0, true);
 	}
@@ -93,6 +108,97 @@ namespace Poshuku
 				btn->setIcon (Core::Instance ().GetProxy ()->
 						GetIconThemeManager ()->GetIcon ("bookmark-new"));
 		}
+	}
+
+	void UrlEditButtonsManager::checkLinkRels ()
+	{
+		LineEdit_->RemoveAction (ExternalLinksAction_);
+
+		ExternalLinks_->clear ();
+
+		const auto entityMgr = Core::Instance ().GetProxy ()->GetEntityManager ();
+
+		const auto& links = View_->page ()->mainFrame ()->findAllElements ("link");
+		const auto& mainFrameURL = View_->page ()->mainFrame ()->url ();
+		bool inserted = false;
+		for (const auto& link : links)
+		{
+			if (link.attribute ("type") == "")
+				continue;
+
+			LeechCraft::Entity e;
+			e.Mime_ = link.attribute ("type");
+
+			QString entity = link.attribute ("title");
+			if (entity.isEmpty ())
+			{
+				entity = e.Mime_;
+				entity.remove ("application/");
+				entity.remove ("+xml");
+				entity = entity.toUpper ();
+			}
+
+			auto entityUrl = mainFrameURL.resolved (QUrl (link.attribute ("href")));
+			e.Entity_ = entityUrl;
+			e.Additional_ ["SourceURL"] = entityUrl;
+			e.Parameters_ = LeechCraft::FromUserInitiated |
+				LeechCraft::OnlyHandle;
+			e.Additional_ ["UserVisibleName"] = entity;
+			e.Additional_ ["LinkRel"] = link.attribute ("rel");
+			e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.Poshuku");
+
+			if (entityMgr->CouldHandle (e))
+			{
+				QString mime = e.Mime_;
+				mime.replace ('/', '_');
+				auto act = ExternalLinks_->addAction (QIcon (QString (":/resources/images/%1.png")
+							.arg (mime)),
+						entity);
+
+				new Util::SlotClosure<Util::NoDeletePolicy>
+				{
+					[entityMgr, e] { entityMgr->HandleEntity (e); },
+					act,
+					SIGNAL (triggered ()),
+					act
+				};
+
+				if (!inserted)
+				{
+					auto btn = LineEdit_->InsertAction (ExternalLinksAction_);
+					LineEdit_->SetVisible (ExternalLinksAction_, true);
+					btn->setMenu (ExternalLinks_.get ());
+					btn->setArrowType (Qt::NoArrow);
+					btn->setPopupMode (QToolButton::InstantPopup);
+					const QString newStyle ("::menu-indicator { image: "
+							"url(data:image/gif;base64,R0lGODlhAQABAPABAP///"
+							"wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==);}");
+					btn->setStyleSheet (btn->styleSheet () + newStyle);
+
+					connect (ExternalLinks_->menuAction (),
+							SIGNAL (triggered ()),
+							this,
+							SLOT (showSendersMenu ()),
+							Qt::UniqueConnection);
+					inserted = true;
+				}
+			}
+		}
+	}
+
+	void UrlEditButtonsManager::showSendersMenu ()
+	{
+		auto action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "sender is not a QAction"
+				<< sender ();
+			return;
+		}
+
+		auto menu = action->menu ();
+		menu->exec (QCursor::pos ());
 	}
 
 	void UrlEditButtonsManager::updateBookmarksState ()

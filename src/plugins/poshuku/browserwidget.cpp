@@ -322,13 +322,6 @@ namespace Poshuku
 				this,
 				SLOT (handleChangeEncodingTriggered (QAction*)));
 
-		ExternalLinks_ = new QMenu (this);
-		ExternalLinks_->menuAction ()->setText (tr ("External links"));
-
-		ExternalLinksAction_ = new QAction (this);
-		ExternalLinksAction_->setText ("External links");
-		ExternalLinksAction_->setProperty ("ActionIcon", "application-rss+xml");
-
 		QWidgetAction *addressBar = new QWidgetAction (this);
 		addressBar->setDefaultWidget (Ui_.URLFrame_);
 		ToolBar_->addAction (addressBar);
@@ -445,10 +438,6 @@ namespace Poshuku
 				this,
 				SLOT (handleStatusBarMessage (const QString&)),
 				Qt::QueuedConnection);
-		connect (WebView_,
-				SIGNAL (loadFinished (bool)),
-				this,
-				SLOT (checkLinkRels ()));
 		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
@@ -1245,96 +1234,6 @@ namespace Poshuku
 		history->goToItem (item);
 	}
 
-	void BrowserWidget::handleEntityAction ()
-	{
-		emit gotEntity (qobject_cast<QAction*> (sender ())->
-				data ().value<LeechCraft::Entity> ());
-	}
-
-	void BrowserWidget::checkLinkRels ()
-	{
-		if (HtmlMode_)
-			return;
-
-		IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
-		if (!iab)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< GetURLEdit ()
-				<< "isn't an IAddressBar object";
-			return;
-		}
-
-		iab->RemoveAction (ExternalLinksAction_);
-
-		ExternalLinks_->clear ();
-
-		QWebElementCollection links = WebView_->
-				page ()->mainFrame ()->findAllElements ("link");
-		QUrl mainFrameURL = WebView_->page ()->mainFrame ()->url ();
-		bool inserted = false;
-		Q_FOREACH (QWebElement link, links)
-		{
-			if (link.attribute ("type") == "")
-				continue;
-
-			LeechCraft::Entity e;
-			e.Mime_ = link.attribute ("type");
-
-			QString entity = link.attribute ("title");
-			if (entity.isEmpty ())
-			{
-				entity = e.Mime_;
-				entity.remove ("application/");
-				entity.remove ("+xml");
-				entity = entity.toUpper ();
-			}
-
-			QUrl entityUrl = mainFrameURL.resolved (QUrl (link.attribute ("href")));
-			e.Entity_ = entityUrl;
-			e.Additional_ ["SourceURL"] = entityUrl;
-			e.Parameters_ = LeechCraft::FromUserInitiated |
-				LeechCraft::OnlyHandle;
-			e.Additional_ ["UserVisibleName"] = entity;
-			e.Additional_ ["LinkRel"] = link.attribute ("rel");
-			e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.Poshuku");
-
-			bool ch = false;
-			emit couldHandle (e, &ch);
-			if (ch)
-			{
-				QString mime = e.Mime_;
-				mime.replace ('/', '_');
-				QAction *act = ExternalLinks_->
-					addAction (QIcon (QString (":/resources/images/%1.png")
-							.arg (mime)),
-						entity,
-						this,
-						SLOT (handleEntityAction ()));
-				act->setData (QVariant::fromValue<LeechCraft::Entity> (e));
-				if (!inserted)
-				{
-					QToolButton *btn = iab->InsertAction (ExternalLinksAction_);
-					iab->SetVisible (ExternalLinksAction_, true);
-					btn->setMenu (ExternalLinks_);
-					btn->setArrowType (Qt::NoArrow);
-					btn->setPopupMode (QToolButton::InstantPopup);
-					const QString newStyle ("::menu-indicator { image: "
-							"url(data:image/gif;base64,R0lGODlhAQABAPABAP///"
-							"wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==);}");
-					btn->setStyleSheet (btn->styleSheet () + newStyle);
-
-					connect (ExternalLinks_->menuAction (),
-							SIGNAL (triggered ()),
-							this,
-							SLOT (showSendersMenu ()),
-							Qt::UniqueConnection);
-					inserted = true;
-				}
-			}
-		}
-	}
-
 	namespace
 	{
 		class HtmlWriter
@@ -1702,21 +1601,6 @@ namespace Poshuku
 		}
 
 		setProperty ("WidgetLogicalPath", path);
-	}
-
-	void BrowserWidget::showSendersMenu ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "sender is not a QAction"
-				<< sender ();
-			return;
-		}
-
-		QMenu *menu = action->menu ();
-		menu->exec (QCursor::pos ());
 	}
 
 	void BrowserWidget::handleUrlChanged (const QString& value)
