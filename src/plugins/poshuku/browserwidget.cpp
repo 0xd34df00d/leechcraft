@@ -87,6 +87,7 @@
 #include "bookmarkswidget.h"
 #include "historywidget.h"
 #include "customwebview.h"
+#include "urleditbuttonsmanager.h"
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
@@ -191,29 +192,9 @@ namespace Poshuku
 		Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
 		Add2Favorites_->setEnabled (false);
 
-		IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
-		if (!iab)
-			qWarning () << Q_FUNC_INFO
-					<< GetURLEdit ()
-					<< "isn't an IAddressBar object";
-		else
-		{
-			iab->InsertAction (Add2Favorites_, 0, true);
-			connect (GetURLEdit (),
-					SIGNAL (textChanged (const QString&)),
-					this,
-					SLOT (handleUrlTextChanged (const QString&)));
-
-			connect (&Core::Instance (),
-					SIGNAL (bookmarkAdded (const QString&)),
-					this,
-					SLOT (checkPageAsFavorite (const QString&)));
-
-			connect (&Core::Instance (),
-					SIGNAL (bookmarkRemoved (const QString&)),
-					this,
-					SLOT (checkPageAsFavorite (const QString&)));
-		}
+		new UrlEditButtonsManager (WebView_,
+				Ui_.URLFrame_->GetEditAsProgressLine (),
+				Add2Favorites_);
 
 		Find_ = new QAction (tr ("Find..."),
 				this);
@@ -522,11 +503,6 @@ namespace Poshuku
 		QTimer::singleShot (100,
 				this,
 				SLOT (focusLineEdit ()));
-
-		connect (WebView_,
-				SIGNAL (loadFinished (bool)),
-				this,
-				SLOT (updateBookmarksState (bool)));
 
 		FindDialog_ = new FindDialog (WebView_);
 		FindDialog_->hide ();
@@ -1067,7 +1043,6 @@ namespace Poshuku
 	void BrowserWidget::handleAdd2Favorites ()
 	{
 		const QString& url = WebView_->url ().toString ();
-		checkPageAsFavorite (url);
 
 		if (Core::Instance ().IsUrlInFavourites (url))
 			Core::Instance ().GetFavoritesModel ()->removeItem (url);
@@ -1153,11 +1128,6 @@ namespace Poshuku
 		QLineEdit *edit = Ui_.URLFrame_->GetEdit ();
 		edit->setFocus (Qt::OtherFocusReason);
 		edit->selectAll ();
-	}
-
-	void BrowserWidget::updateBookmarksState (bool)
-	{
-		checkPageAsFavorite (WebView_->url ().toString ());
 	}
 
 	QWebView* BrowserWidget::getWebView () const
@@ -1785,49 +1755,6 @@ namespace Poshuku
 		Ui_.URLFrame_->GetEdit ()->repaint ();
 
 		emit urlChanged (value);
-	}
-
-	void BrowserWidget::handleUrlTextChanged (const QString& url)
-	{
-		checkPageAsFavorite (url);
-	}
-
-	void BrowserWidget::checkPageAsFavorite (const QString& url)
-	{
-		if (url != WebView_->url ().toString () &&
-				url != GetURLEdit ()->text ())
-			return;
-
-		if (Core::Instance ().IsUrlInFavourites (url))
-		{
-			Add2Favorites_->setProperty ("ActionIcon", "list-remove");
-			Add2Favorites_->setText (tr ("Remove bookmark"));
-			Add2Favorites_->setToolTip (tr ("Remove bookmark"));
-
-			IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
-			if (!iab)
-				qWarning () << Q_FUNC_INFO
-						<< GetURLEdit ()
-						<< "isn't an IAddressBar object";
-			else if (auto btn = iab->GetButtonFromAction (Add2Favorites_))
-				btn->setIcon (Core::Instance ().GetProxy ()->
-						GetIconThemeManager ()->GetIcon ("list-remove"));
-		}
-		else
-		{
-			Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
-			Add2Favorites_->setText (tr ("Add bookmark"));
-			Add2Favorites_->setToolTip (tr ("Add bookmark"));
-
-			IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
-			if (!iab)
-				qWarning () << Q_FUNC_INFO
-						<< GetURLEdit ()
-						<< "isn't an IAddressBar object";
-			else if (auto btn = iab->GetButtonFromAction (Add2Favorites_))
-				btn->setIcon (Core::Instance ().GetProxy ()->
-						GetIconThemeManager ()->GetIcon ("bookmark-new"));
-		}
 	}
 
 	void BrowserWidget::handleShortcutHistory ()

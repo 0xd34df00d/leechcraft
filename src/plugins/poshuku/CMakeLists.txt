@@ -77,6 +77,7 @@ set (SRCS
 	urlframe.cpp
 	importentityhandler.cpp
 	platformplugin.cpp
+	urleditbuttonsmanager.cpp
 	webpagesslwatcher.cpp
 	)
 set (FORMS

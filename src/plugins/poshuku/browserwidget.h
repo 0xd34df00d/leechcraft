@@ -170,14 +170,12 @@ namespace Poshuku
 		void SetSplitterSizes (int);
 	public slots:
 		void focusLineEdit ();
-		void updateBookmarksState (bool);
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
 		void loadURL (const QUrl&);
 		QWebView* getWebView () const;
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;
-		void checkPageAsFavorite (const QString&);
 	private slots:
 		void handleIconChanged ();
 		void handleStatusBarMessage (const QString&);
@@ -212,7 +210,6 @@ namespace Poshuku
 		void updateLogicalPath ();
 		void showSendersMenu ();
 		void handleUrlChanged (const QString&);
-		void handleUrlTextChanged (const QString&);
 	signals:
 		void titleChanged (const QString&);
 		void urlChanged (const QString&);
