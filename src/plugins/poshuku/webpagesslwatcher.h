@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <QObject>
+#include <QSet>
 #include <QNetworkAccessManager>
 
 class QWebPage;
@@ -49,6 +49,8 @@ namespace Poshuku
 		QList<QUrl> SslResources_;
 		QList<QUrl> ErrSslResources_;
 		QList<QUrl> NonSslResources_;
+
+		QSet<QNetworkReply*> PendingErrors_;
 	public:
 		WebPageSslWatcher (QWebPage*);
 	private slots:

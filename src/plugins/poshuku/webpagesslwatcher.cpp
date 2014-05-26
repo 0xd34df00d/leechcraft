@@ -52,10 +52,27 @@ namespace Poshuku
 
 	void WebPageSslWatcher::handleReplyFinished ()
 	{
+		const auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto& url = reply->url ();
+
+		if (url.scheme () == "data")
+			return;
+
+		if (PendingErrors_.remove (reply))
+			ErrSslResources_ << url;
+
+		const auto& sslConfig = reply->sslConfiguration ();
+		if (sslConfig.peerCertificate ().isNull ())
+			NonSslResources_ << url;
+		else
+			SslResources_ << url;
+
+		emit sslStateChanged (this);
 	}
 
-	void WebPageSslWatcher::handleSslErrors (const QList<QSslError>& errors)
+	void WebPageSslWatcher::handleSslErrors (const QList<QSslError>&)
 	{
+		PendingErrors_ << qobject_cast<QNetworkReply*> (sender ());
 	}
 
 	namespace
