@@ -62,7 +62,7 @@ namespace Poshuku
 		connect (View_,
 				SIGNAL (loadFinished (bool)),
 				this,
-				SLOT (updateBookmarksState (bool)));
+				SLOT (updateBookmarksState ()));
 
 		LineEdit_->InsertAction (Add2Favorites_, 0, true);
 	}
