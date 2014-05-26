@@ -14,10 +14,6 @@ set (QT_USE_QTWEBKIT TRUE)
 set (QT_USE_QTSQL TRUE)
 set (QT_USE_QTXML TRUE)
 
-if (ENABLE_MEDIACALLS)
-	set (QT_USE_QTMULTIMEDIA TRUE)
-endif ()
-
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -45,12 +41,10 @@ if (WITH_DOCS)
 	endif ()
 endif ()
 
-option (ENABLE_QTMULTIMEDIA_KLUDGE "Enable kludges for finding QtMultimedia" OFF)
+if (ENABLE_MEDIACALLS)
+	find_package (QtMultimediaKit REQUIRED)
 
-if (ENABLE_MEDIACALLS AND ENABLE_QTMULTIMEDIA_KLUDGE)
-	include_directories (/usr/include/QtMultimediaKit)
-	include_directories (/usr/include/QtMobility)
-	set (QTMULTIMEDIA_KLUDGE "QtMultimediaKit")
+	include_directories (${QTMULTIMEDIAKIT_INCLUDE_DIRS})
 endif ()
 
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
@@ -208,7 +202,7 @@ add_library (leechcraft_azoth SHARED
 target_link_libraries (leechcraft_azoth
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${QTMULTIMEDIA_KLUDGE}
+	${QTMULTIMEDIAKIT_LIBRARIES}
 	${QCA2_LIBRARIES}
 	${CUSTOM_SPEEX}
 	leechcraft_azoth_common
