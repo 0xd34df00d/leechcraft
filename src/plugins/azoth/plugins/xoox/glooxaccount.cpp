@@ -510,7 +510,8 @@ namespace Xoox
 						<< "null entry for"
 						<< target;
 		}
-		target += '/' + var;
+		if (!var.isEmpty ())
+			target += '/' + var;
 		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
 	}
 #endif
