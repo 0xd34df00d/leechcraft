@@ -41,6 +41,7 @@ namespace Poshuku
 {
 	class CustomWebView;
 	class ProgressLineEdit;
+	class WebPageSslWatcher;
 
 	class UrlEditButtonsManager : public QObject
 	{
@@ -48,12 +49,16 @@ namespace Poshuku
 
 		CustomWebView * const View_;
 		ProgressLineEdit * const LineEdit_;
+		WebPageSslWatcher * const SslWatcher_;
 		QAction * const Add2Favorites_;
+		QAction * const SslStateAction_;
 
 		const std::shared_ptr<QMenu> ExternalLinks_;
 		QAction * const ExternalLinksAction_;
 	public:
-		UrlEditButtonsManager (CustomWebView*, ProgressLineEdit*, QAction*);
+		UrlEditButtonsManager (CustomWebView*, ProgressLineEdit*, WebPageSslWatcher*, QAction*);
+	public slots:
+		void handleSslState ();
 	private slots:
 		void checkPageAsFavorite (const QString&);
 

@@ -201,6 +201,7 @@ namespace Poshuku
 
 		new UrlEditButtonsManager (WebView_,
 				Ui_.URLFrame_->GetEditAsProgressLine (),
+				sslWatcher,
 				Add2Favorites_);
 
 		Find_ = new QAction (tr ("Find..."),
