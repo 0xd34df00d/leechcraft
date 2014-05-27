@@ -125,6 +125,10 @@ namespace Poshuku
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 		auto sslWatcher = new WebPageSslWatcher (WebView_->page ());
+		connect (WebView_,
+				SIGNAL (navigateRequested (QUrl)),
+				sslWatcher,
+				SLOT (resetStats ()));
 
 		WebInspector_ = new QWebInspector;
 		WebInspector_->setPage (WebView_->page ());
