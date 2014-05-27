@@ -71,6 +71,44 @@ namespace Poshuku
 		}
 
 		Ui_.OverallStateLabel_->setText (title);
+
+		const auto& config = watcher->GetPageConfiguration ();
+		Certs_ = config.peerCertificateChain ();
+
+		for (const auto& cert : Certs_)
+		{
+			auto name = cert.subjectInfo (QSslCertificate::CommonName);
+			if (name.isEmpty ())
+				name = cert.subjectInfo (QSslCertificate::Organization);
+			Ui_.CertChainBox_->addItem (name);
+		}
+	}
+
+	void SslStateDialog::on_CertChainBox__currentIndexChanged (int index)
+	{
+		const auto& cert = Certs_.value (index);
+
+		auto setSubjectInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
+		{
+			label->setText (cert.subjectInfo (key));
+		};
+		auto setIssuerInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
+		{
+			label->setText (cert.issuerInfo (key));
+		};
+
+		setSubjectInfo (Ui_.SubjectCommonName_, QSslCertificate::CommonName);
+		setSubjectInfo (Ui_.SubjectOrganization_, QSslCertificate::Organization);
+		setSubjectInfo (Ui_.SubjectUnit_, QSslCertificate::OrganizationalUnitName);
+		setSubjectInfo (Ui_.SubjectCountry_, QSslCertificate::CountryName);
+		setSubjectInfo (Ui_.SubjectState_, QSslCertificate::StateOrProvinceName);
+		setSubjectInfo (Ui_.SubjectCity_, QSslCertificate::LocalityName);
+		setIssuerInfo (Ui_.IssuerCommonName_, QSslCertificate::CommonName);
+		setIssuerInfo (Ui_.IssuerOrganization_, QSslCertificate::Organization);
+		setIssuerInfo (Ui_.IssuerUnit_, QSslCertificate::OrganizationalUnitName);
+		setIssuerInfo (Ui_.IssuerCountry_, QSslCertificate::CountryName);
+		setIssuerInfo (Ui_.IssuerState_, QSslCertificate::StateOrProvinceName);
+		setIssuerInfo (Ui_.IssuerCity_, QSslCertificate::LocalityName);
 	}
 }
 }

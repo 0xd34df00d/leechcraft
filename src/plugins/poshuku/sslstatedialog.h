@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QDialog>
+#include <QSslCertificate>
 #include "ui_sslstatedialog.h"
 
 namespace LeechCraft
@@ -43,8 +44,12 @@ namespace Poshuku
 		Q_OBJECT
 
 		Ui::SslStateDialog Ui_;
+
+		QList<QSslCertificate> Certs_;
 	public:
 		SslStateDialog (const WebPageSslWatcher*, QWidget* = 0);
+	private slots:
+		void on_CertChainBox__currentIndexChanged (int);
 	};
 }
 }
