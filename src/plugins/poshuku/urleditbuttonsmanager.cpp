@@ -95,17 +95,13 @@ namespace Poshuku
 
 	void UrlEditButtonsManager::handleSslState ()
 	{
-		const auto pageState = SslWatcher_->GetPageState ();
-		if (pageState == WebPageSslWatcher::State::NoSsl)
-		{
-			LineEdit_->SetVisible (SslStateAction_, false);
-			return;
-		}
-
 		QString iconName;
 		QString title;
-		switch (pageState)
+		switch (SslWatcher_->GetPageState ())
 		{
+		case WebPageSslWatcher::State::NoSsl:
+			LineEdit_->SetVisible (SslStateAction_, false);
+			return;
 		case WebPageSslWatcher::State::SslErrors:
 			iconName = "security-low";
 			title = tr ("Some SSL errors where encountered.");
