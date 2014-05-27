@@ -54,14 +54,23 @@ namespace Poshuku
 		QSet<QNetworkReply*> PendingErrors_;
 	public:
 		WebPageSslWatcher (QWebPage*);
+
+		enum class State
+		{
+			NoSsl,
+			SslErrors,
+			UnencryptedElems,
+			FullSsl
+		};
+		State GetPageState () const;
+	public slots:
+		void resetStats ();
 	private slots:
 		void handleReplyFinished ();
 		void handleSslErrors (const QList<QSslError>&);
 
 		void handleReplyCreated (QNetworkAccessManager::Operation,
 				const QNetworkRequest&, QNetworkReply*);
-
-		void resetStats ();
 
 		void handleNavigationRequest (LeechCraft::IHookProxy_ptr,
 				QWebPage*,

@@ -62,6 +62,18 @@ namespace Poshuku
 						QWebPage::NavigationType)));
 	}
 
+	WebPageSslWatcher::State WebPageSslWatcher::GetPageState () const
+	{
+		if (!ErrSslResources_.isEmpty ())
+			return State::SslErrors;
+		else if (SslResources_.isEmpty ())
+			return State::NoSsl;
+		else if (!NonSslResources_.isEmpty ())
+			return State::UnencryptedElems;
+		else
+			return State::FullSsl;
+	}
+
 	void WebPageSslWatcher::handleReplyFinished ()
 	{
 		const auto reply = qobject_cast<QNetworkReply*> (sender ());
