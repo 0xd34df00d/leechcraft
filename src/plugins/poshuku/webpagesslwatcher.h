@@ -31,6 +31,7 @@
 
 #include <QSet>
 #include <QNetworkAccessManager>
+#include <QSslConfiguration>
 #include <QWebPage>
 #include <interfaces/core/ihookproxy.h>
 
@@ -52,6 +53,8 @@ namespace Poshuku
 		QList<QUrl> NonSslResources_;
 
 		QSet<QNetworkReply*> PendingErrors_;
+
+		QSslConfiguration PageConfig_;
 	public:
 		WebPageSslWatcher (QWebPage*);
 
@@ -63,6 +66,8 @@ namespace Poshuku
 			FullSsl
 		};
 		State GetPageState () const;
+
+		const QSslConfiguration& GetPageConfiguration () const;
 	public slots:
 		void resetStats ();
 	private slots:

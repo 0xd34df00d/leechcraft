@@ -74,6 +74,11 @@ namespace Poshuku
 			return State::FullSsl;
 	}
 
+	const QSslConfiguration& WebPageSslWatcher::GetPageConfiguration () const
+	{
+		return PageConfig_;
+	}
+
 	void WebPageSslWatcher::handleReplyFinished ()
 	{
 		const auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -89,7 +94,17 @@ namespace Poshuku
 		if (sslConfig.peerCertificate ().isNull ())
 			NonSslResources_ << url;
 		else
+		{
 			SslResources_ << url;
+
+			if (url == Page_->mainFrame ()->url ())
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "detected main frame cert for URL"
+						<< url;
+				PageConfig_ = sslConfig;
+			}
+		}
 
 		emit sslStateChanged (this);
 	}
@@ -137,6 +152,8 @@ namespace Poshuku
 		SslResources_.clear ();
 		NonSslResources_.clear ();
 		ErrSslResources_.clear ();
+
+		PageConfig_ = {};
 
 		emit sslStateChanged (this);
 	}
