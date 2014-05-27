@@ -79,6 +79,7 @@ set (SRCS
 	platformplugin.cpp
 	urleditbuttonsmanager.cpp
 	webpagesslwatcher.cpp
+	sslstatedialog.cpp
 	)
 set (FORMS
 	browserwidget.ui
@@ -93,6 +94,7 @@ set (FORMS
 	bookmarkswidget.ui
 	historywidget.ui
 	urlframe.ui
+	sslstatedialog.ui
 	)
 set (RESOURCES poshukuresources.qrc)
 
