@@ -40,6 +40,7 @@
 #include "core.h"
 #include "progresslineedit.h"
 #include "webpagesslwatcher.h"
+#include "sslstatedialog.h"
 
 namespace LeechCraft
 {
@@ -91,6 +92,11 @@ namespace Poshuku
 
 		LineEdit_->InsertAction (SslStateAction_, 0, false);
 		LineEdit_->SetVisible (SslStateAction_, false);
+
+		connect (SslStateAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showSslDialog ()));
 	}
 
 	void UrlEditButtonsManager::handleSslState ()
@@ -239,6 +245,13 @@ namespace Poshuku
 
 		auto menu = action->menu ();
 		menu->exec (QCursor::pos ());
+	}
+
+	void UrlEditButtonsManager::showSslDialog ()
+	{
+		const auto dia = new SslStateDialog { SslWatcher_ };
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 
 	void UrlEditButtonsManager::updateBookmarksState ()

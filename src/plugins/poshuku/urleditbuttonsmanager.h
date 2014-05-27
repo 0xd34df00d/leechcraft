@@ -65,6 +65,8 @@ namespace Poshuku
 		void checkLinkRels ();
 		void showSendersMenu ();
 
+		void showSslDialog ();
+
 		void updateBookmarksState ();
 	};
 }
