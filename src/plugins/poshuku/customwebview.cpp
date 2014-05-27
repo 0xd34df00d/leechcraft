@@ -180,6 +180,9 @@ namespace Poshuku
 				setHtml (result.toString ());
 			return;
 		}
+
+		emit navigateRequested (url);
+
 		if (url.scheme () == "about")
 		{
 			if (url.path () == "plugins")
@@ -188,6 +191,7 @@ namespace Poshuku
 				NavigateHome ();
 			return;
 		}
+
 		if (title.isEmpty ())
 			title = tr ("Loading...");
 		remakeURL (url);

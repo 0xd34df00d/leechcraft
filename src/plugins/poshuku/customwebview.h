@@ -118,6 +118,8 @@ namespace Poshuku
 		void storeFormData (const PageFormsData_t&);
 		void invalidateSettings ();
 
+		void navigateRequested (const QUrl&);
+
 		// Hook support signals
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
 				QWebView*, QContextMenuEvent*,
