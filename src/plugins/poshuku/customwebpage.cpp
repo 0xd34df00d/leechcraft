@@ -77,8 +77,8 @@ namespace Poshuku
 		}
 
 		setForwardUnsupportedContent (true);
-		setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
 
+		setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
 		setPluginFactory (Core::Instance ().GetWebPluginFactory ());
 
 		connect (this,

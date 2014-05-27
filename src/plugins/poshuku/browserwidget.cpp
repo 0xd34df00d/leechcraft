@@ -88,6 +88,7 @@
 #include "historywidget.h"
 #include "customwebview.h"
 #include "urleditbuttonsmanager.h"
+#include "webpagesslwatcher.h"
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
@@ -122,6 +123,8 @@ namespace Poshuku
 		WebView_ = new CustomWebView;
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+		auto sslWatcher = new WebPageSslWatcher (WebView_->page ());
 
 		WebInspector_ = new QWebInspector;
 		WebInspector_->setPage (WebView_->page ());
