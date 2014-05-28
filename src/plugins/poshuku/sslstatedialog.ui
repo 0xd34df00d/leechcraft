@@ -32,7 +32,7 @@
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="TabWidget_">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -286,10 +286,18 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="InsecureTab_">
       <attribute name="title">
        <string>Insecure elements</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QListWidget" name="InsecureList_"/>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>

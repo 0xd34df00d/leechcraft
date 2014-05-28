@@ -44,6 +44,7 @@ namespace Poshuku
 
 		QString iconName;
 		QString title;
+		bool hasInsecure = false;
 		switch (watcher->GetPageState ())
 		{
 		case WebPageSslWatcher::State::NoSsl:
@@ -54,6 +55,7 @@ namespace Poshuku
 			title = tr ("Some SSL errors where encountered.");
 			break;
 		case WebPageSslWatcher::State::UnencryptedElems:
+			hasInsecure = true;
 			iconName = "security-medium";
 			title = tr ("Some elements were loaded via unencrypted connection.");
 			break;
@@ -61,6 +63,12 @@ namespace Poshuku
 			iconName = "security-high";
 			title = tr ("Everything is secure!");
 			break;
+		}
+
+		if (!hasInsecure)
+		{
+			const auto insecureIdx = Ui_.TabWidget_->indexOf (Ui_.InsecureTab_);
+			Ui_.TabWidget_->removeTab (insecureIdx);
 		}
 
 		if (!iconName.isEmpty ())
