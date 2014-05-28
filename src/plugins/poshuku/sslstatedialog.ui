@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>778</width>
-    <height>287</height>
+    <width>766</width>
+    <height>385</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -215,13 +215,6 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="2">
-          <widget class="QLabel" name="IssuerState_">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
          <item row="6" column="2">
           <widget class="QLabel" name="IssuerCity_">
            <property name="text">
@@ -229,7 +222,63 @@
            </property>
           </widget>
          </item>
+         <item row="5" column="2">
+          <widget class="QLabel" name="IssuerState_">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
         </layout>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Serial number:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLabel" name="SerialNumber_">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_13">
+         <property name="text">
+          <string>SHA1:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_14">
+         <property name="text">
+          <string>MD5:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="Sha1_">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLabel" name="Md5_">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

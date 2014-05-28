@@ -109,6 +109,10 @@ namespace Poshuku
 		setIssuerInfo (Ui_.IssuerCountry_, QSslCertificate::CountryName);
 		setIssuerInfo (Ui_.IssuerState_, QSslCertificate::StateOrProvinceName);
 		setIssuerInfo (Ui_.IssuerCity_, QSslCertificate::LocalityName);
+
+		Ui_.SerialNumber_->setText (cert.serialNumber ());
+		Ui_.Md5_->setText (cert.digest (QCryptographicHash::Md5).toHex ());
+		Ui_.Sha1_->setText (cert.digest (QCryptographicHash::Sha1).toHex ());
 	}
 }
 }
