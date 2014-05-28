@@ -38,11 +38,17 @@ namespace AN
 /** @brief Namespace for various AN entity fields.
  *
  * This namespace contains various constants for widely-used fields
- * in the AdvancedNotifications-related Entity structure.
+ * in an AdvancedNotifications-related Entity structure. Both event
+ * notification fields and rule creation fields are mentioned.
  */
 namespace EF
 {
 	/** @brief The plugin ID of the sender (QByteArray or QString).
+	 *
+	 * @note This field is required for event notification entities.
+	 *
+	 * @note This field is required for rule creation entities and should
+	 * be equal to <em>org.LC.AdvNotifications.RuleRegister</em>.
 	 */
 	const QString SenderID { "org.LC.AdvNotifications.SenderID" };
 
@@ -51,7 +57,12 @@ namespace EF
 	 * To notify about an event, this field should contain one of the
 	 * predefined event categories (like CatIM, CatDownloads and so on).
 	 * To cancel an event (for example, when all unread messages have
-	 * been read), this field should contain the CatEventCancel category.
+	 * been read), this field should contain the #CatEventCancel
+	 * category.
+	 *
+	 * @note This field is required for event notification entities.
+	 *
+	 * @note This field is required for rule creation entities.
 	 */
 	const QString EventCategory { "org.LC.AdvNotifications.EventCategory" };
 
@@ -59,6 +70,10 @@ namespace EF
 	 *
 	 * Events relating to the same object (like IM messages from the same
 	 * contact) should have the same event ID.
+	 *
+	 * @note This field is required for event notification entities.
+	 *
+	 * @note This field is required for rule creation entities.
 	 */
 	const QString EventID { "org.LC.AdvNotifications.EventID" };
 
@@ -66,6 +81,8 @@ namespace EF
 	 *
 	 * This field should contain the list of human-readable strings that
 	 * allow grouping of various events into tree-like structures.
+	 *
+	 * @note This field is required for event notification entities.
 	 */
 	const QString VisualPath { "org.LC.AdvNotifications.VisualPath" };
 
@@ -78,18 +95,22 @@ namespace EF
 	 * @note This field is also used when creating rules. In this case,
 	 * it should contain a QStringList with all the event types the rule
 	 * being created relates to.
+	 *
+	 * @note This field is required for event notification entities.
+	 *
+	 * @note This field is required for rule creation entities.
 	 */
 	const QString EventType { "org.LC.AdvNotifications.EventType" };
 
 	/** @brief The detailed text of the event (QString).
 	 *
-	 * @note This field is optional.
+	 * @note This field is optional for event notification entities.
 	 */
 	const QString FullText { "org.LC.AdvNotifications.FullText" };
 
 	/** @brief The even more detailed text than FullText (QString).
 	 *
-	 * @note This field is optional.
+	 * @note This field is optional for event notification entities.
 	 */
 	const QString ExtendedText { "org.LC.AdvNotifications.ExtendedText" };
 
@@ -101,7 +122,8 @@ namespace EF
 	 * For example, if two messages arrive simultaneously from the same
 	 * contact in an IM client, this field should be equal to 2.
 	 *
-	 * @note Either this field or the Count field should be present.
+	 * @note Either this field or the Count field should be present for
+	 * event notification entities.
 	 */
 	const QString DeltaCount { "org.LC.AdvNotifications.DeltaCount" };
 
@@ -110,9 +132,37 @@ namespace EF
 	 * This field represents how many events with the given EventID are
 	 * there pending now.
 	 *
-	 * @note Either this field or the DeltaCount field should be present.
+	 * @note Either this field or the DeltaCount field should be present
+	 * for event notification entities.
 	 */
 	const QString Count { "org.LC.AdvNotifications.Count" };
+
+	/** @brief Whether the created rule should be single-shot (bool).
+	 *
+	 * @note This field is optional for rule creation entities.
+	 */
+	const QString IsSingleShot { "org.LC.AdvNotifications.SingleShot" };
+
+	/** @brief Whether a transient notifier should be enabled by default
+	 * in the rule being created (bool).
+	 *
+	 * @note This field is optional for rule creation entities.
+	 */
+	const QString NotifyTransient { "org.LC.AdvNotifications.NotifyTransient" };
+
+	/** @brief Whether a persistent notifier should be enabled by default
+	 * in the rule being created (bool).
+	 *
+	 * @note This field is optional for rule creation entities.
+	 */
+	const QString NotifyPersistent { "org.LC.AdvNotifications.NotifyPersistent" };
+
+	/** @brief Whether an audio notifier should be enabled by default in
+	 * the rule being created (bool).
+	 *
+	 * @note This field is optional for rule creation entities.
+	 */
+	const QString NotifyAudio { "org.LC.AdvNotifications.NotifyAudio" };
 }
 }
 }
