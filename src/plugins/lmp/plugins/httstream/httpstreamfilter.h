@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <vector>
 #include <QObject>
 #include "interfaces/lmp/ifilterelement.h"
 #include "interfaces/lmp/isourceobject.h"

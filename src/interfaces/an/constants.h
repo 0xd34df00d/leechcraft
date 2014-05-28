@@ -36,6 +36,12 @@ namespace LeechCraft
 {
 namespace AN
 {
+	/** @brief Event cancel pseudo-category.
+	 *
+	 * This category is used to cancel an event by a given event ID.
+	 */
+	const QString CatEventCancel = "org.LC.AdvNotifications.Cancel";
+
 	/** @brief Category of Instant Messaging-related events.
 	 */
 	const QString CatIM = "org.LC.AdvNotifications.IM";
