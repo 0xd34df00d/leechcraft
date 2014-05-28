@@ -75,13 +75,13 @@ namespace Util
 			e.Additional_ [field.first] = QVariant::fromValue (field.second);
 
 		if (flags & AN::NotifySingleShot)
-			e.Additional_ ["org.LC.AdvNotifications.SingleShot"] = true;
+			e.Additional_ [AN::EF::IsSingleShot] = true;
 		if (flags & AN::NotifyTransient)
-			e.Additional_ ["org.LC.AdvNotifications.NotifyTransient"] = true;
+			e.Additional_ [AN::EF::NotifyTransient] = true;
 		if (flags & AN::NotifyPersistent)
-			e.Additional_ ["org.LC.AdvNotifications.NotifyPersistent"] = true;
+			e.Additional_ [AN::EF::NotifyPersistent] = true;
 		if (flags & AN::NotifyAudio)
-			e.Additional_ ["org.LC.AdvNotifications.NotifyAudio"] = true;
+			e.Additional_ [AN::EF::NotifyAudio] = true;
 
 		return e;
 	}
