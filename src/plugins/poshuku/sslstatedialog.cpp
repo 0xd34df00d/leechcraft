@@ -113,6 +113,9 @@ namespace Poshuku
 		Ui_.SerialNumber_->setText (cert.serialNumber ());
 		Ui_.Md5_->setText (cert.digest (QCryptographicHash::Md5).toHex ());
 		Ui_.Sha1_->setText (cert.digest (QCryptographicHash::Sha1).toHex ());
+
+		Ui_.StartDate_->setText (QLocale {}.toString (cert.effectiveDate ()));
+		Ui_.EndDate_->setText (QLocale {}.toString (cert.expiryDate ()));
 	}
 }
 }
