@@ -87,6 +87,12 @@ namespace Poshuku
 		if (url.scheme () == "data")
 			return;
 
+		const bool isCached = reply->attribute (QNetworkRequest::SourceIsFromCacheAttribute).toBool ();
+		const bool connEncrypted = reply->attribute (QNetworkRequest::ConnectionEncryptedAttribute).toBool ();
+
+		if (isCached && !connEncrypted)
+			return;
+
 		if (PendingErrors_.remove (reply))
 			ErrSslResources_ << url;
 
