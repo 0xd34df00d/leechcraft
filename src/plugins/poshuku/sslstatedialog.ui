@@ -52,7 +52,7 @@
         <widget class="QComboBox" name="CertChainBox_"/>
        </item>
        <item row="1" column="0" colspan="2">
-        <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0">
+        <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,1">
          <item row="3" column="1">
           <widget class="QLabel" name="SubjectUnit_">
            <property name="text">
