@@ -33,6 +33,7 @@
 #include <QPair>
 #include <vmime/mailbox.hpp>
 #include <vmime/charsetConverter.hpp>
+#include <vmime/utility/outputStreamStringAdapter.hpp>
 
 namespace LeechCraft
 {
@@ -69,7 +70,7 @@ namespace Snails
 		return QString::fromUtf8 (w.getConvertedText (vmime::charsets::UTF_8).c_str ());
 	}
 
-	inline QPair<QString, QString> Mailbox2Strings (const vmime::ref<const vmime::mailbox>& mbox)
+	inline QPair<QString, QString> Mailbox2Strings (const vmime::shared_ptr<const vmime::mailbox>& mbox)
 	{
 		return {
 					StringizeCT (mbox->getName ()),
