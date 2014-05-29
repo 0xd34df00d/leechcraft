@@ -459,11 +459,9 @@ namespace Poshuku
 			<< "OfflineStorageDB"
 			<< "LocalStorageDB"
 			<< "OfflineWebApplicationCache"
-			<< "EnableXSSAuditing";
-#if QT_VERSION >= 0x040800
-		viewerSettings << "WebGLEnabled"
+			<< "EnableXSSAuditing"
+			<< "WebGLEnabled"
 			<< "HyperlinkAuditingEnabled";
-#endif
 		XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 				this, "viewerSettingsChanged");
 
@@ -539,12 +537,10 @@ namespace Poshuku
 				XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::XSSAuditingEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableXSSAuditing").toBool ());
-#if QT_VERSION >= 0x040800
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableHyperlinkAuditing").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::WebGLEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableWebGL").toBool ());
-#endif
 		QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 					Instance ()->property ("UserStyleSheet").toString ()));
 	}

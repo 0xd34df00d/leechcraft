@@ -151,12 +151,10 @@ namespace Poshuku
 				this,
 				SLOT (handleWindowCloseRequested ()));
 
-#if QT_VERSION >= 0x040800
 		connect (this,
 				SIGNAL (featurePermissionRequested (QWebFrame*, QWebPage::Feature)),
 				this,
 				SLOT (handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature)));
-#endif
 
 		FillErrorSuggestions ();
 
@@ -271,12 +269,10 @@ namespace Poshuku
 		}
 	}
 
-#if QT_VERSION >= 0x040800
 	void CustomWebPage::handleFeaturePermissionReq (QWebFrame *frame, QWebPage::Feature feature)
 	{
 		qDebug () << Q_FUNC_INFO << frame << feature;
 	}
-#endif
 
 	void CustomWebPage::handleContentsChanged ()
 	{

@@ -68,9 +68,7 @@ namespace Poshuku
 		bool supportsExtension (Extension) const;
 		bool extension (Extension, const ExtensionOption*, ExtensionReturn*);
 	private slots:
-#if QT_VERSION >= 0x040800
 		void handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature);
-#endif
 
 		void handleContentsChanged ();
 		void handleDatabaseQuotaExceeded (QWebFrame*, QString);
