@@ -232,6 +232,7 @@ namespace NetStoreManager
 	void ManagerTab::FillToolbar ()
 	{
 		AccountsBox_ = new QComboBox (this);
+		AccountsBox_->setSizeAdjustPolicy (QComboBox::AdjustToContents);
 		Q_FOREACH (auto acc, AM_->GetAccounts ())
 		{
 			auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
