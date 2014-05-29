@@ -68,6 +68,8 @@ namespace Poshuku
 		State GetPageState () const;
 
 		const QSslConfiguration& GetPageConfiguration () const;
+
+		QList<QUrl> GetNonSslUrls () const;
 	public slots:
 		void resetStats ();
 	private slots:

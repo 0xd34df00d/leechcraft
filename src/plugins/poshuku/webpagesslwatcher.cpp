@@ -79,6 +79,11 @@ namespace Poshuku
 		return PageConfig_;
 	}
 
+	QList<QUrl> WebPageSslWatcher::GetNonSslUrls () const
+	{
+		return NonSslResources_;
+	}
+
 	void WebPageSslWatcher::handleReplyFinished ()
 	{
 		const auto reply = qobject_cast<QNetworkReply*> (sender ());
