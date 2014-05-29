@@ -39,17 +39,16 @@ namespace Snails
 	: Dev_ (dev)
 	{
 	}
-
-	void OutputIODevAdapter::write (const vmime::utility::stream::value_type* const data, const size_type size)
-	{
-		Dev_->write (data, size);
-	}
-
 	void OutputIODevAdapter::flush ()
 	{
 		QFile *file = 0;
 		if ((file = qobject_cast<QFile*> (Dev_)))
 			file->flush ();
+	}
+
+	void OutputIODevAdapter::writeImpl (const vmime::byte_t* const data, const size_t size)
+	{
+		Dev_->write (reinterpret_cast<const char*> (data), size);
 	}
 }
 }
