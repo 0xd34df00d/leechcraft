@@ -42,17 +42,8 @@ set (SRCS
 	wrappers/shortcutproxywrapper.cpp
 	wrappers/pluginsmanagerwrapper.cpp
 	wrappers/tagsmanagerwrapper.cpp
+	third-party/qmetaobjectbuilder_48.cpp
 	)
-
-if (${QT_VERSION_MINOR} LESS 8)
-	set (SRCS ${SRCS} third-party/qmetaobjectbuilder.cpp)
-	set (HEADERS ${HEADERS} third-party/qmetaobjectbuilder.h)
-elseif (${QT_VERSION_MINOR} EQUAL 8)
-	set (SRCS ${SRCS} third-party/qmetaobjectbuilder_48.cpp)
-	set (HEADERS ${HEADERS} third-party/qmetaobjectbuilder_48.h)
-else ()
-	message (ERROR "Unsupported Qt version ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}, Qrosp cannot be built")
-endif ()
 
 add_library (leechcraft_qrosp SHARED
 	${COMPILED_TRANSLATIONS}
