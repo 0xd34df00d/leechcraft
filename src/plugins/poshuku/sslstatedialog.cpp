@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "sslstatedialog.h"
+#include <util/sys/extensionsdata.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "webpagesslwatcher.h"
@@ -70,6 +71,16 @@ namespace Poshuku
 			const auto insecureIdx = Ui_.TabWidget_->indexOf (Ui_.InsecureTab_);
 			Ui_.TabWidget_->removeTab (insecureIdx);
 		}
+		else
+			for (const auto& url : watcher->GetNonSslUrls ())
+			{
+				auto item = new QTreeWidgetItem ({ url.toString () });
+
+				const auto& urlExt = url.path ().section ('.', -1, -1);
+				item->setIcon (0, Util::ExtensionsData::Instance ().GetExtIcon (urlExt));
+
+				Ui_.InsecureList_->addTopLevelItem (item);
+			}
 
 		if (!iconName.isEmpty ())
 		{

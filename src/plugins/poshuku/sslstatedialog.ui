@@ -295,7 +295,16 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QListWidget" name="InsecureList_"/>
+        <widget class="QTreeWidget" name="InsecureList_">
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
+        </widget>
        </item>
       </layout>
      </widget>
