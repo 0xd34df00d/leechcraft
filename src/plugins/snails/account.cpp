@@ -34,7 +34,7 @@
 #include <QInputDialog>
 #include <QMutex>
 #include <QStandardItemModel>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "accountconfigdialog.h"
 #include "accountthread.h"
