@@ -46,13 +46,6 @@ uint qHash (IScript_ptr script)
 	return qHash (script.get ());
 }
 
-#if QT_VERSION < 0x040700
-uint qHash (const QUrl& url)
-{
-	return qHash (url.toEncoded ());
-}
-#endif
-
 namespace LeechCraft
 {
 namespace Aggregator
