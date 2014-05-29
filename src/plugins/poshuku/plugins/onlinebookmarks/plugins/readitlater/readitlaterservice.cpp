@@ -179,17 +179,10 @@ namespace ReadItLater
 	void ReadItLaterService::SendRequest (const QString& urlSting,
 			const QByteArray& payload, Request req)
 	{
-#if QT_VERSION < 0x040800
-		QUrl url (urlSting);
-		QNetworkRequest request (url);
-		QNetworkReply *reply = CoreProxy_->
-				GetNetworkAccessManager ()->post (request, payload);
-#else
 		QUrl url = QUrl::fromEncoded (urlSting.toUtf8 () + payload);
 		QNetworkRequest request (url);
 		QNetworkReply *reply = CoreProxy_->
 				GetNetworkAccessManager ()->get (request);
-#endif
 
 		Reply2Request_ [reply] = req;
 
