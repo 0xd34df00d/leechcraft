@@ -12,6 +12,7 @@ set (POTORCHU_SRCS
 	potorchu.cpp
 	visualfilter.cpp
 	viswidget.cpp
+	visscene.cpp
 	)
 
 #CreateTrs ("lmp_potorchu" "en;ru_RU" POTORCHU_COMPILED_TRANSLATIONS)
