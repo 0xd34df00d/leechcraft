@@ -96,6 +96,13 @@ namespace Otlozhu
 		Bar_->addAction (addTodo);
 		Ui_.TodoTree_->addAction (addTodo);
 
+		QAction *addChildTodo = new QAction (tr ("Add child task..."), this);
+		connect (addChildTodo,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAddChildTodoRequested ()));
+		Ui_.TodoTree_->addAction (addChildTodo);
+
 		QAction *removeTodo = new QAction (tr ("Remove task"), this);
 		removeTodo->setProperty ("ActionIcon", "list-remove");
 		removeTodo->setShortcut (Qt::Key_Delete);
@@ -221,8 +228,26 @@ namespace Otlozhu
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		auto item = dia.GetItem ();
+		const auto& item = dia.GetItem ();
 		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->AddItem (item);
+	}
+
+	void TodoTab::handleAddChildTodoRequested ()
+	{
+		const auto& curIdx = Ui_.TodoTree_->currentIndex ();
+		if (!curIdx.isValid () || curIdx.parent ().isValid ())
+			return;
+
+		AddTodoDialog dia;
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& selectedId = curIdx.data (StorageModel::Roles::ItemID).toString ();
+		const auto& item = dia.GetItem ();
+
+		const auto storage = Core::Instance ().GetTodoManager ()->GetTodoStorage ();
+		storage->AddItem (item);
+		storage->AddDependency (selectedId, item->GetID ());
 	}
 
 	void TodoTab::handleRemoveTodoRequested ()
