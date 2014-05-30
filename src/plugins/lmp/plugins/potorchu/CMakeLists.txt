@@ -33,6 +33,7 @@ target_link_libraries (leechcraft_lmp_potorchu
 	${GSTREAMER_INTERFACE_LIBRARY}
 	${GLIB2_LIBRARIES}
 	${LIBXML2_LIBRARIES}
+	projectM
 	)
 
 install (TARGETS leechcraft_lmp_potorchu DESTINATION ${LC_PLUGINS_DEST})

@@ -37,6 +37,8 @@
 typedef struct _GstPad GstPad;
 typedef struct _GstBuffer GstBuffer;
 
+class projectM;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -44,6 +46,7 @@ namespace LMP
 namespace Potorchu
 {
 	class VisWidget;
+	class VisScene;
 
 	class VisualFilter : public QObject
 					   , public IFilterElement
@@ -54,6 +57,7 @@ namespace Potorchu
 		const ILMPProxy_ptr LmpProxy_;
 
 		const std::shared_ptr<VisWidget> Widget_;
+		const std::shared_ptr<VisScene> Scene_;
 
 		GstElement * const Elem_;
 		GstElement * const Tee_;
@@ -62,6 +66,8 @@ namespace Potorchu
 		GstElement * const Converter_;
 		GstElement * const FakeSink_;
 		IPath *Path_;
+
+		std::shared_ptr<projectM> ProjectM_;
 	public:
 		VisualFilter (const QByteArray&, const ILMPProxy_ptr&);
 
@@ -71,9 +77,13 @@ namespace Potorchu
 	protected:
 		GstElement* GetElement () const;
 	private:
+		void InitProjectM ();
+
 		void HandleBuffer (GstBuffer*);
 		void SetVisualizer ();
 	private slots:
+		void updateFrame ();
+
 		void handlePrevVis ();
 		void handleNextVis ();
 	};

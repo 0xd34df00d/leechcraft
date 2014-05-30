@@ -31,8 +31,10 @@
 #include <QtDebug>
 #include <QWidget>
 #include <gst/gst.h>
+#include <libprojectM/projectM.hpp>
 #include <util/lmp/gstutil.h>
 #include "viswidget.h"
+#include "visscene.h"
 
 namespace LeechCraft
 {
@@ -44,6 +46,7 @@ namespace Potorchu
 	: EffectId_ { effectId }
 	, LmpProxy_ { proxy }
 	, Widget_ { new VisWidget }
+	, Scene_ { new VisScene }
 	, Elem_ { gst_bin_new (nullptr) }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
@@ -76,8 +79,19 @@ namespace Potorchu
 		gst_pad_link (teeProbePad, streamPad);
 		gst_object_unref (streamPad);
 
-		Widget_->resize (800, 600);
+		Widget_->resize (512, 512);
 		Widget_->show ();
+		Widget_->setScene (Scene_.get ());
+		Widget_->SetFps (60);
+
+		connect (Widget_.get (),
+				SIGNAL (redrawRequested ()),
+				Scene_.get (),
+				SLOT (update ()));
+		connect (Scene_.get (),
+				SIGNAL (redrawing ()),
+				this,
+				SLOT (updateFrame ()));
 		//proxy->GetGuiProxy ()->AddCurrentSongTab (tr ("Visualization"), Widget_.get ());
 
 		connect (Widget_.get (),
@@ -115,13 +129,68 @@ namespace Potorchu
 		return Elem_;
 	}
 
+	void VisualFilter::InitProjectM ()
+	{
+		/*
+    struct Settings {
+        int meshX;
+        int meshY;
+        int fps;
+        int textureSize;
+        int windowWidth;
+        int windowHeight;
+        std::string presetURL;
+        std::string titleFontURL;
+        std::string menuFontURL;
+        int smoothPresetDuration;
+        int presetDuration;
+        float beatSensitivity;
+        bool aspectCorrection;
+        float easterEgg;
+        bool shuffleEnabled;
+	bool softCutRatingsEnabled;
+    };
+	*/
+		projectM::Settings settings
+		{
+			32,
+			24,
+			60,
+			512,
+			512,
+			512,
+			"/usr/share/projectM/presets",
+			"/usr/share/fonts/droid/DroidSans.ttf",
+			"/usr/share/fonts/droid/DroidSans.ttf",
+			5,
+			15,
+			0,
+			false,
+			false,
+			true,
+			false
+		};
+		ProjectM_.reset (new projectM { settings });
+	}
+
 	void VisualFilter::HandleBuffer (GstBuffer *buffer)
 	{
-		qDebug () << Q_FUNC_INFO;
+		const auto samples = GST_BUFFER_SIZE (buffer) / sizeof (short) / 2;
+		const auto data = reinterpret_cast<short*> (GST_BUFFER_DATA (buffer));
+
+		ProjectM_->pcm ()->addPCM16Data (data, samples);
 	}
 
 	void VisualFilter::SetVisualizer ()
 	{
+	}
+
+	void VisualFilter::updateFrame ()
+	{
+		if (!ProjectM_)
+			InitProjectM ();
+
+		ProjectM_->renderFrame ();
 	}
 
 	void VisualFilter::handleNextVis ()
