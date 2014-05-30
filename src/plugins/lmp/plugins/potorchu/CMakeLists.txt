@@ -2,6 +2,9 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lmp_potorchu)
 include (InitLCPlugin OPTIONAL)
 
+set (QT_USE_QTOPENGL TRUE)
+include (${QT_USE_FILE})
+
 include_directories (${LMP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}

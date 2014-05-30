@@ -30,6 +30,8 @@
 #include "viswidget.h"
 #include <QVBoxLayout>
 #include <QMouseEvent>
+#include <QTimer>
+#include <QGLWidget>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -39,33 +41,23 @@ namespace LMP
 namespace Potorchu
 {
 	VisWidget::VisWidget (QWidget *parent)
-	: QWidget { parent }
+	: QGraphicsView { parent }
+	, Timer_ { new QTimer { this } }
 	{
+		connect (Timer_,
+				SIGNAL (timeout ()),
+				this,
+				SIGNAL (redrawRequested ()));
+
+		setViewport (new QGLWidget { QGLFormat { QGL::SampleBuffers } });
+		setViewportUpdateMode (QGraphicsView::FullViewportUpdate);
 	}
 
-	void VisWidget::EnsureWinId ()
+	void VisWidget::SetFps (int fps)
 	{
-		ensurePolished ();
-
-		WindowId_ = winId ();
-	}
-
-	WId VisWidget::GetVisWinId () const
-	{
-		return WindowId_;
-	}
-
-	bool VisWidget::event (QEvent *event)
-	{
-		if (event->type () == QEvent::WinIdChange)
-		{
-			WindowId_ = winId ();
-			qDebug () << Q_FUNC_INFO
-					<< "window ID changed"
-					<< WindowId_;
-		}
-
-		return QWidget::event (event);
+		Timer_->stop ();
+		Timer_->setInterval (1000.0 / fps);
+		Timer_->start ();
 	}
 
 	void VisWidget::mouseReleaseEvent (QMouseEvent *event)
