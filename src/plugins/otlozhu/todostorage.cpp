@@ -113,14 +113,7 @@ namespace Otlozhu
 
 	void TodoStorage::HandleUpdated (TodoItem_ptr item)
 	{
-		const int pos = FindItem (item->GetID ());
-		if (pos == -1)
-			return;
-
-		emit itemDiffGenerated (item->GetID (), item->DiffWith (Items_ [pos]));
-		Items_ [pos] = item;
-		emit itemUpdated (pos);
-		SaveAt (pos);
+		HandleUpdated (item, {});
 	}
 
 	void TodoStorage::RemoveItem (const QString& id)
@@ -152,6 +145,22 @@ namespace Otlozhu
 		for (int i = pos; i < GetNumItems (); ++i)
 			indexes << i;
 		SaveAt (indexes);
+	}
+
+	void TodoStorage::HandleUpdated (TodoItem_ptr item, const std::function<void ()>& preEmit)
+	{
+		const int pos = FindItem (item->GetID ());
+		if (pos == -1)
+			return;
+
+		emit itemDiffGenerated (item->GetID (), item->DiffWith (Items_ [pos]));
+		Items_ [pos] = item;
+
+		if (preEmit)
+			preEmit ();
+
+		emit itemUpdated (pos);
+		SaveAt (pos);
 	}
 
 	void TodoStorage::Load ()

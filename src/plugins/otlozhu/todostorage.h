@@ -61,6 +61,7 @@ namespace Otlozhu
 		void HandleUpdated (TodoItem_ptr);
 		void RemoveItem (const QString&);
 	private:
+		void HandleUpdated (TodoItem_ptr, const std::function<void ()>&);
 		void Load ();
 		void SaveAt (int);
 		void SaveAt (const QList<int>&);
