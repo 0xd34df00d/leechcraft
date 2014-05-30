@@ -183,12 +183,6 @@ namespace Util
 #endif
 	}
 
-	void RegExp::RegisterTypes ()
-	{
-		qRegisterMetaType<RegExp> ("Util::RegExp");
-		qRegisterMetaTypeStreamOperators<RegExp> ();
-	}
-
 	RegExp::RegExp (const QString& str, Qt::CaseSensitivity cs)
 #ifdef USE_PCRE
 	: Impl_ { new RegExpImpl { { str, cs } } }

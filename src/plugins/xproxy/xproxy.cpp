@@ -42,8 +42,6 @@ namespace XProxy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::RegExp::RegisterTypes ();
-
 		Util::InstallTranslator ("xproxy");
 
 		CoreProxy_ = proxy;
