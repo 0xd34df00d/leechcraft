@@ -104,8 +104,25 @@ namespace Otlozhu
 		if (pos == -1)
 			return;
 
+		for (int i = 0; i < Items_.size (); ++i)
+		{
+			const auto& item = Items_.at (i)->Clone ();
+			auto deps = item->GetDeps ();
+			const auto depIdx = deps.indexOf (id);
+			if (depIdx < 0)
+				continue;
+
+			deps.removeAt (depIdx);
+			item->SetDeps (deps);
+
+			HandleUpdated (item);
+
+			emit itemDepRemoved (i, depIdx);
+		}
+
 		emit itemRemoved (pos);
 		Items_.removeAt (pos);
+
 		QList<int> indexes;
 		for (int i = pos; i < GetNumItems (); ++i)
 			indexes << i;
