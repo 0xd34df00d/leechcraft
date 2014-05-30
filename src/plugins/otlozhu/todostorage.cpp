@@ -107,8 +107,11 @@ namespace Otlozhu
 		item = item->Clone ();
 		item->AddDep (depId);
 
-		HandleUpdated (item);
-		emit itemDepAdded (FindItem (itemId), item->GetDeps ().size () - 1);
+		HandleUpdated (item,
+				[this, itemId, item]
+				{
+					emit itemDepAdded (FindItem (itemId), item->GetDeps ().size () - 1);
+				});
 	}
 
 	void TodoStorage::HandleUpdated (TodoItem_ptr item)
@@ -133,9 +136,7 @@ namespace Otlozhu
 			deps.removeAt (depIdx);
 			item->SetDeps (deps);
 
-			HandleUpdated (item);
-
-			emit itemDepRemoved (i, depIdx);
+			HandleUpdated (item, [this, i, depIdx] { emit itemDepRemoved (i, depIdx); });
 		}
 
 		emit itemRemoved (pos);
