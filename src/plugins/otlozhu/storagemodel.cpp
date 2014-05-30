@@ -283,6 +283,15 @@ namespace Otlozhu
 					SIGNAL (itemRemoved (int)),
 					this,
 					SLOT (handleItemRemoved (int)));
+
+			connect (Storage_,
+					SIGNAL (itemDepAdded (int, int)),
+					this,
+					SLOT (handleItemDepAdded (int, int)));
+			connect (Storage_,
+					SIGNAL (itemDepRemoved (int, int)),
+					this,
+					SLOT (handleItemDepRemoved (int, int)));
 		}
 
 		reset ();
@@ -302,6 +311,20 @@ namespace Otlozhu
 	void StorageModel::handleItemRemoved (int idx)
 	{
 		beginRemoveRows ({}, idx, idx);
+		endRemoveRows ();
+	}
+
+	void StorageModel::handleItemDepAdded (int idx, int depIdx)
+	{
+		const auto& parent = index (idx, 0);
+		beginInsertRows (parent, depIdx, depIdx);
+		endInsertRows ();
+	}
+
+	void StorageModel::handleItemDepRemoved (int idx, int depIdx)
+	{
+		const auto& parent = index (idx, 0);
+		beginRemoveRows (parent, depIdx, depIdx);
 		endRemoveRows ();
 	}
 }

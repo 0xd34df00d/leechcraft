@@ -84,6 +84,9 @@ namespace Otlozhu
 		void handleItemAdded (int);
 		void handleItemUpdated (int);
 		void handleItemRemoved (int);
+
+		void handleItemDepAdded (int, int);
+		void handleItemDepRemoved (int, int);
 	};
 }
 }
