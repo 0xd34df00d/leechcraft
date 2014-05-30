@@ -153,6 +153,18 @@ namespace Util
 	};
 #endif
 
+	namespace
+	{
+		struct RegExpRegisterGuard
+		{
+			RegExpRegisterGuard ()
+			{
+				qRegisterMetaType<RegExp> ("Util::RegExp");
+				qRegisterMetaTypeStreamOperators<RegExp> ();
+			}
+		} Guard;
+	}
+
 	struct RegExpImpl
 	{
 #if USE_PCRE
