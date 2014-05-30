@@ -30,6 +30,7 @@
 #include "todostorage.h"
 #include <algorithm>
 #include <QCoreApplication>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -84,6 +85,30 @@ namespace Otlozhu
 		std::transform (Items_.begin (), Items_.end (), std::back_inserter (result),
 				[] (decltype (Items_.front ()) item) { return item->Clone (); });
 		return result;
+	}
+
+	void TodoStorage::AddDependency (const QString& itemId, const QString& depId)
+	{
+		if (depId.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot add an empty dep ID";
+		}
+
+		auto item = GetItemByID (itemId);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot find item"
+					<< itemId;
+			return;
+		}
+
+		item = item->Clone ();
+		item->AddDep (depId);
+
+		HandleUpdated (item);
+		emit itemDepAdded (FindItem (itemId), item->GetDeps ().size () - 1);
 	}
 
 	void TodoStorage::HandleUpdated (TodoItem_ptr item)
