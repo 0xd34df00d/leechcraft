@@ -45,6 +45,7 @@ namespace Util
 		std::shared_ptr<RegExpImpl> Impl_;
 	public:
 		static bool IsFast ();
+		static void RegisterTypes ();
 
 		RegExp () = default;
 		RegExp (const QString&, Qt::CaseSensitivity);
