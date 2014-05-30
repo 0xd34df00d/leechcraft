@@ -170,7 +170,21 @@ namespace Otlozhu
 		case Columns::Created:
 			return item->GetCreatedDate ();
 		case Columns::Percentage:
-			return item->GetPercentage ();
+		{
+			if (const auto perc = item->GetPercentage ())
+				return perc;
+
+			const auto& deps = item->GetDeps ();
+			if (deps.isEmpty ())
+				return 0;
+
+			const auto res = std::accumulate (deps.begin (), deps.end (), 0.0,
+					[this] (double val, const QString& id)
+					{
+						return val + Storage_->GetItemByID (id)->GetPercentage ();
+					});
+			return std::round (res / deps.size ());
+		}
 		default:
 			return QVariant ();
 		}
