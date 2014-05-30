@@ -32,6 +32,7 @@
 #include "sllconfig.h"
 #include <memory>
 #include <QString>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -55,3 +56,5 @@ namespace Util
 	};
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Util::RegExp);
