@@ -57,14 +57,21 @@ namespace Otlozhu
 
 	QModelIndex StorageModel::index (int row, int column, const QModelIndex& parent) const
 	{
-		if (parent.isValid ())
-			return QModelIndex ();
-		return createIndex (row, column);
+		if (!parent.isValid ())
+			return createIndex (row, column);
+
+		if (parent.parent ().isValid ())
+			return {};
+
+		return createIndex (row, column, parent.row ());
 	}
 
-	QModelIndex StorageModel::parent (const QModelIndex&) const
+	QModelIndex StorageModel::parent (const QModelIndex& index) const
 	{
-		return QModelIndex ();
+		if (!index.internalId ())
+			return {};
+
+		return createIndex (index.internalId (), 0);
 	}
 
 	int StorageModel::columnCount (const QModelIndex&) const
@@ -74,7 +81,14 @@ namespace Otlozhu
 
 	int StorageModel::rowCount (const QModelIndex& parent) const
 	{
-		return parent.isValid () ? 0 : (Storage_ ? Storage_->GetNumItems () : 0);
+		if (!parent.isValid ())
+			return Storage_ ? Storage_->GetNumItems () : 0;
+
+		if (parent.parent ().isValid ())
+			return 0;
+
+		const auto& item = GetItemForIndex (parent);
+		return item ? item->GetDeps ().size () : 0;
 	}
 
 	Qt::ItemFlags StorageModel::flags (const QModelIndex& index) const
@@ -104,9 +118,18 @@ namespace Otlozhu
 	QVariant StorageModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
-			return QVariant ();
+			return {};
 
-		const auto item = Storage_->GetItemAt (index.row ());
+		const auto& item = GetItemForIndex (index);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown item for index"
+					<< index
+					<< index.parent ();
+			return {};
+		}
+
 		if (role == Roles::ItemID)
 			return item->GetID ();
 		else if (role == Roles::ItemTitle)
@@ -158,7 +181,7 @@ namespace Otlozhu
 		if (!index.isValid ())
 			return false;
 
-		auto item = Storage_->GetItemAt (index.row ());
+		auto item = Storage_->GetItemByID (index.data (Roles::ItemID).toString ());
 		bool updated = false;
 
 		if (role == Roles::ItemProgress)
@@ -209,6 +232,35 @@ namespace Otlozhu
 		return updated;
 	}
 
+	TodoItem_ptr StorageModel::GetItemForIndex (const QModelIndex& index) const
+	{
+		const auto& parent = index.parent ();
+		if (!parent.isValid ())
+			return Storage_->GetItemAt (index.row ());
+
+		const auto& parentId = data (parent, Roles::ItemID).toString ();
+		const auto& parentItem = Storage_->GetItemByID (parentId);
+		if (!parentItem)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get item for parent ID"
+					<< parentId;
+			return {};
+		}
+
+		const auto& itemId = parentItem->GetDeps ().value (index.row ());
+		if (itemId.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get dep ID for dep"
+					<< index.row ()
+					<< parentItem->GetDeps ();
+			return {};
+		}
+
+		return Storage_->GetItemByID (itemId);
+	}
+
 	void StorageModel::SetStorage (TodoStorage *storage)
 	{
 		if (Storage_)
@@ -238,7 +290,7 @@ namespace Otlozhu
 
 	void StorageModel::handleItemAdded (int idx)
 	{
-		beginInsertRows (QModelIndex (), idx, idx);
+		beginInsertRows ({}, idx, idx);
 		endInsertRows ();
 	}
 
@@ -249,7 +301,7 @@ namespace Otlozhu
 
 	void StorageModel::handleItemRemoved (int idx)
 	{
-		beginRemoveRows (QModelIndex (), idx, idx);
+		beginRemoveRows ({}, idx, idx);
 		endRemoveRows ();
 	}
 }
