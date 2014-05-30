@@ -57,4 +57,7 @@ namespace Util
 }
 }
 
+UTIL_SLL_API QDataStream& operator<< (QDataStream&, const LeechCraft::Util::RegExp&);
+UTIL_SLL_API QDataStream& operator>> (QDataStream&, LeechCraft::Util::RegExp&);
+
 Q_DECLARE_METATYPE (LeechCraft::Util::RegExp);

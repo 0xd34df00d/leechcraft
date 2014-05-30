@@ -217,3 +217,33 @@ namespace Util
 	}
 }
 }
+
+QDataStream& operator<< (QDataStream& out, const LeechCraft::Util::RegExp& rx)
+{
+	out << static_cast<quint8> (1);
+	out << rx.GetPattern ()
+		<< static_cast<quint8> (rx.GetCaseSensitivity ());
+	return out;
+}
+
+QDataStream& operator>> (QDataStream& in, LeechCraft::Util::RegExp& rx)
+{
+	quint8 version = 0;
+	in >> version;
+	if (version != 1)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "unknown version"
+				<< version;
+		return in;
+	}
+
+	QString pattern;
+	quint8 cs;
+	in >> pattern
+		>> cs;
+
+	rx = LeechCraft::Util::RegExp { pattern, static_cast<Qt::CaseSensitivity> (cs) };
+
+	return in;
+}
