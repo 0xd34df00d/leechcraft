@@ -289,6 +289,10 @@ namespace MTPSync
 						localPath.toUtf8 ().constData (), track,
 						TransferCallback, cbData);
 				delete cbData;
+
+				if (!res)
+					AppendAlbum (device, track, info);
+
 				return { res, device, localPath, track, info };
 			});
 		watcher->setFuture (future);
@@ -563,8 +567,6 @@ namespace MTPSync
 			LIBMTP_Dump_Errorstack (info.Device_);
 			LIBMTP_Clear_Errorstack (info.Device_);
 		}
-
-		AppendAlbum (info.Device_, info.Track_, info.Info_);
 
 		LIBMTP_destroy_track_t (info.Track_);
 
