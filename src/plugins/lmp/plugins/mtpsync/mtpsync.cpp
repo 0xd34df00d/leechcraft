@@ -255,6 +255,8 @@ namespace MTPSync
 			return;
 		}
 
+		IsUploading_ = true;
+
 		const auto id = storage->id;
 		const auto& info = OrigInfos_.take (origPath);
 
@@ -569,6 +571,8 @@ namespace MTPSync
 
 		LIBMTP_destroy_track_t (info.Track_);
 
+		IsUploading_ = false;
+
 		emit uploadFinished (info.LocalPath_, QFile::NoError, {});
 	}
 
@@ -576,6 +580,16 @@ namespace MTPSync
 	{
 		if (IsPolling_)
 			return;
+
+		if (IsUploading_)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "uploading in progress, not polling";
+			QTimer::singleShot (120000,
+					this,
+					SLOT (pollDevices ()));
+			return;
+		}
 
 		auto watcher = new QFutureWatcher<USBDevInfos_t> ();
 		connect (watcher,
