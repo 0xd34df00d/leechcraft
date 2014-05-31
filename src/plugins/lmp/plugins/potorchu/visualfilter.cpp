@@ -178,7 +178,8 @@ namespace Potorchu
 		const auto samples = GST_BUFFER_SIZE (buffer) / sizeof (short) / 2;
 		const auto data = reinterpret_cast<short*> (GST_BUFFER_DATA (buffer));
 
-		ProjectM_->pcm ()->addPCM16Data (data, samples);
+		if (ProjectM_)
+			ProjectM_->pcm ()->addPCM16Data (data, samples);
 	}
 
 	void VisualFilter::SetVisualizer ()
