@@ -34,6 +34,7 @@
 #include <util/tags/tagslineedit.h>
 #include <util/tags/tagscompleter.h>
 #include "storagemodel.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -92,7 +93,8 @@ namespace Otlozhu
 	{
 		QStyleOptionViewItem option (thatOption);
 
-		if (index.data (StorageModel::Roles::ItemProgress).toInt () == 100)
+		if (index.data (StorageModel::Roles::ItemProgress).toInt () == 100 &&
+				XmlSettingsManager::Instance ().property ("DoneStrikeOut").toBool ())
 			option.font.setStrikeOut (true);
 
 		switch (index.column ())
