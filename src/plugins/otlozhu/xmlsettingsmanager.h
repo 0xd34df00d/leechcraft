@@ -29,74 +29,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-
-#ifndef DISABLE_SYNC
-#include <interfaces/isyncable.h>
-#endif
-
-#include <interfaces/ientityhandler.h>
-#include <interfaces/ihavesettings.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Otlozhu
 {
-	class SyncProxy;
-
-	class Plugin : public QObject
-					, public IInfo
-					, public IHaveTabs
-					, public IHaveSettings
-					, public IEntityHandler
-#ifndef DISABLE_SYNC
-					, public ISyncable
-#endif
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
-#ifndef DISABLE_SYNC
-		Q_INTERFACES (ISyncable)
-#endif
 
-		TabClassInfo TCTodo_;
-
-		Util::XmlSettingsDialog_ptr XSD_;
-
-#ifndef DISABLE_SYNC
-		SyncProxy *SyncProxy_;
-#endif
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-#ifndef DISABLE_SYNC
-		ISyncProxy* GetSyncProxy ();
-#endif
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-
-		void gotEntity (const LeechCraft::Entity&);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
