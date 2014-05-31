@@ -113,7 +113,9 @@ namespace LMP
 
 		AlbumArtManager* GetAlbumArtManager () const;
 		LocalCollectionStorage* GetStorage () const;
-		LocalCollectionModel* GetCollectionModel () const;
+		QAbstractItemModel* GetCollectionModel () const;
+
+		QVariant GetTrackData (int trackId, LocalCollectionModel::Role) const;
 
 		void Clear ();
 

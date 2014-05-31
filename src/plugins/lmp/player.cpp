@@ -676,21 +676,19 @@ namespace LMP
 				return { source, info };
 			}
 
-			const auto model = collection->GetCollectionModel ();
-
-			info.Artist_ = model->GetTrackData (trackId,
+			info.Artist_ = collection->GetTrackData (trackId,
 					LocalCollectionModel::Role::ArtistName).toString ();
-			info.Album_ = model->GetTrackData (trackId,
+			info.Album_ = collection->GetTrackData (trackId,
 					LocalCollectionModel::Role::AlbumName).toString ();
-			info.Title_ = model->GetTrackData (trackId,
+			info.Title_ = collection->GetTrackData (trackId,
 					LocalCollectionModel::Role::TrackTitle).toString ();
-			info.Genres_ = model->GetTrackData (trackId,
+			info.Genres_ = collection->GetTrackData (trackId,
 					LocalCollectionModel::Role::TrackGenres).toStringList ();
-			info.Length_ = model->GetTrackData (trackId,
+			info.Length_ = collection->GetTrackData (trackId,
 					LocalCollectionModel::Role::TrackLength).toInt ();
-			info.Year_ = model->GetTrackData (trackId,
+			info.Year_ = collection->GetTrackData (trackId,
 					LocalCollectionModel::Role::AlbumYear).toInt ();
-			info.TrackNumber_ = model->GetTrackData (trackId,
+			info.TrackNumber_ = collection->GetTrackData (trackId,
 					LocalCollectionModel::Role::TrackNumber).toInt ();
 
 			return { source, info };

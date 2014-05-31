@@ -112,9 +112,14 @@ namespace LMP
 		return Storage_;
 	}
 
-	LocalCollectionModel* LocalCollection::GetCollectionModel () const
+	QAbstractItemModel* LocalCollection::GetCollectionModel () const
 	{
 		return CollectionModel_;
+	}
+
+	QVariant LocalCollection::GetTrackData (int trackId, LocalCollectionModel::Role role) const
+	{
+		return CollectionModel_->GetTrackData (trackId, role);
 	}
 
 	void LocalCollection::Clear ()
