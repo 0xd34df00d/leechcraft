@@ -33,6 +33,7 @@
 #include <QIcon>
 #include <QTimer>
 #include <QFileInfo>
+#include <QElapsedTimer>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QBuffer>
@@ -189,17 +190,17 @@ namespace MTPSync
 		struct CallbackData
 		{
 			Plugin *Plugin_;
-			mutable uint64_t PrevSent_;
+			mutable QElapsedTimer Timer_;
 		};
 
 		int TransferCallback (uint64_t sent, uint64_t total, const void *rawData)
 		{
 			auto data = static_cast<const CallbackData*> (rawData);
 
-			if (sent - data->PrevSent_ > total / 200)
+			if (data->Timer_.elapsed () > 100)
 			{
-				data->PrevSent_ = sent;
 				data->Plugin_->HandleTransfer (sent, total);
+				data->Timer_.restart ();
 			}
 
 			return 0;
@@ -282,7 +283,8 @@ namespace MTPSync
 				SLOT (handleUploadFinished ()));
 		const auto future = QtConcurrent::run ([=] () -> UploadInfo
 			{
-				const auto cbData = new CallbackData { this, 0 };
+				const auto cbData = new CallbackData { this, {} };
+				cbData->Timer_.start ();
 				const auto res = LIBMTP_Send_Track_From_File (device,
 						localPath.toUtf8 ().constData (), track,
 						TransferCallback, cbData);
