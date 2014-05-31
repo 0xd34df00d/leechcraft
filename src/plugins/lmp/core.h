@@ -32,7 +32,6 @@
 #include <boost/optional.hpp>
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
-#include "collectionsmanager.h"
 
 class QUrl;
 

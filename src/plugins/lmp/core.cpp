@@ -28,8 +28,8 @@
  **********************************************************************/
 
 #include "core.h"
-#include <QStandardItemModel>
 #include <interfaces/iplugin2.h>
+#include "collectionsmanager.h"
 #include "localfileresolver.h"
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
