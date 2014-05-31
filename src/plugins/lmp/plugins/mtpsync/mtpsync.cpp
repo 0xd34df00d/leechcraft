@@ -239,7 +239,6 @@ namespace MTPSync
 
 		while (storage)
 		{
-			qDebug () << "st" << storage->id;
 			if (QByteArray::number (storage->id) == storageId)
 				break;
 			storage = storage->next;
