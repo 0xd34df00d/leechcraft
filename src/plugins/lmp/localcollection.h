@@ -37,11 +37,13 @@
 #include "interfaces/lmp/collectiontypes.h"
 #include "interfaces/lmp/ilocalcollection.h"
 #include "mediainfo.h"
+#include "localcollectionmodel.h"
 
 class QStandardItemModel;
 class QStandardItem;
 class QAbstractItemModel;
 class QModelIndex;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -65,6 +67,7 @@ namespace LMP
 
 		LocalCollectionStorage * const Storage_;
 		LocalCollectionModel * const CollectionModel_;
+		QSortFilterProxyModel * const Sorter_;
 		LocalCollectionWatcher * const FilesWatcher_;
 
 		AlbumArtManager * const AlbumArtMgr_;

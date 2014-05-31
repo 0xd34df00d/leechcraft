@@ -47,6 +47,7 @@
 #include "xmlsettingsmanager.h"
 #include "localcollectionwatcher.h"
 #include "localcollectionmodel.h"
+#include "collectionsortermodel.h"
 
 namespace LeechCraft
 {
@@ -57,6 +58,7 @@ namespace LMP
 	, IsReady_ (false)
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new LocalCollectionModel (this))
+	, Sorter_ (new CollectionSorterModel (this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
@@ -90,6 +92,10 @@ namespace LMP
 				SIGNAL (rootPathsChanged (QStringList)),
 				this,
 				SLOT (saveRootPaths ()));
+
+		Sorter_->setSourceModel (CollectionModel_);
+		Sorter_->setDynamicSortFilter (true);
+		Sorter_->sort (0);
 	}
 
 	void LocalCollection::FinalizeInit ()
@@ -114,7 +120,7 @@ namespace LMP
 
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
 	{
-		return CollectionModel_;
+		return Sorter_;
 	}
 
 	QVariant LocalCollection::GetTrackData (int trackId, LocalCollectionModel::Role role) const
