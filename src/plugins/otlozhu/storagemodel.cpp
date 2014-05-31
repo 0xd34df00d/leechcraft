@@ -130,23 +130,28 @@ namespace Otlozhu
 			return {};
 		}
 
-		if (role == Roles::ItemID)
+		switch (role)
+		{
+		case Roles::ItemID:
 			return item->GetID ();
-		else if (role == Roles::ItemTitle)
+		case Roles::ItemTitle:
 			return item->GetTitle ();
-		else if (role == Roles::ItemTags)
+		case Roles::ItemTags:
 			return item->GetTagIDs ();
-		else if (role == Roles::ItemProgress)
+		case Roles::ItemProgress:
 			return item->GetPercentage ();
-		else if (role == Roles::ItemComment)
+		case Roles::ItemComment:
 			return item->GetComment ();
-		else if (role == Roles::ItemDueDate)
+		case Roles::ItemDueDate:
 			return item->GetDueDate ();
-		else if (role == Qt::ToolTipRole)
+		case Qt::ToolTipRole:
 			return MakeTooltip (item);
-		else if (role != Qt::DisplayRole &&
-					role != Qt::EditRole)
-			return QVariant ();
+		case Qt::DisplayRole:
+		case Qt::EditRole:
+			break;
+		default:
+			return {};
+		}
 
 		switch (index.column ())
 		{
