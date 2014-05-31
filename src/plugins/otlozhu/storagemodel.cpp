@@ -28,10 +28,13 @@
  **********************************************************************/
 
 #include "storagemodel.h"
+#include <QApplication>
+#include <QPalette>
 #include <QtDebug>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "todostorage.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -149,6 +152,16 @@ namespace Otlozhu
 		case Qt::DisplayRole:
 		case Qt::EditRole:
 			break;
+		case Qt::ForegroundRole:
+		{
+			if (item->GetPercentage () != 100 ||
+					!XmlSettingsManager::Instance ().property ("DoneGreyOut").toBool ())
+				return {};
+
+			auto brush = QApplication::palette ().foreground ();
+			brush.setColor (brush.color ().lighter ());
+			return brush;
+		}
 		default:
 			return {};
 		}
