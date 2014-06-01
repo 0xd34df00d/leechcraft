@@ -32,20 +32,29 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaveshortcuts.h>
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Eleeminator
 {
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
+				 , public IHaveShortcuts
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (IInfo IHaveTabs IHaveShortcuts)
 
 		ICoreProxy_ptr Proxy_;
 		TabClassInfo TermTabTC_;
+
+		Util::ShortcutManager *ShortcutMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -57,6 +66,9 @@ namespace Eleeminator
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void changeTabName (QWidget*, const QString&);

@@ -31,6 +31,8 @@
 #include <QIcon>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/shortcuts/shortcutmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "termtab.h"
 
 namespace LeechCraft
@@ -40,6 +42,9 @@ namespace Eleeminator
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		ShortcutMgr_ = new Util::ShortcutManager { proxy };
+		ShortcutMgr_->SetObject (this);
 
 		Util::InstallTranslator ("eleeminator");
 
@@ -105,6 +110,16 @@ namespace Eleeminator
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tc;
+	}
+
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return ShortcutMgr_->GetActionInfo ();
+	}
+
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	{
+		ShortcutMgr_->SetShortcut (id, sequences);
 	}
 }
 }
