@@ -30,10 +30,12 @@
 #pragma once
 
 #include <QByteArray>
+#include <QUrl>
 #include <QtPlugin>
 #include "structures.h"
 
 class QNetworkReply;
+
 struct EntityTestHandleResult;
 
 /** @brief Common interface for all the downloaders.
@@ -153,3 +155,4 @@ public:
 Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");
 
 Q_DECLARE_METATYPE (QNetworkReply*);
+Q_DECLARE_METATYPE (QList<QUrl>);
