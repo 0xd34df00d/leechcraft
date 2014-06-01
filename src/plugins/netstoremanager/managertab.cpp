@@ -639,7 +639,6 @@ namespace NetStoreManager
 
 	void ManagerTab::handleListingUpdated (const QByteArray& parentId)
 	{
-		qDebug () << LastParentID_ << parentId;
 		if (LastParentID_ == parentId || parentId.isEmpty ())
 			FillListModel ();
 	}
