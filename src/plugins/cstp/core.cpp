@@ -165,9 +165,9 @@ namespace CSTP
 		}
 	}
 
-	int Core::AddTask (Entity& e)
+	int Core::AddTask (const Entity& e)
 	{
-		const QUrl entity = e.Entity_.toUrl ();
+		auto url = e.Entity_.toUrl ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 		const auto& tags = e.Additional_ [" Tags"].toStringList ();
 
@@ -176,42 +176,39 @@ namespace CSTP
 		const auto& file = MakeFilename (e);
 
 		if (rep)
-		{
 			return AddTask (rep,
 					dir,
 					file,
 					QString (),
 					tags,
 					e.Parameters_);
-		}
-		else
+
+		AddTask::Task task
 		{
-			if (e.Parameters_ & LeechCraft::FromUserInitiated &&
-					e.Location_.isEmpty ())
-			{
-				CSTP::AddTask at (entity, e.Location_);
-				if (at.exec () == QDialog::Rejected)
-					return -1;
+			url,
+			dir,
+			file,
+			{}
+		};
 
-				AddTask::Task task = at.GetTask ();
+		if (e.Parameters_ & LeechCraft::FromUserInitiated &&
+				e.Location_.isEmpty ())
+		{
+			CSTP::AddTask at (url, e.Location_);
+			if (at.exec () == QDialog::Rejected)
+				return -1;
 
-				return AddTask (task.URL_,
-						task.LocalPath_,
-						task.Filename_,
-						task.Comment_,
-						tags,
-						e.Additional_,
-						e.Parameters_);
-			}
-			else if (!dir.isEmpty ())
-				return AddTask (entity,
-						dir,
-						file,
-						QString (),
-						tags,
-						e.Additional_,
-						e.Parameters_);
+			task = at.GetTask ();
 		}
+
+		if (!dir.isEmpty ())
+			return AddTask (task.URL_,
+					task.LocalPath_,
+					task.Filename_,
+					task.Comment_,
+					tags,
+					e.Additional_,
+					e.Parameters_);
 
 		return -1;
 	}
