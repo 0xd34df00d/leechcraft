@@ -44,6 +44,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/idownload.h>
 #include <util/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
@@ -61,8 +62,6 @@ extern "C"
 		static const int LC_FILENAME_MAX = NAME_MAX;
 	#endif
 }
-
-Q_DECLARE_METATYPE (QNetworkReply*);
 
 namespace LeechCraft
 {

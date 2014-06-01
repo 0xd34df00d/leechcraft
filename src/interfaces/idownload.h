@@ -27,12 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_IDOWNLOAD_H
-#define INTERFACES_IDOWNLOAD_H
+#pragma once
+
 #include <QByteArray>
 #include <QtPlugin>
 #include "structures.h"
 
+class QNetworkReply;
 struct EntityTestHandleResult;
 
 /** @brief Common interface for all the downloaders.
@@ -151,5 +152,4 @@ public:
 
 Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");
 
-#endif
-
+Q_DECLARE_METATYPE (QNetworkReply*);
