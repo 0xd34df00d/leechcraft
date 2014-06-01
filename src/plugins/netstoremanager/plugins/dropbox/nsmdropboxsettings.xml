@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Behavior" />
+		<item type="checkbox" property="AutoShareOnUrlRequest" default="false">
+			<label value="Share item automatically on url request" />
+		</item>
+	</page>
+</settings>

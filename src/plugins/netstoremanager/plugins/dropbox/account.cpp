@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -43,7 +43,7 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-namespace GoogleDrive
+namespace DBox
 {
 	Account::Account (const QString& name, QObject *parentPlugin)
 	: QObject (parentPlugin)
@@ -53,21 +53,20 @@ namespace GoogleDrive
 	, DriveManager_ (new DriveManager (this, this))
 	{
 		connect (DriveManager_,
-				SIGNAL (gotFiles (const QList<DriveItem>&)),
+				SIGNAL (gotFiles (QList<DBoxItem>)),
 				this,
-				SLOT (handleFileList (const QList<DriveItem>&)));
+				SLOT (handleFileList (QList<DBoxItem>)));
 		connect (DriveManager_,
-				SIGNAL (gotSharedFileId (const QString&)),
+				SIGNAL (gotSharedFileUrl (QUrl, QDateTime)),
 				this,
-				SLOT (handleSharedFileId (const QString&)));
+				SLOT (handleSharedFileUrl (QUrl, QDateTime)));
 		connect (DriveManager_,
-				SIGNAL (gotNewItem (DriveItem)),
+				SIGNAL (gotNewItem (DBoxItem)),
 				this,
-				SLOT (handleGotNewItem (DriveItem)));
-		connect (DriveManager_,
-				SIGNAL (gotChanges (QList<DriveChanges>)),
-				this,
-				SLOT (handleGotChanges (QList<DriveChanges>)));
+				SLOT (handleGotNewItem (DBoxItem)));
+
+		if (UserID_.isEmpty ())
+			DriveManager_->RequestUserId ();
 	}
 
 	QObject* Account::GetQObject ()
@@ -82,7 +81,7 @@ namespace GoogleDrive
 
 	QByteArray Account::GetUniqueID () const
 	{
-		return ("NetStoreManager.GoogleDrive_" + Name_).toUtf8 ();
+		return ("NetStoreManager.DBox_" + Name_).toUtf8 ();
 	}
 
 	AccountFeatures Account::GetAccountFeatures () const
@@ -130,7 +129,7 @@ namespace GoogleDrive
 
 	ListingOps Account::GetListingOps () const
 	{
-		return ListingOp::Delete | ListingOp::TrashSupporting | ListingOp::DirectorySupport;
+		return ListingOp::Delete | ListingOp::DirectorySupport;
 	}
 
 	HashAlgorithm Account::GetCheckSumAlgorithm () const
@@ -145,7 +144,51 @@ namespace GoogleDrive
 
 	void Account::RefreshChildren (const QByteArray& parentId)
 	{
-		emit listingUpdated (parentId);
+		DriveManager_->RefreshListing (parentId);
+	}
+
+	void Account::RequestUrl (const QByteArray& id)
+	{
+		if (id.isNull ())
+			return;
+
+		const bool directLinkAvailable = id.startsWith ("/Public");
+		if (directLinkAvailable)
+		{
+			//Remove /Public from second params
+			emit gotFileUrl (QUrl (QString ("https://dl.dropbox.com/u/%1/%2")
+					.arg (UserID_, QString (id).remove ("/Public/"))), id);
+			return;
+		}
+
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		QMessageBox mbox (QMessageBox::Question,
+				tr ("Share item"),
+				tr ("Direct links available only for files in Public folder."
+						" What type of link do you want?"),
+				QMessageBox::Cancel,
+				rootWM->GetPreferredWindow());
+
+		QPushButton dropboxShareLink (tr ("DropBox share link"));
+		QPushButton dropboxPreviewLink (tr ("DropBox preview link"));
+		mbox.setDefaultButton (QMessageBox::Cancel);
+
+		mbox.addButton (&dropboxShareLink, QMessageBox::YesRole);
+		mbox.addButton (&dropboxPreviewLink, QMessageBox::AcceptRole);
+
+		mbox.exec ();
+
+		if (mbox.clickedButton () == &dropboxShareLink)
+			DriveManager_->ShareEntry (id, ShareType::Share);
+		else if (mbox.clickedButton () == &dropboxPreviewLink)
+			DriveManager_->ShareEntry (id, ShareType::Preview);
+	}
+
+	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)
+	{
+		if (name.isEmpty ())
+			return;
+		DriveManager_->CreateDirectory (name, parentId);
 	}
 
 	void Account::Delete (const QList<QByteArray>& ids, bool ask)
@@ -169,87 +212,43 @@ namespace GoogleDrive
 			DriveManager_->RemoveEntry (id);
 	}
 
-	void Account::MoveToTrash (const QList<QByteArray>& ids)
-	{
-		for (const auto& id : ids)
-			DriveManager_->MoveEntryToTrash (id);
-	}
-
-	void Account::RestoreFromTrash (const QList<QByteArray>& ids)
-	{
-		for (const auto& id : ids)
-			DriveManager_->RestoreEntryFromTrash (id);
-	}
-
-	void Account::Copy (const QList<QByteArray>& ids,
-			const QByteArray& newParentId)
+	void Account::Copy (const QList<QByteArray>& ids, const QByteArray& newParentId)
 	{
 		for (const auto& id : ids)
 			DriveManager_->Copy (id, newParentId);
 	}
 
-	void Account::Move (const QList<QByteArray>& ids,
-			const QByteArray& newParentId)
+	void Account::Move (const QList<QByteArray>& ids, const QByteArray& newParentId)
 	{
 		for (const auto& id : ids)
 			DriveManager_->Move (id, newParentId);
 	}
 
-	void Account::RequestUrl (const QByteArray& id)
+	void Account::MoveToTrash (const QList<QByteArray>&)
 	{
-		if (id.isNull ())
-			return;
-
-		if (!XmlSettingsManager::Instance ().property ("AutoShareOnUrlRequest").toBool ())
-		{
-			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-			QMessageBox mbox (QMessageBox::Question,
-					tr ("Share item"),
-					tr ("The item needs to be shared to obtain the URL. Do you want to share it?"),
-					QMessageBox::Yes | QMessageBox::No,
-					rootWM->GetPreferredWindow());
-			mbox.setDefaultButton (QMessageBox::Yes);
-
-			QPushButton always (tr ("Always"));
-			mbox.addButton (&always, QMessageBox::AcceptRole);
-
-			if (mbox.exec () == QMessageBox::No)
-				return;
-			else if (mbox.clickedButton () == &always)
-				XmlSettingsManager::Instance ().setProperty ("AutoShareOnUrlRequest", true);
-		}
-
-		DriveManager_->ShareEntry (id);
 	}
 
-	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)
+	void Account::RestoreFromTrash (const QList<QByteArray>&)
 	{
-		if (name.isEmpty ())
-			return;
-		DriveManager_->CreateDirectory (name, parentId);
 	}
 
-	void Account::Rename (const QByteArray& id, const QString& newName)
+	void Account::Rename (const QByteArray&, const QString&)
 	{
-		if (id.isEmpty ())
-			return;
-		DriveManager_->Rename (id, newName);
 	}
 
 	void Account::RequestChanges ()
 	{
-		DriveManager_->RequestFileChanges (XmlSettingsManager::Instance ()
-				.Property ("LastChangesId", 0).toLongLong ());
 	}
 
-	QByteArray Account::Serialize ()
+	QByteArray Account::Serialize () const
 	{
 		QByteArray result;
 		QDataStream str (&result, QIODevice::WriteOnly);
 		str << static_cast<quint8> (1)
 				<< Name_
 				<< Trusted_
-				<< RefreshToken_;
+				<< UserID_
+				<< AccessToken_;
 		return result;
 	}
 
@@ -271,7 +270,8 @@ namespace GoogleDrive
 		str >> name;
 		Account_ptr acc (new Account (name, parentPlugin));
 		str >> acc->Trusted_
-				>> acc->RefreshToken_;
+				>> acc->UserID_
+				>> acc->AccessToken_;
 		return acc;
 	}
 
@@ -290,14 +290,14 @@ namespace GoogleDrive
 		AccessToken_ = token;
 	}
 
-	void Account::SetRefreshToken (const QString& token)
+	QString Account::GetAccessToken () const
 	{
-		RefreshToken_ = token;
+		return AccessToken_;
 	}
 
-	QString Account::GetRefreshToken () const
+	void Account::SetUserID (const QString& uid)
 	{
-		return RefreshToken_;
+		UserID_ = uid;
 	}
 
 	DriveManager* Account::GetDriveManager () const
@@ -307,33 +307,24 @@ namespace GoogleDrive
 
 	namespace
 	{
-		StorageItem CreateItem (const DriveItem& item)
+		StorageItem CreateItem (const DBoxItem& item)
 		{
 			StorageItem storageItem;
 			storageItem.ID_ = item.Id_.toUtf8 ();
-			storageItem.ParentID_ = item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ();
+			storageItem.ParentID_ = item.ParentID_.toUtf8 ();
 			storageItem.Name_ = item.Name_;
 			storageItem.Size_ = item.FileSize_;
 			storageItem.ModifyDate_ = item.ModifiedDate_;
-			storageItem.Hash_ = item.Md5_.toUtf8 ();
-			storageItem.HashType_ = HashAlgorithm::Md5;
 			storageItem.IsDirectory_ = item.IsFolder_;
-			storageItem.IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
-			storageItem.MimeType_ = item.Mime_;
-			storageItem.Url_ = item.DownloadUrl_;
-			storageItem.ShareUrl_ = item.ShareUrl_;
-			storageItem.Shared_ = item.Shared_;
-			for (const auto& key : item.ExportLinks_.keys ())
-			{
-				const QString mime = item.ExportLinks_.value (key);
-				storageItem.ExportLinks [key] = qMakePair (mime, key.queryItems ().last ().second);
-			}
+			storageItem.IsTrashed_ = item.IsDeleted_;
+			storageItem.MimeType_ = item.MimeType_;
+			storageItem.Hash_ = item.Revision_;
 
 			return storageItem;
 		}
 	}
 
-	void Account::handleFileList (const QList<DriveItem>& items)
+	void Account::handleFileList (const QList<DBoxItem>& items)
 	{
 		QList<StorageItem> result;
 
@@ -341,43 +332,21 @@ namespace GoogleDrive
 			result << CreateItem (item);
 
 		emit gotListing (result);
-		emit listingUpdated (QByteArray ());
+		emit listingUpdated (result.value (0).ParentID_);
 	}
 
-	void Account::handleSharedFileId (const QString& id)
+	void Account::handleSharedFileUrl (const QUrl& url, const QDateTime& expiredDate)
 	{
-		emit gotFileUrl (QUrl (QString ("https://docs.google.com/uc?id=%1&export=download")
-				.arg (id)), id.toUtf8 ());
+		Q_UNUSED (expiredDate)
+		emit gotFileUrl (url, QByteArray ());
 	}
 
-	void Account::handleGotNewItem (const DriveItem& item)
+	void Account::handleGotNewItem (const DBoxItem& item)
 	{
-		emit gotNewItem (CreateItem (item), item.ParentId_.toUtf8 ());
-		emit listingUpdated (item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ());
+		const auto& storageItem = CreateItem (item);
+		emit gotNewItem (storageItem, storageItem.ParentID_);
+		emit listingUpdated (storageItem.ParentID_);
 	}
-
-	void Account::handleGotChanges (const QList<DriveChanges>& driveChanges)
-	{
-		QList<Change> changes;
-		for (const auto& driveChange : driveChanges)
-		{
-			//TODO setting for shared files
-			if (driveChange.FileResource_.PermissionRole_ != DriveItem::Roles::Owner)
-				continue;
-
-			Change change;
-			change.Deleted_ = driveChange.Deleted_;
-			change.ID_ = driveChange.Id_.toUtf8 ();
-			change.ItemID_ = driveChange.FileId_.toUtf8 ();
-			if (!change.Deleted_)
-				change.Item_ = CreateItem (driveChange.FileResource_);
-
-			changes << change;
-		}
-
-		emit gotChanges (changes);
-	}
-
 }
 }
 }
