@@ -34,6 +34,7 @@
 #include <QNetworkReply>
 #include <QMainWindow>
 #include <qjson/parser.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/xpc/util.h>
 #include "account.h"
 #include "core.h"
