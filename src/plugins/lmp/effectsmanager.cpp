@@ -115,6 +115,8 @@ namespace LMP
 		}
 
 		UpdateHeaders ();
+
+		ReemitEffectsList ();
 	}
 
 	IFilterElement* EffectsManager::RestoreFilter (const QList<EffectInfo>::const_iterator effectPos, const QByteArray& instanceId)
@@ -172,6 +174,14 @@ namespace LMP
 		XmlSettingsManager::Instance ().setProperty ("AddedFilters", QVariant::fromValue (data));
 	}
 
+	void EffectsManager::ReemitEffectsList ()
+	{
+		QStringList result;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+			result << Model_->item (i)->text ();
+		emit effectsListChanged (result);
+	}
+
 	void EffectsManager::addRequested (const QString&, const QVariantList& datas)
 	{
 		const auto& id = datas.value (0).toByteArray ();
@@ -192,6 +202,7 @@ namespace LMP
 
 		UpdateHeaders ();
 		SaveFilters ();
+		ReemitEffectsList ();
 	}
 
 	void EffectsManager::removeRequested (const QString&, const QModelIndexList& indexes)
@@ -217,6 +228,7 @@ namespace LMP
 
 		UpdateHeaders ();
 		SaveFilters ();
+		ReemitEffectsList ();
 	}
 
 	void EffectsManager::customButtonPressed (const QString&, const QByteArray&, int row)
