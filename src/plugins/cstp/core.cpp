@@ -337,27 +337,39 @@ namespace CSTP
 					{ return acc + td.Task_->GetSpeed (); });
 	}
 
-	EntityTestHandleResult Core::CouldDownload (const LeechCraft::Entity& e)
+	namespace
+	{
+		EntityTestHandleResult CheckUrl (const QUrl& url, const Entity& e)
+		{
+			if (!url.isValid ())
+				return {};
+
+			const QString& scheme = url.scheme ();
+			if (scheme == "file")
+				return (!(e.Parameters_ & FromUserInitiated) && !(e.Parameters_ & IsDownloaded)) ?
+						EntityTestHandleResult (EntityTestHandleResult::PHigh) :
+						EntityTestHandleResult ();
+			else
+			{
+				const QStringList schemes { "http", "https" };
+				return schemes.contains (url.scheme ()) ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
+			}
+		}
+	}
+
+	EntityTestHandleResult Core::CouldDownload (const Entity& e)
 	{
 		if (e.Entity_.value<QNetworkReply*> ())
 			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
 
-		const QUrl& url = e.Entity_.toUrl ();
-		if (!url.isValid ())
-			return EntityTestHandleResult ();
-
-		const QString& scheme = url.scheme ();
-		if (scheme == "file")
-			return (!(e.Parameters_ & FromUserInitiated) && !(e.Parameters_ & IsDownloaded)) ?
-					EntityTestHandleResult (EntityTestHandleResult::PHigh) :
-					EntityTestHandleResult ();
+		const auto& url = e.Entity_.toUrl ();
+		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
+		if (url.isValid ())
+			return CheckUrl (url, e);
 		else
-		{
-			const QStringList schemes = QStringList ("http") << "https";
-			return schemes.contains (url.scheme ()) ?
-					EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-					EntityTestHandleResult ();
-		}
+			return {};
 	}
 
 	QAbstractItemModel* Core::GetRepresentationModel ()
