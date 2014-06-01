@@ -632,8 +632,6 @@ namespace NetStoreManager
 		Trash_->setIcon (Proxy_->GetIconThemeManager ()->GetIcon (GetTrashedFiles ().isEmpty () ?
 			"user-trash-full" :
 			"user-trash"));
-
-		handleListingUpdated ();
 	}
 
 	void ManagerTab::handleListingUpdated (const QByteArray& parentId)
