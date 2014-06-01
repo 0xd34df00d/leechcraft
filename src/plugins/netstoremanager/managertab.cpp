@@ -720,8 +720,7 @@ namespace NetStoreManager
 				DoNotSaveInHistory |
 				FromUserInitiated;
 		acc->Download (GetCurrentID (),
-				Ui_.FilesView_->currentIndex ().data ().toString (), tp, true,
-				true);
+				Ui_.FilesView_->currentIndex ().data ().toString (), tp, true);
 	}
 
 	void ManagerTab::flCopy ()
@@ -857,7 +856,8 @@ namespace NetStoreManager
 
 		acc->Download (GetCurrentID (),
 				Ui_.FilesView_->currentIndex ().data ().toString (),
-				OnlyDownload | FromUserInitiated);
+				OnlyDownload | FromUserInitiated,
+				false);
 	}
 
 	void ManagerTab::flCopyUrl ()

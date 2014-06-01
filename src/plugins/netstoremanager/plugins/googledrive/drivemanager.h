@@ -175,7 +175,7 @@ namespace GoogleDrive
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
 		void Download (const QString& id, const QString& filePath,
-				TaskParameters tp, bool silent, bool open = false);
+				TaskParameters tp, bool open);
 
 		void CreateDirectory (const QString& name,
 				const QString& parentId = QString ());
@@ -202,7 +202,7 @@ namespace GoogleDrive
 				const QString& name,  const QString& key);
 
 		void DownloadFile (const QString& filePath, const QUrl& url,
-				TaskParameters tp, bool silent = false, bool open = false);
+				TaskParameters tp, bool open);
 
 		void FindSyncableItems (const QStringList& paths,
 				const QString& baseDir, const QList<DriveItem>& items);

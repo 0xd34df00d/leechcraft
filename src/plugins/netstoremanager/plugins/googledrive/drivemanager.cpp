@@ -120,13 +120,13 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::Download (const QString& id, const QString& filepath,
-			TaskParameters tp, bool silent, bool open)
+			TaskParameters tp, bool open)
 	{
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath, tp, silent, open] (const QUrl& url)
-			{ DownloadFile (filepath, url, tp, silent, open); };
+		DownloadsQueue_ << [this, filepath, tp, open] (const QUrl& url)
+			{ DownloadFile (filepath, url, tp, open); };
 		RequestAccessToken ();
 	}
 
@@ -452,10 +452,10 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
-			TaskParameters tp, bool silent, bool open)
+			TaskParameters tp, bool open)
 	{
 		QString savePath;
-		if (silent)
+		if (open)
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
 					"/" + QFileInfo (filePath).fileName ();
 
@@ -465,9 +465,9 @@ namespace GoogleDrive
 				.arg (fi.baseName ())
 				.arg (QDateTime::currentDateTime ().toTime_t ())
 				.arg (fi.completeSuffix ());
-		silent ?
-			Core::Instance ().DelegateEntity (e, filePath, open) :
-			Core::Instance ().SendEntity (e);
+		open ?
+				Core::Instance ().DelegateEntity (e, filePath, open) :
+				Core::Instance ().SendEntity (e);
 	}
 
 	void DriveManager::FindSyncableItems (const QStringList&,

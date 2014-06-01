@@ -73,7 +73,7 @@ namespace NetStoreManager
 				UploadType ut = UploadType::Upload,
 				const QByteArray& id = QByteArray ()) = 0;
 		virtual void Download (const QByteArray& id, const QString& filepath,
-				TaskParameters tp, bool silent = false, bool open = false) = 0;
+				TaskParameters tp, bool open) = 0;
 	protected:
 		virtual void upStatusChanged (const QString& status, const QString& filepath) = 0;
 		virtual void upProgress (quint64 done, quint64 total, const QString& filepath) = 0;
