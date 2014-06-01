@@ -311,7 +311,7 @@ namespace GoogleDrive
 		{
 			StorageItem storageItem;
 			storageItem.ID_ = item.Id_.toUtf8 ();
-			storageItem.ParentID_ = item.ParentId_.toUtf8 ();
+			storageItem.ParentID_ = item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ();
 			storageItem.Name_ = item.Name_;
 			storageItem.Size_ = item.FileSize_;
 			storageItem.ModifyDate_ = item.ModifiedDate_;
@@ -341,7 +341,7 @@ namespace GoogleDrive
 			result << CreateItem (item);
 
 		emit gotListing (result);
-		emit listingUpdated (result.isEmpty () ? QByteArray () : result.at (0).ParentID_);
+		emit listingUpdated (QByteArray ());
 	}
 
 	void Account::handleSharedFileId (const QString& id)
@@ -353,7 +353,7 @@ namespace GoogleDrive
 	void Account::handleGotNewItem (const DriveItem& item)
 	{
 		emit gotNewItem (CreateItem (item), item.ParentId_.toUtf8 ());
-		emit listingUpdated (item.ParentId_.toUtf8 ());
+		emit listingUpdated (item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ());
 	}
 
 	void Account::handleGotChanges (const QList<DriveChanges>& driveChanges)
