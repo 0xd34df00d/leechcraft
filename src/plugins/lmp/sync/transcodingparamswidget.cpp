@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,8 +42,8 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 		const auto& fm = fontMetrics ();
-		const auto qualityWidth = std::min (fm.width (" 9999 kbps "),
-				fm.width (tr ("Quality %1").arg (10)));
+		const auto qualityWidth = std::max (fm.width (" 9999 kbps "),
+				fm.width (" " + tr ("Quality %1").arg (10) + " "));
 		Ui_.QualityDisplay_->setFixedWidth (qualityWidth);
 		Ui_.QualityDisplay_->setFrameShape (Ui_.ThreadsDisplay_->frameShape ());
 
@@ -81,12 +81,11 @@ namespace LMP
 	TranscodingParams TranscodingParamsWidget::GetParams () const
 	{
 		const bool transcode = Ui_.TranscodingBox_->isChecked ();
-		const auto bitrateType = GetCurrentBitrateType ();
 		return
 		{
 			Ui_.FilenameMask_->text (),
 			transcode ? GetCurrentFormat ()->GetFormatID () : QString (),
-			bitrateType,
+			GetCurrentBitrateType (),
 			Ui_.QualitySlider_->value (),
 			Ui_.ThreadsSlider_->value ()
 		};
@@ -96,8 +95,27 @@ namespace LMP
 	{
 		Ui_.TranscodingBox_->setChecked (!params.FormatID_.isEmpty ());
 		Ui_.FilenameMask_->setText (params.FilePattern_);
-		Ui_.BitrateTypeBox_->setCurrentIndex (static_cast<int> (params.BitrateType_));
 		Ui_.QualitySlider_->setValue (params.Quality_);
+
+		const auto& formats = Formats_->GetFormats ();
+		const auto pos = std::find_if (formats.begin (), formats.end (),
+				[params] (const Format_ptr& format)
+					{ return format->GetFormatID () == params.FormatID_; });
+		if (pos != formats.end ())
+		{
+			const auto idx = std::distance (formats.begin (), pos);
+			Ui_.TranscodingFormat_->setCurrentIndex (idx);
+
+			for (int i = 0; i < Ui_.BitrateTypeBox_->count (); ++i)
+			{
+				const auto& data = Ui_.BitrateTypeBox_->itemData (i);
+				if (data.toInt () != static_cast<int> (params.BitrateType_))
+					continue;
+
+				Ui_.BitrateTypeBox_->setCurrentIndex (i);
+				break;
+			}
+		}
 	}
 
 	Format_ptr TranscodingParamsWidget::GetCurrentFormat () const

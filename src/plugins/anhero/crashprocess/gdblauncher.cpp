@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -72,9 +72,19 @@ namespace CrashProcess
 				this,
 				SLOT (consumeStdout ()));
 		connect (Proc_,
-				SIGNAL (finished (int,QProcess::ExitStatus)),
+				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
-				SIGNAL (finished (int)));
+				SIGNAL (finished (int, QProcess::ExitStatus)));
+	}
+
+	GDBLauncher::~GDBLauncher ()
+	{
+		if (Proc_->state () != QProcess::NotRunning)
+		{
+			Proc_->terminate ();
+			if (!Proc_->waitForFinished (500))
+				Proc_->kill ();
+		}
 	}
 
 	void GDBLauncher::handleError ()
@@ -88,6 +98,11 @@ namespace CrashProcess
 				<< Proc_->error ()
 				<< "str:"
 				<< Proc_->errorString ();
+
+		emit error (Proc_->exitStatus (),
+				Proc_->exitCode (),
+				Proc_->error (),
+				Proc_->errorString ());
 	}
 
 	void GDBLauncher::consumeStdout ()

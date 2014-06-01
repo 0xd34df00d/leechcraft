@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,24 +29,17 @@
 
 #pragma once
 
-#include <qwebpage.h>
-#include <util/gui/findnotification.h>
+#include <util/gui/findnotificationwk.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class FindDialog : public Util::FindNotification
+	class FindDialog : public Util::FindNotificationWk
 	{
 		Q_OBJECT
 	public:
-		FindDialog (QWidget*);
-
-		QWebPage::FindFlags GetPageFlags () const;
-	protected:
-		void handleNext (const QString&, FindFlags);
-	signals:
-		void next (const QString&, QWebPage::FindFlags);
+		FindDialog (QWebView*);
 	};
 }
 }

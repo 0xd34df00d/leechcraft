@@ -51,6 +51,8 @@ set (SRCS
 	importers/psiplus/psiplusimportpage.cpp
 	importers/vacuum/vacuumimporter.cpp
 	importers/vacuum/vacuumimportpage.cpp
+	importers/opera/operaimporter.cpp
+	importers/opera/operaimportselectpage.cpp
 	)
 set (FORMS
 	importwizard.ui
@@ -58,6 +60,7 @@ set (FORMS
 	firstpage.ui
 	common/imimportpage.ui
 	importers/firefox/firefoxprofileselectpage.ui
+	importers/opera/operaimportselectpage.ui
 	)
 set (RESOURCES newliferesources.qrc)
 CreateTrs ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)

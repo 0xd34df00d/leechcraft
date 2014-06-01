@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -48,6 +48,7 @@ class QDataStream;
 class QShortcut;
 class QWebFrame;
 class QLabel;
+class QWebInspector;
 
 namespace LeechCraft
 {
@@ -102,10 +103,8 @@ namespace Poshuku
 		QAction *NotifyWhenFinished_;
 		QAction *HistoryAction_;
 		QAction *BookmarksAction_;
-		QAction *ExternalLinksAction_;
 		QPoint OnLoadPos_;
 		QMenu *ChangeEncoding_;
-		QMenu *ExternalLinks_;
 		FindDialog *FindDialog_;
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
@@ -117,6 +116,8 @@ namespace Poshuku
 		CustomWebView *WebView_;
 		QLabel *LinkTextItem_;
 
+		QWebInspector *WebInspector_;
+
 		static QObject* S_MultiTabsParent_;
 
 		friend class CustomWebView;
@@ -126,7 +127,7 @@ namespace Poshuku
 		static void SetParentMultiTabs (QObject*);
 
 		void Deown ();
-		void InitShortcuts ();
+		void FinalizeInit ();
 
 		CustomWebView* GetView () const;
 		QLineEdit* GetURLEdit () const;
@@ -167,14 +168,12 @@ namespace Poshuku
 		void SetSplitterSizes (int);
 	public slots:
 		void focusLineEdit ();
-		void updateBookmarksState (bool);
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
 		void loadURL (const QUrl&);
 		QWebView* getWebView () const;
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;
-		void checkPageAsFavorite (const QString&);
 	private slots:
 		void handleIconChanged ();
 		void handleStatusBarMessage (const QString&);
@@ -182,9 +181,6 @@ namespace Poshuku
 		void handleReloadPeriodically ();
 		void handleAdd2Favorites ();
 		void handleFind ();
-		void handleFindNext ();
-		void handleFindPrevious ();
-		void findText (const QString&, QWebPage::FindFlags);
 		void handleViewPrint (QWebFrame*);
 		void handlePrinting ();
 		void handlePrintingWithPreview ();
@@ -199,8 +195,6 @@ namespace Poshuku
 		void handleBackHistoryAction ();
 		void handleForwardHistoryAction ();
 
-		void handleEntityAction ();
-		void checkLinkRels ();
 		void checkLoadedDocument ();
 
 		void setScrollPosition ();
@@ -210,9 +204,7 @@ namespace Poshuku
 		void handleChangeEncodingAboutToShow ();
 		void handleChangeEncodingTriggered (QAction*);
 		void updateLogicalPath ();
-		void showSendersMenu ();
 		void handleUrlChanged (const QString&);
-		void handleUrlTextChanged (const QString&);
 	signals:
 		void titleChanged (const QString&);
 		void urlChanged (const QString&);
@@ -228,10 +220,9 @@ namespace Poshuku
 		void tabRecoverDataChanged ();
 
 		// Hook support
-		void hookFindText (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget,
-				QString findText,
-				QWebPage::FindFlags findFlags);
+		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
+				QObject *browserWidget);
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QObject *browserWidget);

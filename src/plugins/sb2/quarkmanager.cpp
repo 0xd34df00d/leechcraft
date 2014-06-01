@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,6 +38,7 @@
 #include <QDir>
 #include <qjson/parser.h>
 #include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarksettingsmanager.h"
@@ -47,8 +48,6 @@ namespace LeechCraft
 {
 namespace SB2
 {
-	const int IconSize = 32;
-
 	namespace
 	{
 		class ImageProvProxy : public QDeclarativeImageProvider
@@ -81,12 +80,8 @@ namespace SB2
 	, Component_ (comp)
 	, URL_ (comp->Url_)
 	, SettingsManager_ (0)
-	, ID_ (QFileInfo (URL_.path ()).fileName ())
-	, Name_ (ID_)
-	, Icon_ (proxy->GetIcon ("applications-science"))
+	, Manifest_ (URL_.toLocalFile ())
 	{
-		ParseManifest ();
-
 		if (!ViewMgr_)
 			return;
 
@@ -113,29 +108,15 @@ namespace SB2
 		CreateSettings ();
 	}
 
-	QString QuarkManager::GetID () const
+	const Manifest& QuarkManager::GetManifest () const
 	{
-		return ID_;
-	}
-
-	QString QuarkManager::GetName () const
-	{
-		return Name_;
-	}
-
-	QIcon QuarkManager::GetIcon () const
-	{
-		return Icon_;
-	}
-
-	QString QuarkManager::GetDescription () const
-	{
-		return Description_;
+		return Manifest_;
 	}
 
 	bool QuarkManager::IsValidArea () const
 	{
-		return Areas_.isEmpty () || Areas_.contains ("panel");
+		const auto& areas = Manifest_.GetAreas ();
+		return areas.isEmpty () || areas.contains ("panel");
 	}
 
 	bool QuarkManager::HasSettings () const
@@ -148,9 +129,9 @@ namespace SB2
 		if (!HasSettings ())
 			return;
 
-		const auto& settingsTitle = Name_.isEmpty () ?
+		const auto& settingsTitle = Manifest_.GetName ().isEmpty () ?
 				tr ("Settings") :
-				tr ("Settings for %1").arg (Name_);
+				tr ("Settings for %1").arg (Manifest_.GetName ());
 		OpenSettingsDialog (XSD_.get (), settingsTitle);
 	}
 
@@ -165,85 +146,6 @@ namespace SB2
 			return QString ();
 
 		return suffixed;
-	}
-
-	void QuarkManager::ParseManifest ()
-	{
-		const auto& manifestName = GetSuffixedName (".manifest");
-		if (manifestName.isEmpty ())
-			return;
-
-		QFile file (manifestName);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open manifest file"
-					<< file.errorString ();
-			return;
-		}
-
-		QJson::Parser parser;
-		bool ok = false;
-		const auto& varMap = parser.parse (&file, &ok).toMap ();
-		if (!ok)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "failed to parse"
-					<< manifestName
-					<< parser.errorLine ()
-					<< parser.errorString ();
-			return;
-		}
-
-		Name_ = varMap ["quarkName"].toString ();
-		Areas_ = varMap ["areas"].toStringList ();
-
-		Description_ = varMap ["description"].toString ();
-
-		if (varMap.contains ("quarkID"))
-			ID_ = varMap ["quarkID"].toString ();
-
-		if (varMap.contains ("icon"))
-		{
-			const auto& iconName = varMap ["icon"].toString ();
-
-			TryFullImage (iconName) || TryTheme (iconName) || TryLC (iconName);
-		}
-	}
-
-	bool QuarkManager::TryFullImage (const QString& iconName)
-	{
-		const auto& dirName = QFileInfo (URL_.toLocalFile ()).absoluteDir ().path ();
-		const auto& fullName = dirName + '/' + iconName;
-
-		const QPixmap px (fullName);
-		if (px.isNull ())
-			return false;
-
-		Icon_ = QIcon ();
-		Icon_.addPixmap (px);
-		return true;
-	}
-
-	bool QuarkManager::TryTheme (const QString& iconName)
-	{
-		const auto& icon = Proxy_->GetIcon (iconName);
-		const auto& px = icon.pixmap (IconSize, IconSize);
-		if (px.isNull ())
-			return false;
-
-		Icon_ = icon;
-		return true;
-	}
-
-	bool QuarkManager::TryLC (const QString& iconName)
-	{
-		if (iconName != "leechcraft")
-			return false;
-
-		Icon_ = QIcon ();
-		Icon_.addFile ("lcicons:/resources/images/leechcraft.svg");
-		return true;
 	}
 
 	void QuarkManager::CreateSettings ()

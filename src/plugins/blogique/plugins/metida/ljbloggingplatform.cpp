@@ -36,7 +36,8 @@
 #include <QMainWindow>
 #include <QDomElement>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/passutils.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <util/xpc/passutils.h>
 #include "core.h"
 #include "ljaccount.h"
 #include "ljaccountconfigurationwidget.h"
@@ -55,11 +56,11 @@ namespace Metida
 	: QObject (parent)
 	, ParentBlogginPlatfromPlugin_ (parent)
 	, PluginProxy_ (0)
-	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
+	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIconThemeManager ()->GetIcon ("user-properties"),
 			tr ("Add LJ user"), this))
-	, LJPoll_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("office-chart-pie"),
+	, LJPoll_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIconThemeManager ()->GetIcon ("office-chart-pie"),
 			tr ("Create poll"), this))
-	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
+	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIconThemeManager ()->GetIcon ("user-properties"),
 			tr ("Insert LJ cut"), this))
 	, FirstSeparator_ (new QAction (this))
 	, MessageCheckingTimer_ (new QTimer (this))
@@ -181,7 +182,7 @@ namespace Metida
 				{
 					action->setText ("Insert cut");
 					action->setIcon (Core::Instance ().GetCoreProxy ()->
-							GetIcon ("distribute-vertical-equal"));
+							GetIconThemeManager ()->GetIcon ("distribute-vertical-equal"));
 				} } };
 	}
 

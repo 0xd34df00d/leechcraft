@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,15 +34,19 @@
 #include <QSet>
 #include <QPair>
 #include <QIcon>
+#include "interfaces/aggregator/iitemsmodel.h"
 #include "item.h"
+#include "channel.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
 	class ItemsListModel : public QAbstractItemModel
+						 , public IItemsModel
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Aggregator::IItemsModel)
 
 		QStringList ItemHeaders_;
 		items_shorts_t CurrentItems_;
@@ -53,11 +57,6 @@ namespace Aggregator
 		const QIcon UnreadIcon_;
 		const QIcon ReadIcon_;
 	public:
-		enum ItemRole
-		{
-			IsRead = Qt::UserRole + 1
-		};
-
 		ItemsListModel (QObject* = 0);
 
 		int GetSelectedRow () const;
@@ -71,7 +70,7 @@ namespace Aggregator
 		QStringList GetCategories (int) const;
 		void Reset (const IDType_t&);
 		void Reset (const QList<IDType_t>&);
-		void RemoveItems (QSet<IDType_t>);
+		void RemoveItems (const QSet<IDType_t>&);
 		void ItemDataUpdated (Item_ptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;
@@ -81,9 +80,14 @@ namespace Aggregator
 		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 		QModelIndex parent (const QModelIndex&) const;
 		int rowCount (const QModelIndex& = QModelIndex ()) const;
+	public slots:
+		void reset (const IDType_t&);
+		void selected (const QModelIndex&);
 	private slots:
 		void handleChannelRemoved (IDType_t);
 		void handleItemsRemoved (const QSet<IDType_t>&);
+
+		void handleItemDataUpdated (const Item_ptr&, const Channel_ptr&);
 	};
 }
 }

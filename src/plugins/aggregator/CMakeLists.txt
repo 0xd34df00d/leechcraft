@@ -68,11 +68,11 @@ set (SRCS
 	dbupdatethreadworker.cpp
 	tovarmaps.cpp
 	dumbstorage.cpp
+	storagebackendmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui
 	addfeed.ui
-	itembucket.ui
 	regexpmatcherui.ui
 	singleregexp.ui
 	importopml.ui
@@ -86,8 +86,18 @@ set (FORMS
 	export2fb2dialog.ui
 	)
 set (RESOURCES aggregatorresources.qrc)
+
+set (UTIL_SRCS
+	util/aggregator/itemsmodeldecorator.cpp
+	)
+
 CreateTrs ("aggregator" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("aggregator" "en;ru_RU" "${SRCS}" "${FORMS}" "aggregatorsettings.xml")
+
+add_library (leechcraft_aggregator_util STATIC
+	${UTIL_SRCS}
+	)
+set_target_properties(leechcraft_aggregator_util PROPERTIES POSITION_INDEPENDENT_CODE True)
 
 add_definitions(-DBOOST_DYN_LINK)
 QT4_WRAP_UI (UIS_H ${FORMS})

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,10 +28,13 @@
  **********************************************************************/
 
 #include "storagemodel.h"
+#include <QApplication>
+#include <QPalette>
 #include <QtDebug>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "todostorage.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -57,14 +60,21 @@ namespace Otlozhu
 
 	QModelIndex StorageModel::index (int row, int column, const QModelIndex& parent) const
 	{
-		if (parent.isValid ())
-			return QModelIndex ();
-		return createIndex (row, column);
+		if (!parent.isValid ())
+			return createIndex (row, column);
+
+		if (parent.parent ().isValid ())
+			return {};
+
+		return createIndex (row, column, parent.row ());
 	}
 
-	QModelIndex StorageModel::parent (const QModelIndex&) const
+	QModelIndex StorageModel::parent (const QModelIndex& index) const
 	{
-		return QModelIndex ();
+		if (!index.internalId ())
+			return {};
+
+		return createIndex (index.internalId (), 0);
 	}
 
 	int StorageModel::columnCount (const QModelIndex&) const
@@ -74,7 +84,14 @@ namespace Otlozhu
 
 	int StorageModel::rowCount (const QModelIndex& parent) const
 	{
-		return parent.isValid () ? 0 : (Storage_ ? Storage_->GetNumItems () : 0);
+		if (!parent.isValid ())
+			return Storage_ ? Storage_->GetNumItems () : 0;
+
+		if (parent.parent ().isValid ())
+			return 0;
+
+		const auto& item = GetItemForIndex (parent);
+		return item ? item->GetDeps ().size () : 0;
 	}
 
 	Qt::ItemFlags StorageModel::flags (const QModelIndex& index) const
@@ -104,26 +121,50 @@ namespace Otlozhu
 	QVariant StorageModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
-			return QVariant ();
+			return {};
 
-		const auto item = Storage_->GetItemAt (index.row ());
-		if (role == Roles::ItemID)
+		const auto& item = GetItemForIndex (index);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown item for index"
+					<< index
+					<< index.parent ();
+			return {};
+		}
+
+		switch (role)
+		{
+		case Roles::ItemID:
 			return item->GetID ();
-		else if (role == Roles::ItemTitle)
+		case Roles::ItemTitle:
 			return item->GetTitle ();
-		else if (role == Roles::ItemTags)
+		case Roles::ItemTags:
 			return item->GetTagIDs ();
-		else if (role == Roles::ItemProgress)
+		case Roles::ItemProgress:
 			return item->GetPercentage ();
-		else if (role == Roles::ItemComment)
+		case Roles::ItemComment:
 			return item->GetComment ();
-		else if (role == Roles::ItemDueDate)
+		case Roles::ItemDueDate:
 			return item->GetDueDate ();
-		else if (role == Qt::ToolTipRole)
+		case Qt::ToolTipRole:
 			return MakeTooltip (item);
-		else if (role != Qt::DisplayRole &&
-					role != Qt::EditRole)
-			return QVariant ();
+		case Qt::DisplayRole:
+		case Qt::EditRole:
+			break;
+		case Qt::ForegroundRole:
+		{
+			if (item->GetPercentage () != 100 ||
+					!XmlSettingsManager::Instance ().property ("DoneGreyOut").toBool ())
+				return {};
+
+			auto brush = QApplication::palette ().foreground ();
+			brush.setColor (brush.color ().lighter ());
+			return brush;
+		}
+		default:
+			return {};
+		}
 
 		switch (index.column ())
 		{
@@ -147,7 +188,21 @@ namespace Otlozhu
 		case Columns::Created:
 			return item->GetCreatedDate ();
 		case Columns::Percentage:
-			return item->GetPercentage ();
+		{
+			if (const auto perc = item->GetPercentage ())
+				return perc;
+
+			const auto& deps = item->GetDeps ();
+			if (deps.isEmpty ())
+				return 0;
+
+			const auto res = std::accumulate (deps.begin (), deps.end (), 0.0,
+					[this] (double val, const QString& id)
+					{
+						return val + Storage_->GetItemByID (id)->GetPercentage ();
+					});
+			return std::round (res / deps.size ());
+		}
 		default:
 			return QVariant ();
 		}
@@ -158,7 +213,7 @@ namespace Otlozhu
 		if (!index.isValid ())
 			return false;
 
-		auto item = Storage_->GetItemAt (index.row ());
+		auto item = Storage_->GetItemByID (index.data (Roles::ItemID).toString ());
 		bool updated = false;
 
 		if (role == Roles::ItemProgress)
@@ -209,6 +264,35 @@ namespace Otlozhu
 		return updated;
 	}
 
+	TodoItem_ptr StorageModel::GetItemForIndex (const QModelIndex& index) const
+	{
+		const auto& parent = index.parent ();
+		if (!parent.isValid ())
+			return Storage_->GetItemAt (index.row ());
+
+		const auto& parentId = data (parent, Roles::ItemID).toString ();
+		const auto& parentItem = Storage_->GetItemByID (parentId);
+		if (!parentItem)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get item for parent ID"
+					<< parentId;
+			return {};
+		}
+
+		const auto& itemId = parentItem->GetDeps ().value (index.row ());
+		if (itemId.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get dep ID for dep"
+					<< index.row ()
+					<< parentItem->GetDeps ();
+			return {};
+		}
+
+		return Storage_->GetItemByID (itemId);
+	}
+
 	void StorageModel::SetStorage (TodoStorage *storage)
 	{
 		if (Storage_)
@@ -231,6 +315,15 @@ namespace Otlozhu
 					SIGNAL (itemRemoved (int)),
 					this,
 					SLOT (handleItemRemoved (int)));
+
+			connect (Storage_,
+					SIGNAL (itemDepAdded (int, int)),
+					this,
+					SLOT (handleItemDepAdded (int, int)));
+			connect (Storage_,
+					SIGNAL (itemDepRemoved (int, int)),
+					this,
+					SLOT (handleItemDepRemoved (int, int)));
 		}
 
 		reset ();
@@ -238,7 +331,7 @@ namespace Otlozhu
 
 	void StorageModel::handleItemAdded (int idx)
 	{
-		beginInsertRows (QModelIndex (), idx, idx);
+		beginInsertRows ({}, idx, idx);
 		endInsertRows ();
 	}
 
@@ -249,7 +342,21 @@ namespace Otlozhu
 
 	void StorageModel::handleItemRemoved (int idx)
 	{
-		beginRemoveRows (QModelIndex (), idx, idx);
+		beginRemoveRows ({}, idx, idx);
+		endRemoveRows ();
+	}
+
+	void StorageModel::handleItemDepAdded (int idx, int depIdx)
+	{
+		const auto& parent = index (idx, 0);
+		beginInsertRows (parent, depIdx, depIdx);
+		endInsertRows ();
+	}
+
+	void StorageModel::handleItemDepRemoved (int idx, int depIdx)
+	{
+		const auto& parent = index (idx, 0);
+		beginRemoveRows (parent, depIdx, depIdx);
 		endRemoveRows ();
 	}
 }

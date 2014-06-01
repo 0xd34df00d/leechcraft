@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,8 +31,8 @@
 
 #include <QDeclarativeView>
 #include <QList>
-#include <util/utilconfig.h>
 #include <interfaces/core/icoreproxy.h>
+#include "qmlconfig.h"
 
 class QStandardItem;
 class QStandardItemModel;
@@ -41,7 +41,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API UnhideListViewBase : public QDeclarativeView
+	class UTIL_QML_API UnhideListViewBase : public QDeclarativeView
 	{
 		Q_OBJECT
 	protected:

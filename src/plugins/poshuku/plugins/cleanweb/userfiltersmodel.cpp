@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,7 +39,7 @@
 #include <qwebframe.h>
 #include <qwebelement.h>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "ruleoptiondialog.h"
 #include "lineparser.h"
 #include "core.h"
@@ -175,8 +175,8 @@ namespace CleanWeb
 	bool UserFiltersModel::Add (const RuleOptionDialog& dia)
 	{
 		const auto& itemRx = dia.GetType () == FilterOption::MTRegexp ?
-				RegExp (dia.GetString (), dia.GetCase ()) :
-				RegExp ();
+				Util::RegExp (dia.GetString (), dia.GetCase ()) :
+				Util::RegExp ();
 		FilterOption fo;
 		fo.Case_ = dia.GetCase ();
 		fo.MatchType_ = dia.GetType ();

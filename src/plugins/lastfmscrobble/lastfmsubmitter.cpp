@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011  Minh Ngo
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -192,9 +192,16 @@ namespace Lastfmscrobble
 		Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
 
 		connect (Scrobbler_.get (),
-				SIGNAL (status (int)),
+				SIGNAL (nowPlayingError (int, QString)),
 				this,
-				SIGNAL (status (int)));
+				SLOT (handleNPError (int, QString)));
+	}
+
+	void LastFMSubmitter::handleNPError (int code, const QString& msg)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< code
+				<< msg;
 	}
 
 	void LastFMSubmitter::cacheAndSubmit ()

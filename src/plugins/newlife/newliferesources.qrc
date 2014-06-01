@@ -8,5 +8,6 @@
 	<file>resources/images/apps/liferea.svg</file>
 	<file>resources/images/apps/psi-plus.svg</file>
 	<file>resources/images/apps/vacuum.svg</file>
+	<file>resources/images/apps/opera.svg</file>
   </qresource>
 </RCC>

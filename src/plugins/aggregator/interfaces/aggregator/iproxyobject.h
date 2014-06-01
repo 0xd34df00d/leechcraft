@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,10 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
-#define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
+#pragma once
+
 #include <memory>
 #include "common.h"
+
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
@@ -53,9 +55,15 @@ namespace Aggregator
 		virtual void AddChannel (Channel_ptr) = 0;
 		virtual void AddItem (Item_ptr) = 0;
 
+		virtual QAbstractItemModel* GetChannelsModel () const = 0;
 		virtual QList<Channel_ptr> GetAllChannels () const = 0;
 		virtual int CountUnreadItems (IDType_t) const = 0;
 		virtual QList<Item_ptr> GetChannelItems (IDType_t) const = 0;
+
+		virtual Item_ptr GetItem (IDType_t) const = 0;
+		virtual void SetItemRead (IDType_t, bool) const = 0;
+
+		virtual QAbstractItemModel* CreateItemsModel () const = 0;
 	};
 
 	typedef std::shared_ptr<IProxyObject> IProxyObject_ptr;
@@ -64,5 +72,3 @@ namespace Aggregator
 
 Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IProxyObject,
 		"org.Deviant.LeechCraft.Aggregator.IProxyObject/1.0");
-
-#endif

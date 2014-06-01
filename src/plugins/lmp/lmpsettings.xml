@@ -110,11 +110,25 @@
 		</tab>
 	</page>
 	<page>
+		<label value="Effects" />
+		<tab>
+			<label value="Effects manager" />
+			<item type="dataview" property="EffectsView" modifyEnabled="false">
+				<button id="Settings">
+					<label value="Effect settings" />
+				</button>
+			</item>
+		</tab>
+	</page>
+	<page>
 		<label value="Collection" />
 		<groupbox>
 			<label value="Root paths" />
 			<item type="dataview" property="RootPathsView" />
 		</groupbox>
+		<item type="checkbox" property="AutobuildRG" default="false">
+			<label value="Automatically calculate ReplayGain data for tracks in collection" />
+		</item>
 	</page>
 	<page>
 		<label value="Plugin communication" />

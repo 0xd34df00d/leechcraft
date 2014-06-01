@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,6 +36,8 @@ namespace LeechCraft
 	{
 		Ui_.setupUi (this);
 
+		setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 		connect (Ui_.Add_,
 				SIGNAL (released ()),
 				this,
@@ -65,6 +67,18 @@ namespace LeechCraft
 		Ui_.Remove_->setEnabled (false);
 	}
 
+	void DataViewWidget::AddCustomButton (const QByteArray& id, const QString& text)
+	{
+		auto button = new QPushButton (text);
+		button->setProperty ("XSD/Id", id);
+		Ui_.ButtonsLayout_->insertWidget (Ui_.ButtonsLayout_->count () - 1, button);
+
+		connect (button,
+				SIGNAL (released ()),
+				this,
+				SLOT (handleCustomButtonReleased ()));
+	}
+
 	void DataViewWidget::SetModel (QAbstractItemModel *model)
 	{
 		Ui_.View_->setModel (model);
@@ -83,5 +97,18 @@ namespace LeechCraft
 	QModelIndexList DataViewWidget::GetSelectedRows () const
 	{
 		return Ui_.View_->selectionModel ()->selectedRows ();
+	}
+
+	void DataViewWidget::resizeColumns ()
+	{
+		Ui_.View_->expandAll ();
+		for (auto i = 0; i < GetModel ()->columnCount (); ++i)
+			Ui_.View_->resizeColumnToContents (i);
+	}
+
+	void DataViewWidget::handleCustomButtonReleased ()
+	{
+		auto button = qobject_cast<QPushButton*> (sender ());
+		emit customButtonReleased (button->property ("XSD/Id").toByteArray ());
 	}
 }

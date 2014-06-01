@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "vkprotocol.h"
 #include "xmlsettingsmanager.h"
 
@@ -47,7 +48,8 @@ namespace Murm
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothmurmsettings.xml");
 
-		Proto_ = new VkProtocol (proxy, this);
+		Proxy_ = proxy;
+		Proto_ = nullptr;
 	}
 
 	void Plugin::SecondInit ()
@@ -101,8 +103,9 @@ namespace Murm
 		return { Proto_ };
 	}
 
-	void Plugin::initPlugin (QObject*)
+	void Plugin::initPlugin (QObject *azothProxy)
 	{
+		Proto_ = new VkProtocol (Proxy_, qobject_cast<IProxyObject*> (azothProxy), this);
 	}
 }
 }

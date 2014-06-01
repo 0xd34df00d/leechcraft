@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,7 +30,7 @@
 #include "filesenddialog.h"
 #include <QFileDialog>
 #include <QMessageBox>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iwebfilestorage.h>
@@ -166,12 +166,17 @@ namespace Azoth
 
 	void FileSendDialog::on_FileBrowse__released ()
 	{
-		const QString& filename = QFileDialog::getOpenFileName (0,
-				tr ("Select file to send"));
+		const auto& filename = QFileDialog::getOpenFileName (0,
+				tr ("Select file to send"),
+				XmlSettingsManager::Instance ()
+						.Property ("LastFileSendDir", QDir::homePath ()).toString ());
 		if (filename.isEmpty ())
 			return;
 
 		Ui_.FileEdit_->setText (filename);
+
+		const auto& dir = QFileInfo { filename }.absolutePath ();
+		XmlSettingsManager::Instance ().setProperty ("LastFileSendDir", dir);
 	}
 }
 }

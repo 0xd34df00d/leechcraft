@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,6 +30,7 @@
 #include "fsmodel.h"
 #include <QFileIconProvider>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "localcollection.h"
 
@@ -48,7 +49,8 @@ namespace LMP
 			const auto& path = info.absoluteFilePath ();
 			const auto status = Core::Instance ().GetLocalCollection ()->GetDirStatus (path);
 			if (status != LocalCollection::DirStatus::None)
-				return Core::Instance ().GetProxy ()->GetIcon ("folder-bookmark");
+				return Core::Instance ().GetProxy ()->
+						GetIconThemeManager ()->GetIcon ("folder-bookmark");
 
 			return QFileIconProvider::icon (info);
 		}

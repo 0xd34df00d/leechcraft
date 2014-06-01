@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,13 +28,17 @@
  **********************************************************************/
 
 #include "core.h"
+#include <algorithm>
 #include <QFile>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iplugin2.h>
+#include "interfaces/monocle/iredirectproxy.h"
 #include "pixmapcachemanager.h"
 #include "recentlyopenedmanager.h"
 #include "defaultbackendmanager.h"
 #include "docstatemanager.h"
 #include "bookmarksmanager.h"
+#include "coreloadproxy.h"
 
 namespace LeechCraft
 {
@@ -59,6 +63,8 @@ namespace Monocle
 	{
 		Proxy_ = proxy;
 		DefaultBackendManager_->LoadSettings ();
+
+		ShortcutMgr_ = new Util::ShortcutManager { proxy };
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -74,34 +80,88 @@ namespace Monocle
 			Backends_ << pluginObj;
 	}
 
-	bool Core::CanLoadDocument (const QString& path)
+	bool Core::CanHandleMime (const QString& mime)
 	{
-		Q_FOREACH (auto backend, Backends_)
-			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
-				return true;
-
-		return false;
+		return std::any_of (Backends_.begin (), Backends_.end (),
+				[&mime] (QObject *plugin)
+				{
+					return qobject_cast<IBackendPlugin*> (plugin)->
+							GetSupportedMimes ().contains (mime);
+				});
 	}
 
-	IDocument_ptr Core::LoadDocument (const QString& path)
+	bool Core::CanLoadDocument (const QString& path)
+	{
+		decltype (Backends_) redirectors;
+		for (auto backend : Backends_)
+		{
+			const auto ibp = qobject_cast<IBackendPlugin*> (backend);
+			switch (ibp->CanLoadDocument (path))
+			{
+			case IBackendPlugin::LoadCheckResult::Can:
+				return true;
+			case IBackendPlugin::LoadCheckResult::Redirect:
+				redirectors << backend;
+				break;
+			case IBackendPlugin::LoadCheckResult::Cannot:
+				break;
+			}
+		}
+
+		return std::any_of (redirectors.begin (), redirectors.end (),
+				[&path, this] (QObject *redirectorObj) -> bool
+				{
+					const auto redirector = qobject_cast<IBackendPlugin*> (redirectorObj);
+					const auto redirect = redirector->GetRedirection (path);
+					return CanHandleMime (redirect->GetRedirectedMime ());
+				});
+	}
+
+	CoreLoadProxy* Core::LoadDocument (const QString& path)
 	{
 		if (!QFile::exists (path))
-			return IDocument_ptr ();
+			return nullptr;
 
 		decltype (Backends_) loaders;
-		Q_FOREACH (auto backend, Backends_)
-			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
+		decltype (Backends_) redirectors;
+		for (auto backend : Backends_)
+		{
+			switch (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
+			{
+			case IBackendPlugin::LoadCheckResult::Can:
 				loaders << backend;
+				break;
+			case IBackendPlugin::LoadCheckResult::Redirect:
+				redirectors << backend;
+				break;
+			case IBackendPlugin::LoadCheckResult::Cannot:
+				break;
+			}
+		}
 
-		if (loaders.isEmpty ())
-			return IDocument_ptr ();
-		else if (loaders.size () == 1)
-			return qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
-
-		auto backend = DefaultBackendManager_->GetBackend (loaders);
-		return backend ?
-				qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path) :
-				IDocument_ptr ();
+		if (loaders.size () == 1)
+		{
+			const auto doc = qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
+			return doc ? new CoreLoadProxy { doc } : nullptr;
+		}
+		else if (!loaders.isEmpty ())
+		{
+			if (const auto backend = DefaultBackendManager_->GetBackend (loaders))
+			{
+				const auto doc = qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path);
+				return doc ? new CoreLoadProxy { doc } : nullptr;
+			}
+			else
+				return nullptr;
+		}
+		else if (!redirectors.isEmpty ())
+		{
+			const auto backend = qobject_cast<IBackendPlugin*> (redirectors.first ());
+			const auto redir = backend->GetRedirection (path);
+			return redir ? new CoreLoadProxy { redir } : nullptr;
+		}
+		else
+			return nullptr;
 	}
 
 	PixmapCacheManager* Core::GetPixmapCacheManager () const
@@ -127,6 +187,11 @@ namespace Monocle
 	BookmarksManager* Core::GetBookmarksManager () const
 	{
 		return BookmarksManager_;
+	}
+
+	Util::ShortcutManager* Core::GetShortcutManager () const
+	{
+		return ShortcutMgr_;
 	}
 }
 }

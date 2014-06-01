@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -65,6 +65,8 @@ namespace AdvancedNotifications
 		void UpdateRule (const QModelIndex&, const NotificationRule&);
 
 		void HandleEntity (const Entity&);
+		void SuggestRuleConfiguration (const Entity&);
+		QList<Entity> GetAllRules (const QString&) const;
 	private:
 		void LoadDefaultRules (int = -1);
 		void LoadSettings ();
@@ -83,6 +85,10 @@ namespace AdvancedNotifications
 		QVariant getRulesModel () const;
 	private slots:
 		void handleItemChanged (QStandardItem*);
+	signals:
+		void focusOnRule (const QModelIndex&);
+
+		void rulesChanged () const;
 	};
 }
 }

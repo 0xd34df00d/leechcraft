@@ -178,23 +178,52 @@ namespace Liznoo
 		}
 	}
 
+	namespace
+	{
+		void SafeRelease (CFTypeRef ref)
+		{
+			if (ref)
+				CFRelease (ref);
+		}
+
+		template<typename T, typename U>
+		std::shared_ptr<typename std::remove_pointer<T>::type> MakeShared (const T& t, const U& u)
+		{
+			return { t, u };
+		}
+	}
+
 	void PlatformMac::powerSourcesChanged ()
 	{
-		auto info = IOPSCopyPowerSourcesInfo ();
+		auto info = MakeShared (IOPSCopyPowerSourcesInfo (), SafeRelease);
 		if (!info)
 			return;
 
-		auto sourcesList = IOPSCopyPowerSourcesList (info);
+		auto sourcesList = MakeShared (IOPSCopyPowerSourcesList (info.get ()), SafeRelease);
 		if (!sourcesList)
+			return;
+
+		auto matching = IOServiceMatching ("IOPMPowerSource");
+		if (!matching)
 		{
-			CFRelease (info);
+			qWarning () << Q_FUNC_INFO
+					<< "cannot create matching dictionary";
 			return;
 		}
 
-		auto matching = IOServiceMatching ("IOPMPowerSource");
 		auto entry = IOServiceGetMatchingService (kIOMasterPortDefault, matching);
+		if (!entry)
+			return;
+
 		CFMutableDictionaryRef properties = nullptr;
 		IORegistryEntryCreateCFProperties (entry, &properties, nullptr, 0);
+
+		if (!properties)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get properties";
+			return;
+		}
 
 		/*
 		const void **keys = new const void* [CFDictionaryGetCount (properties)];
@@ -211,9 +240,9 @@ namespace Liznoo
 		const auto wattage = defVoltage * defAmperage;
 		const auto temperature = GetNum<int> (properties, @kIOPMPSBatteryTemperatureKey, 0) / 10.;
 
-		for (CFIndex i = 0; i < CFArrayGetCount (sourcesList); ++i)
+		for (CFIndex i = 0; i < CFArrayGetCount (sourcesList.get ()); ++i)
 		{
-			auto dict = IOPSGetPowerSourceDescription (info, CFArrayGetValueAtIndex (sourcesList, i));
+			auto dict = IOPSGetPowerSourceDescription (info.get (), CFArrayGetValueAtIndex (sourcesList.get (), i));
 
 			const auto currentCapacity = GetNum<int> (dict, @kIOPSCurrentCapacityKey, 0);
 			const auto maxCapacity = GetNum<int> (dict, @kIOPSMaxCapacityKey, 0);
@@ -244,8 +273,7 @@ namespace Liznoo
 			emit batteryInfoUpdated (bi);
 		}
 
-		CFRelease (sourcesList);
-		CFRelease (info);
+		CFRelease (properties);
 	}
 }
 }

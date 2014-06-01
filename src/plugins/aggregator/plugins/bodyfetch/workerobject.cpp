@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,18 +39,12 @@
 #include <QtDebug>
 #include <interfaces/iscriptloader.h>
 #include <util/util.h>
+#include <util/sys/paths.h>
 
 uint qHash (IScript_ptr script)
 {
 	return qHash (script.get ());
 }
-
-#if QT_VERSION < 0x040700
-uint qHash (const QUrl& url)
-{
-	return qHash (url.toEncoded ());
-}
-#endif
 
 namespace LeechCraft
 {

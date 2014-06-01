@@ -27,10 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINMANAGER_H
+#pragma once
 
-#include <util/basehookinterconnector.h>
+#include <util/xpc/basehookinterconnector.h>
 
 namespace LeechCraft
 {
@@ -49,5 +48,3 @@ namespace OnlineBookmarks
 }
 }
 }
-
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINMANAGER_H

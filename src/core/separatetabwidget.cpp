@@ -46,7 +46,7 @@
 #include "separatetabbar.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
-#include "util/defaulthookproxy.h"
+#include "util/xpc/defaulthookproxy.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
 #include "tabmanager.h"

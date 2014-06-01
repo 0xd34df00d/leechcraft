@@ -31,6 +31,7 @@
 #include "addcommentdialog.h"
 #include <QMessageBox>
 #include <QPushButton>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -42,7 +43,8 @@ namespace Blogique
 	{
 		Ui_.setupUi (this);
 		SendButton_ = Ui_.ButtonBox_->addButton (tr ("Send"), QDialogButtonBox::AcceptRole);
-		SendButton_->setIcon (Core::Instance ().GetCoreProxy ()->GetIcon ("mail-send"));
+		SendButton_->setIcon (Core::Instance ().GetCoreProxy ()->
+					GetIconThemeManager ()->GetIcon ("mail-send"));
 		on_CommentBody__textChanged ();
 	}
 

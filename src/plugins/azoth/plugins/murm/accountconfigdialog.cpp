@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -54,6 +54,16 @@ namespace Murm
 	void AccountConfigDialog::SetFileLogEnabled (bool enabled)
 	{
 		Ui_.KeepFileLog_->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
+	}
+
+	bool AccountConfigDialog::GetUpdateStatusEnabled () const
+	{
+		return Ui_.UpdateStatus_->checkState () == Qt::Checked;
+	}
+
+	void AccountConfigDialog::SetUpdateStatusEnabled (bool enabled)
+	{
+		Ui_.UpdateStatus_->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
 	}
 
 	bool AccountConfigDialog::GetPublishTuneEnabled () const

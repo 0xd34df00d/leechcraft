@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,9 +29,13 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <Wt/WApplication>
 #include <Wt/WModelIndex>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/aggregator/item.h>
+
+class QThread;
 
 namespace LeechCraft
 {
@@ -41,16 +45,25 @@ class IProxyObject;
 
 namespace WebAccess
 {
+	class Q2WProxyModel;
 	class ReadChannelsFilter;
+	class ReadItemsFilter;
 
 	class AggregatorApp : public Wt::WApplication
 	{
+		Q_DECLARE_TR_FUNCTIONS (AggregatorApp)
+
 		IProxyObject *AP_;
 		ICoreProxy_ptr CP_;
 
-		Wt::WStandardItemModel *ChannelsModel_;
+		QThread * const ObjsThread_;
+
+		Q2WProxyModel *ChannelsModel_;
 		ReadChannelsFilter *ChannelsFilter_;
-		Wt::WStandardItemModel *ItemsModel_;
+
+		QAbstractItemModel * const SourceItemModel_;
+		Q2WProxyModel *ItemsModel_;
+		ReadItemsFilter *ItemsFilter_;
 
 		Wt::WTableView *ItemsTable_;
 
@@ -66,16 +79,18 @@ namespace WebAccess
 		enum ItemRole
 		{
 			IID = Wt::UserRole + 1,
-			ParentCh,
-			IsUnread,
-			Text,
-			Link
+			IsRead
 		};
 
 		AggregatorApp (IProxyObject*, ICoreProxy_ptr, const Wt::WEnvironment& environment);
+		~AggregatorApp ();
 	private:
 		void HandleChannelClicked (const Wt::WModelIndex&);
-		void HandleItemClicked (const Wt::WModelIndex&);
+		void HandleItemClicked (const Wt::WModelIndex&, const Wt::WMouseEvent&);
+
+		void ShowItem (const QModelIndex&, const Item_ptr&);
+		void ShowItemMenu (const QModelIndex&, const Item_ptr&, const Wt::WMouseEvent&);
+
 		void SetupUI ();
 	};
 }

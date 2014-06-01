@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,14 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINMANAGER_H
+#pragma once
+
 #include <vector>
 #include <memory>
 #include <QWebPage>
 #include <QDateTime>
 #include <QNetworkRequest>
-#include <util/basehookinterconnector.h>
+#include <util/xpc/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
@@ -142,6 +142,17 @@ namespace Poshuku
 		 */
 		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr proxy,
 				QString title, QString url);
+
+		/** @brief Called when a new browser widget is created and
+		 * initialized.
+		 *
+		 * @param proxy The standard hook proxy object.
+		 * @param view The QWebView of the browser widget.
+		 * @param browserWidget The browser widget itself.
+		 */
+		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
+				QObject *browserWidget);
 
 		/** @brief Called inside QWebPage::chooseFile().
 		 *
@@ -476,7 +487,6 @@ namespace Poshuku
 				QWebFrame *frame);
 
 		/** @brief Called whenever the given link is clicked.
-		 * @deprecated
 		 *
 		 * Seems like this hook is no longer used.
 		 *
@@ -495,7 +505,7 @@ namespace Poshuku
 		 * @param link The URL of the link.
 		 * @param title The HTML link element title, if specified in the
 		 * markup.
-		 * @param textContext The text within the HTML link element.
+		 * @param textContent The text within the HTML link element.
 		 */
 		void hookLinkHovered (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
@@ -812,11 +822,12 @@ namespace Poshuku
 		 * @param menu The menu being built.
 		 * @param menuBuildStage The stage of the menu being built.
 		 */
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*,
-				QContextMenuEvent*,
-				const QWebHitTestResult&, QMenu*,
-				WebViewCtxMenuStage);
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
+				QContextMenuEvent *event,
+				const QWebHitTestResult& hitTestResult,
+				QMenu *menu,
+				WebViewCtxMenuStage menuBuildStage);
 
 		/** @brief Called from QWebPage::windowCloseRequested().
 		 *
@@ -831,5 +842,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif

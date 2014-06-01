@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -44,9 +44,9 @@ namespace DBusManager
 	{
 		Q_OBJECT
 
-		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.General");
-		Q_PROPERTY (QString OrganizationName READ GetOrganizationName);
-		Q_PROPERTY (QString ApplicationName READ GetApplicationName);
+		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.General")
+		Q_PROPERTY (QString OrganizationName READ GetOrganizationName)
+		Q_PROPERTY (QString ApplicationName READ GetApplicationName)
 
 		General *General_;
 	public:

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -218,9 +218,11 @@ namespace Azoth
 		if (!XmlSettingsManager::Instance ().property ("OpenTabOnNewMsg").toBool ())
 			return;
 
-		if (msg->GetMessageType () == IMessage::MTChatMessage)
+		if (msg->GetMessageType () == IMessage::MTChatMessage ||
+				(msg->GetMessageType () == IMessage::MTMUCMessage &&
+					Core::Instance ().IsHighlightMessage (msg)))
 		{
-			auto entry = qobject_cast<ICLEntry*> (msg->OtherPart ());
+			auto entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 			if (!Entry2Tab_.contains (entry->GetEntryID ()))
 				OpenChat (entry, false);
 		}
@@ -248,7 +250,7 @@ namespace Azoth
 
 	void ChatTabsManager::EnqueueRestoreInfos (const QList<RestoreChatInfo>& infos)
 	{
-		Q_FOREACH (const RestoreChatInfo& info, infos)
+		for (const RestoreChatInfo& info : infos)
 		{
 			auto entryObj = Core::Instance ().GetEntry (info.EntryID_);
 			qDebug () << Q_FUNC_INFO << info.EntryID_ << entryObj;
@@ -295,9 +297,10 @@ namespace Azoth
 			Entry2Tab_ [muc->GetEntryID ()]->HandleMUCParticipantsChanged ();
 	}
 
-	void ChatTabsManager::RestoreChat (const ChatTabsManager::RestoreChatInfo& info, QObject *entryObj)
+	void ChatTabsManager::RestoreChat (const RestoreChatInfo& info, QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
+
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -306,7 +309,10 @@ namespace Azoth
 			return;
 		}
 		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, false, info.Props_));
-		tab->selectVariant (info.Variant_);
+
+		if (!info.Variant_.isEmpty ())
+			tab->selectVariant (info.Variant_);
+
 		tab->prepareMessageText (info.MsgText_);
 	}
 
@@ -340,7 +346,7 @@ namespace Azoth
 			QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto& id = entry->GetHumanReadableID ();
+		const auto& id = entry->GetEntryID ();
 		if (!RestoreInfo_.contains (id))
 			return;
 

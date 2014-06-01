@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,6 +35,7 @@
 #include <QtDebug>
 #include <util/x11/xwrapper.h>
 #include <util/gui/autoresizemixin.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "pagerwindow.h"
 
 typedef std::function<void (QString)> Actor_f;
@@ -167,7 +168,7 @@ namespace Krigstask
 			keepAbove->setProperty ("Actor",
 					QVariant::fromValue<Actor_f> ([this, isTop] (const QString& wid)
 							{ moveWindowTo (wid, isTop ? "normal" : "top"); }));
-			keepAbove->setIcon (Proxy_->GetIcon ("go-top"));
+			keepAbove->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("go-top"));
 		}
 
 		{
@@ -179,7 +180,7 @@ namespace Krigstask
 			keepBelow->setProperty ("Actor",
 					QVariant::fromValue<Actor_f> ([this, isBottom] (const QString& wid)
 							{ moveWindowTo (wid, isBottom ? "normal" : "bottom"); }));
-			keepBelow->setIcon (Proxy_->GetIcon ("go-bottom"));
+			keepBelow->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("go-bottom"));
 		}
 
 		{
@@ -231,7 +232,7 @@ namespace Krigstask
 			closeAct->setProperty ("Actor",
 					QVariant::fromValue<Actor_f> ([this] (const QString& wid)
 							{ closeWindow (wid); }));
-			closeAct->setIcon (Proxy_->GetIcon ("window-close"));
+			closeAct->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("window-close"));
 		}
 
 		auto allActions = menu->actions () + moreMenu->actions ();

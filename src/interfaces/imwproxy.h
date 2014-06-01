@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -146,8 +146,27 @@ public:
 	 */
 	virtual void ToggleVisibility () = 0;
 
+	/** @brief Show/raise main window
+	 */
+	virtual void ShowMain () = 0;
+
+	/** @brief Returns the main LeechCraft menu.
+	 *
+	 * @return The main LeechCraft menu.
+	 *
+	 * @sa HideMainMenu()
+	 */
 	virtual QMenu* GetMainMenu () = 0;
 
+	/** @brief Hides the main LeechCraft menu.
+	 *
+	 * Calling this function hides the main LeechCraft menu in the
+	 * tabbar. There is no way of showing it back again after that. The
+	 * menu is still accessable via GetMainMenu() and can be shown via
+	 * other means.
+	 *
+	 * @sa GetMainmenu().
+	 */
 	virtual void HideMainMenu () = 0;
 };
 

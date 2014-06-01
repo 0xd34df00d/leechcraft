@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,9 +29,11 @@
 
 #pragma once
 
-#include <util/utilconfig.h>
 #include <interfaces/core/icoreproxy.h>
+#include "guiconfig.h"
 #include "pagenotification.h"
+
+class QShortcut;
 
 namespace Ui
 {
@@ -49,9 +51,9 @@ namespace Util
 	 * searching and closing the notification, as well as convenience
 	 * slots findNext() and findPrevious().
 	 *
-	 * The notification will automatically embed into a QVBoxLayout of
-	 * its parent widget at the bottom, like in Poshuku or Monocle
-	 * plugins.
+	 * The widget will automatically be embedded into the layout of
+	 * the parent widget of \em near after the \em near widget (which is
+	 * passed to the constructor).
 	 *
 	 * This class is typically used as following:
 	 * -# It's subclassed, and an implementation of handleNext() function
@@ -70,34 +72,43 @@ namespace Util
 	 * -# Optionally a couple of QShortCuts or QActions can be created
 	 *    and connected to findNext() and findPrevious() slots to support
 	 *    shortcuts for the corresponding actions.
+	 *
+	 * The FindNotificationWk class provides some utilities to aid
+	 * integrating this class with a QWebPage.
+	 *
+	 * @sa FindNotificationWk
+	 *
+	 * @ingroup GuiUtil
 	 */
-	class UTIL_API FindNotification : public PageNotification
+	class UTIL_GUI_API FindNotification : public PageNotification
 	{
 		Q_OBJECT
 
-		Ui::FindNotification *Ui_;
+		Ui::FindNotification * const Ui_;
+		QShortcut * const EscShortcut_;
 	public:
 		/** Various options controlling the search behavior.
 		 */
 		enum FindFlag
 		{
+			FindNoFlags = 0x0,
 			/** Search should be performed case sensitively.
 			 */
-			FindCaseSensitively,
+			FindCaseSensitively = 0x1,
 
 			/** Search should be performed in the reverse direction.
 			 */
-			FindBackwards,
+			FindBackwards = 0x2,
 
 			/** Search should continue from the beginning when the end is
 			 * reached (or from the end if the beginning is reached and
 			 * FindBackwards is also set).
 			 */
-			FindWrapsAround
+			FindWrapsAround = 0x4
 		};
 		Q_DECLARE_FLAGS (FindFlags, FindFlag)
 
-		/** @brief Creates the search widget and embeds into parent layout.
+		/** @brief Creates the search widget in parent layout of \em near.
 		 *
 		 * Embedding is done only if possible — that is, if parent's
 		 * layout is QVBoxLayout. Otherwise one should place this widget
@@ -105,10 +116,16 @@ namespace Util
 		 *
 		 * @param[in] proxy The core proxy to be used by this find
 		 * notification.
-		 * @param[in] parent The parent widget to embed into.
+		 * @param[in] near The widget near which to embed.
 		 */
-		FindNotification (ICoreProxy_ptr proxy, QWidget *parent);
+		FindNotification (ICoreProxy_ptr proxy, QWidget *near);
 		~FindNotification ();
+
+		/** @brief Sets whether Esc closes the widget.
+		 *
+		 * @param[in] close Whether pressing Esc button closes the widget.
+		 */
+		void SetEscCloses (bool close);
 
 		/** @brief Sets the text in the find field.
 		 *
@@ -128,13 +145,6 @@ namespace Util
 		 * @param[in] successful Whether the search has been successful.
 		 */
 		void SetSuccessful (bool successful);
-
-		/** @brief Sets the focus to the search edit field.
-		 *
-		 * @deprecated This function is deprecated,
-		 * <code>QWidget::setFocus()</code> should be used instead.
-		 */
-		void Focus ();
 
 		/** @brief Returns the current find flags except the direction.
 		 *
@@ -157,9 +167,16 @@ namespace Util
 		/** @brief Search for the next occurrence of the current search.
 		 */
 		void findNext ();
+
 		/** @brief Search for the previous occurrence of the current search.
 		 */
 		void findPrevious ();
+
+		/** @brief Clears the text in the find field.
+		 *
+		 * This is equivalent to <code>SetText ({})</code>.
+		 */
+		void clear ();
 	private slots:
 		void on_Pattern__textChanged (const QString&);
 		void on_FindButton__released ();

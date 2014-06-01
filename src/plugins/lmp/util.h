@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,20 +29,27 @@
 
 #pragma once
 
+#include <atomic>
 #include <QStringList>
 #include <QFileInfo>
 #include <interfaces/media/idiscographyprovider.h>
+#include "interfaces/lmp/ilmpproxy.h"
+#include "interfaces/lmp/ilmputilproxy.h"
 
 class QPixmap;
 class QPoint;
+class QColor;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace LMP
 {
 	struct MediaInfo;
 
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks = false);
+	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
+			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
 	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
 
 	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
@@ -52,10 +59,15 @@ namespace LMP
 
 	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
 	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
-	QString PerformSubstitutions (QString mask, const MediaInfo& info);
+
+	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
 
 	bool ShouldRememberProvs ();
 
 	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
+
+	bool CompareArtists (QString, QString, bool withoutThe);
+
+	QPair<QString, QColor> GetRuleSymbol (const Entity&);
 }
 }

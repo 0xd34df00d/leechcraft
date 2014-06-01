@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,10 +32,11 @@
 #include <QDBusArgument>
 #include <util/xpc/util.h>
 #include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include <util/xdg/xdg.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 
 namespace LeechCraft
 {
@@ -105,8 +106,13 @@ namespace Laughty
 		}
 
 		Entity e;
-		if (hints.value ("transient", false).toBool () == true)
+		if (hints.value ("transient", false).toBool () || expire_timeout)
+		{
 			e = Util::MakeNotification (app_name, summary, prio);
+
+			if (expire_timeout > 0)
+				e.Additional_ ["NotificationTimeout"] = expire_timeout;
+		}
 		else
 		{
 			const auto& catTypePair = GetCatTypePair (hints);
@@ -122,7 +128,6 @@ namespace Laughty
 					summary,
 					body);
 		}
-
 
 		HandleActions (e, id, actions, hints);
 		HandleSounds (hints);
@@ -237,7 +242,7 @@ namespace Laughty
 
 		QPixmap result;
 
-		auto icon = Proxy_->GetIcon (appIcon);
+		auto icon = Proxy_->GetIconThemeManager ()->GetIcon (appIcon);
 		if (!icon.isNull ())
 		{
 			const auto& sizes = icon.availableSizes ();

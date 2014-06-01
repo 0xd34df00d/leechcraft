@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,10 +34,12 @@
 #include <QUrl>
 #include <QtDeclarative>
 #include <QGraphicsEffect>
-#include <gst/gst.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include "gstfix.h"
 #include "playertab.h"
 #include "player.h"
 #include "xmlsettingsmanager.h"
@@ -49,6 +51,8 @@
 #include "volumenotifycontroller.h"
 #include "radiomanager.h"
 #include "notificationplayer.h"
+#include "effectsmanager.h"
+#include "lmpproxy.h"
 
 typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
@@ -62,20 +66,37 @@ namespace LMP
 		Util::InstallTranslator ("lmp");
 
 #ifdef Q_OS_MAC
-		if (qgetenv ("GST_PLUGIN_SYSTEM_PATH").isEmpty ())
-			qputenv ("GST_PLUGIN_SYSTEM_PATH",
-					QCoreApplication::applicationDirPath ().toUtf8 () + "/../PlugIns/gstreamer");
+		auto updateEnv = [] (const char *name, const QByteArray& relpath)
+		{
+			if (qgetenv (name).isEmpty ())
+				qputenv (name,
+						QCoreApplication::applicationDirPath ().toUtf8 () + relpath);
+		};
 
-		qputenv ("GST_REGISTRY_FORK", "no");
+		if (!QApplication::arguments ().contains ("-nobundle"))
+		{
+			updateEnv ("GST_PLUGIN_SYSTEM_PATH", "/../PlugIns/gstreamer");
+			updateEnv ("GST_PLUGIN_SCANNER", "gst-plugin-scanner");
+			updateEnv ("GTK_PATH", "/../Frameworks");
+			updateEnv ("GIO_EXTRA_MODULES", "/../PlugIns/gstreamer");
+			updateEnv ("GSETTINGS_SCHEMA_DIR", "/../Frameworks/schemas");
+
+			qputenv ("GST_REGISTRY_FORK", "no");
+		}
 #endif
 
 		gint argc = 1;
-		gchar *argvarr [] = { "leechcraft", nullptr };
+		gchar *argvarr [] = { g_strdup ("leechcraft"), nullptr };
 		gchar **argv = argvarr;
 		gst_init (&argc, &argv);
 
 		qRegisterMetaType<QList<QPair<QString, QUrl>>> ("QList<QPair<QString, QUrl>>");
 		qRegisterMetaTypeStreamOperators<QList<QPair<QString, QUrl>>> ();
+
+		qRegisterMetaType<SavedFilterInfo> ("LeechCraft::LMP::SavedFilterInfo");
+		qRegisterMetaTypeStreamOperators<SavedFilterInfo> ();
+		qRegisterMetaType<QList<SavedFilterInfo>> ("QList<LeechCraft::LMP::SavedFilterInfo>");
+		qRegisterMetaTypeStreamOperators<QList<SavedFilterInfo>> ();
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
@@ -113,6 +134,8 @@ namespace LMP
 
 		PlayerTab_ = new PlayerTab (PlayerTC_, this);
 
+		Core::Instance ().GetLmpProxy ()->GetGuiProxy ()->SetPlayerTab (PlayerTab_);
+
 		connect (PlayerTab_,
 				SIGNAL (removeTab (QWidget*)),
 				this,
@@ -137,6 +160,9 @@ namespace LMP
 				SIGNAL (artistBrowseRequested (QString)),
 				this,
 				SLOT (handleArtistBrowseRequested (QString)));
+
+		EffectsMgr_ = new EffectsManager (PlayerTab_->GetPlayer ()->GetPath (), this);
+		XSD_->SetDataSource ("EffectsView", EffectsMgr_->GetEffectsModel ());
 
 		connect (PlayerTab_,
 				SIGNAL (fullRaiseRequested ()),
@@ -167,6 +193,8 @@ namespace LMP
 
 		Core::Instance ().InitWithOtherPlugins ();
 		PlayerTab_->InitWithOtherPlugins ();
+
+		EffectsMgr_->RegisteringFinished ();
 	}
 
 	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
@@ -302,7 +330,7 @@ namespace LMP
 		if (!(e.Parameters_ & FromUserInitiated))
 			return;
 
-		player->Enqueue ({ AudioSource (url) }, false);
+		player->Enqueue ({ AudioSource (url) }, Player::EnqueueNone);
 
 		if (e.Additional_ ["Action"] == "AudioEnqueuePlay")
 			player->AddToOneShotQueue (url);
@@ -358,12 +386,17 @@ namespace LMP
 		result << "org.LeechCraft.LMP.CollectionSync";
 		result << "org.LeechCraft.LMP.CloudStorage";
 		result << "org.LeechCraft.LMP.PlaylistProvider";
+		result << "org.LeechCraft.LMP.FiltersProvider";
 		return result;
 	}
 
 	void Plugin::AddPlugin (QObject *plugin)
 	{
 		Core::Instance ().AddPlugin (plugin);
+
+		if (const auto ifp = qobject_cast<IFilterPlugin*> (plugin))
+			for (const auto& effect : ifp->GetEffects ())
+				EffectsMgr_->RegisterEffect (effect);
 	}
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
@@ -405,7 +438,7 @@ namespace LMP
 		{
 			const auto& id = "LMP_Global_" + method;
 			const auto& seq = GlobAction2Entity_ [id].Additional_ ["Shortcut"].value<QKeySequence> ();
-			GlobAction2Info_ [id] = { userText, seq, proxy->GetIcon (icon) };
+			GlobAction2Info_ [id] = { userText, seq, proxy->GetIconThemeManager ()->GetIcon (icon) };
 		};
 		setInfo (SLOT (togglePause ()), tr ("Play/pause"), "media-playback-start");
 		setInfo (SLOT (previousTrack ()), tr ("Previous track"), "media-skip-backward");

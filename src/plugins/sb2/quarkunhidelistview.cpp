@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -61,15 +61,18 @@ namespace SB2
 				continue;
 			}
 
+			const auto& manifest = manager->GetManifest ();
+
 			auto item = new QStandardItem;
-			item->setData (manager->GetID (), Util::UnhideListModel::Roles::ItemClass);
-			item->setData (manager->GetName (), Util::UnhideListModel::Roles::ItemName);
-			item->setData (manager->GetDescription (), Util::UnhideListModel::Roles::ItemDescription);
-			item->setData (Util::GetAsBase64Src (manager->GetIcon ().pixmap (32, 32).toImage ()),
+
+			item->setData (manifest.GetID (), Util::UnhideListModel::Roles::ItemClass);
+			item->setData (manifest.GetName (), Util::UnhideListModel::Roles::ItemName);
+			item->setData (manifest.GetDescription (), Util::UnhideListModel::Roles::ItemDescription);
+			item->setData (Util::GetAsBase64Src (manifest.GetIcon ().pixmap (32, 32).toImage ()),
 					Util::UnhideListModel::Roles::ItemIcon);
 			items << item;
 
-			ID2Component_ [manager->GetID ()] = { comp, manager };
+			ID2Component_ [manifest.GetID ()] = { comp, manager };
 		}
 
 		Model_->invisibleRootItem ()->appendRows (items);

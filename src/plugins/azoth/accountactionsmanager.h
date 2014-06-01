@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include "interfaces/azoth/azothcommon.h"
 
 class QAction;
 class QMenu;
@@ -39,23 +40,30 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class StatusChangeMenuManager;
 	class IAccount;
 	class ConsoleWidget;
 	class ServiceDiscoveryWidget;
 	class MicroblogsTab;
+	class ServerHistoryWidget;
 
 	class AccountActionsManager : public QObject
 	{
 		Q_OBJECT
 
-		QWidget *MW_;
+		QWidget *MW_ = nullptr;
 
 		QHash<IAccount*, ConsoleWidget*> Account2CW_;
+
+		StatusChangeMenuManager * const StatusMenuMgr_;
+		QMenu *MenuChangeStatus_;
 
 		QAction *AccountJoinConference_;
 		QAction *AccountManageBookmarks_;
 		QAction *AccountAddContact_;
 		QAction *AccountOpenNonRosterChat_;
+		QAction *AccountOpenServerHistory_;
+		QAction *AccountConfigServerHistory_;
 		QAction *AccountViewMicroblogs_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
@@ -66,15 +74,24 @@ namespace Azoth
 		QAction *AccountRename_;
 		QAction *AccountModify_;
 	public:
-		AccountActionsManager (QWidget*, QObject* = 0);
+		AccountActionsManager (QObject* = 0);
 
+		void SetMainWidget (QWidget*);
 		QList<QAction*> GetMenuActions (QMenu*, QObject*);
+
+		QString GetStatusText (QAction*, State) const;
+	private:
+		QList<QAction*> AddMenuChangeStatus (QMenu*, QObject*);
+		QList<QAction*> AddBMActions (QMenu*, QObject*);
 	private slots:
+		void handleChangeStatusRequested ();
 		void joinAccountConference ();
 		void joinAccountConfFromBM ();
 		void manageAccountBookmarks ();
 		void addAccountContact ();
 		void handleOpenNonRoster ();
+		void handleOpenServerHistory ();
+		void handleConfigServerHistory ();
 		void handleAccountMicroblogs ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();
@@ -90,6 +107,7 @@ namespace Azoth
 		void gotConsoleWidget (ConsoleWidget*);
 		void gotSDWidget (ServiceDiscoveryWidget*);
 		void gotMicroblogsTab (MicroblogsTab*);
+		void gotServerHistoryTab (ServerHistoryWidget*);
 	};
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 
 #include <QStringList>
 #include "engine/audiosource.h"
+#include "playlist.h"
 
 namespace LeechCraft
 {
@@ -38,11 +39,8 @@ namespace LMP
 {
 namespace M3U
 {
-	QStringList Read (const QString&);
-	void Write (const QString&, const QStringList&);
-
-	QList<AudioSource> Read2Sources (const QString&);
-	void Write (const QString&, const QList<AudioSource>&);
+	Playlist Read2Sources (const QString&);
+	void Write (const QString&, const Playlist&);
 }
 }
 }

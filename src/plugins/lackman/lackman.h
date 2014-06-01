@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,7 +39,6 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ihaverecoverabletabs.h>
-#include "ui_lackman.h"
 
 class QSortFilterProxyModel;
 class QStringListModel;
@@ -52,38 +51,26 @@ namespace Util
 }
 namespace LackMan
 {
-	class TypeFilterProxyModel;
-	class StringFilterModel;
+	class LackManTab;
 
-	class Plugin : public QWidget
+	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
-				 , public ITabWidget
 				 , public IHaveSettings
 				 , public IEntityHandler
 				 , public IHaveShortcuts
 				 , public IHaveRecoverableTabs
-				 , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings
-				IEntityHandler IHaveShortcuts IHaveRecoverableTabs IRecoverableTab)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings
+				IEntityHandler IHaveShortcuts IHaveRecoverableTabs)
 
-		Ui::LackMan Ui_;
-		std::auto_ptr<QTranslator> Translator_;
-		StringFilterModel *FilterString_;
-		TypeFilterProxyModel *TypeFilter_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		QStringListModel *TagsModel_;
 		Util::ShortcutManager *ShortcutMgr_;
 
-		QAction *UpdateAll_;
-		QAction *UpgradeAll_;
-		QAction *Apply_;
-		QAction *Cancel_;
-		QToolBar *Toolbar_;
-
 		TabClassInfo TabClass_;
+
+		QPointer<LackManTab> LackManTab_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -96,11 +83,6 @@ namespace LackMan
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
-
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
@@ -110,22 +92,12 @@ namespace LackMan
 		QMap<QString, ActionInfo> GetActionInfo () const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
-
-		QByteArray GetTabRecoverData () const;
-		QIcon GetTabRecoverIcon () const;
-		QString GetTabRecoverName () const;
 	private slots:
-		void handleTagsUpdated (const QStringList&);
-		void on_PackageStatus__currentIndexChanged (int);
-		void handlePackageSelected (const QModelIndex&);
-		void handleFetchListUpdated (const QList<int>&);
-
 		void openThis ();
-	private:
-		void BuildActions ();
 	signals:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
+
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
@@ -133,8 +105,6 @@ namespace LackMan
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-
-		void tabRecoverDataChanged ();
 	};
 }
 }

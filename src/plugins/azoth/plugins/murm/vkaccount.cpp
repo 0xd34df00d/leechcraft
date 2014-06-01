@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,6 +32,7 @@
 #include <QUuid>
 #include <QIcon>
 #include <QtDebug>
+#include <util/svcauth/vkcaptchadialog.h>
 #include "vkprotocol.h"
 #include "vkconnection.h"
 #include "vkentry.h"
@@ -43,7 +44,7 @@
 #include "vkchatentry.h"
 #include "logger.h"
 #include "accountconfigdialog.h"
-#include "captchadialog.h"
+#include "serverhistorymanager.h"
 
 namespace LeechCraft
 {
@@ -63,6 +64,7 @@ namespace Murm
 	, Conn_ (new VkConnection (name, cookies, proxy, *Logger_))
 	, GroupsMgr_ (new GroupsManager (Conn_))
 	, GeoResolver_ (new GeoResolver (Conn_, this))
+	, ServHistMgr_ (new ServerHistoryManager (this))
 	{
 		connect (Conn_,
 				SIGNAL (cookiesChanged ()),
@@ -104,6 +106,10 @@ namespace Murm
 				SIGNAL (statusChanged (EntryStatus)));
 
 		connect (Conn_,
+				SIGNAL (mucChanged (qulonglong)),
+				this,
+				SLOT (handleMucChanged (qulonglong)));
+		connect (Conn_,
 				SIGNAL (gotChatInfo (ChatInfo)),
 				this,
 				SLOT (handleGotChatInfo (ChatInfo)));
@@ -121,6 +127,11 @@ namespace Murm
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)),
 				this,
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
+
+		connect (ServHistMgr_,
+				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
+				this,
+				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -128,13 +139,14 @@ namespace Murm
 		QByteArray result;
 		QDataStream out (&result, QIODevice::WriteOnly);
 
-		out << static_cast<quint8> (3)
+		out << static_cast<quint8> (4)
 				<< ID_
 				<< Name_
 				<< Conn_->GetCookies ()
 				<< EnableFileLog_
 				<< PublishTune_
-				<< MarkAsOnline_;
+				<< MarkAsOnline_
+				<< UpdateStatus_;
 
 		return result;
 	}
@@ -145,7 +157,7 @@ namespace Murm
 
 		quint8 version = 0;
 		in >> version;
-		if (version < 1 || version > 3)
+		if (version < 1 || version > 4)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -168,6 +180,8 @@ namespace Murm
 					>> acc->PublishTune_;
 		if (version >= 3)
 			in >> acc->MarkAsOnline_;
+		if (version >= 4)
+			in >> acc->UpdateStatus_;
 
 		acc->Init ();
 
@@ -180,20 +194,17 @@ namespace Murm
 		handleMarkOnline ();
 	}
 
-	void VkAccount::Send (VkEntry *entry, VkMessage *msg)
+	void VkAccount::Send (qulonglong to, VkConnection::MessageType type, VkMessage *msg)
 	{
-		Conn_->SendMessage (entry->GetInfo ().ID_,
-				msg->GetBody (),
-				[msg] (qulonglong id) { msg->SetID (id); },
-				VkConnection::MessageType::Dialog);
-	}
-
-	void VkAccount::Send (VkChatEntry *entry, VkMessage *msg)
-	{
-		Conn_->SendMessage (entry->GetInfo ().ChatID_,
-				msg->GetBody (),
-				[msg] (qulonglong id) { msg->SetID (id); },
-				VkConnection::MessageType::Chat);
+		QPointer<VkMessage> safeMsg { msg };
+		Conn_->SendMessage (to,
+				msg->GetRawBody (),
+				[safeMsg] (qulonglong id)
+				{
+					if (safeMsg)
+						safeMsg->SetID (id);
+				},
+				type);
 	}
 
 	void VkAccount::CreateChat (const QString& name, const QList<VkEntry*>& entries)
@@ -244,7 +255,7 @@ namespace Murm
 		return this;
 	}
 
-	QObject* VkAccount::GetParentProtocol () const
+	VkProtocol* VkAccount::GetParentProtocol () const
 	{
 		return Proto_;
 	}
@@ -303,6 +314,7 @@ namespace Murm
 		dia->SetFileLogEnabled (EnableFileLog_);
 		dia->SetPublishTuneEnabled (PublishTune_);
 		dia->SetMarkAsOnline (MarkAsOnline_);
+		dia->SetUpdateStatusEnabled (UpdateStatus_);
 
 		connect (dia,
 				SIGNAL (reauthRequested ()),
@@ -328,7 +340,7 @@ namespace Murm
 
 	void VkAccount::ChangeState (const EntryStatus& status)
 	{
-		Conn_->SetStatus (status);
+		Conn_->SetStatus (status, UpdateStatus_);
 	}
 
 	void VkAccount::Authorize (QObject*)
@@ -441,6 +453,41 @@ namespace Murm
 		return entry;
 	}
 
+	bool VkAccount::HasFeature (ServerHistoryFeature feature) const
+	{
+		switch (feature)
+		{
+		case ServerHistoryFeature::AccountSupportsHistory:
+			return true;
+		case ServerHistoryFeature::Configurable:
+			return false;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown feature"
+				<< static_cast<int> (feature);
+		return false;
+	}
+
+	void VkAccount::OpenServerHistoryConfiguration ()
+	{
+	}
+
+	QAbstractItemModel* VkAccount::GetServerContactsModel () const
+	{
+		return ServHistMgr_->GetModel ();
+	}
+
+	void VkAccount::FetchServerHistory (const QModelIndex& contact, const QByteArray& startId, int count)
+	{
+		ServHistMgr_->RequestHistory (contact, startId.toInt (), count);
+	}
+
+	DefaultSortParams VkAccount::GetSortParams () const
+	{
+		return { 0, ServerHistoryRole::LastMessageDate, Qt::DescendingOrder };
+	}
+
 	void VkAccount::TryPendingMessages ()
 	{
 		decltype (PendingMessages_) pending;
@@ -461,15 +508,7 @@ namespace Murm
 		return entry;
 	}
 
-	void VkAccount::handleSelfInfo (const UserInfo& info)
-	{
-		handleUsers ({ info });
-
-		SelfEntry_ = Entries_ [info.ID_];
-		SelfEntry_->SetSelf ();
-	}
-
-	void VkAccount::handleUsers (const QList<UserInfo>& infos)
+	bool VkAccount::CreateUsers (const QList<UserInfo>& infos)
 	{
 		QList<QObject*> newEntries;
 		QSet<int> newCountries;
@@ -496,8 +535,24 @@ namespace Murm
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);
 
-		if (hadNew)
+		return hadNew;
+	}
+
+	void VkAccount::handleSelfInfo (const UserInfo& info)
+	{
+		CreateUsers ({ info });
+
+		SelfEntry_ = Entries_ [info.ID_];
+		SelfEntry_->SetSelf ();
+	}
+
+	void VkAccount::handleUsers (const QList<UserInfo>& infos)
+	{
+		if (CreateUsers (infos))
+		{
 			TryPendingMessages ();
+			ServHistMgr_->refresh ();
+		}
 	}
 
 	void VkAccount::handleNRIList (const QList<qulonglong>& ids)
@@ -592,14 +647,23 @@ namespace Murm
 
 	void VkAccount::finishOffline ()
 	{
-		SelfEntry_ = nullptr;
+		if (!ChatEntries_.isEmpty ())
+		{
+			QList<QObject*> toRemove;
+			for (auto item : ChatEntries_)
+				toRemove << item;
+			emit removedCLItems (toRemove);
 
-		emit removedCLItems (GetCLEntries ());
-		qDeleteAll (Entries_);
-		Entries_.clear ();
+			qDeleteAll (ChatEntries_);
+			ChatEntries_.clear ();
+		}
 
-		qDeleteAll (ChatEntries_);
-		ChatEntries_.clear ();
+		for (auto entry : Entries_)
+		{
+			auto info = entry->GetInfo ();
+			info.IsOnline_ = false;
+			entry->UpdateInfo (info, false);
+		}
 	}
 
 	void VkAccount::handleCaptcha (const QString& cid, const QUrl& url)
@@ -610,7 +674,8 @@ namespace Murm
 			return;
 		}
 
-		auto dia = new CaptchaDialog (url, cid, CoreProxy_->GetNetworkAccessManager ());
+		auto dia = new Util::SvcAuth::VkCaptchaDialog (url, cid, CoreProxy_->GetNetworkAccessManager ());
+		dia->SetContextName ("Azoth Murm");
 		connect (dia,
 				SIGNAL (gotCaptcha (QString, QString)),
 				this,
@@ -639,9 +704,16 @@ namespace Murm
 
 		PublishTune_ = AccConfigDia_->GetPublishTuneEnabled ();
 
+		UpdateStatus_ = AccConfigDia_->GetUpdateStatusEnabled ();
+
 		emit accountChanged (this);
 
 		AccConfigDia_->deleteLater ();
+	}
+
+	void VkAccount::handleMucChanged (qulonglong chat)
+	{
+		Conn_->RequestChatInfo (chat);
 	}
 
 	void VkAccount::handleGotChatInfo (const ChatInfo& info)

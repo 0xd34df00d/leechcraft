@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -120,7 +120,7 @@ public:
 	virtual QObject* GetPluginByID (const QByteArray& id) const = 0;
 
 	/** @brief Returns the library path from which plugin instance
-	 * object was loaded loaded.
+	 * \em object has been loaded.
 	 *
 	 * If the path could not be determined for some reason (for example,
 	 * if the plugin was injected or provided by a plugin adaptor, or if
@@ -132,7 +132,8 @@ public:
 	 * a plugin) are supported.
 	 *
 	 * @param[in] object The object for which to get the library path.
-	 * @return
+	 * @return The path corresponding to the plugin represented by the
+	 * plugin instance \em object.
 	 */
 	virtual QString GetPluginLibraryPath (const QObject* object) const = 0;
 
@@ -178,7 +179,9 @@ public:
 	/** @brief Opens the settings page for the given plugin object.
 	 *
 	 * If the plugin doesn't implement IHaveSettings, this function
-	 * does nthing.
+	 * does nothing.
+	 *
+	 * @param[in] plugin The plugin for which to open the settings page.
 	 */
 	virtual void OpenSettings (QObject *plugin) = 0;
 };

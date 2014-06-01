@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,15 +28,10 @@
  **********************************************************************/
 
 #include "localcollectionwatcher.h"
-#include <algorithm>
-#include <QtConcurrentRun>
-#include <QFileSystemWatcher>
-#include <QtDebug>
-#include <QDir>
 #include <QTimer>
 #include "core.h"
 #include "localcollection.h"
-#include "util.h"
+#include "recursivedirwatcher.h"
 
 namespace LeechCraft
 {
@@ -44,7 +39,7 @@ namespace LMP
 {
 	LocalCollectionWatcher::LocalCollectionWatcher (QObject *parent)
 	: QObject (parent)
-	, Watcher_ (new QFileSystemWatcher (this))
+	, Watcher_ (new RecursiveDirWatcher (this))
 	, ScanTimer_ (new QTimer (this))
 	{
 		connect (Watcher_,
@@ -59,37 +54,14 @@ namespace LMP
 				SLOT (rescanQueue ()));
 	}
 
-	namespace
-	{
-		QStringList CollectSubdirs (const QString& path)
-		{
-			QDir dir (path);
-			const auto& list = dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot);
-
-			QStringList result (path);
-			std::for_each (list.begin (), list.end (),
-					[&dir, &result] (decltype (list.front ()) item)
-						{ result += CollectSubdirs (dir.filePath (item)); });
-			return result;
-		}
-	}
-
 	void LocalCollectionWatcher::AddPath (const QString& path)
 	{
-		qDebug () << Q_FUNC_INFO << "scanning" << path;
-		auto watcher = new QFutureWatcher<QStringList> ();
-		watcher->setProperty ("Path", path);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleSubdirsCollected ()));
-
-		watcher->setFuture (QtConcurrent::run (CollectSubdirs, path));
+		Watcher_->AddRoot (path);
 	}
 
 	void LocalCollectionWatcher::RemovePath (const QString& path)
 	{
-		Watcher_->removePaths (Dir2Subdirs_ [path]);
+		Watcher_->RemoveRoot (path);
 	}
 
 	void LocalCollectionWatcher::ScheduleDir (const QString& dir)
@@ -102,20 +74,6 @@ namespace LMP
 			ScheduledDirs_ << dir;
 	}
 
-	void LocalCollectionWatcher::handleSubdirsCollected ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
-		if (!watcher)
-			return;
-
-		watcher->deleteLater ();
-
-		const auto& paths = watcher->result ();
-		const auto& path = watcher->property ("Path").toString ();
-		Dir2Subdirs_ [path] = paths;
-		Watcher_->addPaths (paths);
-	}
-
 	void LocalCollectionWatcher::handleDirectoryChanged (const QString& path)
 	{
 		ScheduleDir (path);
@@ -123,7 +81,7 @@ namespace LMP
 
 	void LocalCollectionWatcher::rescanQueue ()
 	{
-		Q_FOREACH (const auto& path, ScheduledDirs_)
+		for (const auto& path : ScheduledDirs_)
 			Core::Instance ().GetLocalCollection ()->Scan (path, false);
 
 		ScheduledDirs_.clear ();

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,7 @@
 #include <QWebFrame>
 #include <QApplication>
 #include <QtDebug>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
@@ -327,7 +327,7 @@ namespace StandardStyles
 			IsLastMsgRead_ [frame] = isRead;
 		}
 
-		elem.appendInside (QString ("<div class='%1'>%2</div>")
+		elem.appendInside (QString ("<div class='%1' style='word-wrap: break-word;'>%2</div>")
 					.arg (divClass)
 					.arg (string));
 		return true;

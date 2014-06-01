@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,10 +42,9 @@ namespace LeechCraft
 {
 namespace HotSensors
 {
-	PlotManager::PlotManager (std::weak_ptr<SensorsManager> mgr, ICoreProxy_ptr proxy, QObject *parent)
+	PlotManager::PlotManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
-	, SensorsMgr_ (mgr)
 	, Model_ (new SensorsGraphModel (this))
 	, UpdateCounter_ (0)
 	{
@@ -72,29 +71,28 @@ namespace HotSensors
 
 		QList<QStandardItem*> items;
 
-		struct PendingSetInfo
-		{
-			QStandardItem *Item_;
-			const QString Temp_;
-			const QUrl URL_;
-			const QString Name_;
-			const QByteArray SVG_;
-		};
 		for (auto i = history.begin (); i != history.end (); ++i)
 		{
 			const auto& name = i.key ();
 
+			double max = 0, crit = 0;
 			QList<QPointF> points;
 			for (const auto& item : *i)
-				points.append ({ static_cast<qreal> (points.size ()), item });
+			{
+				points.append ({ static_cast<qreal> (points.size ()), item.Value_ });
+				max = std::max (max, item.Max_);
+				crit = std::max (crit, item.Crit_);
+			}
 
 			const bool isKnownSensor = existing.contains (name);
 			auto item = isKnownSensor ? existing.take (name) : new QStandardItem;
 
-			const auto lastTemp = i->isEmpty () ? 0 : static_cast<int> (i->last ());
+			const auto lastTemp = i->isEmpty () ? 0 : static_cast<int> (i->last ().Value_);
 			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
 			item->setData (name, SensorsGraphModel::SensorName);
 			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);
+			item->setData (max, SensorsGraphModel::MaxTemp);
+			item->setData (crit, SensorsGraphModel::CritTemp);
 			if (!isKnownSensor)
 				items << item;
 		}

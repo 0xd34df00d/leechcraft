@@ -42,7 +42,7 @@ namespace OnlineBookmarks
 		Util::BaseSettingsManager::Init ();
 	}
 
-	XmlSettingsManager *XmlSettingsManager::Instance ()
+	XmlSettingsManager* XmlSettingsManager::Instance ()
 	{
 		static XmlSettingsManager xsm;
 		return &xsm;
@@ -52,7 +52,7 @@ namespace OnlineBookmarks
 	{
 	}
 
-	QSettings *XmlSettingsManager::BeginSettings () const
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
 		return new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,6 +34,7 @@
 #include <util/tags/tagslineedit.h>
 #include <util/tags/tagscompleter.h>
 #include "storagemodel.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -92,7 +93,8 @@ namespace Otlozhu
 	{
 		QStyleOptionViewItem option (thatOption);
 
-		if (index.data (StorageModel::Roles::ItemProgress).toInt () == 100)
+		if (index.data (StorageModel::Roles::ItemProgress).toInt () == 100 &&
+				XmlSettingsManager::Instance ().property ("DoneStrikeOut").toBool ())
 			option.font.setStrikeOut (true);
 
 		switch (index.column ())

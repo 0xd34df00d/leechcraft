@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_STARTUPTHIRDPAGE_H
-#define PLUGINS_AGGREGATOR_STARTUPTHIRDPAGE_H
+#pragma once
+
 #include <QWizardPage>
 #include "ui_startupthirdpage.h"
 
@@ -41,14 +41,14 @@ namespace Aggregator
 		Q_OBJECT
 
 		Ui::StartupThirdPageWidget Ui_;
+
 		struct FeedInfo
 		{
 			QString Name_;
-			QString DefaultTags_;
+			QStringList DefaultTags_;
 			QString URL_;
-
-			FeedInfo (const QString&, const QString&, const QString&);
 		};
+
 		typedef QList<FeedInfo> FeedInfos_t;
 		QMap<QString, FeedInfos_t> Sets_;
 	public:
@@ -56,6 +56,7 @@ namespace Aggregator
 
 		void initializePage ();
 	private:
+		void ParseFeedsSets ();
 		void Populate (const QString&);
 	private slots:
 		void handleAccepted ();
@@ -65,5 +66,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

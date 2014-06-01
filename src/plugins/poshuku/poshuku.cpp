@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -46,8 +46,10 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include <util/tags/tagscompletionmodel.h>
-#include <util/backendselector.h>
+#include <util/db/backendselector.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
@@ -457,11 +459,9 @@ namespace Poshuku
 			<< "OfflineStorageDB"
 			<< "LocalStorageDB"
 			<< "OfflineWebApplicationCache"
-			<< "EnableXSSAuditing";
-#if QT_VERSION >= 0x040800
-		viewerSettings << "WebGLEnabled"
+			<< "EnableXSSAuditing"
+			<< "WebGLEnabled"
 			<< "HyperlinkAuditingEnabled";
-#endif
 		XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 				this, "viewerSettingsChanged");
 
@@ -537,12 +537,10 @@ namespace Poshuku
 				XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::XSSAuditingEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableXSSAuditing").toBool ());
-#if QT_VERSION >= 0x040800
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableHyperlinkAuditing").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::WebGLEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableWebGL").toBool ());
-#endif
 		QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 					Instance ()->property ("UserStyleSheet").toString ()));
 	}

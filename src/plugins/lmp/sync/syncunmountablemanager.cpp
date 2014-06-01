@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 #include <interfaces/lmp/iunmountablesync.h>
 #include "core.h"
 #include "localcollection.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {
@@ -71,8 +72,10 @@ namespace LMP
 			if (trackId < 0)
 				continue;
 
-			const auto trackNumber = coll->GetTrackData (trackId, LocalCollection::Role::TrackNumber).toInt ();
-			const auto& trackTitle = coll->GetTrackData (trackId, LocalCollection::Role::TrackTitle).toString ();
+			const auto trackNumber = coll->
+					GetTrackData (trackId, LocalCollectionModel::Role::TrackNumber).toInt ();
+			const auto& trackTitle = coll->
+					GetTrackData (trackId, LocalCollectionModel::Role::TrackTitle).toString ();
 
 			const auto album = coll->GetTrackAlbum (trackId);
 			if (!album)

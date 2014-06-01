@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="SpeedDial" />
+		<item type="groupbox" checkable="true" property="UseStaticList" default="false">
+			<label value="Use static pages list" />
+			<item type="dataview" property="SitesView" />
+		</item>
+	</page>
+</settings>

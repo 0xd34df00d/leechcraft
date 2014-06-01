@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -76,7 +76,7 @@ namespace Murm
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 
-		void UpdateInfo (const UserInfo&);
+		void UpdateInfo (const UserInfo&, bool spontaneous = true);
 		const UserInfo& GetInfo () const;
 
 		void Send (VkMessage*);
@@ -87,6 +87,7 @@ namespace Murm
 
 		void RegisterIn (VkChatEntry*);
 		void UnregisterIn (VkChatEntry*);
+		void ReemitGroups ();
 
 		VkMessage* FindMessage (qulonglong) const;
 		void HandleMessage (MessageInfo);

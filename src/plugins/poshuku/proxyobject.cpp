@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -45,7 +45,7 @@ namespace Poshuku
 	{
 		return Core::Instance ().GetFavoritesModel ();
 	}
-	
+
 	QObject* ProxyObject::OpenInNewTab (const QUrl& url, bool inverted) const
 	{
 		bool raise = XmlSettingsManager::Instance ()->
@@ -53,6 +53,11 @@ namespace Poshuku
 		if (inverted)
 			raise = !raise;
 		return Core::Instance ().NewURL (url, raise);
+	}
+
+	IStorageBackend_ptr ProxyObject::CreateStorageBackend ()
+	{
+		return StorageBackend::Create ();
 	}
 }
 }

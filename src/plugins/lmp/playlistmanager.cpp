@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,7 +32,7 @@
 #include <QStandardItemModel>
 #include <QTimer>
 #include <QMimeData>
-#include <boost/graph/graph_concepts.hpp>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"
@@ -63,7 +63,7 @@ namespace LMP
 
 			QStringList mimeTypes () const
 			{
-				return QStringList ("text/uri-list");
+				return { "text/uri-list" };
 			}
 
 			QMimeData* mimeData (const QModelIndexList& indexes) const
@@ -180,7 +180,7 @@ namespace LMP
 		switch (index.data (Roles::PlaylistType).toInt ())
 		{
 		case PlaylistTypes::Static:
-			return Static_->GetCustomPlaylist (index.data ().toString ());
+			return { Static_->GetCustomPlaylistPath (index.data ().toString ()) };
 		case PlaylistTypes::Random50:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::Random50));
 		case PlaylistTypes::LovedTracks:
@@ -200,7 +200,7 @@ namespace LMP
 
 	boost::optional<MediaInfo> PlaylistManager::TryResolveMediaInfo (const QUrl& url) const
 	{
-		Q_FOREACH (auto provObj, PlaylistProviders_)
+		for (auto provObj : PlaylistProviders_)
 		{
 			auto prov = qobject_cast<IPlaylistProvider*> (provObj);
 			auto info = prov->GetURLInfo (url);
@@ -218,8 +218,9 @@ namespace LMP
 		while (StaticRoot_->rowCount ())
 			StaticRoot_->removeRow (0);
 
-		const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("view-media-playlist");
-		Q_FOREACH (const auto& name, Static_->EnumerateCustomPlaylists ())
+		const auto& icon = Core::Instance ().GetProxy ()->
+				GetIconThemeManager ()->GetIcon ("view-media-playlist");
+		for (const auto& name : Static_->EnumerateCustomPlaylists ())
 		{
 			auto item = new QStandardItem (icon, name);
 			item->setData (PlaylistTypes::Static, Roles::PlaylistType);

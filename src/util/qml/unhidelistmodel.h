@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,13 +30,13 @@
 #pragma once
 
 #include <QStandardItemModel>
-#include <util/utilconfig.h>
+#include "qmlconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API UnhideListModel : public QStandardItemModel
+	class UTIL_QML_API UnhideListModel : public QStandardItemModel
 	{
 	public:
 		enum Roles

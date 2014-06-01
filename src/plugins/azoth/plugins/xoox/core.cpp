@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,8 +32,9 @@
 #include <QXmlStreamWriter>
 #include <QDomDocument>
 #include <QTimer>
+#include <QDir>
 #include <QXmppLogger.h>
-#include <util/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"
@@ -259,16 +260,15 @@ namespace Xoox
 		w.writeStartDocument ();
 		w.writeStartElement ("roster");
 		w.writeAttribute ("formatversion", "1");
-		Q_FOREACH (QObject *accObj,
-				GlooxProtocol_->GetRegisteredAccounts ())
+		for (auto accObj : GlooxProtocol_->GetRegisteredAccounts ())
 		{
-			IAccount *acc = qobject_cast<IAccount*> (accObj);
+			auto acc = qobject_cast<IAccount*> (accObj);
 			w.writeStartElement ("account");
 				w.writeTextElement ("id", acc->GetAccountID ());
 				w.writeStartElement ("entries");
-				Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+				for (auto entryObj : acc->GetCLEntries ())
 				{
-					GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+					const auto entry = qobject_cast<GlooxCLEntry*> (entryObj);
 					if (!entry ||
 							(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 						continue;
@@ -286,9 +286,9 @@ namespace Xoox
 	void Core::handleItemsAdded (const QList<QObject*>& items)
 	{
 		bool shouldSave = false;
-		Q_FOREACH (QObject *clEntry, items)
+		for (auto clEntry : items)
 		{
-			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (clEntry);
+			auto entry = qobject_cast<GlooxCLEntry*> (clEntry);
 			if (!entry ||
 					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 				continue;
@@ -303,7 +303,7 @@ namespace Xoox
 		}
 
 		if (shouldSave)
-			saveRoster ();
+			ScheduleSaveRoster (5000);
 	}
 
 	void Core::saveAvatarFor (GlooxCLEntry *entry)

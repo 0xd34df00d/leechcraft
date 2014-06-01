@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -41,13 +41,14 @@
 #include <QTranslator>
 #include <QCursor>
 #include <QKeyEvent>
+#include <QInputDialog>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/tags/tagscompleter.h>
-#include <util/backendselector.h>
+#include <util/db/backendselector.h>
 #include <util/models/flattofoldersproxymodel.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -71,6 +72,7 @@
 #include "actionsstructs.h"
 #include "uistatepersist.h"
 #include "itemswidget.h"
+#include "channelsmodel.h"
 
 namespace LeechCraft
 {
@@ -225,6 +227,7 @@ namespace Aggregator
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
 		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
 		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRenameFeed_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
 		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveChannel_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
@@ -243,6 +246,7 @@ namespace Aggregator
 		contextMenu->addSeparator ();
 		contextMenu->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
 		contextMenu->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionRenameFeed_);
 		contextMenu->addSeparator ();
 		contextMenu->addAction (Impl_->ChannelActions_.ActionChannelSettings_);
 		contextMenu->addSeparator ();
@@ -715,6 +719,26 @@ namespace Aggregator
 		mb.setWindowModality (Qt::WindowModal);
 		if (mb.exec () == QMessageBox::Ok)
 			Core::Instance ().RemoveFeed (ds);
+	}
+
+	void Aggregator::on_ActionRenameFeed__triggered ()
+	{
+		const auto& ds = GetRelevantIndex ();
+
+		if (!ds.isValid ())
+			return;
+
+		const auto& current = ds.sibling (ds.row (), ChannelsModel::ColumnTitle)
+				.data ().toString ();
+		const QString& newName = QInputDialog::getText (this,
+				tr ("Rename feed"),
+				tr ("New feed name:"),
+				QLineEdit::Normal,
+				current);
+		if (newName.isEmpty ())
+			return;
+
+		Core::Instance ().RenameFeed (ds, newName);
 	}
 
 	void Aggregator::on_ActionRemoveChannel__triggered ()

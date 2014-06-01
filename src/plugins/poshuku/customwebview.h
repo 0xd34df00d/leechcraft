@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -72,7 +72,7 @@ namespace Poshuku
 		 * to its percent-encoding representation.
 		 *
 		 * @param[in] url The possibly non-UTF-8 URL.
-		 * @return
+		 * @return The \em url converted to Unicode.
 		 */
 		QString URLToProperString (const QUrl& url);
 	protected:
@@ -91,6 +91,7 @@ namespace Poshuku
 	private slots:
 		void remakeURL (const QUrl&);
 		void handleLoadFinished (bool);
+		void handleFrameState (QWebFrame*, QWebHistoryItem*);
 		void openLinkHere ();
 		void openLinkInNewTab ();
 		void saveLink ();
@@ -116,6 +117,8 @@ namespace Poshuku
 		void closeRequested ();
 		void storeFormData (const PageFormsData_t&);
 		void invalidateSettings ();
+
+		void navigateRequested (const QUrl&);
 
 		// Hook support signals
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,

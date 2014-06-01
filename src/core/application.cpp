@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -88,12 +88,12 @@ namespace LeechCraft
 	, DefaultSystemStyleName_ (style ()->objectName ())
 	, CatchExceptions_ (true)
 	{
-		Arguments_ = arguments ();
+		Arguments_ = arguments ().mid (1);
 		bpo::options_description desc ("Allowed options");
 
 		{
 			std::vector<std::wstring> strings;
-			for (const auto& arg : Arguments_.mid (1))
+			for (const auto& arg : Arguments_)
 				strings.push_back (arg.toStdWString ());
 			bpo::wcommand_line_parser parser (strings);
 			VarMap_ = Parse (parser, &desc);
@@ -318,8 +318,7 @@ namespace LeechCraft
 	void Application::InitiateRestart ()
 	{
 		QStringList arguments = Arguments_;
-		arguments.removeFirst ();
-		arguments << "-restart";
+		arguments << "--restart";
 		QProcess::startDetached (applicationFilePath (), arguments);
 
 		qApp->quit ();

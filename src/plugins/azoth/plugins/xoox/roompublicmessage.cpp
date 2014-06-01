@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -86,6 +86,11 @@ namespace Xoox
 	, XHTML_ (msg.xhtml ())
 	{
 		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);
+	}
+
+	void RoomPublicMessage::SetParticipantEntry (const RoomParticipantEntry_ptr& entry)
+	{
+		ParticipantEntry_ = entry;
 	}
 
 	QObject* RoomPublicMessage::GetQObject ()

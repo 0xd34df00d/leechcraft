@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -91,6 +91,7 @@ namespace LHTR
 	private:
 		void InternalSetBgColor (const QColor&, ContentType);
 
+		void SetupImageMenu ();
 		void SetupTableMenu ();
 
 		void ExecCommand (const QString&, QString = QString ());
@@ -100,6 +101,8 @@ namespace LHTR
 
 		QString ExpandCustomTags (QString) const;
 		QString RevertCustomTags () const;
+
+		void SyncHTMLToView () const;
 	private slots:
 		void handleBgColorSettings ();
 
@@ -127,6 +130,8 @@ namespace LHTR
 
 		void handleInsertLink ();
 		void handleInsertImage ();
+		void handleCollectionImageChosen ();
+		void handleInsertImageFromCollection ();
 
 		void handleFind ();
 		void handleReplace ();

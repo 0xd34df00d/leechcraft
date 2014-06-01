@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QDeclarativeImageProvider>
-#include <util/utilconfig.h>
+#include "qmlconfig.h"
 
 class QIcon;
 
@@ -62,7 +62,7 @@ namespace Util
 	 *
 	 * @sa ThemeImageProvider
 	 */
-	class UTIL_API WidthIconProvider : public QDeclarativeImageProvider
+	class UTIL_QML_API WidthIconProvider : public QDeclarativeImageProvider
 	{
 	public:
 		WidthIconProvider ();

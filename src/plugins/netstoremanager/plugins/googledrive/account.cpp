@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -120,12 +120,12 @@ namespace GoogleDrive
 	}
 
 	void Account::Download (const QByteArray& id, const QString& filepath,
-			TaskParameters tp, bool silent, bool open)
+			TaskParameters tp, bool open)
 	{
 		if (id.isEmpty ())
 			return;
 
-		DriveManager_->Download (id, filepath, tp, silent, open);
+		DriveManager_->Download (id, filepath, tp, open);
 	}
 
 	ListingOps Account::GetListingOps () const
@@ -145,7 +145,7 @@ namespace GoogleDrive
 
 	void Account::RefreshChildren (const QByteArray& parentId)
 	{
-		emit listingUpdated ();
+		emit listingUpdated (parentId);
 	}
 
 	void Account::Delete (const QList<QByteArray>& ids, bool ask)
@@ -341,7 +341,7 @@ namespace GoogleDrive
 			result << CreateItem (item);
 
 		emit gotListing (result);
-		emit listingUpdated ();
+		emit listingUpdated (result.isEmpty () ? QByteArray () : result.at (0).ParentID_);
 	}
 
 	void Account::handleSharedFileId (const QString& id)
@@ -353,7 +353,7 @@ namespace GoogleDrive
 	void Account::handleGotNewItem (const DriveItem& item)
 	{
 		emit gotNewItem (CreateItem (item), item.ParentId_.toUtf8 ());
-		emit listingUpdated ();
+		emit listingUpdated (item.ParentId_.toUtf8 ());
 	}
 
 	void Account::handleGotChanges (const QList<DriveChanges>& driveChanges)

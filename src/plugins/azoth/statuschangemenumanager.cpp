@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -41,7 +41,7 @@ namespace Azoth
 	{
 	}
 
-	QMenu* StatusChangeMenuManager::CreateMenu (QObject* obj, const char* slot, QWidget *parent)
+	QMenu* StatusChangeMenuManager::CreateMenu (QObject* obj, const char* slot, QWidget *parent, bool autoupdate)
 	{
 		QMenu *result = new QMenu (tr ("Change status"), parent);
 		result->addAction (Core::Instance ().GetIconForState (SOnline),
@@ -72,10 +72,11 @@ namespace Azoth
 		result->addSeparator ();
 		auto customAct = result->addAction (QString (), obj, slot);
 
-		connect (result,
-				SIGNAL (aboutToShow ()),
-				this,
-				SLOT (updateCustomStatuses ()));
+		if (autoupdate)
+			connect (result,
+					SIGNAL (aboutToShow ()),
+					this,
+					SLOT (updateCustomStatuses ()));
 		connect (result,
 				SIGNAL (destroyed (QObject*)),
 				this,
@@ -86,18 +87,18 @@ namespace Azoth
 		return result;
 	}
 
-	void StatusChangeMenuManager::updateCustomStatuses ()
+	void StatusChangeMenuManager::UpdateCustomStatuses (QMenu *rootMenu)
 	{
-		if (!Infos_.contains (sender ()))
+		if (!Infos_.contains (rootMenu))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown menu"
-					<< sender ()
+					<< rootMenu
 					<< Infos_.keys ();
 			return;
 		}
 
-		const auto& info = Infos_ [sender ()];
+		const auto& info = Infos_ [rootMenu];
 
 		std::shared_ptr<QMenu> oldMenu (info.CustomAction_->menu ());
 
@@ -124,6 +125,11 @@ namespace Azoth
 
 		info.CustomAction_->setText (tr ("Custom"));
 		info.CustomAction_->setMenu (menu);
+	}
+
+	void StatusChangeMenuManager::updateCustomStatuses ()
+	{
+		UpdateCustomStatuses (static_cast<QMenu*> (sender ()));
 	}
 
 	void StatusChangeMenuManager::handleMenuDestroyed ()

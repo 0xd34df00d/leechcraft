@@ -37,6 +37,8 @@ public:
 	void start();
 	void stop();
 
+	int interval() const;
+
 signals:
 	void secondsIdle(int);
 

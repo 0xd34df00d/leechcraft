@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -172,7 +172,7 @@ public:
 	/** @brief Returns the index of the window containing the tab widget.
 	 *
 	 * @param[in] ictw The tab widget to search for.
-	 * @return THe index of the given tab widget, or -1 if not found.
+	 * @return The index of the given tab widget, or -1 if not found.
 	 *
 	 * @sa GetTabWidget()
 	 */
@@ -190,6 +190,7 @@ protected:
 	 * @param[out] index The index of the newly added window.
 	 *
 	 * @sa windowRemoved()
+	 * @sa GetQObject()
 	 */
 	virtual void windowAdded (int index) = 0;
 
@@ -202,6 +203,7 @@ protected:
 	 * @param[out] index The index of the window being removed.
 	 *
 	 * @sa windowAdded()
+	 * @sa GetQObject()
 	 */
 	virtual void windowRemoved (int index) = 0;
 
@@ -209,6 +211,8 @@ protected:
 	 *
 	 * @param[out] to The new active window index.
 	 * @param[out] from The previous active window index.
+	 *
+	 * @sa GetQObject()
 	 */
 	virtual void currentWindowChanged (int to, int from) = 0;
 
@@ -218,6 +222,7 @@ protected:
 	 * @param[out] tabIdx The index of the tab.
 	 *
 	 * @sa tabIsRemoving()
+	 * @sa GetQObject()
 	 */
 	virtual void tabAdded (int windowIdx, int tabIdx) = 0;
 
@@ -228,6 +233,7 @@ protected:
 	 * @param[out] tabIdx The index of the tab.
 	 *
 	 * @sa tabAdded()
+	 * @sa GetQObject()
 	 */
 	virtual void tabIsRemoving (int windowIdx, int tabIdx) = 0;
 
@@ -239,6 +245,8 @@ protected:
 	 * @param[out] toWin The window to which the tab is being added.
 	 * @param[out] tabIdx The index of the tab being moved in the window
 	 * it is moved from.
+	 *
+	 * @sa GetQObject()
 	 */
 	virtual void tabIsMoving (int fromWin, int toWin, int tabIdx) = 0;
 
@@ -250,6 +258,8 @@ protected:
 	 * @param[out] toWin The window to which the tab is added.
 	 * @param[out] tabIdx The index of the tab being moved in the window
 	 * it is moved to.
+	 *
+	 * @sa GetQObject()
 	 */
 	virtual void tabMoved (int fromWin, int toWin, int tabIdx) = 0;
 };

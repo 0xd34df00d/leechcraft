@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,14 +37,15 @@
 #include <QFile>
 #include <QFileInfoList>
 #include <QApplication>
+#include <QToolButton>
 #include <QTimer>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
+#include "childactioneventfilter.h"
 #include "util/util.h"
+#include "util/sys/paths.h"
 
 using namespace LeechCraft;
-
-const int MaxIconSize = 32;
 
 IconThemeEngine::IconThemeEngine ()
 {
@@ -56,13 +57,16 @@ IconThemeEngine::IconThemeEngine ()
 	timer->start (60000);
 
 #ifdef Q_OS_WIN32
-	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/icons/"));
+	QIcon::setThemeSearchPaths ({ qApp->applicationDirPath () + "/icons/" });
 #elif defined (Q_OS_MAC)
-	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/../Resources/icons/"));
+	if (QApplication::arguments ().contains ("-nobundle"))
+		QIcon::setThemeSearchPaths ({ "/usr/local/kde4/share/icons/" });
+	else
+		QIcon::setThemeSearchPaths ({ qApp->applicationDirPath () + "/../Resources/icons/" });
 #endif
 
 	const QDir& dir = Util::CreateIfNotExists ("/icons/");
-	QIcon::setThemeSearchPaths (QStringList (dir.absolutePath ()) + QIcon::themeSearchPaths ());
+	QIcon::setThemeSearchPaths (QStringList { dir.absolutePath () } + QIcon::themeSearchPaths ());
 
 	FindIconSets ();
 }
@@ -73,24 +77,33 @@ IconThemeEngine& IconThemeEngine::Instance ()
 	return e;
 }
 
-QIcon IconThemeEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff) const
+QIcon IconThemeEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff)
 {
-	const QPair<QString, QString>& namePair = qMakePair (actionIcon, actionIconOff);
-	if (IconCache_.contains (namePair))
-		return IconCache_ [namePair];
+	const auto& namePair = qMakePair (actionIcon, actionIconOff);
+
+	{
+		QReadLocker locker { &IconCacheLock_ };
+		if (IconCache_.contains (namePair))
+			return IconCache_ [namePair];
+	}
 
 	if (QIcon::hasThemeIcon (actionIcon) &&
 			(actionIconOff.isEmpty () ||
 			 QIcon::hasThemeIcon (actionIconOff)))
 	{
-		QIcon result = QIcon::fromTheme (actionIcon);
+		auto result = QIcon::fromTheme (actionIcon);
 		if (!actionIconOff.isEmpty ())
 		{
-			const QIcon& off = QIcon::fromTheme (actionIconOff);
-			Q_FOREACH (const QSize& size, off.availableSizes ())
+			const auto& off = QIcon::fromTheme (actionIconOff);
+			for (const auto& size : off.availableSizes ())
 				result.addPixmap (off.pixmap (size, QIcon::Normal, QIcon::On));
 		}
-		IconCache_ [namePair] = result;
+
+		{
+			QWriteLocker locker { &IconCacheLock_ };
+			IconCache_ [namePair] = result;
+		}
+
 		return result;
 	}
 
@@ -101,14 +114,14 @@ QIcon IconThemeEngine::GetIcon (const QString& actionIcon, const QString& action
 	return QIcon ();
 }
 
-void IconThemeEngine::UpdateIconSet (const QList<QAction*>& actions)
+void IconThemeEngine::UpdateIconset (const QList<QAction*>& actions)
 {
 	FindIcons ();
 
 	for (auto action : actions)
 	{
 		if (action->menu ())
-			UpdateIconSet (action->menu ()->actions ());
+			UpdateIconset (action->menu ()->actions ());
 
 		if (action->property ("WatchActionIconChange").toBool ())
 			action->installEventFilter (this);
@@ -120,7 +133,7 @@ void IconThemeEngine::UpdateIconSet (const QList<QAction*>& actions)
 	}
 }
 
-void IconThemeEngine::UpdateIconSet (const QList<QPushButton*>& buttons)
+void IconThemeEngine::UpdateIconset (const QList<QPushButton*>& buttons)
 {
 	FindIcons ();
 
@@ -133,21 +146,44 @@ void IconThemeEngine::UpdateIconSet (const QList<QPushButton*>& buttons)
 	}
 }
 
-void IconThemeEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
+void IconThemeEngine::UpdateIconset (const QList<QTabWidget*>& tabs)
 {
 	FindIcons ();
 
-	for (QList<QTabWidget*>::const_iterator i = tabs.begin (),
-			end = tabs.end (); i != end; ++i)
+	for (const auto tw : tabs)
 	{
-		QStringList icons = (*i)->property ("TabIcons").toString ()
+		const auto& icons = tw->property ("TabIcons").toString ()
 			.split (" ", QString::SkipEmptyParts);
 
 		int tab = 0;
-		for (QStringList::const_iterator name = icons.begin ();
-				name != icons.end (); ++name, ++tab)
-			(*i)->setTabIcon (tab, GetIcon (*name, QString ()));
+		for (const auto& name : icons)
+			tw->setTabIcon (tab++, GetIcon (name, {}));
 	}
+}
+
+void IconThemeEngine::UpdateIconset (const QList<QToolButton*>& buttons)
+{
+	for (auto button : buttons)
+	{
+		if (!button->property ("ActionIcon").isValid ())
+			continue;
+
+		SetIcon (button);
+	}
+}
+
+void IconThemeEngine::ManageWidget (QWidget *widget)
+{
+	UpdateIconset (widget->findChildren<QAction*> ());
+	UpdateIconset (widget->findChildren<QPushButton*> ());
+	UpdateIconset (widget->findChildren<QTabWidget*> ());
+
+	widget->installEventFilter (new ChildActionEventFilter (widget));
+}
+
+void IconThemeEngine::RegisterChangeHandler (const std::function<void ()>& function)
+{
+	Handlers_ << function;
 }
 
 QStringList IconThemeEngine::ListIcons () const
@@ -206,6 +242,9 @@ void IconThemeEngine::FindIcons ()
 
 		flushCaches ();
 		OldIconSet_ = iconSet;
+
+		for (const auto& handler : Handlers_)
+			handler ();
 	}
 }
 

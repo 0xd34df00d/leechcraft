@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -62,14 +62,9 @@ namespace Aggregator
 	public slots:
 		void toggleChannelUnread (IDType_t channel, bool state);
 		void updateFeed (channels_container_t channels, QString url);
-	private slots:
-		void handleChannelDataUpdated (Channel_ptr);
 	signals:
-		void channelDataUpdated (IDType_t channelId, IDType_t feedId);
 		void gotNewChannel (const ChannelShort&);
 		void gotEntity (const LeechCraft::Entity&);
-		void itemDataUpdated (Item_ptr, Channel_ptr);
-		void itemsRemoved (const QSet<IDType_t>&);
 
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);

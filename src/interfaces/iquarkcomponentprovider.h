@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -102,6 +102,12 @@ namespace LeechCraft
 		 * quark component for a QML file located in the
 		 * Util::SysPath::QML location under the given \em subdir and
 		 * \em filename.
+		 *
+		 * For example, if a plugin installs its quark file
+		 * \em QuarkName.qml contained in directory \em pluginName via
+		 * \code install (DIRECTORY pluginName DESTINATION ${LC_QML_DEST}) \endcode
+		 * then proper QuarkComponent will be initialized by calling
+		 * \code{.cpp} QuarkComponent { "pluginName", "QuarkName.qml" } \endcode.
 		 *
 		 * @sa Util::GetSysPath()
 		 */

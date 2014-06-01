@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -146,6 +146,8 @@ namespace Xoox
 				>> TurnUser_
 				>> TurnPass_;
 		}
+		if (version >= 9)
+			in >> EnableMessageCarbons_;
 	}
 
 	void AccountSettingsHolder::OpenConfigDialog ()
@@ -451,6 +453,22 @@ namespace Xoox
 		TurnUser_ = user;
 		TurnPass_ = pass;
 		emit turnSettingsChanged ();
+	}
+
+	bool AccountSettingsHolder::IsMessageCarbonsEnabled () const
+	{
+		return EnableMessageCarbons_;
+	}
+
+	void AccountSettingsHolder::SetMessageCarbonsEnabled (bool enabled)
+	{
+		if (EnableMessageCarbons_ == enabled)
+			return;
+
+		EnableMessageCarbons_ = enabled;
+		emit accountSettingsChanged ();
+
+		emit messageCarbonsSettingsChanged ();
 	}
 
 	void AccountSettingsHolder::scheduleReconnect ()

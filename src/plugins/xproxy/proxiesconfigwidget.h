@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <QNetworkProxy>
+#include <util/sll/regexp.h>
 #include "ui_proxiesconfigwidget.h"
 
 class QStandardItemModel;
@@ -41,7 +42,7 @@ namespace XProxy
 {
 	struct ReqTarget
 	{
-		QRegExp Host_;
+		Util::RegExp Host_;
 		int Port_;
 		QStringList Protocols_;
 	};

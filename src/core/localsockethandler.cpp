@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,7 +32,8 @@
 #include <vector>
 #include <QLocalSocket>
 #include <QUrl>
-#include "util/util.h"
+#include <QFile>
+#include "util/xpc/util.h"
 #include "interfaces/structures.h"
 #include "application.h"
 
@@ -60,17 +61,24 @@ namespace LeechCraft
 
 	void LocalSocketHandler::handleNewLocalServerConnection ()
 	{
-		std::auto_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
-		// I think 100 msecs would be more than enough for the local
-		// connections.
+		std::unique_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
 		if (!socket->bytesAvailable ())
-			socket->waitForReadyRead (1000);
+			socket->waitForReadyRead (2000);
+
+		if (!socket->bytesAvailable ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no data read from the socket";
+			return;
+		}
 
 		QByteArray read = socket->readAll ();
 		QDataStream in (read);
 		QStringList arguments;
 		in >> arguments;
-		arguments.removeFirst ();
+
+		if (!arguments.isEmpty ())
+			arguments.removeFirst ();
 
 		qDebug () << Q_FUNC_INFO << arguments;
 

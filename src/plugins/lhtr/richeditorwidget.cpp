@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -51,12 +51,18 @@
 #endif
 
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/data/iimgsource.h>
 #include "hyperlinkdialog.h"
 #include "imagedialog.h"
 #include "finddialog.h"
 #include "inserttabledialog.h"
 #include "xmlsettingsmanager.h"
+#include "htmlhighlighter.h"
+#include "imagecollectiondialog.h"
 
 namespace LeechCraft
 {
@@ -119,6 +125,12 @@ namespace LHTR
 					emit linkClicked (request.url ());
 				return false;
 			}
+		};
+
+		enum TabWidgetIdx
+		{
+			TWIVisualView,
+			TWIHTMLView
 		};
 	}
 
@@ -257,7 +269,7 @@ namespace LHTR
 		ViewBar_->addSeparator ();
 
 		QMenu *headMenu = new QMenu (tr ("Headings"));
-		headMenu->setIcon (Proxy_->GetIcon ("view-list-details"));
+		headMenu->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("view-list-details"));
 		ViewBar_->addAction (headMenu->menuAction ());
 		for (int i = 1; i <= 6; ++i)
 		{
@@ -306,11 +318,7 @@ namespace LHTR
 					SLOT (handleInsertLink ()));
 		InsertLink_->setProperty ("ActionIcon", "insert-link");
 
-		InsertImage_ = ViewBar_->addAction (tr ("Insert image..."),
-					this,
-					SLOT (handleInsertImage ()));
-		InsertImage_->setProperty ("ActionIcon", "insert-image");
-
+		SetupImageMenu ();
 		SetupTableMenu ();
 
 		setupJS ();
@@ -326,6 +334,8 @@ namespace LHTR
 				SLOT (toggleView ()));
 
 		SetContents ("", ContentType::HTML);
+
+		new HtmlHighlighter (Ui_.HTML_->document ());
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -333,7 +343,9 @@ namespace LHTR
 		switch (type)
 		{
 		case ContentType::HTML:
-			return RevertCustomTags ();
+			if (Ui_.TabWidget_->currentIndex () != TabWidgetIdx::TWIHTMLView)
+				SyncHTMLToView ();
+			return Ui_.HTML_->toPlainText ();
 		case ContentType::PlainText:
 			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
 		}
@@ -508,6 +520,40 @@ namespace LHTR
 		widget->setPalette (palette);
 	}
 
+	void RichEditorWidget::SetupImageMenu ()
+	{
+		auto imagesMenu = new QMenu (tr ("Insert image..."), this);
+
+		auto imagesButton = new QToolButton;
+		imagesButton->setMenu (imagesMenu);
+		imagesButton->setPopupMode (QToolButton::InstantPopup);
+		imagesButton->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("insert-image"));
+		ViewBar_->addWidget (imagesButton);
+
+		InsertImage_ = imagesMenu->addAction (tr ("Insert image by link..."),
+					this,
+					SLOT (handleInsertImage ()));
+
+		auto fromCollection = imagesMenu->addMenu (tr ("Insert image from collection"));
+
+		bool added = false;
+		for (const auto pluginObj : Proxy_->GetPluginsManager ()->GetAllCastableRoots<IImgSource*> ())
+		{
+			const auto plugin = qobject_cast<IImgSource*> (pluginObj);
+			for (const auto& service : plugin->GetServices ())
+			{
+				const auto act = fromCollection->addAction (service.Name_,
+						this,
+						SLOT (handleInsertImageFromCollection ()));
+				act->setProperty ("LHTR/Plugin", QVariant::fromValue (pluginObj));
+				act->setProperty ("LHTR/Service", service.ID_);
+				added = true;
+			}
+		}
+
+		fromCollection->setEnabled (added);
+	}
+
 	void RichEditorWidget::SetupTableMenu ()
 	{
 		auto tablesMenu = new QMenu (tr ("Tables..."), this);
@@ -515,7 +561,7 @@ namespace LHTR
 		auto tablesButton = new QToolButton;
 		tablesButton->setMenu (tablesMenu);
 		tablesButton->setPopupMode (QToolButton::InstantPopup);
-		tablesButton->setIcon (Proxy_->GetIcon ("view-form-table"));
+		tablesButton->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("view-form-table"));
 		ViewBar_->addWidget (tablesButton);
 
 		auto table = tablesMenu->addAction (tr ("Insert table..."),
@@ -601,8 +647,8 @@ namespace LHTR
 		void TryFixHTML (QString& html)
 		{
 #ifdef WITH_HTMLTIDY
-			TidyBuffer output = { 0 };
-			TidyBuffer errbuf = { 0 };
+			TidyBuffer output {};
+			TidyBuffer errbuf {};
 
 			auto tdoc = tidyCreate ();
 
@@ -663,14 +709,10 @@ namespace LHTR
 
 	QString RichEditorWidget::ExpandCustomTags (QString html) const
 	{
+		TryFixHTML (html);
+		html.remove ('\n');
+
 		QDomDocument doc;
-#ifdef WITH_HTMLTIDY
-		if (!doc.setContent (html))
-		{
-			TryFixHTML (html);
-			html.remove ('\n');
-		}
-#endif
 		if (!doc.setContent (html))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -752,6 +794,21 @@ namespace LHTR
 		return root.toOuterXml ();
 	}
 
+	void RichEditorWidget::SyncHTMLToView () const
+	{
+		const auto frame = Ui_.View_->page ()->mainFrame ();
+		const auto& peElem = frame->findFirstElement ("parsererror");
+
+		if (!peElem.isNull ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "there are parser errors, ignoring reverting";
+			return;
+		}
+
+		Ui_.HTML_->setPlainText (RevertCustomTags ());
+	}
+
 	void RichEditorWidget::handleBgColorSettings ()
 	{
 		const auto& color = XmlSettingsManager::Instance ()
@@ -782,10 +839,10 @@ namespace LHTR
 
 		switch (idx)
 		{
-		case 1:
-			Ui_.HTML_->setPlainText (RevertCustomTags ());
+		case TabWidgetIdx::TWIHTMLView:
+			SyncHTMLToView ();
 			break;
-		case 0:
+		case TabWidgetIdx::TWIVisualView:
 			if (!HTMLDirty_)
 				return;
 
@@ -1126,6 +1183,147 @@ namespace LHTR
 		w.writeEndElement ();
 
 		ExecCommand ("insertHTML", html);
+	}
+
+	namespace
+	{
+		QUrl GetPreviewUrl (const RemoteImageInfo& info, ImageCollectionDialog::PreviewSize size)
+		{
+			switch (size)
+			{
+			case ImageCollectionDialog::PreviewSize::None:
+				return {};
+			case ImageCollectionDialog::PreviewSize::Thumb:
+				return info.Thumb_;
+			case ImageCollectionDialog::PreviewSize::Preview:
+				return info.Preview_;
+			case ImageCollectionDialog::PreviewSize::Full:
+				return info.Full_;
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown preview size"
+					<< static_cast<int> (size);
+			return {};
+		}
+
+		QSize GetPreviewSize (const RemoteImageInfo& info, ImageCollectionDialog::PreviewSize size)
+		{
+			switch (size)
+			{
+			case ImageCollectionDialog::PreviewSize::None:
+				return {};
+			case ImageCollectionDialog::PreviewSize::Thumb:
+				return info.ThumbSize_;
+			case ImageCollectionDialog::PreviewSize::Preview:
+				return info.PreviewSize_;
+			case ImageCollectionDialog::PreviewSize::Full:
+				return info.FullSize_;
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown preview size"
+					<< static_cast<int> (size);
+			return {};
+		}
+	}
+
+	void RichEditorWidget::handleCollectionImageChosen ()
+	{
+		const auto chooser = qobject_cast<IPendingImgSourceRequest*> (sender ());
+		const auto& rawInfos = chooser->GetInfos ();
+		if (rawInfos.isEmpty ())
+			return;
+
+		ImageCollectionDialog dia { rawInfos, Proxy_, this };
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const bool linkPreviews = dia.PreviewsAreLinks ();
+		const auto previewSize = dia.GetPreviewSize ();
+
+		QString html;
+		QXmlStreamWriter w (&html);
+		w.writeStartElement ("span");
+
+		bool displayBlock = false;
+		QString floatPos;
+		QString align;
+		switch (dia.GetPosition ())
+		{
+		case ImageCollectionDialog::Position::Center:
+			align = "center";
+			displayBlock = true;
+			break;
+		case ImageCollectionDialog::Position::Right:
+			displayBlock = true;
+			align = "right";
+			break;
+		case ImageCollectionDialog::Position::Left:
+			displayBlock = true;
+			align = "left";
+			break;
+		case ImageCollectionDialog::Position::RightWrap:
+			floatPos = "right";
+			break;
+		case ImageCollectionDialog::Position::LeftWrap:
+			floatPos = "left";
+			break;
+		}
+
+		QStringList styleElems;
+		if (displayBlock)
+			styleElems << "display: block";
+		if (!floatPos.isEmpty ())
+			styleElems << "float: " + floatPos;
+		if (!align.isEmpty ())
+			styleElems << "text-align: " + align;
+
+		if (!styleElems.isEmpty ())
+			w.writeAttribute ("style", styleElems.join ("; "));
+
+		for (const auto& image : dia.GetInfos ())
+		{
+			if (linkPreviews)
+			{
+				w.writeStartElement ("a");
+				w.writeAttribute ("href", image.Full_.toString ());
+			}
+
+			w.writeStartElement ("img");
+			w.writeAttribute ("src", GetPreviewUrl (image, previewSize).toString ());
+			w.writeAttribute ("alt", image.Title_);
+
+			const auto& size = GetPreviewSize (image, previewSize);
+			if (size.isValid ())
+			{
+				w.writeAttribute ("width", QString::number (size.width ()));
+				w.writeAttribute ("height", QString::number (size.height ()));
+			}
+
+			w.writeEndElement ();
+
+			if (linkPreviews)
+				w.writeEndElement ();
+
+			w.writeEmptyElement ("br");
+		}
+		w.writeEndElement ();
+
+		ExecCommand ("insertHTML", html);
+	}
+
+	void RichEditorWidget::handleInsertImageFromCollection ()
+	{
+		const auto pluginObj = sender ()->property ("LHTR/Plugin").value<QObject*> ();
+		const auto& service = sender ()->property ("LHTR/Service").toByteArray ();
+
+		const auto plugin = qobject_cast<IImgSource*> (pluginObj);
+		const auto chooser = plugin->RequestImages (service);
+		connect (chooser->GetQObject (),
+				SIGNAL (ready ()),
+				this,
+				SLOT (handleCollectionImageChosen ()));
 	}
 
 	void RichEditorWidget::handleFind ()

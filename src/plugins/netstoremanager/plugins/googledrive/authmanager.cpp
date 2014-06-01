@@ -34,10 +34,10 @@
 #include <QNetworkReply>
 #include <QMainWindow>
 #include <qjson/parser.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "account.h"
 #include "core.h"
-#include <interfaces/core/irootwindowsmanager.h>
 
 namespace LeechCraft
 {

@@ -32,4 +32,18 @@ Item {
         style: Text.Outline
         styleColor: colorProxy.color_Panel_TopColor
     }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+        onPressed: {
+            if (pressedButtons & Qt.LeftButton)
+                KBSwitch_proxy.setNextLanguage();
+            else
+                KBSwitch_proxy.contextMenuRequested();
+        }
+   }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -53,7 +53,8 @@ namespace Azoth
 	public:
 		StatusChangeMenuManager (QObject* = 0);
 
-		QMenu* CreateMenu (QObject *obj, const char *slot, QWidget *parent = 0);
+		QMenu* CreateMenu (QObject *obj, const char *slot, QWidget *parent = 0, bool autoupdate = true);
+		void UpdateCustomStatuses (QMenu*);
 	private slots:
 		void updateCustomStatuses ();
 		void handleMenuDestroyed ();

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -52,8 +52,11 @@ namespace Monocle
 	class TOCWidget;
 	class BookmarksWidget;
 	class ThumbsWidget;
+	class AnnWidget;
 	class FindDialog;
 	class FormManager;
+	class LinksManager;
+	class AnnManager;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -85,11 +88,14 @@ namespace Monocle
 		PagesLayoutManager *LayoutManager_;
 		TextSearchHandler *SearchHandler_;
 		FormManager *FormManager_;
+		AnnManager *AnnManager_;
+		LinksManager *LinksManager_;
 
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
 		BookmarksWidget *BMWidget_;
 		ThumbsWidget *ThumbsWidget_;
+		AnnWidget *AnnWidget_;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;
@@ -155,6 +161,8 @@ namespace Monocle
 
 		void RegenPageVisibility ();
 	private slots:
+		void handleLoaderReady (const IDocument_ptr&, const QString&);
+
 		void handleNavigateRequested (QString, int, double, double);
 		void handlePrintRequested ();
 

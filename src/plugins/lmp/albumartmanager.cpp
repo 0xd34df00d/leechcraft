@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,7 +34,8 @@
 #include <QtConcurrentRun>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>
@@ -127,15 +128,14 @@ namespace LMP
 		const auto& task = Queue_.takeFirst ();
 		for (auto provObj : provs)
 		{
-			auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
-			prov->RequestAlbumArt (task.Info_);
-			connect (provObj,
-					SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
+			const auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
+			const auto proxy = prov->RequestAlbumArt (task.Info_);
+			connect (proxy->GetQObject (),
+					SIGNAL (ready (Media::AlbumInfo, QList<QImage>)),
 					this,
 					task.PreviewMode_ ?
 							SIGNAL (gotImages (Media::AlbumInfo, QList<QImage>)) :
-							SLOT (handleGotAlbumArt (Media::AlbumInfo, QList<QImage>)),
-					Qt::UniqueConnection);
+							SLOT (handleGotAlbumArt (Media::AlbumInfo, QList<QImage>)));
 		}
 		if (!provs.isEmpty ())
 			NumRequests_ [task.Info_] = provs.size ();

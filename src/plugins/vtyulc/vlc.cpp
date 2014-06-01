@@ -30,6 +30,7 @@
 #include <QIcon>
 #include <QShortcut>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
@@ -54,47 +55,47 @@ namespace vlc
 		Manager_->RegisterActionInfo ("org.vtyulc.navigate_left",
 				ActionInfo (tr ("Navigate left in DVD menu"),
 						QKeySequence (Qt::Key_Left),
-						Proxy_->GetIcon ("arrow-left")));
+						Proxy_->GetIconThemeManager ()->GetIcon ("arrow-left")));
 
 		Manager_->RegisterActionInfo ("org.vtyulc.navigate_right",
 				ActionInfo (tr ("Navigate right in DVD menu"),
 						QKeySequence (Qt::Key_Right),
-						Proxy_->GetIcon ("arrow-right")));
+						Proxy_->GetIconThemeManager ()->GetIcon ("arrow-right")));
 
 		Manager_->RegisterActionInfo ("org.vtyulc.navigate_up",
 				ActionInfo (tr ("Navigate up in DVD menu"),
 						QKeySequence (Qt::Key_Up),
-						Proxy_->GetIcon ("arrow-up")));
+						Proxy_->GetIconThemeManager ()->GetIcon ("arrow-up")));
 
 		Manager_->RegisterActionInfo ("org.vtyulc.navigate_down",
 				ActionInfo (tr ("Navigate down in DVD menu"),
 						QKeySequence (Qt::Key_Down),
-						Proxy_->GetIcon ("arrow-down")));
+						Proxy_->GetIconThemeManager ()->GetIcon ("arrow-down")));
 
 		Manager_->RegisterActionInfo ("org.vtyulc.navigate_enter",
 				ActionInfo (tr ("Activate current in DVD menu"),
 						QKeySequence (Qt::Key_Enter),
-						Proxy_->GetIcon ("key-enter")));
+						Proxy_->GetIconThemeManager ()->GetIcon ("key-enter")));
 
 		Manager_->RegisterActionInfo ("org.vtyulc.toggle_fullscreen",
 				ActionInfo (tr ("Toggle fullscreen"),
 						QKeySequence (Qt::Key_F),
-						Proxy_->GetIcon ("view-fullscreen")));
+						Proxy_->GetIconThemeManager ()->GetIcon ("view-fullscreen")));
 
 		Manager_->RegisterActionInfo ("org.vtyulc.toggle_play",
 				ActionInfo (tr ("Switch play/pause"),
 						QKeySequence (Qt::Key_Space),
-						Proxy_->GetIcon ("media-playback-start")));
+						Proxy_->GetIconThemeManager ()->GetIcon ("media-playback-start")));
 
 		Manager_->RegisterActionInfo ("org.vtyulc.volume_increase",
 				ActionInfo (tr ("Increase volume"),
 						QKeySequence (Qt::Key_Plus),
-						Proxy_->GetIcon ("audio-volume-high")));
+						Proxy_->GetIconThemeManager ()->GetIcon ("audio-volume-high")));
 
 		Manager_->RegisterActionInfo ("org.vtyulc.volume_decrease",
 				ActionInfo (tr ("Decrease volume"),
 						QKeySequence (Qt::Key_Minus),
-						Proxy_->GetIcon ("audio-volume-low")));
+						Proxy_->GetIconThemeManager ()->GetIcon ("audio-volume-low")));
 
 		Manager_->RegisterActionInfo ("org.vtyulc.plus_3_percent",
 				ActionInfo (tr ("3% seek forward"),

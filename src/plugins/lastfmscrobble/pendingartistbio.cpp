@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,9 +42,10 @@ namespace LeechCraft
 namespace Lastfmscrobble
 {
 	PendingArtistBio::PendingArtistBio (QString name,
-			QNetworkAccessManager *nam, QObject *parent)
+			QNetworkAccessManager *nam, bool addImages, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
+	, AddImages_ (addImages)
 	{
 		QMap<QString, QString> params;
 		params ["artist"] = name;
@@ -120,6 +121,13 @@ namespace Lastfmscrobble
 		const auto& artist = doc.documentElement ().firstChildElement ("artist");
 		Bio_.BasicInfo_ = GetArtistInfo (artist);
 		std::reverse (Bio_.BasicInfo_.Tags_.begin (), Bio_.BasicInfo_.Tags_.end ());
+
+		if (!AddImages_)
+		{
+			emit ready ();
+			deleteLater ();
+			return;
+		}
 
 		auto imagesUrl = Bio_.BasicInfo_.Page_;
 		imagesUrl.setPath (imagesUrl.path () + "/+images?sort=date");

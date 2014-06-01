@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -64,8 +64,10 @@ namespace Murm
 		qulonglong ID_ = -1;
 
 		bool IsRead_ = Dir_ == DOut || Type_ != MessageType::MTChatMessage;
+
+		const bool IsOurs_;
 	public:
-		VkMessage (Direction, MessageType, EntryBase*, EntryBase* = nullptr);
+		VkMessage (bool isOurs, Direction, MessageType, EntryBase*, EntryBase* = nullptr);
 
 		QObject* GetQObject ();
 		void Send ();
@@ -76,6 +78,8 @@ namespace Murm
 
 		bool IsRead () const;
 		void SetRead ();
+
+		QString GetRawBody () const;
 
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;

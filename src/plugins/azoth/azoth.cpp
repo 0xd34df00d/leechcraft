@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -43,9 +43,11 @@
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "core.h"
@@ -62,6 +64,9 @@
 #include "chatstyleoptionmanager.h"
 #include "colorlisteditorwidget.h"
 #include "customstatusesmanager.h"
+#include "accountactionsmanager.h"
+#include "serverhistorywidget.h"
+#include "actionsmanager.h"
 
 namespace LeechCraft
 {
@@ -76,10 +81,14 @@ namespace Azoth
 		SearchWidget::SetParentMultiTabs (this);
 
 		Core::Instance ().SetProxy (proxy);
+
+		connect (Core::Instance ().GetActionsManager (),
+				SIGNAL (gotServerHistoryTab (ServerHistoryWidget*)),
+				this,
+				SLOT (handleServerHistoryTab (ServerHistoryWidget*)));
+
 		InitShortcuts ();
-
-		MW_ = new MainWidget ();
-
+		InitAccActsMgr ();
 		InitSettings ();
 		InitSignals ();
 		InitTabClasses ();
@@ -233,25 +242,27 @@ namespace Azoth
 				if (context == "chattab2")
 					str >> info.MsgText_;
 
-				QList<ChatTabsManager::RestoreChatInfo> infos;
-				infos << info;
-				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos (infos);
+				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos ({ info });
 			}
 			else if (context == "muctab2")
 			{
 				QString entryId;
 				QVariantMap data;
 				QByteArray accountId;
+				QString text;
 				str >> entryId
 					>> data
-					>> accountId;
+					>> accountId
+					>> text;
 
-				if (auto entry = Core::Instance ().GetEntry (entryId))
-				{
-					auto mgr = Core::Instance ().GetChatTabsManager ();
-					mgr->OpenChat (qobject_cast<ICLEntry*> (entry), false, recInfo.DynProperties_);
-				}
-				else
+				ChatTabsManager::RestoreChatInfo info;
+				info.Props_ = recInfo.DynProperties_;
+				info.EntryID_ = entryId;
+				info.MsgText_ = text;
+
+				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos ({ info });
+
+				if (!Core::Instance ().GetEntry (entryId))
 				{
 					auto acc = Core::Instance ().GetAccount (accountId);
 					if (!acc)
@@ -305,35 +316,35 @@ namespace Azoth
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.ClearChat",
 				ActionInfo (tr ("Clear chat window"),
 						QString ("Ctrl+L"),
-						proxy->GetIcon ("edit-clear-history")));
+						proxy->GetIconThemeManager ()->GetIcon ("edit-clear-history")));
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.ScrollHistoryBack",
 				ActionInfo (tr ("Prepend messages from history"),
 						QKeySequence::StandardKey::Back,
-						proxy->GetIcon ("go-previous")));
+						proxy->GetIconThemeManager ()->GetIcon ("go-previous")));
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.QuoteSelected",
 				ActionInfo (tr ("Quote selected in chat tab"),
 						QString ("Ctrl+Q"),
-						proxy->GetIcon ("mail-reply-sender")));
+						proxy->GetIconThemeManager ()->GetIcon ("mail-reply-sender")));
 
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.LeaveMUC",
 				ActionInfo (tr ("Leave"),
 						QString (),
-						proxy->GetIcon ("irc-close-channel")));
+						proxy->GetIconThemeManager ()->GetIcon ("irc-close-channel")));
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.MUCUsers",
 				ActionInfo (tr ("Show MUC users list"),
 						QString ("Ctrl+M"),
-						proxy->GetIcon ("irc-close-channel")));
+						proxy->GetIconThemeManager ()->GetIcon ("irc-close-channel")));
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.OpenLastLink",
 				ActionInfo (tr ("Open last link in chat"),
 						QString ("Ctrl+O"),
-						proxy->GetIcon ("document-open-remote")));
+						proxy->GetIconThemeManager ()->GetIcon ("document-open-remote")));
 
 		sm->RegisterGlobalShortcut ("org.LeechCraft.Azoth.ShowNextUnread",
 				&Core::Instance (), SLOT (handleShowNextUnread ()),
 				{
 					tr ("Show next unread message (global shortcut)"),
 					QString ("Ctrl+Alt+Shift+M"),
-					proxy->GetIcon ("mail-unread-new")
+					proxy->GetIconThemeManager ()->GetIcon ("mail-unread-new")
 				});
 
 		sm->RegisterActionInfo ("org.Azoth.TextEdit.DeleteWord",
@@ -357,6 +368,29 @@ namespace Azoth
 					{}
 				}
 			);
+	}
+
+	void Plugin::InitAccActsMgr ()
+	{
+		auto accActsMgr = new AccountActionsManager ();
+		MW_ = new MainWidget (accActsMgr);
+		accActsMgr->SetMainWidget (MW_);
+		connect (accActsMgr,
+				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
+				this,
+				SLOT (handleConsoleWidget (ConsoleWidget*)));
+		connect (accActsMgr,
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
+		connect (accActsMgr,
+				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
+				this,
+				SLOT (handleMicroblogsTab (MicroblogsTab*)));
+		connect (accActsMgr,
+				SIGNAL (gotServerHistoryTab (ServerHistoryWidget*)),
+				this,
+				SLOT (handleServerHistoryTab (ServerHistoryWidget*)));
 	}
 
 	void Plugin::InitSettings ()
@@ -494,18 +528,6 @@ namespace Azoth
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
-		connect (MW_,
-				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
-				this,
-				SLOT (handleConsoleWidget (ConsoleWidget*)));
-		connect (MW_,
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
-				this,
-				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
-		connect (MW_,
-				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
-				this,
-				SLOT (handleMicroblogsTab (MicroblogsTab*)));
 	}
 
 	void Plugin::InitTabClasses ()
@@ -561,12 +583,24 @@ namespace Azoth
 			0,
 			TFEmpty
 		};
+
 		TabClassInfo microblogsTab =
 		{
 			"MicroblogsTab",
 			tr ("Microblogs"),
 			tr ("Microblogs where protocol/account supports that"),
 			QIcon (),
+			0,
+			TFEmpty
+		};
+		MicroblogsTab::SetTabData (this, microblogsTab);
+
+		ServerHistoryTC_ =
+		{
+			"ServerHistoryTab",
+			tr ("Server history"),
+			tr ("Server history browser for protocols and accounts supporting this feature"),
+			{},
 			0,
 			TFEmpty
 		};
@@ -577,8 +611,7 @@ namespace Azoth
 		TabClasses_ << sdTab;
 		TabClasses_ << consoleTab;
 		TabClasses_ << microblogsTab;
-
-		MicroblogsTab::SetTabData (this, microblogsTab);
+		TabClasses_ << ServerHistoryTC_;
 	}
 
 	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
@@ -599,6 +632,18 @@ namespace Azoth
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tr ("Microblogs"), tab);
 		emit raiseTab (tab);
+	}
+
+	void Plugin::handleServerHistoryTab (ServerHistoryWidget *widget)
+	{
+		connect (widget,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		widget->SetTabInfo (this, ServerHistoryTC_);
+
+		emit addNewTab (ServerHistoryTC_.VisibleName_, widget);
+		emit raiseTab (widget);
 	}
 
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)

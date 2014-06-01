@@ -2,6 +2,7 @@
 builds/
 build32/
 backup/
+nobundle/
 debug/
 release/
 build/

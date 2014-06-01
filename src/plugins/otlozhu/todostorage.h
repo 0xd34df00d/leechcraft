@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -56,9 +56,12 @@ namespace Otlozhu
 		TodoItem_ptr GetItemByID (const QString&) const;
 		QList<TodoItem_ptr> GetAllItems () const;
 
+		void AddDependency (const QString& itemId, const QString& depId);
+
 		void HandleUpdated (TodoItem_ptr);
 		void RemoveItem (const QString&);
 	private:
+		void HandleUpdated (TodoItem_ptr, const std::function<void ()>&);
 		void Load ();
 		void SaveAt (int);
 		void SaveAt (const QList<int>&);
@@ -67,6 +70,9 @@ namespace Otlozhu
 		void itemRemoved (int);
 		void itemUpdated (int);
 		void itemDiffGenerated (const QString&, const QVariantMap&);
+
+		void itemDepAdded (int itemIdx, int depIdx);
+		void itemDepRemoved (int itemIdx, int depIdx);
 	};
 }
 }

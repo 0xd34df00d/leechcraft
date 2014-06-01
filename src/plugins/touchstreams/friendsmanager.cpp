@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,9 +37,10 @@
 #include <QtDebug>
 #include <qjson/parser.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/svcauth/vkcaptchadialog.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include <util/util.h>
 #include "albumsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -261,6 +262,7 @@ namespace TouchStreams
 
 				auto captchaDialog = new Util::SvcAuth::VkCaptchaDialog (errMap,
 						Proxy_->GetNetworkAccessManager ());
+				captchaDialog->SetContextName ("TouchStreams");
 				captchaDialog->show ();
 				connect (captchaDialog,
 						SIGNAL (gotCaptcha (QString, QString)),
@@ -295,7 +297,7 @@ namespace TouchStreams
 			auto userItem = mgr->GetRootItem ();
 			userItem->setText (name);
 			userItem->setData (QUrl::fromEncoded (map ["photo"].toByteArray ()), PhotoUrlRole);
-			userItem->setIcon (Proxy_->GetIcon ("user-identity"));
+			userItem->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("user-identity"));
 			Root_->appendRow (userItem);
 			Friend2Item_ [id] = userItem;
 

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,10 +35,11 @@
 #include <QSet>
 #include <QIcon>
 #include <QDateTime>
+#include <QUrl>
 #ifdef ENABLE_CRYPT
 #include <QtCrypto>
 #endif
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/iinfo.h>
@@ -85,6 +86,7 @@ namespace Azoth
 	class CustomStatusesManager;
 	class ChatStyleOptionManager;
 	class CustomChatStyleManager;
+	class CLTooltipManager;
 
 	class Core : public QObject
 	{
@@ -104,6 +106,7 @@ namespace Azoth
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
 
+		CLTooltipManager * const TooltipManager_;
 		CLModel *CLModel_;
 		ChatTabsManager *ChatTabsManager_;
 
@@ -128,8 +131,6 @@ namespace Azoth
 
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
-
-		QCache<QImage, QString> Avatar2TooltipSrcCache_;
 
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 
@@ -214,7 +215,8 @@ namespace Azoth
 		void Handle (Entity);
 
 		bool CouldHandleURL (const QUrl&) const;
-		void HandleURL (const QUrl&, ICLEntry* = 0);
+		void HandleURL (const QUrl&, ICLEntry* = nullptr);
+		void HandleURLGeneric (QUrl, bool raise, ICLEntry* = nullptr);
 
 		const QObjectList& GetProtocolPlugins () const;
 
@@ -239,7 +241,7 @@ namespace Azoth
 
 		/** Returns contact list entry with the given id. The id is the
 		 * same as returned by ICLEntry::GetEntryID(). If no such entry
-		 * entry could be found, NULL is returned.
+		 * could be found, NULL is returned.
 		 */
 		QObject* GetEntry (const QString& id) const;
 
@@ -377,20 +379,13 @@ namespace Azoth
 		QStandardItem* GetAccountItem (const QObject *accountObj,
 				QMap<const QObject*, QStandardItem*>& accountItemCache);
 
-		/** Creates the tooltip text for the roster entry to be shown in
-		 * the tree.
-		 */
-		QString MakeTooltipString (ICLEntry *entry);
-
-		void RebuildTooltip (ICLEntry *entry);
-
 		Entity BuildStatusNotification (const EntryStatus&,
 				ICLEntry*, const QString&);
 
 		/** Handles the event of status changes in a contact list entry.
 		 */
 		void HandleStatusChanged (const EntryStatus& status,
-				ICLEntry *entry, const QString& variant, bool asSignal = false, bool rebuildTooltip = true);
+				ICLEntry *entry, const QString& variant, bool asSignal = false);
 
 		/** Checks whether icon representing incoming file should be
 		 * drawn for the entry with the given id.
@@ -442,8 +437,6 @@ namespace Azoth
 	private slots:
 		void handleNewProtocols (const QList<QObject*>&);
 
-		void delayedRebuildTooltip (QPointer<QObject> entryObj);
-
 		/** Handles a new account. This account may be both a new one
 		 * (added as a result of user's actions) and already existing
 		 * one (in case it was just read from settings, for example).
@@ -490,11 +483,6 @@ namespace Azoth
 		 */
 		void handleVariantsChanged ();
 
-		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
-		 * variant.
-		 */
-		void handleEntryPEPEvent (const QString& variant);
-
 		/** Handles the event of name changes in plugin.
 		 */
 		void handleEntryNameChanged (const QString& newName);
@@ -510,9 +498,7 @@ namespace Azoth
 		 * If the passed entry is not NULL, it will be used, otherwise
 		 * sender() will be used.
 		 */
-		void handleEntryPermsChanged (ICLEntry *entry = 0, bool rebuildTooltip = true);
-
-		void remakeTooltipForSender ();
+		void handleEntryPermsChanged (ICLEntry *entry = 0);
 
 		/** Handles the message receival from contact list entries.
 		 */
@@ -644,8 +630,6 @@ namespace Azoth
 				QObject *message);
 		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry) const;
 	};
 }
 }

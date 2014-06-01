@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -68,9 +68,7 @@ namespace Poshuku
 		bool supportsExtension (Extension) const;
 		bool extension (Extension, const ExtensionOption*, ExtensionReturn*);
 	private slots:
-#if QT_VERSION >= 0x040800
 		void handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature);
-#endif
 
 		void handleContentsChanged ();
 		void handleDatabaseQuotaExceeded (QWebFrame*, QString);

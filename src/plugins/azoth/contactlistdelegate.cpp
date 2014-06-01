@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,7 +34,8 @@
 #include <QApplication>
 #include <QAbstractProxyModel>
 #include <QTreeView>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
+#include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/isupportgeolocation.h"
 #include "interfaces/azoth/iaccount.h"
@@ -47,7 +48,6 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	const int CContactShift = 20;
 	const int CPadding = 2;
 
 	ContactListDelegate::ContactListDelegate (QTreeView* parent)
@@ -80,6 +80,8 @@ namespace Azoth
 				this, "handleHighlightGroupsChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("RosterContactHeight",
 				this, "handleContactHeightChanged");
+
+		Core::Instance ().RegisterHookable (this);
 	}
 
 	void ContactListDelegate::paint (QPainter *painter,
@@ -173,7 +175,7 @@ namespace Azoth
 		if (!avatarImg.isNull ())
 		{
 			pxDraw.rx () -= avatarImg.width ();
-			const QPoint& delta = QPoint (0, (iconSize - avatarImg.height ()) / 2);
+			const QPoint delta { 0, (r.height () - avatarImg.height ()) / 2 };
 			painter->drawPixmap (pxDraw + delta,
 					QPixmap::fromImage (avatarImg));
 			pxDraw.rx () -= CPadding;
@@ -184,8 +186,31 @@ namespace Azoth
 			const int size = std::min (16, iconSize);
 			const QPixmap& px = accIcon.pixmap (size, size);
 			pxDraw.rx () -= px.width ();
-			const QPoint& delta = QPoint (0, (iconSize - px.height ()) / 2);
+			const QPoint delta { 0, (r.height () - px.height ()) / 2 };
 			painter->drawPixmap (pxDraw + delta, px);
+		}
+	}
+
+	namespace
+	{
+		QPair<int, int> GetCounts (const QModelIndex& index)
+		{
+			const int visibleCount = index.model ()->rowCount (index);
+
+			auto model = index.model ();
+			auto sourceIndex = index;
+			while (auto proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
+			{
+				model = proxyModel->sourceModel ();
+				sourceIndex = proxyModel->mapToSource (sourceIndex);
+			}
+
+			if (model->rowCount (sourceIndex) != visibleCount)
+				return { visibleCount, model->rowCount (sourceIndex) };
+
+			const auto numOnline = index.data (Core::CLRNumOnline).toInt ();
+
+			return { numOnline, visibleCount };
 		}
 	}
 
@@ -194,7 +219,7 @@ namespace Azoth
 	{
 		const QRect& r = o.rect;
 
-		QStyle *style = o.widget ?
+		auto style = o.widget ?
 				o.widget->style () :
 				QApplication::style ();
 
@@ -231,19 +256,11 @@ namespace Azoth
 		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
 		const int rem = r.width () - textWidth;
 
-		const int visibleCount = index.model ()->rowCount (index);
-
-		const QAbstractItemModel *model = index.model ();
-		QModelIndex sourceIndex = index;
-		while (const QAbstractProxyModel *proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
-		{
-			model = proxyModel->sourceModel ();
-			sourceIndex = proxyModel->mapToSource (sourceIndex);
-		}
+		const auto& counts = GetCounts (index);
 
 		const QString& str = QString (" %1/%2 ")
-				.arg (visibleCount)
-				.arg (model->rowCount (sourceIndex));
+				.arg (counts.first)
+				.arg (counts.second);
 
 		painter->save ();
 
@@ -314,82 +331,7 @@ namespace Azoth
 
 		const QStringList& vars = entry->Variants ();
 
-		QList<QIcon> clientIcons;
-		if (!isMUC && ShowClientIcons_)
-		{
-			const auto& iconsMap = Core::Instance ().GetClientIconForEntry (entry);
-			for (int i = 0; i < std::min (vars.size (), 4); ++i)
-				clientIcons << iconsMap [vars.at (i)];
-
-			clientIcons.erase (std::remove_if (clientIcons.begin (), clientIcons.end (),
-						[] (const QIcon& icon) { return icon.isNull (); }),
-					clientIcons.end ());
-		}
-
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
-		{
-			const QByteArray& aff = index.data (Core::CLRAffiliation).toByteArray ();
-			const QIcon& icon = Core::Instance ().GetAffIcon (aff);
-
-			if (!icon.isNull ())
-				clientIcons.prepend (icon);
-		}
-
-		if (!vars.isEmpty ())
-		{
-			const QMap<QString, QVariant>& addInfo = entry->GetClientInfo (vars.first ());
-			if (addInfo.contains ("user_activity"))
-			{
-				const QMap<QString, QVariant>& actInfo = addInfo ["user_activity"].toMap ();
-				const QString& iconName = ActivityIconset_ + '/' +
-						GetActivityIconName (actInfo ["general"].toString (),
-								actInfo ["specific"].toString ());
-
-				QIcon icon = ActivityIconCache_ [iconName];
-				if (icon.isNull ())
-					icon = QIcon (Core::Instance ()
-							.GetResourceLoader (Core::RLTActivityIconLoader)->
-									GetIconPath (iconName));
-
-				if (!icon.isNull ())
-				{
-					clientIcons.prepend (icon);
-					ActivityIconCache_ [iconName] = icon;
-				}
-			}
-			if (addInfo.contains ("user_mood"))
-			{
-				const QMap<QString, QVariant>& moodInfo = addInfo ["user_mood"].toMap ();
-				QString iconName = moodInfo ["mood"].toString ();
-				iconName [0] = iconName.at (0).toUpper ();
-				iconName.prepend (MoodIconset_ + '/');
-
-				QIcon icon = MoodIconCache_ [iconName];
-				if (icon.isNull ())
-					icon = QIcon (Core::Instance ()
-							.GetResourceLoader (Core::RLTMoodIconLoader)->
-									GetIconPath (iconName));
-
-				if (!icon.isNull ())
-				{
-					clientIcons.prepend (icon);
-					MoodIconCache_ [iconName] = icon;
-				}
-			}
-			if (addInfo.contains ("user_tune"))
-				LoadSystemIcon ("/notification_roster_tune", clientIcons);
-
-			ISupportGeolocation *geoloc =
-					qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ());
-			if (geoloc)
-			{
-				const GeolocationInfo_t& info = geoloc->
-						GetUserGeolocationInfo (entryObj, vars.value (0, QString ()));
-				if (!info.isEmpty ())
-					LoadSystemIcon ("/geolocation", clientIcons);
-			}
-		}
-
+		const auto& clientIcons = GetContactIcons (index, entry, vars);
 		const int clientsIconsWidth = clientIcons.isEmpty () ?
 				0 :
 				clientIcons.size () * (clientIconSize + CPadding);
@@ -442,25 +384,103 @@ namespace Azoth
 
 		int currentShift = textShift + textWidth + CPadding;
 
-		Q_FOREACH (const QIcon& icon, clientIcons)
+		for (const auto& icon : clientIcons)
 		{
-			p.drawPixmap (QPoint (currentShift, (sHeight - stateIconPx.height ()) / 2),
-					icon.pixmap (clientIconSize, clientIconSize));
+			const auto& px = icon.pixmap (clientIconSize, clientIconSize);
+			p.drawPixmap (QPoint { currentShift, (sHeight - px.size ().height ()) / 2 }, px);
 			currentShift += clientIconSize + CPadding;
+		}
+
+		painter->drawPixmap (option.rect, pixmap);
+	}
+
+	QList<QIcon> ContactListDelegate::GetContactIcons (const QModelIndex& index,
+			ICLEntry *entry, const QStringList& vars) const
+	{
+		QList<QIcon> clientIcons;
+
+		const bool isMUC = entry->GetEntryType () == ICLEntry::ETMUC;
+
+		if (!isMUC && ShowClientIcons_)
+		{
+			const auto& iconsMap = Core::Instance ().GetClientIconForEntry (entry);
+			for (int i = 0; i < std::min (vars.size (), 4); ++i)
+				clientIcons << iconsMap [vars.at (i)];
+
+			clientIcons.erase (std::remove_if (clientIcons.begin (), clientIcons.end (),
+						[] (const QIcon& icon) { return icon.isNull (); }),
+					clientIcons.end ());
 		}
 
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
-			const QModelIndex& next = index.model ()->index (index.row () + 1, 0, index.parent ());
-			if (next.isValid () &&
-					next.data (Core::CLRRole) != index.data (Core::CLRRole))
-			{
-				p.setBrush (QColor (option.palette.color (QPalette::Text)));
-				p.drawLine (r.bottomLeft (), r.bottomRight ());
-			}
+			const QByteArray& aff = index.data (Core::CLRAffiliation).toByteArray ();
+			const QIcon& icon = Core::Instance ().GetAffIcon (aff);
+
+			if (!icon.isNull ())
+				clientIcons.prepend (icon);
 		}
 
-		painter->drawPixmap (option.rect, pixmap);
+		if (vars.isEmpty ())
+		{
+			emit hookCollectContactIcons (IHookProxy_ptr { new Util::DefaultHookProxy },
+					entry->GetQObject (), clientIcons);
+			return clientIcons;
+		}
+
+		const auto& addInfo = entry->GetClientInfo (vars.first ());
+		if (addInfo.contains ("user_activity"))
+		{
+			const QMap<QString, QVariant>& actInfo = addInfo ["user_activity"].toMap ();
+			const QString& iconName = ActivityIconset_ + '/' +
+					GetActivityIconName (actInfo ["general"].toString (),
+							actInfo ["specific"].toString ());
+
+			QIcon icon = ActivityIconCache_ [iconName];
+			if (icon.isNull ())
+				icon = QIcon (Core::Instance ()
+						.GetResourceLoader (Core::RLTActivityIconLoader)->
+								GetIconPath (iconName));
+
+			if (!icon.isNull ())
+			{
+				clientIcons.prepend (icon);
+				ActivityIconCache_ [iconName] = icon;
+			}
+		}
+		if (addInfo.contains ("user_mood"))
+		{
+			const QMap<QString, QVariant>& moodInfo = addInfo ["user_mood"].toMap ();
+			QString iconName = moodInfo ["mood"].toString ();
+			iconName [0] = iconName.at (0).toUpper ();
+			iconName.prepend (MoodIconset_ + '/');
+
+			QIcon icon = MoodIconCache_ [iconName];
+			if (icon.isNull ())
+				icon = QIcon (Core::Instance ()
+						.GetResourceLoader (Core::RLTMoodIconLoader)->
+								GetIconPath (iconName));
+
+			if (!icon.isNull ())
+			{
+				clientIcons.prepend (icon);
+				MoodIconCache_ [iconName] = icon;
+			}
+		}
+		if (addInfo.contains ("user_tune"))
+			LoadSystemIcon ("/notification_roster_tune", clientIcons);
+
+		if (auto geoloc = qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ()))
+		{
+			const auto& info = geoloc->GetUserGeolocationInfo (entry->GetQObject (), vars.value (0));
+			if (!info.isEmpty ())
+				LoadSystemIcon ("/geolocation", clientIcons);
+		}
+
+		emit hookCollectContactIcons (IHookProxy_ptr { new Util::DefaultHookProxy },
+				entry->GetQObject (), clientIcons);
+
+		return clientIcons;
 	}
 
 	void ContactListDelegate::LoadSystemIcon (const QString& name,

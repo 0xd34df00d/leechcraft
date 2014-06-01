@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -58,8 +58,10 @@ namespace Postrus
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		bool CanLoadDocument (const QString&);
+		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
+		IRedirectProxy_ptr GetRedirection (const QString&);
+		QStringList GetSupportedMimes () const;
 	};
 }
 }

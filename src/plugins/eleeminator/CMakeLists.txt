@@ -1,0 +1,35 @@
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_eleeminator)
+include (InitLCPlugin OPTIONAL)
+
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (QTermWidget)
+
+include (${QT_USE_FILE})
+include_directories (
+	${CMAKE_CURRENT_BINARY_DIR}
+	${Boost_INCLUDE_DIR}
+	${QTERMWIDGET_INCLUDE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+	)
+set (SRCS
+	eleeminator.cpp
+	termtab.cpp
+	xmlsettingsmanager.cpp
+	)
+set (RESOURCES eleeminatorresources.qrc)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+CreateTrs("eleeminator" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("eleeminator" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+
+add_library (leechcraft_eleeminator SHARED
+	${COMPILED_TRANSLATIONS}
+	${SRCS}
+	${RCCS}
+	)
+target_link_libraries (leechcraft_eleeminator
+	${QT_LIBRARIES}
+	${LEECHCRAFT_LIBRARIES}
+	${QTERMWIDGET_LIBRARIES}
+	)
+install (TARGETS leechcraft_eleeminator DESTINATION ${LC_PLUGINS_DEST})

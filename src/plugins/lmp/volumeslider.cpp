@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "volumeslider.h"
+#include <interfaces/core/iiconthememanager.h>
 #include "engine/output.h"
 #include "core.h"
 
@@ -67,7 +68,8 @@ namespace LMP
 	void VolumeSlider::handleMuted (bool muted)
 	{
 		const auto iconName = muted ? "player-volume-muted" : "player-volume";
-		Ui_.MuteButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon (iconName));
+		Ui_.MuteButton_->setIcon (Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon (iconName));
 	}
 }
 }

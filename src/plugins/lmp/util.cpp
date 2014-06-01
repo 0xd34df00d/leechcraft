@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,6 +29,7 @@
 
 #include "util.h"
 #include <algorithm>
+#include <atomic>
 #include <QDirIterator>
 #include <QPixmap>
 #include <QApplication>
@@ -43,7 +44,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks)
+	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks, std::atomic<bool> *stopFlag)
 	{
 		QStringList nameFilters;
 		nameFilters << "*.aiff"
@@ -66,10 +67,10 @@ namespace LMP
 		const QFileInfo dirInfo (dirPath);
 		if (dirInfo.isFile ())
 		{
-			Q_FOREACH (const auto& filter, nameFilters)
+			for (const auto& filter : nameFilters)
 				if (dirPath.endsWith (filter.mid (1), Qt::CaseInsensitive))
 					return { dirInfo };
-			return QList<QFileInfo> ();
+				return {};
 		}
 
 		auto filters = QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot;
@@ -78,15 +79,18 @@ namespace LMP
 
 		QList<QFileInfo> result;
 		const auto& list = QDir (dirPath).entryInfoList (nameFilters, filters);
-		Q_FOREACH (const QFileInfo& entryInfo, list)
+		for (const auto& entryInfo : list)
 		{
+			if (stopFlag && stopFlag->load (std::memory_order_relaxed))
+				return result;
+
 			const auto& path = entryInfo.absoluteFilePath ();
 			if (entryInfo.isSymLink () &&
 					entryInfo.symLinkTarget () == path)
 				continue;
 
 			if (entryInfo.isDir ())
-				result += RecIterateInfo (path, followSymlinks);
+				result += RecIterateInfo (path, followSymlinks, stopFlag);
 			else if (entryInfo.isFile ())
 				result += entryInfo;
 		}
@@ -199,11 +203,23 @@ namespace LMP
 			});
 	}
 
-	QString PerformSubstitutions (QString mask, const MediaInfo& info)
+	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags flags)
 	{
 		const auto& getters = GetSubstGetters ();
 		for (const auto& key : getters.keys ())
-			mask.replace (key, getters [key] (info));
+		{
+			auto value = getters [key] (info);
+			if (flags & SubstitutionFlag::SFSafeFilesystem)
+				value.replace ('/', '_');
+			mask.replace (key, value);
+		}
+
+		if (flags & SubstitutionFlag::SFSafeFilesystem)
+		{
+			mask.replace ('?', '_');
+			mask.replace ('*', '_');
+		}
+
 		return mask;
 	}
 
@@ -240,6 +256,36 @@ namespace LMP
 			}
 		}
 		return trackTooltip;
+	}
+
+	bool CompareArtists (QString leftStr, QString rightStr, bool withoutThe)
+	{
+		if (withoutThe)
+		{
+			auto chopStr = [] (QString& str)
+			{
+				if (str.startsWith ("the ", Qt::CaseInsensitive))
+					str = str.mid (4);
+				if (str.startsWith ("a ", Qt::CaseInsensitive))
+					str = str.mid (2);
+			};
+
+			chopStr (leftStr);
+			chopStr (rightStr);
+		}
+
+		return QString::localeAwareCompare (leftStr, rightStr) < 0;
+	}
+
+	QPair<QString, QColor> GetRuleSymbol (const Entity& rule)
+	{
+		static const QString flagSym = QString::fromUtf8 ("⚑");
+		static const QString disabledFlagSym = QString::fromUtf8 ("⚐");
+
+		const auto& color = rule.Additional_ ["org.LC.AdvNotifications.AssocColor"].value<QColor> ();
+		const auto isEnabled = rule.Additional_ ["org.LC.AdvNotifications.IsEnabled"].toBool ();
+
+		return { isEnabled ? flagSym : disabledFlagSym, color };
 	}
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -220,9 +220,19 @@ namespace AdvancedNotifications
 		FieldMatches_ << match;
 	}
 
+	QColor NotificationRule::GetColor () const
+	{
+		return Color_;
+	}
+
+	void NotificationRule::SetColor (const QColor& color)
+	{
+		Color_ = color;
+	}
+
 	void NotificationRule::Save (QDataStream& stream) const
 	{
-		stream << static_cast<quint8> (3)
+		stream << static_cast<quint8> (4)
 			<< Name_
 			<< Category_
 			<< Types_
@@ -232,9 +242,10 @@ namespace AdvancedNotifications
 			<< CmdParams_.Args_
 			<< IsEnabled_
 			<< IsSingleShot_
+			<< Color_
 			<< static_cast<quint16> (FieldMatches_.size ());
 
-		Q_FOREACH (const FieldMatch& match, FieldMatches_)
+		for (const auto& match : FieldMatches_)
 			match.Save (stream);
 	}
 
@@ -242,7 +253,7 @@ namespace AdvancedNotifications
 	{
 		quint8 version = 0;
 		stream >> version;
-		if (version < 1 || version > 3)
+		if (version < 1 || version > 4)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -270,6 +281,9 @@ namespace AdvancedNotifications
 			IsSingleShot_ = false;
 		}
 
+		if (version >= 4)
+			stream >> Color_;
+
 		Methods_ = static_cast<NotificationMethods> (methods);
 
 		quint16 numMatches = 0;
@@ -295,7 +309,8 @@ namespace AdvancedNotifications
 			r1.GetVisualParams () == r2.GetVisualParams () &&
 			r1.GetAudioParams () == r2.GetAudioParams () &&
 			r1.GetTrayParams () == r2.GetTrayParams () &&
-			r1.GetCmdParams () == r2.GetCmdParams ();
+			r1.GetCmdParams () == r2.GetCmdParams () &&
+			r1.GetColor () == r2.GetColor ();
 	}
 
 	bool operator!= (const NotificationRule& r1, const NotificationRule& r2)
@@ -303,20 +318,63 @@ namespace AdvancedNotifications
 		return !(r1 == r2);
 	}
 
+	namespace
+	{
+		template<typename T>
+		void DebugSingle (const NotificationRule& r1, const NotificationRule& r2, T method)
+		{
+			const auto eq = (r1.*method) () == (r2.*method) ();
+			qDebug () << eq;
+			if (!eq)
+				qDebug () << (r1.*method) () << (r2.*method) ();
+		}
+	}
+
 	void DebugEquals (const NotificationRule& r1, const NotificationRule& r2)
 	{
 		qDebug () << Q_FUNC_INFO;
-		qDebug () << (r1.GetMethods () == r2.GetMethods ());
-		qDebug () << (r1.IsEnabled () == r2.IsEnabled ());
-		qDebug () << (r1.IsSingleShot () == r2.IsSingleShot ());
-		qDebug () << (r1.GetName () == r2.GetName ());
-		qDebug () << (r1.GetCategory () == r2.GetCategory ());
-		qDebug () << (r1.GetTypes () == r2.GetTypes ());
-		qDebug () << (r1.GetFieldMatches () == r2.GetFieldMatches ());
-		qDebug () << (r1.GetVisualParams () == r2.GetVisualParams ());
-		qDebug () << (r1.GetAudioParams () == r2.GetAudioParams ());
-		qDebug () << (r1.GetTrayParams () == r2.GetTrayParams ());
-		qDebug () << (r1.GetCmdParams () == r2.GetCmdParams ());
+		DebugSingle (r1, r2, &NotificationRule::GetMethods);
+		DebugSingle (r1, r2, &NotificationRule::IsEnabled);
+		DebugSingle (r1, r2, &NotificationRule::IsSingleShot);
+		DebugSingle (r1, r2, &NotificationRule::GetName);
+		DebugSingle (r1, r2, &NotificationRule::GetCategory);
+		DebugSingle (r1, r2, &NotificationRule::GetTypes);
+		DebugSingle (r1, r2, &NotificationRule::GetFieldMatches);
+		DebugSingle (r1, r2, &NotificationRule::GetVisualParams);
+		DebugSingle (r1, r2, &NotificationRule::GetAudioParams);
+		DebugSingle (r1, r2, &NotificationRule::GetTrayParams);
+		DebugSingle (r1, r2, &NotificationRule::GetCmdParams);
+		DebugSingle (r1, r2, &NotificationRule::GetColor);
 	}
 }
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::FieldMatch& match)
+{
+	dbg.nospace () << "FieldMatch (for: " << match.GetPluginID () << "; field: " << match.GetFieldName () << ")";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::VisualParams&)
+{
+	dbg.nospace () << "VisualParams ()";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::AudioParams& params)
+{
+	dbg.nospace () << "AudioParams (file: " << params.Filename_ << ")";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::TrayParams&)
+{
+	dbg.nospace () << "TrayParams ()";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::CmdParams& params)
+{
+	dbg.nospace () << "CmdParams (command: " << params.Cmd_ << "; args: " << params.Args_ << ")";
+	return dbg.space ();
 }

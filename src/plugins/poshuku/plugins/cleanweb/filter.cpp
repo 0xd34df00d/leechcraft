@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -130,14 +130,14 @@ namespace CleanWeb
 		{
 			QRegExp rx;
 			in >> rx;
-			item.RegExp_ = RegExp (rx.pattern (), rx.caseSensitivity ());
+			item.RegExp_ = Util::RegExp (rx.pattern (), rx.caseSensitivity ());
 		}
 		else if (version == 2)
 		{
 			QString str;
 			quint8 cs;
 			in >> str >> cs;
-			item.RegExp_ = RegExp (str, static_cast<Qt::CaseSensitivity> (cs));
+			item.RegExp_ = Util::RegExp (str, static_cast<Qt::CaseSensitivity> (cs));
 		}
 		in >> item.Option_;
 		return in;

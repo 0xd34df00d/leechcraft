@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,7 +39,7 @@ namespace LMP
 {
 namespace XSPF
 {
-	QStringList Read (const QString& path)
+	QList<RawReadData> Read (const QString& path)
 	{
 		QFile file (path);
 		if (!file.open (QIODevice::ReadOnly))
@@ -48,7 +48,7 @@ namespace XSPF
 					<< "unable to open"
 					<< path
 					<< file.errorString ();
-			return QStringList ();
+			return {};
 		}
 
 		QDomDocument doc;
@@ -57,10 +57,10 @@ namespace XSPF
 			qWarning () << Q_FUNC_INFO
 					<< "unable to parse"
 					<< path;
-			return QStringList ();
+			return {};
 		}
 
-		QStringList result;
+		QList<RawReadData> result;
 		auto track = doc.documentElement ()
 				.firstChildElement ("trackList")
 				.firstChildElement ("track");
@@ -68,16 +68,16 @@ namespace XSPF
 		{
 			const auto& loc = track.firstChildElement ("location").text ();
 			if (!loc.isEmpty ())
-				result << loc;
+				result.append ({ loc, {} });
 
 			track = track.nextSiblingElement ("track");
 		}
 		return result;
 	}
 
-	QList<AudioSource> Read2Sources (const QString& path)
+	Playlist Read2Sources (const QString& path)
 	{
-		return CommonRead2Sources ({ QStringList ("xspf"), path, Read });
+		return CommonRead2Sources ({ { "xspf" }, path, Read });
 	}
 }
 }

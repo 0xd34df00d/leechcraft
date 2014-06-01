@@ -37,7 +37,6 @@ public:
 
 	bool active;
 	int idleTime;
-	QDateTime startTime;
 	QTimer checkTimer;
 };
 
@@ -85,8 +84,6 @@ bool Idle::usingPlatform() const
 
 void Idle::start()
 {
-	d->startTime = QDateTime::currentDateTime();
-
 	if(!platform) {
 		// generic idle
 		d->lastMousePos = QCursor::pos();
@@ -94,7 +91,7 @@ void Idle::start()
 	}
 
 	// poll every second (use a lower value if you need more accuracy)
-	d->checkTimer.start(1000);
+	d->checkTimer.start(10000);
 }
 
 void Idle::stop()
@@ -102,9 +99,14 @@ void Idle::stop()
 	d->checkTimer.stop();
 }
 
+int Idle::interval() const
+{
+	return d->checkTimer.interval();
+}
+
 void Idle::doCheck()
 {
-	int i;
+	int i = 0;
 	if(platform)
 		i = platform->secondsIdle();
 	else {
@@ -116,25 +118,5 @@ void Idle::doCheck()
 		}
 		i = d->idleSince.secsTo(curDateTime);
 	}
-
-	// set 'beginIdle' to the beginning of the idle time (by backtracking 'i' seconds from now)
-	QDateTime beginIdle = QDateTime::currentDateTime().addSecs(-i);
-
-	// set 't' to hold the number of seconds between 'beginIdle' and 'startTime'
-	int t = beginIdle.secsTo(d->startTime);
-
-	// beginIdle later than (or equal to) startTime?
-	if(t <= 0) {
-		// scoot ourselves up to the new idle start
-		d->startTime = beginIdle;
-	}
-	// beginIdle earlier than startTime?
-	else if(t > 0) {
-		// do nothing
-	}
-
-	// how long have we been idle?
-	int idleTime = d->startTime.secsTo(QDateTime::currentDateTime());
-
-	secondsIdle(idleTime);
+	secondsIdle(i);
 }

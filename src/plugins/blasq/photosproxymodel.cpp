@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -44,7 +44,8 @@ namespace Blasq
 
 		enum ExtendedRole
 		{
-			SupportsDeletes = CollectionRole::CollectionRoleMax
+			SupportsDeletes = CollectionRole::CollectionRoleMax,
+			IsSelected
 		};
 	}
 
@@ -57,6 +58,8 @@ namespace Blasq
 	{
 		if (role == ExtendedRole::SupportsDeletes)
 			return SupportsDeletes_;
+		else if (role == ExtendedRole::IsSelected)
+			return Selected_.contains (index.data (CollectionRole::ID).toString ());
 
 		const auto& srcIdx = mapToSource (index);
 		const auto& srcData = srcIdx.data (role);
@@ -96,6 +99,7 @@ namespace Blasq
 
 		auto names = roleNames ();
 		names [ExtendedRole::SupportsDeletes] = "supportsDeletes";
+		names [ExtendedRole::IsSelected] = "isSelected";
 		setRoleNames (names);
 
 		blockSignals (false);
@@ -112,6 +116,32 @@ namespace Blasq
 	void PhotosProxyModel::SetCurrentAccount (QObject *accObj)
 	{
 		SupportsDeletes_ = qobject_cast<ISupportDeletes*> (accObj);
+	}
+
+	void PhotosProxyModel::AddSelected (const QString& id, const QModelIndexList& idxs)
+	{
+		Selected_ << id;
+		EmitDataChanged (idxs);
+	}
+
+	void PhotosProxyModel::RemoveSelected (const QString& id, const QModelIndexList& idxs)
+	{
+		Selected_.remove (id);
+		EmitDataChanged (idxs);
+	}
+
+	void PhotosProxyModel::ClearSelected ()
+	{
+		Selected_.clear ();
+	}
+
+	void PhotosProxyModel::EmitDataChanged (const QModelIndexList& idxs)
+	{
+		for (const auto& idx : idxs)
+		{
+			const auto& mapped = mapFromSource (idx);
+			emit dataChanged (mapped, mapped);
+		}
 	}
 
 	void PhotosProxyModel::handleRowsInserted (const QModelIndex& parent, int from, int)

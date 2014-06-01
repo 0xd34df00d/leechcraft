@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -44,11 +44,33 @@ namespace XDG
 
 	QPixmap GetAppPixmap (const QString& name)
 	{
+		const auto prefixes
+		{
+			"/usr/share/pixmaps/",
+			"/usr/local/share/pixmaps/"
+		};
+
+		const auto sizes { "192", "128", "96", "72", "64", "48", "36", "32" };
+		const QStringList themes
+		{
+			"/usr/local/share/icons/hicolor/",
+			"/usr/share/icons/hicolor/"
+		};
+
 		for (auto ext : { ".png", ".svg", ".xpm", ".jpg", "" })
-			for (auto prefix : { "/usr/share/pixmaps/", "/usr/local/share/pixmaps/",
-						"/usr/share/icons/hicolor/", "/usr/local/share/icons/hicolor/" })
+		{
+			for (auto prefix : prefixes)
 				if (QFile::exists (prefix + name + ext))
 					return { prefix + name + ext };
+
+			for (auto themeDir : themes)
+				for (const auto& size : sizes)
+				{
+					const auto& str = themeDir + size + 'x' + size + "/apps/" + name + ext;
+					if (QFile::exists (str))
+						return { str };
+				}
+		}
 
 		return {};
 	}

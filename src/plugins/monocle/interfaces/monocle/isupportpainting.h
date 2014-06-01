@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,12 +35,25 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	/** @brief Interface for documents supporting optimized painting.
+	 *
+	 * This interface should be implemented by IDocument objects that can
+	 * paint better than putting the image returned by the
+	 * IDocument::RenderPage() method to a QPainter.
+	 *
+	 * @sa IDocument
+	 */
 	class ISupportPainting
 	{
 	public:
 		virtual ~ISupportPainting () {}
 
-		virtual void PaintPage (QPainter*, int) = 0;
+		/** @brief Paints a given page to the given painter.
+		 *
+		 * @param[in] painter The painter to paint on.
+		 * @param[in] page The page index to paint on.
+		 */
+		virtual void PaintPage (QPainter *painter, int page) = 0;
 	};
 }
 }

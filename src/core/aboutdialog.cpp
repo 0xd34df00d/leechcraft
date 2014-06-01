@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,7 +29,7 @@
 
 #include "aboutdialog.h"
 #include <QDomDocument>
-#include "util/sysinfo.h"
+#include "util/sys/sysinfo.h"
 #include "interfaces/ihavediaginfo.h"
 #include "core.h"
 #include "coreproxy.h"
@@ -45,7 +45,7 @@ namespace LeechCraft
 			QString JID_;
 			QString Email_;
 			QStringList Roles_;
-			QStringList Years_;
+			QList<int> Years_;
 
 			ContributorInfo (const QString& name, const QString& nick,
 					const QString& jid, const QString& email,
@@ -55,9 +55,8 @@ namespace LeechCraft
 			, JID_ (jid)
 			, Email_ (email)
 			, Roles_ (roles)
+			, Years_ (years)
 			{
-				Q_FOREACH (const int year, years)
-					Years_ << QString::number (year);
 			}
 
 			QString Fmt () const
@@ -86,8 +85,21 @@ namespace LeechCraft
 							.arg (r);
 				result += "</ul>";
 
+				QString yearsStr;
+				if (Years_.size () > 1 && Years_.back () - Years_.front () == Years_.size () - 1)
+					yearsStr = QString::fromUtf8 ("%1–%2")
+							.arg (Years_.front ())
+							.arg (Years_.back ());
+				else
+				{
+					QStringList yearsStrs;
+					for (auto year : Years_)
+						yearsStrs << QString::number (year);
+					yearsStr = yearsStrs.join (", ");
+				}
+
 				result += AboutDialog::tr ("Years: %1")
-						.arg (Years_.join (", "));
+						.arg (yearsStr);
 
 				return result;
 			}

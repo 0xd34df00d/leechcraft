@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -174,6 +174,7 @@ namespace Aggregator
 		void AddFeed (QString, const QStringList&,
 				FeedSettings_ptr = FeedSettings_ptr ());
 		void RemoveFeed (const QModelIndex&);
+		void RenameFeed (const QModelIndex& index, const QString& newName);
 		void RemoveChannel (const QModelIndex&);
 		ItemsWidget* GetReprWidget () const;
 
@@ -250,7 +251,6 @@ namespace Aggregator
 		void rotateUpdatesQueue ();
 
 		void handleDBUpThreadStarted ();
-		void handleDBUpChannelDataUpdated (IDType_t, IDType_t);
 		void handleDBUpGotNewChannel (const ChannelShort&);
 	private:
 		void UpdateUnreadItemsNumber () const;
@@ -266,13 +266,10 @@ namespace Aggregator
 		void HandleProvider (QObject*, int);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
-		void channelDataUpdated (IDType_t id, IDType_t feedId);
 		void unreadNumberChanged (int) const;
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
-		void itemDataUpdated (Item_ptr, Channel_ptr);
-		void itemsRemoved (const QSet<IDType_t>&);
 
 		void storageChanged ();
 

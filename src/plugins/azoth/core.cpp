@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,11 +42,11 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <QtDebug>
-#include <util/resourceloader.h>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/util.h>
 #include <util/tags/categoryselector.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/defaulthookproxy.h>
+#include <util/xpc/notificationactionhandler.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
@@ -90,6 +90,7 @@
 #include "riexhandler.h"
 #include "customstatusesmanager.h"
 #include "customchatstylemanager.h"
+#include "cltooltipmanager.h"
 
 Q_DECLARE_METATYPE (QList<QColor>);
 Q_DECLARE_METATYPE (QPointer<QObject>);
@@ -202,10 +203,10 @@ namespace Azoth
 	, KeyStoreMgr_ (new QCA::KeyStoreManager)
 	, QCAEventHandler_ (new QCA::EventHandler)
 #endif
-	, CLModel_ (new CLModel (this))
+	, TooltipManager_ (new CLTooltipManager (Entry2Items_))
+	, CLModel_ (new CLModel (TooltipManager_, this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, ActionsManager_ (new ActionsManager (this))
-	, Avatar2TooltipSrcCache_ (2 * 1024 * 1024)
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
@@ -286,6 +287,7 @@ namespace Azoth
 		PluginManager_->RegisterHookable (this);
 		PluginManager_->RegisterHookable (CLModel_);
 		PluginManager_->RegisterHookable (ActionsManager_);
+		PluginManager_->RegisterHookable (TooltipManager_);
 
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
@@ -494,9 +496,9 @@ namespace Azoth
 	void Core::HandleURL (const QUrl& url, ICLEntry *source)
 	{
 		QList<QObject*> accounts;
-		Q_FOREACH (QObject *obj, ProtocolPlugins_)
+		for (auto obj : ProtocolPlugins_)
 		{
-			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
+			auto protoPlug = qobject_cast<IProtocolPlugin*> (obj);
 			if (!protoPlug)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -506,15 +508,15 @@ namespace Azoth
 				continue;
 			}
 
-			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
+			for (auto protoObj : protoPlug->GetProtocols ())
 			{
-				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
+				auto handler = qobject_cast<IURIHandler*> (protoObj);
 				if (!handler)
 					continue;
 				if (!handler->SupportsURI (url))
 					continue;
 
-				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+				auto proto = qobject_cast<IProtocol*> (protoObj);
 				if (!proto)
 				{
 					qWarning () << Q_FUNC_INFO
@@ -555,6 +557,30 @@ namespace Azoth
 
 		QObject *selProto = qobject_cast<IAccount*> (selected)->GetParentProtocol ();
 		qobject_cast<IURIHandler*> (selProto)->HandleURI (url, selected);
+	}
+
+	void Core::HandleURLGeneric (QUrl url, bool raise, ICLEntry *source)
+	{
+		if (Core::Instance ().CouldHandleURL (url))
+		{
+			Core::Instance ().HandleURL (url, source);
+			return;
+		}
+
+		if (url.scheme () == "file")
+			return;
+
+		if (url.scheme ().isEmpty () &&
+				url.host ().isEmpty () &&
+				url.path ().startsWith ("www."))
+			url = "http://" + url.toString ();
+
+		auto e = Util::MakeEntity (url,
+				{},
+				FromUserInitiated | OnlyHandle);
+		if (!raise)
+			e.Additional_ ["BackgroundHandle"] = true;
+		Core::Instance ().SendEntity (e);
 	}
 
 	const QObjectList& Core::GetProtocolPlugins () const
@@ -907,7 +933,8 @@ namespace Azoth
 					c.unicode ();
 			hash += nick.length ();
 		}
-		const auto& nc = colors.at (std::abs (hash) % colors.size ());
+		hash = std::abs (hash);
+		const auto& nc = colors.at (hash % colors.size ());
 		return nc.name ();
 	}
 
@@ -1117,14 +1144,6 @@ namespace Azoth
 				this,
 				SLOT (handleEntryPermsChanged ()));
 		connect (clEntry->GetQObject (),
-				SIGNAL (entryGenerallyChanged ()),
-				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
-				SIGNAL (avatarChanged (const QImage&)),
-				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
@@ -1146,28 +1165,10 @@ namespace Azoth
 		}
 
 		if (qobject_cast<IAdvancedCLEntry*> (clEntry->GetQObject ()))
-		{
 			connect (clEntry->GetQObject (),
 					SIGNAL (attentionDrawn (const QString&, const QString&)),
 					this,
 					SLOT (handleAttentionDrawn (const QString&, const QString&)));
-			connect (clEntry->GetQObject (),
-					SIGNAL (activityChanged (const QString&)),
-					this,
-					SLOT (handleEntryPEPEvent (const QString&)));
-			connect (clEntry->GetQObject (),
-					SIGNAL (moodChanged (const QString&)),
-					this,
-					SLOT (handleEntryPEPEvent (const QString&)));
-			connect (clEntry->GetQObject (),
-					SIGNAL (tuneChanged (const QString&)),
-					this,
-					SLOT (handleEntryPEPEvent (const QString&)));
-			connect (clEntry->GetQObject (),
-					SIGNAL (locationChanged (const QString&)),
-					this,
-					SLOT (handleEntryPEPEvent (const QString&)));
-		}
 
 #ifdef ENABLE_CRYPT
 		if (!KeyStoreMgr_->isBusy ())
@@ -1194,12 +1195,12 @@ namespace Azoth
 			}
 		}
 
-		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString (), false, false);
+		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString (), false);
 
 		if (clEntry->GetEntryType () == ICLEntry::ETPrivateChat)
-			handleEntryPermsChanged (clEntry, false);
+			handleEntryPermsChanged (clEntry);
 
-		RebuildTooltip (clEntry);
+		TooltipManager_->AddEntry (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetQObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
@@ -1261,206 +1262,6 @@ namespace Azoth
 		}
 	}
 
-	namespace
-	{
-		QString Status2Str (const EntryStatus& status, std::shared_ptr<IProxyObject> obj)
-		{
-			QString result = obj->StateToString (status.State_);
-			const QString& statusString = Qt::escape (status.StatusString_);
-			if (!statusString.isEmpty ())
-				result += " (" + statusString + ")";
-			return result;
-		}
-
-		void FormatMood (QString& tip, const QMap<QString, QVariant>& moodInfo)
-		{
-			tip += "<br />" + Core::tr ("Mood:") + ' ';
-			tip += MoodDialog::ToHumanReadable (moodInfo ["mood"].toString ());
-			const QString& text = moodInfo ["text"].toString ();
-			if (!text.isEmpty ())
-				tip += " (" + text + ")";
-		}
-
-		void FormatActivity (QString& tip, const QMap<QString, QVariant>& actInfo)
-		{
-			tip += "<br />" + Core::tr ("Activity:") + ' ';
-			tip += ActivityDialog::ToHumanReadable (actInfo ["general"].toString ());
-			const QString& specific = ActivityDialog::ToHumanReadable (actInfo ["specific"].toString ());
-			if (!specific.isEmpty ())
-				tip += " (" + specific + ")";
-			const QString& text = actInfo ["text"].toString ();
-			if (!text.isEmpty ())
-				tip += " (" + text + ")";
-		}
-
-		void FormatTune (QString& tip, const QMap<QString, QVariant>& tuneInfo)
-		{
-			const QString& artist = tuneInfo ["artist"].toString ();
-			const QString& source = tuneInfo ["source"].toString ();
-			const QString& title = tuneInfo ["title"].toString ();
-
-			tip += "<br />" + Core::tr ("Now listening to:") + ' ';
-			if (!artist.isEmpty () && !title.isEmpty ())
-				tip += "<em>" + artist + "</em>" +
-						QString::fromUtf8 (" — ") +
-						"<em>" + title + "</em>";
-			else if (!artist.isEmpty ())
-				tip += "<em>" + artist + "</em>";
-			else if (!title.isEmpty ())
-				tip += "<em>" + title + "</em>";
-
-			if (!source.isEmpty ())
-				tip += ' ' + Core::tr ("from") +
-						" <em>" + source + "</em>";
-
-			const int length = tuneInfo ["length"].toInt ();
-			if (length)
-				tip += " (" + Util::MakeTimeFromLong (length) + ")";
-		}
-	}
-
-	QString Core::MakeTooltipString (ICLEntry *entry)
-	{
-		QString tip = "<table border='0'><tr><td>";
-
-		if (entry->GetEntryType () != ICLEntry::ETMUC)
-		{
-			const int avatarSize = 75;
-
-			auto avatar = entry->GetAvatar ();
-			if (avatar.isNull ())
-				avatar = GetDefaultAvatar (avatarSize);
-
-			QString data;
-			if (auto dataPtr = Avatar2TooltipSrcCache_ [avatar])
-				data = *dataPtr;
-			else
-			{
-				const int minAvatarSize = 32;
-
-				if (std::max (avatar.width (), avatar.height ()) > avatarSize)
-					avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::FastTransformation);
-				else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
-					avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-				data = Util::GetAsBase64Src (avatar);
-				Avatar2TooltipSrcCache_.insert (avatar, new QString (data), data.size ());
-			}
-
-			tip += "<img src='" + data + "' />";
-			tip += "</td><td>";
-		}
-
-		tip += "<strong>" + Qt::escape (entry->GetEntryName ()) + "</strong>";
-		tip += "&nbsp;(<em>" + Qt::escape (entry->GetHumanReadableID ()) + "</em>)<br />";
-		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
-		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
-		{
-			tip += "<br />";
-			tip += tr ("In groups:") + ' ' + Qt::escape (entry->Groups ().join ("; "));
-		}
-
-		const QStringList& variants = entry->Variants ();
-
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
-		if (mucEntry)
-		{
-			const QString& jid = mucEntry->GetRealID (entry->GetQObject ());
-			tip += "<br />" + tr ("Real ID:") + ' ';
-			tip += jid.isEmpty () ? tr ("unknown") : Qt::escape (jid);
-		}
-
-		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
-		if (mucPerms)
-		{
-			tip += "<hr />";
-			const QMap<QByteArray, QList<QByteArray>>& perms =
-					mucPerms->GetPerms (entry->GetQObject ());
-			Q_FOREACH (const QByteArray& permClass, perms.keys ())
-			{
-				tip += mucPerms->GetUserString (permClass);
-				tip += ": ";
-
-				QStringList users;
-				Q_FOREACH (const QByteArray& perm, perms [permClass])
-					users << mucPerms->GetUserString (perm);
-				tip += users.join ("; ");
-				tip += "<br />";
-			}
-		}
-
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		proxy->SetValue ("tooltip", tip);
-		emit hookTooltipBeforeVariants (proxy, entry->GetQObject ());
-		proxy->FillValue ("tooltip", tip);
-
-		auto cleanupBR = [&tip] ()
-		{
-			tip = tip.trimmed ();
-			while (tip.endsWith ("<br />"))
-			{
-				tip.chop (6);
-				tip = tip.trimmed ();
-			}
-		};
-
-		cleanupBR ();
-
-		for (const QString& variant : variants)
-		{
-			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
-			if (info.isEmpty ())
-				continue;
-
-			tip += "<hr />";
-			if (!variant.isEmpty ())
-			{
-				tip += "<strong>" + variant;
-				if (info.contains ("priority"))
-					tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
-				tip += "</strong><br />";
-			}
-			if (!variant.isEmpty () || variants.size () > 1)
-				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
-
-			if (info.contains ("client_name"))
-				tip += "<br />" + tr ("Using:") + ' ' + Qt::escape (info.value ("client_name").toString ());
-			if (info.contains ("client_version"))
-				tip += " " + Qt::escape (info.value ("client_version").toString ());
-			if (info.contains ("client_remote_name"))
-				tip += "<br />" + tr ("Claiming:") + ' ' + Qt::escape (info.value ("client_remote_name").toString ());
-			if (info.contains ("client_os"))
-				tip += "<br />" + tr ("OS:") + ' ' + Qt::escape (info.value ("client_os").toString ());
-
-			if (info.contains ("user_mood"))
-				FormatMood (tip, info ["user_mood"].toMap ());
-			if (info.contains ("user_activity"))
-				FormatActivity (tip, info ["user_activity"].toMap ());
-			if (info.contains ("user_tune"))
-				FormatTune (tip, info ["user_tune"].toMap ());
-
-			if (info.contains ("custom_user_visible_map"))
-			{
-				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
-				for (const QString& key : map.keys ())
-					tip += "<br />" + key + ": " + Qt::escape (map [key].toString ()) + "<br />";
-			}
-		}
-
-		cleanupBR ();
-
-		tip += "</td></tr></table>";
-
-		return tip;
-	}
-
-	void Core::RebuildTooltip (ICLEntry *entry)
-	{
-		const QString& tip = MakeTooltipString (entry);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-			item->setToolTip (tip);
-	}
-
 	Entity Core::BuildStatusNotification (const EntryStatus& entrySt,
 		ICLEntry *entry, const QString& variant)
 	{
@@ -1479,7 +1280,7 @@ namespace Azoth
 			return Entity ();
 
 		const QString& name = entry->GetEntryName ();
-		const QString& status = Status2Str (entrySt, PluginProxyObject_);
+		const QString& status = CLTooltipManager::Status2Str (entrySt, PluginProxyObject_.get ());
 
 		const QString& text = variant.isEmpty () ?
 				Core::tr ("%1 is now %2.")
@@ -1510,7 +1311,7 @@ namespace Azoth
 	}
 
 	void Core::HandleStatusChanged (const EntryStatus& status,
-			ICLEntry *entry, const QString& variant, bool asSignal, bool rebuildTooltip)
+			ICLEntry *entry, const QString& variant, bool asSignal)
 	{
 		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				entry->GetQObject (), variant);
@@ -1520,13 +1321,7 @@ namespace Azoth
 		const State state = entry->GetStatus ().State_;
 		Util::QIODevice_ptr icon = GetIconPathForState (state);
 
-		if (rebuildTooltip)
-			QMetaObject::invokeMethod (this,
-					"delayedRebuildTooltip",
-					Qt::QueuedConnection,
-					Q_ARG (QPointer<QObject>, entry->GetQObject ()));
-
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 		{
 			ItemIconManager_->SetIcon (item, icon.get ());
 			RecalculateOnlineForCat (item->parent ());
@@ -1565,13 +1360,13 @@ namespace Azoth
 		const QString& filename = XmlSettingsManager::Instance ()
 				.property ("StatusIcons").toString () + "/file";
 		Util::QIODevice_ptr fileIcon = ResourceLoaders_ [RLTStatusIconLoader]->GetIconDevice (filename, true);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			ItemIconManager_->SetIcon (item, fileIcon.get ());
 	}
 
 	void Core::IncreaseUnreadCount (ICLEntry* entry, int amount)
 	{
-		for (auto item : Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			{
 				int prevValue = item->data (CLRUnreadMsgCount).toInt ();
 				item->setData (std::max (0, prevValue + amount), CLRUnreadMsgCount);
@@ -2021,18 +1816,6 @@ namespace Azoth
 		}
 	}
 
-	void Core::delayedRebuildTooltip (QPointer<QObject> entryObj)
-	{
-		if (!entryObj)
-			return;
-
-		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-			return;
-
-		RebuildTooltip (entry);
-	}
-
 	void Core::addAccount (QObject *accObject)
 	{
 		IAccount *account = qobject_cast<IAccount*> (accObject);
@@ -2183,9 +1966,8 @@ namespace Azoth
 
 	void Core::handleAccountRemoved (QObject *account)
 	{
-		IAccount *accFace =
-				qobject_cast<IAccount*> (account);
-				if (!accFace)
+		auto accFace = qobject_cast<IAccount*> (account);
+		if (!accFace)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "account doesn't implement IAccount*"
@@ -2211,7 +1993,7 @@ namespace Azoth
 			}
 		}
 
-		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
+		for (auto entry : Entry2Items_.keys ())
 			if (entry->GetParentAccount () == account)
 				Entry2Items_.remove (entry);
 
@@ -2233,6 +2015,8 @@ namespace Azoth
 			{
 				qWarning () << Q_FUNC_INFO
 						<< item
+						<< "from"
+						<< sender ()
 						<< "is not a valid ICLEntry";
 				continue;
 			}
@@ -2271,7 +2055,7 @@ namespace Azoth
 						.property ("OpenTabsForAutojoin").toBool ();
 				if (open || !mucEntry->IsAutojoined ())
 				{
-					QStandardItem *item = Entry2Items_ [entry].first ();
+					auto item = Entry2Items_.value (entry).first ();
 					OpenChat (CLModel_->indexFromItem (item));
 				}
 			}
@@ -2298,9 +2082,11 @@ namespace Azoth
 					this,
 					0);
 
+			TooltipManager_->RemoveEntry (entry);
+
 			ChatTabsManager_->HandleEntryRemoved (entry);
 
-			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			for (auto item : Entry2Items_.value (entry))
 				RemoveCLItem (item);
 
 			Entry2Items_.remove (entry);
@@ -2409,20 +2195,6 @@ namespace Azoth
 		HandleStatusChanged (entry->GetStatus (), entry, QString (), false);
 	}
 
-	void Core::handleEntryPEPEvent (const QString&)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a ICLEntry"
-					<< sender ();
-			return;
-		}
-
-		RebuildTooltip (entry);
-	}
-
 	void Core::handleEntryNameChanged (const QString& newName)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
@@ -2434,7 +2206,7 @@ namespace Azoth
 			return;
 		}
 
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			item->setText (newName);
 
 		if (entry->Variants ().size ())
@@ -2458,7 +2230,7 @@ namespace Azoth
 		if (!Entry2Items_.contains (entry))
 			return;
 
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 		{
 			const QString& oldCat = item->data (CLREntryCategory).toString ();
 			if (newGroups.removeAll (oldCat))
@@ -2467,21 +2239,18 @@ namespace Azoth
 			RemoveCLItem (item);
 		}
 
-		if (newGroups.isEmpty () && Entry2Items_ [entry].size ())
+		if (newGroups.isEmpty () && !Entry2Items_.value (entry).isEmpty ())
 			return;
 
-		QStandardItem *accItem =
-				GetAccountItem (entry->GetParentAccount ());
+		auto accItem = GetAccountItem (entry->GetParentAccount ());
 
-		QList<QStandardItem*> catItems =
-				GetCategoriesItems (newGroups, accItem);
-		Q_FOREACH (QStandardItem *catItem, catItems)
+		for (auto catItem : GetCategoriesItems (newGroups, accItem))
 			AddEntryTo (entry, catItem);
 
 		HandleStatusChanged (entry->GetStatus (), entry, QString ());
 	}
 
-	void Core::handleEntryPermsChanged (ICLEntry *suggest, bool rebuildTooltip)
+	void Core::handleEntryPermsChanged (ICLEntry *suggest)
 	{
 		ICLEntry *entry = suggest ? suggest : qobject_cast<ICLEntry*> (sender ());
 		if (!entry)
@@ -2498,25 +2267,8 @@ namespace Azoth
 			return;
 
 		const QString& name = mucPerms->GetAffName (entryObj);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			item->setData (name, CLRAffiliation);
-
-		if (rebuildTooltip)
-			RebuildTooltip (entry);
-	}
-
-	void Core::remakeTooltipForSender ()
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-
-		RebuildTooltip (entry);
 	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)
@@ -2631,7 +2383,8 @@ namespace Azoth
 				parentCL :
 				other;
 		BuildNotification (e, entry);
-		QStandardItem *someItem = Entry2Items_ [entry].value (0);
+
+		auto someItem = Entry2Items_.value (entry).value (0);
 		const int count = someItem ?
 				someItem->data (CLRUnreadMsgCount).toInt () :
 				0;
@@ -3012,7 +2765,7 @@ namespace Azoth
 			if (!State2IconCache_.contains (state))
 				State2IconCache_ [state] = GetIconPathForState (state);
 
-			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			for (auto item : Entry2Items_.value (entry))
 			{
 				Util::QIODevice_ptr dev = State2IconCache_ [state];
 				ItemIconManager_->SetIcon (item, dev.get ());
@@ -3052,7 +2805,7 @@ namespace Azoth
 			return;
 		}
 
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 			item->setText (entry->GetEntryName ());
 	}
 
@@ -3061,7 +2814,7 @@ namespace Azoth
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto& entryID = entry->GetEntryID ();
 
-		for (QStandardItem *item : Entry2Items_ [entry])
+		for (auto item : Entry2Items_.value (entry))
 		{
 			item->setData (0, CLRUnreadMsgCount);
 			RecalculateUnreadForParents (item);

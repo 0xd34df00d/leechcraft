@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QMap>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/idatafilter.h>
 #include "hostingservice.h"
 
 class QNetworkReply;
@@ -52,10 +53,14 @@ namespace Imgaste
 		const HostingService Service_;
 		const Worker_ptr Worker_;
 		const ICoreProxy_ptr Proxy_;
+		const DataFilterCallback_f Callback_;
 	public:
-		Poster (HostingService,
-				const QByteArray&, const QString&,
-				ICoreProxy_ptr, QObject* = 0);
+		Poster (HostingService service,
+				const QByteArray& data,
+				const QString& format,
+				ICoreProxy_ptr coreProxy,
+				DataFilterCallback_f = {},
+				QObject *parent = 0);
 	private slots:
 		void handleFinished ();
 		void handleError ();

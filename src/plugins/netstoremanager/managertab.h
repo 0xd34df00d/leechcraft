@@ -56,9 +56,16 @@ namespace NetStoreManager
 
 	enum Columns
 	{
-		Name,
-		Size,
-		Modify
+		CName,
+		CSize,
+		CModify
+	};
+
+	enum SortRoles
+	{
+		SRName = Qt::UserRole + 1,
+		SRSize,
+		SRModifyDate
 	};
 
 	class ManagerTab : public QWidget
@@ -107,7 +114,7 @@ namespace NetStoreManager
 		QAction *UploadInCurrentDir_;
 		QAction *Download_;
 		QAction *OpenTrash_;
-		QAction *Trash_;
+		QToolButton *Trash_;
 
 		QByteArray LastParentID_;
 
@@ -150,7 +157,7 @@ namespace NetStoreManager
 		void handleAccountRemoved (QObject *accObj);
 
 		void handleGotListing (const QList<StorageItem>& items);
-		void handleListingUpdated ();
+		void handleListingUpdated (const QByteArray& parentId);
 		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
 
 		void handleFilesViewSectionResized (int index, int oldSize, int newSize);

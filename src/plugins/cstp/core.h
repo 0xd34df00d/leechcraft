@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,6 +36,7 @@
 #include <QNetworkProxy>
 #include <QNetworkAccessManager>
 #include <QSet>
+#include <QUrl>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/idownload.h>
@@ -102,7 +103,7 @@ namespace CSTP
 		void SetToolbar (QToolBar*);
 		void ItemSelected (const QModelIndex&);
 
-		int AddTask (LeechCraft::Entity&);
+		int AddTask (const Entity&);
 		void KillTask (int);
 		qint64 GetDone (int) const;
 		qint64 GetTotal (int) const;
@@ -141,6 +142,7 @@ namespace CSTP
 				const QString&,
 				const QString&,
 				const QStringList&,
+				const QVariantMap&,
 				LeechCraft::TaskParameters = LeechCraft::NoParameters);
 		int AddTask (QNetworkReply*,
 				const QString&,
@@ -148,12 +150,7 @@ namespace CSTP
 				const QString&,
 				const QStringList&,
 				LeechCraft::TaskParameters = LeechCraft::NoParameters);
-		int AddTask (TaskDescr&,
-				const QString&,
-				const QString&,
-				const QString&,
-				const QStringList&,
-				LeechCraft::TaskParameters = LeechCraft::NoParameters);
+		int AddTask (TaskDescr&);
 		void ReadSettings ();
 		void ScheduleSave ();
 		tasks_t::const_iterator FindTask (QObject*) const;

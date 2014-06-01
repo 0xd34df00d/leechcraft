@@ -24,26 +24,15 @@ else ()
 	set (SRCS fswinwatcher.cpp ${SRCS})
 endif ()
 
-set (HEADERS
-	fswinwatcher.h
-	kinotify.h
-	kinotifywidget.h
-	notificationaction.h
-	xmlsettingsmanager.h
-	)
 set (RESOURCES kinotifyresources.qrc)
 CreateTrs ("kinotify" "ar;de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("kinotify" "en;ru_RU" "${SRCS}" "${FORMS}" "kinotifysettings.xml")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_kinotify SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
 	)
 target_link_libraries (leechcraft_kinotify

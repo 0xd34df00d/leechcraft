@@ -1,6 +1,6 @@
 /**********************************************************************
 1 * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,8 +35,10 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QMenu>
+#include <QToolButton>
 #include <QFileInfo>
 #include <QUrl>
+#include <QBuffer>
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexercmake.h>
 #include <Qsci/qscilexercpp.h>
@@ -54,9 +56,9 @@
 #include <Qsci/qscilexertex.h>
 #include <Qsci/qscilexerxml.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 #include "replacedialog.h"
 
@@ -66,10 +68,10 @@ namespace LeechCraft
 {
 namespace Popishu
 {
-	QObject *EditorPage::S_MultiTabsParent_ = 0;
-
-	EditorPage::EditorPage (QWidget *parent)
-	: QWidget (parent)
+	EditorPage::EditorPage (const ICoreProxy_ptr& proxy, const TabClassInfo& tc, QObject *parentPlugin)
+	: TC_ (tc)
+	, ParentPlugin_ (parentPlugin)
+	, Proxy_ (proxy)
 	, Toolbar_ (new QToolBar)
 	, Modified_ (false)
 	, DoctypeDetected_ (false)
@@ -77,38 +79,29 @@ namespace Popishu
 	, WrappedObject_ (0)
 	, TemporaryDocument_ (false)
 	{
-#define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
-		DEFPAIR (Bash, sh);
-		DEFPAIR (CMake, cmake);
-		DEFPAIR (C++, cpp);
-		DEFPAIR (C++, h);
-		DEFPAIR (C++, cxx);
-		DEFPAIR (C++, hxx);
-		DEFPAIR (CSS, css);
-		DEFPAIR (Diff, diff);
-		DEFPAIR (Diff, patch);
-		DEFPAIR (HTML, htm);
-		DEFPAIR (HTML, html);
-		DEFPAIR (HTML, xhtml);
-		DEFPAIR (JavaScript, es);
-		DEFPAIR (JavaScript, js);
-		DEFPAIR (JavaScript, qs);
-#if QSCINTILLA_VERSION >= 0x020501
-		DEFPAIR (MatLab, mat);
-		DEFPAIR (Octave, m);
-#endif
-		DEFPAIR (Python, py);
-		DEFPAIR (Ruby, rb);
-		DEFPAIR (SQL, sql);
-		DEFPAIR (TeX, tex);
-		DEFPAIR (XML, xml);
-#undef DEFPAIR
+		SetupDefPairs ();
+
 		Ui_.setupUi (this);
 
 		Toolbar_->addAction (Ui_.ActionNew_);
-		Toolbar_->addAction (Ui_.ActionOpen_);
+		Toolbar_->addSeparator ();
+
+		RecentFilesMenu_ = new QMenu (tr ("Recent files"));
+		RestoreRecentFiles ();
+
+		auto openButton = new QToolButton ();
+		openButton->setDefaultAction (Ui_.ActionOpen_);
+		openButton->setMenu (RecentFilesMenu_);
+		openButton->setPopupMode (QToolButton::MenuButtonPopup);
+
+		Toolbar_->addWidget (openButton);
+
 		Toolbar_->addAction (Ui_.ActionSave_);
 		Toolbar_->addAction (Ui_.ActionSaveAs_);
+
+		Toolbar_->addSeparator ();
+
+		Toolbar_->addAction (Ui_.ActionReplace_);
 
 		Ui_.TextEditor_->setAutoIndent (true);
 		Ui_.TextEditor_->setUtf8 (true);
@@ -135,6 +128,43 @@ namespace Popishu
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (selectDoctype (QAction*)));
+
+		auto viewAction = new QAction (tr ("View"), this);
+		viewAction->setProperty ("ActionIcon", "view-choose");
+
+		auto viewMenu = new QMenu ();
+
+		auto viewButton = new QToolButton ();
+		viewButton->setDefaultAction (viewAction);
+		viewButton->setMenu (viewMenu);
+		viewButton->setPopupMode (QToolButton::InstantPopup);
+		Toolbar_->addWidget (viewButton);
+
+		QMenu *wsVis = new QMenu (tr ("Whitespace visibility"));
+		wsVis->addAction (Ui_.ActionWSInvisible_);
+		wsVis->addAction (Ui_.ActionWSVisible_);
+		wsVis->addAction (Ui_.ActionWSVisibleAfterIndent_);
+		GroupActions (wsVis->actions ());
+
+		QMenu *wrapMode = new QMenu (tr ("Wrapping mode"));
+		wrapMode->addAction (Ui_.ActionWrapNone_);
+		wrapMode->addAction (Ui_.ActionWrapWords_);
+		wrapMode->addAction (Ui_.ActionWrapCharacters_);
+		GroupActions (wrapMode->actions ());
+
+		viewMenu->addActions ({
+				Ui_.ActionEnableFolding_,
+				Ui_.ActionAutoIndent_,
+				Ui_.ActionShowLineNumbers_,
+				Util::CreateSeparator (this),
+				DoctypeMenu_->menuAction (),
+				wsVis->menuAction (),
+				wrapMode->menuAction (),
+				Util::CreateSeparator (this),
+				Ui_.ActionShowEOL_,
+				Ui_.ActionShowCaretLine_
+			});
+
 		connect (this,
 				SIGNAL (languageChanged (const QString&)),
 				this,
@@ -143,48 +173,6 @@ namespace Popishu
 				SIGNAL (languageChanged (const QString&)),
 				this,
 				SLOT (checkInterpreters (const QString&)));
-
-		RecentFilesMenu_ = new QMenu (tr ("Recent files"));
-		RestoreRecentFiles ();
-
-		QString editor = "view";
-		WindowMenus_ [editor] << Ui_.ActionEnableFolding_;
-		WindowMenus_ [editor] << Ui_.ActionAutoIndent_;
-		WindowMenus_ [editor] << Ui_.ActionShowLineNumbers_;
-
-		WindowMenus_ [editor] << Util::CreateSeparator (this);
-
-		WindowMenus_ [editor] << DoctypeMenu_->menuAction ();
-
-		QMenu *wsVis = new QMenu (tr ("Whitespace visibility"));
-		wsVis->addAction (Ui_.ActionWSInvisible_);
-		wsVis->addAction (Ui_.ActionWSVisible_);
-		wsVis->addAction (Ui_.ActionWSVisibleAfterIndent_);
-		WindowMenus_ [editor] << wsVis->menuAction ();
-		GroupActions (wsVis->actions ());
-
-		QMenu *wrapMode = new QMenu (tr ("Wrapping mode"));
-		wrapMode->addAction (Ui_.ActionWrapNone_);
-		wrapMode->addAction (Ui_.ActionWrapWords_);
-		wrapMode->addAction (Ui_.ActionWrapCharacters_);
-		WindowMenus_ [editor] << wrapMode->menuAction ();
-		GroupActions (wrapMode->actions ());
-
-		WindowMenus_ [editor] << Util::CreateSeparator (this);
-
-		WindowMenus_ [editor] << Ui_.ActionShowEOL_;
-		WindowMenus_ [editor] << Ui_.ActionShowCaretLine_;
-		WindowMenus_ [editor] << Util::CreateSeparator (this);
-
-		QString edit = tr ("Edit");
-		WindowMenus_ [edit] << Ui_.ActionReplace_;
-
-		QString file = tr ("File");
-		WindowMenus_ [file] << Ui_.ActionNew_;
-		WindowMenus_ [file] << Ui_.ActionOpen_;
-		WindowMenus_ [file] << RecentFilesMenu_->menuAction ();
-		WindowMenus_ [file] << Ui_.ActionSave_;
-		WindowMenus_ [file] << Ui_.ActionSaveAs_;
 
 		connect (Ui_.ActionShowEOL_,
 				SIGNAL (toggled (bool)),
@@ -235,13 +223,7 @@ namespace Popishu
 		if (DefaultMsgHandler_)
 			qInstallMsgHandler (DefaultMsgHandler_);
 		if (WrappedObject_)
-			Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->ReleasePlugin (WrappedObject_);
-	}
-
-	void EditorPage::SetParentMultiTabs (QObject *parent)
-	{
-		S_MultiTabsParent_ = parent;
+			Proxy_->GetPluginsManager ()->ReleasePlugin (WrappedObject_);
 	}
 
 	void EditorPage::Remove ()
@@ -276,22 +258,60 @@ namespace Popishu
 
 	QObject* EditorPage::ParentMultiTabs ()
 	{
-		return S_MultiTabsParent_;
-	}
-
-	QList<QAction*> EditorPage::GetTabBarContextMenuActions () const
-	{
-		return QList<QAction*> ();
-	}
-
-	QMap<QString, QList<QAction*>> EditorPage::GetWindowMenus () const
-	{
-		return WindowMenus_;
+		return ParentPlugin_;
 	}
 
 	TabClassInfo EditorPage::GetTabClassInfo () const
 	{
-		return Core::Instance ().GetTabClass ();
+		return TC_;
+	}
+
+	QByteArray EditorPage::GetTabRecoverData () const
+	{
+		QByteArray result;
+
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			ostr << QByteArray { "EditorPage/1" }
+					<< Filename_;
+
+			ostr << (Modified_ ? Ui_.TextEditor_->text () : QString ());
+
+			qint32 line = 0, index = 0;
+			Ui_.TextEditor_->getCursorPosition (&line, &index);
+
+			ostr << line << index;
+		}
+
+		return result;
+	}
+
+	QIcon EditorPage::GetTabRecoverIcon () const
+	{
+		return GetTabClassInfo ().Icon_;
+	}
+
+	QString EditorPage::GetTabRecoverName () const
+	{
+		return Filename_.isEmpty () ?
+				"Popishu" :
+				QFileInfo { Filename_ }.fileName ();
+	}
+
+	void EditorPage::RestoreState (QDataStream& istr)
+	{
+		istr >> Filename_;
+		Open (Filename_);
+
+		QString text;
+		istr >> text;
+		Modified_ = !text.isEmpty ();
+		if (!text.isEmpty ())
+			Ui_.TextEditor_->setText (text);
+
+		qint32 line = 0, index = 0;
+		istr >> line >> index;
+		Ui_.TextEditor_->setCursorPosition (line, index);
 	}
 
 	void EditorPage::SetText (const QString& text)
@@ -396,22 +416,23 @@ namespace Popishu
 
 	void EditorPage::on_ActionReplace__triggered ()
 	{
-		std::auto_ptr<ReplaceDialog> dia (new ReplaceDialog (this));
-		if (dia->exec () != QDialog::Accepted)
+		ReplaceDialog dia { this };
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		QString before = dia->GetBefore ();
-		QString after = dia->GetAfter ();
-		Qt::CaseSensitivity cs = dia->GetCaseSensitivity ();
-		switch (dia->GetScope ())
+		QString before = dia.GetBefore ();
+		QString after = dia.GetAfter ();
+		Qt::CaseSensitivity cs = dia.GetCaseSensitivity ();
+		switch (dia.GetScope ())
 		{
-		case ReplaceDialog::SAll:
+		case ReplaceDialog::Scope::All:
 		{
 			QString text = Ui_.TextEditor_->text ();
 			text.replace (before, after, cs);
 			Ui_.TextEditor_->setText (text);
+			break;
 		}
-		case ReplaceDialog::SSelected:
+		case ReplaceDialog::Scope::Selected:
 		{
 			QString text = Ui_.TextEditor_->selectedText ();
 			text.replace (before, after, cs);
@@ -421,6 +442,7 @@ namespace Popishu
 			Ui_.TextEditor_->getSelection (&lineFrom, &indexFrom, &lineTo, &indexTo);
 			Ui_.TextEditor_->removeSelectedText ();
 			Ui_.TextEditor_->insertAt (text, lineFrom, indexFrom);
+			break;
 		}
 		}
 	}
@@ -428,6 +450,13 @@ namespace Popishu
 	void EditorPage::on_TextEditor__textChanged ()
 	{
 		Modified_ = true;
+
+		ScheduleTabRecoverSave ();
+	}
+
+	void EditorPage::on_TextEditor__cursorPositionChanged (int, int)
+	{
+		ScheduleTabRecoverSave ();
 	}
 
 	static QPlainTextEdit *S_TextEdit_ = 0;
@@ -496,8 +525,7 @@ namespace Popishu
 
 		try
 		{
-			Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->InjectPlugin (WrappedObject_);
+			Proxy_->GetPluginsManager ()->InjectPlugin (WrappedObject_);
 		}
 		catch (const std::exception& e)
 		{
@@ -532,8 +560,7 @@ namespace Popishu
 
 		try
 		{
-			Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->ReleasePlugin (WrappedObject_);
+			Proxy_->GetPluginsManager ()->ReleasePlugin (WrappedObject_);
 		}
 		catch (const std::exception& e)
 		{
@@ -650,6 +677,12 @@ namespace Popishu
 		Open (file);
 	}
 
+	void EditorPage::tabRecoverSave ()
+	{
+		TabRecoverSaveScheduled_ = false;
+		emit tabRecoverDataChanged ();
+	}
+
 	void EditorPage::SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility wv)
 	{
 		Ui_.TextEditor_->setWhitespaceVisibility (wv);
@@ -709,8 +742,7 @@ namespace Popishu
 		}
 
 		Filename_ = filename;
-		Ui_.TextEditor_->setText (QString::fromUtf8 (file
-					.readAll ().constData ()));
+		Ui_.TextEditor_->read (&file);
 
 		const auto& language = GetLanguage (Filename_);
 		const auto lexer = GetLexerByLanguage (language);
@@ -811,6 +843,45 @@ namespace Popishu
 		std::reverse (recent.begin (), recent.end ());
 		Q_FOREACH (const QString& filePath, recent)
 			PrependRecentFile (filePath, false);
+	}
+
+	void EditorPage::SetupDefPairs ()
+	{
+#define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
+		DEFPAIR (Bash, sh);
+		DEFPAIR (CMake, cmake);
+		DEFPAIR (C++, cpp);
+		DEFPAIR (C++, h);
+		DEFPAIR (C++, cxx);
+		DEFPAIR (C++, hxx);
+		DEFPAIR (CSS, css);
+		DEFPAIR (Diff, diff);
+		DEFPAIR (Diff, patch);
+		DEFPAIR (HTML, htm);
+		DEFPAIR (HTML, html);
+		DEFPAIR (HTML, xhtml);
+		DEFPAIR (JavaScript, es);
+		DEFPAIR (JavaScript, js);
+		DEFPAIR (JavaScript, qs);
+		DEFPAIR (MatLab, mat);
+		DEFPAIR (Octave, m);
+		DEFPAIR (Python, py);
+		DEFPAIR (Ruby, rb);
+		DEFPAIR (SQL, sql);
+		DEFPAIR (TeX, tex);
+		DEFPAIR (XML, xml);
+#undef DEFPAIR
+	}
+
+	void EditorPage::ScheduleTabRecoverSave ()
+	{
+		if (TabRecoverSaveScheduled_)
+			return;
+
+		TabRecoverSaveScheduled_ = true;
+		QTimer::singleShot (5000,
+				this,
+				SLOT (tabRecoverSave ()));
 	}
 
 	void EditorPage::PrependRecentFile (const QString& filePath, bool save)

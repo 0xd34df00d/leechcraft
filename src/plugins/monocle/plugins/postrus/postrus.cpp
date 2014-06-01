@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,7 +29,8 @@
 
 #include "postrus.h"
 #include <QIcon>
-#include "document.h"
+#include <util/sys/mimedetector.h>
+#include "redirector.h"
 
 namespace LeechCraft
 {
@@ -76,14 +77,27 @@ namespace Postrus
 		return result;
 	}
 
-	bool Plugin::CanLoadDocument (const QString& file)
+	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
-		return Document (file, this).IsValid ();
+		const auto& mime = Util::MimeDetector {} (file);
+		return mime == "application/postscript" ?
+				LoadCheckResult::Redirect :
+				LoadCheckResult::Cannot;
 	}
 
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
+	IDocument_ptr Plugin::LoadDocument (const QString&)
 	{
-		return IDocument_ptr (new Document (file, this));
+		return {};
+	}
+
+	IRedirectProxy_ptr Plugin::GetRedirection (const QString& filename)
+	{
+		return IRedirectProxy_ptr { new Redirector { filename }};
+	}
+
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/postscript" };
 	}
 }
 }

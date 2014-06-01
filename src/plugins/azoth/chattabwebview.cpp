@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,7 @@
 #include <QPointer>
 #include <QMenu>
 #include <QDesktopServices>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/icoreproxy.h>
@@ -165,8 +165,8 @@ namespace Azoth
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
 		const Entity& e = Util::MakeEntity (action->data (),
-				QString (),
-				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+				{},
+				OnlyHandle | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
 	}
 
@@ -191,8 +191,8 @@ namespace Azoth
 			url = "http://" + url.toString ();
 
 		const Entity& e = Util::MakeEntity (url,
-				QString (),
-				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+				{},
+				OnlyHandle | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
 	}
 

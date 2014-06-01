@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -76,16 +76,24 @@ namespace Dik
 		return result;
 	}
 
-	bool Plugin::CanLoadDocument (const QString& file)
+	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
 		const auto& lower = file.toLower ();
-		return lower.endsWith (".mobi") ||
+		const bool isGood = lower.endsWith (".mobi") ||
 				lower.endsWith (".prc");
+		return isGood ?
+				LoadCheckResult::Can :
+				LoadCheckResult::Cannot;
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
 		return IDocument_ptr (new Document (file, this));
+	}
+
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/x-mobipocket-ebook", "application/x-mobipocket" };
 	}
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -52,6 +52,8 @@ namespace LMP
 	class PreviewHandler;
 	class ProgressManager;
 	class RadioManager;
+	class CollectionsManager;
+	class LMPProxy;
 
 	class Core : public QObject
 	{
@@ -60,7 +62,10 @@ namespace LMP
 		ICoreProxy_ptr Proxy_;
 
 		LocalFileResolver *Resolver_;
+
 		LocalCollection *Collection_;
+		CollectionsManager *CollectionsManager_;
+
 		PlaylistManager *PLManager_;
 
 		SyncManager *SyncManager_;
@@ -73,6 +78,8 @@ namespace LMP
 
 		Player *Player_;
 		PreviewHandler *PreviewMgr_;
+
+		std::shared_ptr<LMPProxy> LmpProxy_;
 
 		QObjectList SyncPlugins_;
 		QObjectList CloudPlugins_;
@@ -93,12 +100,15 @@ namespace LMP
 		void PostInit ();
 		void InitWithOtherPlugins ();
 
+		const std::shared_ptr<LMPProxy>& GetLmpProxy () const;
+
 		void AddPlugin (QObject*);
 		QObjectList GetSyncPlugins () const;
 		QObjectList GetCloudStoragePlugins () const;
 
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
+		CollectionsManager* GetCollectionsManager () const;
 		PlaylistManager* GetPlaylistManager () const;
 		SyncManager* GetSyncManager () const;
 		SyncUnmountableManager* GetSyncUnmountableManager () const;

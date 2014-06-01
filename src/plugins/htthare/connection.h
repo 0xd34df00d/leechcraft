@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -65,7 +65,7 @@ namespace HttHare
 
 		void Start ();
 	private:
-		void HandleHeader (const boost::system::error_code&, ulong);
+		void HandleHeader (const boost::system::error_code&, unsigned long);
 	};
 
 	typedef std::shared_ptr<Connection> Connection_ptr;

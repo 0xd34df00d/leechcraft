@@ -107,6 +107,8 @@ namespace DeathNote
 		void UpdateCollections () override;
 
 	private:
+		std::shared_ptr<void> MakeRunnerGuard ();
+		void CallNextFunctionFromQueue ();
 		bool IsErrorReply (const QByteArray& content);
 		void GetChallenge ();
 		void LoginRequest (const QString& challenge);
@@ -116,8 +118,6 @@ namespace DeathNote
 		void UploadImagesRequest (const QByteArray& albumId, const QList<UploadItem>& items);
 		void UploadOneImage (const QByteArray& id,
 				const UploadItem& item, const QString& challenge);
-		void UploadImages (const QByteArray& id,
-				const QList<UploadItem>& item, const QString& challenge);
 
 	private slots:
 		void handleGetChallengeRequestFinished ();
@@ -130,12 +130,12 @@ namespace DeathNote
 		void handleGalleryCreated ();
 		void handleUploadProgress (qint64 sent, qint64 total);
 		void handleImageUploaded ();
-		void handleUploadPrepareFinished ();
 
 	signals:
 		void accountChanged (FotoBilderAccount *acc);
 		void doneUpdating () override;
 		void networkError (QNetworkReply::NetworkError err, const QString& errString);
+		void itemUploaded (const UploadItem&, const QUrl&);
 	};
 }
 }

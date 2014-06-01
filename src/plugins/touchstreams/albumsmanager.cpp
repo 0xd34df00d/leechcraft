@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,9 +37,10 @@
 #include <QtDebug>
 #include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/audiostructs.h>
+#include <interfaces/core/iiconthememanager.h>
 
 namespace LeechCraft
 {
@@ -51,6 +52,13 @@ namespace TouchStreams
 		{
 			AlbumID = Media::RadioItemRole::MaxRadioRole + 1
 		};
+	}
+
+	AlbumsManager::AlbumInfo::AlbumInfo (qlonglong id, const QString& name, QStandardItem *item)
+	: ID_ { id }
+	, Name_ { name }
+	, Item_ { item }
+	{
 	}
 
 	AlbumsManager::AlbumsManager (Util::SvcAuth::VkAuthManager *authMgr,
@@ -76,6 +84,11 @@ namespace TouchStreams
 				SLOT (refetchAlbums ()));
 
 		AuthMgr_->ManageQueue (&RequestQueue_);
+
+		connect (AuthMgr_,
+				SIGNAL (justAuthenticated ()),
+				this,
+				SLOT (refetchAlbums ()));
 	}
 
 	AlbumsManager::AlbumsManager (qlonglong id, const QVariant& albums, const QVariant& tracks,
@@ -123,6 +136,7 @@ namespace TouchStreams
 				{
 					if (auto rc = AlbumsRootItem_->rowCount ())
 						AlbumsRootItem_->removeRows (0, rc);
+					Albums_.clear ();
 					refetchAlbums ();
 					return item;
 				}
@@ -149,7 +163,7 @@ namespace TouchStreams
 			AlbumsRootItem_->removeRows (0, rc);
 		Albums_.clear ();
 
-		const auto& icon = Proxy_->GetIcon ("media-optical");
+		const auto& icon = Proxy_->GetIconThemeManager ()->GetIcon ("media-optical");
 
 		auto allItem = new QStandardItem (tr ("Uncategorized"));
 		allItem->setEditable (false);
@@ -193,14 +207,6 @@ namespace TouchStreams
 			if (!url.isValid ())
 				continue;
 
-			Media::AudioInfo info {};
-			info.Title_ = map ["title"].toString ();
-			info.Artist_ = map ["artist"].toString ();
-			info.Length_ = map ["duration"].toInt ();
-			info.Other_ ["URL"] = url;
-
-			album2urls [albumId] << info;
-
 			auto albumItem = Albums_ [albumId].Item_;
 			if (!albumItem)
 			{
@@ -209,6 +215,14 @@ namespace TouchStreams
 						<< albumId;
 				continue;
 			}
+
+			Media::AudioInfo info {};
+			info.Title_ = map ["title"].toString ();
+			info.Artist_ = map ["artist"].toString ();
+			info.Length_ = map ["duration"].toInt ();
+			info.Other_ ["URL"] = url;
+
+			album2urls [albumId] << info;
 
 			auto trackItem = new QStandardItem (QString::fromUtf8 ("%1 — %2")
 						.arg (info.Artist_)
@@ -233,6 +247,17 @@ namespace TouchStreams
 
 	void AlbumsManager::refetchAlbums ()
 	{
+		if (!AuthMgr_->HadAuthentication ())
+		{
+			auto item = new QStandardItem (tr ("Authenticate"));
+			item->setEditable (false);
+			item->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("emblem-locked"));
+			item->setData ("auth", Media::RadioItemRole::RadioID);
+			item->setData (Media::RadioType::RadioAction, Media::RadioItemRole::ItemType);
+			AlbumsRootItem_->appendRow (item);
+			return;
+		}
+
 		RequestQueue_.append ({
 				[this] (const QString& key) -> void
 				{

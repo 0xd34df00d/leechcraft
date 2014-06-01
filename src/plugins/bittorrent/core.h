@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -118,6 +118,8 @@ namespace BitTorrent
 			HandleFinder (const libtorrent::torrent_handle&);
 			bool operator() (const TorrentStruct&) const;
 		};
+
+		mutable QMap<libtorrent::torrent_handle, libtorrent::torrent_status> Handle2Status_;
 	public:
 		struct PerTrackerStats
 		{
@@ -320,6 +322,7 @@ namespace BitTorrent
 		void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
 		void HandleMetadata (const libtorrent::metadata_received_alert&);
 		void PieceRead (const libtorrent::read_piece_alert&);
+		void UpdateStatus (const std::vector<libtorrent::torrent_status>&);
 
 		void MoveUp (const std::vector<int>&);
 		void MoveDown (const std::vector<int>&);

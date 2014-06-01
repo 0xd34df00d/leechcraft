@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -59,6 +59,7 @@ namespace Murm
 		const ChatInfo& GetInfo () const;
 		void UpdateInfo (const ChatInfo&);
 
+		void HandleAdded (qulonglong);
 		void HandleRemoved (qulonglong);
 
 		Features GetEntryFeatures () const;
@@ -82,6 +83,7 @@ namespace Murm
 
 		MUCFeatures GetMUCFeatures () const;
 		QString GetMUCSubject () const;
+		bool CanChangeSubject () const;
 		void SetMUCSubject (const QString& subject);
 		QList<QObject*> GetParticipants ();
 		bool IsAutojoined () const;

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -54,8 +54,7 @@ namespace Util
 
 namespace SB2
 {
-
-class ViewSettingsManager;
+	class ViewSettingsManager;
 	class SBView;
 	class QuarkManager;
 	class ViewGeometryManager;
@@ -115,8 +114,8 @@ class ViewSettingsManager;
 
 		std::shared_ptr<QSettings> GetSettings () const;
 	private:
-		void AddComponent (QuarkComponent_ptr);
-		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr);
+		void AddComponent (QuarkComponent_ptr, bool forceAdd);
+		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr, bool forceAdd);
 		QuarkComponents_t ScanRootDir (const QDir&) const;
 
 		void AddToRemoved (const QString&);
@@ -127,6 +126,9 @@ class ViewSettingsManager;
 
 		void SaveQuarkOrder ();
 		void LoadQuarkOrder ();
+	private slots:
+		void handleQuarksAdded (const QList<QUrl>&);
+		void handleQuarksRemoved (const QList<QUrl>&);
 	};
 }
 }

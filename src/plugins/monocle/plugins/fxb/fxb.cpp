@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -76,14 +76,21 @@ namespace FXB
 		return result;
 	}
 
-	bool Plugin::CanLoadDocument (const QString& file)
+	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
-		return file.toLower ().endsWith (".fb2");
+		return file.toLower ().endsWith (".fb2") ?
+				LoadCheckResult::Can :
+				LoadCheckResult::Cannot;
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
 		return IDocument_ptr (new Document (file, this));
+	}
+
+	QStringList Plugin::GetSupportedMimes () const
+	{
+		return { "application/x-fictionbook+xml", "application/x-fictionbook" };
 	}
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -47,12 +47,10 @@ namespace LeechCraft
 {
 namespace Util
 {
-	const int SourceNormal = 1;
 	const int SourcePager = 2;
 
 	const int StateRemove = 0;
 	const int StateAdd = 1;
-	const int StateToggle = 1;
 
 	namespace
 	{
@@ -658,11 +656,11 @@ namespace Util
 		if (screen < 0 || screen >= dw->screenCount ())
 			screen = dw->primaryScreen ();
 
-		auto available = dw->screenGeometry (screen);
-		const auto deskGeom = dw->rect ();
-
 		if (dw->isVirtualDesktop ())
 			screen = DefaultScreen (Display_);
+
+		auto available = dw->screenGeometry (screen);
+		const auto deskGeom = dw->rect ();
 
 		for (const auto wid : GetWindows ())
 		{

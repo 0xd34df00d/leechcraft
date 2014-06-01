@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,10 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_SOCKETERRORSTRINGS_H
-#define UTIL_SOCKETERRORSTRINGS_H
+#pragma once
+
 #include <QAbstractSocket>
-#include <util/utilconfig.h>
+#include "networkconfig.h"
 
 class QString;
 
@@ -45,9 +45,9 @@ namespace Util
 	 *
 	 * @param[in] error The socket error to describe.
 	 * @return The human-readable localized error string.
+	 *
+	 * @ingroup NetworkUtil
 	 */
-	UTIL_API QString GetSocketErrorString (QAbstractSocket::SocketError error);
+	UTIL_NETWORK_API QString GetSocketErrorString (QAbstractSocket::SocketError error);
 }
 }
-
-#endif

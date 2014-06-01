@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,6 +37,8 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QXmppPresence.h>
+#include <QXmppUtils.h>
+#include <QXmppGlobal.h>
 #include "entrybase.h"
 #include "core.h"
 #include "capsdatabase.h"
@@ -101,10 +103,13 @@ namespace XooxUtil
 				Node2ClientID_ ["http://bombusmod.net.ru/caps"] = "bombusmod";
 				Node2ClientID_ ["http://bombusmod-qd.wen.ru/caps"] = "bombusmodqd";
 				Node2ClientID_ ["http://code.google.com/p/qxmpp"] = "qxmpp";
+				Node2ClientID_ ["http://emacs-jabber.sourceforge.net"] = "jabber-el";
 				Node2ClientID_ ["http://emess.eqx.su/caps"] = "emess";
 				Node2ClientID_ ["http://fatal-bot.spb.ru/caps"] = "fatal-bot";
 				Node2ClientID_ ["http://fatal-dev.ru/bot/caps"] = "fatal-bot";
 				Node2ClientID_ ["http://isida-bot.com"] = "isida-bot";
+				Node2ClientID_ ["http://isida-bot.com/4"] = "isida-bot4";
+				Node2ClientID_ ["httр://jabga.ru"] = "jtalk";
 				Node2ClientID_ ["http://jabiru.mzet.net/caps"] = "jabiru";
 				Node2ClientID_ ["http://jasmineicq.ru/caps"] = "jasmine";
 				Node2ClientID_ ["http://jimm.net.ru/caps"] = "jimm";
@@ -125,18 +130,23 @@ namespace XooxUtil
 				Node2ClientID_ ["http://pyicqt.googlecode.com//protocol/caps"] = "pyicq-t";
 				Node2ClientID_ ["http://qip.ru/caps"] = "qipinfium";
 				Node2ClientID_ ["http://qip.ru/caps?QIP Mobile Java"] = "qipmobile";
+				Node2ClientID_ ["http://sawim.ru/caps"] = "sawim";
 				Node2ClientID_ ["http://sip-communicator.org"] = "sip-communicator";
 				Node2ClientID_ ["http://spectrum.im/transport"] = "spectrum";
+				Node2ClientID_ ["httр://stranger.kiev.ua/caps"] = "jtalk";
 				Node2ClientID_ ["http://swift.im"] = "swift";
 				Node2ClientID_ ["http://talk.google.com/xmpp/bot/caps"] = "talk.google.com";
 				Node2ClientID_ ["http://talkgadget.google.com/client/caps"] = "talkgadget.google.com";
 				Node2ClientID_ ["http://telepathy.freedesktop.org/caps"] = "telepathy.freedesktop.org";
 				Node2ClientID_ ["http://trillian.im/caps"] = "trillian";
+				Node2ClientID_ ["http://v4.isida-bot.com"] = "isida-bot4";
 				Node2ClientID_ ["http://vacuum-im.googlecode.com"] = "vacuum";
 				Node2ClientID_ ["http://www.android.com/gtalk/client/caps"] = "android";
 				Node2ClientID_ ["http://www.android.com/gtalk/client/caps2"] = "android";
 				Node2ClientID_ ["http://www.apple.com/ichat/caps"] = "ichat";
 				Node2ClientID_ ["http://www.google.com/xmpp/client/caps"] = "talk.google.com";
+				Node2ClientID_ ["http://www.eyecu.ru"] = "eyecu";
+				Node2ClientID_ ["httр://www.freq-bot.net/"] = "freqbot";
 				Node2ClientID_ ["http://www.igniterealtime.org/projects/smack/"] = "smack";
 				Node2ClientID_ ["http://www.lonelycatgames.com/slick/caps"] = "slick";
 				Node2ClientID_ ["https://www.jappix.com/"] = "jappix";
@@ -183,10 +193,13 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://bombusmod.net.ru/caps"] = "BombusMod";
 				Node2ClientHR_ ["http://bombusmod-qd.wen.ru/caps"] = "BombusMod-QD";
 				Node2ClientHR_ ["http://code.google.com/p/qxmpp"] = "QXmpp library";
+				Node2ClientHR_ ["http://emacs-jabber.sourceforge.net"] = "jabber.el";
 				Node2ClientHR_ ["http://emess.eqx.su/caps"] = "EMess";
 				Node2ClientHR_ ["http://fatal-bot.spb.ru/caps"] = "Fatal-bot";
 				Node2ClientHR_ ["http://fatal-dev.ru/bot/caps"] = "Fatal-bot";
 				Node2ClientHR_ ["http://isida-bot.com"] = "iSida Bot";
+				Node2ClientHR_ ["http://isida-bot.com/4"] = "iSida Bot";
+				Node2ClientHR_ ["httр://jabga.ru"] = "Fin jabber";
 				Node2ClientHR_ ["http://jabiru.mzet.net/caps"] = "Jabiru";
 				Node2ClientHR_ ["http://jasmineicq.ru/caps"] = "Jasmine";
 				Node2ClientHR_ ["http://jimm.net.ru/caps"] = "Jimm";
@@ -207,18 +220,23 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://pyicqt.googlecode.com//protocol/caps"] = "PyICQ-t";
 				Node2ClientHR_ ["http://qip.ru/caps"] = "QIP Infium";
 				Node2ClientHR_ ["http://qip.ru/caps?QIP Mobile Java"] = "QIP Mobile";
+				Node2ClientHR_ ["http://sawim.ru/caps"] = "Sawim";
 				Node2ClientHR_ ["http://sip-communicator.org"] = "SIP Communicator";
 				Node2ClientHR_ ["http://spectrum.im/transport"] = "Spectrum XMPP Gateway";
+				Node2ClientHR_ ["httр://stranger.kiev.ua/caps"] = "Fin Jimm";
 				Node2ClientHR_ ["http://swift.im"] = "Swift";
 				Node2ClientHR_ ["http://talk.google.com/xmpp/bot/caps"] = "Google Talk";
 				Node2ClientHR_ ["http://talkgadget.google.com/client/caps"] = "Google Talk gadget";
 				Node2ClientHR_ ["http://telepathy.freedesktop.org/caps"] = "Telepathy";
 				Node2ClientHR_ ["http://trillian.im/caps"] = "Trillian";
+				Node2ClientHR_ ["http://v4.isida-bot.com"] = "iSida Bot 4";
 				Node2ClientHR_ ["http://vacuum-im.googlecode.com"] = "Vacuum-IM";
 				Node2ClientHR_ ["http://www.android.com/gtalk/client/caps"] = "Android";
 				Node2ClientHR_ ["http://www.android.com/gtalk/client/caps2"] = "Android";
 				Node2ClientHR_ ["http://www.apple.com/ichat/caps"] = "iChat";
 				Node2ClientHR_ ["http://www.google.com/xmpp/client/caps"] = "Google Talk";
+				Node2ClientHR_ ["http://www.eyecu.ru"] = "EyeCU";
+				Node2ClientHR_ ["httр://www.freq-bot.net/"] = "freQ bot";
 				Node2ClientHR_ ["http://www.igniterealtime.org/projects/smack/"] = "Smack XMPP library";
 				Node2ClientHR_ ["http://www.lonelycatgames.com/slick/caps"] = "Slick";
 				Node2ClientHR_ ["https://www.jappix.com/"] = "Jappix";
@@ -256,7 +274,7 @@ namespace XooxUtil
 		elem.toXml (&w);
 
 		QDomDocument doc;
-		doc.setContent (arr);
+		doc.setContent (arr, true);
 		return doc.documentElement ();
 	}
 
@@ -306,6 +324,33 @@ namespace XooxUtil
 			return true;
 
 		return feats.contains (feature);
+	}
+
+	QXmppMessage Forwarded2Message (const QXmppElement& wrapper)
+	{
+		const auto& forwardedElem = wrapper.tagName () == "forwarded" ?
+				wrapper :
+				wrapper.firstChildElement ("forwarded");
+		if (forwardedElem.isNull ())
+			return {};
+
+		const auto& messageElem = forwardedElem.firstChildElement ("message");
+		if (messageElem.isNull ())
+			return {};
+
+		QXmppMessage original;
+#if QXMPP_VERSION >= 0x000800
+		original.parse (messageElem.sourceDomElement ());
+#else
+#warning "You won't have good forwarded messages, Message Archive Management and Message Carbons will look like crap."
+		original.parse (XmppElem2DomElem (messageElem));
+#endif
+
+		auto delayElem = forwardedElem.firstChildElement ("delay");
+		if (!delayElem.isNull ())
+			original.setStamp (QXmppUtils::datetimeFromString (delayElem.attribute ("stamp")));
+
+		return original;
 	}
 
 	EntryStatus PresenceToStatus (const QXmppPresence& pres)

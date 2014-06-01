@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -69,17 +69,17 @@ namespace AnHero
 			switch (pid)
 			{
 			case -1:
-				fprintf (stderr, "%s: failed to fork(), errno: %d\n", Q_FUNC_INFO, errno);
+				fprintf (stderr, "%s: failed to fork(), errno: %d, str: %s\n", Q_FUNC_INFO, errno, strerror (errno));
 				break;
 			case 0:
 				CloseFiles ();
-				execvp (argv[0], const_cast<char**> (argv));
-				fprintf (stderr, "%s: failed to exec(), errno: %d\n", Q_FUNC_INFO, errno);
+				execvp (argv [0], const_cast<char**> (argv));
+				fprintf (stderr, "%s: failed to exec(), errno: %d, str :%s\n", Q_FUNC_INFO, errno, strerror (errno));
 				_exit (253);
 				break;
 			default:
 				alarm (0);
-				while (waitpid (-1, nullptr, 0) != pid)
+				while (waitpid (pid, nullptr, 0) != pid)
 					;
 				break;
 			}
@@ -166,7 +166,7 @@ namespace AnHero
 	{
 		Util::InstallTranslator ("anhero");
 
-		const auto& args = QApplication::arguments ();
+		auto args = QApplication::arguments ();
 		if (args.contains ("-noanhero"))
 			return;
 
@@ -174,6 +174,8 @@ namespace AnHero
 		if (!QFile::exists ("/usr/bin/gdb"))
 			return;
 #endif
+
+		args.removeFirst ();
 
 		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
 		AppDir_ = QCoreApplication::applicationDirPath ().toUtf8 ();

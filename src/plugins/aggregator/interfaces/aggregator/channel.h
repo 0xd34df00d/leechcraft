@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -49,6 +49,7 @@ namespace Aggregator
 		IDType_t FeedID_;
 		QString Author_;
 		QString Title_;
+		QString DisplayTitle_;
 		QString Link_;
 		QStringList Tags_;
 		QDateTime LastBuild_;
@@ -61,6 +62,7 @@ namespace Aggregator
 		IDType_t ChannelID_;
 		IDType_t FeedID_;
 		QString Title_;
+		QString DisplayTitle_;
 		QString Link_;
 		QString Description_;
 		QDateTime LastBuild_;

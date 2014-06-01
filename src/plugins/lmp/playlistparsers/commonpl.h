@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,7 +31,9 @@
 
 #include <functional>
 #include <QStringList>
+#include <QVariantMap>
 #include "engine/audiosource.h"
+#include "playlist.h"
 
 namespace LeechCraft
 {
@@ -42,8 +44,9 @@ namespace LMP
 		QStringList Suffixes_;
 		QString Path_;
 
-		std::function<QStringList (QString)> RawParser_;
+		std::function<QList<RawReadData> (QString)> RawParser_;
 	};
-	QList<AudioSource> CommonRead2Sources (const ReadParams&);
+
+	Playlist CommonRead2Sources (const ReadParams&);
 }
 }

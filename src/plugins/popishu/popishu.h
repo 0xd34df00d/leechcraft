@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,7 +34,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/structures.h>
+#include <interfaces/ihaverecoverabletabs.h>
 
 class QTranslator;
 
@@ -42,15 +42,20 @@ namespace LeechCraft
 {
 namespace Popishu
 {
+	class EditorPage;
+
 	class Plugin : public QObject
-					, public IInfo
-					, public IHaveTabs
-					, public IEntityHandler
-					, public IHaveSettings
+				 , public IInfo
+				 , public IHaveTabs
+				 , public IEntityHandler
+				 , public IHaveSettings
+				 , public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings IHaveRecoverableTabs)
 
+		TabClassInfo TabClass_;
+		ICoreProxy_ptr Proxy_;
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -68,6 +73,11 @@ namespace Popishu
 		void Handle (Entity);
 
 		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+
+		void RecoverTabs (const QList<TabRecoverInfo>&);
+	private:
+		EditorPage* MakeEditorPage ();
+		void AnnouncePage (EditorPage*);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

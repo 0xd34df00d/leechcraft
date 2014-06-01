@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  * Copyright (C) 2011 ForNeVeR
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
@@ -38,6 +38,7 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
 
 Q_DECLARE_METATYPE (QFileInfo);
 
@@ -220,7 +221,8 @@ namespace Choroid
 		sortByName ();
 
 		auto sortModeButton = new QToolButton ();
-		sortModeButton->setIcon (Proxy_->GetIcon ("view-sort-ascending"));
+		sortModeButton->setIcon (Proxy_->GetIconThemeManager ()->
+					GetIcon ("view-sort-ascending"));
 		sortModeButton->setText (tr ("Sort mode"));
 		sortModeButton->setPopupMode (QToolButton::InstantPopup);
 		sortModeButton->setMenu (SortMenu_);

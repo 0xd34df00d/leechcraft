@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,14 +33,31 @@ namespace Media
 {
 	struct AudioInfo;
 
+	/** @brief Interface for plugins able to fetch current tune.
+	 *
+	 * Plugins that are able to fetch current tune from audio players,
+	 * both internal to LeechCraft like LMP and external ones (via MPRIS
+	 * for example) should implement this interface.
+	 */
 	class ICurrentSongKeeper
 	{
 	public:
 		virtual ~ICurrentSongKeeper () {}
 
+		/** @brief Returns the information about the current song.
+		 *
+		 * @return The information about the currently playing song.
+		 */
 		virtual AudioInfo GetCurrentSong () const = 0;
 	protected:
-		virtual void currentSongChanged (const AudioInfo&) = 0;
+		/** @brief Emitted when current song changes.
+		 *
+		 * This signal should be emitted when the currently played tune
+		 * is changed.
+		 *
+		 * @param[out] newTune The new currently playing song.
+		 */
+		virtual void currentSongChanged (const AudioInfo& newTune) = 0;
 	};
 }
 

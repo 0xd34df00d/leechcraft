@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -49,6 +49,7 @@ namespace MPRIS
 		void Notify (const QString& iface, const QString& prop, const QVariant& val);
 	public slots:
 		QDBusVariant Get (const QString& iface, const QString& prop);
+		QVariantMap GetAll (const QString& iface);
 		void Set (const QString& iface, const QString& prop, const QDBusVariant&);
 	private:
 		bool GetProperty (const QString&, const QString&, QMetaProperty*, QObject**) const;

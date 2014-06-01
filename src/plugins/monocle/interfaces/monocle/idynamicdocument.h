@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -50,12 +50,12 @@ namespace Monocle
 	 * IDocument::GetQObject() method to get an object of this class as a
 	 * QObject and connect to those signals:
 	 * \code
-	 * IDynamicDocument *idd;
-	 * connect (dynamic_cast<IDocument*> (idd)->GetQObject (),
-	 *         SIGNAL (pageSizeChanged (int)),
-	 *         this,
-	 *         SLOT (handlePageSizeChanged (int)));
-	 * \endcode
+		IDynamicDocument *idd = ...;
+		connect (dynamic_cast<IDocument*> (idd)->GetQObject (),
+				SIGNAL (pageSizeChanged (int)),
+				this,
+				SLOT (handlePageSizeChanged (int)));
+	   \endcode
 	 */
 	class IDynamicDocument
 	{
@@ -64,7 +64,7 @@ namespace Monocle
 		 */
 		virtual ~IDynamicDocument () {}
 	protected:
-		/** @brief Emitted when the size of the given page is changed.
+		/** @brief Emitted when the size of the given \em page is changed.
 		 *
 		 * The signal is emitted after the new size is known, so
 		 * <code>IDocument::GetPageSize(page)</code> should already
@@ -74,7 +74,7 @@ namespace Monocle
 		 */
 		virtual void pageSizeChanged (int page) = 0;
 
-		/** @brief Emitted when contents of the given page are changed.
+		/** @brief Emitted when contents of the given \em page are changed.
 		 *
 		 * The \em page should typically be re-rendered after this signal.
 		 *

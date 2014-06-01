@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -156,7 +156,7 @@ namespace MPRIS
 		result ["mpris:length"] = info.Length_ * 1000;
 		result ["mpris:artUrl"] = QUrl (Player_->GetCurrentAAPath ()).toLocalFile ();
 		result ["xesam:album"] = info.Album_;
-		result ["xesam:artist"] = info.Artist_;
+		result ["xesam:artist"] = QStringList { info.Artist_ };
 		result ["xesam:genre"] = info.Genres_.join (" / ");
 		result ["xesam:title"] = info.Title_;
 		result ["xesam:trackNumber"] = info.TrackNumber_;

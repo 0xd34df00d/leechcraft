@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -41,12 +41,13 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class RecursiveDirWatcher;
+
 	class LocalCollectionWatcher : public QObject
 	{
 		Q_OBJECT
 
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
+		RecursiveDirWatcher * const Watcher_;
 
 		QList<QString> ScheduledDirs_;
 		QTimer *ScanTimer_;
@@ -58,7 +59,6 @@ namespace LMP
 	private:
 		void ScheduleDir (const QString&);
 	private slots:
-		void handleSubdirsCollected ();
 		void handleDirectoryChanged (const QString&);
 		void rescanQueue ();
 	};

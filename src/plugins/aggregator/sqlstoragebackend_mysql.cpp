@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,7 +37,7 @@
 #include <QVariant>
 #include <QSqlRecord>
 #include <interfaces/core/itagsmanager.h>
-#include "util/dblock.h"
+#include <util/db/dblock.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -430,19 +430,20 @@ namespace Aggregator
 
 			UnreadItemsCounter_.finish ();
 
-			QStringList tags = Core::Instance ().GetProxy ()->
-				GetTagsManager ()->Split (ChannelsShortSelector_.value (3).toString ());
+			const auto& tags = Core::Instance ().GetProxy ()->
+				GetTagsManager ()->Split (ChannelsShortSelector_.value (4).toString ());
 			ChannelShort sh =
 			{
 				id,
 				feedId,
-				ChannelsShortSelector_.value (6).toString (),
+				ChannelsShortSelector_.value (7).toString (),
 				ChannelsShortSelector_.value (1).toString (),
 				ChannelsShortSelector_.value (2).toString (),
+				ChannelsShortSelector_.value (3).toString (),
 				tags,
-				ChannelsShortSelector_.value (4).toDateTime (),
+				ChannelsShortSelector_.value (5).toDateTime (),
 				UnserializePixmap (ChannelsShortSelector_
-						.value (5).toByteArray ()),
+						.value (6).toByteArray ()),
 				unread
 			};
 			shorts.push_back (sh);
@@ -476,6 +477,7 @@ namespace Aggregator
 				.value (8).toByteArray ());
 		channel->Favicon_ = UnserializePixmap (ChannelsFullSelector_
 				.value (9).toByteArray ());
+		channel->DisplayTitle_ = ChannelsFullSelector_.value (10).toString ();
 
 		ChannelsFullSelector_.finish ();
 
@@ -705,6 +707,7 @@ namespace Aggregator
 		UpdateChannel_.bindValue (6, channel->PixmapURL_);
 		UpdateChannel_.bindValue (7, SerializePixmap (channel->Pixmap_));
 		UpdateChannel_.bindValue (8, SerializePixmap (channel->Favicon_));
+		UpdateChannel_.bindValue (9, channel->DisplayTitle_);
 
 		if (!UpdateChannel_.exec ())
 		{
@@ -748,9 +751,10 @@ namespace Aggregator
 		}
 		ChannelFinder_.finish ();
 
-		UpdateShortChannel_.bindValue (0, channel.ChannelID_);
+		UpdateShortChannel_.bindValue (0, Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
 		UpdateShortChannel_.bindValue (1, channel.LastBuild_);
-		UpdateShortChannel_.bindValue (2, Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
+		UpdateShortChannel_.bindValue (2, channel.DisplayTitle_);
+		UpdateShortChannel_.bindValue (3, channel.ChannelID_);
 
 		if (!UpdateShortChannel_.exec ())
 		{
@@ -890,6 +894,7 @@ namespace Aggregator
 		InsertChannel_.bindValue (9, channel->PixmapURL_);
 		InsertChannel_.bindValue (10, SerializePixmap (channel->Pixmap_));
 		InsertChannel_.bindValue (11, SerializePixmap (channel->Favicon_));
+		InsertChannel_.bindValue (12, channel->DisplayTitle_);
 
 		if (!InsertChannel_.exec ())
 		{
@@ -978,31 +983,8 @@ namespace Aggregator
 		}
 	}
 
-	void SQLStorageBackendMysql::RemoveItem (const IDType_t& itemId)
+	void SQLStorageBackendMysql::RemoveItems (const QSet<IDType_t>& items)
 	{
-		boost::optional<IDType_t> cid;
-		try
-		{
-			Item_ptr item = GetItem (itemId);
-			*cid = item->ChannelID_;
-		}
-		catch (const ItemNotFoundError&)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "tried to delete item"
-					<< itemId
-					<< ", but it doesn't exist already";
-			return;
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to obtain more info on"
-					<< itemId
-					<< "so won't update channel data"
-					<< e.what ();
-		}
-
 		Util::DBLock lock (DB_);
 		try
 		{
@@ -1014,44 +996,74 @@ namespace Aggregator
 			return;
 		}
 
-		if (!PerformRemove (RemoveEnclosures_, itemId) ||
-				!PerformRemove (RemoveMediaRSS_, itemId) ||
-				!PerformRemove (RemoveMediaRSSThumbnails_, itemId) ||
-				!PerformRemove (RemoveMediaRSSCredits_, itemId) ||
-				!PerformRemove (RemoveMediaRSSComments_, itemId) ||
-				!PerformRemove (RemoveMediaRSSPeerLinks_, itemId) ||
-				!PerformRemove (RemoveMediaRSSScenes_, itemId))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "a Remove* query failed";
-			return;
-		}
+		QList<IDType_t> modifiedChannels;
 
-		RemoveItem_.bindValue (0, itemId);
-
-		if (!RemoveItem_.exec ())
-		{
-			Util::DBLock::DumpError (RemoveItem_);
-			return;
-		}
-
-		RemoveItem_.finish ();
-
-		lock.Good ();
-
-		if (cid)
+		for (const auto itemId : items)
 		{
 			try
 			{
-				Channel_ptr channel = GetChannel (*cid,
-						FindParentFeedForChannel (*cid));
+				const auto cid = GetItem (itemId)->ChannelID_;
+				if (!modifiedChannels.contains (cid))
+					modifiedChannels << cid;
+			}
+			catch (const ItemNotFoundError&)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "tried to delete item"
+						<< itemId
+						<< ", but it doesn't exist already";
+				continue;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to obtain more info on"
+						<< itemId
+						<< "so won't update channel data"
+						<< e.what ();
+			}
+
+			if (!PerformRemove (RemoveEnclosures_, itemId) ||
+					!PerformRemove (RemoveMediaRSS_, itemId) ||
+					!PerformRemove (RemoveMediaRSSThumbnails_, itemId) ||
+					!PerformRemove (RemoveMediaRSSCredits_, itemId) ||
+					!PerformRemove (RemoveMediaRSSComments_, itemId) ||
+					!PerformRemove (RemoveMediaRSSPeerLinks_, itemId) ||
+					!PerformRemove (RemoveMediaRSSScenes_, itemId))
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "a Remove* query failed";
+				return;
+			}
+
+			RemoveItem_.bindValue (0, itemId);
+
+			if (!RemoveItem_.exec ())
+			{
+				Util::DBLock::DumpError (RemoveItem_);
+				return;
+			}
+
+			RemoveItem_.finish ();
+		}
+
+		lock.Good ();
+
+		emit itemsRemoved ({ items });
+
+		for (const auto& cid : modifiedChannels)
+		{
+			try
+			{
+				Channel_ptr channel = GetChannel (cid,
+						FindParentFeedForChannel (cid));
 				emit channelDataUpdated (channel);
 			}
 			catch (const ChannelNotFoundError&)
 			{
 				qWarning () << Q_FUNC_INFO
 					<< "channel not found"
-					<< *cid;
+					<< cid;
 			}
 		}
 	}

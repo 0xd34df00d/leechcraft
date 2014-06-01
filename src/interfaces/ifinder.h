@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -50,10 +50,10 @@ namespace LeechCraft
 		 */
 		enum Type
 		{
-			RTFixed,		//< Fixed string
-			RTWildcard,		//< Wildcard
-			RTRegexp,		//< Regular expression
-			RTTag			//< Tag filtering
+			RTFixed,		///< Fixed string
+			RTWildcard,		///< Wildcard
+			RTRegexp,		///< Regular expression
+			RTTag			///< Tag filtering
 		};
 
 		/** Whether the search should be case sensitive.

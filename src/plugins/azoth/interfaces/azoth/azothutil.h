@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,6 +40,26 @@ namespace Azoth
 {
 namespace Util
 {
+	/** @brief Standard function to purge \em messages before the given
+	 * date.
+	 *
+	 * This function is a standard implementation to be used in
+	 * LeechCraft::Azoth::ICLEntry::PurgeMessages() implementations. It
+	 * deletes all the messages in the \em messages list before the given
+	 * date \em before.
+	 *
+	 * The list of \em messages is assumed to be sorted according to the
+	 * message timestamp in ascending order.
+	 *
+	 * If \em before is invalid all the \em messages will be erased and
+	 * the list will be cleared.
+	 *
+	 * @param[inout] messages The list of messages to check.
+	 * @param[in] before Messages with timestamp earlier than this
+	 * parameter will be erased.
+	 *
+	 * @sa IMessage
+	 */
 	template<typename T>
 	void StandardPurgeMessages (QList<T*>& messages, const QDateTime& before)
 	{

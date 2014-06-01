@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,6 +40,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	struct RGData;
+
 	class LocalCollectionStorage : public QObject
 	{
 		Q_OBJECT
@@ -69,6 +71,7 @@ namespace LMP
 		QSqlQuery SetTrackStats_;
 		QSqlQuery UpdateTrackStats_;
 
+		QSqlQuery GetFileIdMTime_;
 		QSqlQuery GetFileMTime_;
 		QSqlQuery SetFileMTime_;
 
@@ -76,6 +79,12 @@ namespace LMP
 		QSqlQuery GetLovedBanned_;
 		QSqlQuery SetLovedBanned_;
 		QSqlQuery RemoveLovedBanned_;
+
+		QSqlQuery GetOutdatedRgData_;
+		QSqlQuery GetTrackRgData_;
+		QSqlQuery SetTrackRgData_;
+
+		QSqlQuery AppendToPlayHistory_;
 	public:
 		struct LoadResult
 		{
@@ -112,6 +121,10 @@ namespace LMP
 		void ClearTrackLovedBanned (int);
 		QList<int> GetLovedTracks ();
 		QList<int> GetBannedTracks ();
+
+		QList<int> GetOutdatedRgTracks ();
+		void SetRgTrackInfo (int, const RGData&);
+		RGData GetRgTrackInfo (const QString&);
 	private:
 		void MarkLovedBanned (int, int);
 		QList<int> GetLovedBanned (int);

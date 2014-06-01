@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,8 +37,11 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <util/xpc/stdanfields.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "typedmatchers.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -210,29 +213,78 @@ namespace AdvancedNotifications
 			}
 		}
 
+		auto stdFieldData = Util::GetStdANFields (category);
+		for (const auto& type : types)
+			stdFieldData += Util::GetStdANFields (type);
+
+		auto tryAddFieldMatch = [&e, &rule, sender] (const ANFieldData& field, bool standard) -> void
+		{
+			if (e.Additional_.contains (field.ID_))
+			{
+				const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
+				valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
+
+				FieldMatch fieldMatch (field.Type_, valMatcher);
+				fieldMatch.SetPluginID (standard ? QString {} : sender);
+				fieldMatch.SetFieldName (field.ID_);
+				rule.AddFieldMatch (fieldMatch);
+			}
+		};
+		for (const auto& field : stdFieldData)
+			tryAddFieldMatch (field, true);
+
 		if (auto iane = qobject_cast<IANEmitter*> (plugin))
 			for (const auto& field : iane->GetANFields ())
 			{
 				qDebug () << "testing" << field.EventTypes_ << "against" << typeSet;
-				if (field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
-					continue;
-
-				if (e.Additional_.contains (field.ID_))
-				{
-					const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
-					valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
-
-					FieldMatch fieldMatch (field.Type_, valMatcher);
-					fieldMatch.SetPluginID (sender);
-					fieldMatch.SetFieldName (field.ID_);
-					rule.AddFieldMatch (fieldMatch);
-				}
+				if (!field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
+					tryAddFieldMatch (field, false);
 			}
+
 
 		Rules_.prepend (rule);
 		RulesModel_->insertRow (0, RuleToRow (rule));
 
 		SaveSettings ();
+
+		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+		emit focusOnRule (RulesModel_->index (0, 0));
+	}
+
+	void RulesManager::SuggestRuleConfiguration (const Entity& rule)
+	{
+		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+
+		const auto id = rule.Additional_ ["org.LC.AdvNotifications.RuleID"].toInt ();
+		emit focusOnRule (RulesModel_->index (id, 0));
+	}
+
+	QList<Entity> RulesManager::GetAllRules (const QString& category) const
+	{
+		QList<Entity> result;
+		for (int i = 0; i < Rules_.size (); ++i)
+		{
+			const auto& rule = Rules_.at (i);
+			if (rule.GetCategory () != category)
+				continue;
+
+			auto e = Util::MakeEntity (rule.GetName (), {}, {}, {});
+			e.Additional_ ["org.LC.AdvNotifications.RuleID"] = i;
+			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.AdvancedNotifications";
+			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = rule.GetCategory ();
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = QStringList { rule.GetTypes ().toList () };
+			e.Additional_ ["org.LC.AdvNotifications.AssocColor"] = rule.GetColor ();
+			e.Additional_ ["org.LC.AdvNotifications.IsEnabled"] = rule.IsEnabled ();
+
+			for (const auto& fieldMatch : rule.GetFieldMatches ())
+			{
+				const auto& matcher = fieldMatch.GetMatcher ();
+				e.Additional_ [fieldMatch.GetFieldName ()] = QVariant::fromValue (matcher->GetValue ());
+			}
+
+			result << e;
+		}
+		return result;
 	}
 
 	void RulesManager::LoadDefaultRules (int version)
@@ -241,30 +293,30 @@ namespace AdvancedNotifications
 		{
 			NotificationRule chatMsg (tr ("Incoming chat messages"), AN::CatIM,
 					QStringList (AN::TypeIMIncMsg));
-			chatMsg.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
+			chatMsg.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
 			chatMsg.SetAudioParams (AudioParams ("im-incoming-message"));
 			Rules_ << chatMsg;
 
 			NotificationRule mucHigh (tr ("MUC highlights"), AN::CatIM,
 					QStringList (AN::TypeIMMUCHighlight));
-			mucHigh.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
+			mucHigh.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
 			mucHigh.SetAudioParams (AudioParams ("im-muc-highlight"));
 			Rules_ << mucHigh;
 
 			NotificationRule mucInv (tr ("MUC invitations"), AN::CatIM,
 					QStringList (AN::TypeIMMUCInvite));
-			mucInv.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
+			mucInv.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
 			mucInv.SetAudioParams (AudioParams ("im-attention"));
 			Rules_ << mucInv;
 
 			NotificationRule incFile (tr ("Incoming file transfers"), AN::CatIM,
 					QStringList (AN::TypeIMIncFile));
-			incFile.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
+			incFile.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
 			Rules_ << incFile;
 
 			NotificationRule subscrReq (tr ("Subscription requests"), AN::CatIM,
 					QStringList (AN::TypeIMSubscrRequest));
-			subscrReq.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
+			subscrReq.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
 			subscrReq.SetAudioParams (AudioParams ("im-auth-requested"));
 			Rules_ << subscrReq;
 
@@ -278,7 +330,7 @@ namespace AdvancedNotifications
 
 			NotificationRule attentionDrawn (tr ("Attention requests"), AN::CatIM,
 					QStringList (AN::TypeIMAttention));
-			attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
+			attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
 			attentionDrawn.SetAudioParams (AudioParams ("im-attention"));
 			Rules_ << attentionDrawn;
 		}
@@ -287,7 +339,7 @@ namespace AdvancedNotifications
 		{
 			NotificationRule eventDue (tr ("Event is due"), AN::CatOrganizer,
 					QStringList (AN::TypeOrganizerEventDue));
-			eventDue.SetMethods (NMVisual | NMTray | NMAudio);
+			eventDue.SetMethods (NMVisual | NMTray | NMAudio | NMSystemDependent);
 			eventDue.SetAudioParams (AudioParams ("org-event-due"));
 			Rules_ << eventDue;
 		}
@@ -296,12 +348,12 @@ namespace AdvancedNotifications
 		{
 			NotificationRule downloadFinished (tr ("Download finished"), AN::CatDownloads,
 					QStringList (AN::TypeDownloadFinished));
-			downloadFinished.SetMethods (NMVisual | NMTray | NMAudio);
+			downloadFinished.SetMethods (NMVisual | NMTray | NMAudio | NMSystemDependent);
 			Rules_ << downloadFinished;
 
 			NotificationRule downloadError (tr ("Download error"), AN::CatDownloads,
 					QStringList (AN::TypeDownloadError));
-			downloadError.SetMethods (NMVisual | NMTray | NMAudio);
+			downloadError.SetMethods (NMVisual | NMTray | NMAudio | NMSystemDependent);
 			downloadError.SetAudioParams (AudioParams ("error"));
 			Rules_ << downloadError;
 		}
@@ -310,7 +362,7 @@ namespace AdvancedNotifications
 		{
 			NotificationRule generic (tr ("Generic"), AN::CatGeneric,
 					QStringList (AN::TypeGeneric));
-			generic.SetMethods (NMVisual | NMTray);
+			generic.SetMethods (NMVisual | NMTray | NMSystemDependent);
 			Rules_ << generic;
 		}
 
@@ -318,7 +370,7 @@ namespace AdvancedNotifications
 		{
 			NotificationRule packageUpdated (tr ("Package updated"), AN::CatPackageManager,
 					{ AN::TypePackageUpdated });
-			packageUpdated.SetMethods (NMVisual | NMTray);
+			packageUpdated.SetMethods (NMVisual | NMTray | NMSystemDependent);
 			Rules_ << packageUpdated;
 		}
 	}
@@ -365,6 +417,8 @@ namespace AdvancedNotifications
 		settings.beginGroup ("rules");
 		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule>> (Rules_));
 		settings.endGroup ();
+
+		emit rulesChanged ();
 	}
 
 	QList<QStandardItem*> RulesManager::RuleToRow (const NotificationRule& rule) const

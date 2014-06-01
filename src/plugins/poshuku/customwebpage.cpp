@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,10 +39,11 @@
 #include <QSysInfo>
 #include <qwebelement.h>
 #include <qwebhistory.h>
-#include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/util.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"
@@ -76,8 +77,8 @@ namespace Poshuku
 		}
 
 		setForwardUnsupportedContent (true);
-		setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
 
+		setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
 		setPluginFactory (Core::Instance ().GetWebPluginFactory ());
 
 		connect (this,
@@ -150,12 +151,10 @@ namespace Poshuku
 				this,
 				SLOT (handleWindowCloseRequested ()));
 
-#if QT_VERSION >= 0x040800
 		connect (this,
 				SIGNAL (featurePermissionRequested (QWebFrame*, QWebPage::Feature)),
 				this,
 				SLOT (handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature)));
-#endif
 
 		FillErrorSuggestions ();
 
@@ -270,12 +269,10 @@ namespace Poshuku
 		}
 	}
 
-#if QT_VERSION >= 0x040800
 	void CustomWebPage::handleFeaturePermissionReq (QWebFrame *frame, QWebPage::Feature feature)
 	{
 		qDebug () << Q_FUNC_INFO << frame << feature;
 	}
-#endif
 
 	void CustomWebPage::handleContentsChanged ()
 	{
@@ -329,6 +326,31 @@ namespace Poshuku
 
 		frame->addToJavaScriptWindowObject ("JSProxy", JSProxy_.get ());
 		frame->addToJavaScriptWindowObject ("external", ExternalProxy_.get ());
+		frame->evaluateJavaScript (R"delim(
+			if (!Function.prototype.bind) {
+			Function.prototype.bind = function (oThis) {
+				if (typeof this !== "function") {
+				// closest thing possible to the ECMAScript 5 internal IsCallable function
+				throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+				}
+
+				var aArgs = Array.prototype.slice.call(arguments, 1),
+					fToBind = this,
+					fNOP = function () {},
+					fBound = function () {
+					return fToBind.apply(this instanceof fNOP && oThis
+											? this
+											: oThis,
+										aArgs.concat(Array.prototype.slice.call(arguments)));
+					};
+
+				fNOP.prototype = this.prototype || {};
+				fBound.prototype = new fNOP();
+
+				return fBound;
+			};
+			}
+		)delim");
 	}
 
 	void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)
@@ -396,16 +418,17 @@ namespace Poshuku
 
 		const auto& url = reply->url ();
 		const auto& mime = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
+		const auto& referer = reply->request ().rawHeader ("Referer");
 
-		qDebug () << Q_FUNC_INFO << reply->url () << reply->errorString ();
-
-		auto sendEnt = [reply, mime, url, this] () -> void
+		auto sendEnt = [reply, mime, referer, this] () -> void
 		{
-			auto e = Util::MakeEntity (url,
+			auto e = Util::MakeEntity (reply->url (),
 					{},
 					LeechCraft::FromUserInitiated,
 					mime);
 			e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
+			e.Additional_ ["Referer"] = QUrl::fromEncoded (referer);
+			e.Additional_ ["Operation"] = reply->operation ();
 			emit gotEntity (e);
 
 			if (XmlSettingsManager::Instance ()->
@@ -595,7 +618,7 @@ namespace Poshuku
 
 		QBuffer ib;
 		ib.open (QIODevice::ReadWrite);
-		QPixmap px = Core::Instance ().GetProxy ()->
+		const auto& px = Core::Instance ().GetProxy ()->GetIconThemeManager ()->
 				GetIcon ("dialog-error").pixmap (32, 32);
 		px.save (&ib, "PNG");
 
@@ -705,23 +728,23 @@ namespace Poshuku
 		case QWebPage::WebBrowserWindow:
 			return Core::Instance ().NewURL (QUrl ())->GetView ()->page ();
 		case QWebPage::WebModalDialog:
-			{
-				BrowserWidget *widget = new BrowserWidget (view ());
-				widget->InitShortcuts ();
-				widget->setWindowFlags (Qt::Dialog);
-				widget->setAttribute (Qt::WA_DeleteOnClose);
-				widget->setWindowModality (Qt::ApplicationModal);
-				connect (widget,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				connect (widget,
-						SIGNAL (titleChanged (const QString&)),
-						widget,
-						SLOT (setWindowTitle (const QString&)));
-				widget->show ();
-				return widget->GetView ()->page ();
-			}
+		{
+			BrowserWidget *widget = new BrowserWidget (view ());
+			widget->FinalizeInit ();
+			widget->setWindowFlags (Qt::Dialog);
+			widget->setAttribute (Qt::WA_DeleteOnClose);
+			widget->setWindowModality (Qt::ApplicationModal);
+			connect (widget,
+					SIGNAL (gotEntity (const LeechCraft::Entity&)),
+					&Core::Instance (),
+					SIGNAL (gotEntity (const LeechCraft::Entity&)));
+			connect (widget,
+					SIGNAL (titleChanged (const QString&)),
+					widget,
+					SLOT (setWindowTitle (const QString&)));
+			widget->show ();
+			return widget->GetView ()->page ();
+		}
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,10 +32,11 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QGraphicsObject>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/sys/paths.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -91,10 +92,10 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 
-		Ui_.HypesView_->engine ()->addImageProvider ("sysIcons",
+		Ui_.HypesView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
-		new Util::StandardNAMFactory ("lmp/cache",
+		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
 				Ui_.HypesView_->engine ());
 
@@ -109,7 +110,7 @@ namespace LMP
 		root->setContextProperty ("topsText", tr ("Show tops"));
 		root->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
-		Ui_.HypesView_->setSource (QUrl ("qrc:/lmp/resources/qml/HypesView.qml"));
+		Ui_.HypesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,
 				SIGNAL (activated (int)),

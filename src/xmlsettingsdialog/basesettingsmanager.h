@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_BASESETTINGSMANAGER_H
-#define XMLSETTINGSDIALOG_BASESETTINGSMANAGER_H
+#pragma once
+
 #include <memory>
 #include <QMap>
 #include <QPair>
@@ -168,6 +168,8 @@ namespace Util
 		 */
 		QVariant GetRawValue (const QString& path, const QVariant& def = QVariant ()) const;
 
+		void ShowSettingsPage (const QString& optionName);
+
 		void OptionSelected (const QByteArray&, const QVariant&);
 
 		std::shared_ptr<void> EnterInitMode ();
@@ -196,11 +198,11 @@ namespace Util
 		virtual void PropertyChanged (const QString&, const QVariant&);
 
 		virtual Settings_ptr GetSettings () const;
-	private slots:
+	private Q_SLOTS:
 		void scheduleCleanup ();
 		void cleanupObjects ();
+	Q_SIGNALS:
+		void showPageRequested (Util::BaseSettingsManager*, const QString&);
 	};
 }
 }
-
-#endif

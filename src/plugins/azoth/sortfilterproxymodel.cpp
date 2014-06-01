@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "sortfilterproxymodel.h"
-#include <QTimer>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucperms.h"
@@ -106,9 +105,7 @@ namespace Azoth
 	{
 		OrderByStatus_ = XmlSettingsManager::Instance ()
 				.property ("OrderByStatus").toBool ();
-		QTimer::singleShot (0,
-				this,
-				SLOT (invalidate ()));
+		invalidate ();
 	}
 
 	void SortFilterProxyModel::handleHideMUCPartsChanged ()

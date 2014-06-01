@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,6 +37,7 @@
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/imucperms.h>
 #include <interfaces/azoth/iconfigurablemuc.h>
+#include "roomparticipantentry.h"
 
 class QXmppBookmarkSet;
 
@@ -108,6 +109,7 @@ namespace Xoox
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;
 		QString GetMUCSubject () const;
+		bool CanChangeSubject () const;
 		void SetMUCSubject (const QString&);
 		QList<QObject*> GetParticipants ();
 		bool IsAutojoined () const;
@@ -136,6 +138,8 @@ namespace Xoox
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
 		void AcceptConfiguration (QWidget*);
+
+		void MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to);
 
 		void HandleMessage (RoomPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);

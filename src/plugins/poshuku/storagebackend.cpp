@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,8 +28,10 @@
  **********************************************************************/
 
 #include "storagebackend.h"
+#include <stdexcept>
 #include "sqlstoragebackend.h"
 #include "sqlstoragebackend_mysql.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -39,24 +41,44 @@ namespace Poshuku
 	: QObject (parent)
 	{
 	}
-	
+
 	StorageBackend::~StorageBackend ()
 	{
 	}
-	
+
 	std::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
 	{
 		std::shared_ptr<StorageBackend> result;
 		switch (type)
 		{
-			case SBSQLite:
-			case SBPostgres:
-				result.reset (new SQLStorageBackend (type));
-				break;
-			case SBMysql:
-				result.reset (new SQLStorageBackendMysql (type));
+		case SBSQLite:
+		case SBPostgres:
+			result.reset (new SQLStorageBackend (type));
+			break;
+		case SBMysql:
+			result.reset (new SQLStorageBackendMysql (type));
 		}
 		return result;
+	}
+
+	std::shared_ptr<StorageBackend> StorageBackend::Create ()
+	{
+		StorageBackend::Type type;
+		QString strType = XmlSettingsManager::Instance ()->
+			property ("StorageType").toString ();
+		if (strType == "SQLite")
+			type = StorageBackend::SBSQLite;
+		else if (strType == "PostgreSQL")
+			type = StorageBackend::SBPostgres;
+		else if (strType == "MySQL")
+			type = StorageBackend::SBMysql;
+		else
+			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
+						.arg (strType)));
+
+		const auto& sb = Create (type);
+		sb->Prepare ();
+		return sb;
 	}
 }
 }

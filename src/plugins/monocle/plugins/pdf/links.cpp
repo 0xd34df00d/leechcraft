@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,6 +40,12 @@ namespace PDF
 	Link::Link (Document *doc, Poppler::Link *link)
 	: Doc_ (doc)
 	, Link_ (link)
+	{
+	}
+
+	Link::Link (Document *doc, Poppler::Link *link, const std::shared_ptr<void>& ptr)
+	: Doc_ (doc)
+	, Link_ (ptr, link)
 	{
 	}
 

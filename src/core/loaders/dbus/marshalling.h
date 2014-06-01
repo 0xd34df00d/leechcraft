@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,7 +40,7 @@ class ICoreProxy;
 
 typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
 
-Q_DECLARE_METATYPE (ICoreProxy_ptr)
+Q_DECLARE_METATYPE (QIcon)
 
 QDBusArgument& operator<< (QDBusArgument&, const ICoreProxy_ptr&);
 const QDBusArgument& operator>> (const QDBusArgument&, ICoreProxy_ptr&);
@@ -59,6 +59,14 @@ namespace DBus
 		Q_OBJECT
 
 		quint64 Counter_;
+	public:
+		struct ObjectDataInfo
+		{
+			QString Service_;
+			QDBusObjectPath Path_;
+		};
+	private:
+		QHash<QObject*, ObjectDataInfo> Registered_;
 
 		ObjectManager ();
 
@@ -67,27 +75,19 @@ namespace DBus
 	public:
 		static ObjectManager& Instance ();
 
-		struct ObjectDataInfo
-		{
-			QString Service_;
-			QDBusObjectPath Path_;
-		};
-
 		template<typename T>
 		ObjectDataInfo RegisterObject (std::shared_ptr<T>);
 
 		template<typename T>
-		ObjectDataInfo RegisterObject (T);
-
-		ObjectDataInfo RegisterObject (QObject*);
+		ObjectDataInfo RegisterObject (T*);
 
 		template<typename T>
 		void Wrap (std::shared_ptr<T>&, const ObjectDataInfo&);
 
 		template<typename T>
-		void Wrap (T&, const ObjectDataInfo&);
-
-		void Wrap (QObject*&, const ObjectDataInfo&);
+		void Wrap (T*&, const ObjectDataInfo&);
+	private slots:
+		void handleObjectDestroyed (QObject*);
 	};
 }
 }

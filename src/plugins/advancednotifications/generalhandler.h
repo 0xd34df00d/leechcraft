@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -44,17 +44,18 @@ namespace AdvancedNotifications
 	{
 		Q_OBJECT
 
-		QList<ConcreteHandlerBase_ptr> Handlers_;
+		QList<INotificationHandler_ptr> Handlers_;
 
 		ICoreProxy_ptr Proxy_;
 		QMap<QString, QString> Cat2IconName_;
 	public:
 		GeneralHandler (ICoreProxy_ptr);
 
+		void RegisterHandler (const INotificationHandler_ptr&);
+
 		void Handle (const Entity&);
 
 		ICoreProxy_ptr GetProxy () const;
-
 		QIcon GetIconForCategory (const QString&) const;
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);

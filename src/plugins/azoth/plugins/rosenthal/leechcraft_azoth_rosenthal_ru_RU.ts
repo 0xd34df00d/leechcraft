@@ -2,9 +2,27 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>LeechCraft::Azoth::Rosenthal::KnownDictsManager</name>
+    <message>
+        <location filename="knowndictsmanager.cpp" line="153"/>
+        <source>Locale</source>
+        <translation>Локаль</translation>
+    </message>
+    <message>
+        <location filename="knowndictsmanager.cpp" line="153"/>
+        <source>Language</source>
+        <translation>Язык</translation>
+    </message>
+    <message>
+        <location filename="knowndictsmanager.cpp" line="153"/>
+        <source>Country</source>
+        <translation>Страна</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Rosenthal::Plugin</name>
     <message>
-        <location filename="rosenthal.cpp" line="74"/>
+        <location filename="rosenthal.cpp" line="96"/>
         <source>Provides spellchecking for Azoth.</source>
         <translation>Обеспечивает проверку правописания в Azoth.</translation>
     </message>
@@ -18,13 +36,19 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
-        <source>Languages to use</source>
+        <source>Languages</source>
+        <oldsource>Languages to use</oldsource>
         <translation>Языки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
-        <source>Override autodetect with these locales:</source>
-        <translation>Переопределить автоопределение этими локалями:</translation>
+        <source>Primary language:</source>
+        <translation>Основной язык:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Download and install dictionaries...</source>
+        <translation>Скачать и установить словари…</translation>
     </message>
 </context>
 </TS>

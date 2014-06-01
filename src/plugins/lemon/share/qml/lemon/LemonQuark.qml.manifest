@@ -2,5 +2,6 @@
     "quarkID": "org.LeechCraft.Lemon",
     "quarkName": "Lemon",
     "description": "LeechCraft Network Monitor",
-    "icon": "network-workgroup"
+    "icon": "network-workgroup",
+    "defaultVisibility": false
 }

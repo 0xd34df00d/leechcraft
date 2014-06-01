@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,20 +34,24 @@
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {
 namespace Imgaste
 {
 	Poster::Poster (HostingService service,
-			const QByteArray& data, const QString& format,
-			ICoreProxy_ptr proxy, QObject *parent)
+			const QByteArray& data,
+			const QString& format,
+			ICoreProxy_ptr proxy,
+			DataFilterCallback_f callback,
+			QObject *parent)
 	: QObject (parent)
 	, Reply_ (0)
 	, Service_ (service)
 	, Worker_ (MakeWorker (service))
 	, Proxy_ (proxy)
+	, Callback_ (callback)
 	{
 		Reply_ = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
 
@@ -63,9 +67,10 @@ namespace Imgaste
 
 	void Poster::handleFinished ()
 	{
-		QString result = Reply_->readAll ();
+		const auto& result = Reply_->readAll ();
+		Reply_->deleteLater ();
 
-		QString pasteUrl = Worker_->GetLink (result, Reply_);
+		const auto& pasteUrl = Worker_->GetLink (result, Reply_);
 
 		auto em = Proxy_->GetEntityManager ();
 		if (pasteUrl.isEmpty ())
@@ -75,12 +80,17 @@ namespace Imgaste
 			return;
 		}
 
-		QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
-		QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
+		if (!Callback_)
+		{
+			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
+			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
 
-		QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-			.arg (pasteUrl);
-		em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
+			QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
+				.arg (pasteUrl);
+			em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
+		}
+		else
+			Callback_ (pasteUrl);
 
 		deleteLater ();
 	}
@@ -89,6 +99,7 @@ namespace Imgaste
 	{
 		qWarning () << Q_FUNC_INFO
 			<< Reply_->errorString ();
+		Reply_->deleteLater ();
 
 		QString text = tr ("Image upload failed: %1")
 							.arg (Reply_->errorString ());

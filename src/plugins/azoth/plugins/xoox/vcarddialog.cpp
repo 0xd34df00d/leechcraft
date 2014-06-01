@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,6 +33,8 @@
 #include <QBuffer>
 #include <QCryptographicHash>
 #include <QXmppVCardManager.h>
+#include <QXmppGlobal.h>
+#include <util/gui/util.h>
 #include "entrybase.h"
 #include "glooxaccount.h"
 #include "clientconnection.h"
@@ -41,7 +43,6 @@
 #include "useravatarmanager.h"
 #include "vcardlisteditdialog.h"
 #include "accountsettingsholder.h"
-#include <util/gui/util.h>
 
 namespace LeechCraft
 {
@@ -122,13 +123,15 @@ namespace Xoox
 
 		SetPixmapLabel (QPixmap::fromImage (QImage::fromData (vcard.photo ())));
 
-		/* TODO wait until newer QXmpp
-		Ui_.OrgName_->setText (vcard.orgName ());
-		Ui_.OrgUnit_->setText (vcard.orgUnit ());
-		Ui_.Title_->setText (vcard.title ());
-		Ui_.Role_->setText (vcard.role ());
-		Ui_.About_->setPlainText (vcard.desc ());
-		*/
+		Ui_.About_->setPlainText (vcard.description ());
+
+#if QXMPP_VERSION >= 0x000800
+		const auto& orgInfo = vcard.organization ();
+		Ui_.OrgName_->setText (orgInfo.organization ());
+		Ui_.OrgUnit_->setText (orgInfo.unit ());
+		Ui_.Title_->setText (orgInfo.title ());
+		Ui_.Role_->setText (orgInfo.role ());
+#endif
 	}
 
 	bool VCardDialog::eventFilter (QObject *object, QEvent *event)
@@ -167,7 +170,7 @@ namespace Xoox
 	void VCardDialog::BuildPhones (const QXmppVCardPhoneList& phonesList)
 	{
 		QStringList phones;
-		Q_FOREACH (const QXmppVCardPhone& phone, phonesList)
+		for (const auto& phone : phonesList)
 		{
 			if (phone.number ().isEmpty ())
 				continue;
@@ -192,7 +195,7 @@ namespace Xoox
 	void VCardDialog::BuildEmails (const QXmppVCardEmailList& emailsList)
 	{
 		QStringList emails;
-		Q_FOREACH (const QXmppVCardEmail& email, emailsList)
+		for (const auto& email : emailsList)
 		{
 			if (email.address ().isEmpty ())
 				continue;
@@ -218,7 +221,7 @@ namespace Xoox
 	{
 		QStringList addresses;
 		int addrNum = 1;
-		Q_FOREACH (const QXmppVCardAddress& address, addressList)
+		for (const auto& address : addressList)
 		{
 			if ((address.country () + address.locality () + address.postcode () +
 					address.region () + address.street ()).isEmpty ())
@@ -288,7 +291,7 @@ namespace Xoox
 		CapsManager *mgr = Account_->GetClientConnection ()->GetCapsManager ();
 
 		QString html;
-		Q_FOREACH (const QString& variant, entry->Variants ())
+		for (const auto& variant : entry->Variants ())
 		{
 			const auto& info = entry->GetClientInfo (variant);
 			const QString& client = info ["raw_client_name"].toString ();
@@ -334,16 +337,19 @@ namespace Xoox
 		VCard_.setNickName (Ui_.EditNick_->text ());
 		VCard_.setBirthday (Ui_.EditBirthday_->date ());
 		VCard_.setUrl (Ui_.EditURL_->text ());
-		/* TODO wait for newer QXmpp
-		VCard_.setOrgName (Ui_.OrgName_->text ());
-		VCard_.setOrgUnit (Ui_.OrgUnit_->text ());
-		VCard_.setTitle (Ui_.Title_->text ());
-		VCard_.setRole (Ui_.Role_->text ());
-		VCard_.setDesc (Ui_.About_->toPlainText ());
-		*/
+		VCard_.setDescription (Ui_.About_->toPlainText ());
 		VCard_.setEmail (QString ());
 
-		const QPixmap *px = Ui_.LabelPhoto_->pixmap ();
+#if QXMPP_VERSION >= 0x000800
+		QXmppVCardOrganization orgInfo;
+		orgInfo.setOrganization (Ui_.OrgName_->text ());
+		orgInfo.setUnit (Ui_.OrgUnit_->text ());
+		orgInfo.setTitle (Ui_.Title_->text ());
+		orgInfo.setRole (Ui_.Role_->text ());
+		VCard_.setOrganization (orgInfo);
+#endif
+
+		const auto px = Ui_.LabelPhoto_->pixmap ();
 		if (px)
 		{
 			QBuffer buffer;
@@ -366,20 +372,22 @@ namespace Xoox
 						PublishAvatar (px ? px->toImage () : QImage ());
 		PhotoChanged_ = false;
 
-		QXmppVCardManager& mgr = Account_->GetClientConnection ()->
+		auto& mgr = Account_->GetClientConnection ()->
 				GetClient ()->vCardManager ();
 		mgr.setClientVCard (VCard_);
 	}
 
 	void VCardDialog::on_PhoneButton__released ()
 	{
-		QStringList options;
-		options << tr ("preferred")
-				<< tr ("home")
-				<< tr ("work")
-				<< tr ("cell");
+		const QStringList options
+		{
+			tr ("preferred"),
+			tr ("home"),
+			tr ("work"),
+			tr ("cell")
+		};
 
-		const std::vector<QXmppVCardPhone::Type> type2pos =
+		const std::vector<QXmppVCardPhone::Type> type2pos
 		{
 			QXmppVCardPhone::Preferred,
 			QXmppVCardPhone::Home,
@@ -389,7 +397,7 @@ namespace Xoox
 
 		VCardListEditDialog dia (options, this);
 		dia.setWindowTitle (tr ("VCard phones"));
-		Q_FOREACH (const QXmppVCardPhone& phone, VCard_.phones ())
+		for (const auto& phone : VCard_.phones ())
 		{
 			if (phone.number ().isEmpty ())
 				continue;
@@ -401,14 +409,14 @@ namespace Xoox
 				if (phone.type () & type2pos [i])
 					pair.second << options.at (i);
 
-			dia.AddItems (QList<decltype (pair)> () << pair);
+			dia.AddItems ({ pair });
 		}
 
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		QXmppVCardPhoneList list;
-		Q_FOREACH (const auto& item, dia.GetItems ())
+		for (const auto& item : dia.GetItems ())
 		{
 			QXmppVCardPhone phone;
 			phone.setNumber (item.first);
@@ -427,11 +435,13 @@ namespace Xoox
 
 	void VCardDialog::on_EmailButton__released ()
 	{
-		QStringList options;
-		options << tr ("preferred")
-				<< tr ("home")
-				<< tr ("work")
-				<< "X400";
+		const QStringList options
+		{
+			tr ("preferred"),
+			tr ("home"),
+			tr ("work"),
+			"X400"
+		};
 
 		const std::vector<QXmppVCardEmail::Type> type2pos =
 		{
@@ -443,7 +453,7 @@ namespace Xoox
 
 		VCardListEditDialog dia (options, this);
 		dia.setWindowTitle (tr ("VCard emails"));
-		Q_FOREACH (const QXmppVCardEmail& email, VCard_.emails ())
+		for (const auto& email : VCard_.emails ())
 		{
 			if (email.address ().isEmpty ())
 				continue;
@@ -454,14 +464,14 @@ namespace Xoox
 				if (email.type () & type2pos [i])
 					pair.second << options.at (i);
 
-			dia.AddItems (QList<decltype (pair)> () << pair);
+			dia.AddItems ({ pair });
 		}
 
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		QXmppVCardEmailList list;
-		Q_FOREACH (const auto& item, dia.GetItems ())
+		for (const auto& item : dia.GetItems ())
 		{
 			QXmppVCardEmail email;
 			email.setAddress (item.first);
@@ -519,7 +529,7 @@ namespace Xoox
 		auto toEnable = findChildren<QLineEdit*> ();
 		toEnable.removeAll (Ui_.EditPhone_);
 		toEnable.removeAll (Ui_.EditEmail_);
-		Q_FOREACH (QLineEdit *edit, toEnable)
+		for (auto edit : toEnable)
 			edit->setReadOnly (false);
 
 		Ui_.About_->setReadOnly (false);

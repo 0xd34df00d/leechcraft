@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,7 +30,8 @@
 #include "externalresourcemanager.h"
 #include <stdexcept>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -65,11 +66,11 @@ namespace LackMan
 
 		Entity e = Util::MakeEntity (url,
 				location,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
 		int id = -1;
 		QObject *pr;
@@ -107,8 +108,6 @@ namespace LackMan
 				this,
 				SLOT (handleResourceError (int, IDownload::Error)),
 				Qt::UniqueConnection);
-
-		return;
 	}
 
 	QString ExternalResourceManager::GetResourcePath (const QUrl& url) const

@@ -38,10 +38,12 @@
 #include <QtDebug>
 #include <QUuid>
 #include <QXmlQuery>
+#include <QFileInfo>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/passutils.h>
+#include <util/xpc/passutils.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "albumsettingsdialog.h"
 #include "fotobilderservice.h"
 
@@ -166,11 +168,12 @@ namespace DeathNote
 		const auto& name = dia.GetName ();
 		int priv = dia.GetPrivacyLevel ();
 
-		CallsQueue_.append ([this, name, priv] (const QString& challenge)
-			{
-				CreateGallery (name, priv, challenge);
-			});
-		GetChallenge ();
+		auto guard = MakeRunnerGuard ();
+		CallsQueue_ << [this] (const QString&) { GetChallenge (); };
+		CallsQueue_ << [this, name, priv] (const QString& challenge)
+		{
+			CreateGallery (name, priv, challenge);
+		};
 	}
 
 	bool FotoBilderAccount::HasUploadFeature (ISupportUploads::Feature feature) const
@@ -276,6 +279,22 @@ namespace DeathNote
 		}
 	}
 
+	std::shared_ptr<void> FotoBilderAccount::MakeRunnerGuard ()
+	{
+		const bool shouldRun = CallsQueue_.isEmpty ();
+		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*)
+		{
+			if (shouldRun)
+				CallsQueue_.dequeue () (QString ());
+		});
+	}
+
+	void FotoBilderAccount::CallNextFunctionFromQueue ()
+	{
+		if (!CallsQueue_.isEmpty () && !(CallsQueue_.count () % 2))
+			CallsQueue_.dequeue () (QString ());
+	}
+
 	bool FotoBilderAccount::IsErrorReply (const QByteArray& content)
 	{
 		QXmlQuery query;
@@ -315,20 +334,23 @@ namespace DeathNote
 
 	void FotoBilderAccount::Login ()
 	{
+		auto guard = MakeRunnerGuard ();
+		CallsQueue_ << [this] (const QString&) { GetChallenge (); };
 		CallsQueue_ << [this] (const QString& challenge) { LoginRequest (challenge); };
-		GetChallenge ();
 	}
 
 	void FotoBilderAccount::RequestGalleries ()
 	{
+		auto guard = MakeRunnerGuard ();
+		CallsQueue_ << [this] (const QString&) { GetChallenge (); };
 		CallsQueue_ << [this] (const QString& challenge) { GetGalsRequest (challenge); };
-		GetChallenge ();
 	}
 
 	void FotoBilderAccount::RequestPictures ()
 	{
+		auto guard = MakeRunnerGuard ();
+		CallsQueue_ << [this] (const QString&) { GetChallenge (); };
 		CallsQueue_ << [this] (const QString& challenge) { GetPicsRequest (challenge); };
-		GetChallenge ();
 	}
 
 	void FotoBilderAccount::UpdateCollections ()
@@ -445,13 +467,15 @@ namespace DeathNote
 
 	void FotoBilderAccount::UploadImagesRequest (const QByteArray& albumId, const QList<UploadItem>& items)
 	{
-		CallsQueue_ << [albumId, items, this] (const QString& challenge)
+		auto guard = MakeRunnerGuard ();
+		for (const auto& item : items)
 		{
-			items.count () == 1 ?
-				UploadOneImage (albumId, items.value (0), challenge):
-				UploadImages (albumId, items, challenge);
-		};
-		GetChallenge ();
+			CallsQueue_ << [this] (const QString&) { GetChallenge (); };
+			CallsQueue_ << [albumId, item, this] (const QString& challenge)
+			{
+				UploadOneImage (albumId, item, challenge);
+			};
+		}
 	}
 
 	void FotoBilderAccount::UploadOneImage (const QByteArray& id,
@@ -496,58 +520,6 @@ namespace DeathNote
 				SIGNAL (uploadProgress (qint64, qint64)),
 				this,
 				SLOT (handleUploadProgress (qint64, qint64)));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
-	}
-
-	void FotoBilderAccount::UploadImages(const QByteArray& id,
-			const QList<UploadItem>& items, const QString& challenge)
-	{
-		struct Receipt
-		{
-			QByteArray Md5_;
-			QByteArray Magic_;
-			quint64 Size_;
-		};
-		QList<Receipt> receipts;
-
-		QMap<QByteArray, QByteArray> requestMap;
-		requestMap = Util::MakeMap<QByteArray, QByteArray> ({
-					{ "X-FB-User", Login_.toUtf8 () },
-					{ "X-FB-Mode", "UploadPrepare" },
-					{ "X-FB-Auth", ("crp:" + challenge + ":" +
-							GetHashedChallenge (GetPassword (), challenge))
-								.toUtf8 () },
-					{ "X-FB-UploadPrepare.Pic._size", QString::number (receipts.count ()).toUtf8 () } });
-		for (int i = 0, itemsCount = items.count (); i < itemsCount; ++i)
-		{
-			const auto& item = items.at (i);
-			QFile file (item.FilePath_);
-			if (!file.open (QIODevice::ReadOnly))
-				continue;
-
-			const auto& content = file.readAll ();
-			QByteArray magic = content.mid (0, 10);
-			const QByteArray& md5 = QCryptographicHash::hash (content, QCryptographicHash::Md5).toHex ();
-
-			requestMap.insert (QString ("X-FB-UploadPrepare.Pic.%1.MD5")
-					.arg (i).toUtf8 (), md5);
-			requestMap.insert (QString ("X-FB-UploadPrepare.Pic.%1.Magic")
-					.arg (i).toUtf8 (), magic.toHex ());
-			requestMap.insert (QString ("X-FB-UploadPrepare.Pic.%1.Size")
-					.arg (i).toUtf8 (), QByteArray::number (file.size ()));
-			Hash2UploadItem_ [md5.toHex ()] = item;
-			file.close ();
-		}
-
-		auto reply = Proxy_->GetNetworkAccessManager ()->get (CreateRequest (requestMap));
-		Reply2Gallery_ [reply] = id;
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleUploadPrepareFinished ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -739,6 +711,7 @@ namespace DeathNote
 			return;
 
 		Quota_ = ParseLoginResponse (document);
+		CallNextFunctionFromQueue ();
 	}
 
 	void FotoBilderAccount::handleNetworkError (QNetworkReply::NetworkError err)
@@ -751,6 +724,7 @@ namespace DeathNote
 				<< err
 				<< reply->errorString ();
 		emit networkError (err, reply->errorString ());
+		CallNextFunctionFromQueue ();
 	}
 
 	void FotoBilderAccount::handleGotAlbums ()
@@ -833,6 +807,7 @@ namespace DeathNote
 		for (const auto& photo : ParseGetPicsRequest (document))
 			AllPhotosItem_->appendRow (CreatePhotoItem (photo));
 		emit doneUpdating ();
+		CallNextFunctionFromQueue ();
 	}
 
 	void FotoBilderAccount::handleGalleryCreated ()
@@ -875,6 +850,7 @@ namespace DeathNote
 		CollectionsModel_->appendRow (item);
 
 		Id2AlbumItem_ [album.ID_] = item;
+		CallNextFunctionFromQueue ();
 	}
 
 	void FotoBilderAccount::handleUploadProgress (qint64 sent, qint64 total)
@@ -893,42 +869,16 @@ namespace DeathNote
 		if (IsErrorReply (content))
 			return;
 
+		const auto& item = Reply2UploadItem_.take (reply);
+
 		auto pic = ParseUploadedPictureResponse (document);
-		pic.Title_ = QFileInfo (Reply2UploadItem_.take (reply).FilePath_).fileName ();
+		pic.Title_ = QFileInfo (item.FilePath_).fileName ();
 		AllPhotosItem_->appendRow (CreatePhotoItem (pic));
 		emit doneUpdating ();
+
+		emit itemUploaded (item, pic.Url_);
+		CallNextFunctionFromQueue ();
 	}
-
-	void FotoBilderAccount::handleUploadPrepareFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		QDomDocument document;
-		const QByteArray& content = CreateDomDocumentFromReply (reply,
-				 document);
-		if (content.isEmpty ())
-			return;
-
-		if (IsErrorReply (content))
-			return;
-
-		QDomNodeList pics = document.elementsByTagName ("Pic");
-		for (int i = 0, size = pics.count (); i < size; ++i)
-		{
-			const auto& elem = pics.at (i).toElement ();
-			const auto& errorList = elem.elementsByTagName ("Error");
-			const auto& hash = elem.elementsByTagName ("MD5").at (0).toElement ();
-			if (!errorList.isEmpty ())
-				Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
-						QString ("%1: %2")
-								.arg (errorList.at (0).toElement ().text ())
-								.arg (Hash2UploadItem_.take (hash.text ().toUtf8 ()).FilePath_),
-						PWarning_));
-		}
-
-		for (const auto& uploadItem : Hash2UploadItem_)
-			UploadImagesRequest (Reply2Gallery_.take (reply), { uploadItem });
-	}
-
 }
 }
 }

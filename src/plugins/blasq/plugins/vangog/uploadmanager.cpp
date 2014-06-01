@@ -32,7 +32,7 @@
 #include <QNetworkRequest>
 #include <QFileInfo>
 #include <util/util.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include "picasaaccount.h"
 
 namespace LeechCraft
@@ -77,8 +77,9 @@ namespace Vangog
 										<< file->errorString ();
 								return;
 							}
-							QNetworkReply *reply = Proxy_->GetNetworkAccessManager ()->
+							auto reply = Proxy_->GetNetworkAccessManager ()->
 									post (request, file);
+							Reply2Item_ [reply] = item;
 							file->setParent (reply);
 							connect (reply,
 									SIGNAL (uploadProgress (qint64, qint64)),
@@ -105,7 +106,7 @@ namespace Vangog
 	void UploadManager::handleUploadFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		Account_->ImageUploadResponse (reply->readAll ());
+		Account_->ImageUploadResponse (reply->readAll (), Reply2Item_.take (reply));
 		reply->deleteLater ();
 	}
 

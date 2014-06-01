@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,12 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_MERGEMODEL_H
-#define UTIL_MERGEMODEL_H
+#pragma once
+
+#include <memory>
 #include <QPointer>
 #include <QAbstractProxyModel>
 #include <QStringList>
-#include <util/utilconfig.h>
+#include "modelsconfig.h"
+#include "modelitem.h"
 
 namespace LeechCraft
 {
@@ -48,8 +50,10 @@ namespace LeechCraft
 		 * Currently it doesn't support hierarchical source models.
 		 * Seems like it would never support it at least someone would
 		 * try to implement it.
+		 *
+		 * @ingroup ModelUtil
 		 */
-		class UTIL_API MergeModel : public QAbstractItemModel
+		class UTIL_MODELS_API MergeModel : public QAbstractItemModel
 		{
 			Q_OBJECT
 
@@ -59,12 +63,20 @@ namespace LeechCraft
 			models_t Models_;
 		private:
 			QStringList Headers_;
+
+			ModelItem_ptr Root_;
 		public:
 			typedef models_t::iterator iterator;
 			typedef models_t::const_iterator const_iterator;
 
-			MergeModel (const QStringList&, QObject* = 0);
-			virtual ~MergeModel ();
+			/** @brief Constructs the merge model.
+			 *
+			 * Sets the given \em headers and \em parent object.
+			 *
+			 * @param[in] headers The headers of the model.
+			 * @param[in] parent The parent object of the model.
+			 */
+			MergeModel (const QStringList& headers, QObject *parent = 0);
 
 			virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 			virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
@@ -74,7 +86,25 @@ namespace LeechCraft
 			virtual QModelIndex parent (const QModelIndex&) const;
 			virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-			/** Returns the model index in the MergeModel given the
+			/** @brief Returns the union of MIME types of the models.
+			 *
+			 * @return The union of all the MIME types.
+			 */
+			QStringList mimeTypes () const;
+
+			/** @brief Returns the MIME data for the given \em indices.
+			 *
+			 * This function queries the corresponding source model for
+			 * each index of the \em indices, merging the URL list (if
+			 * any) and using first obtained data of any other format.
+			 *
+			 * @param[in] indices The indices for which to return the
+			 * MIME data.
+			 * @return The MIME data.
+			 */
+			QMimeData* mimeData (const QModelIndexList& indices) const;
+
+			/** @brief Returns the model index in the MergeModel given the
 			 * index from the source model.
 			 *
 			 * @param[in] index Source index.
@@ -82,7 +112,7 @@ namespace LeechCraft
 			 */
 			virtual QModelIndex mapFromSource (const QModelIndex& index) const;
 
-			/** Returns the source model index corresponding to the
+			/** @brief Returns the source model index corresponding to the
 			 * given index from the sorting filter model.
 			 *
 			 * @param[in] index MergeModel's index.
@@ -100,14 +130,15 @@ namespace LeechCraft
 			 */
 			virtual void setSourceModel (QAbstractItemModel*);
 
-			/** Sets the new headers for this model.
+			/** @brief Sets the new headers for this model.
 			 *
 			 * @param[in] headers The new headers.
 			 */
 			void SetHeaders (const QStringList& headers);
 
-			/** Adds a model to the list of source models. The newly
-			 * added model is appended to the end.
+			/** @brief Adds a model to the list of source models.
+			 *
+			 * The newly added model is appended to the end.
 			 *
 			 * If the model already exists in the list, it is added
 			 * again, and bad things would happen, as all the signals and
@@ -119,28 +150,29 @@ namespace LeechCraft
 			 */
 			void AddModel (QAbstractItemModel *model);
 
-			/** Removes a model from the list of source models. If there
-			 * is no such model, this function does nothing.
+			/** @brief Removes a model from the list of source models.
+			 *
+			 * If there is no such model, this function does nothing.
 			 *
 			 * @param[in] model The model to remove from the list.
 			 */
 			void RemoveModel (QAbstractItemModel *model);
 
-			/** Returns the number of child models in the merger.
+			/** @brief Returns the number of child models in the merger.
 			 *
 			 * @return The number of child models.
 			 */
 			size_t Size () const;
 
-			/** Returns a const_iterator corresponding to the passed
-			 * model, or one-past-end if no such model is found.
+			/** @brief Returns a const_iterator corresponding to the
+			 * passed model, or one-past-end if no such model is found.
 			 *
 			 * @param[in] model The model to find.
 			 * @return The iterator.
 			 */
 			const_iterator FindModel (const QAbstractItemModel *model) const;
 
-			/** This is an overloaded function provided for convenience.
+			/** @brief This is an overloaded function provided for convenience.
 			 * Non-const and returns a non-const iterator.
 			 *
 			 * @param[in] model The model to find.
@@ -148,7 +180,9 @@ namespace LeechCraft
 			 */
 			iterator FindModel (const QAbstractItemModel *model);
 
-			/** Returns the row in the resulting MergeModel from which do
+			/** @brief Finds starting row for the model pointed by \em it.
+			 *
+			 * Returns the row in the resulting MergeModel from which do
 			 * begin rows which belong to the model corresponding to the
 			 * given const_iterator.
 			 *
@@ -157,7 +191,9 @@ namespace LeechCraft
 			 */
 			int GetStartingRow (const_iterator it) const;
 
-			/** Returns the model that corresponds to the given row. If
+			/** @brief Returns the model for the given \em row.
+			 *
+			 * Returns the model that corresponds to the given row. If
 			 * there is no such model, throws std::runtime_error. If
 			 * starting is not null, it also calculates and returns the
 			 * starting row for the returned model. This allows one to avoid
@@ -174,8 +210,8 @@ namespace LeechCraft
 			 */
 			const_iterator GetModelForRow (int row, int *starting = 0) const;
 
-			/** This is an overloaded function provided for convenience.
-			 * Non-const and returns a non-const iterator.
+			/** @brief This is an overloaded function provided for
+			 * convenience.
 			 *
 			 * @param[in] row The row that should be identified.
 			 * @param[in,out] starting The pointer to variable that will
@@ -206,19 +242,24 @@ namespace LeechCraft
 			virtual void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
 			virtual void handleRowsInserted (const QModelIndex&, int, int);
 			virtual void handleRowsRemoved (const QModelIndex&, int, int);
+			virtual void handleModelAboutToBeReset ();
+			virtual void handleModelReset ();
 		protected:
-			/** This virtual function could be overridden to provide
+			/** @brief Allows to filter rows from the resulting model.
+			 *
+			 * This virtual function could be overridden to provide
 			 * custom filtering facilities. If the row in the model
 			 * should be merged into the resulting model, this function
 			 * should return true, otherwise if it returns false the row
 			 * would be filtered out.
+			 *
+			 * @param[in] model The source model the \em row belongs.
+			 * @param[in] row The row index in the source \em model.
+			 * @return Whether the given \em row should be displayed.
 			 */
 			virtual bool AcceptsRow (QAbstractItemModel *model, int row) const;
 		private:
 			int RowCount (QAbstractItemModel*) const;
 		};
-	};
-};
-
-#endif
-
+	}
+}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -59,24 +59,26 @@ bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *event)
 		child->installEventFilter (this);
 
 		if (auto act = qobject_cast<QAction*> (child))
-			IconThemeEngine::Instance ().UpdateIconSet ({ act });
+			IconThemeEngine::Instance ().UpdateIconset ({ act });
 		else if (auto tb = qobject_cast<QToolButton*> (child))
 		{
 			if (auto act = tb->defaultAction ())
-				IconThemeEngine::Instance ().UpdateIconSet ({ act });
+				IconThemeEngine::Instance ().UpdateIconset ({ act });
 			if (auto menu = tb->menu ())
-				IconThemeEngine::Instance ().UpdateIconSet ({ menu->menuAction () });
+				IconThemeEngine::Instance ().UpdateIconset ({ menu->menuAction () });
 		}
 		else if (auto pb = qobject_cast<QPushButton*> (child))
-			IconThemeEngine::Instance ().UpdateIconSet ({ pb });
+			IconThemeEngine::Instance ().UpdateIconset ({ pb });
 		else
 		{
 			IconThemeEngine::Instance ()
-				.UpdateIconSet (child->findChildren<QAction*> ());
+				.UpdateIconset (child->findChildren<QAction*> ());
 			IconThemeEngine::Instance ()
-				.UpdateIconSet (child->findChildren<QPushButton*> ());
+				.UpdateIconset (child->findChildren<QPushButton*> ());
 			IconThemeEngine::Instance ()
-				.UpdateIconSet (child->findChildren<QTabWidget*> ());
+				.UpdateIconset (child->findChildren<QTabWidget*> ());
+			IconThemeEngine::Instance ()
+				.UpdateIconset (child->findChildren<QToolButton*> ());
 		}
 		return false;
 	}

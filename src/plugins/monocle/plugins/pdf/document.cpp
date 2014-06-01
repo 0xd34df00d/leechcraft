@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,6 +38,7 @@
 #include <poppler-version.h>
 #include "links.h"
 #include "fields.h"
+#include "annotations.h"
 
 namespace LeechCraft
 {
@@ -142,13 +143,17 @@ namespace PDF
 		return page->text (rect);
 	}
 
-	QList<IAnnotation_ptr> Document::GetAnnotations (int pageNum) const
+	QList<IAnnotation_ptr> Document::GetAnnotations (int pageNum)
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
 		if (!page)
-			return QList<IAnnotation_ptr> ();
+			return {};
 
-		return QList<IAnnotation_ptr> ();
+		QList<IAnnotation_ptr> annotations;
+		for (const auto ann : page->annotations ())
+			if (const auto wrapper = MakeAnnotation (this, ann))
+				annotations << wrapper;
+		return annotations;
 	}
 
 	IFormFields_t Document::GetFormFields (int pageNum)

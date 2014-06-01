@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "staticplaylistmanager.h"
-#include <util/util.h>
+#include <util/sys/paths.h>
 #include "playlistparsers/m3u.h"
 
 namespace LeechCraft
@@ -51,12 +51,12 @@ namespace LMP
 
 	void StaticPlaylistManager::SetOnLoadPlaylist (const QList<AudioSource>& sources)
 	{
-		WritePlaylist (GetOnLoadPath (), sources);
+		WritePlaylist (GetOnLoadPath (), Playlist (sources));
 	}
 
 	QList<AudioSource> StaticPlaylistManager::GetOnLoadPlaylist () const
 	{
-		return ReadPlaylist (GetOnLoadPath ());
+		return ReadPlaylist (GetOnLoadPath ()).ToSources ();
 	}
 
 	namespace
@@ -68,8 +68,7 @@ namespace LMP
 		}
 	}
 
-	void StaticPlaylistManager::SaveCustomPlaylist (QString name,
-			const QList<AudioSource>& sources)
+	void StaticPlaylistManager::SaveCustomPlaylist (QString name, const Playlist& sources)
 	{
 		WritePlaylist (PlaylistsDir_.filePath (GetFileName (name)), sources);
 		emit customPlaylistsChanged ();
@@ -84,9 +83,14 @@ namespace LMP
 		return result;
 	}
 
-	QList<AudioSource> StaticPlaylistManager::GetCustomPlaylist (const QString& name) const
+	Playlist StaticPlaylistManager::GetCustomPlaylist (const QString& name) const
 	{
-		return ReadPlaylist (PlaylistsDir_.filePath (GetFileName (name)));
+		return ReadPlaylist (GetCustomPlaylistPath (name));
+	}
+
+	QString StaticPlaylistManager::GetCustomPlaylistPath (const QString& name) const
+	{
+		return PlaylistsDir_.filePath (GetFileName (name));
 	}
 
 	void StaticPlaylistManager::DeleteCustomPlaylist (const QString& name)
@@ -95,12 +99,12 @@ namespace LMP
 			emit customPlaylistsChanged ();
 	}
 
-	void StaticPlaylistManager::WritePlaylist (const QString& path, const QList<AudioSource>& sources)
+	void StaticPlaylistManager::WritePlaylist (const QString& path, const Playlist& sources)
 	{
 		M3U::Write (path, sources);
 	}
 
-	QList<AudioSource> StaticPlaylistManager::ReadPlaylist (const QString& path) const
+	Playlist StaticPlaylistManager::ReadPlaylist (const QString& path) const
 	{
 		return M3U::Read2Sources (path);
 	}

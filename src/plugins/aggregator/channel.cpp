@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -77,6 +77,7 @@ namespace Aggregator
 		ChannelID_ = channel.ChannelID_;
 		FeedID_ = channel.FeedID_;
 		Title_ = channel.Title_;
+		DisplayTitle_ = channel.Title_;
 		Link_ = channel.Link_;
 		Description_ = channel.Description_;
 		LastBuild_ = channel.LastBuild_;
@@ -96,6 +97,7 @@ namespace Aggregator
 			FeedID_,
 			Author_,
 			Title_,
+			DisplayTitle_,
 			Link_,
 			Tags_,
 			LastBuild_,
@@ -132,9 +134,10 @@ namespace Aggregator
 
 	QDataStream& operator<< (QDataStream& out, const Channel& chan)
 	{
-		int version = 3;
+		int version = 4;
 		out << version
 			<< chan.Title_
+			<< chan.DisplayTitle_
 			<< chan.Link_
 			<< chan.Description_
 			<< chan.LastBuild_
@@ -154,18 +157,31 @@ namespace Aggregator
 	{
 		int version = 0;
 		in >> version;
+		if (version < 1 || version > 4)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
+
+		in >> chan.Title_;
+
+		if (version == 4)
+			in >> chan.DisplayTitle_;
+
+		in >> chan.Link_
+			>> chan.Description_
+			>> chan.LastBuild_
+			>> chan.Tags_
+			>> chan.Language_
+			>> chan.Author_
+			>> chan.PixmapURL_;
+
 		if (version == 1)
 		{
 			quint32 size;
-			in >> chan.Title_
-				>> chan.Link_
-				>> chan.Description_
-				>> chan.LastBuild_
-				>> chan.Tags_
-				>> chan.Language_
-				>> chan.Author_
-				>> chan.PixmapURL_
-				>> chan.Pixmap_
+			in >> chan.Pixmap_
 				>> chan.Favicon_;
 			in >> size;
 			for (size_t i = 0; i < size; ++i)
@@ -175,19 +191,9 @@ namespace Aggregator
 				chan.Items_.push_back (it);
 			}
 		}
-		else if (version == 2 || version == 3)
+		else
 		{
-
 			quint32 size;
-			in >> chan.Title_
-				>> chan.Link_
-				>> chan.Description_
-				>> chan.LastBuild_
-				>> chan.Tags_
-				>> chan.Language_
-				>> chan.Author_
-				>> chan.PixmapURL_;
-
 			if (version == 3)
 				in >> chan.Pixmap_
 					>> chan.Favicon_;
@@ -208,6 +214,7 @@ namespace Aggregator
 				chan.Items_.push_back (it);
 			}
 		}
+
 		return in;
 	}
 }

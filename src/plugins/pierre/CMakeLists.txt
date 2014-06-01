@@ -11,7 +11,7 @@ include_directories (
 set (SRCS
 	pierre.cpp
 	fullscreen.mm
-	dockutil.mm
+	reopenhandler.mm
 	)
 
 add_library (leechcraft_pierre SHARED
@@ -25,4 +25,7 @@ target_link_libraries (leechcraft_pierre
 	"-framework AppKit"
 	)
 install (TARGETS leechcraft_pierre DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY data/ DESTINATION ${LC_BINDIR}/..)
+
+if (NOT APPLE_UNBUNDLE)
+	install (DIRECTORY data/ DESTINATION ${LC_BINDIR}/..)
+endif ()

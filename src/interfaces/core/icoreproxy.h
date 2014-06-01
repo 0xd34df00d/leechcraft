@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,9 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_CORE_ICOREPROXY_H
-#define INTERFACES_CORE_ICOREPROXY_H
+#pragma once
+
 #include <memory>
+#include <QMetaType>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QTabBar>
 
@@ -46,6 +47,7 @@ class QMainWindow;
 class QAbstractItemModel;
 class QTabWidget;
 class IColorThemeManager;
+class IIconThemeManager;
 
 namespace LeechCraft
 {
@@ -74,21 +76,22 @@ public:
 	 * and network cache, it should use the returned
 	 * QNetworkAccessManager.
 	 *
-	 * @return Application-wide QNetworkAccessManager.
+	 * @return The application-wide QNetworkAccessManager.
 	 */
 	virtual QNetworkAccessManager* GetNetworkAccessManager () const = 0;
 
 	/** @brief Returns the shortcut proxy used to communicate with the
 	 * shortcut manager.
 	 *
+	 * @return The application-wide shortcut proxy.
+	 *
 	 * @sa IShortcutProxy
 	 */
 	virtual IShortcutProxy* GetShortcutProxy () const = 0;
 
-	/** @brief Maps the given index up to the plugin's through the
-	 * hierarchy of LeechCraft's models
+	/** @brief Maps the given index to the plugin's model.
 	 */
-	virtual QModelIndex MapToSource (const QModelIndex&) const = 0;
+	virtual QModelIndex MapToSource (const QModelIndex& index) const = 0;
 
 	/** @brief Returns the LeechCraft's settings manager.
 	 *
@@ -97,37 +100,53 @@ public:
 	 * collisions from different plugins it's strongly encouraged to
 	 * also use the plugin name in the property. So the property name
 	 * would look like "PluginsStorage/PluginName/YourProperty".
+	 *
+	 * @return The Core settings manager.
 	 */
 	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
 
-	/** Returns the current theme's icon for the given on and off
-	 * states. Similar to the mapping files.
+	/** @brief Returns the icon theme manager.
 	 *
-	 * @param[in] on The name of the icon in the "on" state.
-	 * @param[in] off The name of the icon in the "off" state, if any.
-	 * @return The QIcon object created from image files which could be
-	 * obtained via GetIconPath().
+	 * @return The icon manager.
 	 *
-	 * @sa GetIconPath
+	 * @sa IIconThemeManager
 	 */
-	virtual QIcon GetIcon (const QString& on, const QString& off = QString ()) const = 0;
-
-	/** @brief Updates the icons of the given actions according to current iconset.
-	 */
-	virtual void UpdateIconset (const QList<QAction*>& actions) const = 0;
+	virtual IIconThemeManager* GetIconThemeManager () const = 0;
 
 	/** @brief Returns the color theme manager.
+	 *
+	 * @return The color manager.
+	 *
+	 * @sa IColorThemeManager
 	 */
 	virtual IColorThemeManager* GetColorThemeManager () const = 0;
 
+	/** @brief Returns the root windows manager.
+	 *
+	 * @return The root windows manager.
+	 *
+	 * @sa IRootWindowsManager
+	 */
 	virtual IRootWindowsManager* GetRootWindowsManager () const = 0;
 
-	/** Returns the application-wide tags manager.
+	/** @brief Returns the application-wide tags manager.
+	 *
+	 * @return The application-wide tags manager.
+	 *
+	 * @sa ITagsManager
 	 */
 	virtual ITagsManager* GetTagsManager () const = 0;
 
 	/** Returns the list of all possible search categories from the
 	 * finders installed.
+	 *
+	 * This function merely aggregates all the search categories from all
+	 * the plugins implementing the IFinder interface, calling
+	 * IFinder::GetCategories().
+	 *
+	 * @return The search categories of all finder.
+	 *
+	 * @sa IFinder
 	 */
 	virtual QStringList GetSearchCategories () const = 0;
 
@@ -155,6 +174,10 @@ public:
 	virtual void FreeID (int id) = 0;
 
 	/** @brief Returns the application's plugin manager.
+	 *
+	 * @return The application plugins manager.
+	 *
+	 * @sa IPluginsManager
 	 */
 	virtual IPluginsManager* GetPluginsManager () const = 0;
 
@@ -163,19 +186,20 @@ public:
 	 * Entity manager is used to perform interoperation with other plugins
 	 * by exchanging entity objects with them.
 	 *
+	 * @return The application-wide entity manager.
+	 *
 	 * @sa LeechCraft::Entity
+	 * @sa IEntityManager
 	 */
 	virtual IEntityManager* GetEntityManager () const = 0;
 
 	/** @brief Returns the version of LeechCraft core and base system.
+	 *
+	 * The returned strings reflects the runtime version of the Core.
+	 *
+	 * @return The version of the LeechCraft Core.
 	 */
 	virtual QString GetVersion () const = 0;
-
-	/** @brief Returns the pointer to itself as QObject*.
-	 *
-	 * Just to avoid nasty reinterpret_casts.
-	 */
-	virtual QObject* GetSelf () = 0;
 
 	/** @brief Registers the given action as having skinnable icons.
 	 *
@@ -186,11 +210,19 @@ public:
 	 */
 	virtual void RegisterSkinnable (QAction *action) = 0;
 
+	/** @brief Checks if LeechCraft is currently shutting down.
+	 *
+	 * This function returns whether shutdown sequence has been
+	 * initiated.
+	 *
+	 * For example, in this case user interaction is discouraged.
+	 *
+	 * @return Whether LeechCraft is shutting down.
+	 */
 	virtual bool IsShuttingDown () = 0;
 };
 
 typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
 
+Q_DECLARE_METATYPE (ICoreProxy_ptr)
 Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
-
-#endif

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,18 +32,26 @@
 #include <QToolButton>
 #include <QApplication>
 #include <QStyle>
+#include "lineeditbuttonmanager.h"
+#include "interfaces/core/iiconthememanager.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
 	ClearLineEditAddon::ClearLineEditAddon (ICoreProxy_ptr proxy, QLineEdit *edit)
+	: ClearLineEditAddon { proxy, edit, new LineEditButtonManager { edit } }
+	{
+	}
+
+	ClearLineEditAddon::ClearLineEditAddon (ICoreProxy_ptr proxy,
+			QLineEdit *edit, LineEditButtonManager *mgr)
 	: QObject (edit)
 	, Button_ (new QToolButton (edit))
 	, Edit_ (edit)
 	{
 		const bool isRtl = QApplication::layoutDirection () == Qt::RightToLeft;
-		const auto& icon = proxy->GetIcon (isRtl ?
+		const auto& icon = proxy->GetIconThemeManager ()->GetIcon (isRtl ?
 				"edit-clear-locationbar-ltr" :
 				"edit-clear-locationbar-rtl");
 
@@ -62,37 +70,9 @@ namespace Util
 				this,
 				SLOT (updateButton (QString)));
 
-		const auto& buttonSH = Button_->sizeHint ();
-
-		const int frameWidth = edit->style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
-		edit->setStyleSheet (QString ("QLineEdit { padding-right: %1px; }")
-					.arg (buttonSH.width () + frameWidth + 1));
-		const auto msz = edit->minimumSizeHint ();
-		edit->setMinimumSize (qMax (msz.width (), buttonSH.height () + frameWidth * 2 + 2),
-						qMax (msz.height(), buttonSH.height () + frameWidth * 2 + 2));
-
-		UpdatePos ();
-
-		edit->installEventFilter (this);
 		updateButton (edit->text ());
-	}
 
-	bool ClearLineEditAddon::eventFilter (QObject *obj, QEvent *event)
-	{
-		if (event->type () == QEvent::Resize ||
-			event->type () == QEvent::Move)
-			UpdatePos ();
-
-		return QObject::eventFilter (obj, event);
-	}
-
-	void ClearLineEditAddon::UpdatePos ()
-	{
-		const auto& hint = Button_->sizeHint ();
-		const auto& rect = Edit_->rect ();
-		const int frameWidth = Edit_->style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
-		Button_->move (rect.right () - frameWidth - hint.width (),
-				(rect.bottom () + 1 - hint.height ()) / 2);
+		mgr->Add (Button_);
 	}
 
 	void ClearLineEditAddon::updateButton (const QString& text)

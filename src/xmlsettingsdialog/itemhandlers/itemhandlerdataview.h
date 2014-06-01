@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERDATAVIEW_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERDATAVIEW_H
+#pragma once
+
 #include "itemhandlerbase.h"
 #include <QHash>
 
@@ -54,14 +54,16 @@ namespace LeechCraft
 	protected:
 		QVariant GetObjectValue (QObject*) const;
 	private:
-		void SetDataSource (const QString&, QAbstractItemModel*);
+		void SetDataSource (const QString&, QAbstractItemModel*, bool);
 
 		QVariantList GetAddVariants (QAbstractItemModel*, const QVariantList& = QVariantList ());
+
+		void AddCustomButtons (const QDomElement&, DataViewWidget*);
 	private slots:
 		void handleAddRequested ();
 		void handleModifyRequested ();
 		void handleRemoveRequested ();
+
+		void handleCustomButton (const QByteArray&);
 	};
 }
-
-#endif

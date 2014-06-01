@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,6 +34,8 @@
 #include <util/util.h>
 #include "interfaces/blasq/iservicesplugin.h"
 #include "interfaces/blasq/iaccount.h"
+#include "interfaces/blasq/iservice.h"
+#include "interfaces/blasq/isupportuploads.h"
 #include "xmlsettingsmanager.h"
 #include "accountswidget.h"
 #include "servicesmanager.h"
@@ -41,6 +43,8 @@
 #include "photostab.h"
 #include "defaultimagechooser.h"
 #include "enumsproxy.h"
+#include "datafilteruploader.h"
+#include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
 {
@@ -160,13 +164,54 @@ namespace Blasq
 
 	IPendingImgSourceRequest* Plugin::RequestImages (const QByteArray& serviceId)
 	{
-		// TODO return proper stuff
-		return nullptr;
+		return new DefaultImageChooser (AccountsMgr_, Proxy_, serviceId);
 	}
 
 	IPendingImgSourceRequest* Plugin::StartDefaultChooser ()
 	{
 		return new DefaultImageChooser (AccountsMgr_, Proxy_);
+	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
+	{
+		const bool suitable = entity.Mime_ == "x-leechcraft/data-filter-request" &&
+				!entity.Entity_.value<QImage> ().isNull ();
+		return EntityTestHandleResult { suitable ?
+					EntityTestHandleResult::PIdeal :
+					EntityTestHandleResult::PNone };
+	}
+
+	void Plugin::Handle (Entity entity)
+	{
+		new DataFilterUploader (entity, AccountsMgr_);
+	}
+
+	QString Plugin::GetFilterVerb () const
+	{
+		return tr ("Upload image to cloud");
+	}
+
+	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
+	{
+		QList<IDataFilter::FilterVariant> result;
+		for (auto acc : AccountsMgr_->GetAccounts ())
+		{
+			if (!qobject_cast<ISupportUploads*> (acc->GetQObject ()))
+				continue;
+
+			const auto accService = acc->GetService ();
+			accService->GetServiceIcon ();
+
+			result.append ({
+					acc->GetID (),
+					acc->GetName () + " (" + accService->GetServiceName () + ")",
+					tr ("Upload image to account %1 at %2.")
+							.arg (acc->GetName ())
+							.arg (accService->GetServiceName ()),
+					accService->GetServiceIcon ()
+				});
+		}
+		return result;
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tcId,

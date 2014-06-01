@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -109,6 +109,7 @@ namespace LeechCraft
 	public slots:
 		void catchError (QString);
 		void showHideMain ();
+		void showMain ();
 
 		void handleQuit ();
 	protected:
@@ -137,6 +138,7 @@ namespace LeechCraft
 		void handleToolButtonStyleChanged ();
 		void handleShowTrayIconChanged ();
 		void handleNewTabMenuRequested ();
+		void handleCurrentTabChanged (int);
 		void handleRestoreActionAdded (QAction*);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void handleWorkAreaResized (int);

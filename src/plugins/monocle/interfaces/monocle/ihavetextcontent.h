@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -41,7 +41,7 @@ namespace Monocle
 	/** @brief Interface for documents supporting querying text contents.
 	 *
 	 * This interface should be implemented by the documents of formats
-	 * supporting obtaining the text contained in a selection rectangle.
+	 * supporting obtaining the text contained in some page rectangle.
 	 */
 	class IHaveTextContent
 	{
@@ -56,6 +56,13 @@ namespace Monocle
 		 * \em rect at the given \em page, or an empty string if there is
 		 * no text in this \em rect or the document doesn't contain any
 		 * text information.
+		 *
+		 * The \em rect is expected to be in absolute page coordinates,
+		 * that is, from 0 to page width and page height correspondingly
+		 * as returned by IDocument::GetPageSize().
+		 *
+		 * If \em rect is empty or null, the text from the whole page
+		 * should be returned.
 		 *
 		 * @param[in] page The index of the page to query.
 		 * @param[in] rect The rectangle on the \em page to query.

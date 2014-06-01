@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,20 +39,30 @@ namespace Wt
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class AddressesModelManager;
+}
+
 namespace Aggregator
 {
 class IProxyObject;
 
 namespace WebAccess
 {
-	class ServerManager
+	class ServerManager : public QObject
 	{
-		IProxyObject *AggProxy_;
+		Q_OBJECT
+
 		ICoreProxy_ptr CoreProxy_;
 
 		std::shared_ptr<Wt::WServer> Server_;
+
+		Util::AddressesModelManager * const AddrMgr_;
 	public:
-		ServerManager (IProxyObject*, ICoreProxy_ptr);
+		ServerManager (IProxyObject*, ICoreProxy_ptr, Util::AddressesModelManager*);
+	private Q_SLOTS:
+		void reconfigureServer ();
 	};
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -80,6 +80,8 @@ namespace Blasq
 		QString SelectedID_;
 		QString SelectedCollection_;
 
+		QStringList SelectedIDsSet_;
+
 		bool SingleImageMode_ = false;
 	public:
 		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
@@ -96,13 +98,17 @@ namespace Blasq
 
 		void RecoverState (QDataStream&);
 
-		QModelIndex GetSelectedImage () const;
+		void SelectAccount (const QByteArray&);
+
+		QModelIndexList GetSelectedImages () const;
 	private:
 		void AddScaleSlider ();
 
 		void HandleImageSelected (const QModelIndex&);
 		void HandleCollectionSelected (const QModelIndex&);
+
 		QModelIndex ImageID2Index (const QString&) const;
+		QModelIndexList ImageID2Indexes (const QString&) const;
 
 		QByteArray GetUniSettingName () const;
 
@@ -121,6 +127,7 @@ namespace Blasq
 		void handleUploadRequested ();
 
 		void handleImageSelected (const QString&);
+		void handleToggleSelectionSet (const QString&);
 		void handleImageOpenRequested (const QVariant&);
 		void handleImageOpenRequested ();
 		void handleImageDownloadRequested (const QVariant&);

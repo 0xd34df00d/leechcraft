@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,21 +30,16 @@
 #include "sourceobject.h"
 #include <memory>
 #include <atomic>
+#include <map>
+#include <stdexcept>
+#include <algorithm>
 #include <QtDebug>
 #include <QTimer>
-#include <QTextCodec>
 #include <QThread>
-#include <gst/gst.h>
-
-#ifdef WITH_LIBGUESS
-extern "C"
-{
-#include <libguess/libguess.h>
-}
-#endif
-
+#include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "path.h"
+#include "../gstfix.h"
 #include "../core.h"
 #include "../xmlsettingsmanager.h"
 
@@ -76,8 +71,11 @@ namespace LMP
 		SourceObject * const SourceObj_;
 		std::atomic_bool ShouldStop_;
 		const double Multiplier_;
+
+		QMutex& BusDrainMutex_;
+		QWaitCondition& BusDrainWC_;
 	public:
-		MsgPopThread (GstBus*, SourceObject*, double);
+		MsgPopThread (GstBus*, SourceObject*, double, QMutex&, QWaitCondition&);
 		~MsgPopThread ();
 
 		void Stop ();
@@ -85,12 +83,14 @@ namespace LMP
 		void run ();
 	};
 
-	MsgPopThread::MsgPopThread (GstBus *bus, SourceObject *obj, double multiplier)
+	MsgPopThread::MsgPopThread (GstBus *bus, SourceObject *obj, double multiplier, QMutex& bdMutex, QWaitCondition& bdWC)
 	: QThread (obj)
 	, Bus_ (bus)
 	, SourceObj_ (obj)
 	, ShouldStop_ (false)
 	, Multiplier_ (multiplier)
+	, BusDrainMutex_ (bdMutex)
+	, BusDrainWC_ (bdWC)
 	{
 	}
 
@@ -116,6 +116,15 @@ namespace LMP
 					"handleMessage",
 					Qt::QueuedConnection,
 					Q_ARG (GstMessage_ptr, std::shared_ptr<GstMessage> (msg, gst_message_unref)));
+
+			if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR)
+			{
+				BusDrainMutex_.lock ();
+				BusDrainWC_.wait (&BusDrainMutex_);
+				BusDrainMutex_.unlock ();
+
+				qDebug () << "bus drained, continuing";
+			}
 		}
 	}
 
@@ -131,7 +140,10 @@ namespace LMP
 	, LastCurrentTime_ (-1)
 	, PrevSoupRank_ (0)
 	, PopThread_ (new MsgPopThread (gst_pipeline_get_bus (GST_PIPELINE (Dec_)),
-				this, cat == Category::Notification ? 0.05 : 1))
+				this,
+				cat == Category::Notification ? 0.05 : 1,
+				BusDrainMutex_,
+				BusDrainWC_))
 	, OldState_ (SourceState::Stopped)
 	{
 		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
@@ -149,6 +161,19 @@ namespace LMP
 				SLOT (handleTick ()));
 		timer->start (1000);
 
+		gst_bus_set_sync_handler (gst_pipeline_get_bus (GST_PIPELINE (Dec_)),
+				[] (GstBus *bus, GstMessage *msg, gpointer udata)
+				{
+					return static_cast<GstBusSyncReply> (static_cast<SourceObject*> (udata)->
+								HandleSyncMessage (bus, msg));
+				},
+#if GST_VERSION_MAJOR < 1
+				this);
+#else
+				this,
+				nullptr);
+#endif
+
 		PopThread_->start (QThread::LowestPriority);
 	}
 
@@ -162,6 +187,11 @@ namespace LMP
 			PopThread_->terminate ();
 
 		gst_object_unref (Dec_);
+	}
+
+	QObject* SourceObject::GetQObject ()
+	{
+		return this;
 	}
 
 	bool SourceObject::IsSeekable () const
@@ -181,6 +211,33 @@ namespace LMP
 	SourceState SourceObject::GetState () const
 	{
 		return OldState_;
+	}
+
+	void SourceObject::SetState (SourceState state)
+	{
+		if (state == OldState_)
+			return;
+
+		switch (state)
+		{
+		case SourceState::Stopped:
+			Stop ();
+			break;
+		case SourceState::Paused:
+			Pause ();
+			break;
+		case SourceState::Buffering:
+			qWarning () << Q_FUNC_INFO
+					<< "`buffering` is quite a bad state to be in, falling through to Playing";
+		case SourceState::Playing:
+			Play ();
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "erroneous state"
+					<< static_cast<int> (state);
+			break;
+		}
 	}
 
 	QString SourceObject::GetErrorString () const
@@ -273,6 +330,11 @@ namespace LMP
 				GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
 	}
 
+	AudioSource SourceObject::GetActualSource () const
+	{
+		return ActualSource_;
+	}
+
 	AudioSource SourceObject::GetCurrentSource () const
 	{
 		return CurrentSource_;
@@ -330,6 +392,8 @@ namespace LMP
 
 		auto path = source.ToUrl ().toEncoded ();
 		g_object_set (G_OBJECT (Dec_), "uri", path.constData (), nullptr);
+
+		NextSource_.Clear ();
 	}
 
 	void SourceObject::PrepareNextSource (const AudioSource& source)
@@ -355,7 +419,6 @@ namespace LMP
 				return;
 
 			SetCurrentSource (NextSource_);
-			NextSource_.Clear ();
 		}
 
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_PLAYING);
@@ -410,7 +473,67 @@ namespace LMP
 		}
 
 		SetCurrentSource (NextSource_);
-		NextSource_.Clear ();
+	}
+
+	void SourceObject::SetupSource ()
+	{
+		GstElement *src;
+		g_object_get (Dec_, "source", &src, nullptr);
+
+		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
+			return;
+
+		std::shared_ptr<void> soupRankGuard (nullptr,
+				[&] (void*) -> void
+				{
+					if (PrevSoupRank_)
+					{
+						SetSoupRank (PrevSoupRank_);
+						PrevSoupRank_ = 0;
+					}
+				});
+
+		if (!g_object_class_find_property (G_OBJECT_GET_CLASS (src), "user-agent"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "user-agent property not found for"
+					<< CurrentSource_.ToUrl ()
+					<< (QString ("|") + G_OBJECT_TYPE_NAME (src) + "|")
+					<< "soup rank:"
+					<< GetRank ("souphttpsrc")
+					<< "webkit rank:"
+					<< GetRank ("WebKitWebSrc");
+			return;
+		}
+
+		const auto& str = QString ("LeechCraft LMP/%1 (%2)")
+				.arg (Core::Instance ().GetProxy ()->GetVersion ())
+				.arg (gst_version_string ());
+		qDebug () << Q_FUNC_INFO
+				<< "setting user-agent to"
+				<< str;
+		g_object_set (src, "user-agent", str.toUtf8 ().constData (), nullptr);
+	}
+
+	void SourceObject::AddToPath (Path *path)
+	{
+		path->SetPipeline (Dec_);
+		Path_ = path;
+	}
+
+	void SourceObject::SetSink (GstElement *bin)
+	{
+		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
+	}
+
+	void SourceObject::AddSyncHandler (const SyncHandler_f& handler, QObject *dependent)
+	{
+		SyncHandlers_.AddHandler (handler, dependent);
+	}
+
+	void SourceObject::AddAsyncHandler (const AsyncHandler_f& handler, QObject *dependent)
+	{
+		AsyncHandlers_.AddHandler (handler, dependent);
 	}
 
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
@@ -423,151 +546,82 @@ namespace LMP
 		const auto& debugStr = QString::fromUtf8 (debug);
 
 		const auto code = gerror->code;
+		const auto domain = gerror->domain;
 
 		g_error_free (gerror);
 		g_free (debug);
 
+		// GStreamer is utter crap
+		if (domain == GST_RESOURCE_ERROR &&
+				code == GST_RESOURCE_ERROR_NOT_FOUND &&
+				msgStr == "Cancelled")
+			return;
+
 		qWarning () << Q_FUNC_INFO
+				<< domain
 				<< code
 				<< msgStr
 				<< debugStr;
 
-		SourceError errCode = SourceError::Other;
-		switch (code)
+		const std::map<decltype (domain), std::map<decltype (code), SourceError>> errMap
 		{
-		case GST_CORE_ERROR_MISSING_PLUGIN:
-			errCode = SourceError::MissingPlugin;
-			break;
-		default:
-			break;
+			{
+				GST_CORE_ERROR,
+				{
+					{
+						GST_CORE_ERROR_MISSING_PLUGIN,
+						SourceError::MissingPlugin
+					}
+				}
+			},
+			{
+				GST_RESOURCE_ERROR,
+				{
+					{
+						GST_RESOURCE_ERROR_NOT_FOUND,
+						SourceError::SourceNotFound
+					}
+				}
+			}
+		};
+
+		const auto errCode = [&] () -> SourceError
+			{
+				try
+				{
+					return errMap.at (domain).at (code);
+				}
+				catch (const std::out_of_range&)
+				{
+					return SourceError::Other;
+				}
+			} ();
+
+		if (!IsDrainingMsgs_)
+		{
+			qDebug () << Q_FUNC_INFO << "draining bus";
+			IsDrainingMsgs_ = true;
+
+			while (const auto newMsg = gst_bus_pop (gst_pipeline_get_bus (GST_PIPELINE (Dec_))))
+				handleMessage (std::shared_ptr<GstMessage> (newMsg, gst_message_unref));
+
+			IsDrainingMsgs_ = false;
+			BusDrainWC_.wakeAll ();
 		}
 
-		emit error (msgStr, errCode);
-	}
-
-	namespace
-	{
-		void FixEncoding (QString& out, const gchar *origStr)
-		{
-#ifdef WITH_LIBGUESS
-			const auto& cp1252 = QTextCodec::codecForName ("CP-1252")->fromUnicode (origStr);
-			if (cp1252.isEmpty ())
-				return;
-
-			const auto region = XmlSettingsManager::Instance ()
-					.property ("TagsRecodingRegion").toString ();
-			const auto encoding = libguess_determine_encoding (cp1252.constData (),
-					cp1252.size (), region.toUtf8 ().constData ());
-			if (!encoding)
-				return;
-
-			auto codec = QTextCodec::codecForName (encoding);
-			if (!codec)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no codec for encoding"
-						<< encoding;
-				return;
-			}
-
-			const auto& proper = codec->toUnicode (cp1252.constData ());
-			if (proper.isEmpty ())
-				return;
-
-			int origQCount = 0;
-			while (*origStr)
-				if (*(origStr++) == '?')
-					++origQCount;
-
-			if (origQCount >= proper.count ('?'))
-				out = proper;
-#else
-			Q_UNUSED (out);
-			Q_UNUSED (origStr);
-#endif
-		}
-
-		void TagFunction (const GstTagList *list, const gchar *tag, gpointer data)
-		{
-			auto& map = *static_cast<SourceObject::TagMap_t*> (data);
-
-			const auto& tagName = QString::fromUtf8 (tag).toLower ();
-			auto& valList = map [tagName];
-
-			switch (gst_tag_get_type (tag))
-			{
-			case G_TYPE_STRING:
-			{
-				gchar *str = nullptr;
-				gst_tag_list_get_string (list, tag, &str);
-				valList = QString::fromUtf8 (str);
-
-				const auto recodingEnabled = XmlSettingsManager::Instance ()
-						.property ("EnableTagsRecoding").toBool ();
-				if (recodingEnabled &&
-						(tagName == "title" || tagName == "album" || tagName == "artist"))
-					FixEncoding (valList, str);
-
-				g_free (str);
-				break;
-			}
-			case G_TYPE_BOOLEAN:
-			{
-				int val = 0;
-				gst_tag_list_get_boolean (list, tag, &val);
-				valList = QString::number (val);
-				break;
-			}
-			case G_TYPE_INT:
-			{
-				int val = 0;
-				gst_tag_list_get_int (list, tag, &val);
-				valList = QString::number (val);
-				break;
-			}
-			case G_TYPE_UINT:
-			{
-				uint val = 0;
-				gst_tag_list_get_uint (list, tag, &val);
-				valList = QString::number (val);
-				break;
-			}
-			case G_TYPE_FLOAT:
-			{
-				float val = 0;
-				gst_tag_list_get_float (list, tag, &val);
-				valList = QString::number (val);
-				break;
-			}
-			case G_TYPE_DOUBLE:
-			{
-				double val = 0;
-				gst_tag_list_get_double (list, tag, &val);
-				valList = QString::number (val);
-				break;
-			}
-			default:
-				qWarning () << Q_FUNC_INFO
-						<< "unhandled tag type"
-						<< gst_tag_get_type (tag)
-						<< "for"
-						<< tag;
-				break;
-			}
-		}
+		if (!IsDrainingMsgs_)
+			emit error (msgStr, errCode);
 	}
 
 	void SourceObject::HandleTagMsg (GstMessage *msg)
 	{
-		GstTagList *tagList = nullptr;
-		gst_message_parse_tag (msg, &tagList);
-		if (!tagList)
-			return;
-
 		const auto oldMetadata = Metadata_;
-		gst_tag_list_foreach (tagList,
-				TagFunction,
-				&Metadata_);
+		const auto& region = XmlSettingsManager::Instance ()
+				.property ("TagsRecodingRegion").toString ();
+		const bool isEnabled = XmlSettingsManager::Instance ()
+				.property ("EnableTagsRecoding").toBool ();
+		if (!GstUtil::ParseTagMessage (msg, Metadata_, isEnabled ? region : QString ()))
+			return;
 
 		auto merge = [this] (const QString& oldName, const QString& stdName, bool emptyOnly)
 		{
@@ -653,22 +707,22 @@ namespace LMP
 
 	void SourceObject::HandleElementMsg (GstMessage *msg)
 	{
+#if GST_VERSION_MAJOR < 1
 		const auto msgStruct = gst_message_get_structure (msg);
 
-#if GST_VERSION_MAJOR < 1
 		if (gst_structure_has_name (msgStruct, "playbin2-stream-changed"))
-#else
-		if (gst_structure_has_name (msgStruct, "playbin-stream-changed"))
-#endif
 		{
 			gchar *uri = nullptr;
 			g_object_get (Dec_, "uri", &uri, nullptr);
 			qDebug () << Q_FUNC_INFO << uri;
 			g_free (uri);
 
+			setActualSource (CurrentSource_);
 			emit currentSourceChanged (CurrentSource_);
-			emit metaDataChanged ();
 		}
+#else
+		Q_UNUSED (msg)
+#endif
 	}
 
 	void SourceObject::HandleEosMsg (GstMessage*)
@@ -677,70 +731,40 @@ namespace LMP
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
 	}
 
-	void SourceObject::HandleStreamStatusMsg (GstMessage *msg)
+	void SourceObject::HandleStreamStatusMsg (GstMessage*)
 	{
-		GstStreamStatusType type;
-		GstElement *owner = nullptr;
-		gst_message_parse_stream_status (msg, &type, &owner);
-
-		qDebug () << Q_FUNC_INFO << type;
 	}
 
-	void SourceObject::SetupSource ()
+	void SourceObject::HandleWarningMsg (GstMessage *msg)
 	{
-		GstElement *src;
-		g_object_get (Dec_, "source", &src, nullptr);
+		GError *gerror = nullptr;
+		gchar *debug = nullptr;
+		gst_message_parse_warning (msg, &gerror, &debug);
 
-		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
-			return;
+		const auto& msgStr = QString::fromUtf8 (gerror->message);
+		const auto& debugStr = QString::fromUtf8 (debug);
 
-		std::shared_ptr<void> soupRankGuard (nullptr,
-				[&] (void*) -> void
-				{
-					if (PrevSoupRank_)
-					{
-						SetSoupRank (PrevSoupRank_);
-						PrevSoupRank_ = 0;
-					}
-				});
+		const auto code = gerror->code;
+		const auto domain = gerror->domain;
 
-		if (!g_object_class_find_property (G_OBJECT_GET_CLASS (src), "user-agent"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "user-agent property not found for"
-					<< CurrentSource_.ToUrl ()
-					<< (QString ("|") + G_OBJECT_TYPE_NAME (src) + "|")
-					<< "soup rank:"
-					<< GetRank ("souphttpsrc")
-					<< "webkit rank:"
-					<< GetRank ("WebKitWebSrc");
-			return;
-		}
+		g_error_free (gerror);
+		g_free (debug);
 
-		const auto& str = QString ("LeechCraft LMP/%1 (%2)")
-				.arg (Core::Instance ().GetProxy ()->GetVersion ())
-				.arg (gst_version_string ());
-		qDebug () << Q_FUNC_INFO
-				<< "setting user-agent to"
-				<< str;
-		g_object_set (src, "user-agent", str.toUtf8 ().constData (), nullptr);
+		qDebug () << Q_FUNC_INFO << code << domain << msgStr << debugStr;
 	}
 
-	void SourceObject::AddToPath (Path *path)
+	int SourceObject::HandleSyncMessage (GstBus *bus, GstMessage *msg)
 	{
-		path->SetPipeline (Dec_);
-		Path_ = path;
-	}
-
-	void SourceObject::PostAdd (Path *path)
-	{
-		auto bin = path->GetAudioBin ();
-		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
+		return SyncHandlers_ ([] (int a, int b) { return std::min (a, b); },
+				static_cast<int> (GST_BUS_PASS),
+				bus, msg);
 	}
 
 	void SourceObject::handleMessage (GstMessage_ptr msgPtr)
 	{
 		const auto message = msgPtr.get ();
+
+		AsyncHandlers_ (message);
 
 		switch (GST_MESSAGE_TYPE (message))
 		{
@@ -773,6 +797,20 @@ namespace LMP
 		case GST_MESSAGE_STREAM_STATUS:
 			HandleStreamStatusMsg (message);
 			break;
+		case GST_MESSAGE_WARNING:
+			HandleWarningMsg (message);
+			break;
+		case GST_MESSAGE_LATENCY:
+			gst_bin_recalculate_latency (GST_BIN (Dec_));
+			break;
+		case GST_MESSAGE_QOS:
+			break;
+#if GST_VERSION_MAJOR >= 1
+		case GST_MESSAGE_STREAM_START:
+			setActualSource (CurrentSource_);
+			emit currentSourceChanged (CurrentSource_);
+			break;
+#endif
 		default:
 			qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
 			break;
@@ -787,6 +825,11 @@ namespace LMP
 	void SourceObject::handleTick ()
 	{
 		emit tick (GetCurrentTime ());
+	}
+
+	void SourceObject::setActualSource (const AudioSource& source)
+	{
+		ActualSource_ = source;
 	}
 }
 }

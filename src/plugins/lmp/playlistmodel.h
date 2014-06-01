@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -47,6 +47,9 @@ namespace LMP
 		QMimeData* mimeData (const QModelIndexList&) const;
 		bool dropMimeData (const QMimeData*, Qt::DropAction, int, int, const QModelIndex&);
 		Qt::DropActions supportedDropActions () const;
+	private:
+		void HandleRadios (const QMimeData*);
+		void HandleDroppedUrls (const QMimeData*, int row, const QModelIndex& parent);
 	};
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,6 +40,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "greasemonkey.h"
 #include "resourcedownloadhandler.h"
 
@@ -51,12 +52,6 @@ namespace FatApe
 {
 	const QString MetadataStart = "// ==UserScript==";
 	const QString MetadataEnd = "// ==/UserScript==";
-
-	template<typename InputIterator, typename Function>
-	bool any (InputIterator first, InputIterator last, Function f)
-	{
-		return std::find_if (first, last, f) != last;
-	}
 
 	UserScript::UserScript (const QString& scriptPath)
 	: ScriptPath_ (scriptPath)
@@ -130,8 +125,8 @@ namespace FatApe
 		BuildPatternsList (include);
 		BuildPatternsList (exclude, false);
 
-		return any (include.begin (), include.end (), match) &&
-				!any (exclude.begin (), exclude.end (), match);
+		return std::any_of (include.begin (), include.end (), match) &&
+				!std::any_of (exclude.begin (), exclude.end (), match);
 	}
 
 	void UserScript::Inject (QWebFrame *frame, IProxyObject *proxy) const

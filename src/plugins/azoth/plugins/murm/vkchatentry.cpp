@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,6 +30,7 @@
 #include "vkchatentry.h"
 #include <QStringList>
 #include <QtDebug>
+#include <interfaces/azoth/iproxyobject.h>
 #include "vkaccount.h"
 #include "vkentry.h"
 #include "vkmessage.h"
@@ -52,7 +53,7 @@ namespace Murm
 
 	void VkChatEntry::Send (VkMessage *msg)
 	{
-		Account_->Send (this, msg);
+		Account_->Send (GetInfo ().ChatID_, VkConnection::MessageType::Chat, msg);
 	}
 
 	void VkChatEntry::HandleMessage (const MessageInfo& info)
@@ -75,7 +76,7 @@ namespace Murm
 			return;
 		}
 
-		auto msg = new VkMessage (IMessage::DIn, IMessage::MTMUCMessage, this, entry);
+		auto msg = new VkMessage (false, IMessage::DIn, IMessage::MTMUCMessage, this, entry);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
@@ -94,17 +95,28 @@ namespace Murm
 	{
 		for (auto id : info.Users_)
 			if (!Info_.Users_.contains (id))
-				HandleRemoved (id);
+				HandleAdded (id);
 		for (auto id : Info_.Users_)
 			if (!info.Users_.contains (id))
-				if (auto entry = Account_->GetEntry (id))
-					entry->UnregisterIn (this);
+				HandleRemoved (id);
 
 		const bool titleChanged = info.Title_ != Info_.Title_;
 
 		Info_ = info;
 		if (titleChanged)
+		{
 			emit nameChanged (GetEntryName ());
+
+			for (auto id : Info_.Users_)
+				if (auto entry = Account_->GetEntry (id))
+					entry->ReemitGroups ();
+		}
+	}
+
+	void VkChatEntry::HandleAdded (qulonglong id)
+	{
+		if (auto entry = Account_->GetEntry (id))
+			entry->RegisterIn (this);
 	}
 
 	void VkChatEntry::HandleRemoved (qulonglong id)
@@ -118,12 +130,12 @@ namespace Murm
 			emit removeEntry (this);
 		}
 		else if (auto entry = Account_->GetEntry (id))
-			entry->RegisterIn (this);
+			entry->UnregisterIn (this);
 	}
 
 	ICLEntry::Features VkChatEntry::GetEntryFeatures () const
 	{
-		return FSessionEntry;
+		return FSessionEntry | FSupportsRenames;
 	}
 
 	ICLEntry::EntryType VkChatEntry::GetEntryType () const
@@ -136,9 +148,9 @@ namespace Murm
 		return Info_.Title_;
 	}
 
-	void VkChatEntry::SetEntryName (const QString&)
+	void VkChatEntry::SetEntryName (const QString& title)
 	{
-		// TODO
+		Account_->GetConnection ()->SetChatTitle (Info_.ChatID_, title);
 	}
 
 	QString VkChatEntry::GetEntryID () const
@@ -201,6 +213,7 @@ namespace Murm
 
 	void VkChatEntry::MarkMsgsRead ()
 	{
+		Account_->GetParentProtocol ()->GetAzothProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void VkChatEntry::ChatTabClosed ()
@@ -215,6 +228,11 @@ namespace Murm
 	QString VkChatEntry::GetMUCSubject () const
 	{
 		return {};
+	}
+
+	bool VkChatEntry::CanChangeSubject () const
+	{
+		return false;
 	}
 
 	void VkChatEntry::SetMUCSubject (const QString&)
@@ -269,9 +287,20 @@ namespace Murm
 		return {};
 	}
 
-	void VkChatEntry::InviteToMUC (const QString& userId, const QString& msg)
+	void VkChatEntry::InviteToMUC (const QString& userId, const QString&)
 	{
-		// TODO
+		bool ok = false;
+		const auto numericId = userId.toULongLong (&ok);
+
+		if (!ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect user id"
+					<< userId;
+			return;
+		}
+
+		Account_->GetConnection ()->AddChatUser (Info_.ChatID_, numericId);
 	}
 }
 }

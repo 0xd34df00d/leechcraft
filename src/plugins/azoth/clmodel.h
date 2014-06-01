@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CLMODEL_H
-#define PLUGINS_AZOTH_CLMODEL_H
+#pragma once
+
 #include <QStandardItemModel>
 #include <interfaces/core/ihookproxy.h>
 
@@ -36,11 +36,17 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class CLTooltipManager;
+
 	class CLModel : public QStandardItemModel
 	{
 		Q_OBJECT
+
+		CLTooltipManager * const TooltipManager_;
 	public:
-		CLModel (QObject* = 0);
+		CLModel (CLTooltipManager*, QObject* = 0);
+
+		QVariant data (const QModelIndex&, int) const;
 
 		QStringList mimeTypes () const;
 		QMimeData* mimeData (const QModelIndexList&) const;
@@ -48,6 +54,8 @@ namespace Azoth
 				int, int, const QModelIndex&);
 		Qt::DropActions supportedDropActions () const;
 	private:
+		void CheckRequestUpdateTooltip (const QModelIndex&, int) const;
+
 		bool PerformHooks (const QMimeData*, int, const QModelIndex&);
 		bool CheckHookDnDEntry2Entry (const QMimeData*, int, const QModelIndex&);
 
@@ -60,5 +68,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

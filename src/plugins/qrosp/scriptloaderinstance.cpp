@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -55,14 +55,17 @@ namespace Qrosp
 	void ScriptLoaderInstance::AddGlobalPrefix ()
 	{
 #ifdef Q_OS_MAC
+		if (QApplication::arguments ().contains ("-nobundle"))
+			Prefixes_ << "/usr/local/share/leechcraft/scripts/";
+		else
 			Prefixes_ << QString (QApplication::applicationDirPath () + "/../Resources/scripts/");
 #elif defined (Q_OS_WIN32)
-			Prefixes_ << QString (QApplication::applicationDirPath () + "/share/scripts/");
+		Prefixes_ << QString (QApplication::applicationDirPath () + "/share/scripts/");
 #elif defined (INSTALL_PREFIX)
-			Prefixes_ << QString (INSTALL_PREFIX "/share/leechcraft/scripts/");
+		Prefixes_ << QString (INSTALL_PREFIX "/share/leechcraft/scripts/");
 #else
-			Prefixes_ << "/usr/local/share/leechcraft/scripts/"
-					<< "/usr/share/leechcraft/scripts/";
+		Prefixes_ << "/usr/local/share/leechcraft/scripts/"
+				<< "/usr/share/leechcraft/scripts/";
 #endif
 	}
 

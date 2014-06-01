@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,7 +34,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
-#include <util/utilconfig.h>
+#include "svcauthconfig.h"
 
 class QTimer;
 
@@ -49,7 +49,7 @@ class CustomCookieJar;
 
 namespace SvcAuth
 {
-	class UTIL_API VkAuthManager : public QObject
+	class UTIL_SVCAUTH_API VkAuthManager : public QObject
 	{
 		Q_OBJECT
 
@@ -67,10 +67,14 @@ namespace SvcAuth
 		qint32 ValidFor_;
 
 		bool IsRequesting_;
-		const QUrl URL_;
+
+		const QString ID_;
+		QUrl URL_;
 
 		bool IsRequestScheduled_;
 		QTimer *ScheduleTimer_;
+
+		bool SilentMode_ = false;
 	public:
 		typedef QList<std::function<void (QString)>> RequestQueue_t;
 		typedef RequestQueue_t* RequestQueue_ptr;
@@ -85,6 +89,11 @@ namespace SvcAuth
 				const QStringList& scope, const QByteArray& cookies,
 				ICoreProxy_ptr, QueueManager* = nullptr, QObject* = nullptr);
 
+		bool IsAuthenticated () const;
+		bool HadAuthentication () const;
+
+		void UpdateScope (const QStringList&);
+
 		void GetAuthKey ();
 
 		void ManageQueue (RequestQueue_ptr);
@@ -92,6 +101,8 @@ namespace SvcAuth
 
 		void ManageQueue (PrioRequestQueue_ptr);
 		void UnmanageQueue (PrioRequestQueue_ptr);
+
+		void SetSilentMode (bool);
 	private:
 		void InvokeQueues (const QString&);
 
@@ -108,8 +119,9 @@ namespace SvcAuth
 		void handleViewUrlChanged (const QUrl&);
 	signals:
 		void gotAuthKey (const QString&);
-
 		void cookiesChanged (const QByteArray&);
+		void authCanceled ();
+		void justAuthenticated ();
 	};
 }
 }

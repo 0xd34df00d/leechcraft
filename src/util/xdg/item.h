@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,7 +34,7 @@
 #include <QDebug>
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
-#include <util/utilconfig.h>
+#include "xdgconfig.h"
 #include "itemtypes.h"
 
 namespace LeechCraft
@@ -47,7 +47,7 @@ namespace XDG
 
 	typedef std::shared_ptr<Item> Item_ptr;
 
-	class UTIL_API Item
+	class UTIL_XDG_API Item
 	{
 		QHash<QString, QString> Name_;
 		QHash<QString, QString> GenericName_;

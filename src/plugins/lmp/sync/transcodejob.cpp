@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,10 @@
 #include <QMap>
 #include <QDir>
 #include <QtDebug>
+#include <taglib/tag.h>
 #include "transcodingparams.h"
+#include "core.h"
+#include "localfileresolver.h"
 
 #ifdef Q_OS_UNIX
 #include <sys/time.h>
@@ -44,31 +47,46 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		QString BuildTranscodedPath (const QString& path, const TranscodingParams& params)
+		{
+			QDir dir = QDir::temp ();
+			if (!dir.exists ("lmp_transcode"))
+				dir.mkdir ("lmp_transcode");
+			if (!dir.cd ("lmp_transcode"))
+				throw std::runtime_error ("unable to cd into temp dir");
+
+			const QFileInfo fi (path);
+
+			const auto format = Formats ().GetFormat (params.FormatID_);
+
+			auto result = dir.absoluteFilePath (fi.fileName ());
+			const auto& ext = format->GetFileExtension ();
+			const auto dotIdx = result.lastIndexOf ('.');
+			if (dotIdx == -1)
+				result += '.' + ext;
+			else
+				result.replace (dotIdx + 1, result.size () - dotIdx, ext);
+
+			return result;
+		}
+	}
+
 	TranscodeJob::TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent)
 	: QObject (parent)
 	, Process_ (new QProcess (this))
 	, OriginalPath_ (path)
+	, TranscodedPath_ (BuildTranscodedPath (path, params))
 	, TargetPattern_ (params.FilePattern_)
 	{
-		QDir dir = QDir::temp ();
-		if (!dir.exists ("lmp_transcode"))
-			dir.mkdir ("lmp_transcode");
-		if (!dir.cd ("lmp_transcode"))
-			throw std::runtime_error ("unable to cd into temp dir");
-
-		const QFileInfo fi (path);
-
-		const auto format = Formats ().GetFormat (params.FormatID_);
-
-		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + format->GetFileExtension ());
-
 		QStringList args
 		{
 			"-i",
-			path
+			path,
+			"-vn"
 		};
-		args << format->ToFFmpeg (params);
-		args << "-map_metadata" << "0";
+		args << Formats {}.GetFormat (params.FormatID_)->ToFFmpeg (params);
 		args << TranscodedPath_;
 
 		connect (Process_,
@@ -101,14 +119,52 @@ namespace LMP
 		return TargetPattern_;
 	}
 
+	namespace
+	{
+		bool CheckTags (const TagLib::FileRef& ref, const QString& filename)
+		{
+			if (!ref.tag ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot get tags for"
+						<< filename;
+				return false;
+			}
+
+			return true;
+		}
+
+		void CopyTags (const QString& from, const QString& to)
+		{
+			const auto resolver = Core::Instance ().GetLocalFileResolver ();
+
+			QMutexLocker locker (&resolver->GetMutex ());
+
+			auto fromRef = resolver->GetFileRef (from);
+			auto toRef = resolver->GetFileRef (to);
+
+			if (!CheckTags (fromRef, from) || !CheckTags (toRef, to))
+				return;
+
+			TagLib::Tag::duplicate (fromRef.tag (), toRef.tag ());
+
+			if (!toRef.save ())
+				qWarning () << Q_FUNC_INFO
+						<< "cannot save file"
+						<< to;
+		}
+	}
+
 	void TranscodeJob::handleFinished (int code, QProcess::ExitStatus status)
 	{
 		qDebug () << Q_FUNC_INFO << code << status;
-		emit done (this, !code);
-
 		if (code)
 			qWarning () << Q_FUNC_INFO
 					<< Process_->readAllStandardError ();
+
+		CopyTags (OriginalPath_, TranscodedPath_);
+
+		emit done (this, !code);
 	}
 
 	void TranscodeJob::handleReadyRead ()

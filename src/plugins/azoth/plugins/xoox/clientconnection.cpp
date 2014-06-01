@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,6 +30,7 @@
 #include "clientconnection.h"
 #include <QTimer>
 #include <QHostAddress>
+#include <QDir>
 #include <QtDebug>
 #include <QXmppClient.h>
 #include <QXmppMucManager.h>
@@ -44,9 +45,10 @@
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCallManager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>
-#include <util/sysinfo.h>
+#include <util/sys/sysinfo.h>
+#include <util/sys/paths.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -89,6 +91,8 @@
 #include "xmlsettingsmanager.h"
 #include "inforequestpolicymanager.h"
 #include "captchamanager.h"
+#include "xep0313manager.h"
+#include "carbonsmanager.h"
 
 namespace LeechCraft
 {
@@ -123,6 +127,8 @@ namespace Xoox
 	, RIEXManager_ (new RIEXManager)
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
+	, Xep0313Manager_ (new Xep0313Manager)
+	, CarbonsManager_ (new CarbonsManager)
 	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
@@ -210,6 +216,13 @@ namespace Xoox
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this));
+		Client_->addExtension (Xep0313Manager_);
+		Client_->addExtension (CarbonsManager_);
+
+		connect (CarbonsManager_,
+				SIGNAL (gotMessage (QXmppMessage)),
+				this,
+				SLOT (handleCarbonsMessage (QXmppMessage)));
 
 		AnnotationsManager_ = new AnnotationsManager (this);
 
@@ -266,11 +279,6 @@ namespace Xoox
 				SIGNAL (itemChanged (const QString&)),
 				this,
 				SLOT (handleRosterChanged (const QString&)));
-		connect (&Client_->rosterManager (),
-				SIGNAL (itemAdded (const QString&)),
-				&Core::Instance (),
-				SLOT (saveRoster ()),
-				Qt::QueuedConnection);
 		connect (&Client_->rosterManager (),
 				SIGNAL (itemRemoved (const QString&)),
 				this,
@@ -349,6 +357,11 @@ namespace Xoox
 				SIGNAL (bytestreamsProxyChanged (QString)),
 				this,
 				SLOT (handleDetectedBSProxy (QString)));
+
+		connect (Settings_,
+				SIGNAL (messageCarbonsSettingsChanged ()),
+				this,
+				SLOT (handleMessageCarbonsSettingsChanged ()));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -479,7 +492,7 @@ namespace Xoox
 	{
 		GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
 		JID2CLEntry_ [jid] = entry;
-		emit gotRosterItems (QList<QObject*> () << entry);
+		emit gotRosterItems ({ entry });
 	}
 
 	QXmppMucManager* ClientConnection::GetMUCManager () const
@@ -557,6 +570,11 @@ namespace Xoox
 	SDManager* ClientConnection::GetSDManager () const
 	{
 		return SDManager_;
+	}
+
+	Xep0313Manager* ClientConnection::GetXep0313Manager () const
+	{
+		return Xep0313Manager_;
 	}
 
 	InfoRequestPolicyManager* ClientConnection::GetInfoReqPolicyManager () const
@@ -739,6 +757,10 @@ namespace Xoox
 
 		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
+		if (msgObj->IsOTRMessage () &&
+				CarbonsManager_->IsEnabled ())
+			CarbonsManager_->ExcludeMessage (msg);
+
 		Client_->sendPacket (msg);
 	}
 
@@ -785,7 +807,7 @@ namespace Xoox
 		GlooxCLEntry *entry = new GlooxCLEntry (ods, Account_);
 		ODSEntries_ [entry->GetJID ()] = entry;
 
-		emit gotRosterItems (QList<QObject*> () << entry);
+		emit gotRosterItems ({ entry });
 
 		return entry;
 	}
@@ -918,7 +940,7 @@ namespace Xoox
 	void ClientConnection::handleConnected ()
 	{
 		IsConnected_ = true;
-		emit statusChanged (EntryStatus (LastState_.State_, LastState_.Status_));
+		emit statusChanged ({ LastState_.State_, LastState_.Status_ });
 
 		Client_->vCardManager ().requestVCard (OurBareJID_);
 
@@ -930,10 +952,12 @@ namespace Xoox
 
 		AnnotationsManager_->refetchNotes ();
 
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+		for (auto rh : RoomHandlers_)
 			rh->Join ();
 
 		PrivacyListsManager_->QueryLists ();
+
+		handleMessageCarbonsSettingsChanged ();
 	}
 
 	void ClientConnection::handleDisconnected ()
@@ -1016,7 +1040,7 @@ namespace Xoox
 		if (jid.isEmpty ())
 			jid = OurBareJID_;
 
-		Q_FOREACH (auto f, VCardFetchCallbacks_.take (jid))
+		for (const auto& f : VCardFetchCallbacks_.take (jid))
 			f (vcard);
 
 		if (JID2CLEntry_.contains (jid))
@@ -1088,14 +1112,16 @@ namespace Xoox
 	{
 		void HandleMessageForEntry (EntryBase *entry,
 				const QXmppMessage& msg, const QString& resource,
-				ClientConnection *conn)
+				ClientConnection *conn,
+				bool forwarded)
 		{
 			if (msg.state ())
 				entry->UpdateChatState (msg.state (), resource);
 
 			if (!msg.body ().isEmpty ())
 			{
-				GlooxMessage *gm = new GlooxMessage (msg, conn);
+				auto gm = new GlooxMessage (msg, conn);
+				gm->ToggleForwarded (forwarded);
 				entry->HandleMessage (gm);
 			}
 
@@ -1104,7 +1130,7 @@ namespace Xoox
 		}
 	}
 
-	void ClientConnection::handleMessageReceived (QXmppMessage msg)
+	void ClientConnection::handleMessageReceived (QXmppMessage msg, bool forwarded)
 	{
 		if (msg.type () == QXmppMessage::Error)
 		{
@@ -1126,24 +1152,27 @@ namespace Xoox
 			HandleRIEX (msg.from (), AwaitingRIEXItems_.take (msg.from ()), msg.body ());
 			return;
 		}
+		else if (Xep0313Manager_->CheckMessage (msg) ||
+				CarbonsManager_->CheckMessage (msg))
+			return;
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
 		else if (JID2CLEntry_.contains (jid))
-			HandleMessageForEntry (JID2CLEntry_ [jid], msg, resource, this);
+			HandleMessageForEntry (JID2CLEntry_ [jid], msg, resource, this, forwarded);
 		else if (!Client_->rosterManager ().isRosterReceived ())
 			OfflineMsgQueue_ << msg;
 		else if (jid == OurBareJID_)
 		{
-			Q_FOREACH (const QXmppExtendedAddress& address, msg.extendedAddresses ())
+			for (const auto& address : msg.extendedAddresses ())
 			{
 				if (address.type () == "ofrom" && !address.jid ().isEmpty ())
 				{
 					msg.setFrom (address.jid ());
-					handleMessageReceived (msg);
+					handleMessageReceived (msg, true);
 					return;
 				}
 			}
-			HandleMessageForEntry (SelfContact_, msg, resource, this);
+			HandleMessageForEntry (SelfContact_, msg, resource, this, forwarded);
 		}
 		else if (msg.mucInvitationJid ().isEmpty ())
 		{
@@ -1155,6 +1184,36 @@ namespace Xoox
 			CreateEntry (jid);
 			handleMessageReceived (msg);
 		}
+	}
+
+	void ClientConnection::handleCarbonsMessage (const QXmppMessage& msg)
+	{
+		if (msg.from () == OurJID_ || msg.to () == OurJID_)
+			return;
+
+		QString jid;
+		QString resource;
+		Split (msg.from (), &jid, &resource);
+
+		if (jid != OurBareJID_)
+		{
+			handleMessageReceived (msg, true);
+			return;
+		}
+
+		if (msg.body ().isEmpty ())
+			return;
+
+		Split (msg.to (), &jid, &resource);
+		auto gm = new GlooxMessage (IMessage::MTChatMessage, IMessage::DOut,
+				jid, resource, this);
+		gm->SetBody (msg.body ());
+		gm->SetRichBody (msg.xhtml ());
+		gm->SetDateTime (msg.stamp ().isValid () ? msg.stamp () : QDateTime::currentDateTime ());
+		if (!JID2CLEntry_.contains (jid))
+			CreateEntry (jid);
+
+		JID2CLEntry_ [jid]->HandleMessage (gm);
 	}
 
 	void ClientConnection::handlePEPEvent (const QString& from, PEPEventBase *event)
@@ -1260,8 +1319,9 @@ namespace Xoox
 		if (!qobject_cast<IProxyObject*> (proto->GetProxyObject ())->IsAutojoinAllowed ())
 			return;
 
-		const JoinQueueItem& it = JoinQueue_.takeFirst ();
-		emit gotRosterItems (QList<QObject*> () << JoinRoom (it.RoomJID_, it.Nickname_, it.AsAutojoin_));
+		const auto& it = JoinQueue_.takeFirst ();
+		if (const auto roomItem = JoinRoom (it.RoomJID_, it.Nickname_, it.AsAutojoin_))
+			emit gotRosterItems ({ roomItem });
 
 		if (!JoinQueue_.isEmpty ())
 			QTimer::singleShot (800,
@@ -1322,7 +1382,7 @@ namespace Xoox
 			{
 				GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
 				JID2CLEntry_ [jid] = entry;
-				emit gotRosterItems (QList<QObject*> () << entry);
+				emit gotRosterItems ({ entry });
 			}
 			JID2CLEntry_ [jid]->SetAuthRequested (true);
 			emit gotSubscriptionRequest (JID2CLEntry_ [jid], QString ());
@@ -1460,6 +1520,11 @@ namespace Xoox
 			return;
 
 		GetTransferManager ()->setProxy (proxy);
+	}
+
+	void ClientConnection::handleMessageCarbonsSettingsChanged ()
+	{
+		CarbonsManager_->SetEnabled (Settings_->IsMessageCarbonsEnabled ());
 	}
 
 	void ClientConnection::handleVersionSettingsChanged ()

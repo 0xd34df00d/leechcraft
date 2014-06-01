@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -66,7 +66,6 @@ namespace LeechCraft
 	PluginManager::PluginManager (const QStringList& pluginPaths, QObject *parent)
 	: QAbstractItemModel (parent)
 	, DBusMode_ (static_cast<Application*> (qApp)->GetVarMap ().count ("multiprocess"))
-	, IconsDir_ (Util::CreateIfNotExists ("core/pluginicons"))
 	, PluginTreeBuilder_ (new PluginTreeBuilder)
 	, CacheValid_ (false)
 	{
@@ -674,7 +673,10 @@ namespace LeechCraft
 #ifdef Q_OS_WIN32
 		ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
 #elif defined (Q_OS_MAC)
-		ScanDir (QApplication::applicationDirPath () + "/../PlugIns");
+		if (QApplication::arguments ().contains ("-nobundle"))
+			ScanDir ("/usr/local/lib/leechcraft/plugins");
+		else
+			ScanDir (QApplication::applicationDirPath () + "/../PlugIns");
 #else
 		QString libdir (PLUGINS_LIBDIR);
 	#if defined (INSTALL_PREFIX)
@@ -844,8 +846,15 @@ namespace LeechCraft
 
 			return {};
 		};
-		auto fails = QtConcurrent::mapped (PluginContainers_,
-				std::function<boost::optional<Checks::Fail> (Loaders::IPluginLoader_ptr)> (thrCheck)).results ();
+
+		QList<boost::optional<Checks::Fail>> fails;
+		if (!DBusMode_)
+			fails = QtConcurrent::mapped (PluginContainers_,
+					std::function<boost::optional<Checks::Fail> (Loaders::IPluginLoader_ptr)> (thrCheck)).results ();
+		else
+			for (const auto loader : PluginContainers_)
+				fails << thrCheck (loader);
+
 		for (int i = fails.size () - 1; i >= 0; --i)
 			if (fails [i])
 			{

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,13 +29,14 @@
 
 #pragma once
 
+#include <memory>
 #include <QMetaType>
 #include <QStringList>
 #include <QDateTime>
 #include <QHash>
 #include <QUrl>
 #include <QByteArrayMatcher>
-#include "regexp.h"
+#include <util/sll/regexp.h>
 
 namespace LeechCraft
 {
@@ -104,7 +105,7 @@ namespace CleanWeb
 
 	struct FilterItem
 	{
-		RegExp RegExp_;
+		Util::RegExp RegExp_;
 		QByteArray PlainMatcher_;
 		FilterOption Option_;
 	};

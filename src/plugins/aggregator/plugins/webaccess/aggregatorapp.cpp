@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,6 +29,7 @@
 
 #include "aggregatorapp.h"
 #include <QObject>
+#include <QThread>
 #include <QtDebug>
 #include <Wt/WText>
 #include <Wt/WContainerWidget>
@@ -39,10 +40,20 @@
 #include <Wt/WStandardItemModel>
 #include <Wt/WStandardItem>
 #include <Wt/WOverlayLoadingIndicator>
+#include <Wt/WPanel>
+#include <Wt/WPopupMenu>
+#include <Wt/WCssTheme>
+#include <Wt/WScrollArea>
 #include <util/util.h>
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
+#include <interfaces/aggregator/iitemsmodel.h>
+#include <util/aggregator/itemsmodeldecorator.h>
 #include "readchannelsfilter.h"
+#include "util.h"
+#include "q2wproxymodel.h"
+#include "readitemsfilter.h"
+#include "wf.h"
 
 namespace LeechCraft
 {
@@ -52,101 +63,184 @@ namespace WebAccess
 {
 	namespace
 	{
-		Wt::WString ToW (const QString& str)
+		class WittyThread : public QThread
 		{
-			return Wt::WString (str.toUtf8 ().constData (), Wt::CharEncoding::UTF8);
-		}
+			Wt::WApplication * const App_;
+		public:
+			WittyThread (Wt::WApplication *app)
+			: App_ { app }
+			{
+				setObjectName ("Aggregator WebAccess (Wt Thread)");
+			}
+		protected:
+			void run ()
+			{
+				App_->attachThread (true);
+				QThread::run ();
+				App_->attachThread (false);
+			}
+		};
 	}
 
 	AggregatorApp::AggregatorApp (IProxyObject *ap, ICoreProxy_ptr cp,
 			const Wt::WEnvironment& environment)
-	: WApplication (environment)
-	, AP_ (ap)
-	, CP_ (cp)
-	, ChannelsModel_ (new Wt::WStandardItemModel (0, 2, this))
-	, ChannelsFilter_ (new ReadChannelsFilter (this))
-	, ItemsModel_ (new Wt::WStandardItemModel (0, 2, this))
+	: WApplication { environment }
+	, AP_ { ap }
+	, CP_ { cp }
+	, ObjsThread_ { new WittyThread (this) }
+	, ChannelsModel_ { new Q2WProxyModel { AP_->GetChannelsModel (), this } }
+	, ChannelsFilter_ { new ReadChannelsFilter { this } }
+	, SourceItemModel_ { AP_->CreateItemsModel () }
+	, ItemsModel_ { new Q2WProxyModel { SourceItemModel_, this } }
+	, ItemsFilter_ { new ReadItemsFilter { this }}
 	{
+		ChannelsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
+				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount },
+				{ ChannelRole::CID, Aggregator::ChannelRoles::ChannelID }
+			}));
+
+		ItemsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
+				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId },
+				{ ItemRole::IsRead, Aggregator::IItemsModel::ItemRole::IsRead }
+			}));
+		ItemsModel_->AddDataMorphism ([] (const QModelIndex& idx, int role) -> boost::any
+			{
+				if (role != Wt::StyleClassRole)
+					return {};
+
+				if (!idx.data (Aggregator::IItemsModel::ItemRole::IsRead).toBool ())
+					return Wt::WString ("unreadItem");
+
+				return {};
+			});
+
+		auto initThread = [this] (QObject *obj) -> void
+		{
+			obj->moveToThread (ObjsThread_);
+			QObject::connect (ObjsThread_,
+					SIGNAL (finished ()),
+					obj,
+					SLOT (deleteLater ()));
+		};
+		initThread (ChannelsModel_);
+		initThread (SourceItemModel_);
+		initThread (ItemsModel_);
+
+		ObjsThread_->start ();
+
 		ChannelsFilter_->setSourceModel (ChannelsModel_);
+		ItemsFilter_->setSourceModel (ItemsModel_);
 
 		setTitle ("Aggregator WebAccess");
 		setLoadingIndicator (new Wt::WOverlayLoadingIndicator ());
 
 		SetupUI ();
 
-		Q_FOREACH (Channel_ptr channel, AP_->GetAllChannels ())
+		enableUpdates (true);
+	}
+
+	AggregatorApp::~AggregatorApp ()
+	{
+		delete ChannelsFilter_;
+		delete ItemsFilter_;
+
+		ObjsThread_->quit ();
+		ObjsThread_->wait (1000);
+		if (!ObjsThread_->isFinished ())
 		{
-			const auto unreadCount = AP_->CountUnreadItems (channel->ChannelID_);
-
-			auto title = new Wt::WStandardItem (ToW (channel->Title_));
-			title->setIcon (Util::GetAsBase64Src (channel->Pixmap_).toStdString ());
-			title->setData (channel->ChannelID_, ChannelRole::CID);
-			title->setData (channel->FeedID_, ChannelRole::FID);
-			title->setData (unreadCount, ChannelRole::UnreadCount);
-
-			auto unread = new Wt::WStandardItem (ToW (QString::number (unreadCount)));
-			unread->setData (channel->ChannelID_, ChannelRole::CID);
-
-			ChannelsModel_->appendRow ({ title, unread });
+			qWarning () << Q_FUNC_INFO
+					<< "objects thread hasn't finished yet, terminating...";
+			ObjsThread_->terminate ();
 		}
+
+		delete ObjsThread_;
 	}
 
 	void AggregatorApp::HandleChannelClicked (const Wt::WModelIndex& idx)
 	{
-		ItemsModel_->clear ();
-		ItemView_->setText (Wt::WString ());
+		ItemView_->setText ({});
 
-		const IDType_t& cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
-		Q_FOREACH (Item_ptr item, AP_->GetChannelItems (cid))
-		{
-			if (!item->Unread_)
-				continue;
+		const auto cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
 
-			auto title = new Wt::WStandardItem (ToW (item->Title_));
-			title->setData (item->ItemID_, ItemRole::IID);
-			title->setData (item->ChannelID_, ItemRole::ParentCh);
-			title->setData (item->Unread_, ItemRole::IsUnread);
-			title->setData (ToW (item->Link_), ItemRole::Link);
-			title->setData (ToW (item->Description_), ItemRole::Text);
-
-			auto date = new Wt::WStandardItem (ToW (item->PubDate_.toString ()));
-
-			ItemsModel_->insertRow (0, { title, date });
-		}
-
-		ItemsTable_->setColumnWidth (0, Wt::WLength (500, Wt::WLength::Pixel));
-		ItemsTable_->setColumnWidth (1, Wt::WLength (180, Wt::WLength::Pixel));
+		ItemsFilter_->ClearCurrentItem ();
+		ItemsModelDecorator { SourceItemModel_ }.Reset (cid);
 	}
 
-	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx)
+	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx,
+			const Wt::WMouseEvent& event)
 	{
-		auto titleIdx = idx.model ()->index (idx.row (), 0);
-		auto pubDate = idx.model ()->index (idx.row (), 1);
+		if (!idx.isValid ())
+			return;
+
+		const auto& src = ItemsModel_->MapToSource (ItemsFilter_->mapToSource (idx));
+		const auto itemId = boost::any_cast<IDType_t> (idx.data (ItemRole::IID));
+		const auto& item = AP_->GetItem (itemId);
+		if (!item)
+			return;
+
+		ItemsFilter_->SetCurrentItem (itemId);
+
+		switch (event.button ())
+		{
+		case Wt::WMouseEvent::LeftButton:
+			ShowItem (src, item);
+			break;
+		case Wt::WMouseEvent::RightButton:
+			ShowItemMenu (src, item, event);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void AggregatorApp::ShowItem (const QModelIndex& src, const Item_ptr& item)
+	{
+		ItemsModelDecorator { SourceItemModel_ }.Selected (src);
+
 		auto text = Wt::WString ("<div><a href='{1}' target='_blank'>{2}</a><br />{3}<br /><hr/>{4}</div>")
-				.arg (boost::any_cast<Wt::WString> (titleIdx.data (ItemRole::Link)))
-				.arg (boost::any_cast<Wt::WString> (titleIdx.data ()))
-				.arg (boost::any_cast<Wt::WString> (pubDate.data ()))
-				.arg (boost::any_cast<Wt::WString> (titleIdx.data (ItemRole::Text)));
+				.arg (ToW (item->Link_))
+				.arg (ToW (item->Title_))
+				.arg (ToW (item->PubDate_.toString ()))
+				.arg (ToW (item->Description_));
 		ItemView_->setText (text);
+	}
+
+	void AggregatorApp::ShowItemMenu (const QModelIndex&,
+			const Item_ptr& item, const Wt::WMouseEvent& event)
+	{
+		Wt::WPopupMenu menu;
+		if (item->Unread_)
+			menu.addItem (ToW (tr ("Mark as read")))->
+					triggered ().connect (WF ([this, &item] { AP_->SetItemRead (item->ItemID_, true); }));
+		else
+			menu.addItem (ToW (tr ("Mark as unread")))->
+					triggered ().connect (WF ([this, &item] { AP_->SetItemRead (item->ItemID_, false); }));
+		menu.exec (event);
 	}
 
 	void AggregatorApp::SetupUI ()
 	{
+		setTheme (new Wt::WCssTheme ("polished"));
+		setLocale ({ QLocale {}.name ().toUtf8 ().constData () });
+
+		styleSheet ().addRule (".unreadItem", "font-weight: bold;");
+
 		auto rootLay = new Wt::WBoxLayout (Wt::WBoxLayout::LeftToRight);
 		root ()->setLayout (rootLay);
 
 		auto leftPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
 		rootLay->addLayout (leftPaneLay, 2);
 
-		auto showReadChannels = new Wt::WCheckBox (ToW (QObject::tr ("Include read channels")));
-		showReadChannels->setToolTip (ToW (QObject::tr ("Also display channels that have no unread items.")));
+		auto showReadChannels = new Wt::WCheckBox (ToW (tr ("Include read channels")));
+		showReadChannels->setToolTip (ToW (tr ("Also display channels that have no unread items.")));
 		showReadChannels->setChecked (false);
-		showReadChannels->checked ().connect ([ChannelsFilter_] (Wt::NoClass) { ChannelsFilter_->SetHideRead (false); });
-		showReadChannels->unChecked ().connect ([ChannelsFilter_] (Wt::NoClass) { ChannelsFilter_->SetHideRead (true); });
+		showReadChannels->checked ().connect (WF ([this] { ChannelsFilter_->SetHideRead (false); }));
+		showReadChannels->unChecked ().connect (WF ([this] { ChannelsFilter_->SetHideRead (true); }));
 		leftPaneLay->addWidget (showReadChannels);
 
 		auto channelsTree = new Wt::WTreeView ();
 		channelsTree->setModel (ChannelsFilter_);
+		channelsTree->setSelectionMode (Wt::SingleSelection);
 		channelsTree->clicked ().connect (this, &AggregatorApp::HandleChannelClicked);
 		channelsTree->setAlternatingRowColors (true);
 		leftPaneLay->addWidget (channelsTree, 1, Wt::AlignTop);
@@ -154,15 +248,34 @@ namespace WebAccess
 		auto rightPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
 		rootLay->addLayout (rightPaneLay, 7);
 
+		auto showReadItems = new Wt::WCheckBox (ToW (tr ("Show read items")));
+		showReadItems->setChecked (false);
+		showReadItems->checked ().connect (WF ([this] { ItemsFilter_->SetHideRead (false); }));
+		showReadItems->unChecked ().connect (WF ([this] { ItemsFilter_->SetHideRead (true); }));
+		rightPaneLay->addWidget (showReadItems);
+
 		ItemsTable_ = new Wt::WTableView ();
-		ItemsTable_->setModel (ItemsModel_);
-		ItemsTable_->clicked ().connect (this, &AggregatorApp::HandleItemClicked);
+		ItemsTable_->setModel (ItemsFilter_);
+		ItemsTable_->mouseWentUp ().connect (this, &AggregatorApp::HandleItemClicked);
 		ItemsTable_->setAlternatingRowColors (true);
-		ItemsTable_->setWidth (Wt::WLength (100, Wt::WLength::Percentage));
+		ItemsTable_->setColumnWidth (0, { 550, Wt::WLength::Pixel });
+		ItemsTable_->setSelectionMode (Wt::SingleSelection);
+		ItemsTable_->setAttributeValue ("oncontextmenu",
+				"event.cancelBubble = true; event.returnValue = false; return false;");
 		rightPaneLay->addWidget (ItemsTable_, 2, Wt::AlignJustify);
 
 		ItemView_ = new Wt::WText ();
-		rightPaneLay->addWidget (ItemView_, 5);
+		ItemView_->setTextFormat (Wt::XHTMLUnsafeText);
+
+		auto scrollArea = new Wt::WScrollArea;
+		scrollArea->setHorizontalScrollBarPolicy (Wt::WScrollArea::ScrollBarAlwaysOff);
+		scrollArea->setVerticalScrollBarPolicy (Wt::WScrollArea::ScrollBarAsNeeded);
+		scrollArea->setWidget (ItemView_);
+
+		auto itemPanel = new Wt::WPanel ();
+		itemPanel->setCentralWidget (scrollArea);
+
+		rightPaneLay->addWidget (itemPanel, 5);
 	}
 }
 }

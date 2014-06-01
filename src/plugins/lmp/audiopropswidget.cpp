@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -67,6 +67,7 @@
 #include <taglib/wavproperties.h>
 #include <taglib/trueaudioproperties.h>
 #include <taglib/wavpackproperties.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "localfileresolver.h"
 #include "core.h"
 
@@ -82,7 +83,8 @@ namespace LMP
 		Ui_.PropsView_->setModel (PropsModel_);
 
 		auto copy = new QAction (tr ("Copy"), this);
-		copy->setIcon (Core::Instance ().GetProxy ()->GetIcon ("edit-copy"));
+		copy->setIcon (Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("edit-copy"));
 		connect (copy,
 				SIGNAL (triggered ()),
 				this,

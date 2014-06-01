@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/media/ialbumartprovider.h>
 
@@ -38,17 +39,29 @@ namespace LeechCraft
 namespace Lastfmscrobble
 {
 	class AlbumArtFetcher : public QObject
+						  , public Media::IPendingAlbumArt
 	{
 		Q_OBJECT
+		Q_INTERFACES (Media::IPendingAlbumArt)
 
-		ICoreProxy_ptr Proxy_;
+		const ICoreProxy_ptr Proxy_;
+
+		const Media::AlbumInfo Info_;
+		QUrl ImageUrl_;
+		QImage Image_;
 	public:
 		AlbumArtFetcher (const Media::AlbumInfo&, ICoreProxy_ptr, QObject* = 0);
+
+		QObject* GetQObject ();
+		Media::AlbumInfo GetAlbumInfo () const;
+		QList<QImage> GetImages () const;
+		QList<QUrl> GetImageUrls () const;
 	private slots:
 		void handleReplyFinished ();
 		void handleImageReplyFinished ();
 	signals:
-		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+		void ready (const Media::AlbumInfo&, const QList<QImage>&);
+		void urlsReady (const Media::AlbumInfo&, const QList<QUrl>&);
 	};
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -99,6 +99,15 @@ namespace Azoth
 		 * @param[in] subject The new subject of this room to set.
 		 */
 		virtual void SetMUCSubject (const QString& subject) = 0;
+
+		/** @brief Returns whether MUC subject can be changed.
+		 *
+		 * This function should return whether our user can change this
+		 * MUC's subject.
+		 *
+		 * @return Whether the MUC subject can be changed by the user.
+		 */
+		virtual bool CanChangeSubject () const = 0;
 
 		/** @brief The list of participants of this MUC.
 		 *

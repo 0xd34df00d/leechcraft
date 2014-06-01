@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,17 +30,10 @@
 #pragma once
 
 #include <QObject>
-#include <QDir>
-
-extern "C"
-{
-#include <libotr/proto.h>
-#include <libotr/message.h>
-}
-
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/imessage.h>
 
@@ -54,32 +47,26 @@ class ICLEntry;
 
 namespace OTRoid
 {
+	class FPManager;
+	class PrivKeyManager;
+	class OtrHandler;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_;
 
-		OtrlUserState UserState_;
-		OtrlMessageAppOps OtrOps_;
+		Util::XmlSettingsDialog_ptr XSD_;
 
-		QHash<QObject*, QAction*> Entry2Action_;
-		QHash<QAction*, QObject*> Action2Entry_;
-
-		QHash<QObject*, QString> Msg2OrigText_;
-
-		QSet<QObject*> PendingInjectedMessages_;
-
-		QDir OtrDir_;
-
-		bool IsGenerating_ = false;
-
-#if OTRL_VERSION_MAJOR >= 4
-		QTimer *PollTimer_;
-#endif
+		OtrHandler *OtrHandler_ = nullptr;
+		FPManager *FPManager_ = nullptr;
+		PrivKeyManager *PKManager_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -91,28 +78,9 @@ namespace OTRoid
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		int IsLoggedIn (const QString& accId, const QString& entryId);
-		void InjectMsg (const QString& accId, const QString& entryId,
-				const QString& msg, bool hidden, IMessage::Direction,
-				IMessage::MessageType = IMessage::MTChatMessage);
-		void InjectMsg (ICLEntry *entry,
-				const QString& msg, bool hidden, IMessage::Direction,
-				IMessage::MessageType = IMessage::MTChatMessage);
-		void Notify (const QString& accId, const QString& entryId,
-				Priority, const QString& title,
-				const QString& primary, const QString& secondary);
-		void WriteFingerprints ();
-		QString GetAccountName (const QString& accId);
-		QString GetVisibleEntryName (const QString& accId, const QString& entryId);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		void CreatePrivkey (const char*, const char*);
-
-#if OTRL_VERSION_MAJOR >= 4
-		void SetPollTimerInterval (unsigned int seconds);
-#endif
-	private:
-		const char* GetOTRFilename (const QString&) const;
-		void CreateActions (QObject*);
+		FPManager* GetFPManager () const;
 	public slots:
 		void initPlugin (QObject*);
 
@@ -128,14 +96,6 @@ namespace OTRoid
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
-	private slots:
-		void handleOtrAction ();
-
-#if OTRL_VERSION_MAJOR >= 4
-		void pollOTR ();
-#endif
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

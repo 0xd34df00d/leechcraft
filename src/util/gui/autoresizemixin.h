@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,7 @@
 #include <QObject>
 #include <QPoint>
 #include <QRect>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 class QWidget;
 
@@ -41,17 +41,55 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Automatically moves a widget to fit a rectangle on resize.
+	 *
+	 * An instance of this class manages a single widget and moves it
+	 * automatically after the widget has been resized, so that it stays
+	 * inside the given rectangle. The autoresize mixin never tries
+	 * to resize the widget itself (despite the name perhaps).
+	 *
+	 * This class also tries to keep a corner of the managed widget near
+	 * a given point passed to the constructor. This is useful when the
+	 * widget pops up in response to some mouse-initiated action so that
+	 * it appears near the mouse cursor.
+	 *
+	 * Most commonly this function is used to keep various popup widgets
+	 * on screen, but it can also be used to prefer showing some popup
+	 * inside the LeechCraft window, for example.
+	 *
+	 * The rectangle into which the widget should be embedded is obtained
+	 * via a functor returning the rectangle. The functor is invoked each
+	 * time the widget is to be refit.
+	 *
+	 * @ingroup GuiUtil
+	 */
 	class AutoResizeMixin : public QObject
 	{
 		const QPoint OrigPoint_;
 		QWidget * const View_;
 	public:
+		/** @brief A function type used to get the rect to fit widget in.
+		 */
 		typedef std::function<QRect ()> RectGetter_f;
 	private:
 		const RectGetter_f Rect_;
 	public:
-		UTIL_API AutoResizeMixin (const QPoint&, RectGetter_f, QWidget*);
+		/** @brief Constructs the resize mixin.
+		 *
+		 * This function constructs the resize mixin managing the given
+		 * \em widget, trying to fit it inside the \em rect, preferably
+		 * with a corner of the \em widget sticking near the \em point.
+		 *
+		 * @param[in] point The point near which the \em widget should be
+		 * shown.
+		 * @param[in] rect The functor returning the rectangle into which
+		 * the \em widget should be fitted.
+		 * @param[in] widget The widget to fit.
+		 */
+		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWidget *widget);
 
+		/** @brief Listens for resize events and refits the widget.
+		 */
 		bool eventFilter (QObject*, QEvent*);
 	private:
 		void Refit (const QSize&);

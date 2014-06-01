@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -146,6 +146,16 @@ namespace LeechCraft
 
 	int RootWindowsManager::GetPreferredWindowIndex (const ITabWidget *itw) const
 	{
+		const auto obj = dynamic_cast<const QObject*> (itw);
+
+		if (obj->dynamicPropertyNames ().contains ("SessionData/RootWindowIndex"))
+		{
+			bool ok = false;
+			const auto value = obj->property ("SessionData/RootWindowIndex").toInt (&ok);
+			if (ok)
+				return value;
+		}
+
 		return GetPreferredWindowIndex (itw->GetTabClassInfo ().TabClass_);
 	}
 
@@ -322,6 +332,9 @@ namespace LeechCraft
 			CreateWindow (-1, false);
 			winIdx = Windows_.size () - 1;
 		}
+
+		while (winIdx >= Windows_.size ())
+			CreateWindow (-1, false);
 
 		const auto& tc = itw->GetTabClassInfo ().TabClass_;
 		Windows_ [winIdx].Window_->setWindowRole (tc);

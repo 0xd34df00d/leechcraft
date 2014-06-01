@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,18 +27,18 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ROSENTHAL_H
-#define PLUGINS_AZOTH_PLUGINS_ROSENTHAL_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/ispellcheckprovider.h>
 
 class QWebView;
 class QTranslator;
-class Hunspell;
 
 namespace LeechCraft
 {
@@ -47,18 +47,21 @@ namespace Azoth
 namespace Rosenthal
 {
 	class Highlighter;
+	class Checker;
 
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
-				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2)
+
+		ICoreProxy_ptr Proxy_;
 
 		std::shared_ptr<QTranslator> Translator_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		std::shared_ptr<Hunspell> Hunspell_;
+
+		ISpellChecker_ptr Checker_;
+
 		QList<Highlighter*> Highlighters_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -69,13 +72,8 @@ namespace Rosenthal
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
-	private:
-		void ReinitHunspell ();
-		QStringList GetPropositions (const QString&);
 	private slots:
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 				QObject*,
@@ -83,10 +81,7 @@ namespace Rosenthal
 				QWebView*);
 		void handleCorrectionTriggered ();
 		void handleHighlighterDestroyed ();
-		void handleCustomLocalesChanged ();
 	};
 }
 }
 }
-
-#endif

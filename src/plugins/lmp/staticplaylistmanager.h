@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QDir>
 #include "engine/audiosource.h"
+#include "playlistparsers/playlist.h"
 
 namespace LeechCraft
 {
@@ -48,13 +49,14 @@ namespace LMP
 		void SetOnLoadPlaylist (const QList<AudioSource>&);
 		QList<AudioSource> GetOnLoadPlaylist () const;
 
-		void SaveCustomPlaylist (QString, const QList<AudioSource>&);
+		void SaveCustomPlaylist (QString, const Playlist&);
 		QStringList EnumerateCustomPlaylists () const;
-		QList<AudioSource> GetCustomPlaylist (const QString&) const;
+		Playlist GetCustomPlaylist (const QString&) const;
+		QString GetCustomPlaylistPath (const QString&) const;
 		void DeleteCustomPlaylist (const QString&);
 	private:
-		void WritePlaylist (const QString&, const QList<AudioSource>&);
-		QList<AudioSource> ReadPlaylist (const QString&) const;
+		void WritePlaylist (const QString&, const Playlist&);
+		Playlist ReadPlaylist (const QString&) const;
 	signals:
 		void customPlaylistsChanged ();
 	};

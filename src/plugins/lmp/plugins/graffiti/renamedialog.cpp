@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,10 +39,10 @@ namespace LMP
 {
 namespace Graffiti
 {
-	RenameDialog::RenameDialog (ILMPProxy_Ptr proxy, QWidget *parent)
+	RenameDialog::RenameDialog (ILMPProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
 	, Proxy_ (proxy)
-	, Getters_ (proxy->GetSubstGetters ())
+	, Getters_ (proxy->GetUtilProxy ()->GetSubstGetters ())
 	, PreviewModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
@@ -125,7 +125,8 @@ namespace Graffiti
 		int row = 0;
 		for (auto& info : Infos_)
 		{
-			info.second = Proxy_->PerformSubstitutions (pattern, info.first);
+			info.second = Proxy_->GetUtilProxy ()->PerformSubstitutions (pattern,
+					info.first, SubstitutionFlag::SFSafeFilesystem);
 			if (!hasExtension)
 				info.second += '.' + QFileInfo (info.first.LocalPath_).suffix ();
 

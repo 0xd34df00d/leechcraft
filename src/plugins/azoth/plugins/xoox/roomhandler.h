@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -118,6 +118,9 @@ namespace Xoox
 
 		void handleChatTabClosed ();
 	private:
+		void HandleRenameStart (const RoomParticipantEntry_ptr& entry,
+				const QString& nick, const QString& newNick);
+
 		/** Creates a new entry for the given nick.
 		 */
 		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);

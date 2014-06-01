@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -106,7 +106,7 @@ namespace CleanWeb
 				f.MatchType_ = FilterOption::MTRegexp;
 				const FilterItem_ptr item (new FilterItem
 						{
-							RegExp (actualLine, f.Case_),
+							Util::RegExp (actualLine, f.Case_),
 							{},
 							f
 						});
@@ -172,7 +172,7 @@ namespace CleanWeb
 
 			if (f.MatchType_ != FilterOption::MTRegexp && actualLine.contains ('^'))
 			{
-				if (!RegExp::IsFast ())
+				if (!Util::RegExp::IsFast ())
 					return;
 
 				actualLine.replace ('*', ".*");
@@ -202,8 +202,8 @@ namespace CleanWeb
 					actualLine :
 					actualLine.toLower ()).toUtf8 ();
 			const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
-					RegExp (actualLine, f.Case_) :
-					RegExp ();
+					Util::RegExp (actualLine, f.Case_) :
+					Util::RegExp ();
 			const FilterItem_ptr item (new FilterItem
 					{
 						itemRx,

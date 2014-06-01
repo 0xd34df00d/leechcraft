@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -129,7 +129,7 @@ namespace Xoox
 			BareJID_ = ods->ID_;
 		}
 
-		SetVCard (ods->VCardIq_);
+		SetVCard (ods->VCardIq_, true);
 
 		Initialize ();
 	}
@@ -213,13 +213,15 @@ namespace Xoox
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
-		ICLEntry::Features result = FSupportsAuth |
-				FSupportsGrouping;
-		if (Account_->GetClientConnection ()->
-				GetClient ()->rosterManager().getRosterBareJids ().contains (GetJID ()))
-			result |= FSupportsRenames | FPermanentEntry;
-		else
-			result |= FSessionEntry;
+		ICLEntry::Features result = FSupportsAuth | FSupportsGrouping;
+
+		auto& rm = Account_->GetClientConnection ()->GetClient ()->rosterManager ();
+		const bool isPerm = ODS_ || rm.getRosterBareJids ().contains (GetJID ());
+
+		result |= isPerm ?
+				FSupportsRenames | FPermanentEntry :
+				FSessionEntry;
+
 		return result;
 	}
 

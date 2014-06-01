@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,9 +28,9 @@
  **********************************************************************/
 
 #include "externalproxy.h"
-#include <interfaces/structures.h>
-#include <util/util.h>
 #include <QUrl>
+#include <interfaces/structures.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {
@@ -48,6 +48,6 @@ namespace Poshuku
 				FromUserInitiated | OnlyHandle,
 				"application/opensearchdescription+xml");
 		emit gotEntity (e);
-	}	
+	}
 }
 }

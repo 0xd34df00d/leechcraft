@@ -57,11 +57,12 @@
 #include <QSettings>
 #include <QStringList>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/imwproxy.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
@@ -99,7 +100,8 @@ namespace vlc
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
-		PlaylistWidget_ = new PlaylistWidget (proxy->GetIcon ("media-playback-start"));
+		PlaylistWidget_ = new PlaylistWidget (proxy->
+					GetIconThemeManager ()->GetIcon ("media-playback-start"));
 
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->addWidget(VlcMainWidget_);

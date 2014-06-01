@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -50,8 +50,8 @@ class Q_DECL_EXPORT IPlugin2
 public:
 	/** @brief Returns the plugin classes of this second-level plugin.
 	 *
-	 * @note This function should be able to work before IInfo::Init()
-	 * is called.
+	 * @note This function should be able to work correctly before
+	 * IInfo::Init() is called on the plugin instance object.
 	 *
 	 * @return The plugin classes.
 	 */

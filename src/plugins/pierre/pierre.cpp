@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,7 +40,7 @@
 #include <interfaces/imwproxy.h>
 #include <interfaces/iactionsexporter.h>
 #include "fullscreen.h"
-#include "dockutil.h"
+#include "reopenhandler.h"
 
 extern void qt_mac_set_dock_menu (QMenu*);
 
@@ -54,6 +54,8 @@ namespace Pierre
 
 		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (0);
+
+		ReopenHandler::Instance ().SetCoreProxy (proxy);
 	}
 
 	void Plugin::SecondInit ()
@@ -97,20 +99,6 @@ namespace Pierre
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Core.Plugins/1.0";
 		return result;
-	}
-
-	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
-	{
-		const bool isCountInfo = entity.Mime_ == "x-leechcraft/notification-event-count-info";
-		return EntityTestHandleResult (isCountInfo ?
-					EntityTestHandleResult::PIdeal :
-					EntityTestHandleResult::PNone);
-	}
-
-	void Plugin::Handle (Entity e)
-	{
-		const int count = e.Entity_.toInt ();
-		DU::SetDockBadge (count ? QString::number (count) : QString ());
 	}
 
 	void Plugin::hookGonnaFillMenu (IHookProxy_ptr)

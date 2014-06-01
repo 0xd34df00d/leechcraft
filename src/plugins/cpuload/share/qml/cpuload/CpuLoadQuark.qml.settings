@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+        <page>
+                <label value="CpuLoad settings" />
+                <item type="spinbox" property="CpuLoad_updateInterval" minimum="100" maximum="10000" step="100">
+                        <label value="Update interval:" />
+                        <suffix value=" ms" />
+                </item>
+        </page>
+</settings>

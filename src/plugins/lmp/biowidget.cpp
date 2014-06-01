@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/sys/paths.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -49,12 +50,12 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 
-		new Util::StandardNAMFactory ("lmp/cache",
+		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
 				Ui_.View_->engine ());
 
 		Manager_ = new BioViewManager (Ui_.View_, this);
-		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/BioView.qml"));
+		Ui_.View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "BioView.qml"));
 		Manager_->InitWithSource ();
 
 		const auto& lastProv = XmlSettingsManager::Instance ()
@@ -91,7 +92,7 @@ namespace LMP
 
 	void BioWidget::SetCurrentArtist (const QString& artist)
 	{
-		if (artist == CurrentArtist_)
+		if (artist.isEmpty () || artist == CurrentArtist_)
 			return;
 
 		CurrentArtist_ = artist;

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -117,7 +117,7 @@ namespace Autoidler
 	void Plugin::handleIdle (int seconds)
 	{
 		IdleSeconds_ = seconds;
-		if (seconds && seconds % 60)
+		if (seconds && (seconds % 60) >= Idle_->interval () / 10000)
 			return;
 
 		if (!XmlSettingsManager::Instance ().property ("EnableAutoidler").toBool ())

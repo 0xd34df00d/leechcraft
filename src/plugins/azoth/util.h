@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,11 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_UTIL_H
-#define PLUGINS_AZOTH_UTIL_H
+#pragma once
 
 class QString;
 class QWidget;
+class QObject;
 
 namespace LeechCraft
 {
@@ -40,6 +40,7 @@ struct Entity;
 namespace Azoth
 {
 	class ICLEntry;
+	class IAccount;
 
 	void BuildNotification (Entity&, ICLEntry*);
 	QString GetActivityIconName (const QString&, const QString&);
@@ -48,7 +49,7 @@ namespace Azoth
 
 	void AuthorizeEntry (ICLEntry*);
 	void DenyAuthForEntry (ICLEntry*);
-}
-}
 
-#endif
+	QObject* FindByHRId (IAccount*, const QString&);
+}
+}

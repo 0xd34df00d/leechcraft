@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -45,10 +45,11 @@ namespace Lastfmscrobble
 		Q_INTERFACES (Media::IPendingArtistBio)
 
 		QNetworkAccessManager * const NAM_;
+		const bool AddImages_;
 
 		Media::ArtistBio Bio_;
 	public:
-		PendingArtistBio (QString, QNetworkAccessManager*, QObject* = 0);
+		PendingArtistBio (QString, QNetworkAccessManager*, bool addImages, QObject* = 0);
 
 		QObject* GetQObject ();
 		Media::ArtistBio GetArtistBio () const;

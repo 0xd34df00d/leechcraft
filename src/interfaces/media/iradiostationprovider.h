@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -95,7 +95,14 @@ namespace Media
 		 *
 		 * Items of this type should provide RadioItemRole::TracksInfos.
 		 */
-		SingleTrack
+		SingleTrack,
+
+		/** @brief An action.
+		 *
+		 * Items of this type represent an action, like "Sign in to radio"
+		 * or something.
+		 */
+		RadioAction
 	};
 
 	/** @brief Custom user roles for the items in the model.

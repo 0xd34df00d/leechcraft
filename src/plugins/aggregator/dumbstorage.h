@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -60,7 +60,7 @@ namespace Aggregator
 		void UpdateChannel (const ChannelShort&);
 		void UpdateItem (Item_ptr);
 		void UpdateItem (const ItemShort&);
-		void RemoveItem (const IDType_t&);
+		void RemoveItems (const QSet<IDType_t>&);
 		void RemoveChannel (const IDType_t&);
 		void RemoveFeed (const IDType_t&);
 		bool UpdateFeedsStorage (int, int);

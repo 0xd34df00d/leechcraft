@@ -33,6 +33,7 @@
 #include <QToolButton>
 #include <QAction>
 #include <QLabel>
+#include <interfaces/core/iiconthememanager.h>
 
 namespace LeechCraft
 {
@@ -41,20 +42,22 @@ namespace vlc
 	PlaylistTitleWidget::PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent)
 	: QToolBar (parent)
 	{
+		const auto mgr = proxy->GetIconThemeManager ();
+
 		AddAction_ = addAction (tr ("Add files"));
-		AddAction_->setIcon (proxy->GetIcon ("list-add"));
-		
+		AddAction_->setIcon (mgr->GetIcon ("list-add"));
+
 		ClearAction_ = addAction (tr ("Clear playlist"));
-		ClearAction_->setIcon (proxy->GetIcon ("edit-clear-list"));
-		
+		ClearAction_->setIcon (mgr->GetIcon ("edit-clear-list"));
+
 		MagicAction_ = addAction (tr ("Magic sort"));
-		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
-		
+		MagicAction_->setIcon (mgr->GetIcon ("tools-wizard"));
+
 		UpAction_ = addAction (tr ("Up"));
-		UpAction_->setIcon (proxy->GetIcon ("arrow-up"));
-		
+		UpAction_->setIcon (mgr->GetIcon ("arrow-up"));
+
 		DownAction_ = addAction (tr ("Down"));
-		DownAction_->setIcon (proxy->GetIcon ("arrow-down"));
+		DownAction_->setIcon (mgr->GetIcon ("arrow-down"));
 	}
 }
 }

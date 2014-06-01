@@ -39,6 +39,8 @@ set (SRCS
 	viewsettingsmanager.cpp
 	sb2util.cpp
 	viewpropsmanager.cpp
+	dirwatcher.cpp
+	manifest.cpp
 	)
 
 if (WITH_X11)

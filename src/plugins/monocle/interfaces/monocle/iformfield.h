@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -74,7 +74,7 @@ namespace Monocle
 	 * This is a base interface that should be implemented by all form
 	 * fields disregarding their type. Depending on the type of this
 	 * field returned by the GetType() method the corresponding class
-	 * should also implement other interfaces. See FormType documentation
+	 * should also implement other interfaces. See ::FormType documentation
 	 * for details.
 	 *
 	 * As a general rule, there is no "Apply" method in form interfaces.

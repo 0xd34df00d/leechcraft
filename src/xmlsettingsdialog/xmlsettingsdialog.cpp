@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -88,6 +88,8 @@ namespace Util
 				"/../Resources/settings/" + basename))
 			filename = QApplication::applicationDirPath () +
 					"/../Resources/settings/" + basename;
+		else if (QFile::exists (QString ("/usr/local/share/leechcraft/settings/") + basename))
+			filename = QString ("/usr/local/share/leechcraft/settings/") + basename;
 	#elif defined (INSTALL_PREFIX)
 		else if (QFile::exists (QString (INSTALL_PREFIX "/share/leechcraft/settings/") + basename))
 			filename = QString (INSTALL_PREFIX "/share/leechcraft/settings/") + basename;
@@ -148,6 +150,11 @@ namespace Util
 		obj->installEventFilter (this);
 
 		UpdateXml (true);
+
+		connect (obj,
+				SIGNAL (showPageRequested (Util::BaseSettingsManager*, QString)),
+				this,
+				SLOT (handleShowPageRequested (Util::BaseSettingsManager*, QString)));
 	}
 
 	BaseSettingsManager* XmlSettingsDialog::GetManagerObject () const
@@ -388,6 +395,7 @@ namespace Util
 		while (!gbox.isNull ())
 		{
 			QGroupBox *box = new QGroupBox (GetLabel (gbox));
+			box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
 			QGridLayout *groupLayout = new QGridLayout ();
 			groupLayout->setContentsMargins (2, 2, 2, 2);
 			box->setLayout (groupLayout);
@@ -530,25 +538,25 @@ namespace Util
 		LangElements returning;
 		returning.Valid_ = true;
 
-		QDomElement label = parent.firstChildElement ("label");
-		if (!label.isNull ())
+		auto getElem = [&parent, this] (const QString& elemName) -> QPair<bool, QString>
 		{
-			returning.Label_.first = true;
-			returning.Label_.second = QCoreApplication::translate (qPrintable (Basename_),
-					label.attribute ("value").toUtf8 ().constData (),
-					0,
-					QCoreApplication::Encoding::UnicodeUTF8);
-		}
+			const auto& label = parent.firstChildElement (elemName);
+			if (label.isNull ())
+				return {};
 
-		QDomElement suffix = parent.firstChildElement ("suffix");
-		if (!suffix.isNull ())
-		{
-			returning.Suffix_.first = true;
-			returning.Suffix_.second = QCoreApplication::translate (qPrintable (Basename_),
-					suffix.attribute ("value").toUtf8 ().constData (),
-					0,
-					QCoreApplication::Encoding::UnicodeUTF8);
-		}
+			return
+			{
+				true,
+				QCoreApplication::translate (qPrintable (Basename_),
+						label.attribute ("value").toUtf8 ().constData (),
+						0,
+						QCoreApplication::Encoding::UnicodeUTF8)
+			};
+		};
+
+		returning.Label_ = getElem ("label");
+		returning.Suffix_ = getElem ("suffix");
+		returning.SpecialValue_ = getElem ("specialValue");
 		return returning;
 	}
 
@@ -702,7 +710,7 @@ namespace Util
 
 		HandlersManager_->ClearNewValues ();
 
-		Q_FOREACH (QWidget *widget, Customs_)
+		for (auto widget : Customs_)
 			QMetaObject::invokeMethod (widget, "accept");
 	}
 
@@ -744,6 +752,47 @@ namespace Util
 	void XmlSettingsDialog::handlePushButtonReleased ()
 	{
 		emit pushButtonClicked (sender ()->objectName ());
+	}
+
+	void XmlSettingsDialog::handleShowPageRequested (BaseSettingsManager *bsm, const QString& name)
+	{
+		emit showPageRequested (bsm, name);
+
+		if (name.isEmpty ())
+			return;
+
+		auto child = findChild<QWidget*> (name);
+		if (!child)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< Basename_
+					<< "cannot find child"
+					<< name;
+			return;
+		}
+
+		QWidget *lastTabChild = nullptr;
+
+		while (auto parent = child->parentWidget ())
+		{
+			std::shared_ptr<void> nextGuard
+			{
+				nullptr,
+				[&child, parent] (void*) { child = parent; }
+			};
+
+			const auto pgIdx = Pages_->indexOf (parent);
+			if (pgIdx >= 0)
+			{
+				Pages_->setCurrentIndex (pgIdx);
+				continue;
+			}
+
+			if (qobject_cast<QStackedWidget*> (parent))
+				lastTabChild = child;
+			else if (auto tw = qobject_cast<QTabWidget*> (parent))
+				tw->setCurrentWidget (lastTabChild);
+		}
 	}
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,12 +39,24 @@ namespace Monocle
 	class IAnnotation;
 	typedef std::shared_ptr<IAnnotation> IAnnotation_ptr;
 
+	/** @brief Interface for documents supporting annotations.
+	 *
+	 * If the document format can contain annotations, this interface
+	 * should be implemented.
+	 *
+	 * @sa IAnnotation
+	 */
 	class ISupportAnnotations
 	{
 	public:
 		virtual ~ISupportAnnotations () {}
 
-		virtual QList<IAnnotation_ptr> GetAnnotations (int page) const = 0;
+		/** @brief Returns the list of annotations on the given page.
+		 *
+		 * @param[in] page The page to query.
+		 * @return The list of annotations on the \em page.
+		 */
+		virtual QList<IAnnotation_ptr> GetAnnotations (int page) = 0;
 	};
 }
 }

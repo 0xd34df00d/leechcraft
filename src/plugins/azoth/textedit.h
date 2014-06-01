@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,11 +38,15 @@ namespace Azoth
 	class TextEdit : public QTextEdit
 	{
 		Q_OBJECT
+
+		QFont DefaultFont_;
 	public:
 		TextEdit (QWidget *parent = 0);
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	private slots:
+		void handleMsgFontSize ();
+
 		void deleteWord ();
 		void deleteBOL ();
 		void deleteEOL ();

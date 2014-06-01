@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -71,6 +71,13 @@ namespace Blasq
 				static_cast<int> (std::distance (Accounts_.begin (), pos));
 	}
 
+	IAccount* AccountsManager::GetAccount (const QByteArray& id) const
+	{
+		const auto pos = std::find_if (Accounts_.begin (), Accounts_.end (),
+				[&id] (IAccount *acc) { return acc->GetID () == id; });
+		return pos == Accounts_.end () ? nullptr : *pos;
+	}
+
 	void AccountsManager::RemoveAccount (const QModelIndex& index)
 	{
 		const auto accObj = index.data (Role::AccountObj).value<QObject*> ();
@@ -97,6 +104,7 @@ namespace Blasq
 		{
 			item->setEditable (false);
 			item->setData (accVar, Role::AccountObj);
+			item->setData (acc->GetID (), Role::AccountId);
 		}
 		Model_->appendRow (row);
 

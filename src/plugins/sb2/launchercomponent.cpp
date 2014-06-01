@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -331,7 +331,10 @@ namespace SB2
 		}
 
 		if (CurrentTabList_)
-			delete CurrentTabList_;
+		{
+			CurrentTabList_->deleteLater ();
+			CurrentTabList_ = nullptr;
+		}
 
 		auto view = new TabListView (tc, widgets, ICTW_, View_->GetManagedWindow (), Proxy_);
 		view->move (Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ()));
@@ -341,12 +344,13 @@ namespace SB2
 		CurrentTabList_ = view;
 	}
 
-	void LauncherComponent::tabListUnhovered (const QByteArray&)
+	void LauncherComponent::tabListUnhovered (const QByteArray& tc)
 	{
 		if (!CurrentTabList_)
 			return;
 
-		CurrentTabList_->HandleLauncherUnhovered ();
+		if (tc == CurrentTabList_->GetTabClass ())
+			CurrentTabList_->HandleLauncherUnhovered ();
 	}
 
 	void LauncherComponent::handleNewTab (const QString&, QWidget *w)

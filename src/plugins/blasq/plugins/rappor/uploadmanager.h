@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,6 +33,8 @@
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
 
+class QUrl;
+
 namespace LeechCraft
 {
 namespace Util
@@ -60,6 +62,8 @@ namespace Rappor
 		QHash<QNetworkReply*, QList<UploadItem>> PhotoUpload2QueueTail_;
 		QHash<QNetworkReply*, QString> PhotoUpload2Server_;
 		QHash<QNetworkReply*, UploadItem> PhotoUpload2Info_;
+
+		QHash<QNetworkReply*, UploadItem> PhotoSave2Info_;
 	public:
 		UploadManager (Util::QueueManager *reqQueue, ICoreProxy_ptr, VkAccount *acc);
 
@@ -71,6 +75,8 @@ namespace Rappor
 		void handlePhotosUploadProgress (qint64, qint64);
 		void handlePhotosUploaded ();
 		void handlePhotosSaved ();
+	signals:
+		void itemUploaded (const UploadItem&, const QUrl&);
 	};
 }
 }

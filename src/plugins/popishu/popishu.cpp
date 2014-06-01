@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,6 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include "core.h"
 #include "editorpage.h"
 #include "xmlsettingsmanager.h"
 
@@ -43,50 +42,20 @@ namespace Popishu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		EditorPage::SetParentMultiTabs (this);
-
 		Util::InstallTranslator ("popishu");
+
+		Proxy_ = proxy;
+
+		TabClass_.TabClass_ = "Popishu";
+		TabClass_.VisibleName_ = "Popishu";
+		TabClass_.Description_ = tr ("The Popishu text editor");
+		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/popishu.svg");
+		TabClass_.Priority_ = 70;
+		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"popishusettings.xml");
-
-		Core::Instance ().SetProxy (proxy);
-
-		connect (&Core::Instance (),
-				SIGNAL (addNewTab (const QString&, QWidget*)),
-				this,
-				SIGNAL (addNewTab (const QString&, QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (raiseTab (QWidget*)),
-				this,
-				SIGNAL (raiseTab (QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTabName (QWidget*, const QString&)),
-				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-				this,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
-		connect (&Core::Instance (),
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 	}
 
 	void Plugin::SecondInit ()
@@ -120,15 +89,13 @@ namespace Popishu
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
-		TabClasses_t result;
-		result << Core::Instance ().GetTabClass ();
-		return result;
+		return { TabClass_ };
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Popishu")
-			Core::Instance ().NewTabRequested ();
+			AnnouncePage (MakeEditorPage ());
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -145,14 +112,77 @@ namespace Popishu
 				EntityTestHandleResult ();
 	}
 
-	void Plugin::Handle (Entity entity)
+	void Plugin::Handle (Entity e)
 	{
-		Core::Instance ().Handle (entity);
+		auto page = MakeEditorPage ();
+		page->SetText (e.Entity_.toString ());
+
+		QString language = e.Additional_ ["Language"].toString ();
+		bool isTempDocumnet = e.Additional_ ["IsTemporaryDocument"].toBool ();
+		if (!language.isEmpty ())
+			page->SetLanguage (language);
+		page->SetTemporaryDocument (isTempDocumnet);
+
+		AnnouncePage (page);
 	}
 
 	std::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
+	}
+
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		for (const auto& info : infos)
+		{
+			const auto page = MakeEditorPage ();
+			for (const auto& prop : info.DynProperties_)
+				page->setProperty (prop.first, prop.second);
+
+			QDataStream istr { info.Data_ };
+			QByteArray tabId;
+			istr >> tabId;
+
+			if (tabId == "EditorPage/1")
+				page->RestoreState (istr);
+
+			AnnouncePage (page);
+		}
+	}
+
+	EditorPage* Plugin::MakeEditorPage ()
+	{
+		auto result = new EditorPage (Proxy_, TabClass_, this);
+		connect (result,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		connect (result,
+				SIGNAL (changeTabName (QWidget*, const QString&)),
+				this,
+				SIGNAL (changeTabName (QWidget*, const QString&)));
+		connect (result,
+				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
+				this,
+				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
+		connect (result,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)));
+		connect (result,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		return result;
+	}
+
+	void Plugin::AnnouncePage (EditorPage *page)
+	{
+		emit addNewTab (page->GetTabRecoverName (), page);
+		emit raiseTab (page);
+		emit changeTabIcon (page, QIcon { "lcicons:/resources/images/popishu.svg" });
 	}
 }
 }

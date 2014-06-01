@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,6 +33,8 @@
 #include <QHash>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_editorpage.h"
 
 class QMenu;
@@ -42,21 +44,23 @@ namespace LeechCraft
 namespace Popishu
 {
 	class EditorPage : public QWidget
-						, public ITabWidget
+					 , public ITabWidget
+					 , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		Ui::EditorPage Ui_;
 
-		static QObject* S_MultiTabsParent_;
+		const TabClassInfo TC_;
+		QObject * const ParentPlugin_;
+		const ICoreProxy_ptr Proxy_;
 
 		std::unique_ptr<QToolBar> Toolbar_;
 		QMenu *DoctypeMenu_;
 		QMenu *RecentFilesMenu_;
 		QString Filename_;
 		bool Modified_;
-		QMap<QString, QList<QAction*>> WindowMenus_;
 		QHash<QString, QString> Extension2Lang_;
 
 		bool DoctypeDetected_;
@@ -64,18 +68,22 @@ namespace Popishu
 		QtMsgHandler DefaultMsgHandler_;
 		QObject *WrappedObject_;
 		bool TemporaryDocument_;
-	public:
-		static void SetParentMultiTabs (QObject*);
 
-		EditorPage (QWidget* = 0);
-		virtual ~EditorPage ();
+		bool TabRecoverSaveScheduled_ = false;
+	public:
+		EditorPage (const ICoreProxy_ptr& proxy, const TabClassInfo&, QObject*);
+		~EditorPage ();
 
 		void Remove ();
 		QToolBar* GetToolBar () const;
 		QObject* ParentMultiTabs ();
-		QList<QAction*> GetTabBarContextMenuActions () const;
-		QMap<QString, QList<QAction*>> GetWindowMenus () const;
 		TabClassInfo GetTabClassInfo () const;
+
+		QByteArray GetTabRecoverData () const;
+		QIcon GetTabRecoverIcon () const;
+		QString GetTabRecoverName () const;
+
+		void RestoreState (QDataStream&);
 
 		void SetText (const QString&);
 		void SetLanguage (const QString&);
@@ -97,7 +105,10 @@ namespace Popishu
 		void on_ActionWrapWords__triggered ();
 		void on_ActionWrapCharacters__triggered ();
 		void on_ActionReplace__triggered ();
+
 		void on_TextEditor__textChanged ();
+		void on_TextEditor__cursorPositionChanged (int, int);
+
 		void on_Inject__released ();
 		void on_Release__released ();
 
@@ -109,6 +120,8 @@ namespace Popishu
 		void checkProperDoctypeAction (const QString& language);
 
 		void handleRecentFileOpen ();
+
+		void tabRecoverSave ();
 	private:
 		void SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility);
 		bool Save ();
@@ -118,7 +131,12 @@ namespace Popishu
 		QString FixLanguage (const QString&) const;
 		void ShowConsole (bool);
 		void GroupActions (const QList<QAction*>&);
+
 		void RestoreRecentFiles ();
+		void SetupDefPairs ();
+
+		void ScheduleTabRecoverSave ();
+
 		void PrependRecentFile (const QString&, bool = true);
 	signals:
 		void removeTab (QWidget*);
@@ -132,6 +150,8 @@ namespace Popishu
 		void gotEntity (const LeechCraft::Entity&);
 
 		void languageChanged (const QString& language);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }

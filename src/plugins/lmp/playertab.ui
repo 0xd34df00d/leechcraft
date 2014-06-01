@@ -96,40 +96,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLineEdit" name="CollectionFilter_">
-             <property name="placeholderText">
-              <string>Search collection</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QTreeView" name="CollectionTree_">
-             <property name="contextMenuPolicy">
-              <enum>Qt::ActionsContextMenu</enum>
-             </property>
-             <property name="dragEnabled">
-              <bool>true</bool>
-             </property>
-             <property name="alternatingRowColors">
-              <bool>true</bool>
-             </property>
-             <property name="selectionMode">
-              <enum>QAbstractItemView::ExtendedSelection</enum>
-             </property>
-             <attribute name="headerVisible">
-              <bool>false</bool>
-             </attribute>
-            </widget>
-           </item>
-           <item>
-            <widget class="QProgressBar" name="ScanProgress_">
-             <property name="value">
-              <number>24</number>
-             </property>
-             <property name="format">
-              <string notr="true">%p%</string>
-             </property>
-            </widget>
+            <widget class="LeechCraft::LMP::CollectionWidget" name="CollectionWidget_" native="true"/>
            </item>
           </layout>
          </widget>
@@ -350,6 +317,12 @@
    <class>LeechCraft::LMP::HypesWidget</class>
    <extends>QWidget</extends>
    <header>hypeswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::CollectionWidget</class>
+   <extends>QWidget</extends>
+   <header>collectionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

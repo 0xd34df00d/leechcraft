@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,12 +37,13 @@
 #include <QClipboard>
 #include <QFile>
 #include <QWebElement>
+#include <QWebHistory>
 #include <QTextCodec>
 #include <QWindowsStyle>
 #include <QFileDialog>
 #include <QtDebug>
-#include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/util.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
@@ -79,11 +80,9 @@ namespace Poshuku
 
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 
-#if QT_VERSION >= 0x040600
 		QPalette p;
 		if (p.color (QPalette::Window) != Qt::white)
 			setPalette (QWindowsStyle ().standardPalette ());
-#endif
 
 		connect (ScrollTimer_,
 				SIGNAL (timeout ()),
@@ -101,6 +100,11 @@ namespace Poshuku
 				SIGNAL (loadingURL (const QUrl&)),
 				this,
 				SLOT (remakeURL (const QUrl&)));
+		connect (page,
+				SIGNAL (saveFrameStateRequested (QWebFrame*, QWebHistoryItem*)),
+				this,
+				SLOT (handleFrameState (QWebFrame*, QWebHistoryItem*)),
+				Qt::QueuedConnection);
 
 		connect (this,
 				SIGNAL (loadFinished (bool)),
@@ -174,6 +178,9 @@ namespace Poshuku
 				setHtml (result.toString ());
 			return;
 		}
+
+		emit navigateRequested (url);
+
 		if (url.scheme () == "about")
 		{
 			if (url.path () == "plugins")
@@ -182,6 +189,7 @@ namespace Poshuku
 				NavigateHome ();
 			return;
 		}
+
 		if (title.isEmpty ())
 			title = tr ("Loading...");
 		remakeURL (url);
@@ -562,6 +570,13 @@ namespace Poshuku
 			remakeURL (url ());
 	}
 
+	void CustomWebView::handleFrameState (QWebFrame*, QWebHistoryItem*)
+	{
+		const auto& histUrl = page ()->history ()->currentItem ().url ();
+		if (histUrl != url ())
+			remakeURL (histUrl);
+	}
+
 	void CustomWebView::openLinkHere ()
 	{
 		Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
@@ -700,7 +715,6 @@ namespace Poshuku
 
 	void CustomWebView::renderSettingsChanged ()
 	{
-#if QT_VERSION >= 0x040800
 		QPainter::RenderHints hints;
 		if (XmlSettingsManager::Instance ()->
 				property ("PrimitivesAntialiasing").toBool ())
@@ -716,7 +730,6 @@ namespace Poshuku
 			hints |= QPainter::HighQualityAntialiasing;
 
 		setRenderHints (hints);
-#endif
 	}
 
 	void CustomWebView::handleAutoscroll ()

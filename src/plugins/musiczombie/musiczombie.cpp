@@ -30,7 +30,7 @@
 #include "musiczombie.h"
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include <util/util.h>
 #include "pendingdisco.h"
 
@@ -46,8 +46,8 @@ namespace MusicZombie
 	{
 		Util::InstallTranslator ("musiczombie");
 
-		Queue_ = new Util::QueueManager (500);
-		AcoustidQueue_ = new Util::QueueManager (350);
+		Queue_ = new Util::QueueManager (1000);
+		AcoustidQueue_ = new Util::QueueManager (1000);
 
 		Proxy_ = proxy;
 	}

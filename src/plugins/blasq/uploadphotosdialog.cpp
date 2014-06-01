@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -95,6 +95,19 @@ namespace Blasq
 		return items;
 	}
 
+	void UploadPhotosDialog::SetFiles (const QList<UploadItem>& items)
+	{
+		for (const auto& item : items)
+			AppendPhotoItem (item);
+		validate ();
+	}
+
+	void UploadPhotosDialog::LockFiles ()
+	{
+		Ui_.AddPhotoButton_->setEnabled (false);
+		Ui_.RemovePhotoButton_->setEnabled (false);
+	}
+
 	void UploadPhotosDialog::on_SelectAlbumButton__released ()
 	{
 		SelectAlbumDialog dia (Acc_);
@@ -102,6 +115,24 @@ namespace Blasq
 			return;
 
 		SetSelectedCollection (dia.GetSelectedCollection ());
+	}
+
+	void UploadPhotosDialog::AppendPhotoItem (const UploadItem& uploadItem)
+	{
+		const QPixmap orig { uploadItem.FilePath_ };
+		const auto& scaled = orig.scaled (Ui_.PhotosView_->iconSize (),
+				Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+		const QFileInfo finfo { uploadItem.FilePath_ };
+
+		auto item = new QStandardItem { scaled, finfo.fileName () };
+		item->setEditable (false);
+		item->setData (uploadItem.FilePath_, Role::Filepath);
+
+		auto sizeItem = new QStandardItem (Util::MakePrettySize (finfo.size ()));
+		sizeItem->setEditable (false);
+
+		FilesModel_->appendRow ({ item, sizeItem, new QStandardItem { uploadItem.Description_ } });
 	}
 
 	void UploadPhotosDialog::on_AddPhotoButton__released ()
@@ -112,22 +143,7 @@ namespace Blasq
 				tr ("Images (*.jpg *.png *.gif);;All files (*.*)"));
 
 		for (const auto& filename : filenames)
-		{
-			const QPixmap orig (filename);
-			const auto& scaled = orig.scaled (Ui_.PhotosView_->iconSize (),
-					Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-			const QFileInfo finfo (filename);
-
-			auto item = new QStandardItem (scaled, finfo.fileName ());
-			item->setEditable (false);
-			item->setData (filename, Role::Filepath);
-
-			auto sizeItem = new QStandardItem (Util::MakePrettySize (finfo.size ()));
-			sizeItem->setEditable (false);
-
-			FilesModel_->appendRow ({ item, sizeItem, new QStandardItem });
-		}
+			AppendPhotoItem ({ filename, {} });
 
 		validate ();
 	}

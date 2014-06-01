@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
+#include "interfaces/core/iiconthememanager.h"
 #include "xdg.h"
 #include "item.h"
 
@@ -97,7 +98,7 @@ namespace XDG
 			if (name.endsWith (".png") || name.endsWith (".svg"))
 				name.chop (4);
 
-			auto result = proxy->GetIcon (name);
+			auto result = proxy->GetIconThemeManager ()->GetIcon (name);
 			if (!result.isNull ())
 				return result;
 
@@ -183,6 +184,7 @@ namespace XDG
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<Cat2Items_t>*> (sender ());
 		auto result = watcher->result ();
+		watcher->deleteLater ();
 		if (result == Items_)
 			return;
 

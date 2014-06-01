@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,8 +28,6 @@
  **********************************************************************/
 
 #include "highlighter.h"
-#include <QTextCodec>
-#include "hunspell/hunspell.hxx"
 
 namespace LeechCraft
 {
@@ -37,31 +35,22 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	Highlighter::Highlighter (std::shared_ptr<Hunspell> hunspell, QTextDocument *parent)
+	Highlighter::Highlighter (const ISpellChecker_ptr& checker, QTextDocument *parent)
 	: QSyntaxHighlighter (parent)
-	, Hunspell_ (hunspell)
+	, Checker_ (checker)
 	{
 		SpellCheckFormat_.setUnderlineColor (QColor (Qt::red));
 		SpellCheckFormat_.setUnderlineStyle (QTextCharFormat::SpellCheckUnderline);
-
-		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
-	}
-
-	void Highlighter::UpdateHunspell (std::shared_ptr<Hunspell> hunspell)
-	{
-		Hunspell_ = hunspell;
 	}
 
 	void Highlighter::highlightBlock (const QString& text)
 	{
 		QRegExp sr ("\\W+");
-		const QStringList& splitted = text.simplified ()
-				.split (sr, QString::SkipEmptyParts);
+		const auto& splitted = text.simplified ().split (sr, QString::SkipEmptyParts);
 		int prevStopPos = 0;
-		Q_FOREACH (const QString& str, splitted)
+		for (const auto& str : splitted)
 		{
-			if (str.size () <= 1 ||
-					CheckWord (str))
+			if (str.size () <= 1 || Checker_->IsCorrect (str))
 				continue;
 
 			const int pos = text.indexOf (str, prevStopPos);
@@ -71,12 +60,6 @@ namespace Rosenthal
 				prevStopPos = pos + str.length ();
 			}
 		}
-	}
-
-	bool Highlighter::CheckWord (const QString& word)
-	{
-		const QByteArray& encoded = Codec_->fromUnicode (word);
-		return Hunspell_->spell (encoded.data ());
 	}
 }
 }

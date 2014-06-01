@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,20 +30,42 @@
 #pragma once
 
 #include <QObject>
-
-typedef struct _GstElement GstElement;
+#include "sourceobject.h"
+#include "interfaces/lmp/ipath.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class SourceObject;
 	class Output;
 
+	typedef std::function<int (GstBus*, GstMessage*)> SyncHandler_f;
+
 	class Path : public QObject
+			   , public IPath
 	{
+		SourceObject * const SrcObj_;
+
+		GstElement * const WholeBin_;
+		GstElement * const Identity_;
+
 		GstElement *Pipeline_;
-		GstElement *Audiobin_;
+		GstElement *OutputBin_;
+
+		QList<GstElement*> NextWholeElems_;
+
+		enum class Action
+		{
+			Add,
+			Remove
+		};
+
+		struct QueueItem
+		{
+			GstElement *Elem_;
+			Action Act_;
+		};
+		QList<QueueItem> Queue_;
 	public:
 		Path (SourceObject*, Output*, QObject* = 0);
 		~Path ();
@@ -51,8 +73,25 @@ namespace LMP
 		GstElement* GetPipeline () const;
 		void SetPipeline (GstElement*);
 
-		GstElement* GetAudioBin () const;
-		void SetAudioBin (GstElement*);
+		GstElement* GetOutPlaceholder () const;
+		GstElement* GetWholeOut () const;
+
+		GstElement* GetOutputBin () const;
+		void SetOutputBin (GstElement*);
+
+		SourceObject* GetSourceObject () const;
+
+		void AddSyncHandler (const SyncHandler_f&, QObject*);
+		void AddAsyncHandler (const AsyncHandler_f&, QObject*);
+
+		void InsertElement (GstElement*);
+		void RemoveElement (GstElement*);
+
+		void FinalizeAction ();
+
+		void PerformWProbe (const std::function<void ()>&);
+	private:
+		void RotateQueue ();
 	};
 }
 }

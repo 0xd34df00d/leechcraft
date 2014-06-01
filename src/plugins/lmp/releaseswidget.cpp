@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,10 +33,11 @@
 #include <QGraphicsObject>
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/sys/paths.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
@@ -88,16 +89,16 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 
-		new Util::StandardNAMFactory ("lmp/cache",
+		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
 				Ui_.ReleasesView_->engine ());
 
-		Ui_.ReleasesView_->engine ()->addImageProvider ("sysIcons",
+		Ui_.ReleasesView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
-		Ui_.ReleasesView_->setSource (QUrl ("qrc:/lmp/resources/qml/ReleasesView.qml"));
+		Ui_.ReleasesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "ReleasesView.qml"));
 
 		connect (Ui_.InfoProvider_,
 				SIGNAL (activated (int)),

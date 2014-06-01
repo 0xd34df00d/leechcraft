@@ -34,8 +34,8 @@
 #include <QMainWindow>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/util.h>
+#include <util/xpc/notificationactionhandler.h>
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "commentsmanager.h"
@@ -357,13 +357,14 @@ namespace Blogique
 					QString (" <a href=\"%1\">%1</a>\n")
 						.arg (entries.value (0).EntryUrl_.toString ()),
 				Priority::PInfo_);
-		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
+
+		auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open Link"),
 				[this, entries] ()
 				{
-					Entity urlEntity = Util::MakeEntity (entries.value (0).EntryUrl_,
-							QString (),
-							static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+					auto urlEntity = Util::MakeEntity (entries.value (0).EntryUrl_,
+							{},
+							OnlyHandle | FromUserInitiated);
 					SendEntity (urlEntity);
 				});
 		emit gotEntity (e);

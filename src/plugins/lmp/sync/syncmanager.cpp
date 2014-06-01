@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -90,21 +90,14 @@ namespace LMP
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< e.what ();
+						<< e.what ()
+						<< "for"
+						<< mask
+						<< transcoded;
 				return false;
 			}
 
-			auto fix = [] (QString& str) -> void
-			{
-				str.replace ('/', '_');
-				str.replace ('?', '_');
-				str.replace ('*', '_');
-			};
-			fix (info.Album_);
-			fix (info.Artist_);
-			fix (info.Title_);
-
-			mask = PerformSubstitutions (mask, info);
+			mask = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
 			const auto& ext = QFileInfo (transcoded).suffix ();
 			if (!mask.endsWith (ext))
 				mask += "." + ext;
@@ -133,7 +126,13 @@ namespace LMP
 				.arg ("<em>" + syncTo.MountPath_) + "</em>");
 
 		if (!FixMask (mask, transcoded))
+		{
+			const auto& errString = tr ("Unable to expand mask for file %1.")
+					.arg ("<em>" + QFileInfo { transcoded }.fileName () + "</em>");
+			emit uploadLog (errString);
+			handleErrorCopying (transcoded, errString);
 			return;
+		}
 
 		if (!Mount2Copiers_.contains (syncTo.MountPath_))
 			CreateSyncer (syncTo.MountPath_);

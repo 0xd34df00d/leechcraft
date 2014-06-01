@@ -30,31 +30,18 @@ set (SRCS
 	audiofindproxy.cpp
 	videofindproxy.cpp
 	)
-set (HEADERS
-	vgrabber.h
-	findproxy.h
-	categoriesselector.h
-	categorymodifier.h
-	xmlsettingsmanager.h
-	audiofindproxy.h
-	videofindproxy.h
-	)
 set (FORMS
 	categoriesselector.ui
 	categorymodifier.ui
 	)
 set (RESOURCES vgrabberresources.qrc)
 CreateTrs ("vgrabber" "ar;de;en;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_vgrabber SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)

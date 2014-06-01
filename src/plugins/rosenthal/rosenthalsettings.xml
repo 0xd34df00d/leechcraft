@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Rosenthal" />
+		<groupbox>
+			<label value="Languages" />
+			<item type="combobox" property="PrimaryLanguage" mayHaveDataSource="true">
+				<label value="Primary language:" />
+			</item>
+			<item type="dataview" property="Dictionaries" addEnabled="false" modifyEnabled="false" removeEnabled="false" />
+			<item type="pushbutton" name="InstallDicts">
+				<label value="Download and install dictionaries..." />
+			</item>
+		</groupbox>
+	</page>
+</settings>

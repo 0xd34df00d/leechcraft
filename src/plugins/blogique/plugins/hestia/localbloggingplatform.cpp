@@ -34,8 +34,8 @@
 #include <QtDebug>
 #include <QMainWindow>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/passutils.h>
-#include <util/util.h>
+#include <util/xpc/passutils.h>
+#include <util/xpc/util.h>
 #include "accountconfigurationwidget.h"
 #include "core.h"
 #include "localblogaccount.h"

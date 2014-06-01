@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,15 +36,60 @@
 
 class QAbstractItemModel;
 
+/** @brief Interface for classes providing information about removable
+ * devices.
+ *
+ * This interface is to be implemented by plugins that provide
+ * information about currently connected USB Mass Storage devices or
+ * removable devices in general.
+ *
+ * The information is provided via the model returned by the
+ * GetDevicesModel() method. Each row corresponds to a separate device or
+ * its part, like a partition for a flash drive. The model is
+ * hierarchical: for example, partitions of a flash drive are children of
+ * the row representing the flash drive itself.
+ *
+ * Each row of the model should contain data for roles defined in the
+ * LeechCraft::CommonDevRole enum as well as LeechCraft::USBDeviceRole or
+ * LeechCraft::MassStorageRole enums, depending on the device type.
+ */
 class Q_DECL_EXPORT IRemovableDevManager
 {
 public:
 	virtual ~IRemovableDevManager () {}
 
-	virtual bool SupportsDevType (LeechCraft::DeviceType) const = 0;
+	/** @brief Checks whether the plugin can handle the device \em type.
+	 *
+	 * This function should return whether the device manager plugin
+	 * recognizes the given \em type of the devices, like USB mass
+	 * storages.
+	 *
+	 * If a device type is supported, the connected devices of the
+	 * corresponding \em type are expected to be found in the model
+	 * returned by the GetDevicesModel() method.
+	 *
+	 * @param[in] type The type of the devices to check.
+	 * @return Whether the \em type is recognized and supported by the
+	 * plugin.
+	 */
+	virtual bool SupportsDevType (LeechCraft::DeviceType type) const = 0;
 
+	/** @brief Returns the model describing the devices.
+	 *
+	 * Each row of the model should contain data for roles defined in the
+	 * LeechCraft::CommonDevRole enum as well as LeechCraft::USBDeviceRole or
+	 * LeechCraft::MassStorageRole enums, depending on the device type.
+	 */
 	virtual QAbstractItemModel* GetDevicesModel () const = 0;
 
+	/** @brief Tries to mount the device with the given \em id.
+	 *
+	 * This function tried to mount the device identified by \em id, if
+	 * applicable. The \em id corresponds to the ID contained in the
+	 * CommonDevRole::DevID role.
+	 *
+	 * @sa CommonDevRole::DevID
+	 */
 	virtual void MountDevice (const QString& id) = 0;
 };
 

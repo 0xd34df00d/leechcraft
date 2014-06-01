@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -41,9 +41,13 @@ namespace Azoth
 	: QObject (parent)
 	, Edit_ (edit)
 	, View_ (view)
-	, IsSearching_ (false)
 	{
 		Edit_->installEventFilter (this);
+	}
+
+	void KeyboardRosterFixer::SetInterceptEnter (bool intercept)
+	{
+		InterceptEnter_ = intercept;
 	}
 
 	bool KeyboardRosterFixer::eventFilter (QObject*, QEvent *e)
@@ -72,22 +76,24 @@ namespace Azoth
 			}
 		}
 
-		switch (ke->key ())
+		QList<int> intercepts
 		{
-		case Qt::Key_Down:
-		case Qt::Key_Up:
-		case Qt::Key_PageDown:
-		case Qt::Key_PageUp:
-		case Qt::Key_Enter:
-		case Qt::Key_Return:
-		case Qt::Key_Escape:
+			Qt::Key_Down, Qt::Key_Up,
+			Qt::Key_PageDown, Qt::Key_PageUp,
+			Qt::Key_Escape
+		};
+		if (InterceptEnter_)
+			intercepts << Qt::Key_Enter << Qt::Key_Return;
+
+		if (intercepts.contains (ke->key ()))
+		{
 			IsSearching_ = false;
 			qApp->sendEvent (View_, e);
 			return true;
-		default:
-			IsSearching_ = true;
-			return false;
 		}
+
+		IsSearching_ = true;
+		return false;
 	}
 }
 }

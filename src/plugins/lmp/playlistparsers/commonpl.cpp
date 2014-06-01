@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,17 +36,23 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	QList<AudioSource> CommonRead2Sources (const ReadParams& params)
+	Playlist CommonRead2Sources (const ReadParams& params)
 	{
 		const auto& plDir = QFileInfo (params.Path_).absoluteDir ();
 
-		QList<AudioSource> result;
-		for (const auto& src : params.RawParser_ (params.Path_))
+		Playlist result;
+
+		for (const auto& raw : params.RawParser_ (params.Path_))
 		{
+			const auto& src = raw.SourceStr_;
+
 			QUrl url (src);
 			if (!url.scheme ().isEmpty ())
 			{
-				result << (url.scheme () == "file" ? url.toLocalFile () : url);
+				result.Append ({
+						url.scheme () == "file" ? url.toLocalFile () : url,
+						raw.Additional_
+					});
 				continue;
 			}
 
@@ -55,9 +61,9 @@ namespace LMP
 				result += CommonRead2Sources ({ params.Suffixes_,
 							plDir.absoluteFilePath (src), params.RawParser_ });
 			else if (fi.isRelative ())
-				result << plDir.absoluteFilePath (src);
+				result.Append ({ plDir.absoluteFilePath (src), raw.Additional_ });
 			else
-				result << src;
+				result.Append ({ src, raw.Additional_ });
 		}
 
 		return result;

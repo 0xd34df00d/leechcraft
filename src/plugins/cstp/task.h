@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,10 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_CSTP_TASK_H
-#define PLUGINS_CSTP_TASK_H
-#include <list>
-#include <boost/intrusive_ptr.hpp>
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QUrl>
@@ -52,7 +50,8 @@ namespace CSTP
 	class Task : public QObject
 	{
 		Q_OBJECT
-		std::auto_ptr<QNetworkReply> Reply_;
+
+		std::unique_ptr<QNetworkReply, std::function<void (QNetworkReply*)>> Reply_;
 		QUrl URL_;
 		QTime StartTime_;
 		qint64 Done_, Total_, FileSizeAtStart_;
@@ -62,8 +61,11 @@ namespace CSTP
 		int UpdateCounter_;
 		QTimer *Timer_;
 		bool CanChangeName_;
+
+		QUrl Referer_;
+		const QVariantMap Params_;
 	public:
-		explicit Task (const QUrl& = QUrl ());
+		explicit Task (const QUrl& url = QUrl (), const QVariantMap& params = QVariantMap ());
 		explicit Task (QNetworkReply*);
 
 		void Start (const std::shared_ptr<QFile>&);
@@ -86,6 +88,8 @@ namespace CSTP
 		void RecalculateSpeed ();
 		void HandleMetadataRedirection ();
 		void HandleMetadataFilename ();
+
+		void Cleanup ();
 	private slots:
 		void handleDataTransferProgress (qint64, qint64);
 		void redirectedConstruction (const QByteArray&);
@@ -103,5 +107,3 @@ namespace CSTP
 	};
 }
 }
-
-#endif

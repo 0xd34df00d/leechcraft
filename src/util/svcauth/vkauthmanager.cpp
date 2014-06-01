@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,9 +32,10 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <QTimer>
+#include <QEvent>
 #include <QWebView>
 #include <util/network/customcookiejar.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 
 namespace LeechCraft
 {
@@ -65,7 +66,8 @@ namespace SvcAuth
 	, Queue_ (queueMgr)
 	, ValidFor_ (0)
 	, IsRequesting_ (false)
-	, URL_ (URLFromClientID (id, scope))
+	, ID_ (id)
+	, URL_ (URLFromClientID (ID_, scope))
 	, IsRequestScheduled_ (false)
 	, ScheduleTimer_ (new QTimer (this))
 	{
@@ -79,10 +81,39 @@ namespace SvcAuth
 				SLOT (execScheduledRequest ()));
 	}
 
+	bool VkAuthManager::IsAuthenticated () const
+	{
+		return !Token_.isEmpty () &&
+			(!ValidFor_ || ReceivedAt_.secsTo (QDateTime::currentDateTime ()) < ValidFor_);
+	}
+
+	bool VkAuthManager::HadAuthentication () const
+	{
+		return !Token_.isEmpty () || !Cookies_->allCookies ().isEmpty ();
+	}
+
+	void VkAuthManager::UpdateScope (const QStringList& scope)
+	{
+		const auto& newUrl = URLFromClientID (ID_, scope);
+		if (URL_ == newUrl)
+			return;
+
+		URL_ = newUrl;
+		Token_.clear ();
+		ReceivedAt_ = QDateTime ();
+		ValidFor_ = 0;
+	}
+
 	void VkAuthManager::GetAuthKey ()
 	{
-		if (Token_.isEmpty () ||
-				ReceivedAt_.secsTo (QDateTime::currentDateTime ()) > ValidFor_)
+		if (SilentMode_)
+		{
+			PrioManagedQueues_.clear ();
+			ManagedQueues_.clear ();
+			return;
+		}
+
+		if (!IsAuthenticated ())
 		{
 			RequestAuthKey ();
 			return;
@@ -124,6 +155,11 @@ namespace SvcAuth
 	void VkAuthManager::UnmanageQueue (VkAuthManager::PrioRequestQueue_ptr queue)
 	{
 		PrioManagedQueues_.removeAll (queue);
+	}
+
+	void VkAuthManager::SetSilentMode (bool silent)
+	{
+		SilentMode_ = silent;
 	}
 
 	void VkAuthManager::InvokeQueues (const QString& token)
@@ -185,6 +221,7 @@ namespace SvcAuth
 
 		InvokeQueues (Token_);
 		emit gotAuthKey (Token_);
+		emit justAuthenticated ();
 
 		return true;
 	}
@@ -195,6 +232,28 @@ namespace SvcAuth
 		Token_.clear ();
 		ReceivedAt_ = QDateTime ();
 		ValidFor_ = 0;
+	}
+
+	namespace
+	{
+		class CloseEventFilter : public QObject
+		{
+			const std::function<void ()> Handler_;
+		public:
+			CloseEventFilter (const std::function<void ()>& handler, QObject *handlee)
+			: QObject { handlee }
+			, Handler_ { handler }
+			{
+				handlee->installEventFilter (this);
+			}
+
+			bool eventFilter (QObject*, QEvent *event)
+			{
+				if (event->type () == QEvent::Close)
+					Handler_ ();
+				return false;
+			}
+		};
 	}
 
 	void VkAuthManager::reauth ()
@@ -213,6 +272,8 @@ namespace SvcAuth
 				SIGNAL (urlChanged (QUrl)),
 				this,
 				SLOT (handleViewUrlChanged (QUrl)));
+
+		new CloseEventFilter ([this] { emit authCanceled (); }, view);
 	}
 
 	void VkAuthManager::execScheduledRequest ()

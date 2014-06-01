@@ -35,6 +35,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QtDebug>
+#include <interfaces/core/iiconthememanager.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "accountsmanager.h"
 #include "filesproxymodel.h"
@@ -54,7 +55,8 @@ namespace NetStoreManager
 	{
 		Ui_.setupUi (this);
 
-		QPushButton *createDir = new QPushButton (AM_->GetProxy ()->GetIcon ("folder-new"),
+		const auto iconMgr = AM_->GetProxy ()->GetIconThemeManager ();
+		auto createDir = new QPushButton (iconMgr->GetIcon ("folder-new"),
 				tr ("New directory..."));
 		Ui_.ButtonBox_->addButton (createDir, QDialogButtonBox::ActionRole);
 		connect (createDir,
@@ -110,7 +112,7 @@ namespace NetStoreManager
 
 			id2Item [item.ID_] = item;
 			QStandardItem *dir = new QStandardItem (AM_->GetProxy ()->
-					GetIcon ("inode-directory"), item.Name_);
+					GetIconThemeManager ()->GetIcon ("inode-directory"), item.Name_);
 			dir->setData (item.ID_, ListingRole::ID);
 			dir->setEditable (false);
 			id2StandardItem [item.ID_] = dir;
@@ -136,7 +138,7 @@ namespace NetStoreManager
 
 		const auto& index = Ui_.DirectoriesView_->currentIndex ();
 		QStandardItem *item = new QStandardItem (AM_->GetProxy ()->
-				GetIcon ("inode-directory"), path);
+				GetIconThemeManager ()->GetIcon ("inode-directory"), path);
 		item->setEditable (false);
 		if (index.isValid ())
 			Model_->itemFromIndex (ProxyModel_->mapToSource (index))->appendRow (item);

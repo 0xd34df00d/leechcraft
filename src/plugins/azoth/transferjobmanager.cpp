@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,7 +38,8 @@
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
 #include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
+#include <util/xpc/util.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
@@ -228,6 +229,7 @@ namespace Azoth
 
 		HandleJob (jobObj);
 
+		Job2SavePath_ [job] = path;
 		job->Accept (path);
 	}
 
@@ -253,15 +255,29 @@ namespace Azoth
 		return SummaryModel_;
 	}
 
-	bool TransferJobManager::OfferURLs (ICLEntry *entry, const QList<QUrl>& urls)
+	namespace
+	{
+		void CleanupUrls (QList<QUrl>& urls)
+		{
+			for (auto i = urls.begin (); i != urls.end (); )
+				if (!i->isLocalFile ())
+					i = urls.erase (i);
+				else
+					++i;
+		}
+	}
+
+	bool TransferJobManager::OfferURLs (ICLEntry *entry, QList<QUrl> urls)
 	{
 		if (entry->Variants ().isEmpty ())
 			return false;
 
-		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		ITransferManager *mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (!mgr)
 			return false;
+
+		CleanupUrls (urls);
 
 		if (urls.isEmpty ())
 			return false;
@@ -280,7 +296,7 @@ namespace Azoth
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return false;
 
-		Q_FOREACH (const QUrl& url, urls)
+		for (const auto& url : urls)
 		{
 			const QString& path = url.toLocalFile ();
 			if (!QFileInfo (path).exists ())
@@ -323,6 +339,47 @@ namespace Azoth
 		}
 	}
 
+	void TransferJobManager::HandleTaskFinished (ITransferJob *job)
+	{
+		const auto& path = Job2SavePath_.take (job);
+		if (job->GetDirection () != TDIn)
+			return;
+
+		const auto& fileUrl = QUrl::fromLocalFile (path + '/' + job->GetName ());
+		const auto& openEntity = Util::MakeEntity (fileUrl,
+				{},
+				IsDownloaded | FromUserInitiated | OnlyHandle);
+		auto opener = [openEntity] { Core::Instance ().SendEntity (openEntity); };
+		if (XmlSettingsManager::Instance ().property ("AutoOpenIncomingFiles").toBool ())
+			opener ();
+
+		const auto entry = GetContact (job->GetSourceID ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown contact for"
+					<< job->GetSourceID ();
+			return;
+		}
+
+		auto e = Util::MakeAN ("Azoth",
+				tr ("Received file from %1: %2.")
+					.arg (entry->GetEntryName ())
+					.arg (QFileInfo { job->GetName () }.fileName ()),
+				PInfo_,
+				"org.LeechCraft.Azoth",
+				AN::CatDownloads,
+				AN::TypeDownloadFinished,
+				"org.LC.Plugins.Azoth.IncomingFileFinished/" + entry->GetEntryID () + "/" + job->GetName (),
+				{ entry->GetEntryName (), job->GetName () });
+		auto nh = new Util::NotificationActionHandler { e, this };
+		nh->AddFunction (tr ("Open"), opener);
+		nh->AddFunction (tr ("Open externally"),
+				[fileUrl] { QDesktopServices::openUrl (fileUrl); });
+
+		Core::Instance ().SendEntity (e);
+	}
+
 	void TransferJobManager::handleFileOffered (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
@@ -357,21 +414,47 @@ namespace Azoth
 		BuildNotification (e, entry);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
-		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = (QStringList (entry->GetEntryName ()) << job->GetName ());
+		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList { entry->GetEntryName (), job->GetName () };
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = job->GetComment ().isEmpty () ?
-				tr ("Incoming file") :
-				tr ("Incoming file: %1")
-					.arg ("<br />" + job->GetComment ());
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Incoming file: %1")
+					.arg (job->GetComment ().isEmpty () ?
+							job->GetName () :
+							job->GetComment ());
+
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncFile;
 
-		Util::NotificationActionHandler *nh =
-				new Util::NotificationActionHandler (e, this);
-		nh->AddFunction ("Accept", [this, jobObj] () { AcceptJob (jobObj, QString ()); });
-		nh->AddFunction ("Deny", [this, jobObj] () { DenyJob (jobObj); });
+		auto nh = new Util::NotificationActionHandler { e, this };
+		nh->AddFunction (tr ("Accept"), [this, jobObj] () { AcceptJob (jobObj, {}); });
+		nh->AddFunction (tr ("Deny"), [this, jobObj] () { DenyJob (jobObj); });
 		nh->AddDependentObject (jobObj);
 
 		Core::Instance ().SendEntity (e);
+	}
+
+	namespace
+	{
+		QString XferError2Str (TransferError error)
+		{
+			switch (error)
+			{
+			case TEAborted:
+				return TransferJobManager::tr ("Transfer aborted.");
+			case TEFileAccessError:
+				return TransferJobManager::tr ("Error accessing file.");
+			case TEFileCorruptError:
+				return TransferJobManager::tr ("File is corrupted.");
+			case TEProtocolError:
+				return TransferJobManager::tr ("Protocol error.");
+			case TENoError:
+				return TransferJobManager::tr ("No error.");
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown error"
+					<< error;
+
+			return {};
+		}
 	}
 
 	void TransferJobManager::handleXferError (TransferError error, const QString& message)
@@ -389,34 +472,13 @@ namespace Azoth
 
 		const QString& other = GetContactName (job->GetSourceID ());
 
-		QString str;
-		if (job->GetDirection () == TDIn)
-			str = tr ("Unable to transfer file from %1.")
-					.arg (other);
-		else
-			str = tr ("Unable to transfer file to %1.")
-					.arg (other);
+		auto str = job->GetDirection () == TDIn ?
+			tr ("Unable to transfer file from %1.")
+				.arg (other) :
+			tr ("Unable to transfer file to %1.")
+				.arg (other);
 
-		str += " ";
-
-		switch (error)
-		{
-		case TEAborted:
-			str += tr ("Transfer aborted.");
-			break;
-		case TEFileAccessError:
-			str += tr ("Error accessing file.");
-			break;
-		case TEFileCorruptError:
-			str += tr ("File is corrupted.");
-			break;
-		case TEProtocolError:
-			str += tr ("Protocol error.");
-			break;
-		case TENoError:
-			str += tr ("No error.");
-			break;
-		}
+		str += " " + XferError2Str (error);
 
 		if (!message.isEmpty ())
 			str += " " + message;
@@ -472,27 +534,22 @@ namespace Azoth
 			HandleDeoffer (sender ());
 
 		if (state != TSFinished)
+		{
 			Object2Status_ [sender ()]->setText (status);
+
+			const Entity& e = Util::MakeNotification ("Azoth",
+					msg,
+					PInfo_);
+			Core::Instance ().SendEntity (e);
+		}
 		else
 		{
 			SummaryModel_->removeRow (Object2Status_ [sender ()]->row ());
 			Object2Status_.remove (sender ());
 			Object2Progress_.remove (sender ());
 			sender ()->deleteLater ();
-		}
 
-		const Entity& e = Util::MakeNotification ("Azoth",
-				msg,
-				PInfo_);
-		Core::Instance ().SendEntity (e);
-
-		if (job->GetDirection () == TDIn &&
-				state == TSFinished)
-		{
-			const Entity& e = Util::MakeEntity (QUrl::fromLocalFile (job->GetName ()),
-					QString (),
-					static_cast<TaskParameters> (IsDownloaded | FromUserInitiated | OnlyHandle));
-			Core::Instance ().SendEntity (e);
+			HandleTaskFinished (job);
 		}
 	}
 

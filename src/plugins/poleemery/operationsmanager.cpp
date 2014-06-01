@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,11 +29,11 @@
 
 #include "operationsmanager.h"
 #include <QStandardItemModel>
+#include <util/sll/prelude.h>
 #include "storage.h"
 #include "entriesmodel.h"
 #include "core.h"
 #include "currenciesmanager.h"
-#include "prelude.h"
 
 namespace LeechCraft
 {
@@ -83,7 +83,7 @@ namespace Poleemery
 
 	QList<EntryWithBalance> OperationsManager::GetEntriesWBalance () const
 	{
-		return ZipWith (Model_->GetEntries (), Model_->GetSumInfos (),
+		return Util::ZipWith (Model_->GetEntries (), Model_->GetSumInfos (),
 					[] (EntryBase_ptr e, BalanceInfo i) { return EntryWithBalance { e, i }; });
 	}
 

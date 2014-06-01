@@ -44,6 +44,7 @@ namespace NetStoreManager
 	enum ListingRole
 	{
 		ID = Qt::UserRole + 20,
+		ParentID,
 		InTrash,
 		IsDirectory,
 		ModifiedDate,
@@ -144,7 +145,7 @@ namespace NetStoreManager
 
 	protected:
 		virtual void gotListing (const QList<StorageItem>& items) = 0;
-		virtual void listingUpdated () = 0;
+		virtual void listingUpdated (const QByteArray& parentId) = 0;
 		virtual void gotFileUrl (const QUrl& url, const QByteArray& id) = 0;
 
 		virtual void gotChanges (const QList<Change>& changes) = 0;

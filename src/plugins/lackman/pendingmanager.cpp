@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,7 +30,9 @@
 #include "pendingmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <QTimer>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "deptreebuilder.h"
 #include "core.h"
 
@@ -41,6 +43,7 @@ namespace LackMan
 	PendingManager::PendingManager (QObject *parent)
 	: QObject (parent)
 	, PendingModel_ (new QStandardItemModel)
+	, NotifyFetchListUpdateScheduled_ (false)
 	{
 	}
 
@@ -60,7 +63,6 @@ namespace LackMan
 
 	void PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
 	{
-		qDebug () << Q_FUNC_INFO << enable << installed;
 		if (enable)
 			EnablePackageInto (id, installed ? Action::Remove : Action::Install);
 		else
@@ -69,9 +71,6 @@ namespace LackMan
 
 	void PendingManager::ToggleUpdate (int id, bool enable)
 	{
-		if (ScheduledForAction_ [Action::Update].contains (id))
-			return;
-
 		if (enable)
 			EnablePackageInto (id, Action::Update);
 		else
@@ -150,7 +149,7 @@ namespace LackMan
 		RootItemForAction_ [action]->appendRow (packageItem);
 
 		if (action != Action::Remove)
-			NotifyFetchListUpdate ();
+			ScheduleNotifyFetchListUpdate ();
 	}
 
 	void PendingManager::DisablePackageFrom (int id, PendingManager::Action action)
@@ -172,7 +171,7 @@ namespace LackMan
 		delete item;
 
 		if (action != Action::Remove)
-			NotifyFetchListUpdate ();
+			ScheduleNotifyFetchListUpdate ();
 	}
 
 	void PendingManager::ReinitRootItems ()
@@ -180,14 +179,16 @@ namespace LackMan
 		PendingModel_->clear ();
 		RootItemForAction_.clear ();
 
+		const auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+
 		RootItemForAction_ [Action::Install] =
-				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("list-add"),
+				new QStandardItem (mgr->GetIcon ("list-add"),
 						tr ("To be installed"));
 		RootItemForAction_ [Action::Remove] =
-				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("list-remove"),
+				new QStandardItem (mgr->GetIcon ("list-remove"),
 						tr ("To be removed"));
 		RootItemForAction_ [Action::Update] =
-				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("system-software-update"),
+				new QStandardItem (mgr->GetIcon ("system-software-update"),
 						tr ("To be updated"));
 
 		for (int i = Action::Install; i < Action::MAX; ++i)
@@ -198,8 +199,21 @@ namespace LackMan
 		}
 	}
 
-	void PendingManager::NotifyFetchListUpdate ()
+	void PendingManager::ScheduleNotifyFetchListUpdate ()
 	{
+		if (NotifyFetchListUpdateScheduled_)
+			return;
+
+		NotifyFetchListUpdateScheduled_ = true;
+		QTimer::singleShot (0,
+				this,
+				SLOT (notifyFetchListUpdate ()));
+	}
+
+	void PendingManager::notifyFetchListUpdate ()
+	{
+		NotifyFetchListUpdateScheduled_ = false;
+
 		auto ids = (ScheduledForAction_ [Action::Install] +
 					ScheduledForAction_ [Action::Update]).toList ();
 		Q_FOREACH (const int id, ids)

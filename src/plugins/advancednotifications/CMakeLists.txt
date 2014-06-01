@@ -6,6 +6,7 @@ set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
@@ -63,3 +64,9 @@ install (TARGETS leechcraft_advancednotifications DESTINATION ${LC_PLUGINS_DEST}
 install (FILES advancednotificationssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/qml/advancednotifications DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/sounds DESTINATION ${LC_SHARE_DEST})
+
+option (ENABLE_ADVANCEDNOTIFICATIONS_DOLLE "Enable Dolle, OS X notifications backend" OFF)
+
+if (ENABLE_ADVANCEDNOTIFICATIONS_DOLLE)
+	add_subdirectory (plugins/dolle)
+endif ()

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "networkdiskcache.h"
-#include <util.h>
 #include <QtDebug>
 #include <QDateTime>
 #include <QDir>
@@ -37,6 +36,7 @@
 #include <QTimer>
 #include <QDirIterator>
 #include <QMutexLocker>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -48,7 +48,7 @@ namespace Util
 	, InsertRemoveMutex_ (QMutex::Recursive)
 	, GarbageCollectorWatcher_ (nullptr)
 	{
-		setCacheDirectory (CreateIfNotExists (subpath).absolutePath ());
+		setCacheDirectory (GetUserDir (UserDir::Cache, "network/" + subpath).absolutePath ());
 	}
 
 	NetworkDiskCache::~NetworkDiskCache ()

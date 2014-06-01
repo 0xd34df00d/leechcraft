@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -47,6 +47,7 @@ namespace Xoox
 	class RoomHandler;
 
 	class RoomParticipantEntry : public EntryBase
+							   , public std::enable_shared_from_this<RoomParticipantEntry>
 	{
 		Q_OBJECT
 
@@ -76,6 +77,8 @@ namespace Xoox
 		QString GetJID () const;
 		QString GetRealJID () const;
 		QString GetNick () const;
+
+		void StealMessagesFrom (RoomParticipantEntry*);
 
 		void SetPhotoHash (const QByteArray&);
 

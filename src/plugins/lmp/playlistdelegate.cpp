@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,9 +32,13 @@
 #include <QPainter>
 #include <QApplication>
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "player.h"
 #include "mediainfo.h"
 #include "core.h"
+#include "util.h"
+
+Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
 
 namespace LeechCraft
 {
@@ -98,6 +102,72 @@ namespace LMP
 		return QSize (width, std::max (height, 32));
 	}
 
+	void PlaylistDelegate::PaintOneShot (const QVariant& oneShotPosVar,
+			QStyleOptionViewItemV4& option, QPainter *painter, QStyle *style, bool drawSelected) const
+	{
+		if (!oneShotPosVar.isValid ())
+			return;
+
+		const auto& text = QString::number (oneShotPosVar.toInt () + 1);
+		const auto& textWidth = option.fontMetrics.width (text);
+
+		auto oneShotRect = option.rect;
+		oneShotRect.setWidth (std::max (textWidth + 2 * Padding, oneShotRect.height ()));
+
+		painter->save ();
+		painter->setRenderHint (QPainter::Antialiasing);
+		painter->setRenderHint (QPainter::HighQualityAntialiasing);
+		painter->setBrush (option.palette.brush (drawSelected ?
+					QPalette::Highlight :
+					QPalette::Button));
+		painter->setPen (option.palette.color (QPalette::ButtonText));
+		painter->drawEllipse (oneShotRect);
+		painter->restore ();
+
+		style->drawItemText (painter,
+				oneShotRect,
+				Qt::AlignCenter,
+				option.palette,
+				true,
+				text);
+
+		option.rect.adjust (oneShotRect.width () + Padding, 0, 0, 0);
+	}
+
+	void PlaylistDelegate::PaintRules (const QVariant& rulesVar,
+			QStyleOptionViewItemV4& option, QPainter *painter, QStyle *style) const
+	{
+		if (!rulesVar.isValid ())
+			return;
+
+		const auto flagWidth = option.fontMetrics.width (GetRuleSymbol ({}).first);
+		const auto rectWidth = std::max (flagWidth + 2 * Padding, option.rect.height ());
+
+		for (const auto& rule : rulesVar.value<QList<Entity>> ())
+		{
+			painter->save ();
+
+			auto ruleRect = option.rect;
+			ruleRect.setWidth (rectWidth);
+
+			const auto& ruleSymb = GetRuleSymbol (rule);
+			const auto& color = ruleSymb.second;
+			if (color.isValid ())
+				painter->setPen (color);
+
+			style->drawItemText (painter,
+					ruleRect,
+					Qt::AlignCenter,
+					option.palette,
+					true,
+					ruleSymb.first);
+
+			painter->restore ();
+
+			option.rect.adjust (ruleRect.width () + Padding, 0, 0, 0);
+		}
+	}
+
 	void PlaylistDelegate::PaintTrack (QPainter *painter,
 			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
@@ -133,43 +203,19 @@ namespace LMP
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &bgOpt, painter, option.widget);
 
-		const auto& oneShotPosVar = index.data (Player::Role::OneShotPos);
-		if (oneShotPosVar.isValid ())
-		{
-			const auto& text = QString::number (oneShotPosVar.toInt () + 1);
-			const auto& textWidth = option.fontMetrics.width (text);
-
-			auto oneShotRect = option.rect;
-			oneShotRect.setWidth (std::max (textWidth + 2 * Padding, oneShotRect.height ()));
-
-			painter->save ();
-			painter->setRenderHint (QPainter::Antialiasing);
-			painter->setRenderHint (QPainter::HighQualityAntialiasing);
-			painter->setBrush (option.palette.brush (drawSelected ?
-						QPalette::Highlight :
-						QPalette::Button));
-			painter->setPen (option.palette.color (QPalette::ButtonText));
-			painter->drawEllipse (oneShotRect);
-			painter->restore ();
-
-			style->drawItemText (painter,
-					oneShotRect,
-					Qt::AlignCenter,
-					option.palette,
-					true,
-					text);
-
-			option.rect.adjust (oneShotRect.width () + Padding, 0, 0, 0);
-		}
+		PaintOneShot (index.data (Player::Role::OneShotPos), option, painter, style, drawSelected);
 
 		if (index.data (Player::Role::IsStop).toBool ())
 		{
-			const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("media-playback-stop");
+			const auto& icon = Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("media-playback-stop");
 			const auto& px = icon.pixmap (option.rect.size ());
 			style->drawItemPixmap (painter, option.rect, Qt::AlignLeft | Qt::AlignVCenter, px);
 
 			option.rect.adjust (px.width () + Padding, 0, 0, 0);
 		}
+
+		PaintRules (index.data (Player::Role::MatchingRules), option, painter, style);
 
 		QString lengthText = Util::MakeTimeFromLong (info.Length_);
 		if (lengthText.startsWith ("00:"))

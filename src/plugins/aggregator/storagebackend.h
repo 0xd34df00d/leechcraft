@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,6 +39,9 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	class StorageBackend;
+	typedef std::shared_ptr<StorageBackend> StorageBackend_ptr;
+
 	/** @brief Abstract base class for storage backends.
 	 *
 	 * Specifies interface for all storage backends. Includes functions for
@@ -63,10 +66,9 @@ namespace Aggregator
 			SBMysql
 		};
 		StorageBackend (QObject* = 0);
-		virtual ~StorageBackend ();
 
-		static std::shared_ptr<StorageBackend> Create (const QString&, const QString& = QString ());
-		static std::shared_ptr<StorageBackend> Create (Type, const QString& = QString ());
+		static StorageBackend_ptr Create (const QString&, const QString& = QString ());
+		static StorageBackend_ptr Create (Type, const QString& = QString ());
 
 		static QString LoadQuery (const QString&, const QString&);
 
@@ -251,7 +253,6 @@ namespace Aggregator
 		 * function should do nothing.
 		 *
 		 * @param[in] channel Pointer to the channel that should be added.
-		 * @param[in] feedURL Parent feed's URL.
 		 */
 		virtual void AddChannel (Channel_ptr channel) = 0;
 
@@ -315,15 +316,15 @@ namespace Aggregator
 
 		/** @brief Removes an already existing item.
 		 *
-		 * This function would emit channelDataUpdated() signal after it
-		 * finishes.
+		 * This function emits channelDataUpdated() and itemsRemoved()
+		 * signals if it removes all the items successfully.
 		 *
-		 * If the specified item doesn't exist, this function should do
-		 * nothing.
+		 * If some of the specified items don't exist, this function
+		 * merely ignores them..
 		 *
-		 * @param[in] id ID of the item that should be removed.
+		 * @param[in] ids IDs of the items that should be removed.
 		 */
-		virtual void RemoveItem (const IDType_t& id) = 0;
+		virtual void RemoveItems (const QSet<IDType_t>& ids) = 0;
 
 		/** @brief Removes an already existing channel.
 		 *
@@ -342,9 +343,9 @@ namespace Aggregator
 		 * If the specified feed doesn't exist, this function should do
 		 * nothing.
 		 *
-		 * @param[in] feed Pointer to the feed that should be removed.
+		 * @param[in] feedId The ID of the feed that should be removed.
 		 */
-		virtual void RemoveFeed (const IDType_t&) = 0;
+		virtual void RemoveFeed (const IDType_t& feedId) = 0;
 
 		/** @brief Update feeds storage section.
 		 *
@@ -407,7 +408,13 @@ namespace Aggregator
 		 *
 		 * This signal is emitted when a channel is updated.
 		 *
+		 * @warning StorageBackendManager::channelDataUpdated() should
+		 * be used instead as it collects the signal from all
+		 * instantiated storage managers.
+		 *
 		 * @param[out] channel Pointer to the updated channel.
+		 *
+		 * @sa StorageBackendManager
 		 */
 		void channelDataUpdated (Channel_ptr channel) const;
 
@@ -415,22 +422,37 @@ namespace Aggregator
 		 *
 		 * This signal is emitted when a single item is updated.
 		 *
+		 * @warning StorageBackendManager::itemDataUpdated() should
+		 * be used instead as it collects the signal from all
+		 * instantiated storage managers.
+		 *
 		 * @param[out] item Pointer to the updated item.
 		 * @param[out] channel Pointer to the channel containing updated
 		 * item.
+		 *
+		 * @sa StorageBackendManager
 		 */
 		void itemDataUpdated (Item_ptr item, Channel_ptr channel) const;
 
 		/** @brief Notifies that a number of items was removed.
+		 *
+		 * @warning StorageBackendManager::itemsRemoved() should
+		 * be used instead as it collects the signal from all
+		 * instantiated storage managers.
+		 *
+		 * @param[out] items The set of IDs of items that have been
+		 * removed.
+		 *
+		 * @sa StorageBackendManager
 		 */
-		void itemsRemoved (const QSet<IDType_t>&) const;
+		void itemsRemoved (const QSet<IDType_t>& items) const;
 
 		/** @brief Should be emitted whenever a full item is loaded.
 		 *
 		 * @param[out] proxy Standard proxy object.
-		 * @param[out] itemId The ID of the item to be loaded.
+		 * @param[out] item The pointer to the already loaded item.
 		 */
-		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item*) const;
+		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item *item) const;
 	};
 }
 }

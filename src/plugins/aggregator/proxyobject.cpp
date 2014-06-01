@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "proxyobject.h"
-#include <boost/foreach.hpp>
 #include "core.h"
+#include "channelsmodel.h"
+#include "itemslistmodel.h"
 
 namespace LeechCraft
 {
@@ -49,7 +50,7 @@ namespace Aggregator
 
 			item->ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
 
-			BOOST_FOREACH (Enclosure& enc, item->Enclosures_)
+			for (auto& enc : item->Enclosures_)
 				enc.ItemID_ = item->ItemID_;
 		}
 
@@ -59,7 +60,7 @@ namespace Aggregator
 				return;
 
 			channel->ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
-			Q_FOREACH (Item_ptr item, channel->Items_)
+			for (const auto& item : channel->Items_)
 			{
 				item->ChannelID_ = channel->ChannelID_;
 
@@ -74,7 +75,7 @@ namespace Aggregator
 
 			feed->FeedID_ = Core::Instance ().GetPool (PTFeed).GetID ();
 
-			Q_FOREACH (Channel_ptr channel, feed->Channels_)
+			for (const auto& channel : feed->Channels_)
 			{
 				channel->FeedID_ = feed->FeedID_;
 
@@ -104,6 +105,11 @@ namespace Aggregator
 		Core::Instance ().GetStorageBackend ()->AddItem (item);
 	}
 
+	QAbstractItemModel* ProxyObject::GetChannelsModel () const
+	{
+		return Core::Instance ().GetRawChannelsModel ();
+	}
+
 	QList<Channel_ptr> ProxyObject::GetAllChannels () const
 	{
 		QList<Channel_ptr> result;
@@ -127,6 +133,28 @@ namespace Aggregator
 		items_container_t items;
 		Core::Instance ().GetStorageBackend ()->GetItems (items, channelId);
 		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
+	}
+
+	Item_ptr ProxyObject::GetItem (IDType_t id) const
+	{
+		return Core::Instance ().GetStorageBackend ()->GetItem (id);
+	}
+
+	void ProxyObject::SetItemRead (IDType_t id, bool read) const
+	{
+		const auto sb = Core::Instance ().GetStorageBackend ();
+
+		auto item = sb->GetItem (id);
+		if (!item)
+			return;
+
+		item->Unread_ = !read;
+		sb->UpdateItem (item);
+	}
+
+	QAbstractItemModel* ProxyObject::CreateItemsModel () const
+	{
+		return new ItemsListModel;
 	}
 }
 }

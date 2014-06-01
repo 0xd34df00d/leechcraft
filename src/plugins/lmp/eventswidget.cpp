@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,6 +37,7 @@
 #include <interfaces/iinfo.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/sys/paths.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -93,7 +94,7 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 
-		new Util::StandardNAMFactory ("lmp/cache",
+		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
 				Ui_.View_->engine ());
 
@@ -103,7 +104,7 @@ namespace LMP
 		Ui_.View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
 		Ui_.View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
-		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/EventsView.qml"));
+		Ui_.View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "EventsView.qml"));
 
 		connect (Ui_.View_->rootObject (),
 				SIGNAL (attendSure (int)),

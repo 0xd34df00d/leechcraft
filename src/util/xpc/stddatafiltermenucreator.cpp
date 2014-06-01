@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
-#include "../util.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -63,7 +63,7 @@ namespace Util
 	{
 		auto entity = MakeEntity (dataVar,
 				QString (),
-				static_cast<TaskParameters> (FromUserInitiated) | OnlyHandle,
+				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/data-filter-request");
 		for (auto plugin : em->GetPossibleHandlers (entity))
 		{
@@ -97,6 +97,16 @@ namespace Util
 		}
 	}
 
+	const QByteArray& StdDataFilterMenuCreator::GetChosenPlugin () const
+	{
+		return ChosenPlugin_;
+	}
+
+	const QByteArray& StdDataFilterMenuCreator::GetChosenVariant () const
+	{
+		return ChosenVariant_;
+	}
+
 	void StdDataFilterMenuCreator::handleDataFilterAction ()
 	{
 		auto action = qobject_cast<QAction*> (sender ());
@@ -105,6 +115,9 @@ namespace Util
 		auto entity = data.Entity_;
 		entity.Additional_ ["DataFilter"] = data.VarID_;
 		EntityMgr_->HandleEntity (entity, data.Plugin_);
+
+		ChosenPlugin_ = qobject_cast<IInfo*> (data.Plugin_)->GetUniqueID ();
+		ChosenVariant_ = data.VarID_;
 	}
 }
 }

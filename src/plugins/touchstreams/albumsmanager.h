@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -64,9 +64,12 @@ namespace TouchStreams
 
 		struct AlbumInfo
 		{
-			qlonglong ID_;
+			qlonglong ID_ = static_cast<qlonglong> (-1);
 			QString Name_;
-			QStandardItem *Item_;
+			QStandardItem *Item_ = nullptr;
+
+			AlbumInfo () = default;
+			AlbumInfo (qlonglong, const QString&, QStandardItem*);
 		};
 		QHash<qlonglong, AlbumInfo> Albums_;
 

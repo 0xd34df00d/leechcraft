@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,6 +29,7 @@
 
 #include "flagiconprovider.h"
 #include <QImage>
+#include <QIcon>
 #include <util/sys/paths.h>
 
 namespace LeechCraft
@@ -40,9 +41,13 @@ namespace KBSwitch
 	{
 	}
 
-	QPixmap FlagIconProvider::requestPixmap (const QString& id, QSize *actual, const QSize&)
+	QPixmap FlagIconProvider::requestPixmap (const QString& id, QSize *actual, const QSize& requested)
 	{
 		QPixmap px (Util::GetSysPath (Util::SysPath::Share, "global_icons/flags", id + ".png"));
+
+		if (px.isNull ())
+			px = QIcon::fromTheme ("preferences-desktop-keyboard").pixmap (requested);
+
 		if (actual)
 			*actual = px.size ();
 		return px;

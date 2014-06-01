@@ -43,11 +43,16 @@ include_directories (
 	)
 set (COMMON_SRCS
 	mediainfo.cpp
+	util/lmp/gstutil.cpp
+	util/lmp/filtersettingsmanager.cpp
 	)
 add_library (leechcraft_lmp_common STATIC
 	${COMMON_SRCS}
 	)
 set_target_properties (leechcraft_lmp_common PROPERTIES POSITION_INDEPENDENT_CODE True)
+target_link_libraries (leechcraft_lmp_common
+	${LibGuess_LIBRARIES}
+	)
 
 set (SRCS
 	lmp.cpp
@@ -108,10 +113,20 @@ set (SRCS
 	radiocustomdialog.cpp
 	stdartistactionsmanager.cpp
 	notificationplayer.cpp
+	effectsmanager.cpp
+	recursivedirwatcher.cpp
+	rganalysismanager.cpp
+	rgfiltercontroller.cpp
+	collectionsmanager.cpp
+	collectionwidget.cpp
+	localcollectionmodel.cpp
+	playerrulesmanager.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
 	engine/pathelement.cpp
+	engine/rganalyser.cpp
+	engine/rgfilter.cpp
 	engine/sourceobject.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
@@ -129,6 +144,7 @@ set (SRCS
 	sync/unmountabledevmanager.cpp
 	sync/uploadmodel.cpp
 	playlistparsers/commonpl.cpp
+	playlistparsers/playlist.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -154,6 +170,7 @@ set (FORMS
 	volumeslider.ui
 	seekslider.ui
 	radiocustomdialog.ui
+	collectionwidget.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui
@@ -163,6 +180,14 @@ CreateTrs ("lmp" "en;es;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp" "en;ru_RU" "${SRCS}" "${FORMS}" "lmpsettings.xml")
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+
+set (ADDITIONAL_LIBRARIES)
+if (NOT APPLE)
+	set (SRCS ${SRCS} recursivedirwatcher_generic.cpp)
+else ()
+	set (ADDITIONAL_LIBRARIES "-framework Foundation;-framework CoreServices")
+	set (SRCS ${SRCS} recursivedirwatcher_mac.mm)
+endif ()
 
 add_library (leechcraft_lmp SHARED
 	${COMPILED_TRANSLATIONS}
@@ -182,6 +207,7 @@ target_link_libraries (leechcraft_lmp
 	${GLIB2_LIBRARIES}
 	${LIBXML2_LIBRARIES}
 	${LibGuess_LIBRARIES}
+	${ADDITIONAL_LIBRARIES}
 
 	${MPRIS_SUBLIB}
 	leechcraft_lmp_common
@@ -189,21 +215,40 @@ target_link_libraries (leechcraft_lmp
 
 install (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES lmpfilterrgsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/qml/lmp DESTINATION ${LC_QML_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-lmp.desktop DESTINATION share/applications)
 endif ()
 
+option (ENABLE_LMP_BRAINSLUGZ "Enable BrainSlugz, plugin for checking collection completeness" ON)
 option (ENABLE_LMP_DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
+option (ENABLE_LMP_FRADJ "Enable Fradj for multiband configurable equalizer" ON)
 option (ENABLE_LMP_GRAFFITI "Enable Graffiti for manipulating audio file tags" ON)
+option (ENABLE_LMP_HTTSTREAM "Enable HttStream for streaming music from LMP via HTTP" ON)
+option (ENABLE_LMP_JOS "Enable jOS for synchronizing with iOS devices" OFF)
 option (ENABLE_LMP_MP3TUNES "Enable plugin for syncing and using the mp3tunes.com service" ON)
 option (ENABLE_LMP_MTPSYNC "Enable plugin for syncing with MTP devices" OFF)
+option (ENABLE_LMP_POTORCHU "Enable visualization effects plugin" OFF)
 
+if (ENABLE_LMP_BRAINSLUGZ)
+	add_subdirectory (plugins/brainslugz)
+endif ()
 if (ENABLE_LMP_DUMBSYNC)
 	add_subdirectory (plugins/dumbsync)
 endif ()
+if (ENABLE_LMP_FRADJ)
+	add_subdirectory (plugins/fradj)
+endif ()
 if (ENABLE_LMP_GRAFFITI)
 	add_subdirectory (plugins/graffiti)
+endif ()
+if (ENABLE_LMP_HTTSTREAM)
+	add_subdirectory (plugins/httstream)
+endif ()
+if (ENABLE_LMP_JOS)
+	add_subdirectory (plugins/jos)
 endif ()
 if (ENABLE_LMP_MP3TUNES)
 	add_subdirectory (plugins/mp3tunes)
@@ -211,3 +256,6 @@ endif ()
 if (ENABLE_LMP_MTPSYNC)
 	add_subdirectory (plugins/mtpsync)
 endif ()
+if (ENABLE_LMP_POTORCHU)
+	add_subdirectory(plugins/potorchu)
+endiF (ENABLE_LMP_POTORCHU)

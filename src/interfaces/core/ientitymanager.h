@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -53,14 +53,14 @@ public:
 	 */
 	struct DelegationResult
 	{
-		/** The plugin instance object that handles this entity.
+		/** @brief The plugin instance object that handles this entity.
 		 *
-		 * If there is no such object, it's a nullptr.
+		 * If no object handles the entity, this is a nullptr.
 		 */
 		QObject *Handler_;
 
-		/** The internal ID of the handling event in "namespace" of
-		 * the Handler_ plugin.
+		/** The internal ID of the delegated entity local to the handling
+		 * plugin.
 		 */
 		int ID_;
 	};

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,33 +34,47 @@
 #include <QString>
 #include <QDir>
 #include <QHash>
+#include <QReadWriteLock>
 #include <QIcon>
+#include "../interfaces/core/iiconthememanager.h"
 
 class QIcon;
 class QAction;
 class QPushButton;
 class QTabWidget;
+class QToolButton;
 class QFile;
 
 namespace LeechCraft
 {
 	class IconThemeEngine : public QObject
+						  , public IIconThemeManager
 	{
 		Q_OBJECT
+		Q_INTERFACES (IIconThemeManager)
 
 		QString OldIconSet_;
 		QStringList IconSets_;
 
-		mutable QHash<QPair<QString, QString>, QIcon> IconCache_;
+		QReadWriteLock IconCacheLock_;
+		QHash<QPair<QString, QString>, QIcon> IconCache_;
+
+		QList<std::function<void ()>> Handlers_;
 
 		IconThemeEngine ();
 	public:
 		static IconThemeEngine& Instance ();
 
-		QIcon GetIcon (const QString&, const QString&) const;
-		void UpdateIconSet (const QList<QAction*>&);
-		void UpdateIconSet (const QList<QPushButton*>&);
-		void UpdateIconSet (const QList<QTabWidget*>&);
+		QIcon GetIcon (const QString&, const QString&);
+		void UpdateIconset (const QList<QAction*>&);
+		void UpdateIconset (const QList<QPushButton*>&);
+		void UpdateIconset (const QList<QTabWidget*>&);
+		void UpdateIconset (const QList<QToolButton*>&);
+
+		void ManageWidget (QWidget*);
+
+		void RegisterChangeHandler (const std::function<void ()>&);
+
 		QStringList ListIcons () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);

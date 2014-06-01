@@ -136,8 +136,13 @@
 					<suffix value=" %" />
 					<tooltip>Some themes have fixed-size font and font size setting doesn't affect them. Use this option to change their font size.</tooltip>
 				</item>
+				<item type="spinbox" property="MsgEditFontSize" default="5" minimum="5" maximum="72">
+					<label value="Message editor font size:" />
+					<suffix value=" px" />
+					<specialValue value="system default" />
+				</item>
 				<item type="spinbox" property="ShortenURLLength" default="100" minimum="10" maximum="1000">
-					<label value="Shorten URLs less than: " />
+					<label value="Shorten URLs longer than:" />
 					<suffix value=" symbols" />
 				</item>
 			</groupbox>
@@ -208,6 +213,9 @@
 			</item>
 			<item type="checkbox" property="AutoOpenFileDialogOnSend" default="true">
 				<label value="Open file choosing dialog automatically on file sending" />
+			</item>
+			<item type="checkbox" property="AutoOpenIncomingFiles" default="true">
+				<label value="Automatically open received files after transfer finishes" />
 			</item>
 			<item type="checkbox" property="UseAltNick" default="true">
 				<label value="Modify nick on conflicts in chat rooms" />

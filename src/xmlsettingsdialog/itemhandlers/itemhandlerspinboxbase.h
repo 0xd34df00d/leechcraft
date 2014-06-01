@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -92,6 +92,8 @@ namespace LeechCraft
 					label->setText (langs.Label_.second);
 				if (langs.Suffix_.first)
 					box->setSuffix (langs.Suffix_.second);
+				if (langs.SpecialValue_.first)
+					box->setSpecialValueText (langs.SpecialValue_.second);
 			}
 
 			QVariant value = XSD_->GetValue (item);

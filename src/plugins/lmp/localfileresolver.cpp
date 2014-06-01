@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -62,7 +62,7 @@ namespace LMP
 #ifdef Q_OS_WIN32
 		return TagLib::FileRef (reinterpret_cast<const wchar_t*> (file.utf16 ()));
 #else
-		return TagLib::FileRef (file.toUtf8 ().constData ());
+		return TagLib::FileRef (file.toUtf8 ().constData (), true, TagLib::AudioProperties::Accurate);
 #endif
 	}
 
@@ -93,7 +93,7 @@ namespace LMP
 		std::for_each (genres.begin (), genres.end (),
 				[] (QString& genre) { genre = genre.trimmed (); });
 
-		MediaInfo info =
+		MediaInfo info
 		{
 			file,
 			ftl (tag->artist ()),
@@ -102,8 +102,7 @@ namespace LMP
 			genres,
 			audio ? audio->length () : 0,
 			static_cast<qint32> (tag->year ()),
-			static_cast<qint32> (tag->track ()),
-			{}
+			static_cast<qint32> (tag->track ())
 		};
 		{
 			QWriteLocker locker (&CacheLock_);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "chattab.h"
+#include <cmath>
 #include <QWebFrame>
 #include <QWebElement>
 #include <QTextDocument>
@@ -42,13 +43,15 @@
 #include <QKeyEvent>
 #include <QTextBrowser>
 #include <QDesktopWidget>
-#include <util/defaulthookproxy.h>
-#include <util/util.h>
+#include <util/xpc/defaulthookproxy.h>
+#include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
+#include <util/gui/findnotificationwk.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imessage.h"
 #include "interfaces/azoth/irichtextmessage.h"
@@ -166,6 +169,7 @@ namespace Azoth
 	, ScrollbackPos_ (0)
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
+	, CDF_ (new ContactDropFilter (entryId, this))
 	, MsgFormatter_ (0)
 	, TypeTimer_ (new QTimer (this))
 	, PreviousState_ (CPSNone)
@@ -176,21 +180,8 @@ namespace Azoth
 		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
 		MUCEventLog_->installEventFilter (this);
 
-		auto dropFilter = new ContactDropFilter (this);
-		Ui_.View_->installEventFilter (dropFilter);
-		Ui_.MsgEdit_->installEventFilter (dropFilter);
-		connect (dropFilter,
-				SIGNAL (localImageDropped (QImage, QUrl)),
-				this,
-				SLOT (handleLocalImageDropped (QImage, QUrl)));
-		connect (dropFilter,
-				SIGNAL (imageDropped (QImage)),
-				this,
-				SLOT (handleImageDropped (QImage)));
-		connect (dropFilter,
-				SIGNAL (filesDropped (QList<QUrl>)),
-				this,
-				SLOT (handleFilesDropped (QList<QUrl>)));
+		Ui_.View_->installEventFilter (CDF_);
+		Ui_.MsgEdit_->installEventFilter (CDF_);
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
@@ -198,11 +189,15 @@ namespace Azoth
 		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events"), this));
 		Ui_.EventsButton_->hide ();
 
-		Ui_.SendButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("key-enter"));
+		Ui_.SendButton_->setIcon (Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("key-enter"));
 		connect (Ui_.SendButton_,
 				SIGNAL (released ()),
 				this,
 				SLOT (messageSend ()));
+
+		ChatFinder_ = new Util::FindNotificationWk (Core::Instance ().GetProxy (), Ui_.View_);
+		ChatFinder_->hide ();
 
 		BuildBasicActions ();
 
@@ -376,6 +371,8 @@ namespace Azoth
 		emit entryLostCurrent (GetEntry<QObject> ());
 
 		IsCurrent_ = false;
+
+		MsgFormatter_->HidePopups ();
 	}
 
 	QByteArray ChatTab::GetTabRecoverData () const
@@ -395,8 +392,9 @@ namespace Azoth
 		else
 			stream << QByteArray ("chattab2")
 					<< entry->GetEntryID ()
-					<< GetSelectedVariant ()
-					<< Ui_.MsgEdit_->toPlainText ();
+					<< GetSelectedVariant ();
+
+		stream << Ui_.MsgEdit_->toPlainText ();
 
 		return result;
 	}
@@ -425,9 +423,7 @@ namespace Azoth
 		{
 			const auto& id = entry->GetHumanReadableID ();
 			data->setText (id);
-#if QT_VERSION >= 0x040800
 			data->setUrls ({ id });
-#endif
 		}
 	}
 
@@ -436,7 +432,6 @@ namespace Azoth
 		auto data = event->mimeData ();
 		if (data->hasText ())
 			event->acceptProposedAction ();
-#if QT_VERSION >= 0x040800
 		else if (data->hasUrls ())
 		{
 			for (const auto& url : data->urls ())
@@ -447,14 +442,13 @@ namespace Azoth
 					break;
 				}
 		}
-#endif
 	}
 
 	void ChatTab::HandleDrop (QDropEvent *event)
 	{
-		auto data = event->mimeData ();
-		if (data->hasUrls ())
-			handleFilesDropped (data->urls ());
+		const auto data = event->mimeData ();
+		if (data->hasUrls () || data->hasImage ())
+			CDF_->HandleDrop (data);
 		else if (data->hasText ())
 			appendMessageText (data->text ());
 	}
@@ -496,9 +490,12 @@ namespace Azoth
 		children += TabToolbar_.get ();
 		children += MUCEventLog_;
 		children += MsgFormatter_;
-		Q_FOREACH (auto child, children)
+		for (auto child : children)
 			if (child != Ui_.View_)
 				child->setEnabled (enabled);
+
+		if (enabled)
+			AddManagedActions (false);
 	}
 
 	QObject* ChatTab::GetCLEntry () const
@@ -529,11 +526,20 @@ namespace Azoth
 
 		SetChatPartState (CPSActive);
 
-		Ui_.MsgEdit_->clear ();
-		Ui_.MsgEdit_->document ()->clear ();
-		MsgFormatter_->Clear ();
-		CurrentHistoryPosition_ = -1;
-		MsgHistory_.prepend (text);
+		bool clear = true;
+		auto clearGuard = std::shared_ptr<void> (nullptr,
+				[&clear, &text, this] (void*) -> void
+				{
+					if (!clear)
+						return;
+
+					Ui_.MsgEdit_->clear ();
+					Ui_.MsgEdit_->document ()->clear ();
+					MsgFormatter_->Clear ();
+					CurrentHistoryPosition_ = -1;
+					MsgHistory_.prepend (text);
+				});
+
 
 		QString variant = Ui_.VariantBox_->count () > 1 ?
 				Ui_.VariantBox_->currentText () :
@@ -549,7 +555,11 @@ namespace Azoth
 		proxy->SetValue ("text", text);
 		emit hookMessageWillCreated (proxy, this, e->GetQObject (), type, variant);
 		if (proxy->IsCancelled ())
+		{
+			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
+				clear = false;
 			return;
+		}
 
 		int intType = type;
 		proxy->FillValue ("type", intType);
@@ -582,7 +592,11 @@ namespace Azoth
 		proxy.reset (new Util::DefaultHookProxy ());
 		emit hookMessageCreated (proxy, this, msg->GetQObject ());
 		if (proxy->IsCancelled ())
+		{
+			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
+				clear = false;
 			return;
+		}
 
 		msg->Send ();
 	}
@@ -615,14 +629,11 @@ namespace Azoth
 		if (!me)
 			return;
 
-		/* TODO enable depending on whether we have enough rights to
-		 * change the subject. And, if we don't, set the SubjEdit_ to
-		 * readOnly() mode.
-		 */
+		Ui_.SubjEdit_->setReadOnly (!me->CanChangeSubject ());
 		Ui_.SubjEdit_->setText (me->GetMUCSubject ());
 	}
 
-	void ChatTab::on_SubjChange__released()
+	void ChatTab::on_SubjChange__released ()
 	{
 		Ui_.SubjectButton_->setChecked (false);
 
@@ -810,7 +821,7 @@ namespace Azoth
 		if (LastLink_.isEmpty ())
 			return;
 
-		const auto& e = Util::MakeEntity (QUrl (LastLink_), QString (), static_cast<TaskParameters> (FromUserInitiated | OnlyHandle));
+		const auto& e = Util::MakeEntity (QUrl (LastLink_), {}, FromUserInitiated | OnlyHandle);
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
@@ -915,17 +926,20 @@ namespace Azoth
 		}
 
 		auto entry = GetEntry<ICLEntry> ();
+
+		const bool isActiveChat = Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry);
+
 		bool shouldReformat = false;
 		if (Core::Instance ().ShouldCountUnread (entry, msg))
 		{
 			++NumUnreadMsgs_;
 			shouldReformat = true;
 		}
-		else
+		else if (isActiveChat)
 			GetEntry<ICLEntry> ()->MarkMsgsRead ();
 
 		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
-				!Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry) &&
+				!isActiveChat &&
 				!HadHighlight_)
 		{
 			HadHighlight_ = Core::Instance ().IsHighlightMessage (msg);
@@ -1088,26 +1102,7 @@ namespace Azoth
 	{
 		if (url.scheme () != "azoth")
 		{
-			if (Core::Instance ().CouldHandleURL (url))
-			{
-				Core::Instance ().HandleURL (url, GetEntry<ICLEntry> ());
-				return;
-			}
-
-			if (url.scheme () == "file")
-				return;
-
-			if (url.scheme ().isEmpty () &&
-					url.host ().isEmpty () &&
-					url.path ().startsWith ("www."))
-				url = "http://" + url.toString ();
-
-			Entity e = Util::MakeEntity (url,
-					QString (),
-					FromUserInitiated | OnlyHandle);
-			if (!raise)
-				e.Additional_ ["BackgroundHandle"] = true;
-			Core::Instance ().SendEntity (e);
+			Core::Instance ().HandleURLGeneric (url, raise, GetEntry<ICLEntry> ());
 			return;
 		}
 
@@ -1242,109 +1237,6 @@ namespace Azoth
 	void ChatTab::typeTimeout ()
 	{
 		SetChatPartState (CPSPaused);
-	}
-
-	void ChatTab::handleLocalImageDropped (const QImage& image, const QUrl& url)
-	{
-		if (url.scheme () == "file")
-			handleFilesDropped (QList<QUrl> () << url);
-		else
-		{
-			if (QMessageBox::question (this,
-						"Sending image",
-						tr ("Would you like to send image %1 directly in chat? "
-							"Otherwise the link to it will be sent.")
-							.arg (QFileInfo (url.path ()).fileName ()),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-			{
-				handleImageDropped (image);
-				return;
-			}
-
-			auto entry = GetEntry<ICLEntry> ();
-			if (!entry)
-				return;
-
-			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-						IMessage::MTMUCMessage :
-						IMessage::MTChatMessage;
-			auto msgObj = entry->CreateMessage (msgType, GetSelectedVariant (), url.toEncoded ());
-			auto msg = qobject_cast<IMessage*> (msgObj);
-			msg->Send ();
-		}
-	}
-
-	void ChatTab::handleImageDropped (const QImage& image)
-	{
-		auto entry = GetEntry<ICLEntry> ();
-		if (!entry)
-			return;
-
-		const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-					IMessage::MTMUCMessage :
-					IMessage::MTChatMessage;
-		auto msgObj = entry->CreateMessage (msgType,
-				GetSelectedVariant (),
-				tr ("This message contains inline image, enable XHTML-IM to view it."));
-		auto msg = qobject_cast<IMessage*> (msgObj);
-
-		if (IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj))
-		{
-			QString asBase;
-			if (entry->GetEntryType () == ICLEntry::ETMUC)
-			{
-				QBuffer buf;
-				buf.open (QIODevice::ReadWrite);
-				image.save (&buf, "JPG", 60);
-				asBase = QString ("data:image/png;base64,%1")
-						.arg (QString (buf.buffer ().toBase64 ()));
-			}
-			else
-				asBase = Util::GetAsBase64Src (image);
-			const auto& body = "<img src='" + asBase + "'/>";
-			richMsg->SetRichBody (body);
-		}
-
-		msg->Send ();
-	}
-
-	namespace
-	{
-		bool CheckImage (const QList<QUrl>& urls, ChatTab *chat)
-		{
-			if (urls.size () != 1)
-				return false;
-
-			const auto& local = urls.at (0).toLocalFile ();
-			if (!QFile::exists (local))
-				return false;
-
-			const QImage img (local);
-			if (img.isNull ())
-				return false;
-
-			const QFileInfo fileInfo (local);
-
-			if (QMessageBox::question (chat,
-						"Sending image",
-						ChatTab::tr ("Would you like to send image %1 (%2) directly in chat? "
-							"Otherwise it will be sent as file.")
-							.arg (fileInfo.fileName ())
-							.arg (Util::MakePrettySize (fileInfo.size ())),
-						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-				return false;
-
-			chat->handleImageDropped (img);
-			return true;
-		}
-	}
-
-	void ChatTab::handleFilesDropped (const QList<QUrl>& urls)
-	{
-		if (CheckImage (urls, this))
-			return;
-
-		Core::Instance ().GetTransferJobManager ()->OfferURLs (GetEntry<ICLEntry> (), urls);
 	}
 
 	void ChatTab::handleGotLastMessages (QObject *entryObj, const QList<QObject*>& messages)
@@ -1558,6 +1450,18 @@ namespace Azoth
 		auto shortcut = new QShortcut (openLinkInfo.Seqs_.value (0),
 				this, SLOT (handleOpenLastLink ()), 0, Qt::WidgetWithChildrenShortcut);
 		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
+
+		auto findShortcut = new QShortcut (this);
+		findShortcut->setContext (Qt::WidgetWithChildrenShortcut);
+		findShortcut->setKey (QString ("Ctrl+F"));
+		connect (findShortcut,
+				SIGNAL (activated ()),
+				ChatFinder_,
+				SLOT (show ()));
+		connect (findShortcut,
+				SIGNAL (activated ()),
+				ChatFinder_,
+				SLOT (setFocus ()));
 	}
 
 	void ChatTab::InitEntry ()
@@ -1718,17 +1622,33 @@ namespace Azoth
 		}
 #endif
 
+		AddManagedActions (true);
+	}
+
+	void ChatTab::AddManagedActions (bool first)
+	{
 		QList<QAction*> coreActions;
-		ActionsManager *manager = Core::Instance ().GetActionsManager ();
-		Q_FOREACH (QAction *action, manager->GetEntryActions (e))
+		const auto manager = Core::Instance ().GetActionsManager ();
+		for (const auto action : manager->GetEntryActions (GetEntry<ICLEntry> ()))
 			if (manager->GetAreasForAction (action).contains (ActionsManager::CLEAAToolbar))
 				coreActions << action;
 
-		if (!coreActions.isEmpty ())
+		if (!first)
 		{
-			TabToolbar_->addSeparator ();
-			TabToolbar_->addActions (coreActions);
+			const auto& toolbarActions = TabToolbar_->actions ();
+			for (auto i = coreActions.begin (); i != coreActions.end (); )
+				if (toolbarActions.contains (*i))
+					i = coreActions.erase (i);
+				else
+					++i;
 		}
+
+		if (coreActions.isEmpty ())
+			return;
+
+		if (!first)
+			TabToolbar_->addSeparator ();
+		TabToolbar_->addActions (coreActions);
 	}
 
 	void ChatTab::InitMsgEdit ()
@@ -1764,10 +1684,6 @@ namespace Azoth
 				SIGNAL (scroll (int)),
 				this,
 				SLOT (handleEditScroll (int)));
-
-		QTimer::singleShot (0,
-				Ui_.MsgEdit_,
-				SLOT (setFocus ()));
 
 		connect (Ui_.MsgEdit_,
 				SIGNAL (clearAvailableNicks ()),
@@ -1918,9 +1834,10 @@ namespace Azoth
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
 
-		const bool isActiveChat =  Core::Instance ()
+		const bool isActiveChat = Core::Instance ()
 				.GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ());
-		if (!LastDateTime_.isNull () && !IsSameDay (LastDateTime_, msg))
+
+		if (!LastDateTime_.isNull () && !IsSameDay (LastDateTime_, msg) && parent)
 		{
 			auto datetime = msg->GetDateTime ();
 			const auto& thisDate = datetime.date ();
@@ -2009,7 +1926,12 @@ namespace Azoth
 			const QString& reason = idx > 0 ?
 					text.mid (idx + 1)
 					: QString ();
+
 			mucEntry->Leave (reason);
+
+			if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+				Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
+
 			return true;
 		}
 		else if (text.startsWith ("/kick ") && mucPerms)

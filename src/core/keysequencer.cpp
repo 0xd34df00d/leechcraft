@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,6 +33,7 @@
 
 KeySequencer::KeySequencer (const QString& labelStr, QWidget *parent)
 : QDialog (parent)
+, LastCode_ (0)
 {
 	Ui_.setupUi (this);
 	Ui_.DescLabel_->setText (labelStr);
@@ -63,46 +64,38 @@ namespace
 
 void KeySequencer::keyPressEvent (QKeyEvent *event)
 {
-	int code = 0;
-	FixCodes (code, event);
+	event->accept ();
+
+	LastCode_ = 0;
+	FixCodes (LastCode_, event);
 
 	const int key = event->key ();
 	if (key != Qt::Key_Control &&
 			key != Qt::Key_Alt &&
 			key != Qt::Key_Meta &&
 			key != Qt::Key_Shift)
-		code += key;
+		LastCode_ += key;
 
-	const QKeySequence ts (code);
+	const QKeySequence ts (LastCode_);
 
-	Ui_.Shortcut_->setText (ts.toString ());
-	QDialog::keyPressEvent (event);
+	Ui_.Shortcut_->setText (ts.toString (QKeySequence::NativeText));
 }
 
 void KeySequencer::keyReleaseEvent (QKeyEvent *event)
 {
-	const int key = event->key ();
-	if (key == Qt::Key_Control ||
-			key == Qt::Key_Alt ||
-			key == Qt::Key_Meta ||
-			key == Qt::Key_Shift)
+	event->accept ();
+
+	auto testCode = LastCode_;
+	for (auto code : { Qt::CTRL, Qt::ALT, Qt::SHIFT, Qt::META })
+		testCode &= ~code;
+	if (!testCode)
 	{
 		reject ();
 		return;
 	}
 
-	int code = 0;
-	FixCodes (code, event);
-
-	if (key != Qt::Key_Control &&
-			key != Qt::Key_Alt &&
-			key != Qt::Key_Meta &&
-			key != Qt::Key_Shift)
-		code += key;
-
-	Result_ = QKeySequence (code);
+	Result_ = QKeySequence (LastCode_);
 
 	accept ();
-	QDialog::keyReleaseEvent (event);
 }
 

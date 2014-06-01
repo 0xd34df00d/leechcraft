@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,6 +36,12 @@ namespace LeechCraft
 {
 namespace AN
 {
+	/** @brief Event cancel pseudo-category.
+	 *
+	 * This category is used to cancel an event by a given event ID.
+	 */
+	const QString CatEventCancel = "org.LC.AdvNotifications.Cancel";
+
 	/** @brief Category of Instant Messaging-related events.
 	 */
 	const QString CatIM = "org.LC.AdvNotifications.IM";
@@ -127,12 +133,47 @@ namespace AN
 	 */
 	const QString TypeGeneric = CatGeneric + ".Generic";
 
+	/** @brief Describes the notification parameters.
+	 */
 	enum NotifyFlag
 	{
+		/** @brief No notifications.
+		 */
 		NotifyNone			= 0,
+
+		/** @brief Rule should be triggered only once.
+		 *
+		 * This corresponds to the single shot events. That is, after
+		 * first triggering of the rule it should be disabled and user
+		 * shouldn't get further notifications.
+		 */
 		NotifySingleShot	= 1 << 0,
+
+		/** @brief User should be notified visually.
+		 *
+		 * The user should be notified via transient notifications like
+		 * a non-intrusive tooltip that will hide soon.
+		 *
+		 * This is ortogonal to NotifyPersistent.
+		 *
+		 * @sa NotifyPersistent
+		 */
 		NotifyTransient		= 1 << 1,
+
+		/** @brief User should be notified visually via persistent
+		 * notifications.
+		 *
+		 * A persistent notification is something like a tray icon
+		 * that will be displayed until the user reacts to the event.
+		 *
+		 * This is ortogonal to NotifyTransient.
+		 *
+		 * @sa NotifyTransient
+		 */
 		NotifyPersistent	= 1 << 2,
+
+		/** @brief Notify by playing back an audio file.
+		 */
 		NotifyAudio			= 1 << 3
 	};
 	Q_DECLARE_FLAGS (NotifyFlags, NotifyFlag);
@@ -143,7 +184,7 @@ namespace AN
 		*/
 		const QString MediaPlayerURL = CatMediaPlayer + ".Fields.URL";
 
-		/** @brief Playback status of the URL.
+		/** @brief Playback status of the URL (QString).
 		 *
 		 * A string, one of:
 		 * - Playing
@@ -152,9 +193,20 @@ namespace AN
 		 */
 		const QString MediaPlaybackStatus = CatMediaPlayer + ".Fields.PlaybackStatus";
 
+		/** @brief The title of the currently playing media (QString).
+		 */
 		const QString MediaTitle = CatMediaPlayer + ".Fields.Title";
+
+		/** @brief The artist of the currently playing media (QString).
+		 */
 		const QString MediaArtist = CatMediaPlayer + ".Fields.Artist";
+
+		/** @brief The album of the currently playing media (QString).
+		 */
 		const QString MediaAlbum = CatMediaPlayer + ".Fields.Album";
+
+		/** @brief The length of the currently playing media (int).
+		 */
 		const QString MediaLength = CatMediaPlayer + ".Fields.Length";
 	}
 }

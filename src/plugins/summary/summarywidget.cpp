@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -43,6 +43,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/imwproxy.h>
 #include <util/gui/clearlineeditaddon.h>
 #include "core.h"
@@ -404,7 +405,8 @@ namespace Summary
 					QString ai = action->property ("ActionIcon").toString ();
 					if (!ai.isEmpty () &&
 							action->icon ().isNull ())
-						action->setIcon (Core::Instance ().GetProxy ()->GetIcon (ai));
+						action->setIcon (Core::Instance ().GetProxy ()->
+									GetIconThemeManager ()->GetIcon (ai));
 				}
 
 				const auto& proxies = CreateProxyActions (controls->actions (), Toolbar_.get ());
@@ -416,7 +418,8 @@ namespace Summary
 			if (addiInfo)
 			{
 				Ui_.ControlsDockWidget_->show ();
-				Core::Instance ().GetProxy()->UpdateIconset (addiInfo->findChildren<QAction*> ());
+				Core::Instance ().GetProxy ()->GetIconThemeManager ()->
+						UpdateIconset (addiInfo->findChildren<QAction*> ());
 			}
 		}
 	}

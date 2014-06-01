@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_BOOKMARKSMANAGERDIALOG_H
-#define PLUGINS_AZOTH_BOOKMARKSMANAGERDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include <QMap>
 #include "ui_bookmarksmanagerdialog.h"
@@ -56,7 +56,7 @@ namespace Azoth
 		BookmarksManagerDialog (QWidget* = 0);
 		~BookmarksManagerDialog ();
 
-		void FocusOn (IAccount*);
+		bool FocusOn (IAccount*);
 		void SuggestSaving (QObject*);
 	private:
 		void Save ();
@@ -67,12 +67,10 @@ namespace Azoth
 		void handleBookmarksChanged ();
 		void handleCurrentBMChanged (const QModelIndex&, const QModelIndex&);
 		void on_RemoveButton__released ();
-		void on_AddButton__released ();
+		QStandardItem* on_AddButton__released ();
 		void on_ApplyButton__released ();
 		void on_MoveUp__released ();
 		void on_MoveDown__released ();
 	};
 }
 }
-
-#endif

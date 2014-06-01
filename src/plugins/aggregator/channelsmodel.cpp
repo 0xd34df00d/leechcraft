@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -90,7 +90,9 @@ namespace Aggregator
 			switch (index.column ())
 			{
 				case ColumnTitle:
-					return Channels_.at (row).Title_;
+					return Channels_.at (row).DisplayTitle_.isEmpty () ?
+							Channels_.at (row).Title_ :
+							Channels_.at (row).DisplayTitle_;
 				case ColumnUnread:
 					return Channels_.at (row).Unread_;
 				case ColumnLastBuild:
@@ -163,6 +165,10 @@ namespace Aggregator
 		}
 		else if (role == LeechCraft::RoleTags)
 			return Channels_.at (row).Tags_;
+		else if (role == ChannelRoles::UnreadCount)
+			return Channels_.at (row).Unread_;
+		else if (role == ChannelRoles::ChannelID)
+			return Channels_.at (row).ChannelID_;
 		else
 			return QVariant ();
 	}
@@ -225,13 +231,13 @@ namespace Aggregator
 	void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 	{
 		auto idx = std::find (Channels_.begin (), Channels_.end (), cs);
+
 		if (idx == Channels_.end ())
 			return;
-		
+
 		*idx = cs;
 		int pos = std::distance (Channels_.begin (), idx);
 		emit dataChanged (index (pos, 0), index (pos, 2));
-		emit channelDataUpdated (cs.ChannelID_, cs.FeedID_);
 	}
 
 	ChannelShort& ChannelsModel::GetChannelForIndex (const QModelIndex& index)

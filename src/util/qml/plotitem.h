@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,17 +30,19 @@
 #pragma once
 
 #include <QDeclarativeItem>
-#include <util/utilconfig.h>
+#include "qmlconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API PlotItem : public QDeclarativeItem
+	class UTIL_QML_API PlotItem : public QDeclarativeItem
 	{
 		Q_OBJECT
 
 		Q_PROPERTY (QList<QPointF> points READ GetPoints WRITE SetPoints NOTIFY pointsChanged)
+
+		Q_PROPERTY (QVariant multipoints READ GetMultipoints WRITE SetMultipoints NOTIFY multipointsChanged)
 
 		Q_PROPERTY (double minYValue READ GetMinYValue WRITE SetMinYValue NOTIFY minYValueChanged)
 		Q_PROPERTY (double maxYValue READ GetMaxYValue WRITE SetMaxYValue NOTIFY maxYValueChanged)
@@ -48,19 +50,34 @@ namespace Util
 		Q_PROPERTY (bool yGridEnabled READ GetYGridEnabled WRITE SetYGridEnabled NOTIFY yGridChanged)
 		Q_PROPERTY (bool yMinorGridEnabled READ GetYMinorGridEnabled WRITE SetYMinorGridEnabled NOTIFY yMinorGridChanged)
 
+		Q_PROPERTY (double alpha READ GetAlpha WRITE SetAlpha NOTIFY alphaChanged)
 		Q_PROPERTY (QColor color READ GetColor WRITE SetColor NOTIFY colorChanged)
 		Q_PROPERTY (bool leftAxisEnabled READ GetLeftAxisEnabled WRITE SetLeftAxisEnabled NOTIFY leftAxisEnabledChanged)
 		Q_PROPERTY (bool bottomAxisEnabled READ GetBottomAxisEnabled WRITE SetBottomAxisEnabled NOTIFY bottomAxisEnabledChanged)
 		Q_PROPERTY (QString leftAxisTitle READ GetLeftAxisTitle WRITE SetLeftAxisTitle NOTIFY leftAxisTitleChanged)
 		Q_PROPERTY (QString bottomAxisTitle READ GetBottomAxisTitle WRITE SetBottomAxisTitle NOTIFY bottomAxisTitleChanged)
 
+		Q_PROPERTY (QString plotTitle READ GetPlotTitle WRITE SetPlotTitle NOTIFY plotTitleChanged)
+
+		Q_PROPERTY (QColor background READ GetBackground WRITE SetBackground NOTIFY backgroundChanged)
+		Q_PROPERTY (QColor textColor READ GetTextColor WRITE SetTextColor NOTIFY textColorChanged)
+
 		QList<QPointF> Points_;
+
+		struct PointsSet
+		{
+			QColor Color_;
+			QList<QPointF> Points_;
+		};
+		QList<PointsSet> Multipoints_;
 
 		double MinYValue_ = -1;
 		double MaxYValue_ = -1;
 
 		bool YGridEnabled_ = false;
 		bool YMinorGridEnabled_ = false;
+
+		double Alpha_ = 0.3;
 
 		QColor Color_;
 
@@ -69,11 +86,19 @@ namespace Util
 
 		QString LeftAxisTitle_;
 		QString BottomAxisTitle_;
+
+		QString PlotTitle_;
+
+		QColor BackgroundColor_;
+		QColor TextColor_;
 	public:
 		PlotItem (QDeclarativeItem* = 0);
 
 		QList<QPointF> GetPoints () const;
 		void SetPoints (const QList<QPointF>&);
+
+		QVariant GetMultipoints () const;
+		void SetMultipoints (const QVariant&);
 
 		double GetMinYValue () const;
 		void SetMinYValue (double);
@@ -84,6 +109,9 @@ namespace Util
 		void SetYGridEnabled (bool);
 		bool GetYMinorGridEnabled () const;
 		void SetYMinorGridEnabled (bool);
+
+		double GetAlpha () const;
+		void SetAlpha (double);
 
 		QColor GetColor () const;
 		void SetColor (const QColor&);
@@ -98,18 +126,29 @@ namespace Util
 		QString GetBottomAxisTitle () const;
 		void SetBottomAxisTitle (const QString&);
 
+		QString GetPlotTitle () const;
+		void SetPlotTitle (const QString&);
+
+		QColor GetBackground () const;
+		void SetBackground (const QColor&);
+		QColor GetTextColor () const;
+		void SetTextColor (const QColor&);
+
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 	private:
 		template<typename T>
 		void SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier);
 	signals:
 		void pointsChanged ();
+		void multipointsChanged ();
 
 		void minYValueChanged ();
 		void maxYValueChanged ();
 
 		void yGridChanged ();
 		void yMinorGridChanged ();
+
+		void alphaChanged ();
 
 		void colorChanged ();
 
@@ -118,6 +157,11 @@ namespace Util
 
 		void leftAxisTitleChanged ();
 		void bottomAxisTitleChanged ();
+
+		void plotTitleChanged ();
+
+		void backgroundChanged ();
+		void textColorChanged ();
 	};
 }
 }

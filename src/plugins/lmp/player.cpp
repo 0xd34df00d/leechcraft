@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,6 +38,7 @@
 #include <QApplication>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -53,6 +54,8 @@
 #include "engine/audiosource.h"
 #include "engine/output.h"
 #include "engine/path.h"
+#include "localcollectionmodel.h"
+#include "playerrulesmanager.h"
 
 namespace LeechCraft
 {
@@ -121,6 +124,7 @@ namespace LMP
 	, Output_ (new Output (this))
 	, Path_ (new Path (Source_, Output_))
 	, RadioItem_ (nullptr)
+	, RulesManager_ (new PlayerRulesManager (PlaylistModel_, this))
 	, FirstPlaylistRestore_ (true)
 	, PlayMode_ (PlayMode::Sequential)
 	{
@@ -150,7 +154,7 @@ namespace LMP
 		connect (Source_,
 				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
-				SLOT (handleStateChanged ()));
+				SLOT (handleStateChanged (SourceState, SourceState)));
 
 		connect (Source_,
 				SIGNAL (metaDataChanged ()),
@@ -176,6 +180,11 @@ namespace LMP
 					SLOT (restorePlaylist ()));
 	}
 
+	void Player::InitWithOtherPlugins ()
+	{
+		RulesManager_->InitializePlugins ();
+	}
+
 	QAbstractItemModel* Player::GetPlaylistModel () const
 	{
 		return PlaylistModel_;
@@ -189,6 +198,11 @@ namespace LMP
 	Output* Player::GetAudioOutput () const
 	{
 		return Output_;
+	}
+
+	Path* Player::GetPath () const
+	{
+		return Path_;
 	}
 
 	Player::PlayMode Player::GetPlayMode () const
@@ -219,29 +233,28 @@ namespace LMP
 	{
 		Sorter_.Criteria_ = criteria;
 
-		AddToPlaylistModel (QList<AudioSource> (), true);
+		AddToPlaylistModel ({}, true);
 
 		XmlSettingsManager::Instance ().setProperty ("SortingCriteria", SaveCriteria (criteria));
 	}
 
 	namespace
 	{
-		QList<AudioSource> FileToSource (const AudioSource& source)
+		Playlist FileToSource (const AudioSource& source)
 		{
 			if (!source.IsLocalFile ())
-				return { source };
+				return Playlist { { source } };
 
 			const auto& file = source.GetLocalPath ();
 
-			auto parser = MakePlaylistParser (file);
-			if (parser)
+			if (auto parser = MakePlaylistParser (file))
 			{
-				const auto& list = parser (file);
-				if (!list.isEmpty ())
-					return list;
+				const auto& sources = parser (file);
+				if (!sources.IsEmpty ())
+					return sources;
 			}
 
-			return { AudioSource (file) };
+			return Playlist { { file } };
 		}
 	}
 
@@ -251,40 +264,55 @@ namespace LMP
 			Url2Info_ [url] = info;
 	}
 
-	void Player::Enqueue (const QStringList& paths, bool sort)
+	void Player::Enqueue (const QStringList& paths, EnqueueFlags flags)
 	{
 		QList<AudioSource> parsedSources;
 		for (const auto& path : paths)
 			parsedSources << AudioSource (path);
-		Enqueue (parsedSources, sort);
+		Enqueue (parsedSources, flags);
 	}
 
-	void Player::Enqueue (const QList<AudioSource>& sources, bool sort)
+	void Player::Enqueue (const QList<AudioSource>& sources, EnqueueFlags flags)
 	{
-		QList<AudioSource> parsedSources;
+		if (CurrentQueue_.isEmpty ())
+			emit shouldClearFiltering ();
+
+		if (flags & EnqueueReplace)
+		{
+			PlaylistModel_->clear ();
+			Items_.clear ();
+			AlbumRoots_.clear ();
+			CurrentQueue_.clear ();
+		}
+
+		Playlist parsedSources;
 		std::for_each (sources.begin (), sources.end (),
 				[&parsedSources] (decltype (sources.front ()) path)
 					{ parsedSources += FileToSource (path); });
 
 		for (auto i = parsedSources.begin (); i != parsedSources.end (); )
 		{
-			if (Items_.contains (*i))
+			if (Items_.contains (i->Source_))
 				i = parsedSources.erase (i);
 			else
 				++i;
 		}
 
-		AddToPlaylistModel (parsedSources, sort);
-	}
+		const auto curSrcPos = std::find_if (parsedSources.begin (), parsedSources.end (),
+				[] (const PlaylistItem& item) { return item.Additional_ ["Current"].toBool (); });
+		if (curSrcPos != parsedSources.end ())
+			switch (Source_->GetState ())
+			{
+			case SourceState::Error:
+			case SourceState::Stopped:
+				Source_->SetCurrentSource (curSrcPos->Source_);
+				break;
+			default:
+				AddToOneShotQueue (curSrcPos->Source_);
+				break;
+			}
 
-	void Player::ReplaceQueue (const QList<AudioSource>& queue, bool sort)
-	{
-		PlaylistModel_->clear ();
-		Items_.clear ();
-		AlbumRoots_.clear ();
-		CurrentQueue_.clear ();
-
-		AddToPlaylistModel (queue, sort);
+		AddToPlaylistModel (parsedSources.ToSources (), flags & EnqueueSort);
 	}
 
 	QList<AudioSource> Player::GetQueue () const
@@ -531,7 +559,7 @@ namespace LMP
 
 	MediaInfo Player::GetCurrentMediaInfo () const
 	{
-		const auto& source = Source_->GetCurrentSource ();
+		const auto& source = Source_->GetActualSource ();
 		if (source.IsEmpty ())
 			return MediaInfo ();
 
@@ -567,7 +595,7 @@ namespace LMP
 		info.Genres_ << Source_->GetMetadata (SourceObject::Metadata::Genre);
 		info.TrackNumber_ = Source_->GetMetadata (SourceObject::Metadata::Tracknumber).toInt ();
 		info.Length_ = Source_->GetTotalTime () / 1000;
-		info.LocalPath_ = Source_->GetCurrentSource ().ToUrl ().toString ();
+		info.LocalPath_ = Source_->GetActualSource ().ToUrl ().toString ();
 
 		if (info.Artist_.isEmpty () && info.Title_.contains (" - "))
 		{
@@ -602,29 +630,6 @@ namespace LMP
 
 	namespace
 	{
-		void FillItem (QStandardItem *item, const MediaInfo& info)
-		{
-			QString text;
-			if (!info.IsUseless ())
-			{
-				text = XmlSettingsManager::Instance ()
-						.property ("SingleTrackDisplayMask").toString ();
-
-				text = PerformSubstitutions (text, info).simplified ();
-				text.replace ("- -", "-");
-				if (text.startsWith ("- "))
-					text = text.mid (2);
-				if (text.endsWith (" -"))
-					text.chop (2);
-			}
-			else
-				text = QFileInfo (info.LocalPath_).fileName ();
-
-			item->setText (text);
-
-			item->setData (QVariant::fromValue (info), Player::Role::Info);
-		}
-
 		QStandardItem* MakeAlbumItem (const MediaInfo& info)
 		{
 			auto albumItem = new QStandardItem (QString ("%1 - %2")
@@ -642,10 +647,7 @@ namespace LMP
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
 		}
-	}
 
-	namespace
-	{
 		QPair<AudioSource, MediaInfo> PairResolve (const AudioSource& source)
 		{
 			MediaInfo info;
@@ -664,19 +666,30 @@ namespace LMP
 				{
 					info = resolver->ResolveInfo (source.GetLocalPath ());
 				}
-				catch (...)
+				catch (const std::exception& e)
 				{
+					qWarning () << Q_FUNC_INFO
+							<< "could not find track"
+							<< info.LocalPath_
+							<< "in library and cannot resolve its info, probably missing?";
 				}
 				return { source, info };
 			}
 
-			info.Artist_ = collection->GetTrackData (trackId, LocalCollection::Role::ArtistName).toString ();
-			info.Album_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumName).toString ();
-			info.Title_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackTitle).toString ();
-			info.Genres_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackGenres).toStringList ();
-			info.Length_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackLength).toInt ();
-			info.Year_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumYear).toInt ();
-			info.TrackNumber_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackNumber).toInt ();
+			info.Artist_ = collection->GetTrackData (trackId,
+					LocalCollectionModel::Role::ArtistName).toString ();
+			info.Album_ = collection->GetTrackData (trackId,
+					LocalCollectionModel::Role::AlbumName).toString ();
+			info.Title_ = collection->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackTitle).toString ();
+			info.Genres_ = collection->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackGenres).toStringList ();
+			info.Length_ = collection->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackLength).toInt ();
+			info.Year_ = collection->GetTrackData (trackId,
+					LocalCollectionModel::Role::AlbumYear).toInt ();
+			info.TrackNumber_ = collection->GetTrackData (trackId,
+					LocalCollectionModel::Role::TrackNumber).toInt ();
 
 			return { source, info };
 		}
@@ -717,7 +730,10 @@ namespace LMP
 	{
 		if (!CurrentQueue_.isEmpty ())
 		{
-			ReplaceQueue (CurrentQueue_ + sources, sort);
+			EnqueueFlags flags { EnqueueReplace };
+			if (sort)
+				flags |= EnqueueSort;
+			Enqueue (CurrentQueue_ + sources, flags);
 			return;
 		}
 
@@ -775,11 +791,11 @@ namespace LMP
 		CurrentStation_.reset ();
 	}
 
-	void Player::EmitStateChange ()
+	void Player::EmitStateChange (SourceState state)
 	{
 		QString stateStr;
 		QString hrStateStr;
-		switch (Source_->GetState ())
+		switch (state)
 		{
 		case SourceState::Paused:
 			stateStr = "Paused";
@@ -807,8 +823,7 @@ namespace LMP
 				"org.LeechCraft.LMP.PlaybackStatus", {}, 0, 1, str);
 		e.Mime_ += "+advanced";
 		e.Additional_ [AN::Field::MediaPlaybackStatus] = stateStr;
-		e.Additional_ [AN::Field::MediaPlayerURL] =
-				Source_->GetCurrentSource ().ToUrl ().toEncoded ();
+		e.Additional_ [AN::Field::MediaPlayerURL] = Source_->GetActualSource ().ToUrl ();
 
 		e.Additional_ [AN::Field::MediaArtist] = mediaInfo.Artist_;
 		e.Additional_ [AN::Field::MediaAlbum] = mediaInfo.Album_;
@@ -935,6 +950,22 @@ namespace LMP
 		return {};
 	}
 
+	void Player::MarkAsCurrent (QStandardItem *curItem)
+	{
+		if (curItem)
+			curItem->setData (true, Role::IsCurrent);
+		for (auto item : Items_)
+		{
+			if (item == curItem)
+				continue;
+			if (item->data (Role::IsCurrent).toBool ())
+			{
+				item->setData (false, Role::IsCurrent);
+				break;
+			}
+		}
+	}
+
 	void Player::play (const QModelIndex& index)
 	{
 		if (CurrentStation_)
@@ -961,6 +992,7 @@ namespace LMP
 		}
 
 		Source_->Stop ();
+		Source_->ClearQueue ();
 		const auto& source = index.data (Role::Source).value<AudioSource> ();
 		Source_->SetCurrentSource (source);
 		Source_->Play ();
@@ -996,7 +1028,6 @@ namespace LMP
 		if (CurrentStation_)
 		{
 			Source_->Clear ();
-			qApp->processEvents ();
 			CurrentStation_->RequestNewStream ();
 			return;
 		}
@@ -1064,7 +1095,7 @@ namespace LMP
 
 		auto queue = GetQueue ();
 		std::random_shuffle (queue.begin (), queue.end ());
-		ReplaceQueue (queue, false);
+		Enqueue (queue, EnqueueReplace);
 	}
 
 	void Player::handleSorted ()
@@ -1072,6 +1103,32 @@ namespace LMP
 		auto watcher = dynamic_cast<QFutureWatcher<QList<QPair<AudioSource, MediaInfo>>>*> (sender ());
 		continueAfterSorted (watcher->result ());
 		emit playerAvailable (true);
+	}
+
+	namespace
+	{
+		void FillItem (QStandardItem *item, const MediaInfo& info)
+		{
+			QString text;
+			if (!info.IsUseless ())
+			{
+				text = XmlSettingsManager::Instance ()
+						.property ("SingleTrackDisplayMask").toString ();
+
+				text = PerformSubstitutions (text, info).simplified ();
+				text.replace ("- -", "-");
+				if (text.startsWith ("- "))
+					text = text.mid (2);
+				if (text.endsWith (" -"))
+					text.chop (2);
+			}
+			else
+				text = QFileInfo (info.LocalPath_).fileName ();
+
+			item->setText (text);
+
+			item->setData (QVariant::fromValue (info), Player::Role::Info);
+		}
 	}
 
 	void Player::continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>& sources)
@@ -1082,6 +1139,8 @@ namespace LMP
 		PlaylistModel_->blockSignals (true);
 
 		QString prevAlbumRoot;
+
+		QList<QStandardItem*> managedRulesItems;
 
 		for (const auto& sourcePair : sources)
 		{
@@ -1122,6 +1181,8 @@ namespace LMP
 			case AudioSource::Type::File:
 			{
 				const auto& info = sourcePair.second;
+
+				managedRulesItems << item;
 
 				const auto& albumID = info.Album_;
 				FillItem (item, info);
@@ -1240,8 +1301,8 @@ namespace LMP
 			return;
 		}
 
-		const auto& list = parser (name);
-		Enqueue (list, false);
+		const auto& list = parser (name).ToSources ();
+		Enqueue (list, EnqueueNone);
 	}
 
 	void Player::handleGotAudioInfos (const QList<Media::AudioInfo>& infos)
@@ -1262,7 +1323,7 @@ namespace LMP
 		}
 
 		if (!sources.isEmpty ())
-			Enqueue (sources, false);
+			Enqueue (sources, EnqueueNone);
 	}
 
 	void Player::postPlaylistCleanup (const QString& filename)
@@ -1273,14 +1334,15 @@ namespace LMP
 
 	void Player::handleUpdateSourceQueue ()
 	{
+		const auto& current = Source_->GetCurrentSource ();
+
 		if (CurrentStation_)
 		{
-			Url2Info_.remove (Source_->GetCurrentSource ().ToUrl ());
+			Url2Info_.remove (current.ToUrl ());
 			CurrentStation_->RequestNewStream ();
 			return;
 		}
 
-		const auto& current = Source_->GetCurrentSource ();
 		const auto& path = current.GetLocalPath ();
 		if (!path.isEmpty ())
 			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
@@ -1288,12 +1350,26 @@ namespace LMP
 					Qt::QueuedConnection,
 					Q_ARG (QString, path));
 
-		if (HandleCurrentStop (current))
-			return;
-
 		const auto& next = GetNextSource (current);
+
+		if (HandleCurrentStop (current))
+		{
+			if (!next.IsEmpty ())
+				new Util::DelayedExecutor
+				{
+					[this, next] { Source_->SetCurrentSource (next); },
+					1000
+				};
+
+			MarkAsCurrent (Items_.value (next));
+			return;
+		}
+
 		if (!next.IsEmpty ())
+		{
+			EmitStateChange (SourceState::Stopped);
 			Source_->PrepareNextSource (next);
+		}
 	}
 
 	void Player::handlePlaybackFinished ()
@@ -1302,17 +1378,15 @@ namespace LMP
 		Source_->SetCurrentSource ({});
 	}
 
-	void Player::handleStateChanged ()
+	void Player::handleStateChanged (SourceState state, SourceState oldState)
 	{
-		const auto state = Source_->GetState ();
-		qDebug () << Q_FUNC_INFO << static_cast<int> (state);
+		qDebug () << Q_FUNC_INFO << static_cast<int> (state) << static_cast<int> (oldState);
 		switch (state)
 		{
-		case SourceState::Error:
-			qDebug () << Source_->GetErrorString ();
-			break;
 		case SourceState::Stopped:
 			emit songChanged ({});
+			if (!CurrentQueue_.contains (Source_->GetCurrentSource ()))
+				Source_->SetCurrentSource ({});
 			break;
 		default:
 			break;
@@ -1320,7 +1394,7 @@ namespace LMP
 
 		SavePlayState (false);
 
-		EmitStateChange ();
+		EmitStateChange (state);
 	}
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)
@@ -1332,9 +1406,6 @@ namespace LMP
 			curItem = RadioItem_;
 		else if (Items_.contains (source))
 			curItem = Items_ [source];
-
-		if (curItem)
-			curItem->setData (true, Role::IsCurrent);
 
 		if (Url2Info_.contains (source.ToUrl ()))
 		{
@@ -1349,18 +1420,11 @@ namespace LMP
 		if (curItem)
 			emit indexChanged (PlaylistModel_->indexFromItem (curItem));
 
-		for (auto item : Items_)
-		{
-			if (item == curItem)
-				continue;
-			if (item->data (Role::IsCurrent).toBool ())
-			{
-				item->setData (false, Role::IsCurrent);
-				break;
-			}
-		}
+		MarkAsCurrent (curItem);
 
-		EmitStateChange ();
+		handleMetadata ();
+
+		EmitStateChange (Source_->GetState ());
 	}
 
 	void Player::handleMetadata ()
@@ -1387,7 +1451,7 @@ namespace LMP
 
 		LastPhononMediaInfo_ = info;
 
-		EmitStateChange ();
+		EmitStateChange (Source_->GetState ());
 	}
 
 	void Player::handleSourceError (const QString& sourceText, SourceError error)
@@ -1400,6 +1464,11 @@ namespace LMP
 			text.prepend (tr ("Cannot find a proper audio decoder. "
 					"You probably don't have all the codec plugins installed."));
 			break;
+		case SourceError::SourceNotFound:
+			text = tr ("Audio source %1 not found, playing next track...")
+					.arg (QFileInfo (Source_->GetCurrentSource ().ToUrl ().path ()).fileName ());
+			nextTrack ();
+			break;
 		case SourceError::Other:
 			break;
 		}
@@ -1410,7 +1479,7 @@ namespace LMP
 
 	void Player::refillPlaylist ()
 	{
-		ReplaceQueue (GetQueue (), false);
+		Enqueue (GetQueue (), EnqueueReplace);
 	}
 }
 }

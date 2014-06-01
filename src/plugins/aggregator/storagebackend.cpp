@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,6 +33,7 @@
 #include <QDebug>
 #include "sqlstoragebackend.h"
 #include "sqlstoragebackend_mysql.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -61,11 +62,7 @@ namespace Aggregator
 	{
 	}
 
-	StorageBackend::~StorageBackend ()
-	{
-	}
-
-	std::shared_ptr<StorageBackend> StorageBackend::Create (const QString& strType, const QString& id)
+	StorageBackend_ptr StorageBackend::Create (const QString& strType, const QString& id)
 	{
 		StorageBackend::Type type;
 		if (strType == "SQLite")
@@ -81,18 +78,24 @@ namespace Aggregator
 		return Create (type, id);
 	}
 
-	std::shared_ptr<StorageBackend> StorageBackend::Create (Type type, const QString& id)
+	StorageBackend_ptr StorageBackend::Create (Type type, const QString& id)
 	{
-		std::shared_ptr<StorageBackend> result;
+		StorageBackend_ptr result;
 		switch (type)
 		{
 			case SBSQLite:
 			case SBPostgres:
-				result.reset (new SQLStorageBackend (type, id));
+				result = std::make_shared<SQLStorageBackend> (type, id);
 				break;
 			case SBMysql:
-				result.reset (new SQLStorageBackendMysql (type, id));
+				result = std::make_shared<SQLStorageBackendMysql> (type, id);
+				break;
 		}
+		qDebug () << Q_FUNC_INFO
+				<< "created connection";
+
+		StorageBackendManager::Instance ().Register (result);
+
 		return result;
 	}
 }

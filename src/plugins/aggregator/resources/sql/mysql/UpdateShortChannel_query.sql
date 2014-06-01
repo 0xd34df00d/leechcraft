@@ -1,1 +1,1 @@
-UPDATE channels SET tags = ? , last_build =  ? WHERE channel_id = ? 
+UPDATE channels SET tags = ? , last_build =  ? , display_title = ? WHERE channel_id = ?

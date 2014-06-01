@@ -15,25 +15,15 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	proxiesconfigwidget.cpp
 	)
-set (HEADERS
-	xproxy.h
-	proxyfactory.h
-	xmlsettingsmanager.h
-	proxiesconfigwidget.h
-	)
 set (FORMS
 	proxiesconfigwidget.ui
 	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 CreateTrs ("xproxy" "en;ru_RU" COMPILED_TRANSLATIONS)
 
 add_library (leechcraft_xproxy SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	)
 target_link_libraries (leechcraft_xproxy

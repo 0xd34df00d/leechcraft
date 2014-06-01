@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,6 +36,7 @@
 #include <QtDebug>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "keysequencer.h"
 #include "coreproxy.h"
 
@@ -75,7 +76,7 @@ namespace LeechCraft
 	, Filter_ (new SMFilterProxyModel (this))
 	{
 		Filter_->setDynamicSortFilter (true);
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("Shortcut") << tr ("Alternate"));
+		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Shortcut"), tr ("Alternate") });
 		Filter_->setSourceModel (Model_);
 		Filter_->sort (0);
 
@@ -156,7 +157,7 @@ namespace LeechCraft
 
 			auto icon = info [name].Icon_;
 			if (icon.isNull ())
-				icon = CoreProxy ().GetIcon ("configure-shortcuts");
+				icon = CoreProxy ().GetIconThemeManager ()->GetIcon ("configure-shortcuts");
 			first->setIcon (icon);
 
 			first->setData (name, Roles::OriginalName);
@@ -164,8 +165,8 @@ namespace LeechCraft
 
 			QList<QStandardItem*> itemRow;
 			itemRow << first;
-			itemRow << new QStandardItem (sequences.value (0).toString ());
-			itemRow << new QStandardItem (sequences.value (1).toString ());
+			itemRow << new QStandardItem (sequences.value (0).toString (QKeySequence::NativeText));
+			itemRow << new QStandardItem (sequences.value (1).toString (QKeySequence::NativeText));
 			deEdit (itemRow);
 			parentRow.at (0)->appendRow (itemRow);
 
@@ -235,16 +236,19 @@ namespace LeechCraft
 			item->setData (item->data (Roles::Sequence), Roles::OldSequence);
 
 		const int numSeqs = 2;
+
 		auto newSeqs = item->data (Roles::Sequence).value<QKeySequences_t> ();
 		while (newSeqs.size () < numSeqs)
 			newSeqs << QKeySequence ();
+
 		newSeqs [std::max (prIndex.column () - 1, 0)] = dia.GetResult ();
 		newSeqs.removeAll (QKeySequence ());
+
 		item->setData (QVariant::fromValue<QKeySequences_t> (newSeqs), Roles::Sequence);
 
 		for (int i = 0; i < numSeqs; ++i)
 			Model_->itemFromIndex (index.sibling (index.row (), i + 1))->
-					setText (newSeqs.value (i).toString ());
+					setText (newSeqs.value (i).toString (QKeySequence::NativeText));
 	}
 
 	void ShortcutManager::accept ()
@@ -294,7 +298,7 @@ namespace LeechCraft
 				item->setData (seq, Roles::Sequence);
 				item->setData (QVariant (), Roles::OldSequence);
 
-				objectItem->child (j, 1)->setText (seq.toString ());
+				objectItem->child (j, 1)->setText (seq.toString (QKeySequence::NativeText));
 			}
 		}
 	}

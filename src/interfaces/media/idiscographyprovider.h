@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -89,6 +89,18 @@ namespace Media
 			 */
 			Single,
 
+			/** @brief A compilation.
+			 */
+			Compilation,
+
+			/** @brief A live release.
+			 */
+			Live,
+
+			/** @brief A soundtrack.
+			 */
+			Soundtrack,
+
 			/** @brief Some other release type currently unrecognized by
 			 * LeechCraft.
 			 */
@@ -140,7 +152,7 @@ namespace Media
 		 *
 		 * This function returns the found releases, or an empty list if
 		 * no releases are found, an error has occurred or search isn't
-		 * completed yet..
+		 * completed yet.
 		 *
 		 * @return The fetched artist biography.
 		 */

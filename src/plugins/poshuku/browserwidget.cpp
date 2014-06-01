@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -59,17 +59,22 @@
 #include <QDesktopServices>
 #include <QTextCodec>
 #include <QCursor>
+#include <QDomDocument>
+#include <QDomElement>
 #include <qwebhistory.h>
 #include <qwebelement.h>
+#include <QWebInspector>
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
 #include <QLabel>
 #include <QXmlStreamWriter>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/util.h>
+#include <util/xpc/defaulthookproxy.h>
+#include <util/xpc/notificationactionhandler.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -82,6 +87,8 @@
 #include "bookmarkswidget.h"
 #include "historywidget.h"
 #include "customwebview.h"
+#include "urleditbuttonsmanager.h"
+#include "webpagesslwatcher.h"
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
@@ -111,12 +118,20 @@ namespace Poshuku
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 		Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
 		Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
-		Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
-		Ui_.Progress_->hide ();
+		Ui_.Splitter_->setSizes ({ 0, 1000 });
 
 		WebView_ = new CustomWebView;
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+		auto sslWatcher = new WebPageSslWatcher (WebView_->page ());
+		connect (WebView_,
+				SIGNAL (navigateRequested (QUrl)),
+				sslWatcher,
+				SLOT (resetStats ()));
+
+		WebInspector_ = new QWebInspector;
+		WebInspector_->setPage (WebView_->page ());
 
 		WebView_->SetBrowserWidget (this);
 		connect (WebView_,
@@ -160,12 +175,12 @@ namespace Poshuku
 		Reload_ = WebView_->pageAction (QWebPage::Reload);
 		Reload_->setProperty ("ActionIcon", "view-refresh");
 		Reload_->setIcon (Core::Instance ()
-				.GetProxy ()->GetIcon ("view-refresh"));
+				.GetProxy ()->GetIconThemeManager ()->GetIcon ("view-refresh"));
 
 		Stop_ = WebView_->pageAction (QWebPage::Stop);
 		Stop_->setProperty ("ActionIcon", "process-stop");
 		Stop_->setIcon (Core::Instance ()
-				.GetProxy ()->GetIcon ("process-stop"));
+				.GetProxy ()->GetIconThemeManager ()->GetIcon ("process-stop"));
 
 		ReloadStop_ = new QAction (this);
 		handleLoadProgress (0);
@@ -180,34 +195,14 @@ namespace Poshuku
 		NotifyWhenFinished_->setChecked (XmlSettingsManager::Instance ()->
 				property ("NotifyFinishedByDefault").toBool ());
 
-
 		Add2Favorites_ = new QAction (tr ("Bookmark..."), this);
 		Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
 		Add2Favorites_->setEnabled (false);
 
-		IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
-		if (!iab)
-			qWarning () << Q_FUNC_INFO
-					<< GetURLEdit ()
-					<< "isn't an IAddressBar object";
-		else
-		{
-			iab->InsertAction (Add2Favorites_, 0, true);
-			connect (GetURLEdit (),
-					SIGNAL (textChanged (const QString&)),
-					this,
-					SLOT (handleUrlTextChanged (const QString&)));
-
-			connect (&Core::Instance (),
-					SIGNAL (bookmarkAdded (const QString&)),
-					this,
-					SLOT (checkPageAsFavorite (const QString&)));
-
-			connect (&Core::Instance (),
-					SIGNAL (bookmarkRemoved (const QString&)),
-					this,
-					SLOT (checkPageAsFavorite (const QString&)));
-		}
+		new UrlEditButtonsManager (WebView_,
+				Ui_.URLFrame_->GetEditAsProgressLine (),
+				sslWatcher,
+				Add2Favorites_);
 
 		Find_ = new QAction (tr ("Find..."),
 				this);
@@ -335,13 +330,6 @@ namespace Poshuku
 				this,
 				SLOT (handleChangeEncodingTriggered (QAction*)));
 
-		ExternalLinks_ = new QMenu (this);
-		ExternalLinks_->menuAction ()->setText (tr ("External links"));
-
-		ExternalLinksAction_ = new QAction (this);
-		ExternalLinksAction_->setText ("External links");
-		ExternalLinksAction_->setProperty ("ActionIcon", "application-rss+xml");
-
 		QWidgetAction *addressBar = new QWidgetAction (this);
 		addressBar->setDefaultWidget (Ui_.URLFrame_);
 		ToolBar_->addAction (addressBar);
@@ -376,14 +364,6 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleFind ()));
-		connect (FindNext_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleFindNext ()));
-		connect (FindPrevious_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleFindPrevious ()));
 		connect (ScreenSave_,
 				SIGNAL (triggered ()),
 				this,
@@ -469,10 +449,6 @@ namespace Poshuku
 		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
-				SLOT (checkLinkRels ()));
-		connect (WebView_,
-				SIGNAL (loadFinished (bool)),
-				this,
 				SLOT (setScrollPosition ()));
 		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
@@ -525,19 +501,18 @@ namespace Poshuku
 				this,
 				SLOT (focusLineEdit ()));
 
-		connect (WebView_,
-				SIGNAL (loadFinished (bool)),
-				this,
-				SLOT (updateBookmarksState (bool)));
-		FindDialog_ = new FindDialog (Ui_.WebFrame_);
+		FindDialog_ = new FindDialog (WebView_);
 		FindDialog_->hide ();
+		connect (FindNext_,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (findNext ()));
+		connect (FindPrevious_,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (findPrevious ()));
 
-		connect (FindDialog_,
-				SIGNAL (next (const QString&, QWebPage::FindFlags)),
-				this,
-				SLOT (findText (const QString&, QWebPage::FindFlags)));
-
-		RememberDialog_ = new PasswordRemember (Ui_.WebFrame_);
+		RememberDialog_ = new PasswordRemember (WebView_);
 		RememberDialog_->hide ();
 
 		connect (WebView_,
@@ -550,6 +525,7 @@ namespace Poshuku
 
 	BrowserWidget::~BrowserWidget ()
 	{
+		WebInspector_->hide ();
 		if (Own_)
 			Core::Instance ().Unregister (this);
 
@@ -566,7 +542,7 @@ namespace Poshuku
 		Own_ = false;
 	}
 
-	void BrowserWidget::InitShortcuts ()
+	void BrowserWidget::FinalizeInit ()
 	{
 		IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
 		QObject *object = Core::Instance ().parent ();
@@ -589,6 +565,12 @@ namespace Poshuku
 		ZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomIn_"));
 		ZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomOut_"));
 		ZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomReset_"));
+
+		if (Own_)
+		{
+			IHookProxy_ptr proxy { new Util::DefaultHookProxy };
+			emit hookBrowserWidgetInitialized (proxy, WebView_, this);
+		}
 	}
 
 	CustomWebView* BrowserWidget::GetView () const
@@ -848,10 +830,9 @@ namespace Poshuku
 	void BrowserWidget::FillMimeData (QMimeData *data)
 	{
 		const auto& url = WebView_->url ();
-#if QT_VERSION >= 0x040800
 		if (!url.isEmpty () && url.isValid ())
 			data->setUrls ({ url });
-#endif
+
 		QImage image (WebView_->size (), QImage::Format_ARGB32);
 		WebView_->render (&image);
 		data->setImageData (image);
@@ -922,32 +903,28 @@ namespace Poshuku
 
 		proxy->FillValue ("preview", preview);
 
-		std::auto_ptr<QPrinter> printer (new QPrinter ());
-
-		QPrintDialog *dialog = new QPrintDialog (printer.get (), this);
-		dialog->setWindowTitle (tr ("Print web page"));
-		/* TODO
-		if (!WebView_->selectedText ().isEmpty ())
-			dialog->addEnabledOption (QAbstractPrintDialog::PrintSelection);
-		*/
-
-		if (dialog->exec () != QDialog::Accepted)
-			return;
-
+		QPrinter printer;
 		if (preview)
 		{
-			QPrintPreviewDialog *prevDialog =
-				new QPrintPreviewDialog (printer.get (), this);
-			connect (prevDialog,
+			QPrintPreviewDialog prevDialog (&printer, this);
+			connect (&prevDialog,
 					SIGNAL (paintRequested (QPrinter*)),
 					frame,
 					SLOT (print (QPrinter*)));
 
-			if (prevDialog->exec () != QDialog::Accepted)
+			if (prevDialog.exec () != QDialog::Accepted)
 				return;
 		}
+		else
+		{
+			QPrintDialog dialog (&printer, this);
+			dialog.setWindowTitle (tr ("Print web page"));
 
-		frame->print (printer.get ());
+			if (dialog.exec () != QDialog::Accepted)
+				return;
+
+			frame->print (&printer);
+		}
 	}
 
 	void BrowserWidget::SetActualReloadInterval (const QTime& value)
@@ -1062,7 +1039,6 @@ namespace Poshuku
 	void BrowserWidget::handleAdd2Favorites ()
 	{
 		const QString& url = WebView_->url ().toString ();
-		checkPageAsFavorite (url);
 
 		if (Core::Instance ().IsUrlInFavourites (url))
 			Core::Instance ().GetFavoritesModel ()->removeItem (url);
@@ -1076,50 +1052,7 @@ namespace Poshuku
 		if (act)
 			FindDialog_->SetText (act->data ().toString ());
 		FindDialog_->show ();
-		FindDialog_->Focus ();
-	}
-
-	void BrowserWidget::handleFindNext ()
-	{
-		const auto& text = FindDialog_->GetText ();
-		if (text.isEmpty ())
-			return;
-
-		findText (text, FindDialog_->GetPageFlags () |
-				QWebPage::FindWrapsAroundDocument);
-	}
-
-	void BrowserWidget::handleFindPrevious ()
-	{
-		const auto& text = FindDialog_->GetText ();
-		if (text.isEmpty ())
-			return;
-
-		findText (text, FindDialog_->GetPageFlags () |
-				QWebPage::FindBackward |
-				QWebPage::FindWrapsAroundDocument);
-	}
-
-	void BrowserWidget::findText (const QString& thtext,
-			QWebPage::FindFlags flags)
-	{
-		QString text = thtext;
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookFindText (proxy, this, text, flags);
-		if (proxy->IsCancelled ())
-			return;
-
-		proxy->FillValue ("text", text);
-
-		if (PreviousFindText_ != text)
-		{
-			QWebPage::FindFlags nflags = flags | QWebPage::HighlightAllOccurrences;
-			WebView_->page ()->findText (QString (), nflags);
-			WebView_->page ()->findText (text, nflags);
-			PreviousFindText_ = text;
-		}
-		bool found = WebView_->page ()->findText (text, flags);
-		FindDialog_->SetSuccessful (found);
+		FindDialog_->setFocus ();
 	}
 
 	void BrowserWidget::handleViewPrint (QWebFrame *frame)
@@ -1193,11 +1126,6 @@ namespace Poshuku
 		edit->selectAll ();
 	}
 
-	void BrowserWidget::updateBookmarksState (bool)
-	{
-		checkPageAsFavorite (WebView_->url ().toString ());
-	}
-
 	QWebView* BrowserWidget::getWebView () const
 	{
 		return WebView_;
@@ -1251,7 +1179,8 @@ namespace Poshuku
 			const auto& item = items.at (i);
 			if (!item.isValid ())
 				continue;
-			auto act = BackMenu_->addAction (Core::Instance ().GetIcon (item.url ()), item.title ());
+			auto act = BackMenu_->addAction (Core::Instance ().GetIcon (item.url ()),
+					item.title ());
 			act->setToolTip (item.url ().toString ());
 			act->setData (i);
 
@@ -1268,7 +1197,8 @@ namespace Poshuku
 			const auto& item = items.at (i);
 			if (!item.isValid ())
 				continue;
-			auto act = ForwardMenu_->addAction (Core::Instance ().GetIcon (item.url ()), item.title ());
+			auto act = ForwardMenu_->addAction (Core::Instance ().GetIcon (item.url ()),
+					item.title ());
 			act->setToolTip (item.url ().toString ());
 			act->setData (i);
 
@@ -1311,171 +1241,142 @@ namespace Poshuku
 		history->goToItem (item);
 	}
 
-	void BrowserWidget::handleEntityAction ()
-	{
-		emit gotEntity (qobject_cast<QAction*> (sender ())->
-				data ().value<LeechCraft::Entity> ());
-	}
-
-	void BrowserWidget::checkLinkRels ()
-	{
-		if (HtmlMode_)
-			return;
-
-		IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
-		if (!iab)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< GetURLEdit ()
-				<< "isn't an IAddressBar object";
-			return;
-		}
-
-		iab->RemoveAction (ExternalLinksAction_);
-
-		ExternalLinks_->clear ();
-
-		QWebElementCollection links = WebView_->
-				page ()->mainFrame ()->findAllElements ("link");
-		QUrl mainFrameURL = WebView_->page ()->mainFrame ()->url ();
-		bool inserted = false;
-		Q_FOREACH (QWebElement link, links)
-		{
-			if (link.attribute ("type") == "")
-				continue;
-
-			LeechCraft::Entity e;
-			e.Mime_ = link.attribute ("type");
-
-			QString entity = link.attribute ("title");
-			if (entity.isEmpty ())
-			{
-				entity = e.Mime_;
-				entity.remove ("application/");
-				entity.remove ("+xml");
-				entity = entity.toUpper ();
-			}
-
-			QUrl entityUrl = mainFrameURL.resolved (QUrl (link.attribute ("href")));
-			e.Entity_ = entityUrl;
-			e.Additional_ ["SourceURL"] = entityUrl;
-			e.Parameters_ = LeechCraft::FromUserInitiated |
-				LeechCraft::OnlyHandle;
-			e.Additional_ ["UserVisibleName"] = entity;
-			e.Additional_ ["LinkRel"] = link.attribute ("rel");
-			e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.Poshuku");
-
-			bool ch = false;
-			emit couldHandle (e, &ch);
-			if (ch)
-			{
-				QString mime = e.Mime_;
-				mime.replace ('/', '_');
-				QAction *act = ExternalLinks_->
-					addAction (QIcon (QString (":/resources/images/%1.png")
-							.arg (mime)),
-						entity,
-						this,
-						SLOT (handleEntityAction ()));
-				act->setData (QVariant::fromValue<LeechCraft::Entity> (e));
-				if (!inserted)
-				{
-					QToolButton *btn = iab->InsertAction (ExternalLinksAction_);
-					iab->SetVisible (ExternalLinksAction_, true);
-					btn->setMenu (ExternalLinks_);
-					btn->setArrowType (Qt::NoArrow);
-					btn->setPopupMode (QToolButton::InstantPopup);
-					const QString newStyle ("::menu-indicator { image: "
-							"url(data:image/gif;base64,R0lGODlhAQABAPABAP///"
-							"wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==);}");
-					btn->setStyleSheet (btn->styleSheet () + newStyle);
-
-					connect (ExternalLinks_->menuAction (),
-							SIGNAL (triggered ()),
-							this,
-							SLOT (showSendersMenu ()),
-							Qt::UniqueConnection);
-					inserted = true;
-				}
-			}
-		}
-	}
-
 	namespace
 	{
-		void ToHtml (const QDomElement& elem, QXmlStreamWriter& w)
+		class HtmlWriter
 		{
-			auto writeColored = [&w] (const QString& color, const QString& text, bool pad) -> void
+			QXmlStreamWriter& W_;
+		public:
+			HtmlWriter (QXmlStreamWriter& w)
+			: W_ (w)
 			{
-				const auto& padStr = (pad ? "; margin-left: 1em;" : QString ());
-
-				w.writeStartElement ("span");
-				w.writeAttribute ("style", "color:" + color + padStr);
-				w.writeCharacters (text);
-				w.writeEndElement ();
-			};
-
-			w.writeStartElement ("div");
-			w.writeAttribute ("style", "color: #881280; margin-left: 1em;");
-			w.writeCharacters ("<" + elem.tagName ());
-
-			const auto& attrs = elem.attributes ();
-			for (int i = 0; i < attrs.size (); ++i)
-			{
-				const auto& attrNode = attrs.item (i).toAttr ();
-
-				writeColored ("#994500", " " + attrNode.name (), false);
-				writeColored ("#881280", "=\"", false);
-				writeColored ("#1A1AA6", attrNode.value (), false);
-				writeColored ("#881280", "\"", false);
 			}
 
-			bool hasChildren = false;
-			auto childrenize = [&hasChildren, &w, writeColored] () -> void
+			void WriteColored (const QString& color, const QString& text, int pad)
 			{
-				if (hasChildren)
-					return;
+				const auto& padStr = pad ?
+						("; margin-left: " + QString::number (pad) + "em;") :
+						QString ();
 
-				hasChildren = true;
-				w.writeCharacters (">");
-				w.writeEmptyElement ("br");
-			};
+				W_.writeStartElement ("span");
+				W_.writeAttribute ("style", "color:" + color + padStr);
+				W_.writeCharacters (text);
+				W_.writeEndElement ();
+			}
 
-			auto child = elem.firstChild ();
-			while (!child.isNull ())
+			void ToHtml (const QDomDocument& doc)
 			{
-				switch (child.nodeType ())
+				const auto& doctype = doc.doctype ();
+				if (!doctype.name ().isEmpty ())
 				{
-				case QDomDocument::TextNode:
-					childrenize ();
-					writeColored ("#000000", child.toText ().data (), true);
-					w.writeEmptyElement ("br");
-					break;
-				case QDomDocument::CDATASectionNode:
-					childrenize ();
-					writeColored ("#000000", "<![CDATA[ " + child.toCDATASection ().data () + " ]]>", true);
-					w.writeEmptyElement ("br");
-					break;
-				case QDomDocument::CommentNode:
-					childrenize ();
-					writeColored ("#00BB00", "<!--" + child.toComment ().data () + "-->", true);
-					w.writeEmptyElement ("br");
-					break;
-				case QDomNode::ElementNode:
-					childrenize ();
-					ToHtml (child.toElement (), w);
-					break;
-				case QDomNode::AttributeNode:
-				case QDomNode::CharacterDataNode:
-				case QDomNode::BaseNode:
-					break;
+					W_.writeStartElement ("div");
+					W_.writeAttribute ("style", "color: #964B00; margin-left: 1em;");
+					W_.writeCharacters ("<!DOCTYPE ");
+
+					WriteColored ("#000000", doctype.name (), 0);
+					W_.writeCharacters (" ");
+					WriteColored ("#881280", '"' + doctype.publicId () + '"', 0);
+					W_.writeEmptyElement ("br");
+					WriteColored ("#881280", '"' + doctype.systemId () + '"', 2);
+
+					W_.writeCharacters (">");
+
+					W_.writeEndElement ();
 				}
-				child = child.nextSibling ();
+
+				ToHtmlChildren (doc, [] {});
 			}
 
-			w.writeCharacters (hasChildren ? ("</" + elem.tagName () + ">") : " />");
-			w.writeEndElement ();
-		}
+			void ToHtml (const QDomElement& elem)
+			{
+				W_.writeStartElement ("div");
+				W_.writeAttribute ("style", "color: #881280; margin-left: 1em;");
+				W_.writeCharacters ("<" + elem.tagName ());
+
+				const auto& attrs = elem.attributes ();
+				for (int i = 0; i < attrs.size (); ++i)
+				{
+					const auto& attrNode = attrs.item (i).toAttr ();
+
+					WriteColored ("#994500", " " + attrNode.name (), 0);
+					WriteColored ("#881280", "=\"", 0);
+					WriteColored ("#1A1AA6", attrNode.value (), 0);
+					WriteColored ("#881280", "\"", 0);
+				}
+
+				bool hasChildren = false;
+				auto childrenize = [this, &hasChildren] () -> void
+				{
+					if (hasChildren)
+						return;
+
+					hasChildren = true;
+					W_.writeCharacters (">");
+					W_.writeEmptyElement ("br");
+				};
+
+				ToHtmlChildren (elem, childrenize);
+
+				W_.writeCharacters (hasChildren ? ("</" + elem.tagName () + ">") : " />");
+				W_.writeEndElement ();
+			}
+
+			template<typename ChildrenizeCbType>
+			void ToHtmlChildren (const QDomNode& elem, const ChildrenizeCbType& childrenize)
+			{
+				auto child = elem.firstChild ();
+				while (!child.isNull ())
+				{
+					switch (child.nodeType ())
+					{
+					case QDomDocument::TextNode:
+						childrenize ();
+						WriteColored ("#000000", child.toText ().data (), 1);
+						W_.writeEmptyElement ("br");
+						break;
+					case QDomDocument::CDATASectionNode:
+						childrenize ();
+						WriteColored ("#000000", "<![CDATA[ " + child.toCDATASection ().data () + " ]]>", 1);
+						W_.writeEmptyElement ("br");
+						break;
+					case QDomDocument::CommentNode:
+						childrenize ();
+						WriteColored ("#00BB00", "<!--" + child.toComment ().data () + "-->", 1);
+						W_.writeEmptyElement ("br");
+						break;
+					case QDomNode::ElementNode:
+						childrenize ();
+						ToHtml (child.toElement ());
+						break;
+					case QDomNode::ProcessingInstructionNode:
+					{
+						childrenize ();
+						const auto& instr = child.toProcessingInstruction ();
+						W_.writeStartElement ("div");
+						W_.writeAttribute ("style", "color: #007700; margin-left: 1em;");
+						W_.writeCharacters ("<?" + instr.target () + " ");
+						WriteColored ("#994500", instr.data (), 0);
+						W_.writeCharacters ("?>");
+						W_.writeEndElement ();
+						break;
+					}
+					case QDomNode::DocumentTypeNode:
+					case QDomNode::EntityNode:
+					case QDomNode::EntityReferenceNode:
+					case QDomNode::AttributeNode:
+					case QDomNode::CharacterDataNode:
+					case QDomNode::BaseNode:
+					case QDomNode::DocumentFragmentNode:
+					case QDomNode::DocumentNode:
+					case QDomNode::NotationNode:
+						qWarning () << "unexpected node type"
+								<< child.nodeType ();
+						break;
+					}
+					child = child.nextSibling ();
+				}
+			}
+		};
 	}
 
 	void BrowserWidget::checkLoadedDocument ()
@@ -1507,7 +1408,7 @@ namespace Poshuku
 				w.writeEndElement ();
 				w.writeStartElement ("body");
 					w.writeAttribute ("style", "font-family:monospace;");
-					ToHtml (doc.documentElement (), w);
+					HtmlWriter { w }.ToHtml (doc);
 				w.writeEndElement ();
 			w.writeEndElement ();
 		w.writeEndDocument ();
@@ -1709,21 +1610,6 @@ namespace Poshuku
 		setProperty ("WidgetLogicalPath", path);
 	}
 
-	void BrowserWidget::showSendersMenu ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "sender is not a QAction"
-				<< sender ();
-			return;
-		}
-
-		QMenu *menu = action->menu ();
-		menu->exec (QCursor::pos ());
-	}
-
 	void BrowserWidget::handleUrlChanged (const QString& value)
 	{
 		QString userText = value;
@@ -1760,55 +1646,6 @@ namespace Poshuku
 		Ui_.URLFrame_->GetEdit ()->repaint ();
 
 		emit urlChanged (value);
-	}
-
-	void BrowserWidget::handleUrlTextChanged (const QString& url)
-	{
-		checkPageAsFavorite (url);
-	}
-
-	void BrowserWidget::checkPageAsFavorite (const QString& url)
-	{
-		if (url != WebView_->url ().toString () &&
-				url != GetURLEdit ()->text ())
-			return;
-
-		if (Core::Instance ().IsUrlInFavourites (url))
-		{
-			Add2Favorites_->setProperty ("ActionIcon", "list-remove");
-			Add2Favorites_->setText (tr ("Remove bookmark"));
-			Add2Favorites_->setToolTip (tr ("Remove bookmark"));
-
-			IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
-			if (!iab)
-				qWarning () << Q_FUNC_INFO
-						<< GetURLEdit ()
-						<< "isn't an IAddressBar object";
-			else
-			{
-				QToolButton *btn = iab->GetButtonFromAction (Add2Favorites_);
-				if (btn)
-					btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("list-remove"));
-			}
-		}
-		else
-		{
-			Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
-			Add2Favorites_->setText (tr ("Add bookmark"));
-			Add2Favorites_->setToolTip (tr ("Add bookmark"));
-
-			IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
-			if (!iab)
-				qWarning () << Q_FUNC_INFO
-						<< GetURLEdit ()
-						<< "isn't an IAddressBar object";
-			else
-			{
-				QToolButton *btn = iab->GetButtonFromAction (Add2Favorites_);
-				if (btn)
-					btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("bookmark-new"));
-			}
-		}
 	}
 
 	void BrowserWidget::handleShortcutHistory ()

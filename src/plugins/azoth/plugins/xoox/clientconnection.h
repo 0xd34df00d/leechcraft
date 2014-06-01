@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -85,6 +85,8 @@ namespace Xoox
 	class UserAvatarManager;
 	class MsgArchivingManager;
 	class SDManager;
+	class Xep0313Manager;
+	class CarbonsManager;
 
 	class InfoRequestPolicyManager;
 	class ClientConnectionErrorMgr;
@@ -126,6 +128,8 @@ namespace Xoox
 		RIEXManager *RIEXManager_;
 		MsgArchivingManager *MsgArchivingManager_;
 		SDManager *SDManager_;
+		Xep0313Manager *Xep0313Manager_;
+		CarbonsManager *CarbonsManager_;
 
 		CryptHandler *CryptHandler_;
 		ClientConnectionErrorMgr *ErrorMgr_;
@@ -219,6 +223,7 @@ namespace Xoox
 		UserAvatarManager* GetUserAvatarManager () const;
 		RIEXManager* GetRIEXManager () const;
 		SDManager* GetSDManager () const;
+		Xep0313Manager* GetXep0313Manager () const;
 
 		InfoRequestPolicyManager* GetInfoReqPolicyManager () const;
 
@@ -284,7 +289,10 @@ namespace Xoox
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handleVersionReceived (const QXmppVersionIq&);
 		void handlePresenceChanged (const QXmppPresence&);
-		void handleMessageReceived (QXmppMessage);
+
+		void handleMessageReceived (QXmppMessage, bool forwarded = false);
+		void handleCarbonsMessage (const QXmppMessage&);
+
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handlePEPAvatarUpdated (const QString&, const QImage&);
 		void handleMessageDelivered (const QString&, const QString&);
@@ -307,6 +315,8 @@ namespace Xoox
 		void updateFTSettings ();
 		void updateCallSettings ();
 		void handleDetectedBSProxy (const QString&);
+
+		void handleMessageCarbonsSettingsChanged ();
 
 		void handleVersionSettingsChanged ();
 	private:

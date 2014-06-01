@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 #include <QTimer>
 #include <QIcon>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/azoth/iclentry.h>
@@ -52,6 +53,7 @@ namespace BirthdayNotifier
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothbirthdaynotifiersettings.xml");
+		XmlSettingsManager::Instance ().RegisterObject ("NotifyNTimesPerDay", this, "notifyNTimesPerDaySettingsChanged");
 
 		CheckTimer_ = new QTimer (this);
 
@@ -60,7 +62,7 @@ namespace BirthdayNotifier
 				this,
 				SLOT (checkDates ()));
 
-		CheckTimer_->start (3600 * 2 * 1000);
+		notifyNTimesPerDaySettingsChanged ();
 	}
 
 	void Plugin::SecondInit ()
@@ -77,6 +79,7 @@ namespace BirthdayNotifier
 
 	void Plugin::Release ()
 	{
+		CheckTimer_->stop ();
 	}
 
 	QString Plugin::GetName () const
@@ -212,6 +215,16 @@ namespace BirthdayNotifier
 					NotifyBirthday (entry, days);
 			}
 		}
+	}
+
+	void Plugin::notifyNTimesPerDaySettingsChanged ()
+	{
+		static const int kMSecPerDay = 24 * 60 * 60 * 1000;
+
+		CheckTimer_->stop ();
+		const int interval = XmlSettingsManager::Instance ().property ("NotifyNTimesPerDay").toInt ();
+		const int timeOutMSec = kMSecPerDay / (interval ? interval : 1);
+		CheckTimer_->start (timeOutMSec);
 	}
 }
 }

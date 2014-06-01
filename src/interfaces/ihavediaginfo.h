@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,11 +33,22 @@
 
 class QString;
 
+/** @brief Interface for plugins having human-readable diagnostic data.
+ *
+ * Library versions, the compiled-in features, etc., count as diagnostic
+ * info. The info aggregated from all plugins will be sent to the issue
+ * tracker with bug reports, for example, so returning proper data can
+ * aid in debugging.
+ */
 class Q_DECL_EXPORT IHaveDiagInfo
 {
 public:
 	virtual ~IHaveDiagInfo () {}
 
+	/** @brief Returns the human-readable diagnostic info.
+	 *
+	 * @return The human-readable diagnostic info.
+	 */
 	virtual QString GetDiagInfoString () const = 0;
 };
 

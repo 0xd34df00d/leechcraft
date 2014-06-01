@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
+#include <interfaces/azoth/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
 #include "vkmessage.h"
@@ -84,7 +85,7 @@ namespace Murm
 				.RegisterObject ("EntryNameFormat", this, "handleEntryNameFormat");
 	}
 
-	void VkEntry::UpdateInfo (const UserInfo& info)
+	void VkEntry::UpdateInfo (const UserInfo& info, bool spontaneous)
 	{
 		const bool updateStatus = info.IsOnline_ != Info_.IsOnline_;
 		const bool updateName = info.FirstName_ != Info_.FirstName_ ||
@@ -99,12 +100,15 @@ namespace Murm
 			emit statusChanged (GetStatus (""), "");
 			emit availableVariantsChanged (Variants ());
 
-			auto msg = new VkMessage (IMessage::DIn, IMessage::MTStatusMessage, this);
-			const auto& entryName = GetEntryName ();
-			msg->SetBody (info.IsOnline_ ?
-					tr ("%1 is now on the site again").arg (entryName) :
-					tr ("%1 has left the site").arg (entryName));
-			Store (msg);
+			if (spontaneous)
+			{
+				auto msg = new VkMessage (false, IMessage::DIn, IMessage::MTStatusMessage, this);
+				const auto& entryName = GetEntryName ();
+				msg->SetBody (info.IsOnline_ ?
+						tr ("%1 is now on the site again").arg (entryName) :
+						tr ("%1 has left the site").arg (entryName));
+				Store (msg);
+			}
 		}
 	}
 
@@ -115,7 +119,7 @@ namespace Murm
 
 	void VkEntry::Send (VkMessage *msg)
 	{
-		Account_->Send (this, msg);
+		Account_->Send (GetInfo ().ID_, VkConnection::MessageType::Dialog, msg);
 	}
 
 	void VkEntry::SetSelf ()
@@ -141,13 +145,18 @@ namespace Murm
 			return;
 
 		Chats_ << chat;
-		emit groupsChanged (Groups ());
+		ReemitGroups ();
 	}
 
 	void VkEntry::UnregisterIn (VkChatEntry *chat)
 	{
 		if (Chats_.removeAll (chat))
-			emit groupsChanged (Groups ());
+			ReemitGroups ();
+	}
+
+	void VkEntry::ReemitGroups ()
+	{
+		emit groupsChanged (Groups ());
 	}
 
 	VkMessage* VkEntry::FindMessage (qulonglong id) const
@@ -338,7 +347,7 @@ namespace Murm
 		if (info.Params_.remove ("emoji"))
 			FixEmoji (info.Text_);
 
-		auto msg = new VkMessage (dir, IMessage::MTChatMessage, this);
+		auto msg = new VkMessage (false, dir, IMessage::MTChatMessage, this);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
@@ -356,7 +365,13 @@ namespace Murm
 
 	ICLEntry::Features VkEntry::GetEntryFeatures () const
 	{
-		return (IsNonRoster_ ? FSessionEntry : FPermanentEntry) | FSupportsGrouping;
+		Features result = FSupportsGrouping;
+		result |= (IsNonRoster_ ? FSessionEntry : FPermanentEntry);
+
+		if (IsSelf_)
+			result |= FSelfContact;
+
+		return result;
 	}
 
 	ICLEntry::EntryType VkEntry::GetEntryType () const
@@ -479,6 +494,8 @@ namespace Murm
 
 	void VkEntry::MarkMsgsRead ()
 	{
+		Account_->GetParentProtocol ()->GetAzothProxy ()->MarkMessagesAsRead (this);
+
 		if (!HasUnread_)
 			return;
 

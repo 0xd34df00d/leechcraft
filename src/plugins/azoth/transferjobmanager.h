@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_TRANSFERJOBMANAGER_H
-#define PLUGINS_AZOTH_TRANSFERJOBMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QHash>
 #include <QModelIndex>
@@ -62,6 +62,7 @@ namespace Azoth
 		ObjectDictionary_t Object2Progress_;
 
 		QHash<QString, QObjectList> Entry2Incoming_;
+		QHash<ITransferJob*, QString> Job2SavePath_;
 
 		QModelIndex Selected_;
 		QToolBar *ReprBar_;
@@ -78,10 +79,12 @@ namespace Azoth
 		void DenyJob (QObject*);
 		QAbstractItemModel* GetSummaryModel () const;
 
-		bool OfferURLs (ICLEntry *entry, const QList<QUrl>& urls);
+		bool OfferURLs (ICLEntry *entry, QList<QUrl> urls);
 	private:
 		QString CheckSavePath (QString);
 		void HandleDeoffer (QObject*);
+
+		void HandleTaskFinished (ITransferJob*);
 	private slots:
 		void handleFileOffered (QObject*);
 		void handleXferError (TransferError, const QString&);
@@ -93,5 +96,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

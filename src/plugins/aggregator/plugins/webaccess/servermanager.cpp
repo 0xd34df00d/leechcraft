@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,8 +30,11 @@
 #include "servermanager.h"
 #include <cstring>
 #include <QStringList>
+#include <QtDebug>
 #include <Wt/WServer>
+#include <util/xsd/addressesmodelmanager.h>
 #include "aggregatorapp.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -64,9 +67,9 @@ namespace WebAccess
 			{
 				char **result = new char* [GetArgc () + 1];
 				int i = 0;
-				Q_FOREACH (const QString& parm, Parms_)
+				for (const auto& parm : Parms_)
 				{
-					result [i] = new char [parm.size ()];
+					result [i] = new char [parm.size () + 1];
 					std::strcpy (result [i], parm.toLatin1 ());
 					++i;
 				}
@@ -77,20 +80,60 @@ namespace WebAccess
 		};
 	}
 
-	ServerManager::ServerManager (IProxyObject *proxy, ICoreProxy_ptr coreProxy)
-	: AggProxy_ (proxy)
-	, CoreProxy_ (coreProxy)
-	, Server_ (new Wt::WServer ())
+	ServerManager::ServerManager (IProxyObject *proxy,
+			ICoreProxy_ptr coreProxy,
+			Util::AddressesModelManager *manager)
+	: CoreProxy_ { coreProxy }
+	, Server_ { new Wt::WServer }
+	, AddrMgr_ { manager }
 	{
-		ArgcGenerator gen;
-		gen.AddParm ("--docroot", "/usr/share/Wt;/favicon.ico,/resources,/style");
-		gen.AddParm ("--http-address", "0.0.0.0");
-		gen.AddParm ("--http-port", "9001");
-		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
 		Server_->addEntryPoint (Wt::Application,
 				[proxy, coreProxy] (const Wt::WEnvironment& we)
 					{ return new AggregatorApp (proxy, coreProxy, we); });
-		Server_->start ();
+
+		connect (AddrMgr_,
+				SIGNAL (addressesChanged ()),
+				this,
+				SLOT (reconfigureServer ()));
+		reconfigureServer ();
+	}
+
+	void ServerManager::reconfigureServer ()
+	{
+		const auto& addresses = AddrMgr_->GetAddresses ();
+
+		qDebug () << Q_FUNC_INFO << "starting server at" << addresses;
+		ArgcGenerator gen;
+		gen.AddParm ("--docroot", "/usr/share/Wt;/favicon.ico,/resources,/style");
+
+		const auto& addr = addresses.value (0);
+		gen.AddParm ("--http-address", addr.first);
+		gen.AddParm ("--http-port", addr.second);
+		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
+
+		if (Server_->isRunning ())
+		{
+			try
+			{
+				Server_->stop ();
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< e.what ();
+			}
+		}
+
+		try
+		{
+			Server_->start ();
+
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 }
 }

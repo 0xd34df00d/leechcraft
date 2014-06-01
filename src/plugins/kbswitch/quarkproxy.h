@@ -46,7 +46,11 @@ namespace KBSwitch
 		QuarkProxy (QObject* = 0);
 
 		QString GetCurrentLangCode () const;
+	public slots:
+		void setNextLanguage ();
+		void contextMenuRequested ();
 	private slots:
+		void handleGroupSelectAction ();
 		void handleGroupChanged (int);
 	signals:
 		void currentLangCodeChanged ();

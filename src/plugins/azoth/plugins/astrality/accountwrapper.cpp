@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,7 +40,8 @@
 #include <ContactManager>
 #include <PendingReady>
 #include <util/util.h>
-#include <util/passutils.h>
+#include <util/xpc/util.h>
+#include <util/xpc/passutils.h>
 #include "astralityutil.h"
 #include "entrywrapper.h"
 #include "protowrapper.h"

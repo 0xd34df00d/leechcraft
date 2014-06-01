@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -51,6 +51,7 @@ namespace Azoth
 	class MainWidget;
 	class ConsoleWidget;
 	class MicroblogsTab;
+	class ServerHistoryWidget;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -79,7 +80,9 @@ namespace Azoth
 		MainWidget *MW_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		std::auto_ptr<QTranslator> Translator_;
+
 		TabClasses_t TabClasses_;
+		TabClassInfo ServerHistoryTC_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -114,6 +117,7 @@ namespace Azoth
 		QList<ANFieldData> GetANFields () const;
 	private :
 		void InitShortcuts ();
+		void InitAccActsMgr ();
 		void InitSettings ();
 		void InitMW ();
 		void InitSignals ();
@@ -121,6 +125,7 @@ namespace Azoth
 	public slots:
 		void handleSDWidget (ServiceDiscoveryWidget*);
 		void handleMicroblogsTab (MicroblogsTab*);
+		void handleServerHistoryTab (ServerHistoryWidget*);
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
 		void handleMWLocation (Qt::DockWidgetArea);

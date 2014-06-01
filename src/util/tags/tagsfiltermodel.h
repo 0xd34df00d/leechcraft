@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QSortFilterProxyModel>
-#include <util/utilconfig.h>
+#include "tagsconfig.h"
 
 namespace LeechCraft
 {
@@ -49,7 +49,7 @@ namespace Util
 	 * separator, which is <em>;</em> by default but can be set via the
 	 * SetSeparator() method.
 	 */
-	class UTIL_API TagsFilterModel : public QSortFilterProxyModel
+	class UTIL_TAGS_API TagsFilterModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
 

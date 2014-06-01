@@ -39,9 +39,6 @@
 #include <QVariant>
 #include <QNetworkReply>
 #include <interfaces/structures.h>
-#ifdef HAVE_MAGIC
-	#include <magic.h>
-#endif
 
 class QFile;
 
@@ -158,17 +155,14 @@ namespace GoogleDrive
 
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
-		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
+		QQueue<std::function<void (const QString&, const QUrl&)>> DownloadsQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 		QHash<QNetworkReply*, QString> Reply2DownloadAccessToken_;
 		bool SecondRequestIfNoItems_;
-#ifdef HAVE_MAGIC
-		magic_t Magic_;
-#endif
+
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
-		~DriveManager ();
 
 		void RefreshListing ();
 		void RemoveEntry (const QByteArray& id);
@@ -181,7 +175,7 @@ namespace GoogleDrive
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
 		void Download (const QString& id, const QString& filePath,
-				TaskParameters tp, bool silent, bool open = false);
+				TaskParameters tp, bool open);
 
 		void CreateDirectory (const QString& name,
 				const QString& parentId = QString ());
@@ -207,8 +201,9 @@ namespace GoogleDrive
 		void RequestRenameItem (const QString& id,
 				const QString& name,  const QString& key);
 
-		void DownloadFile (const QString& filePath, const QUrl& url,
-				TaskParameters tp, bool silent = false, bool open = false);
+		void DownloadFile (const QString& filename,
+				const QString& filePath, const QUrl& url,
+				TaskParameters tp, bool open);
 
 		void FindSyncableItems (const QStringList& paths,
 				const QString& baseDir, const QList<DriveItem>& items);

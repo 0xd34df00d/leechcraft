@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -94,6 +94,11 @@ namespace Aggregator
 		ActionUpdateSelectedFeed_->setObjectName ("ActionUpdateSelectedFeed_");
 		ActionUpdateSelectedFeed_->setProperty ("ActionIcon", "view-refresh");
 
+		ActionRenameFeed_ = new QAction (tr ("Rename feed"),
+				parent);
+		ActionRenameFeed_->setObjectName ("ActionRenameFeed_");
+		ActionRenameFeed_->setProperty ("ActionIcon", "edit-rename");
+		
 		ActionMarkChannelAsRead_ = new QAction (tr ("Mark channel as read"),
 				parent);
 		ActionMarkChannelAsRead_->setObjectName ("ActionMarkChannelAsRead_");

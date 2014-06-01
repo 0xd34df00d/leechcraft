@@ -36,8 +36,8 @@
 #include <QTemporaryFile>
 #include <QXmlQuery>
 #include <QDesktopServices>
-#include <util/sysinfo.h>
-#include <util/util.h>
+#include <util/sys/sysinfo.h>
+#include <util/xpc/util.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "utils.h"
@@ -235,7 +235,7 @@ namespace Metida
 		ApiCallQueue_ << [this, id, deleteThread] (const QString& challenge)
 				{ DeleteCommentRequest (id, deleteThread, challenge); };
 	}
-	
+
 	void LJXmlRPC::AddComment (const CommentEntry& comment)
 	{
 		auto guard = MakeRunnerGuard ();
@@ -1232,7 +1232,7 @@ namespace Metida
 				this,
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
-	
+
 	void LJXmlRPC::AddCommentRequest (const CommentEntry& comment, const QString& challenge)
 	{
 		QDomDocument document ("AddCommentRequest");
@@ -2401,7 +2401,7 @@ namespace Metida
 			auto url = ParseNewCommentUrl (document);
 			if (url.isValid ())
 				emit commentSent (url);
-				
+
 			CallNextFunctionFromQueue ();
 			return;
 		}

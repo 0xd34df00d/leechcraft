@@ -295,7 +295,7 @@ namespace Metida
 			Ui_.Mood_->addItem (mood.Name_, mood.Id_);
 
 		Ui_.UserPic_->addItem (tr ("(default)"));
-		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
+		const QString& path = Util::GetUserDir (Util::UserDir::Cache, "blogique/metida/avatars")
 				.absoluteFilePath (Account_->GetAccountID ().toBase64 ().replace ('/', '_'));
 		QPixmap pxm (path);
 		Ui_.UserPicLabel_->setPixmap (pxm.scaled (pxm.width (), pxm.height ()));
@@ -386,13 +386,12 @@ namespace Metida
 
 	void PostOptionsWidget::on_UserPic__currentIndexChanged (int index)
 	{
+		const auto& dir = Util::GetUserDir (Util::UserDir::Cache, "blogique/metida/avatars");
 		QString path = index ?
-			Util::CreateIfNotExists ("blogique/metida/avatars")
-				.absoluteFilePath ((Account_->GetAccountID () +
+			dir.absoluteFilePath ((Account_->GetAccountID () +
 					Ui_.UserPic_->itemText (index).toUtf8 ())
 						.toBase64 ().replace ('/', '_')) :
-			Util::CreateIfNotExists ("blogique/metida/avatars")
-						.absoluteFilePath ((Account_->GetAccountID ())
+			dir.absoluteFilePath ((Account_->GetAccountID ())
 								.toBase64 ().replace ('/', '_'));
 		QPixmap pxm (path);
 		Ui_.UserPicLabel_->setPixmap (pxm.scaled (pxm.width (), pxm.height ()));

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -52,6 +52,7 @@ namespace BitTorrent
 
 		QToolBar *Toolbar_;
 		QAction *OpenTorrent_;
+		QAction *AddMagnet_;
 		QAction *RemoveTorrent_;
 		QAction *Resume_;
 		QAction *Stop_;
@@ -87,6 +88,7 @@ namespace BitTorrent
 		void on_TorrentsView__customContextMenuRequested (const QPoint&);
 
 		void handleOpenTorrentTriggered ();
+		void handleAddMagnetTriggered ();
 		void handleOpenMultipleTorrentsTriggered ();
 		void handleIPFilterTriggered ();
 		void handleCreateTorrentTriggered ();

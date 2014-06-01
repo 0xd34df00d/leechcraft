@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -50,12 +50,15 @@ namespace LMP
 	}
 
 	QVariant SaveCriteria (const QList<SortingCriteria>& criteria)
-		{
-			QVariantList result;
-			for (const auto& crit : criteria)
-				result << static_cast<quint8> (crit);
-			return result;
-		}
+	{
+		if (criteria.isEmpty ())
+			return false;
+
+		QVariantList result;
+		for (const auto crit : criteria)
+			result << static_cast<quint8> (crit);
+		return result;
+	}
 
 	QList<SortingCriteria> LoadCriteria (const QVariant& var)
 	{

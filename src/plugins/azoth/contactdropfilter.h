@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,8 +29,10 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 
+class QMimeData;
 class QImage;
 class QUrl;
 
@@ -38,17 +40,28 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class ChatTab;
+
 	class ContactDropFilter : public QObject
 	{
 		Q_OBJECT
+
+		const QString EntryId_;
+		ChatTab * const ChatTab_;
 	public:
-		ContactDropFilter (QObject* = 0);
+		ContactDropFilter (const QString&, ChatTab*);
 
 		bool eventFilter (QObject*, QEvent*);
-	signals:
-		void localImageDropped (const QImage&, const QUrl&);
-		void imageDropped (const QImage&);
-		void filesDropped (const QList<QUrl>&);
+
+		void HandleDrop (const QMimeData*);
+	private:
+		bool CheckImage (const QList<QUrl>&);
+
+		void HandleImageDropped (const QImage&, const QUrl&);
+		void PerformChoice (const QStringList&, const QList<std::function<void ()>>&);
+
+		void HandleContactsDropped (const QMimeData*);
+		void HandleFilesDropped (const QList<QUrl>&);
 	};
 }
 }

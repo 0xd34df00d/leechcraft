@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QObject>
-#include <util/utilconfig.h>
+#include "xpcconfig.h"
 
 class QVariant;
 class IEntityManager;
@@ -40,13 +40,19 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class StdDataFilterMenuCreator : public QObject
+	class UTIL_XPC_API StdDataFilterMenuCreator : public QObject
 	{
 		Q_OBJECT
 
-		IEntityManager *EntityMgr_;
+		IEntityManager * const EntityMgr_;
+
+		QByteArray ChosenPlugin_;
+		QByteArray ChosenVariant_;
 	public:
-		UTIL_API StdDataFilterMenuCreator (const QVariant&, IEntityManager*, QMenu*);
+		StdDataFilterMenuCreator (const QVariant&, IEntityManager*, QMenu*);
+
+		const QByteArray& GetChosenPlugin () const;
+		const QByteArray& GetChosenVariant () const;
 	private slots:
 		void handleDataFilterAction ();
 	};

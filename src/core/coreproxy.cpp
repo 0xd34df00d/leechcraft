@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -73,14 +73,9 @@ namespace LeechCraft
 		return Core::Instance ().GetRootWindowsManager ();
 	}
 
-	QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
+	IIconThemeManager* CoreProxy::GetIconThemeManager() const
 	{
-		return IconThemeEngine::Instance ().GetIcon (icon, iconOff);
-	}
-
-	void CoreProxy::UpdateIconset (const QList<QAction*>& actions) const
-	{
-		IconThemeEngine::Instance ().UpdateIconSet (actions);
+		return &IconThemeEngine::Instance ();
 	}
 
 	IColorThemeManager* CoreProxy::GetColorThemeManager () const
@@ -132,14 +127,9 @@ namespace LeechCraft
 		return LEECHCRAFT_VERSION;
 	}
 
-	QObject* CoreProxy::GetSelf ()
-	{
-		return this;
-	}
-
 	void CoreProxy::RegisterSkinnable (QAction *act)
 	{
-		IconThemeEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
+		IconThemeEngine::Instance ().UpdateIconset (QList<QAction*> () << act);
 	}
 
 	bool CoreProxy::IsShuttingDown ()

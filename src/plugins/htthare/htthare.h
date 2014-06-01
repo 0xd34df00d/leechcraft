@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,10 +36,14 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class AddressesModelManager;
+}
+
 namespace HttHare
 {
 	class Server;
-	class AddressesModelManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -49,7 +53,7 @@ namespace HttHare
 		Q_INTERFACES (IInfo IHaveSettings)
 
 		std::shared_ptr<Server> S_;
-		AddressesModelManager *AddrMgr_;
+		Util::AddressesModelManager *AddrMgr_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:

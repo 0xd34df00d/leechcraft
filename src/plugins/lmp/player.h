@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -55,6 +55,7 @@ namespace LMP
 	class SourceObject;
 	class Output;
 	class Path;
+	class PlayerRulesManager;
 	struct MediaInfo;
 	enum class SourceError;
 	enum class SourceState;
@@ -81,6 +82,8 @@ namespace LMP
 		Media::IRadioStation_ptr CurrentStation_;
 		QStandardItem *RadioItem_;
 		QHash<QUrl, MediaInfo> Url2Info_;
+
+		PlayerRulesManager * const RulesManager_;
 
 		MediaInfo LastPhononMediaInfo_;
 
@@ -117,14 +120,27 @@ namespace LMP
 			Info,
 			AlbumArt,
 			AlbumLength,
-			OneShotPos
+			OneShotPos,
+			MatchingRules
 		};
 
+		enum EnqueueFlag
+		{
+			EnqueueNone = 0x0,
+			EnqueueSort = 0x1,
+			EnqueueReplace = 0x2
+		};
+
+		Q_DECLARE_FLAGS (EnqueueFlags, EnqueueFlag)
+
 		Player (QObject* = 0);
+
+		void InitWithOtherPlugins ();
 
 		QAbstractItemModel* GetPlaylistModel () const;
 		SourceObject* GetSourceObject () const;
 		Output* GetAudioOutput () const;
+		Path* GetPath () const;
 
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
@@ -135,9 +151,8 @@ namespace LMP
 		void SetSortingCriteria (const QList<SortingCriteria>&);
 
 		void PrepareURLInfo (const QUrl&, const MediaInfo&);
-		void Enqueue (const QStringList&, bool = true);
-		void Enqueue (const QList<AudioSource>&, bool = true);
-		void ReplaceQueue (const QList<AudioSource>&, bool = true);
+		void Enqueue (const QStringList&, EnqueueFlags = EnqueueSort);
+		void Enqueue (const QList<AudioSource>&, EnqueueFlags = EnqueueSort);
 		QList<AudioSource> GetQueue () const;
 		QList<AudioSource> GetIndexSources (const QModelIndex&) const;
 		QModelIndex GetSourceIndex (const AudioSource&) const;
@@ -172,12 +187,15 @@ namespace LMP
 
 		void UnsetRadio ();
 
-		void EmitStateChange ();
+		void EmitStateChange (SourceState);
 
 		template<typename T>
 		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,
 				std::function<T (AudioSource)>) const;
+
 		AudioSource GetNextSource (const AudioSource&);
+
+		void MarkAsCurrent (QStandardItem*);
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();
@@ -199,7 +217,7 @@ namespace LMP
 		void postPlaylistCleanup (const QString&);
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();
-		void handleStateChanged ();
+		void handleStateChanged (SourceState, SourceState);
 		void handleCurrentSourceChanged (const AudioSource&);
 		void handleMetadata ();
 
@@ -216,6 +234,10 @@ namespace LMP
 		void bufferStatusChanged (int);
 
 		void playerAvailable (bool);
+
+		void shouldClearFiltering ();
 	};
 }
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::Player::EnqueueFlags)

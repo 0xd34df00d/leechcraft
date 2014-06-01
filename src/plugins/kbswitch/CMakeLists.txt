@@ -2,13 +2,28 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_kbswitch)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (X11 REQUIRED)
+
+if (NOT X11_Xlib_INCLUDE_PATH OR
+	NOT X11_Xutil_INCLUDE_PATH OR
+	NOT X11_Xkblib_INCLUDE_PATH OR
+	NOT X11_Xaccessrules_INCLUDE_PATH)
+	message (STATUS "Xlib: ${X11_Xlib_INCLUDE_PATH}")
+	message (STATUS "Xutil: ${X11_Xutil_INCLUDE_PATH}")
+	message (STATUS "XKBlib.h: ${X11_Xkblib_INCLUDE_PATH}")
+	message (STATUS "XKBrules.h: ${X11_Xaccessrules_INCLUDE_PATH}")
+	message (FATAL_ERROR "Could NOT find all required X11 libraries")
+endif ()
 
 set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${X11_Xlib_INCLUDE_PATH}
+	${X11_Xutil_INCLUDE_PATH}
+	${X11_Xkblib_INCLUDE_PATH}
+	${X11_Xaccessrules_INCLUDE_PATH}
 	)
 
 set (SRCS
@@ -41,7 +56,7 @@ add_library (leechcraft_kbswitch SHARED
 target_link_libraries (leechcraft_kbswitch
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	xkbfile
+	${X11_Xkbfile_LIB}
 	)
 install (TARGETS leechcraft_kbswitch DESTINATION ${LC_PLUGINS_DEST})
 install (FILES kbswitchsettings.xml DESTINATION ${LC_SETTINGS_DEST})

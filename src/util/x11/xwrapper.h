@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,7 +35,7 @@
 #include <QHash>
 #include <QAbstractEventDispatcher>
 #include <X11/Xdefs.h>
-#include <util/utilconfig.h>
+#include "x11config.h"
 #include "winflags.h"
 
 class QIcon;
@@ -51,7 +51,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API XWrapper : public QObject
+	class UTIL_X11_API XWrapper : public QObject
 	{
 		Q_OBJECT
 

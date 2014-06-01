@@ -152,6 +152,7 @@ Rectangle {
                                     anchors.topMargin: 2
                                     anchors.left: parent.left
                                     anchors.leftMargin: 2
+                                    cache: false
                                 }
 
                                 Text {

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "channelclentry.h"
+#include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "channelhandler.h"
 #include "channelpublicmessage.h"
@@ -210,6 +211,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::MarkMsgsRead ()
 	{
+		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void ChannelCLEntry::ChatTabClosed ()
@@ -248,6 +250,12 @@ namespace Acetamide
 	QString ChannelCLEntry::GetMUCSubject () const
 	{
 		return ICH_->GetMUCSubject ();
+	}
+
+	bool ChannelCLEntry::CanChangeSubject () const
+	{
+		return !ICH_->GetChannelModes ().InviteMode_ ||
+				ICH_->GetSelf ()->HighestRole () >= Operator;
 	}
 
 	void ChannelCLEntry::SetMUCSubject (const QString& subject)

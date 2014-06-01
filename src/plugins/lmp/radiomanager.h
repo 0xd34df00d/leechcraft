@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <interfaces/media/iradiostation.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -42,6 +43,7 @@ class QUrl;
 namespace Media
 {
 	class IRadioStationProvider;
+	struct AudioInfo;
 }
 
 namespace LeechCraft
@@ -71,6 +73,10 @@ namespace LMP
 		void Handle (const QModelIndex&, Player*);
 
 		void HandleWokeUp ();
+
+		QList<Media::AudioInfo> GetSources (const QModelIndex&) const;
+
+		Media::IRadioStation_ptr GetRadioStation (const QString&) const;
 	private:
 		void InitProvider (QObject*);
 		void HandlePile (QStandardItem*, QObject*);

@@ -30,12 +30,13 @@
 #include "drivemanager.h"
 #include <QNetworkRequest>
 #include <QtDebug>
+#include <QDir>
 #include <QFileInfo>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QMainWindow>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include "account.h"
@@ -120,13 +121,13 @@ namespace DBox
 	}
 
 	void DriveManager::Download (const QString& id, const QString& filepath,
-			TaskParameters tp, bool silent, bool open)
+			TaskParameters tp, bool open)
 	{
 		if (id.isEmpty ())
 			return;
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, id, filepath, tp, silent, open] ()
-				{ DownloadFile (id, filepath, tp, silent, open); };
+		ApiCallQueue_ << [this, id, filepath, tp, open] ()
+				{ DownloadFile (id, filepath, tp, open); };
 	}
 
 	std::shared_ptr< void > DriveManager::MakeRunnerGuard ()
@@ -181,7 +182,6 @@ namespace DBox
 
 	void DriveManager::RequestSharingEntry (const QString& id, ShareType type)
 	{
-
 		QString str;
 		switch (type)
 		{
@@ -214,7 +214,7 @@ namespace DBox
 		QString str = QString ("https://api.dropbox.com/1/fileops/create_folder?access_token=%1&root=%2&path=%3")
 				.arg (Account_->GetAccessToken ())
 				.arg ("dropbox")
-				.arg (parentId + "/" + name);
+				.arg ((parentId.isEmpty () ? "/" : parentId) + "/" + name);
 
 		QNetworkRequest request (str);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
@@ -246,17 +246,18 @@ namespace DBox
 
 	void DriveManager::RequestCopyItem (const QString& id, const QString& parentId)
 	{
+		const auto& parentID = parentId.isEmpty () ? "/" : parentId;
 		QString str = QString ("https://api.dropbox.com/1/fileops/copy?access_token=%1&root=%2&from_path=%3&to_path=%4")
 				.arg (Account_->GetAccessToken ())
 				.arg ("dropbox")
 				.arg (id)
-				.arg (parentId + "/" + QFileInfo (id).fileName ());
+				.arg (parentID + "/" + QFileInfo (id).fileName ());
 
 		QNetworkRequest request (str);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
 				post (request, QByteArray ());
-		Reply2Id_ [reply] = parentId;
+		Reply2Id_ [reply] = parentID;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -265,17 +266,18 @@ namespace DBox
 
 	void DriveManager::RequestMoveItem (const QString& id, const QString& parentId)
 	{
+		const auto& parentID = parentId.isEmpty () ? "/" : parentId;
 		QString str = QString ("https://api.dropbox.com/1/fileops/move?access_token=%1&root=%2&from_path=%3&to_path=%4")
 				.arg (Account_->GetAccessToken ())
 				.arg ("dropbox")
 				.arg (id)
-				.arg (parentId + "/" + QFileInfo (id).fileName ());
+				.arg (parentID + "/" + QFileInfo (id).fileName ());
 
 		QNetworkRequest request (str);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
 				post (request, QByteArray ());
-		Reply2Id_ [reply] = parentId;
+		Reply2Id_ [reply] = parentID;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -297,7 +299,7 @@ namespace DBox
 
 		const QUrl url (QString ("https://api-content.dropbox.com/1/files_put/%1/%2?access_token=%3")
 				.arg ("dropbox")
-				.arg (parent + "/" + info.fileName ())
+				.arg ((parent.isEmpty () ? "/" : parent) + "/" + info.fileName ())
 				.arg (Account_->GetAccessToken ()));
 		QNetworkRequest request (url);
 		request.setPriority (QNetworkRequest::LowPriority);
@@ -348,7 +350,7 @@ namespace DBox
 		else
 			url = QString ("https://api-content.dropbox.com/1/commit_chunked_upload/%1/%2?access_token=%3&upload_id=%4")
 					.arg ("dropbox")
-					.arg (parent + "/" + info.fileName ())
+					.arg ((parent.isEmpty () ? "/" : parent) + "/" + info.fileName ())
 					.arg (Account_->GetAccessToken ())
 					.arg (uploadId);
 
@@ -360,7 +362,7 @@ namespace DBox
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->put (request, chunkFile->GetNextChunk ());
 		Reply2FilePath_ [reply] = filePath;
-		Reply2ParentId_ [reply] = parent;
+		Reply2ParentId_ [reply] = parent.isEmpty () ? "/" : parent;
 		if (offset)
 			Reply2Offset_ [reply] = offset;
 		connect (reply,
@@ -378,10 +380,10 @@ namespace DBox
 	}
 
 	void DriveManager::DownloadFile (const QString& id, const QString& filePath,
-			TaskParameters tp, bool silent, bool open)
+			TaskParameters tp, bool open)
 	{
 		QString savePath;
-		if (silent)
+		if (open)
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
 					"/" + QFileInfo (filePath).fileName ();
 
@@ -395,7 +397,7 @@ namespace DBox
 				.arg (fi.baseName ())
 				.arg (QDateTime::currentDateTime ().toTime_t ())
 				.arg (fi.completeSuffix ());
-		silent ?
+		open ?
 			Core::Instance ().DelegateEntity (e, filePath, open) :
 			Core::Instance ().SendEntity (e);
 	}
@@ -439,7 +441,8 @@ namespace DBox
 			driveItem.Revision_ = map ["rev"].toByteArray ();
 			const auto& path = map ["path"].toString ();
 			driveItem.Id_ = path;
-			driveItem.ParentID_ = QFileInfo (path).dir ().absolutePath ();
+			const auto& parent = QFileInfo (path).dir ().absolutePath ();
+			driveItem.ParentID_ = parent == "/" ? QString () : parent;
 			driveItem.IsDeleted_ = map ["is_deleted"].toBool ();
 			driveItem.IsFolder_ = map ["is_dir"].toBool ();
 			driveItem.ModifiedDate_ = map ["modified"].toDateTime ();

@@ -27,6 +27,7 @@ Rectangle {
 
     signal singleImageMode(bool mode)
     signal imageSelected(string id)
+    signal toggleSelectionSet(string id)
     signal imageOpenRequested(variant url)
     signal imageDownloadRequested(variant url)
     signal copyURLRequested(variant url)
@@ -141,12 +142,12 @@ Rectangle {
             height: collectionThumbsView.cellHeight
 
             onTriggered: {
-                if (itemType == Blasq.ImageItem) {
+                if (itemType != Blasq.ImageItem) {
+                    rootRect.albumSelected(collectionVisualModel.modelIndex(index))
+                } else {
                     rootRect.showImage(original)
                     rootRect.imageSelected(imageId)
                     rootRect.currentImageId = imageId
-                } else {
-                    rootRect.albumSelected(collectionVisualModel.modelIndex(index))
                 }
             }
 
@@ -159,7 +160,7 @@ Rectangle {
                 anchors.topMargin: collectionThumbsView.vertMargin
                 anchors.bottomMargin: collectionThumbsView.vertMargin
 
-                property bool isCurrent: imageId == rootRect.currentImageId
+                property bool isCurrent: imageId == rootRect.currentImageId || isSelected
 
                 radius: 5
                 gradient: Gradient {
@@ -168,12 +169,14 @@ Rectangle {
                         color: itemRect.isCurrent ?
                                 colorProxy.color_TextBox_HighlightTopColor :
                                 colorProxy.color_TextBox_TopColor
+                        Behavior on color { PropertyAnimation {} }
                     }
                     GradientStop {
                         position: 1
                         color: itemRect.isCurrent ?
                                 colorProxy.color_TextBox_HighlightBottomColor :
                                 colorProxy.color_TextBox_BottomColor
+                        Behavior on color { PropertyAnimation {} }
                     }
                 }
 
@@ -251,7 +254,8 @@ Rectangle {
                             openInBrowserAction.isHovered ||
                             downloadOriginalAction.isHovered ||
                             copyURLAction.isHovered ||
-                            deleteAction.isHovered
+                            deleteAction.isHovered ||
+                            selectionAction.isHovered
 
                 Column {
                     anchors.top: parent.top
@@ -259,11 +263,28 @@ Rectangle {
                     visible: itemType == Blasq.ImageItem
 
                     ActionButton {
+                        id: selectionAction
+
+                        width: 24
+                        height: width
+
+                        visible: imageSelectionMode
+                        opacity: itemRect.isHovered ? 1 : 0
+
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: isSelected ? "image://ThemeIcons/list-remove" : "image://ThemeIcons/list-add"
+                        textTooltip: isSelected ? qsTr("Add to the selection") : qsTr ("Remove from the selection")
+                        onTriggered: rootRect.toggleSelectionSet(imageId)
+                    }
+
+                    ActionButton {
                         id: openInBrowserAction
 
                         width: 24
                         height: width
 
+                        visible: !imageSelectionMode
                         opacity: itemRect.isHovered ? 1 : 0
                         Behavior on opacity { PropertyAnimation {} }
 
@@ -278,6 +299,7 @@ Rectangle {
                         width: 24
                         height: width
 
+                        visible: !imageSelectionMode
                         opacity: itemRect.isHovered ? 1 : 0
                         Behavior on opacity { PropertyAnimation {} }
 
@@ -292,6 +314,7 @@ Rectangle {
                         width: 24
                         height: width
 
+                        visible: !imageSelectionMode
                         opacity: itemRect.isHovered ? 1 : 0
                         Behavior on opacity { PropertyAnimation {} }
 
@@ -306,6 +329,7 @@ Rectangle {
                         width: 24
                         height: width
 
+                        visible: !imageSelectionMode
                         opacity: itemRect.isHovered && supportsDeletes ? 1 : 0
                         Behavior on opacity { PropertyAnimation {} }
 

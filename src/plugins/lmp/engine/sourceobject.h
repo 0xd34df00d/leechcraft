@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,17 +30,22 @@
 #pragma once
 
 #include <memory>
+#include <type_traits>
 #include <QObject>
 #include <QStringList>
 #include <QMap>
 #include <QMutex>
 #include <QWaitCondition>
+#include "interfaces/lmp/isourceobject.h"
+#include "interfaces/lmp/ipath.h"
+#include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "pathelement.h"
 
 typedef struct _GstElement GstElement;
 typedef struct _GstPad GstPad;
 typedef struct _GstMessage GstMessage;
+typedef struct _GstBus GstBus;
 
 typedef std::shared_ptr<GstMessage> GstMessage_ptr;
 
@@ -50,20 +55,13 @@ namespace LMP
 {
 	class AudioSource;
 	class Path;
+	class MsgPopThread;
 
 	enum class SourceError
 	{
 		MissingPlugin,
+		SourceNotFound,
 		Other
-	};
-
-	enum class SourceState
-	{
-		Error,
-		Stopped,
-		Paused,
-		Buffering,
-		Playing
 	};
 
 	enum class Category
@@ -72,12 +70,54 @@ namespace LMP
 		Notification
 	};
 
-	class MsgPopThread;
+	class HandlerContainerBase : public QObject
+	{
+		Q_OBJECT
+	protected slots:
+		virtual void objectDestroyed () = 0;
+	};
 
-	class Path;
+	template<typename T>
+	class HandlerContainer : public HandlerContainerBase
+	{
+		QMap<QObject*, QList<T>> Dependents_;
+	public:
+		void AddHandler (const T& handler, QObject *dependent)
+		{
+			Dependents_ [dependent] << handler;
+
+			connect (dependent,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (objectDestroyed ()));
+		}
+
+		template<typename Reducer, typename... Args>
+		auto operator() (Reducer r, decltype (r (T {} (Args {}...), T {} (Args {}...))) init, Args... args) -> decltype (r (T {} (args...), T {} (args...)))
+		{
+			for (const auto& sublist : Dependents_)
+				for (const auto& item : sublist)
+					init = r (init, item (args...));
+
+			return init;
+		}
+
+		template<typename... Args>
+		auto operator() (Args... args) -> typename std::enable_if<std::is_same<void, decltype (T {} (args...))>::value, void>::type
+		{
+			for (const auto& sublist : Dependents_)
+				for (const auto& item : sublist)
+					item (args...);
+		}
+	private:
+		void objectDestroyed ()
+		{
+			Dependents_.remove (sender ());
+		}
+	};
 
 	class SourceObject : public QObject
-					   , public PathElement
+					   , public ISourceObject
 	{
 		Q_OBJECT
 
@@ -90,6 +130,8 @@ namespace LMP
 		AudioSource CurrentSource_;
 		AudioSource NextSource_;
 
+		AudioSource ActualSource_;
+
 		QMutex NextSrcMutex_;
 		QWaitCondition NextSrcWC_;
 
@@ -99,11 +141,15 @@ namespace LMP
 
 		uint PrevSoupRank_;
 
+		QMutex BusDrainMutex_;
+		QWaitCondition BusDrainWC_;
+		bool IsDrainingMsgs_ = false;
+
 		MsgPopThread *PopThread_;
-	public:
-		typedef QMap<QString, QString> TagMap_t;
-	private:
-		TagMap_t Metadata_;
+		GstUtil::TagMap_t Metadata_;
+
+		HandlerContainer<SyncHandler_f> SyncHandlers_;
+		HandlerContainer<AsyncHandler_f> AsyncHandlers_;
 	public:
 		enum class Metadata
 		{
@@ -125,8 +171,12 @@ namespace LMP
 		SourceObject (const SourceObject&) = delete;
 		SourceObject& operator= (const SourceObject&) = delete;
 
+		QObject* GetQObject ();
+
 		bool IsSeekable () const;
+
 		SourceState GetState () const;
+		void SetState (SourceState);
 
 		QString GetErrorString () const;
 
@@ -137,6 +187,7 @@ namespace LMP
 		qint64 GetTotalTime () const;
 		void Seek (qint64);
 
+		AudioSource GetActualSource () const;
 		AudioSource GetCurrentSource () const;
 		void SetCurrentSource (const AudioSource&);
 		void PrepareNextSource (const AudioSource&);
@@ -149,6 +200,15 @@ namespace LMP
 		void ClearQueue ();
 
 		void HandleAboutToFinish ();
+
+		void SetupSource ();
+
+		void AddToPath (Path*);
+		void SetSink (GstElement*);
+
+		void AddSyncHandler (const SyncHandler_f&, QObject*);
+		void AddAsyncHandler (const AsyncHandler_f&, QObject*);
+	private:
 		void HandleErrorMsg (GstMessage*);
 		void HandleTagMsg (GstMessage*);
 		void HandleBufferingMsg (GstMessage*);
@@ -156,14 +216,15 @@ namespace LMP
 		void HandleElementMsg (GstMessage*);
 		void HandleEosMsg (GstMessage*);
 		void HandleStreamStatusMsg (GstMessage*);
-		void SetupSource ();
-	protected:
-		void AddToPath (Path*);
-		void PostAdd (Path*);
+		void HandleWarningMsg (GstMessage*);
+
+		int HandleSyncMessage (GstBus*, GstMessage*);
 	private slots:
 		void handleMessage (GstMessage_ptr);
 		void updateTotalTime ();
 		void handleTick ();
+
+		void setActualSource (const AudioSource&);
 	signals:
 		void stateChanged (SourceState, SourceState);
 		void currentSourceChanged (const AudioSource&);

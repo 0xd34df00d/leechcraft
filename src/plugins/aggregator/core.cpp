@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -44,9 +44,10 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/models/mergemodel.h>
-#include <util/util.h>
-#include <util/fileremoveguard.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/util.h>
+#include <util/sys/fileremoveguard.h>
+#include <util/sys/paths.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
@@ -71,6 +72,7 @@
 #include "dbupdatethreadworker.h"
 #include "tovarmaps.h"
 #include "dumbstorage.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -83,7 +85,7 @@ namespace Aggregator
 	, ChannelsFilterModel_ (0)
 	, Initialized_ (false)
 	, ReprWidget_ (0)
-	, PluginManager_ (new PluginManager)
+	, PluginManager_ (nullptr)
 	, DBUpThread_ (new DBUpdateThread (this))
 	, ShortcutMgr_ (nullptr)
 	{
@@ -97,7 +99,6 @@ namespace Aggregator
 		qRegisterMetaType<channels_container_t> ("channels_container_t");
 		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
 
-		PluginManager_->RegisterHookable (this);
 	}
 
 	Core& Core::Instance ()
@@ -305,8 +306,6 @@ namespace Aggregator
 		if (!ReinitStorage ())
 			result = false;
 
-		PluginManager_->RegisterHookable (StorageBackend_.get ());
-
 		ChannelsFilterModel_ = new ChannelsFilterModel ();
 		ChannelsFilterModel_->setSourceModel (ChannelsModel_);
 		ChannelsFilterModel_->setFilterKeyColumn (0);
@@ -320,26 +319,17 @@ namespace Aggregator
 				Qt::QueuedConnection);
 		DBUpThread_->start (QThread::LowestPriority);
 
-		connect (StorageBackend_.get (),
+		connect (&StorageBackendManager::Instance (),
 				SIGNAL (channelDataUpdated (Channel_ptr)),
 				this,
 				SLOT (handleChannelDataUpdated (Channel_ptr)),
 				Qt::QueuedConnection);
-		connect (StorageBackend_.get (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				this,
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)));
 
 		ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 		ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
 		ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
 		ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
 		ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
-
-		connect (ChannelsModel_,
-				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
-				this,
-				SIGNAL (channelDataUpdated (IDType_t, IDType_t)));
 
 		ReprWidget_ = new ItemsWidget ();
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
@@ -394,6 +384,11 @@ namespace Aggregator
 		UpdateUnreadItemsNumber ();
 		Initialized_ = true;
 
+		PluginManager_ = new PluginManager ();
+		PluginManager_->RegisterHookable (this);
+
+		PluginManager_->RegisterHookable (StorageBackend_.get ());
+
 		return result;
 	}
 
@@ -401,7 +396,6 @@ namespace Aggregator
 	{
 		Pools_.clear ();
 		ChannelsModel_->Clear ();
-
 
 		StorageBackend_.reset (new DumbStorage);
 
@@ -428,7 +422,7 @@ namespace Aggregator
 		emit storageChanged ();
 
 		const int feedsTable = 1;
-		const int channelsTable = 1;
+		const int channelsTable = 2;
 		const int itemsTable = 6;
 
 		if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
@@ -474,11 +468,6 @@ namespace Aggregator
 			pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
 			Pools_ [static_cast<PoolType> (type)] = pool;
 		}
-
-		connect (StorageBackend_.get (),
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
-				this,
-				SIGNAL (itemsRemoved (QSet<IDType_t>)));
 
 		return true;
 	}
@@ -568,6 +557,36 @@ namespace Aggregator
 		StorageBackend_->RemoveFeed (channel.FeedID_);
 
 		UpdateUnreadItemsNumber ();
+	}
+
+	void Core::RenameFeed (const QModelIndex& index, const QString& newName)
+	{
+		if (!index.isValid ())
+			return;
+
+		ChannelShort channel;
+		try
+		{
+			channel = ChannelsModel_->GetChannelForIndex (index);
+		}
+		catch (const std::exception& e)
+		{
+			ErrorNotification (tr ("Feed rename error"),
+					tr ("Could not rename the feed: %1")
+					.arg (e.what ()));
+			return;
+		}
+
+		channel.DisplayTitle_ = newName;
+		try
+		{
+			StorageBackend_->UpdateChannel (channel);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void Core::RemoveChannel (const QModelIndex& index)
@@ -1434,16 +1453,6 @@ namespace Aggregator
 	void Core::handleDBUpThreadStarted ()
 	{
 		connect (DBUpThread_->GetWorker (),
-				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
-				this,
-				SLOT (handleDBUpChannelDataUpdated (IDType_t, IDType_t)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
-				this,
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
 				SIGNAL (gotNewChannel (ChannelShort)),
 				this,
 				SLOT (handleDBUpGotNewChannel (ChannelShort)),
@@ -1454,30 +1463,9 @@ namespace Aggregator
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				Qt::QueuedConnection);
 		connect (DBUpThread_->GetWorker (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				this,
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
 				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
 				this,
 				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
-	}
-
-	void Core::handleDBUpChannelDataUpdated (IDType_t id, IDType_t feedId)
-	{
-		emit channelDataUpdated (id, feedId);
-		try
-		{
-			auto ch = StorageBackend_->GetChannel (id, feedId);
-			handleChannelDataUpdated (ch);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got"
-					<< e.what ();
-		}
 	}
 
 	void Core::handleDBUpGotNewChannel (const ChannelShort& chSh)

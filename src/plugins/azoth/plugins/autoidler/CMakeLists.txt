@@ -18,7 +18,7 @@ QT4_ADD_RESOURCES (AUTOIDLER_RCCS ${AUTOIDLER_RESOURCES})
 
 if (APPLE)
 	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_mac.cpp)
-	set (ADDITIONAL_AUTOIDLER_LIBS "-framework CoreFoundation;-framework Carbon")
+	set (ADDITIONAL_AUTOIDLER_LIBS "-framework ApplicationServices")
 elseif (UNIX)
 	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_x11.cpp)
 

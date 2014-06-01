@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -68,9 +68,9 @@ namespace Xoox
 				const QString& node)
 		{
 			QList<QStandardItem*> items;
-			Q_FOREACH (const QString& string, strings)
+			for (const auto& string : strings)
 			{
-				QStandardItem *item = new QStandardItem (string);
+				auto item = new QStandardItem (string);
 				items << item;
 				item->setEditable (false);
 			}
@@ -86,10 +86,10 @@ namespace Xoox
 		Query_ = query;
 
 		Model_->clear ();
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("JID") << tr ("Node"));
+		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("JID"), tr ("Node") });
 
 		auto items = AppendRow (Model_,
-				QStringList (query) << query << "",
+				{ query, query, "" },
 				query,
 				"");
 		JID2Node2Item_ [query] [""] = items.at (0);
@@ -139,19 +139,7 @@ namespace Xoox
 		if (info.Caps_.contains ("jabber:iq:register"))
 			result << QPair<QByteArray, QString> ("register", tr ("Register..."));
 		if (info.Caps_.contains ("http://jabber.org/protocol/commands"))
-		{
-			bool found = false;
-			Q_FOREACH (const auto& id, info.Identities_)
-				if (id.category () == "automation" &&
-						id.type () == "command-node")
-				{
-					found = true;
-					break;
-				}
-
-			if (found)
-				result << QPair<QByteArray, QString> ("execute-ad-hoc", tr ("Execute..."));
-		}
+			result << QPair<QByteArray, QString> ("execute-ad-hoc", tr ("Execute..."));
 		if (idHasCat ("conference"))
 			result << QPair<QByteArray, QString> ("join-conference", tr ("Join..."));
 
@@ -254,9 +242,18 @@ namespace Xoox
 				targetItem->setText (text);
 		}
 
-		QString tooltip = Qt::escape (targetItem->text ()) + "<br />";
+		auto normalize = [] (QString& text)
+		{
+			text.replace ("\n", "<br />")
+					.remove ("\r")
+					.replace ("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+		};
 
-		const QString& mucDescr = GetMUCDescr (iq.form ());
+		QString tooltip = Qt::escape (targetItem->text ()) + "<br />";
+		normalize (tooltip);
+
+		auto mucDescr = GetMUCDescr (iq.form ());
+		normalize (mucDescr);
 		if (!mucDescr.isEmpty ())
 		{
 			tooltip += tr ("MUC description: %1.")
@@ -284,7 +281,7 @@ namespace Xoox
 		}
 
 		tooltip += "<strong>" + tr ("Identities:") + "</strong><ul>";
-		Q_FOREACH (const auto& id, iq.identities ())
+		for (const auto& id : iq.identities ())
 		{
 			if (id.name ().isEmpty ())
 				continue;
@@ -300,7 +297,7 @@ namespace Xoox
 		}
 		tooltip += "</ul>";
 
-		const QStringList& caps = Account_->GetClientConnection ()->
+		const auto& caps = Account_->GetClientConnection ()->
 				GetCapsManager ()->GetCaps (iq.features ());
 		if (!caps.isEmpty ())
 		{
@@ -312,7 +309,7 @@ namespace Xoox
 
 		targetItem->setToolTip (tooltip);
 
-		ItemInfo info =
+		ItemInfo info
 		{
 			iq.features (),
 			iq.identities (),
@@ -324,7 +321,7 @@ namespace Xoox
 
 	void SDSession::HandleItems (const QXmppDiscoveryIq& iq)
 	{
-		QStandardItem *parentItem = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
+		auto parentItem = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
 		if (!parentItem)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -334,10 +331,10 @@ namespace Xoox
 		}
 
 		QPointer<SDSession> ptr (this);
-		Q_FOREACH (const auto& item, iq.items ())
+		for (const auto& item : iq.items ())
 		{
 			auto items = AppendRow (parentItem,
-					QStringList (item.name ()) << item.jid () << item.node (),
+					{ item.name (), item.jid (), item.node () },
 					item.jid (),
 					item.node ());
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
@@ -414,7 +411,9 @@ namespace Xoox
 		if (jid.isEmpty ())
 			return;
 
-		ExecuteCommandDialog *dia = new ExecuteCommandDialog (jid, info.Node_, Account_);
+		auto dia = info.Node_.isEmpty () ?
+				new ExecuteCommandDialog (jid, Account_) :
+				new ExecuteCommandDialog (jid, info.Node_, Account_);
 		dia->show ();
 		connect (dia,
 				SIGNAL (finished (int)),

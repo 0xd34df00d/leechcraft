@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,12 +40,13 @@
 #include <QClipboard>
 #include <QFileDialog>
 #include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/delayedexecutor.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/an/constants.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucperms.h"
@@ -60,6 +61,7 @@
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
+#include "interfaces/azoth/ihaveserverhistory.h"
 #include "pgpkeyselectiondialog.h"
 #endif
 
@@ -79,15 +81,17 @@
 #include "filesenddialog.h"
 #include "advancedpermchangedialog.h"
 #include "proxyobject.h"
+#include "serverhistorywidget.h"
 
 typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> SingleEntryActor_f;
+typedef std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)> SingleEntryActorWManager_f;
 typedef std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> MultiEntryActor_f;
 
 struct None
 {
 };
 
-typedef boost::variant<None, SingleEntryActor_f, MultiEntryActor_f> EntryActor_f;
+typedef boost::variant<None, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f> EntryActor_f;
 Q_DECLARE_METATYPE (EntryActor_f);
 
 typedef QList<LeechCraft::Azoth::ICLEntry*> EntriesList_t;
@@ -257,6 +261,21 @@ namespace Azoth
 			QApplication::clipboard ()->setText (id, QClipboard::Selection);
 		}
 
+		void ViewServerHistory (ICLEntry *entry, ActionsManager *mgr)
+		{
+			const auto accObj = entry->GetParentAccount ();
+			const auto ihsh = qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ());
+			if (!ihsh || !ihsh->HasFeature (ServerHistoryFeature::AccountSupportsHistory))
+				return;
+
+			auto widget = new ServerHistoryWidget (accObj);
+			widget->SelectEntry (entry);
+
+			QMetaObject::invokeMethod (mgr,
+					"gotServerHistoryTab",
+					Q_ARG (ServerHistoryWidget*, widget));
+		}
+
 #ifdef ENABLE_CRYPT
 		void ManagePGP (ICLEntry *entry)
 		{
@@ -351,6 +370,36 @@ namespace Azoth
 				qobject_cast<IMUCEntry*> (entry->GetQObject ())->SetNick (newNick);
 		}
 
+		void InviteToMuc (ICLEntry *entry)
+		{
+			QList<QObject*> mucObjs;
+
+			const auto account = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			for (const auto entryObj : account->GetCLEntries ())
+				if (qobject_cast<ICLEntry*> (entryObj)->GetEntryType () == ICLEntry::ETMUC)
+					mucObjs << entryObj;
+
+			if (mucObjs.isEmpty ())
+				return;
+
+			MUCInviteDialog dia (account, MUCInviteDialog::ListType::ListMucs);
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			const auto mucEntryObj = FindByHRId (account, dia.GetID ());
+			const auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryObj);
+			if (!mucEntry)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no MUC for"
+						<< dia.GetID ();
+				return;
+			}
+
+			const auto& msg = dia.GetInviteMessage ();
+			mucEntry->InviteToMUC (entry->GetHumanReadableID (), msg);
+		}
+
 		void Invite (ICLEntry *entry)
 		{
 			auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
@@ -379,10 +428,9 @@ namespace Azoth
 				return;
 			}
 
-			if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-			{
-				Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
-				Q_FOREACH (QObject *partObj, mucEntry->GetParticipants ())
+			const bool closeTabs = XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ();
+			if (closeTabs)
+				for (auto partObj : mucEntry->GetParticipants ())
 				{
 					ICLEntry *partEntry = qobject_cast<ICLEntry*> (partObj);
 					if (!partEntry)
@@ -396,9 +444,11 @@ namespace Azoth
 
 					Core::Instance ().GetChatTabsManager ()->CloseChat (partEntry);
 				}
-			}
 
 			mucEntry->Leave ();
+
+			if (closeTabs)
+				Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
 		}
 
 		void Reconnect (ICLEntry *entry)
@@ -583,6 +633,7 @@ namespace Azoth
 			{ "add_contact", SingleEntryActor_f (AddContactFromMUC) },
 			{ "copy_muc_id", SingleEntryActor_f (CopyMUCParticipantID) },
 			{ "sep_afterjid", {} },
+			{ "view_server_history", SingleEntryActorWManager_f (ViewServerHistory) },
 #ifdef ENABLE_CRYPT
 			{ "managepgp", SingleEntryActor_f (ManagePGP) },
 #endif
@@ -595,10 +646,11 @@ namespace Azoth
 						QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
 					})
 			},
+			{ "inviteToMuc", SingleEntryActor_f (InviteToMuc) },
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
+			{ "sep_beforemuc", {} },
 			{ "changenick", MultiEntryActor_f (ChangeNick) },
 			{ "invite", SingleEntryActor_f (Invite) },
-			{ "leave", SingleEntryActor_f (Leave) },
 			{ "reconnect", SingleEntryActor_f (Reconnect) },
 			{
 				"addtobm",
@@ -619,6 +671,7 @@ namespace Azoth
 						tab->ShowUsersList ();
 					})
 			},
+			{ "leave", SingleEntryActor_f (Leave) },
 			{ "authorize", SingleEntryActor_f (AuthorizeEntry) },
 			{ "denyauth", SingleEntryActor_f (DenyAuthForEntry) }
 		};
@@ -671,7 +724,8 @@ namespace Azoth
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		proxy->SetReturnValue (QVariantList ());
 		emit hookEntryActionsRequested (proxy, entry->GetQObject ());
-		Q_FOREACH (const QVariant& var, proxy->GetReturnValue ().toList ())
+
+		for (const auto& var : proxy->GetReturnValue ().toList ())
 		{
 			QObject *obj = var.value<QObject*> ();
 			QAction *act = qobject_cast<QAction*> (obj);
@@ -682,7 +736,7 @@ namespace Azoth
 
 			proxy.reset (new Util::DefaultHookProxy);
 			emit hookEntryActionAreasRequested (proxy, act, entry->GetQObject ());
-			Q_FOREACH (const QString& place, proxy->GetReturnValue ().toStringList ())
+			for (const auto& place : proxy->GetReturnValue ().toStringList ())
 			{
 				if (place == "contactListContextMenu")
 					Action2Areas_ [act] << CLEAAContactListCtxtMenu;
@@ -701,7 +755,7 @@ namespace Azoth
 
 		result.removeAll (0);
 
-		Core::Instance ().GetProxy ()->UpdateIconset (result);
+		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset (result);
 
 		return result;
 	}
@@ -811,7 +865,7 @@ namespace Azoth
 
 		setter (AfterRolesNames);
 
-		Core::Instance ().GetProxy ()->UpdateIconset (result);
+		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset (result);
 
 		return result;
 	}
@@ -1000,6 +1054,15 @@ namespace Azoth
 					this, SLOT (handleActionNotifyBecomesOnline ()));
 		}
 
+		if (qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ()))
+		{
+			auto openHistory = new QAction (tr ("Open server history..."), entry->GetQObject ());
+			openHistory->setToolTip (tr ("View server history log with this contact"));
+			openHistory->setProperty ("ActionIcon", "network-server-database");
+			Entry2Actions_ [entry] ["view_server_history"] = openHistory;
+			Action2Areas_ [openHistory] << CLEAAContactListCtxtMenu;
+		}
+
 #ifdef ENABLE_CRYPT
 		if (qobject_cast<ISupportPGP*> (entry->GetParentAccount ()))
 		{
@@ -1019,6 +1082,10 @@ namespace Azoth
 
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 		{
+			auto inviteTo = new QAction (tr ("Invite to a MUC..."), entry->GetQObject ());
+			Entry2Actions_ [entry] ["inviteToMuc"] = inviteTo;
+			Action2Areas_ [inviteTo] << CLEAAContactListCtxtMenu;
+
 			QAction *vcard = new QAction (tr ("VCard"), entry->GetQObject ());
 			vcard->setProperty ("ActionIcon", "text-x-vcard");
 			Entry2Actions_ [entry] ["vcard"] = vcard;
@@ -1106,6 +1173,10 @@ namespace Azoth
 		}
 		else if (entry->GetEntryType () == ICLEntry::ETMUC)
 		{
+			auto sepBeforeMuc = Util::CreateSeparator (entry->GetQObject ());
+			Entry2Actions_ [entry] ["sep_beforemuc"] = sepBeforeMuc;
+			Action2Areas_ [sepBeforeMuc] << CLEAAContactListCtxtMenu;
+
 			QAction *changeNick = new QAction (tr ("Change nickname..."), entry->GetQObject ());
 			changeNick->setProperty ("ActionIcon", "user-properties");
 			Entry2Actions_ [entry] ["changenick"] = changeNick;
@@ -1237,9 +1308,24 @@ namespace Azoth
 					account->GetAccountFeatures () & IAccount::FCanViewContactsInfoInOffline ||
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
+
+			const auto& allEntries = account->GetCLEntries ();
+			const auto hasMucs = std::any_of (allEntries.begin (), allEntries.end (),
+					[] (QObject *entryObj)
+					{
+						return qobject_cast<ICLEntry*> (entryObj)->GetEntryType () == ICLEntry::ETMUC;
+					});
+
+			Entry2Actions_ [entry] ["inviteToMuc"]->setEnabled (hasMucs);
 		}
 
 		Entry2Actions_ [entry] ["rename"]->setEnabled (entry->GetEntryFeatures () & ICLEntry::FSupportsRenames);
+
+		if (const auto ihsh = qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ()))
+		{
+			const bool supports = ihsh->HasFeature (ServerHistoryFeature::AccountSupportsHistory);
+			Entry2Actions_ [entry] ["view_server_history"]->setEnabled (supports);
+		}
 
 		if (advEntry)
 		{
@@ -1283,9 +1369,11 @@ namespace Azoth
 		struct EntryCallVisitor : public boost::static_visitor<void>
 		{
 			const QList<ICLEntry*>& Entries_;
+			ActionsManager * const Manager_;
 
-			EntryCallVisitor (const QList<ICLEntry*>& es)
-			: Entries_ (es)
+			EntryCallVisitor (const QList<ICLEntry*>& es, ActionsManager *manager)
+			: Entries_ { es }
+			, Manager_ { manager }
 			{
 			}
 
@@ -1293,6 +1381,12 @@ namespace Azoth
 			{
 				for (const auto& entry : Entries_)
 					actor (entry);
+			}
+
+			void operator() (const SingleEntryActorWManager_f& actor) const
+			{
+				for (const auto& entry : Entries_)
+					actor (entry, Manager_);
 			}
 
 			void operator() (const MultiEntryActor_f& actor) const
@@ -1343,7 +1437,7 @@ namespace Azoth
 			return;
 		}
 
-		boost::apply_visitor (EntryCallVisitor (entries), function);
+		boost::apply_visitor (EntryCallVisitor { entries, this }, function);
 	}
 
 	void ActionsManager::handleActionGrantAuthTriggered()
@@ -1396,11 +1490,7 @@ namespace Azoth
 				{
 					{
 						"org.LC.Plugins.Azoth.SourceID",
-						ANStringFieldValue
-						{
-							QRegExp { entry->GetEntryID (), Qt::CaseSensitive, QRegExp::FixedString },
-							true
-						}
+						ANStringFieldValue { entry->GetEntryID () }
 					}
 				});
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);

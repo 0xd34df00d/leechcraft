@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
-#define PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
+#pragma once
+
 #include <QStyledItemDelegate>
 #include "core.h"
 
@@ -68,6 +68,9 @@ namespace Azoth
 				QStyleOptionViewItemV4, const QModelIndex&) const;
 		void DrawContact (QPainter*,
 				QStyleOptionViewItemV4, const QModelIndex&) const;
+
+		QList<QIcon> GetContactIcons (const QModelIndex&, ICLEntry*, const QStringList&) const;
+
 		void LoadSystemIcon (const QString&, QList<QIcon>&) const;
 	private slots:
 		void handleShowAvatarsChanged ();
@@ -78,8 +81,8 @@ namespace Azoth
 		void handleShowStatusesChanged ();
 		void handleHighlightGroupsChanged ();
 		void handleContactHeightChanged ();
+	signals:
+		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 	};
 }
 }
-
-#endif

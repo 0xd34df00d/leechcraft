@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -101,9 +101,10 @@ namespace Xoox
 		AdHocResult Result_;
 		mutable FormBuilder FB_;
 	public:
-		CommandResultPage (const AdHocResult& result, QWidget *parent = 0)
+		CommandResultPage (const AdHocResult& result, GlooxAccount *acc, QWidget *parent = 0)
 		: QWizardPage (parent)
 		, Result_ (result)
+		, FB_ ({}, acc->GetClientConnection ()->GetBobManager ())
 		{
 			Ui_.setupUi (this);
 			setCommitPage (true);
@@ -265,7 +266,7 @@ namespace Xoox
 				this,
 				SLOT (handleGotResult (QString, AdHocResult)));
 
-		addPage (new CommandResultPage (result));
+		addPage (new CommandResultPage (result, Account_));
 		if (!result.GetActions ().isEmpty ())
 			addPage (new WaitPage (tr ("Please wait while action "
 						"is performed")));

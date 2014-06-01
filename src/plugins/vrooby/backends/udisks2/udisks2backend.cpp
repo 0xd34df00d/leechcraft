@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,7 +39,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <QMetaMethod>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/devices/deviceroles.h>
 #include "udisks2types.h"
 
@@ -157,9 +157,14 @@ namespace UDisks2
 		if (!iface)
 			return;
 
-		if (!iface->property ("DeviceIsMounted").toBool ())
+		auto item = Object2Item_.value (id);
+		if (!item)
+			return;
+
+		const bool isMounted = !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
+		if (!isMounted)
 		{
-			auto async = iface->asyncCall ("FilesystemMount", QString (), QStringList ());
+			auto async = iface->asyncCall ("Mount", QVariantMap ());
 			connect (new QDBusPendingCallWatcher (async, this),
 					SIGNAL (finished (QDBusPendingCallWatcher*)),
 					this,

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QWidget>
 #include <QtDebug>
+#include <QUrl>
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"
 
@@ -63,6 +64,8 @@ namespace AdvancedNotifications
 			return TypedMatcherBase_ptr (new StringMatcher (ToTList<QString> (fieldData.AllowedValues_)));
 		case QVariant::StringList:
 			return TypedMatcherBase_ptr (new StringListMatcher (ToTList<QString> (fieldData.AllowedValues_)));
+		case QVariant::Url:
+			return TypedMatcherBase_ptr (new UrlMatcher ());
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
@@ -72,7 +75,7 @@ namespace AdvancedNotifications
 	}
 
 	StringLikeMatcher::StringLikeMatcher (const QStringList& variants)
-	: Value_ { {}, true }
+	: Value_ { {} }
 	, Allowed_ (variants)
 	{
 	}
@@ -120,6 +123,11 @@ namespace AdvancedNotifications
 		boost::apply_visitor (ValueSetVisitor<ANStringFieldValue> { Value_ }, value);
 	}
 
+	ANFieldValue StringLikeMatcher::GetValue () const
+	{
+		return Value_;
+	}
+
 	QWidget* StringLikeMatcher::GetConfigWidget ()
 	{
 		if (!CW_)
@@ -138,27 +146,7 @@ namespace AdvancedNotifications
 			}
 		}
 
-		Ui_->ContainsBox_->setCurrentIndex (Value_.Contains_ ? 0 : 1);
-		Ui_->RegexpEditor_->setText (Value_.Rx_.pattern ());
-		int rxIdx = 0;
-		switch (Value_.Rx_.patternSyntax ())
-		{
-		case QRegExp::Wildcard:
-			rxIdx = 1;
-			break;
-		case QRegExp::RegExp:
-			rxIdx = 2;
-			break;
-		case QRegExp::FixedString:
-		default:
-			rxIdx = 0;
-			break;
-		}
-		Ui_->RegexType_->setCurrentIndex (rxIdx);
-
-		const auto idx = Ui_->VariantsBox_->findText (Value_.Rx_.pattern ());
-		if (idx >= 0)
-			Ui_->VariantsBox_->setCurrentIndex (idx);
+		SyncWidgetTo ();
 
 		return CW_;
 	}
@@ -199,6 +187,55 @@ namespace AdvancedNotifications
 		else
 			Value_.Rx_ = QRegExp (Ui_->VariantsBox_->currentText (),
 					Qt::CaseSensitive, QRegExp::FixedString);
+	}
+
+	void StringLikeMatcher::SyncWidgetTo ()
+	{
+		if (!CW_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null CW";
+			return;
+		}
+
+		Ui_->ContainsBox_->setCurrentIndex (!Value_.Contains_);
+		if (Allowed_.isEmpty ())
+		{
+			Ui_->RegexpEditor_->setText (Value_.Rx_.pattern ());
+
+			switch (Value_.Rx_.patternSyntax ())
+			{
+			case QRegExp::FixedString:
+				Ui_->RegexType_->setCurrentIndex (0);
+				break;
+			case QRegExp::Wildcard:
+			case QRegExp::WildcardUnix:
+				Ui_->RegexType_->setCurrentIndex (1);
+				break;
+			case QRegExp::RegExp:
+			case QRegExp::RegExp2:
+				Ui_->RegexType_->setCurrentIndex (2);
+				break;
+			case QRegExp::W3CXmlSchema11:
+				qWarning () << Q_FUNC_INFO
+						<< "unexpected regexp type"
+						<< Value_.Rx_.patternSyntax ();
+				break;
+			}
+		}
+		else
+		{
+			const auto& pattern = Value_.Rx_.pattern ();
+			const auto idx = Ui_->VariantsBox_->findText (pattern);
+			if (idx == -1)
+				qWarning () << Q_FUNC_INFO
+						<< "cannot find pattern"
+						<< pattern
+						<< "in"
+						<< Allowed_;
+			else
+				Ui_->VariantsBox_->setCurrentIndex (idx);
+		}
 	}
 
 	StringMatcher::StringMatcher (const QStringList& list)
@@ -249,6 +286,29 @@ namespace AdvancedNotifications
 				QObject::tr ("doesn't contain element matching %1").arg (p);
 	}
 
+	UrlMatcher::UrlMatcher ()
+	{
+	}
+
+	bool UrlMatcher::Match (const QVariant& var) const
+	{
+		if (!var.canConvert<QUrl> ())
+			return false;
+
+		const auto& url = var.toUrl ();
+		const auto contains = url.toString ().indexOf (Value_.Rx_) != -1 ||
+				QString::fromUtf8 (url.toEncoded ()).indexOf (Value_.Rx_) != -1;
+		return contains == Value_.Contains_;
+	}
+
+	QString UrlMatcher::GetHRDescription () const
+	{
+		const QString& p = Value_.Rx_.pattern ();
+		return Value_.Contains_ ?
+				QObject::tr ("matches URL or pattern `%1`").arg (p) :
+				QObject::tr ("doesn't match URL or pattern `%1`").arg (p);
+	}
+
 	IntMatcher::IntMatcher ()
 	: Value_ { 0, ANIntFieldValue::OEqual }
 	{
@@ -278,6 +338,11 @@ namespace AdvancedNotifications
 		boost::apply_visitor (ValueSetVisitor<ANIntFieldValue> { Value_ }, value);
 	}
 
+	ANFieldValue IntMatcher::GetValue () const
+	{
+		return Value_;
+	}
+
 	bool IntMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<int> ())
@@ -297,6 +362,9 @@ namespace AdvancedNotifications
 
 	QString IntMatcher::GetHRDescription () const
 	{
+		if (Value_.Ops_ == ANIntFieldValue::OEqual)
+			return QObject::tr ("equals to %1").arg (Value_.Boundary_);
+
 		QString op;
 		if ((Value_.Ops_ & ANIntFieldValue::OGreater))
 			op += ">";
@@ -319,8 +387,7 @@ namespace AdvancedNotifications
 			Ui_->setupUi (CW_);
 		}
 
-		Ui_->Boundary_->setValue (Value_.Boundary_);
-		Ui_->OpType_->setCurrentIndex (Ops2pos_ [Value_.Ops_]);
+		SyncWidgetTo ();
 
 		return CW_;
 	}
@@ -336,6 +403,19 @@ namespace AdvancedNotifications
 
 		Value_.Boundary_  = Ui_->Boundary_->value ();
 		Value_.Ops_ = Ops2pos_.key (Ui_->OpType_->currentIndex ());
+	}
+
+	void IntMatcher::SyncWidgetTo ()
+	{
+		if (!CW_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null CW";
+			return;
+		}
+
+		Ui_->Boundary_->setValue (Value_.Boundary_);
+		Ui_->OpType_->setCurrentIndex (Ops2pos_ [Value_.Ops_]);
 	}
 }
 }

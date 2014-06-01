@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,12 +31,14 @@
 #include <QStyledItemDelegate>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include "util/gui/clearlineeditaddon.h"
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iinfo.h"
 #include "core.h"
 #include "iconthemeengine.h"
 #include "coreinstanceobject.h"
 #include "settingstab.h"
+#include "coreproxy.h"
 
 namespace LeechCraft
 {
@@ -165,6 +167,8 @@ namespace LeechCraft
 				SIGNAL (textChanged (QString)),
 				FilterProxy_,
 				SLOT (setFilterFixedString (QString)));
+
+		new Util::ClearLineEditAddon (ICoreProxy_ptr (new CoreProxy ()), Ui_.FilterLine_);
 	}
 
 	void PluginManagerDialog::readjustColumns ()

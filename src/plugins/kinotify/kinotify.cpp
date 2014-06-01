@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,11 +31,12 @@
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "kinotifywidget.h"
 #include "xmlsettingsmanager.h"
 #include "fswinwatcher.h"
@@ -132,13 +133,14 @@ namespace Kinotify
 		const auto& text = e.Additional_ ["Text"].toString ();
 		const auto sameDataPos =
 				std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
-						[&header, &text, &notifyId] (KinotifyWidget *w)
+						[&header, &text] (KinotifyWidget *w)
 							{ return w->GetTitle () == header && w->GetBody () == text; });
 		if (sameDataPos != ActiveNotifications_.end () && sameIdPos == ActiveNotifications_.end ())
-				return;
+			return;
 
-		int timeout = Proxy_->GetSettingsManager ()->
-				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+		const auto defaultTimeout = XmlSettingsManager::Instance ()->
+				property ("MessageTimeout").toInt () * 1000;
+		const auto timeout = e.Additional_.value ("NotificationTimeout", defaultTimeout).toInt ();
 
 		auto notificationWidget = new KinotifyWidget (Proxy_, timeout);
 		notificationWidget->SetID (notifyId);
@@ -180,7 +182,7 @@ namespace Kinotify
 				break;
 		}
 
-		const QIcon& icon = Proxy_->GetIcon (mi);
+		const QIcon& icon = Proxy_->GetIconThemeManager ()->GetIcon (mi);
 		const QPixmap& px = icon.pixmap (QSize (128, 128));
 		notificationWidget->SetContent (header, text, QString ());
 

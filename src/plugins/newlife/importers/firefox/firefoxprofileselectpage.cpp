@@ -39,7 +39,7 @@
 #include <QUrl>
 #include <QDateTime>
 #include <QXmlStreamWriter>
-#include <util/util.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {

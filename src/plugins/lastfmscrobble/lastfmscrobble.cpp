@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011 Minh Ngo
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -172,13 +172,9 @@ namespace Lastfmscrobble
 		return GetServiceName ();
 	}
 
-	void Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	Media::IPendingAlbumArt* Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
 	{
-		auto fetcher = new AlbumArtFetcher (album, Proxy_);
-		connect (fetcher,
-				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
-				this,
-				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)));
+		return new AlbumArtFetcher (album, Proxy_);
 	}
 
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
@@ -231,9 +227,9 @@ namespace Lastfmscrobble
 				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)));
 	}
 
-	Media::IPendingArtistBio* Plugin::RequestArtistBio (const QString& artist)
+	Media::IPendingArtistBio* Plugin::RequestArtistBio (const QString& artist, bool addImages)
 	{
-		return new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), this);
+		return new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), addImages, this);
 	}
 
 	void Plugin::UpdateRecommendedEvents ()

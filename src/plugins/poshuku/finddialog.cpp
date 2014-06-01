@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,36 +34,9 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	FindDialog::FindDialog (QWidget *parent)
-	: Util::FindNotification (Core::Instance ().GetProxy (), parent)
+	FindDialog::FindDialog (QWebView *parent)
+	: Util::FindNotificationWk (Core::Instance ().GetProxy (), parent)
 	{
-	}
-
-	namespace
-	{
-		QWebPage::FindFlags ToPageFlags (Util::FindNotification::FindFlags flags)
-		{
-			QWebPage::FindFlags pageFlags;
-			auto check = [&pageFlags, flags] (Util::FindNotification::FindFlag ourFlag, QWebPage::FindFlag pageFlag)
-			{
-				if (flags & ourFlag)
-					pageFlags |= pageFlag;
-			};
-			check (Util::FindNotification::FindCaseSensitively, QWebPage::FindCaseSensitively);
-			check (Util::FindNotification::FindBackwards, QWebPage::FindBackward);
-			check (Util::FindNotification::FindWrapsAround, QWebPage::FindWrapsAroundDocument);
-			return pageFlags;
-		}
-	}
-
-	QWebPage::FindFlags FindDialog::GetPageFlags () const
-	{
-		return ToPageFlags (GetFlags ());
-	}
-
-	void FindDialog::handleNext (const QString& text, FindFlags flags)
-	{
-		emit next (text, ToPageFlags (flags));
 	}
 }
 }

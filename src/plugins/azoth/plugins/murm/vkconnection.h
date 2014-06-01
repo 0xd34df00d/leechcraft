@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -173,11 +173,13 @@ namespace Murm
 
 		void CreateChat (const QString&, const QList<qulonglong>&);
 		void RequestChatInfo (qulonglong);
+		void AddChatUser (qulonglong chat, qulonglong user);
 		void RemoveChatUser (qulonglong chat, qulonglong user);
+		void SetChatTitle (qulonglong, const QString&);
 
-		void SetStatus (const QString&);
+		void SetStatus (QString);
 
-		void SetStatus (const EntryStatus&);
+		void SetStatus (const EntryStatus&, bool updateString);
 		EntryStatus GetStatus () const;
 
 		void SetMarkingOnlineEnabled (bool);
@@ -228,6 +230,8 @@ namespace Murm
 		void handleMessageInfoFetched ();
 		void handlePhotoInfosFetched ();
 
+		void handleScopeSettingsChanged ();
+
 		void saveCookies (const QByteArray&);
 	signals:
 		void statusChanged (EntryStatus);
@@ -249,6 +253,8 @@ namespace Murm
 		void chatUserRemoved (qulonglong, qulonglong);
 
 		void userStateChanged (qulonglong uid, bool online);
+
+		void mucChanged (qulonglong);
 
 		void captchaNeeded (const QString& sid, const QUrl& url);
 	};

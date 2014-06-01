@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -55,9 +55,10 @@ public:
 	 * Entity could be anything from file name to URL to all kinds of
 	 * hashes like Magnet links.
 	 *
-	 * @param[in] entity A Entity structure that could be possibly
+	 * @param[in] entity A Entity structure that could possibly be
 	 * handled by this plugin.
-	 * @return The result of entity 
+	 * @return The result of testing whether the \em entity can be
+	 * handled.
 	 *
 	 * @sa Handle
 	 * @sa LeechCraft::Entity

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -94,11 +94,9 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 		case QNetworkAccessManager::UnknownOperation:
 			opName = "Unknown";
 			break;
-#if QT_VERSION >= 0x040700
 		case QNetworkAccessManager::CustomOperation:
 			opName = "Custom";
 			break;
-#endif
 	}
 	items.push_back (new QStandardItem (QDateTime::currentDateTime ().toString ()));
 	items.push_back (new QStandardItem (tr ("In progress")));

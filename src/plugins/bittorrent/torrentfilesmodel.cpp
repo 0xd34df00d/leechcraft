@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,6 +35,10 @@
 #include <QtDebug>
 #include <util/models/treeitem.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/extensionsdata.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 
 using namespace LeechCraft::Util;
@@ -95,33 +99,24 @@ namespace LeechCraft
 				if (!index.isValid ())
 					return QVariant ();
 
-				if (AdditionDialog_)
+				const auto item = static_cast<TreeItem*> (index.internalPointer ());
+				switch (role)
 				{
-					if (role == Qt::CheckStateRole &&
-							index.column () == 0)
-						return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), role);
-					else if (role == Qt::DisplayRole)
-						return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
-					else
-						return QVariant ();
+				case Qt::DisplayRole:
+				case Qt::DecorationRole:
+				case Qt::CheckStateRole:
+					return item->Data (index.column (), role);
+				case RoleSize:
+				case RoleProgress:
+				{
+					double result = item->Data (0, role).toDouble ();
+					if (result < 0)
+						result = 0;
+					return result;
 				}
-				else
-					switch (role)
-					{
-						case Qt::DisplayRole:
-							return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column ());
-						case RoleSize:
-						case RoleProgress:
-							{
-								double result = static_cast<TreeItem*> (index.internalPointer ())->
-									Data (0, role).toDouble ();
-								if (result < 0)
-									result = 0;
-								return result;
-							}
-						default:
-							return QVariant ();
-					}
+				default:
+					return {};
+				}
 			}
 
 			Qt::ItemFlags TorrentFilesModel::flags (const QModelIndex& index) const
@@ -360,6 +355,8 @@ namespace LeechCraft
 				FilesInTorrent_ = infos.size ();
 				Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
 
+				const auto& inst = Util::ExtensionsData::Instance ();
+
 				for (int i = 0; i < infos.size (); ++i)
 				{
 					FileInfo fi = infos.at (i);
@@ -385,6 +382,8 @@ namespace LeechCraft
 					item->ModifyData (1, i, RolePath);
 					item->ModifyData (0, static_cast<qulonglong> (fi.Size_), RoleSize);
 					item->ModifyData (0, fi.Progress_, RoleProgress);
+					item->ModifyData (0, inst.GetExtIcon (pathStr.section ('.', -1)),
+							Qt::DecorationRole);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [fi.Path_] = item;
 					Path2OriginalPosition_ [fi.Path_] = i;
@@ -559,6 +558,11 @@ namespace LeechCraft
 				if (AdditionDialog_)
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
                 item->ModifyData (0, QString::fromUtf8 (parentPath.string ().c_str ()), RawDataRole);
+
+				const auto& icon = Core::Instance ()->GetProxy ()->
+						GetIconThemeManager ()->GetIcon ("document-open-folder");
+				item->ModifyData (0, icon, Qt::DecorationRole);
+
 				parent->AppendChild (item);
 				Path2TreeItem_ [parentPath] = item;
 			}

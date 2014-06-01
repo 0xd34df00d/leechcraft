@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -60,14 +60,14 @@ namespace Monocle
 		LayoutMode LayMode_;
 
 		ScaleMode ScaleMode_;
-		double FixedScale_;
+		double FixedScale_ = 1;
 
-		bool RelayoutScheduled_;
+		bool RelayoutScheduled_ = false;
 
-		double HorMargin_;
-		double VertMargin_;
+		double HorMargin_ = 0;
+		double VertMargin_ = 0;
 
-		double Rotation_;
+		double Rotation_ = 0;
 	public:
 		PagesLayoutManager (PagesView*, QObject* = 0);
 

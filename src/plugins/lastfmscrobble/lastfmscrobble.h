@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011 Minh Ngo
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -101,7 +101,7 @@ namespace Lastfmscrobble
 		void BanCurrentTrack ();
 
 		QString GetAlbumArtProviderName () const;
-		void RequestAlbumArt (const Media::AlbumInfo& album) const;
+		Media::IPendingAlbumArt* RequestAlbumArt (const Media::AlbumInfo& album) const;
 
 		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
 
@@ -113,7 +113,7 @@ namespace Lastfmscrobble
 
 		void RequestRecentReleases (int, bool);
 
-		Media::IPendingArtistBio* RequestArtistBio (const QString&);
+		Media::IPendingArtistBio* RequestArtistBio (const QString&, bool);
 
 		void UpdateRecommendedEvents ();
 		void AttendEvent (qint64, Media::EventAttendType);
@@ -125,8 +125,6 @@ namespace Lastfmscrobble
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
-		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 

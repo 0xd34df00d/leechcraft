@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -45,7 +45,7 @@ namespace LMP
 		QProcess *Process_;
 
 		const QString OriginalPath_;
-		QString TranscodedPath_;
+		const QString TranscodedPath_;
 		const QString TargetPattern_;
 	public:
 		TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent = 0);

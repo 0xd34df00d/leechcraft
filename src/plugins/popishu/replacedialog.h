@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,10 +42,10 @@ namespace Popishu
 
 		Ui::ReplaceDialog Ui_;
 	public:
-		enum Scope
+		enum class Scope
 		{
-			SAll,
-			SSelected
+			All,
+			Selected
 		};
 
 		ReplaceDialog (QWidget* = 0);

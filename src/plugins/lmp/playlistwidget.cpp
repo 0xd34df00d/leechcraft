@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,8 +42,14 @@
 #include <QKeyEvent>
 #include <QSortFilterProxyModel>
 #include <QTimer>
+#include <QPainter>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/an/ianrulesstorage.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -55,6 +61,9 @@
 #include "sortingcriteriadialog.h"
 #include "util.h"
 #include "palettefixerfilter.h"
+#include "engine/sourceobject.h"
+
+Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
 
 namespace LeechCraft
 {
@@ -150,6 +159,8 @@ namespace LMP
 	, ActionShowTrackProps_ (0)
 	, ActionShowAlbumArt_ (0)
 	{
+		qRegisterMetaType<QItemSelection> ("QItemSelection");
+
 		Ui_.setupUi (this);
 
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.SearchPlaylist_);
@@ -222,6 +233,11 @@ namespace LMP
 				this,
 				SLOT (updateStatsLabel ()),
 				Qt::QueuedConnection);
+		connect (Ui_.Playlist_->selectionModel (),
+				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
+				this,
+				SLOT (updateStatsLabel ()),
+				Qt::QueuedConnection);
 		updateStatsLabel ();
 
 		Ui_.Playlist_->installEventFilter (new PlaylistTreeEventFilter (Player_,
@@ -229,6 +245,11 @@ namespace LMP
 					PlaylistFilter_));
 
 		new PaletteFixerFilter (Ui_.Playlist_);
+
+		connect (player,
+				SIGNAL (shouldClearFiltering ()),
+				Ui_.SearchPlaylist_,
+				SLOT (clear ()));
 	}
 
 	void PlaylistWidget::InitToolbarActions ()
@@ -340,7 +361,8 @@ namespace LMP
 	void PlaylistWidget::SetPlayModeButton ()
 	{
 		auto playButton = new QToolButton;
-		playButton->setIcon (Core::Instance ().GetProxy ()->GetIcon ("view-media-playlist"));
+		playButton->setIcon (Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("view-media-playlist"));
 		playButton->setPopupMode (QToolButton::InstantPopup);
 		QMenu *playMode = new QMenu (tr ("Play mode"));
 		playButton->setMenu (playMode);
@@ -385,7 +407,8 @@ namespace LMP
 	void PlaylistWidget::SetSortOrderButton ()
 	{
 		auto sortButton = new QToolButton;
-		sortButton->setIcon (Core::Instance ().GetProxy ()->GetIcon ("view-sort-ascending"));
+		sortButton->setIcon (Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("view-sort-ascending"));
 		sortButton->setPopupMode (QToolButton::InstantPopup);
 
 		auto menu = new QMenu (tr ("Sorting"));
@@ -463,6 +486,7 @@ namespace LMP
 		ActionRemoveSelected_ = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
 		ActionRemoveSelected_->setProperty ("ActionIcon", "list-remove");
 		ActionRemoveSelected_->setShortcut (Qt::Key_Delete);
+		ActionRemoveSelected_->setShortcutContext (Qt::WidgetShortcut);
 		connect (ActionRemoveSelected_,
 				SIGNAL (triggered ()),
 				this,
@@ -517,6 +541,18 @@ namespace LMP
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showAlbumArt ()));
+
+		TrackActions_ = new QMenu (tr ("Track actions"));
+		TrackActions_->addAction (tr ("Perform action after this track starts..."),
+				this, SLOT (initPerformAfterTrackStart ()));
+		TrackActions_->addAction (tr ("Perform action after this track stops..."),
+				this, SLOT (initPerformAfterTrackStop ()));
+
+		ExistingTrackActions_ = TrackActions_->addMenu (tr ("Existing"));
+		connect (ExistingTrackActions_,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (handleExistingTrackAction (QAction*)));
 
 		ActionToggleSearch_ = new QAction (tr ("Toggle search field"), Ui_.Playlist_);
 		ActionToggleSearch_->setShortcut (QKeySequence::Find);
@@ -584,6 +620,29 @@ namespace LMP
 				QAbstractItemView::PositionAtCenter);
 	}
 
+	namespace
+	{
+		QIcon SymbolToIcon (const QPair<QString, QColor>& symb, const QFontMetrics& fm)
+		{
+			const auto& rect = fm.boundingRect (symb.first);
+
+			QPixmap px { rect.size () };
+			px.fill (Qt::transparent);
+			{
+				QPainter painter { &px };
+				if (symb.second.isValid ())
+					painter.setPen (symb.second);
+				painter.drawText (QRect { { 0, 0 }, rect.size () },
+						Qt::AlignCenter | Qt::AlignHCenter,
+						symb.first);
+			}
+
+			QIcon icon;
+			icon.addPixmap (px);
+			return icon;
+		}
+	}
+
 	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)
 	{
 		const auto& idx = Ui_.Playlist_->indexAt (pos);
@@ -611,6 +670,20 @@ namespace LMP
 				menu->addAction (ActionMoveOneShotUp_);
 			if (oneShotPosVar.toInt () < Player_->GetOneShotQueueSize () - 1)
 				menu->addAction (ActionMoveOneShotDown_);
+		}
+
+		menu->addMenu (TrackActions_);
+		const auto& existingRules = idx.data (Player::Role::MatchingRules).value<QList<Entity>> ();
+		ExistingTrackActions_->menuAction ()->setVisible (!existingRules.isEmpty ());
+
+		ExistingTrackActions_->clear ();
+		for (const auto& rule : existingRules)
+		{
+			const auto action = ExistingTrackActions_->addAction (rule.Entity_.toString ());
+			action->setProperty ("LMP/SourceRule", QVariant::fromValue (rule));
+
+			const auto& symbol = GetRuleSymbol (rule);
+			action->setIcon (SymbolToIcon (symbol, menu->fontMetrics ()));
 		}
 
 		menu->addSeparator ();
@@ -797,6 +870,87 @@ namespace LMP
 		ShowAlbumArt (info.LocalPath_, QCursor::pos ());
 	}
 
+	namespace
+	{
+		void EmitStateRule (const QModelIndex& index, const QString& state, const QString& nameTempl)
+		{
+			const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
+
+			auto url = info.Additional_.value ("URL").toUrl ();
+			if (url.isEmpty ())
+				url = QUrl::fromLocalFile (info.LocalPath_);
+
+			const auto& e = Util::MakeANRule (nameTempl
+						.arg (info.Title_)
+						.arg (info.Artist_),
+					"org.LeechCraft.LMP",
+					AN::CatMediaPlayer,
+					{ AN::TypeMediaPlaybackStatus },
+					AN::NotifySingleShot,
+					{
+						{
+							AN::Field::MediaPlaybackStatus,
+							ANStringFieldValue { state }
+						},
+						{
+							AN::Field::MediaArtist,
+							ANStringFieldValue { info.Artist_ }
+						},
+						{
+							AN::Field::MediaAlbum,
+							ANStringFieldValue { info.Album_ }
+						},
+						{
+							AN::Field::MediaTitle,
+							ANStringFieldValue { info.Title_ }
+						},
+						{
+							AN::Field::MediaLength,
+							ANIntFieldValue { info.Length_, ANIntFieldValue::OEqual }
+						},
+						{
+							AN::Field::MediaPlayerURL,
+							ANStringFieldValue { url.toEncoded () }
+						}
+					});
+			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		}
+	}
+
+	void PlaylistWidget::initPerformAfterTrackStart ()
+	{
+		EmitStateRule (Ui_.Playlist_->currentIndex (),
+				"Playing",
+				 tr ("Perform when %1 by %2 starts playing"));
+	}
+
+	void PlaylistWidget::initPerformAfterTrackStop ()
+	{
+		EmitStateRule (Ui_.Playlist_->currentIndex (),
+				"Stopped",
+				tr ("Perform when %1 by %2 stops playing"));
+	}
+
+	void PlaylistWidget::handleExistingTrackAction (QAction *action)
+	{
+		const auto& rule = action->property ("LMP/SourceRule").value<Entity> ();
+		const auto& pluginId = rule.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
+
+		const auto pluginMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		const auto pluginObj = pluginMgr->GetPluginByID (pluginId);
+		if (!pluginObj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "plugin"
+					<< pluginId
+					<< "not found";
+			return;
+		}
+
+		const auto irs = qobject_cast<IANRulesStorage*> (pluginObj);
+		irs->RequestRuleConfiguration (rule);
+	}
+
 	void PlaylistWidget::handleMoveUp ()
 	{
 		const auto& sources = GetSelected ();
@@ -809,7 +963,7 @@ namespace LMP
 			if (sources.contains (allSrcs.at (i)))
 				std::swap (allSrcs [i], allSrcs [i - 1]);
 
-		Player_->ReplaceQueue (allSrcs, false);
+		Player_->Enqueue (allSrcs, Player::EnqueueReplace);
 
 		NextResetSelect_ = sources;
 	}
@@ -821,7 +975,7 @@ namespace LMP
 		Q_FOREACH (const auto& source, sources)
 			allSrcs.removeAll (source);
 
-		Player_->ReplaceQueue (sources + allSrcs, false);
+		Player_->Enqueue (sources + allSrcs, Player::EnqueueReplace);
 		NextResetSelect_ = sources;
 	}
 
@@ -837,7 +991,7 @@ namespace LMP
 			if (sources.contains (allSrcs.at (i)))
 				std::swap (allSrcs [i], allSrcs [i + 1]);
 
-		Player_->ReplaceQueue (allSrcs, false);
+		Player_->Enqueue (allSrcs, Player::EnqueueReplace);
 
 		NextResetSelect_ = sources;
 	}
@@ -849,7 +1003,7 @@ namespace LMP
 		Q_FOREACH (const auto& source, sources)
 			allSrcs.removeAll (source);
 
-		Player_->ReplaceQueue (allSrcs + sources, false);
+		Player_->Enqueue (allSrcs + sources, Player::EnqueueReplace);
 		NextResetSelect_ = sources;
 	}
 
@@ -871,7 +1025,9 @@ namespace LMP
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		mgr->SaveCustomPlaylist (name, Player_->GetQueue ());
+		Playlist playlist { Player_->GetQueue () };
+		playlist.SetProperty (Player_->GetSourceObject ()->GetCurrentSource (), "Current", true);
+		mgr->SaveCustomPlaylist (name, playlist);
 	}
 
 	void PlaylistWidget::loadFromDisk ()
@@ -934,8 +1090,25 @@ namespace LMP
 					idx.data (Player::Role::Info).value<MediaInfo> ().Length_;
 		}
 
-		Ui_.StatsLabel_->setText (tr ("%n track(s), total duration: %1", 0, tracksCount)
-					.arg (Util::MakeTimeFromLong (length)));
+		QModelIndexList selectedTracks;
+		for (const auto& idx : Ui_.Playlist_->selectionModel ()->selectedRows ())
+			if (!model->rowCount (idx))
+				selectedTracks << idx;
+
+		int selectedLength = 0;
+		if (selectedTracks.size () > 1)
+			for (const auto& idx : selectedTracks)
+				selectedLength += idx.data (Player::Role::Info).value<MediaInfo> ().Length_;
+
+		QString text;
+		if (selectedLength > 0)
+			text = tr ("%n track(s), total duration: %1; selected duration: %2", 0, tracksCount)
+					.arg (Util::MakeTimeFromLong (length))
+					.arg (Util::MakeTimeFromLong (selectedLength));
+		else
+			text = tr ("%n track(s), total duration: %1", 0, tracksCount)
+					.arg (Util::MakeTimeFromLong (length));
+		Ui_.StatsLabel_->setText (text);
 	}
 }
 }

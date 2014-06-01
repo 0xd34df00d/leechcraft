@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,7 +38,6 @@
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/iunmountablesync.h>
 
-class QTimer;
 class QAbstractItemModel;
 class QModelIndex;
 
@@ -77,11 +76,8 @@ namespace MTPSync
 		struct DeviceCacheEntry
 		{
 			std::shared_ptr<LIBMTP_mtpdevice_t> Device_;
-			QDateTime LastAccess_;
 		};
 		QHash<QByteArray, DeviceCacheEntry> DevicesCache_;
-
-		QTimer *CacheEvictTimer_;
 
 		struct UploadQueueItem
 		{
@@ -96,6 +92,7 @@ namespace MTPSync
 
 		bool FirstPoll_ = true;
 		bool IsPolling_ = false;
+		bool IsUploading_ = false;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();

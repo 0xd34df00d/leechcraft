@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MAINWIDGET_H
-#define PLUGINS_AZOTH_MAINWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include "interfaces/azoth/iaccount.h"
 #include "ui_mainwidget.h"
@@ -54,6 +54,8 @@ namespace Azoth
 
 		Ui::MainWidget Ui_;
 
+		AccountActionsManager * const AccountActsMgr_;
+
 		QMenu *MainMenu_;
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
@@ -64,17 +66,14 @@ namespace Azoth
 		QAction *ActionDeleteSelected_;
 		QToolBar *BottomBar_;
 
-		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
-
-		AccountActionsManager *AccountActsMgr_;
 
 		QMap<QString, bool> FstLevelExpands_;
 		QMap<QString, QMap<QString, bool>> SndLevelExpands_;
 
 		StatusChangeMenuManager *StatusMenuMgr_;
 	public:
-		MainWidget (QWidget* = 0);
+		MainWidget (AccountActionsManager*, QWidget* = 0);
 
 		QList<QAction*> GetMenuActions ();
 		QMenu* GetChangeStatusMenu () const;
@@ -95,6 +94,7 @@ namespace Azoth
 
 		void handleCatRenameTriggered ();
 		void handleSendGroupMsgTriggered ();
+		void handleMarkAllTriggered ();
 		void handleRemoveChildrenTriggered ();
 
 		void handleManageBookmarks ();
@@ -118,12 +118,6 @@ namespace Azoth
 		void expandIndex (const QPersistentModelIndex&);
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
-	signals:
-		void gotConsoleWidget (ConsoleWidget*);
-		void gotSDWidget (ServiceDiscoveryWidget*);
-		void gotMicroblogsTab (MicroblogsTab*);
 	};
 }
 }
-
-#endif

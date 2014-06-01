@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,7 +39,6 @@
 #include "ui_playertab.h"
 
 class QStandardItemModel;
-class QSortFilterProxyModel;
 class QListWidget;
 class QTabBar;
 
@@ -71,8 +70,6 @@ namespace LMP
 		QObject *Plugin_;
 		const TabClassInfo TC_;
 
-		QSortFilterProxyModel *CollectionFilterModel_;
-
 		Player *Player_;
 		PreviewHandler *PreviewHandler_;
 
@@ -85,11 +82,6 @@ namespace LMP
 		QAction *PlayPause_;
 		QMenu *TrayMenu_;
 
-		QAction *CollectionShowTrackProps_;
-		QAction *CollectionShowAlbumArt_;
-		QAction *CollectionShowAAManager_;
-		QAction *CollectionRemove_;
-		QAction *CollectionDelete_;
 		QListWidget *NavButtons_;
 		QTabBar *NavBar_;
 
@@ -109,11 +101,12 @@ namespace LMP
 		QIcon GetTabRecoverIcon () const;
 		QString GetTabRecoverName () const;
 
+		void AddNPTab (const QString&, QWidget*);
+
 		void InitWithOtherPlugins ();
 	private:
 		void SetupNavButtons ();
 		void SetupToolbar ();
-		void SetupCollection ();
 		void SetNowPlaying (const MediaInfo&, const QPixmap&);
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
@@ -130,15 +123,6 @@ namespace LMP
 		void handleSimilarReady ();
 
 		void handleGotLyrics (const Media::LyricsResults&);
-
-		void handleScanProgress (int);
-		void showCollectionTrackProps ();
-		void showCollectionAlbumArt ();
-		void showAlbumArtManager ();
-		void handleCollectionRemove ();
-		void handleCollectionDelete ();
-		void loadFromCollection ();
-		void handleCollectionItemSelected (const QModelIndex&);
 
 		void handlePlayerAvailable (bool);
 

@@ -8,7 +8,7 @@ find_package (PopplerQt4 REQUIRED)
 include (${QT_USE_FILE})
 include_directories (
 	${POPPLER_QT4_INCLUDE_DIR}
-	${POPPLER_QT4_INCLUDE_DIR}/../cpp/
+	${POPPLER_CPP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -18,6 +18,7 @@ set (SRCS
 	document.cpp
 	links.cpp
 	fields.cpp
+	annotations.cpp
 	)
 
 set (PDF_RESOURCES pdfresources.qrc)

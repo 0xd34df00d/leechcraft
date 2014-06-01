@@ -28,6 +28,9 @@ set (SRCS
 	finddialog.cpp
 	inserttabledialog.cpp
 	xmlsettingsmanager.cpp
+	htmlhighlighter.cpp
+	imagecollectiondialog.cpp
+	imageinfosmodel.cpp
 	)
 set (FORMS
 	richeditorwidget.ui
@@ -35,6 +38,7 @@ set (FORMS
 	imagedialog.ui
 	finddialog.ui
 	inserttabledialog.ui
+	imagecollectiondialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 CreateTrs ("lhtr" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)

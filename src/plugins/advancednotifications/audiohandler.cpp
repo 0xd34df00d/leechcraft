@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,8 +28,8 @@
  **********************************************************************/
 
 #include "audiohandler.h"
-#include <util/util.h>
-#include <util/resourceloader.h>
+#include <util/xpc/util.h>
+#include <util/sys/resourceloader.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -57,19 +57,7 @@ namespace AdvancedNotifications
 			return;
 
 		if (!fname.contains ('/'))
-		{
-			const QString& option = XmlSettingsManager::Instance ()
-					.property ("AudioTheme").toString ();
-			const QString& base = option + '/' + fname;
-
-			QStringList pathVariants;
-			pathVariants << base + ".ogg"
-					<< base + ".wav"
-					<< base + ".flac"
-					<< base + ".mp3";
-
-			fname = Core::Instance ().GetAudioThemeLoader ()->GetPath (pathVariants);
-		}
+			fname = Core::Instance ().GetAbsoluteAudioPath (fname);
 
 		const auto& now = QDateTime::currentDateTime ();
 		if (LastNotify_ [fname].msecsTo (now) < 1000)

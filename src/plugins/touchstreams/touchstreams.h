@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -91,7 +91,6 @@ namespace TouchStreams
 		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
 		void RefreshItems (const QList<QStandardItem*>&);
 	private slots:
-		void handlePushButton (const QString&);
 		void saveCookies (const QByteArray&);
 	};
 }

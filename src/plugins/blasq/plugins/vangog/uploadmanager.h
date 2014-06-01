@@ -57,6 +57,7 @@ namespace Vangog
 		const ICoreProxy_ptr Proxy_;
 		Util::QueueManager * const RequestQueue_;
 
+		QHash<QNetworkReply*, UploadItem> Reply2Item_;
 	public:
 		UploadManager (Util::QueueManager *reqQueue, ICoreProxy_ptr proxy,
 				PicasaAccount *acc);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,6 +40,11 @@ namespace Poshuku
 	}
 
 	QLineEdit* URLFrame::GetEdit () const
+	{
+		return Ui_.URLEdit_;
+	}
+
+	ProgressLineEdit* URLFrame::GetEditAsProgressLine () const
 	{
 		return Ui_.URLEdit_;
 	}

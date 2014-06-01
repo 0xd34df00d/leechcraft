@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -41,6 +41,7 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
@@ -63,8 +64,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	MainWidget::MainWidget (QWidget *parent)
+	MainWidget::MainWidget (AccountActionsManager *accActsMgr, QWidget *parent)
 	: QWidget (parent)
+	, AccountActsMgr_ (accActsMgr)
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel (this))
@@ -72,22 +74,8 @@ namespace Azoth
 	, ActionCLMode_ (new QAction (tr ("CL mode"), this))
 	, ActionShowOffline_ (0)
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
-	, AccountActsMgr_ (new AccountActionsManager (this, this))
 	, StatusMenuMgr_ (new StatusChangeMenuManager (this))
 	{
-		connect (AccountActsMgr_,
-				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
-				this,
-				SIGNAL (gotConsoleWidget (ConsoleWidget*)));
-		connect (AccountActsMgr_,
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
-				this,
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)));
-		connect (AccountActsMgr_,
-				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
-				this,
-				SIGNAL (gotMicroblogsTab (MicroblogsTab*)));
-
 		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
 
 		MainMenu_->setIcon (QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg"));
@@ -165,10 +153,7 @@ namespace Azoth
 		MenuButton_->setIcon (MainMenu_->icon ());
 		MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
-		MenuChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
 		TrayChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
-
-		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
 
 		FastStatusButton_->setMenu (StatusMenuMgr_->CreateMenu (this, SLOT (fastStateChangeRequested ()), this));
 		FastStatusButton_->setPopupMode (QToolButton::InstantPopup);
@@ -206,7 +191,7 @@ namespace Azoth
 				{
 					tr ("Show all users list"),
 					{ "Alt+C" },
-					Core::Instance ().GetProxy ()->GetIcon ("system-users")
+					Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("system-users")
 				},
 				listShortcut);
 	}
@@ -270,7 +255,7 @@ namespace Azoth
 		auto addBottomAct = [this] (QAction *act)
 		{
 			const QString& icon = act->property ("ActionIcon").toString ();
-			act->setIcon (Core::Instance ().GetProxy ()->GetIcon (icon));
+			act->setIcon (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (icon));
 			BottomBar_->addAction (act);
 		};
 		addBottomAct (addContact);
@@ -359,7 +344,7 @@ namespace Azoth
 		if (!index.isValid ())
 			return;
 
-		ActionsManager *manager = Core::Instance ().GetActionsManager ();
+		const auto manager = Core::Instance ().GetActionsManager ();
 
 		QMenu *menu = new QMenu (tr ("Entry context menu"));
 		QList<QAction*> actions;
@@ -423,8 +408,7 @@ namespace Azoth
 			actions << rename;
 
 			QList<QVariant> entries;
-			for (int i = 0, cnt = index.model ()->rowCount (index);
-					i < cnt; ++i)
+			for (int i = 0, cnt = index.model ()->rowCount (index); i < cnt; ++i)
 				entries << index.child (i, 0).data (Core::CLREntryObject);
 
 			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
@@ -434,6 +418,17 @@ namespace Azoth
 					this,
 					SLOT (handleSendGroupMsgTriggered ()));
 			actions << sendMsg;
+
+			if (index.data (Core::CLRUnreadMsgCount).toInt ())
+			{
+				auto markAll = new QAction (tr ("Mark all messages as read"), menu);
+				markAll->setProperty ("Azoth/Entries", entries);
+				connect (markAll,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleMarkAllTriggered ()));
+				actions << markAll;
+			}
 
 			QAction *removeChildren = new QAction (tr ("Remove group's participants"), menu);
 			removeChildren->setProperty ("Azoth/Entries", entries);
@@ -445,28 +440,9 @@ namespace Azoth
 			break;
 		}
 		case Core::CLETAccount:
-		{
-			QVariant objVar = index.data (Core::CLRAccountObject);
-			actions << AccountActsMgr_->GetMenuActions (menu, objVar.value<QObject*> ());
-			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
-			{
-				if (act->isSeparator ())
-					continue;
-
-				act->setData (objVar);
-
-				QVariant stateVar = act->property ("Azoth/TargetState");
-				if (!stateVar.isNull ())
-				{
-					State state = stateVar.value<State> ();
-					act->setIcon (Core::Instance ().GetIconForState (state));
-				}
-			}
-			actions.prepend (Util::CreateSeparator (menu));
-			actions.prepend (MenuChangeStatus_->menuAction ());
-
+			actions << AccountActsMgr_->GetMenuActions (menu,
+					index.data (Core::CLRAccountObject).value<QObject*> ());
 			break;
-		}
 		default:
 			break;
 		}
@@ -481,20 +457,6 @@ namespace Azoth
 		menu->deleteLater ();
 	}
 
-	namespace
-	{
-		QString GetStatusText (QObject *object, State state)
-		{
-			const auto& textVar = object->property ("Azoth/TargetText");
-			if (!textVar.isNull ())
-				return textVar.toString ();
-
-			const auto& propName = "DefaultStatus" + QString::number (state);
-			return XmlSettingsManager::Instance ()
-					.property (propName.toLatin1 ()).toString ();
-		}
-	}
-
 	void MainWidget::handleChangeStatusRequested ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -506,42 +468,26 @@ namespace Azoth
 			return;
 		}
 
-		QObject *obj = action->data ().value<QObject*> ();
-		IAccount *acc = qobject_cast<IAccount*> (obj);
-		if (obj && !acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to cast"
-					<< obj
-					<< "to IAccount";
-			return;
-		}
-
 		QVariant stateVar = action->property ("Azoth/TargetState");
 		EntryStatus status;
 		if (!stateVar.isNull ())
 		{
 			const auto state = stateVar.value<State> ();
-			status = EntryStatus (state, GetStatusText (action, state));
+			status = EntryStatus (state, AccountActsMgr_->GetStatusText (action, state));
 		}
 		else
 		{
-			SetStatusDialog ssd (acc ? acc->GetAccountID () : "global", this);
+			SetStatusDialog ssd ("global", this);
 			if (ssd.exec () != QDialog::Accepted)
 				return;
 
 			status = EntryStatus (ssd.GetState (), ssd.GetStatusText ());
 		}
 
-		if (acc)
-			acc->ChangeState (status);
-		else
-		{
-			for (IAccount *acc : Core::Instance ().GetAccounts ())
-				if (acc->IsShownInRoster ())
-					acc->ChangeState (status);
-			updateFastStatusButton (status.State_);
-		}
+		for (IAccount *acc : Core::Instance ().GetAccounts ())
+			if (acc->IsShownInRoster ())
+				acc->ChangeState (status);
+		updateFastStatusButton (status.State_);
 	}
 
 	void MainWidget::fastStateChangeRequested ()
@@ -556,7 +502,8 @@ namespace Azoth
 		const auto state = stateVar.value<State> ();
 		updateFastStatusButton (state);
 
-		const EntryStatus status (state, GetStatusText (sender (), state));
+		const EntryStatus status (state,
+				AccountActsMgr_->GetStatusText (static_cast<QAction*> (sender ()), state));
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 			if (acc->IsShownInRoster ())
 				acc->ChangeState (status);
@@ -665,6 +612,12 @@ namespace Azoth
 		auto dlg = new GroupSendDialog (entries, this);
 		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
 		dlg->show ();
+	}
+
+	void MainWidget::handleMarkAllTriggered ()
+	{
+		for (const auto entry : GetEntriesFromSender (sender ()))
+			qobject_cast<ICLEntry*> (entry)->MarkMsgsRead ();
 	}
 
 	void MainWidget::handleRemoveChildrenTriggered ()

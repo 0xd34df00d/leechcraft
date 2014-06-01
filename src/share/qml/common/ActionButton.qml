@@ -88,7 +88,9 @@ Item {
             width: Math.min(parent.width, parent.height)
             height: width
 
-            source: actionIconScales ? (actionIconURL + '/' + width) : actionIconURL
+            source: actionIconScales && actionIconURL.length > 0 ?
+                        (actionIconURL + '/' + width) :
+                        actionIconURL
             smooth: true
             cache: false
 

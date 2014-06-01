@@ -119,12 +119,12 @@ namespace DBox
 	}
 
 	void Account::Download (const QByteArray& id, const QString& filepath,
-			TaskParameters tp, bool silent, bool open)
+			TaskParameters tp, bool open)
 	{
 		if (id.isEmpty ())
 			return;
 
-		DriveManager_->Download (id, filepath, tp, silent, open);
+		DriveManager_->Download (id, filepath, tp, open);
 	}
 
 	ListingOps Account::GetListingOps () const
@@ -332,7 +332,7 @@ namespace DBox
 			result << CreateItem (item);
 
 		emit gotListing (result);
-		emit listingUpdated ();
+		emit listingUpdated (result.value (0).ParentID_);
 	}
 
 	void Account::handleSharedFileUrl (const QUrl& url, const QDateTime& expiredDate)
@@ -345,7 +345,7 @@ namespace DBox
 	{
 		const auto& storageItem = CreateItem (item);
 		emit gotNewItem (storageItem, storageItem.ParentID_);
-		emit listingUpdated ();
+		emit listingUpdated (storageItem.ParentID_);
 	}
 }
 }

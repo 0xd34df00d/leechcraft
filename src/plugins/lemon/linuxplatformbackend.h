@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -41,8 +41,8 @@ namespace Lemon
 	{
 		Q_OBJECT
 
-		nl_sock *Rtsock_;
-		nl_cache *LinkCache_;
+		nl_sock *Rtsock_ = nullptr;
+		nl_cache *LinkCache_ = nullptr;
 
 		struct DevInfo
 		{

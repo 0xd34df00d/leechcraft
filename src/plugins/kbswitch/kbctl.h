@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -56,7 +56,7 @@ namespace KBSwitch
 		bool ExtWM_ = false;
 
 		QStringList Groups_;
-		QHash<QString, QString> Variants_;
+		QStringList Variants_;
 
 		QStringList Options_;
 
@@ -78,6 +78,9 @@ namespace KBSwitch
 	private:
 		SwitchPolicy Policy_;
 	public:
+		KBCtl (const KBCtl&) = delete;
+		KBCtl& operator= (const KBCtl&) = delete;
+
 		static KBCtl& Instance ();
 		void Release ();
 
@@ -87,8 +90,10 @@ namespace KBSwitch
 
 		const QStringList& GetEnabledGroups () const;
 		void SetEnabledGroups (QStringList);
-		QString GetGroupVariant (const QString&) const;
-		void SetGroupVariants (const QHash<QString, QString>&);
+		QString GetGroupVariant (int) const;
+		void SetGroupVariants (const QStringList&);
+		void EnableNextGroup ();
+		void EnableGroup (int);
 
 		int GetMaxEnabledGroups () const;
 

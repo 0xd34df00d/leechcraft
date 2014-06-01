@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,7 +37,7 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <qjson/parser.h>
-#include <util/queuemanager.h>
+#include <util/sll/queuemanager.h>
 #include "vkaccount.h"
 
 namespace LeechCraft
@@ -166,9 +166,11 @@ namespace Rappor
 				if (!info.Description_.isEmpty ())
 					saveUrl.addQueryItem ("caption", info.Description_);
 
-				RequestQueue_->Schedule ([this, saveUrl]
+				RequestQueue_->Schedule ([this, saveUrl, info]
 					{
-						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (saveUrl)),
+						const auto req = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (saveUrl));
+						PhotoSave2Info_ [req] = info;
+						connect (req,
 								SIGNAL (finished ()),
 								this,
 								SLOT (handlePhotosSaved ()));
@@ -180,6 +182,8 @@ namespace Rappor
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
+
+		const auto& item = PhotoSave2Info_.take (reply);
 
 		const auto& data = reply->readAll ();
 		QDomDocument doc;
@@ -217,6 +221,9 @@ namespace Rappor
 								SLOT (handlePhotosInfosFetched ()));
 					}, this);
 			});
+
+		// TODO remember to add url
+		emit itemUploaded (item, {});
 	}
 }
 }

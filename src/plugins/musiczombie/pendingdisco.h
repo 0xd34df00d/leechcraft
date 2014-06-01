@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -55,24 +55,18 @@ namespace MusicZombie
 
 		QNetworkAccessManager *NAM_;
 		QList<Media::ReleaseInfo> Releases_;
-		int PendingReleases_;
 	public:
 		PendingDisco (Util::QueueManager*, const QString&, const QString&, QNetworkAccessManager*, QObject* = 0);
 
 		QObject* GetQObject ();
 
 		QList<Media::ReleaseInfo> GetReleases () const;
-	private:
-		void DecrementPending ();
 	private slots:
 		void handleGotID (const QString&);
 		void handleIDError ();
 
 		void handleLookupFinished ();
 		void handleLookupError ();
-
-		void handleReleaseLookupFinished ();
-		void handleReleaseLookupError ();
 	signals:
 		void ready ();
 		void error (const QString&);

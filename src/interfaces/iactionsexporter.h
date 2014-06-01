@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -37,12 +37,50 @@ class QAction;
 
 namespace LeechCraft
 {
+	/** @brief Specifies where the actions should be embedded.
+	 */
 	enum class ActionsEmbedPlace
 	{
+		/** @brief The \em Tools submenu of main LeechCraft menu.
+		 */
 		ToolsMenu,
+
+		/** @brief The common tabbar context menu.
+		 *
+		 * This menu is used to open new tabs, close opened tabs and
+		 * manipulate already opened tabs. Plugins will typically embed
+		 * actions that don't relate to any currently opened tab but
+		 * should be invoked easily by the user.
+		 */
 		CommonContextMenu,
+
+		/** @brief The quick launch area.
+		 *
+		 * The quick launch area resides in the SB2 panel or similar.
+		 * Actions and menus embedded in such areas are always visible
+		 * by the user (unless they hide it explicitly). So, this area
+		 * can be used to either perform some actions in one click (even
+		 * faster than ToolsMenu) or to host actions displaying state,
+		 * like a network monitor.
+		 *
+		 * This area is similar to LCTray but with more focus on
+		 * performing actions.
+		 *
+		 * @sa LCTray
+		 */
 		QuickLaunch,
+
+		/** @brief The context menu of the LeechCraft tray icon.
+		 */
 		TrayMenu,
+
+		/** @brief The tray area.
+		 *
+		 * Similar to QuickLaunch, but with more focus on displaying
+		 * state.
+		 *
+		 * @sa QuickLaunch
+		 */
 		LCTray
 	};
 }
@@ -57,8 +95,8 @@ public:
 
 	/** @brief Returns the actions to embed.
 	 *
-	 * Returns the list of actions that will be inserted into the Tools
-	 * menu.
+	 * Returns the list of actions that will be inserted into the given
+	 * \em area.
 	 *
 	 * @param[in] area The area where the actions should be placed.
 	 *
@@ -77,13 +115,15 @@ public:
 	 */
 	virtual QMap<QString, QList<QAction*>> GetMenuActions () const
 	{
-		return QMap<QString, QList<QAction*>> ();
+		return {};
 	}
 protected:
 	/** @brief Notifies about new actions for the given area.
 	 *
 	 * The sender of this signal remains the owner of actions, and it
 	 * may delete them at any given time.
+	 *
+	 * @note This function is expected to be a signal.
 	 *
 	 * @param[out] actions The list of new actions for the given area.
 	 * @param[out] area The area where these actions should be placed.

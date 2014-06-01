@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ACTIONSMANAGER_H
-#define PLUGINS_AZOTH_ACTIONSMANAGER_H
+#pragma once
+
 #include <functional>
 #include <QObject>
 #include <QHash>
@@ -43,6 +43,7 @@ namespace Azoth
 {
 	class ICLEntry;
 	class IAuthable;
+	class ServerHistoryWidget;
 
 	class ActionsManager : public QObject
 	{
@@ -95,10 +96,10 @@ namespace Azoth
 				QObject *entry);
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
+
+		void gotServerHistoryTab (ServerHistoryWidget*);
 	};
 }
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::ActionsManager::CLEntryActionArea);
-
-#endif

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -54,6 +54,11 @@ namespace Xoox
 	bool ServerInfoStorage::HasServerFeatures () const
 	{
 		return !ServerFeatures_.isEmpty ();
+	}
+
+	QStringList ServerInfoStorage::GetServerFeatures () const
+	{
+		return ServerFeatures_;
 	}
 
 	QString ServerInfoStorage::GetBytestreamsProxy () const

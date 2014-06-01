@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -153,9 +153,12 @@ namespace Media
 		 * results are available — see its documentation for details.
 		 *
 		 * @param[in] artist The artist name.
+		 * @param[in] additionalImages Whether additional images for the
+		 * ArtistBio::OtherImages_ field should be requested.
 		 * @return The pending biography search handle.
 		 */
-		virtual IPendingArtistBio* RequestArtistBio (const QString& artist) = 0;
+		virtual IPendingArtistBio* RequestArtistBio (const QString& artist,
+				bool additionalImages = true) = 0;
 	};
 }
 

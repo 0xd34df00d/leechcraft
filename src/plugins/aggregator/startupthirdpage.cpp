@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,6 +30,7 @@
 #include "startupthirdpage.h"
 #include <QLineEdit>
 #include <QTextCodec>
+#include <QDomDocument>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -38,83 +39,10 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	StartupThirdPage::FeedInfo::FeedInfo (const QString& name,
-			const QString& tags, const QString& url)
-	: Name_ (name)
-	, DefaultTags_ (tags)
-	, URL_ (url)
-	{
-	}
-
 	StartupThirdPage::StartupThirdPage (QWidget *parent)
 	: QWizardPage (parent)
 	{
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Slashdot"),
-				"it; news; software; science; world",
-				"http://rss.slashdot.org/Slashdot/slashdot");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Qt Labs Blogs"),
-				"it; qt; news; blogs; programming",
-				"http://labs.trolltech.com/blogs/feed/atom/");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("euronews RSS feed"),
-				"news; world",
-				"http://feeds.feedburner.com/euronews/en/home/");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("TechCrunch"),
-				"news; it",
-				"http://feedproxy.google.com/TechCrunch");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Wired.com"),
-				"news; it",
-				"http://feeds.wired.com/wired/index");
-		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("IBM DeveloperWorks"),
-				"it; programming",
-				"http://www.ibm.com/developerworks/views/linux/rss/libraryview.jsp");
-		Sets_ ["en"] << FeedInfo (QString::fromUtf8 ("LeechCraft.org News"),
-				"it; blogs; software",
-				"http://leechcraft.org/rss.xml");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости LeechCraft.org"),
-				"it; blogs; software",
-				"http://leechcraft.org/ru/rss.xml");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Linux.org.ru: Новости"),
-				"it; news; software",
-				"http://feeds.feedburner.com/org/LOR");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("OpenNews.opennet.ru: Основная лента"),
-				"it; news; software",
-				"http://www.opennet.ru/opennews/opennews_6.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("CNews.ru"),
-				"it; news",
-				"http://www.cnews.ru/news.xml");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Хабрахабр"),
-				"it; news; blogs",
-				"http://habrahabr.ru/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости: Hardware на iXBT.com"),
-				"it; news; hardware",
-				"http://www.ixbt.com/export/hardnews.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости: Software на iXBT.com"),
-				"it; news; software",
-				"http://www.ixbt.com/export/softnews.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Статьи на iXBT.com"),
-				"it",
-				"http://www.ixbt.com/export/articles.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("3Dnews - Новости Hardware"),
-				"it; news; hardware",
-				"http://www.3dnews.ru/news/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("MEMBRANA: Люди. Идеи. Технологии."),
-				"news; science; world",
-				"http://feeds.feedburner.com/membrana_ru");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Яндекс.Новости"),
-				"news; world",
-				"http://news.yandex.ru/index.rss");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Lenta.Ru"),
-				"news",
-				"http://lenta.ru/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Bash.Org.Ru"),
-				"fun",
-				"http://bash.org.ru/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("iBash.Org.Ru"),
-				"fun; it",
-				"http://ibash.org.ru/rss.xml");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("WeLinux.ru"),
-				"it; linux",
-				"http://feeds.feedburner.com/welinux");
+		ParseFeedsSets ();
 
 		Ui_.setupUi (this);
 		Ui_.Tree_->header ()->setResizeMode (0, QHeaderView::ResizeToContents);
@@ -152,6 +80,72 @@ namespace Aggregator
 				setProperty ("StartupVersion", 3);
 	}
 
+	namespace
+	{
+		QStringList ParseTags (const QDomElement& feedElem)
+		{
+			QStringList result;
+
+			auto tagElem = feedElem.firstChildElement ("tags").firstChildElement ("tag");
+			while (!tagElem.isNull ())
+			{
+				result << tagElem.text ();
+				tagElem = tagElem.nextSiblingElement ("tag");
+			}
+
+			return result;
+		}
+	}
+
+	void StartupThirdPage::ParseFeedsSets ()
+	{
+		QFile file (":/resources/data/default_feeds.xml");
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open feeds resource file:"
+					<< file.errorString ();
+			return;
+		}
+
+		QDomDocument doc;
+		QString msg;
+		int line = 0;
+		int col = 0;
+		if (!doc.setContent (&file, &msg, &line, &col))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse feed resource file:"
+					<< msg
+					<< "on"
+					<< line
+					<< col;
+			return;
+		}
+
+		auto setElem = doc.documentElement ().firstChildElement ("set");
+		while (!setElem.isNull ())
+		{
+			auto& set = Sets_ [setElem.attribute ("lang", "general")];
+
+			auto feedElem = setElem.firstChildElement ("feed");
+			while (!feedElem.isNull ())
+			{
+				FeedInfo info
+				{
+					feedElem.firstChildElement ("name").text (),
+					ParseTags (feedElem),
+					feedElem.firstChildElement ("url").text ()
+				};
+				set << info;
+
+				feedElem = feedElem.nextSiblingElement ("feed");
+			}
+
+			setElem = setElem.nextSiblingElement ();
+		}
+	}
+
 	void StartupThirdPage::Populate (const QString& title)
 	{
 		FeedInfos_t engines = Sets_ [title];
@@ -167,7 +161,7 @@ namespace Aggregator
 
 			QLineEdit *edit = new QLineEdit (Ui_.Tree_);
 			edit->setFrame (false);
-			edit->setText (info.DefaultTags_);
+			edit->setText (info.DefaultTags_.join ("; "));
 			Ui_.Tree_->setItemWidget (item, 1, edit);
 		}
 	}

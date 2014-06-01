@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,6 +42,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/util.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -51,6 +52,7 @@
 #include "viewgeometrymanager.h"
 #include "viewsettingsmanager.h"
 #include "viewpropsmanager.h"
+#include "dirwatcher.h"
 
 namespace LeechCraft
 {
@@ -191,7 +193,19 @@ namespace SB2
 	void ViewManager::SecondInit ()
 	{
 		for (const auto& component : FindAllQuarks ())
-			AddComponent (component);
+			AddComponent (component, false);
+
+		auto watcher = new DirWatcher (Util::CreateIfNotExists ("data/quarks"), this);
+		connect (watcher,
+				SIGNAL (quarksAdded (QList<QUrl>)),
+				this,
+				SLOT (handleQuarksAdded (QList<QUrl>)));
+		connect (watcher,
+				SIGNAL (quarksRemoved (QList<QUrl>)),
+				this,
+				SLOT (handleQuarksRemoved (QList<QUrl>)));
+
+		SaveQuarkOrder ();
 	}
 
 	void ViewManager::RegisterInternalComponent (QuarkComponent_ptr c)
@@ -217,7 +231,9 @@ namespace SB2
 		}
 
 		auto mgr = Quark2Manager_.take (url);
-		AddToRemoved (mgr->GetID ());
+		AddToRemoved (mgr->GetManifest ().GetID ());
+
+		SaveQuarkOrder ();
 	}
 
 	void ViewManager::RemoveQuark (const QString& id)
@@ -237,7 +253,7 @@ namespace SB2
 			return;
 
 		auto mgr = Quark2Manager_.take (url);
-		AddToRemoved (mgr->GetID ());
+		AddToRemoved (mgr->GetManifest ().GetID ());
 	}
 
 	void ViewManager::UnhideQuark (QuarkComponent_ptr component, QuarkManager_ptr manager)
@@ -245,9 +261,11 @@ namespace SB2
 		if (!manager)
 			return;
 
-		RemoveFromRemoved (manager->GetID ());
+		RemoveFromRemoved (manager->GetManifest ().GetID ());
 
-		AddComponent (component, manager);
+		AddComponent (component, manager, true);
+
+		SaveQuarkOrder ();
 	}
 
 	void ViewManager::MoveQuark (int from, int to)
@@ -271,11 +289,8 @@ namespace SB2
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, "quarks"))
 			result += ScanRootDir (QDir (cand));
 
-		QDir local = QDir::home ();
-		if (local.cd (".leechcraft") &&
-			local.cd ("data") &&
-			local.cd ("quarks"))
-			result += ScanRootDir (local);
+		const auto& local = Util::CreateIfNotExists ("data/quarks");
+		result += ScanRootDir (local);
 
 		auto pm = Proxy_->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<IQuarkComponentProvider*> ())
@@ -324,7 +339,7 @@ namespace SB2
 		return result;
 	}
 
-	void ViewManager::AddComponent (QuarkComponent_ptr comp)
+	void ViewManager::AddComponent (QuarkComponent_ptr comp, bool force)
 	{
 		QuarkManager_ptr mgr;
 		try
@@ -338,25 +353,34 @@ namespace SB2
 			return;
 		}
 
-		AddComponent (comp, mgr);
+		AddComponent (comp, mgr, force);
 	}
 
-	void ViewManager::AddComponent (QuarkComponent_ptr comp, QuarkManager_ptr mgr)
+	void ViewManager::AddComponent (QuarkComponent_ptr comp, QuarkManager_ptr mgr, bool force)
 	{
 		if (!mgr->IsValidArea ())
 			return;
 
-		if (RemovedIDs_.contains (mgr->GetID ()))
-			return;
+		const auto& quarkId = mgr->GetManifest ().GetID ();
+
+		if (!force)
+		{
+			if (mgr->GetManifest ().IsHiddenByDefault () &&
+					!PreviousQuarkOrder_.contains (quarkId))
+				return;
+
+			if (RemovedIDs_.contains (quarkId))
+				return;
+		}
 
 		Quark2Manager_ [comp->Url_] = mgr;
 
 		auto item = new QStandardItem;
 		item->setData (comp->Url_, ViewItemsModel::Role::SourceURL);
 		item->setData (mgr->HasSettings (), ViewItemsModel::Role::QuarkHasSettings);
-		item->setData (mgr->GetID (), ViewItemsModel::Role::QuarkClass);
+		item->setData (quarkId, ViewItemsModel::Role::QuarkClass);
 
-		const int pos = PreviousQuarkOrder_.indexOf (mgr->GetID ());
+		const int pos = PreviousQuarkOrder_.indexOf (quarkId);
 		if (pos == -1 || pos == PreviousQuarkOrder_.size () - 1)
 			ViewItemsModel_->appendRow (item);
 		else
@@ -455,6 +479,28 @@ namespace SB2
 	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		return rootWM->GetWindowIndex (Window_);
+	}
+
+	void ViewManager::handleQuarksAdded (const QList<QUrl>& urls)
+	{
+		qDebug () << Q_FUNC_INFO << urls;
+		for (const auto& url : urls)
+		{
+			QuarkComponent_ptr c { new QuarkComponent };
+			c->Url_ = url;
+			AddComponent (c, false);
+		}
+	}
+
+	void ViewManager::handleQuarksRemoved (const QList<QUrl>& urls)
+	{
+		qDebug () << Q_FUNC_INFO << urls;
+		for (const auto& url : urls)
+		{
+			const auto& id = Quark2Manager_ [url]->GetManifest ().GetID ();
+			RemoveQuark (url);
+			RemoveFromRemoved (id);
+		}
 	}
 }
 }

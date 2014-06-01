@@ -8,10 +8,18 @@
 			img {height: 32px; width: 32px; left: 5px; margin: 5px; float: left; display:block;}
 			h3 {font-size: 1.2em; font-weight: bold; padding: 2px; text-align: center; color: rgb({ColorWindowText});}
 			p {font-size: 0.9em; padding:2px 6px; color: rgb({ColorWindowText});}
-			form input {text-align: center; float: right; min-width: 70px;}
+			form input {text-align: center; float: right; clear: both; min-width: 70px; margin-right:2em; font-size: 0.9em; }
 			a {color: rgb({ColorLink});}
 			.additionaltext {padding-left:1.5em; font-size:0.8em;}
-			* { word-wrap:break-word; }
+			* { word-wrap:break-word; font-family: sans-serif; }
+
+			.formContainer:after {
+				content: ".";
+				display: block;
+				height: 0;
+				clear: both;
+				visibility: hidden;
+			}
 		</style>
 	</head>
 	<body>
@@ -23,7 +31,6 @@
 				<form />
 			</div>
 			<br clear="left" />
-			<br />
 		</div>
 	</body>
 </html>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,11 +30,15 @@
 #include "plotitem.h"
 #include <cmath>
 #include <limits>
+#include <vector>
+#include <memory>
 #include <QStyleOption>
+#include <QColor>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_grid.h>
+#include <util.h>
 
 Q_DECLARE_METATYPE (QList<QPointF>)
 
@@ -61,6 +65,32 @@ namespace Util
 
 		Points_ = pts;
 		emit pointsChanged ();
+		update ();
+	}
+
+	QVariant PlotItem::GetMultipoints () const
+	{
+		QVariantList result;
+		for (const auto& set : Multipoints_)
+			result << Util::MakeMap<QString, QVariant> ({
+					{ "color", QVariant::fromValue (set.Color_) },
+					{ "points", QVariant::fromValue (set.Points_) }
+				});
+		return result;
+	}
+
+	void PlotItem::SetMultipoints (const QVariant& variant)
+	{
+		Multipoints_.clear ();
+
+		for (const auto& set : variant.toList ())
+		{
+			const auto& map = set.toMap ();
+			Multipoints_.append ({
+					map ["color"].toString (),
+					map ["points"].value<QList<QPointF>> ()
+				});
+		}
 		update ();
 	}
 
@@ -102,6 +132,17 @@ namespace Util
 	void PlotItem::SetYMinorGridEnabled (bool val)
 	{
 		SetNewValue (val, YMinorGridEnabled_, [this] { emit yMinorGridChanged (); });
+	}
+
+	double PlotItem::GetAlpha () const
+	{
+		return Alpha_;
+	}
+
+	void PlotItem::SetAlpha (double a)
+	{
+		Alpha_ = a;
+		emit alphaChanged ();
 	}
 
 	QColor PlotItem::GetColor () const
@@ -154,17 +195,62 @@ namespace Util
 		SetNewValue (title, BottomAxisTitle_, [this] { emit bottomAxisTitleChanged (); });
 	}
 
+	QString PlotItem::GetPlotTitle () const
+	{
+		return PlotTitle_;
+	}
+
+	void PlotItem::SetPlotTitle (const QString& title)
+	{
+		SetNewValue (title, PlotTitle_, [this] { emit plotTitleChanged (); });
+	}
+
+	QColor PlotItem::GetBackground () const
+	{
+		return BackgroundColor_;
+	}
+
+	void PlotItem::SetBackground (const QColor& bg)
+	{
+		SetNewValue (bg, BackgroundColor_, [this] { emit backgroundChanged (); });
+	}
+
+	QColor PlotItem::GetTextColor () const
+	{
+		return TextColor_;
+	}
+
+	void PlotItem::SetTextColor (const QColor& color)
+	{
+		SetNewValue (color, TextColor_, [this] { emit textColorChanged (); });
+	}
+
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
 		QwtPlot plot;
+		plot.setFrameShape (QFrame::NoFrame);
 		plot.enableAxis (QwtPlot::yLeft, LeftAxisEnabled_);
 		plot.enableAxis (QwtPlot::xBottom, BottomAxisEnabled_);
 		plot.setAxisTitle (QwtPlot::yLeft, LeftAxisTitle_);
 		plot.setAxisTitle (QwtPlot::xBottom, BottomAxisTitle_);
 		plot.resize (option->rect.size ());
 
-		plot.setAxisAutoScale (QwtPlot::xBottom, false);
-		plot.setAxisScale (QwtPlot::xBottom, 0, Points_.size ());
+		auto setPaletteColor = [&plot] (const QColor& color, QPalette::ColorRole role) -> void
+		{
+			if (!color.isValid ())
+				return;
+
+			auto pal = plot.palette ();
+			pal.setColor (role, { color });
+			plot.setPalette (pal);
+		};
+
+		setPaletteColor (BackgroundColor_, QPalette::Window);
+		setPaletteColor (TextColor_, QPalette::WindowText);
+		setPaletteColor (TextColor_, QPalette::Text);
+
+		if (!PlotTitle_.isEmpty ())
+			plot.setTitle (QwtText { PlotTitle_ });
 
 		if (MinYValue_ < MaxYValue_)
 		{
@@ -187,17 +273,29 @@ namespace Util
 			grid->attach (&plot);
 		}
 
-		QwtPlotCurve curve;
+		auto items = Multipoints_;
+		if (items.isEmpty ())
+			items.push_back ({ Color_, Points_ });
 
-		curve.setPen (QPen (Color_));
-		auto transpColor = Color_;
-		transpColor.setAlpha (20);
-		curve.setBrush (transpColor);
+		const auto ptsCount = items.first ().Points_.size ();
+		if (ptsCount)
+			plot.setAxisScale (QwtPlot::xBottom, 0, ptsCount - 1);
 
-		curve.setRenderHint (QwtPlotItem::RenderAntialiased);
-		curve.attach (&plot);
+		std::vector<std::unique_ptr<QwtPlotCurve>> curves;
+		for (const auto& item : items)
+		{
+			auto curve = new QwtPlotCurve;
 
-		curve.setSamples (Points_.toVector ());
+			curve->setPen (QPen (item.Color_));
+			auto transpColor = item.Color_;
+			transpColor.setAlphaF (Alpha_);
+			curve->setBrush (transpColor);
+
+			curve->setRenderHint (QwtPlotItem::RenderAntialiased);
+			curve->attach (&plot);
+
+			curve->setSamples (item.Points_.toVector ());
+		}
 		plot.replot ();
 
 		QwtPlotRenderer {}.render (&plot, painter, option->rect);

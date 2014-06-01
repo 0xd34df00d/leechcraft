@@ -29,7 +29,7 @@
 
 #include "clientconnection.h"
 #include <QTextCodec>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "channelclentry.h"
@@ -311,13 +311,22 @@ namespace Acetamide
 			return;
 		}
 
+		serverDisconnected (ish->GetServerID ());
+
 		Entity e = Util::MakeNotification ("Azoth",
 				errorString,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
-		ish->DisconnectFromServer ();
-		ServerHandlers_.remove (ish->GetServerID ());
-		Account_->handleEntryRemoved (ish->GetCLEntry ());
+
+		QList<ChannelOptions> activeChannels;
+		const auto& channelHandlers = ish->GetChannelHandlers ();
+		std::transform (channelHandlers.begin (), channelHandlers.end (),
+				std::back_inserter (activeChannels),
+				[] (decltype (channelHandlers.first ()) handler)
+					{ return handler->GetChannelOptions (); });
+
+		for (const auto& co : activeChannels)
+			JoinChannel (ish->GetServerOptions (), co);
 	}
 
 	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)

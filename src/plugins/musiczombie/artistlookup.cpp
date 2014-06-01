@@ -28,29 +28,40 @@
  **********************************************************************/
 
 #include "artistlookup.h"
+#include <memory>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QDomDocument>
+#include <QDate>
 #include <QtDebug>
 
 namespace LeechCraft
 {
 namespace MusicZombie
 {
-	ArtistLookup::ArtistLookup (const QString& name, QNetworkAccessManager *nam, QObject *parent)
-	: QObject (parent)
+	namespace
 	{
-		QUrl url ("http://www.musicbrainz.org/ws/2/artist/");
-		url.addQueryItem ("query", "artist:" + name);
+		QString NormalizeName (QString name)
+		{
+			return name.remove ('!');
+		}
+	}
+
+	ArtistLookup::ArtistLookup (const QString& name, QNetworkAccessManager *nam, QObject *parent)
+	: QObject { parent }
+	, Name_ { name }
+	{
+		QUrl url { "http://www.musicbrainz.org/ws/2/artist/" };
+		url.addQueryItem ("query", "artist:" + NormalizeName (name));
 		auto reply = nam->get (QNetworkRequest (url));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleFinished ()));
 		connect (reply,
-				SIGNAL(error (QNetworkReply::NetworkError)),
+				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
 				SLOT (handleError ()));
 	}
@@ -62,7 +73,7 @@ namespace MusicZombie
 
 		const auto& data = reply->readAll ();
 		QDomDocument doc;
-		if (!doc.setContent (data))
+		if (!doc.setContent (data, true))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to parse reply"
@@ -80,9 +91,41 @@ namespace MusicZombie
 			return;
 		}
 
-		const auto& artist = artists.firstChildElement ("artist");
-		const auto& id = artist.attribute ("id");
-		emit gotID (id);
+		QMap<int, QString> span2id;
+
+		const auto curYear = QDate::currentDate ().year ();
+
+		auto artist = artists.firstChildElement ("artist");
+		while (!artist.isNull () && artist.attribute ("score").toInt () > 75)
+		{
+			std::shared_ptr<void> artistGuard { nullptr,
+					[&artist] (void*) { artist = artist.nextSiblingElement ("artist"); } };
+
+			const auto& spanElem = artist.firstChildElement ("life-span");
+
+			const auto& beginYearElem = spanElem.firstChildElement ("begin");
+			if (beginYearElem.isNull ())
+				continue;
+
+			const auto beginYear = beginYearElem.text ().simplified ().toInt ();
+
+			const auto& endYearElem = spanElem.firstChildElement ("end");
+			const auto endYear = endYearElem.isNull () ?
+					curYear :
+					endYearElem.text ().simplified ().toInt ();
+
+			span2id [endYear - beginYear] = artist.attribute ("id");
+		}
+
+		qDebug () << Q_FUNC_INFO
+				<< "choices for"
+				<< Name_
+				<< ":"
+				<< span2id;
+
+		if (span2id.isEmpty ())
+			span2id [0] = artists.firstChildElement ("artist").attribute ("id");
+		emit gotID (span2id.values ().last ());
 	}
 
 	void ArtistLookup::handleError ()
@@ -91,7 +134,9 @@ namespace MusicZombie
 		reply->deleteLater ();
 
 		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
+				<< Name_
+				<< reply->errorString ()
+				<< reply->readAll ();
 		emit networkError ();
 	}
 }

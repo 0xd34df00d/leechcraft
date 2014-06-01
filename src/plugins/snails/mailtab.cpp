@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,6 +35,7 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "storage.h"
 #include "mailtreedelegate.h"
@@ -113,7 +114,8 @@ namespace Snails
 				SLOT (handleReply ()));
 
 		MsgAttachments_ = new QMenu (tr ("Attachments"));
-		MsgAttachments_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("mail-attachment"));
+		MsgAttachments_->setIcon (Core::Instance ().GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("mail-attachment"));
 
 		MsgToolbar_->addAction (MsgReply_);
 		MsgToolbar_->addAction (MsgAttachments_->menuAction ());

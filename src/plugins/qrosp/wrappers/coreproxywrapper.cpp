@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,6 +29,7 @@
 
 #include "coreproxywrapper.h"
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "shortcutproxywrapper.h"
 #include "pluginsmanagerwrapper.h"
 #include "tagsmanagerwrapper.h"
@@ -59,7 +60,7 @@ namespace Qrosp
 
 	QIcon CoreProxyWrapper::GetIcon (const QString& on, const QString& off) const
 	{
-		return Proxy_->GetIcon (on, off);
+		return Proxy_->GetIconThemeManager ()->GetIcon (on, off);
 	}
 
 	QMainWindow* CoreProxyWrapper::GetMainWindow () const
@@ -95,11 +96,6 @@ namespace Qrosp
 	QObject* CoreProxyWrapper::GetPluginsManager () const
 	{
 		return new PluginsManagerWrapper (Proxy_->GetPluginsManager ());
-	}
-
-	QObject* CoreProxyWrapper::GetSelf ()
-	{
-		return Proxy_->GetSelf ();
 	}
 }
 }

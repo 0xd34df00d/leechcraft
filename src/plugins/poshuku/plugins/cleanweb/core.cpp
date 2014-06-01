@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,6 +38,7 @@
 #include <QTimer>
 #include <QTextCodec>
 #include <QMessageBox>
+#include <QDir>
 #include <qwebframe.h>
 #include <qwebpage.h>
 #include <qwebelement.h>
@@ -47,9 +48,12 @@
 #include <QFutureWatcher>
 #include <QMenu>
 #include <QMainWindow>
+#include <QDir>
 #include <qwebview.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/network/customnetworkreply.h>
+#include <util/sys/paths.h>
+#include <util/sll/slotclosure.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
@@ -58,7 +62,6 @@
 
 Q_DECLARE_METATYPE (QWebFrame*);
 Q_DECLARE_METATYPE (QPointer<QWebFrame>);
-Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::HidingWorkerResult);
 
 namespace LeechCraft
@@ -936,8 +939,10 @@ namespace CleanWeb
 		if (!frame)
 			return;
 
-		qDebug () << Q_FUNC_INFO << frame;
-		const QUrl& frameUrl = frame->url ();
+		const QUrl& frameUrl = frame->url ().isEmpty () ?
+				frame->baseUrl () :
+				frame->url ();
+		qDebug () << Q_FUNC_INFO << frame << frameUrl;
 		const QString& urlStr = frameUrl.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
 		const QString& cinUrlStr = urlStr.toLower ();
@@ -973,8 +978,17 @@ namespace CleanWeb
 						return { frame, 0, sels };
 					}));
 
-		for (auto childFrame : frame->childFrames ())
-			handleFrameLayout (childFrame);
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, frame] () -> void
+			{
+				for (auto childFrame : frame->childFrames ())
+					handleFrameLayout (childFrame);
+			},
+			frame,
+			SIGNAL (loadFinished (bool)),
+			frame
+		};
 	}
 
 	void Core::hidingElementsFound ()

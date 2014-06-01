@@ -29,6 +29,7 @@
 
 #include "filesproxymodel.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
+#include "managertab.h"
 
 namespace LeechCraft
 {
@@ -54,8 +55,7 @@ namespace NetStoreManager
 		bool leftIsFolder = sourceModel ()->data (left, ListingRole::IsDirectory).toBool ();
 		bool rightIsFolder = sourceModel ()->data (right, ListingRole::IsDirectory).toBool ();
 
-		if (left.column () == 0 &&
-				right.column () == 0)
+		if (left.column () == CName)
 		{
 			if (sourceModel ()->data (left, ListingRole::ID).toByteArray () == "netstoremanager.item_trash" ||
 					sourceModel ()->data (right, ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
@@ -69,12 +69,18 @@ namespace NetStoreManager
 			else if (!leftIsFolder && rightIsFolder)
 				return true;
 			else
-				return QString::localeAwareCompare (sourceModel ()->data (left).toString (),
-						sourceModel ()->data (right).toString ()) > 0;
+				return QString::localeAwareCompare (sourceModel ()->data (left, SRName).toString ().toLower (),
+						sourceModel ()->data (right, SRName).toString ().toLower ()) > 0;
 		}
+		else if (left.column () == CSize)
+			return sourceModel ()->data (left, SRSize).toDouble () <
+					sourceModel ()->data (right, SRSize).toDouble ();
+		else if (left.column () == CModify)
+			return sourceModel ()->data (left, SRModifyDate).toDateTime () <
+					sourceModel ()->data (right, SRModifyDate).toDateTime ();
 		else
-			return QString::localeAwareCompare (sourceModel ()->data (left).toString (),
-					sourceModel ()->data (right).toString ()) > 0;
+			return QString::localeAwareCompare (sourceModel ()->data (left).toString ().toLower (),
+					sourceModel ()->data (right).toString ().toLower ()) > 0;
 	}
 
 }

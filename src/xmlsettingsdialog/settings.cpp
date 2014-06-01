@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,7 +28,8 @@
  **********************************************************************/
 
 #include "settings.h"
-#include <QCoreApplication>
+#include <QApplication>
+#include <QStringList>
 
 using namespace LeechCraft;
 
@@ -37,7 +38,9 @@ Settings::Settings ()
 #ifdef Q_OS_WIN32
 	ConfigDir_ = QCoreApplication::applicationDirPath () + "/leechcraft/";
 #elif defined (Q_OS_MAC)
-	ConfigDir_ = QCoreApplication::applicationDirPath () + "/../Resources/config";
+	ConfigDir_ = QApplication::arguments ().contains ("-nobundle") ?
+			"/etc/leechcraft/" :
+			QCoreApplication::applicationDirPath () + "/../Resources/config";
 #else
 	ConfigDir_ = "/etc/leechcraft/";
 #endif

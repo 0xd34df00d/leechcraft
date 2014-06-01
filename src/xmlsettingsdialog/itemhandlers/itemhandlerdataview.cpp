@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -77,16 +77,20 @@ namespace LeechCraft
 		if (item.attribute ("removeEnabled") == "false")
 			view->DisableRemoval ();
 
+		const bool resize = item.attribute ("resizeToContents") == "true";
+
+		AddCustomButtons (item, view);
+
 		QString prop = item.attribute ("property");
 
 		view->setObjectName (prop);
 
 		Factory_->RegisterDatasourceSetter (prop,
-				[this] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog*)
-					{ SetDataSource (str, m); });
+				[this, resize] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog*) -> void
+					{ SetDataSource (str, m, resize); });
 		Propname2DataView_ [prop] = view;
 
-		lay->addWidget (view, lay->rowCount (), 0);
+		lay->addWidget (view, lay->rowCount (), 0, 1, 2);
 	}
 
 	QVariant ItemHandlerDataView::GetValue (const QDomElement&, QVariant) const
@@ -107,9 +111,9 @@ namespace LeechCraft
 		return QVariant ();
 	}
 
-	void ItemHandlerDataView::SetDataSource (const QString& prop, QAbstractItemModel *model)
+	void ItemHandlerDataView::SetDataSource (const QString& prop, QAbstractItemModel *model, bool resize)
 	{
-		DataViewWidget *view = Propname2DataView_ [prop];
+		const auto view = Propname2DataView_ [prop];
 		if (!view)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -120,6 +124,18 @@ namespace LeechCraft
 		}
 
 		view->SetModel (model);
+
+		if (resize)
+		{
+			connect (model,
+					SIGNAL (rowsInserted (QModelIndex, int, int)),
+					view,
+					SLOT (resizeColumns ()));
+			connect (model,
+					SIGNAL (dataChanged (QModelIndex, QModelIndex)),
+					view,
+					SLOT (resizeColumns ()));
+		}
 	}
 
 	namespace
@@ -272,16 +288,28 @@ namespace LeechCraft
 		return datas;
 	}
 
+	void ItemHandlerDataView::AddCustomButtons (const QDomElement& item, DataViewWidget *view)
+	{
+		auto elem = item.firstChildElement ("button");
+		while (!elem.isNull ())
+		{
+			const auto& text = XSD_->GetLabel (elem);
+			const auto& id = elem.attribute ("id").toUtf8 ();
+
+			view->AddCustomButton (id, text);
+
+			elem = elem.nextSiblingElement ("button");
+		}
+
+		connect (view,
+				SIGNAL (customButtonReleased (QByteArray)),
+				this,
+				SLOT (handleCustomButton (QByteArray)));
+	}
+
 	void ItemHandlerDataView::handleAddRequested ()
 	{
 		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
-		if (!view)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a DataViewWidget"
-					<< sender ();
-			return;
-		}
 
 		auto model = view->GetModel ();
 		const auto& datas = GetAddVariants (model);
@@ -301,13 +329,6 @@ namespace LeechCraft
 	void ItemHandlerDataView::handleModifyRequested ()
 	{
 		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
-		if (!view)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a DataViewWidget"
-					<< sender ();
-			return;
-		}
 
 		const auto& selected = view->GetCurrentIndex ();
 		if (!selected.isValid ())
@@ -336,13 +357,6 @@ namespace LeechCraft
 	void ItemHandlerDataView::handleRemoveRequested ()
 	{
 		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
-		if (!view)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a DataViewWidget"
-					<< sender ();
-			return;
-		}
 		if (!view->GetModel ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -367,5 +381,29 @@ namespace LeechCraft
 					<< "invokeMethod on "
 					<< model->parent ()
 					<< " for \"removeRequested\" failed";
+	}
+
+	void ItemHandlerDataView::handleCustomButton (const QByteArray& id)
+	{
+		const auto view = qobject_cast<DataViewWidget*> (sender ());
+		if (!view->GetModel ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "model isn't ready";
+			return;
+		}
+
+		const auto& selected = view->GetCurrentIndex ();
+		const auto model = view->GetModel ();
+
+		if (!QMetaObject::invokeMethod (model->parent (),
+					"customButtonPressed",
+					Q_ARG (QString, view->objectName ()),
+					Q_ARG (QByteArray, id),
+					Q_ARG (int, selected.isValid () ? selected.row () : -1)))
+			qWarning () << Q_FUNC_INFO
+					<< "invokeMethod on "
+					<< model->parent ()
+					<< " for \"handleCustomButton\" failed";
 	}
 }

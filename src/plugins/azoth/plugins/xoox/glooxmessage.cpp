@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -199,6 +199,19 @@ namespace Xoox
 		IsDelivered_ = delivered;
 		if (delivered)
 			emit messageDelivered ();
+	}
+
+	void GlooxMessage::SetVariant (const QString& variant)
+	{
+		if (variant == Variant_)
+			return;
+
+		Variant_ = variant;
+
+		if (Direction_ == DIn)
+			Message_.setFrom (Variant_.isEmpty () ?
+					BareJID_ :
+					(BareJID_ + '/' + Variant_));
 	}
 
 	QXmppMessage GlooxMessage::GetNativeMessage () const

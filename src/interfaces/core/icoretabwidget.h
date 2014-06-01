@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -49,8 +49,8 @@ public:
 
 	/** @brief Returns the pointer to tab widget as a QObject.
 	 *
-	 * You can connect to signals of the core tab widget with the use of
-	 * this function, for example.
+	 * You can connect to signals of this class via the object returned
+	 * from this function, for example.
 	 *
 	 * @return The core tab widget as a QObject.
 	*/
@@ -190,6 +190,8 @@ public:
 	/** @brief This signal is emitted after new tab was inserted.
 	 *
 	 * @param[out] index The index of new tab.
+	 *
+	 * @sa GetQObject()
 	 */
 	virtual void tabInserted (int index) = 0;
 
@@ -197,6 +199,8 @@ public:
 	 * The new current has the given index, or -1 if there isn't a new one.
 	 *
 	 * @param[out] index The index of current tab.
+	 *
+	 * @sa GetQObject()
 	 */
 	virtual void currentChanged (int index) = 0;
 
@@ -204,6 +208,8 @@ public:
 	 *
 	 * @param[out] from Previous index of the tab that has just moved.
 	 * @param[out] to The new position of the tab.
+	 *
+	 * @sa GetQObject()
 	 */
 	virtual void tabWasMoved (int from, int to) = 0;
 };

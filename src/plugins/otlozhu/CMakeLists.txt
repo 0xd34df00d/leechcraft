@@ -30,6 +30,9 @@ set (SRCS
 	icalgenerator.cpp
 	icalparser.cpp
 	itemsmergedialog.cpp
+	editcommentdialog.cpp
+	editdatedialog.cpp
+	xmlsettingsmanager.cpp
 	)
 
 set (LARETZ_LIB)
@@ -47,11 +50,13 @@ set (FORMS
 	todotab.ui
 	addtododialog.ui
 	itemsmergedialog.ui
+	editcommentdialog.ui
+	editdatedialog.ui
 	)
 set (RESOURCES otlozhuresources.qrc)
 
 CreateTrs ("otlozhu" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("otlozhu" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("otlozhu" "en;ru_RU" "${SRCS}" "${FORMS}" "otlozhusettings.xml")
 
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
@@ -70,3 +75,4 @@ target_link_libraries (leechcraft_otlozhu
 	${LARETZ_LIB}
 	)
 install (TARGETS leechcraft_otlozhu DESTINATION ${LC_PLUGINS_DEST})
+install (FILES otlozhusettings.xml DESTINATION ${LC_SETTINGS_DEST})

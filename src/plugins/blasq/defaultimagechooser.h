@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -51,9 +51,9 @@ namespace Blasq
 
 		PhotosTab * const Photos_;
 
-		RemoteImageInfo Selected_;
+		RemoteImageInfos_t Selected_;
 	public:
-		DefaultImageChooser (AccountsManager*, const ICoreProxy_ptr&);
+		DefaultImageChooser (AccountsManager*, const ICoreProxy_ptr&, const QByteArray& = {});
 
 		QObject* GetQObject ();
 		RemoteImageInfos_t GetInfos () const;

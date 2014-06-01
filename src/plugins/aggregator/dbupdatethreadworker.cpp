@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,8 +31,8 @@
 #include <stdexcept>
 #include <QUrl>
 #include <QtDebug>
-#include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/util.h>
+#include <util/xpc/defaulthookproxy.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "storagebackend.h"
@@ -66,19 +66,6 @@ namespace Aggregator
 		}
 
 		SB_->Prepare ();
-
-		connect (SB_.get (),
-				SIGNAL (channelDataUpdated (Channel_ptr)),
-				this,
-				SLOT (handleChannelDataUpdated (Channel_ptr)));
-		connect (SB_.get (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				this,
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)));
-		connect (SB_.get (),
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
-				this,
-				SIGNAL (itemsRemoved (QSet<IDType_t>)));
 	}
 
 	Feed::FeedSettings DBUpdateThreadWorker::GetFeedSettings (IDType_t feedId)
@@ -299,11 +286,6 @@ namespace Aggregator
 
 			NotifyUpdates (newItems, updatedItems, channel);
 		}
-	}
-
-	void DBUpdateThreadWorker::handleChannelDataUpdated (Channel_ptr ch)
-	{
-		emit channelDataUpdated (ch->ChannelID_, ch->FeedID_);
 	}
 }
 }

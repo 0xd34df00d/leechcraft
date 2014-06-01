@@ -14,10 +14,6 @@ set (QT_USE_QTWEBKIT TRUE)
 set (QT_USE_QTSQL TRUE)
 set (QT_USE_QTXML TRUE)
 
-if (ENABLE_MEDIACALLS)
-	set (QT_USE_QTMULTIMEDIA TRUE)
-endif ()
-
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -45,19 +41,10 @@ if (WITH_DOCS)
 	endif ()
 endif ()
 
-option (ENABLE_QTMULTIMEDIA_KLUDGE "Enable kludges for finding QtMultimedia" OFF)
-
 if (ENABLE_MEDIACALLS)
-	if ((${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4) OR ENABLE_QTMULTIMEDIA_KLUDGE)
-		if (${QT_VERSION_MINOR} EQUAL 6)
-			include_directories (/usr/include/qt4/QtMultimedia)
-			set (QTMULTIMEDIA_KLUDGE "QtMultimedia")
-		else ()
-			include_directories (/usr/include/QtMultimediaKit)
-			include_directories (/usr/include/QtMobility)
-			set (QTMULTIMEDIA_KLUDGE "QtMultimediaKit")
-		endif ()
-	endif ()
+	find_package (QtMultimediaKit REQUIRED)
+
+	include_directories (${QTMULTIMEDIAKIT_INCLUDE_DIRS})
 endif ()
 
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
@@ -153,6 +140,9 @@ set (SRCS
 	groupremovedialog.cpp
 	coremessage.cpp
 	dummymsgmanager.cpp
+	serverhistorywidget.cpp
+	dndutil.cpp
+	cltooltipmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui
@@ -184,6 +174,7 @@ set (FORMS
 	userslistwidget.ui
 	advancedpermchangedialog.ui
 	groupremovedialog.ui
+	serverhistorywidget.ui
 	)
 set (RESOURCES azothresources.qrc)
 
@@ -211,7 +202,7 @@ add_library (leechcraft_azoth SHARED
 target_link_libraries (leechcraft_azoth
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${QTMULTIMEDIA_KLUDGE}
+	${QTMULTIMEDIAKIT_LIBRARIES}
 	${QCA2_LIBRARIES}
 	${CUSTOM_SPEEX}
 	leechcraft_azoth_common
@@ -243,7 +234,6 @@ option (ENABLE_AZOTH_MODNOK "Build Modnok for rendering and displaying LaTeX for
 option (ENABLE_AZOTH_MURM "Build Murm, special plugin for extensive VKontakte messaging support" ON)
 option (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
 option (ENABLE_AZOTH_OTROID "Build OTRoid for supporting Off-the-Record messaging" OFF)
-option (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service" ON)
 option (ENABLE_AZOTH_ROSENTHAL "Build Rosenthal, spellchecker plugin for Azoth" ON)
 option (ENABLE_AZOTH_SHX "Build ShX, shell command runner" ON)
 option (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
@@ -313,9 +303,6 @@ if (ENABLE_AZOTH_NATIVEEMOTICONS)
 endif ()
 if (ENABLE_AZOTH_OTROID)
 	add_subdirectory (plugins/otroid)
-endif ()
-if (ENABLE_AZOTH_P100Q)
-	add_subdirectory (plugins/p100q)
 endif ()
 if (ENABLE_AZOTH_ROSENTHAL)
 	add_subdirectory (plugins/rosenthal)

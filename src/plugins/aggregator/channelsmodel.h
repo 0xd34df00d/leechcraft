@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_CHANNELSMODEL_H
-#define PLUGINS_AGGREGATOR_CHANNELSMODEL_H
+#pragma once
+
 #include <QAbstractItemModel>
 #include "channel.h"
 
@@ -82,10 +82,6 @@ namespace Aggregator
 		int GetUnreadItemsNumber () const;
 
 		void SetMenu (QMenu*);
-	signals:
-		void channelDataUpdated (IDType_t id, IDType_t feedId);
 	};
 }
 }
-
-#endif

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,7 +30,8 @@
 #include "tipdialog.h"
 #include <QDomDocument>
 #include <util/util.h>
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -79,8 +80,10 @@ namespace KnowHow
 				.Property ("StdTipIndex", -1).toInt () + 1;
 
 		Ui_.setupUi (this);
-		Ui_.Forward_->setIcon (Proxy_->GetIcon ("go-next"));
-		Ui_.Backward_->setIcon (Proxy_->GetIcon ("go-previous"));
+
+		const auto mgr = Proxy_->GetIconThemeManager ();
+		Ui_.Forward_->setIcon (mgr->GetIcon ("go-next"));
+		Ui_.Backward_->setIcon (mgr->GetIcon ("go-previous"));
 
 		ShowForIdx (idx);
 

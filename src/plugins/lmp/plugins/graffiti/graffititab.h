@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -91,6 +91,15 @@ namespace Graffiti
 	private:
 		template<typename T, typename F>
 		void UpdateData (const T& newData, F getter);
+
+		void SetPath (const QString&);
+
+		void SetupEdits ();
+		void SetupViews ();
+		void SetupToolbar ();
+
+		void RestorePathHistory ();
+		void AddToPathHistory (const QString&);
 	private slots:
 		void on_Artist__textChanged (const QString&);
 		void on_Album__textChanged (const QString&);
@@ -107,10 +116,13 @@ namespace Graffiti
 		void handleTagsFetched (const QString&);
 
 		void on_DirectoryTree__activated (const QModelIndex&);
+		void handlePathLine ();
+
 		void currentFileChanged (const QModelIndex&);
 		void handleRereadFiles ();
 
 		void handleIterateFinished ();
+		void handleIterateCanceled ();
 		void handleScanFinished ();
 
 		void handleCueSplitError (const QString&);

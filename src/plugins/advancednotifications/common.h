@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,24 +29,4 @@
 
 #pragma once
 
-#include <QFlags>
-
-namespace LeechCraft
-{
-namespace AdvancedNotifications
-{
-	enum NotificationMethod
-	{
-		NMNone = 0x00,
-		NMVisual = 0x01,
-		NMTray = 0x02,
-		NMAudio = 0x04,
-		NMCommand = 0x08,
-		NMUrgentHint = 0x10
-	};
-
-	Q_DECLARE_FLAGS (NotificationMethods, NotificationMethod);
-}
-}
-
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AdvancedNotifications::NotificationMethods);
+#include "interfaces/advancednotifications/types.h"

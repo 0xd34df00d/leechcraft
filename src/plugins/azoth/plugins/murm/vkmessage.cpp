@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,12 +36,13 @@ namespace Azoth
 {
 namespace Murm
 {
-	VkMessage::VkMessage (Direction dir, MessageType type, EntryBase *parentEntry, EntryBase *other)
+	VkMessage::VkMessage (bool isOurs, Direction dir, MessageType type, EntryBase *parentEntry, EntryBase *other)
 	: QObject (parentEntry)
 	, OtherPart_ (other)
 	, ParentCLEntry_ (parentEntry)
 	, Type_ (type)
 	, Dir_ (dir)
+	, IsOurs_ (isOurs)
 	{
 	}
 
@@ -82,6 +83,11 @@ namespace Murm
 		IsRead_ = true;
 	}
 
+	QString VkMessage::GetRawBody () const
+	{
+		return Body_;
+	}
+
 	IMessage::Direction VkMessage::GetDirection () const
 	{
 		return Dir_;
@@ -114,7 +120,10 @@ namespace Murm
 
 	QString VkMessage::GetBody () const
 	{
-		return Body_;
+		auto result = Body_;
+		if (IsOurs_)
+			result.replace ('<', "&lt;");
+		return result;
 	}
 
 	void VkMessage::SetBody (const QString& body)

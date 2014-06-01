@@ -4,6 +4,9 @@
 		<label value="Azoth Xtazy" />
 		<item type="groupbox" checkable="true" property="NPCmdEnabled" default="true">
 			<label value="/np command" />
+			<item type="checkbox" property="SendTextImmediately" default="false">
+				<label value="Send text immediately" />
+			</item>
 			<item type="lineedit" property="NPCmdSubst" default="/me now playing: $artist — $album — $title">
 				<label value="Substitution:" />
 				<tooltip>The following placeholders can be used: $artist, $album, $title.</tooltip>

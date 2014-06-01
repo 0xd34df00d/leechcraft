@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "findnotification.h"
+#include <QShortcut>
 #include "clearlineeditaddon.h"
 #include "ui_findnotification.h"
 
@@ -38,10 +39,13 @@ namespace Util
 	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWidget *parent)
 	: Util::PageNotification (parent)
 	, Ui_ (new Ui::FindNotification)
+	, EscShortcut_ (new QShortcut (QString ("Esc"), this, SLOT (reject ())))
 	{
 		Ui_->setupUi (this);
 
 		setFocusProxy (Ui_->Pattern_);
+
+		EscShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
 
 		new Util::ClearLineEditAddon (proxy, Ui_->Pattern_);
 	}
@@ -49,6 +53,11 @@ namespace Util
 	FindNotification::~FindNotification ()
 	{
 		delete Ui_;
+	}
+
+	void FindNotification::SetEscCloses (bool close)
+	{
+		EscShortcut_->setEnabled (close);
 	}
 
 	void FindNotification::SetText (const QString& text)
@@ -85,11 +94,6 @@ namespace Util
 		Ui_->Pattern_->setStyleSheet (ss);
 	}
 
-	void FindNotification::Focus ()
-	{
-		Ui_->Pattern_->setFocus ();
-	}
-
 	auto FindNotification::GetFlags () const -> FindFlags
 	{
 		FindFlags flags;
@@ -116,6 +120,11 @@ namespace Util
 			return;
 
 		handleNext (text, GetFlags () | FindBackwards);
+	}
+
+	void FindNotification::clear ()
+	{
+		SetText ({});
 	}
 
 	void FindNotification::on_Pattern__textChanged (const QString& newText)

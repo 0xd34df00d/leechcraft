@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -46,7 +46,7 @@ namespace
 {
 	void Write (QtMsgType type, const char *message, bool bt)
 	{
-#if !defined (Q_OS_WIN32) && !defined (Q_OS_MAC)
+#if !defined (Q_OS_WIN32)
 		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap") ||
 				strstr (message, ": Painter not active"))
 			return;

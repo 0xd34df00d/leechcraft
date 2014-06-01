@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,7 +28,15 @@
  **********************************************************************/
 
 #include "requesthandler.h"
+
+#ifdef Q_OS_LINUX
 #include <sys/sendfile.h>
+#elif defined (Q_OS_MAC)
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/uio.h>
+#endif
+
 #include <errno.h>
 #include <QList>
 #include <QString>
@@ -36,7 +44,6 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDateTime>
-#include <boost/concept_check.hpp>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include "connection.h"
@@ -240,7 +247,7 @@ namespace HttHare
 				if (startStr.isEmpty ())
 				{
 					bool ok = false;
-					const auto last = endStr.toULongLong (&ok);
+					const auto last = endStr.toLongLong (&ok);
 					if (!ok)
 						continue;
 
@@ -252,12 +259,12 @@ namespace HttHare
 					bool ok = false;
 					const auto last = endStr.isEmpty () ?
 							(ok = true, fullSize - 1) :
-							endStr.toULongLong (&ok);
+							endStr.toLongLong (&ok);
 					if (!ok)
 						continue;
 
 					ok = false;
-					const auto first = startStr.toULongLong (&ok);
+					const auto first = startStr.toLongLong (&ok);
 					if (!ok)
 						continue;
 
@@ -292,8 +299,21 @@ namespace HttHare
 				for (qint64 toTransfer = CurrentRange_.second - CurrentRange_.first + 1; toTransfer > 0; )
 				{
 					off_t offset = CurrentRange_.first;
+#ifdef Q_OS_LINUX
 					const auto rc = sendfile (Sock_.native_handle (),
 							File_->handle (), &offset, toTransfer);
+#elif defined (Q_OS_MAC)
+					// Some glue code to make it work like in Linux,
+					// where the amount of transferred data is returned
+					// from sendfile().
+					auto transferred = toTransfer;
+					auto rc = sendfile (File_->handle (),
+							Sock_.native_handle (),
+							offset, &transferred,
+							nullptr, 0);
+					if (!rc)
+						rc = transferred;
+#endif
 					ec = boost::system::error_code (rc < 0 ? errno : 0,
 							boost::asio::error::get_system_category ());
 

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,9 +38,9 @@ namespace LMP
 {
 namespace PLS
 {
-	QStringList Read (const QString& path)
+	QList<RawReadData> Read (const QString& path)
 	{
-		QStringList result;
+		QList<RawReadData> result;
 
 		QSettings settings (path, QSettings::IniFormat);
 		settings.beginGroup ("playlist");
@@ -50,7 +50,7 @@ namespace PLS
 		{
 			const auto& str = settings.value ("File" + QString::number (i)).toString ();
 			if (!str.isEmpty ())
-				result << str;
+				result.append ({ str, {} });
 		}
 
 		settings.endGroup ();
@@ -58,9 +58,9 @@ namespace PLS
 		return result;
 	}
 
-	QList<AudioSource> Read2Sources (const QString& path)
+	Playlist Read2Sources (const QString& path)
 	{
-		return CommonRead2Sources ({ QStringList ("pls"), path, Read });
+		return CommonRead2Sources ({ { "pls" }, path, Read });
 	}
 }
 }

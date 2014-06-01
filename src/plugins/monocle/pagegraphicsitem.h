@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -49,11 +49,6 @@ namespace Monocle
 		IDocument_ptr Doc_;
 		const int PageNum_;
 
-		bool IsHoverLink_;
-		QList<ILink_ptr> Links_;
-		QList<QPair<QRect, ILink_ptr>> Rect2Link_;
-		ILink_ptr PressedLink_;
-
 		double XScale_;
 		double YScale_;
 
@@ -94,14 +89,10 @@ namespace Monocle
 		void UpdatePixmap ();
 	protected:
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
-		void hoverMoveEvent (QGraphicsSceneHoverEvent*);
-		void hoverLeaveEvent (QGraphicsSceneHoverEvent*);
 		void mousePressEvent (QGraphicsSceneMouseEvent*);
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
 		void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
 	private:
-		void LayoutLinks ();
-		ILink_ptr FindLink (const QPointF&);
 		bool IsDisplayed () const;
 	private slots:
 		void rotateCCW ();

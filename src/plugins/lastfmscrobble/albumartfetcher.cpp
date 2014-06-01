@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,17 +42,37 @@ namespace Lastfmscrobble
 	AlbumArtFetcher::AlbumArtFetcher (const Media::AlbumInfo& albumInfo, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, Info_ (albumInfo)
 	{
 		QMap<QString, QString> params;
 		params ["artist"] = albumInfo.Artist_;
 		params ["album"] = albumInfo.Album_;
 		params ["autocorrect"] = "1";
 		auto reply = Request ("album.getInfo", proxy->GetNetworkAccessManager (), params);
-		reply->setProperty ("AlbumInfo", QVariant::fromValue (albumInfo));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleReplyFinished ()));
+	}
+
+	QObject* AlbumArtFetcher::GetQObject ()
+	{
+		return this;
+	}
+
+	Media::AlbumInfo AlbumArtFetcher::GetAlbumInfo () const
+	{
+		return Info_;
+	}
+
+	QList<QUrl> AlbumArtFetcher::GetImageUrls () const
+	{
+		return { ImageUrl_ };
+	}
+
+	QList<QImage> AlbumArtFetcher::GetImages () const
+	{
+		return { Image_ };
 	}
 
 	void AlbumArtFetcher::handleReplyFinished ()
@@ -60,11 +80,10 @@ namespace Lastfmscrobble
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& albumInfo = reply->property ("AlbumInfo").value<Media::AlbumInfo> ();
 		QDomDocument doc;
 		if (!doc.setContent (reply->readAll ()))
 		{
-			emit gotAlbumArt (albumInfo, QList<QImage> ());
+			emit ready (Info_, {});
 			deleteLater ();
 			return;
 		}
@@ -90,7 +109,10 @@ namespace Lastfmscrobble
 				if (text.isEmpty ())
 					continue;
 
-				QNetworkRequest req (QUrl (elem.text ()));
+				ImageUrl_ = QUrl (elem.text ());
+				emit urlsReady (Info_, { ImageUrl_ });
+
+				QNetworkRequest req (ImageUrl_);
 				req.setPriority (QNetworkRequest::LowPriority);
 				auto imageReply = Proxy_->GetNetworkAccessManager ()->get (req);
 				imageReply->setProperty ("AlbumInfo", reply->property ("AlbumInfo"));
@@ -98,11 +120,15 @@ namespace Lastfmscrobble
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleImageReplyFinished ()));
+				connect (this,
+						SIGNAL (destroyed ()),
+						imageReply,
+						SLOT (deleteLater ()));
 				return;
 			}
 		}
 
-		emit gotAlbumArt (albumInfo, QList<QImage> ());
+		emit ready (Info_, {});
 		deleteLater ();
 	}
 
@@ -112,11 +138,8 @@ namespace Lastfmscrobble
 		reply->deleteLater ();
 		deleteLater ();
 
-		auto albumInfo = reply->property ("AlbumInfo").value<Media::AlbumInfo> ();
-		QImage image;
-		image.loadFromData (reply->readAll ());
-		if (!image.isNull ())
-			emit gotAlbumArt (albumInfo, QList<QImage> () << image);
+		Image_.loadFromData (reply->readAll ());
+		emit ready (Info_, { Image_ });
 	}
 }
 }

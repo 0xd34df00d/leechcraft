@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "readchannelsfilter.h"
+#include <QtDebug>
 #include "aggregatorapp.h"
 
 namespace LeechCraft
@@ -57,7 +58,19 @@ namespace WebAccess
 			if (idx.isValid ())
 			{
 				const auto data = idx.data (AggregatorApp::ChannelRole::UnreadCount);
-				return boost::any_cast<int> (data) > 0;
+				try
+				{
+					return boost::any_cast<int> (data) > 0;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot get unread count"
+							<< e.what ()
+							<< "; stored:"
+							<< data.type ().name ();
+					return true;
+				}
 			}
 		}
 		return Wt::WSortFilterProxyModel::filterAcceptRow (row, parent);

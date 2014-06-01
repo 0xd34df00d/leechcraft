@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -223,6 +223,16 @@ namespace TabSessManager
 		act->setProperty ("TabSessManager/SessName", name);
 	}
 
+	bool Plugin::HasTab (QWidget *widget) const
+	{
+		return std::any_of (Tabs_.begin (), Tabs_.end (),
+				[widget] (const QList<QObject*>& list)
+				{
+					return std::any_of (list.begin (), list.end (),
+							[widget] (QObject *obj) { return obj == widget; });
+				});
+	}
+
 	void Plugin::hookTabIsRemoving (IHookProxy_ptr, int index, int windowId)
 	{
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
@@ -234,21 +244,16 @@ namespace TabSessManager
 
 	void Plugin::handleNewTab (const QString&, QWidget *widget)
 	{
+		if (HasTab (widget))
+			return;
+
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto windowIndex = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (widget));
 
-		if (windowIndex < 0)
+		if (windowIndex < 0 || windowIndex >= Tabs_.size ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown window index for"
-					<< widget;
-			return;
-		}
-
-		if (windowIndex >= Tabs_.size ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "window index out of bounds for"
 					<< widget;
 			return;
 		}
@@ -435,13 +440,15 @@ namespace TabSessManager
 		void OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)
 		{
 			QList<QPair<IHaveRecoverableTabs*, RecInfo>> ordered;
-			Q_FOREACH (auto plugin, tabs.keys ())
+			for (auto i = tabs.begin (); i != tabs.end (); ++i)
 			{
+				const auto plugin = i.key ();
+
 				auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
 				if (!ihrt)
 					continue;
 
-				Q_FOREACH (const auto& info, tabs [plugin])
+				for (const auto& info : i.value ())
 					ordered << qMakePair (ihrt, info);
 			}
 
@@ -449,8 +456,12 @@ namespace TabSessManager
 					[] (decltype (ordered.at (0)) left, decltype (ordered.at (0)) right)
 						{ return left.second.Order_ < right.second.Order_; });
 
-			Q_FOREACH (const auto& pair, ordered)
-				pair.first->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, pair.second.Props_ } });
+			for (const auto& pair : ordered)
+			{
+				auto props = pair.second.Props_;
+				props.append ({ "SessionData/RootWindowIndex", pair.second.WindowID_ });
+				pair.first->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, props } });
+			}
 		}
 	}
 

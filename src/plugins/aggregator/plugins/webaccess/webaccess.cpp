@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,7 +30,11 @@
 #include "webaccess.h"
 #include <QIcon>
 #include <interfaces/aggregator/iproxyobject.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
+#include <util/xsd/addressesmodelmanager.h>
 #include "servermanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -41,6 +45,17 @@ namespace WebAccess
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		Util::AddressesModelManager::RegisterTypes ();
+
+		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), 9001, this);
+
+		Util::InstallTranslator ("aggregator_webaccess");
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "aggregatorwebaccesssettings.xml");
+
+		XSD_->SetDataSource ("AddressesDataView", AddrMgr_->GetModel ());
 	}
 
 	void Plugin::SecondInit ()
@@ -79,11 +94,16 @@ namespace WebAccess
 		return result;
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		try
 		{
-			SM_.reset (new ServerManager (qobject_cast<IProxyObject*> (proxy), Proxy_));
+			SM_.reset (new ServerManager (qobject_cast<IProxyObject*> (proxy), Proxy_, AddrMgr_));
 		}
 		catch (const std::exception& e)
 		{

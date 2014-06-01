@@ -11,17 +11,10 @@ include_directories (
 set (SRCS
 	y7.cpp
 	)
-set (HEADERS
-	y7.h
-	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
 add_library (leechcraft_y7 SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 target_link_libraries (leechcraft_y7
 	${QT_LIBRARIES}

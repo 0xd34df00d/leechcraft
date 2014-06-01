@@ -27,23 +27,14 @@ set (SRCS
 	otzerkaludialog.cpp
 	otzerkaludownloader.cpp
 	)
-set (HEADERS
-	otzerkalu.h
-	otzerkaludialog.h
-	otzerkaludownloader.h
-	)
 set (FORMS
 	otzerkaludialog.ui
 	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 
 add_library (leechcraft_otzerkalu SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	)
 target_link_libraries (leechcraft_otzerkalu

@@ -3,7 +3,6 @@ import org.LC.common 1.0
 
 Rectangle {
     id: quarkDisplayRoot
-    anchors.fill: parent
 
     property alias settingsMode: enableSettingsModeButton.settingsMode
     property bool isVert: viewOrient == "vertical"

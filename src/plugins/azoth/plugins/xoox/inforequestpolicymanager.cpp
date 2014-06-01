@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -46,8 +46,9 @@ namespace Xoox
 
 	bool InfoRequestPolicyManager::IsRequestAllowed (InfoRequest req, EntryBase *entry) const
 	{
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		switch (entry->GetEntryType ())
 		{
+		case ICLEntry::ETPrivateChat:
 			switch (req)
 			{
 			case InfoRequest::Version:
@@ -66,6 +67,22 @@ namespace Xoox
 					return false;
 				break;
 			}
+			break;
+		case ICLEntry::ETChat:
+			switch (req)
+			{
+			case InfoRequest::Version:
+				if (!XmlSettingsManager::Instance ().property ("RequestVersion").toBool ())
+					return false;
+				break;
+			case InfoRequest::VCard:
+				if (!XmlSettingsManager::Instance ().property ("RequestVCards").toBool ())
+					return false;
+				break;
+			}
+			break;
+		default:
+			break;
 		}
 
 		return true;

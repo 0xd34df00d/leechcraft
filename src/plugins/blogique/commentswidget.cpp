@@ -38,7 +38,7 @@
 #include <util/qml/tooltipitem.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include "commentsmanager.h"
 #include "commentsmodel.h"
 #include "core.h"

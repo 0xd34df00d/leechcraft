@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,8 +40,8 @@
 #include <QDockWidget>
 #include <QDesktopWidget>
 #include <QWidgetAction>
-#include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/util.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
@@ -241,7 +241,7 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& men
 			MenuButton_->menu ()->insertMenu (MenuTools_->menuAction (), menu);
 		}
 
-		IconThemeEngine::Instance ().UpdateIconSet (menus [menuName]);
+		IconThemeEngine::Instance ().UpdateIconset (menus [menuName]);
 	}
 }
 
@@ -350,6 +350,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SIGNAL (newTabMenuRequested ()),
 			this,
 			SLOT (handleNewTabMenuRequested ()));
+	connect (Ui_.MainTabWidget_,
+			SIGNAL (currentChanged (int)),
+			this,
+			SLOT (handleCurrentTabChanged (int)));
 
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
@@ -609,6 +613,26 @@ void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 	ntmenu->popup (QCursor::pos ());
 }
 
+void MainWindow::handleCurrentTabChanged (int index)
+{
+	if (index == -1)
+		return;
+
+	if (CloseTabShortcut_->key () != QString ("Ctrl+W"))
+	{
+		CloseTabShortcut_->setEnabled (true);
+		return;
+	}
+
+	const auto widget = Ui_.MainTabWidget_->Widget (index);
+	const auto itw = qobject_cast<ITabWidget*> (widget);
+	const bool closeScEnabled = itw ?
+			!(itw->GetTabClassInfo ().Features_ & TabFeature::TFOverridesTabClose) :
+			true;
+
+	CloseTabShortcut_->setEnabled (closeScEnabled);
+}
+
 void MainWindow::handleRestoreActionAdded (QAction *act)
 {
 	Ui_.MainTabWidget_->InsertAction2TabBar (Ui_.ActionCloseTab_, act);
@@ -616,15 +640,21 @@ void MainWindow::handleRestoreActionAdded (QAction *act)
 
 void LeechCraft::MainWindow::showHideMain ()
 {
-	IsShown_ = 1 - IsShown_;
+	IsShown_ = !IsShown_;
 	if (IsShown_)
-	{
-		show ();
-		activateWindow ();
-		raise ();
-	}
+		showMain ();
 	else
 		hide ();
+}
+
+void LeechCraft::MainWindow::showMain ()
+{
+	if (!IsShown_)
+		IsShown_ = true;
+
+	show ();
+	activateWindow ();
+	raise ();
 }
 
 void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
@@ -692,7 +722,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 		if (actions.isEmpty ())
 			continue;
 
-		IconThemeEngine::Instance ().UpdateIconSet (actions);
+		IconThemeEngine::Instance ().UpdateIconset (actions);
 
 		QLBar_->addSeparator ();
 		QLBar_->addActions (actions);
@@ -705,10 +735,13 @@ void LeechCraft::MainWindow::FillTray ()
 		return;
 
 	QMenu *iconMenu = new QMenu (this);
-	QMenu *menu = iconMenu->addMenu (tr ("LeechCraft menu"));
-	menu->addAction (Ui_.ActionAddTask_);
-	menu->addMenu (MenuView_);
-	menu->addMenu (MenuTools_);
+	iconMenu->addAction (windowIcon (),
+			tr ("Toggle LeechCraft window"),
+			this,
+			SLOT (showHideMain ()));
+	iconMenu->addAction (Ui_.ActionAddTask_);
+	iconMenu->addMenu (MenuView_);
+	iconMenu->addMenu (MenuTools_);
 	iconMenu->addSeparator ();
 
 	const auto& trayMenus = Core::Instance ().GetPluginManager ()->
@@ -716,7 +749,7 @@ void LeechCraft::MainWindow::FillTray ()
 	Q_FOREACH (auto o, trayMenus)
 	{
 		const auto& actions = o->GetActions (ActionsEmbedPlace::TrayMenu);
-		IconThemeEngine::Instance ().UpdateIconSet (actions);
+		IconThemeEngine::Instance ().UpdateIconset (actions);
 		iconMenu->addActions (actions);
 		if (actions.size ())
 			iconMenu->addSeparator ();
@@ -745,7 +778,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 				GetAllCastableTo<IActionsExporter*> ())
 	{
 		const auto& acts = e->GetActions (ActionsEmbedPlace::ToolsMenu);
-		IconThemeEngine::Instance ().UpdateIconSet (acts);
+		IconThemeEngine::Instance ().UpdateIconset (acts);
 		MenuTools_->addActions (acts);
 		if (acts.size ())
 			MenuTools_->addSeparator ();

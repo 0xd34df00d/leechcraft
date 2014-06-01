@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010-2011  Oleg Linkin
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,6 +36,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "glanceshower.h"
 
@@ -120,9 +121,12 @@ namespace Glance
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 	{
 		QMap<QString, ActionInfo> result;
+
+		const auto& iconName = ActionGlance_->property ("ActionIcon").toString ();
 		result ["ShowList"] = ActionInfo (ActionGlance_->text (),
 				ActionGlance_->shortcut (),
-				Proxy_->GetIcon (ActionGlance_->property ("ActionIcon").toString ()));
+				Proxy_->GetIconThemeManager ()->GetIcon (iconName));
+
 		return result;
 	}
 

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,11 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IMESSAGE_H
-#define PLUGINS_AZOTH_INTERFACES_IMESSAGE_H
+#pragma once
+
 #include <QString>
 #include <QDateTime>
 #include <QtPlugin>
+#include "messagebase.h"
 
 class QObject;
 
@@ -59,7 +60,7 @@ namespace Azoth
 	 *
 	 * @sa IAdvancedMessage, IRichTextMessage.
 	 */
-	class IMessage
+	class IMessage : public MessageBase
 	{
 	public:
 		virtual ~IMessage () {};
@@ -304,5 +305,3 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMessage,
 	"org.Deviant.LeechCraft.Azoth.IMessage/1.0");
-
-#endif

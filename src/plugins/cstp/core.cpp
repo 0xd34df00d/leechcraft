@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -44,8 +44,9 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/idownload.h>
 #include <util/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
@@ -61,8 +62,6 @@ extern "C"
 		static const int LC_FILENAME_MAX = NAME_MAX;
 	#endif
 }
-
-Q_DECLARE_METATYPE (QNetworkReply*);
 
 namespace LeechCraft
 {
@@ -166,51 +165,50 @@ namespace CSTP
 		}
 	}
 
-	int Core::AddTask (Entity& e)
+	int Core::AddTask (const Entity& e)
 	{
-		const QUrl entity = e.Entity_.toUrl ();
+		auto url = e.Entity_.toUrl ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
-		QStringList tags = e.Additional_ [" Tags"].toStringList ();
+		const auto& tags = e.Additional_ [" Tags"].toStringList ();
 
 		const QFileInfo fi (e.Location_);
 		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
 		const auto& file = MakeFilename (e);
 
 		if (rep)
-		{
 			return AddTask (rep,
 					dir,
 					file,
 					QString (),
 					tags,
 					e.Parameters_);
-		}
-		else
+
+		AddTask::Task task
 		{
-			if (e.Parameters_ & LeechCraft::FromUserInitiated &&
-					e.Location_.isEmpty ())
-			{
-				CSTP::AddTask at (entity, e.Location_);
-				if (at.exec () == QDialog::Rejected)
-					return -1;
+			url,
+			dir,
+			file,
+			{}
+		};
 
-				AddTask::Task task = at.GetTask ();
+		if (e.Parameters_ & LeechCraft::FromUserInitiated &&
+				e.Location_.isEmpty ())
+		{
+			CSTP::AddTask at (url, e.Location_);
+			if (at.exec () == QDialog::Rejected)
+				return -1;
 
-				return AddTask (task.URL_,
-						task.LocalPath_,
-						task.Filename_,
-						task.Comment_,
-						tags,
-						e.Parameters_);
-			}
-			else if (!dir.isEmpty ())
-				return AddTask (entity,
-						dir,
-						file,
-						QString (),
-						tags,
-						e.Parameters_);
+			task = at.GetTask ();
 		}
+
+		if (!dir.isEmpty ())
+			return AddTask (task.URL_,
+					task.LocalPath_,
+					task.Filename_,
+					task.Comment_,
+					tags,
+					e.Additional_,
+					e.Parameters_);
 
 		return -1;
 	}
@@ -239,7 +237,13 @@ namespace CSTP
 		TaskDescr td;
 		td.Task_.reset (new Task (rep));
 
-		return AddTask (td, path, filename, comment, tags, tp);
+		QDir dir (path);
+		td.File_.reset (new QFile (QDir::cleanPath (dir.filePath (filename))));
+		td.Comment_ = comment;
+		td.Parameters_ = tp;
+		td.Tags_ = tags;
+
+		return AddTask (td);
 	}
 
 	int Core::AddTask (const QUrl& url,
@@ -247,28 +251,26 @@ namespace CSTP
 			const QString& filename,
 			const QString& comment,
 			const QStringList& tags,
+			const QVariantMap& params,
 			LeechCraft::TaskParameters tp)
 	{
 		TaskDescr td;
-		td.Task_.reset (new Task (url));
 
-		return AddTask (td, path, filename, comment, tags, tp);
-	}
+		td.Task_.reset (new Task (url, params));
 
-	int Core::AddTask (TaskDescr& td,
-			const QString& path,
-			const QString& filename,
-			const QString& comment,
-			const QStringList& tags,
-			LeechCraft::TaskParameters tp)
-	{
 		QDir dir (path);
 		td.File_.reset (new QFile (QDir::cleanPath (dir.filePath (filename))));
 		td.Comment_ = comment;
-		td.ErrorFlag_ = false;
 		td.Parameters_ = tp;
-		td.ID_ = CoreProxy_->GetID ();
 		td.Tags_ = tags;
+
+		return AddTask (td);
+	}
+
+	int Core::AddTask (TaskDescr& td)
+	{
+		td.ErrorFlag_ = false;
+		td.ID_ = CoreProxy_->GetID ();
 
 		if (td.File_->exists ())
 		{
@@ -292,7 +294,7 @@ namespace CSTP
 			}
 		}
 
-		if (tp & Internal)
+		if (td.Parameters_ & Internal)
 			td.Task_->ForbidNameChanges ();
 
 		connect (td.Task_.get (),
@@ -308,7 +310,7 @@ namespace CSTP
 		ActiveTasks_.push_back (td);
 		endInsertRows ();
 		ScheduleSave ();
-		if (!(tp & LeechCraft::NoAutostart))
+		if (!(td.Parameters_ & LeechCraft::NoAutostart))
 			startTriggered (rowCount () - 1);
 		return td.ID_;
 	}
@@ -335,27 +337,39 @@ namespace CSTP
 					{ return acc + td.Task_->GetSpeed (); });
 	}
 
-	EntityTestHandleResult Core::CouldDownload (const LeechCraft::Entity& e)
+	namespace
+	{
+		EntityTestHandleResult CheckUrl (const QUrl& url, const Entity& e)
+		{
+			if (!url.isValid ())
+				return {};
+
+			const QString& scheme = url.scheme ();
+			if (scheme == "file")
+				return (!(e.Parameters_ & FromUserInitiated) && !(e.Parameters_ & IsDownloaded)) ?
+						EntityTestHandleResult (EntityTestHandleResult::PHigh) :
+						EntityTestHandleResult ();
+			else
+			{
+				const QStringList schemes { "http", "https" };
+				return schemes.contains (url.scheme ()) ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
+			}
+		}
+	}
+
+	EntityTestHandleResult Core::CouldDownload (const Entity& e)
 	{
 		if (e.Entity_.value<QNetworkReply*> ())
 			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
 
-		const QUrl& url = e.Entity_.toUrl ();
-		if (!url.isValid ())
-			return EntityTestHandleResult ();
-
-		const QString& scheme = url.scheme ();
-		if (scheme == "file")
-			return (!(e.Parameters_ & FromUserInitiated) && !(e.Parameters_ & IsDownloaded)) ?
-					EntityTestHandleResult (EntityTestHandleResult::PHigh) :
-					EntityTestHandleResult ();
+		const auto& url = e.Entity_.toUrl ();
+		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
+		if (url.isValid ())
+			return CheckUrl (url, e);
 		else
-		{
-			const QStringList schemes = QStringList ("http") << "https";
-			return schemes.contains (url.scheme ()) ?
-					EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-					EntityTestHandleResult ();
-		}
+			return {};
 	}
 
 	QAbstractItemModel* Core::GetRepresentationModel ()
@@ -386,56 +400,59 @@ namespace CSTP
 	QVariant Core::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
-			return QVariant ();
+			return {};
+
+		if (index.row () >= static_cast<int> (ActiveTasks_.size ()))
+			return {};
 
 		if (role == Qt::DisplayRole)
 		{
-			TaskDescr td = TaskAt (index.row ());
+			const auto& td = TaskAt (index.row ());
 			const auto& task = td.Task_;
 			switch (index.column ())
 			{
-				case HURL:
-					return task->GetURL ();
-				case HState:
-					{
-						if (td.ErrorFlag_)
-							return task->GetErrorString ();
+			case HURL:
+				return task->GetURL ();
+			case HState:
+			{
+				if (td.ErrorFlag_)
+					return task->GetErrorString ();
 
-						if (!task->IsRunning ())
-							return QVariant ();
-
-						qint64 done = task->GetDone (),
-								total = task->GetTotal ();
-						double speed = task->GetSpeed ();
-
-						qint64 rem = (total - done) / speed;
-
-						return tr ("%1 (ETA: %2)")
-							.arg (task->GetState ())
-							.arg (Util::MakeTimeFromLong (rem));
-					}
-				case HProgress:
-					{
-						qint64 done = task->GetDone (),
-								total = task->GetTotal ();
-						int progress = total ? done * 100 / total : 0;
-						if (done > -1)
-						{
-							if (total > -1)
-								return QString (tr ("%1% (%2 of %3 at %4)"))
-									.arg (progress)
-									.arg (Util::MakePrettySize (done))
-									.arg (Util::MakePrettySize (total))
-									.arg (Util::MakePrettySize (task->GetSpeed ()) + tr ("/s"));
-							else
-								return QString ("%1")
-									.arg (Util::MakePrettySize (done));
-						}
-						else
-							return QString ("");
-					}
-				default:
+				if (!task->IsRunning ())
 					return QVariant ();
+
+				qint64 done = task->GetDone (),
+						total = task->GetTotal ();
+				double speed = task->GetSpeed ();
+
+				qint64 rem = (total - done) / speed;
+
+				return tr ("%1 (ETA: %2)")
+					.arg (task->GetState ())
+					.arg (Util::MakeTimeFromLong (rem));
+			}
+			case HProgress:
+			{
+				qint64 done = task->GetDone ();
+				qint64 total = task->GetTotal ();
+				int progress = total ? done * 100 / total : 0;
+				if (done > -1)
+				{
+					if (total > -1)
+						return QString (tr ("%1% (%2 of %3 at %4)"))
+							.arg (progress)
+							.arg (Util::MakePrettySize (done))
+							.arg (Util::MakePrettySize (total))
+							.arg (Util::MakePrettySize (task->GetSpeed ()) + tr ("/s"));
+					else
+						return QString ("%1")
+							.arg (Util::MakePrettySize (done));
+				}
+				else
+					return QString ("");
+			}
+			default:
+				return QVariant ();
 			}
 		}
 		else if (role == LeechCraft::RoleControls)

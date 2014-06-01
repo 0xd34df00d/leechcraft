@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,6 +32,7 @@
 #include <QtPlugin>
 
 class QModelIndex;
+class QUrl;
 
 namespace LeechCraft
 {
@@ -69,6 +70,8 @@ namespace Blasq
 		virtual void CreateCollection (const QModelIndex& parent) = 0;
 
 		virtual void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) = 0;
+	protected:
+		virtual void itemUploaded (const UploadItem&, const QUrl&) = 0;
 	};
 }
 }

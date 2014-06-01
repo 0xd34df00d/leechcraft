@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -133,28 +133,114 @@ namespace LeechCraft
 		}
 	};
 
+	/** @brief Describes a field with integer values.
+	 */
 	struct ANIntFieldValue
 	{
+		/** @brief The boundary of the field.
+		 */
 		int Boundary_;
 
+		/** @brief Describes the elementary semantics of Boundary_.
+		 */
 		enum Operation
 		{
+			/** @brief The value should be greater than Boundary_.
+			 */
 			OGreater = 0x01,
+
+			/** @brief The value should be less than Boundary_.
+			 */
 			OLess = 0x02,
+
+			/** @brief The value should be equal to Boundary_.
+			 */
 			OEqual = 0x04
 		};
 
 		Q_DECLARE_FLAGS (Operations, Operation)
 
+		/** @brief Describe the semantics of Boundary_.
+		 *
+		 * This is the combination of values in Operation enum.
+		 */
 		Operations Ops_;
 	};
 
+	/** @brief Compares two fields with integer values.
+	 *
+	 * @param[in] left First operand.
+	 * @param[in] right Second operand.
+	 * @return Whether \em left and \em right have the same boundary and
+	 * the same operation.
+	 */
+	inline bool operator== (const ANIntFieldValue& left, const ANIntFieldValue& right)
+	{
+		return left.Boundary_ == right.Boundary_ &&
+				left.Ops_ == right.Ops_;
+	}
+
+	/** @brief Describes a field with QString values.
+	 */
 	struct ANStringFieldValue
 	{
+		/** @brief The regular expression the values should (not) match.
+		 */
 		QRegExp Rx_;
+
+		/** @brief Whether the values should match or not match Rx_.
+		 *
+		 * If this is true, the values should match Rx_, and shouldn't
+		 * otherwise.
+		 */
 		bool Contains_;
+
+		/** @brief Constructs the field matcher.
+		 *
+		 * @param[in] rx The regexp to match.
+		 * @param[in] contains Whether the string should or should not
+		 * match \em rx.
+		 */
+		ANStringFieldValue (const QRegExp& rx, bool contains)
+		: Rx_ { rx }
+		, Contains_ { contains }
+		{
+		}
+
+		/** @brief Constructs the field matcher for the given \em str.
+		 *
+		 * This constructor constructs a field matcher that matches (or
+		 * does not match if \em contains is false) when the string in
+		 * question contains the \em str. It is analogous to the previous
+		 * constructor if the regular expression object is constructed as
+		 * <code>QRegExp { str, Qt::CaseSensitive, QRegExp::FixedString }</code>.
+		 *
+		 * @param[in] str The string that should be looked for.
+		 * @param[in] contains Whether the string should or should not
+		 * contain \em str.
+		 */
+		ANStringFieldValue (const QString& str, bool contains = true)
+		: Rx_ { str, Qt::CaseSensitive, QRegExp::FixedString }
+		, Contains_ { contains }
+		{
+		}
 	};
 
+	/** @brief Compares two string field values.
+	 *
+	 * @param[in] left The left operand.
+	 * @param[in] right The right operand.
+	 * @return Whether \em left and \right have the same regexp pattern
+	 * and they both require the presense (or the absence) of the match.
+	 */
+	inline bool operator== (const ANStringFieldValue& left, const ANStringFieldValue& right)
+	{
+		return left.Contains_ == right.Contains_ &&
+				left.Rx_ == right.Rx_;
+	}
+
+	/** @brief A combination of all possible descriptions.
+	 */
 	typedef boost::variant<ANIntFieldValue, ANStringFieldValue> ANFieldValue;
 }
 

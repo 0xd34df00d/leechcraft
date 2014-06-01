@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="HTTP streaming" />
+		<item type="doublespinbox" property="EncQuality" minimum="0" maximum="1" step="0.1" default="0.5">
+			<label value="Encoding quality:" />
+		</item>
+		<item type="combobox" property="Address" mayHaveDataSource="true">
+			<label value="Listen address:" />
+			<option default="true" name="127.0.0.1">
+				<label value="127.0.0.1" />
+			</option>
+		</item>
+		<item type="spinbox" property="Port" minimum="1025" maximum="65535" default="9006">
+			<label value="Listen port:" />
+		</item>
+	</page>
+</settings>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -252,7 +252,8 @@ public:
 		 * passed QDomElement.
 		 *
 		 * An example function that turns back the boldified
-		 * <code>&lt;lj user="$username"/></code> from ToKnown_:
+		 * <code>&lt;lj user="$username"/></code> got from
+		 * CustomTag::ToKnown_:
 		 *
 		 * \code
 		 * [] (QDomElement& elem) -> void
@@ -280,7 +281,7 @@ public:
 	/** @brief Inserts the given HTML at the current cursor position.
 	 *
 	 * This function is somewhat analogous to DOM's
-	 * @code execCommand("insertHTML", ...) @endcode.
+	 * <code>execCommand("insertHTML", ...)</code>.
 	 *
 	 * @param[in] html The HTML to insert.
 	 */
@@ -300,7 +301,7 @@ public:
 	/** @brief Adds a custom action to wrap selected text into given tag.
 	 *
 	 * For example, to insert an action to wrap selected text into
-	 * <code><span style="font-weight: bold" id="sometext">...</span></code>
+	 * <code>&lt;span style="font-weight: bold" id="sometext">...&lt;/span></code>
 	 * one should call this function like this:
 	 * \code
 	 * QVariantMap params;
@@ -316,7 +317,7 @@ public:
 	 */
 	virtual QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params) = 0;
 
-	/** @brief Executes the given js in the context of the content.
+	/** @brief Executes the given \em js in the context of the content.
 	 *
 	 * @param[in] js The JavaScript code to execute.
 	 */

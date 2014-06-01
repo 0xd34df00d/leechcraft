@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,7 +31,7 @@
 
 #include <functional>
 #include <QDeclarativeNetworkAccessManagerFactory>
-#include <util/utilconfig.h>
+#include "qmlconfig.h"
 
 class QDeclarativeEngine;
 
@@ -39,7 +39,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_API StandardNAMFactory : public QDeclarativeNetworkAccessManagerFactory
+	class UTIL_QML_API StandardNAMFactory : public QDeclarativeNetworkAccessManagerFactory
 	{
 		const QString Subpath_;
 	public:

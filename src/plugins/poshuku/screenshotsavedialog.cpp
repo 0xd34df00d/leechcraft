@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,6 +39,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/ientityhandler.h>
 #include "core.h"
@@ -84,7 +85,8 @@ namespace Poshuku
 			}
 		}
 
-		Ui_.ActionBox_->addItem (proxy->GetIcon ("document-save"), tr ("Save"));
+		auto mgr = proxy->GetIconThemeManager ();
+		Ui_.ActionBox_->addItem (mgr->GetIcon ("document-save"), tr ("Save"));
 	}
 
 	void ScreenShotSaveDialog::accept ()

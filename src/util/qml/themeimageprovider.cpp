@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,6 +29,7 @@
 
 #include "themeimageprovider.h"
 #include <QIcon>
+#include "interfaces/core/iiconthememanager.h"
 
 namespace LeechCraft
 {
@@ -41,7 +42,7 @@ namespace Util
 
 	QIcon ThemeImageProvider::GetIcon (const QStringList& list)
 	{
-		return Proxy_->GetIcon (list.value (0));
+		return Proxy_->GetIconThemeManager ()->GetIcon (list.value (0));
 	}
 }
 }

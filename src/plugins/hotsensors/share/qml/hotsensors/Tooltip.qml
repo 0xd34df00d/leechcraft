@@ -11,7 +11,7 @@ Rectangle {
 
     signal closeRequested()
 
-    property variant pointsList
+    property variant pointsList: srcPtsList
 
     gradient: Gradient {
         GradientStop {
@@ -43,6 +43,9 @@ Rectangle {
         anchors.bottom: parent.bottom
 
         points: pointsList
+
+        minYValue: 0
+        maxYValue: Math.max(maxTemp, critTemp)
 
         leftAxisEnabled: true
         leftAxisTitle: qsTr ("Temperature, °C")

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -60,12 +60,15 @@ namespace AdvancedNotifications
 		virtual void Load (const QVariantMap&) = 0;
 
 		virtual void SetValue (const ANFieldValue&) = 0;
+		virtual ANFieldValue GetValue () const = 0;
 
 		virtual bool Match (const QVariant&) const = 0;
 
 		virtual QString GetHRDescription () const = 0;
+
 		virtual QWidget* GetConfigWidget () = 0;
 		virtual void SyncToWidget () = 0;
+		virtual void SyncWidgetTo () = 0;
 	};
 
 	class StringLikeMatcher : public TypedMatcherBase
@@ -82,9 +85,11 @@ namespace AdvancedNotifications
 		void Load (const QVariantMap&);
 
 		void SetValue (const ANFieldValue&);
+		ANFieldValue GetValue () const;
 
 		QWidget* GetConfigWidget ();
 		void SyncToWidget ();
+		void SyncWidgetTo ();
 	};
 
 	class StringMatcher : public StringLikeMatcher
@@ -107,6 +112,16 @@ namespace AdvancedNotifications
 		QString GetHRDescription () const;
 	};
 
+	class UrlMatcher : public StringLikeMatcher
+	{
+	public:
+		UrlMatcher ();
+
+		bool Match (const QVariant&) const;
+
+		QString GetHRDescription () const;
+	};
+
 	class IntMatcher : public TypedMatcherBase
 	{
 		ANIntFieldValue Value_;
@@ -120,12 +135,14 @@ namespace AdvancedNotifications
 		void Load (const QVariantMap&);
 
 		void SetValue (const ANFieldValue&);
+		ANFieldValue GetValue () const;
 
 		bool Match (const QVariant&) const;
 
 		QString GetHRDescription () const;
 		QWidget* GetConfigWidget ();
 		void SyncToWidget ();
+		void SyncWidgetTo ();
 	};
 }
 }

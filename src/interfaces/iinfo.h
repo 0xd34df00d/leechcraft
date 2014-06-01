@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -359,7 +359,7 @@ public:
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 
-#define CURRENT_API_LEVEL 16
+#define CURRENT_API_LEVEL 18
 
 #define LC_EXPORT_PLUGIN(name,file) Q_EXPORT_PLUGIN2(name, file) \
 	extern "C"\

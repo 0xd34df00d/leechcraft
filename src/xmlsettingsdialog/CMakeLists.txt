@@ -74,6 +74,7 @@ add_library (leechcraft-xsd SHARED
 	${UIS_H})
 target_link_libraries (leechcraft-xsd
 	${QT_LIBRARIES}
+	leechcraft-util-sys
 	)
 set_property (TARGET leechcraft-xsd PROPERTY SOVERSION 0.3.0)
 install (TARGETS leechcraft-xsd DESTINATION ${LIBDIR})

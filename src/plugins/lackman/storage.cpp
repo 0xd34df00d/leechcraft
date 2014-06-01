@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,8 +31,9 @@
 #include <stdexcept>
 #include <QDir>
 #include <QSqlError>
-#include <util/dblock.h>
-#include <util/util.h>
+#include <QtDebug>
+#include <util/db/dblock.h>
+#include <util/sys/paths.h>
 #include "repoinfo.h"
 #include "core.h"
 
@@ -621,6 +622,16 @@ namespace LackMan
 
 		for (const auto& version : pInfo.Versions_)
 		{
+			if (FindPackage (pInfo.Name_, version) != -1)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "package"
+						<< pInfo.Name_
+						<< version
+						<< "is already present, skipping...";
+				continue;
+			}
+
 			QueryAddPackage_.bindValue (":name", pInfo.Name_);
 			QueryAddPackage_.bindValue (":version", version);
 			Exec (QueryAddPackage_);

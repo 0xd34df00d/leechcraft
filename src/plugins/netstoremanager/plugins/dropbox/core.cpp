@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "core.h"
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <QDesktopServices>
+#include <QFileInfo>
 #include <QUrl>
 
 namespace LeechCraft

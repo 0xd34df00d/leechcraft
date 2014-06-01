@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Aggregator WebAccess" />
+		<item type="dataview" property="AddressesDataView" modifyEnabled="false" />
+	</page>
+</settings>
+

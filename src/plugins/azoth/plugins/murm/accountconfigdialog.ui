@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>149</height>
+    <height>151</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,6 +18,13 @@
     <widget class="QCheckBox" name="KeepFileLog_">
      <property name="text">
       <string>Keep file log</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="UpdateStatus_">
+     <property name="text">
+      <string>Update VKontakte status according to Azoth status</string>
      </property>
     </widget>
    </item>

@@ -35,13 +35,12 @@ set (MURM_SRCS
 	vkchatentry.cpp
 	logger.cpp
 	accountconfigdialog.cpp
-	captchadialog.cpp
+	serverhistorymanager.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
 	mucjoinwidget.ui
 	accountconfigdialog.ui
-	captchadialog.ui
 	)
 set (MURM_RESOURCES azothmurmresources.qrc)
 

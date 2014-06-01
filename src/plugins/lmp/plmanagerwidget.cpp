@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -41,7 +41,6 @@ namespace LMP
 	PLManagerWidget::PLManagerWidget (QWidget *parent)
 	: QWidget (parent)
 	, Player_ (0)
-	, DeletePlaylistAction_ (new QAction (tr ("Delete playlist"), this))
 	{
 		Ui_.setupUi (this);
 
@@ -54,11 +53,15 @@ namespace LMP
 				this,
 				SLOT (handlePlaylistSelected (QModelIndex)));
 
+		DeletePlaylistAction_ = new QAction (tr ("Delete playlist"), Ui_.PlaylistsTree_);
 		DeletePlaylistAction_->setProperty ("ActionIcon", "list-remove");
+		DeletePlaylistAction_->setShortcut (Qt::Key_Delete);
+		DeletePlaylistAction_->setShortcutContext (Qt::WidgetShortcut);
 		connect (DeletePlaylistAction_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleDeleteSelected ()));
+		Ui_.PlaylistsTree_->addAction (DeletePlaylistAction_);
 	}
 
 	void PLManagerWidget::SetPlayer (Player *player)
@@ -85,6 +88,11 @@ namespace LMP
 	void PLManagerWidget::handleDeleteSelected ()
 	{
 		const auto& idx = Ui_.PlaylistsTree_->currentIndex ();
+
+		const auto mgr = Core::Instance ().GetPlaylistManager ();
+		if (!mgr->CanDeletePlaylist (idx))
+			return;
+
 		if (QMessageBox::question (this,
 				"LeechCraft",
 				tr ("Are you sure you want to delete playlist %1?")
@@ -92,7 +100,6 @@ namespace LMP
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		auto mgr = Core::Instance ().GetPlaylistManager ();
 		mgr->DeletePlaylist (Ui_.PlaylistsTree_->currentIndex ());
 	}
 
@@ -103,7 +110,7 @@ namespace LMP
 		if (sources.isEmpty ())
 			return;
 
-		Player_->ReplaceQueue (sources, false);
+		Player_->Enqueue (sources, Player::EnqueueFlag::EnqueueReplace);
 	}
 }
 }

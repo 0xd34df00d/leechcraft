@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,6 +40,8 @@
 #include <QActionGroup>
 #include <QGridLayout>
 #include <QToolButton>
+#include <QKeyEvent>
+#include <QApplication>
 #include <QtDebug>
 #include "interfaces/azoth/iresourceplugin.h"
 #include "xmlsettingsmanager.h"
@@ -49,6 +51,29 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	namespace
+	{
+		class SmilesTooltip : public QWidget
+		{
+		public:
+			SmilesTooltip (QWidget *parent)
+			: QWidget (parent, Qt::Tool)
+			{
+			}
+
+			void keyPressEvent (QKeyEvent *event)
+			{
+				if (event->key () == Qt::Key_Escape)
+				{
+					event->accept ();
+					hide ();
+				}
+				else
+					QWidget::keyPressEvent (event);
+			}
+		};
+	}
+
 	MsgFormatterWidget::MsgFormatterWidget (QTextEdit *edit, QWidget *parent)
 	: QWidget (parent)
 	, Edit_ (edit)
@@ -56,7 +81,7 @@ namespace Azoth
 	, StockBlockFormat_ (Edit_->document ()->begin ().blockFormat ())
 	, StockFrameFormat_ (Edit_->document ()->rootFrame ()->frameFormat ())
 	, HasCustomFormatting_ (false)
-	, SmilesTooltip_ (new QWidget (this, Qt::Tool))
+	, SmilesTooltip_ (new SmilesTooltip (this))
 	{
 		SmilesTooltip_->setWindowTitle (tr ("Emoticons"));
 
@@ -208,6 +233,12 @@ namespace Azoth
 		return result;
 	}
 
+	void MsgFormatterWidget::HidePopups ()
+	{
+		if (SmilesTooltip_)
+			SmilesTooltip_->hide ();
+	}
+
 	void MsgFormatterWidget::CharFormatActor (std::function<void (QTextCharFormat*)> format)
 	{
 		QTextCursor cursor = Edit_->textCursor ();
@@ -306,6 +337,7 @@ namespace Azoth
 
 		SmilesTooltip_->move (QCursor::pos ());
 		SmilesTooltip_->show ();
+		SmilesTooltip_->activateWindow ();
 
 		const QSize& size = SmilesTooltip_->size ();
 		const QPoint& newPos = QCursor::pos () - QPoint (0, size.height ());
@@ -367,7 +399,8 @@ namespace Azoth
 		const QString& text = sender ()->property ("Text").toString ();
 		Edit_->textCursor ().insertText (text + " ");
 
-		if (SmilesTooltip_)
+		if (SmilesTooltip_ &&
+				!(QApplication::keyboardModifiers () & Qt::ControlModifier))
 			SmilesTooltip_->hide ();
 	}
 

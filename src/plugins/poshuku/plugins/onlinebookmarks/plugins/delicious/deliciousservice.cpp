@@ -31,7 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QSettings>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/iaccount.h>
 #include "deliciousauthwidget.h"
 #include "deliciousapi.h"

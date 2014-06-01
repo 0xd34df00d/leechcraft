@@ -32,8 +32,12 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QStandardItemModel>
+#include <QDir>
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "ljprofile.h"
 #include "ljaccount.h"
 #include "ljfriendentry.h"
@@ -177,7 +181,7 @@ namespace Metida
 
 		Ui_.JournalName_->setText (data.FullName_);
 		IAccount *acc = qobject_cast<IAccount*> (Profile_->GetParentAccount ());
-		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
+		const QString& path = Util::GetUserDir (Util::UserDir::Cache, "blogique/metida/avatars")
 				.absoluteFilePath (acc->GetAccountID ().toBase64 ().replace ('/', '_'));
 		Ui_.JournalPic_->setPixmap (QPixmap (path));
 		ReFillModels ();
@@ -192,22 +196,24 @@ namespace Metida
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
 
+			const auto iconMgr = Core::Instance ().GetCoreProxy ()->GetIconThemeManager ();
+
 			QIcon icon;
 			FriendsProxyModel::FriendStatus status = FriendsProxyModel::FSFriendOf;
 			if (fr->GetFriendOf () &&
 					fr->GetMyFriend ())
 			{
-				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-msn");
+				icon = iconMgr->GetIcon ("im-msn");
 				status = FriendsProxyModel::FSBothFriends;
 			}
 			else if (fr->GetFriendOf ())
 			{
-				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-user-offline");
+				icon = iconMgr->GetIcon ("im-user-offline");
 				status = FriendsProxyModel::FSFriendOf;
 			}
 			else if (fr->GetMyFriend ())
 			{
-				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-user");
+				icon = iconMgr->GetIcon ("im-user");
 				status = FriendsProxyModel::FSMyFriend;
 			}
 			QStandardItem *itemStatus = new QStandardItem (icon, QString ());
@@ -242,7 +248,8 @@ namespace Metida
 
 	void ProfileWidget::FillCommunities (const QStringList& communities)
 	{
-		const QIcon& icon = Core::Instance ().GetCoreProxy ()->GetIcon ("system-users");
+		const QIcon& icon = Core::Instance ().GetCoreProxy ()->
+				GetIconThemeManager ()->GetIcon ("system-users");
 		for (const auto& community : communities)
 		{
 			QStandardItem *item = new QStandardItem (icon, community);

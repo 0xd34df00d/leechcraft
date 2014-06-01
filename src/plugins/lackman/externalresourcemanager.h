@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -63,36 +63,36 @@ namespace LackMan
 	public:
 		ExternalResourceManager (QObject* = 0);
 
-		/** @brief Fetches/returns (if cached) resource at url.
-			*
-			* If the resource identified by the given url is
-			* already fetched, this function just returns its
-			* contents. Otherwise, it starts fetching the resource.
-			* After the resource is fetched, the resourceFetched()
-			* signal is emitted.
-			*
-			* @param[in] url URL of the resource to fetch/return.
-			* @return The resource data (if fetched already) or
-			* nothing (if not).
-			*/
+		/** @brief Fetches resource at \em url.
+		 *
+		 * Starts fetching the resource identified by \em url. After the
+		 * resource is fetched, the resourceFetched() signal is emitted.
+		 *
+		 * If the resource identified by the \em url is already fetched,
+		 * this function does nothing.
+		 *
+		 * @param[in] url URL of the resource to fetch.
+		 *
+		 * @sa resourceFetched()
+		 */
 		void GetResourceData (const QUrl& url);
 
 		/** @brief Returns the path of the resource at a given
-			* url.
-			*
-			* This function returns the proper path even if the
-			* resource hasn't been fetched yet. In this case, there
-			* would be just no file at the returned path. The file
-			* at the returned path is guaranteed to exist and be
-			* valid only after resourceFetched() signal has been
-			* emitted for this url or if GetResourceData() returns
-			* proper data.
-			*
-			* @param[in] url URL of the resource to get the path
-			* for.
-			* @return The local path of the fetched copy of the
-			* url.
-			*/
+		 * url.
+		 *
+		 * This function returns the proper path even if the
+		 * resource hasn't been fetched yet. In this case, there
+		 * would be just no file at the returned path. The file
+		 * at the returned path is guaranteed to exist and be
+		 * valid only after resourceFetched() signal has been
+		 * emitted for this url or if GetResourceData() returns
+		 * proper data.
+		 *
+		 * @param[in] url URL of the resource to get the path
+		 * for.
+		 * @return The local path of the fetched copy of the
+		 * url.
+		 */
 		QString GetResourcePath (const QUrl& url) const;
 
 		/** Clears all fetched resources.
@@ -100,13 +100,13 @@ namespace LackMan
 		void ClearCaches ();
 
 		/** @brief Clears fetched resource identified by url.
-			*
-			* If the resource identified by url isn't fetched, this
-			* function does nothing.
-			*
-			* @param[in] url URL of the resource to remove from
-			* cache.
-			*/
+		 *
+		 * If the resource identified by url isn't fetched, this
+		 * function does nothing.
+		 *
+		 * @param[in] url URL of the resource to remove from
+		 * cache.
+		 */
 		void ClearCachedResource (const QUrl& url);
 	private slots:
 		void handleResourceFinished (int);
@@ -114,14 +114,16 @@ namespace LackMan
 		void handleResourceError (int, IDownload::Error);
 	signals:
 		/** @brief Emitted once the resource identified by url
-			* is fetched.
-			*
-			* After this signal GetResourceData() function is
-			* guaranteed to return valid and actual data for the
-			* resource identified by the emitted url.
-			*
-			* @param[out] url URL of the resource just fetched.
-			*/
+		 * is fetched.
+		 *
+		 * After this signal GetResourceData() function is
+		 * guaranteed to return valid and actual data for the
+		 * resource identified by the emitted url.
+		 *
+		 * @param[out] url URL of the resource just fetched.
+		 *
+		 * @sa GetResourceData()
+		 */
 		void resourceFetched (const QUrl& url);
 
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

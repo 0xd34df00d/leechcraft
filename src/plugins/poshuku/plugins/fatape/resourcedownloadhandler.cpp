@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,15 +36,13 @@
 #include <QSettings>
 #include "userscript.h"
 
-
-
 namespace LeechCraft
 {
 namespace Poshuku
 {
 namespace FatApe
 {
-	ResourceDownloadHandler::ResourceDownloadHandler (const QString& resourceName, 
+	ResourceDownloadHandler::ResourceDownloadHandler (const QString& resourceName,
 			UserScript *script, QNetworkReply *reply)
 	: ResourceName_ (resourceName)
 	, Script_ (script)
@@ -72,7 +70,7 @@ namespace FatApe
 		settings.setValue (QString ("resources/%1/%2/%3")
 				.arg (qHash (Script_->Namespace ()))
 				.arg (Script_->Name ())
-				.arg (ResourceName_), 
+				.arg (ResourceName_),
 				Reply_->header (QNetworkRequest::ContentTypeHeader));
 		Reply_->deleteLater ();
 		deleteLater ();

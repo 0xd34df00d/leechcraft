@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -57,8 +57,7 @@ namespace LeechCraft
 
 		IRootWindowsManager* GetRootWindowsManager () const;
 
-		QIcon GetIcon (const QString&, const QString& = QString ()) const;
-		void UpdateIconset (const QList<QAction*>&) const;
+		IIconThemeManager* GetIconThemeManager () const;
 
 		IColorThemeManager* GetColorThemeManager () const;
 
@@ -69,7 +68,6 @@ namespace LeechCraft
 		IPluginsManager* GetPluginsManager () const;
 		IEntityManager* GetEntityManager () const;
 		QString GetVersion () const;
-		QObject* GetSelf ();
 		void RegisterSkinnable (QAction*);
 		bool IsShuttingDown ();
 	};

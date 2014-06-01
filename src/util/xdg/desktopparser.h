@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,7 +31,7 @@
 
 #include <QHash>
 #include <QStringList>
-#include <util/utilconfig.h>
+#include "xdgconfig.h"
 
 namespace LeechCraft
 {
@@ -51,7 +51,7 @@ namespace XDG
 		typedef QHash<QString, LangValue_t> Group_t;
 		typedef QHash<QString, Group_t> Result_t;
 
-		UTIL_API Result_t operator() (const QByteArray&);
+		UTIL_XDG_API Result_t operator() (const QByteArray&);
 	};
 }
 }

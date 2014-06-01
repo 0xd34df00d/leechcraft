@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -45,7 +45,8 @@ namespace Aggregator
 		virtual ~Parser ();
 		/** @brief Indicates whether parser could parse the document.
 			*
-			* @param[in] doc
+			* @param[in] doc The document to parse.
+			* @return Whether the given document \em doc can be parsed.
 			*/
 		virtual bool CouldParse (const QDomDocument& doc) const = 0;
 

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,6 +42,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/ihavetabs.h>
 #include <util/xdg/itemsfinder.h>
 #include <util/xdg/item.h>
@@ -80,7 +81,7 @@ namespace Launchy
 		{
 			auto icon = Icons_.value (id);
 			if (icon.isNull ())
-				icon = Proxy_->GetIcon ("system-run");
+				icon = Proxy_->GetIconThemeManager ()->GetIcon ("system-run");
 
 			const auto& ourSize = requestedSize.width () > 1 ?
 					requestedSize :
@@ -212,11 +213,11 @@ namespace Launchy
 
 		if (RecentManager_->HasRecents ())
 			addCustomCat (tr ("Recent"), "X-Recent", "document-open-recent",
-					Proxy_->GetIcon ("document-open-recent"));
+					Proxy_->GetIconThemeManager ()->GetIcon ("document-open-recent"));
 		addCustomCat ("LeechCraft", "X-LeechCraft", "leechcraft",
 				QIcon ("lcicons:/resources/images/leechcraft.svg"));
 		addCustomCat (tr ("Favorites"), "X-Favorites", "favorites",
-				Proxy_->GetIcon ("favorites"));
+				Proxy_->GetIconThemeManager ()->GetIcon ("favorites"));
 	}
 
 	void FSDisplayer::MakeStdItems ()
@@ -328,7 +329,8 @@ namespace Launchy
 			}
 
 			if (!catInfo.IconName_.isEmpty ())
-				IconsProvider_->AddIcon (catInfo.IconName_, Proxy_->GetIcon (catInfo.IconName_));
+				IconsProvider_->AddIcon (catInfo.IconName_,
+						Proxy_->GetIconThemeManager ()->GetIcon (catInfo.IconName_));
 
 			auto catItem = new QStandardItem;
 			catItem->setData (visibleName, ModelRoles::CategoryName);

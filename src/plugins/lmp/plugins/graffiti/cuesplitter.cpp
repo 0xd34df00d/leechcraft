@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -80,6 +80,7 @@ namespace Graffiti
 
 			int Date_;
 			QString Genre_;
+			QString DiscId_;
 
 			QList<File> Files_;
 
@@ -101,13 +102,22 @@ namespace Graffiti
 			return str;
 		}
 
-		void HandleREM (QByteArray rem, Cue& result)
+		void HandleREM (QString rem, Cue& result)
 		{
 			rem = rem.mid (4);
-			if (rem.startsWith ("GENRE "))
-				result.Genre_ = rem.mid (6);
-			else if (rem.startsWith ("DATE "))
-				result.Date_ = rem.mid (5).toInt ();
+
+			const QList<QPair<QString, std::function<void (QString)>>> setters ({
+					{ "GENRE", [&result] (const QString& val) { result.Genre_ = val; } },
+					{ "DATE", [&result] (const QString& val) { result.Date_ = val.toInt (); } },
+					{ "DISCID", [&result] (const QString& val) { result.DiscId_ = val; } }
+				});
+
+			for (const auto& key : setters)
+				if (rem.startsWith (key.first))
+				{
+					key.second (rem.mid (key.first.size () + 1));
+					break;
+				}
 		}
 
 		template<typename Iter>
@@ -156,13 +166,13 @@ namespace Graffiti
 		}
 
 		template<typename Iter>
-		Iter HandleFile (const QByteArray& line, Iter i, Iter end, Cue& result)
+		Iter HandleFile (const QString& line, Iter i, Iter end, Cue& result)
 		{
 			const auto startQuote = line.indexOf ('"');
 			const auto endQuote = line.lastIndexOf ('"');
 
 			File file;
-			file.Filename_ = QString::fromUtf8 (line.mid (startQuote + 1, endQuote - startQuote - 1));
+			file.Filename_ = line.mid (startQuote + 1, endQuote - startQuote - 1);
 
 			while (i != end)
 			{
@@ -202,9 +212,9 @@ namespace Graffiti
 
 			Cue result;
 			const auto& lines = file.readAll ().split ('\n');
-			for (auto i = lines.begin (), end= lines.end (); i != end; )
+			for (auto i = lines.begin (), end = lines.end (); i != end; )
 			{
-				const auto& line = i->trimmed ();
+				const auto& line = QString::fromUtf8 (i->trimmed ());
 
 				if (line.startsWith ("REM "))
 				{
@@ -213,12 +223,12 @@ namespace Graffiti
 				}
 				else if (line.startsWith ("PERFORMER "))
 				{
-					result.Performer_ = ChopQuotes (QString::fromUtf8 (line.mid (10)));
+					result.Performer_ = ChopQuotes (line.mid (10));
 					++i;
 				}
 				else if (line.startsWith ("TITLE "))
 				{
-					result.Album_ = ChopQuotes (QString::fromUtf8 (line.mid (6)));
+					result.Album_ = ChopQuotes (line.mid (6));
 					++i;
 				}
 				else if (line.startsWith ("FILE "))
@@ -243,10 +253,39 @@ namespace Graffiti
 		return CueFile_;
 	}
 
+	namespace
+	{
+		QString FindFile (const QString& file, const QDir& dir)
+		{
+			if (dir.exists (file))
+				return dir.absoluteFilePath (file);
+
+			const auto& listing = dir.entryList (QDir::Files);
+
+			auto candPos = std::find_if (listing.begin (), listing.end (),
+					[&file] (const QString& item)
+					{
+						return !QString::compare (item, file, Qt::CaseInsensitive);
+					});
+			if (candPos != listing.end ())
+				return dir.absoluteFilePath (*candPos);
+
+			candPos = std::find_if (listing.begin (), listing.end (),
+					[&file] (const QString& item)
+					{
+						return !QString::compare (item.section ('.', 0, -2),
+								file.section ('.', 0, -2),
+								Qt::CaseInsensitive);
+					});
+
+			return candPos == listing.end () ? QString () : *candPos;
+		}
+	}
+
 	void CueSplitter::split ()
 	{
 		const auto& cue = ParseCue (QDir (Dir_).absoluteFilePath (CueFile_));
-		qDebug () << cue.IsValid () << cue.Album_ << cue.Performer_ << cue.Date_;
+		qDebug () << cue.IsValid () << cue.Album_ << cue.Performer_ << cue.Date_ << cue.DiscId_;
 		for (const auto& file : cue.Files_)
 		{
 			qDebug () << "\t" << file.Filename_;
@@ -277,8 +316,9 @@ namespace Graffiti
 
 		for (const auto& file : cue.Files_)
 		{
-			const QDir dir (Dir_);
-			if (!dir.exists (file.Filename_))
+			const QDir dir { Dir_ };
+			const auto& path = FindFile (file.Filename_, dir);
+			if (path.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO
 						<< file.Filename_
@@ -286,8 +326,6 @@ namespace Graffiti
 				emit error (tr ("No such file %1.").arg (file.Filename_));
 				continue;
 			}
-
-			const auto& path = dir.absoluteFilePath (file.Filename_);
 
 			for (const auto& track : file.Tracks_)
 				SplitQueue_.append ({
@@ -300,7 +338,8 @@ namespace Graffiti
 						cue.Album_,
 						track.Title_,
 						cue.Date_,
-						cue.Genre_
+						cue.Genre_,
+						cue.DiscId_
 					});
 		}
 
@@ -347,6 +386,7 @@ namespace Graffiti
 		addTag ("TRACKNUMBER", QString::number (item.Index_));
 		addTag ("GENRE", item.Genre_);
 		addTag ("DATE", item.Date_ > 0 ? QString::number (item.Date_) : QString ());
+		addTag ("DISCID", item.DiscId_);
 
 		args << item.SourceFile_ << "-o" << item.TargetFile_;
 

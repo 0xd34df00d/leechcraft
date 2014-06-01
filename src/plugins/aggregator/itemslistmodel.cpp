@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,8 +33,10 @@
 #include <QPalette>
 #include <QTextDocument>
 #include <QtDebug>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -44,9 +46,9 @@ namespace Aggregator
 	: QAbstractItemModel (parent)
 	, CurrentRow_ (-1)
 	, CurrentChannel_ (-1)
-	, StarredIcon_ (Core::Instance ().GetProxy ()->GetIcon ("mail-mark-important"))
-	, UnreadIcon_ (Core::Instance ().GetProxy ()->GetIcon ("mail-mark-unread"))
-	, ReadIcon_ (Core::Instance ().GetProxy ()->GetIcon ("mail-mark-read"))
+	, StarredIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-important"))
+	, UnreadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-unread"))
+	, ReadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-read"))
 	{
 		ItemHeaders_ << tr ("Name") << tr ("Date");
 
@@ -54,10 +56,15 @@ namespace Aggregator
 				SIGNAL (channelRemoved (IDType_t)),
 				this,
 				SLOT (handleChannelRemoved (IDType_t)));
-		connect (&Core::Instance (),
+
+		connect (&StorageBackendManager::Instance (),
 				SIGNAL (itemsRemoved (QSet<IDType_t>)),
 				this,
 				SLOT (handleItemsRemoved (QSet<IDType_t>)));
+		connect (&StorageBackendManager::Instance (),
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				this,
+				SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)));
 	}
 
 	int ItemsListModel::GetSelectedRow () const
@@ -72,8 +79,9 @@ namespace Aggregator
 
 	void ItemsListModel::SetCurrentChannel (const IDType_t& channel)
 	{
+		beginResetModel ();
 		CurrentChannel_ = channel;
-		reset ();
+		endResetModel ();
 	}
 
 	void ItemsListModel::Selected (const QModelIndex& index)
@@ -116,16 +124,21 @@ namespace Aggregator
 
 	void ItemsListModel::Reset (const IDType_t& channel)
 	{
+		beginResetModel ();
+
 		CurrentChannel_ = channel;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 		if (channel != static_cast<IDType_t> (-1))
 			Core::Instance ().GetStorageBackend ()->GetItems (CurrentItems_, channel);
-		reset ();
+
+		endResetModel ();
 	}
 
 	void ItemsListModel::Reset (const QList<IDType_t>& items)
 	{
+		beginResetModel ();
+
 		CurrentChannel_ = -1;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
@@ -134,18 +147,23 @@ namespace Aggregator
 		for (const IDType_t& itemId : items)
 			CurrentItems_.push_back (sb->GetItem (itemId)->ToShort ());
 
-		reset ();
+		endResetModel ();
 	}
 
-	void ItemsListModel::RemoveItems (QSet<IDType_t> ids)
+	void ItemsListModel::RemoveItems (const QSet<IDType_t>& ids)
 	{
 		if (ids.isEmpty ())
 			return;
 
 		const bool shouldReset = ids.size () > 10;
 
+		if (shouldReset)
+			beginResetModel ();
+
+		int remainingCount = ids.size ();
+
 		for (auto i = CurrentItems_.begin ();
-				i != CurrentItems_.end () && !ids.isEmpty (); )
+				i != CurrentItems_.end () && remainingCount; )
 		{
 			if (!ids.contains (i->ItemID_))
 			{
@@ -153,13 +171,15 @@ namespace Aggregator
 				continue;
 			}
 
-			ids.remove (i->ItemID_);
 			if (!shouldReset)
 			{
 				const size_t dist = std::distance (CurrentItems_.begin (), i);
 				beginRemoveRows (QModelIndex (), dist, dist);
 			}
+
 			i = CurrentItems_.erase (i);
+			--remainingCount;
+
 			if (!shouldReset)
 			{
 				endRemoveRows ();
@@ -168,23 +188,19 @@ namespace Aggregator
 		}
 
 		if (shouldReset)
-			reset ();
+			endResetModel ();
 	}
 
 	void ItemsListModel::ItemDataUpdated (Item_ptr item)
 	{
-		ItemShort is = item->ToShort ();
+		const auto& is = item->ToShort ();
 
-		auto pos = CurrentItems_.end ();
-
-		for (auto i = CurrentItems_.begin (),
-				end = CurrentItems_.end (); i != end; ++i)
-			if (is.Title_ == i->Title_ &&
-					is.URL_ == i->URL_)
-			{
-				pos = i;
-				break;
-			}
+		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
+				[&item] (const ItemShort& itemShort)
+				{
+					return item->ItemID_ == itemShort.ItemID_ ||
+							(item->Title_ == itemShort.Title_ && item->Link_ == itemShort.URL_);
+				});
 
 		// Item is new
 		if (pos == CurrentItems_.end ())
@@ -372,6 +388,8 @@ namespace Aggregator
 		}
 		else if (role == ItemRole::IsRead)
 			return !CurrentItems_ [index.row ()].Unread_;
+		else if (role == ItemRole::ItemId)
+			return CurrentItems_ [index.row ()].ItemID_;
 		else
 			return QVariant ();
 	}
@@ -407,6 +425,16 @@ namespace Aggregator
 		return parent.isValid () ? 0 : CurrentItems_.size ();
 	}
 
+	void ItemsListModel::reset (const IDType_t& type)
+	{
+		Reset (type);
+	}
+
+	void ItemsListModel::selected (const QModelIndex& index)
+	{
+		Selected (index);
+	}
+
 	void ItemsListModel::handleChannelRemoved (IDType_t id)
 	{
 		if (id != CurrentChannel_)
@@ -417,6 +445,14 @@ namespace Aggregator
 	void ItemsListModel::handleItemsRemoved (const QSet<IDType_t>& items)
 	{
 		RemoveItems (items);
+	}
+
+	void ItemsListModel::handleItemDataUpdated (const Item_ptr& item, const Channel_ptr& channel)
+	{
+		if (channel->ChannelID_ != CurrentChannel_)
+			return;
+
+		ItemDataUpdated (item);
 	}
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,9 +30,10 @@
 #include "shortcutmanager.h"
 #include <QAction>
 #include <QShortcut>
-#include "util/util.h"
+#include <util/xpc/util.h>
 #include "interfaces/ihaveshortcuts.h"
 #include "interfaces/core/ientitymanager.h"
+#include "interfaces/core/iiconthememanager.h"
 
 namespace LeechCraft
 {
@@ -59,7 +60,7 @@ namespace Util
 				SLOT (handleActionDestroyed ()));
 
 		const QIcon& icon = act->icon ().isNull () ?
-				CoreProxy_->GetIcon (act->property ("ActionIcon").toString ()) :
+				CoreProxy_->GetIconThemeManager ()->GetIcon (act->property ("ActionIcon").toString ()) :
 				act->icon ();
 		RegisterActionInfo (id,
 				{ act->text (), act->shortcuts (), icon });

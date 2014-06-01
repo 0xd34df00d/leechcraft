@@ -31,26 +31,58 @@
 
 #include <QObject>
 #include "interfaces/lmp/ilmpproxy.h"
+#include "interfaces/lmp/ilmputilproxy.h"
+#include "interfaces/lmp/ilmpguiproxy.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	class PlayerTab;
+
+	class LMPUtilProxy : public QObject
+					   , public ILMPUtilProxy
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::LMP::ILMPUtilProxy)
+	public:
+		QString FindAlbumArt (const QString&, bool) const;
+		QList<QFileInfo> RecIterateInfo (const QString&, bool, std::atomic<bool>*) const;
+		QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const;
+		QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const;
+		QString PerformSubstitutions (QString, const MediaInfo&, SubstitutionFlags) const;
+	};
+
+	class LMPGuiProxy : public QObject
+					  , public ILMPGuiProxy
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::LMP::ILMPGuiProxy)
+
+		PlayerTab *PlayerTab_ = nullptr;
+	public:
+		void SetPlayerTab (PlayerTab*);
+
+		void AddCurrentSongTab (const QString&, QWidget*) const;
+	};
+
 	class LMPProxy : public QObject
 				   , public ILMPProxy
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::LMP::ILMPProxy)
-	public:
-		LMPProxy ();
 
+		LMPUtilProxy UtilProxy_;
+		LMPGuiProxy GuiProxy_;
+	public:
 		ILocalCollection* GetLocalCollection () const;
 		ITagResolver* GetTagResolver () const;
-		QString FindAlbumArt (const QString&, bool) const;
-		QList<QFileInfo> RecIterateInfo (const QString&, bool) const;
-		QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const;
-		QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const;
-		QString PerformSubstitutions (QString mask, const MediaInfo& info) const;
+		const ILMPUtilProxy* GetUtilProxy () const;
+		const ILMPGuiProxy* GetGuiProxy () const;
+		LMPGuiProxy* GetGuiProxy ();
+
+		void PreviewRelease (const QString& artist, const QString& release,
+				const QList<QPair<QString, int>>& tracks) const;
 	};
 }
 }

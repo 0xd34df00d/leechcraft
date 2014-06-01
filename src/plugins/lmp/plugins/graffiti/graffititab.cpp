@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,15 +33,18 @@
 #include <QToolBar>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QProgressDialog>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QtDebug>
+#include <QSettings>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
-#include <util/util.h>
+#include <util/gui/lineeditbuttonmanager.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/itagsfetcher.h>
@@ -54,6 +57,7 @@
 #include "fileswatcher.h"
 #include "cuesplitter.h"
 #include "tagsfetchmanager.h"
+#include "reciterator.h"
 
 namespace LeechCraft
 {
@@ -61,6 +65,8 @@ namespace LMP
 {
 namespace Graffiti
 {
+	const int MaxHistoryCount = 25;
+
 	GraffitiTab::GraffitiTab (ICoreProxy_ptr coreProxy, ILMPProxy_ptr proxy, const TabClassInfo& tc, QObject *plugin)
 	: CoreProxy_ (coreProxy)
 	, LMPProxy_ (proxy)
@@ -73,69 +79,17 @@ namespace Graffiti
 	, IsChangingCurrent_ (false)
 	{
 		Ui_.setupUi (this);
-		new Util::ClearLineEditAddon (coreProxy, Ui_.Album_);
-		new Util::ClearLineEditAddon (coreProxy, Ui_.Artist_);
-		new Util::ClearLineEditAddon (coreProxy, Ui_.Title_);
-		new Util::ClearLineEditAddon (coreProxy, Ui_.Genre_);
 
-		FSModel_->setRootPath (QDir::homePath ());
-		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
-		FSModel_->setReadOnly (true);
-		Ui_.DirectoryTree_->setModel (FSModel_);
-
-		auto idx = FSModel_->index (QDir::homePath ());
-		while (idx.isValid ())
-		{
-			Ui_.DirectoryTree_->expand (idx);
-			idx = idx.parent ();
-		}
-
-		Ui_.FilesList_->setModel (FilesModel_);
-
-		connect (Ui_.FilesList_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (currentFileChanged (QModelIndex)));
-
-		Save_ = Toolbar_->addAction (tr ("Save"),
-				this, SLOT (save ()));
-		Save_->setProperty ("ActionIcon", "document-save");
-		Save_->setShortcut (QString ("Ctrl+S"));
-
-		Revert_ = Toolbar_->addAction (tr ("Revert"),
-				this, SLOT (revert ()));
-		Revert_->setProperty ("ActionIcon", "document-revert");
-
-		Toolbar_->addSeparator ();
-
-		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
-				this, SLOT (renameFiles ()));
-		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
-
-		Toolbar_->addSeparator ();
-
-		GetTags_ = Toolbar_->addAction (tr ("Fetch tags"),
-				this, SLOT (fetchTags ()));
-		GetTags_->setProperty ("ActionIcon", "download");
-
-		SplitCue_ = Toolbar_->addAction (tr ("Split CUE..."),
-				this, SLOT (splitCue ()));
-		SplitCue_->setProperty ("ActionIcon", "split");
-		SplitCue_->setEnabled (false);
-
-		Ui_.Genre_->SetSeparator (" / ");
-
-		auto model = new Util::TagsCompletionModel (this);
-		model->UpdateTags (Genres);
-		auto completer = new Util::TagsCompleter (Ui_.Genre_, this);
-		completer->OverrideModel (model);
-
-		Ui_.Genre_->AddSelector ();
+		SetupEdits ();
+		SetupViews ();
+		SetupToolbar ();
 
 		connect (FilesWatcher_,
 				SIGNAL (rereadFiles ()),
 				this,
 				SLOT (handleRereadFiles ()));
+
+		RestorePathHistory ();
 	}
 
 	TabClassInfo GraffitiTab::GetTabClassInfo () const
@@ -182,6 +136,166 @@ namespace Graffiti
 			Save_->setEnabled (true);
 			Revert_->setEnabled (true);
 		}
+	}
+
+	void GraffitiTab::SetPath (const QString& path)
+	{
+		AddToPathHistory (path);
+
+		setEnabled (false);
+		FilesModel_->Clear ();
+		FilesWatcher_->Clear ();
+
+		auto recIterator = new RecIterator (LMPProxy_, this);
+		connect (recIterator,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleIterateFinished ()));
+		connect (recIterator,
+				SIGNAL (canceled ()),
+				this,
+				SLOT (handleIterateCanceled ()));
+
+		auto progDialog = new QProgressDialog (this);
+		progDialog->setLabelText (tr ("Scanning path %1...")
+					.arg ("<em>" + path + "</em>"));
+		progDialog->setAttribute (Qt::WA_DeleteOnClose);
+		connect (recIterator,
+				SIGNAL (finished ()),
+				progDialog,
+				SLOT (close ()));
+		connect (progDialog,
+				SIGNAL (canceled ()),
+				recIterator,
+				SLOT (cancel ()));
+		progDialog->show ();
+
+		recIterator->Start (path);
+
+		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
+	}
+
+	void GraffitiTab::SetupEdits ()
+	{
+		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Album_);
+		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Artist_);
+		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Title_);
+
+		auto genreMgr = new Util::LineEditButtonManager (Ui_.Genre_);
+
+		Ui_.Genre_->SetSeparator (" / ");
+
+		auto model = new Util::TagsCompletionModel (this);
+		model->UpdateTags (Genres);
+		auto completer = new Util::TagsCompleter (Ui_.Genre_, this);
+		completer->OverrideModel (model);
+
+		Ui_.Genre_->AddSelector (genreMgr);
+
+		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Genre_, genreMgr);
+	}
+
+	void GraffitiTab::SetupViews ()
+	{
+		FSModel_->setRootPath (QDir::rootPath ());
+		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
+		FSModel_->setReadOnly (true);
+		Ui_.DirectoryTree_->setModel (FSModel_);
+		Ui_.DirectoryTree_->sortByColumn (0, Qt::AscendingOrder);
+
+		auto idx = FSModel_->index (QDir::homePath ());
+		while (idx.isValid ())
+		{
+			Ui_.DirectoryTree_->expand (idx);
+			idx = idx.parent ();
+		}
+
+		Ui_.FilesList_->setModel (FilesModel_);
+
+		connect (Ui_.FilesList_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (currentFileChanged (QModelIndex)));
+
+		connect (Ui_.PathLine_,
+				SIGNAL (activated (QString)),
+				this,
+				SLOT (handlePathLine ()));
+	}
+
+	void GraffitiTab::SetupToolbar ()
+	{
+		Save_ = Toolbar_->addAction (tr ("Save"),
+				this, SLOT (save ()));
+		Save_->setProperty ("ActionIcon", "document-save");
+		Save_->setShortcut (QString ("Ctrl+S"));
+
+		Revert_ = Toolbar_->addAction (tr ("Revert"),
+				this, SLOT (revert ()));
+		Revert_->setProperty ("ActionIcon", "document-revert");
+
+		Toolbar_->addSeparator ();
+
+		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
+				this, SLOT (renameFiles ()));
+		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
+
+		Toolbar_->addSeparator ();
+
+		GetTags_ = Toolbar_->addAction (tr ("Fetch tags"),
+				this, SLOT (fetchTags ()));
+		GetTags_->setProperty ("ActionIcon", "download");
+
+		SplitCue_ = Toolbar_->addAction (tr ("Split CUE..."),
+				this, SLOT (splitCue ()));
+		SplitCue_->setProperty ("ActionIcon", "split");
+		SplitCue_->setEnabled (false);
+	}
+
+	void GraffitiTab::RestorePathHistory ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_Graffiti");
+		settings.beginGroup ("PathHistory");
+		const auto& paths = settings.value ("HistList").toStringList ();
+		settings.endGroup ();
+
+		Ui_.PathLine_->blockSignals (true);
+		for (const auto& item : paths)
+			if (QFile::exists (item))
+				Ui_.PathLine_->addItem (item);
+
+		Ui_.PathLine_->setCurrentIndex (-1);
+		Ui_.PathLine_->blockSignals (false);
+	}
+
+	void GraffitiTab::AddToPathHistory (const QString& path)
+	{
+		const auto sameIdx = Ui_.PathLine_->findText (path);
+		if (!sameIdx)
+			return;
+
+		Ui_.PathLine_->blockSignals (true);
+		if (sameIdx > 0)
+			Ui_.PathLine_->removeItem (sameIdx);
+
+		Ui_.PathLine_->insertItem (0, path);
+
+		while (Ui_.PathLine_->count () > MaxHistoryCount)
+			Ui_.PathLine_->removeItem (Ui_.PathLine_->count () - 1);
+
+		Ui_.PathLine_->setCurrentIndex (0);
+		Ui_.PathLine_->blockSignals (false);
+
+		QStringList paths;
+		for (int i = 0; i < Ui_.PathLine_->count (); ++i)
+			paths << Ui_.PathLine_->itemText (i);
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_Graffiti");
+		settings.beginGroup ("PathHistory");
+		settings.setValue ("HistList", paths);
+		settings.endGroup ();
 	}
 
 	void GraffitiTab::on_Artist__textChanged (const QString& artist)
@@ -396,22 +510,29 @@ namespace Graffiti
 
 	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
 	{
-		setEnabled (false);
-		FilesModel_->Clear ();
-		FilesWatcher_->Clear ();
-
 		const auto& path = FSModel_->filePath (index);
+		Ui_.PathLine_->blockSignals (true);
+		Ui_.PathLine_->setEditText (path);
+		Ui_.PathLine_->blockSignals (false);
 
-		auto watcher = new QFutureWatcher<QList<QFileInfo>> ();
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleIterateFinished ()));
+		SetPath (path);
+	}
 
-		auto worker = [this, path] () { return LMPProxy_->RecIterateInfo (path, true); };
-		watcher->setFuture (QtConcurrent::run (std::function<QList<QFileInfo> ()> (worker)));
+	void GraffitiTab::handlePathLine ()
+	{
+		qDebug () << Q_FUNC_INFO;
+		QString path = Ui_.PathLine_->currentText ();
+		if (path.startsWith ('~'))
+		{
+			path.replace (0, 1, QDir::homePath ());
+			Ui_.PathLine_->blockSignals (true);
+			Ui_.PathLine_->setEditText (path);
+			Ui_.PathLine_->blockSignals (false);
+		}
 
-		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
+		Ui_.DirectoryTree_->setCurrentIndex (FSModel_->index (path));
+
+		SetPath (path);
 	}
 
 	void GraffitiTab::currentFileChanged (const QModelIndex& index)
@@ -439,10 +560,10 @@ namespace Graffiti
 
 	void GraffitiTab::handleIterateFinished ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<QList<QFileInfo>>*> (sender ());
-		watcher->deleteLater ();
+		auto recIterator = qobject_cast<RecIterator*> (sender ());
+		recIterator->deleteLater ();
 
-		const auto& files = watcher->result ();
+		const auto& files = recIterator->GetResult ();
 
 		FilesWatcher_->AddFiles (files);
 		FilesModel_->AddFiles (files);
@@ -470,6 +591,12 @@ namespace Graffiti
 				this,
 				SLOT (handleScanFinished ()));
 		scanWatcher->setFuture (QtConcurrent::run (std::function<QList<MediaInfo> ()> (worker)));
+	}
+
+	void GraffitiTab::handleIterateCanceled  ()
+	{
+		sender ()->deleteLater ();
+		setEnabled (true);
 	}
 
 	void GraffitiTab::handleScanFinished ()

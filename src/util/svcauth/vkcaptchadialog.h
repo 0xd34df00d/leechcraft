@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,7 +31,7 @@
 
 #include <QDialog>
 #include <QVariantMap>
-#include <util/utilconfig.h>
+#include "svcauthconfig.h"
 
 class QNetworkAccessManager;
 class QUrl;
@@ -47,7 +47,7 @@ namespace Util
 {
 namespace SvcAuth
 {
-	class UTIL_API VkCaptchaDialog : public QDialog
+	class UTIL_SVCAUTH_API VkCaptchaDialog : public QDialog
 	{
 		Q_OBJECT
 
@@ -57,6 +57,8 @@ namespace SvcAuth
 	public:
 		VkCaptchaDialog (const QVariantMap& errorMap, QNetworkAccessManager*, QWidget* = 0);
 		VkCaptchaDialog (const QUrl&, const QString&, QNetworkAccessManager*, QWidget* = 0);
+
+		void SetContextName (const QString&);
 
 		void done (int) override;
 	private slots:

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,8 +29,9 @@
 
 #include "collectionsortermodel.h"
 #include <functional>
-#include "localcollection.h"
+#include "localcollectionmodel.h"
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -59,42 +60,27 @@ namespace LMP
 
 		bool NameCompare (const QVariant& left, const QVariant& right, CompareFlags flags)
 		{
-			auto leftStr = left.toString ();
-			auto rightStr = right.toString ();
-
-			if (flags & WithoutThe)
-			{
-				auto chopStr = [] (QString& str)
-				{
-					if (str.startsWith ("the ", Qt::CaseInsensitive))
-						str = str.mid (4);
-				};
-
-				chopStr (leftStr);
-				chopStr (rightStr);
-			}
-
-			return QString::localeAwareCompare (leftStr, rightStr) < 0;
+			return CompareArtists (left.toString (), right.toString (), flags & WithoutThe);
 		}
 
 		struct Comparators
 		{
 			typedef std::function<bool (const QVariant&, const QVariant&, CompareFlags)> Comparator_t;
-			QHash<LocalCollection::Role, Comparator_t> Role2Cmp_;
+			QHash<LocalCollectionModel::Role, Comparator_t> Role2Cmp_;
 
 			Comparators ()
 			{
-				Role2Cmp_ [LocalCollection::Role::ArtistName] = NameCompare;
-				Role2Cmp_ [LocalCollection::Role::AlbumName] = VarCompare<QString>;
-				Role2Cmp_ [LocalCollection::Role::AlbumYear] = VarCompare<int>;
-				Role2Cmp_ [LocalCollection::Role::TrackNumber] = VarCompare<int>;
-				Role2Cmp_ [LocalCollection::Role::TrackTitle] = VarCompare<QString>;
-				Role2Cmp_ [LocalCollection::Role::TrackPath] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollectionModel::Role::ArtistName] = NameCompare;
+				Role2Cmp_ [LocalCollectionModel::Role::AlbumName] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollectionModel::Role::AlbumYear] = VarCompare<int>;
+				Role2Cmp_ [LocalCollectionModel::Role::TrackNumber] = VarCompare<int>;
+				Role2Cmp_ [LocalCollectionModel::Role::TrackTitle] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollectionModel::Role::TrackPath] = VarCompare<QString>;
 			}
 		};
 
 		bool RoleCompare (const QModelIndex& left, const QModelIndex& right,
-				QList<LocalCollection::Role> roles, CompareFlags flags)
+				QList<LocalCollectionModel::Role> roles, CompareFlags flags)
 		{
 			static Comparators comparators;
 			while (!roles.isEmpty ())
@@ -108,6 +94,7 @@ namespace LMP
 			return false;
 		}
 	}
+
 	CollectionSorterModel::CollectionSorterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
 	, UseThe_ (true)
@@ -121,21 +108,21 @@ namespace LMP
 
 	bool CollectionSorterModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
-		const auto type = left.data (LocalCollection::Role::Node).toInt ();
-		QList<LocalCollection::Role> roles;
+		const auto type = left.data (LocalCollectionModel::Role::Node).toInt ();
+		QList<LocalCollectionModel::Role> roles;
 		switch (type)
 		{
-		case LocalCollection::NodeType::Artist:
-			roles << LocalCollection::Role::ArtistName;
+		case LocalCollectionModel::NodeType::Artist:
+			roles << LocalCollectionModel::Role::ArtistName;
 			break;
-		case LocalCollection::NodeType::Album:
-			roles << LocalCollection::Role::AlbumYear
-					<< LocalCollection::Role::AlbumName;
+		case LocalCollectionModel::NodeType::Album:
+			roles << LocalCollectionModel::Role::AlbumYear
+					<< LocalCollectionModel::Role::AlbumName;
 			break;
-		case LocalCollection::NodeType::Track:
-			roles << LocalCollection::Role::TrackNumber
-					<< LocalCollection::Role::TrackTitle
-					<< LocalCollection::Role::TrackPath;
+		case LocalCollectionModel::NodeType::Track:
+			roles << LocalCollectionModel::Role::TrackNumber
+					<< LocalCollectionModel::Role::TrackTitle
+					<< LocalCollectionModel::Role::TrackPath;
 			break;
 		default:
 			return QSortFilterProxyModel::lessThan (left, right);

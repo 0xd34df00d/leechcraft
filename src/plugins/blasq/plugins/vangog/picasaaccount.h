@@ -128,7 +128,7 @@ namespace Vangog
 		bool HasUploadFeature (Feature) const override;
 		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) override;
 
-		void ImageUploadResponse (const QByteArray& content);
+		void ImageUploadResponse (const QByteArray& content, const UploadItem&);
 	private:
 		bool TryToEnterLoginIfNoExists ();
 		void CreatePhotoItem (const Photo& photo);
@@ -144,6 +144,7 @@ namespace Vangog
 	signals:
 		void accountChanged (PicasaAccount *acc);
 		void doneUpdating () override;
+		void itemUploaded (const UploadItem&, const QUrl&);
 	};
 }
 }

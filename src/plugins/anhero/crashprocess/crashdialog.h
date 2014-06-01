@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,7 +29,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QDialog>
+#include <QProcess>
 #include "ui_crashdialog.h"
 #include "appinfo.h"
 
@@ -40,6 +42,7 @@ namespace AnHero
 namespace CrashProcess
 {
 	struct AppInfo;
+	class GDBLauncher;
 
 	class CrashDialog : public QDialog
 	{
@@ -48,6 +51,8 @@ namespace CrashProcess
 		Ui::CrashDialog Ui_;
 		const QString CmdLine_;
 		const AppInfo Info_;
+
+		std::shared_ptr<GDBLauncher> GdbLauncher_;
 	public:
 		CrashDialog (const AppInfo&, QWidget* = 0);
 	private:
@@ -59,7 +64,9 @@ namespace CrashProcess
 		void done (int);
 	private slots:
 		void appendTrace (const QString&);
-		void handleFinished (int);
+		void handleFinished (int, QProcess::ExitStatus);
+		void handleError (QProcess::ExitStatus, int, QProcess::ProcessError, const QString&);
+		void clearGdb ();
 
 		void reload ();
 

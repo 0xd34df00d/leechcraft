@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -71,6 +71,9 @@ namespace ChatHistory
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleHistoryRequested ()));
+
+		SeparatorAction_ = Util::CreateSeparator (this);
+		SeparatorAction_->property ("Azoth/ChatHistory/IsGood").toBool ();
 
 		connect (Core::Instance ().get (),
 				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
@@ -254,7 +257,8 @@ namespace ChatHistory
 			Entry2ActionEnableHistory_ [entry] = action;
 		}
 
-		QList<QVariant> list = proxy->GetReturnValue ().toList ();
+		auto list = proxy->GetReturnValue ().toList ();
+		list << QVariant::fromValue<QObject*> (SeparatorAction_);
 		list << QVariant::fromValue<QObject*> (Entry2ActionHistory_ [entry]);
 		list << QVariant::fromValue<QObject*> (Entry2ActionEnableHistory_ [entry]);
 		proxy->SetReturnValue (list);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,6 +35,8 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/idatafilter.h>
+#include <interfaces/ientityhandler.h>
 #include <interfaces/data/iimgsource.h>
 
 namespace LeechCraft
@@ -51,9 +53,11 @@ namespace Blasq
 				 , public IPluginReady
 				 , public IHaveSettings
 				 , public IImgSource
+				 , public IEntityHandler
+				 , public IDataFilter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveRecoverableTabs IPluginReady IHaveSettings IImgSource)
+		Q_INTERFACES (IInfo IHaveTabs IHaveRecoverableTabs IPluginReady IHaveSettings IImgSource IEntityHandler IDataFilter)
 
 		ICoreProxy_ptr Proxy_;
 
@@ -84,6 +88,12 @@ namespace Blasq
 		ImageServiceInfos_t GetServices () const;
 		IPendingImgSourceRequest* RequestImages (const QByteArray& serviceId);
 		IPendingImgSourceRequest* StartDefaultChooser ();
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
+
+		QString GetFilterVerb () const;
+		QList<FilterVariant> GetFilterVariants () const;
 	private:
 		void TabOpenRequested (const QByteArray&, const DynPropertiesList_t&, QDataStream* = nullptr);
 	signals:

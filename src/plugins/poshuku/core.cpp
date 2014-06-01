@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -54,8 +54,8 @@
 #include <qwebhistory.h>
 #include <QtDebug>
 #include <QMainWindow>
-#include <util/util.h>
-#include <util/defaulthookproxy.h>
+#include <util/xpc/util.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -124,24 +124,9 @@ namespace Poshuku
 			throw std::runtime_error ("could not create necessary directories for Poshuku");
 		}
 
-		StorageBackend::Type type;
-		QString strType = XmlSettingsManager::Instance ()->
-			property ("StorageType").toString ();
-		if (strType == "SQLite")
-			type = StorageBackend::SBSQLite;
-		else if (strType == "PostgreSQL")
-			type = StorageBackend::SBPostgres;
-		else if (strType == "MySQL")
-			type = StorageBackend::SBMysql;
-		else
-			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
-						.arg (strType)));
-
-		std::shared_ptr<StorageBackend> sb;
 		try
 		{
-			sb = StorageBackend::Create (type);
-			sb->Prepare ();
+			StorageBackend_ = StorageBackend::Create ();
 		}
 		catch (const std::runtime_error& s)
 		{
@@ -154,9 +139,6 @@ namespace Poshuku
 			emit error (tr ("Poshuku: general storage initialization error."));
 			throw;
 		}
-
-		StorageBackend_ = sb;
-		StorageBackend_->Prepare ();
 
 		HistoryModel_.reset (new HistoryModel (this));
 		connect (StorageBackend_.get (),
@@ -357,7 +339,7 @@ namespace Poshuku
 			return 0;
 
 		BrowserWidget *widget = new BrowserWidget ();
-		widget->InitShortcuts ();
+		widget->FinalizeInit ();
 		Widgets_.push_back (widget);
 
 		Q_FOREACH (const auto& pair, props)
@@ -396,7 +378,7 @@ namespace Poshuku
 
 		BrowserWidget *widget = new BrowserWidget ();
 		widget->Deown ();
-		widget->InitShortcuts ();
+		widget->FinalizeInit ();
 		SetupConnections (widget);
 		return widget;
 	}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -46,13 +46,21 @@ namespace LeechCraft
 		void DisableModification ();
 		void DisableRemoval ();
 
+		void AddCustomButton (const QByteArray& id, const QString& text);
+
 		void SetModel (QAbstractItemModel*);
 		QAbstractItemModel* GetModel () const;
 		QModelIndex GetCurrentIndex () const;
 		QModelIndexList GetSelectedRows () const;
+	public slots:
+		void resizeColumns ();
+	private slots:
+		void handleCustomButtonReleased ();
 	signals:
 		void addRequested ();
 		void modifyRequested ();
 		void removeRequested ();
+
+		void customButtonReleased (const QByteArray&);
 	};
 }

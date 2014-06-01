@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,6 +33,7 @@
 #include <QIcon>
 #include <QTimer>
 #include <QFileInfo>
+#include <QElapsedTimer>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QBuffer>
@@ -48,20 +49,11 @@ namespace LMP
 {
 namespace MTPSync
 {
-	const int CacheLifetime = 300 * 1000;
-
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
 
 		LIBMTP_Init ();
-
-		CacheEvictTimer_ = new QTimer (this);
-		connect (CacheEvictTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (clearCaches ()));
-		CacheEvictTimer_->setInterval (CacheLifetime);
 
 		QTimer::singleShot (5000,
 				this,
@@ -160,7 +152,7 @@ namespace MTPSync
 				qDebug () << "matching against" << serial;
 				if (serial == devId)
 				{
-					DevicesCache_ [devId] = DeviceCacheEntry { std::move (device), {} };
+					DevicesCache_ [devId] = DeviceCacheEntry { std::move (device) };
 					found = true;
 					break;
 				}
@@ -179,12 +171,8 @@ namespace MTPSync
 			}
 		}
 
-		auto& entry = DevicesCache_ [devId];
+		const auto& entry = DevicesCache_ [devId];
 		UploadTo (entry.Device_.get (), storageId, localPath, origPath);
-		entry.LastAccess_ = QDateTime::currentDateTime ();
-
-		if (CacheEvictTimer_->isActive ())
-			CacheEvictTimer_->stop ();
 	}
 
 	void Plugin::Refresh ()
@@ -202,17 +190,17 @@ namespace MTPSync
 		struct CallbackData
 		{
 			Plugin *Plugin_;
-			mutable uint64_t PrevSent_;
+			mutable QElapsedTimer Timer_;
 		};
 
 		int TransferCallback (uint64_t sent, uint64_t total, const void *rawData)
 		{
 			auto data = static_cast<const CallbackData*> (rawData);
 
-			if (sent - data->PrevSent_ > total / 200)
+			if (data->Timer_.elapsed () > 100)
 			{
-				data->PrevSent_ = sent;
 				data->Plugin_->HandleTransfer (sent, total);
+				data->Timer_.restart ();
 			}
 
 			return 0;
@@ -251,7 +239,6 @@ namespace MTPSync
 
 		while (storage)
 		{
-			qDebug () << "st" << storage->id;
 			if (QByteArray::number (storage->id) == storageId)
 				break;
 			storage = storage->next;
@@ -267,6 +254,8 @@ namespace MTPSync
 					tr ("Unable to find the requested storage."));
 			return;
 		}
+
+		IsUploading_ = true;
 
 		const auto id = storage->id;
 		const auto& info = OrigInfos_.take (origPath);
@@ -295,11 +284,16 @@ namespace MTPSync
 				SLOT (handleUploadFinished ()));
 		const auto future = QtConcurrent::run ([=] () -> UploadInfo
 			{
-				const auto cbData = new CallbackData { this, 0 };
+				const auto cbData = new CallbackData { this, {} };
+				cbData->Timer_.start ();
 				const auto res = LIBMTP_Send_Track_From_File (device,
 						localPath.toUtf8 ().constData (), track,
 						TransferCallback, cbData);
 				delete cbData;
+
+				if (!res)
+					AppendAlbum (device, track, info);
+
 				return { res, device, localPath, track, info };
 			});
 		watcher->setFuture (future);
@@ -449,7 +443,16 @@ namespace MTPSync
 				{ LIBMTP_FILETYPE_OGG, "ogg" },
 				{ LIBMTP_FILETYPE_ASF, "asf" },
 				{ LIBMTP_FILETYPE_AAC, "aac" },
-				{ LIBMTP_FILETYPE_FLAC, "flac" }
+				{ LIBMTP_FILETYPE_FLAC, "flac" },
+				{ LIBMTP_FILETYPE_WMA, "wma" },
+
+				// uninteresting formats go here
+				{ LIBMTP_FILETYPE_FOLDER, {} },
+				{ LIBMTP_FILETYPE_WMV, {} },
+				{ LIBMTP_FILETYPE_AVI, {} },
+				{ LIBMTP_FILETYPE_MPEG, {} },
+				{ LIBMTP_FILETYPE_JPEG, {} }
+
 			};
 
 			QStringList result;
@@ -471,6 +474,8 @@ namespace MTPSync
 				result << pos->second;
 			}
 			free (formats);
+
+			result.removeAll ({});
 
 			return result;
 		}
@@ -502,13 +507,23 @@ namespace MTPSync
 			const auto& devName = QString::fromUtf8 (LIBMTP_Get_Manufacturername (device)) + " " +
 					QString::fromUtf8 (LIBMTP_Get_Modelname (device)) + " " +
 					LIBMTP_Get_Friendlyname (device);
+
+
+			int battPercentage = -1;
+			uint8_t maxBattLevel = 0, curBattLevel = 0;
+			if (!LIBMTP_Get_Batterylevel (device, &maxBattLevel, &curBattLevel) && curBattLevel)
+				battPercentage = 100 * curBattLevel / maxBattLevel;
+
+			qDebug () << Q_FUNC_INFO << curBattLevel << maxBattLevel << battPercentage;
+
 			return
 			{
 				LIBMTP_Get_Serialnumber (device),
 				LIBMTP_Get_Manufacturername (device),
 				devName.simplified ().trimmed (),
 				GetPartitions (device),
-				GetSupportedFormats (device)
+				GetSupportedFormats (device),
+				battPercentage
 			};
 		}
 
@@ -554,12 +569,9 @@ namespace MTPSync
 			LIBMTP_Clear_Errorstack (info.Device_);
 		}
 
-		AppendAlbum (info.Device_, info.Track_, info.Info_);
-
 		LIBMTP_destroy_track_t (info.Track_);
 
-		if (!CacheEvictTimer_->isActive ())
-			CacheEvictTimer_->stop ();
+		IsUploading_ = false;
 
 		emit uploadFinished (info.LocalPath_, QFile::NoError, {});
 	}
@@ -568,6 +580,16 @@ namespace MTPSync
 	{
 		if (IsPolling_)
 			return;
+
+		if (IsUploading_)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "uploading in progress, not polling";
+			QTimer::singleShot (120000,
+					this,
+					SLOT (pollDevices ()));
+			return;
+		}
 
 		auto watcher = new QFutureWatcher<USBDevInfos_t> ();
 		connect (watcher,
@@ -604,6 +626,10 @@ namespace MTPSync
 			Subscribe2Devs ();
 			FirstPoll_ = false;
 		}
+
+		QTimer::singleShot (120000,
+				this,
+				SLOT (pollDevices ()));
 	}
 
 	void Plugin::handleRowsInserted (const QModelIndex& parent, int start, int end)
@@ -639,8 +665,6 @@ namespace MTPSync
 		if (parent.isValid ())
 			return;
 
-		clearCaches ();
-
 		bool changed = false;
 		for (auto i = start; i <= end; ++i)
 		{
@@ -652,33 +676,17 @@ namespace MTPSync
 			const auto pos = std::find_if (Infos_.begin (), Infos_.end (),
 					[&busnum, &devnum] (const USBDevInfo& info)
 						{ return info.Busnum_ == busnum && info.Devnum_ == devnum; });
-			if (pos != Infos_.end ())
-			{
-				Infos_.erase (pos);
-				changed = true;
-			}
+			if (pos == Infos_.end ())
+				continue;
+
+			DevicesCache_.remove (pos->Info_.ID_);
+
+			Infos_.erase (pos);
+			changed = true;
 		}
 
 		if (changed)
 			emit availableDevicesChanged ();
-	}
-
-	void Plugin::clearCaches ()
-	{
-		const auto& now = QDateTime::currentDateTime ();
-		for (auto i = DevicesCache_.begin (); i != DevicesCache_.end (); )
-		{
-			if (i->LastAccess_.secsTo (now) > CacheLifetime)
-			{
-				qDebug () << Q_FUNC_INFO << "erased";
-				i = DevicesCache_.erase (i);
-			}
-			else
-				++i;
-		}
-
-		if (DevicesCache_.isEmpty ())
-			CacheEvictTimer_->stop ();
 	}
 }
 }

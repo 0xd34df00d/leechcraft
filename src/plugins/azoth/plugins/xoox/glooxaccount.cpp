@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,7 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <QXmppCallManager.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 
@@ -64,6 +64,10 @@
 #include "accountsettingsholder.h"
 #include "crypthandler.h"
 #include "gwitemsremovaldialog.h"
+#include "serverinfostorage.h"
+#include "xep0313manager.h"
+#include "xep0313prefsdialog.h"
+#include "xep0313modelmanager.h"
 
 namespace LeechCraft
 {
@@ -86,9 +90,16 @@ namespace Xoox
 	, SettingsHolder_ (new AccountSettingsHolder (this))
 	, SelfVCardAction_ (new QAction (tr ("Self VCard..."), this))
 	, PrivacyDialogAction_ (new QAction (tr ("Privacy lists..."), this))
+	, CarbonsAction_ (new QAction (tr ("Enable message carbons"), this))
+	, Xep0313ModelMgr_ (new Xep0313ModelManager (this))
 	{
 		SelfVCardAction_->setProperty ("ActionIcon", "text-x-vcard");
 		PrivacyDialogAction_->setProperty ("ActionIcon", "emblem-locked");
+		CarbonsAction_->setProperty ("ActionIcon", "edit-copy");
+
+		CarbonsAction_->setCheckable (true);
+		CarbonsAction_->setToolTip (tr ("Deliver messages from conversations on "
+					"other resources to this resource as well."));
 
 		connect (SelfVCardAction_,
 				SIGNAL (triggered ()),
@@ -98,6 +109,10 @@ namespace Xoox
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showPrivacyDialog ()));
+		connect (CarbonsAction_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleCarbonsToggled (bool)));
 
 		connect (SettingsHolder_,
 				SIGNAL (accountSettingsChanged ()),
@@ -177,6 +192,11 @@ namespace Xoox
 				this,
 				SIGNAL (mucInvitationReceived (QVariantMap, QString, QString)));
 
+		connect (ClientConnection_->GetXep0313Manager (),
+				SIGNAL (serverHistoryFetched (QString, QString, SrvHistMessages_t)),
+				this,
+				SLOT (handleServerHistoryFetched (QString, QString, SrvHistMessages_t)));
+
 #ifdef ENABLE_MEDIACALLS
 		connect (ClientConnection_->GetCallManager (),
 				SIGNAL (callReceived (QXmppCall*)),
@@ -185,6 +205,8 @@ namespace Xoox
 #endif
 
 		regenAccountIcon (SettingsHolder_->GetJID ());
+
+		CarbonsAction_->setChecked (SettingsHolder_->IsMessageCarbonsEnabled ());
 	}
 
 	void GlooxAccount::Release ()
@@ -243,10 +265,7 @@ namespace Xoox
 
 	QList<QAction*> GlooxAccount::GetActions () const
 	{
-		QList<QAction*> result;
-		result << SelfVCardAction_;
-		result << PrivacyDialogAction_;
-		return result;
+		return { SelfVCardAction_, PrivacyDialogAction_, CarbonsAction_ };
 	}
 
 	void GlooxAccount::QueryInfo (const QString& entryId)
@@ -491,7 +510,8 @@ namespace Xoox
 						<< "null entry for"
 						<< target;
 		}
-		target += '/' + var;
+		if (!var.isEmpty ())
+			target += '/' + var;
 		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
 	}
 #endif
@@ -670,6 +690,46 @@ namespace Xoox
 				});
 	}
 
+	bool GlooxAccount::HasFeature (ServerHistoryFeature feature) const
+	{
+		auto infoStorage = ClientConnection_->GetServerInfoStorage ();
+		const bool supportsMam = Xep0313Manager::Supports0313 (infoStorage->GetServerFeatures ());
+		switch (feature)
+		{
+		case ServerHistoryFeature::AccountSupportsHistory:
+		case ServerHistoryFeature::Configurable:
+			return supportsMam;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown feature"
+				<< static_cast<int> (feature);
+		return false;
+	}
+
+	void GlooxAccount::OpenServerHistoryConfiguration ()
+	{
+		auto dialog = new Xep0313PrefsDialog (ClientConnection_->GetXep0313Manager ());
+		dialog->show ();
+	}
+
+	QAbstractItemModel* GlooxAccount::GetServerContactsModel () const
+	{
+		return Xep0313ModelMgr_->GetModel ();
+	}
+
+	void GlooxAccount::FetchServerHistory (const QModelIndex& index,
+			const QByteArray& startId, int count)
+	{
+		const auto& jid = Xep0313ModelMgr_->Index2Jid (index);
+		ClientConnection_->GetXep0313Manager ()->RequestHistory (jid, startId, count);
+	}
+
+	DefaultSortParams GlooxAccount::GetSortParams () const
+	{
+		return { 0, Qt::DisplayRole, Qt::AscendingOrder };
+	}
+
 #ifdef ENABLE_CRYPT
 	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
 	{
@@ -826,7 +886,7 @@ namespace Xoox
 
 	QByteArray GlooxAccount::Serialize () const
 	{
-		quint16 version = 8;
+		quint16 version = 9;
 
 		QByteArray result;
 		{
@@ -846,7 +906,7 @@ namespace Xoox
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 8)
+		if (version < 1 || version > 9)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -888,8 +948,6 @@ namespace Xoox
 		else if (jid.contains ("facebook") ||
 				jid.contains ("fb.com"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg");
-		else if (jid.contains ("vk.com"))
-			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/vk.svg");
 		else if (jid.contains ("odnoklassniki"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/odnoklassniki.svg");
 	}
@@ -948,9 +1006,33 @@ namespace Xoox
 
 	void GlooxAccount::showPrivacyDialog ()
 	{
-		PrivacyListsManager *mgr = ClientConnection_->GetPrivacyListsManager ();
-		PrivacyListsConfigDialog *plcd = new PrivacyListsConfigDialog (mgr);
+		auto mgr = ClientConnection_->GetPrivacyListsManager ();
+		auto plcd = new PrivacyListsConfigDialog (mgr);
 		plcd->show ();
+	}
+
+	void GlooxAccount::handleCarbonsToggled (bool toggled)
+	{
+		SettingsHolder_->SetMessageCarbonsEnabled (toggled);
+	}
+
+	void GlooxAccount::handleServerHistoryFetched (const QString& jid,
+			const QString& id, SrvHistMessages_t messages)
+	{
+		const auto& index = Xep0313ModelMgr_->Jid2Index (jid);
+
+		const auto& ourNick = GetOurNick ();
+
+		const auto jidEntry = ClientConnection_->GetCLEntry (jid);
+		const auto& otherNick = jidEntry ?
+				qobject_cast<ICLEntry*> (jidEntry)->GetHumanReadableID () :
+				jid;
+		for (auto& message : messages)
+			message.Nick_ = message.Dir_ == IMessage::Direction::DIn ?
+					otherNick :
+					ourNick;
+
+		emit serverHistoryFetched (index, id.toUtf8 (), messages);
 	}
 
 #ifdef ENABLE_MEDIACALLS

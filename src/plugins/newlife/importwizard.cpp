@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,6 +36,7 @@
 #include "importers/liferea/lifereaimporter.h"
 #include "importers/psiplus/psiplusimporter.h"
 #include "importers/vacuum/vacuumimporter.h"
+#include "importers/opera/operaimporter.h"
 
 namespace LeechCraft
 {
@@ -49,9 +50,10 @@ namespace NewLife
 
 		Importers_ << new Importers::AkregatorImporter (this);
 		Importers_ << new Importers::FirefoxImporter (this);
-		Importers_ << new Importers::KopeteImporter (this);
+		Importers_ << new Importers::OperaImporter (this);
 		Importers_ << new Importers::KTorrentImporter (this);
 		Importers_ << new Importers::LifereaImporter (this);
+		Importers_ << new Importers::KopeteImporter (this);
 		Importers_ << new Importers::PsiPlusImporter (this);
 		Importers_ << new Importers::VacuumImporter (this);
 

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -248,7 +248,7 @@ namespace ChatHistory
 	}
 
 	void Core::Search (const QString& accountId, const QString& entryId,
-			const QString& text, int shift)
+			const QString& text, int shift, bool cs)
 	{
 		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
 				"search",
@@ -256,7 +256,8 @@ namespace ChatHistory
 				Q_ARG (QString, accountId),
 				Q_ARG (QString, entryId),
 				Q_ARG (QString, text),
-				Q_ARG (int, shift));
+				Q_ARG (int, shift),
+				Q_ARG (bool, cs));
 	}
 
 	void Core::Search (const QString& accountId, const QString& entryId, const QDateTime& dt)

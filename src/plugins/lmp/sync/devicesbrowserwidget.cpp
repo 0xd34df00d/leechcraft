@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -41,6 +41,7 @@
 #include <interfaces/lmp/iunmountablesync.h>
 #include "core.h"
 #include "localcollection.h"
+#include "localcollectionmodel.h"
 #include "uploadmodel.h"
 #include "syncmanager.h"
 #include "transcodingparams.h"
@@ -104,36 +105,29 @@ namespace LMP
 		DevUploadModel_->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
 		Ui_.OurCollection_->setModel (DevUploadModel_);
 
-		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (uploadLog (QString)),
-				this,
-				SLOT (appendUpLog (QString)));
+		auto connectManager = [this] (SyncManagerBase *manager) -> void
+		{
+			connect (manager,
+					SIGNAL (uploadLog (QString)),
+					this,
+					SLOT (appendUpLog (QString)));
 
-		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleTranscodingProgress (int, int)));
-		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleUploadProgress (int, int)));
-		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (singleUploadProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleSingleUploadProgress (int, int)));
+			connect (manager,
+					SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
+					this,
+					SLOT (handleTranscodingProgress (int, int)));
+			connect (manager,
+					SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
+					this,
+					SLOT (handleUploadProgress (int, int)));
+			connect (manager,
+					SIGNAL (singleUploadProgress (int, int, SyncManagerBase*)),
+					this,
+					SLOT (handleSingleUploadProgress (int, int)));
+		};
 
-		connect (Core::Instance ().GetSyncUnmountableManager (),
-				SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleTranscodingProgress (int, int)));
-		connect (Core::Instance ().GetSyncUnmountableManager (),
-				SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleUploadProgress (int, int)));
-		connect (Core::Instance ().GetSyncUnmountableManager (),
-				SIGNAL (singleUploadProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleSingleUploadProgress (int, int)));
+		connectManager (Core::Instance ().GetSyncManager ());
+		connectManager (Core::Instance ().GetSyncUnmountableManager ());
 
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
@@ -262,7 +256,7 @@ namespace LMP
 		QStringList paths;
 		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
 				[] (const QModelIndex& idx)
-					{ return idx.data (LocalCollection::Role::TrackPath).toString (); });
+					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
 		Ui_.UploadLog_->clear ();
@@ -281,7 +275,7 @@ namespace LMP
 		QStringList paths;
 		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
 				[] (const QModelIndex& idx)
-					{ return idx.data (LocalCollection::Role::TrackPath).toString (); });
+					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
 		auto syncer = qobject_cast<IUnmountableSync*> (UnmountableMgr_->GetDeviceManager (idx));

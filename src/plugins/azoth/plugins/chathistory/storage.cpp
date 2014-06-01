@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,8 +33,10 @@
 #include <QStringList>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <util/util.h>
-#include <util/dblock.h>
+#include <QDir>
+#include <QtDebug>
+#include <util/db/dblock.h>
+#include <util/sys/paths.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 
@@ -127,7 +129,7 @@ namespace ChatHistory
 				"AND Date = (SELECT Date FROM azoth_history "
 				"	WHERE Id = :inner_entry_id "
 				"	AND AccountID = :inner_account_id "
-				"	AND Message LIKE :text "
+				"	AND ((Message LIKE :text AND :insensitive) OR (Message GLOB :ctext AND :sensitive)) "
 				"	ORDER BY Date DESC "
 				"	LIMIT 1 OFFSET :offset);");
 
@@ -136,14 +138,14 @@ namespace ChatHistory
 				"WHERE AccountID = :account_id "
 				"AND Date = (SELECT Date FROM azoth_history "
 				"	WHERE AccountID = :inner_account_id "
-				"	AND Message LIKE :text "
+				"	AND ((Message LIKE :text AND :insensitive) OR (Message GLOB :ctext AND :sensitive)) "
 				"	ORDER BY Date DESC "
 				"	LIMIT 1 OFFSET :offset);");
 
 		LogsSearcherWOContactAccount_ = QSqlQuery (*DB_);
 		LogsSearcherWOContactAccount_.prepare ("SELECT Date, Id, AccountID FROM azoth_history "
 				"WHERE Date = (SELECT Date FROM azoth_history "
-				"	WHERE Message LIKE :text "
+				"	WHERE ((Message LIKE :text AND :insensitive) OR (Message GLOB :ctext AND :sensitive)) "
 				"	ORDER BY Date DESC "
 				"	LIMIT 1 OFFSET :offset);");
 
@@ -408,11 +410,12 @@ namespace ChatHistory
 	{
 		std::shared_ptr<void> CleanupQueryGuard (QSqlQuery& query)
 		{
-			return std::shared_ptr<void> (static_cast<void*> (0), [&query] (void*) { query.finish (); });
+			return std::shared_ptr<void> (nullptr, [&query] (void*) { query.finish (); });
 		}
 	}
 
-	Storage::RawSearchResult Storage::Search (const QString& accountId, const QString& entryId, const QString& text, int shift)
+	Storage::RawSearchResult Storage::Search (const QString& accountId,
+			const QString& entryId, const QString& text, int shift, bool cs)
 	{
 		if (!Accounts_.contains (accountId))
 		{
@@ -440,6 +443,9 @@ namespace ChatHistory
 		LogsSearcher_.bindValue (":inner_entry_id", intEntryId);
 		LogsSearcher_.bindValue (":inner_account_id", intAccId);
 		LogsSearcher_.bindValue (":text", '%' + text + '%');
+		LogsSearcher_.bindValue (":ctext", '*' + text + '*');
+		LogsSearcher_.bindValue (":sensitive", static_cast<int> (cs));
+		LogsSearcher_.bindValue (":insensitive", static_cast<int> (!cs));
 		LogsSearcher_.bindValue (":offset", shift);
 		if (!LogsSearcher_.exec ())
 		{
@@ -458,7 +464,8 @@ namespace ChatHistory
 		return RawSearchResult (intEntryId, intAccId, LogsSearcher_.value (0).toDateTime ());
 	}
 
-	Storage::RawSearchResult Storage::Search (const QString& accountId, const QString& text, int shift)
+	Storage::RawSearchResult Storage::Search (const QString& accountId,
+			const QString& text, int shift, bool cs)
 	{
 		if (!Accounts_.contains (accountId))
 		{
@@ -474,6 +481,9 @@ namespace ChatHistory
 		LogsSearcherWOContact_.bindValue (":account_id", intAccId);
 		LogsSearcherWOContact_.bindValue (":inner_account_id", intAccId);
 		LogsSearcherWOContact_.bindValue (":text", '%' + text + '%');
+		LogsSearcherWOContact_.bindValue (":ctext", '*' + text + '*');
+		LogsSearcherWOContact_.bindValue (":sensitive", static_cast<int> (cs));
+		LogsSearcherWOContact_.bindValue (":insensitive", static_cast<int> (!cs));
 		LogsSearcherWOContact_.bindValue (":offset", shift);
 		if (!LogsSearcherWOContact_.exec ())
 		{
@@ -495,9 +505,12 @@ namespace ChatHistory
 				LogsSearcherWOContact_.value (0).toDateTime ());
 	}
 
-	Storage::RawSearchResult Storage::Search (const QString& text, int shift)
+	Storage::RawSearchResult Storage::Search (const QString& text, int shift, bool cs)
 	{
 		LogsSearcherWOContactAccount_.bindValue (":text", '%' + text + '%');
+		LogsSearcherWOContactAccount_.bindValue (":ctext", '*' + text + '*');
+		LogsSearcherWOContactAccount_.bindValue (":sensitive", static_cast<int> (cs));
+		LogsSearcherWOContactAccount_.bindValue (":insensitive", static_cast<int> (!cs));
 		LogsSearcherWOContactAccount_.bindValue (":offset", shift);
 		if (!LogsSearcherWOContactAccount_.exec ())
 		{
@@ -734,15 +747,15 @@ namespace ChatHistory
 	}
 
 	void Storage::search (const QString& accountId,
-			const QString& entryId, const QString& text, int shift)
+			const QString& entryId, const QString& text, int shift, bool cs)
 	{
 		RawSearchResult res;
 		if (!accountId.isEmpty () && !entryId.isEmpty ())
-			res = Search (accountId, entryId, text, shift);
+			res = Search (accountId, entryId, text, shift, cs);
 		else if (!accountId.isEmpty ())
-			res = Search (accountId, text, shift);
+			res = Search (accountId, text, shift, cs);
 		else
-			res = Search (text, shift);
+			res = Search (text, shift, cs);
 
 		if (res.Date_.isNull ())
 		{

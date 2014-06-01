@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,11 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_IDOWNLOAD_H
-#define INTERFACES_IDOWNLOAD_H
+#pragma once
+
 #include <QByteArray>
+#include <QUrl>
 #include <QtPlugin>
 #include "structures.h"
+
+class QNetworkReply;
 
 struct EntityTestHandleResult;
 
@@ -114,6 +117,8 @@ public:
 	 * hashes like Magnet links.
 	 *
 	 * @param[in] entity A Entity structure.
+	 * @return The result of the test whether the \em entity can be
+	 * handled.
 	 *
 	 * @sa AddJob
 	 * @sa LeechCraft::Entity
@@ -149,5 +154,5 @@ public:
 
 Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");
 
-#endif
-
+Q_DECLARE_METATYPE (QNetworkReply*);
+Q_DECLARE_METATYPE (QList<QUrl>);

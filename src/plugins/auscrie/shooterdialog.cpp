@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -32,6 +32,8 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <interfaces/idatafilter.h>
+#include <interfaces/iinfo.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -115,6 +117,8 @@ namespace Auscrie
 		Ui_.ActionBox_->clear ();
 		Filters_.clear ();
 
+		const auto& selected = RestoreFilterState ();
+
 		const auto& image = px.toImage ();
 		const auto& filters = Util::GetDataFilters (image, Proxy_->GetEntityManager ());
 		for (auto filter : filters)
@@ -122,10 +126,16 @@ namespace Auscrie
 			auto idf = qobject_cast<IDataFilter*> (filter);
 			const auto& verb = idf->GetFilterVerb ();
 
+			const auto& pluginId = qobject_cast<IInfo*> (filter)->GetUniqueID ();
+
 			for (const auto& var : idf->GetFilterVariants ())
 			{
 				Filters_.append ({ filter, var.ID_ });
 				Ui_.ActionBox_->addItem (QString ("%1: %2").arg (verb).arg (var.Name_));
+
+				if (pluginId == selected.PluginId_ &&
+						var.ID_ == selected.Variant_)
+					Ui_.ActionBox_->setCurrentIndex (Ui_.ActionBox_->count () - 1);
 			}
 		}
 		Ui_.ActionBox_->addItem (tr ("save"));

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -47,7 +47,7 @@ public:
 
 	virtual ~ITagsManager () {}
 
-	/** @brief Returns the ID of the given tag.
+	/** @brief Returns the ID of the given \em tag.
 	 *
 	 * If there is no such tag, it's added to the tag collection and the
 	 * id of the new tag is returned.
@@ -55,10 +55,21 @@ public:
 	 * @param[in] tag The tag that should be identified.
 	 * @return The ID of the tag.
 	 *
-	 * @sa GetTag
+	 * @sa GetTag()
+	 * @sa GetIDs()
 	 */
 	virtual tag_id GetID (const QString& tag) = 0;
 
+	/** @brief Returns the IDs of the given \em tags.
+	 *
+	 * This convenience function invokes GetID() for each tag in \em tags
+	 * and returns the list of the corresponding tag IDs.
+	 *
+	 * @param[in] tags The tags that should be identified.
+	 * @return The IDs of the tags.
+	 *
+	 * @sa GetID()
+	 */
 	QList<tag_id> GetIDs (const QStringList& tags)
 	{
 		QList<tag_id> result;
@@ -67,7 +78,7 @@ public:
 		return result;
 	}
 
-	/** @brief Returns the tag with the given id.
+	/** @brief Returns the tag with the given \em id.
 	 *
 	 * If there is no such tag, a null QString is returned. A sensible
 	 * plugin would delete the given id from the list of assigned tags
@@ -76,10 +87,21 @@ public:
 	 * @param[in] id The id of the tag.
 	 * @return The tag.
 	 *
-	 * @sa GetID
+	 * @sa GetID()
+	 * @sa GetTags()
 	 */
 	virtual QString GetTag (tag_id id) const = 0;
 
+	/** @brief Returns the tags with the given \em ids.
+	 *
+	 * This convenience function invokes GetTag() for each tag ID in
+	 * \em ids and returns the list of the corresponding tags.
+	 *
+	 * @param[in] ids The ids of the tags.
+	 * @return The tags corresponding to the \em ids.
+	 *
+	 * @sa GetTag()
+	 */
 	QStringList GetTags (const QList<tag_id>& ids)
 	{
 		QStringList result;
@@ -88,7 +110,7 @@ public:
 		return result;
 	}
 
-	/** Returns all tags existing in LeechCraft now.
+	/** @brief Returns all tags existing in LeechCraft now.
 	 *
 	 * @return List of all tags.
 	 */
@@ -132,12 +154,20 @@ public:
 	 */
 	virtual QString JoinIDs (const QStringList& tagIDs) const = 0;
 
-	/** @brief Returns the completion model for this.
+	/** @brief Returns the completion model for this tags manager.
+	 *
+	 * The returned completion model can be used in a QCompleter class.
+	 * It uses the tags from this tags manager to provide completions as
+	 * the user types.
+	 *
+	 * @return The completion model suitable for usage in a QCompleter.
 	 */
 	virtual QAbstractItemModel* GetModel () = 0;
 
 	/** @brief Returns the tags manager as a QObject to get access to
 	 * all the meta-stuff.
+	 *
+	 * @return This object as a QObject.
 	 */
 	virtual QObject* GetQObject () = 0;
 };

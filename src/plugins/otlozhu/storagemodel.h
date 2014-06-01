@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,6 +31,7 @@
 
 #include <QAbstractItemModel>
 #include <QStringList>
+#include "todoitem.h"
 
 namespace LeechCraft
 {
@@ -77,10 +78,15 @@ namespace Otlozhu
 		bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
 		void SetStorage (TodoStorage*);
+	private:
+		TodoItem_ptr GetItemForIndex (const QModelIndex&) const;
 	private slots:
 		void handleItemAdded (int);
 		void handleItemUpdated (int);
 		void handleItemRemoved (int);
+
+		void handleItemDepAdded (int, int);
+		void handleItemDepRemoved (int, int);
 	};
 }
 }

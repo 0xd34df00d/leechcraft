@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,8 +35,11 @@
 #include <interfaces/azoth/iextselfinfoaccount.h>
 #include <interfaces/azoth/ihaveconsole.h>
 #include <interfaces/azoth/isupportnonroster.h>
+#include <interfaces/azoth/ihaveserverhistory.h>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
+#include "vkprotocol.h"
+#include "vkconnection.h"
 
 namespace LeechCraft
 {
@@ -47,13 +50,13 @@ namespace Murm
 	class VkEntry;
 	class VkChatEntry;
 	class VkMessage;
-	class VkProtocol;
 	class VkConnection;
 	class PhotoStorage;
 	class GeoResolver;
 	class GroupsManager;
 	class Logger;
 	class AccountConfigDialog;
+	class ServerHistoryManager;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -61,13 +64,15 @@ namespace Murm
 					, public IExtSelfInfoAccount
 					, public IHaveConsole
 					, public ISupportNonRoster
+					, public IHaveServerHistory
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::ISupportTune
 				LeechCraft::Azoth::IExtSelfInfoAccount
 				LeechCraft::Azoth::IHaveConsole
-				LeechCraft::Azoth::ISupportNonRoster)
+				LeechCraft::Azoth::ISupportNonRoster
+				LeechCraft::Azoth::IHaveServerHistory)
 
 		const ICoreProxy_ptr CoreProxy_;
 
@@ -83,6 +88,7 @@ namespace Murm
 		VkConnection * const Conn_;
 		GroupsManager * const GroupsMgr_;
 		GeoResolver * const GeoResolver_;
+		ServerHistoryManager * const ServHistMgr_;
 
 		VkEntry *SelfEntry_ = nullptr;
 		QHash<qulonglong, VkEntry*> Entries_;
@@ -93,6 +99,7 @@ namespace Murm
 		bool PublishTune_ = false;
 		bool EnableFileLog_ = false;
 		bool MarkAsOnline_ = false;
+		bool UpdateStatus_ = false;
 
 		QPointer<AccountConfigDialog> AccConfigDia_;
 
@@ -108,8 +115,7 @@ namespace Murm
 
 		void Init ();
 
-		void Send (VkEntry*, VkMessage*);
-		void Send (VkChatEntry*, VkMessage*);
+		void Send (qulonglong, VkConnection::MessageType, VkMessage*);
 		void CreateChat (const QString&, const QList<VkEntry*>&);
 		VkEntry* GetEntry (qulonglong) const;
 		VkEntry* GetSelf () const;
@@ -121,7 +127,7 @@ namespace Murm
 		GroupsManager* GetGroupsManager () const;
 
 		QObject* GetQObject ();
-		QObject* GetParentProtocol () const;
+		VkProtocol* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
 
@@ -153,9 +159,17 @@ namespace Murm
 		void SetConsoleEnabled (bool);
 
 		QObject* CreateNonRosterItem (const QString&);
+
+		bool HasFeature (ServerHistoryFeature) const;
+		void OpenServerHistoryConfiguration ();
+		QAbstractItemModel* GetServerContactsModel () const;
+		void FetchServerHistory (const QModelIndex& contact, const QByteArray& startId, int count);
+		DefaultSortParams GetSortParams () const;
 	private:
 		void TryPendingMessages ();
 		VkEntry* CreateNonRosterItem (qulonglong);
+
+		bool CreateUsers (const QList<UserInfo>&);
 	private slots:
 		void handleSelfInfo (const UserInfo&);
 		void handleUsers (const QList<UserInfo>&);
@@ -164,6 +178,7 @@ namespace Murm
 		void handleMessage (const MessageInfo&);
 		void handleTypingNotification (qulonglong);
 
+		void handleMucChanged (qulonglong);
 		void handleGotChatInfo (const ChatInfo&);
 		void handleChatUserRemoved (qulonglong, qulonglong);
 
@@ -195,6 +210,9 @@ namespace Murm
 		void accountChanged (VkAccount*);
 
 		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
+
+		void serverHistoryFetched (const QModelIndex&,
+				const QByteArray&, const SrvHistMessages_t&);
 	};
 }
 }

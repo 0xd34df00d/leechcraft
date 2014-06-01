@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -34,8 +34,10 @@
 #include <QClipboard>
 #include <QProcess>
 #include <QtDebug>
+#include <QTimer>
 #include <util/util.h>
-#include <util/sysinfo.h>
+#include <util/sys/sysinfo.h>
+#include <util/sys/paths.h>
 #include "appinfo.h"
 #include "gdblauncher.h"
 #include "highlighter.h"
@@ -54,7 +56,6 @@ namespace CrashProcess
 		Ui_.setupUi (this);
 
 		Ui_.InfoLabel_->setText (tr ("Unfortunately LeechCraft has crashed. This is the info we could collect:"));
-		Ui_.RestartBox_->setEnabled (!Info_.ExecLine_.isEmpty ());
 
 		QFont traceFont ("Terminus");
 		traceFont.setStyleHint (QFont::TypeWriter);
@@ -67,6 +68,8 @@ namespace CrashProcess
 				this,
 				SLOT (reload ()));
 		reload ();
+
+		setAttribute (Qt::WA_DeleteOnClose);
 
 		show ();
 	}
@@ -95,7 +98,6 @@ namespace CrashProcess
 
 	void CrashDialog::SetInteractionAllowed (bool allowed)
 	{
-		Ui_.TraceDisplay_->setEnabled (allowed);
 		Ui_.Reload_->setEnabled (allowed);
 		Ui_.Copy_->setEnabled (allowed);
 		Ui_.Save_->setEnabled (allowed);
@@ -122,9 +124,11 @@ namespace CrashProcess
 
 	void CrashDialog::done (int res)
 	{
-		if (!CmdLine_.isEmpty () &&
-				Ui_.RestartBox_->checkState () == Qt::Checked)
-			QProcess::startDetached ("/bin/sh", { "-c", "sleep 2; " + CmdLine_ });
+		auto cmdlist = CmdLine_.split (' ', QString::SkipEmptyParts);
+		cmdlist << "--restart";
+
+		if (Ui_.RestartBox_->checkState () == Qt::Checked)
+			QProcess::startDetached (Info_.Path_, cmdlist);
 
 		QDialog::done (res);
 	}
@@ -143,8 +147,12 @@ namespace CrashProcess
 		}
 	}
 
-	void CrashDialog::handleFinished (int code)
+	void CrashDialog::handleFinished (int code, QProcess::ExitStatus)
 	{
+		QTimer::singleShot (0,
+				this,
+				SLOT (clearGdb ()));
+
 		Ui_.TraceDisplay_->append ("\n\nGDB exited with code " + QString::number (code));
 		SetInteractionAllowed (true);
 
@@ -170,21 +178,39 @@ namespace CrashProcess
 			Ui_.TraceDisplay_->append (line);
 	}
 
+	void CrashDialog::handleError (QProcess::ExitStatus, int code, QProcess::ProcessError error, const QString& errorStr)
+	{
+		Ui_.TraceDisplay_->append ("\n\nGDB crashed :(");
+		Ui_.TraceDisplay_->append (tr ("Exit code: %1; error code: %2; error string: %3.")
+				.arg (code)
+				.arg (error)
+				.arg (errorStr));
+	}
+
+	void CrashDialog::clearGdb ()
+	{
+		GdbLauncher_.reset ();
+	}
+
 	void CrashDialog::reload ()
 	{
 		Ui_.TraceDisplay_->clear ();
 
 		SetFormat ();
 
-		auto l = new GDBLauncher (Info_.PID_, Info_.Path_);
-		connect (l,
+		GdbLauncher_.reset (new GDBLauncher (Info_.PID_, Info_.Path_));
+		connect (GdbLauncher_.get (),
 				SIGNAL (gotOutput (QString)),
 				this,
 				SLOT (appendTrace (QString)));
-		connect (l,
-				SIGNAL (finished (int)),
+		connect (GdbLauncher_.get (),
+				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
-				SLOT (handleFinished (int)));
+				SLOT (handleFinished (int, QProcess::ExitStatus)));
+		connect (GdbLauncher_.get (),
+				SIGNAL (error (QProcess::ExitStatus, int, QProcess::ProcessError, QString)),
+				this,
+				SLOT (handleError (QProcess::ExitStatus, int, QProcess::ProcessError, QString)));
 
 		Ui_.TraceDisplay_->append ("=== SYSTEM INFO ===");
 		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (Info_.Signal_));

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,13 +27,15 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "chatfindbox.h"
 #include "ui_chathistorywidget.h"
 
 class QStandardItemModel;
+class QStandardItem;
 class QSortFilterProxyModel;
 
 namespace LeechCraft
@@ -47,6 +49,7 @@ class ICLEntry;
 namespace ChatHistory
 {
 	class Plugin;
+	class ChatFindBox;
 
 	class ChatHistoryWidget : public QWidget
 							, public ITabWidget
@@ -76,6 +79,8 @@ namespace ChatHistory
 
 		static Plugin *S_ParentMultiTabs_;
 
+		ChatFindBox *FindBox_;
+
 		enum ModelRoles
 		{
 			MRIDRole = Qt::UserRole + 1
@@ -99,22 +104,23 @@ namespace ChatHistory
 
 		void on_AccountBox__currentIndexChanged (int);
 		void handleContactSelected (const QModelIndex&);
-		void on_HistorySearch__returnPressed ();
-		void on_SearchType__currentIndexChanged ();
 
 		void on_Calendar__currentPageChanged ();
 		void on_Calendar__activated (const QDate&);
 
+		void handleNext (const QString&, ChatFindBox::FindFlags);
 		void previousHistory ();
 		void nextHistory ();
 		void clearHistory ();
 
 		void on_HistView__anchorClicked (const QUrl&);
 	private:
+		QStandardItem* FindContactItem (const QString&) const;
+
 		void ShowLoading ();
 		void UpdateDates ();
 		void RequestLogs ();
-		void RequestSearch ();
+		void RequestSearch (ChatFindBox::FindFlags);
 	signals:
 		void removeSelf (QWidget*);
 
@@ -123,5 +129,3 @@ namespace ChatHistory
 }
 }
 }
-
-#endif

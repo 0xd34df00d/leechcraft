@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -179,11 +179,8 @@ namespace Xoox
 			return;
 
 		QList<AdHocCommand> commands;
-		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
-		{
-			AdHocCommand cmd (item.name (), item.node ());
-			commands << cmd;
-		}
+		for (const auto& item : iq.items ())
+			commands.append ({ item.name (), item.node () });
 
 		emit gotCommands (iq.from (), commands);
 	}

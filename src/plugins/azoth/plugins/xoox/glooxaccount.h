@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -50,6 +50,7 @@
 #include <interfaces/azoth/isupportbookmarks.h>
 #include <interfaces/azoth/ihavemicroblogs.h>
 #include <interfaces/azoth/iregmanagedaccount.h>
+#include <interfaces/azoth/ihaveserverhistory.h>
 #ifdef ENABLE_CRYPT
 #include <interfaces/azoth/isupportpgp.h>
 #endif
@@ -79,6 +80,7 @@ namespace Xoox
 
 	class GlooxProtocol;
 	class TransferManager;
+	class Xep0313ModelManager;
 
 	class GlooxAccount : public QObject
 					   , public IAccount
@@ -97,6 +99,7 @@ namespace Xoox
 					   , public ISupportRIEX
 					   , public ISupportBookmarks
 					   , public IRegManagedAccount
+					   , public IHaveServerHistory
 #ifdef ENABLE_CRYPT
 					   , public ISupportPGP
 #endif
@@ -115,6 +118,7 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportRIEX
 				LeechCraft::Azoth::ISupportBookmarks
 				LeechCraft::Azoth::IRegManagedAccount
+				LeechCraft::Azoth::IHaveServerHistory
 			)
 
 #ifdef ENABLE_MEDIACALLS
@@ -139,6 +143,9 @@ namespace Xoox
 
 		QAction *SelfVCardAction_;
 		QAction *PrivacyDialogAction_;
+		QAction *CarbonsAction_;
+
+		Xep0313ModelManager * const Xep0313ModelMgr_;
 	public:
 		GlooxAccount (const QString&, QObject*);
 
@@ -217,6 +224,13 @@ namespace Xoox
 		bool SupportsFeature (Feature) const;
 		void UpdateServerPassword (const QString& newPass);
 
+		// IHaveServerHistory
+		bool HasFeature (ServerHistoryFeature) const;
+		void OpenServerHistoryConfiguration ();
+		QAbstractItemModel* GetServerContactsModel () const;
+		void FetchServerHistory (const QModelIndex&, const QByteArray&, int);
+		DefaultSortParams GetSortParams () const;
+
 #ifdef ENABLE_CRYPT
 		// ISupportPGP
 		void SetPrivateKey (const QCA::PGPKey&);
@@ -257,6 +271,9 @@ namespace Xoox
 		void feedClientPassword ();
 		void showSelfVCard ();
 		void showPrivacyDialog ();
+		void handleCarbonsToggled (bool);
+		void handleServerHistoryFetched (const QString&,
+				const QString&, SrvHistMessages_t);
 #ifdef ENABLE_MEDIACALLS
 		void handleIncomingCall (QXmppCall*);
 #endif
@@ -286,6 +303,9 @@ namespace Xoox
 		void geolocationInfoChanged (const QString&, QObject*);
 
 		void serverPasswordUpdated (const QString&);
+
+		void serverHistoryFetched (const QModelIndex&,
+				const QByteArray&, const SrvHistMessages_t&);
 
 #ifdef ENABLE_MEDIACALLS
 		void called (QObject*);

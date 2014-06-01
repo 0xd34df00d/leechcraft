@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -31,7 +31,7 @@
 #define UTIL_FLOWLAYOUT_H
 #include <QLayout>
 #include <QStyle>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 namespace LeechCraft
 {
@@ -41,8 +41,10 @@ namespace Util
 	 *
 	 * Flow layout arranges child items in a dynamic wrappable row, much
 	 * like QML's GridView.
+	 *
+	 * @ingroup GuiUtil
 	 */
-	class UTIL_API FlowLayout : public QLayout
+	class UTIL_GUI_API FlowLayout : public QLayout
 	{
 		QList<QLayoutItem*> ItemList_;
 		int HSpace_;

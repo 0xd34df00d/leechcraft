@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,6 +39,7 @@
 #include "roompublicmessage.h"
 #include "roomhandler.h"
 #include "roomconfigwidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -46,10 +47,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	namespace
-	{
-	}
-
 	RoomCLEntry::RoomCLEntry (RoomHandler *rh, bool isAutojoined, GlooxAccount *account)
 	: QObject (rh)
 	, IsAutojoined_ (isAutojoined)
@@ -152,7 +149,7 @@ namespace Xoox
 
 	QStringList RoomCLEntry::Groups () const
 	{
-		return QStringList () << tr ("Multiuser chatrooms");
+		return { tr ("Multiuser chatrooms") };
 	}
 
 	void RoomCLEntry::SetGroups (const QStringList&)
@@ -237,6 +234,7 @@ namespace Xoox
 
 	void RoomCLEntry::MarkMsgsRead ()
 	{
+		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void RoomCLEntry::ChatTabClosed ()
@@ -251,6 +249,11 @@ namespace Xoox
 	QString RoomCLEntry::GetMUCSubject () const
 	{
 		return RH_->GetSubject ();
+	}
+
+	bool RoomCLEntry::CanChangeSubject () const
+	{
+		return RH_->GetRoom ()->allowedActions () & QXmppMucRoom::SubjectAction;
 	}
 
 	void RoomCLEntry::SetMUCSubject (const QString& subj)
@@ -443,10 +446,8 @@ namespace Xoox
 			return false;
 		}
 
-		const QXmppMucItem::Role ourRole =
-				RH_->GetSelf ()->GetRole ();
-		const QXmppMucItem::Affiliation ourAff =
-				RH_->GetSelf ()->GetAffiliation ();
+		const auto ourRole = RH_->GetSelf ()->GetRole ();
+		const auto ourAff = RH_->GetSelf ()->GetAffiliation ();
 
 		if (permClass == "permclass_role")
 			return MayChange (ourRole, ourAff, entry, Role2Str_.key (perm));
@@ -552,6 +553,16 @@ namespace Xoox
 		}
 
 		cfg->accept ();
+	}
+
+	void RoomCLEntry::MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to)
+	{
+		for (const auto msgObj : AllMessages_)
+		{
+			const auto msg = qobject_cast<RoomPublicMessage*> (msgObj);
+			if (msg->OtherPart () == from.get ())
+				msg->SetParticipantEntry (to);
+		}
 	}
 
 	void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)

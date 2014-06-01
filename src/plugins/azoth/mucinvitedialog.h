@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MUCINVITEDIALOG_H
-#define PLUGINS_AZOTH_MUCINVITEDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_mucinvitedialog.h"
 
@@ -45,7 +45,13 @@ namespace Azoth
 		Ui::MUCInviteDialog Ui_;
 		bool ManualMode_;
 	public:
-		MUCInviteDialog (IAccount*, QWidget* = 0);
+		enum class ListType
+		{
+			ListEntries,
+			ListMucs
+		};
+
+		MUCInviteDialog (IAccount*, ListType = ListType::ListEntries, QWidget* = 0);
 
 		QString GetID () const;
 		void SetID (const QString&);
@@ -57,5 +63,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

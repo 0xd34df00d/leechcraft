@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,9 +42,12 @@ namespace Azoth
 	{
 		QLineEdit * const Edit_;
 		QTreeView * const View_;
-		bool IsSearching_;
+		bool IsSearching_ = false;
+		bool InterceptEnter_ = true;
 	public:
 		KeyboardRosterFixer (QLineEdit*, QTreeView*, QObject* = 0);
+
+		void SetInterceptEnter (bool);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	};

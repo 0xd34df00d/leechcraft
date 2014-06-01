@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,7 @@
 #include <QWidget>
 #include <QTextBrowser>
 #include <interfaces/iwebbrowser.h>
-#include <util/utilconfig.h>
+#include "guiconfig.h"
 
 namespace LeechCraft
 {
@@ -49,8 +49,10 @@ namespace LeechCraft
 		 * Currently using this class is generally discouraged. QtWebKit
 		 * isn't as new and uncommon as it was a couple of years ago, so
 		 * in most cases it's easier to just embed a QWebView.
+		 *
+		 * @ingroup GuiUtil
 		 */
-		class UTIL_API SelectableBrowser : public QWidget
+		class UTIL_GUI_API SelectableBrowser : public QWidget
 		{
 			Q_OBJECT
 

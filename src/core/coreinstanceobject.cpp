@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,7 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <QStyleFactory>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sys/paths.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -48,6 +48,7 @@
 #include "acceptlangwidget.h"
 #include "shortcutmanager.h"
 #include "coreproxy.h"
+#include "application.h"
 
 namespace LeechCraft
 {
@@ -61,8 +62,12 @@ namespace LeechCraft
 			filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
 					.entryList (QStringList ("leechcraft_*.qm"));
 	#elif defined (Q_OS_MAC)
-			filenames << QDir (QCoreApplication::applicationDirPath () + "/../Resources/translations")
-					.entryList (QStringList ("leechcraft_*.qm"));
+			if (QApplication::arguments ().contains ("-nobundle"))
+				filenames << QDir ("/usr/local/share/leechcraft/translations")
+						.entryList (QStringList ("leechcraft_*.qm"));
+			else
+				filenames << QDir (QCoreApplication::applicationDirPath () + "/../Resources/translations")
+						.entryList (QStringList ("leechcraft_*.qm"));
 	#elif defined (INSTALL_PREFIX)
 			filenames << QDir (INSTALL_PREFIX "/share/leechcraft/translations")
 					.entryList (QStringList ("leechcraft_*.qm"));
@@ -154,47 +159,48 @@ namespace LeechCraft
 #else
 		const auto sysModifier = Qt::ALT;
 #endif
+		const auto iconMgr = CoreProxy ().GetIconThemeManager ();
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
 				{
 					tr ("Switch to previously active tab"),
 					sysModifier + Qt::Key_Space,
-					CoreProxy ().GetIcon ("edit-undo")
+					iconMgr->GetIcon ("edit-undo")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("FullScreen",
 				{
 					tr ("Toggle fullscreen"),
 					QString ("F11"),
-					CoreProxy ().GetIcon ("view-fullscreen")
+					iconMgr->GetIcon ("view-fullscreen")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("CloseTab",
 				{
 					tr ("Close tab"),
 					QString ("Ctrl+W"),
-					CoreProxy ().GetIcon ("tab-close")
+					iconMgr->GetIcon ("tab-close")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToLeftTab",
 				{
 					tr ("Switch to tab to the left"),
 					QString ("Ctrl+PgUp"),
-					CoreProxy ().GetIcon ("go-previous")
+					iconMgr->GetIcon ("go-previous")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToRightTab",
 				{
 					tr ("Switch to tab to the right"),
 					QString ("Ctrl+PgDown"),
-					CoreProxy ().GetIcon ("go-next")
+					iconMgr->GetIcon ("go-next")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("Settings",
 				{
 					tr ("Settings"),
 					QString ("Ctrl+P"),
-					CoreProxy ().GetIcon ("configure")
+					iconMgr->GetIcon ("configure")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("Quit",
 				{
 					tr ("Quit LeechCraft"),
 					QString ("F10"),
-					CoreProxy ().GetIcon ("application-exit")
+					iconMgr->GetIcon ("application-exit")
 				});
 
 		Classes_ << SettingsTab_->GetTabClassInfo ();
@@ -386,8 +392,8 @@ namespace LeechCraft
 
 	void CoreInstanceObject::updateIconSet ()
 	{
-		IconThemeEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
-		IconThemeEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
+		IconThemeEngine::Instance ().UpdateIconset (findChildren<QAction*> ());
+		IconThemeEngine::Instance ().UpdateIconset (findChildren<QTabWidget*> ());
 	}
 
 	void CoreInstanceObject::updateColorTheme ()

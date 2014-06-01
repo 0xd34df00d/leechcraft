@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,6 +30,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_TRANSFERJOB_H
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_TRANSFERJOB_H
 #include <QObject>
+#include <interfaces/an/ianemitter.h>
 #include <msn/util.h>
 #include <interfaces/azoth/itransfermanager.h>
 
@@ -52,7 +53,7 @@ namespace Zheet
 					  , public ITransferJob
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferJob);
+		Q_INTERFACES (LeechCraft::Azoth::ITransferJob)
 
 		uint ID_;
 		MSNAccount *A_;

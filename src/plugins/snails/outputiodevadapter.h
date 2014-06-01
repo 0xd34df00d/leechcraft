@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <vmime/utility/stream.hpp>
+#include <vmime/utility/outputStream.hpp>
 
 class QIODevice;
 
@@ -43,8 +43,9 @@ namespace Snails
 	public:
 		OutputIODevAdapter (QIODevice*);
 
-		void write (const value_type* const, const size_type);
 		void flush ();
+	protected:
+		void writeImpl (const vmime::byte_t* const, const size_t);
 	};
 }
 }

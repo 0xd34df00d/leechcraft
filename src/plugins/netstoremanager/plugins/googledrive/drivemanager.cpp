@@ -36,6 +36,8 @@
 #include <QMainWindow>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sys/mimedetector.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include "account.h"
@@ -54,17 +56,6 @@ namespace GoogleDrive
 	, Account_ (acc)
 	, SecondRequestIfNoItems_ (true)
 	{
-#ifdef HAVE_MAGIC
-		Magic_ = magic_open (MAGIC_MIME_TYPE);
-		magic_load (Magic_, NULL);
-#endif
-	}
-
-	DriveManager::~DriveManager ()
-	{
-#ifdef HAVE_MAGIC
-		magic_close (Magic_);
-#endif
 	}
 
 	void DriveManager::RefreshListing ()
@@ -129,13 +120,13 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::Download (const QString& id, const QString& filepath,
-			TaskParameters tp, bool silent, bool open)
+			TaskParameters tp, bool open)
 	{
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath, tp, silent, open] (const QUrl& url)
-			{ DownloadFile (filepath, url, tp, silent, open); };
+		DownloadsQueue_ << [this, filepath, tp, open] (const QString& filename, const QUrl& url)
+			{ DownloadFile (filename, filepath, url, tp, open); };
 		RequestAccessToken ();
 	}
 
@@ -288,10 +279,8 @@ namespace GoogleDrive
 				.arg (key));
 		QNetworkRequest request (initiateUrl);
 		request.setPriority (QNetworkRequest::LowPriority);
-#ifdef HAVE_MAGIC
-		request.setRawHeader ("X-Upload-Content-Type",
-				magic_file (Magic_, filePath.toUtf8 ()));
-#endif
+		Util::MimeDetector detector;
+		request.setRawHeader ("X-Upload-Content-Type", detector (filePath));
 		request.setRawHeader ("X-Upload-Content-Length",
 				QString::number (QFileInfo (filePath).size ()).toUtf8 ());
 		QVariantMap map;
@@ -462,23 +451,25 @@ namespace GoogleDrive
 				SLOT (handleItemRenamed ()));
 	}
 
-	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
-			TaskParameters tp, bool silent, bool open)
+	void DriveManager::DownloadFile (const QString& filename, const QString& filePath,
+			const QUrl& url, TaskParameters tp, bool open)
 	{
 		QString savePath;
-		if (silent)
+		if (open)
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-					"/" + QFileInfo (filePath).fileName ();
+					"/" + QFileInfo (filename).fileName ();
+		else if (!filePath.isEmpty ())
+			savePath = filePath + '/' + filename;
 
 		auto e = Util::MakeEntity (url, savePath, tp);
-		QFileInfo fi (filePath);
+		QFileInfo fi (filename);
 		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
 				.arg (fi.baseName ())
 				.arg (QDateTime::currentDateTime ().toTime_t ())
 				.arg (fi.completeSuffix ());
-		silent ?
-			Core::Instance ().DelegateEntity (e, filePath, open) :
-			Core::Instance ().SendEntity (e);
+		open ?
+				Core::Instance ().DelegateEntity (e, savePath, open) :
+				Core::Instance ().SendEntity (e);
 	}
 
 	void DriveManager::FindSyncableItems (const QStringList&,
@@ -535,7 +526,7 @@ namespace GoogleDrive
 		}
 
 		QString accessKey = res.toMap ().value ("access_token").toString ();
-		qDebug () << accessKey;
+
 		if (accessKey.isEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO << "access token is empty";
@@ -888,10 +879,8 @@ namespace GoogleDrive
 
 		QUrl url (reply->rawHeader ("Location"));
 		QNetworkRequest request (url);
-#ifdef HAVE_MAGIC
-		request.setHeader (QNetworkRequest::ContentTypeHeader,
-				magic_file (Magic_, path.toUtf8 ()));
-#endif
+		Util::MimeDetector detector;
+		request.setHeader (QNetworkRequest::ContentTypeHeader, detector (path));
 		request.setHeader (QNetworkRequest::ContentLengthHeader,
 				QString::number (QFileInfo (path).size ()).toUtf8 ());
 
@@ -1148,7 +1137,7 @@ namespace GoogleDrive
 				it.DownloadUrl_.addQueryItem ("access_token", access_token);
 
 			if (!DownloadsQueue_.isEmpty ())
-				DownloadsQueue_.dequeue () (it.DownloadUrl_);
+				DownloadsQueue_.dequeue () (it.Name_, it.DownloadUrl_);
 			return;
 		}
 

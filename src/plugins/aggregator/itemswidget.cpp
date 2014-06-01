@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,10 +39,11 @@
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/util.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -50,6 +51,7 @@
 #include "itemslistmodel.h"
 #include "channelsmodel.h"
 #include "uistatepersist.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -201,12 +203,6 @@ namespace Aggregator
 				SLOT (currentItemChanged ()));
 
 		currentItemChanged ();
-
-		connect (&Core::Instance (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
-				this,
-				SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)),
-				Qt::QueuedConnection);
 
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector",
 				this, "selectorVisiblityChanged");
@@ -1141,20 +1137,6 @@ namespace Aggregator
 		return result;
 	}
 
-	// TODO move this connection to the ItemsListModel
-	void ItemsWidget::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
-	{
-		if (Impl_->CurrentItemsModel_->GetCurrentChannel () == channel->ChannelID_)
-			Impl_->CurrentItemsModel_->ItemDataUpdated (item);
-		else
-			Q_FOREACH (std::shared_ptr<ItemsListModel> m, Impl_->SupplementaryModels_)
-				if (m->GetCurrentChannel () == channel->ChannelID_)
-				{
-					m->ItemDataUpdated (item);
-					break;
-				}
-	}
-
 	void ItemsWidget::invalidateMergeMode ()
 	{
 		if (Impl_->MergeMode_)
@@ -1235,14 +1217,8 @@ namespace Aggregator
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		const auto& models = Impl_->ItemLists_->GetAllModels ();
-		std::for_each (models.begin (), models.end (),
-				[&ids] (QAbstractItemModel *model)
-					{ qobject_cast<ItemsListModel*> (model)->RemoveItems (ids); });
-
-		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
-		Q_FOREACH (IDType_t id, ids)
-			sb->RemoveItem (id);
+		Impl_->Ui_.Items_->clearSelection ();
+		Core::Instance ().GetStorageBackend ()->RemoveItems (ids);
 	}
 
 	void ItemsWidget::on_ActionPrevUnreadItem__triggered ()

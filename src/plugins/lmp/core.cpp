@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,6 +29,7 @@
 
 #include "core.h"
 #include <interfaces/iplugin2.h>
+#include "collectionsmanager.h"
 #include "localfileresolver.h"
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
@@ -45,6 +46,8 @@
 #include "previewhandler.h"
 #include "progressmanager.h"
 #include "radiomanager.h"
+#include "rganalysismanager.h"
+#include "localcollectionmodel.h"
 
 namespace LeechCraft
 {
@@ -53,6 +56,7 @@ namespace LMP
 	Core::Core ()
 	: Resolver_ (new LocalFileResolver)
 	, Collection_ (new LocalCollection)
+	, CollectionsManager_ (new CollectionsManager)
 	, PLManager_ (new PlaylistManager)
 	, SyncManager_ (new SyncManager)
 	, SyncUnmountableManager_ (new SyncUnmountableManager)
@@ -61,10 +65,15 @@ namespace LMP
 	, RadioManager_ (new RadioManager)
 	, Player_ (0)
 	, PreviewMgr_ (0)
+	, LmpProxy_ (new LMPProxy)
 	{
 		ProgressManager_->AddSyncManager (SyncManager_);
 		ProgressManager_->AddSyncManager (SyncUnmountableManager_);
 		ProgressManager_->AddSyncManager (CloudUpMgr_);
+
+		new RgAnalysisManager (Collection_, this);
+
+		CollectionsManager_->Add (Collection_->GetCollectionModel ());
 	}
 
 	Core& Core::Instance ()
@@ -98,7 +107,13 @@ namespace LMP
 
 	void Core::InitWithOtherPlugins ()
 	{
+		Player_->InitWithOtherPlugins ();
 		RadioManager_->InitProviders ();
+	}
+
+	const std::shared_ptr<LMPProxy>& Core::GetLmpProxy () const
+	{
+		return LmpProxy_;
 	}
 
 	void Core::AddPlugin (QObject *pluginObj)
@@ -114,7 +129,7 @@ namespace LMP
 			return;
 		}
 
-		ilmpPlug->SetLMPProxy (ILMPProxy_Ptr (new LMPProxy ()));
+		ilmpPlug->SetLMPProxy (LmpProxy_);
 
 		const auto& classes = ip2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
@@ -151,6 +166,11 @@ namespace LMP
 	LocalCollection* Core::GetLocalCollection () const
 	{
 		return Collection_;
+	}
+
+	CollectionsManager* Core::GetCollectionsManager () const
+	{
+		return CollectionsManager_;
 	}
 
 	PlaylistManager* Core::GetPlaylistManager () const

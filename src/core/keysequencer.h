@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,6 +38,8 @@ class KeySequencer : public QDialog
 
 	Ui::KeySequencer Ui_;
 	QKeySequence Result_;
+
+	int LastCode_;
 public:
 	KeySequencer (const QString&, QWidget* = 0);
 	QKeySequence GetResult () const;

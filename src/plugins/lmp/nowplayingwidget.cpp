@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,6 +30,7 @@
 #include "nowplayingwidget.h"
 #include <algorithm>
 #include <QMouseEvent>
+#include <interfaces/core/iiconthememanager.h>
 #include "mediainfo.h"
 #include "core.h"
 #include "localcollection.h"
@@ -53,8 +54,9 @@ namespace LMP
 		auto coverGetter = [this] () { return CurrentInfo_.LocalPath_; };
 		Ui_.Art_->installEventFilter (new AALabelEventFilter (coverGetter, this));
 
-		Ui_.PrevLyricsButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("go-previous"));
-		Ui_.NextLyricsButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("go-next"));
+		auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+		Ui_.PrevLyricsButton_->setIcon (mgr->GetIcon ("go-previous"));
+		Ui_.NextLyricsButton_->setIcon (mgr->GetIcon ("go-next"));
 
 		updateLyricsSwitcher ();
 
@@ -62,6 +64,11 @@ namespace LMP
 				SIGNAL (gotArtistImage (QString, QUrl)),
 				this,
 				SIGNAL (gotArtistImage (QString, QUrl)));
+	}
+
+	void NowPlayingWidget::AddTab (const QString& tabName, QWidget *widget)
+	{
+		Ui_.CurrentSongTabs_->addTab (widget, tabName);
 	}
 
 	void NowPlayingWidget::SetSimilarArtists (Media::SimilarityInfos_t infos)

@@ -21,6 +21,7 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	albumsmanager.cpp
 	friendsmanager.cpp
+	authclosehandler.cpp
 	)
 set (RESOURCES touchstreamsresources.qrc)
 

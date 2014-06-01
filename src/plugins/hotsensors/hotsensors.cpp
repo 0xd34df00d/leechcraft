@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -33,7 +33,13 @@
 #include <QtDeclarative>
 #include <util/util.h>
 #include <util/sys/paths.h>
-#include "sensorsmanager.h"
+
+#ifdef Q_OS_LINUX
+#include "lmsensorsbackend.h"
+#elif defined (Q_OS_MAC)
+#include "macosbackend.h"
+#endif
+
 #include "historymanager.h"
 #include "plotmanager.h"
 
@@ -45,14 +51,21 @@ namespace HotSensors
 	{
 		Util::InstallTranslator ("hotsensors");
 
-		SensorsMgr_.reset (new SensorsManager (this));
 		HistoryMgr_.reset (new HistoryManager (this));
-		connect (SensorsMgr_.get (),
-				SIGNAL (gotReadings (Readings_t)),
-				HistoryMgr_.get (),
-				SLOT (handleReadings (Readings_t)));
 
-		PlotMgr_.reset (new PlotManager (SensorsMgr_, proxy, this));
+#ifdef Q_OS_LINUX
+		SensorsMgr_.reset (new LmSensorsBackend (this));
+#elif defined (Q_OS_MAC)
+		SensorsMgr_.reset (new MacOsBackend (this));
+#endif
+
+		if (SensorsMgr_)
+			connect (SensorsMgr_.get (),
+					SIGNAL (gotReadings (Readings_t)),
+					HistoryMgr_.get (),
+					SLOT (handleReadings (Readings_t)));
+
+		PlotMgr_.reset (new PlotManager (proxy, this));
 		connect (HistoryMgr_.get (),
 				SIGNAL (historyChanged (ReadingsHistory_t)),
 				PlotMgr_.get (),

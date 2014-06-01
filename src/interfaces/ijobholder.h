@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -38,14 +38,32 @@ class QWidget;
 
 namespace LeechCraft
 {
+	/** @brief Describes the columns in a job holder model.
+	 *
+	 * A job holder model has a fixed number of columns, and this enum
+	 * gives them meaningful names.
+	 */
 	enum JobHolderColumn
 	{
+		/** @brief The column with the name of the task, like a torrent
+		 * name or an RSS feed name.
+		 */
 		JobName,
+
+		/** @brief The column with the status of the task, like the
+		 * download status or the unread items count of an RSS feed.
+		 */
 		JobStatus,
+
+		/** @brief The column with the progress of the task, like the
+		 * amount of data downloaded so far or last update.
+		 */
 		JobProgress
 	};
 
-	/** Values of this enum are used to describe the semantics of rows
+	/** @brief Describes the semantics of a row in a job holder model.
+	 *
+	 * Values of this enum are used to describe the semantics of rows
 	 * in the representation models.
 	 *
 	 * Values of this enum are expected to be obtained via the

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,7 +29,7 @@
 
 #include "bugreportpage.h"
 #include <QtDebug>
-#include <util/sysinfo.h>
+#include <util/sys/sysinfo.h>
 #include "reportwizard.h"
 
 namespace LeechCraft
@@ -89,9 +89,9 @@ namespace Dolozhee
 	QString BugReportPage::GetText () const
 	{
 		QString result = Ui_.ShortDesc_->toPlainText () + "\n\n";
+		result += "*STR:*\n" + Ui_.STR_->toPlainText () + "\n\n";
 		result += "*Expected result:*\n" + Ui_.ER_->toPlainText () + "\n\n";
 		result += "*Actual result:*\n" + Ui_.AR_->toPlainText () + "\n\n";
-		result += "*STR:*\n" + Ui_.STR_->toPlainText () + "\n\n";
 
 		result += "*System information:*\n";
 		result += GetFormattedVersionString (Proxy_);

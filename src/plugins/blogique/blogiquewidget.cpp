@@ -40,13 +40,14 @@
 #include <QStandardItemModel>
 #include <QWidgetAction>
 #include <QWebView>
-#include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/imwproxy.h>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
@@ -303,16 +304,18 @@ namespace Blogique
 		{
 			DummyTextEditor *dummy = new DummyTextEditor (this);
 			PostEdit_ = qobject_cast<IEditorWidget*> (dummy);
-			if (!PostEdit_)
+			if (PostEdit_)
+			{
+				connect (dummy,
+						SIGNAL (textChanged ()),
+						this,
+						SLOT (handleEntryChanged ()));
+				PostEditWidget_ = dummy;
+				editFrameLay->setContentsMargins (4, 4, 4, 4);
+				editFrameLay->addWidget (dummy);
+			}
+			else
 				delete dummy;
-
-			connect (dummy,
-					SIGNAL (textChanged ()),
-					this,
-					SLOT (handleEntryChanged ()));
-			PostEditWidget_ = dummy;
-			editFrameLay->setContentsMargins (4, 4, 4, 4);
-			editFrameLay->addWidget (dummy);
 		}
 
 		Q_FOREACH (ITextEditor *plug, plugs)
@@ -406,7 +409,8 @@ namespace Blogique
 		if (index > AccountsBox_->count ())
 			index = -1;
 
-		AccountsBox_->addItem (Core::Instance ().GetCoreProxy ()->GetIcon ("list-add"),
+		AccountsBox_->addItem (Core::Instance ().GetCoreProxy ()->
+					GetIconThemeManager ()->GetIcon ("list-add"),
 				tr ("Add new account..."));
 
 		AccountsBoxAction_ = ToolBar_->addWidget (AccountsBox_);
@@ -1132,8 +1136,8 @@ namespace Blogique
 			return;
 
 		Core::Instance ().SendEntity (Util::MakeEntity (EntryUrl_,
-				QString (),
-				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
+				{},
+				FromUserInitiated | OnlyHandle));
 	}
 
 	void BlogiqueWidget::on_PreviewPost__triggered ()

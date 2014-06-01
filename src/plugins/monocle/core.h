@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,6 +35,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+class ShortcutManager;
+}
+
 namespace Monocle
 {
 	class RecentlyOpenedManager;
@@ -42,6 +47,7 @@ namespace Monocle
 	class DefaultBackendManager;
 	class DocStateManager;
 	class BookmarksManager;
+	class CoreLoadProxy;
 
 	class Core : public QObject
 	{
@@ -56,6 +62,8 @@ namespace Monocle
 		DocStateManager *DocStateManager_;
 		BookmarksManager *BookmarksManager_;
 
+		Util::ShortcutManager *ShortcutMgr_;
+
 		Core ();
 	public:
 		static Core& Instance ();
@@ -65,14 +73,17 @@ namespace Monocle
 
 		void AddPlugin (QObject*);
 
+		bool CanHandleMime (const QString&);
 		bool CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
+		CoreLoadProxy* LoadDocument (const QString&);
 
 		PixmapCacheManager* GetPixmapCacheManager () const;
 		RecentlyOpenedManager* GetROManager () const;
 		DefaultBackendManager* GetDefaultBackendManager () const;
 		DocStateManager* GetDocStateManager () const;
 		BookmarksManager* GetBookmarksManager () const;
+
+		Util::ShortcutManager* GetShortcutManager () const;
 	};
 }
 }

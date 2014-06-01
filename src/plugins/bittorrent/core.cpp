@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -80,7 +80,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/notificationactionhandler.h>
+#include <util/xpc/notificationactionhandler.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
@@ -286,7 +286,7 @@ namespace BitTorrent
 				SIGNAL (timeout ()),
 				this,
 				SLOT (checkFinished ()));
-		FinishedTimer_->start (2000);
+		FinishedTimer_->start (10000);
 
 		connect (WarningWatchdog_.get (),
 				SIGNAL (timeout ()),
@@ -470,11 +470,18 @@ namespace BitTorrent
 			return QVariant ();
 
 		const auto& h = Handles_.at (row).Handle_;
+		if (!Handle2Status_.contains (h))
+		{
 #if LIBTORRENT_VERSION_NUM >= 1600
-		const auto& status = h.status (0);
+			const auto& status = h.status (0);
 #else
-		const auto& status = h.status ();
+			const auto& status = h.status ();
 #endif
+
+			Handle2Status_ [h] = status;
+		}
+
+		const auto& status = Handle2Status_ [h];
 
 		switch (role)
 		{
@@ -498,7 +505,10 @@ namespace BitTorrent
 						.arg (Util::MakeTimeFromLong (time));
 				}
 				else if (status.paused)
-					return tr ("idle");
+				{
+					static const auto idleStr = tr ("idle");
+					return idleStr;
+				}
 				else
 					return stateStr;
 			}
@@ -506,13 +516,16 @@ namespace BitTorrent
 				if (role == Roles::FullLengthText)
 				{
 					if (status.state == libtorrent::torrent_status::downloading)
-						return tr ("%1% (%2 of %3 at %4 from %5 peers)")
+					{
+						static const auto templ = tr ("%1% (%2 of %3 at %4 from %5 peers)");
+						return templ
 								.arg (status.progress * 100, 0, 'f', 2)
 								.arg (Util::MakePrettySize (status.total_wanted_done))
 								.arg (Util::MakePrettySize (status.total_wanted))
 								.arg (Util::MakePrettySize (status.download_payload_rate) +
 										tr ("/s"))
 								.arg (status.num_peers);
+					}
 					else if (!status.paused &&
 								(status.state == libtorrent::torrent_status::finished ||
 								status.state == libtorrent::torrent_status::seeding))
@@ -520,7 +533,8 @@ namespace BitTorrent
 						auto total = status.num_incomplete;
 						if (total <= 0)
 							total = status.list_peers - status.list_seeds;
-						return tr ("%1, seeding at %2 to %3 leechers (of around %4)")
+						static const auto templ = tr ("%1, seeding at %2 to %3 leechers (of around %4)");
+						return templ
 								.arg (Util::MakePrettySize (status.total_wanted))
 								.arg (Util::MakePrettySize (status.upload_payload_rate) +
 										tr ("/s"))
@@ -528,28 +542,40 @@ namespace BitTorrent
 								.arg (total);
 					}
 					else
-						return tr ("%1% (%2 of %3)")
+					{
+						static const auto templ = tr ("%1% (%2 of %3)");
+						return templ
 								.arg (status.progress * 100, 0, 'f', 2)
 								.arg (Util::MakePrettySize (status.total_wanted_done))
 								.arg (Util::MakePrettySize (status.total_wanted));
+					}
 				}
 				else
 				{
 					if (status.state == libtorrent::torrent_status::downloading)
-						return tr ("%1% (%2 of %3)")
+					{
+						static const auto templ = tr ("%1% (%2 of %3)");
+						return templ
 								.arg (status.progress * 100, 0, 'f', 2)
 								.arg (Util::MakePrettySize (status.total_wanted_done))
 								.arg (Util::MakePrettySize (status.total_wanted));
+					}
 					else if (!status.paused &&
 								(status.state == libtorrent::torrent_status::finished ||
 								status.state == libtorrent::torrent_status::seeding))
-						return tr ("100% (%1)")
+					{
+						static const auto templ = tr ("100% (%1)");
+						return templ
 								.arg (Util::MakePrettySize (status.total_wanted));
+					}
 					else
-						return tr ("%1% (%2 of %3)")
+					{
+						static const auto templ = tr ("%1% (%2 of %3)");
+						return templ
 								.arg (status.progress * 100, 0, 'f', 2)
 								.arg (Util::MakePrettySize (status.total_wanted_done))
 								.arg (Util::MakePrettySize (status.total_wanted));
+					}
 				}
 			case ColumnDownSpeed:
 				return Util::MakePrettySize (status.download_payload_rate) + tr ("/s");
@@ -825,15 +851,18 @@ namespace BitTorrent
 		try
 		{
 			libtorrent::add_torrent_params atp;
-			atp.auto_managed = true;
 			atp.storage_mode = GetCurrentStorageMode ();
-			atp.paused = (params & NoAutostart);
-			atp.duplicate_is_error = true;
 #if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			atp.url = magnet.toStdString ();
+			if (params & NoAutostart)
+				atp.flags |= libtorrent::add_torrent_params::flag_paused;
+			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 			handle = Session_->add_torrent (atp);
 #else
+			atp.duplicate_is_error = true;
+			atp.auto_managed = true;
+			atp.paused = (params & NoAutostart);
 			atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
 			handle = libtorrent::add_magnet_uri (*Session_,
 					magnet.toStdString (),
@@ -891,15 +920,20 @@ namespace BitTorrent
 		{
 			libtorrent::add_torrent_params atp;
 			atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
-			atp.auto_managed = autoManaged;
 			atp.storage_mode = GetCurrentStorageMode ();
-			atp.paused = tryLive || (params & NoAutostart);
 #if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = std::string (path.toUtf8 ().constData ());
+			if (!autoManaged)
+				atp.flags &= ~libtorrent::add_torrent_params::flag_auto_managed;
+			if (tryLive || (params & NoAutostart))
+				atp.flags |= libtorrent::add_torrent_params::flag_paused;
+			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 #else
 			atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
-#endif
 			atp.duplicate_is_error = true;
+			atp.paused = tryLive || (params & NoAutostart);
+			atp.auto_managed = autoManaged;
+#endif
 			handle = Session_->add_torrent (atp);
 			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
 				handle.resolve_countries (true);
@@ -1448,6 +1482,28 @@ namespace BitTorrent
 		LiveStreamManager_->PieceRead (a);
 	}
 
+	void Core::UpdateStatus (const std::vector<libtorrent::torrent_status>& statuses)
+	{
+		for (const auto& status : statuses)
+		{
+			const auto handle = status.handle;
+			Handle2Status_ [handle] = handle.status (0);
+
+			const auto pos = std::find_if (Handles_.begin (), Handles_.end (),
+					HandleFinder { handle });
+
+			if (pos == Handles_.end ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown handle";
+				continue;
+			}
+
+			const auto row = std::distance (Handles_.begin (), pos);
+			emit dataChanged (index (row, 0), index (row, columnCount () - 1));
+		}
+	}
+
 	void Core::MoveUp (const std::vector<int>& selections)
 	{
 		if (!selections.size ())
@@ -1836,13 +1892,18 @@ namespace BitTorrent
 			atp.storage_mode = GetCurrentStorageMode ();
 #if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = path.string ();
+			if (!automanaged)
+				atp.flags &= ~libtorrent::add_torrent_params::flag_auto_managed;
+			if (pause)
+				atp.flags |= libtorrent::add_torrent_params::flag_paused;
+			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 #else
 			atp.save_path = path;
-#endif
 			atp.auto_managed = automanaged;
 			atp.paused = pause;
-			atp.resume_data = new std::vector<char>;
 			atp.duplicate_is_error = true;
+#endif
+			atp.resume_data = new std::vector<char>;
 			std::copy (resumeData.constData (),
 					resumeData.constData () + resumeData.size (),
 					std::back_inserter (*atp.resume_data));
@@ -2378,6 +2439,11 @@ namespace BitTorrent
 		{
 			Core::Instance ()->PieceRead (a);
 		}
+
+		void operator() (const libtorrent::state_update_alert& a) const
+		{
+			Core::Instance ()->UpdateStatus (a.status);
+		}
 	};
 
 #undef __LLEECHCRAFT_API
@@ -2409,6 +2475,7 @@ namespace BitTorrent
 					, libtorrent::file_error_alert
 					, libtorrent::file_rename_failed_alert
 					, libtorrent::read_piece_alert
+					, libtorrent::state_update_alert
 					> alertHandler (a, sd);
 				Q_UNUSED (alertHandler);
 			}
@@ -2808,12 +2875,17 @@ namespace BitTorrent
 
 	void Core::updateRows ()
 	{
-		if (rowCount ())
-			emit dataChanged (index (0, 0), index (rowCount () - 1, columnCount () - 1));
+		if (!rowCount ())
+			return;
+
+		Session_->post_torrent_updates ();
+		QTimer::singleShot (200,
+				this,
+				SLOT (queryLibtorrentForWarnings ()));
 	}
-};
-};
-};
+}
+}
+}
 
 namespace libtorrent
 {

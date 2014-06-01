@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,7 +29,8 @@
 
 #include "touchstreams.h"
 #include <QIcon>
-#include <util/queuemanager.h>
+#include <QStandardItem>
+#include <util/sll/queuemanager.h>
 #include <util/util.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -37,6 +38,7 @@
 #include "audiosearch.h"
 #include "albumsmanager.h"
 #include "friendsmanager.h"
+#include "authclosehandler.h"
 
 namespace LeechCraft
 {
@@ -51,7 +53,7 @@ namespace TouchStreams
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");
 
-		Queue_ = new Util::QueueManager (10000);
+		Queue_ = new Util::QueueManager (1000);
 
 		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("TouchStreams",
 				"3298289",
@@ -66,11 +68,6 @@ namespace TouchStreams
 
 		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
 		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
-
-		connect (XSD_.get (),
-				SIGNAL (pushButtonClicked (QString)),
-				this,
-				SLOT (handlePushButton (QString)));
 	}
 
 	void Plugin::SecondInit ()
@@ -136,8 +133,14 @@ namespace TouchStreams
 		return { AlbumsMgr_->GetRootItem (), FriendsMgr_->GetRootItem () };
 	}
 
-	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem*, const QString&)
+	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem *item, const QString&)
 	{
+		if (item->data (Media::RadioItemRole::RadioID).toString () == "auth")
+		{
+			AuthMgr_->clearAuthData ();
+			AuthMgr_->reauth ();
+		}
+
 		return {};
 	}
 
@@ -145,19 +148,6 @@ namespace TouchStreams
 	{
 		AlbumsMgr_->RefreshItems (items);
 		FriendsMgr_->RefreshItems (items);
-	}
-
-	void Plugin::handlePushButton (const QString& name)
-	{
-		if (name == "AllowRequestsTriggered")
-		{
-			AuthMgr_->clearAuthData ();
-			AuthMgr_->reauth ();
-		}
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "unknown name"
-					<< name;
 	}
 
 	void Plugin::saveCookies (const QByteArray& cookies)

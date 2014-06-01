@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -56,9 +56,16 @@ namespace LMP
 		QList<UnmountablePartition> Partitions_;
 		QStringList SupportedFormats_;
 
+		int BatteryCharge_;
+
 		inline bool operator== (const UnmountableDevInfo& other) const
 		{
 			return ID_ == other.ID_;
+		}
+
+		inline bool operator< (const UnmountableDevInfo& other) const
+		{
+			return ID_ < other.ID_;
 		}
 	};
 
