@@ -427,6 +427,13 @@ namespace CSTP
 		path.replace (path.lastIndexOf (fname),
 				fname.size (), result);
 
+		if (path == oldPath)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "new name equals to the old name, skipping renaming";
+			return;
+		}
+
 		QIODevice::OpenMode om = To_->openMode ();
 		To_->close ();
 
