@@ -85,6 +85,8 @@ namespace LMP
 
 		void ReemitEffectsList ();
 	public slots:
+		void showEffectConfig (int);
+
 		void addRequested (const QString&, const QVariantList&);
 		void removeRequested (const QString&, const QModelIndexList&);
 
