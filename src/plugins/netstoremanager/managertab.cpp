@@ -575,13 +575,10 @@ namespace NetStoreManager
 		}
 		else if (!idx.data (ListingRole::IsDirectory).toBool ())
 			flOpenFile ();
-		else
+		else if (auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
 		{
-			if (auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
-			{
-				LastParentID_ = idx.data (ListingRole::ID).toByteArray ();
-				isfl->RefreshChildren (LastParentID_);
-			}
+			LastParentID_ = idx.data (ListingRole::ID).toByteArray ();
+			isfl->RefreshChildren (LastParentID_);
 		}
 	}
 
@@ -635,6 +632,8 @@ namespace NetStoreManager
 		Trash_->setIcon (Proxy_->GetIconThemeManager ()->GetIcon (GetTrashedFiles ().isEmpty () ?
 			"user-trash-full" :
 			"user-trash"));
+
+		handleListingUpdated ();
 	}
 
 	void ManagerTab::handleListingUpdated (const QByteArray& parentId)

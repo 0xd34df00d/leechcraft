@@ -54,14 +54,6 @@ namespace DBox
 		Core::Instance ().SetProxy (proxy);
 		AuthManager_ = new AuthManager (this);
 
-		connect (AuthManager_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (&Core::Instance (),
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
@@ -95,7 +87,7 @@ namespace DBox
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Support for the DropBox for NetStoreManager plugin.");
+		return tr ("Support for DropBox for NetStoreManager plugin.");
 	}
 
 	QIcon Plugin::GetIcon () const
