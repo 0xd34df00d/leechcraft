@@ -86,6 +86,8 @@ namespace LMP
 		QTabBar *NavBar_;
 
 		NowPlayingPixmapHandler *NPPixmapHandler_;
+
+		QMenu * const EffectsMenu_;
 	public:
 		PlayerTab (const TabClassInfo&, Player*, QObject*, QWidget* = 0);
 		~PlayerTab ();
@@ -113,6 +115,8 @@ namespace LMP
 		void RequestLyrics (const MediaInfo&);
 
 		void NotifyCurrentTrack (const MediaInfo&, QPixmap, bool fromUser);
+	public slots:
+		void updateEffectsList (const QStringList&);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleSongInfoUpdated (const MediaInfo&);
@@ -144,6 +148,8 @@ namespace LMP
 		void gotEntity (const LeechCraft::Entity&);
 
 		void tabRecoverDataChanged ();
+
+		void effectsConfigRequested (int);
 	};
 }
 }
