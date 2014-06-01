@@ -68,11 +68,11 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	PlayerTab::PlayerTab (const TabClassInfo& info, QObject *plugin, QWidget *parent)
+	PlayerTab::PlayerTab (const TabClassInfo& info, Player *player, QObject *plugin, QWidget *parent)
 	: QWidget (parent)
 	, Plugin_ (plugin)
 	, TC_ (info)
-	, Player_ (Core::Instance ().GetPlayer ())
+	, Player_ (player)
 	, PreviewHandler_ (Core::Instance ().GetPreviewHandler ())
 	, TabToolbar_ (new QToolBar ())
 	, PlayPause_ (0)

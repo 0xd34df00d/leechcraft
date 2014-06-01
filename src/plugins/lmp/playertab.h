@@ -87,7 +87,7 @@ namespace LMP
 
 		NowPlayingPixmapHandler *NPPixmapHandler_;
 	public:
-		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
+		PlayerTab (const TabClassInfo&, Player*, QObject*, QWidget* = 0);
 		~PlayerTab ();
 
 		TabClassInfo GetTabClassInfo () const;
