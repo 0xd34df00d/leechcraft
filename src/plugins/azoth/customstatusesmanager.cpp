@@ -47,9 +47,7 @@ namespace Azoth
 	{
 		Model_->setColumnCount (3);
 
-#if QT_VERSION >= 0x040800
 		Model_->setHorizontalHeaderLabels ({tr ("Name"), tr ("Status"), tr ("Text") });
-#endif
 
 		Model_->horizontalHeaderItem (0)->setData (DataSources::DataFieldType::String,
 				DataSources::DataSourceRole::FieldType);

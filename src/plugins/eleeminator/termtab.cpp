@@ -41,6 +41,7 @@
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
 #include <util/xpc/util.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
@@ -48,7 +49,7 @@ namespace LeechCraft
 {
 namespace Eleeminator
 {
-	TermTab::TermTab (const ICoreProxy_ptr& proxy,
+	TermTab::TermTab (const ICoreProxy_ptr& proxy, Util::ShortcutManager *scMgr,
 			const TabClassInfo& tc, QObject *plugin)
 	: CoreProxy_ { proxy }
 	, TC_ (tc)
@@ -84,7 +85,7 @@ namespace Eleeminator
 				SLOT (setFocus ()));
 
 		SetupToolbar ();
-		SetupShortcuts ();
+		SetupShortcuts (scMgr);
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
@@ -164,10 +165,12 @@ namespace Eleeminator
 		action->setProperty ("ActionIcon", "preferences-desktop-font");
 	}
 
-	void TermTab::SetupShortcuts ()
+	void TermTab::SetupShortcuts (Util::ShortcutManager *manager)
 	{
-		new QShortcut { QString { "Ctrl+Shift+C" }, Term_, SLOT (copyClipboard ()) };
-		new QShortcut { QString { "Ctrl+Shift+V" }, Term_, SLOT (pasteClipboard ()) };
+		auto copySc = new QShortcut { { "Ctrl+Shift+C" }, Term_, SLOT (copyClipboard ()) };
+		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Copy", {}, copySc);
+		auto pasteSc = new QShortcut { { "Ctrl+Shift+V" }, Term_, SLOT (pasteClipboard ()) };
+		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Paste", {}, pasteSc);
 
 		auto closeSc = new QShortcut { QString { "Ctrl+Shift+W" }, Term_ };
 		new Util::SlotClosure<Util::NoDeletePolicy>
@@ -177,6 +180,8 @@ namespace Eleeminator
 			SIGNAL (activated ()),
 			this
 		};
+
+		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
 	}
 
 	void TermTab::setColorScheme (QAction *schemeAct)

@@ -44,6 +44,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/idownload.h>
 #include <util/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
@@ -61,8 +62,6 @@ extern "C"
 		static const int LC_FILENAME_MAX = NAME_MAX;
 	#endif
 }
-
-Q_DECLARE_METATYPE (QNetworkReply*);
 
 namespace LeechCraft
 {
@@ -166,9 +165,9 @@ namespace CSTP
 		}
 	}
 
-	int Core::AddTask (Entity& e)
+	int Core::AddTask (const Entity& e)
 	{
-		const QUrl entity = e.Entity_.toUrl ();
+		auto url = e.Entity_.toUrl ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 		const auto& tags = e.Additional_ [" Tags"].toStringList ();
 
@@ -177,42 +176,39 @@ namespace CSTP
 		const auto& file = MakeFilename (e);
 
 		if (rep)
-		{
 			return AddTask (rep,
 					dir,
 					file,
 					QString (),
 					tags,
 					e.Parameters_);
-		}
-		else
+
+		AddTask::Task task
 		{
-			if (e.Parameters_ & LeechCraft::FromUserInitiated &&
-					e.Location_.isEmpty ())
-			{
-				CSTP::AddTask at (entity, e.Location_);
-				if (at.exec () == QDialog::Rejected)
-					return -1;
+			url,
+			dir,
+			file,
+			{}
+		};
 
-				AddTask::Task task = at.GetTask ();
+		if (e.Parameters_ & LeechCraft::FromUserInitiated &&
+				e.Location_.isEmpty ())
+		{
+			CSTP::AddTask at (url, e.Location_);
+			if (at.exec () == QDialog::Rejected)
+				return -1;
 
-				return AddTask (task.URL_,
-						task.LocalPath_,
-						task.Filename_,
-						task.Comment_,
-						tags,
-						e.Additional_,
-						e.Parameters_);
-			}
-			else if (!dir.isEmpty ())
-				return AddTask (entity,
-						dir,
-						file,
-						QString (),
-						tags,
-						e.Additional_,
-						e.Parameters_);
+			task = at.GetTask ();
 		}
+
+		if (!dir.isEmpty ())
+			return AddTask (task.URL_,
+					task.LocalPath_,
+					task.Filename_,
+					task.Comment_,
+					tags,
+					e.Additional_,
+					e.Parameters_);
 
 		return -1;
 	}
@@ -341,27 +337,39 @@ namespace CSTP
 					{ return acc + td.Task_->GetSpeed (); });
 	}
 
-	EntityTestHandleResult Core::CouldDownload (const LeechCraft::Entity& e)
+	namespace
+	{
+		EntityTestHandleResult CheckUrl (const QUrl& url, const Entity& e)
+		{
+			if (!url.isValid ())
+				return {};
+
+			const QString& scheme = url.scheme ();
+			if (scheme == "file")
+				return (!(e.Parameters_ & FromUserInitiated) && !(e.Parameters_ & IsDownloaded)) ?
+						EntityTestHandleResult (EntityTestHandleResult::PHigh) :
+						EntityTestHandleResult ();
+			else
+			{
+				const QStringList schemes { "http", "https" };
+				return schemes.contains (url.scheme ()) ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
+			}
+		}
+	}
+
+	EntityTestHandleResult Core::CouldDownload (const Entity& e)
 	{
 		if (e.Entity_.value<QNetworkReply*> ())
 			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
 
-		const QUrl& url = e.Entity_.toUrl ();
-		if (!url.isValid ())
-			return EntityTestHandleResult ();
-
-		const QString& scheme = url.scheme ();
-		if (scheme == "file")
-			return (!(e.Parameters_ & FromUserInitiated) && !(e.Parameters_ & IsDownloaded)) ?
-					EntityTestHandleResult (EntityTestHandleResult::PHigh) :
-					EntityTestHandleResult ();
+		const auto& url = e.Entity_.toUrl ();
+		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
+		if (url.isValid ())
+			return CheckUrl (url, e);
 		else
-		{
-			const QStringList schemes = QStringList ("http") << "https";
-			return schemes.contains (url.scheme ()) ?
-					EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-					EntityTestHandleResult ();
-		}
+			return {};
 	}
 
 	QAbstractItemModel* Core::GetRepresentationModel ()

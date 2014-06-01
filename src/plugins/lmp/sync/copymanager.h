@@ -59,8 +59,6 @@ namespace LMP
 	template<typename CopyJobT>
 	class CopyManager : public CopyManagerBase
 	{
-	public:
-	private:
 		QList<CopyJobT> Queue_;
 		CopyJobT CurrentJob_;
 	public:

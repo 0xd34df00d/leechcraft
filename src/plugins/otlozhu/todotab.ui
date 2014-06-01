@@ -87,9 +87,6 @@
       <property name="contextMenuPolicy">
        <enum>Qt::ActionsContextMenu</enum>
       </property>
-      <property name="rootIsDecorated">
-       <bool>false</bool>
-      </property>
       <property name="sortingEnabled">
        <bool>true</bool>
       </property>

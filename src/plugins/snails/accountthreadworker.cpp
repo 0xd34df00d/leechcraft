@@ -111,9 +111,9 @@ namespace Snails
 
 		class CertVerifier : public vmime::security::cert::defaultCertificateVerifier
 		{
-			static std::vector<vmime::ref<vmime::security::cert::X509Certificate>> TrustedCerts_;
+			static std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>> TrustedCerts_;
 		public:
-			void verify (vmime::ref<vmime::security::cert::certificateChain> chain)
+			void verify (vmime::shared_ptr<vmime::security::cert::certificateChain> chain)
 			{
 				try
 				{
@@ -132,7 +132,7 @@ namespace Snails
 			}
 		};
 
-		std::vector<vmime::ref<vmime::security::cert::X509Certificate>> CertVerifier::TrustedCerts_;
+		std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>> CertVerifier::TrustedCerts_;
 	}
 
 	class TimerGuard
@@ -165,7 +165,7 @@ namespace Snails
 				SLOT (timeoutDisconnect ()));
 	}
 
-	vmime::utility::ref<vmime::net::store> AccountThreadWorker::MakeStore ()
+	vmime::shared_ptr<vmime::net::store> AccountThreadWorker::MakeStore ()
 	{
 		if (CachedStore_)
 			return CachedStore_;
@@ -196,7 +196,7 @@ namespace Snails
 		return st;
 	}
 
-	vmime::utility::ref<vmime::net::transport> AccountThreadWorker::MakeTransport ()
+	vmime::shared_ptr<vmime::net::transport> AccountThreadWorker::MakeTransport ()
 	{
 		QString url;
 
@@ -259,7 +259,7 @@ namespace Snails
 		}
 	}
 
-	vmime::ref<vmime::net::folder> AccountThreadWorker::GetFolder (const QStringList& path, int mode)
+	vmime::shared_ptr<vmime::net::folder> AccountThreadWorker::GetFolder (const QStringList& path, int mode)
 	{
 		if (!CachedFolders_.contains (path))
 		{
@@ -275,7 +275,7 @@ namespace Snails
 		return folder;
 	}
 
-	Message_ptr AccountThreadWorker::FromHeaders (const vmime::ref<vmime::net::message>& message) const
+	Message_ptr AccountThreadWorker::FromHeaders (const vmime::shared_ptr<vmime::net::message>& message) const
 	{
 		auto utf8cs = vmime::charset ("utf-8");
 
@@ -346,7 +346,7 @@ namespace Snails
 
 	namespace
 	{
-		vmime::ref<vmime::message> FromNetMessage (vmime::ref<vmime::net::message> msg)
+		vmime::shared_ptr<vmime::message> FromNetMessage (vmime::shared_ptr<vmime::net::message> msg)
 		{
 			return msg->getParsedMessage ();
 		}
@@ -408,7 +408,7 @@ namespace Snails
 	}
 
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
-			const QList<QStringList>& origFolders, vmime::ref<vmime::net::store> store)
+			const QList<QStringList>& origFolders, vmime::shared_ptr<vmime::net::store> store)
 	{
 		Q_FOREACH (const auto& folder, origFolders)
 		{
@@ -500,7 +500,7 @@ namespace Snails
 
 	namespace
 	{
-		void FullifyHeaderMessage (Message_ptr msg, const vmime::ref<vmime::message>& full)
+		void FullifyHeaderMessage (Message_ptr msg, const vmime::shared_ptr<vmime::message>& full)
 		{
 			vmime::messageParser mp (full);
 
@@ -544,14 +544,14 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::SyncIMAPFolders (vmime::ref<vmime::net::store> store)
+	void AccountThreadWorker::SyncIMAPFolders (vmime::shared_ptr<vmime::net::store> store)
 	{
 		auto root = store->getRootFolder ();
 
 		QList<QStringList> paths;
 
 		auto folders = root->getFolders (true);
-		Q_FOREACH (vmime::ref<vmime::net::folder> folder, root->getFolders (true))
+		Q_FOREACH (vmime::shared_ptr<vmime::net::folder> folder, root->getFolders (true))
 		{
 			QStringList pathList;
 			const auto& path = folder->getFullPath ();
@@ -646,7 +646,7 @@ namespace Snails
 		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
-				[id] (const vmime::ref<vmime::net::message>& message) { return message->getUniqueId () == id; });
+				[id] (const vmime::shared_ptr<vmime::net::message>& message) { return message->getUniqueId () == id; });
 		if (pos == messages.end ())
 		{
 			Q_FOREACH (auto msg, messages)
@@ -695,7 +695,7 @@ namespace Snails
 		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
-				[id] (const vmime::ref<vmime::net::message>& message) { return message->getUniqueId () == id; });
+				[id] (const vmime::shared_ptr<vmime::net::message>& message) { return message->getUniqueId () == id; });
 		if (pos == messages.end ())
 		{
 			Q_FOREACH (auto msg, messages)
@@ -709,7 +709,7 @@ namespace Snails
 		}
 
 		vmime::messageParser mp ((*pos)->getParsedMessage ());
-		Q_FOREACH (const vmime::ref<const vmime::attachment>& att, mp.getAttachmentList ())
+		Q_FOREACH (const vmime::shared_ptr<const vmime::attachment>& att, mp.getAttachmentList ())
 		{
 			if (StringizeCT (att->getName ()) != attName)
 				continue;
@@ -840,7 +840,7 @@ namespace Snails
 		CachedFolders_.clear ();
 
 		CachedStore_->disconnect ();
-		CachedStore_ = vmime::ref<vmime::net::store> ();
+		CachedStore_ = vmime::shared_ptr<vmime::net::store> ();
 	}
 }
 }

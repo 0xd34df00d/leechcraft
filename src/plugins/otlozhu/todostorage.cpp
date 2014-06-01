@@ -30,6 +30,7 @@
 #include "todostorage.h"
 #include <algorithm>
 #include <QCoreApplication>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -86,16 +87,36 @@ namespace Otlozhu
 		return result;
 	}
 
+	void TodoStorage::AddDependency (const QString& itemId, const QString& depId)
+	{
+		if (depId.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot add an empty dep ID";
+		}
+
+		auto item = GetItemByID (itemId);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot find item"
+					<< itemId;
+			return;
+		}
+
+		item = item->Clone ();
+		item->AddDep (depId);
+
+		HandleUpdated (item,
+				[this, itemId, item]
+				{
+					emit itemDepAdded (FindItem (itemId), item->GetDeps ().size () - 1);
+				});
+	}
+
 	void TodoStorage::HandleUpdated (TodoItem_ptr item)
 	{
-		const int pos = FindItem (item->GetID ());
-		if (pos == -1)
-			return;
-
-		emit itemDiffGenerated (item->GetID (), item->DiffWith (Items_ [pos]));
-		Items_ [pos] = item;
-		emit itemUpdated (pos);
-		SaveAt (pos);
+		HandleUpdated (item, {});
 	}
 
 	void TodoStorage::RemoveItem (const QString& id)
@@ -104,12 +125,43 @@ namespace Otlozhu
 		if (pos == -1)
 			return;
 
+		for (int i = 0; i < Items_.size (); ++i)
+		{
+			const auto& item = Items_.at (i)->Clone ();
+			auto deps = item->GetDeps ();
+			const auto depIdx = deps.indexOf (id);
+			if (depIdx < 0)
+				continue;
+
+			deps.removeAt (depIdx);
+			item->SetDeps (deps);
+
+			HandleUpdated (item, [this, i, depIdx] { emit itemDepRemoved (i, depIdx); });
+		}
+
 		emit itemRemoved (pos);
 		Items_.removeAt (pos);
+
 		QList<int> indexes;
 		for (int i = pos; i < GetNumItems (); ++i)
 			indexes << i;
 		SaveAt (indexes);
+	}
+
+	void TodoStorage::HandleUpdated (TodoItem_ptr item, const std::function<void ()>& preEmit)
+	{
+		const int pos = FindItem (item->GetID ());
+		if (pos == -1)
+			return;
+
+		emit itemDiffGenerated (item->GetID (), item->DiffWith (Items_ [pos]));
+		Items_ [pos] = item;
+
+		if (preEmit)
+			preEmit ();
+
+		emit itemUpdated (pos);
+		SaveAt (pos);
 	}
 
 	void TodoStorage::Load ()

@@ -29,13 +29,14 @@
 
 #pragma once
 
+#include <memory>
 #include <QMetaType>
 #include <QStringList>
 #include <QDateTime>
 #include <QHash>
 #include <QUrl>
 #include <QByteArrayMatcher>
-#include "regexp.h"
+#include <util/sll/regexp.h>
 
 namespace LeechCraft
 {
@@ -104,7 +105,7 @@ namespace CleanWeb
 
 	struct FilterItem
 	{
-		RegExp RegExp_;
+		Util::RegExp RegExp_;
 		QByteArray PlainMatcher_;
 		FilterOption Option_;
 	};

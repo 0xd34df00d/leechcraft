@@ -230,7 +230,7 @@ option (ENABLE_LMP_HTTSTREAM "Enable HttStream for streaming music from LMP via 
 option (ENABLE_LMP_JOS "Enable jOS for synchronizing with iOS devices" OFF)
 option (ENABLE_LMP_MP3TUNES "Enable plugin for syncing and using the mp3tunes.com service" ON)
 option (ENABLE_LMP_MTPSYNC "Enable plugin for syncing with MTP devices" OFF)
-option (ENABLE_LMP_POTORCHU "Enable visualization effects plugin" ON)
+option (ENABLE_LMP_POTORCHU "Enable visualization effects plugin" OFF)
 
 if (ENABLE_LMP_BRAINSLUGZ)
 	add_subdirectory (plugins/brainslugz)

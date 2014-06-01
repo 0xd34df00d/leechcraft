@@ -35,8 +35,9 @@
 #include <interfaces/lmp/ilmpproxy.h>
 
 typedef struct _GstPad GstPad;
-typedef struct _GstPadTemplate GstPadTemplate;
-typedef struct _GstElementFactory GstElementFactory;
+typedef struct _GstBuffer GstBuffer;
+
+class projectM;
 
 namespace LeechCraft
 {
@@ -45,31 +46,7 @@ namespace LMP
 namespace Potorchu
 {
 	class VisWidget;
-
-	class VisBranch
-	{
-		GstElement * const Elem_;
-		GstElement * const Tee_;
-		GstPadTemplate * const TeeTemplate_;
-
-		GstElement * const VisQueue_;
-		GstElement * const VisConverter_;
-		GstElement *Visualizer_;
-		GstElement * const VisColorspace_;
-		GstElement * const XSink_;
-
-		GstPad *TeeVisPad_ = nullptr;
-
-		bool SyncedStates_ = false;
-	public:
-		VisBranch (GstElement *elem, GstElement *tee,
-				GstPadTemplate *teeTemplate, GstElementFactory *factory);
-		~VisBranch ();
-
-		void SyncStates ();
-
-		GstElement* GetXSink () const;
-	};
+	class VisScene;
 
 	class VisualFilter : public QObject
 					   , public IFilterElement
@@ -80,20 +57,17 @@ namespace Potorchu
 		const ILMPProxy_ptr LmpProxy_;
 
 		const std::shared_ptr<VisWidget> Widget_;
+		const std::shared_ptr<VisScene> Scene_;
 
 		GstElement * const Elem_;
 		GstElement * const Tee_;
-		GstPadTemplate * const TeeTemplate_;
 		GstElement * const AudioQueue_;
-
-		GstPad *TeeAudioPad_;
-
-		std::unique_ptr<VisBranch> VisBranch_;
-
+		GstElement * const ProbeQueue_;
+		GstElement * const Converter_;
+		GstElement * const FakeSink_;
 		IPath *Path_;
 
-		const QList<GstElementFactory*> Factories_;
-		int CurFact_ = 0;
+		std::shared_ptr<projectM> ProjectM_;
 	public:
 		VisualFilter (const QByteArray&, const ILMPProxy_ptr&);
 
@@ -101,12 +75,15 @@ namespace Potorchu
 		QByteArray GetInstanceId () const;
 		IFilterConfigurator* GetConfigurator () const;
 	protected:
-		void PostAdd (IPath*) override;
 		GstElement* GetElement () const;
 	private:
-		void SetOverlay ();
+		void InitProjectM ();
+
+		void HandleBuffer (GstBuffer*);
 		void SetVisualizer ();
 	private slots:
+		void updateFrame ();
+
 		void handlePrevVis ();
 		void handleNextVis ();
 	};

@@ -94,11 +94,9 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 		case QNetworkAccessManager::UnknownOperation:
 			opName = "Unknown";
 			break;
-#if QT_VERSION >= 0x040700
 		case QNetworkAccessManager::CustomOperation:
 			opName = "Custom";
 			break;
-#endif
 	}
 	items.push_back (new QStandardItem (QDateTime::currentDateTime ().toString ()));
 	items.push_back (new QStandardItem (tr ("In progress")));

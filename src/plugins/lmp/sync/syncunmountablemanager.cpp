@@ -72,9 +72,9 @@ namespace LMP
 			if (trackId < 0)
 				continue;
 
-			const auto trackNumber = coll->GetCollectionModel ()->
+			const auto trackNumber = coll->
 					GetTrackData (trackId, LocalCollectionModel::Role::TrackNumber).toInt ();
-			const auto& trackTitle = coll->GetCollectionModel ()->
+			const auto& trackTitle = coll->
 					GetTrackData (trackId, LocalCollectionModel::Role::TrackTitle).toString ();
 
 			const auto album = coll->GetTrackAlbum (trackId);

@@ -28,18 +28,17 @@
  **********************************************************************/
 
 #include "regexp.h"
-#include "xmlsettingsmanager.h"
 #include <QtDebug>
 
 #ifdef USE_PCRE
 #include <pcre.h>
+#else
+#include <QRegExp>
 #endif
 
 namespace LeechCraft
 {
-namespace Poshuku
-{
-namespace CleanWeb
+namespace Util
 {
 #ifdef USE_PCRE
 
@@ -71,9 +70,7 @@ namespace CleanWeb
 			{
 				pcre_refcount (RE_, 1);
 				const char *error = 0;
-				const int opts = XmlSettingsManager::Instance ()->property ("EnableJIT").toBool () ?
-						PCRE_STUDY_JIT_COMPILE :
-						0;
+				const int opts = PCRE_STUDY_JIT_COMPILE;
 				Extra_ = pcre_study (RE_, opts, &error);
 			}
 		}
@@ -156,6 +153,27 @@ namespace CleanWeb
 	};
 #endif
 
+	namespace
+	{
+		struct RegExpRegisterGuard
+		{
+			RegExpRegisterGuard ()
+			{
+				qRegisterMetaType<RegExp> ("Util::RegExp");
+				qRegisterMetaTypeStreamOperators<RegExp> ();
+			}
+		} Guard;
+	}
+
+	struct RegExpImpl
+	{
+#if USE_PCRE
+		PCREWrapper PRx_;
+#else
+		QRegExp Rx_;
+#endif
+	};
+
 	bool RegExp::IsFast ()
 	{
 #ifdef USE_PCRE
@@ -165,68 +183,79 @@ namespace CleanWeb
 #endif
 	}
 
-	RegExp::RegExp ()
-	{
-	}
-
-	RegExp::RegExp (const RegExp& rx)
-#ifdef USE_PCRE
-	: PRx_ (rx.PRx_)
-#else
-	: Rx_ (rx.Rx_)
-#endif
-	{
-	}
-
 	RegExp::RegExp (const QString& str, Qt::CaseSensitivity cs)
 #ifdef USE_PCRE
-	: PRx_ (new PCREWrapper (str, cs))
+	: Impl_ { new RegExpImpl { { str, cs } } }
 #else
-	: Rx_ (str, cs, QRegExp::RegExp)
+	: Impl_ { new RegExpImpl { QRegExp { str, cs, QRegExp::RegExp } } }
 #endif
 	{
-	}
-
-	RegExp::~RegExp ()
-	{
-	}
-
-	RegExp& RegExp::operator= (const RegExp& rx)
-	{
-#ifdef USE_PCRE
-		PRx_ = rx.PRx_;
-#else
-		Rx_ = rx.Rx_;
-#endif
-		return *this;
 	}
 
 	bool RegExp::Matches (const QString& str) const
 	{
+		if (!Impl_)
+			return {};
+
 #ifdef USE_PCRE
-		return PRx_->Exec (str.toUtf8 ()) >= 0;
+		return Impl_->PRx_.Exec (str.toUtf8 ()) >= 0;
 #else
-		return Rx_.exactMatch (str);
+		return Impl_->Rx_.exactMatch (str);
 #endif
 	}
 
 	QString RegExp::GetPattern () const
 	{
+		if (!Impl_)
+			return {};
+
 #ifdef USE_PCRE
-		return PRx_->GetPattern ();
+		return Impl_->PRx_.GetPattern ();
 #else
-		return Rx_.pattern ();
+		return Impl_->Rx_.pattern ();
 #endif
 	}
 
 	Qt::CaseSensitivity RegExp::GetCaseSensitivity () const
 	{
+		if (!Impl_)
+			return {};
+
 #ifdef USE_PCRE
-		return PRx_->GetCS ();
+		return Impl_->PRx_.GetCS ();
 #else
-		return Rx_.caseSensitivity ();
+		return Impl_->Rx_.caseSensitivity ();
 #endif
 	}
 }
 }
+
+QDataStream& operator<< (QDataStream& out, const LeechCraft::Util::RegExp& rx)
+{
+	out << static_cast<quint8> (1);
+	out << rx.GetPattern ()
+		<< static_cast<quint8> (rx.GetCaseSensitivity ());
+	return out;
+}
+
+QDataStream& operator>> (QDataStream& in, LeechCraft::Util::RegExp& rx)
+{
+	quint8 version = 0;
+	in >> version;
+	if (version != 1)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "unknown version"
+				<< version;
+		return in;
+	}
+
+	QString pattern;
+	quint8 cs;
+	in >> pattern
+		>> cs;
+
+	rx = LeechCraft::Util::RegExp { pattern, static_cast<Qt::CaseSensitivity> (cs) };
+
+	return in;
 }

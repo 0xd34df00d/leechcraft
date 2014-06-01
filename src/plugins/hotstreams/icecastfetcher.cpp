@@ -44,8 +44,6 @@
 #include <util/sys/paths.h>
 #include <interfaces/idownload.h>
 
-Q_DECLARE_METATYPE (QList<QUrl>);
-
 namespace LeechCraft
 {
 namespace HotStreams

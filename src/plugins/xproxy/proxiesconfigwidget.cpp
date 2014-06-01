@@ -78,7 +78,7 @@ namespace XProxy
 				row << new QStandardItem (ProxiesConfigWidget::tr ("any"));
 			else
 				row << new QStandardItem (req.Protocols_.join ("; "));
-			const QString& targetStr = req.Host_.pattern () +
+			const QString& targetStr = req.Host_.GetPattern () +
 					":" +
 					(req.Port_ > 0 ?
 							QString::number (req.Port_) :
@@ -134,7 +134,7 @@ namespace XProxy
 			if (!target.Protocols_.isEmpty () && !target.Protocols_.contains (proto))
 				continue;
 
-			if (!target.Host_.exactMatch (reqHost))
+			if (!target.Host_.Matches (reqHost))
 				continue;
 
 			result << pair.second;
@@ -172,9 +172,9 @@ namespace XProxy
 			rxPat.append (".*");
 		}
 
-		ReqTarget targ =
+		ReqTarget targ
 		{
-			QRegExp (rxPat, Qt::CaseInsensitive),
+			{ rxPat, Qt::CaseInsensitive },
 			Ui_.TargetPort_->value (),
 			Ui_.TargetProto_->text ().split (' ', QString::SkipEmptyParts)
 		};
@@ -236,7 +236,7 @@ namespace XProxy
 		Ui_.RemoveProxyButton_->setEnabled (idx.isValid ());
 
 		const auto& entry = Entries_.value (idx.row ());
-		Ui_.TargetHost_->setText (entry.first.Host_.pattern ());
+		Ui_.TargetHost_->setText (entry.first.Host_.GetPattern ());
 		Ui_.TargetPort_->setValue (entry.first.Port_);
 		Ui_.TargetProto_->setText (entry.first.Protocols_.join (" "));
 
@@ -334,7 +334,7 @@ namespace XProxy
 
 	QDataStream& operator<< (QDataStream& out, const ReqTarget& t)
 	{
-		out << static_cast<quint8> (1);
+		out << static_cast<quint8> (2);
 		out << t.Host_
 			<< t.Port_
 			<< t.Protocols_;
@@ -345,7 +345,7 @@ namespace XProxy
 	{
 		quint8 ver = 0;
 		in >> ver;
-		if (ver != 1)
+		if (ver < 1 || ver > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -353,8 +353,16 @@ namespace XProxy
 			return in;
 		}
 
-		in >> t.Host_
-			>> t.Port_
+		if (ver == 1)
+		{
+			QRegExp rx;
+			in >> rx;
+			t.Host_ = Util::RegExp { rx.pattern (), rx.caseSensitivity () };
+		}
+		else
+			in >> t.Host_;
+
+		in >> t.Port_
 			>> t.Protocols_;
 		return in;
 	}

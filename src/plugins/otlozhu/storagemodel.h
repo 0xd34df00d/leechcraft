@@ -31,6 +31,7 @@
 
 #include <QAbstractItemModel>
 #include <QStringList>
+#include "todoitem.h"
 
 namespace LeechCraft
 {
@@ -77,10 +78,15 @@ namespace Otlozhu
 		bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
 		void SetStorage (TodoStorage*);
+	private:
+		TodoItem_ptr GetItemForIndex (const QModelIndex&) const;
 	private slots:
 		void handleItemAdded (int);
 		void handleItemUpdated (int);
 		void handleItemRemoved (int);
+
+		void handleItemDepAdded (int, int);
+		void handleItemDepRemoved (int, int);
 	};
 }
 }

@@ -29,40 +29,25 @@
 
 #pragma once
 
+#include "sllconfig.h"
 #include <memory>
 #include <QString>
-
-#if USE_PCRE
-// nothing yet
-#else
-#include <QRegExp>
-#endif
+#include <QMetaType>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Util
 {
-namespace CleanWeb
-{
-#if USE_PCRE
-	class PCREWrapper;
-#endif
+	struct RegExpImpl;
 
-	class RegExp
+	class UTIL_SLL_API RegExp
 	{
-#if USE_PCRE
-		std::shared_ptr<PCREWrapper> PRx_;
-#else
-		QRegExp Rx_;
-#endif
+		std::shared_ptr<RegExpImpl> Impl_;
 	public:
 		static bool IsFast ();
 
-		RegExp ();
-		RegExp (const RegExp&);
+		RegExp () = default;
 		RegExp (const QString&, Qt::CaseSensitivity);
-		~RegExp ();
-		RegExp& operator= (const RegExp&);
 
 		bool Matches (const QString&) const;
 
@@ -71,4 +56,8 @@ namespace CleanWeb
 	};
 }
 }
-}
+
+UTIL_SLL_API QDataStream& operator<< (QDataStream&, const LeechCraft::Util::RegExp&);
+UTIL_SLL_API QDataStream& operator>> (QDataStream&, LeechCraft::Util::RegExp&);
+
+Q_DECLARE_METATYPE (LeechCraft::Util::RegExp);

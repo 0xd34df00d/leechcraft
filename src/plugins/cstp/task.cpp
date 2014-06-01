@@ -352,62 +352,105 @@ namespace CSTP
 		}
 	}
 
+	namespace
+	{
+		QString GetFilenameAscii (const QString& contdis)
+		{
+			const QByteArray start = "filename=\"";
+			int startPos = contdis.indexOf (start) + start.size ();
+			bool ignoreNextQuote = false;
+			QString result;
+			while (startPos < contdis.size ())
+			{
+				QChar cur = contdis.at (startPos++);
+				if (cur == '\\')
+					ignoreNextQuote = true;
+				else if (cur == '"' &&
+						!ignoreNextQuote)
+					break;
+				else
+				{
+					result += cur;
+					ignoreNextQuote = false;
+				}
+			}
+			return result;
+		}
+
+		QString GetFilenameUtf8 (const QString& contdis)
+		{
+			const QByteArray start = "filename*=UTF-8''";
+			const auto markerPos = contdis.indexOf (start);
+			if (markerPos == -1)
+				return {};
+
+			const auto startPos = markerPos + start.size ();
+			auto endPos = contdis.indexOf (';', startPos);
+			if (endPos == -1)
+				endPos = contdis.size ();
+
+			const auto& encoded = contdis.mid (startPos, endPos - startPos);
+			const auto& utf8 = QByteArray::fromPercentEncoding (encoded.toLatin1 ());
+
+			const auto& result = QString::fromUtf8 (utf8);
+			return result;
+		}
+
+		QString GetFilename (const QString& contdis)
+		{
+			auto result = GetFilenameUtf8 (contdis);
+			if (result.isEmpty ())
+				result = GetFilenameAscii (contdis);
+			return result;
+		}
+	}
+
 	void Task::HandleMetadataFilename ()
 	{
 		if (!CanChangeName_)
 			return;
 
-		QByteArray contdis = Reply_->rawHeader ("Content-Disposition");
+		const auto& contdis = Reply_->rawHeader ("Content-Disposition");
 		qDebug () << Q_FUNC_INFO << contdis;
 		if (!contdis.size () ||
 				!contdis.contains ("filename=\""))
 			return;
 
-		const QByteArray start = "filename=\"";
-		int startPos = contdis.indexOf (start) + start.size ();
-		bool ignoreNextQuote = false;
-		QString result;
-		while (startPos < contdis.size ())
+		const auto& result = GetFilename (contdis);
+
+		if (result.isEmpty ())
+			return;
+
+		auto path = To_->fileName ();
+		auto oldPath = path;
+		auto fname = QFileInfo (path).fileName ();
+		path.replace (path.lastIndexOf (fname),
+				fname.size (), result);
+
+		if (path == oldPath)
 		{
-			QChar cur = contdis.at (startPos++);
-			if (cur == '\\')
-				ignoreNextQuote = true;
-			else if (cur == '"' &&
-					!ignoreNextQuote)
-				break;
-			else
-			{
-				result += cur;
-				ignoreNextQuote = false;
-			}
+			qDebug () << Q_FUNC_INFO
+					<< "new name equals to the old name, skipping renaming";
+			return;
 		}
 
-		if (result.size ())
+		QIODevice::OpenMode om = To_->openMode ();
+		To_->close ();
+
+		if (!To_->rename (path))
 		{
-			QString path = To_->fileName ();
-			QString oldPath = path;
-			QString fname = QFileInfo (path).fileName ();
-			path.replace (path.lastIndexOf (fname),
-					fname.size (), result);
-
-			QIODevice::OpenMode om = To_->openMode ();
-			To_->close ();
-
-			if (!To_->rename (path))
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to rename to"
-					<< path
-					<< To_->errorString ();
-			}
-			if (!To_->open (om))
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to re-open the renamed file"
-					<< path;
-				To_->rename (oldPath);
-				To_->open (om);
-			}
+			qWarning () << Q_FUNC_INFO
+				<< "failed to rename to"
+				<< path
+				<< To_->errorString ();
+		}
+		if (!To_->open (om))
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to re-open the renamed file"
+				<< path;
+			To_->rename (oldPath);
+			To_->open (om);
 		}
 	}
 

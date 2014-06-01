@@ -66,6 +66,7 @@ namespace Otlozhu
 		QToolBar* GetToolBar () const;
 	private slots:
 		void handleAddTodoRequested ();
+		void handleAddChildTodoRequested ();
 		void handleRemoveTodoRequested ();
 		void handleCloneTodoRequested ();
 

@@ -232,6 +232,7 @@ namespace NetStoreManager
 	void ManagerTab::FillToolbar ()
 	{
 		AccountsBox_ = new QComboBox (this);
+		AccountsBox_->setSizeAdjustPolicy (QComboBox::AdjustToContents);
 		Q_FOREACH (auto acc, AM_->GetAccounts ())
 		{
 			auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
@@ -718,9 +719,7 @@ namespace NetStoreManager
 				DoNotNotifyUser |
 				DoNotSaveInHistory |
 				FromUserInitiated;
-		acc->Download (GetCurrentID (),
-				Ui_.FilesView_->currentIndex ().data ().toString (), tp, true,
-				true);
+		acc->Download (GetCurrentID (), {}, tp, true);
 	}
 
 	void ManagerTab::flCopy ()
@@ -854,9 +853,29 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		acc->Download (GetCurrentID (),
-				Ui_.FilesView_->currentIndex ().data ().toString (),
-				OnlyDownload | FromUserInitiated);
+		const auto& rows = Ui_.FilesView_->selectionModel ()->selectedRows ();
+		if (rows.size () <= 1)
+		{
+			acc->Download (GetCurrentID (),
+					{},
+					OnlyDownload | FromUserInitiated,
+					false);
+			return;
+		}
+
+		const auto& dir = QFileDialog::getExistingDirectory (this,
+				tr ("Download %n file(s)", 0, rows.size ()));
+		if (dir.isEmpty ())
+			return;
+
+		for (auto row : rows)
+		{
+			row = row.sibling (row.row (), Columns::CName);
+			acc->Download (row.data (ListingRole::ID).toByteArray (),
+					dir,
+					OnlyDownload | FromUserInitiated | AutoAccept,
+					false);
+		}
 	}
 
 	void ManagerTab::flCopyUrl ()

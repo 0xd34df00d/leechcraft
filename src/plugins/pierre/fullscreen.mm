@@ -72,11 +72,7 @@ static WindowObserver *observer = nil;
 
 static bool SupportsFSImpl ()
 {
-#if QT_VERSION >= 0x040800
 	return QSysInfo::MacintoshVersion >= QSysInfo::MV_LION;
-#else
-	return QSysInfo::MacintoshVersion >= 0x0009; /* MV_LION not defined */
-#endif
 }
 
 static void AddActionImpl (QMainWindow *window)

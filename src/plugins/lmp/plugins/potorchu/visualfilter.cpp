@@ -31,17 +31,10 @@
 #include <QtDebug>
 #include <QWidget>
 #include <gst/gst.h>
-
-#if GST_CHECK_VERSION (1, 0, 0)
-#include <gst/video/videooverlay.h>
-#else
-#include <gst/interfaces/xoverlay.h>
-#endif
-
-#include <util/sll/delayedexecutor.h>
+#include <libprojectM/projectM.hpp>
 #include <util/lmp/gstutil.h>
-#include <interfaces/lmp/ilmpguiproxy.h>
 #include "viswidget.h"
+#include "visscene.h"
 
 namespace LeechCraft
 {
@@ -49,125 +42,57 @@ namespace LMP
 {
 namespace Potorchu
 {
-	namespace
-	{
-		QList<GstElementFactory*> EnumerateVisualizers ()
-		{
-#if GST_CHECK_VERSION (1, 0, 0)
-			const auto registry = gst_registry_get ();
-#else
-			const auto registry = gst_registry_get_default ();
-#endif
-			const auto list = gst_registry_feature_filter (registry,
-					[] (GstPluginFeature *feature, gpointer) -> gboolean
-					{
-						if (!GST_IS_ELEMENT_FACTORY (feature))
-							return false;
-
-						const auto factory = GST_ELEMENT_FACTORY (feature);
-						const auto klass = gst_element_factory_get_klass (factory);
-						return g_strrstr (klass, "Visualization") != nullptr;
-					},
-					false,
-					nullptr);
-
-			QList<GstElementFactory*> result;
-			for (auto item = list; item; item = g_list_next (item))
-			{
-				const auto factory = GST_ELEMENT_FACTORY (item->data);
-				result << factory;
-				qDebug () << gst_element_factory_get_longname (factory);
-
-			}
-
-			gst_plugin_feature_list_free (list);
-
-			return result;
-		}
-	}
-
-	VisBranch::VisBranch (GstElement *elem, GstElement *tee, GstPadTemplate *teeTemplate, GstElementFactory *factory)
-	: Elem_ { elem }
-	, Tee_ { tee }
-	, TeeTemplate_ { teeTemplate }
-	, VisQueue_ { gst_element_factory_make ("queue", nullptr) }
-	, VisConverter_ { gst_element_factory_make ("audioconvert", nullptr) }
-	, Visualizer_ { gst_element_factory_create (factory, nullptr) }
-	, VisColorspace_ { gst_element_factory_make ("colorspace", nullptr) }
-	, XSink_ { gst_element_factory_make ("ximagesink", nullptr) }
-	{
-		gst_bin_add_many (GST_BIN (Elem_),
-				VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
-		gst_element_link_many (VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
-
-		TeeVisPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
-		auto streamPad = gst_element_get_static_pad (VisQueue_, "sink");
-		gst_pad_link (TeeVisPad_, streamPad);
-		gst_object_unref (streamPad);
-
-		new Util::DelayedExecutor
-		{
-			[this] () -> void
-			{
-				if (!SyncedStates_)
-					SyncStates ();
-			},
-			0
-		};
-	}
-
-	VisBranch::~VisBranch ()
-	{
-		auto streamPad = gst_element_get_static_pad (VisQueue_, "sink");
-		gst_pad_unlink (TeeVisPad_, streamPad);
-		gst_element_release_request_pad (Tee_, TeeVisPad_);
-		gst_object_unref (streamPad);
-
-		gst_element_unlink_many (VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_, nullptr);
-		for (auto elem : { VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_ })
-		{
-			gst_element_set_state (elem, GST_STATE_NULL);
-			gst_bin_remove (GST_BIN (Elem_), elem);
-		}
-	}
-
-	void VisBranch::SyncStates ()
-	{
-		SyncedStates_ = true;
-		for (auto elem : { VisQueue_, VisConverter_, Visualizer_, VisColorspace_, XSink_ })
-			gst_element_sync_state_with_parent (elem);
-	}
-
-	GstElement* VisBranch::GetXSink () const
-	{
-		return XSink_;
-	}
-
 	VisualFilter::VisualFilter (const QByteArray& effectId, const ILMPProxy_ptr& proxy)
 	: EffectId_ { effectId }
 	, LmpProxy_ { proxy }
 	, Widget_ { new VisWidget }
-	, Elem_ { gst_bin_new ("visualbin") }
+	, Scene_ { new VisScene }
+	, Elem_ { gst_bin_new (nullptr) }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
-	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
-	, Factories_ { EnumerateVisualizers () }
+	, ProbeQueue_ { gst_element_factory_make ("queue", nullptr) }
+	, Converter_ { gst_element_factory_make ("audioconvert", nullptr) }
+	, FakeSink_ { gst_element_factory_make ("fakesink", nullptr) }
 	{
-		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, nullptr);
+		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, ProbeQueue_, Converter_, FakeSink_, nullptr);
 
-		TeeAudioPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
+		auto teeTemplate = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d");
+
+		auto teeAudioPad = gst_element_request_pad (Tee_, teeTemplate, nullptr, nullptr);
 		auto audioPad = gst_element_get_static_pad (AudioQueue_, "sink");
-		gst_pad_link (TeeAudioPad_, audioPad);
+		gst_pad_link (teeAudioPad, audioPad);
 		gst_object_unref (audioPad);
-
-		Widget_->resize (800, 600);
-		Widget_->show ();
-		//proxy->GetGuiProxy ()->AddCurrentSongTab (tr ("Visualization"), Widget_.get ());
 
 		GstUtil::AddGhostPad (Tee_, Elem_, "sink");
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");
 
-		VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_, Factories_.at (CurFact_) });
+		gst_element_link (ProbeQueue_, Converter_);
+		const auto caps = gst_caps_new_simple ("audio/x-raw-int",
+				"width", G_TYPE_INT, 16,
+				"signed", G_TYPE_BOOLEAN, true,
+				nullptr);
+		gst_element_link_filtered (Converter_, FakeSink_, caps);
+		gst_caps_unref (caps);
+
+		auto teeProbePad = gst_element_request_pad (Tee_, teeTemplate, nullptr, nullptr);
+		auto streamPad = gst_element_get_static_pad (ProbeQueue_, "sink");
+		gst_pad_link (teeProbePad, streamPad);
+		gst_object_unref (streamPad);
+
+		Widget_->resize (512, 512);
+		Widget_->show ();
+		Widget_->setScene (Scene_.get ());
+		Widget_->SetFps (60);
+
+		connect (Widget_.get (),
+				SIGNAL (redrawRequested ()),
+				Scene_.get (),
+				SLOT (update ()));
+		connect (Scene_.get (),
+				SIGNAL (redrawing ()),
+				this,
+				SLOT (updateFrame ()));
+		//proxy->GetGuiProxy ()->AddCurrentSongTab (tr ("Visualization"), Widget_.get ());
 
 		connect (Widget_.get (),
 				SIGNAL (nextVis ()),
@@ -177,6 +102,11 @@ namespace Potorchu
 				SIGNAL (prevVis ()),
 				this,
 				SLOT (handlePrevVis ()));
+
+		gst_pad_add_buffer_probe (gst_element_get_static_pad (Converter_, "src"),
+				G_CALLBACK (+[] (GstPad*, GstBuffer *buf, VisualFilter *filter)
+					{ filter->HandleBuffer (buf); }),
+				this);
 	}
 
 	QByteArray VisualFilter::GetEffectId () const
@@ -199,64 +129,77 @@ namespace Potorchu
 		return Elem_;
 	}
 
-	void VisualFilter::PostAdd (IPath *path)
+	void VisualFilter::InitProjectM ()
 	{
-		Path_ = path;
-		path->AddSyncHandler ([this] (GstBus*, GstMessage *message)
-				{
-#if GST_CHECK_VERSION (1, 0, 0)
-					if (!gst_is_video_overlay_prepare_window_handle_message (message))
-						return GST_BUS_PASS;
-#else
-					if (GST_MESSAGE_TYPE (message) != GST_MESSAGE_ELEMENT)
-						return GST_BUS_PASS;
-
-					if (!gst_structure_has_name (message->structure, "prepare-xwindow-id"))
-						return GST_BUS_PASS;
-#endif
-
-					SetOverlay ();
-
-					gst_message_unref (message);
-
-					return GST_BUS_DROP;
-				},
-				this);
+		/*
+    struct Settings {
+        int meshX;
+        int meshY;
+        int fps;
+        int textureSize;
+        int windowWidth;
+        int windowHeight;
+        std::string presetURL;
+        std::string titleFontURL;
+        std::string menuFontURL;
+        int smoothPresetDuration;
+        int presetDuration;
+        float beatSensitivity;
+        bool aspectCorrection;
+        float easterEgg;
+        bool shuffleEnabled;
+	bool softCutRatingsEnabled;
+    };
+	*/
+		projectM::Settings settings
+		{
+			32,
+			24,
+			60,
+			512,
+			512,
+			512,
+			"/usr/share/projectM/presets",
+			"/usr/share/fonts/droid/DroidSans.ttf",
+			"/usr/share/fonts/droid/DroidSans.ttf",
+			5,
+			15,
+			0,
+			false,
+			false,
+			true,
+			false
+		};
+		ProjectM_.reset (new projectM { settings });
 	}
 
-	void VisualFilter::SetOverlay ()
+	void VisualFilter::HandleBuffer (GstBuffer *buffer)
 	{
-		auto sink = VisBranch_->GetXSink ();
+		const auto samples = GST_BUFFER_SIZE (buffer) / sizeof (short) / 2;
+		const auto data = reinterpret_cast<short*> (GST_BUFFER_DATA (buffer));
 
-#if GST_CHECK_VERSION (1, 0, 0)
-		gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (sink), Widget_->GetVisWinId ());
-#else
-		gst_x_overlay_set_window_handle (GST_X_OVERLAY (sink), Widget_->GetVisWinId ());
-#endif
+		if (ProjectM_)
+			ProjectM_->pcm ()->addPCM16Data (data, samples);
 	}
 
 	void VisualFilter::SetVisualizer ()
 	{
-		VisBranch_.reset ();
+	}
 
-		Path_->PerformWProbe ([this] () -> void
-				{
-					VisBranch_.reset (new VisBranch { Elem_, Tee_, TeeTemplate_, Factories_.at (CurFact_) });
-					VisBranch_->SyncStates ();
-				});
+	void VisualFilter::updateFrame ()
+	{
+		if (!ProjectM_)
+			InitProjectM ();
+
+		ProjectM_->renderFrame ();
 	}
 
 	void VisualFilter::handleNextVis ()
 	{
-		CurFact_ = (CurFact_ + 1) % Factories_.size ();
-		SetVisualizer ();
 	}
 
 	void VisualFilter::handlePrevVis ()
 	{
-		if (--CurFact_ < 0)
-			CurFact_ = Factories_.size () - 1;
-		SetVisualizer ();
 	}
 }
 }

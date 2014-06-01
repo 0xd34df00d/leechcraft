@@ -27,65 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QSet>
-#include <QNetworkAccessManager>
-#include <QSslConfiguration>
-#include <QWebPage>
-#include <interfaces/core/ihookproxy.h>
-
-class QNetworkReply;
-class QUrl;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Otlozhu
 {
-	class WebPageSslWatcher : public QObject
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-		QWebPage * const Page_;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
 
-		QList<QUrl> SslResources_;
-		QList<QUrl> ErrSslResources_;
-		QList<QUrl> NonSslResources_;
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 
-		QSet<QNetworkReply*> PendingErrors_;
-
-		QSslConfiguration PageConfig_;
-	public:
-		WebPageSslWatcher (QWebPage*);
-
-		enum class State
-		{
-			NoSsl,
-			SslErrors,
-			UnencryptedElems,
-			FullSsl
-		};
-		State GetPageState () const;
-
-		const QSslConfiguration& GetPageConfiguration () const;
-
-		QList<QUrl> GetNonSslUrls () const;
-	public slots:
-		void resetStats ();
-	private slots:
-		void handleReplyFinished ();
-		void handleSslErrors (const QList<QSslError>&);
-
-		void handleReplyCreated (QNetworkAccessManager::Operation,
-				const QNetworkRequest&, QNetworkReply*);
-
-		void handleNavigationRequest (LeechCraft::IHookProxy_ptr,
-				QWebPage*,
-				QWebFrame*,
-				const QNetworkRequest&,
-				QWebPage::NavigationType);
-	signals:
-		void sslStateChanged (WebPageSslWatcher*);
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Otlozhu");
+		return settings;
+	}
 }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Appearance" />
+		<groupbox>
+			<label value="Finished tasks" />
+			<item type="checkbox" property="DoneStrikeOut" default="false">
+				<label value="Strike out" />
+			</item>
+			<item type="checkbox" property="DoneGreyOut" default="true">
+				<label value="Grey out" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

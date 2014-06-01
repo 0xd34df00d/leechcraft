@@ -27,65 +27,26 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QSet>
-#include <QNetworkAccessManager>
-#include <QSslConfiguration>
-#include <QWebPage>
-#include <interfaces/core/ihookproxy.h>
-
-class QNetworkReply;
-class QUrl;
+#include "visscene.h"
+#include <QPainter>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace LMP
 {
-	class WebPageSslWatcher : public QObject
+namespace Potorchu
+{
+	VisScene::VisScene (QObject *parent)
+	: QGraphicsScene { parent }
 	{
-		Q_OBJECT
+	}
 
-		QWebPage * const Page_;
-
-		QList<QUrl> SslResources_;
-		QList<QUrl> ErrSslResources_;
-		QList<QUrl> NonSslResources_;
-
-		QSet<QNetworkReply*> PendingErrors_;
-
-		QSslConfiguration PageConfig_;
-	public:
-		WebPageSslWatcher (QWebPage*);
-
-		enum class State
-		{
-			NoSsl,
-			SslErrors,
-			UnencryptedElems,
-			FullSsl
-		};
-		State GetPageState () const;
-
-		const QSslConfiguration& GetPageConfiguration () const;
-
-		QList<QUrl> GetNonSslUrls () const;
-	public slots:
-		void resetStats ();
-	private slots:
-		void handleReplyFinished ();
-		void handleSslErrors (const QList<QSslError>&);
-
-		void handleReplyCreated (QNetworkAccessManager::Operation,
-				const QNetworkRequest&, QNetworkReply*);
-
-		void handleNavigationRequest (LeechCraft::IHookProxy_ptr,
-				QWebPage*,
-				QWebFrame*,
-				const QNetworkRequest&,
-				QWebPage::NavigationType);
-	signals:
-		void sslStateChanged (WebPageSslWatcher*);
-	};
+	void VisScene::drawBackground (QPainter *p, const QRectF&)
+	{
+		p->beginNativePainting ();
+		emit redrawing ();
+		p->endNativePainting ();
+	}
+}
 }
 }
