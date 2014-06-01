@@ -311,6 +311,8 @@ namespace Acetamide
 			return;
 		}
 
+		serverDisconnected (ish->GetServerID ());
+
 		Entity e = Util::MakeNotification ("Azoth",
 				errorString,
 				PCritical_);

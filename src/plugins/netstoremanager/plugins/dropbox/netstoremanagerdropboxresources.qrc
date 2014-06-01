@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/netstoremanager/dropbox">
+    <file>resources/images/dropbox-linux.png</file>
+  </qresource>
+</RCC>
