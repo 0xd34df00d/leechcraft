@@ -53,10 +53,9 @@ namespace Xoox
 	void VCardListEditDialog::AddItems (const QList<QPair<QString, QStringList>>& items)
 	{
 		const int rc = Model_->columnCount ();
-		Q_FOREACH (const auto& item, items)
+		for (const auto& item : items)
 		{
-			QList<QStandardItem*> row;
-			row << new QStandardItem (item.first);
+			QList<QStandardItem*> row { new QStandardItem (item.first) };
 
 			const auto& opts = item.second;
 			for (int i = 1; i < rc; ++i)
@@ -100,9 +99,7 @@ namespace Xoox
 		if (str.isEmpty ())
 			return;
 
-		QList<QPair<QString, QStringList>> list;
-		list << qMakePair (str, QStringList ());
-		AddItems (list);
+		AddItems ({ { str, {} } });
 	}
 
 	void VCardListEditDialog::on_Remove__released ()

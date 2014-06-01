@@ -56,7 +56,7 @@ namespace LeechCraft
 		 *
 		 * @sa TFSingle.
 		 */
-		TFOpenableByRequest = 0x01,
+		TFOpenableByRequest = 1 << 0,
 
 		/** @brief There could be only one instance of this tab.
 		 *
@@ -71,7 +71,7 @@ namespace LeechCraft
 		 *
 		 * @sa TFOpenableByRequest.
 		 */
-		TFSingle = 0x02,
+		TFSingle = 1 << 1,
 
 		/** @brief The tab should be opened by default.
 		 *
@@ -80,7 +80,7 @@ namespace LeechCraft
 		 * startup until the user manually closes it, the corresponding
 		 * tab class should have this feature as well.
 		 */
-		TFByDefault = 0x04,
+		TFByDefault = 1 << 2,
 
 		/** @brief The tab is to be suggested in a quick launch area.
 		 *
@@ -91,7 +91,14 @@ namespace LeechCraft
 		 * Consider adding this flag if you think user would often open
 		 * tabs of your class.
 		 */
-		TFSuggestOpening = 0x08
+		TFSuggestOpening = 1 << 3,
+
+		/** @brief The tab uses the standard tab close shortcut (Ctrl+W).
+		 *
+		 * Thus, when this tab is active, the tab close shortcut will be
+		 * disabled if it matches "Ctrl+W".
+		 */
+		TFOverridesTabClose = 1 << 4
 	};
 
 	Q_DECLARE_FLAGS (TabFeatures, LeechCraft::TabFeature);

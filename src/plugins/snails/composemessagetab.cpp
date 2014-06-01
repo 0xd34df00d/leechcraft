@@ -43,6 +43,7 @@
 #include <util/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "message.h"
 #include "core.h"
 
@@ -102,9 +103,10 @@ namespace Snails
 		add->setProperty ("ActionIcon", "list-add");
 		Toolbar_->addAction (AttachmentsMenu_->menuAction ());
 
-		Core::Instance ().GetProxy ()->UpdateIconset (QList<QAction*> ()
-					<< AccountsMenu_->menuAction ()
-					<< AttachmentsMenu_->menuAction ());
+		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset ({
+					AccountsMenu_->menuAction (),
+					AttachmentsMenu_->menuAction ()
+				});
 
 		QVBoxLayout *editFrameLay = new QVBoxLayout ();
 		editFrameLay->setContentsMargins (0, 0, 0, 0);

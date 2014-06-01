@@ -56,29 +56,6 @@ set (SRCS
 	mailmodelmanager.cpp
 	common.cpp
 	)
-set (HEADERS
-	snails.h
-	core.h
-	mailtab.h
-	xmlsettingsmanager.h
-	accountslistwidget.h
-	account.h
-	accountconfigdialog.h
-	message.h
-	accountthread.h
-	accountthreadworker.h
-	progresslistener.h
-	storage.h
-	progressmanager.h
-	mailtreedelegate.h
-	composemessagetab.h
-	accountfoldermanager.h
-	attdescr.h
-	vmimeconversions.h
-	outputiodevadapter.h
-	mailmodelmanager.h
-	common.h
-	)
 set (FORMS
 	mailtab.ui
 	accountslistwidget.ui
@@ -87,16 +64,12 @@ set (FORMS
 	)
 set (RESOURCES snailsresources.qrc)
 CreateTrs ("snails" "en;ru_RU" COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_snails SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)

@@ -38,6 +38,7 @@
 #endif
 
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -48,18 +49,22 @@ namespace Otlozhu
 	class Plugin : public QObject
 					, public IInfo
 					, public IHaveTabs
+					, public IHaveSettings
 					, public IEntityHandler
 #ifndef DISABLE_SYNC
 					, public ISyncable
 #endif
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler)
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
 #ifndef DISABLE_SYNC
 		Q_INTERFACES (ISyncable)
 #endif
 
 		TabClassInfo TCTodo_;
+
+		Util::XmlSettingsDialog_ptr XSD_;
+
 #ifndef DISABLE_SYNC
 		SyncProxy *SyncProxy_;
 #endif
@@ -77,6 +82,8 @@ namespace Otlozhu
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 #ifndef DISABLE_SYNC
 		ISyncProxy* GetSyncProxy ();

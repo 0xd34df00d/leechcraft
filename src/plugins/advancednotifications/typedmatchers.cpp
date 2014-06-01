@@ -146,27 +146,7 @@ namespace AdvancedNotifications
 			}
 		}
 
-		Ui_->ContainsBox_->setCurrentIndex (Value_.Contains_ ? 0 : 1);
-		Ui_->RegexpEditor_->setText (Value_.Rx_.pattern ());
-		int rxIdx = 0;
-		switch (Value_.Rx_.patternSyntax ())
-		{
-		case QRegExp::Wildcard:
-			rxIdx = 1;
-			break;
-		case QRegExp::RegExp:
-			rxIdx = 2;
-			break;
-		case QRegExp::FixedString:
-		default:
-			rxIdx = 0;
-			break;
-		}
-		Ui_->RegexType_->setCurrentIndex (rxIdx);
-
-		const auto idx = Ui_->VariantsBox_->findText (Value_.Rx_.pattern ());
-		if (idx >= 0)
-			Ui_->VariantsBox_->setCurrentIndex (idx);
+		SyncWidgetTo ();
 
 		return CW_;
 	}
@@ -207,6 +187,55 @@ namespace AdvancedNotifications
 		else
 			Value_.Rx_ = QRegExp (Ui_->VariantsBox_->currentText (),
 					Qt::CaseSensitive, QRegExp::FixedString);
+	}
+
+	void StringLikeMatcher::SyncWidgetTo ()
+	{
+		if (!CW_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null CW";
+			return;
+		}
+
+		Ui_->ContainsBox_->setCurrentIndex (!Value_.Contains_);
+		if (Allowed_.isEmpty ())
+		{
+			Ui_->RegexpEditor_->setText (Value_.Rx_.pattern ());
+
+			switch (Value_.Rx_.patternSyntax ())
+			{
+			case QRegExp::FixedString:
+				Ui_->RegexType_->setCurrentIndex (0);
+				break;
+			case QRegExp::Wildcard:
+			case QRegExp::WildcardUnix:
+				Ui_->RegexType_->setCurrentIndex (1);
+				break;
+			case QRegExp::RegExp:
+			case QRegExp::RegExp2:
+				Ui_->RegexType_->setCurrentIndex (2);
+				break;
+			case QRegExp::W3CXmlSchema11:
+				qWarning () << Q_FUNC_INFO
+						<< "unexpected regexp type"
+						<< Value_.Rx_.patternSyntax ();
+				break;
+			}
+		}
+		else
+		{
+			const auto& pattern = Value_.Rx_.pattern ();
+			const auto idx = Ui_->VariantsBox_->findText (pattern);
+			if (idx == -1)
+				qWarning () << Q_FUNC_INFO
+						<< "cannot find pattern"
+						<< pattern
+						<< "in"
+						<< Allowed_;
+			else
+				Ui_->VariantsBox_->setCurrentIndex (idx);
+		}
 	}
 
 	StringMatcher::StringMatcher (const QStringList& list)
@@ -358,8 +387,7 @@ namespace AdvancedNotifications
 			Ui_->setupUi (CW_);
 		}
 
-		Ui_->Boundary_->setValue (Value_.Boundary_);
-		Ui_->OpType_->setCurrentIndex (Ops2pos_ [Value_.Ops_]);
+		SyncWidgetTo ();
 
 		return CW_;
 	}
@@ -375,6 +403,19 @@ namespace AdvancedNotifications
 
 		Value_.Boundary_  = Ui_->Boundary_->value ();
 		Value_.Ops_ = Ops2pos_.key (Ui_->OpType_->currentIndex ());
+	}
+
+	void IntMatcher::SyncWidgetTo ()
+	{
+		if (!CW_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null CW";
+			return;
+		}
+
+		Ui_->Boundary_->setValue (Value_.Boundary_);
+		Ui_->OpType_->setCurrentIndex (Ops2pos_ [Value_.Ops_]);
 	}
 }
 }

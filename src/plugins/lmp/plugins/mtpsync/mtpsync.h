@@ -92,6 +92,7 @@ namespace MTPSync
 
 		bool FirstPoll_ = true;
 		bool IsPolling_ = false;
+		bool IsUploading_ = false;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();

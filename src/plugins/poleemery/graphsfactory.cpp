@@ -38,9 +38,9 @@
 #include <qwt_plot_tradingcurve.h>
 #include <qwt_date_scale_draw.h>
 #include <qwt_plot.h>
+#include <util/sll/prelude.h>
 #include "core.h"
 #include "operationsmanager.h"
-#include "prelude.h"
 #include "accountsmanager.h"
 #include "currenciesmanager.h"
 #include "storage.h"
@@ -136,7 +136,7 @@ namespace Poleemery
 
 			QVector<double> curSum (accBalances.begin ()->size (), 0);
 			for (auto& vec : accBalances)
-				curSum = vec = ZipWith (vec, curSum, std::plus<double> ());
+				curSum = vec = Util::ZipWith (vec, curSum, std::plus<double> ());
 		}
 
 		QList<QColor> GenerateColors (int numColors)
@@ -177,7 +177,7 @@ namespace Poleemery
 				if (rate != 1)
 				{
 					auto& vec = accBalances [accId];
-					vec = Map (vec, [rate] (double x) { return x * rate; });
+					vec = Util::Map (vec, [rate] (double x) { return x * rate; });
 				}
 			}
 

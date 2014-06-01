@@ -45,6 +45,8 @@ namespace Poshuku
 		URLFrame (QWidget* = 0);
 
 		QLineEdit* GetEdit () const;
+		ProgressLineEdit* GetEditAsProgressLine () const;
+
 		void SetFavicon (const QIcon&);
 		void AddWidget (QWidget*);
 		void RemoveWidget (QWidget*);

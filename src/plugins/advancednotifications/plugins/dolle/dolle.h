@@ -50,6 +50,7 @@ namespace Dolle
 				IPlugin2
 				LeechCraft::AdvancedNotifications::INotificationBackendPlugin
 				)
+
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

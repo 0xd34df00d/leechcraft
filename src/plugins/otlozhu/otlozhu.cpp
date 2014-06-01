@@ -32,6 +32,7 @@
 #include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/itagsmanager.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 #ifndef DISABLE_SYNC
 #include "syncproxy.h"
@@ -41,6 +42,7 @@
 #include "core.h"
 #include "todomanager.h"
 #include "todostorage.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -49,6 +51,10 @@ namespace Otlozhu
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("otlozhu");
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "otlozhusettings.xml");
+
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
@@ -152,6 +158,11 @@ namespace Otlozhu
 		item->SetTagIDs (ids);
 
 		mgr->GetTodoStorage ()->AddItem (item);
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 #ifndef DISABLE_SYNC

@@ -39,7 +39,7 @@
 #include <vmime/platforms/posix/posixHandler.hpp>
 #endif
 
-#include <util/resourceloader.h>
+#include <util/sys/resourceloader.h>
 #include "message.h"
 #include "storage.h"
 #include "progressmanager.h"

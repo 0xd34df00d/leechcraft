@@ -33,6 +33,7 @@
 #include <QIcon>
 #include <QTimer>
 #include <QFileInfo>
+#include <QElapsedTimer>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QBuffer>
@@ -189,17 +190,17 @@ namespace MTPSync
 		struct CallbackData
 		{
 			Plugin *Plugin_;
-			mutable uint64_t PrevSent_;
+			mutable QElapsedTimer Timer_;
 		};
 
 		int TransferCallback (uint64_t sent, uint64_t total, const void *rawData)
 		{
 			auto data = static_cast<const CallbackData*> (rawData);
 
-			if (sent - data->PrevSent_ > total / 200)
+			if (data->Timer_.elapsed () > 100)
 			{
-				data->PrevSent_ = sent;
 				data->Plugin_->HandleTransfer (sent, total);
+				data->Timer_.restart ();
 			}
 
 			return 0;
@@ -238,7 +239,6 @@ namespace MTPSync
 
 		while (storage)
 		{
-			qDebug () << "st" << storage->id;
 			if (QByteArray::number (storage->id) == storageId)
 				break;
 			storage = storage->next;
@@ -254,6 +254,8 @@ namespace MTPSync
 					tr ("Unable to find the requested storage."));
 			return;
 		}
+
+		IsUploading_ = true;
 
 		const auto id = storage->id;
 		const auto& info = OrigInfos_.take (origPath);
@@ -282,11 +284,16 @@ namespace MTPSync
 				SLOT (handleUploadFinished ()));
 		const auto future = QtConcurrent::run ([=] () -> UploadInfo
 			{
-				const auto cbData = new CallbackData { this, 0 };
+				const auto cbData = new CallbackData { this, {} };
+				cbData->Timer_.start ();
 				const auto res = LIBMTP_Send_Track_From_File (device,
 						localPath.toUtf8 ().constData (), track,
 						TransferCallback, cbData);
 				delete cbData;
+
+				if (!res)
+					AppendAlbum (device, track, info);
+
 				return { res, device, localPath, track, info };
 			});
 		watcher->setFuture (future);
@@ -562,9 +569,9 @@ namespace MTPSync
 			LIBMTP_Clear_Errorstack (info.Device_);
 		}
 
-		AppendAlbum (info.Device_, info.Track_, info.Info_);
-
 		LIBMTP_destroy_track_t (info.Track_);
+
+		IsUploading_ = false;
 
 		emit uploadFinished (info.LocalPath_, QFile::NoError, {});
 	}
@@ -573,6 +580,16 @@ namespace MTPSync
 	{
 		if (IsPolling_)
 			return;
+
+		if (IsUploading_)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "uploading in progress, not polling";
+			QTimer::singleShot (120000,
+					this,
+					SLOT (pollDevices ()));
+			return;
+		}
 
 		auto watcher = new QFutureWatcher<USBDevInfos_t> ();
 		connect (watcher,

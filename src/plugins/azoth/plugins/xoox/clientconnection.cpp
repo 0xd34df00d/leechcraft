@@ -492,7 +492,7 @@ namespace Xoox
 	{
 		GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
 		JID2CLEntry_ [jid] = entry;
-		emit gotRosterItems (QList<QObject*> () << entry);
+		emit gotRosterItems ({ entry });
 	}
 
 	QXmppMucManager* ClientConnection::GetMUCManager () const
@@ -807,7 +807,7 @@ namespace Xoox
 		GlooxCLEntry *entry = new GlooxCLEntry (ods, Account_);
 		ODSEntries_ [entry->GetJID ()] = entry;
 
-		emit gotRosterItems (QList<QObject*> () << entry);
+		emit gotRosterItems ({ entry });
 
 		return entry;
 	}
@@ -1382,7 +1382,7 @@ namespace Xoox
 			{
 				GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
 				JID2CLEntry_ [jid] = entry;
-				emit gotRosterItems (QList<QObject*> () << entry);
+				emit gotRosterItems ({ entry });
 			}
 			JID2CLEntry_ [jid]->SetAuthRequested (true);
 			emit gotSubscriptionRequest (JID2CLEntry_ [jid], QString ());

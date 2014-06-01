@@ -72,11 +72,75 @@ namespace AdvancedNotifications
 
 		const auto& data = Ui_.FieldName_->itemData (fieldIdx).value<ANFieldData> ();
 
+		const auto plugin = Ui_.SourcePlugin_->itemData (sourceIdx).value<QObject*> ();
+
 		FieldMatch result (data.Type_, CurrentMatcher_);
-		result.SetPluginID (Ui_.SourcePlugin_->itemData (sourceIdx).toByteArray ());
+		result.SetPluginID (qobject_cast<IInfo*> (plugin)->GetUniqueID ());
 		result.SetFieldName (data.ID_);
 
 		return result;
+	}
+
+	void MatchConfigDialog::SetFieldMatch (const FieldMatch& match)
+	{
+		if (!match.GetMatcher ())
+			qWarning () << Q_FUNC_INFO
+					<< "no matcher for"
+					<< match.GetPluginID ()
+					<< match.GetFieldName ();
+
+		const int fieldIdx = SelectPlugin (match.GetPluginID ().toLatin1 (), match.GetFieldName ());
+		if (fieldIdx == -1)
+			return;
+
+		Ui_.FieldName_->setCurrentIndex (fieldIdx);
+		on_FieldName__activated (fieldIdx);
+
+		if (CurrentMatcher_)
+		{
+			CurrentMatcher_->SetValue (match.GetMatcher ()->GetValue ());
+			CurrentMatcher_->SyncWidgetTo ();
+		}
+	}
+
+	int MatchConfigDialog::SelectPlugin (const QByteArray& pluginId, const QString& fieldId)
+	{
+		int plugIdx = -1;
+		if (!pluginId.isEmpty ())
+			for (int i = 0; i < Ui_.SourcePlugin_->count (); ++i)
+			{
+				const auto plugin = Ui_.SourcePlugin_->itemData (i).value<QObject*> ();
+				if (plugin && qobject_cast<IInfo*> (plugin)->GetUniqueID () == pluginId)
+				{
+					plugIdx = i;
+					break;
+				}
+			}
+
+		auto tryIdx = [this, &fieldId] (int idx) -> int
+		{
+			const auto pObj = Ui_.SourcePlugin_->itemData (idx).value<QObject*> ();
+			const auto& fields = FieldsMap_ [pObj];
+
+			for (int i = 0; i < fields.size (); ++i)
+				if (fields.at (i).ID_ == fieldId)
+				{
+					Ui_.SourcePlugin_->setCurrentIndex (idx);
+					on_SourcePlugin__activated (idx);
+					return i;
+				}
+
+			return -1;
+		};
+
+		if (plugIdx != -1)
+		{
+			const auto idx = tryIdx (plugIdx);
+			if (idx != -1)
+				return idx;
+		}
+
+		return tryIdx (0);
 	}
 
 	void MatchConfigDialog::AddFields (const QList<ANFieldData>& fields)

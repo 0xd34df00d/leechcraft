@@ -208,12 +208,12 @@ namespace Xoox
 				.arg (oldNick)
 				.arg (newNick);
 
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
+		auto message = new RoomPublicMessage (msg,
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantNickChange,
-				GetParticipantEntry (oldNick));
+				GetParticipantEntry (newNick));
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -603,6 +603,37 @@ namespace Xoox
 		return Room_;
 	}
 
+	void RoomHandler::HandleRenameStart (const RoomParticipantEntry_ptr& entry,
+			const QString& nick, const QString& newNick)
+	{
+		entry->SetEntryName (newNick);
+
+		const bool isMerge = Nick2Entry_.contains (newNick);
+		if (isMerge)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "detected rename-merge from"
+					<< nick
+					<< "to"
+					<< newNick;
+			const auto& otherEntry = Nick2Entry_.value (newNick);
+			otherEntry->StealMessagesFrom (entry.get ());
+
+			CLEntry_->MoveMessages (entry, otherEntry);
+		}
+		else
+			Nick2Entry_ [newNick] = Nick2Entry_ [nick];
+
+		MakeNickChangeMessage (nick, newNick);
+
+		if (!isMerge)
+			PendingNickChanges_ << newNick;
+		else
+			Account_->handleEntryRemoved (Nick2Entry_.value (nick).get ());
+
+		Nick2Entry_.remove (nick);
+	}
+
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
 	{
 		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
@@ -614,7 +645,7 @@ namespace Xoox
 				Qt::QueuedConnection);
 		Nick2Entry_ [nick] = entry;
 		if (announce)
-			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
+			Account_->handleGotRosterItems ({ entry.get () });
 		return entry;
 	}
 
@@ -646,7 +677,7 @@ namespace Xoox
 		entry->HandlePresence (pres, QString ());
 
 		if (!existed)
-			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
+			Account_->handleGotRosterItems ({ entry.get () });
 
 		MakeJoinMessage (pres, nick);
 	}
@@ -685,11 +716,7 @@ namespace Xoox
 		if (!item.nick ().isEmpty () &&
 				item.nick () != nick)
 		{
-			entry->SetEntryName (item.nick ());
-			Nick2Entry_ [item.nick ()] = Nick2Entry_ [nick];
-			MakeNickChangeMessage (nick, item.nick ());
-			Nick2Entry_.remove (nick);
-			PendingNickChanges_ << item.nick ();
+			HandleRenameStart (entry, nick, item.nick ());
 			return;
 		}
 		else if (pres.mucStatusCodes ().contains (301))

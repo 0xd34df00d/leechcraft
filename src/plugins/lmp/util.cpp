@@ -207,11 +207,15 @@ namespace LMP
 	{
 		const auto& getters = GetSubstGetters ();
 		for (const auto& key : getters.keys ())
-			mask.replace (key, getters [key] (info));
+		{
+			auto value = getters [key] (info);
+			if (flags & SubstitutionFlag::SFSafeFilesystem)
+				value.replace ('/', '_');
+			mask.replace (key, value);
+		}
 
 		if (flags & SubstitutionFlag::SFSafeFilesystem)
 		{
-			mask.replace ('/', '_');
 			mask.replace ('?', '_');
 			mask.replace ('*', '_');
 		}

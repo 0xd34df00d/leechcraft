@@ -80,11 +80,9 @@ namespace Poshuku
 
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 
-#if QT_VERSION >= 0x040600
 		QPalette p;
 		if (p.color (QPalette::Window) != Qt::white)
 			setPalette (QWindowsStyle ().standardPalette ());
-#endif
 
 		connect (ScrollTimer_,
 				SIGNAL (timeout ()),
@@ -180,6 +178,9 @@ namespace Poshuku
 				setHtml (result.toString ());
 			return;
 		}
+
+		emit navigateRequested (url);
+
 		if (url.scheme () == "about")
 		{
 			if (url.path () == "plugins")
@@ -188,6 +189,7 @@ namespace Poshuku
 				NavigateHome ();
 			return;
 		}
+
 		if (title.isEmpty ())
 			title = tr ("Loading...");
 		remakeURL (url);
@@ -713,7 +715,6 @@ namespace Poshuku
 
 	void CustomWebView::renderSettingsChanged ()
 	{
-#if QT_VERSION >= 0x040800
 		QPainter::RenderHints hints;
 		if (XmlSettingsManager::Instance ()->
 				property ("PrimitivesAntialiasing").toBool ())
@@ -729,7 +730,6 @@ namespace Poshuku
 			hints |= QPainter::HighQualityAntialiasing;
 
 		setRenderHints (hints);
-#endif
 	}
 
 	void CustomWebView::handleAutoscroll ()

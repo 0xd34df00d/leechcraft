@@ -139,14 +139,14 @@ endif ()
 
 set (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")
+
 add_subdirectory (util)
 add_subdirectory (xmlsettingsdialog)
 
 set (LEECHCRAFT_LIBRARIES
 		${LEECHCRAFT_UTIL_LIBRARIES}
 		leechcraft-xsd)
-
-set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")
 
 # Various options
 option (STRICT_LICENSING "Makes LeechCraft more prepared, for example, to lacking artwork due to licensing restrictions" OFF)
@@ -199,6 +199,7 @@ option (ENABLE_CPULOAD "Build CpuLoad for, well, monitoring the CPU load" ${WITH
 cmake_dependent_option (ENABLE_DEVMON "Build Devmon, the devices monitor plugin" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 option (ENABLE_DLNIWE "Build DLNiwe, the DLNA server plugin" OFF)
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
+cmake_dependent_option (ENABLE_ELEEMINATOR "Build Leeminal, embedded LeechCraft terminal emulator" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 cmake_dependent_option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
 option (ENABLE_HARBINGER "Build Harbinger, the collections manager" ${WITH_PLUGINS})
@@ -225,7 +226,6 @@ option (ENABLE_POLEEMERY "Build Poleemery, the personal finances manager" ${WITH
 option (ENABLE_ROSENTHAL "Build Rosenthal, the Hunspell-based spell checker service plugin" ${WITH_PLUGINS})
 option (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
 option (ENABLE_SCROBLIBRE "Build ScrobLibre, multiaccount Scrobbler API 1.2 scrobbler" ${WITH_PLUGINS})
-cmake_dependent_option (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 cmake_dependent_option (ENABLE_SYSNOTIFY "Build Sysnotify for using D-Bus notification API" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 option (ENABLE_TEXTOGROOSE "Build Text-o-Groose, script-based lyrics fetcher" ${WITH_PLUGINS})
 option (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
@@ -254,7 +254,6 @@ cmake_dependent_option (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer"
 option (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" OFF)
 
 # Defunct
-option (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 option (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 
 enable_testing ()
@@ -426,10 +425,6 @@ if (ENABLE_SHELLOPEN)
 	add_subdirectory (plugins/shellopen)
 endif ()
 
-if (ENABLE_JUFFED)
-	add_subdirectory (plugins/juffed)
-endif ()
-
 if (ENABLE_GMAILNOTIFIER)
 	add_subdirectory (plugins/gmailnotifier)
 endif ()
@@ -550,6 +545,10 @@ if (ENABLE_DLNIWE)
 	add_subdirectory (plugins/dlniwe)
 endif ()
 
+if (ENABLE_ELEEMINATOR)
+	add_subdirectory (plugins/eleeminator)
+endif ()
+
 if (ENABLE_FENET)
 	add_subdirectory (plugins/fenet)
 endif ()
@@ -624,12 +623,6 @@ endif ()
 
 if (ENABLE_VTYULC)
 	add_subdirectory (plugins/vtyulc)
-endif ()
-
-if (UNIX AND NOT APPLE)
-	if (ENABLE_SHAITAN)
-		add_subdirectory (plugins/shaitan)
-	endif ()
 endif ()
 
 if (UNIX AND NOT APPLE)
@@ -711,6 +704,7 @@ install (DIRECTORY share/qml/common DESTINATION ${LC_QML_DEST}/org/LC)
 
 install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 if (UNIX AND NOT APPLE)
+	install (DIRECTORY cmake/ DESTINATION share/leechcraft/cmake)
 	install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
 	install (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 	install (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS

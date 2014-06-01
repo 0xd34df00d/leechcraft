@@ -188,7 +188,11 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 	emit hookNAMCreateRequest (proxy, this, &op, &out);
 
 	if (proxy->IsCancelled ())
-		return proxy->GetReturnValue ().value<QNetworkReply*> ();
+	{
+		const auto reply = proxy->GetReturnValue ().value<QNetworkReply*> ();
+		emit requestCreated (op, r, reply);
+		return reply;
+	}
 
 	proxy->FillValue ("request", r);
 

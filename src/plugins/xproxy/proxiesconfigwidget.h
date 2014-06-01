@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <QNetworkProxy>
+#include <util/sll/regexp.h>
 #include "ui_proxiesconfigwidget.h"
 
 class QStandardItemModel;
@@ -41,7 +42,7 @@ namespace XProxy
 {
 	struct ReqTarget
 	{
-		QRegExp Host_;
+		Util::RegExp Host_;
 		int Port_;
 		QStringList Protocols_;
 	};

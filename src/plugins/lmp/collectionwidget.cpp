@@ -40,6 +40,7 @@
 #include "audiopropswidget.h"
 #include "util.h"
 #include "albumartmanagerdialog.h"
+#include "collectionsmanager.h"
 
 namespace LeechCraft
 {

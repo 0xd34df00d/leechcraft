@@ -2,6 +2,9 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lmp_potorchu)
 include (InitLCPlugin OPTIONAL)
 
+set (QT_USE_QTOPENGL TRUE)
+include (${QT_USE_FILE})
+
 include_directories (${LMP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -12,6 +15,7 @@ set (POTORCHU_SRCS
 	potorchu.cpp
 	visualfilter.cpp
 	viswidget.cpp
+	visscene.cpp
 	)
 
 #CreateTrs ("lmp_potorchu" "en;ru_RU" POTORCHU_COMPILED_TRANSLATIONS)
@@ -27,9 +31,9 @@ target_link_libraries (leechcraft_lmp_potorchu
 	leechcraft_lmp_common
 	${GSTREAMER_LIBRARIES}
 	${GSTREAMER_INTERFACE_LIBRARY}
-	${GSTREAMER_VIDEO_LIBRARY}
 	${GLIB2_LIBRARIES}
 	${LIBXML2_LIBRARIES}
+	projectM
 	)
 
 install (TARGETS leechcraft_lmp_potorchu DESTINATION ${LC_PLUGINS_DEST})

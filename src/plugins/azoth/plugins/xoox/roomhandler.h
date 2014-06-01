@@ -118,6 +118,9 @@ namespace Xoox
 
 		void handleChatTabClosed ();
 	private:
+		void HandleRenameStart (const RoomParticipantEntry_ptr& entry,
+				const QString& nick, const QString& newNick);
+
 		/** Creates a new entry for the given nick.
 		 */
 		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);

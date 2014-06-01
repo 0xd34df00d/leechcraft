@@ -36,11 +36,17 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class CLTooltipManager;
+
 	class CLModel : public QStandardItemModel
 	{
 		Q_OBJECT
+
+		CLTooltipManager * const TooltipManager_;
 	public:
-		CLModel (QObject* = 0);
+		CLModel (CLTooltipManager*, QObject* = 0);
+
+		QVariant data (const QModelIndex&, int) const;
 
 		QStringList mimeTypes () const;
 		QMimeData* mimeData (const QModelIndexList&) const;
@@ -48,6 +54,8 @@ namespace Azoth
 				int, int, const QModelIndex&);
 		Qt::DropActions supportedDropActions () const;
 	private:
+		void CheckRequestUpdateTooltip (const QModelIndex&, int) const;
+
 		bool PerformHooks (const QMimeData*, int, const QModelIndex&);
 		bool CheckHookDnDEntry2Entry (const QMimeData*, int, const QModelIndex&);
 

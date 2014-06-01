@@ -44,6 +44,11 @@ namespace Poshuku
 		return Ui_.URLEdit_;
 	}
 
+	ProgressLineEdit* URLFrame::GetEditAsProgressLine () const
+	{
+		return Ui_.URLEdit_;
+	}
+
 	void URLFrame::SetFavicon (const QIcon& icon)
 	{
 		QPixmap pixmap = icon.pixmap (Ui_.FaviconLabel_->size ());

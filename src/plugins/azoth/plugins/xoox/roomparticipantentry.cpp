@@ -135,6 +135,31 @@ namespace Xoox
 		return Nick_;
 	}
 
+	void RoomParticipantEntry::StealMessagesFrom (RoomParticipantEntry *other)
+	{
+		if (other->AllMessages_.isEmpty ())
+			return;
+
+		for (auto msg : other->AllMessages_)
+			qobject_cast<GlooxMessage*> (msg)->SetVariant (Nick_);
+
+		QList<QObject*> messages;
+		std::merge (AllMessages_.begin (), AllMessages_.end (),
+				other->AllMessages_.begin (), other->AllMessages_.end (),
+				std::back_inserter (messages),
+				[] (QObject *msgObj1, QObject *msgObj2)
+				{
+					const auto msg1 = qobject_cast<IMessage*> (msgObj1);
+					const auto msg2 = qobject_cast<IMessage*> (msgObj2);
+					return msg1->GetDateTime () < msg2->GetDateTime ();
+				});
+
+		other->AllMessages_.clear ();
+		AllMessages_ = messages;
+
+		// unread messages are skept intentionally
+	}
+
 	void RoomParticipantEntry::SetPhotoHash (const QByteArray& hash)
 	{
 		VCardPhotoHash_ = hash;

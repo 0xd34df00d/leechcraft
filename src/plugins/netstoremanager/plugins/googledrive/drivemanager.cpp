@@ -120,13 +120,13 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::Download (const QString& id, const QString& filepath,
-			TaskParameters tp, bool silent, bool open)
+			TaskParameters tp, bool open)
 	{
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath, tp, silent, open] (const QUrl& url)
-			{ DownloadFile (filepath, url, tp, silent, open); };
+		DownloadsQueue_ << [this, filepath, tp, open] (const QString& filename, const QUrl& url)
+			{ DownloadFile (filename, filepath, url, tp, open); };
 		RequestAccessToken ();
 	}
 
@@ -451,23 +451,25 @@ namespace GoogleDrive
 				SLOT (handleItemRenamed ()));
 	}
 
-	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
-			TaskParameters tp, bool silent, bool open)
+	void DriveManager::DownloadFile (const QString& filename, const QString& filePath,
+			const QUrl& url, TaskParameters tp, bool open)
 	{
 		QString savePath;
-		if (silent)
+		if (open)
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-					"/" + QFileInfo (filePath).fileName ();
+					"/" + QFileInfo (filename).fileName ();
+		else if (!filePath.isEmpty ())
+			savePath = filePath + '/' + filename;
 
 		auto e = Util::MakeEntity (url, savePath, tp);
-		QFileInfo fi (filePath);
+		QFileInfo fi (filename);
 		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
 				.arg (fi.baseName ())
 				.arg (QDateTime::currentDateTime ().toTime_t ())
 				.arg (fi.completeSuffix ());
-		silent ?
-			Core::Instance ().DelegateEntity (e, filePath, open) :
-			Core::Instance ().SendEntity (e);
+		open ?
+				Core::Instance ().DelegateEntity (e, savePath, open) :
+				Core::Instance ().SendEntity (e);
 	}
 
 	void DriveManager::FindSyncableItems (const QStringList&,
@@ -1135,7 +1137,7 @@ namespace GoogleDrive
 				it.DownloadUrl_.addQueryItem ("access_token", access_token);
 
 			if (!DownloadsQueue_.isEmpty ())
-				DownloadsQueue_.dequeue () (it.DownloadUrl_);
+				DownloadsQueue_.dequeue () (it.Name_, it.DownloadUrl_);
 			return;
 		}
 

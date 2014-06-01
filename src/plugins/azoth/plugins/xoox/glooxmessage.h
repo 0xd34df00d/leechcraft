@@ -97,6 +97,8 @@ namespace Xoox
 
 		void SetDelivered (bool);
 
+		void SetVariant (const QString&);
+
 		QXmppMessage GetNativeMessage () const;
 	signals:
 		void messageDelivered ();

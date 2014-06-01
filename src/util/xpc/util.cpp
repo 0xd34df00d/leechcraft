@@ -31,6 +31,7 @@
 #include <util/util.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/an/entityfields.h>
 
 Q_DECLARE_METATYPE (QVariantList*);
 
@@ -45,17 +46,17 @@ namespace Util
 			const QString& fullText, const QString& extendedText)
 	{
 		auto e = MakeNotification (header, text, priority);
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderID;
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = cat;
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] = id;
-		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = visualPath;
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = type;
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = fullText.isNull () ? text : fullText;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = extendedText.isNull () ? text : extendedText;
+		e.Additional_ [AN::EF::SenderID] = senderID;
+		e.Additional_ [AN::EF::EventCategory] = cat;
+		e.Additional_ [AN::EF::EventID] = id;
+		e.Additional_ [AN::EF::VisualPath] = visualPath;
+		e.Additional_ [AN::EF::EventType] = type;
+		e.Additional_ [AN::EF::FullText] = fullText.isNull () ? text : fullText;
+		e.Additional_ [AN::EF::ExtendedText] = extendedText.isNull () ? text : extendedText;
 		if (delta)
-			e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = delta;
+			e.Additional_ [AN::EF::DeltaCount] = delta;
 		else
-			e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
+			e.Additional_ [AN::EF::Count] = count;
 		return e;
 	}
 
@@ -64,23 +65,23 @@ namespace Util
 			AN::NotifyFlags flags, const QList<QPair<QString, ANFieldValue>>& fields)
 	{
 		auto e = MakeNotification (title, {}, PLog_);
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderID;
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.AdvNotifications.RuleRegister";
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = cat;
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = types;
+		e.Additional_ [AN::EF::SenderID] = senderID;
+		e.Additional_ [AN::EF::EventID] = "org.LC.AdvNotifications.RuleRegister";
+		e.Additional_ [AN::EF::EventCategory] = cat;
+		e.Additional_ [AN::EF::EventType] = types;
 		e.Mime_ += "-rule-create";
 
 		for (const auto& field : fields)
 			e.Additional_ [field.first] = QVariant::fromValue (field.second);
 
 		if (flags & AN::NotifySingleShot)
-			e.Additional_ ["org.LC.AdvNotifications.SingleShot"] = true;
+			e.Additional_ [AN::EF::IsSingleShot] = true;
 		if (flags & AN::NotifyTransient)
-			e.Additional_ ["org.LC.AdvNotifications.NotifyTransient"] = true;
+			e.Additional_ [AN::EF::NotifyTransient] = true;
 		if (flags & AN::NotifyPersistent)
-			e.Additional_ ["org.LC.AdvNotifications.NotifyPersistent"] = true;
+			e.Additional_ [AN::EF::NotifyPersistent] = true;
 		if (flags & AN::NotifyAudio)
-			e.Additional_ ["org.LC.AdvNotifications.NotifyAudio"] = true;
+			e.Additional_ [AN::EF::NotifyAudio] = true;
 
 		return e;
 	}
@@ -124,18 +125,18 @@ namespace Util
 	Entity MakeANCancel (const Entity& event)
 	{
 		Entity e = MakeNotification (event.Entity_.toString (), QString (), PInfo_);
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = event.Additional_ ["org.LC.AdvNotifications.SenderID"];
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] = event.Additional_ ["org.LC.AdvNotifications.EventID"];
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+		e.Additional_ [AN::EF::SenderID] = event.Additional_ [AN::EF::SenderID];
+		e.Additional_ [AN::EF::EventID] = event.Additional_ [AN::EF::EventID];
+		e.Additional_ [AN::EF::EventCategory] = AN::CatEventCancel;
 		return e;
 	}
 
 	Entity MakeANCancel (const QString& senderId, const QString& eventId)
 	{
 		Entity e = MakeNotification (QString (), QString (), PInfo_);
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderId;
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] = eventId;
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+		e.Additional_ [AN::EF::SenderID] = senderId;
+		e.Additional_ [AN::EF::EventID] = eventId;
+		e.Additional_ [AN::EF::EventCategory] = AN::CatEventCancel;
 		return e;
 	}
 

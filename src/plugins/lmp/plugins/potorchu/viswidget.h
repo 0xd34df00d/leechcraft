@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include <QGraphicsView>
 
 namespace LeechCraft
 {
@@ -37,22 +37,22 @@ namespace LMP
 {
 namespace Potorchu
 {
-	class VisWidget : public QWidget
+	class VisWidget : public QGraphicsView
 	{
 		Q_OBJECT
 
-		WId WindowId_ = {};
+		QTimer * const Timer_;
 	public:
 		VisWidget (QWidget* = 0);
 
-		void EnsureWinId ();
-		WId GetVisWinId () const;
+		void SetFps (int);
 	protected:
-		bool event (QEvent*);
 		void mouseReleaseEvent (QMouseEvent*);
 	signals:
 		void prevVis ();
 		void nextVis ();
+
+		void redrawRequested ();
 	};
 }
 }

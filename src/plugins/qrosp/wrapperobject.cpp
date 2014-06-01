@@ -51,11 +51,7 @@
 #include "wrappers/shortcutproxywrapper.h"
 #include "wrappers/tagsmanagerwrapper.h"
 
-#if QT_VERSION < 0x040800
-#include "third-party/qmetaobjectbuilder.h"
-#else
 #include "third-party/qmetaobjectbuilder_48.h"
-#endif
 
 class QWebView;
 class QWebPage;

@@ -64,6 +64,7 @@ set (SRCS
 	torrenttabwidget.cpp
 	tabviewproxymodel.cpp
 	notifymanager.cpp
+	addmagnetdialog.cpp
 	)
 
 set (FORMS
@@ -84,6 +85,7 @@ set (FORMS
 	singletrackerchanger.ui
 	torrenttab.ui
 	torrenttabwidget.ui
+	addmagnetdialog.ui
 	)
 
 set (RESOURCES bittorrentresources.qrc)

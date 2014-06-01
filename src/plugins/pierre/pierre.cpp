@@ -40,6 +40,7 @@
 #include <interfaces/imwproxy.h>
 #include <interfaces/iactionsexporter.h>
 #include "fullscreen.h"
+#include "reopenhandler.h"
 
 extern void qt_mac_set_dock_menu (QMenu*);
 
@@ -53,6 +54,8 @@ namespace Pierre
 
 		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (0);
+
+		ReopenHandler::Instance ().SetCoreProxy (proxy);
 	}
 
 	void Plugin::SecondInit ()

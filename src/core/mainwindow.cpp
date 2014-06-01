@@ -350,6 +350,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SIGNAL (newTabMenuRequested ()),
 			this,
 			SLOT (handleNewTabMenuRequested ()));
+	connect (Ui_.MainTabWidget_,
+			SIGNAL (currentChanged (int)),
+			this,
+			SLOT (handleCurrentTabChanged (int)));
 
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
@@ -609,6 +613,26 @@ void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 	ntmenu->popup (QCursor::pos ());
 }
 
+void MainWindow::handleCurrentTabChanged (int index)
+{
+	if (index == -1)
+		return;
+
+	if (CloseTabShortcut_->key () != QString ("Ctrl+W"))
+	{
+		CloseTabShortcut_->setEnabled (true);
+		return;
+	}
+
+	const auto widget = Ui_.MainTabWidget_->Widget (index);
+	const auto itw = qobject_cast<ITabWidget*> (widget);
+	const bool closeScEnabled = itw ?
+			!(itw->GetTabClassInfo ().Features_ & TabFeature::TFOverridesTabClose) :
+			true;
+
+	CloseTabShortcut_->setEnabled (closeScEnabled);
+}
+
 void MainWindow::handleRestoreActionAdded (QAction *act)
 {
 	Ui_.MainTabWidget_->InsertAction2TabBar (Ui_.ActionCloseTab_, act);
@@ -618,13 +642,19 @@ void LeechCraft::MainWindow::showHideMain ()
 {
 	IsShown_ = !IsShown_;
 	if (IsShown_)
-	{
-		show ();
-		activateWindow ();
-		raise ();
-	}
+		showMain ();
 	else
 		hide ();
+}
+
+void LeechCraft::MainWindow::showMain ()
+{
+	if (!IsShown_)
+		IsShown_ = true;
+
+	show ();
+	activateWindow ();
+	raise ();
 }
 
 void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)

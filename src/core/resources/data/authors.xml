@@ -73,8 +73,9 @@
 		<roles>
 			<role>Debian packages.</role>
 			<role>Ubuntu packages.</role>
+			<role>Several Azoth OTRoid fixes and improvements.</role>
 		</roles>
-		<years start="2011" end="2013" />
+		<years start="2011" end="2014" />
 	</contrib>
 	<contrib type="contrib" name="Dmitriy Perlow" nick="DA(P).DarkneSS" jid="darkness@jabber.org.by" email="dap@open.by">
 		<roles>
@@ -82,7 +83,7 @@
 			<role>LackMan packages.</role>
 			<role>Azoth user guide.</role>
 		</roles>
-		<years start="2012" end="2013" />
+		<years start="2012" end="2014" />
 	</contrib>
 	<contrib type="contrib" name="Dimitriy Ryazantcev" nick="DJm00n" jid="djm00n@jabber.ru" email="dimitriy.ryazantcev@gmail.com">
 		<roles>
@@ -208,7 +209,7 @@
 			<role>Azoth theming.</role>
 			<role>LackMan packages.</role>
 		</roles>
-		<years start="2012" end="2013" />
+		<years start="2012" end="2014" />
 	</contrib>
 	<contrib type="contrib" name="" nick="V0id" jid="" email="getbusy@mail.ru">
 		<roles>

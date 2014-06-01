@@ -167,6 +167,13 @@ namespace LeechCraft
 		Operations Ops_;
 	};
 
+	/** @brief Compares two fields with integer values.
+	 *
+	 * @param[in] left First operand.
+	 * @param[in] right Second operand.
+	 * @return Whether \em left and \em right have the same boundary and
+	 * the same operation.
+	 */
 	inline bool operator== (const ANIntFieldValue& left, const ANIntFieldValue& right)
 	{
 		return left.Boundary_ == right.Boundary_ &&
@@ -219,6 +226,13 @@ namespace LeechCraft
 		}
 	};
 
+	/** @brief Compares two string field values.
+	 *
+	 * @param[in] left The left operand.
+	 * @param[in] right The right operand.
+	 * @return Whether \em left and \right have the same regexp pattern
+	 * and they both require the presense (or the absence) of the match.
+	 */
 	inline bool operator== (const ANStringFieldValue& left, const ANStringFieldValue& right)
 	{
 		return left.Contains_ == right.Contains_ &&

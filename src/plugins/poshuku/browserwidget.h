@@ -103,10 +103,8 @@ namespace Poshuku
 		QAction *NotifyWhenFinished_;
 		QAction *HistoryAction_;
 		QAction *BookmarksAction_;
-		QAction *ExternalLinksAction_;
 		QPoint OnLoadPos_;
 		QMenu *ChangeEncoding_;
-		QMenu *ExternalLinks_;
 		FindDialog *FindDialog_;
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
@@ -170,14 +168,12 @@ namespace Poshuku
 		void SetSplitterSizes (int);
 	public slots:
 		void focusLineEdit ();
-		void updateBookmarksState (bool);
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
 		void loadURL (const QUrl&);
 		QWebView* getWebView () const;
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;
-		void checkPageAsFavorite (const QString&);
 	private slots:
 		void handleIconChanged ();
 		void handleStatusBarMessage (const QString&);
@@ -199,8 +195,6 @@ namespace Poshuku
 		void handleBackHistoryAction ();
 		void handleForwardHistoryAction ();
 
-		void handleEntityAction ();
-		void checkLinkRels ();
 		void checkLoadedDocument ();
 
 		void setScrollPosition ();
@@ -210,9 +204,7 @@ namespace Poshuku
 		void handleChangeEncodingAboutToShow ();
 		void handleChangeEncodingTriggered (QAction*);
 		void updateLogicalPath ();
-		void showSendersMenu ();
 		void handleUrlChanged (const QString&);
-		void handleUrlTextChanged (const QString&);
 	signals:
 		void titleChanged (const QString&);
 		void urlChanged (const QString&);

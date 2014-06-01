@@ -29,8 +29,10 @@
 
 #pragma once
 
+#include <vector>
 #include <QObject>
 #include "interfaces/lmp/ifilterelement.h"
+#include "interfaces/lmp/isourceobject.h"
 
 typedef struct _GstPad GstPad;
 typedef struct _GstMessage GstMessage;
@@ -64,6 +66,7 @@ namespace HttStream
 
 		GstElement * const AudioQueue_;
 		GstElement * const StreamQueue_;
+		GstElement * const AConv_;
 
 		GstElement * const Encoder_;
 
@@ -77,6 +80,9 @@ namespace HttStream
 		GstPad *TeeStreamPad_ = nullptr;
 
 		int ClientsCount_ = 0;
+
+		SourceState StateOnFirst_ = SourceState::Error;
+		QList<int> PendingSockets_;
 	public:
 		HttpStreamFilter (const QByteArray& filterId,
 				const QByteArray& instanceId, IPath *path);
@@ -97,11 +103,15 @@ namespace HttStream
 		void CreatePad ();
 		void DestroyPad ();
 
-		void HandleFirstClientConnected ();
+		std::vector<GstElement*> GetStreamBranchElements () const;
+
+		bool HandleFirstClientConnected ();
 		void HandleLastClientDisconnected ();
 
 		int HandleError (GstMessage*);
 	private slots:
+		void checkCreatePad (SourceState);
+
 		void readdFd (int);
 
 		void handleClient (int);

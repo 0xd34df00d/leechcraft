@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef NETWORKACCESSMANAGER_H
-#define NETWORKACCESSMANAGER_H
+#pragma once
+
 #include <memory>
 #include <QNetworkAccessManager>
 #include <QTimer>
@@ -88,6 +88,3 @@ namespace LeechCraft
 					QIODevice **dev);
 	};
 };
-
-#endif
-

@@ -103,7 +103,7 @@ namespace CSTP
 		void SetToolbar (QToolBar*);
 		void ItemSelected (const QModelIndex&);
 
-		int AddTask (LeechCraft::Entity&);
+		int AddTask (const Entity&);
 		void KillTask (int);
 		qint64 GetDone (int) const;
 		qint64 GetTotal (int) const;

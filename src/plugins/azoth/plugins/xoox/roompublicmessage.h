@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPUBLICMESSAGE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPUBLICMESSAGE_H
+#pragma once
+
 #include <QObject>
 #include <QPointer>
 #include <interfaces/azoth/imessage.h>
@@ -75,6 +75,8 @@ namespace Xoox
 		RoomPublicMessage (const QXmppMessage&, RoomCLEntry*,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
 
+		void SetParticipantEntry (const RoomParticipantEntry_ptr&);
+
 		QObject* GetQObject ();
 		void Send ();
 		void Store ();
@@ -96,5 +98,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

@@ -88,6 +88,11 @@ namespace Xoox
 		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);
 	}
 
+	void RoomPublicMessage::SetParticipantEntry (const RoomParticipantEntry_ptr& entry)
+	{
+		ParticipantEntry_ = entry;
+	}
+
 	QObject* RoomPublicMessage::GetQObject ()
 	{
 		return this;

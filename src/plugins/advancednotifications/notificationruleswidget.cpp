@@ -435,11 +435,12 @@ namespace AdvancedNotifications
 		if (!index.isValid ())
 			return;
 
+		const int row = index.row ();
+
 		MatchConfigDialog dia (GetRelevantANFieldsWPlugins (), this);
+		dia.SetFieldMatch (Matches_.value (row));
 		if (dia.exec () != QDialog::Accepted)
 			return;
-
-		const int row = index.row ();
 
 		const FieldMatch& match = dia.GetFieldMatch ();
 		Matches_ [row] = match;

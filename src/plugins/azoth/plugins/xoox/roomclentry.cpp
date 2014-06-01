@@ -149,7 +149,7 @@ namespace Xoox
 
 	QStringList RoomCLEntry::Groups () const
 	{
-		return QStringList () << tr ("Multiuser chatrooms");
+		return { tr ("Multiuser chatrooms") };
 	}
 
 	void RoomCLEntry::SetGroups (const QStringList&)
@@ -553,6 +553,16 @@ namespace Xoox
 		}
 
 		cfg->accept ();
+	}
+
+	void RoomCLEntry::MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to)
+	{
+		for (const auto msgObj : AllMessages_)
+		{
+			const auto msg = qobject_cast<RoomPublicMessage*> (msgObj);
+			if (msg->OtherPart () == from.get ())
+				msg->SetParticipantEntry (to);
+		}
 	}
 
 	void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)

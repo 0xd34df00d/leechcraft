@@ -429,7 +429,7 @@ namespace Xoox
 				QXmppExtendedAddress address;
 				address.setType ("ofrom");
 				address.setJid (from);
-				msg.setExtendedAddresses (QList<QXmppExtendedAddress> () << address);
+				msg.setExtendedAddresses ({ address });
 
 				Conn_->GetClient ()->sendPacket (msg);
 			}

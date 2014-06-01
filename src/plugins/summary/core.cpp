@@ -138,7 +138,6 @@ namespace Summary
 
 	QStringList Core::GetTagsForIndex (int index, QAbstractItemModel *model) const
 	{
-		// TODO check this — passed model could be not MergeModel anymore.
 		int starting = 0;
 		auto merger = dynamic_cast<Util::MergeModel*> (model);
 		if (!merger)
@@ -159,7 +158,6 @@ namespace Summary
 
 	QModelIndex Core::MapToSourceRecursively (QModelIndex index) const
 	{
-		// TODO as in GetTagsForIndex();
 		if (!index.isValid ())
 			return QModelIndex ();
 

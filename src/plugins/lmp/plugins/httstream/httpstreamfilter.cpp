@@ -62,6 +62,7 @@ namespace HttStream
 	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, StreamQueue_ { gst_element_factory_make ("queue", nullptr) }
+	, AConv_ { gst_element_factory_make ("audioconvert", nullptr) }
 	, Encoder_ { gst_element_factory_make ("vorbisenc", nullptr) }
 	, Muxer_ { gst_element_factory_make ("oggmux", nullptr) }
 	, MSS_ { gst_element_factory_make ("multifdsink", nullptr) }
@@ -71,16 +72,16 @@ namespace HttStream
 			qWarning () << Q_FUNC_INFO
 					<< "cannot create multisocketsink";
 
-		const auto convIn = gst_element_factory_make ("audioconvert", nullptr);
+		for (const auto elem : GetStreamBranchElements ())
+			gst_object_ref (elem);
 
-		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, StreamQueue_, Encoder_, convIn, Muxer_, MSS_, nullptr);
+		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, nullptr);
 
 		TeeAudioPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
 		auto audioPad = gst_element_get_static_pad (AudioQueue_, "sink");
 		gst_pad_link (TeeAudioPad_, audioPad);
 		gst_object_unref (audioPad);
 
-		gst_element_link_many (StreamQueue_, convIn, Encoder_, Muxer_, MSS_, nullptr);
 		g_object_set (G_OBJECT (MSS_),
 				"unit-type", GST_FORMAT_TIME,
 				"units-max", static_cast<gint64> (7 * GST_SECOND),
@@ -108,6 +109,11 @@ namespace HttStream
 
 	HttpStreamFilter::~HttpStreamFilter ()
 	{
+		for (const auto elem : GetStreamBranchElements ())
+		{
+			gst_element_set_state (elem, GST_STATE_NULL);
+			gst_object_unref (elem);
+		}
 	}
 
 	QByteArray HttpStreamFilter::GetEffectId () const
@@ -170,6 +176,12 @@ namespace HttStream
 	void HttpStreamFilter::CreatePad ()
 	{
 		qDebug () << Q_FUNC_INFO;
+
+		gst_bin_add_many (GST_BIN (Elem_), StreamQueue_, Encoder_, AConv_, Muxer_, MSS_, nullptr);
+		gst_element_link_many (StreamQueue_, AConv_, Encoder_, Muxer_, MSS_, nullptr);
+		for (auto elem : GetStreamBranchElements ())
+			gst_element_sync_state_with_parent (elem);
+
 		TeeStreamPad_ = gst_element_request_pad (Tee_, TeeTemplate_, nullptr, nullptr);
 		auto streamPad = gst_element_get_static_pad (StreamQueue_, "sink");
 		gst_pad_link (TeeStreamPad_, streamPad);
@@ -185,17 +197,46 @@ namespace HttStream
 		gst_element_release_request_pad (Tee_, TeeStreamPad_);
 		gst_object_unref (TeeStreamPad_);
 
+		gst_element_unlink_many (StreamQueue_, AConv_, Encoder_, Muxer_, MSS_, nullptr);
+		gst_bin_remove_many (GST_BIN (Elem_), StreamQueue_, Encoder_, AConv_, Muxer_, MSS_, nullptr);
+
 		TeeStreamPad_ = nullptr;
 	}
 
-	void HttpStreamFilter::HandleFirstClientConnected ()
+	std::vector<GstElement*> HttpStreamFilter::GetStreamBranchElements () const
 	{
-		CreatePad ();
+		return { StreamQueue_, AConv_, Encoder_, Muxer_, MSS_ };
+	}
+
+	bool HttpStreamFilter::HandleFirstClientConnected ()
+	{
+		const auto source = Path_->GetSourceObject ();
+		StateOnFirst_ = source->GetState ();
+
+		if (StateOnFirst_ == SourceState::Playing)
+		{
+			CreatePad ();
+			return true;
+		}
+		else
+		{
+			connect (source->GetQObject (),
+					SIGNAL (stateChanged (SourceState, SourceState)),
+					this,
+					SLOT (checkCreatePad (SourceState)));
+
+			source->SetState (SourceState::Playing);
+
+			return false;
+		}
 	}
 
 	void HttpStreamFilter::HandleLastClientDisconnected ()
 	{
 		DestroyPad ();
+
+		if (StateOnFirst_ != SourceState::Playing)
+			Path_->GetSourceObject ()->SetState (SourceState::Paused);
 	}
 
 	int HttpStreamFilter::HandleError (GstMessage *msg)
@@ -216,6 +257,23 @@ namespace HttStream
 		return GST_BUS_PASS;
 	}
 
+	void HttpStreamFilter::checkCreatePad (SourceState state)
+	{
+		if (state != SourceState::Playing)
+			return;
+
+		disconnect (Path_->GetSourceObject ()->GetQObject (),
+				SIGNAL (stateChanged (SourceState, SourceState)),
+				this,
+				SLOT (checkCreatePad (SourceState)));
+		CreatePad ();
+
+		for (const auto sock : PendingSockets_)
+			g_signal_emit_by_name (MSS_, "add", sock);
+
+		PendingSockets_.clear ();
+	}
+
 	void HttpStreamFilter::readdFd (int fd)
 	{
 		g_signal_emit_by_name (MSS_, "add", fd);
@@ -223,10 +281,12 @@ namespace HttStream
 
 	void HttpStreamFilter::handleClient (int socket)
 	{
-		if (!ClientsCount_++)
-			HandleFirstClientConnected ();
+		if (ClientsCount_ || HandleFirstClientConnected ())
+			g_signal_emit_by_name (MSS_, "add", socket);
+		else
+			PendingSockets_ << socket;
 
-		g_signal_emit_by_name (MSS_, "add", socket);
+		++ClientsCount_;
 	}
 
 	void HttpStreamFilter::handleClientDisconnected (int socket)
