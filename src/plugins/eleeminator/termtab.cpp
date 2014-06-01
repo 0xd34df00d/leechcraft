@@ -41,6 +41,7 @@
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
 #include <util/xpc/util.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
@@ -48,7 +49,7 @@ namespace LeechCraft
 {
 namespace Eleeminator
 {
-	TermTab::TermTab (const ICoreProxy_ptr& proxy,
+	TermTab::TermTab (const ICoreProxy_ptr& proxy, Util::ShortcutManager *scMgr,
 			const TabClassInfo& tc, QObject *plugin)
 	: CoreProxy_ { proxy }
 	, TC_ (tc)

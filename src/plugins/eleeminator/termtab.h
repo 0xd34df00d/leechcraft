@@ -37,6 +37,11 @@ class QTermWidget;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Eleeminator
 {
 	class TermTab : public QWidget
@@ -55,7 +60,7 @@ namespace Eleeminator
 
 		QString CurrentColorScheme_;
 	public:
-		TermTab (const ICoreProxy_ptr&, const TabClassInfo&, QObject*);
+		TermTab (const ICoreProxy_ptr&, Util::ShortcutManager*, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
