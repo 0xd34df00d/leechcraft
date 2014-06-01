@@ -136,8 +136,9 @@ public:
 
 /** @brief Interface for plugins that support configuring shortcuts.
  *
- * LeechCraft::Util::ShortcutManager class can help in forming the
- * GetActionInfo() map and in keeping track of created actions.
+ * LeechCraft::Util::ShortcutManager class can help creating the
+ * GetActionInfo() map and keeping track of created actions,
+ * automatically updating their shortcuts.
  *
  * @sa LeechCraft::Util::ShortcutManager
  */
