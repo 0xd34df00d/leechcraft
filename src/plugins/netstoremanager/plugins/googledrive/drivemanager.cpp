@@ -125,8 +125,8 @@ namespace GoogleDrive
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath, tp, open] (const QUrl& url)
-			{ DownloadFile (filepath, url, tp, open); };
+		DownloadsQueue_ << [this, filepath, tp, open] (const QString& filename, const QUrl& url)
+			{ DownloadFile (filename, filepath, url, tp, open); };
 		RequestAccessToken ();
 	}
 
@@ -451,22 +451,24 @@ namespace GoogleDrive
 				SLOT (handleItemRenamed ()));
 	}
 
-	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
-			TaskParameters tp, bool open)
+	void DriveManager::DownloadFile (const QString& filename, const QString& filePath,
+			const QUrl& url, TaskParameters tp, bool open)
 	{
 		QString savePath;
 		if (open)
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-					"/" + QFileInfo (filePath).fileName ();
+					"/" + QFileInfo (filename).fileName ();
+		else if (!filePath.isEmpty ())
+			savePath = filePath + '/' + filename;
 
 		auto e = Util::MakeEntity (url, savePath, tp);
-		QFileInfo fi (filePath);
+		QFileInfo fi (filename);
 		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
 				.arg (fi.baseName ())
 				.arg (QDateTime::currentDateTime ().toTime_t ())
 				.arg (fi.completeSuffix ());
 		open ?
-				Core::Instance ().DelegateEntity (e, filePath, open) :
+				Core::Instance ().DelegateEntity (e, savePath, open) :
 				Core::Instance ().SendEntity (e);
 	}
 
@@ -1135,7 +1137,7 @@ namespace GoogleDrive
 				it.DownloadUrl_.addQueryItem ("access_token", access_token);
 
 			if (!DownloadsQueue_.isEmpty ())
-				DownloadsQueue_.dequeue () (it.DownloadUrl_);
+				DownloadsQueue_.dequeue () (it.Name_, it.DownloadUrl_);
 			return;
 		}
 
