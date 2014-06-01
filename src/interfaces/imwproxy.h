@@ -165,7 +165,7 @@ public:
 	 * menu is still accessable via GetMainMenu() and can be shown via
 	 * other means.
 	 *
-	 * @sa GetMainmenu().
+	 * @sa GetMainMenu().
 	 */
 	virtual void HideMainMenu () = 0;
 };

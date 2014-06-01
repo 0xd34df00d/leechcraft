@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -40,7 +40,7 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-namespace GoogleDrive
+namespace DBox
 {
 	class Account;
 	class Syncer;
@@ -56,18 +56,18 @@ namespace GoogleDrive
 				LeechCraft::NetStoreManager::ISupportFileListings)
 
 
-		QObject *ParentPlugin_;
+		QObject * const ParentPlugin_;
 		QString Name_;
 		QString AccessToken_;
-		QString RefreshToken_;
+		QString UserID_;
 
 		bool Trusted_;
 
 		DriveManager *DriveManager_;
-		QHash<QString, DriveItem> Items_;
+		QHash<QString, DBoxItem> Items_;
 
 	public:
-		Account (const QString& name, QObject *parentPlugin = 0);
+		Account (const QString& name, QObject *parentPlugin);
 
 		QObject* GetQObject ();
 		QObject* GetParentPlugin () const;
@@ -79,41 +79,40 @@ namespace GoogleDrive
 				UploadType ut = UploadType::Upload,
 				const QByteArray& id = QByteArray ());
 		void Download (const QByteArray& id, const QString& filepath,
-				TaskParameters tp, bool open);
+				TaskParameters tp, bool open = false);
 
 		ListingOps GetListingOps () const;
 		HashAlgorithm GetCheckSumAlgorithm () const;
 
 		void RefreshListing ();
 		void RefreshChildren (const QByteArray& parentId);
-
+		void RequestUrl (const QByteArray& id);
+		void CreateDirectory (const QString& name, const QByteArray& parentId);
 		void Delete (const QList<QByteArray>& ids, bool ask = true);
-		void MoveToTrash (const QList<QByteArray>& ids);
-		void RestoreFromTrash (const QList<QByteArray>& ids);
 		void Copy (const QList<QByteArray>& ids, const QByteArray& newParentId);
 		void Move (const QList<QByteArray>& ids, const QByteArray& newParentId);
 
-		void RequestUrl (const QByteArray& id);
-		void CreateDirectory (const QString& name, const QByteArray& parentId);
+		void MoveToTrash (const QList<QByteArray>& ids);
+		void RestoreFromTrash (const QList<QByteArray>& ids);
+
 		void Rename (const QByteArray& id, const QString& newName);
 		void RequestChanges ();
 
-		QByteArray Serialize ();
+		QByteArray Serialize () const;
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);
 
 		bool IsTrusted () const;
 		void SetTrusted (bool trust);
 
 		void SetAccessToken (const QString& token);
-		void SetRefreshToken (const QString& token);
-		QString GetRefreshToken () const;
+		QString GetAccessToken () const;
+		void SetUserID (const QString& uid);
 
 		DriveManager* GetDriveManager () const;
 	private slots:
-		void handleFileList (const QList<DriveItem>& items);
-		void handleSharedFileId (const QString& id);
-		void handleGotNewItem (const DriveItem& item);
-		void handleGotChanges (const QList<DriveChanges>& changes);
+		void handleFileList (const QList<DBoxItem>& items);
+		void handleSharedFileUrl (const QUrl& url, const QDateTime& expiredDate);
+		void handleGotNewItem (const DBoxItem& item);
 
 	signals:
 		void upError (const QString& error, const QString& filepath);
@@ -123,7 +122,6 @@ namespace GoogleDrive
 
 		void gotListing (const QList<StorageItem>& items);
 		void listingUpdated (const QByteArray& parentId);
-
 		void gotFileUrl (const QUrl& url, const QByteArray& id);
 
 		void gotChanges (const QList<Change>& changes);

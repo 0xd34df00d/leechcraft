@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "storagemodel.h"
+#include <numeric>
+#include <cmath>
 #include <QApplication>
 #include <QPalette>
 #include <QtDebug>

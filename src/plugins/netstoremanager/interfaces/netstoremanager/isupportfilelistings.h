@@ -127,6 +127,7 @@ namespace NetStoreManager
 		virtual HashAlgorithm GetCheckSumAlgorithm () const = 0;
 
 		virtual void RefreshListing () = 0;
+		virtual void RefreshChildren (const QByteArray& parentId) = 0;
 
 		virtual void Delete (const QList<QByteArray>& ids, bool ask = true) = 0;
 		virtual void MoveToTrash (const QList<QByteArray>& ids) = 0;
@@ -144,6 +145,7 @@ namespace NetStoreManager
 
 	protected:
 		virtual void gotListing (const QList<StorageItem>& items) = 0;
+		virtual void listingUpdated (const QByteArray& parentId) = 0;
 		virtual void gotFileUrl (const QUrl& url, const QByteArray& id) = 0;
 
 		virtual void gotChanges (const QList<Change>& changes) = 0;

@@ -131,10 +131,8 @@ namespace NetStoreManager
 		void ShowAccountActions (bool show);
 		IStorageAccount* GetCurrentAccount () const;
 
-
 		void ClearModel ();
-		void FillModel (IStorageAccount *acc);
-		void FillListModel (IStorageAccount *acc);
+		void FillListModel ();
 
 		void RequestFileListings (IStorageAccount *acc);
 		void RequestFileChanges (IStorageAccount *acc);
@@ -159,6 +157,7 @@ namespace NetStoreManager
 		void handleAccountRemoved (QObject *accObj);
 
 		void handleGotListing (const QList<StorageItem>& items);
+		void handleListingUpdated (const QByteArray& parentId);
 		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
 
 		void handleFilesViewSectionResized (int index, int oldSize, int newSize);
@@ -194,7 +193,7 @@ namespace NetStoreManager
 
 		void handleCurrentIndexChanged (int index);
 
-		void handleGotFileUrl (const QUrl& url, const QByteArray& id = QByteArray ());
+		void handleGotFileUrl (const QUrl& url, const QByteArray&);
 
 		void handleGotChanges (const QList<Change>& changes);
 
