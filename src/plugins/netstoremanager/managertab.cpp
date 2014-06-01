@@ -863,10 +863,15 @@ namespace NetStoreManager
 			return;
 		}
 
+		const auto& defaultDir = XmlSettingsManager::Instance ()
+				.Property ("DirMultiDownload", QDir::homePath ()).toString ();
 		const auto& dir = QFileDialog::getExistingDirectory (this,
-				tr ("Download %n file(s)", 0, rows.size ()));
+				tr ("Download %n file(s)", 0, rows.size ()),
+				defaultDir);
 		if (dir.isEmpty ())
 			return;
+
+		XmlSettingsManager::Instance ().setProperty ("DirMultiDownload", dir);
 
 		for (auto row : rows)
 		{
