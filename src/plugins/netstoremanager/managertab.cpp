@@ -853,10 +853,29 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		acc->Download (GetCurrentID (),
-				{},
-				OnlyDownload | FromUserInitiated,
-				false);
+		const auto& rows = Ui_.FilesView_->selectionModel ()->selectedRows ();
+		if (rows.size () <= 1)
+		{
+			acc->Download (GetCurrentID (),
+					{},
+					OnlyDownload | FromUserInitiated,
+					false);
+			return;
+		}
+
+		const auto& dir = QFileDialog::getExistingDirectory (this,
+				tr ("Download %n file(s)", 0, rows.size ()));
+		if (dir.isEmpty ())
+			return;
+
+		for (auto row : rows)
+		{
+			row = row.sibling (row.row (), Columns::CName);
+			acc->Download (row.data (ListingRole::ID).toByteArray (),
+					dir,
+					OnlyDownload | FromUserInitiated | AutoAccept,
+					false);
+		}
 	}
 
 	void ManagerTab::flCopyUrl ()
