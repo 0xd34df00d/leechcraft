@@ -71,7 +71,7 @@ namespace Eleeminator
 		void SetupColorsButton ();
 		void SetupFontsButton ();
 
-		void SetupShortcuts ();
+		void SetupShortcuts (Util::ShortcutManager*);
 	private slots:
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);

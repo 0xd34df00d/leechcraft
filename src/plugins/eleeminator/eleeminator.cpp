@@ -46,6 +46,25 @@ namespace Eleeminator
 		ShortcutMgr_ = new Util::ShortcutManager { proxy };
 		ShortcutMgr_->SetObject (this);
 
+		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Close",
+				{
+					tr ("Close terminal tab"),
+					QString { "Ctrl+Shift+W" },
+					proxy->GetIconThemeManager ()->GetIcon ("tab-close")
+				});
+		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Copy",
+				{
+					tr ("Copy selected text to clipboard"),
+					QString { "Ctrl+Shift+C" },
+					proxy->GetIconThemeManager ()->GetIcon ("edit-copy")
+				});
+		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Paste",
+				{
+					tr ("Paste text from clipboard"),
+					QString { "Ctrl+Shift+V" },
+					proxy->GetIconThemeManager ()->GetIcon ("edit-paste")
+				});
+
 		Util::InstallTranslator ("eleeminator");
 
 		TermTabTC_ =
