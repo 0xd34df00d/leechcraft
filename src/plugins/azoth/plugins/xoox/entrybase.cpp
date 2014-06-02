@@ -40,6 +40,8 @@
 #include <QXmppRosterManager.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppGlobal.h>
+#include <QXmppEntityTimeIq.h>
+#include <QXmppEntityTimeManager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -202,6 +204,12 @@ namespace Xoox
 	{
 		auto res = Variant2ClientInfo_ [var];
 
+		if (Variant2SecsDiff_.contains (var))
+		{
+			const auto& now = QDateTime::currentDateTime ();
+			res ["client_time"] = now.addSecs (Variant2SecsDiff_.value (var).Diff_);
+		}
+
 		auto version = Variant2Version_ [var];
 		if (version.name ().isEmpty ())
 			return res;
@@ -298,6 +306,35 @@ namespace Xoox
 
 	void EntryBase::RequestLastPosts (int)
 	{
+	}
+
+	void EntryBase::UpdateEntityTime ()
+	{
+		const auto& now = QDateTime::currentDateTime ();
+		if (LastEntityTimeRequest_.isValid () &&
+				LastEntityTimeRequest_.secsTo (now) < 60)
+			return;
+
+		connect (Account_->GetClientConnection ()->GetEntityTimeManager (),
+				SIGNAL (timeReceived (QXmppEntityTimeIq)),
+				this,
+				SLOT (handleTimeReceived (QXmppEntityTimeIq)),
+				Qt::UniqueConnection);
+
+		LastEntityTimeRequest_ = now;
+
+		auto jid = GetJID ();
+
+		auto timeMgr = Account_->GetClientConnection ()->GetEntityTimeManager ();
+		if (jid.contains ('/'))
+		{
+			timeMgr->requestTime (jid);
+			return;
+		}
+
+		for (const auto& variant : Variants ())
+			if (!variant.isEmpty ())
+				timeMgr->requestTime (jid + '/' + variant);
 	}
 
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
@@ -807,6 +844,28 @@ namespace Xoox
 		name = name.trimmed ();
 		if (!name.isEmpty ())
 			SetEntryName (name);
+	}
+
+	void EntryBase::handleTimeReceived (const QXmppEntityTimeIq& iq)
+	{
+		const auto& from = iq.from ();
+		if (!from.startsWith (GetJID ()))
+			return;
+
+		const auto& thatTime = iq.utc ();
+		if (!thatTime.isValid ())
+			return;
+
+		QString bare;
+		QString variant;
+		ClientConnection::Split (from, &bare, &variant);
+
+		if (variant.isEmpty ())
+			variant = "";
+
+		const auto& secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
+		Variant2SecsDiff_ [variant] = { secsDiff, iq.tzo () };
+		emit entryGenerallyChanged ();
 	}
 
 	void EntryBase::handleCommands ()

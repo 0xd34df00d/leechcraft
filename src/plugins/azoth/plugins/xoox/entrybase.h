@@ -43,9 +43,11 @@
 #include <interfaces/azoth/ihavedirectedstatus.h>
 #include <interfaces/azoth/isupportgeolocation.h>
 #include <interfaces/azoth/isupportmicroblogs.h>
+#include <interfaces/azoth/ihaveentitytime.h>
 
 class QXmppPresence;
 class QXmppVersionIq;
+class QXmppEntityTimeIq;
 
 namespace LeechCraft
 {
@@ -72,13 +74,15 @@ namespace Xoox
 					, public IMetaInfoEntry
 					, public IHaveDirectedStatus
 					, public ISupportMicroblogs
+					, public IHaveEntityTime
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
 				LeechCraft::Azoth::IAdvancedCLEntry
 				LeechCraft::Azoth::IMetaInfoEntry
 				LeechCraft::Azoth::IHaveDirectedStatus
-				LeechCraft::Azoth::ISupportMicroblogs)
+				LeechCraft::Azoth::ISupportMicroblogs
+				LeechCraft::Azoth::IHaveEntityTime)
 	protected:
 		GlooxAccount *Account_;
 
@@ -103,6 +107,14 @@ namespace Xoox
 		QMap<QString, QByteArray> Variant2VerString_;
 		QMap<QString, QXmppVersionIq> Variant2Version_;
 		QMap<QString, QList<QXmppDiscoveryIq::Identity>> Variant2Identities_;
+
+		struct EntityTimeInfo
+		{
+			int Diff_;
+			int Tzo_;
+		};
+		QMap<QString, EntityTimeInfo> Variant2SecsDiff_;
+		QDateTime LastEntityTimeRequest_;
 
 		bool HasUnreadMsgs_;
 		bool HasBlindlyRequestedVCard_;
@@ -138,6 +150,9 @@ namespace Xoox
 		// ISupportMicroblogs
 		void RequestLastPosts (int);
 
+		// IHaveEntityTime
+		void UpdateEntityTime ();
+
 		virtual QString GetJID () const = 0;
 
 		void HandlePresence (const QXmppPresence&, const QString&);
@@ -169,6 +184,8 @@ namespace Xoox
 		QString FormatRawInfo (const QXmppVCardIq&);
 		void SetNickFromVCard (const QXmppVCardIq&);
 	private slots:
+		void handleTimeReceived (const QXmppEntityTimeIq&);
+
 		void handleCommands ();
 		void handleDetectNick ();
 	signals:
