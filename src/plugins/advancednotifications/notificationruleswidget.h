@@ -65,7 +65,7 @@ namespace AdvancedNotifications
 		QString GetCurrentCat () const;
 		QStringList GetSelectedTypes () const;
 
-		NotificationRule GetRuleFromUI () const;
+		NotificationRule GetRuleFromUI (QModelIndex = {}) const;
 		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
 
 		QMap<QObject*, QList<ANFieldData>> GetRelevantANFieldsWPlugins () const;
