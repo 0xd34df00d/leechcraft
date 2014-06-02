@@ -39,6 +39,7 @@
 #include <QUrl>
 #include <QDir>
 #include <QDateTime>
+#include <QTemporaryFile>
 #include <QXmlStreamWriter>
 #include <util/xpc/util.h>
 
@@ -255,8 +256,9 @@ namespace Importers
 		if (opmlData.isEmpty ())
 			return QString ();
 
-		QFile file ("firefox.opml");
-		if (!file.open (QIODevice::WriteOnly))
+		QTemporaryFile file ("opera_XXXXXX.ompl");
+		file.setAutoRemove (false);
+		if (!file.open ())
 		{
 			emit gotEntity (Util::MakeNotification ("Opera Import",
 					tr ("OPML file for importing RSS cannot be created: %1")
