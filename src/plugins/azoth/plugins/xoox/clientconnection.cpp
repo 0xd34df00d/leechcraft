@@ -515,6 +515,11 @@ namespace Xoox
 		return XferManager_;
 	}
 
+	QXmppEntityTimeManager* ClientConnection::GetEntityTimeManager () const
+	{
+		return EntityTimeManager_;
+	}
+
 	CapsManager* ClientConnection::GetCapsManager () const
 	{
 		return CapsManager_;

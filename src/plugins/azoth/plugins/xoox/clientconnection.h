@@ -210,6 +210,7 @@ namespace Xoox
 		QXmppDiscoveryManager* GetDiscoveryManager () const;
 		QXmppVersionManager* GetVersionManager () const;
 		QXmppTransferManager* GetTransferManager () const;
+		QXmppEntityTimeManager* GetEntityTimeManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
