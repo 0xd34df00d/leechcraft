@@ -39,6 +39,7 @@
 #include <QUrl>
 #include <QDir>
 #include <QDateTime>
+#include <QTemporaryFile>
 #include <QXmlStreamWriter>
 #include <util/xpc/util.h>
 
@@ -76,11 +77,13 @@ namespace Importers
 	{
 		Ui_.HistoryImport_->setChecked (false);
 		Ui_.BookmarksImport_->setChecked (false);
+		Ui_.RSSImport_->setChecked (false);
 
 		if (!index)
 		{
 			Ui_.HistoryImport_->setEnabled (false);
 			Ui_.BookmarksImport_->setEnabled (false);
+			Ui_.RSSImport_->setEnabled (false);
 			return;
 		}
 	}
@@ -230,6 +233,72 @@ namespace Importers
 		return bookmarks;
 	}
 
+	QString OperaImportSelectPage::GetImportOpmlFile ()
+	{
+		QSettings index (QDir::homePath () + "/.opera/mail/index.ini",
+				QSettings::IniFormat);
+		if (index.status () != QSettings::NoError)
+			return QString ();
+
+		QVariantList opmlData;
+		for (const auto& group : index.childGroups ())
+		{
+			if (index.contains (group + "/Type") &&
+					index.value (group + "/Type").toInt () == 5)
+			{
+				QVariantMap opmlLine;
+				opmlLine ["Title"] = index.value (group + "/Name").toString ();
+				opmlLine ["FeedUrl"] = index.value (group + "/Search Text").toUrl ();
+				opmlData << opmlLine;
+			}
+		}
+
+		if (opmlData.isEmpty ())
+			return QString ();
+
+		QTemporaryFile file ("opera_XXXXXX.ompl");
+		file.setAutoRemove (false);
+		if (!file.open ())
+		{
+			emit gotEntity (Util::MakeNotification ("Opera Import",
+					tr ("OPML file for importing RSS cannot be created: %1")
+							.arg (file.errorString ()),
+					PCritical_));
+			return  QString ();
+		}
+
+		QXmlStreamWriter streamWriter (&file);
+		streamWriter.setAutoFormatting (true);
+		streamWriter.writeStartDocument ();
+		streamWriter.writeStartElement ("opml");
+		streamWriter.writeAttribute ("version", "1.0");
+		streamWriter.writeStartElement ("head");
+		streamWriter.writeStartElement ("text");
+		streamWriter.writeEndElement ();
+		streamWriter.writeEndElement ();
+		streamWriter.writeStartElement ("body");
+		streamWriter.writeStartElement ("outline");
+		streamWriter.writeAttribute ("text", "Live Bookmarks");
+		Q_FOREACH (const QVariant& line, opmlData)
+		{
+			streamWriter.writeStartElement ("outline");
+			const auto& opmlLine = line.toMap ();
+			QXmlStreamAttributes attr;
+			attr.append ("title", opmlLine ["Title"].toString ());
+			attr.append ("xmlUrl", opmlLine ["FeedUrl"].toString ());
+			attr.append ("text", opmlLine ["Title"].toString ());
+			streamWriter.writeAttributes (attr);
+			streamWriter.writeEndElement ();
+		}
+		streamWriter.writeEndElement ();
+		streamWriter.writeEndElement ();
+		streamWriter.writeEndDocument ();
+
+		QString filename = file.fileName ();
+		file.close ();
+		return filename;
+	}
+
 	void OperaImportSelectPage::handleAccepted ()
 	{
 		if (Ui_.HistoryImport_->isEnabled () && Ui_.HistoryImport_->isChecked ())
@@ -252,6 +321,21 @@ namespace Importers
 
 			eBookmarks.Additional_ ["BrowserBookmarks"] = GetBookmarks ();
 			emit gotEntity (eBookmarks);
+		}
+
+		if (Ui_.RSSImport_->isEnabled () && Ui_.RSSImport_->isChecked ())
+		{
+			const auto& file = GetImportOpmlFile ();
+			if (file.isEmpty ())
+				return;
+
+			Entity eRss = Util::MakeEntity (QUrl::fromLocalFile (file),
+					QString (),
+					FromUserInitiated,
+					"text/x-opml");
+
+			eRss.Additional_ ["RemoveAfterHandling"] = true;
+			emit gotEntity (eRss);
 		}
 	}
 }
