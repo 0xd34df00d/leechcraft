@@ -329,6 +329,12 @@ namespace Azoth
 			if (info.contains ("client_os"))
 				tip += "<br />" + tr ("OS:") + ' ' + Qt::escape (info.value ("client_os").toString ());
 
+			if (info.contains ("client_time"))
+			{
+				const auto& dateStr = QLocale {}.toString (info.value ("client_time").toDateTime ());
+				tip += "<br />" + tr ("Client time:") + ' ' + dateStr;
+			}
+
 			if (info.contains ("user_mood"))
 				FormatMood (tip, info ["user_mood"].toMap ());
 			if (info.contains ("user_activity"))
