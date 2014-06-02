@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/ianemitter.h>
+#include <interfaces/an/entityfields.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -247,8 +248,11 @@ namespace AdvancedNotifications
 
 		SaveSettings ();
 
-		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
-		emit focusOnRule (RulesModel_->index (0, 0));
+		if (e.Additional_.value (AN::EF::OpenConfiguration).toBool ())
+		{
+			XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+			emit focusOnRule (RulesModel_->index (0, 0));
+		}
 	}
 
 	void RulesManager::SuggestRuleConfiguration (const Entity& rule)
