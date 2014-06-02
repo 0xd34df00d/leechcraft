@@ -32,6 +32,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QCheckBox" name="RSSImport_">
+         <property name="text">
+          <string>Import RSS</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>

@@ -50,8 +50,10 @@ namespace Importers
 
 			virtual int nextId () const;
 			virtual void initializePage ();
+		private:
 			QList<QVariant> GetHistory ();
 			QList<QVariant> GetBookmarks ();
+			QString GetImportOpmlFile ();
 		private slots:
 			void checkImportDataAvailable (int);
 			void handleAccepted ();

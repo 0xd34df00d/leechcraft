@@ -38,6 +38,7 @@
 #include <QFileInfo>
 #include <QUrl>
 #include <QDateTime>
+#include <QTemporaryFile>
 #include <QXmlStreamWriter>
 #include <util/xpc/util.h>
 
@@ -262,77 +263,79 @@ namespace Importers
 				"bm.id = ann.item_id");
 		QSqlQuery rssQuery = GetQuery (rssSql);
 
-		if (rssQuery.isValid ())
+		if (!rssQuery.isValid ())
+			return QString ();
+
+		QSqlQuery query (*DB_);
+		query.exec ("SELECT id FROM moz_anno_attributes WHERE name='livemark/siteURI'");
+		query.next ();
+		int site = query.value (0).toInt ();
+		query.exec ("SELECT id FROM moz_anno_attributes WHERE name='livemark/feedURI'");
+		query.next ();
+		int feed = query.value (0).toInt ();
+
+		QList<QVariant> opmlData;
+		int prevItemId = -1;
+
+		QMap<QString, QVariant> omplLine;
+		do
 		{
-			QSqlQuery query (*DB_);
-			query.exec ("SELECT id FROM moz_anno_attributes WHERE name='livemark/siteURI'");
-			query.next ();
-			int site = query.value (0).toInt ();
-			query.exec ("SELECT id FROM moz_anno_attributes WHERE name='livemark/feedURI'");
-			query.next ();
-			int feed = query.value (0).toInt ();
-
-			QList<QVariant> opmlData;
-			int prevItemId = -1;
-
-			QMap<QString, QVariant> omplLine;
-			do
-			{
-				if (rssQuery.value (2).toInt () == site)
-					omplLine ["SiteUrl"] = rssQuery.value (3).toString ();
-				if (rssQuery.value (2).toInt () == feed)
-					omplLine ["FeedUrl"] = rssQuery.value (3).toString ();
-				if (prevItemId == rssQuery.value (1).toInt ())
-					opmlData.push_back (omplLine);
-				else
-				{
-					prevItemId = rssQuery.value (1).toInt ();
-					omplLine ["Title"] = rssQuery.value (4).toString ();
-				}
-			}
-			while (rssQuery.next ());
-			QFile file ("firefox.opml");
-			if (file.open (QIODevice::WriteOnly))
-			{
-				QXmlStreamWriter streamWriter (&file);
-				streamWriter.setAutoFormatting (true);
-				streamWriter.writeStartDocument ();
-				streamWriter.writeStartElement ("opml");
-				streamWriter.writeAttribute ("version", "1.0");
-				streamWriter.writeStartElement ("head");
-				streamWriter.writeStartElement ("text");
-				streamWriter.writeEndElement ();
-				streamWriter.writeEndElement ();
-				streamWriter.writeStartElement ("body");
-				streamWriter.writeStartElement ("outline");
-				streamWriter.writeAttribute ("text", "Live Bookmarks");
-				Q_FOREACH (const QVariant& hRowVar, opmlData)
-				{
-					streamWriter.writeStartElement ("outline");
-					QMap<QString, QVariant> hRow = hRowVar.toMap ();
-					QXmlStreamAttributes attr;
-					attr.append ("title", hRow ["Title"].toString ());
-					attr.append ("htmlUrl", hRow ["SiteUrl"].toString ());
-					attr.append ("xmlUrl", hRow ["FeedUrl"].toString ());
-					attr.append ("text", hRow ["Title"].toString ());
-					streamWriter.writeAttributes (attr);
-					streamWriter.writeEndElement ();
-				}
-				streamWriter.writeEndElement ();
-				streamWriter.writeEndElement ();
-				streamWriter.writeEndDocument ();
-
-				QString filename = file.fileName ();
-				file.close ();
-				return filename;
-			}
+			if (rssQuery.value (2).toInt () == site)
+				omplLine ["SiteUrl"] = rssQuery.value (3).toString ();
+			if (rssQuery.value (2).toInt () == feed)
+				omplLine ["FeedUrl"] = rssQuery.value (3).toString ();
+			if (prevItemId == rssQuery.value (1).toInt ())
+				opmlData.push_back (omplLine);
 			else
-				emit gotEntity (Util::MakeNotification ("Firefox Import",
-						tr ("OPML file for importing RSS cannot be created: %1")
-							.arg (file.errorString ()),
-						PCritical_));
+			{
+				prevItemId = rssQuery.value (1).toInt ();
+				omplLine ["Title"] = rssQuery.value (4).toString ();
+			}
 		}
-		return QString ();
+		while (rssQuery.next ());
+
+		QTemporaryFile file ("firefox_XXXXXX.opml");
+		file.setAutoRemove (false);
+		if (!file.open ())
+		{
+			emit gotEntity (Util::MakeNotification ("Firefox Import",
+					tr ("OPML file for importing RSS cannot be created: %1")
+							.arg (file.errorString ()),
+					PCritical_));
+			return QString ();
+		}
+
+		QXmlStreamWriter streamWriter (&file);
+		streamWriter.setAutoFormatting (true);
+		streamWriter.writeStartDocument ();
+		streamWriter.writeStartElement ("opml");
+		streamWriter.writeAttribute ("version", "1.0");
+		streamWriter.writeStartElement ("head");
+		streamWriter.writeStartElement ("text");
+		streamWriter.writeEndElement ();
+		streamWriter.writeEndElement ();
+		streamWriter.writeStartElement ("body");
+		streamWriter.writeStartElement ("outline");
+		streamWriter.writeAttribute ("text", "Live Bookmarks");
+		Q_FOREACH (const QVariant& hRowVar, opmlData)
+		{
+			streamWriter.writeStartElement ("outline");
+			QMap<QString, QVariant> hRow = hRowVar.toMap ();
+			QXmlStreamAttributes attr;
+			attr.append ("title", hRow ["Title"].toString ());
+			attr.append ("htmlUrl", hRow ["SiteUrl"].toString ());
+			attr.append ("xmlUrl", hRow ["FeedUrl"].toString ());
+			attr.append ("text", hRow ["Title"].toString ());
+			streamWriter.writeAttributes (attr);
+			streamWriter.writeEndElement ();
+		}
+		streamWriter.writeEndElement ();
+		streamWriter.writeEndElement ();
+		streamWriter.writeEndDocument ();
+
+		QString filename = file.fileName ();
+		file.close ();
+		return filename;
 	}
 
 	QSqlQuery FirefoxProfileSelectPage::GetQuery (const QString& sql)
