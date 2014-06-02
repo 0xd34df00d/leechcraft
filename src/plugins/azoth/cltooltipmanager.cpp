@@ -354,7 +354,17 @@ namespace Azoth
 	void CLTooltipManager::RebuildTooltip (ICLEntry *entry)
 	{
 		if (const auto ihet = qobject_cast<IHaveEntityTime*> (entry->GetQObject ()))
+		{
 			ihet->UpdateEntityTime ();
+
+			for (const auto& var : entry->Variants ())
+				if (entry->GetClientInfo (var).contains ("client_time"))
+				{
+					DirtyTooltips_ << entry;
+					break;
+				}
+		}
+
 		if (!DirtyTooltips_.contains (entry))
 			return;
 
