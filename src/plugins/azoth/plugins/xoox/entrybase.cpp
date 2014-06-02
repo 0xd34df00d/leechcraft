@@ -202,10 +202,6 @@ namespace Xoox
 	{
 		auto res = Variant2ClientInfo_ [var];
 
-		if (GetJID ().endsWith ("@vk.com") ||
-			GetJID ().endsWith ("@vkmessenger.com"))
-			res.remove ("client_type");
-
 		auto version = Variant2Version_ [var];
 		if (version.name ().isEmpty ())
 			return res;
