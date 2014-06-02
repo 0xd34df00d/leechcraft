@@ -285,7 +285,7 @@ namespace AdvancedNotifications
 		if (prevIndex.isValid ())
 		{
 			const auto& prevRule = RM_->GetRulesList ().value (prevIndex.row ());
-			const auto& uiRule = GetRuleFromUI ();
+			const auto& uiRule = GetRuleFromUI (prevIndex);
 			if (uiRule != prevRule &&
 					QMessageBox::question (this,
 							"LeechCraft",
