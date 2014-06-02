@@ -256,45 +256,45 @@ namespace Importers
 			return QString ();
 
 		QFile file ("firefox.opml");
-		if (file.open (QIODevice::WriteOnly))
+		if (!file.open (QIODevice::WriteOnly))
 		{
-			QXmlStreamWriter streamWriter (&file);
-			streamWriter.setAutoFormatting (true);
-			streamWriter.writeStartDocument ();
-			streamWriter.writeStartElement ("opml");
-			streamWriter.writeAttribute ("version", "1.0");
-			streamWriter.writeStartElement ("head");
-			streamWriter.writeStartElement ("text");
-			streamWriter.writeEndElement ();
-			streamWriter.writeEndElement ();
-			streamWriter.writeStartElement ("body");
-			streamWriter.writeStartElement ("outline");
-			streamWriter.writeAttribute ("text", "Live Bookmarks");
-			Q_FOREACH (const QVariant& line, opmlData)
-			{
-				streamWriter.writeStartElement ("outline");
-				const auto& opmlLine = line.toMap ();
-				QXmlStreamAttributes attr;
-				attr.append ("title", opmlLine ["Title"].toString ());
-				attr.append ("xmlUrl", opmlLine ["FeedUrl"].toString ());
-				attr.append ("text", opmlLine ["Title"].toString ());
-				streamWriter.writeAttributes (attr);
-				streamWriter.writeEndElement ();
-			}
-			streamWriter.writeEndElement ();
-			streamWriter.writeEndElement ();
-			streamWriter.writeEndDocument ();
-
-			QString filename = file.fileName ();
-			file.close ();
-			return filename;
-		}
-		else
 			emit gotEntity (Util::MakeNotification ("Opera Import",
 					tr ("OPML file for importing RSS cannot be created: %1")
 							.arg (file.errorString ()),
 					PCritical_));
-		return QString ();
+			return  QString ();
+		}
+
+		QXmlStreamWriter streamWriter (&file);
+		streamWriter.setAutoFormatting (true);
+		streamWriter.writeStartDocument ();
+		streamWriter.writeStartElement ("opml");
+		streamWriter.writeAttribute ("version", "1.0");
+		streamWriter.writeStartElement ("head");
+		streamWriter.writeStartElement ("text");
+		streamWriter.writeEndElement ();
+		streamWriter.writeEndElement ();
+		streamWriter.writeStartElement ("body");
+		streamWriter.writeStartElement ("outline");
+		streamWriter.writeAttribute ("text", "Live Bookmarks");
+		Q_FOREACH (const QVariant& line, opmlData)
+		{
+			streamWriter.writeStartElement ("outline");
+			const auto& opmlLine = line.toMap ();
+			QXmlStreamAttributes attr;
+			attr.append ("title", opmlLine ["Title"].toString ());
+			attr.append ("xmlUrl", opmlLine ["FeedUrl"].toString ());
+			attr.append ("text", opmlLine ["Title"].toString ());
+			streamWriter.writeAttributes (attr);
+			streamWriter.writeEndElement ();
+		}
+		streamWriter.writeEndElement ();
+		streamWriter.writeEndElement ();
+		streamWriter.writeEndDocument ();
+
+		QString filename = file.fileName ();
+		file.close ();
+		return filename;
 	}
 
 	void OperaImportSelectPage::handleAccepted ()
