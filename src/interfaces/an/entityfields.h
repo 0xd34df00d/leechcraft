@@ -137,6 +137,14 @@ namespace EF
 	 */
 	const QString Count { "org.LC.AdvNotifications.Count" };
 
+	/** @brief Whether configuration dialog should be opened (bool).
+	 *
+	 * If this field is set to <code>true</code>,
+	 *
+	 * @note This field is optional for rule creation entities.
+	 */
+	const QString OpenConfiguration { "org.LC.AdvNotifications.OpenConfiguration" };
+
 	/** @brief Whether the created rule should be single-shot (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
