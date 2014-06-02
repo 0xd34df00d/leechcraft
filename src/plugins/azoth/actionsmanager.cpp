@@ -1487,6 +1487,7 @@ namespace Azoth
 				AN::CatIM,
 				{ AN::TypeIMStatusChange },
 				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
+				false,
 				{
 					{
 						"org.LC.Plugins.Azoth.SourceID",
@@ -1515,6 +1516,7 @@ namespace Azoth
 				AN::CatIM,
 				{ AN::TypeIMStatusChange },
 				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
+				false,
 				{
 					{
 						"org.LC.Plugins.Azoth.SourceID",

@@ -60,15 +60,16 @@ namespace Util
 		return e;
 	}
 
-	Entity MakeANRule (const QString& title,
-			const QString& senderID, const QString& cat, const QStringList& types,
-			AN::NotifyFlags flags, const QList<QPair<QString, ANFieldValue>>& fields)
+	Entity MakeANRule (const QString& title, const QString& senderID,
+			const QString& cat, const QStringList& types, AN::NotifyFlags flags,
+			bool openConfiguration, const QList<QPair<QString, ANFieldValue>>& fields)
 	{
 		auto e = MakeNotification (title, {}, PLog_);
 		e.Additional_ [AN::EF::SenderID] = senderID;
 		e.Additional_ [AN::EF::EventID] = "org.LC.AdvNotifications.RuleRegister";
 		e.Additional_ [AN::EF::EventCategory] = cat;
 		e.Additional_ [AN::EF::EventType] = types;
+		e.Additional_ [AN::EF::OpenConfiguration] = openConfiguration;
 		e.Mime_ += "-rule-create";
 
 		for (const auto& field : fields)

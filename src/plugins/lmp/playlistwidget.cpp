@@ -887,6 +887,7 @@ namespace LMP
 					AN::CatMediaPlayer,
 					{ AN::TypeMediaPlaybackStatus },
 					AN::NotifySingleShot,
+					true,
 					{
 						{
 							AN::Field::MediaPlaybackStatus,

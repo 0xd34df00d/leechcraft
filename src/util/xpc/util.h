@@ -87,6 +87,7 @@ namespace Util
 	UTIL_XPC_API Entity MakeANRule (const QString& title,
 			const QString& senderID, const QString& cat, const QStringList& types,
 			AN::NotifyFlags = AN::NotifyNone,
+			bool openConfiguration = false,
 			const QList<QPair<QString, ANFieldValue>>& fields = {});
 
 	/** @brief Returns the data filter plugins that can handle \em data.
