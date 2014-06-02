@@ -36,6 +36,7 @@
 #include <interfaces/azoth/imucperms.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "interfaces/azoth/iadvancedclentry.h"
+#include "interfaces/azoth/ihaveentitytime.h"
 #include "core.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
@@ -352,6 +353,8 @@ namespace Azoth
 
 	void CLTooltipManager::RebuildTooltip (ICLEntry *entry)
 	{
+		if (const auto ihet = qobject_cast<IHaveEntityTime*> (entry->GetQObject ()))
+			ihet->UpdateEntityTime ();
 		if (!DirtyTooltips_.contains (entry))
 			return;
 
