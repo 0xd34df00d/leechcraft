@@ -192,10 +192,12 @@ namespace Potorchu
 
 	void VisualFilter::handleNextVis ()
 	{
+		ProjectM_->selectNext (true);
 	}
 
 	void VisualFilter::handlePrevVis ()
 	{
+		ProjectM_->selectPrevious (true);
 	}
 }
 }
