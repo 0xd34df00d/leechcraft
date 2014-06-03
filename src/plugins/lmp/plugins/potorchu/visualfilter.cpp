@@ -172,10 +172,6 @@ namespace Potorchu
 			ProjectM_->pcm ()->addPCM16Data (data, samples);
 	}
 
-	void VisualFilter::SetVisualizer ()
-	{
-	}
-
 	void VisualFilter::handleSceneRectChanged (const QRectF& rect)
 	{
 		if (ProjectM_)
