@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/lmp/potorchu">
+    <file>resources/data/blank.ttf</file>
+  </qresource>
+</RCC>
