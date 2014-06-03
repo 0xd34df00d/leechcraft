@@ -745,7 +745,17 @@ namespace Xoox
 		}
 
 		if (ODSEntries_.contains (jid))
-			delete ODSEntries_.take (jid);
+		{
+			const auto otherEntry = ODSEntries_.take (jid);
+			if (otherEntry != entry)
+				qWarning () << Q_FUNC_INFO
+						<< "stored ODS entry isn't equal to entry for"
+						<< jid
+						<< "!";
+			emit rosterItemRemoved (otherEntry);
+
+			delete otherEntry;
+		}
 	}
 
 	void ClientConnection::WhitelistError (const QString& id)
