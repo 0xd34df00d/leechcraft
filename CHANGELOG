@@ -1,6 +1,165 @@
 This file lists only more or less major changes, refer to `git log` for
 the rest.
 
+!!! 0.6.70
+* New plugins:
+	* AdvancedNotifications Dolle - OS X notification backend.
+	* Eleeminator - Embedded LeechCraft Terminal Emulator.
+	* LMP BrainSlugz - discography completeness checker.
+	* LMP FrAdj - equalizer effect plugin.
+	* LMP HttStream - HTTP streamer plugin.
+	* NetStoreManager Dbox - Dropbox support plugin.
+	* Poshuku SpeedDial - speed dial plugin for Poshuku.
+* Removed plugins:
+	* Azoth p100q - psto.net is closed due to ARTS.
+	* Shaitan - obsoleted by Eleeminator.
+* [Overall] Use proper QML cache subpaths.
+* [Core] Support tabs that override the Ctrl+W shortcut.
+* [Core] Store network disk cache in XDG cache dir
+* [Core] Removed Ctrl+W key sequence for shortcut in UI.
+* [Core] Removed obsolete message timeout setting.
+* [Core] Respect "SessionData/RootWindowIndex" tab property when adding tab.
+* [Core] Support iconable toolbuttons.
+* [Util] Splitted the utility library into sublibs.
+* [Util] Added regexp class with optional PCRE backend (from CleanWeb).
+* [Util] Added ColorButton.
+* [Util] Added ExtensionsData database class.
+* [Util] Added FindNotification::clear().
+* [Util] Properly close the FindNotification on Esc.
+* [Util] Added LineEditButtonManager.
+* [Util] Added OneTimeRunner.
+* [Util] Added SlotClosure.
+* [Util] Button for invoking tags selector in TagsLineEdit.
+* [Util] Cache translated units in MakePrettySize().
+* [Util] Check for /usr[/local]/share/applications for icons.
+* [Util] Create network disk cache in XDG cache dir.
+* [Util] Properly check /usr/[local/]share/icons/hicolor/ for icons.
+* [XSD] Support custom buttons in "dataview" items.
+* [XSD] Support "resizeToContents" attribute for dataviews.
+* [Aggregator WA] Workaround QTBUG-22829 in Q2WProxyModel.
+* [AN] Added support for notification plugins.
+* [AN] Support providing the list of rules to other plugins.
+* [AN] Support colors associated with rules.
+* [AN] Support matching URL fields.
+* [AN] Fixed visual representation of integer equality matchers.
+* [AN] Fixed "Modify matcher" dialog (filling with current configuration).
+* [AN] Don't stop on first found rule.
+* [Azoth] Migrate to QtMultimediaKit from QtMobility instead of QtMultimedia.
+* [Azoth] Added "Open" button to "file transfer finished" notification.
+* [Azoth] Added persistent notification about file transfer finish.
+* [Azoth] Auto-opening incoming files now optional.
+* [Azoth] Added "View server history" action.
+* [Azoth] Added icon for iSida bot v. 4.
+* [Azoth] Always save edit text (even for MUCs) in chat tab restore info.
+* [Azoth] Optimized tooltips generation: it's done lazily on hover now.
+* [Azoth] Don't search for links in messages bigger than 1 KiB (QRegExps suck).
+* [Azoth] Show client icons in tooltip.
+* [Azoth] Show status icons in tooltips.
+* [Azoth] Support protocols with entry time information.
+* [Azoth ChatHistory] Migrated to common chat box for history search.
+* [Azoth ChatHistory] Support wrapping, forward and/or case-insensitive search.
+* [Azoth ChatHistory] Use Core colors for private chats.
+* [Azoth LastSeen] Async statistics loading.
+* [Azoth LastSeen] Async statistics saving.
+* [Azoth LastSeen] Bigger saving interval.
+* [Azoth Murm] Don't delete all entries when going offline, fixes reading
+  offline messages.
+* [Azoth OTRoid] Support for question-based and shared-secret authentication.
+* [Azoth OTRoid] Added fingerprints manager.
+* [Azoth OTRoid] Added private keys manager.
+* [Azoth Xoox] Added support for querying entity time.
+* [Azoth Xoox] Added caps for "http://v4.isida-bot.com"
+* [Azoth Xoox] Added new caps for isida bot.
+* [Azoth Xoox] Async threaded avatars saving with maximum compression.
+* [Azoth Xoox] Ignore VCard if it equals to the saved one.
+* [Azoth Xoox] Moved avatars storage to XDG cache dir.
+* [Azoth Xoox] Don't append empty variant in calls.
+* [Azoth Xoox] Don't save roster twice if item is added.
+* [Azoth Xoox] Optimized initial recovery from ODS.
+* [Azoth Xoox] Pass BoB mgr to form builder in cmd result page, fixes rare segfaults.
+* [Azoth Xoox] Proper merging logic for MUC nick changes.
+* [Azoth Xoox] Schedule roster save only for roster contacts VCards (ignore MUCs).
+* [Azoth Xoox] Update incoming PEP avatar iff it's not null.
+* [Azoth Xoox] Fixed a segfault on removing some always-offline entities.
+* [Azoth Xtazy] Support non-immediate tune sending.
+* [BitTorrent] Emit updates only for changed torrents.
+* [BT] Added "Add magnet" dialog.
+* [BT] Cache translations in the model.
+* [BT] Avoid several deprecated libtorrent members.
+* [BT] Show files icons in icons view.
+* [Blogique Metida] Use XDG cache dir for avatars.
+* [CM] Accept/reject is now togglable by left mouse doubleclick.
+* [CSTP] Added support for UTF-8-encoded content-disposition.
+* [DeadLyrics] Properly handle reply errors avoiding a rare but nasty segfault.
+* [Dolozhee] Sane STR/Expected/Actual order.
+* [HistoryHolder] Async history saving.
+* [HotSensors] Added support for OS X SMC temperature sensors backend.
+* [KBSwitch] Support adding same layout multiple times.
+* [KBSwitch] Show group variants.
+* [Kinotify] Respect entity's NotificationTimeout property.
+* [LackMan] Check if a package is already present before adding.
+* [LackMan] Remove check preventing from deselecting upgradables.
+* [LackMan] Fixed items filtering.
+* [LastFMScrobble] Implement new URL-based album art API.
+* [Laughty] Respect expiration timeout parameter.
+* [Laughty] Treat non-expiring notifications as permanent.
+* [LHTR] Always validate the document as XML, fixes misrepresentations due to
+  entities not defined in XML.
+* [LMP] Support creating AN rules directly from the playlist.
+* [LMP] Support displaying and manipulating relevant AN rules.
+* [LMP] Added support for audio effects plugins.
+* [LMP] Clear queue on setting new source.
+* [LMP] Emit state change for old source on gapless track change.
+* [LMP] Handle LATENCY messages.
+* [LMP] Handle warning messages.
+* [LMP] Ignore QOS messages.
+* [LMP] Install QML to ${LC_QML_DEST} instead of bundling them.
+* [LMP] Pass the URL object in the AN entity for #1611.
+* [LMP] Set the AA urls directly without fetching.
+* [LMP] Return actual source from GetCurrentSource().
+* [LMP] Use actual source for emitting.
+* [LMP] Use actual source in metadata getter.
+* [LMP] Use actual source URL.
+* [LMP] Avoid rare use-after-free condition.
+* [LMP] Don't paint on icon if requested size is null.
+* [LMP] Don't try painting on null pixmaps.
+* [LMP] Fixed substitutions escaping code.
+* [LMP] Fixed local collection model sorting.
+* [LMP MTPSync] Moved album appending to a separate thread to avoid GUI freezes.
+* [LMP MTPSync] Don't query devices when uploading (fixes spontaneous errors).
+* [Monocle] Support document redirections.
+* [Monocle] Added shortcuts for focusing to previous or next annotation.
+* [Monocle] Shortcuts are now configurable.
+* [Monocle] Added Copy context menu action to annotations.
+* [Monocle] Black background for annotations by default.
+* [Monocle] Focus on the annotation tab on ann select.
+* [Monocle Postrus] Rewrote the plugin so that if just converts the .ps to .pdf
+  in another process, avoiding conflicts with libpoppler.
+* [MZ] Better candidates choosing.
+* [MZ] Fetch & detect recordings types.
+* [NetStoreManager] Support downloading multiple selected files.
+* [NewLife] Added support for Opera RSS import.
+* [Otlozhu] Support hierarchies in GUI.
+* [Otlozhu] Add "Add todo" button to the context menu.
+* [Otlozhu] Added proper comment edit dialog.
+* [Otlozhu] Fixed date editing dialog.
+* [Otlozhu] Support cloning todo items.
+* [Otlozhu] The calendar pane is now resizable.
+* [Otlozhu] Configurable representation of finished items.
+* [Pierre] Don't show the badge anymore, leave that to AN Dolle.
+* [Pierre] Support showing all windows on dock icon click.
+* [Poshuku] Added SSL security badge indicator and dialog.
+* [Poshuku] Added Function.prototype.bind kludge for WebKit.
+* [Poshuku] Avoid double-printing with print preview.
+* [Poshuku] Support more node types in XML viewer.]
+* [Poshuku] Support multithreaded storage backend.
+* [Poshuku] Fixed a long-standing crash when closing a tab with web inspector opened.
+* [Poshuku CW] Check frame base URL.
+* [Poshuku CW] Handle child frames only when root frame is loaded.
+* [SB2] Severely optimized the Desaturate effect.
+* [TSM] Support multiple windows: consider window index when restoring tabs.
+* [XProxy] Migrate to Util's (possibly PCRE-enabled) regexps.
+
 !!! 0.6.65
 * New plugins:
 	* Aggregator WebAccess — web interface for Aggregator.
