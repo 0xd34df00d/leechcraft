@@ -136,26 +136,6 @@ namespace Potorchu
 
 	void VisualFilter::InitProjectM ()
 	{
-		/*
-    struct Settings {
-        int meshX;
-        int meshY;
-        int fps;
-        int textureSize;
-        int windowWidth;
-        int windowHeight;
-        std::string presetURL;
-        std::string titleFontURL;
-        std::string menuFontURL;
-        int smoothPresetDuration;
-        int presetDuration;
-        float beatSensitivity;
-        bool aspectCorrection;
-        float easterEgg;
-        bool shuffleEnabled;
-	bool softCutRatingsEnabled;
-    };
-	*/
 		std::unique_ptr<QTemporaryFile> fontFile
 		{
 			QTemporaryFile::createLocalFile (":/lmp/potorchu/resources/data/blank.ttf")
