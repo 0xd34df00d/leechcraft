@@ -46,6 +46,7 @@
 #include <interfaces/an/constants.h>
 #include <interfaces/idownload.h>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
 #include "task.h"
@@ -168,6 +169,7 @@ namespace CSTP
 	int Core::AddTask (const Entity& e)
 	{
 		auto url = e.Entity_.toUrl ();
+		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 		const auto& tags = e.Additional_ [" Tags"].toStringList ();
 
@@ -199,6 +201,20 @@ namespace CSTP
 				return -1;
 
 			task = at.GetTask ();
+		}
+
+		if (!urlList.isEmpty ())
+		{
+			for (const auto& url : urlList)
+				AddTask (url,
+						dir,
+						MakeFilename (url),
+						{},
+						tags,
+						e.Additional_,
+						e.Parameters_);
+
+			return -1;
 		}
 
 		if (!dir.isEmpty ())
@@ -368,6 +384,19 @@ namespace CSTP
 		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
 		if (url.isValid ())
 			return CheckUrl (url, e);
+		else if (!urlList.isEmpty ())
+		{
+			const auto& results = Util::Map (urlList,
+					[&e] (const QUrl& url) { return CheckUrl (url, e); });
+			const auto minPos = std::min_element (results.begin (), results.end (),
+					[] (const EntityTestHandleResult& left, const EntityTestHandleResult& right)
+					{
+						return left.HandlePriority_ < right.HandlePriority_;
+					});
+			return minPos == results.end () ?
+					EntityTestHandleResult {} :
+					*minPos;
+		}
 		else
 			return {};
 	}
