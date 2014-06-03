@@ -82,6 +82,8 @@ namespace Potorchu
 		void HandleBuffer (GstBuffer*);
 		void SetVisualizer ();
 	private slots:
+		void handleSceneRectChanged (const QRectF&);
+
 		void updateFrame ();
 
 		void handlePrevVis ();

@@ -93,6 +93,10 @@ namespace Potorchu
 				SIGNAL (redrawing ()),
 				this,
 				SLOT (updateFrame ()));
+		connect (Scene_.get (),
+				SIGNAL (sceneRectChanged (QRectF)),
+				this,
+				SLOT (handleSceneRectChanged (QRectF)));
 		//proxy->GetGuiProxy ()->AddCurrentSongTab (tr ("Visualization"), Widget_.get ());
 
 		connect (Widget_.get (),
@@ -190,6 +194,12 @@ namespace Potorchu
 
 	void VisualFilter::SetVisualizer ()
 	{
+	}
+
+	void VisualFilter::handleSceneRectChanged (const QRectF& rect)
+	{
+		if (ProjectM_)
+			ProjectM_->projectM_resetGL (rect.width (), rect.height ());
 	}
 
 	void VisualFilter::updateFrame ()
