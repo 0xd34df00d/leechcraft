@@ -29,6 +29,7 @@
 
 #include "visualfilter.h"
 #include <QtDebug>
+#include <QTemporaryFile>
 #include <QWidget>
 #include <gst/gst.h>
 #include <libprojectM/projectM.hpp>
@@ -151,6 +152,11 @@ namespace Potorchu
 	bool softCutRatingsEnabled;
     };
 	*/
+		std::unique_ptr<QTemporaryFile> fontFile
+		{
+			QTemporaryFile::createLocalFile (":/lmp/potorchu/resources/data/blank.ttf")
+		};
+		const std::string fontFileNameStr { fontFile->fileName ().toUtf8 ().constData () };
 		projectM::Settings settings
 		{
 			32,
@@ -160,8 +166,8 @@ namespace Potorchu
 			512,
 			512,
 			"/usr/share/projectM/presets",
-			"/usr/share/fonts/droid/DroidSans.ttf",
-			"/usr/share/fonts/droid/DroidSans.ttf",
+			fontFileNameStr,
+			fontFileNameStr,
 			5,
 			15,
 			0,
