@@ -737,7 +737,12 @@ namespace Xoox
 		if (rm.getRosterBareJids ().contains (jid))
 			rm.removeItem (jid);
 		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jid
+					<< "isn't present in roster manager, removing directly";
 			handleRosterItemRemoved (jid);
+		}
 
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
