@@ -33,6 +33,10 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/poshuku/poshukutypes.h>
+
+class QWebHitTestResult;
+class QWebView;
 
 namespace LeechCraft
 {
@@ -56,6 +60,15 @@ namespace QRd
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+	public slots:
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
+				QContextMenuEvent *event,
+				const QWebHitTestResult& hitTestResult,
+				QMenu *menu,
+				WebViewCtxMenuStage menuBuildStage);
+	private slots:
+		void genQR ();
 	};
 }
 }
