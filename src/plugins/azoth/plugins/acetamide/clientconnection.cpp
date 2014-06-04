@@ -287,10 +287,11 @@ namespace Acetamide
 		if (!ServerHandlers_.contains (serverId))
 			return;
 
-		ServerHandlers_ [serverId]->DisconnectFromServer ();
-		Account_->handleEntryRemoved (ServerHandlers_ [serverId]->
-				GetCLEntry ());
-		ServerHandlers_.take (serverId)->deleteLater ();
+		const auto entry = ServerHandlers_.take (serverId);
+		Account_->handleEntryRemoved (entry->GetCLEntry ());
+		entry->DisconnectFromServer ();
+		entry->deleteLater ();
+
 		if (!ServerHandlers_.count ())
 			Account_->SetState (EntryStatus (SOffline,
 					QString ()));
