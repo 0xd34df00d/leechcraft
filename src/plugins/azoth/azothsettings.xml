@@ -245,13 +245,13 @@
 			</item>
 			<item type="combobox" property="EntryActivationType">
 				<label value="Entry activates on:" />
-				<option name="click" default="true">
+				<option name="click">
 					<label value="Single click" />
 				</option>
 				<option name="dclick">
 					<label value="Double click" />
 				</option>
-				<option name="environment">
+				<option name="environment" default="true">
 					<label value="Let the environment decide" />
 				</option>
 			</item>
