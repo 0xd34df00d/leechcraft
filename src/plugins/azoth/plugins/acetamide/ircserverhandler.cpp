@@ -957,7 +957,7 @@ namespace Acetamide
 		Account_->ChangeState (EntryStatus (SOffline, QString ()));
 		ChannelsManager_->CloseAllChannels ();
 
-		Q_FOREACH (ServerParticipantEntry_ptr entry, Nick2Entry_.values ())
+		for (const auto entry : Nick2Entry_)
 			Account_->handleEntryRemoved (entry.get ());
 
 		Nick2Entry_.clear ();

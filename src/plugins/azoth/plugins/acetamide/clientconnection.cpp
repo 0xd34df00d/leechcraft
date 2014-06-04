@@ -205,7 +205,7 @@ namespace Acetamide
 
 	void ClientConnection::DisconnectFromAll ()
 	{
-		Q_FOREACH (auto ish, ServerHandlers_.values ())
+		for (auto ish : ServerHandlers_)
 			ish->SendQuit ();
 	}
 
@@ -218,7 +218,7 @@ namespace Acetamide
 	void ClientConnection::SetConsoleEnabled (bool enabled)
 	{
 		IsConsoleEnabled_ = enabled;
-		Q_FOREACH (auto srv, ServerHandlers_.values ())
+		for (auto srv : ServerHandlers_)
 		{
 			srv->SetConsoleEnabled (enabled);
 			if (enabled)
