@@ -53,6 +53,8 @@ namespace LackMan
 		bool NotifyScheduled_;
 	public:
 		UpdatesNotificationManager (PackagesModel*, ICoreProxy_ptr, QObject* = 0);
+
+		bool HasUpgradable () const;
 	private:
 		void ScheduleNotify ();
 	private slots:
@@ -60,6 +62,7 @@ namespace LackMan
 		void notify ();
 	signals:
 		void openLackmanRequested ();
+		void hasUpgradablePackages (bool);
 	};
 }
 }

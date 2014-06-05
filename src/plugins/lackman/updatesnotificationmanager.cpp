@@ -49,12 +49,17 @@ namespace LackMan
 	, Proxy_ (proxy)
 	, NotifyScheduled_ (false)
 	{
-		connect (model,
+		connect (PM_,
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleDataChanged (QModelIndex, QModelIndex)));
-		if (const auto rc = model->rowCount ())
-			handleDataChanged (model->index (0, 0), model->index (rc - 1, 0));
+		if (const auto rc = PM_->rowCount ())
+			handleDataChanged (PM_->index (0, 0), PM_->index (rc - 1, 0));
+	}
+
+	bool UpdatesNotificationManager::HasUpgradable () const
+	{
+		return !UpgradablePackages_.isEmpty ();
 	}
 
 	void UpdatesNotificationManager::ScheduleNotify ()
@@ -100,6 +105,9 @@ namespace LackMan
 		auto em = Proxy_->GetEntityManager ();
 
 		const auto upgradableCount = UpgradablePackages_.size ();
+
+		emit hasUpgradablePackages (upgradableCount);
+
 		QString bodyText;
 		if (!upgradableCount)
 		{
@@ -108,6 +116,7 @@ namespace LackMan
 
 			return;
 		}
+
 		else if (upgradableCount <= 3)
 		{
 			QStringList names;
