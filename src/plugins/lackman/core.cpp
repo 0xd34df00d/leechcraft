@@ -941,11 +941,9 @@ namespace LackMan
 		for (int i = 0, rows = PackagesModel_->rowCount ();
 				i < rows; ++i)
 		{
-			QModelIndex index = PackagesModel_->index (i, 0);
-			int packageId = PackagesModel_->
-					data (index, PackagesModel::PMRPackageID).toInt ();
-			bool isUpgr = PackagesModel_->
-					data (index, PackagesModel::PMRUpgradable).toBool ();
+			const auto& index = PackagesModel_->index (i, 0);
+			int packageId = PackagesModel_->data (index, PackagesModel::PMRPackageID).toInt ();
+			bool isUpgr = PackagesModel_->data (index, PackagesModel::PMRUpgradable).toBool ();
 
 			if (isUpgr)
 				PendingManager_->ToggleUpdate (packageId, true);
