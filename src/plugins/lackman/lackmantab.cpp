@@ -44,6 +44,7 @@
 #include "packagesdelegate.h"
 #include "pendingmanager.h"
 #include "storage.h"
+#include "updatesnotificationmanager.h"
 
 Q_DECLARE_METATYPE (QModelIndex)
 
@@ -274,6 +275,13 @@ namespace LackMan
 		connect (pm,
 				SIGNAL (hasPendingActionsChanged (bool)),
 				Cancel_,
+				SLOT (setEnabled (bool)));
+
+		auto unm = Core::Instance ().GetUpdatesNotificationManager ();
+		UpgradeAll_->setEnabled (unm->HasUpgradable ());
+		connect (unm,
+				SIGNAL (hasUpgradablePackages (bool)),
+				UpgradeAll_,
 				SLOT (setEnabled (bool)));
 	}
 
