@@ -84,6 +84,7 @@ namespace LackMan
 		int GetRow (int packageId) const;
 		void Clear ();
 	public slots:
+		void handlePackageInstallRemoveToggled (int);
 		void handlePackageUpdateToggled (int);
 	};
 }

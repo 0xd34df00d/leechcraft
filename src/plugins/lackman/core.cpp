@@ -76,6 +76,10 @@ namespace LackMan
 				SIGNAL (packageUpdateToggled (int, bool)),
 				PackagesModel_,
 				SLOT (handlePackageUpdateToggled (int)));
+		connect (PendingManager_,
+				SIGNAL (packageInstallRemoveToggled (int, bool)),
+				PackagesModel_,
+				SLOT (handlePackageInstallRemoveToggled (int)));
 
 		connect (Storage_,
 				SIGNAL (packageRemoved (int)),
