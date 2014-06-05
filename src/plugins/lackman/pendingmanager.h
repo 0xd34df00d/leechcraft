@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_LACKMAN_PENDINGMANAGER_H
-#define PLUGINS_LACKMAN_PENDINGMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QSet>
 #include <QMap>
@@ -81,14 +81,14 @@ namespace LackMan
 		void DisablePackageFrom (int, Action);
 		void ReinitRootItems ();
 
+		void NotifyHasPendingActionsChanged ();
 		void ScheduleNotifyFetchListUpdate ();
 	private slots:
 		void notifyFetchListUpdate ();
 	signals:
 		void packageUpdateToggled (int, bool);
 		void fetchListUpdated (const QList<int>&);
+		void hasPendingActionsChanged (bool);
 	};
 }
 }
-
-#endif

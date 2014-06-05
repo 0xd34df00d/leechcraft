@@ -136,7 +136,7 @@ namespace LackMan
 				.arg (info.Name_)
 				.arg (info.ShortDescription_));
 		packageItem->setIcon (Core::Instance ().GetIconForLPI (info));
-		Q_FOREACH (int dep, deps)
+		for (int dep : deps)
 		{
 			info = Core::Instance ().GetListPackageInfo (dep);
 			QStandardItem *item = new QStandardItem (QString ("%1 (%2)")
@@ -148,6 +148,7 @@ namespace LackMan
 		ID2ModelRow_ [id] = packageItem;
 		RootItemForAction_ [action]->appendRow (packageItem);
 
+		NotifyHasPendingActionsChanged ();
 		if (action != Action::Remove)
 			ScheduleNotifyFetchListUpdate ();
 	}
@@ -166,10 +167,10 @@ namespace LackMan
 			return;
 		}
 
-		QStandardItem *item = ID2ModelRow_.take (id);
-		item->parent ()->takeRow (item->row ());
-		delete item;
+		const auto item = ID2ModelRow_.take (id);
+		item->parent ()->removeRow (item->row ());
 
+		NotifyHasPendingActionsChanged ();
 		if (action != Action::Remove)
 			ScheduleNotifyFetchListUpdate ();
 	}
@@ -199,6 +200,14 @@ namespace LackMan
 		}
 	}
 
+	void PendingManager::NotifyHasPendingActionsChanged ()
+	{
+		const bool hasPending = std::any_of (ScheduledForAction_.begin (),
+				ScheduledForAction_.end (),
+				[] (const QSet<int>& set) { return !set.isEmpty (); });
+		emit hasPendingActionsChanged (hasPending);
+	}
+
 	void PendingManager::ScheduleNotifyFetchListUpdate ()
 	{
 		if (NotifyFetchListUpdateScheduled_)
@@ -216,7 +225,7 @@ namespace LackMan
 
 		auto ids = (ScheduledForAction_ [Action::Install] +
 					ScheduledForAction_ [Action::Update]).toList ();
-		Q_FOREACH (const int id, ids)
+		for (const int id : ids)
 			ids << Deps_ [id];
 		emit fetchListUpdated (ids);
 	}
