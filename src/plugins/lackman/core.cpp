@@ -164,8 +164,8 @@ namespace LackMan
 	{
 		ReadSettings ();
 
-		auto unm = new UpdatesNotificationManager (PackagesModel_, Proxy_, this);
-		connect (unm,
+		UpdatesNotificationManager_ = new UpdatesNotificationManager (PackagesModel_, Proxy_, this);
+		connect (UpdatesNotificationManager_,
 				SIGNAL (openLackmanRequested ()),
 				this,
 				SIGNAL (openLackmanRequested ()));
@@ -204,6 +204,11 @@ namespace LackMan
 	QAbstractItemModel* Core::GetRepositoryModel () const
 	{
 		return ReposModel_;
+	}
+
+	UpdatesNotificationManager* Core::GetUpdatesNotificationManager () const
+	{
+		return UpdatesNotificationManager_;
 	}
 
 	DependencyList Core::GetDependencies (int packageId) const

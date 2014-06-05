@@ -48,6 +48,7 @@ namespace LackMan
 	class PackagesModel;
 	class PendingManager;
 	class PackageProcessor;
+	class UpdatesNotificationManager;
 
 	class Core : public QObject
 	{
@@ -61,6 +62,7 @@ namespace LackMan
 		PendingManager *PendingManager_;
 		PackageProcessor *PackageProcessor_;
 		QStandardItemModel *ReposModel_;
+		UpdatesNotificationManager *UpdatesNotificationManager_ = nullptr;
 		bool UpdatesEnabled_;
 
 		enum ReposColumns
@@ -83,6 +85,7 @@ namespace LackMan
 		ExternalResourceManager* GetExtResourceManager () const;
 		Storage* GetStorage () const;
 		QAbstractItemModel* GetRepositoryModel () const;
+		UpdatesNotificationManager* GetUpdatesNotificationManager () const;
 
 		DependencyList GetDependencies (int) const;
 		QList<ListPackageInfo> GetDependencyFulfillers (const Dependency&) const;
