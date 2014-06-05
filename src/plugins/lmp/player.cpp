@@ -38,7 +38,7 @@
 #include <QApplication>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/sll/delayedexecutor.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -1351,10 +1351,12 @@ namespace LMP
 		if (HandleCurrentStop (current))
 		{
 			if (!next.IsEmpty ())
-				new Util::DelayedExecutor
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
 				{
 					[this, next] { Source_->SetCurrentSource (next); },
-					1000
+					Source_,
+					SIGNAL (finished ()),
+					Source_
 				};
 
 			MarkAsCurrent (Items_.value (next));
