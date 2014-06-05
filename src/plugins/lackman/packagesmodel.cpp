@@ -284,5 +284,20 @@ namespace LackMan
 		Packages_.clear ();
 		reset ();
 	}
+
+	void PackagesModel::handlePackageUpdateToggled (int id)
+	{
+		const auto row = GetRow (id);
+		if (row == -1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown package ID"
+					<< id;
+			return;
+		}
+
+		const auto& idx = index (row, Columns::Upd);
+		emit dataChanged (idx, idx);
+	}
 }
 }

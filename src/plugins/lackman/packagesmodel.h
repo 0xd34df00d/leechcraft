@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_LACKMAN_PACKAGESMODEL_H
-#define PLUGINS_LACKMAN_PACKAGESMODEL_H
+#pragma once
+
 #include <QAbstractItemModel>
 #include "repoinfo.h"
 
@@ -83,8 +83,8 @@ namespace LackMan
 		ListPackageInfo FindPackage (const QString&) const;
 		int GetRow (int packageId) const;
 		void Clear ();
+	public slots:
+		void handlePackageUpdateToggled (int);
 	};
 }
 }
-
-#endif

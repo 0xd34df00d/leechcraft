@@ -72,6 +72,11 @@ namespace LackMan
 		Relation2comparator [Dependency::E] = [] (QString l, QString r) { return r == l; };
 		Relation2comparator [Dependency::LE] = [] (QString l, QString r) { return !Relation2comparator [Dependency::G] (l, r); };
 
+		connect (PendingManager_,
+				SIGNAL (packageUpdateToggled (int, bool)),
+				PackagesModel_,
+				SLOT (handlePackageUpdateToggled (int)));
+
 		connect (Storage_,
 				SIGNAL (packageRemoved (int)),
 				this,
