@@ -64,6 +64,7 @@ namespace LMP
 		void SetPlayerTab (PlayerTab*);
 
 		void AddCurrentSongTab (const QString&, QWidget*) const;
+		void AddToolbarAction (QAction*) const;
 	};
 
 	class LMPProxy : public QObject

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "lmpproxy.h"
+#include <QToolBar>
 #include "core.h"
 #include "util.h"
 #include "localcollection.h"
@@ -75,6 +76,11 @@ namespace LMP
 	void LMPGuiProxy::AddCurrentSongTab (const QString& title, QWidget *widget) const
 	{
 		PlayerTab_->AddNPTab (title, widget);
+	}
+
+	void LMPGuiProxy::AddToolbarAction (QAction *action) const
+	{
+		PlayerTab_->GetToolBar ()->addAction (action);
 	}
 
 	ILocalCollection* LMPProxy::GetLocalCollection () const

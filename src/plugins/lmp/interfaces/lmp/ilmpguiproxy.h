@@ -31,6 +31,7 @@
 
 class QWidget;
 class QString;
+class QAction;
 
 namespace LeechCraft
 {
@@ -42,6 +43,8 @@ namespace LMP
 		virtual ~ILMPGuiProxy () {}
 
 		virtual void AddCurrentSongTab (const QString&, QWidget*) const = 0;
+
+		virtual void AddToolbarAction (QAction*) const = 0;
 	};
 }
 }
