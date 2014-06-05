@@ -55,9 +55,24 @@ namespace Potorchu
 
 	void VisWidget::SetFps (int fps)
 	{
-		Timer_->stop ();
+		const bool isRunning = Timer_->isActive ();
+		if (isRunning)
+			Timer_->stop ();
 		Timer_->setInterval (1000.0 / fps);
+		if (isRunning)
+			Timer_->start ();
+	}
+
+	void VisWidget::hideEvent (QHideEvent *event)
+	{
+		Timer_->stop ();
+		QWidget::hideEvent (event);
+	}
+
+	void VisWidget::showEvent (QShowEvent *event)
+	{
 		Timer_->start ();
+		QGraphicsView::showEvent (event);
 	}
 
 	void VisWidget::resizeEvent (QResizeEvent *event)
