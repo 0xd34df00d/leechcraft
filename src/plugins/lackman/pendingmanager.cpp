@@ -55,10 +55,18 @@ namespace LackMan
 	void PendingManager::Reset ()
 	{
 		ReinitRootItems ();
+
+		for (const auto id : ScheduledForAction_.value (Action::Update))
+			packageUpdateToggled (id, false);
+
 		for (int i = Action::Install; i < Action::MAX; ++i)
 			ScheduledForAction_ [static_cast<Action> (i)].clear ();
+
 		Deps_.clear ();
 		ID2ModelRow_.clear ();
+
+		fetchListUpdated ({});
+		hasPendingActionsChanged (false);
 	}
 
 	void PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
