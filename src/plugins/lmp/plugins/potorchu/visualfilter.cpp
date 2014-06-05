@@ -150,14 +150,17 @@ namespace Potorchu
 			QTemporaryFile::createLocalFile (":/lmp/potorchu/resources/data/blank.ttf")
 		};
 		const std::string fontFileNameStr { fontFile->fileName ().toUtf8 ().constData () };
+
+		const auto& sceneRect = Scene_->sceneRect ().toRect ();
+
 		projectM::Settings settings
 		{
 			32,
 			24,
 			30,
 			512,
-			512,
-			512,
+			sceneRect.width (),
+			sceneRect.height (),
 			"/usr/share/projectM/presets",
 			fontFileNameStr,
 			fontFileNameStr,
