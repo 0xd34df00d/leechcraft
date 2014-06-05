@@ -35,6 +35,7 @@
 #include <QActionEvent>
 #include <QToolButton>
 #include <QMenu>
+#include <QToolBar>
 #include <QtDebug>
 #include "iconthemeengine.h"
 
@@ -71,14 +72,16 @@ bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *event)
 			IconThemeEngine::Instance ().UpdateIconset ({ pb });
 		else
 		{
-			IconThemeEngine::Instance ()
-				.UpdateIconset (child->findChildren<QAction*> ());
-			IconThemeEngine::Instance ()
-				.UpdateIconset (child->findChildren<QPushButton*> ());
-			IconThemeEngine::Instance ()
-				.UpdateIconset (child->findChildren<QTabWidget*> ());
-			IconThemeEngine::Instance ()
-				.UpdateIconset (child->findChildren<QToolButton*> ());
+			if (auto tb = qobject_cast<QToolBar*> (child))
+				IconThemeEngine::Instance ().UpdateIconset (tb->actions ());
+			else
+				IconThemeEngine::Instance ().UpdateIconset (child->findChildren<QAction*> ());
+			IconThemeEngine::Instance ().UpdateIconset (child->findChildren<QPushButton*> ());
+			IconThemeEngine::Instance ().UpdateIconset (child->findChildren<QTabWidget*> ());
+			IconThemeEngine::Instance ().UpdateIconset (child->findChildren<QToolButton*> ());
+
+			for (auto w : child->findChildren<QWidget*> ())
+				w->installEventFilter (this);
 		}
 		return false;
 	}
