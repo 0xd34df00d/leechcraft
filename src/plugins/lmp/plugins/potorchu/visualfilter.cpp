@@ -83,7 +83,7 @@ namespace Potorchu
 		Widget_->resize (512, 512);
 		Widget_->show ();
 		Widget_->setScene (Scene_.get ());
-		Widget_->SetFps (60);
+		Widget_->SetFps (30);
 
 		connect (Widget_.get (),
 				SIGNAL (redrawRequested ()),
@@ -145,7 +145,7 @@ namespace Potorchu
 		{
 			32,
 			24,
-			60,
+			30,
 			512,
 			512,
 			512,
