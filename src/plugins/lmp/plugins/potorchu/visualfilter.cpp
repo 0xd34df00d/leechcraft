@@ -31,9 +31,11 @@
 #include <QtDebug>
 #include <QTemporaryFile>
 #include <QWidget>
+#include <QAction>
 #include <gst/gst.h>
 #include <libprojectM/projectM.hpp>
 #include <util/lmp/gstutil.h>
+#include <interfaces/lmp/ilmpguiproxy.h>
 #include "viswidget.h"
 #include "visscene.h"
 
@@ -81,7 +83,6 @@ namespace Potorchu
 		gst_object_unref (streamPad);
 
 		Widget_->resize (512, 512);
-		Widget_->show ();
 		Widget_->setScene (Scene_.get ());
 		Widget_->SetFps (30);
 
@@ -97,7 +98,15 @@ namespace Potorchu
 				SIGNAL (sceneRectChanged (QRectF)),
 				this,
 				SLOT (handleSceneRectChanged (QRectF)));
-		//proxy->GetGuiProxy ()->AddCurrentSongTab (tr ("Visualization"), Widget_.get ());
+
+		auto action = new QAction { tr ("Visualization"), this };
+		action->setProperty ("ActionIcon", "view-media-visualization");
+		action->setCheckable (true);
+		connect (action,
+				SIGNAL (triggered (bool)),
+				Widget_.get (),
+				SLOT (setVisible (bool)));
+		proxy->GetGuiProxy ()->AddToolbarAction (action);
 
 		connect (Widget_.get (),
 				SIGNAL (nextVis ()),
