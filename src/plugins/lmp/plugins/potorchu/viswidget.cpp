@@ -60,6 +60,14 @@ namespace Potorchu
 		Timer_->start ();
 	}
 
+	void VisWidget::resizeEvent (QResizeEvent *event)
+	{
+		QGraphicsView::resizeEvent (event);
+
+		if (scene ())
+			scene ()->setSceneRect ({ { 0, 0 }, event->size () });
+	}
+
 	void VisWidget::mouseReleaseEvent (QMouseEvent *event)
 	{
 		switch (event->button ())

@@ -47,7 +47,8 @@ namespace Potorchu
 
 		void SetFps (int);
 	protected:
-		void mouseReleaseEvent (QMouseEvent*);
+		void resizeEvent (QResizeEvent*) override;
+		void mouseReleaseEvent (QMouseEvent*) override;
 	signals:
 		void prevVis ();
 		void nextVis ();
