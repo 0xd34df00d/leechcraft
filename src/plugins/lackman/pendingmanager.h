@@ -86,6 +86,7 @@ namespace LackMan
 	private slots:
 		void notifyFetchListUpdate ();
 	signals:
+		void packageInstallRemoveToggled (int, bool);
 		void packageUpdateToggled (int, bool);
 		void fetchListUpdated (const QList<int>&);
 		void hasPendingActionsChanged (bool);

@@ -59,6 +59,11 @@ namespace LackMan
 		for (const auto id : ScheduledForAction_.value (Action::Update))
 			packageUpdateToggled (id, false);
 
+		for (const auto id : ScheduledForAction_.value (Action::Install))
+			packageInstallRemoveToggled (id, false);
+		for (const auto id : ScheduledForAction_.value (Action::Remove))
+			packageInstallRemoveToggled (id, false);
+
 		for (int i = Action::Install; i < Action::MAX; ++i)
 			ScheduledForAction_ [static_cast<Action> (i)].clear ();
 
@@ -75,6 +80,8 @@ namespace LackMan
 			EnablePackageInto (id, installed ? Action::Remove : Action::Install);
 		else
 			DisablePackageFrom (id, installed ? Action::Remove : Action::Install);
+
+		emit packageInstallRemoveToggled (id, enable);
 	}
 
 	void PendingManager::ToggleUpdate (int id, bool enable)
