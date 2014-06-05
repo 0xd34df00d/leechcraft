@@ -148,10 +148,6 @@ namespace LMP
 			Sorter_.Criteria_ = LoadCriteria (criteriaVar);
 
 		connect (Source_,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handlePlaybackFinished ()));
-		connect (Source_,
 				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (handleStateChanged (SourceState, SourceState)));

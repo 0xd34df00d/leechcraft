@@ -703,6 +703,9 @@ namespace LMP
 		auto prevState = OldState_;
 		OldState_ = newNativeState;
 		emit stateChanged (newNativeState, prevState);
+
+		if (newNativeState == SourceState::Stopped)
+			emit finished ();
 	}
 
 	void SourceObject::HandleElementMsg (GstMessage *msg)
