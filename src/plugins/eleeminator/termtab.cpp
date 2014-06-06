@@ -55,7 +55,7 @@ namespace Eleeminator
 	, TC_ (tc)
 	, ParentPlugin_ { plugin }
 	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
-	, Term_ { new QTermWidget { true } }
+	, Term_ { new QTermWidget { false } }
 	{
 		auto lay = new QVBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
@@ -66,6 +66,8 @@ namespace Eleeminator
 		Term_->setFlowControlEnabled (true);
 		Term_->setFlowControlWarningEnabled (true);
 		Term_->setScrollBarPosition (QTermWidget::ScrollBarRight);
+		Term_->startShellProgram ();
+
 		connect (Term_,
 				SIGNAL (finished ()),
 				this,
