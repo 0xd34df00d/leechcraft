@@ -255,7 +255,7 @@ namespace Snails
 		auto utf8cs = vmime::charset ("utf-8");
 
 		Message_ptr msg (new Message);
-		msg->SetID (message->getUniqueId ().c_str ());
+		msg->SetID (static_cast<vmime::string> (message->getUID ()).c_str ());
 		msg->SetSize (message->getSize ());
 
 		if (message->getFlags () & vmime::net::message::FLAG_SEEN)
