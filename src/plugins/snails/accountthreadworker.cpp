@@ -130,10 +130,9 @@ namespace Snails
 
 	AccountThreadWorker::AccountThreadWorker (Account *parent)
 	: A_ (parent)
+	, Session_ (new vmime::net::session ())
 	, DisconnectTimer_ (new QTimer (this))
 	{
-		Session_ = vmime::create<vmime::net::session> ();
-
 		connect (DisconnectTimer_,
 				SIGNAL (timeout ()),
 				this,
