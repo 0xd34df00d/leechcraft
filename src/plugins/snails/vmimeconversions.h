@@ -75,7 +75,7 @@ namespace Snails
 	{
 		return {
 					StringizeCT (mbox->getName ()),
-					QString::fromUtf8 (mbox->getEmail ().c_str ())
+					QString::fromUtf8 (mbox->getEmail ().toString ().c_str ())
 				};
 	}
 }
