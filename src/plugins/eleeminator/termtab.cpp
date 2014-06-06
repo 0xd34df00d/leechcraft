@@ -37,6 +37,7 @@
 #include <QShortcut>
 #include <QFontDialog>
 #include <QUrl>
+#include <QProcessEnvironment>
 #include <QtDebug>
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
@@ -66,6 +67,16 @@ namespace Eleeminator
 		Term_->setFlowControlEnabled (true);
 		Term_->setFlowControlWarningEnabled (true);
 		Term_->setScrollBarPosition (QTermWidget::ScrollBarRight);
+
+		auto systemEnv = QProcessEnvironment::systemEnvironment ();
+		if (systemEnv.value ("TERM") != "xterm")
+			systemEnv.remove ("TERM");
+		if (!systemEnv.contains ("TERM"))
+		{
+			systemEnv.insert ("TERM", "xterm");
+			Term_->setEnvironment (systemEnv.toStringList ());
+		}
+
 		Term_->startShellProgram ();
 
 		connect (Term_,
