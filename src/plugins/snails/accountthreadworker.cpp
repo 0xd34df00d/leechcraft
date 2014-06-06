@@ -622,11 +622,14 @@ namespace Snails
 		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
-				[id] (const vmime::shared_ptr<vmime::net::message>& message) { return message->getUniqueId () == id; });
+				[id] (const vmime::shared_ptr<vmime::net::message>& message)
+				{
+					return message->getUID () == id;
+				});
 		if (pos == messages.end ())
 		{
 			for (const auto& msg : messages)
-				qWarning () << QByteArray (msg->getUniqueId ().c_str ()).toHex ();
+				qWarning () << QByteArray (static_cast<vmime::string> (msg->getUID ()).c_str ()).toHex ();
 			qWarning () << Q_FUNC_INFO
 					<< "message with ID"
 					<< sid.toHex ()
@@ -659,7 +662,7 @@ namespace Snails
 		TimerGuard g (DisconnectTimer_);
 
 		const auto& msgId = msg->GetID ();
-		vmime::string id (msgId.constData ());
+		const vmime::string id { msgId.constData () };
 		qDebug () << Q_FUNC_INFO << msgId.toHex ();
 
 		auto store = MakeStore ();
@@ -671,11 +674,14 @@ namespace Snails
 		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
-				[id] (const vmime::shared_ptr<vmime::net::message>& message) { return message->getUniqueId () == id; });
+				[&id] (const vmime::shared_ptr<vmime::net::message>& message)
+				{
+					return message->getUID () == id;
+				});
 		if (pos == messages.end ())
 		{
 			for (const auto& msg : messages)
-				qWarning () << QByteArray (msg->getUniqueId ().c_str ()).toHex ();
+				qWarning () << QByteArray (static_cast<vmime::string> (msg->getUID ()).c_str ()).toHex ();
 			qWarning () << Q_FUNC_INFO
 					<< "message with ID"
 					<< msgId.toHex ()
