@@ -42,15 +42,16 @@ namespace Snails
 	template<typename T>
 	QString Stringize (const T& t, const vmime::charset& source)
 	{
-		vmime::string str;
-		vmime::utility::outputStreamStringAdapter out (str);
-		vmime::utility::charsetFilteredOutputStream fout (source,
-				vmime::charset ("utf-8"), out);
+		vmime::string stringized;
+		vmime::utility::outputStreamStringAdapter out (stringized);
+		t->extract (out);
+		out.flush ();
 
-		t->extract (fout);
-		fout.flush ();
+		const auto& converter = vmime::charsetConverter::create (source, vmime::charsets::UTF_8);
+		vmime::string outStr;
+		converter->convert (stringized, outStr);
 
-		return QString::fromUtf8 (str.c_str ());
+		return QString::fromUtf8 (outStr.c_str ());
 	}
 
 	template<typename T>
