@@ -32,6 +32,7 @@
 #include <QUrl>
 #include <QFile>
 #include <QTimer>
+#include <QSslSocket>
 #include <QtDebug>
 #include <vmime/security/defaultAuthenticator.hpp>
 #include <vmime/security/cert/defaultCertificateVerifier.hpp>
@@ -133,11 +134,21 @@ namespace Snails
 	: A_ (parent)
 	, Session_ (new vmime::net::session ())
 	, DisconnectTimer_ (new QTimer (this))
+	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	{
 		connect (DisconnectTimer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (timeoutDisconnect ()));
+
+		std::vector<boost::shared_ptr<vmime::security::cert::X509Certificate>> vCerts;
+		for (const auto& sysCert : QSslSocket::systemCaCertificates ())
+		{
+			const auto& der = sysCert.toDer ();
+			const auto bytes = reinterpret_cast<const vmime::byte_t*> (der.constData ());
+			vCerts.push_back (vmime::security::cert::X509Certificate::import (bytes, der.size ()));
+		}
+		CertVerifier_->setX509RootCAs (vCerts);
 	}
 
 	vmime::shared_ptr<vmime::net::store> AccountThreadWorker::MakeStore ()
@@ -153,7 +164,7 @@ namespace Snails
 				Q_ARG (QString*, &url));
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
-		st->setCertificateVerifier (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ());
+		st->setCertificateVerifier (CertVerifier_);
 
 		if (A_->UseTLS_)
 		{
@@ -207,7 +218,7 @@ namespace Snails
 			trp->setProperty ("auth.password", password.toUtf8 ().constData ());
 		}
 		trp->setProperty ("server.port", A_->OutPort_);
-		trp->setCertificateVerifier (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ());
+		trp->setCertificateVerifier (CertVerifier_);
 
 		if (A_->OutSecurity_ == Account::SecurityType::TLS)
 		{

@@ -34,6 +34,7 @@
 #include <vmime/net/message.hpp>
 #include <vmime/net/folder.hpp>
 #include <vmime/net/store.hpp>
+#include <vmime/security/cert/defaultCertificateVerifier.hpp>
 #include <interfaces/structures.h>
 #include "progresslistener.h"
 #include "message.h"
@@ -56,6 +57,8 @@ namespace Snails
 		QTimer *DisconnectTimer_;
 
 		QHash<QStringList, QHash<QByteArray, int>> SeqCache_;
+
+		const vmime::shared_ptr<vmime::security::cert::defaultCertificateVerifier> CertVerifier_;
 	public:
 		AccountThreadWorker (Account*);
 	private:
