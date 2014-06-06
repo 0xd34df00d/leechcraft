@@ -532,7 +532,7 @@ namespace Snails
 		{
 			QStringList pathList;
 			const auto& path = folder->getFullPath ();
-			for (int i = 0; i < path.getSize (); ++i)
+			for (size_t i = 0; i < path.getSize (); ++i)
 				pathList << StringizeCT (path.getComponentAt (i));
 
 			paths << pathList;
