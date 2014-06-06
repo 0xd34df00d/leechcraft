@@ -47,6 +47,7 @@
 #include <vmime/stringContentHandler.hpp>
 #include <vmime/fileAttachment.hpp>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include "message.h"
 #include "account.h"
 #include "core.h"
