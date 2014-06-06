@@ -66,9 +66,9 @@ namespace Snails
 				this,
 				SLOT (handlePLDestroyed (QObject*)));
 		connect (pl,
-				SIGNAL (progress (int, int)),
+				SIGNAL (progress (size_t, size_t)),
 				this,
-				SLOT (handleProgress (int, int)));
+				SLOT (handleProgress (size_t, size_t)));
 
 		QList<QStandardItem*> row;
 		row << new QStandardItem (pl->GetContext ());
@@ -88,7 +88,7 @@ namespace Snails
 		Model_->removeRow (item->row ());
 	}
 
-	void ProgressManager::handleProgress (const int done, const int total)
+	void ProgressManager::handleProgress (size_t done, size_t total)
 	{
 		auto item = Listener2Row_.value (sender ());
 		if (!item)

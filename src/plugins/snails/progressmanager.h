@@ -57,7 +57,7 @@ namespace Snails
 	private slots:
 		void handlePL (ProgressListener_g_ptr);
 		void handlePLDestroyed (QObject*);
-		void handleProgress (const int, const int);
+		void handleProgress (size_t, size_t);
 	};
 }
 }
