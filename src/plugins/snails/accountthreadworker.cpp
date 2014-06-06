@@ -153,7 +153,7 @@ namespace Snails
 				Q_ARG (QString*, &url));
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
-		st->setCertificateVerifier (new vmime::defaultCertificateVerifier ());
+		st->setCertificateVerifier (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ());
 
 		if (A_->UseTLS_)
 		{
@@ -207,7 +207,7 @@ namespace Snails
 			trp->setProperty ("auth.password", password.toUtf8 ().constData ());
 		}
 		trp->setProperty ("server.port", A_->OutPort_);
-		trp->setCertificateVerifier (new vmime::defaultCertificateVerifier ());
+		trp->setCertificateVerifier (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ());
 
 		if (A_->OutSecurity_ == Account::SecurityType::TLS)
 		{
