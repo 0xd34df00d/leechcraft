@@ -36,8 +36,8 @@
 #include <QSqlError>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
-#include <util/util.h>
-#include <util/dblock.h>
+#include <util/db/dblock.h>
+#include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
 #include "account.h"
 
