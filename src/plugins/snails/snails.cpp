@@ -46,12 +46,24 @@ namespace Snails
 	{
 		Util::InstallTranslator ("snails");
 
-		MailTabClass_ = { "mail", tr ("Mail"),
-				tr ("Mail tab."),
-				GetIcon (), 55, TFOpenableByRequest };
-		ComposeTabClass_ = { "compose", tr ("Compose mail"),
-				tr ("Allows one to compose outgoing mail messages."),
-				QIcon (), 60, TFOpenableByRequest };
+		MailTabClass_ =
+		{
+			"mail",
+			tr ("Mail"),
+			tr ("Mail tab."),
+			GetIcon (),
+			65,
+			TFOpenableByRequest
+		};
+		ComposeTabClass_ =
+		{
+			"compose",
+			tr ("Compose mail"),
+			tr ("Allows one to compose outgoing mail messages."),
+			{},
+			60,
+			TFOpenableByRequest
+		};
 
 		ComposeMessageTab::SetParentPlugin (this);
 		ComposeMessageTab::SetTabClassInfo (ComposeTabClass_);
