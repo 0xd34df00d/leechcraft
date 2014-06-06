@@ -22,8 +22,9 @@ if (MAGIC_FOUND)
 	add_definitions (-DHAVE_MAGIC)
 endif ()
 
-set (QT_USE_QTWEBKIT TRUE)
+set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTSQL TRUE)
+set (QT_USE_QTWEBKIT TRUE)
 
 include (${QT_USE_FILE})
 include_directories (
