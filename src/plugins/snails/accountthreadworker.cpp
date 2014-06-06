@@ -108,31 +108,6 @@ namespace Snails
 
 			return pass.toUtf8 ().constData ();
 		}
-
-		class CertVerifier : public vmime::security::cert::defaultCertificateVerifier
-		{
-			static std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>> TrustedCerts_;
-		public:
-			void verify (vmime::shared_ptr<vmime::security::cert::certificateChain> chain)
-			{
-				try
-				{
-					setX509TrustedCerts (TrustedCerts_);
-
-					defaultCertificateVerifier::verify (chain);
-				}
-				catch (vmime::exceptions::certificate_verification_exception&)
-				{
-					auto cert = chain->getAt (0);
-
-					if (cert->getType() == "X.509")
-						TrustedCerts_.push_back (cert.dynamicCast
-								<vmime::security::cert::X509Certificate>());
-				}
-			}
-		};
-
-		std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>> CertVerifier::TrustedCerts_;
 	}
 
 	class TimerGuard
@@ -178,7 +153,7 @@ namespace Snails
 				Q_ARG (QString*, &url));
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
-		st->setCertificateVerifier (vmime::create<CertVerifier> ());
+		st->setCertificateVerifier (new vmime::defaultCertificateVerifier ());
 
 		if (A_->UseTLS_)
 		{
@@ -232,7 +207,7 @@ namespace Snails
 			trp->setProperty ("auth.password", password.toUtf8 ().constData ());
 		}
 		trp->setProperty ("server.port", A_->OutPort_);
-		trp->setCertificateVerifier (vmime::create<CertVerifier> ());
+		trp->setCertificateVerifier (new vmime::defaultCertificateVerifier ());
 
 		if (A_->OutSecurity_ == Account::SecurityType::TLS)
 		{
