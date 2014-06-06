@@ -385,7 +385,7 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
 			const QList<QStringList>& origFolders, vmime::shared_ptr<vmime::net::store> store)
 	{
-		Q_FOREACH (const auto& folder, origFolders)
+		for (const auto& folder : origFolders)
 		{
 			auto netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_WRITE);
 			FetchMessagesInFolder (folder, netFolder);
@@ -393,7 +393,7 @@ namespace Snails
 	}
 
 	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
-			vmime::utility::ref<vmime::net::folder> folder)
+			vmime::shared_ptr<vmime::net::folder> folder)
 	{
 		auto messages = folder->getMessages ();
 		if (!messages.size ())
