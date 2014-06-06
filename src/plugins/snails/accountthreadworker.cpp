@@ -288,9 +288,9 @@ namespace Snails
 		try
 		{
 			const auto& val = header->To ()->getValue ();
-			if (const auto& alist = vmime::dynamicCast<const vmime::mailboxList> (val))
+			if (const auto& alist = vmime::dynamicCast<const vmime::addressList> (val))
 			{
-				const auto& vec = alist->getMailboxList ();
+				const auto& vec = alist->toMailboxList ()->getMailboxList ();
 
 				Message::Addresses_t to;
 				std::transform (vec.begin (), vec.end (), std::back_inserter (to),
