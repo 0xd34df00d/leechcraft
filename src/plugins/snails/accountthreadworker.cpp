@@ -265,7 +265,8 @@ namespace Snails
 
 		try
 		{
-			auto mbox = header->From ()->getValue ().dynamicCast<const vmime::mailbox> ();
+			const auto& mboxVal = header->From ()->getValue ();
+			const auto& mbox = vmime::dynamicCast<const vmime::mailbox> (mboxVal);
 			msg->AddAddress (Message::Address::From, Mailbox2Strings (mbox));
 		}
 		catch (const vmime::exceptions::no_such_field& nsf)
@@ -275,9 +276,8 @@ namespace Snails
 
 		try
 		{
-			auto val = header->To ()->getValue ();
-			auto alist = val.dynamicCast<const vmime::mailboxList> ();
-			if (alist)
+			const auto& val = header->To ()->getValue ();
+			if (const auto& alist = vmime::dynamicCast<const vmime::mailboxList> (val))
 			{
 				const auto& vec = alist->getMailboxList ();
 
@@ -296,8 +296,9 @@ namespace Snails
 
 		try
 		{
-			auto origDate = header->Date ()->getValue ().dynamicCast<const vmime::datetime> ();
-			auto date = vmime::utility::datetimeUtils::toUniversalTime (*origDate);
+			const auto& origDateVal = header->Date ()->getValue ();
+			const auto& origDate = vmime::dynamicCast<const vmime::datetime> (origDateVal);
+			const auto& date = vmime::utility::datetimeUtils::toUniversalTime (*origDate);
 			QDate qdate (date.getYear (), date.getMonth (), date.getDay ());
 			QTime time (date.getHour (), date.getMinute (), date.getSecond ());
 			msg->SetDate (QDateTime (qdate, time, Qt::UTC));
@@ -308,9 +309,9 @@ namespace Snails
 
 		try
 		{
-			auto str = header->Subject ()->getValue ()
-					.dynamicCast<const vmime::text> ()->getConvertedText (utf8cs);
-			msg->SetSubject (QString::fromUtf8 (str.c_str ()));
+			const auto& strVal = header->Subject ()->getValue ();
+			const auto& str = vmime::dynamicCast<const vmime::text> (strVal);
+			msg->SetSubject (QString::fromUtf8 (str->getConvertedText (utf8cs).c_str ()));
 		}
 		catch (const vmime::exceptions::no_such_field&)
 		{
@@ -495,7 +496,7 @@ namespace Snails
 
 				if (tp->getType ().getSubType () == vmime::mediaTypes::TEXT_HTML)
 				{
-					auto htp = tp.dynamicCast<const vmime::htmlTextPart> ();
+					auto htp = vmime::dynamicCast<const vmime::htmlTextPart> (tp);
 					html = Stringize (htp->getText (), htp->getCharset ());
 					plain = Stringize (htp->getPlainText (), htp->getCharset ());
 				}
@@ -766,7 +767,7 @@ namespace Snails
 		else
 		{
 			mb.constructTextPart ({ vmime::mediaTypes::TEXT, vmime::mediaTypes::TEXT_HTML });
-			auto textPart = mb.getTextPart ().dynamicCast<vmime::htmlTextPart> ();
+			auto textPart = vmime::dynamicCast<vmime::htmlTextPart> (mb.getTextPart ());
 			textPart->setCharset (vmime::charsets::UTF_8);
 			textPart->setText (vmime::make_shared<vmime::stringContentHandler> (html.toUtf8 ().constData ()));
 			textPart->setPlainText (vmime::make_shared<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
