@@ -750,7 +750,10 @@ namespace Snails
 		vmime::addressList recips;
 		const auto& tos = msg->GetAddresses (Message::Address::To);
 		std::for_each (tos.begin (), tos.end (),
-				[&recips] (decltype (tos.front ()) pair) { recips.appendAddress (vmime::create<vmime::mailbox> (FromPair (pair))); });
+				[&recips] (decltype (tos.front ()) pair)
+				{
+					recips.appendAddress (vmime::make_shared<vmime::mailbox> (FromPair (pair)));
+				});
 		mb.setRecipients (recips);
 
 		const QString& html = msg->GetHTMLBody ();
@@ -758,15 +761,15 @@ namespace Snails
 		if (html.isEmpty ())
 		{
 			mb.getTextPart ()->setCharset (vmime::charsets::UTF_8);
-			mb.getTextPart ()->setText (vmime::create<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
+			mb.getTextPart ()->setText (vmime::make_shared<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
 		}
 		else
 		{
 			mb.constructTextPart ({ vmime::mediaTypes::TEXT, vmime::mediaTypes::TEXT_HTML });
 			auto textPart = mb.getTextPart ().dynamicCast<vmime::htmlTextPart> ();
 			textPart->setCharset (vmime::charsets::UTF_8);
-			textPart->setText (vmime::create<vmime::stringContentHandler> (html.toUtf8 ().constData ()));
-			textPart->setPlainText (vmime::create<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
+			textPart->setText (vmime::make_shared<vmime::stringContentHandler> (html.toUtf8 ().constData ()));
+			textPart->setPlainText (vmime::make_shared<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
 		}
 
 		Q_FOREACH (const AttDescr& descr, msg->GetAttachments ())
@@ -774,7 +777,7 @@ namespace Snails
 			try
 			{
 				const QFileInfo fi (descr.GetName ());
-				auto att = vmime::create<vmime::fileAttachment> (descr.GetName ().toUtf8 ().constData (),
+				auto att = vmime::make_shared<vmime::fileAttachment> (descr.GetName ().toUtf8 ().constData (),
 						vmime::mediaType (descr.GetType ().constData (), descr.GetSubType ().constData ()),
 						vmime::text (descr.GetDescr ().toUtf8 ().constData ()));
 				att->getFileInfo ().setFilename (fi.fileName ().toUtf8 ().constData ());
