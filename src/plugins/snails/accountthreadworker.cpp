@@ -333,7 +333,7 @@ namespace Snails
 		auto folder = store->getDefaultFolder ();
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
-		auto messages = folder->getMessages ();
+		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
 		if (!messages.size ())
 			return;
 
@@ -395,7 +395,8 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
 			vmime::shared_ptr<vmime::net::folder> folder)
 	{
-		auto messages = folder->getMessages ();
+		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
+
 		if (!messages.size ())
 			return;
 
@@ -617,14 +618,14 @@ namespace Snails
 		qDebug () << Q_FUNC_INFO << sid.toHex ();
 		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
 
-		auto messages = folder->getMessages ();
+		const auto& messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
 		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
 				[id] (const vmime::shared_ptr<vmime::net::message>& message) { return message->getUniqueId () == id; });
 		if (pos == messages.end ())
 		{
-			Q_FOREACH (auto msg, messages)
+			for (const auto& msg : messages)
 				qWarning () << QByteArray (msg->getUniqueId ().c_str ()).toHex ();
 			qWarning () << Q_FUNC_INFO
 					<< "message with ID"
@@ -666,14 +667,14 @@ namespace Snails
 		auto folder = store->getFolder (Folder2Path (msg->GetFolders ().value (0)));
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
-		auto messages = folder->getMessages ();
+		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
 		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
 				[id] (const vmime::shared_ptr<vmime::net::message>& message) { return message->getUniqueId () == id; });
 		if (pos == messages.end ())
 		{
-			Q_FOREACH (auto msg, messages)
+			for (const auto& msg : messages)
 				qWarning () << QByteArray (msg->getUniqueId ().c_str ()).toHex ();
 			qWarning () << Q_FUNC_INFO
 					<< "message with ID"
