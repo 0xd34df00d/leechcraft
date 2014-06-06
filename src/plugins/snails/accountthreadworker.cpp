@@ -345,7 +345,7 @@ namespace Snails
 		auto folder = store->getDefaultFolder ();
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
-		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
+		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (1, -1));
 		if (!messages.size ())
 			return;
 
@@ -407,7 +407,7 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
 			vmime::shared_ptr<vmime::net::folder> folder)
 	{
-		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
+		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (1, -1));
 
 		if (!messages.size ())
 			return;
@@ -630,7 +630,7 @@ namespace Snails
 		qDebug () << Q_FUNC_INFO << sid.toHex ();
 		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
 
-		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
+		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (1, -1));
 		folder->fetchMessages (messages, vmime::net::fetchAttributes::UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
@@ -682,7 +682,7 @@ namespace Snails
 		auto folder = store->getFolder (Folder2Path (msg->GetFolders ().value (0)));
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
-		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
+		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (1, -1));
 		folder->fetchMessages (messages, vmime::net::fetchAttributes::UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
