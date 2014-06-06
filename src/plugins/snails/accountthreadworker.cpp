@@ -339,10 +339,10 @@ namespace Snails
 			return;
 
 		qDebug () << "know about" << messages.size () << "messages";
-		int desiredFlags = vmime::net::folder::FETCH_FLAGS |
-					vmime::net::folder::FETCH_SIZE |
-					vmime::net::folder::FETCH_UID |
-					vmime::net::folder::FETCH_ENVELOPE;
+		auto desiredFlags = vmime::net::fetchAttributes::FLAGS |
+					vmime::net::fetchAttributes::SIZE |
+					vmime::net::fetchAttributes::UID |
+					vmime::net::fetchAttributes::ENVELOPE;
 		desiredFlags &= folder->getFetchCapabilities ();
 
 		qDebug () << "folder supports" << folder->getFetchCapabilities ()
@@ -365,7 +365,7 @@ namespace Snails
 
 		if (fetchFlags & Account::FetchNew)
 		{
-			if (folder->getFetchCapabilities () & vmime::net::folder::FETCH_FLAGS)
+			if (folder->getFetchCapabilities () & vmime::net::fetchAttributes::FLAGS)
 			{
 				auto pos = std::remove_if (messages.begin (), messages.end (),
 						[] (decltype (messages.front ()) msg) { return msg->getFlags () & vmime::net::message::FLAG_SEEN; });
@@ -401,10 +401,10 @@ namespace Snails
 		if (!messages.size ())
 			return;
 
-		const int desiredFlags = vmime::net::folder::FETCH_FLAGS |
-					vmime::net::folder::FETCH_SIZE |
-					vmime::net::folder::FETCH_UID |
-					vmime::net::folder::FETCH_ENVELOPE;
+		const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
+					vmime::net::fetchAttributes::SIZE |
+					vmime::net::fetchAttributes::UID |
+					vmime::net::fetchAttributes::ENVELOPE;
 
 		try
 		{
@@ -619,8 +619,8 @@ namespace Snails
 		qDebug () << Q_FUNC_INFO << sid.toHex ();
 		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
 
-		const auto& messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
-		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
+		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
+		folder->fetchMessages (messages, vmime::net::fetchAttributes::UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
 				[id] (const vmime::shared_ptr<vmime::net::message>& message)
@@ -641,11 +641,11 @@ namespace Snails
 
 		qDebug () << "found corresponding message, fullifying...";
 
-		folder->fetchMessage (*pos, vmime::net::folder::FETCH_FLAGS |
-					vmime::net::folder::FETCH_UID |
-					vmime::net::folder::FETCH_CONTENT_INFO |
-					vmime::net::folder::FETCH_STRUCTURE |
-					vmime::net::folder::FETCH_FULL_HEADER);
+		folder->fetchMessage (*pos, vmime::net::fetchAttributes::FLAGS |
+					vmime::net::fetchAttributes::UID |
+					vmime::net::fetchAttributes::CONTENT_INFO |
+					vmime::net::fetchAttributes::STRUCTURE |
+					vmime::net::fetchAttributes::FULL_HEADER);
 
 		FullifyHeaderMessage (origMsg, FromNetMessage (*pos));
 
@@ -672,7 +672,7 @@ namespace Snails
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
 		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (0, -1));
-		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
+		folder->fetchMessages (messages, vmime::net::fetchAttributes::UID);
 
 		auto pos = std::find_if (messages.begin (), messages.end (),
 				[&id] (const vmime::shared_ptr<vmime::net::message>& message)
