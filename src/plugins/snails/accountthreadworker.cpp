@@ -626,22 +626,13 @@ namespace Snails
 		TimerGuard g (DisconnectTimer_);
 
 		const QByteArray& sid = origMsg->GetID ();
-		vmime::string id (sid.constData ());
-		qDebug () << Q_FUNC_INFO << sid.toHex ();
 		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
 
-		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (1, -1));
+		auto messages = folder->getMessages (vmime::net::messageSet::byUID (sid.constData ()));
 		folder->fetchMessages (messages, vmime::net::fetchAttributes::UID);
 
-		auto pos = std::find_if (messages.begin (), messages.end (),
-				[id] (const vmime::shared_ptr<vmime::net::message>& message)
-				{
-					return message->getUID () == id;
-				});
-		if (pos == messages.end ())
+		if (messages.empty ())
 		{
-			for (const auto& msg : messages)
-				qWarning () << QByteArray (static_cast<vmime::string> (msg->getUID ()).c_str ()).toHex ();
 			qWarning () << Q_FUNC_INFO
 					<< "message with ID"
 					<< sid.toHex ()
@@ -652,13 +643,13 @@ namespace Snails
 
 		qDebug () << "found corresponding message, fullifying...";
 
-		folder->fetchMessage (*pos, vmime::net::fetchAttributes::FLAGS |
+		folder->fetchMessage (messages.front (), vmime::net::fetchAttributes::FLAGS |
 					vmime::net::fetchAttributes::UID |
 					vmime::net::fetchAttributes::CONTENT_INFO |
 					vmime::net::fetchAttributes::STRUCTURE |
 					vmime::net::fetchAttributes::FULL_HEADER);
 
-		FullifyHeaderMessage (origMsg, FromNetMessage (*pos));
+		FullifyHeaderMessage (origMsg, FromNetMessage (messages.front ()));
 
 		qDebug () << "done";
 
