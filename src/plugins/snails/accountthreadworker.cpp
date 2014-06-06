@@ -540,7 +540,7 @@ namespace Snails
 		emit gotFolders (paths);
 	}
 
-	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::utility::ref<vmime::net::message>>& messages)
+	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>& messages)
 	{
 		const auto& context = tr ("Fetching messages for %1")
 					.arg (A_->GetName ());
