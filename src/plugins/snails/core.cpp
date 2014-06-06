@@ -65,6 +65,7 @@ namespace Snails
 		MsgView_->AddGlobalPrefix ();
 		MsgView_->AddLocalPrefix ();
 
+		qRegisterMetaType<size_t> ("size_t");
 		qRegisterMetaType<Message_ptr> ("LeechCraft::Snails::Message_ptr");
 		qRegisterMetaType<Message_ptr> ("Message_ptr");
 		qRegisterMetaType<QList<Message_ptr>> ("QList<LeechCraft::Snails::Message_ptr>");
@@ -74,6 +75,7 @@ namespace Snails
 		qRegisterMetaType<ProgressListener_g_ptr> ("ProgressListener_g_ptr");
 		qRegisterMetaType<Account::FetchFlags> ("Account::FetchFlags");
 		qRegisterMetaType<QList<QStringList>> ("QList<QStringList>");
+		qRegisterMetaType<QList<QByteArray>> ("QList<QByteArray>");
 
 		qRegisterMetaTypeStreamOperators<AttDescr> ();
 
