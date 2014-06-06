@@ -252,7 +252,7 @@ namespace Snails
 
 	Message_ptr AccountThreadWorker::FromHeaders (const vmime::shared_ptr<vmime::net::message>& message) const
 	{
-		auto utf8cs = vmime::charset ("utf-8");
+		const auto& utf8cs = vmime::charset { vmime::charsets::UTF_8 };
 
 		Message_ptr msg (new Message);
 		msg->SetID (static_cast<vmime::string> (message->getUID ()).c_str ());
