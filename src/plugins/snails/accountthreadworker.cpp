@@ -412,7 +412,32 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
 			vmime::shared_ptr<vmime::net::folder> folder)
 	{
-		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (1, -1));
+		qDebug () << Q_FUNC_INFO << folderName << folder.get ();
+		const auto count = folder->getMessageCount ();
+		std::vector<vmime::shared_ptr<vmime::net::message>> messages;
+		messages.reserve (count);
+		const auto chunkSize = 100;
+		for (int i = 0; i < count; i += chunkSize)
+		{
+			const auto endVal = i + chunkSize;
+			const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
+			try
+			{
+				const auto& theseMessages = folder->getMessages (set);
+				std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot get messages from"
+						<< i + 1
+						<< "to"
+						<< endVal
+						<< "because:"
+						<< e.what ();
+				return;
+			}
+		}
 
 		if (!messages.size ())
 			return;
