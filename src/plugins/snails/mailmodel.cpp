@@ -48,10 +48,20 @@ namespace Snails
 
 	QVariant MailModel::data (const QModelIndex& index, int role) const
 	{
-		if (role != Qt::DisplayRole)
-			return {};
-
 		const auto& msg = Messages_.at (index.row ());
+		switch (role)
+		{
+		case Qt::DisplayRole:
+		case Sort:
+			break;
+		case ID:
+			return msg->GetID ();
+		case ReadStatus:
+			return msg->IsRead ();
+		default:
+			return {};
+		}
+
 		switch (static_cast<Column> (index.column ()))
 		{
 		case Column::From:
@@ -59,9 +69,15 @@ namespace Snails
 		case Column::Subject:
 			return msg->GetSubject ();
 		case Column::Date:
-			return msg->GetDate ().toString ();
+			if (role == Sort)
+				return msg->GetDate ();
+			else
+				return msg->GetDate ().toString ();
 		case Column::Size:
-			return Util::MakePrettySize (msg->GetSize ());
+			if (role == Sort)
+				return msg->GetSize ();
+			else
+				return Util::MakePrettySize (msg->GetSize ());
 		default:
 			return {};
 		}
@@ -84,5 +100,11 @@ namespace Snails
 	{
 		return parent.isValid () ? 0 : Messages_.size ();
 	}
+
+	void MailModel::SetFolder (const QStringList& folder)
+	{
+		Folder_ = folder;
+	}
+
 }
 }

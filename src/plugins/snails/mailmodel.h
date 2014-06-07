@@ -54,6 +54,13 @@ namespace Snails
 			Size
 		};
 	public:
+		enum MailRole
+		{
+			ID = Qt::UserRole + 1,
+			Sort,
+			ReadStatus
+		};
+
 		MailModel (QObject* = 0);
 
 		int columnCount (const QModelIndex& = {}) const;
