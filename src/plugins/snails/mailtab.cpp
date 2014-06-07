@@ -39,7 +39,6 @@
 #include "core.h"
 #include "storage.h"
 #include "mailtreedelegate.h"
-#include "mailmodelmanager.h"
 #include "mailmodel.h"
 
 namespace LeechCraft

@@ -48,7 +48,7 @@ namespace Snails
 	class AccountThread;
 	class AccountThreadWorker;
 	class AccountFolderManager;
-	class MailModelManager;
+	class MailModel;
 
 	class Account : public QObject
 	{
@@ -128,7 +128,7 @@ namespace Snails
 		AccountFolderManager *FolderManager_;
 		QStandardItemModel *FoldersModel_;
 
-		MailModelManager *MailModelMgr_;
+		MailModel * const MailModel_;
 
 		enum FoldersRole
 		{

@@ -30,7 +30,6 @@
 #include "mailtreedelegate.h"
 #include <QPainter>
 #include "mailtab.h"
-#include "mailmodelmanager.h"
 #include "mailmodel.h"
 
 namespace LeechCraft

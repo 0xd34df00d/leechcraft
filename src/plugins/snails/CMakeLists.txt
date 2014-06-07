@@ -54,7 +54,6 @@ set (SRCS
 	attdescr.cpp
 	vmimeconversions.cpp
 	outputiodevadapter.cpp
-	mailmodelmanager.cpp
 	common.cpp
 	mailmodel.cpp
 	)
