@@ -40,6 +40,7 @@
 #include "storage.h"
 #include "mailtreedelegate.h"
 #include "mailmodelmanager.h"
+#include "mailmodel.h"
 
 namespace LeechCraft
 {
@@ -60,7 +61,7 @@ namespace Snails
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
 
 		MailSortFilterModel_->setDynamicSortFilter (true);
-		MailSortFilterModel_->setSortRole (MailModelManager::MailRole::Sort);
+		MailSortFilterModel_->setSortRole (MailModel::MailRole::Sort);
 		MailSortFilterModel_->sort (2, Qt::DescendingOrder);
 		Ui_.MailTree_->setItemDelegate (new MailTreeDelegate (this));
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
@@ -196,7 +197,7 @@ namespace Snails
 
 		const QModelIndex& idx = MailSortFilterModel_->mapToSource (sidx);
 		const QByteArray& id = idx.sibling (idx.row (), 0)
-				.data (MailModelManager::MailRole::ID).toByteArray ();
+				.data (MailModel::MailRole::ID).toByteArray ();
 
 		Message_ptr msg;
 		try
@@ -219,7 +220,7 @@ namespace Snails
 
 		msg->SetRead (true);
 		Core::Instance ().GetStorage ()->SaveMessages (CurrAcc_.get (), { msg });
-		updateReadStatus (msg->GetID (), true);
+		CurrAcc_->Update (msg);
 
 		if (!msg->IsFullyFetched ())
 			CurrAcc_->FetchWholeMessage (msg);
@@ -297,15 +298,10 @@ namespace Snails
 	void MailTab::handleMessageBodyFetched (Message_ptr msg)
 	{
 		const QModelIndex& cur = Ui_.MailTree_->currentIndex ();
-		if (cur.data (MailModelManager::MailRole::ID).toByteArray () != msg->GetID ())
+		if (cur.data (MailModel::MailRole::ID).toByteArray () != msg->GetID ())
 			return;
 
 		handleMailSelected (cur);
-	}
-
-	void MailTab::updateReadStatus (const QByteArray& id, bool isRead)
-	{
-		CurrAcc_->UpdateReadStatus (id, isRead);
 	}
 }
 }

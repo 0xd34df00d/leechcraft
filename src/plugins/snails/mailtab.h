@@ -79,7 +79,6 @@ namespace Snails
 		void handleAttachment ();
 		void handleFetchNewMail ();
 		void handleMessageBodyFetched (Message_ptr);
-		void updateReadStatus (const QByteArray&, bool);
 	signals:
 		void removeTab (QWidget*);
 	};

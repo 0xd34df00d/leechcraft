@@ -34,42 +34,23 @@
 #include "message.h"
 
 class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
 
 namespace LeechCraft
 {
 namespace Snails
 {
+	class MailModel;
+
 	class MailModelManager : public QObject
 	{
 		Q_OBJECT
 
-		QStandardItemModel *Model_;
-		QHash<QByteArray, QStandardItem*> MailID2Item_;
-
+		MailModel * const Model_;
 		QStringList CurrentFolder_;
 	public:
-		enum MailColumns
-		{
-			From,
-			Subj,
-			Date,
-			Size,
-			Max
-		};
-
-		enum MailRole
-		{
-			ID = Qt::UserRole + 1,
-			Sort,
-			ReadStatus
-		};
-
 		MailModelManager (QObject* = 0);
 
-		QAbstractItemModel* GetModel () const;
-		void UpdateReadStatus (const QByteArray&, bool);
+		MailModel* GetModel () const;
 
 		void SetCurrentFolder (const QStringList&);
 	public slots:

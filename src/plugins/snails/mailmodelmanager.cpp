@@ -28,8 +28,7 @@
  **********************************************************************/
 
 #include "mailmodelmanager.h"
-#include <QStandardItemModel>
-#include <util/util.h>
+#include "mailmodel.h"
 
 namespace LeechCraft
 {
@@ -37,34 +36,15 @@ namespace Snails
 {
 	MailModelManager::MailModelManager (QObject *parent)
 	: QObject (parent)
-	, Model_ (new QStandardItemModel (this))
+	, Model_ (new MailModel (this))
 	, CurrentFolder_ ("INBOX")
 	{
 		clear ();
 	}
 
-	QAbstractItemModel* MailModelManager::GetModel () const
+	MailModel* MailModelManager::GetModel () const
 	{
 		return Model_;
-	}
-
-	void MailModelManager::UpdateReadStatus (const QByteArray& id, bool isRead)
-	{
-		if (!MailID2Item_.contains (id))
-			return;
-
-		QStandardItem *item = MailID2Item_ [id];
-		const QModelIndex& sIdx = item->index ();
-		for (int i = 0; i < MailColumns::Max; ++i)
-		{
-			QStandardItem *other = Model_->
-					itemFromIndex (sIdx.sibling (sIdx.row (), i));
-			other->setData (isRead, MailRole::ReadStatus);
-		}
-		QMetaObject::invokeMethod (Model_,
-				"dataChanged",
-				Q_ARG (QModelIndex, sIdx.sibling (sIdx.row (), 0)),
-				Q_ARG (QModelIndex, sIdx.sibling (sIdx.row (), MailColumns::Max - 1)));
 	}
 
 	void MailModelManager::SetCurrentFolder (const QStringList& folder)
@@ -74,45 +54,12 @@ namespace Snails
 
 	void MailModelManager::clear ()
 	{
-		Model_->clear ();
-		MailID2Item_.clear ();
-
-		QStringList headers;
-		headers << tr ("From")
-				<< tr ("Subject")
-				<< tr ("Date")
-				<< tr ("Size");
-		Model_->setHorizontalHeaderLabels (headers);
+		Model_->Clear ();
 	}
 
 	void MailModelManager::appendMessages (const QList<Message_ptr>& messages)
 	{
-		Q_FOREACH (Message_ptr message, messages)
-		{
-			if (!message->GetFolders ().contains (CurrentFolder_))
-				continue;
-
-			if (MailID2Item_.contains (message->GetID ()))
-				Model_->removeRow (MailID2Item_ [message->GetID ()]->row ());
-
-			QList<QStandardItem*> row;
-			row << new QStandardItem (GetNiceMail (message->GetAddress (Message::Address::From)));
-			row << new QStandardItem (message->GetSubject ());
-			row << new QStandardItem (message->GetDate ().toString ());
-			row << new QStandardItem (Util::MakePrettySize (message->GetSize ()));
-			Model_->appendRow (row);
-
-			row [MailColumns::From]->setData (row [MailColumns::From]->text (), MailRole::Sort);
-			row [MailColumns::Subj]->setData (row [MailColumns::Subj]->text (), MailRole::Sort);
-			row [MailColumns::Date]->setData (message->GetDate (), MailRole::Sort);
-			row [MailColumns::Size]->setData (message->GetSize (), MailRole::Sort);
-
-			Q_FOREACH (auto item, row)
-				item->setData (message->GetID (), MailRole::ID);
-			MailID2Item_ [message->GetID ()] = row.first ();
-
-			UpdateReadStatus (message->GetID (), message->IsRead ());
-		}
+		Model_->Append (messages);
 	}
 
 	void MailModelManager::replaceMessages (const QList<Message_ptr>& messages)

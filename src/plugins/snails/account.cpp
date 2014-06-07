@@ -42,6 +42,7 @@
 #include "storage.h"
 #include "accountfoldermanager.h"
 #include "mailmodelmanager.h"
+#include "mailmodel.h"
 
 namespace LeechCraft
 {
@@ -195,9 +196,9 @@ namespace Snails
 				Q_ARG (QString, path));
 	}
 
-	void Account::UpdateReadStatus (const QByteArray& id, bool isRead)
+	void Account::Update (const Message_ptr& message)
 	{
-		MailModelMgr_->UpdateReadStatus (id, isRead);
+		MailModelMgr_->GetModel ()->Update (message);
 	}
 
 	QByteArray Account::Serialize () const
