@@ -131,17 +131,8 @@ namespace Snails
 				continue;
 			}
 
-			const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
-					[&msg] (const Message_ptr& other) { return other->GetID () == msg->GetID (); });
-			if (pos != Messages_.end ())
+			if (Update (msg))
 			{
-				if (*pos != msg)
-				{
-					*pos = msg;
-					const auto row = std::distance (Messages_.begin (), pos);
-					emit dataChanged (index (row, 0), index (row, columnCount () - 1));
-				}
-
 				i = messages.erase (i);
 				continue;
 			}
@@ -156,6 +147,23 @@ namespace Snails
 		emit beginInsertColumns ({}, rc, rc + messages.size () - 1);
 		Messages_ += messages;
 		emit endInsertRows ();
+	}
+
+	bool MailModel::Update (const Message_ptr& msg)
+	{
+		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
+				[&msg] (const Message_ptr& other) { return other->GetID () == msg->GetID (); });
+		if (pos == Messages_.end ())
+			return false;
+
+		if (*pos != msg)
+		{
+			*pos = msg;
+			const auto row = std::distance (Messages_.begin (), pos);
+			emit dataChanged (index (row, 0), index (row, columnCount () - 1));
+		}
+
+		return true;
 	}
 }
 }
