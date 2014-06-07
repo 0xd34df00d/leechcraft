@@ -276,11 +276,16 @@ namespace Snails
 
 		try
 		{
-			const auto& mboxVal = header->From ()->getValue ();
-			const auto& mbox = vmime::dynamicCast<const vmime::mailbox> (mboxVal);
-			msg->AddAddress (Message::Address::From, Mailbox2Strings (mbox));
+			if (const auto& from = header->From ())
+			{
+				const auto& mboxVal = from->getValue ();
+				const auto& mbox = vmime::dynamicCast<const vmime::mailbox> (mboxVal);
+				msg->AddAddress (Message::Address::From, Mailbox2Strings (mbox));
+			}
+			else
+				qWarning () << "no 'from' data";
 		}
-		catch (const vmime::exceptions::no_such_field& nsf)
+		catch (const vmime::exceptions::no_such_field&)
 		{
 			qWarning () << "no 'from' data";
 		}
