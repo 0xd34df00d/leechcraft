@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project (leechcraft_sysnotify)
+project (leechcraft_syncer)
 include (InitLCPlugin OPTIONAL)
 
 find_package (LibLaretz REQUIRED)
