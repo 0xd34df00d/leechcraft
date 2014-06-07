@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "potorchu.h"
+#include <util/util.h>
 #include "visualfilter.h"
 
 namespace LeechCraft
@@ -38,6 +39,7 @@ namespace Potorchu
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("lmp_potorchu");
 	}
 
 	void Plugin::SecondInit ()
