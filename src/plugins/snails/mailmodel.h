@@ -56,11 +56,11 @@ namespace Snails
 	public:
 		MailModel (QObject* = 0);
 
-		int columnCount (const QModelIndex&) const;
+		int columnCount (const QModelIndex& = {}) const;
 		QVariant data (const QModelIndex&, int) const;
-		QModelIndex index (int, int, const QModelIndex&) const;
+		QModelIndex index (int, int, const QModelIndex& = {}) const;
 		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex&) const;
+		int rowCount (const QModelIndex& = {}) const;
 
 		void SetFolder (const QStringList&);
 	};
