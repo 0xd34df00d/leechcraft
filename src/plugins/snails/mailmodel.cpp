@@ -106,5 +106,56 @@ namespace Snails
 		Folder_ = folder;
 	}
 
+	void MailModel::Clear ()
+	{
+		if (Messages_.isEmpty ())
+			return;
+
+		beginRemoveRows ({}, 0, Messages_.size () - 1);
+		Messages_.clear ();
+		endRemoveRows ();
+	}
+
+	void MailModel::Append (QList<Message_ptr> messages)
+	{
+		if (messages.isEmpty ())
+			return;
+
+		for (auto i = messages.begin (); i != messages.end (); )
+		{
+			const auto& msg = *i;
+
+			if (!msg->GetFolders ().contains (Folder_))
+			{
+				i = messages.erase (i);
+				continue;
+			}
+
+			const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
+					[&msg] (const Message_ptr& other) { return other->GetID () == msg->GetID (); });
+			if (pos != Messages_.end ())
+			{
+				if (*pos != msg)
+				{
+					*pos = msg;
+					const auto row = std::distance (Messages_.begin (), pos);
+					emit dataChanged (index (row, 0), index (row, columnCount () - 1));
+				}
+
+				i = messages.erase (i);
+				continue;
+			}
+
+			++i;
+		}
+
+		if (messages.isEmpty ())
+			return;
+
+		const auto rc = Messages_.size ();
+		emit beginInsertColumns ({}, rc, rc + messages.size () - 1);
+		Messages_ += messages;
+		emit endInsertRows ();
+	}
 }
 }

@@ -70,6 +70,9 @@ namespace Snails
 		int rowCount (const QModelIndex& = {}) const;
 
 		void SetFolder (const QStringList&);
+
+		void Clear ();
+		void Append (QList<Message_ptr>);
 	};
 }
 }
