@@ -63,6 +63,7 @@ namespace Snails
 
 		MailModel (QObject* = 0);
 
+		QVariant headerData (int, Qt::Orientation, int) const;
 		int columnCount (const QModelIndex& = {}) const;
 		QVariant data (const QModelIndex&, int) const;
 		QModelIndex index (int, int, const QModelIndex& = {}) const;

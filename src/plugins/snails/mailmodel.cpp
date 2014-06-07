@@ -41,6 +41,14 @@ namespace Snails
 	{
 	}
 
+	QVariant MailModel::headerData (int section, Qt::Orientation orient, int role) const
+	{
+		if (orient != Qt::Horizontal || role != Qt::DisplayRole)
+			return {};
+
+		return Headers_.value (section);
+	}
+
 	int MailModel::columnCount (const QModelIndex&) const
 	{
 		return Headers_.size ();
