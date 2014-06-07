@@ -37,6 +37,7 @@ namespace Snails
 	MailModel::MailModel (QObject *parent)
 	: QAbstractItemModel { parent }
 	, Headers_ { tr ("From"), tr ("Subject"), tr ("Date"), tr ("Size")  }
+	, Folder_ { "INBOX" }
 	{
 	}
 

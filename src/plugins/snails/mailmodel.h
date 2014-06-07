@@ -42,6 +42,8 @@ namespace Snails
 	{
 		const QStringList Headers_;
 
+		QStringList Folder_;
+
 		QList<Message_ptr> Messages_;
 
 		enum class Column
@@ -59,6 +61,8 @@ namespace Snails
 		QModelIndex index (int, int, const QModelIndex&) const;
 		QModelIndex parent (const QModelIndex&) const;
 		int rowCount (const QModelIndex&) const;
+
+		void SetFolder (const QStringList&);
 	};
 }
 }
