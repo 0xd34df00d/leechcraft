@@ -404,7 +404,7 @@ namespace Snails
 	{
 		for (const auto& folder : origFolders)
 		{
-			auto netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_WRITE);
+			const auto& netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_WRITE);
 			FetchMessagesInFolder (folder, netFolder);
 		}
 	}
@@ -452,8 +452,7 @@ namespace Snails
 			const auto& context = tr ("Fetching headers for %1")
 					.arg (A_->GetName ());
 
-			folder->fetchMessages (messages,
-					desiredFlags, MkPgListener (context));
+			folder->fetchMessages (messages, desiredFlags, MkPgListener (context));
 		}
 		catch (const vmime::exceptions::operation_not_supported& ons)
 		{
@@ -462,8 +461,15 @@ namespace Snails
 					<< ons.what ();
 			return;
 		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "generally something bad happened:"
+					<< e.what ();
+			return;
+		}
 
-		const QSet<QByteArray>& existing = Core::Instance ().GetStorage ()->LoadIDs (A_);
+		const auto& existing = Core::Instance ().GetStorage ()->LoadIDs (A_);
 
 		QList<Message_ptr> newMessages;
 		std::transform (messages.begin (), messages.end (), std::back_inserter (newMessages),
