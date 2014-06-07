@@ -275,10 +275,6 @@
         <translation>Закрыть вкладку</translation>
     </message>
     <message>
-        <source>Ctrl+W</source>
-        <translation>Ctrl+W</translation>
-    </message>
-    <message>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
@@ -503,10 +499,6 @@
         <translation>Вы действительно хотите выйти?</translation>
     </message>
     <message>
-        <source>LeechCraft menu</source>
-        <translation>Меню LeechCraft</translation>
-    </message>
-    <message>
         <source>Always</source>
         <translation>Всегда</translation>
     </message>
@@ -526,6 +518,10 @@
     <message>
         <source>Do you really want to restart?</source>
         <translation>Вы действительно хотите перезапустить LeechCraft?</translation>
+    </message>
+    <message>
+        <source>Toggle LeechCraft window</source>
+        <translation>Переключить видимость окна LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -813,6 +809,17 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Util</name>
+    <message>
+        <source>Host</source>
+        <translation>Хост</translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation>Порт</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Util::CategorySelector</name>
     <message>
         <source>Tags selector</source>
@@ -825,6 +832,13 @@
     <message>
         <source>Select none</source>
         <translation>Не выбрать ни один</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::ColorButton</name>
+    <message>
+        <source>Select color</source>
+        <translation>Выбрать цвет</translation>
     </message>
 </context>
 <context>
@@ -843,6 +857,13 @@
     <message>
         <source>VK.com authentication for %1</source>
         <translation>Аутентификация ВКонтакте для %1</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::SvcAuth::VkCaptchaDialog</name>
+    <message>
+        <source>CAPTCHA required for %1</source>
+        <translation>Требуется CAPTCHA для %1</translation>
     </message>
 </context>
 <context>
@@ -1242,18 +1263,6 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Show as a submenu</source>
         <translation>Показывать как подменю</translation>
-    </message>
-    <message>
-        <source>Show messages in tray</source>
-        <translation>Показывать сообщения в системном лотке</translation>
-    </message>
-    <message>
-        <source>Message timeout:</source>
-        <translation>Таймаут сообщений:</translation>
-    </message>
-    <message>
-        <source> s</source>
-        <translation> с</translation>
     </message>
     <message>
         <source>Tags</source>
