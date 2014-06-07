@@ -56,6 +56,7 @@ set (SRCS
 	outputiodevadapter.cpp
 	mailmodelmanager.cpp
 	common.cpp
+	mailmodel.cpp
 	)
 set (FORMS
 	mailtab.ui
