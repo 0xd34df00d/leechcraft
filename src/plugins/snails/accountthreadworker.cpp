@@ -664,28 +664,34 @@ namespace Snails
 		const QByteArray& sid = origMsg->GetID ();
 		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
 
-		auto messages = folder->getMessages (vmime::net::messageSet::byUID (sid.constData ()));
-		folder->fetchMessages (messages, vmime::net::fetchAttributes::UID);
-
-		if (messages.empty ())
+		try
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "message with ID"
-					<< sid.toHex ()
-					<< "not found in"
-					<< messages.size ();
-			return;
-		}
-
-		qDebug () << "found corresponding message, fullifying...";
-
-		folder->fetchMessage (messages.front (), vmime::net::fetchAttributes::FLAGS |
+			const auto& set = vmime::net::messageSet::byUID (sid.constData ());
+			const auto attrs = vmime::net::fetchAttributes::FLAGS |
 					vmime::net::fetchAttributes::UID |
 					vmime::net::fetchAttributes::CONTENT_INFO |
 					vmime::net::fetchAttributes::STRUCTURE |
-					vmime::net::fetchAttributes::FULL_HEADER);
+					vmime::net::fetchAttributes::FULL_HEADER;
+			const auto& messages = folder->getAndFetchMessages (set, attrs);
+			if (messages.empty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "message with ID"
+						<< sid.toHex ()
+						<< "not found in"
+						<< messages.size ();
+				return;
+			}
 
-		FullifyHeaderMessage (origMsg, FromNetMessage (messages.front ()));
+			FullifyHeaderMessage (origMsg, FromNetMessage (messages.front ()));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to fetch the message:"
+					<< e.what ();
+			return;
+		}
 
 		qDebug () << "done";
 
