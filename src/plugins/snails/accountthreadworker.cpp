@@ -685,6 +685,15 @@ namespace Snails
 
 			FullifyHeaderMessage (origMsg, FromNetMessage (messages.front ()));
 		}
+		catch (const vmime::exceptions::invalid_response& resp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid response"
+					<< resp.response ().c_str ()
+					<< "to command"
+					<< resp.command ().c_str ();
+			return;
+		}
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
