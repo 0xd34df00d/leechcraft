@@ -148,20 +148,15 @@ namespace Aggregator
 
 	void StartupThirdPage::Populate (const QString& title)
 	{
-		FeedInfos_t engines = Sets_ [title];
-		Q_FOREACH (FeedInfo info, engines)
+		for (const auto& info : Sets_.value (title))
 		{
-			QStringList strings;
-			strings << info.Name_
-				<< info.DefaultTags_
-				<< info.URL_;
-
-			QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Tree_, strings);
+			const auto& joinedTags = info.DefaultTags_.join ("; ");
+			auto item = new QTreeWidgetItem (Ui_.Tree_, { info.Name_, joinedTags, info.URL_ });
 			item->setCheckState (0, Qt::Checked);
 
 			QLineEdit *edit = new QLineEdit (Ui_.Tree_);
 			edit->setFrame (false);
-			edit->setText (info.DefaultTags_.join ("; "));
+			edit->setText (joinedTags);
 			Ui_.Tree_->setItemWidget (item, 1, edit);
 		}
 	}
