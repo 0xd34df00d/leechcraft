@@ -139,17 +139,6 @@ namespace LastSeen
 	void Plugin::Load ()
 	{
 		auto watcher = new QFutureWatcher<LoadResult> ();
-		watcher->setFuture (QtConcurrent::run ([] () -> LoadResult
-				{
-					QSettings settings (QCoreApplication::organizationName (),
-							QCoreApplication::applicationName () + "_Azoth_LastSeen");
-					const auto& avail = settings.value ("LastAvailable").value<LastHash_t> ();
-					const auto& online = settings.value ("LastOnline").value<LastHash_t> ();
-					const auto& status = settings.value ("LastStatusChange").value<LastHash_t> ();
-
-					return { avail, online, status };
-				}));
-
 		new Util::OneTimeRunner
 		{
 			[this, watcher] ()
@@ -167,6 +156,16 @@ namespace LastSeen
 			SIGNAL (finished ()),
 			watcher
 		};
+		watcher->setFuture (QtConcurrent::run ([] () -> LoadResult
+				{
+					QSettings settings (QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "_Azoth_LastSeen");
+					const auto& avail = settings.value ("LastAvailable").value<LastHash_t> ();
+					const auto& online = settings.value ("LastOnline").value<LastHash_t> ();
+					const auto& status = settings.value ("LastStatusChange").value<LastHash_t> ();
+
+					return { avail, online, status };
+				}));
 	}
 
 	void Plugin::save ()
@@ -180,14 +179,6 @@ namespace LastSeen
 		LoadResult res { LastAvailable_, LastOnline_, LastStatusChange_ };
 
 		auto watcher = new QFutureWatcher<void> ();
-		watcher->setFuture (QtConcurrent::run ([this, res] () -> void
-				{
-					QSettings settings (QCoreApplication::organizationName (),
-							QCoreApplication::applicationName () + "_Azoth_LastSeen");
-					settings.setValue ("LastAvailable", QVariant::fromValue (res.Avail_));
-					settings.setValue ("LastOnline", QVariant::fromValue (res.Online_));
-					settings.setValue ("LastStatusChange", QVariant::fromValue (res.StatusChange_));
-				}));
 		new Util::OneTimeRunner
 		{
 			[this, watcher] () -> void
@@ -204,6 +195,14 @@ namespace LastSeen
 			SIGNAL (finished ()),
 			watcher
 		};
+		watcher->setFuture (QtConcurrent::run ([this, res] () -> void
+				{
+					QSettings settings (QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "_Azoth_LastSeen");
+					settings.setValue ("LastAvailable", QVariant::fromValue (res.Avail_));
+					settings.setValue ("LastOnline", QVariant::fromValue (res.Online_));
+					settings.setValue ("LastStatusChange", QVariant::fromValue (res.StatusChange_));
+				}));
 	}
 
 	void Plugin::hookEntryStatusChanged (IHookProxy_ptr, QObject *entryObj, QString)
