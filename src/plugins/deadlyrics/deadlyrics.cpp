@@ -85,6 +85,7 @@ namespace DeadLyrics
 		if (query.Artist_.isEmpty () || query.Title_.isEmpty ())
 			return;
 
+		qDebug () << Q_FUNC_INFO << query.Artist_ << query.Album_;
 		for (auto searcher : Searchers_)
 			searcher->Search (query, options);
 	}
