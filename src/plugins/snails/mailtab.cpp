@@ -157,7 +157,7 @@ namespace Snails
 		{
 			QStringList result;
 
-			Q_FOREACH (const auto& pair, adds)
+			for (const auto& pair : adds)
 			{
 				const bool hasName = !pair.first.isEmpty ();
 
@@ -188,7 +188,7 @@ namespace Snails
 	{
 		if (!CurrAcc_)
 		{
-			Ui_.MailView_->setHtml (QString ());
+			Ui_.MailView_->setHtml ({});
 			return;
 		}
 
@@ -207,8 +207,7 @@ namespace Snails
 		Message_ptr msg;
 		try
 		{
-			msg = Core::Instance ().GetStorage ()->
-					LoadMessage (CurrAcc_.get (), id);
+			msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), id);
 		}
 		catch (const std::exception& e)
 		{
@@ -266,11 +265,10 @@ namespace Snails
 
 		MsgAttachments_->clear ();
 		MsgAttachments_->setEnabled (!msg->GetAttachments ().isEmpty ());
-		Q_FOREACH (const auto& att, msg->GetAttachments ())
+		for (const auto& att : msg->GetAttachments ())
 		{
-			const QString& actName = att.GetName () +
-					" (" + Util::MakePrettySize (att.GetSize ()) + ")";
-			QAction *act = MsgAttachments_->addAction (actName,
+			const auto& name = att.GetName () + " (" + Util::MakePrettySize (att.GetSize ()) + ")";
+			const auto act = MsgAttachments_->addAction (name,
 					this,
 					SLOT (handleAttachment ()));
 			act->setProperty ("Snails/MsgId", id);
@@ -310,7 +308,7 @@ namespace Snails
 	void MailTab::handleFetchNewMail ()
 	{
 		Storage *st = Core::Instance ().GetStorage ();
-		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
+		for (auto acc : Core::Instance ().GetAccounts ())
 			acc->Synchronize (st->HasMessagesIn (acc.get ()) ?
 						Account::FetchNew:
 						Account::FetchAll);
