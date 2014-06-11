@@ -240,7 +240,7 @@ namespace Snails
 		auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
 		{
 			if (!text.isEmpty ())
-				html += "<span class='" + cssClass + "'><span class='fieldName'>" +
+				html += "<span class='field " + cssClass + "'><span class='fieldName'>" +
 						name + "</span>: " + text + "</span><br />";
 		};
 
