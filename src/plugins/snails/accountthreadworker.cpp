@@ -265,20 +265,31 @@ namespace Snails
 			qWarning () << "no 'from' data";
 		}
 
-		try
+		auto setAddresses = [&msg] (Message::Address type,
+				const vmime::shared_ptr<const vmime::headerField>& field) -> void
 		{
-			const auto& val = header->To ()->getValue ();
-			if (const auto& alist = vmime::dynamicCast<const vmime::addressList> (val))
+			if (!field)
+				return;
+
+			if (const auto& alist = vmime::dynamicCast<const vmime::addressList> (field->getValue ()))
 			{
 				const auto& vec = alist->toMailboxList ()->getMailboxList ();
 
-				Message::Addresses_t to;
-				std::transform (vec.begin (), vec.end (), std::back_inserter (to),
+				Message::Addresses_t addrs;
+				std::transform (vec.begin (), vec.end (), std::back_inserter (addrs),
 						[] (decltype (vec.front ()) add) { return Mailbox2Strings (add); });
-				msg->SetAddresses (Message::Address::To, to);
+				msg->SetAddresses (type, addrs);
 			}
 			else
-				qWarning () << "no 'to' data: cannot cast to mailbox list";
+				qWarning () << "no"
+						<< static_cast<int> (type)
+						<< "data: cannot cast to mailbox list"
+						<< typeid (*field).name ();
+		};
+
+		try
+		{
+			setAddresses (Message::Address::To, header->To ());
 		}
 		catch (const vmime::exceptions::no_such_field& nsf)
 		{
