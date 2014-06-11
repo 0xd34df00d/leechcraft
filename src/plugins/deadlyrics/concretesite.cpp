@@ -138,7 +138,7 @@ namespace DeadLyrics
 		{
 			const auto& replace = urlFormat.attribute ("replace");
 			const auto& with = urlFormat.attribute ("with");
-			Q_FOREACH (const auto c, replace)
+			for (const auto c : replace)
 				Replacements_ [c] = with;
 
 			urlFormat = urlFormat.nextSiblingElement ("urlFormat");
@@ -183,7 +183,7 @@ namespace DeadLyrics
 	{
 		auto replace = [this] (QString str) -> QString
 		{
-			Q_FOREACH (const QChar c, Desc_.Replacements_.keys ())
+			for (const auto& c : Desc_.Replacements_.keys ())
 				str.replace (c, Desc_.Replacements_ [c]);
 			return str;
 		};
