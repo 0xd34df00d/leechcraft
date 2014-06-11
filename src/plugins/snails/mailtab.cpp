@@ -230,21 +230,37 @@ namespace Snails
 		if (!msg->IsFullyFetched ())
 			CurrAcc_->FetchWholeMessage (msg);
 
-		QString html = Core::Instance ().GetMsgViewTemplate ();
-		html.replace ("{subject}", msg->GetSubject ());
-		const auto& from = msg->GetAddress (Message::Address::From);
-		html.replace ("{from}", from.first);
-		html.replace ("{fromEmail}", from.second);
-		html.replace ("{to}", HTMLize (msg->GetAddresses (Message::Address::To)));
-		html.replace ("{date}", msg->GetDate ().toString ());
+		QString html = R"delim(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+			<html xmlns="http://www.w3.org/1999/xhtml">
+				<head>
+					<title>Message</title>
+				</head>
+				<body>
+			)delim";
+		auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
+		{
+			if (!text.isEmpty ())
+				html += "<span class='" + cssClass + "'><span class='fieldName'>" +
+						name + "</span>: " + text + "</span><br />";
+		};
 
-		const QString& htmlBody = msg->IsFullyFetched () ?
+		addField ("subject", tr ("Subject"), msg->GetSubject ());
+		addField ("from", tr ("From"), HTMLize ({ msg->GetAddress (Message::Address::From) }));
+		addField ("to", tr ("To"), HTMLize (msg->GetAddresses (Message::Address::To)));
+		addField ("cc", tr ("Copy"), HTMLize (msg->GetAddresses (Message::Address::Cc)));
+		addField ("bcc", tr ("Blind copy"), HTMLize (msg->GetAddresses (Message::Address::Bcc)));
+		addField ("date", tr ("Date"), msg->GetDate ().toString ());
+
+		const auto& htmlBody = msg->IsFullyFetched () ?
 				msg->GetHTMLBody () :
 				"<em>" + tr ("Fetching the message...") + "</em>";
 
-		html.replace ("{body}", htmlBody.isEmpty () ?
-					"<pre>" + Qt::escape (msg->GetBody ()) + "</pre>" :
-					htmlBody);
+		html += "<div class='body'>";
+		html += htmlBody.isEmpty () ?
+				"<pre>" + Qt::escape (msg->GetBody ()) + "</pre>" :
+				htmlBody;
+		html += "</div>";
+		html += "</body></html>";
 
 		Ui_.MailView_->setHtml (html);
 
