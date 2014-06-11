@@ -798,7 +798,7 @@ namespace LMP
 				tr ("Remove %1").arg (indexes.at (0).data ().toString ()) :
 				tr ("Remove %n song(s)", 0, indexes.size ());
 
-		Q_FOREACH (const auto& idx, indexes)
+		for (const auto& idx : indexes)
 			removedSources << Player_->GetIndexSources (PlaylistFilter_->mapToSource (idx));
 
 		auto cmd = new PlaylistUndoCommand (title, removedSources, Player_);
