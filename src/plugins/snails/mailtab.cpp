@@ -234,9 +234,9 @@ namespace Snails
 			<html xmlns="http://www.w3.org/1999/xhtml">
 				<head>
 					<title>Message</title>
-				</head>
-				<body>
-			)delim";
+					<style>)delim";
+		html += Core::Instance ().GetMsgViewTemplate ();
+		html += "</style></head><body>";
 		auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
 		{
 			if (!text.isEmpty ())

@@ -144,9 +144,9 @@ namespace Snails
 
 	QString Core::GetMsgViewTemplate () const
 	{
-		auto dev = MsgView_->Load ("default/msgview.html");
+		auto dev = MsgView_->Load ("default/msgview.css");
 		if (!dev || !dev->open (QIODevice::ReadOnly))
-			return tr ("<h1 style='color:#f00'>Unable to load message view template.</h1>");
+			return {};
 
 		return QString::fromUtf8 (dev->readAll ());
 	}

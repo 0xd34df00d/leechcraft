@@ -1,0 +1,11 @@
+.fieldName {
+	font-weight: 700;
+}
+
+.field {
+	font-weight: 200;
+}
+
+.body pre {
+	white-space: pre-wrap;
+}
