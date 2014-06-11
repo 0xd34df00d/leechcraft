@@ -181,6 +181,7 @@ namespace Snails
 		void handleGotUpdatedMessages (QList<Message_ptr>);
 		void handleGotOtherMessages (QList<QByteArray>, QStringList);
 		void handleGotFolders (QList<QStringList>);
+		void handleFoldersUpdated ();
 		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void mailChanged ();

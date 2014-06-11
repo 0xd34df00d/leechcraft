@@ -67,6 +67,11 @@ namespace Snails
 	, MailModel_ (new MailModel (this))
 	{
 		Thread_->start (QThread::LowPriority);
+
+		connect (FolderManager_,
+				SIGNAL (foldersUpdated ()),
+				this,
+				SLOT (handleFoldersUpdated ()));
 	}
 
 	QByteArray Account::GetID () const
@@ -126,6 +131,7 @@ namespace Snails
 			return;
 
 		MailModel_->SetFolder (path);
+		MailModel_->Clear ();
 
 		QList<Message_ptr> messages;
 		const auto& ids = Core::Instance ().GetStorage ()->LoadIDs (this, path);
@@ -293,6 +299,8 @@ namespace Snails
 				QByteArray fstate;
 				in >> fstate;
 				FolderManager_->Deserialize (fstate);
+
+				handleFoldersUpdated ();
 			}
 		}
 	}
@@ -617,12 +625,16 @@ namespace Snails
 	void Account::handleGotFolders (QList<QStringList> folders)
 	{
 		FolderManager_->SetFolders (folders);
+	}
 
+	void Account::handleFoldersUpdated ()
+	{
 		FoldersModel_->clear ();
-		Q_FOREACH (const QStringList& folder, folders)
+		for (const auto& folder : FolderManager_->GetFolders ())
 		{
 			auto item = BuildFolderItem (folder, FoldersModel_->invisibleRootItem ());
 			item->setData (folder, FoldersRole::Path);
+			item->setEditable (false);
 		}
 	}
 
