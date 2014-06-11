@@ -194,6 +194,12 @@ namespace Snails
 
 		CurrMsg_.reset ();
 
+		if (!sidx.isValid ())
+		{
+			Ui_.MailView_->setHtml ({});
+			return;
+		}
+
 		const QModelIndex& idx = MailSortFilterModel_->mapToSource (sidx);
 		const QByteArray& id = idx.sibling (idx.row (), 0)
 				.data (MailModel::MailRole::ID).toByteArray ();
