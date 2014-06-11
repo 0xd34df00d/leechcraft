@@ -31,7 +31,6 @@
 #include <QMutexLocker>
 #include <QUrl>
 #include <QFile>
-#include <QTimer>
 #include <QSslSocket>
 #include <QtDebug>
 #include <vmime/security/defaultAuthenticator.hpp>
@@ -112,35 +111,11 @@ namespace Snails
 		}
 	}
 
-	class TimerGuard
-	{
-		QTimer *T_;
-		int Timeout_;
-	public:
-		TimerGuard (QTimer *t, int timeout = 30000)
-		: T_ (t)
-		, Timeout_ (timeout)
-		{
-			T_->stop ();
-		}
-
-		~TimerGuard ()
-		{
-			T_->start (Timeout_);
-		}
-	};
-
 	AccountThreadWorker::AccountThreadWorker (Account *parent)
 	: A_ (parent)
 	, Session_ (new vmime::net::session ())
-	, DisconnectTimer_ (new QTimer (this))
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	{
-		connect (DisconnectTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (timeoutDisconnect ()));
-
 		std::vector<boost::shared_ptr<vmime::security::cert::X509Certificate>> vCerts;
 		for (const auto& sysCert : QSslSocket::systemCaCertificates ())
 		{
@@ -639,8 +614,6 @@ namespace Snails
 			break;
 		case Account::InType::IMAP:
 		{
-			TimerGuard g (DisconnectTimer_);
-
 			auto store = MakeStore ();
 			FetchMessagesIMAP (flags, folders, store);
 			SyncIMAPFolders (store);
@@ -658,8 +631,6 @@ namespace Snails
 
 		if (A_->InType_ == Account::InType::POP3)
 			return;
-
-		TimerGuard g (DisconnectTimer_);
 
 		const QByteArray& sid = origMsg->GetID ();
 		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
@@ -712,8 +683,6 @@ namespace Snails
 	{
 		if (A_->InType_ == Account::InType::POP3)
 			return;
-
-		TimerGuard g (DisconnectTimer_);
 
 		const auto& msgId = msg->GetID ();
 		const vmime::string id { msgId.constData () };
@@ -795,8 +764,6 @@ namespace Snails
 		if (!msg)
 			return;
 
-		TimerGuard g (DisconnectTimer_);
-
 		vmime::messageBuilder mb;
 		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
 		mb.setExpeditor (FromPair (msg->GetAddress (Message::Address::From)));
@@ -869,17 +836,6 @@ namespace Snails
 			return;
 		}
 		transport->send (vMsg, pl);
-	}
-
-	void AccountThreadWorker::timeoutDisconnect ()
-	{
-		if (!CachedStore_)
-			return;
-
-		CachedFolders_.clear ();
-
-		CachedStore_->disconnect ();
-		CachedStore_ = vmime::shared_ptr<vmime::net::store> ();
 	}
 }
 }
