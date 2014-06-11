@@ -502,7 +502,7 @@ namespace LMP
 					<< "soup rank:"
 					<< GetRank ("souphttpsrc")
 					<< "webkit rank:"
-					<< GetRank ("WebKitWebSrc");
+					<< GetRank ("webkitwebsrc");
 			return;
 		}
 
