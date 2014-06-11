@@ -106,12 +106,12 @@ namespace Snails
 		auto watcher = new QFutureWatcher<QList<Message_ptr>> ();
 		FutureWatcher2Account_ [watcher] = acc;
 
-		auto future = QtConcurrent::run (MessageSaverProc, msgs, dir);
-		watcher->setFuture (future);
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleMessagesSaved ()));
+		auto future = QtConcurrent::run (MessageSaverProc, msgs, dir);
+		watcher->setFuture (future);
 
 		Q_FOREACH (Message_ptr msg, msgs)
 		{
