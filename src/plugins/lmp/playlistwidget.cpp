@@ -198,6 +198,10 @@ namespace LMP
 				SIGNAL (bufferStatusChanged (int)),
 				this,
 				SLOT (handleBufferStatus (int)));
+		connect (Player_,
+				SIGNAL (songChanged (MediaInfo)),
+				this,
+				SLOT (handleSongChanged (MediaInfo)));
 
 		PlaylistFilter_->setSourceModel (Player_->GetPlaylistModel ());
 		Ui_.Playlist_->setModel (PlaylistFilter_);
@@ -753,6 +757,12 @@ namespace LMP
 	{
 		Ui_.BufferProgress_->setValue (status);
 		Ui_.BufferProgress_->setVisible (status > 0 && status < 100);
+	}
+
+	void PlaylistWidget::handleSongChanged (const MediaInfo& info)
+	{
+		if (!info.LocalPath_.isEmpty ())
+			handleBufferStatus (100);
 	}
 
 	void PlaylistWidget::handleStdSort ()

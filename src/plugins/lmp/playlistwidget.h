@@ -111,6 +111,7 @@ namespace LMP
 		void checkSelections ();
 
 		void handleBufferStatus (int);
+		void handleSongChanged (const MediaInfo&);
 
 		void handleStdSort ();
 		void handleCustomSort ();
