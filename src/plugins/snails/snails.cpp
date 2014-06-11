@@ -159,7 +159,7 @@ namespace Snails
 				this,
 				SIGNAL (removeTab (QWidget*)));
 
-		emit addNewTab (MailTabClass_.VisibleName_, mt);
+		emit addNewTab (name, mt);
 		emit raiseTab (mt);
 	}
 }
