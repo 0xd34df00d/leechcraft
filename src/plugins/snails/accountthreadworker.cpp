@@ -248,7 +248,6 @@ namespace Snails
 			msg->SetRead (true);
 
 		auto header = message->getHeader ();
-
 		try
 		{
 			if (const auto& from = header->From ())
@@ -294,6 +293,22 @@ namespace Snails
 		catch (const vmime::exceptions::no_such_field& nsf)
 		{
 			qWarning () << "no 'to' data" << nsf.what ();
+		}
+
+		try
+		{
+			setAddresses (Message::Address::Cc, header->Cc ());
+		}
+		catch (const vmime::exceptions::no_such_field& nsf)
+		{
+		}
+
+		try
+		{
+			setAddresses (Message::Address::Bcc, header->Bcc ());
+		}
+		catch (const vmime::exceptions::no_such_field& nsf)
+		{
 		}
 
 		try
