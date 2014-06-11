@@ -244,12 +244,14 @@ namespace DeadLyrics
 	void ConcreteSite::handleReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-
 		const auto& data = reply->readAll ();
 		const auto& contentType = reply->header (QNetworkRequest::ContentTypeHeader);
 
 		reply->deleteLater ();
 		deleteLater ();
+
+		if (reply->error () != QNetworkReply::NoError)
+			return;
 
 #ifdef QT_DEBUG
 		qDebug () << Q_FUNC_INFO
@@ -303,14 +305,6 @@ namespace DeadLyrics
 		qWarning () << "\tdesc:"
 				<< Desc_.Name_
 				<< Desc_.URLTemplate_;
-
-		disconnect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyFinished ()));
-
-		reply->deleteLater ();
-		deleteLater ();
 	}
 }
 }
