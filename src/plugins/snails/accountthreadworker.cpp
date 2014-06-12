@@ -470,7 +470,7 @@ namespace Snails
 			return;
 		}
 
-		const auto& existing = Core::Instance ().GetStorage ()->LoadIDs (A_);
+		const auto& existing = Core::Instance ().GetStorage ()->LoadIDs (A_, folderName);
 
 		QList<Message_ptr> newMessages;
 		std::transform (messages.begin (), messages.end (), std::back_inserter (newMessages),
