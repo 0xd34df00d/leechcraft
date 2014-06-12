@@ -69,7 +69,7 @@ namespace Snails
 	{
 		QList<Message_ptr> MessageSaverProc (QList<Message_ptr> msgs, const QDir dir)
 		{
-			Q_FOREACH (Message_ptr msg, msgs)
+			for (const auto& msg : msgs)
 			{
 				if (msg->GetID ().isEmpty ())
 					continue;
@@ -100,7 +100,7 @@ namespace Snails
 	{
 		const QDir& dir = DirForAccount (acc);
 
-		Q_FOREACH (Message_ptr msg, msgs)
+		for (const auto& msg : msgs)
 			PendingSaveMessages_ [acc] [msg->GetID ()] = msg;
 
 		auto watcher = new QFutureWatcher<QList<Message_ptr>> ();
@@ -128,7 +128,7 @@ namespace Snails
 		MessageSet result;
 
 		const QDir& dir = DirForAccount (acc);
-		Q_FOREACH (auto str, dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
+		for (const auto& str : dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
 		{
 			QDir subdir = dir;
 			if (!subdir.cd (str))
@@ -139,7 +139,7 @@ namespace Snails
 				continue;
 			}
 
-			Q_FOREACH (auto str, subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
+			for (const auto& str : subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
 			{
 				QFile file (subdir.filePath (str));
 				if (!file.open (QIODevice::ReadOnly))
@@ -151,7 +151,7 @@ namespace Snails
 					continue;
 				}
 
-				Message_ptr msg (new Message);
+				const auto& msg = std::make_shared<Message> ();
 				try
 				{
 					msg->Deserialize (qUncompress (file.readAll ()));
@@ -225,8 +225,7 @@ namespace Snails
 		QSet<QByteArray> result;
 
 		const QDir& dir = DirForAccount (acc);
-		Q_FOREACH (const auto& str,
-				dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
+		for (const auto& str : dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
 		{
 			QDir subdir = dir;
 			if (!subdir.cd (str))
@@ -237,8 +236,7 @@ namespace Snails
 				continue;
 			}
 
-			Q_FOREACH (const auto& str,
-					subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
+			for (const auto& str : subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
 				result << QByteArray::fromHex (str.toUtf8 ());
 		}
 
@@ -265,7 +263,7 @@ namespace Snails
 		while (query.next ())
 			result << query.value (0).toByteArray ();
 
-		Q_FOREACH (auto msg, PendingSaveMessages_ [acc].values ())
+		for (const auto& msg : PendingSaveMessages_ [acc].values ())
 			if (msg->GetFolders ().contains (folder))
 				result << msg->GetID ();
 
@@ -277,7 +275,7 @@ namespace Snails
 		int result = 0;
 
 		const QDir& dir = DirForAccount (acc);
-		Q_FOREACH (auto str, dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
+		for (const auto& str : dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
 		{
 			QDir subdir = dir;
 			if (!subdir.cd (str))
@@ -334,9 +332,9 @@ namespace Snails
 					"(folder BLOB NOT NULL, msgId BLOB NOT NULL, UNIQUE (folder, msgId) ON CONFLICT IGNORE);";
 			table2queries ["folder2msg"] << "CREATE INDEX folder2msg_idx_folder ON folder2msg (folder);";
 
-			Q_FOREACH (const QString& key, table2queries.keys ())
+			for (const auto& key : table2queries.keys ())
 				if (!base->tables ().contains (key))
-					Q_FOREACH (const QString& queryStr, table2queries [key])
+					for (const auto& queryStr : table2queries [key])
 					{
 						QSqlQuery query (*base);
 						if (!query.exec (queryStr))
@@ -392,10 +390,10 @@ namespace Snails
 		QSqlQuery query (*base);
 		QStringList queries;
 		queries << "INSERT INTO folder2msg (folder, msgId) VALUES (:folder, :msgId);";
-		Q_FOREACH (const QString& qStr, queries)
+		for (const auto& qStr : queries)
 		{
 			query.prepare (qStr);
-			Q_FOREACH (auto folder, folders)
+			for (auto folder : folders)
 			{
 				if (folder.isEmpty ())
 					folder << "INBOX";
@@ -431,7 +429,7 @@ namespace Snails
 		auto& hash = PendingSaveMessages_ [acc];
 
 		auto messages = watcher->result ();
-		Q_FOREACH (Message_ptr msg, messages)
+		for (const auto& msg : messages)
 			hash.remove (msg->GetID ());
 	}
 }
