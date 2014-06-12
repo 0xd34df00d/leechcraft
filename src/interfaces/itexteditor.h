@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QPair>
 #include <QList>
 #include <QRegExp>
