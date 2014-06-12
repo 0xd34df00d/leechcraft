@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "cuesplitter.h"
+#include <functional>
 #include <QTime>
 #include <QFile>
 #include <QtDebug>
