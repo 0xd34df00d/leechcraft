@@ -146,6 +146,10 @@ namespace LMP
 		const auto exp = XmlSettingsManager::Instance ().property ("VolumeExponent").toDouble ();
 		if (exp != 1)
 			volume = std::pow (volume, exp);
+
+		if (volume > 1)
+			volume = 1;
+
 		g_object_set (G_OBJECT (Volume_), "volume", static_cast<gdouble> (volume), nullptr);
 
 		ScheduleSaveVolume ();
