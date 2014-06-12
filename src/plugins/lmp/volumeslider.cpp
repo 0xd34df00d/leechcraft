@@ -45,7 +45,7 @@ namespace LMP
 		Ui_.Slider_->setValue (out->GetVolume () * 100);
 
 		connect (Ui_.Slider_,
-				SIGNAL (valueChanged (int)),
+				SIGNAL (sliderMoved (int)),
 				out,
 				SLOT (setVolume (int)));
 		connect (out,
