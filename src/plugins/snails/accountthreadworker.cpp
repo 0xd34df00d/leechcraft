@@ -484,7 +484,7 @@ namespace Snails
 		QList<QByteArray> ids;
 
 		QList<Message_ptr> updatedMessages;
-		Q_FOREACH (Message_ptr msg, newMessages)
+		Q_FOREACH (const auto& msg, newMessages)
 		{
 			if (!existing.contains (msg->GetID ()))
 				continue;

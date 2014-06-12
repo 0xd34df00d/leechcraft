@@ -126,7 +126,8 @@ namespace Snails
 	{
 		MailModel_->Clear ();
 
-		const QStringList& path = idx.data (FoldersRole::Path).toStringList ();
+		const auto& path = idx.data (FoldersRole::Path).toStringList ();
+		qDebug () << Q_FUNC_INFO << path;
 		if (path.isEmpty ())
 			return;
 
@@ -596,9 +597,9 @@ namespace Snails
 
 	void Account::handleGotOtherMessages (QList<QByteArray> ids, QStringList folder)
 	{
-		qDebug () << Q_FUNC_INFO << ids.size ();
+		qDebug () << Q_FUNC_INFO << ids.size () << folder;
 		QList<Message_ptr> msgs;
-		Q_FOREACH (auto id, ids)
+		for (const auto& id : ids)
 			msgs << Core::Instance ().GetStorage ()->LoadMessage (this, id);
 
 		MailModel_->Append (msgs);
