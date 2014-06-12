@@ -112,6 +112,7 @@ namespace LMP
 	void BioViewManager::Request (Media::IArtistBioFetcher *fetcher, const QString& artist)
 	{
 		DiscoModel_->clear ();
+		BioPropProxy_->SetBio ({});
 
 		CurrentArtist_ = artist;
 
