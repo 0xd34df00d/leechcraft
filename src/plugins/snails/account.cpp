@@ -172,7 +172,8 @@ namespace Snails
 				{
 					Account::FetchFlags { FetchFlag::FetchAll },
 					QList<QStringList> { path }
-				}
+				},
+				"syncFolder"
 			});
 	}
 
