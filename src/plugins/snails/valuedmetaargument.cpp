@@ -27,46 +27,26 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QString>
-#include <QMutex>
 #include "valuedmetaargument.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	struct TaskQueueItem
+	ValuedMetaArgument::operator QGenericArgument () const
 	{
-		QByteArray Method_;
-		QList<ValuedMetaArgument> Args_;
-	};
+		if (!Holder_)
+			return {};
 
-	bool operator== (const TaskQueueItem&, const TaskQueueItem&);
+		return { Holder_->GetTypeName (), Holder_->GetValue () };
+	}
 
-	class AccountThreadWorker;
-
-	class TaskQueueManager : public QObject
+	bool ValuedMetaArgument::operator== (const ValuedMetaArgument& other) const
 	{
-		Q_OBJECT
+		if (!Holder_)
+			return !other.Holder_;
 
-		AccountThreadWorker * const ATW_;
-
-		mutable QMutex ItemsMutex_;
-		QList<TaskQueueItem> Items_;
-	public:
-		TaskQueueManager (AccountThreadWorker*);
-
-		void AddTask (const TaskQueueItem&);
-		bool HasItems () const;
-		TaskQueueItem PopItem ();
-	private slots:
-		void rotateTaskQueue ();
-	signals:
-		void gotTask ();
-	};
+		return Holder_->Equals (*other.Holder_);
+	}
 }
 }
-

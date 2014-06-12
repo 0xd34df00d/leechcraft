@@ -44,6 +44,7 @@ set (SRCS
 	common.cpp
 	mailmodel.cpp
 	taskqueuemanager.cpp
+	valuedmetaargument.cpp
 	)
 set (FORMS
 	mailtab.ui

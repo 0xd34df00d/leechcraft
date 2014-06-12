@@ -29,44 +29,71 @@
 
 #pragma once
 
-#include <QObject>
-#include <QString>
-#include <QMutex>
-#include "valuedmetaargument.h"
+#include <memory>
+#include <QMetaType>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	struct TaskQueueItem
+	class ValuedMetaArgument
 	{
-		QByteArray Method_;
-		QList<ValuedMetaArgument> Args_;
-	};
+		struct HolderBase
+		{
+			virtual int GetTypeId () const = 0;
+			virtual const char* GetTypeName () const = 0;
+			virtual const void* GetValue () const = 0;
 
-	bool operator== (const TaskQueueItem&, const TaskQueueItem&);
+			virtual bool Equals (const HolderBase&) const = 0;
+		};
 
-	class AccountThreadWorker;
+		std::shared_ptr<HolderBase> Holder_;
 
-	class TaskQueueManager : public QObject
-	{
-		Q_OBJECT
+		template<typename T>
+		struct Holder : HolderBase
+		{
+			const T T_;
 
-		AccountThreadWorker * const ATW_;
+			Holder (const T& t)
+			: T_ { t }
+			{
+			}
 
-		mutable QMutex ItemsMutex_;
-		QList<TaskQueueItem> Items_;
+			int GetTypeId () const
+			{
+				return qMetaTypeId<T> ();
+			}
+
+			const char* GetTypeName () const
+			{
+				return QMetaType::typeName (qMetaTypeId<T> ());
+			}
+
+			const void* GetValue () const
+			{
+				return static_cast<const void*> (&T_);
+			}
+
+			bool Equals (const HolderBase& other) const
+			{
+				if (GetTypeId () != other.GetTypeId ())
+					return false;
+
+				return T_ == static_cast<const Holder<T>&> (other).T_;
+			}
+		};
 	public:
-		TaskQueueManager (AccountThreadWorker*);
+		ValuedMetaArgument () = default;
 
-		void AddTask (const TaskQueueItem&);
-		bool HasItems () const;
-		TaskQueueItem PopItem ();
-	private slots:
-		void rotateTaskQueue ();
-	signals:
-		void gotTask ();
+		template<typename T>
+		ValuedMetaArgument (const T& t)
+		: Holder_ { new Holder<T> { t } }
+		{
+		}
+
+		operator QGenericArgument () const;
+
+		bool operator== (const ValuedMetaArgument& other) const;
 	};
 }
 }
-
