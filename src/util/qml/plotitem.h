@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QDeclarativeItem>
 #include "qmlconfig.h"
 
