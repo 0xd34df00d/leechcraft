@@ -53,8 +53,7 @@ namespace LMP
 
 	void VolumeNotifyController::volumeUp ()
 	{
-		const auto val = std::min (Output_->GetVolume () + 0.05, 1.);
-		Output_->setVolume (val);
+		Output_->setVolume (Output_->GetVolume () + 0.05);
 
 		NotifyTimer_->start ();
 	}
