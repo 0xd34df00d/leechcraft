@@ -68,6 +68,12 @@ namespace Snails
 		if (Items_.contains (item))
 			return;
 
+		if (!item.ID_.isEmpty () &&
+				std::any_of (Items_.begin (), Items_.end (),
+						[&item] (const TaskQueueItem& other)
+							{ return item.ID_ == other.ID_; }))
+			return;
+
 		Items_ << item;
 		if (Items_.size () == 1)
 			emit gotTask ();
