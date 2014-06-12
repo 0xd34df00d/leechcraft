@@ -74,10 +74,10 @@ namespace Snails
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>&);
 		ProgressListener* MkPgListener (const QString&);
 	public slots:
-		void synchronize (Account::FetchFlags, const QList<QStringList>&);
-		void fetchWholeMessage (Message_ptr);
-		void fetchAttachment (Message_ptr, const QString&, const QString&);
-		void sendMessage (Message_ptr);
+		void synchronize (LeechCraft::Snails::Account::FetchFlags, const QList<QStringList>&);
+		void fetchWholeMessage (LeechCraft::Snails::Message_ptr);
+		void fetchAttachment (LeechCraft::Snails::Message_ptr, const QString&, const QString&);
+		void sendMessage (LeechCraft::Snails::Message_ptr);
 	signals:
 		void error (const QString&);
 		void gotEntity (const LeechCraft::Entity&);

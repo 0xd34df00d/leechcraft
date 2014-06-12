@@ -42,6 +42,9 @@
 #include "storage.h"
 #include "accountfoldermanager.h"
 #include "mailmodel.h"
+#include "taskqueuemanager.h"
+
+Q_DECLARE_METATYPE (QList<QStringList>)
 
 namespace LeechCraft
 {
@@ -152,28 +155,33 @@ namespace Snails
 		auto folders = FolderManager_->GetSyncFolders ();
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
+
+		Thread_->GetTaskManager ()->AddTask ({
 				"synchronize",
-				Qt::QueuedConnection,
-				Q_ARG (Account::FetchFlags, flags),
-				Q_ARG (QList<QStringList>, folders));
+				{
+					{ flags },
+					{ folders }
+				}
+			});
 	}
 
 	void Account::Synchronize (const QStringList& path)
 	{
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
+		Thread_->GetTaskManager ()->AddTask ({
 				"synchronize",
-				Qt::QueuedConnection,
-				Q_ARG (Account::FetchFlags, FetchFlag::FetchAll),
-				Q_ARG (QList<QStringList>, { path }));
+				{
+					Account::FetchFlags { FetchFlag::FetchAll },
+					QList<QStringList> { path }
+				}
+			});
 	}
 
 	void Account::FetchWholeMessage (Message_ptr msg)
 	{
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
+		Thread_->GetTaskManager ()->AddTask ({
 				"fetchWholeMessage",
-				Qt::QueuedConnection,
-				Q_ARG (Message_ptr, msg));
+				{ msg }
+			});
 	}
 
 	void Account::SendMessage (Message_ptr msg)
@@ -185,21 +193,23 @@ namespace Snails
 			pair.second = UserEmail_;
 		msg->SetAddress (Message::Address::From, pair);
 
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
+		Thread_->GetTaskManager ()->AddTask ({
 				"sendMessage",
-				Qt::QueuedConnection,
-				Q_ARG (Message_ptr, msg));
+				{ msg }
+			});
 	}
 
 	void Account::FetchAttachment (Message_ptr msg,
 			const QString& attName, const QString& path)
 	{
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
+		Thread_->GetTaskManager ()->AddTask ({
 				"fetchAttachment",
-				Qt::QueuedConnection,
-				Q_ARG (Message_ptr, msg),
-				Q_ARG (QString, attName),
-				Q_ARG (QString, path));
+				{
+					msg,
+					attName,
+					path
+				}
+			});
 	}
 
 	void Account::Update (const Message_ptr& message)

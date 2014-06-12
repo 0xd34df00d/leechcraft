@@ -37,6 +37,7 @@ namespace Snails
 {
 	class Account;
 	class AccountThreadWorker;
+	class TaskQueueManager;
 
 	class AccountThread : public QThread
 	{
@@ -44,11 +45,14 @@ namespace Snails
 
 		Account *A_;
 		AccountThreadWorker *W_;
+
+		TaskQueueManager *QueueManager_ = nullptr;
 	public:
 		AccountThread (Account*);
 
-		AccountThreadWorker* GetWorker () const;
+		TaskQueueManager* GetTaskManager () const;
 	protected:
+		AccountThreadWorker* GetWorker () const;
 		void run ();
 	private:
 		void ConnectSignals ();

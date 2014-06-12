@@ -28,18 +28,24 @@
  **********************************************************************/
 
 #include "accountthread.h"
-#include <QTimer>
+#include <QtDebug>
 #include "account.h"
 #include "accountthreadworker.h"
 #include "core.h"
+#include "taskqueuemanager.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
 	AccountThread::AccountThread (Account *parent)
-	: A_ (parent)
+	: A_ { parent }
 	{
+	}
+
+	TaskQueueManager* AccountThread::GetTaskManager () const
+	{
+		return QueueManager_;
 	}
 
 	AccountThreadWorker* AccountThread::GetWorker () const
@@ -49,11 +55,14 @@ namespace Snails
 
 	void AccountThread::run ()
 	{
-		W_ = new AccountThreadWorker (A_);
+		W_ = new AccountThreadWorker { A_ };
+		QueueManager_ = new TaskQueueManager { W_ };
 
 		ConnectSignals ();
 
 		QThread::run ();
+
+		delete QueueManager_;
 		delete W_;
 	}
 
