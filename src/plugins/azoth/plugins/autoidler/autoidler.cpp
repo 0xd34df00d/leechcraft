@@ -117,7 +117,7 @@ namespace Autoidler
 	void Plugin::handleIdle (int seconds)
 	{
 		IdleSeconds_ = seconds;
-		if (seconds && (seconds % 60) >= Idle_->interval () / 10000)
+		if (seconds && (seconds % 60) >= Idle_->interval () / 1000)
 			return;
 
 		if (!XmlSettingsManager::Instance ().property ("EnableAutoidler").toBool ())
