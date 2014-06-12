@@ -42,6 +42,11 @@ namespace Snails
 	{
 		QByteArray Method_;
 		QList<ValuedMetaArgument> Args_;
+
+		QByteArray ID_;
+
+		TaskQueueItem ();
+		TaskQueueItem (const QByteArray&, const QList<ValuedMetaArgument>&, const QByteArray& = {});
 	};
 
 	bool operator== (const TaskQueueItem&, const TaskQueueItem&);

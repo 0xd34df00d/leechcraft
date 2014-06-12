@@ -35,6 +35,18 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	TaskQueueItem::TaskQueueItem ()
+	{
+	}
+
+	TaskQueueItem::TaskQueueItem (const QByteArray& method,
+			const QList<ValuedMetaArgument>& args, const QByteArray& id)
+	: Method_ { method }
+	, Args_ (args)
+	, ID_ { id }
+	{
+	}
+
 	bool operator== (const TaskQueueItem& left, const TaskQueueItem& right)
 	{
 		return left.Method_ == right.Method_ &&
