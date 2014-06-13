@@ -71,6 +71,7 @@ namespace Snails
 		int rowCount (const QModelIndex& = {}) const;
 
 		void SetFolder (const QStringList&);
+		QStringList GetCurrentFolder () const;
 
 		void Clear ();
 		void Append (QList<Message_ptr>);

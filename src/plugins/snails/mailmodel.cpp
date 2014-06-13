@@ -114,6 +114,11 @@ namespace Snails
 		Folder_ = folder;
 	}
 
+	QStringList MailModel::GetCurrentFolder () const
+	{
+		return Folder_;
+	}
+
 	void MailModel::Clear ()
 	{
 		if (Messages_.isEmpty ())
