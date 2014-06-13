@@ -56,6 +56,7 @@ namespace Snails
 
 		friend class AccountThreadWorker;
 		AccountThread * const Thread_;
+		AccountThread * const MessageFetchThread_;
 		QMutex * const AccMutex_;
 
 		QByteArray ID_;

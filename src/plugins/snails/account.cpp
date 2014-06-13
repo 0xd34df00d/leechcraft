@@ -53,6 +53,7 @@ namespace Snails
 	Account::Account (QObject *parent)
 	: QObject (parent)
 	, Thread_ (new AccountThread (this))
+	, MessageFetchThread_ (new AccountThread (this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	, UseSASL_ (false)
@@ -69,7 +70,8 @@ namespace Snails
 	, FoldersModel_ (new QStandardItemModel (this))
 	, MailModel_ (new MailModel (this))
 	{
-		Thread_->start (QThread::LowPriority);
+		Thread_->start (QThread::IdlePriority);
+		MessageFetchThread_->start (QThread::LowPriority);
 
 		connect (FolderManager_,
 				SIGNAL (foldersUpdated ()),
@@ -179,7 +181,7 @@ namespace Snails
 
 	void Account::FetchWholeMessage (Message_ptr msg)
 	{
-		Thread_->GetTaskManager ()->AddTask ({
+		MessageFetchThread_->GetTaskManager ()->AddTask ({
 				"fetchWholeMessage",
 				{ msg }
 			});
@@ -194,7 +196,7 @@ namespace Snails
 			pair.second = UserEmail_;
 		msg->SetAddress (Message::Address::From, pair);
 
-		Thread_->GetTaskManager ()->AddTask ({
+		MessageFetchThread_->GetTaskManager ()->AddTask ({
 				"sendMessage",
 				{ msg }
 			});
@@ -203,7 +205,7 @@ namespace Snails
 	void Account::FetchAttachment (Message_ptr msg,
 			const QString& attName, const QString& path)
 	{
-		Thread_->GetTaskManager ()->AddTask ({
+		MessageFetchThread_->GetTaskManager ()->AddTask ({
 				"fetchAttachment",
 				{
 					msg,
