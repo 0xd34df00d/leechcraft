@@ -35,14 +35,15 @@ namespace LeechCraft
 {
 namespace Eleeminator
 {
-	bool ProcessHasChildren (int pid)
+	QStringList ListProcessChildren (int pid)
 	{
 		const QDir procDir { "/proc" };
 		if (!procDir.isReadable ())
-			return false;
+			return {};
 
 		static QByteArray marker { "PPid:" };
 
+		QStringList result;
 		for (const auto& subdirName : procDir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
 		{
 			bool ok = false;
@@ -68,14 +69,20 @@ namespace Eleeminator
 				const auto& parentPidStr = line.mid (marker.size ()).trimmed ();
 				const auto parentPid = parentPidStr.toInt (&ok);
 				if (ok && parentPid == pid)
-					return true;
+				{
+					QFile commandFile { subdir.filePath ("comm") };
+					if (!commandFile.open (QIODevice::ReadOnly))
+						result << "(UNKNOWN)";
+					else
+						result << QString::fromUtf8 (commandFile.readAll ()).trimmed ();
+				}
 
 				break;
 			}
 			while (!line.isEmpty ());
 		}
 
-		return false;
+		return result;
 	}
 }
 }

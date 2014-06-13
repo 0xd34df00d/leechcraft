@@ -29,10 +29,12 @@
 
 #pragma once
 
+class QStringList;
+
 namespace LeechCraft
 {
 namespace Eleeminator
 {
-	bool ProcessHasChildren (int);
+	QStringList ListProcessChildren (int);
 }
 }

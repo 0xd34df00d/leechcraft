@@ -120,12 +120,20 @@ namespace Eleeminator
 
 	void TermTab::Remove ()
 	{
-		const auto pid = Term_->getShellPID ();
-		if (ProcessHasChildren (pid))
+		const auto& children = ListProcessChildren (Term_->getShellPID ());
+		if (!children.isEmpty ())
 		{
+			QString message;
+			if (children.size () == 1)
+				message = tr ("The shell has a child running: %1. Are you sure you want to close it?")
+						.arg (children.value (0));
+			else
+				message = tr ("The shell has %n child process(es) running: %1. Are you sure you want to close it?", 0, children.size ())
+						.arg ("<em>" + children.join ("</em>; <em>") + "</em>");
+
 			const auto res = QMessageBox::question (this,
 					"LeechCraft",
-					tr ("The shell has children processes running. Are you sure you want to close it?"),
+					message,
 					QMessageBox::Yes | QMessageBox::No);
 			if (res == QMessageBox::No)
 				return;
