@@ -220,31 +220,6 @@ namespace Snails
 		return msg;
 	}
 
-	QSet<QByteArray> Storage::LoadIDs (Account *acc)
-	{
-		QSet<QByteArray> result;
-
-		const QDir& dir = DirForAccount (acc);
-		for (const auto& str : dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
-		{
-			QDir subdir = dir;
-			if (!subdir.cd (str))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< str;
-				continue;
-			}
-
-			for (const auto& str : subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
-				result << QByteArray::fromHex (str.toUtf8 ());
-		}
-
-		result += PendingSaveMessages_ [acc].keys ().toSet ();
-
-		return result;
-	}
-
 	QSet<QByteArray> Storage::LoadIDs (Account *acc, const QStringList& folder)
 	{
 		QSet<QByteArray> result;
