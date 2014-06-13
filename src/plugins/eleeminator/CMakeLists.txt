@@ -15,6 +15,7 @@ include_directories (
 set (SRCS
 	eleeminator.cpp
 	termtab.cpp
+	util.cpp
 	xmlsettingsmanager.cpp
 	)
 set (RESOURCES eleeminatorresources.qrc)
