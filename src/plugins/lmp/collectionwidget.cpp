@@ -69,7 +69,15 @@ namespace LMP
 						if (filterAcceptsRow (i, source))
 							return true;
 
-				return source.data ().toString ().contains (pattern, Qt::CaseInsensitive);
+				auto check = [&source, &pattern] (int role)
+				{
+					return source.data (role).toString ().contains (pattern, Qt::CaseInsensitive);
+				};
+				return check (Qt::DisplayRole) ||
+						check (LocalCollectionModel::Role::ArtistName) ||
+						check (LocalCollectionModel::Role::AlbumName) ||
+						check (LocalCollectionModel::Role::TrackTitle) ||
+						check (LocalCollectionModel::Role::AlbumYear);
 			}
 		};
 	}
