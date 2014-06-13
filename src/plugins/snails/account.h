@@ -143,7 +143,7 @@ namespace Snails
 		QString GetType () const;
 
 		AccountFolderManager* GetFolderManager () const;
-		QAbstractItemModel* GetMailModel () const;
+		MailModel* GetMailModel () const;
 		QAbstractItemModel* GetFoldersModel () const;
 
 		void ShowFolder (const QModelIndex&);

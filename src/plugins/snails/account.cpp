@@ -115,7 +115,7 @@ namespace Snails
 		return FolderManager_;
 	}
 
-	QAbstractItemModel* Account::GetMailModel () const
+	MailModel* Account::GetMailModel () const
 	{
 		return MailModel_;
 	}
