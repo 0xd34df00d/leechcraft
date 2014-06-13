@@ -400,7 +400,7 @@ namespace Snails
 		emit gotMsgHeaders (newMessages, { "INBOX" });
 	}
 
-	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
+	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags,
 			const QList<QStringList>& origFolders, vmime::shared_ptr<vmime::net::store> store)
 	{
 		for (const auto& folder : origFolders)
