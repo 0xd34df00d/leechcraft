@@ -126,7 +126,7 @@ namespace Eleeminator
 			QString message;
 			if (children.size () == 1)
 				message = tr ("The shell has a child running: %1. Are you sure you want to close it?")
-						.arg (children.value (0));
+						.arg ("<em>" + children.value (0) + "</em>");
 			else
 				message = tr ("The shell has %n child process(es) running: %1. Are you sure you want to close it?", 0, children.size ())
 						.arg ("<em>" + children.join ("</em>; <em>") + "</em>");
