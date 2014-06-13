@@ -64,7 +64,9 @@ namespace LMP
 		QList<AudioSource> sources;
 		for (const auto& idx : indexes)
 		{
-			const auto& srcIdx = Model_->mapToSource (Sorter_->mapToSource (idx));
+			auto srcIdx = Model_->mapToSource (Sorter_->mapToSource (idx));
+			if (auto proxyModel = qobject_cast<const QSortFilterProxyModel*> (srcIdx.model ()))
+				srcIdx = proxyModel->mapToSource (srcIdx);
 
 			const auto& urls = dynamic_cast<const ICollectionModel*> (srcIdx.model ())->ToSourceUrls ({ srcIdx });
 			for (const auto& url : urls)
