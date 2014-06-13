@@ -38,6 +38,7 @@
 #include <QFontDialog>
 #include <QUrl>
 #include <QProcessEnvironment>
+#include <QMessageBox>
 #include <QtDebug>
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
@@ -45,6 +46,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -118,6 +120,17 @@ namespace Eleeminator
 
 	void TermTab::Remove ()
 	{
+		const auto pid = Term_->getShellPID ();
+		if (ProcessHasChildren (pid))
+		{
+			const auto res = QMessageBox::question (this,
+					"LeechCraft",
+					tr ("The shell has children processes running. Are you sure you want to close it?"),
+					QMessageBox::Yes | QMessageBox::No);
+			if (res == QMessageBox::No)
+				return;
+		}
+
 		handleFinished ();
 	}
 
