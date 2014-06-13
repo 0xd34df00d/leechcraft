@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "valuedmetaargument.h"
+#include <QDebug>
 
 namespace LeechCraft
 {
@@ -48,5 +49,21 @@ namespace Snails
 
 		return Holder_->Equals (*other.Holder_);
 	}
+
+	void ValuedMetaArgument::DebugPrint (QDebug& debug) const
+	{
+		debug = debug.nospace ();
+		debug << "{ " << Holder_->GetTypeName () << ": ";
+		Holder_->DebugPrint (debug);
+		debug << " }";
+		debug = debug.space ();
+	}
 }
 }
+
+QDebug operator<< (QDebug debug, const LeechCraft::Snails::ValuedMetaArgument& arg)
+{
+	arg.DebugPrint (debug);
+	return debug;
+}
+

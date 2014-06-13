@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QMetaType>
+#include <QDebug>
 
 namespace LeechCraft
 {
@@ -45,6 +46,8 @@ namespace Snails
 			virtual const void* GetValue () const = 0;
 
 			virtual bool Equals (const HolderBase&) const = 0;
+
+			virtual void DebugPrint (QDebug&) const = 0;
 		};
 
 		std::shared_ptr<HolderBase> Holder_;
@@ -81,6 +84,11 @@ namespace Snails
 
 				return T_ == static_cast<const Holder<T>&> (other).T_;
 			}
+
+			void DebugPrint (QDebug& out) const
+			{
+				out << T_;
+			}
 		};
 	public:
 		ValuedMetaArgument () = default;
@@ -94,6 +102,10 @@ namespace Snails
 		operator QGenericArgument () const;
 
 		bool operator== (const ValuedMetaArgument& other) const;
+
+		void DebugPrint (QDebug&) const;
 	};
 }
 }
+
+QDebug operator<< (QDebug, const LeechCraft::Snails::ValuedMetaArgument&);
