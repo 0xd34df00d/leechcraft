@@ -69,9 +69,9 @@ namespace Snails
 	void AccountThread::ConnectSignals ()
 	{
 		connect (W_,
-				SIGNAL (gotMsgHeaders (QList<Message_ptr>)),
+				SIGNAL (gotMsgHeaders (QList<Message_ptr>, QStringList)),
 				A_,
-				SLOT (handleMsgHeaders (QList<Message_ptr>)));
+				SLOT (handleMsgHeaders (QList<Message_ptr>, QStringList)));
 		connect (W_,
 				SIGNAL (gotProgressListener (ProgressListener_g_ptr)),
 				A_,
@@ -81,9 +81,9 @@ namespace Snails
 				A_,
 				SLOT (handleMessageBodyFetched (Message_ptr)));
 		connect (W_,
-				SIGNAL (gotUpdatedMessages (QList<Message_ptr>)),
+				SIGNAL (gotUpdatedMessages (QList<Message_ptr>, QStringList)),
 				A_,
-				SLOT (handleGotUpdatedMessages (QList<Message_ptr>)));
+				SLOT (handleGotUpdatedMessages (QList<Message_ptr>, QStringList)));
 		connect (W_,
 				SIGNAL (gotOtherMessages (QList<QByteArray>, QStringList)),
 				A_,

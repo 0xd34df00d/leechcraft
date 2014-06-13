@@ -60,14 +60,14 @@ namespace Snails
 	public:
 		Storage (QObject* = 0);
 
-		void SaveMessages (Account*, const QList<Message_ptr>&);
+		void SaveMessages (Account*, const QStringList& folders, const QList<Message_ptr>&);
 		MessageSet LoadMessages (Account*);
-		Message_ptr LoadMessage (Account*, const QByteArray&);
-		QSet<QByteArray> LoadIDs (Account*, const QStringList&);
+		Message_ptr LoadMessage (Account*, const QStringList& folder, const QByteArray& id);
+		QSet<QByteArray> LoadIDs (Account*, const QStringList& folder);
 		int GetNumMessages (Account*) const;
 		bool HasMessagesIn (Account*) const;
 
-		bool IsMessageRead (Account*, const QByteArray&);
+		bool IsMessageRead (Account*, const QStringList& folder, const QByteArray&);
 	private:
 		QDir DirForAccount (Account*) const;
 		QSqlDatabase_ptr BaseForAccount (Account*);

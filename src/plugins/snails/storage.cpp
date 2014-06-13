@@ -96,9 +96,23 @@ namespace Snails
 		}
 	}
 
-	void Storage::SaveMessages (Account *acc, const QList<Message_ptr>& msgs)
+	void Storage::SaveMessages (Account *acc, const QStringList& folder, const QList<Message_ptr>& msgs)
 	{
-		const QDir& dir = DirForAccount (acc);
+		auto dir = DirForAccount (acc);
+		for (const auto& elem : folder)
+		{
+			const auto& subdir = elem.toUtf8 ().toHex ();
+			if (!dir.exists (subdir))
+				dir.mkdir (subdir);
+
+			if (!dir.cd (subdir))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cd to"
+						<< dir.filePath (subdir);
+				throw std::runtime_error ("Unable to cd to the directory");
+			}
+		}
 
 		for (const auto& msg : msgs)
 			PendingSaveMessages_ [acc] [msg->GetID ()] = msg;
@@ -178,12 +192,24 @@ namespace Snails
 		return result;
 	}
 
-	Message_ptr Storage::LoadMessage (Account *acc, const QByteArray& id)
+	Message_ptr Storage::LoadMessage (Account *acc, const QStringList& folder, const QByteArray& id)
 	{
 		if (PendingSaveMessages_ [acc].contains (id))
 			return PendingSaveMessages_ [acc] [id];
 
-		QDir dir = DirForAccount (acc);
+		auto dir = DirForAccount (acc);
+		for (const auto& elem : folder)
+		{
+			const auto& subdir = elem.toUtf8 ().toHex ();
+			if (!dir.cd (subdir))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cd to"
+						<< dir.filePath (subdir);
+				throw std::runtime_error ("Unable to cd to the directory");
+			}
+		}
+
 		if (!dir.cd (id.toHex ().right (3)))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -272,12 +298,12 @@ namespace Snails
 		return GetNumMessages (acc);
 	}
 
-	bool Storage::IsMessageRead (Account *acc, const QByteArray& id)
+	bool Storage::IsMessageRead (Account *acc, const QStringList& folder, const QByteArray& id)
 	{
 		if (IsMessageRead_.contains (id))
 			return IsMessageRead_ [id];
 
-		return LoadMessage (acc, id)->IsRead ();
+		return LoadMessage (acc, folder, id)->IsRead ();
 	}
 
 	QDir Storage::DirForAccount (Account *acc) const

@@ -397,7 +397,7 @@ namespace Snails
 
 		auto newMessages = FetchFullMessages (messages);
 
-		emit gotMsgHeaders (newMessages);
+		emit gotMsgHeaders (newMessages, { "INBOX" });
 	}
 
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
@@ -493,8 +493,7 @@ namespace Snails
 
 			bool isUpdated = false;
 
-			auto updated = Core::Instance ().GetStorage ()->
-					LoadMessage (A_, msg->GetID ());
+			auto updated = Core::Instance ().GetStorage ()->LoadMessage (A_, folderName, msg->GetID ());
 
 			if (updated->IsRead () != msg->IsRead ())
 			{
@@ -519,8 +518,8 @@ namespace Snails
 		if (ids.size ())
 			emit gotOtherMessages (ids, folderName);
 
-		emit gotMsgHeaders (newMessages);
-		emit gotUpdatedMessages (updatedMessages);
+		emit gotMsgHeaders (newMessages, folderName);
+		emit gotUpdatedMessages (updatedMessages, folderName);
 	}
 
 	namespace

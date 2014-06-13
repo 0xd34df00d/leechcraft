@@ -140,7 +140,7 @@ namespace Snails
 		QList<Message_ptr> messages;
 		const auto& ids = Core::Instance ().GetStorage ()->LoadIDs (this, path);
 		for (const auto& id : ids)
-			messages << Core::Instance ().GetStorage ()->LoadMessage (this, id);
+			messages << Core::Instance ().GetStorage ()->LoadMessage (this, path, id);
 
 		MailModel_->Append (messages);
 
@@ -590,28 +590,30 @@ namespace Snails
 		Core::Instance ().SendEntity (e);
 	}
 
-	void Account::handleMsgHeaders (QList<Message_ptr> messages)
+	void Account::handleMsgHeaders (const QList<Message_ptr>& messages, const QStringList& folder)
 	{
-		Core::Instance ().GetStorage ()->SaveMessages (this, messages);
+		qDebug () << Q_FUNC_INFO << messages.size ();
+		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
 		emit mailChanged ();
 
 		MailModel_->Append (messages);
 	}
 
-	void Account::handleGotUpdatedMessages (QList<Message_ptr> messages)
+	void Account::handleGotUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)
 	{
-		Core::Instance ().GetStorage ()->SaveMessages (this, messages);
+		qDebug () << Q_FUNC_INFO << messages.size ();
+		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
 		emit mailChanged ();
 
 		MailModel_->Append (messages);
 	}
 
-	void Account::handleGotOtherMessages (QList<QByteArray> ids, QStringList folder)
+	void Account::handleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << ids.size () << folder;
 		QList<Message_ptr> msgs;
 		for (const auto& id : ids)
-			msgs << Core::Instance ().GetStorage ()->LoadMessage (this, id);
+			msgs << Core::Instance ().GetStorage ()->LoadMessage (this, folder, id);
 
 		MailModel_->Append (msgs);
 	}
@@ -652,7 +654,8 @@ namespace Snails
 
 	void Account::handleMessageBodyFetched (Message_ptr msg)
 	{
-		Core::Instance ().GetStorage ()->SaveMessages (this, { msg });
+		for (const auto& folder : msg->GetFolders ())
+			Core::Instance ().GetStorage ()->SaveMessages (this, folder, { msg });
 		emit messageBodyFetched (msg);
 	}
 }

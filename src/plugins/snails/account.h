@@ -177,9 +177,9 @@ namespace Snails
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);
-		void handleMsgHeaders (QList<Message_ptr>);
-		void handleGotUpdatedMessages (QList<Message_ptr>);
-		void handleGotOtherMessages (QList<QByteArray>, QStringList);
+		void handleMsgHeaders (const QList<Message_ptr>&, const QStringList&);
+		void handleGotUpdatedMessages (const QList<Message_ptr>&, const QStringList&);
+		void handleGotOtherMessages (const QList<QByteArray>&, const QStringList&);
 		void handleGotFolders (QList<QStringList>);
 		void handleFoldersUpdated ();
 		void handleMessageBodyFetched (Message_ptr);

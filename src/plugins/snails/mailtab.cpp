@@ -200,14 +200,14 @@ namespace Snails
 			return;
 		}
 
-		const QModelIndex& idx = MailSortFilterModel_->mapToSource (sidx);
-		const QByteArray& id = idx.sibling (idx.row (), 0)
-				.data (MailModel::MailRole::ID).toByteArray ();
+		const auto& idx = MailSortFilterModel_->mapToSource (sidx);
+		const auto& id = idx.sibling (idx.row (), 0).data (MailModel::MailRole::ID).toByteArray ();
+		const auto& folder = CurrAcc_->GetMailModel ()->GetCurrentFolder ();
 
 		Message_ptr msg;
 		try
 		{
-			msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), id);
+			msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), folder, id);
 		}
 		catch (const std::exception& e)
 		{
@@ -223,7 +223,7 @@ namespace Snails
 		}
 
 		msg->SetRead (true);
-		Core::Instance ().GetStorage ()->SaveMessages (CurrAcc_.get (), { msg });
+		Core::Instance ().GetStorage ()->SaveMessages (CurrAcc_.get (), folder, { msg });
 		CurrAcc_->Update (msg);
 
 		if (!msg->IsFullyFetched ())
@@ -273,6 +273,7 @@ namespace Snails
 					SLOT (handleAttachment ()));
 			act->setProperty ("Snails/MsgId", id);
 			act->setProperty ("Snails/AttName", att.GetName ());
+			act->setProperty ("Snails/Folder", folder);
 		}
 
 		CurrMsg_ = msg;
@@ -300,8 +301,9 @@ namespace Snails
 			return;
 
 		const auto& id = sender ()->property ("Snails/MsgId").toByteArray ();
+		const auto& folder = sender ()->property ("Snails/Folder").toStringList ();
 
-		auto msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), id);
+		const auto& msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), folder, id);
 		CurrAcc_->FetchAttachment (msg, name, path);
 	}
 
