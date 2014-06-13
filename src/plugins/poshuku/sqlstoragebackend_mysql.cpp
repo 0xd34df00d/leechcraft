@@ -72,6 +72,7 @@ namespace Poshuku
 
 	SQLStorageBackendMysql::~SQLStorageBackendMysql ()
 	{
+		DB_.close ();
 	}
 
 	void SQLStorageBackendMysql::Prepare ()
