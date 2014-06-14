@@ -29,23 +29,21 @@
 
 #pragma once
 
-#include <QAbstractItemModel>
-#include "processinfo.h"
+#include <QStringList>
+#include <QDebug>
 
 namespace LeechCraft
 {
 namespace Eleeminator
 {
-	class ProcessGraphBuilder
+	struct ProcessInfo
 	{
-		const ProcessInfo Root_;
-	public:
-		ProcessGraphBuilder (int);
-
-		ProcessInfo GetProcessTree () const;
-		bool IsEmpty () const;
-
-		QAbstractItemModel* CreateModel () const;
+		int Pid_;
+		QString Command_;
+		QString CommandLine_;
+		QList<ProcessInfo> Children_;
 	};
 }
 }
+
+QDebug operator<< (QDebug, const LeechCraft::Eleeminator::ProcessInfo&);

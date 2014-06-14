@@ -16,6 +16,7 @@ set (SRCS
 	eleeminator.cpp
 	termtab.cpp
 	processgraphbuilder.cpp
+	processinfo.cpp
 	xmlsettingsmanager.cpp
 	closedialog.cpp
 	)
