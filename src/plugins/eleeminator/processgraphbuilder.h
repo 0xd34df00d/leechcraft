@@ -45,9 +45,17 @@ namespace Eleeminator
 		QList<ProcessInfo> Children_;
 	};
 
-	ProcessInfo GetProcessTree (int rootPid);
+	class ProcessGraphBuilder
+	{
+		const ProcessInfo Root_;
+	public:
+		ProcessGraphBuilder (int);
 
-	QAbstractItemModel* CreateModel (const ProcessInfo&);
+		ProcessInfo GetProcessTree () const;
+		bool IsEmpty () const;
+
+		QAbstractItemModel* CreateModel () const;
+	};
 }
 }
 

@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "util.h"
+#include "processgraphbuilder.h"
 #include <algorithm>
 #include <boost/optional.hpp>
 #include <QDir>
@@ -79,7 +79,6 @@ namespace Eleeminator
 			if (!procDir.isReadable ())
 				return {};
 
-			QStringList result;
 			for (const auto& subdirName : procDir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
 			{
 				bool ok = false;
@@ -129,10 +128,19 @@ namespace Eleeminator
 		}
 	}
 
-	ProcessInfo GetProcessTree (int rootPid)
+	ProcessGraphBuilder::ProcessGraphBuilder (int rootPid)
+	: Root_ (Convert2Info (BuildRawProcessGraph (), rootPid))
 	{
-		const auto& rawGraph = BuildRawProcessGraph ();
-		return Convert2Info (rawGraph, rootPid);
+	}
+
+	ProcessInfo ProcessGraphBuilder::GetProcessTree () const
+	{
+		return Root_;
+	}
+
+	bool ProcessGraphBuilder::IsEmpty () const
+	{
+		return Root_.Children_.isEmpty ();
 	}
 
 	void PrintPI (QDebug& debug, const ProcessInfo& info, int level = 0)
@@ -179,12 +187,12 @@ namespace Eleeminator
 		}
 	}
 
-	QAbstractItemModel* CreateModel (const ProcessInfo& info)
+	QAbstractItemModel* ProcessGraphBuilder::CreateModel () const
 	{
 		auto model = new QStandardItemModel;
 		model->setHorizontalHeaderLabels ({ QObject::tr ("PID"), QObject::tr ("Command"), QObject::tr ("Arguments") });
 
-		for (const auto& child : info.Children_)
+		for (const auto& child : Root_.Children_)
 			AppendInfoRow (child, model->invisibleRootItem ());
 
 		return model;

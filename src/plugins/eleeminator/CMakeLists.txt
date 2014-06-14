@@ -15,7 +15,7 @@ include_directories (
 set (SRCS
 	eleeminator.cpp
 	termtab.cpp
-	util.cpp
+	processgraphbuilder.cpp
 	xmlsettingsmanager.cpp
 	closedialog.cpp
 	)

@@ -45,7 +45,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
-#include "util.h"
+#include "processgraphbuilder.h"
 #include "closedialog.h"
 
 namespace LeechCraft
@@ -120,10 +120,10 @@ namespace Eleeminator
 
 	void TermTab::Remove ()
 	{
-		const auto& processTree = GetProcessTree (Term_->getShellPID ());
-		if (!processTree.Children_.isEmpty ())
+		ProcessGraphBuilder builder { Term_->getShellPID () };
+		if (!builder.IsEmpty ())
 		{
-			CloseDialog dia { CreateModel (processTree), this };
+			CloseDialog dia { builder.CreateModel (), this };
 			if (dia.exec () != QDialog::Accepted)
 				return;
 		}
