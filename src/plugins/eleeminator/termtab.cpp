@@ -110,6 +110,11 @@ namespace Eleeminator
 				SIGNAL (customContextMenuRequested (QPoint)),
 				this,
 				SLOT (handleTermContextMenu (QPoint)));
+
+		connect (Term_,
+				SIGNAL (bell (QString)),
+				this,
+				SLOT (handleBell (QString)));
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
@@ -306,6 +311,10 @@ namespace Eleeminator
 	{
 		const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
 		CoreProxy_->GetEntityManager ()->HandleEntity (entity);
+	}
+
+	void TermTab::handleBell (const QString&)
+	{
 	}
 
 	void TermTab::handleFinished ()

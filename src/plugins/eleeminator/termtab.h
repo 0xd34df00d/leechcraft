@@ -82,6 +82,7 @@ namespace Eleeminator
 		void selectFont ();
 
 		void handleUrlActivated (const QUrl&);
+		void handleBell (const QString&);
 
 		void handleFinished ();
 	signals:
