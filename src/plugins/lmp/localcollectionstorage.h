@@ -95,6 +95,7 @@ namespace LMP
 		};
 
 		LocalCollectionStorage (QObject* = 0);
+		~LocalCollectionStorage ();
 
 		void Clear ();
 		Collection::Artists_t AddToCollection (const QList<MediaInfo>&);

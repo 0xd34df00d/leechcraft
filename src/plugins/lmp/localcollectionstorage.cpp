@@ -80,6 +80,11 @@ namespace LMP
 		PrepareQueries ();
 	}
 
+	LocalCollectionStorage::~LocalCollectionStorage ()
+	{
+		DB_.close ();
+	}
+
 	void LocalCollectionStorage::Clear ()
 	{
 		Util::DBLock lock (DB_);
