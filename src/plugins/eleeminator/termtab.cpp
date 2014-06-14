@@ -38,7 +38,6 @@
 #include <QFontDialog>
 #include <QUrl>
 #include <QProcessEnvironment>
-#include <QMessageBox>
 #include <QApplication>
 #include <QClipboard>
 #include <QtDebug>
@@ -49,7 +48,8 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
-#include "util.h"
+#include "processgraphbuilder.h"
+#include "closedialog.h"
 
 namespace LeechCraft
 {
@@ -134,22 +134,11 @@ namespace Eleeminator
 
 	void TermTab::Remove ()
 	{
-		const auto& children = ListProcessChildren (Term_->getShellPID ());
-		if (!children.isEmpty ())
+		ProcessGraphBuilder builder { Term_->getShellPID () };
+		if (!builder.IsEmpty ())
 		{
-			QString message;
-			if (children.size () == 1)
-				message = tr ("The shell has a child running: %1. Are you sure you want to close it?")
-						.arg ("<em>" + children.value (0) + "</em>");
-			else
-				message = tr ("The shell has %n child process(es) running: %1. Are you sure you want to close it?", 0, children.size ())
-						.arg ("<em>" + children.join ("</em>; <em>") + "</em>");
-
-			const auto res = QMessageBox::question (this,
-					"LeechCraft",
-					message,
-					QMessageBox::Yes | QMessageBox::No);
-			if (res == QMessageBox::No)
+			CloseDialog dia { builder.CreateModel (), this };
+			if (dia.exec () != QDialog::Accepted)
 				return;
 		}
 

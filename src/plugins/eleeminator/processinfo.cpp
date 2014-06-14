@@ -27,14 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-class QStringList;
+#include "processinfo.h"
 
 namespace LeechCraft
 {
 namespace Eleeminator
 {
-	QStringList ListProcessChildren (int);
+	void PrintPI (QDebug& debug, const ProcessInfo& info, int level = 0)
+	{
+		const int levelShift = 2;
+
+		auto printShift = [&debug, level]
+		{
+			for (int i = 0; i < level; ++i)
+				debug << " ";
+		};
+
+		printShift ();
+		debug << "PI { Pid: " << info.Pid_ << "; command: " << info.Command_ << "; command line: " << info.CommandLine_ << "; children: " << info.Children_.size ();
+
+		if (!info.Children_.isEmpty ())
+		{
+			debug << ":\n";
+			for (const auto& child : info.Children_)
+				PrintPI (debug, child, level + levelShift);
+		}
+
+		printShift ();
+		debug << "}\n";
+	}
 }
+}
+
+QDebug operator<< (QDebug debug, const LeechCraft::Eleeminator::ProcessInfo& info)
+{
+	LeechCraft::Eleeminator::PrintPI (debug.nospace (), info);
+	return debug.space ();
 }
