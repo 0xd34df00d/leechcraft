@@ -28,7 +28,10 @@
  **********************************************************************/
 
 #include "util.h"
+#include <algorithm>
+#include <boost/optional.hpp>
 #include <QDir>
+#include <QMap>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -83,6 +86,80 @@ namespace Eleeminator
 		}
 
 		return result;
+	}
+
+	namespace
+	{
+		boost::optional<int> GetParentPid (QDir subdir, const QString& subdirName)
+		{
+			if (!subdir.cd (subdirName))
+				return {};
+
+			QFile file { subdir.filePath ("status") };
+			if (!file.open (QIODevice::ReadOnly))
+				return {};
+
+			static QByteArray marker { "PPid:" };
+
+			QByteArray line;
+			do
+			{
+				line = file.readLine ();
+				if (!line.startsWith (marker))
+					continue;
+
+				const auto& parentPidStr = line.mid (marker.size ()).trimmed ();
+				bool ok = false;
+				const auto parentPid = parentPidStr.toInt (&ok);
+				return ok ? parentPid : boost::optional<int> {};
+			}
+			while (!line.isEmpty ());
+
+			return {};
+		}
+
+		typedef QMap<int, QList<int>> RawProcessGraph_t;
+
+		RawProcessGraph_t BuildRawProcessGraph ()
+		{
+			RawProcessGraph_t processGraph;
+
+			const QDir procDir { "/proc" };
+			if (!procDir.isReadable ())
+				return {};
+
+			QStringList result;
+			for (const auto& subdirName : procDir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+			{
+				bool ok = false;
+				const auto processPid = subdirName.toInt (&ok);
+				if (!ok)
+					continue;
+
+				if (const auto& parentPid = GetParentPid (procDir, subdirName))
+					processGraph [*parentPid] << processPid;
+			}
+
+			return processGraph;
+		}
+
+		ProcessInfo Convert2Info (const RawProcessGraph_t& rawProcessGraph, int pid)
+		{
+			ProcessInfo result { pid, {}, {} };
+
+			auto childPids = rawProcessGraph.value (pid);
+			std::sort (childPids.begin (), childPids.end ());
+			for (const auto childPid : childPids)
+				result.Children_ << Convert2Info (rawProcessGraph, childPid);
+
+			return result;
+		}
+	}
+
+	ProcessInfo GetProcessTree (int rootPid)
+	{
+		const auto& rawGraph = BuildRawProcessGraph ();
+		return Convert2Info (rawGraph, rootPid);
 	}
 }
 }

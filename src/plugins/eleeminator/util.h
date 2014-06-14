@@ -29,12 +29,21 @@
 
 #pragma once
 
-class QStringList;
+#include <QStringList>
 
 namespace LeechCraft
 {
 namespace Eleeminator
 {
 	QStringList ListProcessChildren (int);
+
+	struct ProcessInfo
+	{
+		int Pid_;
+		QString Command_;
+		QList<ProcessInfo> Children_;
+	};
+
+	ProcessInfo GetProcessTree (int rootPid);
 }
 }
