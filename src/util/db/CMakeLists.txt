@@ -31,7 +31,7 @@ target_link_libraries (leechcraft-util-db
 	${QT_LIBRARIES}
 	leechcraft-xsd
 	)
-set_property (TARGET leechcraft-util-db PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-db PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-db DESTINATION ${LIBDIR})
 
 if (USE_QT5)

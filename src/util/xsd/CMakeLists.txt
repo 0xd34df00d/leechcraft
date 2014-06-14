@@ -16,5 +16,5 @@ target_link_libraries (leechcraft-util-xsd
 	leechcraft-xsd
 	leechcraft-util-network
 	)
-set_property (TARGET leechcraft-util-xsd PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-xsd PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-xsd DESTINATION ${LIBDIR})

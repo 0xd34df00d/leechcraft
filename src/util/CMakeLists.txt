@@ -17,6 +17,8 @@ include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	..)
 
+set (LC_SOVERSION 0.6.70)
+
 add_subdirectory (db)
 add_subdirectory (gui)
 add_subdirectory (models)
@@ -84,7 +86,7 @@ target_link_libraries (leechcraft-util
 	${QT_LIBRARIES}
 	${ADDITIONAL_LIBS}
 	)
-set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
 
 if (USE_QT5)

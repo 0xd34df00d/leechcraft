@@ -32,7 +32,7 @@ target_link_libraries (leechcraft-util-svcauth
 	leechcraft-util-network
 	leechcraft-util-sll
 	)
-set_property (TARGET leechcraft-util-svcauth PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-svcauth PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-svcauth DESTINATION ${LIBDIR})
 
 if (USE_QT5)

@@ -22,6 +22,5 @@ target_link_libraries (leechcraft-util-x11
 	${QT_LIBRARIES}
 	${X11_X11_LIB}
 	)
-set_property (TARGET leechcraft-util-x11 PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-x11 PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-x11 DESTINATION ${LIBDIR})
-

@@ -39,5 +39,5 @@ target_link_libraries (leechcraft-util-sys
 	${QT_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	)
-set_property (TARGET leechcraft-util-sys PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-sys PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-sys DESTINATION ${LIBDIR})

@@ -40,7 +40,7 @@ target_link_libraries (leechcraft-util-gui
 	${QT_LIBRARIES}
 	leechcraft-util-network
 	)
-set_property (TARGET leechcraft-util-gui PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-gui PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-gui DESTINATION ${LIBDIR})
 
 if (USE_QT5)

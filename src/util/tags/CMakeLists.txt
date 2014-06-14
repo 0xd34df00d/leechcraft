@@ -18,5 +18,5 @@ target_link_libraries (leechcraft-util-tags
 	${QT_LIBRARIES}
 	leechcraft-util-gui
 	)
-set_property (TARGET leechcraft-util-tags PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-tags PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-tags DESTINATION ${LIBDIR})

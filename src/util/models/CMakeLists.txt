@@ -18,7 +18,7 @@ add_library (leechcraft-util-models SHARED
 target_link_libraries (leechcraft-util-models
 	${QT_LIBRARIES}
 	)
-set_property (TARGET leechcraft-util-models PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-models PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-models DESTINATION ${LIBDIR})
 
 if (USE_QT5)
