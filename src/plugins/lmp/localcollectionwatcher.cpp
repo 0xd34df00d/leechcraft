@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "localcollectionwatcher.h"
+#include <algorithm>
 #include <QTimer>
 #include "core.h"
 #include "localcollection.h"
@@ -70,8 +71,11 @@ namespace LMP
 			ScanTimer_->stop ();
 		ScanTimer_->start (2000);
 
-		if (!ScheduledDirs_.contains (dir))
-			ScheduledDirs_ << dir;
+		if (std::any_of (ScheduledDirs_.begin (), ScheduledDirs_.end (),
+				[&dir] (const QString& other) { return dir.startsWith (other); }))
+			return;
+
+		ScheduledDirs_ << dir;
 	}
 
 	void LocalCollectionWatcher::handleDirectoryChanged (const QString& path)
