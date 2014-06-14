@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QStringList>
+#include <QDebug>
 
 namespace LeechCraft
 {
@@ -47,3 +48,5 @@ namespace Eleeminator
 	ProcessInfo GetProcessTree (int rootPid);
 }
 }
+
+QDebug operator<< (QDebug, const LeechCraft::Eleeminator::ProcessInfo&);
