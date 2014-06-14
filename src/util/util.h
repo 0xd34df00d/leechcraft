@@ -197,7 +197,7 @@ namespace LeechCraft
 		 * @param[in] handle The handle to convert.
 		 * @return The integer representation of the handle.
 		 */
-		UTIL_API unsigned long Handle2Num (Qt::HANDLE handle);
+		UTIL_API uintptr_t Handle2Num (Qt::HANDLE handle);
 
 		/** @brief Returns an element for a given tags list.
 		 *
