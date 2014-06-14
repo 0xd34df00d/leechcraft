@@ -143,9 +143,31 @@ namespace Eleeminator
 			return processGraph;
 		}
 
+		void FillProcessInfo (ProcessInfo& info)
+		{
+			QDir processDir { "/proc/" + QString::number (info.Pid_) };
+			if (!processDir.isReadable ())
+				return;
+
+			QFile commFile { processDir.filePath ("comm") };
+			if (commFile.open (QIODevice::ReadOnly))
+				info.Command_ = QString::fromUtf8 (commFile.readAll ().trimmed ());
+
+			QFile cmdLineFile { processDir.filePath ("cmdline") };
+			if (cmdLineFile.open (QIODevice::ReadOnly))
+			{
+				auto cmdLine = cmdLineFile.readAll ().trimmed ();
+				cmdLine.replace ('\0', ' ');
+				cmdLine.append ('\0');
+				info.CommandLine_ = QString::fromUtf8 (cmdLine).trimmed ();
+			}
+		}
+
 		ProcessInfo Convert2Info (const RawProcessGraph_t& rawProcessGraph, int pid)
 		{
-			ProcessInfo result { pid, {}, {} };
+			ProcessInfo result { pid, "(UNKNOWN)", "(UNKNOWN)", {} };
+
+			FillProcessInfo (result);
 
 			auto childPids = rawProcessGraph.value (pid);
 			std::sort (childPids.begin (), childPids.end ());
