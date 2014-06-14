@@ -33,6 +33,7 @@
 #include <QDir>
 #include <QMap>
 #include <QtDebug>
+#include <QStandardItemModel>
 
 namespace LeechCraft
 {
@@ -206,6 +207,37 @@ namespace Eleeminator
 
 		printShift ();
 		debug << "}\n";
+	}
+
+	namespace
+	{
+		void AppendInfoRow (const ProcessInfo& info, QStandardItem *parent)
+		{
+			QList<QStandardItem*> row
+			{
+				new QStandardItem { QString::number (info.Pid_) },
+				new QStandardItem { info.Command_ },
+				new QStandardItem { info.CommandLine_ }
+			};
+			for (auto item : row)
+				item->setEditable (false);
+
+			for (const auto& child : info.Children_)
+				AppendInfoRow (child, row.first ());
+
+			parent->appendRow (row);
+		}
+	}
+
+	QAbstractItemModel* CreateModel (const ProcessInfo& info)
+	{
+		auto model = new QStandardItemModel;
+		model->setHorizontalHeaderLabels ({ QObject::tr ("PID"), QObject::tr ("Command"), QObject::tr ("Arguments") });
+
+		for (const auto& child : info.Children_)
+			AppendInfoRow (child, model->invisibleRootItem ());
+
+		return model;
 	}
 }
 }

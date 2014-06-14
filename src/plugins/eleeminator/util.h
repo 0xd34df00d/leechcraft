@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QStringList>
+#include <QAbstractItemModel>
 #include <QDebug>
 
 namespace LeechCraft
@@ -47,6 +48,8 @@ namespace Eleeminator
 	};
 
 	ProcessInfo GetProcessTree (int rootPid);
+
+	QAbstractItemModel* CreateModel (const ProcessInfo&);
 }
 }
 
