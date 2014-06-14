@@ -39,56 +39,6 @@ namespace LeechCraft
 {
 namespace Eleeminator
 {
-	QStringList ListProcessChildren (int pid)
-	{
-		const QDir procDir { "/proc" };
-		if (!procDir.isReadable ())
-			return {};
-
-		static QByteArray marker { "PPid:" };
-
-		QStringList result;
-		for (const auto& subdirName : procDir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
-		{
-			bool ok = false;
-			subdirName.toInt (&ok);
-			if (!ok)
-				continue;
-
-			auto subdir = procDir;
-			if (!subdir.cd (subdirName))
-				continue;
-
-			QFile file { subdir.filePath ("status") };
-			if (!file.open (QIODevice::ReadOnly))
-				continue;
-
-			QByteArray line;
-			do
-			{
-				line = file.readLine ();
-				if (!line.startsWith (marker))
-					continue;
-
-				const auto& parentPidStr = line.mid (marker.size ()).trimmed ();
-				const auto parentPid = parentPidStr.toInt (&ok);
-				if (ok && parentPid == pid)
-				{
-					QFile commandFile { subdir.filePath ("comm") };
-					if (!commandFile.open (QIODevice::ReadOnly))
-						result << "(UNKNOWN)";
-					else
-						result << QString::fromUtf8 (commandFile.readAll ()).trimmed ();
-				}
-
-				break;
-			}
-			while (!line.isEmpty ());
-		}
-
-		return result;
-	}
-
 	namespace
 	{
 		boost::optional<int> GetParentPid (QDir subdir, const QString& subdirName)

@@ -37,8 +37,6 @@ namespace LeechCraft
 {
 namespace Eleeminator
 {
-	QStringList ListProcessChildren (int);
-
 	struct ProcessInfo
 	{
 		int Pid_;
