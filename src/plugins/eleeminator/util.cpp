@@ -173,7 +173,7 @@ namespace Eleeminator
 		};
 
 		printShift ();
-		debug << "PI { Pid: " << info.Pid_ << "; command: " << info.Command_ << "; children: " << info.Children_.size ();
+		debug << "PI { Pid: " << info.Pid_ << "; command: " << info.Command_ << "; command line: " << info.CommandLine_ << "; children: " << info.Children_.size ();
 
 		if (!info.Children_.isEmpty ())
 		{

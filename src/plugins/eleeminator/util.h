@@ -42,6 +42,7 @@ namespace Eleeminator
 	{
 		int Pid_;
 		QString Command_;
+		QString CommandLine_;
 		QList<ProcessInfo> Children_;
 	};
 
