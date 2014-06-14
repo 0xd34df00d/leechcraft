@@ -75,6 +75,10 @@ namespace LMP
 				[&dir] (const QString& other) { return dir.startsWith (other); }))
 			return;
 
+		const auto pos = std::remove_if (ScheduledDirs_.begin (), ScheduledDirs_.end (),
+				[&dir] (const QString& other) { return other.startsWith (dir); });
+		ScheduledDirs_.erase (pos, ScheduledDirs_.end ());
+
 		ScheduledDirs_ << dir;
 	}
 
