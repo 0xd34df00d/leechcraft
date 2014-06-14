@@ -315,5 +315,5 @@ QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px,
 
 uintptr_t LeechCraft::Util::Handle2Num (Qt::HANDLE handle)
 {
-	return reinterpret_cast<unsigned long> (handle);
+	return reinterpret_cast<uintptr_t> (handle);
 }
