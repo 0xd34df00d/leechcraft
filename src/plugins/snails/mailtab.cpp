@@ -231,10 +231,6 @@ namespace Snails
 			return;
 		}
 
-		msg->SetRead (true);
-		Core::Instance ().GetStorage ()->SaveMessages (CurrAcc_.get (), folder, { msg });
-		CurrAcc_->Update (msg);
-
 		if (!msg->IsFullyFetched ())
 			CurrAcc_->FetchWholeMessage (msg);
 		else if (!msg->IsRead ())
