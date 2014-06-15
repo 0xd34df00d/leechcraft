@@ -35,6 +35,14 @@
 #include <vmime/charsetConverter.hpp>
 #include <vmime/utility/outputStreamStringAdapter.hpp>
 
+namespace vmime
+{
+namespace net
+{
+	class folder;
+}
+}
+
 namespace LeechCraft
 {
 namespace Snails
@@ -78,5 +86,7 @@ namespace Snails
 					QString::fromUtf8 (mbox->getEmail ().toString ().c_str ())
 				};
 	}
+
+	QStringList GetFolderPath (const vmime::shared_ptr<vmime::net::folder>&);
 }
 }

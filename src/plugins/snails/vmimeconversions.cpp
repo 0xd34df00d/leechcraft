@@ -28,10 +28,20 @@
  **********************************************************************/
 
 #include "vmimeconversions.h"
+#include <QStringList>
+#include <vmime/net/folder.hpp>
 
 namespace LeechCraft
 {
 namespace Snails
 {
+	QStringList GetFolderPath (const boost::shared_ptr<vmime::net::folder>& folder)
+	{
+		QStringList pathList;
+		const auto& path = folder->getFullPath ();
+		for (size_t i = 0; i < path.getSize (); ++i)
+			pathList << StringizeCT (path.getComponentAt (i));
+		return pathList;
+	}
 }
 }
