@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "accountthreadworker.h"
+#include <algorithm>
 #include <QMutexLocker>
 #include <QUrl>
 #include <QFile>
@@ -573,18 +574,10 @@ namespace Snails
 		auto root = store->getRootFolder ();
 
 		QList<QStringList> paths;
-
-		auto folders = root->getFolders (true);
-		Q_FOREACH (vmime::shared_ptr<vmime::net::folder> folder, root->getFolders (true))
-		{
-			QStringList pathList;
-			const auto& path = folder->getFullPath ();
-			for (size_t i = 0; i < path.getSize (); ++i)
-				pathList << StringizeCT (path.getComponentAt (i));
-
-			paths << pathList;
-		}
-
+		const auto& folders = root->getFolders (true);
+		std::transform (folders.begin (), folders.end (),
+				std::back_inserter (paths),
+				&GetFolderPath);
 		emit gotFolders (paths);
 	}
 
