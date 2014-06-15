@@ -22,7 +22,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QTreeView" name="ChildView_"/>
+    <widget class="QTreeView" name="ChildView_">
+     <property name="indentation">
+      <number>10</number>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
