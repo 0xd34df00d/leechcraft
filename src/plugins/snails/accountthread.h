@@ -43,12 +43,14 @@ namespace Snails
 	{
 		Q_OBJECT
 
-		Account *A_;
+		Account * const A_;
+		const bool IsListening_;
+
 		AccountThreadWorker *W_;
 
 		TaskQueueManager *QueueManager_ = nullptr;
 	public:
-		AccountThread (Account*);
+		AccountThread (bool isListening, Account*);
 
 		TaskQueueManager* GetTaskManager () const;
 	protected:

@@ -112,8 +112,9 @@ namespace Snails
 		}
 	}
 
-	AccountThreadWorker::AccountThreadWorker (Account *parent)
+	AccountThreadWorker::AccountThreadWorker (bool isListening, Account *parent)
 	: A_ (parent)
+	, IsListening_ (isListening)
 	, Session_ (new vmime::net::session ())
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	{

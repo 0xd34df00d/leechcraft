@@ -38,8 +38,9 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	AccountThread::AccountThread (Account *parent)
+	AccountThread::AccountThread (bool isListening, Account *parent)
 	: A_ { parent }
+	, IsListening_ { isListening }
 	{
 	}
 
@@ -55,7 +56,7 @@ namespace Snails
 
 	void AccountThread::run ()
 	{
-		W_ = new AccountThreadWorker { A_ };
+		W_ = new AccountThreadWorker { IsListening_, A_ };
 		QueueManager_ = new TaskQueueManager { W_ };
 
 		ConnectSignals ();

@@ -53,8 +53,8 @@ namespace Snails
 {
 	Account::Account (QObject *parent)
 	: QObject (parent)
-	, Thread_ (new AccountThread (this))
-	, MessageFetchThread_ (new AccountThread (this))
+	, Thread_ (new AccountThread (true, this))
+	, MessageFetchThread_ (new AccountThread (false, this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	, UseSASL_ (false)

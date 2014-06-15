@@ -50,14 +50,17 @@ namespace Snails
 	{
 		Q_OBJECT
 
-		Account *A_;
+		Account * const A_;
+
+		const bool IsListening_;
+
 		vmime::shared_ptr<vmime::net::session> Session_;
 		vmime::shared_ptr<vmime::net::store> CachedStore_;
 		QHash<QStringList, vmime::shared_ptr<vmime::net::folder>> CachedFolders_;
 
 		const vmime::shared_ptr<vmime::security::cert::defaultCertificateVerifier> CertVerifier_;
 	public:
-		AccountThreadWorker (Account*);
+		AccountThreadWorker (bool, Account*);
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
