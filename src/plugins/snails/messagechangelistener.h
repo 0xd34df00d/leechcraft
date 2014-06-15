@@ -40,8 +40,12 @@ namespace Snails
 								, public vmime::net::events::messageChangedListener
 	{
 		Q_OBJECT
+
+		bool IsEnabled_ = true;
 	public:
 		MessageChangeListener (QObject*);
+
+		std::shared_ptr<void> Disable ();
 	protected:
 		void messageChanged (vmime::shared_ptr<vmime::net::events::messageChangedEvent>) override;
 	signals:

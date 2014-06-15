@@ -29,6 +29,7 @@
 
 #include "messagechangelistener.h"
 #include <QStringList>
+#include <QtDebug>
 #include <vmime/net/folder.hpp>
 #include "vmimeconversions.h"
 
@@ -41,8 +42,20 @@ namespace Snails
 	{
 	}
 
+	std::shared_ptr<void> MessageChangeListener::Disable ()
+	{
+		if (!IsEnabled_)
+			return {};
+
+		IsEnabled_ = false;
+		return std::shared_ptr<void> (nullptr, [this] (void*) { IsEnabled_ = true; });
+	}
+
 	void MessageChangeListener::messageChanged (vmime::shared_ptr<vmime::net::events::messageChangedEvent> event)
 	{
+		if (!IsEnabled_)
+			return;
+
 		const auto& folder = event->getFolder ();
 
 		QList<int> numsList;
