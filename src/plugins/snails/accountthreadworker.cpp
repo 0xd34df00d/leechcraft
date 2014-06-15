@@ -669,7 +669,7 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::markAsUnread (const QList<QByteArray>& ids, const QStringList& folderPath)
+	void AccountThreadWorker::setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folderPath)
 	{
 		if (A_->InType_ == Account::InType::POP3)
 			return;
@@ -682,13 +682,15 @@ namespace Snails
 
 		folder->setMessageFlags (set,
 				vmime::net::message::Flags::FLAG_SEEN,
-				vmime::net::message::FLAG_MODE_REMOVE);
+				read ?
+						vmime::net::message::FLAG_MODE_ADD :
+						vmime::net::message::FLAG_MODE_REMOVE);
 
 		QList<Message_ptr> messages;
 		for (const auto& id : ids)
 		{
 			const auto& message = Core::Instance ().GetStorage ()->LoadMessage (A_, folderPath, id);
-			message->SetRead (false);
+			message->SetRead (read);
 
 			messages << message;
 		}

@@ -311,7 +311,7 @@ namespace Snails
 		if (!currentId.isEmpty () && !ids.contains (currentId))
 			ids << currentId;
 
-		CurrAcc_->MarkAsUnread (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
+		CurrAcc_->SetReadStatus (false, ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
 	}
 
 	void MailTab::handleAttachment ()

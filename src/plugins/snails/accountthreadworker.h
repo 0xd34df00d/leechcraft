@@ -81,7 +81,7 @@ namespace Snails
 		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
 	public slots:
 		void synchronize (LeechCraft::Snails::Account::FetchFlags, const QList<QStringList>&);
-		void markAsUnread (const QList<QByteArray>& ids, const QStringList& folder);
+		void setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
 		void fetchWholeMessage (LeechCraft::Snails::Message_ptr);
 		void fetchAttachment (LeechCraft::Snails::Message_ptr, const QString&, const QString&);
 		void sendMessage (LeechCraft::Snails::Message_ptr);

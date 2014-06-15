@@ -216,11 +216,12 @@ namespace Snails
 			});
 	}
 
-	void Account::MarkAsUnread (const QList<QByteArray>& ids, const QStringList& folder)
+	void Account::SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		MessageFetchThread_->GetTaskManager ()->AddTask ({
-				"markAsUnread",
+				"setReadStatus",
 				{
+					read,
 					ids,
 					folder
 				}
