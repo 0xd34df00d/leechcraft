@@ -348,7 +348,10 @@ namespace XooxUtil
 
 		auto delayElem = forwardedElem.firstChildElement ("delay");
 		if (!delayElem.isNull ())
-			original.setStamp (QXmppUtils::datetimeFromString (delayElem.attribute ("stamp")));
+		{
+			const auto& sourceDT = QXmppUtils::datetimeFromString (delayElem.attribute ("stamp"));
+			original.setStamp (sourceDT.toLocalTime ());
+		}
 
 		return original;
 	}
