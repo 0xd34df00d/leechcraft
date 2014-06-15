@@ -45,6 +45,7 @@
 #include "taskqueuemanager.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
+Q_DECLARE_METATYPE (QList<QByteArray>)
 
 namespace LeechCraft
 {
@@ -211,6 +212,17 @@ namespace Snails
 					msg,
 					attName,
 					path
+				}
+			});
+	}
+
+	void Account::MarkAsUnread (const QList<QByteArray>& ids, const QStringList& folder)
+	{
+		MessageFetchThread_->GetTaskManager ()->AddTask ({
+				"markAsUnread",
+				{
+					ids,
+					folder
 				}
 			});
 	}

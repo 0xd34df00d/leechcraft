@@ -156,6 +156,8 @@ namespace Snails
 		void FetchAttachment (Message_ptr,
 				const QString&, const QString&);
 
+		void MarkAsUnread (const QList<QByteArray>&, const QStringList&);
+
 		void Update (const Message_ptr&);
 
 		QByteArray Serialize () const;
