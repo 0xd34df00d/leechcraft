@@ -45,6 +45,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class Account;
+	class MessageChangeListener;
 
 	class AccountThreadWorker : public QObject
 	{
@@ -53,6 +54,8 @@ namespace Snails
 		Account * const A_;
 
 		const bool IsListening_;
+
+		MessageChangeListener * const ChangeListener_;
 
 		vmime::shared_ptr<vmime::net::session> Session_;
 		vmime::shared_ptr<vmime::net::store> CachedStore_;
@@ -74,6 +77,8 @@ namespace Snails
 		void SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>&);
 		ProgressListener* MkPgListener (const QString&);
+	private slots:
+		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
 	public slots:
 		void synchronize (LeechCraft::Snails::Account::FetchFlags, const QList<QStringList>&);
 		void markAsUnread (const QList<QByteArray>& ids, const QStringList& folder);

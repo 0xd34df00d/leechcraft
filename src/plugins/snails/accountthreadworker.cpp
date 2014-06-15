@@ -57,6 +57,7 @@
 #include "vmimeconversions.h"
 #include "outputiodevadapter.h"
 #include "common.h"
+#include "messagechangelistener.h"
 
 namespace LeechCraft
 {
@@ -115,6 +116,7 @@ namespace Snails
 	AccountThreadWorker::AccountThreadWorker (bool isListening, Account *parent)
 	: A_ (parent)
 	, IsListening_ (isListening)
+	, ChangeListener_ (new MessageChangeListener (this))
 	, Session_ (new vmime::net::session ())
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	{
@@ -126,6 +128,12 @@ namespace Snails
 			vCerts.push_back (vmime::security::cert::X509Certificate::import (bytes, der.size ()));
 		}
 		CertVerifier_->setX509RootCAs (vCerts);
+
+		if (IsListening_)
+			connect (ChangeListener_,
+					SIGNAL (messagesChanged (QStringList, QList<int>)),
+					this,
+					SLOT (handleMessagesChanged (QStringList, QList<int>)));
 	}
 
 	vmime::shared_ptr<vmime::net::store> AccountThreadWorker::MakeStore ()
@@ -155,6 +163,13 @@ namespace Snails
 		CachedStore_ = st;
 
 		st->connect ();
+
+		if (IsListening_)
+			if (const auto defFolder = st->getDefaultFolder ())
+			{
+				defFolder->addMessageChangedListener (ChangeListener_);
+				CachedFolders_ [GetFolderPath (defFolder)] = defFolder;
+			}
 
 		return st;
 	}
@@ -415,6 +430,9 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
 			vmime::shared_ptr<vmime::net::folder> folder)
 	{
+		const auto& changeGuard = ChangeListener_->Disable ();
+		Q_UNUSED (changeGuard)
+
 		qDebug () << Q_FUNC_INFO << folderName << folder.get ();
 		const auto count = folder->getMessageCount ();
 		std::vector<vmime::shared_ptr<vmime::net::message>> messages;
@@ -622,6 +640,14 @@ namespace Snails
 		pl->deleteLater ();
 		emit gotProgressListener (ProgressListener_g_ptr (pl));
 		return pl;
+	}
+
+	void AccountThreadWorker::handleMessagesChanged (const QStringList& folder, const QList<int>& numbers)
+	{
+		qDebug () << Q_FUNC_INFO << folder << numbers;
+		auto set = vmime::net::messageSet::empty ();
+		for (const auto& num : numbers)
+			set.addRange (vmime::net::numberMessageRange { num });
 	}
 
 	void AccountThreadWorker::synchronize (Account::FetchFlags flags, const QList<QStringList>& folders)
