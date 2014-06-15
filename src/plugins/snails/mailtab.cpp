@@ -117,8 +117,16 @@ namespace Snails
 		MsgAttachments_->setIcon (Core::Instance ().GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("mail-attachment"));
 
+		MsgMarkUnread_ = new QAction (tr ("Mark as unread"), this);
+		MsgMarkUnread_->setProperty ("ActionIcon", "mail-mark-unread");
+		connect (MsgMarkUnread_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMarkMsgUnread ()));
+
 		MsgToolbar_->addAction (MsgReply_);
 		MsgToolbar_->addAction (MsgAttachments_->menuAction ());
+		MsgToolbar_->addAction (MsgMarkUnread_);
 	}
 
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
@@ -286,6 +294,23 @@ namespace Snails
 			return;
 
 		Core::Instance ().PrepareReplyTab (CurrMsg_, CurrAcc_);
+	}
+
+	void MailTab::handleMarkMsgUnread ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto& current = Ui_.MailTree_->currentIndex ();
+		auto rows = Ui_.MailTree_->selectionModel ()->selectedRows ();
+		if (!rows.contains (current))
+			rows << current;
+
+		QList<QByteArray> ids;
+		for (const auto& index : rows)
+			ids << index.data (MailModel::MailRole::ID).toByteArray ();
+
+		CurrAcc_->MarkAsUnread (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
 	}
 
 	void MailTab::handleAttachment ()

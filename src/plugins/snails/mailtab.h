@@ -54,6 +54,7 @@ namespace Snails
 		QToolBar *MsgToolbar_;
 
 		QAction *MsgReply_;
+		QAction *MsgMarkUnread_;
 		QMenu *MsgAttachments_;
 
 		TabClassInfo TabClass_;
@@ -76,6 +77,7 @@ namespace Snails
 		void handleCurrentTagChanged (const QModelIndex&);
 		void handleMailSelected (const QModelIndex&);
 		void handleReply ();
+		void handleMarkMsgUnread ();
 		void handleAttachment ();
 		void handleFetchNewMail ();
 		void handleMessageBodyFetched (Message_ptr);
