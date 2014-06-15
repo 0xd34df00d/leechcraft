@@ -301,14 +301,15 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		const auto& current = Ui_.MailTree_->currentIndex ();
-		auto rows = Ui_.MailTree_->selectionModel ()->selectedRows ();
-		if (!rows.contains (current))
-			rows << current;
-
+		const auto& rows = Ui_.MailTree_->selectionModel ()->selectedRows ();
 		QList<QByteArray> ids;
 		for (const auto& index : rows)
 			ids << index.data (MailModel::MailRole::ID).toByteArray ();
+
+		const auto& currentId = Ui_.MailTree_->currentIndex ()
+				.data (MailModel::MailRole::ID).toByteArray ();
+		if (!currentId.isEmpty () && !ids.contains (currentId))
+			ids << currentId;
 
 		CurrAcc_->MarkAsUnread (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
 	}
