@@ -649,6 +649,22 @@ namespace Snails
 		}
 	}
 
+	void AccountThreadWorker::markAsUnread (const QList<QByteArray>& ids, const QStringList& folderPath)
+	{
+		if (A_->InType_ == Account::InType::POP3)
+			return;
+
+		const auto& folder = GetFolder (folderPath, vmime::net::folder::MODE_READ_WRITE);
+
+		auto set = vmime::net::messageSet::empty ();
+		for (const auto& id : ids)
+			set.addRange (vmime::net::UIDMessageRange { id.constData () });
+
+		folder->setMessageFlags (set,
+				vmime::net::message::Flags::FLAG_SEEN,
+				vmime::net::message::FLAG_MODE_REMOVE);
+	}
+
 	void AccountThreadWorker::fetchWholeMessage (Message_ptr origMsg)
 	{
 		if (!origMsg)
