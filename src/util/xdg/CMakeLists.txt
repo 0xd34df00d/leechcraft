@@ -19,5 +19,5 @@ target_link_libraries (leechcraft-util-xdg
 	${QT_LIBRARIES}
 	leechcraft-util-xpc
 	)
-set_property (TARGET leechcraft-util-xdg PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-xdg PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-xdg DESTINATION ${LIBDIR})

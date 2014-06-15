@@ -38,12 +38,15 @@
 #include <QFontDialog>
 #include <QUrl>
 #include <QProcessEnvironment>
+#include <QApplication>
+#include <QClipboard>
 #include <QtDebug>
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
 #include "processgraphbuilder.h"
 #include "closedialog.h"
@@ -101,6 +104,17 @@ namespace Eleeminator
 
 		SetupToolbar ();
 		SetupShortcuts (scMgr);
+
+		Term_->setContextMenuPolicy (Qt::CustomContextMenu);
+		connect (Term_,
+				SIGNAL (customContextMenuRequested (QPoint)),
+				this,
+				SLOT (handleTermContextMenu (QPoint)));
+
+		connect (Term_,
+				SIGNAL (bell (QString)),
+				this,
+				SLOT (handleBell (QString)));
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
@@ -207,6 +221,27 @@ namespace Eleeminator
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
 	}
 
+	void TermTab::handleTermContextMenu (const QPoint& point)
+	{
+		QMenu menu;
+
+		const auto itm = CoreProxy_->GetIconThemeManager ();
+
+		const auto copyAct = menu.addAction (itm->GetIcon ("edit-copy"),
+				tr ("Copy selected text"),
+				Term_,
+				SLOT (copyClipboard ()));
+		copyAct->setEnabled (!Term_->selectedText ().isEmpty ());
+
+		const auto pasteAct = menu.addAction (itm->GetIcon ("edit-paste"),
+				tr ("Paste from clipboard"),
+				Term_,
+				SLOT (pasteClipboard ()));
+		pasteAct->setEnabled (!QApplication::clipboard ()->text (QClipboard::Clipboard).isEmpty ());
+
+		menu.exec (Term_->mapToGlobal (point));
+	}
+
 	void TermTab::setColorScheme (QAction *schemeAct)
 	{
 		const auto& colorScheme = schemeAct->property ("ER/ColorScheme").toString ();
@@ -265,6 +300,10 @@ namespace Eleeminator
 	{
 		const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
 		CoreProxy_->GetEntityManager ()->HandleEntity (entity);
+	}
+
+	void TermTab::handleBell (const QString&)
+	{
 	}
 
 	void TermTab::handleFinished ()

@@ -36,7 +36,7 @@ target_link_libraries (leechcraft-util-qml
 	leechcraft-util-network
 	leechcraft-util-sys
 	)
-set_property (TARGET leechcraft-util-qml PROPERTY SOVERSION 0.6.65)
+set_property (TARGET leechcraft-util-qml PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-qml DESTINATION ${LIBDIR})
 
 if (USE_QT5)

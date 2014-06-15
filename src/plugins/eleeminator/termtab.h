@@ -73,6 +73,8 @@ namespace Eleeminator
 
 		void SetupShortcuts (Util::ShortcutManager*);
 	private slots:
+		void handleTermContextMenu (const QPoint&);
+
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);
 		void stopColorSchemePreview ();
@@ -80,6 +82,7 @@ namespace Eleeminator
 		void selectFont ();
 
 		void handleUrlActivated (const QUrl&);
+		void handleBell (const QString&);
 
 		void handleFinished ();
 	signals:
