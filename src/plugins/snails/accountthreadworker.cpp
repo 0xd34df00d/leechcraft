@@ -656,6 +656,17 @@ namespace Snails
 		folder->setMessageFlags (set,
 				vmime::net::message::Flags::FLAG_SEEN,
 				vmime::net::message::FLAG_MODE_REMOVE);
+
+		QList<Message_ptr> messages;
+		for (const auto& id : ids)
+		{
+			const auto& message = Core::Instance ().GetStorage ()->LoadMessage (A_, folderPath, id);
+			message->SetRead (false);
+
+			messages << message;
+		}
+
+		emit gotUpdatedMessages (messages, folderPath);
 	}
 
 	void AccountThreadWorker::fetchWholeMessage (Message_ptr origMsg)
