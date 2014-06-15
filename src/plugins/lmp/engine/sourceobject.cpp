@@ -421,6 +421,9 @@ namespace LMP
 			SetCurrentSource (NextSource_);
 		}
 
+		if (CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
+			PrevSoupRank_ = SetSoupRank (G_MAXINT / 2);
+
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_PLAYING);
 	}
 
