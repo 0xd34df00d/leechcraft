@@ -620,7 +620,8 @@ namespace Snails
 		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
 		emit mailChanged ();
 
-		MailModel_->Append (messages);
+		for (const auto& message : messages)
+			MailModel_->Update (message);
 	}
 
 	void Account::handleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)
