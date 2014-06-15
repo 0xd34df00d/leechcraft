@@ -55,8 +55,6 @@ namespace Snails
 		vmime::shared_ptr<vmime::net::store> CachedStore_;
 		QHash<QStringList, vmime::shared_ptr<vmime::net::folder>> CachedFolders_;
 
-		QHash<QStringList, QHash<QByteArray, int>> SeqCache_;
-
 		const vmime::shared_ptr<vmime::security::cert::defaultCertificateVerifier> CertVerifier_;
 	public:
 		AccountThreadWorker (Account*);
