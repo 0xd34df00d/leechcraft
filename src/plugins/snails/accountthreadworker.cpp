@@ -706,6 +706,17 @@ namespace Snails
 		}
 	}
 
+	void AccountThreadWorker::getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot)
+	{
+		const auto& netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_ONLY);
+		const auto count = netFolder->getMessageCount ();
+
+		QMetaObject::invokeMethod (handler,
+				slot,
+				Q_ARG (int, count),
+				Q_ARG (QStringList, folder));
+	}
+
 	void AccountThreadWorker::setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folderPath)
 	{
 		if (A_->InType_ == Account::InType::POP3)
