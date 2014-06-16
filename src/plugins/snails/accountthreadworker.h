@@ -47,6 +47,9 @@ namespace Snails
 	class Account;
 	class MessageChangeListener;
 
+	typedef std::vector<vmime::shared_ptr<vmime::net::message>> MessageVector_t;
+	typedef vmime::shared_ptr<vmime::net::folder> VmimeFolder_ptr;
+
 	class AccountThreadWorker : public QObject
 	{
 		Q_OBJECT
@@ -68,14 +71,16 @@ namespace Snails
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
 
-		vmime::shared_ptr<vmime::net::folder> GetFolder (const QStringList& folder, int mode);
+		VmimeFolder_ptr GetFolder (const QStringList& folder, int mode);
 
 		Message_ptr FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 		void FetchMessagesPOP3 (Account::FetchFlags);
+
 		void FetchMessagesIMAP (Account::FetchFlags, const QList<QStringList>&,
 				vmime::shared_ptr<vmime::net::store>, const QByteArray&);
-		void FetchMessagesInFolder (const QStringList&,
-				vmime::shared_ptr<vmime::net::folder>, const QByteArray&);
+		MessageVector_t GetMessagesInFolder (const VmimeFolder_ptr&, const QByteArray&);
+		void FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
+
 		void SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>&);
 		ProgressListener* MkPgListener (const QString&);

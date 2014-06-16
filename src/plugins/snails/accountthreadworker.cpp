@@ -237,7 +237,7 @@ namespace Snails
 		}
 	}
 
-	vmime::shared_ptr<vmime::net::folder> AccountThreadWorker::GetFolder (const QStringList& path, int mode)
+	VmimeFolder_ptr AccountThreadWorker::GetFolder (const QStringList& path, int mode)
 	{
 		if (!CachedFolders_.contains (path))
 		{
@@ -429,20 +429,15 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
-			vmime::shared_ptr<vmime::net::folder> folder, const QByteArray& lastId)
+	MessageVector_t AccountThreadWorker::GetMessagesInFolder (const VmimeFolder_ptr& folder,const QByteArray& lastId)
 	{
-		const auto& changeGuard = ChangeListener_->Disable ();
-		Q_UNUSED (changeGuard)
-
-		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
-
-		std::vector<vmime::shared_ptr<vmime::net::message>> messages;
-
 		if (lastId.isEmpty ())
 		{
 			const auto count = folder->getMessageCount ();
+
+			MessageVector_t messages;
 			messages.reserve (count);
+
 			const auto chunkSize = 100;
 			for (int i = 0; i < count; i += chunkSize)
 			{
@@ -462,16 +457,18 @@ namespace Snails
 							<< endVal
 							<< "because:"
 							<< e.what ();
-					return;
+					return {};
 				}
 			}
+
+			return messages;
 		}
 		else
 		{
 			const auto& set = vmime::net::messageSet::byUID (lastId.constData (), "*");
 			try
 			{
-				messages = folder->getMessages (set);
+				return folder->getMessages (set);
 			}
 			catch (const std::exception& e)
 			{
@@ -480,10 +477,20 @@ namespace Snails
 						<< lastId
 						<< "because:"
 						<< e.what ();
-				return;
+				return {};
 			}
 		}
+	}
 
+	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
+			const VmimeFolder_ptr& folder, const QByteArray& lastId)
+	{
+		const auto& changeGuard = ChangeListener_->Disable ();
+		Q_UNUSED (changeGuard)
+
+		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
+
+		auto messages = GetMessagesInFolder (folder, lastId);
 		if (!messages.size ())
 			return;
 
