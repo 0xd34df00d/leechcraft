@@ -636,6 +636,26 @@ namespace Snails
 		MailModel_->Append (msgs);
 	}
 
+	void Account::handleFolderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId)
+	{
+		if (lastRequestedId.isEmpty ())
+			return;
+
+		Thread_->GetTaskManager ()->AddTask ({
+				"getMessageCount",
+				{
+					folder,
+					static_cast<QObject*> (this),
+					QByteArray { "handleMessageCountFetched" }
+				}
+			});
+	}
+
+	void Account::handleMessageCountFetched (int count, const QStringList& folder)
+	{
+		qDebug () << Q_FUNC_INFO << folder << count;
+	}
+
 	namespace
 	{
 		QStandardItem* BuildFolderItem (QStringList folder, QStandardItem *root)
