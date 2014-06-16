@@ -313,7 +313,22 @@ QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px,
 	return px;
 }
 
+namespace
+{
+	template<typename To, typename From>
+	typename std::enable_if<std::is_same<From, To>::value, To>::type DumbCast (From from)
+	{
+		return from;
+	}
+
+	template<typename To, typename From>
+	typename std::enable_if<!std::is_same<From, To>::value, To>::type DumbCast (From from)
+	{
+		return reinterpret_cast<To> (from);
+	}
+}
+
 uintptr_t LeechCraft::Util::Handle2Num (Qt::HANDLE handle)
 {
-	return reinterpret_cast<uintptr_t> (handle);
+	return DumbCast<uintptr_t> (handle);
 }
