@@ -246,9 +246,9 @@ namespace Snails
 		return msg;
 	}
 
-	QSet<QByteArray> Storage::LoadIDs (Account *acc, const QStringList& folder)
+	QList<QByteArray> Storage::LoadIDs (Account *acc, const QStringList& folder)
 	{
-		QSet<QByteArray> result;
+		QList<QByteArray> result;
 
 		const QByteArray& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
 
