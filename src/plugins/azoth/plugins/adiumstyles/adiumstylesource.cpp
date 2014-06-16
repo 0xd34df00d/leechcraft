@@ -685,7 +685,7 @@ namespace AdiumStyles
 
 	QString AdiumStyleSource::GetMessageID (QObject *msgObj)
 	{
-		return QString::number (reinterpret_cast<long int> (msgObj));
+		return QString::number (reinterpret_cast<uintptr_t> (msgObj));
 	}
 
 	QImage AdiumStyleSource::GetDefaultAvatar () const
