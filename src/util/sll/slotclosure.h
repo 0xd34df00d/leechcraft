@@ -68,8 +68,7 @@ namespace Util
 		void run () override
 		{
 			SlotClosureBase::run ();
-
-			FireDestrPolicy<SlotClosureBase>::Fired ();
+			this->Fired ();
 		}
 	};
 
