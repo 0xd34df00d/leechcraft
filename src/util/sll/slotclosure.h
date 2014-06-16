@@ -60,7 +60,7 @@ namespace Util
 
 	template<template<typename T> class FireDestrPolicy>
 	class SlotClosure : public SlotClosureBase
-					  , FireDestrPolicy<SlotClosureBase>
+					  , public FireDestrPolicy<SlotClosureBase>
 	{
 	public:
 		using SlotClosureBase::SlotClosureBase;
