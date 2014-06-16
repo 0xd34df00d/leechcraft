@@ -629,17 +629,21 @@ namespace LMP
 		QStandardItem* MakeAlbumItem (const MediaInfo& info)
 		{
 			auto albumItem = new QStandardItem (QString ("%1 - %2")
-							.arg (info.Artist_, info.Album_));
+					.arg (info.Artist_, info.Album_));
 			albumItem->setEditable (false);
 			albumItem->setData (true, Player::Role::IsAlbum);
 			albumItem->setData (QVariant::fromValue (info), Player::Role::Info);
-			auto art = FindAlbumArt (info.LocalPath_);
+
+			auto artImage = FindAlbumArt<QImage> (info.LocalPath_);
 			const int dim = 48;
+			if (std::max (artImage.width (), artImage.height ()) > dim)
+				artImage = artImage.scaled (dim, dim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+			auto art = QPixmap::fromImage (artImage);
 			if (art.isNull ())
 				art = QIcon::fromTheme ("media-optical").pixmap (dim, dim);
-			else if (std::max (art.width (), art.height ()) > dim)
-				art = art.scaled (dim, dim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			albumItem->setData (art, Player::Role::AlbumArt);
+
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
 		}
