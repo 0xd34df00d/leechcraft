@@ -101,6 +101,8 @@ namespace Snails
 		void gotUpdatedMessages (QList<Message_ptr>, QStringList);
 		void gotOtherMessages (QList<QByteArray>, QStringList);
 		void gotFolders (QList<QStringList>);
+
+		void folderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId);
 	};
 }
 }

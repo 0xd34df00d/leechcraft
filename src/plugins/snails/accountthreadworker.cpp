@@ -488,6 +488,12 @@ namespace Snails
 		const auto& changeGuard = ChangeListener_->Disable ();
 		Q_UNUSED (changeGuard)
 
+		const std::shared_ptr<void> syncFinishedGuard
+		{
+			nullptr,
+			[this, &folderName, &lastId] (void*) { emit folderSyncFinished (folderName, lastId); }
+		};
+
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
 		auto messages = GetMessagesInFolder (folder, lastId);
