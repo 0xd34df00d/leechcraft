@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QVariantMap>
+#include <QSet>
 #include "../engine/audiosource.h"
 
 namespace LeechCraft
@@ -46,6 +47,8 @@ namespace LMP
 	{
 		typedef QList<PlaylistItem> Container_t;
 		Container_t Playlist_;
+
+		QSet<QUrl> UrlsSet_;
 	public:
 		typedef Container_t::const_iterator const_iterator;
 		typedef Container_t::iterator iterator;

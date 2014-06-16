@@ -68,11 +68,11 @@ namespace LMP
 
 	Playlist& Playlist::Append (const PlaylistItem& item)
 	{
-		if (std::any_of (Playlist_.begin (), Playlist_.end (),
-					[&item] (const PlaylistItem& other)
-						{ return other.Source_ == item.Source_; }))
+		if (UrlsSet_.contains (item.Source_.ToUrl ()))
 			return *this;
+
 		Playlist_ << item;
+		UrlsSet_ << item.Source_.ToUrl ();
 		return *this;
 	}
 
