@@ -53,7 +53,19 @@ namespace LMP
 	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
 
 	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
-	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
+
+	template<typename T = QPixmap>
+	T FindAlbumArt (const QString& near, bool ignoreCollection = false)
+	{
+		if (near.isEmpty ())
+			return {};
+
+		const T nearPx { near };
+		if (!nearPx.isNull ())
+			return nearPx;
+
+		return T { FindAlbumArtPath (near, ignoreCollection) };
+	}
 
 	void ShowAlbumArt (const QString& near, const QPoint& pos);
 
