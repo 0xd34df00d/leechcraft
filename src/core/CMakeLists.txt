@@ -7,6 +7,10 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 
 option (WITH_DBUS_LOADERS "Build D-Bus loaders on UNIX" OFF)
 
+if (WITH_DBUS_LOADERS)
+	add_definitions (-DWITH_DBUS_LOADERS)
+endif ()
+
 if (NOT USE_QT5)
 	if (WITH_DBUS_LOADERS)
 		set (QT_USE_QTDBUS TRUE)
