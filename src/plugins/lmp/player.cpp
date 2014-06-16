@@ -633,19 +633,42 @@ namespace LMP
 			albumItem->setEditable (false);
 			albumItem->setData (true, Player::Role::IsAlbum);
 			albumItem->setData (QVariant::fromValue (info), Player::Role::Info);
-
-			auto artImage = FindAlbumArt<QImage> (info.LocalPath_);
-			const int dim = 48;
-			if (std::max (artImage.width (), artImage.height ()) > dim)
-				artImage = artImage.scaled (dim, dim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-			auto art = QPixmap::fromImage (artImage);
-			if (art.isNull ())
-				art = QIcon::fromTheme ("media-optical").pixmap (dim, dim);
-			albumItem->setData (art, Player::Role::AlbumArt);
-
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
+		}
+
+		void LoadAlbumArt (QStandardItem *albumItem, const MediaInfo& info)
+		{
+			const int dim = 48;
+			const auto worker = [info, dim] () -> QImage
+			{
+				auto artImage = FindAlbumArt<QImage> (info.LocalPath_);
+				if (std::max (artImage.width (), artImage.height ()) > dim)
+					artImage = artImage.scaled (dim, dim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+				return artImage;
+			};
+
+			const QPersistentModelIndex guardIdx { albumItem->index () };
+			const auto futureWatcher = new QFutureWatcher<QImage>;
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[albumItem, futureWatcher, dim, guardIdx] () -> void
+				{
+					if (!guardIdx.isValid ())
+						return;
+
+					const auto& artImage = futureWatcher->result ();
+					auto art = QPixmap::fromImage (artImage);
+					if (art.isNull ())
+						art = QIcon::fromTheme ("media-optical").pixmap (dim, dim);
+					albumItem->setData (art, Player::Role::AlbumArt);
+					futureWatcher->deleteLater ();
+				},
+				futureWatcher,
+				SIGNAL (finished ()),
+				futureWatcher
+			};
+			futureWatcher->setFuture (QtConcurrent::run (worker));
 		}
 
 		QPair<AudioSource, MediaInfo> PairResolve (const AudioSource& source)
@@ -1208,6 +1231,8 @@ namespace LMP
 					albumItem->appendRow (existing);
 					albumItem->appendRow (item);
 					PlaylistModel_->insertRow (row, albumItem);
+
+					LoadAlbumArt (albumItem, info);
 
 					const auto& existingInfo = existing.at (0)->data (Role::Info).value<MediaInfo> ();
 					albumItem->setData (existingInfo.Length_, Role::AlbumLength);
