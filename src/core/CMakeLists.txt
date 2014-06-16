@@ -5,8 +5,10 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	)
 
+option (WITH_DBUS_LOADERS "Build D-Bus loaders on UNIX" OFF)
+
 if (NOT USE_QT5)
-	if (NOT WIN32)
+	if (WITH_DBUS_LOADERS)
 		set (QT_USE_QTDBUS TRUE)
 	endif ()
 	set (QT_USE_QTNETWORK TRUE)
@@ -101,7 +103,7 @@ set (SRCS
 	loaders/sopluginloader.cpp
 	)
 
-if (UNIX AND NOT APPLE)
+if (WITH_DBUS_LOADERS)
 	set (SRCS
 		${SRCS}
 		loaders/dbuspluginloader.cpp
@@ -179,6 +181,6 @@ if (USE_QT5)
 	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
 endif ()
 
-if (UNIX AND NOT APPLE)
+if (WITH_DBUS_LOADERS)
 	add_subdirectory (loaders/dbus)
 endif ()
