@@ -72,15 +72,17 @@ namespace Snails
 
 		Message_ptr FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 		void FetchMessagesPOP3 (Account::FetchFlags);
-		void FetchMessagesIMAP (Account::FetchFlags, const QList<QStringList>&, vmime::shared_ptr<vmime::net::store>);
-		void FetchMessagesInFolder (const QStringList&, vmime::shared_ptr<vmime::net::folder>);
+		void FetchMessagesIMAP (Account::FetchFlags, const QList<QStringList>&,
+				vmime::shared_ptr<vmime::net::store>, const QByteArray&);
+		void FetchMessagesInFolder (const QStringList&,
+				vmime::shared_ptr<vmime::net::folder>, const QByteArray&);
 		void SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>&);
 		ProgressListener* MkPgListener (const QString&);
 	private slots:
 		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
 	public slots:
-		void synchronize (LeechCraft::Snails::Account::FetchFlags, const QList<QStringList>&);
+		void synchronize (LeechCraft::Snails::Account::FetchFlags, const QList<QStringList>&, const QByteArray& last);
 		void setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
 		void fetchWholeMessage (LeechCraft::Snails::Message_ptr);
 		void fetchAttachment (LeechCraft::Snails::Message_ptr, const QString&, const QString&);

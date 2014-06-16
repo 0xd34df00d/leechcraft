@@ -418,42 +418,66 @@ namespace Snails
 	}
 
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags,
-			const QList<QStringList>& origFolders, vmime::shared_ptr<vmime::net::store> store)
+			const QList<QStringList>& origFolders,
+			vmime::shared_ptr<vmime::net::store> store,
+			const QByteArray& last)
 	{
 		for (const auto& folder : origFolders)
 		{
 			const auto& netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_WRITE);
-			FetchMessagesInFolder (folder, netFolder);
+			FetchMessagesInFolder (folder, netFolder, last);
 		}
 	}
 
 	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
-			vmime::shared_ptr<vmime::net::folder> folder)
+			vmime::shared_ptr<vmime::net::folder> folder, const QByteArray& lastId)
 	{
 		const auto& changeGuard = ChangeListener_->Disable ();
 		Q_UNUSED (changeGuard)
 
-		qDebug () << Q_FUNC_INFO << folderName << folder.get ();
-		const auto count = folder->getMessageCount ();
+		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
+
 		std::vector<vmime::shared_ptr<vmime::net::message>> messages;
-		messages.reserve (count);
-		const auto chunkSize = 100;
-		for (int i = 0; i < count; i += chunkSize)
+
+		if (lastId.isEmpty ())
 		{
-			const auto endVal = i + chunkSize;
-			const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
+			const auto count = folder->getMessageCount ();
+			messages.reserve (count);
+			const auto chunkSize = 100;
+			for (int i = 0; i < count; i += chunkSize)
+			{
+				const auto endVal = i + chunkSize;
+				const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
+				try
+				{
+					const auto& theseMessages = folder->getMessages (set);
+					std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot get messages from"
+							<< i + 1
+							<< "to"
+							<< endVal
+							<< "because:"
+							<< e.what ();
+					return;
+				}
+			}
+		}
+		else
+		{
+			const auto& set = vmime::net::messageSet::byUID (lastId.constData (), "*");
 			try
 			{
-				const auto& theseMessages = folder->getMessages (set);
-				std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
+				messages = folder->getMessages (set);
 			}
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "cannot get messages from"
-						<< i + 1
-						<< "to"
-						<< endVal
+						<< lastId
 						<< "because:"
 						<< e.what ();
 				return;
@@ -650,7 +674,7 @@ namespace Snails
 			set.addRange (vmime::net::numberMessageRange { num });
 	}
 
-	void AccountThreadWorker::synchronize (Account::FetchFlags flags, const QList<QStringList>& folders)
+	void AccountThreadWorker::synchronize (Account::FetchFlags flags, const QList<QStringList>& folders, const QByteArray& last)
 	{
 		switch (A_->InType_)
 		{
@@ -660,7 +684,7 @@ namespace Snails
 		case Account::InType::IMAP:
 		{
 			auto store = MakeStore ();
-			FetchMessagesIMAP (flags, folders, store);
+			FetchMessagesIMAP (flags, folders, store, last);
 			SyncIMAPFolders (store);
 			break;
 		}
