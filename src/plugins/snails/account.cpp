@@ -45,6 +45,7 @@
 #include "taskqueuemanager.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
+Q_DECLARE_METATYPE (QList<QByteArray>)
 
 namespace LeechCraft
 {
@@ -52,8 +53,8 @@ namespace Snails
 {
 	Account::Account (QObject *parent)
 	: QObject (parent)
-	, Thread_ (new AccountThread (this))
-	, MessageFetchThread_ (new AccountThread (this))
+	, Thread_ (new AccountThread (true, this))
+	, MessageFetchThread_ (new AccountThread (false, this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	, UseSASL_ (false)
@@ -146,7 +147,7 @@ namespace Snails
 
 		MailModel_->Append (messages);
 
-		Synchronize (path);
+		Synchronize (path, ids.isEmpty () ? QByteArray {} : ids.last ());
 	}
 
 	void Account::Synchronize (Account::FetchFlags flags)
@@ -162,18 +163,20 @@ namespace Snails
 				"synchronize",
 				{
 					{ flags },
-					{ folders }
+					{ folders },
+					QByteArray {}
 				}
 			});
 	}
 
-	void Account::Synchronize (const QStringList& path)
+	void Account::Synchronize (const QStringList& path, const QByteArray& last)
 	{
 		Thread_->GetTaskManager ()->AddTask ({
 				"synchronize",
 				{
 					Account::FetchFlags { FetchFlag::FetchAll },
-					QList<QStringList> { path }
+					QList<QStringList> { path },
+					last
 				},
 				"syncFolder"
 			});
@@ -211,6 +214,18 @@ namespace Snails
 					msg,
 					attName,
 					path
+				}
+			});
+	}
+
+	void Account::SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder)
+	{
+		MessageFetchThread_->GetTaskManager ()->AddTask ({
+				"setReadStatus",
+				{
+					read,
+					ids,
+					folder
 				}
 			});
 	}
@@ -607,7 +622,8 @@ namespace Snails
 		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
 		emit mailChanged ();
 
-		MailModel_->Append (messages);
+		for (const auto& message : messages)
+			MailModel_->Update (message);
 	}
 
 	void Account::handleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)

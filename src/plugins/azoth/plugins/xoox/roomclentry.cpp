@@ -253,7 +253,7 @@ namespace Xoox
 
 	bool RoomCLEntry::CanChangeSubject () const
 	{
-		return RH_->GetRoom ()->allowedActions () & QXmppMucRoom::SubjectAction;
+		return true;
 	}
 
 	void RoomCLEntry::SetMUCSubject (const QString& subj)

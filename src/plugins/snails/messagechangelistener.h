@@ -29,57 +29,27 @@
 
 #pragma once
 
-#include <atomic>
-#include <QStringList>
-#include <QFileInfo>
-#include <interfaces/media/idiscographyprovider.h>
-#include "interfaces/lmp/ilmpproxy.h"
-#include "interfaces/lmp/ilmputilproxy.h"
-
-class QPixmap;
-class QPoint;
-class QColor;
+#include <QObject>
+#include <vmime/net/events.hpp>
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace LMP
+namespace Snails
 {
-	struct MediaInfo;
-
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
-			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
-	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
-
-	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
-
-	template<typename T = QPixmap>
-	T FindAlbumArt (const QString& near, bool ignoreCollection = false)
+	class MessageChangeListener : public QObject
+								, public vmime::net::events::messageChangedListener
 	{
-		if (near.isEmpty ())
-			return {};
+		Q_OBJECT
 
-		const T nearPx { near };
-		if (!nearPx.isNull ())
-			return nearPx;
+		bool IsEnabled_ = true;
+	public:
+		MessageChangeListener (QObject*);
 
-		return T { FindAlbumArtPath (near, ignoreCollection) };
-	}
-
-	void ShowAlbumArt (const QString& near, const QPoint& pos);
-
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
-
-	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
-
-	bool ShouldRememberProvs ();
-
-	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
-
-	bool CompareArtists (QString, QString, bool withoutThe);
-
-	QPair<QString, QColor> GetRuleSymbol (const Entity&);
+		std::shared_ptr<void> Disable ();
+	protected:
+		void messageChanged (vmime::shared_ptr<vmime::net::events::messageChangedEvent>) override;
+	signals:
+		void messagesChanged (const QStringList& folder, const QList<int>& numbers);
+	};
 }
 }

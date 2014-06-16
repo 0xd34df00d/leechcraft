@@ -56,9 +56,11 @@
 #include "shortcutmanager.h"
 #include "application.h"
 #include "loaders/sopluginloader.h"
-#ifdef Q_OS_LINUX
-	#include "loaders/dbuspluginloader.h"
+
+#ifdef WITH_DBUS_LOADERS
+#include "loaders/dbuspluginloader.h"
 #endif
+
 #include "settingstab.h"
 
 namespace LeechCraft
@@ -985,7 +987,7 @@ namespace LeechCraft
 
 	Loaders::IPluginLoader_ptr PluginManager::MakeLoader (const QString& filename)
 	{
-#ifndef Q_OS_LINUX
+#ifndef WITH_DBUS_LOADERS
 		return Loaders::IPluginLoader_ptr (new Loaders::SOPluginLoader (filename));
 #else
 		if (DBusMode_)

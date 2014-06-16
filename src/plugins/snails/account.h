@@ -149,12 +149,14 @@ namespace Snails
 
 		void ShowFolder (const QModelIndex&);
 		void Synchronize (FetchFlags);
-		void Synchronize (const QStringList&);
+		void Synchronize (const QStringList&, const QByteArray&);
 
 		void FetchWholeMessage (Message_ptr);
 		void SendMessage (Message_ptr);
 		void FetchAttachment (Message_ptr,
 				const QString&, const QString&);
+
+		void SetReadStatus (bool, const QList<QByteArray>&, const QStringList&);
 
 		void Update (const Message_ptr&);
 

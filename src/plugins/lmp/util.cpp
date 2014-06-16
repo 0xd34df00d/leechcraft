@@ -148,18 +148,6 @@ namespace LMP
 			return {};
 	}
 
-	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection)
-	{
-		if (near.isEmpty ())
-			return QPixmap ();
-
-		const QPixmap nearPx (near);
-		if (!nearPx.isNull ())
-			return nearPx;
-
-		return QPixmap (FindAlbumArtPath (near, ignoreCollection));
-	}
-
 	void ShowAlbumArt (const QString& near, const QPoint& pos)
 	{
 		auto px = FindAlbumArt (near);

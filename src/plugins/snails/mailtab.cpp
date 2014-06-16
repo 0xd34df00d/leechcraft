@@ -117,8 +117,16 @@ namespace Snails
 		MsgAttachments_->setIcon (Core::Instance ().GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("mail-attachment"));
 
+		MsgMarkUnread_ = new QAction (tr ("Mark as unread"), this);
+		MsgMarkUnread_->setProperty ("ActionIcon", "mail-mark-unread");
+		connect (MsgMarkUnread_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMarkMsgUnread ()));
+
 		MsgToolbar_->addAction (MsgReply_);
 		MsgToolbar_->addAction (MsgAttachments_->menuAction ());
+		MsgToolbar_->addAction (MsgMarkUnread_);
 	}
 
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
@@ -182,6 +190,7 @@ namespace Snails
 	void MailTab::handleCurrentTagChanged (const QModelIndex& sidx)
 	{
 		CurrAcc_->ShowFolder (sidx);
+		handleMailSelected ({});
 	}
 
 	void MailTab::handleMailSelected (const QModelIndex& sidx)
@@ -222,12 +231,10 @@ namespace Snails
 			return;
 		}
 
-		msg->SetRead (true);
-		Core::Instance ().GetStorage ()->SaveMessages (CurrAcc_.get (), folder, { msg });
-		CurrAcc_->Update (msg);
-
 		if (!msg->IsFullyFetched ())
 			CurrAcc_->FetchWholeMessage (msg);
+		else if (!msg->IsRead ())
+			CurrAcc_->SetReadStatus (true, { id }, folder);
 
 		QString html = R"delim(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 			<html xmlns="http://www.w3.org/1999/xhtml">
@@ -285,6 +292,24 @@ namespace Snails
 			return;
 
 		Core::Instance ().PrepareReplyTab (CurrMsg_, CurrAcc_);
+	}
+
+	void MailTab::handleMarkMsgUnread ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto& rows = Ui_.MailTree_->selectionModel ()->selectedRows ();
+		QList<QByteArray> ids;
+		for (const auto& index : rows)
+			ids << index.data (MailModel::MailRole::ID).toByteArray ();
+
+		const auto& currentId = Ui_.MailTree_->currentIndex ()
+				.data (MailModel::MailRole::ID).toByteArray ();
+		if (!currentId.isEmpty () && !ids.contains (currentId))
+			ids << currentId;
+
+		CurrAcc_->SetReadStatus (false, ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
 	}
 
 	void MailTab::handleAttachment ()

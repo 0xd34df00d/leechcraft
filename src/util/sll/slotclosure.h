@@ -52,13 +52,15 @@ namespace Util
 				QObject *sender,
 				const std::initializer_list<const char*>& signalsList,
 				QObject *parent);
+
+		virtual ~SlotClosureBase () = default;
 	public slots:
 		virtual void run () = 0;
 	};
 
 	template<template<typename T> class FireDestrPolicy>
 	class SlotClosure : public SlotClosureBase
-					  , FireDestrPolicy<SlotClosureBase>
+					  , public FireDestrPolicy<SlotClosureBase>
 	{
 	public:
 		using SlotClosureBase::SlotClosureBase;
@@ -66,8 +68,7 @@ namespace Util
 		void run () override
 		{
 			SlotClosureBase::run ();
-
-			FireDestrPolicy<SlotClosureBase>::Fired ();
+			this->Fired ();
 		}
 	};
 

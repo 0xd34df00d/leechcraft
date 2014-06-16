@@ -27,59 +27,42 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <atomic>
+#include "messagechangelistener.h"
 #include <QStringList>
-#include <QFileInfo>
-#include <interfaces/media/idiscographyprovider.h>
-#include "interfaces/lmp/ilmpproxy.h"
-#include "interfaces/lmp/ilmputilproxy.h"
-
-class QPixmap;
-class QPoint;
-class QColor;
+#include <QtDebug>
+#include <vmime/net/folder.hpp>
+#include "vmimeconversions.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace LMP
+namespace Snails
 {
-	struct MediaInfo;
-
-	QList<QFileInfo> RecIterateInfo (const QString& dirPath,
-			bool followSymlinks = false, std::atomic<bool> *stopFlag = nullptr);
-	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
-
-	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
-
-	template<typename T = QPixmap>
-	T FindAlbumArt (const QString& near, bool ignoreCollection = false)
+	MessageChangeListener::MessageChangeListener (QObject *parent)
+	: QObject { parent }
 	{
-		if (near.isEmpty ())
-			return {};
-
-		const T nearPx { near };
-		if (!nearPx.isNull ())
-			return nearPx;
-
-		return T { FindAlbumArtPath (near, ignoreCollection) };
 	}
 
-	void ShowAlbumArt (const QString& near, const QPoint& pos);
+	std::shared_ptr<void> MessageChangeListener::Disable ()
+	{
+		if (!IsEnabled_)
+			return {};
 
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
+		IsEnabled_ = false;
+		return std::shared_ptr<void> (nullptr, [this] (void*) { IsEnabled_ = true; });
+	}
 
-	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
+	void MessageChangeListener::messageChanged (vmime::shared_ptr<vmime::net::events::messageChangedEvent> event)
+	{
+		if (!IsEnabled_)
+			return;
 
-	bool ShouldRememberProvs ();
+		const auto& folder = event->getFolder ();
 
-	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
+		QList<int> numsList;
+		for (const auto num : event->getNumbers ())
+			numsList << num;
 
-	bool CompareArtists (QString, QString, bool withoutThe);
-
-	QPair<QString, QColor> GetRuleSymbol (const Entity&);
+		emit messagesChanged (GetFolderPath (folder), numsList);
+	}
 }
 }
