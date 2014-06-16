@@ -52,6 +52,8 @@ namespace Util
 				QObject *sender,
 				const std::initializer_list<const char*>& signalsList,
 				QObject *parent);
+
+		virtual ~SlotClosureBase () = default;
 	public slots:
 		virtual void run () = 0;
 	};
