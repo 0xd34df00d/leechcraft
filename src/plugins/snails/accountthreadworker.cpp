@@ -485,23 +485,11 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
-			const VmimeFolder_ptr& folder, const QByteArray& lastId)
+	QList<Message_ptr> AccountThreadWorker::FetchVmimeMessages (MessageVector_t messages,
+			const VmimeFolder_ptr& folder, const QStringList& folderName)
 	{
-		const auto& changeGuard = ChangeListener_->Disable ();
-		Q_UNUSED (changeGuard)
-
-		const std::shared_ptr<void> syncFinishedGuard
-		{
-			nullptr,
-			[this, &folderName, &lastId] (void*) { emit folderSyncFinished (folderName, lastId); }
-		};
-
-		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
-
-		auto messages = GetMessagesInFolder (folder, lastId);
 		if (!messages.size ())
-			return;
+			return {};
 
 		const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
 					vmime::net::fetchAttributes::SIZE |
@@ -520,17 +508,15 @@ namespace Snails
 			qWarning () << Q_FUNC_INFO
 					<< "fetch operation not supported:"
 					<< ons.what ();
-			return;
+			return {};
 		}
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "generally something bad happened:"
 					<< e.what ();
-			return;
+			return {};
 		}
-
-		const auto& existing = Core::Instance ().GetStorage ()->LoadIDs (A_, folderName);
 
 		QList<Message_ptr> newMessages;
 		std::transform (messages.begin (), messages.end (), std::back_inserter (newMessages),
@@ -540,6 +526,26 @@ namespace Snails
 					res->AddFolder (folderName);
 					return res;
 				});
+		return newMessages;
+	}
+
+	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
+			const VmimeFolder_ptr& folder, const QByteArray& lastId)
+	{
+		const auto& changeGuard = ChangeListener_->Disable ();
+		Q_UNUSED (changeGuard)
+
+		const std::shared_ptr<void> syncFinishedGuard
+		{
+			nullptr,
+			[this, &folderName, &lastId] (void*) { emit folderSyncFinished (folderName, lastId); }
+		};
+
+		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
+
+		auto messages = GetMessagesInFolder (folder, lastId);
+		auto newMessages = FetchVmimeMessages (messages, folder, folderName);
+		const auto& existing = Core::Instance ().GetStorage ()->LoadIDs (A_, folderName);
 
 		QList<QByteArray> ids;
 

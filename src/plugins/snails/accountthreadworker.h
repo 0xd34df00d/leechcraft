@@ -78,6 +78,7 @@ namespace Snails
 
 		void FetchMessagesIMAP (Account::FetchFlags, const QList<QStringList>&,
 				vmime::shared_ptr<vmime::net::store>, const QByteArray&);
+		QList<Message_ptr> FetchVmimeMessages (MessageVector_t, const VmimeFolder_ptr&, const QStringList&);
 		void FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
 
 		void SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
