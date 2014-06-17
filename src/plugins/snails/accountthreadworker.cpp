@@ -545,7 +545,7 @@ namespace Snails
 
 		auto messages = GetMessagesInFolder (folder, lastId);
 		auto newMessages = FetchVmimeMessages (messages, folder, folderName);
-		const auto& existing = Core::Instance ().GetStorage ()->LoadIDs (A_, folderName);
+		auto existing = Core::Instance ().GetStorage ()->LoadIDs (A_, folderName);
 
 		QList<QByteArray> ids;
 
@@ -555,6 +555,7 @@ namespace Snails
 			if (!existing.contains (msg->GetID ()))
 				continue;
 
+			existing.removeAll (msg->GetID ());
 			newMessages.removeAll (msg);
 
 			bool isUpdated = false;
@@ -586,6 +587,7 @@ namespace Snails
 
 		emit gotMsgHeaders (newMessages, folderName);
 		emit gotUpdatedMessages (updatedMessages, folderName);
+		emit gotMessagesRemoved (existing, folderName);
 	}
 
 	namespace

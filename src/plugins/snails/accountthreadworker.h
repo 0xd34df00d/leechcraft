@@ -100,10 +100,14 @@ namespace Snails
 		void error (const QString&);
 		void gotEntity (const LeechCraft::Entity&);
 		void gotProgressListener (ProgressListener_g_ptr);
+
 		void gotMsgHeaders (QList<Message_ptr>, QStringList);
-		void messageBodyFetched (Message_ptr);
 		void gotUpdatedMessages (QList<Message_ptr>, QStringList);
 		void gotOtherMessages (QList<QByteArray>, QStringList);
+		void gotMessagesRemoved (QList<QByteArray>, QStringList);
+
+		void messageBodyFetched (Message_ptr);
+
 		void gotFolders (QList<QStringList>);
 
 		void folderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId);
