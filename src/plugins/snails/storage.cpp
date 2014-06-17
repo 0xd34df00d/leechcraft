@@ -293,6 +293,27 @@ namespace Snails
 		return result;
 	}
 
+	int Storage::GetNumMessages (Account *acc, const QStringList& folder)
+	{
+		QList<QByteArray> result;
+
+		const QByteArray& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
+
+		QSqlQuery query (*BaseForAccount (acc));
+		query.prepare ("SELECT COUNT(1) FROM folder2msg WHERE folder = :folder;");
+		query.bindValue (":folder", ba);
+		if (!query.exec ())
+		{
+			Util::DBLock::DumpError (query);
+			throw std::runtime_error ("Query execution failed for fetching message count.");
+		}
+
+		if (!query.next ())
+			throw std::runtime_error ("No next row for count query");
+
+		return query.value (0).toInt ();
+	}
+
 	bool Storage::HasMessagesIn (Account *acc) const
 	{
 		return GetNumMessages (acc);
