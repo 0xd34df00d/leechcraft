@@ -587,7 +587,9 @@ namespace Snails
 
 		emit gotMsgHeaders (newMessages, folderName);
 		emit gotUpdatedMessages (updatedMessages, folderName);
-		emit gotMessagesRemoved (existing, folderName);
+
+		if (lastId.isEmpty ())
+			emit gotMessagesRemoved (existing, folderName);
 	}
 
 	namespace
