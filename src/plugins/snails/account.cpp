@@ -636,6 +636,16 @@ namespace Snails
 		MailModel_->Append (msgs);
 	}
 
+	void Account::handleMessagesRemoved (const QList<QByteArray>& ids, const QStringList& folder)
+	{
+		qDebug () << Q_FUNC_INFO << ids.size () << folder;
+		for (const auto& id : ids)
+		{
+			Core::Instance ().GetStorage ()->RemoveMessage (this, folder, id);
+			MailModel_->Remove (id);
+		}
+	}
+
 	void Account::handleFolderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId)
 	{
 		if (lastRequestedId.isEmpty ())
@@ -653,7 +663,9 @@ namespace Snails
 
 	void Account::handleMessageCountFetched (int count, const QStringList& folder)
 	{
-		qDebug () << Q_FUNC_INFO << folder << count;
+		const auto storedCount = Core::Instance ().GetStorage ()->GetNumMessages (this, folder);
+		if (count != storedCount)
+			Synchronize (folder, {});
 	}
 
 	namespace
