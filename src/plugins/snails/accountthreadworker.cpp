@@ -712,9 +712,9 @@ namespace Snails
 			break;
 		case Account::InType::IMAP:
 		{
-			auto store = MakeStore ();
-			FetchMessagesIMAP (flags, folders, store, last);
+			const auto& store = MakeStore ();
 			SyncIMAPFolders (store);
+			FetchMessagesIMAP (flags, folders, store, last);
 			break;
 		}
 		case Account::InType::Maildir:
