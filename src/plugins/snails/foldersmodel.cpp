@@ -30,6 +30,9 @@
 #include "foldersmodel.h"
 #include <algorithm>
 #include <QtDebug>
+#include "account.h"
+#include "core.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -41,6 +44,8 @@ namespace Snails
 
 		std::weak_ptr<FolderDescr> Parent_;
 		QList<FolderDescr_ptr> Children_;
+
+		int MessageCount_ = -1;
 
 		FolderDescr () = default;
 		FolderDescr (const QString& name, const std::weak_ptr<FolderDescr>& parent);
@@ -78,9 +83,9 @@ namespace Snails
 		return std::distance (parentParent->Children_.begin (), parentPos);
 	}
 
-	FoldersModel::FoldersModel (QObject *parent)
-	: QAbstractItemModel { parent }
-	, Headers_ { tr ("Messages") }
+	FoldersModel::FoldersModel (Account *acc)
+	: QAbstractItemModel { acc }
+	, Headers_ { tr ("Folder"), tr ("Messages") }
 	, RootFolder_ { new FolderDescr {} }
 	{
 	}
@@ -122,7 +127,17 @@ namespace Snails
 			return {};
 		}
 
-		return folder->Name_;
+		switch (index.column ())
+		{
+		case Column::FolderName:
+			return folder->Name_;
+		case Column::MessageCount:
+			return folder->MessageCount_ > 0 ?
+					QString::number (folder->MessageCount_) :
+					QString {};
+		default:
+			return {};
+		}
 	}
 
 	QModelIndex FoldersModel::index (int row, int column, const QModelIndex& parent) const
@@ -197,6 +212,23 @@ namespace Snails
 			RootFolder_ = newRoot;
 			endInsertRows ();
 		}
+	}
+
+	void FoldersModel::SetFolderMessageCount (const QStringList& folder, int count)
+	{
+		const auto descr = Folder2Descr_.value (folder);
+		if (!descr)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no description for folder"
+					<< folder;
+			return;
+		}
+
+		descr->MessageCount_ = count;
+
+		const auto& index = createIndex (descr->Row (), Column::MessageCount, descr);
+		emit dataChanged (index, index);
 	}
 }
 }

@@ -38,6 +38,8 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class Account;
+
 	struct FolderDescr;
 	typedef std::shared_ptr<FolderDescr> FolderDescr_ptr;
 
@@ -53,7 +55,13 @@ namespace Snails
 			FolderPath = Qt::UserRole + 1
 		};
 
-		FoldersModel (QObject* = nullptr);
+		enum Column
+		{
+			FolderName,
+			MessageCount
+		};
+
+		FoldersModel (Account*);
 
 		QVariant headerData (int, Qt::Orientation, int) const;
 		int columnCount (const QModelIndex& = {}) const;
@@ -63,6 +71,7 @@ namespace Snails
 		int rowCount (const QModelIndex& = {}) const;
 
 		void SetFolders (const QList<QStringList>& folders);
+		void SetFolderMessageCount (const QStringList&, int);
 	};
 }
 }
