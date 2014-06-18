@@ -163,6 +163,8 @@ namespace Snails
 	{
 		if (const auto rc = RootFolder_->Children_.size ())
 		{
+			Folder2Descr_.clear ();
+
 			beginRemoveRows ({}, 0, rc - 1);
 			RootFolder_->Children_.clear ();
 			endRemoveRows ();
@@ -185,6 +187,8 @@ namespace Snails
 				currentRoot->Children_.append (componentDescr);
 				currentRoot = componentDescr;
 			}
+
+			Folder2Descr_ [folder] = currentRoot.get ();
 		}
 
 		if (const auto newRc = newRoot->Children_.size ())

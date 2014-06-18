@@ -32,6 +32,7 @@
 #include <memory>
 #include <QAbstractItemModel>
 #include <QStringList>
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -45,6 +46,7 @@ namespace Snails
 		const QStringList Headers_;
 
 		FolderDescr_ptr RootFolder_;
+		QHash<QStringList, FolderDescr*> Folder2Descr_;
 	public:
 		enum Role
 		{
