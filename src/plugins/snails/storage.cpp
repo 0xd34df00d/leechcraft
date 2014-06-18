@@ -250,7 +250,7 @@ namespace Snails
 	{
 		QList<QByteArray> result;
 
-		const QByteArray& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
+		const auto& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
 
 		QSqlQuery query (*BaseForAccount (acc));
 		query.prepare ("SELECT msgId FROM folder2msg WHERE folder = :folder;");
@@ -269,6 +269,19 @@ namespace Snails
 				result << msg->GetID ();
 
 		return result;
+	}
+
+	void Storage::RemoveMessage (Account *acc, const QStringList& folder, const QByteArray& id)
+	{
+		PendingSaveMessages_ [acc].remove (id);
+
+		Util::DBLock lock { *BaseForAccount (acc) };
+		lock.Init ();
+
+		RemoveMessageFromDB (acc, folder, id);
+		RemoveMessageFile (acc, folder, id);
+
+		lock.Good ();
 	}
 
 	int Storage::GetNumMessages (Account *acc) const
@@ -325,6 +338,58 @@ namespace Snails
 			return IsMessageRead_ [id];
 
 		return LoadMessage (acc, folder, id)->IsRead ();
+	}
+
+	void Storage::RemoveMessageFromDB (Account *acc, const QStringList& folder, const QByteArray& id)
+	{
+		const auto& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
+
+		QSqlQuery query (*BaseForAccount (acc));
+		query.prepare ("DELETE FROM folder2msg WHERE folder = :folder AND msgId = :msgId;");
+		query.bindValue (":folder", ba);
+		query.bindValue (":msgId", id);
+		if (!query.exec ())
+		{
+			Util::DBLock::DumpError (query);
+			throw std::runtime_error ("Query execution failed for fetching IDs.");
+		}
+	}
+
+	void Storage::RemoveMessageFile (Account *acc, const QStringList& folder, const QByteArray& id)
+	{
+		auto dir = DirForAccount (acc);
+		for (const auto& elem : folder)
+		{
+			const auto& subdir = elem.toUtf8 ().toHex ();
+			if (!dir.cd (subdir))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cd to"
+						<< dir.filePath (subdir);
+				throw std::runtime_error ("Unable to cd to the directory");
+			}
+		}
+
+		if (!dir.cd (id.toHex ().right (3)))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cd to"
+					<< dir.filePath (id.toHex ().right (3));
+			throw std::runtime_error ("Unable to cd to the directory");
+		}
+
+		QFile file (dir.filePath (id.toHex ()));
+		if (!file.exists ())
+			return;
+
+		qDebug () << "removing" << file.fileName () << file.size ();
+		if (!file.remove ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to remove the file:"
+					<< file.errorString ();
+			throw std::runtime_error ("Unable to remove the file");
+		}
 	}
 
 	QDir Storage::DirForAccount (Account *acc) const

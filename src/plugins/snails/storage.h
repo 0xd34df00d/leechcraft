@@ -64,11 +64,16 @@ namespace Snails
 		MessageSet LoadMessages (Account*);
 		Message_ptr LoadMessage (Account*, const QStringList& folder, const QByteArray& id);
 		QList<QByteArray> LoadIDs (Account*, const QStringList& folder);
+		void RemoveMessage (Account*, const QStringList&, const QByteArray&);
+
 		int GetNumMessages (Account*) const;
 		int GetNumMessages (Account*, const QStringList& folder);
 		bool HasMessagesIn (Account*) const;
 
 		bool IsMessageRead (Account*, const QStringList& folder, const QByteArray&);
+	private:
+		void RemoveMessageFromDB (Account*, const QStringList&, const QByteArray&);
+		void RemoveMessageFile (Account*, const QStringList&, const QByteArray&);
 	private:
 		QDir DirForAccount (Account*) const;
 		QSqlDatabase_ptr BaseForAccount (Account*);
