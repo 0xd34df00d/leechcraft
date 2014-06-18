@@ -46,6 +46,8 @@ namespace Snails
 		FolderDescr (const QString& name, const std::weak_ptr<FolderDescr>& parent);
 
 		QList<FolderDescr_ptr>::iterator Find (const QString& name);
+
+		std::ptrdiff_t Row () const;
 	};
 
 	FolderDescr::FolderDescr (const QString& name, const std::weak_ptr<FolderDescr>& parent)
@@ -58,6 +60,22 @@ namespace Snails
 	{
 		return std::find_if (Children_.begin (), Children_.end (),
 				[&name] (const FolderDescr_ptr& descr) { return descr->Name_ == name; });
+	}
+
+	std::ptrdiff_t FolderDescr::Row () const
+	{
+		const auto& parentParent = Parent_.lock ();
+		const auto parentPos = std::find_if (parentParent->Children_.begin (),
+				parentParent->Children_.end (),
+				[this] (const FolderDescr_ptr& folder) { return folder.get () == this; });
+		if (parentPos == parentParent->Children_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "could not determine parent's folder";
+			return -1;
+		}
+
+		return std::distance (parentParent->Children_.begin (), parentPos);
 	}
 
 	FoldersModel::FoldersModel (QObject *parent)
@@ -126,21 +144,9 @@ namespace Snails
 		if (parentFolder == RootFolder_.get ())
 			return {};
 
-		const auto& parentParent = parentFolder->Parent_.lock ();
-		const auto parentPos = std::find_if (parentParent->Children_.begin (),
-				parentParent->Children_.end (),
-				[&parentFolder] (const std::shared_ptr<FolderDescr>& folder)
-				{
-					return folder.get () == parentFolder;
-				});
-		if (parentPos == parentParent->Children_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "could not determine parent's folder";
+		const auto row = parentFolder->Row ();
+		if (row < 0)
 			return {};
-		}
-
-		const auto row = std::distance (parentParent->Children_.begin (), parentPos);
 
 		return createIndex (row, 0, parentFolder);
 	}
