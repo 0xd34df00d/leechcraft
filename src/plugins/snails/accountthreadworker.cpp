@@ -239,6 +239,9 @@ namespace Snails
 
 	VmimeFolder_ptr AccountThreadWorker::GetFolder (const QStringList& path, int mode)
 	{
+		if (path.size () == 1 && path.at (0) == "[Gmail]")
+			return {};
+
 		if (!CachedFolders_.contains (path))
 		{
 			auto store = MakeStore ();
