@@ -40,6 +40,7 @@
 #endif
 
 #include <util/sys/resourceloader.h>
+#include <util/sll/delayedexecutor.h>
 #include "message.h"
 #include "storage.h"
 #include "progressmanager.h"
@@ -85,7 +86,11 @@ namespace Snails
 				<< tr ("Type");
 		AccountsModel_->setHorizontalHeaderLabels (headers);
 
-		LoadAccounts ();
+		new Util::DelayedExecutor
+		{
+			[this] { LoadAccounts (); },
+			0
+		};
 	}
 
 	Core& Core::Instance ()
