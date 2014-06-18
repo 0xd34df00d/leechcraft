@@ -47,14 +47,12 @@ namespace Snails
 
 	void AccountThread::AddTask (const TaskQueueItem& item)
 	{
-		qDebug () << Q_FUNC_INFO;
 		QMutexLocker guard { &QueueMutex_ };
 
 		if (QueueManager_)
 			QueueManager_->AddTasks ({ item });
 		else
 			PendingQueue_ << item;
-		qDebug () << "done";
 	}
 
 	void AccountThread::run ()
