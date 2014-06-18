@@ -64,7 +64,7 @@ namespace Snails
 	public:
 		TaskQueueManager (AccountThreadWorker*);
 
-		void AddTask (const TaskQueueItem&);
+		void AddTasks (QList<TaskQueueItem>);
 		bool HasItems () const;
 		TaskQueueItem PopItem ();
 	private slots:

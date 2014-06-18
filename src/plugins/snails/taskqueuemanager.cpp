@@ -62,20 +62,33 @@ namespace Snails
 				SLOT (rotateTaskQueue ()));
 	}
 
-	void TaskQueueManager::AddTask (const TaskQueueItem& item)
+	void TaskQueueManager::AddTasks (QList<TaskQueueItem> items)
 	{
-		QMutexLocker locker { &ItemsMutex_ };
-		if (Items_.contains (item))
-			return;
+		bool shouldRotateQueue = false;
+		{
+			QMutexLocker locker { &ItemsMutex_ };
 
-		if (!item.ID_.isEmpty () &&
-				std::any_of (Items_.begin (), Items_.end (),
-						[&item] (const TaskQueueItem& other)
-							{ return item.ID_ == other.ID_; }))
-			return;
+			shouldRotateQueue = Items_.isEmpty ();
 
-		Items_ << item;
-		if (Items_.size () == 1)
+			for (const auto& item : items)
+			{
+				if (Items_.contains (item))
+					continue;
+
+				if (!item.ID_.isEmpty () &&
+						std::any_of (Items_.begin (), Items_.end (),
+								[&item] (const TaskQueueItem& other)
+									{ return item.ID_ == other.ID_; }))
+					continue;;
+
+				Items_ << item;
+			}
+
+			if (Items_.isEmpty ())
+				return;
+		}
+
+		if (shouldRotateQueue)
 			emit gotTask ();
 	}
 
