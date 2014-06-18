@@ -80,11 +80,7 @@ namespace Snails
 
 		qRegisterMetaTypeStreamOperators<AttDescr> ();
 
-		QStringList headers;
-		headers << tr ("Name")
-				<< tr ("Server")
-				<< tr ("Type");
-		AccountsModel_->setHorizontalHeaderLabels (headers);
+		AccountsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Server"), tr ("Type") });
 
 		new Util::DelayedExecutor
 		{

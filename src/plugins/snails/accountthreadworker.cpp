@@ -231,8 +231,8 @@ namespace Snails
 				return vmime::net::folder::path ("INBOX");
 
 			vmime::net::folder::path path;
-			Q_FOREACH (const auto& comp, folder)
-				path.appendComponent (vmime::word (comp.toUtf8 ().constData (), vmime::charsets::UTF_8));
+			for (const auto& comp : folder)
+				path.appendComponent ({ comp.toUtf8 ().constData (), vmime::charsets::UTF_8 });
 			return path;
 		}
 	}
