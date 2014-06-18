@@ -155,9 +155,11 @@ namespace SpeedDial
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleLoaded ()));
-		LoadWatcher_->setFuture (QtConcurrent::run ([this] () -> LoadResult
+
+		auto proxy = PoshukuProxy_;
+		LoadWatcher_->setFuture (QtConcurrent::run ([proxy] () -> LoadResult
 					{
-						const auto& sb = PoshukuProxy_->CreateStorageBackend ();
+						const auto& sb = proxy->CreateStorageBackend ();
 						return GetTopUrls (sb, Rows * Cols);
 					}));
 	}
