@@ -59,7 +59,8 @@ namespace Snails
 		connect (this,
 				SIGNAL (gotTask ()),
 				this,
-				SLOT (rotateTaskQueue ()));
+				SLOT (rotateTaskQueue ()),
+				Qt::QueuedConnection);
 	}
 
 	void TaskQueueManager::AddTasks (QList<TaskQueueItem> items)
