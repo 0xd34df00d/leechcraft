@@ -71,6 +71,7 @@ namespace Snails
 	, FoldersModel_ (new QStandardItemModel (this))
 	, MailModel_ (new MailModel (this))
 	{
+		FoldersModel_->setHorizontalHeaderLabels ({ tr ("Folder") });
 		Thread_->start (QThread::IdlePriority);
 		MessageFetchThread_->start (QThread::LowPriority);
 
@@ -693,7 +694,9 @@ namespace Snails
 
 	void Account::handleFoldersUpdated ()
 	{
-		FoldersModel_->clear ();
+		if (const auto rc = FoldersModel_->rowCount ())
+			FoldersModel_->removeRows (0, rc);
+
 		for (const auto& folder : FolderManager_->GetFolders ())
 		{
 			auto item = BuildFolderItem (folder, FoldersModel_->invisibleRootItem ());
