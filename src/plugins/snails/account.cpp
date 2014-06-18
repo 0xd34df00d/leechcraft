@@ -160,7 +160,7 @@ namespace Snails
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
 
-		Thread_->GetTaskManager ()->AddTask ({
+		Thread_->AddTask ({
 				"synchronize",
 				{
 					{ flags },
@@ -172,7 +172,7 @@ namespace Snails
 
 	void Account::Synchronize (const QStringList& path, const QByteArray& last)
 	{
-		Thread_->GetTaskManager ()->AddTask ({
+		Thread_->AddTask ({
 				"synchronize",
 				{
 					Account::FetchFlags { FetchFlag::FetchAll },
@@ -185,7 +185,7 @@ namespace Snails
 
 	void Account::FetchWholeMessage (Message_ptr msg)
 	{
-		MessageFetchThread_->GetTaskManager ()->AddTask ({
+		MessageFetchThread_->AddTask ({
 				"fetchWholeMessage",
 				{ msg }
 			});
@@ -200,7 +200,7 @@ namespace Snails
 			pair.second = UserEmail_;
 		msg->SetAddress (Message::Address::From, pair);
 
-		MessageFetchThread_->GetTaskManager ()->AddTask ({
+		MessageFetchThread_->AddTask ({
 				"sendMessage",
 				{ msg }
 			});
@@ -209,7 +209,7 @@ namespace Snails
 	void Account::FetchAttachment (Message_ptr msg,
 			const QString& attName, const QString& path)
 	{
-		MessageFetchThread_->GetTaskManager ()->AddTask ({
+		MessageFetchThread_->AddTask ({
 				"fetchAttachment",
 				{
 					msg,
@@ -221,7 +221,7 @@ namespace Snails
 
 	void Account::SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder)
 	{
-		MessageFetchThread_->GetTaskManager ()->AddTask ({
+		MessageFetchThread_->AddTask ({
 				"setReadStatus",
 				{
 					read,
@@ -652,7 +652,7 @@ namespace Snails
 		if (lastRequestedId.isEmpty ())
 			return;
 
-		Thread_->GetTaskManager ()->AddTask ({
+		Thread_->AddTask ({
 				"getMessageCount",
 				{
 					folder,

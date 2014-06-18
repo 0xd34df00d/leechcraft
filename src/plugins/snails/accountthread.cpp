@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "accountthread.h"
+#include <QMutexLocker>
 #include <QtDebug>
 #include "account.h"
 #include "accountthreadworker.h"
@@ -44,22 +45,29 @@ namespace Snails
 	{
 	}
 
-	TaskQueueManager* AccountThread::GetTaskManager () const
+	void AccountThread::AddTask (const TaskQueueItem& item)
 	{
-		return QueueManager_;
-	}
+		qDebug () << Q_FUNC_INFO;
+		QMutexLocker guard { &QueueMutex_ };
 
-	AccountThreadWorker* AccountThread::GetWorker () const
-	{
-		return W_;
+		if (QueueManager_)
+			QueueManager_->AddTasks ({ item });
+		else
+			PendingQueue_ << item;
+		qDebug () << "done";
 	}
 
 	void AccountThread::run ()
 	{
 		W_ = new AccountThreadWorker { IsListening_, A_ };
-		QueueManager_ = new TaskQueueManager { W_ };
-
 		ConnectSignals ();
+
+		{
+			QMutexLocker guard { &QueueMutex_ };
+			QueueManager_ = new TaskQueueManager { W_ };
+			QueueManager_->AddTasks (PendingQueue_);
+			PendingQueue_.clear ();
+		}
 
 		QThread::run ();
 

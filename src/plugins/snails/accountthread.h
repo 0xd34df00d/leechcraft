@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QThread>
+#include "taskqueuemanager.h"
 
 namespace LeechCraft
 {
@@ -48,13 +49,14 @@ namespace Snails
 
 		AccountThreadWorker *W_;
 
+		QMutex QueueMutex_;
+		QList<TaskQueueItem> PendingQueue_;
 		TaskQueueManager *QueueManager_ = nullptr;
 	public:
 		AccountThread (bool isListening, Account*);
 
-		TaskQueueManager* GetTaskManager () const;
+		void AddTask (const TaskQueueItem&);
 	protected:
-		AccountThreadWorker* GetWorker () const;
 		void run ();
 	private:
 		void ConnectSignals ();
