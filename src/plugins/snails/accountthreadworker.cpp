@@ -424,8 +424,8 @@ namespace Snails
 	{
 		for (const auto& folder : origFolders)
 		{
-			const auto& netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_WRITE);
-			FetchMessagesInFolder (folder, netFolder, last);
+			if (const auto& netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_WRITE))
+				FetchMessagesInFolder (folder, netFolder, last);
 		}
 	}
 
@@ -722,6 +722,9 @@ namespace Snails
 	void AccountThreadWorker::getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot)
 	{
 		const auto& netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_ONLY);
+		if (!netFolder)
+			return;
+
 		const auto count = netFolder->getMessageCount ();
 
 		QMetaObject::invokeMethod (handler,
@@ -736,6 +739,8 @@ namespace Snails
 			return;
 
 		const auto& folder = GetFolder (folderPath, vmime::net::folder::MODE_READ_WRITE);
+		if (!folder)
+			return;
 
 		auto set = vmime::net::messageSet::empty ();
 		for (const auto& id : ids)
@@ -769,6 +774,8 @@ namespace Snails
 
 		const QByteArray& sid = origMsg->GetID ();
 		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
+		if (!folder)
+			return;
 
 		try
 		{
@@ -826,6 +833,9 @@ namespace Snails
 		auto store = MakeStore ();
 
 		auto folder = store->getFolder (Folder2Path (msg->GetFolders ().value (0)));
+		if (!folder)
+			return;
+
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
 		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (1, -1));
