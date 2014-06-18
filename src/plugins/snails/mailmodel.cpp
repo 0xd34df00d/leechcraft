@@ -178,5 +178,20 @@ namespace Snails
 
 		return true;
 	}
+
+	bool MailModel::Remove (const QByteArray& id)
+	{
+		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
+				[&id] (const Message_ptr& other) { return other->GetID () == id; });
+		if (pos == Messages_.end ())
+			return false;
+
+		const auto row = std::distance (Messages_.begin (), pos);
+		beginRemoveRows ({}, row, row);
+		Messages_.erase (pos);
+		endRemoveRows ();
+
+		return true;
+	}
 }
 }

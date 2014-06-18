@@ -76,6 +76,7 @@ namespace Snails
 		void Clear ();
 		void Append (QList<Message_ptr>);
 		bool Update (const Message_ptr&);
+		bool Remove (const QByteArray&);
 	};
 }
 }
