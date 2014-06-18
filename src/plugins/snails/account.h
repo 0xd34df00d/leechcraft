@@ -49,6 +49,7 @@ namespace Snails
 	class AccountThreadWorker;
 	class AccountFolderManager;
 	class MailModel;
+	class FoldersModel;
 
 	class Account : public QObject
 	{
@@ -127,14 +128,9 @@ namespace Snails
 		OutType OutType_;
 
 		AccountFolderManager *FolderManager_;
-		QStandardItemModel *FoldersModel_;
+		FoldersModel *FoldersModel_;
 
 		MailModel * const MailModel_;
-
-		enum FoldersRole
-		{
-			Path = Qt::UserRole + 1
-		};
 	public:
 		Account (QObject* = 0);
 

@@ -43,6 +43,7 @@
 #include "accountfoldermanager.h"
 #include "mailmodel.h"
 #include "taskqueuemanager.h"
+#include "foldersmodel.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -68,10 +69,9 @@ namespace Snails
 	, APOP_ (false)
 	, APOPFail_ (false)
 	, FolderManager_ (new AccountFolderManager (this))
-	, FoldersModel_ (new QStandardItemModel (this))
+	, FoldersModel_ (new FoldersModel (this))
 	, MailModel_ (new MailModel (this))
 	{
-		FoldersModel_->setHorizontalHeaderLabels ({ tr ("Folder") });
 		Thread_->start (QThread::IdlePriority);
 		MessageFetchThread_->start (QThread::LowPriority);
 
@@ -133,7 +133,7 @@ namespace Snails
 	{
 		MailModel_->Clear ();
 
-		const auto& path = idx.data (FoldersRole::Path).toStringList ();
+		const auto& path = idx.data (FoldersModel::Role::FolderPath).toStringList ();
 		qDebug () << Q_FUNC_INFO << path;
 		if (path.isEmpty ())
 			return;
@@ -669,24 +669,6 @@ namespace Snails
 			Synchronize (folder, {});
 	}
 
-	namespace
-	{
-		QStandardItem* BuildFolderItem (QStringList folder, QStandardItem *root)
-		{
-			if (folder.isEmpty ())
-				return root;
-
-			const QString name = folder.takeFirst ();
-			for (int i = 0; i < root->rowCount (); ++i)
-				if (root->child (i)->text () == name)
-					return BuildFolderItem (folder, root->child (i));
-
-			QStandardItem *item = new QStandardItem (name);
-			root->appendRow (item);
-			return BuildFolderItem (folder, item);
-		}
-	}
-
 	void Account::handleGotFolders (QList<QStringList> folders)
 	{
 		FolderManager_->SetFolders (folders);
@@ -694,15 +676,7 @@ namespace Snails
 
 	void Account::handleFoldersUpdated ()
 	{
-		if (const auto rc = FoldersModel_->rowCount ())
-			FoldersModel_->removeRows (0, rc);
-
-		for (const auto& folder : FolderManager_->GetFolders ())
-		{
-			auto item = BuildFolderItem (folder, FoldersModel_->invisibleRootItem ());
-			item->setData (folder, FoldersRole::Path);
-			item->setEditable (false);
-		}
+		FoldersModel_->SetFolders (FolderManager_->GetFolders ());
 	}
 
 	void Account::handleMessageBodyFetched (Message_ptr msg)
