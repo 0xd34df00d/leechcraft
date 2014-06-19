@@ -41,9 +41,22 @@ namespace Snails
 
 	TaskQueueItem::TaskQueueItem (const QByteArray& method,
 			const QList<ValuedMetaArgument>& args, const QByteArray& id)
-	: Method_ { method }
+	: TaskQueueItem { Priority::Normal, method, args, id }
+	{
+	}
+
+	TaskQueueItem::TaskQueueItem (int priority, const QByteArray& method,
+			const QList<ValuedMetaArgument>& args, const QByteArray& id)
+	: Priority_ { priority }
+	, Method_ { method }
 	, Args_ (args)
 	, ID_ { id }
+	{
+	}
+
+	TaskQueueItem::TaskQueueItem (Priority priority,
+			const QByteArray& method, const QList<ValuedMetaArgument>& args, const QByteArray& id)
+	: TaskQueueItem { static_cast<int> (priority), method, args, id }
 	{
 	}
 

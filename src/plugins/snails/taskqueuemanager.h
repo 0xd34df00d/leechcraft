@@ -40,13 +40,29 @@ namespace Snails
 {
 	struct TaskQueueItem
 	{
+		enum class Priority
+		{
+			Lowest = -50,
+			Low = -10,
+			Normal = 0,
+			High = 10,
+			Highest = 50
+		};
+
+		int Priority_ = static_cast<int> (Priority::Normal);
+
 		QByteArray Method_;
 		QList<ValuedMetaArgument> Args_;
 
 		QByteArray ID_;
 
 		TaskQueueItem ();
-		TaskQueueItem (const QByteArray&, const QList<ValuedMetaArgument>&, const QByteArray& = {});
+		TaskQueueItem (const QByteArray&,
+				const QList<ValuedMetaArgument>&, const QByteArray& = {});
+		TaskQueueItem (int priority, const QByteArray&,
+				const QList<ValuedMetaArgument>&, const QByteArray& = {});
+		TaskQueueItem (Priority priority, const QByteArray&,
+				const QList<ValuedMetaArgument>&, const QByteArray& = {});
 	};
 
 	bool operator== (const TaskQueueItem&, const TaskQueueItem&);
