@@ -49,6 +49,12 @@ namespace Util
 	, GarbageCollectorWatcher_ (nullptr)
 	{
 		setCacheDirectory (GetUserDir (UserDir::Cache, "network/" + subpath).absolutePath ());
+		auto timer = new QTimer (this);
+		timer->setInterval (60 * 60 * 1000);
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (collectGarbage ()));
 	}
 
 	NetworkDiskCache::~NetworkDiskCache ()
