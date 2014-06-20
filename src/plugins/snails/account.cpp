@@ -678,7 +678,32 @@ namespace Snails
 
 	void Account::handleFoldersUpdated ()
 	{
-		FoldersModel_->SetFolders (FolderManager_->GetFolders ());
+		const auto& folders = FolderManager_->GetFolders ();
+		FoldersModel_->SetFolders (folders);
+
+		for (const auto& folder : folders)
+		{
+			int count = -1;
+			try
+			{
+				count = Core::Instance ().GetStorage ()->GetNumMessages (this, folder);
+			}
+			catch (const std::exception&)
+			{
+			}
+
+			FoldersModel_->SetFolderMessageCount (folder, count);
+
+			Thread_->AddTask ({
+					TaskQueueItem::Priority::Lowest,
+					"getMessageCount",
+					{
+						folder,
+						static_cast<QObject*> (this),
+						QByteArray { "handleMessageCountFetched" }
+					}
+				});
+		}
 	}
 
 	void Account::handleMessageBodyFetched (Message_ptr msg)
