@@ -431,7 +431,15 @@ namespace LeechCraft
 			void TorrentPlugin::on_OpenTorrent__triggered ()
 			{
 				AddTorrentDialog_->Reinit ();
-				if (AddTorrentDialog_->exec () == QDialog::Rejected)
+				AddTorrentDialog_->show ();
+				QEventLoop dialogGuard;
+				connect (AddTorrentDialog_.get (),
+						SIGNAL (finished (int)),
+						&dialogGuard,
+						SLOT (quit ()));
+				dialogGuard.exec ();
+
+				if (AddTorrentDialog_->result () == QDialog::Rejected)
 					return;
 
 				QString filename = AddTorrentDialog_->GetFilename (),
