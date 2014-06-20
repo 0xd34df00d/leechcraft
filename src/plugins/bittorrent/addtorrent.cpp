@@ -32,6 +32,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <QHeaderView>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -248,7 +249,14 @@ namespace BitTorrent
 		const auto& filename = TorrentFile_->text ();
 		const auto& info = Core::Instance ()->GetTorrentInfo (filename);
 		if (!info.is_valid ())
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Looks like %1 is not a valid torrent file.")
+						.arg ("<em>" + filename + "</em>"));
 			return;
+		}
+
 		if (info.trackers ().size ())
 			TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
 		else
