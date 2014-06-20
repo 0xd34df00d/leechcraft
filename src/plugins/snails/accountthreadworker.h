@@ -67,6 +67,7 @@ namespace Snails
 		Util::AssocCache<QStringList, vmime::shared_ptr<vmime::net::folder>> CachedFolders_;
 
 		const vmime::shared_ptr<vmime::security::cert::defaultCertificateVerifier> CertVerifier_;
+		const vmime::shared_ptr<vmime::security::authenticator> InAuth_;
 	public:
 		AccountThreadWorker (bool, Account*);
 	private:

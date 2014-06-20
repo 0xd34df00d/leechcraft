@@ -120,6 +120,7 @@ namespace Snails
 	, Session_ (new vmime::net::session ())
 	, CachedFolders_ (4)
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
+	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
 	{
 		std::vector<boost::shared_ptr<vmime::security::cert::X509Certificate>> vCerts;
 		for (const auto& sysCert : QSslSocket::systemCaCertificates ())
@@ -151,6 +152,7 @@ namespace Snails
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
 		st->setCertificateVerifier (CertVerifier_);
+		st->setAuthenticator (InAuth_);
 
 		if (A_->UseTLS_)
 		{
