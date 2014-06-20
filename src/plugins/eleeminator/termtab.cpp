@@ -145,6 +145,16 @@ namespace Eleeminator
 		handleFinished ();
 	}
 
+	void TermTab::TabMadeCurrent ()
+	{
+		IsTabCurrent_ = true;
+	}
+
+	void TermTab::TabLostCurrent ()
+	{
+		IsTabCurrent_ = false;
+	}
+
 	void TermTab::SetupToolbar ()
 	{
 		SetupColorsButton ();

@@ -59,6 +59,8 @@ namespace Eleeminator
 		QTermWidget * const Term_;
 
 		QString CurrentColorScheme_;
+
+		bool IsTabCurrent_ = false;
 	public:
 		TermTab (const ICoreProxy_ptr&, Util::ShortcutManager*, const TabClassInfo&, QObject*);
 
@@ -66,6 +68,8 @@ namespace Eleeminator
 		QObject* ParentMultiTabs ();
 		QToolBar* GetToolBar () const;
 		void Remove ();
+		void TabMadeCurrent ();
+		void TabLostCurrent ();
 	private:
 		void SetupToolbar ();
 		void SetupColorsButton ();
