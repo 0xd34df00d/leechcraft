@@ -437,6 +437,7 @@ namespace Util
 			areaWidget->setLayout (areaLayout);
 			ParseEntity (scroll, areaWidget);
 			area->setWidget (areaWidget);
+			area->setWidgetResizable (true);
 			areaWidget->show ();
 
 			QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
