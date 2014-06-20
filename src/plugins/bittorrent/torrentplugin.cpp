@@ -269,7 +269,15 @@ namespace LeechCraft
 					if (!tags.isEmpty ())
 						AddTorrentDialog_->SetTags (tags);
 
-					if (AddTorrentDialog_->exec () == QDialog::Rejected)
+					AddTorrentDialog_->show ();
+					QEventLoop dialogGuard;
+					connect (AddTorrentDialog_.get (),
+							SIGNAL (finished (int)),
+							&dialogGuard,
+							SLOT (quit ()));
+					dialogGuard.exec ();
+
+					if (AddTorrentDialog_->result () == QDialog::Rejected)
 						return -1;
 
 					fname = AddTorrentDialog_->GetFilename (),
