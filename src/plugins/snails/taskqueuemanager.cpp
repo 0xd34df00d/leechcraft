@@ -131,26 +131,49 @@ namespace Snails
 			if (item.Method_.isEmpty ())
 				break;
 
-			const bool res = QMetaObject::invokeMethod (ATW_,
-					item.Method_,
-					Qt::DirectConnection,
-					item.Args_.value (0),
-					item.Args_.value (1),
-					item.Args_.value (2),
-					item.Args_.value (3),
-					item.Args_.value (4),
-					item.Args_.value (5),
-					item.Args_.value (6),
-					item.Args_.value (7),
-					item.Args_.value (8),
-					item.Args_.value (9));
+			try
+			{
+				const bool res = QMetaObject::invokeMethod (ATW_,
+						item.Method_,
+						Qt::DirectConnection,
+						item.Args_.value (0),
+						item.Args_.value (1),
+						item.Args_.value (2),
+						item.Args_.value (3),
+						item.Args_.value (4),
+						item.Args_.value (5),
+						item.Args_.value (6),
+						item.Args_.value (7),
+						item.Args_.value (8),
+						item.Args_.value (9));
 
-			if (!res)
+				if (!res)
+					qWarning () << Q_FUNC_INFO
+							<< "unable to call"
+							<< item.Method_
+							<< "with"
+							<< item.Args_;
+			}
+			catch (const vmime::exceptions::authentication_error& err)
+			{
 				qWarning () << Q_FUNC_INFO
-						<< "unable to call"
+						<< "caught auth error:"
+						<< err.response ().c_str ()
+						<< "while calling"
 						<< item.Method_
 						<< "with"
-						<< item.Args_.size ();
+						<< item.Args_;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "caught"
+						<< e.what ()
+						<< "while calling"
+						<< item.Method_
+						<< "with"
+						<< item.Args_;
+			}
 		}
 		qDebug () << Q_FUNC_INFO << "done";
 	}
