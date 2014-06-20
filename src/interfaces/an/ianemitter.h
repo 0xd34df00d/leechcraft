@@ -133,6 +133,27 @@ namespace LeechCraft
 		}
 	};
 
+	/** @brief Describes a field with boolean values.
+	 */
+	struct ANBoolFieldValue
+	{
+		/** @brief Whether the field should be set.
+		 */
+		bool IsSet_;
+	};
+
+	/** @brief Compares two fields with boolean values.
+	 *
+	 * @param[in] left First operand.
+	 * @param[in] right Second operand.
+	 * @return Whether \em left and \em right have the same boundary and
+	 * the same operation.
+	 */
+	inline bool operator== (const ANBoolFieldValue& left, const ANBoolFieldValue& right)
+	{
+		return left.IsSet_ == right.IsSet_;
+	}
+
 	/** @brief Describes a field with integer values.
 	 */
 	struct ANIntFieldValue
@@ -241,7 +262,7 @@ namespace LeechCraft
 
 	/** @brief A combination of all possible descriptions.
 	 */
-	typedef boost::variant<ANIntFieldValue, ANStringFieldValue> ANFieldValue;
+	typedef boost::variant<ANBoolFieldValue, ANIntFieldValue, ANStringFieldValue> ANFieldValue;
 }
 
 /** @brief Interface for plugins emitting AdvancedNotifications entries.
