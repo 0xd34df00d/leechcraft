@@ -76,6 +76,9 @@ namespace AdvancedNotifications
 		Cat2Types_ [AN::CatPackageManager] << AN::TypePackageUpdated;
 
 		Cat2Types_ [AN::CatMediaPlayer] << AN::TypeMediaPlaybackStatus;
+		Cat2Types_ [AN::CatTerminal] << AN::TypeTerminalActivity
+				<< AN::TypeTerminalInactivity
+				<< AN::TypeTerminalBell;
 
 		Cat2Types_ [AN::CatGeneric] << AN::TypeGeneric;
 

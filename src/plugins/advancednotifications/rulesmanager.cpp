@@ -118,6 +118,11 @@ namespace AdvancedNotifications
 		Cat2HR_ [AN::CatMediaPlayer] = tr ("Media player");
 		Type2HR_ [AN::TypeMediaPlaybackStatus] = tr ("Media playback status changed");
 
+		Cat2HR_ [AN::CatTerminal] = tr ("Terminal");
+		Type2HR_ [AN::TypeTerminalBell] = tr ("Bell in a terminal");
+		Type2HR_ [AN::TypeTerminalActivity] = tr ("Activity in a terminal");
+		Type2HR_ [AN::TypeTerminalInactivity] = tr ("Inactivity in a terminal");
+
 		Cat2HR_ [AN::CatGeneric] = tr ("Generic");
 		Type2HR_ [AN::TypeGeneric] = tr ("Generic");
 
