@@ -32,10 +32,12 @@
 #include <QUrl>
 #include <QTimer>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <util/models/treeitem.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"
@@ -689,6 +691,14 @@ namespace BitTorrent
 
 		auto model = static_cast<TorrentFilesModel*> (Ui_.FilesView_->model ());
 		Applier (model, selected, prio);
+	}
+
+	void TorrentTabWidget::on_LabelComment__linkActivated (const QString& link)
+	{
+		const auto& e = Util::MakeEntity (QUrl::fromEncoded (link.toUtf8 ()),
+				{},
+				TaskParameter::FromUserInitiated | TaskParameter::OnlyHandle);
+		Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void TorrentTabWidget::setTabWidgetSettings ()

@@ -87,10 +87,15 @@ namespace BitTorrent
 		void on_TorrentTags__editingFinished ();
 		void setTabWidgetSettings ();
 		void currentFileChanged (const QModelIndex&);
+
 		void on_FilePriorityRegulator__valueChanged (int);
+
+		void on_LabelComment__linkActivated (const QString&);
+
 		void handleAddPeer ();
 		void handleBanPeer ();
 		void handleAddWebSeed ();
+
 		void currentPeerChanged (const QModelIndex&);
 		void currentWebSeedChanged (const QModelIndex&);
 		void handleRemoveWebSeed ();

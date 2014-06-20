@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>778</width>
-    <height>343</height>
+    <height>361</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -50,7 +50,7 @@
          <x>0</x>
          <y>0</y>
          <width>750</width>
-         <height>617</height>
+         <height>644</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -780,8 +780,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>183</width>
-             <height>366</height>
+             <width>297</width>
+             <height>384</height>
             </rect>
            </property>
            <layout class="QFormLayout" name="formLayout_10">
@@ -1176,7 +1176,7 @@
           <string/>
          </property>
          <property name="openExternalLinks">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -1344,7 +1344,7 @@
          <x>0</x>
          <y>0</y>
          <width>750</width>
-         <height>556</height>
+         <height>571</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
