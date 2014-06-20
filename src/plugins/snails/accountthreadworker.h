@@ -35,6 +35,7 @@
 #include <vmime/net/folder.hpp>
 #include <vmime/net/store.hpp>
 #include <vmime/security/cert/defaultCertificateVerifier.hpp>
+#include <util/sll/assoccache.h>
 #include <interfaces/structures.h>
 #include "progresslistener.h"
 #include "message.h"
@@ -62,7 +63,8 @@ namespace Snails
 
 		vmime::shared_ptr<vmime::net::session> Session_;
 		vmime::shared_ptr<vmime::net::store> CachedStore_;
-		QHash<QStringList, vmime::shared_ptr<vmime::net::folder>> CachedFolders_;
+
+		Util::AssocCache<QStringList, vmime::shared_ptr<vmime::net::folder>> CachedFolders_;
 
 		const vmime::shared_ptr<vmime::security::cert::defaultCertificateVerifier> CertVerifier_;
 	public:

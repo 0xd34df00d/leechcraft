@@ -118,6 +118,7 @@ namespace Snails
 	, IsListening_ (isListening)
 	, ChangeListener_ (new MessageChangeListener (this))
 	, Session_ (new vmime::net::session ())
+	, CachedFolders_ (4)
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	{
 		std::vector<boost::shared_ptr<vmime::security::cert::X509Certificate>> vCerts;
