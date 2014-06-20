@@ -37,6 +37,7 @@ namespace LMP
 {
 	class FilterSettingsManager : public Util::BaseSettingsManager
 	{
+		Q_OBJECT
 		const QString FilterId_;
 	public:
 		FilterSettingsManager (const QString& filterId, QObject* = nullptr);

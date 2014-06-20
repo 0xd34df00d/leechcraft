@@ -52,17 +52,29 @@ namespace Util
 
 	QString ExtensionsData::GetMime (const QString& extension) const
 	{
+#ifdef HAVE_EXTENSIONS_DATA
 		return Impl_ ? Impl_->GetMimeDatabase () [extension] : QString {};
+#else
+		return {};
+#endif
 	}
 
 	QIcon ExtensionsData::GetExtIcon (const QString& extension) const
 	{
+#ifdef HAVE_EXTENSIONS_DATA
 		return Impl_ ? Impl_->GetExtIcon (extension) : QIcon {};
+#else
+		return {};
+#endif
 	}
 
 	QIcon ExtensionsData::GetMimeIcon (const QString& mime) const
 	{
+#ifdef HAVE_EXTENSIONS_DATA
 		return Impl_ ? Impl_->GetMimeIcon (mime) : QIcon {};
+#else
+		return {};
+#endif
 	}
 }
 }
