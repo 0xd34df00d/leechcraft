@@ -251,6 +251,7 @@ namespace LeechCraft
 						static_cast<TreeItem*> (pi.internalPointer ())->
 							ModifyData (0, state, Qt::CheckStateRole);
 						emit dataChanged (pi, pi);
+
 						pi = parent (pi);
 					}
 
@@ -467,24 +468,14 @@ namespace LeechCraft
 
 			void TorrentFilesModel::MarkIndexes (const QList<QModelIndex>& indexes)
 			{
-				for (int i = 0; i < indexes.size (); ++i)
-				{
-					TreeItem *item = static_cast<TreeItem*> (indexes.at (i).internalPointer ());
-					if (!item->ChildCount ())
-						item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
-					emit dataChanged (index (indexes.at (i).row (), 0), index (indexes.at (i).row (), 1));
-				}
+				for (const auto& index : indexes)
+					setData (index, Qt::Checked, Qt::CheckStateRole);
 			}
 
 			void TorrentFilesModel::UnmarkIndexes (const QList<QModelIndex>& indexes)
 			{
-				for (int i = 0; i < indexes.size (); ++i)
-				{
-					TreeItem *item = static_cast<TreeItem*> (indexes.at (i).internalPointer ());
-					if (!item->ChildCount ())
-						item->ModifyData (0, Qt::Unchecked, Qt::CheckStateRole);
-					emit dataChanged (index (indexes.at (i).row (), 0), index (indexes.at (i).row (), 1));
-				}
+				for (const auto& index : indexes)
+					setData (index, Qt::Unchecked, Qt::CheckStateRole);
 			}
 
 			void TorrentFilesModel::HandleFileActivated (QModelIndex index) const
