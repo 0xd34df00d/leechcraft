@@ -314,6 +314,13 @@ namespace Eleeminator
 
 	void TermTab::handleBell (const QString&)
 	{
+		auto e = Util::MakeAN ("Eleeminator", tr ("Bell in terminal."), PInfo_,
+				"org.LeechCraft.Eleeminator", AN::CatTerminal, AN::TypeTerminalBell,
+				"org.LeechCraft.Eleeminator.BellEvent",
+				{ tr ("Eleeminator"), tr ("Bell") });
+		e.Mime_ += "+advanced";
+		e.Additional_ [AN::Field::TerminalActive] = IsTabCurrent_;
+		CoreProxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void TermTab::handleFinished ()
