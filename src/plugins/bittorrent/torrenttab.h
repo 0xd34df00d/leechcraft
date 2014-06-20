@@ -88,8 +88,10 @@ namespace BitTorrent
 		void on_TorrentsView__customContextMenuRequested (const QPoint&);
 
 		void handleOpenTorrentTriggered ();
+		void handleOpenTorrentAccepted ();
 		void handleAddMagnetTriggered ();
 		void handleOpenMultipleTorrentsTriggered ();
+
 		void handleIPFilterTriggered ();
 		void handleCreateTorrentTriggered ();
 		void handleRemoveTorrentTriggered ();

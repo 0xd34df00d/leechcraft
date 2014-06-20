@@ -339,18 +339,27 @@ namespace BitTorrent
 
 	void TorrentTab::handleOpenTorrentTriggered ()
 	{
-		AddTorrent dia;
-		if (dia.exec () == QDialog::Rejected)
-			return;
+		auto dia = new AddTorrent (this);
+		connect (dia,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleOpenTorrentAccepted ()));
+		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+	}
 
-		const auto& filename = dia.GetFilename ();
-		const auto& path = dia.GetSavePath ();
-		bool tryLive = dia.GetTryLive ();
-		const auto& files = dia.GetSelectedFiles ();
-		const auto& tags = dia.GetTags ();
+	void TorrentTab::handleOpenTorrentAccepted ()
+	{
+		auto dia = qobject_cast<AddTorrent*> (sender ());
+
+		const auto& filename = dia->GetFilename ();
+		const auto& path = dia->GetSavePath ();
+		bool tryLive = dia->GetTryLive ();
+		const auto& files = dia->GetSelectedFiles ();
+		const auto& tags = dia->GetTags ();
 
 		TaskParameters tp = FromUserInitiated;
-		if (dia.GetAddType () != Core::Started)
+		if (dia->GetAddType () != Core::Started)
 			tp |= NoAutostart;
 		Core::Instance ()->AddFile (filename,
 				path,
