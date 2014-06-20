@@ -667,6 +667,8 @@ namespace Snails
 		const auto storedCount = Core::Instance ().GetStorage ()->GetNumMessages (this, folder);
 		if (storedCount && count != storedCount)
 			Synchronize (folder, {});
+
+		FoldersModel_->SetFolderMessageCount (folder, count);
 	}
 
 	void Account::handleGotFolders (QList<QStringList> folders)
