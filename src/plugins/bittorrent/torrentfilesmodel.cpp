@@ -450,8 +450,7 @@ namespace LeechCraft
 
 				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
 						end = Path2TreeItem_.end (); i != end; ++i)
-					if (!i->second->ChildCount ())
-						i->second->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
+					i->second->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
 				emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 1));
 			}
 
@@ -462,8 +461,7 @@ namespace LeechCraft
 
 				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
 						end = Path2TreeItem_.end (); i != end; ++i)
-					if (!i->second->ChildCount ())
-						i->second->ModifyData (0, Qt::Unchecked, Qt::CheckStateRole);
+					i->second->ModifyData (0, Qt::Unchecked, Qt::CheckStateRole);
 				emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 1));
 			}
 
