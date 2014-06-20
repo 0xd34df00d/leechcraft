@@ -194,12 +194,11 @@ namespace BitTorrent
 
 	void AddTorrent::on_TorrentBrowse__released ()
 	{
-			QString filename = QFileDialog::getOpenFileName (this,
-					tr ("Select torrent file"),
-					XmlSettingsManager::Instance ()->
-						property ("LastTorrentDirectory").toString (),
-					tr ("Torrents (*.torrent);;All files (*.*)"));
-			if (filename.isEmpty ())
+		const auto& filename = QFileDialog::getOpenFileName (this,
+				tr ("Select torrent file"),
+				XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString (),
+				tr ("Torrents (*.torrent);;All files (*.*)"));
+		if (filename.isEmpty ())
 			return;
 
 		Reinit ();
@@ -246,8 +245,8 @@ namespace BitTorrent
 
 	void AddTorrent::ParseBrowsed ()
 	{
-		QString filename = TorrentFile_->text ();
-		libtorrent::torrent_info info = Core::Instance ()->GetTorrentInfo (filename);
+		const auto& filename = TorrentFile_->text ();
+		const auto& info = Core::Instance ()->GetTorrentInfo (filename);
 		if (!info.is_valid ())
 			return;
 		if (info.trackers ().size ())
