@@ -34,6 +34,8 @@
 #include <QWidget>
 #include <QtDebug>
 #include <QUrl>
+#include <util/util.h>
+#include "ui_boolmatcherconfigwidget.h"
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"
 
@@ -58,6 +60,8 @@ namespace AdvancedNotifications
 	{
 		switch (type)
 		{
+		case QVariant::Bool:
+			return TypedMatcherBase_ptr (new BoolMatcher (fieldData.Name_));
 		case QVariant::Int:
 			return TypedMatcherBase_ptr (new IntMatcher ());
 		case QVariant::String:
@@ -307,6 +311,83 @@ namespace AdvancedNotifications
 		return Value_.Contains_ ?
 				QObject::tr ("matches URL or pattern `%1`").arg (p) :
 				QObject::tr ("doesn't match URL or pattern `%1`").arg (p);
+	}
+
+	BoolMatcher::BoolMatcher (const QString& fieldName)
+	: Value_ { false }
+	, FieldName_ { fieldName }
+	{
+	}
+
+	QVariantMap BoolMatcher::Save () const
+	{
+		return Util::MakeMap<QString, QVariant> ({ { "IsSet", Value_.IsSet_ } });
+	}
+
+	void BoolMatcher::Load (const QVariantMap& map)
+	{
+		Value_.IsSet_ = map.value ("IsSet").toBool ();
+	}
+
+	void BoolMatcher::SetValue (const ANFieldValue& value)
+	{
+		boost::apply_visitor (ValueSetVisitor<ANBoolFieldValue> { Value_ }, value);
+	}
+
+	ANFieldValue BoolMatcher::GetValue () const
+	{
+		return Value_;
+	}
+
+	bool BoolMatcher::Match (const QVariant& var) const
+	{
+		return var.toBool () == Value_.IsSet_;
+	}
+
+	QString BoolMatcher::GetHRDescription () const
+	{
+		return Value_.IsSet_ ?
+				QObject::tr ("yes") :
+				QObject::tr ("no");
+	}
+
+	QWidget* BoolMatcher::GetConfigWidget ()
+	{
+		if (!CW_)
+		{
+			CW_ = new QWidget ();
+			Ui_.reset (new Ui::BoolMatcherConfigWidget ());
+			Ui_->setupUi (CW_);
+			Ui_->IsSet_->setText (FieldName_);
+		}
+
+		SyncWidgetTo ();
+
+		return CW_;
+	}
+
+	void BoolMatcher::SyncToWidget ()
+	{
+		if (!CW_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null CW";
+			return;
+		}
+
+		Value_.IsSet_ = Ui_->IsSet_->checkState () == Qt::Checked;
+	}
+
+	void BoolMatcher::SyncWidgetTo ()
+	{
+		if (!CW_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null CW";
+			return;
+		}
+
+		Ui_->IsSet_->setCheckState (Value_.IsSet_ ? Qt::Checked : Qt::Unchecked);
 	}
 
 	IntMatcher::IntMatcher ()

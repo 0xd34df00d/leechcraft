@@ -37,6 +37,7 @@ set (SRCS
 set (FORMS
 	notificationruleswidget.ui
 	matchconfigdialog.ui
+	boolmatcherconfigwidget.ui
 	intmatcherconfigwidget.ui
 	stringlikematcherconfigwidget.ui
 	)

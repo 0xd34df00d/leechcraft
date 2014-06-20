@@ -37,6 +37,7 @@
 
 namespace Ui
 {
+	class BoolMatcherConfigWidget;
 	class IntMatcherConfigWidget;
 	class StringLikeMatcherConfigWidget;
 }
@@ -120,6 +121,29 @@ namespace AdvancedNotifications
 		bool Match (const QVariant&) const;
 
 		QString GetHRDescription () const;
+	};
+
+	class BoolMatcher : public TypedMatcherBase
+	{
+		ANBoolFieldValue Value_;
+
+		const QString FieldName_;
+		std::shared_ptr<Ui::BoolMatcherConfigWidget> Ui_;
+	public:
+		BoolMatcher (const QString& fieldName);
+
+		QVariantMap Save () const;
+		void Load (const QVariantMap&);
+
+		void SetValue (const ANFieldValue&);
+		ANFieldValue GetValue () const;
+
+		bool Match (const QVariant&) const;
+
+		QString GetHRDescription () const;
+		QWidget* GetConfigWidget ();
+		void SyncToWidget ();
+		void SyncWidgetTo ();
 	};
 
 	class IntMatcher : public TypedMatcherBase
