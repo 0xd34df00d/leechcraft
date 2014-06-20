@@ -125,6 +125,22 @@ namespace AN
 	 */
 	const QString TypeMediaPlaybackStatus = CatMediaPlayer + ".PlaybackStatus";
 
+	/** @brief Category for terminal emulation events.
+	 */
+	const QString CatTerminal = "org.LC.AdvNotifications.Terminal";
+
+	/** @brief A bell has ringed in a terminal window.
+	 */
+	const QString TypeTerminalBell = CatTerminal + ".Bell";
+
+	/** @brief Activity in terminal window.
+	 */
+	const QString TypeTerminalActivity = CatTerminal + ".Activity";
+
+	/** @brief Inactivity in terminal window.
+	 */
+	const QString TypeTerminalInactivity = CatTerminal + ".Inactivity";
+
 	/** @brief Generic notifications that don't fit into any other category.
 	 */
 	const QString CatGeneric = "org.LC.AdvNotifications.Generic";
@@ -208,6 +224,10 @@ namespace AN
 		/** @brief The length of the currently playing media (int).
 		 */
 		const QString MediaLength = CatMediaPlayer + ".Fields.Length";
+
+		/** @brief Whether the terminal window is active (bool).
+		 */
+		const QString TerminalActive = CatTerminal + ".Fields.Active";
 	}
 }
 }
