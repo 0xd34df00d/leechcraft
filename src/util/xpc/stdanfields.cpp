@@ -104,6 +104,22 @@ namespace Util
 							}
 						}
 					}
+				},
+				{
+					AN::CatTerminal,
+					{
+						{
+							AN::Field::TerminalActive,
+							QObject::tr ("Terminal is active"),
+							QObject::tr ("The terminal tab that caused the notification is active."),
+							QVariant::Bool,
+							{
+								AN::TypeTerminalBell,
+								AN::TypeTerminalActivity,
+								AN::TypeTerminalInactivity
+							}
+						}
+					}
 				}
 			});
 
