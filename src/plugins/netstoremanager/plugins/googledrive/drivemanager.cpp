@@ -153,10 +153,12 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::RequestFiles (const QString& key)
+	void DriveManager::RequestFiles (const QString& key, const QString& nextPageToken)
 	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
+		auto str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
 				.arg (key);
+		if (!nextPageToken.isEmpty ())
+			str += "&pageToken=" + nextPageToken;
 		QNetworkRequest request (str);
 
 		request.setHeader (QNetworkRequest::ContentTypeHeader,

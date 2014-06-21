@@ -183,7 +183,7 @@ namespace GoogleDrive
 
 		void RequestFileChanges (qlonglong startId, const QString& pageToken = QString ());
 	private:
-		void RequestFiles (const QString& key);
+		void RequestFiles (const QString& key, const QString& nextPageToken = {});
 		void RequestSharingEntry (const QString& id, const QString& key);
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
