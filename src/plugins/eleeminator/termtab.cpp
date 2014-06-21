@@ -40,6 +40,7 @@
 #include <QProcessEnvironment>
 #include <QApplication>
 #include <QClipboard>
+#include <QTimer>
 #include <QtDebug>
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
@@ -95,7 +96,7 @@ namespace Eleeminator
 				this,
 				SLOT (handleUrlActivated (QUrl)));
 
-		auto savedFontVar = XmlSettingsManager::Instance ().property ("Font");
+		const auto& savedFontVar = XmlSettingsManager::Instance ().property ("Font");
 		if (!savedFontVar.isNull () && savedFontVar.canConvert<QFont> ())
 			Term_->setTerminalFont (savedFontVar.value<QFont> ());
 
@@ -116,6 +117,13 @@ namespace Eleeminator
 				SIGNAL (bell (QString)),
 				this,
 				SLOT (handleBell (QString)));
+
+		auto timer = new QTimer { this };
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (updateTitle ()));
+		timer->start (3000);
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
@@ -309,6 +317,23 @@ namespace Eleeminator
 		Term_->setTerminalFont (font);
 
 		XmlSettingsManager::Instance ().setProperty ("Font", QVariant::fromValue (font));
+	}
+
+	void TermTab::updateTitle ()
+	{
+		auto cwd = Term_->workingDirectory ();
+		while (cwd.endsWith ('/'))
+			cwd.chop (1);
+
+		const auto& tree = ProcessGraphBuilder { Term_->getShellPID () }.GetProcessTree ();
+		const auto& processName = tree.Children_.isEmpty () ?
+				tree.Command_ :
+				tree.Children_.value (0).Command_;
+
+		const auto& title = cwd.isEmpty () ?
+				processName :
+				(cwd.section ('/', -1, -1) + " : " + processName);
+		emit changeTabName (this, title);
 	}
 
 	void TermTab::handleUrlActivated (const QUrl& url)
