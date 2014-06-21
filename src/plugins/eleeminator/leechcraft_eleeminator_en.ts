@@ -17,7 +17,7 @@
 <context>
     <name>LeechCraft::Eleeminator</name>
     <message>
-        <location filename="termtab.cpp" line="63"/>
+        <location filename="termtab.cpp" line="64"/>
         <source>Terminal toolbar</source>
         <translation>Terminal toolbar</translation>
     </message>
@@ -58,24 +58,34 @@
 <context>
     <name>LeechCraft::Eleeminator::TermTab</name>
     <message>
-        <location filename="termtab.cpp" line="156"/>
+        <location filename="termtab.cpp" line="167"/>
         <source>Color scheme</source>
         <translation>Color scheme</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="200"/>
+        <location filename="termtab.cpp" line="211"/>
         <source>Select font...</source>
         <translation>Select font...</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="231"/>
+        <location filename="termtab.cpp" line="242"/>
         <source>Copy selected text</source>
         <translation>Copy selected text</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="237"/>
+        <location filename="termtab.cpp" line="248"/>
         <source>Paste from clipboard</source>
         <translation>Paste from clipboard</translation>
+    </message>
+    <message>
+        <location filename="termtab.cpp" line="322"/>
+        <source>Bell in terminal.</source>
+        <translation>Bell in terminal.</translation>
+    </message>
+    <message>
+        <location filename="termtab.cpp" line="325"/>
+        <source>Bell</source>
+        <translation>Bell</translation>
     </message>
 </context>
 <context>
