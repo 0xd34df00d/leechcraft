@@ -600,9 +600,6 @@ namespace GoogleDrive
 			const QVariantMap& permission = map ["userPermission"].toMap ();
 			const QString& role = permission ["role"].toString ();
 
-			if (role != "owner")
-				return DriveItem ();
-
 			DriveItem driveItem;
 
 			const QString& type = permission ["type"].toString ();
