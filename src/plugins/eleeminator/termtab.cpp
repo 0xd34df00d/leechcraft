@@ -44,6 +44,7 @@
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
 #include <util/xpc/util.h>
+#include <util/xpc/stddatafiltermenucreator.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -248,6 +249,10 @@ namespace Eleeminator
 				Term_,
 				SLOT (pasteClipboard ()));
 		pasteAct->setEnabled (!QApplication::clipboard ()->text (QClipboard::Clipboard).isEmpty ());
+
+		const auto& selected = Term_->selectedText ();
+		if (!selected.isEmpty ())
+			new Util::StdDataFilterMenuCreator { selected, CoreProxy_->GetEntityManager (), &menu };
 
 		menu.exec (Term_->mapToGlobal (point));
 	}
