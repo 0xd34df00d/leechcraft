@@ -720,7 +720,7 @@ namespace GoogleDrive
 
 		SecondRequestIfNoItems_ = true;
 		QList<DriveItem> resList;
-		Q_FOREACH (const auto& item, resMap ["items"].toList ())
+		for (const auto& item : resMap ["items"].toList ())
 		{
 			const auto& driveItem = CreateDriveItem (item);
 			if (driveItem.Name_.isEmpty ())
@@ -729,6 +729,13 @@ namespace GoogleDrive
 		}
 
 		emit gotFiles (resList);
+
+		const auto& nextPageToken = resMap ["nextPageToken"].toString ();
+		if (nextPageToken.isEmpty ())
+			return;
+
+		ApiCallQueue_ << [this, nextPageToken] (const QString& key) { RequestFiles (key, nextPageToken); };
+		RequestAccessToken ();
 	}
 
 	void DriveManager::handleRequestFileSharing ()
