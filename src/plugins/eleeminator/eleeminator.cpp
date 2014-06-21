@@ -121,6 +121,10 @@ namespace Eleeminator
 			emit raiseTab (tab);
 
 			connect (tab,
+					SIGNAL (changeTabName (QWidget*, QString)),
+					this,
+					SIGNAL (changeTabName (QWidget*, QString)));
+			connect (tab,
 					SIGNAL (remove (QWidget*)),
 					this,
 					SIGNAL (removeTab (QWidget*)));

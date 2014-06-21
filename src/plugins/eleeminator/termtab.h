@@ -90,6 +90,7 @@ namespace Eleeminator
 
 		void handleFinished ();
 	signals:
+		void changeTabName (QWidget*, const QString&);
 		void remove (QWidget*);
 	};
 }
