@@ -324,23 +324,27 @@ namespace LeechCraft
 	QMenu* SeparateTabWidget::GetTabMenu (int index)
 	{
 		QMenu *menu = new QMenu ();
+
+		const auto imtw = qobject_cast<ITabWidget*> (Widget (index));
+
 		if (XmlSettingsManager::Instance ()->
 				property ("ShowPluginMenuInTabs").toBool ())
 		{
 			bool asSub = XmlSettingsManager::Instance ()->
 				property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
-			ITabWidget *imtw = qobject_cast<ITabWidget*> (Widget (index));
 			if (imtw)
 			{
-				QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
+				const auto& tabActions = imtw->GetTabBarContextMenuActions ();
 
 				QMenu *subMenu = asSub ?
 						new QMenu (TabText (index), menu) :
 						nullptr;
-				Q_FOREACH (QAction *act, tabActions)
+				for (auto act : tabActions)
 					(asSub ? subMenu : menu)->addAction (act);
+
 				if (asSub)
 					menu->addMenu (subMenu);
+
 				if (tabActions.size ())
 					menu->addSeparator ();
 			}
@@ -375,7 +379,7 @@ namespace LeechCraft
 			}
 		}
 
-		Q_FOREACH (QAction *act, TabBarActions_)
+		for (auto act : TabBarActions_)
 		{
 			if (!act)
 			{
@@ -730,8 +734,7 @@ namespace LeechCraft
 		int index = MainTabBar_->tabAt (point);
 
 		if (index == -1)
-		{
-			Q_FOREACH (QAction *act, TabBarActions_)
+			for (auto act : TabBarActions_)
 			{
 				if (!act)
 				{
@@ -741,11 +744,8 @@ namespace LeechCraft
 				}
 				menu->addAction (act);
 			}
-		}
 		else if (index == MainTabBar_->count () - 1)
-		{
 			menu->addActions (AddTabButtonContextMenu_->actions ());
-		}
 		else
 		{
 			LastContextMenuTab_ = index;
@@ -758,7 +758,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::handleActionDestroyed ()
 	{
-		Q_FOREACH (QPointer<QAction> act, TabBarActions_)
+		for (const auto& act : TabBarActions_)
 			if (!act || act == sender ())
 				TabBarActions_.removeAll (act);
 	}
