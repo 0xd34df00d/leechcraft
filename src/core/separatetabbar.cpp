@@ -170,6 +170,9 @@ namespace LeechCraft
 
 	void SeparateTabBar::toggleCloseButtons () const
 	{
+		if (ComputedWidths_.isEmpty ())
+			UpdateComputedWidths ();
+
 		for (int i = 0, cnt = count () - 1; i < cnt; ++i)
 		{
 			const auto button = tabButton (i, GetCloseButtonPosition ());
