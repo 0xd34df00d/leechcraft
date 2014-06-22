@@ -42,6 +42,7 @@
 #include <QStyle>
 #include <QtDebug>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "coreproxy.h"
 #include "separatetabbar.h"
 #include "xmlsettingsmanager.h"
@@ -325,7 +326,8 @@ namespace LeechCraft
 	{
 		QMenu *menu = new QMenu ();
 
-		const auto imtw = qobject_cast<ITabWidget*> (Widget (index));
+		const auto widget = Widget (index);
+		const auto imtw = qobject_cast<ITabWidget*> (widget);
 
 		if (XmlSettingsManager::Instance ()->
 				property ("ShowPluginMenuInTabs").toBool ())
@@ -377,6 +379,18 @@ namespace LeechCraft
 				toExisting->setProperty ("FromWindowIndex", windowIndex);
 				toExisting->setProperty ("ToWindowIndex", i);
 			}
+		}
+
+		const auto irt = qobject_cast<IRecoverableTab*> (widget);
+		if (imtw &&
+				irt &&
+				(imtw->GetTabClassInfo ().Features_ & TabFeature::TFOpenableByRequest) &&
+				!(imtw->GetTabClassInfo ().Features_ & TabFeature::TFSingle))
+		{
+			const auto cloneAct = menu->addAction (tr ("Clone tab"),
+					this, SLOT (handleCloneTab ()));
+			cloneAct->setProperty ("TabIndex", index);
+			cloneAct->setProperty ("ActionIcon", "tab-duplicate");
 		}
 
 		for (auto act : TabBarActions_)
@@ -862,5 +876,28 @@ namespace LeechCraft
 		}
 
 		highestIHT->TabOpenRequested (highestTabClass);
+	}
+
+	void SeparateTabWidget::handleCloneTab ()
+	{
+		const auto index = sender ()->property ("TabIndex").toInt ();
+		const auto widget = Widget (index);
+		const auto irt = qobject_cast<IRecoverableTab*> (widget);
+
+		const auto plugin = qobject_cast<ITabWidget*> (widget)->ParentMultiTabs ();
+		const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
+
+		if (!widget || !irt || !ihrt)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "something required is null:"
+					<< widget
+					<< irt
+					<< ihrt;
+			return;
+		}
+
+		const auto& data = irt->GetTabRecoverData ();
+		ihrt->RecoverTabs ({ { data, {} } });
 	}
 }
