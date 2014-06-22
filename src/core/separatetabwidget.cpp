@@ -845,9 +845,8 @@ namespace LeechCraft
 		IHaveTabs *highestIHT = 0;
 		QByteArray highestTabClass;
 		int highestPriority = 0;
-		Q_FOREACH (IHaveTabs *iht, Core::Instance ()
-				.GetPluginManager ()->GetAllCastableTo<IHaveTabs*> ())
-			Q_FOREACH (const TabClassInfo& info, iht->GetTabClasses ())
+		for (auto iht : Core::Instance ().GetPluginManager ()->GetAllCastableTo<IHaveTabs*> ())
+			for (const auto& info : iht->GetTabClasses ())
 			{
 				if (!(info.Features_ & TFOpenableByRequest))
 					continue;
@@ -860,7 +859,7 @@ namespace LeechCraft
 				highestPriority = info.Priority_;
 			}
 
-		ITabWidget *imtw = qobject_cast<ITabWidget*> (CurrentWidget ());
+		const auto imtw = qobject_cast<ITabWidget*> (CurrentWidget ());
 		const int delta = 15;
 		if (imtw && imtw->GetTabClassInfo ().Priority_ + delta > highestPriority)
 		{
