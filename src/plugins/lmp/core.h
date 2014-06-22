@@ -43,6 +43,7 @@ namespace LMP
 {
 	struct MediaInfo;
 	class LocalCollection;
+	class HookInterconnector;
 	class LocalFileResolver;
 	class PlaylistManager;
 	class SyncManager;
@@ -62,6 +63,8 @@ namespace LMP
 		ICoreProxy_ptr Proxy_;
 
 		LocalFileResolver *Resolver_;
+
+		HookInterconnector *HookInterconnector_;
 
 		LocalCollection *Collection_;
 		CollectionsManager *CollectionsManager_;
@@ -106,6 +109,7 @@ namespace LMP
 		QObjectList GetSyncPlugins () const;
 		QObjectList GetCloudStoragePlugins () const;
 
+		HookInterconnector* GetHookInterconnector () const;
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
 		CollectionsManager* GetCollectionsManager () const;

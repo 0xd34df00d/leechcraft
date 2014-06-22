@@ -48,6 +48,7 @@
 #include "radiomanager.h"
 #include "rganalysismanager.h"
 #include "localcollectionmodel.h"
+#include "hookinterconnector.h"
 
 namespace LeechCraft
 {
@@ -55,6 +56,7 @@ namespace LMP
 {
 	Core::Core ()
 	: Resolver_ (new LocalFileResolver)
+	, HookInterconnector_ (new HookInterconnector)
 	, Collection_ (new LocalCollection)
 	, CollectionsManager_ (new CollectionsManager)
 	, PLManager_ (new PlaylistManager)
@@ -146,6 +148,8 @@ namespace LMP
 		if (classes.contains ("org.LeechCraft.LMP.PlaylistProvider") &&
 			qobject_cast<IPlaylistProvider*> (pluginObj))
 			PLManager_->AddProvider (pluginObj);
+
+		HookInterconnector_->AddPlugin (pluginObj);
 	}
 
 	QObjectList Core::GetSyncPlugins () const
@@ -156,6 +160,11 @@ namespace LMP
 	QObjectList Core::GetCloudStoragePlugins() const
 	{
 		return CloudPlugins_;
+	}
+
+	HookInterconnector* Core::GetHookInterconnector () const
+	{
+		return HookInterconnector_;
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const
