@@ -129,7 +129,7 @@ namespace LeechCraft
 		bool NoHandlersAvailable (const Entity& e)
 		{
 			const auto& url = e.Entity_.toUrl ();
-			if (url.isValid () &&
+			if (!url.scheme ().isEmpty () &&
 					(e.Parameters_ & FromUserInitiated) &&
 					!(e.Parameters_ & OnlyDownload) &&
 					XmlSettingsManager::Instance ()->
