@@ -68,6 +68,8 @@ namespace LeechCraft
 	private:
 		QTabBar::ButtonPosition GetAntiCloseButtonPosition () const;
 		void UpdateComputedWidths () const;
+	private slots:
+		void toggleCloseButtons () const;
 	protected:
 		void tabLayoutChange ();
 		QSize tabSizeHint (int) const;
