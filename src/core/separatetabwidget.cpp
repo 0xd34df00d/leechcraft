@@ -334,7 +334,9 @@ namespace LeechCraft
 			{
 				QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
 
-				QMenu *subMenu = new QMenu (TabText (index), menu);
+				QMenu *subMenu = asSub ?
+						new QMenu (TabText (index), menu) :
+						nullptr;
 				Q_FOREACH (QAction *act, tabActions)
 					(asSub ? subMenu : menu)->addAction (act);
 				if (asSub)
