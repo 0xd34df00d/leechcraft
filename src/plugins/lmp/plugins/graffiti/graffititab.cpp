@@ -113,32 +113,7 @@ namespace Graffiti
 		return Toolbar_.get ();
 	}
 
-	template<typename T, typename F>
-	void GraffitiTab::UpdateData (const T& newData, F getter)
-	{
-		if (IsChangingCurrent_)
-			return;
-
-		static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
-				"functor doesn't return an lvalue reference");
-
-		const auto& selected = Ui_.FilesList_->selectionModel ()->selectedRows ();
-		for (const auto& index : selected)
-		{
-			const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
-			auto info = infoData.template value<MediaInfo> ();
-			getter (info) = newData;
-			FilesModel_->UpdateInfo (index, info);
-		}
-
-		if (!selected.isEmpty ())
-		{
-			Save_->setEnabled (true);
-			Revert_->setEnabled (true);
-		}
-	}
-
-	void GraffitiTab::SetPath (const QString& path)
+	void GraffitiTab::SetPath (const QString& path, const QString& filename)
 	{
 		AddToPathHistory (path);
 
@@ -147,6 +122,7 @@ namespace Graffiti
 		FilesWatcher_->Clear ();
 
 		auto recIterator = new RecIterator (LMPProxy_, this);
+		recIterator->setProperty ("LMP/Graffiti/Filename", filename);
 		connect (recIterator,
 				SIGNAL (finished ()),
 				this,
@@ -173,6 +149,31 @@ namespace Graffiti
 		recIterator->Start (path);
 
 		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
+	}
+
+	template<typename T, typename F>
+	void GraffitiTab::UpdateData (const T& newData, F getter)
+	{
+		if (IsChangingCurrent_)
+			return;
+
+		static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
+				"functor doesn't return an lvalue reference");
+
+		const auto& selected = Ui_.FilesList_->selectionModel ()->selectedRows ();
+		for (const auto& index : selected)
+		{
+			const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
+			auto info = infoData.template value<MediaInfo> ();
+			getter (info) = newData;
+			FilesModel_->UpdateInfo (index, info);
+		}
+
+		if (!selected.isEmpty ())
+		{
+			Save_->setEnabled (true);
+			Revert_->setEnabled (true);
+		}
 	}
 
 	void GraffitiTab::SetupEdits ()

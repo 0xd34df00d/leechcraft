@@ -88,11 +88,11 @@ namespace Graffiti
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		void SetPath (const QString& dir, const QString& filename = {});
 	private:
 		template<typename T, typename F>
 		void UpdateData (const T& newData, F getter);
-
-		void SetPath (const QString&);
 
 		void SetupEdits ();
 		void SetupViews ();
