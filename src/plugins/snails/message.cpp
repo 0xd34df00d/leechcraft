@@ -175,6 +175,21 @@ namespace Snails
 		HTMLBody_ = body;
 	}
 
+	QList<QByteArray> Message::GetInReplyTo () const
+	{
+		return InReplyTo_;
+	}
+
+	void Message::SetInReplyTo (const QList<QByteArray>& irt)
+	{
+		InReplyTo_ = irt;
+	}
+
+	void Message::AddInReplyTo (const QByteArray& irt)
+	{
+		InReplyTo_ << irt;
+	}
+
 	bool Message::IsRead () const
 	{
 		return IsRead_;
@@ -216,7 +231,8 @@ namespace Snails
 				<< Subject_
 				<< IsRead_
 				<< Body_
-				<< HTMLBody_;
+				<< HTMLBody_
+				<< InReplyTo_;
 		Q_FOREACH (const auto key, Addresses_.keys ())
 			qDebug () << static_cast<int> (key)
 					<< Addresses_ [key];
@@ -241,6 +257,7 @@ namespace Snails
 			<< IsRead_
 			<< Body_
 			<< HTMLBody_
+			<< InReplyTo_
 			<< Addresses_
 			<< Attachments_;
 
@@ -265,6 +282,7 @@ namespace Snails
 			>> IsRead_
 			>> Body_
 			>> HTMLBody_
+			>> InReplyTo_
 			>> Addresses_
 			>> Attachments_;
 	}

@@ -58,6 +58,8 @@ namespace Snails
 		QString Body_;
 		QString HTMLBody_;
 
+		QList<QByteArray> InReplyTo_;
+
 		bool IsRead_;
 
 		QList<AttDescr> Attachments_;
@@ -115,6 +117,10 @@ namespace Snails
 
 		QString GetHTMLBody () const;
 		void SetHTMLBody (const QString&);
+
+		QList<QByteArray> GetInReplyTo () const;
+		void SetInReplyTo (const QList<QByteArray>&);
+		void AddInReplyTo (const QByteArray&);
 
 		bool IsRead () const;
 		void SetRead (bool);
