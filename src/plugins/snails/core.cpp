@@ -77,8 +77,12 @@ namespace Snails
 		qRegisterMetaType<Account::FetchFlags> ("Account::FetchFlags");
 		qRegisterMetaType<QList<QStringList>> ("QList<QStringList>");
 		qRegisterMetaType<QList<QByteArray>> ("QList<QByteArray>");
+		qRegisterMetaType<Folder> ("LeechCraft::Snails::Folder");
+		qRegisterMetaType<QList<Folder>> ("QList<LeechCraft::Snails::Folder>");
 
 		qRegisterMetaTypeStreamOperators<AttDescr> ();
+		qRegisterMetaTypeStreamOperators<Folder> ();
+		qRegisterMetaTypeStreamOperators<QList<Folder>> ();
 
 		AccountsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Server"), tr ("Type") });
 

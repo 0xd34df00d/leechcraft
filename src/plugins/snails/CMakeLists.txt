@@ -47,6 +47,7 @@ set (SRCS
 	valuedmetaargument.cpp
 	messagechangelistener.cpp
 	foldersmodel.cpp
+	folder.cpp
 	)
 set (FORMS
 	mailtab.ui
