@@ -152,6 +152,8 @@ namespace Graffiti
 		if (!info.exists ())
 			return;
 
+		menu->addSeparator ();
+
 		const auto action = menu->addAction (tr ("Edit tags..."),
 				this,
 				SLOT (handleOpenTabFromContextMenu ()));
