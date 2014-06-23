@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "localcollection.h"
 #include "localcollectionmodel.h"
@@ -111,64 +112,10 @@ namespace LMP
 		CollectionFilterModel_->setSourceModel (collMgr->GetModel ());
 		Ui_.CollectionTree_->setModel (CollectionFilterModel_);
 
-		QAction *addToPlaylist = new QAction (tr ("Add to playlist"), this);
-		addToPlaylist->setProperty ("ActionIcon", "list-add");
-		connect (addToPlaylist,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (loadFromCollection ()));
-		Ui_.CollectionTree_->addAction (addToPlaylist);
-
-		CollectionShowTrackProps_ = new QAction (tr ("Show track properties"), Ui_.CollectionTree_);
-		CollectionShowTrackProps_->setProperty ("ActionIcon", "document-properties");
-		connect (CollectionShowTrackProps_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showCollectionTrackProps ()));
-		Ui_.CollectionTree_->addAction (CollectionShowTrackProps_);
-
-		CollectionShowAlbumArt_ = new QAction (tr ("Show album art"), Ui_.CollectionTree_);
-		CollectionShowAlbumArt_->setProperty ("ActionIcon", "media-optical");
-		connect (CollectionShowAlbumArt_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showCollectionAlbumArt ()));
-		Ui_.CollectionTree_->addAction (CollectionShowAlbumArt_);
-
-		CollectionShowAAManager_ = new QAction (tr ("Album art manager..."), Ui_.CollectionTree_);
-		connect (CollectionShowAAManager_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showAlbumArtManager ()));
-		Ui_.CollectionTree_->addAction (CollectionShowAAManager_);
-
-		Ui_.CollectionTree_->addAction (Util::CreateSeparator (Ui_.CollectionTree_));
-
-		CollectionRemove_ = new QAction (tr ("Remove from collection..."), Ui_.CollectionTree_);
-		CollectionRemove_->setProperty ("ActionIcon", "list-remove");
-		connect (CollectionRemove_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleCollectionRemove ()));
-		Ui_.CollectionTree_->addAction (CollectionRemove_);
-
-		CollectionDelete_ = new QAction (tr ("Delete from disk..."), Ui_.CollectionTree_);
-		CollectionDelete_->setProperty ("ActionIcon", "edit-delete");
-		connect (CollectionDelete_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleCollectionDelete ()));
-		Ui_.CollectionTree_->addAction (CollectionDelete_);
-
 		connect (Ui_.CollectionTree_,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
 				SLOT (loadFromCollection ()));
-
-		connect (Ui_.CollectionTree_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleCollectionItemSelected (QModelIndex)));
 
 		connect (Ui_.CollectionFilter_,
 				SIGNAL (textChanged (QString)),
@@ -286,12 +233,47 @@ namespace LMP
 		Core::Instance ().GetCollectionsManager ()->Enqueue (mapped, Player_);
 	}
 
-	void CollectionWidget::handleCollectionItemSelected (const QModelIndex& index)
+	void CollectionWidget::on_CollectionTree__customContextMenuRequested (const QPoint& point)
 	{
+		const auto& index = Ui_.CollectionTree_->indexAt (point);
+		if (!index.isValid ())
+			return;
+
 		const int nodeType = index.data (LocalCollectionModel::Role::Node).value<int> ();
-		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollectionModel::NodeType::Track);
-		CollectionShowAlbumArt_->setEnabled (nodeType == LocalCollectionModel::NodeType::Album);
-		CollectionShowAAManager_->setEnabled (nodeType == LocalCollectionModel::NodeType::Album);
+
+		QMenu menu;
+
+		auto addToPlaylist = menu.addAction (tr ("Add to playlist"),
+				this, SLOT (loadFromCollection ()));
+		addToPlaylist->setProperty ("ActionIcon", "list-add");
+
+		if (nodeType == LocalCollectionModel::NodeType::Track)
+		{
+			auto showTrackProps = menu.addAction (tr ("Show track properties"),
+					this, SLOT (showCollectionTrackProps ()));
+			showTrackProps->setProperty ("ActionIcon", "document-properties");
+		}
+
+		if (nodeType == LocalCollectionModel::NodeType::Album)
+		{
+			auto showAlbumArt = menu.addAction (tr ("Show album art"),
+					this, SLOT (showCollectionAlbumArt ()));
+			showAlbumArt->setProperty ("ActionIcon", "media-optical");
+
+			menu.addAction (tr ("Album art manager..."), this, SLOT (showAlbumArtManager ()));
+		}
+
+		menu.addSeparator ();
+
+		auto remove = menu.addAction (tr ("Remove from collection..."), this, SLOT (handleCollectionRemove ()));
+		remove->setProperty ("ActionIcon", "list-remove");
+
+		auto del = menu.addAction (tr ("Delete from disk..."), this, SLOT (handleCollectionDelete ()));
+		del->setProperty ("ActionIcon", "edit-delete");
+
+		Core::Instance ().GetProxy ()->GetIconThemeManager ()->ManageWidget (&menu);
+
+		menu.exec (Ui_.CollectionTree_->viewport ()->mapToGlobal (point));
 	}
 
 	void CollectionWidget::handleScanProgress (int progress)

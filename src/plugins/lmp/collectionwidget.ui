@@ -27,7 +27,7 @@
    <item>
     <widget class="QTreeView" name="CollectionTree_">
      <property name="contextMenuPolicy">
-      <enum>Qt::ActionsContextMenu</enum>
+      <enum>Qt::CustomContextMenu</enum>
      </property>
      <property name="dragEnabled">
       <bool>true</bool>

@@ -49,12 +49,6 @@ namespace LMP
 		Player * const Player_;
 
 		QSortFilterProxyModel * const CollectionFilterModel_;
-
-		QAction *CollectionShowTrackProps_;
-		QAction *CollectionShowAlbumArt_;
-		QAction *CollectionShowAAManager_;
-		QAction *CollectionRemove_;
-		QAction *CollectionDelete_;
 	public:
 		CollectionWidget (QWidget* = nullptr);
 	private slots:
@@ -64,7 +58,7 @@ namespace LMP
 		void handleCollectionRemove ();
 		void handleCollectionDelete ();
 		void loadFromCollection ();
-		void handleCollectionItemSelected (const QModelIndex&);
+		void on_CollectionTree__customContextMenuRequested (const QPoint&);
 
 		void handleScanProgress (int);
 	};
