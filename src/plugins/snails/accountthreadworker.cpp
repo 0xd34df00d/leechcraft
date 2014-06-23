@@ -960,6 +960,7 @@ namespace Snails
 			return;
 
 		folder->deleteMessages (ToMessageSet (ids));
+		folder->expunge ();
 		emit gotMessagesRemoved (ids, path);
 	}
 
