@@ -237,6 +237,24 @@ namespace LMP
 		Core::Instance ().GetCollectionsManager ()->Enqueue (mapped, Player_);
 	}
 
+	namespace
+	{
+		MediaInfo ColIndex2MediaInfo (const QModelIndex& index)
+		{
+			return
+			{
+				index.data (LocalCollectionModel::Role::TrackPath).toString (),
+				index.data (LocalCollectionModel::Role::ArtistName).toString (),
+				index.data (LocalCollectionModel::Role::AlbumName).toString (),
+				index.data (LocalCollectionModel::Role::TrackTitle).toString (),
+				index.data (LocalCollectionModel::Role::TrackGenres).toStringList (),
+				index.data (LocalCollectionModel::Role::TrackLength).toInt (),
+				index.data (LocalCollectionModel::Role::AlbumYear).toInt (),
+				index.data (LocalCollectionModel::Role::TrackNumber).toInt ()
+			};
+		}
+	}
+
 	void CollectionWidget::on_CollectionTree__customContextMenuRequested (const QPoint& point)
 	{
 		const auto& index = Ui_.CollectionTree_->indexAt (point);
@@ -274,6 +292,9 @@ namespace LMP
 
 		auto del = menu.addAction (tr ("Delete from disk..."), this, SLOT (handleCollectionDelete ()));
 		del->setProperty ("ActionIcon", "edit-delete");
+
+		emit hookCollectionContextMenuRequested (std::make_shared<Util::DefaultHookProxy> (),
+				&menu, ColIndex2MediaInfo (index));
 
 		Core::Instance ().GetProxy ()->GetIconThemeManager ()->ManageWidget (&menu);
 
