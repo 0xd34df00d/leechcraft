@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/core/ihookproxy.h>
 #include "ui_collectionwidget.h"
 
 class QSortFilterProxyModel;
@@ -39,6 +40,7 @@ namespace LeechCraft
 namespace LMP
 {
 	class Player;
+	struct MediaInfo;
 
 	class CollectionWidget : public QWidget
 	{
@@ -61,6 +63,10 @@ namespace LMP
 		void on_CollectionTree__customContextMenuRequested (const QPoint&);
 
 		void handleScanProgress (int);
+	signals:
+		void hookCollectionContextMenuRequested (LeechCraft::IHookProxy_ptr,
+				QMenu*,
+				const LeechCraft::LMP::MediaInfo&);
 	};
 }
 }

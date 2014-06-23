@@ -46,6 +46,9 @@ namespace LMP
 	public:
 		HookInterconnector (QObject* = nullptr);
 	signals:
+		void hookCollectionContextMenuRequested (LeechCraft::IHookProxy_ptr,
+				QMenu*,
+				const LeechCraft::LMP::MediaInfo&);
 		void hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
 				QMenu*,
 				const LeechCraft::LMP::MediaInfo&);

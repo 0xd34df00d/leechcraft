@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/util.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "localcollection.h"
@@ -42,6 +43,7 @@
 #include "util.h"
 #include "albumartmanagerdialog.h"
 #include "collectionsmanager.h"
+#include "hookinterconnector.h"
 
 namespace LeechCraft
 {
@@ -121,6 +123,8 @@ namespace LMP
 				SIGNAL (textChanged (QString)),
 				CollectionFilterModel_,
 				SLOT (setFilterFixedString (QString)));
+
+		Core::Instance ().GetHookInterconnector ()->RegisterHookable (this);
 	}
 
 	void CollectionWidget::showCollectionTrackProps ()
