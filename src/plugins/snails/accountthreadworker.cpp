@@ -950,6 +950,19 @@ namespace Snails
 		}
 	}
 
+	void AccountThreadWorker::deleteMessages (const QList<QByteArray>& ids, const QStringList& path)
+	{
+		if (ids.isEmpty ())
+			return;
+
+		const auto& folder = GetFolder (path, vmime::net::folder::MODE_READ_WRITE);
+		if (!folder)
+			return;
+
+		folder->deleteMessages (ToMessageSet (ids));
+		emit gotMessagesRemoved (ids, path);
+	}
+
 	namespace
 	{
 		vmime::mailbox FromPair (const QString& name, const QString& email)

@@ -100,6 +100,8 @@ namespace Snails
 		void fetchWholeMessage (LeechCraft::Snails::Message_ptr);
 		void fetchAttachment (LeechCraft::Snails::Message_ptr, const QString&, const QString&);
 
+		void deleteMessages (const QList<QByteArray>& id, const QStringList& folder);
+
 		void sendMessage (LeechCraft::Snails::Message_ptr);
 	signals:
 		void error (const QString&);
