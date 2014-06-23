@@ -91,6 +91,9 @@ namespace Graffiti
 		void hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
 				QMenu*,
 				const LeechCraft::LMP::MediaInfo&);
+		void hookCollectionContextMenuRequested (LeechCraft::IHookProxy_ptr,
+				QMenu*,
+				const LeechCraft::LMP::MediaInfo&);
 	private slots:
 		void handleOpenTabFromContextMenu ();
 	signals:

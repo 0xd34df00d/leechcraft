@@ -159,6 +159,12 @@ namespace Graffiti
 		action->setProperty ("LMP/Graffiti/Filepath", mediaInfo.LocalPath_);
 	}
 
+	void Plugin::hookCollectionContextMenuRequested (IHookProxy_ptr proxy,
+			QMenu *menu, const MediaInfo& info)
+	{
+		hookPlaylistContextMenuRequested (proxy, menu, info);
+	}
+
 	void Plugin::handleOpenTabFromContextMenu ()
 	{
 		const auto& path = sender ()->property ("LMP/Graffiti/Filepath").toString ();
