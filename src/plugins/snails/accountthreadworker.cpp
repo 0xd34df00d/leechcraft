@@ -919,7 +919,7 @@ namespace Snails
 		}
 
 		vmime::messageParser mp ((*pos)->getParsedMessage ());
-		Q_FOREACH (const vmime::shared_ptr<const vmime::attachment>& att, mp.getAttachmentList ())
+		for (const auto& att : mp.getAttachmentList ())
 		{
 			if (StringizeCT (att->getName ()) != attName)
 				continue;
@@ -1012,7 +1012,7 @@ namespace Snails
 			textPart->setPlainText (vmime::make_shared<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
 		}
 
-		Q_FOREACH (const AttDescr& descr, msg->GetAttachments ())
+		for (const auto& descr : msg->GetAttachments ())
 		{
 			try
 			{

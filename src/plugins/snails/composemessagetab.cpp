@@ -82,8 +82,8 @@ namespace Snails
 
 		AccountsMenu_ = new QMenu (tr ("Accounts"));
 		AccountsMenu_->menuAction ()->setProperty ("ActionIcon", "system-users");
-		QActionGroup *accsGroup = new QActionGroup (this);
-		Q_FOREACH (Account_ptr account, Core::Instance ().GetAccounts ())
+		auto accsGroup = new QActionGroup (this);
+		for (const auto& account : Core::Instance ().GetAccounts ())
 		{
 			QAction *act = new QAction (account->GetName (), this);
 			accsGroup->addAction (act);
@@ -114,7 +114,7 @@ namespace Snails
 
 		auto plugs = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
-		Q_FOREACH (ITextEditor *plug, plugs)
+		for (const auto plug : plugs)
 		{
 			if (!plug->SupportsEditor (ContentType::PlainText))
 				continue;
@@ -157,7 +157,7 @@ namespace Snails
 	void ComposeMessageTab::SelectAccount (Account_ptr account)
 	{
 		const auto& var = QVariant::fromValue<Account_ptr> (account);
-		Q_FOREACH (QAction *action, AccountsMenu_->actions ())
+		for (auto action : AccountsMenu_->actions ())
 			if (action->property ("Account") == var)
 			{
 				action->setChecked (true);
@@ -229,7 +229,7 @@ namespace Snails
 	void ComposeMessageTab::handleSend ()
 	{
 		Account_ptr account;
-		Q_FOREACH (QAction *act, AccountsMenu_->actions ())
+		for (auto act : AccountsMenu_->actions ())
 		{
 			if (!act->isChecked ())
 				continue;
@@ -252,7 +252,7 @@ namespace Snails
 		magic_load (Magic_.get (), NULL);
 #endif
 
-		Q_FOREACH (QAction *act, AttachmentsMenu_->actions ())
+		for (auto act : AttachmentsMenu_->actions ())
 		{
 			const QString& path = act->property ("Snails/AttachmentPath").toString ();
 			if (path.isEmpty ())
