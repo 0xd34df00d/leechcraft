@@ -231,6 +231,17 @@ namespace Snails
 			});
 	}
 
+	void Account::DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder)
+	{
+		MessageFetchThread_->AddTask ({
+				"deleteMessages",
+				{
+					ids,
+					folder
+				}
+			});
+	}
+
 	void Account::Update (const Message_ptr& message)
 	{
 		MailModel_->Update (message);
