@@ -72,6 +72,7 @@ namespace Snails
 		QToolBar* GetToolBar () const;
 	private:
 		void FillMsgToolbar ();
+		QList<QByteArray> GetSelectedIds () const;
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);

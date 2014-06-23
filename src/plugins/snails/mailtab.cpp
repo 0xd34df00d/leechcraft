@@ -129,6 +129,22 @@ namespace Snails
 		MsgToolbar_->addAction (MsgMarkUnread_);
 	}
 
+	QList<QByteArray> MailTab::GetSelectedIds () const
+	{
+		const auto& rows = Ui_.MailTree_->selectionModel ()->selectedRows ();
+
+		QList<QByteArray> ids;
+		for (const auto& index : rows)
+			ids << index.data (MailModel::MailRole::ID).toByteArray ();
+
+		const auto& currentId = Ui_.MailTree_->currentIndex ()
+				.data (MailModel::MailRole::ID).toByteArray ();
+		if (!currentId.isEmpty () && !ids.contains (currentId))
+			ids << currentId;
+
+		return ids;
+	}
+
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
 	{
 		if (CurrAcc_)
@@ -299,17 +315,10 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		const auto& rows = Ui_.MailTree_->selectionModel ()->selectedRows ();
-		QList<QByteArray> ids;
-		for (const auto& index : rows)
-			ids << index.data (MailModel::MailRole::ID).toByteArray ();
-
-		const auto& currentId = Ui_.MailTree_->currentIndex ()
-				.data (MailModel::MailRole::ID).toByteArray ();
-		if (!currentId.isEmpty () && !ids.contains (currentId))
-			ids << currentId;
-
+		const auto& ids = GetSelectedIds ();
 		CurrAcc_->SetReadStatus (false, ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
+
+
 	}
 
 	void MailTab::handleAttachment ()
