@@ -34,15 +34,19 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
+struct MediaInfo;
+
 namespace Graffiti
 {
 	class ProgressManager;
+	class GraffitiTab;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -83,6 +87,12 @@ namespace Graffiti
 		void SetLMPProxy (ILMPProxy_ptr);
 	private:
 		GraffitiTab* MakeTab ();
+	public slots:
+		void hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
+				QMenu*,
+				const LeechCraft::LMP::MediaInfo&);
+	private slots:
+		void handleOpenTabFromContextMenu ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

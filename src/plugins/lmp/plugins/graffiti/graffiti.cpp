@@ -30,6 +30,7 @@
 #include "graffiti.h"
 #include <QIcon>
 #include <util/util.h>
+#include <interfaces/lmp/mediainfo.h>
 #include "graffititab.h"
 #include "progressmanager.h"
 
@@ -139,6 +140,33 @@ namespace Graffiti
 				ProgressMgr_,
 				SLOT (handleCueSplitter (CueSplitter*)));
 		return tab;
+	}
+
+	void Plugin::hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
+			QMenu *menu, const MediaInfo& mediaInfo)
+	{
+		if (mediaInfo.LocalPath_.isEmpty ())
+			return;
+
+		const QFileInfo info { mediaInfo.LocalPath_ };
+		if (!info.exists ())
+			return;
+
+		const auto action = menu->addAction (tr ("Edit tags..."),
+				this,
+				SLOT (handleOpenTabFromContextMenu ()));
+		action->setProperty ("ActionIcon", "mail-tagged");
+		action->setProperty ("LMP/Graffiti/Filepath", mediaInfo.LocalPath_);
+	}
+
+	void Plugin::handleOpenTabFromContextMenu ()
+	{
+		const auto& path = sender ()->property ("LMP/Graffiti/Filepath").toString ();
+
+		const auto tab = MakeTab ();
+
+		const QFileInfo info { path };
+		tab->SetPath (info.dir ().path (), info.fileName ());
 	}
 }
 }
