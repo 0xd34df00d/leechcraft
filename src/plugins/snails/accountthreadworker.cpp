@@ -302,6 +302,22 @@ namespace Snails
 		{
 		}
 
+		try
+		{
+			if (const auto& irt = header->InReplyTo ())
+			{
+				const auto& seqVal = irt->getValue ();
+				const auto& seq = vmime::dynamicCast<const vmime::messageIdSequence> (seqVal);
+
+				for (const auto& id : seq->getMessageIdList ())
+					msg->AddInReplyTo (id->getId ().c_str ());
+			}
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << e.what ();
+		}
+
 		auto setAddresses = [&msg] (Message::Address type,
 				const vmime::shared_ptr<const vmime::headerField>& field) -> void
 		{
