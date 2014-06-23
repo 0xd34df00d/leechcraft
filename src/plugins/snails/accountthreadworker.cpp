@@ -501,6 +501,7 @@ namespace Snails
 		const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
 					vmime::net::fetchAttributes::SIZE |
 					vmime::net::fetchAttributes::UID |
+					vmime::net::fetchAttributes::FULL_HEADER |
 					vmime::net::fetchAttributes::ENVELOPE;
 
 		try
