@@ -806,11 +806,7 @@ namespace Snails
 		if (!folder)
 			return;
 
-		auto set = vmime::net::messageSet::empty ();
-		for (const auto& id : ids)
-			set.addRange (vmime::net::UIDMessageRange { id.constData () });
-
-		folder->setMessageFlags (set,
+		folder->setMessageFlags (ToMessageSet (ids),
 				vmime::net::message::Flags::FLAG_SEEN,
 				read ?
 						vmime::net::message::FLAG_MODE_ADD :

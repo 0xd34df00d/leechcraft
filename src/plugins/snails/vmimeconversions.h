@@ -40,6 +40,7 @@ namespace vmime
 namespace net
 {
 	class folder;
+	class messageSet;
 }
 }
 
@@ -92,5 +93,6 @@ namespace Snails
 	}
 
 	QStringList GetFolderPath (const vmime::shared_ptr<vmime::net::folder>&);
+	vmime::net::messageSet ToMessageSet (const QList<QByteArray>&);
 }
 }

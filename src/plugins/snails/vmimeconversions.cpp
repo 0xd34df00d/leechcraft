@@ -43,5 +43,13 @@ namespace Snails
 			pathList << StringizeCT (path.getComponentAt (i));
 		return pathList;
 	}
+
+	vmime::net::messageSet ToMessageSet (const QList<QByteArray>& ids)
+	{
+		auto set = vmime::net::messageSet::empty ();
+		for (const auto& id : ids)
+			set.addRange (vmime::net::UIDMessageRange (id.constData ()));
+		return set;
+	}
 }
 }
