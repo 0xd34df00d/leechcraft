@@ -63,7 +63,7 @@ namespace Snails
 		case Sort:
 			break;
 		case ID:
-			return msg->GetID ();
+			return msg->GetFolderID ();
 		case ReadStatus:
 			return msg->IsRead ();
 		default:
@@ -165,7 +165,7 @@ namespace Snails
 	bool MailModel::Update (const Message_ptr& msg)
 	{
 		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
-				[&msg] (const Message_ptr& other) { return other->GetID () == msg->GetID (); });
+				[&msg] (const Message_ptr& other) { return other->GetFolderID () == msg->GetFolderID (); });
 		if (pos == Messages_.end ())
 			return false;
 
@@ -182,7 +182,7 @@ namespace Snails
 	bool MailModel::Remove (const QByteArray& id)
 	{
 		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
-				[&id] (const Message_ptr& other) { return other->GetID () == id; });
+				[&id] (const Message_ptr& other) { return other->GetFolderID () == id; });
 		if (pos == Messages_.end ())
 			return false;
 

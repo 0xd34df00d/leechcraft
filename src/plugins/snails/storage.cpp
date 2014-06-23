@@ -71,10 +71,10 @@ namespace Snails
 		{
 			for (const auto& msg : msgs)
 			{
-				if (msg->GetID ().isEmpty ())
+				if (msg->GetFolderID ().isEmpty ())
 					continue;
 
-				const QString dirName = msg->GetID ().toHex ().right (3);
+				const QString dirName = msg->GetFolderID ().toHex ().right (3);
 
 				QDir msgDir = dir;
 				if (!dir.exists (dirName))
@@ -87,7 +87,7 @@ namespace Snails
 					continue;
 				}
 
-				QFile file (msgDir.filePath (msg->GetID ().toHex ()));
+				QFile file (msgDir.filePath (msg->GetFolderID ().toHex ()));
 				file.open (QIODevice::WriteOnly);
 				file.write (qCompress (msg->Serialize (), 9));
 			}
@@ -115,7 +115,7 @@ namespace Snails
 		}
 
 		for (const auto& msg : msgs)
-			PendingSaveMessages_ [acc] [msg->GetID ()] = msg;
+			PendingSaveMessages_ [acc] [msg->GetFolderID ()] = msg;
 
 		auto watcher = new QFutureWatcher<QList<Message_ptr>> ();
 		FutureWatcher2Account_ [watcher] = acc;
@@ -127,9 +127,9 @@ namespace Snails
 		auto future = QtConcurrent::run (MessageSaverProc, msgs, dir);
 		watcher->setFuture (future);
 
-		Q_FOREACH (Message_ptr msg, msgs)
+		for (const auto& msg : msgs)
 		{
-			if (msg->GetID ().isEmpty ())
+			if (msg->GetFolderID ().isEmpty ())
 				continue;
 
 			AddMsgToFolders (msg, acc);
@@ -266,7 +266,7 @@ namespace Snails
 
 		for (const auto& msg : PendingSaveMessages_ [acc].values ())
 			if (msg->GetFolders ().contains (folder))
-				result << msg->GetID ();
+				result << msg->GetFolderID ();
 
 		return result;
 	}
@@ -470,7 +470,7 @@ namespace Snails
 	void Storage::AddMsgToFolders (Message_ptr msg, Account *acc)
 	{
 		const auto& folders = msg->GetFolders ();
-		const auto& id = msg->GetID ();
+		const auto& id = msg->GetFolderID ();
 
 		auto base = BaseForAccount (acc);
 
@@ -496,7 +496,7 @@ namespace Snails
 
 	void Storage::UpdateCaches (Message_ptr msg)
 	{
-		IsMessageRead_ [msg->GetID ()] = msg->IsRead ();
+		IsMessageRead_ [msg->GetFolderID ()] = msg->IsRead ();
 	}
 
 	void Storage::handleMessagesSaved ()
@@ -517,7 +517,7 @@ namespace Snails
 
 		auto messages = watcher->result ();
 		for (const auto& msg : messages)
-			hash.remove (msg->GetID ());
+			hash.remove (msg->GetFolderID ());
 	}
 }
 }

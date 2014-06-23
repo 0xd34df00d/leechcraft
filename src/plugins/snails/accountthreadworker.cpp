@@ -265,7 +265,7 @@ namespace Snails
 		const auto& utf8cs = vmime::charset { vmime::charsets::UTF_8 };
 
 		Message_ptr msg (new Message);
-		msg->SetID (static_cast<vmime::string> (message->getUID ()).c_str ());
+		msg->SetFolderID (static_cast<vmime::string> (message->getUID ()).c_str ());
 		msg->SetSize (message->getSize ());
 
 		if (message->getFlags () & vmime::net::message::FLAG_SEEN)
@@ -559,15 +559,15 @@ namespace Snails
 		QList<Message_ptr> updatedMessages;
 		Q_FOREACH (const auto& msg, newMessages)
 		{
-			if (!existing.contains (msg->GetID ()))
+			if (!existing.contains (msg->GetFolderID ()))
 				continue;
 
-			existing.removeAll (msg->GetID ());
+			existing.removeAll (msg->GetFolderID ());
 			newMessages.removeAll (msg);
 
 			bool isUpdated = false;
 
-			auto updated = Core::Instance ().GetStorage ()->LoadMessage (A_, folderName, msg->GetID ());
+			auto updated = Core::Instance ().GetStorage ()->LoadMessage (A_, folderName, msg->GetFolderID ());
 
 			if (updated->IsRead () != msg->IsRead ())
 			{
@@ -586,7 +586,7 @@ namespace Snails
 			if (isUpdated)
 				updatedMessages << updated;
 			else
-				ids << msg->GetID ();
+				ids << msg->GetFolderID ();
 		}
 
 		if (ids.size ())
@@ -805,7 +805,7 @@ namespace Snails
 		if (A_->InType_ == Account::InType::POP3)
 			return;
 
-		const QByteArray& sid = origMsg->GetID ();
+		const QByteArray& sid = origMsg->GetFolderID ();
 		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
 		if (!folder)
 			return;
@@ -859,7 +859,7 @@ namespace Snails
 		if (A_->InType_ == Account::InType::POP3)
 			return;
 
-		const auto& msgId = msg->GetID ();
+		const auto& msgId = msg->GetFolderID ();
 		const vmime::string id { msgId.constData () };
 		qDebug () << Q_FUNC_INFO << msgId.toHex ();
 

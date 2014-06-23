@@ -344,7 +344,7 @@ namespace Snails
 	void MailTab::handleMessageBodyFetched (Message_ptr msg)
 	{
 		const QModelIndex& cur = Ui_.MailTree_->currentIndex ();
-		if (cur.data (MailModel::MailRole::ID).toByteArray () != msg->GetID ())
+		if (cur.data (MailModel::MailRole::ID).toByteArray () != msg->GetFolderID ())
 			return;
 
 		handleMailSelected (cur);

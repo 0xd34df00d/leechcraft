@@ -47,7 +47,7 @@ namespace Snails
 	{
 		Q_OBJECT
 
-		QByteArray ID_;
+		QByteArray FolderID_;
 		QList<QStringList> Folders_;
 		quint64 Size_;
 		QDateTime Date_;
@@ -79,8 +79,13 @@ namespace Snails
 
 		bool IsFullyFetched () const;
 
-		QByteArray GetID () const;
-		void SetID (const QByteArray&);
+		/** @brief Returns folder-specific message ID.
+		 */
+		QByteArray GetFolderID () const;
+
+		/** @brief Sets folder-specific message ID.
+		 */
+		void SetFolderID (const QByteArray& id);
 
 		QList<QStringList> GetFolders () const;
 		void AddFolder (const QStringList&);
