@@ -4,11 +4,6 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package (MAGIC)
-if (MAGIC_FOUND)
-	add_definitions (-DHAVE_MAGIC)
-endif ()
-
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTSQL TRUE)
 set (QT_USE_QTWEBKIT TRUE)
@@ -19,7 +14,6 @@ include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${MAGIC_INCLUDE_DIRS}
 	)
 set (SRCS
 	snails.cpp
@@ -69,7 +63,6 @@ add_library (leechcraft_snails SHARED
 target_link_libraries (leechcraft_snails
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${MAGIC_LIBRARIES}
 	vmime
 	)
 install (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
