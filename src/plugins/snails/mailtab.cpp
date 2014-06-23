@@ -124,9 +124,17 @@ namespace Snails
 				this,
 				SLOT (handleMarkMsgUnread ()));
 
+		MsgRemove_ = new QAction (tr ("Delete messages"), this);
+		MsgRemove_->setProperty ("ActionIcon", "list-remove");
+		connect (MsgRemove_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleRemoveMsgs ()));
+
 		MsgToolbar_->addAction (MsgReply_);
 		MsgToolbar_->addAction (MsgAttachments_->menuAction ());
 		MsgToolbar_->addAction (MsgMarkUnread_);
+		MsgToolbar_->addAction (MsgRemove_);
 	}
 
 	QList<QByteArray> MailTab::GetSelectedIds () const
@@ -317,8 +325,15 @@ namespace Snails
 
 		const auto& ids = GetSelectedIds ();
 		CurrAcc_->SetReadStatus (false, ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
+	}
 
+	void MailTab::handleRemoveMsgs ()
+	{
+		if (!CurrAcc_)
+			return;
 
+		const auto& ids = GetSelectedIds ();
+		CurrAcc_->DeleteMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
 	}
 
 	void MailTab::handleAttachment ()

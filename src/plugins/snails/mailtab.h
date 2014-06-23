@@ -55,6 +55,7 @@ namespace Snails
 
 		QAction *MsgReply_;
 		QAction *MsgMarkUnread_;
+		QAction *MsgRemove_;
 		QMenu *MsgAttachments_;
 
 		TabClassInfo TabClass_;
@@ -77,10 +78,14 @@ namespace Snails
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);
 		void handleMailSelected (const QModelIndex&);
+
 		void handleReply ();
 		void handleMarkMsgUnread ();
+		void handleRemoveMsgs ();
+
 		void handleAttachment ();
 		void handleFetchNewMail ();
+
 		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void removeTab (QWidget*);
