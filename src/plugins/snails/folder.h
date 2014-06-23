@@ -44,6 +44,8 @@ namespace Snails
 		Drafts,
 		Sent,
 		Important,
+		Junk,
+		Trash,
 		Other
 	};
 

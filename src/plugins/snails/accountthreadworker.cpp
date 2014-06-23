@@ -654,6 +654,10 @@ namespace Snails
 				return FolderType::Drafts;
 			case vmime::net::folderAttributes::SPECIALUSE_IMPORTANT:
 				return FolderType::Important;
+			case vmime::net::folderAttributes::SPECIALUSE_JUNK:
+				return FolderType::Junk;
+			case vmime::net::folderAttributes::SPECIALUSE_TRASH:
+				return FolderType::Trash;
 			default:
 				return FolderType::Other;
 			}
