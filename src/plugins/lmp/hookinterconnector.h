@@ -38,11 +38,17 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	struct MediaInfo;
+
 	class HookInterconnector : public Util::BaseHookInterconnector
 	{
 		Q_OBJECT
 	public:
 		HookInterconnector (QObject* = nullptr);
+	signals:
+		void hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
+				QMenu*,
+				const LeechCraft::LMP::MediaInfo&);
 	};
 }
 }

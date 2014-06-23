@@ -45,6 +45,7 @@
 #include <QPainter>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/xpc/defaulthookproxy.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -62,6 +63,7 @@
 #include "util.h"
 #include "palettefixerfilter.h"
 #include "engine/sourceobject.h"
+#include "hookinterconnector.h"
 
 Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
 
@@ -188,6 +190,8 @@ namespace LMP
 				this,
 				SLOT (checkSelections ()),
 				Qt::QueuedConnection);
+
+		Core::Instance ().GetHookInterconnector ()->RegisterHookable (this);
 	}
 
 	void PlaylistWidget::SetPlayer (Player *player)
@@ -693,6 +697,14 @@ namespace LMP
 		menu->addSeparator ();
 
 		menu->addAction (ActionToggleSearch_);
+
+		auto mediaInfo = idx.data (Player::Role::Info).value<MediaInfo> ();
+		if (idx.model ()->rowCount (idx))
+			mediaInfo = idx.model ()->index (0, 0, idx).data (Player::Role::Info).value<MediaInfo> ();
+
+		emit hookPlaylistContextMenuRequested (std::make_shared<Util::DefaultHookProxy> (),
+				menu,
+				mediaInfo);
 
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/core/ihookproxy.h>
 #include "ui_playlistwidget.h"
 #include "player.h"
 
@@ -142,6 +143,10 @@ namespace LMP
 		void addURL ();
 
 		void updateStatsLabel ();
+	signals:
+		void hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
+				QMenu*,
+				LeechCraft::LMP::MediaInfo);
 	};
 }
 }
