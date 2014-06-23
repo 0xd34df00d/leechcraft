@@ -187,6 +187,15 @@ namespace Graffiti
 				createIndex (std::distance (Files_.begin (), pos), 0);
 	}
 
+	QModelIndex FilesModel::FindIndexByFileName (const QString& name) const
+	{
+		const auto pos = std::find_if (Files_.begin (), Files_.end (),
+				[&name] (const File& file) { return file.Name_ == name; });
+		return pos == Files_.end () ?
+				QModelIndex () :
+				createIndex (std::distance (Files_.begin (), pos), 0);
+	}
+
 	QList<QPair<MediaInfo, MediaInfo>> FilesModel::GetModified () const
 	{
 		QList<QPair<MediaInfo, MediaInfo>> result;

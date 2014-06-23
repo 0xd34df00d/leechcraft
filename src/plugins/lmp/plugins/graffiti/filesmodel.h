@@ -93,6 +93,7 @@ namespace Graffiti
 		void Clear ();
 
 		QModelIndex FindIndex (const QString& path) const;
+		QModelIndex FindIndexByFileName (const QString& name) const;
 
 		QList<QPair<MediaInfo, MediaInfo>> GetModified () const;
 	private:
