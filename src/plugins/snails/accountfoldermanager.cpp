@@ -40,18 +40,26 @@ namespace Snails
 	{
 	}
 
-	QList<QStringList> AccountFolderManager::GetFolders () const
+	QList<Folder> AccountFolderManager::GetFolders () const
 	{
 		return Folders_;
+	}
+
+	QList<QStringList> AccountFolderManager::GetFoldersPaths() const
+	{
+		QList<QStringList> result;
+		result.reserve (Folders_.size ());
+		for (const auto& folder : Folders_)
+			result << folder.Path_;
+		return result;
 	}
 
 	QList<QStringList> AccountFolderManager::GetSyncFolders () const
 	{
 		QList<QStringList> result;
-
-		std::copy_if (Folders_.begin (), Folders_.end (), std::back_inserter (result),
-				[this] (const QStringList& folder) { return Folder2Flags_ [folder] & FolderSyncable; });
-
+		for (const auto& folder : Folders_)
+			if (Folder2Flags_ [folder.Path_] & FolderSyncable)
+				result << folder.Path_;
 		return result;
 	}
 
@@ -70,7 +78,7 @@ namespace Snails
 		Folder2Flags_ [folder] |= flags;
 	}
 
-	void AccountFolderManager::SetFolders (const QList<QStringList>& folders)
+	void AccountFolderManager::SetFolders (const QList<Folder>& folders)
 	{
 		if (folders == Folders_)
 			return;
@@ -108,6 +116,15 @@ namespace Snails
 		QHash<QStringList, int> flags;
 		in >> Folders_
 			>> flags;
+
+		Folders_.erase (std::remove_if (Folders_.begin (), Folders_.end (),
+					[] (const Folder& folder)
+					{
+						return folder.Path_.isEmpty () ||
+								std::all_of (folder.Path_.begin (), folder.Path_.end (),
+										[] (const QString& elem) { return elem.isEmpty (); });
+					}),
+				Folders_.end ());
 
 		for (const auto key : flags.keys ())
 			Folder2Flags_ [key] = static_cast<FolderFlags> (flags [key]);

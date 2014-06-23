@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QHash>
+#include "folder.h"
 
 namespace LeechCraft
 {
@@ -53,20 +54,21 @@ namespace Snails
 
 		Q_DECLARE_FLAGS (FolderFlags, FolderFlag);
 	private:
-		QList<QStringList> Folders_;
+		QList<Folder> Folders_;
 
 		QHash<QStringList, FolderFlags> Folder2Flags_;
 	public:
 		AccountFolderManager (QObject* = 0);
 
-		QList<QStringList> GetFolders () const;
+		QList<Folder> GetFolders () const;
+		QList<QStringList> GetFoldersPaths () const;
 		QList<QStringList> GetSyncFolders () const;
 		FolderFlags GetFolderFlags (const QStringList&) const;
 	private:
 		void ClearFolderFlags ();
 		void AppendFolderFlags (const QStringList&, FolderFlag);
 
-		void SetFolders (const QList<QStringList>&);
+		void SetFolders (const QList<Folder>&);
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);

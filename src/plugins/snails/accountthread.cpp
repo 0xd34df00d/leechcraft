@@ -102,9 +102,9 @@ namespace Snails
 				SLOT (handleMessagesRemoved (QList<QByteArray>, QStringList)));
 
 		connect (W_,
-				SIGNAL (gotFolders (QList<QStringList>)),
+				SIGNAL (gotFolders (QList<LeechCraft::Snails::Folder>)),
 				A_,
-				SLOT (handleGotFolders (QList<QStringList>)));
+				SLOT (handleGotFolders (QList<LeechCraft::Snails::Folder>)));
 		connect (W_,
 				SIGNAL (folderSyncFinished (QStringList, QByteArray)),
 				A_,

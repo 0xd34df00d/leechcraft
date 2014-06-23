@@ -33,6 +33,7 @@
 #include "account.h"
 #include "core.h"
 #include "storage.h"
+#include "folder.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,8 @@ namespace Snails
 
 		std::weak_ptr<FolderDescr> Parent_;
 		QList<FolderDescr_ptr> Children_;
+
+		FolderType Type_ = FolderType::Other;
 
 		int MessageCount_ = -1;
 
@@ -174,7 +177,7 @@ namespace Snails
 		return folder->Children_.size ();
 	}
 
-	void FoldersModel::SetFolders (const QList<QStringList>& folders)
+	void FoldersModel::SetFolders (const QList<Folder>& folders)
 	{
 		if (const auto rc = RootFolder_->Children_.size ())
 		{
@@ -189,7 +192,7 @@ namespace Snails
 		for (const auto& folder : folders)
 		{
 			auto currentRoot = newRoot;
-			for (const auto& component : folder)
+			for (const auto& component : folder.Path_)
 			{
 				const auto componentDescrPos = currentRoot->Find (component);
 				if (componentDescrPos != currentRoot->Children_.end ())
@@ -202,8 +205,9 @@ namespace Snails
 				currentRoot->Children_.append (componentDescr);
 				currentRoot = componentDescr;
 			}
+			currentRoot->Type_ = folder.Type_;
 
-			Folder2Descr_ [folder] = currentRoot.get ();
+			Folder2Descr_ [folder.Path_] = currentRoot.get ();
 		}
 
 		if (const auto newRc = newRoot->Children_.size ())

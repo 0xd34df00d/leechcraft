@@ -39,6 +39,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class Account;
+	struct Folder;
 
 	struct FolderDescr;
 	typedef std::shared_ptr<FolderDescr> FolderDescr_ptr;
@@ -70,7 +71,7 @@ namespace Snails
 		QModelIndex parent (const QModelIndex&) const;
 		int rowCount (const QModelIndex& = {}) const;
 
-		void SetFolders (const QList<QStringList>& folders);
+		void SetFolders (const QList<Folder>& folders);
 		void SetFolderMessageCount (const QStringList&, int);
 	};
 }

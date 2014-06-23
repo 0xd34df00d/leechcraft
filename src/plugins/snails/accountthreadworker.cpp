@@ -58,6 +58,7 @@
 #include "outputiodevadapter.h"
 #include "common.h"
 #include "messagechangelistener.h"
+#include "folder.h"
 
 namespace LeechCraft
 {
@@ -118,7 +119,7 @@ namespace Snails
 	, IsListening_ (isListening)
 	, ChangeListener_ (new MessageChangeListener (this))
 	, Session_ (new vmime::net::session ())
-	, CachedFolders_ (4)
+	, CachedFolders_ (2)
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
 	{
@@ -642,18 +643,40 @@ namespace Snails
 				msg->AddAttachment (att);
 			}
 		}
+
+		FolderType ToFolderType (int specialUse)
+		{
+			switch (static_cast<vmime::net::folderAttributes::SpecialUses> (specialUse))
+			{
+			case vmime::net::folderAttributes::SPECIALUSE_SENT:
+				return FolderType::Sent;
+			case vmime::net::folderAttributes::SPECIALUSE_DRAFTS:
+				return FolderType::Drafts;
+			case vmime::net::folderAttributes::SPECIALUSE_IMPORTANT:
+				return FolderType::Important;
+			default:
+				return FolderType::Other;
+			}
+		}
 	}
 
 	void AccountThreadWorker::SyncIMAPFolders (vmime::shared_ptr<vmime::net::store> store)
 	{
-		auto root = store->getRootFolder ();
+		const auto& root = store->getRootFolder ();
+		const auto& inbox = store->getDefaultFolder ();
 
-		QList<QStringList> paths;
-		const auto& folders = root->getFolders (true);
-		std::transform (folders.begin (), folders.end (),
-				std::back_inserter (paths),
-				&GetFolderPath);
-		emit gotFolders (paths);
+		QList<Folder> folders;
+		for (const auto& folder : root->getFolders (true))
+		{
+			const auto& attrs = folder->getAttributes ();
+			folders.append ({
+					GetFolderPath (folder),
+					folder == inbox ?
+						FolderType::Inbox :
+						ToFolderType (attrs.getSpecialUse ())
+				});
+		}
+		emit gotFolders (folders);
 	}
 
 	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>& messages)

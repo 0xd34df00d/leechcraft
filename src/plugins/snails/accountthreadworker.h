@@ -48,6 +48,8 @@ namespace Snails
 	class Account;
 	class MessageChangeListener;
 
+	struct Folder;
+
 	typedef std::vector<vmime::shared_ptr<vmime::net::message>> MessageVector_t;
 	typedef vmime::shared_ptr<vmime::net::folder> VmimeFolder_ptr;
 
@@ -111,7 +113,7 @@ namespace Snails
 
 		void messageBodyFetched (Message_ptr);
 
-		void gotFolders (QList<QStringList>);
+		void gotFolders (const QList<LeechCraft::Snails::Folder>&);
 
 		void folderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId);
 	};
