@@ -671,7 +671,7 @@ namespace Snails
 			const auto& attrs = folder->getAttributes ();
 			folders.append ({
 					GetFolderPath (folder),
-					folder == inbox ?
+					folder->getFullPath () == inbox->getFullPath () ?
 						FolderType::Inbox :
 						ToFolderType (attrs.getSpecialUse ())
 				});
