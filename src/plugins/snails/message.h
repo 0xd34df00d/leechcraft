@@ -48,6 +48,7 @@ namespace Snails
 		Q_OBJECT
 
 		QByteArray FolderID_;
+		QByteArray MessageID_;
 		QList<QStringList> Folders_;
 		quint64 Size_;
 		QDateTime Date_;
@@ -86,6 +87,9 @@ namespace Snails
 		/** @brief Sets folder-specific message ID.
 		 */
 		void SetFolderID (const QByteArray& id);
+
+		QByteArray GetMessageID () const;
+		void SetMessageID (const QByteArray&);
 
 		QList<QStringList> GetFolders () const;
 		void AddFolder (const QStringList&);

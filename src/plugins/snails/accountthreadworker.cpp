@@ -47,6 +47,7 @@
 #include <vmime/htmlTextPart.hpp>
 #include <vmime/stringContentHandler.hpp>
 #include <vmime/fileAttachment.hpp>
+#include <vmime/messageIdSequence.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include "message.h"
@@ -286,6 +287,19 @@ namespace Snails
 		catch (const vmime::exceptions::no_such_field&)
 		{
 			qWarning () << "no 'from' data";
+		}
+
+		try
+		{
+			if (const auto& msgIdField = header->MessageId ())
+			{
+				const auto& msgIdVal = msgIdField->getValue ();
+				const auto& msgId = vmime::dynamicCast<const vmime::messageId> (msgIdVal);
+				msg->SetMessageID (msgId->getId ().c_str ());
+			}
+		}
+		catch (const vmime::exceptions::no_such_field&)
+		{
 		}
 
 		auto setAddresses = [&msg] (Message::Address type,
