@@ -48,14 +48,13 @@ namespace Snails
 	MailTab::MailTab (const TabClassInfo& tc, QObject *pmt, QWidget *parent)
 	: QWidget (parent)
 	, TabToolbar_ (new QToolBar)
-	, MsgToolbar_ (new QToolBar (tr ("Message actions")))
+	, MsgToolbar_ (new QToolBar)
 	, TabClass_ (tc)
 	, PMT_ (pmt)
 	, MailSortFilterModel_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
-		FillMsgToolbar ();
-		Ui_.MailTreeLay_->insertWidget (0, MsgToolbar_);
+		//Ui_.MailTreeLay_->insertWidget (0, MsgToolbar_);
 
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
 
@@ -74,13 +73,7 @@ namespace Snails
 				this,
 				SLOT (handleMailSelected (QModelIndex)));
 
-		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
-		fetch->setProperty ("ActionIcon", "mail-receive");
-		TabToolbar_->addAction (fetch);
-		connect (fetch,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleFetchNewMail ()));
+		FillTabToolbarActions ();
 	}
 
 	TabClassInfo MailTab::GetTabClassInfo () const
@@ -104,8 +97,19 @@ namespace Snails
 		return TabToolbar_;
 	}
 
-	void MailTab::FillMsgToolbar ()
+	void MailTab::FillTabToolbarActions ()
 	{
+		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
+		fetch->setProperty ("ActionIcon", "mail-receive");
+		TabToolbar_->addAction (fetch);
+		connect (fetch,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleFetchNewMail ()));
+		TabToolbar_->addAction (fetch);
+
+		TabToolbar_->addSeparator ();
+
 		MsgReply_ = new QAction (tr ("Reply..."), this);
 		MsgReply_->setProperty ("ActionIcon", "mail-reply-sender");
 		connect (MsgReply_,
@@ -131,10 +135,10 @@ namespace Snails
 				this,
 				SLOT (handleRemoveMsgs ()));
 
-		MsgToolbar_->addAction (MsgReply_);
-		MsgToolbar_->addAction (MsgAttachments_->menuAction ());
-		MsgToolbar_->addAction (MsgMarkUnread_);
-		MsgToolbar_->addAction (MsgRemove_);
+		TabToolbar_->addAction (MsgReply_);
+		TabToolbar_->addAction (MsgAttachments_->menuAction ());
+		TabToolbar_->addAction (MsgMarkUnread_);
+		TabToolbar_->addAction (MsgRemove_);
 	}
 
 	QList<QByteArray> MailTab::GetSelectedIds () const
