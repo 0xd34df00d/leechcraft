@@ -591,6 +591,7 @@ namespace Graffiti
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleScanFinished ()));
+		scanWatcher->setProperty ("LMP/Graffiti/Filename", recIterator->property ("LMP/Graffiti/Filename"));
 		scanWatcher->setFuture (QtConcurrent::run (std::function<QList<MediaInfo> ()> (worker)));
 	}
 
@@ -607,6 +608,11 @@ namespace Graffiti
 
 		FilesModel_->SetInfos (watcher->result ());
 		setEnabled (true);
+
+		const auto& filename = watcher->property ("LMP/Graffiti/Filename").toString ();
+		const auto& index = FilesModel_->FindIndexByFileName (filename);
+		if (index.isValid ())
+			Ui_.FilesList_->setCurrentIndex (index);
 	}
 
 	void GraffitiTab::handleCueSplitError (const QString& error)
