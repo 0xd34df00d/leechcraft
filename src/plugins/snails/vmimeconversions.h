@@ -81,10 +81,14 @@ namespace Snails
 
 	inline QPair<QString, QString> Mailbox2Strings (const vmime::shared_ptr<const vmime::mailbox>& mbox)
 	{
-		return {
-					StringizeCT (mbox->getName ()),
-					QString::fromUtf8 (mbox->getEmail ().toString ().c_str ())
-				};
+		if (!mbox)
+			return {};
+
+		return
+		{
+			StringizeCT (mbox->getName ()),
+			QString::fromUtf8 (mbox->getEmail ().toString ().c_str ())
+		};
 	}
 
 	QStringList GetFolderPath (const vmime::shared_ptr<vmime::net::folder>&);
