@@ -102,25 +102,7 @@ namespace Graffiti
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (TaggerTC_.TabClass_ == tabClass)
-		{
-			auto tab = new GraffitiTab (CoreProxy_, LMPProxy_, TaggerTC_, this);
-			emit addNewTab (TaggerTC_.VisibleName_, tab);
-			emit raiseTab (tab);
-
-			connect (tab,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-
-			connect (tab,
-					SIGNAL (tagsFetchProgress (int, int, QObject*)),
-					ProgressMgr_,
-					SLOT (handleTagsFetch (int, int, QObject*)));
-			connect (tab,
-					SIGNAL (cueSplitStarted (CueSplitter*)),
-					ProgressMgr_,
-					SLOT (handleCueSplitter (CueSplitter*)));
-		}
+			MakeTab ();
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -135,6 +117,28 @@ namespace Graffiti
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
 	{
 		LMPProxy_ = proxy;
+	}
+
+	GraffitiTab* Plugin::MakeTab ()
+	{
+		auto tab = new GraffitiTab (CoreProxy_, LMPProxy_, TaggerTC_, this);
+		emit addNewTab (TaggerTC_.VisibleName_, tab);
+		emit raiseTab (tab);
+
+		connect (tab,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+
+		connect (tab,
+				SIGNAL (tagsFetchProgress (int, int, QObject*)),
+				ProgressMgr_,
+				SLOT (handleTagsFetch (int, int, QObject*)));
+		connect (tab,
+				SIGNAL (cueSplitStarted (CueSplitter*)),
+				ProgressMgr_,
+				SLOT (handleCueSplitter (CueSplitter*)));
+		return tab;
 	}
 }
 }

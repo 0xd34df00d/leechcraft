@@ -81,6 +81,8 @@ namespace Graffiti
 		QAbstractItemModel* GetRepresentation () const;
 
 		void SetLMPProxy (ILMPProxy_ptr);
+	private:
+		GraffitiTab* MakeTab ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
