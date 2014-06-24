@@ -175,7 +175,8 @@ namespace LeechCraft
 
 	void SeparateTabBar::toggleCloseButtons () const
 	{
-		if (ComputedWidths_.isEmpty ())
+		const bool widthsEmpty = ComputedWidths_.isEmpty ();
+		if (widthsEmpty)
 			UpdateComputedWidths ();
 
 		const auto current = currentIndex ();
@@ -189,6 +190,9 @@ namespace LeechCraft
 					button->width () * 2.5 < ComputedWidths_.value (i);
 			button->setVisible (visible);
 		}
+
+		if (widthsEmpty)
+			ComputedWidths_.clear ();
 	}
 
 	void SeparateTabBar::tabLayoutChange ()
