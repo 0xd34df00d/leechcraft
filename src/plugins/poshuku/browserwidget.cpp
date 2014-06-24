@@ -605,12 +605,7 @@ namespace Poshuku
 	{
 		if (std::fabs (settings.ZoomFactor_ - 1) <
 				std::numeric_limits<decltype (settings.ZoomFactor_)>::epsilon ())
-		{
-			qDebug () << Q_FUNC_INFO
-				<< "setting zoomfactor to"
-				<< settings.ZoomFactor_;
 			WebView_->setZoomFactor (settings.ZoomFactor_);
-		}
 
 		NotifyWhenFinished_->setChecked (settings.NotifyWhenFinished_);
 		QTime interval = settings.ReloadInterval_;
@@ -860,9 +855,6 @@ namespace Poshuku
 		QDataStream str (data);
 		str >> url
 			>> settings;
-
-		qDebug () << Q_FUNC_INFO << url;
-		qDebug () << data;
 
 		SetURL (url);
 		SetWidgetSettings (settings);
