@@ -82,6 +82,7 @@ namespace Poshuku
 		virtual void keyReleaseEvent (QKeyEvent*);
 	private:
 		int LevelForZoom (qreal) const;
+		void SetZoom (qreal);
 		void NavigatePlugins ();
 		void NavigateHome ();
 	public slots:
@@ -116,9 +117,10 @@ namespace Poshuku
 		void printRequested (QWebFrame*);
 		void closeRequested ();
 		void storeFormData (const PageFormsData_t&);
-		void invalidateSettings ();
 
 		void navigateRequested (const QUrl&);
+
+		void zoomChanged ();
 
 		// Hook support signals
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,

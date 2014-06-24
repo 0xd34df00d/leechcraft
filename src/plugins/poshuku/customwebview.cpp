@@ -249,7 +249,7 @@ namespace Poshuku
 		{
 			int degrees = e->delta () / 8;
 			qreal delta = static_cast<qreal> (degrees) / 150;
-			setZoomFactor (zoomFactor () + delta);
+			SetZoom (zoomFactor () + delta);
 			e->accept ();
 		}
 		else
@@ -490,6 +490,12 @@ namespace Poshuku
 			return i - 1;
 	}
 
+	void CustomWebView::SetZoom (qreal zoom)
+	{
+		setZoomFactor (zoom);
+		emit zoomChanged ();
+	}
+
 	void CustomWebView::NavigatePlugins ()
 	{
 		QFile pef (":/resources/html/pluginsenum.html");
@@ -537,9 +543,7 @@ namespace Poshuku
 		int i = LevelForZoom (zoomFactor ());
 
 		if (i < Zooms_.size () - 1)
-			setZoomFactor (Zooms_ [i + 1]);
-
-		emit invalidateSettings ();
+			SetZoom (Zooms_ [i + 1]);
 	}
 
 	void CustomWebView::zoomOut ()
@@ -547,16 +551,12 @@ namespace Poshuku
 		int i = LevelForZoom (zoomFactor ());
 
 		if (i > 0)
-			setZoomFactor (Zooms_ [i - 1]);
-
-		emit invalidateSettings ();
+			SetZoom (Zooms_ [i - 1]);
 	}
 
 	void CustomWebView::zoomReset ()
 	{
-		setZoomFactor (1);
-
-		emit invalidateSettings ();
+		SetZoom (1);
 	}
 
 	void CustomWebView::remakeURL (const QUrl& url)
