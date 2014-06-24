@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_BROWSERWIDGETSETTINGS_H
-#define PLUGINS_POSHUKU_BROWSERWIDGETSETTINGS_H
+#pragma once
+
 #include <QTime>
 #include <QPoint>
 #include <QMetaType>
@@ -46,6 +46,7 @@ namespace Poshuku
 		QTime ReloadInterval_;
 		QByteArray WebHistorySerialized_;
 		QPoint ScrollPosition_;
+		QString DefaultEncoding_;
 	};
 
 	QDataStream& operator<< (QDataStream&, const BrowserWidgetSettings&);
@@ -54,5 +55,3 @@ namespace Poshuku
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Poshuku::BrowserWidgetSettings);
-
-#endif

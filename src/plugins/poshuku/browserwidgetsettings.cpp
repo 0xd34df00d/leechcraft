@@ -37,13 +37,14 @@ namespace Poshuku
 {
 	QDataStream& operator<< (QDataStream& out, const BrowserWidgetSettings& s)
 	{
-		qint8 version = 3;
+		qint8 version = 4;
 		out << version
 			<< s.ZoomFactor_
 			<< s.NotifyWhenFinished_
 			<< s.ReloadInterval_
 			<< s.WebHistorySerialized_
-			<< s.ScrollPosition_;
+			<< s.ScrollPosition_
+			<< s.DefaultEncoding_;
 		return out;
 	}
 
@@ -59,8 +60,10 @@ namespace Poshuku
 			in >> s.WebHistorySerialized_;
 		if (version >= 3)
 			in >> s.ScrollPosition_;
+		if (version >= 4)
+			in >> s.DefaultEncoding_;
 
-		if (version > 3 || version < 1)
+		if (version > 4 || version < 1)
 			qWarning () << Q_FUNC_INFO
 				<< "unknown version"
 				<< version;
