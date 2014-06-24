@@ -897,6 +897,12 @@ namespace LeechCraft
 		}
 
 		const auto& data = irt->GetTabRecoverData ();
-		ihrt->RecoverTabs ({ { data, {} } });
+
+		QList<QPair<QByteArray, QVariant>> props;
+		for (const auto& name : widget->dynamicPropertyNames ())
+			if (name.startsWith ("SessionData/"))
+				props.append ({ name, widget->property (name) });
+
+		ihrt->RecoverTabs ({ { data, props } });
 	}
 }
