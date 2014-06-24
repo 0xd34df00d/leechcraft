@@ -603,7 +603,7 @@ namespace Poshuku
 
 	void BrowserWidget::SetWidgetSettings (const BrowserWidgetSettings& settings)
 	{
-		if (std::fabs (settings.ZoomFactor_ - 1) <
+		if (std::fabs (settings.ZoomFactor_ - 1) >
 				std::numeric_limits<decltype (settings.ZoomFactor_)>::epsilon ())
 			WebView_->setZoomFactor (settings.ZoomFactor_);
 
