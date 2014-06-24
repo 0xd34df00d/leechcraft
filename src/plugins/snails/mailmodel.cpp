@@ -266,7 +266,6 @@ namespace Snails
 
 		const auto row = node->Row ();
 		const auto& parentIndex = GetIndex (parent->FolderID_, 0);
-		qDebug () << "removing at:" << parentIndex << row << index (row, 0, parentIndex).data ().toString () << rowCount (parentIndex);
 		beginRemoveRows (parentIndex, row, row);
 		Messages_.erase (msgPos);
 		parent->Children_.removeOne (node);
