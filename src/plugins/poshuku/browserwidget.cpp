@@ -135,11 +135,11 @@ namespace Poshuku
 
 		WebView_->SetBrowserWidget (this);
 		connect (WebView_,
-				SIGNAL (invalidateSettings ()),
+				SIGNAL (urlChanged (QUrl)),
 				this,
 				SIGNAL (tabRecoverDataChanged ()));
 		connect (WebView_,
-				SIGNAL (urlChanged (QUrl)),
+				SIGNAL (zoomChanged ()),
 				this,
 				SIGNAL (tabRecoverDataChanged ()));
 
