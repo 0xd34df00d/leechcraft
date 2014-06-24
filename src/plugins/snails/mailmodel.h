@@ -44,7 +44,13 @@ namespace Snails
 
 		QStringList Folder_;
 
+		struct TreeNode;
+		typedef std::shared_ptr<TreeNode> TreeNode_ptr;
+		typedef std::weak_ptr<TreeNode> TreeNode_wptr;
+		const TreeNode_ptr Root_;
+
 		QList<Message_ptr> Messages_;
+		QHash<QByteArray, TreeNode_ptr> FolderId2Node_;
 
 		enum class Column
 		{
@@ -77,6 +83,9 @@ namespace Snails
 		void Append (QList<Message_ptr>);
 		bool Update (const Message_ptr&);
 		bool Remove (const QByteArray&);
+	private:
+		QModelIndex GetIndex (const QByteArray& folderId, int column) const;
+		Message_ptr GetMessageByFolderId (const QByteArray&) const;
 	};
 }
 }
