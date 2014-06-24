@@ -81,7 +81,7 @@ namespace Poshuku
 		virtual void contextMenuEvent (QContextMenuEvent*);
 		virtual void keyReleaseEvent (QKeyEvent*);
 	private:
-		int LevelForZoom (qreal);
+		int LevelForZoom (qreal) const;
 		void NavigatePlugins ();
 		void NavigateHome ();
 	public slots:

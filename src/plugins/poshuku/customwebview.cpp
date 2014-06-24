@@ -467,7 +467,7 @@ namespace Poshuku
 			QWebView::keyReleaseEvent (event);
 	}
 
-	int CustomWebView::LevelForZoom (qreal zoom)
+	int CustomWebView::LevelForZoom (qreal zoom) const
 	{
 		int i = Zooms_.indexOf (zoom);
 
