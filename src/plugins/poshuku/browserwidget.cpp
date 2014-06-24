@@ -588,7 +588,7 @@ namespace Poshuku
 		QByteArray ba;
 		QDataStream out (&ba, QIODevice::WriteOnly);
 		out << *WebView_->page ()->history ();
-		BrowserWidgetSettings result =
+		return
 		{
 			WebView_->zoomFactor (),
 			NotifyWhenFinished_->isChecked (),
@@ -596,9 +596,9 @@ namespace Poshuku
 				QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ()) :
 				QTime (0, 0, 0),
 			ba,
-			WebView_->page ()->mainFrame ()->scrollPosition ()
+			WebView_->page ()->mainFrame ()->scrollPosition (),
+			WebView_->settings ()->defaultTextEncoding ()
 		};
-		return result;
 	}
 
 	void BrowserWidget::SetWidgetSettings (const BrowserWidgetSettings& settings)
@@ -625,6 +625,8 @@ namespace Poshuku
 
 		if (!settings.ScrollPosition_.isNull ())
 			SetOnLoadScrollPoint (settings.ScrollPosition_);
+
+		WebView_->settings ()->setDefaultTextEncoding (settings.DefaultEncoding_);
 	}
 
 	void BrowserWidget::SetURL (const QUrl& thurl)
