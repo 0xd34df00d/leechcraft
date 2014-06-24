@@ -131,23 +131,42 @@ namespace LeechCraft
 				QTabBar::LeftSide;
 	}
 
-	void SeparateTabBar::UpdateComputedWidths () const
+	struct TabInfo
 	{
-		const auto cnt = count ();
-		ComputedWidths_.resize (cnt);
+		int Idx_;
+		int WidthHint_;
+	};
 
+	QVector<TabInfo> SeparateTabBar::GetTabInfos () const
+	{
 		const auto maxTabWidth = width () / 4;
+		const auto cnt = count ();
 
-		struct TabInfo
-		{
-			int Idx_;
-			int WidthHint_;
-		};
 		QVector<TabInfo> infos;
 		for (int i = 0; i < cnt - 1; ++i)
-			infos.push_back ({ i, std::min (QTabBar::tabSizeHint (i).width (), maxTabWidth) });
+		{
+			auto hintedWidth = QTabBar::tabSizeHint (i).width ();
+
+			if (const auto button = tabButton (i, GetCloseButtonPosition ()))
+				if (!button->isVisible ())
+					hintedWidth -= button->width ();
+
+			infos.push_back ({
+					i,
+					std::min (hintedWidth, maxTabWidth)
+				});
+		}
 		std::sort (infos.begin (), infos.end (),
 				[] (const TabInfo& l, const TabInfo& r) { return l.WidthHint_ < r.WidthHint_; });
+
+		return infos;
+	}
+
+	void SeparateTabBar::UpdateComputedWidths () const
+	{
+		auto infos = GetTabInfos ();
+
+		ComputedWidths_.resize (infos.size ());
 
 		const auto btnWidth = QTabBar::tabSizeHint (count () - 1).width ();
 

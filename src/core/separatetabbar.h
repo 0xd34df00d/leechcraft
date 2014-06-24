@@ -37,6 +37,8 @@ namespace LeechCraft
 	class MainWindow;
 	class SeparateTabWidget;
 
+	struct TabInfo;
+
 	class SeparateTabBar : public QTabBar
 	{
 		Q_OBJECT
@@ -67,6 +69,8 @@ namespace LeechCraft
 		void SetInMove (bool inMove);
 	private:
 		QTabBar::ButtonPosition GetAntiCloseButtonPosition () const;
+
+		QVector<TabInfo> GetTabInfos () const;
 		void UpdateComputedWidths () const;
 	private slots:
 		void toggleCloseButtons () const;
