@@ -227,7 +227,7 @@ namespace Snails
 		const auto rc = Messages_.size ();
 		Messages_ += messages;
 
-		emit beginInsertColumns ({}, rc, rc + messages.size () - 1);
+		emit beginInsertRows ({}, rc, rc + messages.size () - 1);
 		for (const auto& msg : messages)
 		{
 			const auto& item = std::make_shared<TreeNode> (msg, Root_);
