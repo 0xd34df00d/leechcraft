@@ -266,7 +266,9 @@ namespace Snails
 		{
 			const auto& parent = node->Parent_.lock ();
 
-			const auto& parentIndex = createIndex (parent->Row (), 0, parent.get ());
+			const auto& parentIndex = parent == Root_ ?
+					QModelIndex {} :
+					createIndex (parent->Row (), 0, parent.get ());
 			const auto row = node->Row ();
 
 			beginRemoveRows (parentIndex, row, row);
