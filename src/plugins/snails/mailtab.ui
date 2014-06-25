@@ -47,7 +47,11 @@
       <widget class="QWidget" name="verticalLayoutWidget">
        <layout class="QVBoxLayout" name="MailTreeLay_">
         <item>
-         <widget class="QTreeView" name="MailTree_"/>
+         <widget class="QTreeView" name="MailTree_">
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
