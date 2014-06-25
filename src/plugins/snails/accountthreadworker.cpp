@@ -304,6 +304,22 @@ namespace Snails
 
 		try
 		{
+			if (const auto& refHeader = header->References ())
+			{
+				const auto& seqVal = refHeader->getValue ();
+				const auto& seq = vmime::dynamicCast<const vmime::messageIdSequence> (seqVal);
+
+				for (const auto& id : seq->getMessageIdList ())
+					msg->AddReferences (id->getId ().c_str ());
+			}
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << e.what ();
+		}
+
+		try
+		{
 			if (const auto& irt = header->InReplyTo ())
 			{
 				const auto& seqVal = irt->getValue ();
