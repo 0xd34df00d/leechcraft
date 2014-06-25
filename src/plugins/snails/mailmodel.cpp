@@ -34,7 +34,7 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	struct MailModel::TreeNode
+	struct MailModel::TreeNode : std::enable_shared_from_this<TreeNode>
 	{
 		QByteArray FolderID_;
 
