@@ -190,6 +190,21 @@ namespace Snails
 		InReplyTo_ << irt;
 	}
 
+	QList<QByteArray> Message::GetReferences () const
+	{
+		return References_;
+	}
+
+	void Message::SetReferences (const QList<QByteArray>& refs)
+	{
+		References_ = refs;
+	}
+
+	void Message::AddReferences (const QByteArray& ref)
+	{
+		References_ << ref;
+	}
+
 	bool Message::IsRead () const
 	{
 		return IsRead_;
@@ -232,7 +247,8 @@ namespace Snails
 				<< IsRead_
 				<< Body_
 				<< HTMLBody_
-				<< InReplyTo_;
+				<< InReplyTo_
+				<< References_;
 		Q_FOREACH (const auto key, Addresses_.keys ())
 			qDebug () << static_cast<int> (key)
 					<< Addresses_ [key];
@@ -258,6 +274,7 @@ namespace Snails
 			<< Body_
 			<< HTMLBody_
 			<< InReplyTo_
+			<< References_
 			<< Addresses_
 			<< Attachments_;
 
@@ -283,6 +300,7 @@ namespace Snails
 			>> Body_
 			>> HTMLBody_
 			>> InReplyTo_
+			>> References_
 			>> Addresses_
 			>> Attachments_;
 	}

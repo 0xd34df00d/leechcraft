@@ -59,6 +59,7 @@ namespace Snails
 		QString HTMLBody_;
 
 		QList<QByteArray> InReplyTo_;
+		QList<QByteArray> References_;
 
 		bool IsRead_;
 
@@ -121,6 +122,10 @@ namespace Snails
 		QList<QByteArray> GetInReplyTo () const;
 		void SetInReplyTo (const QList<QByteArray>&);
 		void AddInReplyTo (const QByteArray&);
+
+		QList<QByteArray> GetReferences () const;
+		void SetReferences (const QList<QByteArray>&);
+		void AddReferences (const QByteArray&);
 
 		bool IsRead () const;
 		void SetRead (bool);
