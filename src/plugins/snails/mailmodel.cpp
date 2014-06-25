@@ -197,6 +197,7 @@ namespace Snails
 		Messages_.clear ();
 		Root_->Children_.clear ();
 		FolderId2Nodes_.clear ();
+		MsgId2FolderId_.clear ();
 		endRemoveRows ();
 	}
 
@@ -227,17 +228,65 @@ namespace Snails
 		if (messages.isEmpty ())
 			return;
 
+		std::sort (messages.begin (), messages.end (),
+				[] (const Message_ptr& left, const Message_ptr& right)
+					{ return left->GetDate () < right->GetDate (); });
+
 		Messages_ += messages;
 
-		const auto rc = Messages_.size ();
-		emit beginInsertRows ({}, rc, rc + messages.size () - 1);
 		for (const auto& msg : messages)
 		{
-			const auto& item = std::make_shared<TreeNode> (msg, Root_);
-			Root_->Children_.append (item);
-			FolderId2Nodes_ [msg->GetFolderID ()] << item;
+			const auto& msgId = msg->GetMessageID ();
+			if (!msgId.isEmpty ())
+				MsgId2FolderId_ [msgId] = msg->GetFolderID ();
 		}
-		emit endInsertRows ();
+
+		for (const auto& msg : messages)
+			if (!AppendStructured (msg))
+			{
+				const auto& node = std::make_shared<TreeNode> (msg, Root_);
+				beginInsertRows ({}, Root_->Children_.size (), Root_->Children_.size ());
+				Root_->Children_.append (node);
+				FolderId2Nodes_ [msg->GetFolderID ()] << node;
+				endInsertRows ();
+			}
+	}
+
+	bool MailModel::AppendStructured (const Message_ptr& msg)
+	{
+		auto refs = msg->GetReferences ();
+		for (const auto& replyTo : msg->GetInReplyTo ())
+			if (!refs.contains (replyTo))
+				refs << replyTo;
+
+		if (refs.isEmpty ())
+			return false;
+
+		const auto& replyTo = refs.last ();
+		const auto& folderId = MsgId2FolderId_.value (replyTo);
+		if (folderId.isEmpty ())
+		{
+			qDebug () << Q_FUNC_INFO
+					<< folderId
+					<< replyTo
+					<< "not found";
+			return false;
+		}
+
+		const auto& indexes = GetIndexes (folderId, 0);
+		for (const auto& parentIndex : indexes)
+		{
+			const auto parentNode = static_cast<TreeNode*> (parentIndex.internalPointer ());
+			const auto row = parentNode->Children_.size ();
+
+			const auto& node = std::make_shared<TreeNode> (msg, parentNode->shared_from_this ());
+			beginInsertRows (parentIndex, row, row);
+			parentNode->Children_ << node;
+			FolderId2Nodes_ [msg->GetFolderID ()] << node;
+			endInsertRows ();
+		}
+
+		return !indexes.isEmpty ();
 	}
 
 	bool MailModel::Update (const Message_ptr& msg)
@@ -281,6 +330,7 @@ namespace Snails
 
 		FolderId2Nodes_.remove (id);
 		Messages_.erase (msgPos);
+		MsgId2FolderId_.remove ((*msgPos)->GetMessageID ());
 
 		return true;
 	}
