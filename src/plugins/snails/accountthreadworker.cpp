@@ -367,12 +367,17 @@ namespace Snails
 
 		try
 		{
-			const auto& origDateVal = header->Date ()->getValue ();
-			const auto& origDate = vmime::dynamicCast<const vmime::datetime> (origDateVal);
-			const auto& date = vmime::utility::datetimeUtils::toUniversalTime (*origDate);
-			QDate qdate (date.getYear (), date.getMonth (), date.getDay ());
-			QTime time (date.getHour (), date.getMinute (), date.getSecond ());
-			msg->SetDate (QDateTime (qdate, time, Qt::UTC));
+			if (const auto dateHeader = header->Date ())
+			{
+				const auto& origDateVal = dateHeader->getValue ();
+				const auto& origDate = vmime::dynamicCast<const vmime::datetime> (origDateVal);
+				const auto& date = vmime::utility::datetimeUtils::toUniversalTime (*origDate);
+				QDate qdate (date.getYear (), date.getMonth (), date.getDay ());
+				QTime time (date.getHour (), date.getMinute (), date.getSecond ());
+				msg->SetDate (QDateTime (qdate, time, Qt::UTC));
+			}
+			else
+				qWarning () << "no 'date' data";
 		}
 		catch (const vmime::exceptions::no_such_field&)
 		{
@@ -380,9 +385,14 @@ namespace Snails
 
 		try
 		{
-			const auto& strVal = header->Subject ()->getValue ();
-			const auto& str = vmime::dynamicCast<const vmime::text> (strVal);
-			msg->SetSubject (QString::fromUtf8 (str->getConvertedText (utf8cs).c_str ()));
+			if (const auto subjectHeader = header->Subject ())
+			{
+				const auto& strVal = subjectHeader->getValue ();
+				const auto& str = vmime::dynamicCast<const vmime::text> (strVal);
+				msg->SetSubject (QString::fromUtf8 (str->getConvertedText (utf8cs).c_str ()));
+			}
+			else
+				qWarning () << "no 'subject' data";
 		}
 		catch (const vmime::exceptions::no_such_field&)
 		{
