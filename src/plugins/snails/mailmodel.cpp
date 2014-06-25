@@ -193,7 +193,7 @@ namespace Snails
 		beginRemoveRows ({}, 0, Messages_.size () - 1);
 		Messages_.clear ();
 		Root_->Children_.clear ();
-		FolderId2Node_.clear ();
+		FolderId2Nodes_.clear ();
 		endRemoveRows ();
 	}
 
@@ -224,15 +224,15 @@ namespace Snails
 		if (messages.isEmpty ())
 			return;
 
-		const auto rc = Messages_.size ();
 		Messages_ += messages;
 
+		const auto rc = Messages_.size ();
 		emit beginInsertRows ({}, rc, rc + messages.size () - 1);
 		for (const auto& msg : messages)
 		{
 			const auto& item = std::make_shared<TreeNode> (msg, Root_);
 			Root_->Children_.append (item);
-			FolderId2Node_ [msg->GetFolderID ()] = item;
+			FolderId2Nodes_ [msg->GetFolderID ()] << item;
 		}
 		emit endInsertRows ();
 	}
@@ -240,15 +240,16 @@ namespace Snails
 	bool MailModel::Update (const Message_ptr& msg)
 	{
 		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
-				[&msg] (const Message_ptr& other) { return other->GetFolderID () == msg->GetFolderID (); });
+				[&msg] (const Message_ptr& other)
+					{ return other->GetFolderID () == msg->GetFolderID (); });
 		if (pos == Messages_.end ())
 			return false;
 
 		if (*pos != msg)
 		{
 			*pos = msg;
-			emit dataChanged (GetIndex (msg->GetFolderID (), 0),
-					GetIndex (msg->GetFolderID (), columnCount () - 1));
+			for (const auto& indexPair : GetIndexes (msg->GetFolderID (), { 0, columnCount () - 1 }))
+				emit dataChanged (indexPair.value (0), indexPair.value (1));
 		}
 
 		return true;
@@ -261,27 +262,43 @@ namespace Snails
 		if (msgPos == Messages_.end ())
 			return false;
 
-		const auto& node = FolderId2Node_.value (id);
-		const auto& parent = node->Parent_.lock ();
+		for (const auto& node : FolderId2Nodes_.value (id))
+		{
+			const auto& parent = node->Parent_.lock ();
 
-		const auto row = node->Row ();
-		const auto& parentIndex = GetIndex (parent->FolderID_, 0);
-		beginRemoveRows (parentIndex, row, row);
+			const auto& parentIndex = createIndex (parent->Row (), 0, parent.get ());
+			const auto row = node->Row ();
+
+			beginRemoveRows (parentIndex, row, row);
+			parent->Children_.removeOne (node);
+			endRemoveRows ();
+		}
+
+		FolderId2Nodes_.remove (id);
 		Messages_.erase (msgPos);
-		parent->Children_.removeOne (node);
-		FolderId2Node_.remove (id);
-		endRemoveRows ();
 
 		return true;
 	}
 
-	QModelIndex MailModel::GetIndex (const QByteArray& folderId, int column) const
+	QList<QModelIndex> MailModel::GetIndexes (const QByteArray& folderId, int column) const
 	{
-		const auto& node = FolderId2Node_.value (folderId);
-		if (!node)
-			return {};
+		QList<QModelIndex> result;
+		for (const auto& node : FolderId2Nodes_.value (folderId))
+			result << createIndex (node->Row (), column, node.get ());
+		return result;
+	}
 
-		return createIndex (node->Row (), column, node.get ());
+	QList<QList<QModelIndex>> MailModel::GetIndexes (const QByteArray& folderId, const QList<int>& columns) const
+	{
+		QList<QList<QModelIndex>> result;
+		for (const auto& node : FolderId2Nodes_.value (folderId))
+		{
+			QList<QModelIndex> subresult;
+			for (const auto column : columns)
+				subresult << createIndex (node->Row (), column, node.get ());
+			result << subresult;
+		}
+		return result;
 	}
 
 	Message_ptr MailModel::GetMessageByFolderId (const QByteArray& id) const
