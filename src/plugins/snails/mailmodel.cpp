@@ -124,7 +124,10 @@ namespace Snails
 		switch (static_cast<Column> (index.column ()))
 		{
 		case Column::From:
-			return GetNiceMail (msg->GetAddress (Message::Address::From));
+		{
+			const auto& addr = msg->GetAddress (Message::Address::From);
+			return addr.first.isEmpty () ? addr.second : addr.first;
+		}
 		case Column::Subject:
 			return msg->GetSubject ();
 		case Column::Date:
