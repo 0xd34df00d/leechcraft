@@ -180,12 +180,20 @@ namespace Snails
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
 	{
 		if (CurrAcc_)
+		{
 			disconnect (CurrAcc_.get (),
 					0,
 					this,
 					0);
+			disconnect (CurrAcc_->GetFolderManager (),
+					0,
+					this,
+					0);
+		}
 
 		CurrAcc_ = Core::Instance ().GetAccount (idx);
+		handleFoldersUpdated ();
+
 		if (!CurrAcc_)
 			return;
 
@@ -205,6 +213,12 @@ namespace Snails
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleCurrentTagChanged (QModelIndex)));
+
+		const auto fm = CurrAcc_->GetFolderManager ();
+		connect (fm,
+				SIGNAL (foldersUpdated ()),
+				this,
+				SLOT (handleFoldersUpdated ()));
 	}
 
 	namespace
@@ -332,6 +346,21 @@ namespace Snails
 		}
 
 		CurrMsg_ = msg;
+	}
+
+	void MailTab::handleFoldersUpdated ()
+	{
+		MsgCopy_->clear ();
+
+		if (!CurrAcc_)
+			return;
+
+		auto folders = CurrAcc_->GetFolderManager ()->GetFolders ();
+		for (const auto& folder : folders)
+		{
+			const auto act = MsgCopy_->addAction (folder.Path_.join ("/"));
+			act->setProperty ("Snails/FolderPath", folder.Path_);
+		}
 	}
 
 	void MailTab::handleReply ()

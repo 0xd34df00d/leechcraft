@@ -80,6 +80,8 @@ namespace Snails
 		void handleCurrentTagChanged (const QModelIndex&);
 		void handleMailSelected (const QModelIndex&);
 
+		void handleFoldersUpdated ();
+
 		void handleReply ();
 		void handleCopyMessages (QAction*);
 		void handleMarkMsgUnread ();
