@@ -292,8 +292,8 @@ namespace Snails
 		}
 
 		FolderId2Nodes_.remove (id);
-		Messages_.erase (msgPos);
 		MsgId2FolderId_.remove ((*msgPos)->GetMessageID ());
+		Messages_.erase (msgPos);
 
 		return true;
 	}
