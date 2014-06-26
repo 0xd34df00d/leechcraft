@@ -326,7 +326,7 @@ namespace Snails
 
 	void MailTab::handleReply ()
 	{
-		if (!CurrAcc_)
+		if (!CurrAcc_ || !CurrMsg_)
 			return;
 
 		Core::Instance ().PrepareReplyTab (CurrMsg_, CurrAcc_);
