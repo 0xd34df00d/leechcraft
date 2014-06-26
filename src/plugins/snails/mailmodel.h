@@ -83,11 +83,12 @@ namespace Snails
 		void Clear ();
 
 		void Append (QList<Message_ptr>);
-		bool AppendStructured (const Message_ptr&);
 
 		bool Update (const Message_ptr&);
 		bool Remove (const QByteArray&);
 	private:
+		bool AppendStructured (const Message_ptr&);
+
 		QList<QModelIndex> GetIndexes (const QByteArray& folderId, int column) const;
 		QList<QList<QModelIndex>> GetIndexes (const QByteArray& folderId, const QList<int>& columns) const;
 		Message_ptr GetMessageByFolderId (const QByteArray&) const;
