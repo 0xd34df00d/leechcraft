@@ -41,6 +41,7 @@
 #include "mailtreedelegate.h"
 #include "mailmodel.h"
 #include "viewcolumnsmanager.h"
+#include "accountfoldermanager.h"
 
 namespace LeechCraft
 {
@@ -132,6 +133,16 @@ namespace Snails
 		MsgAttachments_->setIcon (Core::Instance ().GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("mail-attachment"));
 		TabToolbar_->addAction (MsgAttachments_->menuAction ());
+
+		TabToolbar_->addSeparator ();
+
+		MsgCopy_ = new QMenu (tr ("Copy messages"));
+		MsgCopy_->menuAction ()->setProperty ("ActionIcon", "edit-copy");
+		connect (MsgCopy_,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (handleCopyMessages (QAction*)));
+		TabToolbar_->addAction (MsgCopy_->menuAction ());
 
 		MsgMarkUnread_ = new QAction (tr ("Mark as unread"), this);
 		MsgMarkUnread_->setProperty ("ActionIcon", "mail-mark-unread");
@@ -329,6 +340,17 @@ namespace Snails
 			return;
 
 		Core::Instance ().PrepareReplyTab (CurrMsg_, CurrAcc_);
+	}
+
+	void MailTab::handleCopyMessages (QAction *action)
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto& folderPath = action->property ("Snails/FolderPath").toStringList ();
+
+		const auto& ids = GetSelectedIds ();
+		CurrAcc_->CopyMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), { folderPath });
 	}
 
 	void MailTab::handleMarkMsgUnread ()

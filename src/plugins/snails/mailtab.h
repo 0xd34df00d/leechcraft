@@ -55,6 +55,7 @@ namespace Snails
 
 		QAction *MsgReply_;
 		QAction *MsgMarkUnread_;
+		QMenu *MsgCopy_;
 		QAction *MsgRemove_;
 		QMenu *MsgAttachments_;
 
@@ -80,6 +81,7 @@ namespace Snails
 		void handleMailSelected (const QModelIndex&);
 
 		void handleReply ();
+		void handleCopyMessages (QAction*);
 		void handleMarkMsgUnread ();
 		void handleRemoveMsgs ();
 
