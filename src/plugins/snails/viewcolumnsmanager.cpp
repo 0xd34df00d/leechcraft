@@ -62,7 +62,9 @@ namespace Snails
 
 	void ViewColumnsManager::SetDefaultWidths (const QStringList& strings)
 	{
-		const auto& fm = View_->fontMetrics ();
+		auto font = View_->font ();
+		font.setBold (true);
+		const QFontMetrics fm { font };
 
 		QList<int> widths;
 
