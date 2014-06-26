@@ -126,10 +126,12 @@ namespace Snails
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleReply ()));
+		TabToolbar_->addAction (MsgReply_);
 
 		MsgAttachments_ = new QMenu (tr ("Attachments"));
 		MsgAttachments_->setIcon (Core::Instance ().GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("mail-attachment"));
+		TabToolbar_->addAction (MsgAttachments_->menuAction ());
 
 		MsgMarkUnread_ = new QAction (tr ("Mark as unread"), this);
 		MsgMarkUnread_->setProperty ("ActionIcon", "mail-mark-unread");
@@ -137,6 +139,7 @@ namespace Snails
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleMarkMsgUnread ()));
+		TabToolbar_->addAction (MsgMarkUnread_);
 
 		MsgRemove_ = new QAction (tr ("Delete messages"), this);
 		MsgRemove_->setProperty ("ActionIcon", "list-remove");
@@ -144,10 +147,6 @@ namespace Snails
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleRemoveMsgs ()));
-
-		TabToolbar_->addAction (MsgReply_);
-		TabToolbar_->addAction (MsgAttachments_->menuAction ());
-		TabToolbar_->addAction (MsgMarkUnread_);
 		TabToolbar_->addAction (MsgRemove_);
 	}
 
