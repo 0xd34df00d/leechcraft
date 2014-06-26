@@ -42,6 +42,7 @@ set (SRCS
 	messagechangelistener.cpp
 	foldersmodel.cpp
 	folder.cpp
+	viewcolumnsmanager.cpp
 	)
 set (FORMS
 	mailtab.ui
