@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "viewcolumnsmanager.h"
+#include <memory>
 #include <QHeaderView>
 #include <QEvent>
 #include <QtDebug>
@@ -45,6 +46,10 @@ namespace Snails
 				SIGNAL (sectionCountChanged (int, int)),
 				this,
 				SLOT (handleSectionCountChanged (int, int)));
+		connect (View_,
+				SIGNAL (sectionResized (int, int, int)),
+				this,
+				SLOT (handleSectionResized (int, int, int)));
 
 		View_->installEventFilter (this);
 	}
@@ -83,6 +88,13 @@ namespace Snails
 
 	void ViewColumnsManager::readjustWidths ()
 	{
+		IgnoreResizes_ = true;
+		const std::shared_ptr<void> ignoreGuard
+		{
+			nullptr,
+			[this] (void*) { IgnoreResizes_ = false; }
+		};
+
 		const auto scrollBarWidth = View_->style ()->pixelMetric (QStyle::PM_ScrollBarExtent);
 		auto remainingWidth = View_->width () - scrollBarWidth;
 
@@ -100,6 +112,17 @@ namespace Snails
 			remainingWidth = std::max (20, remainingWidth);
 			View_->resizeSection (StretchColumn_, remainingWidth);
 		}
+	}
+
+	void ViewColumnsManager::handleSectionResized (int index, int, int newSize)
+	{
+		if (IgnoreResizes_)
+			return;
+
+		if (index == StretchColumn_)
+			StretchColumn_ = -1;
+
+		ColumnWidths_ [index] = newSize;
 	}
 
 	void ViewColumnsManager::handleSectionCountChanged (int, int newCount)

@@ -45,6 +45,8 @@ namespace Snails
 
 		int StretchColumn_ = -1;
 		QList<int> ColumnWidths_;
+
+		bool IgnoreResizes_ = false;
 	public:
 		ViewColumnsManager (QHeaderView*);
 
@@ -55,6 +57,7 @@ namespace Snails
 		bool eventFilter (QObject*, QEvent*);
 	private slots:
 		void readjustWidths ();
+		void handleSectionResized (int, int, int);
 		void handleSectionCountChanged (int, int);
 	};
 }
