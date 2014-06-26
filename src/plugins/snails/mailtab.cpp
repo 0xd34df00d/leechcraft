@@ -42,6 +42,7 @@
 #include "mailmodel.h"
 #include "viewcolumnsmanager.h"
 #include "accountfoldermanager.h"
+#include "vmimeconversions.h"
 
 namespace LeechCraft
 {
@@ -358,7 +359,8 @@ namespace Snails
 		auto folders = CurrAcc_->GetFolderManager ()->GetFolders ();
 		for (const auto& folder : folders)
 		{
-			const auto act = MsgCopy_->addAction (folder.Path_.join ("/"));
+			const auto& icon = GetFolderIcon (folder.Type_);
+			const auto act = MsgCopy_->addAction (icon, folder.Path_.join ("/"));
 			act->setProperty ("Snails/FolderPath", folder.Path_);
 		}
 	}
