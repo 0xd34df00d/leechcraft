@@ -297,6 +297,25 @@ namespace Snails
 
 		const auto row = node->Row ();
 
+		if (const auto childCount = node->Children_.size ())
+		{
+			const auto& nodeIndex = createIndex (row, 0, node.get ());
+
+			beginRemoveRows (nodeIndex, 0, childCount - 1);
+			auto childNodes = std::move (node->Children_);
+			node->Children_.clear ();
+			endRemoveRows ();
+
+			for (const auto& childNode : childNodes)
+				childNode->Parent_ = parent;
+
+			beginInsertRows (parentIndex,
+					parent->Children_.size (),
+					parent->Children_.size () + childCount - 1);
+			parent->Children_ += childNodes;
+			endInsertRows ();
+		}
+
 		beginRemoveRows (parentIndex, row, row);
 		parent->Children_.removeOne (node);
 		endRemoveRows ();
