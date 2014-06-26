@@ -48,7 +48,6 @@ namespace Snails
 				SIGNAL (geometriesChanged ()),
 				this,
 				SLOT (readjustWIdths ()));
-		qDebug () << Q_FUNC_INFO << view->width ();
 	}
 
 	void ViewColumnsManager::SetStretchColumn (int column)
@@ -76,7 +75,6 @@ namespace Snails
 	void ViewColumnsManager::readjustWidths ()
 	{
 		const auto scrollBarWidth = View_->style ()->pixelMetric (QStyle::PM_ScrollBarExtent);
-		const auto frameWidth = View_->style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
 		auto remainingWidth = View_->width () - scrollBarWidth;
 
 		for (int i = 0; i < ColumnWidths_.size (); ++i)
