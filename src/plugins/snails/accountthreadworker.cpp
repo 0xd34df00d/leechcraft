@@ -976,6 +976,21 @@ namespace Snails
 		}
 	}
 
+	void AccountThreadWorker::copyMessages (const QList<QByteArray>& ids,
+			const QStringList& from, const QList<QStringList>& tos)
+	{
+		if (ids.isEmpty () || tos.isEmpty ())
+			return;
+
+		const auto& folder = GetFolder (from, vmime::net::folder::MODE_READ_WRITE);
+		if (!folder)
+			return;
+
+		const auto& set = ToMessageSet (ids);
+		for (const auto& to : tos)
+			folder->copyMessages (Folder2Path (to), set);
+	}
+
 	void AccountThreadWorker::deleteMessages (const QList<QByteArray>& ids, const QStringList& path)
 	{
 		if (ids.isEmpty ())
