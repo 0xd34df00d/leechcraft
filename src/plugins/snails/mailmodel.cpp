@@ -278,24 +278,28 @@ namespace Snails
 			return false;
 
 		for (const auto& node : FolderId2Nodes_.value (id))
-		{
-			const auto& parent = node->Parent_.lock ();
-
-			const auto& parentIndex = parent == Root_ ?
-					QModelIndex {} :
-					createIndex (parent->Row (), 0, parent.get ());
-			const auto row = node->Row ();
-
-			beginRemoveRows (parentIndex, row, row);
-			parent->Children_.removeOne (node);
-			endRemoveRows ();
-		}
+			RemoveNode (node);
 
 		FolderId2Nodes_.remove (id);
 		MsgId2FolderId_.remove ((*msgPos)->GetMessageID ());
 		Messages_.erase (msgPos);
 
 		return true;
+	}
+
+	void MailModel::RemoveNode (const TreeNode_ptr& node)
+	{
+		const auto& parent = node->Parent_.lock ();
+
+		const auto& parentIndex = parent == Root_ ?
+				QModelIndex {} :
+				createIndex (parent->Row (), 0, parent.get ());
+
+		const auto row = node->Row ();
+
+		beginRemoveRows (parentIndex, row, row);
+		parent->Children_.removeOne (node);
+		endRemoveRows ();
 	}
 
 	bool MailModel::AppendStructured (const Message_ptr& msg)

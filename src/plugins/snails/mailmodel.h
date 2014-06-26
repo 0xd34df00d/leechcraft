@@ -87,6 +87,7 @@ namespace Snails
 		bool Update (const Message_ptr&);
 		bool Remove (const QByteArray&);
 	private:
+		void RemoveNode (const TreeNode_ptr&);
 		bool AppendStructured (const Message_ptr&);
 
 		QList<QModelIndex> GetIndexes (const QByteArray& folderId, int column) const;
