@@ -29,6 +29,7 @@
 
 #include "viewcolumnsmanager.h"
 #include <QHeaderView>
+#include <QEvent>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -44,10 +45,8 @@ namespace Snails
 				SIGNAL (sectionCountChanged (int, int)),
 				this,
 				SLOT (handleSectionCountChanged (int, int)));
-		connect (View_,
-				SIGNAL (geometriesChanged ()),
-				this,
-				SLOT (readjustWIdths ()));
+
+		View_->installEventFilter (this);
 	}
 
 	void ViewColumnsManager::SetStretchColumn (int column)
@@ -72,6 +71,14 @@ namespace Snails
 			widths << fm.width (string);
 
 		SetDefaultWidths (widths);
+	}
+
+	bool ViewColumnsManager::eventFilter (QObject *object, QEvent *event)
+	{
+		if (event->type () == QEvent::Resize)
+			readjustWidths ();
+
+		return QObject::eventFilter (object, event);
 	}
 
 	void ViewColumnsManager::readjustWidths ()

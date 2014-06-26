@@ -51,6 +51,8 @@ namespace Snails
 		void SetStretchColumn (int);
 		void SetDefaultWidths (const QList<int>&);
 		void SetDefaultWidths (const QStringList&);
+
+		bool eventFilter (QObject*, QEvent*);
 	private slots:
 		void readjustWidths ();
 		void handleSectionCountChanged (int, int);
