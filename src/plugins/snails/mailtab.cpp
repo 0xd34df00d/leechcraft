@@ -40,6 +40,7 @@
 #include "storage.h"
 #include "mailtreedelegate.h"
 #include "mailmodel.h"
+#include "viewcolumnsmanager.h"
 
 namespace LeechCraft
 {
@@ -55,6 +56,15 @@ namespace Snails
 	{
 		Ui_.setupUi (this);
 		//Ui_.MailTreeLay_->insertWidget (0, MsgToolbar_);
+
+		auto colMgr = new ViewColumnsManager (Ui_.MailTree_->header ());
+		colMgr->SetStretchColumn (1);
+		colMgr->SetDefaultWidths ({
+				"Typical sender name and surname",
+				{},
+				QDateTime::currentDateTime ().toString (),
+				Util::MakePrettySize (999 * 1024) + "  "
+			});
 
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
 
