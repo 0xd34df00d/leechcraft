@@ -35,6 +35,8 @@
 #include <vmime/charsetConverter.hpp>
 #include <vmime/utility/outputStreamStringAdapter.hpp>
 
+class QIcon;
+
 namespace vmime
 {
 namespace net
@@ -48,6 +50,8 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	enum class FolderType;
+
 	template<typename T>
 	QString Stringize (const T& t, const vmime::charset& source)
 	{
@@ -94,5 +98,8 @@ namespace Snails
 
 	QStringList GetFolderPath (const vmime::shared_ptr<vmime::net::folder>&);
 	vmime::net::messageSet ToMessageSet (const QList<QByteArray>&);
+
+	QString GetFolderIconName (FolderType);
+	QIcon GetFolderIcon (FolderType);
 }
 }

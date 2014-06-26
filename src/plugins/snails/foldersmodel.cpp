@@ -30,11 +30,11 @@
 #include "foldersmodel.h"
 #include <algorithm>
 #include <QtDebug>
-#include <interfaces/core/iiconthememanager.h>
 #include "account.h"
 #include "core.h"
 #include "storage.h"
 #include "folder.h"
+#include "vmimeconversions.h"
 
 namespace LeechCraft
 {
@@ -107,30 +107,6 @@ namespace Snails
 		return Headers_.size ();
 	}
 
-	namespace
-	{
-		QString GetIconName (FolderType type)
-		{
-			switch (type)
-			{
-			case FolderType::Inbox:
-				return "mail-folder-inbox";
-			case FolderType::Drafts:
-				return "mail-folder-outbox";
-			case FolderType::Sent:
-				return "mail-folder-sent";
-			case FolderType::Important:
-				return "mail-mark-important";
-			case FolderType::Junk:
-				return "mail-mark-junk";
-			case FolderType::Trash:
-				return "user-trash";
-			default:
-				return "folder-documents";
-			}
-		}
-	}
-
 	QVariant FoldersModel::data (const QModelIndex& index, int role) const
 	{
 		const auto folder = static_cast<FolderDescr*> (index.internalPointer ());
@@ -143,8 +119,7 @@ namespace Snails
 			if (index.column ())
 				return {};
 
-			return Core::Instance ().GetProxy ()->
-					GetIconThemeManager ()->GetIcon (GetIconName (folder->Type_));
+			return GetFolderIcon (folder->Type_);
 		case Role::FolderPath:
 		{
 			QStringList path { folder->Name_ };

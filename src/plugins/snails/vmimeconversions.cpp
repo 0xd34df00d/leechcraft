@@ -29,7 +29,11 @@
 
 #include "vmimeconversions.h"
 #include <QStringList>
+#include <QIcon>
 #include <vmime/net/folder.hpp>
+#include <interfaces/core/iiconthememanager.h>
+#include "folder.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -50,6 +54,33 @@ namespace Snails
 		for (const auto& id : ids)
 			set.addRange (vmime::net::UIDMessageRange (id.constData ()));
 		return set;
+	}
+
+	QString GetFolderIconName (FolderType type)
+	{
+		switch (type)
+		{
+		case FolderType::Inbox:
+			return "mail-folder-inbox";
+		case FolderType::Drafts:
+			return "mail-folder-outbox";
+		case FolderType::Sent:
+			return "mail-folder-sent";
+		case FolderType::Important:
+			return "mail-mark-important";
+		case FolderType::Junk:
+			return "mail-mark-junk";
+		case FolderType::Trash:
+			return "user-trash";
+		default:
+			return "folder-documents";
+		}
+	}
+
+	QIcon GetFolderIcon (FolderType type)
+	{
+		return Core::Instance ().GetProxy ()->
+				GetIconThemeManager ()->GetIcon (GetFolderIconName (type));
 	}
 }
 }
