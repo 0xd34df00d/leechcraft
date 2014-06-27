@@ -693,6 +693,11 @@ namespace Snails
 					plainParts << Stringize (tp->getText (), tp->getCharset ());
 			}
 
+			if (std::adjacent_find (plainParts.begin (), plainParts.end (),
+					[] (const QString& left, const QString& right)
+						{ return left.size () > right.size (); }) == plainParts.end ())
+				std::reverse (plainParts.begin (), plainParts.end ());
+
 			msg->SetBody (plainParts.join ("\n"));
 			msg->SetHTMLBody (html);
 
