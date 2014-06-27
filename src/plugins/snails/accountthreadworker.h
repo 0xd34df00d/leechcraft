@@ -70,13 +70,19 @@ namespace Snails
 
 		const vmime::shared_ptr<vmime::security::cert::defaultCertificateVerifier> CertVerifier_;
 		const vmime::shared_ptr<vmime::security::authenticator> InAuth_;
+
+		enum class FolderMode
+		{
+			ReadOnly,
+			ReadWrite
+		};
 	public:
 		AccountThreadWorker (bool, Account*);
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
 
-		VmimeFolder_ptr GetFolder (const QStringList& folder, int mode);
+		VmimeFolder_ptr GetFolder (const QStringList& folder, FolderMode mode);
 
 		Message_ptr FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 		void FetchMessagesPOP3 (Account::FetchFlags);

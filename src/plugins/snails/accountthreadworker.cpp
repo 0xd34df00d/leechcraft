@@ -242,7 +242,7 @@ namespace Snails
 		}
 	}
 
-	VmimeFolder_ptr AccountThreadWorker::GetFolder (const QStringList& path, int mode)
+	VmimeFolder_ptr AccountThreadWorker::GetFolder (const QStringList& path, FolderMode mode)
 	{
 		if (path.size () == 1 && path.at (0) == "[Gmail]")
 			return {};
@@ -253,11 +253,15 @@ namespace Snails
 			CachedFolders_ [path] = store->getFolder (Folder2Path (path));
 		}
 
+		const auto requestedMode = mode == FolderMode::ReadOnly ?
+				vmime::net::folder::MODE_READ_ONLY :
+				vmime::net::folder::MODE_READ_WRITE;
+
 		auto folder = CachedFolders_ [path];
-		if (folder->isOpen () && folder->getMode () != mode)
+		if (folder->isOpen () && folder->getMode () != requestedMode)
 			folder->close (false);
 		if (!folder->isOpen ())
-			folder->open (mode);
+			folder->open (requestedMode);
 		return folder;
 	}
 
@@ -487,7 +491,7 @@ namespace Snails
 	{
 		for (const auto& folder : origFolders)
 		{
-			if (const auto& netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_WRITE))
+			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadWrite))
 				FetchMessagesInFolder (folder, netFolder, last);
 		}
 	}
@@ -811,7 +815,7 @@ namespace Snails
 
 	void AccountThreadWorker::getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot)
 	{
-		const auto& netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_ONLY);
+		const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly);
 		if (!netFolder)
 			return;
 
@@ -828,7 +832,7 @@ namespace Snails
 		if (A_->InType_ == Account::InType::POP3)
 			return;
 
-		const auto& folder = GetFolder (folderPath, vmime::net::folder::MODE_READ_WRITE);
+		const auto& folder = GetFolder (folderPath, FolderMode::ReadWrite);
 		if (!folder)
 			return;
 
@@ -859,7 +863,7 @@ namespace Snails
 			return;
 
 		const QByteArray& sid = origMsg->GetFolderID ();
-		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
+		auto folder = GetFolder (origMsg->GetFolders ().value (0), FolderMode::ReadWrite);
 		if (!folder)
 			return;
 
@@ -982,7 +986,7 @@ namespace Snails
 		if (ids.isEmpty () || tos.isEmpty ())
 			return;
 
-		const auto& folder = GetFolder (from, vmime::net::folder::MODE_READ_WRITE);
+		const auto& folder = GetFolder (from, FolderMode::ReadWrite);
 		if (!folder)
 			return;
 
@@ -996,7 +1000,7 @@ namespace Snails
 		if (ids.isEmpty ())
 			return;
 
-		const auto& folder = GetFolder (path, vmime::net::folder::MODE_READ_WRITE);
+		const auto& folder = GetFolder (path, FolderMode::ReadWrite);
 		if (!folder)
 			return;
 
