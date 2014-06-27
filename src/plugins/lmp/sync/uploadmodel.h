@@ -29,17 +29,15 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
+#include <QIdentityProxyModel>
 #include <QSet>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class UploadModel : public QSortFilterProxyModel
+	class UploadModel : public QIdentityProxyModel
 	{
-		Q_OBJECT
-
 		QSet<QPersistentModelIndex> SourceIndexes_;
 	public:
 		UploadModel (QObject* = 0);
@@ -49,8 +47,6 @@ namespace LMP
 		Qt::ItemFlags flags (const QModelIndex&) const;
 		QVariant data (const QModelIndex&, int) const;
 		bool setData (const QModelIndex&, const QVariant&, int);
-	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
 	};
 }
 }

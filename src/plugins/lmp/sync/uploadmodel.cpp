@@ -35,7 +35,7 @@ namespace LeechCraft
 namespace LMP
 {
 	UploadModel::UploadModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
+	: QIdentityProxyModel { parent }
 	{
 	}
 
@@ -46,12 +46,12 @@ namespace LMP
 
 	Qt::ItemFlags UploadModel::flags (const QModelIndex& idx) const
 	{
-		return QSortFilterProxyModel::flags (idx) | Qt::ItemIsUserCheckable;
+		return QIdentityProxyModel::flags (idx) | Qt::ItemIsUserCheckable;
 	}
 
 	QVariant UploadModel::data (const QModelIndex& idx, int role) const
 	{
-		const auto& var = QSortFilterProxyModel::data (idx, role);
+		const auto& var = QIdentityProxyModel::data (idx, role);
 		if (role != Qt::CheckStateRole)
 			return var;
 
@@ -84,11 +84,6 @@ namespace LMP
 		for (int i = 0, rc = rowCount (idx); i < rc; ++i)
 			setData (index (i, 0, idx), data, Qt::CheckStateRole);
 
-		return true;
-	}
-
-	bool UploadModel::filterAcceptsRow (int, const QModelIndex&) const
-	{
 		return true;
 	}
 }
