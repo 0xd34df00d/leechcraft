@@ -9,3 +9,8 @@
 .body pre {
 	white-space: pre-wrap;
 }
+
+body {
+	color: $Text;
+	background-color: $Base;
+}
