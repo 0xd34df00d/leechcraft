@@ -299,11 +299,8 @@ namespace Snails
 		else if (!msg->IsRead ())
 			CurrAcc_->SetReadStatus (true, { id }, folder);
 
-		QString html = R"delim(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-			<html xmlns="http://www.w3.org/1999/xhtml">
-				<head>
-					<title>Message</title>
-					<style>)delim";
+		QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+		html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
 		html += Core::Instance ().GetMsgViewTemplate ();
 		html += "</style></head><body>";
 		auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
