@@ -256,6 +256,21 @@ namespace Snails
 		handleMailSelected ({});
 	}
 
+	namespace
+	{
+		QString GetStyle ()
+		{
+			const auto& palette = qApp->palette ();
+
+			auto result = Core::Instance ().GetMsgViewTemplate ();
+			result.replace ("$WindowText", palette.color (QPalette::ColorRole::WindowText).name ());
+			result.replace ("$Window", palette.color (QPalette::ColorRole::Window).name ());
+			result.replace ("$Base", palette.color (QPalette::ColorRole::Base).name ());
+			result.replace ("$Text", palette.color (QPalette::ColorRole::Text).name ());
+			return result;
+		}
+	}
+
 	void MailTab::handleMailSelected (const QModelIndex& sidx)
 	{
 		if (!CurrAcc_)
@@ -301,7 +316,7 @@ namespace Snails
 
 		QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 		html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
-		html += Core::Instance ().GetMsgViewTemplate ();
+		html += GetStyle ();
 		html += "</style></head><body>";
 		auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
 		{
