@@ -818,11 +818,11 @@ namespace Snails
 
 	void AccountThreadWorker::getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot)
 	{
-		const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly);
+		const auto& netFolder = GetFolder (folder, FolderMode::NoChange);
 		if (!netFolder)
 			return;
 
-		const auto count = netFolder->getMessageCount ();
+		const auto count = netFolder->getStatus ()->getMessageCount ();
 
 		QMetaObject::invokeMethod (handler,
 				slot,
