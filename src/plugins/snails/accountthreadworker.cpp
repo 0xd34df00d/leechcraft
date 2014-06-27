@@ -665,7 +665,7 @@ namespace Snails
 
 	namespace
 	{
-		void FullifyHeaderMessage (Message_ptr msg, const vmime::shared_ptr<vmime::message>& full)
+		void FullifyHeaderMessage (const Message_ptr& msg, const vmime::shared_ptr<vmime::message>& full)
 		{
 			vmime::messageParser mp (full);
 
