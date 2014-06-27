@@ -74,7 +74,8 @@ namespace Snails
 		enum class FolderMode
 		{
 			ReadOnly,
-			ReadWrite
+			ReadWrite,
+			NoChange
 		};
 	public:
 		AccountThreadWorker (bool, Account*);

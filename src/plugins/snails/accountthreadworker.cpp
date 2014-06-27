@@ -253,11 +253,14 @@ namespace Snails
 			CachedFolders_ [path] = store->getFolder (Folder2Path (path));
 		}
 
+		auto folder = CachedFolders_ [path];
+
+		if (mode == FolderMode::NoChange)
+			return folder;
+
 		const auto requestedMode = mode == FolderMode::ReadOnly ?
 				vmime::net::folder::MODE_READ_ONLY :
 				vmime::net::folder::MODE_READ_WRITE;
-
-		auto folder = CachedFolders_ [path];
 		if (folder->isOpen () && folder->getMode () != requestedMode)
 			folder->close (false);
 		if (!folder->isOpen ())
