@@ -667,12 +667,12 @@ namespace Snails
 	{
 		void FullifyHeaderMessage (const Message_ptr& msg, const vmime::shared_ptr<vmime::message>& full)
 		{
-			vmime::messageParser mp (full);
+			vmime::messageParser mp { full };
 
 			QString html;
 			QString plain;
 
-			Q_FOREACH (auto tp, mp.getTextPartList ())
+			for (const auto& tp : mp.getTextPartList ())
 			{
 				if (tp->getType ().getType () != vmime::mediaTypes::TEXT)
 				{
@@ -696,7 +696,7 @@ namespace Snails
 			msg->SetBody (plain);
 			msg->SetHTMLBody (html);
 
-			Q_FOREACH (auto att, mp.getAttachmentList ())
+			for (const auto& att : mp.getAttachmentList ())
 			{
 				const auto& type = att->getType ();
 				if (type.getType () == vmime::mediaTypes::TEXT &&
