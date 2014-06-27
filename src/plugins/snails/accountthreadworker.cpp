@@ -670,11 +670,12 @@ namespace Snails
 			vmime::messageParser mp { full };
 
 			QString html;
-			QString plain;
+			QStringList plainParts;
 
 			for (const auto& tp : mp.getTextPartList ())
 			{
-				if (tp->getType ().getType () != vmime::mediaTypes::TEXT)
+				const auto& type = tp->getType ();
+				if (type.getType () != vmime::mediaTypes::TEXT)
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "non-text in text part"
@@ -682,18 +683,17 @@ namespace Snails
 					continue;
 				}
 
-				if (tp->getType ().getSubType () == vmime::mediaTypes::TEXT_HTML)
+				if (type.getSubType () == vmime::mediaTypes::TEXT_HTML)
 				{
 					auto htp = vmime::dynamicCast<const vmime::htmlTextPart> (tp);
 					html = Stringize (htp->getText (), htp->getCharset ());
-					plain = Stringize (htp->getPlainText (), htp->getCharset ());
+					plainParts << Stringize (htp->getPlainText (), htp->getCharset ());
 				}
-				else if (plain.isEmpty () &&
-						tp->getType ().getSubType () == vmime::mediaTypes::TEXT_PLAIN)
-					plain = Stringize (tp->getText (), tp->getCharset ());
+				else if (type.getSubType () == vmime::mediaTypes::TEXT_PLAIN)
+					plainParts << Stringize (tp->getText (), tp->getCharset ());
 			}
 
-			msg->SetBody (plain);
+			msg->SetBody (plainParts.join ("\n"));
 			msg->SetHTMLBody (html);
 
 			for (const auto& att : mp.getAttachmentList ())
