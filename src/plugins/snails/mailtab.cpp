@@ -34,6 +34,7 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QFileDialog>
+#include <QToolButton>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
@@ -140,12 +141,16 @@ namespace Snails
 		TabToolbar_->addSeparator ();
 
 		MsgCopy_ = new QMenu (tr ("Copy messages"));
-		MsgCopy_->menuAction ()->setProperty ("ActionIcon", "edit-copy");
 		connect (MsgCopy_,
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (handleCopyMessages (QAction*)));
-		TabToolbar_->addAction (MsgCopy_->menuAction ());
+
+		auto copyButton = new QToolButton;
+		copyButton->setMenu (MsgCopy_);
+		copyButton->setProperty ("ActionIcon", "edit-copy");
+		copyButton->setPopupMode (QToolButton::InstantPopup);
+		TabToolbar_->addWidget (copyButton);
 
 		MsgMarkUnread_ = new QAction (tr ("Mark as unread"), this);
 		MsgMarkUnread_->setProperty ("ActionIcon", "mail-mark-unread");
