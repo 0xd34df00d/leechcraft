@@ -49,7 +49,7 @@ CategorySelector::CategorySelector (QWidget *parent)
 , Separator_ ("; ")
 {
 	setWindowTitle (tr ("Tags selector"));
-	setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint);
+	setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint);
 
 	Ui_->setupUi (this);
 
