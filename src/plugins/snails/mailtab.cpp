@@ -200,6 +200,13 @@ namespace Snails
 			return {};
 
 		auto folders = CurrAcc_->GetFolderManager ()->GetFolders ();
+		const auto& curFolder = CurrAcc_->GetMailModel ()->GetCurrentFolder ();
+
+		const auto curPos = std::find_if (folders.begin (), folders.end (),
+				[&curFolder] (const Folder& other) { return other.Path_ == curFolder; });
+		if (curPos != folders.end ())
+			folders.erase (curPos);
+
 		return folders;
 	}
 
@@ -279,6 +286,7 @@ namespace Snails
 	{
 		CurrAcc_->ShowFolder (sidx);
 		handleMailSelected ({});
+		handleFoldersUpdated ();
 	}
 
 	namespace
