@@ -79,6 +79,7 @@ namespace Snails
 		QList<QByteArray> GetSelectedIds () const;
 
 		void SetMsgActionsEnabled (bool);
+		QList<Folder> GetActualFolders () const;
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);

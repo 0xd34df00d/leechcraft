@@ -194,6 +194,15 @@ namespace Snails
 		MsgCopyButton_->setEnabled (enable);
 	}
 
+	QList<Folder> MailTab::GetActualFolders () const
+	{
+		if (!CurrAcc_)
+			return {};
+
+		auto folders = CurrAcc_->GetFolderManager ()->GetFolders ();
+		return folders;
+	}
+
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
 	{
 		if (CurrAcc_)
@@ -389,8 +398,7 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		auto folders = CurrAcc_->GetFolderManager ()->GetFolders ();
-		for (const auto& folder : folders)
+		for (const auto& folder : GetActualFolders ())
 		{
 			const auto& icon = GetFolderIcon (folder.Type_);
 			const auto act = MsgCopy_->addAction (icon, folder.Path_.join ("/"));
