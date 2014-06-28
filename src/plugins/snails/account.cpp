@@ -243,6 +243,12 @@ namespace Snails
 			});
 	}
 
+	void Account::MoveMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
+	{
+		CopyMessages (ids, from, to);
+		DeleteMessages (ids, from);
+	}
+
 	void Account::DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		MessageFetchThread_->AddTask ({
