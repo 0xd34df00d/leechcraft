@@ -123,7 +123,7 @@ void CategorySelector::setPossibleSelections (QStringList mytags)
 	emit tagsSelectionChanged (QStringList ());
 }
 
-QStringList CategorySelector::GetSelections ()
+QStringList CategorySelector::GetSelections () const
 {
 	QStringList tags;
 

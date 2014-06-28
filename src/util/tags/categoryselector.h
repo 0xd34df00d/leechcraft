@@ -108,7 +108,7 @@ namespace LeechCraft
 			 *
 			 * @sa SetPossibleSelections
 			 */
-			QStringList GetSelections ();
+			QStringList GetSelections () const;
 
 			/** @brief Selects some of the items.
 			 *
