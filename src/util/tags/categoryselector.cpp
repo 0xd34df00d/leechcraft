@@ -139,6 +139,20 @@ QStringList CategorySelector::GetSelections () const
 	return tags;
 }
 
+QList<int> CategorySelector::GetSelectedIndexes () const
+{
+	QList<int> result;
+
+	for (int i = 0, size = Ui_->Tree_->topLevelItemCount (); i < size; ++i)
+	{
+		const auto item = Ui_->Tree_->topLevelItem (i);
+		if (item->checkState (0) == Qt::Checked)
+			result << i;
+	}
+
+	return result;
+}
+
 void CategorySelector::SetSelections (const QStringList& tags)
 {
 	blockSignals (true);

@@ -106,9 +106,21 @@ namespace LeechCraft
 			 *
 			 * @return Selected items.
 			 *
-			 * @sa SetPossibleSelections
+			 * @sa SetPossibleSelections()
+			 * @sa GetSelectedIndexes()
 			 */
 			QStringList GetSelections () const;
+
+			/** @brief Gets the indexes of the selected items.
+			 *
+			 * Returns the indexes of the selected items in the array
+			 * passed to setPossibleSelections(). Please note that
+			 * sorting should be disabled in setPossibleSelections()
+			 * for this function to be useful.
+			 *
+			 * @sa GetSelections()
+			 */
+			QList<int> GetSelectedIndexes () const;
 
 			/** @brief Selects some of the items.
 			 *
