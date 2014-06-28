@@ -298,6 +298,19 @@ namespace Snails
 
 		try
 		{
+			if (const auto& replyToHeader = header->ReplyTo ())
+			{
+				const auto& replyToVal = replyToHeader->getValue ();
+				const auto& replyTo = vmime::dynamicCast<const vmime::mailbox> (replyToVal);
+				msg->AddAddress (Message::Address::ReplyTo, Mailbox2Strings (replyTo));
+			}
+		}
+		catch (const vmime::exceptions::no_such_field&)
+		{
+		}
+
+		try
+		{
 			if (const auto& msgIdField = header->MessageId ())
 			{
 				const auto& msgIdVal = msgIdField->getValue ();
