@@ -317,6 +317,40 @@ namespace Snails
 			result.replace ("$Text", palette.color (QPalette::ColorRole::Text).name ());
 			return result;
 		}
+
+		QString ToHtml (const Message_ptr& msg)
+		{
+			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
+			html += GetStyle ();
+			html += "</style></head><body><div class='header'>";
+			auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
+			{
+				if (!text.isEmpty ())
+					html += "<span class='field " + cssClass + "'><span class='fieldName'>" +
+							name + "</span>: " + text + "</span><br />";
+			};
+
+			addField ("subject", MailTab::tr ("Subject"), msg->GetSubject ());
+			addField ("from", MailTab::tr ("From"), HTMLize ({ msg->GetAddress (Message::Address::From) }));
+			addField ("to", MailTab::tr ("To"), HTMLize (msg->GetAddresses (Message::Address::To)));
+			addField ("cc", MailTab::tr ("Copy"), HTMLize (msg->GetAddresses (Message::Address::Cc)));
+			addField ("bcc", MailTab::tr ("Blind copy"), HTMLize (msg->GetAddresses (Message::Address::Bcc)));
+			addField ("date", MailTab::tr ("Date"), msg->GetDate ().toString ());
+
+			const auto& htmlBody = msg->IsFullyFetched () ?
+					msg->GetHTMLBody () :
+					"<em>" + MailTab::tr ("Fetching the message...") + "</em>";
+
+			html += "</div><div class='body'>";
+			html += htmlBody.isEmpty () ?
+					"<pre>" + Qt::escape (msg->GetBody ()) + "</pre>" :
+					htmlBody;
+			html += "</div>";
+			html += "</body></html>";
+
+			return html;
+		}
 	}
 
 	void MailTab::handleMailSelected (const QModelIndex& sidx)
@@ -367,34 +401,7 @@ namespace Snails
 		else if (!msg->IsRead ())
 			CurrAcc_->SetReadStatus (true, { id }, folder);
 
-		QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
-		html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
-		html += GetStyle ();
-		html += "</style></head><body><div class='header'>";
-		auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
-		{
-			if (!text.isEmpty ())
-				html += "<span class='field " + cssClass + "'><span class='fieldName'>" +
-						name + "</span>: " + text + "</span><br />";
-		};
-
-		addField ("subject", tr ("Subject"), msg->GetSubject ());
-		addField ("from", tr ("From"), HTMLize ({ msg->GetAddress (Message::Address::From) }));
-		addField ("to", tr ("To"), HTMLize (msg->GetAddresses (Message::Address::To)));
-		addField ("cc", tr ("Copy"), HTMLize (msg->GetAddresses (Message::Address::Cc)));
-		addField ("bcc", tr ("Blind copy"), HTMLize (msg->GetAddresses (Message::Address::Bcc)));
-		addField ("date", tr ("Date"), msg->GetDate ().toString ());
-
-		const auto& htmlBody = msg->IsFullyFetched () ?
-				msg->GetHTMLBody () :
-				"<em>" + tr ("Fetching the message...") + "</em>";
-
-		html += "</div><div class='body'>";
-		html += htmlBody.isEmpty () ?
-				"<pre>" + Qt::escape (msg->GetBody ()) + "</pre>" :
-				htmlBody;
-		html += "</div>";
-		html += "</body></html>";
+		const auto& html = ToHtml (msg);
 
 		Ui_.MailView_->setHtml (html);
 
