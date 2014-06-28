@@ -345,9 +345,27 @@ namespace Snails
 					"<em>" + MailTab::tr ("Fetching the message...") + "</em>";
 
 			html += "</div><div class='body'>";
-			html += htmlBody.isEmpty () ?
-					"<pre>" + Qt::escape (msg->GetBody ()) + "</pre>" :
-					htmlBody;
+
+			if (!htmlBody.isEmpty ())
+				html += htmlBody;
+			else
+			{
+				auto body = msg->GetBody ();
+				body.replace ("\r\n", "\n");
+
+				auto lines = body.split ('\n');
+				for (auto& line : lines)
+				{
+					auto escaped = Qt::escape (line);
+					if (line.startsWith ('>'))
+						line = "<span class='replyPart'>" + escaped + "</span>";
+					else
+						line = escaped;
+				}
+
+				html += "<pre>" + lines.join ("\n") + "</pre>";
+			}
+
 			html += "</div>";
 			html += "</body></html>";
 
