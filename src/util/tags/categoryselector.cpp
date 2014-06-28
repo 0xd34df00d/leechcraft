@@ -80,6 +80,8 @@ CategorySelector::CategorySelector (QWidget *parent)
 	Ui_->Tree_->addAction (none);
 
 	Ui_->Tree_->setContextMenuPolicy (Qt::ActionsContextMenu);
+
+	SetButtonsMode (parent ? ButtonsMode::NoButtons : ButtonsMode::Close);
 }
 
 void CategorySelector::SetCaption (const QString& caption)
@@ -157,6 +159,24 @@ QString CategorySelector::GetSeparator () const
 void CategorySelector::SetSeparator (const QString& sep)
 {
 	Separator_ = sep;
+}
+
+void CategorySelector::SetButtonsMode (ButtonsMode mode)
+{
+	switch (mode)
+	{
+	case ButtonsMode::NoButtons:
+		Ui_->ButtonsBox_->setVisible (false);
+		break;
+	case ButtonsMode::Close:
+		Ui_->ButtonsBox_->setStandardButtons (QDialogButtonBox::Close);
+		Ui_->ButtonsBox_->setVisible (true);
+		break;
+	case ButtonsMode::AcceptReject:
+		Ui_->ButtonsBox_->setStandardButtons (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		Ui_->ButtonsBox_->setVisible (true);
+		break;
+	}
 }
 
 void CategorySelector::moveEvent (QMoveEvent *e)

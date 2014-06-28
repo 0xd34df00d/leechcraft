@@ -74,6 +74,13 @@ namespace LeechCraft
 			QString Caption_;
 			QString Separator_;
 		public:
+			enum class ButtonsMode
+			{
+				NoButtons,
+				Close,
+				AcceptReject
+			};
+
 			/** @brief Constructor.
 			 *
 			 * Sets the default window title and window flags
@@ -129,6 +136,10 @@ namespace LeechCraft
 			 * @sa GetSeparator()
 			 */
 			void SetSeparator (const QString&);
+
+			/** @brief Sets the buttons mode.
+			 */
+			void SetButtonsMode (ButtonsMode);
 		protected:
 			/** @brief Checks whether after the move event the selector
 			 * won't be beoynd the screen. if it would, moves back.
@@ -138,9 +149,11 @@ namespace LeechCraft
 			/** @brief Selects all variants.
 			 */
 			void selectAll ();
+
 			/** @brief Deselects all variants.
 			 */
 			void selectNone ();
+
 			/** @brief Sets possible selections.
 			 *
 			 * Clears previous selections list, sets new possible selections
@@ -152,6 +165,7 @@ namespace LeechCraft
 			 * @sa GetSelections
 			 */
 			void setPossibleSelections (QStringList selections);
+
 			/** @brief Notifies CategorySelector about logical selection
 			 * changes.
 			 *
