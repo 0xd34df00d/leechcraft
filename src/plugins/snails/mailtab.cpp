@@ -36,6 +36,7 @@
 #include <QFileDialog>
 #include <QToolButton>
 #include <util/util.h>
+#include <util/tags/categoryselector.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "storage.h"
@@ -406,6 +407,9 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
+		MsgCopy_->addAction ("Multiple folders...", this, SLOT (handleCopyMultipleFolders ()));
+		MsgCopy_->addSeparator ();
+
 		for (const auto& folder : GetActualFolders ())
 		{
 			const auto& icon = GetFolderIcon (folder.Type_);
@@ -420,6 +424,45 @@ namespace Snails
 			return;
 
 		Core::Instance ().PrepareReplyTab (CurrMsg_, CurrAcc_);
+	}
+
+	void MailTab::handleCopyMultipleFolders ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto& ids = GetSelectedIds ();
+		if (ids.isEmpty ())
+			return;
+
+		Util::CategorySelector sel;
+		sel.setWindowTitle (ids.size () == 1 ?
+					tr ("Copy message") :
+					tr ("Copy %n message(s)", 0, ids.size ()));
+		sel.SetCaption (tr ("Folders"));
+
+		QStringList folderNames;
+		QList<QStringList> folderPaths;
+		for (const auto& folder : GetActualFolders ())
+		{
+			folderNames << folder.Path_.join ("/");
+			folderPaths << folder.Path_;
+		}
+
+		sel.setPossibleSelections (folderNames, false);
+		sel.SetButtonsMode (Util::CategorySelector::ButtonsMode::AcceptReject);
+
+		if (sel.exec () != QDialog::Accepted)
+			return;
+
+		QList<QStringList> selectedPaths;
+		for (const auto index : sel.GetSelectedIndexes ())
+			selectedPaths << folderPaths [index];
+
+		if (selectedPaths.isEmpty ())
+			return;
+
+		CurrAcc_->CopyMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), selectedPaths);
 	}
 
 	void MailTab::handleCopyMessages (QAction *action)

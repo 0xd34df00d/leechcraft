@@ -88,6 +88,7 @@ namespace Snails
 		void handleFoldersUpdated ();
 
 		void handleReply ();
+		void handleCopyMultipleFolders ();
 		void handleCopyMessages (QAction*);
 		void handleMarkMsgUnread ();
 		void handleRemoveMsgs ();
