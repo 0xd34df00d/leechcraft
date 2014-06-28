@@ -146,11 +146,11 @@ namespace Snails
 				this,
 				SLOT (handleCopyMessages (QAction*)));
 
-		auto copyButton = new QToolButton;
-		copyButton->setMenu (MsgCopy_);
-		copyButton->setProperty ("ActionIcon", "edit-copy");
-		copyButton->setPopupMode (QToolButton::InstantPopup);
-		TabToolbar_->addWidget (copyButton);
+		MsgCopyButton_ = new QToolButton;
+		MsgCopyButton_->setMenu (MsgCopy_);
+		MsgCopyButton_->setProperty ("ActionIcon", "edit-copy");
+		MsgCopyButton_->setPopupMode (QToolButton::InstantPopup);
+		TabToolbar_->addWidget (MsgCopyButton_);
 
 		MsgMarkUnread_ = new QAction (tr ("Mark as unread"), this);
 		MsgMarkUnread_->setProperty ("ActionIcon", "mail-mark-unread");
@@ -167,6 +167,8 @@ namespace Snails
 				this,
 				SLOT (handleRemoveMsgs ()));
 		TabToolbar_->addAction (MsgRemove_);
+
+		SetMsgActionsEnabled (false);
 	}
 
 	QList<QByteArray> MailTab::GetSelectedIds () const
@@ -183,6 +185,13 @@ namespace Snails
 			ids << currentId;
 
 		return ids;
+	}
+
+	void MailTab::SetMsgActionsEnabled (bool enable)
+	{
+		for (auto act : { MsgReply_, MsgMarkUnread_, MsgRemove_ })
+			act->setEnabled (enable);
+		MsgCopyButton_->setEnabled (enable);
 	}
 
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
@@ -282,6 +291,7 @@ namespace Snails
 	{
 		if (!CurrAcc_)
 		{
+			SetMsgActionsEnabled (false);
 			Ui_.MailView_->setHtml ({});
 			return;
 		}
@@ -290,6 +300,7 @@ namespace Snails
 
 		if (!sidx.isValid ())
 		{
+			SetMsgActionsEnabled (false);
 			Ui_.MailView_->setHtml ({});
 			return;
 		}
@@ -311,10 +322,13 @@ namespace Snails
 					<< id.toHex ()
 					<< e.what ();
 
+			SetMsgActionsEnabled (false);
 			const QString& html = tr ("<h2>Unable to load mail</h2><em>%1</em>").arg (e.what ());
 			Ui_.MailView_->setHtml (html);
 			return;
 		}
+
+		SetMsgActionsEnabled (true);
 
 		if (!msg->IsFullyFetched ())
 			CurrAcc_->FetchWholeMessage (msg);

@@ -37,6 +37,7 @@
 class QStandardItemModel;
 class QStandardItem;
 class QSortFilterProxyModel;
+class QToolButton;
 
 namespace LeechCraft
 {
@@ -56,6 +57,7 @@ namespace Snails
 		QAction *MsgReply_;
 		QAction *MsgMarkUnread_;
 		QMenu *MsgCopy_;
+		QToolButton *MsgCopyButton_;
 		QAction *MsgRemove_;
 		QMenu *MsgAttachments_;
 
@@ -75,6 +77,8 @@ namespace Snails
 	private:
 		void FillTabToolbarActions ();
 		QList<QByteArray> GetSelectedIds () const;
+
+		void SetMsgActionsEnabled (bool);
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);
