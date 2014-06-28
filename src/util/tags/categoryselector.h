@@ -160,11 +160,19 @@ namespace LeechCraft
 			 * according to selections parameter. By default, no items are
 			 * selected.
 			 *
-			 * @param[in] selections Possible selections.
+			 * The \em selections list is sorted unless the \em sort
+			 * parameter is set to false. Please note that if you plan to
+			 * call GetSelectedIndexes() you should set \em sort to
+			 * false.
 			 *
-			 * @sa GetSelections
+			 * @param[in] selections Possible selections.
+			 * @param[in] sort Whether the selections should be sorted
+			 * (default is true).
+			 *
+			 * @sa GetSelections()
+			 * @sa GetSelectedIndexes()
 			 */
-			void setPossibleSelections (QStringList selections);
+			void setPossibleSelections (QStringList selections, bool sort = true);
 
 			/** @brief Notifies CategorySelector about logical selection
 			 * changes.

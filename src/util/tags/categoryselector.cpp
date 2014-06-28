@@ -90,7 +90,7 @@ void CategorySelector::SetCaption (const QString& caption)
 	Caption_ = caption;
 }
 
-void CategorySelector::setPossibleSelections (QStringList mytags)
+void CategorySelector::setPossibleSelections (QStringList mytags, bool sort)
 {
 	disconnect (Ui_->Tree_,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
@@ -99,7 +99,9 @@ void CategorySelector::setPossibleSelections (QStringList mytags)
 
 	Ui_->Tree_->clear ();
 
-	mytags.sort ();
+	if (sort)
+		mytags.sort ();
+
 	QList<QTreeWidgetItem*> items;
 	for (const auto& tag : mytags)
 	{
