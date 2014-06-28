@@ -10,6 +10,13 @@
 	white-space: pre-wrap;
 }
 
+.header {
+	padding-left: 1em;
+	padding-right: 1em;
+	border: 2px solid $Window;
+	-webkit-border-radius: 1em;
+}
+
 body {
 	color: $Text;
 	background-color: $Base;
