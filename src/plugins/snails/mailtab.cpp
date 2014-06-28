@@ -315,6 +315,8 @@ namespace Snails
 			result.replace ("$Window", palette.color (QPalette::ColorRole::Window).name ());
 			result.replace ("$Base", palette.color (QPalette::ColorRole::Base).name ());
 			result.replace ("$Text", palette.color (QPalette::ColorRole::Text).name ());
+			result.replace ("$LinkVisited", palette.color (QPalette::ColorRole::LinkVisited).name ());
+			result.replace ("$Link", palette.color (QPalette::ColorRole::Link).name ());
 			return result;
 		}
 
