@@ -101,14 +101,14 @@ void CategorySelector::setPossibleSelections (QStringList mytags)
 
 	mytags.sort ();
 	QList<QTreeWidgetItem*> items;
-	for (auto i = mytags.begin (), end = mytags.end (); i != end; ++i)
+	for (const auto& tag : mytags)
 	{
-		if (i->isEmpty ())
+		if (tag.isEmpty ())
 			continue;
 
-		auto item = new QTreeWidgetItem (QStringList (*i));
+		auto item = new QTreeWidgetItem ({ tag });
 		item->setCheckState (0, Qt::Unchecked);
-		item->setData (0, RoleTag, *i);
+		item->setData (0, RoleTag, tag);
 		items << item;
 	}
 	Ui_->Tree_->addTopLevelItems (items);
