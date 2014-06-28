@@ -420,6 +420,8 @@ namespace Snails
 			return;
 
 		const auto& folderPath = action->property ("Snails/FolderPath").toStringList ();
+		if (folderPath.isEmpty ())
+			return;
 
 		const auto& ids = GetSelectedIds ();
 		CurrAcc_->CopyMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), { folderPath });
