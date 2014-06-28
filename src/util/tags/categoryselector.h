@@ -120,7 +120,7 @@ namespace LeechCraft
 			 *
 			 * @sa SetSeparator()
 			 */
-			UTIL_TAGS_API QString GetSeparator () const;
+			QString GetSeparator () const;
 
 			/** @brief Sets the separator for the tags.
 			 *
@@ -128,7 +128,7 @@ namespace LeechCraft
 			 *
 			 * @sa GetSeparator()
 			 */
-			UTIL_TAGS_API void SetSeparator (const QString&);
+			void SetSeparator (const QString&);
 		protected:
 			/** @brief Checks whether after the move event the selector
 			 * won't be beoynd the screen. if it would, moves back.
