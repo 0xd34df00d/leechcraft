@@ -187,6 +187,7 @@ namespace Aggregator
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
 		Impl_->ItemCategorySelector_->hide ();
 		Impl_->ItemCategorySelector_->setMinimumHeight (0);
+		Impl_->ItemCategorySelector_->SetButtonsMode (CategorySelector::ButtonsMode::NoButtons);
 		connect (Impl_->ItemCategorySelector_.get (),
 				SIGNAL (tagsSelectionChanged (const QStringList&)),
 				Impl_->ItemsFilterModel_.get (),
