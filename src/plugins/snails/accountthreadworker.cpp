@@ -671,6 +671,7 @@ namespace Snails
 
 			QString html;
 			QStringList plainParts;
+			QStringList htmlPlainParts;
 
 			for (const auto& tp : mp.getTextPartList ())
 			{
@@ -687,11 +688,14 @@ namespace Snails
 				{
 					auto htp = vmime::dynamicCast<const vmime::htmlTextPart> (tp);
 					html = Stringize (htp->getText (), htp->getCharset ());
-					plainParts << Stringize (htp->getPlainText (), htp->getCharset ());
+					htmlPlainParts << Stringize (htp->getPlainText (), htp->getCharset ());
 				}
 				else if (type.getSubType () == vmime::mediaTypes::TEXT_PLAIN)
 					plainParts << Stringize (tp->getText (), tp->getCharset ());
 			}
+
+			if (plainParts.isEmpty ())
+				plainParts = htmlPlainParts;
 
 			if (std::adjacent_find (plainParts.begin (), plainParts.end (),
 					[] (const QString& left, const QString& right)
