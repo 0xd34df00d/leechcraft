@@ -58,6 +58,8 @@ namespace Snails
 		QAction *MsgMarkUnread_;
 		QMenu *MsgCopy_;
 		QToolButton *MsgCopyButton_;
+		QMenu *MsgMove_;
+		QToolButton *MsgMoveButton_;
 		QAction *MsgRemove_;
 		QMenu *MsgAttachments_;
 
@@ -90,6 +92,8 @@ namespace Snails
 		void handleReply ();
 		void handleCopyMultipleFolders ();
 		void handleCopyMessages (QAction*);
+		void handleMoveMultipleFolders ();
+		void handleMoveMessages (QAction*);
 		void handleMarkMsgUnread ();
 		void handleRemoveMsgs ();
 

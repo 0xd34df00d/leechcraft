@@ -153,6 +153,18 @@ namespace Snails
 		MsgCopyButton_->setPopupMode (QToolButton::InstantPopup);
 		TabToolbar_->addWidget (MsgCopyButton_);
 
+		MsgMove_ = new QMenu (tr ("Move messages"));
+		connect (MsgMove_,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (handleMoveMessages (QAction*)));
+
+		MsgMoveButton_ = new QToolButton;
+		MsgMoveButton_->setMenu (MsgMove_);
+		MsgMoveButton_->setProperty ("ActionIcon", "transform-move");
+		MsgMoveButton_->setPopupMode (QToolButton::InstantPopup);
+		TabToolbar_->addWidget (MsgMoveButton_);
+
 		MsgMarkUnread_ = new QAction (tr ("Mark as unread"), this);
 		MsgMarkUnread_->setProperty ("ActionIcon", "mail-mark-unread");
 		connect (MsgMarkUnread_,
@@ -192,7 +204,9 @@ namespace Snails
 	{
 		for (auto act : { MsgReply_, MsgMarkUnread_, MsgRemove_ })
 			act->setEnabled (enable);
+
 		MsgCopyButton_->setEnabled (enable);
+		MsgMoveButton_->setEnabled (enable);
 	}
 
 	QList<Folder> MailTab::GetActualFolders () const
@@ -403,19 +417,28 @@ namespace Snails
 	void MailTab::handleFoldersUpdated ()
 	{
 		MsgCopy_->clear ();
+		MsgMove_->clear ();
 
 		if (!CurrAcc_)
 			return;
 
-		MsgCopy_->addAction ("Multiple folders...", this, SLOT (handleCopyMultipleFolders ()));
-		MsgCopy_->addSeparator ();
+		const auto& folders = GetActualFolders ();
 
-		for (const auto& folder : GetActualFolders ())
+		auto setter = [this, &folders] (QMenu *menu, const char *multislot)
 		{
-			const auto& icon = GetFolderIcon (folder.Type_);
-			const auto act = MsgCopy_->addAction (icon, folder.Path_.join ("/"));
-			act->setProperty ("Snails/FolderPath", folder.Path_);
-		}
+			menu->addAction ("Multiple folders...", this, multislot);
+			menu->addSeparator ();
+
+			for (const auto& folder : GetActualFolders ())
+			{
+				const auto& icon = GetFolderIcon (folder.Type_);
+				const auto act = menu->addAction (icon, folder.Path_.join ("/"));
+				act->setProperty ("Snails/FolderPath", folder.Path_);
+			}
+		};
+
+		setter (MsgCopy_, SLOT (handleCopyMultipleFolders ()));
+		setter (MsgMove_, SLOT (handleMoveMultipleFolders ()));
 	}
 
 	void MailTab::handleReply ()
@@ -424,6 +447,35 @@ namespace Snails
 			return;
 
 		Core::Instance ().PrepareReplyTab (CurrMsg_, CurrAcc_);
+	}
+
+	namespace
+	{
+		QList<QStringList> RunSelectFolders (const QList<Folder>& folders, const QString& title)
+		{
+			Util::CategorySelector sel;
+			sel.setWindowTitle (title);
+			sel.SetCaption (MailTab::tr ("Folders"));
+
+			QStringList folderNames;
+			QList<QStringList> folderPaths;
+			for (const auto& folder : folders)
+			{
+				folderNames << folder.Path_.join ("/");
+				folderPaths << folder.Path_;
+			}
+
+			sel.setPossibleSelections (folderNames, false);
+			sel.SetButtonsMode (Util::CategorySelector::ButtonsMode::AcceptReject);
+
+			if (sel.exec () != QDialog::Accepted)
+				return {};
+
+			QList<QStringList> selectedPaths;
+			for (const auto index : sel.GetSelectedIndexes ())
+				selectedPaths << folderPaths [index];
+			return selectedPaths;
+		}
 	}
 
 	void MailTab::handleCopyMultipleFolders ()
@@ -435,29 +487,10 @@ namespace Snails
 		if (ids.isEmpty ())
 			return;
 
-		Util::CategorySelector sel;
-		sel.setWindowTitle (ids.size () == 1 ?
+		const auto& selectedPaths = RunSelectFolders (GetActualFolders (),
+				ids.size () == 1 ?
 					tr ("Copy message") :
 					tr ("Copy %n message(s)", 0, ids.size ()));
-		sel.SetCaption (tr ("Folders"));
-
-		QStringList folderNames;
-		QList<QStringList> folderPaths;
-		for (const auto& folder : GetActualFolders ())
-		{
-			folderNames << folder.Path_.join ("/");
-			folderPaths << folder.Path_;
-		}
-
-		sel.setPossibleSelections (folderNames, false);
-		sel.SetButtonsMode (Util::CategorySelector::ButtonsMode::AcceptReject);
-
-		if (sel.exec () != QDialog::Accepted)
-			return;
-
-		QList<QStringList> selectedPaths;
-		for (const auto index : sel.GetSelectedIndexes ())
-			selectedPaths << folderPaths [index];
 
 		if (selectedPaths.isEmpty ())
 			return;
@@ -476,6 +509,39 @@ namespace Snails
 
 		const auto& ids = GetSelectedIds ();
 		CurrAcc_->CopyMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), { folderPath });
+	}
+
+	void MailTab::handleMoveMultipleFolders ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto& ids = GetSelectedIds ();
+		if (ids.isEmpty ())
+			return;
+
+		const auto& selectedPaths = RunSelectFolders (GetActualFolders (),
+				ids.size () == 1 ?
+					tr ("Move message") :
+					tr ("Move %n message(s)", 0, ids.size ()));
+
+		if (selectedPaths.isEmpty ())
+			return;
+
+		CurrAcc_->MoveMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), selectedPaths);
+	}
+
+	void MailTab::handleMoveMessages (QAction *action)
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto& folderPath = action->property ("Snails/FolderPath").toStringList ();
+		if (folderPath.isEmpty ())
+			return;
+
+		const auto& ids = GetSelectedIds ();
+		CurrAcc_->MoveMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), { folderPath });
 	}
 
 	void MailTab::handleMarkMsgUnread ()
