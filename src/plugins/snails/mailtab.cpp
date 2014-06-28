@@ -335,6 +335,7 @@ namespace Snails
 
 			addField ("subject", MailTab::tr ("Subject"), msg->GetSubject ());
 			addField ("from", MailTab::tr ("From"), HTMLize ({ msg->GetAddress (Message::Address::From) }));
+			addField ("replyTo", MailTab::tr ("Reply to"), HTMLize ({ msg->GetAddress (Message::Address::ReplyTo) }));
 			addField ("to", MailTab::tr ("To"), HTMLize (msg->GetAddresses (Message::Address::To)));
 			addField ("cc", MailTab::tr ("Copy"), HTMLize (msg->GetAddresses (Message::Address::Cc)));
 			addField ("bcc", MailTab::tr ("Blind copy"), HTMLize (msg->GetAddresses (Message::Address::Bcc)));
