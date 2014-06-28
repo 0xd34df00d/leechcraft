@@ -17,6 +17,10 @@
 	-webkit-border-radius: 1em;
 }
 
+.replyPart {
+	color: $LinkVisited;
+}
+
 body {
 	color: $Text;
 	background-color: $Base;
