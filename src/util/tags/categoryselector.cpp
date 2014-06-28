@@ -38,23 +38,28 @@
 #include <QDesktopWidget>
 #include <QAction>
 #include <QtDebug>
+#include "ui_categoryselector.h"
 
 using namespace LeechCraft::Util;
 const int RoleTag = 52;
 
 CategorySelector::CategorySelector (QWidget *parent)
-: QTreeWidget (parent)
+: QDialog (parent)
+, Ui_ (new Ui::CategorySelector)
 , Separator_ ("; ")
 {
 	setWindowTitle (tr ("Tags selector"));
 	setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint);
-	setRootIsDecorated (false);
-	setUniformRowHeights (true);
+
+	Ui_->setupUi (this);
+
+	Ui_->Tree_->setRootIsDecorated (false);
+	Ui_->Tree_->setUniformRowHeights (true);
 
 	QRect avail = QApplication::desktop ()->availableGeometry (this);
 	setMinimumHeight (avail.height () / 3 * 2);
 
-	connect (this,
+	connect (Ui_->Tree_,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
 			this,
 			SLOT (buttonToggled ()));
@@ -71,26 +76,26 @@ CategorySelector::CategorySelector (QWidget *parent)
 			this,
 			SLOT (selectNone ()));
 
-	addAction (all);
-	addAction (none);
+	Ui_->Tree_->addAction (all);
+	Ui_->Tree_->addAction (none);
 
-	setContextMenuPolicy (Qt::ActionsContextMenu);
+	Ui_->Tree_->setContextMenuPolicy (Qt::ActionsContextMenu);
 }
 
 void CategorySelector::SetCaption (const QString& caption)
 {
-	setHeaderLabel (caption);
+	Ui_->Tree_->setHeaderLabel (caption);
 	Caption_ = caption;
 }
 
 void CategorySelector::setPossibleSelections (QStringList mytags)
 {
-	disconnect (this,
+	disconnect (Ui_->Tree_,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
 			this,
 			SLOT (buttonToggled ()));
 
-	clear ();
+	Ui_->Tree_->clear ();
 
 	mytags.sort ();
 	QList<QTreeWidgetItem*> items;
@@ -104,11 +109,11 @@ void CategorySelector::setPossibleSelections (QStringList mytags)
 		item->setData (0, RoleTag, *i);
 		items << item;
 	}
-	addTopLevelItems (items);
+	Ui_->Tree_->addTopLevelItems (items);
 
-	setHeaderLabel (Caption_);
+	Ui_->Tree_->setHeaderLabel (Caption_);
 
-	connect (this,
+	connect (Ui_->Tree_,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
 			this,
 			SLOT (buttonToggled ()));
@@ -120,10 +125,9 @@ QStringList CategorySelector::GetSelections ()
 {
 	QStringList tags;
 
-	for (int i = 0, size = topLevelItemCount ();
-			i < size; ++i)
+	for (int i = 0, size = Ui_->Tree_->topLevelItemCount (); i < size; ++i)
 	{
-		QTreeWidgetItem *item = topLevelItem (i);
+		const auto item = Ui_->Tree_->topLevelItem (i);
 		if (item->checkState (0) == Qt::Checked)
 			tags += item->data (0, RoleTag).toString ();
 	}
@@ -134,13 +138,13 @@ QStringList CategorySelector::GetSelections ()
 void CategorySelector::SetSelections (const QStringList& tags)
 {
 	blockSignals (true);
-	for (int i = 0; i < topLevelItemCount (); ++i)
+	for (int i = 0; i < Ui_->Tree_->topLevelItemCount (); ++i)
 	{
-		Qt::CheckState state =
-			tags.contains (topLevelItem (i)->data (0, RoleTag).toString ()) ?
+		const auto& tagVar = Ui_->Tree_->topLevelItem (i)->data (0, RoleTag);
+		const auto state = tags.contains (tagVar.toString ()) ?
 				Qt::Checked :
 				Qt::Unchecked;
-		topLevelItem (i)->setCheckState (0, state);
+		Ui_->Tree_->topLevelItem (i)->setCheckState (0, state);
 	}
 	blockSignals (false);
 }
@@ -173,21 +177,21 @@ void CategorySelector::moveEvent (QMoveEvent *e)
 
 void CategorySelector::selectAll ()
 {
-	disconnect (this,
+	disconnect (Ui_->Tree_,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
 			this,
 			SLOT (buttonToggled ()));
 
 	QStringList tags;
 
-	for (int i = 0, size = topLevelItemCount (); i < size; ++i)
+	for (int i = 0, size = Ui_->Tree_->topLevelItemCount (); i < size; ++i)
 	{
-		QTreeWidgetItem *item = topLevelItem (i);
+		const auto item = Ui_->Tree_->topLevelItem (i);
 		item->setCheckState (0, Qt::Checked);
 		tags += item->data (0, RoleTag).toString ();
 	}
 
-	connect (this,
+	connect (Ui_->Tree_,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
 			this,
 			SLOT (buttonToggled ()));
@@ -197,15 +201,15 @@ void CategorySelector::selectAll ()
 
 void CategorySelector::selectNone ()
 {
-	disconnect (this,
+	disconnect (Ui_->Tree_,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
 			this,
 			SLOT (buttonToggled ()));
 
-	for (int i = 0; i < topLevelItemCount (); ++i)
-		topLevelItem (i)->setCheckState (0, Qt::Unchecked);
+	for (int i = 0; i < Ui_->Tree_->topLevelItemCount (); ++i)
+		Ui_->Tree_->topLevelItem (i)->setCheckState (0, Qt::Unchecked);
 
-	connect (this,
+	connect (Ui_->Tree_,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
 			this,
 			SLOT (buttonToggled ()));
@@ -215,7 +219,7 @@ void CategorySelector::selectNone ()
 
 void CategorySelector::lineTextChanged (const QString& text)
 {
-	QStringList tags = text.split (Separator_, QString::SkipEmptyParts);
+	const auto& tags = text.split (Separator_, QString::SkipEmptyParts);
 	SetSelections (tags);
 }
 

@@ -29,11 +29,17 @@
 
 #pragma once
 
-#include <QTreeWidget>
+#include <memory>
+#include <QDialog>
 #include "tagsconfig.h"
 
 class QStringList;
 class QString;
+
+namespace Ui
+{
+	class CategorySelector;
+}
 
 namespace LeechCraft
 {
@@ -59,9 +65,11 @@ namespace LeechCraft
 		 * slots selectAll() and selectNone() which could be used to mark all
 		 * and no elements in the list respectively.
 		 */
-		class UTIL_TAGS_API CategorySelector : public QTreeWidget
+		class UTIL_TAGS_API CategorySelector : public QDialog
 		{
 			Q_OBJECT
+
+			std::shared_ptr<Ui::CategorySelector> Ui_;
 
 			QString Caption_;
 			QString Separator_;
