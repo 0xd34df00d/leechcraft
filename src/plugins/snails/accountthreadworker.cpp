@@ -925,29 +925,12 @@ namespace Snails
 			return;
 
 		const auto& msgId = msg->GetFolderID ();
-		const vmime::string id { msgId.constData () };
-		qDebug () << Q_FUNC_INFO << msgId.toHex ();
 
-		auto store = MakeStore ();
-
-		auto folder = store->getFolder (Folder2Path (msg->GetFolders ().value (0)));
-		if (!folder)
-			return;
-
-		folder->open (vmime::net::folder::MODE_READ_WRITE);
-
-		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (1, -1));
-		folder->fetchMessages (messages, vmime::net::fetchAttributes::UID);
-
-		auto pos = std::find_if (messages.begin (), messages.end (),
-				[&id] (const vmime::shared_ptr<vmime::net::message>& message)
-				{
-					return message->getUID () == id;
-				});
-		if (pos == messages.end ())
+		const auto& folder = GetFolder (msg->GetFolders ().value (0), FolderMode::ReadWrite);
+		const auto& msgSet = vmime::net::messageSet::byUID (msgId.constData ());
+		const auto& messages = folder->getAndFetchMessages (msgSet, vmime::net::fetchAttributes::STRUCTURE);
+		if (messages.empty ())
 		{
-			for (const auto& msg : messages)
-				qWarning () << QByteArray (static_cast<vmime::string> (msg->getUID ()).c_str ()).toHex ();
 			qWarning () << Q_FUNC_INFO
 					<< "message with ID"
 					<< msgId.toHex ()
@@ -956,7 +939,7 @@ namespace Snails
 			return;
 		}
 
-		vmime::messageParser mp ((*pos)->getParsedMessage ());
+		vmime::messageParser mp (messages.front ()->getParsedMessage ());
 		for (const auto& att : mp.getAttachmentList ())
 		{
 			if (StringizeCT (att->getName ()) != attName)
