@@ -69,7 +69,7 @@ namespace DCAC
 		}
 		image.detach ();
 
-		uint64_t sourceGraySum = 0;
+		uint64_t sourceGraySumR = 0, sourceGraySumG = 0, sourceGraySumB = 0;
 
 		const auto height = image.height ();
 		const auto width = image.width ();
@@ -79,16 +79,18 @@ namespace DCAC
 			for (int x = 0; x < width; ++x)
 			{
 				auto& color = scanline [x];
-				sourceGraySum += qGray (color);
+				sourceGraySumR += qRed (color);
+				sourceGraySumG += qGreen (color);
+				sourceGraySumB += qBlue (color);
 
 				color &= 0x00ffffff;
 				color = uint32_t { 0xffffffff } - color;
 			}
 		}
 
-		sourceGraySum /= width * height;
+		const auto sourceGraySum = (sourceGraySumR * 11 + sourceGraySumG * 16 + sourceGraySumB * 5) / (width * height * 32);
 
-		if (sourceGraySum >= Threshold_)
+		if (sourceGraySum >= static_cast<uint64_t> (Threshold_))
 			painter->drawImage (offset, image);
 		else
 			painter->drawPixmap (offset, sourcePx);
