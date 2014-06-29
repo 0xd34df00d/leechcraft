@@ -41,8 +41,11 @@ namespace DCAC
 {
 	class InvertEffect : public QGraphicsEffect
 	{
+		int Threshold_ = 127;
 	public:
 		InvertEffect (QWebView*);
+
+		void SetThreshold (int);
 	protected:
 		void draw (QPainter*) override;
 	};
