@@ -50,11 +50,14 @@ namespace DCAC
 		QHash<QObject*, InvertEffect*> View2Effect_;
 		QHash<QObject*, QAction*> View2EnableAction_;
 	public:
+		ViewsManager (QObject* = nullptr);
+
 		void AddView (QWebView*);
 
 		QAction* GetEnableAction (QWebView*) const;
 	private slots:
 		void handleViewDestroyed (QObject*);
+		void handleThresholdChanged ();
 	};
 }
 }

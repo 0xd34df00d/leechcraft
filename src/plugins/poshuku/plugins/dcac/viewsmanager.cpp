@@ -39,6 +39,13 @@ namespace Poshuku
 {
 namespace DCAC
 {
+	ViewsManager::ViewsManager (QObject *parent)
+	: QObject { parent }
+	{
+		XmlSettingsManager::Instance ().RegisterObject ("NightModeThreshold",
+				this, "handleThresholdChanged");
+	}
+
 	void ViewsManager::AddView (QWebView *view)
 	{
 		const auto effect = new InvertEffect { view };
@@ -65,6 +72,10 @@ namespace DCAC
 				effect,
 				SLOT (setEnabled (bool)));
 		View2EnableAction_ [view] = enableAct;
+
+		const auto threshold = XmlSettingsManager::Instance ()
+				.property ("NightModeThreshold").toInt ();
+		effect->SetThreshold (threshold);
 	}
 
 	QAction* ViewsManager::GetEnableAction (QWebView *view) const
@@ -76,6 +87,14 @@ namespace DCAC
 	{
 		View2Effect_.remove (view);
 		View2EnableAction_.remove (view);
+	}
+
+	void ViewsManager::handleThresholdChanged ()
+	{
+		const auto threshold = XmlSettingsManager::Instance ()
+				.property ("NightModeThreshold").toInt ();
+		for (const auto effect : View2Effect_)
+			effect->SetThreshold (threshold);
 	}
 }
 }
