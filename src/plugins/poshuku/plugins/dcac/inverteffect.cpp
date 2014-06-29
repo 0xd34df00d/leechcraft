@@ -56,7 +56,7 @@ namespace DCAC
 	{
 		QPoint offset;
 
-		const auto& sourcePx = sourcePixmap (Qt::DeviceCoordinates, &offset);
+		const auto& sourcePx = sourcePixmap (Qt::LogicalCoordinates, &offset);
 		auto image = sourcePx.toImage ();
 		switch (image.format ())
 		{
@@ -68,8 +68,6 @@ namespace DCAC
 			break;
 		}
 		image.detach ();
-
-		painter->setWorldTransform ({});
 
 		uint64_t sourceGraySum = 0;
 
