@@ -4,11 +4,12 @@ set (DCAC_SRCS
 	dcac.cpp
 	inverteffect.cpp
 	viewsmanager.cpp
+	xmlsettingsmanager.cpp
 	)
 set (DCAC_RESOURCES
 	)
 #CreateTrs ("poshuku_dcac" "en;ru_RU" DCAC_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("poshuku_dcac" "en;ru_RU" "${DCAC_SRCS}" "" "")
+CreateTrsUpTarget("poshuku_dcac" "en;ru_RU" "${DCAC_SRCS}" "" "poshukudcacsettings.xml")
 
 QT4_ADD_RESOURCES (DCAC_RCCS ${DCAC_RESOURCES})
 add_library (leechcraft_poshuku_dcac SHARED
@@ -22,4 +23,4 @@ target_link_libraries (leechcraft_poshuku_dcac
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_poshuku_dcac DESTINATION ${LC_PLUGINS_DEST})
-#install (FILES poshukudcacsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES poshukudcacsettings.xml DESTINATION ${LC_SETTINGS_DEST})

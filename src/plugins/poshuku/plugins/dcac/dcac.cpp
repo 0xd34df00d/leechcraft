@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "dcac.h"
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "viewsmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -39,6 +41,9 @@ namespace DCAC
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		ViewsManager_ = new ViewsManager;
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukudcacsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -75,6 +80,11 @@ namespace DCAC
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	void Plugin::hookBrowserWidgetInitialized (IHookProxy_ptr,

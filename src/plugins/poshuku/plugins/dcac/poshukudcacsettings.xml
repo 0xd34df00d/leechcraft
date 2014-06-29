@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="SpeedDial" />
+		<item type="checkbox" property="EnableNightModeByDefault" default="false">
+			<label value="Enable night mode by default" />
+		</item>
+	</page>
+</settings>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2010-2011  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,15 +29,7 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/core/ihookproxy.h>
-#include <interfaces/poshuku/poshukutypes.h>
-
-class QWebHitTestResult;
-class QWebView;
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -45,40 +37,16 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class ViewsManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-		ViewsManager *ViewsManager_;
-		Util::XmlSettingsDialog_ptr XSD_;
+		XmlSettingsManager ();
+	protected:
+		virtual void EndSettings (QSettings*) const;
+		virtual QSettings *BeginSettings () const;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	public slots:
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
-				QObject *browserWidget);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
-				QContextMenuEvent *event,
-				const QWebHitTestResult& hitTestResult,
-				QMenu *menu,
-				WebViewCtxMenuStage menuBuildStage);
+		static XmlSettingsManager& Instance ();
 	};
 }
 }
