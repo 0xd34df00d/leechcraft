@@ -31,6 +31,7 @@
 #include <QAction>
 #include <qwebview.h>
 #include "inverteffect.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -50,11 +51,15 @@ namespace DCAC
 				this,
 				SLOT (handleViewDestroyed (QObject*)));
 
+		const auto enable = XmlSettingsManager::Instance ()
+				.property ("EnableNightModeByDefault").toBool ();
+		effect->setEnabled (enable);
+
 		const auto enableAct = new QAction { tr ("Night mode"), view };
 		view->addAction (enableAct);
 		enableAct->setShortcut (QString { "Ctrl+Shift+I" });
 		enableAct->setCheckable (true);
-		enableAct->setChecked (true);
+		enableAct->setChecked (enable);
 		connect (enableAct,
 				SIGNAL (toggled (bool)),
 				effect,
