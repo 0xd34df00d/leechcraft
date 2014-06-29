@@ -51,6 +51,8 @@ namespace DCAC
 		QHash<QObject*, QAction*> View2EnableAction_;
 	public:
 		void AddView (QWebView*);
+
+		QAction* GetEnableAction (QWebView*) const;
 	private slots:
 		void handleViewDestroyed (QObject*);
 	};

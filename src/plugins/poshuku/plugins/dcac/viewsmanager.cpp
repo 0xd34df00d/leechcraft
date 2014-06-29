@@ -62,6 +62,11 @@ namespace DCAC
 		View2EnableAction_ [view] = enableAct;
 	}
 
+	QAction* ViewsManager::GetEnableAction (QWebView *view) const
+	{
+		return View2EnableAction_.value (view);
+	}
+
 	void ViewsManager::handleViewDestroyed (QObject *view)
 	{
 		View2Effect_.remove (view);
