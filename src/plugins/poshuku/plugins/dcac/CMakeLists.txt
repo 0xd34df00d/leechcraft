@@ -2,6 +2,7 @@ include_directories (${POSHUKU_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR})
 set (DCAC_SRCS
 	dcac.cpp
+	inverteffect.cpp
 	)
 set (DCAC_RESOURCES
 	)
