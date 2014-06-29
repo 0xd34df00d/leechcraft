@@ -156,7 +156,7 @@ namespace Snails
 		return QString::fromUtf8 (dev->readAll ());
 	}
 
-	void Core::PrepareReplyTab (Message_ptr message, Account_ptr account)
+	void Core::PrepareReplyTab (const Message_ptr& message, const Account_ptr& account)
 	{
 		auto cmt = new ComposeMessageTab ();
 		cmt->SelectAccount (account);

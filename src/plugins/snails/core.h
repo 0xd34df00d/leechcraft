@@ -81,7 +81,7 @@ namespace Snails
 		ProgressManager* GetProgressManager () const;
 		QString GetMsgViewTemplate () const;
 
-		void PrepareReplyTab (Message_ptr, Account_ptr);
+		void PrepareReplyTab (const Message_ptr&, const Account_ptr&);
 
 		void AddAccount (Account_ptr);
 	private:
