@@ -88,8 +88,8 @@ namespace DCAC
 			QWebView *view, QContextMenuEvent*, const QWebHitTestResult&,
 			QMenu *menu, WebViewCtxMenuStage menuBuildStage)
 	{
-		if (menuBuildStage != WVSAfterFinish)
-			return;
+		if (menuBuildStage == WVSAfterFinish)
+			menu->addAction (ViewsManager_->GetEnableAction (view));
 	}
 }
 }
