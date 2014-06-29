@@ -50,7 +50,7 @@ namespace DCAC
 				this,
 				SLOT (handleViewDestroyed (QObject*)));
 
-		const auto enableAct = new QAction { tr ("Enable night mode"), view };
+		const auto enableAct = new QAction { tr ("Night mode"), view };
 		view->addAction (enableAct);
 		enableAct->setShortcut (QString { "Ctrl+Shift+I" });
 		enableAct->setCheckable (true);
