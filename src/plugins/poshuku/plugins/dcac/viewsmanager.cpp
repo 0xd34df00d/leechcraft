@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "viewsmanager.h"
+#include <QAction>
 #include <qwebview.h>
 #include "inverteffect.h"
 
@@ -48,11 +49,23 @@ namespace DCAC
 				SIGNAL (destroyed (QObject*)),
 				this,
 				SLOT (handleViewDestroyed (QObject*)));
+
+		const auto enableAct = new QAction { tr ("Enable night mode"), view };
+		view->addAction (enableAct);
+		enableAct->setShortcut (QString { "Ctrl+Shift+I" });
+		enableAct->setCheckable (true);
+		enableAct->setChecked (true);
+		connect (enableAct,
+				SIGNAL (toggled (bool)),
+				effect,
+				SLOT (setEnabled (bool)));
+		View2EnableAction_ [view] = enableAct;
 	}
 
 	void ViewsManager::handleViewDestroyed (QObject *view)
 	{
 		View2Effect_.remove (view);
+		View2EnableAction_.remove (view);
 	}
 }
 }

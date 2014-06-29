@@ -33,6 +33,7 @@
 #include <QHash>
 
 class QWebView;
+class QAction;
 
 namespace LeechCraft
 {
@@ -47,6 +48,7 @@ namespace DCAC
 		Q_OBJECT
 
 		QHash<QObject*, InvertEffect*> View2Effect_;
+		QHash<QObject*, QAction*> View2EnableAction_;
 	public:
 		void AddView (QWebView*);
 	private slots:
