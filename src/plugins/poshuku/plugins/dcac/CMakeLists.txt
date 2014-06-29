@@ -3,6 +3,7 @@ include_directories (${POSHUKU_INCLUDE_DIR}
 set (DCAC_SRCS
 	dcac.cpp
 	inverteffect.cpp
+	viewsmanager.cpp
 	)
 set (DCAC_RESOURCES
 	)

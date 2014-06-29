@@ -27,16 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/core/ihookproxy.h>
-#include <interfaces/poshuku/poshukutypes.h>
-
-class QWebHitTestResult;
-class QWebView;
+#include "viewsmanager.h"
+#include <qwebview.h>
+#include "inverteffect.h"
 
 namespace LeechCraft
 {
@@ -44,38 +37,23 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class ViewsManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	void ViewsManager::AddView (QWebView *view)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		const auto effect = new InvertEffect { view };
+		view->setGraphicsEffect (effect);
 
-		ViewsManager *ViewsManager_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		View2Effect_ [view] = effect;
 
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
-				QObject *browserWidget);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
-				QContextMenuEvent *event,
-				const QWebHitTestResult& hitTestResult,
-				QMenu *menu,
-				WebViewCtxMenuStage menuBuildStage);
-	};
+		connect (view,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleViewDestroyed (QObject*)));
+	}
+
+	void ViewsManager::handleViewDestroyed (QObject *view)
+	{
+		View2Effect_.remove (view);
+	}
 }
 }
 }
-

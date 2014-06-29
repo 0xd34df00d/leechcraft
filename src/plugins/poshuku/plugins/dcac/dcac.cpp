@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "dcac.h"
-#include <qwebview.h>
+#include "viewsmanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +38,7 @@ namespace DCAC
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		ViewsManager_ = new ViewsManager;
 	}
 
 	void Plugin::SecondInit ()
@@ -46,6 +47,7 @@ namespace DCAC
 
 	void Plugin::Release ()
 	{
+		delete ViewsManager_;
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -79,7 +81,7 @@ namespace DCAC
 			QWebView *view,
 			QObject*)
 	{
-		qDebug () << Q_FUNC_INFO << view;
+		ViewsManager_->AddView (view);
 	}
 
 	void Plugin::hookWebViewContextMenu (IHookProxy_ptr,
