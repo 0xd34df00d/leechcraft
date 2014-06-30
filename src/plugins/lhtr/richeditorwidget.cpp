@@ -368,6 +368,7 @@ namespace LHTR
 			content += contents;
 			break;
 		case ContentType::PlainText:
+			contents.replace ('\n', "<br/>");
 			content += "<pre>" + contents + "</pre>";
 			break;
 		}
