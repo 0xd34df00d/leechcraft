@@ -1,13 +1,19 @@
-.fieldName {
-	font-weight: 700;
-}
-
 .field {
-	font-weight: 200;
+	opacity: 0.6;
 }
 
 .body pre {
 	white-space: pre-wrap;
+}
+
+/* Hide the Subject title */
+.subject .fieldName {
+	display: none;
+}
+
+.subject {
+	font-weight: 700;
+	opacity: 0.9;
 }
 
 .header {
