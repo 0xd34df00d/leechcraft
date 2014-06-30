@@ -86,9 +86,9 @@ namespace Snails
 		VmimeFolder_ptr GetFolder (const QStringList& folder, FolderMode mode);
 
 		Message_ptr FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
-		void FetchMessagesPOP3 (Account::FetchFlags);
+		void FetchMessagesPOP3 ();
 
-		void FetchMessagesIMAP (Account::FetchFlags, const QList<QStringList>&,
+		void FetchMessagesIMAP (const QList<QStringList>&,
 				vmime::shared_ptr<vmime::net::store>, const QByteArray&);
 		QList<Message_ptr> FetchVmimeMessages (MessageVector_t, const VmimeFolder_ptr&, const QStringList&);
 		void FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
@@ -99,7 +99,7 @@ namespace Snails
 	private slots:
 		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
 	public slots:
-		void synchronize (LeechCraft::Snails::Account::FetchFlags, const QList<QStringList>&, const QByteArray& last);
+		void synchronize (const QList<QStringList>&, const QByteArray& last);
 
 		void getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot);
 

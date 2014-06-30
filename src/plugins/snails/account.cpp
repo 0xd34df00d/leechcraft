@@ -151,7 +151,7 @@ namespace Snails
 		Synchronize (path, ids.isEmpty () ? QByteArray {} : ids.last ());
 	}
 
-	void Account::Synchronize (Account::FetchFlags flags)
+	void Account::Synchronize ()
 	{
 		MailModel_->Clear ();
 		MailModel_->SetFolder ({ "INBOX" });
@@ -163,7 +163,6 @@ namespace Snails
 		Thread_->AddTask ({
 				"synchronize",
 				{
-					{ flags },
 					{ folders },
 					QByteArray {}
 				}
@@ -175,7 +174,6 @@ namespace Snails
 		Thread_->AddTask ({
 				"synchronize",
 				{
-					Account::FetchFlags { FetchFlag::FetchAll },
 					QList<QStringList> { path },
 					last
 				},

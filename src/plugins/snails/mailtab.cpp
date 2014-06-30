@@ -612,11 +612,8 @@ namespace Snails
 
 	void MailTab::handleFetchNewMail ()
 	{
-		Storage *st = Core::Instance ().GetStorage ();
-		for (auto acc : Core::Instance ().GetAccounts ())
-			acc->Synchronize (st->HasMessagesIn (acc.get ()) ?
-						Account::FetchNew:
-						Account::FetchAll);
+		for (const auto acc : Core::Instance ().GetAccounts ())
+			acc->Synchronize ();
 	}
 
 	void MailTab::handleMessageBodyFetched (Message_ptr msg)

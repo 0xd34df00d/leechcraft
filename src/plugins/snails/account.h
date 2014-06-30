@@ -116,14 +116,6 @@ namespace Snails
 			SMTP,
 			Sendmail
 		};
-
-		enum FetchFlag
-		{
-			FetchAll = 0x01,
-			FetchNew = 0x02
-		};
-
-		Q_DECLARE_FLAGS (FetchFlags, FetchFlag);
 	private:
 		InType InType_;
 		OutType OutType_;
@@ -145,7 +137,7 @@ namespace Snails
 		QAbstractItemModel* GetFoldersModel () const;
 
 		void ShowFolder (const QModelIndex&);
-		void Synchronize (FetchFlags);
+		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);
 
 		void FetchWholeMessage (Message_ptr);
@@ -205,5 +197,4 @@ namespace Snails
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::Account::FetchFlags);
 Q_DECLARE_METATYPE (LeechCraft::Snails::Account_ptr);

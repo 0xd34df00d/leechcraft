@@ -74,7 +74,6 @@ namespace Snails
 		qRegisterMetaType<AttDescr> ("LeechCraft::Snails::AttDescr");
 		qRegisterMetaType<AttDescr> ("AttDescr");
 		qRegisterMetaType<ProgressListener_g_ptr> ("ProgressListener_g_ptr");
-		qRegisterMetaType<Account::FetchFlags> ("Account::FetchFlags");
 		qRegisterMetaType<QList<QStringList>> ("QList<QStringList>");
 		qRegisterMetaType<QList<QByteArray>> ("QList<QByteArray>");
 		qRegisterMetaType<Folder> ("LeechCraft::Snails::Folder");
