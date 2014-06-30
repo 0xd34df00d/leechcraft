@@ -330,7 +330,7 @@ namespace Snails
 			{
 				if (!text.isEmpty ())
 					html += "<span class='field " + cssClass + "'><span class='fieldName'>" +
-							name + "</span>: " + text + "</span><br />";
+							name + ": </span>" + text + "</span><br />";
 			};
 
 			addField ("subject", MailTab::tr ("Subject"), msg->GetSubject ());
