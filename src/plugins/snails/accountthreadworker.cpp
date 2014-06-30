@@ -660,9 +660,9 @@ namespace Snails
 
 	namespace
 	{
-		void FullifyHeaderMessage (const Message_ptr& msg, const vmime::shared_ptr<vmime::message>& full)
+		void FullifyHeaderMessage (const Message_ptr& msg, const vmime::shared_ptr<vmime::net::message>& full)
 		{
-			vmime::messageParser mp { full };
+			vmime::messageParser mp { FromNetMessage (full) };
 
 			QString html;
 			QStringList plainParts;
@@ -773,7 +773,7 @@ namespace Snails
 
 			auto msgObj = FromHeaders (message);
 
-			FullifyHeaderMessage (msgObj, FromNetMessage (message));
+			FullifyHeaderMessage (msgObj, message);
 
 			newMessages << msgObj;
 		}
@@ -893,7 +893,7 @@ namespace Snails
 				return;
 			}
 
-			FullifyHeaderMessage (origMsg, FromNetMessage (messages.front ()));
+			FullifyHeaderMessage (origMsg, messages.front ());
 		}
 		catch (const vmime::exceptions::invalid_response& resp)
 		{
