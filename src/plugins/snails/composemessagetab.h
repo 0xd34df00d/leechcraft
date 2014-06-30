@@ -70,6 +70,8 @@ namespace Snails
 
 		void SelectAccount (Account_ptr);
 		void PrepareReply (Message_ptr);
+	private:
+		void PrepareReplyBody (const Message_ptr&);
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();
