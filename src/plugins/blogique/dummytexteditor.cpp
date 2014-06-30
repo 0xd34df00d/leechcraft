@@ -44,7 +44,7 @@ namespace Blogique
 				this,
 				SIGNAL (textChanged ()));
 	}
-	
+
 	QString DummyTextEditor::GetContents (ContentType type) const
 	{
 		switch (type)
@@ -54,11 +54,11 @@ namespace Blogique
 		case ContentType::PlainText:
 			return page ()->mainFrame ()->toPlainText ();
 		}
-		
+
 		return QString ();
 	}
 
-	void DummyTextEditor::SetContents (const QString& contents, ContentType type)
+	void DummyTextEditor::SetContents (QString contents, ContentType type)
 	{
 		switch (type)
 		{

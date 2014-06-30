@@ -38,23 +38,22 @@ namespace LeechCraft
 namespace Blogique
 {
 	class DummyTextEditor : public QWebView
-							, public IEditorWidget
+						  , public IEditorWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (IEditorWidget)
-
 	public:
 		DummyTextEditor (QWidget *parent = 0);
 
 		QString GetContents (ContentType type) const;
-		void SetContents (const QString& contents, ContentType type);
-		
+		void SetContents (QString contents, ContentType type);
+
 		void AppendAction (QAction* action);
 		void RemoveAction (QAction* action);
 		void AppendSeparator();
-		
+
 		QAction* GetEditorAction (EditorAction action);
-		
+
 		void SetBackgroundColor (const QColor& color, ContentType editor);
 
 	signals:

@@ -129,7 +129,7 @@ public:
 	 *
 	 * @sa GetContents()
 	 */
-	virtual void SetContents (const QString& contents, LeechCraft::ContentType type) = 0;
+	virtual void SetContents (QString contents, LeechCraft::ContentType type) = 0;
 
 	/** @brief Returns a standard editor action.
 	 *

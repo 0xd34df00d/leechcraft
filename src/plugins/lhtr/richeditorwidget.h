@@ -75,7 +75,7 @@ namespace LHTR
 		RichEditorWidget (ICoreProxy_ptr, QWidget* = 0);
 
 		QString GetContents (ContentType) const;
-		void SetContents (const QString&, ContentType);
+		void SetContents (QString, ContentType);
 		void AppendAction (QAction*);
 		void AppendSeparator ();
 		void RemoveAction (QAction*);
