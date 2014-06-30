@@ -34,6 +34,7 @@
 #include <QDesktopWidget>
 #include <QLabel>
 #include <qrencode.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -43,6 +44,7 @@ namespace QRd
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("poshuku_qrd");
 	}
 
 	void Plugin::SecondInit ()

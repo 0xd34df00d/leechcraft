@@ -5,7 +5,7 @@ set (QRD_SRCS
 	)
 set (QRD_RESOURCES
 	)
-#CreateTrs ("poshuku_qrd" "en;ru_RU" QRD_COMPILED_TRANSLATIONS)
+CreateTrs ("poshuku_qrd" "en;ru_RU" QRD_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_qrd" "en;ru_RU" "${QRD_SRCS}" "" "")
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
