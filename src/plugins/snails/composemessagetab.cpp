@@ -35,6 +35,7 @@
 #include <QMessageBox>
 #include <QFileIconProvider>
 #include <QInputDialog>
+#include <QTextDocument>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <interfaces/itexteditor.h>
@@ -189,6 +190,15 @@ namespace Snails
 
 		const auto& plainContent = plainSplit.join ("\n") + "\n\n";
 		MsgEdit_->SetContents (plainContent, ContentType::PlainText);
+
+		const auto quoteStartMarker = "<span style='border-left: 2px solid #900060; padding-left: 0.5em;'>";
+		const auto quoteEndMarker = "</span>";
+
+		for (auto& str : plainSplit)
+			str = quoteStartMarker + Qt::escape (str) + quoteEndMarker;
+
+		auto htmlBody = plainSplit.join ("<br/>");
+		MsgEdit_->SetContents (htmlBody, ContentType::HTML);
 	}
 
 	namespace
