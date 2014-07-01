@@ -331,13 +331,19 @@ namespace Snails
 		if (refs.isEmpty ())
 			return false;
 
-		const auto& replyTo = refs.last ();
-		const auto& folderId = MsgId2FolderId_.value (replyTo);
+		QByteArray folderId;
+		for (int i = refs.size () - 1; i >= 0; --i)
+		{
+			folderId = MsgId2FolderId_.value (refs.at (i));
+			if (!folderId.isEmpty ())
+				break;
+		}
 		if (folderId.isEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO
-					<< folderId
-					<< replyTo
+					<< refs
+					<< msg->GetSubject ()
+					<< msg->GetDate ()
 					<< "not found";
 			return false;
 		}
