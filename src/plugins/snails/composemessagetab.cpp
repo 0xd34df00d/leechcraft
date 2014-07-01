@@ -151,7 +151,7 @@ namespace Snails
 		return Toolbar_;
 	}
 
-	void ComposeMessageTab::SelectAccount (Account_ptr account)
+	void ComposeMessageTab::SelectAccount (const Account_ptr& account)
 	{
 		const auto& var = QVariant::fromValue<Account_ptr> (account);
 		for (auto action : AccountsMenu_->actions ())
@@ -162,7 +162,7 @@ namespace Snails
 			}
 	}
 
-	void ComposeMessageTab::PrepareReply (Message_ptr msg)
+	void ComposeMessageTab::PrepareReply (const Message_ptr& msg)
 	{
 		auto address = msg->GetAddress (Message::Address::ReplyTo);
 		if (address.second.isEmpty ())

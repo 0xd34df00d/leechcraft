@@ -68,8 +68,8 @@ namespace Snails
 		void Remove();
 		QToolBar* GetToolBar() const;
 
-		void SelectAccount (Account_ptr);
-		void PrepareReply (Message_ptr);
+		void SelectAccount (const Account_ptr&);
+		void PrepareReply (const Message_ptr&);
 	private:
 		void PrepareReplyBody (const Message_ptr&);
 	private slots:
