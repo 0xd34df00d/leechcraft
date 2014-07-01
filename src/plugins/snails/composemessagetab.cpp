@@ -37,11 +37,13 @@
 #include <QInputDialog>
 #include <QTextDocument>
 #include <QToolButton>
+#include <QSignalMapper>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/iinfo.h>
 #include "message.h"
 #include "core.h"
 #include "texteditoradaptor.h"
@@ -189,17 +191,45 @@ namespace Snails
 		attachmentsButton->setMenu (AttachmentsMenu_);
 		attachmentsButton->setPopupMode (QToolButton::InstantPopup);
 		Toolbar_->addWidget (attachmentsButton);
+
+		EditorsMenu_ = new QMenu (tr ("Editors"));
+
+		auto editorsButton = new QToolButton (Toolbar_);
+		editorsButton->setProperty ("ActionIcon", "story-editor");
+		editorsButton->setMenu (EditorsMenu_);
+		editorsButton->setPopupMode (QToolButton::InstantPopup);
+		Toolbar_->addWidget (editorsButton);
 	}
 
 	void ComposeMessageTab::SetupEditors ()
 	{
+		EditorsMapper_ = new QSignalMapper (this);
+		connect (EditorsMapper_,
+				SIGNAL (mapped (int)),
+				this,
+				SLOT (handleEditorSelected (int)));
+
+		const auto editorsGroup = new QActionGroup (this);
+		auto addEditor = [this, editorsGroup] (const QString& name, int index) -> void
+		{
+			auto action = EditorsMenu_->addAction (name, EditorsMapper_, SLOT (map ()));
+			editorsGroup->addAction (action);
+			action->setCheckable (true);
+			action->setChecked (true);
+			EditorsMapper_->setMapping (action, index);
+		};
+
 		MsgEditWidgets_ << Ui_.PlainEdit_;
 		MsgEdits_ << new TextEditorAdaptor (Ui_.PlainEdit_);
 
+		addEditor (tr ("Plain text (internal)"), MsgEdits_.size () - 1);
+
 		const auto& plugs = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
-		for (const auto plug : plugs)
+				GetPluginsManager ()->GetAllCastableRoots<ITextEditor*> ();
+		for (const auto plugObj : plugs)
 		{
+			const auto plug = qobject_cast<ITextEditor*> (plugObj);
+
 			if (!plug->SupportsEditor (ContentType::HTML))
 				continue;
 
@@ -214,6 +244,9 @@ namespace Snails
 			MsgEditWidgets_ << w;
 			MsgEdits_ << edit;
 			Ui_.EditorStack_->addWidget (w);
+
+			const auto& pluginName = qobject_cast<IInfo*> (plugObj)->GetName ();
+			addEditor (tr ("Rich text (%1)").arg (pluginName), MsgEdits_.size () - 1);
 		}
 
 		Ui_.EditorStack_->setCurrentIndex (Ui_.EditorStack_->count () - 1);
@@ -363,6 +396,21 @@ namespace Snails
 		QAction *act = qobject_cast<QAction*> (sender ());
 		act->deleteLater ();
 		AttachmentsMenu_->removeAction (act);
+	}
+
+	void ComposeMessageTab::handleEditorSelected (int index)
+	{
+		const auto currentEditor = GetCurrentEditor ();
+
+		const auto& currentHtml = currentEditor->GetContents (ContentType::HTML);
+		const auto& currentPlain = currentEditor->GetContents (ContentType::PlainText);
+
+		Ui_.EditorStack_->setCurrentIndex (index);
+
+		const auto newEditor = GetCurrentEditor ();
+		newEditor->SetContents (currentPlain, ContentType::PlainText);
+		if (!currentHtml.isEmpty ())
+			newEditor->SetContents (currentHtml, ContentType::HTML);
 	}
 }
 }
