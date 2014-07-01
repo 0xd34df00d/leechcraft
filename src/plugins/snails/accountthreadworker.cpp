@@ -1025,6 +1025,8 @@ namespace Snails
 		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
 		mb.setExpeditor (*FromPair (msg->GetAddress (Message::Address::From)));
 		mb.setRecipients (ToAddressList (msg->GetAddresses (Message::Address::To)));
+		mb.setCopyRecipients (ToAddressList (msg->GetAddresses (Message::Address::Cc)));
+		mb.setBlindCopyRecipients (ToAddressList (msg->GetAddresses (Message::Address::Bcc)));
 
 		const QString& html = msg->GetHTMLBody ();
 
