@@ -1006,6 +1006,14 @@ namespace Snails
 			return vmime::make_shared<vmime::mailbox> (vmime::text (pair.first.toUtf8 ().constData ()),
 					pair.second.toUtf8 ().constData ());
 		}
+
+		vmime::addressList ToAddressList (const Message::Addresses_t& addresses)
+		{
+			vmime::addressList result;
+			for (const auto& pair : addresses)
+				result.appendAddress (FromPair (pair));
+			return result;
+		}
 	}
 
 	void AccountThreadWorker::sendMessage (Message_ptr msg)
@@ -1016,11 +1024,7 @@ namespace Snails
 		vmime::messageBuilder mb;
 		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
 		mb.setExpeditor (*FromPair (msg->GetAddress (Message::Address::From)));
-
-		vmime::addressList recips;
-		for (const auto& pair : msg->GetAddresses (Message::Address::To))
-			recips.appendAddress (FromPair (pair));
-		mb.setRecipients (recips);
+		mb.setRecipients (ToAddressList (msg->GetAddresses (Message::Address::To)));
 
 		const QString& html = msg->GetHTMLBody ();
 
