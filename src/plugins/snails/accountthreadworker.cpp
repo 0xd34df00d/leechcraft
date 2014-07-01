@@ -1014,6 +1014,14 @@ namespace Snails
 				result.appendAddress (FromPair (pair));
 			return result;
 		}
+
+		vmime::messageIdSequence ToMessageIdSequence (const QList<QByteArray>& ids)
+		{
+			vmime::messageIdSequence result;
+			for (const auto& id : ids)
+				result.appendMessageId (vmime::make_shared<vmime::messageId> (id.constData ()));
+			return result;
+		}
 	}
 
 	void AccountThreadWorker::sendMessage (Message_ptr msg)
