@@ -1077,7 +1077,13 @@ namespace Snails
 		const auto& vMsg = mb.construct ();
 		const auto& userAgent = QString ("LeechCraft Snails %1")
 				.arg (Core::Instance ().GetProxy ()->GetVersion ());
-		vMsg->getHeader ()->UserAgent ()->setValue (userAgent.toUtf8 ().constData ());
+		const auto& header = vMsg->getHeader ();
+		header->UserAgent ()->setValue (userAgent.toUtf8 ().constData ());
+
+		if (!msg->GetInReplyTo ().isEmpty ())
+			header->InReplyTo ()->setValue (ToMessageIdSequence (msg->GetInReplyTo ()));
+		if (!msg->GetReferences ().isEmpty ())
+			header->References ()->setValue (ToMessageIdSequence (msg->GetReferences ()));
 
 		auto pl = MkPgListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
 		auto transport = MakeTransport ();
