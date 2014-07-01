@@ -55,8 +55,8 @@ namespace Snails
 		QMenu *AccountsMenu_;
 		QMenu *AttachmentsMenu_;
 
-		QWidget *MsgEditWidget_;
-		IEditorWidget *MsgEdit_;
+		QList<QWidget*> MsgEditWidgets_;
+		QList<IEditorWidget*> MsgEdits_;
 
 		Message_ptr ReplyMessage_;
 	public:
@@ -74,6 +74,11 @@ namespace Snails
 		void PrepareReply (const Message_ptr&);
 	private:
 		void PrepareReplyBody (const Message_ptr&);
+
+		void SetupToolbar ();
+		void SetupEditors ();
+
+		IEditorWidget* GetCurrentEditor () const;
 
 		void SetMessageReferences (const Message_ptr&) const;
 	private slots:

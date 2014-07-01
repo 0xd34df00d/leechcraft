@@ -43,6 +43,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "message.h"
 #include "core.h"
+#include "texteditoradaptor.h"
 
 namespace LeechCraft
 {
@@ -64,69 +65,11 @@ namespace Snails
 	ComposeMessageTab::ComposeMessageTab (QWidget *parent)
 	: QWidget (parent)
 	, Toolbar_ (new QToolBar (tr ("Compose tab bar")))
-	, MsgEditWidget_ (0)
-	, MsgEdit_ (0)
 	{
 		Ui_.setupUi (this);
 
-		QAction *send = new QAction (tr ("Send"), this);
-		send->setProperty ("ActionIcon", "mail-send");
-		connect (send,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleSend ()));
-		Toolbar_->addAction (send);
-
-		AccountsMenu_ = new QMenu (tr ("Accounts"));
-		AccountsMenu_->menuAction ()->setProperty ("ActionIcon", "system-users");
-		auto accsGroup = new QActionGroup (this);
-		for (const auto& account : Core::Instance ().GetAccounts ())
-		{
-			QAction *act = new QAction (account->GetName (), this);
-			accsGroup->addAction (act);
-			act->setCheckable (true);
-			act->setChecked (true);
-			act->setProperty ("Account", QVariant::fromValue<Account_ptr> (account));
-
-			AccountsMenu_->addAction (act);
-		}
-		Toolbar_->addAction (AccountsMenu_->menuAction ());
-
-		AttachmentsMenu_ = new QMenu (tr ("Attachments"));
-		AttachmentsMenu_->menuAction ()->setProperty ("ActionIcon", "mail-attachment");
-		AttachmentsMenu_->addSeparator ();
-		QAction *add = AttachmentsMenu_->
-				addAction (tr ("Add..."), this, SLOT (handleAddAttachment ()));
-		add->setProperty ("ActionIcon", "list-add");
-		Toolbar_->addAction (AttachmentsMenu_->menuAction ());
-
-		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset ({
-					AccountsMenu_->menuAction (),
-					AttachmentsMenu_->menuAction ()
-				});
-
-		QVBoxLayout *editFrameLay = new QVBoxLayout ();
-		editFrameLay->setContentsMargins (0, 0, 0, 0);
-		Ui_.MsgEditFrame_->setLayout (editFrameLay);
-
-		auto plugs = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
-		for (const auto plug : plugs)
-		{
-			if (!plug->SupportsEditor (ContentType::PlainText))
-				continue;
-
-			QWidget *w = plug->GetTextEditor (ContentType::PlainText);
-			MsgEdit_ = qobject_cast<IEditorWidget*> (w);
-			if (!MsgEdit_)
-			{
-				delete w;
-				continue;
-			}
-
-			MsgEditWidget_ = w;
-			editFrameLay->addWidget (w);
-		}
+		SetupToolbar ();
+		SetupEditors ();
 	}
 
 	TabClassInfo ComposeMessageTab::GetTabClassInfo () const
@@ -142,7 +85,7 @@ namespace Snails
 	void ComposeMessageTab::Remove ()
 	{
 		emit removeTab (this);
-		delete MsgEditWidget_;
+		qDeleteAll (MsgEditWidgets_);
 		deleteLater ();
 	}
 
@@ -190,8 +133,10 @@ namespace Snails
 			str.prepend ('>');
 		}
 
+		const auto editor = GetCurrentEditor ();
+
 		const auto& plainContent = plainSplit.join ("\n") + "\n\n";
-		MsgEdit_->SetContents (plainContent, ContentType::PlainText);
+		editor->SetContents (plainContent, ContentType::PlainText);
 
 		const auto quoteStartMarker = "<span style='border-left: 2px solid #900060; padding-left: 0.5em;'>";
 		const auto quoteEndMarker = "</span>";
@@ -200,7 +145,79 @@ namespace Snails
 			str = quoteStartMarker + Qt::escape (str) + quoteEndMarker;
 
 		auto htmlBody = plainSplit.join ("<br/>");
-		MsgEdit_->SetContents (htmlBody, ContentType::HTML);
+		editor->SetContents (htmlBody, ContentType::HTML);
+	}
+
+	void ComposeMessageTab::SetupToolbar ()
+	{
+		QAction *send = new QAction (tr ("Send"), this);
+		send->setProperty ("ActionIcon", "mail-send");
+		connect (send,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSend ()));
+		Toolbar_->addAction (send);
+
+		AccountsMenu_ = new QMenu (tr ("Accounts"));
+		AccountsMenu_->menuAction ()->setProperty ("ActionIcon", "system-users");
+		auto accsGroup = new QActionGroup (this);
+		for (const auto& account : Core::Instance ().GetAccounts ())
+		{
+			QAction *act = new QAction (account->GetName (), this);
+			accsGroup->addAction (act);
+			act->setCheckable (true);
+			act->setChecked (true);
+			act->setProperty ("Account", QVariant::fromValue<Account_ptr> (account));
+
+			AccountsMenu_->addAction (act);
+		}
+		Toolbar_->addAction (AccountsMenu_->menuAction ());
+
+		AttachmentsMenu_ = new QMenu (tr ("Attachments"));
+		AttachmentsMenu_->menuAction ()->setProperty ("ActionIcon", "mail-attachment");
+		AttachmentsMenu_->addSeparator ();
+		QAction *add = AttachmentsMenu_->
+				addAction (tr ("Add..."), this, SLOT (handleAddAttachment ()));
+		add->setProperty ("ActionIcon", "list-add");
+		Toolbar_->addAction (AttachmentsMenu_->menuAction ());
+
+		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset ({
+					AccountsMenu_->menuAction (),
+					AttachmentsMenu_->menuAction ()
+				});
+	}
+
+	void ComposeMessageTab::SetupEditors ()
+	{
+		MsgEditWidgets_ << Ui_.PlainEdit_;
+		MsgEdits_ << new TextEditorAdaptor (Ui_.PlainEdit_);
+
+		const auto& plugs = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
+		for (const auto plug : plugs)
+		{
+			if (!plug->SupportsEditor (ContentType::HTML))
+				continue;
+
+			const auto w = plug->GetTextEditor (ContentType::HTML);
+			const auto edit = qobject_cast<IEditorWidget*> (w);
+			if (!edit)
+			{
+				delete w;
+				continue;
+			}
+
+			MsgEditWidgets_ << w;
+			MsgEdits_ << edit;
+			Ui_.EditorStack_->addWidget (w);
+		}
+
+		Ui_.EditorStack_->setCurrentIndex (Ui_.EditorStack_->count () - 1);
+	}
+
+	IEditorWidget* ComposeMessageTab::GetCurrentEditor() const
+	{
+		return MsgEdits_.value (Ui_.EditorStack_->currentIndex ());
 	}
 
 	void ComposeMessageTab::SetMessageReferences (const Message_ptr& message) const
@@ -269,11 +286,13 @@ namespace Snails
 		if (!account)
 			return;
 
+		const auto editor = GetCurrentEditor ();
+
 		const auto& message = std::make_shared<Message> ();
 		message->SetAddresses (Message::Address::To, FromUserInput (Ui_.To_->text ()));
 		message->SetSubject (Ui_.Subject_->text ());
-		message->SetBody (MsgEdit_->GetContents (ContentType::PlainText));
-		message->SetHTMLBody (MsgEdit_->GetContents (ContentType::HTML));
+		message->SetBody (editor->GetContents (ContentType::PlainText));
+		message->SetHTMLBody (editor->GetContents (ContentType::HTML));
 
 		SetMessageReferences (message);
 
