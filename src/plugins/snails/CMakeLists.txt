@@ -43,6 +43,7 @@ set (SRCS
 	foldersmodel.cpp
 	folder.cpp
 	viewcolumnsmanager.cpp
+	texteditoradaptor.cpp
 	)
 set (FORMS
 	mailtab.ui
