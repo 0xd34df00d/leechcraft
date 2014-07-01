@@ -1018,9 +1018,8 @@ namespace Snails
 		mb.setExpeditor (*FromPair (msg->GetAddress (Message::Address::From)));
 
 		vmime::addressList recips;
-		const auto& tos = msg->GetAddresses (Message::Address::To);
-		std::for_each (tos.begin (), tos.end (),
-				[&recips] (decltype (tos.front ()) pair) { recips.appendAddress (FromPair (pair)); });
+		for (const auto& pair : msg->GetAddresses (Message::Address::To))
+			recips.appendAddress (FromPair (pair));
 		mb.setRecipients (recips);
 
 		const QString& html = msg->GetHTMLBody ();
