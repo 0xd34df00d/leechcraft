@@ -36,6 +36,7 @@
 #include <QFileIconProvider>
 #include <QInputDialog>
 #include <QTextDocument>
+#include <QToolButton>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <interfaces/itexteditor.h>
@@ -159,7 +160,6 @@ namespace Snails
 		Toolbar_->addAction (send);
 
 		AccountsMenu_ = new QMenu (tr ("Accounts"));
-		AccountsMenu_->menuAction ()->setProperty ("ActionIcon", "system-users");
 		auto accsGroup = new QActionGroup (this);
 		for (const auto& account : Core::Instance ().GetAccounts ())
 		{
@@ -171,20 +171,24 @@ namespace Snails
 
 			AccountsMenu_->addAction (act);
 		}
-		Toolbar_->addAction (AccountsMenu_->menuAction ());
+
+		auto accountsButton = new QToolButton (Toolbar_);
+		accountsButton->setMenu (AccountsMenu_);
+		accountsButton->setPopupMode (QToolButton::InstantPopup);
+		accountsButton->setProperty ("ActionIcon", "system-users");
+		Toolbar_->addWidget (accountsButton);
 
 		AttachmentsMenu_ = new QMenu (tr ("Attachments"));
-		AttachmentsMenu_->menuAction ()->setProperty ("ActionIcon", "mail-attachment");
 		AttachmentsMenu_->addSeparator ();
 		QAction *add = AttachmentsMenu_->
 				addAction (tr ("Add..."), this, SLOT (handleAddAttachment ()));
 		add->setProperty ("ActionIcon", "list-add");
-		Toolbar_->addAction (AttachmentsMenu_->menuAction ());
 
-		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset ({
-					AccountsMenu_->menuAction (),
-					AttachmentsMenu_->menuAction ()
-				});
+		auto attachmentsButton = new QToolButton (Toolbar_);
+		attachmentsButton->setProperty ("ActionIcon", "mail-attachment");
+		attachmentsButton->setMenu (AttachmentsMenu_);
+		attachmentsButton->setPopupMode (QToolButton::InstantPopup);
+		Toolbar_->addWidget (attachmentsButton);
 	}
 
 	void ComposeMessageTab::SetupEditors ()
