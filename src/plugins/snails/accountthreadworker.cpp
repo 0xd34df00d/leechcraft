@@ -1022,6 +1022,20 @@ namespace Snails
 				result.appendMessageId (vmime::make_shared<vmime::messageId> (id.constData ()));
 			return result;
 		}
+
+		vmime::messageId GenerateMsgId (const Message_ptr& msg)
+		{
+			const auto& senderAddress = msg->GetAddress (Message::Address::From).second;
+
+			const auto& contents = msg->GetBody ().toUtf8 ();
+			const auto& contentsHash = QCryptographicHash::hash (contents, QCryptographicHash::Sha1).toBase64 ();
+
+			const auto& now = QDateTime::currentDateTime ();
+
+			const auto& id = now.toString ("ddMMyyyy.hhmmsszzzap") + '%' + contentsHash + '%' + senderAddress;
+
+			return vmime::string { id.toUtf8 ().constData () };
+		}
 	}
 
 	void AccountThreadWorker::sendMessage (Message_ptr msg)
@@ -1084,6 +1098,8 @@ namespace Snails
 			header->InReplyTo ()->setValue (ToMessageIdSequence (msg->GetInReplyTo ()));
 		if (!msg->GetReferences ().isEmpty ())
 			header->References ()->setValue (ToMessageIdSequence (msg->GetReferences ()));
+
+		header->MessageId ()->setValue (GenerateMsgId (msg));
 
 		auto pl = MkPgListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
 		auto transport = MakeTransport ();
