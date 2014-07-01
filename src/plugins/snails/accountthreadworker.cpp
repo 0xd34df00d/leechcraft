@@ -1001,15 +1001,10 @@ namespace Snails
 
 	namespace
 	{
-		vmime::mailbox FromPair (const QString& name, const QString& email)
+		vmime::shared_ptr<vmime::mailbox> FromPair (const QPair<QString, QString>& pair)
 		{
-			return vmime::mailbox (vmime::text (name.toUtf8 ().constData ()),
-					email.toUtf8 ().constData ());
-		}
-
-		vmime::mailbox FromPair (const QPair<QString, QString>& pair)
-		{
-			return FromPair (pair.first, pair.second);
+			return vmime::make_shared<vmime::mailbox> (vmime::text (pair.first.toUtf8 ().constData ()),
+					pair.second.toUtf8 ().constData ());
 		}
 	}
 
@@ -1020,15 +1015,12 @@ namespace Snails
 
 		vmime::messageBuilder mb;
 		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
-		mb.setExpeditor (FromPair (msg->GetAddress (Message::Address::From)));
+		mb.setExpeditor (*FromPair (msg->GetAddress (Message::Address::From)));
 
 		vmime::addressList recips;
 		const auto& tos = msg->GetAddresses (Message::Address::To);
 		std::for_each (tos.begin (), tos.end (),
-				[&recips] (decltype (tos.front ()) pair)
-				{
-					recips.appendAddress (vmime::make_shared<vmime::mailbox> (FromPair (pair)));
-				});
+				[&recips] (decltype (tos.front ()) pair) { recips.appendAddress (FromPair (pair)); });
 		mb.setRecipients (recips);
 
 		const QString& html = msg->GetHTMLBody ();
