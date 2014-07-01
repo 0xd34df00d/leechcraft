@@ -57,6 +57,8 @@ namespace Snails
 
 		QWidget *MsgEditWidget_;
 		IEditorWidget *MsgEdit_;
+
+		Message_ptr ReplyMessage_;
 	public:
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);

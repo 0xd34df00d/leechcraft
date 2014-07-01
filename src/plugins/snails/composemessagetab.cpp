@@ -175,6 +175,8 @@ namespace Snails
 		Ui_.Subject_->setText (subj);
 
 		PrepareReplyBody (msg);
+
+		ReplyMessage_ = msg;
 	}
 
 	void ComposeMessageTab::PrepareReplyBody (const Message_ptr& msg)
