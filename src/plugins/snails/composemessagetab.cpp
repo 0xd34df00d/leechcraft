@@ -203,6 +203,25 @@ namespace Snails
 		MsgEdit_->SetContents (htmlBody, ContentType::HTML);
 	}
 
+	void ComposeMessageTab::SetMessageReferences (const Message_ptr& message) const
+	{
+		if (!ReplyMessage_)
+			return;
+
+		const auto& id = ReplyMessage_->GetMessageID ();
+		if (id.isEmpty ())
+			return;
+
+		message->SetInReplyTo ({ id });
+
+		auto references = ReplyMessage_->GetReferences ();
+		while (references.size () > 20)
+			references.removeAt (1);
+
+		references << id;
+		message->SetReferences (references);
+	}
+
 	namespace
 	{
 		Message::Addresses_t FromUserInput (const QString& text)
@@ -250,11 +269,13 @@ namespace Snails
 		if (!account)
 			return;
 
-		Message_ptr message (new Message);
+		const auto& message = std::make_shared<Message> ();
 		message->SetAddresses (Message::Address::To, FromUserInput (Ui_.To_->text ()));
 		message->SetSubject (Ui_.Subject_->text ());
 		message->SetBody (MsgEdit_->GetContents (ContentType::PlainText));
 		message->SetHTMLBody (MsgEdit_->GetContents (ContentType::HTML));
+
+		SetMessageReferences (message);
 
 		Util::MimeDetector detector;
 

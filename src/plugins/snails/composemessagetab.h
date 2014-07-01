@@ -74,6 +74,8 @@ namespace Snails
 		void PrepareReply (const Message_ptr&);
 	private:
 		void PrepareReplyBody (const Message_ptr&);
+
+		void SetMessageReferences (const Message_ptr&) const;
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();
