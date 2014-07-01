@@ -1036,7 +1036,7 @@ namespace Snails
 		mb.setCopyRecipients (ToAddressList (msg->GetAddresses (Message::Address::Cc)));
 		mb.setBlindCopyRecipients (ToAddressList (msg->GetAddresses (Message::Address::Bcc)));
 
-		const QString& html = msg->GetHTMLBody ();
+		const auto& html = msg->GetHTMLBody ();
 
 		if (html.isEmpty ())
 		{
@@ -1046,7 +1046,7 @@ namespace Snails
 		else
 		{
 			mb.constructTextPart ({ vmime::mediaTypes::TEXT, vmime::mediaTypes::TEXT_HTML });
-			auto textPart = vmime::dynamicCast<vmime::htmlTextPart> (mb.getTextPart ());
+			const auto& textPart = vmime::dynamicCast<vmime::htmlTextPart> (mb.getTextPart ());
 			textPart->setCharset (vmime::charsets::UTF_8);
 			textPart->setText (vmime::make_shared<vmime::stringContentHandler> (html.toUtf8 ().constData ()));
 			textPart->setPlainText (vmime::make_shared<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
@@ -1057,7 +1057,7 @@ namespace Snails
 			try
 			{
 				const QFileInfo fi (descr.GetName ());
-				auto att = vmime::make_shared<vmime::fileAttachment> (descr.GetName ().toUtf8 ().constData (),
+				const auto& att = vmime::make_shared<vmime::fileAttachment> (descr.GetName ().toUtf8 ().constData (),
 						vmime::mediaType (descr.GetType ().constData (), descr.GetSubType ().constData ()),
 						vmime::text (descr.GetDescr ().toUtf8 ().constData ()));
 				att->getFileInfo ().setFilename (fi.fileName ().toUtf8 ().constData ());
@@ -1074,7 +1074,7 @@ namespace Snails
 			}
 		}
 
-		auto vMsg = mb.construct ();
+		const auto& vMsg = mb.construct ();
 		const auto& userAgent = QString ("LeechCraft Snails %1")
 				.arg (Core::Instance ().GetProxy ()->GetVersion ());
 		vMsg->getHeader ()->UserAgent ()->setValue (userAgent.toUtf8 ().constData ());
