@@ -70,6 +70,12 @@ namespace Snails
 		const QString& GetMessage () const;
 	};
 
+	class TimeoutException : public ConcurrentExceptionMixin<TimeoutException>
+	{
+	public:
+		TimeoutException () = default;
+	};
+
 	template<typename Wrapped>
 	class WrappedException : public ConcurrentExceptionMixin<WrappedException<Wrapped>>
 	{
