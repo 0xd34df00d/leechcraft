@@ -56,12 +56,17 @@ namespace Snails
 
 		QAction *MsgReply_;
 		QAction *MsgMarkUnread_;
+
 		QMenu *MsgCopy_;
 		QToolButton *MsgCopyButton_;
+
 		QMenu *MsgMove_;
 		QToolButton *MsgMoveButton_;
+
 		QAction *MsgRemove_;
+
 		QMenu *MsgAttachments_;
+		QToolButton *MsgAttachmentsButton_;
 
 		TabClassInfo TabClass_;
 		QObject *PMT_;

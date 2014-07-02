@@ -135,9 +135,11 @@ namespace Snails
 		TabToolbar_->addAction (MsgReply_);
 
 		MsgAttachments_ = new QMenu (tr ("Attachments"));
-		MsgAttachments_->setIcon (Core::Instance ().GetProxy ()->
-					GetIconThemeManager ()->GetIcon ("mail-attachment"));
-		TabToolbar_->addAction (MsgAttachments_->menuAction ());
+		MsgAttachmentsButton_ = new QToolButton;
+		MsgAttachmentsButton_->setProperty ("ActionIcon", "mail-attachment");
+		MsgAttachmentsButton_->setMenu (MsgAttachments_);
+		MsgAttachmentsButton_->setPopupMode (QToolButton::InstantPopup);
+		TabToolbar_->addWidget (MsgAttachmentsButton_);
 
 		TabToolbar_->addSeparator ();
 
@@ -427,7 +429,7 @@ namespace Snails
 		Ui_.MailView_->setHtml (html);
 
 		MsgAttachments_->clear ();
-		MsgAttachments_->setEnabled (!msg->GetAttachments ().isEmpty ());
+		MsgAttachmentsButton_->setEnabled (!msg->GetAttachments ().isEmpty ());
 		for (const auto& att : msg->GetAttachments ())
 		{
 			const auto& name = att.GetName () + " (" + Util::MakePrettySize (att.GetSize ()) + ")";
