@@ -167,14 +167,17 @@ namespace Snails
 			}
 			catch (const vmime::exceptions::authentication_error& err)
 			{
+				const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+
 				qWarning () << Q_FUNC_INFO
 						<< "caught auth error:"
-						<< err.response ().c_str ()
+						<< respStr
 						<< "while calling"
 						<< item.Method_
 						<< "with"
 						<< item.Args_;
-				item.Promise_->reportException (MakeWrappedException (err));
+
+				item.Promise_->reportException (AuthorizationException { respStr });
 			}
 			catch (const std::exception& e)
 			{
