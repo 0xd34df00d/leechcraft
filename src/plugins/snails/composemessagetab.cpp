@@ -38,6 +38,8 @@
 #include <QTextDocument>
 #include <QToolButton>
 #include <QSignalMapper>
+#include <QFuture>
+#include <QFutureWatcher>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <interfaces/itexteditor.h>
@@ -47,6 +49,7 @@
 #include "message.h"
 #include "core.h"
 #include "texteditoradaptor.h"
+#include "concurrentexceptions.h"
 
 namespace LeechCraft
 {
@@ -276,6 +279,28 @@ namespace Snails
 		message->SetReferences (references);
 	}
 
+	void ComposeMessageTab::handleMessageSent ()
+	{
+		const auto watcher = dynamic_cast<QFutureWatcher<void>*> (sender ());
+		watcher->deleteLater ();
+
+		try
+		{
+			watcher->waitForFinished ();
+			Remove ();
+		}
+		catch (const AuthorizationException& err)
+		{
+			QMessageBox::critical (this, "LeechCraft",
+					tr ("Unable to send the message: authorization failure. Server reports: %1.")
+						.arg ("<br/><em>" + err.GetMessage () + "</em>"));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO << "caught exception:" <<  e.what ();
+		}
+	}
+
 	namespace
 	{
 		Message::Addresses_t FromUserInput (const QString& text)
@@ -350,7 +375,13 @@ namespace Snails
 			message->AddAttachment ({ path, descr, type, subtype, QFileInfo (path).size () });
 		}
 
-		account->SendMessage (message);
+		const auto watcher = new QFutureWatcher<void> { this };
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleMessageSent ()));
+		const auto& future = account->SendMessage (message);
+		watcher->setFuture (future);
 	}
 
 	void ComposeMessageTab::handleAddAttachment ()
