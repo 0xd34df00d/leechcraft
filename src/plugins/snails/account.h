@@ -41,6 +41,9 @@ class QStandardItemModel;
 class QStandardItem;
 class QModelIndex;
 
+template<typename T>
+class QFuture;
+
 namespace LeechCraft
 {
 namespace Snails
@@ -141,7 +144,7 @@ namespace Snails
 		void Synchronize (const QStringList&, const QByteArray&);
 
 		void FetchWholeMessage (const Message_ptr&);
-		void SendMessage (const Message_ptr&);
+		QFuture<void> SendMessage (const Message_ptr&);
 		void FetchAttachment (const Message_ptr&,
 				const QString&, const QString&);
 

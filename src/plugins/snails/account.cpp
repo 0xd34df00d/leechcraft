@@ -189,7 +189,7 @@ namespace Snails
 			});
 	}
 
-	void Account::SendMessage (const Message_ptr& msg)
+	QFuture<void> Account::SendMessage (const Message_ptr& msg)
 	{
 		auto pair = msg->GetAddress (Message::Address::From);
 		if (pair.first.isEmpty ())
@@ -198,7 +198,7 @@ namespace Snails
 			pair.second = UserEmail_;
 		msg->SetAddress (Message::Address::From, pair);
 
-		MessageFetchThread_->AddTask ({
+		return MessageFetchThread_->AddTask ({
 				"sendMessage",
 				{ msg }
 			});
