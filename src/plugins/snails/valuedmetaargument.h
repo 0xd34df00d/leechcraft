@@ -115,4 +115,10 @@ QDebug operator<< (QDebug out, const QPointer<T>& ptr)
 	return out << ptr.data ();
 }
 
+template<typename T>
+QDebug operator<< (QDebug out, const std::shared_ptr<T>& ptr)
+{
+	return out << ptr.get ();
+}
+
 QDebug operator<< (QDebug, const LeechCraft::Snails::ValuedMetaArgument&);
