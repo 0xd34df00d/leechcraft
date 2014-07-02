@@ -179,6 +179,16 @@ namespace Snails
 
 				item.Promise_->reportException (AuthorizationException { respStr });
 			}
+			catch (const vmime::exceptions::operation_timed_out&)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "timeout while calling"
+						<< item.Method_
+						<< "with"
+						<< item.Args_;
+
+				item.Promise_->reportException (TimeoutException {});
+			}
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
