@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QString>
 #include <QMutex>
+#include <QFutureInterface>
 #include "valuedmetaargument.h"
 
 namespace LeechCraft
@@ -55,6 +56,8 @@ namespace Snails
 		QList<ValuedMetaArgument> Args_;
 
 		QByteArray ID_;
+
+		std::shared_ptr<QFutureInterface<void>> Promise_ = std::make_shared<QFutureInterface<void>> ();
 
 		TaskQueueItem ();
 		TaskQueueItem (const QByteArray&,
