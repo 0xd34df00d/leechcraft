@@ -219,7 +219,7 @@ namespace Snails
 
 		if (A_->OutSecurity_ == Account::SecurityType::TLS)
 		{
-			trp->setProperty ("connection.tls", A_->UseTLS_);
+			trp->setProperty ("connection.tls", true);
 			trp->setProperty ("connection.tls.required", A_->OutSecurityRequired_);
 		}
 		trp->setProperty ("options.sasl", true);
