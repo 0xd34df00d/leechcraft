@@ -1105,7 +1105,8 @@ namespace Snails
 		auto transport = MakeTransport ();
 		try
 		{
-			transport->connect ();
+			if (!transport->isConnected ())
+				transport->connect ();
 		}
 		catch (const vmime::exceptions::authentication_error& e)
 		{
