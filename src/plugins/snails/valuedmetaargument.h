@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QMetaType>
+#include <QPointer>
 #include <QDebug>
 
 namespace LeechCraft
@@ -106,6 +107,12 @@ namespace Snails
 		void DebugPrint (QDebug&) const;
 	};
 }
+}
+
+template<typename T>
+QDebug operator<< (QDebug out, const QPointer<T>& ptr)
+{
+	return out << ptr.data ();
 }
 
 QDebug operator<< (QDebug, const LeechCraft::Snails::ValuedMetaArgument&);
