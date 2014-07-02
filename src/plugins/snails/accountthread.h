@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QThread>
+#include <QFuture>
 #include "taskqueuemanager.h"
 
 namespace LeechCraft
@@ -55,7 +56,7 @@ namespace Snails
 	public:
 		AccountThread (bool isListening, Account*);
 
-		void AddTask (const TaskQueueItem&);
+		QFuture<void> AddTask (const TaskQueueItem&);
 	protected:
 		void run ();
 	private:

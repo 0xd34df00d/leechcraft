@@ -45,7 +45,7 @@ namespace Snails
 	{
 	}
 
-	void AccountThread::AddTask (const TaskQueueItem& item)
+	QFuture<void> AccountThread::AddTask (const TaskQueueItem& item)
 	{
 		QMutexLocker guard { &QueueMutex_ };
 
@@ -53,6 +53,8 @@ namespace Snails
 			QueueManager_->AddTasks ({ item });
 		else
 			PendingQueue_ << item;
+
+		return item.Promise_->future ();
 	}
 
 	void AccountThread::run ()
