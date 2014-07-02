@@ -1114,7 +1114,7 @@ namespace Snails
 					<< e.what ()
 					<< "with response"
 					<< e.response ().c_str ();
-			return;
+			throw;
 		}
 		transport->send (vMsg, pl);
 	}
