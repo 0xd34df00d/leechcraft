@@ -110,7 +110,7 @@ namespace Snails
 		void copyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
 		void deleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
-		void sendMessage (LeechCraft::Snails::Message_ptr);
+		void sendMessage (const LeechCraft::Snails::Message_ptr&);
 	signals:
 		void error (const QString&);
 		void gotEntity (const LeechCraft::Entity&);

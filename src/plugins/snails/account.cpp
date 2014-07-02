@@ -181,7 +181,7 @@ namespace Snails
 			});
 	}
 
-	void Account::FetchWholeMessage (Message_ptr msg)
+	void Account::FetchWholeMessage (const Message_ptr& msg)
 	{
 		MessageFetchThread_->AddTask ({
 				"fetchWholeMessage",
@@ -189,7 +189,7 @@ namespace Snails
 			});
 	}
 
-	void Account::SendMessage (Message_ptr msg)
+	void Account::SendMessage (const Message_ptr& msg)
 	{
 		auto pair = msg->GetAddress (Message::Address::From);
 		if (pair.first.isEmpty ())
@@ -204,7 +204,7 @@ namespace Snails
 			});
 	}
 
-	void Account::FetchAttachment (Message_ptr msg,
+	void Account::FetchAttachment (const Message_ptr& msg,
 			const QString& attName, const QString& path)
 	{
 		MessageFetchThread_->AddTask ({

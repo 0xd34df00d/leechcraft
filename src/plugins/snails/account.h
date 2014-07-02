@@ -140,9 +140,9 @@ namespace Snails
 		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);
 
-		void FetchWholeMessage (Message_ptr);
-		void SendMessage (Message_ptr);
-		void FetchAttachment (Message_ptr,
+		void FetchWholeMessage (const Message_ptr&);
+		void SendMessage (const Message_ptr&);
+		void FetchAttachment (const Message_ptr&,
 				const QString&, const QString&);
 
 		void SetReadStatus (bool, const QList<QByteArray>&, const QStringList&);
@@ -190,7 +190,7 @@ namespace Snails
 		void mailChanged ();
 		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
-		void messageBodyFetched (Message_ptr);
+		void messageBodyFetched (const Message_ptr&);
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;

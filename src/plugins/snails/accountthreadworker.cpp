@@ -1038,7 +1038,7 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::sendMessage (Message_ptr msg)
+	void AccountThreadWorker::sendMessage (const Message_ptr& msg)
 	{
 		if (!msg)
 			return;
