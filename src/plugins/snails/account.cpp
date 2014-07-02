@@ -437,6 +437,10 @@ namespace Snails
 			}
 
 			InSecurityRequired_ = dia->GetInSecurityRequired ();
+
+			OutSecurity_ = dia->GetOutSecurity ();
+			OutSecurityRequired_ = dia->GetOutSecurityRequired ();
+
 			SMTPNeedsAuth_ = dia->GetSMTPAuth ();
 			APOP_ = dia->GetAPOP ();
 			APOPFail_ = dia->GetAPOPRequired ();
