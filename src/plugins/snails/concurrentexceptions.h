@@ -61,6 +61,15 @@ namespace Snails
 		const char* what () const noexcept override;
 	};
 
+	class AuthorizationException : public ConcurrentExceptionMixin<AuthorizationException>
+	{
+		const QString Message_;
+	public:
+		AuthorizationException (const QString&);
+
+		const QString& GetMessage () const;
+	};
+
 	template<typename Wrapped>
 	class WrappedException : public ConcurrentExceptionMixin<WrappedException<Wrapped>>
 	{

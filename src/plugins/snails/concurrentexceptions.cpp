@@ -56,19 +56,19 @@ namespace Snails
 	{
 	}
 
-	void InvokeFailedException::raise () const
-	{
-		throw *this;
-	}
-
-	QtConcurrent::Exception* InvokeFailedException::clone () const
-	{
-		return new InvokeFailedException { *this };
-	}
-
 	const char* InvokeFailedException::what () const noexcept
 	{
 		return What_.constData ();
+	}
+
+	AuthorizationException::AuthorizationException (const QString& msg)
+	: Message_ { msg }
+	{
+	}
+
+	const QString& AuthorizationException::GetMessage () const
+	{
+		return Message_;
 	}
 }
 }
