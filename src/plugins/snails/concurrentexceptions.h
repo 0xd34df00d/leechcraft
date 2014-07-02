@@ -36,37 +36,39 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	class InvokeFailedException : public QtConcurrent::Exception
+	template<typename T>
+	class ConcurrentExceptionMixin : public QtConcurrent::Exception
+	{
+	public:
+		void raise () const override
+		{
+			throw *dynamic_cast<const T*> (this);
+		}
+
+		Exception* clone () const override
+		{
+			return new T { *dynamic_cast<const T*> (this) };
+		}
+	};
+
+	class InvokeFailedException : public ConcurrentExceptionMixin<InvokeFailedException>
 	{
 		const TaskQueueItem Item_;
 		const QByteArray What_;
 	public:
 		InvokeFailedException (const TaskQueueItem&);
 
-		void raise () const override;
-		Exception* clone () const override;
-
 		const char* what () const noexcept override;
 	};
 
 	template<typename Wrapped>
-	class WrappedException : public QtConcurrent::Exception
+	class WrappedException : public ConcurrentExceptionMixin<WrappedException<Wrapped>>
 	{
 		const Wrapped W_;
 	public:
 		WrappedException (const Wrapped& w)
 		: W_ { w }
 		{
-		}
-
-		void raise () const override
-		{
-			throw *this;
-		}
-
-		Exception* clone () const override
-		{
-			return new WrappedException<Wrapped> { W_ };
 		}
 
 		const char* what () const noexcept override
