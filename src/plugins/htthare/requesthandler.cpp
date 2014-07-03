@@ -31,6 +31,10 @@
 
 #ifdef Q_OS_LINUX
 #include <sys/sendfile.h>
+#elif defined (Q_OS_FREEBSD)
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/uio.h>
 #elif defined (Q_OS_MAC)
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -302,8 +306,17 @@ namespace HttHare
 #ifdef Q_OS_LINUX
 					const auto rc = sendfile (Sock_.native_handle (),
 							File_->handle (), &offset, toTransfer);
-					auto transferred = rc > 0 ? rc : 0;
-					auto errCode = rc > 0 ? 0 : errno;
+					const auto transferred = rc > 0 ? rc : 0;
+					const auto errCode = rc > 0 ? 0 : errno;
+#elif defined (Q_OS_FREEBSD)
+					auto transferred = toTransfer;
+					const auto rc = sendfile (File_->handle (), Sock_.native_handle (),
+							offset, toTransfer, nullptr, &transferred, 0);
+					if (rc == -1)
+					{
+						transferred = 0;
+						errCode = errno;
+					}
 #elif defined (Q_OS_MAC)
 					auto transferred = toTransfer;
 					auto errCode = sendfile (File_->handle (),
