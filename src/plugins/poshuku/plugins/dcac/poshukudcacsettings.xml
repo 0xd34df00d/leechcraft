@@ -6,7 +6,7 @@
 			<label value="Enable night mode by default" />
 		</item>
 		<item type="spinbox" property="NightModeThreshold" default="127" minimum="0" maximum="255">
-			<label value="Average brightness threshold" />
+			<label value="Average brightness threshold:" />
 			<tooltip>Night mode will only be enabled for the given page if its average grayness is bigger than this value.</tooltip>
 		</item>
 	</page>
