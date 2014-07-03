@@ -305,16 +305,11 @@ namespace HttHare
 					auto transferred = rc > 0 ? rc : 0;
 					auto errCode = rc > 0 ? 0 : errno;
 #elif defined (Q_OS_MAC)
-					// Some glue code to make it work like in Linux,
-					// where the amount of transferred data is returned
-					// from sendfile().
 					auto transferred = toTransfer;
-					auto rc = sendfile (File_->handle (),
+					auto errCode = sendfile (File_->handle (),
 							Sock_.native_handle (),
 							offset, &transferred,
 							nullptr, 0);
-					if (!rc)
-						rc = transferred;
 #endif
 					ec = boost::system::error_code (errCode,
 							boost::asio::error::get_system_category ());
