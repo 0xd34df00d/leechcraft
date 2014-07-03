@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_netstoremanager)
 include (InitLCPlugin OPTIONAL)
 
-if (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	set (INOTIFY_DEFAULT TRUE)
 else ()
 	set (INOTIFY_DEFAULT FALSE)
