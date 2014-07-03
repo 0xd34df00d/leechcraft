@@ -29,6 +29,7 @@
 
 #include "dcac.h"
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "viewsmanager.h"
 #include "xmlsettingsmanager.h"
 
@@ -40,6 +41,7 @@ namespace DCAC
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("poshuku_dcac");
 		ViewsManager_ = new ViewsManager;
 
 		XSD_.reset (new Util::XmlSettingsDialog);

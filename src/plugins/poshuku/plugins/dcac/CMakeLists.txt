@@ -8,7 +8,7 @@ set (DCAC_SRCS
 	)
 set (DCAC_RESOURCES
 	)
-#CreateTrs ("poshuku_dcac" "en;ru_RU" DCAC_COMPILED_TRANSLATIONS)
+CreateTrs ("poshuku_dcac" "en;ru_RU" DCAC_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_dcac" "en;ru_RU" "${DCAC_SRCS}" "" "poshukudcacsettings.xml")
 
 QT4_ADD_RESOURCES (DCAC_RCCS ${DCAC_RESOURCES})
