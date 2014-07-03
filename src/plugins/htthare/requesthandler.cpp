@@ -302,6 +302,8 @@ namespace HttHare
 #ifdef Q_OS_LINUX
 					const auto rc = sendfile (Sock_.native_handle (),
 							File_->handle (), &offset, toTransfer);
+					auto transferred = rc > 0 ? rc : 0;
+					auto errCode = rc > 0 ? 0 : errno;
 #elif defined (Q_OS_MAC)
 					// Some glue code to make it work like in Linux,
 					// where the amount of transferred data is returned
@@ -314,13 +316,13 @@ namespace HttHare
 					if (!rc)
 						rc = transferred;
 #endif
-					ec = boost::system::error_code (rc < 0 ? errno : 0,
+					ec = boost::system::error_code (errCode,
 							boost::asio::error::get_system_category ());
 
-					if (rc > 0)
+					if (!errCode)
 					{
 						CurrentRange_.first = offset;
-						toTransfer -= rc;
+						toTransfer -= transferred;
 					}
 
 					if (ec == boost::asio::error::interrupted)
