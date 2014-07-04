@@ -7,7 +7,6 @@ find_package (QJSON REQUIRED)
 
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTXML TRUE)
-set (QT_USE_QTWEBKIT TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
