@@ -34,4 +34,3 @@ target_link_libraries (leechcraft_xproxy
 	)
 install (TARGETS leechcraft_xproxy DESTINATION ${LC_PLUGINS_DEST})
 install (FILES xproxysettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
