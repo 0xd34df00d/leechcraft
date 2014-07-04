@@ -10,7 +10,7 @@ find_package (RBTorrent)
 find_package (OpenSSL REQUIRED)
 
 if (NOT RBTorrent_FOUND)
-	message (ERROR "Rasterbar libtorrent not found, not building BitTorrent")
+	message (SEND_ERROR "Rasterbar libtorrent not found, not building BitTorrent")
 endif ()
 
 set (QT_USE_QTXML TRUE)
