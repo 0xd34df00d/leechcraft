@@ -49,7 +49,6 @@
 class QTimer;
 class QNetworkReply;
 class QFile;
-class QWebView;
 class QSortFilterProxyModel;
 class QToolBar;
 class IWebBrowser;
