@@ -108,6 +108,11 @@ endif ()
 
 if (UNIX)
 	find_program (LPKGC_CMD pkg-config)
+
+	if (NOT LPKGC_CMD)
+		message (FATAL_ERROR "Unable to find pkgconfig")
+	endif ()
+
 	execute_process (COMMAND "${LPKGC_CMD}" libtorrent-rasterbar --cflags
 		OUTPUT_VARIABLE RB_LT_CFLAGS
 		OUTPUT_STRIP_TRAILING_WHITESPACE
