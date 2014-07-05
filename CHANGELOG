@@ -9,7 +9,9 @@ the rest.
 	* LMP FrAdj - equalizer effect plugin.
 	* LMP HttStream - HTTP streamer plugin.
 	* NetStoreManager Dbox - Dropbox support plugin.
+	* Poshuku DC/AC - color invertor plugin for Poshuku.
 	* Poshuku SpeedDial - speed dial plugin for Poshuku.
+	* Poshuku QRd - plugin for showing the URL of the current page as a QR code.
 * Removed plugins:
 	* Azoth p100q - psto.net is closed due to ARTS.
 	* Shaitan - obsoleted by Eleeminator.
@@ -20,6 +22,10 @@ the rest.
 * [Core] Removed obsolete message timeout setting.
 * [Core] Respect "SessionData/RootWindowIndex" tab property when adding tab.
 * [Core] Support iconable toolbuttons.
+* [Core] Support cloning tabs.
+* [Core] Hide close buttons if tab width is too small.
+* [Core] Invoke external handlers iff the scheme is non-empty.
+* [Core] Fixed a memory leak if "Open as submenu" is disabled.
 * [Util] Splitted the utility library into sublibs.
 * [Util] Added regexp class with optional PCRE backend (from CleanWeb).
 * [Util] Added ColorButton.
@@ -34,8 +40,15 @@ the rest.
 * [Util] Check for /usr[/local]/share/applications for icons.
 * [Util] Create network disk cache in XDG cache dir.
 * [Util] Properly check /usr/[local/]share/icons/hicolor/ for icons.
+* [Util] Added network disk cache GC timer.
+* [Util] Converted CategorySelector to a dialog with configurable buttons.
+* [Util] Fixed 32-bit build.
+* [Util] Fixed Windows build.
+* [Util] Tags sorting in CategorySelector now optional.
 * [XSD] Support custom buttons in "dataview" items.
 * [XSD] Support "resizeToContents" attribute for dataviews.
+* [XSD] Resize the scrollarea's widget to full width.
+* [Aggregator] Fixed startup wizard.
 * [Aggregator WA] Workaround QTBUG-22829 in Q2WProxyModel.
 * [AN] Added support for notification plugins.
 * [AN] Support providing the list of rules to other plugins.
@@ -44,6 +57,9 @@ the rest.
 * [AN] Fixed visual representation of integer equality matchers.
 * [AN] Fixed "Modify matcher" dialog (filling with current configuration).
 * [AN] Don't stop on first found rule.
+* [AN] Added support for boolean fields.
+* [AN] Added support for terminal events.
+* [AN] Fixed crash on setting standard fields matchers.
 * [Azoth] Migrate to QtMultimediaKit from QtMobility instead of QtMultimedia.
 * [Azoth] Added "Open" button to "file transfer finished" notification.
 * [Azoth] Added persistent notification about file transfer finish.
@@ -56,6 +72,9 @@ the rest.
 * [Azoth] Show client icons in tooltip.
 * [Azoth] Show status icons in tooltips.
 * [Azoth] Support protocols with entry time information.
+* [Azoth] Environment roster activation style is default now.
+* [Azoth Acetamide] Fixed a possible crash.
+* [Azoth AdiumStyles] Fixed Windows build.
 * [Azoth ChatHistory] Migrated to common chat box for history search.
 * [Azoth ChatHistory] Support wrapping, forward and/or case-insensitive search.
 * [Azoth ChatHistory] Use Core colors for private chats.
@@ -67,6 +86,7 @@ the rest.
 * [Azoth OTRoid] Support for question-based and shared-secret authentication.
 * [Azoth OTRoid] Added fingerprints manager.
 * [Azoth OTRoid] Added private keys manager.
+* [Azoth StandardStyles] Fixed Windows build.
 * [Azoth Xoox] Added support for querying entity time.
 * [Azoth Xoox] Added caps for "http://v4.isida-bot.com"
 * [Azoth Xoox] Added new caps for isida bot.
@@ -81,12 +101,19 @@ the rest.
 * [Azoth Xoox] Schedule roster save only for roster contacts VCards (ignore MUCs).
 * [Azoth Xoox] Update incoming PEP avatar iff it's not null.
 * [Azoth Xoox] Fixed a segfault on removing some always-offline entities.
+* [Azoth Xoox] Allow changing room subject without checking rights.
+* [Azoth Xoox] Convert timestamps in forwarded elems to local time.
 * [Azoth Xtazy] Support non-immediate tune sending.
 * [BitTorrent] Emit updates only for changed torrents.
-* [BT] Added "Add magnet" dialog.
-* [BT] Cache translations in the model.
-* [BT] Avoid several deprecated libtorrent members.
-* [BT] Show files icons in icons view.
+* [BitTorrent] Added "Add magnet" dialog.
+* [BitTorrent] Cache translations in the model.
+* [BitTorrent] Avoid several deprecated libtorrent members.
+* [BitTorrent] Show files icons in icons view.
+* [BitTorrent] Correctly handle marking/unmarking selected files.
+* [BitTorrent] Issue FATAL_ERROR if pkgconfig is not found.
+* [BitTorrent] Non-modal add torrent dialog.
+* [BitTorrent] Notify the user if the torrent file is invalid.
+* [BitTorrent] Open comment label URLs internally.
 * [Blogique Metida] Use XDG cache dir for avatars.
 * [CM] Accept/reject is now togglable by left mouse doubleclick.
 * [CSTP] Added support for UTF-8-encoded content-disposition.
@@ -94,17 +121,21 @@ the rest.
 * [Dolozhee] Sane STR/Expected/Actual order.
 * [HistoryHolder] Async history saving.
 * [HotSensors] Added support for OS X SMC temperature sensors backend.
+* [HttHare] Added support for FreeBSD's sendfile().
 * [KBSwitch] Support adding same layout multiple times.
 * [KBSwitch] Show group variants.
 * [Kinotify] Respect entity's NotificationTimeout property.
 * [LackMan] Check if a package is already present before adding.
 * [LackMan] Remove check preventing from deselecting upgradables.
 * [LackMan] Fixed items filtering.
+* [LackMan] Enable Apply/Cancel/Upgrade actions only when needed.
+* [LackMan] Sync PackagesModel to Install/Remove state.
 * [LastFMScrobble] Implement new URL-based album art API.
 * [Laughty] Respect expiration timeout parameter.
 * [Laughty] Treat non-expiring notifications as permanent.
 * [LHTR] Always validate the document as XML, fixes misrepresentations due to
   entities not defined in XML.
+* [LHTR] Replace '\n' with '<br/>' in plaintext mode.
 * [LMP] Support creating AN rules directly from the playlist.
 * [LMP] Support displaying and manipulating relevant AN rules.
 * [LMP] Added support for audio effects plugins.
@@ -125,6 +156,21 @@ the rest.
 * [LMP] Don't try painting on null pixmaps.
 * [LMP] Fixed substitutions escaping code.
 * [LMP] Fixed local collection model sorting.
+* [LMP] Fixed volume level setting if exponent is not 1.
+* [LMP] Fixed spawning multiple rescan processes if a whole directory tree has
+  been changed at once (for example), because of unmounting.
+* [LMP] Avoid leaking the DBs on LocalCollectionStorage destruction.
+* [LMP] Fixed a crash on double-clicking in the collections tree.
+* [LMP] Fix libsoup rank on play as well.
+* [LMP] Hide buffer bar when switching to local track.
+* [LMP] Load album art lazily and in a separate thread.
+* [LMP] Maintain a set of items in playlist, speeding up concatenation a lot.
+* [LMP] Match against "webkitwebsrc" (lowercased).
+* [LMP] OR the fields during collection searching.
+* [LMP] Replaced QSFPM with QIdentityProxyModel for dev browser, fixing a crash.
+* [LMP] Set empty biography on new request.
+* [LMP] Support multiselection in FS browser.
+* [LMP Graffiti] Support editing files from LMP's collection and playlist menus.
 * [LMP MTPSync] Moved album appending to a separate thread to avoid GUI freezes.
 * [LMP MTPSync] Don't query devices when uploading (fixes spontaneous errors).
 * [Monocle] Support document redirections.
@@ -138,6 +184,9 @@ the rest.
 * [MZ] Better candidates choosing.
 * [MZ] Fetch & detect recordings types.
 * [NetStoreManager] Support downloading multiple selected files.
+* [NetStoreManager] Enable inotify only on Linux.
+* [NetStoreManager GD] Fetch all pages instead of the first one.
+* [NetStoreManager GD] Show ownerless items.
 * [NewLife] Added support for Opera RSS import.
 * [Otlozhu] Support hierarchies in GUI.
 * [Otlozhu] Add "Add todo" button to the context menu.
@@ -151,9 +200,12 @@ the rest.
 * [Poshuku] Added SSL security badge indicator and dialog.
 * [Poshuku] Added Function.prototype.bind kludge for WebKit.
 * [Poshuku] Avoid double-printing with print preview.
-* [Poshuku] Support more node types in XML viewer.]
+* [Poshuku] Support more node types in XML viewer.
 * [Poshuku] Support multithreaded storage backend.
 * [Poshuku] Fixed a long-standing crash when closing a tab with web inspector opened.
+* [Poshuku] Properly save and restore zoom for tabs.
+* [Poshuku] Avoid leaking the DBs in SQLStorageBackend dtor.
+* [Poshuku] Save encoding in tab resume data.
 * [Poshuku CW] Check frame base URL.
 * [Poshuku CW] Handle child frames only when root frame is loaded.
 * [SB2] Severely optimized the Desaturate effect.
