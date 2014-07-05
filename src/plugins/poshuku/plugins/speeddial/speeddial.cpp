@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "speeddial.h"
-#include <vector>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "viewhandler.h"
 #include "imagecache.h"
