@@ -4,58 +4,63 @@
 <context>
     <name>LeechCraft::XProxy::Plugin</name>
     <message>
-        <location filename="xproxy.cpp" line="70"/>
+        <location filename="xproxy.cpp" line="84"/>
         <source>Advanced proxy servers manager for LeechCraft.</source>
-        <translation type="unfinished"></translation>
+        <translation>Продвинутый менеджер прокси-серверов для LeechCraft.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::XProxy::ProxiesConfigWidget</name>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="47"/>
+        <location filename="proxiesconfigwidget.cpp" line="58"/>
         <source>caching HTTP</source>
-        <translation type="unfinished"></translation>
+        <translation>кеширующий HTTP</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="50"/>
+        <location filename="proxiesconfigwidget.cpp" line="61"/>
         <source>caching FTP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.cpp" line="53"/>
-        <source>other type</source>
-        <translation type="unfinished"></translation>
+        <translation>кеширующий FTP</translation>
     </message>
     <message>
         <location filename="proxiesconfigwidget.cpp" line="64"/>
-        <location filename="proxiesconfigwidget.cpp" line="71"/>
+        <source>no proxy</source>
+        <translation>без прокси</translation>
+    </message>
+    <message>
+        <location filename="proxiesconfigwidget.cpp" line="67"/>
+        <source>other type</source>
+        <translation>другой тип</translation>
+    </message>
+    <message>
+        <location filename="proxiesconfigwidget.cpp" line="78"/>
+        <location filename="proxiesconfigwidget.cpp" line="85"/>
         <source>any</source>
-        <translation type="unfinished"></translation>
+        <translation>любой</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="193"/>
+        <location filename="proxiesconfigwidget.cpp" line="223"/>
         <source>Protocols</source>
-        <translation type="unfinished"></translation>
+        <translation>Протоколы</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="194"/>
+        <location filename="proxiesconfigwidget.cpp" line="224"/>
         <source>Target</source>
-        <translation type="unfinished"></translation>
+        <translation>Цель</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="195"/>
+        <location filename="proxiesconfigwidget.cpp" line="225"/>
         <source>Proxy type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="196"/>
+        <location filename="proxiesconfigwidget.cpp" line="226"/>
         <source>Proxy target</source>
-        <translation type="unfinished"></translation>
+        <translation>Прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="197"/>
+        <location filename="proxiesconfigwidget.cpp" line="227"/>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользователь</translation>
     </message>
 </context>
 <context>
@@ -63,74 +68,112 @@
     <message>
         <location filename="proxiesconfigwidget.ui" line="28"/>
         <source>Target</source>
-        <translation type="unfinished"></translation>
+        <translation>Цель</translation>
     </message>
     <message>
         <location filename="proxiesconfigwidget.ui" line="40"/>
-        <location filename="proxiesconfigwidget.ui" line="140"/>
+        <location filename="proxiesconfigwidget.ui" line="145"/>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Хост:</translation>
     </message>
     <message>
         <location filename="proxiesconfigwidget.ui" line="50"/>
-        <location filename="proxiesconfigwidget.ui" line="153"/>
+        <location filename="proxiesconfigwidget.ui" line="158"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Порт:</translation>
     </message>
     <message>
         <location filename="proxiesconfigwidget.ui" line="60"/>
         <source>any</source>
-        <translation type="unfinished"></translation>
+        <translation>любой</translation>
     </message>
     <message>
         <location filename="proxiesconfigwidget.ui" line="70"/>
         <source>Protocols:</source>
-        <translation type="unfinished"></translation>
+        <translation>Протоколы:</translation>
     </message>
     <message>
         <location filename="proxiesconfigwidget.ui" line="77"/>
         <source>Host name or regular expression...</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя хоста или регулярное выражение…</translation>
     </message>
     <message>
         <location filename="proxiesconfigwidget.ui" line="84"/>
         <source>Space-separated list of protocols...</source>
-        <translation type="unfinished"></translation>
+        <translation>Разделённый пробелами список протоколов…</translation>
     </message>
     <message>
         <location filename="proxiesconfigwidget.ui" line="94"/>
         <source>Proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Прокси</translation>
     </message>
     <message>
         <location filename="proxiesconfigwidget.ui" line="106"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="163"/>
+        <location filename="proxiesconfigwidget.ui" line="137"/>
+        <source>None</source>
+        <translation>Нет</translation>
+    </message>
+    <message>
+        <location filename="proxiesconfigwidget.ui" line="168"/>
         <source>User:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользователь:</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="176"/>
+        <location filename="proxiesconfigwidget.ui" line="181"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="209"/>
+        <location filename="proxiesconfigwidget.ui" line="214"/>
         <source>Add proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="219"/>
+        <location filename="proxiesconfigwidget.ui" line="224"/>
         <source>Update proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="229"/>
+        <location filename="proxiesconfigwidget.ui" line="234"/>
         <source>Remove proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить прокси</translation>
+    </message>
+</context>
+<context>
+    <name>xproxysettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>Proxy behavior</source>
+        <translation>Поведение прокси</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Enable for common Network Access Manager</source>
+        <translation>Включить для общего менеджера сетевых соединений</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Intercepts requests made through the global network access manager. Most plugins do their requests via that global manager.</source>
+        <translation>Перехватывает запросы, сделанные через глобальный менеджер сетевых соединений. Большинство модулей делают запросы (в частности, HTTP) через этот менеджер.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Enable globally</source>
+        <translation>Включить глобально</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Intercepts requests made through other means than the global network access manager.</source>
+        <translation>Перехватывает запросы, сделанные другими способами, помимо глобального менеджера соединений.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Proxies</source>
+        <translation>Прокси</translation>
     </message>
 </context>
 </TS>
