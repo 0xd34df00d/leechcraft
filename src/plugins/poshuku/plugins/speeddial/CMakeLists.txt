@@ -9,7 +9,7 @@ set (SPEEDDIAL_SRCS
 	)
 set (SPEEDDIAL_RESOURCES
 	)
-#CreateTrs ("poshuku_speeddial" "en;ru_RU" SPEEDDIAL_COMPILED_TRANSLATIONS)
+CreateTrs ("poshuku_speeddial" "en;ru_RU" SPEEDDIAL_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_speeddial" "en;ru_RU" "${SPEEDDIAL_SRCS}" "" "poshukuspeeddialsettings.xml")
 
 QT4_ADD_RESOURCES (SPEEDDIAL_RCCS ${SPEEDDIAL_RESOURCES})
