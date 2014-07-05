@@ -31,6 +31,7 @@
 #include <QDesktopServices>
 #include <QImage>
 #include <QUrl>
+#include <QDateTime>
 #include <QWebPage>
 #include <QWebFrame>
 #include <QPainter>
@@ -55,11 +56,18 @@ namespace SpeedDial
 	QImage ImageCache::GetSnapshot (const QUrl& url)
 	{
 		const auto& filename = QString::number (qHash (url)) + ".png";
-		if (CacheDir_.exists (filename))
+		const auto& path = CacheDir_.filePath (filename);
+		const QFileInfo info { path };
+		if (info.exists ())
 		{
-			QImage result { CacheDir_.filePath (filename) };
-			if (!result.isNull ())
-				return result;
+			if (info.lastModified ().daysTo (QDateTime::currentDateTime ()) <= 7)
+			{
+				QImage result { path };
+				if (!result.isNull ())
+					return result;
+			}
+
+			QFile::remove (path);
 		}
 
 		if (Url2Page_.contains (url))
