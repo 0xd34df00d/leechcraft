@@ -37,6 +37,7 @@
 #include <QPainter>
 #include <util/sys/paths.h>
 #include <util/sll/delayedexecutor.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -60,7 +61,8 @@ namespace SpeedDial
 		const QFileInfo info { path };
 		if (info.exists ())
 		{
-			if (info.lastModified ().daysTo (QDateTime::currentDateTime ()) <= 7)
+			const auto validity = XmlSettingsManager::Instance ().property ("ValidFor").toInt ();
+			if (info.lastModified ().daysTo (QDateTime::currentDateTime ()) <= validity)
 			{
 				QImage result { path };
 				if (!result.isNull ())
