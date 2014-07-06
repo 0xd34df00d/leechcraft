@@ -516,6 +516,116 @@ namespace Azoth
 		return false;
 	}
 
+	namespace
+	{
+		void PerformRoleAction (const QPair<QByteArray, QByteArray>& role,
+				QObject *mucEntryObj, QString str)
+		{
+			if (role.first.isEmpty () && role.second.isEmpty ())
+				return;
+
+			str = str.trimmed ();
+			const int pos = str.lastIndexOf ('|');
+			const auto& nick = pos > 0 ? str.left (pos) : str;
+			const auto& reason = pos > 0 ? str.mid (pos + 1) : QString ();
+
+			auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryObj);
+			auto mucPerms = qobject_cast<IMUCPerms*> (mucEntryObj);
+
+			const auto& parts = mucEntry->GetParticipants ();
+			auto partPos = std::find_if (parts.begin (), parts.end (),
+					[&nick] (QObject *entryObj) -> bool
+					{
+						auto entry = qobject_cast<ICLEntry*> (entryObj);
+						return entry && entry->GetEntryName () == nick;
+					});
+			if (partPos == parts.end ())
+				return;
+
+			mucPerms->SetPerm (*partPos, role.first, role.second, reason);
+		}
+
+		/** Processes the outgoing messages, replacing /nick with calls
+		 * to the entity to change nick, for example, etc.
+		 *
+		 * If this function returns true, processing (and sending) the
+		 * message should be aborted.
+		 *
+		 * @return true if the processing should be aborted, false
+		 * otherwise.
+		 */
+		bool ProcessOutgoingMsg (ICLEntry *entry, QString& text)
+		{
+			IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+			if (entry->GetEntryType () != ICLEntry::ETMUC ||
+					!mucEntry)
+				return false;
+
+			IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetQObject ());
+
+			if (text.startsWith ("/nick "))
+			{
+				mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
+				return true;
+			}
+			else if (text.startsWith ("/leave"))
+			{
+				const int idx = text.indexOf (' ');
+				const QString& reason = idx > 0 ?
+						text.mid (idx + 1)
+						: QString ();
+
+				mucEntry->Leave (reason);
+
+				if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+					Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
+
+				return true;
+			}
+			else if (text.startsWith ("/kick ") && mucPerms)
+			{
+				PerformRoleAction (mucPerms->GetKickPerm (), entry->GetQObject (), text.mid (6));
+				return true;
+			}
+			else if (text.startsWith ("/ban ") && mucPerms)
+			{
+				PerformRoleAction (mucPerms->GetBanPerm (), entry->GetQObject (), text.mid (5));
+				return true;
+			}
+			else if (text == "/names")
+			{
+				QStringList names;
+				for (const auto obj : mucEntry->GetParticipants ())
+				{
+					ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+					if (!entry)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< obj
+								<< "doesn't implement ICLEntry";
+						continue;
+					}
+					const QString& name = entry->GetEntryName ();
+					if (!name.isEmpty ())
+						names << name;
+				}
+				names.sort ();
+
+				const auto& contents = ChatTab::tr ("MUC's participants: ") + "<ul><li>" +
+						names.join ("</li><li>") + "</li></ul>";
+				const auto entryObj = entry->GetQObject ();
+				const auto msgObj = ProxyObject {}.CreateCoreMessage (contents,
+						QDateTime::currentDateTime (), IMessage::MTServiceMessage, IMessage::DIn, entryObj, entryObj);
+				const auto msg = qobject_cast<IMessage*> (msgObj);
+				msg->Store ();
+
+				return true;
+			}
+
+			return false;
+		}
+	}
+
 	void ChatTab::messageSend ()
 	{
 		QString text = Ui_.MsgEdit_->toPlainText ();
@@ -1875,102 +1985,6 @@ namespace Azoth
 				msg->GetQObject (), info))
 			qWarning () << Q_FUNC_INFO
 					<< "unhandled append message :(";
-	}
-
-	namespace
-	{
-		void PerformRoleAction (const QPair<QByteArray, QByteArray>& role,
-				QObject *mucEntryObj, QString str)
-		{
-			if (role.first.isEmpty () && role.second.isEmpty ())
-				return;
-
-			str = str.trimmed ();
-			const int pos = str.lastIndexOf ('|');
-			const auto& nick = pos > 0 ? str.left (pos) : str;
-			const auto& reason = pos > 0 ? str.mid (pos + 1) : QString ();
-
-			auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryObj);
-			auto mucPerms = qobject_cast<IMUCPerms*> (mucEntryObj);
-
-			const auto& parts = mucEntry->GetParticipants ();
-			auto partPos = std::find_if (parts.begin (), parts.end (),
-					[&nick] (QObject *entryObj) -> bool
-					{
-						auto entry = qobject_cast<ICLEntry*> (entryObj);
-						return entry && entry->GetEntryName () == nick;
-					});
-			if (partPos == parts.end ())
-				return;
-
-			mucPerms->SetPerm (*partPos, role.first, role.second, reason);
-		}
-	}
-
-	bool ChatTab::ProcessOutgoingMsg (ICLEntry *entry, QString& text)
-	{
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
-		if (entry->GetEntryType () != ICLEntry::ETMUC ||
-				!mucEntry)
-			return false;
-
-		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetQObject ());
-
-		if (text.startsWith ("/nick "))
-		{
-			mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
-			return true;
-		}
-		else if (text.startsWith ("/leave"))
-		{
-			const int idx = text.indexOf (' ');
-			const QString& reason = idx > 0 ?
-					text.mid (idx + 1)
-					: QString ();
-
-			mucEntry->Leave (reason);
-
-			if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-				Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
-
-			return true;
-		}
-		else if (text.startsWith ("/kick ") && mucPerms)
-		{
-			PerformRoleAction (mucPerms->GetKickPerm (), entry->GetQObject (), text.mid (6));
-			return true;
-		}
-		else if (text.startsWith ("/ban ") && mucPerms)
-		{
-			PerformRoleAction (mucPerms->GetBanPerm (), entry->GetQObject (), text.mid (5));
-			return true;
-		}
-		else if (text == "/names")
-		{
-			QStringList names;
-			Q_FOREACH (QObject *obj, mucEntry->GetParticipants ())
-			{
-				ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-				if (!entry)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< obj
-							<< "doesn't implement ICLEntry";
-					continue;
-				}
-				const QString& name = entry->GetEntryName ();
-				if (!name.isEmpty ())
-					names << name;
-			}
-			names.sort ();
-			QWebElement body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
-			body.appendInside ("<div class='systemmsg'>" +
-					tr ("MUC's participants: ") + "<ul><li>" +
-					names.join ("</li><li>") + "</li></ul></div>");
-			return true;
-		}
-
-		return false;
 	}
 
 	void ChatTab::nickComplete ()
