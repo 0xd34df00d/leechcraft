@@ -27,11 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "mucommands.h"
-#include <QIcon>
-#include <interfaces/azoth/iclentry.h>
-#include <interfaces/azoth/iproxyobject.h>
 #include "commands.h"
+#include <QStringList>
+#include <QtDebug>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/imucentry.h>
+#include <interfaces/azoth/iproxyobject.h>
 
 namespace LeechCraft
 {
@@ -39,67 +40,41 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	bool HandleNames (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-	}
+		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
 
-	void Plugin::SecondInit ()
-	{
-		Names_ = StaticCommand
+		QStringList names;
+		for (const auto obj : mucEntry->GetParticipants ())
 		{
-			"/names",
-			[this] (ICLEntry *entry, const QString& text)
+			ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+			if (!entry)
 			{
-				return HandleNames (AzothProxy_, entry, text);
+				qWarning () << Q_FUNC_INFO
+						<< obj
+						<< "doesn't implement ICLEntry";
+				continue;
 			}
-		};
-	}
+			const QString& name = entry->GetEntryName ();
+			if (!name.isEmpty ())
+				names << name;
+		}
+		names.sort ();
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Azoth.MuCommands";
-	}
+		const auto& contents = QObject::tr ("MUC's participants: ") + "<ul><li>" +
+				names.join ("</li><li>") + "</li></ul>";
+		const auto entryObj = entry->GetQObject ();
+		const auto msgObj = azothProxy->CreateCoreMessage (contents,
+				QDateTime::currentDateTime (),
+				IMessage::MTServiceMessage,
+				IMessage::DIn,
+				entryObj,
+				entryObj);
+		const auto msg = qobject_cast<IMessage*> (msgObj);
+		msg->Store ();
 
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Azoth MuCommands";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Provides some common conference-oriented commands for Azoth.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return {};
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
-		return result;
-	}
-
-	StaticCommands_t Plugin::GetStaticCommands (ICLEntry *entry)
-	{
-		if (entry->GetEntryType () != ICLEntry::ETMUC)
-			return {};
-
-		return { Names_ };
-	}
-
-	void Plugin::initPlugin (QObject *proxy)
-	{
-		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
+		return true;
 	}
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_azoth_mucommands, LeechCraft::Azoth::MuCommands::Plugin);

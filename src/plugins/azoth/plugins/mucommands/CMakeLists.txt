@@ -11,6 +11,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 
 set (MUCOMMANDS_SRCS
 	mucommands.cpp
+	commands.cpp
 	)
 
 #set (MUCOMMANDS_RESOURCES mucommandsresources.qrc)
