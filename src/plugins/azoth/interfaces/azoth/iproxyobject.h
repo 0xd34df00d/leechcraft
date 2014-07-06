@@ -296,6 +296,8 @@ namespace Azoth
 
 		virtual void FormatLinks (QString& body) = 0;
 
+		virtual QStringList FindLinks (const QString&) = 0;
+
 		virtual QObject* CreateCoreMessage (const QString& body, const QDateTime& date,
 				IMessage::MessageType type, IMessage::Direction dir,
 				QObject *other, QObject *parent = nullptr) = 0;
