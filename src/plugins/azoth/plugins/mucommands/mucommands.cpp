@@ -29,7 +29,9 @@
 
 #include "mucommands.h"
 #include <QIcon>
-#include <interfaces/core/icoreproxy.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/imucentry.h>
+#include <interfaces/azoth/iproxyobject.h>
 
 namespace LeechCraft
 {
@@ -37,12 +39,51 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 	}
 
 	void Plugin::SecondInit ()
 	{
+		Names_ = StaticCommand
+		{
+			"/names",
+			[this] (ICLEntry *entry, const QString& text) -> bool
+			{
+				const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+
+				QStringList names;
+				for (const auto obj : mucEntry->GetParticipants ())
+				{
+					ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+					if (!entry)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< obj
+								<< "doesn't implement ICLEntry";
+						continue;
+					}
+					const QString& name = entry->GetEntryName ();
+					if (!name.isEmpty ())
+						names << name;
+				}
+				names.sort ();
+
+				const auto& contents = tr ("MUC's participants: ") + "<ul><li>" +
+						names.join ("</li><li>") + "</li></ul>";
+				const auto entryObj = entry->GetQObject ();
+				const auto msgObj = AzothProxy_->CreateCoreMessage (contents,
+						QDateTime::currentDateTime (),
+						IMessage::MTServiceMessage,
+						IMessage::DIn,
+						entryObj,
+						entryObj);
+				const auto msg = qobject_cast<IMessage*> (msgObj);
+				msg->Store ();
+
+				return true;
+			}
+		};
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -74,6 +115,19 @@ namespace MuCommands
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
+	}
+
+	StaticCommands_t Plugin::GetStaticCommands (ICLEntry *entry)
+	{
+		if (entry->GetEntryType () != ICLEntry::ETMUC)
+			return {};
+
+		return { Names_ };
+	}
+
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
 }
 }

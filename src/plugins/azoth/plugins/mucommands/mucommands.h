@@ -34,22 +34,29 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/iprovidecommands.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace MuCommands
 {
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IProvideCommands
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				LeechCraft::Azoth::IProvideCommands)
 
-		ICoreProxy_ptr Proxy_;
+		StaticCommand Names_;
+
+		IProxyObject *AzothProxy_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -60,6 +67,10 @@ namespace MuCommands
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		StaticCommands_t GetStaticCommands (ICLEntry*);
+	public slots:
+		void initPlugin (QObject*);
 	};
 }
 }
