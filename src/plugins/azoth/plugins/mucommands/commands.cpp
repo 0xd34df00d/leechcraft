@@ -84,24 +84,32 @@ namespace MuCommands
 		return true;
 	}
 
+	namespace
+	{
+		QStringList GetAllUrls (IProxyObject *azothProxy, ICLEntry *entry)
+		{
+			QStringList urls;
+			for (const auto msgObj : entry->GetAllMessages ())
+			{
+				const auto msg = qobject_cast<IMessage*> (msgObj);
+				switch (msg->GetMessageType ())
+				{
+				case IMessage::MTChatMessage:
+				case IMessage::MTMUCMessage:
+					break;
+				default:
+					continue;
+				}
+
+				urls += azothProxy->FindLinks (msg->GetBody ());
+			}
+			return urls;
+		}
+	}
+
 	bool ListUrls (IProxyObject *azothProxy, ICLEntry *entry, const QString&)
 	{
-		QStringList urls;
-
-		for (const auto msgObj : entry->GetAllMessages ())
-		{
-			const auto msg = qobject_cast<IMessage*> (msgObj);
-			switch (msg->GetMessageType ())
-			{
-			case IMessage::MTChatMessage:
-			case IMessage::MTMUCMessage:
-				break;
-			default:
-				continue;
-			}
-
-			urls += azothProxy->FindLinks (msg->GetBody ());
-		}
+		const auto& urls = GetAllUrls (azothProxy, entry);
 
 		const auto& body = urls.isEmpty () ?
 				QObject::tr ("Sorry, no links found, chat more!") :
