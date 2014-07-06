@@ -83,6 +83,33 @@ namespace MuCommands
 
 		return true;
 	}
+
+	bool ListUrls (IProxyObject *azothProxy, ICLEntry *entry, const QString&)
+	{
+		QStringList urls;
+
+		for (const auto msgObj : entry->GetAllMessages ())
+		{
+			const auto msg = qobject_cast<IMessage*> (msgObj);
+			switch (msg->GetMessageType ())
+			{
+			case IMessage::MTChatMessage:
+			case IMessage::MTMUCMessage:
+				break;
+			default:
+				continue;
+			}
+
+			urls += azothProxy->FindLinks (msg->GetBody ());
+		}
+
+		const auto& body = urls.isEmpty () ?
+				QObject::tr ("Sorry, no links found, chat more!") :
+				QObject::tr ("Found links:") + "<ol><li>" + urls.join ("</li><li>") + "</li></ol>";
+		InjectMessage (azothProxy, entry, body);
+
+		return true;
+	}
 }
 }
 }

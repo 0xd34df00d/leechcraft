@@ -55,6 +55,7 @@ namespace MuCommands
 				LeechCraft::Azoth::IProvideCommands)
 
 		StaticCommand Names_;
+		StaticCommand ListUrls_;
 
 		IProxyObject *AzothProxy_ = nullptr;
 	public:

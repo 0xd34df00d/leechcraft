@@ -41,6 +41,8 @@ class ICLEntry;
 namespace MuCommands
 {
 	bool HandleNames (IProxyObject*, ICLEntry*, const QString&);
+
+	bool ListUrls (IProxyObject*, ICLEntry*, const QString&);
 }
 }
 }

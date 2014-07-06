@@ -48,10 +48,13 @@ namespace MuCommands
 		Names_ = StaticCommand
 		{
 			"/names",
-			[this] (ICLEntry *entry, const QString& text)
-			{
-				return HandleNames (AzothProxy_, entry, text);
-			}
+			[this] (ICLEntry *e, const QString& t) { return HandleNames (AzothProxy_, e, t); }
+		};
+
+		ListUrls_ = StaticCommand
+		{
+			"/urls",
+			[this] (ICLEntry *e, const QString& t) { return ListUrls (AzothProxy_, e, t); }
 		};
 	}
 
@@ -71,7 +74,7 @@ namespace MuCommands
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Provides some common conference-oriented commands for Azoth.");
+		return tr ("Provides some common commands, both for conferences and for private chats, for Azoth.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -91,7 +94,7 @@ namespace MuCommands
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 			return {};
 
-		return { Names_ };
+		return { Names_, ListUrls_ };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
