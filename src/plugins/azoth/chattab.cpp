@@ -1821,8 +1821,9 @@ namespace Azoth
 			return;
 
 		if (XmlSettingsManager::Instance ().property ("SeparateMUCEventLogWindow").toBool () &&
-			(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
-			msg->GetMessageType () != IMessage::MTMUCMessage)
+				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
+				(msg->GetMessageType () != IMessage::MTMUCMessage &&
+					msg->GetMessageType () != IMessage::MTServiceMessage))
 		{
 			const auto& dt = msg->GetDateTime ().toString ("HH:mm:ss.zzz");
 			MUCEventLog_->append (QString ("<font color=\"#56ED56\">[%1] %2</font>")
