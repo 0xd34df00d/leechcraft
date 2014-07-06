@@ -67,6 +67,7 @@
 #include "interfaces/azoth/iupdatablechatentry.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
+#include "interfaces/azoth/iprovidecommands.h"
 #endif
 #include "core.h"
 #include "textedit.h"
@@ -545,6 +546,17 @@ namespace Azoth
 			mucPerms->SetPerm (*partPos, role.first, role.second, reason);
 		}
 
+		bool TextMatchesCmd (const QString& text, const QString& cmd)
+		{
+			if (text == cmd)
+				return true;
+
+			if (!text.startsWith (cmd))
+				return false;
+
+			return text [cmd.size ()] == ' ';
+		}
+
 		/** Processes the outgoing messages, replacing /nick with calls
 		 * to the entity to change nick, for example, etc.
 		 *
@@ -592,34 +604,19 @@ namespace Azoth
 				PerformRoleAction (mucPerms->GetBanPerm (), entry->GetQObject (), text.mid (5));
 				return true;
 			}
-			else if (text == "/names")
+			else
 			{
-				QStringList names;
-				for (const auto obj : mucEntry->GetParticipants ())
-				{
-					ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-					if (!entry)
+				const auto cmdProvs = Core::Instance ().GetProxy ()->
+						GetPluginsManager ()->GetAllCastableTo<IProvideCommands*> ();
+				for (const auto prov : cmdProvs)
+					for (const auto& cmd : prov->GetStaticCommands (entry))
 					{
-						qWarning () << Q_FUNC_INFO
-								<< obj
-								<< "doesn't implement ICLEntry";
-						continue;
+						if (!TextMatchesCmd (text, cmd.Name_))
+							continue;
+
+						if (cmd.Command_ (entry, text))
+							return true;
 					}
-					const QString& name = entry->GetEntryName ();
-					if (!name.isEmpty ())
-						names << name;
-				}
-				names.sort ();
-
-				const auto& contents = ChatTab::tr ("MUC's participants: ") + "<ul><li>" +
-						names.join ("</li><li>") + "</li></ul>";
-				const auto entryObj = entry->GetQObject ();
-				const auto msgObj = ProxyObject {}.CreateCoreMessage (contents,
-						QDateTime::currentDateTime (), IMessage::MTServiceMessage, IMessage::DIn, entryObj, entryObj);
-				const auto msg = qobject_cast<IMessage*> (msgObj);
-				msg->Store ();
-
-				return true;
 			}
 
 			return false;
