@@ -40,7 +40,23 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	bool HandleNames (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	namespace
+	{
+		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry, const QString& contents)
+		{
+			const auto entryObj = entry->GetQObject ();
+			const auto msgObj = azothProxy->CreateCoreMessage (contents,
+					QDateTime::currentDateTime (),
+					IMessage::MTServiceMessage,
+					IMessage::DIn,
+					entryObj,
+					entryObj);
+			const auto msg = qobject_cast<IMessage*> (msgObj);
+			msg->Store ();
+		}
+	}
+
+	bool HandleNames (IProxyObject *azothProxy, ICLEntry *entry, const QString&)
 	{
 		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
 
@@ -63,15 +79,7 @@ namespace MuCommands
 
 		const auto& contents = QObject::tr ("MUC's participants: ") + "<ul><li>" +
 				names.join ("</li><li>") + "</li></ul>";
-		const auto entryObj = entry->GetQObject ();
-		const auto msgObj = azothProxy->CreateCoreMessage (contents,
-				QDateTime::currentDateTime (),
-				IMessage::MTServiceMessage,
-				IMessage::DIn,
-				entryObj,
-				entryObj);
-		const auto msg = qobject_cast<IMessage*> (msgObj);
-		msg->Store ();
+		InjectMessage (azothProxy, entry, contents);
 
 		return true;
 	}
