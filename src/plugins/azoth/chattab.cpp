@@ -65,9 +65,9 @@
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/imucperms.h"
 #include "interfaces/azoth/iupdatablechatentry.h"
+#include "interfaces/azoth/iprovidecommands.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
-#include "interfaces/azoth/iprovidecommands.h"
 #endif
 #include "core.h"
 #include "textedit.h"
