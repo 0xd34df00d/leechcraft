@@ -40,6 +40,7 @@
 #include "vcarddialog.h"
 #include "groupsmanager.h"
 #include "vkchatentry.h"
+#include "georesolver.h"
 
 namespace LeechCraft
 {
@@ -529,6 +530,23 @@ namespace Murm
 				<< "unknown field"
 				<< static_cast<int> (field);
 		return {};
+	}
+
+	QList<QPair<QString, QVariant>> VkEntry::GetVCardRepresentation () const
+	{
+		return
+		{
+			{ tr ("First name"), Info_.FirstName_ },
+			{ tr ("Last name"), Info_.LastName_ },
+			{ tr ("Nick"), Info_.Nick_ },
+			{ tr ("Photo"), Info_.BigPhoto_ },
+			{ tr ("Birthday"), Info_.Birthday_ },
+			{ tr ("Home phone"), Info_.HomePhone_ },
+			{ tr ("Mobile phone"), Info_.MobilePhone_ },
+			{ tr ("Timezone"), Info_.Timezone_ },
+			{ tr ("City"), Account_->GetGeoResolver ()->GetCity (Info_.City_) },
+			{ tr ("Country"), Account_->GetGeoResolver ()->GetCountry (Info_.Country_) },
+		};
 	}
 
 	void VkEntry::handleTypingTimeout ()

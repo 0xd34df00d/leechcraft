@@ -114,6 +114,7 @@ namespace Murm
 		void ChatTabClosed ();
 
 		QVariant GetMetaInfo (DataField) const;
+		QList<QPair<QString, QVariant>> GetVCardRepresentation () const;
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();
