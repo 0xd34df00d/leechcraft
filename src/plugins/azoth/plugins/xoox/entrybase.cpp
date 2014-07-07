@@ -283,7 +283,10 @@ namespace Xoox
 		{
 			{ tr ("Photo"), QImage::fromData (VCardIq_.photo ()) },
 			{ "JID", VCardIq_.from () },
-			{ tr ("Real name"), VCardIq_.fullName () }
+			{ tr ("Real name"), VCardIq_.fullName () },
+			{ tr ("Birthday"), VCardIq_.birthday () },
+			{ "URL", VCardIq_.url () },
+			{ tr ("About"), VCardIq_.description () }
 		};
 		return result;
 	}
