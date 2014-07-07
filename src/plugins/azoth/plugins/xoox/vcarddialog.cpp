@@ -263,6 +263,8 @@ namespace Xoox
 			str += "</li></ul>";
 
 			addresses << str;
+
+			++addrNum;
 		}
 		Ui_.Addresses_->setHtml (addresses.join ("<hr/>"));
 	}
