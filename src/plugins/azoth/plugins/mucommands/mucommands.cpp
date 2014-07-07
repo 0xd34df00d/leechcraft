@@ -64,6 +64,13 @@ namespace MuCommands
 			[this] (ICLEntry *e, const QString& t)
 				{ return OpenUrl (CoreProxy_, AzothProxy_, e, t, OnlyHandle); }
 		};
+
+		FetchUrl_ = StaticCommand
+		{
+			"/fetchurl",
+			[this] (ICLEntry *e, const QString& t)
+				{ return OpenUrl (CoreProxy_, AzothProxy_, e, t, OnlyDownload); }
+		};
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -102,7 +109,7 @@ namespace MuCommands
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 			return {};
 
-		return { Names_, ListUrls_, OpenUrl_ };
+		return { Names_, ListUrls_, OpenUrl_, FetchUrl_ };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
