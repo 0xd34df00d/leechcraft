@@ -288,6 +288,14 @@ namespace Xoox
 			{ "URL", VCardIq_.url () },
 			{ tr ("About"), VCardIq_.description () }
 		};
+
+#if QXMPP_VERSION >= 0x000800
+		const auto& orgInfo = VCardIq_.organization ();
+		result.append ({ tr ("Organization"), orgInfo.organization () });
+		result.append ({ tr ("Organization unit"), orgInfo.unit () });
+		result.append ({ tr ("Job title"), orgInfo.title () });
+		result.append ({ tr ("Job role"), orgInfo.role () });
+#endif
 		return result;
 	}
 
