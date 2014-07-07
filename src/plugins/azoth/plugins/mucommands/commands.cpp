@@ -260,6 +260,15 @@ namespace MuCommands
 					string += date.toString (Qt::DefaultLocaleLongDate);
 					break;
 				}
+				case QVariant::StringList:
+				{
+					const auto& list = pair.second.toStringList ();
+					if (list.isEmpty ())
+						continue;
+
+					string += "<ul><li>" + list.join ("</li><li>") + "</li></ul>";
+					break;
+				}
 				default:
 					string += "unhandled data type ";
 					string += pair.second.typeName ();
