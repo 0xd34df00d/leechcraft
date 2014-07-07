@@ -289,6 +289,78 @@ namespace Xoox
 			{ tr ("About"), VCardIq_.description () }
 		};
 
+		for (const auto& phone : VCardIq_.phones ())
+		{
+			if (phone.number ().isEmpty ())
+				continue;
+
+			QStringList attrs;
+			if (phone.type () & QXmppVCardPhone::Preferred)
+				attrs << tr ("preferred");
+			if (phone.type () & QXmppVCardPhone::Home)
+				attrs << tr ("home");
+			if (phone.type () & QXmppVCardPhone::Work)
+				attrs << tr ("work");
+			if (phone.type () & QXmppVCardPhone::Cell)
+				attrs << tr ("cell");
+
+			result.append ({ tr ("Phone"), attrs.isEmpty () ?
+						phone.number () :
+						phone.number () + " (" + attrs.join (", ") + ")" });
+		}
+
+		for (const auto& email : VCardIq_.emails ())
+		{
+			if (email.address ().isEmpty ())
+				continue;
+
+			QStringList attrs;
+			if (email.type () == QXmppVCardEmail::Preferred)
+				attrs << tr ("preferred");
+			if (email.type () == QXmppVCardEmail::Home)
+				attrs << tr ("home");
+			if (email.type () == QXmppVCardEmail::Work)
+				attrs << tr ("work");
+			if (email.type () == QXmppVCardEmail::X400)
+				attrs << "X400";
+
+			result.append ({ "Email", attrs.isEmpty () ?
+						email.address () :
+						email.address () + " (" + attrs.join (", ") + ")" });
+		}
+
+		for (const auto& address : VCardIq_.addresses ())
+		{
+			if ((address.country () + address.locality () + address.postcode () +
+					address.region () + address.street ()).isEmpty ())
+				continue;
+
+			QStringList attrs;
+			if (address.type () & QXmppVCardAddress::Home)
+				attrs << tr ("home");
+			if (address.type () & QXmppVCardAddress::Work)
+				attrs << tr ("work");
+			if (address.type () & QXmppVCardAddress::Postal)
+				attrs << tr ("postal");
+			if (address.type () & QXmppVCardAddress::Preferred)
+				attrs << tr ("preferred");
+
+			QString str;
+			QStringList fields;
+			auto addField = [&fields] (const QString& label, const QString& val)
+			{
+				if (!val.isEmpty ())
+					fields << label.arg (val);
+			};
+			addField (tr ("Country: %1"), address.country ());
+			addField (tr ("Region: %1"), address.region ());
+			addField (tr ("Locality: %1", "User's locality"), address.locality ());
+			addField (tr ("Street: %1"), address.street ());
+			addField (tr ("Postal code: %1"), address.postcode ());
+
+			result.append ({ tr ("Address"), fields });
+		}
+
 #if QXMPP_VERSION >= 0x000800
 		const auto& orgInfo = VCardIq_.organization ();
 		result.append ({ tr ("Organization"), orgInfo.organization () });
