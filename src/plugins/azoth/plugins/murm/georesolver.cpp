@@ -52,6 +52,11 @@ namespace Murm
 		Get (code, setter, Countries_, GeoIdType::Country);
 	}
 
+	QString GeoResolver::GetCountry (int code) const
+	{
+		return Countries_.value (code);
+	}
+
 	void GeoResolver::CacheCities (QList<int> ids)
 	{
 		Cache (ids, Cities_, GeoIdType::Country);
@@ -60,6 +65,11 @@ namespace Murm
 	void GeoResolver::GetCity (int code, std::function<void (QString)> setter)
 	{
 		Get (code, setter, Cities_, GeoIdType::City);
+	}
+
+	QString GeoResolver::GetCity (int code) const
+	{
+		return Cities_.value (code);
 	}
 
 	void GeoResolver::Cache (QList<int> ids, QHash<int, QString>& result, GeoIdType type)

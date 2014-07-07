@@ -55,9 +55,11 @@ namespace Murm
 
 		void CacheCountries (QList<int>);
 		void GetCountry (int, std::function<void (QString)>);
+		QString GetCountry (int) const;
 
 		void CacheCities (QList<int>);
 		void GetCity (int, std::function<void (QString)>);
+		QString GetCity (int) const;
 	private:
 		void Cache (QList<int>, QHash<int, QString>&, GeoIdType);
 		void Get (int, std::function<void (QString)>, QHash<int, QString>&, GeoIdType);
