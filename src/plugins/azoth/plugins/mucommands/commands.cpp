@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "commands.h"
+#include <boost/range/adaptor/reversed.hpp>
 #include <QStringList>
 #include <QtDebug>
 #include <QUrl>
@@ -35,6 +36,9 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/isupportnonroster.h>
+#include <interfaces/azoth/imetainfoentry.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -154,6 +158,65 @@ namespace MuCommands
 		}
 
 		return true;
+	}
+
+	namespace
+	{
+		QHash<QString, ICLEntry*> GetParticipants (IMUCEntry *entry)
+		{
+			QHash<QString, ICLEntry*> result;
+			for (const auto entryObj : entry->GetParticipants ())
+			{
+				const auto entry = qobject_cast<ICLEntry*> (entryObj);
+				if (entry)
+					result [entry->GetEntryName ()] = entry;
+			}
+			return result;
+		}
+
+		QStringList ParseNicks (ICLEntry *entry, const QString& text)
+		{
+			auto split = text.split (' ', QString::SkipEmptyParts).mid (1);
+
+			if (!split.isEmpty ())
+				return split;
+
+			const auto& msgs = entry->GetAllMessages ();
+			for (const auto msgObj : boost::adaptors::reverse (msgs))
+			{
+				const auto msg = qobject_cast<IMessage*> (msgObj);
+				if (const auto otherPart = qobject_cast<ICLEntry*> (msg->OtherPart ()))
+				{
+					split << otherPart->GetEntryName ();
+					break;
+				}
+			}
+
+			return split;
+		}
+
+		ICLEntry* ResolveEntry (const QString& name, const QHash<QString, ICLEntry*>& context, QObject *accObj)
+		{
+			if (context.contains (name))
+				return context.value (name);
+
+			const auto acc = qobject_cast<IAccount*> (accObj);
+			for (const auto entryObj : acc->GetCLEntries ())
+			{
+				const auto entry = qobject_cast<ICLEntry*> (entryObj);
+				if (!entry)
+					continue;
+
+				if (entry->GetEntryName () == name || entry->GetHumanReadableID () == name)
+					return entry;
+			}
+
+			if (const auto isn = qobject_cast<ISupportNonRoster*> (accObj))
+				if (const auto entry = qobject_cast<ICLEntry*> (isn->CreateNonRosterItem (name)))
+					return entry;
+
+			return nullptr;
+		}
 	}
 }
 }
