@@ -39,8 +39,9 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		CoreProxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
