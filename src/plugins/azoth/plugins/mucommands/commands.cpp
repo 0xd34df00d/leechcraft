@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QUrl>
+#include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
@@ -238,6 +239,25 @@ namespace MuCommands
 						continue;
 
 					string += metaStr;
+					break;
+				}
+				case QVariant::Image:
+				{
+					const auto& image = pair.second.value<QImage> ();
+					if (image.isNull ())
+						continue;
+
+					const auto& src = Util::GetAsBase64Src (image);
+					string += "<img src='" + src + "' alt=''/>";
+					break;
+				}
+				case QVariant::Date:
+				{
+					const auto& date = pair.second.toDate ();
+					if (date.isNull ())
+						continue;
+
+					string += date.toString (Qt::DefaultLocaleLongDate);
 					break;
 				}
 				default:
