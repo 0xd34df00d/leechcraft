@@ -195,7 +195,11 @@ namespace Xoox
 
 		QPointer<VCardDialog> ptr (VCardDialog_);
 		Account_->GetClientConnection ()->FetchVCard (GetJID (),
-				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->UpdateInfo (iq); },
+				[ptr] (const QXmppVCardIq& iq) -> void
+				{
+					if (ptr)
+						ptr->UpdateInfo (iq);
+				},
 				true);
 		VCardDialog_->show ();
 	}
@@ -269,6 +273,19 @@ namespace Xoox
 				<< static_cast<int> (field);
 
 		return QVariant ();
+	}
+
+	QList<QPair<QString, QVariant>> EntryBase::GetVCardRepresentation () const
+	{
+		Account_->GetClientConnection ()->FetchVCard (GetJID ());
+
+		QList<QPair<QString, QVariant>> result
+		{
+			{ tr ("Photo"), QImage::fromData (VCardIq_.photo ()) },
+			{ "JID", VCardIq_.from () },
+			{ tr ("Real name"), VCardIq_.fullName () }
+		};
+		return result;
 	}
 
 	bool EntryBase::CanSendDirectedStatusNow (const QString& variant)

@@ -142,6 +142,7 @@ namespace Xoox
 
 		// IMetaInfoEntry
 		QVariant GetMetaInfo (DataField) const;
+		QList<QPair<QString, QVariant>> GetVCardRepresentation () const;
 
 		// IHaveDirectedStatus
 		bool CanSendDirectedStatusNow (const QString&);
