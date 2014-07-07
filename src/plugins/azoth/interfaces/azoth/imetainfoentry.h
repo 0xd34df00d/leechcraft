@@ -30,6 +30,9 @@
 #pragma once
 
 #include <QtPlugin>
+#include <QList>
+#include <QPair>
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -46,6 +49,8 @@ namespace Azoth
 		virtual ~IMetaInfoEntry () {}
 
 		virtual QVariant GetMetaInfo (DataField) const = 0;
+
+		virtual QList<QPair<QString, QVariant>> GetVCardRepresentation () const = 0;
 	};
 }
 }
