@@ -56,6 +56,7 @@ namespace MuCommands
 
 		StaticCommand Names_;
 		StaticCommand ListUrls_;
+		StaticCommand OpenUrl_;
 
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_ = nullptr;

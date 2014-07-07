@@ -30,9 +30,12 @@
 #include "commands.h"
 #include <QStringList>
 #include <QtDebug>
+#include <QUrl>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -115,6 +118,40 @@ namespace MuCommands
 				QObject::tr ("Sorry, no links found, chat more!") :
 				QObject::tr ("Found links:") + "<ol><li>" + urls.join ("</li><li>") + "</li></ol>";
 		InjectMessage (azothProxy, entry, body);
+
+		return true;
+	}
+
+	bool OpenUrl (const ICoreProxy_ptr& coreProxy,
+			IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		const auto& urls = GetAllUrls (azothProxy, entry);
+
+		const auto& split = text.split (' ', QString::SkipEmptyParts).mid (1);
+
+		QList<int> indexes;
+		if (split.isEmpty ())
+			indexes << urls.size () - 1;
+
+		for (const auto& item : split)
+		{
+			bool ok = false;
+			const auto idx = item.toInt (&ok);
+			if (ok)
+				indexes << idx - 1;
+		}
+
+		const auto iem = coreProxy->GetEntityManager ();
+		for (const auto idx : indexes)
+		{
+			const auto& url = urls.value (idx);
+			if (url.isEmpty ())
+				continue;
+
+			const auto& entity = Util::MakeEntity (QUrl::fromUserInput (url),
+					{}, OnlyHandle | FromUserInitiated);
+			iem->HandleEntity (entity);
+		}
 
 		return true;
 	}
