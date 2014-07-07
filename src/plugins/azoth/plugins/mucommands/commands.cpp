@@ -122,8 +122,8 @@ namespace MuCommands
 		return true;
 	}
 
-	bool OpenUrl (const ICoreProxy_ptr& coreProxy,
-			IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	bool OpenUrl (const ICoreProxy_ptr& coreProxy, IProxyObject *azothProxy,
+			ICLEntry *entry, const QString& text, TaskParameters params)
 	{
 		const auto& urls = GetAllUrls (azothProxy, entry);
 
@@ -149,7 +149,7 @@ namespace MuCommands
 				continue;
 
 			const auto& entity = Util::MakeEntity (QUrl::fromUserInput (url),
-					{}, OnlyHandle | FromUserInitiated);
+					{}, params | FromUserInitiated);
 			iem->HandleEntity (entity);
 		}
 

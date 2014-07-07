@@ -62,7 +62,7 @@ namespace MuCommands
 		{
 			"/openurl",
 			[this] (ICLEntry *e, const QString& t)
-				{ return OpenUrl (CoreProxy_, AzothProxy_, e, t); }
+				{ return OpenUrl (CoreProxy_, AzothProxy_, e, t, OnlyHandle); }
 		};
 	}
 

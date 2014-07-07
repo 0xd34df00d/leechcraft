@@ -30,6 +30,7 @@
 #pragma once
 
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
 
 class QString;
 
@@ -46,7 +47,7 @@ namespace MuCommands
 
 	bool ListUrls (IProxyObject*, ICLEntry*, const QString&);
 
-	bool OpenUrl (const ICoreProxy_ptr&, IProxyObject*, ICLEntry*, const QString&);
+	bool OpenUrl (const ICoreProxy_ptr&, IProxyObject*, ICLEntry*, const QString&, TaskParameters);
 }
 }
 }
