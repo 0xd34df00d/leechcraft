@@ -217,6 +217,76 @@ namespace MuCommands
 
 			return nullptr;
 		}
+
+		QString FormatRepresentation (const QList<QPair<QString, QVariant>>& repr)
+		{
+			QStringList strings;
+
+			for (const auto& pair : repr)
+			{
+				if (pair.second.isNull ())
+					continue;
+
+				auto string = "<strong>" + pair.first + ":</strong> ";
+
+				switch (pair.second.type ())
+				{
+				case QVariant::String:
+				{
+					const auto& metaStr = pair.second.toString ();
+					if (metaStr.isEmpty ())
+						continue;
+
+					string += metaStr;
+					break;
+				}
+				default:
+					string += "unhandled data type ";
+					string += pair.second.typeName ();
+					break;
+				}
+
+				strings << string;
+			}
+
+			if (strings.isEmpty ())
+				return QObject::tr ("no information");
+
+			return "<ul><li>" + strings.join ("</li><li>") + "</li></ul>";
+		}
+	}
+
+	bool ShowVCard (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		const auto& split = ParseNicks (entry, text);
+		if (split.isEmpty ())
+			return true;
+
+		const auto& participants = GetParticipants (qobject_cast<IMUCEntry*> (entry->GetQObject ()));
+		for (const auto& name : split)
+		{
+			const auto target = ResolveEntry (name.trimmed (),
+					participants, entry->GetParentAccount ());
+			if (!target)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("Unable to resolve %1.").arg ("<em>" + name + "</em>"));
+				continue;
+			}
+
+			const auto imie = qobject_cast<IMetaInfoEntry*> (target->GetQObject ());
+			if (!imie)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("%1 doesn't support extended metainformation.").arg ("<em>" + name + "</em>"));
+				continue;
+			}
+
+			InjectMessage (azothProxy, entry,
+					name + ":<br/>" + FormatRepresentation (imie->GetVCardRepresentation ()));
+		}
+
+		return true;
 	}
 }
 }

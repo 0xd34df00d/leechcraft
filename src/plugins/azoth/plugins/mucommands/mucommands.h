@@ -58,6 +58,7 @@ namespace MuCommands
 		StaticCommand ListUrls_;
 		StaticCommand OpenUrl_;
 		StaticCommand FetchUrl_;
+		StaticCommand VCard_;
 
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_ = nullptr;
