@@ -324,11 +324,6 @@ namespace Vader
 		return Avatar_;
 	}
 
-	QString MRIMBuddy::GetRawInfo () const
-	{
-		return QString ();
-	}
-
 	void MRIMBuddy::ShowInfo ()
 	{
 		A_->RequestInfo (GetHumanReadableID ());

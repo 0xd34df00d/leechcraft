@@ -92,11 +92,6 @@ namespace Acetamide
 		return QImage ();
 	}
 
-	QString EntryBase::GetRawInfo () const
-	{
-		return QString ();
-	}
-
 	void EntryBase::ShowInfo ()
 	{
 		IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (this);

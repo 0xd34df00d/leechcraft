@@ -149,11 +149,6 @@ namespace VelvetBird
 		return QImage ();
 	}
 
-	QString Buddy::GetRawInfo () const
-	{
-		return QString ();
-	}
-
 	void Buddy::ShowInfo ()
 	{
 	}

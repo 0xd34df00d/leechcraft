@@ -208,11 +208,6 @@ namespace Zheet
 		return QImage ();
 	}
 
-	QString MSNBuddyEntry::GetRawInfo () const
-	{
-		return QString ();
-	}
-
 	void MSNBuddyEntry::ShowInfo ()
 	{
 	}

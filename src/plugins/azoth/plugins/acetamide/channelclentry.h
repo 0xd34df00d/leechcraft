@@ -99,7 +99,6 @@ namespace Acetamide
 
 		EntryStatus GetStatus (const QString& variant = QString ()) const;
 		QImage GetAvatar () const;
-		QString GetRawInfo () const;
 		void ShowInfo ();
 
 		// IMUCEntry

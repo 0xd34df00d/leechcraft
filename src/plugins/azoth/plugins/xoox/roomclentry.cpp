@@ -218,11 +218,6 @@ namespace Xoox
 		return QImage ();
 	}
 
-	QString RoomCLEntry::GetRawInfo () const
-	{
-		return QString ();
-	}
-
 	void RoomCLEntry::ShowInfo ()
 	{
 	}

@@ -468,11 +468,6 @@ namespace Murm
 		return Avatar_;
 	}
 
-	QString VkEntry::GetRawInfo () const
-	{
-		return {};
-	}
-
 	void VkEntry::ShowInfo ()
 	{
 		if (VCardDialog_)

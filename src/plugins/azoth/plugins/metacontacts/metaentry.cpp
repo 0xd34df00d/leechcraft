@@ -220,11 +220,6 @@ namespace Metacontacts
 		return QImage ();
 	}
 
-	QString MetaEntry::GetRawInfo () const
-	{
-		return QString ();
-	}
-
 	void MetaEntry::ShowInfo ()
 	{
 	}

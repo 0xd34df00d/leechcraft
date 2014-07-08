@@ -233,11 +233,6 @@ namespace Acetamide
 		return QImage ();
 	}
 
-	QString ChannelCLEntry::GetRawInfo () const
-	{
-		return QString ();
-	}
-
 	void ChannelCLEntry::ShowInfo ()
 	{
 	}

@@ -192,11 +192,6 @@ namespace Murm
 		return {};
 	}
 
-	QString VkChatEntry::GetRawInfo () const
-	{
-		return {};
-	}
-
 	void VkChatEntry::ShowInfo ()
 	{
 	}

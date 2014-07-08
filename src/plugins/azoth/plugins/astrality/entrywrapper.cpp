@@ -189,11 +189,6 @@ namespace Astrality
 		return QImage (C_->avatarData ().fileName);
 	}
 
-	QString EntryWrapper::GetRawInfo () const
-	{
-		return QString ();
-	}
-
 	void EntryWrapper::ShowInfo ()
 	{
 		connect (C_->requestInfo (),

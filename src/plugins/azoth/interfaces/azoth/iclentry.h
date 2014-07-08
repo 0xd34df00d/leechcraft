@@ -400,12 +400,6 @@ namespace Azoth
 		 */
 		virtual QImage GetAvatar () const = 0;
 
-		/** @brief Return string with raw information about the entry.
-		 *
-		 * @return Human-readable string with information about the entry.
-		 */
-		virtual QString GetRawInfo () const = 0;
-
 		/** @brief Requests the entry to show dialog with info about it.
 		 */
 		virtual void ShowInfo () = 0;

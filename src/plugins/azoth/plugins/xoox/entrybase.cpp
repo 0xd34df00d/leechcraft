@@ -173,11 +173,6 @@ namespace Xoox
 		return Avatar_;
 	}
 
-	QString EntryBase::GetRawInfo () const
-	{
-		return {};
-	}
-
 	void EntryBase::ShowInfo ()
 	{
 		if (Account_->GetState ().State_ == SOffline)
