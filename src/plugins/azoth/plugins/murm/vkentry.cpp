@@ -111,6 +111,8 @@ namespace Murm
 				Store (msg);
 			}
 		}
+
+		emit vcardUpdated ();
 	}
 
 	const UserInfo& VkEntry::GetInfo () const

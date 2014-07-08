@@ -121,6 +121,8 @@ namespace Murm
 		void handleGotStorageImage (const QUrl&);
 
 		void handleEntryNameFormat ();
+	signals:
+		void vcardUpdated ();
 	};
 }
 }
