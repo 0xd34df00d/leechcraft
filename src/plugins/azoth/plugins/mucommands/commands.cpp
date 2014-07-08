@@ -34,6 +34,7 @@
 #include <QUrl>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -279,7 +280,7 @@ namespace MuCommands
 			}
 
 			if (strings.isEmpty ())
-				return QObject::tr ("no information");
+				return {};
 
 			return "<ul><li>" + strings.join ("</li><li>") + "</li></ul>";
 		}
@@ -303,7 +304,8 @@ namespace MuCommands
 				continue;
 			}
 
-			const auto imie = qobject_cast<IMetaInfoEntry*> (target->GetQObject ());
+			const auto targetObj = target->GetQObject ();
+			const auto imie = qobject_cast<IMetaInfoEntry*> (targetObj);
 			if (!imie)
 			{
 				InjectMessage (azothProxy, entry,
@@ -311,8 +313,22 @@ namespace MuCommands
 				continue;
 			}
 
-			InjectMessage (azothProxy, entry,
-					name + ":<br/>" + FormatRepresentation (imie->GetVCardRepresentation ()));
+			const auto& repr = FormatRepresentation (imie->GetVCardRepresentation ());
+			if (repr.isEmpty ())
+			{
+				InjectMessage (azothProxy, entry,
+						name + ": " + QObject::tr ("no information, would wait for next vcard update..."));
+
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[azothProxy, entry, text] { ShowVCard (azothProxy, entry, text); },
+					targetObj,
+					SIGNAL (vcardUpdated ()),
+					targetObj
+				};
+			}
+			else
+				InjectMessage (azothProxy, entry, name + ":<br/>" + repr);
 		}
 
 		return true;
