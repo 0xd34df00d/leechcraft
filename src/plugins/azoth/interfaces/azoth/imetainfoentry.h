@@ -51,6 +51,8 @@ namespace Azoth
 		virtual QVariant GetMetaInfo (DataField) const = 0;
 
 		virtual QList<QPair<QString, QVariant>> GetVCardRepresentation () const = 0;
+	protected:
+		virtual void vcardUpdated () = 0;
 	};
 }
 }
