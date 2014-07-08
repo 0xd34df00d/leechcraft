@@ -178,7 +178,7 @@ namespace MuCommands
 
 		QStringList ParseNicks (ICLEntry *entry, const QString& text)
 		{
-			auto split = text.split (' ', QString::SkipEmptyParts).mid (1);
+			auto split = text.split ('\n', QString::SkipEmptyParts).mid (1);
 
 			if (!split.isEmpty ())
 				return split;
