@@ -175,7 +175,7 @@ namespace Xoox
 
 	QString EntryBase::GetRawInfo () const
 	{
-		return RawInfo_;
+		return {};
 	}
 
 	void EntryBase::ShowInfo ()
@@ -698,11 +698,6 @@ namespace Xoox
 				QByteArray () :
 				QCryptographicHash::hash (VCardIq_.photo (), QCryptographicHash::Sha1);
 
-		QString text = FormatRawInfo (vcard);
-		if (!text.isEmpty ())
-			text = QString ("gloox VCard:\n") + text;
-		SetRawInfo (text);
-
 		if (!vcard.photo ().isEmpty ())
 		{
 			SetAvatar (vcard.photo ());
@@ -717,13 +712,6 @@ namespace Xoox
 			Core::Instance ().ScheduleSaveRoster (10000);
 
 		emit vcardUpdated ();
-	}
-
-	void EntryBase::SetRawInfo (const QString& rawinfo)
-	{
-		RawInfo_ = rawinfo;
-
-		emit rawinfoChanged (RawInfo_);
 	}
 
 	bool EntryBase::HasUnreadMsgs () const
@@ -885,36 +873,6 @@ namespace Xoox
 			fetchVCard ();
 			HasBlindlyRequestedVCard_ = true;
 		}
-	}
-
-	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)
-	{
-		QString text;
-		text += tr ("Name: %1")
-				.arg (vcard.fullName ());
-		text += "\n";
-
-		if (vcard.nickName ().size ())
-			text += tr ("Nickname: %1\n")
-					.arg (vcard.nickName ());
-		if (vcard.url ().size ())
-			text += tr ("URL: %1\n")
-					.arg (vcard.url ());
-		if (vcard.birthday ().isValid ())
-			text += tr ("Birthday: %1\n")
-					.arg (vcard.birthday ().toString ());
-		if (vcard.email ().size ())
-			text += tr ("Email: %1\n")
-					.arg (vcard.email ());
-
-		if (vcard.photoType ().size ())
-		{
-			text += tr ("Photo:") + QString ("\ndata:%1;base64,%2\n")
-						.arg (vcard.photoType ())
-						.arg (vcard.photo ().constData ());
-		}
-
-		return text;
 	}
 
 	void EntryBase::SetNickFromVCard (const QXmppVCardIq& vcard)

@@ -542,13 +542,6 @@ namespace Azoth
 		 */
 		virtual void avatarChanged (const QImage&) = 0;
 
-		/** @brief This signal should be emitted whenever our copy of
-		 * raw information is updated.
-		 *
-		 * @note This function is expected to be a signal in subclesses.
-		 */
-		virtual void rawinfoChanged (const QString&) = 0;
-
 		/** @brief This signal should be emitted whenever the entry
 		 * changes name.
 		 *

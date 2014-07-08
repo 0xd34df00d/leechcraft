@@ -133,7 +133,6 @@ namespace Metacontacts
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
-		void rawinfoChanged (const QString&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
 		void avatarChanged (const QImage&);

@@ -90,7 +90,6 @@ namespace Acetamide
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
 		void avatarChanged (const QImage&);
-		void rawinfoChanged (const QString&);
 		void availableVariantsChanged (const QStringList&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
