@@ -332,8 +332,13 @@ namespace Azoth
 		return Core::Instance ().GetIconForState (state);
 	}
 
+	const auto MaxBodySize4Links = 10 * 1024;
+
 	void ProxyObject::FormatLinks (QString& body)
 	{
+		if (body.size () > MaxBodySize4Links)
+			return;
+
 		int pos = 0;
 		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
 		{
@@ -368,7 +373,7 @@ namespace Azoth
 	{
 		QStringList result;
 
-		if (body.size () > 10 * 1024)
+		if (body.size () > MaxBodySize4Links)
 			return result;
 
 		int pos = 0;
