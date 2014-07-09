@@ -107,6 +107,8 @@ namespace MuCommands
 			"/leave",
 			[this] (ICLEntry *e, const QString& t) { return LeaveMuc (AzothProxy_, e, t); }
 		};
+		PartMuc_ = LeaveMuc_;
+		PartMuc_.Name_ = "/part";
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -148,7 +150,7 @@ namespace MuCommands
 		return
 		{
 			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_,
-			ChangeNick_, ChangeSubject_, LeaveMuc_
+			ChangeNick_, ChangeSubject_, LeaveMuc_, PartMuc_
 		};
 	}
 
