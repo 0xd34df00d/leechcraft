@@ -292,52 +292,62 @@ namespace MuCommands
 
 			return "<ul><li>" + strings.join ("</li><li>") + "</li></ul>";
 		}
+
+		template<typename T>
+		void PerformMucAction (T action, IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+		{
+			const auto& split = ParseNicks (entry, text);
+			if (split.isEmpty ())
+				return;
+
+			const auto& participants = GetParticipants (qobject_cast<IMUCEntry*> (entry->GetQObject ()));
+			for (const auto& name : split)
+			{
+				const auto target = ResolveEntry (name.trimmed (),
+						participants, entry->GetParentAccount ());
+				if (!target)
+				{
+					InjectMessage (azothProxy, entry,
+							QObject::tr ("Unable to resolve %1.").arg ("<em>" + name + "</em>"));
+					continue;
+				}
+
+				action (target, name);
+			}
+		}
 	}
 
 	bool ShowVCard (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		const auto& split = ParseNicks (entry, text);
-		if (split.isEmpty ())
-			return true;
-
-		const auto& participants = GetParticipants (qobject_cast<IMUCEntry*> (entry->GetQObject ()));
-		for (const auto& name : split)
-		{
-			const auto target = ResolveEntry (name.trimmed (),
-					participants, entry->GetParentAccount ());
-			if (!target)
-			{
-				InjectMessage (azothProxy, entry,
-						QObject::tr ("Unable to resolve %1.").arg ("<em>" + name + "</em>"));
-				continue;
-			}
-
-			const auto targetObj = target->GetQObject ();
-			const auto imie = qobject_cast<IMetaInfoEntry*> (targetObj);
-			if (!imie)
-			{
-				InjectMessage (azothProxy, entry,
-						QObject::tr ("%1 doesn't support extended metainformation.").arg ("<em>" + name + "</em>"));
-				continue;
-			}
-
-			const auto& repr = FormatRepresentation (imie->GetVCardRepresentation ());
-			if (repr.isEmpty ())
-			{
-				InjectMessage (azothProxy, entry,
-						name + ": " + QObject::tr ("no information, would wait for next vcard update..."));
-
-				new Util::SlotClosure<Util::DeleteLaterPolicy>
+		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
 				{
-					[azothProxy, entry, text] { ShowVCard (azothProxy, entry, text); },
-					targetObj,
-					SIGNAL (vcardUpdated ()),
-					targetObj
-				};
-			}
-			else
-				InjectMessage (azothProxy, entry, name + ":<br/>" + repr);
-		}
+					const auto targetObj = target->GetQObject ();
+					const auto imie = qobject_cast<IMetaInfoEntry*> (targetObj);
+					if (!imie)
+					{
+						InjectMessage (azothProxy, entry,
+								QObject::tr ("%1 doesn't support extended metainformation.").arg ("<em>" + name + "</em>"));
+						return;
+					}
+
+					const auto& repr = FormatRepresentation (imie->GetVCardRepresentation ());
+					if (repr.isEmpty ())
+					{
+						InjectMessage (azothProxy, entry,
+								name + ": " + QObject::tr ("no information, would wait for next vcard update..."));
+
+						new Util::SlotClosure<Util::DeleteLaterPolicy>
+						{
+							[azothProxy, entry, text] { ShowVCard (azothProxy, entry, text); },
+							targetObj,
+							SIGNAL (vcardUpdated ()),
+							targetObj
+						};
+					}
+					else
+						InjectMessage (azothProxy, entry, name + ":<br/>" + repr);
+				},
+				azothProxy, entry, text);
 
 		return true;
 	}
