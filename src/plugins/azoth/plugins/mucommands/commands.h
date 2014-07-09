@@ -52,6 +52,8 @@ namespace MuCommands
 	bool ShowVCard (IProxyObject*, ICLEntry*, const QString&);
 
 	bool ShowVersion (IProxyObject*, ICLEntry*, const QString&);
+
+	bool ShowTime (IProxyObject*, ICLEntry*, const QString&);
 }
 }
 }

@@ -41,6 +41,7 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupportnonroster.h>
 #include <interfaces/azoth/imetainfoentry.h>
+#include <interfaces/azoth/ihaveentitytime.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -383,6 +384,70 @@ namespace MuCommands
 
 						InjectMessage (azothProxy, entry, body);
 					}
+				},
+				azothProxy, entry, text);
+
+		return true;
+	}
+
+	bool ShowTime (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
+				{
+					const auto targetObj = target->GetQObject ();
+					const auto ihet = qobject_cast<IHaveEntityTime*> (targetObj);
+					if (!ihet)
+					{
+						InjectMessage (azothProxy, entry,
+								QObject::tr ("%1 does not support querying time.")
+										.arg (name));
+						return;
+					}
+
+					bool shouldUpdate = false;
+
+					QStringList fields;
+
+					const auto& variants = target->Variants ();
+					for (const auto& var : variants)
+					{
+						const auto time = target->GetClientInfo (var)
+								.value ("client_time").toDateTime ();
+						const auto& varName = var.isEmpty () ?
+								name :
+								target->GetHumanReadableID () + '/' + var;
+						if (!time.isValid ())
+						{
+							fields << QObject::tr ("No information for %1.")
+									.arg (varName);
+							shouldUpdate = true;
+							continue;
+						}
+
+						fields << QObject::tr ("Current time for %1: %2.")
+								.arg (varName)
+								.arg (QLocale {}.toString (time));
+					}
+
+					if (shouldUpdate)
+					{
+						ihet->UpdateEntityTime ();
+
+						new Util::SlotClosure<Util::DeleteLaterPolicy>
+						{
+							[azothProxy, entry, text] { ShowTime (azothProxy, entry, text); },
+							targetObj,
+							SIGNAL (entityTimeUpdated ()),
+							targetObj
+						};
+					}
+
+					if (fields.isEmpty ())
+						return;
+
+					const auto& body = "<ul><li>" + fields.join ("</li><li>") + "</li></ul>";
+					InjectMessage (azothProxy, entry,
+							QObject::tr ("Entity time for %1:").arg (name) + body);
 				},
 				azothProxy, entry, text);
 
