@@ -454,6 +454,20 @@ namespace MuCommands
 		return true;
 	}
 
+	bool ChangeSubject (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+		if (!mucEntry)
+			return false;
+
+		const auto& newSubject = text.section (' ', 1);
+		if (newSubject.trimmed ().isEmpty ())
+			InjectMessage (azothProxy, entry, mucEntry->GetMUCSubject ());
+		else
+			mucEntry->SetMUCSubject (newSubject);
+		return true;
+	}
+
 	bool ChangeNick (IProxyObject*, ICLEntry *entry, const QString& text)
 	{
 		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());

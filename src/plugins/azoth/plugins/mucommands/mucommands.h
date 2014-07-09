@@ -62,6 +62,7 @@ namespace MuCommands
 		StaticCommand Version_;
 		StaticCommand Time_;
 		StaticCommand ChangeNick_;
+		StaticCommand ChangeSubject_;
 
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_ = nullptr;
