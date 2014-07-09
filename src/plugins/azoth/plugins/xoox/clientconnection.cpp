@@ -836,9 +836,9 @@ namespace Xoox
 	{
 		QList<QObject*> result;
 		result << SelfContact_;
-		Q_FOREACH (GlooxCLEntry *entry, JID2CLEntry_.values () + ODSEntries_.values ())
+		for (const auto entry : JID2CLEntry_.values () + ODSEntries_.values ())
 			result << entry;
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+		for (const auto rh : RoomHandlers_)
 		{
 			result << rh->GetCLEntry ();
 			result << rh->GetParticipants ();
