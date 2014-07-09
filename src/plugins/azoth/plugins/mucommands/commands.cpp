@@ -141,6 +141,9 @@ namespace MuCommands
 		QList<int> indexes;
 		if (split.isEmpty ())
 			indexes << urls.size () - 1;
+		else if (split.size () == 1 && split.at (0) == "*")
+			for (int i = 0; i < urls.size (); ++i)
+				indexes << i;
 
 		for (const auto& item : split)
 		{
