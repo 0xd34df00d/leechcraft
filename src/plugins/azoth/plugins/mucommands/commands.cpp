@@ -112,6 +112,9 @@ namespace MuCommands
 
 				urls += azothProxy->FindLinks (msg->GetBody ());
 			}
+
+			urls.removeDuplicates ();
+
 			return urls;
 		}
 	}
