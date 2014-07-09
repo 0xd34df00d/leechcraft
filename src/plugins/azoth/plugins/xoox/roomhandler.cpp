@@ -807,8 +807,8 @@ namespace Xoox
 
 	void RoomHandler::RemoveThis ()
 	{
-		Account_->handleEntryRemoved (CLEntry_);
 		Account_->GetClientConnection ()->Unregister (this);
+		Account_->handleEntryRemoved (CLEntry_);
 		Room_->deleteLater ();
 		Room_ = 0;
 		deleteLater ();
