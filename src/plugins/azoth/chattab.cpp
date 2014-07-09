@@ -584,9 +584,6 @@ namespace Azoth
 
 				mucEntry->Leave (reason);
 
-				if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-					Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
-
 				return true;
 			}
 			else if (text.startsWith ("/kick ") && mucPerms)

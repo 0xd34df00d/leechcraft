@@ -2077,6 +2077,10 @@ namespace Azoth
 				continue;
 			}
 
+			if (entry->GetEntryType () == ICLEntry::ETMUC &&
+					XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+				GetChatTabsManager ()->CloseChat (entry);
+
 			disconnect (clitem,
 					0,
 					this,
