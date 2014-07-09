@@ -918,7 +918,10 @@ namespace Xoox
 
 		const auto& secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
 		Variant2SecsDiff_ [variant] = { secsDiff, iq.tzo () };
+
 		emit entryGenerallyChanged ();
+
+		emit entityTimeUpdated ();
 	}
 
 	void EntryBase::handleCommands ()

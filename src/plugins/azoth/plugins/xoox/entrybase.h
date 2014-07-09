@@ -210,6 +210,8 @@ namespace Xoox
 		void locationChanged (const QString&, QObject*);
 
 		void vcardUpdated ();
+
+		void entityTimeUpdated ();
 	};
 }
 }

@@ -39,6 +39,8 @@ namespace Azoth
 		virtual ~IHaveEntityTime () {}
 
 		virtual void UpdateEntityTime () = 0;
+	protected:
+		virtual void entityTimeUpdated () = 0;
 	};
 }
 }
