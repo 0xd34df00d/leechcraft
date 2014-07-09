@@ -89,6 +89,12 @@ namespace MuCommands
 			"/time",
 			[this] (ICLEntry *e, const QString& t) { return ShowTime (AzothProxy_, e, t); }
 		};
+
+		ChangeNick_ = StaticCommand
+		{
+			"/nick",
+			[this] (ICLEntry *e, const QString& t) { return ChangeNick (AzothProxy_, e, t); }
+		};
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -127,7 +133,7 @@ namespace MuCommands
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 			return {};
 
-		return { Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_ };
+		return { Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, ChangeNick_ };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)

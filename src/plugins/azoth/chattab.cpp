@@ -575,12 +575,7 @@ namespace Azoth
 
 			IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetQObject ());
 
-			if (text.startsWith ("/nick "))
-			{
-				mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
-				return true;
-			}
-			else if (text.startsWith ("/leave"))
+			if (text.startsWith ("/leave"))
 			{
 				const int idx = text.indexOf (' ');
 				const QString& reason = idx > 0 ?

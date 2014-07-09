@@ -54,6 +54,8 @@ namespace MuCommands
 	bool ShowVersion (IProxyObject*, ICLEntry*, const QString&);
 
 	bool ShowTime (IProxyObject*, ICLEntry*, const QString&);
+
+	bool ChangeNick (IProxyObject*, ICLEntry*, const QString&);
 }
 }
 }

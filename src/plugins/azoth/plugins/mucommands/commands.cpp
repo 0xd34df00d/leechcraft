@@ -453,6 +453,20 @@ namespace MuCommands
 
 		return true;
 	}
+
+	bool ChangeNick (IProxyObject*, ICLEntry *entry, const QString& text)
+	{
+		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+		if (!mucEntry)
+			return false;
+
+		const auto& newNick = text.section (' ', 1);
+		if (newNick.isEmpty ())
+			return false;
+
+		mucEntry->SetNick (newNick);
+		return true;
+	}
 }
 }
 }

@@ -61,6 +61,7 @@ namespace MuCommands
 		StaticCommand VCard_;
 		StaticCommand Version_;
 		StaticCommand Time_;
+		StaticCommand ChangeNick_;
 
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_ = nullptr;
