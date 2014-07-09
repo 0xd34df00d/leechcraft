@@ -209,7 +209,7 @@ namespace Xoox
 			res ["client_time"] = now.addSecs (Variant2SecsDiff_.value (var).Diff_);
 		}
 
-		auto version = Variant2Version_ [var];
+		const auto& version = Variant2Version_ [var];
 		if (version.name ().isEmpty ())
 			return res;
 
