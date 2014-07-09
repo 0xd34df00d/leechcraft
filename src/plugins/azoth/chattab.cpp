@@ -575,18 +575,7 @@ namespace Azoth
 
 			IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetQObject ());
 
-			if (text.startsWith ("/leave"))
-			{
-				const int idx = text.indexOf (' ');
-				const QString& reason = idx > 0 ?
-						text.mid (idx + 1)
-						: QString ();
-
-				mucEntry->Leave (reason);
-
-				return true;
-			}
-			else if (text.startsWith ("/kick ") && mucPerms)
+			if (text.startsWith ("/kick ") && mucPerms)
 			{
 				PerformRoleAction (mucPerms->GetKickPerm (), entry->GetQObject (), text.mid (6));
 				return true;

@@ -55,6 +55,8 @@ namespace MuCommands
 
 	bool ShowTime (IProxyObject*, ICLEntry*, const QString&);
 
+	bool LeaveMuc (IProxyObject*, ICLEntry*, const QString&);
+
 	bool ChangeSubject (IProxyObject*, ICLEntry*, const QString&);
 
 	bool ChangeNick (IProxyObject*, ICLEntry*, const QString&);
