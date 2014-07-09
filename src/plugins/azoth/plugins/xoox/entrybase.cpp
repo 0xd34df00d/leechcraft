@@ -913,7 +913,7 @@ namespace Xoox
 		QString variant;
 		ClientConnection::Split (from, &bare, &variant);
 
-		if (variant.isEmpty ())
+		if (variant.isEmpty () || GetEntryType () == ETPrivateChat)
 			variant = "";
 
 		const auto& secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
