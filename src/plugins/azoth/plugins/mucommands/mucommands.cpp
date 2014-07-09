@@ -109,6 +109,12 @@ namespace MuCommands
 		};
 		PartMuc_ = LeaveMuc_;
 		PartMuc_.Name_ = "/part";
+
+		RejoinMuc_ = StaticCommand
+		{
+			"/rejoin",
+			[this] (ICLEntry *e, const QString& t) { return RejoinMuc (AzothProxy_, e, t); }
+		};
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -150,7 +156,7 @@ namespace MuCommands
 		return
 		{
 			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_,
-			ChangeNick_, ChangeSubject_, LeaveMuc_, PartMuc_
+			ChangeNick_, ChangeSubject_, LeaveMuc_, PartMuc_, RejoinMuc_
 		};
 	}
 

@@ -35,6 +35,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -42,6 +43,8 @@
 #include <interfaces/azoth/isupportnonroster.h>
 #include <interfaces/azoth/imetainfoentry.h>
 #include <interfaces/azoth/ihaveentitytime.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/imucjoinwidget.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -450,6 +453,48 @@ namespace MuCommands
 							QObject::tr ("Entity time for %1:").arg (name) + body);
 				},
 				azothProxy, entry, text);
+
+		return true;
+	}
+
+	bool RejoinMuc (IProxyObject*, ICLEntry *entry, const QString& text)
+	{
+		const auto accObj = entry->GetParentAccount ();
+		const auto entryObj = entry->GetQObject ();
+		const auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
+		if (!mucEntry)
+			return false;
+
+		const auto& mucData = mucEntry->GetIdentifyingData ();
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[entryObj, accObj, mucData] () -> void
+			{
+				const auto acc = qobject_cast<IAccount*> (accObj);
+				if (acc->GetCLEntries ().contains (entryObj))
+					return;
+
+				new Util::DelayedExecutor
+				{
+					[acc, mucData] ()
+					{
+						const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+						std::unique_ptr<QWidget> jw { proto->GetMUCJoinWidget () };
+
+						const auto imjw = qobject_cast<IMUCJoinWidget*> (jw.get ());
+						imjw->SetIdentifyingData (mucData);
+						imjw->Join (acc->GetQObject ());
+					},
+					1000
+				};
+			},
+			accObj,
+			SIGNAL (removedCLItems (QList<QObject*>)),
+			entryObj
+		};
+
+		mucEntry->Leave (text.section (' ', 1));
 
 		return true;
 	}
