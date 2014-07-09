@@ -50,6 +50,8 @@ namespace MuCommands
 	bool OpenUrl (const ICoreProxy_ptr&, IProxyObject*, ICLEntry*, const QString&, TaskParameters);
 
 	bool ShowVCard (IProxyObject*, ICLEntry*, const QString&);
+
+	bool ShowVersion (IProxyObject*, ICLEntry*, const QString&);
 }
 }
 }

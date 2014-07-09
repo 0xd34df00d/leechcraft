@@ -351,6 +351,43 @@ namespace MuCommands
 
 		return true;
 	}
+
+	bool ShowVersion (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		PerformMucAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
+				{
+					const auto& variants = target->Variants ();
+					for (const auto& var : variants)
+					{
+						const auto& info = target->GetClientInfo (var);
+
+						QStringList fields;
+						auto add = [&fields] (const QString& name, const QString& value)
+						{
+							if (!value.isEmpty ())
+								fields << "<strong>" + name + ":</strong> " + value;
+						};
+
+						add (QObject::tr ("Type"), info ["client_type"].toString ());
+						add (QObject::tr ("Name"), info ["client_name"].toString ());
+						add (QObject::tr ("Version"), info ["client_version"].toString ());
+						add (QObject::tr ("OS"), info ["client_os"].toString ());
+
+						auto body = QObject::tr ("Client information for %1:")
+								.arg (var.isEmpty () && variants.size () == 1 ?
+										name :
+										target->GetHumanReadableID () + '/' + var);
+						body += fields.isEmpty () ?
+								QObject::tr ("no information available.") :
+								"<ul><li>" + fields.join ("</li><li>") + "</li></ul>";
+
+						InjectMessage (azothProxy, entry, body);
+					}
+				},
+				azothProxy, entry, text);
+
+		return true;
+	}
 }
 }
 }
