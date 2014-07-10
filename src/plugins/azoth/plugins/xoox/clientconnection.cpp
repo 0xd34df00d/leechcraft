@@ -93,6 +93,7 @@
 #include "captchamanager.h"
 #include "xep0313manager.h"
 #include "carbonsmanager.h"
+#include "pingmanager.h"
 
 namespace LeechCraft
 {
@@ -129,6 +130,7 @@ namespace Xoox
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager)
 	, CarbonsManager_ (new CarbonsManager)
+	, PingManager_ (new PingManager)
 	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
@@ -218,6 +220,7 @@ namespace Xoox
 		Client_->addExtension (new AdHocCommandServer (this));
 		Client_->addExtension (Xep0313Manager_);
 		Client_->addExtension (CarbonsManager_);
+		Client_->addExtension (PingManager_);
 
 		connect (CarbonsManager_,
 				SIGNAL (gotMessage (QXmppMessage)),
@@ -580,6 +583,11 @@ namespace Xoox
 	Xep0313Manager* ClientConnection::GetXep0313Manager () const
 	{
 		return Xep0313Manager_;
+	}
+
+	PingManager* ClientConnection::GetPingManager () const
+	{
+		return PingManager_;
 	}
 
 	InfoRequestPolicyManager* ClientConnection::GetInfoReqPolicyManager () const

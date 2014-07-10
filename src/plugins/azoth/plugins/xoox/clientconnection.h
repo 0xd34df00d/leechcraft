@@ -87,6 +87,7 @@ namespace Xoox
 	class SDManager;
 	class Xep0313Manager;
 	class CarbonsManager;
+	class PingManager;
 
 	class InfoRequestPolicyManager;
 	class ClientConnectionErrorMgr;
@@ -130,6 +131,7 @@ namespace Xoox
 		SDManager *SDManager_;
 		Xep0313Manager *Xep0313Manager_;
 		CarbonsManager *CarbonsManager_;
+		PingManager *PingManager_;
 
 		CryptHandler *CryptHandler_;
 		ClientConnectionErrorMgr *ErrorMgr_;
@@ -225,6 +227,7 @@ namespace Xoox
 		RIEXManager* GetRIEXManager () const;
 		SDManager* GetSDManager () const;
 		Xep0313Manager* GetXep0313Manager () const;
+		PingManager* GetPingManager () const;
 
 		InfoRequestPolicyManager* GetInfoReqPolicyManager () const;
 

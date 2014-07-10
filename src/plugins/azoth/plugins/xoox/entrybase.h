@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ENTRYBASE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ENTRYBASE_H
+#pragma once
+
 #include <QObject>
 #include <QImage>
 #include <QMap>
@@ -44,6 +44,7 @@
 #include <interfaces/azoth/isupportgeolocation.h>
 #include <interfaces/azoth/isupportmicroblogs.h>
 #include <interfaces/azoth/ihaveentitytime.h>
+#include <interfaces/azoth/ihavepings.h>
 
 class QXmppPresence;
 class QXmppVersionIq;
@@ -75,6 +76,7 @@ namespace Xoox
 					, public IHaveDirectedStatus
 					, public ISupportMicroblogs
 					, public IHaveEntityTime
+					, public IHavePings
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
@@ -82,7 +84,8 @@ namespace Xoox
 				LeechCraft::Azoth::IMetaInfoEntry
 				LeechCraft::Azoth::IHaveDirectedStatus
 				LeechCraft::Azoth::ISupportMicroblogs
-				LeechCraft::Azoth::IHaveEntityTime)
+				LeechCraft::Azoth::IHaveEntityTime
+				LeechCraft::Azoth::IHavePings)
 	protected:
 		GlooxAccount *Account_;
 
@@ -152,6 +155,9 @@ namespace Xoox
 		// IHaveEntityTime
 		void UpdateEntityTime ();
 
+		// IHavePings
+		QObject* Ping (const QString& variant);
+
 		virtual QString GetJID () const = 0;
 
 		void HandlePresence (const QXmppPresence&, const QString&);
@@ -216,5 +222,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

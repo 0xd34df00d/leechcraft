@@ -69,6 +69,8 @@
 #include "capsdatabase.h"
 #include "avatarsstorage.h"
 #include "inforequestpolicymanager.h"
+#include "pingmanager.h"
+#include "pingreplyobject.h"
 
 namespace LeechCraft
 {
@@ -437,6 +439,18 @@ namespace Xoox
 				timeMgr->requestTime (jid + '/' + variant);
 	}
 
+	QObject* EntryBase::Ping (const QString& variant)
+	{
+		auto jid = GetJID ();
+		if (!variant.isEmpty ())
+			jid += '/' + variant;
+
+		auto reply = new PingReplyObject { this };
+		Account_->GetClientConnection ()->GetPingManager ()->Ping (jid,
+				[reply] (int msecs) { reply->HandleReply (msecs); });
+		return reply;
+	}
+
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
 	{
 		SetClientInfo (resource, pres);
@@ -791,6 +805,7 @@ namespace Xoox
 
 	void EntryBase::SetClientVersion (const QString& variant, const QXmppVersionIq& version)
 	{
+		qDebug () << Q_FUNC_INFO << variant << version.os ();
 		Variant2Version_ [variant] = version;
 
 		emit entryGenerallyChanged ();
