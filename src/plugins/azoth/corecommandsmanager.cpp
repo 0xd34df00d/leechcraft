@@ -54,7 +54,7 @@ namespace Azoth
 			auto body = CoreCommandsManager::tr ("The following commands are available:") +
 					"<ul><li>" + commands.join ("</li><li>") + "</li></ul>";
 			body += CoreCommandsManager::tr ("Type %1 in chat to get help on a particular command.")
-					.arg ("<em>/help command</em>");
+					.arg ("<code>/help command</code>");
 
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
@@ -69,10 +69,67 @@ namespace Azoth
 			return true;
 		}
 
+		bool HelpCommand (ICLEntry *entry, const StaticCommand& cmd)
+		{
+			auto message = CoreCommandsManager::tr ("Help on command %1:")
+					.arg ("<code>" + cmd.Names_.first () + "</code>");
+
+			if (cmd.Names_.size () > 1)
+				message += "<br/>" + CoreCommandsManager::tr ("Aliases: %1.")
+						.arg (cmd.Names_.join ("; "));
+
+			const auto entryObj = entry->GetQObject ();
+			const auto msgObj = ProxyObject {}.CreateCoreMessage (message,
+					QDateTime::currentDateTime (),
+					IMessage::MTServiceMessage,
+					IMessage::DIn,
+					entryObj,
+					entryObj);
+			const auto msg = qobject_cast<IMessage*> (msgObj);
+			msg->Store ();
+
+			return true;
+		}
+
+		bool HelpCommand (ICLEntry *entry, const QString& name)
+		{
+			auto cmdProvs = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<IProvideCommands*> ();
+			cmdProvs << Core::Instance ().GetCoreCommandsManager ();
+			for (const auto prov : cmdProvs)
+				for (const auto& cmd : prov->GetStaticCommands (entry))
+					if (cmd.Names_.contains (name) || cmd.Names_.contains ('/' + name))
+					{
+						HelpCommand (entry, cmd);
+						return true;
+					}
+
+			const auto& body = CoreCommandsManager::tr ("Unknown command %1.")
+					.arg ("<code>" + name + "</code>");
+
+			const auto entryObj = entry->GetQObject ();
+			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
+					QDateTime::currentDateTime (),
+					IMessage::MTServiceMessage,
+					IMessage::DIn,
+					entryObj,
+					entryObj);
+			const auto msg = qobject_cast<IMessage*> (msgObj);
+			msg->Store ();
+
+			return false;
+		}
+
 		bool Help (ICLEntry *entry, const QString& text)
 		{
 			const auto& commands = text.section (' ', 1).split (' ', QString::SkipEmptyParts);
-			return HelpAll (entry, text);
+			if (commands.isEmpty ())
+				return HelpAll (entry, text);
+
+			for (const auto& name : commands)
+				HelpCommand (entry, name);
+
+			return true;
 		}
 
 		bool Clear (ICLEntry *entry, const QString&)
