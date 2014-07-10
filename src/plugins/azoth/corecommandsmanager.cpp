@@ -154,8 +154,23 @@ namespace Azoth
 
 	CoreCommandsManager::CoreCommandsManager (QObject* parent)
 	: QObject { parent }
-	, Help_ { { "/help" }, &Help }
-	, Clear_ { { "/clear" }, &Clear }
+	, Help_
+	{
+		{ "/help" },
+		&Help,
+		tr ("Show the list of all commands or get help for a specific command."),
+		tr ("Usage: ") + "<code>/clear " + tr ("[command1] [command2] ...") + "</code><br/>" +
+				tr ("Shows the list of all available commands with their respective short "
+					"descriptions if called without parameters, otherwise shows help for "
+					"the passed commands.")
+	}
+	, Clear_
+	{
+		{ "/clear" },
+		&Clear,
+		tr ("Clear chat window."),
+		tr ("Usage: ") + "<code>/clear</code>"
+	}
 	{
 	}
 
