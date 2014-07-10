@@ -62,6 +62,8 @@ namespace MuCommands
 	bool ChangeSubject (IProxyObject*, ICLEntry*, const QString&);
 
 	bool ChangeNick (IProxyObject*, ICLEntry*, const QString&);
+
+	bool Ping (IProxyObject*, ICLEntry*, const QString&);
 }
 }
 }

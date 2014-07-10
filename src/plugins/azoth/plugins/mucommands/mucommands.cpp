@@ -113,6 +113,12 @@ namespace MuCommands
 			{ "/rejoin" },
 			[this] (ICLEntry *e, const QString& t) { return RejoinMuc (AzothProxy_, e, t); }
 		};
+
+		Ping_ = StaticCommand
+		{
+			{ "/ping" },
+			[this] (ICLEntry *e, const QString& t) { return Ping (AzothProxy_, e, t); }
+		};
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -154,7 +160,7 @@ namespace MuCommands
 		return
 		{
 			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_,
-			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_
+			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_
 		};
 	}
 

@@ -45,6 +45,7 @@
 #include <interfaces/azoth/ihaveentitytime.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/imucjoinwidget.h>
+#include <interfaces/azoth/ihavepings.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -562,6 +563,41 @@ namespace MuCommands
 			return false;
 
 		mucEntry->SetNick (newNick);
+		return true;
+	}
+
+	bool Ping (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		PerformMucAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
+				{
+					const auto targetObj = target->GetQObject ();
+					const auto ihp = qobject_cast<IHavePings*> (targetObj);
+					if (!ihp)
+					{
+						InjectMessage (azothProxy, entry,
+								QObject::tr ("%1 does not support pinging.").arg (name));
+						return;
+					}
+
+					const auto reply = ihp->Ping ({});
+					new Util::SlotClosure<Util::DeleteLaterPolicy>
+					{
+						[reply, azothProxy, entry, name] ()
+						{
+							const auto ipp = qobject_cast<IPendingPing*> (reply);
+
+							InjectMessage (azothProxy, entry,
+									QObject::tr ("Pong from %1: %2 ms.")
+											.arg (name)
+											.arg (ipp->GetTimeout ()));
+						},
+						reply,
+						SIGNAL (replyReceived (int)),
+						reply
+					};
+				},
+				azothProxy, entry, text);
+
 		return true;
 	}
 }

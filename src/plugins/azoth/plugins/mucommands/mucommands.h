@@ -65,6 +65,7 @@ namespace MuCommands
 		StaticCommand ChangeSubject_;
 		StaticCommand LeaveMuc_;
 		StaticCommand RejoinMuc_;
+		StaticCommand Ping_;
 
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_ = nullptr;
