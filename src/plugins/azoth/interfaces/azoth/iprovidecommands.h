@@ -45,6 +45,9 @@ namespace Azoth
 	{
 		QStringList Names_;
 		Command_f Command_;
+
+		QString Description_;
+		QString Help_;
 	};
 
 	typedef QList<StaticCommand> StaticCommands_t;
