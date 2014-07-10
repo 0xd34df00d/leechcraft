@@ -393,6 +393,18 @@ namespace MuCommands
 		return true;
 	}
 
+	namespace
+	{
+		QString FormatTzo (int tzo)
+		{
+			const auto& time = QTime { 0, 0 }.addSecs (std::abs (tzo));
+
+			auto str = time.toString ("HH:mm");
+			str.prepend (tzo >= 0 ? '+' : '-');
+			return str;
+		}
+	}
+
 	bool ShowTime (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
 		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
@@ -427,9 +439,25 @@ namespace MuCommands
 							continue;
 						}
 
-						fields << QObject::tr ("Current time for %1: %2.")
-								.arg (varName)
+						const auto tzo = target->GetClientInfo (var)
+								.value ("client_tzo").toInt ();
+
+						QString field = QObject::tr ("Current time for %1:")
+								.arg (varName);
+						field += "<ul><li>";
+						field += QObject::tr ("Local time: %1")
 								.arg (QLocale {}.toString (time));
+						field += "</li><li>";
+						field += QObject::tr ("Timezone: %1")
+								.arg (FormatTzo (tzo));
+						field += "</li><li>";
+
+						const auto& utcTime = time.addSecs (-tzo);
+						field += QObject::tr ("UTC time: %1")
+								.arg (QLocale {}.toString (utcTime));
+
+						field += "</li></ul>";
+						fields << field;
 					}
 
 					if (shouldUpdate)
