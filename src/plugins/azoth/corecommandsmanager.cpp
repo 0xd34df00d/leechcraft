@@ -49,7 +49,12 @@ namespace Azoth
 			cmdProvs << Core::Instance ().GetCoreCommandsManager ();
 			for (const auto prov : cmdProvs)
 				for (const auto& cmd : prov->GetStaticCommands (entry))
-					commands << cmd.Names_.join ("; ");
+				{
+					auto cmdLine = cmd.Names_.join ("; ");
+					if (!cmd.Description_.isEmpty ())
+						cmdLine += " &mdash; " + cmd.Description_;
+					commands << cmdLine;
+				}
 
 			auto body = CoreCommandsManager::tr ("The following commands are available:") +
 					"<ul><li>" + commands.join ("</li><li>") + "</li></ul>";
@@ -74,9 +79,13 @@ namespace Azoth
 			auto message = CoreCommandsManager::tr ("Help on command %1:")
 					.arg ("<code>" + cmd.Names_.first () + "</code>");
 
+			if (!cmd.Description_.isEmpty ())
+				message += "<br/>" + cmd.Description_;
 			if (cmd.Names_.size () > 1)
 				message += "<br/>" + CoreCommandsManager::tr ("Aliases: %1.")
 						.arg (cmd.Names_.join ("; "));
+			if (!cmd.Help_.isEmpty ())
+				message += "<br/>" + cmd.Help_;
 
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = ProxyObject {}.CreateCoreMessage (message,
