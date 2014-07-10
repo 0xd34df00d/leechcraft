@@ -211,6 +211,7 @@ namespace Xoox
 			res ["client_time"] = now
 					.addSecs (secsDiff.Diff_)
 					.addSecs (secsDiff.Tzo_);
+			res ["client_tzo"] = secsDiff.Tzo_;
 		}
 
 		const auto& version = Variant2Version_ [var];
