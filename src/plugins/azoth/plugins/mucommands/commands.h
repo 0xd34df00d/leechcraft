@@ -63,6 +63,10 @@ namespace MuCommands
 
 	bool ChangeNick (IProxyObject*, ICLEntry*, const QString&);
 
+	bool Kick (IProxyObject*, ICLEntry*, const QString&);
+
+	bool Ban (IProxyObject*, ICLEntry*, const QString&);
+
 	bool Ping (IProxyObject*, ICLEntry*, const QString&);
 }
 }

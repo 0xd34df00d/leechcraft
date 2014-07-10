@@ -119,6 +119,18 @@ namespace MuCommands
 			{ "/ping" },
 			[this] (ICLEntry *e, const QString& t) { return Ping (AzothProxy_, e, t); }
 		};
+
+		Kick_ = StaticCommand
+		{
+			{ "/kick" },
+			[this] (ICLEntry *e, const QString& t) { return Kick (AzothProxy_, e, t); }
+		};
+
+		Ban_ = StaticCommand
+		{
+			{ "/ban" },
+			[this] (ICLEntry *e, const QString& t) { return Ban (AzothProxy_, e, t); }
+		};
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -160,7 +172,7 @@ namespace MuCommands
 		return
 		{
 			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_,
-			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_
+			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Kick_, Ban_
 		};
 	}
 
