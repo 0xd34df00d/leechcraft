@@ -32,6 +32,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "commands.h"
+#include "descparser.h"
 
 namespace LeechCraft
 {
@@ -46,17 +47,21 @@ namespace MuCommands
 
 	void Plugin::SecondInit ()
 	{
+		const DescParser descParser;
+
 		Names_ = StaticCommand
 		{
 			{ "/names" },
 			[this] (ICLEntry *e, const QString& t) { return HandleNames (AzothProxy_, e, t); }
 		};
+		descParser (Names_);
 
 		ListUrls_ = StaticCommand
 		{
 			{ "/urls" },
 			[this] (ICLEntry *e, const QString& t) { return ListUrls (AzothProxy_, e, t); }
 		};
+		descParser (ListUrls_);
 
 		OpenUrl_ = StaticCommand
 		{
@@ -64,6 +69,7 @@ namespace MuCommands
 			[this] (ICLEntry *e, const QString& t)
 				{ return OpenUrl (CoreProxy_, AzothProxy_, e, t, OnlyHandle); }
 		};
+		descParser (OpenUrl_);
 
 		FetchUrl_ = StaticCommand
 		{
@@ -71,66 +77,77 @@ namespace MuCommands
 			[this] (ICLEntry *e, const QString& t)
 				{ return OpenUrl (CoreProxy_, AzothProxy_, e, t, OnlyDownload); }
 		};
+		descParser (FetchUrl_);
 
 		VCard_ = StaticCommand
 		{
 			{ "/vcard" },
 			[this] (ICLEntry *e, const QString& t) { return ShowVCard (AzothProxy_, e, t); }
 		};
+		descParser (VCard_);
 
 		Version_ = StaticCommand
 		{
 			{ "/version" },
 			[this] (ICLEntry *e, const QString& t) { return ShowVersion (AzothProxy_, e, t); }
 		};
+		descParser (Version_);
 
 		Time_ = StaticCommand
 		{
 			{ "/time" },
 			[this] (ICLEntry *e, const QString& t) { return ShowTime (AzothProxy_, e, t); }
 		};
+		descParser (Time_);
 
 		ChangeNick_ = StaticCommand
 		{
 			{ "/nick" },
 			[this] (ICLEntry *e, const QString& t) { return ChangeNick (AzothProxy_, e, t); }
 		};
+		descParser (ChangeNick_);
 
 		ChangeSubject_ = StaticCommand
 		{
 			{ "/subject", "/topic" },
 			[this] (ICLEntry *e, const QString& t) { return ChangeSubject (AzothProxy_, e, t); }
 		};
+		descParser (ChangeSubject_);
 
 		LeaveMuc_ = StaticCommand
 		{
 			{ "/leave", "/part" },
 			[this] (ICLEntry *e, const QString& t) { return LeaveMuc (AzothProxy_, e, t); }
 		};
+		descParser (LeaveMuc_);
 
 		RejoinMuc_ = StaticCommand
 		{
 			{ "/rejoin" },
 			[this] (ICLEntry *e, const QString& t) { return RejoinMuc (AzothProxy_, e, t); }
 		};
+		descParser (RejoinMuc_);
 
 		Ping_ = StaticCommand
 		{
 			{ "/ping" },
 			[this] (ICLEntry *e, const QString& t) { return Ping (AzothProxy_, e, t); }
 		};
+		descParser (Ping_);
 
 		Kick_ = StaticCommand
 		{
 			{ "/kick" },
 			[this] (ICLEntry *e, const QString& t) { return Kick (AzothProxy_, e, t); }
 		};
+		descParser (Kick_);
 
 		Ban_ = StaticCommand
 		{
 			{ "/ban" },
 			[this] (ICLEntry *e, const QString& t) { return Ban (AzothProxy_, e, t); }
 		};
+		descParser (Ban_);
 	}
 
 	QByteArray Plugin::GetUniqueID () const
