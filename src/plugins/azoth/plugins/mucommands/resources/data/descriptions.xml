@@ -1,0 +1,15 @@
+<descs>
+	<command name="/vcard">
+		<desc>Shows VCards for the given participants, or a roster entry, or a JID.</desc>
+		<help>Usage: &lt;code>/vcard [id]\n[id]...&lt;/code>
+
+Shows (and fetches, if required) VCards for the users identified by &lt;code>id&lt;/code>. Multiple IDs could be given, separated by line breaks.
+
+An ID is resolved in the following way:
+&lt;ol>
+&lt;li>If the command is issued in a multiuser chat room, the ID is matched against the nicknames of the participants on the room.&lt;/li>
+&lt;li>The ID is matched against names and protocol-specific IDs (like JIDs) of participants in the roster.&lt;/li>
+&lt;li>If the protocol plugin supports that, the ID is resolved as a global entry ID in the protocol, even if it is not present in the roster.&lt;/li>
+&lt;/ol></help>
+	</command>
+</descs>

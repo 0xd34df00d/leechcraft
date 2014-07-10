@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/azoth/mucommands">
+    <file>resources/data/descriptions.xml</file>
+  </qresource>
+</RCC>

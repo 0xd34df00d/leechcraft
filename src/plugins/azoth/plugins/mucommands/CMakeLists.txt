@@ -16,8 +16,8 @@ set (MUCOMMANDS_SRCS
 	descparser.cpp
 	)
 
-#set (MUCOMMANDS_RESOURCES mucommandsresources.qrc)
-#QT4_ADD_RESOURCES (MUCOMMANDS_RCCS ${MUCOMMANDS_RESOURCES})
+set (MUCOMMANDS_RESOURCES azothmucommandsresources.qrc)
+QT4_ADD_RESOURCES (MUCOMMANDS_RCCS ${MUCOMMANDS_RESOURCES})
 
 #CreateTrs ("azoth_mucommands" "en;ru_RU" MUCOMMANDS_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_mucommands" "en;ru_RU" "${MUCOMMANDS_SRCS}" "" "")
