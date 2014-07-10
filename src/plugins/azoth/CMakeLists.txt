@@ -143,6 +143,7 @@ set (SRCS
 	serverhistorywidget.cpp
 	dndutil.cpp
 	cltooltipmanager.cpp
+	corecommandsmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui
