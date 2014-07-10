@@ -916,7 +916,7 @@ namespace Xoox
 		if (variant.isEmpty () || GetEntryType () == ETPrivateChat)
 			variant = "";
 
-		const auto& secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
+		const auto secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
 		Variant2SecsDiff_ [variant] = { secsDiff, iq.tzo () };
 
 		emit entryGenerallyChanged ();
