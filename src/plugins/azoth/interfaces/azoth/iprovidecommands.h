@@ -30,8 +30,7 @@
 #pragma once
 
 #include <functional>
-#include <QString>
-#include <QList>
+#include <QStringList>
 #include <QtPlugin>
 
 namespace LeechCraft
