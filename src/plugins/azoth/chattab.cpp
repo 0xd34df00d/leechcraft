@@ -592,7 +592,8 @@ namespace Azoth
 				for (const auto prov : cmdProvs)
 					for (const auto& cmd : prov->GetStaticCommands (entry))
 					{
-						if (!TextMatchesCmd (text, cmd.Name_))
+						if (!std::any_of (cmd.Names_.begin (), cmd.Names_.end (),
+								[&text] (const QString& name) { return TextMatchesCmd (text, name); }))
 							continue;
 
 						if (cmd.Command_ (entry, text))

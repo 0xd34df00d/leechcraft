@@ -48,71 +48,69 @@ namespace MuCommands
 	{
 		Names_ = StaticCommand
 		{
-			"/names",
+			{ "/names" },
 			[this] (ICLEntry *e, const QString& t) { return HandleNames (AzothProxy_, e, t); }
 		};
 
 		ListUrls_ = StaticCommand
 		{
-			"/urls",
+			{ "/urls" },
 			[this] (ICLEntry *e, const QString& t) { return ListUrls (AzothProxy_, e, t); }
 		};
 
 		OpenUrl_ = StaticCommand
 		{
-			"/openurl",
+			{ "/openurl" },
 			[this] (ICLEntry *e, const QString& t)
 				{ return OpenUrl (CoreProxy_, AzothProxy_, e, t, OnlyHandle); }
 		};
 
 		FetchUrl_ = StaticCommand
 		{
-			"/fetchurl",
+			{ "/fetchurl" },
 			[this] (ICLEntry *e, const QString& t)
 				{ return OpenUrl (CoreProxy_, AzothProxy_, e, t, OnlyDownload); }
 		};
 
 		VCard_ = StaticCommand
 		{
-			"/vcard",
+			{ "/vcard" },
 			[this] (ICLEntry *e, const QString& t) { return ShowVCard (AzothProxy_, e, t); }
 		};
 
 		Version_ = StaticCommand
 		{
-			"/version",
+			{ "/version" },
 			[this] (ICLEntry *e, const QString& t) { return ShowVersion (AzothProxy_, e, t); }
 		};
 
 		Time_ = StaticCommand
 		{
-			"/time",
+			{ "/time" },
 			[this] (ICLEntry *e, const QString& t) { return ShowTime (AzothProxy_, e, t); }
 		};
 
 		ChangeNick_ = StaticCommand
 		{
-			"/nick",
+			{ "/nick" },
 			[this] (ICLEntry *e, const QString& t) { return ChangeNick (AzothProxy_, e, t); }
 		};
 
 		ChangeSubject_ = StaticCommand
 		{
-			"/subject",
+			{ "/subject" },
 			[this] (ICLEntry *e, const QString& t) { return ChangeSubject (AzothProxy_, e, t); }
 		};
 
 		LeaveMuc_ = StaticCommand
 		{
-			"/leave",
+			{ "/leave", "/part" },
 			[this] (ICLEntry *e, const QString& t) { return LeaveMuc (AzothProxy_, e, t); }
 		};
-		PartMuc_ = LeaveMuc_;
-		PartMuc_.Name_ = "/part";
 
 		RejoinMuc_ = StaticCommand
 		{
-			"/rejoin",
+			{ "/rejoin" },
 			[this] (ICLEntry *e, const QString& t) { return RejoinMuc (AzothProxy_, e, t); }
 		};
 	}
@@ -156,7 +154,7 @@ namespace MuCommands
 		return
 		{
 			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_,
-			ChangeNick_, ChangeSubject_, LeaveMuc_, PartMuc_, RejoinMuc_
+			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_
 		};
 	}
 

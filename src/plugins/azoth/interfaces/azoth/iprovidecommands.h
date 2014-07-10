@@ -44,7 +44,7 @@ namespace Azoth
 
 	struct StaticCommand
 	{
-		QString Name_;
+		QStringList Names_;
 		Command_f Command_;
 	};
 

@@ -64,7 +64,6 @@ namespace MuCommands
 		StaticCommand ChangeNick_;
 		StaticCommand ChangeSubject_;
 		StaticCommand LeaveMuc_;
-		StaticCommand PartMuc_;
 		StaticCommand RejoinMuc_;
 
 		ICoreProxy_ptr CoreProxy_;
