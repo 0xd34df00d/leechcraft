@@ -40,6 +40,41 @@ namespace Azoth
 {
 	namespace
 	{
+		bool HelpAll (ICLEntry *entry, const QString&)
+		{
+			QStringList commands;
+
+			auto cmdProvs = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<IProvideCommands*> ();
+			cmdProvs << Core::Instance ().GetCoreCommandsManager ();
+			for (const auto prov : cmdProvs)
+				for (const auto& cmd : prov->GetStaticCommands (entry))
+					commands << cmd.Names_.join ("; ");
+
+			auto body = CoreCommandsManager::tr ("The following commands are available:") +
+					"<ul><li>" + commands.join ("</li><li>") + "</li></ul>";
+			body += CoreCommandsManager::tr ("Type %1 in chat to get help on a particular command.")
+					.arg ("<em>/help command</em>");
+
+			const auto entryObj = entry->GetQObject ();
+			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
+					QDateTime::currentDateTime (),
+					IMessage::MTServiceMessage,
+					IMessage::DIn,
+					entryObj,
+					entryObj);
+			const auto msg = qobject_cast<IMessage*> (msgObj);
+			msg->Store ();
+
+			return true;
+		}
+
+		bool Help (ICLEntry *entry, const QString& text)
+		{
+			const auto& commands = text.section (' ', 1).split (' ', QString::SkipEmptyParts);
+			return HelpAll (entry, text);
+		}
+
 		bool Clear (ICLEntry *entry, const QString&)
 		{
 			const auto tab = Core::Instance ().GetChatTabsManager ()->
@@ -53,13 +88,14 @@ namespace Azoth
 
 	CoreCommandsManager::CoreCommandsManager (QObject* parent)
 	: QObject { parent }
+	, Help_ { { "/help" }, &Help }
 	, Clear_ { { "/clear" }, &Clear }
 	{
 	}
 
 	StaticCommands_t CoreCommandsManager::GetStaticCommands (ICLEntry*)
 	{
-		return { Clear_ };
+		return { Help_, Clear_ };
 	}
 }
 }
