@@ -42,8 +42,8 @@ namespace Azoth
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProvideCommands)
 
-		StaticCommand Help_;
-		StaticCommand Clear_;
+		const StaticCommand Help_;
+		const StaticCommand Clear_;
 	public:
 		CoreCommandsManager (QObject *parent = nullptr);
 
