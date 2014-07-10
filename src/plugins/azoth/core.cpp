@@ -91,6 +91,7 @@
 #include "customstatusesmanager.h"
 #include "customchatstylemanager.h"
 #include "cltooltipmanager.h"
+#include "corecommandsmanager.h"
 
 Q_DECLARE_METATYPE (QList<QColor>);
 Q_DECLARE_METATYPE (QPointer<QObject>);
@@ -206,6 +207,7 @@ namespace Azoth
 	, TooltipManager_ (new CLTooltipManager (Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
+	, CoreCommandsManager_ (new CoreCommandsManager (this))
 	, ActionsManager_ (new ActionsManager (this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
@@ -1511,6 +1513,11 @@ namespace Azoth
 	ActionsManager* Core::GetActionsManager () const
 	{
 		return ActionsManager_;
+	}
+
+	CoreCommandsManager* Core::GetCoreCommandsManager () const
+	{
+		return CoreCommandsManager_;
 	}
 
 	void Core::RecalculateUnreadForParents (QStandardItem *clItem)

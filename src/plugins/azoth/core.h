@@ -87,6 +87,7 @@ namespace Azoth
 	class ChatStyleOptionManager;
 	class CustomChatStyleManager;
 	class CLTooltipManager;
+	class CoreCommandsManager;
 
 	class Core : public QObject
 	{
@@ -109,6 +110,7 @@ namespace Azoth
 		CLTooltipManager * const TooltipManager_;
 		CLModel *CLModel_;
 		ChatTabsManager *ChatTabsManager_;
+		CoreCommandsManager *CoreCommandsManager_;
 
 		typedef QHash<QString, QStandardItem*> Category2Item_t;
 		typedef QHash<QStandardItem*, Category2Item_t> Account2Category2Item_t;
@@ -314,6 +316,8 @@ namespace Azoth
 		QImage GetDefaultAvatar (int size) const;
 
 		ActionsManager* GetActionsManager () const;
+
+		CoreCommandsManager* GetCoreCommandsManager () const;
 
 		QString GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const;
 		QUrl GetSelectedChatTemplateURL (QObject*) const;
