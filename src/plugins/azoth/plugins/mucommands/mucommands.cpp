@@ -98,7 +98,7 @@ namespace MuCommands
 
 		ChangeSubject_ = StaticCommand
 		{
-			{ "/subject" },
+			{ "/subject", "/topic" },
 			[this] (ICLEntry *e, const QString& t) { return ChangeSubject (AzothProxy_, e, t); }
 		};
 
