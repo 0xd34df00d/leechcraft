@@ -89,6 +89,7 @@
 #include "customchatstylemanager.h"
 #include "coremessage.h"
 #include "dummymsgmanager.h"
+#include "corecommandsmanager.h"
 
 namespace LeechCraft
 {
@@ -541,8 +542,9 @@ namespace Azoth
 		 */
 		bool ProcessOutgoingMsg (ICLEntry *entry, QString& text)
 		{
-			const auto cmdProvs = Core::Instance ().GetProxy ()->
+			auto cmdProvs = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableTo<IProvideCommands*> ();
+			cmdProvs << Core::Instance ().GetCoreCommandsManager ();
 			for (const auto prov : cmdProvs)
 				for (const auto& cmd : prov->GetStaticCommands (entry))
 				{
