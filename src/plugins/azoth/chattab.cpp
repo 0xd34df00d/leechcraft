@@ -782,7 +782,7 @@ namespace Azoth
 	}
 #endif
 
-	void ChatTab::handleClearChat ()
+	void ChatTab::clearChat ()
 	{
 		ICLEntry *entry = GetEntry<ICLEntry> ();
 		if (!entry)
@@ -1436,7 +1436,7 @@ namespace Azoth
 		connect (clearAction,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleClearChat ()));
+				SLOT (clearChat ()));
 		TabToolbar_->addAction (clearAction);
 		sm->RegisterAction ("org.LeechCraft.Azoth.ClearChat", clearAction);
 

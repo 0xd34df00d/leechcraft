@@ -171,6 +171,8 @@ namespace Azoth
 		void appendMessageText (const QString&);
 		void selectVariant (const QString&);
 		QTextEdit* getMsgEdit ();
+
+		void clearChat ();
 	private slots:
 		void on_MUCEventsButton__toggled (bool);
 		void handleSeparateMUCLog (bool initial = false);
@@ -183,7 +185,6 @@ namespace Azoth
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
 		void on_View__loadFinished (bool);
-		void handleClearChat ();
 		void handleHistoryBack ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
