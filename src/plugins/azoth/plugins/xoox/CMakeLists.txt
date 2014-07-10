@@ -106,6 +106,7 @@ set (XOOX_SRCS
 	xep0313reqiq.cpp
 	carbonsmanager.cpp
 	pingmanager.cpp
+	pingreplyobject.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
