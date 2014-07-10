@@ -205,8 +205,12 @@ namespace Xoox
 
 		if (Variant2SecsDiff_.contains (var))
 		{
-			const auto& now = QDateTime::currentDateTime ();
-			res ["client_time"] = now.addSecs (Variant2SecsDiff_.value (var).Diff_);
+			auto now = QDateTime::currentDateTimeUtc ();
+			now.setTimeSpec (Qt::LocalTime);
+			const auto& secsDiff = Variant2SecsDiff_.value (var);
+			res ["client_time"] = now
+					.addSecs (secsDiff.Diff_)
+					.addSecs (secsDiff.Tzo_);
 		}
 
 		const auto& version = Variant2Version_ [var];
