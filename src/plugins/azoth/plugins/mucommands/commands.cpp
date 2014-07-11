@@ -47,6 +47,7 @@
 #include <interfaces/azoth/imucjoinwidget.h>
 #include <interfaces/azoth/ihavepings.h>
 #include <interfaces/azoth/imucperms.h>
+#include <interfaces/azoth/ihavequeriableversion.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -360,9 +361,10 @@ namespace MuCommands
 
 	bool ShowVersion (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
+		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
 				{
 					const auto& variants = target->Variants ();
+					const auto ihqv = qobject_cast<IHaveQueriableVersion*> (target->GetQObject ());
 					for (const auto& var : variants)
 					{
 						const auto& info = target->GetClientInfo (var);
@@ -378,6 +380,18 @@ namespace MuCommands
 						add (QObject::tr ("Name"), info ["client_name"].toString ());
 						add (QObject::tr ("Version"), info ["client_version"].toString ());
 						add (QObject::tr ("OS"), info ["client_os"].toString ());
+
+						if (!info.contains ("client_version") && ihqv)
+						{
+							const auto pendingObj = ihqv->QueryVersion (var);
+							new Util::SlotClosure<Util::DeleteLaterPolicy>
+							{
+								[azothProxy, entry, text] { ShowVersion (azothProxy, entry, text); },
+								pendingObj,
+								SIGNAL (versionReceived ()),
+								pendingObj
+							};
+						}
 
 						auto body = QObject::tr ("Client information for %1:")
 								.arg (var.isEmpty () && variants.size () == 1 ?
