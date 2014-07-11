@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_LASTACTIVITYMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_LASTACTIVITYMANAGER_H
+#pragma once
+
 #include <QXmppClientExtension.h>
 
 namespace LeechCraft
@@ -43,7 +43,7 @@ namespace Xoox
 	public:
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);
-		
+
 		void RequestLastActivity (const QString&);
 	private:
 		QXmppIq CreateIq (const QString&, int = -1);
@@ -53,5 +53,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
