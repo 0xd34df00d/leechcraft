@@ -533,6 +533,11 @@ namespace Xoox
 		return AnnotationsManager_;
 	}
 
+	LastActivityManager* ClientConnection::GetLastActivityManager () const
+	{
+		return LastActivityManager_;
+	}
+
 	PubSubManager* ClientConnection::GetPubSubManager () const
 	{
 		return PubSubManager_;

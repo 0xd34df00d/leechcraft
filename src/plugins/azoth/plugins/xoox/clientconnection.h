@@ -215,6 +215,7 @@ namespace Xoox
 		QXmppEntityTimeManager* GetEntityTimeManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
+		LastActivityManager* GetLastActivityManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
 		XMPPBobManager* GetBobManager () const;
