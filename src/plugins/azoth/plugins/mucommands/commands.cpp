@@ -371,50 +371,60 @@ namespace MuCommands
 		return true;
 	}
 
+	namespace
+	{
+		void ShowVersionVariant (IProxyObject *azothProxy, ICLEntry *entry,
+				const QString& name, ICLEntry *target, const QString& var, bool initial)
+		{
+			const auto ihqv = qobject_cast<IHaveQueriableVersion*> (target->GetQObject ());
+			const auto& info = target->GetClientInfo (var);
+
+			QStringList fields;
+			auto add = [&fields] (const QString& name, const QString& value)
+			{
+				if (!value.isEmpty ())
+					fields << "<strong>" + name + ":</strong> " + value;
+			};
+
+			add (QObject::tr ("Type"), info ["client_type"].toString ());
+			add (QObject::tr ("Name"), info ["client_name"].toString ());
+			add (QObject::tr ("Version"), info ["client_version"].toString ());
+			add (QObject::tr ("OS"), info ["client_os"].toString ());
+
+			if (initial && !info.contains ("client_version") && ihqv)
+			{
+				const auto pendingObj = ihqv->QueryVersion (var);
+
+				const auto closure = new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[name, azothProxy, entry, target, var]
+					{
+						ShowVersionVariant (azothProxy, entry, name, target, var, false);
+					},
+					pendingObj,
+					SIGNAL (versionReceived ()),
+					pendingObj
+				};
+			}
+
+			auto body = QObject::tr ("Client information for %1:")
+					.arg (var.isEmpty () && target->Variants ().size () == 1 ?
+							name :
+							target->GetHumanReadableID () + '/' + var);
+			body += fields.isEmpty () ?
+					QObject::tr ("no information available.") :
+					"<ul><li>" + fields.join ("</li><li>") + "</li></ul>";
+
+			InjectMessage (azothProxy, entry, body);
+		}
+	}
+
 	bool ShowVersion (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
 		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
 				{
-					const auto& variants = target->Variants ();
-					const auto ihqv = qobject_cast<IHaveQueriableVersion*> (target->GetQObject ());
-					for (const auto& var : variants)
-					{
-						const auto& info = target->GetClientInfo (var);
-
-						QStringList fields;
-						auto add = [&fields] (const QString& name, const QString& value)
-						{
-							if (!value.isEmpty ())
-								fields << "<strong>" + name + ":</strong> " + value;
-						};
-
-						add (QObject::tr ("Type"), info ["client_type"].toString ());
-						add (QObject::tr ("Name"), info ["client_name"].toString ());
-						add (QObject::tr ("Version"), info ["client_version"].toString ());
-						add (QObject::tr ("OS"), info ["client_os"].toString ());
-
-						if (!info.contains ("client_version") && ihqv)
-						{
-							const auto pendingObj = ihqv->QueryVersion (var);
-							new Util::SlotClosure<Util::DeleteLaterPolicy>
-							{
-								[azothProxy, entry, text] { ShowVersion (azothProxy, entry, text); },
-								pendingObj,
-								SIGNAL (versionReceived ()),
-								pendingObj
-							};
-						}
-
-						auto body = QObject::tr ("Client information for %1:")
-								.arg (var.isEmpty () && variants.size () == 1 ?
-										name :
-										target->GetHumanReadableID () + '/' + var);
-						body += fields.isEmpty () ?
-								QObject::tr ("no information available.") :
-								"<ul><li>" + fields.join ("</li><li>") + "</li></ul>";
-
-						InjectMessage (azothProxy, entry, body);
-					}
+					for (const auto& var : target->Variants ())
+						ShowVersionVariant (azothProxy, entry, name, target, var, true);
 				},
 				azothProxy, entry, text);
 
