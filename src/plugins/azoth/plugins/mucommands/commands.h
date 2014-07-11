@@ -67,6 +67,8 @@ namespace MuCommands
 
 	bool Ban (IProxyObject*, ICLEntry*, const QString&);
 
+	bool Last (IProxyObject*, ICLEntry*, const QString&);
+
 	bool Ping (IProxyObject*, ICLEntry*, const QString&);
 }
 }

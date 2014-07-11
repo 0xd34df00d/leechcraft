@@ -135,6 +135,13 @@ namespace MuCommands
 		};
 		descParser (Ping_);
 
+		Last_ = StaticCommand
+		{
+			{ "/last" },
+			[this] (ICLEntry *e, const QString& t) { return Last (AzothProxy_, e, t); }
+		};
+		descParser (Last_);
+
 		Kick_ = StaticCommand
 		{
 			{ "/kick" },
@@ -189,7 +196,7 @@ namespace MuCommands
 		return
 		{
 			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_,
-			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Kick_, Ban_
+			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_, Kick_, Ban_
 		};
 	}
 

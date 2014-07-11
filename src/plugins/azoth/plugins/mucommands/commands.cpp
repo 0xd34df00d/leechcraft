@@ -48,6 +48,7 @@
 #include <interfaces/azoth/ihavepings.h>
 #include <interfaces/azoth/imucperms.h>
 #include <interfaces/azoth/ihavequeriableversion.h>
+#include <interfaces/azoth/isupportlastactivity.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -628,6 +629,42 @@ namespace MuCommands
 			return false;
 
 		PerformRoleAction (mucPerms->GetBanPerm (), entry->GetQObject (), text.section (' ', 1));
+		return true;
+	}
+
+	bool Last (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		PerformMucAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
+				{
+					const auto isla = qobject_cast<ISupportLastActivity*> (target->GetParentAccount ());
+					const auto pending = isla ?
+							isla->RequestLastActivity (target->GetQObject (), {}) :
+							nullptr;
+					if (!pending)
+					{
+						InjectMessage (azothProxy, entry,
+								QObject::tr ("%1 does not support last activity.").arg (name));
+						return;
+					}
+
+					new Util::SlotClosure<Util::DeleteLaterPolicy>
+					{
+						[pending, azothProxy, entry, name] ()
+						{
+							const auto iplar = qobject_cast<IPendingLastActivityRequest*> (pending);
+
+							InjectMessage (azothProxy, entry,
+									QObject::tr ("Last activity from %1: %2 s.")
+											.arg (name)
+											.arg (iplar->GetTime ()));
+						},
+						pending,
+						SIGNAL (gotLastActivity ()),
+						pending
+					};
+				},
+				azothProxy, entry, text);
+
 		return true;
 	}
 
