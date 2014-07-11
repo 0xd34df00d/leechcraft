@@ -46,7 +46,7 @@ namespace Xoox
 		return Time_;
 	}
 
-	Context PendingLastActivityRequest::GetContext () const
+	PendingLastActivityRequest::Context PendingLastActivityRequest::GetContext () const
 	{
 		if (Jid_.contains ('/'))
 			return Context::Activity;

@@ -35,16 +35,16 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	enum class Context
-	{
-		Activity,
-		LastConnection,
-		Uptime
-	};
-
 	class IPendingLastActivityRequest
 	{
 	public:
+		enum class Context
+		{
+			Activity,
+			LastConnection,
+			Uptime
+		};
+
 		virtual ~IPendingLastActivityRequest () {}
 
 		virtual int GetTime () const = 0;
