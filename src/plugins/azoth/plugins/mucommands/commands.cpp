@@ -461,8 +461,6 @@ namespace MuCommands
 								target->GetHumanReadableID () + '/' + var;
 						if (!time.isValid ())
 						{
-							fields << QObject::tr ("No information for %1.")
-									.arg (varName);
 							shouldUpdate = true;
 							continue;
 						}
