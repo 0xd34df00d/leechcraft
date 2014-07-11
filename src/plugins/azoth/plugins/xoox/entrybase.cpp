@@ -42,6 +42,7 @@
 #include <QXmppGlobal.h>
 #include <QXmppEntityTimeIq.h>
 #include <QXmppEntityTimeManager.h>
+#include <QXmppVersionManager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -71,6 +72,7 @@
 #include "inforequestpolicymanager.h"
 #include "pingmanager.h"
 #include "pingreplyobject.h"
+#include "pendingversionquery.h"
 
 namespace LeechCraft
 {
@@ -449,6 +451,18 @@ namespace Xoox
 		Account_->GetClientConnection ()->GetPingManager ()->Ping (jid,
 				[reply] (int msecs) { reply->HandleReply (msecs); });
 		return reply;
+	}
+
+	QObject* EntryBase::QueryVersion (const QString& variant)
+	{
+		auto jid = GetJID ();
+		if (!variant.isEmpty ())
+			jid += '/' + variant;
+
+		const auto vm = Account_->GetClientConnection ()->GetVersionManager ();
+		vm->requestVersion (jid);
+
+		return new PendingVersionQuery { vm, jid, this };
 	}
 
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)

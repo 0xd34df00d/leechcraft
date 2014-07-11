@@ -45,6 +45,7 @@
 #include <interfaces/azoth/isupportmicroblogs.h>
 #include <interfaces/azoth/ihaveentitytime.h>
 #include <interfaces/azoth/ihavepings.h>
+#include <interfaces/azoth/ihavequeriableversion.h>
 
 class QXmppPresence;
 class QXmppVersionIq;
@@ -77,6 +78,7 @@ namespace Xoox
 					, public ISupportMicroblogs
 					, public IHaveEntityTime
 					, public IHavePings
+					, public IHaveQueriableVersion
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
@@ -85,7 +87,8 @@ namespace Xoox
 				LeechCraft::Azoth::IHaveDirectedStatus
 				LeechCraft::Azoth::ISupportMicroblogs
 				LeechCraft::Azoth::IHaveEntityTime
-				LeechCraft::Azoth::IHavePings)
+				LeechCraft::Azoth::IHavePings
+				LeechCraft::Azoth::IHaveQueriableVersion)
 	protected:
 		GlooxAccount *Account_;
 
@@ -157,6 +160,9 @@ namespace Xoox
 
 		// IHavePings
 		QObject* Ping (const QString& variant);
+
+		// IHaveQueriableVersion
+		QObject* QueryVersion (const QString& variant);
 
 		virtual QString GetJID () const = 0;
 
