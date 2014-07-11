@@ -159,7 +159,7 @@ namespace Xoox
 
 	QString GlooxMessage::GetBody () const
 	{
-		return Message_.body ();
+		return Qt::escape (Message_.body ());
 	}
 
 	void GlooxMessage::SetBody (const QString& body)

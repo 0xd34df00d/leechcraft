@@ -166,7 +166,7 @@ namespace Xoox
 
 	QString RoomPublicMessage::GetBody () const
 	{
-		return Message_;
+		return Qt::escape (Message_);
 	}
 
 	void RoomPublicMessage::SetBody (const QString& msg)
