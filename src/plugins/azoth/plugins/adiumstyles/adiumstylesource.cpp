@@ -665,7 +665,7 @@ namespace AdiumStyles
 		if (richMsg && info.UseRichTextBody_)
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
-			body = msg->GetBody ();
+			body = Qt::escape (msg->GetBody ());
 
 		if (body.startsWith ("/me "))
 			body = QString ("* %1 %2")
