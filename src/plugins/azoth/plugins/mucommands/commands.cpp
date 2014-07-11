@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QUrl>
+#include <QTimer>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
@@ -405,6 +406,8 @@ namespace MuCommands
 					SIGNAL (versionReceived ()),
 					pendingObj
 				};
+				QTimer::singleShot (10 * 1000, closure, SLOT (run ()));
+				return;
 			}
 
 			auto body = QObject::tr ("Client information for %1:")
