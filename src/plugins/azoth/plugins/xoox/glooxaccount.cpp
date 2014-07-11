@@ -68,6 +68,8 @@
 #include "xep0313manager.h"
 #include "xep0313prefsdialog.h"
 #include "xep0313modelmanager.h"
+#include "pendinglastactivityrequest.h"
+#include "lastactivitymanager.h"
 
 namespace LeechCraft
 {
@@ -636,6 +638,28 @@ namespace Xoox
 		set.setConferences (mucs);
 		set.setUrls (GetBookmarks ().urls ());
 		SetBookmarks (set);
+	}
+
+	QObject* GlooxAccount::RequestLastActivity (QObject *entry, const QString& variant)
+	{
+		auto jid = qobject_cast<ICLEntry*> (entry)->GetHumanReadableID ();
+		if (!variant.isEmpty ())
+			jid += '/' + variant;
+		return RequestLastActivity (jid);
+	}
+
+	QObject* GlooxAccount::RequestLastActivity (const QString& jid)
+	{
+		auto pending = new PendingLastActivityRequest { jid, this };
+
+		const auto manager = ClientConnection_->GetLastActivityManager ();
+		manager->RequestLastActivity (jid);
+		connect (manager,
+				SIGNAL (gotLastActivity (QString, int)),
+				pending,
+				SLOT (handleGotLastActivity (QString, int)));
+
+		return pending;
 	}
 
 	bool GlooxAccount::SupportsFeature (Feature f) const

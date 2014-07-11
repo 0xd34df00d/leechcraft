@@ -51,6 +51,7 @@
 #include <interfaces/azoth/ihavemicroblogs.h>
 #include <interfaces/azoth/iregmanagedaccount.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
+#include <interfaces/azoth/isupportlastactivity.h>
 #ifdef ENABLE_CRYPT
 #include <interfaces/azoth/isupportpgp.h>
 #endif
@@ -98,6 +99,7 @@ namespace Xoox
 #endif
 					   , public ISupportRIEX
 					   , public ISupportBookmarks
+					   , public ISupportLastActivity
 					   , public IRegManagedAccount
 					   , public IHaveServerHistory
 #ifdef ENABLE_CRYPT
@@ -117,6 +119,7 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportGeolocation
 				LeechCraft::Azoth::ISupportRIEX
 				LeechCraft::Azoth::ISupportBookmarks
+				LeechCraft::Azoth::ISupportLastActivity
 				LeechCraft::Azoth::IRegManagedAccount
 				LeechCraft::Azoth::IHaveServerHistory
 			)
@@ -219,6 +222,10 @@ namespace Xoox
 		QWidget* GetMUCBookmarkEditorWidget ();
 		QVariantList GetBookmarkedMUCs () const;
 		void SetBookmarkedMUCs (const QVariantList&);
+
+		// ISupportLastActivity
+		QObject* RequestLastActivity (QObject*, const QString&);
+		QObject* RequestLastActivity (const QString&);
 
 		// IRegManagedAccount
 		bool SupportsFeature (Feature) const;
