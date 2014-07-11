@@ -301,8 +301,8 @@ namespace MuCommands
 			return "<ul><li>" + strings.join ("</li><li>") + "</li></ul>";
 		}
 
-		template<typename T>
-		void PerformMucAction (T action, IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+		template<typename T, typename F>
+		void PerformMucAction (T action, F fallback, ICLEntry *entry, const QString& text)
 		{
 			const auto& split = ParseNicks (entry, text);
 			if (split.isEmpty ())
@@ -315,13 +315,24 @@ namespace MuCommands
 						participants, entry->GetParentAccount ());
 				if (!target)
 				{
-					InjectMessage (azothProxy, entry,
-							QObject::tr ("Unable to resolve %1.").arg ("<em>" + name + "</em>"));
+					fallback (name);
 					continue;
 				}
 
 				action (target, name);
 			}
+		}
+
+		template<typename T>
+		void PerformMucAction (T action, IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+		{
+			PerformMucAction (action,
+					[azothProxy, entry] (const QString& name)
+					{
+						InjectMessage (azothProxy, entry,
+								QObject::tr ("Unable to resolve %1.").arg ("<em>" + name + "</em>"));
+					},
+					entry, text);
 		}
 	}
 
