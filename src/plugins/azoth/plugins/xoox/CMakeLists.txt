@@ -107,6 +107,7 @@ set (XOOX_SRCS
 	carbonsmanager.cpp
 	pingmanager.cpp
 	pingreplyobject.cpp
+	pendingversionquery.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
