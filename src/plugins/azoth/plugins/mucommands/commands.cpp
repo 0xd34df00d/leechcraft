@@ -666,34 +666,47 @@ namespace MuCommands
 
 	bool Last (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
+		const auto handlePending = [azothProxy, entry] (QObject *pending, const QString& name) -> void
+		{
+			if (!pending)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("%1 does not support last activity.").arg (name));
+				return;
+			}
+
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[pending, azothProxy, entry, name] ()
+				{
+					const auto iplar = qobject_cast<IPendingLastActivityRequest*> (pending);
+					const auto& time = Util::MakeTimeFromLong (iplar->GetTime ());
+					const auto& pattern = GetLastActivityPattern (iplar->GetContext ());
+					InjectMessage (azothProxy, entry, pattern.arg (name).arg (time));
+				},
+				pending,
+				SIGNAL (gotLastActivity ()),
+				pending
+			};
+		};
+
+		PerformMucAction ([handlePending] (ICLEntry *target, const QString& name) -> void
 				{
 					const auto isla = qobject_cast<ISupportLastActivity*> (target->GetParentAccount ());
 					const auto pending = isla ?
 							isla->RequestLastActivity (target->GetQObject (), {}) :
 							nullptr;
-					if (!pending)
-					{
-						InjectMessage (azothProxy, entry,
-								QObject::tr ("%1 does not support last activity.").arg (name));
-						return;
-					}
-
-					new Util::SlotClosure<Util::DeleteLaterPolicy>
-					{
-						[pending, azothProxy, entry, name] ()
-						{
-							const auto iplar = qobject_cast<IPendingLastActivityRequest*> (pending);
-							const auto& time = Util::MakeTimeFromLong (iplar->GetTime ());
-							const auto& pattern = GetLastActivityPattern (iplar->GetContext ());
-							InjectMessage (azothProxy, entry, pattern.arg (name).arg (time));
-						},
-						pending,
-						SIGNAL (gotLastActivity ()),
-						pending
-					};
+					handlePending (pending, name);
 				},
-				azothProxy, entry, text);
+				[entry, handlePending] (const QString& name) -> void
+				{
+					const auto isla = qobject_cast<ISupportLastActivity*> (entry->GetParentAccount ());
+					const auto pending = isla ?
+							isla->RequestLastActivity (name) :
+							nullptr;
+					handlePending (pending, name);
+				},
+				entry, text);
 
 		return true;
 	}
