@@ -632,6 +632,27 @@ namespace MuCommands
 		return true;
 	}
 
+	namespace
+	{
+		QString GetLastActivityPattern (IPendingLastActivityRequest::Context context)
+		{
+			switch (context)
+			{
+			case IPendingLastActivityRequest::Context::Activity:
+				return QObject::tr ("Last activity of %1: %2.");
+			case IPendingLastActivityRequest::Context::LastConnection:
+				return QObject::tr ("Last connection of %1: %2.");
+			case IPendingLastActivityRequest::Context::Uptime:
+				return QObject::tr ("%1's uptime: %2.");
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown context"
+					<< static_cast<int> (context);
+			return {};
+		}
+	}
+
 	bool Last (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
 		PerformMucAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
@@ -652,11 +673,9 @@ namespace MuCommands
 						[pending, azothProxy, entry, name] ()
 						{
 							const auto iplar = qobject_cast<IPendingLastActivityRequest*> (pending);
-
-							InjectMessage (azothProxy, entry,
-									QObject::tr ("Last activity from %1: %2 s.")
-											.arg (name)
-											.arg (iplar->GetTime ()));
+							const auto& time = Util::MakeTimeFromLong (iplar->GetTime ());
+							const auto& pattern = GetLastActivityPattern (iplar->GetContext ());
+							InjectMessage (azothProxy, entry, pattern.arg (name).arg (time));
 						},
 						pending,
 						SIGNAL (gotLastActivity ()),
