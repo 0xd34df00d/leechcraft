@@ -108,7 +108,7 @@ namespace Xoox
 
 	QStringList RoomParticipantEntry::Variants () const
 	{
-		return QStringList (QString ());
+		return { {} };
 	}
 
 	QObject* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,

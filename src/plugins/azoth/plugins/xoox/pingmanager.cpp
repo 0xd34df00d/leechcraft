@@ -52,7 +52,7 @@ namespace Xoox
 		return false;
 	}
 
-	void PingManager::Ping (const QString& jid, const PingManager::ReplyHandler_f& cb)
+	void PingManager::Ping (const QString& jid, const ReplyHandler_f& cb)
 	{
 		QXmppPingIq iq;
 		iq.setTo (jid);
