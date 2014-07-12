@@ -653,11 +653,19 @@ namespace Xoox
 		auto pending = new PendingLastActivityRequest { jid, this };
 
 		const auto manager = ClientConnection_->GetLastActivityManager ();
-		manager->RequestLastActivity (jid);
+		const auto& id = manager->RequestLastActivity (jid);
 		connect (manager,
 				SIGNAL (gotLastActivity (QString, int)),
 				pending,
 				SLOT (handleGotLastActivity (QString, int)));
+
+		ClientConnection_->WhitelistError (id);
+		ClientConnection_->AddCallback (id,
+				[pending] (const QXmppIq& iq)
+				{
+					if (iq.type () == QXmppIq::Error)
+						pending->deleteLater ();
+				});
 
 		return pending;
 	}
