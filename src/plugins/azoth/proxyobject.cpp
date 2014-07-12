@@ -394,7 +394,7 @@ namespace Azoth
 		return result;
 	}
 
-	QObject* ProxyObject::CreateCoreMessage (const QString& body,
+	QObject* ProxyObject::CreateCoreMessage (QString body,
 			const QString& richBody, const QDateTime& date,
 			IMessage::MessageType type, IMessage::Direction dir,
 			QObject *other, QObject *parent)

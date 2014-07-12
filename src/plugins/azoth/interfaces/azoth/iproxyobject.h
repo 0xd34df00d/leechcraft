@@ -298,7 +298,7 @@ namespace Azoth
 
 		virtual QStringList FindLinks (const QString&) = 0;
 
-		virtual QObject* CreateCoreMessage (const QString& body,
+		virtual QObject* CreateCoreMessage (QString body,
 				const QString& richBody,
 				const QDateTime& date,
 				IMessage::MessageType type,
