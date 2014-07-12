@@ -2340,7 +2340,7 @@ namespace Azoth
 							.arg (other->GetEntryName ());
 				else
 				{
-					const QString& body = msg->GetBody ();
+					const QString& body = Qt::escape (msg->GetBody ());
 					const QString& notifMsg = body.size () > 50 ?
 							body.left (50) + "..." :
 							body;
@@ -2362,7 +2362,7 @@ namespace Azoth
 							.arg (other->GetEntryName ());
 				else
 				{
-					const QString& body = msg->GetBody ();
+					const QString& body = Qt::escape (msg->GetBody ());
 					const QString& notifMsg = body.size () > 50 ?
 							body.left (50) + "..." :
 							body;
@@ -2421,7 +2421,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
 
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("%n message(s)", 0, count);
-		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg->GetBody ();
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = Qt::escape (msg->GetBody ());
 
 		auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),

@@ -169,8 +169,7 @@ namespace MuCommands
 			if (url.isEmpty ())
 				continue;
 
-			const auto ba = url.toUtf8 ().replace ("&amp;", "&");
-			const auto& entity = Util::MakeEntity (QUrl::fromEncoded (ba),
+			const auto& entity = Util::MakeEntity (QUrl::fromEncoded (url.toUtf8 ()),
 					{}, params | FromUserInitiated);
 			iem->HandleEntity (entity);
 		}

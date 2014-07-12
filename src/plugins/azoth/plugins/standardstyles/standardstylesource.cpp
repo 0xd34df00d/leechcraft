@@ -191,7 +191,7 @@ namespace StandardStyles
 		if (richMsg && info.UseRichTextBody_)
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
-			body = msg->GetBody ();
+			body = Qt::escape (msg->GetBody ());
 
 		body = Proxy_->FormatBody (body, msg->GetQObject ());
 
