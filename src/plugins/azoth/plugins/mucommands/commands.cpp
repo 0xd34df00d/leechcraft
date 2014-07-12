@@ -60,10 +60,12 @@ namespace MuCommands
 {
 	namespace
 	{
-		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry, const QString& contents)
+		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry,
+				const QString& contents, const QString& rich = {})
 		{
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = azothProxy->CreateCoreMessage (contents,
+					rich,
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
 					IMessage::DIn,
