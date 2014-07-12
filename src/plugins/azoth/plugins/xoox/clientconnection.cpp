@@ -138,7 +138,7 @@ namespace Xoox
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
 	, ProxyObject_ (0)
-	, CapsManager_ (new CapsManager (this))
+	, CapsManager_ (new CapsManager (DiscoveryManager_, this))
 	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
@@ -307,15 +307,6 @@ namespace Xoox
 				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
 				Account_,
 				SIGNAL (bookmarksChanged ()));
-
-		connect (DiscoveryManager_,
-				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
-				CapsManager_,
-				SLOT (handleInfoReceived (const QXmppDiscoveryIq&)));
-		connect (DiscoveryManager_,
-				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
-				CapsManager_,
-				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
 
 		connect (Settings_,
 				SIGNAL (kaParamsChanged (QPair<int,int>)),
@@ -634,7 +625,7 @@ namespace Xoox
 	void ClientConnection::RequestInfo (const QString& jid) const
 	{
 		if (JID2CLEntry_.contains (jid))
-			Q_FOREACH (const QString& variant, JID2CLEntry_ [jid]->Variants ())
+			for (const auto& variant : JID2CLEntry_ [jid]->Variants ())
 				CapsQueue_->Schedule (jid + '/' + variant, FetchQueue::PHigh);
 		else
 			CapsQueue_->Schedule (jid, FetchQueue::PLow);

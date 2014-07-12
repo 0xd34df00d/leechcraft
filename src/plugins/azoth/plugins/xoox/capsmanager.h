@@ -27,10 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QXmppDiscoveryIq.h>
+
+class QXmppDiscoveryManager;
 
 namespace LeechCraft
 {
@@ -46,10 +48,11 @@ namespace Xoox
 		Q_OBJECT
 
 		ClientConnection *Connection_;
+		QXmppDiscoveryManager *DiscoMgr_;
 		CapsDatabase *DB_;
 		QHash<QString, QString> Caps2String_;
 	public:
-		CapsManager (ClientConnection*);
+		CapsManager (QXmppDiscoveryManager*, ClientConnection*);
 
 		void FetchCaps (const QString&, const QByteArray&);
 		QStringList GetRawCaps (const QByteArray&) const;
@@ -65,5 +68,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

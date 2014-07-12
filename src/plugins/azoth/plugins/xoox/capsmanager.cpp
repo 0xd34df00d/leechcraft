@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "capsmanager.h"
+#include <QXmppDiscoveryManager.h>
 #include "clientconnection.h"
 #include "capsdatabase.h"
 #include "core.h"
@@ -38,9 +39,10 @@ namespace Azoth
 {
 namespace Xoox
 {
-	CapsManager::CapsManager (ClientConnection *connection)
+	CapsManager::CapsManager (QXmppDiscoveryManager *mgr, ClientConnection *connection)
 	: QObject (connection)
 	, Connection_ (connection)
+	, DiscoMgr_ (mgr)
 	, DB_ (Core::Instance ().GetCapsDatabase ())
 	{
 		Caps2String_ ["http://etherx.jabber.org/streams"] = "stream";
@@ -101,6 +103,15 @@ namespace Xoox
 		Caps2String_ ["jabber:client"] = "client";
 		Caps2String_ ["jabber:server"] = "server";
 		Caps2String_ ["jabber:server:dialback"] = "XEP-0220: Server Dialback";
+
+		connect (DiscoMgr_,
+				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleInfoReceived (const QXmppDiscoveryIq&)));
+		connect (DiscoMgr_,
+				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
 	}
 
 	void CapsManager::FetchCaps (const QString& jid, const QByteArray& verNode)
@@ -123,7 +134,7 @@ namespace Xoox
 	QStringList CapsManager::GetCaps (const QStringList& features) const
 	{
 		QStringList result;
-		Q_FOREACH (const QString& raw, features)
+		for (const auto& raw : features)
 			result << Caps2String_.value (raw, raw);
 		result.removeAll (QString ());
 		return result;
