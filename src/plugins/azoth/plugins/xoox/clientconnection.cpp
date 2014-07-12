@@ -503,7 +503,7 @@ namespace Xoox
 		return MUCManager_;
 	}
 
-	QXmppDiscoveryManager* ClientConnection::GetDiscoveryManager () const
+	QXmppDiscoveryManager* ClientConnection::GetQXmppDiscoveryManager () const
 	{
 		return DiscoveryManager_;
 	}

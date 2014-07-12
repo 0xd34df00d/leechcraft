@@ -208,7 +208,7 @@ namespace Xoox
 		void CreateEntry (const QString&);
 
 		QXmppMucManager* GetMUCManager () const;
-		QXmppDiscoveryManager* GetDiscoveryManager () const;
+		QXmppDiscoveryManager* GetQXmppDiscoveryManager () const;
 		QXmppVersionManager* GetVersionManager () const;
 		QXmppTransferManager* GetTransferManager () const;
 		QXmppEntityTimeManager* GetEntityTimeManager () const;
