@@ -227,6 +227,8 @@ namespace Xoox
 			res ["client_version"] = version.version ();
 		if (!version.os ().isEmpty ())
 			res ["client_os"] = version.os ();
+		if (res ["client_name"].toString ().isEmpty ())
+			res ["client_name"] = version.name ();
 
 		return res;
 	}
