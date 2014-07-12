@@ -63,6 +63,7 @@ namespace Azoth
 
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
+					{},
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
 					IMessage::DIn,
@@ -89,6 +90,7 @@ namespace Azoth
 
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = ProxyObject {}.CreateCoreMessage (message,
+					{},
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
 					IMessage::DIn,
@@ -118,6 +120,7 @@ namespace Azoth
 
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
+					{},
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
 					IMessage::DIn,

@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/irichtextmessage.h>
 
 namespace LeechCraft
 {
@@ -38,15 +39,18 @@ namespace Azoth
 {
 	class CoreMessage : public QObject
 					  , public IMessage
+					  , public IRichTextMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage)
+		Q_INTERFACES (LeechCraft::Azoth::IMessage LeechCraft::Azoth::IRichTextMessage)
 
 		const MessageType Type_;
 		const Direction Dir_;
 		QObject * const Other_;
 		QString Body_;
 		QDateTime Date_;
+
+		QString RichBody_;
 	public:
 		CoreMessage (const QString& body, const QDateTime& date,
 				MessageType type, Direction dir, QObject *other, QObject *parent = nullptr);
@@ -66,6 +70,9 @@ namespace Azoth
 		void SetBody (const QString& body);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime& timestamp);
+
+		QString GetRichBody () const;
+		void SetRichBody (const QString&);
 	};
 }
 }

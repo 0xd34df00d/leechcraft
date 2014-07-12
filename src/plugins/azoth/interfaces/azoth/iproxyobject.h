@@ -298,8 +298,11 @@ namespace Azoth
 
 		virtual QStringList FindLinks (const QString&) = 0;
 
-		virtual QObject* CreateCoreMessage (const QString& body, const QDateTime& date,
-				IMessage::MessageType type, IMessage::Direction dir,
+		virtual QObject* CreateCoreMessage (const QString& body,
+				const QString& richBody,
+				const QDateTime& date,
+				IMessage::MessageType type,
+				IMessage::Direction dir,
 				QObject *other, QObject *parent = nullptr) = 0;
 
 		virtual bool IsMessageRead (QObject *msgObj) = 0;

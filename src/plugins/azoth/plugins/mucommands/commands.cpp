@@ -60,10 +60,21 @@ namespace MuCommands
 {
 	namespace
 	{
-		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry, const QString& contents)
+		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry,
+				const QString& rich)
 		{
+			auto contents = rich;
+			contents.replace ("<li>", "\n * ");
+			auto pos = 0;
+			while ((pos = contents.indexOf ('<', pos)) != -1)
+			{
+				const auto endPos = contents.indexOf ('>', pos + 1);
+				contents.remove (pos, endPos - pos + 1);
+			}
+
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = azothProxy->CreateCoreMessage (contents,
+					rich,
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
 					IMessage::DIn,
@@ -169,8 +180,7 @@ namespace MuCommands
 			if (url.isEmpty ())
 				continue;
 
-			const auto ba = url.toUtf8 ().replace ("&amp;", "&");
-			const auto& entity = Util::MakeEntity (QUrl::fromEncoded (ba),
+			const auto& entity = Util::MakeEntity (QUrl::fromEncoded (url.toUtf8 ()),
 					{}, params | FromUserInitiated);
 			iem->HandleEntity (entity);
 		}

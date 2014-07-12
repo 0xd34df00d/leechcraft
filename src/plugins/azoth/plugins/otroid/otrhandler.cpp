@@ -584,7 +584,7 @@ namespace OTRoid
 		else
 		{
 			auto entryObj = entry->GetQObject ();
-			auto msgObj = AzothProxy_->CreateCoreMessage (body,
+			auto msgObj = AzothProxy_->CreateCoreMessage (body, {},
 					QDateTime::currentDateTime (),
 					type, dir, entryObj, entryObj);
 

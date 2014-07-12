@@ -37,6 +37,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	class CoreMessage;
+	class IMessage;
 
 	class DummyMsgManager : public QObject
 	{
@@ -53,6 +54,8 @@ namespace Azoth
 
 		void AddMessage (CoreMessage*);
 		void ClearMessages (QObject*);
+
+		QList<IMessage*> GetIMessages (QObject*) const;
 	private slots:
 		void entryDestroyed ();
 	};

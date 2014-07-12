@@ -54,6 +54,16 @@ namespace Azoth
 		qDeleteAll (Messages_.take (entry));
 	}
 
+	QList<IMessage*> DummyMsgManager::GetIMessages (QObject *entry) const
+	{
+		QList<IMessage*> result;
+
+		for (const auto msgObj : Messages_.value (entry))
+			result << qobject_cast<IMessage*> (msgObj);
+
+		return result;
+	}
+
 	void DummyMsgManager::entryDestroyed ()
 	{
 		ClearMessages (sender ());

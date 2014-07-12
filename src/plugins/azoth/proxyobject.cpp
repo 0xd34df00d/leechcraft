@@ -394,11 +394,14 @@ namespace Azoth
 		return result;
 	}
 
-	QObject* ProxyObject::CreateCoreMessage (const QString& body, const QDateTime& date,
+	QObject* ProxyObject::CreateCoreMessage (const QString& body,
+			const QString& richBody, const QDateTime& date,
 			IMessage::MessageType type, IMessage::Direction dir,
 			QObject *other, QObject *parent)
 	{
-		return new CoreMessage (body, date, type, dir, other, parent);
+		const auto msg = new CoreMessage (body, date, type, dir, other, parent);
+		msg->SetRichBody (richBody);
+		return msg;
 	}
 
 	bool ProxyObject::IsMessageRead (QObject *msgObj)
