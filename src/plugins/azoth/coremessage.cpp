@@ -106,5 +106,15 @@ namespace Azoth
 	{
 		Date_ = timestamp;
 	}
+
+	QString CoreMessage::GetRichBody () const
+	{
+		return RichBody_;
+	}
+
+	void CoreMessage::SetRichBody (const QString& richBody)
+	{
+		RichBody_ = richBody;
+	}
 }
 }
