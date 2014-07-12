@@ -191,7 +191,10 @@ namespace MuCommands
 	StaticCommands_t Plugin::GetStaticCommands (ICLEntry *entry)
 	{
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
-			return {};
+			return
+			{
+				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Ping_, Last_
+			};
 
 		return
 		{
