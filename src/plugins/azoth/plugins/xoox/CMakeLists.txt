@@ -109,6 +109,7 @@ set (XOOX_SRCS
 	pingreplyobject.cpp
 	pendingversionquery.cpp
 	pendinglastactivityrequest.cpp
+	discomanagerwrapper.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

@@ -96,6 +96,8 @@ namespace Xoox
 
 	class CaptchaManager;
 
+	class DiscoManagerWrapper;
+
 	class ClientConnection : public QObject
 	{
 		Q_OBJECT
@@ -138,6 +140,8 @@ namespace Xoox
 
 		InfoRequestPolicyManager *InfoReqPolicyMgr_;
 
+		DiscoManagerWrapper *DiscoManagerWrapper_;
+
 		QString OurJID_;
 		QString OurBareJID_;
 		QString OurResource_;
@@ -177,13 +181,9 @@ namespace Xoox
 
 		QHash<QString, QList<RIEXManager::Item>> AwaitingRIEXItems_;
 	public:
-		typedef std::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 		typedef std::function<void (const QXmppVCardIq&)> VCardCallback_t;
 		typedef std::function<void (QXmppIq)> PacketCallback_t;
 	private:
-		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
-		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
-
 		QHash<QString, PacketCallback_t> AwaitingPacketCallbacks_;
 
 		QHash<QString, QList<VCardCallback_t>> VCardFetchCallbacks_;
@@ -206,6 +206,8 @@ namespace Xoox
 		void Unregister (RoomHandler*);
 
 		void CreateEntry (const QString&);
+
+		DiscoManagerWrapper* GetDiscoManagerWrapper () const;
 
 		QXmppMucManager* GetMUCManager () const;
 		QXmppDiscoveryManager* GetQXmppDiscoveryManager () const;
@@ -237,9 +239,6 @@ namespace Xoox
 		void SetSignaledLog (bool);
 
 		void RequestInfo (const QString&) const;
-
-		void RequestInfo (const QString&, DiscoCallback_t, bool reportErrors = false, const QString& = "");
-		void RequestItems (const QString&, DiscoCallback_t, bool reportErrors = false, const QString& = "");
 
 		void Update (const QXmppRosterIq::Item&);
 		void Update (const QXmppMucItem&, const QString& room);
@@ -308,9 +307,6 @@ namespace Xoox
 
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
-
-		void handleDiscoInfo (const QXmppDiscoveryIq&);
-		void handleDiscoItems (const QXmppDiscoveryIq&);
 
 		void handleLog (QXmppLogger::MessageType, const QString&);
 

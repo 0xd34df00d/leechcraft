@@ -27,7 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sdmanager.h"
+#include "discomanagerwrapper.h"
+#include <QXmppDiscoveryManager.h>
 #include "clientconnection.h"
 
 namespace LeechCraft
@@ -36,45 +37,53 @@ namespace Azoth
 {
 namespace Xoox
 {
-	SDManager::SDManager (ClientConnection *conn)
-	: QObject (conn)
-	, Conn_ (conn)
+	DiscoManagerWrapper::DiscoManagerWrapper (QXmppDiscoveryManager *mgr, ClientConnection *conn)
+	: QObject { conn }
+	, Mgr_ { mgr }
+	, Conn_ { conn }
 	{
+		connect (Mgr_,
+				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleDiscoInfo (const QXmppDiscoveryIq&)));
+		connect (Mgr_,
+				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
 	}
 
-	void SDManager::RequestInfo (DiscoManagerWrapper::DiscoCallback_t callback,
-			const QString& jid, const QString& node)
+	void DiscoManagerWrapper::RequestInfo (const QString& jid,
+			DiscoCallback_t callback, bool report, const QString& node)
 	{
-		auto f = [this] (const QString& jid, DiscoManagerWrapper::DiscoCallback_t cb, const QString& node)
-				{ Conn_->GetDiscoManagerWrapper ()->RequestInfo (jid, cb, false, node); };
-		CommonDo (Infos_, f, callback, jid, node);
+		AwaitingDiscoInfo_ [jid] = callback;
+
+		const auto& id = Mgr_->requestInfo (jid, node);
+		if (report)
+			Conn_->WhitelistError (id);
 	}
 
-	void SDManager::RequestItems (DiscoManagerWrapper::DiscoCallback_t callback,
-			const QString& jid, const QString& node)
+	void DiscoManagerWrapper::RequestItems (const QString& jid,
+			DiscoCallback_t callback, bool report, const QString& node)
 	{
-		auto f = [this] (const QString& jid, DiscoManagerWrapper::DiscoCallback_t cb, const QString& node)
-				{ Conn_->GetDiscoManagerWrapper ()->RequestItems (jid, cb, false, node); };
-		CommonDo (Items_, f, callback, jid, node);
+		AwaitingDiscoItems_ [jid] = callback;
+
+		const auto& id = Mgr_->requestItems (jid, node);
+		if (report)
+			Conn_->WhitelistError (id);
 	}
 
-	void SDManager::CommonDo (SDManager::Cache_t& cache,
-			std::function<void (const QString&, DiscoManagerWrapper::DiscoCallback_t, const QString&)> f,
-			DiscoManagerWrapper::DiscoCallback_t cb,
-			const QString& jid, const QString& node)
+	void DiscoManagerWrapper::handleDiscoInfo (const QXmppDiscoveryIq& iq)
 	{
-		if (cache [jid].contains (node))
-		{
-			cb (cache [jid] [node]);
-			return;
-		}
+		const auto& jid = iq.from ();
+		if (AwaitingDiscoInfo_.contains (jid))
+			AwaitingDiscoInfo_.take (jid) (iq);
+	}
 
-		auto ourCb = [cb, &cache] (const QXmppDiscoveryIq& iq)
-		{
-			cache [iq.from ()] [iq.queryNode ()] = iq;
-			cb (iq);
-		};
-		f (jid, ourCb, node);
+	void DiscoManagerWrapper::handleDiscoItems (const QXmppDiscoveryIq& iq)
+	{
+		const auto& jid = iq.from ();
+		if (AwaitingDiscoItems_.contains (jid))
+			AwaitingDiscoItems_.take (jid) (iq);
 	}
 }
 }

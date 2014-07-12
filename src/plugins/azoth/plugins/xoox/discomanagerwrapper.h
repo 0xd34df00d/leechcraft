@@ -27,8 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sdmanager.h"
-#include "clientconnection.h"
+#pragma once
+
+#include <functional>
+#include <QObject>
+#include <QHash>
+
+class QXmppDiscoveryManager;
+class QXmppDiscoveryIq;
 
 namespace LeechCraft
 {
@@ -36,46 +42,29 @@ namespace Azoth
 {
 namespace Xoox
 {
-	SDManager::SDManager (ClientConnection *conn)
-	: QObject (conn)
-	, Conn_ (conn)
-	{
-	}
+	class ClientConnection;
 
-	void SDManager::RequestInfo (DiscoManagerWrapper::DiscoCallback_t callback,
-			const QString& jid, const QString& node)
+	class DiscoManagerWrapper : public QObject
 	{
-		auto f = [this] (const QString& jid, DiscoManagerWrapper::DiscoCallback_t cb, const QString& node)
-				{ Conn_->GetDiscoManagerWrapper ()->RequestInfo (jid, cb, false, node); };
-		CommonDo (Infos_, f, callback, jid, node);
-	}
+		Q_OBJECT
 
-	void SDManager::RequestItems (DiscoManagerWrapper::DiscoCallback_t callback,
-			const QString& jid, const QString& node)
-	{
-		auto f = [this] (const QString& jid, DiscoManagerWrapper::DiscoCallback_t cb, const QString& node)
-				{ Conn_->GetDiscoManagerWrapper ()->RequestItems (jid, cb, false, node); };
-		CommonDo (Items_, f, callback, jid, node);
-	}
+	public:
+		typedef std::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
+	private:
+		QXmppDiscoveryManager * const Mgr_;
+		ClientConnection * const Conn_;
 
-	void SDManager::CommonDo (SDManager::Cache_t& cache,
-			std::function<void (const QString&, DiscoManagerWrapper::DiscoCallback_t, const QString&)> f,
-			DiscoManagerWrapper::DiscoCallback_t cb,
-			const QString& jid, const QString& node)
-	{
-		if (cache [jid].contains (node))
-		{
-			cb (cache [jid] [node]);
-			return;
-		}
+		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
+		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
+	public:
+		DiscoManagerWrapper (QXmppDiscoveryManager*, ClientConnection*);
 
-		auto ourCb = [cb, &cache] (const QXmppDiscoveryIq& iq)
-		{
-			cache [iq.from ()] [iq.queryNode ()] = iq;
-			cb (iq);
-		};
-		f (jid, ourCb, node);
-	}
+		void RequestInfo (const QString&, DiscoCallback_t, bool reportErrors = false, const QString& = "");
+		void RequestItems (const QString&, DiscoCallback_t, bool reportErrors = false, const QString& = "");
+	private slots:
+		void handleDiscoInfo (const QXmppDiscoveryIq&);
+		void handleDiscoItems (const QXmppDiscoveryIq&);
+	};
 }
 }
 }

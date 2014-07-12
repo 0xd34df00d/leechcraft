@@ -134,6 +134,7 @@ namespace Xoox
 	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
+	, DiscoManagerWrapper_ (new DiscoManagerWrapper (DiscoveryManager_, this))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
 	, ProxyObject_ (0)
@@ -315,14 +316,6 @@ namespace Xoox
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				CapsManager_,
 				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
-		connect (DiscoveryManager_,
-				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
-				this,
-				SLOT (handleDiscoInfo (const QXmppDiscoveryIq&)));
-		connect (DiscoveryManager_,
-				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
-				this,
-				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
 
 		connect (Settings_,
 				SIGNAL (kaParamsChanged (QPair<int,int>)),
@@ -498,6 +491,11 @@ namespace Xoox
 		emit gotRosterItems ({ entry });
 	}
 
+	DiscoManagerWrapper* ClientConnection::GetDiscoManagerWrapper () const
+	{
+		return DiscoManagerWrapper_;
+	}
+
 	QXmppMucManager* ClientConnection::GetMUCManager () const
 	{
 		return MUCManager_;
@@ -640,24 +638,6 @@ namespace Xoox
 				CapsQueue_->Schedule (jid + '/' + variant, FetchQueue::PHigh);
 		else
 			CapsQueue_->Schedule (jid, FetchQueue::PLow);
-	}
-
-	void ClientConnection::RequestInfo (const QString& jid,
-			DiscoCallback_t callback, bool report, const QString& node)
-	{
-		AwaitingDiscoInfo_ [jid] = callback;
-
-		const auto& id = DiscoveryManager_->requestInfo (jid, node);
-		ErrorMgr_->Whitelist (id, report);
-	}
-
-	void ClientConnection::RequestItems (const QString& jid,
-			DiscoCallback_t callback, bool report, const QString& node)
-	{
-		AwaitingDiscoItems_ [jid] = callback;
-
-		const auto& id = DiscoveryManager_->requestItems (jid, node);
-		ErrorMgr_->Whitelist (id, report);
 	}
 
 	void ClientConnection::Update (const QXmppRosterIq::Item& item)
@@ -1365,20 +1345,6 @@ namespace Xoox
 			QTimer::singleShot (800,
 					this,
 					SLOT (handleAutojoinQueue ()));
-	}
-
-	void ClientConnection::handleDiscoInfo (const QXmppDiscoveryIq& iq)
-	{
-		const QString& jid = iq.from ();
-		if (AwaitingDiscoInfo_.contains (jid))
-			AwaitingDiscoInfo_.take (jid) (iq);
-	}
-
-	void ClientConnection::handleDiscoItems (const QXmppDiscoveryIq& iq)
-	{
-		const QString& jid = iq.from ();
-		if (AwaitingDiscoItems_.contains (jid))
-			AwaitingDiscoItems_.take (jid) (iq);
 	}
 
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)

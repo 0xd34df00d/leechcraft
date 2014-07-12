@@ -73,6 +73,7 @@
 #include "pingmanager.h"
 #include "pingreplyobject.h"
 #include "pendingversionquery.h"
+#include "discomanagerwrapper.h"
 
 namespace LeechCraft
 {
@@ -792,7 +793,7 @@ namespace Xoox
 			qDebug () << "requesting ids for" << reqJid << reqVar;
 			QPointer<EntryBase> pThis (this);
 			QPointer<CapsManager> pCM (capsManager);
-			Account_->GetClientConnection ()->RequestInfo (reqJid,
+			Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (reqJid,
 				[ver, reqVar, pThis, pCM] (const QXmppDiscoveryIq& iq)
 				{
 					if (!ver.isEmpty () && pCM)
