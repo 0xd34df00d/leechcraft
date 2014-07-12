@@ -1460,11 +1460,6 @@ namespace Azoth
 		Q_FOREACH (const QString& variant, entry->Variants ())
 		{
 			const auto& type = entry->GetClientInfo (variant) ["client_type"].toString ();
-			if (type.isNull ())
-			{
-				result [variant] = QIcon ();
-				continue;
-			}
 
 			const QString& filename = pack + type;
 
