@@ -701,9 +701,10 @@ namespace Azoth
 			return;
 		}
 
-		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
+		QList<IMessage*> messages;
+		for (const auto msgObj : e->GetAllMessages ())
 		{
-			IMessage *msg = qobject_cast<IMessage*> (msgObj);
+			const auto msg = qobject_cast<IMessage*> (msgObj);
 			if (!msg)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -711,8 +712,20 @@ namespace Azoth
 						<< msgObj;
 				continue;
 			}
-			AppendMessage (msg);
+			messages << msg;
 		}
+
+		const auto& dummyMsgs = DummyMsgManager::Instance ().GetIMessages (e->GetQObject ());
+		if (!dummyMsgs.isEmpty ())
+		{
+			messages += dummyMsgs;
+			std::sort (messages.begin (), messages.end (),
+					[] (IMessage *left, IMessage *right)
+						{ return left->GetDateTime () < right->GetDateTime (); });
+		}
+
+		for (const auto msg : messages)
+			AppendMessage (msg);
 
 		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
 		if (!scrollerJS.open (QIODevice::ReadOnly))
