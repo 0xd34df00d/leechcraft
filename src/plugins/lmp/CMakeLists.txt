@@ -52,6 +52,9 @@ add_library (leechcraft_lmp_common STATIC
 set_target_properties (leechcraft_lmp_common PROPERTIES POSITION_INDEPENDENT_CODE True)
 target_link_libraries (leechcraft_lmp_common
 	${LibGuess_LIBRARIES}
+	${GSTREAMER_LIBRARIES}
+	${GLIB2_LIBRARIES}
+	${LIBXML2_LIBRARIES}
 	)
 
 set (SRCS
