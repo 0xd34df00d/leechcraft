@@ -63,17 +63,8 @@ namespace MuCommands
 		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry,
 				const QString& rich)
 		{
-			auto contents = rich;
-			contents.replace ("<li>", "\n * ");
-			auto pos = 0;
-			while ((pos = contents.indexOf ('<', pos)) != -1)
-			{
-				const auto endPos = contents.indexOf ('>', pos + 1);
-				contents.remove (pos, endPos - pos + 1);
-			}
-
 			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = azothProxy->CreateCoreMessage (contents,
+			const auto msgObj = azothProxy->CreateCoreMessage ({},
 					rich,
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
