@@ -192,6 +192,9 @@ namespace MuCommands
 	{
 		QHash<QString, ICLEntry*> GetParticipants (IMUCEntry *entry)
 		{
+			if (!entry)
+				return {};
+
 			QHash<QString, ICLEntry*> result;
 			for (const auto entryObj : entry->GetParticipants ())
 			{
