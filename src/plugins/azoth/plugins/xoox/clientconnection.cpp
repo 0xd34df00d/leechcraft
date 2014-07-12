@@ -782,6 +782,11 @@ namespace Xoox
 		Client_->sendPacket (packet);
 	}
 
+	void ClientConnection::AddCallback (const QString& id, const PacketCallback_t& cb)
+	{
+		AwaitingPacketCallbacks_ [id] = cb;
+	}
+
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
 	{
 		QXmppMessage msg = msgObj->GetNativeMessage ();

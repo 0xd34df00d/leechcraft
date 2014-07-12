@@ -257,7 +257,9 @@ namespace Xoox
 		void WhitelistError (const QString&);
 
 		void SendPacketWCallback (const QXmppIq&, PacketCallback_t);
+		void AddCallback (const QString&, const PacketCallback_t&);
 		void SendMessage (GlooxMessage*);
+
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& fullJid) const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
