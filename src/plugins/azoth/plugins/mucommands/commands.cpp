@@ -314,7 +314,7 @@ namespace MuCommands
 		}
 
 		template<typename T, typename F>
-		void PerformMucAction (T action, F fallback, ICLEntry *entry, const QString& text)
+		void PerformAction (T action, F fallback, ICLEntry *entry, const QString& text)
 		{
 			const auto& split = ParseNicks (entry, text);
 			if (split.isEmpty ())
@@ -336,9 +336,9 @@ namespace MuCommands
 		}
 
 		template<typename T>
-		void PerformMucAction (T action, IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+		void PerformAction (T action, IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 		{
-			PerformMucAction (action,
+			PerformAction (action,
 					[azothProxy, entry] (const QString& name)
 					{
 						InjectMessage (azothProxy, entry,
@@ -350,7 +350,7 @@ namespace MuCommands
 
 	bool ShowVCard (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
 				{
 					const auto targetObj = target->GetQObject ();
 					const auto imie = qobject_cast<IMetaInfoEntry*> (targetObj);
@@ -435,7 +435,7 @@ namespace MuCommands
 
 	bool ShowVersion (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
 				{
 					for (const auto& var : target->Variants ())
 						ShowVersionVariant (azothProxy, entry, name, target, var, true);
@@ -459,7 +459,7 @@ namespace MuCommands
 
 	bool ShowTime (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
 				{
 					const auto targetObj = target->GetQObject ();
 					const auto ihet = qobject_cast<IHaveEntityTime*> (targetObj);
@@ -712,7 +712,7 @@ namespace MuCommands
 			};
 		};
 
-		PerformMucAction ([handlePending] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([handlePending] (ICLEntry *target, const QString& name) -> void
 				{
 					const auto isla = qobject_cast<ISupportLastActivity*> (target->GetParentAccount ());
 					const auto pending = isla ?
@@ -735,7 +735,7 @@ namespace MuCommands
 
 	bool Ping (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
 				{
 					const auto targetObj = target->GetQObject ();
 					const auto ihp = qobject_cast<IHavePings*> (targetObj);
