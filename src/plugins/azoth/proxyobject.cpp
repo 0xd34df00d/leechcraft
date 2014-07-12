@@ -46,7 +46,7 @@ namespace Azoth
 	ProxyObject::ProxyObject (QObject* parent)
 	: QObject (parent)
 	, LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))[^\\s<]+)",
-			Qt::CaseInsensitive, QRegExp::RegExp2)
+			Qt::CaseInsensitive)
 	{
 		SerializedStr2AuthStatus_ ["None"] = ASNone;
 		SerializedStr2AuthStatus_ ["To"] = ASTo;
