@@ -127,7 +127,7 @@ namespace Acetamide
 
 	QString ServerCommandMessage::GetBody () const
 	{
-		return Message_;
+		return Qt::escape (Message_);
 	}
 
 	void ServerCommandMessage::SetBody (const QString& msg)
