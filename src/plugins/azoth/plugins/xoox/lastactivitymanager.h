@@ -44,7 +44,7 @@ namespace Xoox
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);
 
-		void RequestLastActivity (const QString&);
+		QString RequestLastActivity (const QString&);
 	private:
 		QXmppIq CreateIq (const QString&, int = -1);
 	signals:

@@ -80,11 +80,13 @@ namespace Xoox
 		return true;
 	}
 
-	void LastActivityManager::RequestLastActivity (const QString& jid)
+	QString LastActivityManager::RequestLastActivity (const QString& jid)
 	{
 		auto iq = CreateIq (jid);
 		iq.setType (QXmppIq::Get);
 		client ()->sendPacket (iq);
+
+		return iq.id ();
 	}
 
 	QXmppIq LastActivityManager::CreateIq (const QString& to, int secs)
