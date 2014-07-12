@@ -319,12 +319,17 @@ namespace MuCommands
 		template<typename T, typename F>
 		void PerformAction (T action, F fallback, ICLEntry *entry, const QString& text)
 		{
-			const auto& split = ParseNicks (entry, text);
-			if (split.isEmpty ())
-				return;
+			auto nicks = ParseNicks (entry, text);
+			if (nicks.isEmpty ())
+			{
+				if (entry->GetEntryType () == ICLEntry::ETMUC)
+					return;
+				else
+					nicks << entry->GetHumanReadableID ();
+			}
 
 			const auto& participants = GetParticipants (qobject_cast<IMUCEntry*> (entry->GetQObject ()));
-			for (const auto& name : split)
+			for (const auto& name : nicks)
 			{
 				const auto target = ResolveEntry (name.trimmed (),
 						participants, entry->GetParentAccount ());
