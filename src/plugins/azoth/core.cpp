@@ -1455,15 +1455,15 @@ namespace Azoth
 
 		QMap<QString, QIcon> result;
 
-		const QString& pack = XmlSettingsManager::Instance ()
+		const auto& pack = XmlSettingsManager::Instance ()
 					.property ("ClientIcons").toString () + '/';
-		Q_FOREACH (const QString& variant, entry->Variants ())
+		for (const auto& variant : entry->Variants ())
 		{
 			const auto& type = entry->GetClientInfo (variant) ["client_type"].toString ();
 
-			const QString& filename = pack + type;
+			const auto& filename = pack + type;
 
-			QPixmap pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (filename);
+			auto pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (filename);
 			if (pixmap.isNull ())
 				pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (pack + "unknown");
 
