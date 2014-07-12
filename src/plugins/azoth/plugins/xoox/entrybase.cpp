@@ -222,8 +222,6 @@ namespace Xoox
 		if (version.name ().isEmpty ())
 			return res;
 
-		QString str;
-		str = version.name ();
 		res ["client_remote_name"] = version.name ();
 		if (!version.version ().isEmpty ())
 			res ["client_version"] = version.version ();
