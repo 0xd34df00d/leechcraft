@@ -778,7 +778,7 @@ namespace Xoox
 
 	void ClientConnection::SendPacketWCallback (const QXmppIq& packet, PacketCallback_t cb)
 	{
-		AwaitingPacketCallbacks_ [packet.to ()] [packet.id ()] = cb;
+		AwaitingPacketCallbacks_ [packet.id ()] = cb;
 		Client_->sendPacket (packet);
 	}
 
@@ -1483,17 +1483,10 @@ namespace Xoox
 
 	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)
 	{
-		if (!AwaitingPacketCallbacks_.contains (iq.from ()))
+		if (!AwaitingPacketCallbacks_.contains (iq.id ()))
 			return;
 
-		auto& cbs = AwaitingPacketCallbacks_ [iq.from ()];
-		if (!cbs.contains (iq.id ()))
-			return;
-
-		const auto& cb = cbs.take (iq.id ());
-		if (cbs.isEmpty ())
-			AwaitingPacketCallbacks_.remove (iq.from ());
-
+		const auto& cb = AwaitingPacketCallbacks_.take (iq.id ());
 		cb (iq);
 	}
 

@@ -184,8 +184,7 @@ namespace Xoox
 		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
 		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
 
-		typedef QHash<QString, PacketCallback_t> PacketID2Callback_t;
-		QHash<QString, PacketID2Callback_t> AwaitingPacketCallbacks_;
+		QHash<QString, PacketCallback_t> AwaitingPacketCallbacks_;
 
 		QHash<QString, QList<VCardCallback_t>> VCardFetchCallbacks_;
 	public:
