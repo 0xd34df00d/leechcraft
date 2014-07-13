@@ -135,8 +135,10 @@ namespace Sysnotify
 		const auto& image = e.Additional_ ["NotificationPixmap"].value<QPixmap> ().toImage ();
 		if (!image.isNull ())
 		{
-			if (Version_ == "1.1")
+			if (Version_ == std::make_tuple (1, 1))
 				hints ["image_data"] = QVariant::fromValue<ImageHint> (image);
+			else if (Version_ <= std::make_tuple (1, 0))
+				hints ["icon_data"] = QVariant::fromValue<ImageHint> (image);
 			else
 				hints ["image-data"] = QVariant::fromValue<ImageHint> (image);
 		}
@@ -183,13 +185,18 @@ namespace Sysnotify
 
 		const auto& implementation = reply.argumentAt<0> ();
 		const auto& vendor = reply.argumentAt<1> ();
-		Version_ = reply.argumentAt<3> ();
+		auto versionString = reply.argumentAt<3> ();
 		qDebug () << Q_FUNC_INFO
 				<< "using"
 				<< implementation
 				<< vendor
 				<< reply.argumentAt<2> ()
-				<< Version_;
+				<< versionString;
+
+		const auto& versionSplit = versionString.split ('.', QString::SkipEmptyParts);
+		if (versionSplit.size () == 2)
+			Version_ = std::make_tuple (versionSplit.value (0).toInt (),
+					versionSplit.value (1).toInt ());
 
 		if (vendor == "LeechCraft")
 			Connection_.reset ();

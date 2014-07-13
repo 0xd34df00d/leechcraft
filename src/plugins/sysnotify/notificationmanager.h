@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <tuple>
 #include <QObject>
 #include <QDBusInterface>
 #include <QPointer>
@@ -63,7 +64,7 @@ namespace Sysnotify
 		QMap<uint, ActionData> CallID2AD_;
 
 		bool IgnoreTimeoutCloses_ = false;
-		QString Version_;
+		std::tuple<int, int> Version_ { 0, 0 };
 	public:
 		NotificationManager (QObject* = 0);
 
