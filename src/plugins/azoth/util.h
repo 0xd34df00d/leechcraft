@@ -29,6 +29,11 @@
 
 #pragma once
 
+#include <QColor>
+
+template<typename T>
+class QList;
+
 class QString;
 class QWidget;
 class QObject;
@@ -51,5 +56,8 @@ namespace Azoth
 	void DenyAuthForEntry (ICLEntry*);
 
 	QObject* FindByHRId (IAccount*, const QString&);
+
+	QList<QColor> GenerateColors (const QString& coloring, QColor);
+	QString GetNickColor (const QString& nick, const QList<QColor>& colors);
 }
 }

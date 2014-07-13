@@ -30,6 +30,7 @@
 #include "util.h"
 #include <QString>
 #include <QWizard>
+#include <QList>
 #include <util/xpc/util.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/structures.h>
@@ -40,6 +41,9 @@
 #include "addaccountwizardfirstpage.h"
 #include "core.h"
 #include "chattabsmanager.h"
+#include "xmlsettingsmanager.h"
+
+Q_DECLARE_METATYPE (QList<QColor>);
 
 namespace LeechCraft
 {
@@ -141,6 +145,78 @@ namespace Azoth
 				});
 
 		return pos == allEntries.end () ? nullptr : *pos;
+	}
+
+	QList<QColor> GenerateColors (const QString& coloring, QColor bg)
+	{
+		auto compatibleColors = [] (const QColor& c1, const QColor& c2) -> bool
+		{
+			int dR = c1.red () - c2.red ();
+			int dG = c1.green () - c2.green ();
+			int dB = c1.blue () - c2.blue ();
+
+			double dV = std::abs (c1.value () - c2.value ());
+			double dC = std::sqrt (0.2126 * dR * dR + 0.7152 * dG * dG + 0.0722 * dB * dB);
+
+			if ((dC < 80. && dV > 100.) ||
+					(dC < 110. && dV <= 100. && dV > 10.) ||
+					(dC < 125. && dV <= 10.))
+				return false;
+
+			return true;
+		};
+
+		QList<QColor> result;
+		if (XmlSettingsManager::Instance ().property ("OverrideHashColors").toBool ())
+		{
+			result = XmlSettingsManager::Instance ()
+					.property ("OverrideColorsList").value<decltype (result)> ();
+			if (!result.isEmpty ())
+				return result;
+		}
+
+		if (coloring == "hash" || coloring.isEmpty ())
+		{
+			if (!bg.isValid ())
+				bg = QApplication::palette ().color (QPalette::Base);
+
+			int alpha = bg.alpha ();
+
+			QColor color;
+			for (int hue = 0; hue < 360; hue += 18)
+			{
+				color.setHsv (hue, 255, 255, alpha);
+				if (compatibleColors (color, bg))
+					result << color;
+				color.setHsv (hue, 255, 170, alpha);
+				if (compatibleColors (color, bg))
+					result << color;
+			}
+		}
+		else
+			for (const auto& str : coloring.split (' ', QString::SkipEmptyParts))
+				result << QColor (str);
+
+		return result;
+	}
+
+	QString GetNickColor (const QString& nick, const QList<QColor>& colors)
+	{
+		if (colors.isEmpty ())
+			return "green";
+
+		int hash = 0;
+		for (int i = 0; i < nick.length (); ++i)
+		{
+			const QChar& c = nick.at (i);
+			hash += c.toLatin1 () ?
+					c.toLatin1 () :
+					c.unicode ();
+			hash += nick.length ();
+		}
+		hash = std::abs (hash);
+		const auto& nc = colors.at (hash % colors.size ());
+		return nc.name ();
 	}
 }
 }

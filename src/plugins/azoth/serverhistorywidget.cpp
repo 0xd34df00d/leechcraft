@@ -35,6 +35,7 @@
 #include "proxyobject.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -160,7 +161,7 @@ namespace Azoth
 		Ui_.MessagesView_->clear ();
 
 		const auto& bgColor = palette ().color (QPalette::Base);
-		const auto& colors = Core::Instance ().GenerateColors ("hash", bgColor);
+		const auto& colors = GenerateColors ("hash", bgColor);
 
 		QString preNick = XmlSettingsManager::Instance ().property ("PreNickText").toString ();
 		QString postNick = XmlSettingsManager::Instance ().property ("PostNickText").toString ();
@@ -169,7 +170,7 @@ namespace Azoth
 
 		for (const auto& message : messages)
 		{
-			const auto& color = Core::Instance ().GetNickColor (message.Nick_, colors);
+			const auto& color = GetNickColor (message.Nick_, colors);
 
 			auto msgText = message.RichBody_;
 			if (msgText.isEmpty ())

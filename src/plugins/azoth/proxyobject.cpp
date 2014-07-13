@@ -39,6 +39,7 @@
 #include "coremessage.h"
 #include "unreadqueuemanager.h"
 #include "resourcesmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -246,12 +247,12 @@ namespace Azoth
 
 	QList<QColor> ProxyObject::GenerateColors (const QString& scheme, QColor bg) const
 	{
-		return Core::Instance ().GenerateColors (scheme, bg);
+		return Azoth::GenerateColors (scheme, bg);
 	}
 
 	QString ProxyObject::GetNickColor (const QString& nick, const QList<QColor>& colors) const
 	{
-		return Core::Instance ().GetNickColor (nick, colors);
+		return Azoth::GetNickColor (nick, colors);
 	}
 
 	QString ProxyObject::FormatDate (QDateTime dt, QObject *obj) const
