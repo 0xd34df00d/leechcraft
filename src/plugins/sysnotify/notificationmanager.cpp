@@ -131,6 +131,16 @@ namespace Sysnotify
 		if (!uus)
 			timeout = 5000;
 
+		QVariantMap hints;
+		const auto& image = e.Additional_ ["NotificationPixmap"].value<QPixmap> ().toImage ();
+		if (!image.isNull ())
+		{
+			if (Version_ == "1.1")
+				hints ["image_data"] = QVariant::fromValue<ImageHint> (image);
+			else
+				hints ["image-data"] = QVariant::fromValue<ImageHint> (image);
+		}
+
 		QList<QVariant> arguments;
 		arguments << header
 			<< uint (0)
@@ -138,7 +148,7 @@ namespace Sysnotify
 			<< QString ()
 			<< text
 			<< fmtActions
-			<< QVariantMap ()
+			<< hints
 			<< timeout;
 
 		ActionData ad =
