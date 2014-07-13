@@ -144,6 +144,7 @@ set (SRCS
 	dndutil.cpp
 	cltooltipmanager.cpp
 	corecommandsmanager.cpp
+	resourcesmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui

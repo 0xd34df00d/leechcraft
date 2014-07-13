@@ -31,6 +31,7 @@
 #include <util/sys/resourceloader.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -134,8 +135,8 @@ namespace Azoth
 			QT_TR_NOOP ("worried")
 		};
 
-		Util::ResourceLoader *rl = Core::Instance ()
-				.GetResourceLoader (Core::RLTMoodIconLoader);
+		const auto rl = ResourcesManager::Instance ()
+				.GetResourceLoader (ResourcesManager::RLTMoodIconLoader);
 		const QString& theme = XmlSettingsManager::Instance ()
 				.property ("MoodIcons").toString () + '/';
 

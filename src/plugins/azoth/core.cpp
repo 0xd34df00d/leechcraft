@@ -48,6 +48,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sys/resourceloader.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
@@ -92,6 +93,7 @@
 #include "customchatstylemanager.h"
 #include "cltooltipmanager.h"
 #include "corecommandsmanager.h"
+#include "resourcesmanager.h"
 
 Q_DECLARE_METATYPE (QList<QColor>);
 Q_DECLARE_METATYPE (QPointer<QObject>);
@@ -219,21 +221,6 @@ namespace Azoth
 	{
 		FillANFields ();
 
-		ResourceLoaders_ [RLTStatusIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this));
-		ResourceLoaders_ [RLTClientIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/clients/", this));
-		ResourceLoaders_ [RLTAffIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this));
-		ResourceLoaders_ [RLTSystemIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/system/", this));
-		ResourceLoaders_ [RLTActivityIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/activities/", this));
-		ResourceLoaders_ [RLTMoodIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/moods/", this));
-
-		for (auto rl : ResourceLoaders_.values ())
-		{
-			rl->AddLocalPrefix ();
-			rl->AddGlobalPrefix ();
-
-			rl->SetCacheParams (1000, 0);
-		}
-
 		connect (this,
 				SIGNAL (hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)),
 				ChatTabsManager_,
@@ -286,7 +273,6 @@ namespace Azoth
 
 	void Core::Release ()
 	{
-		ResourceLoaders_.clear ();
 		ShortcutManager_.reset ();
 		StyleOptionManagers_.clear ();
 
@@ -322,11 +308,6 @@ namespace Azoth
 	QList<ANFieldData> Core::GetANFields () const
 	{
 		return ANFields_;
-	}
-
-	Util::ResourceLoader* Core::GetResourceLoader (Core::ResourceLoaderType type) const
-	{
-		return ResourceLoaders_ [type].get ();
 	}
 
 	QAbstractItemModel* Core::GetSmilesOptionsModel () const
@@ -1043,6 +1024,8 @@ namespace Azoth
 		if (proxy->IsCancelled ())
 			return;
 
+		ResourcesManager::Instance ().HandleEntry (clEntry);
+
 		connect (clEntry->GetQObject (),
 				SIGNAL (statusChanged (EntryStatus, QString)),
 				this,
@@ -1051,10 +1034,6 @@ namespace Azoth
 				SIGNAL (availableVariantsChanged (QStringList)),
 				this,
 				SLOT (handleVariantsChanged ()));
-		connect (clEntry->GetQObject (),
-				SIGNAL (availableVariantsChanged (const QStringList&)),
-				this,
-				SLOT (invalidateClientsIconCache ()));
 		connect (clEntry->GetQObject (),
 				SIGNAL (gotMessage (QObject*)),
 				this,
@@ -1243,10 +1222,8 @@ namespace Azoth
 		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				entry->GetQObject (), variant);
 
-		invalidateClientsIconCache (entry);
-
 		const State state = entry->GetStatus ().State_;
-		Util::QIODevice_ptr icon = GetIconPathForState (state);
+		const auto& icon = ResourcesManager::Instance ().GetIconPathForState (state);
 
 		for (auto item : Entry2Items_.value (entry))
 		{
@@ -1286,7 +1263,9 @@ namespace Azoth
 
 		const QString& filename = XmlSettingsManager::Instance ()
 				.property ("StatusIcons").toString () + "/file";
-		Util::QIODevice_ptr fileIcon = ResourceLoaders_ [RLTStatusIconLoader]->GetIconDevice (filename, true);
+		const auto& fileIcon = ResourcesManager::Instance ()
+				.GetResourceLoader (ResourcesManager::RLTStatusIconLoader)->
+						GetIconDevice (filename, true);
 		for (auto item : Entry2Items_.value (entry))
 			ItemIconManager_->SetIcon (item, fileIcon.get ());
 	}
@@ -1309,96 +1288,6 @@ namespace Azoth
 				0;
 	}
 
-	namespace
-	{
-		QString GetStateIconFilename (State state)
-		{
-			QString iconName;
-			switch (state)
-			{
-			case SOnline:
-				iconName = "online";
-				break;
-			case SChat:
-				iconName = "chatty";
-				break;
-			case SAway:
-				iconName = "away";
-				break;
-			case SDND:
-				iconName = "dnd";
-				break;
-			case SXA:
-				iconName = "xa";
-				break;
-			case SOffline:
-				iconName = "offline";
-				break;
-			case SConnecting:
-				iconName = "connect";
-				break;
-			default:
-				iconName = "perr";
-				break;
-			}
-
-			QString filename = XmlSettingsManager::Instance ()
-					.property ("StatusIcons").toString ();
-			filename += '/';
-			filename += iconName;
-
-			return filename;
-		}
-	}
-
-	Util::QIODevice_ptr Core::GetIconPathForState (State state) const
-	{
-		const QString& filename = GetStateIconFilename (state);
-		return ResourceLoaders_ [RLTStatusIconLoader]->GetIconDevice (filename, true);
-	}
-
-	QIcon Core::GetIconForState (State state) const
-	{
-		const QString& filename = GetStateIconFilename (state);
-		return ResourceLoaders_ [RLTStatusIconLoader]->LoadPixmap (filename);
-	}
-
-	QIcon Core::GetAffIcon (const QByteArray& affName) const
-	{
-		QString filename = XmlSettingsManager::Instance ()
-				.property ("AffIcons").toString ();
-		filename += '/';
-		filename += affName;
-
-		return QIcon (ResourceLoaders_ [RLTAffIconLoader]->LoadPixmap (filename));
-	}
-
-	QMap<QString, QIcon> Core::GetClientIconForEntry (ICLEntry *entry)
-	{
-		if (EntryClientIconCache_.contains (entry))
-			return EntryClientIconCache_ [entry];
-
-		QMap<QString, QIcon> result;
-
-		const auto& pack = XmlSettingsManager::Instance ()
-					.property ("ClientIcons").toString () + '/';
-		for (const auto& variant : entry->Variants ())
-		{
-			const auto& type = entry->GetClientInfo (variant) ["client_type"].toString ();
-
-			const auto& filename = pack + type;
-
-			auto pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (filename);
-			if (pixmap.isNull ())
-				pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (pack + "unknown");
-
-			result [variant] = QIcon (pixmap);
-		}
-
-		EntryClientIconCache_ [entry] = result;
-		return result;
-	}
-
 	QImage Core::GetAvatar (ICLEntry *entry, int size)
 	{
 		if (Entry2SmoothAvatarCache_.contains (entry) &&
@@ -1408,7 +1297,7 @@ namespace Azoth
 
 		QImage avatar = entry ? entry->GetAvatar () : QImage ();
 		if (avatar.isNull () || !avatar.width ())
-			avatar = GetDefaultAvatar (size);
+			avatar = ResourcesManager::Instance ().GetDefaultAvatar (size);
 
 		const QImage& scaled = avatar.isNull () ?
 				QImage () :
@@ -1416,18 +1305,6 @@ namespace Azoth
 						Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		Entry2SmoothAvatarCache_ [entry] = scaled;
 		return scaled;
-	}
-
-	QImage Core::GetDefaultAvatar (int size) const
-	{
-		const QString& name = XmlSettingsManager::Instance ()
-				.property ("SystemIcons").toString () + "/default_avatar";
-		const QImage& image = ResourceLoaders_ [RLTSystemIconLoader]->
-				LoadPixmap (name).toImage ();
-		return image.isNull () ?
-				QImage () :
-				image.scaled (size, size,
-						Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	ActionsManager* Core::GetActionsManager () const
@@ -1716,12 +1593,11 @@ namespace Azoth
 #endif
 
 		QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
-		accItem->setData (QVariant::fromValue<QObject*> (accObject),
-				CLRAccountObject);
-		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount),
-				CLREntryType);
+		accItem->setData (QVariant::fromValue<QObject*> (accObject), CLRAccountObject);
+		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount), CLREntryType);
+		const auto accState = account->GetState ().State_;
 		ItemIconManager_->SetIcon (accItem,
-				GetIconPathForState (account->GetState ().State_).get ());
+				ResourcesManager::Instance ().GetIconPathForState (accState).get ());
 
 		{
 			ModelUpdateSafeguard guard (CLModel_);
@@ -1975,9 +1851,9 @@ namespace Azoth
 
 			ID2Entry_.remove (entry->GetEntryID ());
 
-			EntryClientIconCache_.remove (entry);
 			Entry2SmoothAvatarCache_.remove (entry);
-			invalidateClientsIconCache (clitem);
+
+			ResourcesManager::Instance ().HandleRemoved (entry);
 		}
 	}
 
@@ -2024,7 +1900,7 @@ namespace Azoth
 				continue;
 
 			ItemIconManager_->SetIcon (item,
-					GetIconPathForState (status.State_).get ());
+					ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());
 			return;
 		}
 
@@ -2638,16 +2514,16 @@ namespace Azoth
 
 	void Core::updateStatusIconset ()
 	{
-		QMap<State, Util::QIODevice_ptr> State2IconCache_;
-		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
+		QMap<State, Util::QIODevice_ptr> state2IconCache;
+		for (const auto entry : Entry2Items_.keys ())
 		{
-			State state = entry->GetStatus ().State_;
-			if (!State2IconCache_.contains (state))
-				State2IconCache_ [state] = GetIconPathForState (state);
+			const auto state = entry->GetStatus ().State_;
+			if (!state2IconCache.contains (state))
+				state2IconCache [state] = ResourcesManager::Instance ().GetIconPathForState (state);
 
 			for (auto item : Entry2Items_.value (entry))
 			{
-				Util::QIODevice_ptr dev = State2IconCache_ [state];
+				const auto& dev = state2IconCache [state];
 				ItemIconManager_->SetIcon (item, dev.get ());
 			}
 		}
@@ -2770,26 +2646,6 @@ namespace Azoth
 		RIEX::HandleRIEXItemsSuggested (items, from, message);
 	}
 
-	void Core::invalidateClientsIconCache (QObject *passedObj)
-	{
-		QObject *obj = passedObj ? passedObj : sender ();
-		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< obj
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-
-		invalidateClientsIconCache (entry);
-	}
-
-	void Core::invalidateClientsIconCache (ICLEntry *entry)
-	{
-		EntryClientIconCache_.remove (entry);
-	}
-
 	void Core::invalidateSmoothAvatarCache ()
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
@@ -2803,12 +2659,6 @@ namespace Azoth
 
 		Entry2SmoothAvatarCache_.remove (entry);
 		updateItem ();
-	}
-
-	void Core::flushIconCaches ()
-	{
-		Q_FOREACH (std::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
-			rl->FlushCache ();
 	}
 }
 }

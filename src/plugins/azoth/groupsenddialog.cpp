@@ -33,6 +33,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imessage.h"
 #include "core.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -54,7 +55,7 @@ namespace Azoth
 			QList<QStandardItem*> row;
 			row << new QStandardItem (entry->GetEntryName ());
 			row << new QStandardItem (entry->GetHumanReadableID ());
-			row.first ()->setIcon (Core::Instance ()
+			row.first ()->setIcon (ResourcesManager::Instance ()
 						.GetIconForState (entry->GetStatus ().State_));
 			row.first ()->setData (QVariant::fromValue<QObject*> (entryObj));
 			row.first ()->setCheckable (true);
@@ -155,7 +156,7 @@ namespace Azoth
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		const QIcon& icon = Core::Instance ()
+		const auto& icon = ResourcesManager::Instance ()
 				.GetIconForState (entry->GetStatus ().State_);
 		item->setIcon (icon);
 	}

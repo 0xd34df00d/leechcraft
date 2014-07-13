@@ -38,6 +38,7 @@
 #include "chattabsmanager.h"
 #include "coremessage.h"
 #include "unreadqueuemanager.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -314,11 +315,11 @@ namespace Azoth
 		switch (loader)
 		{
 		case PRLClientIcons:
-			return Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader);
+			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTClientIconLoader);
 		case PRLStatusIcons:
-			return Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader);
+			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTStatusIconLoader);
 		case PRLSystemIcons:
-			return Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader);
+			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTSystemIconLoader);
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
@@ -329,7 +330,7 @@ namespace Azoth
 
 	QIcon ProxyObject::GetIconForState (State state) const
 	{
-		return Core::Instance ().GetIconForState (state);
+		return ResourcesManager::Instance ().GetIconForState (state);
 	}
 
 	const auto MaxBodySize4Links = 10 * 1024;

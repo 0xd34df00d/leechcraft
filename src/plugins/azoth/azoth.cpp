@@ -67,6 +67,7 @@
 #include "accountactionsmanager.h"
 #include "serverhistorywidget.h"
 #include "actionsmanager.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -404,24 +405,17 @@ namespace Azoth
 				this,
 				SLOT (handleMoreThisStuff (const QString&)));
 
-		XmlSettingsDialog_->SetDataSource ("StatusIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("ClientIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("AffIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTAffIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("MoodIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTMoodIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("ActivityIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTActivityIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("SystemIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
-					GetSubElemModel ());
+		const auto setLoader = [this] (const QString& name, ResourcesManager::LoaderType type)
+		{
+			XmlSettingsDialog_->SetDataSource (name,
+					ResourcesManager::Instance ().GetResourceLoader (type)->GetSubElemModel ());
+		};
+		setLoader ("StatusIcons", ResourcesManager::RLTStatusIconLoader);
+		setLoader ("ClientIcons", ResourcesManager::RLTClientIconLoader);
+		setLoader ("AffIcons", ResourcesManager::RLTAffIconLoader);
+		setLoader ("MoodIcons", ResourcesManager::RLTMoodIconLoader);
+		setLoader ("ActivityIcons", ResourcesManager::RLTActivityIconLoader);
+		setLoader ("SystemIcons", ResourcesManager::RLTSystemIconLoader);
 
 		QList<QByteArray> iconsPropList;
 		iconsPropList << "StatusIcons"

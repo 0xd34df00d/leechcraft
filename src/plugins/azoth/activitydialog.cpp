@@ -31,6 +31,7 @@
 #include <util/sys/resourceloader.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -138,8 +139,8 @@ namespace Azoth
 			for (int j = 0; j < sizes [pos]; ++j, ++i)
 				Gen2Specific_ [genAct [pos]] << specAct [i];
 
-		Util::ResourceLoader *rl = Core::Instance ()
-				.GetResourceLoader (Core::RLTActivityIconLoader);
+		auto rl = ResourcesManager::Instance ()
+				.GetResourceLoader (ResourcesManager::RLTActivityIconLoader);
 		const QString& theme = XmlSettingsManager::Instance ()
 				.property ("ActivityIcons").toString () + '/';
 
@@ -189,8 +190,8 @@ namespace Azoth
 	{
 		Ui_.Specific_->clear ();
 
-		Util::ResourceLoader *rl = Core::Instance ()
-				.GetResourceLoader (Core::RLTActivityIconLoader);
+		auto rl = ResourcesManager::Instance ()
+				.GetResourceLoader (ResourcesManager::RLTActivityIconLoader);
 
 		const QString& general = Ui_.General_->itemData (idx).toString ();
 		const QString& theme = XmlSettingsManager::Instance ()

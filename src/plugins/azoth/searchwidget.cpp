@@ -35,6 +35,7 @@
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -77,8 +78,8 @@ namespace Azoth
 			{
 				const QString& name = XmlSettingsManager::Instance ()
 						.property ("SystemIcons").toString () + "/default_avatar";
-				Util::ResourceLoader *rl = Core::Instance ()
-						.GetResourceLoader (Core::RLTSystemIconLoader);
+				const auto rl = ResourcesManager::Instance ()
+						.GetResourceLoader (ResourcesManager::RLTSystemIconLoader);
 				icon = QIcon (rl->GetIconPath (name));
 			}
 

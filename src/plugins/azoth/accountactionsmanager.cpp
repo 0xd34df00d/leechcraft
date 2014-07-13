@@ -63,6 +63,7 @@
 #include "setstatusdialog.h"
 #include "xmlsettingsmanager.h"
 #include "serverhistorywidget.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -278,7 +279,7 @@ namespace Azoth
 				continue;
 
 			const auto state = stateVar.value<State> ();
-			act->setIcon (Core::Instance ().GetIconForState (state));
+			act->setIcon (ResourcesManager::Instance ().GetIconForState (state));
 		}
 
 		return { MenuChangeStatus_->menuAction (), Util::CreateSeparator (menu) };

@@ -59,6 +59,7 @@
 #include "statuschangemenumanager.h"
 #include "userslistwidget.h"
 #include "groupremovedialog.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -270,7 +271,7 @@ namespace Azoth
 
 	void MainWidget::updateFastStatusButton (State state)
 	{
-		FastStatusButton_->setIcon (Core::Instance ().GetIconForState (state));
+		FastStatusButton_->setIcon (ResourcesManager::Instance ().GetIconForState (state));
 	}
 
 	void MainWidget::treeActivated (const QModelIndex& index)
@@ -795,7 +796,7 @@ namespace Azoth
 
 	void MainWidget::handleStatusIconsChanged ()
 	{
-		ActionShowOffline_->setIcon (Core::Instance ().GetIconForState (SOffline));
+		ActionShowOffline_->setIcon (ResourcesManager::Instance ().GetIconForState (SOffline));
 	}
 
 	namespace

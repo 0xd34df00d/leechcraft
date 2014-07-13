@@ -41,6 +41,7 @@
 #include "activitydialog.h"
 #include "mooddialog.h"
 #include "proxyobject.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -59,7 +60,7 @@ namespace Azoth
 		if (!statusString.isEmpty ())
 			result += " (" + statusString + ")";
 
-		const auto& icon = Core::Instance ().GetIconForState (status.State_);
+		const auto& icon = ResourcesManager::Instance ().GetIconForState (status.State_);
 		const auto& data = Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
 		result += "&nbsp;&nbsp;&nbsp;</td><td><img src='" + data + "' /></td></tr></table>";
 
@@ -206,7 +207,7 @@ namespace Azoth
 	{
 		QString tip = "<table border='0'><tr><td>";
 
-		const auto& icons = Core::Instance ().GetClientIconForEntry (entry);
+		const auto& icons = ResourcesManager::Instance ().GetClientIconForEntry (entry);
 
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 		{
@@ -214,7 +215,7 @@ namespace Azoth
 
 			auto avatar = entry->GetAvatar ();
 			if (avatar.isNull ())
-				avatar = Core::Instance ().GetDefaultAvatar (avatarSize);
+				avatar = ResourcesManager::Instance ().GetDefaultAvatar (avatarSize);
 
 			QString data;
 			if (auto dataPtr = Avatar2TooltipSrcCache_ [avatar])

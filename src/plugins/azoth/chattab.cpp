@@ -90,6 +90,7 @@
 #include "coremessage.h"
 #include "dummymsgmanager.h"
 #include "corecommandsmanager.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -1041,10 +1042,10 @@ namespace Azoth
 		const QString& current = Ui_.VariantBox_->currentText ();
 		Ui_.VariantBox_->clear ();
 
-		Q_FOREACH (const QString& variant, variants)
+		for (const auto& variant : variants)
 		{
 			const State& st = GetEntry<ICLEntry> ()->GetStatus (variant).State_;
-			const QIcon& icon = Core::Instance ().GetIconForState (st);
+			const QIcon& icon = ResourcesManager::Instance ().GetIconForState (st);
 			Ui_.VariantBox_->addItem (icon, variant);
 		}
 
@@ -1092,7 +1093,7 @@ namespace Azoth
 				variant.isEmpty () ||
 				vars.isEmpty ())
 		{
-			const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
+			const QIcon& icon = ResourcesManager::Instance ().GetIconForState (status.State_);
 			TabIcon_ = icon;
 			UpdateStateIcon ();
 		}
@@ -1591,8 +1592,7 @@ namespace Azoth
 		{
 			Ui_.SubjectButton_->hide ();
 			Ui_.MUCEventsButton_->hide ();
-			TabIcon_ = Core::Instance ()
-					.GetIconForState (e->GetStatus ().State_);
+			TabIcon_ = ResourcesManager::Instance ().GetIconForState (e->GetStatus ().State_);
 
 			connect (GetEntry<QObject> (),
 					SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
