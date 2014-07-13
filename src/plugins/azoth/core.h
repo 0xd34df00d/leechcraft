@@ -30,7 +30,6 @@
 #pragma once
 
 #include <functional>
-#include <boost/scoped_ptr.hpp>
 #include <QObject>
 #include <QSet>
 #include <QIcon>
@@ -98,9 +97,9 @@ namespace Azoth
 		QList<ANFieldData> ANFields_;
 
 #ifdef ENABLE_CRYPT
-		boost::scoped_ptr<QCA::Initializer> QCAInit_;
-		boost::scoped_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
-		boost::scoped_ptr<QCA::EventHandler> QCAEventHandler_;
+		std::unique_ptr<QCA::Initializer> QCAInit_;
+		std::unique_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
+		std::unique_ptr<QCA::EventHandler> QCAEventHandler_;
 		QMap<QString, QString> StoredPublicKeys_;
 #endif
 
