@@ -103,6 +103,7 @@ set (SRCS
 	colorthemeengine.cpp
 	rootwindowsmanager.cpp
 	docktoolbarmanager.cpp
+	mainwindowmenumanager.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
 	)
