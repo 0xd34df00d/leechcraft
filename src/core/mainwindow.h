@@ -102,8 +102,7 @@ namespace LeechCraft
 
 		QToolBar* GetDockListWidget (Qt::DockWidgetArea) const;
 
-		void AddMenus (const QMap<QString, QList<QAction*>>&);
-		void RemoveMenus (const QMap<QString, QList<QAction*>>&);
+		MainWindowMenuManager* GetMenuManager () const;
 
 		QMenu* createPopupMenu ();
 	public slots:

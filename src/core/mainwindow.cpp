@@ -211,17 +211,9 @@ QToolBar* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) co
 	}
 }
 
-void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& menus)
+MainWindowMenuManager* MainWindow::GetMenuManager () const
 {
-	MenuManager_->AddMenus (menus);
-}
-
-void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*>>& menus)
-{
-	if (IsQuitting_)
-		return;
-
-	MenuManager_->RemoveMenus (menus);
+	return MenuManager_;
 }
 
 QMenu* LeechCraft::MainWindow::createPopupMenu ()
@@ -638,7 +630,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 	{
 		const auto& map = exp->GetMenuActions ();
 		if (!map.isEmpty ())
-			AddMenus (map);
+			MenuManager_->AddMenus (map);
 	}
 
 	proxy.reset (new Util::DefaultHookProxy);
