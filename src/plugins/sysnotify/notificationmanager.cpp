@@ -32,9 +32,11 @@
 #include <QDBusConnectionInterface>
 #include <QApplication>
 #include <QIcon>
+#include <QDBusMetaType>
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
+#include "imagehint.h"
 
 namespace LeechCraft
 {
@@ -50,6 +52,8 @@ namespace Sysnotify
 				<< QDBusConnection::sessionBus ().interface ()->registeredServiceNames ().value ();
 			return;
 		}
+
+		qDBusRegisterMetaType<ImageHint> ();
 
 		Connection_.reset (new QDBusInterface ("org.freedesktop.Notifications",
 					"/org/freedesktop/Notifications"));
