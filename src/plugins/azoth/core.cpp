@@ -2463,20 +2463,6 @@ namespace Azoth
 				handleEntryGroupsChanged (GetDisplayGroups (entry), entry->GetQObject ());
 	}
 
-	void Core::showVCard ()
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender doesn't implement ICLEntry"
-					<< sender ();
-			return;
-		}
-
-		entry->ShowInfo ();
-	}
-
 	void Core::updateItem ()
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());

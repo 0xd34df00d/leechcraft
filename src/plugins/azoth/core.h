@@ -474,11 +474,6 @@ namespace Azoth
 		 */
 		void updateItem ();
 
-		/** Asks the corresponding CL entry to show its dialog with
-		 * information about the user.
-		 */
-		void showVCard ();
-
 		void handleClearUnreadMsgCount (QObject*);
 
 		void handleGotSDSession (QObject*);
