@@ -71,6 +71,8 @@ namespace MuCommands
 
 	bool Invite (IProxyObject*, ICLEntry*, const QString&);
 
+	bool Pm (IProxyObject*, ICLEntry*, const QString&);
+
 	bool Last (IProxyObject*, ICLEntry*, const QString&);
 
 	bool Ping (IProxyObject*, ICLEntry*, const QString&);

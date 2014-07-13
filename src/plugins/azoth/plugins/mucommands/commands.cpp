@@ -817,6 +817,33 @@ namespace MuCommands
 		return true;
 	}
 
+	bool Pm (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		if (entry->GetEntryType () != ICLEntry::ETMUC)
+			return false;
+
+		const auto& firstLine = text.section ('\n', 0, 0);
+		const auto& message = text.section ('\n', 1);
+		const auto& nick = firstLine.section (' ', 1);
+
+		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+		const auto part = GetParticipants (mucEntry).value (nick);
+		if (!part)
+		{
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("Unable to find participant %1.")
+							.arg ("<em>" + nick + "</em>"));
+			return true;
+		}
+
+		const auto msgObj = part->CreateMessage (IMessage::MTChatMessage,
+				part->Variants ().value (0), message);
+		const auto msg = qobject_cast<IMessage*> (msgObj);
+		msg->Send ();
+
+		return true;
+	}
+
 	bool Ping (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
 		PerformAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
