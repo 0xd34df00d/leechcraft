@@ -61,6 +61,7 @@ namespace MuCommands
 		StaticCommand VCard_;
 		StaticCommand Version_;
 		StaticCommand Time_;
+		StaticCommand Disco_;
 		StaticCommand ChangeNick_;
 		StaticCommand ChangeSubject_;
 		StaticCommand LeaveMuc_;

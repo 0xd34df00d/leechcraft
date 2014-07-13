@@ -50,6 +50,7 @@
 #include <interfaces/azoth/imucperms.h>
 #include <interfaces/azoth/ihavequeriableversion.h>
 #include <interfaces/azoth/isupportlastactivity.h>
+#include <interfaces/azoth/ihaveservicediscovery.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -530,6 +531,44 @@ namespace MuCommands
 							QObject::tr ("Entity time for %1:").arg (name) + body);
 				},
 				azothProxy, entry, text);
+
+		return true;
+	}
+
+	bool Disco (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		const auto accObj = entry->GetParentAccount ();
+		const auto ihsd = qobject_cast<IHaveServiceDiscovery*> (accObj);
+		if (!ihsd)
+		{
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("%1's account does not support service discovery.")
+							.arg (entry->GetEntryName ()));
+			return true;
+		}
+
+		const auto requestSD = [ihsd, azothProxy, entry, accObj] (const QString& query)
+		{
+			const auto sessionObj = ihsd->CreateSDSession ();
+			const auto session = qobject_cast<ISDSession*> (sessionObj);
+			if (!session)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("Unable to create service discovery session for %1.")
+								.arg ("<em>" + query + "</em>"));
+				return;
+			}
+
+			session->SetQuery (query);
+
+			QMetaObject::invokeMethod (accObj,
+					"gotSDSession",
+					Q_ARG (QObject*, sessionObj));
+		};
+
+		PerformAction ([requestSD] (ICLEntry *target, const QString&) { requestSD (target->GetHumanReadableID ()); },
+				[requestSD] (const QString& name) { requestSD (name); },
+				entry, text);
 
 		return true;
 	}

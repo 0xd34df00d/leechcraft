@@ -55,6 +55,8 @@ namespace MuCommands
 
 	bool ShowTime (IProxyObject*, ICLEntry*, const QString&);
 
+	bool Disco (IProxyObject*, ICLEntry*, const QString&);
+
 	bool RejoinMuc (IProxyObject*, ICLEntry*, const QString&);
 
 	bool LeaveMuc (IProxyObject*, ICLEntry*, const QString&);

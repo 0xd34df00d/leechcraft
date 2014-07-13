@@ -100,6 +100,13 @@ namespace MuCommands
 		};
 		descParser (Time_);
 
+		Disco_ = StaticCommand
+		{
+			{ "/disco" },
+			[this] (ICLEntry *e, const QString& t) { return Disco (AzothProxy_, e, t); }
+		};
+		descParser (Disco_);
+
 		ChangeNick_ = StaticCommand
 		{
 			{ "/nick" },
@@ -193,12 +200,12 @@ namespace MuCommands
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 			return
 			{
-				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Ping_, Last_
+				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, Ping_, Last_
 			};
 
 		return
 		{
-			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_,
+			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_,
 			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_, Kick_, Ban_
 		};
 	}
