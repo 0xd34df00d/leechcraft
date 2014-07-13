@@ -43,7 +43,7 @@ namespace LeechCraft
 namespace Sysnotify
 {
 	NotificationManager::NotificationManager (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
 	{
 		if (!QDBusConnection::sessionBus ().interface ()->
 				isServiceRegistered ("org.freedesktop.Notifications"))
@@ -62,7 +62,7 @@ namespace Sysnotify
 					<< Connection_->lastError ();
 
 		auto pendingSI = Connection_->asyncCall ("GetServerInformation");
-		connect (new QDBusPendingCallWatcher (pendingSI, this),
+		connect (new QDBusPendingCallWatcher { pendingSI, this },
 				SIGNAL (finished (QDBusPendingCallWatcher*)),
 				this,
 				SLOT (handleGotServerInfo (QDBusPendingCallWatcher*)));
@@ -91,15 +91,15 @@ namespace Sysnotify
 		if (!Connection_.get ())
 			return;
 
-		QStringList actions = e.Additional_ ["NotificationActions"].toStringList ();
+		const auto& actions = e.Additional_ ["NotificationActions"].toStringList ();
 		if (actions.isEmpty ())
 		{
 			DoNotify (e, false);
 			return;
 		}
 
-		auto pending = Connection_->asyncCall ("GetCapabilities");
-		auto watcher = new QDBusPendingCallWatcher (pending, this);
+		const auto& pending = Connection_->asyncCall ("GetCapabilities");
+		const auto watcher = new QDBusPendingCallWatcher { pending, this };
 		Watcher2CapCheck_ [watcher] = { e };
 		connect (watcher,
 				SIGNAL (finished (QDBusPendingCallWatcher*)),
@@ -109,10 +109,13 @@ namespace Sysnotify
 
 	void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 	{
-		Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
-		QString header = e.Entity_.toString ();
-		QString text = e.Additional_ ["Text"].toString ();
+		const auto& prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
+		const auto& header = e.Entity_.toString ();
+		const auto& text = e.Additional_ ["Text"].toString ();
 		bool uus = e.Additional_ ["UntilUserSees"].toBool ();
+
+		if (prio == PLog_)
+			return;
 
 		QStringList fmtActions;
 		QStringList actions;
@@ -120,12 +123,9 @@ namespace Sysnotify
 		{
 			actions = e.Additional_ ["NotificationActions"].toStringList ();
 			int i = 0;
-			Q_FOREACH (QString action, actions)
+			for (const auto& action : actions)
 				fmtActions << QString::number (i++) << action;
 		}
-
-		if (prio == PLog_)
-			return;
 
 		int timeout = 0;
 		if (!uus)
@@ -143,25 +143,27 @@ namespace Sysnotify
 				hints ["image-data"] = QVariant::fromValue<ImageHint> (image);
 		}
 
-		QList<QVariant> arguments;
-		arguments << header
-			<< uint (0)
-			<< QString ("leechcraft_main")
-			<< QString ()
-			<< text
-			<< fmtActions
-			<< hints
-			<< timeout;
+		QList<QVariant> arguments
+		{
+			header,
+			static_cast<uint> (0),
+			QString { "leechcraft_main" },
+			QString {},
+			text,
+			fmtActions,
+			hints,
+			timeout
+		};
 
-		ActionData ad =
+		ActionData ad
 		{
 			e,
 			e.Additional_ ["HandlingObject"].value<QObject_ptr> (),
 			actions
 		};
 
-		auto pending = Connection_->asyncCallWithArgumentList ("Notify", arguments);
-		auto watcher = new QDBusPendingCallWatcher (pending, this);
+		const auto& pending = Connection_->asyncCallWithArgumentList ("Notify", arguments);
+		const auto watcher = new QDBusPendingCallWatcher { pending, this };
 		Watcher2AD_ [watcher] = ad;
 		connect (watcher,
 				SIGNAL (finished (QDBusPendingCallWatcher*)),
@@ -232,15 +234,14 @@ namespace Sysnotify
 				<< reply.error ().message ();
 			return;
 		}
-		QStringList caps = reply.argumentAt<0> ();
+		const auto& caps = reply.argumentAt<0> ();
 		bool hasActions = caps.contains ("actions");
-		Entity e = Watcher2CapCheck_.take (w).Entity_;
-		DoNotify (e, hasActions);
+		DoNotify (Watcher2CapCheck_.take (w).Entity_, hasActions);
 	}
 
 	void NotificationManager::handleActionInvoked (uint id, QString action)
 	{
-		const ActionData& ad = CallID2AD_.take (id);
+		const auto& ad = CallID2AD_.take (id);
 		if (!ad.Handler_)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -248,7 +249,7 @@ namespace Sysnotify
 			return;
 		}
 
-		int idx = action.toInt ();
+		const auto idx = action.toInt ();
 
 		QMetaObject::invokeMethod (ad.Handler_.get (),
 				"notificationActionTriggered",
