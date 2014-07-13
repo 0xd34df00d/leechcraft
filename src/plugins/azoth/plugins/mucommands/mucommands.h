@@ -68,6 +68,7 @@ namespace MuCommands
 		StaticCommand RejoinMuc_;
 		StaticCommand Ping_;
 		StaticCommand Last_;
+		StaticCommand Invite_;
 		StaticCommand Kick_;
 		StaticCommand Ban_;
 

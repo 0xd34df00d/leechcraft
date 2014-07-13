@@ -771,6 +771,52 @@ namespace MuCommands
 		return true;
 	}
 
+	bool Invite (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		const auto& id = text.section (' ', 1, 1);
+		const auto& reason = text.section (' ', 2);
+
+		if (entry->GetEntryType () == ICLEntry::ETMUC)
+		{
+			const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount ());
+			const auto& inviteeId = invitee ?
+					invitee->GetHumanReadableID () :
+					id;
+
+			const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+			mucEntry->InviteToMUC (inviteeId, reason);
+
+			InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
+					.arg (inviteeId)
+					.arg (entry->GetEntryName ()));
+		}
+		else
+		{
+			const auto mucEntry = ResolveEntry (id, {}, entry->GetParentAccount ());
+			if (!mucEntry)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("Unable to resolve multiuser chat for %1.").arg (id));
+				return true;
+			}
+
+			const auto mucIface = qobject_cast<IMUCEntry*> (mucEntry->GetQObject ());
+			if (!mucIface)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("%1 is not a multiuser chat.").arg (id));
+				return true;
+			}
+
+			mucIface->InviteToMUC (entry->GetHumanReadableID (), reason);
+			InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
+					.arg (entry->GetEntryName ())
+					.arg (mucEntry->GetEntryName ()));
+		}
+
+		return true;
+	}
+
 	bool Ping (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
 		PerformAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
