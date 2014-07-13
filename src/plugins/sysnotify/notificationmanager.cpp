@@ -70,7 +70,7 @@ namespace Sysnotify
 		connect (Connection_.get (),
 				SIGNAL (NotificationClosed (uint, uint)),
 				this,
-				SLOT (handleNotificationClosed (uint)));
+				SLOT (handleNotificationClosed (uint, uint)));
 	}
 
 	bool NotificationManager::CouldNotify (const Entity& e) const
@@ -167,16 +167,19 @@ namespace Sysnotify
 			return;
 		}
 
+		const auto& implementation = reply.argumentAt<0> ();
 		const auto& vendor = reply.argumentAt<1> ();
 		qDebug () << Q_FUNC_INFO
 				<< "using"
-				<< reply.argumentAt<0> ()
+				<< implementation
 				<< vendor
 				<< reply.argumentAt<2> ()
 				<< reply.argumentAt<3> ();
 
 		if (vendor == "LeechCraft")
 			Connection_.reset ();
+		else if (implementation == "Plasma")
+			IgnoreTimeoutCloses_ = true;						// KDE is shit violating specs.
 	}
 
 	void NotificationManager::handleNotificationCallFinished (QDBusPendingCallWatcher *w)
@@ -231,8 +234,11 @@ namespace Sysnotify
 				Q_ARG (int, idx));
 	}
 
-	void NotificationManager::handleNotificationClosed (uint id)
+	void NotificationManager::handleNotificationClosed (uint id, uint reason)
 	{
+		if (IgnoreTimeoutCloses_ && reason == 1)
+			return;
+
 		CallID2AD_.remove (id);
 	}
 }

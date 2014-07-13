@@ -61,6 +61,8 @@ namespace Sysnotify
 		};
 		QMap<QDBusPendingCallWatcher*, ActionData> Watcher2AD_;
 		QMap<uint, ActionData> CallID2AD_;
+
+		bool IgnoreTimeoutCloses_ = false;
 	public:
 		NotificationManager (QObject* = 0);
 
@@ -73,7 +75,7 @@ namespace Sysnotify
 		void handleNotificationCallFinished (QDBusPendingCallWatcher*);
 		void handleCapCheckCallFinished (QDBusPendingCallWatcher*);
 		void handleActionInvoked (uint, QString);
-		void handleNotificationClosed (uint);
+		void handleNotificationClosed (uint, uint);
 	};
 }
 }
