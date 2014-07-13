@@ -173,12 +173,13 @@ namespace Sysnotify
 
 		const auto& implementation = reply.argumentAt<0> ();
 		const auto& vendor = reply.argumentAt<1> ();
+		Version_ = reply.argumentAt<3> ();
 		qDebug () << Q_FUNC_INFO
 				<< "using"
 				<< implementation
 				<< vendor
 				<< reply.argumentAt<2> ()
-				<< reply.argumentAt<3> ();
+				<< Version_;
 
 		if (vendor == "LeechCraft")
 			Connection_.reset ();

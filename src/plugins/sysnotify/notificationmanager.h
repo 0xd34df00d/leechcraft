@@ -63,6 +63,7 @@ namespace Sysnotify
 		QMap<uint, ActionData> CallID2AD_;
 
 		bool IgnoreTimeoutCloses_ = false;
+		QString Version_;
 	public:
 		NotificationManager (QObject* = 0);
 
