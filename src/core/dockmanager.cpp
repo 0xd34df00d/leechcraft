@@ -38,6 +38,7 @@
 #include "rootwindowsmanager.h"
 #include "mainwindow.h"
 #include "docktoolbarmanager.h"
+#include "mainwindowmenumanager.h"
 
 Q_DECLARE_METATYPE (QDockWidget*)
 Q_DECLARE_METATYPE (QPointer<QDockWidget>)
@@ -109,6 +110,13 @@ namespace LeechCraft
 		emit hookDockWidgetActionVisToggled (proxy, win, widget, visible);
 		if (proxy->IsCancelled ())
 			return;
+
+		const auto toggleView = widget->toggleViewAction ();
+		const auto menu = win->GetMenuManager ()->GetSubMenu (MainWindowMenuManager::Role::View);
+		if (visible)
+			menu->addAction (toggleView);
+		else
+			menu->removeAction (toggleView);
 	}
 
 	void DockManager::SetDockWidgetVisibility (QDockWidget *dw, bool visible)
