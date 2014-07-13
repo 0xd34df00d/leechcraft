@@ -52,7 +52,7 @@ namespace Azoth
 				{
 					auto cmdLine = cmd.Names_.join ("; ");
 					if (!cmd.Description_.isEmpty ())
-						cmdLine += " &mdash; " + cmd.Description_;
+						cmdLine += QString::fromUtf8 (" — ") + cmd.Description_;
 					commands << cmdLine;
 				}
 
