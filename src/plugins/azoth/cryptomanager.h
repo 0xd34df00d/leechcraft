@@ -27,45 +27,51 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pgpkeyselectiondialog.h"
-#include "cryptomanager.h"
+#pragma once
+
+#include <memory>
+#include <QObject>
+#include <QMap>
+#include <QtCrypto>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	PGPKeySelectionDialog::PGPKeySelectionDialog (const QString& label,
-			PGPKeySelectionDialog::Type type,
-			const QCA::PGPKey& focusKey,
-			QWidget *parent)
-	: QDialog (parent)
+	class IAccount;
+	class ICLEntry;
+
+	class CryptoManager : public QObject
 	{
-		Ui_.setupUi (this);
-		Ui_.LabelText_->setText (label);
+		Q_OBJECT
 
-		switch (type)
-		{
-		case TPrivate:
-			Keys_ = CryptoManager::Instance ().GetPrivateKeys ();
-			break;
-		case TPublic:
-			Keys_ = CryptoManager::Instance ().GetPublicKeys ();
-			break;
-		}
+		std::unique_ptr<QCA::Initializer> QCAInit_;
+		std::unique_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
+		std::unique_ptr<QCA::EventHandler> QCAEventHandler_;
+		QMap<QString, QString> StoredPublicKeys_;
 
-		const auto& focusArr = !focusKey.isNull () ? focusKey.toArray () : QByteArray ();
-		for (const auto& key : Keys_)
-		{
-			Ui_.KeyCombo_->addItem (key.primaryUserId () + " (" + key.keyId () + ")");
-			if (key.toArray () == focusArr)
-				Ui_.KeyCombo_->setCurrentIndex (Ui_.KeyCombo_->count () - 1);
-		}
-	}
+		CryptoManager ();
 
-	QCA::PGPKey PGPKeySelectionDialog::GetSelectedKey () const
-	{
-		const int idx = Ui_.KeyCombo_->currentIndex ();
-		return idx > 0 ? Keys_ [idx - 1] : QCA::PGPKey ();
-	}
+		CryptoManager (const CryptoManager&) = delete;
+		CryptoManager& operator= (const CryptoManager&) = delete;
+	public:
+		static CryptoManager& Instance ();
+
+		void Release ();
+
+		void AddEntry (ICLEntry*);
+		void AddAccount (IAccount*);
+
+		QList<QCA::PGPKey> GetPublicKeys () const;
+		QList<QCA::PGPKey> GetPrivateKeys () const;
+
+		void AssociatePrivateKey (IAccount*, const QCA::PGPKey&) const;
+	private:
+		void RestoreKeyForAccount (IAccount*);
+		void RestoreKeyForEntry (ICLEntry*);
+	private slots:
+		void handleQCAEvent (int, const QCA::Event&);
+		void handleQCABusyFinished ();
+	};
 }
 }

@@ -40,6 +40,7 @@
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
 #include "pgpkeyselectiondialog.h"
+#include "cryptomanager.h"
 #endif
 #include "core.h"
 #include "util.h"
@@ -280,7 +281,7 @@ namespace Azoth
 			return;
 
 		pgpAcc->SetPrivateKey (dia.GetSelectedKey ());
-		Core::Instance ().AssociatePrivateKey (acc, dia.GetSelectedKey ());
+		CryptoManager::Instance ().AssociatePrivateKey (acc, dia.GetSelectedKey ());
 #endif
 	}
 

@@ -35,9 +35,6 @@
 #include <QIcon>
 #include <QDateTime>
 #include <QUrl>
-#ifdef ENABLE_CRYPT
-#include <QtCrypto>
-#endif
 #include <util/sys/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/an/ianemitter.h>
@@ -95,13 +92,6 @@ namespace Azoth
 
 		ICoreProxy_ptr Proxy_;
 		QList<ANFieldData> ANFields_;
-
-#ifdef ENABLE_CRYPT
-		std::unique_ptr<QCA::Initializer> QCAInit_;
-		std::unique_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
-		std::unique_ptr<QCA::EventHandler> QCAEventHandler_;
-		QMap<QString, QString> StoredPublicKeys_;
-#endif
 
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
@@ -226,13 +216,6 @@ namespace Azoth
 		QList<IAccount*> GetAccounts (std::function<bool (IProtocol*)> = [] (IProtocol*) { return true; }) const;
 		QList<IProtocol*> GetProtocols () const;
 		IAccount* GetAccount (const QByteArray&) const;
-
-#ifdef ENABLE_CRYPT
-		QList<QCA::PGPKey> GetPublicKeys () const;
-		QList<QCA::PGPKey> GetPrivateKeys () const;
-
-		void AssociatePrivateKey (IAccount*, const QCA::PGPKey&) const;
-#endif
 
 		/** Returns the list of all groups of all chat entries.
 		 */
@@ -423,11 +406,6 @@ namespace Azoth
 		void FillANFields ();
 
 		void UpdateInitState (State);
-
-#ifdef ENABLE_CRYPT
-		void RestoreKeyForAccount (IAccount*);
-		void RestoreKeyForEntry (ICLEntry*);
-#endif
 	public slots:
 		/** Initiates MUC join by calling the corresponding protocol
 		 * plugin's IProtocol::InitiateMUCJoin() function.
@@ -577,11 +555,6 @@ namespace Azoth
 		void invalidateSmoothAvatarCache ();
 
 		void flushIconCaches ();
-
-#ifdef ENABLE_CRYPT
-		void handleQCAEvent (int, const QCA::Event&);
-		void handleQCABusyFinished ();
-#endif
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

@@ -180,7 +180,7 @@ set (FORMS
 set (RESOURCES azothresources.qrc)
 
 if (ENABLE_CRYPT)
-	set (SRCS ${SRCS} pgpkeyselectiondialog.cpp)
+	set (SRCS ${SRCS} pgpkeyselectiondialog.cpp cryptomanager.cpp)
 	set (FORMS ${FORMS} pgpkeyselectiondialog.ui)
 endif ()
 

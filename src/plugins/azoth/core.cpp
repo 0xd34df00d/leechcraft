@@ -66,7 +66,7 @@
 #include "interfaces/azoth/ihaveservicediscovery.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #ifdef ENABLE_CRYPT
-#include "interfaces/azoth/isupportpgp.h"
+#include "cryptomanager.h"
 #endif
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
@@ -199,11 +199,6 @@ namespace Azoth
 
 	Core::Core ()
 	: Proxy_ (nullptr)
-#ifdef ENABLE_CRYPT
-	, QCAInit_ (new QCA::Initializer)
-	, KeyStoreMgr_ (new QCA::KeyStoreManager)
-	, QCAEventHandler_ (new QCA::EventHandler)
-#endif
 	, TooltipManager_ (new CLTooltipManager (Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
@@ -224,27 +219,6 @@ namespace Azoth
 	{
 		FillANFields ();
 
-#ifdef ENABLE_CRYPT
-		connect (QCAEventHandler_.get (),
-				SIGNAL (eventReady (int, const QCA::Event&)),
-				this,
-				SLOT (handleQCAEvent (int, const QCA::Event&)));
-		if (KeyStoreMgr_->isBusy ())
-			connect (KeyStoreMgr_.get (),
-					SIGNAL (busyFinished ()),
-					this,
-					SLOT (handleQCABusyFinished ()),
-					Qt::QueuedConnection);
-		QCAEventHandler_->start ();
-		KeyStoreMgr_->start ();
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
-		settings.beginGroup ("PublicEntryKeys");
-		Q_FOREACH (const QString& entryId, settings.childKeys ())
-			StoredPublicKeys_ [entryId] = settings.value (entryId).toString ();
-		settings.endGroup ();
-#endif
 		ResourceLoaders_ [RLTStatusIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this));
 		ResourceLoaders_ [RLTClientIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/clients/", this));
 		ResourceLoaders_ [RLTAffIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this));
@@ -317,9 +291,7 @@ namespace Azoth
 		StyleOptionManagers_.clear ();
 
 #ifdef ENABLE_CRYPT
-		QCAEventHandler_.reset ();
-		KeyStoreMgr_.reset ();
-		QCAInit_.reset ();
+		CryptoManager::Instance ().Release ();
 #endif
 	}
 
@@ -630,52 +602,6 @@ namespace Azoth
 
 		return 0;
 	}
-
-#ifdef ENABLE_CRYPT
-	QList<QCA::PGPKey> Core::GetPublicKeys () const
-	{
-		QList<QCA::PGPKey> result;
-
-		QCA::KeyStore store ("qca-gnupg", KeyStoreMgr_.get ());
-
-		Q_FOREACH (const QCA::KeyStoreEntry& entry, store.entryList ())
-		{
-			const QCA::PGPKey& key = entry.pgpPublicKey ();
-			if (!key.isNull ())
-				result << key;
-		}
-
-		return result;
-	}
-
-	QList<QCA::PGPKey> Core::GetPrivateKeys () const
-	{
-		QList<QCA::PGPKey> result;
-
-		QCA::KeyStore store ("qca-gnupg", KeyStoreMgr_.get ());
-
-		Q_FOREACH (const QCA::KeyStoreEntry& entry, store.entryList ())
-		{
-			const QCA::PGPKey& key = entry.pgpSecretKey ();
-			if (!key.isNull ())
-				result << key;
-		}
-
-		return result;
-	}
-
-	void Core::AssociatePrivateKey (IAccount *acc, const QCA::PGPKey& key) const
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
-		settings.beginGroup ("PrivateKeys");
-		if (key.isNull ())
-			settings.remove (acc->GetAccountID ());
-		else
-			settings.setValue (acc->GetAccountID (), key.keyId ());
-		settings.endGroup ();
-	}
-#endif
 
 	QStringList Core::GetChatGroups () const
 	{
@@ -1173,8 +1099,7 @@ namespace Azoth
 					SLOT (handleAttentionDrawn (const QString&, const QString&)));
 
 #ifdef ENABLE_CRYPT
-		if (!KeyStoreMgr_->isBusy ())
-			RestoreKeyForEntry (clEntry);
+		CryptoManager::Instance ().AddEntry (clEntry);
 #endif
 
 		EventsNotifier_->RegisterEntry (clEntry);
@@ -1726,56 +1651,6 @@ namespace Azoth
 			emit topStatusChanged (newTop);
 	}
 
-#ifdef ENABLE_CRYPT
-	void Core::RestoreKeyForAccount (IAccount *acc)
-	{
-		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (acc->GetQObject ());
-		if (!pgp)
-			return;
-
-		QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Azoth");
-		settings.beginGroup ("PrivateKeys");
-		const QString& keyId = settings.value (acc->GetAccountID ()).toString ();
-		settings.endGroup ();
-
-		if (keyId.isEmpty ())
-			return;
-
-		Q_FOREACH (const QCA::PGPKey& key, GetPrivateKeys ())
-			if (key.keyId () == keyId)
-			{
-				pgp->SetPrivateKey (key);
-				break;
-			}
-	}
-
-	void Core::RestoreKeyForEntry (ICLEntry *clEntry)
-	{
-		if (!StoredPublicKeys_.contains (clEntry->GetEntryID ()))
-			return;
-
-		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (clEntry->GetParentAccount ());
-		if (!pgp)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< clEntry->GetQObject ()
-					<< clEntry->GetParentAccount ()
-					<< "doesn't implement ISupportGPG though "
-						"we have the key";
-			return;
-		}
-
-		const QString& keyId = StoredPublicKeys_.take (clEntry->GetEntryID ());
-		Q_FOREACH (const QCA::PGPKey& key, GetPublicKeys ())
-			if (key.keyId () == keyId)
-			{
-				pgp->SetEntryKey (clEntry->GetQObject (), key);
-				break;
-			}
-	}
-#endif
-
 	void Core::handleMucJoinRequested ()
 	{
 		auto accounts = GetAccountsPred (ProtocolPlugins_,
@@ -1837,8 +1712,7 @@ namespace Azoth
 		emit accountAdded (account);
 
 #ifdef ENABLE_CRYPT
-		if (!KeyStoreMgr_->isBusy ())
-			RestoreKeyForAccount (account);
+		CryptoManager::Instance ().AddAccount (account);
 #endif
 
 		QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
@@ -2936,34 +2810,5 @@ namespace Azoth
 		Q_FOREACH (std::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
 			rl->FlushCache ();
 	}
-
-#ifdef ENABLE_CRYPT
-	void Core::handleQCAEvent (int id, const QCA::Event& event)
-	{
-		qDebug () << Q_FUNC_INFO << id << event.type ();
-	}
-
-	void Core::handleQCABusyFinished ()
-	{
-		Q_FOREACH (IAccount *acc, GetAccounts ())
-		{
-			RestoreKeyForAccount (acc);
-
-			Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
-			{
-				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-				if (!entry)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< entry
-							<< "doesn't implement ICLEntry";
-					continue;
-				}
-
-				RestoreKeyForEntry (entry);
-			}
-		}
-	}
-#endif
 }
 }
