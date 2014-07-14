@@ -308,6 +308,34 @@ namespace Azoth
 			return EscapePolicy::Escape;
 		}
 
+		/** @brief Returns the body according to the escape policy.
+		 *
+		 * This function takes the message body as returned by GetBody()
+		 * and, if GetEscapePolicy() returns EscapePolicy::Escape,
+		 * escapes the HTML entities in it.
+		 *
+		 * @return The escaped body if GetEscapePolicy() is
+		 * EscapePolicy::Escape, unchanged body otherwise.
+		 *
+		 * @sa GetEscapePolicy()
+		 */
+		QString GetEscapedBody () const
+		{
+			auto body = GetBody ();
+			switch (GetEscapePolicy ())
+			{
+			case EscapePolicy::NoEscape:
+				break;
+			case EscapePolicy::Escape:
+				body.replace ('&', "&amp;");
+				body.replace ('"', "&quot;");
+				body.replace ('<', "&lt;");
+				body.replace ('>', "&gt;");
+				break;
+			}
+			return body;
+		}
+
 		/** @brief Returns the timestamp of the message.
 		 *
 		 * @return The timestamp of the message.
