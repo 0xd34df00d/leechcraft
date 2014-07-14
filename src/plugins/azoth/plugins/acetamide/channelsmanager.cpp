@@ -252,7 +252,7 @@ namespace Acetamide
 				else
 					ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
 							IMessage::MessageType::EventMessage,
-							IMessage::MSTOther);
+							IMessage::MessageSubType::Other);
 			}
 		}
 		else
@@ -281,7 +281,7 @@ namespace Acetamide
 
 		ChannelHandlers_ [LastActiveChannel_]->HandleServiceMessage (answer,
 				IMessage::MessageType::EventMessage,
-				IMessage::MSTOther);
+				IMessage::MessageSubType::Other);
 
 		return true;
 	}
@@ -305,7 +305,7 @@ namespace Acetamide
 		Q_FOREACH (auto ich, ChannelHandlers_.values ())
 			ich->HandleServiceMessage (msg,
 					IMessage::MessageType::ServiceMessage,
-					IMessage::MSTOther);
+					IMessage::MessageSubType::Other);
 	}
 
 	void ChannelsManager::CTCPRequestResult (const QString& msg)
@@ -314,7 +314,7 @@ namespace Acetamide
 		{
 			ich->HandleServiceMessage (msg,
 					IMessage::MessageType::ServiceMessage,
-					IMessage::MSTOther);
+					IMessage::MessageSubType::Other);
 		}
 	}
 
@@ -586,7 +586,7 @@ namespace Acetamide
 				.arg (QDateTime::fromTime_t (time).toString (Qt::TextDate)));
 		handler->HandleServiceMessage (msg,
 				IMessage::MessageType::ServiceMessage,
-				IMessage::MSTOther);
+				IMessage::MessageSubType::Other);
 	}
 
 	uint qHash (const ChannelOptions& opts)

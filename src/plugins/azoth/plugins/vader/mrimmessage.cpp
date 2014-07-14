@@ -98,7 +98,7 @@ namespace Vader
 
 	IMessage::MessageSubType MRIMMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return MessageSubType::Other;
 	}
 
 	QObject* MRIMMessage::OtherPart () const

@@ -72,7 +72,7 @@ namespace VelvetBird
 
 	IMessage::MessageSubType ConvIMMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return MessageSubType::Other;
 	}
 
 	QObject* ConvIMMessage::OtherPart () const

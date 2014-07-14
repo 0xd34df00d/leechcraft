@@ -287,7 +287,7 @@ namespace Azoth
 
 		switch (msg->GetMessageSubType ())
 		{
-		case IMessage::MSTParticipantStatusChange:
+		case IMessage::MessageSubType::ParticipantStatusChange:
 		{
 			const QString& nick = msgObj->property ("Azoth/Nick").toString ();
 			const QString& state = msgObj->property ("Azoth/TargetState").toString ();

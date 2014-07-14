@@ -123,20 +123,20 @@ namespace Azoth
 		 * required properties used by the Azoth Core and other plugins
 		 * to establish proper context for the events.
 		 */
-		enum MessageSubType
+		enum class MessageSubType
 		{
 			/** This message is of subtype that doesn't correspond to
 			 * any other subtype of message.
 			 */
-			MSTOther,
+			Other,
 
 			/** This message notifies about someone being just kicked.
 			 */
-			MSTKickNotification,
+			KickNotification,
 
 			/** This message notifies about someone being just banned.
 			 */
-			MSTBanNotification,
+			BanNotification,
 
 			/** @brief Represents status change of a participant in a
 			 * chat or MUC room.
@@ -154,33 +154,33 @@ namespace Azoth
 			 * - Azoth/StatusText, with a QString representing the new
 			 *   status text of the participant. May be empty.
 			 */
-			MSTParticipantStatusChange,
+			ParticipantStatusChange,
 
 			/** @brief Represents permission changes of a participant in
 			 * a chat or MUC room.
 			 */
-			MSTParticipantRoleAffiliationChange,
+			ParticipantRoleAffiliationChange,
 
 			/** @brief Notifies about participant joining to a MUC room.
 			 */
-			MSTParticipantJoin,
+			ParticipantJoin,
 
 			/** @brief Notifies about participant leaving a MUC room.
 			 */
-			MSTParticipantLeave,
+			ParticipantLeave,
 
 			/** @brief Notifies about participant in a MUC changing the
 			 * nick.
 			 */
-			MSTParticipantNickChange,
+			ParticipantNickChange,
 
 			/** @brief The participant has ended the conversation.
 			 */
-			MSTParticipantEndedConversation,
+			ParticipantEndedConversation,
 
 			/** @brief Notifies about changing subject in a MUC room.
 			 */
-			MSTRoomSubjectChange
+			RoomSubjectChange
 		};
 
 		enum class EscapePolicy

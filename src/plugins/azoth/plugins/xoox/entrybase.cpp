@@ -595,7 +595,7 @@ namespace Xoox
 					GetJID (),
 					variant,
 					Account_->GetClientConnection ().get ());
-			msg->SetMessageSubType (IMessage::MSTParticipantEndedConversation);
+			msg->SetMessageSubType (IMessage::MessageSubType::ParticipantEndedConversation);
 			HandleMessage (msg);
 		}
 	}
@@ -676,7 +676,7 @@ namespace Xoox
 				GetJID (),
 				variant,
 				Account_->GetClientConnection ().get ());
-		message->SetMessageSubType (IMessage::MSTParticipantStatusChange);
+		message->SetMessageSubType (IMessage::MessageSubType::ParticipantStatusChange);
 
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());

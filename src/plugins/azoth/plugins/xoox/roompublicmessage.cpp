@@ -51,7 +51,7 @@ namespace Xoox
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (Direction::Out)
 	, Type_ (MessageType::MUCMessage)
-	, SubType_ (MSTOther)
+	, SubType_ (MessageSubType::Other)
 	{
 	}
 
@@ -82,7 +82,7 @@ namespace Xoox
 	, Datetime_ (msg.stamp ().isValid () ? msg.stamp ().toLocalTime () : QDateTime::currentDateTime ())
 	, Direction_ (Direction::In)
 	, Type_ (MessageType::MUCMessage)
-	, SubType_ (MSTOther)
+	, SubType_ (MessageSubType::Other)
 	, XHTML_ (msg.xhtml ())
 	{
 		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);

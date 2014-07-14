@@ -47,7 +47,7 @@ namespace Acetamide
 			const QString& nickname,
 			ClientConnection *conn)
 	: Type_ (type)
-	, SubType_ (MSTOther)
+	, SubType_ (MessageSubType::Other)
 	, Direction_ (dir)
 	, ID_ (id)
 	, NickName_ (nickname)
@@ -61,7 +61,7 @@ namespace Acetamide
 	IrcMessage::IrcMessage (const Message& msg,
 			const QString& id, ClientConnection* conn)
 	: Type_ (MessageType::MUCMessage)
-	, SubType_ (MSTOther)
+	, SubType_ (MessageSubType::Other)
 	, Direction_ (Direction::In)
 	, ID_ (id)
 	, Message_ (msg)

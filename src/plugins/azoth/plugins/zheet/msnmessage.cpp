@@ -46,7 +46,7 @@ namespace Zheet
 	, Entry_ (entry)
 	, Dir_ (dir)
 	, MT_ (type)
-	, MST_ (MSTOther)
+	, MST_ (MessageSubType::Other)
 	, DateTime_ (QDateTime::currentDateTime ())
 	, IsDelivered_ (dir == Direction::In)
 	, MsgID_ (-1)

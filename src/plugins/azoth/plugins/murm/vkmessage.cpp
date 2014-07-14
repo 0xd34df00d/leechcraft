@@ -100,7 +100,7 @@ namespace Murm
 
 	IMessage::MessageSubType VkMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return MessageSubType::Other;
 	}
 
 	QObject* VkMessage::OtherPart () const

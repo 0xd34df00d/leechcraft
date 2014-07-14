@@ -1847,22 +1847,22 @@ namespace Azoth
 				other->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
-		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
+		if (msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantStatusChange &&
 				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 
-		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
+		if (msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantStatusChange &&
 				(!parent || parent->GetEntryType () != ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
 			return;
 
-		if ((msg->GetMessageSubType () == IMessage::MSTParticipantJoin ||
-					msg->GetMessageSubType () == IMessage::MSTParticipantLeave) &&
+		if ((msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantJoin ||
+					msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantLeave) &&
 				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
 			return;
 
-		if (msg->GetMessageSubType () == IMessage::MSTParticipantEndedConversation)
+		if (msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantEndedConversation)
 		{
 			if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
 				return;
@@ -1887,7 +1887,7 @@ namespace Azoth
 			MUCEventLog_->append (QString ("<font color=\"#56ED56\">[%1] %2</font>")
 						.arg (dt)
 						.arg (msg->GetEscapedBody ()));
-			if (msg->GetMessageSubType () != IMessage::MSTRoomSubjectChange)
+			if (msg->GetMessageSubType () != IMessage::MessageSubType::RoomSubjectChange)
 				return;
 		}
 

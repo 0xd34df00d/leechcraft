@@ -74,7 +74,7 @@ namespace Azoth
 
 	IMessage::MessageSubType CoreMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return MessageSubType::Other;
 	}
 
 	QObject* CoreMessage::OtherPart () const

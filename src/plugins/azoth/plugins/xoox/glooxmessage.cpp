@@ -50,7 +50,7 @@ namespace Xoox
 			const QString& variant,
 			ClientConnection *conn)
 	: Type_ (type)
-	, SubType_ (MSTOther)
+	, SubType_ (MessageSubType::Other)
 	, Direction_ (dir)
 	, BareJID_ (jid)
 	, Variant_ (variant)
@@ -72,7 +72,7 @@ namespace Xoox
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
 			ClientConnection *conn)
 	: Type_ (MessageType::ChatMessage)
-	, SubType_ (MSTOther)
+	, SubType_ (MessageSubType::Other)
 	, Direction_ (Direction::In)
 	, Message_ (message)
 	, Connection_ (conn)

@@ -145,7 +145,7 @@ namespace Xoox
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MessageType::StatusMessage,
-				IMessage::MSTParticipantLeave,
+				IMessage::MessageSubType::ParticipantLeave,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -174,7 +174,7 @@ namespace Xoox
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MessageType::StatusMessage,
-				IMessage::MSTParticipantJoin,
+				IMessage::MessageSubType::ParticipantJoin,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -194,7 +194,7 @@ namespace Xoox
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MessageType::StatusMessage,
-				IMessage::MSTParticipantStatusChange,
+				IMessage::MessageSubType::ParticipantStatusChange,
 				GetParticipantEntry (nick));
 		message->setProperty ("Azoth/Nick", nick);
 		message->setProperty ("Azoth/TargetState", state);
@@ -212,7 +212,7 @@ namespace Xoox
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MessageType::StatusMessage,
-				IMessage::MSTParticipantNickChange,
+				IMessage::MessageSubType::ParticipantNickChange,
 				GetParticipantEntry (newNick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -232,7 +232,7 @@ namespace Xoox
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MessageType::StatusMessage,
-				IMessage::MSTKickNotification,
+				IMessage::MessageSubType::KickNotification,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -252,7 +252,7 @@ namespace Xoox
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MessageType::StatusMessage,
-				IMessage::MSTBanNotification,
+				IMessage::MessageSubType::BanNotification,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -280,7 +280,7 @@ namespace Xoox
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MessageType::StatusMessage,
-				IMessage::MSTParticipantRoleAffiliationChange,
+				IMessage::MessageSubType::ParticipantRoleAffiliationChange,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -363,7 +363,7 @@ namespace Xoox
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MessageType::EventMessage,
-				IMessage::MSTOther);
+				IMessage::MessageSubType::Other);
 		CLEntry_->HandleMessage (message);
 
 		switch (pres.error ().condition ())
@@ -472,7 +472,7 @@ namespace Xoox
 					IMessage::Direction::In,
 					CLEntry_,
 					IMessage::MessageType::EventMessage,
-					IMessage::MSTRoomSubjectChange);
+					IMessage::MessageSubType::RoomSubjectChange);
 			}
 			else if (!nick.isEmpty ())
 			{
@@ -484,7 +484,7 @@ namespace Xoox
 					IMessage::Direction::In,
 					CLEntry_,
 					IMessage::MessageType::EventMessage,
-					IMessage::MSTOther);
+					IMessage::MessageSubType::Other);
 
 			if (message)
 				CLEntry_->HandleMessage (message);

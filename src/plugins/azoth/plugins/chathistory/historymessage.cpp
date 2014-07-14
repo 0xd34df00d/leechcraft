@@ -81,7 +81,7 @@ namespace ChatHistory
 
 	IMessage::MessageSubType HistoryMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return MessageSubType::Other;
 	}
 
 	QObject* HistoryMessage::OtherPart () const
