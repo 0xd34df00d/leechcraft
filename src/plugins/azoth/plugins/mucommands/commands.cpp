@@ -68,7 +68,7 @@ namespace MuCommands
 			const auto msgObj = azothProxy->CreateCoreMessage ({},
 					rich,
 					QDateTime::currentDateTime (),
-					IMessage::MessageType::ServiceMessage,
+					IMessage::Type::ServiceMessage,
 					IMessage::Direction::In,
 					entryObj,
 					entryObj);
@@ -115,8 +115,8 @@ namespace MuCommands
 				const auto msg = qobject_cast<IMessage*> (msgObj);
 				switch (msg->GetMessageType ())
 				{
-				case IMessage::MessageType::ChatMessage:
-				case IMessage::MessageType::MUCMessage:
+				case IMessage::Type::ChatMessage:
+				case IMessage::Type::MUCMessage:
 					break;
 				default:
 					continue;
@@ -836,7 +836,7 @@ namespace MuCommands
 			return true;
 		}
 
-		const auto msgObj = part->CreateMessage (IMessage::MessageType::ChatMessage,
+		const auto msgObj = part->CreateMessage (IMessage::Type::ChatMessage,
 				part->Variants ().value (0), message);
 		const auto msg = qobject_cast<IMessage*> (msgObj);
 		msg->Send ();

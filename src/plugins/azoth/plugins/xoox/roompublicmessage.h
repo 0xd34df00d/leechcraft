@@ -61,16 +61,16 @@ namespace Xoox
 		Direction Direction_;
 		QString FromJID_;
 		QString FromVariant_;
-		MessageType Type_;
-		MessageSubType SubType_;
+		Type Type_;
+		SubType SubType_;
 
 		QString XHTML_;
 	public:
 		RoomPublicMessage (const QString&, RoomCLEntry*);
 		RoomPublicMessage (const QString&, Direction,
 				RoomCLEntry*,
-				MessageType,
-				MessageSubType,
+				Type,
+				SubType,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
 		RoomPublicMessage (const QXmppMessage&, RoomCLEntry*,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
@@ -81,8 +81,8 @@ namespace Xoox
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
-		MessageType GetMessageType () const;
-		MessageSubType GetMessageSubType () const;
+		Type GetMessageType () const;
+		SubType GetMessageSubType () const;
 
 		QObject* OtherPart () const;
 		QObject* ParentCLEntry () const;

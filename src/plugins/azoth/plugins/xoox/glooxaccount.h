@@ -263,7 +263,7 @@ namespace Xoox
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
 
-		QObject* CreateMessage (IMessage::MessageType,
+		QObject* CreateMessage (IMessage::Type,
 				const QString&, const QString&,
 				const QString&);
 	private:

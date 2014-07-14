@@ -116,7 +116,7 @@ namespace Xoox
 		return EntryBase::GetStatus (resource);
 	}
 
-	QObject* SelfContact::CreateMessage (IMessage::MessageType type,
+	QObject* SelfContact::CreateMessage (IMessage::Type type,
 			const QString& variant, const QString& text)
 	{
 		QObject *msg = Account_->CreateMessage (type, variant, text, GetJID ());

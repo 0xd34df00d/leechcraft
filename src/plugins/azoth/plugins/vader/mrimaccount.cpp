@@ -596,7 +596,7 @@ namespace Vader
 		}
 
 		auto buddy = Buddies_ [msg.From_];
-		MRIMMessage *obj = new MRIMMessage (IMessage::Direction::In, IMessage::MessageType::ChatMessage, buddy);
+		MRIMMessage *obj = new MRIMMessage (IMessage::Direction::In, IMessage::Type::ChatMessage, buddy);
 		obj->SetBody (msg.Text_);
 		obj->SetDateTime (msg.DT_);
 		buddy->HandleMessage (obj);

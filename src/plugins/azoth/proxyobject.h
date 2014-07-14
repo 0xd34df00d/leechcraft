@@ -76,7 +76,7 @@ namespace Azoth
 		void FormatLinks (QString&);
 		QStringList FindLinks (const QString&);
 		QObject* CreateCoreMessage (QString, const QString&, const QDateTime&,
-				IMessage::MessageType, IMessage::Direction, QObject*, QObject*);
+				IMessage::Type, IMessage::Direction, QObject*, QObject*);
 		bool IsMessageRead (QObject*);
 		void MarkMessagesAsRead (QObject*);
 	};

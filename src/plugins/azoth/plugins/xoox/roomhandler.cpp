@@ -144,8 +144,8 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MessageType::StatusMessage,
-				IMessage::MessageSubType::ParticipantLeave,
+				IMessage::Type::StatusMessage,
+				IMessage::SubType::ParticipantLeave,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -173,8 +173,8 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MessageType::StatusMessage,
-				IMessage::MessageSubType::ParticipantJoin,
+				IMessage::Type::StatusMessage,
+				IMessage::SubType::ParticipantJoin,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -193,8 +193,8 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MessageType::StatusMessage,
-				IMessage::MessageSubType::ParticipantStatusChange,
+				IMessage::Type::StatusMessage,
+				IMessage::SubType::ParticipantStatusChange,
 				GetParticipantEntry (nick));
 		message->setProperty ("Azoth/Nick", nick);
 		message->setProperty ("Azoth/TargetState", state);
@@ -211,8 +211,8 @@ namespace Xoox
 		auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MessageType::StatusMessage,
-				IMessage::MessageSubType::ParticipantNickChange,
+				IMessage::Type::StatusMessage,
+				IMessage::SubType::ParticipantNickChange,
 				GetParticipantEntry (newNick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -231,8 +231,8 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MessageType::StatusMessage,
-				IMessage::MessageSubType::KickNotification,
+				IMessage::Type::StatusMessage,
+				IMessage::SubType::KickNotification,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -251,8 +251,8 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MessageType::StatusMessage,
-				IMessage::MessageSubType::BanNotification,
+				IMessage::Type::StatusMessage,
+				IMessage::SubType::BanNotification,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -279,8 +279,8 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MessageType::StatusMessage,
-				IMessage::MessageSubType::ParticipantRoleAffiliationChange,
+				IMessage::Type::StatusMessage,
+				IMessage::SubType::ParticipantRoleAffiliationChange,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
@@ -362,8 +362,8 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (text,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MessageType::EventMessage,
-				IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage,
+				IMessage::SubType::Other);
 		CLEntry_->HandleMessage (message);
 
 		switch (pres.error ().condition ())
@@ -471,8 +471,8 @@ namespace Xoox
 				message = new RoomPublicMessage (string,
 					IMessage::Direction::In,
 					CLEntry_,
-					IMessage::MessageType::EventMessage,
-					IMessage::MessageSubType::RoomSubjectChange);
+					IMessage::Type::EventMessage,
+					IMessage::SubType::RoomSubjectChange);
 			}
 			else if (!nick.isEmpty ())
 			{
@@ -483,8 +483,8 @@ namespace Xoox
 				message = new RoomPublicMessage (msg.body (),
 					IMessage::Direction::In,
 					CLEntry_,
-					IMessage::MessageType::EventMessage,
-					IMessage::MessageSubType::Other);
+					IMessage::Type::EventMessage,
+					IMessage::SubType::Other);
 
 			if (message)
 				CLEntry_->HandleMessage (message);
@@ -512,10 +512,10 @@ namespace Xoox
 		}
 	}
 
-	GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType,
+	GlooxMessage* RoomHandler::CreateMessage (IMessage::Type,
 			const QString& nick, const QString& body)
 	{
-		GlooxMessage *message = new GlooxMessage (IMessage::MessageType::ChatMessage,
+		GlooxMessage *message = new GlooxMessage (IMessage::Type::ChatMessage,
 				IMessage::Direction::Out,
 				GetRoomJID (),
 				nick,

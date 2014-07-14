@@ -163,7 +163,7 @@ namespace Xoox
 		return result;
 	}
 
-	QObject* RoomCLEntry::CreateMessage (IMessage::MessageType,
+	QObject* RoomCLEntry::CreateMessage (IMessage::Type,
 			const QString& variant, const QString& text)
 	{
 		if (variant == "")

@@ -338,7 +338,7 @@ namespace Azoth
 		 *
 		 * @sa Variants()
 		 */
-		virtual QObject* CreateMessage (IMessage::MessageType type,
+		virtual QObject* CreateMessage (IMessage::Type type,
 				const QString& variant,
 				const QString& body) = 0;
 

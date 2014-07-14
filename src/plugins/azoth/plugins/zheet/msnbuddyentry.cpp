@@ -174,7 +174,7 @@ namespace Zheet
 				QStringList (QString ());
 	}
 
-	QObject* MSNBuddyEntry::CreateMessage (IMessage::MessageType type, const QString&, const QString& body)
+	QObject* MSNBuddyEntry::CreateMessage (IMessage::Type type, const QString&, const QString& body)
 	{
 		MSNMessage *msg = new MSNMessage (IMessage::Direction::Out, type, this);
 		msg->SetBody (body);

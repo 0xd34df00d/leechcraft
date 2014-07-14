@@ -591,10 +591,10 @@ namespace Azoth
 				QString ();
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
-		IMessage::MessageType type =
+		IMessage::Type type =
 				e->GetEntryType () == ICLEntry::ETMUC ?
-						IMessage::MessageType::MUCMessage :
-						IMessage::MessageType::ChatMessage;
+						IMessage::Type::MUCMessage :
+						IMessage::Type::ChatMessage;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		proxy->SetValue ("text", text);
@@ -609,7 +609,7 @@ namespace Azoth
 
 		int intType = static_cast<int> (type);
 		proxy->FillValue ("type", intType);
-		type = static_cast<IMessage::MessageType> (intType);
+		type = static_cast<IMessage::Type> (intType);
 		proxy->FillValue ("variant", variant);
 		proxy->FillValue ("text", text);
 
@@ -997,7 +997,7 @@ namespace Azoth
 		else if (isActiveChat)
 			GetEntry<ICLEntry> ()->MarkMsgsRead ();
 
-		if (msg->GetMessageType () == IMessage::MessageType::MUCMessage &&
+		if (msg->GetMessageType () == IMessage::Type::MUCMessage &&
 				!isActiveChat &&
 				!HadHighlight_)
 		{
@@ -1009,7 +1009,7 @@ namespace Azoth
 		if (shouldReformat)
 			ReformatTitle ();
 
-		if (msg->GetMessageType () == IMessage::MessageType::ChatMessage &&
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage &&
 				msg->GetDirection () == IMessage::Direction::In)
 		{
 			const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
@@ -1847,22 +1847,22 @@ namespace Azoth
 				other->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
-		if (msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantStatusChange &&
+		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
 				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 
-		if (msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantStatusChange &&
+		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
 				(!parent || parent->GetEntryType () != ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
 			return;
 
-		if ((msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantJoin ||
-					msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantLeave) &&
+		if ((msg->GetMessageSubType () == IMessage::SubType::ParticipantJoin ||
+					msg->GetMessageSubType () == IMessage::SubType::ParticipantLeave) &&
 				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
 			return;
 
-		if (msg->GetMessageSubType () == IMessage::MessageSubType::ParticipantEndedConversation)
+		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantEndedConversation)
 		{
 			if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
 				return;
@@ -1880,14 +1880,14 @@ namespace Azoth
 
 		if (XmlSettingsManager::Instance ().property ("SeparateMUCEventLogWindow").toBool () &&
 				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
-				(msg->GetMessageType () != IMessage::MessageType::MUCMessage &&
-					msg->GetMessageType () != IMessage::MessageType::ServiceMessage))
+				(msg->GetMessageType () != IMessage::Type::MUCMessage &&
+					msg->GetMessageType () != IMessage::Type::ServiceMessage))
 		{
 			const auto& dt = msg->GetDateTime ().toString ("HH:mm:ss.zzz");
 			MUCEventLog_->append (QString ("<font color=\"#56ED56\">[%1] %2</font>")
 						.arg (dt)
 						.arg (msg->GetEscapedBody ()));
-			if (msg->GetMessageSubType () != IMessage::MessageSubType::RoomSubjectChange)
+			if (msg->GetMessageSubType () != IMessage::SubType::RoomSubjectChange)
 				return;
 		}
 
@@ -1905,7 +1905,7 @@ namespace Azoth
 			datetime.setTime ({0, 0});
 
 			auto coreMessage = new CoreMessage (str, datetime,
-					IMessage::MessageType::ServiceMessage, IMessage::Direction::In, parent->GetQObject (), this);
+					IMessage::Type::ServiceMessage, IMessage::Direction::In, parent->GetQObject (), this);
 			ChatMsgAppendInfo coreInfo
 			{
 				false,

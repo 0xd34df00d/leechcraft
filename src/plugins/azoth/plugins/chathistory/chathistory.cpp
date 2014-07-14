@@ -322,8 +322,8 @@ namespace ChatHistory
 						IMessage::Direction::In :
 						IMessage::Direction::Out;
 			const auto type = participantObj ?
-					IMessage::MessageType::MUCMessage :
-					IMessage::MessageType::ChatMessage;
+					IMessage::Type::MUCMessage :
+					IMessage::Type::ChatMessage;
 
 			HistoryMessage *msg = new HistoryMessage (dir,
 					participantObj ? participantObj : entryObj.data (),

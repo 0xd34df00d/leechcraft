@@ -218,8 +218,8 @@ namespace Azoth
 		if (!XmlSettingsManager::Instance ().property ("OpenTabOnNewMsg").toBool ())
 			return;
 
-		if (msg->GetMessageType () == IMessage::MessageType::ChatMessage ||
-				(msg->GetMessageType () == IMessage::MessageType::MUCMessage &&
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage ||
+				(msg->GetMessageType () == IMessage::Type::MUCMessage &&
 					Core::Instance ().IsHighlightMessage (msg)))
 		{
 			auto entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());

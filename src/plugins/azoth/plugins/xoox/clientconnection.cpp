@@ -866,7 +866,7 @@ namespace Xoox
 		return BMManager_;
 	}
 
-	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
+	GlooxMessage* ClientConnection::CreateMessage (IMessage::Type type,
 			const QString& resource, const QString& body, const QString& jid)
 	{
 		GlooxMessage *msg = new GlooxMessage (type,
@@ -1214,7 +1214,7 @@ namespace Xoox
 			return;
 
 		Split (msg.to (), &jid, &resource);
-		auto gm = new GlooxMessage (IMessage::MessageType::ChatMessage, IMessage::Direction::Out,
+		auto gm = new GlooxMessage (IMessage::Type::ChatMessage, IMessage::Direction::Out,
 				jid, resource, this);
 		gm->SetBody (msg.body ());
 		gm->SetRichBody (msg.xhtml ());

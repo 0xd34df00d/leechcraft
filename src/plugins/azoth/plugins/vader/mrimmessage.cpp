@@ -38,7 +38,7 @@ namespace Azoth
 {
 namespace Vader
 {
-	MRIMMessage::MRIMMessage (Direction dir, MessageType mt, MRIMBuddy *buddy)
+	MRIMMessage::MRIMMessage (Direction dir, Type mt, MRIMBuddy *buddy)
 	: QObject (buddy)
 	, Buddy_ (buddy)
 	, A_ (qobject_cast<MRIMAccount*> (Buddy_->GetParentAccount ()))
@@ -91,14 +91,14 @@ namespace Vader
 		return Dir_;
 	}
 
-	IMessage::MessageType MRIMMessage::GetMessageType () const
+	IMessage::Type MRIMMessage::GetMessageType () const
 	{
 		return MT_;
 	}
 
-	IMessage::MessageSubType MRIMMessage::GetMessageSubType () const
+	IMessage::SubType MRIMMessage::GetMessageSubType () const
 	{
-		return MessageSubType::Other;
+		return SubType::Other;
 	}
 
 	QObject* MRIMMessage::OtherPart () const

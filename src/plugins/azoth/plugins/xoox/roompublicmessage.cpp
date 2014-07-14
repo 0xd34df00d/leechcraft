@@ -50,16 +50,16 @@ namespace Xoox
 	, Message_ (msg)
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (Direction::Out)
-	, Type_ (MessageType::MUCMessage)
-	, SubType_ (MessageSubType::Other)
+	, Type_ (Type::MUCMessage)
+	, SubType_ (SubType::Other)
 	{
 	}
 
 	RoomPublicMessage::RoomPublicMessage (const QString& msg,
 			IMessage::Direction direction,
 			RoomCLEntry *entry,
-			IMessage::MessageType type,
-			IMessage::MessageSubType subType,
+			IMessage::Type type,
+			IMessage::SubType subType,
 			RoomParticipantEntry_ptr part)
 	: QObject (entry)
 	, ParentEntry_ (entry)
@@ -81,8 +81,8 @@ namespace Xoox
 	, Message_ (msg.body ())
 	, Datetime_ (msg.stamp ().isValid () ? msg.stamp ().toLocalTime () : QDateTime::currentDateTime ())
 	, Direction_ (Direction::In)
-	, Type_ (MessageType::MUCMessage)
-	, SubType_ (MessageSubType::Other)
+	, Type_ (Type::MUCMessage)
+	, SubType_ (SubType::Other)
 	, XHTML_ (msg.xhtml ())
 	{
 		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);
@@ -128,12 +128,12 @@ namespace Xoox
 		return Direction_;
 	}
 
-	IMessage::MessageType RoomPublicMessage::GetMessageType () const
+	IMessage::Type RoomPublicMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType RoomPublicMessage::GetMessageSubType () const
+	IMessage::SubType RoomPublicMessage::GetMessageSubType () const
 	{
 		return SubType_;
 	}

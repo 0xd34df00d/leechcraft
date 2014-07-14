@@ -272,7 +272,7 @@ namespace Xoox
 		void SetBookmarks (const QXmppBookmarkSet&);
 		QXmppBookmarkManager* GetBMManager () const;
 
-		GlooxMessage* CreateMessage (IMessage::MessageType,
+		GlooxMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&, const QString&);
 
 		static void Split (const QString& full,

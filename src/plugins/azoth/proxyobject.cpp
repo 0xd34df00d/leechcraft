@@ -287,7 +287,7 @@ namespace Azoth
 
 		switch (msg->GetMessageSubType ())
 		{
-		case IMessage::MessageSubType::ParticipantStatusChange:
+		case IMessage::SubType::ParticipantStatusChange:
 		{
 			const QString& nick = msgObj->property ("Azoth/Nick").toString ();
 			const QString& state = msgObj->property ("Azoth/TargetState").toString ();
@@ -398,7 +398,7 @@ namespace Azoth
 
 	QObject* ProxyObject::CreateCoreMessage (QString body,
 			const QString& richBody, const QDateTime& date,
-			IMessage::MessageType type, IMessage::Direction dir,
+			IMessage::Type type, IMessage::Direction dir,
 			QObject *other, QObject *parent)
 	{
 		if (body.isEmpty ())

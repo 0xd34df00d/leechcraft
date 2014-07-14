@@ -82,7 +82,7 @@ namespace Acetamide
 
 		bool IsUserExists (const QString&) const;
 
-		IrcMessage* CreateMessage (IMessage::MessageType,
+		IrcMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 
 		void ChangeNickname (const QString& oldNick, const QString& newNick);
@@ -90,8 +90,8 @@ namespace Acetamide
 		bool IsRosterReceived () const;
 		void SetRosterReceived (bool);
 
-		void HandleServiceMessage (const QString&, IMessage::MessageType,
-				IMessage::MessageSubType,
+		void HandleServiceMessage (const QString&, IMessage::Type,
+				IMessage::SubType,
 				ChannelParticipantEntry_ptr entry = ChannelParticipantEntry_ptr ());
 
 		void SendPublicMessage (const QString&);

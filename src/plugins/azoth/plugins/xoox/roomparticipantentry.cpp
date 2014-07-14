@@ -111,7 +111,7 @@ namespace Xoox
 		return { {} };
 	}
 
-	QObject* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
+	QObject* RoomParticipantEntry::CreateMessage (IMessage::Type type,
 			const QString&, const QString& body)
 	{
 		GlooxMessage *msg = RoomHandler_->CreateMessage (type, Nick_, body);

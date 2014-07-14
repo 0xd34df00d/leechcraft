@@ -44,13 +44,13 @@ namespace Xoox
 	const QString NsXhtmlIM = "http://jabber.org/protocol/xhtml-im";
 	const QString NsXhtml = "http://www.w3.org/1999/xhtml";
 
-	GlooxMessage::GlooxMessage (IMessage::MessageType type,
+	GlooxMessage::GlooxMessage (IMessage::Type type,
 			IMessage::Direction dir,
 			const QString& jid,
 			const QString& variant,
 			ClientConnection *conn)
 	: Type_ (type)
-	, SubType_ (MessageSubType::Other)
+	, SubType_ (SubType::Other)
 	, Direction_ (dir)
 	, BareJID_ (jid)
 	, Variant_ (variant)
@@ -61,7 +61,7 @@ namespace Xoox
 		const QString& remoteJid = variant.isEmpty () ?
 				jid :
 				jid + "/" + variant;
-		if (type == MessageType::ChatMessage && variant.isEmpty ())
+		if (type == Type::ChatMessage && variant.isEmpty ())
 		{
 			QObject *object = Connection_->GetCLEntry (jid, variant);
 			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().value (0);
@@ -71,8 +71,8 @@ namespace Xoox
 
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
 			ClientConnection *conn)
-	: Type_ (MessageType::ChatMessage)
-	, SubType_ (MessageSubType::Other)
+	: Type_ (Type::ChatMessage)
+	, SubType_ (SubType::Other)
 	, Direction_ (Direction::In)
 	, Message_ (message)
 	, Connection_ (conn)
@@ -103,9 +103,9 @@ namespace Xoox
 
 		switch (Type_)
 		{
-		case MessageType::ChatMessage:
+		case Type::ChatMessage:
 			Message_.setReceiptRequested (true);
-		case MessageType::MUCMessage:
+		case Type::MUCMessage:
 			Connection_->SendMessage (this);
 			QMetaObject::invokeMethod (OtherPart (),
 					"gotMessage",
@@ -132,17 +132,17 @@ namespace Xoox
 		return Direction_;
 	}
 
-	IMessage::MessageType GlooxMessage::GetMessageType () const
+	IMessage::Type GlooxMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType GlooxMessage::GetMessageSubType () const
+	IMessage::SubType GlooxMessage::GetMessageSubType () const
 	{
 		return SubType_;
 	}
 
-	void GlooxMessage::SetMessageSubType (IMessage::MessageSubType subType)
+	void GlooxMessage::SetMessageSubType (IMessage::SubType subType)
 	{
 		SubType_ = subType;
 	}

@@ -250,8 +250,8 @@ namespace Xtazy
 				continue;
 
 			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-					IMessage::MessageType::MUCMessage :
-					IMessage::MessageType::ChatMessage;
+					IMessage::Type::MUCMessage :
+					IMessage::Type::ChatMessage;
 			auto msgObj = entry->CreateMessage (msgType, notifee.second, encoded);
 			auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Send ();

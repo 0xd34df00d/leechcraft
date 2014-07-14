@@ -346,7 +346,7 @@ namespace Xoox
 				max.statusText ());
 	}
 
-	QObject* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
+	QObject* GlooxCLEntry::CreateMessage (IMessage::Type type,
 			const QString& variant, const QString& text)
 	{
 		if (ODS_)

@@ -112,7 +112,7 @@ namespace Acetamide
 		return Nick2Entry_.contains (nick);
 	}
 
-	IrcMessage* ChannelHandler::CreateMessage (IMessage::MessageType t,
+	IrcMessage* ChannelHandler::CreateMessage (IMessage::Type t,
 			const QString& variant, const QString& body)
 	{
 		IrcMessage *msg = new IrcMessage (t,
@@ -131,8 +131,8 @@ namespace Acetamide
 		const QString mess = tr ("%1 has changed nickname to %2")
 				.arg (oldNick, newNick);
 		HandleServiceMessage (mess,
-				IMessage::MessageType::StatusMessage,
-				IMessage::MessageSubType::ParticipantNickChange,
+				IMessage::Type::StatusMessage,
+				IMessage::SubType::ParticipantNickChange,
 				Nick2Entry_ [oldNick]);
 
 		CM_->GetAccount ()->handleEntryRemoved (Nick2Entry_ [oldNick].get ());
@@ -156,7 +156,7 @@ namespace Acetamide
 	}
 
 	void ChannelHandler::HandleServiceMessage (const QString& msg,
-			IMessage::MessageType mt, IMessage::MessageSubType mst,
+			IMessage::Type mt, IMessage::SubType mst,
 			ChannelParticipantEntry_ptr entry)
 	{
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
@@ -185,8 +185,8 @@ namespace Acetamide
 				new ChannelPublicMessage (msg,
 						IMessage::Direction::In,
 						ChannelCLEntry_.get (),
-						IMessage::MessageType::MUCMessage,
-						IMessage::MessageSubType::Other,
+						IMessage::Type::MUCMessage,
+						IMessage::SubType::Other,
 						entry);
 		ChannelCLEntry_->HandleMessage (message);
 	}
@@ -262,8 +262,8 @@ namespace Acetamide
 				new ChannelPublicMessage (msg,
 					IMessage::Direction::In,
 					ChannelCLEntry_.get (),
-					IMessage::MessageType::StatusMessage,
-					IMessage::MessageSubType::ParticipantJoin,
+					IMessage::Type::StatusMessage,
+					IMessage::SubType::ParticipantJoin,
 					Nick2Entry_ [nick]);
 
 		ChannelCLEntry_->HandleMessage (message);
@@ -282,8 +282,8 @@ namespace Acetamide
 				new ChannelPublicMessage (mess,
 					IMessage::Direction::In,
 					ChannelCLEntry_.get (),
-					IMessage::MessageType::StatusMessage,
-					IMessage::MessageSubType::ParticipantLeave,
+					IMessage::Type::StatusMessage,
+					IMessage::SubType::ParticipantLeave,
 					Nick2Entry_ [nick]);
 		ChannelCLEntry_->HandleMessage (message);
 	}
@@ -311,8 +311,8 @@ namespace Acetamide
 		ChannelPublicMessage *message = new ChannelPublicMessage (mess,
 				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
-				IMessage::MessageType::EventMessage,
-				IMessage::MessageSubType::KickNotification);
+				IMessage::Type::EventMessage,
+				IMessage::SubType::KickNotification);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
@@ -327,8 +327,8 @@ namespace Acetamide
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
-				IMessage::MessageType::StatusMessage,
-				IMessage::MessageSubType::ParticipantRoleAffiliationChange,
+				IMessage::Type::StatusMessage,
+				IMessage::SubType::ParticipantRoleAffiliationChange,
 				GetParticipantEntry (nick));
 		ChannelCLEntry_->HandleMessage (message);
 	}
@@ -347,8 +347,8 @@ namespace Acetamide
 				new ChannelPublicMessage (subj.arg (subject),
 						IMessage::Direction::In,
 						ChannelCLEntry_.get (),
-						IMessage::MessageType::EventMessage,
-						IMessage::MessageSubType::RoomSubjectChange);
+						IMessage::Type::EventMessage,
+						IMessage::SubType::RoomSubjectChange);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
@@ -553,7 +553,7 @@ namespace Acetamide
 					.arg (mask)
 					.arg (nick)
 					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
-			HandleServiceMessage (msg, IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+			HandleServiceMessage (msg, IMessage::Type::EventMessage, IMessage::SubType::Other);
 		}
 	}
 
@@ -567,7 +567,7 @@ namespace Acetamide
 					.arg (mask)
 					.arg (nick)
 					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
-			HandleServiceMessage (msg, IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+			HandleServiceMessage (msg, IMessage::Type::EventMessage, IMessage::SubType::Other);
 		}
 	}
 
@@ -581,7 +581,7 @@ namespace Acetamide
 					.arg (mask)
 					.arg (nick)
 					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
-			HandleServiceMessage (msg, IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+			HandleServiceMessage (msg, IMessage::Type::EventMessage, IMessage::SubType::Other);
 		}
 	}
 
@@ -599,7 +599,7 @@ namespace Acetamide
 		else
 			msg = tr ("Channel mode set to non invite only channel (-i)");
 		HandleServiceMessage (msg,
-				IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage, IMessage::SubType::Other);
 		emit updateChanModes (ChannelMode_);
 	}
 
@@ -612,7 +612,7 @@ namespace Acetamide
 		else
 			msg = tr ("Channel mode set to unmoderate channel (-m)");
 		HandleServiceMessage (msg,
-				IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage, IMessage::SubType::Other);
 		emit updateChanModes (ChannelMode_);
 	}
 
@@ -625,7 +625,7 @@ namespace Acetamide
 		else
 			msg = tr ("Channel mode set to not block outside messages (-n)");
 		HandleServiceMessage (msg,
-				IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage, IMessage::SubType::Other);
 		emit updateChanModes (ChannelMode_);
 	}
 
@@ -638,7 +638,7 @@ namespace Acetamide
 		else
 			msg = tr ("Channel mode set to non private channel (-p)");
 		HandleServiceMessage (msg,
-				IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage, IMessage::SubType::Other);
 		emit updateChanModes (ChannelMode_);
 	}
 
@@ -651,7 +651,7 @@ namespace Acetamide
 		else
 			msg = tr ("Channel mode set to non secret channel (-s)");
 		HandleServiceMessage (msg,
-				IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage, IMessage::SubType::Other);
 		emit updateChanModes (ChannelMode_);
 	}
 
@@ -664,7 +664,7 @@ namespace Acetamide
 		else
 			msg = tr ("Reop flag is remove (-r)");
 		HandleServiceMessage (msg,
-				IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage, IMessage::SubType::Other);
 		emit updateChanModes (ChannelMode_);
 	}
 
@@ -677,7 +677,7 @@ namespace Acetamide
 		else
 			msg = tr ("Change topic available not only for channel operators (-t)");
 		HandleServiceMessage (msg,
-				IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage, IMessage::SubType::Other);
 		emit updateChanModes (ChannelMode_);
 	}
 
@@ -690,7 +690,7 @@ namespace Acetamide
 		else
 			msg = tr ("Remove limit user (-l)");
 		HandleServiceMessage (msg,
-				IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage, IMessage::SubType::Other);
 		emit updateChanModes (ChannelMode_);
 	}
 
@@ -703,7 +703,7 @@ namespace Acetamide
 		else
 			msg = tr ("Remove channel key (-k)");
 		HandleServiceMessage (msg,
-				IMessage::MessageType::EventMessage, IMessage::MessageSubType::Other);
+				IMessage::Type::EventMessage, IMessage::SubType::Other);
 		emit updateChanModes (ChannelMode_);
 	}
 

@@ -288,10 +288,10 @@ namespace Vader
 				QStringList ();
 	}
 
-	QObject* MRIMBuddy::CreateMessage (IMessage::MessageType,
+	QObject* MRIMBuddy::CreateMessage (IMessage::Type,
 			const QString&, const QString& body)
 	{
-		MRIMMessage *msg = new MRIMMessage (IMessage::Direction::Out, IMessage::MessageType::ChatMessage, this);
+		MRIMMessage *msg = new MRIMMessage (IMessage::Direction::Out, IMessage::Type::ChatMessage, this);
 		msg->SetBody (body);
 		return msg;
 	}

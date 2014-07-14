@@ -54,8 +54,8 @@ namespace Xoox
 				LeechCraft::Azoth::IAdvancedMessage
 				LeechCraft::Azoth::IRichTextMessage)
 
-		MessageType Type_;
-		MessageSubType SubType_;
+		Type Type_;
+		SubType SubType_;
 		Direction Direction_;
 		QString BareJID_;
 		QString Variant_;
@@ -65,7 +65,7 @@ namespace Xoox
 
 		bool IsDelivered_;
 	public:
-		GlooxMessage (IMessage::MessageType type,
+		GlooxMessage (IMessage::Type type,
 				IMessage::Direction direction,
 				const QString& jid,
 				const QString& variant,
@@ -78,9 +78,9 @@ namespace Xoox
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
-		MessageType GetMessageType () const;
-		MessageSubType GetMessageSubType () const;
-		void SetMessageSubType (MessageSubType);
+		Type GetMessageType () const;
+		SubType GetMessageSubType () const;
+		void SetMessageSubType (SubType);
 		QObject* OtherPart () const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;

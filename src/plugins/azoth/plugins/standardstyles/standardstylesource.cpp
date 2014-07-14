@@ -129,9 +129,9 @@ namespace StandardStyles
 	namespace
 	{
 		QString WrapNickPart (const QString& part,
-				const QString& color, IMessage::MessageType type)
+				const QString& color, IMessage::Type type)
 		{
-			const QString& pre = type == IMessage::MessageType::MUCMessage ?
+			const QString& pre = type == IMessage::Type::MUCMessage ?
 					"<span class='nickname' style='color: " + color + "'>" :
 					"<span class='nickname'>";
 			return pre +
@@ -156,7 +156,7 @@ namespace StandardStyles
 		QString entryName = other ?
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
-		if (msg->GetMessageType () == IMessage::MessageType::ChatMessage &&
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage &&
 				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool () &&
 				!msg->GetOtherVariant ().isEmpty ())
 			entryName += '/' + msg->GetOtherVariant ();
@@ -218,12 +218,12 @@ namespace StandardStyles
 		{
 			switch (msg->GetMessageType ())
 			{
-			case IMessage::MessageType::ChatMessage:
+			case IMessage::Type::ChatMessage:
 				statusIconName = "notification_chat_receive";
 				divClass = msg->GetDirection () == IMessage::Direction::In ?
 					"msgin" :
 					"msgout";
-			case IMessage::MessageType::MUCMessage:
+			case IMessage::Type::MUCMessage:
 			{
 				statusIconName = "notification_chat_receive";
 
@@ -248,17 +248,17 @@ namespace StandardStyles
 				}
 				break;
 			}
-			case IMessage::MessageType::EventMessage:
+			case IMessage::Type::EventMessage:
 				statusIconName = "notification_chat_info";
 				string.append ("! ");
 				divClass = "eventmsg";
 				break;
-			case IMessage::MessageType::StatusMessage:
+			case IMessage::Type::StatusMessage:
 				statusIconName = "notification_chat_info";
 				string.append ("* ");
 				divClass = "statusmsg";
 				break;
-			case IMessage::MessageType::ServiceMessage:
+			case IMessage::Type::ServiceMessage:
 				statusIconName = "notification_chat_info";
 				string.append ("* ");
 				divClass = "servicemsg";
@@ -283,7 +283,7 @@ namespace StandardStyles
 				string.append ("* ");
 			}
 			else if (body.startsWith ("/me ") &&
-					msg->GetMessageType () != IMessage::MessageType::MUCMessage)
+					msg->GetMessageType () != IMessage::Type::MUCMessage)
 			{
 				body = body.mid (3);
 				string.append ("* ");
@@ -312,8 +312,8 @@ namespace StandardStyles
 
 		QWebElement elem = frame->findFirstElement ("body");
 
-		if (msg->GetMessageType () == IMessage::MessageType::ChatMessage ||
-			msg->GetMessageType () == IMessage::MessageType::MUCMessage)
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage ||
+			msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
 			const auto isRead = Proxy_->IsMessageRead (msgObj);
 			if (!isActiveChat &&

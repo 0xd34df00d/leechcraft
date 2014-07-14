@@ -150,19 +150,19 @@ namespace ChatHistory
 	void Core::Process (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (msg->GetMessageType () != IMessage::MessageType::ChatMessage &&
-			msg->GetMessageType () != IMessage::MessageType::MUCMessage)
+		if (msg->GetMessageType () != IMessage::Type::ChatMessage &&
+			msg->GetMessageType () != IMessage::Type::MUCMessage)
 			return;
 
 		if (msg->GetBody ().isEmpty ())
 			return;
 
 		if (msg->GetDirection () == IMessage::Direction::Out &&
-				msg->GetMessageType () == IMessage::MessageType::MUCMessage)
+				msg->GetMessageType () == IMessage::Type::MUCMessage)
 			return;
 
 		const double secsDiff = msg->GetDateTime ().secsTo (QDateTime::currentDateTime ());
-		if (msg->GetMessageType () == IMessage::MessageType::MUCMessage &&
+		if (msg->GetMessageType () == IMessage::Type::MUCMessage &&
 				std::abs (secsDiff) >= 2)
 			return;
 
@@ -194,7 +194,7 @@ namespace ChatHistory
 		data ["Direction"] = msg->GetDirection () == IMessage::Direction::In ? "IN" : "OUT";
 		data ["Body"] = msg->GetBody ();
 		data ["OtherVariant"] = msg->GetOtherVariant ();
-		data ["MessageType"] = static_cast<int> (msg->GetMessageType ());
+		data ["Type"] = static_cast<int> (msg->GetMessageType ());
 
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{

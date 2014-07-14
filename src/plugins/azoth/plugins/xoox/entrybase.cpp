@@ -476,7 +476,7 @@ namespace Xoox
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
-		if (msg->GetMessageType () == IMessage::MessageType::ChatMessage)
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage)
 		{
 			HasUnreadMsgs_ = true;
 			UnreadMessages_ << msg;
@@ -590,12 +590,12 @@ namespace Xoox
 
 		if (state == QXmppMessage::Gone)
 		{
-			GlooxMessage *msg = new GlooxMessage (IMessage::MessageType::EventMessage,
+			GlooxMessage *msg = new GlooxMessage (IMessage::Type::EventMessage,
 					IMessage::Direction::In,
 					GetJID (),
 					variant,
 					Account_->GetClientConnection ().get ());
-			msg->SetMessageSubType (IMessage::MessageSubType::ParticipantEndedConversation);
+			msg->SetMessageSubType (IMessage::SubType::ParticipantEndedConversation);
 			HandleMessage (msg);
 		}
 	}
@@ -664,19 +664,19 @@ namespace Xoox
 
 		GlooxMessage *message = 0;
 		if (GetEntryType () == ETPrivateChat)
-			message = new GlooxMessage (IMessage::MessageType::StatusMessage,
+			message = new GlooxMessage (IMessage::Type::StatusMessage,
 					IMessage::Direction::In,
 					qobject_cast<RoomCLEntry*> (GetParentCLEntry ())->
 							GetRoomHandler ()->GetRoomJID (),
 					GetEntryName (),
 					Account_->GetClientConnection ().get ());
 		else
-			message = new GlooxMessage (IMessage::MessageType::StatusMessage,
+			message = new GlooxMessage (IMessage::Type::StatusMessage,
 				IMessage::Direction::In,
 				GetJID (),
 				variant,
 				Account_->GetClientConnection ().get ());
-		message->SetMessageSubType (IMessage::MessageSubType::ParticipantStatusChange);
+		message->SetMessageSubType (IMessage::SubType::ParticipantStatusChange);
 
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());

@@ -57,8 +57,8 @@ namespace Zheet
 		MSNBuddyEntry *Entry_;
 
 		Direction Dir_;
-		MessageType MT_;
-		MessageSubType MST_;
+		Type MT_;
+		SubType MST_;
 		QString Body_;
 		QDateTime DateTime_;
 
@@ -66,7 +66,7 @@ namespace Zheet
 
 		int MsgID_;
 	public:
-		MSNMessage (Direction, MessageType, MSNBuddyEntry*);
+		MSNMessage (Direction, Type, MSNBuddyEntry*);
 		MSNMessage (MSN::Message*, MSNBuddyEntry*);
 
 		int GetID () const;
@@ -77,8 +77,8 @@ namespace Zheet
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
-		MessageType GetMessageType () const;
-		MessageSubType GetMessageSubType () const;
+		Type GetMessageType () const;
+		SubType GetMessageSubType () const;
 		QObject* OtherPart () const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;

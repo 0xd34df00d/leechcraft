@@ -44,7 +44,7 @@ namespace Azoth
 
 	/** @brief This interface is used to represent a message.
 	 *
-	 * Refer to the MessageType enum for the list of possible message
+	 * Refer to the Type enum for the list of possible message
 	 * types that are covered by this interface.
 	 *
 	 * The message should not be sent upon creation, only call to Send()
@@ -80,7 +80,7 @@ namespace Azoth
 
 		/** @brief Represents possible message types.
 		 */
-		enum class MessageType
+		enum class Type
 		{
 			/** @brief Standard one-to-one message.
 			 */
@@ -123,7 +123,7 @@ namespace Azoth
 		 * required properties used by the Azoth Core and other plugins
 		 * to establish proper context for the events.
 		 */
-		enum class MessageSubType
+		enum class SubType
 		{
 			/** This message is of subtype that doesn't correspond to
 			 * any other subtype of message.
@@ -141,7 +141,7 @@ namespace Azoth
 			/** @brief Represents status change of a participant in a
 			 * chat or MUC room.
 			 *
-			 * The corresponding MessageType is MTStatusMessage.
+			 * The corresponding Type is MTStatusMessage.
 			 *
 			 * Messages of this type should have the following dynamic
 			 * properties:
@@ -223,7 +223,7 @@ namespace Azoth
 		 *
 		 * @return The type of this message.
 		 */
-		virtual MessageType GetMessageType () const = 0;
+		virtual Type GetMessageType () const = 0;
 
 		/** @brief Returns the subtype of this message.
 		 *
@@ -232,7 +232,7 @@ namespace Azoth
 		 *
 		 * @return The subtype of this message
 		 */
-		virtual MessageSubType GetMessageSubType () const = 0;
+		virtual SubType GetMessageSubType () const = 0;
 
 		/** @brief Returns the CL entry from which this message is.
 		 *

@@ -35,7 +35,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	CoreMessage::CoreMessage (const QString& body, const QDateTime& date,
-			MessageType type, Direction dir, QObject* other, QObject *parent)
+			Type type, Direction dir, QObject* other, QObject *parent)
 	: QObject (parent)
 	, Type_ (type)
 	, Dir_ (dir)
@@ -67,14 +67,14 @@ namespace Azoth
 		return Dir_;
 	}
 
-	IMessage::MessageType CoreMessage::GetMessageType () const
+	IMessage::Type CoreMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType CoreMessage::GetMessageSubType () const
+	IMessage::SubType CoreMessage::GetMessageSubType () const
 	{
-		return MessageSubType::Other;
+		return SubType::Other;
 	}
 
 	QObject* CoreMessage::OtherPart () const

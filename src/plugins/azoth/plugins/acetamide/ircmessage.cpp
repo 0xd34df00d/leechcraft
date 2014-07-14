@@ -41,13 +41,13 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	IrcMessage::IrcMessage (IMessage::MessageType type,
+	IrcMessage::IrcMessage (IMessage::Type type,
 			IMessage::Direction dir,
 			const QString& id,
 			const QString& nickname,
 			ClientConnection *conn)
 	: Type_ (type)
-	, SubType_ (MessageSubType::Other)
+	, SubType_ (SubType::Other)
 	, Direction_ (dir)
 	, ID_ (id)
 	, NickName_ (nickname)
@@ -60,8 +60,8 @@ namespace Acetamide
 
 	IrcMessage::IrcMessage (const Message& msg,
 			const QString& id, ClientConnection* conn)
-	: Type_ (MessageType::MUCMessage)
-	, SubType_ (MessageSubType::Other)
+	: Type_ (Type::MUCMessage)
+	, SubType_ (SubType::Other)
 	, Direction_ (Direction::In)
 	, ID_ (id)
 	, Message_ (msg)
@@ -88,14 +88,14 @@ namespace Acetamide
 
 		switch (Type_)
 		{
-		case MessageType::ChatMessage:
-		case MessageType::MUCMessage:
+		case Type::ChatMessage:
+		case Type::MUCMessage:
 			Connection_->GetIrcServerHandler (ID_)->SendPrivateMessage (this);
 			Connection_->GetIrcServerHandler (ID_)->GetChannelManager ()->SetPrivateChat (GetOtherVariant ());
 			return;
-		case MessageType::StatusMessage:
-		case MessageType::EventMessage:
-		case MessageType::ServiceMessage:
+		case Type::StatusMessage:
+		case Type::EventMessage:
+		case Type::ServiceMessage:
 			qWarning () << Q_FUNC_INFO
 					<< this
 					<< "cannot send a service message";
@@ -116,17 +116,17 @@ namespace Acetamide
 		return Direction_;
 	}
 
-	IMessage::MessageType IrcMessage::GetMessageType () const
+	IMessage::Type IrcMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType IrcMessage::GetMessageSubType () const
+	IMessage::SubType IrcMessage::GetMessageSubType () const
 	{
 		return SubType_;
 	}
 
-	void IrcMessage::SetMessageSubType (IMessage::MessageSubType subtype)
+	void IrcMessage::SetMessageSubType (IMessage::SubType subtype)
 	{
 		SubType_ = subtype;
 	}

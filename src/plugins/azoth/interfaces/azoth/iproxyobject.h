@@ -301,7 +301,7 @@ namespace Azoth
 		virtual QObject* CreateCoreMessage (QString body,
 				const QString& richBody,
 				const QDateTime& date,
-				IMessage::MessageType type,
+				IMessage::Type type,
 				IMessage::Direction dir,
 				QObject *other, QObject *parent = nullptr) = 0;
 

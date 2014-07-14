@@ -60,7 +60,7 @@ namespace Xoox
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
 		EntryStatus GetStatus (const QString&) const;
-		QObject* CreateMessage (IMessage::MessageType,
+		QObject* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 		QList<QAction*> GetActions () const;
 

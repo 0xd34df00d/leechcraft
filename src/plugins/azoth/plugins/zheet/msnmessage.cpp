@@ -41,12 +41,12 @@ namespace Azoth
 {
 namespace Zheet
 {
-	MSNMessage::MSNMessage (Direction dir, MessageType type, MSNBuddyEntry *entry)
+	MSNMessage::MSNMessage (Direction dir, Type type, MSNBuddyEntry *entry)
 	: QObject (entry)
 	, Entry_ (entry)
 	, Dir_ (dir)
 	, MT_ (type)
-	, MST_ (MessageSubType::Other)
+	, MST_ (SubType::Other)
 	, DateTime_ (QDateTime::currentDateTime ())
 	, IsDelivered_ (dir == Direction::In)
 	, MsgID_ (-1)
@@ -57,7 +57,7 @@ namespace Zheet
 	: QObject (entry)
 	, Entry_ (entry)
 	, Dir_ (Direction::In)
-	, MT_ (MessageType::ChatMessage)
+	, MT_ (Type::ChatMessage)
 	, Body_ (ZheetUtil::FromStd (msg->getBody ()))
 	, DateTime_ (QDateTime::currentDateTime ())
 	, IsDelivered_ (true)
@@ -106,12 +106,12 @@ namespace Zheet
 		return Dir_;
 	}
 
-	IMessage::MessageType MSNMessage::GetMessageType () const
+	IMessage::Type MSNMessage::GetMessageType () const
 	{
 		return MT_;
 	}
 
-	IMessage::MessageSubType MSNMessage::GetMessageSubType () const
+	IMessage::SubType MSNMessage::GetMessageSubType () const
 	{
 		return MST_;
 	}

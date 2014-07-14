@@ -152,7 +152,7 @@ namespace Murm
 	}
 
 	void VkConnection::SendMessage (qulonglong to, const QString& body,
-			std::function<void (qulonglong)> idSetter, MessageType type)
+			std::function<void (qulonglong)> idSetter, Type type)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
@@ -161,7 +161,7 @@ namespace Murm
 
 				auto query = "access_token=" + QUrl::toPercentEncoding (key.toUtf8 ());
 				query += '&';
-				query += type == MessageType::Dialog ? "uid" : "chat_id";
+				query += type == Type::Dialog ? "uid" : "chat_id";
 				query += '=' + QByteArray::number (to);
 				query += "&type=1&";
 				query += "message=" + QUrl::toPercentEncoding (body, {}, "+");

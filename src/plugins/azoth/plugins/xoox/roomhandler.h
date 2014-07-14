@@ -76,7 +76,7 @@ namespace Xoox
 
 		void SetPresence (QXmppPresence);
 
-		GlooxMessage* CreateMessage (IMessage::MessageType,
+		GlooxMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 		QList<QObject*> GetParticipants () const;
 		QString GetSubject () const;

@@ -176,7 +176,7 @@ namespace Acetamide
 		return result;
 	}
 
-	QObject* ChannelCLEntry::CreateMessage (IMessage::MessageType,
+	QObject* ChannelCLEntry::CreateMessage (IMessage::Type,
 			const QString& variant, const QString& body)
 	{
 		if (variant == "")

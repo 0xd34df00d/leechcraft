@@ -165,7 +165,7 @@ namespace Acetamide
 		return ChannelsManager_->GetChannels ();
 	}
 
-	IrcMessage* IrcServerHandler::CreateMessage (IMessage::MessageType type,
+	IrcMessage* IrcServerHandler::CreateMessage (IMessage::Type type,
 			const QString& variant, const QString& body)
 	{
 		IrcMessage *msg = new IrcMessage (type,
@@ -270,7 +270,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::IncomingMessage (const QString& nick,
-			const QString& target, const QString& msg, IMessage::MessageType type)
+			const QString& target, const QString& msg, IMessage::Type type)
 	{
 		if (ChannelsManager_->IsChannelExists (target))
 			ChannelsManager_->ReceivePublicMessage (target, nick, msg);
@@ -504,7 +504,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::ShowAnswer (const QString& cmd,
-			const QString& answer, bool isEndOf, IMessage::MessageType type)
+			const QString& answer, bool isEndOf, IMessage::Type type)
 	{
 		QString msg = "[" + cmd.toUpper () + "] " + answer;
 		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);

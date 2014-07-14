@@ -97,7 +97,7 @@ namespace Azoth
 			QObject *entryObj = item->data ().value<QObject*> ();
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-			QObject *msgObj = entry->CreateMessage (IMessage::MessageType::ChatMessage,
+			QObject *msgObj = entry->CreateMessage (IMessage::Type::ChatMessage,
 					QString (), msg);
 			IMessage *msg = qobject_cast<IMessage*> (msgObj);
 			if (!msg)

@@ -74,7 +74,7 @@ namespace Astrality
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::MessageType, const QString&, const QString&);
+		QObject* CreateMessage (IMessage::Type, const QString&, const QString&);
 		QList<QObject*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);

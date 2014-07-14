@@ -71,7 +71,7 @@ namespace Juick
 		void InsertAvatars (QString& body);
 		void InsertNickLinks (QString& body);
 		bool ShouldHandle (QObject* msgObj,
-				IMessage::Direction direction, IMessage::MessageType type);
+				IMessage::Direction direction, IMessage::Type type);
 		bool IsBehind (const QString& text, int index, const QString& pattern) const;
 	public slots:
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,

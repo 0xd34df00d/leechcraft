@@ -74,7 +74,7 @@ namespace Xoox
 
 		struct MessageQueueItem
 		{
-			IMessage::MessageType Type_;
+			IMessage::Type Type_;
 			QString Variant_;
 			QString Text_;
 			QDateTime DateTime_;
@@ -113,7 +113,7 @@ namespace Xoox
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
 		EntryStatus GetStatus (const QString&) const;
-		QObject* CreateMessage (IMessage::MessageType,
+		QObject* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 		QList<QAction*> GetActions () const;
 

@@ -54,8 +54,8 @@ namespace Azoth
 			return;
 
 		const auto msgType = Entry_->GetEntryType () == ICLEntry::ETMUC ?
-					IMessage::MessageType::MUCMessage :
-					IMessage::MessageType::ChatMessage;
+					IMessage::Type::MUCMessage :
+					IMessage::Type::ChatMessage;
 		auto msgObj = Entry_->CreateMessage (msgType, EntryVariant_, url.toEncoded ());
 		auto msg = qobject_cast<IMessage*> (msgObj);
 		msg->Send ();

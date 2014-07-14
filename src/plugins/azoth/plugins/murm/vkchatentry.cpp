@@ -53,7 +53,7 @@ namespace Murm
 
 	void VkChatEntry::Send (VkMessage *msg)
 	{
-		Account_->Send (GetInfo ().ChatID_, VkConnection::MessageType::Chat, msg);
+		Account_->Send (GetInfo ().ChatID_, VkConnection::Type::Chat, msg);
 	}
 
 	void VkChatEntry::HandleMessage (const MessageInfo& info)
@@ -76,7 +76,7 @@ namespace Murm
 			return;
 		}
 
-		auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::MessageType::MUCMessage, this, entry);
+		auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::Type::MUCMessage, this, entry);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
