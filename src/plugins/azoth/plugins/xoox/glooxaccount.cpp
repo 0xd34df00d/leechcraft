@@ -1060,7 +1060,7 @@ namespace Xoox
 				qobject_cast<ICLEntry*> (jidEntry)->GetHumanReadableID () :
 				jid;
 		for (auto& message : messages)
-			message.Nick_ = message.Dir_ == IMessage::Direction::DIn ?
+			message.Nick_ = message.Dir_ == IMessage::Direction::In ?
 					otherNick :
 					ourNick;
 

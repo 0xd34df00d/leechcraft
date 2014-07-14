@@ -1009,7 +1009,7 @@ namespace Azoth
 			ReformatTitle ();
 
 		if (msg->GetMessageType () == IMessage::MTChatMessage &&
-				msg->GetDirection () == IMessage::DIn)
+				msg->GetDirection () == IMessage::Direction::In)
 		{
 			const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
 			if (idx != -1)
@@ -1842,7 +1842,7 @@ namespace Azoth
 
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
-		if (msg->GetDirection () == IMessage::DOut &&
+		if (msg->GetDirection () == IMessage::Direction::Out &&
 				other->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
@@ -1904,7 +1904,7 @@ namespace Azoth
 			datetime.setTime ({0, 0});
 
 			auto coreMessage = new CoreMessage (str, datetime,
-					IMessage::MTServiceMessage, IMessage::DIn, parent->GetQObject (), this);
+					IMessage::MTServiceMessage, IMessage::Direction::In, parent->GetQObject (), this);
 			ChatMsgAppendInfo coreInfo
 			{
 				false,

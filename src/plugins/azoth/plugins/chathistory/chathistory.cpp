@@ -319,8 +319,8 @@ namespace ChatHistory
 				}
 
 			const auto dir = msgMap ["Direction"].toString () == "IN" ?
-						IMessage::DIn :
-						IMessage::DOut;
+						IMessage::Direction::In :
+						IMessage::Direction::Out;
 			const auto type = participantObj ?
 					IMessage::MTMUCMessage :
 					IMessage::MTChatMessage;

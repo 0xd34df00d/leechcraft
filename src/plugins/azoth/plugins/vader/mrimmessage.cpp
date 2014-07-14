@@ -46,7 +46,7 @@ namespace Vader
 	, MT_ (mt)
 	, DateTime_ (QDateTime::currentDateTime ())
 	, SendID_ (0)
-	, IsDelivered_ (dir == DIn)
+	, IsDelivered_ (dir == Direction::In)
 	{
 		connect (A_->GetConnection (),
 				SIGNAL (messageDelivered (quint32)),
@@ -70,7 +70,7 @@ namespace Vader
 
 	void MRIMMessage::Send ()
 	{
-		if (Dir_ != Direction::DOut)
+		if (Dir_ != Direction::Out)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to send incoming message";

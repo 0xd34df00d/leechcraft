@@ -67,15 +67,15 @@ namespace Azoth
 
 		/** @brief Represents the direction of the message.
 		 */
-		enum Direction
+		enum class Direction
 		{
 			/** @brief The message is from the remote party to us.
 			 */
-			DIn,
+			In,
 
 			/** @brief The message is from us to the remote party.
 			 */
-			DOut
+			Out
 		};
 
 		/** @brief Represents possible message types.

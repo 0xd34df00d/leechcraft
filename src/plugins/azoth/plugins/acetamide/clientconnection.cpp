@@ -334,10 +334,10 @@ namespace Acetamide
 	{
 		switch (type)
 		{
-		case IMessage::DOut:
+		case IMessage::Direction::Out:
 			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::Out, {});
 			break;
-		case IMessage::DIn:
+		case IMessage::Direction::In:
 			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::In, {});
 			break;
 		default:

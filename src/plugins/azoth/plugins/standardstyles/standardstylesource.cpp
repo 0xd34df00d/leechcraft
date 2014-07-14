@@ -168,7 +168,7 @@ namespace StandardStyles
 				Qt::UniqueConnection);
 
 		IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
-		if (msg->GetDirection () == IMessage::DOut &&
+		if (msg->GetDirection () == IMessage::Direction::Out &&
 				advMsg &&
 				!advMsg->IsDelivered ())
 		{
@@ -214,13 +214,13 @@ namespace StandardStyles
 		string.append (' ');
 		switch (msg->GetDirection ())
 		{
-		case IMessage::DIn:
+		case IMessage::Direction::In:
 		{
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::MTChatMessage:
 				statusIconName = "notification_chat_receive";
-				divClass = msg->GetDirection () == IMessage::DIn ?
+				divClass = msg->GetDirection () == IMessage::Direction::In ?
 					"msgin" :
 					"msgout";
 			case IMessage::MTMUCMessage:
@@ -266,7 +266,7 @@ namespace StandardStyles
 			}
 			break;
 		}
-		case IMessage::DOut:
+		case IMessage::Direction::Out:
 		{
 			statusIconName = "notification_chat_send";
 			if (advMsg && advMsg->IsDelivered ())

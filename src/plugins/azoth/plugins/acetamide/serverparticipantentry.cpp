@@ -79,7 +79,7 @@ namespace Acetamide
 			const QString&, const QString& body)
 	{
  		IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
-				IMessage::DOut,
+				IMessage::Direction::Out,
 				ISH_->GetServerID (),
 				Nick_,
 				Account_->GetClientConnection ().get ());

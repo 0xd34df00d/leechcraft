@@ -48,7 +48,7 @@ namespace Zheet
 	, MT_ (type)
 	, MST_ (MSTOther)
 	, DateTime_ (QDateTime::currentDateTime ())
-	, IsDelivered_ (dir == DIn)
+	, IsDelivered_ (dir == Direction::In)
 	, MsgID_ (-1)
 	{
 	}
@@ -56,7 +56,7 @@ namespace Zheet
 	MSNMessage::MSNMessage (MSN::Message *msg, MSNBuddyEntry *entry)
 	: QObject (entry)
 	, Entry_ (entry)
-	, Dir_ (DIn)
+	, Dir_ (Direction::In)
 	, MT_ (MTChatMessage)
 	, Body_ (ZheetUtil::FromStd (msg->getBody ()))
 	, DateTime_ (QDateTime::currentDateTime ())

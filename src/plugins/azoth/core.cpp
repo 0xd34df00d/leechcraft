@@ -1995,7 +1995,7 @@ namespace Azoth
 			UnreadQueueManager_->AddMessage (msgObj);
 		}
 
-		if (msg->GetDirection () != IMessage::DIn ||
+		if (msg->GetDirection () != IMessage::Direction::In ||
 				ChatTabsManager_->IsActiveChat (parentCL))
 			return;
 

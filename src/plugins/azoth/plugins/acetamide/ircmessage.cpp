@@ -62,7 +62,7 @@ namespace Acetamide
 			const QString& id, ClientConnection* conn)
 	: Type_ (MTMUCMessage)
 	, SubType_ (MSTOther)
-	, Direction_ (DIn)
+	, Direction_ (Direction::In)
 	, ID_ (id)
 	, Message_ (msg)
 	, Connection_ (conn)
@@ -79,7 +79,7 @@ namespace Acetamide
 
 	void IrcMessage::Send ()
 	{
-		if (Direction_ == DIn)
+		if (Direction_ == Direction::In)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "tried to send incoming message";

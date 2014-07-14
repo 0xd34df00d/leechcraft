@@ -63,7 +63,8 @@ namespace Murm
 
 		qulonglong ID_ = -1;
 
-		bool IsRead_ = Dir_ == DOut || Type_ != MessageType::MTChatMessage;
+		bool IsRead_ = Dir_ == Direction::Out ||
+				Type_ != MessageType::MTChatMessage;
 
 		const bool IsOurs_;
 	public:

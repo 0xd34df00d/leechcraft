@@ -291,7 +291,7 @@ namespace Vader
 	QObject* MRIMBuddy::CreateMessage (IMessage::MessageType,
 			const QString&, const QString& body)
 	{
-		MRIMMessage *msg = new MRIMMessage (IMessage::DOut, IMessage::MTChatMessage, this);
+		MRIMMessage *msg = new MRIMMessage (IMessage::Direction::Out, IMessage::MTChatMessage, this);
 		msg->SetBody (body);
 		return msg;
 	}

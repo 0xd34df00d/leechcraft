@@ -142,7 +142,7 @@ namespace Xoox
 			msg += ": " + pres.statusText ();
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantLeave,
@@ -171,7 +171,7 @@ namespace Xoox
 					.arg (affiliation);
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantJoin,
@@ -191,7 +191,7 @@ namespace Xoox
 				.arg (pres.statusText ());
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantStatusChange,
@@ -209,7 +209,7 @@ namespace Xoox
 				.arg (newNick);
 
 		auto message = new RoomPublicMessage (msg,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantNickChange,
@@ -229,7 +229,7 @@ namespace Xoox
 					.arg (reason);
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTKickNotification,
@@ -249,7 +249,7 @@ namespace Xoox
 					.arg (reason);
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTBanNotification,
@@ -277,7 +277,7 @@ namespace Xoox
 					.arg (reason);
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantRoleAffiliationChange,
@@ -360,7 +360,7 @@ namespace Xoox
 						tr ("no message") :
 						errorText);
 		RoomPublicMessage *message = new RoomPublicMessage (text,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::MTEventMessage,
 				IMessage::MSTOther);
@@ -469,7 +469,7 @@ namespace Xoox
 							.arg (msg.subject ());
 
 				message = new RoomPublicMessage (string,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					CLEntry_,
 					IMessage::MTEventMessage,
 					IMessage::MSTRoomSubjectChange);
@@ -481,7 +481,7 @@ namespace Xoox
 			}
 			else if (!msg.body ().isEmpty ())
 				message = new RoomPublicMessage (msg.body (),
-					IMessage::DIn,
+					IMessage::Direction::In,
 					CLEntry_,
 					IMessage::MTEventMessage,
 					IMessage::MSTOther);
@@ -516,7 +516,7 @@ namespace Xoox
 			const QString& nick, const QString& body)
 	{
 		GlooxMessage *message = new GlooxMessage (IMessage::MTChatMessage,
-				IMessage::DOut,
+				IMessage::Direction::Out,
 				GetRoomJID (),
 				nick,
 				Account_->GetClientConnection ().get ());

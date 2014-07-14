@@ -66,14 +66,14 @@ namespace Xoox
 			QObject *object = Connection_->GetCLEntry (jid, variant);
 			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().value (0);
 		}
-		Message_.setTo (dir == DIn ? conn->GetOurJID () : remoteJid);
+		Message_.setTo (dir == Direction::In ? conn->GetOurJID () : remoteJid);
 	}
 
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
 			ClientConnection *conn)
 	: Type_ (MTChatMessage)
 	, SubType_ (MSTOther)
-	, Direction_ (DIn)
+	, Direction_ (Direction::In)
 	, Message_ (message)
 	, Connection_ (conn)
 	, IsDelivered_ (false)
@@ -94,7 +94,7 @@ namespace Xoox
 
 	void GlooxMessage::Send ()
 	{
-		if (Direction_ == DIn)
+		if (Direction_ == Direction::In)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "tried to send incoming message";
@@ -175,7 +175,7 @@ namespace Xoox
 	void GlooxMessage::SetDateTime (const QDateTime& dateTime)
 	{
 		DateTime_ = dateTime;
-		if (Direction_ == DIn)
+		if (Direction_ == Direction::In)
 			Message_.setStamp (dateTime);
 	}
 
@@ -208,7 +208,7 @@ namespace Xoox
 
 		Variant_ = variant;
 
-		if (Direction_ == DIn)
+		if (Direction_ == Direction::In)
 			Message_.setFrom (Variant_.isEmpty () ?
 					BareJID_ :
 					(BareJID_ + '/' + Variant_));

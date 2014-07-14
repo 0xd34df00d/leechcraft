@@ -870,7 +870,7 @@ namespace Xoox
 			const QString& resource, const QString& body, const QString& jid)
 	{
 		GlooxMessage *msg = new GlooxMessage (type,
-				IMessage::DOut,
+				IMessage::Direction::Out,
 				jid,
 				resource,
 				this);
@@ -1214,7 +1214,7 @@ namespace Xoox
 			return;
 
 		Split (msg.to (), &jid, &resource);
-		auto gm = new GlooxMessage (IMessage::MTChatMessage, IMessage::DOut,
+		auto gm = new GlooxMessage (IMessage::MTChatMessage, IMessage::Direction::Out,
 				jid, resource, this);
 		gm->SetBody (msg.body ());
 		gm->SetRichBody (msg.xhtml ());

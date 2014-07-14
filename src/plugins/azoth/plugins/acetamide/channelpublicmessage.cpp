@@ -45,7 +45,7 @@ namespace Acetamide
 	, ParentEntry_ (entry)
 	, Message_ (msg)
 	, Datetime_ (QDateTime::currentDateTime ())
-	, Direction_ (DOut)
+	, Direction_ (Direction::Out)
 	, Type_ (MTMUCMessage)
 	, SubType_ (MSTOther)
 	{
@@ -119,16 +119,16 @@ namespace Acetamide
 	{
 		switch (Direction_)
 		{
-		case DIn:
+		case Direction::In:
 			return ParticipantEntry_.get ();
-		case DOut:
-			return ParentEntry_;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown direction"
-					<< Direction_;
+		case Direction::Out:
 			return ParentEntry_;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown direction"
+				<< static_cast<int> (Direction_);
+		return ParentEntry_;
 	}
 
 	QObject* ChannelPublicMessage::ParentCLEntry () const

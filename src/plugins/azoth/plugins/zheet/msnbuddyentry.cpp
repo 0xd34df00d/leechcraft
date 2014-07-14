@@ -176,7 +176,7 @@ namespace Zheet
 
 	QObject* MSNBuddyEntry::CreateMessage (IMessage::MessageType type, const QString&, const QString& body)
 	{
-		MSNMessage *msg = new MSNMessage (IMessage::DOut, type, this);
+		MSNMessage *msg = new MSNMessage (IMessage::Direction::Out, type, this);
 		msg->SetBody (body);
 		return msg;
 	}

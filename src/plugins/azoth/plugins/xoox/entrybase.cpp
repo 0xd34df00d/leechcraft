@@ -591,7 +591,7 @@ namespace Xoox
 		if (state == QXmppMessage::Gone)
 		{
 			GlooxMessage *msg = new GlooxMessage (IMessage::MTEventMessage,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					GetJID (),
 					variant,
 					Account_->GetClientConnection ().get ());
@@ -665,14 +665,14 @@ namespace Xoox
 		GlooxMessage *message = 0;
 		if (GetEntryType () == ETPrivateChat)
 			message = new GlooxMessage (IMessage::MTStatusMessage,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					qobject_cast<RoomCLEntry*> (GetParentCLEntry ())->
 							GetRoomHandler ()->GetRoomJID (),
 					GetEntryName (),
 					Account_->GetClientConnection ().get ());
 		else
 			message = new GlooxMessage (IMessage::MTStatusMessage,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				GetJID (),
 				variant,
 				Account_->GetClientConnection ().get ());

@@ -116,7 +116,7 @@ namespace Acetamide
 			const QString& variant, const QString& body)
 	{
 		IrcMessage *msg = new IrcMessage (t,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				variant,
 				CM_->GetOurNick (),
 				CM_->GetAccount ()->GetClientConnection ().get ());
@@ -160,7 +160,7 @@ namespace Acetamide
 			ChannelParticipantEntry_ptr entry)
 	{
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				mt,
 				mst,
@@ -183,7 +183,7 @@ namespace Acetamide
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,
-						IMessage::DIn,
+						IMessage::Direction::In,
 						ChannelCLEntry_.get (),
 						IMessage::MTMUCMessage,
 						IMessage::MSTOther,
@@ -260,7 +260,7 @@ namespace Acetamide
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					ChannelCLEntry_.get (),
 					IMessage::MTStatusMessage,
 					IMessage::MSTParticipantJoin,
@@ -280,7 +280,7 @@ namespace Acetamide
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (mess,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					ChannelCLEntry_.get (),
 					IMessage::MTStatusMessage,
 					IMessage::MSTParticipantLeave,
@@ -309,7 +309,7 @@ namespace Acetamide
 					.arg (nick, who, reason);
 
 		ChannelPublicMessage *message = new ChannelPublicMessage (mess,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				IMessage::MTEventMessage,
 				IMessage::MSTKickNotification);
@@ -325,7 +325,7 @@ namespace Acetamide
 				tr ("%1 is not %2 anymore").arg (nick, roleStr);
 
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantRoleAffiliationChange,
@@ -345,7 +345,7 @@ namespace Acetamide
 		QString subj ("Topic changed to: %1");
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (subj.arg (subject),
-						IMessage::DIn,
+						IMessage::Direction::In,
 						ChannelCLEntry_.get (),
 						IMessage::MTEventMessage,
 						IMessage::MSTRoomSubjectChange);
@@ -469,7 +469,7 @@ namespace Acetamide
 			const bool isPrivate = entry->IsPrivateChat ();
 			const QString nick = entry->GetEntryName ();
 // 			const auto& participants = CM_->GetParticipantsByNick (nick);
-// 
+//
 // 			if (participants.count () == 1)
 // 			{
 			CM_->GetAccount ()->handleEntryRemoved (entry.get ());
@@ -484,7 +484,7 @@ namespace Acetamide
 // 				{
 // 					if (participants.key (entryObj) == ChannelOptions_.ChannelName_)
 // 						continue;
-// 
+//
 // 					CM_->GetChannelHandler (participants.key (entryObj))->RemoveUserFromChannel (nick);
 // 					CM_->GetChannelHandler (participants.key (entryObj))->
 // 							GetParticipantEntry (nick)->SetStatus (EntryStatus (SOnline, ""));

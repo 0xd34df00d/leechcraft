@@ -157,7 +157,7 @@ namespace ChatHistory
 		if (msg->GetBody ().isEmpty ())
 			return;
 
-		if (msg->GetDirection () == IMessage::DOut &&
+		if (msg->GetDirection () == IMessage::Direction::Out &&
 				msg->GetMessageType () == IMessage::MTMUCMessage)
 			return;
 
@@ -191,7 +191,7 @@ namespace ChatHistory
 		data ["EntryID"] = entry->GetEntryID ();
 		data ["AccountID"] = acc->GetAccountID ();
 		data ["DateTime"] = msg->GetDateTime ();
-		data ["Direction"] = msg->GetDirection () == IMessage::DIn ? "IN" : "OUT";
+		data ["Direction"] = msg->GetDirection () == IMessage::Direction::In ? "IN" : "OUT";
 		data ["Body"] = msg->GetBody ();
 		data ["OtherVariant"] = msg->GetOtherVariant ();
 		data ["MessageType"] = static_cast<int> (msg->GetMessageType ());

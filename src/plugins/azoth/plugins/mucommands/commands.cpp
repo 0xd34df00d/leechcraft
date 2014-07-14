@@ -69,7 +69,7 @@ namespace MuCommands
 					rich,
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					entryObj,
 					entryObj);
 			const auto msg = qobject_cast<IMessage*> (msgObj);

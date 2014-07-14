@@ -185,7 +185,7 @@ namespace Azoth
 			html += postNick + ' ' + msgText;
 
 			html.prepend (QString ("<font color='#") +
-					(message.Dir_ == IMessage::DIn ? "0000dd" : "dd0000") +
+					(message.Dir_ == IMessage::Direction::In ? "0000dd" : "dd0000") +
 					"'>");
 			html += "</font>";
 

@@ -217,8 +217,8 @@ namespace AdiumStyles
 			IMUCEntry *muc = qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
 			ICLEntry *part = qobject_cast<ICLEntry*> (msg->OtherPart ());
 			return muc->GetNick () == part->GetEntryName () ?
-					IMessage::DOut :
-					IMessage::DIn;
+					IMessage::Direction::Out :
+					IMessage::Direction::In;
 		}
 	}
 
@@ -249,7 +249,7 @@ namespace AdiumStyles
 				this,
 				SLOT (handleMessageDestroyed ()));
 
-		const bool in = GetMsgDirection (msg) == IMessage::DIn;
+		const bool in = GetMsgDirection (msg) == IMessage::Direction::In;
 
 		QObject *kindaSender = in ? msg->OtherPart () : reinterpret_cast<QObject*> (42);
 
@@ -490,7 +490,7 @@ namespace AdiumStyles
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		const bool in = msg->GetDirection () == IMessage::DIn;
+		const bool in = msg->GetDirection () == IMessage::Direction::In;
 
 		ICLEntry *other = 0;
 		switch (msg->GetMessageType ())

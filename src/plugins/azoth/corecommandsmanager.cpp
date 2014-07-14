@@ -66,7 +66,7 @@ namespace Azoth
 					body,
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					entryObj,
 					entryObj);
 			const auto msg = qobject_cast<IMessage*> (msgObj);
@@ -93,7 +93,7 @@ namespace Azoth
 					message,
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					entryObj,
 					entryObj);
 			const auto msg = qobject_cast<IMessage*> (msgObj);
@@ -123,7 +123,7 @@ namespace Azoth
 					body,
 					QDateTime::currentDateTime (),
 					IMessage::MTServiceMessage,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					entryObj,
 					entryObj);
 			const auto msg = qobject_cast<IMessage*> (msgObj);

@@ -65,7 +65,7 @@ namespace Murm
 
 	QObject* EntryBase::CreateMessage (IMessage::MessageType type, const QString&, const QString& body)
 	{
-		auto msg = new VkMessage (true, IMessage::DOut, type, this);
+		auto msg = new VkMessage (true, IMessage::Direction::Out, type, this);
 		msg->SetBody (body);
 		return msg;
 	}

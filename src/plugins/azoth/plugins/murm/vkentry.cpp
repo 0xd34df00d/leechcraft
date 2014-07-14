@@ -103,7 +103,7 @@ namespace Murm
 
 			if (spontaneous)
 			{
-				auto msg = new VkMessage (false, IMessage::DIn, IMessage::MTStatusMessage, this);
+				auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::MTStatusMessage, this);
 				const auto& entryName = GetEntryName ();
 				msg->SetBody (info.IsOnline_ ?
 						tr ("%1 is now on the site again").arg (entryName) :
@@ -330,17 +330,17 @@ namespace Murm
 			{
 				auto msg = Messages_.at (i);
 				if (msg->GetID () == static_cast<qulonglong> (-1) &&
-						msg->GetDirection () == IMessage::DOut &&
+						msg->GetDirection () == IMessage::Direction::Out &&
 						msg->GetBody () == info.Text_)
 					return;
 			}
 		}
 
 		const auto dir = info.Flags_ & MessageFlag::Outbox ?
-				IMessage::DOut :
-				IMessage::DIn;
+				IMessage::Direction::Out :
+				IMessage::Direction::In;
 
-		if (dir == IMessage::DIn)
+		if (dir == IMessage::Direction::In)
 		{
 			emit chatPartStateChanged (CPSActive, "");
 			RemoteTypingTimer_->stop ();

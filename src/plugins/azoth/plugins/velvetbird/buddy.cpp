@@ -119,7 +119,7 @@ namespace VelvetBird
 
 	QObject* Buddy::CreateMessage (IMessage::MessageType, const QString&, const QString& body)
 	{
-		return new ConvIMMessage (body, IMessage::DOut, this);
+		return new ConvIMMessage (body, IMessage::Direction::Out, this);
 	}
 
 	QList<QObject*> Buddy::GetAllMessages () const
@@ -204,7 +204,7 @@ namespace VelvetBird
 		if (flags & PURPLE_MESSAGE_SEND)
 			return;
 
-		auto msg = new ConvIMMessage (QString::fromUtf8 (body), IMessage::DIn, this);
+		auto msg = new ConvIMMessage (QString::fromUtf8 (body), IMessage::Direction::In, this);
 		if (time)
 			msg->SetDateTime (QDateTime::fromTime_t (time));
 		Store (msg);
