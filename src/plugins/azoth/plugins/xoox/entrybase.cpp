@@ -476,7 +476,7 @@ namespace Xoox
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
-		if (msg->GetMessageType () == IMessage::MTChatMessage)
+		if (msg->GetMessageType () == IMessage::MessageType::ChatMessage)
 		{
 			HasUnreadMsgs_ = true;
 			UnreadMessages_ << msg;
@@ -590,7 +590,7 @@ namespace Xoox
 
 		if (state == QXmppMessage::Gone)
 		{
-			GlooxMessage *msg = new GlooxMessage (IMessage::MTEventMessage,
+			GlooxMessage *msg = new GlooxMessage (IMessage::MessageType::EventMessage,
 					IMessage::Direction::In,
 					GetJID (),
 					variant,
@@ -664,14 +664,14 @@ namespace Xoox
 
 		GlooxMessage *message = 0;
 		if (GetEntryType () == ETPrivateChat)
-			message = new GlooxMessage (IMessage::MTStatusMessage,
+			message = new GlooxMessage (IMessage::MessageType::StatusMessage,
 					IMessage::Direction::In,
 					qobject_cast<RoomCLEntry*> (GetParentCLEntry ())->
 							GetRoomHandler ()->GetRoomJID (),
 					GetEntryName (),
 					Account_->GetClientConnection ().get ());
 		else
-			message = new GlooxMessage (IMessage::MTStatusMessage,
+			message = new GlooxMessage (IMessage::MessageType::StatusMessage,
 				IMessage::Direction::In,
 				GetJID (),
 				variant,

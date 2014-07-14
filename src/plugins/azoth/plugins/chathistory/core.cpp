@@ -150,19 +150,19 @@ namespace ChatHistory
 	void Core::Process (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (msg->GetMessageType () != IMessage::MTChatMessage &&
-			msg->GetMessageType () != IMessage::MTMUCMessage)
+		if (msg->GetMessageType () != IMessage::MessageType::ChatMessage &&
+			msg->GetMessageType () != IMessage::MessageType::MUCMessage)
 			return;
 
 		if (msg->GetBody ().isEmpty ())
 			return;
 
 		if (msg->GetDirection () == IMessage::Direction::Out &&
-				msg->GetMessageType () == IMessage::MTMUCMessage)
+				msg->GetMessageType () == IMessage::MessageType::MUCMessage)
 			return;
 
 		const double secsDiff = msg->GetDateTime ().secsTo (QDateTime::currentDateTime ());
-		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
+		if (msg->GetMessageType () == IMessage::MessageType::MUCMessage &&
 				std::abs (secsDiff) >= 2)
 			return;
 

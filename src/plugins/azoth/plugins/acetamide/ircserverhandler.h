@@ -125,7 +125,7 @@ namespace Acetamide
 		void SendMessage (const QStringList&);
 		void IncomingMessage (const QString& nick,
 				const QString& target, const QString& msg,
-				IMessage::MessageType type = IMessage::MTChatMessage);
+				IMessage::MessageType type = IMessage::MessageType::ChatMessage);
 		void IncomingNoticeMessage (const QString&, const QString&);
 
 		void ChangeNickname (const QString&, const QString&);
@@ -155,7 +155,7 @@ namespace Acetamide
 		void GotInvitation (const QString&, const QString&);
 		void ShowAnswer (const QString& cmd,
 				const QString& answer, bool isEndOf = false,
-				IMessage::MessageType type = IMessage::MTEventMessage);
+				IMessage::MessageType type = IMessage::MessageType::EventMessage);
 
 		void CTCPReply (const QString&, const QString&, const QString&);
 		void CTCPRequestResult (const QString&);

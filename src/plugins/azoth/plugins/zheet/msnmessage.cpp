@@ -57,7 +57,7 @@ namespace Zheet
 	: QObject (entry)
 	, Entry_ (entry)
 	, Dir_ (Direction::In)
-	, MT_ (MTChatMessage)
+	, MT_ (MessageType::ChatMessage)
 	, Body_ (ZheetUtil::FromStd (msg->getBody ()))
 	, DateTime_ (QDateTime::currentDateTime ())
 	, IsDelivered_ (true)

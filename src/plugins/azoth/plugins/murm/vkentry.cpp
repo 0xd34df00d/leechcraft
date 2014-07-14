@@ -103,7 +103,7 @@ namespace Murm
 
 			if (spontaneous)
 			{
-				auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::MTStatusMessage, this);
+				auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::MessageType::StatusMessage, this);
 				const auto& entryName = GetEntryName ();
 				msg->SetBody (info.IsOnline_ ?
 						tr ("%1 is now on the site again").arg (entryName) :
@@ -350,7 +350,7 @@ namespace Murm
 		if (info.Params_.remove ("emoji"))
 			FixEmoji (info.Text_);
 
-		auto msg = new VkMessage (false, dir, IMessage::MTChatMessage, this);
+		auto msg = new VkMessage (false, dir, IMessage::MessageType::ChatMessage, this);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);

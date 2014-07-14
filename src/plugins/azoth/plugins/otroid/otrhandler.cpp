@@ -196,7 +196,7 @@ namespace OTRoid
 				plugin->InjectMsg (QString::fromUtf8 (context->accountname),
 						QString::fromUtf8 (context->username),
 						msg, false, IMessage::Direction::In,
-						IMessage::MTServiceMessage);
+						IMessage::MessageType::ServiceMessage);
 			}
 		}
 
@@ -221,7 +221,7 @@ namespace OTRoid
 					.arg (hrHash);
 			plugin->InjectMsg (QString::fromUtf8 (accountname),
 					QString::fromUtf8 (username),
-					msg, false, IMessage::Direction::In, IMessage::MTServiceMessage);
+					msg, false, IMessage::Direction::In, IMessage::MessageType::ServiceMessage);
 		}
 
 		void HandleGoneSecure (void *opData, ConnContext *context)
@@ -230,7 +230,7 @@ namespace OTRoid
 			static_cast<OtrHandler*> (opData)->
 					InjectMsg (QString::fromUtf8 (context->accountname),
 							QString::fromUtf8 (context->username),
-							msg, false, IMessage::Direction::In, IMessage::MTServiceMessage);
+							msg, false, IMessage::Direction::In, IMessage::MessageType::ServiceMessage);
 		}
 
 		void HandleGoneInsecure (void *opData, ConnContext *context)
@@ -239,7 +239,7 @@ namespace OTRoid
 			static_cast<OtrHandler*> (opData)->
 					InjectMsg (QString::fromUtf8 (context->accountname),
 							QString::fromUtf8 (context->username),
-							msg, false, IMessage::Direction::In, IMessage::MTServiceMessage);
+							msg, false, IMessage::Direction::In, IMessage::MessageType::ServiceMessage);
 		}
 
 		void HandleStillSecure (void *opData, ConnContext *context, int)
@@ -248,7 +248,7 @@ namespace OTRoid
 			static_cast<OtrHandler*> (opData)->
 					InjectMsg (QString::fromUtf8 (context->accountname),
 							QString::fromUtf8 (context->username),
-							msg, false, IMessage::Direction::In, IMessage::MTServiceMessage);
+							msg, false, IMessage::Direction::In, IMessage::MessageType::ServiceMessage);
 		}
 	}
 
@@ -315,7 +315,7 @@ namespace OTRoid
 				static_cast<OtrHandler*> (opData)->InjectMsg (QString::fromUtf8 (accountname),
 						QString::fromUtf8 (username),
 						QString::fromUtf8 (msg), false, IMessage::Direction::In,
-						IMessage::MTServiceMessage);
+						IMessage::MessageType::ServiceMessage);
 				return 0;
 			};
 #endif
@@ -423,7 +423,7 @@ namespace OTRoid
 			return;
 		}
 
-		if (msg->GetMessageType () != IMessage::MTChatMessage ||
+		if (msg->GetMessageType () != IMessage::MessageType::ChatMessage ||
 			msg->GetDirection () != IMessage::Direction::In)
 			return;
 
@@ -458,7 +458,7 @@ namespace OTRoid
 					"you should do the same.")
 						.arg (GetVisibleEntryNameImpl (entry));
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
-						message, false, IMessage::Direction::In, IMessage::MTServiceMessage);
+						message, false, IMessage::Direction::In, IMessage::MessageType::ServiceMessage);
 		}
 		otrl_tlv_free (tlvs);
 
@@ -895,14 +895,14 @@ namespace OTRoid
 #endif
 			const auto& message = tr ("Private conversation closed");
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
-						message, false, IMessage::Direction::In, IMessage::MTServiceMessage);
+						message, false, IMessage::Direction::In, IMessage::MessageType::ServiceMessage);
 			return;
 		}
 		else
 		{
 			const auto& message = tr ("Attempting to start a private conversation");
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
-					   message, false, IMessage::Direction::In, IMessage::MTServiceMessage);
+					   message, false, IMessage::Direction::In, IMessage::MessageType::ServiceMessage);
 		}
 
 		char fingerprint [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];

@@ -211,7 +211,7 @@ namespace AdiumStyles
 	{
 		IMessage::Direction GetMsgDirection (IMessage *msg)
 		{
-			if (msg->GetMessageType () != IMessage::MTMUCMessage)
+			if (msg->GetMessageType () != IMessage::MessageType::MUCMessage)
 				return msg->GetDirection ();
 
 			IMUCEntry *muc = qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
@@ -255,7 +255,7 @@ namespace AdiumStyles
 
 		const bool isSlashMe = msg->GetBody ().trimmed ().startsWith ("/me ");
 		const bool alwaysNotNext = isSlashMe ||
-				!(msg->GetMessageType () == IMessage::MTChatMessage || msg->GetMessageType () == IMessage::MTMUCMessage);
+				!(msg->GetMessageType () == IMessage::MessageType::ChatMessage || msg->GetMessageType () == IMessage::MessageType::MUCMessage);
 		const bool isNextMsg = !alwaysNotNext &&
 				Frame2LastContact_.contains (frame) &&
 				kindaSender == Frame2LastContact_ [frame];
@@ -266,8 +266,8 @@ namespace AdiumStyles
 				'/';
 
 		QString filename;
-		if ((msg->GetMessageType () == IMessage::MTChatMessage ||
-					msg->GetMessageType () == IMessage::MTMUCMessage) &&
+		if ((msg->GetMessageType () == IMessage::MessageType::ChatMessage ||
+					msg->GetMessageType () == IMessage::MessageType::MUCMessage) &&
 				!isSlashMe)
 			filename = isNextMsg ?
 					"NextContent.html" :
@@ -275,8 +275,8 @@ namespace AdiumStyles
 		else
 			filename = "Action.html";
 
-		if (msg->GetMessageType () != IMessage::MTMUCMessage &&
-				msg->GetMessageType () != IMessage::MTChatMessage)
+		if (msg->GetMessageType () != IMessage::MessageType::MUCMessage &&
+				msg->GetMessageType () != IMessage::MessageType::ChatMessage)
 			Frame2LastContact_.remove (frame);
 		else if (!isNextMsg && !alwaysNotNext)
 			Frame2LastContact_ [frame] = kindaSender;
@@ -495,13 +495,13 @@ namespace AdiumStyles
 		ICLEntry *other = 0;
 		switch (msg->GetMessageType ())
 		{
-		case IMessage::MTChatMessage:
-		case IMessage::MTMUCMessage:
-		case IMessage::MTStatusMessage:
+		case IMessage::MessageType::ChatMessage:
+		case IMessage::MessageType::MUCMessage:
+		case IMessage::MessageType::StatusMessage:
 			other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 			break;
-		case IMessage::MTEventMessage:
-		case IMessage::MTServiceMessage:
+		case IMessage::MessageType::EventMessage:
+		case IMessage::MessageType::ServiceMessage:
 			other = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 			break;
 		}
@@ -510,7 +510,7 @@ namespace AdiumStyles
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "null other part, gonna fail:"
-					<< msg->GetMessageType ()
+					<< static_cast<int> (msg->GetMessageType ())
 					<< msg->GetBody ()
 					<< msg->OtherPart ()
 					<< msg->ParentCLEntry ();
@@ -533,7 +533,7 @@ namespace AdiumStyles
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no account for outgoing message, that sucks"
-					<< msg->GetMessageType ()
+					<< static_cast<int> (msg->GetMessageType ())
 					<< msg->OtherPart ()
 					<< msg->ParentCLEntry ();
 			return templ;
@@ -541,7 +541,7 @@ namespace AdiumStyles
 
 		QString senderNick = in ? other->GetEntryName () : acc->GetOurNick ();
 		if (in &&
-				msg->GetMessageType () == IMessage::MTChatMessage &&
+				msg->GetMessageType () == IMessage::MessageType::ChatMessage &&
 				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool ())
 		{
 			const auto& resource = msg->GetOtherVariant ();

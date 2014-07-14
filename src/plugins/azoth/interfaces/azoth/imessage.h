@@ -80,11 +80,11 @@ namespace Azoth
 
 		/** @brief Represents possible message types.
 		 */
-		enum MessageType
+		enum class MessageType
 		{
 			/** @brief Standard one-to-one message.
 			 */
-			MTChatMessage,
+			ChatMessage,
 
 			/** @brief Message in a multiuser conference.
 			 *
@@ -93,14 +93,14 @@ namespace Azoth
 			 * changes, topic changes and such should have a different
 			 * type.
 			 */
-			MTMUCMessage,
+			MUCMessage,
 
 			/** @brief Status changes in a chat.
 			 *
 			 * This type of message contains information about
 			 * participant's status/presence changes.
 			 */
-			MTStatusMessage,
+			StatusMessage,
 
 			/** @brief Various events in a chat.
 			 *
@@ -109,11 +109,11 @@ namespace Azoth
 			 * there is no other part in such messages, so the message
 			 * of this type can return NULL from OtherPart().
 			 */
-			MTEventMessage,
+			EventMessage,
 
 			/** @brief Other.
 			 */
-			MTServiceMessage
+			ServiceMessage
 		};
 
 		/** @brief This enum is used for more precise classification of

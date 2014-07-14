@@ -112,8 +112,8 @@ namespace Azoth
 				return;
 
 			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-						IMessage::MTMUCMessage :
-						IMessage::MTChatMessage;
+						IMessage::MessageType::MUCMessage :
+						IMessage::MessageType::ChatMessage;
 			auto msgObj = entry->CreateMessage (msgType,
 					chatTab->GetSelectedVariant (),
 					ContactDropFilter::tr ("This message contains inline image, enable XHTML-IM to view it."));
@@ -146,8 +146,8 @@ namespace Azoth
 				return;
 
 			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-						IMessage::MTMUCMessage :
-						IMessage::MTChatMessage;
+						IMessage::MessageType::MUCMessage :
+						IMessage::MessageType::ChatMessage;
 			auto msgObj = entry->CreateMessage (msgType,
 					chatTab->GetSelectedVariant (),
 					url.toEncoded ());
@@ -194,8 +194,8 @@ namespace Azoth
 										return;
 
 									const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-												IMessage::MTMUCMessage :
-												IMessage::MTChatMessage;
+												IMessage::MessageType::MUCMessage :
+												IMessage::MessageType::ChatMessage;
 									auto msgObj = entry->CreateMessage (msgType,
 											variant,
 											url.toString ());

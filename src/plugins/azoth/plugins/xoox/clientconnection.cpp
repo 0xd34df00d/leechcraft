@@ -1214,7 +1214,7 @@ namespace Xoox
 			return;
 
 		Split (msg.to (), &jid, &resource);
-		auto gm = new GlooxMessage (IMessage::MTChatMessage, IMessage::Direction::Out,
+		auto gm = new GlooxMessage (IMessage::MessageType::ChatMessage, IMessage::Direction::Out,
 				jid, resource, this);
 		gm->SetBody (msg.body ());
 		gm->SetRichBody (msg.xhtml ());

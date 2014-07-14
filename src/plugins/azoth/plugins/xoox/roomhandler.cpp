@@ -144,7 +144,7 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MTStatusMessage,
+				IMessage::MessageType::StatusMessage,
 				IMessage::MSTParticipantLeave,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
@@ -173,7 +173,7 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MTStatusMessage,
+				IMessage::MessageType::StatusMessage,
 				IMessage::MSTParticipantJoin,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
@@ -193,7 +193,7 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MTStatusMessage,
+				IMessage::MessageType::StatusMessage,
 				IMessage::MSTParticipantStatusChange,
 				GetParticipantEntry (nick));
 		message->setProperty ("Azoth/Nick", nick);
@@ -211,7 +211,7 @@ namespace Xoox
 		auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MTStatusMessage,
+				IMessage::MessageType::StatusMessage,
 				IMessage::MSTParticipantNickChange,
 				GetParticipantEntry (newNick));
 		CLEntry_->HandleMessage (message);
@@ -231,7 +231,7 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MTStatusMessage,
+				IMessage::MessageType::StatusMessage,
 				IMessage::MSTKickNotification,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
@@ -251,7 +251,7 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MTStatusMessage,
+				IMessage::MessageType::StatusMessage,
 				IMessage::MSTBanNotification,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
@@ -279,7 +279,7 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MTStatusMessage,
+				IMessage::MessageType::StatusMessage,
 				IMessage::MSTParticipantRoleAffiliationChange,
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
@@ -362,7 +362,7 @@ namespace Xoox
 		RoomPublicMessage *message = new RoomPublicMessage (text,
 				IMessage::Direction::In,
 				CLEntry_,
-				IMessage::MTEventMessage,
+				IMessage::MessageType::EventMessage,
 				IMessage::MSTOther);
 		CLEntry_->HandleMessage (message);
 
@@ -471,7 +471,7 @@ namespace Xoox
 				message = new RoomPublicMessage (string,
 					IMessage::Direction::In,
 					CLEntry_,
-					IMessage::MTEventMessage,
+					IMessage::MessageType::EventMessage,
 					IMessage::MSTRoomSubjectChange);
 			}
 			else if (!nick.isEmpty ())
@@ -483,7 +483,7 @@ namespace Xoox
 				message = new RoomPublicMessage (msg.body (),
 					IMessage::Direction::In,
 					CLEntry_,
-					IMessage::MTEventMessage,
+					IMessage::MessageType::EventMessage,
 					IMessage::MSTOther);
 
 			if (message)
@@ -515,7 +515,7 @@ namespace Xoox
 	GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType,
 			const QString& nick, const QString& body)
 	{
-		GlooxMessage *message = new GlooxMessage (IMessage::MTChatMessage,
+		GlooxMessage *message = new GlooxMessage (IMessage::MessageType::ChatMessage,
 				IMessage::Direction::Out,
 				GetRoomJID (),
 				nick,

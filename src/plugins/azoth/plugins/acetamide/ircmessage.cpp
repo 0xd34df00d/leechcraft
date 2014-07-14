@@ -60,7 +60,7 @@ namespace Acetamide
 
 	IrcMessage::IrcMessage (const Message& msg,
 			const QString& id, ClientConnection* conn)
-	: Type_ (MTMUCMessage)
+	: Type_ (MessageType::MUCMessage)
 	, SubType_ (MSTOther)
 	, Direction_ (Direction::In)
 	, ID_ (id)
@@ -88,14 +88,14 @@ namespace Acetamide
 
 		switch (Type_)
 		{
-		case MTChatMessage:
-		case MTMUCMessage:
+		case MessageType::ChatMessage:
+		case MessageType::MUCMessage:
 			Connection_->GetIrcServerHandler (ID_)->SendPrivateMessage (this);
 			Connection_->GetIrcServerHandler (ID_)->GetChannelManager ()->SetPrivateChat (GetOtherVariant ());
 			return;
-		case MTStatusMessage:
-		case MTEventMessage:
-		case MTServiceMessage:
+		case MessageType::StatusMessage:
+		case MessageType::EventMessage:
+		case MessageType::ServiceMessage:
 			qWarning () << Q_FUNC_INFO
 					<< this
 					<< "cannot send a service message";

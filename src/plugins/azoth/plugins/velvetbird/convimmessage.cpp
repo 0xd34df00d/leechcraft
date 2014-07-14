@@ -67,7 +67,7 @@ namespace VelvetBird
 
 	IMessage::MessageType ConvIMMessage::GetMessageType () const
 	{
-		return MTChatMessage;
+		return MessageType::ChatMessage;
 	}
 
 	IMessage::MessageSubType ConvIMMessage::GetMessageSubType () const

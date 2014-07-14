@@ -50,7 +50,7 @@ namespace Xoox
 	, Message_ (msg)
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (Direction::Out)
-	, Type_ (MTMUCMessage)
+	, Type_ (MessageType::MUCMessage)
 	, SubType_ (MSTOther)
 	{
 	}
@@ -81,7 +81,7 @@ namespace Xoox
 	, Message_ (msg.body ())
 	, Datetime_ (msg.stamp ().isValid () ? msg.stamp ().toLocalTime () : QDateTime::currentDateTime ())
 	, Direction_ (Direction::In)
-	, Type_ (MTMUCMessage)
+	, Type_ (MessageType::MUCMessage)
 	, SubType_ (MSTOther)
 	, XHTML_ (msg.xhtml ())
 	{

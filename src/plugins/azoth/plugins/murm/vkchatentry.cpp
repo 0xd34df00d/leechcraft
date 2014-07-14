@@ -76,7 +76,7 @@ namespace Murm
 			return;
 		}
 
-		auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::MTMUCMessage, this, entry);
+		auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::MessageType::MUCMessage, this, entry);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);

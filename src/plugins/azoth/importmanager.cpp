@@ -112,11 +112,11 @@ namespace Azoth
 			histMap ["AccountID"] = acc->GetAccountID ();
 
 			if (histMap ["MessageType"] == "chat")
-				histMap ["MessageType"] = static_cast<int> (IMessage::MTChatMessage);
+				histMap ["MessageType"] = static_cast<int> (IMessage::MessageType::ChatMessage);
 			else if (histMap ["MessageType"] == "muc")
-				histMap ["MessageType"] = static_cast<int> (IMessage::MTMUCMessage);
+				histMap ["MessageType"] = static_cast<int> (IMessage::MessageType::MUCMessage);
 			else if (histMap ["MessageType"] == "event")
-				histMap ["MessageType"] = static_cast<int> (IMessage::MTEventMessage);
+				histMap ["MessageType"] = static_cast<int> (IMessage::MessageType::EventMessage);
 
 			Q_FOREACH (IHistoryPlugin *plugin, histories)
 				plugin->AddRawMessage (histMap);

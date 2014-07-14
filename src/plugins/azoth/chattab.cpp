@@ -593,12 +593,13 @@ namespace Azoth
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		IMessage::MessageType type =
 				e->GetEntryType () == ICLEntry::ETMUC ?
-						IMessage::MTMUCMessage :
-						IMessage::MTChatMessage;
+						IMessage::MessageType::MUCMessage :
+						IMessage::MessageType::ChatMessage;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		proxy->SetValue ("text", text);
-		emit hookMessageWillCreated (proxy, this, e->GetQObject (), type, variant);
+		// TODO pass type without casts
+		emit hookMessageWillCreated (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
 		if (proxy->IsCancelled ())
 		{
 			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
@@ -606,7 +607,7 @@ namespace Azoth
 			return;
 		}
 
-		int intType = type;
+		int intType = static_cast<int> (type);
 		proxy->FillValue ("type", intType);
 		type = static_cast<IMessage::MessageType> (intType);
 		proxy->FillValue ("variant", variant);
@@ -996,7 +997,7 @@ namespace Azoth
 		else if (isActiveChat)
 			GetEntry<ICLEntry> ()->MarkMsgsRead ();
 
-		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
+		if (msg->GetMessageType () == IMessage::MessageType::MUCMessage &&
 				!isActiveChat &&
 				!HadHighlight_)
 		{
@@ -1008,7 +1009,7 @@ namespace Azoth
 		if (shouldReformat)
 			ReformatTitle ();
 
-		if (msg->GetMessageType () == IMessage::MTChatMessage &&
+		if (msg->GetMessageType () == IMessage::MessageType::ChatMessage &&
 				msg->GetDirection () == IMessage::Direction::In)
 		{
 			const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
@@ -1879,8 +1880,8 @@ namespace Azoth
 
 		if (XmlSettingsManager::Instance ().property ("SeparateMUCEventLogWindow").toBool () &&
 				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
-				(msg->GetMessageType () != IMessage::MTMUCMessage &&
-					msg->GetMessageType () != IMessage::MTServiceMessage))
+				(msg->GetMessageType () != IMessage::MessageType::MUCMessage &&
+					msg->GetMessageType () != IMessage::MessageType::ServiceMessage))
 		{
 			const auto& dt = msg->GetDateTime ().toString ("HH:mm:ss.zzz");
 			MUCEventLog_->append (QString ("<font color=\"#56ED56\">[%1] %2</font>")
@@ -1904,7 +1905,7 @@ namespace Azoth
 			datetime.setTime ({0, 0});
 
 			auto coreMessage = new CoreMessage (str, datetime,
-					IMessage::MTServiceMessage, IMessage::Direction::In, parent->GetQObject (), this);
+					IMessage::MessageType::ServiceMessage, IMessage::Direction::In, parent->GetQObject (), this);
 			ChatMsgAppendInfo coreInfo
 			{
 				false,

@@ -640,8 +640,8 @@ namespace Azoth
 			return proxy->GetReturnValue ().toBool ();
 
 		return !ChatTabsManager_->IsActiveChat (entry) &&
-				(msg->GetMessageType () == IMessage::MTChatMessage ||
-				 msg->GetMessageType () == IMessage::MTMUCMessage);
+				(msg->GetMessageType () == IMessage::MessageType::ChatMessage ||
+				 msg->GetMessageType () == IMessage::MessageType::MUCMessage);
 	}
 
 	bool Core::IsHighlightMessage (IMessage *msg)
@@ -797,7 +797,7 @@ namespace Azoth
 
 		QString string;
 
-		if (msg->GetMessageType () == IMessage::MTMUCMessage)
+		if (msg->GetMessageType () == IMessage::MessageType::MUCMessage)
 		{
 			QUrl url ("azoth://insertnick/");
 			url.addEncodedQueryItem ("nick", QUrl::toPercentEncoding (nick));
@@ -1983,8 +1983,8 @@ namespace Azoth
 		proxy.reset (new Util::DefaultHookProxy);
 		emit hookGotMessage2 (proxy, msgObj);
 
-		if (msg->GetMessageType () != IMessage::MTMUCMessage &&
-				msg->GetMessageType () != IMessage::MTChatMessage)
+		if (msg->GetMessageType () != IMessage::MessageType::MUCMessage &&
+				msg->GetMessageType () != IMessage::MessageType::ChatMessage)
 			return;
 
 		ICLEntry *parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
@@ -2008,7 +2008,7 @@ namespace Azoth
 		bool isHighlightMsg = false;
 		switch (msg->GetMessageType ())
 		{
-		case IMessage::MTChatMessage:
+		case IMessage::MessageType::ChatMessage:
 			if (XmlSettingsManager::Instance ()
 					.property ("NotifyAboutIncomingMessages").toBool ())
 			{
@@ -2027,7 +2027,7 @@ namespace Azoth
 				}
 			}
 			break;
-		case IMessage::MTMUCMessage:
+		case IMessage::MessageType::MUCMessage:
 		{
 			isHighlightMsg = IsHighlightMessage (msg);
 			if (isHighlightMsg && XmlSettingsManager::Instance ()
@@ -2062,7 +2062,7 @@ namespace Azoth
 		if (msgString.isEmpty ())
 			e.Mime_ += "+advanced";
 
-		ICLEntry *entry = msg->GetMessageType () == IMessage::MTMUCMessage ?
+		ICLEntry *entry = msg->GetMessageType () == IMessage::MessageType::MUCMessage ?
 				parentCL :
 				other;
 		BuildNotification (e, entry);
@@ -2071,7 +2071,7 @@ namespace Azoth
 		const int count = someItem ?
 				someItem->data (CLRUnreadMsgCount).toInt () :
 				0;
-		if (msg->GetMessageType () == IMessage::MTMUCMessage)
+		if (msg->GetMessageType () == IMessage::MessageType::MUCMessage)
 		{
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
 					AN::TypeIMMUCHighlight :

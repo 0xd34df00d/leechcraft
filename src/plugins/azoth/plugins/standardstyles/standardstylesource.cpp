@@ -131,7 +131,7 @@ namespace StandardStyles
 		QString WrapNickPart (const QString& part,
 				const QString& color, IMessage::MessageType type)
 		{
-			const QString& pre = type == IMessage::MTMUCMessage ?
+			const QString& pre = type == IMessage::MessageType::MUCMessage ?
 					"<span class='nickname' style='color: " + color + "'>" :
 					"<span class='nickname'>";
 			return pre +
@@ -156,7 +156,7 @@ namespace StandardStyles
 		QString entryName = other ?
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
-		if (msg->GetMessageType () == IMessage::MTChatMessage &&
+		if (msg->GetMessageType () == IMessage::MessageType::ChatMessage &&
 				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool () &&
 				!msg->GetOtherVariant ().isEmpty ())
 			entryName += '/' + msg->GetOtherVariant ();
@@ -218,12 +218,12 @@ namespace StandardStyles
 		{
 			switch (msg->GetMessageType ())
 			{
-			case IMessage::MTChatMessage:
+			case IMessage::MessageType::ChatMessage:
 				statusIconName = "notification_chat_receive";
 				divClass = msg->GetDirection () == IMessage::Direction::In ?
 					"msgin" :
 					"msgout";
-			case IMessage::MTMUCMessage:
+			case IMessage::MessageType::MUCMessage:
 			{
 				statusIconName = "notification_chat_receive";
 
@@ -248,17 +248,17 @@ namespace StandardStyles
 				}
 				break;
 			}
-			case IMessage::MTEventMessage:
+			case IMessage::MessageType::EventMessage:
 				statusIconName = "notification_chat_info";
 				string.append ("! ");
 				divClass = "eventmsg";
 				break;
-			case IMessage::MTStatusMessage:
+			case IMessage::MessageType::StatusMessage:
 				statusIconName = "notification_chat_info";
 				string.append ("* ");
 				divClass = "statusmsg";
 				break;
-			case IMessage::MTServiceMessage:
+			case IMessage::MessageType::ServiceMessage:
 				statusIconName = "notification_chat_info";
 				string.append ("* ");
 				divClass = "servicemsg";
@@ -283,7 +283,7 @@ namespace StandardStyles
 				string.append ("* ");
 			}
 			else if (body.startsWith ("/me ") &&
-					msg->GetMessageType () != IMessage::MTMUCMessage)
+					msg->GetMessageType () != IMessage::MessageType::MUCMessage)
 			{
 				body = body.mid (3);
 				string.append ("* ");
@@ -312,8 +312,8 @@ namespace StandardStyles
 
 		QWebElement elem = frame->findFirstElement ("body");
 
-		if (msg->GetMessageType () == IMessage::MTChatMessage ||
-			msg->GetMessageType () == IMessage::MTMUCMessage)
+		if (msg->GetMessageType () == IMessage::MessageType::ChatMessage ||
+			msg->GetMessageType () == IMessage::MessageType::MUCMessage)
 		{
 			const auto isRead = Proxy_->IsMessageRead (msgObj);
 			if (!isActiveChat &&

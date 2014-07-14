@@ -61,7 +61,7 @@ namespace Xoox
 		const QString& remoteJid = variant.isEmpty () ?
 				jid :
 				jid + "/" + variant;
-		if (type == MTChatMessage && variant.isEmpty ())
+		if (type == MessageType::ChatMessage && variant.isEmpty ())
 		{
 			QObject *object = Connection_->GetCLEntry (jid, variant);
 			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().value (0);
@@ -71,7 +71,7 @@ namespace Xoox
 
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
 			ClientConnection *conn)
-	: Type_ (MTChatMessage)
+	: Type_ (MessageType::ChatMessage)
 	, SubType_ (MSTOther)
 	, Direction_ (Direction::In)
 	, Message_ (message)
@@ -103,9 +103,9 @@ namespace Xoox
 
 		switch (Type_)
 		{
-		case MTChatMessage:
+		case MessageType::ChatMessage:
 			Message_.setReceiptRequested (true);
-		case MTMUCMessage:
+		case MessageType::MUCMessage:
 			Connection_->SendMessage (this);
 			QMetaObject::invokeMethod (OtherPart (),
 					"gotMessage",
@@ -115,7 +115,7 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< this
 					<< "cannot send a message of type"
-					<< Type_;
+					<< static_cast<int> (Type_);
 			break;
 		}
 	}

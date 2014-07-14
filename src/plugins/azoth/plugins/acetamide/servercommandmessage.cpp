@@ -46,7 +46,7 @@ namespace Acetamide
 	, Message_ (msg)
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (Direction::Out)
-	, Type_ (MTMUCMessage)
+	, Type_ (MessageType::MUCMessage)
 	, SubType_ (MSTOther)
 	{
 	}
