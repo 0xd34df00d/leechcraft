@@ -178,9 +178,9 @@ namespace Dolozhee
 		{
 			text += "<br />";
 			text += (tr ("Your issue number is %1. You can view it here:") +
-						" <a href='http://dev.leechcraft.org/issues/%1'>#%1</a>.<br/>"
-						"You can also track it via an Atom feed reader by adding "
-						"its <a href='http://dev.leechcraft.org/issues/%1.atom'>feed</a>.").arg (id);
+						" <a href='http://dev.leechcraft.org/issues/%1'>#%1</a>.<br/>" +
+						tr ("You can also track it via an Atom feed reader:") +
+						" <a href='http://dev.leechcraft.org/issues/%1.atom'>Atom</a>.").arg (id);
 		}
 		Ui_.Status_->setText (text);
 	}
