@@ -90,6 +90,7 @@ namespace Murm
 		QString GetOtherVariant () const;
 		QString GetBody () const;
 		void SetBody (const QString& body);
+		EscapePolicy GetEscapePolicy () const;
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime& timestamp);
 

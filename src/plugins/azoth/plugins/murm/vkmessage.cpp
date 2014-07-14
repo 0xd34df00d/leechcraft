@@ -131,6 +131,11 @@ namespace Murm
 		Body_ = body;
 	}
 
+	IMessage::EscapePolicy VkMessage::GetEscapePolicy () const
+	{
+		return EscapePolicy::NoEscape;
+	}
+
 	QDateTime VkMessage::GetDateTime () const
 	{
 		return TS_;
