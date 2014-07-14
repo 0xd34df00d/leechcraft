@@ -153,25 +153,25 @@ namespace Azoth
 
 		Q_DECLARE_FLAGS (Features, Feature)
 
-		enum EntryType
+		enum class EntryType
 		{
 			/** This entry represents a standard chat.
 			 */
-			ETChat,
+			Chat,
 
 			/** This entry represents a multi-user chatroom.
 			 */
-			ETMUC,
+			MUC,
 
 			/** This entry represents a private conversation in a
 			 * multi-user chatroom.
 			 */
-			ETPrivateChat,
+			PrivateChat,
 
 			/** This entry represents an unauthorized user that has
 			 * requested authorization.
 			 */
-			ETUnauthEntry
+			UnauthEntry
 		};
 
 		/** Returns the entry as a QObject.

@@ -379,7 +379,7 @@ namespace Murm
 
 	ICLEntry::EntryType VkEntry::GetEntryType () const
 	{
-		return ICLEntry::ETChat;
+		return ICLEntry::EntryType::Chat;
 	}
 
 	QString VkEntry::GetEntryName () const

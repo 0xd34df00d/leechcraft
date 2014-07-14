@@ -192,7 +192,7 @@ namespace Azoth
 					return false;
 
 				if (HideMUCParts_ &&
-						entry->GetEntryType () == ICLEntry::ETPrivateChat)
+						entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 					return false;
 
 				if (!ShowSelfContacts_ &&
@@ -241,8 +241,8 @@ namespace Azoth
 		ICLEntry *lE = GetEntry (left);
 		ICLEntry *rE = GetEntry (right);
 
-		if (lE->GetEntryType () == ICLEntry::ETPrivateChat &&
-				rE->GetEntryType () == ICLEntry::ETPrivateChat &&
+		if (lE->GetEntryType () == ICLEntry::EntryType::PrivateChat &&
+				rE->GetEntryType () == ICLEntry::EntryType::PrivateChat &&
 				lE->GetParentCLEntry () == rE->GetParentCLEntry ())
 			if (IMUCPerms *lp = qobject_cast<IMUCPerms*> (lE->GetParentCLEntry ()))
 			{

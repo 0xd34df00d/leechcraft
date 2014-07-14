@@ -130,7 +130,7 @@ namespace Metacontacts
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entryObj)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry || entry->GetEntryType () != ICLEntry::ETChat)
+		if (!entry || entry->GetEntryType () != ICLEntry::EntryType::Chat)
 			return;
 
 		QList<QVariant> list = proxy->GetReturnValue ().toList ();

@@ -209,7 +209,7 @@ namespace Azoth
 
 		const auto& icons = ResourcesManager::Instance ().GetClientIconForEntry (entry);
 
-		if (entry->GetEntryType () != ICLEntry::ETMUC)
+		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
 			const int avatarSize = 75;
 
@@ -240,7 +240,7 @@ namespace Azoth
 		tip += "<strong>" + Qt::escape (entry->GetEntryName ()) + "</strong>";
 		tip += "&nbsp;(<em>" + Qt::escape (entry->GetHumanReadableID ()) + "</em>)";
 		tip += Status2Str (entry->GetStatus (), Core::Instance ().GetPluginProxy ());
-		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 		{
 			tip += "<br />";
 			tip += tr ("In groups:") + ' ' + Qt::escape (entry->Groups ().join ("; "));

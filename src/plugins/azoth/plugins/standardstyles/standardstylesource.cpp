@@ -91,7 +91,7 @@ namespace StandardStyles
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
 		Util::QIODevice_ptr dev;
-		if (entry && entry->GetEntryType () == ICLEntry::ETMUC)
+		if (entry && entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.muc.html"));
 		if (!dev)
 			dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.html"));

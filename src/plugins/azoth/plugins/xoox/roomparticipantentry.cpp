@@ -73,7 +73,7 @@ namespace Xoox
 
 	ICLEntry::EntryType RoomParticipantEntry::GetEntryType () const
 	{
-		return ETPrivateChat;
+		return EntryType::PrivateChat;
 	}
 
 	QString RoomParticipantEntry::GetEntryName () const

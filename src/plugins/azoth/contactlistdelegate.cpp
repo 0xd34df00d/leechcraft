@@ -289,7 +289,7 @@ namespace Azoth
 		QObject *entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-		const bool isMUC = entry->GetEntryType () == ICLEntry::ETMUC;
+		const bool isMUC = entry->GetEntryType () == ICLEntry::EntryType::MUC;
 
 		QStyle *style = option.widget ?
 				option.widget->style () :
@@ -400,7 +400,7 @@ namespace Azoth
 	{
 		QList<QIcon> clientIcons;
 
-		const bool isMUC = entry->GetEntryType () == ICLEntry::ETMUC;
+		const bool isMUC = entry->GetEntryType () == ICLEntry::EntryType::MUC;
 
 		if (!isMUC && ShowClientIcons_)
 		{
@@ -413,7 +413,7 @@ namespace Azoth
 					clientIcons.end ());
 		}
 
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
 			const QByteArray& aff = index.data (Core::CLRAffiliation).toByteArray ();
 			const QIcon& icon = ResourcesManager::Instance ().GetAffIcon (aff);

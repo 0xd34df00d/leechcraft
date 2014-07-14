@@ -235,7 +235,7 @@ namespace Azoth
 		const int autoNum = XmlSettingsManager::Instance ()
 				.property ("ShowLastNMessages").toInt ();
 		if (entry->GetAllMessages ().size () <= 100 &&
-				entry->GetEntryType () != ICLEntry::ETMUC &&
+				entry->GetEntryType () != ICLEntry::EntryType::MUC &&
 				autoNum)
 			RequestLogs (autoNum);
 
@@ -386,7 +386,7 @@ namespace Azoth
 			return result;
 
 		QDataStream stream (&result, QIODevice::WriteOnly);
-		if (entry->GetEntryType () == ICLEntry::ETMUC &&
+		if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
 				GetEntry<IMUCEntry> ())
 			stream << QByteArray ("muctab2")
 					<< entry->GetEntryID ()
@@ -592,7 +592,7 @@ namespace Azoth
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		IMessage::Type type =
-				e->GetEntryType () == ICLEntry::ETMUC ?
+				e->GetEntryType () == ICLEntry::EntryType::MUC ?
 						IMessage::Type::MUCMessage :
 						IMessage::Type::ChatMessage;
 
@@ -1084,7 +1084,7 @@ namespace Azoth
 			const QString& variant)
 	{
 		auto entry = GetEntry<ICLEntry> ();
-		if (entry->GetEntryType () == ICLEntry::ETMUC)
+		if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			return;
 
 		const QStringList& vars = entry->Variants ();
@@ -1572,7 +1572,7 @@ namespace Azoth
 	{
 		ICLEntry *e = GetEntry<ICLEntry> ();
 
-		bool claimsMUC = e->GetEntryType () == ICLEntry::ETMUC;
+		bool claimsMUC = e->GetEntryType () == ICLEntry::EntryType::MUC;
 		IsMUC_ = true;
 		if (!claimsMUC)
 			IsMUC_ = false;
@@ -1639,7 +1639,7 @@ namespace Azoth
 
 #ifdef ENABLE_MEDIACALLS
 		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
-				e->GetEntryType () == ICLEntry::ETChat)
+				e->GetEntryType () == ICLEntry::EntryType::Chat)
 		{
 			Call_ = new QAction (tr ("Call..."), this);
 			Call_->setProperty ("ActionIcon", "call-start");
@@ -1844,16 +1844,16 @@ namespace Azoth
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (msg->GetDirection () == IMessage::Direction::Out &&
-				other->GetEntryType () == ICLEntry::ETMUC)
+				other->GetEntryType () == ICLEntry::EntryType::MUC)
 			return;
 
 		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
-				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
+				(!parent || parent->GetEntryType () == ICLEntry::EntryType::MUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 
 		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
-				(!parent || parent->GetEntryType () != ICLEntry::ETMUC) &&
+				(!parent || parent->GetEntryType () != ICLEntry::EntryType::MUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
 			return;
 
@@ -1879,7 +1879,7 @@ namespace Azoth
 			return;
 
 		if (XmlSettingsManager::Instance ().property ("SeparateMUCEventLogWindow").toBool () &&
-				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
+				(!parent || parent->GetEntryType () == ICLEntry::EntryType::MUC) &&
 				(msg->GetMessageType () != IMessage::Type::MUCMessage &&
 					msg->GetMessageType () != IMessage::Type::ServiceMessage))
 		{
@@ -2087,16 +2087,16 @@ namespace Azoth
 		QStringList path ("Azoth");
 		switch (GetEntry<ICLEntry> ()->GetEntryType ())
 		{
-		case ICLEntry::ETChat:
+		case ICLEntry::EntryType::Chat:
 			path << tr ("Chat");
 			break;
-		case ICLEntry::ETMUC:
+		case ICLEntry::EntryType::MUC:
 			path << tr ("Conference");
 			break;
-		case ICLEntry::ETPrivateChat:
+		case ICLEntry::EntryType::PrivateChat:
 			path << tr ("Private chat");
 			break;
-		case ICLEntry::ETUnauthEntry:
+		case ICLEntry::EntryType::UnauthEntry:
 			path << tr ("Unauthorized user");
 			break;
 		}

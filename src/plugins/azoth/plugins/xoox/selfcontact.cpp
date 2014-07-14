@@ -64,7 +64,7 @@ namespace Xoox
 
 	ICLEntry::EntryType SelfContact::GetEntryType () const
 	{
-		return ETChat;
+		return EntryType::Chat;
 	}
 
 	QString SelfContact::GetEntryName () const

@@ -227,7 +227,7 @@ namespace Xoox
 
 	ICLEntry::EntryType GlooxCLEntry::GetEntryType () const
 	{
-		return ETChat;
+		return EntryType::Chat;
 	}
 
 	QString GlooxCLEntry::GetEntryName () const

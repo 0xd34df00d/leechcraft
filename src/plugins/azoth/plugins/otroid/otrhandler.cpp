@@ -430,7 +430,7 @@ namespace OTRoid
 		QObject *entryObj = msg->ParentCLEntry ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry ||
-				entry->GetEntryType () == ICLEntry::ETMUC)
+				entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			return;
 
 		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
@@ -501,7 +501,7 @@ namespace OTRoid
 
 	void OtrHandler::HandleEntryActionsRequested (const IHookProxy_ptr& proxy, QObject *entry)
 	{
-		if (qobject_cast<ICLEntry*> (entry)->GetEntryType () == ICLEntry::ETMUC)
+		if (qobject_cast<ICLEntry*> (entry)->GetEntryType () == ICLEntry::EntryType::MUC)
 			return;
 
 		if (!Entry2Action_.contains (entry))

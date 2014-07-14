@@ -120,7 +120,7 @@ namespace Metacontacts
 
 	ICLEntry::EntryType MetaEntry::GetEntryType () const
 	{
-		return ETChat;
+		return EntryType::Chat;
 	}
 
 	QString MetaEntry::GetEntryName () const

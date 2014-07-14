@@ -122,13 +122,13 @@ namespace Autopaste
 		QByteArray propName;
 		switch (other->GetEntryType ())
 		{
-		case ICLEntry::ETChat:
+		case ICLEntry::EntryType::Chat:
 			propName = "EnableForNormalChats";
 			break;
-		case ICLEntry::ETMUC:
+		case ICLEntry::EntryType::MUC:
 			propName = "EnableForMUCChats";
 			break;
-		case ICLEntry::ETPrivateChat:
+		case ICLEntry::EntryType::PrivateChat:
 			propName = "EnableForPrivateChats";
 			break;
 		default:

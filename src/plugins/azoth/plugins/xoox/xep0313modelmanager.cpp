@@ -84,7 +84,7 @@ namespace Xoox
 		for (auto itemObj : items)
 		{
 			auto entry = qobject_cast<ICLEntry*> (itemObj);
-			if (entry->GetEntryType () == ICLEntry::ETMUC)
+			if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 				continue;
 
 			f (entry);

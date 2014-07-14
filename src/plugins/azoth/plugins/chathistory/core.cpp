@@ -196,7 +196,7 @@ namespace ChatHistory
 		data ["OtherVariant"] = msg->GetOtherVariant ();
 		data ["Type"] = static_cast<int> (msg->GetMessageType ());
 
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
 			ICLEntry *parent = qobject_cast<ICLEntry*> (entry->GetParentCLEntry ());
 			data ["VisibleName"] = parent->GetEntryName () + "/" + entry->GetEntryName ();

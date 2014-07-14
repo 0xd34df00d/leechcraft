@@ -121,7 +121,7 @@ namespace Xoox
 
 	ICLEntry::EntryType RoomCLEntry::GetEntryType () const
 	{
-		return ETMUC;
+		return EntryType::MUC;
 	}
 
 	QString RoomCLEntry::GetEntryName () const

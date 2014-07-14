@@ -48,7 +48,7 @@ namespace Xoox
 	{
 		switch (entry->GetEntryType ())
 		{
-		case ICLEntry::ETPrivateChat:
+		case ICLEntry::EntryType::PrivateChat:
 			switch (req)
 			{
 			case InfoRequest::Version:
@@ -68,7 +68,7 @@ namespace Xoox
 				break;
 			}
 			break;
-		case ICLEntry::ETChat:
+		case ICLEntry::EntryType::Chat:
 			switch (req)
 			{
 			case InfoRequest::Version:

@@ -88,7 +88,7 @@ namespace Autopaste
 			return;
 		}
 
-		auto type = entry->GetEntryType () == ICLEntry::ETMUC ?
+		auto type = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 				IMessage::Type::MUCMessage :
 				IMessage::Type::ChatMessage;
 		QObject *msgObj = entry->CreateMessage (type, QString (), pasteUrl);

@@ -132,7 +132,7 @@ namespace Zheet
 
 	ICLEntry::EntryType MSNBuddyEntry::GetEntryType () const
 	{
-		return ETChat;
+		return EntryType::Chat;
 	}
 
 	QString MSNBuddyEntry::GetEntryName () const

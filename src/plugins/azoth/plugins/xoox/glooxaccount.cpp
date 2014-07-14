@@ -847,7 +847,7 @@ namespace Xoox
 
 		const auto existingObj = ClientConnection_->GetCLEntry (jid, {});
 		const auto existing = qobject_cast<ICLEntry*> (existingObj);
-		if (existing && existing->GetEntryType () != ICLEntry::ETMUC)
+		if (existing && existing->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
 			const auto res = QMessageBox::question (nullptr,
 					"LeechCraft",

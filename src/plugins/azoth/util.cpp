@@ -69,7 +69,7 @@ namespace Azoth
 			win = rootWM->GetWindowForTab (tab);
 		if (!tab || win == -1)
 		{
-			const auto& tc = other->GetEntryType () == ICLEntry::ETMUC ?
+			const auto& tc = other->GetEntryType () == ICLEntry::EntryType::MUC ?
 					ChatTab::GetMUCTabClassInfo () :
 					ChatTab::GetChatTabClassInfo ();
 			win = rootWM->GetPreferredWindowIndex (tc.TabClass_);

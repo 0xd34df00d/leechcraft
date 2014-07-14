@@ -663,7 +663,7 @@ namespace Xoox
 			emit availableVariantsChanged (vars);
 
 		GlooxMessage *message = 0;
-		if (GetEntryType () == ETPrivateChat)
+		if (GetEntryType () == EntryType::PrivateChat)
 			message = new GlooxMessage (IMessage::Type::StatusMessage,
 					IMessage::Direction::In,
 					qobject_cast<RoomCLEntry*> (GetParentCLEntry ())->
@@ -737,7 +737,7 @@ namespace Xoox
 			VCardDialog_->UpdateInfo (vcard);
 
 		if (!initial &&
-				GetEntryType () == ICLEntry::ETChat)
+				GetEntryType () == ICLEntry::EntryType::Chat)
 			Core::Instance ().ScheduleSaveRoster (10000);
 
 		emit vcardUpdated ();
@@ -775,7 +775,7 @@ namespace Xoox
 
 		QString reqJid = GetJID ();
 		QString reqVar = "";
-		if (GetEntryType () == ETChat)
+		if (GetEntryType () == EntryType::Chat)
 		{
 			reqJid = variant.isEmpty () ?
 					reqJid :
@@ -940,7 +940,7 @@ namespace Xoox
 		QString variant;
 		ClientConnection::Split (from, &bare, &variant);
 
-		if (variant.isEmpty () || GetEntryType () == ETPrivateChat)
+		if (variant.isEmpty () || GetEntryType () == EntryType::PrivateChat)
 			variant = "";
 
 		const auto secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
@@ -954,7 +954,7 @@ namespace Xoox
 	void EntryBase::handleCommands ()
 	{
 		QString jid = GetJID ();
-		if (GetEntryType () != ETPrivateChat)
+		if (GetEntryType () != EntryType::PrivateChat)
 		{
 			QStringList commandable;
 			Q_FOREACH (const QString& var, Variant2VerString_.keys ())

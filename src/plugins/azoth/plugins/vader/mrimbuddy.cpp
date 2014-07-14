@@ -239,7 +239,7 @@ namespace Vader
 
 	ICLEntry::EntryType MRIMBuddy::GetEntryType () const
 	{
-		return ETChat;
+		return EntryType::Chat;
 	}
 
 	QString MRIMBuddy::GetEntryName () const

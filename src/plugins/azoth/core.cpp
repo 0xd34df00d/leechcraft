@@ -588,7 +588,7 @@ namespace Azoth
 		QStringList result;
 		Q_FOREACH (const ICLEntry *entry, Entry2Items_.keys ())
 		{
-			if (entry->GetEntryType () != ICLEntry::ETChat)
+			if (entry->GetEntryType () != ICLEntry::EntryType::Chat)
 				continue;
 
 			Q_FOREACH (const QString& group, entry->Groups ())
@@ -931,9 +931,9 @@ namespace Azoth
 		QStringList GetDisplayGroups (const ICLEntry *clEntry)
 		{
 			QStringList groups;
-			if (clEntry->GetEntryType () == ICLEntry::ETUnauthEntry)
+			if (clEntry->GetEntryType () == ICLEntry::EntryType::UnauthEntry)
 				groups << Core::tr ("Unauthorized users");
-			else if (clEntry->GetEntryType () != ICLEntry::ETChat ||
+			else if (clEntry->GetEntryType () != ICLEntry::EntryType::Chat ||
 					XmlSettingsManager::Instance ()
 						.property ("GroupContacts").toBool ())
 				groups = clEntry->Groups ();
@@ -1023,14 +1023,14 @@ namespace Azoth
 
 				bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
 				if (!isMucCat)
-					isMucCat = clEntry->GetEntryType () == ICLEntry::ETPrivateChat;
+					isMucCat = clEntry->GetEntryType () == ICLEntry::EntryType::PrivateChat;
 				catItem->setData (isMucCat, CLRIsMUCCategory);
 			}
 		}
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString (), false);
 
-		if (clEntry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (clEntry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 			handleEntryPermsChanged (clEntry);
 
 		TooltipManager_->AddEntry (clEntry);
@@ -1098,7 +1098,7 @@ namespace Azoth
 	Entity Core::BuildStatusNotification (const EntryStatus& entrySt,
 		ICLEntry *entry, const QString& variant)
 	{
-		if (entry->GetEntryType () != ICLEntry::ETChat)
+		if (entry->GetEntryType () != ICLEntry::EntryType::Chat)
 			return Entity ();
 
 		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
@@ -1726,7 +1726,7 @@ namespace Azoth
 
 			AddCLEntry (entry, accountItem);
 
-			if (entry->GetEntryType () & ICLEntry::ETMUC)
+			if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			{
 				auto mucEntry = qobject_cast<IMUCEntry*> (item);
 
@@ -1756,7 +1756,7 @@ namespace Azoth
 				continue;
 			}
 
-			if (entry->GetEntryType () == ICLEntry::ETMUC &&
+			if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
 					XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
 				GetChatTabsManager ()->CloseChat (entry);
 
@@ -1907,7 +1907,7 @@ namespace Azoth
 			return;
 		}
 
-		if (entry->GetEntryType () == ICLEntry::ETChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::Chat)
 			newGroups = GetDisplayGroups (entry);
 
 		if (!Entry2Items_.contains (entry))
@@ -2459,7 +2459,7 @@ namespace Azoth
 	void Core::handleGroupContactsChanged ()
 	{
 		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
-			if (entry->GetEntryType () == ICLEntry::ETChat)
+			if (entry->GetEntryType () == ICLEntry::EntryType::Chat)
 				handleEntryGroupsChanged (GetDisplayGroups (entry), entry->GetQObject ());
 	}
 

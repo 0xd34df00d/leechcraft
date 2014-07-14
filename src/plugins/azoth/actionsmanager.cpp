@@ -376,7 +376,7 @@ namespace Azoth
 
 			const auto account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 			for (const auto entryObj : account->GetCLEntries ())
-				if (qobject_cast<ICLEntry*> (entryObj)->GetEntryType () == ICLEntry::ETMUC)
+				if (qobject_cast<ICLEntry*> (entryObj)->GetEntryType () == ICLEntry::EntryType::MUC)
 					mucObjs << entryObj;
 
 			if (mucObjs.isEmpty ())
@@ -953,7 +953,7 @@ namespace Azoth
 		openChat->setProperty ("ActionIcon", "view-conversation-balloon");
 		Entry2Actions_ [entry] ["openchat"] = openChat;
 		Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 			Action2Areas_ [openChat] << CLEAAChatCtxtMenu;
 
 		auto copyEntryId = new QAction (tr ("Copy full entry ID"), entry->GetQObject ());
@@ -1041,7 +1041,7 @@ namespace Azoth
 			rerequestReason->setProperty ("Azoth/WithReason", true);
 		}
 
-		if (entry->GetEntryType () != ICLEntry::ETMUC)
+		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
 			auto notifyMenu = new QMenu (tr ("Notify when"));
 			Entry2Actions_ [entry] ["notifywhen"] = notifyMenu->menuAction ();
@@ -1080,7 +1080,7 @@ namespace Azoth
 			Action2Areas_ [shareRIEX] << CLEAAContactListCtxtMenu;
 		}
 
-		if (entry->GetEntryType () != ICLEntry::ETMUC)
+		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
 			auto inviteTo = new QAction (tr ("Invite to a MUC..."), entry->GetQObject ());
 			Entry2Actions_ [entry] ["inviteToMuc"] = inviteTo;
@@ -1096,7 +1096,7 @@ namespace Azoth
 		}
 
 		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
 			if (perms)
 			{
@@ -1171,7 +1171,7 @@ namespace Azoth
 			Entry2Actions_ [entry] ["sep_afterjid"] = sep;
 			Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
 		}
-		else if (entry->GetEntryType () == ICLEntry::ETMUC)
+		else if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 		{
 			auto sepBeforeMuc = Util::CreateSeparator (entry->GetQObject ());
 			Entry2Actions_ [entry] ["sep_beforemuc"] = sepBeforeMuc;
@@ -1226,7 +1226,7 @@ namespace Azoth
 						<< CLEAAToolbar;
 			}
 		}
-		else if (entry->GetEntryType () == ICLEntry::ETUnauthEntry)
+		else if (entry->GetEntryType () == ICLEntry::EntryType::UnauthEntry)
 		{
 			QAction *authorize = new QAction (tr ("Authorize"), entry->GetQObject ());
 			Entry2Actions_ [entry] ["authorize"] = authorize;
@@ -1236,7 +1236,7 @@ namespace Azoth
 			Entry2Actions_ [entry] ["denyauth"] = denyAuth;
 			Action2Areas_ [denyAuth] << CLEAAContactListCtxtMenu;
 		}
-		else if (entry->GetEntryType () == ICLEntry::ETChat)
+		else if (entry->GetEntryType () == ICLEntry::EntryType::Chat)
 		{
 			QAction *remove = new QAction (tr ("Remove"), entry->GetQObject ());
 			remove->setProperty ("ActionIcon", "list-remove");
@@ -1302,7 +1302,7 @@ namespace Azoth
 
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		const bool isOnline = account->GetState ().State_ != SOffline;
-		if (entry->GetEntryType () != ICLEntry::ETMUC)
+		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
 			bool enableVCard =
 					account->GetAccountFeatures () & IAccount::FCanViewContactsInfoInOffline ||
@@ -1313,7 +1313,7 @@ namespace Azoth
 			const auto hasMucs = std::any_of (allEntries.begin (), allEntries.end (),
 					[] (QObject *entryObj)
 					{
-						return qobject_cast<ICLEntry*> (entryObj)->GetEntryType () == ICLEntry::ETMUC;
+						return qobject_cast<ICLEntry*> (entryObj)->GetEntryType () == ICLEntry::EntryType::MUC;
 					});
 
 			Entry2Actions_ [entry] ["inviteToMuc"]->setEnabled (hasMucs);
@@ -1333,7 +1333,7 @@ namespace Azoth
 			Entry2Actions_ [entry] ["drawattention"]->setEnabled (suppAtt);
 		}
 
-		if (entry->GetEntryType () == ICLEntry::ETChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::Chat)
 		{
 			Entry2Actions_ [entry] ["remove"]->setEnabled (isOnline);
 			if (Entry2Actions_ [entry] ["authorization"])
@@ -1346,7 +1346,7 @@ namespace Azoth
 					setEnabled (thisMuc->GetMUCFeatures () & IMUCEntry::MUCFCanInvite);
 
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
 			if (mucPerms)
 			{

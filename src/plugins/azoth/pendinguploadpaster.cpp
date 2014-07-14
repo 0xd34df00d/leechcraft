@@ -53,7 +53,7 @@ namespace Azoth
 		if (filename != Filename_)
 			return;
 
-		const auto msgType = Entry_->GetEntryType () == ICLEntry::ETMUC ?
+		const auto msgType = Entry_->GetEntryType () == ICLEntry::EntryType::MUC ?
 					IMessage::Type::MUCMessage :
 					IMessage::Type::ChatMessage;
 		auto msgObj = Entry_->CreateMessage (msgType, EntryVariant_, url.toEncoded ());

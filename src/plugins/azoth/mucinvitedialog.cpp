@@ -43,13 +43,13 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.Invitee_->setInsertPolicy (QComboBox::NoInsert);
 
-		ICLEntry::EntryType requestedType = ICLEntry::ETChat;
+		ICLEntry::EntryType requestedType = ICLEntry::EntryType::Chat;
 		switch (type)
 		{
 		case ListType::ListEntries:
 			break;
 		case ListType::ListMucs:
-			requestedType = ICLEntry::ETMUC;
+			requestedType = ICLEntry::EntryType::MUC;
 			Ui_.InviteeLabel_->setText ("Conferences:");
 			break;
 		}

@@ -78,7 +78,7 @@ namespace Acetamide
 
 	ICLEntry::EntryType IrcServerCLEntry::GetEntryType () const
 	{
-		return ETMUC;
+		return EntryType::MUC;
 	}
 
 	QString IrcServerCLEntry::GetEntryID () const

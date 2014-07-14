@@ -65,7 +65,7 @@ namespace VelvetBird
 
 	ICLEntry::EntryType Buddy::GetEntryType () const
 	{
-		return ICLEntry::ETChat;
+		return ICLEntry::EntryType::Chat;
 	}
 
 	QString Buddy::GetEntryName () const

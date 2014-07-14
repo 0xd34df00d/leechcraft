@@ -135,7 +135,7 @@ namespace Acetamide
 
 	ICLEntry::EntryType ChannelCLEntry::GetEntryType () const
 	{
-		return ETMUC;
+		return EntryType::MUC;
 	}
 
 	QString ChannelCLEntry::GetEntryName () const

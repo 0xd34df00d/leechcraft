@@ -314,7 +314,7 @@ namespace MuCommands
 			auto nicks = ParseNicks (entry, text);
 			if (nicks.isEmpty ())
 			{
-				if (entry->GetEntryType () == ICLEntry::ETMUC)
+				if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 					return;
 				else
 					nicks << entry->GetHumanReadableID ();
@@ -776,7 +776,7 @@ namespace MuCommands
 		const auto& id = text.section (' ', 1, 1);
 		const auto& reason = text.section (' ', 2);
 
-		if (entry->GetEntryType () == ICLEntry::ETMUC)
+		if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 		{
 			const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount ());
 			const auto& inviteeId = invitee ?
@@ -819,7 +819,7 @@ namespace MuCommands
 
 	bool Pm (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		if (entry->GetEntryType () != ICLEntry::ETMUC)
+		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 			return false;
 
 		const auto& firstLine = text.section ('\n', 0, 0);
