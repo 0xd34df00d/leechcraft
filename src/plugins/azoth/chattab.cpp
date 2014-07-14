@@ -1885,7 +1885,7 @@ namespace Azoth
 			const auto& dt = msg->GetDateTime ().toString ("HH:mm:ss.zzz");
 			MUCEventLog_->append (QString ("<font color=\"#56ED56\">[%1] %2</font>")
 						.arg (dt)
-						.arg (Qt::escape (msg->GetBody ())));
+						.arg (msg->GetEscapedBody ()));
 			if (msg->GetMessageSubType () != IMessage::MSTRoomSubjectChange)
 				return;
 		}
