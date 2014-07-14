@@ -62,7 +62,7 @@ namespace Astrality
 				Tp::ContactMessengerPtr, EntryWrapper*);
 		MsgWrapper (const QString&, Direction,
 				Tp::ContactMessengerPtr, EntryWrapper*,
-				Type, SubType = MSTOther);
+				Type, SubType = SubType::Other);
 
 		QObject* GetQObject ();
 		void Send ();

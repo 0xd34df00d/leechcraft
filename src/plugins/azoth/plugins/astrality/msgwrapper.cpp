@@ -45,9 +45,9 @@ namespace Astrality
 	, Entry_ (entry)
 	, Body_ (msg.text ())
 	, DT_ (msg.received ())
-	, Dir_ (DIn)
-	, MT_ (MChatMessage)
-	, MST_ (MSTOther)
+	, Dir_ (Direction::In)
+	, MT_ (Type::ChatMessage)
+	, MST_ (SubType::Other)
 	{
 	}
 
