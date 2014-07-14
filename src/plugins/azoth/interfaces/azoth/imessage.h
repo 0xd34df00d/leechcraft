@@ -183,6 +183,12 @@ namespace Azoth
 			MSTRoomSubjectChange
 		};
 
+		enum class EscapePolicy
+		{
+			Escape,
+			NoEscape
+		};
+
 		/** @brief Returns this message as a QObject.
 		 */
 		virtual QObject* GetQObject () = 0;
@@ -288,6 +294,20 @@ namespace Azoth
 		 */
 		virtual void SetBody (const QString& body) = 0;
 
+		/** @brief Returns the escape policy of the body.
+		 *
+		 * The default implementation simply returns EscapePolicy::Escape.
+		 *
+		 * @return The body escape policy.
+		 *
+		 * @sa EscapePolicy
+		 * @sa GetEscapedBody()
+		 */
+		virtual EscapePolicy GetEscapePolicy () const
+		{
+			return EscapePolicy::Escape;
+		}
+
 		/** @brief Returns the timestamp of the message.
 		 *
 		 * @return The timestamp of the message.
@@ -304,4 +324,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMessage,
-	"org.Deviant.LeechCraft.Azoth.IMessage/1.0");
+		"org.LeechCraft.Azoth.IMessage/1.0");
