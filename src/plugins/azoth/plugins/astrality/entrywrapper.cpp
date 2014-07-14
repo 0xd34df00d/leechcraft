@@ -110,7 +110,7 @@ namespace Astrality
 
 	ICLEntry::EntryType EntryWrapper::GetEntryType () const
 	{
-		return ETChat;
+		return EntryType::Chat;
 	}
 
 	QString EntryWrapper::GetEntryName () const
