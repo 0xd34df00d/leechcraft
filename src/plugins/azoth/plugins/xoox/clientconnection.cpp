@@ -45,6 +45,7 @@
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCallManager.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>
 #include <util/sys/sysinfo.h>
@@ -992,6 +993,23 @@ namespace Xoox
 			const auto& presences = rm.getAllPresencesForBareJid (re.bareJid ());
 			for (const auto& resource : presences.keys ())
 				entry->SetClientInfo (resource, presences [resource]);
+
+			if (bareJid == "juick@juick.com")
+			{
+				new Util::DelayedExecutor
+				{
+					[] () -> void
+					{
+						const auto& e = Util::MakeNotification ("Azoth",
+								tr ("Using the juick.com service is discouraged. Please consider "
+									"migrating to saner alternatives, like point.im."),
+								PWarning_);
+						Core::Instance ().SendEntity (e);
+					},
+					5000
+				};
+				break;
+			}
 		}
 		emit gotRosterItems (items);
 
