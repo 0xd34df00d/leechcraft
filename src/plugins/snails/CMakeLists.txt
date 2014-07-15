@@ -45,6 +45,7 @@ set (SRCS
 	viewcolumnsmanager.cpp
 	texteditoradaptor.cpp
 	concurrentexceptions.cpp
+	mailsortmodel.cpp
 	)
 set (FORMS
 	mailtab.ui
