@@ -42,18 +42,17 @@ namespace Snails
 	}
 
 	void MailTreeDelegate::paint (QPainter *painter,
-			const QStyleOptionViewItem& item, const QModelIndex& index) const
+			const QStyleOptionViewItem& stockItem, const QModelIndex& index) const
 	{
 		const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
+		const auto hasUnreadChildren = index.data (MailModel::MailRole::UnreadChildrenCount).toInt ();
 
-		if (isRead)
-			QStyledItemDelegate::paint (painter, item, index);
-		else
-		{
-			QStyleOptionViewItemV4 newItem = item;
-			newItem.font.setBold (true);
-			QStyledItemDelegate::paint (painter, newItem, index);
-		}
+		QStyleOptionViewItemV4 item = stockItem;
+		if (!isRead)
+			item.font.setBold (true);
+		if (hasUnreadChildren)
+			item.font.setUnderline (true);
+		QStyledItemDelegate::paint (painter, item, index);
 	}
 }
 }
