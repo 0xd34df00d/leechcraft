@@ -144,9 +144,9 @@ namespace Snails
 				return msg->GetSize ();
 			else
 				return Util::MakePrettySize (msg->GetSize ());
-		default:
-			return {};
 		}
+
+		return {};
 	}
 
 	QModelIndex MailModel::index (int row, int column, const QModelIndex& parent) const
