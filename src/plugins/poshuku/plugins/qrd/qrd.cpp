@@ -117,17 +117,22 @@ namespace QRd
 			return;
 		}
 
+		const auto whiteBorder = 4;
+
 		const auto width = code->width;
-		QImage image { width, width, QImage::Format_Mono };
+		const auto fullWidth = width + 2 * whiteBorder;
+		QImage image { fullWidth, fullWidth, QImage::Format_Mono };
 		image.setColor (0, QColor { Qt::white }.rgb ());
 		image.setColor (1, QColor { Qt::black }.rgb ());
+		image.fill (0);
 		for (int y = 0; y < width; ++y)
 			for (int x = 0; x < width; ++x)
-				image.setPixel (x, y, code->data [y * width + x] & 0x01);
+				image.setPixel (x + whiteBorder, y + whiteBorder,
+						code->data [y * width + x] & 0x01);
 
 		const auto& geom = QApplication::desktop ()->availableGeometry (QCursor::pos ());
 		const auto& dim = std::min (geom.width (), geom.height ());
-		if (dim < width)
+		if (dim < fullWidth)
 		{
 			QMessageBox::critical (nullptr,
 					"LeechCraft",
@@ -135,9 +140,9 @@ namespace QRd
 			return;
 		}
 
-		auto scale = (width < 2.0 * dim / 3) ? (2.0 * dim / 3 / width) : dim / width;
+		auto scale = (fullWidth < 2.0 * dim / 3) ? (2.0 * dim / 3 / fullWidth) : dim / fullWidth;
 		if (scale > 1)
-			image = image.scaled (width * scale, width * scale, Qt::KeepAspectRatio, Qt::FastTransformation);
+			image = image.scaled (fullWidth * scale, fullWidth * scale, Qt::KeepAspectRatio, Qt::FastTransformation);
 
 		auto label = new QLabel;
 		label->setAttribute (Qt::WA_DeleteOnClose);
