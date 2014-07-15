@@ -87,6 +87,8 @@ namespace Snails
 		bool Update (const Message_ptr&);
 		bool Remove (const QByteArray&);
 	private:
+		void UpdateParentReadCount (const QByteArray&, bool);
+
 		void RemoveNode (const TreeNode_ptr&);
 		bool AppendStructured (const Message_ptr&);
 

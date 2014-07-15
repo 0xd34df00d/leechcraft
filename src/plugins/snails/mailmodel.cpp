@@ -43,6 +43,8 @@ namespace Snails
 		TreeNode_wptr Parent_;
 		QList<TreeNode_ptr> Children_;
 
+		QSet<QByteArray> UnreadChildren_;
+
 		int Row () const
 		{
 			const auto& parent = Parent_.lock ();
@@ -262,9 +264,14 @@ namespace Snails
 
 		if (*pos != msg)
 		{
+			const auto readChanged = (*pos)->IsRead () != msg->IsRead ();
+
 			*pos = msg;
 			for (const auto& indexPair : GetIndexes (msg->GetFolderID (), { 0, columnCount () - 1 }))
 				emit dataChanged (indexPair.value (0), indexPair.value (1));
+
+			if (readChanged)
+				UpdateParentReadCount (msg->GetFolderID (), !msg->IsRead ());
 		}
 
 		return true;
@@ -277,6 +284,8 @@ namespace Snails
 		if (msgPos == Messages_.end ())
 			return false;
 
+		UpdateParentReadCount (id, false);
+
 		for (const auto& node : FolderId2Nodes_.value (id))
 			RemoveNode (node);
 
@@ -285,6 +294,42 @@ namespace Snails
 		Messages_.erase (msgPos);
 
 		return true;
+	}
+
+	void MailModel::UpdateParentReadCount (const QByteArray& folderId, bool addUnread)
+	{
+		QList<TreeNode_ptr> nodes;
+		for (const auto& node : FolderId2Nodes_.value (folderId))
+		{
+			const auto& parent = node->Parent_.lock ();
+			if (parent != Root_)
+				nodes << parent;
+		}
+
+		for (int i = 0; i < nodes.size (); ++i)
+		{
+			const auto& item = nodes.at (i);
+
+			bool emitUpdate = false;
+			if (addUnread && !item->UnreadChildren_.contains (folderId))
+			{
+				item->UnreadChildren_ << folderId;
+				emitUpdate = true;
+			}
+			else if (!addUnread && item->UnreadChildren_.remove (folderId))
+				emitUpdate = true;
+
+			if (emitUpdate)
+			{
+				const auto& leftIdx = createIndex (item->Row (), 0, item.get ());
+				const auto& rightIdx = createIndex (item->Row (), columnCount () - 1, item.get ());
+				emit dataChanged (leftIdx, rightIdx);
+			}
+
+			const auto& parent = item->Parent_.lock ();
+			if (parent != Root_)
+				nodes << parent;
+		}
 	}
 
 	void MailModel::RemoveNode (const TreeNode_ptr& node)
@@ -360,6 +405,9 @@ namespace Snails
 			FolderId2Nodes_ [msg->GetFolderID ()] << node;
 			endInsertRows ();
 		}
+
+		if (!msg->IsRead ())
+			UpdateParentReadCount (msg->GetFolderID (), true);
 
 		return !indexes.isEmpty ();
 	}
