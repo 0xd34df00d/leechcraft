@@ -9,6 +9,9 @@
 				<item type="checkbox" property="RootsRespectRead" default="true">
 					<label value="Consider read status when sorting threads roots" />
 				</item>
+				<item type="checkbox" property="RootsRespectReadChildren" default="true">
+					<label value="Consider read status of children as well" />
+				</item>
 			</groupbox>
 		</tab>
 	</page>

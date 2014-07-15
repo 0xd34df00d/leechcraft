@@ -38,19 +38,33 @@ namespace Snails
 	MailSortModel::MailSortModel (QObject *parent)
 	: QSortFilterProxyModel { parent }
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("RootsRespectRead",
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"RootsRespectRead",
+					"RootsRespectReadChildren"
+				},
 				this, "handleRespectUnreadRootsChanged");
 		handleRespectUnreadRootsChanged ();
 	}
 
 	bool MailSortModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
-		if (left.parent ().isValid () || right.parent ().isValid ())
+		if (left.parent ().isValid () ||
+				right.parent ().isValid () ||
+				!RespectUnreadRoots_)
 			return QSortFilterProxyModel::lessThan (left, right);
 
-		const auto leftRead = left.data (MailModel::MailRole::IsRead).toBool ();
-		const auto rightRead = right.data (MailModel::MailRole::IsRead).toBool ();
-		if (leftRead == rightRead || !RespectUnreadRoots_)
+		auto leftRead = left.data (MailModel::MailRole::IsRead).toBool ();
+		auto rightRead = right.data (MailModel::MailRole::IsRead).toBool ();
+
+		if (RespectUnreadChildren_)
+		{
+			if (left.data (MailModel::MailRole::UnreadChildrenCount).toInt ())
+				leftRead = false;
+			if (right.data (MailModel::MailRole::UnreadChildrenCount).toInt ())
+				rightRead = false;
+		}
+
+		if (leftRead == rightRead)
 			return QSortFilterProxyModel::lessThan (left, right);
 
 		return leftRead && !rightRead;
@@ -58,11 +72,10 @@ namespace Snails
 
 	void MailSortModel::handleRespectUnreadRootsChanged ()
 	{
-		const auto val = XmlSettingsManager::Instance ().property ("RootsRespectRead").toBool ();
-		if (val == RespectUnreadRoots_)
-			return;
-
-		RespectUnreadRoots_ = val;
+		RespectUnreadRoots_ = XmlSettingsManager::Instance ()
+				.property ("RootsRespectRead").toBool ();
+		RespectUnreadChildren_ = XmlSettingsManager::Instance ()
+				.property ("RootsRespectReadChildren").toBool ();
 		invalidate ();
 	}
 }

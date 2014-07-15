@@ -40,6 +40,7 @@ namespace Snails
 		Q_OBJECT
 
 		bool RespectUnreadRoots_ = false;
+		bool RespectUnreadChildren_ = false;
 	public:
 		MailSortModel (QObject* = nullptr);
 	protected:
