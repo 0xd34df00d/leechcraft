@@ -138,7 +138,7 @@ namespace Snails
 			if (role == Sort)
 				return msg->GetDate ();
 			else
-				return msg->GetDate ().toString ();
+				return msg->GetDate ().toLocalTime ().toString ();
 		case Column::Size:
 			if (role == Sort)
 				return msg->GetSize ();
