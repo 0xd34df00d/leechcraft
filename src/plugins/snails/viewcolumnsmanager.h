@@ -51,6 +51,7 @@ namespace Snails
 		ViewColumnsManager (QHeaderView*);
 
 		void SetStretchColumn (int);
+		void SetDefaultWidth (int, int);
 		void SetDefaultWidths (const QList<int>&);
 		void SetDefaultWidths (const QStringList&);
 
