@@ -1006,7 +1006,7 @@ namespace Xoox
 								PWarning_);
 						Core::Instance ().SendEntity (e);
 					},
-					5000
+					15000
 				};
 				break;
 			}
