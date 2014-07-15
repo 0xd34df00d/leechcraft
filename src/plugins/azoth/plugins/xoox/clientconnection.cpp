@@ -982,26 +982,24 @@ namespace Xoox
 
 	void ClientConnection::handleRosterReceived ()
 	{
-		QXmppRosterManager& rm = Client_->rosterManager ();
+		const auto& rm = Client_->rosterManager ();
 		QObjectList items;
-		Q_FOREACH (const QString& bareJid,
-				rm.getRosterBareJids ())
+		for (const auto& bareJid : rm.getRosterBareJids ())
 		{
-			QXmppRosterIq::Item re = rm.getRosterEntry (bareJid);
-			GlooxCLEntry *entry = CreateCLEntry (re);
+			const auto& re = rm.getRosterEntry (bareJid);
+			const auto entry = CreateCLEntry (re);
 			items << entry;
-			QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (re.bareJid ());
-			Q_FOREACH (const QString& resource, presences.keys ())
+			const auto& presences = rm.getAllPresencesForBareJid (re.bareJid ());
+			for (const auto& resource : presences.keys ())
 				entry->SetClientInfo (resource, presences [resource]);
 		}
 		emit gotRosterItems (items);
 
-		Q_FOREACH (const QXmppMessage& msg, OfflineMsgQueue_)
+		for (const auto& msg : OfflineMsgQueue_)
 			handleMessageReceived (msg);
 		OfflineMsgQueue_.clear ();
 
-		QPair<QString, PEPEventBase*> initialEvent;
-		Q_FOREACH (initialEvent, InitialEventQueue_)
+		for (const auto& initialEvent : InitialEventQueue_)
 		{
 			handlePEPEvent (initialEvent.first, initialEvent.second);
 			delete initialEvent.second;
@@ -1011,16 +1009,16 @@ namespace Xoox
 
 	void ClientConnection::handleRosterChanged (const QString& bareJid)
 	{
-		QXmppRosterManager& rm = Client_->rosterManager ();
-		QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (bareJid);
+		const auto& rm = Client_->rosterManager ();
+		const auto& presences = rm.getAllPresencesForBareJid (bareJid);
 
 		if (!JID2CLEntry_.contains (bareJid))
-			emit gotRosterItems (QObjectList () << CreateCLEntry (bareJid));
+			emit gotRosterItems ({ CreateCLEntry (bareJid) });
 
-		GlooxCLEntry *entry = JID2CLEntry_ [bareJid];
-		Q_FOREACH (const QString& resource, presences.keys ())
+		const auto entry = JID2CLEntry_ [bareJid];
+		for (const auto& resource : presences.keys ())
 		{
-			const QXmppPresence& pres = presences [resource];
+			const auto& pres = presences [resource];
 			entry->SetClientInfo (resource, pres);
 			entry->SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
 		}
@@ -1033,7 +1031,7 @@ namespace Xoox
 		if (!JID2CLEntry_.contains (bareJid))
 			return;
 
-		GlooxCLEntry *entry = JID2CLEntry_.take (bareJid);
+		const auto entry = JID2CLEntry_.take (bareJid);
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
 
