@@ -29,6 +29,8 @@
 
 #include "mailmodel.h"
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -110,11 +112,28 @@ namespace Snails
 			return {};
 		}
 
+		const auto column = static_cast<Column> (index.column ());
+
 		switch (role)
 		{
 		case Qt::DisplayRole:
 		case Sort:
 			break;
+		case Qt::DecorationRole:
+		{
+			if (column != Column::Subject)
+				return {};
+
+			QString iconName;
+			if (!msg->IsRead ())
+				iconName = "mail-unread-new";
+			else if (structItem->UnreadChildren_.size ())
+				iconName = "mail-unread";
+			else
+				iconName = "mail-read";
+
+			return Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (iconName);
+		}
 		case ID:
 			return msg->GetFolderID ();
 		case IsRead:
@@ -125,7 +144,7 @@ namespace Snails
 			return {};
 		}
 
-		switch (static_cast<Column> (index.column ()))
+		switch (column)
 		{
 		case Column::From:
 		{
