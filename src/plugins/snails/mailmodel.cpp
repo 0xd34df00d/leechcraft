@@ -115,7 +115,7 @@ namespace Snails
 			break;
 		case ID:
 			return msg->GetFolderID ();
-		case ReadStatus:
+		case IsRead:
 			return msg->IsRead ();
 		default:
 			return {};
