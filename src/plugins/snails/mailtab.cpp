@@ -65,7 +65,7 @@ namespace Snails
 		Ui_.MailView_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
 		auto colMgr = new ViewColumnsManager (Ui_.MailTree_->header ());
-		colMgr->SetStretchColumn (1);
+		colMgr->SetStretchColumn (static_cast<int> (MailModel::Column::Subject));
 		colMgr->SetDefaultWidths ({
 				"Typical sender name and surname",
 				{},

@@ -52,7 +52,7 @@ namespace Snails
 		QList<Message_ptr> Messages_;
 		QHash<QByteArray, QList<TreeNode_ptr>> FolderId2Nodes_;
 		QHash<QByteArray, QByteArray> MsgId2FolderId_;
-
+	public:
 		enum class Column
 		{
 			From,
@@ -60,7 +60,7 @@ namespace Snails
 			Date,
 			Size
 		};
-	public:
+
 		enum MailRole
 		{
 			ID = Qt::UserRole + 1,
