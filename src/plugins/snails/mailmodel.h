@@ -65,7 +65,8 @@ namespace Snails
 		{
 			ID = Qt::UserRole + 1,
 			Sort,
-			IsRead
+			IsRead,
+			UnreadChildrenCount
 		};
 
 		MailModel (QObject* = 0);

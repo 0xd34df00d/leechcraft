@@ -119,6 +119,8 @@ namespace Snails
 			return msg->GetFolderID ();
 		case IsRead:
 			return msg->IsRead ();
+		case UnreadChildrenCount:
+			return structItem->UnreadChildren_.size ();
 		default:
 			return {};
 		}
