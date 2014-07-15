@@ -45,6 +45,7 @@
 #include "viewcolumnsmanager.h"
 #include "accountfoldermanager.h"
 #include "vmimeconversions.h"
+#include "mailsortmodel.h"
 
 namespace LeechCraft
 {
@@ -56,7 +57,7 @@ namespace Snails
 	, MsgToolbar_ (new QToolBar)
 	, TabClass_ (tc)
 	, PMT_ (pmt)
-	, MailSortFilterModel_ (new QSortFilterProxyModel (this))
+	, MailSortFilterModel_ (new MailSortModel { this })
 	{
 		Ui_.setupUi (this);
 		//Ui_.MailTreeLay_->insertWidget (0, MsgToolbar_);
