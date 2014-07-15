@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
+		<label value="Appearance" />
+		<tab>
+			<label value="Mail list" />
+			<groupbox>
+				<label value="Sorting" />
+				<item type="checkbox" property="RootsRespectRead" default="true">
+					<label value="Consider read status when sorting threads roots" />
+				</item>
+			</groupbox>
+		</tab>
+	</page>
+	<page>
 		<label value="Accounts" />
 		<item type="customwidget" name="AccountsWidget" label="own" />
 	</page>

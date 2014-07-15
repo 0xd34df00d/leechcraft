@@ -29,6 +29,7 @@
 
 #include "mailsortmodel.h"
 #include "mailmodel.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,9 @@ namespace Snails
 	MailSortModel::MailSortModel (QObject *parent)
 	: QSortFilterProxyModel { parent }
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("RootsRespectRead",
+				this, "handleRespectUnreadRootsChanged");
+		handleRespectUnreadRootsChanged ();
 	}
 
 	bool MailSortModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
@@ -50,6 +54,16 @@ namespace Snails
 			return QSortFilterProxyModel::lessThan (left, right);
 
 		return leftRead && !rightRead;
+	}
+
+	void MailSortModel::handleRespectUnreadRootsChanged ()
+	{
+		const auto val = XmlSettingsManager::Instance ().property ("RootsRespectRead").toBool ();
+		if (val == RespectUnreadRoots_)
+			return;
+
+		RespectUnreadRoots_ = val;
+		invalidate ();
 	}
 }
 }

@@ -37,11 +37,15 @@ namespace Snails
 {
 	class MailSortModel : public QSortFilterProxyModel
 	{
+		Q_OBJECT
+
 		bool RespectUnreadRoots_ = false;
 	public:
 		MailSortModel (QObject* = nullptr);
 	protected:
 		bool lessThan (const QModelIndex&, const QModelIndex&) const;
+	private slots:
+		void handleRespectUnreadRootsChanged ();
 	};
 }
 }
