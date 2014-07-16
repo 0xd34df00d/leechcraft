@@ -622,14 +622,14 @@ namespace Snails
 			}
 
 			const auto& header = msg->GetVmimeHeader ();
-			if (header)
-			{
-				auto widget = new HeadersViewWidget { header, this };
-				widget->setAttribute (Qt::WA_DeleteOnClose);
-				widget->setWindowFlags (Qt::Dialog);
-				widget->setWindowTitle (tr ("Headers for \"%1\"").arg (msg->GetSubject ()));
-				widget->show ();
-			}
+			if (!header)
+				continue;
+
+			auto widget = new HeadersViewWidget { header, this };
+			widget->setAttribute (Qt::WA_DeleteOnClose);
+			widget->setWindowFlags (Qt::Dialog);
+			widget->setWindowTitle (tr ("Headers for \"%1\"").arg (msg->GetSubject ()));
+			widget->show ();
 		}
 	}
 
