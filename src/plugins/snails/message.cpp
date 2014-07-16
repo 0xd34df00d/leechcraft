@@ -28,8 +28,10 @@
  **********************************************************************/
 
 #include "message.h"
+#include "outputiodevadapter.h"
 #include <stdexcept>
 #include <QtDebug>
+#include <QBuffer>
 
 namespace LeechCraft
 {
@@ -257,6 +259,16 @@ namespace Snails
 			att.Dump ();
 	}
 
+	vmime::shared_ptr<const vmime::header> Message::GetVmimeHeader () const
+	{
+		return VmimeHeader_;
+	}
+
+	void Message::SetVmimeHeader (const vmime::shared_ptr<const vmime::header>& header)
+	{
+		VmimeHeader_ = header;
+	}
+
 	QByteArray Message::Serialize () const
 	{
 		QByteArray result;
@@ -277,6 +289,18 @@ namespace Snails
 			<< References_
 			<< Addresses_
 			<< Attachments_;
+
+		if (VmimeHeader_)
+		{
+			QBuffer buffer;
+			buffer.open (QIODevice::WriteOnly);
+			OutputIODevAdapter adapter { &buffer };
+			VmimeHeader_->generate (adapter);
+
+			str << buffer.buffer ();
+		}
+		else
+			str << QByteArray {};
 
 		return result;
 	}
@@ -303,6 +327,17 @@ namespace Snails
 			>> References_
 			>> Addresses_
 			>> Attachments_;
+
+		QByteArray headerBA;
+		str >> headerBA;
+		if (!headerBA.isEmpty ())
+		{
+			auto header = vmime::make_shared<vmime::header> ();
+			header->parse ({ headerBA.constData (), static_cast<size_t> (headerBA.size ()) });
+			VmimeHeader_ = header;
+		}
+		else
+			VmimeHeader_.reset ();
 	}
 
 	QString GetNiceMail (const Message::Address_t& pair)
