@@ -45,7 +45,7 @@ namespace Snails
 		OutputIODevAdapter adapter { &buffer };
 		header->generate (adapter);
 
-		Ui_.Edit_->setHtml ("<pre>" + QString::fromUtf8 (buffer.buffer ()) + "</pre>");
+		Ui_.Edit_->setHtml ("<pre>" + Qt::escape (QString::fromUtf8 (buffer.buffer ())) + "</pre>");
 	}
 }
 }
