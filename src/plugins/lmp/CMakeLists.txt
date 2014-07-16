@@ -55,6 +55,7 @@ target_link_libraries (leechcraft_lmp_common
 	${GSTREAMER_LIBRARIES}
 	${GLIB2_LIBRARIES}
 	${LIBXML2_LIBRARIES}
+	${LEECHCRAFT_LIBRARIES}
 	)
 
 set (SRCS
