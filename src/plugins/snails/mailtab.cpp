@@ -216,7 +216,7 @@ namespace Snails
 
 	void MailTab::SetMsgActionsEnabled (bool enable)
 	{
-		for (auto act : { MsgReply_, MsgMarkUnread_, MsgRemove_ })
+		for (auto act : { MsgReply_, MsgMarkUnread_, MsgRemove_, MsgViewHeaders_ })
 			act->setEnabled (enable);
 
 		MsgCopyButton_->setEnabled (enable);
