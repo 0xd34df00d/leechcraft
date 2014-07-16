@@ -240,6 +240,38 @@ namespace Eleeminator
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
 	}
 
+	void TermTab::AddUrlActions (QMenu& menu, const QPoint& point)
+	{
+		const auto hotspot = Term_->getHotSpotAt (point);
+		if (!hotspot)
+			return;
+
+		if (hotspot->type () != Filter::HotSpot::Link)
+			return;
+
+		const auto urlHotSpot = dynamic_cast<const Konsole::UrlFilter::HotSpot*> (hotspot);
+		if (!urlHotSpot)
+			return;
+
+		const auto& cap = urlHotSpot->capturedTexts ().value (0);
+		if (cap.isEmpty ())
+			return;
+
+		menu.addSeparator ();
+
+		const auto itm = CoreProxy_->GetIconThemeManager ();
+		const auto openAct = menu.addAction (itm->GetIcon ("document-open-remote"),
+				tr ("Open URL"),
+				this,
+				SLOT (openUrl ()));
+		openAct->setProperty ("ER/Url", cap);
+
+		const auto copyAct = menu.addAction (tr ("Copy URL"),
+				this,
+				SLOT (copyUrl ()));
+		copyAct->setProperty ("ER/Url", cap);
+	}
+
 	void TermTab::handleTermContextMenu (const QPoint& point)
 	{
 		QMenu menu;
@@ -258,11 +290,29 @@ namespace Eleeminator
 				SLOT (pasteClipboard ()));
 		pasteAct->setEnabled (!QApplication::clipboard ()->text (QClipboard::Clipboard).isEmpty ());
 
+		AddUrlActions (menu, point);
+
 		const auto& selected = Term_->selectedText ();
 		if (!selected.isEmpty ())
 			new Util::StdDataFilterMenuCreator { selected, CoreProxy_->GetEntityManager (), &menu };
 
 		menu.exec (Term_->mapToGlobal (point));
+	}
+
+	void TermTab::openUrl ()
+	{
+		const auto& cap = sender ()->property ("ER/Url").toString ();
+		const auto& url = QUrl::fromEncoded (cap.toUtf8 ());
+
+		const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
+		CoreProxy_->GetEntityManager ()->HandleEntity (entity);
+	}
+
+	void TermTab::copyUrl ()
+	{
+		const auto& url = sender ()->property ("ER/Url").toUrl ();
+
+		QApplication::clipboard ()->setText (url.toString (), QClipboard::Clipboard);
 	}
 
 	void TermTab::setColorScheme (QAction *schemeAct)
