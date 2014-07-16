@@ -52,6 +52,7 @@
 #include "core.h"
 #include "texteditoradaptor.h"
 #include "concurrentexceptions.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -130,8 +131,31 @@ namespace Snails
 		ReplyMessage_ = msg;
 	}
 
+	void ComposeMessageTab::PrepareReplyEditor (const Message_ptr& msg)
+	{
+		const auto& replyOpt = XmlSettingsManager::Instance ()
+				.property ("ReplyMessageFormat").toString ();
+		if (replyOpt == "Plain")
+			SelectPlainEditor ();
+		else if (replyOpt == "HTML")
+			SelectHtmlEditor ();
+		else if (replyOpt == "Orig")
+		{
+			if (msg->GetHTMLBody ().isEmpty ())
+				SelectPlainEditor ();
+			else
+				SelectHtmlEditor ();
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown option"
+					<< replyOpt;
+	}
+
 	void ComposeMessageTab::PrepareReplyBody (const Message_ptr& msg)
 	{
+		PrepareReplyEditor (msg);
+
 		auto plainSplit = msg->GetBody ().split ('\n');
 		for (auto& str : plainSplit)
 		{
@@ -255,6 +279,22 @@ namespace Snails
 		}
 
 		Ui_.EditorStack_->setCurrentIndex (Ui_.EditorStack_->count () - 1);
+	}
+
+	void ComposeMessageTab::SelectPlainEditor ()
+	{
+		EditorsMenu_->actions ().value (0)->setChecked (true);
+		handleEditorSelected (0);
+	}
+
+	void ComposeMessageTab::SelectHtmlEditor ()
+	{
+		const auto& actions = EditorsMenu_->actions ();
+		if (actions.size () < 2)
+			return;
+
+		actions.value (1)->setChecked (true);
+		handleEditorSelected (1);
 	}
 
 	IEditorWidget* ComposeMessageTab::GetCurrentEditor() const

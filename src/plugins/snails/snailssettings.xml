@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="Appearance" />
+		<label value="Behavior" />
 		<tab>
 			<label value="Mail list" />
 			<groupbox>
@@ -13,6 +13,21 @@
 					<label value="Consider read status of children as well" />
 				</item>
 			</groupbox>
+		</tab>
+		<tab>
+			<label value="Editor" />
+			<item type="combobox" property="ReplyMessageFormat">
+				<label value="Default format of a reply:" />
+				<option name="Orig" default="true">
+					<label value="As original message" />
+				</option>
+				<option name="Plain">
+					<label value="Plain text" />
+				</option>
+				<option name="HTML">
+					<label value="HTML" />
+				</option>
+			</item>
 		</tab>
 	</page>
 	<page>
