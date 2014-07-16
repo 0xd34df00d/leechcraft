@@ -336,8 +336,34 @@ namespace Eleeminator
 		emit changeTabName (this, title);
 	}
 
+	namespace
+	{
+		Qt::KeyboardModifier GetModifier (const QString& str)
+		{
+			if (str == "Ctrl")
+				return Qt::ControlModifier;
+			else if (str == "Alt")
+				return Qt::AltModifier;
+			else if (str == "Shift")
+				return Qt::ShiftModifier;
+			else if (str == "Meta")
+				return Qt::MetaModifier;
+			else
+				return Qt::NoModifier;
+		}
+	}
+
 	void TermTab::handleUrlActivated (const QUrl& url)
 	{
+		const auto modifiers = QApplication::keyboardModifiers ();
+
+		const auto& selectedStr = XmlSettingsManager::Instance ()
+				.property ("LinkActivationModifier").toString ();
+		const auto selected = GetModifier (selectedStr);
+
+		if (selected != Qt::NoModifier && !(modifiers & selected))
+			return;
+
 		const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
 		CoreProxy_->GetEntityManager ()->HandleEntity (entity);
 	}
