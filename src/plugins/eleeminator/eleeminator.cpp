@@ -32,8 +32,10 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "termtab.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -76,6 +78,9 @@ namespace Eleeminator
 			15,
 			TFOpenableByRequest | TFOverridesTabClose
 		};
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "eleeminatorsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -143,6 +148,11 @@ namespace Eleeminator
 	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
 	{
 		ShortcutMgr_->SetShortcut (id, sequences);
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }

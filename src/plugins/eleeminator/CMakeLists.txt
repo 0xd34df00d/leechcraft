@@ -27,7 +27,7 @@ set (RESOURCES eleeminatorresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 QT4_WRAP_UI (UIS_H ${FORMS})
 CreateTrs("eleeminator" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("eleeminator" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("eleeminator" "en;ru_RU" "${SRCS}" "${FORMS}" "eleeminatorsettings.xml")
 
 add_library (leechcraft_eleeminator SHARED
 	${COMPILED_TRANSLATIONS}
@@ -41,3 +41,4 @@ target_link_libraries (leechcraft_eleeminator
 	${QTERMWIDGET_LIBRARIES}
 	)
 install (TARGETS leechcraft_eleeminator DESTINATION ${LC_PLUGINS_DEST})
+install (FILES eleeminatorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
