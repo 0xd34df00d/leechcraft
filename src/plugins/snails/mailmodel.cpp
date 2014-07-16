@@ -211,6 +211,11 @@ namespace Snails
 		return Folder_;
 	}
 
+	Message_ptr MailModel::GetMessage (const QByteArray& id) const
+	{
+		return GetMessageByFolderId (id);
+	}
+
 	void MailModel::Clear ()
 	{
 		if (Messages_.isEmpty ())
