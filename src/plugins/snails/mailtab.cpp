@@ -188,7 +188,7 @@ namespace Snails
 		TabToolbar_->addSeparator ();
 
 		MsgViewHeaders_ = new QAction (tr ("View headers"), this);
-		MsgViewHeaders_->setProperty ("ActionIcon", "");
+		MsgViewHeaders_->setProperty ("ActionIcon", "text-plain");
 		connect (MsgViewHeaders_,
 				SIGNAL (triggered ()),
 				this,
