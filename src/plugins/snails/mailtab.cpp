@@ -46,6 +46,7 @@
 #include "accountfoldermanager.h"
 #include "vmimeconversions.h"
 #include "mailsortmodel.h"
+#include "headersviewwidget.h"
 
 namespace LeechCraft
 {
@@ -183,6 +184,16 @@ namespace Snails
 				this,
 				SLOT (handleRemoveMsgs ()));
 		TabToolbar_->addAction (MsgRemove_);
+
+		TabToolbar_->addSeparator ();
+
+		MsgViewHeaders_ = new QAction (tr ("View headers"), this);
+		MsgViewHeaders_->setProperty ("ActionIcon", "");
+		connect (MsgViewHeaders_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleViewHeaders ()));
+		TabToolbar_->addAction (MsgViewHeaders_);
 
 		SetMsgActionsEnabled (false);
 	}
@@ -591,6 +602,35 @@ namespace Snails
 
 		const auto& ids = GetSelectedIds ();
 		CurrAcc_->DeleteMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
+	}
+
+	void MailTab::handleViewHeaders ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto model = CurrAcc_->GetMailModel ();
+		for (const auto& id : GetSelectedIds ())
+		{
+			const auto& msg = model->GetMessage (id);
+			if (!msg)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no message for id"
+						<< id;
+				continue;
+			}
+
+			const auto& header = msg->GetVmimeHeader ();
+			if (header)
+			{
+				auto widget = new HeadersViewWidget { header, this };
+				widget->setAttribute (Qt::WA_DeleteOnClose);
+				widget->setWindowFlags (Qt::Dialog);
+				widget->setWindowTitle (tr ("Headers for \"%1\"").arg (msg->GetSubject ()));
+				widget->show ();
+			}
+		}
 	}
 
 	void MailTab::handleAttachment ()
