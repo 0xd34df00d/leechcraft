@@ -135,6 +135,26 @@ namespace Xoox
 		return Nick_;
 	}
 
+	namespace
+	{
+		template<typename T>
+		void MergeMessages (QList<T*>& ourMessages, const QList<T*>& otherMessages)
+		{
+			QList<T*> messages;
+			std::merge (ourMessages.begin (), ourMessages.end (),
+					otherMessages.begin (), otherMessages.end (),
+					std::back_inserter (messages),
+					[] (T *msgObj1, T *msgObj2)
+					{
+						const auto msg1 = qobject_cast<IMessage*> (msgObj1);
+						const auto msg2 = qobject_cast<IMessage*> (msgObj2);
+						return msg1->GetDateTime () < msg2->GetDateTime ();
+					});
+
+			ourMessages = messages;
+		}
+	}
+
 	void RoomParticipantEntry::StealMessagesFrom (RoomParticipantEntry *other)
 	{
 		if (other->AllMessages_.isEmpty ())
@@ -143,19 +163,8 @@ namespace Xoox
 		for (auto msg : other->AllMessages_)
 			qobject_cast<GlooxMessage*> (msg)->SetVariant (Nick_);
 
-		QList<QObject*> messages;
-		std::merge (AllMessages_.begin (), AllMessages_.end (),
-				other->AllMessages_.begin (), other->AllMessages_.end (),
-				std::back_inserter (messages),
-				[] (QObject *msgObj1, QObject *msgObj2)
-				{
-					const auto msg1 = qobject_cast<IMessage*> (msgObj1);
-					const auto msg2 = qobject_cast<IMessage*> (msgObj2);
-					return msg1->GetDateTime () < msg2->GetDateTime ();
-				});
-
+		MergeMessages (AllMessages_, other->AllMessages_);
 		other->AllMessages_.clear ();
-		AllMessages_ = messages;
 
 		// unread messages are skept intentionally
 	}
