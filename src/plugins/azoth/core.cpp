@@ -176,25 +176,21 @@ namespace Azoth
 			std::function<bool (IProtocol*)> protoPred = [] (IProtocol*) { return true; })
 	{
 		QList<IAccount*> accounts;
-		Q_FOREACH (QObject *protoPlugin, protocols)
-		{
-			QObjectList protocols =
-					qobject_cast<IProtocolPlugin*> (protoPlugin)->GetProtocols ();
-			Q_FOREACH (QObject *protoObj, protocols)
+		for (const auto protoPlugin : protocols)
+			for (const auto protoObj : qobject_cast<IProtocolPlugin*> (protoPlugin)->GetProtocols ())
 			{
-				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+				const auto proto = qobject_cast<IProtocol*> (protoObj);
 				if (!protoPred (proto))
 					continue;
 
-				Q_FOREACH (QObject *accountObj, proto->GetRegisteredAccounts ())
+				for (const auto accountObj : proto->GetRegisteredAccounts ())
 				{
-					auto acc = qobject_cast<IAccount*> (accountObj);
+					const auto acc = qobject_cast<IAccount*> (accountObj);
 					if (!acc->IsShownInRoster ())
 						continue;
 					accounts << acc;
 				}
 			}
-		}
 		return accounts;
 	}
 
