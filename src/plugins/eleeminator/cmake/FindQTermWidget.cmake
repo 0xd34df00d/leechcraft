@@ -10,7 +10,7 @@ find_path(QTERMWIDGET_INCLUDE_DIR qtermwidget.h
 	)
 
 find_library(QTERMWIDGET_LIBRARIES NAMES qtermwidget libqtermwidget qtermwidget4 libqtermwidget4
-    PATHS
+	PATHS
 		${QTERMWIDGET_PATH_LIB}
 		/usr/lib/
 		/usr/lib${LIB_SUFFIX}/
