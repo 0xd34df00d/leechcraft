@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <cmath>
 #include <QString>
 #include <QWizard>
 #include <QList>
