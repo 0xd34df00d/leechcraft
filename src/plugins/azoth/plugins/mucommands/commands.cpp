@@ -37,6 +37,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -699,6 +700,46 @@ namespace MuCommands
 			return false;
 
 		PerformRoleAction (mucPerms->GetBanPerm (), entry->GetQObject (), text.section (' ', 1));
+		return true;
+	}
+
+	bool ListPerms (IProxyObject *azothProxy, ICLEntry *entry, const QString&)
+	{
+		const auto mucPerms = qobject_cast<IMUCPerms*> (entry->GetQObject ());
+		if (!mucPerms)
+		{
+			const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("%1 (or its protocol %2) does not support permissions.")
+							.arg ("<em>" + entry->GetEntryName () + "</em>")
+							.arg (proto->GetProtocolName ()));
+			return true;
+		}
+
+		QStringList classes;
+		for (const auto& classInfo : Util::Stlize (mucPerms->GetPossiblePerms ()))
+		{
+			const auto& classId = classInfo.first;
+
+			QStringList fields;
+			for (const auto& role : classInfo.second)
+				fields << QString ("%1 (%2)")
+						.arg ("<code>" + QString::fromUtf8 (role) + "</code>")
+						.arg (mucPerms->GetUserString (role));
+
+			auto string = QObject::tr ("Permission class %1 (%2):")
+					.arg ("<code>" + QString::fromUtf8 (classId) + "</code>")
+					.arg (mucPerms->GetUserString (classId));
+			string += "<ul><li>" + fields.join ("</li><li>") + "</li></ul>";
+
+			classes << string;
+		}
+
+		InjectMessage (azothProxy, entry,
+				QObject::tr ("Available role classes and their values:") +
+					"<ul><li>" + classes.join ("</li><li>") + "</li></ul>");
+
 		return true;
 	}
 
