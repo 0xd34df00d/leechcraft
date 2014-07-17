@@ -65,8 +65,7 @@ namespace MuCommands
 				const QString& rich)
 		{
 			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = azothProxy->CreateCoreMessage ({},
-					rich,
+			const auto msgObj = azothProxy->CreateCoreMessage (rich,
 					QDateTime::currentDateTime (),
 					IMessage::Type::ServiceMessage,
 					IMessage::Direction::In,

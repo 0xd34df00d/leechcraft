@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PROXYOBJECT_H
-#define PLUGINS_AZOTH_PROXYOBJECT_H
+#pragma once
+
 #include <QObject>
 #include <QHash>
 #include <QIcon>
@@ -75,12 +75,14 @@ namespace Azoth
 		QIcon GetIconForState (State) const;
 		void FormatLinks (QString&);
 		QStringList FindLinks (const QString&);
-		QObject* CreateCoreMessage (QString, const QString&, const QDateTime&,
+
+		QObject* CreateCoreMessage (const QString&, const QDateTime&,
 				IMessage::Type, IMessage::Direction, QObject*, QObject*);
+
+		QString ToPlainBody (QString);
+
 		bool IsMessageRead (QObject*);
 		void MarkMessagesAsRead (QObject*);
 	};
 }
 }
-
-#endif

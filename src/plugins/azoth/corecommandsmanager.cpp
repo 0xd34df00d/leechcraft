@@ -62,8 +62,7 @@ namespace Azoth
 					.arg ("<code>/help command</code>");
 
 			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = ProxyObject {}.CreateCoreMessage ({},
-					body,
+			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
 					QDateTime::currentDateTime (),
 					IMessage::Type::ServiceMessage,
 					IMessage::Direction::In,
@@ -89,8 +88,7 @@ namespace Azoth
 				message += "<br/>" + cmd.Help_;
 
 			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = ProxyObject {}.CreateCoreMessage ({},
-					message,
+			const auto msgObj = ProxyObject {}.CreateCoreMessage (message,
 					QDateTime::currentDateTime (),
 					IMessage::Type::ServiceMessage,
 					IMessage::Direction::In,
@@ -119,8 +117,7 @@ namespace Azoth
 					.arg ("<code>" + name + "</code>");
 
 			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = ProxyObject {}.CreateCoreMessage ({},
-					body,
+			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
 					QDateTime::currentDateTime (),
 					IMessage::Type::ServiceMessage,
 					IMessage::Direction::In,

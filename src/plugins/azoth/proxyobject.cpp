@@ -396,26 +396,25 @@ namespace Azoth
 		return result;
 	}
 
-	QObject* ProxyObject::CreateCoreMessage (QString body,
-			const QString& richBody, const QDateTime& date,
+	QObject* ProxyObject::CreateCoreMessage (const QString& body,
+			const QDateTime& date,
 			IMessage::Type type, IMessage::Direction dir,
 			QObject *other, QObject *parent)
 	{
-		if (body.isEmpty ())
+		return new CoreMessage (body, date, type, dir, other, parent);
+	}
+
+	QString ProxyObject::ToPlainBody (QString body)
+	{
+		body.replace ("<li>", "\n * ");
+		auto pos = 0;
+		while ((pos = body.indexOf ('<', pos)) != -1)
 		{
-			body = richBody;
-			body.replace ("<li>", "\n * ");
-			auto pos = 0;
-			while ((pos = body.indexOf ('<', pos)) != -1)
-			{
-				const auto endPos = body.indexOf ('>', pos + 1);
-				body.remove (pos, endPos - pos + 1);
-			}
+			const auto endPos = body.indexOf ('>', pos + 1);
+			body.remove (pos, endPos - pos + 1);
 		}
 
-		const auto msg = new CoreMessage (body, date, type, dir, other, parent);
-		msg->SetRichBody (richBody);
-		return msg;
+		return body;
 	}
 
 	bool ProxyObject::IsMessageRead (QObject *msgObj)
