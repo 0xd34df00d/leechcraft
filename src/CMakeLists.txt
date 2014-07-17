@@ -199,7 +199,7 @@ option (ENABLE_CPULOAD "Build CpuLoad for, well, monitoring the CPU load" ${WITH
 cmake_dependent_option (ENABLE_DEVMON "Build Devmon, the devices monitor plugin" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 option (ENABLE_DLNIWE "Build DLNiwe, the DLNA server plugin" OFF)
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
-cmake_dependent_option (ENABLE_ELEEMINATOR "Build Leeminal, embedded LeechCraft terminal emulator" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
+cmake_dependent_option (ENABLE_ELEEMINATOR "Build Leeminal, embedded LeechCraft terminal emulator" ${WITH_PLUGINS} "NOT WIN32" OFF)
 cmake_dependent_option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
 option (ENABLE_HARBINGER "Build Harbinger, the collections manager" ${WITH_PLUGINS})
