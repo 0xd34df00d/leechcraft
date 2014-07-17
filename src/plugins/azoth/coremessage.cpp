@@ -97,6 +97,11 @@ namespace Azoth
 		Body_ = body;
 	}
 
+	IMessage::EscapePolicy CoreMessage::GetEscapePolicy () const
+	{
+		return EscapePolicy::NoEscape;
+	}
+
 	QDateTime CoreMessage::GetDateTime () const
 	{
 		return Date_;
