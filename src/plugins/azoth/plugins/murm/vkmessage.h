@@ -54,7 +54,7 @@ namespace Murm
 
 		EntryBase * const OtherPart_;
 		EntryBase * const ParentCLEntry_;
-		const MessageType Type_;
+		const Type Type_;
 		const Direction Dir_;
 
 		QString Body_;
@@ -63,11 +63,12 @@ namespace Murm
 
 		qulonglong ID_ = -1;
 
-		bool IsRead_ = Dir_ == DOut || Type_ != MessageType::MTChatMessage;
+		bool IsRead_ = Dir_ == Direction::Out ||
+				Type_ != Type::ChatMessage;
 
 		const bool IsOurs_;
 	public:
-		VkMessage (bool isOurs, Direction, MessageType, EntryBase*, EntryBase* = nullptr);
+		VkMessage (bool isOurs, Direction, Type, EntryBase*, EntryBase* = nullptr);
 
 		QObject* GetQObject ();
 		void Send ();
@@ -82,14 +83,15 @@ namespace Murm
 		QString GetRawBody () const;
 
 		Direction GetDirection () const;
-		MessageType GetMessageType () const;
-		MessageSubType GetMessageSubType () const;
+		Type GetMessageType () const;
+		SubType GetMessageSubType () const;
 
 		QObject* OtherPart () const;
 		QObject* ParentCLEntry() const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;
 		void SetBody (const QString& body);
+		EscapePolicy GetEscapePolicy () const;
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime& timestamp);
 

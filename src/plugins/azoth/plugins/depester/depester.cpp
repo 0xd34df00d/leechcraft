@@ -103,7 +103,7 @@ namespace Depester
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry ||
-				entry->GetEntryType () != ICLEntry::ETPrivateChat)
+				entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 			return false;
 
 		return IgnoredNicks_.contains (entry->GetEntryName ());
@@ -150,7 +150,7 @@ namespace Depester
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entryObj)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 			return;
 
 		if (!Entry2ActionIgnore_.contains (entryObj))
@@ -229,7 +229,7 @@ namespace Depester
 	{
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 			return;
 
 		if (!IgnoredNicks_.contains (entry->GetEntryName ()))

@@ -19,7 +19,7 @@ set (MUCOMMANDS_SRCS
 set (MUCOMMANDS_RESOURCES azothmucommandsresources.qrc)
 QT4_ADD_RESOURCES (MUCOMMANDS_RCCS ${MUCOMMANDS_RESOURCES})
 
-#CreateTrs ("azoth_mucommands" "en;ru_RU" MUCOMMANDS_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_mucommands" "en;ru_RU" MUCOMMANDS_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_mucommands" "en;ru_RU" "${MUCOMMANDS_SRCS}" "" "")
 
 add_library (leechcraft_azoth_mucommands SHARED

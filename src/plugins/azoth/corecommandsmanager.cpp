@@ -52,7 +52,7 @@ namespace Azoth
 				{
 					auto cmdLine = cmd.Names_.join ("; ");
 					if (!cmd.Description_.isEmpty ())
-						cmdLine += " &mdash; " + cmd.Description_;
+						cmdLine += QString::fromUtf8 (" — ") + cmd.Description_;
 					commands << cmdLine;
 				}
 
@@ -64,8 +64,8 @@ namespace Azoth
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
 					QDateTime::currentDateTime (),
-					IMessage::MTServiceMessage,
-					IMessage::DIn,
+					IMessage::Type::ServiceMessage,
+					IMessage::Direction::In,
 					entryObj,
 					entryObj);
 			const auto msg = qobject_cast<IMessage*> (msgObj);
@@ -90,8 +90,8 @@ namespace Azoth
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = ProxyObject {}.CreateCoreMessage (message,
 					QDateTime::currentDateTime (),
-					IMessage::MTServiceMessage,
-					IMessage::DIn,
+					IMessage::Type::ServiceMessage,
+					IMessage::Direction::In,
 					entryObj,
 					entryObj);
 			const auto msg = qobject_cast<IMessage*> (msgObj);
@@ -119,8 +119,8 @@ namespace Azoth
 			const auto entryObj = entry->GetQObject ();
 			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
 					QDateTime::currentDateTime (),
-					IMessage::MTServiceMessage,
-					IMessage::DIn,
+					IMessage::Type::ServiceMessage,
+					IMessage::Direction::In,
 					entryObj,
 					entryObj);
 			const auto msg = qobject_cast<IMessage*> (msgObj);

@@ -48,7 +48,7 @@ namespace Xoox
 	AdHocCommandManager::AdHocCommandManager (ClientConnection *conn)
 	: ClientConn_ (conn)
 	{
-		connect (ClientConn_->GetDiscoveryManager (),
+		connect (ClientConn_->GetQXmppDiscoveryManager (),
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				this,
 				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
@@ -56,7 +56,7 @@ namespace Xoox
 
 	void AdHocCommandManager::QueryCommands (const QString& jid)
 	{
-		ClientConn_->GetDiscoveryManager ()->requestItems (jid, NsAdHoc);
+		ClientConn_->GetQXmppDiscoveryManager ()->requestItems (jid, NsAdHoc);
 	}
 
 	void AdHocCommandManager::ExecuteCommand (const QString& jid,

@@ -59,6 +59,11 @@ namespace Snails
 		StretchColumn_ = column;
 	}
 
+	void ViewColumnsManager::SetDefaultWidth (int idx, int width)
+	{
+		ColumnWidths_ [idx] = width;
+	}
+
 	void ViewColumnsManager::SetDefaultWidths (const QList<int>& widths)
 	{
 		ColumnWidths_ = widths;

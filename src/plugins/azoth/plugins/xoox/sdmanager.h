@@ -32,7 +32,9 @@
 #include <QObject>
 #include <QHash>
 #include <QXmppDiscoveryIq.h>
-#include "clientconnection.h"
+#include "discomanagerwrapper.h"
+
+class ClientConnection;
 
 namespace LeechCraft
 {
@@ -44,7 +46,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		ClientConnection *Conn_;
+		ClientConnection * const Conn_;
 
 		typedef QHash<QString, QHash<QString, QXmppDiscoveryIq>> Cache_t;
 		Cache_t Infos_;
@@ -52,14 +54,14 @@ namespace Xoox
 	public:
 		SDManager (ClientConnection*);
 
-		void RequestInfo (ClientConnection::DiscoCallback_t callback,
+		void RequestInfo (DiscoManagerWrapper::DiscoCallback_t callback,
 				const QString& jid, const QString& node = QString ());
-		void RequestItems (ClientConnection::DiscoCallback_t callback,
+		void RequestItems (DiscoManagerWrapper::DiscoCallback_t callback,
 				const QString& jid, const QString& node = QString ());
 	private:
 		void CommonDo (Cache_t& cache,
-				std::function<void (const QString&, ClientConnection::DiscoCallback_t, const QString&)>,
-				ClientConnection::DiscoCallback_t,
+				std::function<void (const QString&, DiscoManagerWrapper::DiscoCallback_t, const QString&)>,
+				DiscoManagerWrapper::DiscoCallback_t,
 				const QString&, const QString&);
 	};
 }

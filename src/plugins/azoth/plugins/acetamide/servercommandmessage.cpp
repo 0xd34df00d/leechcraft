@@ -45,15 +45,15 @@ namespace Acetamide
 	, ParentEntry_ (entry)
 	, Message_ (msg)
 	, Datetime_ (QDateTime::currentDateTime ())
-	, Direction_ (DOut)
-	, Type_ (MTMUCMessage)
-	, SubType_ (MSTOther)
+	, Direction_ (Direction::Out)
+	, Type_ (Type::MUCMessage)
+	, SubType_ (SubType::Other)
 	{
 	}
 
 	ServerCommandMessage::ServerCommandMessage (const QString& msg,
 			IMessage::Direction dir, IrcServerCLEntry *entry,
-			IMessage::MessageType mtype, IMessage::MessageSubType mstype)
+			IMessage::Type mtype, IMessage::SubType mstype)
 	: QObject (entry)
 	, ParentEntry_ (entry)
 	, Message_ (msg)
@@ -89,23 +89,23 @@ namespace Acetamide
 		return Direction_;
 	}
 
-	IMessage::MessageType ServerCommandMessage::GetMessageType () const
+	IMessage::Type ServerCommandMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	void ServerCommandMessage::SetMessageType (IMessage::MessageType t)
+	void ServerCommandMessage::SetMessageType (IMessage::Type t)
 	{
 		Type_ = t;
 	}
 
-	IMessage::MessageSubType ServerCommandMessage::GetMessageSubType () const
+	IMessage::SubType ServerCommandMessage::GetMessageSubType () const
 	{
 		return SubType_;
 	}
 
 	void ServerCommandMessage::SetMessageSubType
-			(IMessage::MessageSubType type)
+			(IMessage::SubType type)
 	{
 		SubType_ = type;
 	}

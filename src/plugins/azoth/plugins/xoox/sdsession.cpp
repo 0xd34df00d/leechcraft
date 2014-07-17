@@ -41,6 +41,7 @@
 #include "util.h"
 #include "executecommanddialog.h"
 #include "xep0232handler.h"
+#include "discomanagerwrapper.h"
 
 namespace LeechCraft
 {
@@ -97,10 +98,11 @@ namespace Xoox
 		items.at (0)->setData (true, DRFetchedMore);
 
 		QPointer<SDSession> ptr (this);
-		Account_->GetClientConnection ()->RequestInfo (query,
+		const auto discoWrapper = Account_->GetClientConnection ()->GetDiscoManagerWrapper ();
+		discoWrapper->RequestInfo (query,
 				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); },
 				true);
-		Account_->GetClientConnection ()->RequestItems (query,
+		discoWrapper->RequestItems (query,
 				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); },
 				true);
 	}
@@ -339,7 +341,7 @@ namespace Xoox
 					item.node ());
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
 
-			Account_->GetClientConnection ()->RequestInfo (item.jid (),
+			Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),
 					[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); },
 					true,
 					item.node ());
@@ -353,7 +355,7 @@ namespace Xoox
 		QPointer<SDSession> ptr (this);
 		const QString& jid = item->data (DRJID).toString ();
 		const QString& node = item->data (DRNode).toString ();
-		Account_->GetClientConnection ()->RequestItems (jid,
+		Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestItems (jid,
 				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); },
 				true,
 				node);

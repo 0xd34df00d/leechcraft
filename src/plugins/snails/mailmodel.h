@@ -52,7 +52,7 @@ namespace Snails
 		QList<Message_ptr> Messages_;
 		QHash<QByteArray, QList<TreeNode_ptr>> FolderId2Nodes_;
 		QHash<QByteArray, QByteArray> MsgId2FolderId_;
-
+	public:
 		enum class Column
 		{
 			From,
@@ -60,12 +60,13 @@ namespace Snails
 			Date,
 			Size
 		};
-	public:
+
 		enum MailRole
 		{
 			ID = Qt::UserRole + 1,
 			Sort,
-			ReadStatus
+			IsRead,
+			UnreadChildrenCount
 		};
 
 		MailModel (QObject* = 0);
@@ -80,6 +81,8 @@ namespace Snails
 		void SetFolder (const QStringList&);
 		QStringList GetCurrentFolder () const;
 
+		Message_ptr GetMessage (const QByteArray&) const;
+
 		void Clear ();
 
 		void Append (QList<Message_ptr>);
@@ -87,6 +90,8 @@ namespace Snails
 		bool Update (const Message_ptr&);
 		bool Remove (const QByteArray&);
 	private:
+		void UpdateParentReadCount (const QByteArray&, bool);
+
 		void RemoveNode (const TreeNode_ptr&);
 		bool AppendStructured (const Message_ptr&);
 

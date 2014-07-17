@@ -105,7 +105,7 @@ namespace HiLi
 			return;
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (msg->GetMessageType () != IMessage::MTMUCMessage)
+		if (msg->GetMessageType () != IMessage::Type::MUCMessage)
 			return;
 
 		bool isHighlight = false;

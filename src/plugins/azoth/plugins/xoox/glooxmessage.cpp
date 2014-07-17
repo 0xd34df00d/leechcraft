@@ -44,13 +44,13 @@ namespace Xoox
 	const QString NsXhtmlIM = "http://jabber.org/protocol/xhtml-im";
 	const QString NsXhtml = "http://www.w3.org/1999/xhtml";
 
-	GlooxMessage::GlooxMessage (IMessage::MessageType type,
+	GlooxMessage::GlooxMessage (IMessage::Type type,
 			IMessage::Direction dir,
 			const QString& jid,
 			const QString& variant,
 			ClientConnection *conn)
 	: Type_ (type)
-	, SubType_ (MSTOther)
+	, SubType_ (SubType::Other)
 	, Direction_ (dir)
 	, BareJID_ (jid)
 	, Variant_ (variant)
@@ -61,19 +61,19 @@ namespace Xoox
 		const QString& remoteJid = variant.isEmpty () ?
 				jid :
 				jid + "/" + variant;
-		if (type == MTChatMessage && variant.isEmpty ())
+		if (type == Type::ChatMessage && variant.isEmpty ())
 		{
 			QObject *object = Connection_->GetCLEntry (jid, variant);
 			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().value (0);
 		}
-		Message_.setTo (dir == DIn ? conn->GetOurJID () : remoteJid);
+		Message_.setTo (dir == Direction::In ? conn->GetOurJID () : remoteJid);
 	}
 
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
 			ClientConnection *conn)
-	: Type_ (MTChatMessage)
-	, SubType_ (MSTOther)
-	, Direction_ (DIn)
+	: Type_ (Type::ChatMessage)
+	, SubType_ (SubType::Other)
+	, Direction_ (Direction::In)
 	, Message_ (message)
 	, Connection_ (conn)
 	, IsDelivered_ (false)
@@ -94,7 +94,7 @@ namespace Xoox
 
 	void GlooxMessage::Send ()
 	{
-		if (Direction_ == DIn)
+		if (Direction_ == Direction::In)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "tried to send incoming message";
@@ -103,9 +103,9 @@ namespace Xoox
 
 		switch (Type_)
 		{
-		case MTChatMessage:
+		case Type::ChatMessage:
 			Message_.setReceiptRequested (true);
-		case MTMUCMessage:
+		case Type::MUCMessage:
 			Connection_->SendMessage (this);
 			QMetaObject::invokeMethod (OtherPart (),
 					"gotMessage",
@@ -115,7 +115,7 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< this
 					<< "cannot send a message of type"
-					<< Type_;
+					<< static_cast<int> (Type_);
 			break;
 		}
 	}
@@ -132,17 +132,17 @@ namespace Xoox
 		return Direction_;
 	}
 
-	IMessage::MessageType GlooxMessage::GetMessageType () const
+	IMessage::Type GlooxMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType GlooxMessage::GetMessageSubType () const
+	IMessage::SubType GlooxMessage::GetMessageSubType () const
 	{
 		return SubType_;
 	}
 
-	void GlooxMessage::SetMessageSubType (IMessage::MessageSubType subType)
+	void GlooxMessage::SetMessageSubType (IMessage::SubType subType)
 	{
 		SubType_ = subType;
 	}
@@ -159,7 +159,7 @@ namespace Xoox
 
 	QString GlooxMessage::GetBody () const
 	{
-		return Qt::escape (Message_.body ());
+		return Message_.body ();
 	}
 
 	void GlooxMessage::SetBody (const QString& body)
@@ -175,7 +175,7 @@ namespace Xoox
 	void GlooxMessage::SetDateTime (const QDateTime& dateTime)
 	{
 		DateTime_ = dateTime;
-		if (Direction_ == DIn)
+		if (Direction_ == Direction::In)
 			Message_.setStamp (dateTime);
 	}
 
@@ -208,7 +208,7 @@ namespace Xoox
 
 		Variant_ = variant;
 
-		if (Direction_ == DIn)
+		if (Direction_ == Direction::In)
 			Message_.setFrom (Variant_.isEmpty () ?
 					BareJID_ :
 					(BareJID_ + '/' + Variant_));

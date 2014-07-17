@@ -71,7 +71,7 @@ namespace Xoox
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::MessageType,
+		QObject* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 
 		QString GetJID () const;
@@ -80,6 +80,7 @@ namespace Xoox
 
 		void StealMessagesFrom (RoomParticipantEntry*);
 
+		QByteArray GetPhotoHash () const;
 		void SetPhotoHash (const QByteArray&);
 
 		QXmppMucItem::Affiliation GetAffiliation () const;

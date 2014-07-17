@@ -239,7 +239,7 @@ namespace Vader
 
 	ICLEntry::EntryType MRIMBuddy::GetEntryType () const
 	{
-		return ETChat;
+		return EntryType::Chat;
 	}
 
 	QString MRIMBuddy::GetEntryName () const
@@ -288,10 +288,10 @@ namespace Vader
 				QStringList ();
 	}
 
-	QObject* MRIMBuddy::CreateMessage (IMessage::MessageType,
+	QObject* MRIMBuddy::CreateMessage (IMessage::Type,
 			const QString&, const QString& body)
 	{
-		MRIMMessage *msg = new MRIMMessage (IMessage::DOut, IMessage::MTChatMessage, this);
+		MRIMMessage *msg = new MRIMMessage (IMessage::Direction::Out, IMessage::Type::ChatMessage, this);
 		msg->SetBody (body);
 		return msg;
 	}

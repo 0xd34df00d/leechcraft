@@ -60,6 +60,7 @@
 #include "coreplugin2manager.h"
 #include "entitymanager.h"
 #include "rootwindowsmanager.h"
+#include "mainwindowmenumanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -210,68 +211,9 @@ QToolBar* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) co
 	}
 }
 
-void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& menus)
+MainWindowMenuManager* MainWindow::GetMenuManager () const
 {
-	Q_FOREACH (const QString& menuName, menus.keys ())
-	{
-		QMenu *toInsert = 0;
-		if (menuName == "view")
-			toInsert = MenuView_;
-		else if (menuName == "tools")
-			toInsert = MenuTools_;
-		else
-		{
-			const auto& actions = MenuButton_->menu ()->actions ();
-			for (auto action : actions)
-				if (action->menu () &&
-					action->text () == menuName)
-				{
-					toInsert = action->menu ();
-					break;
-				}
-		}
-
-		if (toInsert)
-			toInsert->insertActions (toInsert->actions ().value (0, 0),
-					menus [menuName]);
-		else
-		{
-			QMenu *menu = new QMenu (menuName, MenuButton_->menu ());
-			menu->addActions (menus [menuName]);
-			MenuButton_->menu ()->insertMenu (MenuTools_->menuAction (), menu);
-		}
-
-		IconThemeEngine::Instance ().UpdateIconset (menus [menuName]);
-	}
-}
-
-void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*>>& menus)
-{
-	if (IsQuitting_)
-		return;
-
-	Q_FOREACH (const QString& menuName, menus.keys ())
-	{
-		QMenu *toRemove = 0;
-		if (menuName == "view")
-			toRemove = MenuView_;
-		else if (menuName == "tools")
-			toRemove = MenuTools_;
-
-		if (toRemove)
-			for (auto action : menus [menuName])
-				toRemove->removeAction (action);
-		else
-		{
-			auto menu = MenuButton_->menu ();
-			for (auto action : menu->actions ())
-				if (action->text () == menuName)
-				{
-					menu->removeAction (action);
-					break;
-				}
-		}
-	}
+	return MenuManager_;
 }
 
 QMenu* LeechCraft::MainWindow::createPopupMenu ()
@@ -321,12 +263,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			qApp,
 			SLOT (aboutQt ()));
 
-	MenuView_ = new QMenu (tr ("View"), this);
-	MenuView_->addSeparator ();
-	MenuView_->addAction (Ui_.ActionShowStatusBar_);
-	MenuView_->addAction (Ui_.ActionFullscreenMode_);
-	MenuTools_ = new QMenu (tr ("Tools"), this);
-
 #ifdef Q_OS_MAC
 	Ui_.ActionFullscreenMode_->setVisible (false);
 #endif
@@ -359,28 +295,14 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			this, "handleToolButtonStyleChanged");
 	handleToolButtonStyleChanged ();
 
-	QMenu *menu = new QMenu (this);
-	menu->addAction (Ui_.ActionNewWindow_);
-	menu->addMenu (Core::Instance ().GetNewTabMenuManager ()->GetNewTabMenu ());
-	menu->addSeparator ();
-	menu->addAction (Ui_.ActionAddTask_);
-	menu->addSeparator ();
-	menu->addMenu (MenuTools_);
-	menu->addMenu (MenuView_);
-	menu->addSeparator ();
-	menu->addAction (Ui_.ActionSettings_);
-	menu->addSeparator ();
-	menu->addAction (Ui_.ActionAboutLeechCraft_);
-	menu->addSeparator ();
-	menu->addAction (Ui_.ActionRestart_);
-	menu->addAction (Ui_.ActionQuit_);
+	MenuManager_ = new MainWindowMenuManager (Ui_, this);
 
-	addAction (menu->menuAction ());
+	addAction (MenuManager_->GetMenu ()->menuAction ());
 
 	MenuButton_ = new QToolButton (this);
 	MenuButton_->setIcon (QIcon (":/resources/images/leechcraft.svg"));
 	MenuButton_->setPopupMode (QToolButton::MenuButtonPopup);
-	MenuButton_->setMenu (menu);
+	MenuButton_->setMenu (MenuManager_->GetMenu ());
 	MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
 	SetStatusBar ();
@@ -708,7 +630,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 	{
 		const auto& map = exp->GetMenuActions ();
 		if (!map.isEmpty ())
-			AddMenus (map);
+			MenuManager_->AddMenus (map);
 	}
 
 	proxy.reset (new Util::DefaultHookProxy);
@@ -740,8 +662,8 @@ void LeechCraft::MainWindow::FillTray ()
 			this,
 			SLOT (showHideMain ()));
 	iconMenu->addAction (Ui_.ActionAddTask_);
-	iconMenu->addMenu (MenuView_);
-	iconMenu->addMenu (MenuTools_);
+	iconMenu->addMenu (MenuManager_->GetSubMenu (MainWindowMenuManager::Role::View));
+	iconMenu->addMenu (MenuManager_->GetSubMenu (MainWindowMenuManager::Role::Tools));
 	iconMenu->addSeparator ();
 
 	const auto& trayMenus = Core::Instance ().GetPluginManager ()->
@@ -773,27 +695,15 @@ void LeechCraft::MainWindow::FillTray ()
 
 void LeechCraft::MainWindow::FillToolMenu ()
 {
-	Q_FOREACH (IActionsExporter *e,
-			Core::Instance ().GetPluginManager ()->
-				GetAllCastableTo<IActionsExporter*> ())
-	{
-		const auto& acts = e->GetActions (ActionsEmbedPlace::ToolsMenu);
-		IconThemeEngine::Instance ().UpdateIconset (acts);
-		MenuTools_->addActions (acts);
-		if (acts.size ())
-			MenuTools_->addSeparator ();
-	}
+	MenuManager_->FillToolMenu ();
 
-	QMenu *ntm = Core::Instance ()
-		.GetNewTabMenuManager ()->GetNewTabMenu ();
+	const auto ntm = Core::Instance ().GetNewTabMenuManager ()->GetNewTabMenu ();
 	Ui_.MainTabWidget_->SetAddTabButtonContextMenu (ntm);
 
-	QMenu *atm = Core::Instance ()
-		.GetNewTabMenuManager ()->GetAdditionalMenu ();
-
-	int i = 0;
-	Q_FOREACH (QAction *act, atm->actions ())
-		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
+	const auto atm = Core::Instance ().GetNewTabMenuManager ()->GetAdditionalMenu ();
+	const auto& additionalActs = atm->actions ();
+	for (int i = 0; i < additionalActs.size (); ++i)
+		Ui_.MainTabWidget_->InsertAction2TabBar (i, additionalActs.at (i));
 }
 
 void LeechCraft::MainWindow::InitializeShortcuts ()

@@ -137,12 +137,12 @@ namespace Xoox
 		QString otherJid;
 		if (message.to ().startsWith (ourJid))
 		{
-			dir = IMessage::Direction::DIn;
+			dir = IMessage::Direction::In;
 			otherJid = message.from ().section ('/', 0, 0);
 		}
 		else
 		{
-			dir = IMessage::Direction::DOut;
+			dir = IMessage::Direction::Out;
 			otherJid = message.to ().section ('/', 0, 0);
 		}
 

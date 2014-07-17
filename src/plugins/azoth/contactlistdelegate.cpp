@@ -43,6 +43,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -165,7 +166,7 @@ namespace Azoth
 		if (extAcc)
 			avatarImg = extAcc->GetSelfAvatar ();
 		if (avatarImg.isNull ())
-			avatarImg = Core::Instance ().GetDefaultAvatar (iconSize);
+			avatarImg = ResourcesManager::Instance ().GetDefaultAvatar (iconSize);
 		else
 			avatarImg = avatarImg.scaled (iconSize, iconSize,
 					Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -288,7 +289,7 @@ namespace Azoth
 		QObject *entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-		const bool isMUC = entry->GetEntryType () == ICLEntry::ETMUC;
+		const bool isMUC = entry->GetEntryType () == ICLEntry::EntryType::MUC;
 
 		QStyle *style = option.widget ?
 				option.widget->style () :
@@ -399,11 +400,11 @@ namespace Azoth
 	{
 		QList<QIcon> clientIcons;
 
-		const bool isMUC = entry->GetEntryType () == ICLEntry::ETMUC;
+		const bool isMUC = entry->GetEntryType () == ICLEntry::EntryType::MUC;
 
 		if (!isMUC && ShowClientIcons_)
 		{
-			const auto& iconsMap = Core::Instance ().GetClientIconForEntry (entry);
+			const auto& iconsMap = ResourcesManager::Instance ().GetClientIconForEntry (entry);
 			for (int i = 0; i < std::min (vars.size (), 4); ++i)
 				clientIcons << iconsMap [vars.at (i)];
 
@@ -412,10 +413,10 @@ namespace Azoth
 					clientIcons.end ());
 		}
 
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
 			const QByteArray& aff = index.data (Core::CLRAffiliation).toByteArray ();
-			const QIcon& icon = Core::Instance ().GetAffIcon (aff);
+			const QIcon& icon = ResourcesManager::Instance ().GetAffIcon (aff);
 
 			if (!icon.isNull ())
 				clientIcons.prepend (icon);
@@ -438,8 +439,8 @@ namespace Azoth
 
 			QIcon icon = ActivityIconCache_ [iconName];
 			if (icon.isNull ())
-				icon = QIcon (Core::Instance ()
-						.GetResourceLoader (Core::RLTActivityIconLoader)->
+				icon = QIcon (ResourcesManager::Instance ()
+						.GetResourceLoader (ResourcesManager::RLTActivityIconLoader)->
 								GetIconPath (iconName));
 
 			if (!icon.isNull ())
@@ -457,8 +458,8 @@ namespace Azoth
 
 			QIcon icon = MoodIconCache_ [iconName];
 			if (icon.isNull ())
-				icon = QIcon (Core::Instance ()
-						.GetResourceLoader (Core::RLTMoodIconLoader)->
+				icon = QIcon (ResourcesManager::Instance ()
+						.GetResourceLoader (ResourcesManager::RLTMoodIconLoader)->
 								GetIconPath (iconName));
 
 			if (!icon.isNull ())
@@ -489,8 +490,8 @@ namespace Azoth
 		const QString& iconName = SystemIconset_ + name;
 		QIcon icon = SystemIconCache_ [iconName];
 		if (icon.isNull ())
-			icon = QIcon (Core::Instance ()
-					.GetResourceLoader (Core::RLTSystemIconLoader)->
+			icon = QIcon (ResourcesManager::Instance ()
+					.GetResourceLoader (ResourcesManager::RLTSystemIconLoader)->
 							GetIconPath (iconName));
 
 		if (!icon.isNull ())

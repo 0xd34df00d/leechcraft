@@ -55,21 +55,21 @@ namespace Astrality
 		QString Body_;
 		QDateTime DT_;
 		Direction Dir_;
-		MessageType MT_;
-		MessageSubType MST_;
+		Type MT_;
+		SubType MST_;
 	public:
 		MsgWrapper (const Tp::ReceivedMessage&,
 				Tp::ContactMessengerPtr, EntryWrapper*);
 		MsgWrapper (const QString&, Direction,
 				Tp::ContactMessengerPtr, EntryWrapper*,
-				MessageType, MessageSubType = MSTOther);
+				Type, SubType = SubType::Other);
 
 		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
-		MessageType GetMessageType () const;
-		MessageSubType GetMessageSubType () const;
+		Type GetMessageType () const;
+		SubType GetMessageSubType () const;
 		QObject* OtherPart () const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;

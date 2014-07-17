@@ -76,7 +76,7 @@ namespace Xoox
 
 		void SetPresence (QXmppPresence);
 
-		GlooxMessage* CreateMessage (IMessage::MessageType,
+		GlooxMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 		QList<QObject*> GetParticipants () const;
 		QString GetSubject () const;
@@ -118,6 +118,8 @@ namespace Xoox
 
 		void handleChatTabClosed ();
 	private:
+		void HandleMessageExtensions (const QXmppMessage&);
+
 		void HandleRenameStart (const RoomParticipantEntry_ptr& entry,
 				const QString& nick, const QString& newNick);
 

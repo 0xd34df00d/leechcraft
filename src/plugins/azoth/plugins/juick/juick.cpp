@@ -157,7 +157,8 @@ namespace Juick
 	}
 
 
-	bool Plugin::ShouldHandle (QObject* msgObj, int direction, int type)
+	bool Plugin::ShouldHandle (QObject* msgObj,
+			IMessage::Direction direction, IMessage::Type type)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 
@@ -197,7 +198,7 @@ namespace Juick
 	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
 			QObject *msgObj)
 	{
-		if(ShouldHandle (msgObj, IMessage::DIn, IMessage::MTChatMessage))
+		if (ShouldHandle (msgObj, IMessage::Direction::In, IMessage::Type::ChatMessage))
 			proxy->SetValue ("body", FormatBody (proxy->GetValue ("body").toString ()));
 	}
 

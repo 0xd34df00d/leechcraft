@@ -55,6 +55,8 @@ namespace MuCommands
 
 	bool ShowTime (IProxyObject*, ICLEntry*, const QString&);
 
+	bool Disco (IProxyObject*, ICLEntry*, const QString&);
+
 	bool RejoinMuc (IProxyObject*, ICLEntry*, const QString&);
 
 	bool LeaveMuc (IProxyObject*, ICLEntry*, const QString&);
@@ -66,6 +68,12 @@ namespace MuCommands
 	bool Kick (IProxyObject*, ICLEntry*, const QString&);
 
 	bool Ban (IProxyObject*, ICLEntry*, const QString&);
+
+	bool Invite (IProxyObject*, ICLEntry*, const QString&);
+
+	bool Pm (IProxyObject*, ICLEntry*, const QString&);
+
+	bool Last (IProxyObject*, ICLEntry*, const QString&);
 
 	bool Ping (IProxyObject*, ICLEntry*, const QString&);
 }

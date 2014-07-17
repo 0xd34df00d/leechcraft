@@ -37,6 +37,7 @@
 #include <QPair>
 #include <QHash>
 #include <QSet>
+#include <vmime/header.hpp>
 #include "attdescr.h"
 
 namespace LeechCraft
@@ -64,6 +65,8 @@ namespace Snails
 		bool IsRead_;
 
 		QList<AttDescr> Attachments_;
+
+		vmime::shared_ptr<const vmime::header> VmimeHeader_;
 	public:
 		enum class Address
 		{
@@ -135,6 +138,9 @@ namespace Snails
 		void SetAttachmentList (const QList<AttDescr>&);
 
 		void Dump () const;
+
+		vmime::shared_ptr<const vmime::header> GetVmimeHeader () const;
+		void SetVmimeHeader (const vmime::shared_ptr<const vmime::header>&);
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);

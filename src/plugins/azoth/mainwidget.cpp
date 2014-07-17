@@ -59,6 +59,7 @@
 #include "statuschangemenumanager.h"
 #include "userslistwidget.h"
 #include "groupremovedialog.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -270,7 +271,7 @@ namespace Azoth
 
 	void MainWidget::updateFastStatusButton (State state)
 	{
-		FastStatusButton_->setIcon (Core::Instance ().GetIconForState (state));
+		FastStatusButton_->setIcon (ResourcesManager::Instance ().GetIconForState (state));
 	}
 
 	void MainWidget::treeActivated (const QModelIndex& index)
@@ -312,7 +313,7 @@ namespace Azoth
 					[] (QObject *entryObj) -> bool
 					{
 						auto entry = qobject_cast<ICLEntry*> (entryObj);
-						return entry->GetEntryType () != ICLEntry::ETPrivateChat;
+						return entry->GetEntryType () != ICLEntry::EntryType::PrivateChat;
 					});
 		}
 
@@ -714,7 +715,7 @@ namespace Azoth
 	void MainWidget::handleEntryMadeCurrent (QObject *obj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (obj);
-		if (entry && entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry && entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 			obj = entry->GetParentCLEntry ();
 
 		const bool isMUC = qobject_cast<IMUCEntry*> (obj);
@@ -795,7 +796,7 @@ namespace Azoth
 
 	void MainWidget::handleStatusIconsChanged ()
 	{
-		ActionShowOffline_->setIcon (Core::Instance ().GetIconForState (SOffline));
+		ActionShowOffline_->setIcon (ResourcesManager::Instance ().GetIconForState (SOffline));
 	}
 
 	namespace

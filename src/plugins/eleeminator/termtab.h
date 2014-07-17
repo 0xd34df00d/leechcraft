@@ -33,6 +33,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoreproxy.h>
 
+class QMenu;
 class QTermWidget;
 
 namespace LeechCraft
@@ -76,8 +77,13 @@ namespace Eleeminator
 		void SetupFontsButton ();
 
 		void SetupShortcuts (Util::ShortcutManager*);
+
+		void AddUrlActions (QMenu&, const QPoint&);
 	private slots:
 		void handleTermContextMenu (const QPoint&);
+
+		void openUrl ();
+		void copyUrl ();
 
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);

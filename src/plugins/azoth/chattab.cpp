@@ -90,6 +90,7 @@
 #include "coremessage.h"
 #include "dummymsgmanager.h"
 #include "corecommandsmanager.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -234,7 +235,7 @@ namespace Azoth
 		const int autoNum = XmlSettingsManager::Instance ()
 				.property ("ShowLastNMessages").toInt ();
 		if (entry->GetAllMessages ().size () <= 100 &&
-				entry->GetEntryType () != ICLEntry::ETMUC &&
+				entry->GetEntryType () != ICLEntry::EntryType::MUC &&
 				autoNum)
 			RequestLogs (autoNum);
 
@@ -385,7 +386,7 @@ namespace Azoth
 			return result;
 
 		QDataStream stream (&result, QIODevice::WriteOnly);
-		if (entry->GetEntryType () == ICLEntry::ETMUC &&
+		if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
 				GetEntry<IMUCEntry> ())
 			stream << QByteArray ("muctab2")
 					<< entry->GetEntryID ()
@@ -590,14 +591,15 @@ namespace Azoth
 				QString ();
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
-		IMessage::MessageType type =
-				e->GetEntryType () == ICLEntry::ETMUC ?
-						IMessage::MTMUCMessage :
-						IMessage::MTChatMessage;
+		IMessage::Type type =
+				e->GetEntryType () == ICLEntry::EntryType::MUC ?
+						IMessage::Type::MUCMessage :
+						IMessage::Type::ChatMessage;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		proxy->SetValue ("text", text);
-		emit hookMessageWillCreated (proxy, this, e->GetQObject (), type, variant);
+		// TODO pass type without casts
+		emit hookMessageWillCreated (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
 		if (proxy->IsCancelled ())
 		{
 			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
@@ -605,9 +607,9 @@ namespace Azoth
 			return;
 		}
 
-		int intType = type;
+		int intType = static_cast<int> (type);
 		proxy->FillValue ("type", intType);
-		type = static_cast<IMessage::MessageType> (intType);
+		type = static_cast<IMessage::Type> (intType);
 		proxy->FillValue ("variant", variant);
 		proxy->FillValue ("text", text);
 
@@ -701,9 +703,10 @@ namespace Azoth
 			return;
 		}
 
-		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
+		QList<IMessage*> messages;
+		for (const auto msgObj : e->GetAllMessages ())
 		{
-			IMessage *msg = qobject_cast<IMessage*> (msgObj);
+			const auto msg = qobject_cast<IMessage*> (msgObj);
 			if (!msg)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -711,8 +714,20 @@ namespace Azoth
 						<< msgObj;
 				continue;
 			}
-			AppendMessage (msg);
+			messages << msg;
 		}
+
+		const auto& dummyMsgs = DummyMsgManager::Instance ().GetIMessages (e->GetQObject ());
+		if (!dummyMsgs.isEmpty ())
+		{
+			messages += dummyMsgs;
+			std::sort (messages.begin (), messages.end (),
+					[] (IMessage *left, IMessage *right)
+						{ return left->GetDateTime () < right->GetDateTime (); });
+		}
+
+		for (const auto msg : messages)
+			AppendMessage (msg);
 
 		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
 		if (!scrollerJS.open (QIODevice::ReadOnly))
@@ -982,7 +997,7 @@ namespace Azoth
 		else if (isActiveChat)
 			GetEntry<ICLEntry> ()->MarkMsgsRead ();
 
-		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
+		if (msg->GetMessageType () == IMessage::Type::MUCMessage &&
 				!isActiveChat &&
 				!HadHighlight_)
 		{
@@ -994,8 +1009,8 @@ namespace Azoth
 		if (shouldReformat)
 			ReformatTitle ();
 
-		if (msg->GetMessageType () == IMessage::MTChatMessage &&
-				msg->GetDirection () == IMessage::DIn)
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage &&
+				msg->GetDirection () == IMessage::Direction::In)
 		{
 			const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
 			if (idx != -1)
@@ -1028,10 +1043,10 @@ namespace Azoth
 		const QString& current = Ui_.VariantBox_->currentText ();
 		Ui_.VariantBox_->clear ();
 
-		Q_FOREACH (const QString& variant, variants)
+		for (const auto& variant : variants)
 		{
 			const State& st = GetEntry<ICLEntry> ()->GetStatus (variant).State_;
-			const QIcon& icon = Core::Instance ().GetIconForState (st);
+			const QIcon& icon = ResourcesManager::Instance ().GetIconForState (st);
 			Ui_.VariantBox_->addItem (icon, variant);
 		}
 
@@ -1069,7 +1084,7 @@ namespace Azoth
 			const QString& variant)
 	{
 		auto entry = GetEntry<ICLEntry> ();
-		if (entry->GetEntryType () == ICLEntry::ETMUC)
+		if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			return;
 
 		const QStringList& vars = entry->Variants ();
@@ -1079,7 +1094,7 @@ namespace Azoth
 				variant.isEmpty () ||
 				vars.isEmpty ())
 		{
-			const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
+			const QIcon& icon = ResourcesManager::Instance ().GetIconForState (status.State_);
 			TabIcon_ = icon;
 			UpdateStateIcon ();
 		}
@@ -1557,7 +1572,7 @@ namespace Azoth
 	{
 		ICLEntry *e = GetEntry<ICLEntry> ();
 
-		bool claimsMUC = e->GetEntryType () == ICLEntry::ETMUC;
+		bool claimsMUC = e->GetEntryType () == ICLEntry::EntryType::MUC;
 		IsMUC_ = true;
 		if (!claimsMUC)
 			IsMUC_ = false;
@@ -1578,8 +1593,7 @@ namespace Azoth
 		{
 			Ui_.SubjectButton_->hide ();
 			Ui_.MUCEventsButton_->hide ();
-			TabIcon_ = Core::Instance ()
-					.GetIconForState (e->GetStatus ().State_);
+			TabIcon_ = ResourcesManager::Instance ().GetIconForState (e->GetStatus ().State_);
 
 			connect (GetEntry<QObject> (),
 					SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
@@ -1625,7 +1639,7 @@ namespace Azoth
 
 #ifdef ENABLE_MEDIACALLS
 		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
-				e->GetEntryType () == ICLEntry::ETChat)
+				e->GetEntryType () == ICLEntry::EntryType::Chat)
 		{
 			Call_ = new QAction (tr ("Call..."), this);
 			Call_->setProperty ("ActionIcon", "call-start");
@@ -1829,26 +1843,26 @@ namespace Azoth
 
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
-		if (msg->GetDirection () == IMessage::DOut &&
-				other->GetEntryType () == ICLEntry::ETMUC)
+		if (msg->GetDirection () == IMessage::Direction::Out &&
+				other->GetEntryType () == ICLEntry::EntryType::MUC)
 			return;
 
-		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
-				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
+		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
+				(!parent || parent->GetEntryType () == ICLEntry::EntryType::MUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 
-		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
-				(!parent || parent->GetEntryType () != ICLEntry::ETMUC) &&
+		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
+				(!parent || parent->GetEntryType () != ICLEntry::EntryType::MUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
 			return;
 
-		if ((msg->GetMessageSubType () == IMessage::MSTParticipantJoin ||
-					msg->GetMessageSubType () == IMessage::MSTParticipantLeave) &&
+		if ((msg->GetMessageSubType () == IMessage::SubType::ParticipantJoin ||
+					msg->GetMessageSubType () == IMessage::SubType::ParticipantLeave) &&
 				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
 			return;
 
-		if (msg->GetMessageSubType () == IMessage::MSTParticipantEndedConversation)
+		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantEndedConversation)
 		{
 			if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
 				return;
@@ -1865,15 +1879,15 @@ namespace Azoth
 			return;
 
 		if (XmlSettingsManager::Instance ().property ("SeparateMUCEventLogWindow").toBool () &&
-				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
-				(msg->GetMessageType () != IMessage::MTMUCMessage &&
-					msg->GetMessageType () != IMessage::MTServiceMessage))
+				(!parent || parent->GetEntryType () == ICLEntry::EntryType::MUC) &&
+				(msg->GetMessageType () != IMessage::Type::MUCMessage &&
+					msg->GetMessageType () != IMessage::Type::ServiceMessage))
 		{
 			const auto& dt = msg->GetDateTime ().toString ("HH:mm:ss.zzz");
 			MUCEventLog_->append (QString ("<font color=\"#56ED56\">[%1] %2</font>")
 						.arg (dt)
-						.arg (msg->GetBody ()));
-			if (msg->GetMessageSubType () != IMessage::MSTRoomSubjectChange)
+						.arg (msg->GetEscapedBody ()));
+			if (msg->GetMessageSubType () != IMessage::SubType::RoomSubjectChange)
 				return;
 		}
 
@@ -1891,7 +1905,7 @@ namespace Azoth
 			datetime.setTime ({0, 0});
 
 			auto coreMessage = new CoreMessage (str, datetime,
-					IMessage::MTServiceMessage, IMessage::DIn, parent->GetQObject (), this);
+					IMessage::Type::ServiceMessage, IMessage::Direction::In, parent->GetQObject (), this);
 			ChatMsgAppendInfo coreInfo
 			{
 				false,
@@ -2073,16 +2087,16 @@ namespace Azoth
 		QStringList path ("Azoth");
 		switch (GetEntry<ICLEntry> ()->GetEntryType ())
 		{
-		case ICLEntry::ETChat:
+		case ICLEntry::EntryType::Chat:
 			path << tr ("Chat");
 			break;
-		case ICLEntry::ETMUC:
+		case ICLEntry::EntryType::MUC:
 			path << tr ("Conference");
 			break;
-		case ICLEntry::ETPrivateChat:
+		case ICLEntry::EntryType::PrivateChat:
 			path << tr ("Private chat");
 			break;
-		case ICLEntry::ETUnauthEntry:
+		case ICLEntry::EntryType::UnauthEntry:
 			path << tr ("Unauthorized user");
 			break;
 		}

@@ -57,8 +57,8 @@ namespace VelvetBird
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
-		MessageType GetMessageType () const;
-		MessageSubType GetMessageSubType () const;
+		Type GetMessageType () const;
+		SubType GetMessageSubType () const;
 		QObject* OtherPart () const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;

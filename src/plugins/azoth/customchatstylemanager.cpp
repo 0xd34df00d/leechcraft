@@ -47,7 +47,7 @@ namespace Azoth
 			return {};
 
 		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		return entry->GetEntryType () == ICLEntry::ETMUC ?
+		return entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 				GetMUCStyleForAccount (acc) :
 				GetStyleForAccount (acc);
 	}

@@ -184,7 +184,7 @@ namespace BirthdayNotifier
 			for (auto entryObj : acc->GetCLEntries ())
 			{
 				auto entry = qobject_cast<ICLEntry*> (entryObj);
-				if (!entry || entry->GetEntryType () != ICLEntry::ETChat)
+				if (!entry || entry->GetEntryType () != ICLEntry::EntryType::Chat)
 					continue;
 
 				if (extSelf && extSelf->GetSelfContact () == entryObj)

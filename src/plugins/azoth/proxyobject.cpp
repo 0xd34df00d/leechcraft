@@ -38,6 +38,8 @@
 #include "chattabsmanager.h"
 #include "coremessage.h"
 #include "unreadqueuemanager.h"
+#include "resourcesmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -46,7 +48,7 @@ namespace Azoth
 	ProxyObject::ProxyObject (QObject* parent)
 	: QObject (parent)
 	, LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))[^\\s<]+)",
-			Qt::CaseInsensitive, QRegExp::RegExp2)
+			Qt::CaseInsensitive)
 	{
 		SerializedStr2AuthStatus_ ["None"] = ASNone;
 		SerializedStr2AuthStatus_ ["To"] = ASTo;
@@ -245,12 +247,12 @@ namespace Azoth
 
 	QList<QColor> ProxyObject::GenerateColors (const QString& scheme, QColor bg) const
 	{
-		return Core::Instance ().GenerateColors (scheme, bg);
+		return Azoth::GenerateColors (scheme, bg);
 	}
 
 	QString ProxyObject::GetNickColor (const QString& nick, const QList<QColor>& colors) const
 	{
-		return Core::Instance ().GetNickColor (nick, colors);
+		return Azoth::GetNickColor (nick, colors);
 	}
 
 	QString ProxyObject::FormatDate (QDateTime dt, QObject *obj) const
@@ -285,7 +287,7 @@ namespace Azoth
 
 		switch (msg->GetMessageSubType ())
 		{
-		case IMessage::MSTParticipantStatusChange:
+		case IMessage::SubType::ParticipantStatusChange:
 		{
 			const QString& nick = msgObj->property ("Azoth/Nick").toString ();
 			const QString& state = msgObj->property ("Azoth/TargetState").toString ();
@@ -314,11 +316,11 @@ namespace Azoth
 		switch (loader)
 		{
 		case PRLClientIcons:
-			return Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader);
+			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTClientIconLoader);
 		case PRLStatusIcons:
-			return Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader);
+			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTStatusIconLoader);
 		case PRLSystemIcons:
-			return Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader);
+			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTSystemIconLoader);
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
@@ -329,7 +331,7 @@ namespace Azoth
 
 	QIcon ProxyObject::GetIconForState (State state) const
 	{
-		return Core::Instance ().GetIconForState (state);
+		return ResourcesManager::Instance ().GetIconForState (state);
 	}
 
 	const auto MaxBodySize4Links = 10 * 1024;
@@ -394,11 +396,25 @@ namespace Azoth
 		return result;
 	}
 
-	QObject* ProxyObject::CreateCoreMessage (const QString& body, const QDateTime& date,
-			IMessage::MessageType type, IMessage::Direction dir,
+	QObject* ProxyObject::CreateCoreMessage (const QString& body,
+			const QDateTime& date,
+			IMessage::Type type, IMessage::Direction dir,
 			QObject *other, QObject *parent)
 	{
 		return new CoreMessage (body, date, type, dir, other, parent);
+	}
+
+	QString ProxyObject::ToPlainBody (QString body)
+	{
+		body.replace ("<li>", "\n * ");
+		auto pos = 0;
+		while ((pos = body.indexOf ('<', pos)) != -1)
+		{
+			const auto endPos = body.indexOf ('>', pos + 1);
+			body.remove (pos, endPos - pos + 1);
+		}
+
+		return body;
 	}
 
 	bool ProxyObject::IsMessageRead (QObject *msgObj)

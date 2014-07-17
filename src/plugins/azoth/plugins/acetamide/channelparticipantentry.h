@@ -61,7 +61,7 @@ namespace Acetamide
 		void SetGroups (const QStringList&);
 		QStringList Groups () const;
 
-		QObject* CreateMessage (IMessage::MessageType,
+		QObject* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 
 		QList<ChannelRole> Roles () const;

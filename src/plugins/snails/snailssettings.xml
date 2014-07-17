@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
+		<label value="Behavior" />
+		<tab>
+			<label value="Mail list" />
+			<groupbox>
+				<label value="Sorting" />
+				<item type="checkbox" property="RootsRespectRead" default="true">
+					<label value="Consider read status when sorting threads roots" />
+				</item>
+				<item type="checkbox" property="RootsRespectReadChildren" default="true">
+					<label value="Consider read status of children as well" />
+				</item>
+			</groupbox>
+		</tab>
+		<tab>
+			<label value="Editor" />
+			<item type="combobox" property="ReplyMessageFormat">
+				<label value="Default format of a reply:" />
+				<option name="Orig" default="true">
+					<label value="As original message" />
+				</option>
+				<option name="Plain">
+					<label value="Plain text" />
+				</option>
+				<option name="HTML">
+					<label value="HTML" />
+				</option>
+			</item>
+		</tab>
+	</page>
+	<page>
 		<label value="Accounts" />
 		<item type="customwidget" name="AccountsWidget" label="own" />
 	</page>

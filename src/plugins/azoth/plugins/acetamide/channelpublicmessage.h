@@ -56,24 +56,24 @@ namespace Acetamide
 		QDateTime Datetime_;
 		Direction Direction_;
 		QString FromChID_;
-		MessageType Type_;
-		MessageSubType SubType_;
+		Type Type_;
+		SubType SubType_;
 	public:
 		ChannelPublicMessage (const QString&, ChannelCLEntry*);
 		ChannelPublicMessage (const QString&, Direction,
 				ChannelCLEntry*,
-				MessageType,
-				MessageSubType,
+				Type,
+				SubType,
 				ChannelParticipantEntry_ptr = ChannelParticipantEntry_ptr ());
 
 		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
-		MessageType GetMessageType () const;
-		void SetMessageType (IMessage::MessageType);
-		MessageSubType GetMessageSubType () const;
-		void SetMessageSubType (IMessage::MessageSubType);
+		Type GetMessageType () const;
+		void SetMessageType (IMessage::Type);
+		SubType GetMessageSubType () const;
+		void SetMessageSubType (IMessage::SubType);
 		/** Since it's outgoing message, the other part
 		 * always equals to the room entry.
 		 */

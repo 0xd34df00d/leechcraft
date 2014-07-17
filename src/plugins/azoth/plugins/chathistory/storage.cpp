@@ -634,21 +634,21 @@ namespace ChatHistory
 		MessageDumper_.bindValue (":message", data ["Body"]);
 		MessageDumper_.bindValue (":variant", data ["OtherVariant"]);
 
-		switch (data ["MessageType"].toInt ())
+		switch (static_cast<IMessage::Type> (data ["Type"].toInt ()))
 		{
-		case IMessage::MTChatMessage:
+		case IMessage::Type::ChatMessage:
 			MessageDumper_.bindValue (":type", "CHAT");
 			break;
-		case IMessage::MTMUCMessage:
+		case IMessage::Type::MUCMessage:
 			MessageDumper_.bindValue (":type", "MUC");
 			break;
-		case IMessage::MTStatusMessage:
+		case IMessage::Type::StatusMessage:
 			MessageDumper_.bindValue (":type", "STATUS");
 			break;
-		case IMessage::MTEventMessage:
+		case IMessage::Type::EventMessage:
 			MessageDumper_.bindValue (":type", "EVENT");
 			break;
-		case IMessage::MTServiceMessage:
+		case IMessage::Type::ServiceMessage:
 			MessageDumper_.bindValue (":type", "SERVICE");
 			break;
 		}

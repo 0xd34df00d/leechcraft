@@ -96,6 +96,8 @@ namespace Xoox
 
 	class CaptchaManager;
 
+	class DiscoManagerWrapper;
+
 	class ClientConnection : public QObject
 	{
 		Q_OBJECT
@@ -138,6 +140,8 @@ namespace Xoox
 
 		InfoRequestPolicyManager *InfoReqPolicyMgr_;
 
+		DiscoManagerWrapper *DiscoManagerWrapper_;
+
 		QString OurJID_;
 		QString OurBareJID_;
 		QString OurResource_;
@@ -177,15 +181,10 @@ namespace Xoox
 
 		QHash<QString, QList<RIEXManager::Item>> AwaitingRIEXItems_;
 	public:
-		typedef std::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 		typedef std::function<void (const QXmppVCardIq&)> VCardCallback_t;
 		typedef std::function<void (QXmppIq)> PacketCallback_t;
 	private:
-		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
-		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
-
-		typedef QHash<QString, PacketCallback_t> PacketID2Callback_t;
-		QHash<QString, PacketID2Callback_t> AwaitingPacketCallbacks_;
+		QHash<QString, PacketCallback_t> AwaitingPacketCallbacks_;
 
 		QHash<QString, QList<VCardCallback_t>> VCardFetchCallbacks_;
 	public:
@@ -208,13 +207,16 @@ namespace Xoox
 
 		void CreateEntry (const QString&);
 
+		DiscoManagerWrapper* GetDiscoManagerWrapper () const;
+
 		QXmppMucManager* GetMUCManager () const;
-		QXmppDiscoveryManager* GetDiscoveryManager () const;
+		QXmppDiscoveryManager* GetQXmppDiscoveryManager () const;
 		QXmppVersionManager* GetVersionManager () const;
 		QXmppTransferManager* GetTransferManager () const;
 		QXmppEntityTimeManager* GetEntityTimeManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
+		LastActivityManager* GetLastActivityManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
 		XMPPBobManager* GetBobManager () const;
@@ -238,9 +240,6 @@ namespace Xoox
 
 		void RequestInfo (const QString&) const;
 
-		void RequestInfo (const QString&, DiscoCallback_t, bool reportErrors = false, const QString& = "");
-		void RequestItems (const QString&, DiscoCallback_t, bool reportErrors = false, const QString& = "");
-
 		void Update (const QXmppRosterIq::Item&);
 		void Update (const QXmppMucItem&, const QString& room);
 
@@ -257,7 +256,9 @@ namespace Xoox
 		void WhitelistError (const QString&);
 
 		void SendPacketWCallback (const QXmppIq&, PacketCallback_t);
+		void AddCallback (const QString&, const PacketCallback_t&);
 		void SendMessage (GlooxMessage*);
+
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& fullJid) const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
@@ -271,7 +272,7 @@ namespace Xoox
 		void SetBookmarks (const QXmppBookmarkSet&);
 		QXmppBookmarkManager* GetBMManager () const;
 
-		GlooxMessage* CreateMessage (IMessage::MessageType,
+		GlooxMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&, const QString&);
 
 		static void Split (const QString& full,
@@ -306,9 +307,6 @@ namespace Xoox
 
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
-
-		void handleDiscoInfo (const QXmppDiscoveryIq&);
-		void handleDiscoItems (const QXmppDiscoveryIq&);
 
 		void handleLog (QXmppLogger::MessageType, const QString&);
 

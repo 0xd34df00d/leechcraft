@@ -65,14 +65,14 @@ namespace VelvetBird
 		return Dir_;
 	}
 
-	IMessage::MessageType ConvIMMessage::GetMessageType () const
+	IMessage::Type ConvIMMessage::GetMessageType () const
 	{
-		return MTChatMessage;
+		return Type::ChatMessage;
 	}
 
-	IMessage::MessageSubType ConvIMMessage::GetMessageSubType () const
+	IMessage::SubType ConvIMMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return SubType::Other;
 	}
 
 	QObject* ConvIMMessage::OtherPart () const

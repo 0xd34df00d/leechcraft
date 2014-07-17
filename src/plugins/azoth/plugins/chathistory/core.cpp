@@ -150,19 +150,19 @@ namespace ChatHistory
 	void Core::Process (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (msg->GetMessageType () != IMessage::MTChatMessage &&
-			msg->GetMessageType () != IMessage::MTMUCMessage)
+		if (msg->GetMessageType () != IMessage::Type::ChatMessage &&
+			msg->GetMessageType () != IMessage::Type::MUCMessage)
 			return;
 
 		if (msg->GetBody ().isEmpty ())
 			return;
 
-		if (msg->GetDirection () == IMessage::DOut &&
-				msg->GetMessageType () == IMessage::MTMUCMessage)
+		if (msg->GetDirection () == IMessage::Direction::Out &&
+				msg->GetMessageType () == IMessage::Type::MUCMessage)
 			return;
 
 		const double secsDiff = msg->GetDateTime ().secsTo (QDateTime::currentDateTime ());
-		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
+		if (msg->GetMessageType () == IMessage::Type::MUCMessage &&
 				std::abs (secsDiff) >= 2)
 			return;
 
@@ -191,12 +191,12 @@ namespace ChatHistory
 		data ["EntryID"] = entry->GetEntryID ();
 		data ["AccountID"] = acc->GetAccountID ();
 		data ["DateTime"] = msg->GetDateTime ();
-		data ["Direction"] = msg->GetDirection () == IMessage::DIn ? "IN" : "OUT";
+		data ["Direction"] = msg->GetDirection () == IMessage::Direction::In ? "IN" : "OUT";
 		data ["Body"] = msg->GetBody ();
 		data ["OtherVariant"] = msg->GetOtherVariant ();
-		data ["MessageType"] = static_cast<int> (msg->GetMessageType ());
+		data ["Type"] = static_cast<int> (msg->GetMessageType ());
 
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
 			ICLEntry *parent = qobject_cast<ICLEntry*> (entry->GetParentCLEntry ());
 			data ["VisibleName"] = parent->GetEntryName () + "/" + entry->GetEntryName ();

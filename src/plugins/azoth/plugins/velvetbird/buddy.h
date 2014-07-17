@@ -72,7 +72,7 @@ namespace VelvetBird
 		QStringList Groups () const;
 		void SetGroups (const QStringList& groups);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body);
+		QObject* CreateMessage (IMessage::Type type, const QString& variant, const QString& body);
 		QList<QObject*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime& before);
 		void SetChatPartState (ChatPartState state, const QString& variant);

@@ -53,7 +53,7 @@ namespace Murm
 
 	void VkChatEntry::Send (VkMessage *msg)
 	{
-		Account_->Send (GetInfo ().ChatID_, VkConnection::MessageType::Chat, msg);
+		Account_->Send (GetInfo ().ChatID_, VkConnection::Type::Chat, msg);
 	}
 
 	void VkChatEntry::HandleMessage (const MessageInfo& info)
@@ -76,7 +76,7 @@ namespace Murm
 			return;
 		}
 
-		auto msg = new VkMessage (false, IMessage::DIn, IMessage::MTMUCMessage, this, entry);
+		auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::Type::MUCMessage, this, entry);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
@@ -140,7 +140,7 @@ namespace Murm
 
 	ICLEntry::EntryType VkChatEntry::GetEntryType () const
 	{
-		return ETMUC;
+		return EntryType::MUC;
 	}
 
 	QString VkChatEntry::GetEntryName () const

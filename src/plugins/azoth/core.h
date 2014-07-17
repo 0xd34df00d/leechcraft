@@ -30,16 +30,11 @@
 #pragma once
 
 #include <functional>
-#include <boost/scoped_ptr.hpp>
 #include <QObject>
 #include <QSet>
 #include <QIcon>
 #include <QDateTime>
 #include <QUrl>
-#ifdef ENABLE_CRYPT
-#include <QtCrypto>
-#endif
-#include <util/sys/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/iinfo.h>
@@ -60,7 +55,6 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class ResourceLoader;
 	class ShortcutManager;
 }
 
@@ -97,13 +91,6 @@ namespace Azoth
 		ICoreProxy_ptr Proxy_;
 		QList<ANFieldData> ANFields_;
 
-#ifdef ENABLE_CRYPT
-		boost::scoped_ptr<QCA::Initializer> QCAInit_;
-		boost::scoped_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
-		boost::scoped_ptr<QCA::EventHandler> QCAEventHandler_;
-		QMap<QString, QString> StoredPublicKeys_;
-#endif
-
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
 
@@ -128,27 +115,13 @@ namespace Azoth
 		typedef QHash<QString, QObject*> ID2Entry_t;
 		ID2Entry_t ID2Entry_;
 
-		typedef QHash<ICLEntry*, QMap<QString, QIcon>> EntryClientIconCache_t;
-		EntryClientIconCache_t EntryClientIconCache_;
-
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
 
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 
 		QMap<State, int> StateCounter_;
-	public:
-		enum ResourceLoaderType
-		{
-			RLTStatusIconLoader,
-			RLTClientIconLoader,
-			RLTAffIconLoader,
-			RLTSystemIconLoader,
-			RLTActivityIconLoader,
-			RLTMoodIconLoader
-		};
-	private:
-		QMap<ResourceLoaderType, std::shared_ptr<Util::ResourceLoader>> ResourceLoaders_;
+
 		std::shared_ptr<SourceTrackingModel<IEmoticonResourceSource>> SmilesOptionsModel_;
 		std::shared_ptr<SourceTrackingModel<IChatStyleResourceSource>> ChatStylesOptionsModel_;
 
@@ -201,7 +174,6 @@ namespace Azoth
 
 		QList<ANFieldData> GetANFields () const;
 
-		Util::ResourceLoader* GetResourceLoader (ResourceLoaderType) const;
 		QAbstractItemModel* GetSmilesOptionsModel () const;
 		IEmoticonResourceSource* GetCurrentEmoSource () const;
 		ChatStyleOptionManager* GetChatStylesOptionsManager (const QByteArray&) const;
@@ -227,13 +199,6 @@ namespace Azoth
 		QList<IAccount*> GetAccounts (std::function<bool (IProtocol*)> = [] (IProtocol*) { return true; }) const;
 		QList<IProtocol*> GetProtocols () const;
 		IAccount* GetAccount (const QByteArray&) const;
-
-#ifdef ENABLE_CRYPT
-		QList<QCA::PGPKey> GetPublicKeys () const;
-		QList<QCA::PGPKey> GetPrivateKeys () const;
-
-		void AssociatePrivateKey (IAccount*, const QCA::PGPKey&) const;
-#endif
 
 		/** Returns the list of all groups of all chat entries.
 		 */
@@ -271,38 +236,6 @@ namespace Azoth
 		 */
 		bool IsHighlightMessage (IMessage*);
 
-		/** Returns the name of the icon from the current iconset for
-		 * the given contact list entry state.
-		 */
-		Util::QIODevice_ptr GetIconPathForState (State state) const;
-
-		/** Returns an icon from the current iconset for the given
-		 * contact list entry state.
-		 */
-		QIcon GetIconForState (State state) const;
-
-		/** Returns an icon from the current iconset for the given
-		 * affiliation.
-		 */
-		QIcon GetAffIcon (const QByteArray& affName) const;
-
-		/** @brief Returns icons for the given CL entry.
-		 *
-		 * This function returns an icon for each variant of the entry,
-		 * since different variants may have different clients. If the
-		 * protocol which the entry belongs doesn't support variants,
-		 * the map would have only one key/value pair of null QString
-		 * and corresponding icon.
-		 *
-		 * This function returns the icons from the currently selected
-		 * (in settings) iconset.
-		 *
-		 * @param[in] entry Entry for which to return the icons.
-		 * @return Map from entity variant to corresponding
-		 * client icon.
-		 */
-		QMap<QString, QIcon> GetClientIconForEntry (ICLEntry *entry);
-
 		/** @brief Returns the avatar for the given CL entry scaled to
 		 * the given size.
 		 *
@@ -313,7 +246,6 @@ namespace Azoth
 		 * @return Entry's avatar scaled to the given size.
 		 */
 		QImage GetAvatar (ICLEntry *entry, int size);
-		QImage GetDefaultAvatar (int size) const;
 
 		ActionsManager* GetActionsManager () const;
 
@@ -325,11 +257,6 @@ namespace Azoth
 		bool AppendMessageByTemplate (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 
 		void FrameFocused (QObject*, QWebFrame*);
-
-		// Theming stuff
-		QList<QColor> GenerateColors (const QString& coloringScheme, QColor background) const;
-
-		QString GetNickColor (const QString& nick, const QList<QColor>& colors) const;
 
 		QString FormatDate (QDateTime, IMessage*);
 		QString FormatNickname (QString, IMessage*, const QString& color);
@@ -424,11 +351,6 @@ namespace Azoth
 		void FillANFields ();
 
 		void UpdateInitState (State);
-
-#ifdef ENABLE_CRYPT
-		void RestoreKeyForAccount (IAccount*);
-		void RestoreKeyForEntry (ICLEntry*);
-#endif
 	public slots:
 		/** Initiates MUC join by calling the corresponding protocol
 		 * plugin's IProtocol::InitiateMUCJoin() function.
@@ -552,11 +474,6 @@ namespace Azoth
 		 */
 		void updateItem ();
 
-		/** Asks the corresponding CL entry to show its dialog with
-		 * information about the user.
-		 */
-		void showVCard ();
-
 		void handleClearUnreadMsgCount (QObject*);
 
 		void handleGotSDSession (QObject*);
@@ -566,23 +483,7 @@ namespace Azoth
 
 		void handleRIEXItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString);
 
-		/** Removes the entries in the client icon cache for the sender,
-		 * if obj is null, or for obj, if it is not null.
-		 *
-		 * If the object can't be casted to ICLEntry, this function does
-		 * nothing.
-		 */
-		void invalidateClientsIconCache (QObject *obj = 0);
-		void invalidateClientsIconCache (ICLEntry*);
-
 		void invalidateSmoothAvatarCache ();
-
-		void flushIconCaches ();
-
-#ifdef ENABLE_CRYPT
-		void handleQCAEvent (int, const QCA::Event&);
-		void handleQCABusyFinished ();
-#endif
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

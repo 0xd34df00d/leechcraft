@@ -158,7 +158,7 @@ namespace Herbicide
 				"question to verify you are not a bot and is welcome "
 				"to communicate with me:\n%1")
 					.arg (ConfWidget_->GetQuestion ());
-		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+		QObject *msgObj = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 		OurMessages_ << msgObj;
 		qobject_cast<IMessage*> (msgObj)->Send ();
 
@@ -176,7 +176,7 @@ namespace Herbicide
 		const QString& text = tr ("Nice, seems like you've answered "
 				"correctly. Please write again now what you wanted "
 				"to write.");
-		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+		QObject *msgObj = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 		OurMessages_ << msgObj;
 		qobject_cast<IMessage*> (msgObj)->Send ();
 
@@ -227,7 +227,7 @@ namespace Herbicide
 			return;
 		}
 
-		if (msg->GetMessageType () != IMessage::MTChatMessage)
+		if (msg->GetMessageType () != IMessage::Type::ChatMessage)
 			return;
 
 		QObject *entryObj = msg->OtherPart ();
@@ -243,7 +243,7 @@ namespace Herbicide
 		else
 		{
 			const QString& text = tr ("Sorry, you are wrong. Try again.");
-			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+			QObject *msgObj = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 			OurMessages_ << msgObj;
 			qobject_cast<IMessage*> (msgObj)->Send ();
 

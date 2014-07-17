@@ -40,6 +40,7 @@
 #include "mainwindow.h"
 #include "newtabmenumanager.h"
 #include "separatetabbar.h"
+#include "mainwindowmenumanager.h"
 
 using namespace LeechCraft;
 
@@ -307,7 +308,7 @@ void TabManager::handleCurrentChanged (int index)
 			imtw->TabLostCurrent ();
 
 	if (TabWidget_->WidgetCount () != 1)
-		Window_->RemoveMenus (Menus_);
+		Window_->GetMenuManager ()->RemoveMenus (Menus_);
 
 	auto tab = TabWidget_->Widget (index);
 	auto imtw = qobject_cast<ITabWidget*> (tab);
@@ -320,7 +321,7 @@ void TabManager::handleCurrentChanged (int index)
 	}
 
 	const auto menus = imtw->GetWindowMenus ();
-	Window_->AddMenus (menus);
+	Window_->GetMenuManager ()->AddMenus (menus);
 	Menus_ = menus;
 
 	emit currentTabChanged (tab);

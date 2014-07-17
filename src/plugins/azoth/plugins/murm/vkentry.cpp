@@ -103,7 +103,7 @@ namespace Murm
 
 			if (spontaneous)
 			{
-				auto msg = new VkMessage (false, IMessage::DIn, IMessage::MTStatusMessage, this);
+				auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::Type::StatusMessage, this);
 				const auto& entryName = GetEntryName ();
 				msg->SetBody (info.IsOnline_ ?
 						tr ("%1 is now on the site again").arg (entryName) :
@@ -122,7 +122,7 @@ namespace Murm
 
 	void VkEntry::Send (VkMessage *msg)
 	{
-		Account_->Send (GetInfo ().ID_, VkConnection::MessageType::Dialog, msg);
+		Account_->Send (GetInfo ().ID_, VkConnection::Type::Dialog, msg);
 	}
 
 	void VkEntry::SetSelf ()
@@ -330,17 +330,17 @@ namespace Murm
 			{
 				auto msg = Messages_.at (i);
 				if (msg->GetID () == static_cast<qulonglong> (-1) &&
-						msg->GetDirection () == IMessage::DOut &&
+						msg->GetDirection () == IMessage::Direction::Out &&
 						msg->GetBody () == info.Text_)
 					return;
 			}
 		}
 
 		const auto dir = info.Flags_ & MessageFlag::Outbox ?
-				IMessage::DOut :
-				IMessage::DIn;
+				IMessage::Direction::Out :
+				IMessage::Direction::In;
 
-		if (dir == IMessage::DIn)
+		if (dir == IMessage::Direction::In)
 		{
 			emit chatPartStateChanged (CPSActive, "");
 			RemoteTypingTimer_->stop ();
@@ -350,7 +350,7 @@ namespace Murm
 		if (info.Params_.remove ("emoji"))
 			FixEmoji (info.Text_);
 
-		auto msg = new VkMessage (false, dir, IMessage::MTChatMessage, this);
+		auto msg = new VkMessage (false, dir, IMessage::Type::ChatMessage, this);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
@@ -379,7 +379,7 @@ namespace Murm
 
 	ICLEntry::EntryType VkEntry::GetEntryType () const
 	{
-		return ICLEntry::ETChat;
+		return ICLEntry::EntryType::Chat;
 	}
 
 	QString VkEntry::GetEntryName () const

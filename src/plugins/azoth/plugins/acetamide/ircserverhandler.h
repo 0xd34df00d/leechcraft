@@ -102,7 +102,7 @@ namespace Acetamide
 		ChannelHandler* GetChannelHandler (const QString& channel);
 		QList<std::shared_ptr<ChannelHandler>> GetChannelHandlers () const;
 
-		IrcMessage* CreateMessage (IMessage::MessageType type,
+		IrcMessage* CreateMessage (IMessage::Type type,
 				const QString& variant, const QString& body);
 
 		bool IsChannelExists (const QString& channel) const;
@@ -125,7 +125,7 @@ namespace Acetamide
 		void SendMessage (const QStringList&);
 		void IncomingMessage (const QString& nick,
 				const QString& target, const QString& msg,
-				IMessage::MessageType type = IMessage::MTChatMessage);
+				IMessage::Type type = IMessage::Type::ChatMessage);
 		void IncomingNoticeMessage (const QString&, const QString&);
 
 		void ChangeNickname (const QString&, const QString&);
@@ -155,7 +155,7 @@ namespace Acetamide
 		void GotInvitation (const QString&, const QString&);
 		void ShowAnswer (const QString& cmd,
 				const QString& answer, bool isEndOf = false,
-				IMessage::MessageType type = IMessage::MTEventMessage);
+				IMessage::Type type = IMessage::Type::EventMessage);
 
 		void CTCPReply (const QString&, const QString&, const QString&);
 		void CTCPRequestResult (const QString&);

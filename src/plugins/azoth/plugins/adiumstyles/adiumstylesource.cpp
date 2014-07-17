@@ -211,14 +211,14 @@ namespace AdiumStyles
 	{
 		IMessage::Direction GetMsgDirection (IMessage *msg)
 		{
-			if (msg->GetMessageType () != IMessage::MTMUCMessage)
+			if (msg->GetMessageType () != IMessage::Type::MUCMessage)
 				return msg->GetDirection ();
 
 			IMUCEntry *muc = qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
 			ICLEntry *part = qobject_cast<ICLEntry*> (msg->OtherPart ());
 			return muc->GetNick () == part->GetEntryName () ?
-					IMessage::DOut :
-					IMessage::DIn;
+					IMessage::Direction::Out :
+					IMessage::Direction::In;
 		}
 	}
 
@@ -249,13 +249,13 @@ namespace AdiumStyles
 				this,
 				SLOT (handleMessageDestroyed ()));
 
-		const bool in = GetMsgDirection (msg) == IMessage::DIn;
+		const bool in = GetMsgDirection (msg) == IMessage::Direction::In;
 
 		QObject *kindaSender = in ? msg->OtherPart () : reinterpret_cast<QObject*> (42);
 
 		const bool isSlashMe = msg->GetBody ().trimmed ().startsWith ("/me ");
 		const bool alwaysNotNext = isSlashMe ||
-				!(msg->GetMessageType () == IMessage::MTChatMessage || msg->GetMessageType () == IMessage::MTMUCMessage);
+				!(msg->GetMessageType () == IMessage::Type::ChatMessage || msg->GetMessageType () == IMessage::Type::MUCMessage);
 		const bool isNextMsg = !alwaysNotNext &&
 				Frame2LastContact_.contains (frame) &&
 				kindaSender == Frame2LastContact_ [frame];
@@ -266,8 +266,8 @@ namespace AdiumStyles
 				'/';
 
 		QString filename;
-		if ((msg->GetMessageType () == IMessage::MTChatMessage ||
-					msg->GetMessageType () == IMessage::MTMUCMessage) &&
+		if ((msg->GetMessageType () == IMessage::Type::ChatMessage ||
+					msg->GetMessageType () == IMessage::Type::MUCMessage) &&
 				!isSlashMe)
 			filename = isNextMsg ?
 					"NextContent.html" :
@@ -275,8 +275,8 @@ namespace AdiumStyles
 		else
 			filename = "Action.html";
 
-		if (msg->GetMessageType () != IMessage::MTMUCMessage &&
-				msg->GetMessageType () != IMessage::MTChatMessage)
+		if (msg->GetMessageType () != IMessage::Type::MUCMessage &&
+				msg->GetMessageType () != IMessage::Type::ChatMessage)
 			Frame2LastContact_.remove (frame);
 		else if (!isNextMsg && !alwaysNotNext)
 			Frame2LastContact_ [frame] = kindaSender;
@@ -490,18 +490,18 @@ namespace AdiumStyles
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		const bool in = msg->GetDirection () == IMessage::DIn;
+		const bool in = msg->GetDirection () == IMessage::Direction::In;
 
 		ICLEntry *other = 0;
 		switch (msg->GetMessageType ())
 		{
-		case IMessage::MTChatMessage:
-		case IMessage::MTMUCMessage:
-		case IMessage::MTStatusMessage:
+		case IMessage::Type::ChatMessage:
+		case IMessage::Type::MUCMessage:
+		case IMessage::Type::StatusMessage:
 			other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 			break;
-		case IMessage::MTEventMessage:
-		case IMessage::MTServiceMessage:
+		case IMessage::Type::EventMessage:
+		case IMessage::Type::ServiceMessage:
 			other = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 			break;
 		}
@@ -510,7 +510,7 @@ namespace AdiumStyles
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "null other part, gonna fail:"
-					<< msg->GetMessageType ()
+					<< static_cast<int> (msg->GetMessageType ())
 					<< msg->GetBody ()
 					<< msg->OtherPart ()
 					<< msg->ParentCLEntry ();
@@ -533,7 +533,7 @@ namespace AdiumStyles
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no account for outgoing message, that sucks"
-					<< msg->GetMessageType ()
+					<< static_cast<int> (msg->GetMessageType ())
 					<< msg->OtherPart ()
 					<< msg->ParentCLEntry ();
 			return templ;
@@ -541,7 +541,7 @@ namespace AdiumStyles
 
 		QString senderNick = in ? other->GetEntryName () : acc->GetOurNick ();
 		if (in &&
-				msg->GetMessageType () == IMessage::MTChatMessage &&
+				msg->GetMessageType () == IMessage::Type::ChatMessage &&
 				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool ())
 		{
 			const auto& resource = msg->GetOtherVariant ();
@@ -665,7 +665,7 @@ namespace AdiumStyles
 		if (richMsg && info.UseRichTextBody_)
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
-			body = msg->GetBody ();
+			body = msg->GetEscapedBody ();
 
 		if (body.startsWith ("/me "))
 			body = QString ("* %1 %2")

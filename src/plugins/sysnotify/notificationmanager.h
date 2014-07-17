@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <tuple>
 #include <QObject>
 #include <QDBusInterface>
 #include <QPointer>
@@ -61,6 +62,9 @@ namespace Sysnotify
 		};
 		QMap<QDBusPendingCallWatcher*, ActionData> Watcher2AD_;
 		QMap<uint, ActionData> CallID2AD_;
+
+		bool IgnoreTimeoutCloses_ = false;
+		std::tuple<int, int> Version_ { 0, 0 };
 	public:
 		NotificationManager (QObject* = 0);
 
@@ -73,7 +77,7 @@ namespace Sysnotify
 		void handleNotificationCallFinished (QDBusPendingCallWatcher*);
 		void handleCapCheckCallFinished (QDBusPendingCallWatcher*);
 		void handleActionInvoked (uint, QString);
-		void handleNotificationClosed (uint);
+		void handleNotificationClosed (uint, uint);
 	};
 }
 }

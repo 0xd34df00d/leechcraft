@@ -32,16 +32,18 @@
 #include <QDBusConnectionInterface>
 #include <QApplication>
 #include <QIcon>
+#include <QDBusMetaType>
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
+#include "imagehint.h"
 
 namespace LeechCraft
 {
 namespace Sysnotify
 {
 	NotificationManager::NotificationManager (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
 	{
 		if (!QDBusConnection::sessionBus ().interface ()->
 				isServiceRegistered ("org.freedesktop.Notifications"))
@@ -51,6 +53,8 @@ namespace Sysnotify
 			return;
 		}
 
+		qDBusRegisterMetaType<ImageHint> ();
+
 		Connection_.reset (new QDBusInterface ("org.freedesktop.Notifications",
 					"/org/freedesktop/Notifications"));
 		if (!Connection_->isValid ())
@@ -58,7 +62,7 @@ namespace Sysnotify
 					<< Connection_->lastError ();
 
 		auto pendingSI = Connection_->asyncCall ("GetServerInformation");
-		connect (new QDBusPendingCallWatcher (pendingSI, this),
+		connect (new QDBusPendingCallWatcher { pendingSI, this },
 				SIGNAL (finished (QDBusPendingCallWatcher*)),
 				this,
 				SLOT (handleGotServerInfo (QDBusPendingCallWatcher*)));
@@ -70,7 +74,7 @@ namespace Sysnotify
 		connect (Connection_.get (),
 				SIGNAL (NotificationClosed (uint, uint)),
 				this,
-				SLOT (handleNotificationClosed (uint)));
+				SLOT (handleNotificationClosed (uint, uint)));
 	}
 
 	bool NotificationManager::CouldNotify (const Entity& e) const
@@ -87,15 +91,15 @@ namespace Sysnotify
 		if (!Connection_.get ())
 			return;
 
-		QStringList actions = e.Additional_ ["NotificationActions"].toStringList ();
+		const auto& actions = e.Additional_ ["NotificationActions"].toStringList ();
 		if (actions.isEmpty ())
 		{
 			DoNotify (e, false);
 			return;
 		}
 
-		auto pending = Connection_->asyncCall ("GetCapabilities");
-		auto watcher = new QDBusPendingCallWatcher (pending, this);
+		const auto& pending = Connection_->asyncCall ("GetCapabilities");
+		const auto watcher = new QDBusPendingCallWatcher { pending, this };
 		Watcher2CapCheck_ [watcher] = { e };
 		connect (watcher,
 				SIGNAL (finished (QDBusPendingCallWatcher*)),
@@ -105,10 +109,13 @@ namespace Sysnotify
 
 	void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 	{
-		Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
-		QString header = e.Entity_.toString ();
-		QString text = e.Additional_ ["Text"].toString ();
+		const auto& prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
+		const auto& header = e.Entity_.toString ();
+		const auto& text = e.Additional_ ["Text"].toString ();
 		bool uus = e.Additional_ ["UntilUserSees"].toBool ();
+
+		if (prio == PLog_)
+			return;
 
 		QStringList fmtActions;
 		QStringList actions;
@@ -116,36 +123,47 @@ namespace Sysnotify
 		{
 			actions = e.Additional_ ["NotificationActions"].toStringList ();
 			int i = 0;
-			Q_FOREACH (QString action, actions)
+			for (const auto& action : actions)
 				fmtActions << QString::number (i++) << action;
 		}
-
-		if (prio == PLog_)
-			return;
 
 		int timeout = 0;
 		if (!uus)
 			timeout = 5000;
 
-		QList<QVariant> arguments;
-		arguments << header
-			<< uint (0)
-			<< QString ("leechcraft_main")
-			<< QString ()
-			<< text
-			<< fmtActions
-			<< QVariantMap ()
-			<< timeout;
+		QVariantMap hints;
+		const auto& image = e.Additional_ ["NotificationPixmap"].value<QPixmap> ().toImage ();
+		if (!image.isNull ())
+		{
+			if (Version_ == std::make_tuple (1, 1))
+				hints ["image_data"] = QVariant::fromValue<ImageHint> (image);
+			else if (Version_ <= std::make_tuple (1, 0))
+				hints ["icon_data"] = QVariant::fromValue<ImageHint> (image);
+			else
+				hints ["image-data"] = QVariant::fromValue<ImageHint> (image);
+		}
 
-		ActionData ad =
+		QList<QVariant> arguments
+		{
+			header,
+			static_cast<uint> (0),
+			QString { "leechcraft_main" },
+			QString {},
+			text,
+			fmtActions,
+			hints,
+			timeout
+		};
+
+		ActionData ad
 		{
 			e,
 			e.Additional_ ["HandlingObject"].value<QObject_ptr> (),
 			actions
 		};
 
-		auto pending = Connection_->asyncCallWithArgumentList ("Notify", arguments);
-		auto watcher = new QDBusPendingCallWatcher (pending, this);
+		const auto& pending = Connection_->asyncCallWithArgumentList ("Notify", arguments);
+		const auto watcher = new QDBusPendingCallWatcher { pending, this };
 		Watcher2AD_ [watcher] = ad;
 		connect (watcher,
 				SIGNAL (finished (QDBusPendingCallWatcher*)),
@@ -167,16 +185,25 @@ namespace Sysnotify
 			return;
 		}
 
+		const auto& implementation = reply.argumentAt<0> ();
 		const auto& vendor = reply.argumentAt<1> ();
+		auto versionString = reply.argumentAt<3> ();
 		qDebug () << Q_FUNC_INFO
 				<< "using"
-				<< reply.argumentAt<0> ()
+				<< implementation
 				<< vendor
 				<< reply.argumentAt<2> ()
-				<< reply.argumentAt<3> ();
+				<< versionString;
+
+		const auto& versionSplit = versionString.split ('.', QString::SkipEmptyParts);
+		if (versionSplit.size () == 2)
+			Version_ = std::make_tuple (versionSplit.value (0).toInt (),
+					versionSplit.value (1).toInt ());
 
 		if (vendor == "LeechCraft")
 			Connection_.reset ();
+		else if (implementation == "Plasma")
+			IgnoreTimeoutCloses_ = true;						// KDE is shit violating specs.
 	}
 
 	void NotificationManager::handleNotificationCallFinished (QDBusPendingCallWatcher *w)
@@ -207,15 +234,14 @@ namespace Sysnotify
 				<< reply.error ().message ();
 			return;
 		}
-		QStringList caps = reply.argumentAt<0> ();
+		const auto& caps = reply.argumentAt<0> ();
 		bool hasActions = caps.contains ("actions");
-		Entity e = Watcher2CapCheck_.take (w).Entity_;
-		DoNotify (e, hasActions);
+		DoNotify (Watcher2CapCheck_.take (w).Entity_, hasActions);
 	}
 
 	void NotificationManager::handleActionInvoked (uint id, QString action)
 	{
-		const ActionData& ad = CallID2AD_.take (id);
+		const auto& ad = CallID2AD_.take (id);
 		if (!ad.Handler_)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -223,7 +249,7 @@ namespace Sysnotify
 			return;
 		}
 
-		int idx = action.toInt ();
+		const auto idx = action.toInt ();
 
 		QMetaObject::invokeMethod (ad.Handler_.get (),
 				"notificationActionTriggered",
@@ -231,8 +257,11 @@ namespace Sysnotify
 				Q_ARG (int, idx));
 	}
 
-	void NotificationManager::handleNotificationClosed (uint id)
+	void NotificationManager::handleNotificationClosed (uint id, uint reason)
 	{
+		if (IgnoreTimeoutCloses_ && reason == 1)
+			return;
+
 		CallID2AD_.remove (id);
 	}
 }

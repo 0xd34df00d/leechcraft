@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QUrl>
+#include <QTimer>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
@@ -47,6 +48,9 @@
 #include <interfaces/azoth/imucjoinwidget.h>
 #include <interfaces/azoth/ihavepings.h>
 #include <interfaces/azoth/imucperms.h>
+#include <interfaces/azoth/ihavequeriableversion.h>
+#include <interfaces/azoth/isupportlastactivity.h>
+#include <interfaces/azoth/ihaveservicediscovery.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -57,13 +61,14 @@ namespace MuCommands
 {
 	namespace
 	{
-		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry, const QString& contents)
+		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry,
+				const QString& rich)
 		{
 			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = azothProxy->CreateCoreMessage (contents,
+			const auto msgObj = azothProxy->CreateCoreMessage (rich,
 					QDateTime::currentDateTime (),
-					IMessage::MTServiceMessage,
-					IMessage::DIn,
+					IMessage::Type::ServiceMessage,
+					IMessage::Direction::In,
 					entryObj,
 					entryObj);
 			const auto msg = qobject_cast<IMessage*> (msgObj);
@@ -109,8 +114,8 @@ namespace MuCommands
 				const auto msg = qobject_cast<IMessage*> (msgObj);
 				switch (msg->GetMessageType ())
 				{
-				case IMessage::MTChatMessage:
-				case IMessage::MTMUCMessage:
+				case IMessage::Type::ChatMessage:
+				case IMessage::Type::MUCMessage:
 					break;
 				default:
 					continue;
@@ -166,7 +171,7 @@ namespace MuCommands
 			if (url.isEmpty ())
 				continue;
 
-			const auto& entity = Util::MakeEntity (QUrl::fromUserInput (url),
+			const auto& entity = Util::MakeEntity (QUrl::fromEncoded (url.toUtf8 ()),
 					{}, params | FromUserInitiated);
 			iem->HandleEntity (entity);
 		}
@@ -178,6 +183,9 @@ namespace MuCommands
 	{
 		QHash<QString, ICLEntry*> GetParticipants (IMUCEntry *entry)
 		{
+			if (!entry)
+				return {};
+
 			QHash<QString, ICLEntry*> result;
 			for (const auto entryObj : entry->GetParticipants ())
 			{
@@ -299,33 +307,49 @@ namespace MuCommands
 			return "<ul><li>" + strings.join ("</li><li>") + "</li></ul>";
 		}
 
-		template<typename T>
-		void PerformMucAction (T action, IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+		template<typename T, typename F>
+		void PerformAction (T action, F fallback, ICLEntry *entry, const QString& text)
 		{
-			const auto& split = ParseNicks (entry, text);
-			if (split.isEmpty ())
-				return;
+			auto nicks = ParseNicks (entry, text);
+			if (nicks.isEmpty ())
+			{
+				if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
+					return;
+				else
+					nicks << entry->GetHumanReadableID ();
+			}
 
 			const auto& participants = GetParticipants (qobject_cast<IMUCEntry*> (entry->GetQObject ()));
-			for (const auto& name : split)
+			for (const auto& name : nicks)
 			{
 				const auto target = ResolveEntry (name.trimmed (),
 						participants, entry->GetParentAccount ());
 				if (!target)
 				{
-					InjectMessage (azothProxy, entry,
-							QObject::tr ("Unable to resolve %1.").arg ("<em>" + name + "</em>"));
+					fallback (name);
 					continue;
 				}
 
 				action (target, name);
 			}
 		}
+
+		template<typename T>
+		void PerformAction (T action, IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+		{
+			PerformAction (action,
+					[azothProxy, entry] (const QString& name)
+					{
+						InjectMessage (azothProxy, entry,
+								QObject::tr ("Unable to resolve %1.").arg ("<em>" + name + "</em>"));
+					},
+					entry, text);
+		}
 	}
 
 	bool ShowVCard (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
 				{
 					const auto targetObj = target->GetQObject ();
 					const auto imie = qobject_cast<IMetaInfoEntry*> (targetObj);
@@ -358,37 +382,62 @@ namespace MuCommands
 		return true;
 	}
 
+	namespace
+	{
+		void ShowVersionVariant (IProxyObject *azothProxy, ICLEntry *entry,
+				const QString& name, ICLEntry *target, const QString& var, bool initial)
+		{
+			const auto ihqv = qobject_cast<IHaveQueriableVersion*> (target->GetQObject ());
+			const auto& info = target->GetClientInfo (var);
+
+			QStringList fields;
+			auto add = [&fields] (const QString& name, const QString& value)
+			{
+				if (!value.isEmpty ())
+					fields << "<strong>" + name + ":</strong> " + value;
+			};
+
+			add (QObject::tr ("Type"), info ["client_type"].toString ());
+			add (QObject::tr ("Name"), info ["client_name"].toString ());
+			add (QObject::tr ("Version"), info ["client_version"].toString ());
+			add (QObject::tr ("OS"), info ["client_os"].toString ());
+
+			if (initial && !info.contains ("client_version") && ihqv)
+			{
+				const auto pendingObj = ihqv->QueryVersion (var);
+
+				const auto closure = new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[name, azothProxy, entry, target, var]
+					{
+						ShowVersionVariant (azothProxy, entry, name, target, var, false);
+					},
+					pendingObj,
+					SIGNAL (versionReceived ()),
+					pendingObj
+				};
+				QTimer::singleShot (10 * 1000, closure, SLOT (run ()));
+				return;
+			}
+
+			auto body = QObject::tr ("Client information for %1:")
+					.arg (var.isEmpty () && target->Variants ().size () == 1 ?
+							name :
+							target->GetHumanReadableID () + '/' + var);
+			body += fields.isEmpty () ?
+					QObject::tr ("no information available.") :
+					"<ul><li>" + fields.join ("</li><li>") + "</li></ul>";
+
+			InjectMessage (azothProxy, entry, body);
+		}
+	}
+
 	bool ShowVersion (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
 				{
-					const auto& variants = target->Variants ();
-					for (const auto& var : variants)
-					{
-						const auto& info = target->GetClientInfo (var);
-
-						QStringList fields;
-						auto add = [&fields] (const QString& name, const QString& value)
-						{
-							if (!value.isEmpty ())
-								fields << "<strong>" + name + ":</strong> " + value;
-						};
-
-						add (QObject::tr ("Type"), info ["client_type"].toString ());
-						add (QObject::tr ("Name"), info ["client_name"].toString ());
-						add (QObject::tr ("Version"), info ["client_version"].toString ());
-						add (QObject::tr ("OS"), info ["client_os"].toString ());
-
-						auto body = QObject::tr ("Client information for %1:")
-								.arg (var.isEmpty () && variants.size () == 1 ?
-										name :
-										target->GetHumanReadableID () + '/' + var);
-						body += fields.isEmpty () ?
-								QObject::tr ("no information available.") :
-								"<ul><li>" + fields.join ("</li><li>") + "</li></ul>";
-
-						InjectMessage (azothProxy, entry, body);
-					}
+					for (const auto& var : target->Variants ())
+						ShowVersionVariant (azothProxy, entry, name, target, var, true);
 				},
 				azothProxy, entry, text);
 
@@ -409,7 +458,7 @@ namespace MuCommands
 
 	bool ShowTime (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
 				{
 					const auto targetObj = target->GetQObject ();
 					const auto ihet = qobject_cast<IHaveEntityTime*> (targetObj);
@@ -435,8 +484,6 @@ namespace MuCommands
 								target->GetHumanReadableID () + '/' + var;
 						if (!time.isValid ())
 						{
-							fields << QObject::tr ("No information for %1.")
-									.arg (varName);
 							shouldUpdate = true;
 							continue;
 						}
@@ -483,6 +530,44 @@ namespace MuCommands
 							QObject::tr ("Entity time for %1:").arg (name) + body);
 				},
 				azothProxy, entry, text);
+
+		return true;
+	}
+
+	bool Disco (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		const auto accObj = entry->GetParentAccount ();
+		const auto ihsd = qobject_cast<IHaveServiceDiscovery*> (accObj);
+		if (!ihsd)
+		{
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("%1's account does not support service discovery.")
+							.arg (entry->GetEntryName ()));
+			return true;
+		}
+
+		const auto requestSD = [ihsd, azothProxy, entry, accObj] (const QString& query)
+		{
+			const auto sessionObj = ihsd->CreateSDSession ();
+			const auto session = qobject_cast<ISDSession*> (sessionObj);
+			if (!session)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("Unable to create service discovery session for %1.")
+								.arg ("<em>" + query + "</em>"));
+				return;
+			}
+
+			session->SetQuery (query);
+
+			QMetaObject::invokeMethod (accObj,
+					"gotSDSession",
+					Q_ARG (QObject*, sessionObj));
+		};
+
+		PerformAction ([requestSD] (ICLEntry *target, const QString&) { requestSD (target->GetHumanReadableID ()); },
+				[requestSD] (const QString& name) { requestSD (name); },
+				entry, text);
 
 		return true;
 	}
@@ -617,9 +702,150 @@ namespace MuCommands
 		return true;
 	}
 
+	namespace
+	{
+		QString GetLastActivityPattern (IPendingLastActivityRequest::Context context)
+		{
+			switch (context)
+			{
+			case IPendingLastActivityRequest::Context::Activity:
+				return QObject::tr ("Last activity of %1: %2.");
+			case IPendingLastActivityRequest::Context::LastConnection:
+				return QObject::tr ("Last connection of %1: %2.");
+			case IPendingLastActivityRequest::Context::Uptime:
+				return QObject::tr ("%1's uptime: %2.");
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown context"
+					<< static_cast<int> (context);
+			return {};
+		}
+	}
+
+	bool Last (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		const auto handlePending = [azothProxy, entry] (QObject *pending, const QString& name) -> void
+		{
+			if (!pending)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("%1 does not support last activity.").arg (name));
+				return;
+			}
+
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[pending, azothProxy, entry, name] ()
+				{
+					const auto iplar = qobject_cast<IPendingLastActivityRequest*> (pending);
+					const auto& time = Util::MakeTimeFromLong (iplar->GetTime ());
+					const auto& pattern = GetLastActivityPattern (iplar->GetContext ());
+					InjectMessage (azothProxy, entry, pattern.arg (name).arg (time));
+				},
+				pending,
+				SIGNAL (gotLastActivity ()),
+				pending
+			};
+		};
+
+		PerformAction ([handlePending] (ICLEntry *target, const QString& name) -> void
+				{
+					const auto isla = qobject_cast<ISupportLastActivity*> (target->GetParentAccount ());
+					const auto pending = isla ?
+							isla->RequestLastActivity (target->GetQObject (), {}) :
+							nullptr;
+					handlePending (pending, name);
+				},
+				[entry, handlePending] (const QString& name) -> void
+				{
+					const auto isla = qobject_cast<ISupportLastActivity*> (entry->GetParentAccount ());
+					const auto pending = isla ?
+							isla->RequestLastActivity (name) :
+							nullptr;
+					handlePending (pending, name);
+				},
+				entry, text);
+
+		return true;
+	}
+
+	bool Invite (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		const auto& id = text.section (' ', 1, 1);
+		const auto& reason = text.section (' ', 2);
+
+		if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
+		{
+			const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount ());
+			const auto& inviteeId = invitee ?
+					invitee->GetHumanReadableID () :
+					id;
+
+			const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+			mucEntry->InviteToMUC (inviteeId, reason);
+
+			InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
+					.arg (inviteeId)
+					.arg (entry->GetEntryName ()));
+		}
+		else
+		{
+			const auto mucEntry = ResolveEntry (id, {}, entry->GetParentAccount ());
+			if (!mucEntry)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("Unable to resolve multiuser chat for %1.").arg (id));
+				return true;
+			}
+
+			const auto mucIface = qobject_cast<IMUCEntry*> (mucEntry->GetQObject ());
+			if (!mucIface)
+			{
+				InjectMessage (azothProxy, entry,
+						QObject::tr ("%1 is not a multiuser chat.").arg (id));
+				return true;
+			}
+
+			mucIface->InviteToMUC (entry->GetHumanReadableID (), reason);
+			InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
+					.arg (entry->GetEntryName ())
+					.arg (mucEntry->GetEntryName ()));
+		}
+
+		return true;
+	}
+
+	bool Pm (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
+			return false;
+
+		const auto& firstLine = text.section ('\n', 0, 0);
+		const auto& message = text.section ('\n', 1);
+		const auto& nick = firstLine.section (' ', 1);
+
+		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+		const auto part = GetParticipants (mucEntry).value (nick);
+		if (!part)
+		{
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("Unable to find participant %1.")
+							.arg ("<em>" + nick + "</em>"));
+			return true;
+		}
+
+		const auto msgObj = part->CreateMessage (IMessage::Type::ChatMessage,
+				part->Variants ().value (0), message);
+		const auto msg = qobject_cast<IMessage*> (msgObj);
+		msg->Send ();
+
+		return true;
+	}
+
 	bool Ping (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformMucAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([azothProxy, entry] (ICLEntry *target, const QString& name) -> void
 				{
 					const auto targetObj = target->GetQObject ();
 					const auto ihp = qobject_cast<IHavePings*> (targetObj);

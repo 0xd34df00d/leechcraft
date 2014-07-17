@@ -68,6 +68,8 @@
 #include "xep0313manager.h"
 #include "xep0313prefsdialog.h"
 #include "xep0313modelmanager.h"
+#include "pendinglastactivityrequest.h"
+#include "lastactivitymanager.h"
 
 namespace LeechCraft
 {
@@ -638,6 +640,36 @@ namespace Xoox
 		SetBookmarks (set);
 	}
 
+	QObject* GlooxAccount::RequestLastActivity (QObject *entry, const QString& variant)
+	{
+		auto jid = qobject_cast<ICLEntry*> (entry)->GetHumanReadableID ();
+		if (!variant.isEmpty ())
+			jid += '/' + variant;
+		return RequestLastActivity (jid);
+	}
+
+	QObject* GlooxAccount::RequestLastActivity (const QString& jid)
+	{
+		auto pending = new PendingLastActivityRequest { jid, this };
+
+		const auto manager = ClientConnection_->GetLastActivityManager ();
+		const auto& id = manager->RequestLastActivity (jid);
+		connect (manager,
+				SIGNAL (gotLastActivity (QString, int)),
+				pending,
+				SLOT (handleGotLastActivity (QString, int)));
+
+		ClientConnection_->WhitelistError (id);
+		ClientConnection_->AddCallback (id,
+				[pending] (const QXmppIq& iq)
+				{
+					if (iq.type () == QXmppIq::Error)
+						pending->deleteLater ();
+				});
+
+		return pending;
+	}
+
 	bool GlooxAccount::SupportsFeature (Feature f) const
 	{
 		switch (f)
@@ -815,7 +847,7 @@ namespace Xoox
 
 		const auto existingObj = ClientConnection_->GetCLEntry (jid, {});
 		const auto existing = qobject_cast<ICLEntry*> (existingObj);
-		if (existing && existing->GetEntryType () != ICLEntry::ETMUC)
+		if (existing && existing->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
 			const auto res = QMessageBox::question (nullptr,
 					"LeechCraft",
@@ -923,7 +955,7 @@ namespace Xoox
 		return result;
 	}
 
-	QObject* GlooxAccount::CreateMessage (IMessage::MessageType type,
+	QObject* GlooxAccount::CreateMessage (IMessage::Type type,
 			const QString& variant,
 			const QString& body,
 			const QString& jid)
@@ -1028,7 +1060,7 @@ namespace Xoox
 				qobject_cast<ICLEntry*> (jidEntry)->GetHumanReadableID () :
 				jid;
 		for (auto& message : messages)
-			message.Nick_ = message.Dir_ == IMessage::Direction::DIn ?
+			message.Nick_ = message.Dir_ == IMessage::Direction::In ?
 					otherNick :
 					ourNick;
 

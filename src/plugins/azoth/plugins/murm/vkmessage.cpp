@@ -36,7 +36,7 @@ namespace Azoth
 {
 namespace Murm
 {
-	VkMessage::VkMessage (bool isOurs, Direction dir, MessageType type, EntryBase *parentEntry, EntryBase *other)
+	VkMessage::VkMessage (bool isOurs, Direction dir, Type type, EntryBase *parentEntry, EntryBase *other)
 	: QObject (parentEntry)
 	, OtherPart_ (other)
 	, ParentCLEntry_ (parentEntry)
@@ -93,14 +93,14 @@ namespace Murm
 		return Dir_;
 	}
 
-	IMessage::MessageType VkMessage::GetMessageType () const
+	IMessage::Type VkMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType VkMessage::GetMessageSubType () const
+	IMessage::SubType VkMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return SubType::Other;
 	}
 
 	QObject* VkMessage::OtherPart () const
@@ -129,6 +129,11 @@ namespace Murm
 	void VkMessage::SetBody (const QString& body)
 	{
 		Body_ = body;
+	}
+
+	IMessage::EscapePolicy VkMessage::GetEscapePolicy () const
+	{
+		return EscapePolicy::NoEscape;
 	}
 
 	QDateTime VkMessage::GetDateTime () const

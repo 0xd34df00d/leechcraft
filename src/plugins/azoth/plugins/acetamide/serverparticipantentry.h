@@ -63,7 +63,7 @@ namespace Acetamide
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 
-		QObject* CreateMessage (IMessage::MessageType,
+		QObject* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 
 		void SetMessageHistory (QObjectList messages);

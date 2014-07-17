@@ -33,6 +33,7 @@
 #include <util/gui/clearlineeditaddon.h>
 #include "core.h"
 #include "keyboardrosterfixer.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -59,7 +60,7 @@ namespace Azoth
 			auto entry = qobject_cast<ICLEntry*> (part);
 
 			auto item = new QStandardItem (nameGetter (entry));
-			item->setIcon (Core::Instance ().GetIconForState (entry->GetStatus ().State_));
+			item->setIcon (ResourcesManager::Instance ().GetIconForState (entry->GetStatus ().State_));
 			item->setData (QVariant::fromValue (part), PLRObject);
 			item->setEditable (false);
 

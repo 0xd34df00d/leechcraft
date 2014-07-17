@@ -68,6 +68,8 @@ namespace Snails
 		QMenu *MsgAttachments_;
 		QToolButton *MsgAttachmentsButton_;
 
+		QAction *MsgViewHeaders_;
+
 		TabClassInfo TabClass_;
 		QObject *PMT_;
 
@@ -101,6 +103,7 @@ namespace Snails
 		void handleMoveMessages (QAction*);
 		void handleMarkMsgUnread ();
 		void handleRemoveMsgs ();
+		void handleViewHeaders ();
 
 		void handleAttachment ();
 		void handleFetchNewMail ();

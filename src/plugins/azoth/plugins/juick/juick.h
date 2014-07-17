@@ -34,6 +34,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {
@@ -69,7 +70,8 @@ namespace Juick
 		QString FormatBody (QString);
 		void InsertAvatars (QString& body);
 		void InsertNickLinks (QString& body);
-		bool ShouldHandle (QObject* msgObj, int direction, int type);
+		bool ShouldHandle (QObject* msgObj,
+				IMessage::Direction direction, IMessage::Type type);
 		bool IsBehind (const QString& text, int index, const QString& pattern) const;
 	public slots:
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,

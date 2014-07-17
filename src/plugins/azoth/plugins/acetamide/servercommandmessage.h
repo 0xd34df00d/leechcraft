@@ -55,22 +55,22 @@ namespace Acetamide
 		Direction Direction_;
 		QString FromChID_;
 		QString FromVariant_;
-		MessageType Type_;
-		MessageSubType SubType_;
+		Type Type_;
+		SubType SubType_;
 	public:
 		ServerCommandMessage (const QString&, IrcServerCLEntry*);
 		ServerCommandMessage (const QString&, Direction,
 				IrcServerCLEntry*,
-				MessageType,
-				MessageSubType);
+				Type,
+				SubType);
 		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
-		MessageType GetMessageType () const;
-		void SetMessageType (IMessage::MessageType);
-		MessageSubType GetMessageSubType () const;
-		void SetMessageSubType (IMessage::MessageSubType);
+		Type GetMessageType () const;
+		void SetMessageType (IMessage::Type);
+		SubType GetMessageSubType () const;
+		void SetMessageSubType (IMessage::SubType);
 		/** Since it's outgoing message, the other part
 		 * always equals to the room entry.
 		 */

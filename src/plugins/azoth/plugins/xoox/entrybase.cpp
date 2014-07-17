@@ -42,6 +42,7 @@
 #include <QXmppGlobal.h>
 #include <QXmppEntityTimeIq.h>
 #include <QXmppEntityTimeManager.h>
+#include <QXmppVersionManager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -71,6 +72,8 @@
 #include "inforequestpolicymanager.h"
 #include "pingmanager.h"
 #include "pingreplyobject.h"
+#include "pendingversionquery.h"
+#include "discomanagerwrapper.h"
 
 namespace LeechCraft
 {
@@ -220,13 +223,13 @@ namespace Xoox
 		if (version.name ().isEmpty ())
 			return res;
 
-		QString str;
-		str = version.name ();
 		res ["client_remote_name"] = version.name ();
 		if (!version.version ().isEmpty ())
 			res ["client_version"] = version.version ();
 		if (!version.os ().isEmpty ())
 			res ["client_os"] = version.os ();
+		if (res ["client_name"].toString ().isEmpty ())
+			res ["client_name"] = version.name ();
 
 		return res;
 	}
@@ -451,6 +454,18 @@ namespace Xoox
 		return reply;
 	}
 
+	QObject* EntryBase::QueryVersion (const QString& variant)
+	{
+		auto jid = GetJID ();
+		if (!variant.isEmpty ())
+			jid += '/' + variant;
+
+		const auto vm = Account_->GetClientConnection ()->GetVersionManager ();
+		vm->requestVersion (jid);
+
+		return new PendingVersionQuery { vm, jid, this };
+	}
+
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
 	{
 		SetClientInfo (resource, pres);
@@ -461,7 +476,7 @@ namespace Xoox
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
-		if (msg->GetMessageType () == IMessage::MTChatMessage)
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage)
 		{
 			HasUnreadMsgs_ = true;
 			UnreadMessages_ << msg;
@@ -575,12 +590,12 @@ namespace Xoox
 
 		if (state == QXmppMessage::Gone)
 		{
-			GlooxMessage *msg = new GlooxMessage (IMessage::MTEventMessage,
-					IMessage::DIn,
+			GlooxMessage *msg = new GlooxMessage (IMessage::Type::EventMessage,
+					IMessage::Direction::In,
 					GetJID (),
 					variant,
 					Account_->GetClientConnection ().get ());
-			msg->SetMessageSubType (IMessage::MSTParticipantEndedConversation);
+			msg->SetMessageSubType (IMessage::SubType::ParticipantEndedConversation);
 			HandleMessage (msg);
 		}
 	}
@@ -648,20 +663,20 @@ namespace Xoox
 			emit availableVariantsChanged (vars);
 
 		GlooxMessage *message = 0;
-		if (GetEntryType () == ETPrivateChat)
-			message = new GlooxMessage (IMessage::MTStatusMessage,
-					IMessage::DIn,
+		if (GetEntryType () == EntryType::PrivateChat)
+			message = new GlooxMessage (IMessage::Type::StatusMessage,
+					IMessage::Direction::In,
 					qobject_cast<RoomCLEntry*> (GetParentCLEntry ())->
 							GetRoomHandler ()->GetRoomJID (),
 					GetEntryName (),
 					Account_->GetClientConnection ().get ());
 		else
-			message = new GlooxMessage (IMessage::MTStatusMessage,
-				IMessage::DIn,
+			message = new GlooxMessage (IMessage::Type::StatusMessage,
+				IMessage::Direction::In,
 				GetJID (),
 				variant,
 				Account_->GetClientConnection ().get ());
-		message->SetMessageSubType (IMessage::MSTParticipantStatusChange);
+		message->SetMessageSubType (IMessage::SubType::ParticipantStatusChange);
 
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
@@ -722,7 +737,7 @@ namespace Xoox
 			VCardDialog_->UpdateInfo (vcard);
 
 		if (!initial &&
-				GetEntryType () == ICLEntry::ETChat)
+				GetEntryType () == ICLEntry::EntryType::Chat)
 			Core::Instance ().ScheduleSaveRoster (10000);
 
 		emit vcardUpdated ();
@@ -742,25 +757,17 @@ namespace Xoox
 			const QString& node, const QByteArray& ver)
 	{
 		QString type = XooxUtil::GetClientIDName (node);
-		if (type.isEmpty ())
-		{
-			if (!node.isEmpty ())
-				qWarning () << Q_FUNC_INFO
-						<< "unknown client type for"
-						<< node;
-			type = "unknown";
-		}
+		if (type.isEmpty () && !node.isEmpty ())
+			qWarning () << Q_FUNC_INFO
+					<< "unknown client type for"
+					<< node;
 		Variant2ClientInfo_ [variant] ["client_type"] = type;
 
 		QString name = XooxUtil::GetClientHRName (node);
-		if (name.isEmpty ())
-		{
-			if (!node.isEmpty ())
-				qWarning () << Q_FUNC_INFO
-						<< "unknown client name for"
-						<< node;
-			name = "Unknown";
-		}
+		if (name.isEmpty () && !node.isEmpty ())
+			qWarning () << Q_FUNC_INFO
+					<< "unknown client name for"
+					<< node;
 		Variant2ClientInfo_ [variant] ["client_name"] = name;
 		Variant2ClientInfo_ [variant] ["raw_client_name"] = name;
 
@@ -768,7 +775,7 @@ namespace Xoox
 
 		QString reqJid = GetJID ();
 		QString reqVar = "";
-		if (GetEntryType () == ETChat)
+		if (GetEntryType () == EntryType::Chat)
 		{
 			reqJid = variant.isEmpty () ?
 					reqJid :
@@ -786,7 +793,7 @@ namespace Xoox
 			qDebug () << "requesting ids for" << reqJid << reqVar;
 			QPointer<EntryBase> pThis (this);
 			QPointer<CapsManager> pCM (capsManager);
-			Account_->GetClientConnection ()->RequestInfo (reqJid,
+			Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (reqJid,
 				[ver, reqVar, pThis, pCM] (const QXmppDiscoveryIq& iq)
 				{
 					if (!ver.isEmpty () && pCM)
@@ -933,7 +940,7 @@ namespace Xoox
 		QString variant;
 		ClientConnection::Split (from, &bare, &variant);
 
-		if (variant.isEmpty () || GetEntryType () == ETPrivateChat)
+		if (variant.isEmpty () || GetEntryType () == EntryType::PrivateChat)
 			variant = "";
 
 		const auto secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
@@ -947,7 +954,7 @@ namespace Xoox
 	void EntryBase::handleCommands ()
 	{
 		QString jid = GetJID ();
-		if (GetEntryType () != ETPrivateChat)
+		if (GetEntryType () != EntryType::PrivateChat)
 		{
 			QStringList commandable;
 			Q_FOREACH (const QString& var, Variant2VerString_.keys ())

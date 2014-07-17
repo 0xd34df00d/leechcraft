@@ -45,17 +45,17 @@ namespace Acetamide
 	, ParentEntry_ (entry)
 	, Message_ (msg)
 	, Datetime_ (QDateTime::currentDateTime ())
-	, Direction_ (DOut)
-	, Type_ (MTMUCMessage)
-	, SubType_ (MSTOther)
+	, Direction_ (Direction::Out)
+	, Type_ (Type::MUCMessage)
+	, SubType_ (SubType::Other)
 	{
 	}
 
 	ChannelPublicMessage::ChannelPublicMessage (const QString& msg,
 			IMessage::Direction direction,
 			ChannelCLEntry *entry,
-			IMessage::MessageType type,
-			IMessage::MessageSubType subType,
+			IMessage::Type type,
+			IMessage::SubType subType,
 			ChannelParticipantEntry_ptr part)
 	: QObject (0)
 	, ParentEntry_ (entry)
@@ -94,23 +94,23 @@ namespace Acetamide
 		return Direction_;
 	}
 
-	IMessage::MessageType ChannelPublicMessage::GetMessageType () const
+	IMessage::Type ChannelPublicMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	void ChannelPublicMessage::SetMessageType (IMessage::MessageType t)
+	void ChannelPublicMessage::SetMessageType (IMessage::Type t)
 	{
 		Type_ = t;
 	}
 
-	IMessage::MessageSubType ChannelPublicMessage::GetMessageSubType () const
+	IMessage::SubType ChannelPublicMessage::GetMessageSubType () const
 	{
 		return SubType_;
 	}
 
 	void ChannelPublicMessage::SetMessageSubType
-			(IMessage::MessageSubType type)
+			(IMessage::SubType type)
 	{
 		SubType_ = type;
 	}
@@ -119,16 +119,16 @@ namespace Acetamide
 	{
 		switch (Direction_)
 		{
-		case DIn:
+		case Direction::In:
 			return ParticipantEntry_.get ();
-		case DOut:
-			return ParentEntry_;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown direction"
-					<< Direction_;
+		case Direction::Out:
 			return ParentEntry_;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown direction"
+				<< static_cast<int> (Direction_);
+		return ParentEntry_;
 	}
 
 	QObject* ChannelPublicMessage::ParentCLEntry () const

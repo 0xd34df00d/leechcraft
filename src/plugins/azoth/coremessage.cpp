@@ -35,7 +35,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	CoreMessage::CoreMessage (const QString& body, const QDateTime& date,
-			MessageType type, Direction dir, QObject* other, QObject *parent)
+			Type type, Direction dir, QObject* other, QObject *parent)
 	: QObject (parent)
 	, Type_ (type)
 	, Dir_ (dir)
@@ -67,14 +67,14 @@ namespace Azoth
 		return Dir_;
 	}
 
-	IMessage::MessageType CoreMessage::GetMessageType () const
+	IMessage::Type CoreMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType CoreMessage::GetMessageSubType () const
+	IMessage::SubType CoreMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return SubType::Other;
 	}
 
 	QObject* CoreMessage::OtherPart () const
@@ -97,6 +97,11 @@ namespace Azoth
 		Body_ = body;
 	}
 
+	IMessage::EscapePolicy CoreMessage::GetEscapePolicy () const
+	{
+		return EscapePolicy::NoEscape;
+	}
+
 	QDateTime CoreMessage::GetDateTime () const
 	{
 		return Date_;
@@ -105,6 +110,16 @@ namespace Azoth
 	void CoreMessage::SetDateTime (const QDateTime& timestamp)
 	{
 		Date_ = timestamp;
+	}
+
+	QString CoreMessage::GetRichBody () const
+	{
+		return RichBody_;
+	}
+
+	void CoreMessage::SetRichBody (const QString& richBody)
+	{
+		RichBody_ = richBody;
 	}
 }
 }

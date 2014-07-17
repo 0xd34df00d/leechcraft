@@ -49,17 +49,17 @@ namespace Xoox
 	, ParentEntry_ (entry)
 	, Message_ (msg)
 	, Datetime_ (QDateTime::currentDateTime ())
-	, Direction_ (DOut)
-	, Type_ (MTMUCMessage)
-	, SubType_ (MSTOther)
+	, Direction_ (Direction::Out)
+	, Type_ (Type::MUCMessage)
+	, SubType_ (SubType::Other)
 	{
 	}
 
 	RoomPublicMessage::RoomPublicMessage (const QString& msg,
 			IMessage::Direction direction,
 			RoomCLEntry *entry,
-			IMessage::MessageType type,
-			IMessage::MessageSubType subType,
+			IMessage::Type type,
+			IMessage::SubType subType,
 			RoomParticipantEntry_ptr part)
 	: QObject (entry)
 	, ParentEntry_ (entry)
@@ -80,9 +80,9 @@ namespace Xoox
 	, ParticipantEntry_ (partEntry)
 	, Message_ (msg.body ())
 	, Datetime_ (msg.stamp ().isValid () ? msg.stamp ().toLocalTime () : QDateTime::currentDateTime ())
-	, Direction_ (DIn)
-	, Type_ (MTMUCMessage)
-	, SubType_ (MSTOther)
+	, Direction_ (Direction::In)
+	, Type_ (Type::MUCMessage)
+	, SubType_ (SubType::Other)
 	, XHTML_ (msg.xhtml ())
 	{
 		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);
@@ -128,12 +128,12 @@ namespace Xoox
 		return Direction_;
 	}
 
-	IMessage::MessageType RoomPublicMessage::GetMessageType () const
+	IMessage::Type RoomPublicMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType RoomPublicMessage::GetMessageSubType () const
+	IMessage::SubType RoomPublicMessage::GetMessageSubType () const
 	{
 		return SubType_;
 	}
@@ -142,16 +142,16 @@ namespace Xoox
 	{
 		switch (Direction_)
 		{
-		case DIn:
+		case Direction::In:
 			return ParticipantEntry_.get ();
-		case DOut:
-			return ParentEntry_;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown direction"
-					<< Direction_;
+		case Direction::Out:
 			return ParentEntry_;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown direction"
+				<< static_cast<int> (Direction_);
+		return ParentEntry_;
 	}
 
 	QObject* RoomPublicMessage::ParentCLEntry () const
@@ -166,7 +166,7 @@ namespace Xoox
 
 	QString RoomPublicMessage::GetBody () const
 	{
-		return Qt::escape (Message_);
+		return Message_;
 	}
 
 	void RoomPublicMessage::SetBody (const QString& msg)

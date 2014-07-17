@@ -45,6 +45,8 @@
 #include "viewcolumnsmanager.h"
 #include "accountfoldermanager.h"
 #include "vmimeconversions.h"
+#include "mailsortmodel.h"
+#include "headersviewwidget.h"
 
 namespace LeechCraft
 {
@@ -56,7 +58,7 @@ namespace Snails
 	, MsgToolbar_ (new QToolBar)
 	, TabClass_ (tc)
 	, PMT_ (pmt)
-	, MailSortFilterModel_ (new QSortFilterProxyModel (this))
+	, MailSortFilterModel_ (new MailSortModel { this })
 	{
 		Ui_.setupUi (this);
 		//Ui_.MailTreeLay_->insertWidget (0, MsgToolbar_);
@@ -64,7 +66,7 @@ namespace Snails
 		Ui_.MailView_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
 		auto colMgr = new ViewColumnsManager (Ui_.MailTree_->header ());
-		colMgr->SetStretchColumn (1);
+		colMgr->SetStretchColumn (static_cast<int> (MailModel::Column::Subject));
 		colMgr->SetDefaultWidths ({
 				"Typical sender name and surname",
 				{},
@@ -183,6 +185,16 @@ namespace Snails
 				SLOT (handleRemoveMsgs ()));
 		TabToolbar_->addAction (MsgRemove_);
 
+		TabToolbar_->addSeparator ();
+
+		MsgViewHeaders_ = new QAction (tr ("View headers"), this);
+		MsgViewHeaders_->setProperty ("ActionIcon", "text-plain");
+		connect (MsgViewHeaders_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleViewHeaders ()));
+		TabToolbar_->addAction (MsgViewHeaders_);
+
 		SetMsgActionsEnabled (false);
 	}
 
@@ -204,7 +216,7 @@ namespace Snails
 
 	void MailTab::SetMsgActionsEnabled (bool enable)
 	{
-		for (auto act : { MsgReply_, MsgMarkUnread_, MsgRemove_ })
+		for (auto act : { MsgReply_, MsgMarkUnread_, MsgRemove_, MsgViewHeaders_ })
 			act->setEnabled (enable);
 
 		MsgCopyButton_->setEnabled (enable);
@@ -590,6 +602,35 @@ namespace Snails
 
 		const auto& ids = GetSelectedIds ();
 		CurrAcc_->DeleteMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
+	}
+
+	void MailTab::handleViewHeaders ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto model = CurrAcc_->GetMailModel ();
+		for (const auto& id : GetSelectedIds ())
+		{
+			const auto& msg = model->GetMessage (id);
+			if (!msg)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no message for id"
+						<< id;
+				continue;
+			}
+
+			const auto& header = msg->GetVmimeHeader ();
+			if (!header)
+				continue;
+
+			auto widget = new HeadersViewWidget { header, this };
+			widget->setAttribute (Qt::WA_DeleteOnClose);
+			widget->setWindowFlags (Qt::Dialog);
+			widget->setWindowTitle (tr ("Headers for \"%1\"").arg (msg->GetSubject ()));
+			widget->show ();
+		}
 	}
 
 	void MailTab::handleAttachment ()

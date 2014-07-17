@@ -676,7 +676,7 @@ namespace LMP
 
 		for (auto pos = toRemove.begin (); pos != toRemove.end (); )
 		{
-			if (pos->startsWith (rootPath) && !scanned.contains (*pos))
+			if (pos->startsWith (rootPath))
 				++pos;
 			else
 				pos = toRemove.erase (pos);

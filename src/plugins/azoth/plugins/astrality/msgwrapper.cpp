@@ -45,15 +45,15 @@ namespace Astrality
 	, Entry_ (entry)
 	, Body_ (msg.text ())
 	, DT_ (msg.received ())
-	, Dir_ (DIn)
-	, MT_ (MTChatMessage)
-	, MST_ (MSTOther)
+	, Dir_ (Direction::In)
+	, MT_ (Type::ChatMessage)
+	, MST_ (SubType::Other)
 	{
 	}
 
 	MsgWrapper::MsgWrapper (const QString& body, Direction dir,
 			Tp::ContactMessengerPtr messenger, EntryWrapper *entry,
-			MessageType mt, MessageSubType mst)
+			Type mt, SubType mst)
 	: QObject (entry)
 	, Messenger_ (messenger)
 	, Entry_ (entry)
@@ -93,12 +93,12 @@ namespace Astrality
 		return Dir_;
 	}
 
-	IMessage::MessageType MsgWrapper::GetMessageType () const
+	IMessage::Type MsgWrapper::GetMessageType () const
 	{
 		return MT_;
 	}
 
-	IMessage::MessageSubType MsgWrapper::GetMessageSubType () const
+	IMessage::SubType MsgWrapper::GetMessageSubType () const
 	{
 		return MST_;
 	}

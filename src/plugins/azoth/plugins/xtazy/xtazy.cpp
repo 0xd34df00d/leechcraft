@@ -249,9 +249,9 @@ namespace Xtazy
 			if (!entry)
 				continue;
 
-			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-					IMessage::MTMUCMessage :
-					IMessage::MTChatMessage;
+			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
+					IMessage::Type::MUCMessage :
+					IMessage::Type::ChatMessage;
 			auto msgObj = entry->CreateMessage (msgType, notifee.second, encoded);
 			auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Send ();

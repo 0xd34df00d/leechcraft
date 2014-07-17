@@ -38,7 +38,7 @@ namespace Azoth
 {
 namespace Vader
 {
-	MRIMMessage::MRIMMessage (Direction dir, MessageType mt, MRIMBuddy *buddy)
+	MRIMMessage::MRIMMessage (Direction dir, Type mt, MRIMBuddy *buddy)
 	: QObject (buddy)
 	, Buddy_ (buddy)
 	, A_ (qobject_cast<MRIMAccount*> (Buddy_->GetParentAccount ()))
@@ -46,7 +46,7 @@ namespace Vader
 	, MT_ (mt)
 	, DateTime_ (QDateTime::currentDateTime ())
 	, SendID_ (0)
-	, IsDelivered_ (dir == DIn)
+	, IsDelivered_ (dir == Direction::In)
 	{
 		connect (A_->GetConnection (),
 				SIGNAL (messageDelivered (quint32)),
@@ -70,7 +70,7 @@ namespace Vader
 
 	void MRIMMessage::Send ()
 	{
-		if (Dir_ != Direction::DOut)
+		if (Dir_ != Direction::Out)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to send incoming message";
@@ -91,14 +91,14 @@ namespace Vader
 		return Dir_;
 	}
 
-	IMessage::MessageType MRIMMessage::GetMessageType () const
+	IMessage::Type MRIMMessage::GetMessageType () const
 	{
 		return MT_;
 	}
 
-	IMessage::MessageSubType MRIMMessage::GetMessageSubType () const
+	IMessage::SubType MRIMMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return SubType::Other;
 	}
 
 	QObject* MRIMMessage::OtherPart () const

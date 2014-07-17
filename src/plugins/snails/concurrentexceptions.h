@@ -57,6 +57,7 @@ namespace Snails
 		const QByteArray What_;
 	public:
 		InvokeFailedException (const TaskQueueItem&);
+		~InvokeFailedException () noexcept = default;
 
 		const char* what () const noexcept override;
 	};
@@ -66,6 +67,7 @@ namespace Snails
 		const QString Message_;
 	public:
 		AuthorizationException (const QString&);
+		~AuthorizationException () noexcept = default;
 
 		const QString& GetMessage () const;
 	};
@@ -74,6 +76,7 @@ namespace Snails
 	{
 	public:
 		TimeoutException () = default;
+		~TimeoutException () noexcept = default;
 	};
 
 	template<typename Wrapped>
@@ -85,6 +88,8 @@ namespace Snails
 		: W_ { w }
 		{
 		}
+
+		~WrappedException () noexcept = default;
 
 		const char* what () const noexcept override
 		{

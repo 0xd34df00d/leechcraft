@@ -41,13 +41,13 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	IrcMessage::IrcMessage (IMessage::MessageType type,
+	IrcMessage::IrcMessage (IMessage::Type type,
 			IMessage::Direction dir,
 			const QString& id,
 			const QString& nickname,
 			ClientConnection *conn)
 	: Type_ (type)
-	, SubType_ (MSTOther)
+	, SubType_ (SubType::Other)
 	, Direction_ (dir)
 	, ID_ (id)
 	, NickName_ (nickname)
@@ -60,9 +60,9 @@ namespace Acetamide
 
 	IrcMessage::IrcMessage (const Message& msg,
 			const QString& id, ClientConnection* conn)
-	: Type_ (MTMUCMessage)
-	, SubType_ (MSTOther)
-	, Direction_ (DIn)
+	: Type_ (Type::MUCMessage)
+	, SubType_ (SubType::Other)
+	, Direction_ (Direction::In)
 	, ID_ (id)
 	, Message_ (msg)
 	, Connection_ (conn)
@@ -79,7 +79,7 @@ namespace Acetamide
 
 	void IrcMessage::Send ()
 	{
-		if (Direction_ == DIn)
+		if (Direction_ == Direction::In)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "tried to send incoming message";
@@ -88,14 +88,14 @@ namespace Acetamide
 
 		switch (Type_)
 		{
-		case MTChatMessage:
-		case MTMUCMessage:
+		case Type::ChatMessage:
+		case Type::MUCMessage:
 			Connection_->GetIrcServerHandler (ID_)->SendPrivateMessage (this);
 			Connection_->GetIrcServerHandler (ID_)->GetChannelManager ()->SetPrivateChat (GetOtherVariant ());
 			return;
-		case MTStatusMessage:
-		case MTEventMessage:
-		case MTServiceMessage:
+		case Type::StatusMessage:
+		case Type::EventMessage:
+		case Type::ServiceMessage:
 			qWarning () << Q_FUNC_INFO
 					<< this
 					<< "cannot send a service message";
@@ -116,17 +116,17 @@ namespace Acetamide
 		return Direction_;
 	}
 
-	IMessage::MessageType IrcMessage::GetMessageType () const
+	IMessage::Type IrcMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType IrcMessage::GetMessageSubType () const
+	IMessage::SubType IrcMessage::GetMessageSubType () const
 	{
 		return SubType_;
 	}
 
-	void IrcMessage::SetMessageSubType (IMessage::MessageSubType subtype)
+	void IrcMessage::SetMessageSubType (IMessage::SubType subtype)
 	{
 		SubType_ = subtype;
 	}

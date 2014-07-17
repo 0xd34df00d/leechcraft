@@ -66,7 +66,7 @@ namespace Acetamide
 
 	ICLEntry::EntryType IrcParticipantEntry::GetEntryType () const
 	{
-		return ETPrivateChat;
+		return EntryType::PrivateChat;
 	}
 
 	QString IrcParticipantEntry::GetEntryName () const

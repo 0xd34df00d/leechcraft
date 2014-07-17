@@ -88,7 +88,7 @@ namespace Azoth
 		 * - "Body" of type QString: the contents of the message.
 		 * - "OtherVariant" of type QString: the variant of the entry
 		 *   that has sent the message.
-		 * - "MessageType" of type int: the type of the message.
+		 * - "Type" of type int: the type of the message.
 		 * - "VisibleName" of type QString: the human-readable name of
 		 *   the entry.
 		 *

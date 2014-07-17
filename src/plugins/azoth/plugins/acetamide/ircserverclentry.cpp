@@ -78,7 +78,7 @@ namespace Acetamide
 
 	ICLEntry::EntryType IrcServerCLEntry::GetEntryType () const
 	{
-		return ETMUC;
+		return EntryType::MUC;
 	}
 
 	QString IrcServerCLEntry::GetEntryID () const
@@ -111,7 +111,7 @@ namespace Acetamide
 		return result;
 	}
 
-	QObject* IrcServerCLEntry::CreateMessage (IMessage::MessageType,
+	QObject* IrcServerCLEntry::CreateMessage (IMessage::Type,
 			const QString& variant, const QString& body)
 	{
 		if (variant.isEmpty ())

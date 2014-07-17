@@ -111,9 +111,9 @@ namespace Azoth
 			if (!entry)
 				return;
 
-			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-						IMessage::MTMUCMessage :
-						IMessage::MTChatMessage;
+			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
+						IMessage::Type::MUCMessage :
+						IMessage::Type::ChatMessage;
 			auto msgObj = entry->CreateMessage (msgType,
 					chatTab->GetSelectedVariant (),
 					ContactDropFilter::tr ("This message contains inline image, enable XHTML-IM to view it."));
@@ -122,7 +122,7 @@ namespace Azoth
 			if (IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj))
 			{
 				QString asBase;
-				if (entry->GetEntryType () == ICLEntry::ETMUC)
+				if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 				{
 					QBuffer buf;
 					buf.open (QIODevice::ReadWrite);
@@ -145,9 +145,9 @@ namespace Azoth
 			if (!entry)
 				return;
 
-			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-						IMessage::MTMUCMessage :
-						IMessage::MTChatMessage;
+			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
+						IMessage::Type::MUCMessage :
+						IMessage::Type::ChatMessage;
 			auto msgObj = entry->CreateMessage (msgType,
 					chatTab->GetSelectedVariant (),
 					url.toEncoded ());
@@ -193,9 +193,9 @@ namespace Azoth
 									if (!entry)
 										return;
 
-									const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
-												IMessage::MTMUCMessage :
-												IMessage::MTChatMessage;
+									const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
+												IMessage::Type::MUCMessage :
+												IMessage::Type::ChatMessage;
 									auto msgObj = entry->CreateMessage (msgType,
 											variant,
 											url.toString ());
@@ -296,14 +296,14 @@ namespace Azoth
 	{
 		bool CanEntryBeInvited (ICLEntry *thisEntry, ICLEntry *entry)
 		{
-			const bool isMuc = thisEntry->GetEntryType () == ICLEntry::ETMUC;
+			const bool isMuc = thisEntry->GetEntryType () == ICLEntry::EntryType::MUC;
 
 			const auto entryAcc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 			const auto thisAcc = qobject_cast<IAccount*> (thisEntry->GetParentAccount ());
 			if (thisAcc->GetParentProtocol () != entryAcc->GetParentProtocol ())
 				return false;
 
-			const bool isThatMuc = entry->GetEntryType () == ICLEntry::ETMUC;
+			const bool isThatMuc = entry->GetEntryType () == ICLEntry::EntryType::MUC;
 			return isThatMuc != isMuc;
 		}
 	}
@@ -311,7 +311,7 @@ namespace Azoth
 	void ContactDropFilter::HandleContactsDropped (const QMimeData *data)
 	{
 		const auto thisEntry = GetEntry<ICLEntry> (EntryId_);
-		const bool isMuc = thisEntry->GetEntryType () == ICLEntry::ETMUC;
+		const bool isMuc = thisEntry->GetEntryType () == ICLEntry::EntryType::MUC;
 
 		auto entries = DndUtil::DecodeEntryObjs (data);
 		entries.erase (std::remove_if (entries.begin (), entries.end (),

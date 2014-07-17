@@ -91,7 +91,7 @@ namespace StandardStyles
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
 		Util::QIODevice_ptr dev;
-		if (entry && entry->GetEntryType () == ICLEntry::ETMUC)
+		if (entry && entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.muc.html"));
 		if (!dev)
 			dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.html"));
@@ -129,9 +129,9 @@ namespace StandardStyles
 	namespace
 	{
 		QString WrapNickPart (const QString& part,
-				const QString& color, IMessage::MessageType type)
+				const QString& color, IMessage::Type type)
 		{
-			const QString& pre = type == IMessage::MTMUCMessage ?
+			const QString& pre = type == IMessage::Type::MUCMessage ?
 					"<span class='nickname' style='color: " + color + "'>" :
 					"<span class='nickname'>";
 			return pre +
@@ -156,7 +156,7 @@ namespace StandardStyles
 		QString entryName = other ?
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
-		if (msg->GetMessageType () == IMessage::MTChatMessage &&
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage &&
 				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool () &&
 				!msg->GetOtherVariant ().isEmpty ())
 			entryName += '/' + msg->GetOtherVariant ();
@@ -168,7 +168,7 @@ namespace StandardStyles
 				Qt::UniqueConnection);
 
 		IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
-		if (msg->GetDirection () == IMessage::DOut &&
+		if (msg->GetDirection () == IMessage::Direction::Out &&
 				advMsg &&
 				!advMsg->IsDelivered ())
 		{
@@ -191,7 +191,7 @@ namespace StandardStyles
 		if (richMsg && info.UseRichTextBody_)
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
-			body = msg->GetBody ();
+			body = msg->GetEscapedBody ();
 
 		body = Proxy_->FormatBody (body, msg->GetQObject ());
 
@@ -214,16 +214,16 @@ namespace StandardStyles
 		string.append (' ');
 		switch (msg->GetDirection ())
 		{
-		case IMessage::DIn:
+		case IMessage::Direction::In:
 		{
 			switch (msg->GetMessageType ())
 			{
-			case IMessage::MTChatMessage:
+			case IMessage::Type::ChatMessage:
 				statusIconName = "notification_chat_receive";
-				divClass = msg->GetDirection () == IMessage::DIn ?
+				divClass = msg->GetDirection () == IMessage::Direction::In ?
 					"msgin" :
 					"msgout";
-			case IMessage::MTMUCMessage:
+			case IMessage::Type::MUCMessage:
 			{
 				statusIconName = "notification_chat_receive";
 
@@ -248,17 +248,17 @@ namespace StandardStyles
 				}
 				break;
 			}
-			case IMessage::MTEventMessage:
+			case IMessage::Type::EventMessage:
 				statusIconName = "notification_chat_info";
 				string.append ("! ");
 				divClass = "eventmsg";
 				break;
-			case IMessage::MTStatusMessage:
+			case IMessage::Type::StatusMessage:
 				statusIconName = "notification_chat_info";
 				string.append ("* ");
 				divClass = "statusmsg";
 				break;
-			case IMessage::MTServiceMessage:
+			case IMessage::Type::ServiceMessage:
 				statusIconName = "notification_chat_info";
 				string.append ("* ");
 				divClass = "servicemsg";
@@ -266,7 +266,7 @@ namespace StandardStyles
 			}
 			break;
 		}
-		case IMessage::DOut:
+		case IMessage::Direction::Out:
 		{
 			statusIconName = "notification_chat_send";
 			if (advMsg && advMsg->IsDelivered ())
@@ -283,7 +283,7 @@ namespace StandardStyles
 				string.append ("* ");
 			}
 			else if (body.startsWith ("/me ") &&
-					msg->GetMessageType () != IMessage::MTMUCMessage)
+					msg->GetMessageType () != IMessage::Type::MUCMessage)
 			{
 				body = body.mid (3);
 				string.append ("* ");
@@ -312,8 +312,8 @@ namespace StandardStyles
 
 		QWebElement elem = frame->findFirstElement ("body");
 
-		if (msg->GetMessageType () == IMessage::MTChatMessage ||
-			msg->GetMessageType () == IMessage::MTMUCMessage)
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage ||
+			msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
 			const auto isRead = Proxy_->IsMessageRead (msgObj);
 			if (!isActiveChat &&

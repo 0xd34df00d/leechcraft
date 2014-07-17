@@ -64,12 +64,12 @@ namespace Metacontacts
 		return Message_->GetDirection ();
 	}
 
-	IMessage::MessageType MetaMessage::GetMessageType () const
+	IMessage::Type MetaMessage::GetMessageType () const
 	{
 		return Message_->GetMessageType ();
 	}
 
-	IMessage::MessageSubType MetaMessage::GetMessageSubType () const
+	IMessage::SubType MetaMessage::GetMessageSubType () const
 	{
 		return Message_->GetMessageSubType ();
 	}

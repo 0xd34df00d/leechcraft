@@ -32,6 +32,7 @@
 #include "core.h"
 #include "customstatusesmanager.h"
 #include "proxyobject.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -82,7 +83,7 @@ namespace Azoth
 		for (int i = 0; i < Ui_.StatusBox_->count (); ++i)
 		{
 			const auto state = GetStateForIndex (i);
-			Ui_.StatusBox_->setItemIcon (i, Core::Instance ().GetIconForState (state));
+			Ui_.StatusBox_->setItemIcon (i, ResourcesManager::Instance ().GetIconForState (state));
 			Ui_.StatusBox_->setItemData (i, QVariant::fromValue (state), Roles::ItemState);
 
 			const auto& name = BuildSettingName (Context_, state);
@@ -98,7 +99,7 @@ namespace Azoth
 		{
 			const auto state = custom.State_;
 			const auto& name = custom.Name_ + " (" + ProxyObject ().StateToString (state) + ")";
-			Ui_.StatusBox_->addItem (Core::Instance ().GetIconForState (state), name);
+			Ui_.StatusBox_->addItem (ResourcesManager::Instance ().GetIconForState (state), name);
 
 			const auto pos = Ui_.StatusBox_->count () - 1;
 			Ui_.StatusBox_->setItemData (pos,

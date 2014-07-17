@@ -96,13 +96,13 @@ namespace Isterique
 		if (!msg)
 			return;
 
-		if (msg->GetMessageType () != IMessage::MTChatMessage &&
-				msg->GetMessageType () != IMessage::MTMUCMessage)
+		if (msg->GetMessageType () != IMessage::Type::ChatMessage &&
+				msg->GetMessageType () != IMessage::Type::MUCMessage)
 			return;
 
-		if ((msg->GetMessageType () == IMessage::MTChatMessage &&
+		if ((msg->GetMessageType () == IMessage::Type::ChatMessage &&
 				!XmlSettingsManager::Instance ().property ("EnableForChats").toBool ()) ||
-			(msg->GetMessageType () == IMessage::MTMUCMessage &&
+			(msg->GetMessageType () == IMessage::Type::MUCMessage &&
 				!XmlSettingsManager::Instance ().property ("EnableForMUCs").toBool ()))
 			return;
 

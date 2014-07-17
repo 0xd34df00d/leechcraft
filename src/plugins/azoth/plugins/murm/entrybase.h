@@ -62,7 +62,7 @@ namespace Murm
 		QObject* GetQObject ();
 		QObject* GetParentAccount () const;
 
-		QObject* CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body);
+		QObject* CreateMessage (IMessage::Type type, const QString& variant, const QString& body);
 		QList<QObject*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime& before);
 	protected:

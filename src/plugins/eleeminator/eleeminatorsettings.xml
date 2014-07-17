@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Terminal" />
+		<item type="combobox" property="LinkActivationModifier">
+			<label value="Link activation modifier:" />
+			<option name="None" default="true">
+				<label value="None" />
+			</option>
+			<option name="Ctrl">
+				<label value="Control" />
+			</option>
+			<option name="Alt">
+				<label value="Alt" />
+			</option>
+			<option name="Shift">
+				<label value="Shift" />
+			</option>
+		</item>
+	</page>
+</settings>

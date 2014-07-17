@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "sdmanager.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -41,25 +42,25 @@ namespace Xoox
 	{
 	}
 
-	void SDManager::RequestInfo (ClientConnection::DiscoCallback_t callback,
+	void SDManager::RequestInfo (DiscoManagerWrapper::DiscoCallback_t callback,
 			const QString& jid, const QString& node)
 	{
-		auto f = [this] (const QString& jid, ClientConnection::DiscoCallback_t cb, const QString& node)
-				{ Conn_->RequestInfo (jid, cb, false, node); };
+		auto f = [this] (const QString& jid, DiscoManagerWrapper::DiscoCallback_t cb, const QString& node)
+				{ Conn_->GetDiscoManagerWrapper ()->RequestInfo (jid, cb, false, node); };
 		CommonDo (Infos_, f, callback, jid, node);
 	}
 
-	void SDManager::RequestItems (ClientConnection::DiscoCallback_t callback,
+	void SDManager::RequestItems (DiscoManagerWrapper::DiscoCallback_t callback,
 			const QString& jid, const QString& node)
 	{
-		auto f = [this] (const QString& jid, ClientConnection::DiscoCallback_t cb, const QString& node)
-				{ Conn_->RequestItems (jid, cb, false, node); };
+		auto f = [this] (const QString& jid, DiscoManagerWrapper::DiscoCallback_t cb, const QString& node)
+				{ Conn_->GetDiscoManagerWrapper ()->RequestItems (jid, cb, false, node); };
 		CommonDo (Items_, f, callback, jid, node);
 	}
 
 	void SDManager::CommonDo (SDManager::Cache_t& cache,
-			std::function<void (const QString&, ClientConnection::DiscoCallback_t, const QString&)> f,
-			ClientConnection::DiscoCallback_t cb,
+			std::function<void (const QString&, DiscoManagerWrapper::DiscoCallback_t, const QString&)> f,
+			DiscoManagerWrapper::DiscoCallback_t cb,
 			const QString& jid, const QString& node)
 	{
 		if (cache [jid].contains (node))

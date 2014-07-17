@@ -31,6 +31,7 @@
 #include <QMenu>
 #include "core.h"
 #include "customstatusesmanager.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -44,27 +45,27 @@ namespace Azoth
 	QMenu* StatusChangeMenuManager::CreateMenu (QObject* obj, const char* slot, QWidget *parent, bool autoupdate)
 	{
 		QMenu *result = new QMenu (tr ("Change status"), parent);
-		result->addAction (Core::Instance ().GetIconForState (SOnline),
+		result->addAction (ResourcesManager::Instance ().GetIconForState (SOnline),
 				tr ("Online"), obj, slot)->
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SOnline));
-		result ->addAction (Core::Instance ().GetIconForState (SChat),
+		result ->addAction (ResourcesManager::Instance ().GetIconForState (SChat),
 				tr ("Free to chat"), obj, slot)->
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SChat));
-		result ->addAction (Core::Instance ().GetIconForState (SAway),
+		result ->addAction (ResourcesManager::Instance ().GetIconForState (SAway),
 				tr ("Away"), obj, slot)->
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SAway));
-		result ->addAction (Core::Instance ().GetIconForState (SDND),
+		result ->addAction (ResourcesManager::Instance ().GetIconForState (SDND),
 				tr ("DND"), obj, slot)->
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SDND));
-		result ->addAction (Core::Instance ().GetIconForState (SXA),
+		result ->addAction (ResourcesManager::Instance ().GetIconForState (SXA),
 				tr ("Not available"), obj, slot)->
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SXA));
-		result ->addAction (Core::Instance ().GetIconForState (SOffline),
+		result ->addAction (ResourcesManager::Instance ().GetIconForState (SOffline),
 				tr ("Offline"), obj, slot)->
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SOffline));
@@ -114,7 +115,7 @@ namespace Azoth
 		for (const auto& custom : customs)
 		{
 			auto action = menu->addAction (custom.Name_, info.Obj_, info.Slot_);
-			action->setIcon (Core::Instance ().GetIconForState (custom.State_));
+			action->setIcon (ResourcesManager::Instance ().GetIconForState (custom.State_));
 			action->setProperty ("Azoth/TargetState", QVariant::fromValue<State> (custom.State_));
 			action->setProperty ("Azoth/TargetText", custom.Text_);
 		}

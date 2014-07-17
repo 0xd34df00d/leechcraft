@@ -29,6 +29,7 @@
 
 #include "mucommands.h"
 #include <QIcon>
+#include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "commands.h"
@@ -42,6 +43,8 @@ namespace MuCommands
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("azoth_mucommands");
+
 		CoreProxy_ = proxy;
 	}
 
@@ -100,6 +103,13 @@ namespace MuCommands
 		};
 		descParser (Time_);
 
+		Disco_ = StaticCommand
+		{
+			{ "/disco" },
+			[this] (ICLEntry *e, const QString& t) { return Disco (AzothProxy_, e, t); }
+		};
+		descParser (Disco_);
+
 		ChangeNick_ = StaticCommand
 		{
 			{ "/nick" },
@@ -134,6 +144,27 @@ namespace MuCommands
 			[this] (ICLEntry *e, const QString& t) { return Ping (AzothProxy_, e, t); }
 		};
 		descParser (Ping_);
+
+		Last_ = StaticCommand
+		{
+			{ "/last" },
+			[this] (ICLEntry *e, const QString& t) { return Last (AzothProxy_, e, t); }
+		};
+		descParser (Last_);
+
+		Invite_ = StaticCommand
+		{
+			{ "/invite" },
+			[this] (ICLEntry *e, const QString& t) { return Invite (AzothProxy_, e, t); }
+		};
+		descParser (Invite_);
+
+		Pm_ = StaticCommand
+		{
+			{ "/pm" },
+			[this] (ICLEntry *e, const QString& t) { return Pm (AzothProxy_, e, t); }
+		};
+		descParser (Invite_);
 
 		Kick_ = StaticCommand
 		{
@@ -183,13 +214,17 @@ namespace MuCommands
 
 	StaticCommands_t Plugin::GetStaticCommands (ICLEntry *entry)
 	{
-		if (entry->GetEntryType () != ICLEntry::ETMUC)
-			return {};
+		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
+			return
+			{
+				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_,
+				Time_, Disco_, Ping_, Last_, Invite_
+			};
 
 		return
 		{
-			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_,
-			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Kick_, Ban_
+			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, Invite_,
+			ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_, Kick_, Ban_, Pm_
 		};
 	}
 

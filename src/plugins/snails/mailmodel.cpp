@@ -29,6 +29,8 @@
 
 #include "mailmodel.h"
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -42,6 +44,8 @@ namespace Snails
 
 		TreeNode_wptr Parent_;
 		QList<TreeNode_ptr> Children_;
+
+		QSet<QByteArray> UnreadChildren_;
 
 		int Row () const
 		{
@@ -108,20 +112,39 @@ namespace Snails
 			return {};
 		}
 
+		const auto column = static_cast<Column> (index.column ());
+
 		switch (role)
 		{
 		case Qt::DisplayRole:
 		case Sort:
 			break;
+		case Qt::DecorationRole:
+		{
+			if (column != Column::Subject)
+				return {};
+
+			QString iconName;
+			if (!msg->IsRead ())
+				iconName = "mail-unread-new";
+			else if (structItem->UnreadChildren_.size ())
+				iconName = "mail-unread";
+			else
+				iconName = "mail-read";
+
+			return Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (iconName);
+		}
 		case ID:
 			return msg->GetFolderID ();
-		case ReadStatus:
+		case IsRead:
 			return msg->IsRead ();
+		case UnreadChildrenCount:
+			return structItem->UnreadChildren_.size ();
 		default:
 			return {};
 		}
 
-		switch (static_cast<Column> (index.column ()))
+		switch (column)
 		{
 		case Column::From:
 		{
@@ -134,15 +157,15 @@ namespace Snails
 			if (role == Sort)
 				return msg->GetDate ();
 			else
-				return msg->GetDate ().toString ();
+				return msg->GetDate ().toLocalTime ().toString ();
 		case Column::Size:
 			if (role == Sort)
 				return msg->GetSize ();
 			else
 				return Util::MakePrettySize (msg->GetSize ());
-		default:
-			return {};
 		}
+
+		return {};
 	}
 
 	QModelIndex MailModel::index (int row, int column, const QModelIndex& parent) const
@@ -186,6 +209,11 @@ namespace Snails
 	QStringList MailModel::GetCurrentFolder () const
 	{
 		return Folder_;
+	}
+
+	Message_ptr MailModel::GetMessage (const QByteArray& id) const
+	{
+		return GetMessageByFolderId (id);
 	}
 
 	void MailModel::Clear ()
@@ -262,9 +290,14 @@ namespace Snails
 
 		if (*pos != msg)
 		{
+			const auto readChanged = (*pos)->IsRead () != msg->IsRead ();
+
 			*pos = msg;
 			for (const auto& indexPair : GetIndexes (msg->GetFolderID (), { 0, columnCount () - 1 }))
 				emit dataChanged (indexPair.value (0), indexPair.value (1));
+
+			if (readChanged)
+				UpdateParentReadCount (msg->GetFolderID (), !msg->IsRead ());
 		}
 
 		return true;
@@ -277,6 +310,8 @@ namespace Snails
 		if (msgPos == Messages_.end ())
 			return false;
 
+		UpdateParentReadCount (id, false);
+
 		for (const auto& node : FolderId2Nodes_.value (id))
 			RemoveNode (node);
 
@@ -285,6 +320,42 @@ namespace Snails
 		Messages_.erase (msgPos);
 
 		return true;
+	}
+
+	void MailModel::UpdateParentReadCount (const QByteArray& folderId, bool addUnread)
+	{
+		QList<TreeNode_ptr> nodes;
+		for (const auto& node : FolderId2Nodes_.value (folderId))
+		{
+			const auto& parent = node->Parent_.lock ();
+			if (parent != Root_)
+				nodes << parent;
+		}
+
+		for (int i = 0; i < nodes.size (); ++i)
+		{
+			const auto& item = nodes.at (i);
+
+			bool emitUpdate = false;
+			if (addUnread && !item->UnreadChildren_.contains (folderId))
+			{
+				item->UnreadChildren_ << folderId;
+				emitUpdate = true;
+			}
+			else if (!addUnread && item->UnreadChildren_.remove (folderId))
+				emitUpdate = true;
+
+			if (emitUpdate)
+			{
+				const auto& leftIdx = createIndex (item->Row (), 0, item.get ());
+				const auto& rightIdx = createIndex (item->Row (), columnCount () - 1, item.get ());
+				emit dataChanged (leftIdx, rightIdx);
+			}
+
+			const auto& parent = item->Parent_.lock ();
+			if (parent != Root_)
+				nodes << parent;
+		}
 	}
 
 	void MailModel::RemoveNode (const TreeNode_ptr& node)
@@ -360,6 +431,9 @@ namespace Snails
 			FolderId2Nodes_ [msg->GetFolderID ()] << node;
 			endInsertRows ();
 		}
+
+		if (!msg->IsRead ())
+			UpdateParentReadCount (msg->GetFolderID (), true);
 
 		return !indexes.isEmpty ();
 	}

@@ -61,6 +61,7 @@ namespace LeechCraft
 	class PluginInfo;
 	class PluginManagerDialog;
 	class ShortcutManager;
+	class MainWindowMenuManager;
 
 	class MainWindow : public QMainWindow
 	{
@@ -81,8 +82,7 @@ namespace LeechCraft
 
 		QToolButton *MenuButton_;
 		QWidgetAction *MBAction_;
-		QMenu *MenuView_;
-		QMenu *MenuTools_;
+		MainWindowMenuManager *MenuManager_;
 
 		QToolBar *LeftDockToolbar_;
 		QToolBar *RightDockToolbar_;
@@ -102,8 +102,7 @@ namespace LeechCraft
 
 		QToolBar* GetDockListWidget (Qt::DockWidgetArea) const;
 
-		void AddMenus (const QMap<QString, QList<QAction*>>&);
-		void RemoveMenus (const QMap<QString, QList<QAction*>>&);
+		MainWindowMenuManager* GetMenuManager () const;
 
 		QMenu* createPopupMenu ();
 	public slots:

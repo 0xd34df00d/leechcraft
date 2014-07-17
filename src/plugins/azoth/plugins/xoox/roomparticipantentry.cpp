@@ -73,7 +73,7 @@ namespace Xoox
 
 	ICLEntry::EntryType RoomParticipantEntry::GetEntryType () const
 	{
-		return ETPrivateChat;
+		return EntryType::PrivateChat;
 	}
 
 	QString RoomParticipantEntry::GetEntryName () const
@@ -108,10 +108,10 @@ namespace Xoox
 
 	QStringList RoomParticipantEntry::Variants () const
 	{
-		return QStringList (QString ());
+		return { {} };
 	}
 
-	QObject* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
+	QObject* RoomParticipantEntry::CreateMessage (IMessage::Type type,
 			const QString&, const QString& body)
 	{
 		GlooxMessage *msg = RoomHandler_->CreateMessage (type, Nick_, body);
@@ -135,6 +135,25 @@ namespace Xoox
 		return Nick_;
 	}
 
+	namespace
+	{
+		template<typename T>
+		void MergeMessages (QList<T*>& ourMessages, const QList<T*>& otherMessages)
+		{
+			const auto size = ourMessages.size ();
+			ourMessages += otherMessages;
+			std::inplace_merge (ourMessages.begin (),
+					ourMessages.begin () + size,
+					ourMessages.end (),
+					[] (T *msgObj1, T *msgObj2)
+					{
+						const auto msg1 = qobject_cast<IMessage*> (msgObj1);
+						const auto msg2 = qobject_cast<IMessage*> (msgObj2);
+						return msg1->GetDateTime () < msg2->GetDateTime ();
+					});
+		}
+	}
+
 	void RoomParticipantEntry::StealMessagesFrom (RoomParticipantEntry *other)
 	{
 		if (other->AllMessages_.isEmpty ())
@@ -143,21 +162,21 @@ namespace Xoox
 		for (auto msg : other->AllMessages_)
 			qobject_cast<GlooxMessage*> (msg)->SetVariant (Nick_);
 
-		QList<QObject*> messages;
-		std::merge (AllMessages_.begin (), AllMessages_.end (),
-				other->AllMessages_.begin (), other->AllMessages_.end (),
-				std::back_inserter (messages),
-				[] (QObject *msgObj1, QObject *msgObj2)
-				{
-					const auto msg1 = qobject_cast<IMessage*> (msgObj1);
-					const auto msg2 = qobject_cast<IMessage*> (msgObj2);
-					return msg1->GetDateTime () < msg2->GetDateTime ();
-				});
-
+		MergeMessages (AllMessages_, other->AllMessages_);
 		other->AllMessages_.clear ();
-		AllMessages_ = messages;
 
-		// unread messages are skept intentionally
+		if (other->HasUnreadMsgs ())
+		{
+			for (auto msg : other->UnreadMessages_)
+				emit gotMessage (msg);
+
+			MergeMessages (UnreadMessages_, other->UnreadMessages_);
+		}
+	}
+
+	QByteArray RoomParticipantEntry::GetPhotoHash () const
+	{
+		return VCardPhotoHash_;
 	}
 
 	void RoomParticipantEntry::SetPhotoHash (const QByteArray& hash)

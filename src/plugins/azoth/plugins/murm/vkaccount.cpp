@@ -194,7 +194,7 @@ namespace Murm
 		handleMarkOnline ();
 	}
 
-	void VkAccount::Send (qulonglong to, VkConnection::MessageType type, VkMessage *msg)
+	void VkAccount::Send (qulonglong to, VkConnection::Type type, VkMessage *msg)
 	{
 		QPointer<VkMessage> safeMsg { msg };
 		Conn_->SendMessage (to,

@@ -45,7 +45,7 @@ namespace Xoox
 
 	QStringList LastActivityManager::discoveryFeatures () const
 	{
-		return QStringList (NsLastActivity);
+		return { NsLastActivity };
 	}
 
 	bool LastActivityManager::handleStanza (const QDomElement& elem)
@@ -53,23 +53,21 @@ namespace Xoox
 		if (elem.tagName () != "iq")
 				return false;
 
-		const QDomElement& query = elem.firstChildElement ("query");
+		const auto& query = elem.firstChildElement ("query");
 		if (query.namespaceURI () != NsLastActivity)
 			return false;
 
-		const QString& from = elem.attribute ("from");
+		const auto& from = elem.attribute ("from");
 
 		if (elem.attribute ("type") == "get")
 		{
-			IPluginsManager *pMgr = Core::Instance ()
-					.GetProxy ()->GetPluginsManager ();
-			ILastActivityProvider *prov = pMgr->
-					GetAllCastableTo<ILastActivityProvider*> ().value (0);
+			const auto pMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
+			const auto prov = pMgr->GetAllCastableTo<ILastActivityProvider*> ().value (0);
 
 			if (!prov)
 				return false;
 
-			QXmppIq iq = CreateIq (from, std::max (prov->GetInactiveSeconds (), 0));
+			auto iq = CreateIq (from, std::max (prov->GetInactiveSeconds (), 0));
 			iq.setType (QXmppIq::Result);
 			iq.setId (elem.attribute ("id"));
 
@@ -82,11 +80,13 @@ namespace Xoox
 		return true;
 	}
 
-	void LastActivityManager::RequestLastActivity (const QString& jid)
+	QString LastActivityManager::RequestLastActivity (const QString& jid)
 	{
-		QXmppIq iq = CreateIq (jid);
+		auto iq = CreateIq (jid);
 		iq.setType (QXmppIq::Get);
 		client ()->sendPacket (iq);
+
+		return iq.id ();
 	}
 
 	QXmppIq LastActivityManager::CreateIq (const QString& to, int secs)
@@ -99,7 +99,7 @@ namespace Xoox
 		queryElem.setAttribute ("xmlns", NsLastActivity);
 		if (secs != -1)
 			queryElem.setAttribute ("seconds", QString::number (secs));
-		iq.setExtensions (QXmppElementList () << queryElem);
+		iq.setExtensions ({ queryElem });
 
 		return iq;
 	}

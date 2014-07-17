@@ -53,7 +53,7 @@ namespace Vader
 		MRIMBuddy *Buddy_;
 		MRIMAccount *A_;
 		Direction Dir_;
-		MessageType MT_;
+		Type MT_;
 
 		QString Body_;
 		QDateTime DateTime_;
@@ -62,7 +62,7 @@ namespace Vader
 
 		bool IsDelivered_;
 	public:
-		MRIMMessage (Direction, MessageType, MRIMBuddy*);
+		MRIMMessage (Direction, Type, MRIMBuddy*);
 
 		void SetDelivered ();
 
@@ -71,8 +71,8 @@ namespace Vader
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
-		MessageType GetMessageType () const;
-		MessageSubType GetMessageSubType () const;
+		Type GetMessageType () const;
+		SubType GetMessageSubType () const;
 		QObject* OtherPart () const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;

@@ -33,6 +33,7 @@
 #include <QXmppDiscoveryManager.h>
 #include "clientconnection.h"
 #include "accountsettingsholder.h"
+#include "discomanagerwrapper.h"
 
 namespace LeechCraft
 {
@@ -69,7 +70,7 @@ namespace Xoox
 	void ServerInfoStorage::HandleItems (const QXmppDiscoveryIq& iq)
 	{
 		Q_FOREACH (const auto& item, iq.items ())
-			Conn_->RequestInfo (item.jid (),
+			Conn_->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),
 					[this] (const QXmppDiscoveryIq& iq) { HandleItemInfo (iq); },
 					false,
 					item.node ());
@@ -111,10 +112,10 @@ namespace Xoox
 		if (Server_.isEmpty ())
 			return;
 
-		Conn_->RequestInfo (Server_,
+		Conn_->GetDiscoManagerWrapper ()->RequestInfo (Server_,
 				[this] (const QXmppDiscoveryIq& iq) { HandleServerInfo (iq); },
 				false);
-		Conn_->RequestItems (Server_,
+		Conn_->GetDiscoManagerWrapper ()->RequestItems (Server_,
 				[this] (const QXmppDiscoveryIq& iq) { HandleItems (iq); },
 				false);
 	}

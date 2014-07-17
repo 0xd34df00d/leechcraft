@@ -39,7 +39,7 @@ namespace ChatHistory
 {
 	HistoryMessage::HistoryMessage (IMessage::Direction dir,
 			QObject *otherPart,
-			MessageType type,
+			Type type,
 			const QString& variant,
 			const QString& body,
 			const QDateTime& dt)
@@ -74,14 +74,14 @@ namespace ChatHistory
 		return Direction_;
 	}
 
-	IMessage::MessageType HistoryMessage::GetMessageType () const
+	IMessage::Type HistoryMessage::GetMessageType () const
 	{
 		return Type_;
 	}
 
-	IMessage::MessageSubType HistoryMessage::GetMessageSubType () const
+	IMessage::SubType HistoryMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return SubType::Other;
 	}
 
 	QObject* HistoryMessage::OtherPart () const

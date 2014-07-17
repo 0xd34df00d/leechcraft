@@ -110,7 +110,7 @@ namespace Astrality
 
 	ICLEntry::EntryType EntryWrapper::GetEntryType () const
 	{
-		return ETChat;
+		return EntryType::Chat;
 	}
 
 	QString EntryWrapper::GetEntryName () const
@@ -156,10 +156,10 @@ namespace Astrality
 		return QStringList (QString ());
 	}
 
-	QObject* EntryWrapper::CreateMessage (IMessage::MessageType mt, const QString&, const QString& body)
+	QObject* EntryWrapper::CreateMessage (IMessage::Type mt, const QString&, const QString& body)
 	{
 		auto messenger = AW_->GetMessenger (GetHumanReadableID ());
-		return new MsgWrapper (body, IMessage::DOut, messenger, this, mt);
+		return new MsgWrapper (body, IMessage::Direction::Out, messenger, this, mt);
 	}
 
 	QList<QObject*> EntryWrapper::GetAllMessages () const

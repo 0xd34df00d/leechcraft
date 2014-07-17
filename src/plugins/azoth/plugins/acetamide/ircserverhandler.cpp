@@ -165,11 +165,11 @@ namespace Acetamide
 		return ChannelsManager_->GetChannels ();
 	}
 
-	IrcMessage* IrcServerHandler::CreateMessage (IMessage::MessageType type,
+	IrcMessage* IrcServerHandler::CreateMessage (IMessage::Type type,
 			const QString& variant, const QString& body)
 	{
 		IrcMessage *msg = new IrcMessage (type,
-				IMessage::DIn,
+				IMessage::Direction::In,
 				variant,
 				QString (),
 				Account_->GetClientConnection ().get ());
@@ -270,7 +270,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::IncomingMessage (const QString& nick,
-			const QString& target, const QString& msg, IMessage::MessageType type)
+			const QString& target, const QString& msg, IMessage::Type type)
 	{
 		if (ChannelsManager_->IsChannelExists (target))
 			ChannelsManager_->ReceivePublicMessage (target, nick, msg);
@@ -278,7 +278,7 @@ namespace Acetamide
 		{
 			//TODO Work only for exists entries
 			IrcMessage *message = new IrcMessage (type,
-					IMessage::DIn,
+					IMessage::Direction::In,
 					ServerID_,
 					nick,
 					Account_->GetClientConnection ().get ());
@@ -504,7 +504,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::ShowAnswer (const QString& cmd,
-			const QString& answer, bool isEndOf, IMessage::MessageType type)
+			const QString& answer, bool isEndOf, IMessage::Type type)
 	{
 		QString msg = "[" + cmd.toUpper () + "] " + answer;
 		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
@@ -968,7 +968,7 @@ namespace Acetamide
 
 	void IrcServerHandler::SendCommand (const QString& cmd)
 	{
-		SendToConsole (IMessage::DOut, cmd.trimmed ());
+		SendToConsole (IMessage::Direction::Out, cmd.trimmed ());
 		Socket_->Send (cmd);
 	}
 
@@ -1028,7 +1028,7 @@ namespace Acetamide
 
 	void IrcServerHandler::ReadReply (const QByteArray& msg)
 	{
-		SendToConsole (IMessage::DIn, msg.trimmed ());
+		SendToConsole (IMessage::Direction::In, msg.trimmed ());
 		if (!IrcParser_->ParseMessage (msg))
 			return;
 

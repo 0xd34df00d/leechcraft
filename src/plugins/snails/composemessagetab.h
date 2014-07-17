@@ -77,10 +77,14 @@ namespace Snails
 		void SelectAccount (const Account_ptr&);
 		void PrepareReply (const Message_ptr&);
 	private:
+		void PrepareReplyEditor (const Message_ptr&);
 		void PrepareReplyBody (const Message_ptr&);
 
 		void SetupToolbar ();
 		void SetupEditors ();
+
+		void SelectPlainEditor ();
+		void SelectHtmlEditor ();
 
 		IEditorWidget* GetCurrentEditor () const;
 

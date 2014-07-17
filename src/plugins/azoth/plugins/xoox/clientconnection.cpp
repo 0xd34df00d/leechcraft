@@ -45,6 +45,7 @@
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCallManager.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>
 #include <util/sys/sysinfo.h>
@@ -134,10 +135,11 @@ namespace Xoox
 	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
+	, DiscoManagerWrapper_ (new DiscoManagerWrapper (DiscoveryManager_, this))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
 	, ProxyObject_ (0)
-	, CapsManager_ (new CapsManager (this))
+	, CapsManager_ (new CapsManager (DiscoveryManager_, this))
 	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
@@ -306,23 +308,6 @@ namespace Xoox
 				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
 				Account_,
 				SIGNAL (bookmarksChanged ()));
-
-		connect (DiscoveryManager_,
-				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
-				CapsManager_,
-				SLOT (handleInfoReceived (const QXmppDiscoveryIq&)));
-		connect (DiscoveryManager_,
-				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
-				CapsManager_,
-				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
-		connect (DiscoveryManager_,
-				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
-				this,
-				SLOT (handleDiscoInfo (const QXmppDiscoveryIq&)));
-		connect (DiscoveryManager_,
-				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
-				this,
-				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
 
 		connect (Settings_,
 				SIGNAL (kaParamsChanged (QPair<int,int>)),
@@ -498,12 +483,17 @@ namespace Xoox
 		emit gotRosterItems ({ entry });
 	}
 
+	DiscoManagerWrapper* ClientConnection::GetDiscoManagerWrapper () const
+	{
+		return DiscoManagerWrapper_;
+	}
+
 	QXmppMucManager* ClientConnection::GetMUCManager () const
 	{
 		return MUCManager_;
 	}
 
-	QXmppDiscoveryManager* ClientConnection::GetDiscoveryManager () const
+	QXmppDiscoveryManager* ClientConnection::GetQXmppDiscoveryManager () const
 	{
 		return DiscoveryManager_;
 	}
@@ -531,6 +521,11 @@ namespace Xoox
 	AnnotationsManager* ClientConnection::GetAnnotationsManager () const
 	{
 		return AnnotationsManager_;
+	}
+
+	LastActivityManager* ClientConnection::GetLastActivityManager () const
+	{
+		return LastActivityManager_;
 	}
 
 	PubSubManager* ClientConnection::GetPubSubManager () const
@@ -631,28 +626,10 @@ namespace Xoox
 	void ClientConnection::RequestInfo (const QString& jid) const
 	{
 		if (JID2CLEntry_.contains (jid))
-			Q_FOREACH (const QString& variant, JID2CLEntry_ [jid]->Variants ())
+			for (const auto& variant : JID2CLEntry_ [jid]->Variants ())
 				CapsQueue_->Schedule (jid + '/' + variant, FetchQueue::PHigh);
 		else
 			CapsQueue_->Schedule (jid, FetchQueue::PLow);
-	}
-
-	void ClientConnection::RequestInfo (const QString& jid,
-			DiscoCallback_t callback, bool report, const QString& node)
-	{
-		AwaitingDiscoInfo_ [jid] = callback;
-
-		const auto& id = DiscoveryManager_->requestInfo (jid, node);
-		ErrorMgr_->Whitelist (id, report);
-	}
-
-	void ClientConnection::RequestItems (const QString& jid,
-			DiscoCallback_t callback, bool report, const QString& node)
-	{
-		AwaitingDiscoItems_ [jid] = callback;
-
-		const auto& id = DiscoveryManager_->requestItems (jid, node);
-		ErrorMgr_->Whitelist (id, report);
 	}
 
 	void ClientConnection::Update (const QXmppRosterIq::Item& item)
@@ -773,8 +750,13 @@ namespace Xoox
 
 	void ClientConnection::SendPacketWCallback (const QXmppIq& packet, PacketCallback_t cb)
 	{
-		AwaitingPacketCallbacks_ [packet.to ()] [packet.id ()] = cb;
+		AwaitingPacketCallbacks_ [packet.id ()] = cb;
 		Client_->sendPacket (packet);
+	}
+
+	void ClientConnection::AddCallback (const QString& id, const PacketCallback_t& cb)
+	{
+		AwaitingPacketCallbacks_ [id] = cb;
 	}
 
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
@@ -885,11 +867,11 @@ namespace Xoox
 		return BMManager_;
 	}
 
-	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
+	GlooxMessage* ClientConnection::CreateMessage (IMessage::Type type,
 			const QString& resource, const QString& body, const QString& jid)
 	{
 		GlooxMessage *msg = new GlooxMessage (type,
-				IMessage::DOut,
+				IMessage::Direction::Out,
 				jid,
 				resource,
 				this);
@@ -1001,26 +983,41 @@ namespace Xoox
 
 	void ClientConnection::handleRosterReceived ()
 	{
-		QXmppRosterManager& rm = Client_->rosterManager ();
+		const auto& rm = Client_->rosterManager ();
 		QObjectList items;
-		Q_FOREACH (const QString& bareJid,
-				rm.getRosterBareJids ())
+		for (const auto& bareJid : rm.getRosterBareJids ())
 		{
-			QXmppRosterIq::Item re = rm.getRosterEntry (bareJid);
-			GlooxCLEntry *entry = CreateCLEntry (re);
+			const auto& re = rm.getRosterEntry (bareJid);
+			const auto entry = CreateCLEntry (re);
 			items << entry;
-			QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (re.bareJid ());
-			Q_FOREACH (const QString& resource, presences.keys ())
+			const auto& presences = rm.getAllPresencesForBareJid (re.bareJid ());
+			for (const auto& resource : presences.keys ())
 				entry->SetClientInfo (resource, presences [resource]);
+
+			if (bareJid == "juick@juick.com")
+			{
+				new Util::DelayedExecutor
+				{
+					[] () -> void
+					{
+						const auto& e = Util::MakeNotification ("Azoth",
+								tr ("Using the juick.com service is discouraged. Please consider "
+									"migrating to saner alternatives, like point.im."),
+								PWarning_);
+						Core::Instance ().SendEntity (e);
+					},
+					15000
+				};
+				break;
+			}
 		}
 		emit gotRosterItems (items);
 
-		Q_FOREACH (const QXmppMessage& msg, OfflineMsgQueue_)
+		for (const auto& msg : OfflineMsgQueue_)
 			handleMessageReceived (msg);
 		OfflineMsgQueue_.clear ();
 
-		QPair<QString, PEPEventBase*> initialEvent;
-		Q_FOREACH (initialEvent, InitialEventQueue_)
+		for (const auto& initialEvent : InitialEventQueue_)
 		{
 			handlePEPEvent (initialEvent.first, initialEvent.second);
 			delete initialEvent.second;
@@ -1030,16 +1027,16 @@ namespace Xoox
 
 	void ClientConnection::handleRosterChanged (const QString& bareJid)
 	{
-		QXmppRosterManager& rm = Client_->rosterManager ();
-		QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (bareJid);
+		const auto& rm = Client_->rosterManager ();
+		const auto& presences = rm.getAllPresencesForBareJid (bareJid);
 
 		if (!JID2CLEntry_.contains (bareJid))
-			emit gotRosterItems (QObjectList () << CreateCLEntry (bareJid));
+			emit gotRosterItems ({ CreateCLEntry (bareJid) });
 
-		GlooxCLEntry *entry = JID2CLEntry_ [bareJid];
-		Q_FOREACH (const QString& resource, presences.keys ())
+		const auto entry = JID2CLEntry_ [bareJid];
+		for (const auto& resource : presences.keys ())
 		{
-			const QXmppPresence& pres = presences [resource];
+			const auto& pres = presences [resource];
 			entry->SetClientInfo (resource, pres);
 			entry->SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
 		}
@@ -1052,7 +1049,7 @@ namespace Xoox
 		if (!JID2CLEntry_.contains (bareJid))
 			return;
 
-		GlooxCLEntry *entry = JID2CLEntry_.take (bareJid);
+		const auto entry = JID2CLEntry_.take (bareJid);
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
 
@@ -1233,7 +1230,7 @@ namespace Xoox
 			return;
 
 		Split (msg.to (), &jid, &resource);
-		auto gm = new GlooxMessage (IMessage::MTChatMessage, IMessage::DOut,
+		auto gm = new GlooxMessage (IMessage::Type::ChatMessage, IMessage::Direction::Out,
 				jid, resource, this);
 		gm->SetBody (msg.body ());
 		gm->SetRichBody (msg.xhtml ());
@@ -1357,20 +1354,6 @@ namespace Xoox
 					SLOT (handleAutojoinQueue ()));
 	}
 
-	void ClientConnection::handleDiscoInfo (const QXmppDiscoveryIq& iq)
-	{
-		const QString& jid = iq.from ();
-		if (AwaitingDiscoInfo_.contains (jid))
-			AwaitingDiscoInfo_.take (jid) (iq);
-	}
-
-	void ClientConnection::handleDiscoItems (const QXmppDiscoveryIq& iq)
-	{
-		const QString& jid = iq.from ();
-		if (AwaitingDiscoItems_.contains (jid))
-			AwaitingDiscoItems_.take (jid) (iq);
-	}
-
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
 	{
 		QString entryId;
@@ -1478,17 +1461,10 @@ namespace Xoox
 
 	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)
 	{
-		if (!AwaitingPacketCallbacks_.contains (iq.from ()))
+		if (!AwaitingPacketCallbacks_.contains (iq.id ()))
 			return;
 
-		auto& cbs = AwaitingPacketCallbacks_ [iq.from ()];
-		if (!cbs.contains (iq.id ()))
-			return;
-
-		const auto& cb = cbs.take (iq.id ());
-		if (cbs.isEmpty ())
-			AwaitingPacketCallbacks_.remove (iq.from ());
-
+		const auto& cb = AwaitingPacketCallbacks_.take (iq.id ());
 		cb (iq);
 	}
 

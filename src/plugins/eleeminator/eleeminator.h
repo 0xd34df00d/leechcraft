@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -47,14 +48,17 @@ namespace Eleeminator
 				 , public IInfo
 				 , public IHaveTabs
 				 , public IHaveShortcuts
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveShortcuts)
+		Q_INTERFACES (IInfo IHaveTabs IHaveShortcuts IHaveSettings)
 
 		ICoreProxy_ptr Proxy_;
 		TabClassInfo TermTabTC_;
 
 		Util::ShortcutManager *ShortcutMgr_;
+
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -69,6 +73,8 @@ namespace Eleeminator
 
 		QMap<QString, ActionInfo> GetActionInfo () const;
 		void SetShortcut (const QString&, const QKeySequences_t&);
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void changeTabName (QWidget*, const QString&);

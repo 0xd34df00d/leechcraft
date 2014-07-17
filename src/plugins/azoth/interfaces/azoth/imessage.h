@@ -44,7 +44,7 @@ namespace Azoth
 
 	/** @brief This interface is used to represent a message.
 	 *
-	 * Refer to the MessageType enum for the list of possible message
+	 * Refer to the Type enum for the list of possible message
 	 * types that are covered by this interface.
 	 *
 	 * The message should not be sent upon creation, only call to Send()
@@ -67,24 +67,24 @@ namespace Azoth
 
 		/** @brief Represents the direction of the message.
 		 */
-		enum Direction
+		enum class Direction
 		{
 			/** @brief The message is from the remote party to us.
 			 */
-			DIn,
+			In,
 
 			/** @brief The message is from us to the remote party.
 			 */
-			DOut
+			Out
 		};
 
 		/** @brief Represents possible message types.
 		 */
-		enum MessageType
+		enum class Type
 		{
 			/** @brief Standard one-to-one message.
 			 */
-			MTChatMessage,
+			ChatMessage,
 
 			/** @brief Message in a multiuser conference.
 			 *
@@ -93,14 +93,14 @@ namespace Azoth
 			 * changes, topic changes and such should have a different
 			 * type.
 			 */
-			MTMUCMessage,
+			MUCMessage,
 
 			/** @brief Status changes in a chat.
 			 *
 			 * This type of message contains information about
 			 * participant's status/presence changes.
 			 */
-			MTStatusMessage,
+			StatusMessage,
 
 			/** @brief Various events in a chat.
 			 *
@@ -109,11 +109,11 @@ namespace Azoth
 			 * there is no other part in such messages, so the message
 			 * of this type can return NULL from OtherPart().
 			 */
-			MTEventMessage,
+			EventMessage,
 
 			/** @brief Other.
 			 */
-			MTServiceMessage
+			ServiceMessage
 		};
 
 		/** @brief This enum is used for more precise classification of
@@ -123,25 +123,25 @@ namespace Azoth
 		 * required properties used by the Azoth Core and other plugins
 		 * to establish proper context for the events.
 		 */
-		enum MessageSubType
+		enum class SubType
 		{
 			/** This message is of subtype that doesn't correspond to
 			 * any other subtype of message.
 			 */
-			MSTOther,
+			Other,
 
 			/** This message notifies about someone being just kicked.
 			 */
-			MSTKickNotification,
+			KickNotification,
 
 			/** This message notifies about someone being just banned.
 			 */
-			MSTBanNotification,
+			BanNotification,
 
 			/** @brief Represents status change of a participant in a
 			 * chat or MUC room.
 			 *
-			 * The corresponding MessageType is MTStatusMessage.
+			 * The corresponding Type is MTStatusMessage.
 			 *
 			 * Messages of this type should have the following dynamic
 			 * properties:
@@ -154,33 +154,39 @@ namespace Azoth
 			 * - Azoth/StatusText, with a QString representing the new
 			 *   status text of the participant. May be empty.
 			 */
-			MSTParticipantStatusChange,
+			ParticipantStatusChange,
 
 			/** @brief Represents permission changes of a participant in
 			 * a chat or MUC room.
 			 */
-			MSTParticipantRoleAffiliationChange,
+			ParticipantRoleAffiliationChange,
 
 			/** @brief Notifies about participant joining to a MUC room.
 			 */
-			MSTParticipantJoin,
+			ParticipantJoin,
 
 			/** @brief Notifies about participant leaving a MUC room.
 			 */
-			MSTParticipantLeave,
+			ParticipantLeave,
 
 			/** @brief Notifies about participant in a MUC changing the
 			 * nick.
 			 */
-			MSTParticipantNickChange,
+			ParticipantNickChange,
 
 			/** @brief The participant has ended the conversation.
 			 */
-			MSTParticipantEndedConversation,
+			ParticipantEndedConversation,
 
 			/** @brief Notifies about changing subject in a MUC room.
 			 */
-			MSTRoomSubjectChange
+			RoomSubjectChange
+		};
+
+		enum class EscapePolicy
+		{
+			Escape,
+			NoEscape
 		};
 
 		/** @brief Returns this message as a QObject.
@@ -217,7 +223,7 @@ namespace Azoth
 		 *
 		 * @return The type of this message.
 		 */
-		virtual MessageType GetMessageType () const = 0;
+		virtual Type GetMessageType () const = 0;
 
 		/** @brief Returns the subtype of this message.
 		 *
@@ -226,7 +232,7 @@ namespace Azoth
 		 *
 		 * @return The subtype of this message
 		 */
-		virtual MessageSubType GetMessageSubType () const = 0;
+		virtual SubType GetMessageSubType () const = 0;
 
 		/** @brief Returns the CL entry from which this message is.
 		 *
@@ -288,6 +294,48 @@ namespace Azoth
 		 */
 		virtual void SetBody (const QString& body) = 0;
 
+		/** @brief Returns the escape policy of the body.
+		 *
+		 * The default implementation simply returns EscapePolicy::Escape.
+		 *
+		 * @return The body escape policy.
+		 *
+		 * @sa EscapePolicy
+		 * @sa GetEscapedBody()
+		 */
+		virtual EscapePolicy GetEscapePolicy () const
+		{
+			return EscapePolicy::Escape;
+		}
+
+		/** @brief Returns the body according to the escape policy.
+		 *
+		 * This function takes the message body as returned by GetBody()
+		 * and, if GetEscapePolicy() returns EscapePolicy::Escape,
+		 * escapes the HTML entities in it.
+		 *
+		 * @return The escaped body if GetEscapePolicy() is
+		 * EscapePolicy::Escape, unchanged body otherwise.
+		 *
+		 * @sa GetEscapePolicy()
+		 */
+		QString GetEscapedBody () const
+		{
+			auto body = GetBody ();
+			switch (GetEscapePolicy ())
+			{
+			case EscapePolicy::NoEscape:
+				break;
+			case EscapePolicy::Escape:
+				body.replace ('&', "&amp;");
+				body.replace ('"', "&quot;");
+				body.replace ('<', "&lt;");
+				body.replace ('>', "&gt;");
+				break;
+			}
+			return body;
+		}
+
 		/** @brief Returns the timestamp of the message.
 		 *
 		 * @return The timestamp of the message.
@@ -304,4 +352,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMessage,
-	"org.Deviant.LeechCraft.Azoth.IMessage/1.0");
+		"org.LeechCraft.Azoth.IMessage/1.0");

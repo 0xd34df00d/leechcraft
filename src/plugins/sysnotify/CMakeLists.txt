@@ -12,6 +12,7 @@ include_directories (
 set (SRCS
 	sysnotify.cpp
 	notificationmanager.cpp
+	imagehint.cpp
 	)
 CreateTrs("sysnotify" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("sysnotify" "en;ru_RU" "${SRCS}" "${FORMS}" "")

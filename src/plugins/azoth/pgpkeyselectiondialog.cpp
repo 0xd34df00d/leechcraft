@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "pgpkeyselectiondialog.h"
-#include "core.h"
+#include "cryptomanager.h"
 
 namespace LeechCraft
 {
@@ -46,15 +46,15 @@ namespace Azoth
 		switch (type)
 		{
 		case TPrivate:
-			Keys_ = Core::Instance ().GetPrivateKeys ();
+			Keys_ = CryptoManager::Instance ().GetPrivateKeys ();
 			break;
 		case TPublic:
-			Keys_ = Core::Instance ().GetPublicKeys ();
+			Keys_ = CryptoManager::Instance ().GetPublicKeys ();
 			break;
 		}
 
 		const auto& focusArr = !focusKey.isNull () ? focusKey.toArray () : QByteArray ();
-		Q_FOREACH (const QCA::PGPKey& key, Keys_)
+		for (const auto& key : Keys_)
 		{
 			Ui_.KeyCombo_->addItem (key.primaryUserId () + " (" + key.keyId () + ")");
 			if (key.toArray () == focusArr)

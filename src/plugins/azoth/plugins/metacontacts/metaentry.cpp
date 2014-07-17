@@ -120,7 +120,7 @@ namespace Metacontacts
 
 	ICLEntry::EntryType MetaEntry::GetEntryType () const
 	{
-		return ETChat;
+		return EntryType::Chat;
 	}
 
 	QString MetaEntry::GetEntryName () const
@@ -185,7 +185,7 @@ namespace Metacontacts
 		return result;
 	}
 
-	QObject* MetaEntry::CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body)
+	QObject* MetaEntry::CreateMessage (IMessage::Type type, const QString& variant, const QString& body)
 	{
 		auto f = [type, body] (ICLEntry *e, const QString& v)
 				{ return e->CreateMessage (type, v, body); };

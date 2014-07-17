@@ -182,7 +182,7 @@ namespace Azoth
 
 	void ChatTabsManager::HandleEntryAdded (ICLEntry *entry)
 	{
-		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 			return;
 
 		QObject *mucObj = entry->GetParentCLEntry ();
@@ -192,7 +192,7 @@ namespace Azoth
 
 	void ChatTabsManager::HandleEntryRemoved (ICLEntry *entry)
 	{
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
 			QObject *mucObj = entry->GetParentCLEntry ();
 			ICLEntry *muc = qobject_cast<ICLEntry*> (mucObj);
@@ -218,8 +218,8 @@ namespace Azoth
 		if (!XmlSettingsManager::Instance ().property ("OpenTabOnNewMsg").toBool ())
 			return;
 
-		if (msg->GetMessageType () == IMessage::MTChatMessage ||
-				(msg->GetMessageType () == IMessage::MTMUCMessage &&
+		if (msg->GetMessageType () == IMessage::Type::ChatMessage ||
+				(msg->GetMessageType () == IMessage::Type::MUCMessage &&
 					Core::Instance ().IsHighlightMessage (msg)))
 		{
 			auto entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());

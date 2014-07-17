@@ -36,6 +36,7 @@
 #include "core.h"
 #include "proxyobject.h"
 #include "xmlsettingsmanager.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -58,7 +59,7 @@ namespace Azoth
 		{
 			values << Util::MakeMap<QString, QVariant> ({
 					{ "Name", ProxyObject ().StateToString (state) },
-					{ "Icon", Core::Instance ().GetIconForState (state) },
+					{ "Icon", ResourcesManager::Instance ().GetIconForState (state) },
 					{ "ID", QVariant::fromValue (state) }
 				});
 		};
@@ -131,7 +132,7 @@ namespace Azoth
 
 		QList<QStandardItem*> row;
 		row << new QStandardItem (state.Name_);
-		row << new QStandardItem (Core::Instance ().GetIconForState (state.State_),
+		row << new QStandardItem (ResourcesManager::Instance ().GetIconForState (state.State_),
 				proxy.StateToString (state.State_));
 		row << new QStandardItem (state.Text_);
 		row.at (1)->setData (static_cast<int> (state.State_));

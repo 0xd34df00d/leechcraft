@@ -174,10 +174,10 @@ namespace Murm
 				continue;
 
 			const auto dir = map ["out"].toInt () ?
-					IMessage::DOut :
-					IMessage::DIn;
+					IMessage::Direction::Out :
+					IMessage::Direction::In;
 
-			const auto& username = dir == IMessage::DIn ?
+			const auto& username = dir == IMessage::Direction::In ?
 					reqContext.Index_.data (CustomHistRole::UserName).toString () :
 					Acc_->GetSelf ()->GetEntryName ();
 
