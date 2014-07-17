@@ -80,6 +80,7 @@ namespace Xoox
 
 		void StealMessagesFrom (RoomParticipantEntry*);
 
+		QByteArray GetPhotoHash () const;
 		void SetPhotoHash (const QByteArray&);
 
 		QXmppMucItem::Affiliation GetAffiliation () const;

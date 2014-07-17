@@ -160,6 +160,11 @@ namespace Xoox
 		// unread messages are skept intentionally
 	}
 
+	QByteArray RoomParticipantEntry::GetPhotoHash () const
+	{
+		return VCardPhotoHash_;
+	}
+
 	void RoomParticipantEntry::SetPhotoHash (const QByteArray& hash)
 	{
 		VCardPhotoHash_ = hash;
