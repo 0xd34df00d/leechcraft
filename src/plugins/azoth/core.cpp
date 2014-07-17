@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <cmath>
 #include <QIcon>
 #include <QAction>
 #include <QStandardItemModel>

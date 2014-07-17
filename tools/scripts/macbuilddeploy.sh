@@ -7,6 +7,11 @@ echo $BASEDIR
 
 sudo rm -rf $TARGET/leechcraft.app/Contents/Resources/qt.conf $TARGET/leechcraft.app/Contents/Frameworks $TARGET/leechcraft.app/Contents/PlugIns
 make -j8 install
+
+# Kludge
+install_name_tool -change lib/libqtermwidget4.0.dylib /usr/local/lib/libqtermwidget4.0.5.1.dylib $TARGET/leechcraft.app/Contents/PlugIns/libleechcraft_eleeminator.dylib
+sudo cp /usr/local/leechcraft.app/Contents/Frameworks/libleechcraft-* /usr/lib
+
 cp -Rv /usr/local/Cellar/qt/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
 mkdir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/gstreamer-1.0/* $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
@@ -32,6 +37,9 @@ for GST in $TARGET/leechcraft.app/Contents/PlugIns/gstreamer/lib*.so; do
 	done
 done
 sudo macdeployqt $TARGET/leechcraft.app -verbose=2
+
+# Kludge
+sudo rm /usr/lib/libleechcraft-*
 
 cd $BASEDIR
 cat Makefile.in | sed s/LC_VERSION/$(git describe)/ > Makefile
