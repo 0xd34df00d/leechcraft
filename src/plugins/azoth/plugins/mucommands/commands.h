@@ -71,6 +71,8 @@ namespace MuCommands
 
 	bool ListPerms (IProxyObject*, ICLEntry*, const QString&);
 
+	bool SetPerm (IProxyObject*, ICLEntry*, const QString&);
+
 	bool Invite (IProxyObject*, ICLEntry*, const QString&);
 
 	bool Pm (IProxyObject*, ICLEntry*, const QString&);

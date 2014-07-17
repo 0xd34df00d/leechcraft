@@ -173,6 +173,13 @@ namespace MuCommands
 		};
 		descParser (ListPerms_);
 
+		SetPerm_ = StaticCommand
+		{
+			{ "/setperm" },
+			[this] (ICLEntry *e, const QString& t) { return SetPerm (AzothProxy_, e, t); }
+		};
+		descParser (SetPerm_);
+
 		Kick_ = StaticCommand
 		{
 			{ "/kick" },
@@ -232,7 +239,7 @@ namespace MuCommands
 		{
 			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_,
 			Invite_, ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_,
-			ListPerms_, Kick_, Ban_, Pm_
+			ListPerms_, SetPerm_, Kick_, Ban_, Pm_
 		};
 	}
 

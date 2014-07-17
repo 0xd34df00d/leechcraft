@@ -37,6 +37,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
@@ -740,6 +741,201 @@ namespace MuCommands
 				QObject::tr ("Available role classes and their values:") +
 					"<ul><li>" + classes.join ("</li><li>") + "</li></ul>");
 
+		return true;
+	}
+
+	namespace
+	{
+		class PermSetter
+		{
+			IProxyObject * const AzothProxy_;
+			ICLEntry * const Entry_;
+			IMUCPerms * const MucPerms_;
+
+			const QString Text_;
+			const QString Command_;
+			const QString PermClassStr_;
+			const QByteArray PermClass_;
+			const QString PermValueStr_;
+			const QByteArray PermValue_;
+
+			const QString Remainder_;
+			const QString Nick_;
+			const QString Reason_;
+
+			enum class Mode
+			{
+				Nick,
+				Id
+			} Mode_ = Mode::Nick;
+		public:
+			PermSetter (IProxyObject *azothProxy, ICLEntry *entry, const QString& text);
+		private:
+			bool CheckPermsCast () const;
+			bool CheckSyntax () const;
+			bool CheckMode ();
+			bool CheckParticipants (decltype (GetParticipants ({}))) const;
+			bool CheckPermsValidity () const;
+
+			void SetNickPerms (decltype (GetParticipants ({})));
+			void SetIdPerms ();
+		};
+
+		PermSetter::PermSetter (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+		: AzothProxy_ { azothProxy }
+		, Entry_ { entry }
+		, MucPerms_ { qobject_cast<IMUCPerms*> (entry->GetQObject ()) }
+		, Text_ { text }
+		, Command_ { text.section (' ', 0, 0) }
+		, PermClassStr_ { text.section (' ', 1, 1) }
+		, PermClass_ { PermClassStr_.toUtf8 () }
+		, PermValueStr_ { text.section (' ', 2, 2) }
+		, PermValue_ { PermValueStr_.toUtf8 () }
+		, Remainder_ { text.section (' ', 4) }
+		, Nick_ { Remainder_.section ('\n', 0, 0) }
+		, Reason_ { Remainder_.section ('\n', 1) }
+		{
+			if (!CheckPermsCast () || !CheckSyntax () || !CheckMode () || !CheckPermsValidity ())
+				return;
+
+			switch (Mode_)
+			{
+			case Mode::Nick:
+			{
+				const auto& parts = GetParticipants (qobject_cast<IMUCEntry*> (entry->GetQObject ()));
+				if (!CheckParticipants (parts))
+					return;
+
+				SetNickPerms (parts);
+				break;
+			}
+			case Mode::Id:
+				SetIdPerms ();
+				break;
+			}
+		}
+
+		bool PermSetter::CheckPermsCast () const
+		{
+			if (!MucPerms_)
+			{
+				const auto acc = qobject_cast<IAccount*> (Entry_->GetParentAccount ());
+				const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+				InjectMessage (AzothProxy_, Entry_,
+						QObject::tr ("%1 (or its protocol %2) does not support permissions.")
+								.arg ("<em>" + Entry_->GetEntryName () + "</em>")
+								.arg (proto->GetProtocolName ()));
+
+				return false;
+			}
+
+			return true;
+		}
+
+		bool PermSetter::CheckSyntax () const
+		{
+			if (PermClassStr_.isEmpty () ||
+					PermValueStr_.isEmpty () ||
+					Nick_.isEmpty ())
+			{
+				InjectMessage (AzothProxy_, Entry_,
+						QObject::tr ("Invalid syntax. Type %1 for more information.")
+								.arg ("<code>/help " + Command_ + "</code>"));
+				return false;
+			}
+
+			return true;
+		}
+
+		bool PermSetter::CheckMode ()
+		{
+			const auto& modeStr = Text_.section (' ', 3, 3);
+			if (modeStr == "nick")
+				Mode_ = Mode::Nick;
+			else if (modeStr == "id")
+				Mode_ = Mode::Id;
+			else
+			{
+				InjectMessage (AzothProxy_, Entry_,
+						QObject::tr ("Unknown mode %1. Type %2 for more information.")
+								.arg ("<em>" + modeStr + "</em>")
+								.arg ("<code>/help " + Command_ + "</code>"));
+				return false;
+			}
+
+			return true;
+		}
+
+		bool PermSetter::CheckParticipants (decltype (GetParticipants ({})) parts) const
+		{
+			if (!parts.contains (Nick_))
+			{
+				InjectMessage (AzothProxy_, Entry_,
+						QObject::tr ("Unknown participant %1.")
+								.arg ("<em>" + Nick_ + "</em>"));
+				return false;
+			}
+
+			return true;
+		}
+
+		bool PermSetter::CheckPermsValidity () const
+		{
+			const auto& perms = MucPerms_->GetPossiblePerms ();
+			if (!perms.contains (PermClass_))
+			{
+				const auto& keys = Util::Map (perms.keys (),
+						[] (const QByteArray& ba) { return QString::fromUtf8 (ba); });
+				InjectMessage (AzothProxy_, Entry_,
+						QObject::tr ("Unknown permission class %1, available classes are: %2")
+								.arg ("<code>" + PermClassStr_ + "</permClass>")
+								.arg ("<ul><li>" + QStringList { keys }.join ("</li><li>") + "</ul></li>"));
+				return false;
+			}
+
+			if (!perms [PermClass_].contains (PermValue_))
+			{
+				const auto& values = Util::Map (perms [PermClass_],
+						[] (const QByteArray& ba) { return QString::fromUtf8 (ba); });
+				InjectMessage (AzothProxy_, Entry_,
+						QObject::tr ("Unknown permission class %1, available classes are: %2")
+								.arg ("<code>" + PermValueStr_ + "</permClass>")
+								.arg ("<ul><li>" + QStringList { values }.join ("</li><li>") + "</ul></li>"));
+				return false;
+			}
+
+			return true;
+		}
+
+		void PermSetter::SetNickPerms (decltype (GetParticipants ({})) parts)
+		{
+			const auto part = parts [Nick_];
+			const auto partObj = part->GetQObject ();
+
+			if (!MucPerms_->MayChangePerm (partObj, PermClass_, PermValue_))
+			{
+				InjectMessage (AzothProxy_, Entry_,
+						QObject::tr ("Cannot change %1's role of class %2 (%3) to %4 (%5).")
+								.arg ("<em>" + Nick_ + "</em>")
+								.arg ("<code>" + PermClassStr_ + "</code>")
+								.arg ("<em>" + MucPerms_->GetUserString (PermClass_) + "</em>")
+								.arg ("<code>" + PermValueStr_ + "</code>")
+								.arg ("<em>" + MucPerms_->GetUserString (PermValue_) + "</em>"));
+				return;
+			}
+
+			MucPerms_->SetPerm (partObj, PermClass_, PermValue_, Reason_);
+		}
+
+		void PermSetter::SetIdPerms ()
+		{
+			MucPerms_->TrySetPerm (Nick_, PermClass_, PermValue_, Reason_);
+		}
+	}
+
+	bool SetPerm (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		PermSetter { azothProxy, entry, text };
 		return true;
 	}
 

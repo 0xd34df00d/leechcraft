@@ -71,6 +71,7 @@ namespace MuCommands
 		StaticCommand Invite_;
 		StaticCommand Pm_;
 		StaticCommand ListPerms_;
+		StaticCommand SetPerm_;
 		StaticCommand Kick_;
 		StaticCommand Ban_;
 
