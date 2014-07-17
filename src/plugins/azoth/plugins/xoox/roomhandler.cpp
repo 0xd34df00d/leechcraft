@@ -611,31 +611,23 @@ namespace Xoox
 	void RoomHandler::HandleRenameStart (const RoomParticipantEntry_ptr& entry,
 			const QString& nick, const QString& newNick)
 	{
-		entry->SetEntryName (newNick);
-
-		const bool isMerge = Nick2Entry_.contains (newNick);
-		if (isMerge)
+		if (!Nick2Entry_.contains (newNick))
 		{
-			qDebug () << Q_FUNC_INFO
-					<< "detected rename-merge from"
-					<< nick
-					<< "to"
-					<< newNick;
-			const auto& otherEntry = Nick2Entry_.value (newNick);
-			otherEntry->StealMessagesFrom (entry.get ());
-
-			CLEntry_->MoveMessages (entry, otherEntry);
+			const auto& newEntry = GetParticipantEntry (newNick, false);
+			newEntry->SetAffiliation (entry->GetAffiliation ());
+			newEntry->SetRole (entry->GetRole ());
+			newEntry->SetPhotoHash (entry->GetPhotoHash ());
+			Account_->handleGotRosterItems ({ newEntry.get () });
 		}
-		else
-			Nick2Entry_ [newNick] = Nick2Entry_ [nick];
+
+		PendingNickChanges_ << newNick;
+
+		const auto& otherEntry = Nick2Entry_.value (newNick);
+		otherEntry->StealMessagesFrom (entry.get ());
+		CLEntry_->MoveMessages (entry, otherEntry);
 
 		MakeNickChangeMessage (nick, newNick);
-
-		if (!isMerge)
-			PendingNickChanges_ << newNick;
-		else
-			Account_->handleEntryRemoved (Nick2Entry_.value (nick).get ());
-
+		Account_->handleEntryRemoved (Nick2Entry_.value (nick).get ());
 		Nick2Entry_.remove (nick);
 	}
 
@@ -669,12 +661,16 @@ namespace Xoox
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
 
-		if (PendingNickChanges_.remove (nick))
-			return;
-
 		const bool existed = Nick2Entry_.contains (nick);
 
 		const auto& entry = GetParticipantEntry (nick, false);
+
+		if (PendingNickChanges_.remove (nick))
+		{
+			entry->HandlePresence (pres, {});
+			return;
+		}
+
 		entry->SetAffiliation (pres.mucItem ().affiliation ());
 		entry->SetRole (pres.mucItem ().role ());
 
