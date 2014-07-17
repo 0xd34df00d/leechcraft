@@ -12,4 +12,13 @@ An ID is resolved in the following way:
 &lt;li>If the protocol plugin supports that, the ID is resolved as a global entry ID in the protocol, even if it is not present in the roster.&lt;/li>
 &lt;/ol></help>
 	</command>
+	<command name="/setperm">
+		<desc>Sets the permissions (like affiliation or role in case of XMPP) of a given participant in a multiuser chat room.</desc>
+		<help>Usage:
+
+&lt;code>/setperm&lt;/code> &lt;em>permclass perm&lt;/em> &lt;code>nick&lt;/code> &lt;em>participant nick&lt;br/>[reason]&lt;/em>
+
+&lt;code>/setperm&lt;/code> &lt;em>permclass perm&lt;/em> &lt;code>id&lt;/code> &lt;em>entry_id&lt;br/>[reason]&lt;/em>
+		</help>
+	</command>
 </descs>
