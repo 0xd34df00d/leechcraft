@@ -166,7 +166,13 @@ namespace Xoox
 		MergeMessages (AllMessages_, other->AllMessages_);
 		other->AllMessages_.clear ();
 
-		// unread messages are skept intentionally
+		if (other->HasUnreadMsgs ())
+		{
+			for (auto msg : other->UnreadMessages_)
+				emit gotMessage (msg);
+
+			MergeMessages (UnreadMessages_, other->UnreadMessages_);
+		}
 	}
 
 	QByteArray RoomParticipantEntry::GetPhotoHash () const
