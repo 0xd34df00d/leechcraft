@@ -140,18 +140,17 @@ namespace Xoox
 		template<typename T>
 		void MergeMessages (QList<T*>& ourMessages, const QList<T*>& otherMessages)
 		{
-			QList<T*> messages;
-			std::merge (ourMessages.begin (), ourMessages.end (),
-					otherMessages.begin (), otherMessages.end (),
-					std::back_inserter (messages),
+			const auto size = ourMessages.size ();
+			ourMessages += otherMessages;
+			std::inplace_merge (ourMessages.begin (),
+					ourMessages.begin () + size,
+					ourMessages.end (),
 					[] (T *msgObj1, T *msgObj2)
 					{
 						const auto msg1 = qobject_cast<IMessage*> (msgObj1);
 						const auto msg2 = qobject_cast<IMessage*> (msgObj2);
 						return msg1->GetDateTime () < msg2->GetDateTime ();
 					});
-
-			ourMessages = messages;
 		}
 	}
 
