@@ -78,7 +78,8 @@ namespace Snails
 
 		MailSortFilterModel_->setDynamicSortFilter (true);
 		MailSortFilterModel_->setSortRole (MailModel::MailRole::Sort);
-		MailSortFilterModel_->sort (2, Qt::DescendingOrder);
+		MailSortFilterModel_->sort (static_cast<int> (MailModel::Column::Date),
+				Qt::DescendingOrder);
 		Ui_.MailTree_->setItemDelegate (new MailTreeDelegate (this));
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
 
