@@ -87,7 +87,7 @@ namespace Snails
 				this,
 				SLOT (handleCurrentAccountChanged (QModelIndex)));
 		connect (Ui_.MailTree_->selectionModel (),
-				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
 				this,
 				SLOT (handleMailSelected ()));
 
@@ -403,7 +403,8 @@ namespace Snails
 
 		CurrMsg_.reset ();
 
-		if (!sidx.isValid ())
+		if (!sidx.isValid () ||
+				!Ui_.MailTree_->selectionModel ()->selectedIndexes ().contains (sidx))
 		{
 			SetMsgActionsEnabled (false);
 			Ui_.MailView_->setHtml ({});
