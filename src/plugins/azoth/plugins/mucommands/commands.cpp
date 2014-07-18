@@ -1053,6 +1053,35 @@ namespace MuCommands
 		return true;
 	}
 
+	bool Whois (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
+	{
+		const auto& nick = text.section (' ', 1);
+
+		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+		const auto part = GetParticipants (mucEntry).value (nick);
+
+		if (!part)
+		{
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("Unable to find participant %1.")
+							.arg ("<em>" + nick + "</em>"));
+			return true;
+		}
+
+		const auto& rid = mucEntry->GetRealID (part->GetQObject ());
+		if (rid.isEmpty ())
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("Unable to get real ID of %1.")
+							.arg ("<em>" + nick + "</em>"));
+		else
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("%1's real ID: %2.")
+							.arg ("<em>" + nick + "</em>")
+							.arg ("<em>" + rid + "</em>"));
+
+		return true;
+	}
+
 	bool Pm (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)

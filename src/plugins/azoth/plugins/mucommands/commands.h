@@ -73,6 +73,8 @@ namespace MuCommands
 
 	bool SetPerm (IProxyObject*, ICLEntry*, const QString&);
 
+	bool Whois (IProxyObject*, ICLEntry*, const QString&);
+
 	bool Invite (IProxyObject*, ICLEntry*, const QString&);
 
 	bool Pm (IProxyObject*, ICLEntry*, const QString&);

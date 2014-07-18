@@ -166,6 +166,13 @@ namespace MuCommands
 		};
 		descParser (Pm_);
 
+		Whois_ = StaticCommand
+		{
+			{ "/whois" },
+			[this] (ICLEntry *e, const QString& t) { return Whois (AzothProxy_, e, t); }
+		};
+		descParser (Whois_);
+
 		ListPerms_ = StaticCommand
 		{
 			{ "/listperms" },
@@ -239,7 +246,7 @@ namespace MuCommands
 		{
 			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_,
 			Invite_, ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_,
-			ListPerms_, SetPerm_, Kick_, Ban_, Pm_
+			ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_
 		};
 	}
 
