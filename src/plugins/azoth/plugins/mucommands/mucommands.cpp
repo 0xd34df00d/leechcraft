@@ -164,7 +164,7 @@ namespace MuCommands
 			{ "/pm" },
 			[this] (ICLEntry *e, const QString& t) { return Pm (AzothProxy_, e, t); }
 		};
-		descParser (Invite_);
+		descParser (Pm_);
 
 		ListPerms_ = StaticCommand
 		{
