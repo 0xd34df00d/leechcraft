@@ -83,6 +83,11 @@ namespace Snails
 		SetDefaultWidths (widths);
 	}
 
+	void ViewColumnsManager::SetSwaps (const QList<QPair<int, int>>& swaps)
+	{
+		Swaps_ = swaps;
+	}
+
 	bool ViewColumnsManager::eventFilter (QObject *object, QEvent *event)
 	{
 		if (event->type () == QEvent::Resize)
@@ -136,6 +141,9 @@ namespace Snails
 			return;
 
 		readjustWidths ();
+
+		for (const auto& pair : Swaps_)
+			View_->swapSections (pair.first, pair.second);
 	}
 }
 }
