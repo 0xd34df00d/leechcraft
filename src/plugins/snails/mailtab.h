@@ -92,7 +92,7 @@ namespace Snails
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);
-		void handleMailSelected (const QModelIndex&);
+		void handleMailSelected ();
 
 		void handleFoldersUpdated ();
 

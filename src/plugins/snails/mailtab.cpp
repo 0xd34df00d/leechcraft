@@ -89,7 +89,7 @@ namespace Snails
 		connect (Ui_.MailTree_->selectionModel (),
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
-				SLOT (handleMailSelected (QModelIndex)));
+				SLOT (handleMailSelected ()));
 
 		FillTabToolbarActions ();
 	}
@@ -314,7 +314,9 @@ namespace Snails
 	void MailTab::handleCurrentTagChanged (const QModelIndex& sidx)
 	{
 		CurrAcc_->ShowFolder (sidx);
-		handleMailSelected ({});
+		Ui_.MailTree_->setCurrentIndex ({});
+
+		handleMailSelected ();
 		handleFoldersUpdated ();
 	}
 
@@ -388,7 +390,7 @@ namespace Snails
 		}
 	}
 
-	void MailTab::handleMailSelected (const QModelIndex& sidx)
+	void MailTab::handleMailSelected ()
 	{
 		if (!CurrAcc_)
 		{
@@ -396,6 +398,8 @@ namespace Snails
 			Ui_.MailView_->setHtml ({});
 			return;
 		}
+
+		const auto& sidx = Ui_.MailTree_->currentIndex ();
 
 		CurrMsg_.reset ();
 
@@ -665,7 +669,7 @@ namespace Snails
 		if (cur.data (MailModel::MailRole::ID).toByteArray () != msg->GetFolderID ())
 			return;
 
-		handleMailSelected (cur);
+		handleMailSelected ();
 	}
 }
 }
