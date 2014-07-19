@@ -266,6 +266,70 @@ namespace Snails
 		return folder;
 	}
 
+	namespace
+	{
+		class MessageStructHandler
+		{
+			const Message_ptr Msg_;
+			const vmime::shared_ptr<vmime::net::message> VmimeMessage_;
+		public:
+			MessageStructHandler (const Message_ptr&, const vmime::shared_ptr<vmime::net::message>&);
+
+			void operator() ();
+		private:
+			void HandlePart (const vmime::shared_ptr<vmime::net::messagePart>&);
+
+			template<typename T>
+			void EnumParts (const T&);
+		};
+
+		MessageStructHandler::MessageStructHandler (const Message_ptr& msg,
+				const vmime::shared_ptr<vmime::net::message>& message)
+		: Msg_ { msg }
+		, VmimeMessage_ { message }
+		{
+		}
+
+		void MessageStructHandler::operator() ()
+		{
+			const auto& structure = VmimeMessage_->getStructure ();
+			if (!structure)
+				return;
+
+			EnumParts (structure);
+		}
+
+		void MessageStructHandler::HandlePart (const boost::shared_ptr<vmime::net::messagePart>& part)
+		{
+			const auto& type = part->getType ();
+
+			if (type.getType () == "text")
+				return;
+
+			if (type.getType () == "multipart")
+			{
+				EnumParts (part);
+				return;
+			}
+
+			Msg_->AddAttachment ({
+						{},
+						{},
+						type.getType ().c_str (),
+						type.getSubType ().c_str (),
+						static_cast<qlonglong> (part->getSize ())
+					});
+		}
+
+		template<typename T>
+		void MessageStructHandler::EnumParts (const T& enumable)
+		{
+			const auto pc = enumable->getPartCount ();
+			for (vmime::size_t i = 0; i < pc; ++i)
+				HandlePart (enumable->getPartAt (i));
+		}
+	}
+
 	Message_ptr AccountThreadWorker::FromHeaders (const vmime::shared_ptr<vmime::net::message>& message) const
 	{
 		const auto& utf8cs = vmime::charset { vmime::charsets::UTF_8 };
@@ -433,6 +497,8 @@ namespace Snails
 		{
 		}
 
+		MessageStructHandler { msg, message } ();
+
 		return msg;
 	}
 
@@ -559,6 +625,7 @@ namespace Snails
 					vmime::net::fetchAttributes::SIZE |
 					vmime::net::fetchAttributes::UID |
 					vmime::net::fetchAttributes::FULL_HEADER |
+					vmime::net::fetchAttributes::STRUCTURE |
 					vmime::net::fetchAttributes::ENVELOPE;
 
 		try
@@ -703,6 +770,8 @@ namespace Snails
 
 			msg->SetBody (plainParts.join ("\n"));
 			msg->SetHTMLBody (html);
+
+			msg->SetAttachmentList ({});
 
 			for (const auto& att : mp.getAttachmentList ())
 			{
