@@ -52,6 +52,8 @@ namespace Snails
 		TabClassInfo MailTabClass_;
 		TabClassInfo ComposeTabClass_;
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

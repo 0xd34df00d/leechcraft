@@ -53,8 +53,9 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	MailTab::MailTab (const TabClassInfo& tc, QObject *pmt, QWidget *parent)
+	MailTab::MailTab (const ICoreProxy_ptr& proxy, const TabClassInfo& tc, QObject *pmt, QWidget *parent)
 	: QWidget (parent)
+	, Proxy_ (proxy)
 	, TabToolbar_ (new QToolBar)
 	, MsgToolbar_ (new QToolBar)
 	, TabClass_ (tc)

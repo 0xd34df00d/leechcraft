@@ -46,6 +46,8 @@ namespace Snails
 	{
 		Util::InstallTranslator ("snails");
 
+		Proxy_ = proxy;
+
 		MailTabClass_ =
 		{
 			"mail",
@@ -130,7 +132,7 @@ namespace Snails
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "mail")
-			handleNewTab (MailTabClass_.VisibleName_, new MailTab (MailTabClass_, this));
+			handleNewTab (MailTabClass_.VisibleName_, new MailTab (Proxy_, MailTabClass_, this));
 		else if (tabClass == "compose")
 		{
 			auto ct = new ComposeMessageTab ();

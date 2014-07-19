@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "ui_mailtab.h"
 #include "account.h"
@@ -50,6 +51,8 @@ namespace Snails
 		Q_INTERFACES (ITabWidget)
 
 		Ui::MailTab Ui_;
+
+		const ICoreProxy_ptr Proxy_;
 
 		QToolBar * const TabToolbar_;
 		QToolBar * const MsgToolbar_;
@@ -77,7 +80,7 @@ namespace Snails
 		Account_ptr CurrAcc_;
 		Message_ptr CurrMsg_;
 	public:
-		MailTab (const TabClassInfo&, QObject*, QWidget* = 0);
+		MailTab (const ICoreProxy_ptr&, const TabClassInfo&, QObject*, QWidget* = 0);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
