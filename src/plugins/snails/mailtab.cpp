@@ -72,7 +72,7 @@ namespace Snails
 				"999",
 				{},
 				{},
-				QDateTime::currentDateTime ().toString (),
+				QDateTime::currentDateTime ().toString () + "  ",
 				Util::MakePrettySize (999 * 1024) + "  "
 			});
 		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::StatusIcon),
