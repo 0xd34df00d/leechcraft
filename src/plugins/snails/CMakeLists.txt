@@ -48,6 +48,7 @@ set (SRCS
 	concurrentexceptions.cpp
 	mailsortmodel.cpp
 	headersviewwidget.cpp
+	mailwebpage.cpp
 	)
 set (FORMS
 	mailtab.ui

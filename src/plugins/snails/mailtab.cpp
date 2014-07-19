@@ -48,6 +48,7 @@
 #include "vmimeconversions.h"
 #include "mailsortmodel.h"
 #include "headersviewwidget.h"
+#include "mailwebpage.h"
 
 namespace LeechCraft
 {
@@ -65,6 +66,7 @@ namespace Snails
 		Ui_.setupUi (this);
 		//Ui_.MailTreeLay_->insertWidget (0, MsgToolbar_);
 
+		Ui_.MailView_->setPage (new MailWebPage { Proxy_, Ui_.MailView_ });
 		Ui_.MailView_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
 		auto colMgr = new ViewColumnsManager (Ui_.MailTree_->header ());
