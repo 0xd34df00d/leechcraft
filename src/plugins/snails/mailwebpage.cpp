@@ -29,6 +29,7 @@
 
 #include "mailwebpage.h"
 #include <QNetworkRequest>
+#include <QtDebug>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 
@@ -52,7 +53,23 @@ namespace Snails
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 			return false;
 		}
+
+		if (url.scheme () == "snails")
+		{
+			if (url.host () == "attachment")
+				HandleAttachment (url);
+		}
+
 		return false;
+	}
+
+	void MailWebPage::HandleAttachment (const QUrl& url)
+	{
+		const auto& msgId = url.queryItemValue ("msgId").toUtf8 ();
+		const auto& folder = url.queryItemValue ("folderId").split ('/');
+		const auto& attName = url.queryItemValue ("attName");
+
+		emit attachmentSelected (msgId, folder, attName);
 	}
 }
 }

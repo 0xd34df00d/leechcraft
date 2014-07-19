@@ -38,11 +38,18 @@ namespace Snails
 {
 	class MailWebPage : public QWebPage
 	{
+		Q_OBJECT
+
 		const ICoreProxy_ptr Proxy_;
 	public:
 		MailWebPage (const ICoreProxy_ptr&, QObject* = nullptr);
 	protected:
 		bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest&, NavigationType);
+	private:
+		void HandleAttachment (const QUrl&);
+	signals:
+		void attachmentSelected (const QByteArray& msgId,
+				const QStringList& folder, const QString& attName);
 	};
 }
 }
