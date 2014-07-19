@@ -78,7 +78,7 @@ namespace Snails
 
 	MailModel::MailModel (QObject *parent)
 	: QAbstractItemModel { parent }
-	, Headers_ { tr ("From"), {}, {}, tr ("Subject"), tr ("Date"), tr ("Size")  }
+	, Headers_ { tr ("From"), {}, {}, {}, tr ("Subject"), tr ("Date"), tr ("Size")  }
 	, Folder_ { "INBOX" }
 	, Root_ { std::make_shared<TreeNode> () }
 	{
@@ -132,16 +132,27 @@ namespace Snails
 		}
 		case Qt::DecorationRole:
 		{
-			if (column != Column::StatusIcon)
-				return {};
-
 			QString iconName;
-			if (!msg->IsRead ())
-				iconName = "mail-unread-new";
-			else if (structItem->UnreadChildren_.size ())
-				iconName = "mail-unread";
-			else
-				iconName = "mail-read";
+
+			switch (column)
+			{
+			case Column::StatusIcon:
+				if (!msg->IsRead ())
+					iconName = "mail-unread-new";
+				else if (structItem->UnreadChildren_.size ())
+					iconName = "mail-unread";
+				else
+					iconName = "mail-read";
+				break;
+			case Column::AttachIcon:
+				if (!msg->GetAttachments ().isEmpty ())
+					iconName = "mail-attachment";
+			default:
+				break;
+			}
+
+			if (iconName.isEmpty ())
+				return {};
 
 			return Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (iconName);
 		}

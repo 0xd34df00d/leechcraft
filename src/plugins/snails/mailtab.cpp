@@ -72,11 +72,16 @@ namespace Snails
 				"999",
 				{},
 				{},
+				{},
 				QDateTime::currentDateTime ().toString () + "  ",
 				Util::MakePrettySize (999 * 1024) + "  "
 			});
+
+		const auto iconSize = style ()->pixelMetric (QStyle::PM_ListViewIconSize);
 		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::StatusIcon),
-				style ()->pixelMetric (QStyle::PM_ListViewIconSize) + 6);
+				iconSize + 6);
+		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::AttachIcon),
+				iconSize + 6);
 		colMgr->SetSwaps ({
 					{
 						static_cast<int> (MailModel::Column::From),
