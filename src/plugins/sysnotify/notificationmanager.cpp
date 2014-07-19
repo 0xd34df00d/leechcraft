@@ -135,12 +135,10 @@ namespace Sysnotify
 		const auto& image = e.Additional_ ["NotificationPixmap"].value<QPixmap> ().toImage ();
 		if (!image.isNull ())
 		{
-			if (Version_ == std::make_tuple (1, 1))
-				hints ["image_data"] = QVariant::fromValue<ImageHint> (image);
-			else if (Version_ <= std::make_tuple (1, 0))
-				hints ["icon_data"] = QVariant::fromValue<ImageHint> (image);
-			else
-				hints ["image-data"] = QVariant::fromValue<ImageHint> (image);
+			const auto& imageVar = QVariant::fromValue<ImageHint> (image);
+			hints ["image_data"] = imageVar;
+			hints ["icon_data"] = imageVar;
+			hints ["image-data"] = imageVar;
 		}
 
 		QList<QVariant> arguments
