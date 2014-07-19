@@ -23,11 +23,38 @@
 	-webkit-border-radius: 1em;
 }
 
+.attachments {
+	margin-top: 3em;
+	padding-left: 1em;
+	padding-right: 1em;
+	border: 2px solid $Window;
+	-webkit-border-radius: 1em;
+	opacity: 0.9;
+}
+
 .replyPart {
 	color: $LinkVisited;
+}
+
+.attachment {
+	display: table;
+	margin-top: 0.125em;
+	margin-bottom: 0.125em;
+}
+
+.attachment span {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.attachMime {
+	margin-right: 1em;
 }
 
 body {
 	color: $Text;
 	background-color: $Base;
+
+	margin-left: 1em;
+	margin-right: 1em;
 }

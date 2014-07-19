@@ -37,6 +37,7 @@
 #include <QToolButton>
 #include <util/util.h>
 #include <util/tags/categoryselector.h>
+#include <util/sys/extensionsdata.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "storage.h"
@@ -358,6 +359,42 @@ namespace Snails
 			return result;
 		}
 
+		QString AttachmentsToHtml (const QList<AttDescr>& attachments)
+		{
+			if (attachments.isEmpty ())
+				return {};
+
+			QString result;
+			result += "<div class='attachments'>";
+
+			const auto& extData = Util::ExtensionsData::Instance ();
+			for (const auto& attach : attachments)
+			{
+				result += "<div class='attachment'>";
+
+				const auto& mimeType = attach.GetType () + '/' + attach.GetSubType ();
+				const auto& icon = extData.GetMimeIcon (mimeType);
+				if (!icon.isNull ())
+				{
+					const auto& iconData = Util::GetAsBase64Src (icon.pixmap (32, 32).toImage ());
+
+					result += "<img class='attachMime' src='" + iconData + "' alt='" + mimeType + "' />";
+				}
+
+				result += "<span>";
+
+				result += attach.GetName ();
+				if (!attach.GetDescr ().isEmpty ())
+					result += " (" + attach.GetDescr () + ")";
+				result += " &mdash; " + Util::MakePrettySize (attach.GetSize ());
+
+				result += "</span></div>";
+			}
+
+			result += "</div>";
+			return result;
+		}
+
 		QString ToHtml (const Message_ptr& msg)
 		{
 			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
@@ -406,6 +443,7 @@ namespace Snails
 			}
 
 			html += "</div>";
+			html += AttachmentsToHtml (msg->GetAttachments ());
 			html += "</body></html>";
 
 			return html;
