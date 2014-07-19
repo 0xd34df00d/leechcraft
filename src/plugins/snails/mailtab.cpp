@@ -77,11 +77,9 @@ namespace Snails
 				Util::MakePrettySize (999 * 1024) + "  "
 			});
 
-		const auto iconSize = style ()->pixelMetric (QStyle::PM_ListViewIconSize);
-		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::StatusIcon),
-				iconSize + 6);
-		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::AttachIcon),
-				iconSize + 6);
+		const auto iconSize = style ()->pixelMetric (QStyle::PM_ListViewIconSize) + 6;
+		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::StatusIcon), iconSize + 6);
+		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::AttachIcon), iconSize + 6);
 		colMgr->SetSwaps ({
 					{
 						static_cast<int> (MailModel::Column::From),
