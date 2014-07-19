@@ -41,5 +41,18 @@ namespace Snails
 	, Proxy_ { proxy }
 	{
 	}
+
+	bool MailWebPage::acceptNavigationRequest (QWebFrame*, const QNetworkRequest& req, QWebPage::NavigationType type)
+	{
+		const auto& url = req.url ();
+		if (type == NavigationTypeLinkClicked &&
+				url.scheme () != "snails")
+		{
+			const auto& e = Util::MakeEntity (url, {}, FromUserInitiated);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
+			return false;
+		}
+		return false;
+	}
 }
 }

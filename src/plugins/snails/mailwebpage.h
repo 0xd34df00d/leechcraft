@@ -41,6 +41,8 @@ namespace Snails
 		const ICoreProxy_ptr Proxy_;
 	public:
 		MailWebPage (const ICoreProxy_ptr&, QObject* = nullptr);
+	protected:
+		bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest&, NavigationType);
 	};
 }
 }
