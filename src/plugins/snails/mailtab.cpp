@@ -139,6 +139,14 @@ namespace Snails
 
 		TabToolbar_->addSeparator ();
 
+		auto registerMailAction = [this] (QObject *obj)
+		{
+			connect (this,
+					SIGNAL (mailActionsEnabledChanged (bool)),
+					obj,
+					SLOT (setEnabled (bool)));
+		};
+
 		MsgReply_ = new QAction (tr ("Reply..."), this);
 		MsgReply_->setProperty ("ActionIcon", "mail-reply-sender");
 		connect (MsgReply_,
@@ -146,6 +154,7 @@ namespace Snails
 				this,
 				SLOT (handleReply ()));
 		TabToolbar_->addAction (MsgReply_);
+		registerMailAction (MsgReply_);
 
 		MsgAttachments_ = new QMenu (tr ("Attachments"));
 		MsgAttachmentsButton_ = new QToolButton;
@@ -157,16 +166,14 @@ namespace Snails
 		TabToolbar_->addSeparator ();
 
 		MsgCopy_ = new QMenu (tr ("Copy messages"));
-		connect (MsgCopy_,
-				SIGNAL (triggered (QAction*)),
-				this,
-				SLOT (handleCopyMessages (QAction*)));
 
 		MsgCopyButton_ = new QToolButton;
 		MsgCopyButton_->setMenu (MsgCopy_);
 		MsgCopyButton_->setProperty ("ActionIcon", "edit-copy");
 		MsgCopyButton_->setPopupMode (QToolButton::InstantPopup);
 		TabToolbar_->addWidget (MsgCopyButton_);
+
+		registerMailAction (MsgCopyButton_);
 
 		MsgMove_ = new QMenu (tr ("Move messages"));
 		connect (MsgMove_,
@@ -180,6 +187,8 @@ namespace Snails
 		MsgMoveButton_->setPopupMode (QToolButton::InstantPopup);
 		TabToolbar_->addWidget (MsgMoveButton_);
 
+		registerMailAction (MsgMoveButton_);
+
 		MsgMarkUnread_ = new QAction (tr ("Mark as unread"), this);
 		MsgMarkUnread_->setProperty ("ActionIcon", "mail-mark-unread");
 		connect (MsgMarkUnread_,
@@ -187,6 +196,7 @@ namespace Snails
 				this,
 				SLOT (handleMarkMsgUnread ()));
 		TabToolbar_->addAction (MsgMarkUnread_);
+		registerMailAction (MsgMarkUnread_);
 
 		MsgRemove_ = new QAction (tr ("Delete messages"), this);
 		MsgRemove_->setProperty ("ActionIcon", "list-remove");
@@ -195,6 +205,7 @@ namespace Snails
 				this,
 				SLOT (handleRemoveMsgs ()));
 		TabToolbar_->addAction (MsgRemove_);
+		registerMailAction (MsgRemove_);
 
 		TabToolbar_->addSeparator ();
 
@@ -205,6 +216,7 @@ namespace Snails
 				this,
 				SLOT (handleViewHeaders ()));
 		TabToolbar_->addAction (MsgViewHeaders_);
+		registerMailAction (MsgViewHeaders_);
 
 		SetMsgActionsEnabled (false);
 	}
@@ -227,11 +239,7 @@ namespace Snails
 
 	void MailTab::SetMsgActionsEnabled (bool enable)
 	{
-		for (auto act : { MsgReply_, MsgMarkUnread_, MsgRemove_, MsgViewHeaders_ })
-			act->setEnabled (enable);
-
-		MsgCopyButton_->setEnabled (enable);
-		MsgMoveButton_->setEnabled (enable);
+		emit mailActionsEnabledChanged (enable);
 	}
 
 	QList<Folder> MailTab::GetActualFolders () const

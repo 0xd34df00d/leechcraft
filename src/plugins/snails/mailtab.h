@@ -111,6 +111,8 @@ namespace Snails
 		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void removeTab (QWidget*);
+
+		void mailActionsEnabledChanged (bool);
 	};
 }
 }
