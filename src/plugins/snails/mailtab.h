@@ -109,6 +109,7 @@ namespace Snails
 		void handleViewHeaders ();
 
 		void handleAttachment ();
+		void handleAttachment (const QByteArray&, const QStringList&, const QString&);
 		void handleFetchNewMail ();
 
 		void handleMessageBodyFetched (Message_ptr);

@@ -66,7 +66,12 @@ namespace Snails
 		Ui_.setupUi (this);
 		//Ui_.MailTreeLay_->insertWidget (0, MsgToolbar_);
 
-		Ui_.MailView_->setPage (new MailWebPage { Proxy_, Ui_.MailView_ });
+		const auto mailWebPage = new MailWebPage { Proxy_, Ui_.MailView_ };
+		connect (mailWebPage,
+				SIGNAL (attachmentSelected (QByteArray, QStringList, QString)),
+				this,
+				SLOT (handleAttachment (QByteArray, QStringList, QString)));
+		Ui_.MailView_->setPage (mailWebPage);
 		Ui_.MailView_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
 		auto colMgr = new ViewColumnsManager (Ui_.MailTree_->header ());
@@ -362,7 +367,7 @@ namespace Snails
 			return result;
 		}
 
-		QString AttachmentsToHtml (const QList<AttDescr>& attachments)
+		QString AttachmentsToHtml (const Message_ptr& msg, const QList<AttDescr>& attachments)
 		{
 			if (attachments.isEmpty ())
 				return {};
@@ -375,23 +380,32 @@ namespace Snails
 			{
 				result += "<div class='attachment'>";
 
+				QUrl linkUrl { "snails://attachment/" };
+				linkUrl.addQueryItem ("msgId", msg->GetFolderID ());
+				linkUrl.addQueryItem ("folderId", msg->GetFolders ().value (0).join ("/"));
+				linkUrl.addQueryItem ("attName", attach.GetName ());
+				const auto& link = linkUrl.toEncoded ();
+
+				result += "<a href='" + link + "'>";
+
 				const auto& mimeType = attach.GetType () + '/' + attach.GetSubType ();
 				const auto& icon = extData.GetMimeIcon (mimeType);
 				if (!icon.isNull ())
 				{
 					const auto& iconData = Util::GetAsBase64Src (icon.pixmap (32, 32).toImage ());
 
-					result += "<img class='attachMime' src='" + iconData + "' alt='" + mimeType + "' />";
+					result += "<img class='attachMime' style='float:left' src='" + iconData + "' alt='" + mimeType + "' />";
 				}
 
-				result += "<span>";
+				result += "</a><span><a href='" + link + "'>";
 
 				result += attach.GetName ();
 				if (!attach.GetDescr ().isEmpty ())
 					result += " (" + attach.GetDescr () + ")";
 				result += " &mdash; " + Util::MakePrettySize (attach.GetSize ());
 
-				result += "</span></div>";
+				result += "</a></span>";
+				result += "</div>";
 			}
 
 			result += "</div>";
@@ -446,7 +460,7 @@ namespace Snails
 			}
 
 			html += "</div>";
-			html += AttachmentsToHtml (msg->GetAttachments ());
+			html += AttachmentsToHtml (msg, msg->GetAttachments ());
 			html += "</body></html>";
 
 			return html;
@@ -707,15 +721,19 @@ namespace Snails
 			return;
 
 		const auto& name = sender ()->property ("Snails/AttName").toString ();
+		const auto& id = sender ()->property ("Snails/MsgId").toByteArray ();
+		const auto& folder = sender ()->property ("Snails/Folder").toStringList ();
+		handleAttachment (id, folder, name);
+	}
 
+	void MailTab::handleAttachment (const QByteArray& id,
+			const QStringList& folder, const QString& name)
+	{
 		const auto& path = QFileDialog::getSaveFileName (0,
 				tr ("Save attachment"),
 				QDir::homePath () + '/' + name);
 		if (path.isEmpty ())
 			return;
-
-		const auto& id = sender ()->property ("Snails/MsgId").toByteArray ();
-		const auto& folder = sender ()->property ("Snails/Folder").toStringList ();
 
 		const auto& msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), folder, id);
 		CurrAcc_->FetchAttachment (msg, name, path);
