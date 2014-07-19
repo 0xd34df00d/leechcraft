@@ -45,13 +45,10 @@ namespace Snails
 			const QStyleOptionViewItem& stockItem, const QModelIndex& index) const
 	{
 		const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
-		const auto hasUnreadChildren = index.data (MailModel::MailRole::UnreadChildrenCount).toInt ();
 
 		QStyleOptionViewItemV4 item = stockItem;
 		if (!isRead)
 			item.font.setBold (true);
-		if (hasUnreadChildren)
-			item.font.setUnderline (true);
 		QStyledItemDelegate::paint (painter, item, index);
 	}
 }
