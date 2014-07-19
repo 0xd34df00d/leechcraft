@@ -56,6 +56,8 @@ namespace Snails
 		enum class Column
 		{
 			From,
+			UnreadChildren,
+			StatusIcon,
 			Subject,
 			Date,
 			Size

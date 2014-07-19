@@ -69,10 +69,20 @@ namespace Snails
 		colMgr->SetStretchColumn (static_cast<int> (MailModel::Column::Subject));
 		colMgr->SetDefaultWidths ({
 				"Typical sender name and surname",
+				"999",
+				{},
 				{},
 				QDateTime::currentDateTime ().toString (),
 				Util::MakePrettySize (999 * 1024) + "  "
 			});
+		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::StatusIcon),
+				style ()->pixelMetric (QStyle::PM_ListViewIconSize) + 6);
+		colMgr->SetSwaps ({
+					{
+						static_cast<int> (MailModel::Column::From),
+						static_cast<int> (MailModel::Column::StatusIcon)
+					}
+				});
 
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
 
