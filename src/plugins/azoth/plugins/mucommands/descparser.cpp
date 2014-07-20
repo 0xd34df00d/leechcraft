@@ -31,6 +31,8 @@
 #include <QFile>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/azoth/iprovidecommands.h>
 
 namespace LeechCraft
@@ -39,6 +41,85 @@ namespace Azoth
 {
 namespace MuCommands
 {
+	namespace
+	{
+		class MDParser
+		{
+			enum class State
+			{
+				None,
+				Em,
+				Code
+			} State_ = State::None;
+
+			const QMap<QString, QPair<QString, State>> Repls_ = Util::MakeMap<QString, QPair<QString, State>> ({
+						{ "_", { "em", State::Em } },
+						{ "@", { "code", State::Code } }
+					});
+
+			QString Body_;
+		public:
+			MDParser (const QString& body);
+
+			QString operator() ();
+		private:
+			int HandleSubstr (const QString& str, int pos);
+		};
+
+		MDParser::MDParser (const QString& body)
+		: Body_ { body }
+		{
+			Body_.replace ("\n", "<br/>");
+
+			const auto& stlized = Util::Stlize (Repls_);
+			for (int i = 0; i < Body_.size (); ++i)
+				for (const auto& pair : stlized)
+				{
+					if (Body_.mid (i, pair.first.size ()) != pair.first)
+						continue;
+
+					const auto res = HandleSubstr (pair.first, i);
+					if (res > 0)
+					{
+						i += res;
+						break;
+					}
+				}
+		}
+
+		QString MDParser::operator() ()
+		{
+			return Body_;
+		}
+
+		int MDParser::HandleSubstr (const QString& str, int pos)
+		{
+			const auto& replData = Repls_.value (str);
+			const auto& repl = replData.first;
+			if (repl.isEmpty ())
+				return 0;
+
+			const auto replState = replData.second;
+
+			QString tag;
+			if (State_ == State::None)
+			{
+				tag = "<" + repl + ">";
+				State_ = replState;
+			}
+			else if (State_ == replState)
+			{
+				tag = "</" + repl + ">";
+				State_ = State::None;
+			}
+			else
+				return 0;
+
+			Body_.replace (pos, str.size (), tag);
+			return tag.size () - str.size ();
+		}
+	}
+
 	DescParser::DescParser ()
 	{
 		QFile file { ":/azoth/mucommands/resources/data/descriptions.xml" };
@@ -70,8 +151,7 @@ namespace MuCommands
 			const auto& name = cmdElem.attribute ("name");
 
 			const auto& descr = cmdElem.firstChildElement ("desc").text ();
-			auto help = cmdElem.firstChildElement ("help").text ();
-			help.replace ("\n\n", "<br/><br/>");
+			const auto& help = MDParser { cmdElem.firstChildElement ("help").text () } ();
 
 			Cmd2Desc_ [name] = Desc { descr, help };
 

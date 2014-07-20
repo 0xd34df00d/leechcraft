@@ -1,9 +1,9 @@
 <descs>
 	<command name="/vcard">
 		<desc>Shows VCards for the given participants, or a roster entry, or a JID.</desc>
-		<help>Usage: &lt;code>/vcard [id]\n[id]...&lt;/code>
+		<help>Usage: @/vcard@ _[id]_\n_[id]_...&lt;/code>
 
-Shows (and fetches, if required) VCards for the users identified by &lt;code>id&lt;/code>. Multiple IDs could be given, separated by line breaks.
+Shows (and fetches, if required) VCards for the users identified by _id_. Multiple IDs could be given, separated by line breaks.
 
 An ID is resolved in the following way:
 &lt;ol>
@@ -14,11 +14,7 @@ An ID is resolved in the following way:
 	</command>
 	<command name="/setperm">
 		<desc>Sets the permissions (like affiliation or role in case of XMPP) of a given participant in a multiuser chat room.</desc>
-		<help>Usage:
-
-&lt;code>/setperm&lt;/code> &lt;em>permclass perm&lt;/em> &lt;code>nick&lt;/code> &lt;em>participant nick&lt;br/>[reason]&lt;/em>
-
-&lt;code>/setperm&lt;/code> &lt;em>permclass perm&lt;/em> &lt;code>id&lt;/code> &lt;em>entry_id&lt;br/>[reason]&lt;/em>
+		<help>Usage: @/setperm@ _permclass_ _perm_ &lt;@nick@|@id@> &lt;_nick_|_id_>&lt;br/>_[reason]_&lt;/em>
 		</help>
 	</command>
 </descs>
