@@ -159,7 +159,7 @@ namespace Azoth
 		{ "/help" },
 		&Help,
 		tr ("Show the list of all commands or get help for a specific command."),
-		tr ("Usage: ") + "<code>/clear " + tr ("[command1] [command2] ...") + "</code><br/>" +
+		tr ("Usage: ") + "<code>/help " + tr ("[command1] [command2] ...") + "</code><br/>" +
 				tr ("Shows the list of all available commands with their respective short "
 					"descriptions if called without parameters, otherwise shows help for "
 					"the passed commands.")
