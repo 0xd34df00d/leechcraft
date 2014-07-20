@@ -30,6 +30,7 @@
 #include "descparser.h"
 #include <QFile>
 #include <QDomDocument>
+#include <QApplication>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sll/qtutil.h>
@@ -185,7 +186,9 @@ namespace MuCommands
 			const auto& descr = cmdElem.firstChildElement ("desc").text ();
 			const auto& help = MDParser { cmdElem.firstChildElement ("help").text () } ();
 
-			Cmd2Desc_ [name] = Desc { descr, help };
+			const auto& descrTr = qApp->translate ("descriptions", descr.toUtf8 ().constData ());
+
+			Cmd2Desc_ [name] = Desc { descrTr, help };
 
 			cmdElem = cmdElem.nextSiblingElement ("command");
 		}
