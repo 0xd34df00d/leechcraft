@@ -920,7 +920,7 @@ namespace MuCommands
 						[] (const QByteArray& ba) { return QString::fromUtf8 (ba); });
 				InjectMessage (AzothProxy_, Entry_,
 						QObject::tr ("Unknown permission class %1, available classes are: %2")
-								.arg ("<code>" + PermClassStr_ + "</permClass>")
+								.arg ("<code>" + PermClassStr_ + "</code>")
 								.arg ("<ul><li>" + QStringList { keys }.join ("</li><li>") + "</ul></li>"));
 				return false;
 			}
@@ -931,7 +931,7 @@ namespace MuCommands
 						[] (const QByteArray& ba) { return QString::fromUtf8 (ba); });
 				InjectMessage (AzothProxy_, Entry_,
 						QObject::tr ("Unknown permission class %1, available classes are: %2")
-								.arg ("<code>" + PermValueStr_ + "</permClass>")
+								.arg ("<code>" + PermValueStr_ + "</code>")
 								.arg ("<ul><li>" + QStringList { values }.join ("</li><li>") + "</ul></li>"));
 				return false;
 			}
