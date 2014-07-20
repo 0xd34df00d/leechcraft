@@ -112,7 +112,6 @@ else ()
 	set (LC_GLOBAL_SETTINGS_DEST_IN "${CMAKE_INSTALL_PREFIX}/${LC_GLOBAL_SETTINGS_DEST}")
 endif ()
 
-set (Boost_ADDITIONAL_VERSIONS "1.47" "1.46" "1.46.1" "1.44" "1.44.0")
 find_package (Boost REQUIRED COMPONENTS date_time filesystem program_options system thread)
 
 if (USE_QT5)
