@@ -28,8 +28,13 @@ set (MUCOMMANDS_SRCS
 set (MUCOMMANDS_RESOURCES azothmucommandsresources.qrc)
 QT4_ADD_RESOURCES (MUCOMMANDS_RCCS ${MUCOMMANDS_RESOURCES})
 
+add_custom_target (leechcraft_azoth_mucommands_gen_descr_ts
+		"${CMAKE_CURRENT_SOURCE_DIR}/descr_transform.sh"
+		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
+
 CreateTrs ("azoth_mucommands" "en;ru_RU" MUCOMMANDS_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("azoth_mucommands" "en;ru_RU" "${MUCOMMANDS_SRCS}" "" "")
+CreateTrsUpTarget ("azoth_mucommands" "en;ru_RU" "${MUCOMMANDS_SRCS}" "" ""
+		DEPENDS leechcraft_azoth_mucommands_gen_descr_ts)
 
 add_library (leechcraft_azoth_mucommands SHARED
 	${MUCOMMANDS_COMPILED_TRANSLATIONS}
