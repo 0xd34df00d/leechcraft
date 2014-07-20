@@ -94,8 +94,6 @@ namespace MuCommands
 		MDParser::MDParser (const QString& body)
 		: Body_ { body }
 		{
-			Body_.replace ("\n", "<br/>");
-
 			const auto& stlized = Util::Stlize<QPair> (Repls_);
 			for (int i = 0; i < Body_.size (); ++i)
 				for (const auto& pair : stlized)
@@ -110,6 +108,8 @@ namespace MuCommands
 						break;
 					}
 				}
+
+			Body_.replace ("\n", "<br/>");
 		}
 
 		QString MDParser::operator() ()
