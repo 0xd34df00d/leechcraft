@@ -52,9 +52,34 @@ namespace MuCommands
 				Code
 			} State_ = State::None;
 
-			const QMap<QString, QPair<QString, State>> Repls_ = Util::MakeMap<QString, QPair<QString, State>> ({
-						{ "_", { "em", State::Em } },
-						{ "@", { "code", State::Code } }
+			struct Pattern
+			{
+				QString Str_;
+				State Expected_;
+
+				bool Reversible_;
+
+				bool operator< (const Pattern& other) const
+				{
+					if (Str_ != other.Str_)
+						return Str_ < other.Str_;
+
+					if (Expected_ != other.Expected_)
+						return static_cast<int> (Expected_) < static_cast<int> (other.Expected_);
+
+					return Reversible_ < other.Reversible_;
+				}
+			};
+
+			struct Rep
+			{
+				QString TagBase_;
+				State NextState_;
+			};
+
+			const QMap<Pattern, Rep> Repls_ = Util::MakeMap<Pattern, Rep> ({
+						{ { "_", State::None, true }, { "em", State::Em } },
+						{ { "@", State::None, true }, { "code", State::Code } }
 					});
 
 			QString Body_;
@@ -63,7 +88,7 @@ namespace MuCommands
 
 			QString operator() ();
 		private:
-			int HandleSubstr (const QString& str, int pos);
+			int HandleSubstr (const QPair<Pattern, Rep>& rule, int pos);
 		};
 
 		MDParser::MDParser (const QString& body)
@@ -71,14 +96,14 @@ namespace MuCommands
 		{
 			Body_.replace ("\n", "<br/>");
 
-			const auto& stlized = Util::Stlize (Repls_);
+			const auto& stlized = Util::Stlize<QPair> (Repls_);
 			for (int i = 0; i < Body_.size (); ++i)
 				for (const auto& pair : stlized)
 				{
-					if (Body_.mid (i, pair.first.size ()) != pair.first)
+					if (Body_.mid (i, pair.first.Str_.size ()) != pair.first.Str_)
 						continue;
 
-					const auto res = HandleSubstr (pair.first, i);
+					const auto res = HandleSubstr (pair, i);
 					if (res > 0)
 					{
 						i += res;
@@ -92,31 +117,27 @@ namespace MuCommands
 			return Body_;
 		}
 
-		int MDParser::HandleSubstr (const QString& str, int pos)
+		int MDParser::HandleSubstr (const QPair<Pattern, Rep>& rule, int pos)
 		{
-			const auto& replData = Repls_.value (str);
-			const auto& repl = replData.first;
-			if (repl.isEmpty ())
-				return 0;
-
-			const auto replState = replData.second;
+			const auto& pat = rule.first;
+			const auto& rep = rule.second;
 
 			QString tag;
-			if (State_ == State::None)
+			if (State_ == pat.Expected_)
 			{
-				tag = "<" + repl + ">";
-				State_ = replState;
+				tag = "<" + rep.TagBase_ + ">";
+				State_ = rep.NextState_;
 			}
-			else if (State_ == replState)
+			else if (pat.Reversible_ && State_ == rep.NextState_)
 			{
-				tag = "</" + repl + ">";
-				State_ = State::None;
+				tag = "</" + rep.TagBase_ + ">";
+				State_ = pat.Expected_;
 			}
 			else
 				return 0;
 
-			Body_.replace (pos, str.size (), tag);
-			return tag.size () - str.size ();
+			Body_.replace (pos, pat.Str_.size (), tag);
+			return tag.size () - pat.Str_.size ();
 		}
 	}
 
