@@ -35,23 +35,23 @@ namespace LeechCraft
 {
 namespace Util
 {
-	template<typename Iter, typename Assoc>
+	template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
 	class StlAssocIteratorAdaptor : public boost::iterator_adaptor<
-				StlAssocIteratorAdaptor<Iter, Assoc>,
+				StlAssocIteratorAdaptor<Iter, Assoc, PairType>,
 				Iter,
-				std::pair<typename Assoc::key_type, typename Assoc::mapped_type>,
+				PairType<typename Assoc::key_type, typename Assoc::mapped_type>,
 				boost::use_default,
-				std::pair<typename Assoc::key_type, typename Assoc::mapped_type>
+				PairType<typename Assoc::key_type, typename Assoc::mapped_type>
 			>
 	{
 		friend class boost::iterator_core_access;
 
 		typedef boost::iterator_adaptor<
-					StlAssocIteratorAdaptor<Iter, Assoc>,
+					StlAssocIteratorAdaptor<Iter, Assoc, PairType>,
 					Iter,
-					std::pair<typename Assoc::key_type, typename Assoc::mapped_type>,
+					PairType<typename Assoc::key_type, typename Assoc::mapped_type>,
 					boost::use_default,
-					std::pair<typename Assoc::key_type, typename Assoc::mapped_type>
+					PairType<typename Assoc::key_type, typename Assoc::mapped_type>
 				> Super_t;
 	public:
 		StlAssocIteratorAdaptor () = default;
@@ -67,18 +67,18 @@ namespace Util
 		}
 	};
 
-	template<typename Iter, typename Assoc>
-	struct StlAssocRange : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, Assoc>>
+	template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
+	struct StlAssocRange : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, Assoc, PairType>>
 	{
 	public:
 		StlAssocRange (const Assoc& assoc)
-		: boost::iterator_range<StlAssocIteratorAdaptor<Iter, Assoc>> { assoc.begin (), assoc.end () }
+		: boost::iterator_range<StlAssocIteratorAdaptor<Iter, Assoc, PairType>> { assoc.begin (), assoc.end () }
 		{
 		}
 	};
 
-	template<typename Assoc>
-	StlAssocRange<typename Assoc::const_iterator, Assoc> Stlize (const Assoc& assoc)
+	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
+	StlAssocRange<typename Assoc::const_iterator, Assoc, PairType> Stlize (const Assoc& assoc)
 	{
 		return { assoc };
 	}
