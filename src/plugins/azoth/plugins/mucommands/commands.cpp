@@ -29,6 +29,11 @@
 
 #include "commands.h"
 #include <boost/range/adaptor/reversed.hpp>
+
+#ifdef USE_BOOST_LOCALE
+#include <boost/locale.hpp>
+#endif
+
 #include <QStringList>
 #include <QtDebug>
 #include <QUrl>
@@ -457,9 +462,31 @@ namespace MuCommands
 			return str;
 		}
 
-		QString FormatDateTime (const QDateTime& datetime)
+		QString FormatDateTime (const QDateTime& dt)
 		{
-			return QLocale {}.toString (datetime);
+#ifdef USE_BOOST_LOCALE
+			static class LocaleInitializer
+			{
+			public:
+				LocaleInitializer ()
+				{
+					boost::locale::generator gen;
+					std::locale::global (gen (""));
+				}
+			} loc;
+
+			const auto& cal = dt.timeSpec () == Qt::LocalTime ?
+					boost::locale::calendar {} :
+					boost::locale::calendar { "GMT" };
+			boost::locale::date_time bdt { static_cast<double> (dt.toTime_t ()),  cal };
+
+			std::ostringstream ostr;
+			ostr << bdt;
+
+			return QString::fromUtf8 (ostr.str ().c_str ());
+#else
+			return QLocale {}.toString (dt);
+#endif
 		}
 	}
 
