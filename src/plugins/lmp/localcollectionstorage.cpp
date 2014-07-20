@@ -846,12 +846,10 @@ namespace LMP
 				"Date TIMESTAMP"
 				");");
 
-		QSqlQuery { DB_ }.exec ("PRAGMA defer_foreign_keys = ON;");
-		QSqlQuery { DB_ }.exec ("PRAGMA foreign_keys = OFF;");
-
 		Util::DBLock lock (DB_);
-
 		lock.Init ();
+
+		QSqlQuery { DB_ }.exec ("PRAGMA defer_foreign_keys = ON;");
 
 		const auto& tables = DB_.tables ();
 		for (const auto& pair : table2query)
@@ -897,8 +895,6 @@ namespace LMP
 		QSqlQuery (DB_).exec ("CREATE UNIQUE INDEX IF NOT EXISTS index_tracksPaths ON tracks (Path);");
 
 		lock.Good ();
-
-		QSqlQuery { DB_ }.exec ("PRAGMA foreign_keys = ON;");
 	}
 }
 }
