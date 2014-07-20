@@ -854,7 +854,7 @@ namespace LMP
 		lock.Init ();
 
 		const auto& tables = DB_.tables ();
-		Q_FOREACH (const auto& pair, table2query)
+		for (const auto& pair : table2query)
 			if (!tables.contains (pair.first))
 			{
 				QSqlQuery q (DB_);

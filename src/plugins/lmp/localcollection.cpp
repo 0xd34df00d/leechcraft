@@ -164,7 +164,7 @@ namespace LMP
 		watcher->setProperty ("Path", path);
 
 		if (root)
-			AddRootPaths (QStringList (path));
+			AddRootPaths ({ path });
 
 		const bool symLinks = XmlSettingsManager::Instance ()
 				.property ("FollowSymLinks").toBool ();
@@ -254,7 +254,7 @@ namespace LMP
 		auto paths = RootPaths_;
 		Clear ();
 
-		Q_FOREACH (const auto& path, paths)
+		for (const auto& path : paths)
 			Scan (path, true);
 	}
 
@@ -659,7 +659,7 @@ namespace LMP
 	void LocalCollection::RemoveRootPaths (const QStringList& paths)
 	{
 		int removed = 0;
-		Q_FOREACH (const auto& str, paths)
+		for (const auto& str : paths)
 		{
 			removed += RootPaths_.removeAll (str);
 			FilesWatcher_->RemovePath (str);
