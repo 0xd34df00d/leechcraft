@@ -159,10 +159,16 @@ namespace Azoth
 		{ "/help" },
 		&Help,
 		tr ("Show the list of all commands or get help for a specific command."),
-		tr ("Usage: ") + "<code>/help " + tr ("[command1] [command2] ...") + "</code><br/>" +
+		tr ("Usage: ") + "<em>/help " + tr ("[command1] [command2] ...") + "</em><br/>" +
 				tr ("Shows the list of all available commands with their respective short "
 					"descriptions if called without parameters, otherwise shows help for "
-					"the passed commands.")
+					"the passed commands.") +
+				"<br/><br/>" +
+				tr ("Commands' variable inputs are typically shown in <em>italics</em>, "
+					"while the parts that are to be entered as is are shown in "
+					"<code>monospace</code> font. Optional arguments are typically in "
+					"[square brackets], while different options are shown like this:")
+					+ " &lt;A1|B2|C3>."
 	}
 	, Clear_
 	{
