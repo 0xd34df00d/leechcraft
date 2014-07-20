@@ -284,22 +284,24 @@ function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 	string (LENGTH "${PlugName}" _pnameLength)
 	string (LENGTH "${Xml}" _xmlLength)
 	set (_basename "leechcraft")
+
 	if (_pnameLength)
 		set (_basename "${_basename}_${PlugName}")
 	endif ()
+
+	foreach (_LANG ${Langs})
+		add_custom_target (${_basename}_ts_${_LANG}
+				${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "dummy.cpp" "-ts" "${_basename}_${_LANG}.ts"
+				COMMAND "rm" "-f" "dummy.cpp"
+				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
+	endforeach ()
+
 	if (_xmlLength)
+		add_custom_target (${_basename}_ts_convert_settings
+				${GENCPP_XML_PATH} ${Xml}
+				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
 		foreach (_LANG ${Langs})
-			add_custom_target (${_basename}_ts_${_LANG}
-					${GENCPP_XML_PATH} ${Xml}
-					COMMAND ${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "dummy.cpp" "-ts" "${_basename}_${_LANG}.ts"
-					COMMAND "rm" "-f" "dummy.cpp"
-					WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
-		endforeach ()
-	else ()
-		foreach (_LANG ${Langs})
-			add_custom_target (${_basename}_ts_${_LANG}
-					${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "${_basename}_${_LANG}.ts"
-					WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
+			add_dependencies (${_basename}_ts_${_LANG} ${_basename}_ts_convert_settings)
 		endforeach ()
 	endif ()
 endfunction ()
