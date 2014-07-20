@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/iterator_adaptors.hpp>
+#include <boost/range.hpp>
 
 namespace LeechCraft
 {
