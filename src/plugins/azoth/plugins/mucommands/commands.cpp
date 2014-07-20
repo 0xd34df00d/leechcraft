@@ -456,6 +456,11 @@ namespace MuCommands
 			str.prepend (tzo >= 0 ? '+' : '-');
 			return str;
 		}
+
+		QString FormatDateTime (const QDateTime& datetime)
+		{
+			return QLocale {}.toString (datetime);
+		}
 	}
 
 	bool ShowTime (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
@@ -497,7 +502,7 @@ namespace MuCommands
 								.arg (varName);
 						field += "<ul><li>";
 						field += QObject::tr ("Local time: %1")
-								.arg (QLocale {}.toString (time));
+								.arg (FormatDateTime (time));
 						field += "</li><li>";
 						field += QObject::tr ("Timezone: %1")
 								.arg (FormatTzo (tzo));
@@ -505,7 +510,7 @@ namespace MuCommands
 
 						const auto& utcTime = time.addSecs (-tzo);
 						field += QObject::tr ("UTC time: %1")
-								.arg (QLocale {}.toString (utcTime));
+								.arg (FormatDateTime (utcTime));
 
 						field += "</li></ul>";
 						fields << field;
