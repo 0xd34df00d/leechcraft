@@ -65,7 +65,7 @@ namespace Xoox
 		Perms_ ["role"] << "moderator";
 
 		Perms_ ["aff"] << "outcast";
-		Perms_ ["aff"] << "none";
+		Perms_ ["aff"] << "noaffiliation";
 		Perms_ ["aff"] << "member";
 		Perms_ ["aff"] << "admin";
 		Perms_ ["aff"] << "owner";
@@ -76,7 +76,7 @@ namespace Xoox
 		Role2Str_ [QXmppMucItem::ModeratorRole] = "moderator";
 
 		Aff2Str_ [QXmppMucItem::OutcastAffiliation] = "outcast";
-		Aff2Str_ [QXmppMucItem::NoAffiliation] = "none";
+		Aff2Str_ [QXmppMucItem::NoAffiliation] = "noaffiliation";
 		Aff2Str_ [QXmppMucItem::MemberAffiliation] = "member";
 		Aff2Str_ [QXmppMucItem::AdminAffiliation] = "admin";
 		Aff2Str_ [QXmppMucItem::OwnerAffiliation] = "owner";
@@ -88,7 +88,7 @@ namespace Xoox
 		Translations_ ["participant"] = tr ("Participant");
 		Translations_ ["moderator"] = tr ("Moderator");
 		Translations_ ["outcast"] = tr ("Banned");
-		Translations_ ["none"] = tr ("None");
+		Translations_ ["noaffiliation"] = tr ("None");
 		Translations_ ["member"] = tr ("Member");
 		Translations_ ["admin"] = tr ("Admin");
 		Translations_ ["owner"] = tr ("Owner");
@@ -345,7 +345,7 @@ namespace Xoox
 					<< participant
 					<< "is not a RoomParticipantEntry";
 			result ["role"] << "norole";
-			result ["aff"] << "none";
+			result ["aff"] << "noaffiliation";
 		}
 		else
 		{
@@ -375,7 +375,7 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< participant
 					<< "is not a RoomParticipantEntry";
-			return "none";
+			return "noaffiliation";
 		}
 
 		return Aff2Str_ [entry->GetAffiliation ()];
