@@ -787,9 +787,9 @@ namespace MuCommands
 			const QString Text_;
 			const QString Command_;
 			const QString PermClassStr_;
-			const QByteArray PermClass_;
+			QByteArray PermClass_;
 			const QString PermValueStr_;
-			const QByteArray PermValue_;
+			QByteArray PermValue_;
 
 			const QString Remainder_;
 			const QString Nick_;
@@ -807,7 +807,7 @@ namespace MuCommands
 			bool CheckSyntax () const;
 			bool CheckMode ();
 			bool CheckParticipants (decltype (GetParticipants ({}))) const;
-			bool CheckPermsValidity () const;
+			bool CheckPermsValidity ();
 
 			void SetNickPerms (decltype (GetParticipants ({})));
 			void SetIdPerms ();
@@ -911,30 +911,65 @@ namespace MuCommands
 			return true;
 		}
 
-		bool PermSetter::CheckPermsValidity () const
+		namespace
+		{
+			int GetExpandCount (const QList<QByteArray>& variants, const QByteArray& given)
+			{
+				return std::count_if (variants.begin (), variants.end (),
+						[&given] (const QByteArray& variant) { return variant.startsWith (given); });
+			}
+
+			bool Expand (const QList<QByteArray>& variants, QByteArray& given)
+			{
+				const auto pos = std::find_if (variants.begin (), variants.end (),
+						[&given] (const QByteArray& variant) { return variant.startsWith (given); });
+				if (*pos == given)
+					return false;
+
+				given = *pos;
+				return true;
+			}
+		}
+
+		bool PermSetter::CheckPermsValidity ()
 		{
 			const auto& perms = MucPerms_->GetPossiblePerms ();
-			if (!perms.contains (PermClass_))
+
+			const auto& keys = perms.keys ();
+			if (GetExpandCount (keys, PermClass_) != 1)
 			{
 				const auto& keys = Util::Map (perms.keys (),
 						[] (const QByteArray& ba) { return QString::fromUtf8 (ba); });
 				InjectMessage (AzothProxy_, Entry_,
-						QObject::tr ("Unknown permission class %1, available classes are: %2")
+						QObject::tr ("Unknown or ambiguous permission class %1, available classes are: %2")
 								.arg ("<code>" + PermClassStr_ + "</code>")
 								.arg ("<ul><li>" + QStringList { keys }.join ("</li><li>") + "</ul></li>"));
 				return false;
 			}
 
-			if (!perms [PermClass_].contains (PermValue_))
+			if (Expand (keys, PermClass_))
+				InjectMessage (AzothProxy_, Entry_,
+						QObject::tr ("Expanded requested permission class to %1 (%2)")
+								.arg ("<code>" + QString::fromUtf8 (PermClass_) + "</code>")
+								.arg (MucPerms_->GetUserString (PermClass_)));
+
+			const auto& values = perms [PermClass_];
+			if (GetExpandCount (values, PermValue_) != 1)
 			{
-				const auto& values = Util::Map (perms [PermClass_],
+				const auto& valuesStrs = Util::Map (values,
 						[] (const QByteArray& ba) { return QString::fromUtf8 (ba); });
 				InjectMessage (AzothProxy_, Entry_,
-						QObject::tr ("Unknown permission class %1, available classes are: %2")
+						QObject::tr ("Unknown or ambiguous permission class %1, available classes are: %2")
 								.arg ("<code>" + PermValueStr_ + "</code>")
-								.arg ("<ul><li>" + QStringList { values }.join ("</li><li>") + "</ul></li>"));
+								.arg ("<ul><li>" + QStringList { valuesStrs }.join ("</li><li>") + "</ul></li>"));
 				return false;
 			}
+
+			if (Expand (values, PermValue_))
+				InjectMessage (AzothProxy_, Entry_,
+						QObject::tr ("Expanded requested permission value to %1 (%2)")
+								.arg ("<code>" + QString::fromUtf8 (PermValue_) + "</code>")
+								.arg (MucPerms_->GetUserString (PermValue_)));
 
 			return true;
 		}
