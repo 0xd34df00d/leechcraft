@@ -3,7 +3,6 @@ project (leechcraft_snails)
 include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
 
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTSQL TRUE)
