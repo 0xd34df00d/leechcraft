@@ -59,16 +59,16 @@ namespace Xoox
 				this,
 				SLOT (reemitStatusChange (const EntryStatus&)));
 
-		Perms_ ["permclass_role"] << "norole";
-		Perms_ ["permclass_role"] << "visitor";
-		Perms_ ["permclass_role"] << "participant";
-		Perms_ ["permclass_role"] << "moderator";
+		Perms_ ["role"] << "norole";
+		Perms_ ["role"] << "visitor";
+		Perms_ ["role"] << "participant";
+		Perms_ ["role"] << "moderator";
 
-		Perms_ ["permclass_aff"] << "outcast";
-		Perms_ ["permclass_aff"] << "none";
-		Perms_ ["permclass_aff"] << "member";
-		Perms_ ["permclass_aff"] << "admin";
-		Perms_ ["permclass_aff"] << "owner";
+		Perms_ ["aff"] << "outcast";
+		Perms_ ["aff"] << "none";
+		Perms_ ["aff"] << "member";
+		Perms_ ["aff"] << "admin";
+		Perms_ ["aff"] << "owner";
 
 		Role2Str_ [QXmppMucItem::NoRole] = "norole";
 		Role2Str_ [QXmppMucItem::VisitorRole] = "visitor";
@@ -81,8 +81,8 @@ namespace Xoox
 		Aff2Str_ [QXmppMucItem::AdminAffiliation] = "admin";
 		Aff2Str_ [QXmppMucItem::OwnerAffiliation] = "owner";
 
-		Translations_ ["permclass_role"] = tr ("Role");
-		Translations_ ["permclass_aff"] = tr ("Affiliation");
+		Translations_ ["role"] = tr ("Role");
+		Translations_ ["aff"] = tr ("Affiliation");
 		Translations_ ["norole"] = tr ("Kicked");
 		Translations_ ["visitor"] = tr ("Visitor");
 		Translations_ ["participant"] = tr ("Participant");
@@ -344,26 +344,26 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< participant
 					<< "is not a RoomParticipantEntry";
-			result ["permclass_role"] << "norole";
-			result ["permclass_aff"] << "none";
+			result ["role"] << "norole";
+			result ["aff"] << "none";
 		}
 		else
 		{
-			result ["permclass_role"] << Role2Str_.value (entry->GetRole (), "invalid");
-			result ["permclass_aff"] << Aff2Str_.value (entry->GetAffiliation (), "invalid");
+			result ["role"] << Role2Str_.value (entry->GetRole (), "invalid");
+			result ["aff"] << Aff2Str_.value (entry->GetAffiliation (), "invalid");
 		}
 		return result;
 	}
 
 	QPair<QByteArray, QByteArray> RoomCLEntry::GetKickPerm () const
 	{
-		return qMakePair<QByteArray, QByteArray> ("permclass_role",
+		return qMakePair<QByteArray, QByteArray> ("role",
 				Role2Str_ [QXmppMucItem::Role::NoRole]);
 	}
 
 	QPair<QByteArray, QByteArray> RoomCLEntry::GetBanPerm () const
 	{
-		return qMakePair<QByteArray, QByteArray> ("permclass_aff",
+		return qMakePair<QByteArray, QByteArray> ("aff",
 				Aff2Str_ [QXmppMucItem::Affiliation::OutcastAffiliation]);
 	}
 
@@ -444,9 +444,9 @@ namespace Xoox
 		const auto ourRole = RH_->GetSelf ()->GetRole ();
 		const auto ourAff = RH_->GetSelf ()->GetAffiliation ();
 
-		if (permClass == "permclass_role")
+		if (permClass == "role")
 			return MayChange (ourRole, ourAff, entry, Role2Str_.key (perm));
-		else if (permClass == "permclass_aff")
+		else if (permClass == "aff")
 			return MayChange (ourRole, ourAff, entry, Aff2Str_.key (perm));
 		else
 		{
@@ -471,9 +471,9 @@ namespace Xoox
 			return;
 		}
 
-		if (permClass == "permclass_role")
+		if (permClass == "role")
 			RH_->SetRole (entry, Role2Str_.key (perm), reason);
-		else if (permClass == "permclass_aff")
+		else if (permClass == "aff")
 			RH_->SetAffiliation (entry, Aff2Str_.key (perm), reason);
 		else
 		{
@@ -490,9 +490,9 @@ namespace Xoox
 			const QString& reason)
 	{
 		QXmppMucItem item;
-		if (permClass == "permclass_role")
+		if (permClass == "role")
 			item.setRole (Role2Str_.key (targetPerm));
-		else if (permClass == "permclass_aff")
+		else if (permClass == "aff")
 			item.setAffiliation (Aff2Str_.key (targetPerm));
 		else
 			return;
