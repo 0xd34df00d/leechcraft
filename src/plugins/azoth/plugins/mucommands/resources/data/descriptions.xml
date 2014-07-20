@@ -1,8 +1,12 @@
 <descs>
 	<command name="/setperm">
 		<desc>Sets the permissions (like affiliation or role in case of XMPP) of a given participant in a multiuser chat room.</desc>
-		<help>Usage: @/setperm@ _permclass_ _perm_ &lt;@nick@|@id@> &lt;_nick_|_id_>&lt;br/>_[reason]_&lt;/em>
-		</help>
+		<help>Usage: @/setperm@ _permclass_ _perm_ &lt;@nick@|@id@> &lt;_nick_|_id_>
+_[reason]_
+
+It should be explicitly stated whether currently present participant nickname is mentioned or some protocol-defined ID string (like a JID in case of XMPP). The @nick@ argument is used in the former case, and @id@ — in the latter.
+
+The list of available permission classes and permissions for a given protocol may be obtained via the @/listperms@ command.</help>
 	</command>
 	<command name="/names">
 		<desc>Shows the nick names of multiuser chat room participants.</desc>
