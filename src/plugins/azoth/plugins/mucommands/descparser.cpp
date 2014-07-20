@@ -49,7 +49,9 @@ namespace MuCommands
 			{
 				None,
 				Em,
-				Code
+				Code,
+				OrderedList,
+				UnorderedList
 			} State_ = State::None;
 
 			struct Pattern
@@ -77,10 +79,17 @@ namespace MuCommands
 				State NextState_;
 			};
 
-			const QMap<Pattern, Rep> Repls_ = Util::MakeMap<Pattern, Rep> ({
-						{ { "_", State::None, true }, { "em", State::Em } },
-						{ { "@", State::None, true }, { "code", State::Code } }
-					});
+			const QList<QPair<Pattern, Rep>> Repls_
+			{
+				{ { "_", State::None, true }, { "em", State::Em } },
+				{ { "@", State::None, true }, { "code", State::Code } },
+				{ { "\n#", State::None, false }, { "<ol><li>", State::OrderedList } },
+				{ { "\n#", State::OrderedList, false }, { "</li><li>", State::OrderedList } },
+				{ { "\n", State::OrderedList, false }, { "</li></ol>", State::None } },
+				{ { "\n*", State::None, false }, { "<ul><li>", State::UnorderedList } },
+				{ { "\n*", State::UnorderedList, false }, { "</li><li>", State::UnorderedList } },
+				{ { "\n", State::UnorderedList, false }, { "</li></ul>", State::None } }
+			};
 
 			QString Body_;
 		public:
@@ -94,9 +103,8 @@ namespace MuCommands
 		MDParser::MDParser (const QString& body)
 		: Body_ { body }
 		{
-			const auto& stlized = Util::Stlize<QPair> (Repls_);
 			for (int i = 0; i < Body_.size (); ++i)
-				for (const auto& pair : stlized)
+				for (const auto& pair : Repls_)
 				{
 					if (Body_.mid (i, pair.first.Str_.size ()) != pair.first.Str_)
 						continue;
@@ -122,19 +130,22 @@ namespace MuCommands
 			const auto& pat = rule.first;
 			const auto& rep = rule.second;
 
-			QString tag;
+			QString tag = rep.TagBase_;
 			if (State_ == pat.Expected_)
-			{
-				tag = "<" + rep.TagBase_ + ">";
 				State_ = rep.NextState_;
-			}
 			else if (pat.Reversible_ && State_ == rep.NextState_)
 			{
-				tag = "</" + rep.TagBase_ + ">";
+				tag.prepend ('/');
 				State_ = pat.Expected_;
 			}
 			else
 				return 0;
+
+			if (pat.Reversible_)
+			{
+				tag.prepend ('<');
+				tag.append ('>');
+			}
 
 			Body_.replace (pos, pat.Str_.size (), tag);
 			return tag.size () - pat.Str_.size ();
