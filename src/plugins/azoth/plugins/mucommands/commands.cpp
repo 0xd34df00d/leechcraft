@@ -29,11 +29,6 @@
 
 #include "commands.h"
 #include <boost/range/adaptor/reversed.hpp>
-
-#ifdef USE_BOOST_LOCALE
-#include <boost/locale.hpp>
-#endif
-
 #include <QStringList>
 #include <QtDebug>
 #include <QUrl>
@@ -461,33 +456,6 @@ namespace MuCommands
 			str.prepend (tzo >= 0 ? '+' : '-');
 			return str;
 		}
-
-		QString FormatDateTime (const QDateTime& dt)
-		{
-#ifdef USE_BOOST_LOCALE
-			static class LocaleInitializer
-			{
-			public:
-				LocaleInitializer ()
-				{
-					boost::locale::generator gen;
-					std::locale::global (gen (""));
-				}
-			} loc;
-
-			const auto& cal = dt.timeSpec () == Qt::LocalTime ?
-					boost::locale::calendar {} :
-					boost::locale::calendar { "GMT" };
-			boost::locale::date_time bdt { static_cast<double> (dt.toTime_t ()),  cal };
-
-			std::ostringstream ostr;
-			ostr << bdt;
-
-			return QString::fromUtf8 (ostr.str ().c_str ());
-#else
-			return QLocale {}.toString (dt);
-#endif
-		}
 	}
 
 	bool ShowTime (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
@@ -529,7 +497,7 @@ namespace MuCommands
 								.arg (varName);
 						field += "<ul><li>";
 						field += QObject::tr ("Local time: %1")
-								.arg (FormatDateTime (time));
+								.arg (azothProxy->PrettyPrintDateTime (time));
 						field += "</li><li>";
 						field += QObject::tr ("Timezone: %1")
 								.arg (FormatTzo (tzo));
@@ -537,7 +505,7 @@ namespace MuCommands
 
 						const auto& utcTime = time.addSecs (-tzo);
 						field += QObject::tr ("UTC time: %1")
-								.arg (FormatDateTime (utcTime));
+								.arg (azothProxy->PrettyPrintDateTime (utcTime));
 
 						field += "</li></ul>";
 						fields << field;

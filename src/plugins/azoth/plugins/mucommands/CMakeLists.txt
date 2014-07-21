@@ -2,14 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_mucommands)
 include (InitLCPlugin OPTIONAL)
 
-option (USE_AZOTH_MUCOMMANDS_BOOST_LOCALE "Use Boost.Locale for better datetime formatting in Azoth MuCommands" ON)
-
-if (USE_AZOTH_MUCOMMANDS_BOOST_LOCALE)
-	find_Package (Boost REQUIRED COMPONENTS locale)
-
-	add_definitions (-DUSE_BOOST_LOCALE)
-endif ()
-
 set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
 include_directories (${AZOTH_INCLUDE_DIR}
@@ -44,6 +36,5 @@ add_library (leechcraft_azoth_mucommands SHARED
 target_link_libraries (leechcraft_azoth_mucommands
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${Boost_LOCALE_LIBRARY}
 	)
 install (TARGETS leechcraft_azoth_mucommands DESTINATION ${LC_PLUGINS_DEST})

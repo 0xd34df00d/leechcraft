@@ -6,6 +6,13 @@ include (CMakeDependentOption)
 
 option (ENABLE_MEDIACALLS "Enable support for media calls" ON)
 
+option (USE_AZOTH_BOOST_LOCALE "Use Boost.Locale for better datetime formatting in Azoth" ON)
+if (USE_AZOTH_BOOST_LOCALE)
+	find_Package (Boost REQUIRED COMPONENTS locale)
+
+	add_definitions (-DUSE_BOOST_LOCALE)
+endif ()
+
 if (NOT WIN32)
 	set (QT_USE_QTDBUS TRUE)
 endif ()
@@ -203,6 +210,7 @@ add_library (leechcraft_azoth SHARED
 	)
 target_link_libraries (leechcraft_azoth
 	${QT_LIBRARIES}
+	${Boost_LOCALE_LIBRARY}
 	${LEECHCRAFT_LIBRARIES}
 	${QTMULTIMEDIAKIT_LIBRARIES}
 	${QCA2_LIBRARIES}

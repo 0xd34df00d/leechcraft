@@ -83,6 +83,8 @@ namespace Azoth
 
 		bool IsMessageRead (QObject*);
 		void MarkMessagesAsRead (QObject*);
+
+		QString PrettyPrintDateTime (const QDateTime&);
 	};
 }
 }
