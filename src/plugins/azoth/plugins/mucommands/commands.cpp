@@ -736,9 +736,34 @@ namespace MuCommands
 		return true;
 	}
 
+	namespace
+	{
+		ICLEntry* GetMucEntry (ICLEntry *entry)
+		{
+			switch (entry->GetEntryType ())
+			{
+			case ICLEntry::EntryType::MUC:
+				return entry;
+			case ICLEntry::EntryType::PrivateChat:
+				return qobject_cast<ICLEntry*> (entry->GetParentCLEntry ());
+			default:
+				return nullptr;
+			}
+		}
+	}
+
 	bool ListPerms (IProxyObject *azothProxy, ICLEntry *entry, const QString&)
 	{
-		const auto mucPerms = qobject_cast<IMUCPerms*> (entry->GetQObject ());
+		const auto mucEntry = GetMucEntry (entry);
+		if (!mucEntry)
+		{
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("%1 is not related to a multiuser chat room.")
+							.arg ("<em>" + entry->GetEntryName () + "</em>"));
+			return true;
+		}
+
+		const auto mucPerms = qobject_cast<IMUCPerms*> (mucEntry->GetQObject ());
 		if (!mucPerms)
 		{
 			const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
@@ -782,6 +807,7 @@ namespace MuCommands
 		{
 			IProxyObject * const AzothProxy_;
 			ICLEntry * const Entry_;
+			ICLEntry * const MucEntry_;
 			IMUCPerms * const MucPerms_;
 
 			const QString Text_;
@@ -816,7 +842,8 @@ namespace MuCommands
 		PermSetter::PermSetter (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 		: AzothProxy_ { azothProxy }
 		, Entry_ { entry }
-		, MucPerms_ { qobject_cast<IMUCPerms*> (entry->GetQObject ()) }
+		, MucEntry_ { GetMucEntry (entry) }
+		, MucPerms_ { MucEntry_ ? qobject_cast<IMUCPerms*> (MucEntry_->GetQObject ()) : nullptr }
 		, Text_ { text }
 		, Command_ { text.section (' ', 0, 0) }
 		, PermClassStr_ { text.section (' ', 1, 1) }
@@ -834,7 +861,7 @@ namespace MuCommands
 			{
 			case Mode::Nick:
 			{
-				const auto& parts = GetParticipants (qobject_cast<IMUCEntry*> (entry->GetQObject ()));
+				const auto& parts = GetParticipants (qobject_cast<IMUCEntry*> (MucEntry_->GetQObject ()));
 				if (!CheckParticipants (parts))
 					return;
 
