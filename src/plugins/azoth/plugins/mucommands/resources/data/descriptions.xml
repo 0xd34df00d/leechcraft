@@ -1,15 +1,4 @@
 <descs>
-	<command name="/setperm">
-		<desc>Sets the permissions (like affiliation or role in case of XMPP) of a given participant in a multiuser chat room.</desc>
-		<help>Usage: @/setperm@ _permclass_ _perm_ &lt;@nick@|@id@> &lt;_nick_|_id_>
-_[reason]_
-
-It should be explicitly stated whether currently present participant nickname is mentioned or some protocol-defined ID string (like a JID in case of XMPP). The @nick@ argument is used in the former case, and @id@ — in the latter.
-
-The list of available permission classes and permissions for a given protocol may be obtained via the @/listperms@ command.
-
-Please note that you may type only first few letters of a permission class and value for _permclass_ and _perm_ parameters respectively, if only one string starts with the corresponding letters.</help>
-	</command>
 	<command name="/names">
 		<desc>Shows the nick names of multiuser chat room participants.</desc>
 	</command>
@@ -83,5 +72,79 @@ Please note that in most protocols there is no reliable way to know if MUC subje
 	<command name="/leave">
 		<desc>Leaves the current multiuser chat room.</desc>
 		<help>Usage: @/leave@ _[leave message]_</help>
+	</command>
+	<command name="/rejoin">
+		<desc>Leaves the current multiuser chat room and then joins it again.</desc>
+		<help>Usage: @/rejoin@ _[leave message]_</help>
+	</command>
+	<command name="/ping">
+		<desc>Pings the given contact and shows the round trip time of the ping request.</desc>
+		<help>Usage: @/ping@ _[id1]_
+_[id2]_ ...
+
+See the documentation for the @/vcard@ command regarding resolving IDs.</help>
+	</command>
+	<command name="/last">
+		<desc>Shows the time of last activity, or connection, or uptime.</desc>
+		<help>Usage: @/last@ _[id1]_
+_[id2]_ ...
+
+See the documentation for the @/vcard@ command regarding resolving IDs.
+
+If the resolved ID is a contact, then either last activity time or last connection time are reported, depending on the protocol pecularities. If the resolved ID is a server, its uptime is returned.</help>
+	</command>
+	<command name="/invite">
+		<desc>Invites a roster entry into a multiuser chat room.</desc>
+		<help>Usage: @/invite@ _id_ _[reason]_
+
+If the command is issued in a private chat, the _id_ is interpreted as a MUC room ID, and the other part of the current private chat is invited to that MUC.
+
+If the command is issued in a MUC, the _id_ is resolved just like in @/vcard@ case, and the resolved entry is invited to the current MUC.</help>
+	</command>
+	<command name="/pm">
+		<desc>Sends a private message to a participant of the current multiuser chat room.</desc>
+		<help>Usage: @/pm@ _nickname_
+_Message text_
+
+The text can consist of multiple lines, depending on the protocol.</help>
+	</command>
+	<command name="/whois">
+		<desc>Shows the real ID of a multiuser chat participant, if available.</desc>
+		<help>Usage: @/whois@ _nickname_</help>
+	</command>
+	<command name="/listperms">
+		<desc>Lists the available permission classes and roles for the current multiuser chat room.</desc>
+		<help>Usage: @/listperms@
+
+This command shows the list of available permission classes (like role and affiliation in case of XMPP) for the current multiuser chat room, as well as the available permission values for each of the classes.
+
+The listed classes and values can be passed to the @/setperm@ command.
+
+@/listperms@ can be issued both in the room itself and in any private chat with one of its participants.</help>
+	</command>
+	<command name="/setperm">
+		<desc>Sets the permissions (like affiliation or role in case of XMPP) of a given participant in a multiuser chat room.</desc>
+		<help>Usage: @/setperm@ _permclass_ _perm_ &lt;@nick@|@id@> &lt;_nick_|_id_>
+_[reason]_
+
+It should be explicitly stated whether currently present participant nickname is mentioned or some protocol-defined ID string (like a JID in case of XMPP). The @nick@ argument is used in the former case, and @id@ — in the latter.
+
+The list of available permission classes and permissions for a given protocol may be obtained via the @/listperms@ command.
+
+Please note that you may type only first few letters of a permission class and value for _permclass_ and _perm_ parameters respectively, if only one string starts with the corresponding letters.
+
+@/setperm@ can be issued both in the room itself and in any private chat with one of its participants.</help>
+	</command>
+	<command name="/kick">
+		<desc>Kicks the given participant from the current multiuser chat room.</desc>
+		<help>Usage: @/kick@ _nickname_[|_reason_]
+
+This is a shortcut for kicking the given participant by its nickname.</help>
+	</command>
+	<command name="/ban">
+		<desc>Bans the given participant from the current multiuser chat room.</desc>
+		<help>Usage: @/ban@ _nickname_[|_reason_]
+
+This is a shortcut for ban the given participant by its nickname.</help>
 	</command>
 </descs>
