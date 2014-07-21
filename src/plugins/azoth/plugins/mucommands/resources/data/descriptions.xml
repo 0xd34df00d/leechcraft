@@ -6,7 +6,9 @@ _[reason]_
 
 It should be explicitly stated whether currently present participant nickname is mentioned or some protocol-defined ID string (like a JID in case of XMPP). The @nick@ argument is used in the former case, and @id@ — in the latter.
 
-The list of available permission classes and permissions for a given protocol may be obtained via the @/listperms@ command.</help>
+The list of available permission classes and permissions for a given protocol may be obtained via the @/listperms@ command.
+
+Please note that you may type only first few letters of a permission class and value for _permclass_ and _perm_ parameters respectively, if only one string starts with the corresponding letters.</help>
 	</command>
 	<command name="/names">
 		<desc>Shows the nick names of multiuser chat room participants.</desc>
