@@ -235,19 +235,28 @@ namespace MuCommands
 
 	StaticCommands_t Plugin::GetStaticCommands (ICLEntry *entry)
 	{
-		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
+		switch (entry->GetEntryType ())
+		{
+		case ICLEntry::EntryType::MUC:
+			return
+			{
+				Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_,
+				Invite_, ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_,
+				ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_
+			};
+		case ICLEntry::EntryType::PrivateChat:
+			return
+			{
+				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_,
+				Time_, Disco_, Ping_, Last_, Invite_, ListPerms_, SetPerm_
+			};
+		default:
 			return
 			{
 				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_,
 				Time_, Disco_, Ping_, Last_, Invite_
 			};
-
-		return
-		{
-			Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_,
-			Invite_, ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_,
-			ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_
-		};
+		}
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
