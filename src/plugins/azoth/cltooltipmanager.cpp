@@ -332,7 +332,8 @@ namespace Azoth
 
 			if (info.contains ("client_time"))
 			{
-				const auto& dateStr = QLocale {}.toString (info.value ("client_time").toDateTime ());
+				const auto& datetime = info.value ("client_time").toDateTime ();
+				const auto& dateStr = ProxyObject {}.PrettyPrintDateTime (datetime);
 				tip += "<br />" + tr ("Client time:") + ' ' + dateStr;
 			}
 
