@@ -79,6 +79,8 @@ namespace LeechCraft
 	{
 		for (const auto& win : Windows_)
 			win.Window_->handleQuit ();
+
+		IsShuttingDown_ = true;
 	}
 
 	MainWindow* RootWindowsManager::MakeMainWindow ()
@@ -246,6 +248,9 @@ namespace LeechCraft
 
 	void RootWindowsManager::PerformWithTab (const std::function<void (TabManager*, int)>& f, QWidget *w)
 	{
+		if (IsShuttingDown_)
+			return;
+
 		const int idx = GetWindowForTab (qobject_cast<ITabWidget*> (w));
 		if (idx < 0)
 		{

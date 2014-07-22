@@ -54,6 +54,8 @@ namespace LeechCraft
 			TabManager *TM_;
 		};
 		QList<WinData> Windows_;
+
+		bool IsShuttingDown_ = false;
 	public:
 		RootWindowsManager (QObject* = 0);
 
