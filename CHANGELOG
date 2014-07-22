@@ -4,6 +4,7 @@ the rest.
 !!! 0.6.70
 * New plugins:
 	* AdvancedNotifications Dolle - OS X notification backend.
+	* Azoth MuCommands - various textual commands for Azoth.
 	* Eleeminator - Embedded LeechCraft Terminal Emulator.
 	* LMP BrainSlugz - discography completeness checker.
 	* LMP FrAdj - equalizer effect plugin.
@@ -15,7 +16,9 @@ the rest.
 * Removed plugins:
 	* Azoth p100q - psto.net is closed due to ARTS.
 	* Shaitan - obsoleted by Eleeminator.
+	* ShellOpen - obsoleted by Advanced Notifications.
 * [Overall] Use proper QML cache subpaths.
+* [Core] Add visible dock toggle actions to View menu.
 * [Core] Support tabs that override the Ctrl+W shortcut.
 * [Core] Store network disk cache in XDG cache dir
 * [Core] Removed Ctrl+W key sequence for shortcut in UI.
@@ -26,6 +29,8 @@ the rest.
 * [Core] Hide close buttons if tab width is too small.
 * [Core] Invoke external handlers iff the scheme is non-empty.
 * [Core] Fixed a memory leak if "Open as submenu" is disabled.
+* [Core] Don't perform anything with tabs on shutting down, fixes
+  occasional crashes on restart.
 * [Util] Splitted the utility library into sublibs.
 * [Util] Added regexp class with optional PCRE backend (from CleanWeb).
 * [Util] Added ColorButton.
@@ -60,6 +65,10 @@ the rest.
 * [AN] Added support for boolean fields.
 * [AN] Added support for terminal events.
 * [AN] Fixed crash on setting standard fields matchers.
+* [Azoth] Added support for commands.
+* [Azoth] Added /help and /clear commands.
+* [Azoth] New APIs: IHavePings, IHaveQueriableVersion, IProvideCommands,
+  ISupportLastActivity.
 * [Azoth] Migrate to QtMultimediaKit from QtMobility instead of QtMultimedia.
 * [Azoth] Added "Open" button to "file transfer finished" notification.
 * [Azoth] Added persistent notification about file transfer finish.
@@ -73,6 +82,13 @@ the rest.
 * [Azoth] Show status icons in tooltips.
 * [Azoth] Support protocols with entry time information.
 * [Azoth] Environment roster activation style is default now.
+* [Azoth] Fixed escaping HTML entities in message bodies in the core and plugins.
+* [Azoth] Re-show core messages after theme reload.
+* [Azoth] Refactored most enums to be enum classes.
+* [Azoth] Don't format links if body is >10 KiB.
+* [Azoth] Don't skip null types in GetClientIconForEntry().
+* [Azoth] Show service messages in chat tab even with separate MUC log.
+* [Azoth] Refactored lots of core code, much cleaner and nicer now.
 * [Azoth Acetamide] Fixed a possible crash.
 * [Azoth AdiumStyles] Fixed Windows build.
 * [Azoth ChatHistory] Migrated to common chat box for history search.
@@ -103,6 +119,8 @@ the rest.
 * [Azoth Xoox] Fixed a segfault on removing some always-offline entities.
 * [Azoth Xoox] Allow changing room subject without checking rights.
 * [Azoth Xoox] Convert timestamps in forwarded elems to local time.
+* [Azoth Xoox] Fixed handling renaming MUC participants with unread messages.
+* [Azoth Xoox] Warn about juick crappiness.
 * [Azoth Xtazy] Support non-immediate tune sending.
 * [BitTorrent] Emit updates only for changed torrents.
 * [BitTorrent] Added "Add magnet" dialog.
@@ -119,6 +137,7 @@ the rest.
 * [CSTP] Added support for UTF-8-encoded content-disposition.
 * [DeadLyrics] Properly handle reply errors avoiding a rare but nasty segfault.
 * [Dolozhee] Sane STR/Expected/Actual order.
+* [Dolozhee] Added the link to Atom feed for tickets.
 * [HistoryHolder] Async history saving.
 * [HotSensors] Added support for OS X SMC temperature sensors backend.
 * [HttHare] Added support for FreeBSD's sendfile().
@@ -170,6 +189,9 @@ the rest.
 * [LMP] Replaced QSFPM with QIdentityProxyModel for dev browser, fixing a crash.
 * [LMP] Set empty biography on new request.
 * [LMP] Support multiselection in FS browser.
+* [LMP] Never disable foreign_keys, move deffering into transaction instead,
+  fixes a few nasty bugs.
+* [LMP] Fixed build on Win32 gcc 4.9.0.
 * [LMP Graffiti] Support editing files from LMP's collection and playlist menus.
 * [LMP MTPSync] Moved album appending to a separate thread to avoid GUI freezes.
 * [LMP MTPSync] Don't query devices when uploading (fixes spontaneous errors).
@@ -209,6 +231,9 @@ the rest.
 * [Poshuku CW] Check frame base URL.
 * [Poshuku CW] Handle child frames only when root frame is loaded.
 * [SB2] Severely optimized the Desaturate effect.
+* [SysNotify] Show the images associated with notifications if the server
+  supports them.
+* [SysNotify] Detect KDE backend & ignore timeouts in this case.
 * [TSM] Support multiple windows: consider window index when restoring tabs.
 * [XProxy] Migrate to Util's (possibly PCRE-enabled) regexps.
 
