@@ -11,20 +11,13 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (KEESO_SRCS
 	keeso.cpp
 	)
-set (KEESO_HEADERS
-	keeso.h
-	)
 set (KEESO_RESOURCES
 	azothkeesoresources.qrc
 	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (KEESO_MOC_SRCS ${KEESO_HEADERS})
-endif ()
 QT4_ADD_RESOURCES (KEESO_RCCS ${KEESO_RESOURCES})
 
 add_library (leechcraft_azoth_keeso SHARED
 	${KEESO_SRCS}
-	${KEESO_MOC_SRCS}
 	${KEESO_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_keeso

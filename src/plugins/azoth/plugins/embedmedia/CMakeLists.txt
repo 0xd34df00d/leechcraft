@@ -12,20 +12,13 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (EMBEDMEDIA_SRCS
 	embedmedia.cpp
 	)
-set (EMBEDMEDIA_HEADERS
-	embedmedia.h
-	)
 set (EMBEDMEDIA_RESOURCES
 	embedmedia.qrc
 	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (EMBEDMEDIA_MOC_SRCS ${EMBEDMEDIA_HEADERS})
-endif ()
 QT4_ADD_RESOURCES (EMBEDMEDIA_RCCS ${EMBEDMEDIA_RESOURCES})
 
 add_library (leechcraft_azoth_embedmedia SHARED
     ${EMBEDMEDIA_SRCS}
-    ${EMBEDMEDIA_MOC_SRCS}
     ${EMBEDMEDIA_RCCS}
     )
 target_link_libraries (leechcraft_azoth_embedmedia

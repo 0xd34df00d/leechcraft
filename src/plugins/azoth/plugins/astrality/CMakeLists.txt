@@ -29,17 +29,6 @@ set (ASTRALITY_SRCS
 	astralityutil.cpp
 	vcarddialog.cpp
 	)
-set (ASTRALITY_HEADERS
-	astrality.h
-	cmwrapper.h
-	protowrapper.h
-	accountregfirstpage.h
-	accountwrapper.h
-	entrywrapper.h
-	msgwrapper.h
-	astralityutil.h
-	vcarddialog.h
-	)
 set (ASTRALITY_FORMS
 	accountregfirstpage.ui
 	vcarddialog.ui
@@ -48,16 +37,12 @@ set (ASTRALITY_RESOURCES azothastralityresources.qrc)
 CreateTrs ("azoth_astrality" "en;es;ru_RU;uk_UA" ASTRALITY_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_astrality" "en;ru_RU" "${ASTRALITY_SRCS}" "${ASTRALITY_FORMS}" "")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (ASTRALITY_MOC_SRCS ${ASTRALITY_HEADERS})
-endif ()
 QT4_WRAP_UI (ASTRALITY_UIS_H ${ASTRALITY_FORMS})
 QT4_ADD_RESOURCES (ASTRALITY_RCCS ${ASTRALITY_RESOURCES})
 
 add_library (leechcraft_azoth_astrality SHARED
 	${ASTRALITY_COMPILED_TRANSLATIONS}
 	${ASTRALITY_SRCS}
-	${ASTRALITY_MOC_SRCS}
 	${ASTRALITY_UIS_H}
 	${ASTRALITY_RCCS}
 	)

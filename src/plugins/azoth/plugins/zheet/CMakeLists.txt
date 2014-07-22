@@ -34,22 +34,6 @@ set (ZHEET_SRCS
 	transfermanager.cpp
 	transferjob.cpp
 	)
-set (ZHEET_HEADERS
-	zheet.h
-	core.h
-	msnprotocol.h
-	msnaccount.h
-	callbacks.h
-	zheetutil.h
-	msnaccountconfigwidget.h
-	msnbuddyentry.h
-	msnmessage.h
-	sbmanager.h
-	groupmanager.h
-	manageblacklistdialog.h
-	transfermanager.h
-	transferjob.h
-	)
 set (ZHEET_FORMS
 	msnaccountconfigwidget.ui
 	manageblacklistdialog.ui
@@ -57,16 +41,12 @@ set (ZHEET_FORMS
 set (ZHEET_RESOURCES azothzheetresources.qrc)
 CreateTrs ("azoth_zheet" "en;es;ru_RU;uk_UA" ZHEET_COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (ZHEET_MOC_SRCS ${ZHEET_HEADERS})
-endif ()
 QT4_WRAP_UI (ZHEET_UIS_H ${ZHEET_FORMS})
 QT4_ADD_RESOURCES (ZHEET_RCCS ${ZHEET_RESOURCES})
 
 add_library (leechcraft_azoth_zheet SHARED
 	${ZHEET_COMPILED_TRANSLATIONS}
 	${ZHEET_SRCS}
-	${ZHEET_MOC_SRCS}
 	${ZHEET_UIS_H}
 	${ZHEET_RCCS}
 	)
