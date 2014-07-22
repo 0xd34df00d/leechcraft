@@ -289,9 +289,13 @@ function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 		set (_basename "${_basename}_${PlugName}")
 	endif ()
 
+	if (_xmlLength)
+		set (Sources "${Sources};dummy.cpp")
+	endif ()
+
 	foreach (_LANG ${Langs})
 		add_custom_target (${_basename}_ts_${_LANG}
-				${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "dummy.cpp" "-ts" "${_basename}_${_LANG}.ts"
+				${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "${_basename}_${_LANG}.ts"
 				COMMAND "rm" "-f" "dummy.cpp"
 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
 	endforeach ()
