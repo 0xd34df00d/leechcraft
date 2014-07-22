@@ -12,18 +12,10 @@ set (SRCS
 	blackdash.cpp
 	dashtab.cpp
 	)
-set (HEADERS
-	blackdash.h
-	dashtab.h
-	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
 add_library (leechcraft_blackdash SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 target_link_libraries (leechcraft_blackdash
 	${QT_LIBRARIES}
