@@ -249,9 +249,6 @@ cmake_dependent_option (ENABLE_LAUNCHY "Build Launchy, third-party application l
 
 cmake_dependent_option (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer" ${WITH_PLUGINS} "APPLE" OFF)
 
-# Old ones
-option (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" OFF)
-
 # Defunct
 option (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 
