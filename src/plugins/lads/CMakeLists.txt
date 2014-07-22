@@ -12,12 +12,6 @@ include_directories (
 set (SRCS
 	lads.cpp
 	)
-set (HEADERS
-	lads.h
-	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
 set (RESOURCES ladsresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
@@ -29,7 +23,6 @@ endif ()
 add_library (leechcraft_lads SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
 	)
 target_link_libraries (leechcraft_lads
