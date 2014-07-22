@@ -248,7 +248,7 @@ namespace MuCommands
 			return
 			{
 				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_,
-				Time_, Disco_, Ping_, Last_, Invite_, ListPerms_, SetPerm_
+				Time_, Disco_, Ping_, Last_, Invite_, ListPerms_, SetPerm_, Whois_
 			};
 		default:
 			return

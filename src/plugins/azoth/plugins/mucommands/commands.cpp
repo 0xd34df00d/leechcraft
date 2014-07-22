@@ -1115,32 +1115,57 @@ namespace MuCommands
 		return true;
 	}
 
+	namespace
+	{
+		void WhoisImpl (IProxyObject *azothProxy, ICLEntry *entry, ICLEntry *partEntry, ICLEntry *showEntry, const QString& text)
+		{
+			const auto& reqNick = text.section (' ', 1);
+
+			const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+			const auto part = reqNick.isEmpty () ?
+					partEntry :
+					GetParticipants (mucEntry).value (reqNick);
+
+			if (!part)
+			{
+				InjectMessage (azothProxy, showEntry,
+						QObject::tr ("Unable to find participant %1.")
+								.arg ("<em>" + reqNick + "</em>"));
+				return;
+			}
+
+			const auto& nick = part->GetEntryName ();
+
+			const auto& rid = mucEntry->GetRealID (part->GetQObject ());
+			if (rid.isEmpty ())
+				InjectMessage (azothProxy, showEntry,
+						QObject::tr ("Unable to get real ID of %1.")
+								.arg ("<em>" + nick + "</em>"));
+			else
+				InjectMessage (azothProxy, showEntry,
+						QObject::tr ("%1's real ID: %2.")
+								.arg ("<em>" + nick + "</em>")
+								.arg ("<em>" + rid + "</em>"));
+		}
+	}
+
 	bool Whois (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		const auto& nick = text.section (' ', 1);
-
-		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
-		const auto part = GetParticipants (mucEntry).value (nick);
-
-		if (!part)
+		switch (entry->GetEntryType ())
 		{
-			InjectMessage (azothProxy, entry,
-					QObject::tr ("Unable to find participant %1.")
-							.arg ("<em>" + nick + "</em>"));
-			return true;
+		case ICLEntry::EntryType::MUC:
+			WhoisImpl (azothProxy, entry, nullptr, entry, text);
+			break;
+		case ICLEntry::EntryType::PrivateChat:
+			WhoisImpl (azothProxy,
+					qobject_cast<ICLEntry*> (entry->GetParentCLEntry ()),
+					entry,
+					entry,
+					text);
+			break;
+		default:
+			break;
 		}
-
-		const auto& rid = mucEntry->GetRealID (part->GetQObject ());
-		if (rid.isEmpty ())
-			InjectMessage (azothProxy, entry,
-					QObject::tr ("Unable to get real ID of %1.")
-							.arg ("<em>" + nick + "</em>"));
-		else
-			InjectMessage (azothProxy, entry,
-					QObject::tr ("%1's real ID: %2.")
-							.arg ("<em>" + nick + "</em>")
-							.arg ("<em>" + rid + "</em>"));
-
 		return true;
 	}
 
