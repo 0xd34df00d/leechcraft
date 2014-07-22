@@ -10,22 +10,11 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	newpassworddialog.cpp
 	)
-set (HEADERS
-	securestorage.h
-	cryptosystem.h
-	ciphertextformat.h
-	settingswidget.h
-	xmlsettingsmanager.h
-	newpassworddialog.h
-	)
 set (FORMS
 	settingswidget.ui
 	newpassworddialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
 if (TESTS_SECMAN)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
@@ -47,7 +36,6 @@ endif ()
 add_library (leechcraft_secman_securestorage SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	)
 target_link_libraries (leechcraft_secman_securestorage
