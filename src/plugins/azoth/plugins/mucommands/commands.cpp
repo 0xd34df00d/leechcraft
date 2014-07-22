@@ -221,12 +221,14 @@ namespace MuCommands
 			return split;
 		}
 
-		ICLEntry* ResolveEntry (const QString& name, const QHash<QString, ICLEntry*>& context, QObject *accObj)
+		ICLEntry* ResolveEntry (const QString& name, const QHash<QString, ICLEntry*>& context, QObject *accObj, ICLEntry *hint)
 		{
 			if (context.contains (name))
 				return context.value (name);
 
 			const auto acc = qobject_cast<IAccount*> (accObj);
+
+			QList<ICLEntry*> entries;
 			for (const auto entryObj : acc->GetCLEntries ())
 			{
 				const auto entry = qobject_cast<ICLEntry*> (entryObj);
@@ -234,8 +236,11 @@ namespace MuCommands
 					continue;
 
 				if (entry->GetEntryName () == name || entry->GetHumanReadableID () == name)
-					return entry;
+					entries << entry;
 			}
+
+			if (!entries.isEmpty ())
+				return entries.contains (hint) ? hint : entries.first ();
 
 			if (const auto isn = qobject_cast<ISupportNonRoster*> (accObj))
 				if (const auto entry = qobject_cast<ICLEntry*> (isn->CreateNonRosterItem (name)))
@@ -325,7 +330,7 @@ namespace MuCommands
 			for (const auto& name : nicks)
 			{
 				const auto target = ResolveEntry (name.trimmed (),
-						participants, entry->GetParentAccount ());
+						participants, entry->GetParentAccount (), entry);
 				if (!target)
 				{
 					fallback (name);
@@ -1076,7 +1081,7 @@ namespace MuCommands
 
 		if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 		{
-			const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount ());
+			const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount (), entry);
 			const auto& inviteeId = invitee ?
 					invitee->GetHumanReadableID () :
 					id;
@@ -1090,7 +1095,7 @@ namespace MuCommands
 		}
 		else
 		{
-			const auto mucEntry = ResolveEntry (id, {}, entry->GetParentAccount ());
+			const auto mucEntry = ResolveEntry (id, {}, entry->GetParentAccount (), entry);
 			if (!mucEntry)
 			{
 				InjectMessage (azothProxy, entry,
