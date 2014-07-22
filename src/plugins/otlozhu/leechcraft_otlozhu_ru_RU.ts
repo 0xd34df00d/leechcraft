@@ -20,6 +20,32 @@
     </message>
 </context>
 <context>
+    <name>EditCommentDialog</name>
+    <message>
+        <location filename="editcommentdialog.ui" line="14"/>
+        <source>Edit comment</source>
+        <translation>Редактирование комментария</translation>
+    </message>
+    <message>
+        <location filename="editcommentdialog.ui" line="20"/>
+        <source>Task:</source>
+        <translation>Задача:</translation>
+    </message>
+    <message>
+        <location filename="editcommentdialog.ui" line="40"/>
+        <source>Comment:</source>
+        <translation>Комментарий:</translation>
+    </message>
+</context>
+<context>
+    <name>EditDateDialog</name>
+    <message>
+        <location filename="editdatedialog.ui" line="23"/>
+        <source>HH:mm:ss</source>
+        <translation>HH:mm:ss</translation>
+    </message>
+</context>
+<context>
     <name>ItemsMergeDialog</name>
     <message>
         <location filename="itemsmergedialog.ui" line="14"/>
@@ -60,7 +86,7 @@
 <context>
     <name>LeechCraft::Otlozhu::ItemsMergeDialog</name>
     <message numerus="yes">
-        <location filename="itemsmergedialog.cpp" line="30"/>
+        <location filename="itemsmergedialog.cpp" line="41"/>
         <source>There are %n items to import. How would you like to merge similar tasks?</source>
         <translation>
             <numerusform>Импортируется %n задача. Как вы хотите объединить похожие задачи?</numerusform>
@@ -72,7 +98,7 @@
 <context>
     <name>LeechCraft::Otlozhu::NotificationsManager</name>
     <message>
-        <location filename="notificationsmanager.cpp" line="56"/>
+        <location filename="notificationsmanager.cpp" line="68"/>
         <source>%1 is due now!</source>
         <translation>Пора бы сделать %1!</translation>
     </message>
@@ -80,7 +106,7 @@
 <context>
     <name>LeechCraft::Otlozhu::Plugin</name>
     <message>
-        <location filename="otlozhu.cpp" line="69"/>
+        <location filename="otlozhu.cpp" line="100"/>
         <source>A simple GTD-compatible ToDo manager.</source>
         <translation>Простой основанный на GTD менеджер задач.</translation>
     </message>
@@ -88,37 +114,37 @@
 <context>
     <name>LeechCraft::Otlozhu::StorageModel</name>
     <message>
-        <location filename="storagemodel.cpp" line="33"/>
+        <location filename="storagemodel.cpp" line="49"/>
         <source>Title</source>
         <translation>Заголовок</translation>
     </message>
     <message>
-        <location filename="storagemodel.cpp" line="34"/>
+        <location filename="storagemodel.cpp" line="50"/>
         <source>Tags</source>
         <translation>Метки</translation>
     </message>
     <message>
-        <location filename="storagemodel.cpp" line="35"/>
+        <location filename="storagemodel.cpp" line="51"/>
         <source>Due date</source>
         <translation>Срок</translation>
     </message>
     <message>
-        <location filename="storagemodel.cpp" line="36"/>
+        <location filename="storagemodel.cpp" line="52"/>
         <source>Created</source>
         <translation>Создано</translation>
     </message>
     <message>
-        <location filename="storagemodel.cpp" line="37"/>
+        <location filename="storagemodel.cpp" line="53"/>
         <source>Percentage</source>
         <translation>Процент выполнения</translation>
     </message>
     <message>
-        <location filename="storagemodel.cpp" line="79"/>
+        <location filename="storagemodel.cpp" line="109"/>
         <source>%1% done</source>
         <translation>%1% сделано</translation>
     </message>
     <message>
-        <location filename="storagemodel.cpp" line="132"/>
+        <location filename="storagemodel.cpp" line="186"/>
         <source>not set</source>
         <translation>не установлено</translation>
     </message>
@@ -126,123 +152,128 @@
 <context>
     <name>LeechCraft::Otlozhu::TodoTab</name>
     <message>
-        <location filename="todotab.cpp" line="46"/>
+        <location filename="todotab.cpp" line="60"/>
         <source>Set progress</source>
         <translation>Статус выполнения</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="47"/>
+        <location filename="todotab.cpp" line="61"/>
         <source>Set due date</source>
         <translation>Установить срок</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="75"/>
-        <source>Add todo...</source>
-        <translation>Добавить задачу...</translation>
+        <location filename="todotab.cpp" line="89"/>
+        <source>Add task...</source>
+        <translation>Добавить задачу…</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="84"/>
-        <source>Remove</source>
-        <translation>Удалить</translation>
+        <location filename="todotab.cpp" line="99"/>
+        <source>Add child task...</source>
+        <translation>Добавить дочернюю задачу…</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="111"/>
+        <location filename="todotab.cpp" line="106"/>
+        <source>Remove task</source>
+        <translation>Удалить задачу</translation>
+    </message>
+    <message>
+        <location filename="todotab.cpp" line="116"/>
+        <source>Clone task</source>
+        <translation>Клонировать задачу</translation>
+    </message>
+    <message>
+        <location filename="todotab.cpp" line="142"/>
         <source>Edit comment...</source>
         <translation>Редактировать комментарий...</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="121"/>
+        <location filename="todotab.cpp" line="152"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="121"/>
+        <location filename="todotab.cpp" line="152"/>
         <source>Hour</source>
         <translation>Час</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="121"/>
+        <location filename="todotab.cpp" line="152"/>
         <source>3 hours</source>
         <translation>3 часа</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="121"/>
+        <location filename="todotab.cpp" line="152"/>
         <source>6 hours</source>
         <translation>6 часов</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="122"/>
+        <location filename="todotab.cpp" line="153"/>
         <source>12 hours</source>
         <translation>12 часов</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="122"/>
+        <location filename="todotab.cpp" line="153"/>
         <source>Day</source>
         <translation>День</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="122"/>
+        <location filename="todotab.cpp" line="153"/>
         <source>2 days</source>
         <translation>2 дня</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="122"/>
+        <location filename="todotab.cpp" line="153"/>
         <source>Week</source>
         <translation>Неделя</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="134"/>
+        <location filename="todotab.cpp" line="168"/>
         <source>Custom...</source>
         <translation>Другое...</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="146"/>
+        <location filename="todotab.cpp" line="180"/>
         <source>Import</source>
         <translation>Импорт</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="154"/>
+        <location filename="todotab.cpp" line="188"/>
         <source>Export</source>
         <translation>Экспорт</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="210"/>
+        <location filename="todotab.cpp" line="262"/>
         <source>Are you sure you want to remove &lt;em&gt;%1&lt;/em&gt;?</source>
         <translation>Вы уверены, что хотите удалить &lt;em&gt;%1&lt;/em&gt;?</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="229"/>
-        <source>Enter new comment for item %1:</source>
-        <translation>Введите новый комментарий для %1:</translation>
+        <location filename="todotab.cpp" line="359"/>
+        <source>Import tasks</source>
+        <translation>Импортировать задачи</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="259"/>
+        <location filename="todotab.cpp" line="336"/>
         <source>Select due date</source>
         <translation>Выбор срока</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="296"/>
-        <source>Import todos</source>
-        <translation>Импортирование задач</translation>
-    </message>
-    <message>
-        <location filename="todotab.cpp" line="298"/>
-        <location filename="todotab.cpp" line="350"/>
+        <location filename="todotab.cpp" line="361"/>
+        <location filename="todotab.cpp" line="413"/>
         <source>iCalendar files (*.ics)</source>
         <translation>Файлы iCalendar (*.ics)</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="348"/>
+        <location filename="todotab.cpp" line="411"/>
         <source>Todos export</source>
         <translation>Экспорт задач</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="360"/>
+        <location filename="todotab.cpp" line="423"/>
         <source>Unable to export to %1: %2.</source>
         <translation>Невозможно экспортировать в %1: %2.</translation>
     </message>
     <message>
-        <location filename="todotab.cpp" line="375"/>
+        <location filename="todotab.cpp" line="438"/>
         <source>Todo items were successfully exported to %1.</source>
         <translation>Задачи были успешно экспортированы в %1.</translation>
     </message>
@@ -250,9 +281,32 @@
 <context>
     <name>TodoTab</name>
     <message>
-        <location filename="todotab.ui" line="41"/>
+        <location filename="todotab.ui" line="45"/>
         <source>Enter tags or filter string...</source>
         <translation>Введите метки или строку поиска...</translation>
+    </message>
+</context>
+<context>
+    <name>otlozhusettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>Appearance</source>
+        <translation>Внешний вид</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Finished tasks</source>
+        <translation>Завершённые задачи</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Strike out</source>
+        <translation>Вычёркивать</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Grey out</source>
+        <translation>Выцветать</translation>
     </message>
 </context>
 </TS>
