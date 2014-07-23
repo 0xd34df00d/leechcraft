@@ -287,6 +287,28 @@ namespace HttHare
 
 	namespace
 	{
+#if !defined (Q_OS_LINUX) && !defined (Q_OS_FREEBSD) && !defined (Q_OSMAC)
+		QPair<int, qint64> DumbSendfile (const std::shared_ptr<QFile>& file,
+				boost::asio::ip::tcp::socket& sock, int offset, int toTransfer)
+		{
+			if (!file->seek (offset))
+				return { ESPIPE, 0 };
+
+			const auto& ba = file->read (toTransfer);
+			try
+			{
+				boost::asio::write (sock,
+						boost::asio::buffer (ba.constData (), static_cast<size_t> (ba.size ())));
+			}
+			catch (const boost::system::system_error& e)
+			{
+				return { e.code ().value (), 0 };
+			}
+
+			return { 0, ba.size () };
+		}
+#endif
+
 		struct Sendfiler
 		{
 			boost::asio::ip::tcp::socket& Sock_;
@@ -321,7 +343,13 @@ namespace HttHare
 							Sock_.native_handle (),
 							offset, &transferred,
 							nullptr, 0);
+#else
+#warning "Using suboptimal file sending method"
+					const auto& pair = DumbSendfile (File_, Sock_, offset, toTransfer);
+					const auto errCode = pair.first;
+					const auto transferred = pair.second;
 #endif
+
 					ec = boost::system::error_code (errCode,
 							boost::asio::error::get_system_category ());
 
