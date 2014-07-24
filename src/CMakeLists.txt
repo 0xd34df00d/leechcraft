@@ -296,6 +296,10 @@ function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 				COMMAND "rm" "-f" "dummy.cpp"
 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
 	endforeach ()
+	add_custom_target (${_basename}_ts
+			${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "${_basename}_\${TSLANG}.ts"
+			COMMAND "rm" "-f" "dummy.cpp"
+			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 
 	if (_xmlLength)
 		add_custom_target (${_basename}_ts_convert_settings
@@ -304,6 +308,7 @@ function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 		foreach (_LANG ${Langs})
 			add_dependencies (${_basename}_ts_${_LANG} ${_basename}_ts_convert_settings)
 		endforeach ()
+		add_dependencies (${_basename}_ts ${_basename}_ts_convert_settings)
 	endif ()
 
 	if (ARGN)
@@ -316,6 +321,7 @@ function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 				foreach (_LANG ${Langs})
 					add_dependencies (${_basename}_ts_${_LANG} ${_argn})
 				endforeach ()
+				add_dependencies (${_basename}_ts ${_argn})
 			else ()
 				string (COMPARE EQUAL ${_argn} "DEPENDS" _isDepends)
 			endif ()
