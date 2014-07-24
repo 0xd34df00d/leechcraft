@@ -34,6 +34,7 @@
 #include <QFile>
 #include <QSslSocket>
 #include <QtDebug>
+#include <QTimer>
 #include <vmime/security/defaultAuthenticator.hpp>
 #include <vmime/security/cert/defaultCertificateVerifier.hpp>
 #include <vmime/security/cert/X509Certificate.hpp>
@@ -138,6 +139,13 @@ namespace Snails
 					SIGNAL (messagesChanged (QStringList, QList<int>)),
 					this,
 					SLOT (handleMessagesChanged (QStringList, QList<int>)));
+
+		auto noopTimer = new QTimer { this };
+		connect (noopTimer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (sendNoop ()));
+		noopTimer->start (60 * 1000);
 	}
 
 	vmime::shared_ptr<vmime::net::store> AccountThreadWorker::MakeStore ()
@@ -872,6 +880,12 @@ namespace Snails
 		auto set = vmime::net::messageSet::empty ();
 		for (const auto& num : numbers)
 			set.addRange (vmime::net::numberMessageRange { num });
+	}
+
+	void AccountThreadWorker::sendNoop ()
+	{
+		if (CachedStore_)
+			CachedStore_->noop ();
 	}
 
 	void AccountThreadWorker::flushSockets ()

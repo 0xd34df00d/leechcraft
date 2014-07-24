@@ -98,6 +98,8 @@ namespace Snails
 		ProgressListener* MkPgListener (const QString&);
 	private slots:
 		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
+
+		void sendNoop ();
 	public slots:
 		void flushSockets ();
 
