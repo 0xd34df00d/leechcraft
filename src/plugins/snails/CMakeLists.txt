@@ -48,6 +48,7 @@ set (SRCS
 	mailsortmodel.cpp
 	headersviewwidget.cpp
 	mailwebpage.cpp
+	mailmodelsmanager.cpp
 	)
 set (FORMS
 	mailtab.ui

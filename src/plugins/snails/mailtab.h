@@ -66,6 +66,7 @@ namespace Snails
 		TabClassInfo TabClass_;
 		QObject *PMT_;
 
+		std::shared_ptr<MailModel> MailModel_;
 		QSortFilterProxyModel *MailSortFilterModel_;
 		Account_ptr CurrAcc_;
 		Message_ptr CurrMsg_;
@@ -89,7 +90,7 @@ namespace Snails
 		void handleCurrentTagChanged (const QModelIndex&);
 		void handleMailSelected ();
 
-		void handleFoldersUpdated ();
+		void rebuildOpsToFolders ();
 
 		void handleReply ();
 		void handleCopyMultipleFolders ();

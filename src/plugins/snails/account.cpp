@@ -44,6 +44,7 @@
 #include "mailmodel.h"
 #include "taskqueuemanager.h"
 #include "foldersmodel.h"
+#include "mailmodelsmanager.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -70,7 +71,7 @@ namespace Snails
 	, APOPFail_ (false)
 	, FolderManager_ (new AccountFolderManager (this))
 	, FoldersModel_ (new FoldersModel (this))
-	, MailModel_ (new MailModel (this))
+	, MailModelsManager_ (new MailModelsManager (this))
 	{
 		Thread_->start (QThread::IdlePriority);
 		MessageFetchThread_->start (QThread::LowPriority);
@@ -119,36 +120,14 @@ namespace Snails
 		return FolderManager_;
 	}
 
-	MailModel* Account::GetMailModel () const
+	MailModelsManager* Account::GetMailModelsManager () const
 	{
-		return MailModel_;
+		return MailModelsManager_;
 	}
 
 	QAbstractItemModel* Account::GetFoldersModel () const
 	{
 		return FoldersModel_;
-	}
-
-	void Account::ShowFolder (const QModelIndex& idx)
-	{
-		MailModel_->Clear ();
-
-		const auto& path = idx.data (FoldersModel::Role::FolderPath).toStringList ();
-		qDebug () << Q_FUNC_INFO << path;
-		if (path.isEmpty ())
-			return;
-
-		MailModel_->SetFolder (path);
-		MailModel_->Clear ();
-
-		QList<Message_ptr> messages;
-		const auto& ids = Core::Instance ().GetStorage ()->LoadIDs (this, path);
-		for (const auto& id : ids)
-			messages << Core::Instance ().GetStorage ()->LoadMessage (this, path, id);
-
-		MailModel_->Append (messages);
-
-		Synchronize (path, ids.isEmpty () ? QByteArray {} : ids.last ());
 	}
 
 	void Account::Synchronize ()
@@ -637,7 +616,7 @@ namespace Snails
 		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
 		emit mailChanged ();
 
-		MailModel_->Append (messages);
+		MailModelsManager_->Append (messages);
 	}
 
 	void Account::handleGotUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)
@@ -646,8 +625,7 @@ namespace Snails
 		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
 		emit mailChanged ();
 
-		for (const auto& message : messages)
-			MailModel_->Update (message);
+		MailModelsManager_->Update (messages);
 	}
 
 	void Account::handleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)
@@ -657,17 +635,16 @@ namespace Snails
 		for (const auto& id : ids)
 			msgs << Core::Instance ().GetStorage ()->LoadMessage (this, folder, id);
 
-		MailModel_->Append (msgs);
+		MailModelsManager_->Append (msgs);
 	}
 
 	void Account::handleMessagesRemoved (const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << ids.size () << folder;
 		for (const auto& id : ids)
-		{
 			Core::Instance ().GetStorage ()->RemoveMessage (this, folder, id);
-			MailModel_->Remove (id);
-		}
+
+		MailModelsManager_->Remove (ids);
 	}
 
 	void Account::handleFolderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId)

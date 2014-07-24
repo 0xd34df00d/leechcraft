@@ -49,6 +49,8 @@
 #include "mailsortmodel.h"
 #include "headersviewwidget.h"
 #include "mailwebpage.h"
+#include "foldersmodel.h"
+#include "mailmodelsmanager.h"
 
 namespace LeechCraft
 {
@@ -268,7 +270,7 @@ namespace Snails
 			return {};
 
 		auto folders = CurrAcc_->GetFolderManager ()->GetFolders ();
-		const auto& curFolder = CurrAcc_->GetMailModel ()->GetCurrentFolder ();
+		const auto& curFolder = MailModel_->GetCurrentFolder ();
 
 		const auto curPos = std::find_if (folders.begin (), folders.end (),
 				[&curFolder] (const Folder& other) { return other.Path_ == curFolder; });
@@ -290,11 +292,15 @@ namespace Snails
 					0,
 					this,
 					0);
+
+			MailSortFilterModel_->setSourceModel (nullptr);
+			MailModel_.reset ();
+			CurrAcc_.reset ();
+
+			rebuildOpsToFolders ();
 		}
 
 		CurrAcc_ = Core::Instance ().GetAccount (idx);
-		handleFoldersUpdated ();
-
 		if (!CurrAcc_)
 			return;
 
@@ -303,7 +309,8 @@ namespace Snails
 				this,
 				SLOT (handleMessageBodyFetched (Message_ptr)));
 
-		MailSortFilterModel_->setSourceModel (CurrAcc_->GetMailModel ());
+		MailModel_.reset (CurrAcc_->GetMailModelsManager ()->CreateModel ());
+		MailSortFilterModel_->setSourceModel (MailModel_.get ());
 		MailSortFilterModel_->setDynamicSortFilter (true);
 
 		if (Ui_.TagsTree_->selectionModel ())
@@ -319,7 +326,8 @@ namespace Snails
 		connect (fm,
 				SIGNAL (foldersUpdated ()),
 				this,
-				SLOT (handleFoldersUpdated ()));
+				SLOT (rebuildOpsToFolders ()));
+		rebuildOpsToFolders ();
 	}
 
 	namespace
@@ -352,11 +360,12 @@ namespace Snails
 
 	void MailTab::handleCurrentTagChanged (const QModelIndex& sidx)
 	{
-		CurrAcc_->ShowFolder (sidx);
+		const auto& folder = sidx.data (FoldersModel::Role::FolderPath).toStringList ();
+		CurrAcc_->GetMailModelsManager ()->ShowFolder (folder, MailModel_.get ());
 		Ui_.MailTree_->setCurrentIndex ({});
 
 		handleMailSelected ();
-		handleFoldersUpdated ();
+		rebuildOpsToFolders ();
 	}
 
 	namespace
@@ -522,7 +531,7 @@ namespace Snails
 
 		const auto& idx = MailSortFilterModel_->mapToSource (sidx);
 		const auto& id = idx.sibling (idx.row (), 0).data (MailModel::MailRole::ID).toByteArray ();
-		const auto& folder = CurrAcc_->GetMailModel ()->GetCurrentFolder ();
+		const auto& folder = MailModel_->GetCurrentFolder ();
 
 		Message_ptr msg;
 		try
@@ -570,7 +579,7 @@ namespace Snails
 		CurrMsg_ = msg;
 	}
 
-	void MailTab::handleFoldersUpdated ()
+	void MailTab::rebuildOpsToFolders ()
 	{
 		MsgCopy_->clear ();
 		MsgMove_->clear ();
@@ -651,7 +660,7 @@ namespace Snails
 		if (selectedPaths.isEmpty ())
 			return;
 
-		CurrAcc_->CopyMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), selectedPaths);
+		CurrAcc_->CopyMessages (ids, MailModel_->GetCurrentFolder (), selectedPaths);
 	}
 
 	void MailTab::handleCopyMessages (QAction *action)
@@ -664,7 +673,7 @@ namespace Snails
 			return;
 
 		const auto& ids = GetSelectedIds ();
-		CurrAcc_->CopyMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), { folderPath });
+		CurrAcc_->CopyMessages (ids, MailModel_->GetCurrentFolder (), { folderPath });
 	}
 
 	void MailTab::handleMoveMultipleFolders ()
@@ -684,7 +693,7 @@ namespace Snails
 		if (selectedPaths.isEmpty ())
 			return;
 
-		CurrAcc_->MoveMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), selectedPaths);
+		CurrAcc_->MoveMessages (ids, MailModel_->GetCurrentFolder (), selectedPaths);
 	}
 
 	void MailTab::handleMoveMessages (QAction *action)
@@ -697,7 +706,7 @@ namespace Snails
 			return;
 
 		const auto& ids = GetSelectedIds ();
-		CurrAcc_->MoveMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder (), { folderPath });
+		CurrAcc_->MoveMessages (ids, MailModel_->GetCurrentFolder (), { folderPath });
 	}
 
 	void MailTab::handleMarkMsgUnread ()
@@ -706,7 +715,7 @@ namespace Snails
 			return;
 
 		const auto& ids = GetSelectedIds ();
-		CurrAcc_->SetReadStatus (false, ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
+		CurrAcc_->SetReadStatus (false, ids, MailModel_->GetCurrentFolder ());
 	}
 
 	void MailTab::handleRemoveMsgs ()
@@ -715,7 +724,7 @@ namespace Snails
 			return;
 
 		const auto& ids = GetSelectedIds ();
-		CurrAcc_->DeleteMessages (ids, CurrAcc_->GetMailModel ()->GetCurrentFolder ());
+		CurrAcc_->DeleteMessages (ids, MailModel_->GetCurrentFolder ());
 	}
 
 	void MailTab::handleViewHeaders ()
@@ -723,10 +732,9 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		const auto model = CurrAcc_->GetMailModel ();
 		for (const auto& id : GetSelectedIds ())
 		{
-			const auto& msg = model->GetMessage (id);
+			const auto& msg = MailModel_->GetMessage (id);
 			if (!msg)
 			{
 				qWarning () << Q_FUNC_INFO

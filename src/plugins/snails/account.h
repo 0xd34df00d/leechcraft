@@ -53,6 +53,7 @@ namespace Snails
 	class AccountFolderManager;
 	class MailModel;
 	class FoldersModel;
+	class MailModelsManager;
 	struct Folder;
 
 	class Account : public QObject
@@ -73,7 +74,6 @@ namespace Snails
 		QString Login_;
 		bool UseSASL_;
 		bool SASLRequired_;
-
 	public:
 		enum class SecurityType
 		{
@@ -126,7 +126,7 @@ namespace Snails
 		AccountFolderManager *FolderManager_;
 		FoldersModel *FoldersModel_;
 
-		MailModel * const MailModel_;
+		MailModelsManager * const MailModelsManager_;
 	public:
 		Account (QObject* = 0);
 
@@ -136,10 +136,9 @@ namespace Snails
 		QString GetType () const;
 
 		AccountFolderManager* GetFolderManager () const;
-		MailModel* GetMailModel () const;
+		MailModelsManager* GetMailModelsManager () const;
 		QAbstractItemModel* GetFoldersModel () const;
 
-		void ShowFolder (const QModelIndex&);
 		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);
 
