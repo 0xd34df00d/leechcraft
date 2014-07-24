@@ -159,14 +159,14 @@ namespace Snails
 					SLOT (setEnabled (bool)));
 		};
 
-		MsgReply_ = new QAction (tr ("Reply..."), this);
-		MsgReply_->setProperty ("ActionIcon", "mail-reply-sender");
-		connect (MsgReply_,
+		const auto msgReply = new QAction (tr ("Reply..."), this);
+		msgReply->setProperty ("ActionIcon", "mail-reply-sender");
+		connect (msgReply,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleReply ()));
-		TabToolbar_->addAction (MsgReply_);
-		registerMailAction (MsgReply_);
+		TabToolbar_->addAction (msgReply);
+		registerMailAction (msgReply);
 
 		MsgAttachments_ = new QMenu (tr ("Attachments"));
 		MsgAttachmentsButton_ = new QToolButton;
@@ -179,13 +179,13 @@ namespace Snails
 
 		MsgCopy_ = new QMenu (tr ("Copy messages"));
 
-		MsgCopyButton_ = new QToolButton;
-		MsgCopyButton_->setMenu (MsgCopy_);
-		MsgCopyButton_->setProperty ("ActionIcon", "edit-copy");
-		MsgCopyButton_->setPopupMode (QToolButton::InstantPopup);
-		TabToolbar_->addWidget (MsgCopyButton_);
+		const auto msgCopyButton = new QToolButton;
+		msgCopyButton->setMenu (MsgCopy_);
+		msgCopyButton->setProperty ("ActionIcon", "edit-copy");
+		msgCopyButton->setPopupMode (QToolButton::InstantPopup);
+		TabToolbar_->addWidget (msgCopyButton);
 
-		registerMailAction (MsgCopyButton_);
+		registerMailAction (msgCopyButton);
 
 		MsgMove_ = new QMenu (tr ("Move messages"));
 		connect (MsgMove_,
@@ -193,42 +193,42 @@ namespace Snails
 				this,
 				SLOT (handleMoveMessages (QAction*)));
 
-		MsgMoveButton_ = new QToolButton;
-		MsgMoveButton_->setMenu (MsgMove_);
-		MsgMoveButton_->setProperty ("ActionIcon", "transform-move");
-		MsgMoveButton_->setPopupMode (QToolButton::InstantPopup);
-		TabToolbar_->addWidget (MsgMoveButton_);
+		const auto msgMoveButton = new QToolButton;
+		msgMoveButton->setMenu (MsgMove_);
+		msgMoveButton->setProperty ("ActionIcon", "transform-move");
+		msgMoveButton->setPopupMode (QToolButton::InstantPopup);
+		TabToolbar_->addWidget (msgMoveButton);
 
-		registerMailAction (MsgMoveButton_);
+		registerMailAction (msgMoveButton);
 
-		MsgMarkUnread_ = new QAction (tr ("Mark as unread"), this);
-		MsgMarkUnread_->setProperty ("ActionIcon", "mail-mark-unread");
-		connect (MsgMarkUnread_,
+		const auto msgMarkUnread = new QAction (tr ("Mark as unread"), this);
+		msgMarkUnread->setProperty ("ActionIcon", "mail-mark-unread");
+		connect (msgMarkUnread,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleMarkMsgUnread ()));
-		TabToolbar_->addAction (MsgMarkUnread_);
-		registerMailAction (MsgMarkUnread_);
+		TabToolbar_->addAction (msgMarkUnread);
+		registerMailAction (msgMarkUnread);
 
-		MsgRemove_ = new QAction (tr ("Delete messages"), this);
-		MsgRemove_->setProperty ("ActionIcon", "list-remove");
-		connect (MsgRemove_,
+		const auto msgRemove = new QAction (tr ("Delete messages"), this);
+		msgRemove->setProperty ("ActionIcon", "list-remove");
+		connect (msgRemove,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleRemoveMsgs ()));
-		TabToolbar_->addAction (MsgRemove_);
-		registerMailAction (MsgRemove_);
+		TabToolbar_->addAction (msgRemove);
+		registerMailAction (msgRemove);
 
 		TabToolbar_->addSeparator ();
 
-		MsgViewHeaders_ = new QAction (tr ("View headers"), this);
-		MsgViewHeaders_->setProperty ("ActionIcon", "text-plain");
-		connect (MsgViewHeaders_,
+		const auto msgViewHeaders = new QAction (tr ("View headers"), this);
+		msgViewHeaders->setProperty ("ActionIcon", "text-plain");
+		connect (msgViewHeaders,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleViewHeaders ()));
-		TabToolbar_->addAction (MsgViewHeaders_);
-		registerMailAction (MsgViewHeaders_);
+		TabToolbar_->addAction (msgViewHeaders);
+		registerMailAction (msgViewHeaders);
 
 		SetMsgActionsEnabled (false);
 	}
