@@ -142,7 +142,7 @@ namespace Snails
 
 	void MailTab::FillCommonActions ()
 	{
-		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
+		const auto fetch = new QAction (tr ("Fetch new mail"), this);
 		fetch->setProperty ("ActionIcon", "mail-receive");
 		TabToolbar_->addAction (fetch);
 		connect (fetch,
@@ -150,6 +150,15 @@ namespace Snails
 				this,
 				SLOT (handleFetchNewMail ()));
 		TabToolbar_->addAction (fetch);
+
+		const auto refresh = new QAction (tr ("Refresh the folder"), this);
+		refresh->setProperty ("ActionIcon", "view-refresh");
+		TabToolbar_->addAction (refresh);
+		connect (refresh,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleRefreshFolder ()));
+		TabToolbar_->addAction (refresh);
 	}
 
 	void MailTab::FillMailActions ()
@@ -783,6 +792,14 @@ namespace Snails
 	{
 		for (const auto acc : Core::Instance ().GetAccounts ())
 			acc->Synchronize ();
+	}
+
+	void MailTab::handleRefreshFolder ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		CurrAcc_->Synchronize (MailModel_->GetCurrentFolder (), {});
 	}
 
 	void MailTab::handleMessageBodyFetched (Message_ptr msg)
