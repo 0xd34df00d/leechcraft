@@ -74,7 +74,6 @@ namespace Snails
 			return;
 
 		mailModel->SetFolder (path);
-		mailModel->Clear ();
 
 		QList<Message_ptr> messages;
 		const auto& ids = Core::Instance ().GetStorage ()->LoadIDs (Acc_, path);
