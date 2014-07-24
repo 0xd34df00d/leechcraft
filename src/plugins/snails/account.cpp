@@ -153,9 +153,6 @@ namespace Snails
 
 	void Account::Synchronize ()
 	{
-		MailModel_->Clear ();
-		MailModel_->SetFolder ({ "INBOX" });
-
 		auto folders = FolderManager_->GetSyncFolders ();
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
