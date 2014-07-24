@@ -364,6 +364,30 @@ namespace Snails
 			result.replace ("$Text", palette.color (QPalette::ColorRole::Text).name ());
 			result.replace ("$LinkVisited", palette.color (QPalette::ColorRole::LinkVisited).name ());
 			result.replace ("$Link", palette.color (QPalette::ColorRole::Link).name ());
+
+			result += R"delim(
+						html, body {
+							height: 100%;
+							overflow: hidden;
+						}
+
+						body {
+							margin: 0 !important;
+						}
+
+						.header {
+							width: 100%;
+							top: 0;
+							left: 0;
+						}
+
+						.body {
+							width: 100%;
+							height: 100%;
+							overflow: auto;
+						}
+					)delim";
+
 			return result;
 		}
 
