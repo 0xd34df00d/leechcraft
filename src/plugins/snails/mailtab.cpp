@@ -417,7 +417,7 @@ namespace Snails
 			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
 			html += GetStyle ();
-			html += "</style></head><body><div class='header'>";
+			html += "</style></head><body><header class='header'>";
 			auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
 			{
 				if (!text.trimmed ().isEmpty ())
@@ -437,7 +437,7 @@ namespace Snails
 					msg->GetHTMLBody () :
 					"<em>" + MailTab::tr ("Fetching the message...") + "</em>";
 
-			html += "</div><div class='body'>";
+			html += "</header><div class='body'>";
 
 			if (!htmlBody.isEmpty ())
 				html += htmlBody;
