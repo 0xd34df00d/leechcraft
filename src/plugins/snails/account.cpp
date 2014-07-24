@@ -258,11 +258,6 @@ namespace Snails
 			});
 	}
 
-	void Account::Update (const Message_ptr& message)
-	{
-		MailModel_->Update (message);
-	}
-
 	QByteArray Account::Serialize () const
 	{
 		QMutexLocker l (GetMutex ());
