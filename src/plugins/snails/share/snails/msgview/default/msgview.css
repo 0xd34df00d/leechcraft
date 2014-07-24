@@ -23,23 +23,19 @@
 	-webkit-border-radius: 1em;
 }
 
-.attachments {
-	margin-top: 3em;
-	padding-left: 1em;
-	padding-right: 1em;
-	border: 2px solid $Window;
-	-webkit-border-radius: 1em;
-	opacity: 0.9;
-}
-
 .replyPart {
 	color: $LinkVisited;
 }
 
+.attachments {
+}
+
 .attachment {
-	display: table;
-	margin-top: 0.125em;
-	margin-bottom: 0.125em;
+	display: inline-table;
+}
+
+.attachment:not(:first-of-type) {
+	margin-left: 2em;
 }
 
 .attachment span {
@@ -48,7 +44,7 @@
 }
 
 .attachMime {
-	margin-right: 1em;
+	margin-right: 0.25em;
 }
 
 body {

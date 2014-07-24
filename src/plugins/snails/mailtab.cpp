@@ -402,7 +402,7 @@ namespace Snails
 			const auto& extData = Util::ExtensionsData::Instance ();
 			for (const auto& attach : attachments)
 			{
-				result += "<div class='attachment'>";
+				result += "<span class='attachment'>";
 
 				QUrl linkUrl { "snails://attachment/" };
 				linkUrl.addQueryItem ("msgId", msg->GetFolderID ());
@@ -416,7 +416,7 @@ namespace Snails
 				const auto& icon = extData.GetMimeIcon (mimeType);
 				if (!icon.isNull ())
 				{
-					const auto& iconData = Util::GetAsBase64Src (icon.pixmap (32, 32).toImage ());
+					const auto& iconData = Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
 
 					result += "<img class='attachMime' style='float:left' src='" + iconData + "' alt='" + mimeType + "' />";
 				}
@@ -429,7 +429,7 @@ namespace Snails
 				result += " &mdash; " + Util::MakePrettySize (attach.GetSize ());
 
 				result += "</a></span>";
-				result += "</div>";
+				result += "</span>";
 			}
 
 			result += "</div>";
@@ -456,6 +456,7 @@ namespace Snails
 			addField ("cc", MailTab::tr ("Copy"), HTMLize (msg->GetAddresses (Message::Address::Cc)));
 			addField ("bcc", MailTab::tr ("Blind copy"), HTMLize (msg->GetAddresses (Message::Address::Bcc)));
 			addField ("date", MailTab::tr ("Date"), msg->GetDate ().toString ());
+			html += AttachmentsToHtml (msg, msg->GetAttachments ());
 
 			const auto& htmlBody = msg->IsFullyFetched () ?
 					msg->GetHTMLBody () :
@@ -484,7 +485,6 @@ namespace Snails
 			}
 
 			html += "</div>";
-			html += AttachmentsToHtml (msg, msg->GetAttachments ());
 			html += "</body></html>";
 
 			return html;
