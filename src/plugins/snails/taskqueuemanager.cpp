@@ -123,6 +123,80 @@ namespace Snails
 		return Items_.isEmpty () ? TaskQueueItem {} : Items_.takeLast ();
 	}
 
+	void TaskQueueManager::HandleItem (const TaskQueueItem& item, int recLevel)
+	{
+		item.Promise_->reportStarted ();
+
+		const auto invoke = [this, &item]
+		{
+			return QMetaObject::invokeMethod (ATW_,
+					item.Method_,
+					Qt::DirectConnection,
+					item.Args_.value (0),
+					item.Args_.value (1),
+					item.Args_.value (2),
+					item.Args_.value (3),
+					item.Args_.value (4),
+					item.Args_.value (5),
+					item.Args_.value (6),
+					item.Args_.value (7),
+					item.Args_.value (8),
+					item.Args_.value (9));
+		};
+
+		try
+		{
+			const bool res = invoke ();
+
+			if (!res)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to call"
+						<< item.Method_
+						<< "with"
+						<< item.Args_;
+				item.Promise_->reportException (InvokeFailedException { item });
+			}
+		}
+		catch (const vmime::exceptions::authentication_error& err)
+		{
+			const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+
+			qWarning () << Q_FUNC_INFO
+					<< "caught auth error:"
+					<< respStr
+					<< "while calling"
+					<< item.Method_
+					<< "with"
+					<< item.Args_;
+
+			item.Promise_->reportException (AuthorizationException { respStr });
+		}
+		catch (const vmime::exceptions::operation_timed_out&)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "timeout while calling"
+					<< item.Method_
+					<< "with"
+					<< item.Args_;
+
+			item.Promise_->reportException (TimeoutException {});
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "caught"
+					<< e.what ()
+					<< "while calling"
+					<< item.Method_
+					<< "with"
+					<< item.Args_;
+			item.Promise_->reportException (MakeWrappedException (e));
+		}
+
+		item.Promise_->reportFinished ();
+	}
+
 	void TaskQueueManager::rotateTaskQueue ()
 	{
 		qDebug () << Q_FUNC_INFO << "start";
@@ -132,76 +206,7 @@ namespace Snails
 			if (item.Method_.isEmpty ())
 				break;
 
-			item.Promise_->reportStarted ();
-
-			const auto invoke = [this, &item]
-			{
-				return QMetaObject::invokeMethod (ATW_,
-						item.Method_,
-						Qt::DirectConnection,
-						item.Args_.value (0),
-						item.Args_.value (1),
-						item.Args_.value (2),
-						item.Args_.value (3),
-						item.Args_.value (4),
-						item.Args_.value (5),
-						item.Args_.value (6),
-						item.Args_.value (7),
-						item.Args_.value (8),
-						item.Args_.value (9));
-			};
-
-			try
-			{
-				const bool res = invoke ();
-
-				if (!res)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to call"
-							<< item.Method_
-							<< "with"
-							<< item.Args_;
-					item.Promise_->reportException (InvokeFailedException { item });
-				}
-			}
-			catch (const vmime::exceptions::authentication_error& err)
-			{
-				const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
-
-				qWarning () << Q_FUNC_INFO
-						<< "caught auth error:"
-						<< respStr
-						<< "while calling"
-						<< item.Method_
-						<< "with"
-						<< item.Args_;
-
-				item.Promise_->reportException (AuthorizationException { respStr });
-			}
-			catch (const vmime::exceptions::operation_timed_out&)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "timeout while calling"
-						<< item.Method_
-						<< "with"
-						<< item.Args_;
-
-				item.Promise_->reportException (TimeoutException {});
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "caught"
-						<< e.what ()
-						<< "while calling"
-						<< item.Method_
-						<< "with"
-						<< item.Args_;
-				item.Promise_->reportException (MakeWrappedException (e));
-			}
-
-			item.Promise_->reportFinished ();
+			HandleItem (item);
 		}
 		qDebug () << Q_FUNC_INFO << "done";
 	}

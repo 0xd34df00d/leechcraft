@@ -86,6 +86,8 @@ namespace Snails
 		void AddTasks (QList<TaskQueueItem>);
 		bool HasItems () const;
 		TaskQueueItem PopItem ();
+	private:
+		void HandleItem (const TaskQueueItem&, int recLevel = 0);
 	private slots:
 		void rotateTaskQueue ();
 	signals:
