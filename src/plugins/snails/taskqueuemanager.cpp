@@ -182,6 +182,25 @@ namespace Snails
 
 			item.Promise_->reportException (TimeoutException {});
 		}
+		catch (const vmime::exceptions::socket_exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "socket error while calling"
+					<< item.Method_
+					<< "with"
+					<< item.Args_
+					<< ":"
+					<< e.what ();
+
+			if (recLevel >= 3)
+				item.Promise_->reportException (MakeWrappedException (e));
+			else
+			{
+				ATW_->flushSockets ();
+				HandleItem (item, ++recLevel);
+				return;
+			}
+		}
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
