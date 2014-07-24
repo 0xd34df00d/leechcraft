@@ -77,6 +77,8 @@ namespace Snails
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private:
+		void FillCommonActions ();
+		void FillMailActions ();
 		void FillTabToolbarActions ();
 		QList<QByteArray> GetSelectedIds () const;
 

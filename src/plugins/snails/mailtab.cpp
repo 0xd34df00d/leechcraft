@@ -138,7 +138,7 @@ namespace Snails
 		return TabToolbar_;
 	}
 
-	void MailTab::FillTabToolbarActions ()
+	void MailTab::FillCommonActions ()
 	{
 		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
 		fetch->setProperty ("ActionIcon", "mail-receive");
@@ -148,9 +148,10 @@ namespace Snails
 				this,
 				SLOT (handleFetchNewMail ()));
 		TabToolbar_->addAction (fetch);
+	}
 
-		TabToolbar_->addSeparator ();
-
+	void MailTab::FillMailActions ()
+	{
 		auto registerMailAction = [this] (QObject *obj)
 		{
 			connect (this,
@@ -231,6 +232,13 @@ namespace Snails
 		registerMailAction (msgViewHeaders);
 
 		SetMsgActionsEnabled (false);
+	}
+
+	void MailTab::FillTabToolbarActions ()
+	{
+		FillCommonActions ();
+		TabToolbar_->addSeparator ();
+		FillMailActions ();
 	}
 
 	QList<QByteArray> MailTab::GetSelectedIds () const
