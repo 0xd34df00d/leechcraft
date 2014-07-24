@@ -99,6 +99,8 @@ namespace Snails
 	private slots:
 		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
 	public slots:
+		void flushSockets ();
+
 		void synchronize (const QList<QStringList>&, const QByteArray& last);
 
 		void getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot);

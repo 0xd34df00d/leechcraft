@@ -874,6 +874,12 @@ namespace Snails
 			set.addRange (vmime::net::numberMessageRange { num });
 	}
 
+	void AccountThreadWorker::flushSockets ()
+	{
+		CachedFolders_.clear ();
+		CachedStore_.reset ();
+	}
+
 	void AccountThreadWorker::synchronize (const QList<QStringList>& folders, const QByteArray& last)
 	{
 		switch (A_->InType_)
