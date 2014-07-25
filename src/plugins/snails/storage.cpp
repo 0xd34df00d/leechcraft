@@ -40,6 +40,7 @@
 #include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
 #include "account.h"
+#include "accountdatabase.h"
 
 namespace LeechCraft
 {
@@ -132,7 +133,7 @@ namespace Snails
 			if (msg->GetFolderID ().isEmpty ())
 				continue;
 
-			AddMsgToFolders (msg, acc);
+			AddMessage (msg, acc);
 			UpdateCaches (msg);
 		}
 	}
@@ -248,40 +249,15 @@ namespace Snails
 
 	QList<QByteArray> Storage::LoadIDs (Account *acc, const QStringList& folder)
 	{
-		QList<QByteArray> result;
-
-		const auto& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
-
-		QSqlQuery query (*BaseForAccount (acc));
-		query.prepare ("SELECT msgId FROM folder2msg WHERE folder = :folder;");
-		query.bindValue (":folder", ba);
-		if (!query.exec ())
-		{
-			Util::DBLock::DumpError (query);
-			throw std::runtime_error ("Query execution failed for fetching IDs.");
-		}
-
-		while (query.next ())
-			result << query.value (0).toByteArray ();
-
-		for (const auto& msg : PendingSaveMessages_ [acc].values ())
-			if (msg->GetFolders ().contains (folder))
-				result << msg->GetFolderID ();
-
-		return result;
+		return BaseForAccount (acc)->GetIDs (folder);
 	}
 
 	void Storage::RemoveMessage (Account *acc, const QStringList& folder, const QByteArray& id)
 	{
 		PendingSaveMessages_ [acc].remove (id);
 
-		Util::DBLock lock { *BaseForAccount (acc) };
-		lock.Init ();
-
-		RemoveMessageFromDB (acc, folder, id);
-		RemoveMessageFile (acc, folder, id);
-
-		lock.Good ();
+		BaseForAccount (acc)->RemoveMessage (id, folder,
+				[this, acc, folder, id] { RemoveMessageFile (acc, folder, id); });
 	}
 
 	int Storage::GetNumMessages (Account *acc) const
@@ -308,23 +284,7 @@ namespace Snails
 
 	int Storage::GetNumMessages (Account *acc, const QStringList& folder)
 	{
-		QList<QByteArray> result;
-
-		const QByteArray& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
-
-		QSqlQuery query (*BaseForAccount (acc));
-		query.prepare ("SELECT COUNT(1) FROM folder2msg WHERE folder = :folder;");
-		query.bindValue (":folder", ba);
-		if (!query.exec ())
-		{
-			Util::DBLock::DumpError (query);
-			throw std::runtime_error ("Query execution failed for fetching message count.");
-		}
-
-		if (!query.next ())
-			throw std::runtime_error ("No next row for count query");
-
-		return query.value (0).toInt ();
+		return BaseForAccount (acc)->GetMessageCount (folder);
 	}
 
 	bool Storage::HasMessagesIn (Account *acc) const
@@ -338,21 +298,6 @@ namespace Snails
 			return IsMessageRead_ [id];
 
 		return LoadMessage (acc, folder, id)->IsRead ();
-	}
-
-	void Storage::RemoveMessageFromDB (Account *acc, const QStringList& folder, const QByteArray& id)
-	{
-		const auto& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
-
-		QSqlQuery query (*BaseForAccount (acc));
-		query.prepare ("DELETE FROM folder2msg WHERE folder = :folder AND msgId = :msgId;");
-		query.bindValue (":folder", ba);
-		query.bindValue (":msgId", id);
-		if (!query.exec ())
-		{
-			Util::DBLock::DumpError (query);
-			throw std::runtime_error ("Query execution failed for fetching IDs.");
-		}
 	}
 
 	void Storage::RemoveMessageFile (Account *acc, const QStringList& folder, const QByteArray& id)
@@ -410,88 +355,21 @@ namespace Snails
 		return dir;
 	}
 
-	namespace
-	{
-		void InitStorageBase (QSqlDatabase_ptr base)
-		{
-			QHash<QString, QStringList> table2queries;
-			table2queries ["folder2msg"] << "CREATE TABLE folder2msg "
-					"(folder BLOB NOT NULL, msgId BLOB NOT NULL, UNIQUE (folder, msgId) ON CONFLICT IGNORE);";
-			table2queries ["folder2msg"] << "CREATE INDEX folder2msg_idx_folder ON folder2msg (folder);";
-
-			for (const auto& key : table2queries.keys ())
-				if (!base->tables ().contains (key))
-					for (const auto& queryStr : table2queries [key])
-					{
-						QSqlQuery query (*base);
-						if (!query.exec (queryStr))
-						{
-							Util::DBLock::DumpError (query);
-							throw std::runtime_error ("Query execution failed for storage creation.");
-						}
-					}
-
-			QSqlQuery pragmas (*base);
-			pragmas.exec ("PRAGMA synchronous = OFF;");
-		}
-	}
-
-	QSqlDatabase_ptr Storage::BaseForAccount (Account *acc)
+	AccountDatabase_ptr Storage::BaseForAccount (Account *acc)
 	{
 		if (AccountBases_.contains (acc))
 			return AccountBases_ [acc];
 
 		const auto& dir = DirForAccount (acc);
-
-		auto db = QSqlDatabase::addDatabase ("QSQLITE", "SnailsStorage_" + acc->GetID ());
-		QSqlDatabase_ptr base (new QSqlDatabase (db));
-		if (!base->isValid ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "database invalid :(";
-			Util::DBLock::DumpError (base->lastError ());
-			throw std::runtime_error ("Unable to add database connection.");
-		}
-
-		base->setDatabaseName (dir.filePath ("msgs.db"));
-		if (!base->open ())
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (base->lastError ());
-			throw std::runtime_error (qPrintable (QString ("Could not initialize database: %1")
-						.arg (base->lastError ().text ())));
-		}
-
-		InitStorageBase (base);
+		const auto& base = std::make_shared<AccountDatabase> (dir, acc);
 		AccountBases_ [acc] = base;
 		return base;
 	}
 
-	void Storage::AddMsgToFolders (Message_ptr msg, Account *acc)
+	void Storage::AddMessage (Message_ptr msg, Account *acc)
 	{
-		const auto& folders = msg->GetFolders ();
-		const auto& id = msg->GetFolderID ();
-
-		auto base = BaseForAccount (acc);
-
-		QSqlQuery query (*base);
-		QStringList queries;
-		queries << "INSERT INTO folder2msg (folder, msgId) VALUES (:folder, :msgId);";
-		for (const auto& qStr : queries)
-		{
-			query.prepare (qStr);
-			for (auto folder : folders)
-			{
-				if (folder.isEmpty ())
-					folder << "INBOX";
-
-				query.bindValue (":folder", Serialize (folder));
-				query.bindValue (":msgId", id);
-				if (!query.exec ())
-					Util::DBLock::DumpError (query);
-			}
-			query.finish ();
-		}
+		const auto& base = BaseForAccount (acc);
+		base->AddMessage (msg);
 	}
 
 	void Storage::UpdateCaches (Message_ptr msg)

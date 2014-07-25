@@ -36,14 +36,14 @@
 #include <QSet>
 #include "message.h"
 
-class QSqlDatabase;
-typedef std::shared_ptr<QSqlDatabase> QSqlDatabase_ptr;
-
 namespace LeechCraft
 {
 namespace Snails
 {
 	class Account;
+
+	class AccountDatabase;
+	typedef std::shared_ptr<AccountDatabase> AccountDatabase_ptr;
 
 	class Storage : public QObject
 	{
@@ -53,7 +53,7 @@ namespace Snails
 		QSettings Settings_;
 		QHash<QByteArray, bool> IsMessageRead_;
 
-		QHash<Account*, QSqlDatabase_ptr> AccountBases_;
+		QHash<Account*, AccountDatabase_ptr> AccountBases_;
 		QHash<Account*, QHash<QByteArray, Message_ptr>> PendingSaveMessages_;
 
 		QHash<QObject*, Account*> FutureWatcher2Account_;
@@ -72,13 +72,12 @@ namespace Snails
 
 		bool IsMessageRead (Account*, const QStringList& folder, const QByteArray&);
 	private:
-		void RemoveMessageFromDB (Account*, const QStringList&, const QByteArray&);
 		void RemoveMessageFile (Account*, const QStringList&, const QByteArray&);
 	private:
 		QDir DirForAccount (Account*) const;
-		QSqlDatabase_ptr BaseForAccount (Account*);
+		AccountDatabase_ptr BaseForAccount (Account*);
 
-		void AddMsgToFolders (Message_ptr, Account*);
+		void AddMessage (Message_ptr, Account*);
 		void UpdateCaches (Message_ptr);
 	private slots:
 		void handleMessagesSaved ();
