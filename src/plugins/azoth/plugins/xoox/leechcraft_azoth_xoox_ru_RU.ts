@@ -465,19 +465,24 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="470"/>
+        <location filename="clientconnection.cpp" line="455"/>
         <source>This room is already joined.</source>
         <translation>Вы уже в этой комнате.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="915"/>
+        <location filename="clientconnection.cpp" line="922"/>
         <source>Data form from %1</source>
         <translation>Форма от %1</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="918"/>
+        <location filename="clientconnection.cpp" line="925"/>
         <source>You have received dataform from %1:</source>
         <translation>Вы получили форму от %1:</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1004"/>
+        <source>Using the juick.com service is discouraged. Please consider migrating to saner alternatives, like point.im.</source>
+        <translation>Использование сервиса juick.com не рекомендуется. Рассмотрите возможность миграции на более адекватные альтернативы вроде point.im.</translation>
     </message>
 </context>
 <context>
@@ -639,70 +644,139 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="78"/>
+        <location filename="entrybase.cpp" line="87"/>
         <source>Commands...</source>
         <translation>Команды...</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="79"/>
+        <location filename="entrybase.cpp" line="88"/>
         <source>Detect nick</source>
         <translation>Определить ник</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="182"/>
+        <location filename="entrybase.cpp" line="186"/>
         <source>Can&apos;t view info while offline</source>
         <translation>Невозможно просматривать информацию в оффлайне</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="526"/>
+        <location filename="entrybase.cpp" line="289"/>
+        <source>Photo</source>
+        <translation>Фото</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="291"/>
+        <source>Real name</source>
+        <translation>Настоящее имя</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="292"/>
+        <source>Birthday</source>
+        <translation>День рожденья</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="294"/>
+        <source>About</source>
+        <translation>О себе</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="304"/>
+        <location filename="entrybase.cpp" line="324"/>
+        <location filename="entrybase.cpp" line="351"/>
+        <source>preferred</source>
+        <translation>предпочтительно</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="306"/>
+        <location filename="entrybase.cpp" line="326"/>
+        <location filename="entrybase.cpp" line="345"/>
+        <source>home</source>
+        <translation>домашний</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="308"/>
+        <location filename="entrybase.cpp" line="328"/>
+        <location filename="entrybase.cpp" line="347"/>
+        <source>work</source>
+        <translation>рабочий</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="310"/>
+        <source>cell</source>
+        <translation>мобильный</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="312"/>
+        <source>Phone</source>
+        <translation>Телефон</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="349"/>
+        <source>postal</source>
+        <translation>почтовый код</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="360"/>
+        <source>Country: %1</source>
+        <translation>Страна: %1</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="361"/>
+        <source>Region: %1</source>
+        <translation>Регион: %1</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="362"/>
+        <source>Locality: %1</source>
+        <comment>User&apos;s locality</comment>
+        <translation>Местоположение: %1</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="363"/>
+        <source>Street: %1</source>
+        <translation>Улица: %1</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="364"/>
+        <source>Postal code: %1</source>
+        <translation>Почтовый код: %1</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="366"/>
+        <source>Address</source>
+        <translation>Адрес</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="371"/>
+        <source>Organization</source>
+        <translation>Организация</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="372"/>
+        <source>Organization unit</source>
+        <translation>Подразделение</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="373"/>
+        <source>Job title</source>
+        <translation>Должность</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="374"/>
+        <source>Job role</source>
+        <translation>Роль</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="690"/>
         <source>%1 is now %2 (%3)</source>
         <translation>%1 теперь %2 (%3)</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="752"/>
-        <source>Name: %1</source>
-        <translation>Имя: %1</translation>
-    </message>
-    <message>
-        <location filename="entrybase.cpp" line="757"/>
-        <source>Nickname: %1
-</source>
-        <translation>Ник: %1
-</translation>
-    </message>
-    <message>
-        <location filename="entrybase.cpp" line="760"/>
-        <source>URL: %1
-</source>
-        <translation>URL: %1
-</translation>
-    </message>
-    <message>
-        <location filename="entrybase.cpp" line="763"/>
-        <source>Birthday: %1
-</source>
-        <translation>День рожденья: %1
-</translation>
-    </message>
-    <message>
-        <location filename="entrybase.cpp" line="766"/>
-        <source>Email: %1
-</source>
-        <translation>Email: %1
-</translation>
-    </message>
-    <message>
-        <location filename="entrybase.cpp" line="771"/>
-        <source>Photo:</source>
-        <translation>Фото:</translation>
-    </message>
-    <message>
-        <location filename="entrybase.cpp" line="831"/>
+        <location filename="entrybase.cpp" line="977"/>
         <source>Select resource</source>
         <translation>Выберите ресурс</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="832"/>
+        <location filename="entrybase.cpp" line="978"/>
         <source>Select resource for which to fetch the commands</source>
         <translation>Выберите ресурс, которым хотите командовать</translation>
     </message>
@@ -710,22 +784,22 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ExecuteCommandDialog</name>
     <message>
-        <location filename="executecommanddialog.cpp" line="166"/>
+        <location filename="executecommanddialog.cpp" line="167"/>
         <source>Please wait while the selected command is executed.</source>
         <translation>Пожалуйста, подождите, пока исполнится выбранная команда.</translation>
     </message>
     <message>
-        <location filename="executecommanddialog.cpp" line="176"/>
+        <location filename="executecommanddialog.cpp" line="177"/>
         <source>Please wait while the list of commands is fetched.</source>
         <translation>Пожалуйста, подождите, пока загрузится список команд.</translation>
     </message>
     <message>
-        <location filename="executecommanddialog.cpp" line="253"/>
+        <location filename="executecommanddialog.cpp" line="254"/>
         <source>Please wait while command result is fetched.</source>
         <translation>Пожалуйста, подождите, пока загрузится результат команды.</translation>
     </message>
     <message>
-        <location filename="executecommanddialog.cpp" line="270"/>
+        <location filename="executecommanddialog.cpp" line="271"/>
         <source>Please wait while action is performed</source>
         <translation>Пожалуйста, подождите, пока выполнится команда</translation>
     </message>
@@ -754,42 +828,42 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="91"/>
+        <location filename="glooxaccount.cpp" line="93"/>
         <source>Self VCard...</source>
         <translation>Собственный VCard...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="92"/>
+        <location filename="glooxaccount.cpp" line="94"/>
         <source>Privacy lists...</source>
         <translation>Списки приватности...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="93"/>
+        <location filename="glooxaccount.cpp" line="95"/>
         <source>Enable message carbons</source>
         <translation>Включить копирование сообщений</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="101"/>
+        <location filename="glooxaccount.cpp" line="103"/>
         <source>Deliver messages from conversations on other resources to this resource as well.</source>
         <translation>Копировать на этот ресурс все сообщения из разговоров на других ресурсах.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="492"/>
+        <location filename="glooxaccount.cpp" line="494"/>
         <source>Why would you call yourself?</source>
         <translation>Почему вы хотите позвонить себе?</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="784"/>
+        <location filename="glooxaccount.cpp" line="817"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
         <translation>Невозможно включить шифрование для контакта %1: не задан ключ.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="793"/>
+        <location filename="glooxaccount.cpp" line="826"/>
         <source>Unable to change encryption state for %1.</source>
         <translation>Невозможно изменить состояние шифрования для %1.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="821"/>
+        <location filename="glooxaccount.cpp" line="854"/>
         <source>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</source>
         <translation>Невозможно присоединиться к тому, что уже добавлено в контакт-лист. Вы желаете удалить %1 из ростера и попробовать снова?</translation>
     </message>
@@ -1223,7 +1297,7 @@
         <translation>Запросить голос</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="296"/>
+        <location filename="roomclentry.cpp" line="291"/>
         <source>%1 participants</source>
         <translation>Участники %1</translation>
     </message>
@@ -1376,7 +1450,7 @@
         <translation>нет сообщения</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="467"/>
+        <location filename="roomhandler.cpp" line="472"/>
         <source>%1 changed subject to %2</source>
         <translation>%1 изменил тему на %2</translation>
     </message>
@@ -1384,107 +1458,107 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::SDSession</name>
     <message>
-        <location filename="sdsession.cpp" line="89"/>
+        <location filename="sdsession.cpp" line="90"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="89"/>
+        <location filename="sdsession.cpp" line="90"/>
         <source>JID</source>
         <translation>JID</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="89"/>
+        <location filename="sdsession.cpp" line="90"/>
         <source>Node</source>
         <translation>Узел</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="136"/>
+        <location filename="sdsession.cpp" line="138"/>
         <source>View VCard...</source>
         <translation>Просмотреть VCard...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="138"/>
+        <location filename="sdsession.cpp" line="140"/>
         <source>Add to roster...</source>
         <translation>Добавить в ростер...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="140"/>
+        <location filename="sdsession.cpp" line="142"/>
         <source>Register...</source>
         <translation>Зарегистрироваться...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="142"/>
+        <location filename="sdsession.cpp" line="144"/>
         <source>Execute...</source>
         <translation>Выполнить...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="144"/>
+        <location filename="sdsession.cpp" line="146"/>
         <source>Join...</source>
         <translation>Присоединиться...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="146"/>
+        <location filename="sdsession.cpp" line="148"/>
         <source>Refresh...</source>
         <translation>Обновить...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="259"/>
+        <location filename="sdsession.cpp" line="261"/>
         <source>MUC description: %1.</source>
         <translation>Описание комнаты: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="273"/>
+        <location filename="sdsession.cpp" line="275"/>
         <source>OS: %1.</source>
         <translation>ОС: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="274"/>
+        <location filename="sdsession.cpp" line="276"/>
         <source>OS version: %1.</source>
         <translation>Версия ОС: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="275"/>
+        <location filename="sdsession.cpp" line="277"/>
         <source>Software: %1.</source>
         <translation>ПО: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="276"/>
+        <location filename="sdsession.cpp" line="278"/>
         <source>Software version: %1.</source>
         <translation>Версия ПО: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="278"/>
+        <location filename="sdsession.cpp" line="280"/>
         <source>Version:</source>
         <translation>Версия:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="283"/>
+        <location filename="sdsession.cpp" line="285"/>
         <source>Identities:</source>
         <translation>Сущности:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="291"/>
+        <location filename="sdsession.cpp" line="293"/>
         <source>Identity name:</source>
         <translation>Имя сущности:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="292"/>
+        <location filename="sdsession.cpp" line="294"/>
         <source>Category:</source>
         <translation>Категория:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="293"/>
+        <location filename="sdsession.cpp" line="295"/>
         <source>Type:</source>
         <translation>Тип:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="294"/>
+        <location filename="sdsession.cpp" line="296"/>
         <source>Language:</source>
         <translation>Язык:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="304"/>
+        <location filename="sdsession.cpp" line="306"/>
         <source>Capabilities:</source>
         <translation>Возможности:</translation>
     </message>
@@ -1508,7 +1582,7 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::VCardDialog</name>
     <message>
-        <location filename="vcarddialog.cpp" line="315"/>
+        <location filename="vcarddialog.cpp" line="317"/>
         <source>Capabilities</source>
         <translation>Возможности</translation>
     </message>
@@ -1521,8 +1595,8 @@
         <location filename="vcarddialog.cpp" line="180"/>
         <location filename="vcarddialog.cpp" line="205"/>
         <location filename="vcarddialog.cpp" line="238"/>
-        <location filename="vcarddialog.cpp" line="383"/>
-        <location filename="vcarddialog.cpp" line="437"/>
+        <location filename="vcarddialog.cpp" line="386"/>
+        <location filename="vcarddialog.cpp" line="442"/>
         <source>preferred</source>
         <translation>предпочтительно</translation>
     </message>
@@ -1530,8 +1604,8 @@
         <location filename="vcarddialog.cpp" line="182"/>
         <location filename="vcarddialog.cpp" line="207"/>
         <location filename="vcarddialog.cpp" line="232"/>
-        <location filename="vcarddialog.cpp" line="384"/>
-        <location filename="vcarddialog.cpp" line="438"/>
+        <location filename="vcarddialog.cpp" line="387"/>
+        <location filename="vcarddialog.cpp" line="443"/>
         <source>home</source>
         <translation>домашний</translation>
     </message>
@@ -1539,14 +1613,14 @@
         <location filename="vcarddialog.cpp" line="184"/>
         <location filename="vcarddialog.cpp" line="209"/>
         <location filename="vcarddialog.cpp" line="234"/>
-        <location filename="vcarddialog.cpp" line="385"/>
-        <location filename="vcarddialog.cpp" line="439"/>
+        <location filename="vcarddialog.cpp" line="388"/>
+        <location filename="vcarddialog.cpp" line="444"/>
         <source>work</source>
         <translation>рабочий</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="186"/>
-        <location filename="vcarddialog.cpp" line="386"/>
+        <location filename="vcarddialog.cpp" line="389"/>
         <source>cell</source>
         <translation>мобильный</translation>
     </message>
@@ -1602,37 +1676,37 @@
         <translation>Почтовый код: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="308"/>
+        <location filename="vcarddialog.cpp" line="310"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="309"/>
+        <location filename="vcarddialog.cpp" line="311"/>
         <source>Version</source>
         <translation>Версия</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="310"/>
+        <location filename="vcarddialog.cpp" line="312"/>
         <source>OS</source>
         <translation>ОС</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="397"/>
+        <location filename="vcarddialog.cpp" line="401"/>
         <source>VCard phones</source>
         <translation>Телефоны VCard</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="451"/>
+        <location filename="vcarddialog.cpp" line="457"/>
         <source>VCard emails</source>
         <translation>Адреса электронной почты VCard</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="490"/>
+        <location filename="vcarddialog.cpp" line="496"/>
         <source>Choose new photo</source>
         <translation>Выбор нового фото</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="492"/>
+        <location filename="vcarddialog.cpp" line="498"/>
         <source>Images (*.png *.jpg *.jpeg *.gif *.bmp);;All files (*.*)</source>
         <translation>Изображения (*.png *.jpg *.jpeg *.gif *.bmp);;Все файлы (*.*)</translation>
     </message>
@@ -1645,7 +1719,7 @@
         <translation>Запись</translation>
     </message>
     <message>
-        <location filename="vcardlisteditdialog.cpp" line="99"/>
+        <location filename="vcardlisteditdialog.cpp" line="98"/>
         <source>Enter the new item:</source>
         <translation>Введите новую запись:</translation>
     </message>
