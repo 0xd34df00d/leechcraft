@@ -50,6 +50,7 @@ namespace Snails
 		FolderType Type_ = FolderType::Other;
 
 		int MessageCount_ = -1;
+		int UnreadCount_ = -1;
 
 		FolderDescr () = default;
 		FolderDescr (const QString& name, const std::weak_ptr<FolderDescr>& parent);
@@ -89,7 +90,7 @@ namespace Snails
 
 	FoldersModel::FoldersModel (Account *acc)
 	: QAbstractItemModel { acc }
-	, Headers_ { tr ("Folder"), tr ("Messages") }
+	, Headers_ { tr ("Folder"), tr ("Messages"), tr ("Unread") }
 	, RootFolder_ { new FolderDescr {} }
 	{
 	}
@@ -143,6 +144,10 @@ namespace Snails
 		case Column::MessageCount:
 			return folder->MessageCount_ >= 0 ?
 					QString::number (folder->MessageCount_) :
+					QString {};
+		case Column::UnreadCount:
+			return folder->UnreadCount_ >= 0 ?
+					QString::number (folder->UnreadCount_) :
 					QString {};
 		default:
 			return {};
@@ -238,6 +243,23 @@ namespace Snails
 		descr->MessageCount_ = count;
 
 		const auto& index = createIndex (descr->Row (), Column::MessageCount, descr);
+		emit dataChanged (index, index);
+	}
+
+	void FoldersModel::SetFolderUnreadCount (const QStringList& folder, int count)
+	{
+		const auto descr = Folder2Descr_.value (folder);
+		if (!descr)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no description for folder"
+					<< folder;
+			return;
+		}
+
+		descr->UnreadCount_ = count;
+
+		const auto& index = createIndex (descr->Row (), Column::UnreadCount, descr);
 		emit dataChanged (index, index);
 	}
 }

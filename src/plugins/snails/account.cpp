@@ -569,6 +569,8 @@ namespace Snails
 		const auto storage = Core::Instance ().GetStorage ();
 
 		const auto totalCount = storage->GetNumMessages (this, folder);
+		const auto unreadCount = storage->GetNumUnread (this, folder);
+		FoldersModel_->SetFolderUnreadCount (folder, unreadCount);
 		FoldersModel_->SetFolderMessageCount (folder, totalCount);
 	}
 
@@ -685,6 +687,7 @@ namespace Snails
 			Synchronize (folder, {});
 
 		FoldersModel_->SetFolderMessageCount (folder, count);
+		FoldersModel_->SetFolderUnreadCount (folder, unread);
 	}
 
 	void Account::handleGotFolders (const QList<Folder>& folders)
@@ -699,16 +702,19 @@ namespace Snails
 
 		for (const auto& folder : folders)
 		{
-			int count = -1;
+			int count = -1, unread = -1;
+			const auto storage = Core::Instance ().GetStorage ();
 			try
 			{
-				count = Core::Instance ().GetStorage ()->GetNumMessages (this, folder.Path_);
+				count = storage->GetNumMessages (this, folder.Path_);
+				unread = storage->GetNumUnread (this, folder.Path_);
 			}
 			catch (const std::exception&)
 			{
 			}
 
 			FoldersModel_->SetFolderMessageCount (folder.Path_, count);
+			FoldersModel_->SetFolderUnreadCount (folder.Path_, unread);
 
 			Thread_->AddTask ({
 					TaskQueueItem::Priority::Lowest,

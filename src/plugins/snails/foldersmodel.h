@@ -59,7 +59,8 @@ namespace Snails
 		enum Column
 		{
 			FolderName,
-			MessageCount
+			MessageCount,
+			UnreadCount
 		};
 
 		FoldersModel (Account*);
@@ -73,6 +74,7 @@ namespace Snails
 
 		void SetFolders (const QList<Folder>& folders);
 		void SetFolderMessageCount (const QStringList&, int);
+		void SetFolderUnreadCount (const QStringList&, int);
 	};
 }
 }
