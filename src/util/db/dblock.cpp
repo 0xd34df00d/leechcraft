@@ -97,3 +97,12 @@ void LeechCraft::Util::DBLock::DumpError (const QSqlQuery& lastQuery)
 	qWarning () << "bound values:" << lastQuery.boundValues ();
 }
 
+void LeechCraft::Util::DBLock::Execute (QSqlQuery& query)
+{
+	if (query.exec ())
+		return;
+
+	DumpError (query);
+	throw std::runtime_error ("Query execution failed.");
+}
+

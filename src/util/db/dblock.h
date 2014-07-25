@@ -110,11 +110,22 @@ namespace LeechCraft
 			 * @param[in] error The error class.
 			 */
 			UTIL_DB_API static void DumpError (const QSqlError& error);
+
 			/** @brief Dumps the error to the qWarning() stream.
 			 *
 			 * @param[in] query The query that should be dumped.
 			 */
 			UTIL_DB_API static void DumpError (const QSqlQuery& query);
+
+			/** @brief Tries to execute the given query.
+			 *
+			 * If query execution is successful, this function just
+			 * returns. Otherwise it calls DumpError() to write the error
+			 * to the logs and throws an exception.
+			 *
+			 * @param[in] query The query that should be dumped.
+			 */
+			UTIL_DB_API static void Execute (QSqlQuery& query);
 		};
 	};
 };
