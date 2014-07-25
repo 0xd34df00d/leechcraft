@@ -169,7 +169,8 @@ namespace BitTorrent
 			ColumnDownSpeed,
 			ColumnUpSpeed,
 			ColumnLeechers,
-			ColumnSeeders
+			ColumnSeeders,
+			ColumnUploaded
 		};
 		enum AddType
 		{

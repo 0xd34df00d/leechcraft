@@ -273,7 +273,8 @@ namespace BitTorrent
 				<< tr ("Down speed")
 				<< tr ("Up speed")
 				<< tr ("Leechers")
-				<< tr ("Seeders");
+				<< tr ("Seeders")
+				<< tr ("Total uploaded");
 
 		connect (SettingsSaveTimer_.get (),
 				SIGNAL (timeout ()),
@@ -585,6 +586,8 @@ namespace BitTorrent
 				return QString::number (status.num_peers - status.num_seeds);
 			case ColumnSeeders:
 				return QString::number (status.num_seeds);
+			case ColumnUploaded:
+				return Util::MakePrettySize (status.all_time_upload);
 			default:
 				return QVariant ();
 			}
