@@ -678,7 +678,7 @@ namespace Snails
 			});
 	}
 
-	void Account::handleMessageCountFetched (int count, const QStringList& folder)
+	void Account::handleMessageCountFetched (int count, int unread, const QStringList& folder)
 	{
 		const auto storedCount = Core::Instance ().GetStorage ()->GetNumMessages (this, folder);
 		if (storedCount && count != storedCount)

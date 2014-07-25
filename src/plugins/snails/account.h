@@ -182,7 +182,7 @@ namespace Snails
 		void handleMessagesRemoved (const QList<QByteArray>&, const QStringList&);
 
 		void handleFolderSyncFinished (const QStringList&, const QByteArray&);
-		void handleMessageCountFetched (int, const QStringList&);
+		void handleMessageCountFetched (int, int, const QStringList&);
 
 		void handleGotFolders (const QList<LeechCraft::Snails::Folder>&);
 		void handleFoldersUpdated ();

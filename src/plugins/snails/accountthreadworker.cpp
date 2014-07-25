@@ -919,11 +919,11 @@ namespace Snails
 		if (!netFolder)
 			return;
 
-		const auto count = netFolder->getStatus ()->getMessageCount ();
-
+		const auto& status = netFolder->getStatus ();
 		QMetaObject::invokeMethod (handler,
 				slot,
-				Q_ARG (int, count),
+				Q_ARG (int, status->getMessageCount ()),
+				Q_ARG (int, status->getUnseenCount ()),
 				Q_ARG (QStringList, folder));
 	}
 
