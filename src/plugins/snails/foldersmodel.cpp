@@ -141,7 +141,7 @@ namespace Snails
 		case Column::FolderName:
 			return folder->Name_;
 		case Column::MessageCount:
-			return folder->MessageCount_ > 0 ?
+			return folder->MessageCount_ >= 0 ?
 					QString::number (folder->MessageCount_) :
 					QString {};
 		default:
