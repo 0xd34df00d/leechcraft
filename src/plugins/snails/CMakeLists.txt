@@ -49,6 +49,7 @@ set (SRCS
 	headersviewwidget.cpp
 	mailwebpage.cpp
 	mailmodelsmanager.cpp
+	accountdatabase.cpp
 	)
 set (FORMS
 	mailtab.ui
