@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QSqlQuery>
 
 class QSqlDatabase;
 typedef std::shared_ptr<QSqlDatabase> QSqlDatabase_ptr;
@@ -43,14 +44,28 @@ namespace Snails
 {
 	class Account;
 
+	class Message;
+	typedef std::shared_ptr<Message> Message_ptr;
+
 	class AccountDatabase : public QObject
 	{
 		Account * const Acc_;
 		const QSqlDatabase_ptr DB_;
+
+		QSqlQuery QueryGetIds_;
+		QSqlQuery QueryGetCount_;
+		QSqlQuery QueryRemoveMessage_;
 	public:
 		AccountDatabase (const QDir&, Account*, QObject* = nullptr);
+
+		QList<QByteArray> GetIDs (const QStringList& folder);
+		int GetMessageCount (const QStringList& folder);
+
+		void RemoveMessage (const QByteArray& msgId, const QStringList& folder,
+				const std::function<void ()>& continuation = {});
 	private:
 		void InitTables ();
+		void PrepareQueries ();
 	};
 }
 }

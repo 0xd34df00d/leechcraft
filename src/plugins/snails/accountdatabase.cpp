@@ -61,6 +61,51 @@ namespace Snails
 		}
 
 		InitTables ();
+		PrepareQueries ();
+	}
+
+	QList<QByteArray> AccountDatabase::GetIDs (const QStringList& folder)
+	{
+		QueryGetIds_.bindValue (":path", folder.join ("/"));
+		Util::DBLock::Execute (QueryGetIds_);
+
+		QList<QByteArray> result;
+		while (QueryGetIds_.next ())
+			result << QueryGetIds_.value (0).toByteArray ();
+		QueryGetIds_.finish ();
+		return result;
+	}
+
+	int AccountDatabase::GetMessageCount (const QStringList& folder)
+	{
+		QueryGetCount_.bindValue (":path", folder.join ("/"));
+		Util::DBLock::Execute (QueryGetCount_);
+		if (!QueryGetCount_.next ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to navigate to result";
+			throw std::runtime_error ("Query execution failed.");
+		}
+
+		const auto result = QueryGetCount_.value (0).toInt ();
+		QueryGetCount_.finish ();
+		return result;
+	}
+
+	void AccountDatabase::RemoveMessage (const QByteArray& msgId, const QStringList& folder,
+			const std::function<void ()>& continuation)
+	{
+		Util::DBLock lock { *DB_ };
+		lock.Init ();
+
+		QueryRemoveMessage_.bindValue (":msgId", msgId);
+		QueryRemoveMessage_.bindValue (":path", folder.join ("/"));
+		Util::DBLock::Execute (QueryRemoveMessage_);
+
+		if (continuation)
+			continuation ();
+
+		lock.Good ();
 	}
 
 	void AccountDatabase::InitTables ()
@@ -68,7 +113,7 @@ namespace Snails
 		QHash<QString, QStringList> table2queries;
 		table2queries ["messages"] << "CREATE TABLE messages ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT,"
-				"MsgId TEXT UNIQUE NOT NULL,"
+				"MsgId TEXT NOT NULL,"
 				"IsRead BOOL"
 				")";
 		table2queries ["folders"] << "CREATE TABLE folders ("
@@ -93,6 +138,37 @@ namespace Snails
 
 		query.exec ("PRAGMA foreign_keys = ON;");
 		query.exec ("PRAGMA synchronous = OFF;");
+	}
+
+	void AccountDatabase::PrepareQueries ()
+	{
+		QueryGetIds_ = QSqlQuery { *DB_ };
+		QueryGetIds_.prepare (R"d(
+					SELECT messages.MsgId FROM messages, msg2folder, folders
+					WHERE folders.FolderPath = :path
+					AND folders.Id = msg2folder.FolderId
+					AND msg2folder.MsgId = messages.Id
+				)d");
+
+		QueryGetCount_ = QSqlQuery { *DB_ };
+		QueryGetCount_.prepare (R"d(
+					SELECT COUNT(1) FROM messages, msg2folder, folders
+					WHERE folders.FolderPath = :path
+					AND folders.Id = msg2folder.FolderId
+					AND msg2folder.MsgId = messages.Id
+				)d");
+
+		QueryRemoveMessage_ = QSqlQuery { *DB_ };
+		QueryRemoveMessage_.prepare (R"d(
+					DELETE FROM messages
+					WHERE Id =
+						(SELECT messages.Id
+							FROM messages, msg2folder, folders
+							WHERE messages.MsgId = :msgId
+							AND folders.FolderId = :folderId
+							AND msg2folder.MsgId = messages.Id
+							AND msg2folder.FolderId = folders.Id)
+				)d");
 	}
 }
 }
