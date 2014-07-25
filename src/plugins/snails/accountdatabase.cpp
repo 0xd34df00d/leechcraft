@@ -88,20 +88,33 @@ namespace Snails
 		return result;
 	}
 
+	namespace
+	{
+		int GetCount (QSqlQuery& query, const QStringList& folder)
+		{
+			query.bindValue (":path", folder.join ("/"));
+			Util::DBLock::Execute (query);
+			if (!query.next ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to navigate to result";
+				throw std::runtime_error ("Query execution failed.");
+			}
+
+			const auto result = query.value (0).toInt ();
+			query.finish ();
+			return result;
+		}
+	}
+
 	int AccountDatabase::GetMessageCount (const QStringList& folder)
 	{
-		QueryGetCount_.bindValue (":path", folder.join ("/"));
-		Util::DBLock::Execute (QueryGetCount_);
-		if (!QueryGetCount_.next ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to navigate to result";
-			throw std::runtime_error ("Query execution failed.");
-		}
+		return GetCount (QueryGetCount_, folder);
+	}
 
-		const auto result = QueryGetCount_.value (0).toInt ();
-		QueryGetCount_.finish ();
-		return result;
+	int AccountDatabase::GetUnreadMessageCount (const QStringList& folder)
+	{
+		return GetCount (QueryGetUnreadCount_, folder);
 	}
 
 	int AccountDatabase::GetMessageCount ()

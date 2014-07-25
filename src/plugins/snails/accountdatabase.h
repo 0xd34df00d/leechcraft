@@ -55,6 +55,7 @@ namespace Snails
 
 		QSqlQuery QueryGetIds_;
 		QSqlQuery QueryGetCount_;
+		QSqlQuery QueryGetUnreadCount_;
 		QSqlQuery QueryGetTotalCount_;
 		QSqlQuery QueryRemoveMessage_;
 		QSqlQuery QueryAddFolder_;
@@ -73,6 +74,7 @@ namespace Snails
 
 		QList<QByteArray> GetIDs (const QStringList& folder);
 		int GetMessageCount (const QStringList& folder);
+		int GetUnreadMessageCount (const QStringList& folder);
 		int GetMessageCount ();
 
 		void AddMessage (const Message_ptr&);
