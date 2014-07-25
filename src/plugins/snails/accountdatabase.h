@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <memory>
 #include <QObject>
 #include <QSqlQuery>
@@ -65,6 +66,13 @@ namespace Snails
 		 */
 		QSqlQuery QueryGetMsgTableIdByFolder_;
 
+		/* Returns the primary key of a message by its
+		 * global unique ID.
+		 */
+		QSqlQuery QueryGetMsgTableIdByUniqueId_;
+
+		QSqlQuery QuerySetMsgRead_;
+
 		QSqlQuery QueryAddMsgUnfoldered_;
 		QSqlQuery QueryAddMsgToFolder_;
 
@@ -81,9 +89,11 @@ namespace Snails
 		void RemoveMessage (const QByteArray& msgId, const QStringList& folder,
 				const std::function<void ()>& continuation = {});
 
-		bool HasMessage (const QByteArray& msgId, const QStringList& folder);
+		boost::optional<int> GetMsgTableId (const QByteArray& uniqueId);
+		boost::optional<int> GetMsgTableId (const QByteArray& msgId, const QStringList& folder);
 	private:
 		int AddMessageUnfoldered (const Message_ptr&);
+		void UpdateMessage (int, const Message_ptr&);
 		void AddMessageToFolder (int msgTableId, int folderTableId, const QByteArray& msgId);
 
 		void InitTables ();
