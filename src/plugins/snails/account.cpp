@@ -564,6 +564,14 @@ namespace Snails
 		return result;
 	}
 
+	void Account::UpdateFolderCount (const QStringList& folder)
+	{
+		const auto storage = Core::Instance ().GetStorage ();
+
+		const auto totalCount = storage->GetNumMessages (this, folder);
+		FoldersModel_->SetFolderMessageCount (folder, totalCount);
+	}
+
 	void Account::buildInURL (QString *res)
 	{
 		*res = BuildInURL ();
@@ -617,6 +625,8 @@ namespace Snails
 		emit mailChanged ();
 
 		MailModelsManager_->Append (messages);
+
+		UpdateFolderCount (folder);
 	}
 
 	void Account::handleGotUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)
@@ -626,6 +636,8 @@ namespace Snails
 		emit mailChanged ();
 
 		MailModelsManager_->Update (messages);
+
+		UpdateFolderCount (folder);
 	}
 
 	void Account::handleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)
@@ -636,6 +648,8 @@ namespace Snails
 			msgs << Core::Instance ().GetStorage ()->LoadMessage (this, folder, id);
 
 		MailModelsManager_->Append (msgs);
+
+		UpdateFolderCount (folder);
 	}
 
 	void Account::handleMessagesRemoved (const QList<QByteArray>& ids, const QStringList& folder)
@@ -645,6 +659,8 @@ namespace Snails
 			Core::Instance ().GetStorage ()->RemoveMessage (this, folder, id);
 
 		MailModelsManager_->Remove (ids);
+
+		UpdateFolderCount (folder);
 	}
 
 	void Account::handleFolderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId)
