@@ -184,7 +184,7 @@ namespace Snails
 			}
 		}
 
-		Q_FOREACH (auto msg, PendingSaveMessages_ [acc].values ())
+		for (const auto& msg : PendingSaveMessages_ [acc])
 		{
 			result << msg;
 			UpdateCaches (msg);
@@ -285,6 +285,11 @@ namespace Snails
 	int Storage::GetNumMessages (Account *acc, const QStringList& folder)
 	{
 		return BaseForAccount (acc)->GetMessageCount (folder);
+	}
+
+	int Storage::GetNumUnread (Account *acc, const QStringList& folder)
+	{
+		return BaseForAccount (acc)->GetUnreadMessageCount (folder);
 	}
 
 	bool Storage::HasMessagesIn (Account *acc) const

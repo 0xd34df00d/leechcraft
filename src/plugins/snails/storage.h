@@ -68,6 +68,7 @@ namespace Snails
 
 		int GetNumMessages (Account*) const;
 		int GetNumMessages (Account*, const QStringList& folder);
+		int GetNumUnread (Account*, const QStringList& folder);
 		bool HasMessagesIn (Account*) const;
 
 		bool IsMessageRead (Account*, const QStringList& folder, const QByteArray&);
