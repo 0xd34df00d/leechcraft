@@ -430,12 +430,12 @@ IPv6 input mask</extracomment>
         <translation>Unknown</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="420"/>
+        <location filename="core.cpp" line="421"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="420"/>
+        <location filename="core.cpp" line="421"/>
         <source>Standard</source>
         <translation>Standard</translation>
     </message>
@@ -455,46 +455,46 @@ IPv6 input mask</extracomment>
         <translation>State</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="371"/>
+        <location filename="core.cpp" line="372"/>
         <source>Rejecting file %1 because it&apos;s bigger than current auto limit.</source>
         <translation>Rejecting file %1 because it&apos;s bigger than current auto limit.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="607"/>
-        <location filename="core.cpp" line="738"/>
+        <location filename="core.cpp" line="610"/>
+        <location filename="core.cpp" line="741"/>
         <source>Idle</source>
         <translation>Idle</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="526"/>
-        <location filename="core.cpp" line="540"/>
-        <location filename="core.cpp" line="581"/>
-        <location filename="core.cpp" line="583"/>
-        <location filename="core.cpp" line="609"/>
-        <location filename="core.cpp" line="611"/>
+        <location filename="core.cpp" line="527"/>
+        <location filename="core.cpp" line="541"/>
+        <location filename="core.cpp" line="582"/>
+        <location filename="core.cpp" line="584"/>
+        <location filename="core.cpp" line="612"/>
+        <location filename="core.cpp" line="614"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="594"/>
+        <location filename="core.cpp" line="597"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="595"/>
+        <location filename="core.cpp" line="598"/>
         <source>Destination:</source>
         <translation>Destination:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="601"/>
+        <location filename="core.cpp" line="604"/>
         <source>Progress:</source>
         <translation>Progress:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="546"/>
-        <location filename="core.cpp" line="557"/>
-        <location filename="core.cpp" line="573"/>
-        <location filename="core.cpp" line="602"/>
+        <location filename="core.cpp" line="547"/>
+        <location filename="core.cpp" line="558"/>
+        <location filename="core.cpp" line="574"/>
+        <location filename="core.cpp" line="605"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 of %3)</translation>
     </message>
@@ -519,157 +519,162 @@ IPv6 input mask</extracomment>
         <translation>Seeders</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="509"/>
+        <location filename="core.cpp" line="277"/>
+        <source>Total uploaded</source>
+        <translation>Total uploaded</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="510"/>
         <source>idle</source>
         <translation>idle</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="520"/>
+        <location filename="core.cpp" line="521"/>
         <source>%1% (%2 of %3 at %4 from %5 peers)</source>
         <translation>%1% (%2 of %3 at %4 from %5 peers)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="536"/>
+        <location filename="core.cpp" line="537"/>
         <source>%1, seeding at %2 to %3 leechers (of around %4)</source>
         <translation>%1, seeding at %2 to %3 leechers (of around %4)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="567"/>
+        <location filename="core.cpp" line="568"/>
         <source>100% (%1)</source>
         <translation>100% (%1)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="606"/>
+        <location filename="core.cpp" line="609"/>
         <source>; status:</source>
         <translation>; status:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="608"/>
+        <location filename="core.cpp" line="611"/>
         <source>Downloading speed:</source>
         <translation>Downloading speed:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="610"/>
+        <location filename="core.cpp" line="613"/>
         <source>; uploading speed:</source>
         <translation>; uploading speed:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="612"/>
+        <location filename="core.cpp" line="615"/>
         <source>Peers/seeds: %1/%2</source>
         <translation>Peers/seeds: %1/%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="689"/>
+        <location filename="core.cpp" line="692"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Could not open file %1 for read: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="913"/>
+        <location filename="core.cpp" line="916"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>File %1 doesn&apos;t exist or could not be read</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="948"/>
+        <location filename="core.cpp" line="951"/>
         <source>Runtime error</source>
         <translation>Runtime error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1064"/>
+        <location filename="core.cpp" line="1067"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Torrent %1 could not be reannounced at the moment, try again later.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1735"/>
+        <location filename="core.cpp" line="1738"/>
         <source>Queued for checking</source>
         <translation>Queued for checking</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1737"/>
+        <location filename="core.cpp" line="1740"/>
         <source>Checking files</source>
         <translation>Checking files</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1739"/>
+        <location filename="core.cpp" line="1742"/>
         <source>Downloading metadata</source>
         <translation>Downloading metadata</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1741"/>
+        <location filename="core.cpp" line="1744"/>
         <source>Downloading</source>
         <translation>Downloading</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1743"/>
+        <location filename="core.cpp" line="1746"/>
         <source>Finished</source>
         <translation>Finished</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1745"/>
+        <location filename="core.cpp" line="1748"/>
         <source>Seeding</source>
         <translation>Seeding</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1747"/>
+        <location filename="core.cpp" line="1750"/>
         <source>Allocating</source>
         <translation>Allocating</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1749"/>
+        <location filename="core.cpp" line="1752"/>
         <source>Checking resume data</source>
         <translation>Checking resume data</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1770"/>
+        <location filename="core.cpp" line="1773"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Could not open saved torrent %1 for read.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1861"/>
+        <location filename="core.cpp" line="1864"/>
         <source>Bad bencoding in saved torrent data: %1</source>
         <translation>Bad bencoding in saved torrent data: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1868"/>
+        <location filename="core.cpp" line="1871"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Bad bencoding in saved torrent data</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1941"/>
+        <location filename="core.cpp" line="1944"/>
         <source>Torrent finished: %1</source>
         <translation>Torrent finished: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1957"/>
+        <location filename="core.cpp" line="1960"/>
         <source>Open...</source>
         <translation>Open...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1965"/>
+        <location filename="core.cpp" line="1968"/>
         <source>Show folder</source>
         <translation>Show folder</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2156"/>
+        <location filename="core.cpp" line="2159"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2172"/>
+        <location filename="core.cpp" line="2175"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation>Could not create path %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2540"/>
+        <location filename="core.cpp" line="2543"/>
         <source>Error listening on ports %1-%2: %3</source>
         <translation>Error listening on ports %1-%2: %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2697"/>
+        <location filename="core.cpp" line="2700"/>
         <source>Wrong announce address %1</source>
         <translation>Wrong announce address %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2839"/>
+        <location filename="core.cpp" line="2842"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, re-enable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
         <translation>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, re-enable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</translation>
     </message>
@@ -1626,32 +1631,32 @@ IPv6 input mask</extracomment>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="2358"/>
+        <location filename="core.cpp" line="2361"/>
         <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
         <translation>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2370"/>
+        <location filename="core.cpp" line="2373"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
         <translation>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2383"/>
+        <location filename="core.cpp" line="2386"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
         <translation>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2400"/>
+        <location filename="core.cpp" line="2403"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
         <translation>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2414"/>
+        <location filename="core.cpp" line="2417"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
         <translation>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2428"/>
+        <location filename="core.cpp" line="2431"/>
         <source>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</source>
         <translation>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</translation>
     </message>
