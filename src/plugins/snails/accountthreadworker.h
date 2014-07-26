@@ -88,8 +88,7 @@ namespace Snails
 		Message_ptr FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 		void FetchMessagesPOP3 ();
 
-		void FetchMessagesIMAP (const QList<QStringList>&,
-				vmime::shared_ptr<vmime::net::store>, const QByteArray&);
+		void FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
 		QList<Message_ptr> FetchVmimeMessages (MessageVector_t, const VmimeFolder_ptr&, const QStringList&);
 		void FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
 

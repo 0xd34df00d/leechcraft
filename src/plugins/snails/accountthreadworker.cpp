@@ -558,7 +558,7 @@ namespace Snails
 	}
 
 	void AccountThreadWorker::FetchMessagesIMAP (const QList<QStringList>& origFolders,
-			vmime::shared_ptr<vmime::net::store> store, const QByteArray& last)
+			const QByteArray& last)
 	{
 		for (const auto& folder : origFolders)
 		{
@@ -905,7 +905,7 @@ namespace Snails
 		{
 			const auto& store = MakeStore ();
 			SyncIMAPFolders (store);
-			FetchMessagesIMAP (folders, store, last);
+			FetchMessagesIMAP (folders, last);
 			break;
 		}
 		case Account::InType::Maildir:
