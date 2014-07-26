@@ -57,7 +57,7 @@ namespace Snails
 	, ProgressManager_ (new ProgressManager (this))
 	, MsgView_ (new Util::ResourceLoader ("snails/msgview"))
 	{
-#if Q_OS_WIN32
+#ifdef Q_OS_WIN32
 		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();
 #else
 		vmime::platform::setHandler<vmime::platforms::posix::posixHandler> ();
