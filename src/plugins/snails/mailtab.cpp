@@ -393,23 +393,23 @@ namespace Snails
 
 			result += R"delim(
 						html, body {
+							width: 100%;
 							height: 100%;
 							overflow: hidden;
-						}
-
-						body {
 							margin: 0 !important;
 						}
 
 						.header {
-							width: 100%;
 							top: 0;
 							left: 0;
+							right: 0;
+							position: fixed;
 						}
 
 						.body {
 							width: 100%;
-							height: 100%;
+							bottom: 0;
+							position: absolute;
 							overflow: auto;
 						}
 					)delim";
@@ -467,7 +467,22 @@ namespace Snails
 			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
 			html += GetStyle ();
-			html += "</style></head><body><header class='header'>";
+			html += "</style>";
+			html += R"d(
+						<script language='javascript'>
+							function resizeBody() {
+								var headHeight = document.getElementById('msgHeader').offsetHeight;
+
+								var bodyElem = document.getElementById('msgBody');
+								bodyElem.style.top = headHeight + "px";
+							}
+							function setupResize() {
+								window.onresize = resizeBody;
+								resizeBody();
+							}
+						</script>
+					)d";
+			html += "</head><body onload='setupResize()'><header class='header' id='msgHeader'>";
 			auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
 			{
 				if (!text.trimmed ().isEmpty ())
@@ -488,7 +503,7 @@ namespace Snails
 					msg->GetHTMLBody () :
 					"<em>" + MailTab::tr ("Fetching the message...") + "</em>";
 
-			html += "</header><div class='body'>";
+			html += "</header><div class='body' id='msgBody'>";
 
 			if (!htmlBody.isEmpty ())
 				html += htmlBody;
