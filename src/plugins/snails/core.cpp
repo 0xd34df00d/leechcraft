@@ -33,7 +33,7 @@
 #include <QCoreApplication>
 #include <QtDebug>
 
-#if Q_OS_WIN32
+#ifdef Q_OS_WIN32
 #include <vmime/platforms/windows/windowsHandler.hpp>
 #else
 #include <vmime/platforms/posix/posixHandler.hpp>
