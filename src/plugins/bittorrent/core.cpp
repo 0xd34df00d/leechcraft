@@ -486,6 +486,32 @@ namespace BitTorrent
 
 		switch (role)
 		{
+		case Roles::SortRole:
+			switch (column)
+			{
+			case ColumnID:
+				return row + 1;
+			case ColumnName:
+				return QString::fromUtf8 (h.name ().c_str ());
+			case ColumnState:
+				return status.paused ?
+						-1 :
+						static_cast<int> (status.state);
+			case ColumnProgress:
+				return status.progress;
+			case ColumnDownSpeed:
+				return status.download_payload_rate;
+			case ColumnUpSpeed:
+				return status.upload_payload_rate;
+			case ColumnLeechers:
+				return status.num_peers - status.num_seeds;
+			case ColumnSeeders:
+				return status.num_seeds;
+			case ColumnUploaded:
+				return static_cast<quint64> (status.all_time_upload);
+			default:
+				return {};
+			}
 		case Roles::FullLengthText:
 		case Qt::DisplayRole:
 			switch (column)

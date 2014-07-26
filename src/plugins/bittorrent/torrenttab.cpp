@@ -64,6 +64,7 @@ namespace BitTorrent
 		Ui_.setupUi (this);
 
 		ViewFilter_->setDynamicSortFilter (true);
+		ViewFilter_->setSortRole (Core::Roles::SortRole);
 		ViewFilter_->setSourceModel (Core::Instance ());
 
 		Ui_.TorrentsView_->setModel (ViewFilter_);

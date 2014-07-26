@@ -185,7 +185,8 @@ namespace BitTorrent
 		};
 		enum Roles
 		{
-			FullLengthText = Qt::UserRole + 1
+			FullLengthText = Qt::UserRole + 1,
+			SortRole
 		};
 
 		static Core* Instance ();
