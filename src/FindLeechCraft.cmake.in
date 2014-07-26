@@ -63,11 +63,7 @@ else()
 	endif()
 endif()
 
-if (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
-	message (STATUS "CMake 2.8.6 or greater found, enabling automoc...")
-	set (CMAKE_AUTOMOC TRUE)
-	set (LC_NO_MOC TRUE)
-endif ()
+set (CMAKE_AUTOMOC TRUE)
 
 function (CreateTrs PlugName Langs CompiledTranVar)
 	string (LENGTH "${PlugName}" _pnameLength)
