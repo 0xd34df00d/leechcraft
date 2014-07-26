@@ -3,6 +3,7 @@ project (leechcraft_snails)
 include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (VMime REQUIRED)
 
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTSQL TRUE)
@@ -13,6 +14,7 @@ include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
+	${VMIME_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
@@ -73,7 +75,7 @@ add_library (leechcraft_snails SHARED
 target_link_libraries (leechcraft_snails
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	vmime
+	${VMIME_LIBRARIES}
 	)
 install (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
 install (FILES snailssettings.xml DESTINATION ${LC_SETTINGS_DEST})
