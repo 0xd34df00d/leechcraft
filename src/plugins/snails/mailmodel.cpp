@@ -194,6 +194,7 @@ namespace Snails
 			return role == Sort ? 0 : QString::fromUtf8 ("·");
 		}
 		case Column::StatusIcon:
+		case Column::AttachIcon:
 			break;
 		}
 
