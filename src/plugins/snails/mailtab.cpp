@@ -347,6 +347,9 @@ namespace Snails
 
 			for (const auto& pair : adds)
 			{
+				if (pair.second.isEmpty ())
+					continue;
+
 				const bool hasName = !pair.first.isEmpty ();
 
 				QString thisStr;
