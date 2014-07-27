@@ -374,6 +374,26 @@ namespace Graffiti
 		Revert_->setEnabled (true);
 	}
 
+	void GraffitiTab::on_TrackNumberAutoFill__released ()
+	{
+		QMap<QString, int> album2counter;
+
+		const auto& selected = Ui_.FilesList_->selectionModel ()->selectedRows ();
+		for (const auto& index : selected)
+		{
+			const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
+			auto info = infoData.value<MediaInfo> ();
+			info.TrackNumber_ = ++album2counter [info.Album_];
+			FilesModel_->UpdateInfo (index, info);
+		}
+
+		if (!selected.isEmpty ())
+		{
+			Save_->setEnabled (true);
+			Revert_->setEnabled (true);
+		}
+	}
+
 	void GraffitiTab::save ()
 	{
 		const auto& modified = FilesModel_->GetModified ();

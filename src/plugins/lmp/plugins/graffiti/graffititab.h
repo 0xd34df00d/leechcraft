@@ -108,6 +108,8 @@ namespace Graffiti
 		void on_Year__valueChanged ();
 		void on_TrackNumber__valueChanged ();
 
+		void on_TrackNumberAutoFill__released ();
+
 		void save ();
 		void revert ();
 		void renameFiles ();
