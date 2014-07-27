@@ -194,6 +194,27 @@ namespace Graffiti
 		Ui_.Genre_->AddSelector (genreMgr);
 
 		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Genre_, genreMgr);
+
+		connect (Ui_.ArtistSetAll_,
+				SIGNAL (released ()),
+				this,
+				SLOT (on_Artist__textChanged ()));
+		connect (Ui_.AlbumSetAll_,
+				SIGNAL (released ()),
+				this,
+				SLOT (on_Album__textChanged ()));
+		connect (Ui_.TitleSetAll_,
+				SIGNAL (released ()),
+				this,
+				SLOT (on_Title__textChanged ()));
+		connect (Ui_.GenreSetAll_,
+				SIGNAL (released ()),
+				this,
+				SLOT (on_Genre__textChanged ()));
+		connect (Ui_.YearSetAll_,
+				SIGNAL (released ()),
+				this,
+				SLOT (on_Year__valueChanged ()));
 	}
 
 	void GraffitiTab::SetupViews ()

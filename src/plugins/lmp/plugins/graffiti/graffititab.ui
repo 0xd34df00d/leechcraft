@@ -67,13 +67,21 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="Artist_"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="Album_"/>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="Title_"/>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLineEdit" name="Artist_"/>
+         </item>
+         <item>
+          <widget class="QToolButton" name="ArtistSetAll_">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset theme="edit-select-all"/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
@@ -82,12 +90,19 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Title:</string>
-         </property>
-        </widget>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLineEdit" name="Album_"/>
+         </item>
+         <item>
+          <widget class="QToolButton" name="AlbumSetAll_">
+           <property name="icon">
+            <iconset theme="edit-select-all"/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_4">
@@ -97,14 +112,46 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QSpinBox" name="Year_">
-         <property name="minimum">
-          <number>-3000</number>
-         </property>
-         <property name="maximum">
-          <number>3000</number>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QSpinBox" name="Year_">
+           <property name="minimum">
+            <number>-3000</number>
+           </property>
+           <property name="maximum">
+            <number>3000</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="YearSetAll_">
+           <property name="icon">
+            <iconset theme="edit-select-all"/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Title:</string>
          </property>
         </widget>
+       </item>
+       <item row="3" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLineEdit" name="Title_"/>
+         </item>
+         <item>
+          <widget class="QToolButton" name="TitleSetAll_">
+           <property name="icon">
+            <iconset theme="edit-select-all"/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item row="4" column="0">
         <widget class="QLabel" name="label_5">
@@ -114,7 +161,18 @@
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="LeechCraft::Util::TagsLineEdit" name="Genre_"/>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="LeechCraft::Util::TagsLineEdit" name="Genre_"/>
+         </item>
+         <item>
+          <widget class="QToolButton" name="GenreSetAll_">
+           <property name="icon">
+            <iconset theme="edit-select-all"/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
