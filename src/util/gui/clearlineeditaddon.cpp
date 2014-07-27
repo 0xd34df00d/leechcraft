@@ -32,6 +32,7 @@
 #include <QToolButton>
 #include <QApplication>
 #include <QStyle>
+#include <QShortcut>
 #include "lineeditbuttonmanager.h"
 #include "interfaces/core/iiconthememanager.h"
 
@@ -73,6 +74,8 @@ namespace Util
 		updateButton (edit->text ());
 
 		mgr->Add (Button_);
+
+		new QShortcut (Qt::Key_Escape, Edit_, SLOT (clear ()), nullptr, Qt::WidgetShortcut);
 	}
 
 	void ClearLineEditAddon::updateButton (const QString& text)
