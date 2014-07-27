@@ -299,23 +299,27 @@ namespace Graffiti
 		settings.endGroup ();
 	}
 
-	void GraffitiTab::on_Artist__textChanged (const QString& artist)
+	void GraffitiTab::on_Artist__textChanged ()
 	{
+		const auto& artist = Ui_.Artist_->text ();
 		UpdateData (artist, [] (MediaInfo& info) -> QString& { return info.Artist_; });
 	}
 
-	void GraffitiTab::on_Album__textChanged (const QString& album)
+	void GraffitiTab::on_Album__textChanged ()
 	{
+		const auto& album = Ui_.Album_->text ();
 		UpdateData (album, [] (MediaInfo& info) -> QString& { return info.Album_; });
 	}
 
-	void GraffitiTab::on_Title__textChanged (const QString& title)
+	void GraffitiTab::on_Title__textChanged ()
 	{
+		const auto& title = Ui_.Title_->text ();
 		UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
 	}
 
-	void GraffitiTab::on_Genre__textChanged (const QString& genreString)
+	void GraffitiTab::on_Genre__textChanged ()
 	{
+		const auto& genreString = Ui_.Genre_->text ();
 		auto genres = genreString.split ('/', QString::SkipEmptyParts);
 		for (auto& genre : genres)
 			genre = genre.trimmed ();
@@ -323,8 +327,9 @@ namespace Graffiti
 		UpdateData (genres, [] (MediaInfo& info) -> QStringList& { return info.Genres_; });
 	}
 
-	void GraffitiTab::on_Year__valueChanged (int year)
+	void GraffitiTab::on_Year__valueChanged ()
 	{
+		const auto year = Ui_.Year_->value ();
 		UpdateData (year, [] (MediaInfo& info) -> int& { return info.Year_; });
 	}
 

@@ -101,11 +101,11 @@ namespace Graffiti
 		void RestorePathHistory ();
 		void AddToPathHistory (const QString&);
 	private slots:
-		void on_Artist__textChanged (const QString&);
-		void on_Album__textChanged (const QString&);
-		void on_Title__textChanged (const QString&);
-		void on_Genre__textChanged (const QString&);
-		void on_Year__valueChanged (int);
+		void on_Artist__textChanged ();
+		void on_Album__textChanged ();
+		void on_Title__textChanged ();
+		void on_Genre__textChanged ();
+		void on_Year__valueChanged ();
 
 		void save ();
 		void revert ();
