@@ -106,6 +106,7 @@ namespace Graffiti
 		void on_Title__textChanged ();
 		void on_Genre__textChanged ();
 		void on_Year__valueChanged ();
+		void on_TrackNumber__valueChanged ();
 
 		void save ();
 		void revert ();

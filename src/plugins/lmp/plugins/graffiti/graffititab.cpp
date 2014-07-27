@@ -354,6 +354,26 @@ namespace Graffiti
 		UpdateData (year, [] (MediaInfo& info) -> int& { return info.Year_; });
 	}
 
+	void GraffitiTab::on_TrackNumber__valueChanged ()
+	{
+		const auto number = Ui_.TrackNumber_->value ();
+
+		if (IsChangingCurrent_)
+			return;
+
+		const auto& index = Ui_.FilesList_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
+		auto info = infoData.value<MediaInfo> ();
+		info.TrackNumber_ = number;
+		FilesModel_->UpdateInfo (index, info);
+
+		Save_->setEnabled (true);
+		Revert_->setEnabled (true);
+	}
+
 	void GraffitiTab::save ()
 	{
 		const auto& modified = FilesModel_->GetModified ();
@@ -386,6 +406,7 @@ namespace Graffiti
 			tag->setTitle (toTLStr (newInfo.Title_));
 			tag->setYear (newInfo.Year_);
 			tag->setGenre (toTLStr (newInfo.Genres_.join (" / ")));
+			tag->setTrack (newInfo.TrackNumber_);
 
 			if (!file.save ())
 				qWarning () << Q_FUNC_INFO
@@ -575,6 +596,8 @@ namespace Graffiti
 		Ui_.Genre_->setText (info.Genres_.join (" / "));
 
 		Ui_.Year_->setValue (info.Year_);
+
+		Ui_.TrackNumber_->setValue (info.TrackNumber_);
 
 		IsChangingCurrent_ = false;
 	}
