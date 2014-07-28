@@ -290,6 +290,14 @@
         <source>New window</source>
         <translation>Новое окно</translation>
     </message>
+    <message>
+        <source>View</source>
+        <translation>Вид</translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation>Инструменты</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
@@ -508,14 +516,6 @@
         <translation>F11</translation>
     </message>
     <message>
-        <source>View</source>
-        <translation>Вид</translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation>Инструменты</translation>
-    </message>
-    <message>
         <source>Do you really want to restart?</source>
         <translation>Вы действительно хотите перезапустить LeechCraft?</translation>
     </message>
@@ -629,6 +629,10 @@
     <message>
         <source>To window %1 (%2)</source>
         <translation>В окно %1 (%2)</translation>
+    </message>
+    <message>
+        <source>Clone tab</source>
+        <translation>Клонировать вкладку</translation>
     </message>
 </context>
 <context>
@@ -1073,6 +1077,14 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Length of the track being played.</source>
         <translation>Продолжительность текущего трека.</translation>
+    </message>
+    <message>
+        <source>Terminal is active</source>
+        <translation>Терминал активен</translation>
+    </message>
+    <message>
+        <source>The terminal tab that caused the notification is active.</source>
+        <translation>Вкладка терминала, вызвавшая уведомление, активна.</translation>
     </message>
 </context>
 <context>

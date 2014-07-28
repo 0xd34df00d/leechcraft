@@ -358,6 +358,16 @@
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
+    <message>
+        <location filename="mainwindowmenumanager.cpp" line="44"/>
+        <source>View</source>
+        <translation>View</translation>
+    </message>
+    <message>
+        <location filename="mainwindowmenumanager.cpp" line="48"/>
+        <source>Tools</source>
+        <translation>Tools</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
@@ -607,38 +617,28 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="141"/>
+        <location filename="mainwindow.cpp" line="142"/>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="324"/>
-        <source>View</source>
-        <translation>View</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="328"/>
-        <source>Tools</source>
-        <translation>Tools</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="482"/>
+        <location filename="mainwindow.cpp" line="404"/>
         <source>Do you really want to restart?</source>
         <translation>Do you really want to restart?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="498"/>
+        <location filename="mainwindow.cpp" line="420"/>
         <source>Do you really want to quit?</source>
         <translation>Do you really want to quit?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="503"/>
+        <location filename="mainwindow.cpp" line="425"/>
         <source>Always</source>
         <translation>Always</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="739"/>
+        <location filename="mainwindow.cpp" line="661"/>
         <source>Toggle LeechCraft window</source>
         <translation>Toggle LeechCraft window</translation>
     </message>
@@ -685,67 +685,67 @@
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="72"/>
+        <location filename="pluginmanager.cpp" line="74"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="73"/>
+        <location filename="pluginmanager.cpp" line="75"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="278"/>
+        <location filename="pluginmanager.cpp" line="280"/>
         <source>The following plugins would also be disabled as the result:</source>
         <translation>The following plugins would also be disabled as the result:</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="280"/>
+        <location filename="pluginmanager.cpp" line="282"/>
         <source>Are you sure you want to disable this one?</source>
         <translation>Are you sure you want to disable this one?</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="340"/>
+        <location filename="pluginmanager.cpp" line="342"/>
         <source>Initializing %1: stage one...</source>
         <translation>Initializing %1: stage one...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="434"/>
+        <location filename="pluginmanager.cpp" line="436"/>
         <source>Initializing %1: stage two...</source>
         <translation>Initializing %1: stage two...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="743"/>
+        <location filename="pluginmanager.cpp" line="745"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Refusing to load plugin from %1 because it&apos;s not a file.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="757"/>
+        <location filename="pluginmanager.cpp" line="759"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
         <translation>Could not load plugin from %1: API level mismatch.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="771"/>
+        <location filename="pluginmanager.cpp" line="773"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>Could not load plugin from %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="791"/>
+        <location filename="pluginmanager.cpp" line="793"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance with exception %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="802"/>
+        <location filename="pluginmanager.cpp" line="804"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="812"/>
+        <location filename="pluginmanager.cpp" line="814"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="897"/>
+        <location filename="pluginmanager.cpp" line="899"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Plugin with ID %1 is already loaded from %2; aborting load from %3.</translation>
     </message>
@@ -761,19 +761,24 @@
 <context>
     <name>LeechCraft::SeparateTabWidget</name>
     <message>
-        <location filename="separatetabwidget.cpp" line="350"/>
+        <location filename="separatetabwidget.cpp" line="358"/>
         <source>Move tab to</source>
         <translation>Move tab to</translation>
     </message>
     <message>
-        <location filename="separatetabwidget.cpp" line="351"/>
+        <location filename="separatetabwidget.cpp" line="359"/>
         <source>New window</source>
         <translation>New window</translation>
     </message>
     <message>
-        <location filename="separatetabwidget.cpp" line="365"/>
+        <location filename="separatetabwidget.cpp" line="373"/>
         <source>To window %1 (%2)</source>
         <translation>To window %1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="separatetabwidget.cpp" line="390"/>
+        <source>Clone tab</source>
+        <translation>Clone tab</translation>
     </message>
 </context>
 <context>
@@ -975,7 +980,7 @@
 <context>
     <name>LeechCraft::TabManager</name>
     <message>
-        <location filename="tabmanager.cpp" line="67"/>
+        <location filename="tabmanager.cpp" line="68"/>
         <source>Close all but this</source>
         <translation>Close all but this</translation>
     </message>
@@ -1017,17 +1022,17 @@
 <context>
     <name>LeechCraft::Util::CategorySelector</name>
     <message>
-        <location filename="../util/tags/categoryselector.cpp" line="49"/>
+        <location filename="../util/tags/categoryselector.cpp" line="51"/>
         <source>Tags selector</source>
         <translation>Tags selector</translation>
     </message>
     <message>
-        <location filename="../util/tags/categoryselector.cpp" line="62"/>
+        <location filename="../util/tags/categoryselector.cpp" line="67"/>
         <source>Select all</source>
         <translation>Select all</translation>
     </message>
     <message>
-        <location filename="../util/tags/categoryselector.cpp" line="68"/>
+        <location filename="../util/tags/categoryselector.cpp" line="73"/>
         <source>Select none</source>
         <translation>Select none</translation>
     </message>
@@ -1322,6 +1327,16 @@ If you have read and really understood all these letters, click Cancel button in
         <location filename="../util/xpc/stdanfields.cpp" line="100"/>
         <source>Length of the track being played.</source>
         <translation>Length of the track being played.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="113"/>
+        <source>Terminal is active</source>
+        <translation>Terminal is active</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="114"/>
+        <source>The terminal tab that caused the notification is active.</source>
+        <translation>The terminal tab that caused the notification is active.</translation>
     </message>
 </context>
 <context>
