@@ -31,6 +31,7 @@ the rest.
 * [Core] Fixed a memory leak if "Open as submenu" is disabled.
 * [Core] Don't perform anything with tabs on shutting down, fixes
   occasional crashes on restart.
+* [Util] "Esc" clears the line edit in ClearLineEditAddon.
 * [Util] Splitted the utility library into sublibs.
 * [Util] Added regexp class with optional PCRE backend (from CleanWeb).
 * [Util] Added ColorButton.
@@ -132,15 +133,19 @@ the rest.
 * [BitTorrent] Non-modal add torrent dialog.
 * [BitTorrent] Notify the user if the torrent file is invalid.
 * [BitTorrent] Open comment label URLs internally.
+* [BitTorrent] Added "total uploaded" column.
+* [BitTorrent] Proper sorting.
 * [Blogique Metida] Use XDG cache dir for avatars.
 * [CM] Accept/reject is now togglable by left mouse doubleclick.
 * [CSTP] Added support for UTF-8-encoded content-disposition.
 * [DeadLyrics] Properly handle reply errors avoiding a rare but nasty segfault.
+* [DeadLyrics] Temporarily removed AnimeLyrics provider.
 * [Dolozhee] Sane STR/Expected/Actual order.
 * [Dolozhee] Added the link to Atom feed for tickets.
 * [HistoryHolder] Async history saving.
 * [HotSensors] Added support for OS X SMC temperature sensors backend.
 * [HttHare] Added support for FreeBSD's sendfile().
+* [HttHare] Added default sendfile() emulation backend.
 * [KBSwitch] Support adding same layout multiple times.
 * [KBSwitch] Show group variants.
 * [Kinotify] Respect entity's NotificationTimeout property.
@@ -193,6 +198,10 @@ the rest.
   fixes a few nasty bugs.
 * [LMP] Fixed build on Win32 gcc 4.9.0.
 * [LMP Graffiti] Support editing files from LMP's collection and playlist menus.
+* [LMP Graffiti] Added "set all" buttons.
+* [LMP Graffiti] Parameterless slots.
+* [LMP Graffiti] Support track numbers autofilling.
+* [LMP Graffiti] Support track numbers manipulation.
 * [LMP MTPSync] Moved album appending to a separate thread to avoid GUI freezes.
 * [LMP MTPSync] Don't query devices when uploading (fixes spontaneous errors).
 * [Monocle] Support document redirections.
