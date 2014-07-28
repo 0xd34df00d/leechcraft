@@ -217,22 +217,4 @@
       <item tag="&lt;span id=&quot;ctl00_cphBody_LyricsContent&quot;&gt;"/>
     </extract>
   </provider>
-  <provider name="animelyrics.com (J-Pop lyrics with Kanji)" title="{title}" charset="sjis" url="http://www.animelyrics.com/jpop/{artist}/{title}.jis.txt">
-    <urlFormat replace=" ._@,;&amp;\/'&quot;-" with=""/>
-    <exclude>
-      <item value="&lt;br&gt;"/>
-      <item begin="&lt;!--" end="--!&gt;"/>
-    </exclude>
-    <invalidIndicator value="File not found, 404"/>
-    <invalidIndicator value="DOCTYPE HTML"/>
-  </provider>
-  <provider name="animelyrics.com (J-Pop lyrics)" title="{title}" charset="utf-8" url="http://www.animelyrics.com/jpop/{artist}/{title}.txt">
-    <urlFormat replace=" ._@,;&amp;\/'&quot;-" with=""/>
-    <exclude>
-      <item value="&lt;br&gt;"/>
-      <item begin="&lt;!--" end="--&gt;"/>
-    </exclude>
-    <invalidIndicator value="File not found, 404"/>
-    <invalidIndicator value="DOCTYPE HTML"/>
-  </provider>
 </lyricproviders>
