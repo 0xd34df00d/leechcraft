@@ -152,6 +152,7 @@ set (SRCS
 	cltooltipmanager.cpp
 	corecommandsmanager.cpp
 	resourcesmanager.cpp
+	notificationsmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui

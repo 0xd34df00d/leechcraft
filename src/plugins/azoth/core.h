@@ -82,6 +82,7 @@ namespace Azoth
 	class CustomChatStyleManager;
 	class CLTooltipManager;
 	class CoreCommandsManager;
+	class NotificationsManager;
 
 	class Core : public QObject
 	{
@@ -102,8 +103,6 @@ namespace Azoth
 		typedef QHash<QString, QStandardItem*> Category2Item_t;
 		typedef QHash<QStandardItem*, Category2Item_t> Account2Category2Item_t;
 		Account2Category2Item_t Account2Category2Item_;
-
-		QHash<IAccount*, QDateTime> LastAccountStatusChange_;
 
 		QHash<IAccount*, EntryStatus> SavedStatus_;
 
@@ -136,6 +135,7 @@ namespace Azoth
 		std::shared_ptr<Util::ShortcutManager> ShortcutManager_;
 		std::shared_ptr<CustomStatusesManager> CustomStatusesManager_;
 		std::shared_ptr<CustomChatStyleManager> CustomChatStyleManager_;
+		std::shared_ptr<NotificationsManager> NotificationsManager_;
 
 		Core ();
 	public:
@@ -310,13 +310,10 @@ namespace Azoth
 		QStandardItem* GetAccountItem (const QObject *accountObj,
 				QMap<const QObject*, QStandardItem*>& accountItemCache);
 
-		Entity BuildStatusNotification (const EntryStatus&,
-				ICLEntry*, const QString&);
-
 		/** Handles the event of status changes in a contact list entry.
 		 */
 		void HandleStatusChanged (const EntryStatus& status,
-				ICLEntry *entry, const QString& variant, bool asSignal = false);
+				ICLEntry *entry, const QString& variant);
 
 		/** Checks whether icon representing incoming file should be
 		 * drawn for the entry with the given id.
@@ -330,10 +327,6 @@ namespace Azoth
 
 		void RecalculateOnlineForCat (QStandardItem*);
 
-		void NotifyWithReason (QObject*, const QString&,
-				const char*, const QString&,
-				const QString&, const QString&);
-
 		void HandlePowerNotification (Entity);
 
 		/** Removes one item representing the given CL entry.
@@ -343,8 +336,6 @@ namespace Azoth
 		/** Adds the given entry to the given category item.
 		 */
 		void AddEntryTo (ICLEntry*, QStandardItem*);
-
-		void SuggestJoiningMUC (IAccount*, const QVariantMap&);
 
 		IChatStyleResourceSource* GetCurrentChatStyle (QObject*) const;
 
@@ -430,14 +421,6 @@ namespace Azoth
 		 */
 		void handleEntryGotMessage (QObject *msg);
 
-		/** Handles the authorization requests from accounts.
-		 */
-		void handleAuthorizationRequested (QObject*, const QString&);
-
-		/** Handles the IAdvancedCLEntry::attentionDrawn().
-		 */
-		void handleAttentionDrawn (const QString&, const QString&);
-
 		/** Handles nick conflict.
 		 */
 		void handleNicknameConflict (const QString&);
@@ -449,14 +432,6 @@ namespace Azoth
 		/** Handles bans.
 		 */
 		void handleBeenBanned (const QString&);
-
-		void handleItemSubscribed (QObject*, const QString&);
-		void handleItemUnsubscribed (QObject*, const QString&);
-		void handleItemUnsubscribed (const QString&, const QString&);
-		void handleItemCancelledSubscription (QObject*, const QString&);
-		void handleItemGrantedSubscription (QObject*, const QString&);
-
-		void handleMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
 		/** Is registered in the XmlSettingsManager as handler for
 		 * changes of the "StatusIcons" property.
@@ -524,9 +499,6 @@ namespace Azoth
 		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
 				QString body,
 				QString pack);
-		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry,
-				QString msg);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
