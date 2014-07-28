@@ -287,7 +287,7 @@ namespace HttHare
 
 	namespace
 	{
-#if !defined (Q_OS_LINUX) && !defined (Q_OS_FREEBSD) && !defined (Q_OSMAC)
+#if !defined (Q_OS_LINUX) && !defined (Q_OS_FREEBSD) && !defined (Q_OS_MAC)
 		QPair<int, qint64> DumbSendfile (const std::shared_ptr<QFile>& file,
 				boost::asio::ip::tcp::socket& sock, int offset, int toTransfer)
 		{
