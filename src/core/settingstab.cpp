@@ -89,7 +89,7 @@ namespace LeechCraft
 
 	namespace
 	{
-		bool IsProperPlugin2 (QObject *obj)
+		bool IsProperPlugin2 (QObject *obj, const QObjectList& settables)
 		{
 			auto ip2 = qobject_cast<IPlugin2*> (obj);
 			if (!ip2)
@@ -97,7 +97,15 @@ namespace LeechCraft
 
 			auto classes = ip2->GetPluginClasses ();
 			classes.subtract (Core::Instance ().GetCoreInstanceObject ()->GetExpectedPluginClasses ());
-			return !classes.isEmpty ();
+			if (classes.isEmpty ())
+				return false;
+
+			for (const auto settable : settables)
+				if (const auto ipr = qobject_cast<IPluginReady*> (settable))
+					if (!ipr->GetExpectedPluginClasses ().intersect (classes).isEmpty ())
+						return true;
+
+			return false;
 		}
 
 		QString NameForGroup (const QString& origName, const QString& group)
@@ -125,11 +133,11 @@ namespace LeechCraft
 		QMap<QObject*, QList<QPair<QString, QString>>> BuildGroups (const QObjectList& settables)
 		{
 			QMap<QObject*, QList<QPair<QString, QString>>> result;
-			Q_FOREACH (QObject *obj, settables)
+			for (const auto obj : settables)
 			{
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
 					result [obj] << qMakePair (QString ("LeechCraft"), QString ());
-				else if (!IsProperPlugin2 (obj))
+				else if (!IsProperPlugin2 (obj, settables))
 					result [obj] << qMakePair (SettingsTab::tr ("General plugins"), QString ());
 			}
 
