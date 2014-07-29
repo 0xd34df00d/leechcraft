@@ -79,22 +79,20 @@ namespace SecureStorage
 	}
 
 	Plugin::Plugin ()
-	: WindowTitle_ ("SecMan SecureStorage")
-	, CryptoSystem_ (0)
+	: Storage_ { std::make_shared<QSettings> (QSettings::IniFormat,
+					QSettings::UserScope,
+					QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data")}
+	, Settings_ { std::make_shared<QSettings> (QSettings::IniFormat,
+					QSettings::UserScope,
+					QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_SecMan_SecureStorage") }
+	, WindowTitle_ { "SecMan SecureStorage" }
 	{
 	}
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Settings_ .reset (new QSettings (QSettings::IniFormat,
-					QSettings::UserScope,
-					QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_SecMan_SecureStorage"));
-		Storage_ .reset (new QSettings (QSettings::IniFormat,
-					QSettings::UserScope,
-					QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
-
 		ForgetKeyAction_ = new QAction (tr ("Forget master password"), this);
 		connect (ForgetKeyAction_,
 				SIGNAL (triggered ()),

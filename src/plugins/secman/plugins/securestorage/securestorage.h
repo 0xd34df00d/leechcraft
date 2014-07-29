@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QInputDialog>
 #include <interfaces/iinfo.h>
@@ -63,17 +63,17 @@ namespace SecureStorage
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		SettingsWidget* SettingsWidget_;
 
-		boost::shared_ptr<QSettings> Storage_;
-		boost::shared_ptr<QSettings> Settings_;
+		const std::shared_ptr<QSettings> Storage_;
+		const std::shared_ptr<QSettings> Settings_;
 
 		QString WindowTitle_;
-		CryptoSystem *CryptoSystem_;
+		CryptoSystem *CryptoSystem_ = nullptr;
 
 		QAction *ForgetKeyAction_;
 		QAction *InputKeyAction_;
 
-		boost::shared_ptr<QInputDialog> InputPasswordDialog_;
-		boost::shared_ptr<NewPasswordDialog> NewPasswordDialog_;
+		std::shared_ptr<QInputDialog> InputPasswordDialog_;
+		std::shared_ptr<NewPasswordDialog> NewPasswordDialog_;
 	public:
 		Plugin ();
 		void Init (ICoreProxy_ptr);
