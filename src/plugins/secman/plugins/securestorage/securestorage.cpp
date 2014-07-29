@@ -308,34 +308,27 @@ namespace SecureStorage
 				{
 					// This method can be called recursively from loop.exec() below,
 					// but we should display only one password dialog.
-					if (!InputPasswordDialog_->isVisible ())
+					if (InputPasswordDialog_->isVisible ())
 					{
-						InputPasswordDialog_->setTextEchoMode (QLineEdit::Password);
-						InputPasswordDialog_->setWindowTitle (WindowTitle_);
-						InputPasswordDialog_->setLabelText (tr ("Enter master password:"));
-						InputPasswordDialog_->setTextValue (QString ());
-						InputPasswordDialog_->setVisible (true);
+						QEventLoop loop;
+						connect (InputPasswordDialog_.get (),
+								SIGNAL (done (int)),
+								&loop,
+								SLOT (quit ()),
+								Qt::QueuedConnection);
+						loop.exec ();
 					}
-
-					QEventLoop loop;
-					connect (InputPasswordDialog_.get (),
-						SIGNAL (accepted ()),
-						&loop,
-						SLOT (quit ()),
-						Qt::QueuedConnection);
-					connect (InputPasswordDialog_.get (),
-						SIGNAL (rejected ()),
-						&loop,
-						SLOT (quit ()),
-						Qt::QueuedConnection);
-					// qDebug () << Q_FUNC_INFO << "Loop start";
-					loop.exec ();
-					// qDebug () << Q_FUNC_INFO << "Loop exit";
 
 					if (CryptoSystem_)
 						break;
 
-					if (InputPasswordDialog_->result () != QDialog::Accepted)
+					InputPasswordDialog_->setTextEchoMode (QLineEdit::Password);
+					InputPasswordDialog_->setWindowTitle (WindowTitle_);
+					InputPasswordDialog_->setLabelText (tr ("Enter master password:"));
+					InputPasswordDialog_->setTextValue ({});
+					InputPasswordDialog_->setVisible (true);
+
+					if (InputPasswordDialog_->exec () != QDialog::Accepted)
 						throw PasswordNotEnteredException ();
 
 					QString password = InputPasswordDialog_->textValue ();
@@ -346,11 +339,7 @@ namespace SecureStorage
 						break;
 					}
 					else // continue
-					{
 						delete cs;
-						InputPasswordDialog_->setLabelText (tr ("Wrong password.\n"
-								"Try enter master password again:"));
-					}
 				}
 			}
 		}
@@ -367,24 +356,14 @@ namespace SecureStorage
 
 	void Plugin::CreateNewPassword ()
 	{
-		if (!NewPasswordDialog_->isVisible ())
-		{
-			NewPasswordDialog_->clear ();
-			NewPasswordDialog_->show ();
-		}
-		QEventLoop loop;
-		connect (NewPasswordDialog_.get (),
-			SIGNAL (dialogFinished ()),
-			&loop,
-			SLOT (quit ()),
-			Qt::QueuedConnection);
-		// qDebug () << Q_FUNC_INFO << "Loop start";
-		loop.exec ();
-		// qDebug () << Q_FUNC_INFO << "Loop exit";
+		if (NewPasswordDialog_->isVisible ())
+			return;
 
-		QString password = NewPasswordDialog_->GetPassword ();
+		NewPasswordDialog_->clear ();
+		if (NewPasswordDialog_->exec () != QDialog::Accepted)
+			return;
 
-		// check result of recursive calls of this method through loop.exec().
+		const auto& password = NewPasswordDialog_->GetPassword ();
 		if (!IsPasswordSet ())
 		{
 			// clear old settings and data
@@ -395,7 +374,7 @@ namespace SecureStorage
 			UpdatePasswordSettings (password);
 			UpdateActionsStates ();
 		}
-}
+	}
 
 	bool Plugin::IsPasswordSet ()
 	{
@@ -413,13 +392,13 @@ namespace SecureStorage
 
 		CryptoSystem newCs (newPass);
 
-		Q_FOREACH (const QString& key, Storage_->allKeys ())
+		for (const auto& key : Storage_->allKeys ())
 		{
 			try
 			{
-				const QByteArray& oldEncrypted = Storage_->value (key).toByteArray ();
-				const QByteArray& data = oldCs.Decrypt (oldEncrypted);
-				const QByteArray& newEncrypted = newCs.Encrypt (data);
+				const auto& oldEncrypted = Storage_->value (key).toByteArray ();
+				const auto& data = oldCs.Decrypt (oldEncrypted);
+				const auto& newEncrypted = newCs.Encrypt (data);
 				QVariant encryptedData (newEncrypted);
 				Storage_->setValue (key, encryptedData);
 			}
