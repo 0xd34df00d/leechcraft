@@ -78,7 +78,8 @@ namespace Azoth
 		Ui_.ListView_->setModel (Filter_);
 		Ui_.ListView_->sortByColumn (0, Qt::AscendingOrder);
 
-		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
+		auto clear = new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
+		clear->SetEscClearsEdit (false);
 
 		connect (Ui_.ListView_,
 				SIGNAL (activated (QModelIndex)),
