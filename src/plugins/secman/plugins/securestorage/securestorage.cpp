@@ -299,7 +299,7 @@ namespace SecureStorage
 		if (!CryptoSystem_)
 		{
 			if (IsPasswordEmpty ())
-				SetCryptoSystem (new CryptoSystem (""));
+				SetCryptoSystem (std::make_shared<CryptoSystem> (""));
 			else
 			{
 				while (true)
@@ -329,15 +329,13 @@ namespace SecureStorage
 					if (InputPasswordDialog_->exec () != QDialog::Accepted)
 						throw PasswordNotEnteredException ();
 
-					QString password = InputPasswordDialog_->textValue ();
-					CryptoSystem *cs = new CryptoSystem (password);
+					const auto& password = InputPasswordDialog_->textValue ();
+					const auto& cs = std::make_shared<CryptoSystem> (password);
 					if (IsPasswordCorrect (*cs))
 					{
 						SetCryptoSystem (cs);
 						break;
 					}
-					else // continue
-						delete cs;
 				}
 			}
 		}
@@ -345,9 +343,8 @@ namespace SecureStorage
 		return *CryptoSystem_;
 	}
 
-	void Plugin::SetCryptoSystem (CryptoSystem *cs)
+	void Plugin::SetCryptoSystem (const CryptoSystem_ptr& cs)
 	{
-		delete CryptoSystem_;
 		CryptoSystem_ = cs;
 		UpdateActionsStates ();
 	}
@@ -414,12 +411,12 @@ namespace SecureStorage
 
 	void Plugin::UpdatePasswordSettings (const QString& pass)
 	{
-		CryptoSystem *cs = new CryptoSystem (pass);
+		const auto& cs = std::make_shared<CryptoSystem> (pass);
 
 		// set up new settings
 		Settings_->setValue ("SecureStoragePasswordIsSet", true);
 		Settings_->setValue ("SecureStoragePasswordIsEmpty", pass.isEmpty ());
-		const QByteArray& cookie = cs->Encrypt (QByteArray ("cookie"));
+		const QByteArray& cookie = cs->Encrypt ("cookie");
 		Settings_->setValue ("SecureStorageCookie", cookie);
 
 		// use created cryptosystem.

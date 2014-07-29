@@ -30,6 +30,7 @@
 #pragma once
 
 #include <stdexcept>
+#include <memory>
 #include <QByteArray>
 #include <QString>
 
@@ -59,6 +60,8 @@ namespace SecureStorage
 		QByteArray Hash (const QByteArray& data) const;
 		QByteArray CreateKey (const QString& password) const;
 	};
+
+	typedef std::shared_ptr<CryptoSystem> CryptoSystem_ptr;
 }
 }
 }

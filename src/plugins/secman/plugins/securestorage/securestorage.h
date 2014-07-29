@@ -67,7 +67,7 @@ namespace SecureStorage
 		const std::shared_ptr<QSettings> Settings_;
 
 		QString WindowTitle_;
-		CryptoSystem *CryptoSystem_ = nullptr;
+		CryptoSystem_ptr CryptoSystem_;
 
 		QAction *ForgetKeyAction_;
 		QAction *InputKeyAction_;
@@ -100,7 +100,7 @@ namespace SecureStorage
 		void clearSettings ();
 	private:
 		const CryptoSystem& GetCryptoSystem ();
-		void SetCryptoSystem (CryptoSystem *cs);
+		void SetCryptoSystem (const CryptoSystem_ptr&);
 		void UpdateActionsStates ();
 		void UpdatePasswordSettings (const QString& pass);
 
