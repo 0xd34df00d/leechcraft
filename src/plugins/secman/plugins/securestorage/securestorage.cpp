@@ -468,7 +468,7 @@ namespace SecureStorage
 		return Settings_->value ("SecureStoragePasswordIsEmpty").toBool ();
 	}
 
-	LeechCraft::Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}

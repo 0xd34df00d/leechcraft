@@ -50,9 +50,8 @@ namespace SecureStorage
 
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		QSettings *settings =
-			new QSettings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_SecureStorage");
+		auto settings = new QSettings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_SecMan_SecureStorage");
 		return settings;
 	}
 

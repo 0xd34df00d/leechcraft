@@ -92,7 +92,7 @@ namespace SecureStorage
 		QVariant Load (const QByteArray&, StorageType);
 		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const;
 
-		LeechCraft::Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void forgetKey ();
 		void inputKey ();
