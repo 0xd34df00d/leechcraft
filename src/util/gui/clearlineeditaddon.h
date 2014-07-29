@@ -35,6 +35,7 @@
 
 class QLineEdit;
 class QToolButton;
+class QShortcut;
 
 namespace LeechCraft
 {
@@ -65,8 +66,10 @@ namespace Util
 	{
 		Q_OBJECT
 
-		QToolButton *Button_;
-		QLineEdit *Edit_;
+		QToolButton * const Button_;
+		QLineEdit * const Edit_;
+
+		QShortcut * const EscShortcut_;
 	public:
 		/** @brief Creates the addon and installs it on the given edit.
 		 *
@@ -96,6 +99,15 @@ namespace Util
 		 * of the default internal one.
 		 */
 		ClearLineEditAddon (ICoreProxy_ptr proxy, QLineEdit *edit, LineEditButtonManager *manager);
+
+		/** @brief Toggles whether Esc button clears the line edit.
+		 *
+		 * By default, Esc clears the line edit.
+		 *
+		 * @param[in] clears Whether pressing Esc should clear the line
+		 * edit.
+		 */
+		void SetEscClearsEdit (bool clears);
 	private slots:
 		void updateButton (const QString&);
 	};

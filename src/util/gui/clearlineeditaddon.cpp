@@ -47,9 +47,10 @@ namespace Util
 
 	ClearLineEditAddon::ClearLineEditAddon (ICoreProxy_ptr proxy,
 			QLineEdit *edit, LineEditButtonManager *mgr)
-	: QObject (edit)
-	, Button_ (new QToolButton (edit))
-	, Edit_ (edit)
+	: QObject { edit }
+	, Button_ { new QToolButton { edit } }
+	, Edit_ { edit }
+	, EscShortcut_ { new QShortcut { Qt::Key_Escape, edit, SLOT (clear ()), nullptr, Qt::WidgetShortcut } }
 	{
 		const bool isRtl = QApplication::layoutDirection () == Qt::RightToLeft;
 		const auto& icon = proxy->GetIconThemeManager ()->GetIcon (isRtl ?
@@ -74,13 +75,16 @@ namespace Util
 		updateButton (edit->text ());
 
 		mgr->Add (Button_);
-
-		new QShortcut (Qt::Key_Escape, Edit_, SLOT (clear ()), nullptr, Qt::WidgetShortcut);
 	}
 
 	void ClearLineEditAddon::updateButton (const QString& text)
 	{
 		Button_->setVisible (!text.isEmpty ());
+	}
+
+	void ClearLineEditAddon::SetEscClearsEdit (bool clears)
+	{
+		EscShortcut_->setEnabled (clears);
 	}
 }
 }
