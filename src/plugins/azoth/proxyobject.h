@@ -53,7 +53,6 @@ namespace Azoth
 		ProxyObject (QObject* = 0);
 	public slots:
 		QObject* GetSettingsManager ();
-		QString GetPassword (QObject*);
 		void SetPassword (const QString&, QObject*);
 		QString GetAccountPassword (QObject*, bool);
 		bool IsAutojoinAllowed ();

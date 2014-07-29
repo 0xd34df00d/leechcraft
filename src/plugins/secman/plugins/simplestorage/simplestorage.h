@@ -73,10 +73,9 @@ namespace LeechCraft
 
 						StorageTypes GetStorageTypes () const;
 						QList<QByteArray> ListKeys (StorageType);
-						void Save (const QByteArray&, const QVariantList&, StorageType, bool);
-						QVariantList Load (const QByteArray&, StorageType);
-						void Save (const QList<QPair<QByteArray, QVariantList>>&, StorageType, bool);
-						QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
+
+						void Save (const QByteArray&, const QVariant&, StorageType);
+						QVariant Load (const QByteArray&, StorageType);
 					};
 				}
 			}

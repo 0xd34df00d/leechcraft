@@ -31,7 +31,9 @@
 #include <util/util.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/an/entityfields.h>
+#include <interfaces/ipersistentstorageplugin.h>
 
 Q_DECLARE_METATYPE (QVariantList*);
 
@@ -141,17 +143,22 @@ namespace Util
 		return e;
 	}
 
-	QVariantList GetPersistentData (const QList<QVariant>& keys,
+	QVariant GetPersistentData (const QByteArray& key,
 			const ICoreProxy_ptr& proxy)
 	{
-		Entity e = MakeEntity (keys,
-				{},
-				Internal,
-				"x-leechcraft/data-persistent-load");
-		QVariantList values;
-		e.Additional_ ["Values"] = QVariant::fromValue<QVariantList*> (&values);
-		proxy->GetEntityManager ()->HandleEntity (e);
-		return values;
+		const auto& plugins = proxy->GetPluginsManager ()->
+				GetAllCastableTo<IPersistentStoragePlugin*> ();
+		for (const auto plug : plugins)
+		{
+			const auto& storage = plug->RequestStorage ();
+			if (!storage)
+				continue;
+
+			const auto& value = storage->Get (key);
+			if (!value.isNull ())
+				return value;
+		}
+		return {};
 	}
 }
 }

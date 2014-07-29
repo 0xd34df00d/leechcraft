@@ -171,18 +171,14 @@ namespace Xoox
 
 		if (isNewAcc)
 		{
-			InBandAccountRegSecondPage *second =
-				qobject_cast<InBandAccountRegSecondPage*> (widgets.value (1));
-			if (second)
-				qobject_cast<IProxyObject*> (ProxyObject_)->
-						SetPassword (second->GetPassword (), account);
+			if (const auto second = qobject_cast<InBandAccountRegSecondPage*> (widgets.value (1)))
+				qobject_cast<IProxyObject*> (ProxyObject_)->SetPassword (second->GetPassword (), account);
 		}
 		else
 		{
-			const QString& pass = w->GetPassword ();
+			const auto& pass = w->GetPassword ();
 			if (!pass.isNull ())
-				qobject_cast<IProxyObject*> (ProxyObject_)->
-						SetPassword (pass, account);
+				qobject_cast<IProxyObject*> (ProxyObject_)->SetPassword (pass, account);
 		}
 
 		Accounts_ << account;

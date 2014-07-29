@@ -29,35 +29,32 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/structures.h>
+#include <memory>
+#include <QtPlugin>
 
-namespace LeechCraft
+class QByteArray;
+
+class IPersistentStorage
 {
-namespace Plugins
+public:
+	virtual ~IPersistentStorage () {}
+
+	virtual bool HasKey (const QByteArray& key) = 0;
+
+	virtual QVariant Get (const QByteArray& key) = 0;
+
+	virtual void Set (const QByteArray& key, const QVariant& value) = 0;
+};
+
+typedef std::shared_ptr<IPersistentStorage> IPersistentStorage_ptr;
+
+class IPersistentStoragePlugin
 {
-namespace SecMan
-{
-	class Core : public QObject
-	{
-		Core ();
+public:
+	virtual ~IPersistentStoragePlugin () {}
 
-		QObjectList StoragePlugins_;
-	public:
-		static Core& Instance ();
+	virtual IPersistentStorage_ptr RequestStorage () = 0;
+};
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
-
-		QObjectList GetStoragePlugins () const;
-
-		void Store (const QByteArray&, const QVariant&);
-		QVariant Load (const QByteArray&);
-	private:
-		void AddStoragePlugin (QObject *object);
-
-		QObject* GetStoragePlugin () const;
-	};
-}
-}
-}
+Q_DECLARE_INTERFACE (IPersistentStorage, "org.LeechCraft.IPersistentStorage/1.0");
+Q_DECLARE_INTERFACE (IPersistentStoragePlugin, "org.LeechCraft.IPersistentStoragePlugin/1.0");

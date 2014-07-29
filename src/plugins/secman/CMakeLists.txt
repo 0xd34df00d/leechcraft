@@ -30,6 +30,7 @@ set (SRCS
 	secman.cpp
 	core.cpp
 	contentsdisplaydialog.cpp
+	persistentstorage.cpp
 	)
 set (FORMS
 	contentsdisplaydialog.ui

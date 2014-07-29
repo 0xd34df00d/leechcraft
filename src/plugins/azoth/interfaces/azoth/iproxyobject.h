@@ -65,29 +65,6 @@ namespace Azoth
 		 */
 		virtual QObject* GetSettingsManager () = 0;
 
-		/** @brief Retrieves the password for the given account.
-		 *
-		 * Returns password for the given account, or a null string if
-		 * no password is stored. The password should be previously set
-		 * (stored) by the call to SetPassword().
-		 *
-		 * The account object should implement the IAccount interface.
-		 * Accounts are distinguished by their IDs.
-		 *
-		 * @param[in] account The account for which to retrieve the
-		 * password. The object should implement IAccount.
-		 * @return The stored password or null string if no password is
-		 * stored.
-		 *
-		 * @note This function may return null passwords even after
-		 * corresponding calls to SetPassword() since the implementation
-		 * uses secure storage plugins to store passwords, and if no
-		 * such plugins are installed, no passwords are stored.
-		 *
-		 * @sa GetAccountPassword(), SetPassword(), IAccount
-		 */
-		virtual QString GetPassword (QObject *account) = 0;
-
 		/** @brief Stores the password for the given account.
 		 *
 		 * The password set by this function overwrites any previously

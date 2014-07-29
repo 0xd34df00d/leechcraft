@@ -186,7 +186,7 @@ namespace Util
 	 */
 	UTIL_XPC_API Entity MakeANCancel (const QString& senderId, const QString& eventId);
 
-	UTIL_XPC_API QVariantList GetPersistentData (const QList<QVariant>& keys,
+	UTIL_XPC_API QVariant GetPersistentData (const QByteArray& key,
 			const ICoreProxy_ptr& proxy);
 }
 }

@@ -979,12 +979,15 @@ namespace Poshuku
 			return;
 		}
 
-		QList<QVariant> keys;
-		QStringList pairFirstKeys = pair.first.keys ();
-		Q_FOREACH (QString name, pairFirstKeys)
-			keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + name.toUtf8 ();
-
-		QVariantList values = Util::GetPersistentData (keys, Core::Instance ().GetProxy ());
+		QVariantList values;
+		QList<QByteArray> keys;
+		const auto& pairFirstKeys = pair.first.keys ();
+		for (const auto& name : pairFirstKeys)
+		{
+			const auto& key = "org.LeechCraft.Poshuku.Forms.InputByName/" + name.toUtf8 ();
+			keys << key;
+			values.append (Util::GetPersistentData (key, Core::Instance ().GetProxy ()));
+		}
 
 		const int size = keys.size ();
 		if (values.size () != size)
@@ -992,7 +995,7 @@ namespace Poshuku
 
 		for (int i = 0; i < size; ++i)
 		{
-			QString inputName = QString (keys.at (i).toByteArray ());
+			QString inputName = QString::fromUtf8 (keys.at (i));
 			if (inputName.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO

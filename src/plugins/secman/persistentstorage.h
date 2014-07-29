@@ -27,14 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "secman.h"
-#include <QIcon>
-#include <QAction>
-#include <util/util.h>
-#include <interfaces/entitytesthandleresult.h>
-#include "core.h"
-#include "contentsdisplaydialog.h"
-#include "persistentstorage.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/ipersistentstorageplugin.h>
 
 namespace LeechCraft
 {
@@ -42,82 +38,18 @@ namespace Plugins
 {
 namespace SecMan
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	class PersistentStorage : public QObject
+							, public IPersistentStorage
 	{
-		Util::InstallTranslator ("secman");
+		Q_OBJECT
+		Q_INTERFACES (IPersistentStorage)
+	public:
+		PersistentStorage ();
 
-#ifdef SECMAN_EXPOSE_CONTENTSDISPLAY
-		auto displayContentsAction = new QAction (tr ("Display storages' contents"), this);
-		connect (displayContentsAction,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleDisplayContents ()));
-		MenuActions_ ["tools"] << displayContentsAction;
-#endif
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.SecMan";
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "SecMan";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Secure data storage for other LeechCraft modules.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		static QIcon icon ("lcicons:/resources/images/secman.svg");
-		return icon;
-	}
-
-	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
-	{
-		return Core::Instance ().GetExpectedPluginClasses ();
-	}
-
-	void Plugin::AddPlugin (QObject *plugin)
-	{
-		Core::Instance ().AddPlugin (plugin);
-	}
-
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
-	{
-		return {};
-	}
-
-	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
-	{
-		return MenuActions_;
-	}
-
-	void Plugin::handleDisplayContents ()
-	{
-		auto dia = new ContentsDisplayDialog;
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->show ();
-	}
-
-	IPersistentStorage_ptr Plugin::RequestStorage ()
-	{
-		return std::make_shared<PersistentStorage> ();
-	}
+		bool HasKey (const QByteArray& key);
+		QVariant Get (const QByteArray& key);
+		void Set (const QByteArray& key, const QVariant& value);
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_secman, LeechCraft::Plugins::SecMan::Plugin);

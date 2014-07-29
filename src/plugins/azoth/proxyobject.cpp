@@ -34,6 +34,7 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <util/xpc/util.h>
+#include <util/xpc/passutils.h>
 #include <util/sys/sysinfo.h>
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
@@ -64,88 +65,22 @@ namespace Azoth
 		return &XmlSettingsManager::Instance ();
 	}
 
-	QString ProxyObject::GetPassword (QObject *accObj)
-	{
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "account doesn't implement IAccount"
-					<< accObj;
-			return QString ();
-		}
-
-		QList<QVariant> keys;
-		keys << "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ();
-		const auto& result = Util::GetPersistentData (keys, Core::Instance ().GetProxy ());
-		if (result.size () != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "incorrect result size"
-					<< result;
-			return QString ();
-		}
-
-		const auto& strVarList = result.at (0).toList ();
-		if (strVarList.isEmpty () ||
-				!strVarList.at (0).canConvert<QString> ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid string variant list"
-					<< strVarList;
-			return QString ();
-		}
-
-		return strVarList.at (0).toString ();
-	}
-
 	void ProxyObject::SetPassword (const QString& password, QObject *accObj)
 	{
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "account doesn't implement IAccount"
-					<< accObj;
-			return;
-		}
-
-		QList<QVariant> keys;
-		keys << "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ();
-
-		QList<QVariant> passwordVar;
-		passwordVar << password;
-		QList<QVariant> values;
-		values << QVariant (passwordVar);
-
-		Entity e = Util::MakeEntity (keys,
-				QString (),
-				Internal,
-				"x-leechcraft/data-persistent-save");
-		e.Additional_ ["Values"] = values;
-		e.Additional_ ["Overwrite"] = true;
-
-		Core::Instance ().SendEntity (e);
+		const auto acc = qobject_cast<IAccount*> (accObj);
+		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ();
+		Util::SavePassword (password, key, Core::Instance ().GetProxy ());
 	}
 
 	QString ProxyObject::GetAccountPassword (QObject *accObj, bool useStored)
 	{
-		if (useStored)
-		{
-			const QString& result = GetPassword (accObj);
-			if (!result.isNull ())
-				return result;
-		}
-
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
-
-		QString result = QInputDialog::getText (0,
-				"LeechCraft",
-				tr ("Enter password for %1:").arg (acc->GetAccountName ()),
-				QLineEdit::Password);
-		if (!result.isNull ())
-			SetPassword (result, accObj);
-		return result;
+		const auto acc = qobject_cast<IAccount*> (accObj);
+		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ();
+		return Util::GetPassword (key,
+				tr ("Enter password for %1:")
+						.arg (acc->GetAccountName ()),
+				Core::Instance ().GetProxy (),
+				useStored);
 	}
 
 	bool ProxyObject::IsAutojoinAllowed ()

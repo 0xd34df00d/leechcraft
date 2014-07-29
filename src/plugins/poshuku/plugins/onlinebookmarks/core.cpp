@@ -35,6 +35,7 @@
 #include <interfaces/poshuku/iproxyobject.h>
 #include <interfaces/iserviceplugin.h>
 #include <util/xpc/util.h>
+#include <util/xpc/passutils.h>
 #include "accountssettings.h"
 #include "pluginmanager.h"
 #include "xmlsettingsmanager.h"
@@ -188,51 +189,19 @@ namespace OnlineBookmarks
 
 	QString Core::GetPassword (QObject *accObj)
 	{
-		QVariantList keys;
-		IAccount *account = qobject_cast<IAccount*> (accObj);
-		keys << account->GetAccountID ();
-
-		const QVariantList& result = Util::GetPersistentData (keys, CoreProxy_);
-		if (result.size () != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "incorrect result size"
-					<< result;
-			return QString ();
-		}
-
-		const QVariantList& strVarList = result.at (0).toList ();
-		if (strVarList.isEmpty () ||
-				!strVarList.at (0).canConvert<QString> ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid string variant list"
-					<< strVarList;
-			return QString ();
-		}
-
-		return strVarList.at (0).toString ();
+		const auto account = qobject_cast<IAccount*> (accObj);
+		const auto service = qobject_cast<IBookmarksService*> (account->GetParentService ());
+		return Util::GetPassword (account->GetAccountID (),
+				tr ("Enter password for account %1 at service %2:")
+					.arg ("<em>" + account->GetLogin () + "</em>")
+					.arg ("<em>" + service->GetServiceName () + "</em>"),
+				CoreProxy_);
 	}
 
 	void Core::SavePassword (QObject *accObj)
 	{
-		QVariantList keys;
-		IAccount *account = qobject_cast<IAccount*> (accObj);
-		keys << account->GetAccountID ();
-
-		QVariantList passwordVar;
-		passwordVar << account->GetPassword ();
-		QVariantList values;
-		values << QVariant (passwordVar);
-
-		Entity e = Util::MakeEntity (keys,
-				QString (),
-				Internal,
-				"x-leechcraft/data-persistent-save");
-		e.Additional_ ["Values"] = values;
-		e.Additional_ ["Overwrite"] = true;
-
-		emit gotEntity (e);
+		const auto account = qobject_cast<IAccount*> (accObj);
+		Util::SavePassword (account->GetPassword (), account->GetAccountID (), CoreProxy_);
 	}
 
 	QModelIndex Core::GetServiceIndex (QObject *object) const
