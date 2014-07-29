@@ -29,41 +29,42 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_proxiesconfigwidget.h"
-#include "structures.h"
+#include <QStringList>
+#include <QNetworkProxy>
+#include <util/sll/regexp.h>
 
-class QStandardItemModel;
+class QDataStream;
 
 namespace LeechCraft
 {
 namespace XProxy
 {
-	class ProxiesConfigWidget : public QWidget
+	struct ReqTarget
 	{
-		Q_OBJECT
-
-		Ui::ProxiesConfigWidget Ui_;
-		QStandardItemModel *Model_;
-
-		QList<Entry_t> Entries_;
-	public:
-		ProxiesConfigWidget (QWidget* = 0);
-
-		QList<Proxy> FindMatching (const QString& reqHost, int reqPort,
-				const QString& proto = QString ()) const;
-	private:
-		void LoadSettings ();
-		void SaveSettings () const;
-		Entry_t EntryFromUI () const;
-	public slots:
-		void accept ();
-		void reject ();
-	private slots:
-		void handleItemSelected (const QModelIndex&);
-		void on_AddProxyButton__released ();
-		void on_UpdateProxyButton__released ();
-		void on_RemoveProxyButton__released ();
+		Util::RegExp Host_;
+		int Port_;
+		QStringList Protocols_;
 	};
+	struct Proxy
+	{
+		QNetworkProxy::ProxyType Type_;
+		QString Host_;
+		int Port_;
+		QString User_;
+		QString Pass_;
+
+		operator QNetworkProxy () const;
+	};
+
+	bool operator< (const Proxy&, const Proxy&);
+
+	typedef QPair<ReqTarget, Proxy> Entry_t;
+
+	QDataStream& operator<< (QDataStream&, const Proxy&);
+	QDataStream& operator>> (QDataStream&, Proxy&);
+	QDataStream& operator<< (QDataStream&, const ReqTarget&);
+	QDataStream& operator>> (QDataStream&, ReqTarget&);
 }
 }
+
+Q_DECLARE_METATYPE (QList<LeechCraft::XProxy::Entry_t>);

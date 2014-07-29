@@ -14,6 +14,7 @@ set (SRCS
 	proxyfactory.cpp
 	xmlsettingsmanager.cpp
 	proxiesconfigwidget.cpp
+	structures.cpp
 	)
 set (FORMS
 	proxiesconfigwidget.ui

@@ -31,17 +31,10 @@
 #include <QStandardItemModel>
 #include <QSettings>
 
-Q_DECLARE_METATYPE (QList<LeechCraft::XProxy::Entry_t>);
-
 namespace LeechCraft
 {
 namespace XProxy
 {
-	Proxy::operator QNetworkProxy () const
-	{
-		return QNetworkProxy (Type_, Host_, Port_, User_, Pass_);
-	}
-
 	namespace
 	{
 		QString ProxyType2Str (QNetworkProxy::ProxyType type)
@@ -296,75 +289,6 @@ namespace XProxy
 
 		Entries_.removeAt (row);
 		Model_->removeRow (row);
-	}
-
-	QDataStream& operator<< (QDataStream& out, const Proxy& p)
-	{
-		out << static_cast<quint8> (1);
-		out << static_cast<qint8> (p.Type_)
-			<< p.Host_
-			<< p.Port_
-			<< p.User_
-			<< p.Pass_;
-		return out;
-	}
-
-	QDataStream& operator>> (QDataStream& in, Proxy& p)
-	{
-		quint8 ver = 0;
-		in >> ver;
-		if (ver != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< ver;
-			return in;
-		}
-
-		qint8 type = 0;
-		in >> type
-			>> p.Host_
-			>> p.Port_
-			>> p.User_
-			>> p.Pass_;
-		p.Type_ = static_cast<QNetworkProxy::ProxyType> (type);
-
-		return in;
-	}
-
-	QDataStream& operator<< (QDataStream& out, const ReqTarget& t)
-	{
-		out << static_cast<quint8> (2);
-		out << t.Host_
-			<< t.Port_
-			<< t.Protocols_;
-		return out;
-	}
-
-	QDataStream& operator>> (QDataStream& in, ReqTarget& t)
-	{
-		quint8 ver = 0;
-		in >> ver;
-		if (ver < 1 || ver > 2)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< ver;
-			return in;
-		}
-
-		if (ver == 1)
-		{
-			QRegExp rx;
-			in >> rx;
-			t.Host_ = Util::RegExp { rx.pattern (), rx.caseSensitivity () };
-		}
-		else
-			in >> t.Host_;
-
-		in >> t.Port_
-			>> t.Protocols_;
-		return in;
 	}
 }
 }
