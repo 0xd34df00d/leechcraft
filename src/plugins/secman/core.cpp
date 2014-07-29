@@ -106,7 +106,14 @@ namespace SecMan
 			return {};
 		}
 
-		return qobject_cast<IStoragePlugin*> (storage)->Load (key, IStoragePlugin::STSecure);
+		for (const auto storage : StoragePlugins_)
+		{
+			const auto& loaded = qobject_cast<IStoragePlugin*> (storage)->Load (key, IStoragePlugin::STSecure);
+			if (!loaded.isNull ())
+				return loaded;
+		}
+
+		return {};
 	}
 
 	QObject* Core::GetStoragePlugin () const
