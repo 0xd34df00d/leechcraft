@@ -50,7 +50,6 @@ namespace DeathNote
 
 		const ICoreProxy_ptr Proxy_;
 		QList<FotoBilderAccount*> Accounts_;
-
 	public:
 		FotoBilderService (ICoreProxy_ptr proxy);
 
@@ -69,10 +68,7 @@ namespace DeathNote
 
 	private slots:
 		void saveAccount (FotoBilderAccount *account);
-
 	signals:
-		void gotEntity (LeechCraft::Entity e);
-		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
 		void accountAdded (QObject *accObj);
 		void accountRemoved (QObject *accObj);
 	};

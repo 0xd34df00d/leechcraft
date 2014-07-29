@@ -142,7 +142,7 @@ namespace Util
 	}
 
 	QVariantList GetPersistentData (const QList<QVariant>& keys,
-			QObject* object)
+			const ICoreProxy_ptr& proxy)
 	{
 		Entity e = MakeEntity (keys,
 				{},
@@ -150,13 +150,7 @@ namespace Util
 				"x-leechcraft/data-persistent-load");
 		QVariantList values;
 		e.Additional_ ["Values"] = QVariant::fromValue<QVariantList*> (&values);
-
-		QMetaObject::invokeMethod (object,
-				"delegateEntity",
-				Q_ARG (LeechCraft::Entity, e),
-				Q_ARG (int*, 0),
-				Q_ARG (QObject**, 0));
-
+		proxy->GetEntityManager ()->HandleEntity (e);
 		return values;
 	}
 }

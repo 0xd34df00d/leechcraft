@@ -77,8 +77,7 @@ namespace Azoth
 
 		QList<QVariant> keys;
 		keys << "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ();
-		const QVariantList& result =
-				Util::GetPersistentData (keys, &Core::Instance ());
+		const auto& result = Util::GetPersistentData (keys, Core::Instance ().GetProxy ());
 		if (result.size () != 1)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -87,7 +86,7 @@ namespace Azoth
 			return QString ();
 		}
 
-		const QVariantList& strVarList = result.at (0).toList ();
+		const auto& strVarList = result.at (0).toList ();
 		if (strVarList.isEmpty () ||
 				!strVarList.at (0).canConvert<QString> ())
 		{

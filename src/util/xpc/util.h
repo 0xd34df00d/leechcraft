@@ -32,6 +32,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/ianemitter.h>
+#include <interfaces/core/icoreproxy.h>
 #include "xpcconfig.h"
 
 class IEntityManager;
@@ -186,6 +187,6 @@ namespace Util
 	UTIL_XPC_API Entity MakeANCancel (const QString& senderId, const QString& eventId);
 
 	UTIL_XPC_API QVariantList GetPersistentData (const QList<QVariant>& keys,
-			QObject *object);
+			const ICoreProxy_ptr& proxy);
 }
 }

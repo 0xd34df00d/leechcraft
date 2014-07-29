@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWizardPage>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_finalpage.h"
 #include "structures.h"
 
@@ -45,11 +46,13 @@ namespace Dolozhee
 
 		Ui::FinalPage Ui_;
 
+		const ICoreProxy_ptr Proxy_;
+
 		QList<FileInfo> PendingFiles_;
 		FileInfo CurrentUpload_;
 		QList<FileInfo> UploadedFiles_;
 	public:
-		FinalPage (QWidget* = 0);
+		FinalPage (const ICoreProxy_ptr&, QWidget* = 0);
 
 		void initializePage ();
 	private:
@@ -61,8 +64,6 @@ namespace Dolozhee
 		void handleReplyFinished ();
 
 		void on_Status__linkActivated (const QString&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

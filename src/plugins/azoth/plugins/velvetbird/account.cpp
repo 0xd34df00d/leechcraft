@@ -147,7 +147,9 @@ namespace VelvetBird
 		if (status.State_ != SOffline && !purple_account_get_password (Account_))
 		{
 			const auto& str = Util::GetPassword ("Azoth." + GetAccountID (),
-					tr ("Enter password for account %1:").arg (GetAccountName ()), Proto_, true);
+					tr ("Enter password for account %1:").arg (GetAccountName ()),
+					Proto_->GetCoreProxy (),
+					true);
 			if (str.isEmpty ())
 				return;
 
@@ -286,7 +288,9 @@ namespace VelvetBird
 	{
 		ChangeState (EntryStatus ());
 		const auto& str = Util::GetPassword ("Azoth." + GetAccountID (),
-				tr ("Enter password for account %1:").arg (GetAccountName ()), Proto_, false);
+				tr ("Enter password for account %1:").arg (GetAccountName ()),
+				Proto_->GetCoreProxy (),
+				false);
 		if (str.isEmpty ())
 			return;
 

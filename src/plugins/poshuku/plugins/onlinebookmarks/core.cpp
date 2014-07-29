@@ -192,7 +192,7 @@ namespace OnlineBookmarks
 		IAccount *account = qobject_cast<IAccount*> (accObj);
 		keys << account->GetAccountID ();
 
-		const QVariantList& result = Util::GetPersistentData (keys, this);
+		const QVariantList& result = Util::GetPersistentData (keys, CoreProxy_);
 		if (result.size () != 1)
 		{
 			qWarning () << Q_FUNC_INFO

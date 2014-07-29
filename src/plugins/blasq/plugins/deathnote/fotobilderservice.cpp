@@ -93,7 +93,7 @@ namespace DeathNote
 			if (!password.isEmpty ())
 				Util::SavePassword (password,
 						"org.LeechCraft.Blasq.PassForAccount/" + acc->GetID (),
-						this);
+						Proxy_);
 			AddAccount (acc);
 			saveAccount (acc);
 		}

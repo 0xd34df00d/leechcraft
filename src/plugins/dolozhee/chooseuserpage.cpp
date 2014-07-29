@@ -37,8 +37,9 @@ namespace LeechCraft
 {
 namespace Dolozhee
 {
-	ChooseUserPage::ChooseUserPage (QWidget *parent)
+	ChooseUserPage::ChooseUserPage (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QWizardPage (parent)
+	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
 
@@ -77,7 +78,7 @@ namespace Dolozhee
 		const QString& text = tr ("Please enter password for user %1:")
 				.arg (login);
 		qDebug () << Q_FUNC_INFO << GetPassKey ();
-		const QString& pass = Util::GetPassword (GetPassKey (), text, this);
+		const QString& pass = Util::GetPassword (GetPassKey (), text, Proxy_);
 		Ui_.Password_->setText (pass);
 	}
 
@@ -156,7 +157,7 @@ namespace Dolozhee
 		settings.setValue ("Login", GetLogin ());
 		settings.endGroup ();
 
-		Util::SavePassword (GetPassword (), GetPassKey (), this);
+		Util::SavePassword (GetPassword (), GetPassKey (), Proxy_);
 	}
 }
 }

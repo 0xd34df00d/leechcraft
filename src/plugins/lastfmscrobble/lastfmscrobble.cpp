@@ -63,7 +63,7 @@ namespace Lastfmscrobble
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lastfmscrobblesettings.xml");
 
-		Auth_ = new Authenticator (proxy->GetNetworkAccessManager (), this);
+		Auth_ = new Authenticator (proxy->GetNetworkAccessManager (), proxy, this);
 		connect (Auth_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,

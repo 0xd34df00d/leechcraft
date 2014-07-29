@@ -984,7 +984,7 @@ namespace Poshuku
 		Q_FOREACH (QString name, pairFirstKeys)
 			keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + name.toUtf8 ();
 
-		QVariantList values = Util::GetPersistentData (keys, this);
+		QVariantList values = Util::GetPersistentData (keys, Core::Instance ().GetProxy ());
 
 		const int size = keys.size ();
 		if (values.size () != size)

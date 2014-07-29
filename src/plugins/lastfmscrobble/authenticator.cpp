@@ -68,9 +68,11 @@ namespace Lastfmscrobble
 		}
 	}
 
-	Authenticator::Authenticator (QNetworkAccessManager *nam, QObject *parent)
+	Authenticator::Authenticator (QNetworkAccessManager *nam,
+			const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
+	, Proxy_ (proxy)
 	, IsAuthenticated_ (false)
 	{
 	}
@@ -100,7 +102,7 @@ namespace Lastfmscrobble
 					.arg (login);
 		const auto& password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login,
 				text,
-				this,
+				Proxy_,
 				!authFailure);
 		if (password.isEmpty ())
 			return;

@@ -30,6 +30,7 @@
 #pragma once
 
 #include "xpcconfig.h"
+#include <interfaces/core/icoreproxy.h>
 
 class QString;
 class QObject;
@@ -75,7 +76,7 @@ namespace Util
 	 */
 	UTIL_XPC_API QString GetPassword (const QString& keyName,
 			const QString& dialogText,
-			QObject *emitter,
+			const ICoreProxy_ptr& proxy,
 			bool useStore = true);
 
 	/** @brief Saves the password to be retrieved later via GetPassword().
@@ -104,6 +105,6 @@ namespace Util
 	 */
 	UTIL_XPC_API void SavePassword (const QString& password,
 			const QString& keyName,
-			QObject *emitter);
+			const ICoreProxy_ptr& proxy);
 }
 }

@@ -206,7 +206,7 @@ namespace Metida
 	QString LJAccount::GetPassword () const
 	{
 		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
-		return Util::GetPassword (key, QString (), &Core::Instance ());
+		return Util::GetPassword (key, QString (), Core::Instance ().GetCoreProxy ());
 	}
 
 	QObject* LJAccount::GetProfile ()
@@ -379,7 +379,7 @@ namespace Metida
 		if (!pass.isNull ())
 			Util::SavePassword (pass,
 					"org.LeechCraft.Blogique.PassForAccount/" + GetAccountID (),
-					&Core::Instance ());
+					Core::Instance ().GetCoreProxy ());
 
 		emit accountSettingsChanged ();
 		Validate ();

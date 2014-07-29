@@ -150,7 +150,7 @@ namespace Metida
 		if (!pass.isEmpty ())
 			Util::SavePassword (pass,
 					"org.LeechCraft.Blogique.PassForAccount/" + account->GetAccountID (),
-					&Core::Instance ());
+					Core::Instance ().GetCoreProxy ());
 
 		LJAccounts_ << account;
 		saveAccounts ();

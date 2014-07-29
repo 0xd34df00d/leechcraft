@@ -104,9 +104,6 @@ namespace MP3Tunes
 		void uploadFinished (const QString&,
 				LeechCraft::LMP::CloudStorageError, const QString&);
 		void accountsChanged ();
-
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

@@ -40,13 +40,15 @@
 #include "featurerequestpage.h"
 #include "xmlgenerator.h"
 #include "fileattachpage.h"
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	FinalPage::FinalPage (QWidget *parent)
+	FinalPage::FinalPage (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QWizardPage (parent)
+	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
 		Ui_.UploadProgress_->hide ();
@@ -187,9 +189,10 @@ namespace Dolozhee
 
 	void FinalPage::on_Status__linkActivated (const QString& linkStr)
 	{
-		emit gotEntity (Util::MakeEntity (QUrl (linkStr),
+		const auto& e = Util::MakeEntity (QUrl (linkStr),
 					QString (),
-					OnlyHandle | FromUserInitiated));
+					OnlyHandle | FromUserInitiated);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

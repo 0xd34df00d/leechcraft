@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWizardPage>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_chooseuserpage.h"
 
 namespace LeechCraft
@@ -43,6 +44,7 @@ namespace Dolozhee
 		Q_OBJECT
 
 		Ui::ChooseUserPage Ui_;
+		const ICoreProxy_ptr Proxy_;
 	public:
 		enum class User
 		{
@@ -51,7 +53,7 @@ namespace Dolozhee
 			Existing
 		};
 
-		ChooseUserPage (QWidget* = 0);
+		ChooseUserPage (const ICoreProxy_ptr&, QWidget* = 0);
 
 		void initializePage ();
 		int nextId () const;

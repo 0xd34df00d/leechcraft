@@ -48,15 +48,7 @@ namespace MP3Tunes
 		Proxy_ = proxy;
 
 		auto nam = proxy->GetNetworkAccessManager ();
-		AuthMgr_ = new AuthManager (nam, this);
-		connect (AuthMgr_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (AuthMgr_,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+		AuthMgr_ = new AuthManager (nam, proxy, this);
 
 		AccMgr_ = new AccountsManager ();
 

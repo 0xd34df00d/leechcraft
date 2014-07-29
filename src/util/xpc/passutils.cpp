@@ -33,6 +33,7 @@
 #include <QInputDialog>
 #include <util/xpc/util.h>
 #include "interfaces/structures.h"
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -40,11 +41,11 @@ namespace Util
 {
 	namespace
 	{
-		QString GetPasswordHelper (const QString& key, QObject *emitter)
+		QString GetPasswordHelper (const QString& key, const ICoreProxy_ptr& proxy)
 		{
 			QList<QVariant> keys;
 			keys << key;
-			const auto& result = Util::GetPersistentData (keys, emitter);
+			const auto& result = Util::GetPersistentData (keys, proxy);
 			if (result.size () != 1)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -72,11 +73,11 @@ namespace Util
 	}
 
 	QString GetPassword (const QString& key, const QString& diaText,
-			QObject *emitter, bool useStored)
+			const ICoreProxy_ptr& proxy, bool useStored)
 	{
 		if (useStored)
 		{
-			const QString& result = GetPasswordHelper (key, emitter);
+			const QString& result = GetPasswordHelper (key, proxy);
 			if (!result.isNull ())
 				return result;
 		}
@@ -86,12 +87,12 @@ namespace Util
 				diaText,
 				QLineEdit::Password);
 		if (!result.isNull ())
-			SavePassword (result, key, emitter);
+			SavePassword (result, key, proxy);
 		return result;
 	}
 
 	void SavePassword (const QString& password, const QString& key,
-			QObject *emitter)
+			const ICoreProxy_ptr& proxy)
 	{
 		QList<QVariant> keys;
 		keys << key;
@@ -108,7 +109,7 @@ namespace Util
 		e.Additional_ ["Values"] = values;
 		e.Additional_ ["Overwrite"] = true;
 
-		QMetaObject::invokeMethod (emitter, "gotEntity", Q_ARG (LeechCraft::Entity, e));
+		proxy->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

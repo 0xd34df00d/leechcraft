@@ -299,7 +299,9 @@ namespace Xoox
 		const auto& text = tr ("This room is password-protected. Please enter the "
 				"password required to join this room.");
 		const QString& pass = Util::GetPassword (GetPassKey (),
-				text, &Core::Instance (), !HadRequestedPassword_);
+				text,
+				Core::Instance ().GetProxy (),
+				!HadRequestedPassword_);
 		if (pass.isEmpty ())
 		{
 			Leave (QString ());

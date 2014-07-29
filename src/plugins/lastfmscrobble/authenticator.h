@@ -30,24 +30,24 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 class QNetworkAccessManager;
 class QDomDocument;
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Lastfmscrobble
 {
 	class Authenticator : public QObject
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *NAM_;
+		QNetworkAccessManager * const NAM_;
+		const ICoreProxy_ptr Proxy_;
 		bool IsAuthenticated_;
 	public:
-		Authenticator (QNetworkAccessManager*, QObject* = 0);
+		Authenticator (QNetworkAccessManager*, const ICoreProxy_ptr&, QObject* = 0);
 
 		void Init ();
 		bool IsAuthenticated () const;
@@ -58,9 +58,6 @@ namespace Lastfmscrobble
 		void getSessionKey ();
 		void handleAuth ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
 		void authenticated ();
 	};
 }

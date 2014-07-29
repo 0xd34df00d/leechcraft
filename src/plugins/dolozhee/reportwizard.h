@@ -88,9 +88,6 @@ namespace Dolozhee
 		FileAttachPage* GetFilePage () const;
 	private slots:
 		void handleAuthenticationRequired (QNetworkReply*, QAuthenticator*);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

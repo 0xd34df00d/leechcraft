@@ -143,7 +143,7 @@ namespace DeathNote
 	QString FotoBilderAccount::GetPassword () const
 	{
 		QString key ("org.LeechCraft.Blasq.PassForAccount/" + GetID ());
-		return Util::GetPassword (key, tr ("Enter password"), Service_);
+		return Util::GetPassword (key, tr ("Enter password"), Proxy_);
 	}
 
 	QByteArray FotoBilderAccount::GetHashedChallenge (const QString& password, const QString& challenge)

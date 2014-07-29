@@ -76,7 +76,7 @@ namespace DeathNote
 	{
 		QString key ("org.LeechCraft.Blasq.PassForAccount/" + Account_->GetID ());
 		return Util::GetPassword (key, tr ("Enter password"),
-				Account_->GetService ()->GetQObject ());
+				Account_->GetProxy ());
 	}
 
 	QNetworkRequest SelectGroupsDialog::CreateNetworkRequest ()

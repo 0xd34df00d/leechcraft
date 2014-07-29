@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QMap>
 #include <QSet>
+#include <interfaces/core/icoreproxy.h>
 
 class QNetworkAccessManager;
 
@@ -51,8 +52,10 @@ namespace MP3Tunes
 
 		QMap<QString, QString> Login2Sid_;
 		QSet<QString> FailedAuth_;
+
+		const ICoreProxy_ptr Proxy_;
 	public:
-		AuthManager (QNetworkAccessManager*, QObject* = 0);
+		AuthManager (QNetworkAccessManager*, const ICoreProxy_ptr&, QObject* = 0);
 
 		QString GetSID (const QString&);
 	private slots:
@@ -61,9 +64,6 @@ namespace MP3Tunes
 	signals:
 		void sidReady (const QString&);
 		void sidError (const QString&, const QString&);
-
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

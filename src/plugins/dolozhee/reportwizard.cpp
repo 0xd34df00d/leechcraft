@@ -50,7 +50,7 @@ namespace Dolozhee
 	: QWizard (parent)
 	, Proxy_ (proxy)
 	, NAM_ (new QNetworkAccessManager (this))
-	, ChooseUser_ (new ChooseUserPage)
+	, ChooseUser_ (new ChooseUserPage (proxy))
 	, ReportType_ (new ReportTypePage)
 	, BugReportPage_ (new BugReportPage (proxy))
 	, FRPage_ (new FeatureRequestPage)
@@ -60,15 +60,6 @@ namespace Dolozhee
 	{
 		setWindowTitle (tr ("Issue reporter"));
 
-		connect (ChooseUser_,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
-		connect (ChooseUser_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-
 		setPage (PageID::ChooseUser, ChooseUser_);
 		setPage (PageID::UserStatus, new UserStatusPage ());
 		setPage (PageID::ReportType, ReportType_);
@@ -76,12 +67,8 @@ namespace Dolozhee
 		setPage (PageID::FeatureDetails, FRPage_);
 		setPage (PageID::PreviewRequestPage, PreviewPage_);
 		setPage (PageID::FilePage, FilePage_);
-		auto final = new FinalPage;
+		auto final = new FinalPage (proxy);
 		setPage (PageID::Final, final);
-		connect (final,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 
 		connect (NAM_,
 				SIGNAL (authenticationRequired (QNetworkReply*, QAuthenticator*)),

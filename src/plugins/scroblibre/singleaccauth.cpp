@@ -236,7 +236,7 @@ namespace Scroblibre
 				tr ("Please enter password for account %1 on %2:")
 					.arg ("<em>" + Login_ + "</em>")
 					.arg (service),
-				parent (),
+				Proxy_,
 				!failed);
 
 		const auto& md5pass = QCryptographicHash::hash (pass.toUtf8 (),

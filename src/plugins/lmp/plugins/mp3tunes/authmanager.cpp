@@ -41,9 +41,10 @@ namespace LMP
 {
 namespace MP3Tunes
 {
-	AuthManager::AuthManager (QNetworkAccessManager *nam, QObject *parent)
+	AuthManager::AuthManager (QNetworkAccessManager *nam, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
+	, Proxy_ (proxy)
 	{
 	}
 
@@ -54,7 +55,7 @@ namespace MP3Tunes
 
 		const auto& pass = Util::GetPassword ("org.LeechCraft.LMP.MP3Tunes.Account." + login,
 				tr ("Enter password for MP3tunes account %1:").arg (login),
-				this,
+				Proxy_,
 				!FailedAuth_.contains (login));
 		if (pass.isEmpty ())
 		{
