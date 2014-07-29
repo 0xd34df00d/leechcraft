@@ -184,17 +184,17 @@ namespace SecureStorage
 	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
 	{
 		QList<QByteArray> result;
-		Q_FOREACH (const QString& key, Storage_->allKeys ())
+		for (const auto& key : Storage_->allKeys ())
 			result << key.toUtf8 ();
 		return result;
 	}
 
 	void Plugin::Save (const QByteArray& key, const QVariant& value, IStoragePlugin::StorageType)
 	{
+		const auto& data = Serialize (value);
 		try
 		{
-			const QByteArray& data = Serialize (value);
-			const QByteArray& encrypted = GetCryptoSystem ().Encrypt (data);
+			const auto& encrypted = GetCryptoSystem ().Encrypt (data);
 			Storage_->setValue (key, encrypted);
 		}
 		catch (const PasswordNotEnteredException&)
@@ -210,10 +210,13 @@ namespace SecureStorage
 
 	QVariant Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType)
 	{
+		const auto& encrypted = Storage_->value (key).toByteArray ();
+		if (encrypted.isEmpty ())
+			return {};
+
 		try
 		{
-			const QByteArray& encrypted = Storage_->value (key).toByteArray ();
-			const QByteArray& data = GetCryptoSystem ().Decrypt (encrypted);
+			const auto& data = GetCryptoSystem ().Decrypt (encrypted);
 			return Deserialize (data);
 		}
 		catch (const WrongHMACException&)
