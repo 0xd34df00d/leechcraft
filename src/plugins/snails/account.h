@@ -167,7 +167,6 @@ namespace Snails
 
 		QString BuildInURL ();
 		QString BuildOutURL ();
-		QString GetPassImpl (Direction);
 		QByteArray GetStoreID (Direction) const;
 
 		void UpdateFolderCount (const QStringList&);

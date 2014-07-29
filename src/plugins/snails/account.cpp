@@ -530,32 +530,6 @@ namespace Snails
 		return result;
 	}
 
-	QString Account::GetPassImpl (Direction dir)
-	{
-		QList<QVariant> keys;
-		keys << GetStoreID (dir);
-		const auto& result = Util::GetPersistentData (keys, Core::Instance ().GetProxy ());
-		if (result.size () != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "incorrect result size"
-					<< result;
-			return QString ();
-		}
-
-		const auto& strVarList = result.at (0).toList ();
-		if (strVarList.isEmpty () ||
-				!strVarList.at (0).canConvert<QString> ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid string variant list"
-					<< strVarList;
-			return QString ();
-		}
-
-		return strVarList.at (0).toString ();
-	}
-
 	QByteArray Account::GetStoreID (Account::Direction dir) const
 	{
 		QByteArray result = GetID ();
@@ -586,38 +560,11 @@ namespace Snails
 
 	void Account::getPassword (QString *outPass, Direction dir)
 	{
-		QString pass = GetPassImpl (dir);
-		if (!pass.isEmpty ())
-		{
-			*outPass = pass;
-			return;
-		}
-
-		pass = QInputDialog::getText (0,
-				"LeechCraft",
-				Account::tr ("Enter password for account %1:")
-						.arg (GetName ()),
-				QLineEdit::Password);
-		*outPass = pass;
-		if (pass.isEmpty ())
-			return;
-
-		QList<QVariant> keys;
-		keys << GetStoreID (dir);
-
-		QList<QVariant> passwordVar;
-		passwordVar << pass;
-		QList<QVariant> values;
-		values << QVariant (passwordVar);
-
-		Entity e = Util::MakeEntity (keys,
-				QString (),
-				Internal,
-				"x-leechcraft/data-persistent-save");
-		e.Additional_ ["Values"] = values;
-		e.Additional_ ["Overwrite"] = true;
-
-		Core::Instance ().SendEntity (e);
+		const auto& storeId = GetStoreID (dir);
+		*outPass = Util::GetPassword (GetStoreID (dir),
+				tr ("Enter password for account %1:")
+					.arg (GetName ()),
+				Core::Instance ().GetProxy ());
 	}
 
 	void Account::handleMsgHeaders (const QList<Message_ptr>& messages, const QStringList& folder)
