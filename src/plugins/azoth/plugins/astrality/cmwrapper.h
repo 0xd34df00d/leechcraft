@@ -32,6 +32,7 @@
 #include <QObject>
 #include <Types>
 #include <ConnectionManager>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -47,8 +48,10 @@ namespace Astrality
 
 		Tp::ConnectionManagerPtr CM_;
 		QList<ProtoWrapper*> ProtoWrappers_;
+
+		const ICoreProxy_ptr Proxy_;
 	public:
-		CMWrapper (const QString&, QObject* = 0);
+		CMWrapper (const QString&, const ICoreProxy_ptr&, QObject* = 0);
 
 		QList<QObject*> GetProtocols () const;
 	private slots:

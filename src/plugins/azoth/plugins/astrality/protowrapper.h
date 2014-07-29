@@ -34,6 +34,7 @@
 #include <ConnectionManager>
 #include <AccountManager>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iprotocol.h>
 #include "accountwrapper.h"
 
@@ -52,7 +53,8 @@ namespace Astrality
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
 
 		Tp::ConnectionManagerPtr CM_;
-		QString ProtoName_;
+		const QString ProtoName_;
+		const ICoreProxy_ptr Proxy_;
 		const Tp::ProtocolInfo ProtoInfo_;
 
 		Tp::AccountManagerPtr AM_;
@@ -60,8 +62,7 @@ namespace Astrality
 		QList<AccountWrapper*> Accounts_;
 		QMap<Tp::PendingAccount*, AccountWrapper::Settings> PendingSettings_;
 	public:
-		ProtoWrapper (Tp::ConnectionManagerPtr,
-				const QString&, QObject*);
+		ProtoWrapper (Tp::ConnectionManagerPtr, const QString&, const ICoreProxy_ptr&, QObject*);
 
 		void Release ();
 

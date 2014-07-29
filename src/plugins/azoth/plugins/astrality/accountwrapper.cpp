@@ -53,9 +53,10 @@ namespace Azoth
 {
 namespace Astrality
 {
-	AccountWrapper::AccountWrapper (Tp::AccountPtr acc, QObject *parent)
+	AccountWrapper::AccountWrapper (Tp::AccountPtr acc, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, A_ (acc)
+	, Proxy_ (proxy)
 	, S_ ({ true })
 	{
 		connect (A_->setEnabled (true),
@@ -315,7 +316,7 @@ namespace Astrality
 				.arg (A_->displayName ())
 				.arg (A_->parameters () ["account"].toString ());
 
-		const QString& pass = Util::GetPassword (key, msg, this, !failure);
+		const QString& pass = Util::GetPassword (key, msg, Proxy_, !failure);
 		if (pass.isEmpty ())
 			return;
 

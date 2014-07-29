@@ -54,6 +54,7 @@ namespace Astrality
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
 
+		ICoreProxy_ptr Proxy_;
 		QList<CMWrapper*> Wrappers_;
 	public:
 		void Init (ICoreProxy_ptr);

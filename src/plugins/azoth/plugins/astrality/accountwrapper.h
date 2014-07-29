@@ -33,6 +33,7 @@
 #include <Account>
 #include <ContactMessenger>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iextselfinfoaccount.h>
 
@@ -52,6 +53,7 @@ namespace Astrality
 		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IExtSelfInfoAccount);
 
 		Tp::AccountPtr A_;
+		const ICoreProxy_ptr Proxy_;
 		QList<EntryWrapper*> Entries_;
 
 		QMap<QString, Tp::ContactMessengerPtr> Messengers_;
@@ -63,7 +65,7 @@ namespace Astrality
 	private:
 		Settings S_;
 	public:
-		AccountWrapper (Tp::AccountPtr, QObject*);
+		AccountWrapper (Tp::AccountPtr, const ICoreProxy_ptr&, QObject*);
 
 		// IAccount
 		QObject* GetQObject ();

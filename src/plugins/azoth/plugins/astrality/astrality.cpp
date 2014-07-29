@@ -49,6 +49,8 @@ namespace Astrality
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		Util::InstallTranslator ("azoth_astrality");
 		Tp::registerTypes ();
 		Tp::enableDebug (false);
@@ -124,7 +126,7 @@ namespace Astrality
 
 		Q_FOREACH (const QString& cmName, psl->result ())
 		{
-			auto cmw = new CMWrapper (cmName, this);
+			auto cmw = new CMWrapper (cmName, Proxy_, this);
 			Wrappers_ << cmw;
 
 			connect (cmw,

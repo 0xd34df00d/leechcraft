@@ -44,10 +44,11 @@ namespace Azoth
 namespace Astrality
 {
 	ProtoWrapper::ProtoWrapper (Tp::ConnectionManagerPtr cm,
-			const QString& protoName, QObject *parent)
+			const QString& protoName, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, CM_ (cm)
 	, ProtoName_ (protoName)
+	, Proxy_ (proxy)
 	, ProtoInfo_ (CM_->protocol (ProtoName_))
 	{
 		const auto& sb = QDBusConnection::sessionBus ();
@@ -269,7 +270,7 @@ namespace Astrality
 				return w;
 
 		qDebug () << Q_FUNC_INFO << ProtoName_ << acc->nickname () << acc->iconName ();
-		auto w = new AccountWrapper (acc, this);
+		auto w = new AccountWrapper (acc, Proxy_, this);
 		connect (w,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,

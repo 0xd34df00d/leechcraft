@@ -39,9 +39,10 @@ namespace Azoth
 {
 namespace Astrality
 {
-	CMWrapper::CMWrapper (const QString& cmName, QObject *parent)
+	CMWrapper::CMWrapper (const QString& cmName, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, CM_ (Tp::ConnectionManager::create (cmName))
+	, Proxy_ (proxy)
 	{
 		connect (CM_->becomeReady (),
 				SIGNAL (finished (Tp::PendingOperation*)),
@@ -76,7 +77,7 @@ namespace Astrality
 			if (proto == "jabber" || proto == "irc")
 				continue;
 
-			auto pw = new ProtoWrapper (CM_, proto, this);
+			auto pw = new ProtoWrapper (CM_, proto, Proxy_, this);
 			ProtoWrappers_ << pw;
 			newProtoWrappers << pw;
 		}
