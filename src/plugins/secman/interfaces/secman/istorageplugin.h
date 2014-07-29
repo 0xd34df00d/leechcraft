@@ -27,43 +27,38 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SECMAN_INTERFACES_ISTORAGEPLUGIN_H
-#define PLUGINS_SECMAN_INTERFACES_ISTORAGEPLUGIN_H
+#pragma once
+
 #include <QtPlugin>
 #include <QFlags>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SecMan
+{
+	class IStoragePlugin
 	{
-		namespace SecMan
+	public:
+		virtual ~IStoragePlugin () {}
+
+		enum StorageType
 		{
-			class IStoragePlugin
-			{
-			public:
-				virtual ~IStoragePlugin () {}
+			STInsecure,
+			STSecure
+		};
 
-				enum StorageType
-				{
-					STInsecure,
-					STSecure
-				};
+		Q_DECLARE_FLAGS (StorageTypes, StorageType)
 
-				Q_DECLARE_FLAGS (StorageTypes, StorageType)
+		virtual StorageTypes GetStorageTypes () const = 0;
+		virtual QList<QByteArray> ListKeys (StorageType st = STInsecure) = 0;
 
-				virtual StorageTypes GetStorageTypes () const = 0;
-				virtual QList<QByteArray> ListKeys (StorageType st = STInsecure) = 0;
-
-				virtual void Save (const QByteArray& key,
-						const QVariant& value,
-						StorageType st = STInsecure) = 0;
-				virtual QVariant Load (const QByteArray& key, StorageType st = STInsecure) = 0;
-			};
-		}
-	}
+		virtual void Save (const QByteArray& key,
+				const QVariant& value,
+				StorageType st = STInsecure) = 0;
+		virtual QVariant Load (const QByteArray& key, StorageType st = STInsecure) = 0;
+	};
+}
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::SecMan::IStoragePlugin,
-		"org.Deviant.LeechCraft.Plugins.SecMan.IStoragePlugin/1.0");
-
-#endif
+Q_DECLARE_INTERFACE (LeechCraft::SecMan::IStoragePlugin,
+		"org.LeechCraft.SecMan.IStoragePlugin/1.0");

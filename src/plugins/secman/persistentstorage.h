@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
 {
 	class PersistentStorage : public QObject
@@ -50,6 +48,5 @@ namespace SecMan
 		QVariant Get (const QByteArray& key);
 		void Set (const QByteArray& key, const QVariant& value);
 	};
-}
 }
 }

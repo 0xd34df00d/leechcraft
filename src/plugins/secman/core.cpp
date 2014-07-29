@@ -33,8 +33,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
 {
 	Core::Core ()
@@ -115,6 +113,5 @@ namespace SecMan
 	{
 		return StoragePlugins_.size () ? StoragePlugins_.at (0) : 0;
 	}
-}
 }
 }

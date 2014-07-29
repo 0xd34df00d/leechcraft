@@ -33,8 +33,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
 {
 	PersistentStorage::PersistentStorage ()
@@ -55,6 +53,5 @@ namespace SecMan
 	{
 		Core::Instance ().Store (key, value);
 	}
-}
 }
 }

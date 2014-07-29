@@ -34,104 +34,98 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SecMan
+{
+namespace SimpleStorage
+{
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		namespace SecMan
-		{
-			namespace StoragePlugins
-			{
-				namespace SimpleStorage
-				{
-					void Plugin::Init (ICoreProxy_ptr)
-					{
-						Storage_ .reset (new QSettings (QSettings::IniFormat,
-									QSettings::UserScope,
-									QCoreApplication::organizationName (),
-									QCoreApplication::applicationName () + "_SecMan_SimpleStorage"));
-					}
+		Storage_ .reset (new QSettings (QSettings::IniFormat,
+					QSettings::UserScope,
+					QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_SecMan_SimpleStorage"));
+	}
 
-					void Plugin::SecondInit ()
-					{
-					}
+	void Plugin::SecondInit ()
+	{
+	}
 
-					QByteArray Plugin::GetUniqueID () const
-					{
-						return "org.LeechCraft.SecMan.StoragePlugins.SimpleStorage";
-					}
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.SecMan.StoragePlugins.SimpleStorage";
+	}
 
-					void Plugin::Release ()
-					{
-					}
+	void Plugin::Release ()
+	{
+	}
 
-					QString Plugin::GetName () const
-					{
-						return "SimpleStorage";
-					}
+	QString Plugin::GetName () const
+	{
+		return "SimpleStorage";
+	}
 
-					QString Plugin::GetInfo () const
-					{
-						return tr ("Simple unencrypted storage plugin for SecMan");
-					}
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Simple unencrypted storage plugin for SecMan");
+	}
 
-					QIcon Plugin::GetIcon () const
-					{
-						static QIcon icon ("lcicons:/secman/simplestorage/resources/images/simplestorage.svg");
-						return icon;
-					}
+	QIcon Plugin::GetIcon () const
+	{
+		static QIcon icon ("lcicons:/secman/simplestorage/resources/images/simplestorage.svg");
+		return icon;
+	}
 
-					QStringList Plugin::Provides () const
-					{
-						return QStringList ();
-					}
+	QStringList Plugin::Provides () const
+	{
+		return QStringList ();
+	}
 
-					QStringList Plugin::Needs () const
-					{
-						return QStringList ();
-					}
+	QStringList Plugin::Needs () const
+	{
+		return QStringList ();
+	}
 
-					QStringList Plugin::Uses () const
-					{
-						return QStringList ();
-					}
+	QStringList Plugin::Uses () const
+	{
+		return QStringList ();
+	}
 
-					void Plugin::SetProvider (QObject*, const QString&)
-					{
-					}
+	void Plugin::SetProvider (QObject*, const QString&)
+	{
+	}
 
-					QSet<QByteArray> Plugin::GetPluginClasses () const
-					{
-						return QSet<QByteArray> () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
-					}
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		return QSet<QByteArray> () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
+	}
 
-					IStoragePlugin::StorageTypes Plugin::GetStorageTypes () const
-					{
-						return STInsecure;
-					}
+	IStoragePlugin::StorageTypes Plugin::GetStorageTypes () const
+	{
+		return STInsecure;
+	}
 
-					QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
-					{
-						QStringList keys = Storage_->allKeys ();
-						qDebug () << Q_FUNC_INFO << keys;
-						QList<QByteArray> result;
-						Q_FOREACH (const QString& key, keys)
-							result << key.toUtf8 ();
-						return result;
-					}
+	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
+	{
+		QStringList keys = Storage_->allKeys ();
+		qDebug () << Q_FUNC_INFO << keys;
+		QList<QByteArray> result;
+		Q_FOREACH (const QString& key, keys)
+			result << key.toUtf8 ();
+		return result;
+	}
 
-					void Plugin::Save (const QByteArray& key, const QVariant& value,
-							IStoragePlugin::StorageType)
-					{
-						Storage_->setValue (key, value);
-					}
+	void Plugin::Save (const QByteArray& key, const QVariant& value,
+			IStoragePlugin::StorageType)
+	{
+		Storage_->setValue (key, value);
+	}
 
-					QVariant Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType)
-					{
-						return Storage_->value (key);
-					}
-				}
-			}
-		}
+	QVariant Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType)
+	{
+		return Storage_->value (key);
 	}
 }
+}
+}
 
-LC_EXPORT_PLUGIN (leechcraft_secman_simplestorage, LeechCraft::Plugins::SecMan::StoragePlugins::SimpleStorage::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_secman_simplestorage, LeechCraft::SecMan::SimpleStorage::Plugin);

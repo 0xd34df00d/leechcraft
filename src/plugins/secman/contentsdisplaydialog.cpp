@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
 {
 	namespace
@@ -118,6 +116,5 @@ namespace SecMan
 
 		Ui_.ContentsTree_->expandAll ();
 	}
-}
 }
 }

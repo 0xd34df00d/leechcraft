@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
 {
 	class Core : public QObject
@@ -58,6 +56,5 @@ namespace SecMan
 
 		QObject* GetStoragePlugin () const;
 	};
-}
 }
 }

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SECMAN_PLUGINS_SIMPLESTORAGE_SIMPLESTORAGE_H
-#define PLUGINS_SECMAN_PLUGINS_SIMPLESTORAGE_SIMPLESTORAGE_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
@@ -39,49 +39,40 @@ class QSettings;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SecMan
+{
+namespace SimpleStorage
+{
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IStoragePlugin
 	{
-		namespace SecMan
-		{
-			namespace StoragePlugins
-			{
-				namespace SimpleStorage
-				{
-					class Plugin : public QObject
-								 , public IInfo
-								 , public IPlugin2
-								 , public IStoragePlugin
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::SecMan::IStoragePlugin)
 
-						std::shared_ptr<QSettings> Storage_;
-					public:
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						QByteArray GetUniqueID () const;
-						void Release ();
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
+		std::shared_ptr<QSettings> Storage_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-						QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const;
 
-						StorageTypes GetStorageTypes () const;
-						QList<QByteArray> ListKeys (StorageType);
+		StorageTypes GetStorageTypes () const;
+		QList<QByteArray> ListKeys (StorageType);
 
-						void Save (const QByteArray&, const QVariant&, StorageType);
-						QVariant Load (const QByteArray&, StorageType);
-					};
-				}
-			}
-		}
-	}
+		void Save (const QByteArray&, const QVariant&, StorageType);
+		QVariant Load (const QByteArray&, StorageType);
+	};
 }
-
-#endif
-
+}
+}

@@ -36,8 +36,6 @@ class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
 {
 	class ContentsDisplayDialog : public QDialog
@@ -49,6 +47,5 @@ namespace SecMan
 	public:
 		ContentsDisplayDialog (QWidget* = 0);
 	};
-}
 }
 }

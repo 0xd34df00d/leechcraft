@@ -38,8 +38,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
 {
 	class Plugin : public QObject
@@ -73,6 +71,5 @@ namespace SecMan
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
-}
 }
 }
