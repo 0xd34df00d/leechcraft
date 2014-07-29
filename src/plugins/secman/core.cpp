@@ -111,7 +111,7 @@ namespace SecMan
 
 	QObject* Core::GetStoragePlugin () const
 	{
-		return StoragePlugins_.size () ? StoragePlugins_.at (0) : 0;
+		return StoragePlugins_.value (0);
 	}
 }
 }
