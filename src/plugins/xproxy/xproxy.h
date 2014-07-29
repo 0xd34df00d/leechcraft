@@ -37,6 +37,7 @@ namespace LeechCraft
 {
 namespace XProxy
 {
+	class ProxiesStorage;
 	class ProxiesConfigWidget;
 
 	class Plugin : public QObject
@@ -47,6 +48,7 @@ namespace XProxy
 		Q_INTERFACES (IInfo IHaveSettings)
 
 		ICoreProxy_ptr CoreProxy_;
+		ProxiesStorage *Storage_;
 		ProxiesConfigWidget *CfgWidget_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:

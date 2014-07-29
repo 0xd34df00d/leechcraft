@@ -28,14 +28,14 @@
  **********************************************************************/
 
 #include "proxyfactory.h"
-#include "proxiesconfigwidget.h"
+#include "proxiesstorage.h"
 
 namespace LeechCraft
 {
 namespace XProxy
 {
-	ProxyFactory::ProxyFactory (ProxiesConfigWidget *cfgWidget)
-	: CfgWidget_ (cfgWidget)
+	ProxyFactory::ProxyFactory (ProxiesStorage *storage)
+	: Storage_ { storage }
 	{
 	}
 
@@ -45,7 +45,7 @@ namespace XProxy
 		if (query.queryType () == QNetworkProxyQuery::TcpSocket ||
 				query.queryType () == QNetworkProxyQuery::UrlRequest)
 		{
-			const auto& matches = CfgWidget_->FindMatching (query.peerHostName (),
+			const auto& matches = Storage_->FindMatching (query.peerHostName (),
 					query.peerPort (), query.protocolTag ());
 			std::copy (matches.begin (), matches.end (), std::back_inserter (proxies));
 		}

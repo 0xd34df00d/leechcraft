@@ -29,37 +29,24 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_proxiesconfigwidget.h"
+#include <QObject>
+#include <QMap>
 #include "structures.h"
-
-class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace XProxy
 {
-	class ProxiesConfigWidget : public QWidget
-	{
-		Q_OBJECT
 
-		Ui::ProxiesConfigWidget Ui_;
-		QStandardItemModel *Model_;
-		QList<Proxy> Proxies_;
+	class ProxiesStorage : public QObject
+	{
+		QMap<Proxy, QList<ReqTarget>> Proxies_;
 	public:
-		ProxiesConfigWidget (QWidget* = 0);
+		QList<Proxy> FindMatching (const QString& reqHost, int reqPort,
+				const QString& proto = QString ()) const;
 	private:
 		void LoadSettings ();
 		void SaveSettings () const;
-		Proxy EntryFromUI () const;
-	public slots:
-		void accept ();
-		void reject ();
-	private slots:
-		void handleItemSelected (const QModelIndex&);
-		void on_AddProxyButton__released ();
-		void on_UpdateProxyButton__released ();
-		void on_RemoveProxyButton__released ();
 	};
 }
 }

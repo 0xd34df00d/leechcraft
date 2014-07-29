@@ -35,6 +35,7 @@
 #include "proxyfactory.h"
 #include "proxiesconfigwidget.h"
 #include "xmlsettingsmanager.h"
+#include "proxiesstorage.h"
 
 namespace LeechCraft
 {
@@ -53,7 +54,9 @@ namespace XProxy
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "xproxysettings.xml");
 
-		CfgWidget_ = new ProxiesConfigWidget ();
+		Storage_ = new ProxiesStorage;
+
+		CfgWidget_ = new ProxiesConfigWidget;
 		XSD_->SetCustomWidget ("Proxies", CfgWidget_);
 
 		XmlSettingsManager::Instance ().RegisterObject ("EnableForNAM", this, "handleReenable");
@@ -97,10 +100,10 @@ namespace XProxy
 	void Plugin::handleReenable ()
 	{
 		const bool app = XmlSettingsManager::Instance ().property ("EnableForApp").toBool ();
-		QNetworkProxyFactory::setApplicationProxyFactory (app ? new ProxyFactory (CfgWidget_) : 0);
+		QNetworkProxyFactory::setApplicationProxyFactory (app ? new ProxyFactory (Storage_) : 0);
 
 		const bool nam = XmlSettingsManager::Instance ().property ("EnableForNAM").toBool ();
-		CoreProxy_->GetNetworkAccessManager ()->setProxyFactory (nam ? new ProxyFactory (CfgWidget_) : 0);
+		CoreProxy_->GetNetworkAccessManager ()->setProxyFactory (nam ? new ProxyFactory (Storage_) : 0);
 	}
 }
 }

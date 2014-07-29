@@ -35,16 +35,16 @@ namespace LeechCraft
 {
 namespace XProxy
 {
-	class ProxiesConfigWidget;
+	class ProxiesStorage;
 
 	class ProxyFactory : public QObject
 					   , public QNetworkProxyFactory
 	{
 		Q_OBJECT
 
-		ProxiesConfigWidget *CfgWidget_;
+		ProxiesStorage * const Storage_;
 	public:
-		ProxyFactory (ProxiesConfigWidget*);
+		ProxyFactory (ProxiesStorage*);
 
 		QList<QNetworkProxy> queryProxy (const QNetworkProxyQuery&);
 	};
