@@ -28,8 +28,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_SECURESTORAGE_H
-#define PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_SECURESTORAGE_H
+#pragma once
+
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QInputDialog>
@@ -46,11 +46,7 @@ class QSettings;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
@@ -62,11 +58,11 @@ namespace SecureStorage
 				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::SecMan::IStoragePlugin IActionsExporter IHaveSettings)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		SettingsWidget* SettingsWidget_;
-		
+
 		boost::shared_ptr<QSettings> Storage_;
 		boost::shared_ptr<QSettings> Settings_;
 
@@ -92,12 +88,10 @@ namespace SecureStorage
 
 		StorageTypes GetStorageTypes () const;
 		QList<QByteArray> ListKeys (StorageType);
-		void Save (const QByteArray&, const QVariantList&, StorageType, bool);
-		QVariantList Load (const QByteArray&, StorageType);
-		void Save (const QList<QPair<QByteArray, QVariantList>>&, StorageType, bool);
-		QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
+		void Save (const QByteArray&, const QVariant&, StorageType);
+		QVariant Load (const QByteArray&, StorageType);
 		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const;
-		
+
 		LeechCraft::Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void forgetKey ();
@@ -118,7 +112,7 @@ namespace SecureStorage
 	signals:
 		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 	};
-	
+
 	class PasswordNotEnteredException : std::exception
 	{
 	public:
@@ -135,7 +129,3 @@ namespace SecureStorage
 }
 }
 }
-}
-}
-
-#endif

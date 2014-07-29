@@ -31,11 +31,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
@@ -97,8 +93,6 @@ namespace SecureStorage
 			return bufferLength - (IVLength + HMACLength);
 		}
 	}
-}
-}
 }
 }
 }

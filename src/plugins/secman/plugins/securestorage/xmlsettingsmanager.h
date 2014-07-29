@@ -28,17 +28,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_XMLSETTINGSMANAGER_H
-#define PLUGINS_AGGREGATOR_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
@@ -56,7 +52,3 @@ namespace SecureStorage
 }
 }
 }
-}
-}
-
-#endif

@@ -27,16 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_CIPHERTEXTFORMAT_H
-#define PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_CIPHERTEXTFORMAT_H
+#pragma once
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
@@ -74,7 +69,7 @@ namespace SecureStorage
 
 	/**
 	 * Block of ciphertext in specific format.
-	 * 
+	 *
 	 * Format:
 	 * IV + CIPHER(TEXT+RND) + HMAC(TEXT+RND)
 	 */
@@ -105,7 +100,3 @@ namespace SecureStorage
 }
 }
 }
-}
-}
-
-#endif

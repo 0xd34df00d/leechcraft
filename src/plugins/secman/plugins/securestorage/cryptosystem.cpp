@@ -38,11 +38,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
@@ -171,8 +167,6 @@ namespace SecureStorage
 		res.resize (KeyLength);
 		return res;
 	}
-}
-}
 }
 }
 }

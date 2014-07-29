@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_SETTINGSWIDGET_H
-#define	PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_SETTINGSWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QLineEdit>
@@ -36,11 +35,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
@@ -51,7 +46,7 @@ namespace SecureStorage
 		Ui::SettingsWidget Ui_;
 	public:
 		SettingsWidget ();
-		
+
 		QString GetOldPassword ();
 		QString GetNewPassword ();
 		void ClearPasswordFields ();
@@ -62,7 +57,3 @@ namespace SecureStorage
 }
 }
 }
-}
-}
-
-#endif

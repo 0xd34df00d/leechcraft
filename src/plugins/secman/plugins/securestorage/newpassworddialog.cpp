@@ -33,11 +33,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
@@ -83,9 +79,6 @@ namespace SecureStorage
 		Ui_.DifferenceLabel_->setText (passwordsEqual ? "" : tr ("Passwords must be the same"));
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (passwordsEqual);
 	}
-
-}
-}
 }
 }
 }

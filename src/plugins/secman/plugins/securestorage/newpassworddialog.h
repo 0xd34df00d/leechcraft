@@ -34,11 +34,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
@@ -57,8 +53,6 @@ namespace SecureStorage
 	signals:
 		void dialogFinished ();
 	};
-}
-}
 }
 }
 }

@@ -27,19 +27,15 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_CRYPTOSYSTEM_H
-#define PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_CRYPTOSYSTEM_H
+#pragma once
+
 #include <stdexcept>
 #include <QByteArray>
 #include <QString>
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
@@ -66,7 +62,3 @@ namespace SecureStorage
 }
 }
 }
-}
-}
-
-#endif

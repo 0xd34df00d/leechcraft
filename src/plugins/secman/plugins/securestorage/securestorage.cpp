@@ -66,15 +66,10 @@ namespace
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
-{
-namespace StoragePlugins
 {
 namespace SecureStorage
 {
-
 	QString ReturnIfEqual (const QString& s1, const QString& s2)
 	{
 		if (s1 == s2)
@@ -194,16 +189,11 @@ namespace SecureStorage
 		return result;
 	}
 
-	void Plugin::Save (const QByteArray& key, const QVariantList& values,
-			IStoragePlugin::StorageType st, bool overwrite)
+	void Plugin::Save (const QByteArray& key, const QVariant& value, IStoragePlugin::StorageType)
 	{
-		QVariantList allValues = values;
-		if (!overwrite)
-			allValues.prepend (Load (key, st));
-
 		try
 		{
-			const QByteArray& data = Serialize (allValues);
+			const QByteArray& data = Serialize (value);
 			const QByteArray& encrypted = GetCryptoSystem ().Encrypt (data);
 			Storage_->setValue (key, encrypted);
 		}
@@ -218,38 +208,22 @@ namespace SecureStorage
 		}
 	}
 
-	QVariantList Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType)
+	QVariant Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType)
 	{
 		try
 		{
 			const QByteArray& encrypted = Storage_->value (key).toByteArray ();
 			const QByteArray& data = GetCryptoSystem ().Decrypt (encrypted);
-			return Deserialize (data).toList ();
+			return Deserialize (data);
 		}
 		catch (const WrongHMACException&)
 		{
-			return QVariantList ();
+			return {};
 		}
 		catch (const PasswordNotEnteredException&)
 		{
-			return QVariantList ();
+			return {};
 		}
-	}
-
-	void Plugin::Save (const QList<QPair<QByteArray, QVariantList>>& keyValues,
-			IStoragePlugin::StorageType st, bool overwrite)
-	{
-		QPair<QByteArray, QVariantList> keyValue;
-		Q_FOREACH (keyValue, keyValues)
-			Save (keyValue.first, keyValue.second, st, overwrite);
-	}
-
-	QList<QVariantList> Plugin::Load (const QList<QByteArray>& keys, IStoragePlugin::StorageType st)
-	{
-		QList<QVariantList> result;
-		Q_FOREACH (const QByteArray& key, keys)
-			result << Load (key, st);
-		return result;
 	}
 
 	void Plugin::forgetKey ()
@@ -501,7 +475,5 @@ namespace SecureStorage
 }
 }
 }
-}
-}
 
-LC_EXPORT_PLUGIN (leechcraft_secman_securestorage, LeechCraft::Plugins::SecMan::StoragePlugins::SecureStorage::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_secman_securestorage, LeechCraft::SecMan::SecureStorage::Plugin);
