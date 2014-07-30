@@ -112,9 +112,9 @@ namespace Qrosp
 		*entity.Additional_ ["Object"].value<QObject**> () = new WrapperObject (language, path);
 	}
 
-	IScriptLoaderInstance* Plugin::CreateScriptLoaderInstance (const QString& relPath)
+	IScriptLoaderInstance_ptr Plugin::CreateScriptLoaderInstance (const QString& relPath)
 	{
-		return new ScriptLoaderInstance (relPath);
+		return std::make_shared<ScriptLoaderInstance> (relPath);
 	}
 }
 }

@@ -82,8 +82,7 @@ namespace BodyFetch
 			return;
 		}
 
-		IScriptLoaderInstance *inst = loader->
-				CreateScriptLoaderInstance ("aggregator/recipes/");
+		const auto& inst = loader->CreateScriptLoaderInstance ("aggregator/recipes/");
 		if (!inst)
 		{
 			qWarning () << Q_FUNC_INFO

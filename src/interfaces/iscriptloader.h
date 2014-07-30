@@ -189,6 +189,8 @@ public:
 	virtual IScript_ptr LoadScript (const QString& script) = 0;
 };
 
+typedef std::shared_ptr<IScriptLoaderInstance> IScriptLoaderInstance_ptr;
+
 /** @brief Interface for plugins providing scripting.
  *
  * This interface is to be implemented by plugins that support loading
@@ -222,7 +224,7 @@ public:
 	 * @param[in] relPath The relative path of the scripts to be loaded.
 	 * @return The script loader for the given relative path.
 	 */
-	virtual IScriptLoaderInstance* CreateScriptLoaderInstance (const QString& relPath) = 0;
+	virtual IScriptLoaderInstance_ptr CreateScriptLoaderInstance (const QString& relPath) = 0;
 };
 
 Q_DECLARE_INTERFACE (IScript, "org.Deviant.LeechCraft.IScript/1.0");

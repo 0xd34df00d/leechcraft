@@ -62,8 +62,8 @@ namespace Qrosp
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
-		
-		IScriptLoaderInstance* CreateScriptLoaderInstance (const QString&);
+
+		IScriptLoaderInstance_ptr CreateScriptLoaderInstance (const QString&);
 	};
 }
 }

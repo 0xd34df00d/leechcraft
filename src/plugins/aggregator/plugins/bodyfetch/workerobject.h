@@ -47,7 +47,7 @@ namespace BodyFetch
 	{
 		Q_OBJECT
 
-		IScriptLoaderInstance *Inst_;
+		IScriptLoaderInstance_ptr Inst_;
 		QVariantList Items_;
 
 		bool IsProcessing_;
@@ -67,7 +67,7 @@ namespace BodyFetch
 	public:
 		WorkerObject (QObject* = 0);
 
-		void SetLoaderInstance (IScriptLoaderInstance*);
+		void SetLoaderInstance (const IScriptLoaderInstance_ptr&);
 		bool IsOk () const;
 		void AppendItems (const QVariantList&);
 	private:

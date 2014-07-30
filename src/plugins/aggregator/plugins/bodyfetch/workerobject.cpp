@@ -69,14 +69,14 @@ namespace BodyFetch
 		timer->start (10000);
 	}
 
-	void WorkerObject::SetLoaderInstance (IScriptLoaderInstance *inst)
+	void WorkerObject::SetLoaderInstance (const IScriptLoaderInstance_ptr& inst)
 	{
 		Inst_ = inst;
 	}
 
 	bool WorkerObject::IsOk () const
 	{
-		return Inst_;
+		return Inst_.get ();
 	}
 
 	void WorkerObject::AppendItems (const QVariantList& items)

@@ -63,7 +63,6 @@ namespace Textogroose
 
 	void Plugin::Release ()
 	{
-		qDeleteAll (Loaders_);
 	}
 
 	QString Plugin::GetName () const

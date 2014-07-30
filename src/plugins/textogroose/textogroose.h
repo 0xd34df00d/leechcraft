@@ -48,7 +48,7 @@ namespace Textogroose
 		Q_OBJECT
 		Q_INTERFACES (IInfo Media::ILyricsFinder)
 
-		QList<IScriptLoaderInstance*> Loaders_;
+		QList<std::shared_ptr<IScriptLoaderInstance>> Loaders_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
