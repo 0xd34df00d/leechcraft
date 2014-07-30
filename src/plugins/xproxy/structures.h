@@ -57,6 +57,7 @@ namespace XProxy
 	};
 
 	bool operator< (const Proxy&, const Proxy&);
+	bool operator== (const Proxy&, const Proxy&);
 
 	typedef QPair<ReqTarget, Proxy> Entry_t;
 

@@ -76,6 +76,11 @@ namespace XProxy
 		return IsLess (left, right, &Proxy::Type_, &Proxy::Port_, &Proxy::Host_, &Proxy::User_, &Proxy::Pass_);
 	}
 
+	bool operator== (const Proxy& left, const Proxy& right)
+	{
+		return !(left < right) && !(right < left);
+	}
+
 	QDataStream& operator<< (QDataStream& out, const Proxy& p)
 	{
 		out << static_cast<quint8> (1);
