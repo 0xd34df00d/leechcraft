@@ -66,7 +66,7 @@ public:
 	 * if the call has failed.
 	 */
 	virtual QVariant InvokeMethod (const QString& name,
-			const QVariantList& args) = 0;
+			const QVariantList& args = {}) = 0;
 
 	/** @brief Adds the given object to the script context.
 	 *
