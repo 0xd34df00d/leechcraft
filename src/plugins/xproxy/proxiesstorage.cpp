@@ -113,6 +113,8 @@ namespace XProxy
 
 	void ProxiesStorage::LoadSettings ()
 	{
+		Proxies_.clear ();
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_XProxy");
 		settings.beginGroup ("SavedProxies");
