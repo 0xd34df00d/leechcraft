@@ -38,17 +38,42 @@ namespace XProxy
 		return { Type_, Host_, static_cast<quint16> (Port_), User_, Pass_ };
 	}
 
-	template<typename Class, typename G>
-	bool Compare (G g, const Class& left, const Class& right)
+	namespace
 	{
+		template<typename Class, typename G, typename... Gs>
+		struct IsLessImpl
+		{
+			bool operator() (const Class& left, const Class& right, G g, Gs... gs) const
+			{
+				if (left.*g != right.*g)
+					return left.*g < right.*g;
+
+				return IsLessImpl<Class, Gs...> {} (left, right, gs...);
+			}
+		};
+
+		template<typename Class, typename G>
+		struct IsLessImpl<Class, G>
+		{
+			bool operator() (const Class& left, const Class& right, G g) const
+			{
+				if (left.*g != right.*g)
+					return left.*g < right.*g;
+
+				return false;
+			}
+		};
+
+		template<typename Class, typename... Gs>
+		bool IsLess (const Class& left, const Class& right, Gs... gs)
+		{
+			return IsLessImpl<Class, Gs...> {} (left, right, gs...);
+		}
 	}
 
 	bool operator< (const Proxy& left, const Proxy& right)
 	{
-		Compare (&Proxy::Type_, left, right);
-
-		if (left.Type_ != right.Type_)
-			return left.Type_ < right.Type_;
+		return IsLess (left, right, &Proxy::Type_, &Proxy::Port_, &Proxy::Host_, &Proxy::User_, &Proxy::Pass_);
 	}
 
 	QDataStream& operator<< (QDataStream& out, const Proxy& p)
