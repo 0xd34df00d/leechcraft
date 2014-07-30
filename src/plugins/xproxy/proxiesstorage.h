@@ -42,8 +42,19 @@ namespace XProxy
 	{
 		QMap<Proxy, QList<ReqTarget>> Proxies_;
 	public:
+
+		QList<Proxy> GetKnownProxies () const;
+
 		QList<Proxy> FindMatching (const QString& reqHost, int reqPort,
 				const QString& proto = QString ()) const;
+
+		void AddProxy (const Proxy&);
+		void UpdateProxy (const Proxy&, const Proxy&);
+		void RemoveProxy (const Proxy&);
+
+		QList<ReqTarget> GetTargets (const Proxy&) const;
+		void SetTargets (const Proxy&, const QList<ReqTarget>&);
+
 	private:
 		void LoadSettings ();
 		void SaveSettings () const;

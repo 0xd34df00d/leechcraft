@@ -36,9 +36,14 @@ namespace LeechCraft
 {
 namespace XProxy
 {
+	QList<Proxy> ProxiesStorage::GetKnownProxies () const
+	{
+		return Proxies_.keys ();
+	}
+
 	QList<Proxy> ProxiesStorage::FindMatching (const QString& reqHost, int reqPort, const QString& proto) const
 	{
-		static const std::map<QString, int> proto2port =
+		static const std::map<QString, int> proto2port
 		{
 			{ "http", 80 },
 			{ "https", 443 }
@@ -71,6 +76,30 @@ namespace XProxy
 				result << pair.first;
 		}
 		return result;
+	}
+
+	void ProxiesStorage::AddProxy (const Proxy&)
+	{
+	}
+
+	void ProxiesStorage::UpdateProxy (const Proxy& oldProxy, const Proxy& newProxy)
+	{
+		Proxies_ [newProxy] += Proxies_.take (oldProxy);
+	}
+
+	void ProxiesStorage::RemoveProxy (const Proxy& proxy)
+	{
+		Proxies_.remove (proxy);
+	}
+
+	QList<ReqTarget> ProxiesStorage::GetTargets (const Proxy& proxy) const
+	{
+		return Proxies_ [proxy];
+	}
+
+	void ProxiesStorage::SetTargets (const Proxy& proxy, const QList<ReqTarget>& targets)
+	{
+		Proxies_ [proxy] = targets;
 	}
 
 	void ProxiesStorage::LoadSettings ()
