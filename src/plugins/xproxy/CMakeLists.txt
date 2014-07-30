@@ -16,9 +16,11 @@ set (SRCS
 	proxiesconfigwidget.cpp
 	proxiesstorage.cpp
 	structures.cpp
+	editurldialog.cpp
 	)
 set (FORMS
 	proxiesconfigwidget.ui
+	editurldialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 
