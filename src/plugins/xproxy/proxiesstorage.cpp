@@ -36,6 +36,12 @@ namespace LeechCraft
 {
 namespace XProxy
 {
+	ProxiesStorage::ProxiesStorage (QObject *parent)
+	: QObject { parent }
+	{
+		LoadSettings ();
+	}
+
 	QList<Proxy> ProxiesStorage::GetKnownProxies () const
 	{
 		return Proxies_.keys ();

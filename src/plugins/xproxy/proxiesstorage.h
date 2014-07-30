@@ -42,6 +42,7 @@ namespace XProxy
 	{
 		QMap<Proxy, QList<ReqTarget>> Proxies_;
 	public:
+		ProxiesStorage (QObject* = nullptr);
 
 		QList<Proxy> GetKnownProxies () const;
 
@@ -55,7 +56,6 @@ namespace XProxy
 		QList<ReqTarget> GetTargets (const Proxy&) const;
 		void SetTargets (const Proxy&, const QList<ReqTarget>&);
 
-	private:
 		void LoadSettings ();
 		void SaveSettings () const;
 	};
