@@ -90,7 +90,11 @@ namespace XProxy
 
 	void ProxiesStorage::UpdateProxy (const Proxy& oldProxy, const Proxy& newProxy)
 	{
-		Proxies_ [newProxy] += Proxies_.take (oldProxy);
+		if (oldProxy == newProxy)
+			return;
+
+		const auto& olds = Proxies_.take (oldProxy);
+		Proxies_ [newProxy] += olds;
 	}
 
 	void ProxiesStorage::RemoveProxy (const Proxy& proxy)
