@@ -39,18 +39,21 @@ namespace LeechCraft
 {
 namespace XProxy
 {
+	class ProxiesStorage;
+
 	class ProxiesConfigWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::ProxiesConfigWidget Ui_;
-		QStandardItemModel *Model_;
+
+		ProxiesStorage * const Storage_;
+
+		QStandardItemModel * const Model_;
 		QList<Proxy> Proxies_;
 	public:
-		ProxiesConfigWidget (QWidget* = 0);
+		ProxiesConfigWidget (ProxiesStorage*, QWidget* = 0);
 	private:
-		void LoadSettings ();
-		void SaveSettings () const;
 		Proxy EntryFromUI () const;
 	public slots:
 		void accept ();
@@ -60,6 +63,7 @@ namespace XProxy
 		void on_AddProxyButton__released ();
 		void on_UpdateProxyButton__released ();
 		void on_RemoveProxyButton__released ();
+		void on_EditUrlsButton__released ();
 	};
 }
 }

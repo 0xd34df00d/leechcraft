@@ -56,7 +56,7 @@ namespace XProxy
 
 		Storage_ = new ProxiesStorage;
 
-		CfgWidget_ = new ProxiesConfigWidget;
+		CfgWidget_ = new ProxiesConfigWidget { Storage_ };
 		XSD_->SetCustomWidget ("Proxies", CfgWidget_);
 
 		XmlSettingsManager::Instance ().RegisterObject ("EnableForNAM", this, "handleReenable");

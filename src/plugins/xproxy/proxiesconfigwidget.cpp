@@ -30,6 +30,9 @@
 #include "proxiesconfigwidget.h"
 #include <QStandardItemModel>
 #include <QSettings>
+#include <util/sll/slotclosure.h>
+#include "proxiesstorage.h"
+#include "editurlsdialog.h"
 #include "proxiesstorage.h"
 
 namespace LeechCraft
@@ -66,31 +69,16 @@ namespace XProxy
 		QList<QStandardItem*> Proxy2Row (const Proxy& proxy)
 		{
 			QList<QStandardItem*> row;
-
-			/*
-			const auto& req = proxy.first;
-			if (req.Protocols_.isEmpty ())
-				row << new QStandardItem (ProxiesConfigWidget::tr ("any"));
-			else
-				row << new QStandardItem (req.Protocols_.join ("; "));
-			const QString& targetStr = req.Host_.GetPattern () +
-					":" +
-					(req.Port_ > 0 ?
-							QString::number (req.Port_) :
-							ProxiesConfigWidget::tr ("any"));
-			row << new QStandardItem (targetStr);
-			*/
-
 			row << new QStandardItem (ProxyType2Str (proxy.Type_));
 			row << new QStandardItem (proxy.Host_ + ":" + QString::number (proxy.Port_));
 			row << new QStandardItem (proxy.User_);
-
 			return row;
 		}
 	}
 
-	ProxiesConfigWidget::ProxiesConfigWidget (QWidget *parent)
+	ProxiesConfigWidget::ProxiesConfigWidget (ProxiesStorage *storage, QWidget *parent)
 	: QWidget (parent)
+	, Storage_ (storage)
 	, Model_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
@@ -101,27 +89,19 @@ namespace XProxy
 				this,
 				SLOT (handleItemSelected (QModelIndex)));
 
+		const QStringList labels
+		{
+			tr ("Proxy type"),
+			tr ("Proxy target"),
+			tr ("User")
+		};
+		Model_->setHorizontalHeaderLabels (labels);
+
 		reject ();
 	}
 
 	Proxy ProxiesConfigWidget::EntryFromUI () const
 	{
-		/*
-		QString rxPat = Ui_.TargetHost_->text ();
-		if (!rxPat.contains ("*") && !rxPat.contains ("^") && !rxPat.contains ("$"))
-		{
-			rxPat.prepend (".*");
-			rxPat.append (".*");
-		}
-
-		ReqTarget targ
-		{
-			{ rxPat, Qt::CaseInsensitive },
-			Ui_.TargetPort_->value (),
-			Ui_.TargetProto_->text ().split (' ', QString::SkipEmptyParts)
-		};
-		*/
-
 		auto type = QNetworkProxy::ProxyType::NoProxy;
 		switch (Ui_.ProxyType_->currentIndex ())
 		{
@@ -155,36 +135,28 @@ namespace XProxy
 
 	void ProxiesConfigWidget::accept ()
 	{
-		SaveSettings ();
+		Storage_->SaveSettings ();
 	}
 
 	void ProxiesConfigWidget::reject ()
 	{
-		Model_->clear ();
+		if (const auto rc = Model_->rowCount ())
+			Model_->removeRows (0, rc);
 
-		const QStringList labels
-		{
-			tr ("Proxy type"),
-			tr ("Proxy target"),
-			tr ("User")
-		};
-		Model_->setHorizontalHeaderLabels (labels);
+		Storage_->LoadSettings ();
 
-		LoadSettings ();
+		Proxies_ = Storage_->GetKnownProxies ();
+		for (const auto& proxy : Proxies_)
+			Model_->appendRow (Proxy2Row (proxy));
 	}
 
 	void ProxiesConfigWidget::handleItemSelected (const QModelIndex& idx)
 	{
 		Ui_.UpdateProxyButton_->setEnabled (idx.isValid ());
 		Ui_.RemoveProxyButton_->setEnabled (idx.isValid ());
+		Ui_.EditUrlsButton_->setEnabled (idx.isValid ());
 
 		const auto& proxy = Proxies_.value (idx.row ());
-		/*
-		Ui_.TargetHost_->setText (entry.first.Host_.GetPattern ());
-		Ui_.TargetPort_->setValue (entry.first.Port_);
-		Ui_.TargetProto_->setText (entry.first.Protocols_.join (" "));
-		*/
-
 		Ui_.ProxyHost_->setText (proxy.Host_);
 		Ui_.ProxyPort_->setValue (proxy.Port_);
 		Ui_.ProxyUser_->setText (proxy.User_);
@@ -219,6 +191,8 @@ namespace XProxy
 		const auto& proxy = EntryFromUI ();
 		Proxies_ << proxy;
 		Model_->appendRow (Proxy2Row (proxy));
+
+		Storage_->AddProxy (proxy);
 	}
 
 	void ProxiesConfigWidget::on_UpdateProxyButton__released ()
@@ -227,10 +201,14 @@ namespace XProxy
 		if (row < 0 || row >= Proxies_.size ())
 			return;
 
+		const auto& oldProxy = Proxies_.at (row);
+
 		const auto& proxy = EntryFromUI ();
 		Proxies_ [row] = proxy;
 		Model_->removeRow (row);
 		Model_->insertRow (row, Proxy2Row (proxy));
+
+		Storage_->UpdateProxy (oldProxy, proxy);
 	}
 
 	void ProxiesConfigWidget::on_RemoveProxyButton__released ()
@@ -239,8 +217,32 @@ namespace XProxy
 		if (row < 0 || row >= Proxies_.size ())
 			return;
 
-		Proxies_.removeAt (row);
+		Storage_->RemoveProxy (Proxies_.takeAt (row));
 		Model_->removeRow (row);
+	}
+
+	void ProxiesConfigWidget::on_EditUrlsButton__released ()
+	{
+		const int row = Ui_.ProxiesList_->currentIndex ().row ();
+		if (row < 0 || row >= Proxies_.size ())
+			return;
+
+		const auto& proxy = Proxies_.value (row);
+		auto dialog = new EditUrlsDialog { Storage_->GetTargets (proxy), this };
+		dialog->setAttribute (Qt::WA_DeleteOnClose);
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, proxy, dialog] () -> void
+			{
+				Storage_->SetTargets (proxy, dialog->GetTargets ());
+			},
+			dialog,
+			SIGNAL (accepted ()),
+			dialog
+		};
+
+		dialog->show ();
 	}
 }
 }
