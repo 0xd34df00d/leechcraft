@@ -44,6 +44,11 @@ namespace XProxy
 		refresh ();
 	}
 
+	QByteArray UrlListScript::GetListId () const
+	{
+		return ListName_.toUtf8 ();
+	}
+
 	QString UrlListScript::GetListName () const
 	{
 		return ListName_;

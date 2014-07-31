@@ -46,6 +46,7 @@ namespace XProxy
 	public:
 		UrlListScript (const IScript_ptr& script, QObject* = nullptr);
 
+		QByteArray GetListId () const;
 		QString GetListName () const;
 
 		bool Accepts (const QString& host, int port, const QString& proto);
