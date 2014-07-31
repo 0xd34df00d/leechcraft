@@ -90,20 +90,21 @@ namespace Qrosp
 		QStringList result;
 		for (const auto& prefix : Prefixes_)
 			for (const auto& interp : interpreters)
-			{
-				const auto& path = prefix + RelativePath_ + interp + '/';
-
-				QDir dir (path);
-				const auto& entries = dir.entryList (knownExtensions [interp],
-						QDir::Readable | QDir::Files);
-
-				for (const auto& entry : entries)
+				for (const auto& interpSuffix : { interp + '/', {} })
 				{
-					const auto& id = path + entry;
-					ID2Interpereter_ [id] = interp;
-					result << id;
+					const auto& path = prefix + RelativePath_ + interpSuffix;
+
+					QDir dir (path);
+					const auto& entries = dir.entryList (knownExtensions [interp],
+							QDir::Readable | QDir::Files);
+
+					for (const auto& entry : entries)
+					{
+						const auto& id = path + entry;
+						ID2Interpereter_ [id] = interp;
+						result << id;
+					}
 				}
-			}
 
 		return result;
 	}
