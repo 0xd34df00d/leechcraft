@@ -56,11 +56,18 @@ namespace XProxy
 
 	bool UrlListScript::Accepts (const QString& host, int port, const QString& proto)
 	{
-		return false;
+		return Hosts_.contains ({ host, port, proto }) ||
+				Hosts_.contains ({ host, -1, proto });
 	}
 
 	void UrlListScript::setUrls (const QStringList& urls)
 	{
+		Hosts_.clear ();
+		for (const auto& urlStr : urls)
+		{
+			const auto& url = QUrl::fromEncoded (urlStr.toUtf8 ());
+			Hosts_.insert ({ url.host (), url.port (), url.scheme () });
+		}
 	}
 
 	void UrlListScript::refresh ()
