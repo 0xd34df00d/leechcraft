@@ -18,6 +18,7 @@ set (SRCS
 	structures.cpp
 	editurlsdialog.cpp
 	editurldialog.cpp
+	editlistsdialog.cpp
 	scriptsmanager.cpp
 	urllistscript.cpp
 	)
@@ -25,6 +26,7 @@ set (FORMS
 	proxiesconfigwidget.ui
 	editurlsdialog.ui
 	editurldialog.ui
+	editlistsdialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 
