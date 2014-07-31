@@ -27,7 +27,7 @@ def handleFinished(req, elems = [], tries = 0):
 		if child.name != "tr":
 			continue
 		link = child.find("a")
-		if link == None:
+		if link is None:
 			continue
 		linkStr = link.string
 		if linkStr.startswith("http://"):
