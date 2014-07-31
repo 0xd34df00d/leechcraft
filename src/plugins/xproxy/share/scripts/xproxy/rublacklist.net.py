@@ -44,7 +44,7 @@ def handleFinished(req, elems = [], tries = 0):
 	nextIdx = int(curIdxStr) + 1
 
 	nextReq = nam.get(QNetworkRequest(QUrl("http://reestr.rublacklist.net/pages/" + str(nextIdx))))
-	nextReq.finished.connect(lambda: handleFinished(nextReq))
+	nextReq.finished.connect(lambda: handleFinished(nextReq, elems))
 
 def refresh():
 	req = nam.get(QNetworkRequest(QUrl("http://reestr.rublacklist.net/")))
