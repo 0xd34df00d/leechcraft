@@ -46,7 +46,11 @@ namespace XProxy
 
 	QList<Proxy> ProxiesStorage::GetKnownProxies () const
 	{
-		return Proxies_.keys () + Scripts_.keys ();
+		auto result = Proxies_.keys ();
+		for (const auto& otherProxy : Scripts_.keys ())
+			if (!result.contains (otherProxy))
+				result << otherProxy;
+		return result;
 	}
 
 	QList<Proxy> ProxiesStorage::FindMatching (const QString& reqHost, int reqPort, const QString& proto) const
