@@ -18,6 +18,8 @@ set (SRCS
 	structures.cpp
 	editurlsdialog.cpp
 	editurldialog.cpp
+	scriptsmanager.cpp
+	urllistscript.cpp
 	)
 set (FORMS
 	proxiesconfigwidget.ui
@@ -40,3 +42,4 @@ target_link_libraries (leechcraft_xproxy
 	)
 install (TARGETS leechcraft_xproxy DESTINATION ${LC_PLUGINS_DEST})
 install (FILES xproxysettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/scripts/xproxy DESTINATION ${LC_SCRIPTS_DEST})
