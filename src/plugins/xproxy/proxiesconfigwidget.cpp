@@ -222,8 +222,8 @@ namespace XProxy
 		if (row < 0 || row >= Proxies_.size ())
 			return;
 
-		Storage_->RemoveProxy (Proxies_.takeAt (row));
 		Model_->removeRow (row);
+		Storage_->RemoveProxy (Proxies_.takeAt (row));
 	}
 
 	void ProxiesConfigWidget::on_EditUrlsButton__released ()
