@@ -7,15 +7,19 @@ def getListName():
 
 nam = QNetworkAccessManager()
 
-def handleFinished(req, elems = []):
+def handleFinished(req, elems = [], tries = 0):
 	data = req.readAll()
 	req.deleteLater()
 	soup = BeautifulSoup(str(data))
 
 	tbody = soup.select("body div div table tbody")
 	if len(tbody) != 1:
-		xproxy.reportError("Cannot parse markup")
-		return
+		if tries < 3:
+			nextReq = nam.get(QNetworkRequest(req.request().url()))
+			nextReq.finished.connect(lambda: handleFinished(nextReq, elems, tries + 1))
+		else:
+			xproxy.reportError("Cannot parse markup")
+			return
 
 	tbody = tbody[0]
 
