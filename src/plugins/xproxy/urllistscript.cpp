@@ -60,6 +60,7 @@ namespace XProxy
 				QCoreApplication::applicationName () + "_XProxy_SavedScripts" };
 		settings.beginGroup (GetListId ());
 		SetUrlsImpl (settings.value ("Urls").toStringList ());
+		LastUpdate_ = settings.value ("LastUpdate").toDateTime ();
 		settings.endGroup ();
 
 		refresh ();
@@ -83,12 +84,17 @@ namespace XProxy
 
 	void UrlListScript::setUrls (const QStringList& urls)
 	{
+		qDebug () << Q_FUNC_INFO << GetListId () << urls.size () << "; was" << Hosts_.size ();
+
 		SetUrlsImpl (urls);
+
+		LastUpdate_ = QDateTime::currentDateTime ();
 
 		QSettings settings { QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_XProxy_SavedScripts" };
 		settings.beginGroup (GetListId ());
 		settings.setValue ("Urls", urls);
+		settings.setValue ("LastUpdate", LastUpdate_);
 		settings.endGroup ();
 	}
 
@@ -104,6 +110,7 @@ namespace XProxy
 
 	void UrlListScript::refresh ()
 	{
+		qDebug () << Q_FUNC_INFO << GetListId ();
 		Script_->InvokeMethod ("refresh");
 	}
 }

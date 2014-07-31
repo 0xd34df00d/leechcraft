@@ -31,6 +31,7 @@
 
 #include <QStringList>
 #include <QSet>
+#include <QDateTime>
 #include <interfaces/iscriptloader.h>
 #include "structures.h"
 
@@ -53,6 +54,7 @@ namespace XProxy
 
 		QString ListName_;
 		QSet<HostInfo> Hosts_;
+		QDateTime LastUpdate_;
 	public:
 		UrlListScript (const IScript_ptr& script, QObject* = nullptr);
 
