@@ -62,8 +62,6 @@ namespace XProxy
 		SetUrlsImpl (settings.value ("Urls").toStringList ());
 		LastUpdate_ = settings.value ("LastUpdate").toDateTime ();
 		settings.endGroup ();
-
-		refresh ();
 	}
 
 	QByteArray UrlListScript::GetListId () const
@@ -74,6 +72,22 @@ namespace XProxy
 	QString UrlListScript::GetListName () const
 	{
 		return ListName_;
+	}
+
+	void UrlListScript::SetEnabled (bool enabled)
+	{
+		if (enabled == IsEnabled_)
+			return;
+
+		IsEnabled_ = enabled;
+		if (!IsEnabled_)
+			return;
+
+		if (!LastUpdate_.isValid () || LastUpdate_.secsTo (QDateTime::currentDateTime ()) > 60 * 60)
+		{
+			refresh ();
+			LastUpdate_ = QDateTime::currentDateTime ();
+		}
 	}
 
 	bool UrlListScript::Accepts (const QString& host, int port, const QString& proto)

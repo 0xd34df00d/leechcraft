@@ -54,12 +54,16 @@ namespace XProxy
 
 		QString ListName_;
 		QSet<HostInfo> Hosts_;
+
+		bool IsEnabled_ = false;
 		QDateTime LastUpdate_;
 	public:
 		UrlListScript (const IScript_ptr& script, QObject* = nullptr);
 
 		QByteArray GetListId () const;
 		QString GetListName () const;
+
+		void SetEnabled (bool);
 
 		bool Accepts (const QString& host, int port, const QString& proto);
 

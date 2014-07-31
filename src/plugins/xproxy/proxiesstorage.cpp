@@ -143,6 +143,8 @@ namespace XProxy
 	void ProxiesStorage::SetScripts (const Proxy& proxy, const QList<UrlListScript*>& lists)
 	{
 		Scripts_ [proxy] = lists;
+		for (const auto script : lists)
+			script->SetEnabled (true);
 	}
 
 	void ProxiesStorage::LoadSettings ()
@@ -158,7 +160,10 @@ namespace XProxy
 
 		for (const auto& entry : settings.value ("Scripts").value<QList<ScriptEntry_t>> ())
 			if (const auto script = ScriptsMgr_->GetScript (entry.first))
+			{
 				Scripts_ [entry.second] << script;
+				script->SetEnabled (true);
+			}
 			else
 				qWarning () << Q_FUNC_INFO
 						<< "can't restore"
