@@ -48,6 +48,7 @@ namespace XProxy
 		ScriptsManager (const ICoreProxy_ptr&);
 
 		QList<UrlListScript*> GetScripts () const;
+		UrlListScript* GetScript (const QByteArray&) const;
 	};
 }
 }

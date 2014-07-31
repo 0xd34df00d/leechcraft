@@ -59,5 +59,14 @@ namespace XProxy
 	{
 		return Scripts_;
 	}
+
+	UrlListScript* ScriptsManager::GetScript (const QByteArray& id) const
+	{
+		for (const auto script : Scripts_)
+			if (script->GetListId () == id)
+				return script;
+
+		return nullptr;
+	}
 }
 }
