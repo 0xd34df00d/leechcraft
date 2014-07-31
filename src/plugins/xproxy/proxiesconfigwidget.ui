@@ -171,8 +171,21 @@
      </item>
      <item>
       <widget class="QPushButton" name="EditUrlsButton_">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Edit URLs</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="EditListsButton_">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Edit scripts</string>
        </property>
       </widget>
      </item>

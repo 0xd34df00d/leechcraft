@@ -60,7 +60,7 @@ namespace XProxy
 		const auto scriptsMgr = new ScriptsManager { proxy };
 		Storage_ = new ProxiesStorage { scriptsMgr} ;
 
-		CfgWidget_ = new ProxiesConfigWidget { Storage_ };
+		CfgWidget_ = new ProxiesConfigWidget { Storage_, scriptsMgr };
 		XSD_->SetCustomWidget ("Proxies", CfgWidget_);
 
 		XmlSettingsManager::Instance ().RegisterObject ("EnableForNAM", this, "handleReenable");

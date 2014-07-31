@@ -33,6 +33,8 @@
 #include <util/sll/slotclosure.h>
 #include "proxiesstorage.h"
 #include "editurlsdialog.h"
+#include "editlistsdialog.h"
+#include "scriptsmanager.h"
 #include "proxiesstorage.h"
 
 namespace LeechCraft
@@ -76,9 +78,11 @@ namespace XProxy
 		}
 	}
 
-	ProxiesConfigWidget::ProxiesConfigWidget (ProxiesStorage *storage, QWidget *parent)
+	ProxiesConfigWidget::ProxiesConfigWidget (ProxiesStorage *storage,
+			ScriptsManager *manager, QWidget *parent)
 	: QWidget (parent)
 	, Storage_ (storage)
+	, ScriptsMgr_ (manager)
 	, Model_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
@@ -155,6 +159,7 @@ namespace XProxy
 		Ui_.UpdateProxyButton_->setEnabled (idx.isValid ());
 		Ui_.RemoveProxyButton_->setEnabled (idx.isValid ());
 		Ui_.EditUrlsButton_->setEnabled (idx.isValid ());
+		Ui_.EditListsButton_->setEnabled (idx.isValid ());
 
 		const auto& proxy = Proxies_.value (idx.row ());
 		Ui_.ProxyHost_->setText (proxy.Host_);
@@ -233,10 +238,28 @@ namespace XProxy
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[this, proxy, dialog] () -> void
-			{
-				Storage_->SetTargets (proxy, dialog->GetTargets ());
-			},
+			[this, proxy, dialog] { Storage_->SetTargets (proxy, dialog->GetTargets ()); },
+			dialog,
+			SIGNAL (accepted ()),
+			dialog
+		};
+
+		dialog->show ();
+	}
+
+	void ProxiesConfigWidget::on_EditListsButton__released ()
+	{
+		const int row = Ui_.ProxiesList_->currentIndex ().row ();
+		if (row < 0 || row >= Proxies_.size ())
+			return;
+
+		const auto& proxy = Proxies_.value (row);
+		auto dialog = new EditListsDialog { Storage_->GetScripts (proxy), ScriptsMgr_, this };
+		dialog->setAttribute (Qt::WA_DeleteOnClose);
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, proxy, dialog] { Storage_->SetScripts (proxy, dialog->GetScripts ()); },
 			dialog,
 			SIGNAL (accepted ()),
 			dialog
