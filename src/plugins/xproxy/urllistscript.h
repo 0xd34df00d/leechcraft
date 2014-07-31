@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QStringList>
+#include <QSet>
 #include <interfaces/iscriptloader.h>
 #include "structures.h"
 
@@ -37,6 +38,13 @@ namespace LeechCraft
 {
 namespace XProxy
 {
+	struct HostInfo
+	{
+		QString Host_;
+		int Port_;
+		QString Scheme_;
+	};
+
 	class UrlListScript : public QObject
 	{
 		Q_OBJECT
@@ -44,6 +52,7 @@ namespace XProxy
 		const IScript_ptr Script_;
 
 		QString ListName_;
+		QSet<HostInfo> Hosts_;
 	public:
 		UrlListScript (const IScript_ptr& script, QObject* = nullptr);
 
@@ -53,6 +62,8 @@ namespace XProxy
 		bool Accepts (const QString& host, int port, const QString& proto);
 
 		Q_INVOKABLE void setUrls (const QStringList&);
+	private:
+		void SetUrlsImpl (const QStringList&);
 	public slots:
 		void refresh ();
 	};

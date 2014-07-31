@@ -28,18 +28,39 @@
  **********************************************************************/
 
 #include "urllistscript.h"
+#include <QUrl>
 #include <QtDebug>
+#include <QSettings>
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace XProxy
 {
+	bool operator== (const HostInfo& left, const HostInfo& right)
+	{
+		return left.Port_ == right.Port_ &&
+				left.Host_ == right.Host_ &&
+				left.Scheme_ == right.Scheme_;
+	}
+
+	uint qHash (const HostInfo& info)
+	{
+		return qHash (info.Host_ + info.Scheme_) + info.Port_;
+	}
+
 	UrlListScript::UrlListScript (const IScript_ptr& script, QObject *parent)
 	: QObject { parent }
 	, Script_ { script }
 	{
 		script->AddQObject (this, "xproxy");
 		ListName_ = Script_->InvokeMethod ("getListName").toString ();
+
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_XProxy_SavedScripts" };
+		settings.beginGroup (GetListId ());
+		SetUrlsImpl (settings.value ("Urls").toStringList ());
+		settings.endGroup ();
 
 		refresh ();
 	}
@@ -61,6 +82,17 @@ namespace XProxy
 	}
 
 	void UrlListScript::setUrls (const QStringList& urls)
+	{
+		SetUrlsImpl (urls);
+
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_XProxy_SavedScripts" };
+		settings.beginGroup (GetListId ());
+		settings.setValue ("Urls", urls);
+		settings.endGroup ();
+	}
+
+	void UrlListScript::SetUrlsImpl (const QStringList& urls)
 	{
 		Hosts_.clear ();
 		for (const auto& urlStr : urls)
