@@ -36,6 +36,8 @@
 #include "proxiesconfigwidget.h"
 #include "xmlsettingsmanager.h"
 #include "proxiesstorage.h"
+#include "scriptsmanager.h"
+#include "urllistscript.h"
 
 namespace LeechCraft
 {
@@ -50,11 +52,13 @@ namespace XProxy
 		qRegisterMetaTypeStreamOperators<Proxy> ("LeechCraft::XProxy::Proxy");
 		qRegisterMetaTypeStreamOperators<ReqTarget> ("LeechCraft::XProxy::ReqTarget");
 		qRegisterMetaTypeStreamOperators<QList<LeechCraft::XProxy::Entry_t>> ("QList<LeechCraft::XProxy::Entry_t>");
+		qRegisterMetaTypeStreamOperators<QList<LeechCraft::XProxy::ScriptEntry_t>> ("QList<LeechCraft::XProxy::ScriptEntry_t>");
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "xproxysettings.xml");
 
-		Storage_ = new ProxiesStorage;
+		const auto scriptsMgr = new ScriptsManager { proxy };
+		Storage_ = new ProxiesStorage { scriptsMgr} ;
 
 		CfgWidget_ = new ProxiesConfigWidget { Storage_ };
 		XSD_->SetCustomWidget ("Proxies", CfgWidget_);

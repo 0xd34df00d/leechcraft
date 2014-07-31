@@ -37,12 +37,16 @@ namespace LeechCraft
 {
 namespace XProxy
 {
+	class UrlListScript;
+	class ScriptsManager;
 
 	class ProxiesStorage : public QObject
 	{
+		const ScriptsManager * const ScriptsMgr_;
 		QMap<Proxy, QList<ReqTarget>> Proxies_;
+		QMap<Proxy, QList<UrlListScript*>> Scripts_;
 	public:
-		ProxiesStorage (QObject* = nullptr);
+		ProxiesStorage (const ScriptsManager*, QObject* = nullptr);
 
 		QList<Proxy> GetKnownProxies () const;
 
@@ -55,6 +59,9 @@ namespace XProxy
 
 		QList<ReqTarget> GetTargets (const Proxy&) const;
 		void SetTargets (const Proxy&, const QList<ReqTarget>&);
+
+		QList<UrlListScript*> GetScripts (const Proxy&) const;
+		void SetScripts (const Proxy&, const QList<UrlListScript*>&);
 
 		void LoadSettings ();
 		void SaveSettings () const;

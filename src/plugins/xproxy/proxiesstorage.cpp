@@ -31,19 +31,22 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <util/sll/qtutil.h>
+#include "urllistscript.h"
+#include "scriptsmanager.h"
 
 namespace LeechCraft
 {
 namespace XProxy
 {
-	ProxiesStorage::ProxiesStorage (QObject *parent)
+	ProxiesStorage::ProxiesStorage (const ScriptsManager *manager, QObject *parent)
 	: QObject { parent }
+	, ScriptsMgr_ { manager }
 	{
 	}
 
 	QList<Proxy> ProxiesStorage::GetKnownProxies () const
 	{
-		return Proxies_.keys ();
+		return Proxies_.keys () + Scripts_.keys ();
 	}
 
 	QList<Proxy> ProxiesStorage::FindMatching (const QString& reqHost, int reqPort, const QString& proto) const
@@ -64,6 +67,9 @@ namespace XProxy
 		QList<Proxy> result;
 		for (const auto& pair : Util::Stlize (Proxies_))
 		{
+			if (result.contains (pair.first))
+				continue;
+
 			if (std::any_of (pair.second.begin (), pair.second.end (),
 					[&reqHost, reqPort, &proto] (const ReqTarget& target)
 					{
@@ -80,6 +86,16 @@ namespace XProxy
 					}))
 				result << pair.first;
 		}
+		for (const auto& pair : Util::Stlize (Scripts_))
+		{
+			if (result.contains (pair.first))
+				continue;
+
+			if (std::any_of (pair.second.begin (), pair.second.end (),
+					[&reqHost, reqPort, &proto] (UrlListScript *script)
+						{ return script->Accepts (reqHost, reqPort, proto); }))
+				result << pair.first;
+		}
 		return result;
 	}
 
@@ -94,11 +110,15 @@ namespace XProxy
 
 		const auto& olds = Proxies_.take (oldProxy);
 		Proxies_ [newProxy] += olds;
+
+		const auto& oldScripts = Scripts_.take (oldProxy);
+		Scripts_ [newProxy] += oldScripts;
 	}
 
 	void ProxiesStorage::RemoveProxy (const Proxy& proxy)
 	{
 		Proxies_.remove (proxy);
+		Scripts_.remove (proxy);
 	}
 
 	QList<ReqTarget> ProxiesStorage::GetTargets (const Proxy& proxy) const
@@ -111,6 +131,16 @@ namespace XProxy
 		Proxies_ [proxy] = targets;
 	}
 
+	QList<UrlListScript*> ProxiesStorage::GetScripts (const Proxy& proxy) const
+	{
+		return Scripts_ [proxy];
+	}
+
+	void ProxiesStorage::SetScripts (const Proxy& proxy, const QList<UrlListScript*>& lists)
+	{
+		Scripts_ [proxy] = lists;
+	}
+
 	void ProxiesStorage::LoadSettings ()
 	{
 		Proxies_.clear ();
@@ -118,8 +148,17 @@ namespace XProxy
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_XProxy");
 		settings.beginGroup ("SavedProxies");
+
 		for (const auto& entry : settings.value ("Entries").value<QList<Entry_t>> ())
 			Proxies_ [entry.second] << entry.first;
+
+		for (const auto& entry : settings.value ("Scripts").value<QList<ScriptEntry_t>> ())
+			if (const auto script = ScriptsMgr_->GetScript (entry.first))
+				Scripts_ [entry.second] << script;
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "can't restore"
+						<< entry.first;
 
 		settings.endGroup ();
 	}
@@ -131,10 +170,16 @@ namespace XProxy
 			for (const auto& target : pair.second)
 				entries.append ({ target, pair.first });
 
+		QList<ScriptEntry_t> scripts;
+		for (const auto pair : Util::Stlize (Scripts_))
+			for (const auto script : pair.second)
+				scripts.append ({ script->GetListId (), pair.first });
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_XProxy");
 		settings.beginGroup ("SavedProxies");
 		settings.setValue ("Entries", QVariant::fromValue (entries));
+		settings.setValue ("Scripts", QVariant::fromValue (scripts));
 		settings.endGroup ();
 	}
 }
