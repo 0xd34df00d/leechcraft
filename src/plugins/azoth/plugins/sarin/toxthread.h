@@ -60,6 +60,7 @@ namespace Sarin
 		ToxThread (const QString& name, const QByteArray& key);
 		~ToxThread ();
 
+		EntryStatus GetStatus () const;
 		void SetStatus (const EntryStatus&);
 
 		void Stop ();

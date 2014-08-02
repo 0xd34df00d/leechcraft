@@ -89,6 +89,11 @@ namespace Sarin
 		}
 	}
 
+	EntryStatus ToxThread::GetStatus () const
+	{
+		return Status_;
+	}
+
 	void ToxThread::SetStatus (const EntryStatus& status)
 	{
 		Status_ = status;
