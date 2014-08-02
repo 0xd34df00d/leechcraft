@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "sarin.h"
+#include <interfaces/azoth/iclentry.h>
 #include "toxprotocol.h"
 
 namespace LeechCraft
@@ -38,6 +39,8 @@ namespace Sarin
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		qRegisterMetaType<EntryStatus> ("EntryStatus");
+
 		Proto_ = new ToxProtocol { this };
 	}
 

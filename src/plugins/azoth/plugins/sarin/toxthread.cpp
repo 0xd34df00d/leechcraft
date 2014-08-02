@@ -93,7 +93,11 @@ namespace Sarin
 	{
 		Status_ = status;
 		if (IsStoppable ())
-			ScheduleFunction ([status] (Tox *tox) { SetToxStatus (tox, status); });
+			ScheduleFunction ([status, this] (Tox *tox)
+					{
+						SetToxStatus (tox, status);
+						emit statusChanged (status);
+					});
 	}
 
 	void ToxThread::Stop ()
@@ -139,10 +143,19 @@ namespace Sarin
 				reinterpret_cast<const uint8_t*> (pubkey.constData ()));
 		qDebug () << "done" << tox_isconnected (tox.get ());
 
+		bool wasConnected = false;
 		while (!ShouldStop_)
 		{
 			tox_do (tox.get ());
 			auto next = tox_do_interval (tox.get ());
+
+			if (!wasConnected && tox_isconnected (tox.get ()))
+			{
+				wasConnected = true;
+				qDebug () << "connected!";
+
+				emit statusChanged (Status_);
+			}
 
 			QElapsedTimer timer;
 			timer.start ();

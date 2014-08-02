@@ -45,6 +45,8 @@ namespace Sarin
 {
 	class ToxThread : public QThread
 	{
+		Q_OBJECT
+
 		std::atomic_bool ShouldStop_ { false };
 
 		const QString Name_;
@@ -66,6 +68,8 @@ namespace Sarin
 		void ScheduleFunction (const std::function<void (Tox*)>&);
 	protected:
 		virtual void run ();
+	signals:
+		void statusChanged (const EntryStatus&);
 	};
 }
 }

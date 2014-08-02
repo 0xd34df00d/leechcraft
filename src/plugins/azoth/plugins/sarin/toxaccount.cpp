@@ -176,7 +176,7 @@ namespace Sarin
 			{
 				new Util::SlotClosure<Util::DeleteLaterPolicy>
 				{
-					[thread = Thread_] {},
+					[thread = Thread_, status, this] { emit statusChanged (status); },
 					Thread_.get (),
 					SIGNAL (finished ()),
 					Thread_.get ()
@@ -191,6 +191,10 @@ namespace Sarin
 		{
 			Thread_ = std::make_shared<ToxThread> (Nick_, ToxId_.toLatin1 ());
 			Thread_->SetStatus (status);
+			connect (Thread_.get (),
+					SIGNAL (statusChanged (EntryStatus)),
+					this,
+					SIGNAL (statusChanged (EntryStatus)));
 			Thread_->start (QThread::IdlePriority);
 		}
 		else
