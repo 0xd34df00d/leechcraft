@@ -165,7 +165,7 @@ namespace Sarin
 
 	EntryStatus ToxAccount::GetState () const
 	{
-		return {};
+		return Thread_ ? Thread_->GetStatus () : EntryStatus {};
 	}
 
 	void ToxAccount::ChangeState (const EntryStatus& status)
