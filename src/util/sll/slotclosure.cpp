@@ -34,29 +34,39 @@ namespace LeechCraft
 namespace Util
 {
 	SlotClosureBase::SlotClosureBase (const std::function<void ()>& func, QObject *parent)
-	: QObject { parent }
+	: QObject { nullptr }
 	, Func_ { func }
 	{
+		if (parent)
+			connect (parent,
+					SIGNAL (destroyed ()),
+					this,
+					SLOT (deleteLater ()));
 	}
 
 	SlotClosureBase::SlotClosureBase (const std::function<void ()>& func,
 			QObject *sender,
 			const char *signal,
 			QObject *parent)
-	: QObject { parent }
+	: QObject { nullptr }
 	, Func_ { func }
 	{
 		connect (sender,
 				signal,
 				this,
 				SLOT (run ()));
+		if (parent)
+			connect (parent,
+					SIGNAL (destroyed ()),
+					this,
+					SLOT (deleteLater ()));
 	}
 
 	SlotClosureBase::SlotClosureBase (const std::function<void ()>& func,
 			QObject *sender,
 			const std::initializer_list<const char*>& signalsList,
 			QObject *parent)
-	: QObject { parent }
+	: QObject { nullptr }
 	, Func_ { func }
 	{
 		for (const auto signal : signalsList)
@@ -64,6 +74,12 @@ namespace Util
 					signal,
 					this,
 					SLOT (run ()));
+
+		if (parent)
+			connect (parent,
+					SIGNAL (destroyed ()),
+					this,
+					SLOT (deleteLater ()));
 	}
 
 	void SlotClosureBase::run ()
