@@ -80,12 +80,12 @@ namespace Sarin
 		EntryStatus GetState () const override;
 		void ChangeState (const EntryStatus&) override;
 
-		void Authorize (QObject* entry) override;
-		void DenyAuth (QObject* entry) override;
-		void RequestAuth (const QString& entry, const QString& msg = QString (), const QString& name = QString (), const QStringList& groups = QStringList ()) override;
-		void RemoveEntry (QObject* entry) override;
+		void Authorize (QObject*) override;
+		void DenyAuth (QObject*) override;
+		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&) override;
+		void RemoveEntry (QObject*) override;
 
-		QObject* GetTransferManager () const;
+		QObject* GetTransferManager () const override;
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;
