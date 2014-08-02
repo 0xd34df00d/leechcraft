@@ -31,6 +31,7 @@
 #include <memory>
 #include <QElapsedTimer>
 #include <QMutexLocker>
+#include <QtEndian>
 #include <QtDebug>
 #include <tox/tox.h>
 
@@ -110,23 +111,32 @@ namespace Sarin
 		FQueue_ << function;
 	}
 
+	namespace
+	{
+		QByteArray HexStringToBin (const QByteArray& key)
+		{
+			return QByteArray::fromHex (key.toLower ());
+		}
+	}
+
 	void ToxThread::run ()
 	{
 		qDebug () << Q_FUNC_INFO;
 		std::shared_ptr<Tox> tox { tox_new (TOX_ENABLE_IPV6_DEFAULT), &tox_kill };
 
 		DoTox (Name_,
-				[tox] (auto bytes, auto size) { tox_set_name (tox.get (), bytes, size); });
+				[&tox] (const uint8_t *bytes, uint16_t size) { tox_set_name (tox.get (), bytes, size); });
 
 		SetToxStatus (tox.get (), Status_);
 
-		qDebug () << "gonna bootstrap...";
-		tox_bootstrap_from_address (tox.get (),
-				"23.226.230.47",
-				TOX_ENABLE_IPV6_DEFAULT,
-				33445,
-				reinterpret_cast<const uint8_t*> (Key_.constData ()));
-		qDebug () << "done";
+		qDebug () << "gonna bootstrap..." << tox.get ();
+		const auto pubkey = HexStringToBin ("F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67");
+		qDebug () << tox_bootstrap_from_address (tox.get (),
+				"192.210.149.121",
+				0,
+				qToBigEndian (static_cast<uint16_t> (33445)),
+				reinterpret_cast<const uint8_t*> (pubkey.constData ()));
+		qDebug () << "done" << tox_isconnected (tox.get ());
 
 		while (!ShouldStop_)
 		{
