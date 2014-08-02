@@ -12,6 +12,10 @@ set (SARIN_SRCS
 	sarin.cpp
 	toxprotocol.cpp
 	toxaccount.cpp
+	accregisterdetailspage.cpp
+	)
+set (SARIN_FORMS
+	accregisterdetailspage.ui
 	)
 #CreateTrs ("azoth_sarin" "en;ru_RU" SARIN_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_sarin" "en;ru_RU" "${SARIN_SRCS}" "" "")
@@ -19,11 +23,13 @@ CreateTrsUpTarget ("azoth_sarin" "en;ru_RU" "${SARIN_SRCS}" "" "")
 #	sarinresources.qrc
 #	)
 #QT4_ADD_RESOURCES (SARIN_RCCS ${SARIN_RESOURCES})
+QT4_WRAP_UI (SARIN_UIS_H ${SARIN_FORMS})
 
 add_library (leechcraft_azoth_sarin SHARED
 	${SARIN_COMPILED_TRANSLATIONS}
 	${SARIN_SRCS}
 	${SARIN_RCCS}
+	${SARIN_UIS_H}
 	)
 target_link_libraries (leechcraft_azoth_sarin
 	${QT_LIBRARIES}
