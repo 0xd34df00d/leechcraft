@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
 
@@ -39,6 +40,7 @@ namespace Azoth
 namespace Sarin
 {
 	class ToxProtocol;
+	class ToxThread;
 
 	class ToxAccount : public QObject
 					 , public IAccount
@@ -53,6 +55,8 @@ namespace Sarin
 
 		QString ToxId_;
 		QString Nick_;
+
+		std::shared_ptr<ToxThread> Thread_;
 
 		ToxAccount (const QByteArray&, const QString& name, ToxProtocol*);
 	public:

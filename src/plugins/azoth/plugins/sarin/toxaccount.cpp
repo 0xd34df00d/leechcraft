@@ -31,7 +31,9 @@
 #include <QUuid>
 #include <QDataStream>
 #include <QtDebug>
+#include <util/sll/slotclosure.h>
 #include "toxprotocol.h"
+#include "toxthread.h"
 
 namespace LeechCraft
 {
@@ -166,8 +168,33 @@ namespace Sarin
 		return {};
 	}
 
-	void ToxAccount::ChangeState (const EntryStatus&)
+	void ToxAccount::ChangeState (const EntryStatus& status)
 	{
+		if (status.State_ == SOffline)
+		{
+			if (Thread_ && Thread_->IsStoppable ())
+			{
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[thread = Thread_] {},
+					Thread_.get (),
+					SIGNAL (finished ()),
+					Thread_.get ()
+				};
+				Thread_->Stop ();
+			}
+			Thread_.reset ();
+			return;
+		}
+
+		if (!Thread_)
+		{
+			Thread_ = std::make_shared<ToxThread> (Nick_, ToxId_.toLatin1 ());
+			Thread_->SetStatus (status);
+			Thread_->start (QThread::IdlePriority);
+		}
+		else
+			Thread_->SetStatus (status);
 	}
 
 	void ToxAccount::Authorize (QObject*)
