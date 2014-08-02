@@ -3,7 +3,7 @@ project (leechcraft_eleeminator)
 include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package (QTermWidget)
+find_package (QTermWidget REQUIRED)
 
 include (${QT_USE_FILE})
 include_directories (
