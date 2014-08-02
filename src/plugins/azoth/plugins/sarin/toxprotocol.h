@@ -38,6 +38,8 @@ namespace Azoth
 {
 namespace Sarin
 {
+	class ToxAccount;
+
 	class ToxProtocol : public QObject
 					  , public IProtocol
 	{
@@ -45,6 +47,8 @@ namespace Sarin
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
 		QObject * const ParentProtocol_;
+
+		QList<ToxAccount*> Accounts_;
 	public:
 		ToxProtocol (QObject *parentPlugin);
 
@@ -61,6 +65,10 @@ namespace Sarin
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
 		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject* account);
+	private:
+		void LoadAccounts ();
+	private slots:
+		void saveAccount (ToxAccount*);
 	signals:
 		void accountAdded (QObject*) override;
 		void accountRemoved (QObject*) override;

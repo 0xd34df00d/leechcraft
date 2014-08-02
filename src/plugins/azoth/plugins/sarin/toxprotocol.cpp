@@ -29,6 +29,11 @@
 
 #include "toxprotocol.h"
 #include <QIcon>
+#include <QSettings>
+#include <QCoreApplication>
+#include <QtDebug>
+#include "accregisterdetailspage.h"
+#include "toxaccount.h"
 
 namespace LeechCraft
 {
@@ -40,6 +45,7 @@ namespace Sarin
 	: QObject { parentPlugin }
 	, ParentProtocol_ { parentPlugin }
 	{
+		LoadAccounts ();
 	}
 
 	QObject* ToxProtocol::GetQObject ()
@@ -54,7 +60,10 @@ namespace Sarin
 
 	QList<QObject*> ToxProtocol::GetRegisteredAccounts ()
 	{
-		return {};
+		QList<QObject*> result;
+		for (auto acc : Accounts_)
+			result << acc;
+		return result;
 	}
 
 	QObject* ToxProtocol::GetParentProtocolPlugin () const
@@ -79,11 +88,25 @@ namespace Sarin
 
 	QList<QWidget*> ToxProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
-		return {};
+		return { new AccRegisterDetailsPage };
 	}
 
 	void ToxProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
+		const auto detailsPage = qobject_cast<AccRegisterDetailsPage*> (widgets.value (0));
+
+		auto acc = new ToxAccount { name, this };
+		acc->SetToxId (detailsPage->GetId ());
+		acc->SetNickname (detailsPage->GetNickname ());
+		saveAccount (acc);
+
+		Accounts_ << acc;
+		emit accountAdded (acc);
+
+		connect (acc,
+				SIGNAL (accountChanged (ToxAccount*)),
+				this,
+				SLOT (saveAccount (ToxAccount*)));
 	}
 
 	QWidget* ToxProtocol::GetMUCJoinWidget ()
@@ -91,8 +114,45 @@ namespace Sarin
 		return nullptr;
 	}
 
-	void ToxProtocol::RemoveAccount (QObject *account)
+	void ToxProtocol::RemoveAccount (QObject *accObj)
 	{
+		const auto account = qobject_cast<ToxAccount*> (accObj);
+		if (!Accounts_.contains (account))
+			return;
+
+		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Saren_Accounts" };
+		settings.remove (account->GetAccountID ());
+
+		Accounts_.removeOne (account);
+		emit accountRemoved (accObj);
+	}
+
+	void ToxProtocol::LoadAccounts ()
+	{
+		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Saren_Accounts" };
+
+		for (const auto& key : settings.childKeys ())
+		{
+			const auto& serialized = settings.value (key).toByteArray ();
+			if (const auto acc = ToxAccount::Deserialize (serialized, this))
+				Accounts_ << acc;
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "cannot deserialize"
+						<< key;
+		}
+	}
+
+	void ToxProtocol::saveAccount (ToxAccount *account)
+	{
+		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Saren_Accounts" };
+		settings.setValue (account->GetAccountID (), account->Serialize ());
 	}
 }
 }
