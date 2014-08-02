@@ -34,6 +34,7 @@ add_library (leechcraft_azoth_sarin SHARED
 target_link_libraries (leechcraft_azoth_sarin
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	sodium					# TODO write FindSodium.cmake
 	)
 install (TARGETS leechcraft_azoth_sarin DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES azothsarinsettings.xml DESTINATION ${LC_SETTINGS_DEST})
