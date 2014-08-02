@@ -99,6 +99,11 @@ namespace Sarin
 		ShouldStop_ = true;
 	}
 
+	bool ToxThread::IsStoppable () const
+	{
+		return isRunning () && !ShouldStop_;
+	}
+
 	void ToxThread::ScheduleFunction (const std::function<void (Tox*)>& function)
 	{
 		QMutexLocker locker { &FQueueMutex_ };

@@ -61,6 +61,7 @@ namespace Sarin
 		void SetStatus (const EntryStatus&);
 
 		void Stop ();
+		bool IsStoppable () const;
 	private:
 		void ScheduleFunction (const std::function<void (Tox*)>&);
 	protected:
