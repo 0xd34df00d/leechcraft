@@ -14,6 +14,7 @@ set (SARIN_SRCS
 	sarin.cpp
 	toxprotocol.cpp
 	toxaccount.cpp
+	toxthread.cpp
 	accregisterdetailspage.cpp
 	)
 set (SARIN_FORMS
