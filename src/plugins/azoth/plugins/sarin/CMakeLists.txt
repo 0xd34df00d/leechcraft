@@ -11,6 +11,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (SARIN_SRCS
 	sarin.cpp
 	toxprotocol.cpp
+	toxaccount.cpp
 	)
 #CreateTrs ("azoth_sarin" "en;ru_RU" SARIN_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_sarin" "en;ru_RU" "${SARIN_SRCS}" "" "")
