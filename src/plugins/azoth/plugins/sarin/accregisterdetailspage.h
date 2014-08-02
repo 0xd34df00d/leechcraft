@@ -48,6 +48,8 @@ namespace Sarin
 
 		QString GetId () const;
 		QString GetNickname () const;
+	private slots:
+		void on_GenerateButton__released ();
 	};
 }
 }
