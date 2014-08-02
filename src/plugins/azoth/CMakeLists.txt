@@ -247,7 +247,7 @@ option (ENABLE_AZOTH_MURM "Build Murm, special plugin for extensive VKontakte me
 option (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
 option (ENABLE_AZOTH_OTROID "Build OTRoid for supporting Off-the-Record messaging" OFF)
 option (ENABLE_AZOTH_ROSENTHAL "Build Rosenthal, spellchecker plugin for Azoth" ON)
-option (ENABLE_AZOTH_SARIN "Build Sarin, Tox support for Azoth" ON)
+option (ENABLE_AZOTH_SARIN "Build Sarin, Tox support for Azoth" OFF)
 option (ENABLE_AZOTH_SHX "Build ShX, shell command runner" ON)
 option (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
 option (ENABLE_AZOTH_VADER "Build support for the MRIM protocol" ON)
