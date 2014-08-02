@@ -180,15 +180,6 @@ namespace Azoth
 		 */
 		virtual QList<QAction*> GetActions () const = 0;
 
-		/** @brief Request message w/ info/vcard information for the given address.
-		 *
-		 * The address should be in format compatible with the result of
-		 * ICLEntry::GetHumanReadableID() function whenever possible.
-		 *
-		 * @param[in] address Address or entry ID to query.
-		 */
-		virtual void QueryInfo (const QString& address) = 0;
-
 		/** @brief Requests the account to open its configuration dialog.
 		 */
 		virtual void OpenConfigurationDialog () = 0;

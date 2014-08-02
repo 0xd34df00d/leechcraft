@@ -77,7 +77,6 @@ namespace Astrality
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
 		QList<QAction*> GetActions () const;
-		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);

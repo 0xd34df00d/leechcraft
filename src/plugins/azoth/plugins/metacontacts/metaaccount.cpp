@@ -90,10 +90,6 @@ namespace Metacontacts
 		return QList<QAction*> ();
 	}
 
-	void MetaAccount::QueryInfo (const QString&)
-	{
-	}
-
 	void MetaAccount::OpenConfigurationDialog ()
 	{
 	}

@@ -112,10 +112,6 @@ namespace Acetamide
 		return QList<QObject*> ();
 	}
 
-	void IrcAccount::QueryInfo (const QString&)
-	{
-	}
-
 	QString IrcAccount::GetAccountName () const
 	{
 		return AccountName_;

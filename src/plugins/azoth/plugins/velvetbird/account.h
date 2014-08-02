@@ -70,7 +70,6 @@ namespace VelvetBird
 		void RenameAccount (const QString& name);
 		virtual QByteArray GetAccountID () const;
 		QList< QAction* > GetActions () const;
-		void QueryInfo (const QString& address);
 		void OpenConfigurationDialog ();
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);

@@ -87,7 +87,6 @@ namespace Acetamide
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
-		void QueryInfo (const QString&);
 
 		QString GetAccountName () const;
 		QString GetOurNick () const;

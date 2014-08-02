@@ -301,10 +301,6 @@ namespace Murm
 		return {};
 	}
 
-	void VkAccount::QueryInfo (const QString&)
-	{
-	}
-
 	void VkAccount::OpenConfigurationDialog ()
 	{
 		auto dia = new AccountConfigDialog;

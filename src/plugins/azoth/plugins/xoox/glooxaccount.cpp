@@ -270,11 +270,6 @@ namespace Xoox
 		return { SelfVCardAction_, PrivacyDialogAction_, CarbonsAction_ };
 	}
 
-	void GlooxAccount::QueryInfo (const QString& entryId)
-	{
-		ClientConnection_->FetchVCard (entryId);
-	}
-
 	void GlooxAccount::OpenConfigurationDialog ()
 	{
 		SettingsHolder_->OpenConfigDialog ();

@@ -270,10 +270,6 @@ namespace Zheet
 		return result;
 	}
 
-	void MSNAccount::QueryInfo (const QString&)
-	{
-	}
-
 	void MSNAccount::OpenConfigurationDialog ()
 	{
 	}

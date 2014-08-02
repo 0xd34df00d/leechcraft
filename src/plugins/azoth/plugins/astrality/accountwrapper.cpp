@@ -152,10 +152,6 @@ namespace Astrality
 		return QList<QAction*> ();
 	}
 
-	void AccountWrapper::QueryInfo (const QString&)
-	{
-	}
-
 	void AccountWrapper::OpenConfigurationDialog ()
 	{
 		auto proto = qobject_cast<ProtoWrapper*> (GetParentProtocol ());

@@ -229,10 +229,6 @@ namespace Vader
 		return Actions_;
 	}
 
-	void MRIMAccount::QueryInfo (const QString&)
-	{
-	}
-
 	void MRIMAccount::OpenConfigurationDialog ()
 	{
 	}

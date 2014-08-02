@@ -113,10 +113,6 @@ namespace VelvetBird
 		return {};
 	}
 
-	void Account::QueryInfo (const QString&)
-	{
-	}
-
 	void Account::OpenConfigurationDialog ()
 	{
 		AccountConfigDialog dia;
