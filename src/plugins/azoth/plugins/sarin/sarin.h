@@ -41,6 +41,8 @@ namespace Azoth
 {
 namespace Sarin
 {
+	class ToxProtocol;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -48,6 +50,8 @@ namespace Sarin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+
+		ToxProtocol *Proto_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "sarin.h"
+#include "toxprotocol.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,7 @@ namespace Sarin
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Proto_ = new ToxProtocol { this };
 	}
 
 	void Plugin::SecondInit ()
@@ -81,7 +83,7 @@ namespace Sarin
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return {};
+		return { Proto_ };
 	}
 }
 }
