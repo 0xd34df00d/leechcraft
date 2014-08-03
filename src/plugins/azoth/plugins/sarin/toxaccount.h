@@ -89,6 +89,10 @@ namespace Sarin
 		void RemoveEntry (QObject*) override;
 
 		QObject* GetTransferManager () const override;
+	private:
+		void InitThread (const EntryStatus&);
+	private slots:
+		void handleToxStateChanged (const QByteArray&);
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;

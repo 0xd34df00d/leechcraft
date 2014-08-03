@@ -71,10 +71,13 @@ namespace Sarin
 		bool IsStoppable () const;
 	private:
 		void ScheduleFunction (const std::function<void (Tox*)>&);
+		void SaveState ();
 	protected:
 		virtual void run ();
 	signals:
 		void statusChanged (const EntryStatus&);
+
+		void toxStateChanged (const QByteArray&);
 	};
 }
 }

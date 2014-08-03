@@ -213,7 +213,17 @@ namespace Sarin
 				SIGNAL (statusChanged (EntryStatus)),
 				this,
 				SIGNAL (statusChanged (EntryStatus)));
+		connect (Thread_.get (),
+				SIGNAL (toxStateChanged (QByteArray)),
+				this,
+				SLOT (handleToxStateChanged (QByteArray)));
 		Thread_->start (QThread::IdlePriority);
+	}
+
+	void ToxAccount::handleToxStateChanged (const QByteArray& toxState)
+	{
+		ToxState_ = toxState;
+		emit accountChanged (this);
 	}
 }
 }

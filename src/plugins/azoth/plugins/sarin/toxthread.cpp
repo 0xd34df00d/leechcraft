@@ -120,6 +120,22 @@ namespace Sarin
 		FQueue_ << function;
 	}
 
+	void ToxThread::SaveState ()
+	{
+		const auto size = tox_size (Tox_.get ());
+		if (!size)
+			return;
+
+		QByteArray newState { static_cast<int> (size), 0 };
+		tox_save (Tox_.get (), reinterpret_cast<uint8_t*> (newState.data ()));
+
+		if (newState == ToxState_)
+			return;
+
+		ToxState_ = newState;
+		emit toxStateChanged (ToxState_);
+	}
+
 	namespace
 	{
 		QByteArray HexStringToBin (const QByteArray& key)
@@ -138,6 +154,16 @@ namespace Sarin
 
 		SetToxStatus (Tox_.get (), Status_);
 
+		if (!ToxState_.isEmpty ())
+		{
+			const auto res = tox_load (Tox_.get (),
+					reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
+					ToxState_.size ());
+			if (!res)
+				qDebug () << "successfully loaded Tox state";
+			else
+				qWarning () << "failed to load Tox state";
+		}
 
 		qDebug () << "gonna bootstrap..." << Tox_.get ();
 		const auto pubkey = HexStringToBin ("F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67");
@@ -159,6 +185,8 @@ namespace Sarin
 				qDebug () << "connected!";
 
 				emit statusChanged (Status_);
+
+				SaveState ();
 			}
 
 			QElapsedTimer timer;
@@ -181,6 +209,8 @@ namespace Sarin
 				msleep (next);
 			}
 		}
+
+		SaveState ();
 	}
 }
 }
