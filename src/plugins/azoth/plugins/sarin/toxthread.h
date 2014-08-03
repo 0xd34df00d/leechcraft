@@ -34,6 +34,7 @@
 #include <functional>
 #include <QThread>
 #include <QMutex>
+#include <QFuture>
 #include <interfaces/azoth/iclentry.h>
 
 typedef struct Tox Tox;
@@ -69,6 +70,8 @@ namespace Sarin
 
 		void Stop ();
 		bool IsStoppable () const;
+
+		QFuture<QByteArray> GetToxId ();
 	private:
 		void ScheduleFunction (const std::function<void (Tox*)>&);
 		void SaveState ();

@@ -139,6 +139,18 @@ namespace Sarin
 		}
 	}
 
+	QFuture<QByteArray> ToxThread::GetToxId ()
+	{
+		QFutureInterface<QByteArray> iface;
+		ScheduleFunction ([iface] (Tox *tox) mutable
+				{
+					iface.reportStarted ();
+					const auto& res = GetToxAddress (tox);
+					iface.reportFinished (&res);
+				});
+		return QFuture<QByteArray> { &iface };
+	}
+
 	void ToxThread::ScheduleFunction (const std::function<void (Tox*)>& function)
 	{
 		QMutexLocker locker { &FQueueMutex_ };
