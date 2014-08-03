@@ -72,6 +72,7 @@ namespace Sarin
 	private:
 		void ScheduleFunction (const std::function<void (Tox*)>&);
 		void SaveState ();
+		QByteArray GetToxAddress () const;
 	protected:
 		virtual void run ();
 	signals:
