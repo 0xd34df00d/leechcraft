@@ -50,14 +50,15 @@ namespace Sarin
 		std::atomic_bool ShouldStop_ { false };
 
 		const QString Name_;
-		const QByteArray Key_;
+
+		QByteArray ToxState_;
 
 		EntryStatus Status_;
 
 		QList<std::function<void (Tox*)>> FQueue_;
 		QMutex FQueueMutex_;
 	public:
-		ToxThread (const QString& name, const QByteArray& key);
+		ToxThread (const QString& name, const QByteArray& toxState);
 		~ToxThread ();
 
 		EntryStatus GetStatus () const;

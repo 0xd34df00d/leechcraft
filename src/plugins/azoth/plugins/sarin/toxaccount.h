@@ -52,9 +52,9 @@ namespace Sarin
 		const QByteArray UID_;
 
 		QString Name_;
-
-		QString ToxId_;
 		QString Nick_;
+
+		QByteArray ToxState_;
 
 		std::shared_ptr<ToxThread> Thread_;
 
@@ -65,7 +65,6 @@ namespace Sarin
 		QByteArray Serialize ();
 		static ToxAccount* Deserialize (const QByteArray&, ToxProtocol*);
 
-		void SetToxId (const QString&);
 		void SetNickname (const QString&);
 
 		QObject* GetQObject () override;

@@ -62,7 +62,7 @@ namespace Sarin
 				<< UID_
 				<< Name_
 				<< Nick_
-				<< ToxId_;
+				<< ToxState_;
 
 		return ba;
 	}
@@ -87,17 +87,8 @@ namespace Sarin
 
 		const auto acc = new ToxAccount { uid, name, proto };
 		str >> acc->Nick_
-				>> acc->ToxId_;
+				>> acc->ToxState_;
 		return acc;
-	}
-
-	void ToxAccount::SetToxId (const QString& id)
-	{
-		if (id == ToxId_)
-			return;
-
-		ToxId_ = id;
-		emit accountChanged (this);
 	}
 
 	void ToxAccount::SetNickname (const QString& nickname)
@@ -188,15 +179,7 @@ namespace Sarin
 		}
 
 		if (!Thread_)
-		{
-			Thread_ = std::make_shared<ToxThread> (Nick_, ToxId_.toLatin1 ());
-			Thread_->SetStatus (status);
-			connect (Thread_.get (),
-					SIGNAL (statusChanged (EntryStatus)),
-					this,
-					SIGNAL (statusChanged (EntryStatus)));
-			Thread_->start (QThread::IdlePriority);
-		}
+			InitThread (status);
 		else
 			Thread_->SetStatus (status);
 	}
@@ -220,6 +203,17 @@ namespace Sarin
 	QObject* ToxAccount::GetTransferManager () const
 	{
 		return nullptr;
+	}
+
+	void ToxAccount::InitThread (const EntryStatus& status)
+	{
+		Thread_ = std::make_shared<ToxThread> (Nick_, ToxState_);
+		Thread_->SetStatus (status);
+		connect (Thread_.get (),
+				SIGNAL (statusChanged (EntryStatus)),
+				this,
+				SIGNAL (statusChanged (EntryStatus)));
+		Thread_->start (QThread::IdlePriority);
 	}
 }
 }

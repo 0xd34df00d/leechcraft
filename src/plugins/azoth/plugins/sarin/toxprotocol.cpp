@@ -96,7 +96,6 @@ namespace Sarin
 		const auto detailsPage = qobject_cast<AccRegisterDetailsPage*> (widgets.value (0));
 
 		auto acc = new ToxAccount { name, this };
-		acc->SetToxId (detailsPage->GetId ());
 		acc->SetNickname (detailsPage->GetNickname ());
 		saveAccount (acc);
 
