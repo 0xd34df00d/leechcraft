@@ -114,6 +114,31 @@ namespace Sarin
 		return isRunning () && !ShouldStop_;
 	}
 
+	namespace
+	{
+		QByteArray GetToxAddress (Tox *tox)
+		{
+			QByteArray result;
+
+			uint8_t address [TOX_FRIEND_ADDRESS_SIZE];
+			tox_get_address (tox, address);
+
+			auto toHexChar = [] (uint8_t num) -> char
+			{
+				return num >= 10 ? (num - 10 + 'A') : (num + '0');
+			};
+
+			for (size_t i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i)
+			{
+				const auto num = address [i];
+				result += toHexChar ((num & 0xf0) >> 4);
+				result += toHexChar (num & 0xf);
+			}
+
+			return result;
+		}
+	}
+
 	void ToxThread::ScheduleFunction (const std::function<void (Tox*)>& function)
 	{
 		QMutexLocker locker { &FQueueMutex_ };
@@ -134,31 +159,6 @@ namespace Sarin
 
 		ToxState_ = newState;
 		emit toxStateChanged (ToxState_);
-	}
-
-	QByteArray ToxThread::GetToxAddress () const
-	{
-		if (!Tox_)
-			return {};
-
-		QByteArray result;
-
-		uint8_t address [TOX_FRIEND_ADDRESS_SIZE];
-		tox_get_address (Tox_.get (), address);
-
-		auto toHexChar = [] (uint8_t num) -> char
-		{
-			return num >= 10 ? (num - 10 + 'A') : (num + '0');
-		};
-
-		for (size_t i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i)
-		{
-			const auto num = address [i];
-			result += toHexChar ((num & 0xf0) >> 4);
-			result += toHexChar (num & 0xf);
-		}
-
-		return result;
 	}
 
 	namespace
@@ -207,7 +207,7 @@ namespace Sarin
 			if (!wasConnected && tox_isconnected (Tox_.get ()))
 			{
 				wasConnected = true;
-				qDebug () << "connected! tox id is" << GetToxAddress ();
+				qDebug () << "connected! tox id is" << GetToxAddress (Tox_.get ());
 
 				emit statusChanged (Status_);
 
