@@ -30,6 +30,7 @@
 #pragma once
 
 #include <atomic>
+#include <memory>
 #include <functional>
 #include <QThread>
 #include <QMutex>
@@ -57,6 +58,8 @@ namespace Sarin
 
 		QList<std::function<void (Tox*)>> FQueue_;
 		QMutex FQueueMutex_;
+
+		std::shared_ptr<Tox> Tox_;
 	public:
 		ToxThread (const QString& name, const QByteArray& toxState);
 		~ToxThread ();

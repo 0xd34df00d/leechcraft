@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "toxthread.h"
-#include <memory>
 #include <QElapsedTimer>
 #include <QMutexLocker>
 #include <QtEndian>
@@ -132,29 +131,29 @@ namespace Sarin
 	void ToxThread::run ()
 	{
 		qDebug () << Q_FUNC_INFO;
-		std::shared_ptr<Tox> tox { tox_new (TOX_ENABLE_IPV6_DEFAULT), &tox_kill };
+		Tox_ = std::shared_ptr<Tox> { tox_new (TOX_ENABLE_IPV6_DEFAULT), &tox_kill };
 
 		DoTox (Name_,
-				[&tox] (const uint8_t *bytes, uint16_t size) { tox_set_name (tox.get (), bytes, size); });
+				[this] (const uint8_t *bytes, uint16_t size) { tox_set_name (Tox_.get (), bytes, size); });
 
-		SetToxStatus (tox.get (), Status_);
+		SetToxStatus (Tox_.get (), Status_);
 
-		qDebug () << "gonna bootstrap..." << tox.get ();
+
+		qDebug () << "gonna bootstrap..." << Tox_.get ();
 		const auto pubkey = HexStringToBin ("F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67");
-		qDebug () << tox_bootstrap_from_address (tox.get (),
+		tox_bootstrap_from_address (Tox_.get (),
 				"192.210.149.121",
 				0,
 				qToBigEndian (static_cast<uint16_t> (33445)),
 				reinterpret_cast<const uint8_t*> (pubkey.constData ()));
-		qDebug () << "done" << tox_isconnected (tox.get ());
 
 		bool wasConnected = false;
 		while (!ShouldStop_)
 		{
-			tox_do (tox.get ());
-			auto next = tox_do_interval (tox.get ());
+			tox_do (Tox_.get ());
+			auto next = tox_do_interval (Tox_.get ());
 
-			if (!wasConnected && tox_isconnected (tox.get ()))
+			if (!wasConnected && tox_isconnected (Tox_.get ()))
 			{
 				wasConnected = true;
 				qDebug () << "connected!";
@@ -170,7 +169,7 @@ namespace Sarin
 				std::swap (queue, FQueue_);
 			}
 			for (const auto item : queue)
-				item (tox.get ());
+				item (Tox_.get ());
 
 			next -= timer.elapsed ();
 
