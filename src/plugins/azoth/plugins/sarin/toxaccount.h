@@ -56,6 +56,8 @@ namespace Sarin
 
 		QByteArray ToxState_;
 
+		QAction * const ActionGetToxId_;
+
 		std::shared_ptr<ToxThread> Thread_;
 
 		ToxAccount (const QByteArray&, const QString& name, ToxProtocol*);
@@ -92,6 +94,7 @@ namespace Sarin
 	private:
 		void InitThread (const EntryStatus&);
 	private slots:
+		void handleToxIdRequested ();
 		void handleToxStateChanged (const QByteArray&);
 	signals:
 		void accountRenamed (const QString&) override;

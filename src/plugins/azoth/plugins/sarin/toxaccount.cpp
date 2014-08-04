@@ -29,11 +29,14 @@
 
 #include "toxaccount.h"
 #include <QUuid>
+#include <QAction>
 #include <QDataStream>
 #include <QtDebug>
+#include <QFutureWatcher>
 #include <util/sll/slotclosure.h>
 #include "toxprotocol.h"
 #include "toxthread.h"
+#include "showtoxiddialog.h"
 
 namespace LeechCraft
 {
@@ -46,7 +49,12 @@ namespace Sarin
 	, Proto_ { parent }
 	, UID_ { uid }
 	, Name_ { name }
+	, ActionGetToxId_ { new QAction { tr ("Get Tox ID"), this } }
 	{
+		connect (ActionGetToxId_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleToxIdRequested ()));
 	}
 
 	ToxAccount::ToxAccount (const QString& name, ToxProtocol *parent)
@@ -147,7 +155,7 @@ namespace Sarin
 
 	QList<QAction*> ToxAccount::GetActions () const
 	{
-		return {};
+		return { ActionGetToxId_ };
 	}
 
 	void ToxAccount::OpenConfigurationDialog ()
@@ -218,6 +226,32 @@ namespace Sarin
 				this,
 				SLOT (handleToxStateChanged (QByteArray)));
 		Thread_->start (QThread::IdlePriority);
+	}
+
+	void ToxAccount::handleToxIdRequested ()
+	{
+		if (!Thread_)
+			return;
+
+		auto dialog = new ShowToxIdDialog { tr ("Fetching self Tox ID...") };
+		dialog->show ();
+		dialog->setAttribute (Qt::WA_DeleteOnClose);
+
+		auto watcher = new QFutureWatcher<QByteArray>;
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[watcher, dialog]
+			{
+				const auto& res = watcher->result ();
+				dialog->setToxId (QString::fromLatin1 (res));
+				watcher->deleteLater ();
+			},
+			watcher,
+			SIGNAL (finished ()),
+			watcher
+		};
+		auto future = Thread_->GetToxId ();
+		watcher->setFuture (future);
 	}
 
 	void ToxAccount::handleToxStateChanged (const QByteArray& toxState)
