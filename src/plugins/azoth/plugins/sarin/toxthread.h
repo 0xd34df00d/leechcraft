@@ -74,6 +74,19 @@ namespace Sarin
 		QFuture<QByteArray> GetToxId ();
 	private:
 		void ScheduleFunction (const std::function<void (Tox*)>&);
+		template<typename F>
+		auto ScheduleFunction (const F& func) -> typename std::enable_if<!std::is_same<decltype (func ({})), void>::value, QFuture<decltype (func ({}))>>::type
+		{
+			QFutureInterface<decltype (func ({}))> iface;
+			ScheduleFunction ([iface, func] (Tox *tox) mutable
+					{
+						iface.reportStarted ();
+						const auto result = func (tox);
+						iface.reportFinished (&result);
+					});
+			return iface.future ();
+		}
+
 		void SaveState ();
 	protected:
 		virtual void run ();
