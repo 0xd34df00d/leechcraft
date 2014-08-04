@@ -116,6 +116,7 @@ namespace Sarin
 
 	namespace
 	{
+		template<size_t Size>
 		QByteArray ToxId2HR (const uint8_t *address)
 		{
 			QByteArray result;
@@ -124,7 +125,7 @@ namespace Sarin
 				return num >= 10 ? (num - 10 + 'A') : (num + '0');
 			};
 
-			for (size_t i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i)
+			for (size_t i = 0; i < Size; ++i)
 			{
 				const auto num = address [i];
 				result += toHexChar ((num & 0xf0) >> 4);
@@ -134,10 +135,16 @@ namespace Sarin
 			return result;
 		}
 
+		template<size_t Size>
+		QByteArray ToxId2HR (const std::array<uint8_t, Size>& address)
+		{
+			return ToxId2HR<Size> (address.data ());
+		}
+
 		QByteArray GetToxAddress (Tox *tox)
 		{
-			uint8_t address [TOX_FRIEND_ADDRESS_SIZE];
-			tox_get_address (tox, address);
+			std::array<uint8_t, TOX_FRIEND_ADDRESS_SIZE> address;
+			tox_get_address (tox, address.data ());
 			return ToxId2HR (address);
 		}
 	}
@@ -247,7 +254,7 @@ namespace Sarin
 
 	void ToxThread::HandleFriendRequest (const uint8_t *pkey, const uint8_t *data, uint16_t size)
 	{
-		const auto& toxId = ToxId2HR (pkey);
+		const auto& toxId = ToxId2HR<TOX_CLIENT_ID_SIZE> (pkey);
 		const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (data), size);
 
 		emit gotFriendRequest (toxId, msg);
