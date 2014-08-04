@@ -147,6 +147,14 @@ namespace Sarin
 			tox_get_address (tox, address.data ());
 			return ToxId2HR (address);
 		}
+
+		QByteArray GetFriendId (Tox *tox, int32_t friendId)
+		{
+			std::array<uint8_t, TOX_CLIENT_ID_SIZE> clientId;
+			if (tox_get_client_id (tox, friendId, clientId.data ()) == -1)
+				throw std::runtime_error ("Cannot get friend's pubkey.");
+			return ToxId2HR (clientId);
+		}
 	}
 
 	QFuture<QByteArray> ToxThread::GetToxId ()
@@ -232,6 +240,24 @@ namespace Sarin
 
 					SaveState ();
 					emit gotFriend (addResult);
+				});
+	}
+
+	QFuture<ToxThread::FriendInfo> ToxThread::ResolveFriend (qint32 id)
+	{
+		return ScheduleFunction ([id, this] (Tox *tox)
+				{
+					if (!tox_friend_exists (tox, id))
+						throw std::runtime_error ("Friend not found.");
+
+					FriendInfo result;
+					result.Pubkey_ = GetFriendId (tox, id);
+
+					char name [TOX_MAX_NAME_LENGTH] = { 0 };
+					tox_get_name (tox, id, reinterpret_cast<uint8_t*> (name));
+					result.Name_ = QString::fromUtf8 (name);
+
+					return result;
 				});
 	}
 

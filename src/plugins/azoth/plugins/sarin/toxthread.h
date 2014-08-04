@@ -87,8 +87,17 @@ namespace Sarin
 			NoMem,
 			Unknown
 		};
+
+		struct FriendInfo
+		{
+			QByteArray Pubkey_;
+			QString Name_;
+		};
+
 		QFuture<AddFriendResult> AddFriend (QByteArray, QString);
 		void AddFriend (QByteArray);
+
+		QFuture<FriendInfo> ResolveFriend (qint32);
 	private:
 		void ScheduleFunction (const std::function<void (Tox*)>&);
 
