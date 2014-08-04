@@ -302,6 +302,10 @@ namespace Sarin
 				SIGNAL (gotFriendRequest (QByteArray, QString)),
 				this,
 				SLOT (handleGotFriendRequest (QByteArray, QString)));
+		connect (Thread_.get (),
+				SIGNAL (gotFriend (qint32)),
+				this,
+				SLOT (handleGotFriend (qint32)));
 		Thread_->start (QThread::IdlePriority);
 	}
 
@@ -345,12 +349,47 @@ namespace Sarin
 		emit accountChanged (this);
 	}
 
-	void ToxAccount::handleGotFriendRequest (const QByteArray& key, const QString& msg)
+	void ToxAccount::handleGotFriend (qint32 id)
 	{
-		if (!Contacts_.contains (key))
-			InitEntry (key);
+		const auto watcher = new QFutureWatcher<ToxThread::FriendInfo>;
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[watcher, this]
+			{
+				watcher->deleteLater ();
 
-		emit authorizationRequested (Contacts_.value (key), msg.trimmed ());
+				try
+				{
+					const auto& info = watcher->result ();
+					qDebug () << Q_FUNC_INFO << info.Pubkey_ << info.Name_;
+					if (!Contacts_.contains (info.Pubkey_))
+						InitEntry (info.Pubkey_);
+
+					const auto entry = Contacts_.value (info.Pubkey_);
+					entry->SetEntryName (info.Name_);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot get friend info:"
+							<< e.what ();
+				}
+			},
+			watcher,
+			SIGNAL (finished ()),
+			watcher
+		};
+
+		watcher->setFuture (Thread_->ResolveFriend (id));
+	}
+
+	void ToxAccount::handleGotFriendRequest (const QByteArray& pubkey, const QString& msg)
+	{
+		if (!Contacts_.contains (pubkey))
+			InitEntry (pubkey);
+
+		emit authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
+
 	}
 }
 }

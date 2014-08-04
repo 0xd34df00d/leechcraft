@@ -100,6 +100,8 @@ namespace Sarin
 	private slots:
 		void handleToxIdRequested ();
 		void handleToxStateChanged (const QByteArray&);
+
+		void handleGotFriend (qint32);
 		void handleGotFriendRequest (const QByteArray&, const QString&);
 	signals:
 		void accountRenamed (const QString&) override;
