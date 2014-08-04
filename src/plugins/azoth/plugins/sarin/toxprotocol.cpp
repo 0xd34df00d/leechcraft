@@ -103,10 +103,7 @@ namespace Sarin
 		Accounts_ << acc;
 		emit accountAdded (acc);
 
-		connect (acc,
-				SIGNAL (accountChanged (ToxAccount*)),
-				this,
-				SLOT (saveAccount (ToxAccount*)));
+		InitConnections (acc);
 	}
 
 	QWidget* ToxProtocol::GetMUCJoinWidget ()
@@ -143,13 +140,26 @@ namespace Sarin
 		for (const auto& key : settings.childKeys ())
 		{
 			const auto& serialized = settings.value (key).toByteArray ();
-			if (const auto acc = ToxAccount::Deserialize (serialized, this))
-				Accounts_ << acc;
-			else
+			const auto acc = ToxAccount::Deserialize (serialized, this);
+			if (!acc)
+			{
 				qWarning () << Q_FUNC_INFO
 						<< "cannot deserialize"
 						<< key;
+				continue;
+			}
+
+			Accounts_ << acc;
+			InitConnections (acc);
 		}
+	}
+
+	void ToxProtocol::InitConnections (ToxAccount *acc)
+	{
+		connect (acc,
+				SIGNAL (accountChanged (ToxAccount*)),
+				this,
+				SLOT (saveAccount (ToxAccount*)));
 	}
 
 	void ToxProtocol::saveAccount (ToxAccount *account)

@@ -72,6 +72,7 @@ namespace Sarin
 		const ICoreProxy_ptr& GetCoreProxy () const;
 	private:
 		void LoadAccounts ();
+		void InitConnections (ToxAccount*);
 	private slots:
 		void saveAccount (ToxAccount*);
 	signals:
