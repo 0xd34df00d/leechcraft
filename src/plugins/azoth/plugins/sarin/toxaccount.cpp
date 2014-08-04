@@ -239,7 +239,7 @@ namespace Sarin
 				notify (PCritical_, ToxAccount::tr ("Why would you add yourself as friend?"));
 				return;
 			case ToxThread::AddFriendResult::AlreadySent:
-				notify (PWarning_, ToxAccount::tr ("Friend request has been already sent."));
+				notify (PWarning_, ToxAccount::tr ("Friend request has already been sent."));
 				return;
 			case ToxThread::AddFriendResult::BadChecksum:
 				notify (PCritical_, ToxAccount::tr ("Friend was not added: bad Tox ID checksum."));
