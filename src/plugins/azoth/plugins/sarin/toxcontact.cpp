@@ -67,11 +67,16 @@ namespace Sarin
 
 	QString ToxContact::GetEntryName () const
 	{
-		return Pubkey_;
+		return PublicName_.isEmpty () ? Pubkey_ : PublicName_;
 	}
 
-	void ToxContact::SetEntryName (const QString&)
+	void ToxContact::SetEntryName (const QString& name)
 	{
+		if (name == PublicName_)
+			return;
+
+		PublicName_ = name;
+		emit nameChanged (GetEntryName ());
 	}
 
 	QString ToxContact::GetEntryID () const

@@ -48,6 +48,8 @@ namespace Sarin
 
 		const QByteArray Pubkey_;
 		ToxAccount * const Acc_;
+
+		QString PublicName_;
 	public:
 		ToxContact (const QByteArray& pubkey, ToxAccount *account);
 
