@@ -41,6 +41,7 @@ namespace Sarin
 {
 	class ToxProtocol;
 	class ToxThread;
+	class ToxContact;
 
 	class ToxAccount : public QObject
 					 , public IAccount
@@ -59,6 +60,8 @@ namespace Sarin
 		QAction * const ActionGetToxId_;
 
 		std::shared_ptr<ToxThread> Thread_;
+
+		QHash<QByteArray, ToxContact*> Contacts_;
 
 		ToxAccount (const QByteArray&, const QString& name, ToxProtocol*);
 	public:
@@ -93,9 +96,11 @@ namespace Sarin
 		QObject* GetTransferManager () const override;
 	private:
 		void InitThread (const EntryStatus&);
+		void InitEntry (const QByteArray&);
 	private slots:
 		void handleToxIdRequested ();
 		void handleToxStateChanged (const QByteArray&);
+		void handleGotFriendRequest (const QByteArray&, const QString&);
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;

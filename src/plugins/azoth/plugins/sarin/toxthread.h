@@ -114,6 +114,7 @@ namespace Sarin
 		void toxStateChanged (const QByteArray&);
 
 		void gotFriend (qint32);
+		void gotFriendRequest (const QByteArray& toxId, const QString& msg);
 	};
 }
 }

@@ -39,6 +39,7 @@
 #include "toxprotocol.h"
 #include "toxthread.h"
 #include "showtoxiddialog.h"
+#include "toxcontact.h"
 
 namespace LeechCraft
 {
@@ -127,7 +128,9 @@ namespace Sarin
 
 	QList<QObject*> ToxAccount::GetCLEntries ()
 	{
-		return {};
+		QList<QObject*> result;
+		std::copy (Contacts_.begin (), Contacts_.end (), std::back_inserter (result));
+		return result;
 	}
 
 	QString ToxAccount::GetAccountName () const
@@ -288,7 +291,19 @@ namespace Sarin
 				SIGNAL (toxStateChanged (QByteArray)),
 				this,
 				SLOT (handleToxStateChanged (QByteArray)));
+		connect (Thread_.get (),
+				SIGNAL (gotFriendRequest (QByteArray, QString)),
+				this,
+				SLOT (handleGotFriendRequest (QByteArray, QString)));
 		Thread_->start (QThread::IdlePriority);
+	}
+
+	void ToxAccount::InitEntry (const QByteArray& pkey)
+	{
+		const auto entry = new ToxContact { pkey, this };
+		Contacts_ [pkey] = entry;
+
+		emit gotCLItems ({ entry });
 	}
 
 	void ToxAccount::handleToxIdRequested ()
@@ -321,6 +336,14 @@ namespace Sarin
 	{
 		ToxState_ = toxState;
 		emit accountChanged (this);
+	}
+
+	void ToxAccount::handleGotFriendRequest (const QByteArray& key, const QString& msg)
+	{
+		if (!Contacts_.contains (key))
+			InitEntry (key);
+
+		emit authorizationRequested (Contacts_.value (key), msg.trimmed ());
 	}
 }
 }

@@ -235,7 +235,8 @@ namespace Sarin
 	{
 		const auto& toxId = ToxId2HR (pkey);
 		const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (data), size);
-		qDebug () << toxId << msg;
+
+		emit gotFriendRequest (toxId, msg);
 	}
 
 	void ToxThread::run ()
