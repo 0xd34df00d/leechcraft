@@ -197,8 +197,15 @@ namespace Sarin
 			Thread_->SetStatus (status);
 	}
 
-	void ToxAccount::Authorize (QObject*)
+	void ToxAccount::Authorize (QObject *entryObj)
 	{
+		if (!Thread_)
+			return;
+
+		const auto entry = qobject_cast<ToxContact*> (entryObj);
+		const auto& toxId = entry->GetHumanReadableID ().toLatin1 ();
+
+		Thread_->AddFriend (toxId);
 	}
 
 	void ToxAccount::DenyAuth (QObject*)
