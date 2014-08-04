@@ -305,6 +305,15 @@ namespace Sarin
 		emit gotFriendRequest (toxId, msg);
 	}
 
+	void ToxThread::HandleNameChange (int32_t id, const uint8_t *data, uint16_t size)
+	{
+		const auto& toxId = GetFriendId (Tox_.get (), id);
+		const auto& name = QString::fromUtf8 (reinterpret_cast<const char*> (data));
+		emit friendNameChanged (toxId, name);
+
+		SaveState ();
+	}
+
 	void ToxThread::run ()
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -319,6 +328,12 @@ namespace Sarin
 				[] (Tox*, const uint8_t *pkey, const uint8_t *data, uint16_t size, void *udata)
 				{
 					static_cast<ToxThread*> (udata)->HandleFriendRequest (pkey, data, size);
+				},
+				this);
+		tox_callback_name_change (Tox_.get (),
+				[] (Tox*, int32_t id, const uint8_t *name, uint16_t len, void *udata)
+				{
+					static_cast<ToxThread*> (udata)->HandleNameChange (id, name, len + 1);
 				},
 				this);
 
