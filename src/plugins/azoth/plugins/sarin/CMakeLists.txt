@@ -16,9 +16,11 @@ set (SARIN_SRCS
 	toxaccount.cpp
 	toxthread.cpp
 	accregisterdetailspage.cpp
+	showtoxiddialog.cpp
 	)
 set (SARIN_FORMS
 	accregisterdetailspage.ui
+	showtoxiddialog.ui
 	)
 #CreateTrs ("azoth_sarin" "en;ru_RU" SARIN_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_sarin" "en;ru_RU" "${SARIN_SRCS}" "" "")
