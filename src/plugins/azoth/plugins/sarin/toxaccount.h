@@ -103,6 +103,7 @@ namespace Sarin
 
 		void handleGotFriend (qint32);
 		void handleGotFriendRequest (const QByteArray&, const QString&);
+		void handleFriendNameChanged (const QByteArray&, const QString&);
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;

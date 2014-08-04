@@ -306,6 +306,10 @@ namespace Sarin
 				SIGNAL (gotFriend (qint32)),
 				this,
 				SLOT (handleGotFriend (qint32)));
+		connect (Thread_.get (),
+				SIGNAL (friendNameChanged (QByteArray, QString)),
+				this,
+				SLOT (handleFriendNameChanged (QByteArray, QString)));
 		Thread_->start (QThread::IdlePriority);
 	}
 
@@ -389,7 +393,21 @@ namespace Sarin
 			InitEntry (pubkey);
 
 		emit authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
+	}
 
+	void ToxAccount::handleFriendNameChanged (const QByteArray& id, const QString& newName)
+	{
+		if (!Contacts_.contains (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown friend name change"
+					<< id
+					<< "; new name:"
+					<< newName;
+			return;
+		}
+
+		Contacts_.value (id)->SetEntryName (newName);
 	}
 }
 }
