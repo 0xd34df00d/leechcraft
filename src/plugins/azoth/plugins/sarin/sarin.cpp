@@ -37,11 +37,11 @@ namespace Azoth
 {
 namespace Sarin
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		qRegisterMetaType<EntryStatus> ("EntryStatus");
 
-		Proto_ = new ToxProtocol { this };
+		Proto_ = new ToxProtocol { proxy, this };
 	}
 
 	void Plugin::SecondInit ()

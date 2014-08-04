@@ -41,8 +41,9 @@ namespace Azoth
 {
 namespace Sarin
 {
-	ToxProtocol::ToxProtocol (QObject* parentPlugin)
+	ToxProtocol::ToxProtocol (const ICoreProxy_ptr& proxy, QObject* parentPlugin)
 	: QObject { parentPlugin }
+	, CoreProxy_ { proxy }
 	, ParentProtocol_ { parentPlugin }
 	{
 		LoadAccounts ();
@@ -126,6 +127,11 @@ namespace Sarin
 
 		Accounts_.removeOne (account);
 		emit accountRemoved (accObj);
+	}
+
+	const ICoreProxy_ptr& ToxProtocol::GetCoreProxy () const
+	{
+		return CoreProxy_;
 	}
 
 	void ToxProtocol::LoadAccounts ()

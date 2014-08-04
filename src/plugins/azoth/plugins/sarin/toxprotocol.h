@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/azoth/iprotocol.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -46,11 +47,13 @@ namespace Sarin
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
+		const ICoreProxy_ptr CoreProxy_;
+
 		QObject * const ParentProtocol_;
 
 		QList<ToxAccount*> Accounts_;
 	public:
-		ToxProtocol (QObject *parentPlugin);
+		ToxProtocol (const ICoreProxy_ptr&, QObject *parentPlugin);
 
 		QObject* GetQObject () override;
 		ProtocolFeatures GetFeatures () const override;
@@ -65,6 +68,8 @@ namespace Sarin
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
 		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject* account);
+
+		const ICoreProxy_ptr& GetCoreProxy () const;
 	private:
 		void LoadAccounts ();
 	private slots:
