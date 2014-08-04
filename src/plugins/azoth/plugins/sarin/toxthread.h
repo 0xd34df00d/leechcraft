@@ -113,6 +113,8 @@ namespace Sarin
 
 		void SaveState ();
 
+		void LoadFriends ();
+
 		void HandleFriendRequest (const uint8_t*, const uint8_t*, uint16_t);
 	protected:
 		virtual void run ();

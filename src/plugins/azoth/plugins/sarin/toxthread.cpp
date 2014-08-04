@@ -231,6 +231,20 @@ namespace Sarin
 		emit toxStateChanged (ToxState_);
 	}
 
+	void ToxThread::LoadFriends ()
+	{
+		auto count = tox_count_friendlist (Tox_.get ());
+		qDebug () << Q_FUNC_INFO << count;
+		if (count <= 0)
+			return;
+
+		std::unique_ptr<int32_t []> friendList { new int32_t [count] };
+		count = tox_get_friendlist (Tox_.get (), friendList.get (), count);
+
+		for (uint32_t i = 0; i < count; ++i)
+			emit gotFriend (friendList [i]);
+	}
+
 	void ToxThread::HandleFriendRequest (const uint8_t *pkey, const uint8_t *data, uint16_t size)
 	{
 		const auto& toxId = ToxId2HR (pkey);
@@ -262,7 +276,10 @@ namespace Sarin
 					reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
 					ToxState_.size ());
 			if (!res)
+			{
 				qDebug () << "successfully loaded Tox state";
+				LoadFriends ();
+			}
 			else
 				qWarning () << "failed to load Tox state";
 		}
