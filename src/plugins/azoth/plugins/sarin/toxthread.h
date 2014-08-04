@@ -97,8 +97,16 @@ namespace Sarin
 			ScheduleFunction ([iface, func] (Tox *tox) mutable
 					{
 						iface.reportStarted ();
-						const auto result = func (tox);
-						iface.reportFinished (&result);
+						try
+						{
+							const auto result = func (tox);
+							iface.reportFinished (&result);
+						}
+						catch (const std::exception& e)
+						{
+							iface.reportException (ToxException { e });
+							iface.reportFinished ();
+						}
 					});
 			return iface.future ();
 		}
