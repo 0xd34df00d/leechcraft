@@ -36,6 +36,7 @@
 #include <QMutex>
 #include <QFuture>
 #include <interfaces/azoth/iclentry.h>
+#include "threadexceptions.h"
 
 typedef struct Tox Tox;
 
