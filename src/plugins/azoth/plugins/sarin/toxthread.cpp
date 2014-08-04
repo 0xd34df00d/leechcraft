@@ -216,6 +216,25 @@ namespace Sarin
 				});
 	}
 
+	void ToxThread::AddFriend (QByteArray toxId)
+	{
+		toxId = Hex2Bin (toxId);
+		ScheduleFunction ([toxId, this] (Tox *tox)
+				{
+					if (toxId.size () != TOX_FRIEND_ADDRESS_SIZE)
+						return;
+
+					const auto addResult = tox_add_friend_norequest (tox,
+							reinterpret_cast<const uint8_t*> (toxId.constData ()));
+
+					if (addResult < 0)
+						return;
+
+					SaveState ();
+					emit gotFriend (addResult);
+				});
+	}
+
 	void ToxThread::ScheduleFunction (const std::function<void (Tox*)>& function)
 	{
 		QMutexLocker locker { &FQueueMutex_ };
