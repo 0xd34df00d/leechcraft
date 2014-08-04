@@ -116,13 +116,9 @@ namespace Sarin
 
 	namespace
 	{
-		QByteArray GetToxAddress (Tox *tox)
+		QByteArray ToxId2HR (const uint8_t *address)
 		{
 			QByteArray result;
-
-			uint8_t address [TOX_FRIEND_ADDRESS_SIZE];
-			tox_get_address (tox, address);
-
 			auto toHexChar = [] (uint8_t num) -> char
 			{
 				return num >= 10 ? (num - 10 + 'A') : (num + '0');
@@ -136,6 +132,13 @@ namespace Sarin
 			}
 
 			return result;
+		}
+
+		QByteArray GetToxAddress (Tox *tox)
+		{
+			uint8_t address [TOX_FRIEND_ADDRESS_SIZE];
+			tox_get_address (tox, address);
+			return ToxId2HR (address);
 		}
 	}
 
