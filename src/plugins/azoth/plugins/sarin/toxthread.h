@@ -72,8 +72,24 @@ namespace Sarin
 		bool IsStoppable () const;
 
 		QFuture<QByteArray> GetToxId ();
+
+		enum class AddFriendResult
+		{
+			Added,
+			InvalidId,
+			TooLong,
+			NoMessage,
+			OwnKey,
+			AlreadySent,
+			BadChecksum,
+			NoSpam,
+			NoMem,
+			Unknown
+		};
+		QFuture<AddFriendResult> AddFriend (QByteArray, QString);
 	private:
 		void ScheduleFunction (const std::function<void (Tox*)>&);
+
 		template<typename F>
 		auto ScheduleFunction (const F& func) -> typename std::enable_if<!std::is_same<decltype (func ({})), void>::value, QFuture<decltype (func ({}))>>::type
 		{
@@ -88,12 +104,16 @@ namespace Sarin
 		}
 
 		void SaveState ();
+
+		void HandleFriendRequest (const uint8_t*, const uint8_t*, uint16_t);
 	protected:
 		virtual void run ();
 	signals:
 		void statusChanged (const EntryStatus&);
 
 		void toxStateChanged (const QByteArray&);
+
+		void gotFriend (qint32);
 	};
 }
 }

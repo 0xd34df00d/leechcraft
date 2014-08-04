@@ -144,10 +144,68 @@ namespace Sarin
 
 	QFuture<QByteArray> ToxThread::GetToxId ()
 	{
-		return ScheduleFunction ([] (Tox *tox)
+		return ScheduleFunction (&GetToxAddress);
+	}
+
+	namespace
+	{
+		ToxThread::AddFriendResult ToxFAError2ThreadError (int32_t addResult)
+		{
+			switch (addResult)
+			{
+			case TOX_FAERR_TOOLONG:
+				return ToxThread::AddFriendResult::TooLong;
+			case TOX_FAERR_NOMESSAGE:
+				return ToxThread::AddFriendResult::NoMessage;
+			case TOX_FAERR_OWNKEY:
+				return ToxThread::AddFriendResult::OwnKey;
+			case TOX_FAERR_ALREADYSENT:
+				return ToxThread::AddFriendResult::AlreadySent;
+			case TOX_FAERR_BADCHECKSUM:
+				return ToxThread::AddFriendResult::BadChecksum;
+			case TOX_FAERR_SETNEWNOSPAM:
+				return ToxThread::AddFriendResult::NoSpam;
+			case TOX_FAERR_NOMEM:
+				return ToxThread::AddFriendResult::NoMem;
+			case TOX_FAERR_UNKNOWN:
+			default:
+				return ToxThread::AddFriendResult::Unknown;
+			}
+		}
+	}
+
+	namespace
+	{
+		QByteArray Hex2Bin (const QByteArray& key)
+		{
+			return QByteArray::fromHex (key.toLower ());
+		}
+	}
+
+	QFuture<ToxThread::AddFriendResult> ToxThread::AddFriend (QByteArray toxId, QString msg)
+	{
+		toxId = Hex2Bin (toxId);
+		if (msg.isEmpty ())
+			msg = " ";
+
+		return ScheduleFunction ([toxId, msg, this] (Tox *tox)
 				{
-					return GetToxAddress (tox);
-				});
+					if (toxId.size () != TOX_FRIEND_ADDRESS_SIZE)
+						return ToxThread::AddFriendResult::InvalidId;
+
+					const auto& msgUtf8 = msg.toUtf8 ();
+					const auto addResult = tox_add_friend (tox,
+							reinterpret_cast<const uint8_t*> (toxId.constData ()),
+							reinterpret_cast<const uint8_t*> (msgUtf8.constData ()),
+							msgUtf8.size ());
+
+					if (addResult < 0)
+						return ToxFAError2ThreadError (addResult);
+
+					SaveState ();
+
+					emit gotFriend (addResult);
+					return AddFriendResult::Added;
 				});
 	}
 
@@ -173,12 +231,11 @@ namespace Sarin
 		emit toxStateChanged (ToxState_);
 	}
 
-	namespace
+	void ToxThread::HandleFriendRequest (const uint8_t *pkey, const uint8_t *data, uint16_t size)
 	{
-		QByteArray HexStringToBin (const QByteArray& key)
-		{
-			return QByteArray::fromHex (key.toLower ());
-		}
+		const auto& toxId = ToxId2HR (pkey);
+		const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (data), size);
+		qDebug () << toxId << msg;
 	}
 
 	void ToxThread::run ()
@@ -190,6 +247,13 @@ namespace Sarin
 				[this] (const uint8_t *bytes, uint16_t size) { tox_set_name (Tox_.get (), bytes, size); });
 
 		SetToxStatus (Tox_.get (), Status_);
+
+		tox_callback_friend_request (Tox_.get (),
+				[] (Tox*, const uint8_t *pkey, const uint8_t *data, uint16_t size, void *udata)
+				{
+					static_cast<ToxThread*> (udata)->HandleFriendRequest (pkey, data, size);
+				},
+				this);
 
 		if (!ToxState_.isEmpty ())
 		{
@@ -203,7 +267,7 @@ namespace Sarin
 		}
 
 		qDebug () << "gonna bootstrap..." << Tox_.get ();
-		const auto pubkey = HexStringToBin ("F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67");
+		const auto pubkey = Hex2Bin ("F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67");
 		tox_bootstrap_from_address (Tox_.get (),
 				"192.210.149.121",
 				0,
