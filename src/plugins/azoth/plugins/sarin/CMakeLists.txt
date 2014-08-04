@@ -15,6 +15,7 @@ set (SARIN_SRCS
 	toxprotocol.cpp
 	toxaccount.cpp
 	toxthread.cpp
+	toxcontact.cpp
 	accregisterdetailspage.cpp
 	showtoxiddialog.cpp
 	)
