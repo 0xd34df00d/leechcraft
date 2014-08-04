@@ -18,6 +18,7 @@ set (SARIN_SRCS
 	toxcontact.cpp
 	accregisterdetailspage.cpp
 	showtoxiddialog.cpp
+	threadexceptions.cpp
 	)
 set (SARIN_FORMS
 	accregisterdetailspage.ui
