@@ -58,16 +58,16 @@ namespace Sarin
 		void Send () override;
 		void Store () override;
 
-		Direction GetDirection () const;
-		Type GetMessageType () const;
-		SubType GetMessageSubType () const;
-		QObject* OtherPart () const;
-		QString GetOtherVariant () const;
+		Direction GetDirection () const override;
+		Type GetMessageType () const override;
+		SubType GetMessageSubType () const override;
+		QObject* OtherPart () const override;
+		QString GetOtherVariant () const override;
 
-		QString GetBody () const;
-		void SetBody (const QString& body);
-		QDateTime GetDateTime () const;
-		void SetDateTime (const QDateTime& timestamp);
+		QString GetBody () const override;
+		void SetBody (const QString& body) override;
+		QDateTime GetDateTime () const override;
+		void SetDateTime (const QDateTime& timestamp) override;
 	};
 }
 }
