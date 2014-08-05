@@ -50,6 +50,8 @@ namespace Sarin
 		ToxAccount * const Acc_;
 
 		QString PublicName_;
+
+		EntryStatus Status_;
 	public:
 		ToxContact (const QByteArray& pubkey, ToxAccount *account);
 
@@ -81,6 +83,8 @@ namespace Sarin
 
 		void MarkMsgsRead () override;
 		void ChatTabClosed () override;
+
+		void SetStatus (const EntryStatus&);
 	signals:
 		void gotMessage (QObject*) override;
 		void statusChanged (const EntryStatus&, const QString&) override;

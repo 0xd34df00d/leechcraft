@@ -123,7 +123,7 @@ namespace Sarin
 
 	EntryStatus ToxContact::GetStatus (const QString&) const
 	{
-		return {};
+		return Status_;
 	}
 
 	QImage ToxContact::GetAvatar () const
@@ -151,6 +151,15 @@ namespace Sarin
 
 	void ToxContact::ChatTabClosed ()
 	{
+	}
+
+	void ToxContact::SetStatus (const EntryStatus& status)
+	{
+		if (status == Status_)
+			return;
+
+		Status_ = status;
+		emit statusChanged (Status_, Variants ().front ());
 	}
 }
 }
