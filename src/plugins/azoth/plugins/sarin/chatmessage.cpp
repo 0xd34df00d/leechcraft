@@ -104,6 +104,20 @@ namespace Sarin
 	{
 		TS_ = timestamp;
 	}
+
+	bool ChatMessage::IsDelivered () const
+	{
+		return IsDelivered_;
+	}
+
+	void ChatMessage::SetDelivered ()
+	{
+		if (IsDelivered_)
+			return;
+
+		IsDelivered_ = true;
+		emit messageDelivered ();
+	}
 }
 }
 }

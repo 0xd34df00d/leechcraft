@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iadvancedmessage.h>
 
 namespace LeechCraft
 {
@@ -42,15 +43,19 @@ namespace Sarin
 
 	class ChatMessage : public QObject
 					  , public IMessage
+					  , public IAdvancedMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage)
+		Q_INTERFACES (LeechCraft::Azoth::IMessage
+				LeechCraft::Azoth::IAdvancedMessage)
 
 		ToxContact * const Contact_;
 		const Direction Dir_;
 
 		QString Body_;
 		QDateTime TS_ = QDateTime::currentDateTime ();
+
+		bool IsDelivered_ = false;
 	public:
 		ChatMessage (const QString&, Direction, ToxContact*);
 
@@ -68,6 +73,12 @@ namespace Sarin
 		void SetBody (const QString& body) override;
 		QDateTime GetDateTime () const override;
 		void SetDateTime (const QDateTime& timestamp) override;
+
+		bool IsDelivered () const override;
+
+		void SetDelivered ();
+	signals:
+		void messageDelivered () override;
 	};
 }
 }
