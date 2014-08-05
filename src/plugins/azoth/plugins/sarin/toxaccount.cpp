@@ -310,6 +310,10 @@ namespace Sarin
 				SIGNAL (friendNameChanged (QByteArray, QString)),
 				this,
 				SLOT (handleFriendNameChanged (QByteArray, QString)));
+		connect (Thread_.get (),
+				SIGNAL (friendStatusChanged (QByteArray, EntryStatus)),
+				this,
+				SLOT (handleFriendStatusChanged (QByteArray, EntryStatus)));
 		Thread_->start (QThread::IdlePriority);
 	}
 
@@ -371,6 +375,8 @@ namespace Sarin
 
 					const auto entry = Contacts_.value (info.Pubkey_);
 					entry->SetEntryName (info.Name_);
+
+					entry->SetStatus (info.Status_);
 				}
 				catch (const std::exception& e)
 				{
@@ -408,6 +414,19 @@ namespace Sarin
 		}
 
 		Contacts_.value (id)->SetEntryName (newName);
+	}
+
+	void ToxAccount::handleFriendStatusChanged (const QByteArray& pubkey, const EntryStatus& status)
+	{
+		if (!Contacts_.contains (pubkey))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown friend status"
+					<< pubkey;
+			return;
+		}
+
+		Contacts_.value (pubkey)->SetStatus (status);
 	}
 }
 }
