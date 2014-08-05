@@ -402,6 +402,8 @@ namespace Sarin
 				},
 				this);
 
+		emit toxCreated (Tox_.get ());
+
 		if (!ToxState_.isEmpty ())
 		{
 			const auto res = tox_load (Tox_.get (),
