@@ -118,7 +118,7 @@ namespace Sarin
 				}));
 	}
 
-	void MessagesManager::HandleReadReceipt (uint32_t msgId)
+	void MessagesManager::handleReadReceipt (quint32 msgId)
 	{
 		if (!MsgId2Msg_.contains (msgId))
 		{
@@ -159,7 +159,9 @@ namespace Sarin
 		tox_callback_read_receipt (tox,
 				[] (Tox*, int32_t, uint32_t msgId, void *udata)
 				{
-					static_cast<MessagesManager*> (udata)->HandleReadReceipt (msgId);
+					QMetaObject::invokeMethod (static_cast<MessagesManager*> (udata),
+							"handleReadReceipt",
+							Q_ARG (quint32, msgId));
 				},
 				this);
 	}

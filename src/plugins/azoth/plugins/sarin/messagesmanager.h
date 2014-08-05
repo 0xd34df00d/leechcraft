@@ -65,9 +65,8 @@ namespace Sarin
 		MessagesManager (ToxAccount*);
 
 		void SendMessage (const QByteArray& privkey, ChatMessage*);
-	private:
-		void HandleReadReceipt (uint32_t);
 	private slots:
+		void handleReadReceipt (quint32);
 		void setThread (const std::shared_ptr<ToxThread>&);
 		void handleToxCreated (Tox*);
 	};
