@@ -295,6 +295,7 @@ namespace Sarin
 					char name [TOX_MAX_NAME_LENGTH] = { 0 };
 					tox_get_name (tox, id, reinterpret_cast<uint8_t*> (name));
 					result.Name_ = QString::fromUtf8 (name);
+					result.Status_ = GetFriendStatus (tox, id);
 
 					return result;
 				});

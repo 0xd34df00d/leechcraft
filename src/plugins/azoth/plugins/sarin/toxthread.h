@@ -92,6 +92,7 @@ namespace Sarin
 		{
 			QByteArray Pubkey_;
 			QString Name_;
+			EntryStatus Status_;
 		};
 
 		QFuture<AddFriendResult> AddFriend (QByteArray, QString);
