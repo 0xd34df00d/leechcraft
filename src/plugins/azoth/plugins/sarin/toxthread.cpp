@@ -67,6 +67,22 @@ namespace Sarin
 			f (reinterpret_cast<const uint8_t*> (strUtf8.constData ()), strUtf8.size ());
 		}
 
+		State ToxStatus2State (int toxStatus)
+		{
+			switch (toxStatus)
+			{
+			case TOX_USERSTATUS_AWAY:
+				return State::SAway;
+			case TOX_USERSTATUS_BUSY:
+				return State::SDND;
+			case TOX_USERSTATUS_INVALID:
+				return State::SInvalid;
+			case TOX_USERSTATUS_NONE:
+			default:
+				return State::SOnline;
+			}
+		}
+
 		void SetToxStatus (Tox *tox, const EntryStatus& status)
 		{
 			DoTox (status.StatusString_,
