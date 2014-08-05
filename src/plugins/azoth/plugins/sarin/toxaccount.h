@@ -94,6 +94,8 @@ namespace Sarin
 		void RemoveEntry (QObject*) override;
 
 		QObject* GetTransferManager () const override;
+
+		void SendMessage (const QByteArray& pkey, const QString& body);
 	private:
 		void InitThread (const EntryStatus&);
 		void InitEntry (const QByteArray&);

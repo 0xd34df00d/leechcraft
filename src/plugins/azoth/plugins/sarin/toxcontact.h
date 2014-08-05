@@ -39,6 +39,7 @@ namespace Azoth
 namespace Sarin
 {
 	class ToxAccount;
+	class ChatMessage;
 
 	class ToxContact : public QObject
 					 , public ICLEntry
@@ -48,6 +49,8 @@ namespace Sarin
 
 		const QByteArray Pubkey_;
 		ToxAccount * const Acc_;
+
+		QList<ChatMessage*> AllMessages_;
 
 		QString PublicName_;
 
@@ -85,6 +88,9 @@ namespace Sarin
 		void ChatTabClosed () override;
 
 		void SetStatus (const EntryStatus&);
+
+		void HandleMessage (ChatMessage*);
+		void SendMessage (ChatMessage*);
 	signals:
 		void gotMessage (QObject*) override;
 		void statusChanged (const EntryStatus&, const QString&) override;

@@ -19,6 +19,7 @@ set (SARIN_SRCS
 	accregisterdetailspage.cpp
 	showtoxiddialog.cpp
 	threadexceptions.cpp
+	chatmessage.cpp
 	)
 set (SARIN_FORMS
 	accregisterdetailspage.ui

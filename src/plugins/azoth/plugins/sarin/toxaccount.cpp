@@ -286,6 +286,18 @@ namespace Sarin
 		return nullptr;
 	}
 
+	void ToxAccount::SendMessage (const QByteArray& pkey, const QString& body)
+	{
+		if (!Thread_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot send messages in offline";
+			return;
+		}
+
+		Thread_->SendMessage (pkey, body);
+	}
+
 	void ToxAccount::InitThread (const EntryStatus& status)
 	{
 		Thread_ = std::make_shared<ToxThread> (Nick_, ToxState_);

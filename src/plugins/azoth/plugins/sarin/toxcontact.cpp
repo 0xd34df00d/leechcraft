@@ -31,6 +31,7 @@
 #include <QImage>
 #include <interfaces/azoth/azothutil.h>
 #include "toxaccount.h"
+#include "chatmessage.h"
 
 namespace LeechCraft
 {
@@ -105,16 +106,27 @@ namespace Sarin
 
 	QObject* ToxContact::CreateMessage (IMessage::Type type, const QString&, const QString& body)
 	{
-		return nullptr;
+		if (type != IMessage::Type::ChatMessage)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unsupported message type"
+					<< static_cast<int> (type);
+			return nullptr;
+		}
+
+		return new ChatMessage { body, IMessage::Direction::Out, this };
 	}
 
 	QList<QObject*> ToxContact::GetAllMessages () const
 	{
-		return {};
+		QList<QObject*> result;
+		std::copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
+		return result;
 	}
 
 	void ToxContact::PurgeMessages (const QDateTime& before)
 	{
+		Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void ToxContact::SetChatPartState (ChatPartState state, const QString&)
@@ -160,6 +172,17 @@ namespace Sarin
 
 		Status_ = status;
 		emit statusChanged (Status_, Variants ().front ());
+	}
+
+	void ToxContact::HandleMessage (ChatMessage *msg)
+	{
+		AllMessages_ << msg;
+		emit gotMessage (msg);
+	}
+
+	void ToxContact::SendMessage (ChatMessage *msg)
+	{
+		Acc_->SendMessage (Pubkey_, msg->GetBody ());
 	}
 }
 }
