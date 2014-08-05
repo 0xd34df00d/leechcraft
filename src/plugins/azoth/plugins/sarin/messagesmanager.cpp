@@ -86,6 +86,8 @@ namespace Sarin
 						5000
 					};
 				}
+				else
+					MsgId2Msg_ [result.Result_] = result.Msg_;
 			},
 			watcher,
 			SIGNAL (finished ()),
@@ -116,9 +118,50 @@ namespace Sarin
 				}));
 	}
 
+	void MessagesManager::HandleReadReceipt (uint32_t msgId)
+	{
+		if (!MsgId2Msg_.contains (msgId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message ID"
+					<< msgId
+					<< MsgId2Msg_.keys ();
+			return;
+		}
+
+		const auto& val = MsgId2Msg_.take (msgId);
+		if (!val)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "too late for roses, the message for ID"
+					<< msgId
+					<< "is dead";
+			return;
+		}
+
+		val->SetDelivered ();
+	}
+
 	void MessagesManager::setThread (const std::shared_ptr<ToxThread>& thread)
 	{
 		Thread_ = thread;
+
+		if (thread)
+			connect (thread.get (),
+					SIGNAL (toxCreated (Tox*)),
+					this,
+					SLOT (handleToxCreated (Tox*)),
+					Qt::BlockingQueuedConnection);
+	}
+
+	void MessagesManager::handleToxCreated (Tox *tox)
+	{
+		tox_callback_read_receipt (tox,
+				[] (Tox*, int32_t, uint32_t msgId, void *udata)
+				{
+					static_cast<MessagesManager*> (udata)->HandleReadReceipt (msgId);
+				},
+				this);
 	}
 }
 }

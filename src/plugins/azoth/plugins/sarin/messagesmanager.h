@@ -32,6 +32,9 @@
 #include <memory>
 #include <QObject>
 #include <QPointer>
+#include <QHash>
+
+typedef struct Tox Tox;
 
 namespace LeechCraft
 {
@@ -56,12 +59,17 @@ namespace Sarin
 			QByteArray Privkey_;
 			QPointer<ChatMessage> Msg_;
 		};
+
+		QHash<uint32_t, QPointer<ChatMessage>> MsgId2Msg_;
 	public:
 		MessagesManager (ToxAccount*);
 
 		void SendMessage (const QByteArray& privkey, ChatMessage*);
+	private:
+		void HandleReadReceipt (uint32_t);
 	private slots:
 		void setThread (const std::shared_ptr<ToxThread>&);
+		void handleToxCreated (Tox*);
 	};
 }
 }
