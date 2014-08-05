@@ -305,7 +305,7 @@ namespace Sarin
 		emit gotFriendRequest (toxId, msg);
 	}
 
-	void ToxThread::HandleNameChange (int32_t id, const uint8_t *data, uint16_t size)
+	void ToxThread::HandleNameChange (int32_t id, const uint8_t *data, uint16_t)
 	{
 		const auto& toxId = GetFriendId (Tox_.get (), id);
 		const auto& name = QString::fromUtf8 (reinterpret_cast<const char*> (data));
