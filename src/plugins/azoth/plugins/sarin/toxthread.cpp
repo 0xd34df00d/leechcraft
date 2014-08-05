@@ -259,6 +259,29 @@ namespace Sarin
 				});
 	}
 
+	namespace
+	{
+		EntryStatus GetFriendStatus (Tox *tox, qint32 id)
+		{
+			if (!tox_get_friend_connection_status (tox, id))
+				return { SOffline, {} };
+
+			QString statusStr;
+			const auto statusMsgSize = tox_get_status_message_size (tox, id);
+			if (statusMsgSize > 0)
+			{
+				std::unique_ptr<uint8_t []> statusMsg { new uint8_t [statusMsgSize] };
+				tox_get_status_message (tox, id, statusMsg.get (), statusMsgSize);
+				statusStr = QString::fromUtf8 (reinterpret_cast<char*> (statusMsg.get ()));
+			}
+			return
+				{
+					ToxStatus2State (tox_get_user_status (tox, id)),
+					statusStr
+				};
+		}
+	}
+
 	QFuture<ToxThread::FriendInfo> ToxThread::ResolveFriend (qint32 id)
 	{
 		return ScheduleFunction ([id, this] (Tox *tox)
