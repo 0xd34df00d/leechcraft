@@ -74,6 +74,7 @@ namespace Sarin
 			[watcher, this]
 			{
 				watcher->deleteLater ();
+
 				const auto& result = watcher->result ();
 				if (!result.Result_)
 				{
@@ -142,6 +143,41 @@ namespace Sarin
 		val->SetDelivered ();
 	}
 
+	void MessagesManager::handleInMessage (qint32 friendId, const QString& msg)
+	{
+		const auto thread = Thread_.lock ();
+		if (!thread)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got message in offline, that's kinda strange";
+			return;
+		}
+
+		const auto watcher = new QFutureWatcher<QByteArray>;
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[msg, watcher, this]
+			{
+				watcher->deleteLater ();
+				const auto& pubkey = watcher->result ();
+				if (pubkey.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot get pubkey for message"
+							<< msg;
+					return;
+				}
+
+				emit gotMessage (pubkey, msg);
+			},
+			watcher,
+			SIGNAL (finished ()),
+			watcher
+		};
+
+		watcher->setFuture (thread->GetFriendPubkey (friendId));
+	}
+
 	void MessagesManager::setThread (const std::shared_ptr<ToxThread>& thread)
 	{
 		Thread_ = thread;
@@ -156,6 +192,17 @@ namespace Sarin
 
 	void MessagesManager::handleToxCreated (Tox *tox)
 	{
+		tox_callback_friend_message (tox,
+				[] (Tox*, int32_t friendId, const uint8_t *msgData, uint16_t, void *udata)
+				{
+					const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (msgData));
+
+					QMetaObject::invokeMethod (static_cast<MessagesManager*> (udata),
+							"handleInMessage",
+							Q_ARG (qint32, friendId),
+							Q_ARG (QString, msg));
+				},
+				this);
 		tox_callback_read_receipt (tox,
 				[] (Tox*, int32_t, uint32_t msgId, void *udata)
 				{

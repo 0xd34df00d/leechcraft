@@ -67,8 +67,12 @@ namespace Sarin
 		void SendMessage (const QByteArray& privkey, ChatMessage*);
 	private slots:
 		void handleReadReceipt (quint32);
+		void handleInMessage (qint32, const QString&);
+
 		void setThread (const std::shared_ptr<ToxThread>&);
 		void handleToxCreated (Tox*);
+	signals:
+		void gotMessage (const QByteArray&, const QString&);
 	};
 }
 }

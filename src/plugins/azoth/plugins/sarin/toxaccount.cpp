@@ -41,6 +41,7 @@
 #include "showtoxiddialog.h"
 #include "toxcontact.h"
 #include "messagesmanager.h"
+#include "chatmessage.h"
 
 namespace LeechCraft
 {
@@ -60,6 +61,11 @@ namespace Sarin
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleToxIdRequested ()));
+
+		connect (MsgsMgr_,
+				SIGNAL (gotMessage (QByteArray, QString)),
+				this,
+				SLOT (handleInMessage (QByteArray, QString)));
 	}
 
 	ToxAccount::ToxAccount (const QString& name, ToxProtocol *parent)
@@ -438,6 +444,22 @@ namespace Sarin
 		}
 
 		Contacts_.value (pubkey)->SetStatus (status);
+	}
+
+	void ToxAccount::handleInMessage (const QByteArray& pubkey, const QString& body)
+	{
+		if (!Contacts_.contains (pubkey))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown pubkey for message"
+					<< body
+					<< pubkey;
+			InitEntry (pubkey);
+		}
+
+		const auto contact = Contacts_.value (pubkey);
+		const auto msg = new ChatMessage { body, IMessage::Direction::In, contact };
+		msg->Store ();
 	}
 }
 }
