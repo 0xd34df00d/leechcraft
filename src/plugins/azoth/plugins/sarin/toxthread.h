@@ -100,8 +100,6 @@ namespace Sarin
 
 		QFuture<FriendInfo> ResolveFriend (qint32);
 
-		void SendMessage (QByteArray, const QString&);
-	private:
 		void ScheduleFunction (const std::function<void (Tox*)>&);
 
 		template<typename F>
@@ -125,6 +123,7 @@ namespace Sarin
 			return iface.future ();
 		}
 
+	private:
 		void SaveState ();
 
 		void LoadFriends ();
