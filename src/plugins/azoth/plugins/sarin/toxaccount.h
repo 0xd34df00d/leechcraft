@@ -121,6 +121,8 @@ namespace Sarin
 		void statusChanged (const EntryStatus&) override;
 
 		void accountChanged (ToxAccount*);
+
+		void threadChanged (const std::shared_ptr<ToxThread>&);
 	};
 }
 }

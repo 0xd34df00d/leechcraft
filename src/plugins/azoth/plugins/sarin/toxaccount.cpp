@@ -188,6 +188,7 @@ namespace Sarin
 				Thread_->Stop ();
 			}
 			Thread_.reset ();
+			emit threadChanged (Thread_);
 			return;
 		}
 
@@ -326,6 +327,9 @@ namespace Sarin
 				SIGNAL (friendStatusChanged (QByteArray, EntryStatus)),
 				this,
 				SLOT (handleFriendStatusChanged (QByteArray, EntryStatus)));
+
+		emit threadChanged (Thread_);
+
 		Thread_->start (QThread::IdlePriority);
 	}
 
