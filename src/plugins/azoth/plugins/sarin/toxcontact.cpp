@@ -182,7 +182,7 @@ namespace Sarin
 
 	void ToxContact::SendMessage (ChatMessage *msg)
 	{
-		Acc_->SendMessage (Pubkey_, msg->GetBody ());
+		Acc_->SendMessage (Pubkey_, msg);
 	}
 }
 }

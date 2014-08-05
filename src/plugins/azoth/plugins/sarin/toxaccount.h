@@ -42,6 +42,8 @@ namespace Sarin
 	class ToxProtocol;
 	class ToxThread;
 	class ToxContact;
+	class ChatMessage;
+	class MessagesManager;
 
 	class ToxAccount : public QObject
 					 , public IAccount
@@ -60,6 +62,8 @@ namespace Sarin
 		QAction * const ActionGetToxId_;
 
 		std::shared_ptr<ToxThread> Thread_;
+
+		MessagesManager * const MsgsMgr_;
 
 		QHash<QByteArray, ToxContact*> Contacts_;
 
@@ -95,7 +99,7 @@ namespace Sarin
 
 		QObject* GetTransferManager () const override;
 
-		void SendMessage (const QByteArray& pkey, const QString& body);
+		void SendMessage (const QByteArray& pkey, ChatMessage *msg);
 	private:
 		void InitThread (const EntryStatus&);
 		void InitEntry (const QByteArray&);

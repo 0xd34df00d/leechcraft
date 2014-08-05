@@ -301,29 +301,6 @@ namespace Sarin
 				});
 	}
 
-	void ToxThread::SendMessage (QByteArray pkey, const QString& msg)
-	{
-		pkey = Hex2Bin (pkey);
-		ScheduleFunction ([pkey, msg, this] (Tox *tox)
-				{
-					const auto friendNum = tox_get_friend_number (tox,
-							reinterpret_cast<const uint8_t*> (pkey.constData ()));
-					if (friendNum < 0)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unknown friend";
-						return;
-					}
-
-					const auto& msgUtf8 = msg.toUtf8 ();
-					const auto id =tox_send_message (tox,
-							friendNum,
-							reinterpret_cast<const uint8_t*> (msgUtf8.constData ()),
-							msgUtf8.size ());
-					qDebug () << Q_FUNC_INFO << id;
-				});
-	}
-
 	void ToxThread::ScheduleFunction (const std::function<void (Tox*)>& function)
 	{
 		QMutexLocker locker { &FQueueMutex_ };

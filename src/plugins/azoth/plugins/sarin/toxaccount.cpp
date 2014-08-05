@@ -40,6 +40,7 @@
 #include "toxthread.h"
 #include "showtoxiddialog.h"
 #include "toxcontact.h"
+#include "messagesmanager.h"
 
 namespace LeechCraft
 {
@@ -53,6 +54,7 @@ namespace Sarin
 	, UID_ { uid }
 	, Name_ { name }
 	, ActionGetToxId_ { new QAction { tr ("Get Tox ID"), this } }
+	, MsgsMgr_ { new MessagesManager { this } }
 	{
 		connect (ActionGetToxId_,
 				SIGNAL (triggered ()),
@@ -287,16 +289,9 @@ namespace Sarin
 		return nullptr;
 	}
 
-	void ToxAccount::SendMessage (const QByteArray& pkey, const QString& body)
+	void ToxAccount::SendMessage (const QByteArray& pkey, ChatMessage *message)
 	{
-		if (!Thread_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot send messages in offline";
-			return;
-		}
-
-		Thread_->SendMessage (pkey, body);
+		MsgsMgr_->SendMessage (pkey, message);
 	}
 
 	void ToxAccount::InitThread (const EntryStatus& status)
