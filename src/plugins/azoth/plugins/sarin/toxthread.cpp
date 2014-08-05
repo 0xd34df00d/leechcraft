@@ -354,6 +354,13 @@ namespace Sarin
 		SaveState ();
 	}
 
+	void ToxThread::UpdateFriendStatus (int32_t friendId)
+	{
+		const auto& id = GetFriendId (Tox_.get (), friendId);
+		const auto& status = GetFriendStatus (Tox_.get (), friendId);
+		emit friendStatusChanged (id, status);
+	}
+
 	void ToxThread::run ()
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -374,6 +381,24 @@ namespace Sarin
 				[] (Tox*, int32_t id, const uint8_t *name, uint16_t len, void *udata)
 				{
 					static_cast<ToxThread*> (udata)->HandleNameChange (id, name, len + 1);
+				},
+				this);
+		tox_callback_user_status (Tox_.get (),
+				[] (Tox*, int32_t friendId, uint8_t, void *udata)
+				{
+					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
+				},
+				this);
+		tox_callback_status_message (Tox_.get (),
+				[] (Tox*, int32_t friendId, const uint8_t*, uint16_t, void *udata)
+				{
+					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
+				},
+				this);
+		tox_callback_connection_status (Tox_.get (),
+				[] (Tox*, int32_t friendId, uint8_t, void *udata)
+				{
+					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
 				},
 				this);
 

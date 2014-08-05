@@ -129,6 +129,7 @@ namespace Sarin
 
 		void HandleFriendRequest (const uint8_t*, const uint8_t*, uint16_t);
 		void HandleNameChange (int32_t, const uint8_t*, uint16_t);
+		void UpdateFriendStatus (int32_t);
 	protected:
 		virtual void run ();
 	signals:
@@ -140,6 +141,8 @@ namespace Sarin
 		void gotFriendRequest (const QByteArray& toxId, const QString& msg);
 
 		void friendNameChanged (const QByteArray& toxId, const QString&);
+
+		void friendStatusChanged (const QByteArray& pubkey, const EntryStatus& status);
 	};
 }
 }
