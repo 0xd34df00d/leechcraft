@@ -259,6 +259,14 @@ namespace Sarin
 				});
 	}
 
+	QFuture<QByteArray> ToxThread::GetFriendPubkey (qint32 id)
+	{
+		return ScheduleFunction ([id] (Tox *tox)
+				{
+					return GetFriendId (tox, id);
+				});
+	}
+
 	namespace
 	{
 		EntryStatus GetFriendStatus (Tox *tox, qint32 id)

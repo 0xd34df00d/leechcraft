@@ -98,6 +98,7 @@ namespace Sarin
 		QFuture<AddFriendResult> AddFriend (QByteArray, QString);
 		void AddFriend (QByteArray);
 
+		QFuture<QByteArray> GetFriendPubkey (qint32);
 		QFuture<FriendInfo> ResolveFriend (qint32);
 
 		void ScheduleFunction (const std::function<void (Tox*)>&);
