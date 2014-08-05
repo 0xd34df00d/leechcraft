@@ -28,7 +28,10 @@
  **********************************************************************/
 
 #include "messagesmanager.h"
+#include <QFutureWatcher>
 #include <tox/tox.h>
+#include <util/sll/slotclosure.h>
+#include <util/sll/delayedexecutor.h>
 #include "toxaccount.h"
 #include "toxthread.h"
 #include "chatmessage.h"
@@ -58,24 +61,59 @@ namespace Sarin
 			return;
 		}
 
-		const auto& body = msg->GetBody ();
-		thread->ScheduleFunction ([pkey = QByteArray::fromHex (privkey), body, this] (Tox *tox) -> uint32_t
+		if (!msg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty message";
+			return;
+		}
+
+		const auto watcher = new QFutureWatcher<MessageSendResult>;
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[watcher, this]
+			{
+				watcher->deleteLater ();
+				const auto& result = watcher->result ();
+				if (!result.Result_)
 				{
+					qWarning () << Q_FUNC_INFO
+							<< "message was not sent, resending in 5 seconds";
+
+					new Util::DelayedExecutor
+					{
+						[result, this] { SendMessage (result.Privkey_, result.Msg_); },
+						5000
+					};
+				}
+			},
+			watcher,
+			SIGNAL (finished ()),
+			watcher
+		};
+
+		const auto& body = msg->GetBody ();
+		watcher->setFuture (thread->ScheduleFunction ([=] (Tox *tox) -> MessageSendResult
+				{
+					const auto& binPkey = QByteArray::fromHex (privkey);
 					const auto friendNum = tox_get_friend_number (tox,
-							reinterpret_cast<const uint8_t*> (pkey.constData ()));
+							reinterpret_cast<const uint8_t*> (binPkey.constData ()));
 					if (friendNum < 0)
 					{
 						qWarning () << Q_FUNC_INFO
-								<< "unknown friend";
-						return 0;
+								<< "unknown friend"
+								<< privkey;
+						return { 0, privkey, msg };
 					}
 
 					const auto& msgUtf8 = body.toUtf8 ();
-					return tox_send_message (tox,
+					const auto id = tox_send_message (tox,
 							friendNum,
 							reinterpret_cast<const uint8_t*> (msgUtf8.constData ()),
 							msgUtf8.size ());
-				});
+
+					return { id, privkey, msg };
+				}));
 	}
 
 	void MessagesManager::setThread (const std::shared_ptr<ToxThread>& thread)

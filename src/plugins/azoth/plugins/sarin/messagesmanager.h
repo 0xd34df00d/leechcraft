@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QPointer>
 
 namespace LeechCraft
 {
@@ -47,6 +48,14 @@ namespace Sarin
 		Q_OBJECT
 
 		std::weak_ptr<ToxThread> Thread_;
+
+		struct MessageSendResult
+		{
+			uint32_t Result_;
+
+			QByteArray Privkey_;
+			QPointer<ChatMessage> Msg_;
+		};
 	public:
 		MessagesManager (ToxAccount*);
 
