@@ -29,6 +29,7 @@
 
 #include "executecommanddialog.h"
 #include <QVBoxLayout>
+#include <QAbstractButton>
 #include <QLabel>
 #include "glooxaccount.h"
 #include "clientconnection.h"
@@ -187,6 +188,14 @@ namespace Xoox
 				SLOT (handleCurrentChanged (int)));
 
 		RequestCommands ();
+
+		setButtonText (QWizard::CustomButton1, tr ("Execute another command"));
+		setOption (QWizard::HaveCustomButton1);
+
+		connect (button (QWizard::CustomButton1),
+				SIGNAL (released ()),
+				this,
+				SLOT (recreate ()));
 	}
 
 	ExecuteCommandDialog::ExecuteCommandDialog (const QString& jid,
@@ -313,6 +322,14 @@ namespace Xoox
 			addPage (new WaitPage { tr ("Please wait while action "
 						"is performed") });
 		next ();
+	}
+
+	void ExecuteCommandDialog::recreate ()
+	{
+		deleteLater ();
+
+		const auto dia = new ExecuteCommandDialog { JID_, Account_, parentWidget () };
+		dia->show ();
 	}
 }
 }

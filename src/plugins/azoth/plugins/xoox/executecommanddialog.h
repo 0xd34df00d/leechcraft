@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_EXECUTECOMMANDDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_EXECUTECOMMANDDIALOG_H
+#pragma once
+
 #include <QWizard>
 #include "ui_executecommanddialog.h"
 #include "adhoccommandmanager.h"
@@ -61,9 +61,9 @@ namespace Xoox
 		void handleCurrentChanged (int);
 		void handleGotCommands (const QString&, const QList<AdHocCommand>&);
 		void handleGotResult (const QString&, const AdHocResult&);
+
+		void recreate ();
 	};
 }
 }
 }
-
-#endif
