@@ -31,10 +31,20 @@
         <x>0</x>
         <y>0</y>
         <width>392</width>
-        <height>263</height>
+        <height>242</height>
        </rect>
       </property>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="NotesLabel_">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>

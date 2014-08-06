@@ -94,6 +94,27 @@ namespace Xoox
 		}
 	};
 
+	namespace
+	{
+		QString GetSeverityText (AdHocNote::Severity severity)
+		{
+			switch (severity)
+			{
+			case AdHocNote::Severity::Info:
+				return QObject::tr ("Info:") + " ";
+			case AdHocNote::Severity::Warn:
+				return QObject::tr ("Warning:") + " ";
+			case AdHocNote::Severity::Error:
+				return QObject::tr ("Error:") + " ";
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown severity level"
+					<< static_cast<int> (severity);
+			return {};
+		}
+	}
+
 	class CommandResultPage : public QWizardPage
 	{
 		Ui::CommandResultPage Ui_;
@@ -116,6 +137,21 @@ namespace Xoox
 				Ui_.FormArea_->setWidget (FB_.CreateForm (form));
 			else
 				Ui_.FormArea_->hide ();
+
+			const auto& notes = result.GetNotes ();
+			if (notes.isEmpty ())
+				Ui_.NotesLabel_->hide ();
+			else
+			{
+				QStringList strs;
+				for (const auto& note : notes)
+				{
+					auto str = GetSeverityText (note.GetSeverity ()) + note.GetText ();
+					str.replace ('\n', "<br/>");
+					strs << str;
+				}
+				Ui_.NotesLabel_->setText (strs.join ("<br/><br/>"));
+			}
 		}
 
 		QString GetSelectedAction () const
