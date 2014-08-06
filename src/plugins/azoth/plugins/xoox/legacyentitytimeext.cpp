@@ -64,10 +64,7 @@ namespace Xoox
 		utcElem.setTagName ("utc");
 		utcElem.setValue (date.toString ("yyyyMMddThh:mm:ss"));
 
-		const QString& displayStr = "Your client/bot sucks since it "
-				"uses the long-deprecated XEP-0090. Upgrade your code. "
-				"Ah, and, regarding your question, it's " +
-				QDateTime::currentDateTime ().toString () + " here";
+		const auto& displayStr = QDateTime::currentDateTime ().toString ();
 		QXmppElement displayElem;
 		displayElem.setTagName ("display");
 		displayElem.setValue (displayStr);
