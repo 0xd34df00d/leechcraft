@@ -53,6 +53,7 @@
 #include "notificationplayer.h"
 #include "effectsmanager.h"
 #include "lmpproxy.h"
+#include "diaginfocollector.h"
 
 typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
@@ -410,6 +411,11 @@ namespace LMP
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return Core::Instance ().GetProgressManager ()->GetModel ();
+	}
+
+	QString Plugin::GetDiagInfoString () const
+	{
+		return DiagInfoCollector {} ();
 	}
 
 	void Plugin::InitShortcuts ()

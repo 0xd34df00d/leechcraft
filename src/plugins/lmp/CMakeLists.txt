@@ -126,6 +126,7 @@ set (SRCS
 	localcollectionmodel.cpp
 	playerrulesmanager.cpp
 	hookinterconnector.cpp
+	diaginfocollector.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
