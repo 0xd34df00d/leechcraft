@@ -114,6 +114,8 @@ namespace Xoox
 			const auto& form = result.GetDataForm ();
 			if (!form.isNull ())
 				Ui_.FormArea_->setWidget (FB_.CreateForm (form));
+			else
+				Ui_.FormArea_->hide ();
 		}
 
 		QString GetSelectedAction () const
