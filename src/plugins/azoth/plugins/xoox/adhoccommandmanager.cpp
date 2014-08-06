@@ -110,25 +110,13 @@ namespace Xoox
 		return { NsAdHoc };
 	}
 
-	bool AdHocCommandManager::handleStanza (const QDomElement& elem)
+	namespace
 	{
-		if (elem.tagName () != "iq" ||
-				!PendingCommands_.contains (elem.attribute ("id")))
-			return false;
-
-		PendingCommands_.remove (elem.attribute ("id"));
-
-		const auto& command = elem.firstChildElement ("command");
-		if (command.namespaceURI () != NsAdHoc)
-			return false;
-
-		AdHocResult result;
-		result.SetSessionID (command.attribute ("sessionid"));
-		result.SetNode (command.attribute ("node"));
-
-		const auto& actionsElem = command.firstChildElement ("actions");
-		if (!actionsElem.isNull ())
+		bool ParseActions (AdHocResult& result, const QDomElement& actionsElem)
 		{
+			if (actionsElem.isNull ())
+				return false;
+
 			QStringList actionsList;
 
 			const auto& def = actionsElem.attribute ("execute", "execute");
@@ -146,15 +134,14 @@ namespace Xoox
 			actionsList.prepend (def);
 
 			result.SetActions (actionsList);
-		}
-		else if (command.attribute ("status") == "executing")
-			result.SetActions ({ "execute" });
 
-		if (command.firstChildElement ("x").namespaceURI () == "jabber:x:data")
+			return true;
+		}
+
+		void ParseDataForm (AdHocResult& result, QDomElement xForm)
 		{
 			QXmppDataForm form;
 
-			auto xForm = command.firstChildElement ("x");
 			if (!xForm.hasAttribute ("type"))
 			{
 				qWarning () << Q_FUNC_INFO
@@ -165,6 +152,30 @@ namespace Xoox
 			form.parse (xForm);
 			result.SetDataForm (form);
 		}
+	}
+
+	bool AdHocCommandManager::handleStanza (const QDomElement& elem)
+	{
+		if (elem.tagName () != "iq" ||
+				!PendingCommands_.contains (elem.attribute ("id")))
+			return false;
+
+		PendingCommands_.remove (elem.attribute ("id"));
+
+		const auto& command = elem.firstChildElement ("command");
+		if (command.namespaceURI () != NsAdHoc)
+			return false;
+
+		AdHocResult result;
+		result.SetSessionID (command.attribute ("sessionid"));
+		result.SetNode (command.attribute ("node"));
+
+		if (!ParseActions (result, command.firstChildElement ("actions")) &&
+				command.attribute ("status") == "executing")
+			result.SetActions ({ "execute" });
+
+		if (command.firstChildElement ("x").namespaceURI () == "jabber:x:data")
+			ParseDataForm (result, command.firstChildElement ("x"));
 
 		emit gotResult (elem.attribute ("from"), result);
 
