@@ -1230,13 +1230,14 @@ namespace Xoox
 			return;
 
 		Split (msg.to (), &jid, &resource);
+		if (!JID2CLEntry_.contains (jid))
+			return;
+
 		auto gm = new GlooxMessage (IMessage::Type::ChatMessage, IMessage::Direction::Out,
 				jid, resource, this);
 		gm->SetBody (msg.body ());
 		gm->SetRichBody (msg.xhtml ());
 		gm->SetDateTime (msg.stamp ().isValid () ? msg.stamp () : QDateTime::currentDateTime ());
-		if (!JID2CLEntry_.contains (jid))
-			CreateEntry (jid);
 
 		JID2CLEntry_ [jid]->HandleMessage (gm);
 	}
