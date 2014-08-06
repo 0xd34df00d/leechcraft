@@ -987,8 +987,7 @@ namespace Xoox
 			}
 		}
 
-		ExecuteCommandDialog *dia = new ExecuteCommandDialog (jid, Account_);
-		dia->setAttribute (Qt::WA_DeleteOnClose);
+		const auto dia = new ExecuteCommandDialog (jid, Account_);
 		dia->show ();
 	}
 

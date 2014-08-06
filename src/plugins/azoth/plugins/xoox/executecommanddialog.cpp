@@ -179,6 +179,8 @@ namespace Xoox
 	{
 		Ui_.setupUi (this);
 
+		setAttribute (Qt::WA_DeleteOnClose);
+
 		connect (this,
 				SIGNAL (currentIdChanged (int)),
 				this,
@@ -196,6 +198,8 @@ namespace Xoox
 	, JID_ { jid }
 	{
 		Ui_.setupUi (this);
+
+		setAttribute (Qt::WA_DeleteOnClose);
 
 		connect (this,
 				SIGNAL (currentIdChanged (int)),
