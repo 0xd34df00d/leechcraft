@@ -29,6 +29,7 @@
 
 #include "diaginfocollector.h"
 #include <gst/gst.h>
+#include <taglib/taglib.h>
 
 namespace LeechCraft
 {
@@ -41,7 +42,16 @@ namespace LMP
 				.arg (GST_VERSION_MINOR)
 				.arg (GST_VERSION_MICRO)
 				.arg (QString::fromUtf8 (gst_version_string ()));
-		Strs_ << QString { "GStreamer plugins:" };
+#ifdef WITH_LIBGUESS
+		Strs_ << "Built WITH libguess";
+#else
+		Strs_ << "Built WITHOUT libguess";
+#endif
+		Strs_ << QString { "Built with Taglib %1.%2.%3" }
+				.arg (TAGLIB_MAJOR_VERSION)
+				.arg (TAGLIB_MINOR_VERSION)
+				.arg (TAGLIB_PATCH_VERSION);
+		Strs_ << "GStreamer plugins:";
 
 		const auto plugins = gst_default_registry_get_plugin_list ();
 		auto node = plugins;
