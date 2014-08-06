@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "adhoccommand.h"
+#include <QtDebug>
+#include <QDomElement>
 
 namespace LeechCraft
 {
@@ -36,8 +38,8 @@ namespace Azoth
 namespace Xoox
 {
 	AdHocCommand::AdHocCommand (const QString& name, const QString& node)
-	: Name_ (name)
-	, Node_ (node)
+	: Name_ { name }
+	, Node_ { node }
 	{
 	}
 
@@ -59,6 +61,45 @@ namespace Xoox
 	void AdHocCommand::SetNode (const QString& node)
 	{
 		Node_ = node;
+	}
+
+	namespace
+	{
+		AdHocNote::Severity Type2Severity (const QString& severity)
+		{
+			if (severity == "info")
+				return AdHocNote::Severity::Info;
+			else if (severity == "warn")
+				return AdHocNote::Severity::Warn;
+			else if (severity == "error")
+				return AdHocNote::Severity::Error;
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown severity level"
+					<< severity;
+			return AdHocNote::Severity::Info;
+		}
+	}
+
+	AdHocNote::AdHocNote (const QDomElement& elem)
+	: AdHocNote { elem.attribute ("type"), elem.text () }
+	{
+	}
+
+	AdHocNote::AdHocNote (const QString& severity, const QString& text)
+	: Severity_ { Type2Severity (severity) }
+	, Text_ { text }
+	{
+	}
+
+	AdHocNote::Severity AdHocNote::GetSeverity () const
+	{
+		return Severity_;
+	}
+
+	const QString& AdHocNote::GetText () const
+	{
+		return Text_;
 	}
 
 	QString AdHocResult::GetNode () const
@@ -99,6 +140,16 @@ namespace Xoox
 	void AdHocResult::SetActions (const QStringList& actions)
 	{
 		Actions_ = actions;
+	}
+
+	const QList<AdHocNote>& AdHocResult::GetNotes () const
+	{
+		return Notes_;
+	}
+
+	void AdHocResult::AddNote (const AdHocNote& note)
+	{
+		Notes_ << note;
 	}
 }
 }

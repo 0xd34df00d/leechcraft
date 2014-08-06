@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMAND_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMAND_H
+#pragma once
+
 #include <QString>
 #include <QStringList>
 #include <QXmppDataForm.h>
@@ -53,6 +53,26 @@ namespace Xoox
 		void SetNode (const QString&);
 	};
 
+	class AdHocNote
+	{
+	public:
+		enum class Severity
+		{
+			Info,
+			Warn,
+			Error
+		};
+	private:
+		Severity Severity_;
+		QString Text_;
+	public:
+		AdHocNote (const QDomElement&);
+		AdHocNote (const QString& severity, const QString& text);
+
+		Severity GetSeverity () const;
+		const QString& GetText () const;
+	};
+
 	class AdHocResult
 	{
 		QString Node_;
@@ -61,6 +81,8 @@ namespace Xoox
 		QXmppDataForm Form_;
 
 		QStringList Actions_;
+
+		QList<AdHocNote> Notes_;
 	public:
 		QString GetNode () const;
 		void SetNode (const QString&);
@@ -73,9 +95,10 @@ namespace Xoox
 
 		QStringList GetActions () const;
 		void SetActions (const QStringList&);
+
+		const QList<AdHocNote>& GetNotes () const;
+		void AddNote (const AdHocNote&);
 	};
 }
 }
 }
-
-#endif
