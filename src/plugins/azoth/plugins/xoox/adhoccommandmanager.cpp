@@ -46,7 +46,7 @@ namespace Xoox
 	}
 
 	AdHocCommandManager::AdHocCommandManager (ClientConnection *conn)
-	: ClientConn_ (conn)
+	: ClientConn_ { conn }
 	{
 		connect (ClientConn_->GetQXmppDiscoveryManager (),
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
@@ -68,9 +68,9 @@ namespace Xoox
 		command.setAttribute ("node", cmd.GetNode ());
 		command.setAttribute ("action", "execute");
 
-		QXmppIq iq (QXmppIq::Set);
+		QXmppIq iq { QXmppIq::Set };
 		iq.setTo (jid);
-		iq.setExtensions (QXmppElementList () << command);
+		iq.setExtensions ({ command });
 
 		PendingCommands_ << iq.id ();
 		client ()->sendPacket (iq);
@@ -89,17 +89,17 @@ namespace Xoox
 		QDomDocument formElem;
 		{
 			QByteArray ba;
-			QXmlStreamWriter w (&ba);
-			QXmppDataForm form = state.GetDataForm ();
+			QXmlStreamWriter w { &ba };
+			auto form = state.GetDataForm ();
 			form.setType (QXmppDataForm::Submit);
 			form.toXml (&w);
 			formElem.setContent (ba);
 		}
 		command.appendChild (formElem.documentElement ());
 
-		QXmppIq iq (QXmppIq::Set);
+		QXmppIq iq { QXmppIq::Set };
 		iq.setTo (jid);
-		iq.setExtensions (QXmppElementList () << command);
+		iq.setExtensions ({ command });
 
 		PendingCommands_ << iq.id ();
 		client ()->sendPacket (iq);
@@ -107,7 +107,7 @@ namespace Xoox
 
 	QStringList AdHocCommandManager::discoveryFeatures () const
 	{
-		return QStringList (NsAdHoc);
+		return { NsAdHoc };
 	}
 
 	bool AdHocCommandManager::handleStanza (const QDomElement& elem)
@@ -118,7 +118,7 @@ namespace Xoox
 
 		PendingCommands_.remove (elem.attribute ("id"));
 
-		const QDomElement& command = elem.firstChildElement ("command");
+		const auto& command = elem.firstChildElement ("command");
 		if (command.namespaceURI () != NsAdHoc)
 			return false;
 
@@ -126,19 +126,17 @@ namespace Xoox
 		result.SetSessionID (command.attribute ("sessionid"));
 		result.SetNode (command.attribute ("node"));
 
-		const QDomElement& actionsElem = command.firstChildElement ("actions");
+		const auto& actionsElem = command.firstChildElement ("actions");
 		if (!actionsElem.isNull ())
 		{
 			QStringList actionsList;
 
-			QString def = actionsElem.attribute ("execute");
-			if (def.isEmpty ())
-				def = "execute";
+			const auto& def = actionsElem.attribute ("execute", "execute");
 
-			QDomElement actionElem = actionsElem.firstChildElement ();
+			auto actionElem = actionsElem.firstChildElement ();
 			while (!actionElem.isNull ())
 			{
-				const QString& name = actionElem.tagName ();
+				const auto& name = actionElem.tagName ();
 				if (name != def)
 					actionsList << name;
 
@@ -150,13 +148,13 @@ namespace Xoox
 			result.SetActions (actionsList);
 		}
 		else if (command.attribute ("status") == "executing")
-			result.SetActions (QStringList ("execute"));
+			result.SetActions ({ "execute" });
 
 		if (command.firstChildElement ("x").namespaceURI () == "jabber:x:data")
 		{
 			QXmppDataForm form;
 
-			QDomElement xForm = command.firstChildElement ("x");
+			auto xForm = command.firstChildElement ("x");
 			if (!xForm.hasAttribute ("type"))
 			{
 				qWarning () << Q_FUNC_INFO

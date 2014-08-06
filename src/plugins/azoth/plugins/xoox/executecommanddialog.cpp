@@ -47,14 +47,14 @@ namespace Xoox
 		bool DataFetched_;
 	public:
 		WaitPage (const QString& text, QWidget *parent = 0)
-		: QWizardPage (parent)
-		, DataFetched_ (false)
+		: QWizardPage { parent }
+		, DataFetched_ { false }
 		{
 			setTitle (tr ("Fetching data..."));
 			setCommitPage (true);
 
-			setLayout (new QVBoxLayout ());
-			layout ()->addWidget (new QLabel (text));
+			setLayout (new QVBoxLayout);
+			layout ()->addWidget (new QLabel { text });
 		}
 
 		bool isComplete () const
@@ -75,13 +75,13 @@ namespace Xoox
 		QList<AdHocCommand> Commands_;
 	public:
 		CommandsListPage (const QList<AdHocCommand>& commands, QWidget *parent = 0)
-		: QWizardPage (parent)
-		, Commands_ (commands)
+		: QWizardPage { parent }
+		, Commands_ { commands }
 		{
 			Ui_.setupUi (this);
 			setCommitPage (true);
 
-			Q_FOREACH (const AdHocCommand& cmd, commands)
+			for (const auto& cmd : commands)
 				Ui_.CommandsBox_->addItem (cmd.GetName ());
 		}
 
@@ -90,7 +90,7 @@ namespace Xoox
 			const int idx = Ui_.CommandsBox_->currentIndex ();
 			return idx >= 0 ?
 					Commands_.at (idx) :
-					AdHocCommand (QString (), QString ());
+					AdHocCommand { {}, {} };
 		}
 	};
 
@@ -102,16 +102,16 @@ namespace Xoox
 		mutable FormBuilder FB_;
 	public:
 		CommandResultPage (const AdHocResult& result, GlooxAccount *acc, QWidget *parent = 0)
-		: QWizardPage (parent)
-		, Result_ (result)
-		, FB_ ({}, acc->GetClientConnection ()->GetBobManager ())
+		: QWizardPage { parent }
+		, Result_ { result }
+		, FB_ { {}, acc->GetClientConnection ()->GetBobManager () }
 		{
 			Ui_.setupUi (this);
 			setCommitPage (true);
 
 			Ui_.Actions_->addItems (result.GetActions ());
 
-			const QXmppDataForm& form = result.GetDataForm ();
+			const auto& form = result.GetDataForm ();
 			if (!form.isNull ())
 				Ui_.FormArea_->setWidget (FB_.CreateForm (form));
 		}
@@ -134,10 +134,10 @@ namespace Xoox
 
 	ExecuteCommandDialog::ExecuteCommandDialog (const QString& jid,
 			GlooxAccount *account, QWidget *parent)
-	: QWizard (parent)
-	, Account_ (account)
-	, Manager_ (account->GetClientConnection ()->GetAdHocCommandManager ())
-	, JID_ (jid)
+	: QWizard { parent }
+	, Account_ { account }
+	, Manager_ { account->GetClientConnection ()->GetAdHocCommandManager () }
+	, JID_ { jid }
 	{
 		Ui_.setupUi (this);
 
@@ -152,10 +152,10 @@ namespace Xoox
 	ExecuteCommandDialog::ExecuteCommandDialog (const QString& jid,
 			const QString& command,
 			GlooxAccount *account, QWidget *parent)
-	: QWizard (parent)
-	, Account_ (account)
-	, Manager_ (account->GetClientConnection ()->GetAdHocCommandManager ())
-	, JID_ (jid)
+	: QWizard { parent }
+	, Account_ { account }
+	, Manager_ { account->GetClientConnection ()->GetAdHocCommandManager () }
+	, JID_ { jid }
 	{
 		Ui_.setupUi (this);
 
@@ -164,12 +164,12 @@ namespace Xoox
 				this,
 				SLOT (handleCurrentChanged (int)));
 
-		const int idx = addPage (new WaitPage (tr ("Please wait while "
-				"the selected command is executed.")));
+		const int idx = addPage (new WaitPage { tr ("Please wait while "
+				"the selected command is executed.") });
 		if (currentId () != idx)
 			next ();
 
-		ExecuteCommand (AdHocCommand (QString (), command));
+		ExecuteCommand ({ {}, command });
 	}
 
 	void ExecuteCommandDialog::RequestCommands ()
@@ -212,13 +212,13 @@ namespace Xoox
 		if (!dynamic_cast<WaitPage*> (currentPage ()))
 			return;
 
-		const QList<int>& ids = pageIds ();
+		const auto& ids = pageIds ();
 
 		const int pos = ids.indexOf (id);
 		if (pos <= 0)
 			return;
 
-		QWizardPage *prevPage = page (ids.at (pos - 1));
+		const auto prevPage = page (ids.at (pos - 1));
 		if (dynamic_cast<CommandsListPage*> (prevPage))
 		{
 			const AdHocCommand& cmd = dynamic_cast<CommandsListPage*> (prevPage)->GetSelectedCommand ();
@@ -229,12 +229,12 @@ namespace Xoox
 		}
 		else if (dynamic_cast<CommandResultPage*> (prevPage))
 		{
-			CommandResultPage *crp = dynamic_cast<CommandResultPage*> (prevPage);
-			const QString& action = crp->GetSelectedAction ();
+			const auto crp = dynamic_cast<CommandResultPage*> (prevPage);
+			const auto& action = crp->GetSelectedAction ();
 			if (action.isEmpty ())
 				return;
 
-			AdHocResult result = crp->GetResult ();
+			auto result = crp->GetResult ();
 			result.SetDataForm (crp->GetForm ());
 			ProceedExecuting (result, action);
 		}
@@ -250,9 +250,9 @@ namespace Xoox
 				this,
 				SLOT (handleGotCommands (QString, QList<AdHocCommand>)));
 
-		addPage (new CommandsListPage (commands));
-		addPage (new WaitPage (tr ("Please wait while command result "
-					"is fetched.")));
+		addPage (new CommandsListPage { commands });
+		addPage (new WaitPage { tr ("Please wait while command result "
+					"is fetched.") });
 		next ();
 	}
 
@@ -266,10 +266,10 @@ namespace Xoox
 				this,
 				SLOT (handleGotResult (QString, AdHocResult)));
 
-		addPage (new CommandResultPage (result, Account_));
+		addPage (new CommandResultPage { result, Account_ });
 		if (!result.GetActions ().isEmpty ())
-			addPage (new WaitPage (tr ("Please wait while action "
-						"is performed")));
+			addPage (new WaitPage { tr ("Please wait while action "
+						"is performed") });
 		next ();
 	}
 }
