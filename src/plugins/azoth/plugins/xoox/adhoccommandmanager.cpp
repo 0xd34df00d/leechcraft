@@ -152,6 +152,16 @@ namespace Xoox
 			form.parse (xForm);
 			result.SetDataForm (form);
 		}
+
+		void ParseNotes (AdHocResult& result, const QDomElement& command)
+		{
+			auto noteElem = command.firstChildElement ("note");
+			while (!noteElem.isNull ())
+			{
+				result.AddNote ({ noteElem });
+				noteElem = noteElem.nextSiblingElement ("note");
+			}
+		}
 	}
 
 	bool AdHocCommandManager::handleStanza (const QDomElement& elem)
@@ -176,6 +186,8 @@ namespace Xoox
 
 		if (command.firstChildElement ("x").namespaceURI () == "jabber:x:data")
 			ParseDataForm (result, command.firstChildElement ("x"));
+
+		ParseNotes (result, command);
 
 		emit gotResult (elem.attribute ("from"), result);
 
