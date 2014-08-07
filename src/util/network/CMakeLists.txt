@@ -21,4 +21,4 @@ target_link_libraries (leechcraft-util-network
 set_property (TARGET leechcraft-util-network PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-network DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-network Network)
+FindQtLibs (leechcraft-util-network Concurrent Network)
