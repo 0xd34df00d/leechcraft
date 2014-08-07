@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "autoresizemixin.h"
-#include <QDeclarativeView>
+#include <QWidget>
 #include <QResizeEvent>
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>

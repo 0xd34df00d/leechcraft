@@ -43,4 +43,4 @@ target_link_libraries (leechcraft-util-gui
 set_property (TARGET leechcraft-util-gui PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-gui DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-gui Network Quick QuickWidgets WebKitWidgets Widgets)
+FindQtLibs (leechcraft-util-gui Network WebKitWidgets Widgets)
