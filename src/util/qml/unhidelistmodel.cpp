@@ -34,7 +34,7 @@ namespace LeechCraft
 namespace Util
 {
 	UnhideListModel::UnhideListModel (QObject *parent)
-	: QStandardItemModel (parent)
+	: RoleNamesMixin<QStandardItemModel> (parent)
 	{
 		QHash<int, QByteArray> roleNames;
 		roleNames [Roles::ItemClass] = "itemClass";

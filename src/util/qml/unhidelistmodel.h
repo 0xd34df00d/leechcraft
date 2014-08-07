@@ -30,13 +30,14 @@
 #pragma once
 
 #include <QStandardItemModel>
+#include <util/models/rolenamesmixin.h>
 #include "qmlconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_QML_API UnhideListModel : public QStandardItemModel
+	class UTIL_QML_API UnhideListModel : public RoleNamesMixin<QStandardItemModel>
 	{
 	public:
 		enum Roles
