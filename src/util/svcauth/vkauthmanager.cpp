@@ -30,6 +30,7 @@
 #include "vkauthmanager.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkCookie>
 #include <QtDebug>
 #include <QTimer>
 #include <QEvent>
