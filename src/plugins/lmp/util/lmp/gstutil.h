@@ -32,7 +32,7 @@
 #include <functional>
 #include <gst/gst.h>
 
-template<typename Key, typename T >
+template<typename Key, typename T>
 class QMap;
 class QString;
 
