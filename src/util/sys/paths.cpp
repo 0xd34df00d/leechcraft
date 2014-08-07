@@ -37,7 +37,13 @@
 #include <QtDebug>
 #include <QDir>
 #include <QUrl>
+
+#if QT_VERSION < 0x050000
 #include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
 #include <util/util.h>
 
 namespace LeechCraft
@@ -122,7 +128,11 @@ namespace Util
 		switch (dir)
 		{
 		case UserDir::Cache:
+#if QT_VERSION < 0x050000
 			path = QDesktopServices::storageLocation (QDesktopServices::CacheLocation);
+#else
+			path = QStandardPaths::writableLocation (QStandardPaths::CacheLocation);
+#endif
 			break;
 		case UserDir::LC:
 			path = QDir::home ().path () + "/.leechcraft/";
