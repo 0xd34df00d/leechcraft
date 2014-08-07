@@ -881,7 +881,9 @@ namespace LMP
 				}
 			}
 
-		if (XmlSettingsManager::Instance ().Property ("TracksTableVersion", 1).toInt () < 2)
+		const auto tracksTableVersion = XmlSettingsManager::Instance ()
+				.Property ("TracksTableVersion", 1).toInt ();
+		if (tracksTableVersion < 2)
 		{
 			const QString query = "CREATE TABLE tracks2 ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
