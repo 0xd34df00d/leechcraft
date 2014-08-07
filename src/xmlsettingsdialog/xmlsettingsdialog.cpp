@@ -516,8 +516,12 @@ namespace Util
 			result = label.attribute ("value");
 		return QCoreApplication::translate (qPrintable (Basename_),
 				result.toUtf8 ().constData (),
+#if QT_VERSION < 0x050000
 				0,
 				QCoreApplication::Encoding::UnicodeUTF8);
+#else
+				0);
+#endif
 	}
 
 	QString XmlSettingsDialog::GetDescription (const QDomElement& item) const
@@ -552,8 +556,12 @@ namespace Util
 				true,
 				QCoreApplication::translate (qPrintable (Basename_),
 						label.attribute ("value").toUtf8 ().constData (),
+#if QT_VERSION < 0x050000
 						0,
 						QCoreApplication::Encoding::UnicodeUTF8)
+#else
+						0)
+#endif
 			};
 		};
 
