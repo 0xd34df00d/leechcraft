@@ -29,8 +29,14 @@
 
 #pragma once
 
-#include <QDeclarativeView>
 #include <QList>
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
+#else
+#include <QQuickView>
+#endif
+
 #include <interfaces/core/icoreproxy.h>
 #include "qmlconfig.h"
 
@@ -41,7 +47,11 @@ namespace LeechCraft
 {
 namespace Util
 {
+#if QT_VERSION < 0x050000
 	class UTIL_QML_API UnhideListViewBase : public QDeclarativeView
+#else
+	class UTIL_QML_API UnhideListViewBase : public QQuickView
+#endif
 	{
 		Q_OBJECT
 	protected:

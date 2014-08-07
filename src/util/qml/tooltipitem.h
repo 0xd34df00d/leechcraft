@@ -29,8 +29,12 @@
 
 #pragma once
 
-#include <QDeclarativeItem>
 #include <QTimer>
+#if QT_VERSION < 0x050000
+#include <QDeclarativeItem>
+#else
+#include <QQuickItem>
+#endif
 #include "qmlconfig.h"
 
 namespace LeechCraft
@@ -68,7 +72,11 @@ namespace Util
 	 *	}
 	 * \endcode
 	 */
+#if QT_VERSION < 0x050000
 	class UTIL_QML_API ToolTipItem : public QDeclarativeItem
+#else
+	class UTIL_QML_API ToolTipItem : public QQuickItem
+#endif
 	{
 		Q_OBJECT
 		Q_PROPERTY (QString text READ GetText WRITE SetText NOTIFY textChanged)
@@ -79,7 +87,11 @@ namespace Util
 		bool ContainsMouse_;
 
 	public:
+#if QT_VERSION < 0x050000
 		ToolTipItem (QDeclarativeItem *parent = 0);
+#else
+		ToolTipItem (QQuickItem *parent = 0);
+#endif
 
 		void SetText (const QString& text);
 		QString GetText () const;
@@ -87,12 +99,15 @@ namespace Util
 
 		void ShowToolTip (const QString& text) const;
 	protected:
-		void hoverEnterEvent (QGraphicsSceneHoverEvent *event);
-		void hoverLeaveEvent (QGraphicsSceneHoverEvent *event);
-
+#if QT_VERSION < 0x050000
+		void hoverEnterEvent (QGraphicsSceneHoverEvent*) override;
+		void hoverLeaveEvent (QGraphicsSceneHoverEvent*) override;
+#else
+		void hoverEnterEvent (QHoverEvent*) override;
+		void hoverLeaveEvent (QHoverEvent*) override;
+#endif
 	public slots:
 		void showToolTip ();
-
 	signals:
 		void textChanged ();
 		void containsMouseChanged ();
