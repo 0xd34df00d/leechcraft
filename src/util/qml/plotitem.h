@@ -30,14 +30,23 @@
 #pragma once
 
 #include <functional>
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
 #include <QDeclarativeItem>
+#else
+#include <QQuickPaintedItem>
+#endif
 #include "qmlconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
+#if QT_VERSION < 0x050000
 	class UTIL_QML_API PlotItem : public QDeclarativeItem
+#else
+	class UTIL_QML_API PlotItem : public QQuickPaintedItem
+#endif
 	{
 		Q_OBJECT
 
@@ -93,7 +102,11 @@ namespace Util
 		QColor BackgroundColor_;
 		QColor TextColor_;
 	public:
+#if QT_VERSION < 0x050000
 		PlotItem (QDeclarativeItem* = 0);
+#else
+		PlotItem (QQuickItem* = 0);
+#endif
 
 		QList<QPointF> GetPoints () const;
 		void SetPoints (const QList<QPointF>&);
@@ -135,7 +148,11 @@ namespace Util
 		QColor GetTextColor () const;
 		void SetTextColor (const QColor&);
 
+#if QT_VERSION < 0x050000
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
+#else
+		void paint (QPainter*) override;
+#endif
 	private:
 		template<typename T>
 		void SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier);

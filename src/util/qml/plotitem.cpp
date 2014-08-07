@@ -46,11 +46,20 @@ namespace LeechCraft
 {
 namespace Util
 {
+#if QT_VERSION < 0x050000
 	PlotItem::PlotItem (QDeclarativeItem *parent)
 	: QDeclarativeItem { parent }
+#else
+	PlotItem::PlotItem (QQuickItem *parent)
+	: QQuickPaintedItem { parent }
+#endif
 	, Color_ { "#FF4B10" }
 	{
+#if QT_VERSION < 0x050000
 		setFlag (QGraphicsItem::ItemHasNoContents, false);
+#else
+		setFlag (ItemHasContents, true);
+#endif
 	}
 
 	QList<QPointF> PlotItem::GetPoints () const
@@ -225,15 +234,23 @@ namespace Util
 		SetNewValue (color, TextColor_, [this] { emit textColorChanged (); });
 	}
 
+#if QT_VERSION < 0x050000
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
+		const auto& rect = option->rect;
+#else
+	void PlotItem::paint (QPainter *painter)
+	{
+		const auto& rect = contentsBoundingRect ().toRect ();
+#endif
+
 		QwtPlot plot;
 		plot.setFrameShape (QFrame::NoFrame);
 		plot.enableAxis (QwtPlot::yLeft, LeftAxisEnabled_);
 		plot.enableAxis (QwtPlot::xBottom, BottomAxisEnabled_);
 		plot.setAxisTitle (QwtPlot::yLeft, LeftAxisTitle_);
 		plot.setAxisTitle (QwtPlot::xBottom, BottomAxisTitle_);
-		plot.resize (option->rect.size ());
+		plot.resize (rect.size ());
 
 		auto setPaletteColor = [&plot] (const QColor& color, QPalette::ColorRole role) -> void
 		{
@@ -298,7 +315,7 @@ namespace Util
 		}
 		plot.replot ();
 
-		QwtPlotRenderer {}.render (&plot, painter, option->rect);
+		QwtPlotRenderer {}.render (&plot, painter, rect);
 	}
 
 	template<typename T>
