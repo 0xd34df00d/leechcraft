@@ -85,9 +85,10 @@ namespace Util
 					SLOT (handleDataChanged (QModelIndex, QModelIndex)));
 		}
 
+		beginResetModel ();
 		SourceIndexes_.clear ();
 		Source_ = model;
-		reset ();
+		endResetModel ();
 		connect (Source_,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
