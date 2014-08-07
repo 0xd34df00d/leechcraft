@@ -37,6 +37,7 @@
 #include <QWebView>
 #include <util/network/customcookiejar.h>
 #include <util/sll/queuemanager.h>
+#include <util/sll/urloperator.h>
 
 namespace LeechCraft
 {
@@ -48,9 +49,10 @@ namespace SvcAuth
 	{
 		QUrl URLFromClientID (const QString& id, const QStringList& scope)
 		{
-			QUrl url = QUrl::fromEncoded ("https://oauth.vk.com/authorize?redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&state=");
-			url.addQueryItem ("client_id", id);
-			url.addQueryItem ("scope", scope.join (","));
+			auto url = QUrl::fromEncoded ("https://oauth.vk.com/authorize?redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&state=");
+			UrlOperator { url }
+					("client_id", id)
+					("scope", scope.join (","));
 			return url;
 		}
 	}
