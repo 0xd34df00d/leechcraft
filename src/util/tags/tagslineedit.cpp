@@ -35,6 +35,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QToolButton>
+#include <QAbstractItemView>
 #include "gui/lineeditbuttonmanager.h"
 #include "tagscompletionmodel.h"
 #include "tagscompleter.h"
