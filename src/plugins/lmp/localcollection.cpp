@@ -75,7 +75,7 @@ namespace LMP
 				this,
 				SIGNAL (scanProgressChanged (int)));
 
-		auto loadWatcher = new QFutureWatcher<LocalCollectionStorage::LoadResult> ();
+		auto loadWatcher = new QFutureWatcher<LocalCollectionStorage::LoadResult> (this);
 		connect (loadWatcher,
 				SIGNAL (finished ()),
 				this,
@@ -156,7 +156,7 @@ namespace LMP
 
 	void LocalCollection::Scan (const QString& path, bool root)
 	{
-		auto watcher = new QFutureWatcher<IterateResult> ();
+		auto watcher = new QFutureWatcher<IterateResult> (this);
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
@@ -706,7 +706,7 @@ namespace LMP
 				return MediaInfo ();
 			}
 		};
-		QFuture<MediaInfo> future = QtConcurrent::mapped (newPaths,
+		const auto& future = QtConcurrent::mapped (newPaths,
 				std::function<MediaInfo (const QString&)> (worker));
 		Watcher_->setFuture (future);
 	}
