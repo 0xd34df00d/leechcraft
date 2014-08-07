@@ -21,6 +21,4 @@ target_link_libraries (leechcraft-util-network
 set_property (TARGET leechcraft-util-network PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-network DESTINATION ${LIBDIR})
 
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-util-network Network)
-endif ()
+FindQtLibs (leechcraft-util-network Network)

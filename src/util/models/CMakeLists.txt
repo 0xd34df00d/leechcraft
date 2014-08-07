@@ -21,6 +21,4 @@ target_link_libraries (leechcraft-util-models
 set_property (TARGET leechcraft-util-models PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-models DESTINATION ${LIBDIR})
 
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-util-models Widgets)
-endif ()
+FindQtLibs (leechcraft-util-models WebKitWidgets Widgets)

@@ -1,12 +1,3 @@
-if (NOT USE_QT5)
-	set (QT_USE_QTDECLARATIVE TRUE)
-	set (QT_USE_QTNETWORK TRUE)
-	set (QT_USE_QTSQL TRUE)
-	set (QT_USE_QTWEBKIT TRUE)
-	set (QT_USE_QTXML TRUE)
-	include (${QT_USE_FILE})
-endif ()
-
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
@@ -89,6 +80,4 @@ target_link_libraries (leechcraft-util
 set_property (TARGET leechcraft-util PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
 
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-util Xml Sql Widgets)
-endif ()
+FindQtLibs (leechcraft-util Xml Sql Widgets)

@@ -39,6 +39,4 @@ target_link_libraries (leechcraft-util-qml
 set_property (TARGET leechcraft-util-qml PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-qml DESTINATION ${LIBDIR})
 
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-util-qml Declarative Network)
-endif ()
+FindQtLibs (leechcraft-util-qml Network Quick QuickWidgets)

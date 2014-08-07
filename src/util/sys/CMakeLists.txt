@@ -45,3 +45,5 @@ target_link_libraries (leechcraft-util-sys
 	)
 set_property (TARGET leechcraft-util-sys PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-sys DESTINATION ${LIBDIR})
+
+FindQtLibs (leechcraft-util-sys Network Widgets)

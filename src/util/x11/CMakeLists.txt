@@ -24,3 +24,5 @@ target_link_libraries (leechcraft-util-x11
 	)
 set_property (TARGET leechcraft-util-x11 PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-x11 DESTINATION ${LIBDIR})
+
+FindQtLibs (leechcraft-util-x11 X11Extras Widgets)

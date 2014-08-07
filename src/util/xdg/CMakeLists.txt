@@ -21,3 +21,5 @@ target_link_libraries (leechcraft-util-xdg
 	)
 set_property (TARGET leechcraft-util-xdg PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-xdg DESTINATION ${LIBDIR})
+
+FindQtLibs (leechcraft-util-xdg Concurrent Widgets)

@@ -16,3 +16,5 @@ target_link_libraries (leechcraft-util-shortcuts
 	)
 set_property (TARGET leechcraft-util-shortcuts PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-shortcuts DESTINATION ${LIBDIR})
+
+FindQtLibs (leechcraft-util-shortcuts Widgets)

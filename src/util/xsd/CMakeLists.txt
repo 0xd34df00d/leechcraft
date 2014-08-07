@@ -18,3 +18,5 @@ target_link_libraries (leechcraft-util-xsd
 	)
 set_property (TARGET leechcraft-util-xsd PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-xsd DESTINATION ${LIBDIR})
+
+FindQtLibs (leechcraft-util-xsd Network Widgets)

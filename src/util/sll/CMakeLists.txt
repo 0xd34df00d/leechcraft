@@ -37,3 +37,5 @@ target_link_libraries (leechcraft-util-sll
 	)
 set_property (TARGET leechcraft-util-sll PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-sll DESTINATION ${LIBDIR})
+
+FindQtLibs (leechcraft-util-sll Core)

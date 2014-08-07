@@ -35,6 +35,4 @@ target_link_libraries (leechcraft-util-svcauth
 set_property (TARGET leechcraft-util-svcauth PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-svcauth DESTINATION ${LIBDIR})
 
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-util-svcauth Network Widgets)
-endif ()
+FindQtLibs (leechcraft-util-svcauth Network WebKitWidgets Widgets)
