@@ -216,8 +216,14 @@ namespace SvcAuth
 			return false;
 
 		location = QUrl::fromEncoded (location.toEncoded ().replace ('#', '?'));
+#if QT_VERSION < 0x050000
 		Token_ = location.queryItemValue ("access_token");
 		ValidFor_ = location.queryItemValue ("expires_in").toInt ();
+#else
+		const QUrlQuery query { location };
+		Token_ = query.queryItemValue ("access_token");
+		ValidFor_ = query.queryItemValue ("expires_in").toInt ();
+#endif
 		ReceivedAt_ = QDateTime::currentDateTime ();
 		qDebug () << Q_FUNC_INFO << Token_ << ValidFor_;
 		IsRequesting_ = false;
