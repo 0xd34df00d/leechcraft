@@ -29,7 +29,12 @@
 
 #pragma once
 
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
 #include <QDeclarativeImageProvider>
+#else
+#include <QQuickImageProvider>
+#endif
 #include "qmlconfig.h"
 
 class QIcon;
@@ -62,7 +67,11 @@ namespace Util
 	 *
 	 * @sa ThemeImageProvider
 	 */
+#if QT_VERSION < 0x050000
 	class UTIL_QML_API WidthIconProvider : public QDeclarativeImageProvider
+#else
+	class UTIL_QML_API WidthIconProvider : public QQuickImageProvider
+#endif
 	{
 	public:
 		WidthIconProvider ();
