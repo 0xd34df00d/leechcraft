@@ -4,6 +4,7 @@ set (SLL_SRCS
 	queuemanager.cpp
 	regexp.cpp
 	slotclosure.cpp
+	urloperator.cpp
 	)
 
 option (WITH_PCRE "Use PCRE regular expression engine for instead of Qt's one (recommended since QRegExps are slow)." ON)
