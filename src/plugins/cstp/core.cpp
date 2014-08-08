@@ -53,6 +53,8 @@
 #include "xmlsettingsmanager.h"
 #include "addtask.h"
 
+Q_DECLARE_METATYPE (QNetworkReply*)
+
 extern "C"
 {
 	#ifdef Q_OS_WIN32
