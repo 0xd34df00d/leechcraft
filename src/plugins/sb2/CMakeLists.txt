@@ -3,8 +3,13 @@ project (leechcraft_sb2)
 include (InitLCPlugin OPTIONAL)
 include (CMakeDependentOption)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package (QJSON REQUIRED)
+if (NOT USE_QT5)
+	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+	find_package (QJSON REQUIRED)
+else ()
+	set (QJSON_INCLUDE_DIR)
+	set (QJSON_LIBRARIES)
+endif ()
 
 cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
 
