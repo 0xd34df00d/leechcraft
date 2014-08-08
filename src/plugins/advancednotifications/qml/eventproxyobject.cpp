@@ -29,9 +29,10 @@
 
 #include "eventproxyobject.h"
 #include <QVariant>
-#include <QDeclarativeContext>
 #include <util/util.h>
 #include "actionsproxyobject.h"
+
+Q_DECLARE_METATYPE (QList<QObject*>)
 
 namespace LeechCraft
 {
@@ -45,7 +46,7 @@ namespace AdvancedNotifications
 
 		QList<QObject*> model;
 		int i = 0;
-		Q_FOREACH (const QString& action, ed.Actions_)
+		for (const auto& action : ed.Actions_)
 		{
 			QObject *proxy = new ActionsProxyObject (action, this);
 			proxy->setProperty ("ActionIndex", i++);
