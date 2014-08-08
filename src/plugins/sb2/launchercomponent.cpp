@@ -119,9 +119,9 @@ namespace SB2
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
 
-		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
-		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
-		Component_->ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
+		Component_->DynamicProps_.append ({ "SB2_launcherModel", Model_ });
+		Component_->DynamicProps_.append ({ "SB2_launcherProxy", this });
+		Component_->ImageProviders_.append ({ ImageProviderID, ImageProv_ });
 
 		connect (ICTW_->GetQObject (),
 				SIGNAL (currentChanged (int)),
