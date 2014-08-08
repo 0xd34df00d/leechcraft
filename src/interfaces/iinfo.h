@@ -381,4 +381,10 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 	}
 #endif
 
+#if QT_VERSION < 0x050000
+#define LC_PLUGIN_METADATA(id)
+#else
+#define LC_PLUGIN_METADATA(id) Q_PLUGIN_METADATA (IID id)
+#endif
+
 #endif

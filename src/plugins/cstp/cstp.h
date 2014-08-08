@@ -65,9 +65,7 @@ namespace CSTP
 		Q_OBJECT
 		Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
 
-#if QT_VERSION >= 0x050000
-		Q_PLUGIN_METADATA (IID "org.LeechCraft.CSTP")
-#endif
+		LC_PLUGIN_METADATA ("org.LeechCraft.CSTP")
 
 		QMenu *Plugins_;
 		std::auto_ptr<QTranslator> Translator_;

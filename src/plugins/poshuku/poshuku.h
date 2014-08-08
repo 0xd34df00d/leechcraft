@@ -74,9 +74,7 @@ namespace Poshuku
 				IActionsExporter
 				IHaveRecoverableTabs)
 
-#if QT_VERSION >= 0x050000
-		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku")
-#endif
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku")
 
 		QMenu *ToolMenu_;
 		QAction *ImportXbel_;
