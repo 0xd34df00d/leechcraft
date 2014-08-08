@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "quarkunhidelistview.h"
-#include <QDeclarativeView>
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <util/util.h>
