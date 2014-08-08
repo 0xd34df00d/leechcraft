@@ -7,7 +7,7 @@ set (BODYFETCH_SRCS
 	)
 
 set (BODYFETCH_RESOURCES bodyfetchresources.qrc)
-QT4_ADD_RESOURCES (BODYFETCH_RCCS ${BODYFETCH_RESOURCES})
+QtAddResources (BODYFETCH_RCCS ${BODYFETCH_RESOURCES})
 
 add_library (leechcraft_aggregator_bodyfetch SHARED
 	${BODYFETCH_RCCS}
@@ -15,8 +15,9 @@ add_library (leechcraft_aggregator_bodyfetch SHARED
 	${BODYFETCH_SRCS}
 	)
 target_link_libraries (leechcraft_aggregator_bodyfetch
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_aggregator_bodyfetch DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/scripts DESTINATION ${LC_SHARE_DEST})
+
+FindQtLibs (leechcraft_aggregator_bodyfetch WebKitWidgets)

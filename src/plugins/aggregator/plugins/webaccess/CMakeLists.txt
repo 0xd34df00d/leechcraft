@@ -28,7 +28,6 @@ add_library (leechcraft_aggregator_webaccess SHARED
 	${WEBACCESS_MOC_SRCS}
 	)
 target_link_libraries (leechcraft_aggregator_webaccess
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${Wt_LIBRARY}
 	${Wt_HTTP_LIBRARY}
@@ -36,3 +35,5 @@ target_link_libraries (leechcraft_aggregator_webaccess
 	)
 install (TARGETS leechcraft_aggregator_webaccess DESTINATION ${LC_PLUGINS_DEST})
 install (FILES aggregatorwebaccesssettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_aggregator_webaccess Core)

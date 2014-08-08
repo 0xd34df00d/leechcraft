@@ -54,6 +54,8 @@ namespace BodyFetch
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator.BodyFetch")
+
 		ICoreProxy_ptr Proxy_;
 		QDir StorageDir_;
 		WorkerObject *WO_;

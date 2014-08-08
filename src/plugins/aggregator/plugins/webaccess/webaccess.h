@@ -59,6 +59,8 @@ namespace WebAccess
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator.WebAccess")
+
 		ICoreProxy_ptr Proxy_;
 		std::shared_ptr<ServerManager> SM_;
 
