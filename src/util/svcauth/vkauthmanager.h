@@ -106,7 +106,6 @@ namespace SvcAuth
 	private:
 		void InvokeQueues (const QString&);
 
-		void HandleError ();
 		void RequestURL (const QUrl&);
 		void RequestAuthKey ();
 		bool CheckIsBlank (QUrl);

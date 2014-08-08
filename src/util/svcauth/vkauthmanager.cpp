@@ -183,11 +183,6 @@ namespace SvcAuth
 			}
 	}
 
-	void VkAuthManager::HandleError ()
-	{
-		IsRequesting_ = false;
-	}
-
 	void VkAuthManager::RequestURL (const QUrl& url)
 	{
 		qDebug () << Q_FUNC_INFO << url;
