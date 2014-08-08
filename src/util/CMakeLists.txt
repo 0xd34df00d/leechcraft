@@ -80,4 +80,4 @@ target_link_libraries (leechcraft-util
 set_property (TARGET leechcraft-util PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util Xml Sql Widgets)
+FindQtLibs (leechcraft-util Xml Qml Sql Widgets)

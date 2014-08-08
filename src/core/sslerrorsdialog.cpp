@@ -55,9 +55,8 @@ void LeechCraft::SslErrorsDialog::Update (const QString& msg,
 		const QList<QSslError>& errors)
 {
 	Ui_.Description_->setText (msg);
-	for (QList<QSslError>::const_iterator i = errors.begin (),
-			end = errors.end (); i != end; ++i)
-		PopulateTree (*i);
+	for (const auto& err : errors)
+		PopulateTree (err);
 	Ui_.Errors_->expandAll ();
 }
 
@@ -86,7 +85,11 @@ void LeechCraft::SslErrorsDialog::PopulateTree (const QSslError& error)
 	}
 
 	new QTreeWidgetItem (item, QStringList (tr ("Valid:")) <<
+#if QT_VERSION < 0x050000
 				(cer.isValid () ? tr ("yes") : tr ("no")));
+#else
+				(!cer.isBlacklisted () ? tr ("yes") : tr ("no")));
+#endif
 	new QTreeWidgetItem (item, QStringList (tr ("Effective date:")) <<
 				cer.effectiveDate ().toString ());
 	new QTreeWidgetItem (item, QStringList (tr ("Expiry date:")) <<

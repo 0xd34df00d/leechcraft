@@ -49,7 +49,11 @@
 #include <QTimer>
 #include <QCryptographicHash>
 #include <QTextCodec>
+#if QT_VERSION < 0x050000
 #include <QtDeclarative>
+#else
+#include <QtQml>
+#endif
 #include <interfaces/isyncable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
@@ -118,7 +122,9 @@ namespace LeechCraft
 			std::exit (EVersionRequested);
 		}
 
+#if QT_VERSION < 0x050000
 		QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
+#endif
 
 		if (VarMap_.count ("no-app-catch"))
 			CatchExceptions_ = false;
@@ -432,6 +438,7 @@ namespace LeechCraft
 
 	void Application::ParseCommandLine ()
 	{
+#if QT_VERSION < 0x050000
 		if (VarMap_.count ("nolog"))
 		{
 			qInstallMsgHandler (0);
@@ -442,6 +449,24 @@ namespace LeechCraft
 			qInstallMsgHandler (DebugHandler::backtraced);
 		else
 			qInstallMsgHandler (DebugHandler::simple);
+#else
+		if (VarMap_.count ("nolog"))
+		{
+			qInstallMessageHandler (0);
+			return;
+		}
+
+		if (VarMap_.count ("bt"))
+			qInstallMessageHandler ([] (QtMsgType type, const QMessageLogContext&, const QString& msg)
+					{
+						DebugHandler::backtraced (type, msg.toUtf8 ().constData ());
+					});
+		else
+			qInstallMessageHandler ([] (QtMsgType type, const QMessageLogContext&, const QString& msg)
+					{
+						DebugHandler::simple (type, msg.toUtf8 ().constData ());
+					});
+#endif
 
 		QDir lcDir = QDir::home ();
 		lcDir.cd (".leechcraft");
