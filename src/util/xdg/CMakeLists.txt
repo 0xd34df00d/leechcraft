@@ -16,7 +16,6 @@ add_library (leechcraft-util-xdg SHARED
 	${XDG_SRCS}
 	)
 target_link_libraries (leechcraft-util-xdg
-	${QT_LIBRARIES}
 	leechcraft-util-xpc
 	)
 set_property (TARGET leechcraft-util-xdg PROPERTY SOVERSION ${LC_SOVERSION})

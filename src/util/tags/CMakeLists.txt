@@ -31,7 +31,6 @@ add_library (leechcraft-util-tags SHARED
 	${TAGS_UIS_H}
 	)
 target_link_libraries (leechcraft-util-tags
-	${QT_LIBRARIES}
 	leechcraft-util-gui
 	)
 set_property (TARGET leechcraft-util-tags PROPERTY SOVERSION ${LC_SOVERSION})

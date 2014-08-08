@@ -28,7 +28,6 @@ add_library (leechcraft-util-db SHARED
 	${DB_UIS_H}
 	)
 target_link_libraries (leechcraft-util-db
-	${QT_LIBRARIES}
 	leechcraft-xsd
 	)
 set_property (TARGET leechcraft-util-db PROPERTY SOVERSION ${LC_SOVERSION})

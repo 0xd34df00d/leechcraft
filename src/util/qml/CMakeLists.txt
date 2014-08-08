@@ -30,7 +30,6 @@ add_library (leechcraft-util-qml SHARED
 	${QML_SRCS}
 	)
 target_link_libraries (leechcraft-util-qml
-	${QT_LIBRARIES}
 	${ADDITIONAL_LIBS}
 	leechcraft-util-gui
 	leechcraft-util-network

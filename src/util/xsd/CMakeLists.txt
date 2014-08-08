@@ -12,7 +12,6 @@ add_library (leechcraft-util-xsd SHARED
 	${XSD_SRCS}
 	)
 target_link_libraries (leechcraft-util-xsd
-	${QT_LIBRARIES}
 	leechcraft-xsd
 	leechcraft-util-network
 	)

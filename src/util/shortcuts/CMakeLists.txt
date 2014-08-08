@@ -11,7 +11,6 @@ add_library (leechcraft-util-shortcuts SHARED
 	${SHORTCUTS_SRCS}
 	)
 target_link_libraries (leechcraft-util-shortcuts
-	${QT_LIBRARIES}
 	leechcraft-util-xpc
 	)
 set_property (TARGET leechcraft-util-shortcuts PROPERTY SOVERSION ${LC_SOVERSION})

@@ -33,7 +33,6 @@ add_library (leechcraft-util-sll SHARED
 	${SLL_SRCS}
 	)
 target_link_libraries (leechcraft-util-sll
-	${QT_LIBRARIES}
 	${PCRE_LIBRARIES}
 	)
 set_property (TARGET leechcraft-util-sll PROPERTY SOVERSION ${LC_SOVERSION})

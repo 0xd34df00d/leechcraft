@@ -28,7 +28,6 @@ add_library (leechcraft-util-svcauth SHARED
 	${SVCAUTH_UIS_H}
 	)
 target_link_libraries (leechcraft-util-svcauth
-	${QT_LIBRARIES}
 	leechcraft-util-network
 	leechcraft-util-sll
 	)

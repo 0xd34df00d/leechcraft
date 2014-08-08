@@ -15,7 +15,6 @@ add_library (leechcraft-util-network SHARED
 	${NETWORK_SRCS}
 	)
 target_link_libraries (leechcraft-util-network
-	${QT_LIBRARIES}
 	leechcraft-util-sys
 	)
 set_property (TARGET leechcraft-util-network PROPERTY SOVERSION ${LC_SOVERSION})
