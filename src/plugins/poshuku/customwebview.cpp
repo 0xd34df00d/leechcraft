@@ -39,7 +39,11 @@
 #include <QWebElement>
 #include <QWebHistory>
 #include <QTextCodec>
+
+#if QT_VERSION < 0x050000
 #include <QWindowsStyle>
+#endif
+
 #include <QFileDialog>
 #include <QtDebug>
 #include <util/xpc/util.h>
@@ -80,9 +84,11 @@ namespace Poshuku
 
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 
+#if QT_VERSION < 0x050000
 		QPalette p;
 		if (p.color (QPalette::Window) != Qt::white)
 			setPalette (QWindowsStyle ().standardPalette ());
+#endif
 
 		connect (ScrollTimer_,
 				SIGNAL (timeout ()),

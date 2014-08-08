@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "htmlhighlighter.h"
+#include <QTextEdit>
 
 namespace LeechCraft
 {
@@ -38,30 +39,34 @@ namespace Poshuku
 	{
 		Fill ();
 	}
-	
+
 	HtmlHighlighter::HtmlHighlighter (QTextEdit *edit)
+#if QT_VERSION < 0x050000
 	: QSyntaxHighlighter (edit)
+#else
+	: QSyntaxHighlighter (edit->document ())
+#endif
 	{
 		Fill ();
 	}
-	
+
 	void HtmlHighlighter::SetFormatFor (Construct c, const QTextCharFormat& f)
 	{
 		Formats_ [c] = f;
 		rehighlight ();
 	}
-	
+
 	QTextCharFormat HtmlHighlighter::GetFormatFor (Construct c) const
 	{
 		return Formats_ [c];
 	}
-	
+
 	void HtmlHighlighter::highlightBlock (const QString& text)
 	{
 		int state = previousBlockState ();
 		int len = text.length ();
 		int start = 0, pos = 0;
-	
+
 		while (pos < len)
 		{
 			switch (state)
@@ -79,7 +84,7 @@ namespace Poshuku
 						else
 							++pos;
 					}
-	
+
 					setFormat (start, pos - start,
 							Formats_ [Comment]);
 					break;
@@ -103,10 +108,10 @@ namespace Poshuku
 							}
 							else if (ch == quote)
 								quote = QChar::Null;
-	
+
 							++pos;
 						}
-	
+
 						setFormat (start, pos - start,
 								Formats_ [Tag]);
 						break;
@@ -128,7 +133,7 @@ namespace Poshuku
 							start = pos;
 							while (pos < len &&
 									text.at (pos++) != ';') ;
-	
+
 							setFormat (start, pos - start,
 									Formats_ [Entity]);
 						}
@@ -138,22 +143,22 @@ namespace Poshuku
 					break;
 			}
 		}
-	
+
 		setCurrentBlockState (state);
 	}
-	
+
 	void HtmlHighlighter::Fill ()
 	{
 		QTextCharFormat entityFormat;
 		entityFormat.setForeground (QColor (0, 128, 0));
 		entityFormat.setFontWeight (QFont::Bold);
 		SetFormatFor (Entity, entityFormat);
-	
+
 		QTextCharFormat tagFormat;
 		tagFormat.setForeground (QColor (192, 16, 112));
 		tagFormat.setFontWeight (QFont::Bold);
 		SetFormatFor (Tag, tagFormat);
-	
+
 		QTextCharFormat commentFormat;
 		commentFormat.setForeground (QColor (128, 10, 74));
 		commentFormat.setFontItalic (true);

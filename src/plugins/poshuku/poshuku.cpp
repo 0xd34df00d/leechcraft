@@ -40,7 +40,9 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <qwebpage.h>
+#if QT_VERSION < 0x050000
 #include <qwebkitversion.h>
+#endif
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
