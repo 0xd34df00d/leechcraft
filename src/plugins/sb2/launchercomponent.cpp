@@ -29,8 +29,8 @@
 
 #include "launchercomponent.h"
 #include <QStandardItemModel>
+#include <QSettings>
 #include <QtDebug>
-#include <QtDeclarative>
 #include <util/gui/util.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/sys/paths.h>
