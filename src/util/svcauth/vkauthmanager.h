@@ -108,7 +108,8 @@ namespace SvcAuth
 
 		void RequestURL (const QUrl&);
 		void RequestAuthKey ();
-		bool CheckIsBlank (QUrl);
+		bool CheckReply (QUrl);
+		bool CheckError (const QUrl&);
 	public slots:
 		void clearAuthData ();
 		void reauth ();
