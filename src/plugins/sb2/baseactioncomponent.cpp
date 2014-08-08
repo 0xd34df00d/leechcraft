@@ -34,6 +34,7 @@
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <util/qml/widthiconprovider.h>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "sbview.h"
 
@@ -43,7 +44,7 @@ namespace SB2
 {
 	namespace
 	{
-		class TrayModel : public QStandardItemModel
+		class TrayModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -54,7 +55,7 @@ namespace SB2
 			};
 
 			TrayModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::ActionObject] = "actionObject";

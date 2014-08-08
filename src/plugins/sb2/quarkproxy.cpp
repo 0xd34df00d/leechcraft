@@ -28,7 +28,13 @@
  **********************************************************************/
 
 #include "quarkproxy.h"
+
+#if QT_VERSION < 0x050000
 #include <QGraphicsObject>
+#else
+#include <QQuickItem>
+#endif
+
 #include <QToolTip>
 #include <QApplication>
 #include <QToolBar>
@@ -166,8 +172,14 @@ namespace SB2
 		}
 
 		QuarkOrderView_ = new QuarkOrderView (Manager_, Proxy_);
-		QuarkOrderView_->move (Util::FitRect ({ x, y }, QuarkOrderView_->size (), GetFreeCoords (),
-				Util::FitFlag::NoOverlap));
+
+		const auto& pos = Util::FitRect ({ x, y }, QuarkOrderView_->size (), GetFreeCoords (),
+				Util::FitFlag::NoOverlap);
+#if QT_VERSION < 0x050000
+		QuarkOrderView_->move (pos);
+#else
+		QuarkOrderView_->setPosition (pos);
+#endif
 		QuarkOrderView_->show ();
 
 		connect (QuarkOrderView_,

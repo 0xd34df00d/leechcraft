@@ -29,13 +29,22 @@
 
 #pragma once
 
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
 #include <QDeclarativeView>
+#else
+#include <QQuickWidget>
+#endif
 
 namespace LeechCraft
 {
 namespace SB2
 {
+#if QT_VERSION < 0x050000
 	class SBView : public QDeclarativeView
+#else
+	class SBView : public QQuickWidget
+#endif
 	{
 		Q_OBJECT
 

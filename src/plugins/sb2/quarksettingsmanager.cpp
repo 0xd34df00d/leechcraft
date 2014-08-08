@@ -29,7 +29,13 @@
 
 #include "quarksettingsmanager.h"
 #include <QCoreApplication>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeContext>
+#else
+#include <QQmlContext>
+#endif
+
 #include <QFileInfo>
 #include <QtDebug>
 
@@ -37,7 +43,12 @@ namespace LeechCraft
 {
 namespace SB2
 {
-	QuarkSettingsManager::QuarkSettingsManager (const QUrl& url, QDeclarativeContext *ctx)
+	QuarkSettingsManager::QuarkSettingsManager (const QUrl& url,
+#if QT_VERSION < 0x050000
+			QDeclarativeContext *ctx)
+#else
+			QQmlContext *ctx)
+#endif
 	: QuarkURL_ (url)
 	, Ctx_ (ctx)
 	{

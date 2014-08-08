@@ -29,7 +29,13 @@
 
 #pragma once
 
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
 #include <QDeclarativeView>
+#else
+#include <QQuickView>
+#endif
+
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
@@ -45,7 +51,11 @@ namespace Util
 
 namespace SB2
 {
+#if QT_VERSION < 0x050000
 	class TabListView : public QDeclarativeView
+#else
+	class TabListView : public QQuickView
+#endif
 	{
 		Q_OBJECT
 

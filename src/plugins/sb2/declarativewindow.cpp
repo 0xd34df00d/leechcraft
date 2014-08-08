@@ -29,9 +29,17 @@
 
 #include "declarativewindow.h"
 #include <QResizeEvent>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QGraphicsObject>
+#else
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickItem>
+#endif
+
 #include <QtDebug>
 #include <QFile>
 #include <util/sys/paths.h>
@@ -48,16 +56,22 @@ namespace SB2
 {
 	DeclarativeWindow::DeclarativeWindow (const QUrl& url, QVariantMap params,
 			const QPoint& orig, ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
+#if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
+#else
+	: QQuickWidget (parent)
+#endif
 	{
 		new Util::AutoResizeMixin (orig, [viewMgr] () { return viewMgr->GetFreeCoords (); }, this);
 
 		if (!params.take ("keepOnFocusLeave").toBool ())
 			new Util::UnhoverDeleteMixin (this, SLOT (beforeDelete ()));
 
+#if QT_VERSION < 0x050000
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::Tool | Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);
+#endif
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);

@@ -58,6 +58,8 @@ namespace SB2
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveShortcuts)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.SB2")
+
 		ICoreProxy_ptr Proxy_;
 
 		struct WindowInfo

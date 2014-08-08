@@ -8,8 +8,6 @@ find_package (QJSON REQUIRED)
 
 cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
 
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -43,7 +41,7 @@ set (SRCS
 	manifest.cpp
 	)
 
-if (WITH_X11)
+if (WITH_X11 AND NOT USE_QT5)
 	find_package (X11)
 
 	if (X11_FOUND)
@@ -52,7 +50,7 @@ if (WITH_X11)
 endif ()
 
 set (SB2_RESOURCES sb2resources.qrc)
-QT4_ADD_RESOURCES (SB2_RCCS ${SB2_RESOURCES})
+QtAddResources (SB2_RCCS ${SB2_RESOURCES})
 
 CreateTrs ("sb2" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("sb2" "en;ru_RU" "${SRCS}" "" "sb2panelsettings.xml")
@@ -64,10 +62,11 @@ add_library (leechcraft_sb2 SHARED
 	${SB2_RCCS}
 	)
 target_link_libraries (leechcraft_sb2
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_sb2 DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/sb2 DESTINATION ${LC_QML_DEST})
 install (FILES sb2panelsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_sb2 Quick QuickWidgets Widgets)

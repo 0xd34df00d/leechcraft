@@ -28,9 +28,17 @@
  **********************************************************************/
 
 #include "quarkmanager.h"
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
+#else
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QQuickImageProvider>
+#endif
+
 #include <QStandardItem>
 #include <QFile>
 #include <QtDebug>
@@ -50,12 +58,21 @@ namespace SB2
 {
 	namespace
 	{
+#if QT_VERSION < 0x050000
 		class ImageProvProxy : public QDeclarativeImageProvider
 		{
 			QDeclarativeImageProvider *Wrapped_;
 		public:
 			ImageProvProxy (QDeclarativeImageProvider *other)
 			: QDeclarativeImageProvider (other->imageType ())
+#else
+		class ImageProvProxy : public QQuickImageProvider
+		{
+			QQuickImageProvider *Wrapped_;
+		public:
+			ImageProvProxy (QQuickImageProvider *other)
+			: QQuickImageProvider (other->imageType ())
+#endif
 			, Wrapped_ (other)
 			{
 			}

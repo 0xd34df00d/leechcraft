@@ -29,8 +29,15 @@
 
 #include "viewmanager.h"
 #include <QStandardItemModel>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#else
+#include <QQmlEngine>
+#include <QQmlContext>
+#endif
+
 #include <QtDebug>
 #include <QDir>
 #include <QSettings>
@@ -43,6 +50,7 @@
 #include <util/qml/themeimageprovider.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -62,7 +70,7 @@ namespace SB2
 	{
 		const QString ImageProviderID = "ThemeIcons";
 
-		class ViewItemsModel : public QStandardItemModel
+		class ViewItemsModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Role
@@ -73,7 +81,7 @@ namespace SB2
 			};
 
 			ViewItemsModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
 				names [Role::SourceURL] = "sourceURL";

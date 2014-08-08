@@ -31,7 +31,13 @@
 #include <QSettings>
 #include <QToolBar>
 #include <QApplication>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeContext>
+#else
+#include <QQmlContext>
+#endif
+
 #include <QMainWindow>
 #include <QDesktopWidget>
 #include <QtDebug>

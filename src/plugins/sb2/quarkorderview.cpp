@@ -28,9 +28,17 @@
  **********************************************************************/
 
 #include "quarkorderview.h"
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QGraphicsObject>
+#else
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickItem>
+#endif
+
 #include <QtDebug>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sys/paths.h>
@@ -46,7 +54,11 @@ namespace LeechCraft
 namespace SB2
 {
 	QuarkOrderView::QuarkOrderView (ViewManager *manager, ICoreProxy_ptr proxy, QWidget *parent)
+#if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
+#else
+	: QQuickView (parent->windowHandle ())
+#endif
 	, Manager_ (manager)
 	, Proxy_ (proxy)
 	, Model_ (new Util::UnhideListModel (this))
@@ -84,9 +96,11 @@ namespace SB2
 			Model_->appendRow (item);
 		}
 
+#if QT_VERSION < 0x050000
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
+#endif
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);

@@ -28,34 +28,57 @@
  **********************************************************************/
 
 #include "launcherdroparea.h"
+
+#include <QCursor>
+
+#if QT_VERSION < 0x050000
 #include <QGraphicsSceneDragDropEvent>
+#endif
+
 #include <QMimeData>
 
 namespace LeechCraft
 {
 namespace SB2
 {
+#if QT_VERSION < 0x050000
 	LauncherDropArea::LauncherDropArea (QDeclarativeItem *parent)
 	: QDeclarativeItem (parent)
+#else
+	LauncherDropArea::LauncherDropArea (QQuickItem *parent)
+	: QQuickItem (parent)
+#endif
 	{
-		setAcceptDrops (true);
+		SetAcceptingDrops (true);
 	}
 
 	bool LauncherDropArea::GetAcceptingDrops () const
 	{
+#if QT_VERSION < 0x050000
 		return acceptDrops ();
+#else
+		return flags () & ItemAcceptsDrops;
+#endif
 	}
 
 	void LauncherDropArea::SetAcceptingDrops (bool accepting)
 	{
-		if (acceptDrops () == accepting)
+		if (GetAcceptingDrops () == accepting)
 			return;
 
+#if QT_VERSION < 0x050000
 		setAcceptDrops (accepting);
+#else
+		setFlag (ItemAcceptsDrops, accepting);
+#endif
 		emit acceptingDropsChanged (accepting);
 	}
 
+#if QT_VERSION < 0x050000
 	void LauncherDropArea::dragEnterEvent (QGraphicsSceneDragDropEvent *event)
+#else
+	void LauncherDropArea::dragEnterEvent (QDragEnterEvent *event)
+#endif
 	{
 		auto data = event->mimeData ();
 		if (!data->formats ().contains ("x-leechcraft/tab-tabclass"))
@@ -65,12 +88,20 @@ namespace SB2
 		setCursor (Qt::DragCopyCursor);
 	}
 
+#if QT_VERSION < 0x050000
 	void LauncherDropArea::dragLeaveEvent (QGraphicsSceneDragDropEvent*)
+#else
+	void LauncherDropArea::dragLeaveEvent (QDragLeaveEvent*)
+#endif
 	{
 		unsetCursor ();
 	}
 
+#if QT_VERSION < 0x050000
 	void LauncherDropArea::dropEvent (QGraphicsSceneDragDropEvent *event)
+#else
+	void LauncherDropArea::dropEvent (QDropEvent *event)
+#endif
 	{
 		unsetCursor ();
 		emit tabDropped (event->mimeData ()->data ("x-leechcraft/tab-tabclass"));

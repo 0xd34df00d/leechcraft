@@ -35,6 +35,7 @@
 #include <util/gui/autoresizemixin.h>
 #include <util/sys/paths.h>
 #include <util/qml/widthiconprovider.h>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihavetabs.h>
@@ -52,7 +53,7 @@ namespace SB2
 {
 	namespace
 	{
-		class LauncherModel : public QStandardItemModel
+		class LauncherModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -67,7 +68,7 @@ namespace SB2
 			};
 
 			LauncherModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::TabClassIcon] = "tabClassIcon";
@@ -337,9 +338,16 @@ namespace SB2
 		}
 
 		auto view = new TabListView (tc, widgets, ICTW_, View_->GetManagedWindow (), Proxy_);
-		view->move (Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ()));
 		view->show ();
+
+		const auto& pos = Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ());
+
+#if QT_VERSION < 0x050000
+		view->move (pos);
 		view->setFocus ();
+#else
+		view->setPosition (pos);
+#endif
 
 		CurrentTabList_ = view;
 	}
