@@ -52,7 +52,7 @@ namespace Util
 #if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
 #else
-	: QQuickView (parent->windowHandle ())
+	: QQuickWidget (parent)
 #endif
 	, Model_ (new UnhideListModel (this))
 	{
@@ -67,11 +67,9 @@ namespace Util
 			return;
 		}
 
-#if QT_VERSION < 0x050000
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
-#endif
 
 		for (const auto& cand : GetPathCandidates (SysPath::QML, ""))
 			engine ()->addImportPath (cand);

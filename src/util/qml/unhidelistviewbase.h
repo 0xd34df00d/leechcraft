@@ -34,7 +34,7 @@
 #if QT_VERSION < 0x050000
 #include <QDeclarativeView>
 #else
-#include <QQuickView>
+#include <QQuickWidget>
 #endif
 
 #include <interfaces/core/icoreproxy.h>
@@ -50,7 +50,7 @@ namespace Util
 #if QT_VERSION < 0x050000
 	class UTIL_QML_API UnhideListViewBase : public QDeclarativeView
 #else
-	class UTIL_QML_API UnhideListViewBase : public QQuickView
+	class UTIL_QML_API UnhideListViewBase : public QQuickWidget
 #endif
 	{
 		Q_OBJECT
