@@ -7,6 +7,5 @@ if (NOT QT_USE_FILE)
 	set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")
 
 	find_package (Boost REQUIRED)
-	find_package (Qt4 REQUIRED)
 	find_package (LeechCraft REQUIRED)
 endif ()
