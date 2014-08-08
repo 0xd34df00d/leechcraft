@@ -40,6 +40,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/stdanfields.h>
 #include <util/xpc/util.h>
+#include <util/models/rolenamesmixin.h>
 #include "core.h"
 #include "typedmatchers.h"
 #include "xmlsettingsmanager.h"
@@ -62,7 +63,7 @@ namespace AdvancedNotifications
 
 	namespace
 	{
-		class RulesModel : public QStandardItemModel
+		class RulesModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -72,7 +73,7 @@ namespace AdvancedNotifications
 			};
 
 			RulesModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::RuleName] = "ruleName";

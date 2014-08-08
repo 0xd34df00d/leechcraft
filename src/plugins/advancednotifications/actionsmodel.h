@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QStandardItemModel>
+#include <util/models/rolenamesmixin.h>
 
 class QAction;
 
@@ -37,7 +38,7 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class ActionsModel : public QStandardItemModel
+	class ActionsModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
 		Q_OBJECT
 

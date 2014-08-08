@@ -27,21 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_QML_VISUALNOTIFICATIONSVIEW_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_QML_VISUALNOTIFICATIONSVIEW_H
+#pragma once
 
 #ifndef HAVE_QML
 #error "Trying to compile QML notifications view without having QML :("
 #endif
 
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
 #include <QDeclarativeView>
+#else
+#include <QQuickView>
+#endif
 #include "../eventdata.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+#if QT_VERSION < 0x050000
 	class VisualNotificationsView : public QDeclarativeView
+#else
+	class VisualNotificationsView : public QQuickView
+#endif
 	{
 		Q_OBJECT
 
@@ -52,12 +60,14 @@ namespace AdvancedNotifications
 
 		void SetEvents (const QList<EventData>&);
 	private slots:
+#if QT_VERSION < 0x050000
 		void handleStatusChanged (QDeclarativeView::Status);
+#else
+		void handleStatusChanged (QQuickView::Status);
+#endif
 	signals:
 		void actionTriggered (const QString&, int);
 		void dismissEvent (const QString&);
 	};
 }
 }
-
-#endif

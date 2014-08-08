@@ -63,6 +63,8 @@ namespace AdvancedNotifications
 				IPluginReady
 				IANRulesStorage)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.AdvancedNotifications")
+
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<GeneralHandler> GeneralHandler_;
