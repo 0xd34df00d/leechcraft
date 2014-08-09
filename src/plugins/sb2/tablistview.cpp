@@ -83,7 +83,7 @@ namespace SB2
 #if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
 #else
-	: QQuickView (parent->windowHandle ())
+	: QQuickWidget (parent)
 #endif
 	, Proxy_ (proxy)
 	, ICTW_ (ictw)
@@ -101,11 +101,9 @@ namespace SB2
 			return;
 		}
 
-#if QT_VERSION < 0x050000
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
-#endif
 
 		QString longestText;
 

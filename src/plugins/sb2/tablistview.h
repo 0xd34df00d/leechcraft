@@ -33,7 +33,7 @@
 #if QT_VERSION < 0x050000
 #include <QDeclarativeView>
 #else
-#include <QQuickView>
+#include <QQuickWidget>
 #endif
 
 #include <interfaces/core/icoreproxy.h>
@@ -54,7 +54,7 @@ namespace SB2
 #if QT_VERSION < 0x050000
 	class TabListView : public QDeclarativeView
 #else
-	class TabListView : public QQuickView
+	class TabListView : public QQuickWidget
 #endif
 	{
 		Q_OBJECT

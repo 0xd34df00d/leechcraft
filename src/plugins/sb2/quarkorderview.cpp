@@ -57,7 +57,7 @@ namespace SB2
 #if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
 #else
-	: QQuickView (parent->windowHandle ())
+	: QQuickWidget (parent)
 #endif
 	, Manager_ (manager)
 	, Proxy_ (proxy)
@@ -96,11 +96,9 @@ namespace SB2
 			Model_->appendRow (item);
 		}
 
-#if QT_VERSION < 0x050000
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
-#endif
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);

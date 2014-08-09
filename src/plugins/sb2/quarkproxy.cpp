@@ -175,11 +175,7 @@ namespace SB2
 
 		const auto& pos = Util::FitRect ({ x, y }, QuarkOrderView_->size (), GetFreeCoords (),
 				Util::FitFlag::NoOverlap);
-#if QT_VERSION < 0x050000
 		QuarkOrderView_->move (pos);
-#else
-		QuarkOrderView_->setPosition (pos);
-#endif
 		QuarkOrderView_->show ();
 
 		connect (QuarkOrderView_,

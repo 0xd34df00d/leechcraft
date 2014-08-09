@@ -339,15 +339,9 @@ namespace SB2
 
 		auto view = new TabListView (tc, widgets, ICTW_, View_->GetManagedWindow (), Proxy_);
 		view->show ();
-
 		const auto& pos = Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ());
-
-#if QT_VERSION < 0x050000
 		view->move (pos);
 		view->setFocus ();
-#else
-		view->setPosition (pos);
-#endif
 
 		CurrentTabList_ = view;
 	}

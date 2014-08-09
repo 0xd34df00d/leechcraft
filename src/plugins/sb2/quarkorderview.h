@@ -34,7 +34,7 @@
 #if QT_VERSION < 0x050000
 #include <QDeclarativeView>
 #else
-#include <QQuickView>
+#include <QQuickWidget>
 #endif
 
 #include <interfaces/core/icoreproxy.h>
@@ -50,7 +50,7 @@ namespace SB2
 #if QT_VERSION < 0x050000
 	class QuarkOrderView : public QDeclarativeView
 #else
-	class QuarkOrderView : public QQuickView
+	class QuarkOrderView : public QQuickWidget
 #endif
 	{
 		Q_OBJECT
