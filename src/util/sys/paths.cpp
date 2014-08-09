@@ -59,7 +59,11 @@ namespace Util
 		switch (path)
 		{
 		case SysPath::QML:
+#if QT_VERSION < 0x050000
 			return GetPathCandidates (SysPath::Share, "qml/" + suffix);
+#else
+			return GetPathCandidates (SysPath::Share, "qml5/" + suffix);
+#endif
 		case SysPath::Share:
 #ifdef Q_OS_WIN32
 			candidates << QApplication::applicationDirPath () + "/share/" + suffix;
