@@ -158,7 +158,8 @@ macro (FindQtLibs Target)
 					(NOT ${_currentArg} STREQUAL Widgets) AND
 					(NOT ${_currentArg} STREQUAL X11Extras))
 				if ((${_currentArg} STREQUAL Quick) OR
-						(${_currentArg} STREQUAL Qml))
+						(${_currentArg} STREQUAL Qml) OR
+						(${_currentArg} STREQUAL QuickWidgets))
 					set (QT_USE_QTDECLARATIVE TRUE)
 				elseif ((${_currentArg} STREQUAL WebKitWidgets) OR
 						(${_currentArg} STREQUAL WebKit))
