@@ -83,11 +83,13 @@ Rectangle {
                         SB2_launcherProxy.tabListUnhovered(tabClassID)
                     }
 
+                    /*
                     effect: Desaturate {
                         strength: openedTabsCount || tcButton.isHovered ? 0 : 0.5
 
                         Behavior on strength { PropertyAnimation {} }
                     }
+                    */
 
                     ActionButton {
                         id: removeButton
