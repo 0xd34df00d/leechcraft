@@ -67,11 +67,9 @@ namespace SB2
 		if (!params.take ("keepOnFocusLeave").toBool ())
 			new Util::UnhoverDeleteMixin (this, SLOT (beforeDelete ()));
 
-#if QT_VERSION < 0x050000
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::Tool | Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);
-#endif
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);
