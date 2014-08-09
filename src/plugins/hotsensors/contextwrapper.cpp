@@ -132,8 +132,9 @@ namespace HotSensors
 		if (items.isEmpty ())
 			return;
 
-		auto list = new Util::UnhideListViewBase (Proxy_);
-		list->SetItems (items);
+		auto list = new Util::UnhideListViewBase (Proxy_,
+				[&items] (QStandardItemModel *model)
+					{ model->invisibleRootItem ()->appendRows (items); });
 		connect (list,
 				SIGNAL (itemUnhideRequested (QString)),
 				this,
