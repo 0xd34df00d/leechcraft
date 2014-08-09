@@ -57,7 +57,9 @@ namespace Util
 	protected:
 		QStandardItemModel *Model_;
 	public:
-		UnhideListViewBase (ICoreProxy_ptr, QWidget* = 0);
+		UnhideListViewBase (ICoreProxy_ptr,
+				const std::function<void (QStandardItemModel*)>& modelFiller,
+				QWidget* = 0);
 
 		void SetItems (const QList<QStandardItem*>&);
 	signals:

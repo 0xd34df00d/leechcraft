@@ -48,7 +48,8 @@ namespace LeechCraft
 {
 namespace Util
 {
-	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy, QWidget *parent)
+	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy,
+			const std::function<void (QStandardItemModel*)>& filler, QWidget *parent)
 #if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
 #else
@@ -57,6 +58,8 @@ namespace Util
 	, Model_ (new UnhideListModel (this))
 	{
 		new UnhoverDeleteMixin (this);
+
+		filler (Model_);
 
 		const auto& file = GetSysPath (SysPath::QML, "common", "UnhideListView.qml");
 		if (file.isEmpty ())
