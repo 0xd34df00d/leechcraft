@@ -4,8 +4,6 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -44,10 +42,11 @@ add_library (leechcraft_hotsensors SHARED
 	${SRCS}
 	)
 target_link_libraries (leechcraft_hotsensors
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${QWT_LIBRARIES}
 	${ADDITIONAL_LIBS}
 	)
 install (TARGETS leechcraft_hotsensors DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/hotsensors DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/hotsensors DESTINATION ${LC_QML5_DEST})
+
+FindQtLibs (leechcraft_hotsensors QuickWidgets)

@@ -34,7 +34,7 @@ namespace LeechCraft
 namespace HotSensors
 {
 	SensorsGraphModel::SensorsGraphModel (QObject *parent)
-	: QStandardItemModel (parent)
+	: RoleNamesMixin<QStandardItemModel> (parent)
 	{
 		QHash<int, QByteArray> roleNames;
 		roleNames [LastTemp] = "lastTemp";

@@ -30,12 +30,13 @@
 #pragma once
 
 #include <QStandardItemModel>
+#include <util/models/rolenamesmixin.h>
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	class SensorsGraphModel : public QStandardItemModel
+	class SensorsGraphModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
 	public:
 		enum Role

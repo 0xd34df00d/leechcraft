@@ -49,6 +49,8 @@ namespace HotSensors
 		Q_OBJECT
 		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.HotSensors")
+
 		std::shared_ptr<Backend> SensorsMgr_;
 		std::unique_ptr<HistoryManager> HistoryMgr_;
 		std::unique_ptr<PlotManager> PlotMgr_;
