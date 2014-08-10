@@ -124,7 +124,7 @@ namespace Xoox
 
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
-		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	namespace

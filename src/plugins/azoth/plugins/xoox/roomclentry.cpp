@@ -179,7 +179,7 @@ namespace Xoox
 
 	void RoomCLEntry::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void RoomCLEntry::SetChatPartState (ChatPartState, const QString&)

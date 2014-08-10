@@ -80,7 +80,7 @@ namespace Murm
 
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (Messages_, before);
+		AzothUtil::StandardPurgeMessages (Messages_, before);
 	}
 
 	namespace

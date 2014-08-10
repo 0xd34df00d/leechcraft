@@ -70,7 +70,7 @@ namespace Acetamide
 
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void EntryBase::SetChatPartState (ChatPartState, const QString&)

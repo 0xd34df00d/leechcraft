@@ -38,7 +38,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Util
+namespace AzothUtil
 {
 	/** @brief Standard function to purge \em messages before the given
 	 * date.

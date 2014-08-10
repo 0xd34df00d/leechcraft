@@ -192,7 +192,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void ChannelCLEntry::SetChatPartState (ChatPartState, const QString&)
