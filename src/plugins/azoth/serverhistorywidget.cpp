@@ -175,7 +175,11 @@ namespace Azoth
 			auto msgText = message.RichBody_;
 			if (msgText.isEmpty ())
 			{
+#if QT_VERSION < 0x050000
 				msgText = Qt::escape (message.Body_);
+#else
+				msgText = message.Body_.toHtmlEscaped ();
+#endif
 				ProxyObject {}.FormatLinks (msgText);
 				msgText.replace ('\n', "<br/>");
 			}

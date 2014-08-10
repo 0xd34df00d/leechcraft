@@ -33,6 +33,11 @@
 #include <QPointer>
 #include <QMenu>
 #include <QDesktopServices>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/idatafilter.h>
@@ -120,7 +125,12 @@ namespace Azoth
 
 	void ChatTabWebView::HandleNick (QMenu *menu, const QUrl& nickUrl)
 	{
-		const QString& entryId = QUrl::fromPercentEncoding (nickUrl.queryItemValue ("entryId").toUtf8 ());
+#if QT_VERSION < 0x050000
+		const auto& entryIdValue = nickUrl.queryItemValue ("entryId");
+#else
+		const auto& entryIdValue = QUrlQuery { nickUrl }.queryItemValue ("entryId");
+#endif
+		const QString& entryId = QUrl::fromPercentEncoding (entryIdValue.toUtf8 ());
 		if (entryId.isEmpty ())
 			return;
 

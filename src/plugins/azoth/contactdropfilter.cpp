@@ -35,6 +35,7 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QBuffer>
+#include <QMimeData>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>

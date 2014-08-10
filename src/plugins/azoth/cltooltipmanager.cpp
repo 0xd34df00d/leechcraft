@@ -47,6 +47,18 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	namespace
+	{
+		QString Escape (const QString& str)
+		{
+#if QT_VERSION < 0x050000
+			return Qt::escape (str);
+#else
+			return str.toHtmlEscaped ();
+#endif
+		}
+	}
+
 	CLTooltipManager::CLTooltipManager (Entry2Items_t& items)
 	: Entry2Items_ (items)
 	, Avatar2TooltipSrcCache_ { 2 * 1024 * 1024 }
@@ -56,7 +68,7 @@ namespace Azoth
 	QString CLTooltipManager::Status2Str (const EntryStatus& status, IProxyObject *obj)
 	{
 		auto result = "<table><tr><td valign='middle'>" + obj->StateToString (status.State_);
-		const QString& statusString = Qt::escape (status.StatusString_);
+		const QString& statusString = Escape (status.StatusString_);
 		if (!statusString.isEmpty ())
 			result += " (" + statusString + ")";
 
@@ -237,13 +249,13 @@ namespace Azoth
 			tip += "</td><td>";
 		}
 
-		tip += "<strong>" + Qt::escape (entry->GetEntryName ()) + "</strong>";
-		tip += "&nbsp;(<em>" + Qt::escape (entry->GetHumanReadableID ()) + "</em>)";
+		tip += "<strong>" + Escape (entry->GetEntryName ()) + "</strong>";
+		tip += "&nbsp;(<em>" + Escape (entry->GetHumanReadableID ()) + "</em>)";
 		tip += Status2Str (entry->GetStatus (), Core::Instance ().GetPluginProxy ());
 		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 		{
 			tip += "<br />";
-			tip += tr ("In groups:") + ' ' + Qt::escape (entry->Groups ().join ("; "));
+			tip += tr ("In groups:") + ' ' + Escape (entry->Groups ().join ("; "));
 		}
 
 		const QStringList& variants = entry->Variants ();
@@ -252,7 +264,7 @@ namespace Azoth
 		{
 			const QString& jid = mucEntry->GetRealID (entry->GetQObject ());
 			tip += "<br />" + tr ("Real ID:") + ' ';
-			tip += jid.isEmpty () ? tr ("unknown") : Qt::escape (jid);
+			tip += jid.isEmpty () ? tr ("unknown") : Escape (jid);
 		}
 
 		FormatMucPerms (tip, qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()), entry);
@@ -302,7 +314,7 @@ namespace Azoth
 
 			if (info.contains ("client_name"))
 			{
-				tip += "<br />" + tr ("Using:") + ' ' + Qt::escape (info.value ("client_name").toString ());
+				tip += "<br />" + tr ("Using:") + ' ' + Escape (info.value ("client_name").toString ());
 
 				if (!info.contains ("client_version"))
 				{
@@ -312,14 +324,14 @@ namespace Azoth
 			}
 			if (info.contains ("client_version"))
 			{
-				tip += " " + Qt::escape (info.value ("client_version").toString ());
+				tip += " " + Escape (info.value ("client_version").toString ());
 
 				tip += clientIconString;
 				clientIconInserted = true;
 			}
 			if (info.contains ("client_remote_name"))
 			{
-				tip += "<br />" + tr ("Claiming:") + ' ' + Qt::escape (info.value ("client_remote_name").toString ());
+				tip += "<br />" + tr ("Claiming:") + ' ' + Escape (info.value ("client_remote_name").toString ());
 
 				if (!clientIconInserted)
 				{
@@ -328,7 +340,7 @@ namespace Azoth
 				}
 			}
 			if (info.contains ("client_os"))
-				tip += "<br />" + tr ("OS:") + ' ' + Qt::escape (info.value ("client_os").toString ());
+				tip += "<br />" + tr ("OS:") + ' ' + Escape (info.value ("client_os").toString ());
 
 			if (info.contains ("client_time"))
 			{
@@ -348,7 +360,7 @@ namespace Azoth
 			{
 				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
 				for (const QString& key : map.keys ())
-					tip += "<br />" + key + ": " + Qt::escape (map [key].toString ()) + "<br />";
+					tip += "<br />" + key + ": " + Escape (map [key].toString ()) + "<br />";
 			}
 		}
 
