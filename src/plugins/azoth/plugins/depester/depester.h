@@ -50,6 +50,8 @@ namespace Depester
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Depester")
+
 		QHash<QObject*, QAction*> Entry2ActionIgnore_;
 		QHash<QObject*, QString> Entry2Nick_;
 		QSet<QString> IgnoredNicks_;

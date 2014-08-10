@@ -54,6 +54,8 @@ namespace MuCommands
 				IPlugin2
 				LeechCraft::Azoth::IProvideCommands)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.MuCommands")
+
 		StaticCommand Names_;
 		StaticCommand ListUrls_;
 		StaticCommand OpenUrl_;

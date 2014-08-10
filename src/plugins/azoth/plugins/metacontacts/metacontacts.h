@@ -52,6 +52,8 @@ namespace Metacontacts
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.MetaContacts")
+
 		MetaProtocol *Proto_;
 		QAction *AddToMetacontacts_;
 	public:

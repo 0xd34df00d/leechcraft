@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_JUICK_JUICK_H
-#define PLUGINS_AZOTH_PLUGINS_JUICK_JUICK_H
+#pragma once
+
 #include <QObject>
 #include <QRegExp>
 #include <interfaces/iinfo.h>
@@ -48,6 +48,8 @@ namespace Juick
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Juick")
 
 		QRegExp UserRX_;
 		QRegExp PostRX_;
@@ -85,5 +87,3 @@ namespace Juick
 }
 }
 }
-
-#endif

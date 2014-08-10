@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_EMBEDMEDIA_H
-#define PLUGINS_AZOTH_PLUGINS_EMBEDMEDIA_H
+#pragma once
+
 #include <QObject>
 #include <QString>
 #include <QWebView>
@@ -49,6 +49,8 @@ namespace EmbedMedia
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.EmbedMedia")
+
 		QString	ScriptContent_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -68,6 +70,3 @@ namespace EmbedMedia
 }
 }
 }
-
-#endif
-
