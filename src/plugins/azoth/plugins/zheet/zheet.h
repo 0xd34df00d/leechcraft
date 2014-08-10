@@ -46,6 +46,8 @@ namespace Zheet
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Zheet")
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

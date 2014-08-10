@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_otroid)
 include (InitLCPlugin OPTIONAL)
 
-include (${QT_USE_FILE})
-
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (LibOTR REQUIRED)
@@ -31,8 +29,8 @@ set (OTROID_FORMS
 set (OTROID_RESOURCES azothotroidresources.qrc)
 CreateTrs ("azoth_otroid" "en;ru_RU;uk_UA" OTROID_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_otroid" "en;ru_RU" "${OTROID_SRCS}" "" "azothotroidsettings.xml")
-QT4_ADD_RESOURCES (OTROID_RCCS ${OTROID_RESOURCES})
-QT4_WRAP_UI (OTROID_UIS_H ${OTROID_FORMS})
+QtAddResources (OTROID_RCCS ${OTROID_RESOURCES})
+QtWrapUi (OTROID_UIS_H ${OTROID_FORMS})
 
 add_library (leechcraft_azoth_otroid SHARED
 	${OTROID_COMPILED_TRANSLATIONS}
@@ -41,10 +39,11 @@ add_library (leechcraft_azoth_otroid SHARED
 	${OTROID_UIS_H}
 	)
 target_link_libraries (leechcraft_azoth_otroid
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LIBOTR_LIBRARY}
 	leechcraft_azoth_common
 	)
 install (TARGETS leechcraft_azoth_otroid DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothotroidsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_azoth_otroid Concurrent Widgets)

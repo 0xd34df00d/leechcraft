@@ -51,6 +51,8 @@ namespace VelvetBird
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Zheet")
+
 		QLibrary PurpleLib_;
 		ProtoManager *ProtoMgr_;
 	public:
