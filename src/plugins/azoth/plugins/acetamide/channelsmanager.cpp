@@ -391,7 +391,7 @@ namespace Acetamide
 
 		for (int i = 1; i < mode.length (); ++i)
 		{
-			switch (mode [i].toAscii ())
+			switch (mode [i].toLatin1 ())
 			{
 				case 'o':
 					if (!value.isEmpty () &&

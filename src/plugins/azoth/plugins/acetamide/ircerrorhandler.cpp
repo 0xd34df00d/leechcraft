@@ -56,7 +56,7 @@ namespace Acetamide
 		QString msg, paramsMessage = QString ();
 		QTextCodec *codec = QTextCodec::codecForName (ISH_->GetServerOptions ()
 				.ServerEncoding_.toUtf8 ());
-		msg = codec->toUnicode (options.Message_.toAscii ());
+		msg = codec->toUnicode (options.Message_.toLatin1 ());
 
 		if (options.Parameters_.count () > 1)
 			Q_FOREACH (const std::string& str, options.Parameters_.mid (1))

@@ -78,7 +78,7 @@ namespace Acetamide
 		const auto& iSupport = ICH_->GetChannelsManager ()->GetISupport ();
 		QString roles = iSupport ["PREFIX"].split (')').value (0);
 		for (int i = roles.length () - 1; i >= 1; --i)
-			switch (roles.at (i).toAscii ())
+			switch (roles.at (i).toLatin1 ())
 			{
 			case 'v':
 				Perms_ ["permclass_role"] << "voiced";

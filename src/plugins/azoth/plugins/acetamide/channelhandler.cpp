@@ -220,7 +220,7 @@ namespace Acetamide
 
 		ChannelRole role;
 		if (hasRole)
-			switch (roleSign.toAscii ())
+			switch (roleSign.toLatin1 ())
 			{
 				case 'v':
 					role = ChannelRole::Voiced;

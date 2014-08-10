@@ -78,7 +78,7 @@ namespace Acetamide
 			return;
 		}
 
-		if (Socket_ptr->write (message.toAscii ()) == -1)
+		if (Socket_ptr->write (message.toLatin1 ()) == -1)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< Socket_ptr->error ()
