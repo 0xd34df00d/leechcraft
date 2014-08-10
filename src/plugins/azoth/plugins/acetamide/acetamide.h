@@ -52,6 +52,8 @@ namespace Acetamide
 		Q_INTERFACES (IInfo IHaveSettings IPlugin2
 				LeechCraft::Azoth::IProtocolPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Acetamide")
+
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<QTranslator> Translator_;
 	public:

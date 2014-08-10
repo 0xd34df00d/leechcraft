@@ -68,11 +68,17 @@ namespace Acetamide
 				<< tr ("Set by")
 				<< tr ("Date"));
 
+#if QT_VERSION < 0x050000
 		Ui_.BanList_->horizontalHeader ()->setResizeMode (QHeaderView::Stretch);
-		Ui_.BanList_->setModel (BanFilterModel_);
 		Ui_.ExceptList_->horizontalHeader ()->setResizeMode (QHeaderView::Stretch);
-		Ui_.ExceptList_->setModel (ExceptFilterModel_);
 		Ui_.InviteList_->horizontalHeader ()->setResizeMode (QHeaderView::Stretch);
+#else
+		Ui_.BanList_->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
+		Ui_.ExceptList_->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
+		Ui_.InviteList_->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
+#endif
+		Ui_.BanList_->setModel (BanFilterModel_);
+		Ui_.ExceptList_->setModel (ExceptFilterModel_);
 		Ui_.InviteList_->setModel (InviteFilterModel_);
 		BanFilterModel_->setSourceModel (BanModel_);
 		ExceptFilterModel_->setSourceModel (ExceptModel_);
