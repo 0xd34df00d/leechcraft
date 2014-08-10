@@ -96,7 +96,7 @@ namespace Xoox
 		Cid_ = dataElement.attribute ("cid");
 		MimeType_ = dataElement.attribute ("type");
 		MaxAge_ = dataElement.attribute ("max-age", "-1").toInt ();
-		Data_ = QByteArray::fromBase64 (dataElement.text ().toAscii ());
+		Data_ = QByteArray::fromBase64 (dataElement.text ().toLatin1 ());
 	}
 
 	void XMPPBobIq::toXmlElementFromChild(QXmlStreamWriter *writer) const

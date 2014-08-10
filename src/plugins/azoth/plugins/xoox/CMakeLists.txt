@@ -2,10 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_xoox)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
-
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package (QXmpp REQUIRED)
@@ -151,8 +147,8 @@ set (CMAKE_AUTOMOC_MOC_OPTIONS ${CMAKE_AUTOMOC_MOC_OPTIONS} ${DEFINITIONS})
 
 CreateTrs ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("azoth_xoox" "en;ru_RU" "${XOOX_SRCS}" "${XOOX_FORMS}" "azothxooxsettings.xml")
-QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})
-QT4_ADD_RESOURCES (XOOX_RCCS ${XOOX_RESOURCES})
+QtWrapUi (XOOX_UIS_H ${XOOX_FORMS})
+QtAddResources (XOOX_RCCS ${XOOX_RESOURCES})
 
 add_library (leechcraft_azoth_xoox SHARED
 	${XOOX_COMPILED_TRANSLATIONS}
@@ -162,7 +158,6 @@ add_library (leechcraft_azoth_xoox SHARED
 	${XOOX_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_xoox
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QXMPP_LIBRARIES}
 	${SPEEX_LIBRARIES}
@@ -172,4 +167,10 @@ install (TARGETS leechcraft_azoth_xoox DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothxooxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-azoth-xoox.desktop DESTINATION share/applications)
+endif ()
+
+FindQtLibs (leechcraft_azoth_xoox Concurrent Widgets Xml)
+
+if (ENABLE_MEDIACALLS)
+	FindQtLibs (leechcraft_azoth_xoox Multimedia)
 endif ()

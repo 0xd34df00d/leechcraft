@@ -251,7 +251,11 @@ namespace Xoox
 					.replace ("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
 		};
 
-		QString tooltip = Qt::escape (targetItem->text ()) + "<br />";
+#if QT_VERSION < 0x050000
+		auto tooltip = Qt::escape (targetItem->text ()) + "<br />";
+#else
+		auto tooltip = targetItem->text ().toHtmlEscaped () + "<br />";
+#endif
 		normalize (tooltip);
 
 		auto mucDescr = GetMUCDescr (iq.form ());
