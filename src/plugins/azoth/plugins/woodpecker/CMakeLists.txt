@@ -12,9 +12,10 @@ endif ()
 project (leechcraft_azoth_woodpecker)
 include (InitLCPlugin OPTIONAL)
 
+find_package (QtKOAuth REQUIRED)
+
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package (QtKOAuth REQUIRED)
 find_package (QJSON REQUIRED)
 
 set (QT_USE_QTNETWORK TRUE)
