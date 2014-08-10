@@ -2,9 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blasq_spegnersi)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-find_package (QtKOAuth)
+find_package (QtKOAuth REQUIRED)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
