@@ -43,6 +43,7 @@
 #include <QKeyEvent>
 #include <QTextBrowser>
 #include <QDesktopWidget>
+#include <QMimeData>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
