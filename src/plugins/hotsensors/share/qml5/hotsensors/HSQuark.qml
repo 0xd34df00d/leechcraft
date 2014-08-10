@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtQuick.Window 2.1
 import org.LC.common 1.0
 
 Rectangle {
@@ -76,23 +77,38 @@ Rectangle {
 
                 onEntered: {
                     var global = commonJS.getTooltipPos(delegateItem);
+
                     var params = {
                         "x": global.x,
                         "y": global.y,
-                        "existing": "ignore",
-                        "srcPtsList": pointsList,
                         "colorProxy": colorProxy,
                         "maxTemp": maxTemp,
                         "critTemp": critTemp,
-                        "sensorName": sensorName
+                        "sensorName": sensorName,
+                        "pointsList": Qt.binding(function() { return pointsList; })
                     };
-                    tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
-                    tooltip.pointsList = (function() { return pointsList; });
-                }
-                onExited: if (tooltip != null) { tooltip.closeRequested(); tooltip = null; }
-            }
+                    var component = Qt.createComponent(Qt.resolvedUrl("Tooltip.qml"))
 
-            ListView.onRemove: if (tooltip != null) { tooltip.closeRequested(); tooltip = null; }
+                    var sf = (function() {
+                            if (tooltip)
+                                tooltip.destroy();
+                            tooltip = component.createObject(delegateItem, params);
+                            var pos = quarkProxy.fitRect(Qt.point(global.x, global.y),
+                                    Qt.size(tooltip.width, tooltip.height),
+                                    quarkProxy.getWinRect(),
+                                    false);
+                            tooltip.x = pos.x;
+                            tooltip.y = pos.y;
+                            tooltip.show();
+                        });
+
+                    if (component.status === Component.Ready)
+                        sf();
+                    else
+                        component.onCompleted = sf;
+                }
+                onExited: { tooltip.destroy(); tooltip = null; }
+            }
 
             ActionButton {
                 id: removeButton

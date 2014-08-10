@@ -1,54 +1,62 @@
 import QtQuick 2.3
+import QtQuick.Window 2.1
 import org.LC.common 1.0
 
-Rectangle {
-    id: rootRect
+Window {
     width: 400
     height: 300
 
-    smooth: true
-    radius: 5
+    flags: Qt.ToolTip
 
-    signal closeRequested()
+    Rectangle {
+        id: rootRect
 
-    property variant pointsList: srcPtsList
+        anchors.fill: parent
 
-    gradient: Gradient {
-        GradientStop {
-            position: 0
-            color: colorProxy.color_TextView_TopColor
+        smooth: true
+        radius: 5
+
+        signal closeRequested()
+
+        property variant pointsList
+
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: colorProxy.color_TextView_TopColor
+            }
+            GradientStop {
+                position: 1
+                color: colorProxy.color_TextView_BottomColor
+            }
         }
-        GradientStop {
-            position: 1
-            color: colorProxy.color_TextView_BottomColor
+
+        Text {
+            id: sensorNameLabel
+            text: sensorName
+
+            anchors.top: parent.top
+            anchors.topMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            color: colorProxy.color_TextView_TitleTextColor
+            font.bold: true
         }
-    }
 
-    Text {
-        id: sensorNameLabel
-        text: sensorName
+        Plot {
+            anchors.top: sensorNameLabel.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
 
-        anchors.top: parent.top
-        anchors.topMargin: 5
-        anchors.horizontalCenter: parent.horizontalCenter
+            points: pointsList
 
-        color: colorProxy.color_TextView_TitleTextColor
-        font.bold: true
-    }
+            minYValue: 0
+            maxYValue: Math.max(maxTemp, critTemp)
 
-    Plot {
-        anchors.top: sensorNameLabel.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-
-        points: pointsList
-
-        minYValue: 0
-        maxYValue: Math.max(maxTemp, critTemp)
-
-        leftAxisEnabled: true
-        leftAxisTitle: qsTr ("Temperature, °C")
-        yGridEnabled: true
+            leftAxisEnabled: true
+            leftAxisTitle: qsTr ("Temperature, °C")
+            yGridEnabled: true
+        }
     }
 }
