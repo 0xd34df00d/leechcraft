@@ -43,6 +43,11 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QSortFilterProxyModel>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
@@ -223,7 +228,11 @@ namespace LeechCraft
 						for (const auto& tag : tm->Split (at))
 							tags << tm->GetID (tag);
 
+#if QT_VERSION < 0x050000
 						for (const auto& p : resource.queryItems ())
+#else
+						for (const auto& p : QUrlQuery { resource }.queryItems ())
+#endif
 							if (p.first == "kt")
 								for (const auto& hr : p.second.split ('+', QString::SkipEmptyParts))
 									tags += tm->GetID (hr);
