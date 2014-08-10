@@ -5,15 +5,14 @@ include (InitLCPlugin OPTIONAL)
 option (WITH_AZOTH_AUTOPASTE_JSON "Enable support for JSON-based services in Azoth Autopaste module" ON)
 
 set (QJSON_INCLUDES)
+set (QJSON_LIBRARIES)
 
-if (WITH_AZOTH_AUTOPASTE_JSON)
+if (WITH_AZOTH_AUTOPASTE_JSON AND NOT USE_QT5)
 	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 	find_package (QJSON REQUIRED)
 	set (QJSON_INCLUDES ${QJSON_INCLUDE_DIR})
 endif ()
 
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -33,11 +32,11 @@ set (AUTOPASTE_SRCS
 	xmlsettingsmanager.cpp
 	)
 
-if (WITH_AZOTH_AUTOPASTE_JSON)
+if (WITH_AZOTH_AUTOPASTE_JSON OR USE_QT5)
 	add_definitions (-DWITH_JSON)
 
 	set (AUTOPASTE_SRCS ${AUTOPASTE_SRCS} hastebinservice.cpp)
-endif (WITH_AZOTH_AUTOPASTE_JSON)
+endif ()
 
 set (AUTOPASTE_FORMS
 	pastedialog.ui
@@ -47,8 +46,8 @@ set (AUTOPASTE_RESOURCES azothautopasteresources.qrc)
 CreateTrs ("azoth_autopaste" "en;es;ru_RU;uk_UA" AUTOPASTE_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_autopaste" "en;ru_RU" "${AUTOPASTE_SRCS}" "${AUTOPASTE_FORMS}" "azothautopastesettings.xml")
 
-QT4_WRAP_UI (AUTOPASTE_UIS_H ${AUTOPASTE_FORMS})
-QT4_ADD_RESOURCES (AUTOPASTE_RCCS ${AUTOPASTE_RESOURCES})
+QtWrapUi (AUTOPASTE_UIS_H ${AUTOPASTE_FORMS})
+QtAddResources (AUTOPASTE_RCCS ${AUTOPASTE_RESOURCES})
 
 add_library (leechcraft_azoth_autopaste SHARED
 	${AUTOPASTE_COMPILED_TRANSLATIONS}
@@ -58,9 +57,10 @@ add_library (leechcraft_azoth_autopaste SHARED
 	${QJSON_INCLUDE_DIR}
 	)
 target_link_libraries (leechcraft_azoth_autopaste
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_autopaste DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothautopastesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_azoth_autopaste Network Widgets)
