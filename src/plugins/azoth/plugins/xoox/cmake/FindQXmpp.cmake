@@ -31,7 +31,7 @@ if (NOT USE_QT5)
 else ()
 	find_library(QXMPP_LIBRARIES
 		NAMES
-		qxmpp-qt4
+		qxmpp-qt5
 		qxmpp
 		qxmpp0
 		HINTS
