@@ -5,21 +5,34 @@ if (QTKOAUTH_INCLUDE_DIR AND QTKOAUTH_LIBRARIES)
 	set(QTKOAUTH_FOUND TRUE)
 else ()
 	if (NOT WIN32)
-		find_package(PkgConfig) 
+		find_package(PkgConfig)
 		PKG_CHECK_MODULES(PC_QTKOAUTH QUIET kqoauth)
 		set(QTKOAUTH_DEFINITIONS ${PC_QTKOAUTH_CFLAGS_OTHER})
 	endif ()
 
 	include(FindLibraryWithDebug)
-	find_library_with_debug(QTKOAUTH_LIBRARIES 
-					WIN32_DEBUG_POSTFIX d
-					NAMES kqoauth kqoauth0
-					HINTS
-						${QT_LIBRARY_DIR}
-						${QTKOAUTH_DIR}
-						${PC_QTKOAUTH_LIBDIR}
-						${PC_QTKOAUTH_LIBRARY_DIRS}
-					)
+
+	if (NOT USE_QT5)
+		find_library_with_debug(QTKOAUTH_LIBRARIES
+			WIN32_DEBUG_POSTFIX d
+			NAMES kqoauth-qt4 kqoauth kqoauth0
+			HINTS
+				${QT_LIBRARY_DIR}
+				${QTKOAUTH_DIR}
+				${PC_QTKOAUTH_LIBDIR}
+				${PC_QTKOAUTH_LIBRARY_DIRS}
+			)
+	else ()
+		find_library_with_debug(QTKOAUTH_LIBRARIES
+			WIN32_DEBUG_POSTFIX d
+			NAMES kqoauth-qt5 kqoauth kqoauth0
+			HINTS
+				${QT_LIBRARY_DIR}
+				${QTKOAUTH_DIR}
+				${PC_QTKOAUTH_LIBDIR}
+				${PC_QTKOAUTH_LIBRARY_DIRS}
+			)
+	endif ()
 
 	find_path(QTKOAUTH_INCLUDE_DIR
 		NAMES
