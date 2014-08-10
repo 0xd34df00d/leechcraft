@@ -55,6 +55,8 @@ namespace Util
 		void Flush ();
 
 		UrlOperator& operator() (const QString& key, const QString& value);
+		UrlOperator& operator-= (const QString& key);
+
 		QUrl operator() ();
 	};
 }
