@@ -67,6 +67,8 @@ namespace ChatHistory
 				IHaveSettings
 				LeechCraft::Azoth::IHistoryPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.ChatHistory")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		std::shared_ptr<STGuard<Core>> Guard_;
