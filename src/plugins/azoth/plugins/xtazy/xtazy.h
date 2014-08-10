@@ -60,6 +60,8 @@ namespace Xtazy
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Xtazy")
+
 		IProxyObject *AzothProxy_;
 		ICoreProxy_ptr Proxy_;
 
