@@ -8,9 +8,6 @@ if (ENABLE_AZOTH_VADER_VERBOSE_LOG)
 	add_definitions (-DPROTOCOL_LOGGING)
 endif ()
 
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
-
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include_directories (${AZOTH_INCLUDE_DIR}
@@ -55,8 +52,8 @@ set (VADER_RESOURCES azothvaderresources.qrc)
 CreateTrs ("azoth_vader" "en;es;ru_RU;uk_UA" VADER_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_vader" "en;ru_RU" "${VADER_SRCS}" "${VADER_FORMS}" "azothvadersettings.xml")
 
-QT4_WRAP_UI (VADER_UIS_H ${VADER_FORMS})
-QT4_ADD_RESOURCES (VADER_RCCS ${VADER_RESOURCES})
+QtWrapUi (VADER_UIS_H ${VADER_FORMS})
+QtAddResources (VADER_RCCS ${VADER_RESOURCES})
 
 add_library (leechcraft_azoth_vader SHARED
 	${VADER_COMPILED_TRANSLATIONS}
@@ -65,9 +62,10 @@ add_library (leechcraft_azoth_vader SHARED
 	${VADER_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_vader
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_azoth_vader DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothvadersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_azoth_vader Network Widgets)
