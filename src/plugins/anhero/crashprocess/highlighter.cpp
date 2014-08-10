@@ -36,8 +36,8 @@ namespace AnHero
 {
 namespace CrashProcess
 {
-	Highlighter::Highlighter (QTextEdit *edit)
-	: QSyntaxHighlighter (edit)
+	Highlighter::Highlighter (QTextDocument *doc)
+	: QSyntaxHighlighter (doc)
 	{
 	}
 
