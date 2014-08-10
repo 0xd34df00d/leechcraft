@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_AUSCRIE_H
-#define PLUGINS_AUSCRIE_AUSCRIE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
@@ -45,6 +45,8 @@ namespace Auscrie
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Auscrie")
 
 		ICoreProxy_ptr Proxy_;
 		QAction *ShotAction_;
@@ -72,5 +74,3 @@ namespace Auscrie
 	};
 }
 }
-
-#endif
