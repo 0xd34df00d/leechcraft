@@ -31,6 +31,7 @@
 
 #include <QByteArray>
 #include <QVariant>
+#include <QIODevice>
 
 #if QT_VERSION < 0x050000
 #include <qjson/parser.h>
@@ -69,6 +70,11 @@ namespace Util
 #endif
 
 		return result;
+	}
+
+	inline QVariant ParseJson (QIODevice *device, const char *context)
+	{
+		return ParseJson (device->readAll (), context);
 	}
 }
 }
