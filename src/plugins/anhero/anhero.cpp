@@ -30,7 +30,6 @@
 #include "anhero.h"
 #include <QIcon>
 #include <QApplication>
-#include <QX11Info>
 #include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -39,10 +38,6 @@
 #include <errno.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
-
-#ifdef HAVE_X11
-#include <X11/Xlib.h>
-#endif
 
 namespace LeechCraft
 {
@@ -110,10 +105,6 @@ namespace AnHero
 				"lc_anhero_crashprocess",
 #else
 				crashprocess,
-#endif
-#ifdef HAVE_X11
-				"-display",
-				QX11Info::display () ? XDisplayString (QX11Info::display ()) : getenv ("DISPLAY"),
 #endif
 				"--signal",
 				sigtxt,
