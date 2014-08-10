@@ -4,11 +4,12 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
-
-find_package (QJSON REQUIRED)
+if (NOT USE_QT5)
+	find_package (QJSON REQUIRED)
+else ()
+	set (QJSON_INCLUDE_DIR)
+	set (QJSON_LIBRARIES)
+endif ()
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -37,8 +38,8 @@ set (VANGOG_RESOURCES blasqvangogresources.qrc)
 CreateTrs("blasq_vangog" "en;ru_RU" VANGOG_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq_vangog" "en;ru_RU" "${VANGOG_SRCS}" "${VANGOG_FORMS}" "")
 
-QT4_WRAP_UI (VANGOG_UIS_H ${VANGOG_FORMS})
-QT4_ADD_RESOURCES (VANGOG_RCCS ${VANGOG_RESOURCES})
+QtWrapUi (VANGOG_UIS_H ${VANGOG_FORMS})
+QtAddResources (VANGOG_RCCS ${VANGOG_RESOURCES})
 
 add_library (leechcraft_blasq_vangog SHARED
 	${VANGOG_COMPILED_TRANSLATIONS}
@@ -47,9 +48,9 @@ add_library (leechcraft_blasq_vangog SHARED
 	${VANGOG_RCCS}
 	)
 target_link_libraries (leechcraft_blasq_vangog
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_blasq_vangog DESTINATION ${LC_PLUGINS_DEST})
 
+FindQtLibs (leechcraft_blasq_vangog Network Widgets Xml)

@@ -2,9 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blasq)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTDECLARATIVE TRUE)
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -36,7 +33,7 @@ set (FORMS
 CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-QT4_WRAP_UI (UIS_H ${FORMS})
+QtWrapUi (UIS_H ${FORMS})
 
 add_library (leechcraft_blasq SHARED
 	${COMPILED_TRANSLATIONS}
@@ -44,12 +41,14 @@ add_library (leechcraft_blasq SHARED
 	${UIS_H}
 	)
 target_link_libraries (leechcraft_blasq
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_blasq DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blasqsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/qml/blasq DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/blasq DESTINATION ${LC_QML5_DEST})
+
+FindQtLibs (leechcraft_blasq Network QuickWidgets Widgets)
 
 option (ENABLE_BLASQ_RAPPOR "Build VKontakte client module for Blasq" ON)
 option (ENABLE_BLASQ_SPEGNERSI "Build Flickr client module for Blasq" ON)

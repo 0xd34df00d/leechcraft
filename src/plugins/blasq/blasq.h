@@ -59,6 +59,8 @@ namespace Blasq
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IHaveRecoverableTabs IPluginReady IHaveSettings IImgSource IEntityHandler IDataFilter)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Blasq")
+
 		ICoreProxy_ptr Proxy_;
 
 		ServicesManager *ServicesMgr_;

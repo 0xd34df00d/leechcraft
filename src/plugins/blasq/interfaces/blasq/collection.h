@@ -32,6 +32,7 @@
 #include <Qt>
 #include <QHash>
 #include <QByteArray>
+#include <util/models/rolenamesmixin.h>
 
 namespace LeechCraft
 {
@@ -64,11 +65,11 @@ namespace Blasq
 	};
 
 	template<typename T>
-	class NamedModel : public T
+	class NamedModel : public Util::RoleNamesMixin<T>
 	{
 	public:
 		NamedModel (QObject *parent)
-		: T (parent)
+		: Util::RoleNamesMixin<T> (parent)
 		{
 			QHash<int, QByteArray> result;
 			result [CollectionRole::Type] = "itemType";
@@ -80,7 +81,7 @@ namespace Blasq
 			result [CollectionRole::MediumThumbSize] = "mediumThumbSize";
 			result [CollectionRole::Original] = "original";
 			result [CollectionRole::OriginalSize] = "originalSize";
-			T::setRoleNames (result);
+			Util::RoleNamesMixin<T>::setRoleNames (result);
 		}
 	};
 

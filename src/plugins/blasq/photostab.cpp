@@ -32,10 +32,21 @@
 #include <cmath>
 #include <QToolBar>
 #include <QComboBox>
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeNetworkAccessManagerFactory>
 #include <QGraphicsObject>
+#else
+#include <QQuickWidget>
+#include <QQmlNetworkAccessManagerFactory>
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QQuickItem>
+#endif
+
 #include <QClipboard>
 #include <QDesktopWidget>
 #include <QtDebug>
@@ -67,7 +78,12 @@ namespace Blasq
 	}
 
 	PhotosTab::PhotosTab (AccountsManager *accMgr, const TabClassInfo& tc, QObject *plugin, ICoreProxy_ptr proxy)
-	: TC_ (tc)
+#if QT_VERSION < 0x050000
+	: ImagesView_ (new QDeclarativeView)
+#else
+	: ImagesView_ (new QQuickWidget)
+#endif
+	, TC_ (tc)
 	, Plugin_ (plugin)
 	, AccMgr_ (accMgr)
 	, Proxy_ (proxy)
@@ -76,10 +92,15 @@ namespace Blasq
 	, Toolbar_ (new QToolBar)
 	{
 		Ui_.setupUi (this);
+		Ui_.ImagesViewContainer_->layout ()->addWidget (ImagesView_);
 
-		Ui_.ImagesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#if QT_VERSION < 0x050000
+		ImagesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		ImagesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
 
-		auto rootCtx = Ui_.ImagesView_->rootContext ();
+		auto rootCtx = ImagesView_->rootContext ();
 		rootCtx->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		rootCtx->setContextProperty ("collectionModel",
@@ -88,7 +109,7 @@ namespace Blasq
 		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
 		rootCtx->setContextProperty ("imageSelectionMode", tc.TabClass_.isEmpty ());
 
-		auto engine = Ui_.ImagesView_->engine ();
+		auto engine = ImagesView_->engine ();
 		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine->addImportPath (cand);
@@ -101,9 +122,9 @@ namespace Blasq
 			engine);
 
 		const auto& path = Util::GetSysPath (Util::SysPath::QML, "blasq", "PhotoView.qml");
-		Ui_.ImagesView_->setSource (QUrl::fromLocalFile (path));
+		ImagesView_->setSource (QUrl::fromLocalFile (path));
 
-		auto rootObj = Ui_.ImagesView_->rootObject ();
+		auto rootObj = ImagesView_->rootObject ();
 		connect (rootObj,
 				SIGNAL (imageSelected (QString)),
 				this,
@@ -278,21 +299,21 @@ namespace Blasq
 
 	void PhotosTab::HandleImageSelected (const QModelIndex& index)
 	{
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", QVariant (false));
+		ImagesView_->rootContext ()->setContextProperty ("listingMode", QVariant (false));
 
 		handleImageSelected (index.data (CollectionRole::ID).toString ());
 
-		QMetaObject::invokeMethod (Ui_.ImagesView_->rootObject (),
+		QMetaObject::invokeMethod (ImagesView_->rootObject (),
 				"showImage",
 				Q_ARG (QVariant, index.data (CollectionRole::Original).toUrl ()));
 	}
 
 	void PhotosTab::HandleCollectionSelected (const QModelIndex& index)
 	{
-		auto rootCtx = Ui_.ImagesView_->rootContext ();
+		auto rootCtx = ImagesView_->rootContext ();
 		if (!rootCtx->contextProperty ("listingMode").toBool ())
 		{
-			QMetaObject::invokeMethod (Ui_.ImagesView_->rootObject (),
+			QMetaObject::invokeMethod (ImagesView_->rootObject (),
 					"showImage",
 					Q_ARG (QVariant, QUrl ()));
 
@@ -426,7 +447,7 @@ namespace Blasq
 		ProxyModel_->SetCurrentAccount (CurAccObj_);
 		ProxyModel_->setSourceModel (model);
 
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
+		ImagesView_->rootContext ()->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
 		HandleCollectionSelected ({});
 
 		UploadAction_->setEnabled (qobject_cast<ISupportUploads*> (CurAccObj_));
@@ -498,7 +519,7 @@ namespace Blasq
 	void PhotosTab::handleScaleSlider (int value)
 	{
 		if (SingleImageMode_)
-			Ui_.ImagesView_->rootObject ()->setProperty ("imageZoom", Zooms [value]);
+			ImagesView_->rootObject ()->setProperty ("imageZoom", Zooms [value]);
 		else
 		{
 			const auto width = qApp->desktop ()->screenGeometry (this).width ();
@@ -507,7 +528,7 @@ namespace Blasq
 
 			// value from 0 to 100; at 0 it should be lowest, at 100 it should be highest
 			const auto computed = (highest - lowest) / (std::exp (1) - 1) * (std::exp (value / 100.) - 1) + lowest;
-			Ui_.ImagesView_->rootObject ()->setProperty ("cellSize", computed);
+			ImagesView_->rootObject ()->setProperty ("cellSize", computed);
 		}
 		XmlSettingsManager::Instance ().setProperty (GetUniSettingName (), value);
 	}

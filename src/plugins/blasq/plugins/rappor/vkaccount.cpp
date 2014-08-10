@@ -36,6 +36,7 @@
 #include <QtDebug>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/sll/queuemanager.h>
+#include <util/sll/urloperator.h>
 #include "vkservice.h"
 #include "albumsettingsdialog.h"
 #include "uploadmanager.h"
@@ -165,7 +166,8 @@ namespace Rappor
 		CallQueue_.append ([this] (const QString& authKey) -> void
 			{
 				QUrl albumsUrl ("https://api.vk.com/method/photos.getAlbums.xml");
-				albumsUrl.addQueryItem ("access_token", authKey);
+				Util::UrlOperator { albumsUrl }
+						("access_token", authKey);
 				RequestQueue_->Schedule ([this, albumsUrl]
 					{
 						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (albumsUrl)),
@@ -175,9 +177,10 @@ namespace Rappor
 					}, this);
 
 				QUrl photosUrl ("https://api.vk.com/method/photos.getAll.xml");
-				photosUrl.addQueryItem ("access_token", authKey);
-				photosUrl.addQueryItem ("count", "100");
-				photosUrl.addQueryItem ("photo_sizes", "1");
+				Util::UrlOperator { photosUrl }
+						("access_token", authKey)
+						("count", "100")
+						("photo_sizes", "1");
 				RequestQueue_->Schedule ([this, photosUrl]
 					{
 						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (photosUrl)),
@@ -225,11 +228,12 @@ namespace Rappor
 		CallQueue_.append ([this, params] (const QString& authKey) -> void
 			{
 				QUrl createUrl ("https://api.vk.com/method/photos.createAlbum.xml");
-				createUrl.addQueryItem ("title", params.Name_);
-				createUrl.addQueryItem ("description", params.Desc_);
-				createUrl.addQueryItem ("privacy", QString::number (params.Priv_));
-				createUrl.addQueryItem ("comment_privacy", QString::number (params.CommentPriv_));
-				createUrl.addQueryItem ("access_token", authKey);
+				Util::UrlOperator { createUrl }
+						("title", params.Name_)
+						("description", params.Desc_)
+						("privacy", QString::number (params.Priv_))
+						("comment_privacy", QString::number (params.CommentPriv_))
+						("access_token", authKey);
 				RequestQueue_->Schedule ([this, createUrl]
 					{
 						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (createUrl)),
@@ -280,8 +284,9 @@ namespace Rappor
 			CallQueue_.append ([this, id] (const QString& authKey) -> void
 				{
 					QUrl delUrl ("https://api.vk.com/method/photos.delete.xml");
-					delUrl.addQueryItem ("pid", id);
-					delUrl.addQueryItem ("access_token", authKey);
+					Util::UrlOperator { delUrl }
+							("pid", id)
+							("access_token", authKey);
 					RequestQueue_->Schedule ([this, delUrl] () -> void
 						{
 							auto reply = Proxy_->GetNetworkAccessManager ()->
@@ -519,10 +524,11 @@ namespace Rappor
 		CallQueue_.append ([this, offset] (const QString& authKey) -> void
 			{
 				QUrl photosUrl ("https://api.vk.com/method/photos.getAll.xml");
-				photosUrl.addQueryItem ("access_token", authKey);
-				photosUrl.addQueryItem ("count", "100");
-				photosUrl.addQueryItem ("offset", QString::number (offset));
-				photosUrl.addQueryItem ("photo_sizes", "1");
+				Util::UrlOperator { photosUrl }
+						("access_token", authKey)
+						("count", "100")
+						("offset", QString::number (offset))
+						("photo_sizes", "1");
 				RequestQueue_->Schedule ([this, photosUrl]
 					{
 						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (photosUrl)),

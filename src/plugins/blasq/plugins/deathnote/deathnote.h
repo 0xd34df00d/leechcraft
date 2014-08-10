@@ -51,6 +51,8 @@ namespace DeathNote
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Blasq::IServicesPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Blasq.DeathNote")
+
 		FotoBilderService *Service_;
 
 	public:
