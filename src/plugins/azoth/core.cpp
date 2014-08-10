@@ -804,12 +804,12 @@ namespace Azoth
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
 			QUrl url ("azoth://insertnick/");
-			url.addEncodedQueryItem ("nick", QUrl::toPercentEncoding (nick));
-
-			ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
-			if (other)
-				url.addEncodedQueryItem ("entryId",
-						QUrl::toPercentEncoding (other->GetEntryID ()));
+			{
+				Util::UrlOperator op { url };
+				op ("nick", nick);
+				if (const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ()))
+					op ("entryId", other->GetEntryID ());
+			}
 
 			string.append ("<span class='nickname'><a href=\"");
 			string.append (url.toEncoded ());
