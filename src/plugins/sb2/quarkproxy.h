@@ -71,6 +71,8 @@ namespace SB2
 		QVariant openWindow (const QUrl&, const QString&, const QVariant&);
 		QRect getWinRect ();
 
+		QPoint fitRect (const QPoint& src, const QSize& size, const QRect& rect, bool canOverlap);
+
 		void panelMoveRequested (const QString&);
 
 		void quarkAddRequested (int, int);

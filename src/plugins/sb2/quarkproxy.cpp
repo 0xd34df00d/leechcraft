@@ -122,6 +122,17 @@ namespace SB2
 		return GetFreeCoords ();
 	}
 
+	QPoint QuarkProxy::fitRect (const QPoint& src, const QSize& size, const QRect& rect, bool canOverlap)
+	{
+		Util::FitFlags flags = Util::FitFlag::NoFlags;
+		if (!canOverlap)
+			flags |= Util::FitFlag::NoOverlap;
+
+		return rect.isValid () ?
+				Util::FitRect (src, size, rect, flags) :
+				Util::FitRectScreen (src, size, flags);
+	}
+
 	void QuarkProxy::panelMoveRequested (const QString& position)
 	{
 		Qt::ToolBarArea area = Qt::BottomToolBarArea;
