@@ -60,6 +60,8 @@ namespace SecureStorage
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::SecMan::IStoragePlugin IActionsExporter IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.SecMan.SecureStorage")
+
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		SettingsWidget* SettingsWidget_;
 

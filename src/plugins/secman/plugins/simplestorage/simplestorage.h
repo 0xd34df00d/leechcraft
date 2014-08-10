@@ -51,6 +51,8 @@ namespace SimpleStorage
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::SecMan::IStoragePlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.SecMan.SimpleStorage")
+
 		std::shared_ptr<QSettings> Storage_;
 	public:
 		void Init (ICoreProxy_ptr);

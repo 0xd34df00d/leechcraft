@@ -49,6 +49,8 @@ namespace SecMan
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPluginReady IActionsExporter IPersistentStoragePlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.SecMan")
+
 		QMap<QString, QList<QAction*>> MenuActions_;
 	public:
 		void Init (ICoreProxy_ptr);

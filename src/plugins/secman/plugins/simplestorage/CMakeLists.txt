@@ -6,7 +6,7 @@ set (SRCS
 	)
 
 set (SIMPLESTORAGE_RESOURCES simplestorageresources.qrc)
-QT4_ADD_RESOURCES (SIMPLESTORAGE_RCCS ${SIMPLESTORAGE_RESOURCES})
+QtAddResources (SIMPLESTORAGE_RCCS ${SIMPLESTORAGE_RESOURCES})
 
 add_library (leechcraft_secman_simplestorage SHARED
 	${SIMPLESTORAGE_RCCS}
@@ -14,7 +14,8 @@ add_library (leechcraft_secman_simplestorage SHARED
 	${SRCS}
 	)
 target_link_libraries (leechcraft_secman_simplestorage
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_secman_simplestorage DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_secman_simplestorage Core)
