@@ -29,8 +29,10 @@ else ()
 		${LASTFM_DIR}/include
 	)
 
+if (NOT USE_QT5)
 	find_library (LastFM_LIBRARY
 		NAMES
+		lastfm-qt4
 		lastfm
 		PATHS
 		/usr/lib
@@ -40,6 +42,20 @@ else ()
 		/sw/lib
 		${LASTFM_DIR}/lib
 	)
+else ()
+	find_library (LastFM_LIBRARY
+		NAMES
+		lastfm-qt5
+		lastfm
+		PATHS
+		/usr/lib
+		/usr/local/lib
+		/usr/local/lib
+		/opt/local/lib
+		/sw/lib
+		${LASTFM_DIR}/lib
+	)
+endif ()
 
 	set (LastFM_INCLUDE_DIRS
 		${LastFM_INCLUDE_DIR}
