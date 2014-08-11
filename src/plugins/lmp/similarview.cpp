@@ -53,6 +53,7 @@ namespace LMP
 #endif
 	, Manager_ (new SimilarViewManager (this, this))
 	{
+		setResizeMode (SizeRootObjectToView);
 		engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
@@ -63,7 +64,7 @@ namespace LMP
 		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "SimilarView.qml"));
 		Manager_->InitWithSource ();
 
-		setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
+		setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 	}
 
 	void SimilarView::SetSimilarArtists (Media::SimilarityInfos_t infos)

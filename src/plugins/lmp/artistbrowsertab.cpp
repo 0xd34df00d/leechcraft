@@ -61,6 +61,14 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 
+		View_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+#if QT_VERSION < 0x050000
+		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
+		layout ()->addWidget (View_);
+
 		BioMgr_ = new BioViewManager (View_, this);
 		SimilarMgr_ = new SimilarViewManager (View_, this);
 

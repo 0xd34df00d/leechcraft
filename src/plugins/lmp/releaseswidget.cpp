@@ -104,6 +104,13 @@ namespace LMP
 	, ReleasesModel_ (new ReleasesModel (this))
 	{
 		Ui_.setupUi (this);
+		layout ()->addWidget (ReleasesView_);
+
+#if QT_VERSION < 0x050000
+		ReleasesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		ReleasesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
