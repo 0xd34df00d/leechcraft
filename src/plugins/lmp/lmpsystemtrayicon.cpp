@@ -31,6 +31,7 @@
 #include <QWheelEvent>
 #include <QHelpEvent>
 #include <QToolTip>
+#include <QTime>
 #include "core.h"
 #include "playertab.h"
 #include "util.h"

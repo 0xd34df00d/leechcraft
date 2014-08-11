@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QStandardItemModel>
+#include <util/models/dndactionsmixin.h>
 
 namespace LeechCraft
 {
@@ -37,7 +38,7 @@ namespace LMP
 {
 	class Player;
 
-	class PlaylistModel : public QStandardItemModel
+	class PlaylistModel : public Util::DndActionsMixin<QStandardItemModel>
 	{
 		Player * const Player_;
 	public:

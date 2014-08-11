@@ -72,6 +72,8 @@ namespace LMP
 				IJobHolder
 				IHaveDiagInfo)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP")
+
 		TabClassInfo PlayerTC_;
 		TabClassInfo ArtistBrowserTC_;
 

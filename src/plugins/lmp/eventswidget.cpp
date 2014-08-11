@@ -29,8 +29,17 @@
 
 #include "eventswidget.h"
 #include <QStandardItemModel>
-#include <QGraphicsObject>
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
 #include <QDeclarativeContext>
+#include <QGraphicsObject>
+#else
+#include <QQuickWidget>
+#include <QQmlContext>
+#include <QQuickItem>
+#endif
+
 #include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/ieventsprovider.h>
@@ -38,6 +47,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
+#include <util/models/rolenamesmixin.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -48,7 +58,7 @@ namespace LMP
 {
 	namespace
 	{
-		class EventsModel : public QStandardItemModel
+		class EventsModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Role
@@ -68,7 +78,7 @@ namespace LMP
 			};
 
 			EventsModel (QObject *parent = 0)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
 				names [EventID] = "eventID";
@@ -90,31 +100,37 @@ namespace LMP
 
 	EventsWidget::EventsWidget (QWidget *parent)
 	: QWidget (parent)
+#if QT_VERSION < 0x050000
+	, View_ (new QDeclarativeView)
+#else
+	, View_ (new QQuickWidget)
+#endif
 	, Model_ (new EventsModel (this))
 	{
 		Ui_.setupUi (this);
+		layout ()->addWidget (View_);
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
-				Ui_.View_->engine ());
+				View_->engine ());
 
-		Ui_.View_->rootContext ()->setContextProperty ("eventsModel", Model_);
-		Ui_.View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));
-		Ui_.View_->rootContext ()->setContextProperty ("attendMaybeTextString", tr ("Maybe"));
-		Ui_.View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
-		Ui_.View_->rootContext ()->setContextProperty ("colorProxy",
+		View_->rootContext ()->setContextProperty ("eventsModel", Model_);
+		View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));
+		View_->rootContext ()->setContextProperty ("attendMaybeTextString", tr ("Maybe"));
+		View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
+		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
-		Ui_.View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "EventsView.qml"));
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "EventsView.qml"));
 
-		connect (Ui_.View_->rootObject (),
+		connect (View_->rootObject (),
 				SIGNAL (attendSure (int)),
 				this,
 				SLOT (handleAttendSure (int)));
-		connect (Ui_.View_->rootObject (),
+		connect (View_->rootObject (),
 				SIGNAL (attendMaybe (int)),
 				this,
 				SLOT (handleAttendMaybe (int)));
-		connect (Ui_.View_->rootObject (),
+		connect (View_->rootObject (),
 				SIGNAL (unattend (int)),
 				this,
 				SLOT (handleUnattend (int)));

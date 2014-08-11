@@ -64,6 +64,8 @@ namespace MP3Tunes
 				LeechCraft::LMP::ICloudStoragePlugin
 				LeechCraft::LMP::IPlaylistProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.MP3Tunes")
+
 		ICoreProxy_ptr Proxy_;
 
 		AccountsManager *AccMgr_;

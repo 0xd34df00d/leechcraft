@@ -37,10 +37,11 @@ add_library (leechcraft_lmp_jos SHARED
 	${JOS_SRCS}
 	)
 target_link_libraries (leechcraft_lmp_jos
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LIBIMOBILEDEVICE_LIBRARIES}
 	${LIBGPOD_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_lmp_jos DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_lmp_jos Concurrent)

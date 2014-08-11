@@ -36,6 +36,8 @@
 #include "localcollection.h"
 #include "aalabeleventfilter.h"
 #include "util.h"
+#include "biowidget.h"
+#include "similarview.h"
 
 namespace LeechCraft
 {
@@ -43,9 +45,13 @@ namespace LMP
 {
 	NowPlayingWidget::NowPlayingWidget (QWidget *parent)
 	: QWidget (parent)
+	, BioWidget_ (new BioWidget)
+	, SimilarView_ (new SimilarView)
 	, LyricsVariantPos_ (0)
 	{
 		Ui_.setupUi (this);
+		Ui_.BioPage_->layout ()->addWidget (BioWidget_);
+		Ui_.SimilarPage_->layout ()->addWidget (SimilarView_);
 		connect (Ui_.SimilarIncludeCollection_,
 				SIGNAL (stateChanged (int)),
 				this,
@@ -60,7 +66,7 @@ namespace LMP
 
 		updateLyricsSwitcher ();
 
-		connect (Ui_.BioWidget_,
+		connect (BioWidget_,
 				SIGNAL (gotArtistImage (QString, QUrl)),
 				this,
 				SIGNAL (gotArtistImage (QString, QUrl)));
@@ -84,8 +90,8 @@ namespace LMP
 			infos.erase (pos, infos.end ());
 		}
 
-		Ui_.SimilarView_->SetSimilarArtists (infos);
-		Ui_.SimilarView_->setVisible (!infos.isEmpty ());
+		SimilarView_->SetSimilarArtists (infos);
+		SimilarView_->setVisible (!infos.isEmpty ());
 	}
 
 	void NowPlayingWidget::SetLyrics (const Media::LyricsResultItem& item)
@@ -137,7 +143,7 @@ namespace LMP
 
 		SetStatistics (info.LocalPath_);
 
-		Ui_.BioWidget_->SetCurrentArtist (info.Artist_);
+		BioWidget_->SetCurrentArtist (info.Artist_);
 
 		Ui_.AudioProps_->SetProps (info);
 

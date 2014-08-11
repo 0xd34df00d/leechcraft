@@ -34,6 +34,12 @@
 
 class QStandardItemModel;
 
+#if QT_VERSION < 0x050000
+class QDeclarativeView;
+#else
+class QQuickWidget;
+#endif
+
 namespace Media
 {
 	class IEventsProvider;
@@ -51,7 +57,14 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::EventsWidget Ui_;
-		QStandardItemModel *Model_;
+#if QT_VERSION < 0x050000
+		QDeclarativeView * const View_;
+#else
+		QQuickWidget * const View_;
+#endif
+
+		QStandardItemModel * const Model_;
+
 		QList<Media::IEventsProvider*> Providers_;
 	public:
 		EventsWidget (QWidget* = 0);

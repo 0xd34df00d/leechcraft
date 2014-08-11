@@ -49,6 +49,8 @@ namespace Fradj
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::LMP::IFilterPlugin)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.FrAdj")
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

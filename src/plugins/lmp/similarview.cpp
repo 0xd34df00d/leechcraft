@@ -28,7 +28,13 @@
  **********************************************************************/
 
 #include "similarview.h"
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeEngine>
+#else
+#include <QQmlEngine>
+#endif
+
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
@@ -40,7 +46,11 @@ namespace LeechCraft
 namespace LMP
 {
 	SimilarView::SimilarView (QWidget *parent)
+#if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
+#else
+	: QQuickWidget (parent)
+#endif
 	, Manager_ (new SimilarViewManager (this, this))
 	{
 		engine ()->addImageProvider ("ThemeIcons",
@@ -52,6 +62,8 @@ namespace LMP
 
 		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "SimilarView.qml"));
 		Manager_->InitWithSource ();
+
+		setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
 	}
 
 	void SimilarView::SetSimilarArtists (Media::SimilarityInfos_t infos)

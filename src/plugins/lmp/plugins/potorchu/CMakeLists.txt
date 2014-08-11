@@ -2,9 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lmp_potorchu)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTOPENGL TRUE)
-include (${QT_USE_FILE})
-
 include_directories (${LMP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -21,7 +18,7 @@ set (POTORCHU_RESOURCES lmppotorchuresources.qrc)
 
 CreateTrs ("lmp_potorchu" "en;ru_RU" POTORCHU_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp_potorchu" "en;ru_RU" "${POTORCHU_SRCS}" "${POTORCHU_FORMS}" "")
-QT4_ADD_RESOURCES (POTORCHU_RCCS ${POTORCHU_RESOURCES})
+QtAddResources (POTORCHU_RCCS ${POTORCHU_RESOURCES})
 
 add_library (leechcraft_lmp_potorchu SHARED
 	${POTORCHU_COMPILED_TRANSLATIONS}
@@ -29,7 +26,6 @@ add_library (leechcraft_lmp_potorchu SHARED
 	${POTORCHU_RCCS}
 	)
 target_link_libraries (leechcraft_lmp_potorchu
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	leechcraft_lmp_common
 	${GSTREAMER_LIBRARIES}
@@ -41,3 +37,5 @@ target_link_libraries (leechcraft_lmp_potorchu
 
 install (TARGETS leechcraft_lmp_potorchu DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES lmppotorchufiltersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_lmp_potorchu OpenGL)

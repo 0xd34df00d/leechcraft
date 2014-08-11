@@ -40,7 +40,7 @@ namespace LeechCraft
 namespace LMP
 {
 	LocalCollectionModel::LocalCollectionModel (QObject *parent)
-	: QStandardItemModel { parent }
+	: DndActionsMixin<QStandardItemModel> { parent }
 	{
 		setSupportedDragActions (Qt::CopyAction);
 	}

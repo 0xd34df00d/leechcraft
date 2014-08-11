@@ -30,13 +30,14 @@
 #pragma once
 
 #include <QFileSystemModel>
+#include <util/models/dndactionsmixin.h>
 #include "localcollection.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class FSModel : public QFileSystemModel
+	class FSModel : public Util::DndActionsMixin<QFileSystemModel>
 	{
 		Q_OBJECT
 	public:

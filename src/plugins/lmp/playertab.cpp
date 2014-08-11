@@ -39,6 +39,7 @@
 #include <QTabBar>
 #include <QMessageBox>
 #include <QToolButton>
+#include <QPainter>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/ipluginsmanager.h>

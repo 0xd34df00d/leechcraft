@@ -1,6 +1,3 @@
-set (QT_USE_QTDBUS TRUE)
-include (${QT_USE_FILE})
-
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 set (SRCS
@@ -18,3 +15,5 @@ add_library (${MPRIS_SUBLIB} STATIC
 target_link_libraries (${MPRIS_SUBLIB}
 	${QT_LIBRARIES}
 	)
+
+FindQtLibs (leechcraft_lmp_mpris DBus)

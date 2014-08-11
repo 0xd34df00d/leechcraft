@@ -58,6 +58,8 @@ namespace jOS
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::IUnmountableSync)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.jOS")
+
 		ILMPProxy_ptr LMPProxy_;
 
 		DevManager *DevManager_;

@@ -23,7 +23,6 @@ add_library (leechcraft_lmp_httstream SHARED
 	${HTTSTREAM_SRCS}
 	)
 target_link_libraries (leechcraft_lmp_httstream
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	leechcraft_lmp_common
 	${GSTREAMER_LIBRARIES}
@@ -34,3 +33,5 @@ target_link_libraries (leechcraft_lmp_httstream
 install (TARGETS leechcraft_lmp_httstream DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmphttstreamfiltersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${HTTSTREAM_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+
+FindQtLibs (leechcraft_lmp_httstream Core)

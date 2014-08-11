@@ -35,6 +35,12 @@
 
 class QStandardItemModel;
 
+#if QT_VERSION < 0x050000
+class QDeclarativeView;
+#else
+class QQuickWidget;
+#endif
+
 namespace LeechCraft
 {
 namespace LMP
@@ -44,10 +50,17 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::HypesWidget Ui_;
-		QStandardItemModel *NewArtistsModel_;
-		QStandardItemModel *TopArtistsModel_;
-		QStandardItemModel *NewTracksModel_;
-		QStandardItemModel *TopTracksModel_;
+
+#if QT_VERSION < 0x050000
+		QDeclarativeView * const HypesView_;
+#else
+		QQuickWidget * const HypesView_;
+#endif
+
+		QStandardItemModel * const NewArtistsModel_;
+		QStandardItemModel * const TopArtistsModel_;
+		QStandardItemModel * const NewTracksModel_;
+		QStandardItemModel * const TopTracksModel_;
 
 		QList<QObject*> Providers_;
 	public:

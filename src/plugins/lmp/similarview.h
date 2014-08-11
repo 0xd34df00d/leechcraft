@@ -29,7 +29,12 @@
 
 #pragma once
 
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
 #include <QDeclarativeView>
+#else
+#include <QQuickWidget>
+#endif
 #include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
@@ -38,7 +43,11 @@ namespace LMP
 {
 	class SimilarViewManager;
 
+#if QT_VERSION < 0x050000
 	class SimilarView : public QDeclarativeView
+#else
+	class SimilarView : public QQuickWidget
+#endif
 	{
 		Q_OBJECT
 

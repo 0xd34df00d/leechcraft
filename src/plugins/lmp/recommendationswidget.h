@@ -41,11 +41,14 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class SimilarView;
+
 	class RecommendationsWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::RecommendationsWidget Ui_;
+		SimilarView * const RecView_;
 
 		QList<QObject*> ProvRoots_;
 		QList<Media::IRecommendedArtists*> Providers_;

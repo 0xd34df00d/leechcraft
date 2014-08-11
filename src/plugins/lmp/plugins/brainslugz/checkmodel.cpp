@@ -52,7 +52,7 @@ namespace BrainSlugz
 		const int AASize = 130;
 		const int ArtistSize = 190;
 
-		class ReleasesSubmodel : public QStandardItemModel
+		class ReleasesSubmodel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Role
@@ -63,7 +63,7 @@ namespace BrainSlugz
 			};
 
 			ReleasesSubmodel (QObject *parent)
-			: QStandardItemModel { parent }
+			: RoleNamesMixin<QStandardItemModel> { parent }
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [ReleaseName] = "releaseName";
@@ -82,7 +82,7 @@ namespace BrainSlugz
 
 	CheckModel::CheckModel (const Collection::Artists_t& artists,
 			const ICoreProxy_ptr& proxy, const ILMPProxy_ptr& lmpProxy, QObject *parent)
-	: QStandardItemModel { parent }
+	: RoleNamesMixin<QStandardItemModel> { parent }
 	, AllArtists_ { artists }
 	, Proxy_ { lmpProxy }
 	, DefaultAlbumIcon_ { GetIcon (proxy, "media-optical", AASize * 2) }
