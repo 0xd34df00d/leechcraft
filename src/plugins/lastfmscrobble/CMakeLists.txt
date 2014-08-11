@@ -6,11 +6,6 @@ set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package (LastFM REQUIRED)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTWEBKIT TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
-
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -40,7 +35,7 @@ set (SRCS
 	hypedtracksfetcher.cpp
 	)
 set (RESOURCES lastfmscrobbleresources.qrc)
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtAddResources (RCCS ${RESOURCES})
 CreateTrs ("lastfmscrobble" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lastfmscrobble" "en;ru_RU" "${SRCS}" "" "lastfmscrobblesettings.xml")
 
@@ -50,10 +45,11 @@ add_library (leechcraft_lastfmscrobble SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_lastfmscrobble
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LastFM_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_lastfmscrobble DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lastfmscrobblesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_lastfmscrobble Network WebKitWidgets Xml)
