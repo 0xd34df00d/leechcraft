@@ -31,6 +31,7 @@
 
 #include <QAbstractItemModel>
 #include <QStringList>
+#include <QVector>
 #include <interfaces/data/iimgsource.h>
 #include <interfaces/core/icoreproxy.h>
 

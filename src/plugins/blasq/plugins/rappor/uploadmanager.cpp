@@ -35,6 +35,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QDomDocument>
+#include <QStringList>
 #include <QtDebug>
 #include <qjson/parser.h>
 #include <util/sll/queuemanager.h>

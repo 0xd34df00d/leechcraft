@@ -30,6 +30,7 @@
 #include "itemsdatabase.h"
 #include <QFileSystemWatcher>
 #include <QSet>
+#include <QStringList>
 #include "itemtypes.h"
 
 namespace LeechCraft

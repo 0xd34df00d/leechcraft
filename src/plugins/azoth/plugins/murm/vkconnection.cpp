@@ -31,8 +31,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QtDebug>
 #include <QTimer>
+#include <QtDebug>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
