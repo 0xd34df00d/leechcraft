@@ -48,9 +48,8 @@
 #include "unmountabledevmanager.h"
 #include "syncunmountablemanager.h"
 
-#define COMMA ,
-Q_DECLARE_METATYPE (QMap<QString COMMA LeechCraft::LMP::TranscodingParams>)
-#undef COMMA
+typedef QMap<QString, LeechCraft::LMP::TranscodingParams> TranscodingParamsMap_t;
+Q_DECLARE_METATYPE (TranscodingParamsMap_t)
 
 namespace LeechCraft
 {
