@@ -40,6 +40,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -201,16 +202,25 @@ namespace LMP
 					SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
 					this,
 					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QUrl>)));
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[this, proxy] () -> void
+				{
+					const auto proxyObj = proxy->GetQObject ();
+					proxyObj->deleteLater ();
+
+					const auto& info = proxy->GetAlbumInfo ();
+					const auto& images = proxy->GetImageUrls ();
+					if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
+						return;
+
+					SetAlbumImage (info.Album_, images.first ());
+				},
+				proxy->GetQObject (),
+				SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
+				this
+			};
 		}
-	}
-
-	void BioViewManager::handleAlbumArt (const Media::AlbumInfo& info, const QList<QUrl>& images)
-	{
-		sender ()->deleteLater ();
-		if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
-			return;
-
-		SetAlbumImage (info.Album_, images.first ());
 	}
 
 	void BioViewManager::handleAlbumPreviewRequested (int index)

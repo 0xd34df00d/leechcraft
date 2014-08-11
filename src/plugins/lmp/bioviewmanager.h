@@ -71,7 +71,6 @@ namespace LMP
 	private slots:
 		void handleBioReady ();
 		void handleDiscographyReady ();
-		void handleAlbumArt (const Media::AlbumInfo&, const QList<QUrl>&);
 
 		void handleAlbumPreviewRequested (int);
 	signals:
