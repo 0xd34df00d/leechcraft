@@ -58,7 +58,7 @@ namespace Util
 		}
 #else
 		QJsonParseError error;
-		const auto& result = QJsonDocument::fromJson (bytes, &error);
+		const auto& result = QJsonDocument::fromJson (bytes, &error).toVariant ();
 		if (error.error != QJsonParseError::NoError)
 		{
 			qWarning () << context
