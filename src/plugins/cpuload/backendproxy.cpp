@@ -30,6 +30,7 @@
 #include "backendproxy.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <util/models/rolenamesmixin.h>
 #include "backend.h"
 #include "cpuloadproxyobj.h"
 
@@ -39,7 +40,7 @@ namespace CpuLoad
 {
 	namespace
 	{
-		class CpusModel : public QStandardItemModel
+		class CpusModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Role
@@ -49,7 +50,7 @@ namespace CpuLoad
 			};
 
 			CpusModel (QObject *parent)
-			: QStandardItemModel { parent }
+			: RoleNamesMixin<QStandardItemModel> { parent }
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [CpuIdxRole] = "cpuIdx";
