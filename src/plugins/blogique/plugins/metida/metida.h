@@ -53,6 +53,8 @@ namespace Metida
 		Q_INTERFACES (IInfo IHaveSettings IPlugin2
 				LeechCraft::Blogique::IBloggingPlatformPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Blogique.Metida")
+
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 	public:

@@ -34,7 +34,7 @@ namespace LeechCraft
 namespace Blogique
 {
 	CommentsModel::CommentsModel (QObject *parent)
-	: QStandardItemModel (parent)
+	: RoleNamesMixin<QStandardItemModel> (parent)
 	{
 		QHash<int, QByteArray> roleNames;
 		roleNames [AccountID] = "accountID";

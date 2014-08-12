@@ -2,12 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blogique)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTSQL TRUE)
-set (QT_USE_QTXML TRUE)
-set (QT_USE_QTWEBKIT TRUE)
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
-
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -64,8 +58,8 @@ set (RESOURCES blogiqueresources.qrc)
 CreateTrs ("blogique" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("blogique" "en;ru_RU" "${SRCS}" "${FORMS}" "blogiquesettings.xml")
 
-QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (FORMS_HEADERS ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_blogique SHARED
 	${SRCS}
@@ -76,13 +70,15 @@ add_library (leechcraft_blogique SHARED
 	)
 
 target_link_libraries (leechcraft_blogique
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_blogique DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blogiquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/blogique DESTINATION ${LC_QML5_DEST})
+
+FindQtLibs (leechcraft_blogique PrintSupport QuickWidgets Sql WebKitWidgets Xml)
 
 set (BLOGIQUE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

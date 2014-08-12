@@ -105,7 +105,11 @@ namespace Blogique
 		itemValidated->setEditable (false);
 		AccountsModel_->appendRow ({item, itemValidated});
 
+#if QT_VERSION < 0x050000
 		Ui_.Accounts_->header ()->setResizeMode (QHeaderView::ResizeToContents);
+#else
+		Ui_.Accounts_->header ()->setSectionResizeMode (QHeaderView::ResizeToContents);
+#endif
 
 		Item2Account_ [item] = acc;
 		Account2Item_ [acc] = item;
@@ -188,7 +192,11 @@ namespace Blogique
 		AccountsModel_->item (item->row (), Columns::IsValidated)->setText (validated ?
 				tr ("Validated") :
 				tr ("Not validated"));
+#if QT_VERSION < 0x050000
 		Ui_.Accounts_->header ()->setResizeMode (QHeaderView::ResizeToContents);
+#else
+		Ui_.Accounts_->header ()->setSectionResizeMode (QHeaderView::ResizeToContents);
+#endif
 	}
 
 	void AccountsListWidget::on_Add__released ()
