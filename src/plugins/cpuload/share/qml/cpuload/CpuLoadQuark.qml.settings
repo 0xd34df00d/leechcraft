@@ -2,7 +2,7 @@
 <settings>
         <page>
                 <label value="CpuLoad settings" />
-                <item type="spinbox" property="CpuLoad_updateInterval" minimum="100" maximum="10000" step="100">
+                <item type="spinbox" property="CpuLoad_updateInterval" default="1000" minimum="100" maximum="10000" step="100">
                         <label value="Update interval:" />
                         <suffix value=" ms" />
                 </item>
