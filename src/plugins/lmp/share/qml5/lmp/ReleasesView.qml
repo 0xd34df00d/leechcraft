@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtGraphicalEffects 1.0
 import "."
 
 Rectangle {
@@ -39,18 +40,17 @@ Rectangle {
             State {
                 name: "hidden"
                 PropertyChanges { target: fullSizeAA; opacity: 0 }
-                PropertyChanges { target: releasesViewBlur; blurRadius: 0 }
+                PropertyChanges { target: releasesViewBlur; radius: 0 }
             },
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeAA; opacity: 1 }
-                PropertyChanges { target: releasesViewBlur; blurRadius: 10 }
+                PropertyChanges { target: releasesViewBlur; radius: 10 }
             }
         ]
 
         transitions: Transition {
             PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
-            PropertyAnimation { target: releasesViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
@@ -64,6 +64,8 @@ Rectangle {
     GridView {
         anchors.fill: parent
         id: releasesView
+
+        visible: releasesViewBlur.radius == 0
 
         model: releasesModel
         cellHeight: 180
@@ -195,6 +197,17 @@ Rectangle {
                 }
             }
         }
+    }
+
+    RecursiveBlur {
+        id: releasesViewBlur
+        anchors.fill: releasesView
+
+        radius: 0
+        loops: 20
+        source: releasesView
+
+        visible: radius != 0
     }
 
     TrackListContainer {

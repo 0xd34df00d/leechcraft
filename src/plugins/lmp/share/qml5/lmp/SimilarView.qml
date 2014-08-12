@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtGraphicalEffects 1.0
 import "."
 
 Rectangle {
@@ -41,19 +42,18 @@ Rectangle {
             State {
                 name: "hidden"
                 PropertyChanges { target: fullSizeArtistImg; opacity: 0 }
-                PropertyChanges { target: similarViewBlur; blurRadius: 0 }
+                PropertyChanges { target: similarViewBlur; radius: 0 }
             },
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeArtistImg; opacity: 1 }
-                PropertyChanges { target: similarViewBlur; blurRadius: 10 }
+                PropertyChanges { target: similarViewBlur; radius: 10 }
             }
         ]
 
         transitions: Transition {
             ParallelAnimation {
                 PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
-                PropertyAnimation { target: similarViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
             }
         }
 
@@ -69,6 +69,8 @@ Rectangle {
         anchors.fill: parent
         id: similarView
         smooth: true
+
+        visible: similarViewBlur.radius == 0
 
         model: similarModel
         delegate: Item {
@@ -227,5 +229,16 @@ Rectangle {
                 }
             }
         }
+    }
+
+    RecursiveBlur {
+        id: similarViewBlur
+        anchors.fill: similarView
+
+        radius: 0
+        loops: 20
+        source: similarView
+
+        visible: radius != 0
     }
 }

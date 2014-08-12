@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtGraphicalEffects 1.0
 import "."
 
 Rectangle {
@@ -39,18 +40,17 @@ Rectangle {
             State {
                 name: "hidden"
                 PropertyChanges { target: fullSizeEventImg; opacity: 0 }
-                PropertyChanges { target: eventsViewBlur; blurRadius: 0 }
+                PropertyChanges { target: eventsViewBlur; radius: 0 }
             },
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeEventImg; opacity: 1 }
-                PropertyChanges { target: eventsViewBlur; blurRadius: 10 }
+                PropertyChanges { target: eventsViewBlur; radius: 10 }
             }
         ]
 
         transitions: Transition {
             PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
-            PropertyAnimation { target: eventsViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
@@ -64,6 +64,8 @@ Rectangle {
     ListView {
         anchors.fill: parent
         id: eventsView
+
+        visible: eventsViewBlur.radius == 0
 
         model: eventsModel
         delegate: Item {
@@ -245,5 +247,16 @@ Rectangle {
                 }
             }
         }
+    }
+
+    RecursiveBlur {
+        id: eventsViewBlur
+        anchors.fill: eventsView
+
+        radius: 0
+        loops: 20
+        source: eventsView
+
+        visible: radius != 0
     }
 }
