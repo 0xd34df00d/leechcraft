@@ -16,8 +16,6 @@ Window {
         smooth: true
         radius: 5
 
-        signal closeRequested()
-
         property variant pointsList
 
         gradient: Gradient {

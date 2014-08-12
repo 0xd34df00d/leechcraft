@@ -1,5 +1,4 @@
 import QtQuick 2.3
-import QtQuick.Window 2.1
 import org.LC.common 1.0
 
 Rectangle {
@@ -75,37 +74,17 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered: {
-                    var global = commonJS.getTooltipPos(delegateItem);
+                Common { id: opener }
 
+                onEntered: {
                     var params = {
-                        "x": global.x,
-                        "y": global.y,
                         "colorProxy": colorProxy,
                         "maxTemp": maxTemp,
                         "critTemp": critTemp,
                         "sensorName": sensorName,
                         "pointsList": Qt.binding(function() { return pointsList; })
                     };
-                    var component = Qt.createComponent(Qt.resolvedUrl("Tooltip.qml"))
-
-                    var sf = (function() {
-                            if (tooltip)
-                                tooltip.destroy();
-                            tooltip = component.createObject(delegateItem, params);
-                            var pos = quarkProxy.fitRect(Qt.point(global.x, global.y),
-                                    Qt.size(tooltip.width, tooltip.height),
-                                    quarkProxy.getWinRect(),
-                                    false);
-                            tooltip.x = pos.x;
-                            tooltip.y = pos.y;
-                            tooltip.show();
-                        });
-
-                    if (component.status === Component.Ready)
-                        sf();
-                    else
-                        component.onCompleted = sf;
+                    opener.openWindow(delegateItem, params, Qt.resolvedUrl("Tooltip.qml"), tooltip, function(t) { tooltip = t; });
                 }
                 onExited: { tooltip.destroy(); tooltip = null; }
             }
