@@ -46,6 +46,8 @@ namespace CertMgr
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.CertMgr")
+
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
 
