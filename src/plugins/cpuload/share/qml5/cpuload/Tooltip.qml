@@ -1,24 +1,15 @@
 import QtQuick 2.3
+import QtQuick.Window 2.1
 import org.LC.common 1.0
 
-Rectangle {
-    id: rootRect
+Window {
     width: loadView.cellWidth * 2
     height: loadView.cellHeight * Math.ceil(loadView.count / 2)
 
-    smooth: true
-    radius: 5
+    flags: Qt.ToolTip
 
-    signal closeRequested()
-
-    function beforeDelete() {}
-
-    property alias isHovered: wholeArea.containsMouse
-
-    MouseArea {
-        id: wholeArea
-        hoverEnabled: true
-    }
+    property variant loadModel
+    property variant cpuProxy
 
     function zipN(first) {
         for (var i = 1; i < arguments.length; ++i) {
@@ -28,70 +19,88 @@ Rectangle {
         return first;
     }
 
-    GridView {
-        id: loadView
-
-        model: loadModel
+    Rectangle {
+        id: rootRect
 
         anchors.fill: parent
 
-        cellWidth: 400
-        cellHeight: 100
+        smooth: true
+        radius: 5
 
-        property int desiredRows: Math.ceil(Math.sqrt(count))
+        function beforeDelete() {}
 
-        delegate: Rectangle {
-            width: 400
-            height: plot.height
+        property alias isHovered: wholeArea.containsMouse
 
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: colorProxy.color_TextBox_TopColor
+        MouseArea {
+            id: wholeArea
+            hoverEnabled: true
+        }
+
+        GridView {
+            id: loadView
+
+            model: loadModel
+
+            anchors.fill: parent
+
+            cellWidth: 400
+            cellHeight: 100
+
+            property int desiredRows: Math.ceil(Math.sqrt(count))
+
+            delegate: Rectangle {
+                width: 400
+                height: plot.height
+
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0
+                        color: colorProxy.color_TextBox_TopColor
+                    }
+                    GradientStop {
+                        position: 1
+                        color: colorProxy.color_TextBox_BottomColor
+                    }
                 }
-                GradientStop {
-                    position: 1
-                    color: colorProxy.color_TextBox_BottomColor
+
+                Plot {
+                    id: plot
+
+                    anchors.top: parent.top
+
+                    width: parent.width
+                    height: 100
+
+                    multipoints: [
+                            { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
+                            { color: "blue", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist) },
+                            { color: "yellow", points: zipN(loadObj.ioHist, loadObj.lowHist) },
+                            { color: "green", points: loadObj.ioHist }
+                        ]
+
+                    leftAxisEnabled: true
+                    leftAxisTitle: qsTr ("Load, %")
+                    yGridEnabled: true
+
+                    minYValue: 0
+                    maxYValue: 100
+
+                    alpha: 1
+                    background: "transparent"
+                    textColor: colorProxy.color_TextBox_TextColor
                 }
-            }
 
-            Plot {
-                id: plot
+                Text {
+                    id: cpuLabel
+                    text: "CPU " + cpuIdx
 
-                anchors.top: parent.top
+                    anchors.top: plot.top
+                    anchors.horizontalCenter: parent.horizontalCenter
 
-                width: parent.width
-                height: 100
+                    color: colorProxy.color_TextBox_TitleTextColor
 
-                multipoints: [
-                        { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
-                        { color: "blue", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist) },
-                        { color: "yellow", points: zipN(loadObj.ioHist, loadObj.lowHist) },
-                        { color: "green", points: loadObj.ioHist }
-                    ]
-
-                leftAxisEnabled: true
-                leftAxisTitle: qsTr ("Load, %")
-                yGridEnabled: true
-
-                minYValue: 0
-                maxYValue: 100
-
-                alpha: 1
-                background: "transparent"
-                textColor: colorProxy.color_TextBox_TextColor
-            }
-
-            Text {
-                id: cpuLabel
-                text: "CPU " + cpuIdx
-
-                anchors.top: plot.top
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                color: colorProxy.color_TextBox_TitleTextColor
-
-                font.bold: true
+                    font.bold: true
+                }
             }
         }
     }

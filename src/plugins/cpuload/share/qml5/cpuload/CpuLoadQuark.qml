@@ -50,21 +50,26 @@ Rectangle {
             hoverInTimeout: commonHoverInTimeout
 
             onHoverInTimedOut: {
-                var global = commonJS.getTooltipPos(rootRect);
                 var params = {
-                    "x": global.x,
-                    "y": global.y,
                     "loadModel": CpuLoad_model,
                     "cpuProxy": CpuLoad_proxy,
                     "colorProxy": colorProxy
                 };
-                tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
-                closeOnExit = true;
+
+                commonJS.openWindow(rootRect,
+                        {
+                            "loadModel": CpuLoad_model,
+                            "cpuProxy": CpuLoad_proxy,
+                            "colorProxy": colorProxy
+                        },
+                        Qt.resolvedUrl("Tooltip.qml"),
+                        tooltip,
+                        function(t) { tooltip = t; });
             }
 
             onAreaExited: {
                 if (tooltip != null && closeOnExit) {
-                    tooltip.closeRequested();
+                    tooltip.destroy();
                     tooltip = null;
                 }
             }
