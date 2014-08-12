@@ -93,6 +93,10 @@ namespace SB2
 
 	QVariant QuarkProxy::openWindow (const QUrl& url, const QString& str, const QVariant& var)
 	{
+#if QT_VERSION >= 0x050000
+		qWarning () << Q_FUNC_INFO
+				<< "this function is deprecated, consider using QtQuick.Window";
+#endif
 		const auto& newUrl = url.resolved (str);
 
 		auto varMap = var.toMap ();
