@@ -46,6 +46,8 @@ namespace Devmon
 		Q_OBJECT
 		Q_INTERFACES (IInfo IRemovableDevManager)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.DeadLyrics")
+
 		UDevBackend *Backend_;
 	public:
 		void Init (ICoreProxy_ptr);
