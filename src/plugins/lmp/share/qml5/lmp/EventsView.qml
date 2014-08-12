@@ -45,12 +45,13 @@ Rectangle {
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeEventImg; opacity: 1 }
-                PropertyChanges { target: eventsViewBlur; radius: 10 }
+                PropertyChanges { target: eventsViewBlur; radius: 20 }
             }
         ]
 
         transitions: Transition {
             PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { target: eventsViewBlur; property: "radius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
@@ -249,13 +250,13 @@ Rectangle {
         }
     }
 
-    RecursiveBlur {
+    GaussianBlur {
         id: eventsViewBlur
         anchors.fill: eventsView
 
         radius: 0
-        loops: 20
         source: eventsView
+        samples: 32
 
         visible: radius != 0
     }

@@ -46,20 +46,21 @@ Rectangle {
             State {
                 name: "loading"
                 when: fullSizeArtistImg.status == Image.Loading
-                PropertyChanges { target: bioViewBlur; radius: 1 }
+                PropertyChanges { target: bioViewBlur; radius: 2 }
                 PropertyChanges { target: loadProgress; opacity: 1 }
             },
             State {
                 name: "visible"
                 when: fullSizeArtistImg.status == Image.Ready
                 PropertyChanges { target: fullSizeArtistImg; opacity: 1; width: parent.width - 64; height: parent.height - 64 }
-                PropertyChanges { target: bioViewBlur; radius: 10 }
+                PropertyChanges { target: bioViewBlur; radius: 20 }
                 PropertyChanges { target: loadProgress; opacity: 0 }
             }
         ]
 
         transitions: Transition {
             PropertyAnimation { properties: "opacity,width,height,x,y"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { target: bioViewBlur; property: "radius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
@@ -438,14 +439,14 @@ Rectangle {
         }
     }
 
-    RecursiveBlur {
+    GaussianBlur {
         id: bioViewBlur
 
         anchors.fill: artistArea
 
         radius: 0
-        loops: 20
         source: artistArea
+        samples: 32
 
         visible: radius != 0
     }

@@ -47,13 +47,14 @@ Rectangle {
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeArtistImg; opacity: 1 }
-                PropertyChanges { target: similarViewBlur; radius: 10 }
+                PropertyChanges { target: similarViewBlur; radius: 20 }
             }
         ]
 
         transitions: Transition {
             ParallelAnimation {
                 PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+                PropertyAnimation { target: similarViewBlur; property: "radius"; duration: 300; easing.type: Easing.OutSine }
             }
         }
 
@@ -231,13 +232,13 @@ Rectangle {
         }
     }
 
-    RecursiveBlur {
+    GaussianBlur {
         id: similarViewBlur
         anchors.fill: similarView
 
         radius: 0
-        loops: 20
         source: similarView
+        samples: 32
 
         visible: radius != 0
     }
