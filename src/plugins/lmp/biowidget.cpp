@@ -61,9 +61,15 @@ namespace LMP
 #endif
 	{
 		Ui_.setupUi (this);
-		layout ()->addWidget (View_);
+
+#if QT_VERSION < 0x050000
+		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
 		View_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+		layout ()->addWidget (View_);
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
