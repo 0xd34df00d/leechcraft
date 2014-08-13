@@ -210,6 +210,11 @@ namespace Snails
 
 			item.Promise_->reportException (TimeoutException {});
 		}
+		catch (const vmime::exceptions::not_connected& e)
+		{
+			if (HandleReconnect (item, e, recLevel))
+				return;
+		}
 		catch (const vmime::exceptions::socket_exception& e)
 		{
 			if (HandleReconnect (item, e, recLevel))
