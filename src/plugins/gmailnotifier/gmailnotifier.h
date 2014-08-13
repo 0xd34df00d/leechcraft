@@ -53,6 +53,8 @@ namespace GmailNotifier
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.GMailNotifier")
+
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
 		GmailChecker *GmailChecker_;

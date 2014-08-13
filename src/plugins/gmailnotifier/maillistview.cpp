@@ -28,13 +28,23 @@
  **********************************************************************/
 
 #include "maillistview.h"
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
+#else
+#include <QQuickWidget>
+#include <QQmlContext>
+#include <QQmlEngine>
+#endif
+
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <util/sys/paths.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/models/rolenamesmixin.h>
 
 namespace LeechCraft
 {
@@ -42,7 +52,7 @@ namespace GmailNotifier
 {
 	namespace
 	{
-		class MailListModel : public QStandardItemModel
+		class MailListModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -55,7 +65,7 @@ namespace GmailNotifier
 			};
 
 			MailListModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Subject] = "subject";
@@ -69,7 +79,11 @@ namespace GmailNotifier
 	}
 
 	MailListView::MailListView (const ConvInfos_t& infos, ICoreProxy_ptr proxy, QWidget *parent)
+#if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
+#else
+	: QQuickWidget (parent)
+#endif
 	, Model_ (new MailListModel (this))
 	{
 		new Util::UnhoverDeleteMixin (this);
