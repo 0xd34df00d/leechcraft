@@ -125,7 +125,8 @@ namespace Snails
 
 	void TaskQueueManager::HandleItem (const TaskQueueItem& item, int recLevel)
 	{
-		item.Promise_->reportStarted ();
+		if (!item.Promise_->isStarted ())
+			item.Promise_->reportStarted ();
 
 		const auto invoke = [this, &item]
 		{
@@ -213,7 +214,8 @@ namespace Snails
 			item.Promise_->reportException (MakeWrappedException (e));
 		}
 
-		item.Promise_->reportFinished ();
+		if (!item.Promise_->isFinished ())
+			item.Promise_->reportFinished ();
 	}
 
 	void TaskQueueManager::rotateTaskQueue ()
