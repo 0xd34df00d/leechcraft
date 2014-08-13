@@ -26,6 +26,10 @@
 #include <QX11Info>
 #include <X11/Xlib.h>
 
+#if QT_VERSION >= 0x050000
+#include <xcb/xcb.h>
+#endif
+
 #include "keymapper_x11.h"
 
 static int (*original_x_errhandler)(Display* display, XErrorEvent* event);
@@ -51,18 +55,47 @@ static int qxt_x_errhandler(Display* display, XErrorEvent *event)
     }
 }
 
+#if QT_VERSION < 0x050000
 bool QxtGlobalShortcutPrivate::eventFilter(void* message)
 {
     XEvent* event = static_cast<XEvent*>(message);
     if (event->type == KeyPress)
     {
         XKeyEvent* key = (XKeyEvent*) event;
-        activateShortcut(key->keycode, 
+        activateShortcut(key->keycode,
             // Mod1Mask == Alt, Mod4Mask == Meta
             key->state & (ShiftMask | ControlMask | Mod1Mask | Mod4Mask));
     }
     return prevEventFilter ? prevEventFilter(message) : false;
 }
+#else
+bool QxtGlobalShortcutPrivate::nativeEventFilter (const QByteArray& eventType, void *msg, long *result)
+{
+	if (eventType != "xcb_generic_event_t")
+		return false;
+
+	const auto ev = static_cast<xcb_generic_event_t*> (msg);
+	if ((ev->response_type & 127) != XCB_KEY_PRESS)
+		return false;
+
+	const auto kev = static_cast<xcb_key_press_event_t*> (msg);
+
+	const auto keycode = kev->detail;
+	uint keystate = 0;
+	if (kev->state & XCB_MOD_MASK_1)
+		keystate |= Mod1Mask;
+	if (kev->state & XCB_MOD_MASK_CONTROL)
+		keystate |= ControlMask;
+	if (kev->state & XCB_MOD_MASK_4)
+		keystate |= Mod4Mask;
+	if (kev->state & XCB_MOD_MASK_SHIFT)
+		keystate |= ShiftMask;
+
+	activateShortcut (keycode, keystate & (ShiftMask | ControlMask | Mod1Mask | Mod4Mask));
+
+	return false;
+}
+#endif
 
 quint32 QxtGlobalShortcutPrivate::nativeModifiers(Qt::KeyboardModifiers modifiers)
 {

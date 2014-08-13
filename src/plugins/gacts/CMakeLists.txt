@@ -5,6 +5,11 @@ include (InitLCPlugin OPTIONAL)
 option (WITH_GACTS_BUNDLED_QXT "Build with bundled Qxt with fixed media keys handling" ON)
 
 if (NOT WITH_GACTS_BUNDLED_QXT)
+	if (USE_QT5)
+		message (FATAL_ERROR "Building Gacts with Qxt and Qt5 is not supported (as there are no
+				public releases of Qt5-enabled Qxt yet. Consider disabling WITH_GACTS_BUNDLED_QXT option.")
+	endif ()
+
 	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 	set(QXT_USE_QXTCORE TRUE)
@@ -37,9 +42,11 @@ else ()
 		)
 
 	include_directories (${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qxt)
+
+	unset (QXT_INCLUDE_DIRS)
+	unset (QXT_LIBRARIES)
 endif ()
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -63,9 +70,10 @@ add_library (leechcraft_gacts SHARED
 	${ADDITIONAL_SOURCES}
 	)
 target_link_libraries (leechcraft_gacts
-	${QT_LIBRARIES}
 	${QXT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${ADDITIONAL_LIBS}
 	)
 install (TARGETS leechcraft_gacts DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_gacts X11Extras)

@@ -46,6 +46,8 @@ namespace GActs
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.GActs")
+
 		QHash<QByteArray, QxtGlobalShortcut*> RegisteredShortcuts_;
 	public:
 		void Init (ICoreProxy_ptr);
