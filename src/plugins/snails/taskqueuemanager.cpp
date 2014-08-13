@@ -123,6 +123,33 @@ namespace Snails
 		return Items_.isEmpty () ? TaskQueueItem {} : Items_.takeLast ();
 	}
 
+	template<typename Ex>
+	bool TaskQueueManager::HandleReconnect (const TaskQueueItem& item, const Ex& ex, int recLevel)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "error while calling"
+				<< item.Method_
+				<< "with"
+				<< item.Args_
+				<< ":"
+				<< ex.what ();
+
+		if (recLevel >= 3)
+		{
+			item.Promise_->reportException (MakeWrappedException (ex));
+			return false;
+		}
+		else
+		{
+			qWarning () << "reconnecting for the"
+					<< recLevel
+					<< "time";
+			ATW_->flushSockets ();
+			HandleItem (item, ++recLevel);
+			return true;
+		}
+	}
+
 	void TaskQueueManager::HandleItem (const TaskQueueItem& item, int recLevel)
 	{
 		if (!item.Promise_->isStarted ())
@@ -185,22 +212,8 @@ namespace Snails
 		}
 		catch (const vmime::exceptions::socket_exception& e)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "socket error while calling"
-					<< item.Method_
-					<< "with"
-					<< item.Args_
-					<< ":"
-					<< e.what ();
-
-			if (recLevel >= 3)
-				item.Promise_->reportException (MakeWrappedException (e));
-			else
-			{
-				ATW_->flushSockets ();
-				HandleItem (item, ++recLevel);
+			if (HandleReconnect (item, e, recLevel))
 				return;
-			}
 		}
 		catch (const std::exception& e)
 		{
