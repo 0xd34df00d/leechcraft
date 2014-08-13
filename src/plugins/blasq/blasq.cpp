@@ -29,9 +29,16 @@
 
 #include "blasq.h"
 #include <QIcon>
+
+#if QT_VERSION < 0x050000
 #include <QtDeclarative>
+#else
+#include <QtQuick>
+#endif
+
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
 #include "interfaces/blasq/iservicesplugin.h"
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/iservice.h"
@@ -44,7 +51,6 @@
 #include "defaultimagechooser.h"
 #include "enumsproxy.h"
 #include "datafilteruploader.h"
-#include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
 {
@@ -74,7 +80,9 @@ namespace Blasq
 			TFOpenableByRequest | TFSuggestOpening
 		};
 
+#if QT_VERSION < 0x050000
 		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
+#endif
 		qmlRegisterUncreatableType<EnumsProxy> ("org.LC.Blasq", 1, 0, "Blasq",
 				"This exports otherwise unavailable Blasq datatypes to QML");
 	}

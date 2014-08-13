@@ -31,7 +31,11 @@
 
 #include <QObject>
 
+#if QT_VERSION < 0x050000
 class QDeclarativeView;
+#else
+class QQuickWidget;
+#endif
 
 namespace LeechCraft
 {
@@ -41,7 +45,11 @@ namespace LMP
 	{
 		Q_OBJECT
 	public:
+#if QT_VERSION < 0x050000
 		StdArtistActionsManager (QDeclarativeView *view, QObject *parent = 0);
+#else
+		StdArtistActionsManager (QQuickWidget *view, QObject *parent = 0);
+#endif
 	private slots:
 		void handleBookmark (const QString&, const QString&, const QString&);
 		void handleLink (const QString&);

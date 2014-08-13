@@ -29,6 +29,7 @@
 
 #include "entrybase.h"
 #include <util/util.h>
+#include <util/sll/urloperator.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/azothutil.h>
 #include "vkaccount.h"
@@ -80,7 +81,7 @@ namespace Murm
 
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (Messages_, before);
+		AzothUtil::StandardPurgeMessages (Messages_, before);
 	}
 
 	namespace
@@ -107,23 +108,27 @@ namespace Murm
 			QUrl azothUrl;
 			azothUrl.setScheme ("azoth");
 			azothUrl.setHost ("sendentities");
-			azothUrl.addQueryItem ("count", "1");
-			azothUrl.addQueryItem ("entityVar0", info.URL_.toEncoded ());
-			azothUrl.addQueryItem ("entityType0", "url");
-			azothUrl.addQueryItem ("addCount0", "1");
+			Util::UrlOperator { azothUrl }
+					("count", "1")
+					("entityVar0", info.URL_.toEncoded ())
+					("entityType0", "url")
+					("addCount0", "1");
 
 			auto enqueueUrl = azothUrl;
-			enqueueUrl.addQueryItem ("flags0", "OnlyHandle");
-			enqueueUrl.addQueryItem ("add0key0", "Action");
-			enqueueUrl.addQueryItem ("add0value0", "AudioEnqueue");
+			Util::UrlOperator { enqueueUrl }
+					("flags0", "OnlyHandle")
+					("add0key0", "Action")
+					("add0value0", "AudioEnqueue");
 
 			auto playUrl = azothUrl;
-			playUrl.addQueryItem ("flags0", "OnlyHandle");
-			playUrl.addQueryItem ("add0key0", "Action");
-			playUrl.addQueryItem ("add0value0", "AudioEnqueuePlay");
+			Util::UrlOperator { playUrl }
+					("flags0", "OnlyHandle")
+					("add0key0", "Action")
+					("add0value0", "AudioEnqueuePlay");
 
 			auto downloadUrl = azothUrl;
-			downloadUrl.addQueryItem ("flags0", "OnlyDownload");
+			Util::UrlOperator { downloadUrl }
+					("flags0", "OnlyDownload");
 
 			QString result;
 

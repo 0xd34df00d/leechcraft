@@ -56,6 +56,8 @@ namespace Rosenthal
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Rosenthal")
+
 		ICoreProxy_ptr Proxy_;
 
 		std::shared_ptr<QTranslator> Translator_;

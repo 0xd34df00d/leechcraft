@@ -41,11 +41,16 @@ namespace LMP
 	struct MediaInfo;
 	class ArtistsInfoDisplay;
 
+	class BioWidget;
+	class SimilarView;
+
 	class NowPlayingWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::NowPlayingWidget Ui_;
+		BioWidget * const BioWidget_;
+		SimilarView * const SimilarView_;
 
 		Media::SimilarityInfos_t LastInfos_;
 		MediaInfo CurrentInfo_;

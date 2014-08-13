@@ -5,7 +5,6 @@ include (InitLCPlugin OPTIONAL)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (QTermWidget REQUIRED)
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -24,8 +23,8 @@ set (FORMS
 	closedialog.ui
 	)
 set (RESOURCES eleeminatorresources.qrc)
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
-QT4_WRAP_UI (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
 CreateTrs("eleeminator" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("eleeminator" "en;ru_RU" "${SRCS}" "${FORMS}" "eleeminatorsettings.xml")
 
@@ -36,9 +35,10 @@ add_library (leechcraft_eleeminator SHARED
 	${UIS_H}
 	)
 target_link_libraries (leechcraft_eleeminator
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QTERMWIDGET_LIBRARIES}
 	)
 install (TARGETS leechcraft_eleeminator DESTINATION ${LC_PLUGINS_DEST})
 install (FILES eleeminatorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_eleeminator Widgets)

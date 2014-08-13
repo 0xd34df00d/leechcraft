@@ -33,6 +33,7 @@
 #include <QTimer>
 #include <QMimeData>
 #include <QtDebug>
+#include <util/models/dndactionsmixin.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/imodifiableradiostation.h>
@@ -67,12 +68,12 @@ namespace LMP
 			}
 		}
 
-		class RadioModel : public QStandardItemModel
+		class RadioModel : public Util::DndActionsMixin<QStandardItemModel>
 		{
 			RadioManager * const Manager_;
 		public:
 			RadioModel (RadioManager *manager)
-			: QStandardItemModel { manager }
+			: DndActionsMixin<QStandardItemModel> { manager }
 			, Manager_ { manager }
 			{
 				setSupportedDragActions (Qt::CopyAction | Qt::MoveAction);

@@ -14,11 +14,10 @@ set (FORMS
 	settingswidget.ui
 	newpassworddialog.ui
 	)
-QT4_WRAP_UI (UIS_H ${FORMS})
+QtWrapUi (UIS_H ${FORMS})
 
 if (TESTS_SECMAN)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
-	QT4_WRAP_CPP (SECMAN_SECURESTORAGE_MOC "tests/cryptosystemtest.h")
 	add_executable (lc_secman_securestorage_test WIN32
 		tests/cryptosystemtest.cpp
 		cryptosystem.cpp
@@ -31,6 +30,8 @@ if (TESTS_SECMAN)
 		crypto
 	)
 	add_test (CryptoSystemTest lc_secman_securestorage_test)
+
+	FindQtLibs (lc_secman_securestorage_test Test)
 endif ()
 
 add_library (leechcraft_secman_securestorage SHARED
@@ -39,9 +40,10 @@ add_library (leechcraft_secman_securestorage SHARED
 	${UIS_H}
 	)
 target_link_libraries (leechcraft_secman_securestorage
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	crypto
 	)
 install (TARGETS leechcraft_secman_securestorage DESTINATION ${LC_PLUGINS_DEST})
 install (FILES securestoragesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_secman_securestorage Widgets)

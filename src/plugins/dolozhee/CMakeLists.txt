@@ -2,9 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_dolozhee)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -35,7 +32,7 @@ set (FORMS
 	)
 CreateTrs ("dolozhee" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("dolozhee" "en;ru_RU" "${SRCS}" "${FORMS}" "")
-QT4_WRAP_UI (UIS_H ${FORMS})
+QtWrapUi (UIS_H ${FORMS})
 
 add_library (leechcraft_dolozhee SHARED
 	${COMPILED_TRANSLATIONS}
@@ -47,3 +44,5 @@ target_link_libraries (leechcraft_dolozhee
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_dolozhee DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_dolozhee Network Widgets Xml)

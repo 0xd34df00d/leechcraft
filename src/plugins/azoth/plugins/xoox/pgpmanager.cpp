@@ -254,7 +254,7 @@ namespace Xoox
 
 			const QCA::PGPKey key = PublicKey (from);
 
-			if (!IsValidSignature (key, message.toUtf8 (), signature.toAscii ()))
+			if (!IsValidSignature (key, message.toUtf8 (), signature.toLatin1 ()))
 				emit invalidSignatureReceived (from);
 			else if (tagName == "message")
 				emit signedMessageReceived (from);
@@ -267,7 +267,7 @@ namespace Xoox
 		{
 			QString encryptedBodyStr = x_element.text ();
 			//TODO Check if we need another representation, instead of 'toAscii()'
-			const QByteArray& encryptedBody = encryptedBodyStr.toAscii ();
+			const QByteArray& encryptedBody = encryptedBodyStr.toLatin1 ();
 			QByteArray decryptedBody = DecryptBody (encryptedBody);
 			if (!decryptedBody.isEmpty ())
 				emit encryptedMessageReceived (from, QString::fromUtf8 (decryptedBody));

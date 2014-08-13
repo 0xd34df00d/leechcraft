@@ -13,8 +13,7 @@ if (NOT RBTorrent_FOUND)
 	message (SEND_ERROR "Rasterbar libtorrent not found, not building BitTorrent")
 endif ()
 
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
+
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
@@ -142,8 +141,8 @@ endif ()
 
 add_definitions(-DTORRENT_LINKING_SHARED)
 
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_bittorrent SHARED
 	${COMPILED_TRANSLATIONS}
@@ -171,3 +170,5 @@ install (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-bittorrent.desktop DESTINATION share/applications)
 endif ()
+
+FindQtLibs (leechcraft_bittorrent Xml Widgets)

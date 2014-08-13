@@ -28,6 +28,13 @@
  **********************************************************************/
 
 #include "biowidget.h"
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
+#else
+#include <QQuickWidget>
+#endif
+
 #include <QtDebug>
 #include <util/util.h>
 #include <util/qml/standardnamfactory.h>
@@ -47,15 +54,29 @@ namespace LMP
 {
 	BioWidget::BioWidget (QWidget *parent)
 	: QWidget (parent)
+#if QT_VERSION < 0x050000
+	, View_ (new QDeclarativeView)
+#else
+	, View_ (new QQuickWidget)
+#endif
 	{
 		Ui_.setupUi (this);
 
+#if QT_VERSION < 0x050000
+		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
+		View_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+		layout ()->addWidget (View_);
+
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
-				Ui_.View_->engine ());
+				View_->engine ());
 
-		Manager_ = new BioViewManager (Ui_.View_, this);
-		Ui_.View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "BioView.qml"));
+		Manager_ = new BioViewManager (View_, this);
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "BioView.qml"));
 		Manager_->InitWithSource ();
 
 		const auto& lastProv = XmlSettingsManager::Instance ()

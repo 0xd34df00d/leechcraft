@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "serveradaptor.h"
+#include <QStringList>
 #include "serverobject.h"
 
 namespace LeechCraft

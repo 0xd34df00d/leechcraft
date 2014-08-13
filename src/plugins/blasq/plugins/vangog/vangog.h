@@ -51,6 +51,8 @@ namespace Vangog
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Blasq::IServicesPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Blasq.Vangog")
+
 		PicasaService *Service_;
 
 	public:

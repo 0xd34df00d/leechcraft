@@ -191,7 +191,7 @@ namespace Zheet
 
 	void MSNBuddyEntry::PurgeMessages (const QDateTime& before)
 	{
-		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void MSNBuddyEntry::SetChatPartState (ChatPartState, const QString&)

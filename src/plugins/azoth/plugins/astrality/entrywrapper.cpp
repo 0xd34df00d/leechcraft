@@ -172,7 +172,7 @@ namespace Astrality
 
 	void EntryWrapper::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void EntryWrapper::SetChatPartState (ChatPartState, const QString&)

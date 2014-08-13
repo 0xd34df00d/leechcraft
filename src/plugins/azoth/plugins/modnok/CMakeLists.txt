@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_modnok)
 include (InitLCPlugin OPTIONAL)
 
-include (${QT_USE_FILE})
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -15,7 +14,7 @@ set (MODNOK_SRCS
 set (MODNOK_RESOURCES azothmodnokresources.qrc)
 CreateTrs ("azoth_modnok" "en;es;ru_RU;uk_UA" MODNOK_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_modnok" "en;ru_RU" "${MODNOK_SRCS}" "" "azothmodnoksettings.xml")
-QT4_ADD_RESOURCES (MODNOK_RCCS ${MODNOK_RESOURCES})
+QtAddResources (MODNOK_RCCS ${MODNOK_RESOURCES})
 
 add_library (leechcraft_azoth_modnok SHARED
 	${MODNOK_COMPILED_TRANSLATIONS}
@@ -23,9 +22,10 @@ add_library (leechcraft_azoth_modnok SHARED
 	${MODNOK_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_modnok
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_modnok DESTINATION ${LC_PLUGINS_DEST})
 install (PROGRAMS lc_azoth_modnok_latexconvert.sh DESTINATION ${LC_SHARE_DEST}/azoth)
 install (FILES azothmodnoksettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_azoth_modnok Core)

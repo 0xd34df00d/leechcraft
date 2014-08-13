@@ -50,6 +50,8 @@ namespace Potorchu
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::LMP::ILMPPlugin LeechCraft::LMP::IFilterPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.Potorchu")
+
 		ILMPProxy_ptr LmpProxy_;
 	public:
 		void Init (ICoreProxy_ptr);

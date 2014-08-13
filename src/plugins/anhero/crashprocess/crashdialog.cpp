@@ -61,7 +61,7 @@ namespace CrashProcess
 		traceFont.setStyleHint (QFont::TypeWriter);
 		Ui_.TraceDisplay_->setFont (traceFont);
 
-		new Highlighter (Ui_.TraceDisplay_);
+		new Highlighter (Ui_.TraceDisplay_->document ());
 
 		connect (Ui_.Reload_,
 				SIGNAL (released ()),

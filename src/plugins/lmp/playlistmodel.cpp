@@ -41,7 +41,7 @@ namespace LeechCraft
 namespace LMP
 {
 	PlaylistModel::PlaylistModel (Player *parent)
-	: QStandardItemModel (parent)
+	: DndActionsMixin<QStandardItemModel> (parent)
 	, Player_ (parent)
 	{
 		setSupportedDragActions (Qt::CopyAction | Qt::MoveAction);

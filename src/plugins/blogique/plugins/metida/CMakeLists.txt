@@ -2,12 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blogique_metida)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTDECLARATIVE TRUE)
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-set (QT_USE_QTXMLPATTERNS TRUE)
-include (${QT_USE_FILE})
-
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${BLOGIQUE_INCLUDE_DIR}
@@ -54,8 +48,8 @@ set (METIDA_FORMS
 
 set (METIDA_RESOURCES blogiquemetidaresources.qrc metidaresources.qrc)
 
-QT4_WRAP_UI (METIDA_UIS_H ${METIDA_FORMS})
-QT4_ADD_RESOURCES (METIDA_RCCS ${METIDA_RESOURCES})
+QtWrapUi (METIDA_UIS_H ${METIDA_FORMS})
+QtAddResources (METIDA_RCCS ${METIDA_RESOURCES})
 
 CreateTrs ("blogique_metida" "en;ru_RU" METIDA_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("blogique_metida" "en;ru_RU" "${METIDA_SRCS}" "${METIDA_FORMS}" "blogiquemetidasettings.xml")
@@ -69,9 +63,10 @@ add_library (leechcraft_blogique_metida SHARED
 	)
 
 target_link_libraries (leechcraft_blogique_metida
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_blogique_metida DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blogiquemetidasettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_blogique_metida Network Widgets Xml XmlPatterns)

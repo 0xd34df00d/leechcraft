@@ -31,6 +31,7 @@
 
 #include <QStandardItemModel>
 #include <QHash>
+#include <util/models/dndactionsmixin.h>
 #include "interfaces/lmp/icollectionmodel.h"
 #include "interfaces/lmp/collectiontypes.h"
 
@@ -38,7 +39,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class LocalCollectionModel : public QStandardItemModel
+	class LocalCollectionModel : public Util::DndActionsMixin<QStandardItemModel>
 							   , public ICollectionModel
 	{
 		Q_OBJECT

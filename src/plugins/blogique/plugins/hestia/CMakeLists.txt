@@ -2,9 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blogique_hestia)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTSQL TRUE)
-include (${QT_USE_FILE})
-
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${BLOGIQUE_INCLUDE_DIR}
@@ -28,8 +25,8 @@ set (HESTIA_FORMS
 	accountconfigurationwidget.ui
 	)
 
-QT4_WRAP_UI (HESTIA_UIS_H ${HESTIA_FORMS})
-QT4_ADD_RESOURCES (HESTIA_RCCS ${HESTIA_RESOURCES})
+QtWrapUi (HESTIA_UIS_H ${HESTIA_FORMS})
+QtAddResources (HESTIA_RCCS ${HESTIA_RESOURCES})
 
 CreateTrs ("blogique_hestia" "en;ru_RU" HESTIA_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("blogique_hestia" "en;ru_RU" "${HESTIA_SRCS}" "${HESTIA_FORMS}" "blogiquehestiasettings.xml")
@@ -42,9 +39,10 @@ add_library (leechcraft_blogique_hestia SHARED
 	)
 
 target_link_libraries (leechcraft_blogique_hestia
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_blogique_hestia DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blogiquehestiasettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_blogique_hestia Sql Widgets)

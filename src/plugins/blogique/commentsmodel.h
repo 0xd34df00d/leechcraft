@@ -30,12 +30,13 @@
 #pragma once
 
 #include <QStandardItemModel>
+#include <util/models/rolenamesmixin.h>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CommentsModel : public QStandardItemModel
+	class CommentsModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
 		Q_OBJECT
 

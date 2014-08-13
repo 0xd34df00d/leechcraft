@@ -5,6 +5,10 @@ include (InitLCPlugin OPTIONAL)
 option (DUMBEEP_WITH_PHONON "Build with support for Phonon backend" OFF)
 
 if (DUMBEEP_WITH_PHONON)
+	if (USE_QT5)
+		message (FATAL_ERROR "Building Dumbeep with Phonon is not supported on Qt5, disable DUMBEEP_WITH_PHONON option.")
+	endif ()
+
 	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 	if (NOT WIN32)
@@ -29,7 +33,6 @@ if (DUMBEEP_WITH_PHONON)
 	add_definitions (-DWITH_PHONON)
 endif ()
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -45,9 +48,10 @@ add_library (leechcraft_dumbeep SHARED
 	${SRCS}
 	)
 target_link_libraries (leechcraft_dumbeep
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QT_PHONON_LIBS}
 	)
 install (TARGETS leechcraft_dumbeep DESTINATION ${LC_PLUGINS_DEST})
 install (FILES dumbeepsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_dumbeep Core)

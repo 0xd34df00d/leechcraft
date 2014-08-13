@@ -62,6 +62,8 @@ namespace Graffiti
 				IJobHolder
 				LeechCraft::LMP::ILMPPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.Graffiti")
+
 		ICoreProxy_ptr CoreProxy_;
 		ILMPProxy_ptr LMPProxy_;
 

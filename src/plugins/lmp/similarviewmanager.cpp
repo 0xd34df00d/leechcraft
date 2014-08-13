@@ -29,8 +29,15 @@
 
 #include "similarviewmanager.h"
 #include <algorithm>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
+#else
+#include <QQuickWidget>
+#include <QQmlContext>
+#endif
+
 #include <util/qml/colorthemeproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/isimilarartists.h>
@@ -43,7 +50,11 @@ namespace LeechCraft
 {
 namespace LMP
 {
+#if QT_VERSION < 0x050000
 	SimilarViewManager::SimilarViewManager (QDeclarativeView *view, QObject *parent)
+#else
+	SimilarViewManager::SimilarViewManager (QQuickWidget *view, QObject *parent)
+#endif
 	: QObject (parent)
 	, View_ (view)
 	, Model_ (new SimilarModel (this))

@@ -79,6 +79,7 @@ namespace SecMan
 		Ui_.setupUi (this);
 		Ui_.ContentsTree_->setModel (ContentsModel_);
 
+		/*
 		auto makePair = [] (const QString& leftText, const QString& rightText) -> QList<QStandardItem*>
 		{
 			QList<QStandardItem*> result;
@@ -89,7 +90,6 @@ namespace SecMan
 			return result;
 		};
 
-		/*
 		for (auto pluginObj : Core::Instance ().GetStoragePlugins ())
 		{
 			auto ii = qobject_cast<IInfo*> (pluginObj);

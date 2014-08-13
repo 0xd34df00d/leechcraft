@@ -52,7 +52,12 @@ namespace Util
 		UrlOperator (QUrl& url);
 		~UrlOperator ();
 
+		void Flush ();
+
 		UrlOperator& operator() (const QString& key, const QString& value);
+		UrlOperator& operator-= (const QString& key);
+
+		QUrl operator() ();
 	};
 }
 }

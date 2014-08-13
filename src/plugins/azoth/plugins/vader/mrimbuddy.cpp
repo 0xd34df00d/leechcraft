@@ -306,7 +306,7 @@ namespace Vader
 
 	void MRIMBuddy::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void MRIMBuddy::SetChatPartState (ChatPartState state, const QString&)

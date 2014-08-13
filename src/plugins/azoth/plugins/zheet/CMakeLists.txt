@@ -6,9 +6,6 @@ set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package (Libmsn REQUIRED)
 find_package (OpenSSL REQUIRED)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -41,8 +38,8 @@ set (ZHEET_FORMS
 set (ZHEET_RESOURCES azothzheetresources.qrc)
 CreateTrs ("azoth_zheet" "en;es;ru_RU;uk_UA" ZHEET_COMPILED_TRANSLATIONS)
 
-QT4_WRAP_UI (ZHEET_UIS_H ${ZHEET_FORMS})
-QT4_ADD_RESOURCES (ZHEET_RCCS ${ZHEET_RESOURCES})
+QtWrapUi (ZHEET_UIS_H ${ZHEET_FORMS})
+QtAddResources (ZHEET_RCCS ${ZHEET_RESOURCES})
 
 add_library (leechcraft_azoth_zheet SHARED
 	${ZHEET_COMPILED_TRANSLATIONS}
@@ -51,7 +48,6 @@ add_library (leechcraft_azoth_zheet SHARED
 	${ZHEET_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_zheet
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LIBMSN_LIBRARIES}
 	${OPENSSL_LIBRARIES}
@@ -60,3 +56,5 @@ target_link_libraries (leechcraft_azoth_zheet
 install (TARGETS leechcraft_azoth_zheet DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${ZHEET_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 #install (FILES azothzheetsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_azoth_zheet Network Widgets Xml)

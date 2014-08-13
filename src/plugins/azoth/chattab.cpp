@@ -43,11 +43,18 @@
 #include <QKeyEvent>
 #include <QTextBrowser>
 #include <QDesktopWidget>
+#include <QMimeData>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
 #include <util/gui/findnotificationwk.h>
+#include <util/sll/urloperator.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -941,7 +948,11 @@ namespace Azoth
 		if (!job->GetComment ().isEmpty ())
 		{
 			text += "<br /><br />" + tr ("The file description is:") + "<br /><br /><em>";
+#if QT_VERSION < 0x050000
 			auto comment = Qt::escape (job->GetComment ());
+#else
+			auto comment = job->GetComment ().toHtmlEscaped ();
+#endif
 			comment.replace ("\n", "<br />");
 			text += comment + "</em>";
 		}
@@ -1138,7 +1149,7 @@ namespace Azoth
 	{
 		void OpenChatWithText (QUrl newUrl, const QString& id, ICLEntry *own)
 		{
-			newUrl.removeQueryItem ("hrid");
+			Util::UrlOperator { newUrl } -= "hrid";
 
 			IAccount *account = qobject_cast<IAccount*> (own->GetParentAccount ());
 			for (QObject *entryObj : account->GetCLEntries ())
@@ -1168,14 +1179,19 @@ namespace Azoth
 		const auto& host = url.host ();
 		if (host == "msgeditreplace")
 		{
-			if (url.queryItems ().isEmpty ())
+#if QT_VERSION < 0x050000
+			const auto& queryItems = url.queryItems ();
+#else
+			const auto& queryItems = QUrlQuery { url }.queryItems ();
+#endif
+			if (queryItems.isEmpty ())
 			{
 				Ui_.MsgEdit_->setText (url.path ().mid (1));
 				Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 				Ui_.MsgEdit_->setFocus ();
 			}
 			else
-				for (const auto& item : url.queryItems ())
+				for (const auto& item : queryItems)
 					if (item.first == "hrid")
 					{
 						OpenChatWithText (url, item.second, GetEntry<ICLEntry> ());
@@ -1203,8 +1219,12 @@ namespace Azoth
 		}
 		else if (host == "insertnick")
 		{
+#if QT_VERSION < 0x050000
 			const auto& encoded = url.encodedQueryItemValue ("nick");
 			const auto& nick = QUrl::fromPercentEncoding (encoded);
+#else
+			const auto& nick = QUrlQuery { url }.queryItemValue ("nick", QUrl::FullyDecoded);
+#endif
 			InsertNick (nick);
 
 			if (!GetMUCParticipants ().contains (nick))
@@ -1215,13 +1235,18 @@ namespace Azoth
 		}
 		else if (host == "sendentities")
 		{
-			const auto& count = std::max (url.queryItemValue ("count").toInt (), 1);
+#if QT_VERSION < 0x050000
+			const auto queryObject = url;
+#else
+			const QUrlQuery queryObject { url };
+#endif
+			const auto& count = std::max (queryObject.queryItemValue ("count").toInt (), 1);
 			for (int i = 0; i < count; ++i)
 			{
 				const auto& numStr = QString::number (i);
 
-				const auto& entityStr = url.queryItemValue ("entityVar" + numStr);
-				const auto& type = url.queryItemValue ("entityType" + numStr);
+				const auto& entityStr = queryObject.queryItemValue ("entityVar" + numStr);
+				const auto& type = queryObject.queryItemValue ("entityType" + numStr);
 
 				QVariant entityVar;
 				if (type == "url")
@@ -1234,9 +1259,9 @@ namespace Azoth
 					continue;
 				}
 
-				const auto& mime = url.queryItemValue ("mime" + numStr);
+				const auto& mime = queryObject.queryItemValue ("mime" + numStr);
 
-				const auto& flags = url.queryItemValue ("flags" + numStr).split (",");
+				const auto& flags = queryObject.queryItemValue ("flags" + numStr).split (",");
 				TaskParameters tp = TaskParameter::FromUserInitiated;
 				if (flags.contains ("OnlyHandle"))
 					tp |= TaskParameter::OnlyHandle;
@@ -1245,12 +1270,12 @@ namespace Azoth
 
 				auto e = Util::MakeEntity (entityVar, {}, tp, mime);
 
-				const auto& addCountStr = url.queryItemValue ("addCount" + numStr);
+				const auto& addCountStr = queryObject.queryItemValue ("addCount" + numStr);
 				for (int j = 0, cnt = std::max (addCountStr.toInt (), 1); j < cnt; ++j)
 				{
 					const auto& addStr = QString::number (j);
-					const auto& key = url.queryItemValue ("add" + numStr + "key" + addStr);
-					const auto& value = url.queryItemValue ("add" + numStr + "value" + addStr);
+					const auto& key = queryObject.queryItemValue ("add" + numStr + "key" + addStr);
+					const auto& value = queryObject.queryItemValue ("add" + numStr + "value" + addStr);
 					e.Additional_ [key] = value;
 				}
 

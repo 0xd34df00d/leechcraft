@@ -50,6 +50,8 @@ namespace Rappor
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Blasq::IServicesPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Blasq.Rappor")
+
 		VkService *Service_;
 	public:
 		void Init (ICoreProxy_ptr);

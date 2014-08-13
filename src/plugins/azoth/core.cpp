@@ -48,6 +48,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sys/resourceloader.h>
+#include <util/sll/urloperator.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
@@ -804,12 +805,12 @@ namespace Azoth
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
 			QUrl url ("azoth://insertnick/");
-			url.addEncodedQueryItem ("nick", QUrl::toPercentEncoding (nick));
-
-			ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
-			if (other)
-				url.addEncodedQueryItem ("entryId",
-						QUrl::toPercentEncoding (other->GetEntryID ()));
+			{
+				Util::UrlOperator op { url };
+				op ("nick", nick);
+				if (const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ()))
+					op ("entryId", other->GetEntryID ());
+			}
 
 			string.append ("<span class='nickname'><a href=\"");
 			string.append (url.toEncoded ());
@@ -887,7 +888,11 @@ namespace Azoth
 		QMap<int, QString> pos2smile;
 		for (const auto& str : src->GetEmoticonStrings (pack))
 		{
+#if QT_VERSION < 0x050000
 			const auto& escaped = Qt::escape (str);
+#else
+			const auto& escaped = str.toHtmlEscaped ();
+#endif
 			int pos = 0;
 			while ((pos = body.indexOf (escaped, pos)) != -1)
 			{
@@ -905,8 +910,15 @@ namespace Azoth
 			return body;
 
 		for (auto i = pos2smile.begin (); i != pos2smile.end (); ++i)
-			for (int j = 1; j < Qt::escape (i.value ()).size (); ++j)
+		{
+#if QT_VERSION < 0x050000
+			const auto& escapedSmile = Qt::escape (i.value ());
+#else
+			const auto& escapedSmile = i.value ().toHtmlEscaped ();
+#endif
+			for (int j = 1; j < escapedSmile.size (); ++j)
 				pos2smile.remove (i.key () + j);
+		}
 
 		QList<QPair<int, QString>> reversed;
 		reversed.reserve (pos2smile.size ());
@@ -916,7 +928,11 @@ namespace Azoth
 		for (const auto& pair : reversed)
 		{
 			const auto& str = pair.second;
+#if QT_VERSION < 0x050000
 			const auto& escaped = Qt::escape (str);
+#else
+			const auto& escaped = str.toHtmlEscaped ();
+#endif
 
 			const auto& rawData = src->GetImage (pack, str).toBase64 ();
 

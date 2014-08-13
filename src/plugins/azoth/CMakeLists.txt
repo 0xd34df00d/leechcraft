@@ -1,7 +1,9 @@
 cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth)
 include (InitLCPlugin OPTIONAL)
-set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
+
 include (CMakeDependentOption)
 
 option (ENABLE_MEDIACALLS "Enable support for media calls" ON)
@@ -13,15 +15,6 @@ if (USE_AZOTH_BOOST_LOCALE)
 	add_definitions (-DUSE_BOOST_LOCALE)
 endif ()
 
-if (NOT WIN32)
-	set (QT_USE_QTDBUS TRUE)
-endif ()
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTWEBKIT TRUE)
-set (QT_USE_QTSQL TRUE)
-set (QT_USE_QTXML TRUE)
-
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -49,9 +42,13 @@ if (WITH_DOCS)
 endif ()
 
 if (ENABLE_MEDIACALLS)
-	find_package (QtMultimediaKit REQUIRED)
+	if (NOT USE_QT5)
+		find_package (QtMultimediaKit REQUIRED)
 
-	include_directories (${QTMULTIMEDIAKIT_INCLUDE_DIRS})
+		include_directories (${QTMULTIMEDIAKIT_INCLUDE_DIRS})
+	else ()
+		set (QTMULTIMEDIAKIT_LIBRARIES)
+	endif ()
 endif ()
 
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
@@ -85,6 +82,7 @@ add_library (leechcraft_azoth_common STATIC
 	${COMMON_SRCS}
 	)
 set_target_properties (leechcraft_azoth_common PROPERTIES POSITION_INDEPENDENT_CODE True)
+FindQtLibs (leechcraft_azoth_common Core)
 
 set (SRCS
 	azoth.cpp
@@ -195,8 +193,8 @@ endif ()
 
 CreateTrs ("azoth" "en;es;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("azoth" "en;ru_RU" "${SRCS}" "${FORMS}" "azothsettings.xml")
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 if (WIN32)
 	find_package (Speex REQUIRED)
@@ -210,7 +208,6 @@ add_library (leechcraft_azoth SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_azoth
-	${QT_LIBRARIES}
 	${Boost_LOCALE_LIBRARY}
 	${LEECHCRAFT_LIBRARIES}
 	${QTMULTIMEDIAKIT_LIBRARIES}
@@ -222,6 +219,16 @@ install (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
+
+FindQtLibs (leechcraft_azoth Network Sql WebKitWidgets Widgets Xml)
+if (NOT WIN32)
+	FindQtLibs (leechcraft_azoth DBus)
+endif ()
+if (ENABLE_MEDIACALLS)
+	if (USE_QT5)
+		FindQtLibs (leechcraft_azoth Multimedia)
+	endif ()
+endif ()
 
 set (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

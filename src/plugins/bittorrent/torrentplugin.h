@@ -97,6 +97,8 @@ namespace LeechCraft
 						IActionsExporter
 						IHaveDiagInfo)
 
+				LC_PLUGIN_METADATA ("org.LeechCraft.BitTorrent")
+
 				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;
 				std::auto_ptr<QTimer> OverallStatsUpdateTimer_;

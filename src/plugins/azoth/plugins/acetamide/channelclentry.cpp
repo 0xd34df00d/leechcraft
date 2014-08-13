@@ -78,7 +78,7 @@ namespace Acetamide
 		const auto& iSupport = ICH_->GetChannelsManager ()->GetISupport ();
 		QString roles = iSupport ["PREFIX"].split (')').value (0);
 		for (int i = roles.length () - 1; i >= 1; --i)
-			switch (roles.at (i).toAscii ())
+			switch (roles.at (i).toLatin1 ())
 			{
 			case 'v':
 				Perms_ ["permclass_role"] << "voiced";
@@ -192,7 +192,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void ChannelCLEntry::SetChatPartState (ChatPartState, const QString&)

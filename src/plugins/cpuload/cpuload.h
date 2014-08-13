@@ -44,6 +44,8 @@ namespace CpuLoad
 		Q_OBJECT
 		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.CPULoad")
+
 		QuarkComponent_ptr CpuQuark_;
 	public:
 		void Init (ICoreProxy_ptr);

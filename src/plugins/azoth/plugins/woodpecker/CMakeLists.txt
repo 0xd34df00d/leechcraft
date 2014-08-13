@@ -12,18 +12,20 @@ endif ()
 project (leechcraft_azoth_woodpecker)
 include (InitLCPlugin OPTIONAL)
 
+find_package (QtKOAuth REQUIRED)
+
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package (QtKOAuth REQUIRED)
-find_package (QJSON REQUIRED)
+if (NOT USE_QT5)
+	find_package (QJSON REQUIRED)
+else ()
+	set (QJSON_LIBRARIES)
+endif ()
 
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QT_INCLUDE_DIR}
 	${QJSON_INCLUDE_DIR}
 	${QTKOAUTH_INCLUDE_DIR}
 	)
@@ -45,8 +47,8 @@ set (WOODPECKER_FORMS
 	)
 CreateTrs ("azoth_woodpecker" "en;ru_RU" WOODPECKER_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_woodpecker" "en;ru_RU" "${WOODPECKER_SRCS}" "${WOODPECKER_FORMS}" "azothwoodpeckersettings.xml")
-QT4_WRAP_UI (WOODPECKER_UIS_H ${WOODPECKER_FORMS})
-QT4_ADD_RESOURCES (WOODPECKER_RCCS ${WOODPECKER_RESOURCES})
+QtWrapUi (WOODPECKER_UIS_H ${WOODPECKER_FORMS})
+QtAddResources (WOODPECKER_RCCS ${WOODPECKER_RESOURCES})
 
 add_library (leechcraft_azoth_woodpecker SHARED
 	${WOODPECKER_COMPILED_TRANSLATIONS}
@@ -55,7 +57,6 @@ add_library (leechcraft_azoth_woodpecker SHARED
 	${WOODPECKER_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_woodpecker
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	${QTKOAUTH_LIBRARIES}
@@ -63,3 +64,5 @@ target_link_libraries (leechcraft_azoth_woodpecker
 
 install (TARGETS leechcraft_azoth_woodpecker DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothwoodpeckersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_azoth_woodpecker Network Widgets)

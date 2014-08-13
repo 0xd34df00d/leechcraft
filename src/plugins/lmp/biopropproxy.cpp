@@ -32,6 +32,7 @@
 #include <QStandardItemModel>
 #include <QApplication>
 #include <QtDebug>
+#include <util/models/rolenamesmixin.h>
 
 namespace LeechCraft
 {
@@ -39,7 +40,7 @@ namespace LMP
 {
 	namespace
 	{
-		class ArtistImagesModel : public QStandardItemModel
+		class ArtistImagesModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Role
@@ -52,7 +53,7 @@ namespace LMP
 			};
 
 			ArtistImagesModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: Util::RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Role::ThumbURL] = "thumbURL";

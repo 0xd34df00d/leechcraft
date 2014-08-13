@@ -126,7 +126,7 @@ namespace Sarin
 
 	void ToxContact::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void ToxContact::SetChatPartState (ChatPartState state, const QString&)

@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_autoidler)
 include (InitLCPlugin OPTIONAL)
 
-include (${QT_USE_FILE})
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -14,7 +13,7 @@ set (AUTOIDLER_SRCS
 	3dparty/idle.cpp
 	)
 set (AUTOIDLER_RESOURCES azothautoidlerresources.qrc)
-QT4_ADD_RESOURCES (AUTOIDLER_RCCS ${AUTOIDLER_RESOURCES})
+QtAddResources (AUTOIDLER_RCCS ${AUTOIDLER_RESOURCES})
 
 if (APPLE)
 	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_mac.cpp)
@@ -45,10 +44,15 @@ add_library (leechcraft_azoth_autoidler SHARED
 	${AUTOIDLER_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_autoidler
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${ADDITIONAL_AUTOIDLER_LIBS}
 	)
 install (TARGETS leechcraft_azoth_autoidler DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothautoidlersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${AUTOIDLER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+
+FindQtLibs (leechcraft_azoth_autoidler Widgets)
+
+if (UNIX)
+	FindQtLibs (leechcraft_azoth_autoidler X11Extras)
+endif ()

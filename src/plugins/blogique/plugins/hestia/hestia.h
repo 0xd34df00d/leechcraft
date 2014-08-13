@@ -52,6 +52,8 @@ namespace Hestia
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings
 				LeechCraft::Blogique::IBloggingPlatformPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Blogique.Hestia")
+
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 	public:

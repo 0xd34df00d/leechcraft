@@ -57,7 +57,7 @@ namespace LMP
 	};
 
 	FSModel::FSModel (QObject *parent)
-	: QFileSystemModel (parent)
+	: DndActionsMixin<QFileSystemModel> (parent)
 	{
 		setIconProvider (new FSIconProvider);
 

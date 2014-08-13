@@ -74,25 +74,20 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
 
+                Common { id: opener }
+
                 onEntered: {
-                    var global = commonJS.getTooltipPos(delegateItem);
                     var params = {
-                        "x": global.x,
-                        "y": global.y,
-                        "existing": "ignore",
-                        "srcPtsList": pointsList,
                         "colorProxy": colorProxy,
                         "maxTemp": maxTemp,
                         "critTemp": critTemp,
-                        "sensorName": sensorName
+                        "sensorName": sensorName,
+                        "pointsList": Qt.binding(function() { return pointsList; })
                     };
-                    tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
-                    tooltip.pointsList = (function() { return pointsList; });
+                    opener.openWindow(delegateItem, params, Qt.resolvedUrl("Tooltip.qml"), tooltip, function(t) { tooltip = t; });
                 }
-                onExited: if (tooltip != null) { tooltip.closeRequested(); tooltip = null; }
+                onExited: { tooltip.destroy(); tooltip = null; }
             }
-
-            ListView.onRemove: if (tooltip != null) { tooltip.closeRequested(); tooltip = null; }
 
             ActionButton {
                 id: removeButton

@@ -29,10 +29,18 @@
 
 #include "bioviewmanager.h"
 #include <numeric>
+#if QT_VERSION < 0x050000
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QGraphicsObject>
+#else
+#include <QQuickWidget>
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickItem>
+#endif
+
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QStandardItemModel>
@@ -40,6 +48,8 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
+#include <util/models/rolenamesmixin.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -56,7 +66,7 @@ namespace LMP
 {
 	namespace
 	{
-		class DiscoModel : public QStandardItemModel
+		class DiscoModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -68,7 +78,7 @@ namespace LMP
 			};
 
 			DiscoModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::AlbumName] = "albumName";
@@ -82,7 +92,11 @@ namespace LMP
 		const int AASize = 170;
 	}
 
+#if QT_VERSION < 0x050000
 	BioViewManager::BioViewManager (QDeclarativeView *view, QObject *parent)
+#else
+	BioViewManager::BioViewManager (QQuickWidget *view, QObject *parent)
+#endif
 	: QObject (parent)
 	, View_ (view)
 	, BioPropProxy_ (new BioPropProxy (this))
@@ -201,16 +215,25 @@ namespace LMP
 					SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
 					this,
 					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QUrl>)));
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[this, proxy] () -> void
+				{
+					const auto proxyObj = proxy->GetQObject ();
+					proxyObj->deleteLater ();
+
+					const auto& info = proxy->GetAlbumInfo ();
+					const auto& images = proxy->GetImageUrls ();
+					if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
+						return;
+
+					SetAlbumImage (info.Album_, images.first ());
+				},
+				proxy->GetQObject (),
+				SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
+				this
+			};
 		}
-	}
-
-	void BioViewManager::handleAlbumArt (const Media::AlbumInfo& info, const QList<QUrl>& images)
-	{
-		sender ()->deleteLater ();
-		if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
-			return;
-
-		SetAlbumImage (info.Album_, images.first ());
 	}
 
 	void BioViewManager::handleAlbumPreviewRequested (int index)

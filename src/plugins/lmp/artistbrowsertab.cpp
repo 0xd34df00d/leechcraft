@@ -29,6 +29,13 @@
 
 #include "artistbrowsertab.h"
 #include <QMessageBox>
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
+#else
+#include <QQuickWidget>
+#endif
+
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/gui/clearlineeditaddon.h>
@@ -46,16 +53,29 @@ namespace LMP
 	ArtistBrowserTab::ArtistBrowserTab (const TabClassInfo& tc, QObject *plugin)
 	: TC_ (tc)
 	, Plugin_ (plugin)
+#if QT_VERSION < 0x050000
+	, View_ (new QDeclarativeView)
+#else
+	, View_ (new QQuickWidget)
+#endif
 	{
 		Ui_.setupUi (this);
 
-		BioMgr_ = new BioViewManager (Ui_.View_, this);
-		SimilarMgr_ = new SimilarViewManager (Ui_.View_, this);
+		View_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+#if QT_VERSION < 0x050000
+		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
+		layout ()->addWidget (View_);
+
+		BioMgr_ = new BioViewManager (View_, this);
+		SimilarMgr_ = new SimilarViewManager (View_, this);
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
-				Ui_.View_->engine ());
-		Ui_.View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "ArtistBrowserView.qml"));
+				View_->engine ());
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "ArtistBrowserView.qml"));
 
 		BioMgr_->InitWithSource ();
 		SimilarMgr_->InitWithSource ();

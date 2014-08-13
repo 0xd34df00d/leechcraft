@@ -135,7 +135,11 @@ namespace StandardStyles
 					"<span class='nickname' style='color: " + color + "'>" :
 					"<span class='nickname'>";
 			return pre +
+#if QT_VERSION < 0x050000
 					Qt::escape (part) +
+#else
+					part.toHtmlEscaped () +
+#endif
 					"</span>";
 		}
 	}
@@ -154,7 +158,11 @@ namespace StandardStyles
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		QString entryName = other ?
+#if QT_VERSION < 0x050000
 				Qt::escape (other->GetEntryName ()) :
+#else
+				other->GetEntryName ().toHtmlEscaped () :
+#endif
 				QString ();
 		if (msg->GetMessageType () == IMessage::Type::ChatMessage &&
 				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool () &&

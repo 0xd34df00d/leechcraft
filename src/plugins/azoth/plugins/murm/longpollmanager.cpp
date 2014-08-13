@@ -33,7 +33,8 @@
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <QtDebug>
-#include <qjson/parser.h>
+#include <util/sll/urloperator.h>
+#include <util/sll/parsejson.h>
 #include "vkconnection.h"
 
 namespace LeechCraft
@@ -66,9 +67,10 @@ namespace Murm
 	QUrl LongPollManager::GetURLTemplate () const
 	{
 		QUrl url = LPURLTemplate_;
-		url.addQueryItem ("ts", QString::number (LPTS_));
-		url.addQueryItem ("wait", QString::number (WaitTimeout_));
-		return url;
+		return Util::UrlOperator { url }
+				("ts", QString::number (LPTS_))
+				("wait", QString::number (WaitTimeout_))
+				();
 	}
 
 	void LongPollManager::HandlePollError (QNetworkReply *pollReply)
@@ -86,7 +88,7 @@ namespace Murm
 		case QNetworkReply::RemoteHostClosedError:
 		{
 			const auto diff = LastPollDT_.secsTo (QDateTime::currentDateTime ());
-			const auto newTimeout = std::max ((diff + WaitTimeout_) / 2 - 1, 5);
+			const auto newTimeout = std::max<decltype (diff)> ((diff + WaitTimeout_) / 2 - 1, 5);
 			qWarning () << Q_FUNC_INFO
 					<< "got timeout with"
 					<< WaitTimeout_
@@ -128,7 +130,7 @@ namespace Murm
 		auto req = [this, nam] (const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
 		{
 			QUrl lpUrl ("https://api.vk.com/method/messages.getLongPollServer");
-			lpUrl.addQueryItem ("access_token", key);
+			Util::UrlOperator { lpUrl } ("access_token", key);
 
 			VkConnection::AddParams (lpUrl, params);
 
@@ -181,7 +183,7 @@ namespace Murm
 			emit listening ();
 		}
 
-		const auto& data = QJson::Parser ().parse (currentReply);
+		const auto& data = Util::ParseJson (currentReply, Q_FUNC_INFO);
 		const auto& rootMap = data.toMap ();
 		if (rootMap.contains ("failed"))
 		{
@@ -227,7 +229,7 @@ namespace Murm
 			return;
 		}
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		const auto& map = data.toMap () ["response"].toMap ();
 
 		LPKey_ = map ["key"].toString ();
@@ -235,9 +237,10 @@ namespace Murm
 		LPTS_ = map ["ts"].toULongLong ();
 
 		LPURLTemplate_ = QUrl ("http://" + LPServer_);
-		LPURLTemplate_.addQueryItem ("act", "a_check");
-		LPURLTemplate_.addQueryItem ("key", LPKey_);
-		LPURLTemplate_.addQueryItem ("mode", "2");
+		Util::UrlOperator { LPURLTemplate_ }
+				("act", "a_check")
+				("key", LPKey_)
+				("mode", "2");
 
 		emit listening ();
 

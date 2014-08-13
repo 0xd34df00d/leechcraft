@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_KEESO_KEESO_H
-#define PLUGINS_AZOTH_PLUGINS_KEESO_KEESO_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -46,6 +46,8 @@ namespace Keeso
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Keeso")
 
 		QRegExp UserRX_;
 		QRegExp PostRX_;
@@ -74,5 +76,3 @@ namespace Keeso
 }
 }
 }
-
-#endif

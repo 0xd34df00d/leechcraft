@@ -227,7 +227,11 @@ namespace DeadLyrics
 		QNetworkRequest req { url };
 
 		url.setPath ({});
+#if QT_VERSION < 0x050000
 		url.setQueryItems ({});
+#else
+		url.setQuery ({});
+#endif
 		req.setRawHeader ("Referer", url.toString ().toUtf8 ());
 
 		auto reply = nam->get (req);

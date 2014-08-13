@@ -30,10 +30,20 @@
 #include "blogiquewidget.h"
 #include <stdexcept>
 #include <QComboBox>
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
-#include <QInputDialog>
 #include <QGraphicsObject>
+#else
+#include <QQuickWidget>
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickItem>
+#endif
+
+#include <QInputDialog>
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QPushButton>
@@ -74,6 +84,13 @@ namespace Blogique
 
 	BlogiqueWidget::BlogiqueWidget (QWidget *parent)
 	: QWidget (parent)
+#if QT_VERSION < 0x050000
+	, TagsCloud_ (new QDeclarativeView)
+	, Tags_ (new QDeclarativeView)
+#else
+	, TagsCloud_ (new QQuickWidget)
+	, Tags_ (new QQuickWidget)
+#endif
 	, PostEdit_ (0)
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
@@ -93,6 +110,19 @@ namespace Blogique
 	, TagsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+
+#if QT_VERSION < 0x050000
+		TagsCloud_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+		Tags_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		TagsCloud_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+		Tags_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
+
+		TagsCloud_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+		Ui_.PluginOptionsWidget_->layout ()->addWidget (TagsCloud_);
+		Tags_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+		Ui_.TagsBox_->layout ()->addWidget (Tags_);
 
 		auto dwa = static_cast<Qt::DockWidgetArea> (XmlSettingsManager::Instance ()
 				.Property ("DockWidgetArea", Qt::RightDockWidgetArea).toInt ());
@@ -445,41 +475,41 @@ namespace Blogique
 	void BlogiqueWidget::PrepareQmlWidgets ()
 	{
 		TagsProxyModel_->setSourceModel (TagsModel_);
-		Ui_.Tags_->rootContext ()->setContextProperty ("mainWidget",
+		Tags_->rootContext ()->setContextProperty ("mainWidget",
 				this);
-		Ui_.Tags_->rootContext ()->setContextProperty ("tagsModel",
+		Tags_->rootContext ()->setContextProperty ("tagsModel",
 				TagsProxyModel_);
-		Ui_.Tags_->rootContext ()->setContextProperty ("colorProxy",
+		Tags_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()
 						.GetCoreProxy ()->GetColorThemeManager (), this));
-		Ui_.Tags_->engine ()->addImageProvider (ImageProviderID,
+		Tags_->engine ()->addImageProvider (ImageProviderID,
 				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
-			Ui_.Tags_->engine ()->addImportPath (cand);
+			Tags_->engine ()->addImportPath (cand);
 
-		Ui_.Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+		Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique", "tagwidget.qml")));
-		connect (Ui_.Tags_->rootObject (),
+		connect (Tags_->rootObject (),
 				SIGNAL (tagTextChanged (QString)),
 				this,
 				SLOT (handleTagTextChanged (QString)));
 
-		Ui_.TagsCloud_->setVisible (Ui_.SelectTags_->isChecked ());
-		Ui_.TagsCloud_->rootContext ()->setContextProperty ("colorProxy",
+		TagsCloud_->setVisible (Ui_.SelectTags_->isChecked ());
+		TagsCloud_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()
 						.GetCoreProxy ()->GetColorThemeManager (), this));
-		Ui_.TagsCloud_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+		TagsCloud_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 					"blogique", "tagscloud.qml")));
-		connect (Ui_.TagsCloud_->rootObject (),
+		connect (TagsCloud_->rootObject (),
 				SIGNAL (tagSelected (QString)),
 				this,
 				SIGNAL (tagSelected (QString)));
-		connect (Ui_.Tags_->rootObject (),
+		connect (Tags_->rootObject (),
 				SIGNAL (tagRemoved (QString)),
 				this,
 				SLOT (handleTagRemoved (QString)));
-		connect (Ui_.Tags_->rootObject (),
+		connect (Tags_->rootObject (),
 				SIGNAL (tagAdded (QString)),
 				this,
 				SLOT (handleTagAdded (QString)));
@@ -516,10 +546,10 @@ namespace Blogique
 
 	void BlogiqueWidget::SetPostTags (const QStringList& tags)
 	{
-		QMetaObject::invokeMethod (Ui_.Tags_->rootObject (),
+		QMetaObject::invokeMethod (Tags_->rootObject (),
 				"setTags",
 				Q_ARG (QVariant, QVariant::fromValue (tags)));
-		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+		QMetaObject::invokeMethod (TagsCloud_->rootObject (),
 				"setTags",
 				Q_ARG (QVariant, QVariant::fromValue (tags)));
 	}
@@ -527,7 +557,7 @@ namespace Blogique
 	QStringList BlogiqueWidget::GetPostTags () const
 	{
 		QVariant tags;
-		QMetaObject::invokeMethod (Ui_.Tags_->rootObject (),
+		QMetaObject::invokeMethod (Tags_->rootObject (),
 				"getTags",
 				Q_RETURN_ARG (QVariant, tags));
 		return tags.toStringList ();
@@ -846,7 +876,7 @@ namespace Blogique
 	void BlogiqueWidget::handleTagsUpdated (const QHash<QString, int>& tags)
 	{
 		TagsModel_->clear ();
-		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+		QMetaObject::invokeMethod (TagsCloud_->rootObject (),
 				"clearTags");
 
 		int max = 0;
@@ -860,12 +890,12 @@ namespace Blogique
 		}
 
 		for (const auto& tag : tags.keys ())
-			QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+			QMetaObject::invokeMethod (TagsCloud_->rootObject (),
 					"addTag",
 					Q_ARG (QVariant, tag),
 					Q_ARG (QVariant, tags.value (tag)),
 					Q_ARG (QVariant, max));
-		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+		QMetaObject::invokeMethod (TagsCloud_->rootObject (),
 				"updateTagsCloud");
 	}
 
@@ -1105,7 +1135,7 @@ namespace Blogique
 			if (w)
 				w->setVisible (!checked);
 		}
-		Ui_.TagsCloud_->setVisible (checked);
+		TagsCloud_->setVisible (checked);
 	}
 
 	void BlogiqueWidget::handleTagTextChanged (const QString& text)
@@ -1116,7 +1146,7 @@ namespace Blogique
 
 	void BlogiqueWidget::handleTagRemoved (const QString& tag)
 	{
-		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+		QMetaObject::invokeMethod (TagsCloud_->rootObject (),
 				"selectTag",
 				Q_ARG (QVariant, tag),
 				Q_ARG (QVariant, false));
@@ -1124,7 +1154,7 @@ namespace Blogique
 
 	void BlogiqueWidget::handleTagAdded (const QString& tag)
 	{
-		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+		QMetaObject::invokeMethod (TagsCloud_->rootObject (),
 				"selectTag",
 				Q_ARG (QVariant, tag),
 				Q_ARG (QVariant, true));

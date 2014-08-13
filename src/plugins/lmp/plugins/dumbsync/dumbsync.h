@@ -56,6 +56,8 @@ namespace DumbSync
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::ISyncPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.DumbSync")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 		ILMPProxy_ptr LMPProxy_;
 	public:

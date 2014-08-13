@@ -32,9 +32,9 @@
 #include <QNetworkReply>
 #include <QDateTime>
 #include <QDebug>
-#include <qjson/parser.h>
 #include <QtKOAuth/QtKOAuth>
 #include <util/xpc/util.h>
+#include <util/sll/parsejson.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -90,22 +90,15 @@ namespace Woodpecker
 
 	QList<Tweet_ptr> TwitterInterface::ParseReply (const QByteArray& json)
 	{
-		QJson::Parser parser;
+		const auto& parsedReply = Util::ParseJson (json, Q_FUNC_INFO);
+		if (parsedReply.isNull ())
+			return {};
+
+		const auto& answers = LastRequestMode_ == FeedMode::SearchResult ?
+				parsedReply.toMap () ["statuses"].toList () :
+				parsedReply.toList ();
+
 		QList<Tweet_ptr> result;
-		bool ok;
-		QVariantList answers;
-
-		if (LastRequestMode_ == FeedMode::SearchResult)
-		{
-			const QVariantMap& sections = parser.parse (json, &ok).toMap ();
-			answers = sections ["statuses"].toList ();
-		}
-		else
-			answers = parser.parse (json, &ok).toList ();
-
-		if (!ok)
-			qWarning () << Q_FUNC_INFO << "Parsing error at " << Q_FUNC_INFO << QString::fromUtf8 (json);
-
 		const QLocale locale (QLocale::English);
 		for (int i = answers.count () - 1; i >= 0 ; --i)
 		{

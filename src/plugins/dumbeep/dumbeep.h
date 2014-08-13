@@ -46,6 +46,8 @@ namespace Dumbeep
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IEntityHandler)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Dumbeep")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);

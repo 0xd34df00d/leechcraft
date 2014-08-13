@@ -35,9 +35,11 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QDomDocument>
+#include <QStringList>
 #include <QtDebug>
 #include <qjson/parser.h>
 #include <util/sll/queuemanager.h>
+#include <util/sll/urloperator.h>
 #include "vkaccount.h"
 
 namespace LeechCraft
@@ -59,8 +61,9 @@ namespace Rappor
 		Acc_->Schedule ([this, items, aidStr] (const QString& authKey) -> void
 			{
 				QUrl getUrl ("https://api.vk.com/method/photos.getUploadServer.xml");
-				getUrl.addQueryItem ("aid", aidStr);
-				getUrl.addQueryItem ("access_token", authKey);
+				Util::UrlOperator { getUrl }
+						("aid", aidStr)
+						("access_token", authKey);
 				RequestQueue_->Schedule ([this, getUrl, items] () -> void
 					{
 						auto reply = Proxy_->GetNetworkAccessManager ()->
@@ -155,16 +158,19 @@ namespace Rappor
 		Acc_->Schedule ([this, parsed, info] (const QString& authKey) -> void
 			{
 				QUrl saveUrl ("https://api.vk.com/method/photos.save.xml");
-				auto add = [&saveUrl, &parsed] (const QString& name)
-					{ saveUrl.addQueryItem (name, parsed [name].toString ()); };
-				add ("server");
-				add ("photos_list");
-				add ("aid");
-				add ("hash");
-				saveUrl.addQueryItem ("access_token", authKey);
+				{
+					Util::UrlOperator op { saveUrl };
+					auto add = [&parsed, &op] (const QString& name)
+						{ op (name, parsed [name].toString ()); };
+					add ("server");
+					add ("photos_list");
+					add ("aid");
+					add ("hash");
+					op ("access_token", authKey);
 
-				if (!info.Description_.isEmpty ())
-					saveUrl.addQueryItem ("caption", info.Description_);
+					if (!info.Description_.isEmpty ())
+						op ("caption", info.Description_);
+				}
 
 				RequestQueue_->Schedule ([this, saveUrl, info]
 					{
@@ -210,9 +216,10 @@ namespace Rappor
 		Acc_->Schedule ([this, ids] (const QString& authKey) -> void
 			{
 				QUrl getUrl ("https://api.vk.com/method/photos.getById.xml");
-				getUrl.addQueryItem ("photos", ids.join (","));
-				getUrl.addQueryItem ("photo_sizes", "1");
-				getUrl.addQueryItem ("access_token", authKey);
+				Util::UrlOperator { getUrl }
+						("photos", ids.join (","))
+						("photo_sizes", "1")
+						("access_token", authKey);
 				RequestQueue_->Schedule ([this, getUrl]
 					{
 						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (getUrl)),

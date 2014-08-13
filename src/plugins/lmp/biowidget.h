@@ -32,6 +32,12 @@
 #include <QWidget>
 #include "ui_biowidget.h"
 
+#if QT_VERSION < 0x050000
+class QDeclarativeView;
+#else
+class QQuickWidget;
+#endif
+
 namespace Media
 {
 	class IArtistBioFetcher;
@@ -48,6 +54,12 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::BioWidget Ui_;
+
+#if QT_VERSION < 0x050000
+		QDeclarativeView * const View_;
+#else
+		QQuickWidget * const View_;
+#endif
 
 		BioViewManager *Manager_;
 

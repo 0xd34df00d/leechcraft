@@ -50,6 +50,8 @@ namespace Spegnersi
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Blasq::IServicesPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Blasq.Spegnersi")
+
 		FlickrService *Service_;
 	public:
 		void Init (ICoreProxy_ptr);

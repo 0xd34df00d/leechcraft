@@ -67,6 +67,8 @@ namespace MTPSync
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::IUnmountableSync)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.MTPSync")
+
 		ICoreProxy_ptr Proxy_;
 		ILMPProxy_ptr LMPProxy_;
 		USBDevInfos_t Infos_;

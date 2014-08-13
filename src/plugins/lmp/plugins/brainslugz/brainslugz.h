@@ -50,6 +50,8 @@ namespace BrainSlugz
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IPlugin2 LeechCraft::LMP::ILMPPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.BrainSlugz")
+
 		TabClassInfo CheckTC_;
 
 		ICoreProxy_ptr CoreProxy_;

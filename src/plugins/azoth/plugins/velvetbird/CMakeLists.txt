@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_velvetbird)
 include (InitLCPlugin OPTIONAL)
 
-include (${QT_USE_FILE})
-
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package (GLIB2 REQUIRED)
 find_package (LibPurple REQUIRED)
@@ -38,8 +36,8 @@ set (VELVETBIRD_FORMS
 set (VELVETBIRD_RESOURCES azothvelvetbirdresources.qrc)
 #CreateTrs ("azoth_velvetbird" "en;ru_RU;uk_UA" VELVETBIRD_COMPILED_TRANSLATIONS)
 
-QT4_WRAP_UI (VELVETBIRD_UIS_H ${VELVETBIRD_FORMS})
-QT4_ADD_RESOURCES (VELVETBIRD_RCCS ${VELVETBIRD_RESOURCES})
+QtWrapUi (VELVETBIRD_UIS_H ${VELVETBIRD_FORMS})
+QtAddResources (VELVETBIRD_RCCS ${VELVETBIRD_RESOURCES})
 
 add_library (leechcraft_azoth_velvetbird SHARED
 	${VELVETBIRD_COMPILED_TRANSLATIONS}
@@ -48,7 +46,6 @@ add_library (leechcraft_azoth_velvetbird SHARED
 	${VELVETBIRD_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_velvetbird
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${GLIB2_LIBRARIES}
 	${LIBPURPLE_LIBRARIES}
@@ -57,3 +54,5 @@ target_link_libraries (leechcraft_azoth_velvetbird
 install (TARGETS leechcraft_azoth_velvetbird DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES ${VELVETBIRD_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 #install (FILES azothvelvetbirdsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_azoth_velvetbird Widgets)

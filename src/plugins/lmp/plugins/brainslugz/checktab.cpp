@@ -30,8 +30,17 @@
 #include "checktab.h"
 #include <QStandardItemModel>
 #include <QToolBar>
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
+#else
+#include <QQuickWidget>
+#include <QQmlContext>
+#include <QQmlEngine>
+#endif
+
 #include <QSortFilterProxyModel>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
@@ -72,7 +81,12 @@ namespace BrainSlugz
 			const ICoreProxy_ptr& coreProxy,
 			const TabClassInfo& tc,
 			QObject* plugin)
-	: LmpProxy_ { lmpProxy }
+#if QT_VERSION < 0x050000
+	: CheckView_ { new QDeclarativeView }
+#else
+	: CheckView_ { new QQuickWidget }
+#endif
+	, LmpProxy_ { lmpProxy }
 	, CoreProxy_ { coreProxy }
 	, TC_ (tc)
 	, Plugin_ { plugin }
@@ -82,13 +96,14 @@ namespace BrainSlugz
 	, CheckedModel_ { new MissingModel { Model_, this } }
 	{
 		Ui_.setupUi (this);
+		Ui_.CheckViewWidget_->layout ()->addWidget (CheckView_);
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
-			Ui_.CheckView_->engine ()->addImportPath (cand);
-		Ui_.CheckView_->engine ()->addImageProvider ("ThemeIcons",
+			CheckView_->engine ()->addImportPath (cand);
+		CheckView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider { coreProxy });
 
-		const auto root = Ui_.CheckView_->rootContext ();
+		const auto root = CheckView_->rootContext ();
 		root->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy { coreProxy->GetColorThemeManager (), this });
 		root->setContextProperty ("artistsModel", Model_);
@@ -99,11 +114,11 @@ namespace BrainSlugz
 		{
 			"lmp/qml",
 			[] { return 50 * 1024 * 1024; },
-			Ui_.CheckView_->engine ()
+			CheckView_->engine ()
 		};
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
-		Ui_.CheckView_->setSource (QUrl::fromLocalFile (filename));
+		CheckView_->setSource (QUrl::fromLocalFile (filename));
 
 		SetupToolbar ();
 	}
@@ -170,7 +185,7 @@ namespace BrainSlugz
 
 		new Checker { Model_, types, LmpProxy_, CoreProxy_, this };
 
-		Ui_.CheckView_->rootContext ()->setContextProperty ("checkingState", "checking");
+		CheckView_->rootContext ()->setContextProperty ("checkingState", "checking");
 	}
 }
 }

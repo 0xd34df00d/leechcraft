@@ -2,9 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_acetamide)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -73,8 +70,8 @@ set (ACETAMIDE_RESOURCES azothacetamideresources.qrc)
 CreateTrs ("azoth_acetamide" "de;en;es;fr;it;ru_RU;uk_UA" ACETAMIDE_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_acetamide" "en;ru_RU" "${ACETAMIDE_SRCS}" "${ACETAMIDE_FORMS}" "azothacetamidesettings.xml")
 
-QT4_WRAP_UI (ACETAMIDE_UIS_H ${ACETAMIDE_FORMS})
-QT4_ADD_RESOURCES (ACETAMIDE_RCCS ${ACETAMIDE_RESOURCES})
+QtWrapUi (ACETAMIDE_UIS_H ${ACETAMIDE_FORMS})
+QtAddResources (ACETAMIDE_RCCS ${ACETAMIDE_RESOURCES})
 
 add_library (leechcraft_azoth_acetamide SHARED
 	${ACETAMIDE_COMPILED_TRANSLATIONS}
@@ -84,9 +81,10 @@ add_library (leechcraft_azoth_acetamide SHARED
 	${ACETAMIDE_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_acetamide
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
+
+FindQtLibs (leechcraft_azoth_acetamide Network Widgets Xml)
 
 install (TARGETS leechcraft_azoth_acetamide
 		DESTINATION ${LC_PLUGINS_DEST})

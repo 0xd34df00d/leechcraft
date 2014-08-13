@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
-#define PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -48,6 +48,8 @@ namespace StandardStyles
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.StandardStyles")
 
 		IProxyObject *Proxy_;
 		QObjectList ResourceSources_;
@@ -69,5 +71,3 @@ namespace StandardStyles
 }
 }
 }
-
-#endif

@@ -53,6 +53,8 @@ namespace SHX
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.SHX")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 		QHash<QProcess*, QPointer<QObject>> Process2Chat_;
 	public:

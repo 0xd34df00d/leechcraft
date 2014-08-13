@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLESOURCE_H
-#define PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLESOURCE_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QDateTime>
@@ -87,5 +87,3 @@ namespace StandardStyles
 }
 }
 }
-
-#endif

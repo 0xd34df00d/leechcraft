@@ -31,7 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
-#include <qjson/parser.h>
+#include <util/sll/parsejson.h>
 
 namespace LeechCraft
 {
@@ -58,19 +58,13 @@ namespace Autopaste
 	{
 		sender ()->deleteLater ();
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		const auto &bytes = reply->readAll ();
-		QJson::Parser parser;
-		bool ok;
-		QVariantMap result = parser.parse (bytes, &ok).toMap ();
-		if (!ok)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "Ooops, cannot parse!"
-					<< sender ();
+
+		const auto& var = Util::ParseJson (reply->readAll (), Q_FUNC_INFO);
+		if (var.isNull ())
 			return;
-		}
+
 		QUrl url ("http://hastebin.com/");
-		url.setPath (result ["key"].toString ());
+		url.setPath (var.toMap () ["key"].toString ());
 		FeedURL (url.toString ());
 	}
 }

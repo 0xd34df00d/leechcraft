@@ -979,7 +979,7 @@ namespace Acetamide
 			return;
 
 		QTextCodec *codec = QTextCodec::codecForName (ServerOptions_.ServerEncoding_.toUtf8 ());
-		emit sendMessageToConsole (dir, codec->toUnicode (message.toAscii ()));
+		emit sendMessageToConsole (dir, codec->toUnicode (message.toLatin1 ()));
 	}
 
 	void IrcServerHandler::NickCmdError ()
