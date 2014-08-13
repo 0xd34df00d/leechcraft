@@ -53,6 +53,8 @@ namespace Glance
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter IHaveShortcuts)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Glance")
+
 		ICoreProxy_ptr Proxy_;
 		QAction *ActionGlance_;
 		GlanceShower *Glance_;
