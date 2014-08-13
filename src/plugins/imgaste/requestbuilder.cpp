@@ -51,10 +51,10 @@ namespace Imgaste
 		Result_ += Boundary_;
 		Result_ += "\r\n";
 		Result_ += "Content-Disposition: form-data; name=\"";
-		Result_ += name.toAscii();
+		Result_ += name.toLatin1 ();
 		Result_ += "\"";
 		Result_ += "\r\n\r\n";
-		Result_ += value.toUtf8();
+		Result_ += value.toUtf8 ();
 		Result_ += "\r\n";
 	}
 
@@ -65,12 +65,12 @@ namespace Imgaste
 		Result_ += Boundary_;
 		Result_ += "\r\n";
 		Result_ += "Content-Disposition: form-data; name=\"";
-		Result_ += name.toAscii ();
+		Result_ += name.toLatin1 ();
 		Result_ += "\"; ";
 		Result_ += "filename=\"";
 		Result_ += QString ("screenshot.%1")
 			.arg (format.toLower ())
-			.toAscii ();
+			.toLatin1 ();
 		Result_ += "\"";
 		Result_ += "\r\n";
 		Result_ += "Content-Type: ";

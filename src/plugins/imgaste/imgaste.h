@@ -46,6 +46,8 @@ namespace Imgaste
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler IDataFilter)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Imgaste")
+
 		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
