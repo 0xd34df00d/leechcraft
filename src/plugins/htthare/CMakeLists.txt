@@ -4,8 +4,6 @@ include (InitLCPlugin OPTIONAL)
 
 find_package (Boost REQUIRED COMPONENTS system)
 
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -35,3 +33,5 @@ target_link_libraries (leechcraft_htthare
 	)
 install (TARGETS leechcraft_htthare DESTINATION ${LC_PLUGINS_DEST})
 install (FILES httharesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_htthare Network)
