@@ -2,11 +2,14 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_fenet)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+if (NOT USE_QT5)
+	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+	find_package (QJSON REQUIRED)
+else ()
+	unset (QJSON_INCLUDE_DIR)
+	unset (QJSON_LIBRARIES)
+endif ()
 
-find_package (QJSON REQUIRED)
-
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -29,7 +32,6 @@ add_library (leechcraft_fenet SHARED
 	${SRCS}
 	)
 target_link_libraries (leechcraft_fenet
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
@@ -46,3 +48,5 @@ install (DIRECTORY share/fenet DESTINATION ${LC_SHARE_DEST}
 		PERMISSIONS
 			OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
 			WORLD_EXECUTE WORLD_READ)
+
+FindQtLibs (leechcraft_fenet Widgets)

@@ -51,6 +51,8 @@ namespace Fenet
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Fenet")
+
 		WMFinder *Finder_;
 
 		CompFinder *CompFinder_;

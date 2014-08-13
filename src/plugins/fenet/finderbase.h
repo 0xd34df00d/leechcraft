@@ -33,8 +33,8 @@
 #include <QDir>
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <qjson/parser.h>
 #include <util/sys/paths.h>
+#include <util/sll/parsejson.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -86,8 +86,6 @@ namespace Fenet
 
 		void HandleDescr (const QString& filePath)
 		{
-			QJson::Parser parser;
-
 			QFile file (filePath);
 			if (!file.open (QIODevice::ReadOnly))
 			{
@@ -98,15 +96,11 @@ namespace Fenet
 				return;
 			}
 
-			bool ok = false;
-			const auto& varmap = parser.parse (&file, &ok).toMap ();
-			if (!ok)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot parse file"
-						<< file.fileName ();
+			const auto& parsedVar = Util::ParseJson (&file, Q_FUNC_INFO);
+			if (parsedVar.isNull ())
 				return;
-			}
+
+			const auto& varmap = parsedVar.toMap ();
 
 			QStringList execNames;
 			for (const auto& var : varmap ["execNames"].toList ())
