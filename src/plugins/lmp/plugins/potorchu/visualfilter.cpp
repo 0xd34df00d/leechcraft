@@ -117,10 +117,24 @@ namespace Potorchu
 				this,
 				SLOT (handlePrevVis ()));
 
-		gst_pad_add_buffer_probe (gst_element_get_static_pad (Converter_, "src"),
+		const auto srcpad = gst_element_get_static_pad (Converter_, "src");
+#if GST_VERSION_MAJOR < 1
+		gst_pad_add_buffer_probe (srcpad,
 				G_CALLBACK (+[] (GstPad*, GstBuffer *buf, VisualFilter *filter)
 					{ filter->HandleBuffer (buf); }),
 				this);
+#else
+		gst_pad_add_probe (srcpad,
+				GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
+				[] (GstPad*, GstPadProbeInfo *info, gpointer filterPtr) -> GstPadProbeReturn
+				{
+					const auto filter = static_cast<VisualFilter*> (filterPtr);
+					filter->HandleBuffer (GST_PAD_PROBE_INFO_BUFFER (info));
+					return GST_PAD_PROBE_OK;
+				},
+				this,
+				nullptr);
+#endif
 	}
 
 	QByteArray VisualFilter::GetEffectId () const
@@ -177,8 +191,28 @@ namespace Potorchu
 
 	void VisualFilter::HandleBuffer (GstBuffer *buffer)
 	{
-		const auto samples = GST_BUFFER_SIZE (buffer) / sizeof (short) / 2;
+#if GST_VERSION_MAJOR < 1
+		const auto size = GST_BUFFER_SIZE (buffer);
 		const auto data = reinterpret_cast<short*> (GST_BUFFER_DATA (buffer));
+#else
+		GstMapInfo map;
+		if (!gst_buffer_map (buffer, &map, GST_MAP_READ))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot map data";
+			return;
+		}
+
+		const auto data = reinterpret_cast<const short*> (map.data);
+		const auto size = map.size;
+
+		std::shared_ptr<void> mapGuard
+		{
+			nullptr,
+			[buffer, &map] (void*) { gst_buffer_unmap (buffer, &map); }
+		};
+#endif
+		const auto samples = size / sizeof (short) / 2;
 
 		if (ProjectM_)
 			ProjectM_->pcm ()->addPCM16Data (data, samples);
