@@ -49,6 +49,8 @@ namespace KBSwitch
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.KBSwitch")
+
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		KeyboardLayoutSwitcher *KBLayoutSwitcher_;

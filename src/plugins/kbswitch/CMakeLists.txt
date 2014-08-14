@@ -15,8 +15,6 @@ if (NOT X11_Xlib_INCLUDE_PATH OR
 	message (FATAL_ERROR "Could NOT find all required X11 libraries")
 endif ()
 
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -41,8 +39,8 @@ set (FORMS
 	layoutsconfigwidget.ui
 	)
 set (RESOURCES kbswitchresources.qrc)
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
-QT4_WRAP_UI (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
 
 CreateTrs ("kbswitch" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("kbswitch" "en;ru_RU" "${SRCS}" "${FORMS}" "kbswitchsettings.xml")
@@ -53,11 +51,22 @@ add_library (leechcraft_kbswitch SHARED
 	${RCCS}
 	${UIS_H}
 	)
+
+set (EXTRA_LIBS)
+if (USE_QT5)
+	set (EXTRA_LIBS ${EXTRA_LIBS} xcb-xkb)
+endif ()
+
 target_link_libraries (leechcraft_kbswitch
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${X11_Xkbfile_LIB}
+	${EXTRA_LIBS}
 	)
 install (TARGETS leechcraft_kbswitch DESTINATION ${LC_PLUGINS_DEST})
 install (FILES kbswitchsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/qml/kbswitch DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/kbswitch DESTINATION ${LC_QML5_DEST})
+
+FindQtLibs (leechcraft_kbswitch QuickWidgets X11Extras)
+
+include_directories (${Qt5Gui_PRIVATE_INCLUDE_DIRS})
