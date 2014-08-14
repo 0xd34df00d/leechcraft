@@ -190,8 +190,8 @@ namespace LMP
 		void EmitStateChange (SourceState);
 
 		template<typename T>
-		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,
-				std::function<T (AudioSource)>) const;
+		AudioSource GetRandomBy (AudioSources_t::const_iterator,
+				std::function<T (AudioSources_t::const_iterator, AudioSources_t)>) const;
 
 		AudioSource GetNextSource (const AudioSource&);
 
