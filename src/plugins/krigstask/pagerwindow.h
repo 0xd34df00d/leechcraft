@@ -29,7 +29,14 @@
 
 #pragma once
 
+#include <QtGlobal>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeView>
+#else
+#include <QQuickWidget>
+#endif
+
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
@@ -45,7 +52,11 @@ namespace Krigstask
 	class SingleDesktopModel;
 	class ImageProvider;
 
+#if QT_VERSION < 0x050000
 	class PagerWindow : public QDeclarativeView
+#else
+	class PagerWindow : public QQuickWidget
+#endif
 	{
 		Q_OBJECT
 

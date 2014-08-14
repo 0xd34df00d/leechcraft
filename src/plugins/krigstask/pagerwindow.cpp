@@ -32,26 +32,35 @@
 #include <QStandardItemModel>
 #include <QDesktopWidget>
 #include <QApplication>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
+#else
+#include <QQmlContext>
+#include <QQmlEngine>
+#endif
+
 #include <QtDebug>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/extensions/Xrender.h>
-#include <X11/extensions/Xfixes.h>
-#include <X11/extensions/Xcomposite.h>
 #include <util/sys/paths.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/settableiconprovider.h>
+#include <util/models/rolenamesmixin.h>
 #include <util/x11/xwrapper.h>
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/Xrender.h>
+#include <X11/extensions/Xfixes.h>
+#include <X11/extensions/Xcomposite.h>
 
 namespace LeechCraft
 {
 namespace Krigstask
 {
-	class DesktopsModel : public QStandardItemModel
+	class DesktopsModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
 	public:
 		enum Role
@@ -63,7 +72,7 @@ namespace Krigstask
 		};
 
 		DesktopsModel (QObject *parent)
-		: QStandardItemModel (parent)
+		: RoleNamesMixin<QStandardItemModel> (parent)
 		{
 			QHash<int, QByteArray> roleNames;
 			roleNames [Role::SubModel] = "subModel";
@@ -74,7 +83,7 @@ namespace Krigstask
 		}
 	};
 
-	class SingleDesktopModel : public QStandardItemModel
+	class SingleDesktopModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
 	public:
 		enum Role
@@ -85,7 +94,7 @@ namespace Krigstask
 		};
 
 		SingleDesktopModel (QObject *parent)
-		: QStandardItemModel (parent)
+		: RoleNamesMixin<QStandardItemModel> (parent)
 		{
 			QHash<int, QByteArray> roleNames;
 			roleNames [Role::WinName] = "winName";
@@ -95,12 +104,20 @@ namespace Krigstask
 		}
 	};
 
+#if QT_VERSION < 0x050000
 	class ImageProvider : public QDeclarativeImageProvider
+#else
+	class ImageProvider : public QQuickImageProvider
+#endif
 	{
 		QHash<QString, QPixmap> Images_;
 	public:
 		ImageProvider ()
+#if QT_VERSION < 0x050000
 		: QDeclarativeImageProvider (Pixmap)
+#else
+		: QQuickImageProvider (Pixmap)
+#endif
 		{
 		}
 
@@ -123,7 +140,11 @@ namespace Krigstask
 	};
 
 	PagerWindow::PagerWindow (int screen, bool showThumbs, ICoreProxy_ptr proxy, QWidget *parent)
+#if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
+#else
+	: QQuickWidget (parent)
+#endif
 	, DesktopsModel_ (new DesktopsModel (this))
 	, ShowThumbs_ (showThumbs)
 	, WinIconProv_ (new Util::SettableIconProvider)
@@ -200,6 +221,13 @@ namespace Krigstask
 
 	namespace
 	{
+#if QT_VERSION >= 0x050000
+		QImage XPixmap2Image (Pixmap pixmap)
+		{
+			return {};
+		}
+#endif
+
 		QImage GrabWindow (ulong wid)
 		{
 			auto disp = Util::XWrapper::Instance ().GetDisplay ();
@@ -233,18 +261,24 @@ namespace Krigstask
 			auto xpixmap = XCreatePixmap (disp,
 					Util::XWrapper::Instance ().GetRootWindow (),
 					attrs.width, attrs.height, attrs.depth);
+#if QT_VERSION < 0x050000
 			auto pixmap = QPixmap::fromX11Pixmap (xpixmap);
 			pixmap.fill ();
+#endif
 
 			XRenderComposite (disp,
 					PictOpOver,
 					picture,
 					None,
-					pixmap.x11PictureHandle (),
+					xpixmap,
 					0, 0, 0, 0,
 					0, 0, attrs.width, attrs.height);
 
-			const auto image = pixmap.toImage ();
+#if QT_VERSION < 0x050000
+			const auto& image = pixmap.toImage ();
+#else
+			const auto& image = XPixmap2Image (xpixmap);
+#endif
 
 			XFreePixmap (disp, xpixmap);
 
