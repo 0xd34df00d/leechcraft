@@ -114,16 +114,6 @@ namespace KBSwitch
 		xcb_change_window_attributes (conn,
 				Window_, XCB_CW_EVENT_MASK, rootEvents);
 
-		/*
-		const uint16_t requiredMapParts = XCB_XKB_MAP_PART_KEY_TYPES |
-				XCB_XKB_MAP_PART_KEY_SYMS |
-				XCB_XKB_MAP_PART_MODIFIER_MAP |
-				XCB_XKB_MAP_PART_EXPLICIT_COMPONENTS |
-				XCB_XKB_MAP_PART_KEY_ACTIONS |
-				XCB_XKB_MAP_PART_KEY_BEHAVIORS |
-				XCB_XKB_MAP_PART_VIRTUAL_MODS |
-				XCB_XKB_MAP_PART_VIRTUAL_MOD_MAP;
-				*/
 		const uint16_t requiredMapParts = 0xffff;
 
 		const uint16_t requiredEvents = XCB_XKB_EVENT_TYPE_NEW_KEYBOARD_NOTIFY |
@@ -138,19 +128,6 @@ namespace KBSwitch
 				requiredMapParts,
 				requiredMapParts,
 				nullptr);
-
-		/*
-		xcb_xkb_select_events (conn,
-				XCB_XKB_ID_USE_CORE_KBD,
-				XCB_XKB_EVENT_TYPE_STATE_NOTIFY,
-				0,
-				XCB_XKB_EVENT_TYPE_STATE_NOTIFY,
-				0,
-				0,
-				nullptr);
-		XkbSelectEventDetails (Display_, XkbUseCoreKbd,
-				XkbStateNotify, XkbAllStateComponentsMask, XkbGroupStateMask);
-		*/
 #endif
 
 		CheckExtWM ();
@@ -403,10 +380,9 @@ namespace KBSwitch
 	void KBCtl::HandleXkbEvent (void *msg)
 	{
 		const auto ev = static_cast<xcb_generic_event_t*> (msg);
-		qDebug () << Q_FUNC_INFO << ev->pad0;
 		switch (ev->pad0)
 		{
-		case XCB_XKB_EVENT_TYPE_STATE_NOTIFY:
+		case XCB_XKB_STATE_NOTIFY:
 		{
 			const auto stateEv = static_cast<xcb_xkb_state_notify_event_t*> (msg);
 			if (stateEv->group == stateEv->lockedGroup)
@@ -414,7 +390,7 @@ namespace KBSwitch
 			emit groupChanged (stateEv->group);
 			break;
 		}
-		case XCB_XKB_EVENT_TYPE_NEW_KEYBOARD_NOTIFY:
+		case XCB_XKB_NEW_KEYBOARD_NOTIFY:
 			Win2Group_.clear ();
 			UpdateGroupNames ();
 			break;
