@@ -4,14 +4,20 @@ include (InitLCPlugin OPTIONAL)
 
 option (ENABLE_IDN "Enable support for Internationalized Domain Names" OFF)
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
+
 if (ENABLE_IDN)
+	FIND_PACKAGE (IDN REQUIRED)
 	add_definitions (-DENABLE_IDN)
+else ()
+	unset (IDN_LIBRARIES)
 endif ()
 
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${IDN_INCLUDE_DIR}
 	)
 set (SRCS
 	poshuku.cpp
@@ -93,13 +99,9 @@ add_library (leechcraft_poshuku SHARED
 	${RCCS}
 	)
 
-if (ENABLE_IDN)
-	set (IDN_LIB "idn")
-endif ()
-
 target_link_libraries (leechcraft_poshuku
 	${LEECHCRAFT_LIBRARIES}
-	${IDN_LIB}
+	${IDN_LIBRARIES}
 	)
 install (TARGETS leechcraft_poshuku DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukusettings.xml DESTINATION ${LC_SETTINGS_DEST})

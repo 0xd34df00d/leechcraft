@@ -1,0 +1,7 @@
+find_path (IDN_INCLUDE_DIR idna.h)
+
+find_library (IDN_LIBRARIES
+		NAMES idn)
+
+include (FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS (IDN DEFAULT_MSG IDN_INCLUDE_DIR IDN_LIBRARIES)
