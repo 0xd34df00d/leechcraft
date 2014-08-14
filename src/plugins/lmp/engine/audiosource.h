@@ -74,8 +74,10 @@ namespace LMP
 	};
 
 	uint qHash (const AudioSource&);
+
+	typedef QList<AudioSource> AudioSources_t;
 }
 }
 
 Q_DECLARE_METATYPE (LeechCraft::LMP::AudioSource);
-Q_DECLARE_METATYPE (QList<LeechCraft::LMP::AudioSource>);
+Q_DECLARE_METATYPE (LeechCraft::LMP::AudioSources_t);
