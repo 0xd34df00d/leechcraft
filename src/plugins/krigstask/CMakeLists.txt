@@ -26,6 +26,11 @@ target_link_libraries (leechcraft_krigstask
 	${LEECHCRAFT_LIBRARIES}
 	${X11_X11_LIB}
 	${X11_Xcomposite_LIB}
+	${X11_Xfixes_LIB}
+	xcb-composite
+	xcb-xfixes
+	xcb-render
+	xcb-render-util
 	)
 install (TARGETS leechcraft_krigstask DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/krigstask DESTINATION ${LC_QML_DEST})
