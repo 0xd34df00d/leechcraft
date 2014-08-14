@@ -30,7 +30,7 @@
 #include "audioaddictstreamfetcher.h"
 #include <QNetworkRequest>
 #include <QtDebug>
-#include <qjson/parser.h>
+#include <util/sll/parsejson.h>
 
 namespace LeechCraft
 {
@@ -76,7 +76,7 @@ namespace HotStreams
 				"Basic " + QString ("%1:%2")
 					.arg (APIUsername)
 					.arg (APIPass)
-					.toAscii ()
+					.toLatin1 ()
 					.toBase64 ());
 		Request (req);
 	}
@@ -85,7 +85,7 @@ namespace HotStreams
 	{
 		QList<StreamInfo> result;
 
-		const auto& map = QJson::Parser ().parse (data).toMap ();
+		const auto& map = Util::ParseJson (data, Q_FUNC_INFO).toMap ();
 
 		if (!map.contains ("channel_filters"))
 			return result;
