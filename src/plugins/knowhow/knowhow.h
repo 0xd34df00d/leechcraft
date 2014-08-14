@@ -44,6 +44,8 @@ namespace KnowHow
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.KnowHow")
+
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 	public:
