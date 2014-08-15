@@ -64,6 +64,8 @@ namespace NetStoreManager
 				IJobHolder
 				IWebFileStorage)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.NetStoreManager")
+
 		TabClassInfo ManagerTC_;
 		Util::XmlSettingsDialog_ptr XSD_;
 

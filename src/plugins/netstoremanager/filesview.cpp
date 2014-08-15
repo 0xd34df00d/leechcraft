@@ -30,6 +30,7 @@
 #include "filesview.h"
 #include <QAction>
 #include <QDropEvent>
+#include <QMimeData>
 #include <QMenu>
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 
