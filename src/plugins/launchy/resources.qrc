@@ -1,5 +1,4 @@
 <RCC>
   <qresource prefix="/launchy">
-	<file>resources/qml/FSView.qml</file>
   </qresource>
 </RCC>

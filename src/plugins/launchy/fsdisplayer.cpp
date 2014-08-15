@@ -135,8 +135,8 @@ namespace Launchy
 		};
 	}
 
-	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy,
-			Util::XDG::ItemsFinder *finder, FavoritesManager *favMgr, RecentManager *recMgr, QObject *parent)
+	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy, Util::XDG::ItemsFinder *finder,
+			FavoritesManager *favMgr, RecentManager *recMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Finder_ (finder)
@@ -202,7 +202,7 @@ namespace Launchy
 			View_
 		};
 
-		View_->setSource (QUrl ("qrc:/launchy/resources/qml/FSView.qml"));
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "launchy", "FSView.qml"));
 
 		connect (View_->rootObject (),
 				SIGNAL (closeRequested ()),
