@@ -43,6 +43,8 @@ namespace Util
 		QHash<int, QByteArray> RoleNames_;
 #endif
 	protected:
+		RoleNamesMixin () = default;
+
 		template<typename... Args>
 		RoleNamesMixin (Args&&... args)
 		: Model { std::forward<Args...> (args...) }
