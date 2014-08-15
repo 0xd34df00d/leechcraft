@@ -5,10 +5,6 @@ include (InitLCPlugin OPTIONAL)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (Qwt)
 
-if (NOT WIN32 AND NOT APPLE)
-	set (QT_USE_QTDBUS TRUE)
-endif ()
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -76,8 +72,8 @@ set (FORMS
 set (RESOURCES liznooresources.qrc)
 CreateTrs ("liznoo" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("liznoo" "en;ru_RU" "${SRCS};${FBSD_SRCS};${UPOWER_SRCS};${WIN32_SRCS}" "${FORMS}" "liznoosettings.xml")
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_liznoo SHARED
 	${COMPILED_TRANSLATIONS}
@@ -86,10 +82,15 @@ add_library (leechcraft_liznoo SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_liznoo
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QWT_LIBRARIES}
 	${AdditionalLibraries}
 	)
 install (TARGETS leechcraft_liznoo DESTINATION ${LC_PLUGINS_DEST})
 install (FILES liznoosettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_liznoo Widgets)
+
+if (NOT WIN32 AND NOT APPLE)
+	FindQtLibs (leechcraft_liznoo DBus)
+endif ()
