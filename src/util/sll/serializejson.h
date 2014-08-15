@@ -32,7 +32,7 @@
 #include <QByteArray>
 
 #if QT_VERSION < 0x050000
-#include <qjson/parser.h>
+#include <qjson/serializer.h>
 #else
 #include <QJsonDocument>
 #endif
