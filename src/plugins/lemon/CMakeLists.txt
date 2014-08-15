@@ -6,8 +6,6 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (Libnl REQUIRED)
 find_package (Qwt REQUIRED)
 
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -26,7 +24,7 @@ set (SRCS
 set (FORMS
 	trafficdialog.ui
 	)
-QT4_WRAP_UI (UIS_H ${FORMS})
+QtWrapUi (UIS_H ${FORMS})
 
 CreateTrs("lemon" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lemon" "en;ru_RU" "${SRCS}" "" "")
@@ -37,10 +35,12 @@ add_library (leechcraft_lemon SHARED
 	${UIS_H}
 	)
 target_link_libraries (leechcraft_lemon
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LIBNL_LIBRARIES}
 	${QWT_LIBRARIES}
 	)
 install (TARGETS leechcraft_lemon DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/lemon DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/lemon DESTINATION ${LC_QML5_DEST})
+
+FindQtLibs (leechcraft_lemon Network Widgets)
