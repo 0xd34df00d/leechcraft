@@ -22,15 +22,25 @@ add_library (leechcraft_krigstask SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
-target_link_libraries (leechcraft_krigstask
-	${LEECHCRAFT_LIBRARIES}
+
+set (ADDITIONAL_LIBS
 	${X11_X11_LIB}
 	${X11_Xcomposite_LIB}
 	${X11_Xfixes_LIB}
-	xcb-composite
-	xcb-xfixes
-	xcb-render
-	xcb-render-util
+	)
+
+if (USE_QT5)
+	set (ADDITIONAL_LIBS
+		${ADDITIONAL_LIBS}
+		xcb-composite
+		xcb-xfixes
+		xcb-render
+		xcb-render-util
+		)
+endif ()
+
+target_link_libraries (leechcraft_krigstask
+	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_krigstask DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/krigstask DESTINATION ${LC_QML_DEST})
