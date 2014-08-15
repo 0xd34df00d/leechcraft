@@ -44,7 +44,11 @@ namespace Util
 	inline QByteArray SerializeJson (const QVariant& var, bool compact = true)
 	{
 #if QT_VERSION < 0x050000
-		return QJson::Serializer {}.serialize (var);
+		QJson::Serializer s;
+		s.setIndentMode (compact ?
+				QJson::IndentNone :
+				QJson::IndentFull);
+		return s.serialize (var);
 #else
 		return QJsonDocument::fromVariant (var)
 				.toJson (compact ? QJsonDocument::Compact : QJsonDocument::Indented);
