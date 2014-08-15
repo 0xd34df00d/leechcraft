@@ -21,8 +21,6 @@ if (WITH_DOCS)
 	endif ()
 endif ()
 
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -75,8 +73,8 @@ set (FORMS
 set (RESOURCES monocleresources.qrc)
 CreateTrs ("monocle" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("monocle" "en;ru_RU" "${SRCS}" "${FORMS}" "monoclesettings.xml")
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 set (UTIL_SRCS
 	util/monocle/textdocumentadapter.cpp
@@ -85,6 +83,7 @@ add_library (leechcraft_monocle_util STATIC
 	${UTIL_SRCS}
 	)
 set_target_properties(leechcraft_monocle_util PROPERTIES POSITION_INDEPENDENT_CODE True)
+FindQtLibs (leechcraft_monocle_util Widgets)
 
 add_library (leechcraft_monocle SHARED
 	${COMPILED_TRANSLATIONS}
@@ -93,12 +92,13 @@ add_library (leechcraft_monocle SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_monocle
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_monocle DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES monoclesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_monocle Concurrent PrintSupport Widgets Xml)
 
 option (ENABLE_MONOCLE_DIK "Enable MOBI backend for Monocle" ON)
 option (ENABLE_MONOCLE_FXB "Enable FictionBook backend for Monocle" ON)

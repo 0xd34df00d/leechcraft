@@ -47,6 +47,8 @@ namespace PDF
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.PDF")
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

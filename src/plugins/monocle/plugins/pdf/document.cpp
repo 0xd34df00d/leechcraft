@@ -33,7 +33,13 @@
 #include <QtDebug>
 #include <QBuffer>
 #include <QFile>
+
+#if QT_VERSION < 0x050000
 #include <poppler-qt4.h>
+#else
+#include <poppler-qt5.h>
+#endif
+
 #include <poppler-form.h>
 #include <poppler-version.h>
 #include "links.h"
