@@ -333,7 +333,7 @@ namespace GoogleDrive
 				const auto mime = item.ExportLinks_.value (key);
 
 #if QT_VERSION < 0x050000
-				const auto queryItems = url.queryItems ();
+				const auto queryItems = key.queryItems ();
 #else
 				const auto queryItems = QUrlQuery { key }.queryItems ();
 #endif
