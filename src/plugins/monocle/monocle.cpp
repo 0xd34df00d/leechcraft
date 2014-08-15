@@ -48,6 +48,8 @@ namespace Monocle
 	{
 		Util::InstallTranslator ("monocle");
 
+		qRegisterMetaType<QList<int>> ("QList<int>");
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclesettings.xml");
 
