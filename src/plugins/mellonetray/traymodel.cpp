@@ -28,13 +28,20 @@
  **********************************************************************/
 
 #include "traymodel.h"
+#include <QAbstractEventDispatcher>
 #include <QtDebug>
+#include <util/x11/xwrapper.h>
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrender.h>
 #include <X11/extensions/Xdamage.h>
-#include <util/x11/xwrapper.h>
+
+#if QT_VERSION >= 0x050000
+#include <xcb/xcb.h>
+#include <xcb/damage.h>
+#endif
 
 namespace LeechCraft
 {
@@ -72,15 +79,22 @@ namespace Mellonetray
 			return result;
 		}
 
+#if QT_VERSION < 0x050000
 		bool EvFilter (void *event)
 		{
 			return TrayModel::Instance ().Filter (static_cast<XEvent*> (event));
 		}
+#endif
 	}
 
 	TrayModel::TrayModel ()
+#if QT_VERSION < 0x050000
 	: PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
+#endif
 	{
+#if QT_VERSION >= 0x050000
+		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
+#endif
 
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::ItemID] = "itemID";
@@ -200,6 +214,7 @@ namespace Mellonetray
 		return {};
 	}
 
+#if QT_VERSION < 0x050000
 	template<>
 	void TrayModel::HandleClientMsg<XClientMessageEvent*> (XClientMessageEvent *ev)
 	{
@@ -215,6 +230,23 @@ namespace Mellonetray
 			break;
 		}
 	}
+#else
+	template<>
+	void TrayModel::HandleClientMsg<xcb_client_message_event_t*> (xcb_client_message_event_t *ev)
+	{
+		if (ev->type != Util::XWrapper::Instance ().GetAtom ("_NET_SYSTEM_TRAY_OPCODE"))
+			return;
+
+		switch (ev->data.data32 [1])
+		{
+		case 0:
+			if (auto id = ev->data.data32 [2])
+				Add (id);
+		default:
+			break;
+		}
+	}
+#endif
 
 	void TrayModel::Add (ulong wid)
 	{
@@ -246,6 +278,7 @@ namespace Mellonetray
 		emit updateRequired (wid);
 	}
 
+#if QT_VERSION < 0x050000
 	bool TrayModel::Filter (XEvent *ev)
 	{
 		auto invokePrev = [this, ev] { return PrevFilter_ ? PrevFilter_ (ev) : false; };
@@ -272,6 +305,31 @@ namespace Mellonetray
 
 		return invokePrev ();
 	}
+#else
+	bool TrayModel::nativeEventFilter (const QByteArray& eventType, void *msg, long int*)
+	{
+		if (eventType != "xcb_generic_event_t")
+			return false;
+
+		const auto ev = static_cast<xcb_generic_event_t*> (msg);
+
+		switch (ev->response_type & ~0x80)
+		{
+		case XCB_CLIENT_MESSAGE:
+			HandleClientMsg (static_cast<xcb_client_message_event_t*> (msg));
+			break;
+		case XCB_DESTROY_NOTIFY:
+			Remove (static_cast<xcb_destroy_notify_event_t*> (msg)->window);
+			break;
+		default:
+			if (ev->response_type == XCB_DAMAGE_NOTIFY + DamageEvent_)
+				break;
+			break;
+		}
+
+		return false;
+	}
+#endif
 
 	auto TrayModel::FindItem (ulong wid) -> QList<TrayItem>::iterator
 	{

@@ -30,31 +30,57 @@
 #pragma once
 
 #include <memory>
-#include <QGraphicsProxyWidget>
+#include <QtGlobal>
 
+#if QT_VERSION < 0x050000
+#include <QGraphicsWidget>
+#else
+#include <QQuickItem>
+#endif
+
+#if QT_VERSION < 0x050000
 class QX11EmbedContainer;
+#endif
 
 namespace LeechCraft
 {
 namespace Mellonetray
 {
+#if QT_VERSION < 0x050000
 	class IconHandler : public QGraphicsWidget
+#else
+	class IconHandler : public QQuickItem
+#endif
 	{
 		Q_OBJECT
 		Q_PROPERTY (unsigned long wid READ GetWID WRITE SetWID NOTIFY widChanged)
 
+#if QT_VERSION < 0x050000
 		std::shared_ptr<QX11EmbedContainer> Proxy_;
-		unsigned long WID_;
+#else
+		std::shared_ptr<QWindow> Proxy_;
+#endif
+		unsigned long WID_ = 0;
 	public:
+#if QT_VERSION < 0x050000
 		IconHandler (QGraphicsItem* = 0);
+#else
+		IconHandler (QQuickItem* = 0);
+#endif
 		~IconHandler ();
 
 		ulong GetWID () const;
 		void SetWID (const ulong&);
 
-		void setGeometry (const QRectF&);
+#if QT_VERSION < 0x050000
+		void setGeometry (const QRectF&) override;
+#endif
 	protected:
-		QVariant itemChange (GraphicsItemChange change, const QVariant& value);
+#if QT_VERSION < 0x050000
+		QVariant itemChange (GraphicsItemChange change, const QVariant& value) override;
+#else
+		void geometryChanged (const QRectF&, const QRectF&) override;
+#endif
 	private:
 		void Free ();
 	signals:

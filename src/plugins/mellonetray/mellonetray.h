@@ -44,6 +44,8 @@ namespace Mellonetray
 		Q_OBJECT
 		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.MelloneTray")
+
 		QuarkComponent_ptr Panel_;
 	public:
 		void Init (ICoreProxy_ptr);
