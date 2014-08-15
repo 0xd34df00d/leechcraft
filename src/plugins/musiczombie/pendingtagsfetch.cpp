@@ -36,6 +36,7 @@
 #include <QNetworkReply>
 #include <QDomDocument>
 #include <util/sll/queuemanager.h>
+#include <util/sll/urloperator.h>
 #include "chroma.h"
 
 namespace LeechCraft
@@ -87,11 +88,12 @@ namespace MusicZombie
 	void PendingTagsFetch::Request (const QByteArray& fp, int duration)
 	{
 		QUrl url ("http://api.acoustid.org/v2/lookup");
-		url.addQueryItem ("client", ApiKey);
-		url.addQueryItem ("duration", QString::number (duration));
-		url.addQueryItem ("fingerprint", QString::fromLatin1 (fp));
-		url.addQueryItem ("meta", "recordings+releasegroups+releases+tracks+sources+usermeta");
-		url.addQueryItem ("format", "xml");
+		Util::UrlOperator { url }
+				("client", ApiKey)
+				("duration", QString::number (duration))
+				("fingerprint", QString::fromLatin1 (fp))
+				("meta", "recordings+releasegroups+releases+tracks+sources+usermeta")
+				("format", "xml");
 
 		auto reply = NAM_->get (QNetworkRequest (url));
 		connect (reply,

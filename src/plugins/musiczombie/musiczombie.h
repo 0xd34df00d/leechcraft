@@ -59,6 +59,8 @@ namespace MusicZombie
 		Q_INTERFACES (Media::ITagsFetcher)
 #endif
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.MusicZombie")
+
 		ICoreProxy_ptr Proxy_;
 
 		Util::QueueManager *Queue_;

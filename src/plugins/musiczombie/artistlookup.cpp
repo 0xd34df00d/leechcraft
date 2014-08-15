@@ -36,6 +36,7 @@
 #include <QDomDocument>
 #include <QDate>
 #include <QtDebug>
+#include <util/sll/urloperator.h>
 
 namespace LeechCraft
 {
@@ -54,7 +55,9 @@ namespace MusicZombie
 	, Name_ { name }
 	{
 		QUrl url { "http://www.musicbrainz.org/ws/2/artist/" };
-		url.addQueryItem ("query", "artist:" + NormalizeName (name));
+		Util::UrlOperator { url }
+				("query", "artist:" + NormalizeName (name));
+
 		auto reply = nam->get (QNetworkRequest (url));
 		connect (reply,
 				SIGNAL (finished ()),
