@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "itemimageprovider.h"
+#include <QUrl>
 #include <util/xdg/item.h>
 
 namespace LeechCraft
@@ -45,7 +46,11 @@ namespace Launchy
 
 	QIcon ItemImageProvider::GetIcon (const QStringList& list)
 	{
-		const auto& id = list.at (0);
+		auto id = list.at (0);
+		if (PermID2Icon_.contains (id))
+			return PermID2Icon_.value (id);
+
+		id = QUrl::fromPercentEncoding (id.toUtf8 ());
 		return PermID2Icon_.value (id);
 	}
 }
