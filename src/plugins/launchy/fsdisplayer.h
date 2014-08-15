@@ -32,13 +32,17 @@
 #include <memory>
 #include <QObject>
 #include <QHash>
-#include <QDeclarativeView>
 #include <interfaces/core/icoreproxy.h>
 #include <util/xdg/xdgfwd.h>
 
 class QStandardItem;
 class QStandardItemModel;
+
+#if QT_VERSION < 0x050000
 class QDeclarativeView;
+#else
+class QQuickWidget;
+#endif
 
 namespace LeechCraft
 {
@@ -66,7 +70,11 @@ namespace Launchy
 		QStandardItemModel * const ItemsModel_;
 		ItemsSortFilterProxyModel * const ItemsProxyModel_;
 
+#if QT_VERSION < 0x050000
 		QDeclarativeView * const View_;
+#else
+		QQuickWidget * const View_;
+#endif
 		ItemIconsProvider * const IconsProvider_;
 
 		SysPathItemProvider * const SysPathHandler_;
@@ -88,7 +96,6 @@ namespace Launchy
 		void handleCategorySelected (int);
 		void handleExecRequested (const QString&);
 		void handleItemBookmark (const QString&);
-		void handleViewStatus (QDeclarativeView::Status);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 

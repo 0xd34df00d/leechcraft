@@ -57,6 +57,8 @@ namespace Launchy
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter IHaveShortcuts IQuarkComponentProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Launchy")
+
 		ICoreProxy_ptr Proxy_;
 		Util::XDG::ItemsFinder *Finder_;
 		FavoritesManager *FavManager_;

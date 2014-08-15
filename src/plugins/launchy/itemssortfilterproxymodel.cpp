@@ -37,7 +37,7 @@ namespace LeechCraft
 namespace Launchy
 {
 	ItemsSortFilterProxyModel::ItemsSortFilterProxyModel (QAbstractItemModel *source, QObject *parent)
-	: QSortFilterProxyModel (parent)
+	: RoleNamesMixin<QSortFilterProxyModel> (parent)
 	{
 		setDynamicSortFilter (true);
 		setSourceModel (source);
