@@ -34,6 +34,11 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QPushButton>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 #include "uploadmanager.h"
@@ -325,8 +330,16 @@ namespace GoogleDrive
 			storageItem.Shared_ = item.Shared_;
 			for (const auto& key : item.ExportLinks_.keys ())
 			{
-				const QString mime = item.ExportLinks_.value (key);
-				storageItem.ExportLinks [key] = qMakePair (mime, key.queryItems ().last ().second);
+				const auto mime = item.ExportLinks_.value (key);
+
+#if QT_VERSION < 0x050000
+				const auto queryItems = url.queryItems ();
+#else
+				const auto queryItems = QUrlQuery { key }.queryItems ();
+#endif
+				const auto lastQueryPair = queryItems.last ();
+
+				storageItem.ExportLinks [key] = qMakePair (mime, lastQueryPair.second);
 			}
 
 			return storageItem;

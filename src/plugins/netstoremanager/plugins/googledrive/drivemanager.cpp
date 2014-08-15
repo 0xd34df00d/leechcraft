@@ -31,15 +31,22 @@
 #include <QNetworkRequest>
 #include <QtDebug>
 #include <QFileInfo>
-#include <QDesktopServices>
 #include <QMessageBox>
 #include <QMainWindow>
+
+#if QT_VERSION < 0x050000
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sys/mimedetector.h>
-#include <qjson/parser.h>
-#include <qjson/serializer.h>
+#include <util/sll/urloperator.h>
+#include <util/sll/parsejson.h>
+#include <util/sll/serializejson.h>
 #include "account.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -188,10 +195,8 @@ namespace GoogleDrive
 		map.insert ("type", "anyone");
 		map.insert ("withLink", true);
 
-		QJson::Serializer serializer;
-
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->
-				GetNetworkAccessManager ()->post (request, serializer.serialize (map));
+		const auto reply = Core::Instance ().GetProxy ()->
+				GetNetworkAccessManager ()->post (request, Util::SerializeJson (map));
 		Reply2Id_ [reply] = id;
 
 		connect (reply,
@@ -296,7 +301,7 @@ namespace GoogleDrive
 			map ["parents"] = parents;
 		}
 
-		const auto& data = QJson::Serializer ().serialize (map);
+		const auto& data = Util::SerializeJson (map);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
 		request.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 
@@ -331,7 +336,7 @@ namespace GoogleDrive
 		}
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				post (request, QJson::Serializer ().serialize (data));
+				post (request, Util::SerializeJson (data));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -358,7 +363,7 @@ namespace GoogleDrive
 		}
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				post (request, QJson::Serializer ().serialize (data));
+				post (request, Util::SerializeJson (data));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -385,7 +390,7 @@ namespace GoogleDrive
 		}
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				put (request, QJson::Serializer ().serialize (data));
+				put (request, Util::SerializeJson (data));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -445,7 +450,7 @@ namespace GoogleDrive
 		QVariantMap data;
 		data ["title"] = name;
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				put (request, QJson::Serializer ().serialize (data));
+				put (request, Util::SerializeJson (data));
 		Reply2DownloadAccessToken_ [reply] = key;
 		connect (reply,
 				SIGNAL (finished ()),
@@ -458,7 +463,11 @@ namespace GoogleDrive
 	{
 		QString savePath;
 		if (open)
+#if QT_VERSION < 0x050000
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+#else
+			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
+#endif
 					"/" + QFileInfo (filename).fileName ();
 		else if (!filePath.isEmpty ())
 			savePath = filePath + '/' + filename;
@@ -518,17 +527,11 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		QVariant res = QJson::Parser ().parse (reply->readAll (), &ok);
-
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO << "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
-		QString accessKey = res.toMap ().value ("access_token").toString ();
-
+		const auto& accessKey = res.toMap ().value ("access_token").toString ();
 		if (accessKey.isEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO << "access token is empty";
@@ -651,7 +654,14 @@ namespace GoogleDrive
 			for (const auto& key : exports.keys ())
 			{
 				QUrl url = exports.value (key).toUrl ();
-				driveItem.ExportLinks_ [url] = GetLocalMimeTypeFromGoogleMimeType (key, url.queryItems ().last ().second);
+
+#if QT_VERSION < 0x050000
+				const auto& lastQueryPair = url.queryItems ().last ();
+#else
+				const auto& lastQueryPair = QUrlQuery { url }.queryItems ().last ();
+#endif
+
+				driveItem.ExportLinks_ [url] = GetLocalMimeTypeFromGoogleMimeType (key, lastQueryPair.second);
 			}
 
 			driveItem.CreateDate_ = QDateTime::fromString (map ["createdDate"].toString (),
@@ -691,14 +701,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO << "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		const auto& resMap = res.toMap ();
 		if (!resMap.contains ("items"))
@@ -746,15 +751,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		if (!res.toMap ().contains ("error"))
 		{
@@ -775,14 +774,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		if (!res.toMap ().contains ("error"))
 		{
@@ -803,14 +797,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		if (!res.toMap ().contains ("error"))
 		{
@@ -832,14 +821,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		if (!res.toMap ().contains ("error"))
 		{
@@ -917,14 +901,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		const auto& map = res.toMap ();
 		const auto& id = map ["id"].toString ();
@@ -974,14 +953,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		if (!res.toMap ().contains ("error"))
 		{
@@ -1003,14 +977,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		if (!res.toMap ().contains ("error"))
 		{
@@ -1032,14 +1001,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		if (!res.toMap ().contains ("error"))
 		{
@@ -1061,15 +1025,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		auto ba = reply->readAll ();
-		const auto& res = QJson::Parser ().parse (ba, &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		const QVariantMap& map = res.toMap ();
 		if (map.contains ("error"))
@@ -1115,14 +1073,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		const QVariantMap& map = res.toMap ();
 		QString access_token = Reply2DownloadAccessToken_.take (reply);
@@ -1140,7 +1093,7 @@ namespace GoogleDrive
 			}
 
 			if (!access_token.isEmpty ())
-				it.DownloadUrl_.addQueryItem ("access_token", access_token);
+				Util::UrlOperator { it.DownloadUrl_ } ("access_token", access_token);
 
 			if (!DownloadsQueue_.isEmpty ())
 				DownloadsQueue_.dequeue () (it.Name_, it.DownloadUrl_);
@@ -1158,16 +1111,11 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
-		const QVariantMap& map = res.toMap ();
+		const auto& map = res.toMap ();
 
 		if (!map.contains ("error"))
 		{
@@ -1182,8 +1130,6 @@ namespace GoogleDrive
 
 		ParseError (map);
 	}
-
 }
 }
 }
-

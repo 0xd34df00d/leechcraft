@@ -4,7 +4,12 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package (QJSON REQUIRED)
+if (NOT USE_QT5)
+	find_package (QJSON REQUIRED)
+else ()
+	unset (QJSON_INCLUDE_DIR)
+	unset (QJSON_LIBRARIES)
+endif ()
 
 include_directories (${NETSTOREMANAGER_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -28,7 +33,7 @@ set (GOOGLEDRIVE_RESOURCES netstoremanagergoogledriveresources.qrc)
 CreateTrs ("netstoremanager_googledrive" "en;ru_RU" GOOGLEDRIVE_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("netstoremanager_googledrive" "en;ru_RU" "${GOOGLEDRIVE_SRCS}" "" "nsmgoogledrivesettings.xml")
 
-QT4_ADD_RESOURCES (GOOGLEDRIVE_RCCS ${GOOGLEDRIVE_RESOURCES})
+QtAddResources (GOOGLEDRIVE_RCCS ${GOOGLEDRIVE_RESOURCES})
 
 add_library (leechcraft_netstoremanager_googledrive SHARED
 	${GOOGLEDRIVE_COMPILED_TRANSLATIONS}
@@ -37,10 +42,11 @@ add_library (leechcraft_netstoremanager_googledrive SHARED
 	${GOOGLEDRIVE_RCCS}
 	)
 target_link_libraries (leechcraft_netstoremanager_googledrive
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_netstoremanager_googledrive DESTINATION ${LC_PLUGINS_DEST})
 install (FILES nsmgoogledrivesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_netstoremanager_googledrive Core)

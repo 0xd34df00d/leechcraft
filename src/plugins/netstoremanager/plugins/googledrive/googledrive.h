@@ -56,6 +56,8 @@ namespace GoogleDrive
 				IHaveSettings
 				LeechCraft::NetStoreManager::IStoragePlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.NetStoreManager.GoogleDrive")
+
 		QList<Account_ptr> Accounts_;
 		AuthManager *AuthManager_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;

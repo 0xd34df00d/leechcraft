@@ -28,9 +28,15 @@
  **********************************************************************/
 
 #include "core.h"
-#include <QDesktopServices>
 #include <QUrl>
 #include <QFileInfo>
+
+#if QT_VERSION < 0x050000
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
 #include <util/xpc/util.h>
 
 namespace LeechCraft
@@ -111,19 +117,23 @@ namespace GoogleDrive
 	{
 		QString path = Id2SavePath_.take (id);
 		Id2Downloader_.remove (id);
+
+#if QT_VERSION < 0x050000
+		const auto& tmpLoc = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
+#else
+		const auto& tmpLoc = QStandardPaths::writableLocation (QStandardPaths::TempLocation);
+#endif
+
 		if (Id2OpenAfterDownloadState_.contains (id) &&
 				Id2OpenAfterDownloadState_ [id])
 		{
-			path = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-					"/" + QFileInfo (path).fileName ();
+			path = tmpLoc + "/" + QFileInfo (path).fileName ();
 			emit gotEntity (Util::MakeEntity (QUrl::fromLocalFile (path),
 					QString (), OnlyHandle | FromUserInitiated));
 			Id2OpenAfterDownloadState_.remove (id);
 		}
 		else
-			QFile::rename (QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-						"/" + QFileInfo (path).fileName (),
-					path);
+			QFile::rename (tmpLoc + "/" + QFileInfo (path).fileName (), path);
 	}
 
 	void Core::handleJobRemoved (int id)
