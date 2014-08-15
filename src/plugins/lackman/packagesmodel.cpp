@@ -281,8 +281,9 @@ namespace LackMan
 
 	void PackagesModel::Clear ()
 	{
+		beginResetModel ();
 		Packages_.clear ();
-		reset ();
+		endResetModel ();
 	}
 
 	void PackagesModel::handlePackageInstallRemoveToggled (int id)
