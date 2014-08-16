@@ -61,6 +61,8 @@ namespace Otlozhu
 		Q_INTERFACES (ISyncable)
 #endif
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Otlozhu")
+
 		TabClassInfo TCTodo_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
