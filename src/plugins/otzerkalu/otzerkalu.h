@@ -52,6 +52,8 @@ namespace Otzerkalu
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler IJobHolder)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Otzerkalu")
+
 		QStandardItemModel *RepresentationModel_;
 		ICoreProxy_ptr Proxy_;
 		Util::IDPool<int> MirrorIDPool_;
