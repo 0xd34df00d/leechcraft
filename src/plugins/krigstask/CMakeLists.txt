@@ -41,6 +41,7 @@ endif ()
 
 target_link_libraries (leechcraft_krigstask
 	${LEECHCRAFT_LIBRARIES}
+	${ADDITIONAL_LIBS}
 	)
 install (TARGETS leechcraft_krigstask DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/krigstask DESTINATION ${LC_QML_DEST})
