@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_ooronee)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -15,6 +13,7 @@ set (SRCS
 	quarkproxy.cpp
 	xmlsettingsmanager.cpp
 	)
+
 #CreateTrs("ooronee" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("ooronee" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
@@ -28,4 +27,7 @@ target_link_libraries (leechcraft_ooronee
 	)
 install (TARGETS leechcraft_ooronee DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/ooronee DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/ooronee DESTINATION ${LC_QML5_DEST})
 install (FILES ooroneesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_ooronee Quick)
