@@ -33,4 +33,4 @@ target_link_libraries (leechcraft_monocle_mu
 	)
 install (TARGETS leechcraft_monocle_mu DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_monocle_fxb Core)
+FindQtLibs (leechcraft_monocle_mu Core)
