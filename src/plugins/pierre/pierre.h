@@ -49,6 +49,8 @@ namespace Pierre
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Pierre")
+
 		QMenuBar *MenuBar_;
 		ICoreProxy_ptr Proxy_;
 
