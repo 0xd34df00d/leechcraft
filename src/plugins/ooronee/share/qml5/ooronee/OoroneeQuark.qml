@@ -13,7 +13,7 @@ Rectangle {
     border.width: 1
     radius: width / 8
 
-    property variant hoverTime: null
+    property variant enterTime: null
 
     Image {
         anchors.fill: parent
@@ -23,6 +23,11 @@ Rectangle {
     DropArea {
         anchors.fill: parent
 
-        onDataDropped: Ooronee_Proxy.handle(data, false)
+        onDataDropped: {
+            var now = new Date();
+            Ooronee_Proxy.handle(data, (now - enterTime) > Ooronee_Proxy.hoverTimeout);
+        }
+
+        onDragEntered: enterTime = new Date();
     }
 }
