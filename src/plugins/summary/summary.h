@@ -51,6 +51,8 @@ namespace Summary
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs ISummaryRepresentation IHaveRecoverableTabs)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Summary")
+
 		std::auto_ptr<QTranslator> Translator_;
 		TabClasses_t TabClasses_;
 	public:
