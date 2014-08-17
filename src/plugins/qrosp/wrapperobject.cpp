@@ -39,9 +39,9 @@
 #include <qross/core/script.h>
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
-#include <qjson/parser.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/ihookproxy.h>
+#include <util/sll/parsejson.h>
 #include <util/util.h>
 #include "utilproxy.h"
 #include "wrappers/coreproxywrapper.h"
@@ -51,7 +51,12 @@
 #include "wrappers/shortcutproxywrapper.h"
 #include "wrappers/tagsmanagerwrapper.h"
 
+#if QT_VERSION < 0x050000
 #include "third-party/qmetaobjectbuilder_48.h"
+#else
+#include <QtGlobal>
+#include <private/qmetaobjectbuilder_p.h>
+#endif
 
 Q_DECLARE_METATYPE (QList<QAction*>);
 Q_DECLARE_METATYPE (QList<QMenu*>);
@@ -153,7 +158,7 @@ namespace Qrosp
 				return QVariantMap ();
 			}
 
-			return QJson::Parser ().parse (file.readAll ()).toMap ();
+			return Util::ParseJson (&file, Q_FUNC_INFO).toMap ();
 		}
 	}
 
@@ -200,7 +205,11 @@ namespace Qrosp
 	WrapperObject::~WrapperObject ()
 	{
 		delete ScriptAction_;
+#if QT_VERSION < 0x050000
 		qFree (ThisMetaObject_);
+#else
+		qFreeAligned (ThisMetaObject_);
+#endif
 	}
 
 	const QString& WrapperObject::GetType () const
@@ -241,7 +250,13 @@ namespace Qrosp
 
 	const QMetaObject* WrapperObject::metaObject () const
 	{
-		return ThisMetaObject_ ? ThisMetaObject_ : QObject::d_ptr->metaObject;
+		return ThisMetaObject_ ?
+				ThisMetaObject_ :
+#if QT_VERSION < 0x050000
+				QObject::d_ptr->metaObject;
+#else
+				QObject::d_ptr->dynamicMetaObject ();
+#endif
 	}
 
 	namespace
@@ -289,7 +304,11 @@ namespace Qrosp
 						i < size; ++i)
 					args << WrapParameter (method.parameterTypes ().at (i),
 							argsArray [i + 1]);
+#if QT_VERSION < 0x050000
 				QString name (method.signature ());
+#else
+				QString name (method.methodSignature ());
+#endif
 				name = name.left (name.indexOf ('('));
 				SCALL (void) (name, args);
 			}
