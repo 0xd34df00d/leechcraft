@@ -13,8 +13,6 @@ Rectangle {
     border.width: 1
     radius: width / 8
 
-    property variant hoverTime: null
-
     Image {
         anchors.fill: parent
         source: "image://ThemeIcons/edit-paste"
