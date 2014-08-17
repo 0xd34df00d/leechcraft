@@ -37,7 +37,7 @@
 #include <QDomDocument>
 #include <QStringList>
 #include <QtDebug>
-#include <qjson/parser.h>
+#include <util/sll/parsejson.h>
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
 #include "vkaccount.h"
@@ -151,7 +151,7 @@ namespace Rappor
 		StartUpload (server, tail);
 
 		const auto& data = reply->readAll ();
-		const auto& parsed = QJson::Parser ().parse (data).toMap ();
+		const auto& parsed = Util::ParseJson (data, Q_FUNC_INFO).toMap ();
 
 		const auto& info = PhotoUpload2Info_.take (reply);
 
