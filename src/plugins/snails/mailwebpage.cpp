@@ -30,6 +30,11 @@
 #include "mailwebpage.h"
 #include <QNetworkRequest>
 #include <QtDebug>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 
@@ -65,9 +70,14 @@ namespace Snails
 
 	void MailWebPage::HandleAttachment (const QUrl& url)
 	{
-		const auto& msgId = url.queryItemValue ("msgId").toUtf8 ();
-		const auto& folder = url.queryItemValue ("folderId").split ('/');
-		const auto& attName = url.queryItemValue ("attName");
+#if QT_VERSION < 0x050000
+		const auto& queryable = url;
+#else
+		const QUrlQuery queryable { url };
+#endif
+		const auto& msgId = queryable.queryItemValue ("msgId").toUtf8 ();
+		const auto& folder = queryable.queryItemValue ("folderId").split ('/');
+		const auto& attName = queryable.queryItemValue ("attName");
 
 		emit attachmentSelected (msgId, folder, attName);
 	}

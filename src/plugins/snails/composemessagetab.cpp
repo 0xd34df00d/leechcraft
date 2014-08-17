@@ -174,7 +174,13 @@ namespace Snails
 		const auto quoteEndMarker = "</span>";
 
 		for (auto& str : plainSplit)
-			str = quoteStartMarker + Qt::escape (str) + quoteEndMarker;
+			str = quoteStartMarker +
+#if QT_VERSION < 0x050000
+					Qt::escape (str) +
+#else
+					str.toHtmlEscaped () +
+#endif
+					quoteEndMarker;
 
 		auto htmlBody = plainSplit.join ("<br/>");
 		editor->SetContents (htmlBody, ContentType::HTML);
