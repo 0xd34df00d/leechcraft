@@ -48,6 +48,8 @@ namespace Poleemery
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poleemery")
+
 		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
