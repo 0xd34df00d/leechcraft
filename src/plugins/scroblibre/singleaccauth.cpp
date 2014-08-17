@@ -240,6 +240,8 @@ namespace Scroblibre
 					.arg (service),
 				Proxy_,
 				!failed);
+		if (pass.isEmpty ())
+			return;
 
 		const auto& md5pass = QCryptographicHash::hash (pass.toUtf8 (),
 				QCryptographicHash::Md5).toHex ();
