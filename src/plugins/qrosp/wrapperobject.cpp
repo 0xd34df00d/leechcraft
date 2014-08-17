@@ -53,15 +53,10 @@
 
 #include "third-party/qmetaobjectbuilder_48.h"
 
-class QWebView;
-class QWebPage;
-
 Q_DECLARE_METATYPE (QList<QAction*>);
 Q_DECLARE_METATYPE (QList<QMenu*>);
 Q_DECLARE_METATYPE (QUrl*);
 Q_DECLARE_METATYPE (QString*);
-Q_DECLARE_METATYPE (QWebView*);
-Q_DECLARE_METATYPE (QWebPage*);
 
 #define SCALL(x) (Call<x> (ScriptAction_))
 
@@ -78,8 +73,6 @@ namespace Qrosp
 	{
 		qRegisterMetaType<QUrl*> ("QUrl*");
 		qRegisterMetaType<QString*> ("QString*");
-		qRegisterMetaType<QWebView*> ("QWebView*");
-		qRegisterMetaType<QWebPage*> ("QWebPage*");
 		qRegisterMetaType<QNetworkAccessManager*> ("QNetworkAccessManager*");
 		qRegisterMetaType<QStandardItemModel*> ("QStandardItemModel*");
 
