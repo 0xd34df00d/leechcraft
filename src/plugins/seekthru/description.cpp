@@ -29,6 +29,11 @@
 
 #include "description.h"
 #include <stdexcept>
+#include <type_traits>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
 
 namespace LeechCraft
 {
@@ -61,8 +66,15 @@ namespace SeekThru
 	QUrl UrlDescription::MakeUrl (const QString& searchStr, const QHash<QString, QVariant>& params) const
 	{
 		QUrl url = Template_;
-		decltype (url.queryItems ()) newItems;
-		for (auto item : url.queryItems ())
+
+#if QT_VERSION < 0x050000
+		const auto& items = url.queryItems ();
+#else
+		const auto& items = QUrlQuery { url }.queryItems ();
+#endif
+
+		std::decay<decltype (items)>::type newItems;
+		for (auto item : items)
 		{
 			// Currently skips optional parameters
 			if (item.second.size () >= 3 &&
@@ -85,7 +97,13 @@ namespace SeekThru
 
 			newItems << item;
 		}
+#if QT_VERSION < 0x050000
 		url.setQueryItems (newItems);
+#else
+		QUrlQuery newQuery;
+		newQuery.setQueryItems (newItems);
+		url.setQuery (newQuery);
+#endif
 		return url;
 	}
 

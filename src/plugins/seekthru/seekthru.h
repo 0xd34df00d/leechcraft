@@ -63,6 +63,8 @@ namespace SeekThru
 				IStartupWizard
 				ISyncable)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.SeekThru")
+
 		std::auto_ptr<QTranslator> Translator_;
 		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	public:

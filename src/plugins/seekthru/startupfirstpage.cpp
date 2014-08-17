@@ -116,8 +116,12 @@ namespace SeekThru
 			edit->setText (info.DefaultTags_);
 			Ui_.Tree_->setItemWidget (item, 1, edit);
 		}
-		if (Ui_.Tree_->header ())
-			Ui_.Tree_->header ()->setResizeMode (0, QHeaderView::ResizeToContents);
+		if (const auto hdr = Ui_.Tree_->header ())
+#if QT_VERSION < 0x050000
+			hdr->setResizeMode (0, QHeaderView::ResizeToContents);
+#else
+			hdr->setSectionResizeMode (0, QHeaderView::ResizeToContents);
+#endif
 	}
 
 	void StartupFirstPage::handleAccepted ()
