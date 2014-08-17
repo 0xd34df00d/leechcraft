@@ -49,6 +49,8 @@ namespace Scroblibre
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings Media::IAudioScrobbler)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Scroblibre")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 		AccountsManager *AccMgr_;
 		AuthManager *AuthMgr_;
