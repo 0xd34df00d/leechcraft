@@ -11,7 +11,12 @@ if(QROSS_LIBRARIES AND QROSS_INCLUDE_DIR)
 	set(QROSS_FOUND 1)
 else()
 	find_path(QROSS_INCLUDE_DIR qross/core/manager.h PATH ENV)
-	find_library(QROSS_LIBRARIES NAMES qrosscore)
+
+	if (NOT USE_QT5)
+		find_library(QROSS_LIBRARIES NAMES qrosscore qrosscore-qt4)
+	else ()
+		find_library(QROSS_LIBRARIES NAMES qrosscore-qt5)
+	endif ()
 
 	if(QROSS_LIBRARIES AND QROSS_INCLUDE_DIR)
 		set(QROSS_FOUND 1)
