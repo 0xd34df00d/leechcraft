@@ -46,6 +46,8 @@ namespace Syncer
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Syncer")
+
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
