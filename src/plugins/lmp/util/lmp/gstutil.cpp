@@ -207,7 +207,7 @@ namespace GstUtil
 		GstPadProbeReturn EventProbeHandler (GstPad *pad, GstPadProbeInfo *info, gpointer cbDataPtr)
 		{
 			if (GST_EVENT_TYPE (GST_PAD_PROBE_INFO_DATA (info)) != GST_EVENT_EOS)
-				return GST_PAD_PROBE_PASS;
+				return GST_PAD_PROBE_OK;
 
 			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
 #endif
@@ -224,7 +224,7 @@ namespace GstUtil
 #if GST_VERSION_MAJOR < 1
 			return FALSE;
 #else
-			return GST_PAD_PROBE_REMOVE;
+			return GST_PAD_PROBE_DROP;
 #endif
 		}
 
@@ -258,7 +258,7 @@ namespace GstUtil
 #if GST_VERSION_MAJOR < 1
 			return TRUE;
 #else
-			return GST_PAD_PROBE_REMOVE;
+			return GST_PAD_PROBE_OK;
 #endif
 		}
 	}
