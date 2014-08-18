@@ -27,6 +27,7 @@ set (SRCS
 	utilproxy.cpp
 	scriptloaderinstance.cpp
 	loadedscript.cpp
+	lcenv.cpp
 	wrappers/coreproxywrapper.cpp
 	wrappers/hookproxywrapper.cpp
 	wrappers/entitywrapper.cpp
