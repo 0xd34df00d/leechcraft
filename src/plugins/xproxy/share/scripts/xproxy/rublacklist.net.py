@@ -1,6 +1,11 @@
 from bs4 import BeautifulSoup
-from PyQt4.QtCore import QUrl, QStringList
-from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
+
+if LCEnv.majorQtVersion == 4:
+	from PyQt4.QtCore import QUrl, QStringList
+	from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
+else:
+	from PyQt5.QtCore import QUrl, QStringList
+	from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 def getListName():
 	return "RuBlackList.net"
