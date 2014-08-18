@@ -134,8 +134,11 @@ namespace LMP
 		}
 	}
 
-	void NPStateUpdater::update (const MediaInfo& info) const
+	void NPStateUpdater::update (MediaInfo info) const
 	{
+		if (Player_->GetState () == SourceState::Stopped)
+			info = MediaInfo {};
+
 		const auto& pxInfo = GetPixmap (info);
 
 		const auto& text = BuildNotificationText (info);

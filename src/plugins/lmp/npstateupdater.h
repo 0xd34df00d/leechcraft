@@ -32,6 +32,7 @@
 #include <functional>
 #include <QObject>
 #include <QPixmap>
+#include "mediainfo.h"
 
 class QLabel;
 
@@ -41,7 +42,6 @@ namespace LMP
 {
 	class Player;
 	class NowPlayingWidget;
-	struct MediaInfo;
 
 	class NPStateUpdater : public QObject
 	{
@@ -66,7 +66,7 @@ namespace LMP
 		void emitNotification () const;
 	private slots:
 		void update () const;
-		void update (const MediaInfo&) const;
+		void update (MediaInfo) const;
 	};
 }
 }
