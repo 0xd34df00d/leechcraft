@@ -47,6 +47,8 @@ namespace XProxy
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.XProxy")
+
 		ICoreProxy_ptr CoreProxy_;
 		ProxiesStorage *Storage_;
 		ProxiesConfigWidget *CfgWidget_;
