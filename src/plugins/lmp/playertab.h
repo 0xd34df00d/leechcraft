@@ -119,7 +119,6 @@ namespace LMP
 		void updateEffectsList (const QStringList&);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
-		void handleSongInfoUpdated (const MediaInfo&);
 		void handleLoveTrack ();
 		void handleBanTrack ();
 
@@ -129,8 +128,6 @@ namespace LMP
 		void handleGotLyrics (const Media::LyricsResults&);
 
 		void handlePlayerAvailable (bool);
-
-		void notifyCurrentTrack ();
 
 		void closeLMP ();
 		void handleStateChanged ();
@@ -150,6 +147,9 @@ namespace LMP
 		void tabRecoverDataChanged ();
 
 		void effectsConfigRequested (int);
+
+		// Internal signal.
+		void notifyCurrentTrackRequested ();
 	};
 }
 }

@@ -62,6 +62,7 @@
 #include "volumeslider.h"
 #include "seekslider.h"
 #include "palettefixerfilter.h"
+#include "npstateupdater.h"
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
@@ -104,6 +105,14 @@ namespace LMP
 		auto coverGetter = [this] () { return Ui_.NPArt_->property ("LMP/CoverPath").toString (); };
 		Ui_.NPArt_->installEventFilter (new AALabelEventFilter (coverGetter, this));
 
+		const auto updater = new NPStateUpdater { Ui_.NowPlaying_, Ui_.NPWidget_, Player_, this };
+		updater->AddPixmapHandler ([this] (const MediaInfo& info, const QString& path, const QPixmap& px)
+					{ NPPixmapHandler_->HandleSongChanged (info, path, px, !px.isNull ()); });
+		connect (this,
+				SIGNAL (notifyCurrentTrackRequested ()),
+				updater,
+				SLOT (emitNotification ()));
+
 		connect (Player_,
 				SIGNAL (playerAvailable (bool)),
 				this,
@@ -112,10 +121,10 @@ namespace LMP
 				SIGNAL (songChanged (MediaInfo)),
 				this,
 				SLOT (handleSongChanged (MediaInfo)));
-		connect (Player_,
-				SIGNAL (songInfoUpdated (MediaInfo)),
+		connect (Player_->GetSourceObject (),
+				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
-				SLOT (handleSongInfoUpdated (MediaInfo)));
+				SLOT (handleStateChanged ()));
 		connect (Player_,
 				SIGNAL (indexChanged (QModelIndex)),
 				Ui_.Playlist_,
@@ -380,10 +389,6 @@ namespace LMP
 				this,
 				SLOT (closeLMP ()));
 
-		connect (Player_->GetSourceObject (),
-				SIGNAL (stateChanged (SourceState, SourceState)),
-				this,
-				SLOT (handleStateChanged ()));
 		TrayMenu_->addAction (previous);
 		TrayMenu_->addAction (PlayPause_);
 		TrayMenu_->addAction (stop);
@@ -446,72 +451,6 @@ namespace LMP
 			auto finder = qobject_cast<Media::ILyricsFinder*> (finderObj);
 			finder->RequestLyrics ({ info.Artist_, info.Album_, info.Title_ },
 					Media::QueryOption::NoOption);
-		}
-	}
-
-	namespace
-	{
-		struct PixmapInfo
-		{
-			QPixmap PX_;
-			QString CoverPath_;
-			bool IsCorrect_;
-		};
-
-		PixmapInfo GetPixmap (const MediaInfo& info)
-		{
-			PixmapInfo pi;
-
-			pi.CoverPath_ = FindAlbumArtPath (info.LocalPath_);
-			if (!pi.CoverPath_.isEmpty ())
-				pi.PX_ = QPixmap (pi.CoverPath_);
-
-			pi.IsCorrect_ = !pi.PX_.isNull ();
-			if (!pi.IsCorrect_)
-			{
-				pi.PX_ = QIcon::fromTheme ("media-optical").pixmap (128, 128);
-				pi.CoverPath_.clear ();
-			}
-
-			return pi;
-		}
-	}
-
-	void PlayerTab::NotifyCurrentTrack (const MediaInfo& info, QPixmap notifyPx, bool fromUser)
-	{
-		QString text;
-		if (Player_->GetState () != SourceState::Stopped)
-		{
-			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
-			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
-			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
-
-			text = tr ("Now playing: %1 from %2 by %3")
-					.arg ("<em>" + title + "</em>")
-					.arg ("<em>" + album + "</em>")
-					.arg ("<em>" + track + "</em>");
-			if (!fromUser)
-				Ui_.NowPlaying_->setText (text);
-		}
-		else if (fromUser)
-			text = tr ("Playback is stopped.");
-		else
-			return;
-
-		if (!text.isEmpty () && (fromUser ||
-				XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ()))
-		{
-			int width = notifyPx.width ();
-			if (width > 200)
-			{
-				while (width > 200)
-					width /= 2;
-				notifyPx = notifyPx.scaledToWidth (width);
-			}
-
-			Entity e = Util::MakeNotification ("LMP", text, PInfo_);
-			e.Additional_ ["NotificationPixmap"] = notifyPx;
-			emit gotEntity (e);
 		}
 	}
 
@@ -595,13 +534,6 @@ namespace LMP
 
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
-		const auto& pxInfo = GetPixmap (info);
-
-		NPPixmapHandler_->HandleSongChanged (info, pxInfo.CoverPath_, pxInfo.PX_, pxInfo.IsCorrect_);
-
-		Ui_.NPWidget_->SetTrackInfo (info);
-
-		SetNowPlaying (info, pxInfo.PX_);
 		Scrobble (info);
 		RequestLyrics (info);
 
@@ -612,11 +544,11 @@ namespace LMP
 		}
 		else if (!Similars_.contains (info.Artist_))
 		{
-			auto similars = Core::Instance ().GetProxy ()->
+			const auto& similars = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
-			Q_FOREACH (auto *similar, similars)
+			for (const auto similar : similars)
 			{
-				auto obj = similar->GetSimilarArtists (info.Artist_, 15);
+				const auto obj = similar->GetSimilarArtists (info.Artist_, 15);
 				if (!obj)
 					continue;
 				connect (obj->GetQObject (),
@@ -634,11 +566,6 @@ namespace LMP
 			LastArtist_ = info.Artist_;
 			FillSimilar (Similars_ [info.Artist_]);
 		}
-	}
-
-	void PlayerTab::handleSongInfoUpdated (const MediaInfo& info)
-	{
-		Ui_.NPWidget_->SetTrackInfo (info);
 	}
 
 	namespace
@@ -709,12 +636,6 @@ namespace LMP
 		Ui_.PlaylistsTab_->setEnabled (available);
 		Ui_.CollectionTab_->setEnabled (available);
 		Ui_.RadioTab_->setEnabled (available);
-	}
-
-	void PlayerTab::notifyCurrentTrack ()
-	{
-		const auto& info = Player_->GetCurrentMediaInfo ();
-		NotifyCurrentTrack (info, GetPixmap (info).PX_, true);
 	}
 
 	void PlayerTab::closeLMP ()
