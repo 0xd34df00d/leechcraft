@@ -120,6 +120,7 @@ set (SRCS
 	playerrulesmanager.cpp
 	hookinterconnector.cpp
 	diaginfocollector.cpp
+	npstateupdater.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
