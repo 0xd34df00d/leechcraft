@@ -53,6 +53,8 @@ namespace Acetamide
 		IrcServerHandler *ISH_;
 		bool SSL_;
 		std::shared_ptr<QTcpSocket> Socket_ptr;
+
+		QTextCodec *LastCodec_ = nullptr;
 	public:
 		IrcServerSocket (IrcServerHandler*);
 		void ConnectToHost (const QString&, int);

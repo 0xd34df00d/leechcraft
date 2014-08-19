@@ -30,6 +30,7 @@
 
 #include "ircserversocket.h"
 #include <QTcpSocket>
+#include <QTextCodec>
 #include <QSettings>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
@@ -78,13 +79,14 @@ namespace Acetamide
 			return;
 		}
 
-		if (Socket_ptr->write (message.toLatin1 ()) == -1)
-		{
+		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
+		if (!LastCodec_ || LastCodec_->name () != encoding)
+			LastCodec_ = QTextCodec::codecForName (encoding.toLatin1 ());
+
+		if (Socket_ptr->write (LastCodec_->fromUnicode (message)) == -1)
 			qWarning () << Q_FUNC_INFO
 					<< Socket_ptr->error ()
 					<< Socket_ptr->errorString ();
-			return;
-		}
 	}
 
 	void IrcServerSocket::Close ()
