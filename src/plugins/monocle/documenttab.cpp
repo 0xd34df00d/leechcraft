@@ -654,16 +654,21 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 
 		ScalesBox_ = new QComboBox ();
+		ScalesBox_->setEditable (true);
+		ScalesBox_->setInsertPolicy (QComboBox::NoInsert);
 		ScalesBox_->addItem (tr ("Fit width"));
 		ScalesBox_->addItem (tr ("Fit page"));
-		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2, 3, 4, 5, 7.5, 10 };
-		Q_FOREACH (double scale, scales)
+		for (auto scale : { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2., 3., 4., 5., 7.5, 10. })
 			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
 		ScalesBox_->setCurrentIndex (0);
 		connect (ScalesBox_,
 				SIGNAL (activated (int)),
 				this,
 				SLOT (handleScaleChosen (int)));
+		connect (ScalesBox_,
+				SIGNAL (editTextChanged (QString)),
+				this,
+				SLOT (handleCustomScale (QString)));
 		Toolbar_->addWidget (ScalesBox_);
 
 		ZoomOut_ = new QAction (tr ("Zoom out"), this);
@@ -1422,9 +1427,36 @@ namespace Monocle
 		}
 
 		Relayout ();
-
 		scheduleSaveState ();
+		emit tabRecoverDataChanged ();
+	}
 
+	void DocumentTab::handleCustomScale (QString str)
+	{
+		if (ScalesBox_->findText (str) >= 0)
+			return;
+
+		str.remove ('%');
+		str = str.trimmed ();
+
+		bool ok = false;
+		auto num = str.toDouble (&ok);
+		if (!ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "could not convert"
+					<< str
+					<< "to number";
+			return;
+		}
+
+		num /= 100;
+
+		LayoutManager_->SetScaleMode (ScaleMode::Fixed);
+		LayoutManager_->SetFixedScale (num);
+
+		Relayout ();
+		scheduleSaveState ();
 		emit tabRecoverDataChanged ();
 	}
 
