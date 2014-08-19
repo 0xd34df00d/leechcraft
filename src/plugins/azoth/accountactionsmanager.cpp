@@ -89,6 +89,7 @@ namespace Azoth
 	, AccountUpdatePassword_ (new QAction (tr ("Update server password..."), this))
 	, AccountRename_ (new QAction (tr ("Rename..."), this))
 	, AccountModify_ (new QAction (tr ("Modify..."), this))
+	, AccountRemove_ (new QAction (tr ("Remove"), this))
 	{
 		AccountJoinConference_->setProperty ("ActionIcon", "irc-join-channel");
 		AccountManageBookmarks_->setProperty ("ActionIcon", "bookmarks-organize");
@@ -161,6 +162,10 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAccountModify ()));
+		connect (AccountRemove_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountRemove ()));
 	}
 
 	void AccountActionsManager::SetMainWidget (QWidget *mw)
@@ -237,6 +242,7 @@ namespace Azoth
 		if (account->GetAccountFeatures () & IAccount::FRenamable)
 			actions << AccountRename_;
 		actions << AccountModify_;
+		actions << AccountRemove_;
 
 		const auto& accObjVar = QVariant::fromValue<QObject*> (accObj);
 		std::function<void (QList<QAction*>)> actionSetter = [&actionSetter, &accObjVar] (const QList<QAction*>& actions)
@@ -650,6 +656,32 @@ namespace Azoth
 			return;
 
 		account->OpenConfigurationDialog ();
+	}
+
+	void AccountActionsManager::handleAccountRemove ()
+	{
+		IAccount *acc = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!acc)
+			return;
+
+		if (QMessageBox::question (nullptr,
+					"LeechCraft",
+					tr ("Are you sure you want to remove the account %1?")
+						.arg ("<em>" + acc->GetAccountName () + "</em>"),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		auto protoObj = acc->GetParentProtocol ();
+		auto proto = qobject_cast<IProtocol*> (protoObj);
+		if (!proto)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "parent protocol for"
+					<< acc->GetAccountID ()
+					<< "doesn't implement IProtocol";
+			return;
+		}
+		proto->RemoveAccount (acc->GetQObject ());
 	}
 
 	void AccountActionsManager::consoleRemoved (QWidget *w)
