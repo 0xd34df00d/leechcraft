@@ -52,6 +52,8 @@ namespace ChatHistory
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qRegisterMetaType<QList<int>> ("QList<int>");
+
 		Translator_.reset (Util::InstallTranslator ("azoth_chathistory"));
 
 		XSD_.reset (new Util::XmlSettingsDialog);
