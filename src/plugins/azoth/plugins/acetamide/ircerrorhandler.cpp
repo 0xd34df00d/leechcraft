@@ -59,7 +59,7 @@ namespace Acetamide
 		msg = codec->toUnicode (options.Message_.toLatin1 ());
 
 		if (options.Parameters_.count () > 1)
-			Q_FOREACH (const std::string& str, options.Parameters_.mid (1))
+			for (const auto& str : options.Parameters_.mid (1))
 				paramsMessage += QString::fromUtf8 (str.c_str ()) + " ";
 
 		Entity e = Util::MakeNotification ("Azoth",

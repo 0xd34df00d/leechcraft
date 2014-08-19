@@ -414,10 +414,9 @@ namespace Acetamide
 
 	bool IrcParser::ParseMessage (const QByteArray& message)
 	{
-		QString msg;
 		QTextCodec *codec = QTextCodec::codecForName (ISH_->
 				GetServerOptions ().ServerEncoding_.toUtf8 ());
-		msg = codec->toUnicode (message);
+		const auto& msg = codec->toUnicode (message);
 
 		IrcMessageOptions_.Command_.clear ();
 		IrcMessageOptions_.Nick_.clear ();
@@ -482,12 +481,9 @@ namespace Acetamide
 		}
 		else
 		{
-			IrcMessageOptions_.Nick_ =
-					QString::fromUtf8 (nickStr.c_str ());
-			IrcMessageOptions_.Command_ =
-					QString::fromUtf8 (commandStr.c_str ()).toLower ();
-			IrcMessageOptions_.Message_ =
-					QString::fromUtf8 (msgStr.c_str ());
+			IrcMessageOptions_.Nick_ = QString::fromUtf8 (nickStr.c_str ());
+			IrcMessageOptions_.Command_ = QString::fromUtf8 (commandStr.c_str ()).toLower ();
+			IrcMessageOptions_.Message_ = QString::fromUtf8 (msgStr.c_str ());
 			IrcMessageOptions_.UserName_ = QString::fromUtf8 (userStr.c_str ());
 			IrcMessageOptions_.Host_ = QString::fromUtf8 (hostStr.c_str ());
 			IrcMessageOptions_.Parameters_ = opts;

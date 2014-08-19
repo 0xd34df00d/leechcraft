@@ -1032,7 +1032,7 @@ namespace Acetamide
 		if (!IrcParser_->ParseMessage (msg))
 			return;
 
-		const IrcMessageOptions& opts = IrcParser_->GetIrcMessageOptions ();
+		const auto& opts = IrcParser_->GetIrcMessageOptions ();
 		if (ErrorHandler_->IsError (opts.Command_.toInt ()))
 		{
 			ErrorHandler_->HandleError (opts);
