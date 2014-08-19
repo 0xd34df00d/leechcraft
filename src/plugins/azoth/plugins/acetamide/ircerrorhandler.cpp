@@ -53,17 +53,16 @@ namespace Acetamide
 		if (!IsError (options.Command_.toInt ()))
 			return;
 
-		QString msg, paramsMessage = QString ();
-		QTextCodec *codec = QTextCodec::codecForName (ISH_->GetServerOptions ()
-				.ServerEncoding_.toUtf8 ());
-		msg = codec->toUnicode (options.Message_.toLatin1 ());
+		QString paramsMessage;
 
 		if (options.Parameters_.count () > 1)
 			for (const auto& str : options.Parameters_.mid (1))
 				paramsMessage += QString::fromUtf8 (str.c_str ()) + " ";
 
 		Entity e = Util::MakeNotification ("Azoth",
-				paramsMessage.isEmpty () ? msg : (paramsMessage + ": " + msg),
+				paramsMessage.isEmpty () ?
+						options.Message_ :
+						(paramsMessage + ": " + options.Message_),
 				PWarning_);
 		Core::Instance ().SendEntity (e);
 	}
