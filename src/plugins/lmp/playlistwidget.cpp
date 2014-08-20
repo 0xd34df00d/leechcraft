@@ -791,7 +791,14 @@ namespace LMP
 
 	void PlaylistWidget::handleCustomSort ()
 	{
-		const auto& current = Player_->GetSortingCriteria ();
+		auto current = Player_->GetSortingCriteria ();
+
+		if (current.isEmpty ())
+		{
+			const auto& var = XmlSettingsManager::Instance ().property ("LastCustomSortCriteria");
+			current = LoadCriteria (var);
+		}
+
 		SortingCriteriaDialog dia (this);
 		dia.SetCriteria (current);
 		if (dia.exec () != QDialog::Accepted)
@@ -800,6 +807,12 @@ namespace LMP
 		const auto& newCriteria = dia.GetCriteria ();
 		if (newCriteria == current)
 			return;
+
+		if (!newCriteria.isEmpty ())
+		{
+			const auto& var = SaveCriteria (newCriteria);
+			XmlSettingsManager::Instance ().setProperty ("LastCustomSortCriteria", var);
+		}
 
 		Player_->SetSortingCriteria (newCriteria);
 	}
