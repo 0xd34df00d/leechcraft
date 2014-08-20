@@ -253,6 +253,15 @@ namespace GstUtil
 		gst_element_get_state (elem, &state, &pending, time);
 		qDebug () << state << pending;
 	}
+
+	const char* GetTeePadTemplateName ()
+	{
+#if GST_VERSION_MAJOR < 1
+		return "src%d";
+#else
+		return "src_%u";
+#endif
+	}
 }
 }
 }

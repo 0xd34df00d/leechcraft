@@ -50,6 +50,8 @@ namespace GstUtil
 	void PerformWProbe (GstPad *srcpad, GstPad *sinkpad, const std::function<void ()>& functor);
 
 	void DebugPrintState (GstElement*, GstClockTime = 0.1 * GST_SECOND);
+
+	const char* GetTeePadTemplateName ();
 }
 }
 }
