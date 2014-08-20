@@ -346,7 +346,7 @@ namespace Azoth
 				clientsIconsWidth;
 
 		QPixmap pixmap (r.size ());
-		pixmap.fill (Qt::transparent);
+		pixmap.fill (option.palette.color (QPalette::Base));
 		QPainter p (&pixmap);
 
 		if (selected ||
