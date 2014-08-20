@@ -86,12 +86,17 @@ namespace LMP
 		for (const auto& item : criteria)
 			items << GetCriteriaName (item);
 
+		bool ok = false;
 		const auto& selected = QInputDialog::getItem (this,
 				tr ("Select criteria"),
 				tr ("Select criteria to be added:"),
 				items,
 				0,
-				false);
+				false,
+				&ok);
+		if (!ok)
+			return;
+
 		const auto& pos = items.indexOf (selected);
 		if (pos < 0)
 			return;
