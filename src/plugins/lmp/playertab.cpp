@@ -401,12 +401,6 @@ namespace LMP
 		TrayIcon_->setContextMenu (TrayMenu_);
 	}
 
-	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
-	{
-		Ui_.NowPlaying_->clear ();
-		NotifyCurrentTrack (info, px, false);
-	}
-
 	void PlayerTab::Scrobble (const MediaInfo& info)
 	{
 		if (!XmlSettingsManager::Instance ()

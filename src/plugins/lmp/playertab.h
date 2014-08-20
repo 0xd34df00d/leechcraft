@@ -109,12 +109,9 @@ namespace LMP
 	private:
 		void SetupNavButtons ();
 		void SetupToolbar ();
-		void SetNowPlaying (const MediaInfo&, const QPixmap&);
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
 		void RequestLyrics (const MediaInfo&);
-
-		void NotifyCurrentTrack (const MediaInfo&, QPixmap, bool fromUser);
 	public slots:
 		void updateEffectsList (const QStringList&);
 	private slots:
