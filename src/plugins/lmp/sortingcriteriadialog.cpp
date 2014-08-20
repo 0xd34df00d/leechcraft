@@ -74,7 +74,14 @@ namespace LMP
 
 	void SortingCriteriaDialog::on_Add__released ()
 	{
-		const auto& criteria = GetAllCriteria ();
+		const auto& existing = GetCriteria ();
+		auto criteria = GetAllCriteria ();
+		for (auto i = criteria.begin (); i != criteria.end (); )
+			if (existing.contains (*i))
+				i = criteria.erase (i);
+			else
+				++i;
+
 		QStringList items;
 		for (const auto& item : criteria)
 			items << GetCriteriaName (item);
