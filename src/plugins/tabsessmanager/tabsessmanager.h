@@ -48,6 +48,8 @@ namespace TabSessManager
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IActionsExporter)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.TabSessManager")
+
 		ICoreProxy_ptr Proxy_;
 		QList<QList<QObject*>> Tabs_;
 		bool IsRecovering_;
