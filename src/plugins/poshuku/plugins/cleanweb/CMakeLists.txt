@@ -32,8 +32,8 @@ set (CLEANWEB_RESOURCES
 CreateTrs ("poshuku_cleanweb" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" CLEANWEB_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("poshuku_cleanweb" "en;ru_RU" "${CLEANWEB_SRCS}" "${CLEANWEB_FORMS}" "poshukucleanwebsettings.xml")
 
-QT4_WRAP_UI (CLEANWEB_UIS_H ${CLEANWEB_FORMS})
-QT4_ADD_RESOURCES (CLEANWEB_RCCS ${CLEANWEB_RESOURCES})
+QtWrapUi (CLEANWEB_UIS_H ${CLEANWEB_FORMS})
+QtAddResources (CLEANWEB_RCCS ${CLEANWEB_RESOURCES})
 add_library (leechcraft_poshuku_cleanweb SHARED
 	${CLEANWEB_COMPILED_TRANSLATIONS}
 	${CLEANWEB_SRCS}
@@ -41,9 +41,10 @@ add_library (leechcraft_poshuku_cleanweb SHARED
 	${CLEANWEB_RCCS}
 	)
 target_link_libraries (leechcraft_poshuku_cleanweb
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_poshuku_cleanweb DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${CLEANWEB_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES poshukucleanwebsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_poshuku_cleanweb Concurrent Widgets)

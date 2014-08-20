@@ -64,6 +64,8 @@ namespace CleanWeb
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
+
 		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 		std::auto_ptr<QTranslator> Translator_;
 	public:
