@@ -49,6 +49,12 @@ namespace HttStream
 		{
 			static_cast<HttpStreamFilter*> (udata)->HandleRemoved (fd, reason);
 		}
+
+#if GST_VERSION_MAJOR < 1
+		const auto TeeTemplateName = "src%d";
+#else
+		const auto TeeTemplateName = "src_%u";
+#endif
 	}
 
 	HttpStreamFilter::HttpStreamFilter (const QByteArray& filterId,
@@ -59,7 +65,7 @@ namespace HttStream
 	, Configurator_ { new FilterConfigurator { instanceId, this } }
 	, Elem_ { gst_bin_new (nullptr) }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
-	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
+	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), TeeTemplateName) }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, StreamQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, AConv_ { gst_element_factory_make ("audioconvert", nullptr) }
