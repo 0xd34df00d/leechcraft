@@ -132,12 +132,12 @@ namespace Potorchu
 				this);
 #else
 		gst_pad_add_probe (srcpad,
-				GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
+				GST_PAD_PROBE_TYPE_BUFFER,
 				[] (GstPad*, GstPadProbeInfo *info, gpointer filterPtr) -> GstPadProbeReturn
 				{
 					const auto filter = static_cast<VisualFilter*> (filterPtr);
 					filter->HandleBuffer (GST_PAD_PROBE_INFO_BUFFER (info));
-					return GST_PAD_PROBE_OK;
+					return GST_PAD_PROBE_PASS;
 				},
 				this,
 				nullptr);
