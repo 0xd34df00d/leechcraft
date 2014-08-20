@@ -71,10 +71,16 @@ namespace Potorchu
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");
 
 		gst_element_link (ProbeQueue_, Converter_);
+#if GST_VERSION_MAJOR < 1
 		const auto caps = gst_caps_new_simple ("audio/x-raw-int",
 				"width", G_TYPE_INT, 16,
 				"signed", G_TYPE_BOOLEAN, true,
 				nullptr);
+#else
+		const auto caps = gst_caps_new_simple ("audio/x-raw",
+				"format", G_TYPE_STRING, "S16LE",
+				nullptr);
+#endif
 		gst_element_link_filtered (Converter_, FakeSink_, caps);
 		gst_caps_unref (caps);
 
