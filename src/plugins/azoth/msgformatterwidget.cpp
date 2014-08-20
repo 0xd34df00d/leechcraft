@@ -369,8 +369,14 @@ namespace Azoth
 		layout->setContentsMargins (1, 1, 1, 1);
 		const int numRows = std::sqrt (static_cast<double> (images.size ())) + 1;
 		int pos = 0;
+		QSize maxSize;
+		QList<QToolButton*> buttons;
 		for (const auto& pair : Util::Stlize (images))
 		{
+			const auto& size = pair.first.size ();
+			maxSize.setWidth (std::max (size.width (), maxSize.width ()));
+			maxSize.setHeight (std::max (size.height (), maxSize.height ()));
+
 			const QIcon icon (QPixmap::fromImage (pair.first));
 			QAction *action = new QAction (icon, pair.second, this);
 			action->setToolTip (pair.second);
@@ -381,12 +387,16 @@ namespace Azoth
 					this,
 					SLOT (insertEmoticon ()));
 
-			QToolButton *button = new QToolButton ();
+			const auto button = new QToolButton;
 			button->setDefaultAction (action);
+			buttons << button;
 
 			layout->addWidget (button, pos / numRows, pos % numRows);
 			++pos;
 		}
+
+		for (const auto button : buttons)
+			button->setIconSize (maxSize);
 
 		SmilesTooltip_->setLayout (layout);
 		SmilesTooltip_->adjustSize ();
