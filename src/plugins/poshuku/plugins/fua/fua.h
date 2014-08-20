@@ -42,10 +42,6 @@ class QWebPage;
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class XmlSettingsDialog;
-};
 namespace Poshuku
 {
 namespace Fua
@@ -59,6 +55,8 @@ namespace Fua
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.FUA")
 
 		std::shared_ptr<QStandardItemModel> Model_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;

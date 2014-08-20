@@ -55,6 +55,8 @@ namespace DCAC
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.DCAC")
+
 		ViewsManager *ViewsManager_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:

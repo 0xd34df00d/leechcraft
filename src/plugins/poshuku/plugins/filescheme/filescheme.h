@@ -50,6 +50,8 @@ namespace FileScheme
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.FileScheme")
+
 		std::auto_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);

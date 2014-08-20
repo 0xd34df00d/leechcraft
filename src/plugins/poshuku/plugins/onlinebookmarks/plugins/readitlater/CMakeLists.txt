@@ -1,6 +1,11 @@
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package (QJSON REQUIRED)
+if (NOT USE_QT5)
+	find_package (QJSON REQUIRED)
+else ()
+	unset (QJSON_INCLUDE_DIR)
+	unset (QJSON_LIBRARIES)
+endif ()
 
 include_directories (${ONLINEBOOKMARKS_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -21,8 +26,8 @@ set (READITLATER_RESOURCES readitlaterresources.qrc)
 CreateTrs ("poshuku_onlinebookmarks_readitlater" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_onlinebookmarks_readitlater" "en;ru_RU" "${READITLATER_SRCS}" "${READITLATER_FORMS}" "")
 
-QT4_WRAP_UI (READITLATER_UIS_H ${READITLATER_FORMS})
-QT4_ADD_RESOURCES (READITLATER_RCCS ${READITLATER_RESOURCES})
+QtWrapUi (READITLATER_UIS_H ${READITLATER_FORMS})
+QtAddResources (READITLATER_RCCS ${READITLATER_RESOURCES})
 
 add_library (leechcraft_poshuku_onlinebookmarks_readitlater SHARED
  	${ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS}
@@ -32,9 +37,10 @@ add_library (leechcraft_poshuku_onlinebookmarks_readitlater SHARED
 	)
 
 target_link_libraries (leechcraft_poshuku_onlinebookmarks_readitlater
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_poshuku_onlinebookmarks_readitlater DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_poshuku_onlinebookmarks_readitlater Widgets)

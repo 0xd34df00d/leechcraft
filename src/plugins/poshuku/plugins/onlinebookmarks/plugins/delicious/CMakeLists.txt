@@ -18,8 +18,8 @@ set (DELICIOUS_RESOURCES deliciousresources.qrc)
 CreateTrs ("poshuku_onlinebookmarks_delicious" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_onlinebookmarks_delicious" "en;ru_RU" "${DELICIOUS_SRCS}" "${DELICIOUS_FORMS}" "")
 
-QT4_WRAP_UI (DELICIOUS_UIS_H ${DELICIOUS_FORMS})
-QT4_ADD_RESOURCES (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
+QtWrapUi (DELICIOUS_UIS_H ${DELICIOUS_FORMS})
+QtAddResources (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
 
 add_library (leechcraft_poshuku_onlinebookmarks_delicious SHARED
  	${ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS}
@@ -29,8 +29,9 @@ add_library (leechcraft_poshuku_onlinebookmarks_delicious SHARED
 	)
 
 target_link_libraries (leechcraft_poshuku_onlinebookmarks_delicious
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_poshuku_onlinebookmarks_delicious DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_poshuku_onlinebookmarks_delicious Widgets)

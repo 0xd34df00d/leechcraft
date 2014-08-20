@@ -51,6 +51,8 @@ namespace Keywords
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.Keywords")
+
 		ICoreProxy_ptr CoreProxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<QStandardItemModel> Model_;

@@ -56,6 +56,8 @@ namespace OnlineBookmarks
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IPluginReady)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.OnlineBookmarks")
+
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<QTranslator> Translator_;
 	public:
