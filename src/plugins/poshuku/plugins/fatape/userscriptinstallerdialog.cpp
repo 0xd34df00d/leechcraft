@@ -28,11 +28,17 @@
  **********************************************************************/
 
 #include "userscriptinstallerdialog.h"
-#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QNetworkRequest>
+
+#if QT_VERSION < 0x050000
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
 #include "fatape.h"
 #include "userscript.h"
 
@@ -47,7 +53,12 @@ namespace FatApe
 	: QDialog (parent)
 	, Plugin_ (plugin)
 	{
+#if QT_VERSION < 0x050000
 		QDir temp (QDesktopServices::storageLocation (QDesktopServices::TempLocation));
+#else
+		QDir temp (QStandardPaths::writableLocation (QStandardPaths::TempLocation));
+#endif
+
 		QFileInfo userScript (temp, QFileInfo (scriptUrl.path ()).fileName ());
 
 		Ui_.setupUi (this);
