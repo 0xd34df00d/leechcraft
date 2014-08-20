@@ -43,6 +43,7 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "interfaces/azoth/iresourceplugin.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -346,36 +347,34 @@ namespace Azoth
 
 	void MsgFormatterWidget::handleEmoPackChanged ()
 	{
-		const QString& emoPack = XmlSettingsManager::Instance ()
+		const auto& emoPack = XmlSettingsManager::Instance ()
 				.property ("SmileIcons").toString ();
 		AddEmoticon_->setEnabled (!emoPack.isEmpty ());
 
-		IEmoticonResourceSource *src = Core::Instance ().GetCurrentEmoSource ();
+		const auto src = Core::Instance ().GetCurrentEmoSource ();
 		if (!src)
 			return;
 
-		const QHash<QImage, QString>& images = src->GetReprImages (emoPack);
+		const auto& images = src->GetReprImages (emoPack);
 
-		QLayout *lay = SmilesTooltip_->layout ();
-		if (lay)
+		if (const auto lay = SmilesTooltip_->layout ())
 		{
 			while (lay->count ())
 				delete lay->takeAt (0);
 			delete lay;
 		}
 
-		QGridLayout *layout = new QGridLayout (SmilesTooltip_);
+		const auto layout = new QGridLayout (SmilesTooltip_);
 		layout->setSpacing (0);
 		layout->setContentsMargins (1, 1, 1, 1);
 		const int numRows = std::sqrt (static_cast<double> (images.size ())) + 1;
 		int pos = 0;
-		for (QHash<QImage, QString>::const_iterator i = images.begin (),
-				end = images.end (); i != end; ++i)
+		for (const auto& pair : Util::Stlize (images))
 		{
-			const QIcon icon (QPixmap::fromImage (i.key ()));
-			QAction *action = new QAction (icon, *i, this);
-			action->setToolTip (*i);
-			action->setProperty ("Text", *i);
+			const QIcon icon (QPixmap::fromImage (pair.first));
+			QAction *action = new QAction (icon, pair.second, this);
+			action->setToolTip (pair.second);
+			action->setProperty ("Text", pair.second);
 
 			connect (action,
 					SIGNAL (triggered ()),
