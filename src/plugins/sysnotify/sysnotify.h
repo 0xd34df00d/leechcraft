@@ -46,6 +46,8 @@ namespace Sysnotify
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.SysNotify")
+
 		std::shared_ptr<NotificationManager> Manager_;
 	public:
 		void Init (ICoreProxy_ptr);
