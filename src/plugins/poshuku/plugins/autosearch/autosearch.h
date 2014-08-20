@@ -49,6 +49,8 @@ namespace Autosearch
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.Autosearch")
+
 		ICoreProxy_ptr Proxy_;
 
 		QMap<QNetworkReply*, QObject*> Reply2Model_;
