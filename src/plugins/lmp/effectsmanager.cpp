@@ -68,7 +68,7 @@ namespace LMP
 	, Model_ { new QStandardItemModel { this } }
 	, Path_ { path }
 	{
-		Model_->setHorizontalHeaderLabels ({ tr ("Effect"), });
+		Model_->setHorizontalHeaderLabels ({ tr ("Effect") });
 		Model_->horizontalHeaderItem (0)->setData (DataSources::DataFieldType::Enum,
 				DataSources::DataSourceRole::FieldType);
 
