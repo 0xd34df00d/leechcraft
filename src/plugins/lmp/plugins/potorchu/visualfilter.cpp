@@ -59,7 +59,8 @@ namespace Potorchu
 	{
 		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, ProbeQueue_, Converter_, FakeSink_, nullptr);
 
-		auto teeTemplate = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d");
+		auto teeTemplate = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_),
+				GstUtil::GetTeePadTemplateName ());
 
 		auto teeAudioPad = gst_element_request_pad (Tee_, teeTemplate, nullptr, nullptr);
 		auto audioPad = gst_element_get_static_pad (AudioQueue_, "sink");
