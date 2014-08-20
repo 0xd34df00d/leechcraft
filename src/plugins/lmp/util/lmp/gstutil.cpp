@@ -198,69 +198,42 @@ namespace GstUtil
 			guint ID_;
 		};
 
-#if GST_VERSION_MAJOR < 1
+#if GST_VERSION_MAJOR >= 1
+		GstPadProbeReturn ProbeHandler (GstPad *pad, GstPadProbeInfo*, gpointer cbDataPtr)
+		{
+			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
+			cbData->Functor_ ();
+			delete cbData;
+			return GST_PAD_PROBE_REMOVE;
+		}
+#else
 		gboolean EventProbeHandler (GstPad *pad, GstEvent *event, CallbackData *cbData)
 		{
 			if (GST_EVENT_TYPE (event) != GST_EVENT_EOS)
 				return TRUE;
-#else
-		GstPadProbeReturn EventProbeHandler (GstPad *pad, GstPadProbeInfo *info, gpointer cbDataPtr)
-		{
-			if (GST_EVENT_TYPE (GST_PAD_PROBE_INFO_DATA (info)) != GST_EVENT_EOS)
-				return GST_PAD_PROBE_OK;
-
-			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
-#endif
 			qDebug () << Q_FUNC_INFO << "eos";
-#if GST_VERSION_MAJOR < 1
 			gst_pad_remove_event_probe (pad, cbData->ID_);
-#else
-			gst_pad_remove_probe (pad, cbData->ID_);
-#endif
 
 			cbData->Functor_ ();
 			delete cbData;
 
-#if GST_VERSION_MAJOR < 1
 			return FALSE;
-#else
-			return GST_PAD_PROBE_DROP;
-#endif
 		}
 
-#if GST_VERSION_MAJOR < 1
 		gboolean ProbeHandler (GstPad *pad, GstMiniObject*, CallbackData *cbData)
 		{
-#else
-		GstPadProbeReturn ProbeHandler (GstPad *pad, GstPadProbeInfo*, gpointer cbDataPtr)
-		{
-			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
-#endif
 			qDebug () << Q_FUNC_INFO;
-#if GST_VERSION_MAJOR < 1
 			gst_pad_remove_data_probe (pad, cbData->ID_);
-#else
-			gst_pad_remove_probe (pad, cbData->ID_);
-#endif
 
-#if GST_VERSION_MAJOR < 1
 			cbData->ID_ = gst_pad_add_event_probe (pad, G_CALLBACK (EventProbeHandler), cbData);
-#else
-			cbData->ID_ = gst_pad_add_probe (pad,
-					static_cast<GstPadProbeType> (GST_PAD_PROBE_TYPE_BLOCK | GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM),
-					EventProbeHandler, cbData, nullptr);
-#endif
 
 			const auto sinkpad = cbData->SinkPad_;
 			gst_pad_send_event (sinkpad, gst_event_new_eos ());
 			gst_object_unref (sinkpad);
 
-#if GST_VERSION_MAJOR < 1
 			return TRUE;
-#else
-			return GST_PAD_PROBE_OK;
-#endif
 		}
+#endif
 	}
 
 	void PerformWProbe (GstPad *srcpad, GstPad *sinkpad, const std::function<void ()>& functor)
@@ -269,7 +242,7 @@ namespace GstUtil
 #if GST_VERSION_MAJOR < 1
 		data->ID_ = gst_pad_add_data_probe (srcpad, G_CALLBACK (ProbeHandler), data);
 #else
-		data->ID_ = gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
+		data->ID_ = gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_IDLE,
 				ProbeHandler, data, nullptr);
 #endif
 	}

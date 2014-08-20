@@ -48,7 +48,14 @@ namespace LMP
 		const auto convOut = gst_element_factory_make ("audioconvert", "convOut");
 
 		gst_bin_add_many (GST_BIN (Elem_), TagInject_, RGVol_, RGLimiter_, convIn, convOut, nullptr);
-		gst_element_link_many (convIn, TagInject_, RGVol_, RGLimiter_, convOut, nullptr);
+		gst_element_link_many (convIn,
+				TagInject_,
+				RGVol_,
+#if GST_VERSION_MAJOR < 1
+				RGLimiter_,
+#endif
+				convOut,
+				nullptr);
 
 		GstUtil::AddGhostPad (convIn, Elem_, "sink");
 		GstUtil::AddGhostPad (convOut, Elem_, "src");
