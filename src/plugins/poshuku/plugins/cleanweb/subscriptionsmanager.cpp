@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "subscriptionsmanager.h"
-#include <memory>
 #include <QMessageBox>
 #include "core.h"
 #include "subscriptionadddialog.h"
@@ -109,19 +108,19 @@ namespace CleanWeb
 
 	void SubscriptionsManager::on_AddButton__released ()
 	{
-		std::auto_ptr<SubscriptionAddDialog> subscriptionAdd (new SubscriptionAddDialog (this));
+		SubscriptionAddDialog subscriptionAdd (this);
 
-		if (!subscriptionAdd->exec ())
+		if (!subscriptionAdd.exec ())
 			return;
 
-		QString title = subscriptionAdd->GetName ();
-		QString urlStr = subscriptionAdd->GetURL ();
+		QString title = subscriptionAdd.GetName ();
+		QString urlStr = subscriptionAdd.GetURL ();
 		if (!title.isEmpty () ||
 				!urlStr.isEmpty ())
 			AddCustom (title, urlStr);
 
-		QList<QUrl> urls = subscriptionAdd->GetAdditionalSubscriptions ();
-		Q_FOREACH (const QUrl& url, urls)
+		const auto& urls = subscriptionAdd.GetAdditionalSubscriptions ();
+		for (const auto& url : urls)
 			Core::Instance ().Add (url);
 	}
 }
