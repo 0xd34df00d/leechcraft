@@ -42,7 +42,7 @@ namespace Sysnotify
 	, HasAlpha_ { image.hasAlphaChannel () }
 	, Channels_ { HasAlpha_ ? 4 : 3 }
 	, BPS_ { image.depth () / Channels_ }
-	, Data_ { reinterpret_cast<char*> (image.rgbSwapped ().bits ()), image.numBytes () }
+	, Data_ { reinterpret_cast<char*> (image.rgbSwapped ().bits ()), image.byteCount () }
 	{
 	}
 
