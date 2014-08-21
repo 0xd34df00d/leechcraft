@@ -32,10 +32,12 @@ set (SRCS
 	)
 
 set (PDF_RESOURCES pdfresources.qrc)
+CreateTrs ("monocle_pdf" "en;ru_RU" PDF_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("monocle_pdf" "en;ru_RU" "${SRCS}" "" "monoclepdfsettings.xml")
 QtAddResources (PDF_RCCS ${PDF_RESOURCES})
 
 add_library (leechcraft_monocle_pdf SHARED
+	${PDF_COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${PDF_RCCS}

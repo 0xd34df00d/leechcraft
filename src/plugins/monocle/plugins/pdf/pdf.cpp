@@ -30,6 +30,7 @@
 #include "pdf.h"
 #include <QIcon>
 #include <poppler-version.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "document.h"
@@ -42,6 +43,8 @@ namespace PDF
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("monocle_pdf");
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclepdfsettings.xml");
 	}
