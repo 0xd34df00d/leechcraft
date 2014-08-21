@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QDialog>
 #include "ui_docinfodialog.h"
 
@@ -36,7 +37,8 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-	struct DocumentInfo;
+	class IDocument;
+	typedef std::shared_ptr<IDocument> IDocument_ptr;
 
 	class DocInfoDialog : public QDialog
 	{
@@ -44,7 +46,7 @@ namespace Monocle
 
 		Ui::DocInfoDialog Ui_;
 	public:
-		DocInfoDialog (const QString&, const DocumentInfo&, QWidget* = 0);
+		DocInfoDialog (const QString&, const IDocument_ptr&, QWidget* = 0);
 	};
 }
 }

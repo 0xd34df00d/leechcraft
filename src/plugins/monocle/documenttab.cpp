@@ -1400,7 +1400,7 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return;
 
-		auto dia = new DocInfoDialog (CurrentDocPath_, CurrentDoc_->GetDocumentInfo (), this);
+		auto dia = new DocInfoDialog (CurrentDocPath_, CurrentDoc_, this);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}

@@ -34,12 +34,14 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-	DocInfoDialog::DocInfoDialog (const QString& filepath, const DocumentInfo& info, QWidget *parent)
-	: QDialog (parent)
+	DocInfoDialog::DocInfoDialog (const QString& filepath, const IDocument_ptr& doc, QWidget *parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 
 		Ui_.FilePath_->setText (filepath);
+
+		const auto& info = doc->GetDocumentInfo ();
 		Ui_.Title_->setText (info.Title_);
 		Ui_.Subject_->setText (info.Subject_);
 		Ui_.Author_->setText (info.Author_);
