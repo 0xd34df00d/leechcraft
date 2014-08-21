@@ -1098,7 +1098,7 @@ namespace Aggregator
 	Channel_ptr SQLStorageBackend::GetChannel (const IDType_t& channelId,
 			const IDType_t& parentFeed) const
 	{
-		ChannelsFullSelector_.bindValue (":channelId", channelId);
+		ChannelsFullSelector_.bindValue (":channel_id", channelId);
 		if (!ChannelsFullSelector_.exec ())
 			Util::DBLock::DumpError (ChannelsFullSelector_);
 
