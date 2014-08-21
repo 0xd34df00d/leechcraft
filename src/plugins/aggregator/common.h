@@ -38,6 +38,9 @@ namespace LeechCraft
 namespace Aggregator
 {
 	typedef quint64 IDType_t;
+
+	static const IDType_t IDNotFound = static_cast<IDType_t> (-1);
+
 	typedef QList<IDType_t> ids_t;
 
 	enum PoolType

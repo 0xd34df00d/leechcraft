@@ -65,13 +65,12 @@ namespace Aggregator
 	Parser::~Parser ()
 	{
 	}
-	
+
 	channels_container_t Parser::ParseFeed (const QDomDocument& recent, const IDType_t& feedId) const
 	{
 		channels_container_t newes = Parse (recent, feedId);
-		for (size_t i = 0; i < newes.size (); ++i)
+		for (const auto& newChannel : newes)
 		{
-			Channel_ptr newChannel = newes [i];
 			if (newChannel->Link_.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO
@@ -79,12 +78,12 @@ namespace Aggregator
 					<< newChannel->Title_;
 				newChannel->Link_ = "about:blank";
 			}
-			Q_FOREACH (Item_ptr item, newChannel->Items_)
+			for (const auto& item : newChannel->Items_)
 				item->Title_ = item->Title_.trimmed ().simplified ();
 		}
 		return newes;
 	}
-	
+
 	namespace
 	{
 		inline void AppendToList (QList<QDomNode>& nodes,
@@ -142,7 +141,7 @@ namespace Aggregator
 		}
 		return result;
 	}
-	
+
 	QString Parser::GetAuthor (const QDomElement& parent) const
 	{
 		QString result;
@@ -171,7 +170,7 @@ namespace Aggregator
 
 		return result;
 	}
-	
+
 	QString Parser::GetCommentsRSS (const QDomElement& parent) const
 	{
 		QString result;
@@ -181,7 +180,7 @@ namespace Aggregator
 			result = nodes.at (0).toElement ().text ();
 		return result;
 	}
-	
+
 	QString Parser::GetCommentsLink (const QDomElement& parent) const
 	{
 		QString result;
@@ -190,7 +189,7 @@ namespace Aggregator
 			result = nodes.at (0).toElement ().text ();
 		return result;
 	}
-	
+
 	int Parser::GetNumComments (const QDomElement& parent) const
 	{
 		int result = -1;
@@ -200,7 +199,7 @@ namespace Aggregator
 			result = nodes.at (0).toElement ().text ().toInt ();
 		return result;
 	}
-	
+
 	QDateTime Parser::GetDCDateTime (const QDomElement& parent) const
 	{
 		QDomNodeList dates = parent.elementsByTagNameNS (DC_, "date");
@@ -208,26 +207,26 @@ namespace Aggregator
 			return QDateTime ();
 		return FromRFC3339 (dates.at (0).toElement ().text ());
 	}
-	
+
 	QStringList Parser::GetAllCategories (const QDomElement& parent) const
 	{
 		return GetDCCategories (parent) +
 			GetPlainCategories (parent) +
 			GetITunesCategories (parent);
 	}
-	
+
 	QStringList Parser::GetDCCategories (const QDomElement& parent) const
 	{
 		QStringList result;
-	
+
 		QDomNodeList nodes =
 			parent.elementsByTagNameNS (DC_,
 					"subject");
 		for (int i = 0; i < nodes.size (); ++i)
 			result += nodes.at (i).toElement ().text ();
-	
+
 		result.removeAll ("");
-	
+
 		return result;
 	}
 
@@ -248,41 +247,41 @@ namespace Aggregator
 		result.removeAll ("");
 		return result;
 	}
-	
+
 	QStringList Parser::GetPlainCategories (const QDomElement& parent) const
 	{
 		QStringList result;
-	
+
 		QDomNodeList nodes =
 			parent.elementsByTagName ("category");
 		for (int i = 0; i < nodes.size (); ++i)
 			result += nodes.at (i).toElement ().text ();
-	
+
 		result.removeAll ("");
-	
+
 		return result;
 	}
-	
+
 	QList<Enclosure> Parser::GetEncEnclosures (const QDomElement& parent,
 			const IDType_t& itemId) const
 	{
 		QList<Enclosure> result;
-	
+
 		QDomNodeList nodes = parent.elementsByTagNameNS (Enc_, "enclosure");
-	
+
 		for (int i = 0; i < nodes.size (); ++i)
 		{
 			QDomElement link = nodes.at (i).toElement ();
-	
+
 			Enclosure e (itemId);
 			e.URL_ = link.attributeNS (RDF_, "resource");
 			e.Type_ = link.attributeNS (Enc_, "type");
 			e.Length_ = link.attributeNS (Enc_, "length", "-1").toLongLong ();
 			e.Lang_ = "";
-	
+
 			result << e;
 		}
-	
+
 		return result;
 	}
 
@@ -806,7 +805,7 @@ namespace Aggregator
 	{
 		return MRSSParser (itemId) (item);
 	}
-	
+
 	QDateTime Parser::FromRFC3339 (const QString& t) const
 	{
 		if (t.size () < 19)
@@ -822,7 +821,7 @@ namespace Aggregator
 			{
 				if (fractional < 100)
 					fractional *= 10;
-				if (fractional <10) 
+				if (fractional < 10)
 					fractional *= 100;
 				result.addMSecs (fractional);
 			}
@@ -843,7 +842,7 @@ namespace Aggregator
 		result.setTimeSpec (Qt::UTC);
 		return result.toLocalTime ();
 	}
-	
+
 	// Via
 	// http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
 	QString Parser::UnescapeHTML (const QString& escaped)
