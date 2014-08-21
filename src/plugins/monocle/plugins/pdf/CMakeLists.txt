@@ -27,9 +27,11 @@ set (SRCS
 	links.cpp
 	fields.cpp
 	annotations.cpp
+	xmlsettingsmanager.cpp
 	)
 
 set (PDF_RESOURCES pdfresources.qrc)
+CreateTrsUpTarget("monocle_pdf" "en;ru_RU" "${SRCS}" "" "monoclepdfsettings.xml")
 QtAddResources (PDF_RCCS ${PDF_RESOURCES})
 
 add_library (leechcraft_monocle_pdf SHARED
@@ -42,6 +44,7 @@ target_link_libraries (leechcraft_monocle_pdf
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_monocle_pdf DESTINATION ${LC_PLUGINS_DEST})
+install (FILES monoclepdfsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-monocle-pdf.desktop DESTINATION share/applications)
 endif ()

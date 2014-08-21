@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Monocle PDF" />
+		<groupbox>
+			<label value="Rendering" />
+			<item type="checkbox" property="EnableAntialiasing" default="true">
+				<label value="Antialiasing" />
+			</item>
+			<item type="checkbox" property="EnableTextAntialiasing" default="true">
+				<label value="Text antialiasing" />
+			</item>
+			<item type="checkbox" property="EnableTextHinting" default="true">
+				<label value="Text hinting" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

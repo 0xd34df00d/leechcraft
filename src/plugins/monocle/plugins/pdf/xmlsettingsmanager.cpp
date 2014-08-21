@@ -27,12 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pdf.h"
-#include <QIcon>
-#include <poppler-version.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
-#include "document.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -40,80 +36,27 @@ namespace Monocle
 {
 namespace PDF
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclepdfsettings.xml");
+		Util::BaseSettingsManager::Init ();
 	}
 
-	void Plugin::SecondInit ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
+		static XmlSettingsManager manager;
+		return manager;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		return "org.LeechCraft.Monocle.PDF";
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Monocle_PDF");
+		return settings;
 	}
 
-	void Plugin::Release ()
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Monocle PDF";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("PDF backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		static QIcon icon ("lcicons:/monocle/pdf/resources/images/pdf.svg");
-		return icon;
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
-
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
-	{
-		return Document (file, this).IsValid () ?
-				LoadCheckResult::Can :
-				LoadCheckResult::Cannot;
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
-	{
-		return IDocument_ptr (new Document (file, this));
-	}
-
-	QStringList Plugin::GetSupportedMimes () const
-	{
-		return { "application/pdf" };
-	}
-
-	bool Plugin::IsThreaded () const
-	{
-#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 24
-		return true;
-#else
-		return false;
-#endif
 	}
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_pdf, LeechCraft::Monocle::PDF::Plugin);
