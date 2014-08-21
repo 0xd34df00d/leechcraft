@@ -14,7 +14,7 @@
    <string>Add feed</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="aggregatorresources.qrc">
     <normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -73,7 +73,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="aggregatorresources.qrc"/>
  </resources>
  <connections>
   <connection>
