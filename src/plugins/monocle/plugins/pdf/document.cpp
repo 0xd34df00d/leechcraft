@@ -45,6 +45,7 @@
 #include "links.h"
 #include "fields.h"
 #include "annotations.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -60,9 +61,14 @@ namespace PDF
 		if (!PDocument_)
 			return;
 
-		PDocument_->setRenderHint (Poppler::Document::Antialiasing);
-		PDocument_->setRenderHint (Poppler::Document::TextAntialiasing);
-		PDocument_->setRenderHint (Poppler::Document::TextHinting);
+		auto setRenderHint = [this] (const QByteArray& optName, Poppler::Document::RenderHint hint)
+		{
+			PDocument_->setRenderHint (hint,
+					XmlSettingsManager::Instance ().property (optName).toBool ());
+		};
+		setRenderHint ("EnableAntialiasing", Poppler::Document::Antialiasing);
+		setRenderHint ("EnableTextAntialiasing", Poppler::Document::TextAntialiasing);
+		setRenderHint ("EnableTextHinting", Poppler::Document::TextHinting);
 
 		BuildTOC ();
 	}
