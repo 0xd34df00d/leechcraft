@@ -13,6 +13,21 @@
 			<item type="checkbox" property="EnableTextHinting" default="true">
 				<label value="Text hinting" />
 			</item>
+			<item type="checkbox" property="EnableSlightTextHinting" default="false">
+				<label value="Slight text hinting" />
+			</item>
+			<item type="combobox" property="ThinLineEnhancement">
+				<label value="Thin line enhancement:" />
+				<option name="None" default="true">
+					<label value="none" />
+				</option>
+				<option name="Solid">
+					<label value="solid" />
+				</option>
+				<option name="Shape">
+					<label value="shape" />
+				</option>
+			</item>
 		</groupbox>
 	</page>
 </settings>
