@@ -59,6 +59,9 @@
 				<item type="checkbox" property="ShowNavBarInItemsView" state="off">
 					<label lang="en" value="Show navigation bar when showing the news item" />
 				</item>
+				<item type="checkbox" property="EmbedMediaRSSImages" default="true">
+					<label value="Show images linked via MediaRSS" />
+				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Items list" />
