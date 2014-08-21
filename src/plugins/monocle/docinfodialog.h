@@ -33,10 +33,14 @@
 #include <QDialog>
 #include "ui_docinfodialog.h"
 
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace Monocle
 {
+	struct FontInfo;
+
 	class IDocument;
 	typedef std::shared_ptr<IDocument> IDocument_ptr;
 
@@ -45,8 +49,11 @@ namespace Monocle
 		Q_OBJECT
 
 		Ui::DocInfoDialog Ui_;
+		QStandardItemModel * const FontsModel_;
 	public:
 		DocInfoDialog (const QString&, const IDocument_ptr&, QWidget* = 0);
+	private slots:
+		void HandleFontsInfo (const QList<FontInfo>&);
 	};
 }
 }
