@@ -28,6 +28,7 @@ set (SRCS
 	fields.cpp
 	annotations.cpp
 	xmlsettingsmanager.cpp
+	pendingfontinforequest.cpp
 	)
 
 set (PDF_RESOURCES pdfresources.qrc)
@@ -49,4 +50,4 @@ if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-monocle-pdf.desktop DESTINATION share/applications)
 endif ()
 
-FindQtLibs (leechcraft_monocle_pdf Core)
+FindQtLibs (leechcraft_monocle_pdf Concurrent)
