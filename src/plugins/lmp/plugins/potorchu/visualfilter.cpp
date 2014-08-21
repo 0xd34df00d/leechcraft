@@ -57,7 +57,10 @@ namespace Potorchu
 	, Converter_ { gst_element_factory_make ("audioconvert", nullptr) }
 	, FakeSink_ { gst_element_factory_make ("fakesink", nullptr) }
 	{
-		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, ProbeQueue_, Converter_, FakeSink_, nullptr);
+		gst_bin_add_many (GST_BIN (Elem_),
+				Tee_, AudioQueue_,
+				ProbeQueue_, Converter_, FakeSink_,
+				nullptr);
 
 		auto teeTemplate = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_),
 				GstUtil::GetTeePadTemplateName ());
