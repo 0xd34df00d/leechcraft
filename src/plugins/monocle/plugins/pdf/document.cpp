@@ -46,6 +46,7 @@
 #include "fields.h"
 #include "annotations.h"
 #include "xmlsettingsmanager.h"
+#include "pendingfontinforequest.h"
 
 namespace LeechCraft
 {
@@ -161,6 +162,11 @@ namespace PDF
 			return QString ();
 
 		return page->text (rect);
+	}
+
+	IPendingFontInfoRequest* Document::RequestFontInfos () const
+	{
+		return new PendingFontInfoRequest (PDocument_);
 	}
 
 	QList<IAnnotation_ptr> Document::GetAnnotations (int pageNum)

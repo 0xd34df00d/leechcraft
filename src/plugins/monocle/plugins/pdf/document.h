@@ -35,6 +35,7 @@
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/ihavetoc.h>
 #include <interfaces/monocle/ihavetextcontent.h>
+#include <interfaces/monocle/ihavefontinfo.h>
 #include <interfaces/monocle/isupportannotations.h>
 #include <interfaces/monocle/isupportforms.h>
 #include <interfaces/monocle/isearchabledocument.h>
@@ -57,6 +58,7 @@ namespace PDF
 				   , public IDocument
 				   , public IHaveTOC
 				   , public IHaveTextContent
+				   , public IHaveFontInfo
 				   , public ISupportAnnotations
 				   , public ISupportForms
 				   , public ISearchableDocument
@@ -66,6 +68,7 @@ namespace PDF
 		Q_INTERFACES (LeechCraft::Monocle::IDocument
 				LeechCraft::Monocle::IHaveTOC
 				LeechCraft::Monocle::IHaveTextContent
+				LeechCraft::Monocle::IHaveFontInfo
 				LeechCraft::Monocle::ISupportAnnotations
 				LeechCraft::Monocle::ISupportForms
 				LeechCraft::Monocle::ISearchableDocument
@@ -92,6 +95,8 @@ namespace PDF
 		TOCEntryLevel_t GetTOC ();
 
 		QString GetTextContent (int, const QRect&);
+
+		IPendingFontInfoRequest* RequestFontInfos () const;
 
 		QList<IAnnotation_ptr> GetAnnotations (int);
 
