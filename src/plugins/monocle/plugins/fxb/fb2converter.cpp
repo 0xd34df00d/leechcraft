@@ -116,6 +116,21 @@ namespace FXB
 					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
 
+		Handlers_ ["annotation"] = [this] (const QDomElement& p)
+		{
+			HandleMangleBlockFormat (p,
+					[] (QTextBlockFormat& fmt) -> void
+					{
+						fmt.setAlignment (Qt::AlignRight);
+						fmt.setLeftMargin (60);
+					},
+					[this] (const QDomElement& p)
+					{
+						HandleMangleCharFormat (p,
+								[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
+								[this] (const QDomElement& p) { HandleChildren (p); });
+					});
+		};
 		Handlers_ ["style"] = [this] (const QDomElement& p) { HandleParaWONL (p); };
 
 		TOCEntry entry =
@@ -168,8 +183,11 @@ namespace FXB
 
 	void FB2Converter::HandleDescription (const QDomElement& elem)
 	{
-		auto getChildValues = [&elem] (const QString& nodeName) -> QStringList
+		QStringList handledChildren;
+		auto getChildValues = [&elem, &handledChildren] (const QString& nodeName) -> QStringList
 		{
+			handledChildren << nodeName;
+
 			QStringList result;
 			auto elems = elem.elementsByTagName (nodeName);
 			for (int i = 0; i < elems.size (); ++i)
@@ -200,16 +218,21 @@ namespace FXB
 		DocInfo_.Author_ = DocInfo_.Author_.trimmed ().simplified ();
 
 		FillPreamble ();
+
+		const auto& titleInfo = elem.firstChildElement ("title-info");
+
+		auto childElem = titleInfo.firstChildElement ();
+		while (!childElem.isNull ())
+		{
+			if (!handledChildren.contains (childElem.tagName ()))
+				Handle (childElem);
+			childElem = childElem.nextSiblingElement ();
+		}
 	}
 
 	void FB2Converter::HandleBody (const QDomElement& bodyElem)
 	{
-		auto elem = bodyElem.firstChildElement ();
-		while (!elem.isNull ())
-		{
-			Handle (elem);
-			elem = elem.nextSiblingElement ();
-		}
+		HandleChildren (bodyElem);
 	}
 
 	void FB2Converter::HandleSection (const QDomElement& tagElem)
