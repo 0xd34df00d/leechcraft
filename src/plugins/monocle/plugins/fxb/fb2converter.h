@@ -38,6 +38,7 @@
 #include <interfaces/monocle/ihavetoc.h>
 
 class QTextCharFormat;
+class QTextBlockFormat;
 class QTextCursor;
 class QDomElement;
 class QDomDocument;
