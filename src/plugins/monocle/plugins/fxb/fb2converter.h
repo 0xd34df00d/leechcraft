@@ -97,6 +97,8 @@ namespace FXB
 		void HandleChildren (const QDomElement&);
 		void Handle (const QDomElement&);
 
+		void HandleMangleBlockFormat (const QDomElement&,
+				std::function<void (QTextBlockFormat&)>, Handler_f);
 		void HandleMangleCharFormat (const QDomElement&,
 				std::function<void (QTextCharFormat&)>, Handler_f);
 

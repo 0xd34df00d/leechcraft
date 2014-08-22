@@ -384,6 +384,20 @@ namespace FXB
 					}) (child);
 	}
 
+	void FB2Converter::HandleMangleBlockFormat (const QDomElement& tagElem,
+			std::function<void (QTextBlockFormat&)> mangler, Handler_f next)
+	{
+		const auto origFmt = Cursor_->blockFormat ();
+
+		auto mangledFmt = origFmt;
+		mangler (mangledFmt);
+		Cursor_->insertBlock (mangledFmt);
+
+		next ({ tagElem });
+
+		Cursor_->insertBlock (origFmt);
+	}
+
 	void FB2Converter::HandleMangleCharFormat (const QDomElement& tagElem,
 			std::function<void (QTextCharFormat&)> mangler, Handler_f next)
 	{
