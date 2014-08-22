@@ -190,13 +190,14 @@ namespace FXB
 		const auto& dateElem = elem.elementsByTagName ("date").at (0).toElement ();
 		DocInfo_.Date_.setDate (QDate::fromString (dateElem.attribute ("value"), Qt::ISODate));
 
-		DocInfo_.Author_ = QString ("%1 %2 %3 <%4> %5")
-				.arg (getChildValues ("first-name").value (0))
-				.arg (getChildValues ("middle-name").value (0))
-				.arg (getChildValues ("last-name").value (0))
-				.arg (getChildValues ("email").value (0))
-				.arg (getChildValues ("nickname").value (0))
-				.simplified ();
+		DocInfo_.Author_ += getChildValues ("first-name").value (0) + " ";
+		DocInfo_.Author_ += getChildValues ("last-name").value (0) + " ";
+		const auto& email = getChildValues ("email").value (0);
+		if (!email.isEmpty ())
+			DocInfo_.Author_ += "<" + email + "> ";
+		DocInfo_.Author_ += getChildValues ("nickname").value (0);
+
+		DocInfo_.Author_ = DocInfo_.Author_.trimmed ().simplified ();
 	}
 
 	void FB2Converter::HandleBody (const QDomElement& bodyElem)
