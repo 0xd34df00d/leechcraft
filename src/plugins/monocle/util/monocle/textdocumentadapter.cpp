@@ -33,7 +33,6 @@
 #include <QTextBlock>
 #include <QAbstractTextDocumentLayout>
 #include <QTextEdit>
-#include <QPainter>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -77,6 +76,7 @@ namespace Monocle
 
 		QPainter painter;
 		painter.begin (&image);
+		painter.setRenderHints (Hints_);
 		painter.scale (xScale, yScale);
 		painter.translate (0, rect.height () * (-page));
 		Doc_->drawContents (&painter, rect);
@@ -92,16 +92,29 @@ namespace Monocle
 
 	void TextDocumentAdapter::PaintPage (QPainter *painter, int page)
 	{
+		const auto oldHints = painter->renderHints ();
+		painter->setRenderHints (Hints_);
+
 		const auto& size = Doc_->pageSize ();
 
 		QRectF rect (QPointF (0, 0), size);
 		rect.moveTop (rect.height () * page);
 		Doc_->drawContents (painter, rect);
+
+		painter->setRenderHints (oldHints);
 	}
 
 	void TextDocumentAdapter::SetDocument (QTextDocument *doc)
 	{
 		Doc_.reset (doc);
+	}
+
+	void TextDocumentAdapter::SetRenderHint (QPainter::RenderHint hint, bool enable)
+	{
+		if (enable)
+			Hints_ |= hint;
+		else
+			Hints_ &= ~hint;
 	}
 
 	QMap<int, QList<QRectF>> TextDocumentAdapter::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)

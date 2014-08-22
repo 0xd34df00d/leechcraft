@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <QPainter>
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/isearchabledocument.h>
@@ -46,6 +47,8 @@ namespace Monocle
 	{
 	protected:
 		std::shared_ptr<QTextDocument> Doc_;
+
+		QPainter::RenderHints Hints_;
 	public:
 		TextDocumentAdapter (QTextDocument* = 0);
 
@@ -58,6 +61,8 @@ namespace Monocle
 		void PaintPage (QPainter*, int);
 
 		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs);
+
+		void SetRenderHint (QPainter::RenderHint hint, bool enable = true);
 	protected:
 		void SetDocument (QTextDocument*);
 	};
