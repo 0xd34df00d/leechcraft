@@ -280,8 +280,12 @@ namespace StandardStyles
 			if (advMsg && advMsg->IsDelivered ())
 				statusIconName = "notification_chat_delivery_ok";
 
-			IMUCEntry *entry = qobject_cast<IMUCEntry*> (other->GetParentCLEntry ());
-			IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
+			const auto entry = other ?
+					qobject_cast<IMUCEntry*> (other->GetParentCLEntry ()) :
+					nullptr;
+			const auto acc = other ?
+					qobject_cast<IAccount*> (other->GetParentAccount ()) :
+					nullptr;
 			const QString& nick = entry ?
 					entry->GetNick () :
 					acc->GetOurNick ();
