@@ -320,7 +320,7 @@ namespace FXB
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
 	{
-		QTextBlockFormat fmt;
+		auto fmt = Cursor_->blockFormat ();
 		fmt.setTextIndent (20);
 		Cursor_->insertBlock (fmt);
 
