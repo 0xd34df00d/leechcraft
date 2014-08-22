@@ -94,6 +94,7 @@ namespace FXB
 		void HandleStanza (const QDomElement&);
 		void HandleEmptyLine (const QDomElement&);
 
+		void HandleChildren (const QDomElement&);
 		void Handle (const QDomElement&);
 
 		void HandleMangleCharFormat (const QDomElement&,

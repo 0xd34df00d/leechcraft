@@ -350,27 +350,27 @@ namespace FXB
 
 	void FB2Converter::HandlePoem (const QDomElement& tagElem)
 	{
-		auto child = tagElem.firstChildElement ();
-		while (!child.isNull ())
-		{
-			Handle (child);
-			child = child.nextSiblingElement ();
-		}
+		HandleChildren (tagElem);
 	}
 
 	void FB2Converter::HandleStanza (const QDomElement& tagElem)
 	{
-		auto child = tagElem.firstChildElement ();
-		while (!child.isNull ())
-		{
-			Handle (child);
-			child = child.nextSiblingElement ();
-		}
+		HandleChildren (tagElem);
 	}
 
 	void FB2Converter::HandleEmptyLine (const QDomElement&)
 	{
 		Cursor_->insertText ("\n\n");
+	}
+
+	void FB2Converter::HandleChildren (const QDomElement& tagElem)
+	{
+		auto child = tagElem.firstChildElement ();
+		while (!child.isNull ())
+		{
+			Handle (child);
+			child = child.nextSiblingElement ();
+		}
 	}
 
 	void FB2Converter::Handle (const QDomElement& child)
