@@ -198,12 +198,12 @@ namespace FXB
 		DocInfo_.Author_ += getChildValues ("nickname").value (0);
 
 		DocInfo_.Author_ = DocInfo_.Author_.trimmed ().simplified ();
+
+		FillPreamble ();
 	}
 
 	void FB2Converter::HandleBody (const QDomElement& bodyElem)
 	{
-		FillPreamble ();
-
 		auto elem = bodyElem.firstChildElement ();
 		while (!elem.isNull ())
 		{
