@@ -132,6 +132,7 @@ namespace FXB
 					});
 		};
 		Handlers_ ["style"] = [this] (const QDomElement& p) { HandleParaWONL (p); };
+		Handlers_ ["coverpage"] = [this] (const QDomElement& p) { HandleChildren (p); };
 
 		TOCEntry entry =
 		{
