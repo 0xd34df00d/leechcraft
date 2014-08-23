@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QTextDocument>
 #include "fb2converter.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,8 @@ namespace FXB
 	: DocURL_ (QUrl::fromLocalFile (filename))
 	, Plugin_ (plugin)
 	{
+		SetSettings ();
+
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
 		{
@@ -98,6 +101,19 @@ namespace FXB
 	void Document::RequestNavigation (int page)
 	{
 		emit navigateRequested (QString (), page, 0, 0.4);
+	}
+
+	void Document::SetSettings ()
+	{
+		auto setRenderHint = [this] (const QByteArray& option, QPainter::RenderHint hint)
+		{
+			SetRenderHint (hint,
+					XmlSettingsManager::Instance ().property (option).toBool ());
+		};
+
+		setRenderHint ("EnableAntialiasing", QPainter::Antialiasing);
+		setRenderHint ("EnableTextAntialiasing", QPainter::TextAntialiasing);
+		setRenderHint ("EnableSmoothPixmapTransform", QPainter::SmoothPixmapTransform);
 	}
 }
 }
