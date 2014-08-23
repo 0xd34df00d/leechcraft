@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "fb2converter.h"
-#include "toclink.h"
 #include <functional>
 #include <memory>
 #include <QDomDocument>
@@ -42,6 +41,7 @@
 #include <QVariant>
 #include <QStringList>
 #include <QtDebug>
+#include "toclink.h"
 
 namespace LeechCraft
 {
@@ -64,13 +64,6 @@ namespace FXB
 		{
 			Error_ = tr ("Invalid FictionBook document.");
 			return;
-		}
-
-		auto elems = docElem.elementsByTagName ("binary");
-		for (int i = 0, size = elems.size (); i < size; ++i)
-		{
-			const auto& elem = elems.at (i).toElement ();
-			AddImage (elem);
 		}
 
 		auto frameFmt = Result_->rootFrame ()->frameFormat ();
@@ -350,9 +343,18 @@ namespace FXB
 		}
 	}
 
-	void FB2Converter::HandleImage (const QDomElement&)
+	void FB2Converter::HandleImage (const QDomElement& imageElem)
 	{
-		// TODO
+		const auto& refId = imageElem.attribute ("href").mid (1);
+		const auto& binary = FindBinary (refId);
+		const auto& imageData = QByteArray::fromBase64 (binary.text ().toLatin1 ());
+		const auto& image = QImage::fromData (imageData);
+
+		Result_->addResource (QTextDocument::ImageResource,
+				{ "image://" + refId },
+				QVariant::fromValue (image));
+
+		Cursor_->insertHtml (QString ("<img src='image://%1'/>").arg (refId));
 	}
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
@@ -483,14 +485,6 @@ namespace FXB
 		}
 
 		Cursor_->insertBlock ();
-	}
-
-	void FB2Converter::AddImage (const QDomElement& elem)
-	{
-		const auto& data = elem.firstChild ().toText ().data ().toLatin1 ();
-		Result_->addResource (QTextDocument::ImageResource,
-				QUrl (elem.attribute ("id")),
-				QImage::fromData (QByteArray::fromBase64 (data)));
 	}
 }
 }

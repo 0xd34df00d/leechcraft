@@ -106,8 +106,6 @@ namespace FXB
 				std::function<void (QTextCharFormat&)>, Handler_f);
 
 		void FillPreamble ();
-
-		void AddImage (const QDomElement&);
 	};
 }
 }
