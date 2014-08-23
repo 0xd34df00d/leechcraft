@@ -7,6 +7,14 @@
 			<item type="font" property="DefaultFont">
 				<label value="Default font:" />
 			</item>
+			<item type="spinbox" property="PageWidth" default="600" minimum="100" maximum="4000" step="10">
+				<label value="Page width:" />
+				<suffix value=" px" />
+			</item>
+			<item type="spinbox" property="PageHeight" default="800" minimum="100" maximum="6000" step="10">
+				<label value="Page height:" />
+				<suffix value=" px" />
+			</item>
 		</groupbox>
 		<groupbox>
 			<label value="Rendering" />

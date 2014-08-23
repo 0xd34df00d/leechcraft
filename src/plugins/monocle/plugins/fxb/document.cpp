@@ -73,6 +73,11 @@ namespace FXB
 				.property ("DefaultFont").value<QFont> ();
 		textDoc->setDefaultFont (defaultFont);
 
+		textDoc->setPageSize (QSize {
+				XmlSettingsManager::Instance ().property ("PageWidth").toInt (),
+				XmlSettingsManager::Instance ().property ("PageHeight").toInt ()
+			});
+
 		SetDocument (textDoc);
 		Info_ = conv.GetDocumentInfo ();
 		TOC_ = conv.GetTOC ();
