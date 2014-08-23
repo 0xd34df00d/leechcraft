@@ -3,6 +3,12 @@
 	<page>
 		<label value="Monocle FXB" />
 		<groupbox>
+			<label value="Appearance" />
+			<item type="font" property="DefaultFont">
+				<label value="Default font:" />
+			</item>
+		</groupbox>
+		<groupbox>
 			<label value="Rendering" />
 			<item type="checkbox" property="EnableAntialiasing" default="true">
 				<label value="Antialiasing" />

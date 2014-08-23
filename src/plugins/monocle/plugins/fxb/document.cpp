@@ -68,6 +68,11 @@ namespace FXB
 
 		FB2Converter conv (this, doc);
 		auto textDoc = conv.GetResult ();
+
+		const auto& defaultFont = XmlSettingsManager::Instance ()
+				.property ("DefaultFont").value<QFont> ();
+		textDoc->setDefaultFont (defaultFont);
+
 		SetDocument (textDoc);
 		Info_ = conv.GetDocumentInfo ();
 		TOC_ = conv.GetTOC ();
