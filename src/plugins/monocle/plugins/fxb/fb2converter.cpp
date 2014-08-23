@@ -182,6 +182,19 @@ namespace FXB
 		return TOC_;
 	}
 
+	QDomElement FB2Converter::FindBinary (const QString& refId) const
+	{
+		const auto& binaries = FB2_.elementsByTagName ("binary");
+		for (int i = 0; i < binaries.size (); ++i)
+		{
+			const auto& elem = binaries.at (i).toElement ();
+			if (elem.attribute ("id") == refId)
+				return elem;
+		}
+
+		return {};
+	}
+
 	void FB2Converter::HandleDescription (const QDomElement& elem)
 	{
 		QStringList handledChildren;

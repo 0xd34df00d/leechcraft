@@ -81,6 +81,8 @@ namespace FXB
 		DocumentInfo GetDocumentInfo () const;
 		TOCEntryLevel_t GetTOC () const;
 	private:
+		QDomElement FindBinary (const QString&) const;
+
 		void HandleDescription (const QDomElement&);
 		void HandleBody (const QDomElement&);
 
