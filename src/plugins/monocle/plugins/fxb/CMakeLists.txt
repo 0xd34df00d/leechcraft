@@ -14,6 +14,7 @@ set (SRCS
 	document.cpp
 	fb2converter.cpp
 	toclink.cpp
+	xmlsettingsmanager.cpp
 	)
 
 add_library (leechcraft_monocle_fxb SHARED
@@ -24,6 +25,7 @@ target_link_libraries (leechcraft_monocle_fxb
 	leechcraft_monocle_util
 	)
 install (TARGETS leechcraft_monocle_fxb DESTINATION ${LC_PLUGINS_DEST})
+install (FILES monoclefxbsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-monocle-fxb.desktop DESTINATION share/applications)
 endif ()

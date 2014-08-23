@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/monocle/ibackendplugin.h>
 
 namespace LeechCraft
@@ -43,12 +44,18 @@ namespace FXB
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 				 , public IBackendPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				IHaveSettings
+				LeechCraft::Monocle::IBackendPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.FXB")
+
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -59,6 +66,8 @@ namespace FXB
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);

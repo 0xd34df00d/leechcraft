@@ -27,11 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "fxb.h"
-#include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "document.h"
 #include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -39,70 +36,27 @@ namespace Monocle
 {
 namespace FXB
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclefxbsettings.xml");
+		Util::BaseSettingsManager::Init ();
 	}
 
-	void Plugin::SecondInit ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
+		static XmlSettingsManager manager;
+		return manager;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		return "org.LeechCraft.Monocle.FXB";
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Monocle_FXB");
+		return settings;
 	}
 
-	void Plugin::Release ()
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Monocle FXB";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("FictionBook (fb2) backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
-
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
-	{
-		return file.toLower ().endsWith (".fb2") ?
-				LoadCheckResult::Can :
-				LoadCheckResult::Cannot;
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
-	{
-		return IDocument_ptr (new Document (file, this));
-	}
-
-	QStringList Plugin::GetSupportedMimes () const
-	{
-		return { "application/x-fictionbook+xml", "application/x-fictionbook" };
 	}
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_fxb, LeechCraft::Monocle::FXB::Plugin);

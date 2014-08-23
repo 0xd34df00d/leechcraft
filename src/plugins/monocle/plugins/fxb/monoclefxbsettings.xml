@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Monocle FXB" />
+		<groupbox>
+			<label value="Rendering" />
+			<item type="checkbox" property="EnableAntialiasing" default="true">
+				<label value="Antialiasing" />
+			</item>
+			<item type="checkbox" property="EnableTextAntialiasing" default="true">
+				<label value="Text antialiasing" />
+			</item>
+			<item type="checkbox" property="EnableSmoothPixmapTransform" default="true">
+				<label value="Smooth image transformations" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

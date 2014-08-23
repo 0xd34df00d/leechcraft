@@ -27,11 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "fxb.h"
-#include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "document.h"
-#include "xmlsettingsmanager.h"
+#pragma once
+
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -39,70 +37,17 @@ namespace Monocle
 {
 namespace FXB
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclefxbsettings.xml");
-	}
+		Q_OBJECT
 
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Monocle.FXB";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Monocle FXB";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("FictionBook (fb2) backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
-
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
-	{
-		return file.toLower ().endsWith (".fb2") ?
-				LoadCheckResult::Can :
-				LoadCheckResult::Cannot;
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
-	{
-		return IDocument_ptr (new Document (file, this));
-	}
-
-	QStringList Plugin::GetSupportedMimes () const
-	{
-		return { "application/x-fictionbook+xml", "application/x-fictionbook" };
-	}
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_fxb, LeechCraft::Monocle::FXB::Plugin);
