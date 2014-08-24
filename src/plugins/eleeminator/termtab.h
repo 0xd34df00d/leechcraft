@@ -80,6 +80,8 @@ namespace Eleeminator
 
 		void AddUrlActions (QMenu&, const QPoint&);
 	private slots:
+		void setHistorySettings ();
+
 		void handleTermContextMenu (const QPoint&);
 
 		void openUrl ();

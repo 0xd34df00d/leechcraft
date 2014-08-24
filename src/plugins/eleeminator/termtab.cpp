@@ -126,6 +126,11 @@ namespace Eleeminator
 				this,
 				SLOT (updateTitle ()));
 		timer->start (3000);
+
+		XmlSettingsManager::Instance ().RegisterObject ({ "FiniteHistory", "HistorySize" },
+				this,
+				"setHistorySettings");
+		setHistorySettings ();
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
@@ -272,6 +277,15 @@ namespace Eleeminator
 				this,
 				SLOT (copyUrl ()));
 		copyAct->setProperty ("ER/Url", cap);
+	}
+
+	void TermTab::setHistorySettings ()
+	{
+		const bool isFinite = XmlSettingsManager::Instance ().property ("FiniteHistory").toBool ();
+		const auto linesCount = isFinite ?
+				XmlSettingsManager::Instance ().property ("HistorySize").toInt () :
+				-1;
+		Term_->setHistorySize (linesCount);
 	}
 
 	void TermTab::handleTermContextMenu (const QPoint& point)
