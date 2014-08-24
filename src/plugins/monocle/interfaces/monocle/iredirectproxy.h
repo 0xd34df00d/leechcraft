@@ -35,7 +35,7 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-	/** @brief Interface for redirect proxy.
+	/** @brief Interface for redirecting document opening requests.
 	 *
 	 * This interface is used when a backend can't open a document, but
 	 * can convert it to a format probably openable by another Monocle
@@ -49,8 +49,11 @@ namespace Monocle
 	 * document.
 	 *
 	 * The redirect proxy should start converting after a small delay
-	 * after construction, as it is a common pattern to request temporary
-	 * IRedirectProxy objects to get the MIME type, for example.
+	 * after construction (like after spinning the main event loop via
+	 * QTimer with a zero timeout). This is because temporary
+	 * IRedirectProxy objects can be requested by Monocle to get the
+	 * MIME type of the redirected document without actually converting
+	 * it.
 	 *
 	 * @sa IBackendPlugin
 	 * @sa IBackendPlugin::GetRedirection()
