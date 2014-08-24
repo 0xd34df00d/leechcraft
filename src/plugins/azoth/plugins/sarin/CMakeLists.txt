@@ -10,8 +10,13 @@ find_package (Tox)
 
 option (USE_AZOTH_SARIN_NACL "Use NaCl crypto library instead of libsodium" OFF)
 
+set (EXTRA_LIBRARIES)
 if (USE_AZOTH_SARIN_NACL)
 	add_definitions (-DUSE_NACL)
+else ()
+	find_package (Sodium)
+	set (EXTRA_LIBRARIES ${SODIUM_LIBRARIES})
+	include_directories (${SODIUM_INCLUDE_DIRS})
 endif ()
 
 include_directories (${AZOTH_INCLUDE_DIR}
@@ -52,8 +57,8 @@ add_library (leechcraft_azoth_sarin SHARED
 	)
 target_link_libraries (leechcraft_azoth_sarin
 	${LEECHCRAFT_LIBRARIES}
-	sodium					# TODO write FindSodium.cmake
 	${TOXCORE_LIBRARY}
+	${EXTRA_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_sarin DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES azothsarinsettings.xml DESTINATION ${LC_SETTINGS_DEST})
