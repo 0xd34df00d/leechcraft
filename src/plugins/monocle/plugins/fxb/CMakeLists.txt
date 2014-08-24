@@ -17,8 +17,12 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	)
 
+CreateTrs ("monocle_fxb" "en;ru_RU" FXB_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("monocle_fxb" "en;ru_RU" "${SRCS}" "" "monoclefxbsettings.xml")
+
 add_library (leechcraft_monocle_fxb SHARED
 	${SRCS}
+	${FXB_COMPILED_TRANSLATIONS}
 	)
 target_link_libraries (leechcraft_monocle_fxb
 	${LEECHCRAFT_LIBRARIES}
