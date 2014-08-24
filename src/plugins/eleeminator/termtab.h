@@ -85,6 +85,8 @@ namespace Eleeminator
 		void openUrl ();
 		void copyUrl ();
 
+		void openSelectedFile ();
+
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);
 		void stopColorSchemePreview ();

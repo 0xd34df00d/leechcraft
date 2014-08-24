@@ -40,8 +40,10 @@
 #include <QProcessEnvironment>
 #include <QApplication>
 #include <QClipboard>
+#include <QDesktopServices>
 #include <QTimer>
 #include <QtDebug>
+#include <QDir>
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
 #include <util/xpc/util.h>
@@ -294,7 +296,27 @@ namespace Eleeminator
 
 		const auto& selected = Term_->selectedText ();
 		if (!selected.isEmpty ())
+		{
+			const QDir workingDir { Term_->workingDirectory () };
+			if (workingDir.exists (selected))
+			{
+				const auto openAct = menu.addAction (tr ("Open file").arg (selected),
+						this,
+						SLOT (openSelectedFile ()));
+				openAct->setProperty ("ER/LCHandle", true);
+				openAct->setProperty ("ER/Path",
+						workingDir.filePath (selected));
+
+				const auto openExternally = menu.addAction (tr ("Open file externally").arg (selected),
+						this,
+						SLOT (openSelectedFile ()));
+				openExternally->setProperty ("ER/LCHandle", false);
+				openExternally->setProperty ("ER/Path",
+						workingDir.filePath (selected));
+			}
+
 			new Util::StdDataFilterMenuCreator { selected, CoreProxy_->GetEntityManager (), &menu };
+		}
 
 		menu.exec (Term_->mapToGlobal (point));
 	}
@@ -313,6 +335,28 @@ namespace Eleeminator
 		const auto& url = sender ()->property ("ER/Url").toUrl ();
 
 		QApplication::clipboard ()->setText (url.toString (), QClipboard::Clipboard);
+	}
+
+	void TermTab::openSelectedFile ()
+	{
+		const auto& path = sender ()->property ("ER/Path").toString ();
+		const bool internally = sender ()->property ("ER/LCHandle").toBool ();
+		if (!QFile::exists (path))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "path does not exist"
+					<< path;
+			return;
+		}
+
+		const auto& url = QUrl::fromLocalFile (path);
+		if (internally)
+		{
+			const auto& entity = Util::MakeEntity (url, {}, OnlyHandle | FromUserInitiated);
+			CoreProxy_->GetEntityManager ()->HandleEntity (entity);
+		}
+		else
+			QDesktopServices::openUrl (url);
 	}
 
 	void TermTab::setColorScheme (QAction *schemeAct)
