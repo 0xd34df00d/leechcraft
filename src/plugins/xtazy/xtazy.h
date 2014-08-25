@@ -51,6 +51,8 @@ namespace Xtazy
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings Media::IAudioScrobbler Media::ICurrentSongKeeper)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Xtazy")
+
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		QList<TuneSourceBase*> TuneSources_;
 

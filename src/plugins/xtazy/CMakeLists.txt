@@ -2,10 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_xtazy)
 include (InitLCPlugin OPTIONAL)
 
-if (NOT WIN32)
-	set (QT_USE_QTDBUS TRUE)
-endif ()
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -36,8 +32,13 @@ add_library (leechcraft_xtazy SHARED
 	${SRCS}
 	)
 target_link_libraries (leechcraft_xtazy
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_xtazy DESTINATION ${LC_PLUGINS_DEST})
 install (FILES xtazysettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_xtazy Core)
+
+if (NOT WIN32)
+	FindQtLibs (leechcraft_xtazy DBus)
+endif ()
