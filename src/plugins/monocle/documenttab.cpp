@@ -1102,8 +1102,8 @@ namespace Monocle
 
 		const int numPages = CurrentDoc_->GetNumPages ();
 
-		QPrinter printer;
-		QPrintDialog dia (&printer, this);
+		QPrinter printer { QPrinter::HighResolution };
+		QPrintDialog dia { &printer, this };
 		dia.setMinMax (1, numPages);
 		dia.addEnabledOption (QAbstractPrintDialog::PrintCurrentPage);
 		if (dia.exec () != QDialog::Accepted)
