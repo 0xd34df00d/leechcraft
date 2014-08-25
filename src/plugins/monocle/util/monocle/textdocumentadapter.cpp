@@ -90,10 +90,13 @@ namespace Monocle
 		return QList<ILink_ptr> ();
 	}
 
-	void TextDocumentAdapter::PaintPage (QPainter *painter, int page)
+	void TextDocumentAdapter::PaintPage (QPainter *painter, int page, double xScale, double yScale)
 	{
+		painter->save ();
 		const auto oldHints = painter->renderHints ();
 		painter->setRenderHints (Hints_);
+
+		painter->scale (xScale, yScale);
 
 		const auto& size = Doc_->pageSize ();
 
@@ -102,6 +105,7 @@ namespace Monocle
 		Doc_->drawContents (painter, rect);
 
 		painter->setRenderHints (oldHints);
+		painter->restore ();
 	}
 
 	void TextDocumentAdapter::SetDocument (QTextDocument *doc)

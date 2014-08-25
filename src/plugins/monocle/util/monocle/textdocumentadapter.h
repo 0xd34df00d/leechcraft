@@ -130,10 +130,14 @@ namespace Monocle
 		 *
 		 * @param[in] painter The painter to use.
 		 * @param[in] page The index of the page to paint.
+		 * @param[in] xScale The X-axis scale which should be used during
+		 * painting.
+		 * @param[in] yScale The Y-axis scale which should be used during
+		 * painting.
 		 *
 		 * @sa SetRenderHint()
 		 */
-		void PaintPage (QPainter *painter, int page);
+		void PaintPage (QPainter *painter, int page, double xScale, double yScale);
 
 		/** @brief Searches for the given \em text and returns its positions.
 		 *

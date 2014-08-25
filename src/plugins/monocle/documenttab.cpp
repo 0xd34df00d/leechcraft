@@ -1085,7 +1085,7 @@ namespace Monocle
 
 		for (int i = 0, numPages = CurrentDoc_->GetNumPages (); i < numPages; ++i)
 		{
-			paintable->PaintPage (&painter, i);
+			paintable->PaintPage (&painter, i, 1, 1);
 			if (i != numPages - 1)
 			{
 				printer.newPage ();

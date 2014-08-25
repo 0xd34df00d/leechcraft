@@ -52,8 +52,12 @@ namespace Monocle
 		 *
 		 * @param[in] painter The painter to paint on.
 		 * @param[in] page The page index to paint on.
+		 * @param[in] xScale The X-axis scale which should be used during
+		 * painting.
+		 * @param[in] yScale The Y-axis scale which should be used during
+		 * painting.
 		 */
-		virtual void PaintPage (QPainter *painter, int page) = 0;
+		virtual void PaintPage (QPainter *painter, int page, double xScale, double yScale) = 0;
 	};
 }
 }
