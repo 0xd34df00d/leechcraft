@@ -40,6 +40,7 @@
 #include <interfaces/monocle/isupportforms.h>
 #include <interfaces/monocle/isearchabledocument.h>
 #include <interfaces/monocle/isaveabledocument.h>
+#include <interfaces/monocle/isupportpainting.h>
 
 namespace Poppler
 {
@@ -61,6 +62,7 @@ namespace PDF
 				   , public IHaveFontInfo
 				   , public ISupportAnnotations
 				   , public ISupportForms
+				   , public ISupportPainting
 				   , public ISearchableDocument
 				   , public ISaveableDocument
 	{
@@ -71,6 +73,7 @@ namespace PDF
 				LeechCraft::Monocle::IHaveFontInfo
 				LeechCraft::Monocle::ISupportAnnotations
 				LeechCraft::Monocle::ISupportForms
+				LeechCraft::Monocle::ISupportPainting
 				LeechCraft::Monocle::ISearchableDocument
 				LeechCraft::Monocle::ISaveableDocument)
 
@@ -101,6 +104,8 @@ namespace PDF
 		QList<IAnnotation_ptr> GetAnnotations (int);
 
 		IFormFields_t GetFormFields (int);
+
+		void PaintPage (QPainter*, int, double, double);
 
 		QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity);
 

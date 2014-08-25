@@ -216,6 +216,15 @@ namespace PDF
 		return fields;
 	}
 
+	void Document::PaintPage (QPainter *painter, int num, double xScale, double yScale)
+	{
+		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
+		if (!page)
+			return;
+
+		page->renderToPainter (painter, 72 * xScale, 72 * yScale);
+	}
+
 	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
 	{
 		typedef QMap<int, QList<QRectF>> Result_t;
