@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QUrl>
 #include <util/util.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iwebfilestorage.h>
@@ -61,6 +62,19 @@ namespace Xtazy
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothxtazysettings.xml");
 
 		Keeper_ = 0;
+
+		Commands_.append ({
+				{ "/np" },
+				[this] (ICLEntry *entry, QString& text) { return SendCurrentSong (entry, text); },
+				tr ("Sends the metadata of the currently plaing tune to the chat."),
+				{}
+			});
+		Commands_.append ({
+				{ "/sharesong" },
+				[this] (ICLEntry *entry, QString& text) { return HandleShare (entry, text); },
+				tr ("Uploads the current track file to a web file storage and sends the link to the chat."),
+				{}
+			});
 	}
 
 	void Plugin::SecondInit ()
@@ -113,24 +127,70 @@ namespace Xtazy
 		return XSD_;
 	}
 
-	void Plugin::HandleShare (LeechCraft::IHookProxy_ptr proxy, QObject *entryObj, const QString& variant, const QUrl& url)
+	StaticCommands_t Plugin::GetStaticCommands (ICLEntry*)
 	{
-		proxy->CancelDefault ();
+		if (!Keeper_)
+			return {};
+
+		return Commands_;
+	}
+
+	bool Plugin::SendCurrentSong (ICLEntry *entry, QString& text)
+	{
+		const auto& song = Keeper_->GetCurrentSong ();
+
+		QString songStr;
+		if (!song.Title_.isEmpty () ||
+				!song.Artist_.isEmpty () ||
+				!song.Album_.isEmpty ())
+		{
+			songStr = XmlSettingsManager::Instance ().property ("NPCmdSubst").toString ();
+			songStr.replace ("$artist", song.Artist_);
+			songStr.replace ("$album", song.Album_);
+			songStr.replace ("$title", song.Title_);
+		}
+		else
+			songStr = XmlSettingsManager::Instance ().property ("NPCmdNoPlaying").toString ();
+
+		if (XmlSettingsManager::Instance ().property ("SendTextImmediately").toBool ())
+		{
+			text = songStr;
+			return false;
+		}
+		else
+		{
+			const auto& eId = entry->GetEntryID ();
+			const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			const auto& accId = acc->GetAccountID ();
+			new Util::DelayedExecutor
+			{
+				[this, eId, accId, songStr] { AzothProxy_->OpenChat (eId, accId, songStr); },
+				0
+			};
+
+			return true;
+		}
+	}
+
+	bool Plugin::HandleShare (ICLEntry *entry, QString& text)
+	{
+		const auto& song = Keeper_->GetCurrentSong ();
+		const auto& url = song.Other_ ["URL"].toUrl ();
 		if (!url.isValid ())
-			return;
+			return true;
 
 		if (url.scheme () != "file")
 		{
-			proxy->SetValue ("text", QString::fromUtf8 (url.toEncoded ()));
-			return;
+			text = QString::fromUtf8 (url.toEncoded ());
+			return false;
 		}
 
 		auto sharers = Proxy_->GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ();
 		QMap<QString, QObject*> variants;
-		Q_FOREACH (auto sharerObj, sharers)
+		for (const auto sharerObj : sharers)
 		{
 			auto sharer = qobject_cast<IWebFileStorage*> (sharerObj);
-			Q_FOREACH (const auto& var, sharer->GetServiceVariants ())
+			for (const auto& var : sharer->GetServiceVariants ())
 				variants [var] = sharerObj;
 		}
 
@@ -139,14 +199,14 @@ namespace Xtazy
 			QMessageBox::critical (0,
 					"LeechCraft",
 					tr ("No web share plugins are installed. Try installing NetStoreManager, for example."));
-			return;
+			return true;
 		}
 
 		const auto& localPath = url.toLocalFile ();
 
-		TrackShareDialog dia (localPath, variants.keys (), entryObj);
+		TrackShareDialog dia (localPath, variants.keys (), entry->GetQObject ());
 		if (dia.exec () != QDialog::Accepted)
-			return;
+			return true;
 
 		const auto& selectedVar = dia.GetVariantName ();
 		auto sharerObj = variants [selectedVar];
@@ -154,63 +214,20 @@ namespace Xtazy
 		auto sharer = qobject_cast<IWebFileStorage*> (sharerObj);
 		sharer->UploadFile (localPath, selectedVar);
 
-		PendingUploads_ [localPath] << UploadNotifee_t (entryObj, variant);
+		PendingUploads_ [localPath] << UploadNotifee_t (entry->GetQObject (), {});
 
 		connect (sharerObj,
 				SIGNAL (fileUploaded (QString, QUrl)),
 				this,
 				SLOT (handleFileUploaded (QString, QUrl)),
 				Qt::UniqueConnection);
+
+		return true;
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
-	}
-
-	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-			QObject *chatTab,
-			QObject *entryObj,
-			int,
-			QString variant)
-	{
-		if (!Keeper_)
-			return;
-
-		if (!XmlSettingsManager::Instance ().property ("NPCmdEnabled").toBool ())
-			return;
-
-		const auto& song = Keeper_->GetCurrentSong ();
-
-		auto text = proxy->GetValue ("text").toString ();
-		if (text == "/np")
-		{
-			if (!song.Title_.isEmpty () ||
-					!song.Artist_.isEmpty () ||
-					!song.Album_.isEmpty ())
-			{
-				text = XmlSettingsManager::Instance ().property ("NPCmdSubst").toString ();
-				text.replace ("$artist", song.Artist_);
-				text.replace ("$album", song.Album_);
-				text.replace ("$title", song.Title_);
-			}
-			else
-				text = XmlSettingsManager::Instance ().property ("NPCmdNoPlaying").toString ();
-
-			if (XmlSettingsManager::Instance ().property ("SendTextImmediately").toBool ())
-				proxy->SetValue ("text", text);
-			else
-			{
-				proxy->CancelDefault ();
-
-				QMetaObject::invokeMethod (chatTab,
-						"prepareMessageText",
-						Qt::QueuedConnection,
-						Q_ARG (QString, text));
-			}
-		}
-		else if (text == "/sharesong" && song.Other_.contains ("URL"))
-			HandleShare (proxy, entryObj, variant, song.Other_ ["URL"].toUrl ());
 	}
 
 	void Plugin::publish (const Media::AudioInfo& info)

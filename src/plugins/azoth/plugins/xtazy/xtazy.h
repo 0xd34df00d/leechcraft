@@ -34,6 +34,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/iprovidecommands.h>
 
 namespace Media
 {
@@ -56,9 +57,13 @@ namespace Xtazy
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				 , public IProvideCommands
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				IHaveSettings
+				LeechCraft::Azoth::IProvideCommands)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Xtazy")
 
@@ -71,6 +76,8 @@ namespace Xtazy
 
 		typedef QPair<QPointer<QObject>, QString> UploadNotifee_t;
 		QMap<QString, QList<UploadNotifee_t>> PendingUploads_;
+
+		StaticCommands_t Commands_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -83,16 +90,13 @@ namespace Xtazy
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		StaticCommands_t GetStaticCommands (ICLEntry*);
 	private:
-		void HandleShare (LeechCraft::IHookProxy_ptr proxy,
-				QObject*, const QString&, const QUrl&);
+		bool SendCurrentSong (ICLEntry*, QString&);
+		bool HandleShare (ICLEntry*, QString&);
 	public slots:
 		void initPlugin (QObject*);
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
 	private slots:
 		void publish (const Media::AudioInfo&);
 		void handleFileUploaded (const QString&, const QUrl&);
