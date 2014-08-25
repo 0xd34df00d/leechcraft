@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_TABSLIST_TABSLIST_H
-#define PLUGINS_TABSLIST_TABSLIST_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
@@ -47,6 +47,8 @@ namespace TabsList
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter IHaveShortcuts)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.TabsList")
 
 		ICoreProxy_ptr Proxy_;
 		QAction *ShowList_;
@@ -73,5 +75,3 @@ namespace TabsList
 	};
 }
 }
-
-#endif
