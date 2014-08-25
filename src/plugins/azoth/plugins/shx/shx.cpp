@@ -33,6 +33,9 @@
 #include <QTextDocument>
 #include <QMessageBox>
 #include <util/util.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iaccount.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
@@ -101,17 +104,26 @@ namespace SHX
 		return XSD_;
 	}
 
-	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-			QObject *chatTab, QObject*, int, QString)
+	StaticCommands_t Plugin::GetStaticCommands (ICLEntry*)
 	{
-		QString text = proxy->GetValue ("text").toString ();
-
-		const QString marker = XmlSettingsManager::Instance ()
+		const auto& marker = XmlSettingsManager::Instance ()
 				.property ("Marker").toString ();
-		if (!text.startsWith (marker))
-			return;
+		StaticCommand execCommand
+		{
+			{ marker },
+			[this, marker] (ICLEntry *entry, const QString& text)
+			{
+				ExecuteProcess (entry, text.mid (marker.size () + 1));
+				return true;
+			},
+			tr ("Executes the given command in a shell."),
+			{}
+		};
+		return { execCommand };
+	}
 
-		text = text.mid (marker.size ());
+	void Plugin::ExecuteProcess (ICLEntry *entry, const QString& text)
+	{
 		if (XmlSettingsManager::Instance ().property ("WarnAboutExecution").toBool ())
 		{
 #if QT_VERSION < 0x050000
@@ -121,16 +133,15 @@ namespace SHX
 #endif
 			const auto& msgText = tr ("Are you sure you want to execute this command?") +
 					"<blockquote><em>" + escaped + "</em></blockquote>";
-			if (QMessageBox::question (0, "LeechCraft",
+			if (QMessageBox::question (nullptr,
+						"LeechCraft",
 						msgText,
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 				return;
 		}
 
-		proxy->CancelDefault ();
-
 		auto proc = new QProcess ();
-		Process2Chat_ [proc] = chatTab;
+		Process2Entry_ [proc] = entry->GetQObject ();
 		connect (proc,
 				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
@@ -148,15 +159,21 @@ namespace SHX
 		proc->start (command, commandParts.mid (1) << text);
 	}
 
+	void Plugin::initPlugin (QObject *proxyObj)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (proxyObj);
+	}
+
 	void Plugin::handleFinished ()
 	{
 		auto proc = qobject_cast<QProcess*> (sender ());
 		proc->deleteLater ();
 
-		if (!Process2Chat_.contains (proc))
+		const auto entryObj = Process2Entry_.take (proc);
+		if (!entryObj)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "no chat for process"
+					<< "no entry for process"
 					<< proc;
 			return;
 		}
@@ -174,9 +191,10 @@ namespace SHX
 			out.prepend (tr ("Error: %1").arg (QString::fromUtf8 (err)) + "\n");
 #endif
 
-		QMetaObject::invokeMethod (Process2Chat_.take (proc),
-				"prepareMessageText",
-				Q_ARG (QString, out));
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		AzothProxy_->OpenChat (entry->GetEntryID (),
+				qobject_cast<IAccount*> (entry->GetParentAccount ())->GetAccountID (),
+				out);
 	}
 }
 }
