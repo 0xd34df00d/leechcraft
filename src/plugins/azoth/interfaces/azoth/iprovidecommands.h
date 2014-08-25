@@ -39,7 +39,7 @@ namespace Azoth
 {
 	class ICLEntry;
 
-	typedef std::function<bool (ICLEntry*, const QString&)> Command_f;
+	typedef std::function<bool (ICLEntry*, QString&)> Command_f;
 
 	struct StaticCommand
 	{
