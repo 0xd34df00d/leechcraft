@@ -1135,6 +1135,8 @@ namespace Monocle
 			break;
 		}
 
+		const auto isp = qobject_cast<ISupportPainting*> (CurrentDoc_->GetQObject ());
+
 		QPainter painter (&printer);
 		painter.setRenderHint (QPainter::Antialiasing);
 		painter.setRenderHint (QPainter::HighQualityAntialiasing);
@@ -1145,8 +1147,13 @@ namespace Monocle
 			const auto scale = std::min (static_cast<double> (pageSize.width ()) / size.width (),
 					static_cast<double> (pageSize.height ()) / size.height ());
 
-			const auto& img = CurrentDoc_->RenderPage (i, resScale * scale, resScale * scale);
-			painter.drawImage (0, 0, img);
+			if (isp)
+				isp->PaintPage (&painter, i, resScale * scale, resScale * scale);
+			else
+			{
+				const auto& img = CurrentDoc_->RenderPage (i, resScale * scale, resScale * scale);
+				painter.drawImage (0, 0, img);
+			}
 
 			if (i != end - 1)
 				printer.newPage ();
