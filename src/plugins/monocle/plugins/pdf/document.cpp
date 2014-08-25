@@ -218,6 +218,15 @@ namespace PDF
 
 	void Document::PaintPage (QPainter *painter, int num, double xScale, double yScale)
 	{
+		const auto backend = PDocument_->renderBackend ();
+		std::shared_ptr<void> guard;
+		if (backend != Poppler::Document::ArthurBackend)
+		{
+			PDocument_->setRenderBackend (Poppler::Document::ArthurBackend);
+			guard.reset (static_cast<void*> (nullptr),
+					[this, backend] (void*) { PDocument_->setRenderBackend (backend); });
+		}
+
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
 		if (!page)
 			return;
