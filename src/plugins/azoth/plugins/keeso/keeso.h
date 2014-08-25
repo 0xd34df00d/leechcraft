@@ -49,13 +49,6 @@ namespace Keeso
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Keeso")
 
-		QRegExp UserRX_;
-		QRegExp PostRX_;
-		QRegExp IdRX_;
-		QRegExp UnsubRX_;
-		QRegExp ReplyRX_;
-		QRegExp AvatarRX_;
-		QRegExp TagRX_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
