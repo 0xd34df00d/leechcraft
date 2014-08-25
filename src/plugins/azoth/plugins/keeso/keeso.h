@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/iprovidecommands.h>
 
 namespace LeechCraft
 {
@@ -43,12 +44,16 @@ namespace Keeso
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IProvideCommands
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				LeechCraft::Azoth::IProvideCommands)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Keeso")
 
+		StaticCommands_t Commands_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -59,12 +64,8 @@ namespace Keeso
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
+
+		StaticCommands_t GetStaticCommands (ICLEntry*);
 	};
 }
 }
