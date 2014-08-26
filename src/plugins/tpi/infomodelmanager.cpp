@@ -29,6 +29,7 @@
 
 #include "infomodelmanager.h"
 #include <QStandardItemModel>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ijobholder.h>
 
@@ -40,7 +41,7 @@ namespace TPI
 {
 	namespace
 	{
-		class InfoModel : public QStandardItemModel
+		class InfoModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -51,7 +52,7 @@ namespace TPI
 			};
 
 			InfoModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::Done] = "jobDone";

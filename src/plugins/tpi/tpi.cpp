@@ -33,7 +33,10 @@
 #include <util/sys/paths.h>
 #include <util/gui/util.h>
 #include "infomodelmanager.h"
+
+#if QT_VERSION < 0x050000
 #include "tooltipview.h"
+#endif
 
 namespace LeechCraft
 {
@@ -47,7 +50,9 @@ namespace TPI
 
 		QuarkComponent_ptr comp (new QuarkComponent ("tpi", "TPIQuark.qml"));
 		comp->DynamicProps_ << QPair<QString, QObject*> ("TPI_infoModel", ModelMgr_->GetModel ());
+#if QT_VERSION < 0x050000
 		comp->DynamicProps_ << QPair<QString, QObject*> ("TPI_proxy", this);
+#endif
 		Components_ << comp;
 	}
 
@@ -85,6 +90,7 @@ namespace TPI
 		return Components_;
 	}
 
+#if QT_VERSION < 0x050000
 	void Plugin::hovered (int x, int y, const QRect& geometry)
 	{
 		if (!TooltipView_)
@@ -101,6 +107,7 @@ namespace TPI
 		if (TooltipView_)
 			TooltipView_->Unhovered ();
 	}
+#endif
 }
 }
 
