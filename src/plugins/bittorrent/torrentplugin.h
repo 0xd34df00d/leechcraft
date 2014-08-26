@@ -29,7 +29,6 @@
 
 #ifndef PLUGINS_BITTORRENT_TORRENTPLUIGN_H
 #define PLUGINS_BITTORRENT_TORRENTPLUIGN_H
-#define PLUGINS_BITTORRENT_WIN32_LEAN_AND_MEAN
 #include <memory>
 #include <deque>
 #include <QMainWindow>
