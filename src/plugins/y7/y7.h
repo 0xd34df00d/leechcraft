@@ -37,10 +37,12 @@ namespace LeechCraft
 namespace Y7
 {
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.y7")
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
