@@ -35,9 +35,9 @@
 #include <QIcon>
 #include <QTimer>
 #include <QtDebug>
-#include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/sll/queuemanager.h>
+#include <util/sll/parsejson.h>
 #include <util/sll/urloperator.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/audiostructs.h>
@@ -286,7 +286,7 @@ namespace TouchStreams
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& data = QJson::Parser ().parse (reply).toMap ();
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
 		HandleAlbums (data ["response"]);
 
 		RequestQueue_.prepend ({
@@ -315,7 +315,7 @@ namespace TouchStreams
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& data = QJson::Parser ().parse (reply).toMap ();
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
 		auto tracksList = data ["response"].toList ();
 		HandleTracks (data ["response"]);
 
