@@ -64,6 +64,8 @@ namespace TouchStreams
 				Media::IAudioPile
 				Media::IRadioStationProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.TouchStreams")
+
 		ICoreProxy_ptr Proxy_;
 		Util::QueueManager *Queue_;
 

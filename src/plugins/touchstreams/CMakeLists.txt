@@ -2,12 +2,14 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_touchstreams)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package (QJSON REQUIRED)
+if (NOT USE_QT5)
+	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+	find_package (QJSON REQUIRED)
+else ()
+	unset (QJSON_INCLUDE_DIR)
+	unset (QJSON_LIBRARIES)
+endif ()
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -24,7 +26,7 @@ set (SRCS
 	)
 set (RESOURCES touchstreamsresources.qrc)
 
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtAddResources (RCCS ${RESOURCES})
 
 CreateTrs ("touchstreams" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("touchstreams" "en;ru_RU" "${SRCS}" "${FORMS}" "touchstreamssettings.xml")
@@ -36,9 +38,10 @@ add_library (leechcraft_touchstreams SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_touchstreams
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_touchstreams DESTINATION ${LC_PLUGINS_DEST})
 install (FILES touchstreamssettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_touchstreams Network Xml)
