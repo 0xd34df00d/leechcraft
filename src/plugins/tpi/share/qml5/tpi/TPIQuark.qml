@@ -1,5 +1,6 @@
 import QtQuick 2.3
-import org.LC.common 1.0
+import QtQuick.Controls 1.2
+import org.LC.common 1.0 as LCCommon
 
 Rectangle {
     id: rootRect
@@ -27,26 +28,19 @@ Rectangle {
             angle: viewOrient == "vertical" ? 0 : 180
         }
 
-        delegate: Rectangle {
+        delegate: ProgressBar {
+            minimumValue: 0
+            maximumValue: jobTotal
+            value: jobDone
+
             width: parent.width
             height: 10
 
-            border.color: "#777777"
-            border.width: 1
-
-            ProgressBar {
-                minimum: 0
-                maximum: jobTotal
-                value: jobDone
-
-                color: "#999999"
-
-                anchors.fill: parent
-            }
+            orientation: Qt.Horizontal
         }
     }
 
-    Common { id: commonJS }
+    LCCommon.Common { id: commonJS }
 
     MouseArea {
         anchors.fill: parent
