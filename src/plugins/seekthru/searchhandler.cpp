@@ -42,6 +42,8 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
+Q_DECLARE_METATYPE (QToolBar*)
+
 namespace LeechCraft
 {
 namespace SeekThru

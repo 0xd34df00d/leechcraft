@@ -34,6 +34,9 @@
 #include <QFont>
 #include <QPalette>
 #include <QIcon>
+#include <QFontMetrics>
+#include <QToolBar>
+#include <QMenu>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -41,6 +44,9 @@
 #include "item.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
+
+Q_DECLARE_METATYPE (QToolBar*)
+Q_DECLARE_METATYPE (QMenu*)
 
 namespace LeechCraft
 {

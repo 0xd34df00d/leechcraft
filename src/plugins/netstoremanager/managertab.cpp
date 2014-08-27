@@ -36,6 +36,7 @@
 #include <QInputDialog>
 #include <QComboBox>
 #include <QToolButton>
+#include <QToolBar>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>

@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QDBusInterface>
 #include <QPointer>
+#include <QStringList>
 #include <interfaces/structures.h>
 
 class QDBusPendingCallWatcher;

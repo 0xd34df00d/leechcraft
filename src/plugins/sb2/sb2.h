@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QObject>
+#include <QMainWindow>
+#include <QToolBar>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>

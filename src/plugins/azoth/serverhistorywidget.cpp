@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "serverhistorywidget.h"
-#include <QtDebug>
 #include <QSortFilterProxyModel>
+#include <QToolBar>
+#include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include "proxyobject.h"

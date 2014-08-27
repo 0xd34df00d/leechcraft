@@ -36,6 +36,7 @@
 #include <QUrl>
 #include <QTimer>
 #include <QMessageBox>
+#include <QToolBar>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>

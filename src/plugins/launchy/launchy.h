@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QAction>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/iquarkcomponentprovider.h>

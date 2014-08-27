@@ -35,6 +35,8 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 
+class QAction;
+
 namespace LeechCraft
 {
 namespace Azoth

@@ -32,13 +32,13 @@
 
 #include <QObject>
 #include <QTranslator>
+#include <QMenu>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QMenu;
 class QWebView;
 
 namespace LeechCraft

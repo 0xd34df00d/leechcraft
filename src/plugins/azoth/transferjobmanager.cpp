@@ -47,6 +47,8 @@
 #include "util.h"
 #include "filesenddialog.h"
 
+Q_DECLARE_METATYPE (QToolBar*)
+
 namespace LeechCraft
 {
 namespace Azoth

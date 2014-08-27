@@ -28,11 +28,10 @@
  **********************************************************************/
 
 #include "otrhandler.h"
-#include "authenticator.h"
 #include <cstring>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
-
+#include <QMenu>
 #include <QMessageBox>
 #include <QEventLoop>
 #include <QFutureWatcher>
@@ -61,6 +60,7 @@ extern "C"
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/core/ientitymanager.h>
 #include "util.h"
+#include "authenticator.h"
 
 namespace LeechCraft
 {

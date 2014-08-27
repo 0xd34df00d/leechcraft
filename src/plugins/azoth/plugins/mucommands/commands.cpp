@@ -33,6 +33,8 @@
 #include <QtDebug>
 #include <QUrl>
 #include <QTimer>
+#include <QImage>
+#include <QWidget>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>

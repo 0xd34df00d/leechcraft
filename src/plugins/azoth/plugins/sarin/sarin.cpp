@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "sarin.h"
+#include <QIcon>
 #include <interfaces/azoth/iclentry.h>
 #include "toxprotocol.h"
 

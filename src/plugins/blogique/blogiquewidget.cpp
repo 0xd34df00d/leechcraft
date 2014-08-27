@@ -30,6 +30,7 @@
 #include "blogiquewidget.h"
 #include <stdexcept>
 #include <QComboBox>
+#include <QToolBar>
 
 #if QT_VERSION < 0x050000
 #include <QDeclarativeView>

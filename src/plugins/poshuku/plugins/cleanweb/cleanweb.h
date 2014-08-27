@@ -35,6 +35,7 @@
 #include <QTranslator>
 #include <QWebPage>
 #include <QNetworkAccessManager>
+#include <QMenu>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>

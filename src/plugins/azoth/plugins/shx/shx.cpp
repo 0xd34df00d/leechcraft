@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QTextDocument>
 #include <QMessageBox>
+#include <QIcon>
 #include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>

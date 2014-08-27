@@ -37,6 +37,7 @@
 
 class QWebHitTestResult;
 class QWebView;
+class QContextMenuEvent;
 
 namespace LeechCraft
 {

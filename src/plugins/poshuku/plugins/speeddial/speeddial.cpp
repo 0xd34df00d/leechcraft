@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "speeddial.h"
+#include <QIcon>
 #include <util/util.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "viewhandler.h"

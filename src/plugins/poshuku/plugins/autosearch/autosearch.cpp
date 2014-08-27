@@ -32,6 +32,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
+#include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/iurlcompletionmodel.h>
 #include <util/util.h>

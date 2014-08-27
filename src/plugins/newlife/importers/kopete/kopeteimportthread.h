@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QThread>
+#include <QStringList>
 #include <interfaces/structures.h>
 
 namespace LeechCraft

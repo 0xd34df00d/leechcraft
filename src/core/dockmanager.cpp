@@ -31,6 +31,7 @@
 #include <QDockWidget>
 #include <QToolButton>
 #include <QToolBar>
+#include <QMenu>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "tabmanager.h"

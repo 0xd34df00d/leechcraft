@@ -29,6 +29,7 @@
 
 #include "foldersmodel.h"
 #include <algorithm>
+#include <QIcon>
 #include <QtDebug>
 #include "account.h"
 #include "core.h"

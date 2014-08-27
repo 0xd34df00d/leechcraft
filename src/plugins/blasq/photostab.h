@@ -33,6 +33,7 @@
 #include <functional>
 #include <QWidget>
 #include <QModelIndex>
+#include <QToolBar>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/core/icoreproxy.h>

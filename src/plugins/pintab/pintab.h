@@ -31,12 +31,13 @@
 #pragma once
 
 #include <QObject>
+#include <QMenu>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QMenu;
+class QMainWindow;
 
 namespace LeechCraft
 {

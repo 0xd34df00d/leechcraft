@@ -35,8 +35,6 @@
 #include <QVariant>
 #include <QString>
 #include <QByteArray>
-#include <QToolBar>
-#include <QMenu>
 #include <QtDebug>
 
 class QMenu;
@@ -287,8 +285,6 @@ typedef std::shared_ptr<QObject> QObject_ptr;
 
 Q_DECLARE_METATYPE (LeechCraft::Entity);
 Q_DECLARE_METATYPE (QIODevice*);
-Q_DECLARE_METATYPE (QToolBar*);
-Q_DECLARE_METATYPE (QMenu*);
 Q_DECLARE_METATYPE (QObject_ptr);
 Q_DECLARE_METATYPE (QPointer<QObject*>);
 Q_DECLARE_METATYPE (LeechCraft::TaskParameters);

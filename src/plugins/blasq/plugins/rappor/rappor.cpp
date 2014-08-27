@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "rappor.h"
+#include <QIcon>
 #include <util/util.h>
 #include "vkservice.h"
 

@@ -44,6 +44,7 @@
 #include <QAction>
 #include <QBuffer>
 #include <QPainter>
+#include <QAction>
 #include <QtDebug>
 
 Q_DECLARE_METATYPE (QList<QModelIndex>);

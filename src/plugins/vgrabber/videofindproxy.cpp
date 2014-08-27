@@ -28,10 +28,15 @@
  **********************************************************************/
 
 #include "videofindproxy.h"
+#include <QMenu>
 #include <QAction>
+#include <QToolBar>
 #include <QTextCodec>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
+
+Q_DECLARE_METATYPE (QToolBar*)
+Q_DECLARE_METATYPE (QMenu*)
 
 namespace LeechCraft
 {

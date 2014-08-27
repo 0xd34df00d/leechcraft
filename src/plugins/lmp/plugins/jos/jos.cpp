@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "jos.h"
+#include <QIcon>
 #include "devmanager.h"
 #include "uploadmanager.h"
 

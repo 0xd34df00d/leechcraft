@@ -38,6 +38,8 @@
 #include "summarywidget.h"
 #include "summarytagsfilter.h"
 
+Q_DECLARE_METATYPE (QToolBar*)
+
 namespace LeechCraft
 {
 namespace Summary

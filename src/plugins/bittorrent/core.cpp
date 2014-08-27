@@ -40,6 +40,7 @@
 #include <QSettings>
 #include <QToolBar>
 #include <QTimer>
+#include <QMenu>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
@@ -93,6 +94,9 @@
 #include "livestreammanager.h"
 #include "torrentmaker.h"
 #include "notifymanager.h"
+
+Q_DECLARE_METATYPE (QMenu*)
+Q_DECLARE_METATYPE (QToolBar*)
 
 using namespace LeechCraft::Util;
 

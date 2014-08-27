@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "entrybase.h"
+#include <QIcon>
 #include <util/util.h>
 #include <util/sll/urloperator.h>
 #include <interfaces/core/iiconthememanager.h>

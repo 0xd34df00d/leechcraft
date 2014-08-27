@@ -35,6 +35,8 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
+class QWidget;
+
 namespace LeechCraft
 {
 namespace LMP

@@ -31,11 +31,13 @@
 
 #include <memory>
 #include <QObject>
+#include <QIcon>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
+class QAction;
 
 namespace LeechCraft
 {

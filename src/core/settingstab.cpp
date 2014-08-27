@@ -33,6 +33,7 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QToolButton>
+#include <QToolBar>
 #include <QLineEdit>
 #include "util/gui/flowlayout.h"
 #include "util/gui/clearlineeditaddon.h"

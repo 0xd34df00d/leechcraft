@@ -31,6 +31,7 @@
 
 #include <QCoreApplication>
 #include <QTranslator>
+#include <QMenu>
 #ifndef QROSP_NO_QTSCRIPT
 #include <QScriptEngine>
 #endif

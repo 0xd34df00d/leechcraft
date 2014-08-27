@@ -31,6 +31,7 @@
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
 #include <memory>
 #include <QObject>
+#include <QAction>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iactionsexporter.h>

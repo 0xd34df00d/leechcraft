@@ -40,6 +40,7 @@
 #include <QtDebug>
 #include <QRegExp>
 #include <QDesktopServices>
+#include <QToolBar>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ijobholder.h>
@@ -54,6 +55,7 @@
 #include "addtask.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*)
+Q_DECLARE_METATYPE (QToolBar*)
 
 extern "C"
 {

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "deathnote.h"
+#include <QIcon>
 #include <util/util.h>
 #include "fotobilderservice.h"
 

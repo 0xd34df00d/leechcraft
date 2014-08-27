@@ -31,11 +31,10 @@
 #ifndef PLUGINS_GLANCE_GLANCE_H
 #define PLUGINS_GLANCE_GLANCE_H
 #include <QObject>
+#include <QAction>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihaveshortcuts.h>
-
-class QAction;
 
 namespace LeechCraft
 {

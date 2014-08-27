@@ -32,6 +32,7 @@
 #include <cmath>
 #include <QToolBar>
 #include <QComboBox>
+#include <QMenu>
 
 #if QT_VERSION < 0x050000
 #include <QDeclarativeView>

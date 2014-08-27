@@ -32,6 +32,7 @@
 #include <QWebElement>
 #include <QWebFrame>
 #include <QApplication>
+#include <QPalette>
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
 #include <util/util.h>

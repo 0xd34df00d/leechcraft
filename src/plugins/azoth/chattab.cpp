@@ -44,6 +44,7 @@
 #include <QTextBrowser>
 #include <QDesktopWidget>
 #include <QMimeData>
+#include <QToolBar>
 
 #if QT_VERSION >= 0x050000
 #include <QUrlQuery>

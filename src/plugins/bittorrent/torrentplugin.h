@@ -32,6 +32,7 @@
 #include <memory>
 #include <deque>
 #include <QMainWindow>
+#include <QToolBar>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ientityhandler.h>

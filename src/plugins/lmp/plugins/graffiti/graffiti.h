@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QMenu>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavetabs.h>
