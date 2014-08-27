@@ -42,5 +42,6 @@ target_link_libraries (leechcraft_vrooby
 	)
 install (TARGETS leechcraft_vrooby DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/vrooby DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/vrooby DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_vrooby DBus QuickWidgets)
