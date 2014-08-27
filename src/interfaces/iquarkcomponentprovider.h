@@ -120,7 +120,7 @@ namespace LeechCraft
 		 * @sa Util::GetSysPath()
 		 */
 		QuarkComponent (const QString& subdir, const QString& filename)
-		: Url_ (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, subdir, filename)))
+		: Url_ (Util::GetSysPathUrl (Util::SysPath::QML, subdir, filename))
 		{
 		}
 
