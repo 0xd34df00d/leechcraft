@@ -30,10 +30,19 @@
 #include "trayview.h"
 #include <QSortFilterProxyModel>
 #include <QIcon>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
+#else
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickImageProvider>
+#include <QQuickItem>
+#endif
+
 #include <QSortFilterProxyModel>
 #include <QSettings>
 #include <QCoreApplication>

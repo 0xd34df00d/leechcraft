@@ -3,8 +3,6 @@ project (leechcraft_vrooby)
 include (InitLCPlugin OPTIONAL)
 include (CMakeDependentOption)
 
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -17,7 +15,7 @@ set (SRCS
 	flatmountableitems.cpp
 	)
 set (RESOURCES vroobyresources.qrc)
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtAddResources (RCCS ${RESOURCES})
 CreateTrs ("vrooby" "en;ru_RU" COMPILED_TRANSLATIONS)
 
 cmake_dependent_option (ENABLE_VROOBY_UDISKS "Enable UDisks backend for Vrooby" ON "NOT WIN32" OFF)
@@ -39,9 +37,9 @@ add_library (leechcraft_vrooby SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_vrooby
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-
 	${UDISKS_BACKEND_LIBS}
 	)
 install (TARGETS leechcraft_vrooby DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_vrooby DBus QuickWidgets)
