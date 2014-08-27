@@ -1228,7 +1228,7 @@ namespace Azoth
 #endif
 			InsertNick (nick);
 
-			if (!GetMUCParticipants ().contains (nick))
+			if (!GetMucParticipants (EntryID_).contains (nick))
 				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 							tr ("%1 isn't present in this conference at the moment.")
 								.arg ("<em>" + nick + "</em>"),

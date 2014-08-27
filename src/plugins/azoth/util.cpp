@@ -219,5 +219,32 @@ namespace Azoth
 		const auto& nc = colors.at (hash % colors.size ());
 		return nc.name ();
 	}
+
+	QStringList GetMucParticipants (const QString& entryId)
+	{
+		const auto entry = qobject_cast<IMUCEntry*> (Core::Instance ().GetEntry (entryId));
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entry
+					<< "doesn't implement IMUCEntry";
+			return {};
+		}
+
+		QStringList participantsList;
+		for (const auto item : entry->GetParticipants ())
+		{
+			const auto part = qobject_cast<ICLEntry*> (item);
+			if (!part)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast item to ICLEntry"
+						<< item;
+				continue;
+			}
+			participantsList << part->GetEntryName ();
+		}
+		return participantsList;
+	}
 }
 }

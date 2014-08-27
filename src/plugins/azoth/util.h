@@ -59,5 +59,7 @@ namespace Azoth
 
 	QList<QColor> GenerateColors (const QString& coloring, QColor);
 	QString GetNickColor (const QString& nick, const QList<QColor>& colors);
+
+	QStringList GetMucParticipants (const QString& entryId);
 }
 }
