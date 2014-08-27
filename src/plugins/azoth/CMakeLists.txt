@@ -151,6 +151,7 @@ set (SRCS
 	corecommandsmanager.cpp
 	resourcesmanager.cpp
 	notificationsmanager.cpp
+	msgeditautocompleter.cpp
 	)
 set (FORMS
 	mainwidget.ui

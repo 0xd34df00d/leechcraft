@@ -99,6 +99,7 @@
 #include "dummymsgmanager.h"
 #include "corecommandsmanager.h"
 #include "resourcesmanager.h"
+#include "msgeditautocompleter.h"
 
 namespace LeechCraft
 {
@@ -173,8 +174,6 @@ namespace Azoth
 	, EntryID_ (entryId)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
-	, CurrentNickIndex_ (0)
-	, LastSpacePosition_(-1)
 	, HadHighlight_ (false)
 	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	, ScrollbackPos_ (0)
@@ -1761,18 +1760,20 @@ namespace Azoth
 				this,
 				SLOT (messageSend ()));
 		connect (Ui_.MsgEdit_,
-				SIGNAL (keyTabPressed ()),
-				this,
-				SLOT (nickComplete ()));
-		connect (Ui_.MsgEdit_,
 				SIGNAL (scroll (int)),
 				this,
 				SLOT (handleEditScroll (int)));
 
+		const auto completer = new MsgEditAutocompleter (EntryID_, Ui_.MsgEdit_, this);
+		connect (Ui_.MsgEdit_,
+				SIGNAL (keyTabPressed ()),
+				completer,
+				SLOT (complete ()));
 		connect (Ui_.MsgEdit_,
 				SIGNAL (clearAvailableNicks ()),
-				this,
-				SLOT (clearAvailableNick ()));
+				completer,
+				SLOT (resetState ()));
+
 		UpdateTextHeight ();
 
 		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_, Ui_.MsgEdit_);
@@ -1961,138 +1962,6 @@ namespace Azoth
 					<< "unhandled append message :(";
 	}
 
-	void ChatTab::nickComplete ()
-	{
-		IMUCEntry *entry = GetEntry<IMUCEntry> ();
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry
-					<< "doesn't implement ICLEntry";
-
-			return;
-		}
-
-		QStringList currentMUCParticipants = GetMUCParticipants ();
-		currentMUCParticipants.removeAll (entry->GetNick ());
-		if (currentMUCParticipants.isEmpty ())
-			return;
-
-		QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
-
-		int cursorPosition = cursor.position ();
-		int pos = -1;
-
-		QString text = Ui_.MsgEdit_->toPlainText ();
-
-		if (AvailableNickList_.isEmpty ())
-		{
-			if (cursorPosition)
-				pos = text.lastIndexOf (' ', cursorPosition - 1);
-			else
-				pos = text.lastIndexOf (' ', cursorPosition);
-			LastSpacePosition_ = pos;
-		}
-		else
-			pos = LastSpacePosition_;
-
-		if (NickFirstPart_.isNull ())
-		{
-			if (!cursorPosition)
-				NickFirstPart_ = "";
-			else
-				NickFirstPart_ = text.mid (pos + 1, cursorPosition - pos -1);
-		}
-
-		const QString& post = XmlSettingsManager::Instance ()
-				.property ("PostAddressText").toString ();
-
-		if (AvailableNickList_.isEmpty ())
-		{
-			Q_FOREACH (const QString& item, currentMUCParticipants)
-				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					AvailableNickList_ << item + (pos == -1 ? post : "") + " ";
-
-			if (AvailableNickList_.isEmpty ())
-				return;
-
-			text.replace (pos + 1,
-					NickFirstPart_.length (),
-					AvailableNickList_ [CurrentNickIndex_]);
-		}
-		else
-		{
-			QStringList newAvailableNick;
-
-			Q_FOREACH (const QString& item, currentMUCParticipants)
-				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					newAvailableNick << item + (pos == -1 ? post : "") + " ";
-
-			int lastNickLen = -1;
-			if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
-			{
-				int newIndex = newAvailableNick.indexOf (AvailableNickList_ [CurrentNickIndex_ - 1]);
-				lastNickLen = AvailableNickList_ [CurrentNickIndex_ - 1].length ();
-
-				while (newIndex == -1 && CurrentNickIndex_ > 0)
-					newIndex = newAvailableNick.indexOf (AvailableNickList_ [--CurrentNickIndex_]);
-
-				CurrentNickIndex_ = (newIndex == -1 ? 0 : newIndex);
-				AvailableNickList_ = newAvailableNick;
-			}
-
-			if (CurrentNickIndex_ < AvailableNickList_.count () && CurrentNickIndex_)
-				text.replace (pos + 1,
-						AvailableNickList_ [CurrentNickIndex_ - 1].length (),
-						AvailableNickList_ [CurrentNickIndex_]);
-			else if (CurrentNickIndex_)
-			{
-				CurrentNickIndex_ = 0;
-				text.replace (pos + 1,
-						AvailableNickList_.last ().length (),
-						AvailableNickList_ [CurrentNickIndex_]);
-			}
-			else
-				text.replace (pos + 1,
-						lastNickLen,
-						AvailableNickList_ [CurrentNickIndex_]);
-		}
-		++CurrentNickIndex_;
-
-		Ui_.MsgEdit_->setPlainText (text);
-		cursor.setPosition (pos + 1 + AvailableNickList_ [CurrentNickIndex_ - 1].length ());
-		Ui_.MsgEdit_->setTextCursor (cursor);
-	}
-
-	QStringList ChatTab::GetMUCParticipants () const
-	{
-		IMUCEntry *entry = GetEntry<IMUCEntry> ();
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry
-					<< "doesn't implement IMUCEntry";
-
-			return QStringList ();
-		}
-
-		QStringList participantsList;
-
-		Q_FOREACH (QObject *item, entry->GetParticipants ())
-		{
-			ICLEntry *part = qobject_cast<ICLEntry*> (item);
-			if (!part)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast item to ICLEntry"
-						<< item;
-				return QStringList ();
-			}
-			participantsList << part->GetEntryName ();
-		}
-		return participantsList;
-	}
-
 	QString ChatTab::ReformatTitle ()
 	{
 		if (!GetEntry<ICLEntry> ())
@@ -2218,16 +2087,6 @@ namespace Azoth
 		Ui_.MUCEventsButton_->setVisible (isSep);
 		if (!initial)
 			PrepareTheme ();
-	}
-
-	void ChatTab::clearAvailableNick ()
-	{
-		NickFirstPart_.clear ();
-		if (!AvailableNickList_.isEmpty ())
-		{
-			AvailableNickList_.clear ();
-			CurrentNickIndex_ = 0;
-		}
 	}
 
 	void ChatTab::handleEditScroll (int direction)

@@ -88,10 +88,6 @@ namespace Azoth
 
 		QList<QString> MsgHistory_;
 		int CurrentHistoryPosition_;
-		QStringList AvailableNickList_;
-		int CurrentNickIndex_;
-		int LastSpacePosition_;
-		QString NickFirstPart_;
 
 		bool HadHighlight_;
 		int NumUnreadMsgs_;
@@ -177,10 +173,8 @@ namespace Azoth
 		void on_MUCEventsButton__toggled (bool);
 		void handleSeparateMUCLog (bool initial = false);
 
-		void clearAvailableNick ();
 		void handleEditScroll (int);
 		void messageSend ();
-		void nickComplete ();
 		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
@@ -237,8 +231,6 @@ namespace Azoth
 		void RegisterSettings ();
 
 		void RequestLogs (int);
-
-		QStringList GetMUCParticipants () const;
 
 		void UpdateTextHeight ();
 		void SetChatPartState (ChatPartState);
