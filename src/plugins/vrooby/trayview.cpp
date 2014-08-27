@@ -164,7 +164,7 @@ namespace Vrooby
 		rootContext ()->setContextProperty ("devModel", Filtered_);
 		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
 		rootContext ()->setContextProperty ("hasHiddenItems", Filtered_->GetHiddenCount ());
-		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
+		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "vrooby", "DevicesTrayView.qml"));
 
 		connect (Flattened_,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
