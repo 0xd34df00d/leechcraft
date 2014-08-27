@@ -791,13 +791,11 @@ namespace LMP
 
 	void PlaylistWidget::handleCustomSort ()
 	{
-		auto current = Player_->GetSortingCriteria ();
+		const auto& var = XmlSettingsManager::Instance ().property ("LastCustomSortCriteria");
+		auto current = LoadCriteria (var);
 
 		if (current.isEmpty ())
-		{
-			const auto& var = XmlSettingsManager::Instance ().property ("LastCustomSortCriteria");
-			current = LoadCriteria (var);
-		}
+			current = Player_->GetSortingCriteria ();
 
 		SortingCriteriaDialog dia (this);
 		dia.SetCriteria (current);
