@@ -560,8 +560,33 @@ namespace Azoth
 							[&text] (const QString& name) { return TextMatchesCmd (text, name); }))
 						continue;
 
-					if (cmd.Command_ (entry, text))
-						return true;
+					try
+					{
+						if (cmd.Command_ (entry, text))
+							return true;
+					}
+					catch (const CommandException& ex)
+					{
+						const auto entryObj = entry->GetQObject ();
+
+						auto body = ChatTab::tr ("Cannot execute %1.")
+								.arg ("<em>" + text + "</em>");
+						body += " " + ex.GetError ();
+
+						const auto msg = new CoreMessage
+						{
+							body,
+							QDateTime::currentDateTime (),
+							IMessage::Type::ServiceMessage,
+							IMessage::Direction::In,
+							entryObj,
+							entryObj
+						};
+						msg->Store ();
+
+						if (!ex.CanTryOtherCommands ())
+							return true;
+					}
 				}
 
 			return false;

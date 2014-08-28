@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <stdexcept>
 #include <QStringList>
 #include <QtPlugin>
 
@@ -40,6 +41,29 @@ namespace Azoth
 	class ICLEntry;
 
 	typedef std::function<bool (ICLEntry*, QString&)> Command_f;
+
+	class CommandException : public std::runtime_error
+	{
+		const QString Error_;
+		const bool TryOtherCommands_;
+	public:
+		CommandException (const QString& error, bool canTryOthers = false)
+		: std::runtime_error { error.toUtf8 ().constData () }
+		, Error_ { error }
+		, TryOtherCommands_ { canTryOthers }
+		{
+		}
+
+		const QString& GetError () const
+		{
+			return Error_;
+		}
+
+		bool CanTryOtherCommands () const
+		{
+			return TryOtherCommands_;
+		}
+	};
 
 	struct StaticCommand
 	{
