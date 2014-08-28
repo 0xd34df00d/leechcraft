@@ -30,6 +30,7 @@
 #include "abbrevsmanager.h"
 #include <QSettings>
 #include <QCoreApplication>
+#include <interfaces/azoth/iprovidecommands.h>
 
 namespace LeechCraft
 {
@@ -48,10 +49,13 @@ namespace Abbrev
 		if (std::any_of (Abbrevs_.begin (), Abbrevs_.end (),
 				[&abbrev] (const Abbreviation& other)
 					{ return other.Pattern_ == abbrev.Pattern_; }))
-		{
-			const auto& errorStr = tr ("Abbreviation with this pattern already exists.");
-			throw std::logic_error { errorStr.toUtf8 ().constData () };
-		}
+			throw CommandException { tr ("Abbreviation with this pattern already exists.") };
+
+		if (abbrev.Pattern_.isEmpty ())
+			throw CommandException { tr ("Abbeviation pattern is empty.") };
+
+		if (abbrev.Expansion_.isEmpty ())
+			throw CommandException { tr ("Abbeviation expansion is empty.") };
 
 		const auto pos = std::lower_bound (Abbrevs_.begin (), Abbrevs_.end (), abbrev,
 				[] (const Abbreviation& left, const Abbreviation& right)
