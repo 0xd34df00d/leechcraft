@@ -29,9 +29,13 @@
 
 #include "msgeditautocompleter.h"
 #include <QTextEdit>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include "interfaces/azoth/iprovidecommands.h"
 #include "core.h"
 #include "util.h"
 #include "xmlsettingsmanager.h"
+#include "corecommandsmanager.h"
 
 namespace LeechCraft
 {
@@ -47,13 +51,32 @@ namespace Azoth
 
 	QStringList MsgEditAutocompleter::GetPossibleCompletions (const QString& firstPart, int pos) const
 	{
-		auto result = GetNickCompletions (pos);
+		auto result = GetNickCompletions (pos) + GetCommandCompletions (pos);
 		result.erase (std::remove_if (result.begin (), result.end (),
 					[this] (const QString& completion)
 					{
 						return !completion.startsWith (NickFirstPart_, Qt::CaseInsensitive);
 					}),
 				result.end ());
+		return result;
+	}
+
+	QStringList MsgEditAutocompleter::GetCommandCompletions (int) const
+	{
+		const auto entryObj = Core::Instance ().GetEntry (EntryId_);
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+			return {};
+
+		QStringList result;
+
+		auto cmdProvs = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableTo<IProvideCommands*> ();
+		cmdProvs << Core::Instance ().GetCoreCommandsManager ();
+		for (const auto prov : cmdProvs)
+			for (const auto& cmd : prov->GetStaticCommands (entry))
+				result += cmd.Names_;
+
 		return result;
 	}
 
