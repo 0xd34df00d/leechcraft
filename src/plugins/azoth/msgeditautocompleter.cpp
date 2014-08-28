@@ -47,6 +47,18 @@ namespace Azoth
 
 	QStringList MsgEditAutocompleter::GetPossibleCompletions (const QString& firstPart, int pos) const
 	{
+		auto result = GetNickCompletions (pos);
+		result.erase (std::remove_if (result.begin (), result.end (),
+					[this] (const QString& completion)
+					{
+						return !completion.startsWith (NickFirstPart_, Qt::CaseInsensitive);
+					}),
+				result.end ());
+		return result;
+	}
+
+	QStringList MsgEditAutocompleter::GetNickCompletions (int pos) const
+	{
 		const auto entryObj = Core::Instance ().GetEntry (EntryId_);
 		const auto entry = qobject_cast<IMUCEntry*> (entryObj);
 		if (!entry)
@@ -77,25 +89,18 @@ namespace Azoth
 		QString NewText_;
 	};
 
-	NickReplacement MsgEditAutocompleter::GetNickFromState (const QStringList& participants)
+	NickReplacement MsgEditAutocompleter::GetNickFromState (const QStringList& completions)
 	{
 		if (AvailableNickList_.isEmpty ())
 		{
-			for (const auto& item : participants)
-				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					AvailableNickList_ << item;
-
+			AvailableNickList_ = completions;
 			if (AvailableNickList_.isEmpty ())
 				return {};
 
 			return { NickFirstPart_.size (), AvailableNickList_ [CurrentNickIndex_] };
 		}
 
-		QStringList newAvailableNick;
-
-		for (const auto& item : participants)
-			if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-				newAvailableNick << item;
+		auto newAvailableNick = completions;
 
 		int lastNickLen = -1;
 		if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))

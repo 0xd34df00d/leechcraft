@@ -55,6 +55,7 @@ namespace Azoth
 		MsgEditAutocompleter (const QString& entryId, QTextEdit *msgEdit, QObject* = nullptr);
 	private:
 		QStringList GetPossibleCompletions (const QString& firstPart, int position) const;
+		QStringList GetNickCompletions (int position) const;
 		NickReplacement GetNickFromState (const QStringList& participants);
 	public slots:
 		void complete ();
