@@ -72,6 +72,18 @@ namespace Abbrev
 				tr ("Lists all abbreviations that were previously added."),
 				{}
 			});
+		Commands_.append ({
+				{ "/unabbrev" },
+				[this] (ICLEntry*, const QString& text) -> bool
+				{
+					RemoveAbbrev (text.section (' ', 1).trimmed ());
+					return true;
+				},
+				tr ("Removes a previously added abbreviation."),
+				tr ("Usage: @/unabbrev <_pattern_|_index_>\n\n"
+					"Removes a previously added abbrevation either by its _pattern_ or by its "
+					"_index_ in the list returned by @/listabbrevs@.")
+			});
 	}
 
 	void Plugin::SecondInit ()
@@ -135,6 +147,26 @@ namespace Abbrev
 				entryObj);
 		const auto msg = qobject_cast<IMessage*> (msgObj);
 		msg->Store ();
+	}
+
+	void Plugin::RemoveAbbrev (const QString& text)
+	{
+		bool ok = false;
+		const auto idx = text.toInt (&ok);
+		if (ok)
+		{
+			Manager_->Remove (idx - 1);
+			return;
+		}
+
+		const auto& list = Manager_->List ();
+		const auto pos = std::find_if (list.begin (), list.end (),
+				[&text] (const Abbreviation& abbrev) { return abbrev.Pattern_ == text; });
+		if (pos == list.end ())
+			throw CommandException { tr ("Unable to find abbreviation %1.")
+					.arg ("<em>" + text + "</em>") };
+
+		Manager_->Remove (std::distance (list.begin (), pos));
 	}
 
 	void Plugin::initPlugin (QObject *proxyObj)

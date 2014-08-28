@@ -76,6 +76,7 @@ namespace Abbrev
 		StaticCommands_t GetStaticCommands (ICLEntry*);
 	private:
 		void ListAbbrevs (ICLEntry*);
+		void RemoveAbbrev (const QString&);
 	public slots:
 		void initPlugin (QObject*);
 	};
