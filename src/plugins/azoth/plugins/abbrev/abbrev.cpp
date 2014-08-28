@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
+#include "abbrevsmanager.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,10 @@ namespace Abbrev
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		qRegisterMetaType<Abbreviation> ("LeechCraft::Azoth::Abbrev::Abbreviation");
+		qRegisterMetaType<QList<Abbreviation>> ("QList<LeechCraft::Azoth::Abbrev::Abbreviation>");
+		qRegisterMetaTypeStreamOperators<Abbreviation> ();
+		qRegisterMetaTypeStreamOperators<QList<Abbreviation>> ();
 	}
 
 	void Plugin::SecondInit ()
