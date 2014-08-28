@@ -45,6 +45,33 @@ namespace Abbrev
 		qRegisterMetaType<QList<Abbreviation>> ("QList<LeechCraft::Azoth::Abbrev::Abbreviation>");
 		qRegisterMetaTypeStreamOperators<Abbreviation> ();
 		qRegisterMetaTypeStreamOperators<QList<Abbreviation>> ();
+
+		Manager_ = std::make_shared<AbbrevsManager> ();
+
+		Commands_.append ({
+				{ "/abbrev" },
+				[this] (ICLEntry*, const QString& text) -> bool
+				{
+					const auto& pattern = text.section (' ', 1, 1).trimmed ();
+					const auto& expansion = text.section (' ', 2).trimmed ();
+					Manager_->Add ({ pattern, expansion });
+					return true;
+				},
+				tr ("Adds a new abbreviation to the list of abbreviations."),
+				tr ("Usage: @/abbrev _abbreviation_ _text_\n\n"
+					"Adds a new _abbreviation_ that expands to the given _text_, which can span "
+					"multiple lines.")
+			});
+		Commands_.append ({
+				{ "/listabbrevs" },
+				[this] (ICLEntry *entry, const QString&) -> bool
+				{
+					ListAbbrevs (entry);
+					return true;
+				},
+				tr ("Lists all abbreviations that were previously added."),
+				{}
+			});
 	}
 
 	void Plugin::SecondInit ()
@@ -58,6 +85,7 @@ namespace Abbrev
 
 	void Plugin::Release ()
 	{
+		Manager_.reset ();
 	}
 
 	QString Plugin::GetName () const
@@ -85,6 +113,28 @@ namespace Abbrev
 	StaticCommands_t Plugin::GetStaticCommands (ICLEntry*)
 	{
 		return Commands_;
+	}
+
+	void Plugin::ListAbbrevs (ICLEntry *entry)
+	{
+		QStringList abbrevs;
+		for (const auto& abbrev : Manager_->List ())
+			abbrevs << QString::fromUtf8 ("%1 → %2")
+					.arg (abbrev.Pattern_)
+					.arg (abbrev.Expansion_);
+
+		const auto& text = tr ("%n abbreviation(s):", 0, abbrevs.size ()) +
+				"<ol><li>" + abbrevs.join ("</li><li>") + "</li></ol>";
+
+		const auto entryObj = entry->GetQObject ();
+		const auto msgObj = AzothProxy_->CreateCoreMessage (text,
+				QDateTime::currentDateTime (),
+				IMessage::Type::ServiceMessage,
+				IMessage::Direction::In,
+				entryObj,
+				entryObj);
+		const auto msg = qobject_cast<IMessage*> (msgObj);
+		msg->Store ();
 	}
 
 	void Plugin::initPlugin (QObject *proxyObj)

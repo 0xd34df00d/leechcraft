@@ -43,6 +43,8 @@ class IProxyObject;
 
 namespace Abbrev
 {
+	class AbbrevsManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -58,6 +60,8 @@ namespace Abbrev
 		StaticCommands_t Commands_;
 
 		IProxyObject *AzothProxy_ = nullptr;
+
+		std::shared_ptr<AbbrevsManager> Manager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -70,6 +74,8 @@ namespace Abbrev
 		QSet<QByteArray> GetPluginClasses () const;
 
 		StaticCommands_t GetStaticCommands (ICLEntry*);
+	private:
+		void ListAbbrevs (ICLEntry*);
 	public slots:
 		void initPlugin (QObject*);
 	};
