@@ -9,6 +9,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	)
 set (ABBREV_SRCS
 	abbrev.cpp
+	abbreviation.cpp
 	)
 
 add_library (leechcraft_azoth_abbrev SHARED
