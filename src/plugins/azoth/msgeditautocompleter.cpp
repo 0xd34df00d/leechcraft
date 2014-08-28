@@ -45,6 +45,58 @@ namespace Azoth
 	{
 	}
 
+	struct NickReplacement
+	{
+		int Length_;
+		QString NewText_;
+	};
+
+	NickReplacement MsgEditAutocompleter::GetNickFromState (const QStringList& participants, const QString& postNick)
+	{
+		if (AvailableNickList_.isEmpty ())
+		{
+			for (const auto& item : participants)
+				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
+					AvailableNickList_ << item + postNick;
+
+			if (AvailableNickList_.isEmpty ())
+				return {};
+
+			return { NickFirstPart_.size (), AvailableNickList_ [CurrentNickIndex_] };
+		}
+		else
+		{
+			QStringList newAvailableNick;
+
+			for (const auto& item : participants)
+				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
+					newAvailableNick << item + postNick;
+
+			int lastNickLen = -1;
+			if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
+			{
+				int newIndex = newAvailableNick.indexOf (AvailableNickList_ [CurrentNickIndex_ - 1]);
+				lastNickLen = AvailableNickList_ [CurrentNickIndex_ - 1].length ();
+
+				while (newIndex == -1 && CurrentNickIndex_ > 0)
+					newIndex = newAvailableNick.indexOf (AvailableNickList_ [--CurrentNickIndex_]);
+
+				CurrentNickIndex_ = (newIndex == -1 ? 0 : newIndex);
+				AvailableNickList_ = newAvailableNick;
+			}
+
+			if (CurrentNickIndex_ < AvailableNickList_.count () && CurrentNickIndex_)
+				return { AvailableNickList_ [CurrentNickIndex_ - 1].size (), AvailableNickList_ [CurrentNickIndex_] };
+			else if (CurrentNickIndex_)
+			{
+				CurrentNickIndex_ = 0;
+				return { AvailableNickList_.last ().size (), AvailableNickList_ [CurrentNickIndex_] };
+			}
+			else
+				return { lastNickLen, AvailableNickList_ [CurrentNickIndex_] };
+		}
+	}
+
 	void MsgEditAutocompleter::complete ()
 	{
 		const auto entryObj = Core::Instance ().GetEntry (EntryId_);
@@ -77,63 +129,19 @@ namespace Azoth
 					text.mid (pos + 1, cursorPosition - pos - 1) :
 					"";
 
-		const auto& post = XmlSettingsManager::Instance ()
-				.property ("PostAddressText").toString ();
+		QString postNick;
+		if (pos == -1)
+			postNick = XmlSettingsManager::Instance ().property ("PostAddressText").toString ();
+		postNick += " ";
+		const auto& replacement = GetNickFromState (currentMUCParticipants, postNick);
+		if (replacement.NewText_.isEmpty ())
+			return;
 
-		if (AvailableNickList_.isEmpty ())
-		{
-			for (const auto& item : currentMUCParticipants)
-				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					AvailableNickList_ << item + (pos == -1 ? post : "") + " ";
-
-			if (AvailableNickList_.isEmpty ())
-				return;
-
-			text.replace (pos + 1,
-					NickFirstPart_.length (),
-					AvailableNickList_ [CurrentNickIndex_]);
-		}
-		else
-		{
-			QStringList newAvailableNick;
-
-			for (const auto& item : currentMUCParticipants)
-				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					newAvailableNick << item + (pos == -1 ? post : "") + " ";
-
-			int lastNickLen = -1;
-			if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
-			{
-				int newIndex = newAvailableNick.indexOf (AvailableNickList_ [CurrentNickIndex_ - 1]);
-				lastNickLen = AvailableNickList_ [CurrentNickIndex_ - 1].length ();
-
-				while (newIndex == -1 && CurrentNickIndex_ > 0)
-					newIndex = newAvailableNick.indexOf (AvailableNickList_ [--CurrentNickIndex_]);
-
-				CurrentNickIndex_ = (newIndex == -1 ? 0 : newIndex);
-				AvailableNickList_ = newAvailableNick;
-			}
-
-			if (CurrentNickIndex_ < AvailableNickList_.count () && CurrentNickIndex_)
-				text.replace (pos + 1,
-						AvailableNickList_ [CurrentNickIndex_ - 1].length (),
-						AvailableNickList_ [CurrentNickIndex_]);
-			else if (CurrentNickIndex_)
-			{
-				CurrentNickIndex_ = 0;
-				text.replace (pos + 1,
-						AvailableNickList_.last ().length (),
-						AvailableNickList_ [CurrentNickIndex_]);
-			}
-			else
-				text.replace (pos + 1,
-						lastNickLen,
-						AvailableNickList_ [CurrentNickIndex_]);
-		}
+		text.replace (pos + 1, replacement.Length_, replacement.NewText_);
 		++CurrentNickIndex_;
 
 		MsgEdit_->setPlainText (text);
-		cursor.setPosition (pos + 1 + AvailableNickList_ [CurrentNickIndex_ - 1].length ());
+		cursor.setPosition (pos + 1 + replacement.NewText_.size ());
 		MsgEdit_->setTextCursor (cursor);
 	}
 

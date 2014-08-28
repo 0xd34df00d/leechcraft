@@ -38,6 +38,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	struct NickReplacement;
+
 	class MsgEditAutocompleter : public QObject
 	{
 		Q_OBJECT
@@ -51,6 +53,8 @@ namespace Azoth
 		QString NickFirstPart_;
 	public:
 		MsgEditAutocompleter (const QString& entryId, QTextEdit *msgEdit, QObject* = nullptr);
+	private:
+		NickReplacement GetNickFromState (const QStringList& participants, const QString& postNick);
 	public slots:
 		void complete ();
 		void resetState ();
