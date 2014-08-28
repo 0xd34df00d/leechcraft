@@ -83,8 +83,13 @@ namespace LMP
 				.arg ("<em>" + track + "</em>");
 	}
 
-	void NPStateUpdater::EmitNotification (const QString& text, QPixmap notifyPx) const
+	void NPStateUpdater::EmitNotification (const QString& text, QPixmap notifyPx)
 	{
+		if (text == LastNotificationString_)
+			return;
+
+		LastNotificationString_ = text;
+
 		int width = notifyPx.width ();
 		if (width > 200)
 		{
@@ -124,7 +129,7 @@ namespace LMP
 		}
 	}
 
-	void NPStateUpdater::Update (MediaInfo info) const
+	void NPStateUpdater::Update (MediaInfo info)
 	{
 		if (Player_->GetState () == SourceState::Stopped)
 			info = MediaInfo {};
@@ -144,17 +149,17 @@ namespace LMP
 			EmitNotification (text, pxInfo.PX_);
 	}
 
-	void NPStateUpdater::emitNotification () const
+	void NPStateUpdater::emitNotification ()
 	{
 		EmitNotification (BuildNotificationText (Player_->GetCurrentMediaInfo ()), {});
 	}
 
-	void NPStateUpdater::update () const
+	void NPStateUpdater::update ()
 	{
 		Update (Player_->GetCurrentMediaInfo ());
 	}
 
-	void NPStateUpdater::update (const MediaInfo& info) const
+	void NPStateUpdater::update (const MediaInfo& info)
 	{
 		if (Player_->GetState () == SourceState::Stopped ||
 				info.IsUseless ())

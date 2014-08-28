@@ -51,6 +51,8 @@ namespace LMP
 		NowPlayingWidget * const NPWidget_;
 
 		Player * const Player_;
+
+		QString LastNotificationString_;
 	public:
 		typedef std::function<void (MediaInfo, QString, QPixmap)> PixmapHandler_f;
 	private:
@@ -61,13 +63,13 @@ namespace LMP
 		void AddPixmapHandler (const PixmapHandler_f&);
 	private:
 		QString BuildNotificationText (const MediaInfo&) const;
-		void EmitNotification (const QString&, QPixmap) const;
-		void Update (MediaInfo) const;
+		void EmitNotification (const QString&, QPixmap);
+		void Update (MediaInfo);
 	public slots:
-		void emitNotification () const;
+		void emitNotification ();
 	private slots:
-		void update () const;
-		void update (const MediaInfo&) const;
+		void update ();
+		void update (const MediaInfo&);
 	};
 }
 }
