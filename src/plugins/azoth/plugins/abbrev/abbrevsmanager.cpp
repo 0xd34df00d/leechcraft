@@ -59,7 +59,7 @@ namespace Abbrev
 
 		const auto pos = std::lower_bound (Abbrevs_.begin (), Abbrevs_.end (), abbrev,
 				[] (const Abbreviation& left, const Abbreviation& right)
-					{ return left.Pattern_.size () < right.Pattern_.size (); });
+					{ return left.Pattern_.size () > right.Pattern_.size (); });
 		Abbrevs_.insert (pos, abbrev);
 
 		Save ();
