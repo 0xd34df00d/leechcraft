@@ -98,16 +98,6 @@ namespace LMP
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	void NPStateUpdater::emitNotification () const
-	{
-		EmitNotification (BuildNotificationText (Player_->GetCurrentMediaInfo ()), {});
-	}
-
-	void NPStateUpdater::update () const
-	{
-		update (Player_->GetCurrentMediaInfo ());
-	}
-
 	namespace
 	{
 		struct PixmapInfo
@@ -134,7 +124,7 @@ namespace LMP
 		}
 	}
 
-	void NPStateUpdater::update (MediaInfo info) const
+	void NPStateUpdater::Update (MediaInfo info) const
 	{
 		if (Player_->GetState () == SourceState::Stopped)
 			info = MediaInfo {};
@@ -152,6 +142,25 @@ namespace LMP
 		if (!text.isEmpty () &&
 				XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
 			EmitNotification (text, pxInfo.PX_);
+	}
+
+	void NPStateUpdater::emitNotification () const
+	{
+		EmitNotification (BuildNotificationText (Player_->GetCurrentMediaInfo ()), {});
+	}
+
+	void NPStateUpdater::update () const
+	{
+		Update (Player_->GetCurrentMediaInfo ());
+	}
+
+	void NPStateUpdater::update (const MediaInfo& info) const
+	{
+		if (Player_->GetState () == SourceState::Stopped ||
+				info.IsUseless ())
+			return;
+
+		Update (info);
 	}
 }
 }

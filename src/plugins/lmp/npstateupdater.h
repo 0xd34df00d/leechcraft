@@ -62,11 +62,12 @@ namespace LMP
 	private:
 		QString BuildNotificationText (const MediaInfo&) const;
 		void EmitNotification (const QString&, QPixmap) const;
+		void Update (MediaInfo) const;
 	public slots:
 		void emitNotification () const;
 	private slots:
 		void update () const;
-		void update (MediaInfo) const;
+		void update (const MediaInfo&) const;
 	};
 }
 }
