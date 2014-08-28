@@ -9,6 +9,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	)
 set (ABBREV_SRCS
 	abbrev.cpp
+	abbrevsmanager.cpp
 	abbreviation.cpp
 	)
 
