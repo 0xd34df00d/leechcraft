@@ -58,9 +58,11 @@ namespace Abbrev
 					return true;
 				},
 				tr ("Adds a new abbreviation to the list of abbreviations."),
-				tr ("Usage: @/abbrev _abbreviation_ _text_\n\n"
-					"Adds a new _abbreviation_ that expands to the given _text_, which can span "
-					"multiple lines.")
+				tr ("Usage: @/abbrev _pattern_ _text_\n\n"
+					"Adds a new _pattern_ that expands to the given _text_, which can span "
+					"multiple lines.\n\n"
+					"@/listabbrevs@ lists all available abbreviations and @/unabbrev@ allows "
+					"removing them.")
 			});
 		Commands_.append ({
 				{ "/listabbrevs" },
