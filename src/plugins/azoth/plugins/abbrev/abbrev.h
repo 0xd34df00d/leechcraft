@@ -79,6 +79,12 @@ namespace Abbrev
 		void RemoveAbbrev (const QString&);
 	public slots:
 		void initPlugin (QObject*);
+
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr,
+				QObject*,
+				QObject*,
+				int,
+				QString);
 	};
 }
 }

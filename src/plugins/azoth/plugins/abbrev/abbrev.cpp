@@ -173,6 +173,30 @@ namespace Abbrev
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
+
+	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+			QObject*, QObject *entryObj, int, QString)
+	{
+		const auto& text = proxy->GetValue ("text").toString ();
+
+		try
+		{
+			const auto& newText = Manager_->Process (text);
+			if (text != newText)
+				proxy->SetValue ("text", newText);
+		}
+		catch (const CommandException& e)
+		{
+			const auto msgObj = AzothProxy_->CreateCoreMessage (e.GetError (),
+					QDateTime::currentDateTime (),
+					IMessage::Type::ServiceMessage,
+					IMessage::Direction::In,
+					entryObj,
+					entryObj);
+			const auto msg = qobject_cast<IMessage*> (msgObj);
+			msg->Store ();
+		}
+	}
 }
 }
 }
