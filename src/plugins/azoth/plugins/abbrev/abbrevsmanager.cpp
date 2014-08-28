@@ -79,6 +79,30 @@ namespace Abbrev
 		Save ();
 	}
 
+	QString AbbrevsManager::Process (QString text) const
+	{
+		int cyclesCount = 0;
+		while (true)
+		{
+			auto result = text;
+			for (const auto& abbrev : Abbrevs_)
+				if (result.contains (abbrev.Pattern_))
+				{
+					result.replace (abbrev.Pattern_, abbrev.Expansion_);
+					break;
+				}
+
+			if (result == text)
+				break;
+
+			text = result;
+			if (++cyclesCount >= 1024)
+				throw CommandException { tr ("Too much expansions during abbreviations application. Check your rules.") };
+		}
+
+		return text;
+	}
+
 	void AbbrevsManager::Load ()
 	{
 		QSettings settings { QCoreApplication::organizationName (),

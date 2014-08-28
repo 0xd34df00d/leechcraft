@@ -49,6 +49,8 @@ namespace Abbrev
 		void Add (const Abbreviation&);
 		const QList<Abbreviation>& List () const;
 		void Remove (int);
+
+		QString Process (QString) const;
 	private:
 		void Load ();
 		void Save () const;
