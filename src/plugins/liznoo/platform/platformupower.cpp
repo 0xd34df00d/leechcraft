@@ -74,6 +74,10 @@ namespace Liznoo
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+
+		QMetaObject::invokeMethod (Thread_->GetConnector (),
+				"enumerateDevices",
+				Qt::QueuedConnection);
 	}
 }
 }
