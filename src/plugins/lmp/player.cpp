@@ -900,8 +900,8 @@ namespace LMP
 		if (modifiedQueue.isEmpty ())
 			return rand (CurrentQueue_);
 
-		pos = modifiedQueue.begin () + randPos (modifiedQueue);
 		const auto& origFeature = feature (pos, modifiedQueue);
+		pos = modifiedQueue.begin () + randPos (modifiedQueue);
 		while (pos != modifiedQueue.begin ())
 		{
 			if (feature (pos - 1, modifiedQueue) != origFeature)
