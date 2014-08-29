@@ -58,7 +58,7 @@ namespace Abbrev
 					return true;
 				},
 				tr ("Adds a new abbreviation to the list of abbreviations."),
-				tr ("Usage: @/abbrev _pattern_ _text_\n\n"
+				tr ("Usage: @/abbrev@ _pattern_ _text_\n\n"
 					"Adds a new _pattern_ that expands to the given _text_, which can span "
 					"multiple lines.\n\n"
 					"@/listabbrevs@ lists all available abbreviations and @/unabbrev@ allows "
@@ -82,7 +82,7 @@ namespace Abbrev
 					return true;
 				},
 				tr ("Removes a previously added abbreviation."),
-				tr ("Usage: @/unabbrev <_pattern_|_index_>\n\n"
+				tr ("Usage: @/unabbrev@ <_pattern_|_index_>\n\n"
 					"Removes a previously added abbrevation either by its _pattern_ or by its "
 					"_index_ in the list returned by @/listabbrevs@.")
 			});
