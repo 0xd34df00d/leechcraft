@@ -42,117 +42,6 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	namespace
-	{
-		class MDParser
-		{
-			enum class State
-			{
-				None,
-				Em,
-				Code,
-				OrderedList,
-				UnorderedList
-			} State_ = State::None;
-
-			struct Pattern
-			{
-				QString Str_;
-				State Expected_;
-
-				bool Reversible_;
-
-				bool operator< (const Pattern& other) const
-				{
-					if (Str_ != other.Str_)
-						return Str_ < other.Str_;
-
-					if (Expected_ != other.Expected_)
-						return static_cast<int> (Expected_) < static_cast<int> (other.Expected_);
-
-					return Reversible_ < other.Reversible_;
-				}
-			};
-
-			struct Rep
-			{
-				QString TagBase_;
-				State NextState_;
-			};
-
-			const QList<QPair<Pattern, Rep>> Repls_
-			{
-				{ { "_", State::None, true }, { "em", State::Em } },
-				{ { "@", State::None, true }, { "code", State::Code } },
-				{ { "\n#", State::None, false }, { "<ol><li>", State::OrderedList } },
-				{ { "\n#", State::OrderedList, false }, { "</li><li>", State::OrderedList } },
-				{ { "\n", State::OrderedList, false }, { "</li></ol>", State::None } },
-				{ { "\n*", State::None, false }, { "<ul><li>", State::UnorderedList } },
-				{ { "\n*", State::UnorderedList, false }, { "</li><li>", State::UnorderedList } },
-				{ { "\n", State::UnorderedList, false }, { "</li></ul>", State::None } }
-			};
-
-			QString Body_;
-		public:
-			MDParser (const QString& body);
-
-			QString operator() ();
-		private:
-			int HandleSubstr (const QPair<Pattern, Rep>& rule, int pos);
-		};
-
-		MDParser::MDParser (const QString& body)
-		: Body_ { body }
-		{
-			for (int i = 0; i < Body_.size (); ++i)
-				for (const auto& pair : Repls_)
-				{
-					if (Body_.mid (i, pair.first.Str_.size ()) != pair.first.Str_)
-						continue;
-
-					const auto res = HandleSubstr (pair, i);
-					if (res > 0)
-					{
-						i += res;
-						break;
-					}
-				}
-
-			Body_.replace ("\n", "<br/>");
-		}
-
-		QString MDParser::operator() ()
-		{
-			return Body_;
-		}
-
-		int MDParser::HandleSubstr (const QPair<Pattern, Rep>& rule, int pos)
-		{
-			const auto& pat = rule.first;
-			const auto& rep = rule.second;
-
-			QString tag = rep.TagBase_;
-			if (State_ == pat.Expected_)
-				State_ = rep.NextState_;
-			else if (pat.Reversible_ && State_ == rep.NextState_)
-			{
-				tag.prepend ('/');
-				State_ = pat.Expected_;
-			}
-			else
-				return 0;
-
-			if (pat.Reversible_)
-			{
-				tag.prepend ('<');
-				tag.append ('>');
-			}
-
-			Body_.replace (pos, pat.Str_.size (), tag);
-			return tag.size () - pat.Str_.size ();
-		}
-	}
-
 	DescParser::DescParser ()
 	{
 		QFile file { ":/azoth/mucommands/resources/data/descriptions.xml" };
@@ -184,7 +73,7 @@ namespace MuCommands
 			const auto& name = cmdElem.attribute ("name");
 
 			const auto& descr = cmdElem.firstChildElement ("desc").text ();
-			const auto& help = MDParser { cmdElem.firstChildElement ("help").text () } ();
+			const auto& help = cmdElem.firstChildElement ("help").text ();
 
 			const auto& descrTr = qApp->translate ("descriptions", descr.toUtf8 ().constData ());
 
