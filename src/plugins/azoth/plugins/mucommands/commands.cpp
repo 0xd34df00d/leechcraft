@@ -1296,6 +1296,9 @@ namespace MuCommands
 		else if (action == "message")
 			statusSetter = [&message] (const EntryStatus& status)
 					{ return EntryStatus { status.State_, message }; };
+		else if (const auto status = proxy->FindCustomStatus (action))
+			statusSetter = [status, &message] (const EntryStatus&)
+					{ return EntryStatus { status->State_, status->Text_}; };
 		else
 		{
 			const auto state = String2State (action);
