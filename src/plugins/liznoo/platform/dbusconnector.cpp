@@ -135,7 +135,7 @@ namespace Liznoo
 		emit gotEntity (e);
 	}
 
-	void DBusConnector::enumerateDevices()
+	void DBusConnector::enumerateDevices ()
 	{
 		QDBusInterface face ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",

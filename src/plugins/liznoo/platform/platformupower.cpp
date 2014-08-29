@@ -42,7 +42,7 @@ namespace Liznoo
 
 		Thread_ = new DBusThread;
 		connect (Thread_,
-				SIGNAL(started ()),
+				SIGNAL (started ()),
 				this,
 				SLOT (handleThreadStarted ()));
 		Thread_->start (QThread::LowestPriority);
