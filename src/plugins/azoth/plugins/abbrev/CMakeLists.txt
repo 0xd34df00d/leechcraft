@@ -13,7 +13,11 @@ set (ABBREV_SRCS
 	abbreviation.cpp
 	)
 
+CreateTrs ("azoth_abbrev" "en;ru_RU" ABBREV_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_abbrev" "en;ru_RU" "${ABBREV_SRCS}" "" "")
+
 add_library (leechcraft_azoth_abbrev SHARED
+	${ABBREV_COMPILED_TRANSLATIONS}
 	${ABBREV_SRCS}
 	)
 target_link_libraries (leechcraft_azoth_abbrev

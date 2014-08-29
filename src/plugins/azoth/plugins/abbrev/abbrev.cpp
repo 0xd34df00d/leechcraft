@@ -29,6 +29,7 @@
 
 #include "abbrev.h"
 #include <QIcon>
+#include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
 #include "abbrevsmanager.h"
@@ -45,6 +46,8 @@ namespace Abbrev
 		qRegisterMetaType<QList<Abbreviation>> ("QList<LeechCraft::Azoth::Abbrev::Abbreviation>");
 		qRegisterMetaTypeStreamOperators<Abbreviation> ();
 		qRegisterMetaTypeStreamOperators<QList<Abbreviation>> ();
+
+		Util::InstallTranslator ("azoth_abbrev");
 
 		Manager_ = std::make_shared<AbbrevsManager> ();
 
