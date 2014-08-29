@@ -78,6 +78,7 @@ namespace MuCommands
 		StaticCommand Kick_;
 		StaticCommand Ban_;
 		StaticCommand Presence_;
+		StaticCommand ChatPresence_;
 
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_ = nullptr;

@@ -56,6 +56,7 @@
 #include <interfaces/azoth/isupportlastactivity.h>
 #include <interfaces/azoth/ihaveservicediscovery.h>
 #include <interfaces/azoth/iprovidecommands.h>
+#include <interfaces/azoth/ihavedirectedstatus.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -1310,6 +1311,26 @@ namespace MuCommands
 		const auto& statusSetter = GetStatusMangler (proxy, text);
 		for (const auto acc : accs)
 			acc->ChangeState (statusSetter (acc->GetState ()));
+
+		return true;
+	}
+
+	bool SetDirectedPresence (IProxyObject *proxy, ICLEntry *entry, const QString& text)
+	{
+		const auto ihds = qobject_cast<IHaveDirectedStatus*> (entry->GetQObject ());
+		if (!ihds)
+			throw CommandException { QObject::tr ("This entry doesn't support directed presence.") };
+
+		const auto& variant = text.section ('\n', 0, 0).section (' ', 1).trimmed ();
+
+		const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto& newStatus = GetStatusMangler (proxy, text) (acc->GetState ());
+
+		if (!variant.isEmpty ())
+			ihds->SendDirectedStatus (newStatus, variant);
+		else
+			for (const auto& var : entry->Variants ())
+				ihds->SendDirectedStatus (newStatus, var);
 
 		return true;
 	}
