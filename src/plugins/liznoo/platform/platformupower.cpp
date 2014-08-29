@@ -42,7 +42,7 @@ namespace Liznoo
 
 		Thread_ = new DBusThread;
 		connect (Thread_,
-				SIGNAL(started ()),
+				SIGNAL (started ()),
 				this,
 				SLOT (handleThreadStarted ()));
 		Thread_->start (QThread::LowestPriority);
@@ -74,6 +74,10 @@ namespace Liznoo
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+
+		QMetaObject::invokeMethod (Thread_->GetConnector (),
+				"enumerateDevices",
+				Qt::QueuedConnection);
 	}
 }
 }
