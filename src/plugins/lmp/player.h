@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <random>
 #include <QObject>
 
 #ifdef ENABLE_MPRIS
@@ -71,6 +72,8 @@ namespace LMP
 		SourceObject *Source_;
 		Output *Output_;
 		Path *Path_;
+
+		mutable std::mt19937 PRG_;
 
 		QList<AudioSource> CurrentQueue_;
 		QHash<AudioSource, QStandardItem*> Items_;

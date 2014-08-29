@@ -29,7 +29,6 @@
 
 #include "player.h"
 #include <algorithm>
-#include <random>
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
@@ -123,6 +122,7 @@ namespace LMP
 	, Source_ (new SourceObject (Category::Music, this))
 	, Output_ (new Output (this))
 	, Path_ (new Path (Source_, Output_))
+	, PRG_ { QDateTime::currentDateTime ().toTime_t () }
 	, RadioItem_ (nullptr)
 	, RulesManager_ (new PlayerRulesManager (PlaylistModel_, this))
 	, FirstPlaylistRestore_ (true)
@@ -860,16 +860,14 @@ namespace LMP
 	AudioSource Player::GetRandomBy (AudioSources_t::const_iterator pos,
 			std::function<T (AudioSources_t::const_iterator, AudioSources_t)> feature) const
 	{
-		auto randPos = [&feature] (const QList<AudioSource>& sources) -> int
+		auto randPos = [&feature, this] (const QList<AudioSource>& sources) -> int
 		{
 			const auto begin = sources.begin ();
 			QHash<T, QList<int>> fVals;
 			for (auto i = begin, end = sources.end (); i != end; ++i)
 				fVals [feature (i, sources)] << std::distance (begin, i);
 
-			static std::random_device generator;
-			std::uniform_int_distribution<int> dist (0, sources.size () - 1);
-			auto fIdx = std::uniform_int_distribution<int> (0, fVals.size () - 1) (generator);
+			auto fIdx = std::uniform_int_distribution<int> (0, fVals.size () - 1) (PRG_);
 
 			auto fPos = fVals.begin ();
 			std::advance (fPos, fIdx);
@@ -877,7 +875,7 @@ namespace LMP
 			if (positions.size () < 2)
 				return positions [0];
 
-			auto posIdx = std::uniform_int_distribution<int> (0, positions.size () - 1) (generator);
+			auto posIdx = std::uniform_int_distribution<int> (0, positions.size () - 1) (PRG_);
 			return positions [posIdx];
 		};
 		auto rand = [&randPos] (const QList<AudioSource>& sources)
