@@ -29,79 +29,28 @@
 
 #pragma once
 
-#include <functional>
-#include <stdexcept>
-#include <QStringList>
-#include <QtPlugin>
+#include <QString>
+#include <QMetaType>
+
+class QDataStream;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class ICLEntry;
-
-	typedef std::function<bool (ICLEntry*, QString&)> Command_f;
-
-	class CommandException : public std::runtime_error
+namespace Abbrev
+{
+	struct Abbreviation
 	{
-		const QString Error_;
-		const bool TryOtherCommands_;
-	public:
-		CommandException (const QString& error, bool canTryOthers = false)
-		: std::runtime_error { error.toUtf8 ().constData () }
-		, Error_ { error }
-		, TryOtherCommands_ { canTryOthers }
-		{
-		}
-
-		const QString& GetError () const
-		{
-			return Error_;
-		}
-
-		bool CanTryOtherCommands () const
-		{
-			return TryOtherCommands_;
-		}
+		QString Pattern_;
+		QString Expansion_;
 	};
 
-	struct StaticCommand
-	{
-		QStringList Names_;
-		Command_f Command_;
-
-		QString Description_;
-		QString Help_;
-
-		StaticCommand () = default;
-		StaticCommand (const StaticCommand&) = default;
-
-		StaticCommand (const QStringList& names, const Command_f& command)
-		: Names_ { names }
-		, Command_ { command }
-		{
-		}
-
-		StaticCommand (const QStringList& names, const Command_f& command,
-				const QString& descr, const QString& help)
-		: Names_ { names }
-		, Command_ { command }
-		, Description_ { descr }
-		, Help_ { help }
-		{
-		}
-	};
-
-	typedef QList<StaticCommand> StaticCommands_t;
-
-	class IProvideCommands
-	{
-	public:
-		virtual ~IProvideCommands () {}
-
-		virtual StaticCommands_t GetStaticCommands (ICLEntry*) = 0;
-	};
+	QDataStream& operator<< (QDataStream&, const Abbreviation&);
+	QDataStream& operator>> (QDataStream&, Abbreviation&);
+}
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProvideCommands, "org.LeechCraft.Azoth.IProvideCommands/1.0");
+Q_DECLARE_METATYPE (LeechCraft::Azoth::Abbrev::Abbreviation)
+Q_DECLARE_METATYPE (QList<LeechCraft::Azoth::Abbrev::Abbreviation>)

@@ -29,79 +29,32 @@
 
 #pragma once
 
-#include <functional>
-#include <stdexcept>
-#include <QStringList>
-#include <QtPlugin>
+#include <QObject>
+#include "abbreviation.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class ICLEntry;
-
-	typedef std::function<bool (ICLEntry*, QString&)> Command_f;
-
-	class CommandException : public std::runtime_error
+namespace Abbrev
+{
+	class AbbrevsManager : public QObject
 	{
-		const QString Error_;
-		const bool TryOtherCommands_;
+		Q_OBJECT
+
+		QList<Abbreviation> Abbrevs_;
 	public:
-		CommandException (const QString& error, bool canTryOthers = false)
-		: std::runtime_error { error.toUtf8 ().constData () }
-		, Error_ { error }
-		, TryOtherCommands_ { canTryOthers }
-		{
-		}
+		AbbrevsManager (QObject* = nullptr);
 
-		const QString& GetError () const
-		{
-			return Error_;
-		}
+		void Add (const Abbreviation&);
+		const QList<Abbreviation>& List () const;
+		void Remove (int);
 
-		bool CanTryOtherCommands () const
-		{
-			return TryOtherCommands_;
-		}
-	};
-
-	struct StaticCommand
-	{
-		QStringList Names_;
-		Command_f Command_;
-
-		QString Description_;
-		QString Help_;
-
-		StaticCommand () = default;
-		StaticCommand (const StaticCommand&) = default;
-
-		StaticCommand (const QStringList& names, const Command_f& command)
-		: Names_ { names }
-		, Command_ { command }
-		{
-		}
-
-		StaticCommand (const QStringList& names, const Command_f& command,
-				const QString& descr, const QString& help)
-		: Names_ { names }
-		, Command_ { command }
-		, Description_ { descr }
-		, Help_ { help }
-		{
-		}
-	};
-
-	typedef QList<StaticCommand> StaticCommands_t;
-
-	class IProvideCommands
-	{
-	public:
-		virtual ~IProvideCommands () {}
-
-		virtual StaticCommands_t GetStaticCommands (ICLEntry*) = 0;
+		QString Process (QString) const;
+	private:
+		void Load ();
+		void Save () const;
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProvideCommands, "org.LeechCraft.Azoth.IProvideCommands/1.0");
+}

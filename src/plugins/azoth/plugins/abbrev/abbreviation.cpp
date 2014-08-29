@@ -27,81 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <functional>
-#include <stdexcept>
-#include <QStringList>
-#include <QtPlugin>
+#include "abbreviation.h"
+#include <QDataStream>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class ICLEntry;
-
-	typedef std::function<bool (ICLEntry*, QString&)> Command_f;
-
-	class CommandException : public std::runtime_error
+namespace Abbrev
+{
+	QDataStream& operator<< (QDataStream& str, const Abbreviation& abbr)
 	{
-		const QString Error_;
-		const bool TryOtherCommands_;
-	public:
-		CommandException (const QString& error, bool canTryOthers = false)
-		: std::runtime_error { error.toUtf8 ().constData () }
-		, Error_ { error }
-		, TryOtherCommands_ { canTryOthers }
-		{
-		}
+		str << static_cast<quint8> (1)
+				<< abbr.Pattern_
+				<< abbr.Expansion_;
+		return str;
+	}
 
-		const QString& GetError () const
-		{
-			return Error_;
-		}
-
-		bool CanTryOtherCommands () const
-		{
-			return TryOtherCommands_;
-		}
-	};
-
-	struct StaticCommand
+	QDataStream& operator>> (QDataStream& str, Abbreviation& abbr)
 	{
-		QStringList Names_;
-		Command_f Command_;
-
-		QString Description_;
-		QString Help_;
-
-		StaticCommand () = default;
-		StaticCommand (const StaticCommand&) = default;
-
-		StaticCommand (const QStringList& names, const Command_f& command)
-		: Names_ { names }
-		, Command_ { command }
+		quint8 version = 0;
+		str >> version;
+		if (version != 1)
 		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return str;
 		}
 
-		StaticCommand (const QStringList& names, const Command_f& command,
-				const QString& descr, const QString& help)
-		: Names_ { names }
-		, Command_ { command }
-		, Description_ { descr }
-		, Help_ { help }
-		{
-		}
-	};
-
-	typedef QList<StaticCommand> StaticCommands_t;
-
-	class IProvideCommands
-	{
-	public:
-		virtual ~IProvideCommands () {}
-
-		virtual StaticCommands_t GetStaticCommands (ICLEntry*) = 0;
-	};
+		str >> abbr.Pattern_
+				>> abbr.Expansion_;
+		return str;
+	}
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProvideCommands, "org.LeechCraft.Azoth.IProvideCommands/1.0");
+}

@@ -233,6 +233,7 @@ endif ()
 
 set (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+option (ENABLE_AZOTH_ABBREV "Build Abbrev for supporting abbreviations" ON)
 option (ENABLE_AZOTH_ACETAMIDE "Build Acetamide, IRC support for Azoth" ON)
 option (ENABLE_AZOTH_ADIUMSTYLES "Build support for Adium styles" ON)
 option (ENABLE_AZOTH_ASTRALITY "Build support for protocols provided by Telepathy" OFF)
@@ -265,6 +266,9 @@ option (ENABLE_AZOTH_XTAZY "Build Xtazy for publishing current user tune" ON)
 option (ENABLE_AZOTH_ZHEET "Build Zheet, the libmsn-based Windows Live support for Azoth" OFF)
 option (ENABLE_AZOTH_WOODPECKER "Build Woodpecker, twitter client" ON)
 
+if (ENABLE_AZOTH_ABBREV)
+	add_subdirectory (plugins/abbrev)
+endif ()
 if (ENABLE_AZOTH_ACETAMIDE)
 	add_subdirectory (plugins/acetamide)
 endif ()

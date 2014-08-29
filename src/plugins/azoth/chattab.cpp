@@ -560,8 +560,33 @@ namespace Azoth
 							[&text] (const QString& name) { return TextMatchesCmd (text, name); }))
 						continue;
 
-					if (cmd.Command_ (entry, text))
-						return true;
+					try
+					{
+						if (cmd.Command_ (entry, text))
+							return true;
+					}
+					catch (const CommandException& ex)
+					{
+						const auto entryObj = entry->GetQObject ();
+
+						auto body = ChatTab::tr ("Cannot execute %1.")
+								.arg ("<em>" + text + "</em>");
+						body += " " + ex.GetError ();
+
+						const auto msg = new CoreMessage
+						{
+							body,
+							QDateTime::currentDateTime (),
+							IMessage::Type::ServiceMessage,
+							IMessage::Direction::In,
+							entryObj,
+							entryObj
+						};
+						msg->Store ();
+
+						if (!ex.CanTryOtherCommands ())
+							return true;
+					}
 				}
 
 			return false;
@@ -592,14 +617,15 @@ namespace Azoth
 					MsgHistory_.prepend (text);
 				});
 
-
 		QString variant = Ui_.VariantBox_->count () > 1 ?
 				Ui_.VariantBox_->currentText () :
 				QString ();
 
-		ICLEntry *e = GetEntry<ICLEntry> ();
-		IMessage::Type type =
-				e->GetEntryType () == ICLEntry::EntryType::MUC ?
+		const auto e = GetEntry<ICLEntry> ();
+		if (ProcessOutgoingMsg (e, text))
+			return;
+
+		auto type = e->GetEntryType () == ICLEntry::EntryType::MUC ?
 						IMessage::Type::MUCMessage :
 						IMessage::Type::ChatMessage;
 
@@ -619,9 +645,6 @@ namespace Azoth
 		type = static_cast<IMessage::Type> (intType);
 		proxy->FillValue ("variant", variant);
 		proxy->FillValue ("text", text);
-
-		if (ProcessOutgoingMsg (e, text))
-			return;
 
 		QObject *msgObj = e->CreateMessage (type, variant, text);
 

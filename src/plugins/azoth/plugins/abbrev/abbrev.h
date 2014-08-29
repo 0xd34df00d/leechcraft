@@ -29,79 +29,64 @@
 
 #pragma once
 
-#include <functional>
-#include <stdexcept>
-#include <QStringList>
-#include <QtPlugin>
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/iprovidecommands.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class ICLEntry;
+class IProxyObject;
 
-	typedef std::function<bool (ICLEntry*, QString&)> Command_f;
+namespace Abbrev
+{
+	class AbbrevsManager;
 
-	class CommandException : public std::runtime_error
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IProvideCommands
 	{
-		const QString Error_;
-		const bool TryOtherCommands_;
+		Q_OBJECT
+		Q_INTERFACES (IInfo
+				IPlugin2
+				LeechCraft::Azoth::IProvideCommands)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Abbrev")
+
+		StaticCommands_t Commands_;
+
+		IProxyObject *AzothProxy_ = nullptr;
+
+		std::shared_ptr<AbbrevsManager> Manager_;
 	public:
-		CommandException (const QString& error, bool canTryOthers = false)
-		: std::runtime_error { error.toUtf8 ().constData () }
-		, Error_ { error }
-		, TryOtherCommands_ { canTryOthers }
-		{
-		}
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		const QString& GetError () const
-		{
-			return Error_;
-		}
+		QSet<QByteArray> GetPluginClasses () const;
 
-		bool CanTryOtherCommands () const
-		{
-			return TryOtherCommands_;
-		}
-	};
+		StaticCommands_t GetStaticCommands (ICLEntry*);
+	private:
+		void ListAbbrevs (ICLEntry*);
+		void RemoveAbbrev (const QString&);
+	public slots:
+		void initPlugin (QObject*);
 
-	struct StaticCommand
-	{
-		QStringList Names_;
-		Command_f Command_;
-
-		QString Description_;
-		QString Help_;
-
-		StaticCommand () = default;
-		StaticCommand (const StaticCommand&) = default;
-
-		StaticCommand (const QStringList& names, const Command_f& command)
-		: Names_ { names }
-		, Command_ { command }
-		{
-		}
-
-		StaticCommand (const QStringList& names, const Command_f& command,
-				const QString& descr, const QString& help)
-		: Names_ { names }
-		, Command_ { command }
-		, Description_ { descr }
-		, Help_ { help }
-		{
-		}
-	};
-
-	typedef QList<StaticCommand> StaticCommands_t;
-
-	class IProvideCommands
-	{
-	public:
-		virtual ~IProvideCommands () {}
-
-		virtual StaticCommands_t GetStaticCommands (ICLEntry*) = 0;
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr,
+				QObject*,
+				QObject*,
+				int,
+				QString);
 	};
 }
 }
+}
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProvideCommands, "org.LeechCraft.Azoth.IProvideCommands/1.0");
