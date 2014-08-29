@@ -536,7 +536,7 @@ namespace Azoth
 			if (!text.startsWith (cmd))
 				return false;
 
-			return text [cmd.size ()] == ' ';
+			return text [cmd.size ()].isSpace ();
 		}
 
 		/** Processes the outgoing messages, replacing /nick with calls
