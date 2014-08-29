@@ -27,8 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IPROXYOBJECT_H
-#define PLUGINS_AZOTH_INTERFACES_IPROXYOBJECT_H
+#pragma once
+
+#include <boost/optional.hpp>
 #include <QString>
 #include "azothcommon.h"
 
@@ -301,11 +302,17 @@ namespace Azoth
 		 * @return The formatted \em datetime as string.
 		 */
 		virtual QString PrettyPrintDateTime (const QDateTime& datetime) = 0;
+
+		/** @brief Tries to find a cusotm status under the given \em name.
+		 *
+		 * @param[in] name The name of the custom status.
+		 * @return A custom status if it's found, or an empty
+		 * boost::optional object otherwise.
+		 */
+		virtual boost::optional<CustomStatus> FindCustomStatus (const QString& name) = 0;
 	};
 }
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProxyObject,
 		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProxyObject/1.0");
-
-#endif
