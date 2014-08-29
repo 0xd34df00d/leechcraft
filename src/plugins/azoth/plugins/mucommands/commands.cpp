@@ -1276,6 +1276,27 @@ namespace MuCommands
 			throw CommandException { QObject::tr ("Unknown status %1.")
 						.arg ("<em>" + str + "</em>") };
 		}
+
+		std::function<EntryStatus (EntryStatus)> GetStatusMangler (IProxyObject *proxy, const QString& text)
+		{
+			const auto& action = text.section ('\n', 1, 1).trimmed ();
+			const auto& message = text.section ('\n', 2).trimmed ();
+			if (action == "clear")
+				return [] (const EntryStatus& status)
+						{ return EntryStatus { status.State_, {} }; };
+			else if (action == "message")
+				return [message] (const EntryStatus& status)
+						{ return EntryStatus { status.State_, message }; };
+			else if (const auto status = proxy->FindCustomStatus (action))
+				return [status, message] (const EntryStatus&)
+						{ return EntryStatus { status->State_, status->Text_}; };
+			else
+			{
+				const auto state = String2State (action);
+				return [state, message] (const EntryStatus&)
+						{ return EntryStatus { state, message }; };
+			}
+		}
 	}
 
 	bool SetPresence (IProxyObject *proxy, ICLEntry *entry, const QString& text)
@@ -1286,26 +1307,7 @@ namespace MuCommands
 			throw CommandException { QObject::tr ("Unable to find account %1.")
 						.arg ("<em>" + accName + "</em>") };
 
-		std::function<EntryStatus (EntryStatus)> statusSetter;
-
-		const auto& action = text.section ('\n', 1, 1).trimmed ();
-		const auto& message = text.section ('\n', 2).trimmed ();
-		if (action == "clear")
-			statusSetter = [] (const EntryStatus& status)
-					{ return EntryStatus { status.State_, {} }; };
-		else if (action == "message")
-			statusSetter = [&message] (const EntryStatus& status)
-					{ return EntryStatus { status.State_, message }; };
-		else if (const auto status = proxy->FindCustomStatus (action))
-			statusSetter = [status, &message] (const EntryStatus&)
-					{ return EntryStatus { status->State_, status->Text_}; };
-		else
-		{
-			const auto state = String2State (action);
-			statusSetter = [state, &message] (const EntryStatus&)
-					{ return EntryStatus { state, message }; };
-		}
-
+		const auto& statusSetter = GetStatusMangler (proxy, text);
 		for (const auto acc : accs)
 			acc->ChangeState (statusSetter (acc->GetState ()));
 
