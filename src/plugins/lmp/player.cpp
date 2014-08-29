@@ -889,14 +889,10 @@ namespace LMP
 		if (pos != CurrentQueue_.end () && feature (pos, CurrentQueue_) == current)
 			return *pos;
 
-		auto modifiedQueue = CurrentQueue_;
-		for (auto i = modifiedQueue.begin (); i != modifiedQueue.end (); )
-		{
-			if (feature (i, modifiedQueue) == current)
-				i = modifiedQueue.erase (i);
-			else
-				++i;
-		}
+		decltype (CurrentQueue_) modifiedQueue;
+		for (auto i = CurrentQueue_.begin (); i != CurrentQueue_.end (); ++i)
+			if (feature (i, CurrentQueue_) != current)
+				modifiedQueue << *i;
 		if (modifiedQueue.isEmpty ())
 			return rand (CurrentQueue_);
 
