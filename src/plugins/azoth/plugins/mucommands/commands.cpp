@@ -55,6 +55,7 @@
 #include <interfaces/azoth/ihavequeriableversion.h>
 #include <interfaces/azoth/isupportlastactivity.h>
 #include <interfaces/azoth/ihaveservicediscovery.h>
+#include <interfaces/azoth/iprovidecommands.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -1234,6 +1235,76 @@ namespace MuCommands
 					};
 				},
 				azothProxy, entry, text);
+
+		return true;
+	}
+
+	namespace
+	{
+		QList<IAccount*> FindAccounts (const QString& name, IProxyObject *proxy, ICLEntry *entry)
+		{
+			if (name == "$")
+				return { qobject_cast<IAccount*> (entry->GetParentAccount ()) };
+
+			QList<IAccount*> allAccs;
+			for (const auto accObj : proxy->GetAllAccounts ())
+				allAccs << qobject_cast<IAccount*> (accObj);
+
+			if (name == "*")
+				return allAccs;
+
+			for (const auto acc : allAccs)
+				if (acc->GetAccountName () == name)
+					return { acc };
+
+			return {};
+		}
+
+		State String2State (const QString& str)
+		{
+			if (str.startsWith ("avail"))
+				return SOnline;
+			else if (str == "away")
+				return SAway;
+			else if (str == "xa")
+				return SXA;
+			else if (str == "dnd")
+				return SDND;
+			else if (str == "chat")
+				return SChat;
+
+			throw CommandException { QObject::tr ("Unknown status %1.")
+						.arg ("<em>" + str + "</em>") };
+		}
+	}
+
+	bool SetPresence (IProxyObject *proxy, ICLEntry *entry, const QString& text)
+	{
+		const auto& accName = text.section ('\n', 0, 0).section (' ', 1).trimmed ();
+		const auto& accs = FindAccounts (accName, proxy, entry);
+		if (accs.isEmpty ())
+			throw CommandException { QObject::tr ("Unable to find account %1.")
+						.arg ("<em>" + accName + "</em>") };
+
+		std::function<EntryStatus (EntryStatus)> statusSetter;
+
+		const auto& action = text.section ('\n', 1, 1).trimmed ();
+		const auto& message = text.section ('\n', 2).trimmed ();
+		if (action == "clear")
+			statusSetter = [] (const EntryStatus& status)
+					{ return EntryStatus { status.State_, {} }; };
+		else if (action == "message")
+			statusSetter = [&message] (const EntryStatus& status)
+					{ return EntryStatus { status.State_, message }; };
+		else
+		{
+			const auto state = String2State (action);
+			statusSetter = [state, &message] (const EntryStatus&)
+					{ return EntryStatus { state, message }; };
+		}
+
+		for (const auto acc : accs)
+			acc->ChangeState (statusSetter (acc->GetState ()));
 
 		return true;
 	}

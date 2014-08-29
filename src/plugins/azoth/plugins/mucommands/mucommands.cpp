@@ -200,6 +200,13 @@ namespace MuCommands
 			[this] (ICLEntry *e, const QString& t) { return Ban (AzothProxy_, e, t); }
 		};
 		descParser (Ban_);
+
+		Presence_ = StaticCommand
+		{
+			{ "/presence" },
+			[this] (ICLEntry *e, const QString& t) { return SetPresence (AzothProxy_, e, t); }
+		};
+		descParser (Ban_);
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -242,19 +249,19 @@ namespace MuCommands
 			{
 				Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_,
 				Invite_, ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_,
-				ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_
+				ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_, Presence_
 			};
 		case ICLEntry::EntryType::PrivateChat:
 			return
 			{
 				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_,
-				Time_, Disco_, Ping_, Last_, Invite_, ListPerms_, SetPerm_, Whois_
+				Time_, Disco_, Ping_, Last_, Invite_, ListPerms_, SetPerm_, Whois_, Presence_
 			};
 		default:
 			return
 			{
 				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_,
-				Time_, Disco_, Ping_, Last_, Invite_
+				Time_, Disco_, Ping_, Last_, Invite_, Presence_
 			};
 		}
 	}

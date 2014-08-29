@@ -82,6 +82,8 @@ namespace MuCommands
 	bool Last (IProxyObject*, ICLEntry*, const QString&);
 
 	bool Ping (IProxyObject*, ICLEntry*, const QString&);
+
+	bool SetPresence (IProxyObject*, ICLEntry*, const QString&);
 }
 }
 }

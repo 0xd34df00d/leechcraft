@@ -77,6 +77,7 @@ namespace MuCommands
 		StaticCommand SetPerm_;
 		StaticCommand Kick_;
 		StaticCommand Ban_;
+		StaticCommand Presence_;
 
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_ = nullptr;
