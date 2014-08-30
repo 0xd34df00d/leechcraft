@@ -68,6 +68,7 @@ set (SRCS
 	urleditbuttonsmanager.cpp
 	webpagesslwatcher.cpp
 	sslstatedialog.cpp
+	featurepermnotification.cpp
 	)
 set (FORMS
 	browserwidget.ui
@@ -83,6 +84,7 @@ set (FORMS
 	historywidget.ui
 	urlframe.ui
 	sslstatedialog.ui
+	featurepermnotification.ui
 	)
 set (RESOURCES poshukuresources.qrc)
 
