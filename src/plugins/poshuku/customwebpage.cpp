@@ -41,6 +41,7 @@
 #include <qwebhistory.h>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -52,6 +53,7 @@
 #include "externalproxy.h"
 #include "webpluginfactory.h"
 #include "browserwidget.h"
+#include "featurepermnotification.h"
 
 Q_DECLARE_METATYPE (QVariantList*);
 Q_DECLARE_METATYPE (QNetworkReply*);
@@ -269,9 +271,55 @@ namespace Poshuku
 		}
 	}
 
-	void CustomWebPage::handleFeaturePermissionReq (QWebFrame *frame, QWebPage::Feature feature)
+	namespace
 	{
-		qDebug () << Q_FUNC_INFO << frame << feature;
+		QString GetFeatureText (QWebPage::Feature feature)
+		{
+			switch (feature)
+			{
+			case QWebPage::Notifications:
+				return CustomWebPage::tr ("%1 requests access to notifications.");
+			case QWebPage::Geolocation:
+				return CustomWebPage::tr ("%1 requests access to geolocation services.");
+			}
+
+			return {};
+		}
+	}
+
+	void CustomWebPage::handleFeaturePermissionReq (QWebFrame *frame, Feature feature)
+	{
+		const auto& text = GetFeatureText (feature)
+				.arg (frame->url ().host ());
+		qDebug () << Q_FUNC_INFO << view () << text;
+		if (text.isEmpty ())
+			return;
+
+		const auto notification = new FeaturePermNotification { text, view () };
+		notification->show ();
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, notification, frame, feature] () -> void
+			{
+				setFeaturePermission (frame, feature, PermissionGrantedByUser);
+				notification->deleteLater ();
+			},
+			notification,
+			SIGNAL (granted ()),
+			notification
+		};
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, notification, frame, feature] () -> void
+			{
+				setFeaturePermission (frame, feature, PermissionDeniedByUser);
+				notification->deleteLater ();
+			},
+			notification,
+			SIGNAL (denied ()),
+			notification
+		};
 	}
 
 	void CustomWebPage::handleContentsChanged ()
