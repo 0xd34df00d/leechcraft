@@ -462,8 +462,8 @@ namespace Poshuku
 			<< "LocalStorageDB"
 			<< "OfflineWebApplicationCache"
 			<< "EnableXSSAuditing"
-			<< "WebGLEnabled"
-			<< "HyperlinkAuditingEnabled";
+			<< "EnableWebGL"
+			<< "EnableHyperlinkAuditing";
 		XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 				this, "viewerSettingsChanged");
 
