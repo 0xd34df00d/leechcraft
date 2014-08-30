@@ -1494,6 +1494,11 @@ namespace LMP
 					.arg (QFileInfo (Source_->GetCurrentSource ().ToUrl ().path ()).fileName ());
 			nextTrack ();
 			break;
+		case SourceError::InvalidSource:
+			text = tr ("Audio source %1 is invalid, playing next track...")
+					.arg (QFileInfo (Source_->GetCurrentSource ().ToUrl ().path ()).fileName ());
+			nextTrack ();
+			break;
 		case SourceError::Other:
 			break;
 		}
