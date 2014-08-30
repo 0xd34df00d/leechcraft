@@ -102,7 +102,7 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 	items.push_back (new QStandardItem (tr ("In progress")));
 	items.push_back (new QStandardItem (opName));
 	items.push_back (new QStandardItem (req.url ().toString ()));
-	items.first ()->setData (QVariant::fromValue<QNetworkReply*> (rep));
+	items.first ()->setData (QVariant::fromValue<QObject*> (rep));
 	appendRow (items);
 
 	connect (rep,
@@ -165,7 +165,7 @@ void RequestModel::handleFinished ()
 		if (ci->data ().value<QNetworkReply*> () == reply)
 		{
 			if (Clear_)
-				qDeleteAll (takeRow (i));
+				removeRow (i);
 			else
 			{
 				item (i, 1)->setText (QDateTime::currentDateTime ().toString ());
@@ -190,8 +190,8 @@ void RequestModel::setClear (bool clear)
 	if (Clear_)
 	{
 		for (int i = rowCount () - 1; i >= 0; --i)
-			if (!item (i)->data ().value<QNetworkReply*> ())
-				qDeleteAll (takeRow (i));
+			if (!item (i)->data ().value<QObject*> ())
+				removeRow (i);
 		handleCurrentChanged (QModelIndex ());
 	}
 }
@@ -228,10 +228,10 @@ void RequestModel::handleGonnaDestroy (QObject *obj)
 
 	for (int i = 0; i < rowCount (); ++i)
 	{
-		QStandardItem *ci = item (i);
-		if (ci->data ().value<QNetworkReply*> () == obj)
+		const auto ci = item (i);
+		if (ci->data ().value<QObject*> () == obj)
 		{
-			qDeleteAll (takeRow (i));
+			removeRow (i);
 			break;
 		}
 	}
