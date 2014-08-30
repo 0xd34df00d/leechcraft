@@ -561,6 +561,7 @@ namespace LMP
 			return;
 
 		qWarning () << Q_FUNC_INFO
+				<< GetCurrentSource ().ToUrl ()
 				<< domain
 				<< code
 				<< msgStr
