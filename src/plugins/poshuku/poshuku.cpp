@@ -463,7 +463,8 @@ namespace Poshuku
 			<< "OfflineWebApplicationCache"
 			<< "EnableXSSAuditing"
 			<< "EnableWebGL"
-			<< "EnableHyperlinkAuditing";
+			<< "EnableHyperlinkAuditing"
+			<< "EnableSmoothScrolling";
 		XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 				this, "viewerSettingsChanged");
 
