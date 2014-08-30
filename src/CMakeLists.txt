@@ -288,6 +288,7 @@ option (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" 
 option (ENABLE_TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
 option (ENABLE_VTYULC "Build VtyuLC, the videoplayer plugin" ${WITH_PLUGINS})
 option (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
+option (ENABLE_WKPLUGINS "Build WKPlugins for WebKit spellcheck and notifications" OFF)
 option (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
 option (ENABLE_XTAZY "Build Xtazy, plugin for keeping track of a currently playing song" ${WITH_PLUGINS})
 
@@ -704,6 +705,10 @@ endif ()
 
 if (ENABLE_VTYULC)
 	add_subdirectory (plugins/vtyulc)
+endif ()
+
+if (ENABLE_WKPLUGINS)
+	add_subdirectory (plugins/wkplugins)
 endif ()
 
 if (UNIX AND NOT APPLE)
