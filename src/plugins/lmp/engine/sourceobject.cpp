@@ -585,6 +585,15 @@ namespace LMP
 						SourceError::SourceNotFound
 					}
 				}
+			},
+			{
+				GST_STREAM_ERROR,
+				{
+					{
+						GST_STREAM_ERROR_TYPE_NOT_FOUND,
+						SourceError::InvalidSource
+					}
+				}
 			}
 		};
 
