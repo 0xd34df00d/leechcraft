@@ -543,6 +543,10 @@ namespace Poshuku
 				XmlSettingsManager::Instance ()->property ("EnableHyperlinkAuditing").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::WebGLEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableWebGL").toBool ());
+#if QT_VERSION >= 0x050000
+		QWebSettings::globalSettings ()->setAttribute (QWebSettings::ScrollAnimatorEnabled,
+				XmlSettingsManager::Instance ()->property ("EnableSmoothScrolling").toBool ());
+#endif
 		QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 					Instance ()->property ("UserStyleSheet").toString ()));
 	}
