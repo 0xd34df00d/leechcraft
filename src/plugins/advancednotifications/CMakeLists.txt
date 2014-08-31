@@ -61,6 +61,7 @@ target_link_libraries (leechcraft_advancednotifications
 install (TARGETS leechcraft_advancednotifications DESTINATION ${LC_PLUGINS_DEST})
 install (FILES advancednotificationssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/qml/advancednotifications DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/advancednotifications DESTINATION ${LC_QML5_DEST})
 install (DIRECTORY share/sounds DESTINATION ${LC_SHARE_DEST})
 
 option (ENABLE_ADVANCEDNOTIFICATIONS_DOLLE "Enable Dolle, OS X notifications backend" OFF)
@@ -69,4 +70,4 @@ if (ENABLE_ADVANCEDNOTIFICATIONS_DOLLE)
 	add_subdirectory (plugins/dolle)
 endif ()
 
-FindQtLibs (leechcraft_advancednotifications Quick)
+FindQtLibs (leechcraft_advancednotifications QuickWidgets)

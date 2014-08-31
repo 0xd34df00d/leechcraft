@@ -53,11 +53,9 @@ namespace AdvancedNotifications
 {
 	VisualNotificationsView::VisualNotificationsView ()
 	{
-#if QT_VERSION < 0x050000
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
-#endif
 
 		connect (this,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
@@ -116,7 +114,7 @@ namespace AdvancedNotifications
 #if QT_VERSION < 0x050000
 	void VisualNotificationsView::handleStatusChanged (QDeclarativeView::Status status)
 #else
-	void VisualNotificationsView::handleStatusChanged (QQuickView::Status status)
+	void VisualNotificationsView::handleStatusChanged (QQuickWidget::Status status)
 #endif
 	{
 		qDebug () << Q_FUNC_INFO

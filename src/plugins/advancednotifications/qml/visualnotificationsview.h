@@ -37,7 +37,7 @@
 #if QT_VERSION < 0x050000
 #include <QDeclarativeView>
 #else
-#include <QQuickView>
+#include <QQuickWidget>
 #endif
 #include "../eventdata.h"
 
@@ -48,7 +48,7 @@ namespace AdvancedNotifications
 #if QT_VERSION < 0x050000
 	class VisualNotificationsView : public QDeclarativeView
 #else
-	class VisualNotificationsView : public QQuickView
+	class VisualNotificationsView : public QQuickWidget
 #endif
 	{
 		Q_OBJECT
@@ -63,7 +63,7 @@ namespace AdvancedNotifications
 #if QT_VERSION < 0x050000
 		void handleStatusChanged (QDeclarativeView::Status);
 #else
-		void handleStatusChanged (QQuickView::Status);
+		void handleStatusChanged (QQuickWidget::Status);
 #endif
 	signals:
 		void actionTriggered (const QString&, int);
