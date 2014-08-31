@@ -53,12 +53,17 @@ namespace Abbrev
 
 		Commands_.append ({
 				{ "/abbrev" },
-				[this] (ICLEntry*, const QString& text) -> bool
+				[this] (ICLEntry*, const QString& text) -> StringCommandResult
 				{
 					const auto& pattern = text.section (' ', 1, 1).trimmed ();
 					const auto& expansion = text.section (' ', 2).trimmed ();
 					Manager_->Add ({ pattern, expansion });
-					return true;
+					return
+					{
+						true,
+						tr ("Pattern %1 has been added successfully.")
+								.arg ("<em>" + pattern + "</em>")
+					};
 				},
 				tr ("Adds a new abbreviation to the list of abbreviations."),
 				tr ("Usage: @/abbrev@ _pattern_ _text_\n\n"
@@ -79,10 +84,16 @@ namespace Abbrev
 			});
 		Commands_.append ({
 				{ "/unabbrev" },
-				[this] (ICLEntry*, const QString& text) -> bool
+				[this] (ICLEntry*, const QString& text) -> StringCommandResult
 				{
-					RemoveAbbrev (text.section (' ', 1).trimmed ());
-					return true;
+					const auto& pattern = text.section (' ', 1).trimmed ();
+					RemoveAbbrev (pattern);
+					return
+					{
+						true,
+						tr ("Pattern %1 has been removed successfully.")
+								.arg ("<em>" + pattern + "</em>")
+					};
 				},
 				tr ("Removes a previously added abbreviation."),
 				tr ("Usage: @/unabbrev@ <_pattern_|_index_>\n\n"
