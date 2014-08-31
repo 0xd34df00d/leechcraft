@@ -79,6 +79,14 @@ namespace Abbrev
 		Save ();
 	}
 
+	namespace
+	{
+		bool IsBadChar (const QChar& c)
+		{
+			return c.isLetter ();
+		}
+	}
+
 	QString AbbrevsManager::Process (QString text) const
 	{
 		int cyclesCount = 0;
@@ -88,8 +96,23 @@ namespace Abbrev
 			for (const auto& abbrev : Abbrevs_)
 				if (result.contains (abbrev.Pattern_))
 				{
-					result.replace (abbrev.Pattern_, abbrev.Expansion_);
-					break;
+					bool changed = false;
+					auto pos = 0;
+					while ((pos = result.indexOf (abbrev.Pattern_, pos)) != -1)
+					{
+						const auto afterAbbrevPos = pos + abbrev.Pattern_.size ();
+						if ((!pos || !IsBadChar (result.at (pos - 1))) &&
+							(afterAbbrevPos >= result.size () || !IsBadChar (result.at (afterAbbrevPos))))
+						{
+							result.replace (pos, abbrev.Pattern_.size (), abbrev.Expansion_);
+							pos += abbrev.Expansion_.size ();
+							changed = true;
+						}
+						else
+							pos += abbrev.Pattern_.size ();
+					}
+					if (changed)
+						break;
 				}
 
 			if (result == text)
