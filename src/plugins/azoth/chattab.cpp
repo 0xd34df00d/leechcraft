@@ -539,6 +539,36 @@ namespace Azoth
 			return text [cmd.size ()].isSpace ();
 		}
 
+		class CommandResultVisitor : public boost::static_visitor<bool>
+		{
+			QObject * const EntryObj_;
+		public:
+			CommandResultVisitor (QObject *entryObj)
+			: EntryObj_ { entryObj }
+			{
+			}
+
+			bool operator() (bool res) const
+			{
+				return res;
+			}
+
+			bool operator() (const StringCommandResult& result) const
+			{
+				const auto msg = new CoreMessage
+				{
+					result.Message_,
+					QDateTime::currentDateTime (),
+					IMessage::Type::ServiceMessage,
+					IMessage::Direction::In,
+					EntryObj_,
+					EntryObj_
+				};
+				msg->Store ();
+				return result.StopProcessing_;
+			}
+		};
+
 		/** Processes the outgoing messages, replacing /nick with calls
 		 * to the entity to change nick, for example, etc.
 		 *
@@ -560,15 +590,15 @@ namespace Azoth
 							[&text] (const QString& name) { return TextMatchesCmd (text, name); }))
 						continue;
 
+					const auto entryObj = entry->GetQObject ();
 					try
 					{
-						if (cmd.Command_ (entry, text))
+						auto res = cmd.Command_ (entry, text);
+						if (boost::apply_visitor (CommandResultVisitor { entryObj }, res))
 							return true;
 					}
 					catch (const CommandException& ex)
 					{
-						const auto entryObj = entry->GetQObject ();
-
 						auto body = ChatTab::tr ("Cannot execute %1.")
 								.arg ("<em>" + text + "</em>");
 						body += " " + ex.GetError ();

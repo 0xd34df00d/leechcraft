@@ -31,6 +31,7 @@
 
 #include <functional>
 #include <stdexcept>
+#include <boost/variant.hpp>
 #include <QStringList>
 #include <QtPlugin>
 
@@ -40,7 +41,14 @@ namespace Azoth
 {
 	class ICLEntry;
 
-	typedef std::function<bool (ICLEntry*, QString&)> Command_f;
+	struct StringCommandResult
+	{
+		bool StopProcessing_;
+		QString Message_;
+	};
+	typedef boost::variant<bool, StringCommandResult> CommandResult_t;
+
+	typedef std::function<CommandResult_t (ICLEntry*, QString&)> Command_f;
 
 	class CommandException : public std::runtime_error
 	{
