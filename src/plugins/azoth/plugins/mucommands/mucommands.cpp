@@ -33,6 +33,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "commands.h"
+#include "presencecommand.h"
 #include "descparser.h"
 
 namespace LeechCraft

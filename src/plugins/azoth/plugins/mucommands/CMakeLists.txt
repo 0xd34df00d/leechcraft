@@ -12,6 +12,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (MUCOMMANDS_SRCS
 	mucommands.cpp
 	commands.cpp
+	presencecommand.cpp
 	descparser.cpp
 	)
 
