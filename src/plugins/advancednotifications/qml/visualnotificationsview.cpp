@@ -57,10 +57,17 @@ namespace AdvancedNotifications
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
 
+#if QT_VERSION < 0x050000
 		connect (this,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
 				this,
 				SLOT (handleStatusChanged (QDeclarativeView::Status)));
+#else
+		connect (this,
+				SIGNAL (statusChanged (QQuickWidget::Status)),
+				this,
+				SLOT (handleStatusChanged (QQuickWidget::Status)));
+#endif
 
 		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "visualnotificationsview.qml");
 
