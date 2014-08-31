@@ -1,6 +1,6 @@
 import QtQuick 2.3
+import QtQuick.Controls 1.2
 import org.LC.common 1.0
-import "."
 
 Rectangle {
     id: notifArea
@@ -107,17 +107,17 @@ Rectangle {
         id: actionsDelegate
 
         Rectangle {
-            height: actionsListView.height
+            height: 20
             width: actionText.width
             smooth: true
             radius: 3
             color: "transparent"
 
-            TextButton {
+            Button {
                 id: actionText
 
                 text: model.modelData.actionText
-                onClicked: { model.modelData.actionSelected() }
+                onClicked: model.modelData.actionSelected()
 
                 anchors.fill: parent
             }
