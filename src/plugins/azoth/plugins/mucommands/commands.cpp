@@ -1319,7 +1319,8 @@ namespace MuCommands
 	{
 		const auto ihds = qobject_cast<IHaveDirectedStatus*> (entry->GetQObject ());
 		if (!ihds)
-			throw CommandException { QObject::tr ("This entry doesn't support directed presence.") };
+			throw CommandException { QObject::tr ("%1 doesn't support directed presence.")
+						.arg (entry->GetEntryName ()) };
 
 		const auto& variant = text.section ('\n', 0, 0).section (' ', 1).trimmed ();
 
