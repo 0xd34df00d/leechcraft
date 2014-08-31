@@ -56,12 +56,14 @@ namespace Xoox
 					  , public IMUCEntry
 					  , public IMUCPerms
 					  , public IConfigurableMUC
+					  , public IHaveDirectedStatus
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
 						LeechCraft::Azoth::IMUCEntry
 						LeechCraft::Azoth::IMUCPerms
-						LeechCraft::Azoth::IConfigurableMUC)
+						LeechCraft::Azoth::IConfigurableMUC
+						LeechCraft::Azoth::IHaveDirectedStatus)
 
 		friend class RoomHandler;
 
@@ -137,6 +139,10 @@ namespace Xoox
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
 		void AcceptConfiguration (QWidget*);
+
+		// IHaveDirectedStatus
+		bool CanSendDirectedStatusNow (const QString&);
+		void SendDirectedStatus (const EntryStatus&, const QString&);
 
 		void MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to);
 
