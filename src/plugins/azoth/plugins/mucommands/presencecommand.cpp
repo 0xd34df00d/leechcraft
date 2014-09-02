@@ -29,6 +29,9 @@
 
 #include "presencecommand.h"
 #include <functional>
+#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/phoenix.hpp>
+#include <boost/fusion/adapted.hpp>
 #include <QList>
 #include <interfaces/azoth/iprovidecommands.h>
 #include <interfaces/azoth/iaccount.h>
@@ -98,6 +101,121 @@ namespace MuCommands
 				return [state, message] (const EntryStatus&)
 						{ return EntryStatus { state, message }; };
 			}
+		}
+
+		typedef boost::optional<std::string> AccName_t;
+
+		typedef boost::variant<State, std::string> State_t;
+		typedef boost::optional<std::string> StatusMsg_t;
+		typedef boost::variant<State_t, StatusMsg_t> Status_t;
+
+		struct PresenceParams
+		{
+			AccName_t AccName_;
+			Status_t Status_;
+		};
+	}
+}
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::PresenceParams,
+		(LeechCraft::Azoth::MuCommands::AccName_t, AccName_)
+		(LeechCraft::Azoth::MuCommands::Status_t, Status_))
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+namespace MuCommands
+{
+	namespace
+	{
+		namespace ascii = boost::spirit::ascii;
+		namespace qi = boost::spirit::qi;
+		namespace phoenix = boost::phoenix;
+
+		template<typename Iter>
+		struct Parser : qi::grammar<Iter, PresenceParams ()>
+		{
+			/*
+			qi::rule<Iter, File ()> Start_;
+			qi::rule<Iter, Group ()> Group_;
+			qi::rule<Iter, std::string ()> GroupName_;
+			qi::rule<Iter, std::string ()> Lang_;
+			qi::rule<Iter, void ()> KeyValSep_;
+			qi::rule<Iter, std::string ()> LineValSingle_;
+			qi::rule<Iter, FieldVal_t ()> LineVal_;
+			qi::rule<Iter, Field ()> Line_;
+			qi::rule<Iter, void ()> Comment_;
+			*/
+			qi::rule<Iter, PresenceParams ()> Start_;
+			qi::rule<Iter, AccName_t ()> AccName_;
+			qi::rule<Iter, State_t ()> StatusName_;
+
+			struct StateSymbs : qi::symbols<char, State>
+			{
+				StateSymbs ()
+				{
+					add ("avail", SOnline)
+						("away", SAway)
+						("xa", SXA)
+						("dnd", SDND)
+						("chat", SChat);
+				}
+			} State_;
+
+			Parser ()
+			: Parser::base_type (Start_)
+			{
+				AccName_ = -*(qi::char_ - '\n');
+				StatusName_ = State_ | *qi::char_;
+
+				Start_ = AccName_ >> '\n' >> StatusName_;
+				/*
+				auto eol = qi::lit ("\n");
+				Comment_ %= qi::lit ("#") >> *(qi::char_ - '\r' - '\n') >> eol;
+
+				Lang_ %= '[' >> qi::lexeme [+(qi::char_ ("a-zA-Z0-9@_-"))] >> ']';
+
+				KeyValSep_ %= *(qi::lit (' ')) >> '=' >> *(qi::lit (' '));
+
+				LineValSingle_ %= qi::lexeme [+((qi::lit ("\\;") | (qi::char_ - ';' - '\r' - '\n')))];
+				LineVal_ %= +(LineValSingle_ >> ';') | LineValSingle_;
+
+				Line_ %= qi::lexeme [+(qi::char_ ("a-zA-Z0-9-"))] >>
+						-Lang_ >>
+						KeyValSep_ >>
+						LineVal_ >>
+						eol;
+
+				GroupName_ %= '[' >> qi::lexeme [+(qi::char_ ("a-zA-Z0-9 "))] >> ']';
+
+				Group_ %= GroupName_ >> eol >>
+						*(Comment_ | Line_ | eol);
+
+				Start_ %= *Comment_ >> +Group_;
+
+				qi::on_error<qi::fail> (Start_,
+						std::cout << phoenix::val ("Error! Expecting") << qi::_4
+								<< phoenix::val (" here: \"") << phoenix::construct<std::string> (qi::_3, qi::_2)
+								<< phoenix::val ("\"") << std::endl);
+								*/
+			}
+		};
+
+		template<typename Iter>
+		PresenceParams ParsePresenceCommand (Iter begin, Iter end)
+		{
+			PresenceParams res;
+			qi::parse (begin, end, Parser<Iter> (), res);
+			return res;
+		}
+
+		PresenceParams ParsePresenceCommand (const QString& cmd)
+		{
+			const auto& unicode = cmd.trimmed ().toUtf8 ();
+			return ParsePresenceCommand (unicode.begin (), unicode.end ());
 		}
 	}
 
