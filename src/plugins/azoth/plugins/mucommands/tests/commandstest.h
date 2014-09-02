@@ -47,6 +47,7 @@ namespace MuCommands
 		void accCustomStateChange ();
 		void accStatusChange ();
 		void accMessageOnly ();
+		void accMultilineMessageOnly ();
 	};
 }
 }

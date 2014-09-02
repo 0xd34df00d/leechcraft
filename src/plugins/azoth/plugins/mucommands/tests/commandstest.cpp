@@ -122,7 +122,6 @@ away
 				)delim";
 		const auto& res = ParsePresenceCommand (command);
 		QCOMPARE (res.AccName_, AccName_t { CurrentAccount {} });
-		//QCOMPARE (res.AccName_, AccName_t { std::string { "" } });
 		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
 	}
 
@@ -162,6 +161,21 @@ away
 		const auto& res = ParsePresenceCommand (command);
 		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc with spaces" } });
 		QCOMPARE (res.Status_, Status_t { std::string { "away" } });
+	}
+
+	void CommandsTest::accMultilineMessageOnly ()
+	{
+
+		const QString command = R"delim(
+/presence testacc
+This is my new
+multiline status.
+				)delim";
+		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc" } });
+
+		const auto expectedStatus = Status_t { std::string { "This is my new\nmultiline status." } };
+		QCOMPARE (res.Status_, expectedStatus);
 	}
 }
 }
