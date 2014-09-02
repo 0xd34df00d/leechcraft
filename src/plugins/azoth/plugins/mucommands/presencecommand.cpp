@@ -176,9 +176,9 @@ namespace MuCommands
 				CurAcc_ = qi::eps > qi::attr (CurrentAccount ());
 				AccName_ = AllAccounts_ | +(qi::char_ - '\n') | CurAcc_;
 
-				State_ = PredefinedState_ | +(qi::char_ - '\n');
 				FullState_ = PredefinedState_ >> '\n' >> +qi::char_;
-				StateMessageOnly_ = qi::lit ('\n') >> +qi::char_;
+				State_ = PredefinedState_ | (+(qi::char_ - '\n') >> qi::eoi);
+				StateMessageOnly_ = -qi::lit ('\n') >> +qi::char_;
 				Status_ = FullState_ | State_ | StateMessageOnly_;
 
 				Start_ = AccName_ >> '\n' >> Status_;
