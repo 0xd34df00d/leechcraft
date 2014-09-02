@@ -2,6 +2,20 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_mucommands)
 include (InitLCPlugin OPTIONAL)
 
+option (ENABLE_AZOTH_MUCOMMANDS_TESTS "Enable tests for Azoth MuCommands" ON)
+if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
+	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
+	add_executable (lc_azoth_mucommands_test WIN32
+		tests/commandstest.cpp
+	)
+	target_link_libraries (lc_azoth_mucommands_test
+		${LEECHCRAFT_LIBRARIES}
+	)
+	add_test (AzothMucommandsTest lc_azoth_mucommands_test)
+
+	FindQtLibs (lc_azoth_mucommands_test Test)
+endif ()
+
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
