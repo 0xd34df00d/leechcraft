@@ -92,16 +92,64 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	void CommandsTest::basicTest ()
+	void CommandsTest::accStateChange ()
 	{
 		const QString command = R"delim(
-testacc
+/presence testacc with spaces
 away
 				)delim";
 		const auto& res = ParsePresenceCommand (command);
-		QVERIFY (res.AccName_);
-		QCOMPARE (QString::fromStdString (*res.AccName_), QString { "testacc" });
+		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc with spaces" } });
 		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
+	}
+
+	void CommandsTest::allAccStateChange()
+	{
+		const QString command = R"delim(
+/presence *
+away
+				)delim";
+		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { AllAccounts {} });
+		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
+	}
+
+	void CommandsTest::noAccStateChange()
+	{
+		const QString command = R"delim(
+/presence
+away
+				)delim";
+		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { CurrentAccount {} });
+		//QCOMPARE (res.AccName_, AccName_t { std::string { "" } });
+		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
+	}
+
+	void CommandsTest::accCustomStateChange ()
+	{
+		const QString command = R"delim(
+/presence testacc with spaces
+some custom status
+				)delim";
+		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc with spaces" } });
+		QCOMPARE (res.Status_, Status_t { State_t { "some custom status" } });
+	}
+
+	void CommandsTest::accStatusChange ()
+	{
+		const QString command = R"delim(
+/presence testacc
+xa
+This is my new
+multiline status.
+				)delim";
+		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc" } });
+
+		const auto expectedStatus = Status_t { FullState_t { State::SXA, "This is my new\nmultiline status." } };
+		QCOMPARE (res.Status_, expectedStatus);
 	}
 }
 }

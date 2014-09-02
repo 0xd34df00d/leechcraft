@@ -41,7 +41,11 @@ namespace MuCommands
 	{
 		Q_OBJECT
 	private slots:
-		void basicTest ();
+		void accStateChange ();
+		void allAccStateChange ();
+		void noAccStateChange ();
+		void accCustomStateChange ();
+		void accStatusChange ();
 	};
 }
 }
