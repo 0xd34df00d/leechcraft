@@ -194,7 +194,7 @@ namespace MuCommands
 		PresenceParams ParsePresenceCommand (QString cmd)
 		{
 			cmd = cmd.trimmed ();
-			cmd = cmd.mid (QLatin1String { "/presence" }.size ());
+			cmd = cmd.mid (QString { "/presence" }.size ());
 			if (cmd.startsWith (' '))
 				cmd = cmd.mid (1);
 			const auto& unicode = cmd.toUtf8 ();
