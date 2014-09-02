@@ -32,6 +32,8 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted.hpp>
+#include <boost/fusion/adapted/std_pair.hpp>
+#include <boost/fusion/include/std_pair.hpp>
 #include <QList>
 #include <interfaces/azoth/iprovidecommands.h>
 #include <interfaces/azoth/iaccount.h>
@@ -103,11 +105,17 @@ namespace MuCommands
 			}
 		}
 
-		typedef boost::optional<std::string> AccName_t;
+		struct AllAccounts {};
+		bool operator== (const AllAccounts&, const AllAccounts&) { return true; }
+
+		struct CurrentAccount {};
+		bool operator== (const CurrentAccount&, const CurrentAccount&) { return true; }
+
+		typedef boost::variant<AllAccounts, std::string, CurrentAccount> AccName_t;
 
 		typedef boost::variant<State, std::string> State_t;
-		typedef boost::optional<std::string> StatusMsg_t;
-		typedef boost::variant<State_t, StatusMsg_t> Status_t;
+		typedef std::pair<State, std::string> FullState_t;
+		typedef boost::variant<FullState_t, State_t> Status_t;
 
 		struct PresenceParams
 		{
@@ -139,8 +147,14 @@ namespace MuCommands
 		struct Parser : qi::grammar<Iter, PresenceParams ()>
 		{
 			qi::rule<Iter, PresenceParams ()> Start_;
+
+			qi::rule<Iter, AllAccounts ()> AllAccounts_;
+			qi::rule<Iter, CurrentAccount ()> CurAcc_;
 			qi::rule<Iter, AccName_t ()> AccName_;
-			qi::rule<Iter, State_t ()> StatusName_;
+
+			qi::rule<Iter, State_t ()> State_;
+			qi::rule<Iter, FullState_t ()> FullState_;
+			qi::rule<Iter, Status_t ()> Status_;
 
 			struct StateSymbs : qi::symbols<char, State>
 			{
@@ -152,17 +166,20 @@ namespace MuCommands
 						("dnd", SDND)
 						("chat", SChat);
 				}
-			} State_;
+			} PredefinedState_;
 
 			Parser ()
 			: Parser::base_type (Start_)
 			{
-				AccName_ = -*(qi::char_ - '\n');
-				StatusName_ = State_ | *qi::char_;
+				AllAccounts_ = qi::lit ('*') > qi::attr (AllAccounts ());
+				CurAcc_ = qi::eps > qi::attr (CurrentAccount ());
+				AccName_ = AllAccounts_ | +(qi::char_ - '\n') | CurAcc_;
 
-				Start_ = AccName_ >> '\n' >> StatusName_;
+				State_ = PredefinedState_ | +(qi::char_ - '\n');
+				FullState_ = PredefinedState_ >> '\n' >> +qi::char_;
+				Status_ = FullState_ | State_;
 
-
+				Start_ = AccName_ >> '\n' >> Status_;
 			}
 		};
 
@@ -174,9 +191,13 @@ namespace MuCommands
 			return res;
 		}
 
-		PresenceParams ParsePresenceCommand (const QString& cmd)
+		PresenceParams ParsePresenceCommand (QString cmd)
 		{
-			const auto& unicode = cmd.trimmed ().toUtf8 ();
+			cmd = cmd.trimmed ();
+			cmd = cmd.mid (QLatin1String { "/presence" }.size ());
+			if (cmd.startsWith (' '))
+				cmd = cmd.mid (1);
+			const auto& unicode = cmd.toUtf8 ();
 			return ParsePresenceCommand (unicode.begin (), unicode.end ());
 		}
 	}
