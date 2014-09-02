@@ -3,18 +3,6 @@ project (leechcraft_azoth_mucommands)
 include (InitLCPlugin OPTIONAL)
 
 option (ENABLE_AZOTH_MUCOMMANDS_TESTS "Enable tests for Azoth MuCommands" ON)
-if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
-	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
-	add_executable (lc_azoth_mucommands_test WIN32
-		tests/commandstest.cpp
-	)
-	target_link_libraries (lc_azoth_mucommands_test
-		${LEECHCRAFT_LIBRARIES}
-	)
-	add_test (AzothMucommandsTest lc_azoth_mucommands_test)
-
-	FindQtLibs (lc_azoth_mucommands_test Test)
-endif ()
 
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -52,3 +40,17 @@ target_link_libraries (leechcraft_azoth_mucommands
 install (TARGETS leechcraft_azoth_mucommands DESTINATION ${LC_PLUGINS_DEST})
 
 FindQtLibs (leechcraft_azoth_mucommands Core Xml)
+
+if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
+	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
+	add_executable (lc_azoth_mucommands_test WIN32
+		tests/commandstest.cpp
+	)
+	target_link_libraries (lc_azoth_mucommands_test
+		${LEECHCRAFT_LIBRARIES}
+	)
+	add_test (AzothMucommandsTest lc_azoth_mucommands_test)
+
+	FindQtLibs (lc_azoth_mucommands_test Test)
+	add_dependencies (lc_azoth_mucommands_test leechcraft_azoth_mucommands)
+endif ()
