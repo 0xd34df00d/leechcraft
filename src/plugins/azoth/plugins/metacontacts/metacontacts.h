@@ -36,6 +36,8 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 
+class QAction;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -51,6 +53,8 @@ namespace Metacontacts
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.MetaContacts")
 
 		MetaProtocol *Proto_;
 		QAction *AddToMetacontacts_;

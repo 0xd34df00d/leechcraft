@@ -62,8 +62,14 @@ namespace LackMan
 				 , public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings
-				IEntityHandler IHaveShortcuts IHaveRecoverableTabs)
+		Q_INTERFACES (IInfo
+				IHaveTabs
+				IHaveSettings
+				IEntityHandler
+				IHaveShortcuts
+				IHaveRecoverableTabs)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.LackMan")
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		Util::ShortcutManager *ShortcutMgr_;

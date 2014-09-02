@@ -4,11 +4,10 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package (QJSON REQUIRED)
+if (NOT USE_QT5)
+	find_package (QJSON REQUIRED)
+endif ()
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
 include_directories (${AZOTH_INCLUDE_DIR}
 	${QJSON_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -47,8 +46,8 @@ set (MURM_RESOURCES azothmurmresources.qrc)
 CreateTrs ("azoth_murm" "en;ru_RU" MURM_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_murm" "en;ru_RU" "${MURM_SRCS}" "${MURM_FORMS}" "azothmurmsettings.xml")
 
-QT4_WRAP_UI (MURM_UIS_H ${MURM_FORMS})
-QT4_ADD_RESOURCES (MURM_RCCS ${MURM_RESOURCES})
+QtWrapUi (MURM_UIS_H ${MURM_FORMS})
+QtAddResources (MURM_RCCS ${MURM_RESOURCES})
 
 add_library (leechcraft_azoth_murm SHARED
 	${MURM_COMPILED_TRANSLATIONS}
@@ -57,10 +56,11 @@ add_library (leechcraft_azoth_murm SHARED
 	${MURM_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_murm
-	${QT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_azoth_murm DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothmurmsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_azoth_murm Network Widgets Xml)

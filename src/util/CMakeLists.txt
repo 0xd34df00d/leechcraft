@@ -24,7 +24,7 @@ add_subdirectory (xdg)
 add_subdirectory (xpc)
 add_subdirectory (xsd)
 
-if (WITH_X11 AND NOT APPLE AND NOT USE_QT5)
+if (WITH_X11 AND NOT APPLE)
 	add_subdirectory (x11)
 	set (LEECHCRAFT_UTIL_LIBRARIES leechcraft-util-x11)
 endif ()
@@ -80,4 +80,4 @@ target_link_libraries (leechcraft-util
 set_property (TARGET leechcraft-util PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util Xml Sql Widgets)
+FindQtLibs (leechcraft-util Xml Qml Sql Widgets)

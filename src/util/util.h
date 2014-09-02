@@ -39,6 +39,7 @@
 
 class QTranslator;
 class QLocale;
+class QAction;
 
 namespace LeechCraft
 {

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <QPainter>
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/isearchabledocument.h>
@@ -40,26 +41,136 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	/** @brief Provides an adapter of QTextDocument to Monocle's IDocument.
+	 *
+	 * This class provides implementations for most of the IDocument's
+	 * methods, as well as methods of ISupportPainting and
+	 * ISearchableDocument, working over a QTextDocument.
+	 *
+	 * The document for this class to work on is passed either via the
+	 * constructor or by calling the SetDocument() method. The adapter
+	 * owns the document.
+	 */
 	class TextDocumentAdapter : public IDocument
 							  , public ISupportPainting
 							  , public ISearchableDocument
 	{
 	protected:
+		/** @brief The adapted QTextDocument.
+		 */
 		std::shared_ptr<QTextDocument> Doc_;
+
+		/** @brief The hints used during rendering operations.
+		 *
+		 * These hints are set via SetRenderHint() calls and are used in
+		 * RenderPage() and PaintPage() implementations.
+		 */
+		QPainter::RenderHints Hints_;
 	public:
-		TextDocumentAdapter (QTextDocument* = 0);
+		/** @brief Constructs the TextDocumentAdapter over the \em document.
+		 *
+		 * The ownership of the \em document is passed to the adapter.
+		 */
+		TextDocumentAdapter (QTextDocument *document = nullptr);
 
+		/** @brief Checks if a document is set.
+		 */
 		bool IsValid () const;
+
+		/** @brief Returns the pages count in the underlying document.
+		 *
+		 * @note If IsValid() returns false, the behavior is undefined.
+		 *
+		 * @return Pages count.
+		 */
 		int GetNumPages () const;
-		QSize GetPageSize (int) const;
-		QImage RenderPage (int , double xRes, double yRes);
-		QList<ILink_ptr> GetPageLinks (int);
 
-		void PaintPage (QPainter*, int);
+		/** @brief Returns the size of the \em page.
+		 *
+		 * @note If IsValid() returns false, the behavior is undefined.
+		 *
+		 * @param[in] page The index of the page to query.
+		 * @return The size of the given \em page in pixels.
+		 */
+		QSize GetPageSize (int page) const;
 
+		/** @brief Renders the given \em page.
+		 *
+		 * The hints set via SetRenderHint() are used during rendering.
+		 *
+		 * @note If IsValid() returns false, the behavior is undefined.
+		 *
+		 * @param[in] page The index of the page to render.
+		 * @param[in] xScale The scale in the X dimension.
+		 * @param[in] yScale The scale in the Y dimension.
+		 *
+		 * @return The rendered image of the given page.
+		 *
+		 * @sa SetRenderHint()
+		 */
+		QImage RenderPage (int page, double xScale, double yScale);
+
+		/** @brief Returns the links found on the given \em page.
+		 *
+		 * The implementation currently always returns an empty list.
+		 *
+		 * @note If IsValid() returns false, the behavior is undefined.
+		 *
+		 * @param[in] page The index of the page to query.
+		 *
+		 * @return The list of links found on the \em page.
+		 */
+		QList<ILink_ptr> GetPageLinks (int page);
+
+		/** @brief Paints the given \em page using the \em painter.
+		 *
+		 * The hints set via SetRenderHint() are used during rendering.
+		 *
+		 * @note If IsValid() returns false, the behavior is undefined.
+		 *
+		 * @param[in] painter The painter to use.
+		 * @param[in] page The index of the page to paint.
+		 * @param[in] xScale The X-axis scale which should be used during
+		 * painting.
+		 * @param[in] yScale The Y-axis scale which should be used during
+		 * painting.
+		 *
+		 * @sa SetRenderHint()
+		 */
+		void PaintPage (QPainter *painter, int page, double xScale, double yScale);
+
+		/** @brief Searches for the given \em text and returns its positions.
+		 *
+		 * @note If IsValid() returns false, the behavior is undefined.
+		 *
+		 * @param[in] text The text to search for.
+		 * @param[in] cs The case sensitivity of the search.
+		 *
+		 * @return The list of positions of the given \em text string for
+		 * each page.
+		 */
 		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs);
+
+		/** @brief Toggles the render \em hint used during painting.
+		 *
+		 * Sets the \em hint state to \em enable.
+		 *
+		 * The hints are used during RenderPage() and PaintPage() calls.
+		 *
+		 * @param[in] hint The hint to toggle.
+		 * @param[in] enable Whether the hint should be enabled.
+		 *
+		 * @sa RenderPage(), PaintPage()
+		 */
+		void SetRenderHint (QPainter::RenderHint hint, bool enable = true);
 	protected:
-		void SetDocument (QTextDocument*);
+		/** @brief Sets the underlying document to \em doc.
+		 *
+		 * Ownership is passed to the TextDocumentAdapter object.
+		 *
+		 * @param[in] doc The document to use.
+		 */
+		void SetDocument (QTextDocument *doc);
 	};
 }
 }

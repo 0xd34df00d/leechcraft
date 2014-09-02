@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <random>
 #include <QObject>
 
 #ifdef ENABLE_MPRIS
@@ -71,6 +72,8 @@ namespace LMP
 		SourceObject *Source_;
 		Output *Output_;
 		Path *Path_;
+
+		mutable std::mt19937 PRG_;
 
 		QList<AudioSource> CurrentQueue_;
 		QHash<AudioSource, QStandardItem*> Items_;
@@ -190,8 +193,8 @@ namespace LMP
 		void EmitStateChange (SourceState);
 
 		template<typename T>
-		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,
-				std::function<T (AudioSource)>) const;
+		AudioSource GetRandomBy (AudioSources_t::const_iterator,
+				std::function<T (AudioSources_t::const_iterator, AudioSources_t)>) const;
 
 		AudioSource GetNextSource (const AudioSource&);
 

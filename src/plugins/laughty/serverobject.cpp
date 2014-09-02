@@ -29,6 +29,9 @@
 
 #include "serverobject.h"
 #include <QUrl>
+#include <QIcon>
+#include <QImage>
+#include <QPixmap>
 #include <QDBusArgument>
 #include <util/xpc/util.h>
 #include <util/util.h>

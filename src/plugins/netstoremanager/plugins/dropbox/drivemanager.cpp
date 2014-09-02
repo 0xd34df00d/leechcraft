@@ -36,10 +36,9 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/xpc/util.h>
-#include <qjson/parser.h>
-#include <qjson/serializer.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/xpc/util.h>
+#include <util/sll/parsejson.h>
 #include <util/util.h>
 #include "account.h"
 #include "chunkiodevice.h"
@@ -386,7 +385,11 @@ namespace DBox
 	{
 		QString savePath;
 		if (open)
+#if QT_VERSION < 0x050000
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+#else
+			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
+#endif
 					"/" + QFileInfo (filePath).fileName ();
 
 		QUrl url (QString ("https://api-content.dropbox.com/1/files/%1/%2?access_token=%3")
@@ -419,14 +422,9 @@ namespace DBox
 			return;
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		Account_->SetUserID (res.toMap () ["uid"].toString ());
 	}
@@ -463,14 +461,9 @@ namespace DBox
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO << "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		const auto& resMap = res.toMap ();
 		if (!resMap.contains ("contents"))
@@ -506,15 +499,9 @@ namespace DBox
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		const auto& map = res.toMap ();
 		qDebug () << Q_FUNC_INFO
@@ -529,14 +516,9 @@ namespace DBox
 			return;
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		qDebug () << Q_FUNC_INFO
 				<< "directory created successfully";
@@ -551,14 +533,9 @@ namespace DBox
 
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		qDebug () << Q_FUNC_INFO
 				<< "file removed successfully";
@@ -572,14 +549,9 @@ namespace DBox
 			return;
 		reply->deleteLater ();
 
-		bool ok = false;
-		QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		qDebug () << Q_FUNC_INFO
 				<< "entry copied successfully";
@@ -593,14 +565,10 @@ namespace DBox
 			return;
 		reply->deleteLater ();
 
-		bool ok = false;
-		QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
+
 		qDebug () << Q_FUNC_INFO
 				<< "entry moved successfully";
 		RefreshListing (Reply2Id_.take (reply).toUtf8 ());
@@ -613,14 +581,9 @@ namespace DBox
 			return;
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		const auto& map = res.toMap ();
 		const auto& id = map ["id"].toString ();
@@ -630,7 +593,7 @@ namespace DBox
 			ParseError (map);
 			return;
 		}
-		
+
 		qDebug () << Q_FUNC_INFO
 				<< "file uploaded successfully";
 		emit gotNewItem (CreateDBoxItem (res));
@@ -645,14 +608,9 @@ namespace DBox
 			return;
 		reply->deleteLater ();
 
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "parse error";
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
-		}
 
 		const auto& map = res.toMap ();
 		if (!map.contains ("error"))

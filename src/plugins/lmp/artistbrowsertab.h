@@ -34,6 +34,12 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include "ui_artistbrowsertab.h"
 
+#if QT_VERSION < 0x050000
+class QDeclarativeView;
+#else
+class QQuickWidget;
+#endif
+
 namespace LeechCraft
 {
 namespace LMP
@@ -50,6 +56,12 @@ namespace LMP
 
 		const TabClassInfo TC_;
 		QObject * const Plugin_;
+
+#if QT_VERSION < 0x050000
+		QDeclarativeView * const View_;
+#else
+		QQuickWidget * const View_;
+#endif
 
 		Ui::ArtistBrowserTab Ui_;
 

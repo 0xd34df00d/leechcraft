@@ -37,7 +37,11 @@ namespace LeechCraft
 namespace KBSwitch
 {
 	FlagIconProvider::FlagIconProvider ()
+#if QT_VERSION < 0x050000
 	: QDeclarativeImageProvider (Pixmap)
+#else
+	: QQuickImageProvider (Pixmap)
+#endif
 	{
 	}
 

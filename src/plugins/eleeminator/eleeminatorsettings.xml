@@ -17,5 +17,12 @@
 				<label value="Shift" />
 			</option>
 		</item>
+		<item type="groupbox" checkable="true" property="FiniteHistory" default="false">
+			<label value="Finite scrollback history" />
+			<item type="spinbox" property="HistorySize" default="1000" minimum="100" maximum="10000" step="100">
+				<label value="History size:" />
+				<suffix value=" lines" />
+			</item>
+		</item>
 	</page>
 </settings>

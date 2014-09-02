@@ -35,12 +35,13 @@
 #include <QIcon>
 #include <QTimer>
 #include <QtDebug>
-#include <qjson/parser.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/svcauth/vkcaptchadialog.h>
 #include <util/sll/queuemanager.h>
+#include <util/sll/urloperator.h>
+#include <util/sll/parsejson.h>
 #include <util/util.h>
 #include "albumsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -118,9 +119,10 @@ namespace TouchStreams
 		RequestQueue_.push_back ([this, nam] (const QString& key) -> void
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
-				friendsUrl.addQueryItem ("access_token", key);
-				friendsUrl.addQueryItem ("order", "name");
-				friendsUrl.addQueryItem ("fields", "uid,first_name,last_name,photo");
+				Util::UrlOperator { friendsUrl }
+						("access_token", key)
+						("order", "name")
+						("fields", "uid,first_name,last_name,photo");
 				auto reply = nam->get (QNetworkRequest (friendsUrl));
 				connect (reply,
 						SIGNAL (finished ()),
@@ -140,7 +142,7 @@ namespace TouchStreams
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& data = QJson::Parser ().parse (reply).toMap ();
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
 		auto usersList = data ["response"].toList ();
 
 		QList<qlonglong> ids;
@@ -246,7 +248,7 @@ namespace TouchStreams
 		const auto& usersMap = Reply2Users_.take (reply);
 		const auto& reqFunc = Reply2Func_.take (reply);
 
-		const auto& data = QJson::Parser ().parse (reply).toMap ();
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
 
 		if (data.contains ("error"))
 		{

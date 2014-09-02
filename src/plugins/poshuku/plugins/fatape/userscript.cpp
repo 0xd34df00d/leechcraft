@@ -31,7 +31,6 @@
 #include <algorithm>
 #include <QCoreApplication>
 #include <QtDebug>
-#include <QDesktopServices>
 #include <QFile>
 #include <QFileInfo>
 #include <QHash>
@@ -39,6 +38,13 @@
 #include <QNetworkRequest>
 #include <QTextCodec>
 #include <QTextStream>
+
+#if QT_VERSION < 0x050000
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include "greasemonkey.h"
@@ -257,7 +263,11 @@ namespace FatApe
 
 	void UserScript::Install (QNetworkAccessManager *networkManager)
 	{
+#if QT_VERSION < 0x050000
 		const QString& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
+#else
+		const QString& temp = QStandardPaths::writableLocation (QStandardPaths::TempLocation);
+#endif
 
 		if (!ScriptPath_.startsWith (temp))
 			return;

@@ -46,6 +46,8 @@ namespace Pogooglue
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler IDataFilter)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Pogooglue")
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

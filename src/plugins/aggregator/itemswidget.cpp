@@ -36,6 +36,7 @@
 #include <QUrl>
 #include <QTimer>
 #include <QMessageBox>
+#include <QToolBar>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
@@ -804,24 +805,31 @@ namespace Aggregator
 			.arg (GetHex (QPalette::Text));
 		result += item->Description_;
 
-		for (QList<Enclosure>::const_iterator i = item->Enclosures_.begin (),
-				end = item->Enclosures_.end (); i != end; ++i)
+		const auto embedImages = XmlSettingsManager::Instance ()->
+				property ("EmbedMediaRSSImages").toBool ();
+		for (const auto& enclosure : item->Enclosures_)
 		{
 			result += inpad.arg (headerBg)
 				.arg (headerText);
-			if (i->Length_ > 0)
+
+			if (embedImages && enclosure.Type_.startsWith ("image/"))
+				result += QString ("<img src='%1' /><br/>")
+						.arg (enclosure.URL_);
+
+			if (enclosure.Length_ > 0)
 				result += tr ("File of type %1, size %2:<br />")
-					.arg (i->Type_)
-					.arg (LeechCraft::Util::MakePrettySize (i->Length_));
+					.arg (enclosure.Type_)
+					.arg (Util::MakePrettySize (enclosure.Length_));
 			else
 				result += tr ("File of type %1 and unknown length:<br />")
-					.arg (i->Type_);
+					.arg (enclosure.Type_);
+
 			result += QString ("<a href='%1'>%2</a>")
-				.arg (i->URL_)
-				.arg (QFileInfo (QUrl (i->URL_).path ()).fileName ());
-			if (!i->Lang_.isEmpty ())
+				.arg (enclosure.URL_)
+				.arg (QFileInfo (QUrl (enclosure.URL_).path ()).fileName ());
+			if (!enclosure.Lang_.isEmpty ())
 				result += tr ("<br />Specified language: %1")
-					.arg (i->Lang_);
+					.arg (enclosure.Lang_);
 			result += "</div>";
 		}
 

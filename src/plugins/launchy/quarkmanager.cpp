@@ -32,6 +32,7 @@
 #include <util/util.h>
 #include <util/xdg/itemsfinder.h>
 #include <util/xdg/item.h>
+#include <util/models/rolenamesmixin.h>
 #include "favoritesmanager.h"
 #include "itemimageprovider.h"
 
@@ -41,7 +42,7 @@ namespace Launchy
 {
 	namespace
 	{
-		class LaunchModel : public QStandardItemModel
+		class LaunchModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -51,7 +52,7 @@ namespace Launchy
 			};
 
 			LaunchModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::PermanentID] = "permanentID";

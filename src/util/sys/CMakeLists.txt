@@ -40,7 +40,6 @@ add_library (leechcraft-util-sys SHARED
 	${SYS_SRCS}
 	)
 target_link_libraries (leechcraft-util-sys
-	${QT_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	)
 set_property (TARGET leechcraft-util-sys PROPERTY SOVERSION ${LC_SOVERSION})

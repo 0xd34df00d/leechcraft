@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QPoint>
+#include <QString>
 #include <QMetaType>
 
 class QDomElement;

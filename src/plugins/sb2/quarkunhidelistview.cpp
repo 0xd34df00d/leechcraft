@@ -28,8 +28,13 @@
  **********************************************************************/
 
 #include "quarkunhidelistview.h"
-#include <QDeclarativeView>
+
+#if QT_VERSION < 0x050000
 #include <QGraphicsObject>
+#else
+#include <QQuickItem>
+#endif
+
 #include <QtDebug>
 #include <util/util.h>
 #include <util/qml/unhidelistmodel.h>
@@ -42,37 +47,50 @@ namespace SB2
 {
 	QuarkUnhideListView::QuarkUnhideListView (const QuarkComponents_t& components,
 			ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
-	: Util::UnhideListViewBase (proxy, parent)
+	: Util::UnhideListViewBase (proxy,
+			[&components, &proxy, viewMgr] (QStandardItemModel *model)
+			{
+				for (const auto& comp : components)
+				{
+					std::unique_ptr<QuarkManager> qm;
+					try
+					{
+						qm.reset (new QuarkManager (comp, viewMgr, proxy));
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error creating manager for quark"
+								<< comp->Url_;
+						continue;
+					}
+
+					const auto& manifest = qm->GetManifest ();
+
+					auto item = new QStandardItem;
+					item->setData (manifest.GetID (), Util::UnhideListModel::Roles::ItemClass);
+					item->setData (manifest.GetName (), Util::UnhideListModel::Roles::ItemName);
+					item->setData (manifest.GetDescription (), Util::UnhideListModel::Roles::ItemDescription);
+					item->setData (Util::GetAsBase64Src (manifest.GetIcon ().pixmap (32, 32).toImage ()),
+							Util::UnhideListModel::Roles::ItemIcon);
+					model->appendRow (item);
+				}
+			},
+			parent)
 	, ViewManager_ (viewMgr)
 	{
 		QList<QStandardItem*> items;
 		for (const auto& comp : components)
 		{
-			QuarkManager_ptr manager;
 			try
 			{
-				manager.reset (new QuarkManager (comp, ViewManager_, proxy));
+				const auto& manager = std::make_shared<QuarkManager> (comp, ViewManager_, proxy);
+				const auto& manifest = manager->GetManifest ();
+				ID2Component_ [manifest.GetID ()] = { comp, manager };
 			}
 			catch (const std::exception& e)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "error creating manager for quark"
-						<< comp->Url_;
-				continue;
 			}
-
-			const auto& manifest = manager->GetManifest ();
-
-			auto item = new QStandardItem;
-
-			item->setData (manifest.GetID (), Util::UnhideListModel::Roles::ItemClass);
-			item->setData (manifest.GetName (), Util::UnhideListModel::Roles::ItemName);
-			item->setData (manifest.GetDescription (), Util::UnhideListModel::Roles::ItemDescription);
-			item->setData (Util::GetAsBase64Src (manifest.GetIcon ().pixmap (32, 32).toImage ()),
-					Util::UnhideListModel::Roles::ItemIcon);
-			items << item;
-
-			ID2Component_ [manifest.GetID ()] = { comp, manager };
 		}
 
 		Model_->invisibleRootItem ()->appendRows (items);

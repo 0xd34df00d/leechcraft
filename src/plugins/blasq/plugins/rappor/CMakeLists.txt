@@ -4,11 +4,12 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
-
-find_package (QJSON REQUIRED)
+if (NOT USE_QT5)
+	find_package (QJSON REQUIRED)
+else ()
+	set (QJSON_INCLUDE_DIR)
+	set (QJSON_LIBRARIES)
+endif ()
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -32,8 +33,8 @@ set (RAPPOR_RESOURCES
 CreateTrs("blasq_rappor" "en;ru_RU" RAPPOR_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq_rappor" "en;ru_RU" "${RAPPOR_SRCS}" "${RAPPOR_FORMS}" "")
 
-QT4_WRAP_UI (RAPPOR_UIS_H ${RAPPOR_FORMS})
-QT4_ADD_RESOURCES (RAPPOR_RCCS ${RAPPOR_RESOURCES})
+QtWrapUi (RAPPOR_UIS_H ${RAPPOR_FORMS})
+QtAddResources (RAPPOR_RCCS ${RAPPOR_RESOURCES})
 
 add_library (leechcraft_blasq_rappor SHARED
 	${RAPPOR_COMPILED_TRANSLATIONS}
@@ -48,3 +49,4 @@ target_link_libraries (leechcraft_blasq_rappor
 	)
 install (TARGETS leechcraft_blasq_rappor DESTINATION ${LC_PLUGINS_DEST})
 
+FindQtLibs (leechcraft_blasq_rappor Network Widgets Xml)

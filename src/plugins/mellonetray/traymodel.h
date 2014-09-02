@@ -30,14 +30,24 @@
 #pragma once
 
 #include <QAbstractItemModel>
-#include <QAbstractEventDispatcher>
 #include <QIcon>
+
+#if QT_VERSION < 0x050000
+#include <QAbstractEventDispatcher>
+#else
+#include <QAbstractNativeEventFilter>
+#endif
+
+#include <util/models/rolenamesmixin.h>
 
 namespace LeechCraft
 {
 namespace Mellonetray
 {
-	class TrayModel : public QAbstractItemModel
+	class TrayModel : public Util::RoleNamesMixin<QAbstractItemModel>
+#if QT_VERSION >= 0x050000
+					, public QAbstractNativeEventFilter
+#endif
 	{
 		Q_OBJECT
 
@@ -57,7 +67,9 @@ namespace Mellonetray
 			ItemID = Qt::UserRole + 1
 		};
 
+#if QT_VERSION < 0x050000
 		const QAbstractEventDispatcher::EventFilter PrevFilter_;
+#endif
 
 		TrayModel ();
 
@@ -78,7 +90,11 @@ namespace Mellonetray
 		QModelIndex parent (const QModelIndex& child) const;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 
+#if QT_VERSION < 0x050000
 		bool Filter (XEvent*);
+#else
+		bool nativeEventFilter (const QByteArray&, void*, long int*) override;
+#endif
 	private:
 		template<typename T>
 		void HandleClientMsg (T);

@@ -48,6 +48,8 @@ namespace NativeEmoticons
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.NativeEmoticons")
+
 		QObjectList ResourceSources_;
 	public:
 		void Init (ICoreProxy_ptr);

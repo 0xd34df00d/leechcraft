@@ -48,6 +48,8 @@ namespace Rosenthal
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings ISpellCheckProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Rosenthal")
+
 		ICoreProxy_ptr Proxy_;
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;

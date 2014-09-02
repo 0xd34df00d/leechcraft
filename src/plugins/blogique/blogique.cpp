@@ -29,8 +29,12 @@
 
 #include "blogique.h"
 #include <QIcon>
+
+#if QT_VERSION < 0x050000
 #include <QGraphicsEffect>
 #include <QtDeclarative>
+#endif
+
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "accountslistwidget.h"
@@ -97,7 +101,9 @@ namespace Blogique
 				&Core::Instance (),
 				SLOT (exportBlog ()));
 
+#if QT_VERSION < 0x050000
 		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
+#endif
 	}
 
 	void Plugin::SecondInit ()

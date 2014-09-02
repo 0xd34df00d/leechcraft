@@ -29,6 +29,7 @@
 
 #include "groupsmanager.h"
 #include <QTimer>
+#include <QStringList>
 #include "vkconnection.h"
 #include "structures.h"
 

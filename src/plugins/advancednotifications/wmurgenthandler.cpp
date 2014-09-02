@@ -30,6 +30,7 @@
 #include "wmurgenthandler.h"
 #include <QMainWindow>
 #include <QApplication>
+#include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -54,9 +55,20 @@ namespace AdvancedNotifications
 			return;
 
 		bool ok = false;
-		const auto winIdx = e.Additional_ ["org.LC.AdvNotifications.WindowIndex"].toInt (&ok);
+		auto winIdx = e.Additional_ ["org.LC.AdvNotifications.WindowIndex"].toInt (&ok);
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+
+		if (winIdx < 0 || winIdx >= rootWM->GetWindowsCount ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid window index"
+					<< winIdx
+					<< "for notification"
+					<< e.Additional_;
+			winIdx = rootWM->GetPreferredWindowIndex ();
+		}
+
 		auto win = rootWM->GetMainWindow (ok ? winIdx : rootWM->GetPreferredWindowIndex ());
 
 		if (!win->isActiveWindow ())

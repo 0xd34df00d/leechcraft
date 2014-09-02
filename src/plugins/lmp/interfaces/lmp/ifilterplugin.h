@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QIcon>
 #include <QtPlugin>
 #include "ifilterelement.h"
 

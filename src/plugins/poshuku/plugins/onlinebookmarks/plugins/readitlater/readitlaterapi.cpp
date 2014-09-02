@@ -30,9 +30,9 @@
 #include "readitlaterapi.h"
 #include <QtDebug>
 #include <QStringList>
-#include <qjson/parser.h>
-#include <qjson/serializer.h>
 #include <QDateTime>
+#include <util/sll/parsejson.h>
+#include <util/sll/serializejson.h>
 
 namespace LeechCraft
 {
@@ -98,9 +98,8 @@ namespace ReadItLater
 		if (exportBookmarks.isEmpty ())
 			return QByteArray ();
 
-		QJson::Serializer serializer;
-		QByteArray jsonBookmarks = serializer.serialize (exportBookmarks);
-		QByteArray jsonTags = serializer.serialize (exportTags);
+		const auto& jsonBookmarks = Util::SerializeJson (exportBookmarks);
+		const auto& jsonTags = Util::SerializeJson (exportTags);
 
 		QString res = QString ("username=%1&password=%2&apikey=%3&new=%4&update_tags=%5")
 				.arg (login,
@@ -128,14 +127,11 @@ namespace ReadItLater
 
 	QVariantList ReadItLaterApi::GetDownloadedBookmarks (const QByteArray& content)
 	{
-		QJson::Parser parser;
-		bool ok;
+		const auto& resultVar = Util::ParseJson (content, Q_FUNC_INFO);
+		if (resultVar.isNull ())
+			return {};
 
-		const QVariantMap& result = parser.parse (content, &ok).toMap ();
-
-		if (!ok)
-			return QVariantList ();
-
+		const auto& result = resultVar.toMap ();
 		const QVariantMap& nestedMap = result ["list"].toMap ();
 
 		QVariantList bookmarks;

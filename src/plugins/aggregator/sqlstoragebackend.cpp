@@ -221,20 +221,20 @@ namespace Aggregator
 		UnreadItemsCounter_ = QSqlQuery (DB_);
 		switch (Type_)
 		{
-			case SBSQLite:
-				UnreadItemsCounter_.prepare ("SELECT COUNT (unread) "
-						"FROM items "
-						"WHERE channel_id = :channel_id "
-						"AND unread = \"true\"");
-				break;
-			case SBPostgres:
-				UnreadItemsCounter_.prepare ("SELECT COUNT (1) "
-						"FROM items "
-						"WHERE channel_id = :channel_id "
-						"AND unread");
-				break;
-			case SBMysql:
-				break;
+		case SBSQLite:
+			UnreadItemsCounter_.prepare ("SELECT COUNT (unread) "
+					"FROM items "
+					"WHERE channel_id = :channel_id "
+					"AND unread = 1");
+			break;
+		case SBPostgres:
+			UnreadItemsCounter_.prepare ("SELECT COUNT (1) "
+					"FROM items "
+					"WHERE channel_id = :channel_id "
+					"AND unread");
+			break;
+		case SBMysql:
+			break;
 		}
 
 		ItemsShortSelector_ = QSqlQuery (DB_);
@@ -1098,7 +1098,7 @@ namespace Aggregator
 	Channel_ptr SQLStorageBackend::GetChannel (const IDType_t& channelId,
 			const IDType_t& parentFeed) const
 	{
-		ChannelsFullSelector_.bindValue (":channelId", channelId);
+		ChannelsFullSelector_.bindValue (":channel_id", channelId);
 		if (!ChannelsFullSelector_.exec ())
 			Util::DBLock::DumpError (ChannelsFullSelector_);
 

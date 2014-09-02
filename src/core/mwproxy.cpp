@@ -29,6 +29,7 @@
 
 #include "mwproxy.h"
 #include <QDockWidget>
+#include <QToolBar>
 #include "core.h"
 #include "mainwindow.h"
 #include "dockmanager.h"

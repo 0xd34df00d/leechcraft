@@ -35,9 +35,16 @@
 #include <QFile>
 #include <QTemporaryFile>
 #include <QXmlQuery>
+
+#if QT_VERSION < 0x050000
 #include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
 #include <util/sys/sysinfo.h>
 #include <util/xpc/util.h>
+#include <util/sll/urloperator.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "utils.h"
@@ -611,37 +618,43 @@ namespace Metida
 		request.setRawHeader ("Referer", "http://www.livejournal.com/update.bml");
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		QUrl params;
-		params.addEncodedQueryItem ("lj_form_auth", QUrl::toPercentEncoding (challenge));
-		params.addEncodedQueryItem ("rte_on", "1");
-		params.addEncodedQueryItem ("date_diff", "1");
-		params.addEncodedQueryItem ("date_format", QUrl::toPercentEncoding ("%M/%D/%Y"));
-		params.addEncodedQueryItem ("postas", "remote");
-		params.addEncodedQueryItem ("postto", "journal");
-		params.addEncodedQueryItem ("community", "books_dot_ru");
-		params.addEncodedQueryItem ("altcommunity", "");
-		params.addEncodedQueryItem ("date", QUrl::toPercentEncoding (event.DateTime_.toString ("dd/MM/yyyy")));
-		params.addEncodedQueryItem ("time", QUrl::toPercentEncoding (event.DateTime_.toString ("hh:mm")));
-		params.addEncodedQueryItem ("custom_time", "0");
-		params.addEncodedQueryItem ("timezone", "300");
-		params.addEncodedQueryItem ("prop_picture_keyword", QUrl::toPercentEncoding (event.Props_.PostAvatar_));
-		params.addEncodedQueryItem ("subject", QUrl::toPercentEncoding (event.Subject_));
-		params.addEncodedQueryItem ("event", QUrl::toPercentEncoding (event.Event_));
-		params.addEncodedQueryItem ("prop_taglist", QUrl::toPercentEncoding (event.Tags_.join (",")));
-		params.addEncodedQueryItem ("prop_current_moodid", QByteArray::number (event.Props_.CurrentMoodId_));
-		params.addEncodedQueryItem ("prop_current_mood", QUrl::toPercentEncoding (event.Props_.CurrentMood_));
-		params.addEncodedQueryItem ("prop_current_music", QUrl::toPercentEncoding (event.Props_.CurrentMusic_));
-		params.addEncodedQueryItem ("prop_current_location", QUrl::toPercentEncoding (event.Props_.CurrentLocation_));
-		params.addEncodedQueryItem ("prop_adult_conten", QUrl::toPercentEncoding (MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_)));
-		params.addEncodedQueryItem ("comment_settings", QUrl::toPercentEncoding ("default"));
-		params.addEncodedQueryItem ("prop_opt_screening", "");
-		params.addEncodedQueryItem ("security", QUrl::toPercentEncoding (MetidaUtils::GetStringForAccess (event.Security_)));
-		params.addEncodedQueryItem ("date_ymd_dd", QByteArray::number (event.DateTime_.date ().day ()));
-		params.addEncodedQueryItem ("date_ymd_mm", QByteArray::number (event.DateTime_.date ().month ()));
-		params.addEncodedQueryItem ("date_ymd_yyyy", QByteArray::number (event.DateTime_.date ().year ()));
-		params.addEncodedQueryItem ("date_diff", "1");
+		Util::UrlOperator { params }
+				("lj_form_auth", challenge)
+				("rte_on", "1")
+				("date_diff", "1")
+				("date_format", "%M/%D/%Y")
+				("postas", "remote")
+				("postto", "journal")
+				("community", "books_dot_ru")
+				("altcommunity", "")
+				("date", event.DateTime_.toString ("dd/MM/yyyy"))
+				("time", event.DateTime_.toString ("hh:mm"))
+				("custom_time", "0")
+				("timezone", "300")
+				("prop_picture_keyword", event.Props_.PostAvatar_)
+				("subject", event.Subject_)
+				("event", event.Event_)
+				("prop_taglist", event.Tags_.join (","))
+				("prop_current_moodid", QString::number (event.Props_.CurrentMoodId_))
+				("prop_current_mood", event.Props_.CurrentMood_)
+				("prop_current_music", event.Props_.CurrentMusic_)
+				("prop_current_location", event.Props_.CurrentLocation_)
+				("prop_adult_conten", MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_))
+				("comment_settings", "default")
+				("prop_opt_screening", "")
+				("security", MetidaUtils::GetStringForAccess (event.Security_))
+				("date_ymd_dd", QString::number (event.DateTime_.date ().day ()))
+				("date_ymd_mm", QString::number (event.DateTime_.date ().month ()))
+				("date_ymd_yyyy", QString::number (event.DateTime_.date ().year ()))
+				("date_diff", "1");
 
+#if QT_VERSION < 0x050000
+		const auto& payload = params.encodedQuery ();
+#else
+		const auto& payload = QUrlQuery { params }.toString (QUrl::FullyEncoded).toUtf8 ();
+#endif
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (request, params.encodedQuery ());
+				GetNetworkAccessManager ()->post (request, payload);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1838,7 +1851,11 @@ namespace Metida
 		if (!reply)
 			return;
 
-		const QString path = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+#if QT_VERSION < 0x050000
+		const auto& path = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+#else
+		const auto& path = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
+#endif
 				QString ("/blogique_preview_%1.bml")
 						.arg (QDateTime::currentDateTime ().toTime_t ());
 		QFile file (path);

@@ -37,7 +37,6 @@ add_library (leechcraft-util-gui SHARED
 	${GUI_UIS_H}
 	)
 target_link_libraries (leechcraft-util-gui
-	${QT_LIBRARIES}
 	leechcraft-util-network
 	)
 set_property (TARGET leechcraft-util-gui PROPERTY SOVERSION ${LC_SOVERSION})

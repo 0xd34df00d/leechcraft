@@ -654,16 +654,21 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 
 		ScalesBox_ = new QComboBox ();
+		ScalesBox_->setEditable (true);
+		ScalesBox_->setInsertPolicy (QComboBox::NoInsert);
 		ScalesBox_->addItem (tr ("Fit width"));
 		ScalesBox_->addItem (tr ("Fit page"));
-		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2, 3, 4, 5, 7.5, 10 };
-		Q_FOREACH (double scale, scales)
+		for (auto scale : { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2., 3., 4., 5., 7.5, 10. })
 			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
 		ScalesBox_->setCurrentIndex (0);
 		connect (ScalesBox_,
 				SIGNAL (activated (int)),
 				this,
 				SLOT (handleScaleChosen (int)));
+		connect (ScalesBox_,
+				SIGNAL (editTextChanged (QString)),
+				this,
+				SLOT (handleCustomScale (QString)));
 		Toolbar_->addWidget (ScalesBox_);
 
 		ZoomOut_ = new QAction (tr ("Zoom out"), this);
@@ -1080,7 +1085,7 @@ namespace Monocle
 
 		for (int i = 0, numPages = CurrentDoc_->GetNumPages (); i < numPages; ++i)
 		{
-			paintable->PaintPage (&painter, i);
+			paintable->PaintPage (&painter, i, 1, 1);
 			if (i != numPages - 1)
 			{
 				printer.newPage ();
@@ -1097,8 +1102,8 @@ namespace Monocle
 
 		const int numPages = CurrentDoc_->GetNumPages ();
 
-		QPrinter printer;
-		QPrintDialog dia (&printer, this);
+		QPrinter printer { QPrinter::HighResolution };
+		QPrintDialog dia { &printer, this };
 		dia.setMinMax (1, numPages);
 		dia.addEnabledOption (QAbstractPrintDialog::PrintCurrentPage);
 		if (dia.exec () != QDialog::Accepted)
@@ -1130,6 +1135,8 @@ namespace Monocle
 			break;
 		}
 
+		const auto isp = qobject_cast<ISupportPainting*> (CurrentDoc_->GetQObject ());
+
 		QPainter painter (&printer);
 		painter.setRenderHint (QPainter::Antialiasing);
 		painter.setRenderHint (QPainter::HighQualityAntialiasing);
@@ -1140,8 +1147,13 @@ namespace Monocle
 			const auto scale = std::min (static_cast<double> (pageSize.width ()) / size.width (),
 					static_cast<double> (pageSize.height ()) / size.height ());
 
-			const auto& img = CurrentDoc_->RenderPage (i, resScale * scale, resScale * scale);
-			painter.drawImage (0, 0, img);
+			if (isp)
+				isp->PaintPage (&painter, i, resScale * scale, resScale * scale);
+			else
+			{
+				const auto& img = CurrentDoc_->RenderPage (i, resScale * scale, resScale * scale);
+				painter.drawImage (0, 0, img);
+			}
 
 			if (i != end - 1)
 				printer.newPage ();
@@ -1395,7 +1407,7 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return;
 
-		auto dia = new DocInfoDialog (CurrentDocPath_, CurrentDoc_->GetDocumentInfo (), this);
+		auto dia = new DocInfoDialog (CurrentDocPath_, CurrentDoc_, this);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}
@@ -1422,9 +1434,36 @@ namespace Monocle
 		}
 
 		Relayout ();
-
 		scheduleSaveState ();
+		emit tabRecoverDataChanged ();
+	}
 
+	void DocumentTab::handleCustomScale (QString str)
+	{
+		if (ScalesBox_->findText (str) >= 0)
+			return;
+
+		str.remove ('%');
+		str = str.trimmed ();
+
+		bool ok = false;
+		auto num = str.toDouble (&ok);
+		if (!ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "could not convert"
+					<< str
+					<< "to number";
+			return;
+		}
+
+		num /= 100;
+
+		LayoutManager_->SetScaleMode (ScaleMode::Fixed);
+		LayoutManager_->SetFixedScale (num);
+
+		Relayout ();
+		scheduleSaveState ();
 		emit tabRecoverDataChanged ();
 	}
 

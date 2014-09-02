@@ -4,9 +4,29 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
 
-include (${QT_USE_FILE})
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
+
+find_package (Tox)
+
+option (USE_AZOTH_SARIN_NACL "Use NaCl crypto library instead of libsodium" OFF)
+
+set (EXTRA_LIBRARIES)
+if (USE_AZOTH_SARIN_NACL)
+	find_package (NaCl)
+
+	set (EXTRA_LIBRARIES ${NACL_LIBRARIES})
+	include_directories (${NACL_INCLUDE_DIRS})
+	add_definitions (-DUSE_NACL)
+else ()
+	find_package (Sodium)
+
+	set (EXTRA_LIBRARIES ${SODIUM_LIBRARIES})
+	include_directories (${SODIUM_INCLUDE_DIRS})
+endif ()
+
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
+	${TOX_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
@@ -32,7 +52,7 @@ CreateTrsUpTarget ("azoth_sarin" "en;ru_RU" "${SARIN_SRCS}" "" "")
 #	sarinresources.qrc
 #	)
 #QT4_ADD_RESOURCES (SARIN_RCCS ${SARIN_RESOURCES})
-QT4_WRAP_UI (SARIN_UIS_H ${SARIN_FORMS})
+QtWrapUi (SARIN_UIS_H ${SARIN_FORMS})
 
 add_library (leechcraft_azoth_sarin SHARED
 	${SARIN_COMPILED_TRANSLATIONS}
@@ -41,10 +61,11 @@ add_library (leechcraft_azoth_sarin SHARED
 	${SARIN_UIS_H}
 	)
 target_link_libraries (leechcraft_azoth_sarin
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	sodium					# TODO write FindSodium.cmake
-	toxcore					# TODO write FindTox.cmake
+	${TOXCORE_LIBRARY}
+	${EXTRA_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_sarin DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES azothsarinsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_azoth_sarin Concurrent Widgets)

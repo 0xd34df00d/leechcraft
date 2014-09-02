@@ -52,6 +52,8 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 				Q_INTERFACES (IInfo IFinder IEntityHandler IHaveShortcuts)
+
+				LC_PLUGIN_METADATA ("org.LeechCraft.HistoryHolder")
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();

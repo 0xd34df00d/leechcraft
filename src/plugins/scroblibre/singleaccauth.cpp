@@ -39,6 +39,7 @@
 #include <QCoreApplication>
 #include <util/xpc/passutils.h>
 #include <util/xpc/util.h>
+#include <util/sll/urloperator.h>
 #include <interfaces/core/ientitymanager.h>
 #include "util.h"
 
@@ -224,12 +225,13 @@ namespace Scroblibre
 		const auto& nowStr = QString::number (nowTime_t);
 
 		QUrl reqUrl { BaseURL_ };
-		reqUrl.addQueryItem ("hs", "true");
-		reqUrl.addQueryItem ("p", "1.2");
-		reqUrl.addQueryItem ("c", "tst");
-		reqUrl.addQueryItem ("v", "1.0");
-		reqUrl.addQueryItem ("u", Login_);
-		reqUrl.addQueryItem ("t", nowStr);
+		Util::UrlOperator { reqUrl }
+				("hs", "true")
+				("p", "1.2")
+				("c", "tst")
+				("v", "1.0")
+				("u", Login_)
+				("t", nowStr);
 
 		const auto& service = UrlToService (BaseURL_);
 		const auto& pass = Util::GetPassword ("org.LeechCraft.Scroblibre/" + service + '/' + Login_,
@@ -238,12 +240,14 @@ namespace Scroblibre
 					.arg (service),
 				Proxy_,
 				!failed);
+		if (pass.isEmpty ())
+			return;
 
 		const auto& md5pass = QCryptographicHash::hash (pass.toUtf8 (),
 				QCryptographicHash::Md5).toHex ();
 		const auto& token = QCryptographicHash::hash (md5pass + nowStr.toUtf8 (),
 				QCryptographicHash::Md5).toHex ();
-		reqUrl.addQueryItem ("a", token);
+		Util::UrlOperator { reqUrl } ("a", token);
 
 		const auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (reqUrl));
 		connect (reply,

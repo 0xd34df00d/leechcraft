@@ -124,7 +124,7 @@ namespace Xoox
 
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
-		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	namespace
@@ -944,7 +944,7 @@ namespace Xoox
 			variant = "";
 
 		const auto secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
-		Variant2SecsDiff_ [variant] = { secsDiff, iq.tzo () };
+		Variant2SecsDiff_ [variant] = { static_cast<int> (secsDiff), iq.tzo () };
 
 		emit entryGenerallyChanged ();
 

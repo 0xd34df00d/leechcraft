@@ -35,6 +35,7 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <util/sll/queuemanager.h>
+#include <util/sll/urloperator.h>
 #include <util/svcauth/vkauthmanager.h>
 
 namespace LeechCraft
@@ -69,8 +70,9 @@ namespace TouchStreams
 	void AudioSearch::handleGotAuthKey (const QString& key)
 	{
 		QUrl url ("https://api.vk.com/method/audio.search");
-		url.addQueryItem ("access_token", key);
-		url.addQueryItem ("q", Query_.FreeForm_);
+		Util::UrlOperator { url }
+				("access_token", key)
+				("q", Query_.FreeForm_);
 
 		Queue_->Schedule ([this, url] () -> void
 			{

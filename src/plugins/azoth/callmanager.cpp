@@ -188,8 +188,15 @@ namespace Azoth
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (sender ());
 		QIODevice *callAudioDev = mediaCall->GetAudioDevice ();
 
-		const QAudioFormat& format = mediaCall->GetAudioFormat ();
-		const int bufSize = (format.frequency () * format.channels () * (format.sampleSize () / 8) * 160) / 1000;
+		const auto& format = mediaCall->GetAudioFormat ();
+#if QT_VERSION < 0x050000
+		const auto frequency = format.frequency ();
+		const auto channels = format.channels ();
+#else
+		const auto frequency = format.sampleRate ();
+		const auto channels = format.channelCount ();
+#endif
+		const int bufSize = (frequency * channels * (format.sampleSize () / 8) * 160) / 1000;
 
 		if (mode & QIODevice::WriteOnly)
 		{
@@ -197,8 +204,14 @@ namespace Azoth
 			QAudioDeviceInfo info (QAudioDeviceInfo::defaultOutputDevice ());
 			if (!info.isFormatSupported (format))
 				qWarning () << "raw audio format not supported by backend, cannot play audio"
-						<< info.supportedByteOrders () << info.supportedChannelCounts ()
-						<< info.supportedCodecs () << info.supportedFrequencies ()
+						<< info.supportedByteOrders ()
+						<< info.supportedChannelCounts ()
+						<< info.supportedCodecs ()
+#if QT_VERSION < 0x050000
+						<< info.supportedFrequencies ()
+#else
+						<< info.supportedSampleRates ()
+#endif
 						<< info.supportedSampleTypes ();
 
 			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
@@ -217,8 +230,14 @@ namespace Azoth
 			QAudioDeviceInfo info (QAudioDeviceInfo::defaultInputDevice ());
 			if (!info.isFormatSupported (format))
 				qWarning () << "raw audio format not supported by backend, cannot record audio"
-						<< info.supportedByteOrders () << info.supportedChannelCounts ()
-						<< info.supportedCodecs () << info.supportedFrequencies ()
+						<< info.supportedByteOrders ()
+						<< info.supportedChannelCounts ()
+						<< info.supportedCodecs ()
+#if QT_VERSION < 0x050000
+						<< info.supportedFrequencies ()
+#else
+						<< info.supportedSampleRates ()
+#endif
 						<< info.supportedSampleTypes ();
 
 			QAudioDeviceInfo inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);

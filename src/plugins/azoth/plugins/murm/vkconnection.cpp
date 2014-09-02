@@ -31,11 +31,12 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QtDebug>
 #include <QTimer>
-#include <qjson/parser.h>
+#include <QtDebug>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/sll/queuemanager.h>
+#include <util/sll/urloperator.h>
+#include <util/sll/parsejson.h>
 #include "longpollmanager.h"
 #include "logger.h"
 #include "xmlsettingsmanager.h"
@@ -193,9 +194,10 @@ namespace Murm
 		PreparedCalls_.push_back ([this, nam, to] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.setActivity");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("uid", QString::number (to));
-				url.addQueryItem ("type", "typing");
+				Util::UrlOperator { url }
+						("access_token", key)
+						("uid", QString::number (to))
+						("type", "typing");
 
 				AddParams (url, params);
 
@@ -229,8 +231,9 @@ namespace Murm
 		PreparedCalls_.push_back ([this, nam, joined] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.markAsRead");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("mids", joined);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("mids", joined);
 
 				AddParams (url, params);
 
@@ -263,8 +266,9 @@ namespace Murm
 				}
 
 				QUrl url ("https://api.vk.com/method/" + method);
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("cids", joined);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("cids", joined);
 
 				AddParams (url, params);
 
@@ -286,10 +290,11 @@ namespace Murm
 		PreparedCalls_.push_back ([this, nam, joined] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/users.get");
-				url.addQueryItem ("access_token", key);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("fields", UserFields);
 				if (!joined.isEmpty ())
-					url.addQueryItem ("uids", joined);
-				url.addQueryItem ("fields", UserFields);
+					Util::UrlOperator { url} ("uids", joined);
 
 				AddParams (url, params);
 
@@ -309,9 +314,10 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.getById");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("mid", QString::number (id));
-				url.addQueryItem ("photo_sizes", "1");
+				Util::UrlOperator { url }
+						("access_token", key)
+						("mid", QString::number (id))
+						("photo_sizes", "1");
 
 				AddParams (url, params);
 
@@ -333,8 +339,9 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/photos.getById");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("photos", joined);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("photos", joined);
 
 				AddParams (url, params);
 
@@ -356,9 +363,10 @@ namespace Murm
 		PreparedCalls_.push_back ([this, joined, name, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/friends.addList");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("name", name);
-				url.addQueryItem ("uids", joined);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("name", name)
+						("uids", joined);
 
 				AddParams (url, params);
 
@@ -380,10 +388,11 @@ namespace Murm
 		PreparedCalls_.push_back ([this, joined, list, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/friends.editList");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("lid", QString::number (list.ID_));
-				url.addQueryItem ("name", list.Name_);
-				url.addQueryItem ("uids", joined);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("lid", QString::number (list.ID_))
+						("name", list.Name_)
+						("uids", joined);
 
 				AddParams (url, params);
 
@@ -405,9 +414,10 @@ namespace Murm
 		PreparedCalls_.push_back ([this, joined, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/storage.set");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("key", "non_roster_items");
-				url.addQueryItem ("value", joined);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("key", "non_roster_items")
+						("value", joined);
 
 				AddParams (url, params);
 
@@ -428,9 +438,10 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.createChat");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("title", title);
-				url.addQueryItem ("uids", joined);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("title", title)
+						("uids", joined);
 
 				AddParams (url, params);
 
@@ -451,8 +462,9 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.getChat");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("chat_id", QString::number (id));
+				Util::UrlOperator { url }
+						("access_token", key)
+						("chat_id", QString::number (id));
 
 				AddParams (url, params);
 
@@ -472,9 +484,10 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.addChatUser");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("chat_id", QString::number (chat));
-				url.addQueryItem ("user_id", QString::number (user));
+				Util::UrlOperator { url }
+						("access_token", key)
+						("chat_id", QString::number (chat))
+						("user_id", QString::number (user));
 
 				AddParams (url, params);
 
@@ -494,9 +507,10 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.removeChatUser");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("chat_id", QString::number (chat));
-				url.addQueryItem ("user_id", QString::number (user));
+				Util::UrlOperator { url }
+						("access_token", key)
+						("chat_id", QString::number (chat))
+						("user_id", QString::number (user));
 
 				AddParams (url, params);
 
@@ -517,9 +531,10 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.editChat");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("chat_id", QString::number (chat));
-				url.addQueryItem ("title", title);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("chat_id", QString::number (chat))
+						("title", title);
 
 				AddParams (url, params);
 
@@ -542,8 +557,9 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/status.set");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("text", status);
+				Util::UrlOperator { url }
+						("access_token", key)
+						("text", status);
 
 				AddParams (url, params);
 
@@ -573,10 +589,11 @@ namespace Murm
 		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl lpUrl ("https://api.vk.com/method/users.get");
-				lpUrl.addQueryItem ("access_token", key);
-				lpUrl.addQueryItem ("fields",
-						"first_name,last_name,nickname,photo,photo_big,sex,"
-						"bdate,city,country,timezone,contacts,education");
+				Util::UrlOperator { lpUrl }
+						("access_token", key)
+						("fields",
+								"first_name,last_name,nickname,photo,photo_big,sex,"
+								"bdate,city,country,timezone,contacts,education");
 				AddParams (lpUrl, params);
 				auto reply = nam->get (QNetworkRequest (lpUrl));
 				connect (reply,
@@ -588,7 +605,7 @@ namespace Murm
 		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl lpUrl ("https://api.vk.com/method/friends.getLists");
-				lpUrl.addQueryItem ("access_token", key);
+				Util::UrlOperator { lpUrl } ("access_token", key);
 				AddParams (lpUrl, params);
 				auto reply = nam->get (QNetworkRequest (lpUrl));
 				connect (reply,
@@ -631,8 +648,9 @@ namespace Murm
 
 	void VkConnection::AddParams (QUrl& url, const UrlParams_t& params)
 	{
+		Util::UrlOperator op { url };
 		for (auto i = params.begin (); i != params.end (); ++i)
-			url.addQueryItem (i.key (), i.value ());
+			op (i.key (), i.value ());
 	}
 
 	void VkConnection::HandleCaptcha (const QString& cid, const QString& value)
@@ -660,8 +678,9 @@ namespace Murm
 		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
-				friendsUrl.addQueryItem ("access_token", key);
-				friendsUrl.addQueryItem ("fields", UserFields);
+				Util::UrlOperator { friendsUrl }
+						("access_token", key)
+						("fields", UserFields);
 				AddParams (friendsUrl, params);
 				auto reply = nam->get (QNetworkRequest (friendsUrl));
 				connect (reply,
@@ -674,8 +693,9 @@ namespace Murm
 		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/storage.get");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("key", "non_roster_items");
+				Util::UrlOperator { url }
+						("access_token", key)
+						("key", "non_roster_items");
 				AddParams (url, params);
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
@@ -840,7 +860,7 @@ namespace Murm
 		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/account.setOnline");
-				url.addQueryItem ("access_token", key);
+				Util::UrlOperator { url } ("access_token", key);
 				AddParams (url, params);
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
@@ -906,7 +926,7 @@ namespace Murm
 
 		const auto& name = Reply2ListName_.take (reply);
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -961,7 +981,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -975,7 +995,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1016,7 +1036,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1027,8 +1047,9 @@ namespace Murm
 		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl msgUrl ("https://api.vk.com/method/messages.get");
-				msgUrl.addQueryItem ("access_token", key);
-				msgUrl.addQueryItem ("filters", "1");
+				Util::UrlOperator { msgUrl }
+						("access_token", key)
+						("filters", "1");
 				AddParams (msgUrl, params);
 				auto reply = nam->get (QNetworkRequest (msgUrl));
 				connect (reply,
@@ -1047,7 +1068,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1070,7 +1091,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1084,7 +1105,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1133,7 +1154,7 @@ namespace Murm
 
 		auto info = Reply2ChatInfo_.take (reply);
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1148,7 +1169,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1173,7 +1194,7 @@ namespace Murm
 
 		auto removeInfo = Reply2ChatRemoveInfo_.take (reply);
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1192,7 +1213,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1210,7 +1231,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1348,7 +1369,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 
@@ -1380,7 +1401,7 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (!CheckReplyData (data, reply))
 			return;
 

@@ -37,7 +37,7 @@ namespace LeechCraft
 namespace LMP
 {
 	SimilarModel::SimilarModel (QObject *parent)
-	: QStandardItemModel (parent)
+	: RoleNamesMixin<QStandardItemModel> (parent)
 	{
 		QHash<int, QByteArray> names;
 		names [ArtistName] = "artistName";

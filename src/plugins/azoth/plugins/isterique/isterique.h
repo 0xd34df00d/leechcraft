@@ -49,6 +49,8 @@ namespace Isterique
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Isterique")
+
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);

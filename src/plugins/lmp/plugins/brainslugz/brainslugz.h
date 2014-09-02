@@ -35,6 +35,8 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
+class QWidget;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -49,6 +51,8 @@ namespace BrainSlugz
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IPlugin2 LeechCraft::LMP::ILMPPlugin)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.BrainSlugz")
 
 		TabClassInfo CheckTC_;
 

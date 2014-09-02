@@ -29,12 +29,13 @@
 
 #include "launchercomponent.h"
 #include <QStandardItemModel>
+#include <QSettings>
 #include <QtDebug>
-#include <QtDeclarative>
 #include <util/gui/util.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/sys/paths.h>
 #include <util/qml/widthiconprovider.h>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihavetabs.h>
@@ -52,7 +53,7 @@ namespace SB2
 {
 	namespace
 	{
-		class LauncherModel : public QStandardItemModel
+		class LauncherModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -67,7 +68,7 @@ namespace SB2
 			};
 
 			LauncherModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::TabClassIcon] = "tabClassIcon";
@@ -119,9 +120,9 @@ namespace SB2
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
 
-		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
-		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
-		Component_->ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
+		Component_->DynamicProps_.append ({ "SB2_launcherModel", Model_ });
+		Component_->DynamicProps_.append ({ "SB2_launcherProxy", this });
+		Component_->ImageProviders_.append ({ ImageProviderID, ImageProv_ });
 
 		connect (ICTW_->GetQObject (),
 				SIGNAL (currentChanged (int)),
@@ -337,8 +338,9 @@ namespace SB2
 		}
 
 		auto view = new TabListView (tc, widgets, ICTW_, View_->GetManagedWindow (), Proxy_);
-		view->move (Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ()));
 		view->show ();
+		const auto& pos = Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ());
+		view->move (pos);
 		view->setFocus ();
 
 		CurrentTabList_ = view;

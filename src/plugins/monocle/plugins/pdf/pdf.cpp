@@ -30,6 +30,9 @@
 #include "pdf.h"
 #include <QIcon>
 #include <poppler-version.h>
+#include <util/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 #include "document.h"
 
 namespace LeechCraft
@@ -40,6 +43,10 @@ namespace PDF
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("monocle_pdf");
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclepdfsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -76,6 +83,11 @@ namespace PDF
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Monocle.IBackendPlugin";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult

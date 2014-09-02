@@ -59,7 +59,7 @@ namespace SpeedDial
 	{
 		double GetScore (const QDateTime& then, const QDateTime& now)
 		{
-			return std::log (std::max (then.daysTo (now) + 1, 1));
+			return std::log (std::max<int> (then.daysTo (now) + 1, 1));
 		}
 
 		template<typename T>

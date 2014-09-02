@@ -4,11 +4,6 @@ include (InitLCPlugin OPTIONAL)
 
 option (TESTS_SECMAN "Enable SecMan tests")
 
-if (TESTS_SECMAN)
-	set (QT_USE_QTTEST TRUE)
-endif ()
-
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -39,8 +34,8 @@ set (RESOURCES
 	secmanresources.qrc
 	)
 
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 CreateTrs("secman" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("secman" "en;ru_RU" "${SRCS}" "${FORMS}" "")
@@ -52,8 +47,9 @@ add_library (leechcraft_secman SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_secman
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_secman DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY interfaces DESTINATION "include/leechcraft")
+
+FindQtLibs (leechcraft_secman Widgets)

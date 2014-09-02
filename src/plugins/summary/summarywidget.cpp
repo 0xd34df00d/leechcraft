@@ -50,6 +50,8 @@
 #include "summary.h"
 #include "modeldelegate.h"
 
+Q_DECLARE_METATYPE (QMenu*)
+
 namespace LeechCraft
 {
 namespace Summary

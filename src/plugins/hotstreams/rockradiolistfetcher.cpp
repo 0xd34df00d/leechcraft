@@ -30,7 +30,7 @@
 #include "rockradiolistfetcher.h"
 #include <QNetworkRequest>
 #include <QtDebug>
-#include <qjson/parser.h>
+#include <util/sll/parsejson.h>
 
 namespace LeechCraft
 {
@@ -46,7 +46,7 @@ namespace HotStreams
 	{
 		QList<StreamInfo> result;
 
-		const auto& map = QJson::Parser ().parse (data);
+		const auto& map = Util::ParseJson (data, Q_FUNC_INFO);
 
 		for (const auto& var : map.toList ())
 		{

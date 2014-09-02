@@ -29,7 +29,6 @@
 
 #include "player.h"
 #include <algorithm>
-#include <random>
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
@@ -123,6 +122,7 @@ namespace LMP
 	, Source_ (new SourceObject (Category::Music, this))
 	, Output_ (new Output (this))
 	, Path_ (new Path (Source_, Output_))
+	, PRG_ { QDateTime::currentDateTime ().toTime_t () }
 	, RadioItem_ (nullptr)
 	, RulesManager_ (new PlayerRulesManager (PlaylistModel_, this))
 	, FirstPlaylistRestore_ (true)
@@ -857,18 +857,17 @@ namespace LMP
 	}
 
 	template<typename T>
-	AudioSource Player::GetRandomBy (QList<AudioSource>::const_iterator pos,
-			std::function<T (AudioSource)> feature) const
+	AudioSource Player::GetRandomBy (AudioSources_t::const_iterator pos,
+			std::function<T (AudioSources_t::const_iterator, AudioSources_t)> feature) const
 	{
-		auto randPos = [&feature] (const QList<AudioSource>& sources) -> int
+		auto randPos = [&feature, this] (const QList<AudioSource>& sources) -> int
 		{
+			const auto begin = sources.begin ();
 			QHash<T, QList<int>> fVals;
-			for (int i = 0; i < sources.size (); ++i)
-				fVals [feature (sources.at (i))] << i;
+			for (auto i = begin, end = sources.end (); i != end; ++i)
+				fVals [feature (i, sources)] << std::distance (begin, i);
 
-			static std::random_device generator;
-			std::uniform_int_distribution<int> dist (0, sources.size () - 1);
-			auto fIdx = std::uniform_int_distribution<int> (0, fVals.size () - 1) (generator);
+			auto fIdx = std::uniform_int_distribution<int> (0, fVals.size () - 1) (PRG_);
 
 			auto fPos = fVals.begin ();
 			std::advance (fPos, fIdx);
@@ -876,7 +875,7 @@ namespace LMP
 			if (positions.size () < 2)
 				return positions [0];
 
-			auto posIdx = std::uniform_int_distribution<int> (0, positions.size () - 1) (generator);
+			auto posIdx = std::uniform_int_distribution<int> (0, positions.size () - 1) (PRG_);
 			return positions [posIdx];
 		};
 		auto rand = [&randPos] (const QList<AudioSource>& sources)
@@ -885,24 +884,23 @@ namespace LMP
 		if (pos == CurrentQueue_.end ())
 			return rand (CurrentQueue_);
 
-		const auto& current = feature (*pos);
+		const auto& current = feature (pos, CurrentQueue_);
 		++pos;
-		if (pos != CurrentQueue_.end () && feature (*pos) == current)
+		if (pos != CurrentQueue_.end () && feature (pos, CurrentQueue_) == current)
 			return *pos;
 
-		auto modifiedQueue = CurrentQueue_;
-		auto endPos = std::remove_if (modifiedQueue.begin (), modifiedQueue.end (),
-				[&current, &feature, this] (decltype (modifiedQueue.at (0)) source)
-					{ return feature (source) == current; });
-		modifiedQueue.erase (endPos, modifiedQueue.end ());
+		decltype (CurrentQueue_) modifiedQueue;
+		for (auto i = CurrentQueue_.begin (); i != CurrentQueue_.end (); ++i)
+			if (feature (i, CurrentQueue_) != current)
+				modifiedQueue << *i;
 		if (modifiedQueue.isEmpty ())
 			return rand (CurrentQueue_);
 
+		const auto& origFeature = feature (pos, modifiedQueue);
 		pos = modifiedQueue.begin () + randPos (modifiedQueue);
-		const auto& origFeature = feature (*pos);
 		while (pos != modifiedQueue.begin ())
 		{
-			if (feature (*(pos - 1)) != origFeature)
+			if (feature (pos - 1, modifiedQueue) != origFeature)
 				break;
 			--pos;
 		}
@@ -934,16 +932,16 @@ namespace LMP
 				return {};
 		case PlayMode::Shuffle:
 			return GetRandomBy<int> (pos,
-					[this] (const AudioSource& source)
-						{ return CurrentQueue_.indexOf (source); });
+					[this] (AudioSources_t::const_iterator pos, const AudioSources_t& sources)
+						{ return pos - sources.begin (); });
 		case PlayMode::ShuffleAlbums:
 			return GetRandomBy<QString> (pos,
-					[this] (const AudioSource& source)
-						{ return GetMediaInfo (source).Album_; });
+					[this] (AudioSources_t::const_iterator pos, const AudioSources_t&)
+						{ return GetMediaInfo (*pos).Album_; });
 		case PlayMode::ShuffleArtists:
 			return GetRandomBy<QString> (pos,
-					[this] (const AudioSource& source)
-						{ return GetMediaInfo (source).Artist_; });
+					[this] (AudioSources_t::const_iterator pos, const AudioSources_t&)
+						{ return GetMediaInfo (*pos).Artist_; });
 		case PlayMode::RepeatTrack:
 			return current;
 		case PlayMode::RepeatAlbum:
@@ -1493,6 +1491,11 @@ namespace LMP
 			break;
 		case SourceError::SourceNotFound:
 			text = tr ("Audio source %1 not found, playing next track...")
+					.arg (QFileInfo (Source_->GetCurrentSource ().ToUrl ().path ()).fileName ());
+			nextTrack ();
+			break;
+		case SourceError::InvalidSource:
+			text = tr ("Audio source %1 is invalid, playing next track...")
 					.arg (QFileInfo (Source_->GetCurrentSource ().ToUrl ().path ()).fileName ());
 			nextTrack ();
 			break;

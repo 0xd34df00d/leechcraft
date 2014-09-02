@@ -59,6 +59,8 @@ namespace OTRoid
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.OTRoid")
+
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_;
 

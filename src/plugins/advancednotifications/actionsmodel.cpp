@@ -36,7 +36,7 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	ActionsModel::ActionsModel (QObject *parent)
-	: QStandardItemModel (parent)
+	: RoleNamesMixin<QStandardItemModel> (parent)
 	{
 		QHash<int, QByteArray> roleNames;
 		roleNames [Roles::IconName] = "iconName";

@@ -33,6 +33,7 @@
 #include <QNetworkSession>
 #include <QTimer>
 #include <util/util.h>
+#include <util/models/rolenamesmixin.h>
 #include "core.h"
 #include "platformbackend.h"
 
@@ -42,7 +43,7 @@ namespace Lemon
 {
 	namespace
 	{
-		class IfacesModel : public QStandardItemModel
+		class IfacesModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -59,7 +60,7 @@ namespace Lemon
 			};
 
 			IfacesModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::IfaceName] = "ifaceName";

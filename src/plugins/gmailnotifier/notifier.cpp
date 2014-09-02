@@ -58,7 +58,15 @@ namespace GmailNotifier
 				property ("ShowLastNMessages").toInt ();
 
 		auto textWFallback = [] (const QString& text, const QString& fallback)
-			{ return text.isEmpty () ? fallback : Qt::escape (text); };
+		{
+			return text.isEmpty () ?
+					fallback :
+#if QT_VERSION < 0x050000
+					Qt::escape (text);
+#else
+					text.toHtmlEscaped ();
+#endif
+		};
 
 		int handledMsgs = 0;
 		QString result;
@@ -73,7 +81,11 @@ namespace GmailNotifier
 			result += tr ("at") + " ";
 			result += info.Modified_.toString (Qt::SystemLocaleLongDate);
 			result += "</p><p class=\"additionaltext\">";
+#if QT_VERSION < 0x050000
 			result += Qt::escape (info.Summary_) + "</p>";
+#else
+			result += info.Summary_.toHtmlEscaped () + "</p>";
+#endif
 
 			if (++handledMsgs == fullShow)
 				break;

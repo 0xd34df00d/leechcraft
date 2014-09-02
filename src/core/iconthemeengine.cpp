@@ -39,6 +39,7 @@
 #include <QApplication>
 #include <QToolButton>
 #include <QTimer>
+#include <QMenu>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 #include "childactioneventfilter.h"

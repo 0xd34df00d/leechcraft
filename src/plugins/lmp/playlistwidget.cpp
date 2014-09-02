@@ -791,17 +791,27 @@ namespace LMP
 
 	void PlaylistWidget::handleCustomSort ()
 	{
+		const auto& var = XmlSettingsManager::Instance ().property ("LastCustomSortCriteria");
+		auto lastCustom = LoadCriteria (var);
+
 		const auto& current = Player_->GetSortingCriteria ();
+		if (lastCustom.isEmpty ())
+			lastCustom = current;
+
 		SortingCriteriaDialog dia (this);
-		dia.SetCriteria (current);
+		dia.SetCriteria (lastCustom);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		const auto& newCriteria = dia.GetCriteria ();
-		if (newCriteria == current)
-			return;
+		if (!newCriteria.isEmpty ())
+		{
+			const auto& var = SaveCriteria (newCriteria);
+			XmlSettingsManager::Instance ().setProperty ("LastCustomSortCriteria", var);
+		}
 
-		Player_->SetSortingCriteria (newCriteria);
+		if (newCriteria != current)
+			Player_->SetSortingCriteria (newCriteria);
 	}
 
 	void PlaylistWidget::removeSelectedSongs ()

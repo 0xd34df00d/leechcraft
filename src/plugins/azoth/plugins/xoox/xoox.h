@@ -53,6 +53,8 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::IProtocolPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Xoox")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);

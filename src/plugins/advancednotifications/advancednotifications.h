@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QAction>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
@@ -62,6 +63,8 @@ namespace AdvancedNotifications
 				IQuarkComponentProvider
 				IPluginReady
 				IANRulesStorage)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.AdvancedNotifications")
 
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;

@@ -59,7 +59,11 @@ namespace Util
 		switch (path)
 		{
 		case SysPath::QML:
+#if QT_VERSION < 0x050000
 			return GetPathCandidates (SysPath::Share, "qml/" + suffix);
+#else
+			return GetPathCandidates (SysPath::Share, "qml5/" + suffix);
+#endif
 		case SysPath::Share:
 #ifdef Q_OS_WIN32
 			candidates << QApplication::applicationDirPath () + "/share/" + suffix;
@@ -144,8 +148,12 @@ namespace Util
 
 		if (!path.endsWith ('/'))
 			path += '/';
-		if (dir != UserDir::LC)
+		if (dir == UserDir::Cache)
+#if QT_VERSION < 0x050000
 			path += "leechcraft/";
+#else
+			path += "leechcraft5/";
+#endif
 		path += subpath;
 
 		if (!QDir {}.exists (path) &&

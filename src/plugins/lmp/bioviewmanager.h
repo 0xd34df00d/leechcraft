@@ -33,7 +33,12 @@
 #include <QImage>
 #include <interfaces/media/idiscographyprovider.h>
 
+#if QT_VERSION < 0x050000
 class QDeclarativeView;
+#else
+class QQuickWidget;
+#endif
+
 class QStandardItemModel;
 class QStandardItem;
 
@@ -53,7 +58,11 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		QDeclarativeView *View_;
+#if QT_VERSION < 0x050000
+		QDeclarativeView * const View_;
+#else
+		QQuickWidget * const View_;
+#endif
 
 		QString CurrentArtist_;
 
@@ -61,7 +70,11 @@ namespace LMP
 		QStandardItemModel *DiscoModel_;
 		QList<QList<Media::ReleaseTrackInfo>> Album2Tracks_;
 	public:
+#if QT_VERSION < 0x050000
 		BioViewManager (QDeclarativeView*, QObject* = 0);
+#else
+		BioViewManager (QQuickWidget*, QObject* = 0);
+#endif
 
 		void InitWithSource ();
 		void Request (Media::IArtistBioFetcher*, const QString&);
@@ -71,7 +84,6 @@ namespace LMP
 	private slots:
 		void handleBioReady ();
 		void handleDiscographyReady ();
-		void handleAlbumArt (const Media::AlbumInfo&, const QList<QUrl>&);
 
 		void handleAlbumPreviewRequested (int);
 	signals:

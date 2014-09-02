@@ -99,7 +99,11 @@ namespace Poshuku
 			auto name = cert.subjectInfo (QSslCertificate::CommonName);
 			if (name.isEmpty ())
 				name = cert.subjectInfo (QSslCertificate::Organization);
+#if QT_VERSION < 0x050000
 			Ui_.CertChainBox_->addItem (name);
+#else
+			Ui_.CertChainBox_->addItem (name.join ("; "));
+#endif
 		}
 	}
 
@@ -109,11 +113,19 @@ namespace Poshuku
 
 		auto setSubjectInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
 		{
+#if QT_VERSION < 0x050000
 			label->setText (cert.subjectInfo (key));
+#else
+			label->setText (cert.subjectInfo (key).join ("; "));
+#endif
 		};
 		auto setIssuerInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
 		{
+#if QT_VERSION < 0x050000
 			label->setText (cert.issuerInfo (key));
+#else
+			label->setText (cert.issuerInfo (key).join ("; "));
+#endif
 		};
 
 		setSubjectInfo (Ui_.SubjectCommonName_, QSslCertificate::CommonName);

@@ -35,6 +35,8 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 
+class QAction;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -49,6 +51,8 @@ namespace Vader
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Vader")
 
 		Util::XmlSettingsDialog_ptr XSD_;
 

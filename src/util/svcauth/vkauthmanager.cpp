@@ -38,6 +38,8 @@
 #include <util/network/customcookiejar.h>
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
+#include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -183,11 +185,6 @@ namespace SvcAuth
 			}
 	}
 
-	void VkAuthManager::HandleError ()
-	{
-		IsRequesting_ = false;
-	}
-
 	void VkAuthManager::RequestURL (const QUrl& url)
 	{
 		qDebug () << Q_FUNC_INFO << url;
@@ -210,10 +207,10 @@ namespace SvcAuth
 		IsRequesting_ = true;
 	}
 
-	bool VkAuthManager::CheckIsBlank (QUrl location)
+	bool VkAuthManager::CheckReply (QUrl location)
 	{
 		if (location.path () != "/blank.html")
-			return false;
+			return CheckError (location);
 
 		location = QUrl::fromEncoded (location.toEncoded ().replace ('#', '?'));
 #if QT_VERSION < 0x050000
@@ -231,6 +228,41 @@ namespace SvcAuth
 		InvokeQueues (Token_);
 		emit gotAuthKey (Token_);
 		emit justAuthenticated ();
+
+		return true;
+	}
+
+	bool VkAuthManager::CheckError (const QUrl& url)
+	{
+		if (url.path () != "/error")
+			return false;
+
+#if QT_VERSION < 0x050000
+		const auto errNum = url.queryItemValue ("err").toInt ();
+#else
+		const auto errNum = QUrlQuery { url }.queryItemValue ("err").toInt ();
+#endif
+
+		IsRequesting_ = false;
+
+		qWarning () << Q_FUNC_INFO
+				<< "got error"
+				<< errNum;
+		if (errNum == 2)
+		{
+			clearAuthData ();
+
+			RequestAuthKey ();
+			return true;
+		}
+
+		const auto& e = Util::MakeNotification ("VK.com",
+				tr ("VK.com authentication for %1 failed because of error %2. "
+					"Report upstream please.")
+					.arg (AccountHR_)
+					.arg (errNum),
+				PCritical_);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		return true;
 	}
@@ -300,6 +332,7 @@ namespace SvcAuth
 		if (reply->error () != QNetworkReply::NoError)
 		{
 			qWarning () << Q_FUNC_INFO
+					<< reply->error ()
 					<< reply->errorString ();
 
 			IsRequesting_ = false;
@@ -320,7 +353,7 @@ namespace SvcAuth
 			return;
 		}
 
-		if (CheckIsBlank (location))
+		if (CheckReply (location))
 			return;
 
 		RequestURL (location);
@@ -328,7 +361,7 @@ namespace SvcAuth
 
 	void VkAuthManager::handleViewUrlChanged (const QUrl& url)
 	{
-		if (!CheckIsBlank (url))
+		if (!CheckReply (url))
 			return;
 
 		emit cookiesChanged (Cookies_->Save ());

@@ -35,9 +35,10 @@
 #include <QIcon>
 #include <QTimer>
 #include <QtDebug>
-#include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/sll/queuemanager.h>
+#include <util/sll/parsejson.h>
+#include <util/sll/urloperator.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -262,10 +263,12 @@ namespace TouchStreams
 				[this] (const QString& key) -> void
 				{
 					QUrl url ("https://api.vk.com/method/audio.getAlbums");
-					url.addQueryItem ("access_token", key);
-					url.addQueryItem ("count", "100");
+					Util::UrlOperator { url }
+							("access_token", key)
+							("count", "100");
 					if (UserID_ >= 0)
-						url.addQueryItem ("uid", QString::number (UserID_));
+						Util::UrlOperator { url }
+								("uid", QString::number (UserID_));
 
 					auto nam = Proxy_->GetNetworkAccessManager ();
 					connect (nam->get (QNetworkRequest (url)),
@@ -283,17 +286,18 @@ namespace TouchStreams
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& data = QJson::Parser ().parse (reply).toMap ();
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
 		HandleAlbums (data ["response"]);
 
 		RequestQueue_.prepend ({
 				[this] (const QString& key) -> void
 				{
 					QUrl url ("https://api.vk.com/method/audio.get");
-					url.addQueryItem ("access_token", key);
-					url.addQueryItem ("count", "1000");
+					Util::UrlOperator { url }
+							("access_token", key)
+							("count", "1000");
 					if (UserID_ >= 0)
-						url.addQueryItem ("uid", QString::number (UserID_));
+						Util::UrlOperator { url } ("uid", QString::number (UserID_));
 
 					auto nam = Proxy_->GetNetworkAccessManager ();
 					connect (nam->get (QNetworkRequest (url)),
@@ -311,7 +315,7 @@ namespace TouchStreams
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& data = QJson::Parser ().parse (reply).toMap ();
+		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
 		auto tracksList = data ["response"].toList ();
 		HandleTracks (data ["response"]);
 

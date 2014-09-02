@@ -57,9 +57,13 @@ namespace Potorchu
 	, Converter_ { gst_element_factory_make ("audioconvert", nullptr) }
 	, FakeSink_ { gst_element_factory_make ("fakesink", nullptr) }
 	{
-		gst_bin_add_many (GST_BIN (Elem_), Tee_, AudioQueue_, ProbeQueue_, Converter_, FakeSink_, nullptr);
+		gst_bin_add_many (GST_BIN (Elem_),
+				Tee_, AudioQueue_,
+				ProbeQueue_, Converter_, FakeSink_,
+				nullptr);
 
-		auto teeTemplate = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d");
+		auto teeTemplate = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_),
+				GstUtil::GetTeePadTemplateName ());
 
 		auto teeAudioPad = gst_element_request_pad (Tee_, teeTemplate, nullptr, nullptr);
 		auto audioPad = gst_element_get_static_pad (AudioQueue_, "sink");
@@ -70,10 +74,16 @@ namespace Potorchu
 		GstUtil::AddGhostPad (AudioQueue_, Elem_, "src");
 
 		gst_element_link (ProbeQueue_, Converter_);
+#if GST_VERSION_MAJOR < 1
 		const auto caps = gst_caps_new_simple ("audio/x-raw-int",
 				"width", G_TYPE_INT, 16,
 				"signed", G_TYPE_BOOLEAN, true,
 				nullptr);
+#else
+		const auto caps = gst_caps_new_simple ("audio/x-raw",
+				"format", G_TYPE_STRING, "S16LE",
+				nullptr);
+#endif
 		gst_element_link_filtered (Converter_, FakeSink_, caps);
 		gst_caps_unref (caps);
 
@@ -117,10 +127,24 @@ namespace Potorchu
 				this,
 				SLOT (handlePrevVis ()));
 
-		gst_pad_add_buffer_probe (gst_element_get_static_pad (Converter_, "src"),
+		const auto srcpad = gst_element_get_static_pad (Converter_, "src");
+#if GST_VERSION_MAJOR < 1
+		gst_pad_add_buffer_probe (srcpad,
 				G_CALLBACK (+[] (GstPad*, GstBuffer *buf, VisualFilter *filter)
 					{ filter->HandleBuffer (buf); }),
 				this);
+#else
+		gst_pad_add_probe (srcpad,
+				GST_PAD_PROBE_TYPE_BUFFER,
+				[] (GstPad*, GstPadProbeInfo *info, gpointer filterPtr) -> GstPadProbeReturn
+				{
+					const auto filter = static_cast<VisualFilter*> (filterPtr);
+					filter->HandleBuffer (GST_PAD_PROBE_INFO_BUFFER (info));
+					return GST_PAD_PROBE_PASS;
+				},
+				this,
+				nullptr);
+#endif
 	}
 
 	QByteArray VisualFilter::GetEffectId () const
@@ -177,8 +201,28 @@ namespace Potorchu
 
 	void VisualFilter::HandleBuffer (GstBuffer *buffer)
 	{
-		const auto samples = GST_BUFFER_SIZE (buffer) / sizeof (short) / 2;
+#if GST_VERSION_MAJOR < 1
+		const auto size = GST_BUFFER_SIZE (buffer);
 		const auto data = reinterpret_cast<short*> (GST_BUFFER_DATA (buffer));
+#else
+		GstMapInfo map;
+		if (!gst_buffer_map (buffer, &map, GST_MAP_READ))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot map data";
+			return;
+		}
+
+		const auto data = reinterpret_cast<const short*> (map.data);
+		const auto size = map.size;
+
+		std::shared_ptr<void> mapGuard
+		{
+			nullptr,
+			[buffer, &map] (void*) { gst_buffer_unmap (buffer, &map); }
+		};
+#endif
+		const auto samples = size / sizeof (short) / 2;
 
 		if (ProjectM_)
 			ProjectM_->pcm ()->addPCM16Data (data, samples);

@@ -61,6 +61,7 @@ namespace LMP
 	{
 		MissingPlugin,
 		SourceNotFound,
+		InvalidSource,
 		Other
 	};
 

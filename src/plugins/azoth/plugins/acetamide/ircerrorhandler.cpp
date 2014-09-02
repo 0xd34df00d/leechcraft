@@ -53,17 +53,16 @@ namespace Acetamide
 		if (!IsError (options.Command_.toInt ()))
 			return;
 
-		QString msg, paramsMessage = QString ();
-		QTextCodec *codec = QTextCodec::codecForName (ISH_->GetServerOptions ()
-				.ServerEncoding_.toUtf8 ());
-		msg = codec->toUnicode (options.Message_.toAscii ());
+		QString paramsMessage;
 
 		if (options.Parameters_.count () > 1)
-			Q_FOREACH (const std::string& str, options.Parameters_.mid (1))
+			for (const auto& str : options.Parameters_.mid (1))
 				paramsMessage += QString::fromUtf8 (str.c_str ()) + " ";
 
 		Entity e = Util::MakeNotification ("Azoth",
-				paramsMessage.isEmpty () ? msg : (paramsMessage + ": " + msg),
+				paramsMessage.isEmpty () ?
+						options.Message_ :
+						(paramsMessage + ": " + options.Message_),
 				PWarning_);
 		Core::Instance ().SendEntity (e);
 	}
@@ -73,60 +72,73 @@ namespace Acetamide
 		return ErrorKeys_.contains (id);
 	}
 
+	namespace
+	{
+		template<int B, int E>
+		struct Range
+		{
+			static_assert (B <= E, "Invalid range");
+
+			constexpr static int Begin = B;
+			constexpr static int End = E;
+		};
+
+		template<int... Pts>
+		struct Points
+		{
+		};
+
+		template<typename T, typename... Args>
+		struct Filler;
+
+		template<typename T, int... Pts, typename... Args>
+		struct Filler<T, Points<Pts...>, Args...>
+		{
+			void operator() (T& list) const
+			{
+				list += T { Pts... };
+
+				Filler<T, Args...> {} (list);
+			}
+		};
+
+		template<typename T, typename Arg, typename... Args>
+		struct Filler<T, Arg, Args...>
+		{
+			void operator() (T& list) const
+			{
+				for (int i = Arg::Begin; i <= Arg::End; ++i)
+					list << i;
+
+				Filler<T, Args...> {} (list);
+			}
+		};
+
+		template<typename T>
+		struct Filler<T>
+		{
+			void operator() (T&) const
+			{
+			}
+		};
+	}
+
 	void IrcErrorHandler::InitErrors ()
 	{
-		ErrorKeys_ << 401;
-		ErrorKeys_ << 402;
-		ErrorKeys_ << 403;
-		ErrorKeys_ << 404;
-		ErrorKeys_ << 405;
-		ErrorKeys_ << 406;
-		ErrorKeys_ << 407;
-		ErrorKeys_ << 408;
-		ErrorKeys_ << 409;
-		ErrorKeys_ << 411;
-		ErrorKeys_ << 412;
-		ErrorKeys_ << 413;
-		ErrorKeys_ << 414;
-		ErrorKeys_ << 415;
-		ErrorKeys_ << 421;
-		ErrorKeys_ << 422;
-		ErrorKeys_ << 424;
-		ErrorKeys_ << 431;
-		ErrorKeys_ << 432;
-		ErrorKeys_ << 433;
-		ErrorKeys_ << 436;
-		ErrorKeys_ << 437;
-		ErrorKeys_ << 441;
-		ErrorKeys_ << 442;
-		ErrorKeys_ << 443;
-		ErrorKeys_ << 444;
-		ErrorKeys_ << 445;
-		ErrorKeys_ << 446;
-		ErrorKeys_ << 451;
-		ErrorKeys_ << 461;
-		ErrorKeys_ << 462;
-		ErrorKeys_ << 463;
-		ErrorKeys_ << 464;
-		ErrorKeys_ << 465;
-		ErrorKeys_ << 466;
-		ErrorKeys_ << 467;
-		ErrorKeys_ << 471;
-		ErrorKeys_ << 472;
-		ErrorKeys_ << 473;
-		ErrorKeys_ << 474;
-		ErrorKeys_ << 475;
-		ErrorKeys_ << 476;
-		ErrorKeys_ << 477;
-		ErrorKeys_ << 478;
-		ErrorKeys_ << 481;
-		ErrorKeys_ << 482;
-		ErrorKeys_ << 483;
-		ErrorKeys_ << 484;
-		ErrorKeys_ << 485;
-		ErrorKeys_ << 491;
-		ErrorKeys_ << 501;
-		ErrorKeys_ << 502;
+		Filler<
+				decltype (ErrorKeys_),
+				Range<401, 409>,
+				Range<411, 415>,
+				Points<421, 422, 424>,
+				Range<431, 433>,
+				Range<436, 437>,
+				Range<441, 446>,
+				Points<451>,
+				Range<461, 467>,
+				Range<471, 478>,
+				Range<481, 485>,
+				Points<491, 501, 502>
+			> {} (ErrorKeys_);
 	}
 }
 }

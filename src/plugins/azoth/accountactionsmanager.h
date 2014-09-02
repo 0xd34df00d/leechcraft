@@ -73,6 +73,7 @@ namespace Azoth
 		QAction *AccountUpdatePassword_;
 		QAction *AccountRename_;
 		QAction *AccountModify_;
+		QAction *AccountRemove_;
 	public:
 		AccountActionsManager (QObject* = 0);
 
@@ -101,6 +102,7 @@ namespace Azoth
 		void handleUpdatePassword ();
 		void handleAccountRename ();
 		void handleAccountModify ();
+		void handleAccountRemove ();
 
 		void consoleRemoved (QWidget*);
 	signals:

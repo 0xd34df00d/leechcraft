@@ -30,7 +30,6 @@
 #include "hotsensors.h"
 #include <QIcon>
 #include <QAbstractItemModel>
-#include <QtDeclarative>
 #include <util/util.h>
 #include <util/sys/paths.h>
 

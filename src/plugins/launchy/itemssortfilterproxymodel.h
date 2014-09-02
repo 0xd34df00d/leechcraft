@@ -31,12 +31,13 @@
 
 #include <QSortFilterProxyModel>
 #include <QStringList>
+#include <util/models/rolenamesmixin.h>
 
 namespace LeechCraft
 {
 namespace Launchy
 {
-	class ItemsSortFilterProxyModel : public QSortFilterProxyModel
+	class ItemsSortFilterProxyModel : public Util::RoleNamesMixin<QSortFilterProxyModel>
 	{
 		Q_OBJECT
 

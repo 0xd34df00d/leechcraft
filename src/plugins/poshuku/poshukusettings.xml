@@ -153,6 +153,9 @@
 				<item type="checkbox" property="EnableWebGL" default="true">
 					<label value="Enable WebGL" />
 				</item>
+				<item type="checkbox" property="EnableSmoothScrolling" default="true">
+					<label value="Enable smooth scrolling" />
+				</item>
 				<item type="checkbox" property="DeveloperExtrasEnabled" state="off">
 					<label lang="en" value="Developer extras" />
 				</item>

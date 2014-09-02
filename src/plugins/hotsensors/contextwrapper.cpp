@@ -36,6 +36,7 @@
 #include <util/qml/unhidelistviewbase.h>
 #include <util/qml/unhidelistmodel.h>
 #include <util/gui/autoresizemixin.h>
+#include <util/models/rolenamesmixin.h>
 #include "plotmanager.h"
 #include "sensorsgraphmodel.h"
 
@@ -43,12 +44,12 @@ namespace LeechCraft
 {
 namespace HotSensors
 {
-	class SensorsFilterModel : public QSortFilterProxyModel
+	class SensorsFilterModel : public Util::RoleNamesMixin<QSortFilterProxyModel>
 	{
 		QStringList Hidden_;
 	public:
 		SensorsFilterModel (QObject *parent)
-		: QSortFilterProxyModel (parent)
+		: RoleNamesMixin<QSortFilterProxyModel> (parent)
 		{
 		}
 
@@ -132,8 +133,9 @@ namespace HotSensors
 		if (items.isEmpty ())
 			return;
 
-		auto list = new Util::UnhideListViewBase (Proxy_);
-		list->SetItems (items);
+		auto list = new Util::UnhideListViewBase (Proxy_,
+				[&items] (QStandardItemModel *model)
+					{ model->invisibleRootItem ()->appendRows (items); });
 		connect (list,
 				SIGNAL (itemUnhideRequested (QString)),
 				this,

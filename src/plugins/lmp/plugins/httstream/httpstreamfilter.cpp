@@ -59,7 +59,7 @@ namespace HttStream
 	, Configurator_ { new FilterConfigurator { instanceId, this } }
 	, Elem_ { gst_bin_new (nullptr) }
 	, Tee_ { gst_element_factory_make ("tee", nullptr) }
-	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), "src%d") }
+	, TeeTemplate_ { gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (Tee_), GstUtil::GetTeePadTemplateName ()) }
 	, AudioQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, StreamQueue_ { gst_element_factory_make ("queue", nullptr) }
 	, AConv_ { gst_element_factory_make ("audioconvert", nullptr) }
@@ -83,9 +83,11 @@ namespace HttStream
 		gst_object_unref (audioPad);
 
 		g_object_set (G_OBJECT (MSS_),
+#if GST_VERSION_MAJOR < 1
 				"unit-type", GST_FORMAT_TIME,
 				"units-max", static_cast<gint64> (7 * GST_SECOND),
 				"units-soft-max", static_cast<gint64> (3 * GST_SECOND),
+#endif
 				"recover-policy", 3,
 				"sync-method", 1,
 				"async", FALSE,

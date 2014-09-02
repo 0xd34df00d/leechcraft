@@ -43,11 +43,19 @@
 #include <QKeyEvent>
 #include <QTextBrowser>
 #include <QDesktopWidget>
+#include <QMimeData>
+#include <QToolBar>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
 #include <util/gui/findnotificationwk.h>
+#include <util/sll/urloperator.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -91,6 +99,7 @@
 #include "dummymsgmanager.h"
 #include "corecommandsmanager.h"
 #include "resourcesmanager.h"
+#include "msgeditautocompleter.h"
 
 namespace LeechCraft
 {
@@ -165,8 +174,6 @@ namespace Azoth
 	, EntryID_ (entryId)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
-	, CurrentNickIndex_ (0)
-	, LastSpacePosition_(-1)
 	, HadHighlight_ (false)
 	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	, ScrollbackPos_ (0)
@@ -529,8 +536,38 @@ namespace Azoth
 			if (!text.startsWith (cmd))
 				return false;
 
-			return text [cmd.size ()] == ' ';
+			return text [cmd.size ()].isSpace ();
 		}
+
+		class CommandResultVisitor : public boost::static_visitor<bool>
+		{
+			QObject * const EntryObj_;
+		public:
+			CommandResultVisitor (QObject *entryObj)
+			: EntryObj_ { entryObj }
+			{
+			}
+
+			bool operator() (bool res) const
+			{
+				return res;
+			}
+
+			bool operator() (const StringCommandResult& result) const
+			{
+				const auto msg = new CoreMessage
+				{
+					result.Message_,
+					QDateTime::currentDateTime (),
+					IMessage::Type::ServiceMessage,
+					IMessage::Direction::In,
+					EntryObj_,
+					EntryObj_
+				};
+				msg->Store ();
+				return result.StopProcessing_;
+			}
+		};
 
 		/** Processes the outgoing messages, replacing /nick with calls
 		 * to the entity to change nick, for example, etc.
@@ -553,8 +590,33 @@ namespace Azoth
 							[&text] (const QString& name) { return TextMatchesCmd (text, name); }))
 						continue;
 
-					if (cmd.Command_ (entry, text))
-						return true;
+					const auto entryObj = entry->GetQObject ();
+					try
+					{
+						auto res = cmd.Command_ (entry, text);
+						if (boost::apply_visitor (CommandResultVisitor { entryObj }, res))
+							return true;
+					}
+					catch (const CommandException& ex)
+					{
+						auto body = ChatTab::tr ("Cannot execute %1.")
+								.arg ("<em>" + text + "</em>");
+						body += " " + ex.GetError ();
+
+						const auto msg = new CoreMessage
+						{
+							body,
+							QDateTime::currentDateTime (),
+							IMessage::Type::ServiceMessage,
+							IMessage::Direction::In,
+							entryObj,
+							entryObj
+						};
+						msg->Store ();
+
+						if (!ex.CanTryOtherCommands ())
+							return true;
+					}
 				}
 
 			return false;
@@ -585,14 +647,15 @@ namespace Azoth
 					MsgHistory_.prepend (text);
 				});
 
-
 		QString variant = Ui_.VariantBox_->count () > 1 ?
 				Ui_.VariantBox_->currentText () :
 				QString ();
 
-		ICLEntry *e = GetEntry<ICLEntry> ();
-		IMessage::Type type =
-				e->GetEntryType () == ICLEntry::EntryType::MUC ?
+		const auto e = GetEntry<ICLEntry> ();
+		if (ProcessOutgoingMsg (e, text))
+			return;
+
+		auto type = e->GetEntryType () == ICLEntry::EntryType::MUC ?
 						IMessage::Type::MUCMessage :
 						IMessage::Type::ChatMessage;
 
@@ -612,9 +675,6 @@ namespace Azoth
 		type = static_cast<IMessage::Type> (intType);
 		proxy->FillValue ("variant", variant);
 		proxy->FillValue ("text", text);
-
-		if (ProcessOutgoingMsg (e, text))
-			return;
 
 		QObject *msgObj = e->CreateMessage (type, variant, text);
 
@@ -941,7 +1001,11 @@ namespace Azoth
 		if (!job->GetComment ().isEmpty ())
 		{
 			text += "<br /><br />" + tr ("The file description is:") + "<br /><br /><em>";
+#if QT_VERSION < 0x050000
 			auto comment = Qt::escape (job->GetComment ());
+#else
+			auto comment = job->GetComment ().toHtmlEscaped ();
+#endif
 			comment.replace ("\n", "<br />");
 			text += comment + "</em>";
 		}
@@ -1138,7 +1202,7 @@ namespace Azoth
 	{
 		void OpenChatWithText (QUrl newUrl, const QString& id, ICLEntry *own)
 		{
-			newUrl.removeQueryItem ("hrid");
+			Util::UrlOperator { newUrl } -= "hrid";
 
 			IAccount *account = qobject_cast<IAccount*> (own->GetParentAccount ());
 			for (QObject *entryObj : account->GetCLEntries ())
@@ -1168,14 +1232,19 @@ namespace Azoth
 		const auto& host = url.host ();
 		if (host == "msgeditreplace")
 		{
-			if (url.queryItems ().isEmpty ())
+#if QT_VERSION < 0x050000
+			const auto& queryItems = url.queryItems ();
+#else
+			const auto& queryItems = QUrlQuery { url }.queryItems ();
+#endif
+			if (queryItems.isEmpty ())
 			{
 				Ui_.MsgEdit_->setText (url.path ().mid (1));
 				Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 				Ui_.MsgEdit_->setFocus ();
 			}
 			else
-				for (const auto& item : url.queryItems ())
+				for (const auto& item : queryItems)
 					if (item.first == "hrid")
 					{
 						OpenChatWithText (url, item.second, GetEntry<ICLEntry> ());
@@ -1203,11 +1272,15 @@ namespace Azoth
 		}
 		else if (host == "insertnick")
 		{
+#if QT_VERSION < 0x050000
 			const auto& encoded = url.encodedQueryItemValue ("nick");
 			const auto& nick = QUrl::fromPercentEncoding (encoded);
+#else
+			const auto& nick = QUrlQuery { url }.queryItemValue ("nick", QUrl::FullyDecoded);
+#endif
 			InsertNick (nick);
 
-			if (!GetMUCParticipants ().contains (nick))
+			if (!GetMucParticipants (EntryID_).contains (nick))
 				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 							tr ("%1 isn't present in this conference at the moment.")
 								.arg ("<em>" + nick + "</em>"),
@@ -1215,13 +1288,18 @@ namespace Azoth
 		}
 		else if (host == "sendentities")
 		{
-			const auto& count = std::max (url.queryItemValue ("count").toInt (), 1);
+#if QT_VERSION < 0x050000
+			const auto queryObject = url;
+#else
+			const QUrlQuery queryObject { url };
+#endif
+			const auto& count = std::max (queryObject.queryItemValue ("count").toInt (), 1);
 			for (int i = 0; i < count; ++i)
 			{
 				const auto& numStr = QString::number (i);
 
-				const auto& entityStr = url.queryItemValue ("entityVar" + numStr);
-				const auto& type = url.queryItemValue ("entityType" + numStr);
+				const auto& entityStr = queryObject.queryItemValue ("entityVar" + numStr);
+				const auto& type = queryObject.queryItemValue ("entityType" + numStr);
 
 				QVariant entityVar;
 				if (type == "url")
@@ -1234,9 +1312,9 @@ namespace Azoth
 					continue;
 				}
 
-				const auto& mime = url.queryItemValue ("mime" + numStr);
+				const auto& mime = queryObject.queryItemValue ("mime" + numStr);
 
-				const auto& flags = url.queryItemValue ("flags" + numStr).split (",");
+				const auto& flags = queryObject.queryItemValue ("flags" + numStr).split (",");
 				TaskParameters tp = TaskParameter::FromUserInitiated;
 				if (flags.contains ("OnlyHandle"))
 					tp |= TaskParameter::OnlyHandle;
@@ -1245,12 +1323,12 @@ namespace Azoth
 
 				auto e = Util::MakeEntity (entityVar, {}, tp, mime);
 
-				const auto& addCountStr = url.queryItemValue ("addCount" + numStr);
+				const auto& addCountStr = queryObject.queryItemValue ("addCount" + numStr);
 				for (int j = 0, cnt = std::max (addCountStr.toInt (), 1); j < cnt; ++j)
 				{
 					const auto& addStr = QString::number (j);
-					const auto& key = url.queryItemValue ("add" + numStr + "key" + addStr);
-					const auto& value = url.queryItemValue ("add" + numStr + "value" + addStr);
+					const auto& key = queryObject.queryItemValue ("add" + numStr + "key" + addStr);
+					const auto& value = queryObject.queryItemValue ("add" + numStr + "value" + addStr);
 					e.Additional_ [key] = value;
 				}
 
@@ -1735,18 +1813,20 @@ namespace Azoth
 				this,
 				SLOT (messageSend ()));
 		connect (Ui_.MsgEdit_,
-				SIGNAL (keyTabPressed ()),
-				this,
-				SLOT (nickComplete ()));
-		connect (Ui_.MsgEdit_,
 				SIGNAL (scroll (int)),
 				this,
 				SLOT (handleEditScroll (int)));
 
+		const auto completer = new MsgEditAutocompleter (EntryID_, Ui_.MsgEdit_, this);
+		connect (Ui_.MsgEdit_,
+				SIGNAL (keyTabPressed ()),
+				completer,
+				SLOT (complete ()));
 		connect (Ui_.MsgEdit_,
 				SIGNAL (clearAvailableNicks ()),
-				this,
-				SLOT (clearAvailableNick ()));
+				completer,
+				SLOT (resetState ()));
+
 		UpdateTextHeight ();
 
 		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_, Ui_.MsgEdit_);
@@ -1935,138 +2015,6 @@ namespace Azoth
 					<< "unhandled append message :(";
 	}
 
-	void ChatTab::nickComplete ()
-	{
-		IMUCEntry *entry = GetEntry<IMUCEntry> ();
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry
-					<< "doesn't implement ICLEntry";
-
-			return;
-		}
-
-		QStringList currentMUCParticipants = GetMUCParticipants ();
-		currentMUCParticipants.removeAll (entry->GetNick ());
-		if (currentMUCParticipants.isEmpty ())
-			return;
-
-		QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
-
-		int cursorPosition = cursor.position ();
-		int pos = -1;
-
-		QString text = Ui_.MsgEdit_->toPlainText ();
-
-		if (AvailableNickList_.isEmpty ())
-		{
-			if (cursorPosition)
-				pos = text.lastIndexOf (' ', cursorPosition - 1);
-			else
-				pos = text.lastIndexOf (' ', cursorPosition);
-			LastSpacePosition_ = pos;
-		}
-		else
-			pos = LastSpacePosition_;
-
-		if (NickFirstPart_.isNull ())
-		{
-			if (!cursorPosition)
-				NickFirstPart_ = "";
-			else
-				NickFirstPart_ = text.mid (pos + 1, cursorPosition - pos -1);
-		}
-
-		const QString& post = XmlSettingsManager::Instance ()
-				.property ("PostAddressText").toString ();
-
-		if (AvailableNickList_.isEmpty ())
-		{
-			Q_FOREACH (const QString& item, currentMUCParticipants)
-				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					AvailableNickList_ << item + (pos == -1 ? post : "") + " ";
-
-			if (AvailableNickList_.isEmpty ())
-				return;
-
-			text.replace (pos + 1,
-					NickFirstPart_.length (),
-					AvailableNickList_ [CurrentNickIndex_]);
-		}
-		else
-		{
-			QStringList newAvailableNick;
-
-			Q_FOREACH (const QString& item, currentMUCParticipants)
-				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					newAvailableNick << item + (pos == -1 ? post : "") + " ";
-
-			int lastNickLen = -1;
-			if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
-			{
-				int newIndex = newAvailableNick.indexOf (AvailableNickList_ [CurrentNickIndex_ - 1]);
-				lastNickLen = AvailableNickList_ [CurrentNickIndex_ - 1].length ();
-
-				while (newIndex == -1 && CurrentNickIndex_ > 0)
-					newIndex = newAvailableNick.indexOf (AvailableNickList_ [--CurrentNickIndex_]);
-
-				CurrentNickIndex_ = (newIndex == -1 ? 0 : newIndex);
-				AvailableNickList_ = newAvailableNick;
-			}
-
-			if (CurrentNickIndex_ < AvailableNickList_.count () && CurrentNickIndex_)
-				text.replace (pos + 1,
-						AvailableNickList_ [CurrentNickIndex_ - 1].length (),
-						AvailableNickList_ [CurrentNickIndex_]);
-			else if (CurrentNickIndex_)
-			{
-				CurrentNickIndex_ = 0;
-				text.replace (pos + 1,
-						AvailableNickList_.last ().length (),
-						AvailableNickList_ [CurrentNickIndex_]);
-			}
-			else
-				text.replace (pos + 1,
-						lastNickLen,
-						AvailableNickList_ [CurrentNickIndex_]);
-		}
-		++CurrentNickIndex_;
-
-		Ui_.MsgEdit_->setPlainText (text);
-		cursor.setPosition (pos + 1 + AvailableNickList_ [CurrentNickIndex_ - 1].length ());
-		Ui_.MsgEdit_->setTextCursor (cursor);
-	}
-
-	QStringList ChatTab::GetMUCParticipants () const
-	{
-		IMUCEntry *entry = GetEntry<IMUCEntry> ();
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry
-					<< "doesn't implement IMUCEntry";
-
-			return QStringList ();
-		}
-
-		QStringList participantsList;
-
-		Q_FOREACH (QObject *item, entry->GetParticipants ())
-		{
-			ICLEntry *part = qobject_cast<ICLEntry*> (item);
-			if (!part)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast item to ICLEntry"
-						<< item;
-				return QStringList ();
-			}
-			participantsList << part->GetEntryName ();
-		}
-		return participantsList;
-	}
-
 	QString ChatTab::ReformatTitle ()
 	{
 		if (!GetEntry<ICLEntry> ())
@@ -2192,16 +2140,6 @@ namespace Azoth
 		Ui_.MUCEventsButton_->setVisible (isSep);
 		if (!initial)
 			PrepareTheme ();
-	}
-
-	void ChatTab::clearAvailableNick ()
-	{
-		NickFirstPart_.clear ();
-		if (!AvailableNickList_.isEmpty ())
-		{
-			AvailableNickList_.clear ();
-			CurrentNickIndex_ = 0;
-		}
 	}
 
 	void ChatTab::handleEditScroll (int direction)

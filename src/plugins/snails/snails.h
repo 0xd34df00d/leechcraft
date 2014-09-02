@@ -49,6 +49,8 @@ namespace Snails
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IJobHolder)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Snails")
+
 		TabClassInfo MailTabClass_;
 		TabClassInfo ComposeTabClass_;
 		Util::XmlSettingsDialog_ptr XSD_;

@@ -53,6 +53,8 @@ namespace LeechCraft
 				Q_OBJECT
 				Q_INTERFACES (IInfo IActionsExporter)
 
+				LC_PLUGIN_METADATA ("org.LeechCraft.NetworkMonitor")
+
 				Ui::NetworkMonitor Ui_;
 				RequestModel *Model_;
 				QSortFilterProxyModel *ProxyModel_;

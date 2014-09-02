@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "dcac.h"
+#include <QIcon>
+#include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "viewsmanager.h"

@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "serverhistorywidget.h"
-#include <QtDebug>
 #include <QSortFilterProxyModel>
+#include <QToolBar>
+#include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include "proxyobject.h"
@@ -175,7 +176,11 @@ namespace Azoth
 			auto msgText = message.RichBody_;
 			if (msgText.isEmpty ())
 			{
+#if QT_VERSION < 0x050000
 				msgText = Qt::escape (message.Body_);
+#else
+				msgText = message.Body_.toHtmlEscaped ();
+#endif
 				ProxyObject {}.FormatLinks (msgText);
 				msgText.replace ('\n', "<br/>");
 			}

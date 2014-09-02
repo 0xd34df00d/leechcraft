@@ -75,6 +75,8 @@ namespace Lastfmscrobble
 				Media::IEventsProvider
 				Media::IHypesProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.LastFMScrobble")
+
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 		Authenticator *Auth_;

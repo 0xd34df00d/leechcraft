@@ -31,7 +31,12 @@
 #include <QAction>
 #include <QTextCodec>
 #include <QTime>
+#include <QToolBar>
+#include <QMenu>
 #include "xmlsettingsmanager.h"
+
+Q_DECLARE_METATYPE (QToolBar*)
+Q_DECLARE_METATYPE (QMenu*)
 
 namespace LeechCraft
 {

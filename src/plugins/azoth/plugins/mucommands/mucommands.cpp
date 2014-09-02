@@ -33,6 +33,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "commands.h"
+#include "presencecommand.h"
 #include "descparser.h"
 
 namespace LeechCraft
@@ -200,6 +201,20 @@ namespace MuCommands
 			[this] (ICLEntry *e, const QString& t) { return Ban (AzothProxy_, e, t); }
 		};
 		descParser (Ban_);
+
+		Presence_ = StaticCommand
+		{
+			{ "/presence" },
+			[this] (ICLEntry *e, const QString& t) { return SetPresence (AzothProxy_, e, t); }
+		};
+		descParser (Presence_);
+
+		ChatPresence_ = StaticCommand
+		{
+			{ "/chatpresence" },
+			[this] (ICLEntry *e, const QString& t) { return SetDirectedPresence (AzothProxy_, e, t); }
+		};
+		descParser (ChatPresence_);
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -242,19 +257,19 @@ namespace MuCommands
 			{
 				Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_,
 				Invite_, ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_,
-				ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_
+				ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_, Presence_, ChatPresence_
 			};
 		case ICLEntry::EntryType::PrivateChat:
 			return
 			{
-				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_,
-				Time_, Disco_, Ping_, Last_, Invite_, ListPerms_, SetPerm_, Whois_
+				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, Ping_, Last_,
+				Invite_, ListPerms_, SetPerm_, Whois_, Presence_, ChatPresence_
 			};
 		default:
 			return
 			{
-				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_,
-				Time_, Disco_, Ping_, Last_, Invite_
+				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, Ping_, Last_,
+				Invite_, Presence_, ChatPresence_
 			};
 		}
 	}

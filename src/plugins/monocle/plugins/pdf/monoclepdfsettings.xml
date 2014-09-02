@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Monocle PDF" />
+		<groupbox>
+			<label value="Rendering" />
+			<item type="checkbox" property="EnableAntialiasing" default="true">
+				<label value="Antialiasing" />
+			</item>
+			<item type="checkbox" property="EnableTextAntialiasing" default="true">
+				<label value="Text antialiasing" />
+			</item>
+			<item type="checkbox" property="EnableTextHinting" default="true">
+				<label value="Text hinting" />
+			</item>
+			<item type="checkbox" property="EnableSlightTextHinting" default="false">
+				<label value="Slight text hinting" />
+			</item>
+			<item type="combobox" property="ThinLineEnhancement">
+				<label value="Thin line enhancement:" />
+				<option name="None" default="true">
+					<label value="none" />
+				</option>
+				<option name="Solid">
+					<label value="solid" />
+				</option>
+				<option name="Shape">
+					<label value="shape" />
+				</option>
+			</item>
+		</groupbox>
+	</page>
+</settings>

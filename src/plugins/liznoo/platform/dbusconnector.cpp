@@ -85,10 +85,6 @@ namespace Liznoo
 				"Resuming",
 				this,
 				SLOT (handleWokeUp ()));
-
-		QTimer::singleShot (1000,
-				this,
-				SLOT (enumerateDevices ()));
 	}
 
 	void DBusConnector::changeState (PlatformLayer::PowerState state)
@@ -135,7 +131,7 @@ namespace Liznoo
 		emit gotEntity (e);
 	}
 
-	void DBusConnector::enumerateDevices()
+	void DBusConnector::enumerateDevices ()
 	{
 		QDBusInterface face ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",

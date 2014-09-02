@@ -27,9 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef COREPLUGIN2MANAGER_H
-#define COREPLUGIN2MANAGER_H
+#pragma once
+
 #include <QNetworkAccessManager>
+#include <QMainWindow>
+#include <QAction>
 #include "util/xpc/basehookinterconnector.h"
 #include "interfaces/core/ihookproxy.h"
 #include "interfaces/iinfo.h"
@@ -81,5 +83,3 @@ namespace LeechCraft
 				bool);
 	};
 }
-
-#endif

@@ -33,6 +33,13 @@
 #include <QTimer>
 #include <QProcess>
 #include <QCoreApplication>
+#include <QAbstractEventDispatcher>
+
+#if QT_VERSION >= 0x050000
+#include <qpa/qplatformnativeinterface.h>
+#include <QGuiApplication>
+#endif
+
 #include <util/x11/xwrapper.h>
 #include "xmlsettingsmanager.h"
 #include "rulesstorage.h"
@@ -42,25 +49,42 @@
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
 
+#if QT_VERSION >= 0x050000
+#include <xcb/xcb.h>
+
+#define explicit xcb_authors_dont_care_about_cplusplus
+#include <xcb/xkb.h>
+#undef explicit
+
+#endif
+
 namespace LeechCraft
 {
 namespace KBSwitch
 {
 	namespace
 	{
+#if QT_VERSION < 0x050000
 		bool EvFilter (void *msg)
 		{
 			return KBCtl::Instance ().Filter (static_cast<XEvent*> (msg));
 		}
+#endif
 	}
 
 	KBCtl::KBCtl ()
+#if QT_VERSION < 0x050000
 	: PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
+#endif
 	{
+#if QT_VERSION >= 0x050000
+		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
+#endif
 		InitDisplay ();
 
 		Rules_ = new RulesStorage (Display_);
 
+#if QT_VERSION < 0x050000
 		XWindowAttributes wa;
 		XGetWindowAttributes (Display_, Window_, &wa);
 		const auto rootEvents = StructureNotifyMask |
@@ -74,6 +98,37 @@ namespace KBSwitch
 
 		XkbSelectEventDetails (Display_, XkbUseCoreKbd,
 				XkbStateNotify, XkbAllStateComponentsMask, XkbGroupStateMask);
+#else
+		const auto conn = QX11Info::connection ();
+
+		const uint32_t rootEvents [] =
+		{
+			XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+				XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
+				XCB_EVENT_MASK_PROPERTY_CHANGE |
+				XCB_EVENT_MASK_FOCUS_CHANGE |
+				XCB_EVENT_MASK_KEYMAP_STATE |
+				XCB_EVENT_MASK_LEAVE_WINDOW |
+				XCB_EVENT_MASK_ENTER_WINDOW
+		};
+		xcb_change_window_attributes (conn,
+				Window_, XCB_CW_EVENT_MASK, rootEvents);
+
+		const uint16_t requiredMapParts = 0xffff;
+
+		const uint16_t requiredEvents = XCB_XKB_EVENT_TYPE_NEW_KEYBOARD_NOTIFY |
+				XCB_XKB_EVENT_TYPE_MAP_NOTIFY |
+				XCB_XKB_EVENT_TYPE_STATE_NOTIFY;
+
+		xcb_xkb_select_events (conn,
+				XCB_XKB_ID_USE_CORE_KBD,
+				requiredEvents,
+				0,
+				requiredEvents,
+				requiredMapParts,
+				requiredMapParts,
+				nullptr);
+#endif
 
 		CheckExtWM ();
 
@@ -97,6 +152,38 @@ namespace KBSwitch
 					"RepeatTimeout"
 				},
 				this, "scheduleApply");
+	}
+
+	void KBCtl::InitDisplay ()
+	{
+#if QT_VERSION < 0x050000
+		int xkbError, xkbReason;
+		int mjr = XkbMajorVersion, mnr = XkbMinorVersion;
+		Display_ = XkbOpenDisplay (nullptr,
+				&XkbEventType_,
+				&xkbError,
+				&mjr,
+				&mnr,
+				&xkbReason);
+#else
+		Display_ = QX11Info::display ();
+
+		const auto conn = QX11Info::connection ();
+		const auto reply = xcb_get_extension_data (conn, &xcb_xkb_id);
+
+		if (!reply || !reply->present)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "XKB extension not present";
+		}
+
+		XkbEventType_ = reply->first_event;
+
+		xcb_xkb_use_extension (conn, XCB_XKB_MAJOR_VERSION, XCB_XKB_MINOR_VERSION);
+#endif
+
+		Window_ = DefaultRootWindow (Display_);
+		NetActiveWinAtom_ = Util::XWrapper::Instance ().GetAtom ("_NET_ACTIVE_WINDOW");
 	}
 
 	KBCtl& KBCtl::Instance ()
@@ -209,6 +296,7 @@ namespace KBSwitch
 		return Rules_;
 	}
 
+#if QT_VERSION < 0x050000
 	bool KBCtl::Filter (XEvent *event)
 	{
 		auto invokePrev = [this, event] { return PrevFilter_ ? PrevFilter_ (event) : false; };
@@ -260,8 +348,57 @@ namespace KBSwitch
 			break;
 		}
 	}
+#else
+	bool KBCtl::nativeEventFilter (const QByteArray& eventType, void *msg, long int* result)
+	{
+		if (eventType != "xcb_generic_event_t")
+			return false;
 
-	void KBCtl::SetWindowLayout (Qt::HANDLE window)
+		const auto ev = static_cast<xcb_generic_event_t*> (msg);
+
+		if ((ev->response_type & ~0x80) == XkbEventType_)
+			HandleXkbEvent (msg);
+
+		switch (ev->response_type & ~0x80)
+		{
+		case XCB_FOCUS_IN:
+		case XCB_FOCUS_OUT:
+		case XCB_PROPERTY_NOTIFY:
+			SetWindowLayout (Util::XWrapper::Instance ().GetActiveApp ());
+			break;
+		case XCB_CREATE_NOTIFY:
+			AssignWindow (static_cast<xcb_create_notify_event_t*> (msg)->window);
+			break;
+		case XCB_DESTROY_NOTIFY:
+			Win2Group_.remove (static_cast<xcb_destroy_notify_event_t*> (msg)->window);
+			break;
+		}
+
+		return false;
+	}
+
+	void KBCtl::HandleXkbEvent (void *msg)
+	{
+		const auto ev = static_cast<xcb_generic_event_t*> (msg);
+		switch (ev->pad0)
+		{
+		case XCB_XKB_STATE_NOTIFY:
+		{
+			const auto stateEv = static_cast<xcb_xkb_state_notify_event_t*> (msg);
+			if (stateEv->group == stateEv->lockedGroup)
+				Win2Group_ [Util::XWrapper::Instance ().GetActiveApp ()] = stateEv->group;
+			emit groupChanged (stateEv->group);
+			break;
+		}
+		case XCB_XKB_NEW_KEYBOARD_NOTIFY:
+			Win2Group_.clear ();
+			UpdateGroupNames ();
+			break;
+		}
+	}
+#endif
+
+	void KBCtl::SetWindowLayout (ulong window)
 	{
 		if (Policy_ != SwitchPolicy::PerWindow)
 			return;
@@ -278,21 +415,6 @@ namespace KBSwitch
 		/* See comments in SetGroup() for details of X11 crappiness.
 		 */
 		GetCurrentGroup ();
-	}
-
-	void KBCtl::InitDisplay ()
-	{
-		int xkbError, xkbReason;
-		int mjr = XkbMajorVersion, mnr = XkbMinorVersion;
-		Display_ = XkbOpenDisplay (nullptr,
-				&XkbEventType_,
-				&xkbError,
-				&mjr,
-				&mnr,
-				&xkbReason);
-		Window_ = DefaultRootWindow (Display_);
-
-		NetActiveWinAtom_ = Util::XWrapper::Instance ().GetAtom ("_NET_ACTIVE_WINDOW");
 	}
 
 	void KBCtl::CheckExtWM ()
@@ -385,7 +507,7 @@ namespace KBSwitch
 		XkbFreeNames (desc, XkbSymbolsNameMask | XkbGroupNamesMask, True);
 	}
 
-	void KBCtl::AssignWindow (Qt::HANDLE window)
+	void KBCtl::AssignWindow (ulong window)
 	{
 		if (ExtWM_)
 			return;

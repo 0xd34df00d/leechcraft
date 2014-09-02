@@ -227,19 +227,23 @@ namespace Xoox
 		}
 
 		QMap<QString, QString> queryItems;
-		QList<QByteArray> queryParts = url.encodedQuery ().split (';');
-		Q_FOREACH (const QByteArray& part, queryParts)
+#if QT_VERSION < 0x050000
+		const auto& queryParts = QString::fromUtf8 (url.encodedQuery ()).split (';');
+#else
+		const auto& queryParts = url.query (QUrl::FullyEncoded).split (';');
+#endif
+		for (const auto& part : queryParts)
 		{
-			const QList<QByteArray>& splitted = part.split ('=');
-			if (splitted.size () > 2)
+			const auto& split = part.split ('=');
+			if (split.size () > 2)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "incorrect query part"
 						<< part
-						<< splitted;
+						<< split;
 				continue;
 			}
-			queryItems [splitted.at (0)] = QUrl::fromPercentEncoding (splitted.value (1));
+			queryItems [split.at (0)] = QUrl::fromPercentEncoding (split.value (1).toLatin1 ());
 		}
 
 		qDebug () << "HANDLE" << queryItems;

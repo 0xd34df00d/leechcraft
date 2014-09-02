@@ -33,6 +33,7 @@
 #include <QTimer>
 #include <QMimeData>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/models/dndactionsmixin.h>
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"
@@ -44,7 +45,7 @@ namespace LMP
 {
 	namespace
 	{
-		class PlaylistModel : public QStandardItemModel
+		class PlaylistModel : public Util::DndActionsMixin<QStandardItemModel>
 		{
 			PlaylistManager *Manager_;
 		public:
@@ -55,7 +56,7 @@ namespace LMP
 			};
 
 			PlaylistModel (PlaylistManager *parent)
-			: QStandardItemModel (parent)
+			: DndActionsMixin<QStandardItemModel> (parent)
 			, Manager_ (parent)
 			{
 				setSupportedDragActions (Qt::CopyAction);

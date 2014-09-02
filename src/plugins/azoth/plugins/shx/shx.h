@@ -36,6 +36,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/iprovidecommands.h>
 
 class QProcess;
 
@@ -43,18 +44,28 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace SHX
 {
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				 , public IProvideCommands
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				IHaveSettings
+				LeechCraft::Azoth::IProvideCommands)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.SHX")
 
 		Util::XmlSettingsDialog_ptr XSD_;
-		QHash<QProcess*, QPointer<QObject>> Process2Chat_;
+		QHash<QProcess*, QPointer<QObject>> Process2Entry_;
+
+		IProxyObject *AzothProxy_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -67,12 +78,12 @@ namespace SHX
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		StaticCommands_t GetStaticCommands (ICLEntry*);
+	private:
+		void ExecuteProcess (ICLEntry *entry, const QString& text);
 	public slots:
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
+		void initPlugin (QObject*);
 	private slots:
 		void handleFinished ();
 	};

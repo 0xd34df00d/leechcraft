@@ -4,8 +4,6 @@ include (InitLCPlugin OPTIONAL)
 
 find_package (LibLaretz REQUIRED)
 
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -46,3 +44,5 @@ target_link_libraries (leechcraft_syncer
 install (TARGETS leechcraft_syncer DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES syncersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_syncer Network)

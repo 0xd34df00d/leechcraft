@@ -53,6 +53,8 @@ namespace Eleeminator
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IHaveShortcuts IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Eleeminator")
+
 		ICoreProxy_ptr Proxy_;
 		TabClassInfo TermTabTC_;
 

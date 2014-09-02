@@ -37,6 +37,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
+#include "similarview.h"
 
 namespace LeechCraft
 {
@@ -44,8 +45,11 @@ namespace LMP
 {
 	RecommendationsWidget::RecommendationsWidget (QWidget *parent)
 	: QWidget (parent)
+	, RecView_ (new SimilarView)
 	{
 		Ui_.setupUi (this);
+
+		layout ()->addWidget (RecView_);
 	}
 
 	void RecommendationsWidget::InitializeProviders ()
@@ -95,7 +99,7 @@ namespace LMP
 		}
 		const auto& similars = pending->GetSimilar ();
 
-		Ui_.RecView_->SetSimilarArtists (similars);
+		RecView_->SetSimilarArtists (similars);
 	}
 
 	void RecommendationsWidget::on_RecProvider__activated (int index)

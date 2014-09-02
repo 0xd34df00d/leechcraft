@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "velvetbird.h"
+#include <QIcon>
 #include "protomanager.h"
 
 namespace LeechCraft

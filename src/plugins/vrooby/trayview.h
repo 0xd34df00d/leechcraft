@@ -29,7 +29,13 @@
 
 #pragma once
 
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
 #include <QDeclarativeView>
+#else
+#include <QQuickWidget>
+#endif
+
 #include <interfaces/core/icoreproxy.h>
 
 class QSortFilterProxyModel;
@@ -42,7 +48,11 @@ namespace Vrooby
 	class FlatMountableItems;
 	class FilterModel;
 
+#if QT_VERSION < 0x050000
 	class TrayView : public QDeclarativeView
+#else
+	class TrayView : public QQuickWidget
+#endif
 	{
 		Q_OBJECT
 

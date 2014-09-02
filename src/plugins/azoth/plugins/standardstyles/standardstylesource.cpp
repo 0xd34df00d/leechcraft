@@ -32,6 +32,7 @@
 #include <QWebElement>
 #include <QWebFrame>
 #include <QApplication>
+#include <QPalette>
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
 #include <util/util.h>
@@ -135,7 +136,11 @@ namespace StandardStyles
 					"<span class='nickname' style='color: " + color + "'>" :
 					"<span class='nickname'>";
 			return pre +
+#if QT_VERSION < 0x050000
 					Qt::escape (part) +
+#else
+					part.toHtmlEscaped () +
+#endif
 					"</span>";
 		}
 	}
@@ -154,7 +159,11 @@ namespace StandardStyles
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		QString entryName = other ?
+#if QT_VERSION < 0x050000
 				Qt::escape (other->GetEntryName ()) :
+#else
+				other->GetEntryName ().toHtmlEscaped () :
+#endif
 				QString ();
 		if (msg->GetMessageType () == IMessage::Type::ChatMessage &&
 				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool () &&
@@ -272,8 +281,12 @@ namespace StandardStyles
 			if (advMsg && advMsg->IsDelivered ())
 				statusIconName = "notification_chat_delivery_ok";
 
-			IMUCEntry *entry = qobject_cast<IMUCEntry*> (other->GetParentCLEntry ());
-			IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
+			const auto entry = other ?
+					qobject_cast<IMUCEntry*> (other->GetParentCLEntry ()) :
+					nullptr;
+			const auto acc = other ?
+					qobject_cast<IAccount*> (other->GetParentAccount ()) :
+					nullptr;
 			const QString& nick = entry ?
 					entry->GetNick () :
 					acc->GetOurNick ();

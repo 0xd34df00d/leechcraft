@@ -29,8 +29,14 @@
 #include <QAbstractEventDispatcher>
 #include <QKeySequence>
 #include <QHash>
+#if QT_VERSION >= 0x050000
+#include <QAbstractNativeEventFilter>
+#endif
 
 class QxtGlobalShortcutPrivate : public QxtPrivate<QxtGlobalShortcut>
+#if QT_VERSION >= 0x050000
+							   , public QAbstractNativeEventFilter
+#endif
 {
 public:
 	QXT_DECLARE_PUBLIC(QxtGlobalShortcut)
@@ -47,8 +53,12 @@ public:
 	static bool error;
 #ifndef Q_WS_MAC
 	static int ref;
+#if QT_VERSION < 0x050000
 	static QAbstractEventDispatcher::EventFilter prevEventFilter;
 	static bool eventFilter(void* message);
+#else
+	bool nativeEventFilter (const QByteArray&, void*, long*) override;
+#endif
 #endif // Q_WS_MAC
 
 	static void activateShortcut(quint32 nativeKey, quint32 nativeMods);

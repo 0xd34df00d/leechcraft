@@ -31,6 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
+#include <QImage>
 #include <QtDebug>
 
 namespace LeechCraft

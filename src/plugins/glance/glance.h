@@ -31,11 +31,10 @@
 #ifndef PLUGINS_GLANCE_GLANCE_H
 #define PLUGINS_GLANCE_GLANCE_H
 #include <QObject>
+#include <QAction>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihaveshortcuts.h>
-
-class QAction;
 
 namespace LeechCraft
 {
@@ -52,6 +51,8 @@ namespace Glance
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter IHaveShortcuts)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Glance")
 
 		ICoreProxy_ptr Proxy_;
 		QAction *ActionGlance_;

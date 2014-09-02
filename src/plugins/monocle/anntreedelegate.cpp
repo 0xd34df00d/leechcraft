@@ -159,7 +159,11 @@ namespace Monocle
 					.arg (ann->GetAuthor ())
 					.arg (tr ("Date"))
 					.arg (ann->GetDate ().toString (Qt::DefaultLocaleShortDate)) +
+#if QT_VERSION < 0x050000
 				Qt::escape (ann->GetText ()) +
+#else
+				ann->GetText ().toHtmlEscaped () +
+#endif
 				"</body></html>";
 	}
 }

@@ -29,10 +29,10 @@
 
 #ifndef PLUGINS_BITTORRENT_TORRENTPLUIGN_H
 #define PLUGINS_BITTORRENT_TORRENTPLUIGN_H
-#define PLUGINS_BITTORRENT_WIN32_LEAN_AND_MEAN
 #include <memory>
 #include <deque>
 #include <QMainWindow>
+#include <QToolBar>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ientityhandler.h>
@@ -96,6 +96,8 @@ namespace LeechCraft
 						IStartupWizard
 						IActionsExporter
 						IHaveDiagInfo)
+
+				LC_PLUGIN_METADATA ("org.LeechCraft.BitTorrent")
 
 				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;

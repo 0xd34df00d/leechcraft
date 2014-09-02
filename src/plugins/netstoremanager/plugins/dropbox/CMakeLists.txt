@@ -4,7 +4,12 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package (QJSON REQUIRED)
+if (NOT USE_QT5)
+	find_package (QJSON REQUIRED)
+else ()
+	unset (QJSON_INCLUDE_DIR)
+	unset (QJSON_LIBRARIES)
+endif ()
 
 include_directories (${NETSTOREMANAGER_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -26,17 +31,18 @@ set (DBOX_SRCS
 
 set (DBOX_RESOURCES netstoremanagerdropboxresources.qrc)
 
-QT4_ADD_RESOURCES (DBOX_RCCS ${DBOX_RESOURCES})
+QtAddResources (DBOX_RCCS ${DBOX_RESOURCES})
 
 add_library (leechcraft_netstoremanager_dbox SHARED
 	${DBOX_SRCS}
 	${DBOX_RCCS}
 	)
 target_link_libraries (leechcraft_netstoremanager_dbox
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_netstoremanager_dbox DESTINATION ${LC_PLUGINS_DEST})
 install (FILES nsmdropboxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_netstoremanager_dbox Core)

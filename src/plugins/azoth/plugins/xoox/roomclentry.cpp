@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QXmppMucManager.h>
 #include <QXmppBookmarkManager.h>
+#include <QXmppDiscoveryManager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxaccount.h"
@@ -40,6 +41,7 @@
 #include "roomhandler.h"
 #include "roomconfigwidget.h"
 #include "core.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -158,9 +160,7 @@ namespace Xoox
 
 	QStringList RoomCLEntry::Variants () const
 	{
-		QStringList result;
-		result << "";
-		return result;
+		return { "" };
 	}
 
 	QObject* RoomCLEntry::CreateMessage (IMessage::Type,
@@ -179,7 +179,7 @@ namespace Xoox
 
 	void RoomCLEntry::PurgeMessages (const QDateTime& before)
 	{
-		Util::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void RoomCLEntry::SetChatPartState (ChatPartState, const QString&)
@@ -548,6 +548,27 @@ namespace Xoox
 		}
 
 		cfg->accept ();
+	}
+
+	bool RoomCLEntry::CanSendDirectedStatusNow (const QString&)
+	{
+		return true;
+	}
+
+	void RoomCLEntry::SendDirectedStatus (const EntryStatus& state, const QString&)
+	{
+		auto conn = Account_->GetClientConnection ();
+
+		auto pres = XooxUtil::StatusToPresence (state.State_,
+				state.StatusString_, conn->GetLastState ().Priority_);
+
+		pres.setTo (RH_->GetRoomJID ());
+
+		const auto discoMgr = conn->GetClient ()->findExtension<QXmppDiscoveryManager> ();
+		pres.setCapabilityHash ("sha-1");
+		pres.setCapabilityNode (discoMgr->clientCapabilitiesNode ());
+		pres.setCapabilityVer (discoMgr->capabilities ().verificationString ());
+		conn->GetClient ()->sendPacket (pres);
 	}
 
 	void RoomCLEntry::MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to)

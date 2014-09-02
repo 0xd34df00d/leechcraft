@@ -53,6 +53,8 @@ namespace Herbicide
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Herbicide")
+
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		ConfWidget *ConfWidget_;
 		QSet<QObject*> AskedEntries_;

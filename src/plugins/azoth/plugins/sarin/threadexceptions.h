@@ -38,7 +38,11 @@ namespace Azoth
 {
 namespace Sarin
 {
+#if QT_VERSION < 0x050000
 	class ToxException : public QtConcurrent::Exception
+#else
+	class ToxException : public QException
+#endif
 	{
 		const std::exception Wrapped_;
 	public:

@@ -42,6 +42,7 @@
 #include <interfaces/idownload.h>
 
 class QFile;
+class QToolBar;
 
 struct EntityTestHandleResult;
 

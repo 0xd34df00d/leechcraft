@@ -33,12 +33,20 @@
 #include <QtDebug>
 #include <QBuffer>
 #include <QFile>
+
+#if QT_VERSION < 0x050000
 #include <poppler-qt4.h>
+#else
+#include <poppler-qt5.h>
+#endif
+
 #include <poppler-form.h>
 #include <poppler-version.h>
 #include "links.h"
 #include "fields.h"
 #include "annotations.h"
+#include "xmlsettingsmanager.h"
+#include "pendingfontinforequest.h"
 
 namespace LeechCraft
 {
@@ -54,9 +62,22 @@ namespace PDF
 		if (!PDocument_)
 			return;
 
-		PDocument_->setRenderHint (Poppler::Document::Antialiasing);
-		PDocument_->setRenderHint (Poppler::Document::TextAntialiasing);
-		PDocument_->setRenderHint (Poppler::Document::TextHinting);
+		auto setRenderHint = [this] (const QByteArray& optName, Poppler::Document::RenderHint hint)
+		{
+			PDocument_->setRenderHint (hint,
+					XmlSettingsManager::Instance ().property (optName).toBool ());
+		};
+		setRenderHint ("EnableAntialiasing", Poppler::Document::Antialiasing);
+		setRenderHint ("EnableTextAntialiasing", Poppler::Document::TextAntialiasing);
+		setRenderHint ("EnableTextHinting", Poppler::Document::TextHinting);
+		setRenderHint ("EnableTextSlightHinting", Poppler::Document::TextSlightHinting);
+
+		const auto& enhanceMode = XmlSettingsManager::Instance ()
+				.property ("ThinLineEnhancement").toString ();
+		if (enhanceMode == "Solid")
+			PDocument_->setRenderHint (Poppler::Document::ThinLineSolid);
+		else if (enhanceMode == "Shape")
+			PDocument_->setRenderHint (Poppler::Document::ThinLineShape);
 
 		BuildTOC ();
 	}
@@ -143,6 +164,11 @@ namespace PDF
 		return page->text (rect);
 	}
 
+	IPendingFontInfoRequest* Document::RequestFontInfos () const
+	{
+		return new PendingFontInfoRequest (PDocument_);
+	}
+
 	QList<IAnnotation_ptr> Document::GetAnnotations (int pageNum)
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
@@ -188,6 +214,24 @@ namespace PDF
 			}
 		}
 		return fields;
+	}
+
+	void Document::PaintPage (QPainter *painter, int num, double xScale, double yScale)
+	{
+		const auto backend = PDocument_->renderBackend ();
+		std::shared_ptr<void> guard;
+		if (backend != Poppler::Document::ArthurBackend)
+		{
+			PDocument_->setRenderBackend (Poppler::Document::ArthurBackend);
+			guard.reset (static_cast<void*> (nullptr),
+					[this, backend] (void*) { PDocument_->setRenderBackend (backend); });
+		}
+
+		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
+		if (!page)
+			return;
+
+		page->renderToPainter (painter, 72 * xScale, 72 * yScale);
 	}
 
 	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)

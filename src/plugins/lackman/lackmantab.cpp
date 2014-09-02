@@ -30,6 +30,8 @@
 #include "lackmantab.h"
 #include <QStringListModel>
 #include <QShortcut>
+#include <QToolBar>
+#include <QMenu>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>

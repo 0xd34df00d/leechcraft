@@ -32,7 +32,12 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QtDebug>
+
+#if QT_VERSION < 0x050000
 #include <qjson/parser.h>
+#else
+#include <QJsonDocument>
+#endif
 
 namespace LeechCraft
 {
@@ -57,6 +62,7 @@ namespace SB2
 			return;
 		}
 
+#if QT_VERSION < 0x050000
 		QJson::Parser parser;
 		bool ok = false;
 		const auto& varMap = parser.parse (&file, &ok).toMap ();
@@ -69,6 +75,20 @@ namespace SB2
 					<< parser.errorString ();
 			return;
 		}
+#else
+		QJsonParseError error;
+		const auto& document = QJsonDocument::fromJson (file.readAll (), &error);
+		const auto& varMap = document.toVariant ().toMap ();
+		if (error.error != QJsonParseError::NoError)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to parse manifest for"
+					<< path
+					<< error.offset
+					<< error.errorString ();
+			return;
+		}
+#endif
 
 		Name_ = varMap ["quarkName"].toString ();
 		Areas_ = varMap ["areas"].toStringList ();

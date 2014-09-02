@@ -33,7 +33,14 @@
 #include <QList>
 #include <QString>
 #include <QHash>
+#include <QObject>
+
+#if QT_VERSION < 0x050000
 #include <QAbstractEventDispatcher>
+#else
+#include <QAbstractNativeEventFilter>
+#endif
+
 #include <X11/Xdefs.h>
 #include "x11config.h"
 #include "winflags.h"
@@ -52,6 +59,9 @@ namespace LeechCraft
 namespace Util
 {
 	class UTIL_X11_API XWrapper : public QObject
+#if QT_VERSION >= 0x050000
+								, public QAbstractNativeEventFilter
+#endif
 	{
 		Q_OBJECT
 
@@ -60,7 +70,9 @@ namespace Util
 
 		QHash<QString, Atom> Atoms_;
 
+#if QT_VERSION < 0x050000
 		const QAbstractEventDispatcher::EventFilter PrevFilter_;
+#endif
 
 		XWrapper ();
 	public:
@@ -76,7 +88,11 @@ namespace Util
 		Display* GetDisplay () const;
 		Window GetRootWindow () const;
 
+#if QT_VERSION < 0x050000
 		bool Filter (XEvent*);
+#else
+		bool nativeEventFilter (const QByteArray& eventType, void *message, long *result) override;
+#endif
 
 		void Sync ();
 

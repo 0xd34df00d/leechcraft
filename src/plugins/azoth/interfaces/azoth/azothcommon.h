@@ -119,6 +119,14 @@ namespace Azoth
 		 */
 		CPSPaused
 	};
+
+	struct CustomStatus
+	{
+		QString Name_;
+
+		State State_;
+		QString Text_;
+	};
 }
 }
 

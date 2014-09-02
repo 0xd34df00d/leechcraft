@@ -17,18 +17,8 @@
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QDeclarativeView" name="CommentsView_"/>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QDeclarativeView</class>
-   <extends>QGraphicsView</extends>
-   <header>QtDeclarative/QDeclarativeView</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

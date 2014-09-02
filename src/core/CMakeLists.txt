@@ -11,18 +11,6 @@ if (WITH_DBUS_LOADERS)
 	add_definitions (-DWITH_DBUS_LOADERS)
 endif ()
 
-if (NOT USE_QT5)
-	if (WITH_DBUS_LOADERS)
-		set (QT_USE_QTDBUS TRUE)
-	endif ()
-	set (QT_USE_QTNETWORK TRUE)
-	set (QT_USE_QTXML TRUE)
-	set (QT_USE_QTSQL TRUE)
-	set (QT_USE_QTSCRIPT TRUE)
-	set (QT_USE_QTDECLARATIVE TRUE)
-	include (${QT_USE_FILE})
-endif ()
-
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
 if (WITH_QWT)
 	add_definitions (-DWITH_QWT)
@@ -51,7 +39,7 @@ if (WITH_DOCS)
 endif ()
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
-if (WITH_X11 AND NOT APPLE)
+if (WITH_X11 AND NOT APPLE AND NOT USE_QT5)
 	find_package (X11)
 
 	if (X11_FOUND)
@@ -172,8 +160,6 @@ add_executable (leechcraft WIN32
 	)
 
 target_link_libraries (leechcraft
-		${QT_QTMAIN_LIBRARY}
-		${QT_LIBRARIES}
 		${Boost_PROGRAM_OPTIONS_LIBRARY}
 		${LEECHCRAFT_LIBRARIES}
 		${ADDITIONAL_LIBS}
@@ -182,10 +168,9 @@ target_link_libraries (leechcraft
 install (TARGETS leechcraft DESTINATION ${LC_BINDIR})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
-endif ()
+FindQtLibs (leechcraft Gui Network Widgets Xml Quick Qml Script Concurrent Svg Sql)
 
 if (WITH_DBUS_LOADERS)
 	add_subdirectory (loaders/dbus)
+	FindQtLibs (leechcraft DBus)
 endif ()

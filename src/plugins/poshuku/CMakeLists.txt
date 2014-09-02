@@ -1,35 +1,23 @@
-if (NOT QT_USE_FILE)
-	cmake_minimum_required (VERSION 2.6)
-	if (COMMAND cmake_policy)
-		cmake_policy (SET CMP0003 NEW)
-	endif ()
-
-	project (leechcraft_poshuku)
-
-	if (NOT CMAKE_MODULE_PATH)
-		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	endif ()
-
-	find_package (Boost REQUIRED)
-	find_package (Qt4 REQUIRED)
-	find_package (LeechCraft REQUIRED)
-endif ()
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_poshuku)
+include (InitLCPlugin OPTIONAL)
 
 option (ENABLE_IDN "Enable support for Internationalized Domain Names" OFF)
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
+
 if (ENABLE_IDN)
+	FIND_PACKAGE (IDN REQUIRED)
 	add_definitions (-DENABLE_IDN)
+else ()
+	unset (IDN_LIBRARIES)
 endif ()
 
-set (QT_USE_QTSQL TRUE)
-set (QT_USE_QTXML TRUE)
-set (QT_USE_QTWEBKIT TRUE)
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${IDN_INCLUDE_DIR}
 	)
 set (SRCS
 	poshuku.cpp
@@ -80,6 +68,7 @@ set (SRCS
 	urleditbuttonsmanager.cpp
 	webpagesslwatcher.cpp
 	sslstatedialog.cpp
+	featurepermnotification.cpp
 	)
 set (FORMS
 	browserwidget.ui
@@ -95,14 +84,15 @@ set (FORMS
 	historywidget.ui
 	urlframe.ui
 	sslstatedialog.ui
+	featurepermnotification.ui
 	)
 set (RESOURCES poshukuresources.qrc)
 
 CreateTrs ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku" "en;ru_RU" "${SRCS}" "${FORMS}" "poshukusettings.xml")
 
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_poshuku SHARED
 	${COMPILED_TRANSLATIONS}
@@ -111,19 +101,16 @@ add_library (leechcraft_poshuku SHARED
 	${RCCS}
 	)
 
-if (ENABLE_IDN)
-	set (IDN_LIB "idn")
-endif ()
-
 target_link_libraries (leechcraft_poshuku
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${IDN_LIB}
+	${IDN_LIBRARIES}
 	)
 install (TARGETS leechcraft_poshuku DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukusettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY installed/poshuku/ DESTINATION ${LC_INSTALLEDMANIFEST_DEST}/poshuku)
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
+
+FindQtLibs (leechcraft_poshuku Network PrintSupport Sql Xml WebKitWidgets)
 
 set (POSHUKU_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
 

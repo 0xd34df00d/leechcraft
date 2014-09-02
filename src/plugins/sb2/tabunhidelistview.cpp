@@ -28,7 +28,11 @@
  **********************************************************************/
 
 #include "tabunhidelistview.h"
+#if QT_VERSION < 0x050000
 #include <QGraphicsObject>
+#else
+#include <QQuickItem>
+#endif
 #include <QtDebug>
 #include <util/util.h>
 #include <util/qml/unhidelistmodel.h>
@@ -39,21 +43,22 @@ namespace SB2
 {
 	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs,
 			ICoreProxy_ptr proxy, QWidget *parent)
-	: UnhideListViewBase (proxy, parent)
-	{
-		QList<QStandardItem*> items;
-		for (const auto& tc : tcs)
+	: UnhideListViewBase (proxy,
+		[&tcs] (QStandardItemModel *model)
 		{
-			auto item = new QStandardItem;
-			item->setData (tc.TabClass_, Util::UnhideListModel::Roles::ItemClass);
-			item->setData (tc.VisibleName_, Util::UnhideListModel::Roles::ItemName);
-			item->setData (tc.Description_, Util::UnhideListModel::Roles::ItemDescription);
-			item->setData (Util::GetAsBase64Src (tc.Icon_.pixmap (32, 32).toImage ()),
-					Util::UnhideListModel::Roles::ItemIcon);
-			items << item;
-		}
-		Model_->invisibleRootItem ()->appendRows (items);
-
+			for (const auto& tc : tcs)
+			{
+				auto item = new QStandardItem;
+				item->setData (tc.TabClass_, Util::UnhideListModel::Roles::ItemClass);
+				item->setData (tc.VisibleName_, Util::UnhideListModel::Roles::ItemName);
+				item->setData (tc.Description_, Util::UnhideListModel::Roles::ItemDescription);
+				item->setData (Util::GetAsBase64Src (tc.Icon_.pixmap (32, 32).toImage ()),
+						Util::UnhideListModel::Roles::ItemIcon);
+				model->appendRow (item);
+			}
+		},
+		parent)
+	{
 		connect (rootObject (),
 				SIGNAL (itemUnhideRequested (QString)),
 				this,

@@ -48,6 +48,8 @@
 #include <interfaces/core/itagsmanager.h>
 #include "findproxy.h"
 
+Q_DECLARE_METATYPE (QToolBar*)
+
 using namespace LeechCraft::Plugins::HistoryHolder;
 
 QDataStream& operator<< (QDataStream& out, const Core::HistoryEntry& e)

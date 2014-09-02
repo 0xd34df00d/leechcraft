@@ -55,6 +55,8 @@ namespace Liznoo
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IActionsExporter)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Liznoo")
+
 		ICoreProxy_ptr Proxy_;
 
 		Util::XmlSettingsDialog_ptr XSD_;

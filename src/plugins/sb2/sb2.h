@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QObject>
+#include <QMainWindow>
+#include <QToolBar>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
@@ -57,6 +59,8 @@ namespace SB2
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveShortcuts)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.SB2")
 
 		ICoreProxy_ptr Proxy_;
 

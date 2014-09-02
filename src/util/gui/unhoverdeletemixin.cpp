@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	UnhoverDeleteMixin::UnhoverDeleteMixin (QWidget *watched, const char *slot)
+	UnhoverDeleteMixin::UnhoverDeleteMixin (QObject *watched, const char *slot)
 	: QObject (watched)
 	, LeaveTimer_ (new QTimer (this))
 	, ContainsMouse_ (false)

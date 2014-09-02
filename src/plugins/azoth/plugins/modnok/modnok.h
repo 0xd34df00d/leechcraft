@@ -54,6 +54,8 @@ namespace Modnok
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Modnok")
+
 		std::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 

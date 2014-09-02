@@ -58,6 +58,8 @@ namespace SpeedDial
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.SpeedDial")
+
 		IProxyObject *PoshukuProxy_;
 		ImageCache *Cache_;
 		CustomSitesManager *CustomSites_;

@@ -80,10 +80,14 @@ namespace Eleeminator
 
 		void AddUrlActions (QMenu&, const QPoint&);
 	private slots:
+		void setHistorySettings ();
+
 		void handleTermContextMenu (const QPoint&);
 
 		void openUrl ();
 		void copyUrl ();
+
+		void openSelectedFile ();
 
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);

@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_xproxy)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -28,7 +26,7 @@ set (FORMS
 	editurldialog.ui
 	editlistsdialog.ui
 	)
-QT4_WRAP_UI (UIS_H ${FORMS})
+QtWrapUi (UIS_H ${FORMS})
 
 CreateTrs ("xproxy" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("xproxy" "en;ru_RU" "${SRCS}" "${FORMS}" "xproxysettings.xml")
@@ -45,3 +43,5 @@ target_link_libraries (leechcraft_xproxy
 install (TARGETS leechcraft_xproxy DESTINATION ${LC_PLUGINS_DEST})
 install (FILES xproxysettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/scripts/xproxy DESTINATION ${LC_SCRIPTS_DEST})
+
+FindQtLibs (leechcraft_xproxy Network Widgets)

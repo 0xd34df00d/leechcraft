@@ -4,8 +4,6 @@ include (InitLCPlugin OPTIONAL)
 
 find_package (X11 REQUIRED)
 
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -31,3 +29,5 @@ target_link_libraries (leechcraft_mellonetray
 	)
 install (TARGETS leechcraft_mellonetray DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/mellonetray DESTINATION ${LC_QML_DEST})
+
+FindQtLibs (leechcraft_mellonetray Quick X11Extras)

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "spegnersi.h"
+#include <QIcon>
 #include <util/util.h>
 #include "flickrservice.h"
 

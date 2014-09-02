@@ -32,7 +32,6 @@
 #include <memory>
 #include <QMetaType>
 #include <QtNetwork/QNetworkAccessManager>
-#include <QTabBar>
 
 class IShortcutProxy;
 class IMWProxy;
@@ -48,6 +47,7 @@ class QAbstractItemModel;
 class QTabWidget;
 class IColorThemeManager;
 class IIconThemeManager;
+class QAction;
 
 namespace LeechCraft
 {

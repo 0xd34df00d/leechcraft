@@ -8,8 +8,6 @@ if (NOT ENABLE_OTLOZHU_SYNC)
 	add_definitions (-DDISABLE_SYNC=1)
 endif ()
 
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -58,8 +56,8 @@ set (RESOURCES otlozhuresources.qrc)
 CreateTrs ("otlozhu" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("otlozhu" "en;ru_RU" "${SRCS}" "${FORMS}" "otlozhusettings.xml")
 
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 add_definitions (-DBOOST_SPIRIT_USE_PHOENIX_V3)
 
 add_library (leechcraft_otlozhu SHARED
@@ -70,9 +68,10 @@ add_library (leechcraft_otlozhu SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_otlozhu
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LARETZ_LIB}
 	)
 install (TARGETS leechcraft_otlozhu DESTINATION ${LC_PLUGINS_DEST})
 install (FILES otlozhusettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_otlozhu Widgets Xml)

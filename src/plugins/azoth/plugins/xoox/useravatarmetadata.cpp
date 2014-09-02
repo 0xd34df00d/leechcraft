@@ -115,7 +115,7 @@ namespace Xoox
 			Height_ = info.attribute ("height").toInt ();
 			Type_ = info.attribute ("type");
 			ID_ = info.attribute ("id").toLatin1 ();
-			URL_ = QUrl::fromEncoded (info.attribute ("url").toAscii ());
+			URL_ = QUrl::fromEncoded (info.attribute ("url").toLatin1 ());
 		}
 	}
 

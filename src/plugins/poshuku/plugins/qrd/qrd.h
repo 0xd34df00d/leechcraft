@@ -37,6 +37,7 @@
 
 class QWebHitTestResult;
 class QWebView;
+class QContextMenuEvent;
 
 namespace LeechCraft
 {
@@ -50,6 +51,8 @@ namespace QRd
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.QRd")
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

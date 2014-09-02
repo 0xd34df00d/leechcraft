@@ -48,6 +48,8 @@ namespace Lemon
 		Q_OBJECT
 		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Lemon")
+
 		TrafficManager *TrafficMgr_;
 		QuarkComponent_ptr PanelComponent_;
 

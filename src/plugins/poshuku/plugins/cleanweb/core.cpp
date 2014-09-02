@@ -50,6 +50,11 @@
 #include <QMainWindow>
 #include <QDir>
 #include <qwebview.h>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <util/xpc/util.h>
 #include <util/network/customnetworkreply.h>
 #include <util/sys/paths.h>
@@ -60,6 +65,7 @@
 #include "userfiltersmodel.h"
 #include "lineparser.h"
 
+Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QWebFrame*);
 Q_DECLARE_METATYPE (QPointer<QWebFrame>);
 Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::HidingWorkerResult);
@@ -306,7 +312,11 @@ namespace CleanWeb
 		if (url.scheme () == "abp" &&
 				url.path () == "subscribe")
 		{
-			QString name = url.queryItemValue ("title");
+#if QT_VERSION < 0x050000
+			const auto& name = url.queryItemValue ("title");
+#else
+			const auto& name = QUrlQuery { url }.queryItemValue ("title");
+#endif
 			if (std::find_if (Filters_.begin (), Filters_.end (),
 						FilterFinder<FTName_> (name)) == Filters_.end ())
 				return true;
@@ -721,11 +731,23 @@ namespace CleanWeb
 	{
 		qDebug () << Q_FUNC_INFO << subscrUrl;
 		QUrl url;
-		if (subscrUrl.queryItemValue ("location").contains ("%"))
-			url.setUrl (QUrl::fromPercentEncoding (subscrUrl.queryItemValue ("location").toAscii ()));
+
+#if QT_VERSION < 0x050000
+		const auto& location = subscrUrl.queryItemValue ("location");
+#else
+		const auto& location = QUrlQuery { subscrUrl }.queryItemValue ("location");
+#endif
+
+		if (location.contains ("%"))
+			url.setUrl (QUrl::fromPercentEncoding (location.toLatin1 ()));
 		else
-			url.setUrl (subscrUrl.queryItemValue ("location"));
-		QString subscrName = subscrUrl.queryItemValue ("title");
+			url.setUrl (location);
+
+#if QT_VERSION < 0x050000
+		const auto& subscrName = subscrUrl.queryItemValue ("title");
+#else
+		const auto& subscrName = QUrlQuery { subscrUrl }.queryItemValue ("title");
+#endif
 
 		if (Exists (subscrName) || Exists (url))
 			return false;

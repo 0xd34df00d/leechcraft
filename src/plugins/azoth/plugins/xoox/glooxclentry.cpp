@@ -80,7 +80,7 @@ namespace Xoox
 					.firstChildElement ("id").text ().toLatin1 ());
 		const QString& name = entry.firstChildElement ("name").text ();
 
-		QByteArray vcardData = entry.firstChildElement ("vcard").text ().toAscii ();
+		const auto& vcardData = entry.firstChildElement ("vcard").text ().toLatin1 ();
 		QDomDocument vcardDoc;
 		vcardDoc.setContent (QByteArray::fromBase64 (vcardData));
 

@@ -48,6 +48,8 @@ namespace DeadLyrics
 		Q_OBJECT
 		Q_INTERFACES (IInfo Media::ILyricsFinder)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.DeadLyrics")
+
 		ICoreProxy_ptr Proxy_;
 		Searchers_t Searchers_;
 	public:

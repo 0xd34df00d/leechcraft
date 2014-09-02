@@ -38,6 +38,29 @@ namespace Keeso
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Commands_.append ({
+				{ "/keeso" },
+				[] (ICLEntry*, QString& text) -> bool
+				{
+					text = text.mid (QString ("/keeso ").length ()).trimmed ();
+					bool isUpper = qrand () % 2;
+					for (int i = 0, length = text.length (); i < length; ++i)
+					{
+						const auto& c = text.at (i);
+						const auto& u = c.toUpper ();
+						const auto& l = c.toLower ();
+						if (u == l)
+							continue;
+
+						text [i] = isUpper ? u : l;
+						isUpper = (qrand () % 4) ? !isUpper : isUpper;
+					}
+
+					return false;
+				},
+				tr ("Randomily changes the capitalization of outbound messages."),
+				{}
+			});
 	}
 
 	void Plugin::SecondInit ()
@@ -76,28 +99,9 @@ namespace Keeso
 		return result;
 	}
 
-	void Plugin::hookMessageWillCreated (IHookProxy_ptr proxy,
-			QObject*, QObject*, int, QString)
+	StaticCommands_t Plugin::GetStaticCommands (ICLEntry*)
 	{
-		QString text = proxy->GetValue ("text").toString ();
-		if (!text.startsWith ("/keeso "))
-			return;
-
-		text = text.mid (QString ("/keeso ").length ()).trimmed ();
-		bool isUpper = qrand () % 2;
-		for (int i = 0, length = text.length (); i < length; ++i)
-		{
-			QChar c = text.at (i);
-			const QChar& u = c.toUpper ();
-			const QChar& l = c.toLower ();
-			if (u == l)
-				continue;
-
-			text [i] = isUpper ? u : l;
-			isUpper = (qrand () % 4) ? !isUpper : isUpper;
-		}
-
-		proxy->SetValue ("text", text);
+		return Commands_;
 	}
 }
 }

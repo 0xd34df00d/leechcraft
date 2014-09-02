@@ -135,7 +135,7 @@ namespace jOS
 			track->filetype_marker <<= 8;
 			track->filetype_marker |= (i >= suffix.length () ?
 						' ' :
-						suffix [i].toAscii ());
+						suffix [i].toLatin1 ());
 		}
 
 		track->ipod_path = strdup (filename.toUtf8 ().mid (1));

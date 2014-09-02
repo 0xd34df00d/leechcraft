@@ -43,6 +43,10 @@
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 
+#if QT_VERSION >= 0x050000
+#include <xcb/xcb.h>
+#endif
+
 namespace LeechCraft
 {
 namespace Util
@@ -54,20 +58,39 @@ namespace Util
 
 	namespace
 	{
+#if QT_VERSION < 0x050000
 		bool EvFilter (void *msg)
 		{
 			return XWrapper::Instance ().Filter (static_cast<XEvent*> (msg));
 		}
+#endif
 	}
 
 	XWrapper::XWrapper ()
 	: Display_ (QX11Info::display ())
 	, AppWin_ (QX11Info::appRootWindow ())
+#if QT_VERSION < 0x050000
 	, PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
+#endif
 	{
+#if QT_VERSION >= 0x050000
+		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
+#endif
+
+#if QT_VERSION < 0x050000
 		XSelectInput (Display_,
 				AppWin_,
 				PropertyChangeMask | StructureNotifyMask | SubstructureNotifyMask);
+#else
+		const uint32_t rootEvents [] =
+		{
+			XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+				XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
+				XCB_EVENT_MASK_PROPERTY_CHANGE
+		};
+		xcb_change_window_attributes (QX11Info::connection (),
+				AppWin_, XCB_CW_EVENT_MASK, rootEvents);
+#endif
 	}
 
 	XWrapper& XWrapper::Instance ()
@@ -86,6 +109,7 @@ namespace Util
 		return AppWin_;
 	}
 
+#if QT_VERSION < 0x050000
 	bool XWrapper::Filter (XEvent *ev)
 	{
 		if (ev->type == PropertyNotify)
@@ -93,6 +117,19 @@ namespace Util
 
 		return PrevFilter_ ? PrevFilter_ (ev) : false;
 	}
+#else
+	bool XWrapper::nativeEventFilter (const QByteArray& eventType, void *msg, long int*)
+	{
+		if (eventType != "xcb_generic_event_t")
+			return false;
+
+		const auto ev = static_cast<xcb_generic_event_t*> (msg);
+		if ((ev->response_type & ~0x80) == XCB_PROPERTY_NOTIFY)
+			HandlePropNotify (static_cast<xcb_property_notify_event_t*> (msg));
+
+		return false;
+	}
+#endif
 
 	namespace
 	{
@@ -530,6 +567,7 @@ namespace Util
 		SendMessage (wid, GetAtom ("_NET_CLOSE_WINDOW"), 0, SourcePager);
 	}
 
+#if QT_VERSION < 0x050000
 	template<typename T>
 	void XWrapper::HandlePropNotify (T ev)
 	{
@@ -562,6 +600,40 @@ namespace Util
 				emit windowActionsChanged (wid);
 		}
 	}
+#else
+	template<typename T>
+	void XWrapper::HandlePropNotify (T ev)
+	{
+		if (ev->state == XCB_PROPERTY_DELETE)
+			return;
+
+		const auto wid = ev->window;
+
+		if (wid == AppWin_)
+		{
+			if (ev->atom == GetAtom ("_NET_CLIENT_LIST"))
+				emit windowListChanged ();
+			else if (ev->atom == GetAtom ("_NET_ACTIVE_WINDOW"))
+				emit activeWindowChanged ();
+			else if (ev->atom == GetAtom ("_NET_CURRENT_DESKTOP"))
+				emit desktopChanged ();
+		}
+		else
+		{
+			if (ev->atom == GetAtom ("_NET_WM_VISIBLE_NAME") ||
+					ev->atom == GetAtom ("WM_NAME"))
+				emit windowNameChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_ICON"))
+				emit windowIconChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_DESKTOP"))
+				emit windowDesktopChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_STATE"))
+				emit windowStateChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_ALLOWED_ACTIONS"))
+				emit windowActionsChanged (wid);
+		}
+	}
+#endif
 
 	Window XWrapper::GetActiveWindow ()
 	{
@@ -779,7 +851,7 @@ namespace Util
 		msg.data.l [3] = d3;
 		msg.data.l [4] = d4;
 
-		return XSendEvent (Display_, AppWin_, FALSE, SubstructureRedirectMask | SubstructureNotifyMask,
+		return XSendEvent (Display_, AppWin_, false, SubstructureRedirectMask | SubstructureNotifyMask,
 				reinterpret_cast<XEvent*> (&msg)) == Success;
 	}
 

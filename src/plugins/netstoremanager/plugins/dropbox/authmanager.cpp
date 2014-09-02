@@ -33,9 +33,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QMainWindow>
-#include <qjson/parser.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/xpc/util.h>
+#include <util/sll/parsejson.h>
 #include "account.h"
 #include "core.h"
 
@@ -128,14 +128,11 @@ namespace DBox
 		Account *acc = Reply2Account_.take (reply);
 		reply->deleteLater ();
 
-		QByteArray data = reply->readAll ();
-
-		bool ok = false;
-		QVariant res = QJson::Parser ().parse (data, &ok);
-		if (!ok)
+		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (res.isNull ())
 			return;
 
-		QVariantMap map = res.toMap ();
+		const auto& map = res.toMap ();
 
 		if (map.contains ("error"))
 			return;

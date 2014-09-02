@@ -53,6 +53,8 @@ namespace Mu
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.Mu")
+
 		fz_context *MuCtx_;
 	public:
 		void Init (ICoreProxy_ptr);

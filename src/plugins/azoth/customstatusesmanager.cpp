@@ -82,9 +82,9 @@ namespace Azoth
 		return Model_;
 	}
 
-	QList<CustomStatusesManager::CustomState> CustomStatusesManager::GetStates () const
+	QList<CustomStatus> CustomStatusesManager::GetStates () const
 	{
-		QList<CustomState> result;
+		QList<CustomStatus> result;
 		for (int i = 0; i < Model_->rowCount (); ++i)
 			result << GetCustom (i);
 		return result;
@@ -126,7 +126,7 @@ namespace Azoth
 		settings.endGroup ();
 	}
 
-	void CustomStatusesManager::Add (const CustomState& state, int after)
+	void CustomStatusesManager::Add (const CustomStatus& state, int after)
 	{
 		ProxyObject proxy;
 
@@ -143,7 +143,7 @@ namespace Azoth
 			Model_->insertRow (after, row);
 	}
 
-	CustomStatusesManager::CustomState CustomStatusesManager::GetCustom (int i) const
+	CustomStatus CustomStatusesManager::GetCustom (int i) const
 	{
 		return
 		{
@@ -155,7 +155,7 @@ namespace Azoth
 
 	namespace
 	{
-		CustomStatusesManager::CustomState GetState (const QVariantList& vars)
+		CustomStatus GetState (const QVariantList& vars)
 		{
 			return
 			{

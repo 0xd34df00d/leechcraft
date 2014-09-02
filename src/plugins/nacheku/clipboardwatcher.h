@@ -33,6 +33,8 @@
 #include <QString>
 #include <interfaces/structures.h>
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Nacheku

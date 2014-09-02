@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "potorchu.h"
+#include <QIcon>
 #include <util/util.h>
 #include "visualfilter.h"
 

@@ -27,9 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_HTMLHIGHLIGHTER_H
-#define PLUGINS_POSHUKU_HTMLHIGHLIGHTER_H
+#pragma once
+
 #include <QSyntaxHighlighter>
+
+class QTextEdit;
 
 namespace LeechCraft
 {
@@ -71,5 +73,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif

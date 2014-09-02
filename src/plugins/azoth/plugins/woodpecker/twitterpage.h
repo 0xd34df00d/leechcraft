@@ -67,7 +67,6 @@ namespace Woodpecker
 		QMap<QString, QList<QAction*>> WindowMenus_;
 		QHash<QString, QString> Extension2Lang_;
 
-		QtMsgHandler DefaultMsgHandler_;
 		QObject *WrappedObject_;
 		bool TemporaryDocument_;
 

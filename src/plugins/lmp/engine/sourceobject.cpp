@@ -561,6 +561,7 @@ namespace LMP
 			return;
 
 		qWarning () << Q_FUNC_INFO
+				<< GetCurrentSource ().ToUrl ()
 				<< domain
 				<< code
 				<< msgStr
@@ -583,6 +584,15 @@ namespace LMP
 					{
 						GST_RESOURCE_ERROR_NOT_FOUND,
 						SourceError::SourceNotFound
+					}
+				}
+			},
+			{
+				GST_STREAM_ERROR,
+				{
+					{
+						GST_STREAM_ERROR_TYPE_NOT_FOUND,
+						SourceError::InvalidSource
 					}
 				}
 			}

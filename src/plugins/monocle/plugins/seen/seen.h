@@ -52,6 +52,8 @@ namespace Seen
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.Seen")
+
 		ddjvu_context_t *Context_;
 		DocManager *DocMgr_;
 	public:

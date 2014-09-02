@@ -29,16 +29,25 @@
 
 #include "tablistview.h"
 #include <QStandardItemModel>
-#include <QGraphicsObject>
 #include <QMainWindow>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
+#include <QGraphicsObject>
+#else
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickItem>
+#endif
+
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/gui/unhoverdeletemixin.h>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoretabwidget.h>
 
@@ -48,7 +57,7 @@ namespace SB2
 {
 	namespace
 	{
-		class TabsListModel : public QStandardItemModel
+		class TabsListModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -59,7 +68,7 @@ namespace SB2
 			};
 
 			TabsListModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
 				names [Roles::TabIcon] = "tabIcon";
@@ -71,7 +80,11 @@ namespace SB2
 
 	TabListView::TabListView (const QByteArray& tc, const QList<QWidget*>& widgets,
 			ICoreTabWidget *ictw, QMainWindow *win, ICoreProxy_ptr proxy, QWidget *parent)
+#if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
+#else
+	: QQuickWidget (parent)
+#endif
 	, Proxy_ (proxy)
 	, ICTW_ (ictw)
 	, MW_ (win)

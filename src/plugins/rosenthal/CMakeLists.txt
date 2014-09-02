@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_rosenthal)
 include (InitLCPlugin OPTIONAL)
 
-include (${QT_USE_FILE})
-
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (Hunspell REQUIRED)
@@ -38,3 +36,5 @@ target_link_libraries (leechcraft_rosenthal
 	)
 install (TARGETS leechcraft_rosenthal DESTINATION ${LC_PLUGINS_DEST})
 install (FILES rosenthalsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_rosenthal Core)

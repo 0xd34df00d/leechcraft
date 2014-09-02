@@ -47,6 +47,8 @@ namespace NewLife
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.NewLife")
+
 		QAction *ImporterAction_;
 	public:
 		void Init (ICoreProxy_ptr);

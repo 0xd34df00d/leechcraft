@@ -15,15 +15,25 @@ find_path (QWT_INCLUDE_DIRS
 	/usr/local/lib/qwt.framework/Headers
 )
 
-find_library (QWT_LIBRARIES
-	NAMES qwt-qt4 qwt6 qwt
-	PATHS
-	/usr/local/lib
-	/usr/lib
-	/usr/local/lib/qwt.framework
-)
+if (NOT USE_QT5)
+	find_library (QWT_LIBRARIES
+		NAMES qwt-qt4 qwt6-qt4 qwt6 qwt
+		PATHS
+		/usr/local/lib
+		/usr/lib
+		/usr/local/lib/qwt.framework
+	)
+else ()
+	find_library (QWT_LIBRARIES
+		NAMES qwt6-qt5
+		PATHS
+		/usr/local/lib
+		/usr/lib
+		/usr/local/lib/qwt.framework
+	)
+endif ()
 
-# handle the QUIETLY and REQUIRED arguments and set QWT_FOUND to TRUE if 
+# handle the QUIETLY and REQUIRED arguments and set QWT_FOUND to TRUE if
 # all listed variables are TRUE
 include ( FindPackageHandleStandardArgs )
 find_package_handle_standard_args( Qwt DEFAULT_MSG QWT_LIBRARIES QWT_INCLUDE_DIRS )

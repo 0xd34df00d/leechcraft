@@ -37,6 +37,7 @@
 
 class QSortFilterProxyModel;
 class QTreeView;
+class QToolBar;
 
 namespace LeechCraft
 {

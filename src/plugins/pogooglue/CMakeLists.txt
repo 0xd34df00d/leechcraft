@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_pogooglue)
 include (InitLCPlugin OPTIONAL)
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -17,7 +16,7 @@ set (RESOURCES pogooglueresources.qrc)
 CreateTrs ("pogooglue" "en;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("pogooglue" "en;ru_RU" "${SRCS}" "" "")
 
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_pogooglue SHARED
 	${COMPILED_TRANSLATIONS}
@@ -30,3 +29,5 @@ target_link_libraries (leechcraft_pogooglue
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_pogooglue DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_pogooglue Core)

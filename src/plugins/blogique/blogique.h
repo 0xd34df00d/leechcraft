@@ -56,6 +56,8 @@ namespace Blogique
 		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IPluginReady IActionsExporter
 				IHaveRecoverableTabs)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Blogique")
+
 		TabClasses_t TabClasses_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 

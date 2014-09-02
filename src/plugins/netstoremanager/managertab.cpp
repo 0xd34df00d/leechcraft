@@ -36,6 +36,7 @@
 #include <QInputDialog>
 #include <QComboBox>
 #include <QToolButton>
+#include <QToolBar>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -68,7 +69,14 @@ namespace NetStoreManager
 		Ui_.FilesView_->setModel (ProxyModel_);
 		ProxyModel_->setSourceModel (TreeModel_);
 		TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Used space"), tr ("Modify") });
-		Ui_.FilesView_->header ()->setResizeMode (Columns::CName, QHeaderView::Interactive);
+
+		const auto header = Ui_.FilesView_->header ();
+
+#if QT_VERSION < 0x050000
+		header->setResizeMode (Columns::CName, QHeaderView::Interactive);
+#else
+		header->setSectionResizeMode (Columns::CName, QHeaderView::Interactive);
+#endif
 
 		connect (Ui_.FilesView_->header (),
 				SIGNAL (sectionResized (int, int, int)),

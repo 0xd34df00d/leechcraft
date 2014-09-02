@@ -21,10 +21,11 @@ add_library (leechcraft_lmp_dumbsync SHARED
 	${DUMBSYNC_SRCS}
 	)
 target_link_libraries (leechcraft_lmp_dumbsync
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_lmp_dumbsync DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpdumbsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${DUMBSYNC_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+
+FindQtLibs (leechcraft_lmp_dumbsync Concurrent)

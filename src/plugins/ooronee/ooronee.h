@@ -46,6 +46,8 @@ namespace Ooronee
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Ooronee")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 		QuarkComponent_ptr Quark_;
 	public:

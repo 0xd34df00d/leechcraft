@@ -11,7 +11,6 @@ else ()
 	add_definitions (-DMUPDF_VERSION=0x0102)
 endif ()
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -30,7 +29,8 @@ target_link_libraries (leechcraft_monocle_mu
 	jbig2dec
 	jpeg
 	openjpeg
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_monocle_mu DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_monocle_mu Core)

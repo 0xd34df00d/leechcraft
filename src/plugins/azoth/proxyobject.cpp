@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "proxyobject.h"
+#include <algorithm>
 #ifdef USE_BOOST_LOCALE
 #include <boost/locale.hpp>
 #endif
@@ -44,6 +45,7 @@
 #include "unreadqueuemanager.h"
 #include "resourcesmanager.h"
 #include "util.h"
+#include "customstatusesmanager.h"
 
 namespace LeechCraft
 {
@@ -389,6 +391,19 @@ namespace Azoth
 #else
 		return QLocale {}.toString (dt);
 #endif
+	}
+
+	boost::optional<CustomStatus> ProxyObject::FindCustomStatus (const QString& name)
+	{
+		const auto mgr = Core::Instance ().GetCustomStatusesManager ();
+		const auto& statuses = mgr->GetStates ();
+
+		const auto pos = std::find_if (statuses.begin (), statuses.end (),
+				[&name] (const CustomStatus& status)
+					{ return !QString::compare (status.Name_, name, Qt::CaseInsensitive); });
+		if (pos == statuses.end ())
+			return {};
+		return *pos;
 	}
 }
 }

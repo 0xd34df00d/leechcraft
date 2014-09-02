@@ -10,14 +10,15 @@ set (FILESCHEME_RESOURCES
 CreateTrs ("poshuku_filescheme" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" FILESCHEME_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_filescheme" "en;ru_RU" "${FILESCHEME_SRCS}" "${FILESCHEME_FORMS}" "")
 
-QT4_ADD_RESOURCES (FILESCHEME_RCCS ${FILESCHEME_RESOURCES})
+QtAddResources (FILESCHEME_RCCS ${FILESCHEME_RESOURCES})
 add_library (leechcraft_poshuku_filescheme SHARED
 	${FILESCHEME_COMPILED_TRANSLATIONS}
 	${FILESCHEME_SRCS}
 	${FILESCHEME_RCCS}
 	)
 target_link_libraries (leechcraft_poshuku_filescheme
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_poshuku_filescheme DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_poshuku_filescheme Network)

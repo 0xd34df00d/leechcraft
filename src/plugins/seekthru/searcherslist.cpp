@@ -29,6 +29,7 @@
 
 #include "searcherslist.h"
 #include <QInputDialog>
+#include <QMenu>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>

@@ -10,8 +10,6 @@ endif ()
 
 option (ENABLE_NETSTOREMANAGER_INOTIFY "Enable inotify file watcher backend for NetStoreManager" ${INOTIFY_DEFAULT})
 
-set (QT_USE_QTNETWORK TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -59,8 +57,8 @@ endif ()
 
 set (RESOURCES netstoremanagerresources.qrc)
 
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 CreateTrs ("netstoremanager" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("netstoremanager" "en;ru_RU" "${SRCS}" "${FORMS}" "netstoremanagersettings.xml")
 
@@ -71,12 +69,13 @@ add_library (leechcraft_netstoremanager SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_netstoremanager
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_netstoremanager DESTINATION ${LC_PLUGINS_DEST})
 install (FILES netstoremanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+
+FindQtLibs (leechcraft_netstoremanager Network Widgets)
 
 option (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE "Build support for Google Drive" ON)
 option (ENABLE_NETSTOREMANAGER_DROPBOX "Build support for DropBox" ON)

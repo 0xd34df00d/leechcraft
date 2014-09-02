@@ -28,9 +28,6 @@
  **********************************************************************/
 
 #include "postoptionswidget.h"
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QGraphicsObject>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>

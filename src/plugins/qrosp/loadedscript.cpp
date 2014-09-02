@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <qross/core/action.h>
 #include <qross/core/script.h>
+#include "lcenv.h"
 
 namespace LeechCraft
 {
@@ -52,7 +53,7 @@ namespace Qrosp
 	{
 		return this;
 	}
-	
+
 	QVariant LoadedScript::InvokeMethod (const QString& name, const QVariantList& args)
 	{
 		if (!Imported_)
@@ -91,6 +92,8 @@ namespace Qrosp
 	{
 		if (Imported_)
 			return;
+
+		ScriptAction_->addQObject (new LCEnv (this), "LCEnv");
 
 		Imported_ = true;
 		ScriptAction_->trigger ();

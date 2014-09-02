@@ -38,6 +38,8 @@
 #include <interfaces/azoth/iclentry.h>
 #include "structures.h"
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Util

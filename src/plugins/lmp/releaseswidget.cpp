@@ -28,9 +28,19 @@
  **********************************************************************/
 
 #include "releaseswidget.h"
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QGraphicsObject>
+#else
+#include <QQuickWidget>
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickItem>
+#endif
+
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <util/xpc/util.h>
@@ -38,6 +48,7 @@
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
@@ -53,7 +64,7 @@ namespace LMP
 {
 	namespace
 	{
-		class ReleasesModel : public QStandardItemModel
+		class ReleasesModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Role
@@ -68,7 +79,7 @@ namespace LMP
 			};
 
 			ReleasesModel (QObject *parent = 0)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
 				names [AlbumName] = "albumName";
@@ -85,20 +96,32 @@ namespace LMP
 
 	ReleasesWidget::ReleasesWidget (QWidget *parent)
 	: QWidget (parent)
+#if QT_VERSION < 0x050000
+	, ReleasesView_ (new QDeclarativeView)
+#else
+	, ReleasesView_ (new QQuickWidget)
+#endif
 	, ReleasesModel_ (new ReleasesModel (this))
 	{
 		Ui_.setupUi (this);
+		layout ()->addWidget (ReleasesView_);
+
+#if QT_VERSION < 0x050000
+		ReleasesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		ReleasesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
-				Ui_.ReleasesView_->engine ());
+				ReleasesView_->engine ());
 
-		Ui_.ReleasesView_->engine ()->addImageProvider ("ThemeIcons",
+		ReleasesView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
-		Ui_.ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
-		Ui_.ReleasesView_->rootContext ()->setContextProperty ("colorProxy",
+		ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
+		ReleasesView_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
-		Ui_.ReleasesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "ReleasesView.qml"));
+		ReleasesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "ReleasesView.qml"));
 
 		connect (Ui_.InfoProvider_,
 				SIGNAL (activated (int)),
@@ -109,11 +132,11 @@ namespace LMP
 				this,
 				SLOT (request ()));
 
-		connect (Ui_.ReleasesView_->rootObject (),
+		connect (ReleasesView_->rootObject (),
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLink (QString)));
-		connect (Ui_.ReleasesView_->rootObject (),
+		connect (ReleasesView_->rootObject (),
 				SIGNAL (albumPreviewRequested (int)),
 				this,
 				SLOT (previewAlbum (int)));

@@ -49,6 +49,3 @@ namespace Poshuku
 	}
 }
 }
-
-Q_EXPORT_PLUGIN2 (poshukuplatformplugin, LeechCraft::Poshuku::PlatformPlugin);
-Q_IMPORT_PLUGIN (poshukuplatformplugin);

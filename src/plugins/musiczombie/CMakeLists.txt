@@ -22,9 +22,6 @@ if (WITH_MUSICZOMBIE_CHROMAPRINT)
 	add_definitions (-DWITH_CHROMAPRINT)
 endif ()
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -50,8 +47,9 @@ add_library (leechcraft_musiczombie SHARED
 	${SRCS}
 	)
 target_link_libraries (leechcraft_musiczombie
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${EXTRA_LIBRARIES}
 	)
 install (TARGETS leechcraft_musiczombie DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_musiczombie Concurrent Network Xml)

@@ -32,6 +32,7 @@
 #include <functional>
 #include <QMap>
 #include <QDir>
+#include <QUuid>
 #include <QtDebug>
 #include <taglib/tag.h>
 #include "transcodingparams.h"
@@ -62,7 +63,8 @@ namespace LMP
 			const auto format = Formats ().GetFormat (params.FormatID_);
 
 			auto result = dir.absoluteFilePath (fi.fileName ());
-			const auto& ext = format->GetFileExtension ();
+			auto ext = format->GetFileExtension ();
+			ext.prepend (QUuid::createUuid ().toString () + ".");
 			const auto dotIdx = result.lastIndexOf ('.');
 			if (dotIdx == -1)
 				result += '.' + ext;

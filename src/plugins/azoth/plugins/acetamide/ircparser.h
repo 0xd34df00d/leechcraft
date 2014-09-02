@@ -101,7 +101,9 @@ namespace Acetamide
 		void ChanModeCommand (const QStringList&);
 		void ChannelsListCommand (const QStringList&);
 
-		bool ParseMessage (const QByteArray&);
+		/** Automatically converts the \em ba to UTF-8.
+		 */
+		bool ParseMessage (const QByteArray& ba);
 		IrcMessageOptions GetIrcMessageOptions () const;
 	private:
 		QStringList EncodingList (const QStringList&);

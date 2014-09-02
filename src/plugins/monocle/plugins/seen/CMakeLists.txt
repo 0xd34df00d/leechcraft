@@ -6,7 +6,6 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (DjVuLibre REQUIRED)
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -23,7 +22,6 @@ add_library (leechcraft_monocle_seen SHARED
 	${SRCS}
 	)
 target_link_libraries (leechcraft_monocle_seen
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${DJVULIBRE_LIBRARY}
 	)
@@ -31,3 +29,5 @@ install (TARGETS leechcraft_monocle_seen DESTINATION ${LC_PLUGINS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-monocle-seen.desktop DESTINATION share/applications)
 endif ()
+
+FindQtLibs (leechcraft_monocle_seen Core)

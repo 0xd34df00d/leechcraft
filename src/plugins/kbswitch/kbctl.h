@@ -32,7 +32,12 @@
 #include <QObject>
 #include <QStringList>
 #include <QHash>
+
+#if QT_VERSION < 0x050000
 #include <QAbstractEventDispatcher>
+#else
+#include <QAbstractNativeEventFilter>
+#endif
 
 typedef struct _XDisplay Display;
 typedef union  _XEvent XEvent;
@@ -44,14 +49,17 @@ namespace KBSwitch
 	class RulesStorage;
 
 	class KBCtl : public QObject
+#if QT_VERSION >= 0x050000
+				, public QAbstractNativeEventFilter
+#endif
 	{
 		Q_OBJECT
 
 		Display *Display_ = 0;
 		int XkbEventType_;
 
-		Qt::HANDLE Window_;
-		Qt::HANDLE NetActiveWinAtom_;
+		ulong Window_;
+		ulong NetActiveWinAtom_;
 
 		bool ExtWM_ = false;
 
@@ -60,13 +68,15 @@ namespace KBSwitch
 
 		QStringList Options_;
 
-		QHash<Qt::HANDLE, uchar> Win2Group_;
+		QHash<ulong, uchar> Win2Group_;
 
 		RulesStorage *Rules_;
 
 		bool ApplyScheduled_ = false;
 
+#if QT_VERSION < 0x050000
 		const QAbstractEventDispatcher::EventFilter PrevFilter_;
+#endif
 
 		KBCtl ();
 	public:
@@ -104,10 +114,19 @@ namespace KBSwitch
 
 		const RulesStorage* GetRulesStorage () const;
 
+#if QT_VERSION < 0x050000
 		bool Filter (XEvent*);
+#else
+		bool nativeEventFilter (const QByteArray& eventType, void *message, long *result) override;
+#endif
 	private:
+#if QT_VERSION < 0x050000
 		void HandleXkbEvent (XEvent*);
-		void SetWindowLayout (Qt::HANDLE);
+#else
+		void HandleXkbEvent (void*);
+#endif
+
+		void SetWindowLayout (ulong);
 
 		void InitDisplay ();
 		void CheckExtWM ();
@@ -115,7 +134,7 @@ namespace KBSwitch
 
 		void UpdateGroupNames ();
 
-		void AssignWindow (Qt::HANDLE);
+		void AssignWindow (ulong);
 
 		void ApplyKeyRepeat ();
 	public slots:

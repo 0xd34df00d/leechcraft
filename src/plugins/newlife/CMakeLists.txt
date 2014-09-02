@@ -1,24 +1,7 @@
-if (NOT QT_USE_FILE)
-	cmake_minimum_required (VERSION 2.6)
-	if (COMMAND cmake_policy)
-		cmake_policy (SET CMP0003 NEW)
-	endif ()
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_newlife)
+include (InitLCPlugin OPTIONAL)
 
-	project (leechcraft_newlife)
-
-	if (NOT CMAKE_MODULE_PATH)
-		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	endif ()
-
-	find_package (Boost REQUIRED)
-	find_package (Qt4 REQUIRED)
-	find_package (LeechCraft REQUIRED)
-endif ()
-
-set (QT_USE_QTXML TRUE)
-set (QT_USE_QTSQL TRUE)
-
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -66,8 +49,8 @@ set (RESOURCES newliferesources.qrc)
 CreateTrs ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("newlife" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_newlife SHARED
 	${COMPILED_TRANSLATIONS}
@@ -76,7 +59,8 @@ add_library (leechcraft_newlife SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_newlife
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_newlife DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_newlife Sql Widgets Xml)

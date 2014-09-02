@@ -38,7 +38,7 @@ namespace LeechCraft
 namespace Vrooby
 {
 	FlatMountableItems::FlatMountableItems (QObject *parent)
-	: Util::FlattenFilterModel (parent)
+	: RoleNamesMixin<FlattenFilterModel> (parent)
 	{
 		QHash<int, QByteArray> names;
 		names [MassStorageRole::VisibleName] = "devName";

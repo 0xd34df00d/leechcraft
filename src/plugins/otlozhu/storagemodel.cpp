@@ -297,6 +297,8 @@ namespace Otlozhu
 
 	void StorageModel::SetStorage (TodoStorage *storage)
 	{
+		beginResetModel ();
+
 		if (Storage_)
 			disconnect (Storage_,
 					0,
@@ -328,7 +330,7 @@ namespace Otlozhu
 					SLOT (handleItemDepRemoved (int, int)));
 		}
 
-		reset ();
+		endResetModel ();
 	}
 
 	void StorageModel::handleItemAdded (int idx)

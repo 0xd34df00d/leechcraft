@@ -37,6 +37,7 @@
 #include <QPair>
 #include <QList>
 #include <QVector>
+#include <QIcon>
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>

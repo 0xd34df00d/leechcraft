@@ -51,6 +51,8 @@ namespace vGrabber
 		Q_OBJECT
 		Q_INTERFACES (IInfo IFinder IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.vGrabber")
+
 		std::auto_ptr<QTranslator> Translator_;
 		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 		ICoreProxy_ptr Proxy_;

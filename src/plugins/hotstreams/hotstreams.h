@@ -46,6 +46,8 @@ namespace HotStreams
 		Q_OBJECT
 		Q_INTERFACES (IInfo Media::IRadioStationProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.HotStreams")
+
 		ICoreProxy_ptr Proxy_;
 		QHash<QString, QStandardItem*> Roots_;
 		QHash<QStandardItem*, std::function<void (QStandardItem*)>> Root2Fetcher_;

@@ -55,6 +55,8 @@ namespace Murm
 				IHaveSettings
 				LeechCraft::Azoth::IProtocolPlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Murm")
+
 		VkProtocol *Proto_;
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;

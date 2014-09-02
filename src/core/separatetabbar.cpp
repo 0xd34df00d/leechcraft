@@ -33,6 +33,8 @@
 #include <QStylePainter>
 #include <QStyleOption>
 #include <QApplication>
+#include <QMimeData>
+#include <QDrag>
 #include <QtDebug>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/idndtab.h>

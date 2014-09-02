@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QMetaType>
 #include <QDBusObjectPath>
+#include <QIcon>
 
 class QDBusArgument;
 

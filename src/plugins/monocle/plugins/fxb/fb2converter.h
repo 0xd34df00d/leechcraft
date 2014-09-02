@@ -38,6 +38,7 @@
 #include <interfaces/monocle/ihavetoc.h>
 
 class QTextCharFormat;
+class QTextBlockFormat;
 class QTextCursor;
 class QDomElement;
 class QDomDocument;
@@ -80,6 +81,8 @@ namespace FXB
 		DocumentInfo GetDocumentInfo () const;
 		TOCEntryLevel_t GetTOC () const;
 	private:
+		QDomElement FindBinary (const QString&) const;
+
 		void HandleDescription (const QDomElement&);
 		void HandleBody (const QDomElement&);
 
@@ -94,14 +97,15 @@ namespace FXB
 		void HandleStanza (const QDomElement&);
 		void HandleEmptyLine (const QDomElement&);
 
+		void HandleChildren (const QDomElement&);
 		void Handle (const QDomElement&);
 
+		void HandleMangleBlockFormat (const QDomElement&,
+				std::function<void (QTextBlockFormat&)>, Handler_f);
 		void HandleMangleCharFormat (const QDomElement&,
 				std::function<void (QTextCharFormat&)>, Handler_f);
 
 		void FillPreamble ();
-
-		void AddImage (const QDomElement&);
 	};
 }
 }

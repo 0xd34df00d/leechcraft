@@ -50,6 +50,8 @@ namespace AdiumStyles
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.AdiumStyles")
+
 		IProxyObject *Proxy_;
 		QObjectList ResourceSources_;
 	public:

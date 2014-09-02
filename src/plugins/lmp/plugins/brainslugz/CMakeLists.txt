@@ -18,7 +18,7 @@ set (BRAINSLUGZ_SRCS
 set (BRAINSLUGZ_FORMS
 	checktab.ui
 	)
-QT4_WRAP_UI (BRAINSLUGZ_UIS_H ${BRAINSLUGZ_FORMS})
+QtWrapUi (BRAINSLUGZ_UIS_H ${BRAINSLUGZ_FORMS})
 CreateTrs ("lmp_brainslugz" "en;ru_RU" BRAINSLUGZ_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp_brainslugz" "en;ru_RU" "${BRAINSLUGZ_SRCS}" "${BRAINSLUGZ_FORMS}" "")
 
@@ -28,10 +28,12 @@ add_library (leechcraft_lmp_brainslugz SHARED
 	${BRAINSLUGZ_UIS_H}
 	)
 target_link_libraries (leechcraft_lmp_brainslugz
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_lmp_brainslugz DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${BRAINSLUGZ_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (DIRECTORY share/qml/lmp DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/lmp DESTINATION ${LC_QML5_DEST})
+
+FindQtLibs (leechcraft_lmp_brainslugz Concurrent QuickWidgets)

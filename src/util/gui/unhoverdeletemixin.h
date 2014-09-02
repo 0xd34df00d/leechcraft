@@ -74,7 +74,7 @@ namespace Util
 		 * @param[in] slot The slot to call when enough time has passed
 		 * since mouse leave. By default it is <code>deleteLater()</code>.
 		 */
-		UTIL_GUI_API UnhoverDeleteMixin (QWidget *parent, const char *slot = SLOT (deleteLater ()));
+		UTIL_GUI_API UnhoverDeleteMixin (QObject *parent, const char *slot = SLOT (deleteLater ()));
 
 		/** @brief Manually starts the timer.
 		 *

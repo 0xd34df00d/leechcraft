@@ -6,9 +6,6 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (MTP REQUIRED)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-include (${QT_USE_FILE})
 include_directories (${LMP_INCLUDE_DIR}
 	${MTP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -27,10 +24,11 @@ add_library (leechcraft_lmp_mtpsync SHARED
 	${MTPSYNC_SRCS}
 	)
 target_link_libraries (leechcraft_lmp_mtpsync
-	${QT_LIBRARIES}
 	${MTP_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_lmp_mtpsync DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES lmpmtpsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_lmp_mtpsync Concurrent)

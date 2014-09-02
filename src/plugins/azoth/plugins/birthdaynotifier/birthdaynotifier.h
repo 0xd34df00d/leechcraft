@@ -53,6 +53,8 @@ namespace BirthdayNotifier
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.BirthdayNotifier")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		QTimer *CheckTimer_;

@@ -35,6 +35,8 @@
 #include <QVBoxLayout>
 #include <QGraphicsObject>
 #include <QToolButton>
+#include <QToolBar>
+#include <QMenu>
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
 #include <util/util.h>

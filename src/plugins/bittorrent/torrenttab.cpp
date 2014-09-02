@@ -32,6 +32,8 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QSortFilterProxyModel>
+#include <QToolBar>
+#include <QMenu>
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>

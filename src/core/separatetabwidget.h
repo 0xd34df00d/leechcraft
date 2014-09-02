@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef SEPARATETABWIDGET_H
-#define SEPARATETABWIDGET_H
+#pragma once
+
 #include <memory>
 #include <QWidget>
 #include <QIcon>
@@ -36,6 +36,7 @@
 #include <QPointer>
 #include <QAction>
 #include <QMap>
+#include <QMenu>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoretabwidget.h>
 #include "interfaces/core/ihookproxy.h"
@@ -192,4 +193,3 @@ namespace LeechCraft
 				int windowId);
 	};
 }
-#endif // SEPARATETABWIDGET_H

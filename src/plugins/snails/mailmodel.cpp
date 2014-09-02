@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "mailmodel.h"
+#include <QIcon>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"

@@ -35,7 +35,11 @@ namespace LeechCraft
 namespace SB2
 {
 	SBView::SBView (QWidget *parent)
+#if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
+#else
+	: QQuickWidget (parent)
+#endif
 	, Dim_ (32)
 	{
 		setResizeMode (SizeRootObjectToView);

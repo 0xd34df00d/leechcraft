@@ -77,6 +77,8 @@ namespace Azoth
 				IHaveShortcuts
 				IANEmitter)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth")
+
 		MainWidget *MW_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		std::auto_ptr<QTranslator> Translator_;

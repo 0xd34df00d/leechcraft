@@ -32,7 +32,12 @@
 #include <QObject>
 #include <interfaces/media/audiostructs.h>
 
+#if QT_VERSION < 0x050000
 class QDeclarativeView;
+#else
+class QQuickWidget;
+#endif
+
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -43,10 +48,18 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		QDeclarativeView *View_;
-		QStandardItemModel *Model_;
+#if QT_VERSION < 0x050000
+		QDeclarativeView * const View_;
+#else
+		QQuickWidget * const View_;
+#endif
+		QStandardItemModel * const Model_;
 	public:
+#if QT_VERSION < 0x050000
 		SimilarViewManager (QDeclarativeView*, QObject* = 0);
+#else
+		SimilarViewManager (QQuickWidget*, QObject* = 0);
+#endif
 
 		void InitWithSource ();
 

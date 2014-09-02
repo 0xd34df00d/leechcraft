@@ -32,8 +32,6 @@
 #include <typeinfo>
 #include <stdexcept>
 #include <QUrl>
-#include <QHttp>
-#include <QFtp>
 #include <QFileInfo>
 #include <QDataStream>
 #include <QDir>

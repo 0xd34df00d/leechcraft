@@ -32,9 +32,11 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
+#include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/iurlcompletionmodel.h>
 #include <util/util.h>
+#include <util/sll/urloperator.h>
 
 namespace LeechCraft
 {
@@ -100,9 +102,10 @@ namespace Autosearch
 			return;
 
 		QUrl reqUrl ("http://clients1.google.com/complete/search");
-		reqUrl.addQueryItem ("hl", "en");
-		reqUrl.addQueryItem ("output", "toolbar");
-		reqUrl.addQueryItem ("q", string);
+		Util::UrlOperator { reqUrl }
+				("hl", "en")
+				("output", "toolbar")
+				("q", string);
 
 		auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (reqUrl));
 		connect (reply,

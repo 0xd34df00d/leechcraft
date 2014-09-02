@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "notificationactionhandler.h"
+#include <QStringList>
 
 namespace LeechCraft
 {

@@ -29,14 +29,25 @@
 
 #include "hypeswidget.h"
 #include <QStandardItemModel>
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QGraphicsObject>
+#else
+#include <QQuickWidget>
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickItem>
+#endif
+
 #include <util/xpc/util.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -52,7 +63,7 @@ namespace LMP
 {
 	namespace
 	{
-		class TracksModel : public QStandardItemModel
+		class TracksModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Role
@@ -67,7 +78,7 @@ namespace LMP
 			};
 
 			TracksModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
 				names [TrackName] = "trackName";
@@ -85,21 +96,27 @@ namespace LMP
 
 	HypesWidget::HypesWidget (QWidget *parent)
 	: QWidget (parent)
+#if QT_VERSION < 0x050000
+	, HypesView_ (new QDeclarativeView)
+#else
+	, HypesView_ (new QQuickWidget)
+#endif
 	, NewArtistsModel_ (new SimilarModel (this))
 	, TopArtistsModel_ (new SimilarModel (this))
 	, NewTracksModel_ (new TracksModel (this))
 	, TopTracksModel_ (new TracksModel (this))
 	{
 		Ui_.setupUi (this);
+		layout ()->addWidget (HypesView_);
 
-		Ui_.HypesView_->engine ()->addImageProvider ("ThemeIcons",
+		HypesView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
-				Ui_.HypesView_->engine ());
+				HypesView_->engine ());
 
-		auto root = Ui_.HypesView_->rootContext ();
+		auto root = HypesView_->rootContext ();
 		root->setContextProperty ("newArtistsModel", NewArtistsModel_);
 		root->setContextProperty ("newTracksModel", NewTracksModel_);
 		root->setContextProperty ("topArtistsModel", TopArtistsModel_);
@@ -110,27 +127,27 @@ namespace LMP
 		root->setContextProperty ("topsText", tr ("Show tops"));
 		root->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
-		Ui_.HypesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "HypesView.qml"));
+		HypesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,
 				SIGNAL (activated (int)),
 				this,
 				SLOT (request ()));
 
-		connect (Ui_.HypesView_->rootObject (),
+		connect (HypesView_->rootObject (),
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLink (QString)));
-		connect (Ui_.HypesView_->rootObject (),
+		connect (HypesView_->rootObject (),
 				SIGNAL (artistPreviewRequested (QString)),
 				this,
 				SIGNAL (artistPreviewRequested (QString)));
-		connect (Ui_.HypesView_->rootObject (),
+		connect (HypesView_->rootObject (),
 				SIGNAL (trackPreviewRequested (QString, QString)),
 				this,
 				SIGNAL (trackPreviewRequested (QString, QString)));
 
-		connect (Ui_.HypesView_->rootObject (),
+		connect (HypesView_->rootObject (),
 				SIGNAL (browseInfo (QString)),
 				&Core::Instance (),
 				SIGNAL (artistBrowseRequested (QString)));

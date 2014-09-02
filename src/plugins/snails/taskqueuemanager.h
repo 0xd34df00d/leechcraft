@@ -87,6 +87,8 @@ namespace Snails
 		bool HasItems () const;
 		TaskQueueItem PopItem ();
 	private:
+		template<typename Ex>
+		bool HandleReconnect (const TaskQueueItem&, const Ex& ex, int recLevel);
 		void HandleItem (const TaskQueueItem&, int recLevel = 0);
 	private slots:
 		void rotateTaskQueue ();

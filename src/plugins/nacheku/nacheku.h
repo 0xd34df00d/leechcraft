@@ -44,6 +44,8 @@ namespace Nacheku
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Nacheku")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_SQLSTORAGEBACKEND_H
-#define PLUGINS_AGGREGATOR_SQLSTORAGEBACKEND_H
+#pragma once
+
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include "storagebackend.h"
@@ -634,5 +634,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

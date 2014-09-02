@@ -29,9 +29,19 @@
  **********************************************************************/
 
 #include "commentswidget.h"
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
+#else
+#include <QQuickWidget>
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QQuickItem>
+#endif
+
 #include <QMessageBox>
 #include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
@@ -52,42 +62,53 @@ namespace Blogique
 {
 	CommentsWidget::CommentsWidget (QWidget *parent)
 	: QWidget (parent)
+#if QT_VERSION < 0x050000
+	, View_ (new QDeclarativeView)
+#else
+	, View_ (new QQuickWidget)
+#endif
 	, CommentsModel_ (new CommentsModel (this))
 	, ProxyModel_ (new SortCommentsProxyModel (this, this))
 	{
 		Ui_.setupUi (this);
+		layout ()->addWidget (View_);
 
 		ProxyModel_->setSourceModel (CommentsModel_);
 
-		Ui_.CommentsView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-		auto context = Ui_.CommentsView_->rootContext ();
+#if QT_VERSION < 0x050000
+		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
+
+		auto context = View_->rootContext ();
 		context->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()
 						.GetCoreProxy ()->GetColorThemeManager (), this));
 		context->setContextProperty ("commentsModel", ProxyModel_);
 		context->setContextProperty ("parentWidget", this);
 
-		auto engine = Ui_.CommentsView_->engine ();
+		auto engine = View_->engine ();
 		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine->addImportPath (cand);
 
-		Ui_.CommentsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+		View_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique", "commentsview.qml")));
 
-		connect (Ui_.CommentsView_->rootObject (),
+		connect (View_->rootObject (),
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLinkActivated (QString)));
-		connect (Ui_.CommentsView_->rootObject (),
+		connect (View_->rootObject (),
 				SIGNAL (deleteComment (QString, int)),
 				this,
 				SLOT (handleDeleteComment (QString, int)));
-		connect (Ui_.CommentsView_->rootObject (),
+		connect (View_->rootObject (),
 				SIGNAL (markCommentAsRead (QString, int)),
 				this,
 				SLOT (handleMarkCommentAsRead (QString, int)));
-		connect (Ui_.CommentsView_->rootObject (),
+		connect (View_->rootObject (),
 				SIGNAL (addComment (QString, int, int)),
 				this,
 				SLOT (handleAddComment (QString, int, int)));
@@ -234,6 +255,7 @@ namespace Blogique
 		FillModel ();
 	}
 
+#if QT_VERSION < 0x050000
 	void CommentsWidget::setItemCursor (QGraphicsObject *object, const QString& shape)
 	{
 		Q_ASSERT (object);
@@ -244,6 +266,7 @@ namespace Blogique
 
 		object->setCursor (QCursor (cursor));
 	}
+#endif
 
 	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentsWidget::CommentID& comment)
 	{

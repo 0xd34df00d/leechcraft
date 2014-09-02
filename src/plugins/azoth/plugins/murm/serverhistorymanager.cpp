@@ -32,7 +32,8 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
-#include <qjson/parser.h>
+#include <util/sll/urloperator.h>
+#include <util/sll/parsejson.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include "vkaccount.h"
 #include "vkentry.h"
@@ -88,10 +89,11 @@ namespace Murm
 				(const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.getHistory");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("uid", QString::number (uid));
-				url.addQueryItem ("count", QString::number (count));
-				url.addQueryItem ("offset", QString::number (offset));
+				Util::UrlOperator { url }
+						("access_token", key)
+						("uid", QString::number (uid))
+						("count", QString::number (count))
+						("offset", QString::number (offset));
 				VkConnection::AddParams (url, params);
 
 				LastOffset_ = offset;
@@ -116,9 +118,10 @@ namespace Murm
 				(const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.getDialogs");
-				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("count", QString::number (DlgChunkCount));
-				url.addQueryItem ("offset", QString::number (offset));
+				Util::UrlOperator { url }
+						("access_token", key)
+						("count", QString::number (DlgChunkCount))
+						("offset", QString::number (offset));
 				VkConnection::AddParams (url, params);
 
 				LastOffset_ = offset;
@@ -155,16 +158,11 @@ namespace Murm
 
 		const auto& reqContext = MsgRequestState_.take (reply);
 
-		const auto& data = reply->readAll ();
-		bool ok = true;
-		const auto& varmap = QJson::Parser {}.parse (data).toMap ();
-		if (!ok)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot parse reply"
-					<< data;
+		const auto& replyVar = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (replyVar.isNull ())
 			return;
-		}
+
+		const auto& varmap = replyVar.toMap ();
 
 		SrvHistMessages_t messages;
 		for (const auto& var : varmap ["response"].toList ())
@@ -207,16 +205,11 @@ namespace Murm
 
 		IsRefreshing_ = false;
 
-		const auto& data = reply->readAll ();
-		bool ok = true;
-		const auto& varmap = QJson::Parser {}.parse (data).toMap ();
-		if (!ok)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot parse reply"
-					<< data;
+		const auto& replyVar = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (replyVar.isNull ())
 			return;
-		}
+
+		const auto& varmap = replyVar.toMap ();
 
 		auto varlist = varmap ["response"].toList ();
 		if (varlist.isEmpty ())

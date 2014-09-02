@@ -62,6 +62,8 @@ namespace Monocle
 				IHaveRecoverableTabs
 				IHaveShortcuts)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle")
+
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		TabClassInfo DocTabInfo_;

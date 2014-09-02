@@ -31,6 +31,11 @@
 #include <QClipboard>
 #include <QFileDialog>
 #include <QUrl>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
@@ -50,8 +55,11 @@ namespace BitTorrent
 			if (!url.isValid () || url.scheme () != "magnet")
 				return false;
 
-			const auto& queryItems = url.queryItems ();
-			for (const auto& item : queryItems)
+#if QT_VERSION < 0x050000
+			for (const auto& item : url.queryItems ())
+#else
+			for (const auto& item : QUrlQuery { url }.queryItems ())
+#endif
 				if (item.first == "xt" && item.second.startsWith ("urn:btih:"))
 					return true;
 

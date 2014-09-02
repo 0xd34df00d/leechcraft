@@ -33,6 +33,11 @@
 #include <QCryptographicHash>
 #include <QUrl>
 #include <QDomElement>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <lastfm/ws.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
@@ -54,10 +59,17 @@ namespace Lastfmscrobble
 
 		params << QPair<QString, QString> ("api_sig", sig);
 
+#if QT_VERSION < 0x050000
 		QUrl url;
-		std::for_each (params.begin (), params.end (),
-				[&url] (decltype (params.front ()) pair) { url.addQueryItem (pair.first, pair.second); });
+		for (const auto& pair : params)
+			url.addQueryItem (pair.first, pair.second);
 		return url.encodedQuery ();
+#else
+		QUrlQuery query;
+		for (const auto& pair : params)
+			query.addQueryItem (pair.first, pair.second);
+		return query.toString (QUrl::QUrl::FullyEncoded).toUtf8 ();
+#endif
 	}
 
 	void AddLanguageParam (QMap<QString, QString>& params)

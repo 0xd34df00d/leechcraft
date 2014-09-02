@@ -84,6 +84,8 @@ namespace Azoth
 		void MarkMessagesAsRead (QObject*);
 
 		QString PrettyPrintDateTime (const QDateTime&);
+
+		boost::optional<CustomStatus> FindCustomStatus (const QString&);
 	};
 }
 }

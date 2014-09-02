@@ -32,7 +32,13 @@
 #include <QLabel>
 #include <QPainter>
 #include <QStyleOption>
+
+#if QT_VERSION < 0x050000
 #include <QX11EmbedContainer>
+#else
+#include <QQuickWindow>
+#endif
+
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QtDebug>
@@ -42,13 +48,18 @@ namespace LeechCraft
 {
 namespace Mellonetray
 {
+#if QT_VERSION < 0x050000
 	IconHandler::IconHandler (QGraphicsItem *item)
 	: QGraphicsWidget (item)
-	, Proxy_ (0)
-	, WID_ (0)
 	{
 		setFlag (QGraphicsItem::ItemSendsScenePositionChanges);
 	}
+#else
+	IconHandler::IconHandler (QQuickItem *item)
+	: QQuickItem (item)
+	{
+	}
+#endif
 
 	IconHandler::~IconHandler ()
 	{
@@ -70,9 +81,14 @@ namespace Mellonetray
 		WID_ = wid;
 		emit widChanged ();
 
+#if QT_VERSION < 0x050000
 		setGeometry (rect ());
+#else
+
+#endif
 	}
 
+#if QT_VERSION < 0x050000
 	void IconHandler::setGeometry (const QRectF& rect)
 	{
 		QGraphicsWidget::setGeometry (rect);
@@ -104,14 +120,43 @@ namespace Mellonetray
 
 		return QGraphicsWidget::itemChange (change, value);
 	}
+#else
+	void IconHandler::geometryChanged (const QRectF& rect, const QRectF& oldRect)
+	{
+		QQuickItem::geometryChanged (rect, oldRect);
+
+		if (!window ())
+			return;
+
+		if (!Proxy_ && WID_)
+		{
+			Proxy_.reset (QWindow::fromWinId (WID_));
+			Proxy_->setPosition (-1024, -1024);
+			Proxy_->show ();
+		}
+
+		if (Proxy_ && rect.width () * rect.height () > 0)
+		{
+			Proxy_->resize (rect.width (), rect.height ());
+
+			const auto& scenePoint = mapToScene ({ 0, 0 }).toPoint ();
+			Proxy_->setPosition (window ()->mapToGlobal (scenePoint));
+		}
+	}
+#endif
 
 	void IconHandler::Free ()
 	{
+#if QT_VERSION < 0x050000
 		if (Proxy_ && Proxy_->clientWinId ())
 		{
 			Proxy_->discardClient ();
 			Proxy_.reset ();
 		}
+#else
+		if (Proxy_)
+			Proxy_.reset ();
+#endif
 	}
 }
 }

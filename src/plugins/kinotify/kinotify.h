@@ -55,6 +55,8 @@ namespace Kinotify
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Kinotify")
+
 		ICoreProxy_ptr Proxy_;
 
 		QList<KinotifyWidget*> ActiveNotifications_;

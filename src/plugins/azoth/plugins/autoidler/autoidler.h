@@ -59,6 +59,8 @@ namespace Autoidler
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::ILastActivityProvider)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.AutoIdler")
+
 		ICoreProxy_ptr Proxy_;
 		IProxyObject *AzothProxy_;
 		std::shared_ptr<QTranslator> Translator_;

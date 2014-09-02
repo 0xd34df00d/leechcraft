@@ -32,6 +32,7 @@
 #include <QStandardItemModel>
 #include <QHash>
 #include <QSet>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/lmp/collectiontypes.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/core/icoreproxy.h>
@@ -49,10 +50,9 @@ namespace LMP
 {
 namespace BrainSlugz
 {
-	class CheckModel : public QStandardItemModel
+	class CheckModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
 		Q_OBJECT
-
 
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItemModel*> Artist2Submodel_;

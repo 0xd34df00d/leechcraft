@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QStandardItemModel>
+#include <util/models/rolenamesmixin.h>
 
 namespace Media
 {
@@ -40,7 +41,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class SimilarModel : public QStandardItemModel
+	class SimilarModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
 		Q_OBJECT
 	public:

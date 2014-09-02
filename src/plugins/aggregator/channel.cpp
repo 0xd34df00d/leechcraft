@@ -31,6 +31,7 @@
 #include <QDataStream>
 #include <QVariant>
 #include <QStringList>
+#include <QPixmap>
 #include "channel.h"
 #include "item.h"
 #include "core.h"

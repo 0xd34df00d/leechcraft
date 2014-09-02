@@ -32,13 +32,13 @@
 
 #include <QObject>
 #include <QTranslator>
+#include <QMenu>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QMenu;
 class QWebView;
 
 namespace LeechCraft
@@ -55,6 +55,8 @@ namespace OnlineBookmarks
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IPluginReady)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.OnlineBookmarks")
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<QTranslator> Translator_;

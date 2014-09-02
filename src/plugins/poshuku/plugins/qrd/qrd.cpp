@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QLabel>
+#include <QMenu>
 #include <qrencode.h>
 #include <util/util.h>
 

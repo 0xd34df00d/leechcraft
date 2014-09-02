@@ -32,6 +32,7 @@
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
 #include <QShortcut>
+#include <QToolBar>
 #include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ientitymanager.h>

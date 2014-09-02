@@ -30,6 +30,7 @@
 #include "infoproxy.h"
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft

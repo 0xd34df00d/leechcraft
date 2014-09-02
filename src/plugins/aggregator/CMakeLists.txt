@@ -5,15 +5,6 @@ include (InitLCPlugin OPTIONAL)
 option (ENABLE_AGGREGATOR_BODYFETCH "Enable BodyFetch for fetching full bodies of news items" ON)
 option (ENABLE_AGGREGATOR_WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
 
-set (QT_USE_QTSQL TRUE)
-set (QT_USE_QTXML TRUE)
-set (QT_USE_QTNETWORK TRUE)
-
-if (ENABLE_AGGREGATOR_BODYFETCH)
-	set (QT_USE_QTWEBKIT TRUE)
-endif ()
-
-include (${QT_USE_FILE})
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -99,9 +90,11 @@ add_library (leechcraft_aggregator_util STATIC
 	)
 set_target_properties(leechcraft_aggregator_util PROPERTIES POSITION_INDEPENDENT_CODE True)
 
+FindQtLibs (leechcraft_aggregator_util Core Widgets)
+
 add_definitions(-DBOOST_DYN_LINK)
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_aggregator SHARED
 	${COMPILED_TRANSLATIONS}
@@ -111,11 +104,12 @@ add_library (leechcraft_aggregator SHARED
 	)
 link_directories (${Boost_LIBRARY_DIR})
 target_link_libraries (leechcraft_aggregator
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_aggregator DESTINATION ${LC_PLUGINS_DEST})
 install (FILES aggregatorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_aggregator Network PrintSupport Sql Widgets Xml)
 
 set (AGGREGATOR_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
 

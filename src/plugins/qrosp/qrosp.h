@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_QROSP_H
-#define PLUGINS_QROSP_QROSP_H
+#pragma once
+
 #include <QObject>
 #include <QModelIndex>
 #include <interfaces/iinfo.h>
@@ -48,6 +48,8 @@ namespace Qrosp
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPluginAdaptor IEntityHandler IScriptLoader)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Qrosp")
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -67,5 +69,3 @@ namespace Qrosp
 	};
 }
 }
-
-#endif

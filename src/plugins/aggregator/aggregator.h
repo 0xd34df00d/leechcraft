@@ -86,6 +86,8 @@ namespace Aggregator
 				IHaveRecoverableTabs
 				IRecoverableTab)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator")
+
 		Aggregator_Impl *Impl_;
 	public:
 		virtual ~Aggregator ();

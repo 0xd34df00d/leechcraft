@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QMenu>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavetabs.h>
@@ -61,6 +62,8 @@ namespace Graffiti
 				IHaveTabs
 				IJobHolder
 				LeechCraft::LMP::ILMPPlugin)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.Graffiti")
 
 		ICoreProxy_ptr CoreProxy_;
 		ILMPProxy_ptr LMPProxy_;

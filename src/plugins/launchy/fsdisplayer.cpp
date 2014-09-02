@@ -29,11 +29,21 @@
 
 #include "fsdisplayer.h"
 #include <algorithm>
+
+#if QT_VERSION < 0x050000
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
+#else
+#include <QQuickWidget>
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickImageProvider>
+#include <QQuickItem>
+#endif
+
 #include <QStandardItemModel>
 #include <QApplication>
 #include <QDesktopWidget>
@@ -41,11 +51,13 @@
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/sys/paths.h>
+#include <util/xdg/itemsfinder.h>
+#include <util/xdg/item.h>
+#include <util/models/rolenamesmixin.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/ihavetabs.h>
-#include <util/xdg/itemsfinder.h>
-#include <util/xdg/item.h>
 #include "itemssortfilterproxymodel.h"
 #include "modelroles.h"
 #include "favoritesmanager.h"
@@ -56,13 +68,21 @@ namespace LeechCraft
 {
 namespace Launchy
 {
+#if QT_VERSION < 0x050000
 	class ItemIconsProvider : public QDeclarativeImageProvider
+#else
+	class ItemIconsProvider : public QQuickImageProvider
+#endif
 	{
 		ICoreProxy_ptr Proxy_;
 		QHash<QString, QIcon> Icons_;
 	public:
 		ItemIconsProvider (ICoreProxy_ptr proxy)
+#if QT_VERSION < 0x050000
 		: QDeclarativeImageProvider (Pixmap)
+#else
+		: QQuickImageProvider (Pixmap)
+#endif
 		, Proxy_ (proxy)
 		{
 		}
@@ -95,11 +115,11 @@ namespace Launchy
 
 	namespace
 	{
-		class DisplayModel : public QStandardItemModel
+		class DisplayModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			DisplayModel (QObject *parent = 0)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [ModelRoles::CategoryName] = "categoryName";
@@ -115,8 +135,8 @@ namespace Launchy
 		};
 	}
 
-	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy,
-			Util::XDG::ItemsFinder *finder, FavoritesManager *favMgr, RecentManager *recMgr, QObject *parent)
+	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy, Util::XDG::ItemsFinder *finder,
+			FavoritesManager *favMgr, RecentManager *recMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Finder_ (finder)
@@ -125,7 +145,11 @@ namespace Launchy
 	, CatsModel_ (new DisplayModel (this))
 	, ItemsModel_ (new DisplayModel (this))
 	, ItemsProxyModel_ (new ItemsSortFilterProxyModel (ItemsModel_, this))
+#if QT_VERSION < 0x050000
 	, View_ (new QDeclarativeView)
+#else
+	, View_ (new QQuickWidget)
+#endif
 	, IconsProvider_ (new ItemIconsProvider (proxy))
 	, SysPathHandler_ (new SysPathItemProvider (ItemsModel_, this))
 	{
@@ -143,18 +167,42 @@ namespace Launchy
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);
 
+#if QT_VERSION < 0x050000
 		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
 		View_->rootContext ()->setContextProperty ("itemsModel", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
 		View_->rootContext ()->setContextProperty ("launchyProxy", this);
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), parent));
 
-		connect (View_,
-				SIGNAL (statusChanged (QDeclarativeView::Status)),
-				this,
-				SLOT (handleViewStatus (QDeclarativeView::Status)));
-		View_->setSource (QUrl ("qrc:/launchy/resources/qml/FSView.qml"));
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this]
+			{
+#if QT_VERSION < 0x050000
+				if (View_->status () != QDeclarativeView::Error)
+#else
+				if (View_->status () != QQuickWidget::Error)
+#endif
+					return;
+
+				qWarning () << Q_FUNC_INFO
+						<< "declarative view error";
+				deleteLater ();
+			},
+			View_,
+#if QT_VERSION < 0x050000
+			SIGNAL (statusChanged (QDeclarativeView::Status)),
+#else
+			SIGNAL (statusChanged (QQuickWidget::Status)),
+#endif
+			View_
+		};
+
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "launchy", "FSView.qml"));
 
 		connect (View_->rootObject (),
 				SIGNAL (closeRequested ()),
@@ -467,15 +515,6 @@ namespace Launchy
 
 		FavManager_->AddFavorite (item->data (ModelRoles::ItemID).toString ());
 		item->setData (true, ModelRoles::IsItemFavorite);
-	}
-
-	void FSDisplayer::handleViewStatus (QDeclarativeView::Status status)
-	{
-		if (status != QDeclarativeView::Error)
-			return;
-
-		qWarning () << Q_FUNC_INFO << "declarative view error";
-		deleteLater ();
 	}
 }
 }

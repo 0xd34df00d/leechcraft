@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QAction>
 #include <interfaces/iinfo.h>
 #include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/iactionsexporter.h>
@@ -49,6 +50,8 @@ namespace Vrooby
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Vrooby")
 
 		std::shared_ptr<DevBackend> Backend_;
 		std::shared_ptr<QAction> ActionDevices_;

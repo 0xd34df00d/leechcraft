@@ -48,6 +48,8 @@ namespace Textogroose
 		Q_OBJECT
 		Q_INTERFACES (IInfo Media::ILyricsFinder)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Textogroose")
+
 		QList<std::shared_ptr<IScriptLoaderInstance>> Loaders_;
 	public:
 		void Init (ICoreProxy_ptr);

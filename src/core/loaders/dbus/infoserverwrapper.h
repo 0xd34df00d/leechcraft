@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QIcon>
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft

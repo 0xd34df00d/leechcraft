@@ -50,7 +50,7 @@ namespace Sarin
 		return new ToxException { *this };
 	}
 
-	const char* ToxException::what () const
+	const char* ToxException::what () const noexcept
 	{
 		return Wrapped_.what ();
 	}

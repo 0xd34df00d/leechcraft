@@ -33,6 +33,8 @@
 #include <QtDebug>
 #include <QUrl>
 #include <QTimer>
+#include <QImage>
+#include <QWidget>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
@@ -53,6 +55,8 @@
 #include <interfaces/azoth/ihavequeriableversion.h>
 #include <interfaces/azoth/isupportlastactivity.h>
 #include <interfaces/azoth/ihaveservicediscovery.h>
+#include <interfaces/azoth/iprovidecommands.h>
+#include <interfaces/azoth/ihavedirectedstatus.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft

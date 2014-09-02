@@ -188,7 +188,7 @@ namespace Sarin
 			{
 				new Util::SlotClosure<Util::DeleteLaterPolicy>
 				{
-					[thread = Thread_, status, this] { emit statusChanged (status); },
+					[status, guard = Thread_, this] { emit statusChanged (status); },
 					Thread_.get (),
 					SIGNAL (finished ()),
 					Thread_.get ()

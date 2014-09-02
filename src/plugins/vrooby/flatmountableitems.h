@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QAbstractItemModel>
 #include <util/models/flattenfiltermodel.h>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/devices/deviceroles.h>
 
 class QStandardItemModel;
@@ -41,7 +42,7 @@ namespace LeechCraft
 {
 namespace Vrooby
 {
-	class FlatMountableItems : public Util::FlattenFilterModel
+	class FlatMountableItems : public Util::RoleNamesMixin<Util::FlattenFilterModel>
 	{
 		Q_OBJECT
 

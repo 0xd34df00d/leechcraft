@@ -31,9 +31,10 @@
 #include <QtDebug>
 #include <QIcon>
 #include <QFrame>
-#include <X11/extensions/Xcomposite.h>
 #include <util/qml/widthiconprovider.h>
 #include <util/x11/xwrapper.h>
+
+#include <X11/extensions/Xcomposite.h>
 
 namespace LeechCraft
 {
@@ -70,7 +71,7 @@ namespace Krigstask
 	};
 
 	WindowsModel::WindowsModel (QObject *parent)
-	: QAbstractItemModel (parent)
+	: RoleNamesMixin<QAbstractItemModel> (parent)
 	, CurrentDesktop_ (Util::XWrapper::Instance ().GetCurrentDesktop ())
 	, ImageProvider_ (new TaskbarImageProvider (QIcon::fromTheme ("xorg")))
 	{
@@ -133,7 +134,11 @@ namespace Krigstask
 		}
 	}
 
+#if QT_VERSION < 0x050000
 	QDeclarativeImageProvider* WindowsModel::GetImageProvider () const
+#else
+	QQuickImageProvider* WindowsModel::GetImageProvider () const
+#endif
 	{
 		return ImageProvider_;
 	}

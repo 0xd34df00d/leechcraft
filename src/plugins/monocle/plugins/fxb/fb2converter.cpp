@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "fb2converter.h"
-#include "toclink.h"
 #include <functional>
 #include <memory>
 #include <QDomDocument>
@@ -42,6 +41,7 @@
 #include <QVariant>
 #include <QStringList>
 #include <QtDebug>
+#include "toclink.h"
 
 namespace LeechCraft
 {
@@ -64,13 +64,6 @@ namespace FXB
 		{
 			Error_ = tr ("Invalid FictionBook document.");
 			return;
-		}
-
-		auto elems = docElem.elementsByTagName ("binary");
-		for (int i = 0, size = elems.size (); i < size; ++i)
-		{
-			const auto& elem = elems.at (i).toElement ();
-			AddImage (elem);
 		}
 
 		auto frameFmt = Result_->rootFrame ()->frameFormat ();
@@ -116,7 +109,23 @@ namespace FXB
 					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
 
+		Handlers_ ["annotation"] = [this] (const QDomElement& p)
+		{
+			HandleMangleBlockFormat (p,
+					[] (QTextBlockFormat& fmt) -> void
+					{
+						fmt.setAlignment (Qt::AlignRight);
+						fmt.setLeftMargin (60);
+					},
+					[this] (const QDomElement& p)
+					{
+						HandleMangleCharFormat (p,
+								[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
+								[this] (const QDomElement& p) { HandleChildren (p); });
+					});
+		};
 		Handlers_ ["style"] = [this] (const QDomElement& p) { HandleParaWONL (p); };
+		Handlers_ ["coverpage"] = [this] (const QDomElement& p) { HandleChildren (p); };
 
 		TOCEntry entry =
 		{
@@ -166,10 +175,26 @@ namespace FXB
 		return TOC_;
 	}
 
+	QDomElement FB2Converter::FindBinary (const QString& refId) const
+	{
+		const auto& binaries = FB2_.elementsByTagName ("binary");
+		for (int i = 0; i < binaries.size (); ++i)
+		{
+			const auto& elem = binaries.at (i).toElement ();
+			if (elem.attribute ("id") == refId)
+				return elem;
+		}
+
+		return {};
+	}
+
 	void FB2Converter::HandleDescription (const QDomElement& elem)
 	{
-		auto getChildValues = [&elem] (const QString& nodeName) -> QStringList
+		QStringList handledChildren;
+		auto getChildValues = [&elem, &handledChildren] (const QString& nodeName) -> QStringList
 		{
+			handledChildren << nodeName;
+
 			QStringList result;
 			auto elems = elem.elementsByTagName (nodeName);
 			for (int i = 0; i < elems.size (); ++i)
@@ -190,25 +215,31 @@ namespace FXB
 		const auto& dateElem = elem.elementsByTagName ("date").at (0).toElement ();
 		DocInfo_.Date_.setDate (QDate::fromString (dateElem.attribute ("value"), Qt::ISODate));
 
-		DocInfo_.Author_ = QString ("%1 %2 %3 <%4> %5")
-				.arg (getChildValues ("first-name").value (0))
-				.arg (getChildValues ("middle-name").value (0))
-				.arg (getChildValues ("last-name").value (0))
-				.arg (getChildValues ("email").value (0))
-				.arg (getChildValues ("nickname").value (0))
-				.simplified ();
+		DocInfo_.Author_ += getChildValues ("first-name").value (0) + " ";
+		DocInfo_.Author_ += getChildValues ("last-name").value (0) + " ";
+		const auto& email = getChildValues ("email").value (0);
+		if (!email.isEmpty ())
+			DocInfo_.Author_ += "<" + email + "> ";
+		DocInfo_.Author_ += getChildValues ("nickname").value (0);
+
+		DocInfo_.Author_ = DocInfo_.Author_.trimmed ().simplified ();
+
+		FillPreamble ();
+
+		const auto& titleInfo = elem.firstChildElement ("title-info");
+
+		auto childElem = titleInfo.firstChildElement ();
+		while (!childElem.isNull ())
+		{
+			if (!handledChildren.contains (childElem.tagName ()))
+				Handle (childElem);
+			childElem = childElem.nextSiblingElement ();
+		}
 	}
 
 	void FB2Converter::HandleBody (const QDomElement& bodyElem)
 	{
-		FillPreamble ();
-
-		auto elem = bodyElem.firstChildElement ();
-		while (!elem.isNull ())
-		{
-			Handle (elem);
-			elem = elem.nextSiblingElement ();
-		}
+		HandleChildren (bodyElem);
 	}
 
 	void FB2Converter::HandleSection (const QDomElement& tagElem)
@@ -312,14 +343,23 @@ namespace FXB
 		}
 	}
 
-	void FB2Converter::HandleImage (const QDomElement&)
+	void FB2Converter::HandleImage (const QDomElement& imageElem)
 	{
-		// TODO
+		const auto& refId = imageElem.attribute ("href").mid (1);
+		const auto& binary = FindBinary (refId);
+		const auto& imageData = QByteArray::fromBase64 (binary.text ().toLatin1 ());
+		const auto& image = QImage::fromData (imageData);
+
+		Result_->addResource (QTextDocument::ImageResource,
+				{ "image://" + refId },
+				QVariant::fromValue (image));
+
+		Cursor_->insertHtml (QString ("<img src='image://%1'/>").arg (refId));
 	}
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
 	{
-		QTextBlockFormat fmt;
+		auto fmt = Cursor_->blockFormat ();
 		fmt.setTextIndent (20);
 		Cursor_->insertBlock (fmt);
 
@@ -349,27 +389,27 @@ namespace FXB
 
 	void FB2Converter::HandlePoem (const QDomElement& tagElem)
 	{
-		auto child = tagElem.firstChildElement ();
-		while (!child.isNull ())
-		{
-			Handle (child);
-			child = child.nextSiblingElement ();
-		}
+		HandleChildren (tagElem);
 	}
 
 	void FB2Converter::HandleStanza (const QDomElement& tagElem)
 	{
-		auto child = tagElem.firstChildElement ();
-		while (!child.isNull ())
-		{
-			Handle (child);
-			child = child.nextSiblingElement ();
-		}
+		HandleChildren (tagElem);
 	}
 
 	void FB2Converter::HandleEmptyLine (const QDomElement&)
 	{
 		Cursor_->insertText ("\n\n");
+	}
+
+	void FB2Converter::HandleChildren (const QDomElement& tagElem)
+	{
+		auto child = tagElem.firstChildElement ();
+		while (!child.isNull ())
+		{
+			Handle (child);
+			child = child.nextSiblingElement ();
+		}
 	}
 
 	void FB2Converter::Handle (const QDomElement& child)
@@ -381,6 +421,20 @@ namespace FXB
 								<< "unhandled tag"
 								<< tagName;
 					}) (child);
+	}
+
+	void FB2Converter::HandleMangleBlockFormat (const QDomElement& tagElem,
+			std::function<void (QTextBlockFormat&)> mangler, Handler_f next)
+	{
+		const auto origFmt = Cursor_->blockFormat ();
+
+		auto mangledFmt = origFmt;
+		mangler (mangledFmt);
+		Cursor_->insertBlock (mangledFmt);
+
+		next ({ tagElem });
+
+		Cursor_->insertBlock (origFmt);
 	}
 
 	void FB2Converter::HandleMangleCharFormat (const QDomElement& tagElem,
@@ -431,14 +485,6 @@ namespace FXB
 		}
 
 		Cursor_->insertBlock ();
-	}
-
-	void FB2Converter::AddImage (const QDomElement& elem)
-	{
-		const auto& data = elem.firstChild ().toText ().data ().toLatin1 ();
-		Result_->addResource (QTextDocument::ImageResource,
-				QUrl (elem.attribute ("id")),
-				QImage::fromData (QByteArray::fromBase64 (data)));
 	}
 }
 }

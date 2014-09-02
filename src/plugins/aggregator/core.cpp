@@ -1155,16 +1155,18 @@ namespace Aggregator
 				return;
 			}
 
+			IDType_t feedId = IDNotFound;
 			if (pj.Role_ == PendingJob::RFeedAdded)
 			{
-				Feed_ptr feed (new Feed ());
+				const auto& feed = std::make_shared<Feed> ();
 				feed->URL_ = pj.URL_;
 				StorageBackend_->AddFeed (feed);
+				feedId = feed->FeedID_;
 			}
+			else
+				feedId = StorageBackend_->FindFeed (pj.URL_);
 
-			IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
-
-			if (feedId == static_cast<IDType_t> (-1))
+			if (feedId == IDNotFound)
 			{
 				ErrorNotification (tr ("Feed error"),
 						tr ("Feed with url %1 not found.").arg (pj.URL_));
@@ -1565,9 +1567,8 @@ namespace Aggregator
 			ChannelsModel_->AddChannel (channel->ToShort ());
 			StorageBackend_->AddChannel (channel);
 
-			std::for_each (channel->Items_.begin (), channel->Items_.end (),
-					[] (Item_ptr item)
-						{ RegexpMatcherManager::Instance ().HandleItem (item); });
+			for (const auto& item : channel->Items_)
+				RegexpMatcherManager::Instance ().HandleItem (item);
 
 			emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 					GetItems (channel));

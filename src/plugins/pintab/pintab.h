@@ -28,16 +28,16 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef LEECHCRAFT_PINTAB_PINTAB_H
-#define LEECHCRAFT_PINTAB_PINTAB_H
+#pragma once
 
 #include <QObject>
+#include <QMenu>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QMenu;
+class QMainWindow;
 
 namespace LeechCraft
 {
@@ -49,6 +49,8 @@ namespace PinTab
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.PinTab")
 
 		ICoreTabWidget *MainTabWidget_;
 		QAction *PinTab_;
@@ -84,5 +86,3 @@ namespace PinTab
 	};
 }
 }
-
-#endif // LEECHCRAFT_PINTAB_PINTAB_H

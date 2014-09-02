@@ -38,6 +38,7 @@
 #include <util/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/sys/extensionsdata.h>
+#include <util/sll/urloperator.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "storage.h"
@@ -434,9 +435,10 @@ namespace Snails
 				result += "<span class='attachment'>";
 
 				QUrl linkUrl { "snails://attachment/" };
-				linkUrl.addQueryItem ("msgId", msg->GetFolderID ());
-				linkUrl.addQueryItem ("folderId", msg->GetFolders ().value (0).join ("/"));
-				linkUrl.addQueryItem ("attName", attach.GetName ());
+				Util::UrlOperator { linkUrl }
+						("msgId", msg->GetFolderID ())
+						("folderId", msg->GetFolders ().value (0).join ("/"))
+						("attName", attach.GetName ());
 				const auto& link = linkUrl.toEncoded ();
 
 				result += "<a href='" + link + "'>";
@@ -518,7 +520,11 @@ namespace Snails
 				auto lines = body.split ('\n');
 				for (auto& line : lines)
 				{
-					auto escaped = Qt::escape (line);
+#if QT_VERSION < 0x050000
+					const auto& escaped = Qt::escape (line);
+#else
+					const auto& escaped = line.toHtmlEscaped ();
+#endif
 					if (line.startsWith ('>'))
 						line = "<span class='replyPart'>" + escaped + "</span>";
 					else

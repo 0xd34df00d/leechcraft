@@ -212,6 +212,7 @@ namespace Monocle
 		void delayedCenterOn (const QPoint&);
 
 		void handleScaleChosen (int);
+		void handleCustomScale (QString);
 
 		void handleDockLocation (Qt::DockWidgetArea);
 		void handleDockVisibility (bool);

@@ -47,9 +47,9 @@ namespace Lastfmscrobble
 
 		QString AuthToken (const QString& username, const QString& password)
 		{
-			const QString& passHash = QCryptographicHash::hash (password.toAscii (),
+			const QString& passHash = QCryptographicHash::hash (password.toLatin1 (),
 					QCryptographicHash::Md5).toHex ();
-			return QCryptographicHash::hash ((username + passHash).toAscii (),
+			return QCryptographicHash::hash ((username + passHash).toLatin1 (),
 					QCryptographicHash::Md5).toHex ();
 		}
 
@@ -63,7 +63,7 @@ namespace Lastfmscrobble
 					.arg (method)
 					.arg (username)
 					.arg (secret);
-			return QCryptographicHash::hash (str.toAscii (),
+			return QCryptographicHash::hash (str.toLatin1 (),
 					QCryptographicHash::Md5).toHex ();
 		}
 	}

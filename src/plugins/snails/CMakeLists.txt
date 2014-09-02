@@ -5,11 +5,6 @@ include (InitLCPlugin OPTIONAL)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (VMime REQUIRED)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTSQL TRUE)
-set (QT_USE_QTWEBKIT TRUE)
-
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -63,8 +58,8 @@ set (FORMS
 set (RESOURCES snailsresources.qrc)
 CreateTrs ("snails" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("snails" "en;ru_RU" "${SRCS}" "${FORMS}" "snailssettings.xml")
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_snails SHARED
 	${COMPILED_TRANSLATIONS}
@@ -73,10 +68,11 @@ add_library (leechcraft_snails SHARED
 	${RCCS}
 	)
 target_link_libraries (leechcraft_snails
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${VMIME_LIBRARIES}
 	)
 install (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
 install (FILES snailssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/snails DESTINATION ${LC_SHARE_DEST})
+
+FindQtLibs (leechcraft_snails Concurrent Network Sql WebKitWidgets)

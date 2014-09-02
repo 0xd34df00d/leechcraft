@@ -40,6 +40,7 @@
 #include <QSettings>
 #include <QToolBar>
 #include <QTimer>
+#include <QMenu>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
@@ -56,6 +57,11 @@
 #include <QDataStream>
 #include <QMainWindow>
 #include <QDesktopServices>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/create_torrent.hpp>
@@ -88,6 +94,9 @@
 #include "livestreammanager.h"
 #include "torrentmaker.h"
 #include "notifymanager.h"
+
+Q_DECLARE_METATYPE (QMenu*)
+Q_DECLARE_METATYPE (QToolBar*)
 
 using namespace LeechCraft::Util;
 
@@ -350,10 +359,12 @@ namespace BitTorrent
 			QUrl url = e.Entity_.toUrl ();
 			if (url.scheme () == "magnet")
 			{
-				const auto& queryItems = url.queryItems ();
-				for (auto i = queryItems.begin (), end = queryItems.end (); i != end; ++i)
-					if (i->first == "xt" &&
-							i->second.startsWith ("urn:btih:"))
+#if QT_VERSION < 0x050000
+				for (const auto& item : url.queryItems ())
+#else
+				for (const auto& item : QUrlQuery { url }.queryItems ())
+#endif
+					if (item.first == "xt" && item.second.startsWith ("urn:btih:"))
 						return EntityTestHandleResult (EntityTestHandleResult::PIdeal);
 				return EntityTestHandleResult ();
 			}

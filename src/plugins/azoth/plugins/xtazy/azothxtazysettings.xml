@@ -2,7 +2,7 @@
 <settings>
 	<page>
 		<label value="Azoth Xtazy" />
-		<item type="groupbox" checkable="true" property="NPCmdEnabled" default="true">
+		<groupbox>
 			<label value="/np command" />
 			<item type="checkbox" property="SendTextImmediately" default="false">
 				<label value="Send text immediately" />

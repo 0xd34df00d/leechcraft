@@ -54,6 +54,8 @@ namespace MuCommands
 				IPlugin2
 				LeechCraft::Azoth::IProvideCommands)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.MuCommands")
+
 		StaticCommand Names_;
 		StaticCommand ListUrls_;
 		StaticCommand OpenUrl_;
@@ -75,6 +77,8 @@ namespace MuCommands
 		StaticCommand SetPerm_;
 		StaticCommand Kick_;
 		StaticCommand Ban_;
+		StaticCommand Presence_;
+		StaticCommand ChatPresence_;
 
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *AzothProxy_ = nullptr;

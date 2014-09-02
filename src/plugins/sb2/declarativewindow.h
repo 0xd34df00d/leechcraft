@@ -29,8 +29,14 @@
 
 #pragma once
 
-#include <QDeclarativeView>
 #include <QVariantMap>
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
+#else
+#include <QQuickWidget>
+#endif
+
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
@@ -39,7 +45,11 @@ namespace SB2
 {
 	class ViewManager;
 
+#if QT_VERSION < 0x050000
 	class DeclarativeWindow : public QDeclarativeView
+#else
+	class DeclarativeWindow : public QQuickWidget
+#endif
 	{
 		Q_OBJECT
 	public:

@@ -58,6 +58,8 @@ namespace Woodpecker
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IHaveRecoverableTabs IPlugin2)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.WoodPecker")
+
 		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 

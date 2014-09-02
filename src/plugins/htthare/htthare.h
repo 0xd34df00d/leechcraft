@@ -52,6 +52,8 @@ namespace HttHare
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.HttHare")
+
 		std::shared_ptr<Server> S_;
 		Util::AddressesModelManager *AddrMgr_;
 

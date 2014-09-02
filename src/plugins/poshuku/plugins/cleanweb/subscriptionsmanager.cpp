@@ -28,8 +28,12 @@
  **********************************************************************/
 
 #include "subscriptionsmanager.h"
-#include <memory>
 #include <QMessageBox>
+
+#if QT_VERSION >= 0x050000
+#include <QUrlQuery>
+#endif
+
 #include "core.h"
 #include "subscriptionadddialog.h"
 
@@ -59,10 +63,16 @@ namespace CleanWeb
 	{
 		QUrl url (urlStr);
 		QUrl locationUrl;
-		if (url.queryItemValue ("location").contains ("%"))
-			locationUrl.setUrl (QUrl::fromPercentEncoding (url.queryItemValue ("location").toAscii ()));
+
+#if QT_VERSION < 0x050000
+		const auto& location = url.queryItemValue ("location");
+#else
+		const auto& location = QUrlQuery { url }.queryItemValue ("location");
+#endif
+		if (location.contains ("%"))
+			locationUrl.setUrl (QUrl::fromPercentEncoding (location.toLatin1 ()));
 		else
-			locationUrl.setUrl (url.queryItemValue ("location"));
+			locationUrl.setUrl (location);
 
 		if (url.scheme () == "abp" &&
 				url.host () == "subscribe" &&
@@ -109,19 +119,19 @@ namespace CleanWeb
 
 	void SubscriptionsManager::on_AddButton__released ()
 	{
-		std::auto_ptr<SubscriptionAddDialog> subscriptionAdd (new SubscriptionAddDialog (this));
+		SubscriptionAddDialog subscriptionAdd (this);
 
-		if (!subscriptionAdd->exec ())
+		if (!subscriptionAdd.exec ())
 			return;
 
-		QString title = subscriptionAdd->GetName ();
-		QString urlStr = subscriptionAdd->GetURL ();
+		QString title = subscriptionAdd.GetName ();
+		QString urlStr = subscriptionAdd.GetURL ();
 		if (!title.isEmpty () ||
 				!urlStr.isEmpty ())
 			AddCustom (title, urlStr);
 
-		QList<QUrl> urls = subscriptionAdd->GetAdditionalSubscriptions ();
-		Q_FOREACH (const QUrl& url, urls)
+		const auto& urls = subscriptionAdd.GetAdditionalSubscriptions ();
+		for (const auto& url : urls)
 			Core::Instance ().Add (url);
 	}
 }

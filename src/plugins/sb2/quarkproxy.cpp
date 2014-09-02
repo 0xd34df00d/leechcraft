@@ -28,7 +28,13 @@
  **********************************************************************/
 
 #include "quarkproxy.h"
+
+#if QT_VERSION < 0x050000
 #include <QGraphicsObject>
+#else
+#include <QQuickItem>
+#endif
+
 #include <QToolTip>
 #include <QApplication>
 #include <QToolBar>
@@ -87,6 +93,10 @@ namespace SB2
 
 	QVariant QuarkProxy::openWindow (const QUrl& url, const QString& str, const QVariant& var)
 	{
+#if QT_VERSION >= 0x050000
+		qWarning () << Q_FUNC_INFO
+				<< "this function is deprecated, consider using QtQuick.Window";
+#endif
 		const auto& newUrl = url.resolved (str);
 
 		auto varMap = var.toMap ();
@@ -114,6 +124,17 @@ namespace SB2
 	QRect QuarkProxy::getWinRect ()
 	{
 		return GetFreeCoords ();
+	}
+
+	QPoint QuarkProxy::fitRect (const QPoint& src, const QSize& size, const QRect& rect, bool canOverlap)
+	{
+		Util::FitFlags flags = Util::FitFlag::NoFlags;
+		if (!canOverlap)
+			flags |= Util::FitFlag::NoOverlap;
+
+		return rect.isValid () ?
+				Util::FitRect (src, size, rect, flags) :
+				Util::FitRectScreen (src, size, flags);
 	}
 
 	void QuarkProxy::panelMoveRequested (const QString& position)
@@ -166,8 +187,10 @@ namespace SB2
 		}
 
 		QuarkOrderView_ = new QuarkOrderView (Manager_, Proxy_);
-		QuarkOrderView_->move (Util::FitRect ({ x, y }, QuarkOrderView_->size (), GetFreeCoords (),
-				Util::FitFlag::NoOverlap));
+
+		const auto& pos = Util::FitRect ({ x, y }, QuarkOrderView_->size (), GetFreeCoords (),
+				Util::FitFlag::NoOverlap);
+		QuarkOrderView_->move (pos);
 		QuarkOrderView_->show ();
 
 		connect (QuarkOrderView_,

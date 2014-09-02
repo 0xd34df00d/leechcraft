@@ -31,11 +31,13 @@
 
 #include <memory>
 #include <QObject>
+#include <QIcon>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
+class QAction;
 
 namespace LeechCraft
 {
@@ -49,6 +51,8 @@ namespace Depester
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Depester")
 
 		QHash<QObject*, QAction*> Entry2ActionIgnore_;
 		QHash<QObject*, QString> Entry2Nick_;

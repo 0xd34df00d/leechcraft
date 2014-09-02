@@ -52,6 +52,8 @@ namespace HiLi
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.HiLi")
+
 		std::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		QList<QRegExp> RegexpsCache_;

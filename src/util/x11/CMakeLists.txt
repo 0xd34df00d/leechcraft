@@ -19,7 +19,6 @@ add_library (leechcraft-util-x11 SHARED
 	${X11_SRCS}
 	)
 target_link_libraries (leechcraft-util-x11
-	${QT_LIBRARIES}
 	${X11_X11_LIB}
 	)
 set_property (TARGET leechcraft-util-x11 PROPERTY SOVERSION ${LC_SOVERSION})

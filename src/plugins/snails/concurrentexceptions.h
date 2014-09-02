@@ -37,7 +37,11 @@ namespace LeechCraft
 namespace Snails
 {
 	template<typename T>
+#if QT_VERSION < 0x050000
 	class ConcurrentExceptionMixin : public QtConcurrent::Exception
+#else
+	class ConcurrentExceptionMixin : public QException
+#endif
 	{
 	public:
 		void raise () const override
@@ -45,7 +49,11 @@ namespace Snails
 			throw *dynamic_cast<const T*> (this);
 		}
 
+#if QT_VERSION < 0x050000
 		Exception* clone () const override
+#else
+		QException* clone () const override
+#endif
 		{
 			return new T { *dynamic_cast<const T*> (this) };
 		}

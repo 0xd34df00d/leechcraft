@@ -30,11 +30,11 @@
 #include "baseactioncomponent.h"
 #include <QStandardItemModel>
 #include <QAction>
-#include <QDeclarativeImageProvider>
 #include <QApplication>
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <util/qml/widthiconprovider.h>
+#include <util/models/rolenamesmixin.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "sbview.h"
 
@@ -44,7 +44,7 @@ namespace SB2
 {
 	namespace
 	{
-		class TrayModel : public QStandardItemModel
+		class TrayModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
 			enum Roles
@@ -55,7 +55,7 @@ namespace SB2
 			};
 
 			TrayModel (QObject *parent)
-			: QStandardItemModel (parent)
+			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::ActionObject] = "actionObject";
@@ -120,8 +120,8 @@ namespace SB2
 	, View_ (view)
 	, ComponentInfo_ (info)
 	{
-		Component_->DynamicProps_ << QPair<QString, QObject*> (info.ModelName_, Model_);
-		Component_->ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (info.ImageProvID_, ImageProv_);
+		Component_->DynamicProps_.append ({ info.ModelName_, Model_ });
+		Component_->ImageProviders_.append ({ info.ImageProvID_, ImageProv_ });
 	}
 
 	QuarkComponent_ptr BaseActionComponent::GetComponent () const

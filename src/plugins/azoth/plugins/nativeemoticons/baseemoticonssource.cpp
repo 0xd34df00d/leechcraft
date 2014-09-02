@@ -38,8 +38,8 @@ namespace Azoth
 namespace NativeEmoticons
 {
 	BaseEmoticonsSource::BaseEmoticonsSource (const QString& suffix, QObject *parent)
-	: QObject (parent)
-	, EmoLoader_ (new Util::ResourceLoader ("azoth/emoticons/" + suffix, this))
+	: QObject { parent }
+	, EmoLoader_ { new Util::ResourceLoader { "azoth/emoticons/" + suffix, this } }
 	{
 		EmoLoader_->AddGlobalPrefix ();
 		EmoLoader_->AddLocalPrefix ();
@@ -59,12 +59,12 @@ namespace NativeEmoticons
 	{
 		QHash<QImage, QString> result;
 
-		const String2Filename_t& hash = ParseFile (pack);
-		const QSet<QString>& uniqueImgs = hash.values ().toSet ();
-		Q_FOREACH (const QString& imgPath, uniqueImgs)
+		const auto& hash = ParseFile (pack);
+		const auto& uniqueImgs = hash.values ().toSet ();
+		for (const auto& imgPath : uniqueImgs)
 		{
-			const QString& fullPath = EmoLoader_->GetIconPath (pack + "/" + imgPath);
-			const QImage& img = QImage (fullPath);
+			const auto& fullPath = EmoLoader_->GetIconPath (pack + "/" + imgPath);
+			const auto& img = QImage { fullPath };
 			if (img.isNull ())
 			{
 				qWarning () << Q_FUNC_INFO
@@ -84,12 +84,12 @@ namespace NativeEmoticons
 
 	QByteArray BaseEmoticonsSource::GetImage (const QString& pack, const QString& smile) const
 	{
-		const String2Filename_t& hash = ParseFile (pack);
+		const auto& hash = ParseFile (pack);
 		if (!hash.contains (smile))
-			return QByteArray ();
+			return {};
 
-		const QString& path = EmoLoader_->GetIconPath (pack + "/" + hash [smile]);
-		QFile file (path);
+		const auto& path = EmoLoader_->GetIconPath (pack + "/" + hash [smile]);
+		QFile file { path };
 		if (!file.open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -99,7 +99,7 @@ namespace NativeEmoticons
 					<< pack
 					<< smile
 					<< file.errorString ();
-			return QByteArray ();
+			return {};
 		}
 
 		return file.readAll ();

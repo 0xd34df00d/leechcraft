@@ -22,8 +22,8 @@ set (ONLINEBOOKMARKS_RESOURCES
 CreateTrs ("poshuku_onlinebookmarks" "de;en;fr;it;ru_RU;uk_UA" ONLINEBOOKMARKS_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_onlinebookmarks" "en;ru_RU" "${ONLINEBOOKMARKS_SRCS}" "${ONLINEBOOKMARKS_FORMS}" "poshukuonlinebookmarkssettings.xml")
 
-QT4_WRAP_UI (ONLINEBOOKMARKS_UIS_H ${ONLINEBOOKMARKS_FORMS})
-QT4_ADD_RESOURCES (ONLINEBOOKMARKS_RCCS ${ONLINEBOOKMARKS_RESOURCES})
+QtWrapUi (ONLINEBOOKMARKS_UIS_H ${ONLINEBOOKMARKS_FORMS})
+QtAddResources (ONLINEBOOKMARKS_RCCS ${ONLINEBOOKMARKS_RESOURCES})
 
 add_library (leechcraft_poshuku_onlinebookmarks SHARED
  	${ONLINEBOOKMARKS_COMPILED_TRANSLATIONS}
@@ -34,12 +34,13 @@ add_library (leechcraft_poshuku_onlinebookmarks SHARED
 	)
 
 target_link_libraries (leechcraft_poshuku_onlinebookmarks
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_poshuku_onlinebookmarks DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukuonlinebookmarkssettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+FindQtLibs (leechcraft_poshuku_onlinebookmarks Widgets)
 
 set (ONLINEBOOKMARKS_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
 

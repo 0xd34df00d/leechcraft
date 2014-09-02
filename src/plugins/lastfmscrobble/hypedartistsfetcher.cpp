@@ -117,7 +117,7 @@ namespace Lastfmscrobble
 				getText ("listeners").toInt ()
 			};
 
-			auto pendingBio = new PendingArtistBio (name, NAM_, this);
+			auto pendingBio = new PendingArtistBio (name, NAM_, false, this);
 			connect (pendingBio,
 					SIGNAL (ready ()),
 					this,
