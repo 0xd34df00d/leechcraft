@@ -151,6 +151,18 @@ multiline status.
 		const auto expectedStatus = Status_t { FullState_t { State::SXA, "This is my new\nmultiline status." } };
 		QCOMPARE (res.Status_, expectedStatus);
 	}
+
+	void CommandsTest::accMessageOnly ()
+	{
+		const QString command = R"delim(
+/presence testacc with spaces
+
+away
+				)delim";
+		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc with spaces" } });
+		QCOMPARE (res.Status_, Status_t { std::string { "away" } });
+	}
 }
 }
 }
