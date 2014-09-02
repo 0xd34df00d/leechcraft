@@ -44,6 +44,7 @@ target_link_libraries (leechcraft_azoth_otroid
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LIBOTR_LIBRARY}
+	gcrypt
 	leechcraft_azoth_common
 	)
 install (TARGETS leechcraft_azoth_otroid DESTINATION ${LC_PLUGINS_DEST})
