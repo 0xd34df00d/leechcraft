@@ -30,6 +30,7 @@
 #include "wkplugins.h"
 #include <QIcon>
 #include "notificationsext.h"
+#include "staticplugin.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,9 @@ namespace WKPlugins
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
+		StaticPlugin::SetImpl (this);
 	}
 
 	void Plugin::SecondInit ()
@@ -103,3 +107,5 @@ namespace WKPlugins
 }
 
 LC_EXPORT_PLUGIN (leechcraft_wkplugins, LeechCraft::WKPlugins::Plugin);
+
+Q_IMPORT_PLUGIN (StaticPlugin)
