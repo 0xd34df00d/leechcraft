@@ -32,6 +32,7 @@
 #include <memory>
 #include <vector>
 #include <QObject>
+#include <QSet>
 #include <interfaces/ispellcheckprovider.h>
 #include "hunspell/hunspell.hxx"
 
@@ -57,11 +58,14 @@ namespace Rosenthal
 		std::vector<HunspellItem> Hunspells_;
 
 		const KnownDictsManager * const KnownMgr_;
+
+		QSet<QString> LearntWords_;
 	public:
 		Checker (const KnownDictsManager*, QObject* = 0);
 
 		QStringList GetPropositions (const QString&) const;
 		bool IsCorrect (const QString&) const;
+		void LearnWord (const QString&);
 	public slots:
 		void setLanguages (const QStringList&);
 	};

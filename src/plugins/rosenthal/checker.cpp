@@ -31,6 +31,8 @@
 #include <algorithm>
 #include <QFile>
 #include <QTextCodec>
+#include <QSettings>
+#include <QCoreApplication>
 #include <util/util.h>
 #include "knowndictsmanager.h"
 
@@ -39,14 +41,18 @@ namespace LeechCraft
 namespace Rosenthal
 {
 	Checker::Checker (const KnownDictsManager *knownMgr, QObject *parent)
-	: QObject (parent)
-	, KnownMgr_ (knownMgr)
+	: QObject { parent }
+	, KnownMgr_ { knownMgr }
 	{
 		connect (knownMgr,
 				SIGNAL (languagesChanged (QStringList)),
 				this,
 				SLOT (setLanguages (QStringList)));
 		setLanguages (knownMgr->GetLanguages ());
+
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Rosenthal_LearntWords" };
+		LearntWords_ = settings.value ("LearntWords").value<QSet<QString>> ();
 	}
 
 	QStringList Checker::GetPropositions (const QString& word) const
@@ -54,7 +60,7 @@ namespace Rosenthal
 		QStringList result;
 		for (const auto& item : Hunspells_)
 		{
-			const QByteArray& encoded = item.Codec_->fromUnicode (word);
+			const auto& encoded = item.Codec_->fromUnicode (word);
 			if (item.Hunspell_->spell (encoded.data ()))
 				continue;
 
@@ -73,11 +79,23 @@ namespace Rosenthal
 
 	bool Checker::IsCorrect (const QString& word) const
 	{
+		if (LearntWords_.contains (word))
+			return true;
+
 		return std::any_of (Hunspells_.begin (), Hunspells_.end (),
 				[&word] (const HunspellItem& item)
 				{
 					return item.Hunspell_->spell (item.Codec_->fromUnicode (word).data ());
 				});
+	}
+
+	void Checker::LearnWord (const QString& word)
+	{
+		LearntWords_ << word;
+
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Rosenthal_LearntWords" };
+		settings.setValue ("LearntWords", QVariant::fromValue (LearntWords_));
 	}
 
 	void Checker::setLanguages (const QStringList& languages)
@@ -88,8 +106,11 @@ namespace Rosenthal
 		{
 			const auto& primaryPath = KnownMgr_->GetDictPath (language);
 			HunspellItem item;
-			item.Hunspell_.reset (new Hunspell ((primaryPath + ".aff").toLatin1 (),
-					(primaryPath + ".dic").toLatin1 ()));
+			item.Hunspell_.reset (new Hunspell
+					{
+						(primaryPath + ".aff").toLatin1 (),
+						(primaryPath + ".dic").toLatin1 ()
+					});
 			item.Codec_ = QTextCodec::codecForName (item.Hunspell_->get_dic_encoding ());
 
 			if (item.Codec_)
