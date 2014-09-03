@@ -48,6 +48,8 @@ namespace WKPlugins
 		Q_PLUGIN_METADATA (IID "org.qtwebkit.QtWebKit.QtWebKitPlugins")
 #endif
 
+		mutable QMap<Extension, QPointer<QObject>> CreatedExtensions_;
+
 		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);

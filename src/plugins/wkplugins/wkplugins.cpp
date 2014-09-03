@@ -80,13 +80,24 @@ namespace WKPlugins
 
 	QObject* Plugin::createExtension (Extension ext) const
 	{
+		if (const auto& val = CreatedExtensions_.value (ext))
+			return val;
+
+		QObject *extObj = nullptr;
 		switch (ext)
 		{
 		case Extension::Notifications:
-			return new NotificationsExt { Proxy_ };
+			extObj = new NotificationsExt { Proxy_ };
+			break;
 		default:
-			return nullptr;
+			break;
 		}
+
+		if (!extObj)
+			return nullptr;
+
+		CreatedExtensions_ [ext] = extObj;
+		return extObj;
 	}
 }
 }
