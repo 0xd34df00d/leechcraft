@@ -36,6 +36,8 @@
 #include <util/util.h>
 #include "knowndictsmanager.h"
 
+Q_DECLARE_METATYPE (QSet<QString>)
+
 namespace LeechCraft
 {
 namespace Rosenthal
