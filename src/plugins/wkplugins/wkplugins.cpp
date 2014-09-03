@@ -29,6 +29,7 @@
 
 #include "wkplugins.h"
 #include <QIcon>
+#include "notificationsext.h"
 
 namespace LeechCraft
 {
@@ -58,12 +59,34 @@ namespace WKPlugins
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("");
+		return tr ("Provides support for spellchecking and HTML5 notifications to WebKit.");
 	}
 
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	bool Plugin::supportsExtension (Extension ext) const
+	{
+		switch (ext)
+		{
+		case Extension::Notifications:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	QObject* Plugin::createExtension (Extension ext) const
+	{
+		switch (ext)
+		{
+		case Extension::Notifications:
+			return new NotificationsExt { Proxy_ };
+		default:
+			return nullptr;
+		}
 	}
 }
 }

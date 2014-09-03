@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QWebKitPlatformPlugin>
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft
@@ -38,13 +39,16 @@ namespace WKPlugins
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public QWebKitPlatformPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo QWebKitPlatformPlugin)
 
 #if QT_VERSION >= 0x050000
 		Q_PLUGIN_METADATA (IID "org.qtwebkit.QtWebKit.QtWebKitPlugins")
 #endif
+
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,6 +57,9 @@ namespace WKPlugins
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		bool supportsExtension (Extension) const override;
+		QObject* createExtension (Extension) const override;
 	};
 }
 }
