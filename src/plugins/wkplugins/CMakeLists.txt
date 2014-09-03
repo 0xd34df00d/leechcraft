@@ -7,6 +7,17 @@ include_directories (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+
+set (STATIC_SRCS
+	staticplugin.cpp
+	)
+add_library (leechcraft_wkplugins_qtplugin STATIC
+	${STATIC_SRCS}
+	)
+set_target_properties (leechcraft_wkplugins_qtplugin PROPERTIES COMPILE_FLAGS "-DQT_STATICPLUGIN")
+install (TARGETS leechcraft_wkplugins_qtplugin DESTINATION ${LC_PLUGINS_DEST}/lib)
+FindQtLibs (leechcraft_wkplugins_qtplugin WebKitWidgets)
+
 set (SRCS
 	wkplugins.cpp
 	)
@@ -19,6 +30,7 @@ add_library (leechcraft_wkplugins SHARED
 	)
 target_link_libraries (leechcraft_wkplugins
 	${LEECHCRAFT_LIBRARIES}
+	leechcraft_wkplugins_qtplugin
 	)
 install (TARGETS leechcraft_wkplugins DESTINATION ${LC_PLUGINS_DEST})
 
