@@ -27,95 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "wkplugins.h"
-#include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "notificationsext.h"
-#include "staticplugin.h"
-#include "xmlsettingsmanager.h"
+#pragma once
+
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace WKPlugins
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Proxy_ = proxy;
+		Q_OBJECT
 
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "wkpluginssettings.xml");
-
-		StaticPlugin::SetImpl (this);
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.WKPlugins";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "WKPlugins";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Provides support for spellchecking and HTML5 notifications to WebKit.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
-
-	bool Plugin::supportsExtension (Extension ext) const
-	{
-		switch (ext)
-		{
-		case Extension::Notifications:
-			return true;
-		default:
-			return false;
-		}
-	}
-
-	QObject* Plugin::createExtension (Extension ext) const
-	{
-		if (const auto& val = CreatedExtensions_.value (ext))
-			return val;
-
-		QObject *extObj = nullptr;
-		switch (ext)
-		{
-		case Extension::Notifications:
-			extObj = new NotificationsExt { Proxy_ };
-			break;
-		default:
-			break;
-		}
-
-		if (!extObj)
-			return nullptr;
-
-		CreatedExtensions_ [ext] = extObj;
-		return extObj;
-	}
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_wkplugins, LeechCraft::WKPlugins::Plugin);
-
-Q_IMPORT_PLUGIN (StaticPlugin)

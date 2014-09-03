@@ -22,9 +22,10 @@ set (SRCS
 	wkplugins.cpp
 	notificationsext.cpp
 	spellcheckext.cpp
+	xmlsettingsmanager.cpp
 	)
 #CreateTrs("wkplugins" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("wkplugins" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("wkplugins" "en;ru_RU" "${SRCS}" "${FORMS}" "wkpluginssettings.xml")
 
 if (USE_QT5)
 	find_package (Qt5Core REQUIRED)
@@ -60,5 +61,6 @@ target_link_libraries (leechcraft_wkplugins
 	leechcraft_wkplugins_qtplugin
 	)
 install (TARGETS leechcraft_wkplugins DESTINATION ${LC_PLUGINS_DEST})
+install (FILES wkpluginssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_wkplugins WebKitWidgets)

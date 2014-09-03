@@ -27,95 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "wkplugins.h"
-#include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "notificationsext.h"
-#include "staticplugin.h"
 #include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace WKPlugins
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Proxy_ = proxy;
-
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "wkpluginssettings.xml");
-
-		StaticPlugin::SetImpl (this);
+		Util::BaseSettingsManager::Init ();
 	}
 
-	void Plugin::SecondInit ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
+		static XmlSettingsManager xsm;
+		return xsm;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.WKPlugins";
-	}
-
-	void Plugin::Release ()
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
 
-	QString Plugin::GetName () const
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		return "WKPlugins";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Provides support for spellchecking and HTML5 notifications to WebKit.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
-
-	bool Plugin::supportsExtension (Extension ext) const
-	{
-		switch (ext)
-		{
-		case Extension::Notifications:
-			return true;
-		default:
-			return false;
-		}
-	}
-
-	QObject* Plugin::createExtension (Extension ext) const
-	{
-		if (const auto& val = CreatedExtensions_.value (ext))
-			return val;
-
-		QObject *extObj = nullptr;
-		switch (ext)
-		{
-		case Extension::Notifications:
-			extObj = new NotificationsExt { Proxy_ };
-			break;
-		default:
-			break;
-		}
-
-		if (!extObj)
-			return nullptr;
-
-		CreatedExtensions_ [ext] = extObj;
-		return extObj;
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_WKPlugins");
+		return settings;
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_wkplugins, LeechCraft::WKPlugins::Plugin);
-
-Q_IMPORT_PLUGIN (StaticPlugin)

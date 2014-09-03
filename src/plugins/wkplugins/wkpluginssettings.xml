@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="WKPlugins" />
+		<groupbox>
+			<label value="Spell checking" />
+			<item type="checkbox" property="Autocorrect" default="false">
+				<label value="Automatically correct spelling errors" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

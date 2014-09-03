@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QWebKitPlatformPlugin>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -39,16 +40,18 @@ namespace WKPlugins
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveSettings
 				 , public QWebKitPlatformPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo QWebKitPlatformPlugin)
+		Q_INTERFACES (IInfo IHaveSettings QWebKitPlatformPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.WKPlugins")
 
-		mutable QMap<Extension, QPointer<QObject>> CreatedExtensions_;
-
 		ICoreProxy_ptr Proxy_;
+		Util::XmlSettingsDialog_ptr XSD_;
+
+		mutable QMap<Extension, QPointer<QObject>> CreatedExtensions_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -57,6 +60,8 @@ namespace WKPlugins
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog() const;
 
 		bool supportsExtension (Extension) const override;
 		QObject* createExtension (Extension) const override;
