@@ -21,6 +21,7 @@ FindQtLibs (leechcraft_wkplugins_qtplugin WebKitWidgets)
 set (SRCS
 	wkplugins.cpp
 	notificationsext.cpp
+	spellcheckext.cpp
 	)
 #CreateTrs("wkplugins" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("wkplugins" "en;ru_RU" "${SRCS}" "${FORMS}" "")
