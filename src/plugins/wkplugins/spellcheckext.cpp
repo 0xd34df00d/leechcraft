@@ -30,6 +30,7 @@
 #include "spellcheckext.h"
 #include <QTextBoundaryFinder>
 #include <interfaces/core/ipluginsmanager.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -145,6 +146,9 @@ namespace WKPlugins
 
 	QString SpellcheckerExt::autoCorrectSuggestionForMisspelledWord (const QString& word)
 	{
+		if (!XmlSettingsManager::Instance ().property ("EnableAutocorrect").toBool ())
+			return {};
+
 		QStringList guesses;
 		guessesForWord (word, {}, guesses);
 		return guesses.value (0);
