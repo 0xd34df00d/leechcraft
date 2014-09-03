@@ -44,9 +44,7 @@ namespace WKPlugins
 		Q_OBJECT
 		Q_INTERFACES (IInfo QWebKitPlatformPlugin)
 
-#if QT_VERSION >= 0x050000
-		Q_PLUGIN_METADATA (IID "org.qtwebkit.QtWebKit.QtWebKitPlugins")
-#endif
+		LC_PLUGIN_METADATA ("org.LeechCraft.WKPlugins")
 
 		mutable QMap<Extension, QPointer<QObject>> CreatedExtensions_;
 
