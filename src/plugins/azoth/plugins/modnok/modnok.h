@@ -27,11 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_MODNOK_MODNOK_H
-#define PLUGINS_AZOTH_PLUGINS_MODNOK_MODNOK_H
+#pragma once
+
 #include <QObject>
 #include <QRegExp>
 #include <QCache>
+#include <QImage>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
@@ -92,5 +93,3 @@ namespace Modnok
 }
 }
 }
-
-#endif
