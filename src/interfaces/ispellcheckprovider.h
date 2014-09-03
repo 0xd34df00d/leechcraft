@@ -39,6 +39,8 @@ public:
 
 	virtual bool IsCorrect (const QString&) const = 0;
 	virtual QStringList GetPropositions (const QString&) const = 0;
+
+	virtual void LearnWord (const QString&) = 0;
 };
 
 typedef std::shared_ptr<ISpellChecker> ISpellChecker_ptr;
