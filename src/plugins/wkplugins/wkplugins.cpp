@@ -30,8 +30,9 @@
 #include "wkplugins.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "notificationsext.h"
 #include "staticplugin.h"
+#include "notificationsext.h"
+#include "spellcheckext.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -86,6 +87,7 @@ namespace WKPlugins
 		switch (ext)
 		{
 		case Extension::Notifications:
+		case Extension::SpellChecker:
 			return true;
 		default:
 			return false;
@@ -102,6 +104,9 @@ namespace WKPlugins
 		{
 		case Extension::Notifications:
 			extObj = new NotificationsExt { Proxy_ };
+			break;
+		case Extension::SpellChecker:
+			extObj = new SpellcheckerExt { Proxy_ };
 			break;
 		default:
 			break;
