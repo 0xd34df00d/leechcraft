@@ -212,7 +212,7 @@ namespace Xoox
 		return new JoinGroupchatWidget ();
 	}
 
-	QVariantMap GlooxProtocol::TryGuessMUCIdentifyingData (const QString& input, QObject *entryObj)
+	QVariantMap GlooxProtocol::TryGuessMUCIdentifyingData (const QString& text, QObject *entryObj)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
@@ -220,14 +220,17 @@ namespace Xoox
 		QVariantMap result;
 		result ["AccountID"] = acc->GetAccountID ();
 		result ["Nick"] = acc->GetNick ();
-		if (input.contains ('@'))
+		result ["Password"] = text.section (' ', 1);
+
+		const auto& address = text.section (' ', 0, 0);
+		if (address.contains ('@'))
 		{
-			result ["Room"] = input.section ('@', 0, 0);
-			result ["Server"] = input.section ('@', 1);
+			result ["Room"] = address.section ('@', 0, 0);
+			result ["Server"] = address.section ('@', 1);
 		}
 		else
 		{
-			result ["Room"] = input;
+			result ["Room"] = address;
 
 			auto& server = result ["Server"];
 			switch (entry->GetEntryType ())
