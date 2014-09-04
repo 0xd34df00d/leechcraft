@@ -46,7 +46,11 @@ namespace Azoth
 		bool StopProcessing_;
 		QString Message_;
 	};
-	typedef boost::variant<bool, StringCommandResult> CommandResult_t;
+	struct TextMorphResult
+	{
+		QString NewText_;
+	};
+	typedef boost::variant<bool, StringCommandResult, TextMorphResult> CommandResult_t;
 
 	typedef std::function<CommandResult_t (ICLEntry*, QString&)> Command_f;
 

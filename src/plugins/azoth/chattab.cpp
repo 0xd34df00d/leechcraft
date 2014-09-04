@@ -569,6 +569,12 @@ namespace Azoth
 				msg->Store ();
 				return result.StopProcessing_;
 			}
+
+			bool operator() (const TextMorphResult& result) const
+			{
+				Text_ = result.NewText_;
+				return false;
+			}
 		};
 
 		/** Processes the outgoing messages, replacing /nick with calls
