@@ -78,8 +78,10 @@ namespace Xoox
 		QByteArray GetProtocolID () const;
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
+
+		QWidget* GetMUCJoinWidget ();
+		QVariantMap TryGuessMUCIdentifyingData (const QString&, QObject*);
 
 		bool SupportsURI (const QUrl&) const;
 		void HandleURI (const QUrl&, QObject*);

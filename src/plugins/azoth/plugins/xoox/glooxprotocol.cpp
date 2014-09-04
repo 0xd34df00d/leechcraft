@@ -45,6 +45,8 @@
 #include "inbandaccountregthirdpage.h"
 #include "clientconnection.h"
 #include "accountsettingsholder.h"
+#include "roomclentry.h"
+#include "roomhandler.h"
 
 namespace LeechCraft
 {
@@ -189,11 +191,6 @@ namespace Xoox
 		emit accountAdded (account);
 	}
 
-	QWidget* GlooxProtocol::GetMUCJoinWidget ()
-	{
-		return new JoinGroupchatWidget ();
-	}
-
 	void GlooxProtocol::RemoveAccount (QObject *acc)
 	{
 		GlooxAccount *accObj = qobject_cast<GlooxAccount*> (acc);
@@ -208,6 +205,55 @@ namespace Xoox
 
 		accObj->deleteLater ();
 		saveAccounts ();
+	}
+
+	QWidget* GlooxProtocol::GetMUCJoinWidget ()
+	{
+		return new JoinGroupchatWidget ();
+	}
+
+	QVariantMap GlooxProtocol::TryGuessMUCIdentifyingData (const QString& input, QObject *entryObj)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
+
+		QVariantMap result;
+		result ["AccountID"] = acc->GetAccountID ();
+		result ["Nick"] = acc->GetNick ();
+		if (input.contains ('@'))
+		{
+			result ["Room"] = input.section ('@', 0, 0);
+			result ["Server"] = input.section ('@', 1);
+		}
+		else
+		{
+			result ["Room"] = input;
+
+			auto& server = result ["Server"];
+			switch (entry->GetEntryType ())
+			{
+			case ICLEntry::EntryType::MUC:
+			{
+				const auto rh = qobject_cast<RoomCLEntry*> (entryObj)->GetRoomHandler ();
+				server = rh->GetRoomJID ().section ('@', 1);
+				break;
+			}
+			case ICLEntry::EntryType::PrivateChat:
+			{
+				const auto roomEntry = entry->GetParentCLEntry ();
+				const auto rh = qobject_cast<RoomCLEntry*> (roomEntry)->GetRoomHandler ();
+				server = rh->GetRoomJID ().section ('@', 1);
+				break;
+			}
+			default:
+			{
+				const auto& serverStr = acc->GetSettings ()->GetJID ().section ('@', 1);
+				server = "conference." + serverStr;
+			}
+			}
+		}
+
+		return result;
 	}
 
 	bool GlooxProtocol::SupportsURI (const QUrl& url) const
