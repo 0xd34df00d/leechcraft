@@ -73,6 +73,11 @@ namespace Xoox
 		return Ui_.Server_->text ();
 	}
 
+	QString JoinGroupchatWidget::GetPassword () const
+	{
+		return Ui_.Password_->text ();
+	}
+
 	void JoinGroupchatWidget::AccountSelected (QObject *accObj)
 	{
 		GlooxAccount *acc = qobject_cast<GlooxAccount*> (accObj);
@@ -120,14 +125,16 @@ namespace Xoox
 		result ["Nick"] = GetNickname ();
 		result ["Room"] = GetRoom ();
 		result ["Server"] = GetServer ();
+		result ["Password"] = GetPassword ();
 		return result;
 	}
 
 	void JoinGroupchatWidget::SetIdentifyingData (const QVariantMap& data)
 	{
-		const QString& nick = data ["Nick"].toString ();
-		const QString& room = data ["Room"].toString ();
-		const QString& server = data ["Server"].toString ();
+		const auto& nick = data ["Nick"].toString ();
+		const auto& room = data ["Room"].toString ();
+		const auto& server = data ["Server"].toString ();
+		const auto& password = data ["Password"].toString ();
 
 		if (!nick.isEmpty ())
 			Ui_.Nickname_->setText (nick);
@@ -135,6 +142,8 @@ namespace Xoox
 			Ui_.Room_->setText (room);
 		if (!server.isEmpty ())
 			Ui_.Server_->setText (server);
+		if (!password.isEmpty ())
+			Ui_.Password_->setText (password);
 
 		checkValidity ();
 	}

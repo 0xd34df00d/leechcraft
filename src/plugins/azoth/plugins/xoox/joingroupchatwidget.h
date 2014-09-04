@@ -55,6 +55,7 @@ namespace Xoox
 		QString GetServer () const;
 		QString GetRoom () const;
 		QString GetNickname () const;
+		QString GetPassword () const;
 
 		void AccountSelected (QObject *account);
 		void Join (QObject *account);
