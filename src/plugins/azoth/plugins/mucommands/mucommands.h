@@ -77,6 +77,7 @@ namespace MuCommands
 		StaticCommand SetPerm_;
 		StaticCommand Kick_;
 		StaticCommand Ban_;
+		StaticCommand Subst_;
 		StaticCommand Presence_;
 		StaticCommand ChatPresence_;
 

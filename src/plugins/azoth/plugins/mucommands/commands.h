@@ -40,6 +40,7 @@ namespace Azoth
 {
 class IProxyObject;
 class ICLEntry;
+struct TextMorphResult;
 
 namespace MuCommands
 {
@@ -82,6 +83,8 @@ namespace MuCommands
 	bool Last (IProxyObject*, ICLEntry*, const QString&);
 
 	bool Ping (IProxyObject*, ICLEntry*, const QString&);
+
+	TextMorphResult Subst (IProxyObject*, ICLEntry*, const QString&);
 }
 }
 }

@@ -1239,6 +1239,16 @@ namespace MuCommands
 
 		return true;
 	}
+
+	TextMorphResult Subst (IProxyObject*, ICLEntry*, const QString& text)
+	{
+		const char sep = text.count ('\n') < 2 ?
+				' ' :
+				'\n';
+		const auto& pattern = text.section (sep, 1, 1);
+		const auto& replacement = text.section (sep, 2, 2);
+		return { text.section (sep, 3).replace (pattern, replacement) };
+	}
 }
 }
 }

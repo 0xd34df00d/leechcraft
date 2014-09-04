@@ -202,6 +202,13 @@ namespace MuCommands
 		};
 		descParser (Ban_);
 
+		Subst_ = StaticCommand
+		{
+			{ "/subst" },
+			[this] (ICLEntry *e, const QString& t) { return Subst (AzothProxy_, e, t); }
+		};
+		descParser (Subst_);
+
 		Presence_ = StaticCommand
 		{
 			{ "/presence" },
@@ -257,19 +264,19 @@ namespace MuCommands
 			{
 				Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_,
 				Invite_, ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_,
-				ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_, Presence_, ChatPresence_
+				ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_, Subst_, Presence_, ChatPresence_
 			};
 		case ICLEntry::EntryType::PrivateChat:
 			return
 			{
 				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, Ping_, Last_,
-				Invite_, ListPerms_, SetPerm_, Whois_, Presence_, ChatPresence_
+				Invite_, ListPerms_, SetPerm_, Whois_, Subst_, Presence_, ChatPresence_
 			};
 		default:
 			return
 			{
 				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, Ping_, Last_,
-				Invite_, Presence_, ChatPresence_
+				Invite_, Subst_, Presence_, ChatPresence_
 			};
 		}
 	}
