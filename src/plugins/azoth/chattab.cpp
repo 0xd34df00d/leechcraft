@@ -541,10 +541,12 @@ namespace Azoth
 
 		class CommandResultVisitor : public boost::static_visitor<bool>
 		{
+			QString& Text_;
 			QObject * const EntryObj_;
 		public:
-			CommandResultVisitor (QObject *entryObj)
-			: EntryObj_ { entryObj }
+			CommandResultVisitor (QString& text, QObject *entryObj)
+			: Text_ (text)
+			, EntryObj_ { entryObj }
 			{
 			}
 
@@ -594,7 +596,7 @@ namespace Azoth
 					try
 					{
 						auto res = cmd.Command_ (entry, text);
-						if (boost::apply_visitor (CommandResultVisitor { entryObj }, res))
+						if (boost::apply_visitor (CommandResultVisitor { text, entryObj }, res))
 							return true;
 					}
 					catch (const CommandException& ex)
