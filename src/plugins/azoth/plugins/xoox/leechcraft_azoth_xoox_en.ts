@@ -363,7 +363,7 @@
         <location filename="joingroupchatwidget.ui" line="74"/>
         <source>Nickname:</source>
         <oldsource>NIckname:</oldsource>
-        <translation>NIckname:</translation>
+        <translation>Nickname:</translation>
     </message>
 </context>
 <context>
