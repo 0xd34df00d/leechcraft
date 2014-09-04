@@ -33,6 +33,7 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <QXmppCallManager.h>
+#include <QXmppMucManager.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -70,6 +71,7 @@
 #include "xep0313modelmanager.h"
 #include "pendinglastactivityrequest.h"
 #include "lastactivitymanager.h"
+#include "roomhandler.h"
 
 namespace LeechCraft
 {
@@ -831,7 +833,7 @@ namespace Xoox
 		return SettingsHolder_->GetNick ();
 	}
 
-	void GlooxAccount::JoinRoom (const QString& jid, const QString& nick)
+	void GlooxAccount::JoinRoom (const QString& jid, const QString& nick, const QString& password)
 	{
 		if (!ClientConnection_)
 		{
@@ -858,19 +860,21 @@ namespace Xoox
 			return;
 		}
 
-		RoomCLEntry *entry = ClientConnection_->JoinRoom (jid, nick);
+		const auto entry = ClientConnection_->JoinRoom (jid, nick);
 		if (!entry)
 			return;
+
+		if (!password.isEmpty ())
+			entry->GetRoomHandler ()->GetRoom ()->setPassword (password);
 
 		emit gotCLItems ({ entry });
 	}
 
 	void GlooxAccount::JoinRoom (const QString& server,
-			const QString& room, const QString& nick)
+			const QString& room, const QString& nick, const QString& password)
 	{
-		QString jidStr = QString ("%1@%2")
-				.arg (room, server);
-		JoinRoom (jidStr, nick);
+		const auto& jidStr = room + '@' + server;
+		JoinRoom (jidStr, nick, password);
 	}
 
 	std::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
@@ -996,7 +1000,7 @@ namespace Xoox
 		if (ExistingEntry2JoinConflict_.contains (entry))
 		{
 			const auto& pair = ExistingEntry2JoinConflict_.take (entry);
-			JoinRoom (pair.first, pair.second);
+			JoinRoom (pair.first, pair.second, {});
 		}
 	}
 

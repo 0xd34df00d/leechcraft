@@ -102,7 +102,7 @@ namespace Xoox
 		}
 
 		SelectedAccount_ = acc;
-		acc->JoinRoom (GetServer (), GetRoom (), GetNickname ());
+		acc->JoinRoom (GetServer (), GetRoom (), GetNickname (), {});
 	}
 
 	void JoinGroupchatWidget::Cancel ()

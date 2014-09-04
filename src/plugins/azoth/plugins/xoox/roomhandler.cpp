@@ -34,6 +34,7 @@
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/xpc/passutils.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -96,7 +97,11 @@ namespace Xoox
 				SLOT (handlePendingForm (QXmppDataForm*, const QString&)),
 				Qt::QueuedConnection);
 
-		Room_->join ();
+		new Util::DelayedExecutor
+		{
+			[this] { Room_->join (); },
+			0
+		};
 	}
 
 	QString RoomHandler::GetRoomJID () const

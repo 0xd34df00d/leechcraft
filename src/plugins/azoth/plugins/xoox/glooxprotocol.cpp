@@ -306,7 +306,7 @@ namespace Xoox
 						<< split;
 				return;
 			}
-			acc->JoinRoom (split.at (1), split.at (0), acc->GetNick ());
+			acc->JoinRoom (split.at (1), split.at (0), acc->GetNick (), {});
 		}
 		else if (queryItems.contains ("roster") ||
 				queryItems.contains ("subscribe"))

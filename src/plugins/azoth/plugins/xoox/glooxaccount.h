@@ -247,8 +247,9 @@ namespace Xoox
 #endif
 
 		QString GetNick () const;
-		void JoinRoom (const QString&, const QString&);
-		void JoinRoom (const QString&, const QString&, const QString&);
+		void JoinRoom (const QString& jid, const QString& nick, const QString& password);
+		void JoinRoom (const QString& room, const QString& server,
+				const QString& nick, const QString& password);
 
 		std::shared_ptr<ClientConnection> GetClientConnection () const;
 		GlooxCLEntry* CreateFromODS (OfflineDataSource_ptr);

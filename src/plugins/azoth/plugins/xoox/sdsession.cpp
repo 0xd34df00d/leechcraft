@@ -433,7 +433,7 @@ namespace Xoox
 		if (jid.isEmpty ())
 			return;
 
-		Account_->JoinRoom (jid, Account_->GetNick ());
+		Account_->JoinRoom (jid, Account_->GetNick (), {});
 	}
 
 	void SDSession::handleRegistrationForm (const QXmppIq& iq)

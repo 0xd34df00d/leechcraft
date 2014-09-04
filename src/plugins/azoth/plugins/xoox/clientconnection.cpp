@@ -466,7 +466,7 @@ namespace Xoox
 				JoinQueue_.erase (pos);
 		}
 
-		RoomHandler *rh = new RoomHandler (jid, nick, asAutojoin, Account_);
+		const auto rh = new RoomHandler (jid, nick, asAutojoin, Account_);
 		RoomHandlers_ [jid] = rh;
 		return rh->GetCLEntry ();
 	}
