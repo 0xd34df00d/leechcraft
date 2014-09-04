@@ -66,6 +66,7 @@ namespace MuCommands
 		StaticCommand Disco_;
 		StaticCommand ChangeNick_;
 		StaticCommand ChangeSubject_;
+		StaticCommand JoinMuc_;
 		StaticCommand LeaveMuc_;
 		StaticCommand RejoinMuc_;
 		StaticCommand Ping_;

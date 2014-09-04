@@ -584,6 +584,30 @@ namespace MuCommands
 		return true;
 	}
 
+	bool JoinMuc (IProxyObject*, ICLEntry *entry, const QString& text)
+	{
+		const auto accObj = entry->GetParentAccount ();
+		const auto acc = qobject_cast<IAccount*> (accObj);
+		const auto mucProto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
+		if (!mucProto)
+			throw CommandException { QObject::tr ("The account %1 does not support MUCs.")
+					.arg (acc->GetAccountName ()) };
+
+		const auto data = mucProto->TryGuessMUCIdentifyingData (text.section (' ', 1), entry->GetQObject ());
+		if (data.isEmpty ())
+			throw CommandException { QObject::tr ("Cannot guess MUC connection parameters.") };
+
+		std::unique_ptr<QWidget> jw { mucProto->GetMUCJoinWidget () };
+		if (!jw)
+			throw CommandException { QObject::tr ("Cannot join the MUC.") };
+
+		const auto imjw = qobject_cast<IMUCJoinWidget*> (jw.get ());
+		imjw->SetIdentifyingData (data);
+		imjw->Join (accObj);
+
+		return true;
+	}
+
 	bool RejoinMuc (IProxyObject*, ICLEntry *entry, const QString& text)
 	{
 		const auto accObj = entry->GetParentAccount ();

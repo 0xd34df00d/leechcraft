@@ -125,6 +125,13 @@ namespace MuCommands
 		};
 		descParser (ChangeSubject_);
 
+		JoinMuc_ = StaticCommand
+		{
+			{ "/join" },
+			[this] (ICLEntry *e, const QString& t) { return JoinMuc (AzothProxy_, e, t); }
+		};
+		descParser (JoinMuc_);
+
 		LeaveMuc_ = StaticCommand
 		{
 			{ "/leave", "/part" },
@@ -262,20 +269,20 @@ namespace MuCommands
 		case ICLEntry::EntryType::MUC:
 			return
 			{
-				Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_,
-				Invite_, ChangeNick_, ChangeSubject_, LeaveMuc_, RejoinMuc_, Ping_, Last_,
+				Names_, ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, Invite_,
+				ChangeNick_, ChangeSubject_, JoinMuc_, LeaveMuc_, RejoinMuc_, Ping_, Last_,
 				ListPerms_, SetPerm_, Kick_, Ban_, Pm_, Whois_, Subst_, Presence_, ChatPresence_
 			};
 		case ICLEntry::EntryType::PrivateChat:
 			return
 			{
-				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, Ping_, Last_,
+				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, JoinMuc_, Ping_, Last_,
 				Invite_, ListPerms_, SetPerm_, Whois_, Subst_, Presence_, ChatPresence_
 			};
 		default:
 			return
 			{
-				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, Ping_, Last_,
+				ListUrls_, OpenUrl_, FetchUrl_, VCard_, Version_, Time_, Disco_, JoinMuc_, Ping_, Last_,
 				Invite_, Subst_, Presence_, ChatPresence_
 			};
 		}

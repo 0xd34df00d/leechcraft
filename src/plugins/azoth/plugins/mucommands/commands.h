@@ -58,6 +58,8 @@ namespace MuCommands
 
 	bool Disco (IProxyObject*, ICLEntry*, const QString&);
 
+	bool JoinMuc (IProxyObject*, ICLEntry*, const QString&);
+
 	bool RejoinMuc (IProxyObject*, ICLEntry*, const QString&);
 
 	bool LeaveMuc (IProxyObject*, ICLEntry*, const QString&);
