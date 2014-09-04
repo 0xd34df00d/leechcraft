@@ -66,7 +66,6 @@ namespace Sarin
 
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions options);
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
-		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject* account);
 
 		const ICoreProxy_ptr& GetCoreProxy () const;

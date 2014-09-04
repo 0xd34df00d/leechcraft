@@ -27,89 +27,42 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "metaprotocol.h"
-#include <QIcon>
-#include "metaaccount.h"
-#include "core.h"
+#pragma once
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Metacontacts
-{
-	MetaProtocol::MetaProtocol (QObject *parent)
-	: QObject (parent)
-	, ParentPlugin_ (parent)
+	/** @brief Interface for protocols supporting multiuser chat rooms.
+	 *
+	 * This interface should be implemented by protocol objects supporting
+	 * multiuser chat rooms.
+	 */
+	class IMUCProtocol
 	{
-		Account_ = new MetaAccount (this);
-	}
+	public:
+		virtual ~IMUCProtocol () {};
 
-	MetaProtocol::~MetaProtocol ()
-	{
-		Release ();
-	}
-
-	void MetaProtocol::Release ()
-	{
-		if (!Account_)
-			return;
-
-		Core::Instance ().SetMetaAccount (0);
-		delete Account_;
-		Account_ = 0;
-	}
-
-	QObject* MetaProtocol::GetQObject ()
-	{
-		return this;
-	}
-
-	IProtocol::ProtocolFeatures MetaProtocol::GetFeatures () const
-	{
-		return PFNoAccountRegistration;
-	}
-
-	QList<QObject*> MetaProtocol::GetRegisteredAccounts ()
-	{
-		QList<QObject*> result;
-		if (!Account_->GetCLEntries ().isEmpty ())
-			result << Account_;
-		return result;
-	}
-
-	QObject* MetaProtocol::GetParentProtocolPlugin () const
-	{
-		return ParentPlugin_;
-	}
-
-	QString MetaProtocol::GetProtocolName () const
-	{
-		return tr ("Metacontacts");
-	}
-
-	QIcon MetaProtocol::GetProtocolIcon () const
-	{
-		return QIcon ();
-	}
-
-	QByteArray MetaProtocol::GetProtocolID () const
-	{
-		return "org.LeechCraft.Azoth.Protocols.MetaProtocol";
-	}
-
-	QList<QWidget*> MetaProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
-	{
-		return QList<QWidget*> ();
-	}
-
-	void MetaProtocol::RegisterAccount (const QString&, const QList<QWidget*>&)
-	{
-	}
-
-	void MetaProtocol::RemoveAccount (QObject*)
-	{
-	}
+		/** @brief Returns the widget used to set up the MUC join options.
+		 *
+		 * The returned widget must implement IMUCJoinWidget.
+		 *
+		 * The caller takes the ownership of the widget, so each time
+		 * a newly constructed widget should be returned, and the plugin
+		 * shouldn't delete the widget by itself.
+		 *
+		 * If the protocol doesn't support joining multi-user chats, it is
+		 * safe to return \b nullptr here.
+		 *
+		 * @return The widget used for joining MUCs, which must implement
+		 * IMUCJoinWidget, or \b nullptr if not supported.
+		 *
+		 * @sa IMUCJoinWidget
+		 */
+		virtual QWidget* GetMUCJoinWidget () = 0;
+	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCProtocol,
+		"org.Deviant.LeechCraft.Azoth.IMUCProtocol/1.0");

@@ -27,11 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPROTOCOL_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPROTOCOL_H
+#pragma once
 
 #include <QObject>
 #include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/imucprotocol.h>
 #include <interfaces/azoth/iurihandler.h>
 
 namespace LeechCraft
@@ -45,11 +45,14 @@ namespace Acetamide
 	class IrcAccount;
 
 	class IrcProtocol : public QObject
-						, public IProtocol
-						, public IURIHandler
+					  , public IProtocol
+					  , public IMUCProtocol
+					  , public IURIHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IURIHandler)
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol
+				LeechCraft::Azoth::IMUCProtocol
+				LeechCraft::Azoth::IURIHandler)
 
 		QObject *ParentProtocolPlugin_;
 		QList<IrcAccount*> IrcAccounts_;
@@ -88,5 +91,3 @@ namespace Acetamide
 };
 };
 };
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPROTOCOL_H

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAPROTOCOL_H
-#define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAPROTOCOL_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/azoth/iprotocol.h>
 
@@ -63,8 +63,6 @@ namespace Metacontacts
 		QByteArray GetProtocolID () const;
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
-		QWidget* GetMUCBookmarkEditorWidget ();
 		void RemoveAccount (QObject*);
 	signals:
 		void accountAdded (QObject*);
@@ -73,5 +71,3 @@ namespace Metacontacts
 }
 }
 }
-
-#endif

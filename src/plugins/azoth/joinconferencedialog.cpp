@@ -34,6 +34,7 @@
 #include "interfaces/azoth/iprotocol.h"
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/isupportbookmarks.h"
+#include "interfaces/azoth/imucprotocol.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -51,11 +52,14 @@ namespace Azoth
 			if (!acc->IsShownInRoster ())
 				continue;
 
-			auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+			const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+			const auto mucProto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
+			if (!mucProto)
+				continue;
 
 			if (!Proto2Joiner_.contains (proto))
 			{
-				QWidget *joiner = proto->GetMUCJoinWidget ();
+				const auto joiner = mucProto->GetMUCJoinWidget ();
 				if (!qobject_cast<IMUCJoinWidget*> (joiner))
 				{
 					qWarning () << Q_FUNC_INFO
@@ -230,8 +234,7 @@ namespace Azoth
 			return;
 		}
 
-		IProtocol *proto =
-				qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 		if (!proto)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -285,8 +288,7 @@ namespace Azoth
 
 			Ui_.AccountBox_->setCurrentIndex (i);
 
-			IProtocol *proto =
-					qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+			const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 			if (!Proto2Joiner_.contains (proto))
 			{
 				qWarning () << Q_FUNC_INFO

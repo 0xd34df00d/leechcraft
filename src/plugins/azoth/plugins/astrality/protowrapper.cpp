@@ -182,11 +182,6 @@ namespace Astrality
 		return QList<QWidget*> () << fpage;
 	}
 
-	QWidget* ProtoWrapper::GetMUCJoinWidget ()
-	{
-		return 0;
-	}
-
 	void ProtoWrapper::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
 		auto fpg = qobject_cast<AccountRegFirstPage*> (widgets.value (0));

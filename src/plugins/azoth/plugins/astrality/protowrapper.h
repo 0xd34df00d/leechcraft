@@ -78,7 +78,6 @@ namespace Astrality
 		QByteArray GetProtocolID () const;
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
 	private slots:
 		void handleAMReady (Tp::PendingOperation*);

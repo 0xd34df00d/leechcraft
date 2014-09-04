@@ -58,6 +58,7 @@
 #include "interfaces/azoth/iconfigurablemuc.h"
 #include "interfaces/azoth/ihavedirectedstatus.h"
 #include "interfaces/azoth/imucjoinwidget.h"
+#include "interfaces/azoth/imucprotocol.h"
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
@@ -465,7 +466,15 @@ namespace Azoth
 
 			auto accObj = entry->GetParentAccount ();
 			auto acc = qobject_cast<IAccount*> (accObj);
-			auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+			auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
+			if (!proto)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "requested reconnect on an entry"
+						<< entry->GetHumanReadableID ()
+						<< "whose parent account doesn't implement IMUCProtocol";
+				return;
+			}
 
 			const auto& data = mucEntry->GetIdentifyingData ();
 			mucEntry->Leave ();

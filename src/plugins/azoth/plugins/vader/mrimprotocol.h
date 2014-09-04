@@ -62,7 +62,6 @@ namespace Vader
 		QByteArray GetProtocolID () const;
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
 	private:
 		void RestoreAccounts ();

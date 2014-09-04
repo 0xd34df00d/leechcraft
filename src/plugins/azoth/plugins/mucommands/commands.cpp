@@ -57,6 +57,7 @@
 #include <interfaces/azoth/ihaveservicediscovery.h>
 #include <interfaces/azoth/iprovidecommands.h>
 #include <interfaces/azoth/ihavedirectedstatus.h>
+#include <interfaces/azoth/imucprotocol.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
@@ -605,8 +606,13 @@ namespace MuCommands
 				{
 					[acc, mucData] ()
 					{
-						const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+						const auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
+						if (!proto)
+							return;
+
 						std::unique_ptr<QWidget> jw { proto->GetMUCJoinWidget () };
+						if (!jw)
+							return;
 
 						const auto imjw = qobject_cast<IMUCJoinWidget*> (jw.get ());
 						imjw->SetIdentifyingData (mucData);

@@ -50,6 +50,7 @@
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "interfaces/azoth/imucjoinwidget.h"
+#include "interfaces/azoth/imucprotocol.h"
 #include "core.h"
 #include "mainwidget.h"
 #include "chattabsmanager.h"
@@ -274,7 +275,10 @@ namespace Azoth
 						continue;
 					}
 
-					auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+					auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
+					if (!proto)
+						continue;
+
 					auto widgetObj = proto->GetMUCJoinWidget ();
 					auto widget = qobject_cast<IMUCJoinWidget*> (widgetObj);
 					if (!widget)

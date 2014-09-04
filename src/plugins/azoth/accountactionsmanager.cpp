@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QtDebug>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -48,6 +49,7 @@
 #include "interfaces/azoth/iregmanagedaccount.h"
 #include "interfaces/azoth/isupportnonroster.h"
 #include "interfaces/azoth/ihaveserverhistory.h"
+#include "interfaces/azoth/imucprotocol.h"
 #include "core.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
@@ -415,7 +417,14 @@ namespace Azoth
 		if (bmData.isNull ())
 			return;
 
-		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+		const auto proto = qobject_cast<IMUCProtocol*> (account->GetParentProtocol ());
+		if (!proto)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< account->GetAccountName ()
+					<< "parent protocol does not implement IMUCProtocol";
+			return;
+		}
 
 		auto jWidget = proto->GetMUCJoinWidget ();
 		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (jWidget);

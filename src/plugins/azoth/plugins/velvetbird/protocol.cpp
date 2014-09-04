@@ -129,11 +129,6 @@ namespace VelvetBird
 		PushAccount (pacc);
 	}
 
-	QWidget* Protocol::GetMUCJoinWidget ()
-	{
-		return 0;
-	}
-
 	void Protocol::RemoveAccount (QObject *accObj)
 	{
 		auto acc = qobject_cast<Account*> (accObj);

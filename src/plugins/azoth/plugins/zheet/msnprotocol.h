@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_MSNPROTOCOL_H
-#define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNPROTOCOL_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/azoth/iprotocol.h>
 
@@ -61,7 +61,6 @@ namespace Zheet
 		QByteArray GetProtocolID () const;
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
 	private:
 		void RestoreAccounts ();
@@ -74,5 +73,3 @@ namespace Zheet
 }
 }
 }
-
-#endif

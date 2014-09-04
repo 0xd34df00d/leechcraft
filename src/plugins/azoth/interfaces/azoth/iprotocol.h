@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IPROTOCOL_H
-#define PLUGINS_AZOTH_INTERFACES_IPROTOCOL_H
+#pragma once
+
 #include <QFlags>
 #include <QMetaType>
 
@@ -212,24 +212,6 @@ namespace Azoth
 		 */
 		virtual void RegisterAccount (const QString& name, const QList<QWidget*>& widgets) = 0;
 
-		/** @brief Returns the widget used to set up the MUC join options.
-		 *
-		 * The returned widget must implement IMUCJoinWidget.
-		 *
-		 * The caller takes the ownership of the widget, so each time
-		 * a newly constructed widget should be returned, and the plugin
-		 * shouldn't delete the widget by itself.
-		 *
-		 * If the protocol doesn't support multi-user chats, it is safe
-		 * to return \b nullptr here.
-		 *
-		 * @return The widget used for joining MUCs, which must implement
-		 * IMUCJoinWidget, or \b nullptr if not supported.
-		 *
-		 * @sa IMUCJoinWidget
-		 */
-		virtual QWidget* GetMUCJoinWidget () = 0;
-
 		/** @brief Removes the given account.
 		 *
 		 * This function shouldn't ask anything from the user, just
@@ -277,5 +259,3 @@ Q_DECLARE_METATYPE (LeechCraft::Azoth::IProtocol*);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IProtocol::ProtocolFeatures);
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProtocol,
 		"org.Deviant.LeechCraft.Azoth.IProtocol/1.0");
-
-#endif

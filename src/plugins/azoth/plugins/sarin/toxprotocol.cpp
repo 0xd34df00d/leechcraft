@@ -106,11 +106,6 @@ namespace Sarin
 		InitConnections (acc);
 	}
 
-	QWidget* ToxProtocol::GetMUCJoinWidget ()
-	{
-		return nullptr;
-	}
-
 	void ToxProtocol::RemoveAccount (QObject *accObj)
 	{
 		const auto account = qobject_cast<ToxAccount*> (accObj);

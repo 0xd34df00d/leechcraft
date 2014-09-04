@@ -42,6 +42,11 @@ namespace Azoth
 	 *
 	 * This interface should be implemented by accounts that support
 	 * bookmarking conferences.
+	 *
+	 * If this interface is implemented by an entry, the parent account
+	 * must also implement IMUCProtocol.
+	 *
+	 * @sa IMUCProtocol
 	 */
 	class ISupportBookmarks
 	{

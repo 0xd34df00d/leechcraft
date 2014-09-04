@@ -34,6 +34,7 @@
 #include "interfaces/azoth/imucbookmarkeditorwidget.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/isupportbookmarks.h"
+#include "interfaces/azoth/imucprotocol.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -59,7 +60,11 @@ namespace Azoth
 
 		for (auto proto : Core::Instance ().GetProtocols ())
 		{
-			const auto widget = proto->GetMUCJoinWidget ();
+			const auto mucProto = qobject_cast<IMUCProtocol*> (proto->GetQObject ());
+			if (!mucProto)
+				continue;
+
+			const auto widget = mucProto->GetMUCJoinWidget ();
 			const auto joiner = qobject_cast<IMUCJoinWidget*> (widget);
 			if (!joiner)
 				continue;

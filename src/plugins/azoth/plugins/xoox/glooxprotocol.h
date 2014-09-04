@@ -27,10 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/imucprotocol.h>
 #include <interfaces/azoth/iurihandler.h>
 #include <interfaces/azoth/isupportimport.h>
 
@@ -46,11 +47,13 @@ namespace Xoox
 
 	class GlooxProtocol : public QObject
 						, public IProtocol
+						, public IMUCProtocol
 						, public IURIHandler
 						, public ISupportImport
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol
+				LeechCraft::Azoth::IMUCProtocol
 				LeechCraft::Azoth::IURIHandler
 				LeechCraft::Azoth::ISupportImport)
 
@@ -95,5 +98,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

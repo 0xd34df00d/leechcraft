@@ -30,8 +30,9 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/azoth/iprotocol.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/imucprotocol.h>
 
 namespace LeechCraft
 {
@@ -45,9 +46,10 @@ namespace Murm
 
 	class VkProtocol : public QObject
 					 , public IProtocol
+					 , public IMUCProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IMUCProtocol)
 
 		const ICoreProxy_ptr Proxy_;
 		IProxyObject * const AzothProxy_;

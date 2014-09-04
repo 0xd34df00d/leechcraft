@@ -69,7 +69,6 @@ namespace VelvetBird
 		QByteArray GetProtocolID () const;
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
 
 		QByteArray GetPurpleID () const;

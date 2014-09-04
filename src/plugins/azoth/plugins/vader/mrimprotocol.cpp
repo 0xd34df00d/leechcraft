@@ -97,7 +97,7 @@ namespace Vader
 
 	QList<QWidget*> MRIMProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
-		return QList<QWidget*> () << new MRIMAccountConfigWidget;
+		return { new MRIMAccountConfigWidget };
 	}
 
 	void MRIMProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
@@ -118,11 +118,6 @@ namespace Vader
 		emit accountAdded (acc);
 
 		saveAccounts ();
-	}
-
-	QWidget* MRIMProtocol::GetMUCJoinWidget ()
-	{
-		return 0;
 	}
 
 	void MRIMProtocol::RemoveAccount (QObject *acc)

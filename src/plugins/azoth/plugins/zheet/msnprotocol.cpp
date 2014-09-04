@@ -116,11 +116,6 @@ namespace Zheet
 		saveAccounts ();
 	}
 
-	QWidget* MSNProtocol::GetMUCJoinWidget ()
-	{
-		return 0;
-	}
-
 	void MSNProtocol::RemoveAccount (QObject *acc)
 	{
 		if (Accounts_.removeAll (static_cast<MSNAccount*> (acc)))
