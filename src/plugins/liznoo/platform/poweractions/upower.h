@@ -40,7 +40,7 @@ namespace PowerActions
 	class UPower final : public Platform
 	{
 	public:
-		UPower (QObject* = nullptr);
+		using Platform::Platform;
 
 		void ChangeState (State) override;
 	};

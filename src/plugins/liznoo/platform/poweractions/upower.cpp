@@ -36,11 +36,6 @@ namespace Liznoo
 {
 namespace PowerActions
 {
-	UPower::UPower (QObject *parent)
-	: Platform (parent)
-	{
-	}
-
 	void UPower::ChangeState (State state)
 	{
 		QDBusInterface face ("org.freedesktop.UPower",
