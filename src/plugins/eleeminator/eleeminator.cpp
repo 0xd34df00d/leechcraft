@@ -54,6 +54,12 @@ namespace Eleeminator
 					QString { "Ctrl+Shift+W" },
 					proxy->GetIconThemeManager ()->GetIcon ("tab-close")
 				});
+		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Clear",
+				{
+					tr ("Clear terminal window"),
+					QString { "Ctrl+Shift+L" },
+					proxy->GetIconThemeManager ()->GetIcon ("edit-clear")
+				});
 		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Copy",
 				{
 					tr ("Copy selected text to clipboard"),

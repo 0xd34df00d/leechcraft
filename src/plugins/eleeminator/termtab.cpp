@@ -106,7 +106,7 @@ namespace Eleeminator
 				Term_,
 				SLOT (setFocus ()));
 
-		SetupToolbar ();
+		SetupToolbar (scMgr);
 		SetupShortcuts (scMgr);
 
 		Term_->setContextMenuPolicy (Qt::CustomContextMenu);
@@ -171,7 +171,7 @@ namespace Eleeminator
 		IsTabCurrent_ = false;
 	}
 
-	void TermTab::SetupToolbar ()
+	void TermTab::SetupToolbar (Util::ShortcutManager *manager)
 	{
 		SetupColorsButton ();
 		SetupFontsButton ();
@@ -184,6 +184,7 @@ namespace Eleeminator
 				SIGNAL (triggered ()),
 				Term_,
 				SLOT (clear ()));
+		manager->RegisterAction ("org.LeechCraft.Eleeminator.Clear", clearAct);
 	}
 
 	void TermTab::SetupColorsButton ()

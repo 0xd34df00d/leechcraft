@@ -72,7 +72,7 @@ namespace Eleeminator
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
 	private:
-		void SetupToolbar ();
+		void SetupToolbar (Util::ShortcutManager*);
 		void SetupColorsButton ();
 		void SetupFontsButton ();
 
