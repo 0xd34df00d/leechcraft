@@ -41,16 +41,16 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
-#include "screenplatform/screenplatformlayer.h"
+#include "platform/screen/screenplatformlayer.h"
 
 #if defined(Q_OS_LINUX)
 	#include "platform/platformupower.h"
-	#include "screenplatform/screenplatformfreedesktop.h"
+	#include "platform/screen/screenplatformfreedesktop.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/platformwinapi.h"
 #elif defined(Q_OS_FREEBSD)
 	#include "platform/platformfreebsd.h"
-	#include "screenplatform/screenplatformfreedesktop.h"
+	#include "platform/screen/screenplatformfreedesktop.h"
 #elif defined(Q_OS_MAC)
 	#include "platform/platformmac.h"
 #else

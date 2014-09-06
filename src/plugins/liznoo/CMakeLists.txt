@@ -18,7 +18,7 @@ set (SRCS
 	batteryhistorydialog.cpp
 	xmlsettingsmanager.cpp
 	platform/platformlayer.cpp
-	screenplatform/screenplatformlayer.cpp
+	platform/screen/screenplatformlayer.cpp
 	)
 
 set (FBSD_SRCS platform/platformfreebsd.cpp)
@@ -53,7 +53,7 @@ elseif (NOT WIN32)
 			)
 	endif ()
 
-	set (SRCS ${SRCS} "screenplatform/screenplatformfreedesktop.cpp")
+	set (SRCS ${SRCS} platform/screen/screenplatformfreedesktop.cpp)
 # Windows implementation using WinAPI
 else ()
 	set (SRCS
