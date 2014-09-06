@@ -34,6 +34,12 @@ set (UPOWER_SRCS
 set (UPOWER_POWERACTIONS_SRCS
 	platform/poweractions/upower.cpp
 	)
+set (PMUTILS_POWERACTIONS_SRCS)
+if (USE_LIZNOO_PMUTILS)
+	set (PMUTILS_POWERACTIONS_SRCS
+		platform/poweractions/pmutils.cpp
+		)
+endif ()
 set (MAC_SRCS
 	platform/events/platformmac.mm
 	)
@@ -57,10 +63,14 @@ elseif (NOT WIN32)
 			${SRCS}
 			${UPOWER_SRCS}
 			${UPOWER_POWERACTIONS_SRCS}
+			${PMUTILS_POWERACTIONS_SRCS}
 			)
 	endif ()
 
-	set (SRCS ${SRCS} platform/screen/screenplatformfreedesktop.cpp)
+	set (SRCS
+		${SRCS}
+		platform/screen/screenplatformfreedesktop.cpp
+		)
 # Windows implementation using WinAPI
 else ()
 	set (SRCS
