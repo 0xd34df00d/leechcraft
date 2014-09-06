@@ -45,7 +45,7 @@ namespace Liznoo
 				<< "not supported";
 	}
 
-	void PlatformLayer::EmitGonnaSleep (int timeout)
+	void PlatformLayer::emitGonnaSleep (int timeout)
 	{
 		Entity e = Util::MakeEntity ("Sleeping",
 				QString (),
@@ -55,7 +55,7 @@ namespace Liznoo
 		emit gotEntity (e);
 	}
 
-	void PlatformLayer::EmitWokeUp ()
+	void PlatformLayer::emitWokeUp ()
 	{
 		Entity e = Util::MakeEntity ("WokeUp",
 				QString (),

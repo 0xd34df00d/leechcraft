@@ -120,10 +120,10 @@ namespace Liznoo
 			IOCancelPowerChange (Port_, reinterpret_cast<long> (messageArgument));
 			break;
 		case kIOMessageSystemWillSleep:
-			EmitGonnaSleep (30000);
+			emitGonnaSleep (30000);
 			break;
 		case kIOMessageSystemHasPoweredOn:
-			EmitWokeUp ();
+			emitWokeUp ();
 			break;
 		default:
 			break;

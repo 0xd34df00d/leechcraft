@@ -424,9 +424,9 @@ namespace Liznoo
 		}
 
 		if (button == "TestSleep")
-			PL_->EmitGonnaSleep (1000);
+			PL_->emitGonnaSleep (1000);
 		else if (button == "TestWake")
-			PL_->EmitWokeUp ();
+			PL_->emitWokeUp ();
 	}
 }
 }
