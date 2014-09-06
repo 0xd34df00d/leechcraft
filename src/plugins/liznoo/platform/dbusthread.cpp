@@ -34,17 +34,16 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	DBusThread::DBusThread(QObject *parent)
+	DBusThread::DBusThread (QObject *parent)
 	: QThread (parent)
-	, Conn_ (0)
 	{
 	}
-	
+
 	DBusConnector* DBusThread::GetConnector () const
 	{
 		return Conn_;
 	}
-	
+
 	void DBusThread::run ()
 	{
 		Conn_ = new DBusConnector;

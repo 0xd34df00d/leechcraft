@@ -40,11 +40,11 @@ namespace Liznoo
 	class DBusThread : public QThread
 	{
 		Q_OBJECT
-		
-		DBusConnector *Conn_;
+
+		DBusConnector *Conn_ = nullptr;
 	public:
 		DBusThread (QObject* = 0);
-		
+
 		DBusConnector* GetConnector () const;
 	protected:
 		void run ();
