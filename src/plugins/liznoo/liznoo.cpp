@@ -45,7 +45,11 @@
 
 #if defined(Q_OS_LINUX)
 	#include "platform/events/platformupower.h"
+#if USE_PMUTILS
+	#include "platform/poweractions/pmutils.h"
+#else
 	#include "platform/poweractions/upower.h"
+#endif
 	#include "platform/screen/screenplatformfreedesktop.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/events/platformwinapi.h"
@@ -77,7 +81,12 @@ namespace Liznoo
 #if defined(Q_OS_LINUX)
 		PL_ = new PlatformUPower (Proxy_, this);
 		SPL_ = new ScreenPlatformFreedesktop (this);
+
+#if USE_PMUTILS
+		PowerActPlatform_ = new PowerActions::PMUtils (this);
+#else
 		PowerActPlatform_ = new PowerActions::UPower (this);
+#endif
 #elif defined(Q_OS_WIN32)
 		PL_ = new PlatformWinAPI (Proxy_, this);
 #elif defined(Q_OS_FREEBSD)

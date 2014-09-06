@@ -36,6 +36,7 @@ set (UPOWER_POWERACTIONS_SRCS
 	)
 set (PMUTILS_POWERACTIONS_SRCS)
 if (USE_LIZNOO_PMUTILS)
+	add_definitions (-DUSE_PMUTILS)
 	set (PMUTILS_POWERACTIONS_SRCS
 		platform/poweractions/pmutils.cpp
 		)
