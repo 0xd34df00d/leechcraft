@@ -18,6 +18,7 @@ set (SRCS
 	batteryhistorydialog.cpp
 	xmlsettingsmanager.cpp
 	platform/events/platformlayer.cpp
+	platform/poweractions/platform.cpp
 	platform/screen/screenplatformlayer.cpp
 	)
 
