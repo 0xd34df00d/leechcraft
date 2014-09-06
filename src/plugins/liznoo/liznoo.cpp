@@ -34,6 +34,7 @@
 #include <QAction>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -289,8 +290,9 @@ namespace Liznoo
 		const bool isLow = check ([checkPerc] (const BatteryInfo& b)
 				{ return checkPerc (b, "NotifyOnLowPower"); });
 
+		const auto iem = Proxy_->GetEntityManager ();
 		if (isExtremeLow || isLow)
-			emit gotEntity (Util::MakeNotification ("Liznoo",
+			iem->HandleEntity (Util::MakeNotification ("Liznoo",
 						tr ("Battery charge level is below %1.")
 							.arg (info.Percentage_),
 						isLow ? PWarning_ : PCritical_));
@@ -303,11 +305,11 @@ namespace Liznoo
 					{ return !b.TimeToFull_ && b.TimeToEmpty_; });
 
 			if (startedCharging)
-				emit gotEntity (Util::MakeNotification ("Liznoo",
+				iem->HandleEntity (Util::MakeNotification ("Liznoo",
 							tr ("The device started charging."),
 							PInfo_));
 			else if (startedDischarging)
-				emit gotEntity (Util::MakeNotification ("Liznoo",
+				iem->HandleEntity (Util::MakeNotification ("Liznoo",
 							tr ("The device started discharging."),
 							PWarning_));
 		}
