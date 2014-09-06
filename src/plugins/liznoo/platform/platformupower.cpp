@@ -71,9 +71,13 @@ namespace Liznoo
 				this,
 				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)));
 		connect (Thread_->GetConnector (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gonnaSleep (int)),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SLOT (emitGonnaSleep (int)));
+		connect (Thread_->GetConnector (),
+				SIGNAL (wokeUp ()),
+				this,
+				SLOT (emitWokeUp ()));
 
 		QMetaObject::invokeMethod (Thread_->GetConnector (),
 				"enumerateDevices",

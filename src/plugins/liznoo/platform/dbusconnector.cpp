@@ -84,7 +84,7 @@ namespace Liznoo
 				"org.freedesktop.UPower",
 				"Resuming",
 				this,
-				SLOT (handleWokeUp ()));
+				SIGNAL (wokeUp ()));
 	}
 
 	void DBusConnector::changeState (PlatformLayer::PowerState state)
@@ -114,21 +114,7 @@ namespace Liznoo
 
 	void DBusConnector::handleGonnaSleep ()
 	{
-		Entity e = Util::MakeEntity ("Sleeping",
-				QString (),
-				TaskParameter::Internal,
-				"x-leechcraft/power-state-changed");
-		e.Additional_ ["TimeLeft"] = 1000;
-		emit gotEntity (e);
-	}
-
-	void DBusConnector::handleWokeUp ()
-	{
-		Entity e = Util::MakeEntity ("WokeUp",
-				QString (),
-				TaskParameter::Internal,
-				"x-leechcraft/power-state-changed");
-		emit gotEntity (e);
+		emit gonnaSleep (1000);
 	}
 
 	void DBusConnector::enumerateDevices ()

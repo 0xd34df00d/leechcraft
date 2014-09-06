@@ -50,12 +50,13 @@ namespace Liznoo
 		void changeState (Liznoo::PlatformLayer::PowerState);
 	private slots:
 		void handleGonnaSleep ();
-		void handleWokeUp ();
 		void enumerateDevices ();
 		void requeryDevice (const QString&);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
 		void batteryInfoUpdated (Liznoo::BatteryInfo);
+
+		void gonnaSleep (int);
+		void wokeUp ();
 	};
 }
 }
