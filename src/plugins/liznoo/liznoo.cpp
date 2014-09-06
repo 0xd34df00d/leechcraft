@@ -404,12 +404,14 @@ namespace Liznoo
 
 	void Plugin::handleSuspendRequested ()
 	{
-		PowerActPlatform_->ChangeState (PowerActions::Platform::State::Suspend);
+		if (PowerActPlatform_)
+			PowerActPlatform_->ChangeState (PowerActions::Platform::State::Suspend);
 	}
 
 	void Plugin::handleHibernateRequested ()
 	{
-		PowerActPlatform_->ChangeState (PowerActions::Platform::State::Hibernate);
+		if (PowerActPlatform_)
+			PowerActPlatform_->ChangeState (PowerActions::Platform::State::Hibernate);
 	}
 
 	void Plugin::handlePushButton (const QString& button)
