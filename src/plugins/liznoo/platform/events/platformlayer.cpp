@@ -41,12 +41,6 @@ namespace Liznoo
 	{
 	}
 
-	void PlatformLayer::ChangeState (PlatformLayer::PowerState)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "not supported";
-	}
-
 	void PlatformLayer::emitGonnaSleep (int timeout)
 	{
 		auto e = Util::MakeEntity ("Sleeping",

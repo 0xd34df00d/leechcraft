@@ -29,33 +29,21 @@
 
 #pragma once
 
-#include <QObject>
-#include <QDBusConnection>
-#include <interfaces/structures.h>
-#include "../../batteryinfo.h"
-#include "platformlayer.h"
+#include "platform.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class DBusConnector : public QObject
+namespace PowerActions
+{
+	class UPower final : public Platform
 	{
-		Q_OBJECT
-
-		QDBusConnection SB_;
 	public:
-		DBusConnector (QObject* = 0);
-	private slots:
-		void handleGonnaSleep ();
-		void enumerateDevices ();
-		void requeryDevice (const QString&);
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
+		UPower (QObject* = nullptr);
 
-		void gonnaSleep (int);
-		void wokeUp ();
+		void ChangeState (State) override;
 	};
 }
 }
-
+}

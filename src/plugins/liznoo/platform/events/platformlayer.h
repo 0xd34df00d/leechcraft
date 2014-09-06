@@ -47,13 +47,6 @@ namespace Liznoo
 		PlatformLayer (const ICoreProxy_ptr&, QObject* = 0);
 
 		virtual void Stop () = 0;
-
-		enum class PowerState
-		{
-			Suspend,
-			Hibernate
-		};
-		virtual void ChangeState (PowerState);
 	public slots:
 		void emitGonnaSleep (int);
 		void emitWokeUp ();
@@ -63,5 +56,3 @@ namespace Liznoo
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::PlatformLayer::PowerState);

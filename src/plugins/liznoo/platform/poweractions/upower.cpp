@@ -27,35 +27,44 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QDBusConnection>
-#include <interfaces/structures.h>
-#include "../../batteryinfo.h"
-#include "platformlayer.h"
+#include "upower.h"
+#include <QtDBus/QtDBus>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class DBusConnector : public QObject
+namespace PowerActions
+{
+	UPower::UPower (QObject *parent)
+	: Platform (parent)
 	{
-		Q_OBJECT
+	}
 
-		QDBusConnection SB_;
-	public:
-		DBusConnector (QObject* = 0);
-	private slots:
-		void handleGonnaSleep ();
-		void enumerateDevices ();
-		void requeryDevice (const QString&);
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
+	void UPower::ChangeState (State state)
+	{
+		QDBusInterface face ("org.freedesktop.UPower",
+				"/org/freedesktop/UPower",
+				"org.freedesktop.UPower");
 
-		void gonnaSleep (int);
-		void wokeUp ();
-	};
+		auto st2meth = [] (State state)
+		{
+			switch (state)
+			{
+			case State::Suspend:
+				return "Suspend";
+			case State::Hibernate:
+				return "Hibernate";
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown state"
+					<< static_cast<int> (state);
+			return "";
+		};
+
+		face.call (QDBus::NoBlock, st2meth (state));
+	}
 }
 }
-
+}

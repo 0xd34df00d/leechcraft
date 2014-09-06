@@ -5,6 +5,8 @@ include (InitLCPlugin OPTIONAL)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (Qwt)
 
+option (USE_LIZNOO_PMUTILS "Enable pm-utils support for suspending and hibernating" OFF)
+
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -29,6 +31,9 @@ set (UPOWER_SRCS
 	platform/events/dbusthread.cpp
 	platform/events/dbusconnector.cpp
 	)
+set (UPOWER_POWERACTIONS_SRCS
+	platform/poweractions/upower.cpp
+	)
 set (MAC_SRCS
 	platform/events/platformmac.mm
 	)
@@ -51,6 +56,7 @@ elseif (NOT WIN32)
 		set (SRCS
 			${SRCS}
 			${UPOWER_SRCS}
+			${UPOWER_POWERACTIONS_SRCS}
 			)
 	endif ()
 

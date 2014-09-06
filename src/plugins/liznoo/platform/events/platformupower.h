@@ -46,7 +46,6 @@ namespace Liznoo
 		PlatformUPower (const ICoreProxy_ptr&, QObject* = 0);
 
 		void Stop ();
-		void ChangeState (PowerState);
 	private slots:
 		void handleThreadStarted ();
 	};

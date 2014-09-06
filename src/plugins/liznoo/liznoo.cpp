@@ -45,6 +45,7 @@
 
 #if defined(Q_OS_LINUX)
 	#include "platform/events/platformupower.h"
+	#include "platform/poweractions/upower.h"
 	#include "platform/screen/screenplatformfreedesktop.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/events/platformwinapi.h"
@@ -76,6 +77,7 @@ namespace Liznoo
 #if defined(Q_OS_LINUX)
 		PL_ = new PlatformUPower (Proxy_, this);
 		SPL_ = new ScreenPlatformFreedesktop (this);
+		PowerActPlatform_ = new PowerActions::UPower (this);
 #elif defined(Q_OS_WIN32)
 		PL_ = new PlatformWinAPI (Proxy_, this);
 #elif defined(Q_OS_FREEBSD)
@@ -83,8 +85,6 @@ namespace Liznoo
 		SPL_ = new ScreenPlatformFreedesktop (this);
 #elif defined(Q_OS_MAC)
 		PL_ = new PlatformMac (Proxy_, this);
-#else
-		PL_ = 0;
 #endif
 
 		connect (PL_,
@@ -404,12 +404,12 @@ namespace Liznoo
 
 	void Plugin::handleSuspendRequested ()
 	{
-		PL_->ChangeState (PlatformLayer::PowerState::Suspend);
+		PowerActPlatform_->ChangeState (PowerActions::Platform::State::Suspend);
 	}
 
 	void Plugin::handleHibernateRequested ()
 	{
-		PL_->ChangeState (PlatformLayer::PowerState::Hibernate);
+		PowerActPlatform_->ChangeState (PowerActions::Platform::State::Hibernate);
 	}
 
 	void Plugin::handlePushButton (const QString& button)
