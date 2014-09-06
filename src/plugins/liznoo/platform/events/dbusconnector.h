@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QDBusConnection>
 #include <interfaces/structures.h>
-#include "../batteryinfo.h"
+#include "../../batteryinfo.h"
 #include "platformlayer.h"
 
 namespace LeechCraft

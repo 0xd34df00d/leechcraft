@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
-#include "../batteryinfo.h"
+#include "../../batteryinfo.h"
 
 namespace LeechCraft
 {

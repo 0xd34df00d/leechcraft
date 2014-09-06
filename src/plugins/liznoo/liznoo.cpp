@@ -44,15 +44,15 @@
 #include "platform/screen/screenplatformlayer.h"
 
 #if defined(Q_OS_LINUX)
-	#include "platform/platformupower.h"
+	#include "platform/events/platformupower.h"
 	#include "platform/screen/screenplatformfreedesktop.h"
 #elif defined(Q_OS_WIN32)
-	#include "platform/platformwinapi.h"
+	#include "platform/events/platformwinapi.h"
 #elif defined(Q_OS_FREEBSD)
-	#include "platform/platformfreebsd.h"
+	#include "platform/events/platformfreebsd.h"
 	#include "platform/screen/screenplatformfreedesktop.h"
 #elif defined(Q_OS_MAC)
-	#include "platform/platformmac.h"
+	#include "platform/events/platformmac.h"
 #else
 	#pragma message ("Unsupported system")
 #endif

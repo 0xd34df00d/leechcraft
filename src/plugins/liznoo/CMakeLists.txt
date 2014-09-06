@@ -17,23 +17,23 @@ set (SRCS
 	batteryhistory.cpp
 	batteryhistorydialog.cpp
 	xmlsettingsmanager.cpp
-	platform/platformlayer.cpp
+	platform/events/platformlayer.cpp
 	platform/screen/screenplatformlayer.cpp
 	)
 
 set (FBSD_SRCS platform/platformfreebsd.cpp)
 set (FBSD_HEADERS platform/platformfreebsd.h)
 set (UPOWER_SRCS
-	platform/platformupower.cpp
-	platform/dbusthread.cpp
-	platform/dbusconnector.cpp
+	platform/events/platformupower.cpp
+	platform/events/dbusthread.cpp
+	platform/events/dbusconnector.cpp
 	)
 set (MAC_SRCS
-	platform/platformmac.mm
+	platform/events/platformmac.mm
 	)
 set (WIN32_SRCS
-	platform/platformwinapi.cpp
-	platform/fakeqwidgetwinapi.cpp
+	platform/events/platformwinapi.cpp
+	platform/events/fakeqwidgetwinapi.cpp
 	)
 # Default implementation using UPower
 if (APPLE)
