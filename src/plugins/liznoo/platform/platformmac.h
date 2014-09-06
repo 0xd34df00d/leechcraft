@@ -47,7 +47,7 @@ namespace Liznoo
 
 		CFRunLoopSourceRef PSEventsSource_;
 	public:
-		PlatformMac (QObject* = 0);
+		PlatformMac (const ICoreProxy_ptr& proxy, QObject* = 0);
 		~PlatformMac ();
 
 		void Stop ();

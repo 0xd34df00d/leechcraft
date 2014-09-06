@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include "../batteryinfo.h"
 
 namespace LeechCraft
@@ -40,8 +41,10 @@ namespace Liznoo
 	class PlatformLayer : public QObject
 	{
 		Q_OBJECT
+	protected:
+		const ICoreProxy_ptr Proxy_;
 	public:
-		PlatformLayer (QObject* = 0);
+		PlatformLayer (const ICoreProxy_ptr&, QObject* = 0);
 
 		virtual void Stop () = 0;
 
@@ -56,7 +59,6 @@ namespace Liznoo
 		void emitWokeUp ();
 	signals:
 		void started ();
-		void gotEntity (const LeechCraft::Entity&);
 		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
 }

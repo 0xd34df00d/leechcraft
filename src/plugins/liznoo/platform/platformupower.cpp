@@ -35,8 +35,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	PlatformUPower::PlatformUPower (QObject *parent)
-	: PlatformLayer (parent)
+	PlatformUPower::PlatformUPower (const ICoreProxy_ptr& proxy, QObject *parent)
+	: PlatformLayer (proxy, parent)
 	{
 		qRegisterMetaType<PlatformLayer::PowerState> ("Liznoo::PlatformLayer::PowerState");
 

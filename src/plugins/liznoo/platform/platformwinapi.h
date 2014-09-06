@@ -35,7 +35,7 @@
 #include <windows.h>
 #include "platformlayer.h"
 
-namespace LeechCraft 
+namespace LeechCraft
 {
 namespace Liznoo
 {
@@ -50,7 +50,7 @@ namespace Liznoo
 		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HBatteryPowerNotify_;
 		std::unique_ptr<FakeQWidgetWinAPI> FakeWidget_;
 	public:
-		PlatformWinAPI (QObject* = 0);
+		PlatformWinAPI (const ICoreProxy_ptr&, QObject* = 0);
 		virtual void Stop ();
 	private slots:
 		void handleSchemeChanged(QString schemeName);

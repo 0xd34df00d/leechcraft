@@ -29,13 +29,15 @@
 
 #include "platformlayer.h"
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	PlatformLayer::PlatformLayer (QObject *parent)
+	PlatformLayer::PlatformLayer (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	{
 	}
 
@@ -47,21 +49,21 @@ namespace Liznoo
 
 	void PlatformLayer::emitGonnaSleep (int timeout)
 	{
-		Entity e = Util::MakeEntity ("Sleeping",
+		auto e = Util::MakeEntity ("Sleeping",
 				QString (),
 				TaskParameter::Internal,
 				"x-leechcraft/power-state-changed");
 		e.Additional_ ["TimeLeft"] = timeout;
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void PlatformLayer::emitWokeUp ()
 	{
-		Entity e = Util::MakeEntity ("WokeUp",
+		const auto& e = Util::MakeEntity ("WokeUp",
 				QString (),
 				TaskParameter::Internal,
 				"x-leechcraft/power-state-changed");
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

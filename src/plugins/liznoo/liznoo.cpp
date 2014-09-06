@@ -73,15 +73,15 @@ namespace Liznoo
 		XSD_->RegisterObject (XmlSettingsManager::Instance (), "liznoosettings.xml");
 
 #if defined(Q_OS_LINUX)
-		PL_ = new PlatformUPower (this);
+		PL_ = new PlatformUPower (Proxy_, this);
 		SPL_ = new ScreenPlatformFreedesktop (this);
 #elif defined(Q_OS_WIN32)
-		PL_ = new PlatformWinAPI (this);
+		PL_ = new PlatformWinAPI (Proxy_, this);
 #elif defined(Q_OS_FREEBSD)
-		PL_ = new PlatformFreeBSD (this);
+		PL_ = new PlatformFreeBSD (Proxy_, this);
 		SPL_ = new ScreenPlatformFreedesktop (this);
 #elif defined(Q_OS_MAC)
-		PL_ = new PlatformMac (this);
+		PL_ = new PlatformMac (Proxy_, this);
 #else
 		PL_ = 0;
 #endif
@@ -391,10 +391,6 @@ namespace Liznoo
 				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
 				this,
 				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
-		connect (PL_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 
 		QTimer *timer = new QTimer (this);
 		connect (timer,

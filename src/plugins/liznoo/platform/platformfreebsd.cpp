@@ -42,8 +42,8 @@ namespace Liznoo
 {
 	const int UpdateInterval = 10 * 1000;
 
-	PlatformFreeBSD::PlatformFreeBSD (QObject *parent)
-	: PlatformLayer (parent)
+	PlatformFreeBSD::PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject *parent)
+	: PlatformLayer (proxy, parent)
 	{
 		Timer_ = new QTimer (this);
 		Timer_->start (UpdateInterval);

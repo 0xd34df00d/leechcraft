@@ -45,7 +45,7 @@ namespace Liznoo
 		QTimer *Timer_;
 		int ACPIfd_;
 	public:
-		PlatformFreeBSD (QObject* = 0);
+		PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject* = 0);
 		void Stop ();
 		void ChangeState (PowerState);
 	private slots:

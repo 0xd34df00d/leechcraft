@@ -43,7 +43,7 @@ namespace Liznoo
 
 		DBusThread *Thread_;
 	public:
-		PlatformUPower (QObject* = 0);
+		PlatformUPower (const ICoreProxy_ptr&, QObject* = 0);
 
 		void Stop ();
 		void ChangeState (PowerState);
