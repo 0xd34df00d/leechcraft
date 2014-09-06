@@ -175,6 +175,15 @@ namespace Eleeminator
 	{
 		SetupColorsButton ();
 		SetupFontsButton ();
+
+		Toolbar_->addSeparator ();
+
+		const auto clearAct = Toolbar_->addAction (tr ("Clear window"));
+		clearAct->setProperty ("ActionIcon", "edit-clear");
+		connect (clearAct,
+				SIGNAL (triggered ()),
+				Term_,
+				SLOT (clear ()));
 	}
 
 	void TermTab::SetupColorsButton ()
