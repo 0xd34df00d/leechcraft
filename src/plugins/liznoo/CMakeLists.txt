@@ -25,7 +25,6 @@ set (SRCS
 	)
 
 set (FBSD_SRCS platform/platformfreebsd.cpp)
-set (FBSD_HEADERS platform/platformfreebsd.h)
 set (UPOWER_SRCS
 	platform/events/platformupower.cpp
 	platform/events/dbusthread.cpp
