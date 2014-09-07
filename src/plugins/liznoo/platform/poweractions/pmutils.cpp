@@ -29,7 +29,9 @@
 
 #include "pmutils.h"
 #include <QProcess>
+#include <QFutureInterface>
 #include <QtDebug>
+#include <util/sll/slotclosure.h>
 
 namespace LeechCraft
 {
@@ -37,23 +39,76 @@ namespace Liznoo
 {
 namespace PowerActions
 {
-	void PMUtils::ChangeState (State state)
+	namespace
 	{
-		const auto& app = [state] () -> QString
+		QString State2Str (Platform::State state)
 		{
 			switch (state)
 			{
-			case State::Suspend:
-				return "pm-suspend";
-			case State::Hibernate:
-				return "pm-hibernate";
+			case Platform::State::Suspend:
+				return "suspend";
+			case Platform::State::Hibernate:
+				return "hibernate";
 			}
 
 			qWarning () << Q_FUNC_INFO
 					<< "unknown state"
 					<< static_cast<int> (state);
-			return "";
-		} ();
+			return {};
+		}
+
+		QString MakeErrMsg (QProcess *process)
+		{
+			const auto& origMsg = process->errorString ();
+			switch (process->error ())
+			{
+			case QProcess::ProcessError::FailedToStart:
+				return PMUtils::tr ("pm-is-supported failed to start. "
+						"Probably pm-utils is not installed? Original message: %1.")
+						.arg (origMsg);
+			default:
+				return origMsg;
+			}
+		}
+	}
+
+	QFuture<Platform::QueryChangeStateResult> PMUtils::CanChangeState (State state)
+	{
+		QFutureInterface<QueryChangeStateResult> iface;
+
+		auto process = new QProcess { this };
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[process, iface] () mutable
+			{
+				const QueryChangeStateResult result { false, MakeErrMsg (process) };
+				iface.reportFinished (&result);
+				process->deleteLater ();
+			},
+			process,
+			SIGNAL (error (QProcess::ProcessError)),
+			process
+		};
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[process, iface] () mutable
+			{
+				const QueryChangeStateResult result { process->exitCode () == 0, {} };
+				iface.reportFinished (&result);
+				process->deleteLater ();
+			},
+			process,
+			SIGNAL (finished (int, QProcess::ExitStatus)),
+			process
+		};
+		process->start ("pm-is-supported", { "--" + State2Str (state) });
+
+		return iface.future ();
+	}
+
+	void PMUtils::ChangeState (State state)
+	{
+		const auto& app = "pm-" + State2Str (state);
 
 		QProcess::startDetached ("/usr/sbin/" + app);
 	}
