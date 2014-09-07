@@ -38,6 +38,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/futures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
@@ -324,6 +325,29 @@ namespace Liznoo
 		}
 	}
 
+	void Plugin::ChangeState (PowerActions::Platform::State state)
+	{
+		if (!PowerActPlatform_)
+			return;
+
+		Util::ExecuteFuture ([state, this] { return PowerActPlatform_->CanChangeState (state); },
+				[state, this] (const PowerActions::Platform::QueryChangeStateResult& res)
+				{
+					if (res.CanChangeState_)
+						PowerActPlatform_->ChangeState (state);
+					else
+					{
+						const auto& msg = res.Reason_.isEmpty () ?
+								tr ("Cannot change state.") :
+								res.Reason_;
+						const auto& entity = Util::MakeNotification ("Liznoo",
+								msg, PCritical_);
+						Proxy_->GetEntityManager ()->HandleEntity (entity);
+					}
+				},
+				this);
+	}
+
 	void Plugin::handleBatteryInfo (BatteryInfo info)
 	{
 		if (!Battery2Action_.contains (info.ID_))
@@ -413,14 +437,12 @@ namespace Liznoo
 
 	void Plugin::handleSuspendRequested ()
 	{
-		if (PowerActPlatform_)
-			PowerActPlatform_->ChangeState (PowerActions::Platform::State::Suspend);
+		ChangeState (PowerActions::Platform::State::Suspend);
 	}
 
 	void Plugin::handleHibernateRequested ()
 	{
-		if (PowerActPlatform_)
-			PowerActPlatform_->ChangeState (PowerActions::Platform::State::Hibernate);
+		ChangeState (PowerActions::Platform::State::Hibernate);
 	}
 
 	void Plugin::handlePushButton (const QString& button)

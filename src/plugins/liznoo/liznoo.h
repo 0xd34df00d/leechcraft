@@ -37,6 +37,7 @@
 #include <interfaces/iactionsexporter.h>
 #include "batteryhistory.h"
 #include "batteryinfo.h"
+#include "platform/poweractions/platform.h"
 
 namespace LeechCraft
 {
@@ -96,6 +97,8 @@ namespace Liznoo
 	private:
 		void UpdateAction (const BatteryInfo&);
 		void CheckNotifications (const BatteryInfo&);
+
+		void ChangeState (PowerActions::Platform::State);
 	private slots:
 		void handleBatteryInfo (Liznoo::BatteryInfo);
 		void handleUpdateHistory ();
