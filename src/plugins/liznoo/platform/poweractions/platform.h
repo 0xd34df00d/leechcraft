@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QFuture>
 
 namespace LeechCraft
 {
@@ -48,6 +49,14 @@ namespace PowerActions
 			Suspend,
 			Hibernate
 		};
+
+		struct QueryChangeStateResult
+		{
+			bool CanChangeState_;
+			QString Reason_;
+		};
+
+		virtual QFuture<QueryChangeStateResult> CanChangeState (State) = 0;
 		virtual void ChangeState (State) = 0;
 	};
 }
