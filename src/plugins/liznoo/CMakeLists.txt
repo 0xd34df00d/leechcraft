@@ -24,7 +24,7 @@ set (SRCS
 	platform/screen/screenplatformlayer.cpp
 	)
 
-set (FBSD_SRCS platform/platformfreebsd.cpp)
+set (FBSD_SRCS platform/events/platformfreebsd.cpp)
 set (UPOWER_SRCS
 	platform/events/platformupower.cpp
 	platform/events/dbusthread.cpp
