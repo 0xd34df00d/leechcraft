@@ -47,11 +47,25 @@ namespace Util
 		{
 			typedef T type;
 		};
+
+		template<typename T>
+		struct IsFuture
+		{
+			constexpr static bool Result_ = false;
+		};
+
+		template<typename T>
+		struct IsFuture<QFuture<T>>
+		{
+			constexpr static bool Result_ = true;
+		};
 	}
 
 	template<typename Executor, typename ResultHandler, typename... Args>
 	void ExecuteFuture (Executor f, ResultHandler rh, QObject *parent, Args... args)
 	{
+		static_assert (detail::IsFuture<decltype (f (args...))>::Result_,
+				"The passed functor should return a QFuture.");
 		const auto watcher = new QFutureWatcher<typename detail::UnwrapFutureType<decltype (f (args...))>::type> { parent };
 
 		new SlotClosure<DeleteLaterPolicy>
