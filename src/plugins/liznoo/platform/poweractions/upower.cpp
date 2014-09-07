@@ -36,29 +36,48 @@ namespace Liznoo
 {
 namespace PowerActions
 {
-	void UPower::ChangeState (State state)
+	namespace
 	{
-		QDBusInterface face ("org.freedesktop.UPower",
-				"/org/freedesktop/UPower",
-				"org.freedesktop.UPower");
-
-		auto st2meth = [] (State state)
+		QByteArray State2Method (Platform::State state)
 		{
 			switch (state)
 			{
-			case State::Suspend:
+			case Platform::State::Suspend:
 				return "Suspend";
-			case State::Hibernate:
+			case Platform::State::Hibernate:
 				return "Hibernate";
 			}
 
 			qWarning () << Q_FUNC_INFO
 					<< "unknown state"
 					<< static_cast<int> (state);
-			return "";
-		};
+			return {};
+		}
+	}
 
-		face.call (QDBus::NoBlock, st2meth (state));
+	QFuture<Platform::QueryChangeStateResult> UPower::CanChangeState (State state)
+	{
+		return QtConcurrent::run ([state] () -> QueryChangeStateResult
+				{
+					QDBusInterface face ("org.freedesktop.UPower",
+							"/org/freedesktop/UPower",
+							"org.freedesktop.UPower",
+							QDBusConnection::systemBus ());
+					if (!face.isValid ())
+						return { false, tr ("Cannot connect to UPower daemon.") };
+
+					return { face.property ("Can" + State2Method (state)).toBool (), {} };
+				});
+	}
+
+	void UPower::ChangeState (State state)
+	{
+		QDBusInterface face ("org.freedesktop.UPower",
+				"/org/freedesktop/UPower",
+				"org.freedesktop.UPower",
+				QDBusConnection::systemBus ());
+
+		face.call (QDBus::NoBlock, State2Method (state));
 	}
 }
 }
