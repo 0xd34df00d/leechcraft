@@ -72,12 +72,14 @@ namespace PDF
 		setRenderHint ("EnableTextHinting", Poppler::Document::TextHinting);
 		setRenderHint ("EnableTextSlightHinting", Poppler::Document::TextSlightHinting);
 
+#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 24
 		const auto& enhanceMode = XmlSettingsManager::Instance ()
 				.property ("ThinLineEnhancement").toString ();
 		if (enhanceMode == "Solid")
 			PDocument_->setRenderHint (Poppler::Document::ThinLineSolid);
 		else if (enhanceMode == "Shape")
 			PDocument_->setRenderHint (Poppler::Document::ThinLineShape);
+#endif
 
 		BuildTOC ();
 	}
