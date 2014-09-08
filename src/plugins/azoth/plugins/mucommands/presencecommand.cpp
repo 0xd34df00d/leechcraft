@@ -142,10 +142,13 @@ namespace MuCommands
 				StateSymbs ()
 				{
 					add ("avail", SOnline)
+						("available", SOnline)
+						("online", SOnline)
 						("away", SAway)
 						("xa", SXA)
 						("dnd", SDND)
 						("chat", SChat)
+						("off", SOffline)
 						("offline", SOffline);
 				}
 			} PredefinedState_;
