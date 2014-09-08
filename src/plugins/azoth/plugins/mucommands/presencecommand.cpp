@@ -48,25 +48,6 @@ namespace MuCommands
 {
 	namespace
 	{
-		QList<IAccount*> FindAccounts (const QString& name, IProxyObject *proxy, ICLEntry *entry)
-		{
-			if (name == "$")
-				return { qobject_cast<IAccount*> (entry->GetParentAccount ()) };
-
-			QList<IAccount*> allAccs;
-			for (const auto accObj : proxy->GetAllAccounts ())
-				allAccs << qobject_cast<IAccount*> (accObj);
-
-			if (name == "*")
-				return allAccs;
-
-			for (const auto acc : allAccs)
-				if (acc->GetAccountName () == name)
-					return { acc };
-
-			return {};
-		}
-
 		State String2State (const QString& str)
 		{
 			if (str.startsWith ("avail"))
@@ -104,7 +85,6 @@ namespace MuCommands
 						{ return EntryStatus { state, message }; };
 			}
 		}
-
 		struct AllAccounts {};
 		bool operator== (const AllAccounts&, const AllAccounts&) { return true; }
 
