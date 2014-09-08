@@ -153,15 +153,26 @@ namespace MuCommands
 				}
 			} PredefinedState_;
 
-			Parser ()
+			const struct CustomStatuses : qi::symbols<char, std::string>
+			{
+				CustomStatuses (const std::vector<std::string>& customStatuses)
+				{
+					for (const auto& str : customStatuses)
+						add (str, str);
+				}
+			} CustomStatus_;
+
+			Parser (const std::vector<std::string>& customStatuses)
 			: Parser::base_type { Start_ }
+			, CustomStatus_ { customStatuses }
 			{
 				AllAccounts_ = qi::lit ('*') > qi::attr (AllAccounts ());
 				CurAcc_ = qi::eps > qi::attr (CurrentAccount ());
 				AccName_ = AllAccounts_ | +(qi::char_ - '\n') | CurAcc_;
 
 				FullState_ = PredefinedState_ >> '\n' >> +qi::char_;
-				State_ = PredefinedState_ | (+(qi::char_ - '\n') >> qi::eoi);
+
+				State_ = PredefinedState_ | CustomStatus_;
 				StateMessageOnly_ = -qi::lit ('\n') >> +qi::char_;
 				Status_ = FullState_ | State_ | StateMessageOnly_;
 
@@ -170,21 +181,27 @@ namespace MuCommands
 		};
 
 		template<typename Iter>
-		PresenceParams ParsePresenceCommand (Iter begin, Iter end)
+		PresenceParams ParsePresenceCommand (Iter begin, Iter end,
+				const std::vector<std::string>& customStatuses = {})
 		{
 			PresenceParams res;
-			qi::parse (begin, end, Parser<Iter> (), res);
+			qi::parse (begin, end, Parser<Iter> { customStatuses }, res);
 			return res;
 		}
 
-		PresenceParams ParsePresenceCommand (QString cmd)
+		PresenceParams ParsePresenceCommand (QString cmd, const QStringList& statuses = {})
 		{
 			cmd = cmd.trimmed ();
 			cmd = cmd.mid (QString { "/presence" }.size ());
 			if (cmd.startsWith (' '))
 				cmd = cmd.mid (1);
 			const auto& unicode = cmd.toUtf8 ();
-			return ParsePresenceCommand (unicode.begin (), unicode.end ());
+
+			std::vector<std::string> convertedStatuses;
+			for (const auto& status : statuses)
+				convertedStatuses.push_back (status.toUtf8 ().constData ());
+
+			return ParsePresenceCommand (unicode.begin (), unicode.end (), convertedStatuses);
 		}
 
 		struct AccountsVisitor : boost::static_visitor<QList<IAccount*>>
