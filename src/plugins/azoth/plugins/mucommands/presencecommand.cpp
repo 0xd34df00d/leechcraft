@@ -299,7 +299,7 @@ namespace MuCommands
 
 	bool SetPresence (IProxyObject *proxy, ICLEntry *entry, const QString& text)
 	{
-		const auto& params = ParsePresenceCommand (text);
+		const auto& params = ParsePresenceCommand (text, proxy->GetCustomStatusNames ());
 		const auto& accs = boost::apply_visitor (AccountsVisitor { proxy, entry }, params.AccName_);
 		const auto& status = boost::apply_visitor (StatusManglerVisitor { proxy }, params.Status_);
 		for (const auto acc : accs)
