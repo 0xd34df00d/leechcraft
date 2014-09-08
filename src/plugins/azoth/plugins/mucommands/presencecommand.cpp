@@ -170,7 +170,7 @@ namespace MuCommands
 			} PredefinedState_;
 
 			Parser ()
-			: Parser::base_type (Start_)
+			: Parser::base_type { Start_ }
 			{
 				AllAccounts_ = qi::lit ('*') > qi::attr (AllAccounts ());
 				CurAcc_ = qi::eps > qi::attr (CurrentAccount ());
@@ -291,15 +291,11 @@ namespace MuCommands
 
 	bool SetPresence (IProxyObject *proxy, ICLEntry *entry, const QString& text)
 	{
-		const auto& accName = text.section ('\n', 0, 0).section (' ', 1).trimmed ();
-		const auto& accs = FindAccounts (accName, proxy, entry);
-		if (accs.isEmpty ())
-			throw CommandException { QObject::tr ("Unable to find account %1.")
-						.arg ("<em>" + accName + "</em>") };
-
-		const auto& statusSetter = GetStatusMangler (proxy, text);
+		const auto& params = ParsePresenceCommand (text);
+		const auto& accs = boost::apply_visitor (AccountsVisitor { proxy, entry }, params.AccName_);
+		const auto& status = boost::apply_visitor (StatusManglerVisitor { proxy }, params.Status_);
 		for (const auto acc : accs)
-			acc->ChangeState (statusSetter (acc->GetState ()));
+			acc->ChangeState (status (acc->GetState ()));
 
 		return true;
 	}
