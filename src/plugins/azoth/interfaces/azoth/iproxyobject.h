@@ -308,8 +308,22 @@ namespace Azoth
 		 * @param[in] name The name of the custom status.
 		 * @return A custom status if it's found, or an empty
 		 * boost::optional object otherwise.
+		 *
+		 * @sa GetCustomStatusNames()
 		 */
 		virtual boost::optional<CustomStatus> FindCustomStatus (const QString& name) const = 0;
+
+		/** @brief Returns the names of all available custom statuses.
+		 *
+		 * The returned names can be passed to FindCustomStatus() to
+		 * obtain the full CustomStatus structure.
+		 *
+		 * @return The names of custom statuses, suitable for
+		 * FindCustomStatus().
+		 *
+		 * @sa FindCustomStatus()
+		 */
+		virtual QStringList GetCustomStatusNames () const = 0;
 	};
 }
 }

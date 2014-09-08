@@ -86,6 +86,7 @@ namespace Azoth
 		QString PrettyPrintDateTime (const QDateTime&);
 
 		boost::optional<CustomStatus> FindCustomStatus (const QString&) const;
+		QStringList GetCustomStatusNames () const;
 	};
 }
 }

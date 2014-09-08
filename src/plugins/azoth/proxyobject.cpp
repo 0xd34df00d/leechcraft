@@ -405,5 +405,15 @@ namespace Azoth
 			return {};
 		return *pos;
 	}
+
+	QStringList ProxyObject::GetCustomStatusNames () const
+	{
+		const auto mgr = Core::Instance ().GetCustomStatusesManager ();
+	
+		QStringList result;
+		for (const auto& status : mgr->GetStates ())
+			result << status.Name_;
+		return result;
+	}
 }
 }
