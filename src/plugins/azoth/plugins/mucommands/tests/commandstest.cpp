@@ -125,13 +125,25 @@ away
 		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
 	}
 
-	void CommandsTest::accCustomStateChange ()
+	void CommandsTest::accAlmostCustomStateChange ()
 	{
 		const QString command = R"delim(
 /presence testacc with spaces
 some custom status
 				)delim";
 		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc with spaces" } });
+		QCOMPARE (res.Status_, Status_t { std::string { "some custom status" } });
+	}
+
+	void CommandsTest::accCustomStateChange ()
+	{
+		const QString command = R"delim(
+/presence testacc with spaces
+some custom status
+				)delim";
+		const auto& res = ParsePresenceCommand (command,
+				{ "some custom status", "another custom status", "some custom status too" });
 		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc with spaces" } });
 		QCOMPARE (res.Status_, Status_t { State_t { "some custom status" } });
 	}
