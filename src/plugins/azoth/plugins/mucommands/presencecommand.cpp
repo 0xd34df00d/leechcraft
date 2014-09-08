@@ -202,6 +202,91 @@ namespace MuCommands
 			const auto& unicode = cmd.toUtf8 ();
 			return ParsePresenceCommand (unicode.begin (), unicode.end ());
 		}
+
+		struct AccountsVisitor : boost::static_visitor<QList<IAccount*>>
+		{
+			const IProxyObject * const Proxy_;
+			const ICLEntry * const Entry_;
+
+			AccountsVisitor (const IProxyObject *proxy, const ICLEntry *entry)
+			: Proxy_ { proxy }
+			, Entry_ { entry }
+			{
+			}
+
+			QList<IAccount*> operator() (const AllAccounts&) const
+			{
+				QList<IAccount*> allAccs;
+				for (const auto accObj : Proxy_->GetAllAccounts ())
+					allAccs << qobject_cast<IAccount*> (accObj);
+				return allAccs;
+			}
+
+			QList<IAccount*> operator() (const CurrentAccount&) const
+			{
+				return { qobject_cast<IAccount*> (Entry_->GetParentAccount ()) };
+			}
+
+			QList<IAccount*> operator() (const std::string& accName) const
+			{
+				const auto& accNameStr = QString::fromUtf8 (accName.c_str ());
+				for (const auto acc : (*this) (AllAccounts {}))
+					if (acc->GetAccountName () == accNameStr)
+						return { acc };
+
+				throw CommandException { QObject::tr ("Unable to find account %1.")
+							.arg ("<em>" + accNameStr + "</em>") };
+			}
+		};
+
+		typedef std::function<EntryStatus (EntryStatus)> StatusMangler_f;
+
+		struct StatusManglerVisitor : boost::static_visitor<StatusMangler_f>
+		{
+			const IProxyObject * const Proxy_;
+
+			StatusManglerVisitor (const IProxyObject *proxy)
+			: Proxy_ { proxy }
+			{
+			}
+
+			StatusMangler_f operator() (const FullState_t& fullState) const
+			{
+				const auto& statusStr = QString::fromUtf8 (fullState.second.c_str ());
+				const EntryStatus status { fullState.first, statusStr };
+				return [status] (const EntryStatus&) { return status; };
+			}
+
+			StatusMangler_f operator() (const State_t& state) const
+			{
+				struct StateVisitor : boost::static_visitor<StatusMangler_f>
+				{
+					StatusMangler_f operator() (State state) const
+					{
+						return [state] (const EntryStatus& status) { return EntryStatus { state, status.StatusString_ }; };
+					}
+
+					StatusMangler_f operator() (const std::string& msg) const
+					{
+						const auto& msgStr = QString::fromUtf8 (msg.c_str ());
+						return [msgStr] (const EntryStatus& status) { return EntryStatus { status.State_, msgStr }; };
+					}
+				};
+				return boost::apply_visitor (StateVisitor {}, state);
+			}
+
+			StatusMangler_f operator() (const std::string& stateName) const
+			{
+				const auto& stateNameStr = QString::fromUtf8 (stateName.c_str ());
+				const auto& customStatus = Proxy_->FindCustomStatus (stateNameStr);
+				if (!customStatus)
+					throw CommandException { QObject::tr ("Cannot find custom status %1.")
+								.arg ("<em>" + stateNameStr + "</em>") };
+
+				const EntryStatus status { customStatus->State_, customStatus->Text_ };
+				return [status] (const EntryStatus&) { return status; };
+			}
+		};
 	}
 
 	bool SetPresence (IProxyObject *proxy, ICLEntry *entry, const QString& text)
