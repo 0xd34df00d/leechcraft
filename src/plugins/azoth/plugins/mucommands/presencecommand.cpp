@@ -145,7 +145,8 @@ namespace MuCommands
 						("away", SAway)
 						("xa", SXA)
 						("dnd", SDND)
-						("chat", SChat);
+						("chat", SChat)
+						("offline", SOffline);
 				}
 			} PredefinedState_;
 
