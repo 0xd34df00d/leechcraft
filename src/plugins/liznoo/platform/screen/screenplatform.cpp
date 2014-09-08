@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "platform.h"
+#include "screenplatform.h"
 
 namespace LeechCraft
 {
