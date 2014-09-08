@@ -62,7 +62,7 @@ namespace
 		template<typename... Args>
 		QString operator() (const boost::variant<Args...>& variant) const
 		{
-			auto result = QString { "Variant with type %1, value: { %2 }" }
+			auto result = QString { "Variant with type %1, value: { `%2` }" }
 					.arg (variant.which ())
 					.arg (boost::apply_visitor (PrintVisitor {}, variant));
 			return result;
