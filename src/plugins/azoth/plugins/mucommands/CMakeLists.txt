@@ -42,7 +42,7 @@ install (TARGETS leechcraft_azoth_mucommands DESTINATION ${LC_PLUGINS_DEST})
 FindQtLibs (leechcraft_azoth_mucommands Core Xml)
 
 if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
-	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
+	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
 	add_executable (lc_azoth_mucommands_test WIN32
 		tests/commandstest.cpp
 	)
