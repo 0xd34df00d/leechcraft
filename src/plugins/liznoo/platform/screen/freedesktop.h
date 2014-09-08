@@ -27,49 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "screenplatformfreedesktop.h"
-#include <QTimer>
-#include <QDBusConnection>
-#include <QDBusInterface>
-#include <QDBusPendingCall>
+#pragma once
+
+#include "screenplatform.h"
+
+class QTimer;
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	ScreenPlatformFreedesktop::ScreenPlatformFreedesktop (QObject *parent)
-	: ScreenPlatformLayer (parent)
-	, ActivityTimer_ (new QTimer (this))
+namespace Screen
+{
+	class Freedesktop : public ScreenPlatform
 	{
-		connect (ActivityTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleTimeout ()));
-		ActivityTimer_->setInterval (30000);
-	}
+		Q_OBJECT
 
-	void ScreenPlatformFreedesktop::ProhibitScreensaver (bool prohibit, const QString& id)
-	{
-		if (prohibit)
-		{
-			if (ActiveProhibitions_.isEmpty ())
-				ActivityTimer_->start ();
+		QTimer * const ActivityTimer_;
+	public:
+		Freedesktop (QObject* = 0);
 
-			ActiveProhibitions_ << id;
-		}
-		else
-		{
-			ActiveProhibitions_.remove (id);
-
-			if (ActiveProhibitions_.isEmpty ())
-				ActivityTimer_->stop ();
-		}
-	}
-
-	void ScreenPlatformFreedesktop::handleTimeout ()
-	{
-		QDBusInterface iface ("org.freedesktop.ScreenSaver", "/ScreenSaver");
-		iface.call ("SimulateUserActivity");
-	}
+		void ProhibitScreensaver (bool prohibit, const QString& id);
+	private slots:
+		void handleTimeout ();
+	};
+}
 }
 }

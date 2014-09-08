@@ -27,24 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QSet>
+#include "platform.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class ScreenPlatformLayer : public QObject
-	{
-		Q_OBJECT
-	protected:
-		QSet<QString> ActiveProhibitions_;
-	public:
-		ScreenPlatformLayer (QObject* = 0);
-
-		virtual void ProhibitScreensaver (bool prohibit, const QString& id) = 0;
-	};
+namespace
+{
+}
 }
 }

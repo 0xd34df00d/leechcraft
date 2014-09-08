@@ -21,7 +21,7 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	platform/events/platformlayer.cpp
 	platform/poweractions/platform.cpp
-	platform/screen/screenplatformlayer.cpp
+	platform/screen/screenplatform.cpp
 	)
 
 set (FBSD_SRCS platform/events/platformfreebsd.cpp)
@@ -69,7 +69,7 @@ elseif (NOT WIN32)
 
 	set (SRCS
 		${SRCS}
-		platform/screen/screenplatformfreedesktop.cpp
+		platform/screen/freedesktop.cpp
 		)
 # Windows implementation using WinAPI
 else ()

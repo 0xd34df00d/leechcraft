@@ -45,7 +45,11 @@ namespace Liznoo
 {
 	class BatteryHistoryDialog;
 	class PlatformLayer;
-	class ScreenPlatformLayer;
+
+	namespace Screen
+	{
+		class ScreenPlatform;
+	}
 
 	namespace PowerActions
 	{
@@ -68,7 +72,7 @@ namespace Liznoo
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		PlatformLayer *PL_ = nullptr;
-		ScreenPlatformLayer *SPL_ = nullptr;
+		Screen::ScreenPlatform *SPL_ = nullptr;
 		PowerActions::Platform *PowerActPlatform_ = nullptr;
 
 		QMap<QString, QAction*> Battery2Action_;

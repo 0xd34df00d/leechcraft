@@ -42,16 +42,16 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
-#include "platform/screen/screenplatformlayer.h"
+#include "platform/screen/screenplatform.h"
 
 #if defined(Q_OS_LINUX)
 	#include "platform/events/platformupower.h"
-#if USE_PMUTILS
-	#include "platform/poweractions/pmutils.h"
-#else
-	#include "platform/poweractions/upower.h"
-#endif
-	#include "platform/screen/screenplatformfreedesktop.h"
+	#if USE_PMUTILS
+		#include "platform/poweractions/pmutils.h"
+	#else
+		#include "platform/poweractions/upower.h"
+	#endif
+	#include "platform/screen/freedesktop.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/events/platformwinapi.h"
 #elif defined(Q_OS_FREEBSD)
@@ -81,7 +81,7 @@ namespace Liznoo
 
 #if defined(Q_OS_LINUX)
 		PL_ = new PlatformUPower (Proxy_, this);
-		SPL_ = new ScreenPlatformFreedesktop (this);
+		SPL_ = new Screen::Freedesktop (this);
 
 #if USE_PMUTILS
 		PowerActPlatform_ = new PowerActions::PMUtils (this);
@@ -92,7 +92,7 @@ namespace Liznoo
 		PL_ = new PlatformWinAPI (Proxy_, this);
 #elif defined(Q_OS_FREEBSD)
 		PL_ = new PlatformFreeBSD (Proxy_, this);
-		SPL_ = new ScreenPlatformFreedesktop (this);
+		SPL_ = new Screen::Freedesktop (this);
 #elif defined(Q_OS_MAC)
 		PL_ = new PlatformMac (Proxy_, this);
 #endif

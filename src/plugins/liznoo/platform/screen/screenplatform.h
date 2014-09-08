@@ -29,25 +29,25 @@
 
 #pragma once
 
-#include "screenplatformlayer.h"
-
-class QTimer;
+#include <QObject>
+#include <QSet>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class ScreenPlatformFreedesktop : public ScreenPlatformLayer
+namespace Screen
+{
+	class ScreenPlatform : public QObject
 	{
 		Q_OBJECT
-
-		QTimer * const ActivityTimer_;
+	protected:
+		QSet<QString> ActiveProhibitions_;
 	public:
-		ScreenPlatformFreedesktop (QObject* = 0);
+		using QObject::QObject;
 
-		void ProhibitScreensaver (bool prohibit, const QString& id);
-	private slots:
-		void handleTimeout ();
+		virtual void ProhibitScreensaver (bool prohibit, const QString& id) = 0;
 	};
+}
 }
 }
