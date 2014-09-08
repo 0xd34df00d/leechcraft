@@ -245,30 +245,37 @@ namespace MuCommands
 			{
 				struct StateVisitor : boost::static_visitor<StatusMangler_f>
 				{
+					const IProxyObject * const Proxy_;
+
+					StateVisitor (const IProxyObject *proxy)
+					: Proxy_ { proxy }
+					{
+					}
+
 					StatusMangler_f operator() (State state) const
 					{
 						return [state] (const EntryStatus& status) { return EntryStatus { state, status.StatusString_ }; };
 					}
 
-					StatusMangler_f operator() (const std::string& msg) const
+					StatusMangler_f operator() (const std::string& stateName) const
 					{
-						const auto& msgStr = QString::fromUtf8 (msg.c_str ());
-						return [msgStr] (const EntryStatus& status) { return EntryStatus { status.State_, msgStr }; };
+						const auto& stateNameStr = QString::fromUtf8 (stateName.c_str ());
+						const auto& customStatus = Proxy_->FindCustomStatus (stateNameStr);
+						if (!customStatus)
+							throw CommandException { QObject::tr ("Cannot find custom status %1.")
+										.arg ("<em>" + stateNameStr + "</em>") };
+
+						const EntryStatus status { customStatus->State_, customStatus->Text_ };
+						return [status] (const EntryStatus&) { return status; };
 					}
 				};
-				return boost::apply_visitor (StateVisitor {}, state);
+				return boost::apply_visitor (StateVisitor { Proxy_ }, state);
 			}
 
-			StatusMangler_f operator() (const std::string& stateName) const
+			StatusMangler_f operator() (const std::string& msg) const
 			{
-				const auto& stateNameStr = QString::fromUtf8 (stateName.c_str ());
-				const auto& customStatus = Proxy_->FindCustomStatus (stateNameStr);
-				if (!customStatus)
-					throw CommandException { QObject::tr ("Cannot find custom status %1.")
-								.arg ("<em>" + stateNameStr + "</em>") };
-
-				const EntryStatus status { customStatus->State_, customStatus->Text_ };
-				return [status] (const EntryStatus&) { return status; };
+				const auto& msgStr = QString::fromUtf8 (msg.c_str ());
+				return [msgStr] (const EntryStatus& status) { return EntryStatus { status.State_, msgStr }; };
 			}
 		};
 	}
