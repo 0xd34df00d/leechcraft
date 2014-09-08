@@ -393,7 +393,7 @@ namespace Azoth
 #endif
 	}
 
-	boost::optional<CustomStatus> ProxyObject::FindCustomStatus (const QString& name)
+	boost::optional<CustomStatus> ProxyObject::FindCustomStatus (const QString& name) const
 	{
 		const auto mgr = Core::Instance ().GetCustomStatusesManager ();
 		const auto& statuses = mgr->GetStates ();

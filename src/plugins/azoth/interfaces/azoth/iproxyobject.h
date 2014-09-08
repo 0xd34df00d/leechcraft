@@ -309,7 +309,7 @@ namespace Azoth
 		 * @return A custom status if it's found, or an empty
 		 * boost::optional object otherwise.
 		 */
-		virtual boost::optional<CustomStatus> FindCustomStatus (const QString& name) = 0;
+		virtual boost::optional<CustomStatus> FindCustomStatus (const QString& name) const = 0;
 	};
 }
 }
