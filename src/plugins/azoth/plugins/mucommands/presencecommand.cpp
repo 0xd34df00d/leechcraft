@@ -137,7 +137,7 @@ namespace MuCommands
 			qi::rule<Iter, std::string ()> StateMessageOnly_;
 			qi::rule<Iter, Status_t ()> Status_;
 
-			struct StateSymbs : qi::symbols<char, State>
+			const struct StateSymbs : qi::symbols<char, State>
 			{
 				StateSymbs ()
 				{
