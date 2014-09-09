@@ -36,6 +36,18 @@ QTEST_MAIN (LeechCraft::Azoth::MuCommands::CommandsTest)
 
 namespace
 {
+	template<typename T>
+	constexpr bool TestDebuggable (typename std::add_pointer<decltype (qDebug () << T {})>::type)
+	{
+		return true;
+	}
+
+	template<typename T>
+	constexpr bool TestDebuggable (...)
+	{
+		return false;
+	}
+
 	struct PrintVisitor : boost::static_visitor<QString>
 	{
 		QString operator() (const std::string& str) const
