@@ -86,10 +86,8 @@ namespace MuCommands
 			}
 		}
 		struct AllAccounts {};
-		bool operator== (const AllAccounts&, const AllAccounts&) { return true; }
 
 		struct CurrentAccount {};
-		bool operator== (const CurrentAccount&, const CurrentAccount&) { return true; }
 
 		typedef boost::variant<AllAccounts, std::string, CurrentAccount> AccName_t;
 

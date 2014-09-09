@@ -92,6 +92,12 @@ namespace Azoth
 {
 namespace MuCommands
 {
+	namespace
+	{
+		bool operator== (const AllAccounts&, const AllAccounts&) { return true; }
+		bool operator== (const CurrentAccount&, const CurrentAccount&) { return true; }
+	}
+
 	void CommandsTest::accStateChange ()
 	{
 		const QString command = R"delim(
