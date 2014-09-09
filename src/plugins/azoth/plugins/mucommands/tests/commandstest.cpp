@@ -201,6 +201,17 @@ clear
 		QCOMPARE (res.Status_, Status_t { ClearStatus {} });
 	}
 
+	void CommandsTest::accStatusChangeClearSubstr ()
+	{
+		const QString command = R"delim(
+/presence testacc
+clearr
+				)delim";
+		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc" } });
+		QCOMPARE (res.Status_, Status_t { std::string { "clearr" } });
+	}
+
 	void CommandsTest::accMessageOnly ()
 	{
 		const QString command = R"delim(
