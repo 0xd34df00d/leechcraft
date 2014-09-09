@@ -229,6 +229,12 @@ namespace MuCommands
 			return ParseCommand (cmd, "/presence", statuses, Parse::NoOptions);
 		}
 
+		PresenceParams ParseChatPresenceCommand (QString cmd,
+				const QStringList& statuses = {})
+		{
+			return ParseCommand (cmd, "/chatpresence", statuses, Parse::NoAccount);
+		}
+
 		struct AccountsVisitor : boost::static_visitor<QList<IAccount*>>
 		{
 			const IProxyObject * const Proxy_;
