@@ -273,11 +273,11 @@ namespace MuCommands
 
 		typedef std::function<EntryStatus (EntryStatus)> StatusMangler_f;
 
-		struct StatusManglerVisitor : boost::static_visitor<StatusMangler_f>
+		struct StatusVisitor : boost::static_visitor<StatusMangler_f>
 		{
 			const IProxyObject * const Proxy_;
 
-			StatusManglerVisitor (const IProxyObject *proxy)
+			StatusVisitor (const IProxyObject *proxy)
 			: Proxy_ { proxy }
 			{
 			}
@@ -337,7 +337,7 @@ namespace MuCommands
 	{
 		const auto& params = ParsePresenceCommand (text, proxy->GetCustomStatusNames ());
 		const auto& accs = boost::apply_visitor (AccountsVisitor { proxy, entry }, params.AccName_);
-		const auto& status = boost::apply_visitor (StatusManglerVisitor { proxy }, params.Status_);
+		const auto& status = boost::apply_visitor (StatusVisitor { proxy }, params.Status_);
 		for (const auto acc : accs)
 			acc->ChangeState (status (acc->GetState ()));
 
@@ -351,10 +351,12 @@ namespace MuCommands
 			throw CommandException { QObject::tr ("%1 doesn't support directed presence.")
 						.arg (entry->GetEntryName ()) };
 
-		const auto& variant = text.section ('\n', 0, 0).section (' ', 1).trimmed ();
+		const auto& params = ParseChatPresenceCommand (text, proxy->GetCustomStatusNames ());
 
-		const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		const auto& newStatus = GetStatusMangler (proxy, text) (acc->GetState ());
+		const QString variant {};
+
+		const auto& status = qobject_cast<IAccount*> (entry->GetParentAccount ())->GetState ();
+		const auto& newStatus = boost::apply_visitor (StatusVisitor { proxy }, params.Status_) (status);
 
 		if (!variant.isEmpty ())
 			ihds->SendDirectedStatus (newStatus, variant);
