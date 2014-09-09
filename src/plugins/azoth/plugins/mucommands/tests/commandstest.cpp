@@ -116,6 +116,7 @@ namespace MuCommands
 	{
 		bool operator== (const AllAccounts&, const AllAccounts&) { return true; }
 		bool operator== (const CurrentAccount&, const CurrentAccount&) { return true; }
+		bool operator== (const ClearStatus&, const ClearStatus&) { return true; }
 	}
 
 	void CommandsTest::accStateChange ()
@@ -187,6 +188,17 @@ multiline status.
 
 		const auto expectedStatus = Status_t { FullState_t { State::SXA, "This is my new\nmultiline status." } };
 		QCOMPARE (res.Status_, expectedStatus);
+	}
+
+	void CommandsTest::accStatusClear ()
+	{
+		const QString command = R"delim(
+/presence testacc
+clear
+				)delim";
+		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc" } });
+		QCOMPARE (res.Status_, Status_t { ClearStatus {} });
 	}
 
 	void CommandsTest::accMessageOnly ()
