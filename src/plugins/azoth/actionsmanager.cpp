@@ -1388,13 +1388,13 @@ namespace Azoth
 
 			void operator() (const SingleEntryActor_f& actor) const
 			{
-				for (const auto& entry : Entries_)
+				for (const auto entry : Entries_)
 					actor (entry);
 			}
 
 			void operator() (const SingleEntryActorWManager_f& actor) const
 			{
-				for (const auto& entry : Entries_)
+				for (const auto entry : Entries_)
 					actor (entry, Manager_);
 			}
 
