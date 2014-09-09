@@ -116,6 +116,17 @@ namespace Azoth
 {
 namespace MuCommands
 {
+	namespace Parse
+	{
+		enum Option
+		{
+			NoOptions = 0x00,
+			NoAccount = 0x01
+		};
+
+		Q_DECLARE_FLAGS (Options, Option)
+	}
+
 	namespace
 	{
 		namespace ascii = boost::spirit::ascii;
@@ -162,7 +173,7 @@ namespace MuCommands
 				}
 			} CustomStatus_;
 
-			Parser (const std::vector<std::string>& customStatuses)
+			Parser (const std::vector<std::string>& customStatuses, Parse::Options options)
 			: Parser::base_type { Start_ }
 			, CustomStatus_ { customStatuses }
 			{
@@ -177,23 +188,30 @@ namespace MuCommands
 				StateMessageOnly_ = -qi::lit ('\n') >> +qi::char_;
 				Status_ = FullState_ | State_ | ClearStatus_ | StateMessageOnly_;
 
-				Start_ = AccName_ >> '\n' >> Status_;
+				if (options & Parse::NoAccount)
+					Start_ = qi::attr (CurrentAccount ()) >> -qi::lit ('\n') >> Status_;
+				else
+					Start_ = AccName_ >> '\n' >> Status_;
 			}
 		};
 
 		template<typename Iter>
-		PresenceParams ParsePresenceCommand (Iter begin, Iter end,
-				const std::vector<std::string>& customStatuses = {})
+		PresenceParams ParseCommand (Iter begin, Iter end,
+				const std::vector<std::string>& statuses = {},
+				Parse::Options opts = Parse::NoOptions)
 		{
 			PresenceParams res;
-			qi::parse (begin, end, Parser<Iter> { customStatuses }, res);
+			qi::parse (begin, end, Parser<Iter> { statuses, opts }, res);
 			return res;
 		}
 
-		PresenceParams ParsePresenceCommand (QString cmd, const QStringList& statuses = {})
+		PresenceParams ParseCommand (QString cmd,
+				const QString& marker,
+				const QStringList& statuses = {},
+				Parse::Options opts = Parse::NoOptions)
 		{
 			cmd = cmd.trimmed ();
-			cmd = cmd.mid (QString { "/presence" }.size ());
+			cmd = cmd.mid (marker.size ());
 			if (cmd.startsWith (' '))
 				cmd = cmd.mid (1);
 			const auto& unicode = cmd.toUtf8 ();
@@ -202,7 +220,13 @@ namespace MuCommands
 			for (const auto& status : statuses)
 				convertedStatuses.push_back (status.toUtf8 ().constData ());
 
-			return ParsePresenceCommand (unicode.begin (), unicode.end (), convertedStatuses);
+			return ParseCommand (unicode.begin (), unicode.end (), convertedStatuses, opts);
+		}
+
+		PresenceParams ParsePresenceCommand (QString cmd,
+				const QStringList& statuses = {})
+		{
+			return ParseCommand (cmd, "/presence", statuses, Parse::NoOptions);
 		}
 
 		struct AccountsVisitor : boost::static_visitor<QList<IAccount*>>
