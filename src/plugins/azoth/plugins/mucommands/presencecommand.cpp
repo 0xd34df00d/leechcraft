@@ -172,7 +172,7 @@ namespace MuCommands
 
 				FullState_ = PredefinedState_ >> '\n' >> +qi::char_;
 
-				ClearStatus_ = qi::lit ("clear") > qi::eoi;
+				ClearStatus_ = (qi::lit ("clear") >> qi::eoi) > qi::attr (ClearStatus ());
 				State_ = PredefinedState_ | CustomStatus_;
 				StateMessageOnly_ = -qi::lit ('\n') >> +qi::char_;
 				Status_ = FullState_ | State_ | ClearStatus_ | StateMessageOnly_;
