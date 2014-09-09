@@ -48,43 +48,6 @@ namespace MuCommands
 {
 	namespace
 	{
-		State String2State (const QString& str)
-		{
-			if (str.startsWith ("avail"))
-				return SOnline;
-			else if (str == "away")
-				return SAway;
-			else if (str == "xa")
-				return SXA;
-			else if (str == "dnd")
-				return SDND;
-			else if (str == "chat")
-				return SChat;
-
-			throw CommandException { QObject::tr ("Unknown status %1.")
-						.arg ("<em>" + str + "</em>") };
-		}
-
-		std::function<EntryStatus (EntryStatus)> GetStatusMangler (IProxyObject *proxy, const QString& text)
-		{
-			const auto& action = text.section ('\n', 1, 1).trimmed ();
-			const auto& message = text.section ('\n', 2).trimmed ();
-			if (action == "clear")
-				return [] (const EntryStatus& status)
-						{ return EntryStatus { status.State_, {} }; };
-			else if (action == "message")
-				return [message] (const EntryStatus& status)
-						{ return EntryStatus { status.State_, message }; };
-			else if (const auto status = proxy->FindCustomStatus (action))
-				return [status, message] (const EntryStatus&)
-						{ return EntryStatus { status->State_, status->Text_}; };
-			else
-			{
-				const auto state = String2State (action);
-				return [state, message] (const EntryStatus&)
-						{ return EntryStatus { state, message }; };
-			}
-		}
 		struct AllAccounts {};
 
 		struct CurrentAccount {};
