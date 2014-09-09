@@ -91,9 +91,10 @@ namespace MuCommands
 
 		typedef boost::variant<AllAccounts, std::string, CurrentAccount> AccName_t;
 
+		struct ClearStatus {};
 		typedef boost::variant<State, std::string> State_t;
 		typedef std::pair<State, std::string> FullState_t;
-		typedef boost::variant<FullState_t, State_t, std::string> Status_t;
+		typedef boost::variant<FullState_t, State_t, ClearStatus, std::string> Status_t;
 
 		struct PresenceParams
 		{
@@ -132,6 +133,7 @@ namespace MuCommands
 
 			qi::rule<Iter, State_t ()> State_;
 			qi::rule<Iter, FullState_t ()> FullState_;
+			qi::rule<Iter, ClearStatus ()> ClearStatus_;
 			qi::rule<Iter, std::string ()> StateMessageOnly_;
 			qi::rule<Iter, Status_t ()> Status_;
 
@@ -170,9 +172,10 @@ namespace MuCommands
 
 				FullState_ = PredefinedState_ >> '\n' >> +qi::char_;
 
+				ClearStatus_ = qi::lit ("clear") > qi::eoi;
 				State_ = PredefinedState_ | CustomStatus_;
 				StateMessageOnly_ = -qi::lit ('\n') >> +qi::char_;
-				Status_ = FullState_ | State_ | StateMessageOnly_;
+				Status_ = FullState_ | State_ | ClearStatus_ | StateMessageOnly_;
 
 				Start_ = AccName_ >> '\n' >> Status_;
 			}
@@ -285,6 +288,11 @@ namespace MuCommands
 					}
 				};
 				return boost::apply_visitor (StateVisitor { Proxy_ }, state);
+			}
+
+			StatusMangler_f operator() (const ClearStatus&) const
+			{
+				return [] (const EntryStatus& status) { return EntryStatus { status.State_, {} }; };
 			}
 
 			StatusMangler_f operator() (const std::string& msg) const
