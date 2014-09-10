@@ -114,11 +114,11 @@ namespace Azoth
 			{
 				{ { "_", State::None, true }, { "em", State::Em } },
 				{ { "@", State::None, true }, { "code", State::Code } },
-				{ { "\n#", State::None, false }, { "<ol><li>", State::OrderedList } },
 				{ { "\n#", State::OrderedList, false }, { "</li><li>", State::OrderedList } },
+				{ { "\n#", State::None, false }, { "<ol><li>", State::OrderedList } },
 				{ { "\n", State::OrderedList, false }, { "</li></ol>", State::None } },
-				{ { "\n*", State::None, false }, { "<ul><li>", State::UnorderedList } },
 				{ { "\n*", State::UnorderedList, false }, { "</li><li>", State::UnorderedList } },
+				{ { "\n*", State::None, false }, { "<ul><li>", State::UnorderedList } },
 				{ { "\n", State::UnorderedList, false }, { "</li></ul>", State::None } }
 			};
 
