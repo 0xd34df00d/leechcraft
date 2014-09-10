@@ -52,13 +52,9 @@ namespace MuCommands
 		void accMessageOnly ();
 		void accMultilineMessageOnly ();
 
-		void chatPrStateChange ();
 		void chatPrStateChangeNoNL ();
-		void chatPrAlmostCustomStateChange ();
 		void chatPrAlmostCustomStateChangeNoNL ();
-		void chatPrCustomStateChange ();
 		void chatPrCustomStateChangeNoNL ();
-		void chatPrStatusChange ();
 		void chatPrStatusChangeNoNL ();
 	};
 }
