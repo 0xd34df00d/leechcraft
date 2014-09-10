@@ -69,6 +69,16 @@ The subject may span multiple lines.
 
 Please note that in most protocols there is no reliable way to know if MUC subject may be changed in advance. Thus, this command will try its best to guess if subject change is allowed, but it still may silently fail.</help>
 	</command>
+	<command name="/join">
+		<desc>Joins a room.</desc>
+		<help>Usage: @/join@ _room_ [_password_]
+
+Joins a multiuser chat room identified by _room_, optionally using the given _password_.
+
+In case of XMPP the _room_ may be either the full room ID, like @leechcraft\@conference.leechcraft.org@, or just the room name, like @leechcraft@. In the latter case the server name is resolved as following:
+# If the current chat is related to a multiuser chat room or a private chat in a multiuser chat room, then this room's server is used.
+# Otherwise, the server of the account to which the current chat is related is used, prepended with the @conference.@ string.</help>
+	</command>
 	<command name="/leave">
 		<desc>Leaves the current multiuser chat room.</desc>
 		<help>Usage: @/leave@ _[leave message]_</help>
