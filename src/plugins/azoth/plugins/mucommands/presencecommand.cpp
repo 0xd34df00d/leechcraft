@@ -152,7 +152,7 @@ namespace MuCommands
 				Status_ = FullState_ | State_ | ClearStatus_ | StateMessageOnly_;
 
 				if (options & Parse::NoAccount)
-					Start_ = qi::attr (CurrentAccount ()) >> -qi::lit ('\n') >> Status_;
+					Start_ = qi::attr (CurrentAccount ()) >> Status_;
 				else
 					Start_ = AccName_ >> '\n' >> Status_;
 			}
