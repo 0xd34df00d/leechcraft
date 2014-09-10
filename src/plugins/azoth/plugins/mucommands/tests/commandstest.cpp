@@ -249,11 +249,29 @@ away
 		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
 	}
 
+	void CommandsTest::chatPrStateChangeNoNL ()
+	{
+		const QString command = R"delim(
+/chatpresence away
+				)delim";
+		const auto& res = ParseChatPresenceCommand (command);
+		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
+	}
+
 	void CommandsTest::chatPrAlmostCustomStateChange ()
 	{
 		const QString command = R"delim(
 /chatpresence
 some custom status
+				)delim";
+		const auto& res = ParseChatPresenceCommand (command);
+		QCOMPARE (res.Status_, Status_t { std::string { "some custom status" } });
+	}
+
+	void CommandsTest::chatPrAlmostCustomStateChangeNoNL ()
+	{
+		const QString command = R"delim(
+/chatpresence some custom status
 				)delim";
 		const auto& res = ParseChatPresenceCommand (command);
 		QCOMPARE (res.Status_, Status_t { std::string { "some custom status" } });
@@ -270,11 +288,33 @@ some custom status
 		QCOMPARE (res.Status_, Status_t { State_t { "some custom status" } });
 	}
 
+	void CommandsTest::chatPrCustomStateChangeNoNL ()
+	{
+		const QString command = R"delim(
+/chatpresence some custom status
+				)delim";
+		const auto& res = ParseChatPresenceCommand (command,
+				{ "some custom status", "another custom status", "some custom status too" });
+		QCOMPARE (res.Status_, Status_t { State_t { "some custom status" } });
+	}
+
 	void CommandsTest::chatPrStatusChange ()
 	{
 		const QString command = R"delim(
 /chatpresence
 xa
+This is my new
+multiline status.
+				)delim";
+		const auto& res = ParseChatPresenceCommand (command);
+		const auto expectedStatus = Status_t { FullState_t { State::SXA, "This is my new\nmultiline status." } };
+		QCOMPARE (res.Status_, expectedStatus);
+	}
+
+	void CommandsTest::chatPrStatusChangeNoNL ()
+	{
+		const QString command = R"delim(
+/chatpresence xa
 This is my new
 multiline status.
 				)delim";
