@@ -140,6 +140,9 @@ namespace Azoth
 					if (Body_.mid (i, pair.first.Str_.size ()) != pair.first.Str_)
 						continue;
 
+					if (i && Body_.at (i - 1) == '\\')
+						continue;
+
 					const auto res = HandleSubstr (pair, i);
 					if (res > 0)
 					{
