@@ -141,7 +141,10 @@ namespace Azoth
 						continue;
 
 					if (i && Body_.at (i - 1) == '\\')
+					{
+						Body_.remove (i - 1, 1);
 						continue;
+					}
 
 					const auto res = HandleSubstr (pair, i);
 					if (res > 0)
