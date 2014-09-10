@@ -147,4 +147,10 @@ This is a shortcut for kicking the given participant by its nickname.</help>
 
 This is a shortcut for ban the given participant by its nickname.</help>
 	</command>
+	<command name="/subst">
+		<desc>Substitutes one string with another in a single outgoing message.</desc>
+		<help>Usage: @/subst@ _pattern_ _replacement_ _message_
+
+Replaces all occurences of _pattern_ with _replacement_ in _message_ and sends it. _message_ may span multiple lines, while _pattern_ and _replacement_ should NOT contain spaces.</help>
+	</command>
 </descs>
