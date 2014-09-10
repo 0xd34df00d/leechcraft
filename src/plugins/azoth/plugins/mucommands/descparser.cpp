@@ -85,6 +85,13 @@ namespace MuCommands
 
 	void DescParser::operator() (StaticCommand& cmd) const
 	{
+		if (!Cmd2Desc_.contains (cmd.Names_.first ()))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no description for"
+					<< cmd.Names_;
+			return;
+		}
 		const auto& desc = Cmd2Desc_.value (cmd.Names_.first ());
 		cmd.Description_ = desc.Description_;
 		cmd.Help_ = desc.Help_;
