@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "corecommandsmanager.h"
+#include <stack>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
@@ -83,7 +84,8 @@ namespace Azoth
 				Code,
 				OrderedList,
 				UnorderedList
-			} State_ = State::None;
+			};
+			std::stack<State> States_;
 
 			struct Pattern
 			{
@@ -167,13 +169,36 @@ namespace Azoth
 			const auto& pat = rule.first;
 			const auto& rep = rule.second;
 
+			auto isProperState = [this] (State state)
+			{
+				if (state == State::None)
+					return true;
+
+				if (States_.empty ())
+					return false;
+
+				return States_.top () == state;
+			};
+			auto setState = [this] (State state)
+			{
+				if (state == State::None)
+					States_.pop ();
+				else
+					States_.push (state);
+			};
+
 			QString tag = rep.TagBase_;
-			if (State_ == pat.Expected_)
-				State_ = rep.NextState_;
-			else if (pat.Reversible_ && State_ == rep.NextState_)
+			const auto isReverse = pat.Reversible_ && isProperState (rep.NextState_);
+			if (isProperState (pat.Expected_) && !isReverse)
+			{
+				if (pat.Expected_ != State::None)
+					States_.pop ();
+				setState (rep.NextState_);
+			}
+			else if (isReverse)
 			{
 				tag.prepend ('/');
-				State_ = pat.Expected_;
+				setState (pat.Expected_);
 			}
 			else
 				return 0;
