@@ -72,12 +72,11 @@ namespace Xoox
 		GlooxProtocol_->SetProxyObject (PluginProxy_);
 		GlooxProtocol_->Prepare ();
 		LoadRoster ();
-		Q_FOREACH (QObject *account,
-				GlooxProtocol_->GetRegisteredAccounts ())
+		for (const auto account : GlooxProtocol_->GetRegisteredAccounts ())
 			connect (account,
-					SIGNAL (gotCLItems (const QList<QObject*>&)),
+					SIGNAL (gotCLItems (QList<QObject*>)),
 					this,
-					SLOT (handleItemsAdded (const QList<QObject*>&)));
+					SLOT (handleItemsAdded (QList<QObject*>)));
 	}
 
 	void Core::Release ()
@@ -87,9 +86,7 @@ namespace Xoox
 
 	QList<QObject*> Core::GetProtocols () const
 	{
-		QList<QObject*> result;
-		result << GlooxProtocol_.get ();
-		return result;
+		return { GlooxProtocol_.get () };
 	}
 
 	void Core::SetPluginProxy (QObject *proxy)
