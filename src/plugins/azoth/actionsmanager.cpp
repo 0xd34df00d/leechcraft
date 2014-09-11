@@ -443,13 +443,13 @@ namespace Azoth
 						continue;
 					}
 
-					Core::Instance ().GetChatTabsManager ()->CloseChat (partEntry);
+					Core::Instance ().GetChatTabsManager ()->CloseChat (partEntry, true);
 				}
 
 			mucEntry->Leave ();
 
 			if (closeTabs)
-				Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
+				Core::Instance ().GetChatTabsManager ()->CloseChat (entry, true);
 		}
 
 		void Reconnect (ICLEntry *entry)

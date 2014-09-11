@@ -1682,7 +1682,7 @@ namespace Azoth
 
 			if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
 					XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-				GetChatTabsManager ()->CloseChat (entry);
+				GetChatTabsManager ()->CloseChat (entry, false);
 
 			disconnect (clitem,
 					0,

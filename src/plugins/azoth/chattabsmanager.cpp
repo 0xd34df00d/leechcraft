@@ -135,13 +135,13 @@ namespace Azoth
 		return tab;
 	}
 
-	void ChatTabsManager::CloseChat (const ICLEntry *entry)
+	void ChatTabsManager::CloseChat (const ICLEntry *entry, bool fromUser)
 	{
 		const QString& id = entry->GetEntryID ();
 		if (!Entry2Tab_.contains (id))
 			return;
 
-		handleNeedToClose (Entry2Tab_ [id]);
+		CloseChatTab (Entry2Tab_ [id], fromUser);
 	}
 
 	bool ChatTabsManager::IsActiveChat (const ICLEntry *entry) const
@@ -316,22 +316,27 @@ namespace Azoth
 		tab->prepareMessageText (info.MsgText_);
 	}
 
-	void ChatTabsManager::handleNeedToClose (ChatTab *tab)
+	void ChatTabsManager::CloseChatTab (ChatTab *tab, bool fromUser)
 	{
 		emit removeTab (tab);
 
-		const QString& entry = Entry2Tab_.key (tab);
+		const auto& entry = Entry2Tab_.key (tab);
 		Entry2Tab_.remove (entry);
 
 		tab->deleteLater ();
 
-		if (XmlSettingsManager::Instance ().property ("LeaveConfOnClose").toBool ())
+		if (fromUser &&
+				XmlSettingsManager::Instance ().property ("LeaveConfOnClose").toBool ())
 		{
-			QObject *entryObj = tab->GetCLEntry ();
-			IMUCEntry *muc = qobject_cast<IMUCEntry*> (entryObj);
-			if (muc)
+			const auto entryObj = tab->GetCLEntry ();
+			if (const auto muc = qobject_cast<IMUCEntry*> (entryObj))
 				muc->Leave ();
 		}
+	}
+
+	void ChatTabsManager::handleNeedToClose (ChatTab *tab)
+	{
+		CloseChatTab (tab, true);
 	}
 
 	void ChatTabsManager::updateCurrentTab (QObject *entryObj)

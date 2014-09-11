@@ -67,7 +67,9 @@ namespace Azoth
 		QWidget* OpenChat (const QModelIndex&);
 		ChatTab* OpenChat (const ICLEntry*, bool fromUser,
 				const DynPropertiesList_t& = DynPropertiesList_t ());
-		void CloseChat (const ICLEntry*);
+
+		void CloseChat (const ICLEntry*, bool fromUser);
+
 		bool IsActiveChat (const ICLEntry*) const;
 		bool IsOpenedChat (const QString&) const;
 		ChatTab* GetActiveChatTab () const;
@@ -90,6 +92,7 @@ namespace Azoth
 	private:
 		void UpdateMUCTab (ICLEntry*);
 		void RestoreChat (const RestoreChatInfo&, QObject*);
+		void CloseChatTab (ChatTab*, bool fromUser);
 	private slots:
 		void handleNeedToClose (ChatTab*);
 		void updateCurrentTab (QObject*);
