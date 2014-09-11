@@ -144,7 +144,7 @@ namespace MuCommands
 				CurAcc_ = qi::eps > qi::attr (CurrentAccount ());
 				AccName_ = AllAccounts_ | +(qi::char_ - '\n') | CurAcc_;
 
-				FullState_ = PredefinedState_ >> '\n' >> +qi::char_;
+				FullState_ = PredefinedState_ >> (qi::lit ('\n') | qi::lit (' ')) >> +qi::char_;
 
 				ClearStatus_ = (qi::lit ("clear") >> qi::eoi) > qi::attr (ClearStatus ());
 				State_ = PredefinedState_ | CustomStatus_;
