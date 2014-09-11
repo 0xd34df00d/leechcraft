@@ -169,7 +169,7 @@ namespace Azoth
 		const auto entry = qobject_cast<ICLEntry*> (GetEntry (entryID, accID));
 		const auto chat = mgr->OpenChat (entry, true);
 
-		chat->prepareMessageText (message);
+		chat->insertMessageText (message);
 		chat->selectVariant (variant);
 	}
 
