@@ -165,6 +165,7 @@ namespace Azoth
 	public slots:
 		void prepareMessageText (const QString&);
 		void appendMessageText (const QString&);
+		void insertMessageText (const QString&);
 		void selectVariant (const QString&);
 		QTextEdit* getMsgEdit ();
 

@@ -2115,6 +2115,11 @@ namespace Azoth
 		prepareMessageText (Ui_.MsgEdit_->toPlainText () + text);
 	}
 
+	void ChatTab::insertMessageText (const QString& text)
+	{
+		Ui_.MsgEdit_->textCursor ().insertText (text);
+	}
+
 	void ChatTab::selectVariant (const QString& var)
 	{
 		const int idx = Ui_.VariantBox_->findText (var);
