@@ -164,19 +164,13 @@ namespace Azoth
 	void ProxyObject::OpenChat (const QString& entryID, const QString& accID,
 			const QString& message, const QString& variant) const
 	{
-		ChatTabsManager *mgr = Core::Instance ().GetChatTabsManager ();
+		const auto mgr = Core::Instance ().GetChatTabsManager ();
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (entryID, accID));
-		QWidget *chat = mgr->OpenChat (entry, true);
+		const auto entry = qobject_cast<ICLEntry*> (GetEntry (entryID, accID));
+		const auto chat = mgr->OpenChat (entry, true);
 
-		QMetaObject::invokeMethod (chat,
-				"prepareMessageText",
-				Qt::QueuedConnection,
-				Q_ARG (QString, message));
-		QMetaObject::invokeMethod (chat,
-				"selectVariant",
-				Qt::QueuedConnection,
-				Q_ARG (QString, variant));
+		chat->prepareMessageText (message);
+		chat->selectVariant (variant);
 	}
 
 	QString ProxyObject::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const
@@ -409,7 +403,7 @@ namespace Azoth
 	QStringList ProxyObject::GetCustomStatusNames () const
 	{
 		const auto mgr = Core::Instance ().GetCustomStatusesManager ();
-	
+
 		QStringList result;
 		for (const auto& status : mgr->GetStates ())
 			result << status.Name_;
