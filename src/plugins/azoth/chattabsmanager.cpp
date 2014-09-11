@@ -79,7 +79,7 @@ namespace Azoth
 		return OpenChat (entry, true);
 	}
 
-	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry,
+	ChatTab* ChatTabsManager::OpenChat (const ICLEntry *entry,
 			bool fromUser, const DynPropertiesList_t& props)
 	{
 		const QString& id = entry->GetEntryID ();
