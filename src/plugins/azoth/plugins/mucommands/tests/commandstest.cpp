@@ -190,6 +190,19 @@ multiline status.
 		QCOMPARE (res.Status_, expectedStatus);
 	}
 
+	void CommandsTest::accStatusChangeSameLine ()
+	{
+		const QString command = R"delim(
+/presence testacc
+away oh yeah i'm going away
+				)delim";
+		const auto& res = ParsePresenceCommand (command);
+		QCOMPARE (res.AccName_, AccName_t { std::string { "testacc" } });
+
+		const auto expectedStatus = Status_t { FullState_t { State::SAway, "oh yeah i'm going away" } };
+		QCOMPARE (res.Status_, expectedStatus);
+	}
+
 	void CommandsTest::accStatusClear ()
 	{
 		const QString command = R"delim(
@@ -276,6 +289,16 @@ multiline status.
 				)delim";
 		const auto& res = ParseChatPresenceCommand (command);
 		const auto expectedStatus = Status_t { FullState_t { State::SXA, "This is my new\nmultiline status." } };
+		QCOMPARE (res.Status_, expectedStatus);
+	}
+
+	void CommandsTest::chatPrStatusChangeSameLineNoNL ()
+	{
+		const QString command = R"delim(
+/chatpresence away oh yeah i'm going away
+				)delim";
+		const auto& res = ParseChatPresenceCommand (command);
+		const auto expectedStatus = Status_t { FullState_t { State::SAway, "oh yeah i'm going away" } };
 		QCOMPARE (res.Status_, expectedStatus);
 	}
 }

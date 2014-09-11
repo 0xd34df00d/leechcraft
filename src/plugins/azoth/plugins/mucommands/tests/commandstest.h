@@ -47,6 +47,7 @@ namespace MuCommands
 		void accAlmostCustomStateChange ();
 		void accCustomStateChange ();
 		void accStatusChange ();
+		void accStatusChangeSameLine ();
 		void accStatusClear ();
 		void accStatusChangeClearSubstr ();
 		void accMessageOnly ();
@@ -56,6 +57,7 @@ namespace MuCommands
 		void chatPrAlmostCustomStateChangeNoNL ();
 		void chatPrCustomStateChangeNoNL ();
 		void chatPrStatusChangeNoNL ();
+		void chatPrStatusChangeSameLineNoNL ();
 	};
 }
 }
