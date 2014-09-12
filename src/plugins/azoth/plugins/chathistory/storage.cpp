@@ -213,45 +213,60 @@ namespace ChatHistory
 		}
 
 		QSqlQuery query (*DB_);
-		QMap<QString, QString> table2query;
-		table2query ["azoth_users"] = "CREATE TABLE azoth_users ("
-					"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-					"EntryID TEXT "
-					");";
-		table2query ["azoth_accounts"] = "CREATE TABLE azoth_accounts ("
-					"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-					"AccountID TEXT "
-					");";
-		table2query ["azoth_history"] = "CREATE TABLE azoth_history ("
-					"Id INTEGER, "
-					"AccountId INTEGER, "
-					"Date DATETIME, "
-					"Direction INTEGER, "
-					"Message TEXT, "
-					"Variant TEXT, "
-					"Type INTEGER, "
-					"UNIQUE (Id, AccountId, Date, Direction, Message, Variant, Type) ON CONFLICT IGNORE);";
-		table2query ["azoth_entrycache"] = "CREATE TABLE azoth_entrycache ("
-					"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id) ON DELETE CASCADE, "
-					"VisibleName TEXT "
-					");";
-		table2query ["azoth_acc2users2"] = "CREATE TABLE azoth_acc2users2 ("
-					"AccountId INTEGER REFERENCES azoth_accounts (Id) ON DELETE CASCADE, "
-					"UserId INTEGER REFERENCES azoth_users (Id) ON DELETE CASCADE, "
-					"UNIQUE (AccountId, UserId)"
-					");";
+		QList<QPair<QString, QString>> table2query;
+		table2query.append ({
+					"azoth_users",
+					"CREATE TABLE azoth_users ("
+						"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+						"EntryID TEXT "
+						");"
+				});
+		table2query.append ({
+					"azoth_accounts",
+					"CREATE TABLE azoth_accounts ("
+						"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+						"AccountID TEXT "
+						");"
+				});
+		table2query.append ({
+					"azoth_history",
+					"CREATE TABLE azoth_history ("
+						"Id INTEGER, "
+						"AccountId INTEGER, "
+						"Date DATETIME, "
+						"Direction INTEGER, "
+						"Message TEXT, "
+						"Variant TEXT, "
+						"Type INTEGER, "
+						"UNIQUE (Id, AccountId, Date, Direction, Message, Variant, Type) ON CONFLICT IGNORE);"
+				});
+		table2query.append ({
+					"azoth_entrycache",
+					"CREATE TABLE azoth_entrycache ("
+						"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id) ON DELETE CASCADE, "
+						"VisibleName TEXT "
+						");"
+				});
+		table2query.append ({
+					"azoth_acc2users2",
+					"CREATE TABLE azoth_acc2users2 ("
+						"AccountId INTEGER REFERENCES azoth_accounts (Id) ON DELETE CASCADE, "
+						"UserId INTEGER REFERENCES azoth_users (Id) ON DELETE CASCADE, "
+						"UNIQUE (AccountId, UserId)"
+						");"
+				});
 		const QStringList& tables = DB_->tables ();
 		const bool hadAcc2User = tables.contains ("azoth_acc2users2");
 
 		if (tables.contains ("azoth_acc2users"))
 			query.exec ("DROP TABLE azoth_acc2users;");
 
-		Q_FOREACH (const QString& table, table2query.keys ())
+		for (const auto& pair : table2query)
 		{
-			if (tables.contains (table))
+			if (tables.contains (pair.first))
 				continue;
 
-			const QString& queryStr = table2query [table];
+			const auto& queryStr = pair.second;
 			if (!query.exec (queryStr))
 			{
 				Util::DBLock::DumpError (query);
