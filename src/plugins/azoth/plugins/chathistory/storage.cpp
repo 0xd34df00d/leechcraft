@@ -306,6 +306,12 @@ namespace ChatHistory
 
 		UpdateTables (currentTableVersions);
 
+		if (!query.exec ("CREATE INDEX IF NOT EXISTS azoth_history_id_accountid ON azoth_history (Id, AccountId);"))
+		{
+			Util::DBLock::DumpError (query);
+			throw std::runtime_error ("Unable to index `azoth_history`.");
+		}
+
 		if (!hadAcc2User)
 			regenUsersCache ();
 
