@@ -33,6 +33,7 @@
 #include "bpasteservice.h"
 #include "hastebinservice.h"
 #include "pasteorgruservice.h"
+#include "poundpythonservice.h"
 
 namespace LeechCraft
 {
@@ -45,6 +46,7 @@ namespace Autopaste
 		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
 		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
 		Infos_.push_back ({ "paste.org.ru", QIcon (), [] (QObject *entry) { return new PasteOrgRuService (entry); } });
+		Infos_.push_back ({ "pound-python.org", QIcon (), [] (QObject *entry) { return new PoundPythonService (entry); } });
 
 #ifdef WITH_JSON
 		Infos_.push_back ({ "hastebin.com", QIcon (), [] (QObject *entry) { return new HastebinService (entry); } });
