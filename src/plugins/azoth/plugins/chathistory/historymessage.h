@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/irichtextmessage.h>
 
 namespace LeechCraft
 {
@@ -53,6 +54,8 @@ namespace ChatHistory
 		QDateTime DateTime_;
 
 		QString RichBody_;
+
+		const EscapePolicy EscPolicy_;
 	public:
 		HistoryMessage (Direction dir,
 				QObject *other,
@@ -60,7 +63,8 @@ namespace ChatHistory
 				const QString& variant,
 				const QString& body,
 				const QDateTime& datetime,
-				const QString& richBody);
+				const QString& richBody,
+				EscapePolicy policy);
 
 		QObject* GetQObject ();
 		void Send ();
@@ -77,6 +81,8 @@ namespace ChatHistory
 
 		QString GetRichBody () const;
 		void SetRichBody (const QString&);
+
+		EscapePolicy GetEscapePolicy () const;
 	};
 }
 }

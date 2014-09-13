@@ -326,6 +326,9 @@ namespace ChatHistory
 			const auto type = participantObj ?
 					IMessage::Type::MUCMessage :
 					IMessage::Type::ChatMessage;
+			const auto escPolicy = msgMap ["EscapePolicy"].toString () == "NEs" ?
+					IMessage::EscapePolicy::NoEscape :
+					IMessage::EscapePolicy::Escape;
 
 			const auto msg = new HistoryMessage (dir,
 					participantObj ? participantObj : entryObj.data (),
@@ -333,7 +336,8 @@ namespace ChatHistory
 					participantObj ? QString () : variant,
 					msgMap ["Message"].toString (),
 					msgMap ["Date"].toDateTime (),
-					msgMap ["RichMessage"].toString ());
+					msgMap ["RichMessage"].toString (),
+					escPolicy);
 
 			result << msg;
 		}

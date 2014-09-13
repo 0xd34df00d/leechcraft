@@ -43,7 +43,8 @@ namespace ChatHistory
 			const QString& variant,
 			const QString& body,
 			const QDateTime& dt,
-			const QString& richBody)
+			const QString& richBody,
+			EscapePolicy policy)
 	: Direction_ (dir)
 	, OtherPart_ (otherPart)
 	, Type_ (type)
@@ -51,6 +52,7 @@ namespace ChatHistory
 	, Body_ (body)
 	, DateTime_ (dt)
 	, RichBody_ (richBody)
+	, EscPolicy_ (policy)
 	{
 	}
 
@@ -124,6 +126,11 @@ namespace ChatHistory
 	void HistoryMessage::SetRichBody (const QString& body)
 	{
 		RichBody_ = body;
+	}
+
+	IMessage::EscapePolicy HistoryMessage::GetEscapePolicy () const
+	{
+		return EscPolicy_;
 	}
 }
 }

@@ -196,6 +196,7 @@ namespace ChatHistory
 		data ["Body"] = msg->GetBody ();
 		data ["OtherVariant"] = msg->GetOtherVariant ();
 		data ["Type"] = static_cast<int> (msg->GetMessageType ());
+		data ["EscapePolicy"] = msg->GetEscapePolicy () == IMessage::EscapePolicy::Escape ? "Esc" : "NEs";
 
 		if (const auto irtm = qobject_cast<IRichTextMessage*> (msgObj))
 			data ["RichBody"] = irtm->GetRichBody ();
