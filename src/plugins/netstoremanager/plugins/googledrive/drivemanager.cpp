@@ -656,9 +656,9 @@ namespace GoogleDrive
 				QUrl url = exports.value (key).toUrl ();
 
 #if QT_VERSION < 0x050000
-				const auto& lastQueryPair = url.queryItems ().last ();
+				const auto lastQueryPair = url.queryItems ().last ();
 #else
-				const auto& lastQueryPair = QUrlQuery { url }.queryItems ().last ();
+				const auto lastQueryPair = QUrlQuery { url }.queryItems ().last ();
 #endif
 
 				driveItem.ExportLinks_ [url] = GetLocalMimeTypeFromGoogleMimeType (key, lastQueryPair.second);
