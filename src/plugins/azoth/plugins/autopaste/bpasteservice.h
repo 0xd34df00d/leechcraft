@@ -37,7 +37,7 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	class BPasteService : public SpacePasteServiceBase
+	class BPasteService final : public SpacePasteServiceBase
 	{
 	public:
 		using SpacePasteServiceBase::SpacePasteServiceBase;

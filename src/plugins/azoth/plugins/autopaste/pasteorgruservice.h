@@ -37,14 +37,14 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	class PasteOrgRuService : public PasteServiceBase
+	class PasteOrgRuService final : public PasteServiceBase
 	{
 	public:
 		PasteOrgRuService (QObject *entry, QObject* = 0);
 
 		void Paste (const PasteParams&);
 	protected:
-		virtual void handleFinished ();
+		void handleFinished () override;
 	};
 }
 }

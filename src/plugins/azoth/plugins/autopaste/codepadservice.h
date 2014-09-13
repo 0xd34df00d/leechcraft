@@ -39,7 +39,7 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	class CodepadService : public PasteServiceBase
+	class CodepadService final : public PasteServiceBase
 	{
 	public:
 		CodepadService (QObject *entry, QObject* = 0);

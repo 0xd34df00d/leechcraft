@@ -37,16 +37,16 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	class HastebinService : public PasteServiceBase
+	class HastebinService final : public PasteServiceBase
 	{
 	public:
 		HastebinService (QObject *entry, QObject* = 0);
 
 		void Paste (const PasteParams&);
 	protected:
-		virtual void handleFinished ();
+		void handleFinished () override;
 	};
 }
 }
 }
- 
+
