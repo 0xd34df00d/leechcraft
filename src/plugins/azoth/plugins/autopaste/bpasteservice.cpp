@@ -75,9 +75,8 @@ namespace Autopaste
 			break;
 		}
 
-		QByteArray data = "language=" + highlight + "&code=";
+		QByteArray data = "lexer=" + highlight + "&expiry=never&code=";
 		data += params.Text_.toUtf8 ().toPercentEncoding ();
-		data += "&private=on&webpage=";
 
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 
