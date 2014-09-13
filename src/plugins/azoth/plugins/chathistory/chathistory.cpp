@@ -327,12 +327,13 @@ namespace ChatHistory
 					IMessage::Type::MUCMessage :
 					IMessage::Type::ChatMessage;
 
-			HistoryMessage *msg = new HistoryMessage (dir,
+			const auto msg = new HistoryMessage (dir,
 					participantObj ? participantObj : entryObj.data (),
 					type,
 					participantObj ? QString () : variant,
 					msgMap ["Message"].toString (),
-					msgMap ["Date"].toDateTime ());
+					msgMap ["Date"].toDateTime (),
+					msgMap ["RichMessage"].toString ());
 
 			result << msg;
 		}

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_HISTORYMESSAGE_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_HISTORYMESSAGE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
 
@@ -40,9 +40,10 @@ namespace ChatHistory
 {
 	class HistoryMessage : public QObject
 						 , public IMessage
+						 , public IRichTextMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage)
+		Q_INTERFACES (LeechCraft::Azoth::IMessage LeechCraft::Azoth::IRichTextMessage)
 
 		Direction Direction_;
 		QObject * const OtherPart_;
@@ -50,13 +51,16 @@ namespace ChatHistory
 		QString Variant_;
 		QString Body_;
 		QDateTime DateTime_;
+
+		QString RichBody_;
 	public:
 		HistoryMessage (Direction dir,
 				QObject *other,
 				Type type,
 				const QString& variant,
 				const QString& body,
-				const QDateTime& datetime);
+				const QDateTime& datetime,
+				const QString& richBody);
 
 		QObject* GetQObject ();
 		void Send ();
@@ -70,9 +74,10 @@ namespace ChatHistory
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
+
+		QString GetRichBody () const;
+		void SetRichBody (const QString&);
 	};
 }
 }
 }
-
-#endif

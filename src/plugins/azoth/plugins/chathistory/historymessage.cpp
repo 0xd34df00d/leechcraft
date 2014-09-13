@@ -42,13 +42,15 @@ namespace ChatHistory
 			Type type,
 			const QString& variant,
 			const QString& body,
-			const QDateTime& dt)
+			const QDateTime& dt,
+			const QString& richBody)
 	: Direction_ (dir)
 	, OtherPart_ (otherPart)
 	, Type_ (type)
 	, Variant_ (variant)
 	, Body_ (body)
 	, DateTime_ (dt)
+	, RichBody_ (richBody)
 	{
 	}
 
@@ -112,6 +114,16 @@ namespace ChatHistory
 	void HistoryMessage::SetDateTime (const QDateTime& dt)
 	{
 		DateTime_ = dt;
+	}
+
+	QString HistoryMessage::GetRichBody () const
+	{
+		return RichBody_;
+	}
+
+	void HistoryMessage::SetRichBody (const QString& body)
+	{
+		RichBody_ = body;
 	}
 }
 }
