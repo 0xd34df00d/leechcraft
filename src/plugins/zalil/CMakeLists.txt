@@ -11,6 +11,7 @@ set (SRCS
 	zalil.cpp
 	pendinguploadbase.cpp
 	servicebase.cpp
+	servicesmanager.cpp
 	)
 #CreateTrs("zalil" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("zalil" "en;ru_RU" "${SRCS}" "${FORMS}" "")
