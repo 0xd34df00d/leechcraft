@@ -31,6 +31,7 @@
 
 #include <type_traits>
 #include <iterator>
+#include <boost/optional.hpp>
 
 namespace LeechCraft
 {
@@ -65,6 +66,16 @@ namespace Util
 		for (auto t : c)
 			result.push_back (f (t));
 		return result;
+	}
+
+	template<template<typename Pair, typename... Rest> class Cont, template<typename K, typename V> class Pair, typename K, typename V, typename KV, typename... Rest>
+	boost::optional<V> Lookup (const KV& key, const Cont<Pair<K, V>, Rest...>& cont)
+	{
+		for (const auto& pair : cont)
+			if (pair.first == key)
+				return pair.second;
+
+		return {};
 	}
 }
 }
