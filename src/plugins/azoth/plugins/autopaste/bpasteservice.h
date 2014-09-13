@@ -41,7 +41,7 @@ namespace Autopaste
 	{
 		Q_OBJECT
 	public:
-		BPasteService (QObject *entry, QObject* = 0);
+		using PasteServiceBase::PasteServiceBase;
 
 		void Paste (const PasteParams&);
 	};

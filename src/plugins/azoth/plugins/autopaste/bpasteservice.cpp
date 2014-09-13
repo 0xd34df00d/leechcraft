@@ -38,11 +38,6 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	BPasteService::BPasteService (QObject* entry, QObject *parent)
-	: PasteServiceBase (entry, parent)
-	{
-	}
-
 	void BPasteService::Paste (const PasteParams& params)
 	{
 		QNetworkRequest req (QUrl ("https://bpaste.net"));
