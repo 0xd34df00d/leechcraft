@@ -337,10 +337,15 @@ namespace ChatHistory
 			auto msgText = map ["RichMessage"].toString ();
 			if (msgText.isEmpty ())
 			{
+				const bool escape = map ["EscapePolicy"] != "NEs";
+
 				msgText = map ["Message"].toString ();
-				msgText.replace ('<', "&lt;");
+
+				if (!escape)
+					msgText.replace ('<', "&lt;");
 				Core::Instance ()->GetPluginProxy ()->FormatLinks (msgText);
-				msgText.replace ('\n', "<br/>");
+				if (!escape)
+					msgText.replace ('\n', "<br/>");
 			}
 
 			html += postNick + ' ' + msgText;
