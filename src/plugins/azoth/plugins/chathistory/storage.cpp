@@ -156,7 +156,7 @@ namespace ChatHistory
 				"FROM azoth_history "
 				"WHERE Id = :entry_id "
 				"AND AccountID = :account_id "
-				"ORDER BY Date DESC LIMIT :limit OFFSET :offset;");
+				"ORDER BY Rowid DESC LIMIT :limit OFFSET :offset;");
 
 		HistoryClearer_ = QSqlQuery (*DB_);
 		HistoryClearer_.prepare ("DELETE FROM azoth_history WHERE Id = :entry_id AND AccountID = :account_id;");
