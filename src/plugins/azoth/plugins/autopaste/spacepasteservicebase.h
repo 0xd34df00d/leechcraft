@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include "spacepasteservicebase.h"
+#include "pasteservicebase.h"
 
 namespace LeechCraft
 {
@@ -37,13 +37,14 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	class BPasteService : public SpacePasteServiceBase
+	class SpacePasteServiceBase : public PasteServiceBase
 	{
 		Q_OBJECT
 	public:
-		using SpacePasteServiceBase::SpacePasteServiceBase;
-
-		void Paste (const PasteParams&);
+		using PasteServiceBase::PasteServiceBase;
+	protected:
+		void PasteImpl (const PasteParams& params,
+				QByteArray baseUrl, const QByteArray& postData);
 	};
 }
 }

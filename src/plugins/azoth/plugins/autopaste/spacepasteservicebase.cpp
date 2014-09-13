@@ -27,9 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
 #include "spacepasteservicebase.h"
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 namespace LeechCraft
 {
@@ -37,14 +37,20 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	class BPasteService : public SpacePasteServiceBase
+	void SpacePasteServiceBase::PasteImpl (const PasteParams& params,
+			QByteArray baseUrl, const QByteArray& postData)
 	{
-		Q_OBJECT
-	public:
-		using SpacePasteServiceBase::SpacePasteServiceBase;
+		if (!baseUrl.endsWith ('/'))
+			baseUrl += '/';
 
-		void Paste (const PasteParams&);
-	};
+		QNetworkRequest req { QUrl { baseUrl } };
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+		req.setRawHeader ("Origin", baseUrl);
+		req.setRawHeader ("Referer", baseUrl);
+		req.setHeader (QNetworkRequest::ContentLengthHeader, postData.size ());
+		InitReply (params.NAM_->post (req, postData));
+	}
 }
 }
 }
+

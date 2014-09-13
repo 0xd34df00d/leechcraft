@@ -26,6 +26,7 @@ set (AUTOPASTE_SRCS
 	codepadservice.cpp
 	hastebinservice.cpp
 	pasteorgruservice.cpp
+	spacepasteservicebase.cpp
 	pastedialog.cpp
 	pasteservicebase.cpp
 	pasteservicefactory.cpp

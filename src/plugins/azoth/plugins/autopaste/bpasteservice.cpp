@@ -28,9 +28,6 @@
  **********************************************************************/
 
 #include "bpasteservice.h"
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -40,11 +37,6 @@ namespace Autopaste
 {
 	void BPasteService::Paste (const PasteParams& params)
 	{
-		QNetworkRequest req (QUrl ("https://bpaste.net"));
-		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-		req.setRawHeader ("Origin", "https://bpaste.net/");
-		req.setRawHeader ("Referer", "https://bpaste.net/");
-
 		QByteArray highlight = "text";
 		switch (params.High_)
 		{
@@ -71,12 +63,10 @@ namespace Autopaste
 			break;
 		}
 
-		QByteArray data = "lexer=" + highlight + "&expiry=never&code=";
+		auto data = "lexer=" + highlight + "&expiry=never&code=";
 		data += params.Text_.toUtf8 ().toPercentEncoding ();
 
-		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
-
-		InitReply (params.NAM_->post (req, data));
+		PasteImpl (params, "https://bpaste.net/", data);
 	}
 }
 }
