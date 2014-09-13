@@ -341,10 +341,10 @@ namespace ChatHistory
 
 				msgText = map ["Message"].toString ();
 
-				if (!escape)
+				if (escape)
 					msgText.replace ('<', "&lt;");
 				Core::Instance ()->GetPluginProxy ()->FormatLinks (msgText);
-				if (!escape)
+				if (escape)
 					msgText.replace ('\n', "<br/>");
 			}
 
