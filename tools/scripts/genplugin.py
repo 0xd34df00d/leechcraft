@@ -7,7 +7,6 @@ cmake_str = """cmake_minimum_required (VERSION 2.8)
 project (leechcraft_${plug_lower})
 include (InitLCPlugin OPTIONAL)
 
-include ($${QT_USE_FILE})
 include_directories (
 	$${CMAKE_CURRENT_BINARY_DIR}
 	$${Boost_INCLUDE_DIR}
@@ -24,10 +23,11 @@ add_library (leechcraft_${plug_lower} SHARED
 	$${SRCS}
 	)
 target_link_libraries (leechcraft_${plug_lower}
-	$${QT_LIBRARIES}
 	$${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_${plug_lower} DESTINATION $${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_${plug_lower} Core)
 """
 
 header_str = """/**********************************************************************
@@ -73,6 +73,8 @@ namespace $plug
 	{
 		Q_OBJECT
 		Q_INTERFACES ($interfaces)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.$plug")
 	public:
 $interfaces_decls
 	};
