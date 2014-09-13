@@ -35,9 +35,12 @@
 #include <QSqlError>
 #include <QDir>
 #include <QtDebug>
+#include <QCoreApplication>
 #include <util/db/dblock.h>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
+#include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 #include "xmlsettingsmanager.h"
@@ -259,16 +262,36 @@ namespace ChatHistory
 						"UNIQUE (AccountId, UserId)"
 						");"
 				});
+		const auto& table2version = Util::MakeMap<QString, int> ({ { "azoth_history", 2 } });
+		QMap<QString, int> currentTableVersions;
+
 		const auto& tables = DB_->tables ();
 		const bool hadAcc2User = tables.contains ("azoth_acc2users2");
 
 		if (tables.contains ("azoth_acc2users"))
 			query.exec ("DROP TABLE azoth_acc2users;");
 
+		QSettings settings
+		{
+			QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Azoth_ChatHistory"
+		};
+		settings.beginGroup ("TableVersions");
+		const std::shared_ptr<void> settingsGuard
+		{
+			nullptr,
+			[&settings] (void*) { settings.endGroup (); }
+		};
+
 		for (const auto& pair : table2query)
 		{
 			if (tables.contains (pair.first))
+			{
+				const auto& savedVersion = settings.value (pair.first);
+				if (!savedVersion.isNull ())
+					currentTableVersions [pair.first] = savedVersion.toInt ();
 				continue;
+			}
 
 			const auto& queryStr = pair.second;
 			if (!query.exec (queryStr))
@@ -276,21 +299,25 @@ namespace ChatHistory
 				Util::DBLock::DumpError (query);
 				throw std::runtime_error ("Unable to create tables for Azoth history");
 			}
+
+			if (table2version.contains (pair.first))
+				currentTableVersions [pair.first] = table2version [pair.first];
 		}
 
-		UpdateTables (table2query);
+		UpdateTables (currentTableVersions);
 
 		if (!hadAcc2User)
 			regenUsersCache ();
 
 		lock.Good ();
+
+		for (const auto& pair : Util::Stlize (currentTableVersions))
+			settings.setValue (pair.first, pair.second);
 	}
 
-	void Storage::UpdateTables (const QList<QPair<QString, QString>>& tables)
+	void Storage::UpdateTables (QMap<QString, int>& currentVersions)
 	{
-		const auto storageVersion = XmlSettingsManager::Instance ()
-				.Property ("StorageVersion", 1).toInt ();
-		if (storageVersion >= 2)
+		if (currentVersions ["azoth_history"] >= 2)
 			return;
 
 		QSqlQuery query { *DB_ };
@@ -306,7 +333,7 @@ namespace ChatHistory
 			throw std::runtime_error ("Unable to add column `EscapePolicy` to `azoth_history`.");
 		}
 
-		XmlSettingsManager::Instance ().setProperty ("StorageVersion", 2);
+		currentVersions ["azoth_history"] = 2;
 	}
 
 	QHash<QString, qint32> Storage::GetUsers ()
