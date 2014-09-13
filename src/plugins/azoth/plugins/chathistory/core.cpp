@@ -38,6 +38,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/irichtextmessage.h>
 #include "storage.h"
 #include "storagethread.h"
 
@@ -195,6 +196,9 @@ namespace ChatHistory
 		data ["Body"] = msg->GetBody ();
 		data ["OtherVariant"] = msg->GetOtherVariant ();
 		data ["Type"] = static_cast<int> (msg->GetMessageType ());
+
+		if (const auto irtm = qobject_cast<IRichTextMessage*> (msgObj))
+			data ["RichBody"] = irtm->GetRichBody ();
 
 		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
