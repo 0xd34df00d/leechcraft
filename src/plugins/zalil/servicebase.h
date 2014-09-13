@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -41,8 +42,10 @@ namespace Zalil
 	class ServiceBase : public QObject
 	{
 		Q_OBJECT
+	protected:
+		const ICoreProxy_ptr Proxy_;
 	public:
-		using QObject::QObject;
+		ServiceBase (const ICoreProxy_ptr&, QObject* = nullptr);
 
 		virtual QString GetName () const = 0;
 		virtual qint64 GetMaxFileSize () const = 0;

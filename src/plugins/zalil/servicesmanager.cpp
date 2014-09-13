@@ -38,8 +38,9 @@ namespace LeechCraft
 {
 namespace Zalil
 {
-	ServicesManager::ServicesManager (QObject *parent)
+	ServicesManager::ServicesManager (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject { parent }
+	, Proxy_ { proxy }
 	{
 	}
 

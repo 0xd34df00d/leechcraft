@@ -33,5 +33,10 @@ namespace LeechCraft
 {
 namespace Zalil
 {
+	ServiceBase::ServiceBase (const ICoreProxy_ptr& proxy, QObject *parent)
+	: QObject { parent }
+	, Proxy_ { proxy }
+	{
+	}
 }
 }

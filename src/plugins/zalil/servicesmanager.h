@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 class QStringList;
 
@@ -43,9 +44,10 @@ namespace Zalil
 
 	class ServicesManager : public QObject
 	{
+		const ICoreProxy_ptr Proxy_;
 		QList<ServiceBase_ptr> Services_;
 	public:
-		ServicesManager (QObject* = 0);
+		ServicesManager (const ICoreProxy_ptr&, QObject* = 0);
 
 		QStringList GetNames (const QString& file) const;
 		void Upload (const QString& file, const QString& service);
