@@ -39,7 +39,6 @@ namespace Autopaste
 {
 	class PasteOrgRuService : public PasteServiceBase
 	{
-		Q_OBJECT
 	public:
 		PasteOrgRuService (QObject *entry, QObject* = 0);
 
@@ -50,4 +49,4 @@ namespace Autopaste
 }
 }
 }
- 
+

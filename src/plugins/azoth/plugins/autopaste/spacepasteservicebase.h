@@ -39,7 +39,6 @@ namespace Autopaste
 {
 	class SpacePasteServiceBase : public PasteServiceBase
 	{
-		Q_OBJECT
 	public:
 		using PasteServiceBase::PasteServiceBase;
 	protected:

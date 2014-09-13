@@ -39,7 +39,6 @@ namespace Autopaste
 {
 	class HastebinService : public PasteServiceBase
 	{
-		Q_OBJECT
 	public:
 		HastebinService (QObject *entry, QObject* = 0);
 

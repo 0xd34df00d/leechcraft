@@ -41,7 +41,6 @@ namespace Autopaste
 {
 	class CodepadService : public PasteServiceBase
 	{
-		Q_OBJECT
 	public:
 		CodepadService (QObject *entry, QObject* = 0);
 
