@@ -334,10 +334,15 @@ namespace ChatHistory
 				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
 
-			auto msgText = map ["Message"].toString ();
-			msgText.replace ('<', "&lt;");
-			Core::Instance ()->GetPluginProxy ()->FormatLinks (msgText);
-			msgText.replace ('\n', "<br/>");
+			auto msgText = map ["RichMessage"].toString ();
+			if (msgText.isEmpty ())
+			{
+				msgText = map ["Message"].toString ();
+				msgText.replace ('<', "&lt;");
+				Core::Instance ()->GetPluginProxy ()->FormatLinks (msgText);
+				msgText.replace ('\n', "<br/>");
+			}
+
 			html += postNick + ' ' + msgText;
 
 			const bool isSearchRes = SearchResultPosition_ == PerPageAmount_ - Amount_;
