@@ -37,8 +37,10 @@
 #include <QtDebug>
 #include <util/db/dblock.h>
 #include <util/sys/paths.h>
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -102,8 +104,8 @@ namespace ChatHistory
 		AccountInserter_.prepare ("INSERT INTO azoth_accounts (AccountID) VALUES (:account_id);");
 
 		MessageDumper_ = QSqlQuery (*DB_);
-		MessageDumper_.prepare ("INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type) "
-				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type);");
+		MessageDumper_.prepare ("INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type, RichMessage, EscapePolicy) "
+				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type, :rich_message, :escape_policy);");
 
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
 		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users2.UserId, EntryID FROM azoth_users, azoth_acc2users2 "
@@ -150,7 +152,7 @@ namespace ChatHistory
 				"	LIMIT 1 OFFSET :offset);");
 
 		HistoryGetter_ = QSqlQuery (*DB_);
-		HistoryGetter_.prepare ("SELECT Date, Direction, Message, Variant, Type "
+		HistoryGetter_.prepare ("SELECT Date, Direction, Message, Variant, Type, RichMessage, EscapePolicy "
 				"FROM azoth_history "
 				"WHERE Id = :entry_id "
 				"AND AccountID = :account_id "
@@ -238,6 +240,8 @@ namespace ChatHistory
 						"Message TEXT, "
 						"Variant TEXT, "
 						"Type INTEGER, "
+						"RichMessage TEXT, "
+						"EscapePolicy VARCHAR(3), "
 						"UNIQUE (Id, AccountId, Date, Direction, Message, Variant, Type) ON CONFLICT IGNORE);"
 				});
 		table2query.append ({
@@ -255,7 +259,7 @@ namespace ChatHistory
 						"UNIQUE (AccountId, UserId)"
 						");"
 				});
-		const QStringList& tables = DB_->tables ();
+		const auto& tables = DB_->tables ();
 		const bool hadAcc2User = tables.contains ("azoth_acc2users2");
 
 		if (tables.contains ("azoth_acc2users"))
@@ -274,10 +278,35 @@ namespace ChatHistory
 			}
 		}
 
+		UpdateTables (table2query);
+
 		if (!hadAcc2User)
 			regenUsersCache ();
 
 		lock.Good ();
+	}
+
+	void Storage::UpdateTables (const QList<QPair<QString, QString>>& tables)
+	{
+		const auto storageVersion = XmlSettingsManager::Instance ()
+				.Property ("StorageVersion", 1).toInt ();
+		if (storageVersion >= 2)
+			return;
+
+		QSqlQuery query { *DB_ };
+		if (!query.exec ("ALTER TABLE azoth_history ADD COLUMN RichMessage TEXT;"))
+		{
+			Util::DBLock::DumpError (query);
+			throw std::runtime_error ("Unable to add column `RichMessage` to `azoth_history`.");
+		}
+
+		if (!query.exec ("ALTER TABLE azoth_history ADD COLUMN EscapePolicy VARCHAR(3);"))
+		{
+			Util::DBLock::DumpError (query);
+			throw std::runtime_error ("Unable to add column `EscapePolicy` to `azoth_history`.");
+		}
+
+		XmlSettingsManager::Instance ().setProperty ("StorageVersion", 2);
 	}
 
 	QHash<QString, qint32> Storage::GetUsers ()
@@ -648,6 +677,8 @@ namespace ChatHistory
 		MessageDumper_.bindValue (":direction", data ["Direction"]);
 		MessageDumper_.bindValue (":message", data ["Body"]);
 		MessageDumper_.bindValue (":variant", data ["OtherVariant"]);
+		MessageDumper_.bindValue (":rich_message", data ["RichBody"]);
+		MessageDumper_.bindValue (":escape_policy", data ["EscapePolicy"]);
 
 		switch (static_cast<IMessage::Type> (data ["Type"].toInt ()))
 		{
@@ -755,6 +786,8 @@ namespace ChatHistory
 			map ["Message"] = HistoryGetter_.value (2);
 			map ["Variant"] = HistoryGetter_.value (3);
 			map ["Type"] = HistoryGetter_.value (4);
+			map ["RichMessage"] = HistoryGetter_.value (5);
+			map ["EscapePolicy"] = HistoryGetter_.value (6);
 			result.prepend (map);
 		}
 
