@@ -22,6 +22,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 
 set (AUTOPASTE_SRCS
 	autopaste.cpp
+	highlight2str.cpp
 	bpasteservice.cpp
 	codepadservice.cpp
 	hastebinservice.cpp

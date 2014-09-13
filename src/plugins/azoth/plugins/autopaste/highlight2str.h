@@ -27,8 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "bpasteservice.h"
-#include "highlight2str.h"
+#pragma once
+
+#include "pasteservicebase.h"
+
+class QString;
 
 namespace LeechCraft
 {
@@ -36,14 +39,10 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	void BPasteService::Paste (const PasteParams& params)
-	{
-		const auto& highlight = HlConverters::SpacePaste (params.High_);
-		auto data = "lexer=" + highlight + "&expiry=never&code=";
-		data += params.Text_.toUtf8 ().toPercentEncoding ();
-
-		PasteImpl (params, "https://bpaste.net/", data);
-	}
+namespace HlConverters
+{
+	QByteArray SpacePaste (Highlight);
+}
 }
 }
 }
