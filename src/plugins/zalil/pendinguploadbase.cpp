@@ -28,10 +28,35 @@
  **********************************************************************/
 
 #include "pendinguploadbase.h"
+#include <QNetworkReply>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace Zalil
 {
+	PendingUploadBase::PendingUploadBase (const QString& filename,
+			const ICoreProxy_ptr& proxy, QObject *parent)
+	: QObject { parent }
+	, Filename_ { filename }
+	, Proxy_ { proxy }
+	{
+	}
+
+	void PendingUploadBase::handleUploadProgress (qint64 done, qint64 total)
+	{
+	}
+
+	void PendingUploadBase::handleError ()
+	{
+		deleteLater ();
+
+		const auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		qWarning () << Q_FUNC_INFO
+				<< reply->error ()
+				<< reply->errorString ();
+	}
 }
 }

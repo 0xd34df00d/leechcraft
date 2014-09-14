@@ -30,8 +30,8 @@
 #pragma once
 
 #include <QObject>
-
-class QUrl;
+#include <QUrl>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -40,8 +40,15 @@ namespace Zalil
 	class PendingUploadBase : public QObject
 	{
 		Q_OBJECT
+	protected:
+		const QString Filename_;
+		const ICoreProxy_ptr Proxy_;
 	public:
-		using QObject::QObject;
+		PendingUploadBase (const QString& filename, const ICoreProxy_ptr&, QObject* = nullptr);
+	protected slots:
+		void handleUploadProgress (qint64, qint64);
+		virtual void handleError ();
+		virtual void handleFinished () = 0;
 	signals:
 		void fileUploaded (const QString&, const QUrl&);
 	};
