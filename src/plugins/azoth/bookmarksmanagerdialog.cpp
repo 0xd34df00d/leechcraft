@@ -54,11 +54,6 @@ namespace Azoth
 		Ui_.MoveUp_->setIcon (QIcon::fromTheme ("go-up"));
 		Ui_.BookmarksTree_->setModel (BMModel_);
 
-		connect (Ui_.BookmarksTree_->selectionModel (),
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-				this,
-				SLOT (handleCurrentBMChanged (const QModelIndex&, const QModelIndex&)));
-
 		for (auto proto : Core::Instance ().GetProtocols ())
 		{
 			const auto mucProto = qobject_cast<IMUCProtocol*> (proto->GetQObject ());
@@ -237,21 +232,6 @@ namespace Azoth
 			return;
 
 		on_AccountBox__currentIndexChanged (curIdx);
-	}
-
-	void BookmarksManagerDialog::handleCurrentBMChanged (const QModelIndex& current, const QModelIndex& previous)
-	{
-		if (CheckSave (previous))
-			return;
-
-		if (!current.isValid ())
-			return;
-
-		QStandardItem *item = BMModel_->itemFromIndex (current);
-		if (!item || !CurrentEditor_)
-			return;
-
-		CurrentEditor_->SetIdentifyingData (item->data ().toMap ());
 	}
 
 	void BookmarksManagerDialog::Save ()
