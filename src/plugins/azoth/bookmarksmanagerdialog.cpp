@@ -180,22 +180,22 @@ namespace Azoth
 		BMModel_->clear ();
 		CurrentEditor_ = 0;
 
-		IAccount *account = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
-		ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (account->GetQObject ());
-		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+		CurrentAccount_ = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
+		ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (CurrentAccount_->GetQObject ());
+		IProtocol *proto = qobject_cast<IProtocol*> (CurrentAccount_->GetParentProtocol ());
 		IMUCJoinWidget *joiner = Proto2Joiner_ [proto->GetProtocolID ()];
 		if (!joiner)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "null joiner for"
-					<< account->GetAccountID ()
+					<< CurrentAccount_->GetAccountID ()
 					<< proto->GetProtocolID ();
 			return;
 		}
 
 		qDebug () << Q_FUNC_INFO << supBms->GetBookmarkedMUCs ().size ();
 
-		const QByteArray& accId = account->GetAccountID ();
+		const QByteArray& accId = CurrentAccount_->GetAccountID ();
 		Q_FOREACH (const QVariant& var, supBms->GetBookmarkedMUCs ())
 		{
 			const QVariantMap& map = var.toMap ();
@@ -253,23 +253,20 @@ namespace Azoth
 
 	void BookmarksManagerDialog::Save ()
 	{
+		if (!CurrentAccount_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no current account";
+			return;
+		}
+
 		QVariantList datas;
 		for (int i = 0; i < BMModel_->rowCount (); ++i)
 			datas << BMModel_->item (i)->data ();
 
-		const int index = Ui_.AccountBox_->currentIndex ();
-		IAccount *account = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
-		if (!account)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no account available for index"
-					<< index;
-			return;
-		}
+		qobject_cast<ISupportBookmarks*> (CurrentAccount_->GetQObject())->SetBookmarkedMUCs (datas);
 
-		qobject_cast<ISupportBookmarks*> (account->GetQObject ())->SetBookmarkedMUCs (datas);
-
-		on_AccountBox__currentIndexChanged (index);
+		on_AccountBox__currentIndexChanged (Ui_.AccountBox_->currentIndex ());
 	}
 
 	bool BookmarksManagerDialog::CheckSave (const QModelIndex& index)
@@ -324,7 +321,7 @@ namespace Azoth
 		if (!item)
 			return;
 
-		const QVariantMap& data = item->data ().toMap ();
+		const auto& data = item->data ().toMap ();
 
 		if (QMessageBox::question (this,
 				"LeechCraft",
@@ -374,7 +371,7 @@ namespace Azoth
 
 	void BookmarksManagerDialog::on_MoveUp__released ()
 	{
-		QStandardItem *selected = GetSelectedItem ();
+		const auto selected = GetSelectedItem ();
 		if (!selected)
 			return;
 
@@ -390,7 +387,7 @@ namespace Azoth
 
 	void BookmarksManagerDialog::on_MoveDown__released ()
 	{
-		QStandardItem *selected = GetSelectedItem ();
+		const auto selected = GetSelectedItem ();
 		if (!selected)
 			return;
 

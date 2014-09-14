@@ -52,6 +52,8 @@ namespace Azoth
 		QMap<QByteArray, IMUCJoinWidget*> Proto2Joiner_;
 		QStandardItemModel *BMModel_;
 		IMUCBookmarkEditorWidget *CurrentEditor_;
+
+		IAccount *CurrentAccount_ = nullptr;
 	public:
 		BookmarksManagerDialog (QWidget* = 0);
 		~BookmarksManagerDialog ();
