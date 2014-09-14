@@ -61,7 +61,8 @@ namespace Azoth
 	BookmarkEditDialog::BookmarkEditDialog (const QVariantMap& data, IAccount *acc, QWidget *parent)
 	: BookmarkEditDialog { acc, parent }
 	{
-		IMJW_->SetIdentifyingData (data);
+		if (!data.isEmpty ())
+			IMJW_->SetIdentifyingData (data);
 	}
 
 	QVariantMap BookmarkEditDialog::GetIdentifyingData () const
