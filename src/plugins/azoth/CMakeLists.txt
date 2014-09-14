@@ -152,6 +152,7 @@ set (SRCS
 	resourcesmanager.cpp
 	notificationsmanager.cpp
 	msgeditautocompleter.cpp
+	bookmarkeditdialog.cpp
 	)
 set (FORMS
 	mainwidget.ui
@@ -184,6 +185,7 @@ set (FORMS
 	advancedpermchangedialog.ui
 	groupremovedialog.ui
 	serverhistorywidget.ui
+	bookmarkeditdialog.ui
 	)
 set (RESOURCES azothresources.qrc)
 
