@@ -37,7 +37,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	class IAccount;
-	class IMUCJoinWidget;
+	class IMUCBookmarkEditorWidget;
 
 	class BookmarkEditDialog : public QDialog
 	{
@@ -45,8 +45,8 @@ namespace Azoth
 
 		Ui::BookmarkEditDialog Ui_;
 
-		QWidget * const MucJoinWidget_;
-		IMUCJoinWidget * const IMJW_;
+		QWidget * const EditorWidget_;
+		IMUCBookmarkEditorWidget * const EditorWidgetIface_;
 	public:
 		BookmarkEditDialog (IAccount*, QWidget* = nullptr);
 		BookmarkEditDialog (const QVariantMap&, IAccount*, QWidget* = nullptr);

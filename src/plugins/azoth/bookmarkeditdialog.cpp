@@ -30,8 +30,8 @@
 #include "bookmarkeditdialog.h"
 #include <QVBoxLayout>
 #include "interfaces/azoth/iaccount.h"
-#include "interfaces/azoth/imucprotocol.h"
-#include "interfaces/azoth/imucjoinwidget.h"
+#include "interfaces/azoth/isupportbookmarks.h"
+#include "interfaces/azoth/imucbookmarkeditorwidget.h"
 
 namespace LeechCraft
 {
@@ -39,35 +39,32 @@ namespace Azoth
 {
 	namespace
 	{
-		QWidget* GetMucJoinWidget (IAccount *acc)
+		QWidget* GetEditWidget (IAccount *acc)
 		{
-			const auto protoObj = acc->GetParentProtocol ();
-			const auto mucProto = qobject_cast<IMUCProtocol*> (protoObj);
-			return mucProto->GetMUCJoinWidget ();
+			const auto isb = qobject_cast<ISupportBookmarks*> (acc->GetQObject ());
+			return isb->GetMUCBookmarkEditorWidget ();
 		}
 	}
 
 	BookmarkEditDialog::BookmarkEditDialog (IAccount *acc, QWidget *parent)
 	: QDialog { parent }
-	, MucJoinWidget_ { GetMucJoinWidget (acc) }
-	, IMJW_ { qobject_cast<IMUCJoinWidget*> (MucJoinWidget_) }
+	, EditorWidget_ { GetEditWidget (acc) }
+	, EditorWidgetIface_ { qobject_cast<IMUCBookmarkEditorWidget*> (EditorWidget_) }
 	{
 		Ui_.setupUi (this);
-		Ui_.MainLayout_->insertWidget (0, MucJoinWidget_);
-
-		IMJW_->AccountSelected (acc->GetQObject ());
+		Ui_.MainLayout_->insertWidget (0, EditorWidget_);
 	}
 
 	BookmarkEditDialog::BookmarkEditDialog (const QVariantMap& data, IAccount *acc, QWidget *parent)
 	: BookmarkEditDialog { acc, parent }
 	{
 		if (!data.isEmpty ())
-			IMJW_->SetIdentifyingData (data);
+			EditorWidgetIface_->SetIdentifyingData (data);
 	}
 
 	QVariantMap BookmarkEditDialog::GetIdentifyingData () const
 	{
-		return IMJW_->GetIdentifyingData ();
+		return EditorWidgetIface_->GetIdentifyingData ();
 	}
 }
 }
