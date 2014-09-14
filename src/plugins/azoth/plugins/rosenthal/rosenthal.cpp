@@ -35,9 +35,9 @@
 #include <QMenu>
 #include <QTranslator>
 #include <util/util.h>
-#include "highlighter.h"
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include "highlighter.h"
 
 namespace LeechCraft
 {
@@ -119,12 +119,8 @@ namespace Rosenthal
 		const QPoint& curPos = edit->mapToGlobal (eventPos);
 
 		QTextCursor cur = edit->cursorForPosition (eventPos);
-		QString word = cur.block ().text ();
-		const int pos = cur.columnNumber ();
-		const int end = word.indexOf (QRegExp("\\W+"), pos);
-		const int begin = word.lastIndexOf (QRegExp("\\W+"), pos);
-		word = word.mid (begin + 1, end - begin - 1);
-
+		cur.select (QTextCursor::WordUnderCursor);
+		const auto& word = cur.selectedText ();
 		QMenu *menu = edit->createStandardContextMenu (curPos);
 
 		const auto& words = Checker_->GetPropositions (word);
@@ -164,7 +160,7 @@ namespace Rosenthal
 				"getMsgEdit",
 				Q_RETURN_ARG (QTextEdit*, edit));
 
-		Highlighter *hl = new Highlighter (Checker_, edit->document ());
+		const auto hl = new Highlighter (Checker_, edit->document ());
 		Highlighters_ << hl;
 		connect (hl,
 				SIGNAL (destroyed (QObject*)),
