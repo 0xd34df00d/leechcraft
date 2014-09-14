@@ -212,35 +212,55 @@ namespace ChatHistory
 		}
 	}
 
+	namespace
+	{
+		QString GetEntryName (const QString& entryId, const QString& accountId, const QString& cachedName)
+		{
+			const auto proxy = Core::Instance ()->GetPluginProxy ();
+
+			if (const auto entry = qobject_cast<ICLEntry*> (proxy->GetEntry (entryId, accountId)))
+			{
+				const auto& entryName = entry->GetEntryName ();
+
+				if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
+				{
+					const auto parent = qobject_cast<ICLEntry*> (entry->GetParentCLEntry ());
+					return parent->GetEntryName () + '/' + entryName;
+				}
+				else
+					return entryName;
+			}
+
+			if (!cachedName.isEmpty ())
+				return cachedName;
+
+			return entryId;
+		}
+	}
+
 	void ChatHistoryWidget::handleGotUsersForAccount (const QStringList& users,
 			const QString& id, const QStringList& nameCache)
 	{
 		if (id != Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ())
 			return;
 
-		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
 		ContactsModel_->clear ();
 
 		Ui_.HistView_->clear ();
 
-		QStandardItem *ourFocus = 0;
+		QStandardItem *ourFocus = nullptr;
 		const QString& focusId = EntryToFocus_ ?
 				EntryToFocus_->GetEntryID () :
 				CurrentEntry_;
 		EntryToFocus_ = 0;
 		for (int i = 0; i < users.size (); ++i)
 		{
-			const QString& user = users.at (i);
-			ICLEntry *entry = qobject_cast<ICLEntry*> (proxy->GetEntry (user, id));
-			const QString& name = entry ?
-					entry->GetEntryName () :
-					(nameCache.value (i).isEmpty () ?
-						user :
-						nameCache.value (i));
+			const auto& user = users.at (i);
+			const auto& name = GetEntryName (user, id, nameCache.value (i));
 
 			EntryID2NameCache_ [user] = name;
 
-			QStandardItem *item = new QStandardItem (name);
+			const auto item = new QStandardItem (name);
 			item->setData (user, MRIDRole);
 			item->setToolTip (name);
 			item->setEditable (false);
@@ -253,7 +273,7 @@ namespace ChatHistory
 		if (ourFocus)
 		{
 			ShowLoading ();
-			QModelIndex idx = ContactsModel_->indexFromItem (ourFocus);
+			auto idx = ContactsModel_->indexFromItem (ourFocus);
 			idx = SortFilter_->mapFromSource (idx);
 			Ui_.Contacts_->selectionModel ()->
 					setCurrentIndex (idx, QItemSelectionModel::SelectCurrent);
