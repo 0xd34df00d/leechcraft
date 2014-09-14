@@ -69,7 +69,7 @@ namespace Azoth
 		void handleBookmarksChanged ();
 		void handleCurrentBMChanged (const QModelIndex&, const QModelIndex&);
 		void on_RemoveButton__released ();
-		QStandardItem* on_AddButton__released ();
+		void on_AddButton__released ();
 		void on_ApplyButton__released ();
 		void on_MoveUp__released ();
 		void on_MoveDown__released ();

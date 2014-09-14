@@ -36,6 +36,7 @@
 #include "interfaces/azoth/isupportbookmarks.h"
 #include "interfaces/azoth/imucprotocol.h"
 #include "core.h"
+#include "bookmarkeditdialog.h"
 
 namespace LeechCraft
 {
@@ -170,9 +171,11 @@ namespace Azoth
 			return;
 		}
 
+		/* TODO
 		const auto item = on_AddButton__released ();
 		item->setText (data.value ("HumanReadableName").toString ());
 		CurrentEditor_->SetIdentifyingData (data);
+		*/
 	}
 
 	void BookmarksManagerDialog::on_AccountBox__currentIndexChanged (int index)
@@ -335,26 +338,18 @@ namespace Azoth
 		Save ();
 	}
 
-	QStandardItem* BookmarksManagerDialog::on_AddButton__released ()
+	void BookmarksManagerDialog::on_AddButton__released ()
 	{
-		if (!CurrentEditor_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no editor available";
-			return nullptr;
-		}
+		BookmarkEditDialog editDia { CurrentAccount_, this };
+		if (editDia.exec () != QDialog::Accepted)
+			return;
 
-		const auto selected = GetSelectedItem ();
-		const auto& data = selected ?
-				selected->data ().toMap () :
-				CurrentEditor_->GetIdentifyingData ();
-
+		const auto& data = editDia.GetIdentifyingData ();
 		const auto item = new QStandardItem (data.value ("HumanReadableName").toString ());
 		item->setData (data);
 		BMModel_->appendRow (item);
-		Ui_.BookmarksTree_->setCurrentIndex (BMModel_->indexFromItem (item));
 
-		return item;
+		Save ();
 	}
 
 	void BookmarksManagerDialog::on_ApplyButton__released ()
