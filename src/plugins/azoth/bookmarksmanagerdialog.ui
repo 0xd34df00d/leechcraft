@@ -13,138 +13,110 @@
   <property name="windowTitle">
    <string>Manage bookmarks</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::ExpandingFieldsGrow</enum>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Account:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="AccountBox_">
+       <property name="insertPolicy">
+        <enum>QComboBox::InsertAlphabetically</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <widget class="QTreeView" name="BookmarksTree_">
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <layout class="QFormLayout" name="formLayout">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::ExpandingFieldsGrow</enum>
+        <widget class="QPushButton" name="AddButton_">
+         <property name="text">
+          <string>Add...</string>
          </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Account:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="AccountBox_">
-           <property name="insertPolicy">
-            <enum>QComboBox::InsertAlphabetically</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QTreeView" name="BookmarksTree_">
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
+         <property name="icon">
+          <iconset theme="list-add"/>
+         </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QToolButton" name="MoveUp_">
-           <property name="text">
-            <string>Move up</string>
-           </property>
-           <property name="icon">
-            <iconset theme="go-up"/>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextBesideIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="MoveDown_">
-           <property name="text">
-            <string>Move down</string>
-           </property>
-           <property name="icon">
-            <iconset theme="go-down"/>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextBesideIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="AddButton_">
-           <property name="text">
-            <string>Add...</string>
-           </property>
-           <property name="icon">
-            <iconset theme="list-add"/>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextBesideIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="ModifyButton_">
-           <property name="text">
-            <string>Modify...</string>
-           </property>
-           <property name="icon">
-            <iconset theme="edit-rename"/>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextBesideIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="RemoveButton_">
-           <property name="text">
-            <string>Remove</string>
-           </property>
-           <property name="icon">
-            <iconset theme="list-remove"/>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextBesideIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+        <widget class="QPushButton" name="ModifyButton_">
+         <property name="text">
+          <string>Modify...</string>
+         </property>
+         <property name="icon">
+          <iconset theme="edit-rename"/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="RemoveButton_">
+         <property name="text">
+          <string>Remove</string>
+         </property>
+         <property name="icon">
+          <iconset theme="list-remove"/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="MoveUp_">
+         <property name="text">
+          <string>Move up</string>
+         </property>
+         <property name="icon">
+          <iconset theme="go-up"/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="MoveDown_">
+         <property name="text">
+          <string>Move down</string>
+         </property>
+         <property name="icon">
+          <iconset theme="go-down"/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2"/>
      </item>
     </layout>
    </item>
