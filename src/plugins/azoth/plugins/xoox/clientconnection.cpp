@@ -1008,7 +1008,6 @@ namespace Xoox
 					},
 					15000
 				};
-				break;
 			}
 		}
 		emit gotRosterItems (items);
