@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>553</width>
-    <height>377</height>
+    <width>600</width>
+    <height>381</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,12 +66,24 @@
            <property name="text">
             <string>Move up</string>
            </property>
+           <property name="icon">
+            <iconset theme="go-up"/>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QToolButton" name="MoveDown_">
            <property name="text">
             <string>Move down</string>
+           </property>
+           <property name="icon">
+            <iconset theme="go-down"/>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>
           </widget>
          </item>
@@ -80,6 +92,12 @@
            <property name="text">
             <string>Add...</string>
            </property>
+           <property name="icon">
+            <iconset theme="list-add"/>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
           </widget>
          </item>
          <item>
@@ -87,12 +105,24 @@
            <property name="text">
             <string>Modify...</string>
            </property>
+           <property name="icon">
+            <iconset theme="edit-rename"/>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QToolButton" name="RemoveButton_">
            <property name="text">
             <string>Remove</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-remove"/>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>
           </widget>
          </item>

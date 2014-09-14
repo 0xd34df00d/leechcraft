@@ -49,8 +49,6 @@ namespace Azoth
 		setAttribute (Qt::WA_DeleteOnClose, true);
 
 		Ui_.setupUi (this);
-		Ui_.MoveDown_->setIcon (QIcon::fromTheme ("go-down"));
-		Ui_.MoveUp_->setIcon (QIcon::fromTheme ("go-up"));
 		Ui_.BookmarksTree_->setModel (BMModel_);
 
 		for (auto proto : Core::Instance ().GetProtocols ())
