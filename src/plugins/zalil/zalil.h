@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 
@@ -36,6 +37,8 @@ namespace LeechCraft
 {
 namespace Zalil
 {
+	class ServicesManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 	{
@@ -43,6 +46,8 @@ namespace Zalil
 		Q_INTERFACES (IInfo)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Zalil")
+
+		std::shared_ptr<ServicesManager> Manager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

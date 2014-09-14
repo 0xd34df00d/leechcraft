@@ -29,6 +29,7 @@
 
 #include "zalil.h"
 #include <QIcon>
+#include "servicesmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,11 @@ namespace Zalil
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Manager_ = std::make_shared<ServicesManager> (proxy);
+		connect (Manager_.get (),
+				SIGNAL (fileUploaded (QString, QUrl)),
+				this,
+				SIGNAL (fileUploaded (QString, QUrl)));
 	}
 
 	void Plugin::SecondInit ()
@@ -49,6 +55,7 @@ namespace Zalil
 
 	void Plugin::Release ()
 	{
+		Manager_.reset ();
 	}
 
 	QString Plugin::GetName () const
