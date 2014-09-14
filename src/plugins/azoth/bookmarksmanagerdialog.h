@@ -61,6 +61,8 @@ namespace Azoth
 		void Save ();
 		QStandardItem* GetSelectedItem () const;
 		void ReloadModel ();
+
+		void AddBookmark (const QVariantMap&);
 	private slots:
 		void on_AccountBox__currentIndexChanged (int);
 		void handleBookmarksChanged ();

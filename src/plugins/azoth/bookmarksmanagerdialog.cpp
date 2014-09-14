@@ -230,6 +230,21 @@ namespace Azoth
 		}
 	}
 
+	void BookmarksManagerDialog::AddBookmark (const QVariantMap& initialData)
+	{
+		BookmarkEditDialog editDia { initialData, CurrentAccount_, this };
+		editDia.setWindowTitle (tr ("Add bookmark for account %1")
+					.arg (CurrentAccount_->GetAccountName ()));
+		if (editDia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& data = editDia.GetIdentifyingData ();
+		const auto item = new QStandardItem (data.value ("HumanReadableName").toString ());
+		item->setData (data);
+		BMModel_->appendRow (item);
+
+		Save ();
+	}
 
 	void BookmarksManagerDialog::on_RemoveButton__released ()
 	{
@@ -253,18 +268,7 @@ namespace Azoth
 
 	void BookmarksManagerDialog::on_AddButton__released ()
 	{
-		BookmarkEditDialog editDia { CurrentAccount_, this };
-		editDia.setWindowTitle (tr ("Add bookmark for account %1")
-					.arg (CurrentAccount_->GetAccountName ()));
-		if (editDia.exec () != QDialog::Accepted)
-			return;
-
-		const auto& data = editDia.GetIdentifyingData ();
-		const auto item = new QStandardItem (data.value ("HumanReadableName").toString ());
-		item->setData (data);
-		BMModel_->appendRow (item);
-
-		Save ();
+		AddBookmark ({});
 	}
 
 	void BookmarksManagerDialog::on_ModifyButton__released()
