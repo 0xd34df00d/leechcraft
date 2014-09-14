@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>348</height>
+    <width>553</width>
+    <height>377</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,6 +49,19 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="QToolButton" name="MoveUp_">
            <property name="text">
             <string>Move up</string>
@@ -62,19 +75,46 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QToolButton" name="AddButton_">
+           <property name="text">
+            <string>Add...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="ModifyButton_">
+           <property name="text">
+            <string>Modify...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="RemoveButton_">
+           <property name="text">
+            <string>Remove</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
        </item>
       </layout>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QPushButton" name="RemoveButton_">
-         <property name="text">
-          <string>Remove</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QFrame" name="BMFrame_">
          <property name="frameShape">
@@ -87,21 +127,14 @@
           <property name="margin">
            <number>0</number>
           </property>
+          <item>
+           <widget class="QPushButton" name="ApplyButton_">
+            <property name="text">
+             <string>Apply</string>
+            </property>
+           </widget>
+          </item>
          </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="AddButton_">
-         <property name="text">
-          <string>Add...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="ApplyButton_">
-         <property name="text">
-          <string>Apply</string>
-         </property>
         </widget>
        </item>
       </layout>
