@@ -54,6 +54,8 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		Ui_.MainLayout_->insertWidget (0, MucJoinWidget_);
+
+		IMJW_->AccountSelected (acc->GetQObject ());
 	}
 
 	QVariantMap BookmarkEditDialog::GetIdentifyingData () const
