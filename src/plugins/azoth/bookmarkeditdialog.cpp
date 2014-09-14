@@ -58,6 +58,12 @@ namespace Azoth
 		IMJW_->AccountSelected (acc->GetQObject ());
 	}
 
+	BookmarkEditDialog::BookmarkEditDialog (const QVariantMap& data, IAccount *acc, QWidget *parent)
+	: BookmarkEditDialog { acc, parent }
+	{
+		IMJW_->SetIdentifyingData (data);
+	}
+
 	QVariantMap BookmarkEditDialog::GetIdentifyingData () const
 	{
 		return IMJW_->GetIdentifyingData ();

@@ -49,6 +49,7 @@ namespace Azoth
 		IMUCJoinWidget * const IMJW_;
 	public:
 		BookmarkEditDialog (IAccount*, QWidget* = nullptr);
+		BookmarkEditDialog (const QVariantMap&, IAccount*, QWidget* = nullptr);
 
 		QVariantMap GetIdentifyingData () const;
 	};
