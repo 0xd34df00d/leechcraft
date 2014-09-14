@@ -44,6 +44,8 @@ namespace Zalil
 
 	class ServicesManager : public QObject
 	{
+		Q_OBJECT
+
 		const ICoreProxy_ptr Proxy_;
 		QList<ServiceBase_ptr> Services_;
 	public:
@@ -51,6 +53,8 @@ namespace Zalil
 
 		QStringList GetNames (const QString& file) const;
 		void Upload (const QString& file, const QString& service);
+	signals:
+		void fileUploaded (const QString&, const QUrl&);
 	};
 }
 }
