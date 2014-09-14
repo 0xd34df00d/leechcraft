@@ -308,12 +308,14 @@ namespace ChatHistory
 			if (isChat)
 			{
 				QString remoteName;
-				if (!entry && !var.isEmpty ())
-					remoteName += var;
-				else if (entry && var.isEmpty ())
+				if (!name.isEmpty () && var.isEmpty ())
 					remoteName += name;
-				else
+				else if (name.isEmpty () && !var.isEmpty ())
+					remoteName += var;
+				else if (!name.endsWith ('/' + var))
 					remoteName += name + '/' + var;
+				else
+					remoteName += name;
 
 				if (!ourName.isEmpty ())
 					html += map ["Direction"] == "IN" ?
