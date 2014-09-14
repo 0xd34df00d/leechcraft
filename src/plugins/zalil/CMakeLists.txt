@@ -8,10 +8,11 @@ include_directories (
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
-	zalil.cpp
+	bitcheesepending.cpp
 	pendinguploadbase.cpp
 	servicebase.cpp
 	servicesmanager.cpp
+	zalil.cpp
 	)
 #CreateTrs("zalil" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("zalil" "en;ru_RU" "${SRCS}" "${FORMS}" "")
@@ -25,4 +26,4 @@ target_link_libraries (leechcraft_zalil
 	)
 install (TARGETS leechcraft_zalil DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_zalil Core)
+FindQtLibs (leechcraft_zalil Network)
