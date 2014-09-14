@@ -290,6 +290,8 @@ namespace Azoth
 	void BookmarksManagerDialog::on_AddButton__released ()
 	{
 		BookmarkEditDialog editDia { CurrentAccount_, this };
+		editDia.setWindowTitle (tr ("Add bookmark for account %1")
+					.arg (CurrentAccount_->GetAccountName ()));
 		if (editDia.exec () != QDialog::Accepted)
 			return;
 
