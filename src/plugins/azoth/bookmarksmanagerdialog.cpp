@@ -169,11 +169,11 @@ namespace Azoth
 	{
 		const int curIdx = Ui_.AccountBox_->currentIndex ();
 
-		IAccount *acc = qobject_cast<IAccount*> (sender ());
+		const auto acc = qobject_cast<IAccount*> (sender ());
 		if (acc != Ui_.AccountBox_->itemData (curIdx).value<IAccount*> ())
 			return;
 
-		on_AccountBox__currentIndexChanged (curIdx);
+		ReloadModel ();
 	}
 
 	void BookmarksManagerDialog::Save ()
@@ -191,7 +191,7 @@ namespace Azoth
 
 		qobject_cast<ISupportBookmarks*> (CurrentAccount_->GetQObject())->SetBookmarkedMUCs (datas);
 
-		on_AccountBox__currentIndexChanged (Ui_.AccountBox_->currentIndex ());
+		ReloadModel ();
 	}
 
 	QStandardItem* BookmarksManagerDialog::GetSelectedItem () const
