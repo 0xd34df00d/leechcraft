@@ -27,52 +27,22 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "servicesmanager.h"
-#include <algorithm>
-#include <QStringList>
-#include <QFileInfo>
-#include <QtDebug>
+#pragma once
+
 #include "servicebase.h"
-#include "pendinguploadbase.h"
-#include "bitcheeseservice.h"
 
 namespace LeechCraft
 {
 namespace Zalil
 {
-	ServicesManager::ServicesManager (const ICoreProxy_ptr& proxy, QObject *parent)
-	: QObject { parent }
-	, Proxy_ { proxy }
+	class BitcheeseService final : public ServiceBase
 	{
-		Services_ << std::make_shared<BitcheeseService> (proxy, this);
-	}
+	public:
+		using ServiceBase::ServiceBase;
 
-	QStringList ServicesManager::GetNames (const QString& file) const
-	{
-		const auto fileSize = file.isEmpty () ?
-				0 :
-				QFileInfo { file }.size ();
-
-		QStringList result;
-		for (const auto service : Services_)
-			if (service->GetMaxFileSize () > fileSize)
-				result << service->GetName ();
-
-		return result;
-	}
-
-	void ServicesManager::Upload (const QString& file, const QString& svcName)
-	{
-		const auto pos = std::find_if (Services_.begin (), Services_.end (),
-				[&svcName] (const ServiceBase_ptr& service)
-					{ return service->GetName () == svcName; });
-		if (pos == Services_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot find service"
-					<< svcName;
-			return;
-		}
-	}
+		QString GetName () const;
+		qint64 GetMaxFileSize () const;
+		PendingUploadBase* UploadFile (const QString&);
+	};
 }
 }

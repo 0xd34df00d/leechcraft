@@ -9,6 +9,7 @@ include_directories (
 	)
 set (SRCS
 	bitcheesepending.cpp
+	bitcheeseservice.cpp
 	pendinguploadbase.cpp
 	servicebase.cpp
 	servicesmanager.cpp
