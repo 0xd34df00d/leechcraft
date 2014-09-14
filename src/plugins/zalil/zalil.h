@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iwebfilestorage.h>
 
 namespace LeechCraft
 {
@@ -41,9 +42,10 @@ namespace Zalil
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IWebFileStorage
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IWebFileStorage)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Zalil")
 
@@ -56,6 +58,11 @@ namespace Zalil
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QStringList GetServiceVariants () const;
+		void UploadFile (const QString&, const QString&);
+	signals:
+		void fileUploaded (const QString&, const QUrl&);
 	};
 }
 }

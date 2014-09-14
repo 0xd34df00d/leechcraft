@@ -72,6 +72,16 @@ namespace Zalil
 	{
 		return {};
 	}
+
+	QStringList Plugin::GetServiceVariants () const
+	{
+		return Manager_->GetNames ({});
+	}
+
+	void Plugin::UploadFile (const QString& filename, const QString& service)
+	{
+		Manager_->Upload (filename, service);
+	}
 }
 }
 
