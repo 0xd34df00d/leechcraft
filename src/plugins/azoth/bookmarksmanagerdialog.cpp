@@ -315,7 +315,7 @@ namespace Azoth
 		if (row >= BMModel_->rowCount () - 1)
 			return;
 
-		auto items = BMModel_->takeRow (row);
+		auto items = BMModel_->takeRow (row + 1);
 		BMModel_->insertRow (row, items);
 
 		Save ();
