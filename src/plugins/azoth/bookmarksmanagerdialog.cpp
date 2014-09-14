@@ -151,11 +151,7 @@ namespace Azoth
 			return;
 		}
 
-		/* TODO
-		const auto item = on_AddButton__released ();
-		item->setText (data.value ("HumanReadableName").toString ());
-		CurrentEditor_->SetIdentifyingData (data);
-		*/
+		AddBookmark (data);
 	}
 
 	void BookmarksManagerDialog::on_AccountBox__currentIndexChanged (int index)
