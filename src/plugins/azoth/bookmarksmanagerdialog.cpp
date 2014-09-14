@@ -301,6 +301,30 @@ namespace Azoth
 		Save ();
 	}
 
+	void BookmarksManagerDialog::on_ModifyButton__released()
+	{
+		const auto selected = GetSelectedItem ();
+		if (!selected)
+			return;
+
+		const auto& sourceData = selected->data ().toMap ();
+
+		BookmarkEditDialog editDia { sourceData, CurrentAccount_, this };
+		editDia.setWindowTitle (tr ("Edit bookmark for account %1")
+					.arg (CurrentAccount_->GetAccountName ()));
+		if (editDia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& data = editDia.GetIdentifyingData ();
+		if (data == sourceData)
+			return;
+
+		selected->setText (data.value ("HumanReadableName").toString ());
+		selected->setData (data);
+
+		Save ();
+	}
+
 	void BookmarksManagerDialog::on_ApplyButton__released ()
 	{
 		QStandardItem *selected = GetSelectedItem ();
