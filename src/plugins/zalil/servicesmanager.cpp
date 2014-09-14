@@ -73,6 +73,15 @@ namespace Zalil
 					<< svcName;
 			return;
 		}
+
+		const auto pending = (*pos)->UploadFile (file);
+		if (!pending)
+			return;
+
+		connect (pending,
+				SIGNAL (fileUploaded (QString, QUrl)),
+				this,
+				SIGNAL (fileUploaded (QString, QUrl)));
 	}
 }
 }
