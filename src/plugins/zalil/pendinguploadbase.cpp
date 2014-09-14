@@ -29,7 +29,11 @@
 
 #include "pendinguploadbase.h"
 #include <QNetworkReply>
+#include <QHttpMultiPart>
+#include <QFileInfo>
+#include <QFile>
 #include <QtDebug>
+#include <util/sys/mimedetector.h>
 
 namespace LeechCraft
 {
@@ -41,6 +45,25 @@ namespace Zalil
 	, Filename_ { filename }
 	, Proxy_ { proxy }
 	{
+	}
+
+	QHttpMultiPart* PendingUploadBase::MakeStandardMultipart ()
+	{
+		const auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType, this };
+
+		QHttpPart textPart;
+		const QFileInfo fi { Filename_ };
+		textPart.setHeader (QNetworkRequest::ContentDispositionHeader,
+				"form-data; name=\"file\"; filename=\"" + fi.fileName () + "\"");
+		textPart.setHeader (QNetworkRequest::ContentTypeHeader, Util::MimeDetector {} (Filename_));
+
+		const auto fileDev = new QFile { Filename_, this };
+		fileDev->open (QIODevice::ReadOnly);
+		textPart.setBodyDevice (fileDev);
+
+		multipart->append (textPart);
+
+		return multipart;
 	}
 
 	void PendingUploadBase::handleUploadProgress (qint64 done, qint64 total)

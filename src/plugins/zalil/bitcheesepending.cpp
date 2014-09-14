@@ -31,11 +31,7 @@
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QHttpMultiPart>
-#include <QFileInfo>
-#include <QFile>
 #include <QtDebug>
-#include <util/sys/mimedetector.h>
 
 namespace LeechCraft
 {
@@ -49,20 +45,7 @@ namespace Zalil
 		QNetworkRequest req { QUrl { "http://dump.bitcheese.net/upload-file" } };
 		req.setRawHeader ("Referer", "http://dump.bitcheese.net/");
 
-		auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType, this };
-
-		QHttpPart textPart;
-		const QFileInfo fi { filename };
-		textPart.setHeader (QNetworkRequest::ContentDispositionHeader, "form-data; name=\"file\"; filename=\"" + fi.fileName () + "\"");
-		textPart.setHeader (QNetworkRequest::ContentTypeHeader, Util::MimeDetector {} (filename));
-
-		auto fileDev = new QFile { filename, this };
-		fileDev->open (QIODevice::ReadOnly);
-		textPart.setBodyDevice (fileDev);
-
-		multipart->append (textPart);
-
-		const auto reply = nam->post (req, multipart);
+		const auto reply = nam->post (req, MakeStandardMultipart ());
 		connect (reply,
 				SIGNAL (finished ()),
 				this,

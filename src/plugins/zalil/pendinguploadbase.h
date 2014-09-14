@@ -33,6 +33,8 @@
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 
+class QHttpMultiPart;
+
 namespace LeechCraft
 {
 namespace Zalil
@@ -45,6 +47,8 @@ namespace Zalil
 		const ICoreProxy_ptr Proxy_;
 	public:
 		PendingUploadBase (const QString& filename, const ICoreProxy_ptr&, QObject* = nullptr);
+	protected:
+		QHttpMultiPart* MakeStandardMultipart ();
 	protected slots:
 		void handleUploadProgress (qint64, qint64);
 		virtual void handleError ();
