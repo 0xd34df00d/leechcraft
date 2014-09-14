@@ -160,26 +160,9 @@ namespace Azoth
 
 	void BookmarksManagerDialog::on_AccountBox__currentIndexChanged (int index)
 	{
-		BMModel_->clear ();
-
 		CurrentAccount_ = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
 
-		const auto supBms = qobject_cast<ISupportBookmarks*> (CurrentAccount_->GetQObject ());
-		const QByteArray& accId = CurrentAccount_->GetAccountID ();
-		for (const auto& var : supBms->GetBookmarkedMUCs ())
-		{
-			const auto& map = var.toMap ();
-			if (map.value ("AccountID").toByteArray () != accId)
-				continue;
-
-			const auto& name = map.value ("HumanReadableName").toString ();
-			if (name.isEmpty ())
-				continue;
-
-			const auto item = new QStandardItem (name);
-			item->setData (var);
-			BMModel_->appendRow (item);
-		}
+		ReloadModel ();
 	}
 
 	void BookmarksManagerDialog::handleBookmarksChanged ()
@@ -225,6 +208,28 @@ namespace Azoth
 
 		return item;
 	}
+
+	void BookmarksManagerDialog::ReloadModel ()
+	{
+		BMModel_->clear ();
+		const auto supBms = qobject_cast<ISupportBookmarks*> (CurrentAccount_->GetQObject ());
+		const QByteArray& accId = CurrentAccount_->GetAccountID ();
+		for (const auto& var : supBms->GetBookmarkedMUCs ())
+		{
+			const auto& map = var.toMap ();
+			if (map.value ("AccountID").toByteArray () != accId)
+				continue;
+
+			const auto& name = map.value ("HumanReadableName").toString ();
+			if (name.isEmpty ())
+				continue;
+
+			const auto item = new QStandardItem (name);
+			item->setData (var);
+			BMModel_->appendRow (item);
+		}
+	}
+
 
 	void BookmarksManagerDialog::on_RemoveButton__released ()
 	{

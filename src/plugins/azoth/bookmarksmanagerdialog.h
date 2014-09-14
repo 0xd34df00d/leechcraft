@@ -60,6 +60,7 @@ namespace Azoth
 	private:
 		void Save ();
 		QStandardItem* GetSelectedItem () const;
+		void ReloadModel ();
 	private slots:
 		void on_AccountBox__currentIndexChanged (int);
 		void handleBookmarksChanged ();
