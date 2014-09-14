@@ -62,7 +62,6 @@ namespace Azoth
 		void SuggestSaving (QObject*);
 	private:
 		void Save ();
-		bool CheckSave (const QModelIndex&);
 		QStandardItem* GetSelectedItem () const;
 	private slots:
 		void on_AccountBox__currentIndexChanged (int);
