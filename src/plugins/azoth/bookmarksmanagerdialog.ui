@@ -114,30 +114,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QFrame" name="BMFrame_">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="BMFrameLayout_">
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="ApplyButton_">
-            <property name="text">
-             <string>Apply</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
+      <layout class="QVBoxLayout" name="verticalLayout_2"/>
      </item>
     </layout>
    </item>

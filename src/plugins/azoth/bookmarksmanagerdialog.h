@@ -49,14 +49,11 @@ namespace Azoth
 		Q_OBJECT
 
 		Ui::BookmarksManagerDialog Ui_;
-		QMap<QByteArray, IMUCJoinWidget*> Proto2Joiner_;
 		QStandardItemModel *BMModel_;
-		IMUCBookmarkEditorWidget *CurrentEditor_;
 
 		IAccount *CurrentAccount_ = nullptr;
 	public:
 		BookmarksManagerDialog (QWidget* = 0);
-		~BookmarksManagerDialog ();
 
 		bool FocusOn (IAccount*);
 		void SuggestSaving (QObject*);
@@ -69,7 +66,6 @@ namespace Azoth
 		void on_RemoveButton__released ();
 		void on_AddButton__released ();
 		void on_ModifyButton__released ();
-		void on_ApplyButton__released ();
 		void on_MoveUp__released ();
 		void on_MoveDown__released ();
 	};
