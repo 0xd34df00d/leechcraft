@@ -31,6 +31,7 @@
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "interfaces/monocle/isearchabledocument.h"
 #include "pagegraphicsitem.h"
 #include "pageslayoutmanager.h"
@@ -64,49 +65,7 @@ namespace Monocle
 			return false;
 
 		if (text != CurrentSearchString_)
-		{
-			CurrentSearchString_ = text;
-			for (auto item : CurrentHighlights_)
-			{
-				auto parentPage = static_cast<PageGraphicsItem*> (item->parentItem ());
-				parentPage->UnregisterChildRect (item);
-				Scene_->removeItem (item);
-				delete item;
-			}
-
-			CurrentHighlights_.clear ();
-
-			auto searchable = qobject_cast<ISearchableDocument*> (Doc_->GetQObject ());
-			if (!searchable)
-				return false;
-
-			const QBrush brush (Qt::yellow);
-
-			auto cs = flags & Util::FindNotification::FindCaseSensitively ?
-					Qt::CaseSensitive :
-					Qt::CaseInsensitive;
-			const auto& map = searchable->GetTextPositions (text, cs);
-			for (auto i = map.begin (); i != map.end (); ++i)
-			{
-				auto page = Pages_.at (i.key ());
-				for (const auto& rect : *i)
-				{
-					auto item = new QGraphicsRectItem (page);
-					item->setBrush (brush);
-					item->setZValue (1);
-					item->setOpacity (0.2);
-					CurrentHighlights_ << item;
-
-					page->RegisterChildRect (item, rect,
-							[item] (const QRectF& rect) { item->setRect (rect); });
-				}
-			}
-
-			if (!CurrentHighlights_.isEmpty ())
-				SelectItem (0);
-
-			return !CurrentHighlights_.isEmpty ();
-		}
+			return RequestSearch (text, flags);
 
 		if (CurrentHighlights_.isEmpty ())
 			return false;
@@ -137,6 +96,51 @@ namespace Monocle
 		}
 
 		return true;
+	}
+
+	bool TextSearchHandler::RequestSearch (const QString& text, Util::FindNotification::FindFlags flags)
+	{
+		CurrentSearchString_ = text;
+		for (auto item : CurrentHighlights_)
+		{
+			auto parentPage = static_cast<PageGraphicsItem*> (item->parentItem ());
+			parentPage->UnregisterChildRect (item);
+			Scene_->removeItem (item);
+			delete item;
+		}
+
+		CurrentHighlights_.clear ();
+
+		const auto searchable = qobject_cast<ISearchableDocument*> (Doc_->GetQObject ());
+		if (!searchable)
+			return false;
+
+		const QBrush brush (Qt::yellow);
+
+		const auto cs = flags & Util::FindNotification::FindCaseSensitively ?
+				Qt::CaseSensitive :
+				Qt::CaseInsensitive;
+		const auto& map = searchable->GetTextPositions (text, cs);
+		for (const auto& pair : Util::Stlize (map))
+		{
+			const auto page = Pages_.at (pair.first);
+			for (const auto& rect : pair.second)
+			{
+				const auto item = new QGraphicsRectItem (page);
+				item->setBrush (brush);
+				item->setZValue (1);
+				item->setOpacity (0.2);
+				CurrentHighlights_ << item;
+
+				page->RegisterChildRect (item, rect,
+						[item] (const QRectF& rect) { item->setRect (rect); });
+			}
+		}
+
+		if (!CurrentHighlights_.isEmpty ())
+			SelectItem (0);
+
+		return !CurrentHighlights_.isEmpty ();
 	}
 
 	void TextSearchHandler::SelectItem (int index)
