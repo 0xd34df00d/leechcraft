@@ -29,6 +29,7 @@
 
 #include "searchtabwidget.h"
 #include <QStandardItemModel>
+#include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "textsearchhandler.h"
 
@@ -98,6 +99,49 @@ namespace Monocle
 
 		Model_->insertRow (0, searchItem);
 		Ui_.ResultsTree_->expand (searchItem->index ());
+	}
+
+	namespace
+	{
+		int GetPosIdx (const QStandardItem *item)
+		{
+			const auto overallIdxVar = item->data (static_cast<int> (SearchModelRole::OverallIdx));
+			if (!overallIdxVar.isNull ())
+				return overallIdxVar.toInt ();
+
+			const auto pageIdxVar = item->data (static_cast<int> (SearchModelRole::PageFirstIdx));
+			if (!pageIdxVar.isNull ())
+				return pageIdxVar.toInt ();
+
+			return 0;
+		}
+	}
+
+	void SearchTabWidget::on_ResultsTree__activated (const QModelIndex& index)
+	{
+		const auto item = Model_->itemFromIndex (index);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown index"
+					<< index;
+			return;
+		}
+
+		auto root = item;
+		while (const auto parent = root->parent ())
+			root = parent;
+
+		if (!Root2Results_.contains (root))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown root index for"
+					<< index;
+			return;
+		}
+
+		const auto results = Root2Results_.value (root);
+		SearchHandler_->SetPreparedResults (results, GetPosIdx (item));
 	}
 }
 }

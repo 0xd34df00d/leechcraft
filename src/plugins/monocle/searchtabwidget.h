@@ -56,6 +56,7 @@ namespace Monocle
 		SearchTabWidget (TextSearchHandler*, QWidget* = nullptr);
 	private slots:
 		void handleSearchResults (const TextSearchHandlerResults&);
+		void on_ResultsTree__activated (const QModelIndex&);
 	};
 }
 }

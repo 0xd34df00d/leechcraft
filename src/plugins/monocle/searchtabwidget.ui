@@ -19,8 +19,8 @@
    </property>
    <item>
     <widget class="QTreeView" name="ResultsTree_">
-     <property name="rootIsDecorated">
-      <bool>false</bool>
+     <property name="headerHidden">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
