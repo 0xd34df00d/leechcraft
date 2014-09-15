@@ -72,30 +72,30 @@ namespace Monocle
 		QObject *ParentPlugin_;
 
 		QToolBar *Toolbar_;
-		QComboBox *ScalesBox_;
-		QAction *ZoomOut_;
-		QAction *ZoomIn_;
-		QLineEdit *PageNumLabel_;
+		QComboBox *ScalesBox_ = nullptr;
+		QAction *ZoomOut_ = nullptr;
+		QAction *ZoomIn_ = nullptr;
+		QLineEdit *PageNumLabel_ = nullptr;
 
-		QAction *LayOnePage_;
-		QAction *LayTwoPages_;
+		QAction *LayOnePage_ = nullptr;
+		QAction *LayTwoPages_ = nullptr;
 
-		QAction *SaveAction_;
-		QAction *ExportPDFAction_;
-		QAction *FindAction_;
-		FindDialog *FindDialog_;
+		QAction *SaveAction_ = nullptr;
+		QAction *ExportPDFAction_ = nullptr;
+		QAction *FindAction_ = nullptr;
+		FindDialog *FindDialog_ = nullptr;
 
-		PagesLayoutManager *LayoutManager_;
-		TextSearchHandler *SearchHandler_;
-		FormManager *FormManager_;
-		AnnManager *AnnManager_;
-		LinksManager *LinksManager_;
+		PagesLayoutManager *LayoutManager_ = nullptr;
+		TextSearchHandler *SearchHandler_ = nullptr;
+		FormManager *FormManager_ = nullptr;
+		AnnManager *AnnManager_ = nullptr;
+		LinksManager *LinksManager_ = nullptr;
 
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
 		BookmarksWidget *BMWidget_;
 		ThumbsWidget *ThumbsWidget_;
-		AnnWidget *AnnWidget_;
+		AnnWidget *AnnWidget_ = nullptr;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;
