@@ -47,9 +47,9 @@ namespace Monocle
 
 	struct TextSearchHandlerResults
 	{
-		const QString Text_;
+		QString Text_;
 		Util::FindNotification::FindFlags FindFlags_;
-		const QMap<int, QList<QRectF>> Positions_;
+		QMap<int, QList<QRectF>> Positions_;
 	};
 
 	class TextSearchHandler : public QObject
