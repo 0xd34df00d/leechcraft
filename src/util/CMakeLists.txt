@@ -8,7 +8,7 @@ include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	..)
 
-set (LC_SOVERSION 0.6.70)
+set (LC_SOVERSION 0.6.75)
 
 add_subdirectory (db)
 add_subdirectory (gui)
