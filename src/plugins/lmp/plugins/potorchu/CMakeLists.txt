@@ -2,10 +2,14 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lmp_potorchu)
 include (InitLCPlugin OPTIONAL)
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (ProjectM)
+
 include_directories (${LMP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${ProjectM_INCLUDE_DIR}
 	)
 
 set (POTORCHU_SRCS
@@ -32,7 +36,7 @@ target_link_libraries (leechcraft_lmp_potorchu
 	${GSTREAMER_INTERFACE_LIBRARY}
 	${GLIB2_LIBRARIES}
 	${LIBXML2_LIBRARIES}
-	projectM
+	${ProjectM_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_lmp_potorchu DESTINATION ${LC_PLUGINS_DEST})
