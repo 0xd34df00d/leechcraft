@@ -39,6 +39,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QTreeView" name="BookmarksTree_">
+       <property name="rootIsDecorated">
+        <bool>false</bool>
+       </property>
        <attribute name="headerVisible">
         <bool>false</bool>
        </attribute>
