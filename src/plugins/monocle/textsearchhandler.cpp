@@ -98,6 +98,18 @@ namespace Monocle
 		return true;
 	}
 
+	void TextSearchHandler::SetPreparedResults (const TextSearchHandlerResults& results, int select)
+	{
+		if (CurrentSearchString_ != results.Text_)
+		{
+			ClearHighlights ();
+			CurrentSearchString_ = results.Text_;
+			BuildHighlights (results.Positions_);
+		}
+
+		SelectItem (select);
+	}
+
 	bool TextSearchHandler::RequestSearch (const QString& text, Util::FindNotification::FindFlags flags)
 	{
 		ClearHighlights ();

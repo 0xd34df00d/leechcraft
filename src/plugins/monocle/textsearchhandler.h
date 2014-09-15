@@ -73,8 +73,10 @@ namespace Monocle
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 
 		bool Search (const QString&, Util::FindNotification::FindFlags);
+		void SetPreparedResults (const TextSearchHandlerResults&, int selectedItem);
 	private:
 		bool RequestSearch (const QString&, Util::FindNotification::FindFlags);
+
 		void BuildHighlights (const QMap<int, QList<QRectF>>&);
 		void ClearHighlights ();
 
