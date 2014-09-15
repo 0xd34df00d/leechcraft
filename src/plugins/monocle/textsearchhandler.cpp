@@ -121,6 +121,7 @@ namespace Monocle
 				Qt::CaseSensitive :
 				Qt::CaseInsensitive;
 		const auto& map = searchable->GetTextPositions (text, cs);
+		emit gotSearchResults ({ text, flags, map });
 		for (const auto& pair : Util::Stlize (map))
 		{
 			const auto page = Pages_.at (pair.first);

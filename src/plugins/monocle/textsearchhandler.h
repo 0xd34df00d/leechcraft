@@ -30,8 +30,9 @@
 #pragma once
 
 #include <QObject>
-#include "interfaces/monocle/idocument.h"
+#include <QMap>
 #include <util/gui/findnotification.h>
+#include "interfaces/monocle/idocument.h"
 
 class QGraphicsRectItem;
 class QGraphicsView;
@@ -43,6 +44,13 @@ namespace Monocle
 {
 	class PageGraphicsItem;
 	class PagesLayoutManager;
+
+	struct TextSearchHandlerResults
+	{
+		const QString Text_;
+		Util::FindNotification::FindFlags FindFlags_;
+		const QMap<int, QList<QRectF>> Positions_;
+	};
 
 	class TextSearchHandler : public QObject
 	{
@@ -70,6 +78,8 @@ namespace Monocle
 		void SelectItem (int);
 	signals:
 		void navigateRequested (const QString&, int, double, double);
+
+		void gotSearchResults (const TextSearchHandlerResults&);
 	};
 }
 }
