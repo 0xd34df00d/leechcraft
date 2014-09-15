@@ -114,12 +114,19 @@ namespace LMP
 				[] { return 50 * 1024 * 1024; },
 				View_->engine ());
 
+#if QT_VERSION < 0x050000
+		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
+
 		View_->rootContext ()->setContextProperty ("eventsModel", Model_);
 		View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));
 		View_->rootContext ()->setContextProperty ("attendMaybeTextString", tr ("Maybe"));
 		View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "EventsView.qml"));
 
 		connect (View_->rootObject (),
