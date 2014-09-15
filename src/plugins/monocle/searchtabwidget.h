@@ -33,6 +33,7 @@
 #include "ui_searchtabwidget.h"
 
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -49,6 +50,8 @@ namespace Monocle
 
 		QStandardItemModel * const Model_;
 		TextSearchHandler * const SearchHandler_;
+
+		QMap<QStandardItem*, TextSearchHandlerResults> Root2Results_;
 	public:
 		SearchTabWidget (TextSearchHandler*, QWidget* = nullptr);
 	private slots:

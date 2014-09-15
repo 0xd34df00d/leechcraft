@@ -40,10 +40,8 @@ namespace Monocle
 	{
 		enum class SearchModelRole
 		{
-			String = Qt::UserRole + 1,
-			Flags,
-			Page,
-			Rect
+			PageFirstIdx = Qt::UserRole + 1,
+			OverallIdx
 		};
 	}
 
@@ -66,34 +64,23 @@ namespace Monocle
 				[] (const QList<QRectF>& list) { return list.isEmpty (); }))
 			return;
 
-		const auto searchDataSetter = [&results] (QStandardItem *item)
-		{
-			item->setData (results.Text_, static_cast<int> (SearchModelRole::String));
-			item->setData (static_cast<int> (results.FindFlags_), static_cast<int> (SearchModelRole::Flags));
-			item->setEditable (false);
-		};
 
 		QList<QStandardItem*> pageItems;
+		int globalPosIdx = 0;
 		for (const auto& pair : Util::Stlize (results.Positions_))
 		{
 			const auto& posList = pair.second;
 			if (posList.isEmpty ())
 				continue;
 
-			auto pageDataSetter = [&pair, &searchDataSetter] (QStandardItem *item)
-			{
-				searchDataSetter (item);
-				item->setData (pair.first, static_cast<int> (SearchModelRole::Page));
-			};
-
 			const auto pageItem = new QStandardItem { tr ("Page %1").arg (pair.first + 1) };
-			searchDataSetter (pageItem);
-			for (int i = 0; i < posList.size (); ++i)
+			pageItem->setData (globalPosIdx, static_cast<int> (SearchModelRole::PageFirstIdx));
+			pageItem->setEditable (false);
+			for (int i = 0; i < posList.size (); ++i, ++globalPosIdx)
 			{
 				const auto posItem = new QStandardItem { tr ("Occurrence %1").arg (i + 1) };
-				pageDataSetter (posItem);
-				posItem->setData (posList.at (i), static_cast<int> (SearchModelRole::Rect));
-
+				posItem->setData (globalPosIdx, static_cast<int> (SearchModelRole::OverallIdx));
+				posItem->setEditable (false);
 				pageItem->appendRow (posItem);
 			}
 
@@ -105,7 +92,9 @@ namespace Monocle
 
 		const auto searchItem = new QStandardItem { results.Text_ };
 		searchItem->appendRows (pageItems);
-		searchDataSetter (searchItem);
+		searchItem->setEditable (false);
+
+		Root2Results_ [searchItem] = results;
 
 		Model_->insertRow (0, searchItem);
 		Ui_.ResultsTree_->expand (searchItem->index ());
