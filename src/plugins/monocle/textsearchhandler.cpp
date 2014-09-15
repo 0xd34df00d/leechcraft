@@ -100,28 +100,30 @@ namespace Monocle
 
 	bool TextSearchHandler::RequestSearch (const QString& text, Util::FindNotification::FindFlags flags)
 	{
+		ClearHighlights ();
 		CurrentSearchString_ = text;
-		for (auto item : CurrentHighlights_)
-		{
-			auto parentPage = static_cast<PageGraphicsItem*> (item->parentItem ());
-			parentPage->UnregisterChildRect (item);
-			Scene_->removeItem (item);
-			delete item;
-		}
-
-		CurrentHighlights_.clear ();
 
 		const auto searchable = qobject_cast<ISearchableDocument*> (Doc_->GetQObject ());
 		if (!searchable)
 			return false;
-
-		const QBrush brush (Qt::yellow);
 
 		const auto cs = flags & Util::FindNotification::FindCaseSensitively ?
 				Qt::CaseSensitive :
 				Qt::CaseInsensitive;
 		const auto& map = searchable->GetTextPositions (text, cs);
 		emit gotSearchResults ({ text, flags, map });
+
+		BuildHighlights (map);
+
+		if (!CurrentHighlights_.isEmpty ())
+			SelectItem (0);
+
+		return !CurrentHighlights_.isEmpty ();
+	}
+
+	void TextSearchHandler::BuildHighlights (const QMap<int, QList<QRectF>>& map)
+	{
+		const QBrush brush (Qt::yellow);
 		for (const auto& pair : Util::Stlize (map))
 		{
 			const auto page = Pages_.at (pair.first);
@@ -137,11 +139,19 @@ namespace Monocle
 						[item] (const QRectF& rect) { item->setRect (rect); });
 			}
 		}
+	}
 
-		if (!CurrentHighlights_.isEmpty ())
-			SelectItem (0);
+	void TextSearchHandler::ClearHighlights ()
+	{
+		for (auto item : CurrentHighlights_)
+		{
+			auto parentPage = static_cast<PageGraphicsItem*> (item->parentItem ());
+			parentPage->UnregisterChildRect (item);
+			Scene_->removeItem (item);
+			delete item;
+		}
 
-		return !CurrentHighlights_.isEmpty ();
+		CurrentHighlights_.clear ();
 	}
 
 	void TextSearchHandler::SelectItem (int index)

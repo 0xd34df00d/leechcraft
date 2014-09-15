@@ -75,6 +75,9 @@ namespace Monocle
 		bool Search (const QString&, Util::FindNotification::FindFlags);
 	private:
 		bool RequestSearch (const QString&, Util::FindNotification::FindFlags);
+		void BuildHighlights (const QMap<int, QList<QRectF>>&);
+		void ClearHighlights ();
+
 		void SelectItem (int);
 	signals:
 		void navigateRequested (const QString&, int, double, double);
