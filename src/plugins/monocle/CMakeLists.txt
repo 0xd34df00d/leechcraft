@@ -59,6 +59,7 @@ set (SRCS
 	linksmanager.cpp
 	coreloadproxy.cpp
 	converteddoccleaner.cpp
+	searchtabwidget.cpp
 	)
 set (FORMS
 	documenttab.ui
@@ -69,6 +70,7 @@ set (FORMS
 	thumbswidget.ui
 	arbitraryrotationwidget.ui
 	annwidget.ui
+	searchtabwidget.ui
 	)
 set (RESOURCES monocleresources.qrc)
 CreateTrs ("monocle" "en;ru_RU" COMPILED_TRANSLATIONS)
