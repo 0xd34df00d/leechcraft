@@ -92,7 +92,7 @@ namespace Monocle
 {
 	class FindDialog : public Util::FindNotification
 	{
-		TextSearchHandler *SearchHandler_;
+		TextSearchHandler * const SearchHandler_;
 	public:
 		FindDialog (TextSearchHandler *searchHandler, QWidget *parent)
 		: Util::FindNotification (Core::Instance ().GetProxy (), parent)
