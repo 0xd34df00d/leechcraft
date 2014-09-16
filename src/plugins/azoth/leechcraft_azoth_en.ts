@@ -186,34 +186,34 @@
         <translation>Manage bookmarks</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="29"/>
+        <location filename="bookmarksmanagerdialog.ui" line="25"/>
         <source>Account:</source>
         <translation>Account:</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="54"/>
+        <location filename="bookmarksmanagerdialog.ui" line="65"/>
+        <source>Modify...</source>
+        <translation>Modify...</translation>
+    </message>
+    <message>
+        <location filename="bookmarksmanagerdialog.ui" line="92"/>
         <source>Move up</source>
         <translation>Move up</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="61"/>
+        <location filename="bookmarksmanagerdialog.ui" line="102"/>
         <source>Move down</source>
         <translation>Move down</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="74"/>
+        <location filename="bookmarksmanagerdialog.ui" line="75"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="96"/>
+        <location filename="bookmarksmanagerdialog.ui" line="55"/>
         <source>Add...</source>
         <translation>Add...</translation>
-    </message>
-    <message>
-        <location filename="bookmarksmanagerdialog.ui" line="103"/>
-        <source>Apply</source>
-        <translation>Apply</translation>
     </message>
 </context>
 <context>
@@ -464,33 +464,33 @@
         <translation>Next page</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="269"/>
+        <location filename="corecommandsmanager.cpp" line="300"/>
         <source>Show the list of all commands or get help for a specific command.</source>
         <translation>Show the list of all commands or get help for a specific command.</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="270"/>
-        <location filename="corecommandsmanager.cpp" line="286"/>
+        <location filename="corecommandsmanager.cpp" line="301"/>
+        <location filename="corecommandsmanager.cpp" line="317"/>
         <source>Usage: </source>
         <translation>Usage: </translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="270"/>
+        <location filename="corecommandsmanager.cpp" line="301"/>
         <source>[command1] [command2] ...</source>
         <translation>[command1] [command2] ...</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="271"/>
+        <location filename="corecommandsmanager.cpp" line="302"/>
         <source>Shows the list of all available commands with their respective short descriptions if called without parameters, otherwise shows help for the passed commands.</source>
         <translation>Shows the list of all available commands with their respective short descriptions if called without parameters, otherwise shows help for the passed commands.</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="275"/>
+        <location filename="corecommandsmanager.cpp" line="306"/>
         <source>Commands&apos; variable inputs are typically shown in &lt;em&gt;italics&lt;/em&gt;, while the parts that are to be entered as is are shown in &lt;code&gt;monospace&lt;/code&gt; font. Optional arguments are typically in [square brackets], while different options are shown like this:</source>
         <translation>Commands&apos; variable inputs are typically shown in &lt;em&gt;italics&lt;/em&gt;, while the parts that are to be entered as is are shown in &lt;code&gt;monospace&lt;/code&gt; font. Optional arguments are typically in [square brackets], while different options are shown like this:</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="285"/>
+        <location filename="corecommandsmanager.cpp" line="316"/>
         <source>Clear chat window.</source>
         <translation>Clear chat window.</translation>
     </message>
@@ -1432,19 +1432,19 @@
 <context>
     <name>LeechCraft::Azoth::BookmarksManagerDialog</name>
     <message>
-        <location filename="bookmarksmanagerdialog.cpp" line="296"/>
-        <source>Save the bookmark?</source>
-        <translation>Save the bookmark?</translation>
+        <location filename="bookmarksmanagerdialog.cpp" line="230"/>
+        <source>Add bookmark for account %1</source>
+        <translation>Add bookmark for account %1</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.cpp" line="297"/>
-        <source>You&apos;ve changed the bookmark. Do you want to save the changes?</source>
-        <translation>You&apos;ve changed the bookmark. Do you want to save the changes?</translation>
-    </message>
-    <message>
-        <location filename="bookmarksmanagerdialog.cpp" line="331"/>
+        <location filename="bookmarksmanagerdialog.cpp" line="253"/>
         <source>Are you sure you want to delete the bookmark %1?</source>
         <translation>Are you sure you want to delete the bookmark %1?</translation>
+    </message>
+    <message>
+        <location filename="bookmarksmanagerdialog.cpp" line="277"/>
+        <source>Edit bookmark for account %1</source>
+        <translation>Edit bookmark for account %1</translation>
     </message>
 </context>
 <context>
@@ -1963,27 +1963,27 @@
 <context>
     <name>LeechCraft::Azoth::CoreCommandsManager</name>
     <message>
-        <location filename="corecommandsmanager.cpp" line="59"/>
+        <location filename="corecommandsmanager.cpp" line="60"/>
         <source>The following commands are available:</source>
         <translation>The following commands are available:</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="61"/>
+        <location filename="corecommandsmanager.cpp" line="62"/>
         <source>Type %1 in chat to get help on a particular command.</source>
         <translation>Type %1 in chat to get help on a particular command.</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="187"/>
+        <location filename="corecommandsmanager.cpp" line="218"/>
         <source>Help on command %1:</source>
         <translation>Help on command %1:</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="193"/>
+        <location filename="corecommandsmanager.cpp" line="224"/>
         <source>Aliases: %1.</source>
         <translation>Aliases: %1.</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="224"/>
+        <location filename="corecommandsmanager.cpp" line="255"/>
         <source>Unknown command %1.</source>
         <translation>Unknown command %1.</translation>
     </message>
@@ -2994,12 +2994,12 @@
         <translation>Enter password for %1:</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="237"/>
+        <location filename="proxyobject.cpp" line="231"/>
         <source>%1 changed status to %2</source>
         <translation>%1 changed status to %2</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="240"/>
+        <location filename="proxyobject.cpp" line="234"/>
         <source>%1 changed status to %2 (%3)</source>
         <translation>%1 changed status to %2 (%3)</translation>
     </message>

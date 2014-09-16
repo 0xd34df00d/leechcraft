@@ -186,34 +186,34 @@
         <translation>Управление закладками</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="29"/>
+        <location filename="bookmarksmanagerdialog.ui" line="25"/>
         <source>Account:</source>
         <translation>Учётная запись:</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="54"/>
+        <location filename="bookmarksmanagerdialog.ui" line="65"/>
+        <source>Modify...</source>
+        <translation>Изменить...</translation>
+    </message>
+    <message>
+        <location filename="bookmarksmanagerdialog.ui" line="92"/>
         <source>Move up</source>
         <translation>Переместить вверх</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="61"/>
+        <location filename="bookmarksmanagerdialog.ui" line="102"/>
         <source>Move down</source>
         <translation>Переместить вниз</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="74"/>
+        <location filename="bookmarksmanagerdialog.ui" line="75"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.ui" line="96"/>
+        <location filename="bookmarksmanagerdialog.ui" line="55"/>
         <source>Add...</source>
         <translation>Добавить...</translation>
-    </message>
-    <message>
-        <location filename="bookmarksmanagerdialog.ui" line="103"/>
-        <source>Apply</source>
-        <translation>Применить</translation>
     </message>
 </context>
 <context>
@@ -464,33 +464,33 @@
         <translation>Следующая страница</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="269"/>
+        <location filename="corecommandsmanager.cpp" line="300"/>
         <source>Show the list of all commands or get help for a specific command.</source>
         <translation>Показать список всех команд или справку по конкретной команде.</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="270"/>
-        <location filename="corecommandsmanager.cpp" line="286"/>
+        <location filename="corecommandsmanager.cpp" line="301"/>
+        <location filename="corecommandsmanager.cpp" line="317"/>
         <source>Usage: </source>
         <translation>Использование:</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="270"/>
+        <location filename="corecommandsmanager.cpp" line="301"/>
         <source>[command1] [command2] ...</source>
         <translation>[команда1] [команда2] …</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="271"/>
+        <location filename="corecommandsmanager.cpp" line="302"/>
         <source>Shows the list of all available commands with their respective short descriptions if called without parameters, otherwise shows help for the passed commands.</source>
         <translation>Если вызвано без параметров, то показывает список всех доступных команд с соответствующим кратким описанием. Иначе, показывает справку по каждой из переданных команд.</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="275"/>
+        <location filename="corecommandsmanager.cpp" line="306"/>
         <source>Commands&apos; variable inputs are typically shown in &lt;em&gt;italics&lt;/em&gt;, while the parts that are to be entered as is are shown in &lt;code&gt;monospace&lt;/code&gt; font. Optional arguments are typically in [square brackets], while different options are shown like this:</source>
         <translation>Фиксированные элементы команд, обычно выделяются &lt;em&gt;курсивом&lt;/em&gt;, в то время как части, требующие ввода, отображаются &lt;code&gt;моноширинным шрифтом&lt;/code&gt;. Опциональные аргументы обычно показываются в [квадратных скобках], а различные опции отображаются так:</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="285"/>
+        <location filename="corecommandsmanager.cpp" line="316"/>
         <source>Clear chat window.</source>
         <translation>Очистить экран чата.</translation>
     </message>
@@ -1432,19 +1432,19 @@
 <context>
     <name>LeechCraft::Azoth::BookmarksManagerDialog</name>
     <message>
-        <location filename="bookmarksmanagerdialog.cpp" line="296"/>
-        <source>Save the bookmark?</source>
-        <translation>Сохранить закладку?</translation>
+        <location filename="bookmarksmanagerdialog.cpp" line="230"/>
+        <source>Add bookmark for account %1</source>
+        <translation>Добавление закладку для учётной записи %1</translation>
     </message>
     <message>
-        <location filename="bookmarksmanagerdialog.cpp" line="297"/>
-        <source>You&apos;ve changed the bookmark. Do you want to save the changes?</source>
-        <translation>Вы изменили закладку. Хотите сохранить изменения?</translation>
-    </message>
-    <message>
-        <location filename="bookmarksmanagerdialog.cpp" line="331"/>
+        <location filename="bookmarksmanagerdialog.cpp" line="253"/>
         <source>Are you sure you want to delete the bookmark %1?</source>
         <translation>Вы уверены, что хотите удалить закладку %1?</translation>
+    </message>
+    <message>
+        <location filename="bookmarksmanagerdialog.cpp" line="277"/>
+        <source>Edit bookmark for account %1</source>
+        <translation>Редактирование закладки для учётной записи %1</translation>
     </message>
 </context>
 <context>
@@ -1966,27 +1966,27 @@
 <context>
     <name>LeechCraft::Azoth::CoreCommandsManager</name>
     <message>
-        <location filename="corecommandsmanager.cpp" line="59"/>
+        <location filename="corecommandsmanager.cpp" line="60"/>
         <source>The following commands are available:</source>
         <translation>Доступны следующие команды:</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="61"/>
+        <location filename="corecommandsmanager.cpp" line="62"/>
         <source>Type %1 in chat to get help on a particular command.</source>
         <translation>Наберите %1 в чате для получения справки по конкретной команде.</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="187"/>
+        <location filename="corecommandsmanager.cpp" line="218"/>
         <source>Help on command %1:</source>
         <translation>Справка по команде %1:</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="193"/>
+        <location filename="corecommandsmanager.cpp" line="224"/>
         <source>Aliases: %1.</source>
         <translation>Синонимы: %1.</translation>
     </message>
     <message>
-        <location filename="corecommandsmanager.cpp" line="224"/>
+        <location filename="corecommandsmanager.cpp" line="255"/>
         <source>Unknown command %1.</source>
         <translation>Неизвестная команда %1.</translation>
     </message>
@@ -3000,12 +3000,12 @@
         <translation>Введите пароль для %1:</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="237"/>
+        <location filename="proxyobject.cpp" line="231"/>
         <source>%1 changed status to %2</source>
         <translation>%1 теперь %2</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="240"/>
+        <location filename="proxyobject.cpp" line="234"/>
         <source>%1 changed status to %2 (%3)</source>
         <translation>%1 теперь %2 (%3)</translation>
     </message>
