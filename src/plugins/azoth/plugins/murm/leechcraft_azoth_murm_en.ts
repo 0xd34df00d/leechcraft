@@ -37,7 +37,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm</name>
     <message>
-        <location filename="serverhistorymanager.cpp" line="62"/>
+        <location filename="serverhistorymanager.cpp" line="63"/>
         <source>Contact</source>
         <translation>Contact</translation>
     </message>
@@ -45,27 +45,27 @@
 <context>
     <name>LeechCraft::Azoth::Murm::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="141"/>
+        <location filename="entrybase.cpp" line="147"/>
         <source>Enqueue</source>
         <translation>Enqueue</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="145"/>
+        <location filename="entrybase.cpp" line="151"/>
         <source>Play</source>
         <translation>Play</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="149"/>
+        <location filename="entrybase.cpp" line="155"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="301"/>
+        <location filename="entrybase.cpp" line="307"/>
         <source>Posted on: %1</source>
         <translation>Posted on: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="304"/>
+        <location filename="entrybase.cpp" line="310"/>
         <source>%n like(s)</source>
         <translation>
             <numerusform>%n like</numerusform>
@@ -73,7 +73,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="306"/>
+        <location filename="entrybase.cpp" line="312"/>
         <source>%n repost(s)</source>
         <translation>
             <numerusform>%n repost</numerusform>
@@ -110,7 +110,7 @@
         <translation>me</translation>
     </message>
     <message>
-        <location filename="vkaccount.cpp" line="439"/>
+        <location filename="vkaccount.cpp" line="435"/>
         <source>%1 is invalid VKontake ID</source>
         <translation>%1 is invalid VKontake ID</translation>
     </message>
@@ -118,12 +118,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkChatEntry</name>
     <message>
-        <location filename="vkchatentry.cpp" line="168"/>
+        <location filename="vkchatentry.cpp" line="171"/>
         <source>Chats</source>
         <translation>Chats</translation>
     </message>
     <message>
-        <location filename="vkchatentry.cpp" line="277"/>
+        <location filename="vkchatentry.cpp" line="275"/>
         <source>Participants of %1</source>
         <translation>Participants of %1</translation>
     </message>
@@ -131,24 +131,74 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkEntry</name>
     <message>
-        <location filename="vkentry.cpp" line="106"/>
+        <location filename="vkentry.cpp" line="109"/>
         <source>%1 is now on the site again</source>
         <translation>%1 is now on the site again</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="107"/>
+        <location filename="vkentry.cpp" line="110"/>
         <source>%1 has left the site</source>
         <translation>%1 has left the site</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="406"/>
+        <location filename="vkentry.cpp" line="412"/>
         <source>Self contact</source>
         <translation>Self contact</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="409"/>
+        <location filename="vkentry.cpp" line="415"/>
         <source>Non-friends</source>
         <translation>Non-friends</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="536"/>
+        <source>First name</source>
+        <translation>First name</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="537"/>
+        <source>Last name</source>
+        <translation>Last name</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="538"/>
+        <source>Nick</source>
+        <translation>Nick</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="539"/>
+        <source>Photo</source>
+        <translation>Photo</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="540"/>
+        <source>Birthday</source>
+        <translation>Birthday</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="541"/>
+        <source>Home phone</source>
+        <translation>Home phone</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="542"/>
+        <source>Mobile phone</source>
+        <translation>Mobile phone</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="543"/>
+        <source>Timezone</source>
+        <translation>Timezone</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="544"/>
+        <source>City</source>
+        <translation>City</translation>
+    </message>
+    <message>
+        <location filename="vkentry.cpp" line="545"/>
+        <source>Country</source>
+        <translation>Country</translation>
     </message>
 </context>
 <context>
