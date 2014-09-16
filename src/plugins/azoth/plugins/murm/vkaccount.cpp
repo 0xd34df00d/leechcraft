@@ -604,7 +604,15 @@ namespace Murm
 				return;
 			}
 
-			ChatEntries_.value (from)->HandleMessage (info);
+			switch (ChatEntries_.value (from)->HandleMessage (info))
+			{
+			case VkChatEntry::HandleMessageResult::Accepted:
+			case VkChatEntry::HandleMessageResult::Rejected:
+				return;
+			case VkChatEntry::HandleMessageResult::UserInfoRequested:
+				PendingMessages_ << info;
+				return;
+			}
 		}
 		else
 		{
