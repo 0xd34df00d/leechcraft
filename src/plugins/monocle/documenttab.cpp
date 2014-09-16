@@ -914,6 +914,7 @@ namespace Monocle
 
 		BMWidget_->HandleDoc (CurrentDoc_);
 		ThumbsWidget_->HandleDoc (CurrentDoc_);
+		SearchTabWidget_->HandleDoc (CurrentDoc_);
 
 		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (docObj));
 
