@@ -67,12 +67,13 @@ namespace Murm
 			return;
 		}
 
-		auto entry = Account_->GetEntry (from);
+		const auto entry = Account_->GetEntry (from);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown entry for"
 					<< from;
+			Account_->GetConnection ()->GetUserInfo ({ from });
 			return;
 		}
 
