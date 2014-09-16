@@ -51,10 +51,17 @@ namespace Murm
 
 		ChatInfo Info_;
 	public:
+		enum class HandleMessageResult
+		{
+			Accepted,
+			Rejected,
+			UserInfoRequested
+		};
+
 		VkChatEntry (const ChatInfo&, VkAccount*);
 
 		void Send (VkMessage*);
-		void HandleMessage (const MessageInfo&);
+		HandleMessageResult HandleMessage (const MessageInfo&);
 
 		const ChatInfo& GetInfo () const;
 		void UpdateInfo (const ChatInfo&);

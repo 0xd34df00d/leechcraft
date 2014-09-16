@@ -56,7 +56,7 @@ namespace Murm
 		Account_->Send (GetInfo ().ChatID_, VkConnection::Type::Chat, msg);
 	}
 
-	void VkChatEntry::HandleMessage (const MessageInfo& info)
+	VkChatEntry::HandleMessageResult VkChatEntry::HandleMessage (const MessageInfo& info)
 	{
 		const auto from = info.Params_ ["from"].toULongLong ();
 		if (from == 0)
@@ -64,7 +64,7 @@ namespace Murm
 			qWarning () << Q_FUNC_INFO
 					<< "unknown from"
 					<< info.Params_;
-			return;
+			return HandleMessageResult::Rejected;
 		}
 
 		const auto entry = Account_->GetEntry (from);
@@ -74,7 +74,7 @@ namespace Murm
 					<< "unknown entry for"
 					<< from;
 			Account_->GetConnection ()->GetUserInfo ({ from });
-			return;
+			return HandleMessageResult::UserInfoRequested;
 		}
 
 		auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::Type::MUCMessage, this, entry);
@@ -85,6 +85,8 @@ namespace Murm
 		HandleAttaches (msg, info);
 
 		Store (msg);
+
+		return HandleMessageResult::Accepted;
 	}
 
 	const ChatInfo& VkChatEntry::GetInfo () const
