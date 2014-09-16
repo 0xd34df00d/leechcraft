@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include "ui_searchtabwidget.h"
 
@@ -42,6 +43,9 @@ namespace Monocle
 	class TextSearchHandler;
 	struct TextSearchHandlerResults;
 
+	class IDocument;
+	typedef std::shared_ptr<IDocument> IDocument_ptr;
+
 	class SearchTabWidget : public QWidget
 	{
 		Q_OBJECT
@@ -54,6 +58,8 @@ namespace Monocle
 		QMap<QStandardItem*, TextSearchHandlerResults> Root2Results_;
 	public:
 		SearchTabWidget (TextSearchHandler*, QWidget* = nullptr);
+
+		void HandleDoc (const IDocument_ptr&);
 	private slots:
 		void handleSearchResults (const TextSearchHandlerResults&);
 		void on_ResultsTree__activated (const QModelIndex&);

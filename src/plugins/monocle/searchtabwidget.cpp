@@ -59,6 +59,12 @@ namespace Monocle
 				SLOT (handleSearchResults (TextSearchHandlerResults)));
 	}
 
+	void SearchTabWidget::HandleDoc (const IDocument_ptr&)
+	{
+		Model_->clear ();
+		Root2Results_.clear ();
+	}
+
 	void SearchTabWidget::handleSearchResults (const TextSearchHandlerResults& results)
 	{
 		if (std::all_of (results.Positions_.begin (), results.Positions_.end (),
