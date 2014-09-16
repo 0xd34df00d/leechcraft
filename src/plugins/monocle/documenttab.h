@@ -57,6 +57,7 @@ namespace Monocle
 	class FormManager;
 	class LinksManager;
 	class AnnManager;
+	class SearchTabWidget;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -96,6 +97,7 @@ namespace Monocle
 		BookmarksWidget *BMWidget_;
 		ThumbsWidget *ThumbsWidget_;
 		AnnWidget *AnnWidget_ = nullptr;
+		SearchTabWidget *SearchTabWidget_ = nullptr;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;

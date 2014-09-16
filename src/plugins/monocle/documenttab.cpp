@@ -85,6 +85,7 @@
 #include "annwidget.h"
 #include "coreloadproxy.h"
 #include "core.h"
+#include "searchtabwidget.h"
 
 namespace LeechCraft
 {
@@ -136,6 +137,8 @@ namespace Monocle
 
 		AnnWidget_ = new AnnWidget (AnnManager_);
 
+		SearchTabWidget_ = new SearchTabWidget (SearchHandler_);
+
 		FindDialog_ = new FindDialog (SearchHandler_, Ui_.PagesView_);
 		FindDialog_->hide ();
 
@@ -156,6 +159,8 @@ namespace Monocle
 				mgr->GetIcon ("view-preview"), tr ("Thumbnails"));
 		dockTabWidget->addTab (AnnWidget_,
 				mgr->GetIcon ("view-pim-notes"), tr ("Annotations"));
+		dockTabWidget->addTab (SearchTabWidget_,
+				mgr->GetIcon ("edit-find"), tr ("Search"));
 
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
