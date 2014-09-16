@@ -595,6 +595,10 @@ namespace Murm
 			const auto from = info.From_ - 2000000000;
 			if (!ChatEntries_.contains (from))
 			{
+				qDebug () << Q_FUNC_INFO
+						<< "unknown chat entry"
+						<< from
+						<< "; requesting info";
 				PendingMessages_ << info;
 				Conn_->RequestChatInfo (from);
 				return;
