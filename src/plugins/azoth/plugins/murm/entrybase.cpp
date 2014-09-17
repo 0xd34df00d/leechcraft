@@ -261,6 +261,9 @@ namespace Murm
 
 		msg->SetBody (contentsInfo.Contents_);
 
+		if (!contentsInfo.HasAdditionalInfo_)
+			return;
+
 		QPointer<VkMessage> safeMsg (msg);
 		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
 				[this, safeMsg] (const FullMessageInfo& msgInfo) -> void
