@@ -177,77 +177,93 @@ namespace Murm
 
 			return result;
 		}
-	}
 
-	void EntryBase::HandleAttaches (VkMessage *msg, const MessageInfo& info)
-	{
-		struct AttachInfo
+		struct ContentsInfo
 		{
-			QString Type_;
-			QString ID_;
+			QString Contents_;
+			bool HasAdditionalInfo_;
 		};
-		QMap<int, AttachInfo> attaches;
 
-		const QString attachMarker ("attach");
-		const QString typeMarker ("_type");
-		for (const auto& pair : Util::Stlize (info.Params_))
-		{
-			auto key = pair.first;
-			if (!key.startsWith (attachMarker))
-				continue;
 
-			key = key.mid (attachMarker.size ());
-			const bool isType = key.endsWith (typeMarker);
-			if (isType)
-				key.chop (typeMarker.size ());
-
-			bool ok = false;
-			const auto num = key.toInt (&ok);
-			if (!ok)
-				continue;
-
-			auto& attach = attaches [num];
-			if (isType)
-				attach.Type_ = pair.second.toString ();
-			else
-				attach.ID_ = pair.second.toString ();
-		}
-
-		QStringList photoIds, wallIds, audioIds, videoIds;
-		for (const auto& info : attaches)
-			if (info.Type_ == "photo")
-				photoIds << info.ID_;
-			else if (info.Type_ == "wall")
-				wallIds << info.ID_;
-			else if (info.Type_ == "audio")
-				audioIds << info.ID_;
-			else if (info.Type_ == "video")
-				videoIds << info.ID_;
-		if (photoIds.isEmpty () &&
-				wallIds.isEmpty () &&
-				audioIds.isEmpty () &&
-				videoIds.isEmpty ())
-			return;
-
-		const QString audioDivStyle = "border-color: #CDCCCC; "
+		const QString AudioDivStyle = "border-color: #CDCCCC; "
 				"margin-top: 2px; margin-bottom: 0px; "
 				"border-width: 1px; border-style: solid; border-radius: 5px; "
 				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
 
-		QString newContents = msg->GetBody ();
-		for (const auto& id : photoIds)
-			newContents += "<div id='photostub_" + id + "'></div>";
-		for (const auto& id : wallIds)
-			newContents += "<div id='wallstub_" + id + "'></div>";
-		for (const auto& id : audioIds)
-			newContents += "<div id='audiostub_" + id + "' style='" + audioDivStyle + "'></div>";
-		for (const auto& id : videoIds)
-			newContents += "<div id='videostub_" + id + "'></div>";
-		msg->SetBody (newContents);
+		ContentsInfo ToMessageContents (const MessageInfo& info)
+		{
+			auto newContents = info.Text_;
+			struct AttachInfo
+			{
+				QString Type_;
+				QString ID_;
+			};
+			QMap<int, AttachInfo> attaches;
+
+			const QString attachMarker ("attach");
+			const QString typeMarker ("_type");
+			for (const auto& pair : Util::Stlize (info.Params_))
+			{
+				auto key = pair.first;
+				if (!key.startsWith (attachMarker))
+					continue;
+
+				key = key.mid (attachMarker.size ());
+				const bool isType = key.endsWith (typeMarker);
+				if (isType)
+					key.chop (typeMarker.size ());
+
+				bool ok = false;
+				const auto num = key.toInt (&ok);
+				if (!ok)
+					continue;
+
+				auto& attach = attaches [num];
+				if (isType)
+					attach.Type_ = pair.second.toString ();
+				else
+					attach.ID_ = pair.second.toString ();
+			}
+
+			QStringList photoIds, wallIds, audioIds, videoIds;
+			for (const auto& info : attaches)
+				if (info.Type_ == "photo")
+					photoIds << info.ID_;
+				else if (info.Type_ == "wall")
+					wallIds << info.ID_;
+				else if (info.Type_ == "audio")
+					audioIds << info.ID_;
+				else if (info.Type_ == "video")
+					videoIds << info.ID_;
+
+			if (photoIds.isEmpty () &&
+					wallIds.isEmpty () &&
+					audioIds.isEmpty () &&
+					videoIds.isEmpty ())
+				return { newContents, false };
+
+			for (const auto& id : photoIds)
+				newContents += "<div id='photostub_" + id + "'></div>";
+			for (const auto& id : wallIds)
+				newContents += "<div id='wallstub_" + id + "'></div>";
+			for (const auto& id : audioIds)
+				newContents += "<div id='audiostub_" + id + "' style='" + AudioDivStyle + "'></div>";
+			for (const auto& id : videoIds)
+				newContents += "<div id='videostub_" + id + "'></div>";
+
+			return { newContents, true };
+		}
+	}
+
+	void EntryBase::HandleAttaches (VkMessage *msg, const MessageInfo& info)
+	{
+		const auto& contentsInfo = ToMessageContents (info);
+
+		msg->SetBody (contentsInfo.Contents_);
 
 		QPointer<VkMessage> safeMsg (msg);
 		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
-				[this, safeMsg, audioDivStyle] (const FullMessageInfo& msgInfo) -> void
+				[this, safeMsg] (const FullMessageInfo& msgInfo) -> void
 				{
 					if (!safeMsg)
 						return;
@@ -297,7 +313,7 @@ namespace Murm
 
 						if (!repost.Audios_.empty ())
 						{
-							replacement += "<div style='" + audioDivStyle + "'>";
+							replacement += "<div style='" + AudioDivStyle + "'>";
 							for (const auto& audio : repost.Audios_)
 								replacement += Audio2Replacement (audio,
 										Account_->GetCoreProxy ());
