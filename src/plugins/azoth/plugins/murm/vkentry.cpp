@@ -351,7 +351,6 @@ namespace Murm
 			FixEmoji (info.Text_);
 
 		auto msg = new VkMessage (false, dir, IMessage::Type::ChatMessage, this);
-		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
 
