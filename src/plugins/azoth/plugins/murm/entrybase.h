@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QObject>
+#include <QList>
+#include <QPair>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iupdatablechatentry.h>
 
@@ -67,6 +69,8 @@ namespace Murm
 		void PurgeMessages (const QDateTime& before);
 	protected:
 		void HandleAttaches (VkMessage*, const MessageInfo&);
+	private:
+		void PerformReplacements (QList<QPair<QString, QString>>, QString&);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);

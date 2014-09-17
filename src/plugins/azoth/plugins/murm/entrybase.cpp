@@ -271,7 +271,6 @@ namespace Murm
 					if (!safeMsg)
 						return;
 
-					QString js;
 					auto body = safeMsg->GetBody ();
 
 					QList<QPair<QString, QString>> replacements;
@@ -335,24 +334,31 @@ namespace Murm
 						replacements.append ({ id, replacement });
 					}
 
-					for (auto& pair : replacements)
-					{
-						body.replace ("<div id='" + pair.first + "'></div>",
-								"<div>" + pair.second + "</div>");
-
-						pair.second.replace ('\\', "\\\\");
-						pair.second.replace ('"', "\\\"");
-
-						js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) {};")
-								.arg (pair.first)
-								.arg (pair.second);
-					}
+					const auto safeThis = qobject_cast<EntryBase*> (safeMsg->ParentCLEntry ());
+					safeThis->PerformReplacements (replacements, body);
 
 					safeMsg->SetBody (body);
-
-					auto safeThis = qobject_cast<EntryBase*> (safeMsg->ParentCLEntry ());
-					safeThis->performJS (js);
 				});
+	}
+
+	void EntryBase::PerformReplacements (QList<QPair<QString, QString>> replacements, QString& body)
+	{
+		QString js;
+
+		for (auto& pair : replacements)
+		{
+			body.replace ("<div id='" + pair.first + "'></div>",
+					"<div>" + pair.second + "</div>");
+
+			pair.second.replace ('\\', "\\\\");
+			pair.second.replace ('"', "\\\"");
+
+			js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) {};")
+					.arg (pair.first)
+					.arg (pair.second);
+		}
+
+		emit performJS (js);
 	}
 }
 }
