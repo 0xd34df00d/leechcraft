@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/azothutil.h>
 #include "vkaccount.h"
@@ -189,9 +190,9 @@ namespace Murm
 
 		const QString attachMarker ("attach");
 		const QString typeMarker ("_type");
-		for (auto pos = info.Params_.begin (); pos != info.Params_.end (); ++pos)
+		for (const auto& pair : Util::Stlize (info.Params_))
 		{
-			auto key = pos.key ();
+			auto key = pair.first;
 			if (!key.startsWith (attachMarker))
 				continue;
 
@@ -207,9 +208,9 @@ namespace Murm
 
 			auto& attach = attaches [num];
 			if (isType)
-				attach.Type_ = pos->toString ();
+				attach.Type_ = pair.second.toString ();
 			else
-				attach.ID_ = pos->toString ();
+				attach.ID_ = pair.second.toString ();
 		}
 
 		QStringList photoIds, wallIds, audioIds, videoIds;
