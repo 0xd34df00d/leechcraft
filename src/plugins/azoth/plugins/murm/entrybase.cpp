@@ -185,7 +185,7 @@ namespace Murm
 			QString Type_;
 			QString ID_;
 		};
-		QMap<int, AttachInfo> Attaches_;
+		QMap<int, AttachInfo> attaches;
 
 		const QString attachMarker ("attach");
 		const QString typeMarker ("_type");
@@ -205,7 +205,7 @@ namespace Murm
 			if (!ok)
 				continue;
 
-			auto& attach = Attaches_ [num];
+			auto& attach = attaches [num];
 			if (isType)
 				attach.Type_ = pos->toString ();
 			else
@@ -213,7 +213,7 @@ namespace Murm
 		}
 
 		QStringList photoIds, wallIds, audioIds, videoIds;
-		for (const auto& info : Attaches_)
+		for (const auto& info : attaches)
 			if (info.Type_ == "photo")
 				photoIds << info.ID_;
 			else if (info.Type_ == "wall")
