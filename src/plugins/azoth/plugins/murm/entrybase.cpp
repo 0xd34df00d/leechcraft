@@ -253,6 +253,34 @@ namespace Murm
 
 			return { newContents, true };
 		}
+
+		QString FullInfo2Replacement (const FullMessageInfo& info, const ICoreProxy_ptr& proxy)
+		{
+			auto replacement = info.Text_;
+			for (const auto& photo : info.Photos_)
+				replacement += "<br/>" + Photo2Replacement (photo);
+
+			for (const auto& video : info.Videos_)
+				replacement += "<br/>" + Video2Replacement (video, proxy);
+
+			if (!info.Audios_.empty ())
+			{
+				replacement += "<div style='" + AudioDivStyle + "'>";
+				for (const auto& audio : info.Audios_)
+					replacement += Audio2Replacement (audio, proxy);
+				replacement += "</div>";
+			}
+
+			replacement += "<div style='text-align:right'>";
+			replacement += EntryBase::tr ("Posted on: %1")
+					.arg (info.PostDate_.toString ());
+			replacement += "<br/>";
+			replacement += EntryBase::tr ("%n like(s)", 0, info.Likes_);
+			replacement += "; ";
+			replacement += EntryBase::tr ("%n repost(s)", 0, info.Reposts_);
+			replacement += "</div>";
+			return replacement;
+		}
 	}
 
 	void EntryBase::HandleAttaches (VkMessage *msg, const MessageInfo& info)
@@ -305,33 +333,8 @@ namespace Murm
 						const auto& id = QString ("wallstub_%1_%2")
 								.arg (repost.OwnerID_)
 								.arg (repost.ID_);
-
-						auto replacement = repost.Text_;
-						for (const auto& photo : repost.Photos_)
-							replacement += "<br/>" + Photo2Replacement (photo);
-
-						for (const auto& video : repost.Videos_)
-							replacement += "<br/>" + Video2Replacement (video, Account_->GetCoreProxy ());
-
-						if (!repost.Audios_.empty ())
-						{
-							replacement += "<div style='" + AudioDivStyle + "'>";
-							for (const auto& audio : repost.Audios_)
-								replacement += Audio2Replacement (audio,
-										Account_->GetCoreProxy ());
-							replacement += "</div>";
-						}
-
-						replacement += "<div style='text-align:right'>";
-						replacement += tr ("Posted on: %1")
-								.arg (repost.PostDate_.toString ());
-						replacement += "<br/>";
-						replacement += tr ("%n like(s)", 0, repost.Likes_);
-						replacement += "; ";
-						replacement += tr ("%n repost(s)", 0, repost.Reposts_);
-						replacement += "</div>";
-
-						replacements.append ({ id, replacement });
+						const auto& repl = FullInfo2Replacement (repost, Account_->GetCoreProxy ());
+						replacements.append ({ id, repl });
 					}
 
 					const auto safeThis = qobject_cast<EntryBase*> (safeMsg->ParentCLEntry ());
