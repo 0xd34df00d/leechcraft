@@ -2386,6 +2386,8 @@ namespace BitTorrent
 
 	struct __LLEECHCRAFT_API SimpleDispatcher
 	{
+		mutable bool NeedToLog_ = true;
+
 		void operator() (const libtorrent::external_ip_alert& a) const
 		{
 			Core::Instance ()->SetExternalAddress (QString::
@@ -2487,6 +2489,7 @@ namespace BitTorrent
 		void operator() (const libtorrent::state_update_alert& a) const
 		{
 			Core::Instance ()->UpdateStatus (a.status);
+			NeedToLog_ = false;
 		}
 	};
 
@@ -2531,7 +2534,7 @@ namespace BitTorrent
 
 			try
 			{
-				if (a->type () != libtorrent::state_update_alert {}.type ())
+				if (sd.NeedToLog_)
 				{
 					const auto& logmsg = QString::fromUtf8 (a->message ().c_str ());
 					qDebug () << "<libtorrent>" << logmsg;
