@@ -1308,6 +1308,16 @@ namespace Murm
 			};
 		}
 
+		void HandleBasicMsgInfo (FullMessageInfo& info, const QVariantMap& wallMap)
+		{
+			info.OwnerID_ = wallMap ["from_id"].toLongLong ();
+			info.ID_ = wallMap ["id"].toULongLong ();
+			info.Text_ = wallMap ["text"].toString ();
+			info.Likes_ = wallMap ["likes"].toMap () ["count"].toInt ();
+			info.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
+			info.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
+		}
+
 		VideoInfo VideoMap2Info (const QVariantMap& map)
 		{
 			return
@@ -1340,12 +1350,7 @@ namespace Murm
 					auto wallMap = attMap ["wall"].toMap ();
 
 					FullMessageInfo repost;
-					repost.OwnerID_ = wallMap ["from_id"].toLongLong ();
-					repost.ID_ = wallMap ["id"].toULongLong ();
-					repost.Text_ = wallMap ["text"].toString ();
-					repost.Likes_ = wallMap ["likes"].toMap () ["count"].toInt ();
-					repost.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
-					repost.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
+					HandleBasicMsgInfo (repost, wallMap);
 
 					HandleAttachments (repost, wallMap.take ("attachments"), logger);
 					wallMap.take ("attachment");
