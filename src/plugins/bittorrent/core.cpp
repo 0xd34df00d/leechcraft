@@ -2531,8 +2531,11 @@ namespace BitTorrent
 
 			try
 			{
-				const auto& logmsg = QString::fromUtf8 (a->message ().c_str ());
-				qDebug () << "<libtorrent>" << logmsg;
+				if (a->type () != libtorrent::state_update_alert {}.type ())
+				{
+					const auto& logmsg = QString::fromUtf8 (a->message ().c_str ());
+					qDebug () << "<libtorrent>" << logmsg;
+				}
 			}
 			catch (const std::exception& e)
 			{
