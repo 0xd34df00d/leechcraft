@@ -2504,9 +2504,9 @@ namespace BitTorrent
 #pragma GCC diagnostic pop
 #endif
 
-		SimpleDispatcher sd;
 		while (a.get ())
 		{
+			SimpleDispatcher sd;
 			try
 			{
 				libtorrent::handle_alert<
