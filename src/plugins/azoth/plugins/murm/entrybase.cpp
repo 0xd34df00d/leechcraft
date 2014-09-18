@@ -182,8 +182,8 @@ namespace Murm
 		{
 			QString Contents_;
 			bool HasAdditionalInfo_;
+			QStringList FwdIds_;
 		};
-
 
 		const QString AudioDivStyle = "border-color: #CDCCCC; "
 				"margin-top: 2px; margin-bottom: 0px; "
@@ -237,11 +237,10 @@ namespace Murm
 				else if (info.Type_ == "video")
 					videoIds << info.ID_;
 
-			if (photoIds.isEmpty () &&
-					wallIds.isEmpty () &&
-					audioIds.isEmpty () &&
-					videoIds.isEmpty ())
-				return { newContents, false };
+			const auto hasAdditional = !photoIds.isEmpty () ||
+					!wallIds.isEmpty () ||
+					!audioIds.isEmpty () ||
+					!videoIds.isEmpty ();
 
 			for (const auto& id : photoIds)
 				newContents += "<div id='photostub_" + id + "'></div>";
@@ -252,7 +251,12 @@ namespace Murm
 			for (const auto& id : videoIds)
 				newContents += "<div id='videostub_" + id + "'></div>";
 
-			return { newContents, true };
+			const auto& fwdIds = info.Params_.value ("fwd")
+					.toString ().split (',', QString::SkipEmptyParts);
+			for (const auto& id : fwdIds)
+				newContents += "<div id='fwdstub_" + id + "'></div>";
+
+			return { newContents, hasAdditional, fwdIds };
 		}
 
 		QString FullInfo2Replacement (const FullMessageInfo& info, const ICoreProxy_ptr& proxy)
