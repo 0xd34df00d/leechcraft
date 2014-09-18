@@ -179,6 +179,7 @@ namespace Murm
 		QList<AudioInfo> Audios_;
 		QList<VideoInfo> Videos_;
 		QList<FullMessageInfo> ContainedReposts_;
+		QList<FullMessageInfo> ForwardedMessages_;
 	};
 }
 }
