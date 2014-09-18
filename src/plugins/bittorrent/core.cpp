@@ -1401,11 +1401,6 @@ namespace BitTorrent
 		tm->Start (params);
 	}
 
-	void Core::LogMessage (const QString& message)
-	{
-		emit gotEntity (Util::MakeNotification ("BitTorrent", message, PLog_));
-	}
-
 	void Core::SetExternalAddress (const QString& address)
 	{
 		ExternalAddress_ = address;
@@ -2536,9 +2531,7 @@ namespace BitTorrent
 
 			try
 			{
-				QString logmsg = QString::fromUtf8 (a->message ().c_str ());
-				LogMessage (QDateTime::currentDateTime ().toString () + " " + logmsg);
-
+				const auto& logmsg = QString::fromUtf8 (a->message ().c_str ());
 				qDebug () << "<libtorrent>" << logmsg;
 			}
 			catch (const std::exception& e)

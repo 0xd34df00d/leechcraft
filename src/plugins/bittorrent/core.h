@@ -313,7 +313,6 @@ namespace BitTorrent
 		bool IsTorrentSuperSeeding (int) const;
 		void SetTorrentSuperSeeding (bool, int);
 		void MakeTorrent (const NewTorrentParams&) const;
-		void LogMessage (const QString&);
 		void SetExternalAddress (const QString&);
 		QString GetExternalAddress () const;
 		typedef QPair<QString, QString> BanRange_t;
