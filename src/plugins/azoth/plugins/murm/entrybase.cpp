@@ -301,10 +301,43 @@ namespace Murm
 
 		msg->SetBody (contentsInfo.Contents_);
 
+		QPointer<VkMessage> safeMsg (msg);
+
+		for (const auto& idStr : contentsInfo.FwdIds_)
+		{
+			bool converted = false;
+			const auto id = idStr.section ('_', 1, 1).toULongLong (&converted);
+			if (!converted)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to parse message ID"
+						<< idStr;
+				continue;
+			}
+
+			Account_->GetConnection ()->GetMessageInfo (id,
+					[this, safeMsg, idStr] (const FullMessageInfo& msgInfo) -> void
+					{
+						if (!safeMsg)
+							return;
+
+						auto body = safeMsg->GetBody ();
+
+						const auto& id = "fwdstub_" + idStr;
+						auto repl = "<div style='" + RepostDivStyle + "'>";
+						repl += FullInfo2Replacement (msgInfo,
+								Account_->GetCoreProxy ());
+						repl += "</div>";
+
+						PerformReplacements ({ { id, repl } }, body);
+
+						safeMsg->SetBody (body);
+					});
+		}
+
 		if (!contentsInfo.HasAdditionalInfo_)
 			return;
 
-		QPointer<VkMessage> safeMsg (msg);
 		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
 				[this, safeMsg] (const FullMessageInfo& msgInfo) -> void
 				{
