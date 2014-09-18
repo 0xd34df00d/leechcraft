@@ -2525,8 +2525,7 @@ namespace BitTorrent
 					, libtorrent::file_rename_failed_alert
 					, libtorrent::read_piece_alert
 					, libtorrent::state_update_alert
-					> alertHandler (a, sd);
-				Q_UNUSED (alertHandler);
+					> { a, sd };
 			}
 			catch (const libtorrent::libtorrent_exception&)
 			{
