@@ -350,10 +350,7 @@ namespace Xoox
 			const QString& variant, const QString& text)
 	{
 		if (ODS_)
-		{
-			// TODO
-			return 0;
-		}
+			return nullptr;
 
 		QObject *msg = Account_->CreateMessage (type, variant, text, GetJID ());
 		AllMessages_ << msg;
