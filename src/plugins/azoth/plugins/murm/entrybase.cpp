@@ -322,9 +322,9 @@ namespace Murm
 
 		for (const auto& idStr : contentsInfo.FwdIds_)
 		{
-			bool converted = false;
-			const auto id = idStr.section ('_', 1, 1).toULongLong (&converted);
-			if (!converted)
+			std::size_t endIdx = 0;
+			const auto id = std::stoull (idStr.section ('_', 1, 1).toStdString (), &endIdx);
+			if (!endIdx)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unable to parse message ID"
