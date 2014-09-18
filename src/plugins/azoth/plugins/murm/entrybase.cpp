@@ -101,7 +101,7 @@ namespace Murm
 					.arg (fullSizeStr);
 		}
 
-		QString Audio2Replacement (const AudioInfo& info, ICoreProxy_ptr proxy)
+		QString Audio2Replacement (const AudioInfo& info, const ICoreProxy_ptr& proxy)
 		{
 			auto durStr = LeechCraft::Util::MakeTimeFromLong (info.Duration_);
 			if (durStr.startsWith ("00:"))
@@ -161,7 +161,7 @@ namespace Murm
 			return result;
 		}
 
-		QString Video2Replacement (const VideoInfo& info, ICoreProxy_ptr)
+		QString Video2Replacement (const VideoInfo& info, const ICoreProxy_ptr&)
 		{
 			QString result = "<div>";
 			result += QString ("<a href='http://vk.com/video%1_%2' target='_blank'>")
