@@ -1386,6 +1386,7 @@ namespace Murm
 				continue;
 
 			const auto& map = item.toMap ();
+			HandleBasicMsgInfo (info, map);
 			HandleAttachments (info, map ["attachments"], Logger_);
 		}
 
