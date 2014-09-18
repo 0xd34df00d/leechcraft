@@ -29,3 +29,4 @@ target_link_libraries (leechcraft_advancednotifications_dolle
 
 install (TARGETS leechcraft_advancednotifications_dolle DESTINATION ${LC_PLUGINS_DEST})
 
+FindQtLibs (leechcraft_advancednotifications_dolle Gui)
