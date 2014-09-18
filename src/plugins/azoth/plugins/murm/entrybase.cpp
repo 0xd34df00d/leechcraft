@@ -297,6 +297,13 @@ namespace Murm
 				replacement += "</div>";
 			}
 
+			for (const auto& fwd : info.ForwardedMessages_)
+			{
+				replacement += "<div style='" + RepostDivStyle + "'>";
+				replacement += FullInfo2Replacement (fwd, proxy, true);
+				replacement += "</div>";
+			}
+
 			if (!fwdMode)
 			{
 				replacement += "<div style='text-align:right'>";
