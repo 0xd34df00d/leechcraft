@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "dolle.h"
+#include <QIcon>
 #include "notificationhandler.h"
 #include "dockutil.h"
 
