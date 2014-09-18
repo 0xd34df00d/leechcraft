@@ -244,12 +244,7 @@ namespace Murm
 
 			const auto entry = Acc_->GetEntry (uid);
 			if (!entry)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no entry for"
-						<< uid;
 				continue;
-			}
 
 			auto item = new QStandardItem (entry->GetEntryName ());
 			item->setEditable (false);
