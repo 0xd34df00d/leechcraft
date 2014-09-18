@@ -262,9 +262,20 @@ namespace Murm
 			return { newContents, hasAdditional, fwdIds };
 		}
 
-		QString FullInfo2Replacement (const FullMessageInfo& info, const ICoreProxy_ptr& proxy)
+		QString FullInfo2Replacement (const FullMessageInfo& info, const ICoreProxy_ptr& proxy, bool fwdMode)
 		{
-			auto replacement = info.Text_;
+			QString replacement;
+
+			if (fwdMode)
+			{
+				replacement += "<div>";
+				replacement += EntryBase::tr ("Forwarded message from %1")
+						.arg (info.PostDate_.toString ());
+				replacement += "</div>";
+			}
+
+			replacement += info.Text_;
+
 			for (const auto& photo : info.Photos_)
 				replacement += "<br/>" + Photo2Replacement (photo);
 
@@ -282,18 +293,21 @@ namespace Murm
 			for (const auto& repost : info.ContainedReposts_)
 			{
 				replacement += "<div style='" + RepostDivStyle + "'>";
-				replacement += FullInfo2Replacement (repost, proxy);
+				replacement += FullInfo2Replacement (repost, proxy, false);
 				replacement += "</div>";
 			}
 
-			replacement += "<div style='text-align:right'>";
-			replacement += EntryBase::tr ("Posted on: %1")
-					.arg (info.PostDate_.toString ());
-			replacement += "<br/>";
-			replacement += EntryBase::tr ("%n like(s)", 0, info.Likes_);
-			replacement += "; ";
-			replacement += EntryBase::tr ("%n repost(s)", 0, info.Reposts_);
-			replacement += "</div>";
+			if (!fwdMode)
+			{
+				replacement += "<div style='text-align:right'>";
+				replacement += EntryBase::tr ("Posted on: %1")
+						.arg (info.PostDate_.toString ());
+				replacement += "<br/>";
+				replacement += EntryBase::tr ("%n like(s)", 0, info.Likes_);
+				replacement += "; ";
+				replacement += EntryBase::tr ("%n repost(s)", 0, info.Reposts_);
+				replacement += "</div>";
+			}
 			return replacement;
 		}
 	}
@@ -329,7 +343,7 @@ namespace Murm
 						const auto& id = "fwdstub_" + idStr;
 						auto repl = "<div style='" + RepostDivStyle + "'>";
 						repl += FullInfo2Replacement (msgInfo,
-								Account_->GetCoreProxy ());
+								Account_->GetCoreProxy (), true);
 						repl += "</div>";
 
 						PerformReplacements ({ { id, repl } }, body);
@@ -381,7 +395,7 @@ namespace Murm
 						const auto& id = QString ("wallstub_%1_%2")
 								.arg (repost.OwnerID_)
 								.arg (repost.ID_);
-						const auto& repl = FullInfo2Replacement (repost, Account_->GetCoreProxy ());
+						const auto& repl = FullInfo2Replacement (repost, Account_->GetCoreProxy (), false);
 						replacements.append ({ id, repl });
 					}
 
