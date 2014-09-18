@@ -1362,6 +1362,22 @@ namespace Murm
 					logger << "HandleAttachments" << attMap.keys ();
 			}
 		}
+
+		void HandleForwarded (FullMessageInfo& info, const QVariant& fwds, Logger& logger)
+		{
+			const auto& fwdList = fwds.toList ();
+			for (const auto& fwdVar : fwdList)
+			{
+				const auto& map = fwdVar.toMap ();
+
+				FullMessageInfo subInfo;
+				HandleBasicMsgInfo (subInfo, map);
+				HandleAttachments (subInfo, map ["attachments"], logger);
+				HandleForwarded (subInfo, map ["fwd_messages"], logger);
+
+				info.ForwardedMessages_ << subInfo;
+			}
+		}
 	}
 
 	void VkConnection::handleMessageInfoFetched ()
@@ -1388,6 +1404,7 @@ namespace Murm
 			const auto& map = item.toMap ();
 			HandleBasicMsgInfo (info, map);
 			HandleAttachments (info, map ["attachments"], Logger_);
+			HandleForwarded (info, map ["fwd_messages"], Logger_);
 		}
 
 		setter (info);
