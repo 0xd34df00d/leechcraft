@@ -61,7 +61,7 @@ namespace Liznoo
 		}
 	}
 
-	PlatformMac::PlatformMac (const ICoreProxy_ptr& proxy, Object *parent)
+	PlatformMac::PlatformMac (const ICoreProxy_ptr& proxy, QObject *parent)
 	: PlatformLayer (proxy, parent)
 	, Port_ (IORegisterForSystemPower (this, &NotifyPortRef_, IOCallbackProxy, &NotifierObject_))
 	, PSEventsSource_ (IOPSNotificationCreateRunLoopSource (PSCallbackProxy, this))
