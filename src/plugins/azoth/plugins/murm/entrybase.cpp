@@ -189,6 +189,7 @@ namespace Murm
 				"margin-top: 2px; margin-bottom: 0px; "
 				"border-width: 1px; border-style: solid; border-radius: 5px; "
 				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
+		const QString RepostDivStyle {};
 
 		ContentsInfo ToMessageContents (const MessageInfo& info)
 		{
@@ -268,6 +269,13 @@ namespace Murm
 				replacement += "<div style='" + AudioDivStyle + "'>";
 				for (const auto& audio : info.Audios_)
 					replacement += Audio2Replacement (audio, proxy);
+				replacement += "</div>";
+			}
+
+			for (const auto& repost : info.ContainedReposts_)
+			{
+				replacement += "<div style='" + RepostDivStyle + "'>";
+				replacement += FullInfo2Replacement (repost, proxy);
 				replacement += "</div>";
 			}
 
