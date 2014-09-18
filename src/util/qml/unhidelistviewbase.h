@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QList>
 
 #if QT_VERSION < 0x050000
