@@ -189,7 +189,10 @@ namespace Murm
 				"margin-top: 2px; margin-bottom: 0px; "
 				"border-width: 1px; border-style: solid; border-radius: 5px; "
 				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
-		const QString RepostDivStyle {};
+		const QString RepostDivStyle = "border-color: #ABAAAA; "
+				"margin-top: 2px; margin-bottom: 0px; margin-left: 1em; margin-right: 0em; "
+				"border-width: 1px; border-style: solid; border-radius: 5px; "
+				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
 
 		ContentsInfo ToMessageContents (const MessageInfo& info)
 		{
