@@ -2500,7 +2500,7 @@ namespace BitTorrent
 					<< ":"
 					<< a.port
 					<< "; the SHA1 hash is"
-					<< a.info_hash.to_string ().c_str ();
+					<< libtorrent::to_hex (a.info_hash.to_string ()).c_str ();
 			NeedToLog_ = false;
 		}
 
@@ -2525,7 +2525,7 @@ namespace BitTorrent
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "got peers for"
-					<< a.info_hash.to_string ().c_str ();
+					<< libtorrent::to_hex (a.info_hash.to_string ()).c_str ();
 			NeedToLog_ = false;
 		}
 	};
