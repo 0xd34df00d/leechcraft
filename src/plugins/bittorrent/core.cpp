@@ -237,6 +237,7 @@ namespace BitTorrent
 #endif
 
 			setLoggingSettings ();
+			sslPortChanged ();
 			tcpPortRangeChanged ();
 
 #if LIBTORRENT_VERSION_NUM < 010000
@@ -2056,6 +2057,8 @@ namespace BitTorrent
 				this, "maxUploadsChanged");
 		XmlSettingsManager::Instance ()->RegisterObject ("MaxConnections",
 				this, "maxConnectionsChanged");
+		XmlSettingsManager::Instance ()->RegisterObject ({ "SSLPort", "EnableSSLPort" },
+				this, "sslPortChanged");
 
 		QList<QByteArray> proxySettings;
 		proxySettings << "TrackerProxyEnabled"
@@ -2635,6 +2638,18 @@ namespace BitTorrent
 		Session_->listen_on (std::make_pair (ports.at (0).toInt (),
 					ports.at (1).toInt ()));
 #endif
+	}
+
+	void Core::sslPortChanged ()
+	{
+		const bool enable = XmlSettingsManager::Instance ()->property ("EnableSSLPort").toBool ();
+		const auto sslPort = enable ?
+				XmlSettingsManager::Instance ()->property ("SSLPort").toInt () :
+				0;
+
+		auto settings = Session_->settings ();
+		settings.ssl_listen = sslPort;
+		Session_->set_settings (settings);
 	}
 
 	void Core::autosaveIntervalChanged ()

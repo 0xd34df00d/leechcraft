@@ -9,6 +9,12 @@
 				<item type="spinboxrange" property="TCPPortRange" default="56881:56889" minimum="1" maximum="65535" step="5">
 					<label lang="en" value="Port range:" />
 				</item>
+				<item type="groupbox" checkable="true" property="EnableSSLPort" default="on">
+					<label value="Enable port for SSL torrents" />
+					<item type="spinbox" property="SSLPort" default="4433" minimum="1024" maximum="65535">
+						<label value="SSL port:" />
+					</item>
+				</item>
 				<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
 					<label lang="en" value="Maximum upload connections:" />
 				</item>

@@ -368,6 +368,7 @@ namespace BitTorrent
 	public slots:
 		void queryLibtorrentForWarnings ();
 		void tcpPortRangeChanged ();
+		void sslPortChanged ();
 		void autosaveIntervalChanged ();
 		void maxUploadsChanged ();
 		void maxConnectionsChanged ();
