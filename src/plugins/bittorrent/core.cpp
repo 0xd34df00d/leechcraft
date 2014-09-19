@@ -2491,6 +2491,43 @@ namespace BitTorrent
 			Core::Instance ()->UpdateStatus (a.status);
 			NeedToLog_ = false;
 		}
+
+		void operator() (const libtorrent::dht_announce_alert& a) const
+		{
+			qDebug () << "<libtorrent> <DHT>"
+					<< "got announce from"
+					<< a.ip.to_string ().c_str ()
+					<< ":"
+					<< a.port
+					<< "; the SHA1 hash is"
+					<< a.info_hash.to_string ().c_str ();
+			NeedToLog_ = false;
+		}
+
+		void operator() (const libtorrent::dht_reply_alert& a) const
+		{
+			qDebug () << "<libtorrent> <DHT>"
+					<< "got reply with"
+					<< a.num_peers
+					<< "peers";
+			NeedToLog_ = false;
+		}
+
+		void operator() (const libtorrent::dht_bootstrap_alert& a) const
+		{
+			qDebug () << "<libtorrent> <DHT>"
+					<< "bootstrapped; "
+					<< a.message ().c_str ();
+			NeedToLog_ = false;
+		}
+
+		void operator() (const libtorrent::dht_get_peers_alert& a) const
+		{
+			qDebug () << "<libtorrent> <DHT>"
+					<< "got peers for"
+					<< a.info_hash.to_string ().c_str ();
+			NeedToLog_ = false;
+		}
 	};
 
 #undef __LLEECHCRAFT_API
@@ -2523,6 +2560,10 @@ namespace BitTorrent
 					, libtorrent::file_rename_failed_alert
 					, libtorrent::read_piece_alert
 					, libtorrent::state_update_alert
+					, libtorrent::dht_announce_alert
+					, libtorrent::dht_reply_alert
+					, libtorrent::dht_bootstrap_alert
+					, libtorrent::dht_get_peers_alert
 					> { a, sd };
 			}
 			catch (const libtorrent::libtorrent_exception&)
