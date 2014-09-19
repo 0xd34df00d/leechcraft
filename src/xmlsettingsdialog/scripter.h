@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_SCRIPTER_H
-#define XMLSETTINGSDIALOG_SCRIPTER_H
+#pragma once
+
 #include <memory>
 #include <QVariant>
 #include <QDomElement>
@@ -39,8 +39,8 @@ namespace LeechCraft
 {
 	class Scripter
 	{
-		std::auto_ptr<QScriptEngine> Engine_;
-		std::auto_ptr<Settings> Settings_;
+		std::unique_ptr<QScriptEngine> Engine_;
+		std::unique_ptr<Settings> Settings_;
 		QDomElement Container_;
 	public:
 		Scripter (const QDomElement&);
@@ -53,6 +53,3 @@ namespace LeechCraft
 		void Reset ();
 	};
 };
-
-#endif
-
