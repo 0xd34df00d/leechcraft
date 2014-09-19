@@ -43,7 +43,7 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		std::auto_ptr<QLocalServer> Server_;
+		const std::unique_ptr<QLocalServer> Server_;
 	public:
 		LocalSocketHandler ();
 	private slots:

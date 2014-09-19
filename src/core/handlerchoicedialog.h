@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef HANDLERCHOICEDIALOG_H
-#define HANDLERCHOICEDIALOG_H
+#pragma once
+
 #include <memory>
 #include <QMap>
 #include <QDialog>
@@ -57,11 +57,14 @@ namespace LeechCraft
 		Q_OBJECT
 
 		Ui::HandlerChoiceDialog Ui_;
-		std::auto_ptr<QButtonGroup> Buttons_;
+		const std::unique_ptr<QButtonGroup> Buttons_;
+
 		typedef QMap<QString, IDownload*> downloaders_t;
 		downloaders_t Downloaders_;
+
 		typedef QMap<QString, IEntityHandler*> handlers_t;
 		handlers_t Handlers_;
+
 		QMap<QString, const IInfo*> Infos_;
 
 		mutable QString Suggestion_;
@@ -189,5 +192,3 @@ namespace LeechCraft
 		void on_BrowseButton__released ();
 	};
 }
-
-#endif
