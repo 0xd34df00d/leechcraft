@@ -33,8 +33,6 @@
 #include <QStringList>
 #include <QFile>
 #include <typeinfo>
-#include "typeregister.h"
-#include "file.h"
 
 using namespace LeechCraft;
 
@@ -42,7 +40,6 @@ Scripter::Scripter (const QDomElement& elem)
 : Settings_ (new Settings)
 , Container_ (elem)
 {
-	TypeRegister::Instance ();
 }
 
 QStringList Scripter::GetOptions ()
@@ -117,16 +114,7 @@ QString Scripter::GetScript (const QDomElement& elem) const
 
 void Scripter::FeedRequiredClasses () const
 {
-	QScriptValue global = Engine_->globalObject ();
-	const QStringList& classes = global.property ("RequiredClasses").call ()
-		.toString ().split (" ", QString::SkipEmptyParts);
-
-	Q_FOREACH (const QString& elm, classes)
-		global.setProperty (elm, TypeRegister::Instance ().GetValueForName (elm,
-						Engine_.get ()));
-
-	global.setProperty ("Settings", Engine_->newQObject (Settings_.get ()));
-	qScriptRegisterMetaType (Engine_.get (), toScriptValue, fromScriptValue);
+	Engine_->importExtension ("qt.core");
 }
 
 void Scripter::Reset ()

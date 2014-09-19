@@ -14,10 +14,6 @@ set (SRCS
 	filepicker.cpp
 	radiogroup.cpp
 	scripter.cpp
-	typeregister.cpp
-	dir.cpp
-	file.cpp
-	bytearray.cpp
 	settings.cpp
 	basesettingsmanager.cpp
 	fontpicker.cpp
