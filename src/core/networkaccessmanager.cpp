@@ -212,31 +212,26 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 
 void LeechCraft::NetworkAccessManager::DoCommonAuth (const QString& msg, QAuthenticator *authen)
 {
-	QString realm = authen->realm ();
+	const auto& realm = authen->realm ();
 
-	QString suggestedUser = authen->user ();
-	QString suggestedPassword = authen->password ();
+	auto suggestedUser = authen->user ();
+	auto suggestedPassword = authen->password ();
 
-	StorageBackend *backend = Core::Instance ().GetStorageBackend ();
+	const auto backend = Core::Instance ().GetStorageBackend ();
 
 	if (suggestedUser.isEmpty ())
 		backend->GetAuth (realm, suggestedUser, suggestedPassword);
 
-	std::auto_ptr<AuthenticationDialog> dia (
-			new AuthenticationDialog (msg,
-				suggestedUser,
-				suggestedPassword,
-				qApp->activeWindow ())
-			);
-	if (dia->exec () == QDialog::Rejected)
+	AuthenticationDialog dia (msg, suggestedUser, suggestedPassword, qApp->activeWindow ());
+	if (dia.exec () == QDialog::Rejected)
 		return;
 
-	QString login = dia->GetLogin ();
-	QString password = dia->GetPassword ();
+	const auto& login = dia.GetLogin ();
+	const auto& password = dia.GetPassword ();
 	authen->setUser (login);
 	authen->setPassword (password);
 
-	if (dia->ShouldSave ())
+	if (dia.ShouldSave ())
 		backend->SetAuth (realm, login, password);
 }
 
