@@ -29,11 +29,11 @@
 
 #pragma once
 
-#include <memory>
 #include <QNetworkAccessManager>
-#include <QTimer>
 #include <QLocale>
 #include "interfaces/core/ihookproxy.h"
+
+class QTimer;
 
 namespace LeechCraft
 {
@@ -48,7 +48,7 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		std::auto_ptr<QTimer> CookieSaveTimer_;
+		QTimer * const CookieSaveTimer_;
 		QList<QLocale> Locales_;
 		QString LocaleStr_;
 

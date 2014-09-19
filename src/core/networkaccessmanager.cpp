@@ -30,7 +30,6 @@
 #include "networkaccessmanager.h"
 #include <stdexcept>
 #include <algorithm>
-#include <memory>
 #include <QNetworkRequest>
 #include <QDir>
 #include <QFile>
@@ -38,6 +37,7 @@
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QSettings>
+#include <QTimer>
 #include <util/util.h>
 #include <util/network/customcookiejar.h>
 #include <util/network/networkdiskcache.h>
@@ -56,7 +56,7 @@ using namespace LeechCraft::Util;
 
 NetworkAccessManager::NetworkAccessManager (QObject *parent)
 : QNetworkAccessManager (parent)
-, CookieSaveTimer_ (new QTimer ())
+, CookieSaveTimer_ (new QTimer (this))
 {
 	connect (this,
 			SIGNAL (authenticationRequired (QNetworkReply*,
@@ -125,7 +125,7 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			<< file.fileName ()
 			<< file.errorString ();
 
-	connect (CookieSaveTimer_.get (),
+	connect (CookieSaveTimer_,
 			SIGNAL (timeout ()),
 			this,
 			SLOT (saveCookies ()));
