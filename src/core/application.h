@@ -27,15 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
-#include <memory>
+#pragma once
+
 #ifndef Q_MOC_RUN // see https://bugreports.qt-project.org/browse/QTBUG-22829
 #include <boost/program_options.hpp>
 #endif
 #include <QApplication>
 #include <QStringList>
-#include <QTranslator>
 
 class QSplashScreen;
 
@@ -54,7 +52,6 @@ namespace LeechCraft
 		const QString DefaultSystemStyleName_;
 		QString PreviousLangName_;
 
-		std::auto_ptr<QTranslator> Translator_;
 		boost::program_options::variables_map VarMap_;
 		bool CatchExceptions_;
 
@@ -151,6 +148,3 @@ namespace LeechCraft
 		void checkStillRunning ();
 	};
 };
-
-#endif
-

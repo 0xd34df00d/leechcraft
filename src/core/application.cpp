@@ -164,7 +164,7 @@ namespace LeechCraft
 		QCoreApplication::setApplicationVersion (LEECHCRAFT_VERSION);
 		QCoreApplication::setOrganizationName ("Deviant");
 
-		Translator_.reset (Util::InstallTranslator (""));
+		Util::InstallTranslator ("");
 
 		qRegisterMetaType<QModelIndex> ("QModelIndex");
 		qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
