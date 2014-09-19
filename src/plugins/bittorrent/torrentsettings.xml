@@ -416,6 +416,9 @@
 				<item type="checkbox" property="PerformanceWarning" default="on">
 					<label lang="en" value="Performance warnings" />
 				</item>
+				<item type="checkbox" property="NotificationDHT" default="true">
+					<label value="DHT events" />
+				</item>
 			</groupbox>
 		</tab>
 	</page>
