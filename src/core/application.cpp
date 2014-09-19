@@ -618,6 +618,10 @@ namespace LeechCraft
 		if (IsAlreadyRunning ())
 			return;
 
+		const auto fdlimit = sysconf (_SC_OPEN_MAX);
+		for (int i = STDERR_FILENO + 1; i < fdlimit; ++i)
+			close (i);
+
 		QProcess::startDetached (applicationFilePath (), Arguments_);
 
 		quit ();
