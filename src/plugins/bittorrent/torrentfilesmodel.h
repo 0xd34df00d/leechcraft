@@ -96,11 +96,21 @@ namespace LeechCraft
 					RoleSize,
 					RoleProgress
 				};
+
 				enum
 				{
 					ColumnPath,
+
+					/* Columns for dynamic files list.
+					 */
 					ColumnPriority,
-					ColumnProgress
+					ColumnProgress,
+					ColumnDynamicMax,
+
+					/* Columns for torrent add list.
+					 */
+					ColumnSize = ColumnPriority,
+					ColumnAddListMax
 				};
 
 				TorrentFilesModel (QObject *parent = 0);
