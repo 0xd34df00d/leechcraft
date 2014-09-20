@@ -106,16 +106,6 @@ namespace Plugins
 {
 namespace BitTorrent
 {
-	Core::HandleFinder::HandleFinder (const libtorrent::torrent_handle& h)
-	: Handle_ (h)
-	{
-	}
-
-	bool Core::HandleFinder::operator() (const Core::TorrentStruct& ts) const
-	{
-		return ts.Handle_ == Handle_;
-	}
-
 	Core::PerTrackerAccumulator::PerTrackerAccumulator (Core::pertrackerstats_t& stats)
 	: Stats_ (stats)
 	{
@@ -1448,9 +1438,7 @@ namespace BitTorrent
 
 	void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
 	{
-		HandleDict_t::const_iterator torrent =
-			std::find_if (Handles_.begin (), Handles_.end (),
-					HandleFinder (a.handle));
+		const auto torrent = FindHandle (a.handle);
 		if (torrent == Handles_.end ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1480,9 +1468,7 @@ namespace BitTorrent
 
 	void Core::HandleMetadata (const libtorrent::metadata_received_alert& a)
 	{
-		HandleDict_t::iterator torrent =
-			std::find_if (Handles_.begin (), Handles_.end (),
-					HandleFinder (a.handle));
+		const auto torrent = FindHandle (a.handle);
 		if (torrent == Handles_.end ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1522,9 +1508,7 @@ namespace BitTorrent
 			const auto handle = status.handle;
 			Handle2Status_ [handle] = handle.status (0);
 
-			const auto pos = std::find_if (Handles_.begin (), Handles_.end (),
-					HandleFinder { handle });
-
+			const auto pos = FindHandle (handle);
 			if (pos == Handles_.end ())
 			{
 				qWarning () << Q_FUNC_INFO

@@ -112,13 +112,6 @@ namespace BitTorrent
 			LeechCraft::TaskParameters Parameters_;
 		};
 
-		struct HandleFinder
-		{
-			const libtorrent::torrent_handle& Handle_;
-
-			HandleFinder (const libtorrent::torrent_handle&);
-			bool operator() (const TorrentStruct&) const;
-		};
 
 		mutable QMap<libtorrent::torrent_handle, libtorrent::torrent_status> Handle2Status_;
 	public:
