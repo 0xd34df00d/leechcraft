@@ -43,14 +43,6 @@ namespace Plugins
 {
 namespace BitTorrent
 {
-	namespace
-	{
-		bool HasChildren (const QModelIndex& index)
-		{
-			return index.model ()->rowCount (index.sibling (index.row (), 0));
-		}
-	};
-
 	FilesViewDelegate::FilesViewDelegate (QTreeView *parent)
 	: QStyledItemDelegate (parent)
 	, View_ (parent)
