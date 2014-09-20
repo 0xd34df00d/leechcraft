@@ -487,35 +487,33 @@ namespace LeechCraft
 				if (index.column () != ColumnPath)
 					index = index.sibling (index.row (), ColumnPath);
 
-				TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-				for (auto i = Path2TreeItem_.begin (), end = Path2TreeItem_.end (); i != end; ++i)
-				{
-					if (i->second == item)
-					{
-						if (item->Data (0, RoleProgress).toDouble () != 1)
-						{
-#ifdef Q_OS_WIN32
-							QString filename = QString::fromUtf16 (reinterpret_cast<const ushort*> (i->first.filename ().c_str ()));
-#else
-							QString filename = QString::fromUtf8 (i->first.filename ().c_str ());
-#endif
-							emit gotEntity (Util::MakeNotification ("BitTorrent",
-									tr ("The file %1 hasn't finished downloading yet.")
-										.arg (filename),
-									PWarning_));
-						}
-						else
-						{
-							boost::filesystem::path full = BasePath_ / i->first;
-							QString path = QString::fromUtf8 (full.string ().c_str ());
-							Entity e = Util::MakeEntity (QUrl::fromLocalFile (path),
-									QString (),
-									FromUserInitiated);
-							emit gotEntity (e);
-						}
+				const auto item = static_cast<TreeItem*> (index.internalPointer ());
+				const auto pos = std::find_if (Path2TreeItem_.begin (), Path2TreeItem_.end (),
+						[item] (const Path2TreeItem_t::value_type& pair)
+							{ return pair.second == item; });
+				if (pos == Path2TreeItem_.end ())
+					return;
 
-						break;
-					}
+				if (item->Data (0, RoleProgress).toDouble () != 1)
+				{
+#ifdef Q_OS_WIN32
+					const auto& filename = QString::fromUtf16 (reinterpret_cast<const ushort*> (pos->first.filename ().c_str ()));
+#else
+					const auto& filename = QString::fromUtf8 (pos->first.filename ().c_str ());
+#endif
+					emit gotEntity (Util::MakeNotification ("BitTorrent",
+							tr ("The file %1 hasn't finished downloading yet.")
+								.arg (filename),
+							PWarning_));
+				}
+				else
+				{
+					const auto& full = BasePath_ / pos->first;
+					const auto& path = QString::fromUtf8 (full.string ().c_str ());
+					const auto& e = Util::MakeEntity (QUrl::fromLocalFile (path),
+							{},
+							FromUserInitiated);
+					emit gotEntity (e);
 				}
 			}
 
