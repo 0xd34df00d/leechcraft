@@ -92,7 +92,7 @@ namespace LeechCraft
 				enum
 				{
 					RawDataRole = Qt::UserRole + 1,
-					RolePath,
+					RoleFileIndex,
 					RoleSize,
 					RoleProgress
 				};

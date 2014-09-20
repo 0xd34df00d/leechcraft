@@ -262,7 +262,7 @@ namespace LeechCraft
 					if (index.column () == 1)
 					{
 						TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-						Core::Instance ()->SetFilePriority (item->Data (1, RolePath).toInt (), value.toInt (), Index_);
+						Core::Instance ()->SetFilePriority (item->Data (ColumnPath, RoleFileIndex).toInt (), value.toInt (), Index_);
 						item->ModifyData (index.column (), value);
 						emit dataChanged (index, index);
 						return true;
@@ -270,7 +270,7 @@ namespace LeechCraft
 					else if (index.column () == 0)
 					{
 						TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-						Core::Instance ()->SetFilename (item->Data (1, RolePath).toInt (), value.toString (), Index_);
+						Core::Instance ()->SetFilename (item->Data (ColumnPath, RoleFileIndex).toInt (), value.toString (), Index_);
 						return true;
 					}
 					else
@@ -333,8 +333,8 @@ namespace LeechCraft
 					const auto parentItem = Path2TreeItem_ [parentPath];
 					const auto item = new TreeItem (displayData, parentItem);
 					item->ModifyData (2, static_cast<qulonglong> (pos->size), RawDataRole);
-					item->ModifyData (1, idx, RolePath);
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
+					item->ModifyData (ColumnPath, idx, RoleFileIndex);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [path] = item;
 					Path2OriginalPosition_ [path] = idx;
@@ -383,10 +383,10 @@ namespace LeechCraft
 					const auto item = new TreeItem (displayData, parentItem);
 					item->ModifyData (0, pathStr, RawDataRole);
 					item->ModifyData (2, static_cast<qulonglong> (fi.Size_), RawDataRole);
-					item->ModifyData (1, i, RolePath);
 					item->ModifyData (0, static_cast<qulonglong> (fi.Size_), RoleSize);
 					item->ModifyData (0, fi.Progress_, RoleProgress);
 					item->ModifyData (0, inst.GetExtIcon (pathStr.section ('.', -1)), Qt::DecorationRole);
+					item->ModifyData (ColumnPath, i, RoleFileIndex);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [fi.Path_] = item;
 					Path2OriginalPosition_ [fi.Path_] = i;
