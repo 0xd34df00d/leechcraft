@@ -29,10 +29,9 @@
 
 #pragma once
 
-#include <memory>
 #include <QModelIndex>
-#include <QVector>
 #include "modelsconfig.h"
+#include "modelitembase.h"
 
 namespace LeechCraft
 {
@@ -45,11 +44,8 @@ namespace Util
 	typedef QVector<ModelItem_ptr> ModelItemsList_t;
 	typedef std::shared_ptr<const ModelItem> ModelItem_cptr;
 
-	class UTIL_MODELS_API ModelItem : public std::enable_shared_from_this<ModelItem>
+	class UTIL_MODELS_API ModelItem final : public ModelItemBase<ModelItem>
 	{
-		ModelItem_wtr Parent_;
-		ModelItemsList_t Children_;
-
 		QAbstractItemModel * const Model_;
 		QModelIndex SrcIdx_;
 	public:
@@ -59,43 +55,13 @@ namespace Util
 		ModelItem ();
 		ModelItem (QAbstractItemModel *model, const QModelIndex& idx, const ModelItem_wtr& parent);
 
-		iterator begin ();
-		iterator end ();
-		const_iterator begin () const;
-		const_iterator end () const;
-
-		ModelItem_ptr GetChild (int row) const;
-		const ModelItemsList_t& GetChildren () const;
-		int GetRowCount () const;
-
 		ModelItem* EnsureChild (int row);
-
-		iterator EraseChild (iterator it);
-		iterator EraseChildren (iterator begin, iterator end);
-
-		template<typename... Args>
-		void AppendChild (Args&&... args)
-		{
-			Children_ << std::make_shared<ModelItem> (std::forward<Args> (args)...);
-		}
-
-		template<typename... Args>
-		void InsertChild (int pos, Args&&... args)
-		{
-			Children_.insert (pos, std::make_shared<ModelItem> (std::forward<Args> (args)...));
-		}
 
 		const QModelIndex& GetIndex () const;
 
 		void RefreshIndex (int modelStartingRow);
 
 		QAbstractItemModel* GetModel () const;
-
-		ModelItem_ptr GetParent () const;
-
-		int GetRow (const ModelItem_ptr& item) const;
-		int GetRow (const ModelItem_cptr& item) const;
-		int GetRow () const;
 
 		ModelItem_ptr FindChild (QModelIndex index) const;
 	};

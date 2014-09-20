@@ -40,45 +40,10 @@ namespace Util
 	}
 
 	ModelItem::ModelItem (QAbstractItemModel *model, const QModelIndex& idx, const ModelItem_wtr& parent)
-	: Parent_ { parent }
+	: ModelItemBase { parent }
 	, Model_ { model }
 	, SrcIdx_ { idx }
 	{
-	}
-
-	ModelItem::iterator ModelItem::begin ()
-	{
-		return Children_.begin ();
-	}
-
-	ModelItem::iterator ModelItem::end ()
-	{
-		return Children_.end ();
-	}
-
-	ModelItem::const_iterator ModelItem::begin () const
-	{
-		return Children_.begin ();
-	}
-
-	ModelItem::const_iterator ModelItem::end () const
-	{
-		return Children_.end ();
-	}
-
-	ModelItem_ptr ModelItem::GetChild (int row) const
-	{
-		return Children_.value (row);
-	}
-
-	const ModelItemsList_t& ModelItem::GetChildren () const
-	{
-		return Children_;
-	}
-
-	int ModelItem::GetRowCount () const
-	{
-		return Children_.size ();
 	}
 
 	ModelItem* ModelItem::EnsureChild (int row)
@@ -92,16 +57,6 @@ namespace Util
 		const auto& childIdx = Model_->index (row, 0, SrcIdx_);
 		Children_ [row].reset (new ModelItem { Model_, childIdx, shared_from_this () });
 		return Children_.at (row).get ();
-	}
-
-	ModelItem::iterator ModelItem::EraseChild (iterator it)
-	{
-		return Children_.erase (it);
-	}
-
-	ModelItem::iterator ModelItem::EraseChildren (iterator begin, iterator end)
-	{
-		return Children_.erase (begin, end);
 	}
 
 	const QModelIndex& ModelItem::GetIndex () const
@@ -118,29 +73,6 @@ namespace Util
 	QAbstractItemModel* ModelItem::GetModel () const
 	{
 		return Model_;
-	}
-
-	ModelItem_ptr ModelItem::GetParent () const
-	{
-		return Parent_.lock ();
-	}
-
-	int ModelItem::GetRow (const ModelItem_ptr& item) const
-	{
-		return Children_.indexOf (item);
-	}
-
-	int ModelItem::GetRow (const ModelItem_cptr& item) const
-	{
-		const auto pos = std::find (Children_.begin (), Children_.end (), item);
-		return pos == Children_.end () ?
-				-1 :
-				std::distance (Children_.begin (), pos);
-	}
-
-	int ModelItem::GetRow () const
-	{
-		return Parent_.lock ()->GetRow (shared_from_this ());
 	}
 
 	ModelItem_ptr ModelItem::FindChild (QModelIndex index) const
