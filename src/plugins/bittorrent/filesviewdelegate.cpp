@@ -64,15 +64,13 @@ namespace BitTorrent
 	QWidget* FilesViewDelegate::createEditor (QWidget *parent,
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		if (index.column () == TorrentFilesModel::ColumnPriority &&
-				!HasChildren (index))
+		if (index.column () == TorrentFilesModel::ColumnPriority)
 		{
-			QSpinBox *box = new QSpinBox (parent);
+			const auto box = new QSpinBox (parent);
 			box->setRange (0, 7);
 			return box;
 		}
-		else if (index.column () == TorrentFilesModel::ColumnPath &&
-				!HasChildren (index))
+		else if (index.column () == TorrentFilesModel::ColumnPath)
 			return new QLineEdit (parent);
 		else
 			return QStyledItemDelegate::createEditor (parent, option, index);
@@ -116,12 +114,10 @@ namespace BitTorrent
 
 	void FilesViewDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
 	{
-		if (index.column () == TorrentFilesModel::ColumnPriority &&
-				!HasChildren (index))
+		if (index.column () == TorrentFilesModel::ColumnPriority)
 			qobject_cast<QSpinBox*> (editor)->
 				setValue (index.data (TorrentFilesModel::RolePriority).toInt ());
-		else if (index.column () == TorrentFilesModel::ColumnPath &&
-				!HasChildren (index))
+		else if (index.column () == TorrentFilesModel::ColumnPath)
 		{
 			const auto& data = index.data (TorrentFilesModel::RoleFullPath);
 			qobject_cast<QLineEdit*> (editor)->setText (data.toString ());
