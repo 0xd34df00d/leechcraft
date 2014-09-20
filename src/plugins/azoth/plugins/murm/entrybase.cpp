@@ -194,9 +194,39 @@ namespace Murm
 				"border-width: 1px; border-style: solid; border-radius: 5px; "
 				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
 
+		QString ProcessMessageBody (QString body)
+		{
+			const QString idMarker { "[id" };
+
+			auto pos = 0;
+			while ((pos = body.indexOf ("[id", pos)) > 0)
+			{
+				const auto numStart = pos + idMarker.size ();
+				const auto pipePos = body.indexOf ('|', numStart);
+
+				const auto& numStr = body.mid (numStart, pipePos - numStart);
+				if (!std::all_of (numStr.begin (), numStr.end (), [] (const QChar& c) { return c.isDigit (); }))
+				{
+					pos += idMarker.size ();
+					continue;
+				}
+
+				const auto endPos = body.indexOf (']', pipePos);
+				const auto& name = body.mid (pipePos + 1, endPos - pipePos - 1);
+
+				const auto& newStr = QString ("<a href='https://vk.com/id%1'>%2</a>")
+						.arg (numStr)
+						.arg (name);
+				body.replace (pos, endPos - pos + 1, newStr);
+				pos += newStr.size ();
+			}
+
+			return body;
+		}
+
 		ContentsInfo ToMessageContents (const MessageInfo& info)
 		{
-			auto newContents = info.Text_;
+			auto newContents = ProcessMessageBody (info.Text_);
 			struct AttachInfo
 			{
 				QString Type_;
@@ -274,7 +304,7 @@ namespace Murm
 				replacement += "</div>";
 			}
 
-			replacement += info.Text_;
+			replacement += ProcessMessageBody (info.Text_);
 
 			for (const auto& photo : info.Photos_)
 				replacement += "<br/>" + Photo2Replacement (photo);
