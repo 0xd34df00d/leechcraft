@@ -70,8 +70,6 @@ namespace BitTorrent
 		const auto node = static_cast<TorrentNodeInfo*> (index.internalPointer ());
 		switch (role)
 		{
-		case Qt::CheckStateRole:
-			return {};
 		case Qt::DisplayRole:
 			switch (index.column ())
 			{

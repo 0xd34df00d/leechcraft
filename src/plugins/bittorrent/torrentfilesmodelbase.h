@@ -90,7 +90,8 @@ namespace BitTorrent
 			}
 		};
 	protected:
-		std::unordered_map<boost::filesystem::path, std::shared_ptr<T>, Hash> Path2Node_;
+		using Path2Node_t = std::unordered_map<boost::filesystem::path, std::shared_ptr<T>, Hash>;
+		Path2Node_t Path2Node_;
 
 		const std::shared_ptr<T> RootNode_;
 

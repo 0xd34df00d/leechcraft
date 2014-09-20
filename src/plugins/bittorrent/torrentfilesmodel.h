@@ -84,9 +84,10 @@ namespace BitTorrent
 		void UpdateFiles (const boost::filesystem::path&, const QList<FileInfo>&);
 
 		void HandleFileActivated (QModelIndex) const;
-		void UpdateSizeGraph (const TorrentNodeInfo_ptr& node);
 	public slots:
 		void update ();
+	private:
+		void UpdateSizeGraph (const TorrentNodeInfo_ptr& node);
 	};
 }
 }

@@ -288,9 +288,8 @@ namespace BitTorrent
 		void SetFilePriority (int, int, int);
 		void SetFilename (int, const QString&, int);
 
-		std::vector<libtorrent::announce_entry> GetTrackers (const boost::optional<int>& = boost::optional<int> ()) const;
-		void SetTrackers (const std::vector<libtorrent::announce_entry>&,
-				const boost::optional<int>& = boost::optional<int> ());
+		std::vector<libtorrent::announce_entry> GetTrackers (const boost::optional<int>& = {}) const;
+		void SetTrackers (const std::vector<libtorrent::announce_entry>&, const boost::optional<int>& = {});
 
 		QString GetMagnetLink (int) const;
 
