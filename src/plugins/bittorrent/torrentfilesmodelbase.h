@@ -171,7 +171,7 @@ namespace BitTorrent
 #endif
 
 			const auto& node = parent->AppendChild (parent);
-			node->ParentPath_ = parentPath;
+			node->ParentPath_ = parentPath.branch_path ();
 			node->Name_ = name;
 			node->Icon_ = Core::Instance ()->GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("document-open-folder");
