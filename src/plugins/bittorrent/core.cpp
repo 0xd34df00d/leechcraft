@@ -1735,6 +1735,18 @@ namespace BitTorrent
 		return result;
 	}
 
+	auto Core::FindHandle (const libtorrent::torrent_handle& h) -> HandleDict_t::iterator
+	{
+		return std::find_if (Handles_.begin (), Handles_.end (),
+				[&h] (const TorrentStruct& ts) { return ts.Handle_ == h; });
+	}
+
+	auto Core::FindHandle (const libtorrent::torrent_handle& h) const -> HandleDict_t::const_iterator
+	{
+		return std::find_if (Handles_.begin (), Handles_.end (),
+				[&h] (const TorrentStruct& ts) { return ts.Handle_ == h; });
+	}
+
 	void Core::MoveToTop (int row)
 	{
 		Handles_.at (row).Handle_.queue_position_top ();

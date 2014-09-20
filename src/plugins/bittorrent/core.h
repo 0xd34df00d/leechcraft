@@ -335,6 +335,9 @@ namespace BitTorrent
 
 		QList<FileInfo> GetTorrentFiles (int = -1) const;
 	private:
+		HandleDict_t::iterator FindHandle (const libtorrent::torrent_handle&);
+		HandleDict_t::const_iterator FindHandle (const libtorrent::torrent_handle&) const;
+
 		void MoveToTop (int);
 		void MoveToBottom (int);
 		QString GetStringForState (libtorrent::torrent_status::state_t) const;
