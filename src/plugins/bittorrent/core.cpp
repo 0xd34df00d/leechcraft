@@ -2903,7 +2903,13 @@ namespace BitTorrent
 			Session_->stop_natpmp ();
 
 		if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
+		{
 			Session_->start_dht ();
+			Session_->add_dht_router ({ "router.bittorrent.com", 6881 });
+			Session_->add_dht_router ({ "router.utorrent.com", 6881 });
+			Session_->add_dht_router ({ "dht.transmissionbt.com", 6881 });
+			Session_->add_dht_router ({ "dht.aelitis.com", 6881 });
+		}
 		else
 		{
 			ScheduleSave ();
