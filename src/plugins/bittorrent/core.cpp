@@ -1701,7 +1701,7 @@ namespace BitTorrent
 			idx = CurrentTorrent_;
 
 		if (!CheckValidity (idx))
-			return QList<FileInfo> ();
+			return {};
 
 		QList<FileInfo> result;
 		const auto& handle = Handles_.at (idx).Handle_;
@@ -1726,8 +1726,9 @@ namespace BitTorrent
 #endif
 			fi.Size_ = i->size;
 			fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i - info.begin_files ());
-			fi.Progress_ = static_cast<float> (prbytes.at (i - info.begin_files ())) /
-				static_cast<float> (fi.Size_);
+			fi.Progress_ = fi.Size_ ?
+					prbytes.at (i - info.begin_files ()) / static_cast<float> (fi.Size_) :
+					1;
 			result << fi;
 		}
 
