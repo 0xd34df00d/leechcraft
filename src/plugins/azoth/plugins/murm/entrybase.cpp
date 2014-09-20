@@ -196,30 +196,9 @@ namespace Murm
 
 		QString ProcessMessageBody (QString body)
 		{
-			const QString idMarker { "[id" };
-
-			auto pos = 0;
-			while ((pos = body.indexOf ("[id", pos)) > 0)
-			{
-				const auto numStart = pos + idMarker.size ();
-				const auto pipePos = body.indexOf ('|', numStart);
-
-				const auto& numStr = body.mid (numStart, pipePos - numStart);
-				if (!std::all_of (numStr.begin (), numStr.end (), [] (const QChar& c) { return c.isDigit (); }))
-				{
-					pos += idMarker.size ();
-					continue;
-				}
-
-				const auto endPos = body.indexOf (']', pipePos);
-				const auto& name = body.mid (pipePos + 1, endPos - pipePos - 1);
-
-				const auto& newStr = QString ("<a href='https://vk.com/id%1'>%2</a>")
-						.arg (numStr)
-						.arg (name);
-				body.replace (pos, endPos - pos + 1, newStr);
-				pos += newStr.size ();
-			}
+			QRegExp rx { "\\[([a-z]+[0-9]+)\\|(.*)\\]", Qt::CaseInsensitive, QRegExp::RegExp2 };
+			rx.setMinimal (true);
+			body.replace (rx, "<a href='https://vk.com/\\1'>\\2</a>");
 
 			return body;
 		}
