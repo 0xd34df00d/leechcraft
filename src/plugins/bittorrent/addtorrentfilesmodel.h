@@ -29,10 +29,7 @@
 
 #pragma once
 
-#include <QDialog>
-#include <QVector>
-#include "ui_addtorrent.h"
-#include "core.h"
+#include "torrentfilesmodelbase.h"
 
 namespace LeechCraft
 {
@@ -40,41 +37,48 @@ namespace Plugins
 {
 namespace BitTorrent
 {
-	class AddTorrentFilesModel;
-
-	class AddTorrent : public QDialog, private Ui::AddTorrent
+	struct AddTorrentNodeInfo : public TorrentNodeInfoBase<AddTorrentNodeInfo>
 	{
-		Q_OBJECT
+		Qt::CheckState CheckState_ = Qt::Checked;
 
-		AddTorrentFilesModel * const FilesModel_;
+		using TorrentNodeInfoBase<AddTorrentNodeInfo>::TorrentNodeInfoBase;
+	};
+	typedef std::shared_ptr<AddTorrentNodeInfo> AddTorrentNodeInfo_ptr;
+
+	class AddTorrentFilesModel final : public TorrentFilesModelBase<AddTorrentNodeInfo>
+	{
 	public:
-		AddTorrent (QWidget *parent = 0);
-		void Reinit ();
-		void SetFilename (const QString&);
-		void SetSavePath (const QString&);
-		QString GetFilename () const;
-		QString GetSavePath () const;
-		bool GetTryLive () const;
+		enum
+		{
+			RoleFullPath = Qt::UserRole + 1,
+			RoleFileName,
+			RoleFileIndex,
+			RoleSize,
+		};
+
+		enum
+		{
+			ColumnPath,
+			ColumnSize,
+			ColumnAddListMax
+		};
+
+		AddTorrentFilesModel (QObject *parent = 0);
+
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole) override;
+
+		void ResetFiles (libtorrent::torrent_info::file_iterator,
+				libtorrent::torrent_info::file_iterator,
+				const libtorrent::file_storage&);
 		QVector<bool> GetSelectedFiles () const;
-		Core::AddType GetAddType () const;
-		void SetTags (const QStringList& tags);
-		QStringList GetTags () const;
-		Util::TagsLineEdit* GetEdit ();
-	private slots:
-		void on_TorrentBrowse__released ();
-		void on_DestinationBrowse__released ();
-		void on_MarkAll__released ();
-		void on_UnmarkAll__released ();
-		void on_MarkSelected__released ();
-		void on_UnmarkSelected__released ();
-		void setOkEnabled ();
-		void updateAvailableSpace ();
-	private:
-		void ParseBrowsed ();
-		QPair<quint64, quint64> GetAvailableSpaceInDestination ();
-	signals:
-		void on_TorrentFile__textChanged ();
-		void on_Destination__textChanged ();
+		void MarkAll ();
+		void UnmarkAll ();
+		void MarkIndexes (const QList<QModelIndex>&);
+		void UnmarkIndexes (const QList<QModelIndex>&);
+
+		void UpdateSizeGraph (const AddTorrentNodeInfo_ptr& node);
 	};
 }
 }

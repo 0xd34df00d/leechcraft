@@ -37,7 +37,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "torrentfilesmodel.h"
+#include "addtorrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -49,9 +49,9 @@ namespace BitTorrent
 {
 	AddTorrent::AddTorrent (QWidget *parent)
 	: QDialog (parent)
+	, FilesModel_ (new AddTorrentFilesModel (this))
 	{
 		setupUi (this);
-		FilesModel_ = new TorrentFilesModel (this);
 		FilesView_->header ()->setStretchLastSection (true);
 		FilesView_->setModel (FilesModel_);
 		OK_->setEnabled (false);

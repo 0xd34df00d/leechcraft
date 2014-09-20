@@ -46,15 +46,8 @@ namespace Plugins
 {
 namespace BitTorrent
 {
-	TorrentFilesModel::TorrentFilesModel (QObject *parent)
-	: TorrentFilesModelBase { { tr ("Name"), tr ("Size") },  parent }
-	, AdditionDialog_ { true }
-	{
-	}
-
 	TorrentFilesModel::TorrentFilesModel (int index)
 	: TorrentFilesModelBase { { tr ("Name"), tr ("Priority"), tr ("Progress") } }
-	, AdditionDialog_ { false }
 	, Index_ { index }
 	{
 		auto timer = new QTimer (this);
@@ -78,31 +71,17 @@ namespace BitTorrent
 		switch (role)
 		{
 		case Qt::CheckStateRole:
-			if (!AdditionDialog_)
-				return {};
-
-			return index.column () == ColumnPath ?
-					node->CheckState_ :
-					QVariant {};
+			return {};
 		case Qt::DisplayRole:
-			if (AdditionDialog_)
-				switch (index.column ())
-				{
-				case ColumnPath:
-					return node->Name_;
-				case ColumnSize:
-					return Util::MakePrettySize (node->SubtreeSize_);
-				}
-			else
-				switch (index.column ())
-				{
-				case ColumnPath:
-					return node->Name_;
-				case ColumnPriority:
-					return node->Priority_;
-				case ColumnProgress:
-					return node->Progress_;
-				}
+			switch (index.column ())
+			{
+			case ColumnPath:
+				return node->Name_;
+			case ColumnPriority:
+				return node->Priority_;
+			case ColumnProgress:
+				return node->Progress_;
+			}
 		case Qt::DecorationRole:
 			return index.column () == ColumnPath ?
 					node->Icon_ :
@@ -126,15 +105,8 @@ namespace BitTorrent
 		if (!index.isValid ())
 			return 0;
 
-		if (AdditionDialog_ &&
-				index.column () == 0)
-			return Qt::ItemIsSelectable |
-				Qt::ItemIsEnabled |
-				Qt::ItemIsUserCheckable;
-		else if (!AdditionDialog_ &&
-				((index.column () == 1 &&
-					!rowCount (index.sibling (index.row (), 0))) ||
-					index.column () == 0))
+		if (index.column () == ColumnPriority ||
+				index.column () == ColumnPath)
 			return Qt::ItemIsSelectable |
 				Qt::ItemIsEnabled |
 				Qt::ItemIsEditable;
@@ -145,131 +117,25 @@ namespace BitTorrent
 
 	bool TorrentFilesModel::setData (const QModelIndex& index, const QVariant& value, int role)
 	{
-		if (!index.isValid ())
+		if (!index.isValid () || role != Qt::EditRole)
 			return false;
 
 		const auto node = static_cast<TorrentNodeInfo*> (index.internalPointer ());
-
-		if (role == Qt::CheckStateRole)
+		if (index.column () == ColumnPriority)
 		{
-			node->CheckState_ = static_cast<Qt::CheckState> (value.toInt ());
+			const auto newPriority = value.toInt ();
+			Core::Instance ()->SetFilePriority (node->FileIndex_, newPriority, Index_);
+			node->Priority_ = newPriority;
 			emit dataChanged (index, index);
-
-			for (int i = 0, rc = rowCount (index); i < rc; ++i)
-				setData (this->index (i, 0, index), value, role);
-
-			auto pi = parent (index);
-			while (pi.isValid ())
-			{
-				bool hasChecked = false;
-				bool hasUnchecked = false;
-				const auto prows = rowCount (pi);
-				for (int i = 0; i < prows; ++i)
-				{
-					int state = this->index (i, 0, pi).data (role).toInt ();
-					switch (static_cast<Qt::CheckState> (state))
-					{
-					case Qt::Checked:
-						hasChecked = true;
-						break;
-					case Qt::Unchecked:
-						hasUnchecked = true;
-						break;
-					default:
-						hasChecked = true;
-						hasUnchecked = true;
-						break;
-					}
-					if (hasChecked && hasUnchecked)
-						break;
-				}
-
-				auto state = Qt::Unchecked;
-				if (hasChecked && hasUnchecked)
-					state = Qt::PartiallyChecked;
-				else if (hasChecked)
-					state = Qt::Checked;
-				else if (hasUnchecked)
-					state = Qt::Unchecked;
-				else
-					qWarning () << Q_FUNC_INFO
-						<< pi
-						<< "we have neither checked nor unchecked items. Strange.";
-
-				const auto parentNode = static_cast<TorrentNodeInfo*> (pi.internalPointer ());
-				if (parentNode->CheckState_ == state)
-					break;
-
-				parentNode->CheckState_ = state;
-				emit dataChanged (pi, pi);
-
-				pi = parent (pi);
-			}
-
 			return true;
 		}
-		else if (role == Qt::EditRole)
+		else if (index.column () == ColumnPath)
 		{
-			if (index.column () == ColumnPriority)
-			{
-				const auto newPriority = value.toInt ();
-				Core::Instance ()->SetFilePriority (node->FileIndex_, newPriority, Index_);
-				node->Priority_ = newPriority;
-				emit dataChanged (index, index);
-				return true;
-			}
-			else if (index.column () == ColumnPath)
-			{
-				Core::Instance ()->SetFilename (node->FileIndex_, value.toString (), Index_);
-				return true;
-			}
-			else
-				return false;
+			Core::Instance ()->SetFilename (node->FileIndex_, value.toString (), Index_);
+			return true;
 		}
 		else
 			return false;
-	}
-
-	void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begin,
-			libtorrent::torrent_info::file_iterator end,
-			const libtorrent::file_storage& storage)
-	{
-		Clear ();
-
-		FilesInTorrent_ = std::distance (begin, end);
-		if (!FilesInTorrent_)
-			return;
-
-		beginInsertRows ({}, 0, 0);
-		Path2Node_ [{}] = RootNode_;
-
-		for (auto pos = begin; pos != end; ++pos)
-		{
-#if LIBTORRENT_VERSION_NUM >= 1600
-			const boost::filesystem::path path { storage.at (pos).path };
-#else
-			const auto& path = pos->path;
-#endif
-			const auto& parentItem = MkParentIfDoesntExist (path);
-
-			const auto& name =
-#ifdef Q_OS_WIN32
-					QString::fromUtf16 (reinterpret_cast<const ushort*> (path.leaf ().c_str ()));
-#else
-					QString::fromUtf8 (path.leaf ().c_str ());
-#endif
-
-			const auto& item = parentItem->AppendChild (parentItem);
-			item->Name_ = name;
-			item->FileIndex_ = static_cast<int> (std::distance (begin, pos));
-			item->SubtreeSize_ = pos->size;
-
-			Path2Node_ [path] = item;
-		}
-
-		UpdateSizeGraph (RootNode_);
-
-		endInsertRows ();
 	}
 
 	void TorrentFilesModel::ResetFiles (const boost::filesystem::path& basePath,
@@ -344,52 +210,9 @@ namespace BitTorrent
 			emit dataChanged (index (0, 2), index (rc - 1, 2));
 	}
 
-	QVector<bool> TorrentFilesModel::GetSelectedFiles () const
-	{
-		QVector<bool> result (FilesInTorrent_);
-		for (const auto& pair : Path2Node_)
-			if (pair.second->FileIndex_ != -1)
-				result [pair.second->FileIndex_] = pair.second->CheckState_ == Qt::Checked;
-		return result;
-	}
-
-	void TorrentFilesModel::MarkAll ()
-	{
-		const auto rc = RootNode_->GetRowCount ();
-		if (!rc)
-			return;
-
-		for (const auto& pair : Path2Node_)
-			pair.second->CheckState_ = Qt::Checked;
-		emit dataChanged (index (0, 0), index (rc - 1, 1));
-	}
-
-	void TorrentFilesModel::UnmarkAll ()
-	{
-		const auto rc = RootNode_->GetRowCount ();
-		if (!rc)
-			return;
-
-		for (const auto& pair : Path2Node_)
-			pair.second->CheckState_ = Qt::Unchecked;
-		emit dataChanged (index (0, 0), index (rc - 1, 1));
-	}
-
-	void TorrentFilesModel::MarkIndexes (const QList<QModelIndex>& indexes)
-	{
-		for (const auto& index : indexes)
-			setData (index.sibling (index.row (), ColumnPath), Qt::Checked, Qt::CheckStateRole);
-	}
-
-	void TorrentFilesModel::UnmarkIndexes (const QList<QModelIndex>& indexes)
-	{
-		for (const auto& index : indexes)
-			setData (index.sibling (index.row (), ColumnPath), Qt::Unchecked, Qt::CheckStateRole);
-	}
-
 	void TorrentFilesModel::HandleFileActivated (QModelIndex index) const
 	{
-		if (!index.isValid () || AdditionDialog_)
+		if (!index.isValid ())
 			return;
 
 		if (index.column () != ColumnPath)
@@ -421,6 +244,25 @@ namespace BitTorrent
 
 		const auto& files = Core::Instance ()->GetTorrentFiles (Index_);
 		UpdateFiles (base, files);
+	}
+
+	void TorrentFilesModel::UpdateSizeGraph (const TorrentNodeInfo_ptr& node)
+	{
+		if (!node->GetRowCount ())
+			return;
+
+		qulonglong size = 0;
+		qulonglong done = 0;
+
+		for (const auto & child : *node)
+		{
+			UpdateSizeGraph (child);
+			size += child->SubtreeSize_;
+			done += child->SubtreeSize_ * child->Progress_;
+		}
+
+		node->SubtreeSize_ = size;
+		node->Progress_ = size ? static_cast<double> (done) / size : 1;
 	}
 }
 }

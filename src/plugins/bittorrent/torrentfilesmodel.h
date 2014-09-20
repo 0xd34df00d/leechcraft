@@ -43,7 +43,6 @@ namespace BitTorrent
 {
 	struct TorrentNodeInfo : public TorrentNodeInfoBase<TorrentNodeInfo>
 	{
-		Qt::CheckState CheckState_ = Qt::Checked;
 		int Priority_ = -1;
 		float Progress_ = 0;
 
@@ -55,7 +54,6 @@ namespace BitTorrent
 	{
 		Q_OBJECT
 
-		bool AdditionDialog_;
 		const int Index_ = -1;
 	public:
 		enum
@@ -71,38 +69,22 @@ namespace BitTorrent
 		enum
 		{
 			ColumnPath,
-
-			/* Columns for dynamic files list.
-				*/
 			ColumnPriority,
 			ColumnProgress,
 			ColumnDynamicMax,
-
-			/* Columns for torrent add list.
-				*/
-			ColumnSize = ColumnPriority,
-			ColumnAddListMax
 		};
 
-		TorrentFilesModel (QObject *parent = 0);
 		TorrentFilesModel (int);
 
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
 		Qt::ItemFlags flags (const QModelIndex&) const override;
 		bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole) override;
 
-		void ResetFiles (libtorrent::torrent_info::file_iterator,
-				libtorrent::torrent_info::file_iterator,
-				const libtorrent::file_storage&);
 		void ResetFiles (const boost::filesystem::path&, const QList<FileInfo>&);
 		void UpdateFiles (const boost::filesystem::path&, const QList<FileInfo>&);
-		QVector<bool> GetSelectedFiles () const;
-		void MarkAll ();
-		void UnmarkAll ();
-		void MarkIndexes (const QList<QModelIndex>&);
-		void UnmarkIndexes (const QList<QModelIndex>&);
 
 		void HandleFileActivated (QModelIndex) const;
+		void UpdateSizeGraph (const TorrentNodeInfo_ptr& node);
 	public slots:
 		void update ();
 	};

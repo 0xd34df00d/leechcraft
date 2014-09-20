@@ -64,6 +64,7 @@ set (SRCS
 	tabviewproxymodel.cpp
 	notifymanager.cpp
 	addmagnetdialog.cpp
+	addtorrentfilesmodel.cpp
 	)
 
 set (FORMS

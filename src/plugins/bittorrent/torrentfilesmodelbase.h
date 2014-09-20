@@ -157,23 +157,6 @@ namespace BitTorrent
 			return nodePtr->GetRowCount ();
 		}
 
-		void UpdateSizeGraph (const std::shared_ptr<T>& node)
-		{
-			if (!node->GetRowCount ())
-				return;
-
-			qulonglong size = 0;
-			qulonglong done = 0;
-			for (const auto& child : *node)
-			{
-				UpdateSizeGraph (child);
-				size += child->SubtreeSize_;
-				done += child->SubtreeSize_ * child->Progress_;
-			}
-			node->SubtreeSize_ = size;
-			node->Progress_ = size ? static_cast<double> (done) / size : 1;
-		}
-
 		const std::shared_ptr<T>& MkParentIfDoesntExist (const boost::filesystem::path& path)
 		{
 			const auto& parentPath = path.branch_path ();
