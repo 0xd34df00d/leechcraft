@@ -333,9 +333,9 @@ namespace LeechCraft
 					const auto idx = static_cast<int> (std::distance (begin, pos));
 					const auto parentItem = Path2TreeItem_ [parentPath];
 					const auto item = new TreeItem (displayData, parentItem);
-					item->ModifyData (2, static_cast<qulonglong> (pos->size), RawDataRole);
-					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
+					item->ModifyData (ColumnSize, static_cast<qulonglong> (pos->size), RawDataRole);
 					item->ModifyData (ColumnPath, idx, RoleFileIndex);
+					item->ModifyData (ColumnPath, Qt::Checked, Qt::CheckStateRole);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [path] = item;
 					Path2OriginalPosition_ [path] = idx;
@@ -382,12 +382,12 @@ namespace LeechCraft
 
 					const auto parentItem = Path2TreeItem_ [parentPath];
 					const auto item = new TreeItem (displayData, parentItem);
-					item->ModifyData (0, pathStr, RawDataRole);
-					item->ModifyData (2, static_cast<qulonglong> (fi.Size_), RawDataRole);
-					item->ModifyData (0, static_cast<qulonglong> (fi.Size_), RoleSize);
-					item->ModifyData (0, fi.Progress_, RoleProgress);
-					item->ModifyData (0, inst.GetExtIcon (pathStr.section ('.', -1)), Qt::DecorationRole);
+					item->ModifyData (ColumnPath, pathStr, RawDataRole);
 					item->ModifyData (ColumnPath, i, RoleFileIndex);
+					item->ModifyData (ColumnPath, static_cast<qulonglong> (fi.Size_), RoleSize);
+					item->ModifyData (ColumnPath, fi.Progress_, RoleProgress);
+					item->ModifyData (ColumnPath, inst.GetExtIcon (pathStr.section ('.', -1)), Qt::DecorationRole);
+					item->ModifyData (ColumnProgress, static_cast<qulonglong> (fi.Size_), RawDataRole);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [fi.Path_] = item;
 					Path2OriginalPosition_ [fi.Path_] = i;
@@ -451,9 +451,8 @@ namespace LeechCraft
 				if (!RootItem_->ChildCount ())
 					return;
 
-				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
-						end = Path2TreeItem_.end (); i != end; ++i)
-					i->second->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
+				for (const auto& pair : Path2TreeItem_)
+					pair.second->ModifyData (ColumnPath, Qt::Checked, Qt::CheckStateRole);
 				emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 1));
 			}
 
@@ -462,9 +461,8 @@ namespace LeechCraft
 				if (!RootItem_->ChildCount ())
 					return;
 
-				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
-						end = Path2TreeItem_.end (); i != end; ++i)
-					i->second->ModifyData (0, Qt::Unchecked, Qt::CheckStateRole);
+				for (const auto& pair : Path2TreeItem_)
+					pair.second->ModifyData (ColumnPath, Qt::Unchecked, Qt::CheckStateRole);
 				emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 1));
 			}
 
@@ -496,7 +494,7 @@ namespace LeechCraft
 					return;
 
 				const auto iem = Core::Instance ()->GetProxy ()->GetEntityManager ();
-				if (item->Data (0, RoleProgress).toDouble () != 1)
+				if (item->Data (ColumnPath, RoleProgress).toDouble () != 1)
 				{
 #ifdef Q_OS_WIN32
 					const auto& filename = QString::fromUtf16 (reinterpret_cast<const ushort*> (pos->first.filename ().c_str ()));
@@ -545,7 +543,9 @@ namespace LeechCraft
 #endif
 				if (!AdditionDialog_)
 					data << QString ("") << QString ("");
+
 				TreeItem *item = new TreeItem (data, parent);
+
 				if (AdditionDialog_)
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
                 item->ModifyData (0, QString::fromUtf8 (parentPath.string ().c_str ()), RawDataRole);
