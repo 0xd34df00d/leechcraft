@@ -137,7 +137,28 @@ namespace BitTorrent
 		}
 		else if (index.column () == ColumnPath)
 		{
-			Core::Instance ()->SetFilename (node->FileIndex_, value.toString (), Index_);
+			const auto& newPath = value.toString ();
+			if (!node->IsEmpty ())
+			{
+				const auto& curPath = QString::fromUtf8 (node->GetFullPath ().c_str ());
+				const auto curPathSize = curPath.size ();
+				std::function<void (TorrentNodeInfo*)> setter =
+						[this, &setter, &newPath, curPathSize] (TorrentNodeInfo *node)
+						{
+							if (node->IsEmpty ())
+							{
+								auto specificPath = QString::fromUtf8 (node->GetFullPath ().c_str ());
+								specificPath.replace (0, curPathSize, newPath);
+								Core::Instance ()->SetFilename (node->FileIndex_, specificPath, Index_);
+							}
+							else
+								for (const auto& subnode : *node)
+									setter (subnode.get ());
+						};
+				setter (node);
+			}
+			else
+				Core::Instance ()->SetFilename (node->FileIndex_, newPath, Index_);
 			return true;
 		}
 		else
