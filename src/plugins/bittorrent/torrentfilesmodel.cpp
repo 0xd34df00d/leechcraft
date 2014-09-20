@@ -42,65 +42,22 @@
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 
-using namespace LeechCraft::Util;
-
 namespace LeechCraft
 {
 namespace Plugins
 {
 namespace BitTorrent
 {
-	struct TorrentNodeInfo : public Util::ModelItemBase<TorrentNodeInfo>
-	{
-		// (0, Qt::CheckStateRole)
-		Qt::CheckState CheckState_ = Qt::Checked;
-		QIcon Icon_;
-
-		QString Name_;
-
-		// (ColumnPath, RawDataRole)
-		boost::filesystem::path ParentPath_;
-
-		// (ColumnPath, RoleFileIndex)
-		int FileIndex_ = -1;
-
-		int Priority_ = -1;
-
-		// (ColumnPath, RoleSize)
-		// (2, RoleSize)
-		// (ColumnProgress, RawDataRole)
-		qulonglong SubtreeSize_ = 0;
-
-		// (ColumnPath, RoleProgress)
-		float Progress_ = 0;
-
-		/* (ColumnPath, RawDataRole) -> full path
-		 */
-
-		TorrentNodeInfo (const TorrentNodeInfo_ptr& parent)
-		: ModelItemBase { parent }
-		{
-		}
-
-		boost::filesystem::path GetFullPath () const
-		{
-			return ParentPath_ / Name_.toStdString ();
-		}
-	};
-
 	TorrentFilesModel::TorrentFilesModel (QObject *parent)
-	: QAbstractItemModel { parent }
+	: TorrentFilesModelBase { { tr ("Name"), tr ("Size") },  parent }
 	, AdditionDialog_ { true }
-	, HeaderData_ { tr ("Name"), tr ("Size") }
-	, RootNode_ { std::make_shared<TorrentNodeInfo> (TorrentNodeInfo_ptr {}) }
 	{
 	}
 
 	TorrentFilesModel::TorrentFilesModel (int index)
-	: AdditionDialog_ { false }
+	: TorrentFilesModelBase { { tr ("Name"), tr ("Priority"), tr ("Progress") } }
+	, AdditionDialog_ { false }
 	, Index_ { index }
-	, HeaderData_ { tr ("Name"), tr ("Priority"), tr ("Progress") }
-	, RootNode_ { std::make_shared<TorrentNodeInfo> (TorrentNodeInfo_ptr {}) }
 	{
 		auto timer = new QTimer (this);
 		connect (timer,
@@ -112,11 +69,6 @@ namespace BitTorrent
 		QTimer::singleShot (0,
 				this,
 				SLOT (update ()));
-	}
-
-	int TorrentFilesModel::columnCount (const QModelIndex&) const
-	{
-		return HeaderData_.size ();
 	}
 
 	QVariant TorrentFilesModel::data (const QModelIndex& index, int role) const
@@ -191,53 +143,6 @@ namespace BitTorrent
 		else
 			return Qt::ItemIsSelectable |
 				Qt::ItemIsEnabled;
-	}
-
-	QVariant TorrentFilesModel::headerData (int h, Qt::Orientation orient, int role) const
-	{
-		if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-			return HeaderData_.value (h);
-
-		return {};
-	}
-
-	QModelIndex TorrentFilesModel::index (int row, int col, const QModelIndex& parent) const
-	{
-		if (!hasIndex (row, col, parent))
-			return {};
-
-		const auto nodePtr = parent.isValid () ?
-				static_cast<TorrentNodeInfo*> (parent.internalPointer ()) :
-				RootNode_.get ();
-
-		if (const auto childNode = nodePtr->GetChild (row))
-			return createIndex (row, col, childNode.get ());
-		return {};
-	}
-
-	QModelIndex TorrentFilesModel::parent (const QModelIndex& index) const
-	{
-		if (!index.isValid ())
-			return {};
-
-		const auto nodePtr = static_cast<TorrentNodeInfo*> (index.internalPointer ());
-		const auto parent = nodePtr->GetParent ();
-
-		if (parent == RootNode_)
-			return {};
-
-		return createIndex (parent->GetRow (), 0, parent.get ());
-	}
-
-	int TorrentFilesModel::rowCount (const QModelIndex& parent) const
-	{
-		if (parent.column () > 0)
-			return 0;
-
-		const auto nodePtr = parent.isValid () ?
-				static_cast<TorrentNodeInfo*> (parent.internalPointer ()) :
-				RootNode_.get ();
-		return nodePtr->GetRowCount ();
 	}
 
 	bool TorrentFilesModel::setData (const QModelIndex& index, const QVariant& value, int role)
@@ -325,21 +230,6 @@ namespace BitTorrent
 		}
 		else
 			return false;
-	}
-
-	void TorrentFilesModel::Clear ()
-	{
-		if (!RootNode_->GetRowCount ())
-			return;
-
-		BasePath_ = boost::filesystem::path ();
-
-		beginRemoveRows ({}, 0, RootNode_->GetRowCount () - 1);
-		RootNode_->EraseChildren (RootNode_->begin (), RootNode_->end ());
-		endRemoveRows ();
-
-		FilesInTorrent_ = 0;
-		Path2Node_.clear ();
 	}
 
 	void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begin,
@@ -558,23 +448,6 @@ namespace BitTorrent
 				GetIconThemeManager ()->GetIcon ("document-open-folder");
 
 		return Path2Node_.insert ({ parentPath, node }).first->second;
-	}
-
-	void TorrentFilesModel::UpdateSizeGraph (const TorrentNodeInfo_ptr& node)
-	{
-		if (!node->GetRowCount ())
-			return;
-
-		qulonglong size = 0;
-		qulonglong done = 0;
-		for (const auto& child : *node)
-		{
-			UpdateSizeGraph (child);
-			size += child->SubtreeSize_;
-			done += child->SubtreeSize_ * child->Progress_;
-		}
-		node->SubtreeSize_ = size;
-		node->Progress_ = size ? static_cast<double> (done) / size : 1;
 	}
 }
 }

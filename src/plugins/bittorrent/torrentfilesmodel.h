@@ -29,12 +29,11 @@
 
 #pragma once
 
-#include <unordered_map>
 #include <QStringList>
-#include <QAbstractItemModel>
 #include <libtorrent/torrent_info.hpp>
 #include <interfaces/structures.h>
 #include "fileinfo.h"
+#include "torrentfilesmodelbase.h"
 
 namespace LeechCraft
 {
@@ -42,30 +41,22 @@ namespace Plugins
 {
 namespace BitTorrent
 {
-	struct TorrentNodeInfo;
+	struct TorrentNodeInfo : public TorrentNodeInfoBase<TorrentNodeInfo>
+	{
+		Qt::CheckState CheckState_ = Qt::Checked;
+		int Priority_ = -1;
+		float Progress_ = 0;
+
+		using TorrentNodeInfoBase<TorrentNodeInfo>::TorrentNodeInfoBase;
+	};
 	typedef std::shared_ptr<TorrentNodeInfo> TorrentNodeInfo_ptr;
 
-	class TorrentFilesModel : public QAbstractItemModel
+	class TorrentFilesModel : public TorrentFilesModelBase<TorrentNodeInfo>
 	{
 		Q_OBJECT
 
 		bool AdditionDialog_;
-		int FilesInTorrent_ = 0;
-		boost::filesystem::path BasePath_;
 		const int Index_ = -1;
-
-		const QStringList HeaderData_;
-
-		const TorrentNodeInfo_ptr RootNode_;
-
-		struct Hash : public std::unary_function<boost::filesystem::path, size_t>
-		{
-			size_t operator() (const boost::filesystem::path& path) const
-			{
-				return std::hash<std::string> {} (path.string ());
-			}
-		};
-		std::unordered_map<boost::filesystem::path, TorrentNodeInfo_ptr, Hash> Path2Node_;
 	public:
 		enum
 		{
@@ -96,16 +87,10 @@ namespace BitTorrent
 		TorrentFilesModel (QObject *parent = 0);
 		TorrentFilesModel (int);
 
-		virtual int columnCount (const QModelIndex&) const;
-		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		virtual Qt::ItemFlags flags (const QModelIndex&) const;
-		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-		virtual QModelIndex parent (const QModelIndex&) const;
-		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-		virtual bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole);
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole) override;
 
-		void Clear ();
 		void ResetFiles (libtorrent::torrent_info::file_iterator,
 				libtorrent::torrent_info::file_iterator,
 				const libtorrent::file_storage&);
@@ -122,7 +107,6 @@ namespace BitTorrent
 		void update ();
 	private:
 		const TorrentNodeInfo_ptr& MkParentIfDoesntExist (const boost::filesystem::path&);
-		void UpdateSizeGraph (const TorrentNodeInfo_ptr&);
 	};
 }
 }
