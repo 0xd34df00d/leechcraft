@@ -471,13 +471,13 @@ namespace LeechCraft
 			void TorrentFilesModel::MarkIndexes (const QList<QModelIndex>& indexes)
 			{
 				for (const auto& index : indexes)
-					setData (index, Qt::Checked, Qt::CheckStateRole);
+					setData (index.sibling (index.row (), ColumnPath), Qt::Checked, Qt::CheckStateRole);
 			}
 
 			void TorrentFilesModel::UnmarkIndexes (const QList<QModelIndex>& indexes)
 			{
 				for (const auto& index : indexes)
-					setData (index, Qt::Unchecked, Qt::CheckStateRole);
+					setData (index.sibling (index.row (), ColumnPath), Qt::Unchecked, Qt::CheckStateRole);
 			}
 
 			void TorrentFilesModel::HandleFileActivated (QModelIndex index) const
