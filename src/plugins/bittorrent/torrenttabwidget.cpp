@@ -33,7 +33,6 @@
 #include <QTimer>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/models/treeitem.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -627,9 +626,7 @@ namespace BitTorrent
 		}
 		else
 		{
-			QString path = static_cast<TreeItem*> (index.internalPointer ())->
-				Data (TorrentFilesModel::ColumnPath,
-						TorrentFilesModel::RawDataRole).toString ();
+			auto path = index.data (TorrentFilesModel::RoleFullPath).toString ();
 			path = QApplication::fontMetrics ()
 				.elidedText (path,
 						Qt::ElideLeft,

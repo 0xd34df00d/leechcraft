@@ -30,6 +30,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <QStringList>
 #include <QAbstractItemModel>
 #include <libtorrent/torrent_info.hpp>
 #include <interfaces/structures.h>
@@ -37,64 +38,43 @@
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class TreeItem;
-};
-
 namespace Plugins
 {
 namespace BitTorrent
 {
-	struct Hash : public std::unary_function<boost::filesystem::path, size_t>
-	{
-		std::hash<std::string> H_;
-
-		size_t operator() (const boost::filesystem::path& p) const
-		{
-			return H_ (p.string ());
-		}
-	};
-
-	struct MyEqual : public std::binary_function<boost::filesystem::path,
-		boost::filesystem::path,
-		bool>
-	{
-		bool operator() (const boost::filesystem::path& p1,
-				const boost::filesystem::path& p2) const
-		{
-			return p1.string () == p2.string ();
-		}
-	};
-
-	typedef std::unordered_map<boost::filesystem::path,
-			LeechCraft::Util::TreeItem*,
-			Hash,
-			MyEqual> Path2TreeItem_t;
-
-	typedef std::unordered_map<boost::filesystem::path,
-			int,
-			Hash,
-			MyEqual> Path2Position_t;
+	struct TorrentNodeInfo;
+	typedef std::shared_ptr<TorrentNodeInfo> TorrentNodeInfo_ptr;
 
 	class TorrentFilesModel : public QAbstractItemModel
 	{
 		Q_OBJECT
 
-		Util::TreeItem *RootItem_;
 		bool AdditionDialog_;
-		Path2TreeItem_t Path2TreeItem_;
-		Path2Position_t Path2OriginalPosition_;
-		int FilesInTorrent_;
+		int FilesInTorrent_ = 0;
 		boost::filesystem::path BasePath_;
-		const int Index_;
+		const int Index_ = -1;
+
+		const QStringList HeaderData_;
+
+		const TorrentNodeInfo_ptr RootNode_;
+
+		struct Hash : public std::unary_function<boost::filesystem::path, size_t>
+		{
+			size_t operator() (const boost::filesystem::path& path) const
+			{
+				return std::hash<std::string> {} (path.string ());
+			}
+		};
+		std::unordered_map<boost::filesystem::path, TorrentNodeInfo_ptr, Hash> Path2Node_;
 	public:
 		enum
 		{
-			RawDataRole = Qt::UserRole + 1,
+			RoleFullPath = Qt::UserRole + 1,
+			RoleFileName,
 			RoleFileIndex,
 			RoleSize,
-			RoleProgress
+			RoleProgress,
+			RolePriority,
 		};
 
 		enum
@@ -115,7 +95,6 @@ namespace BitTorrent
 
 		TorrentFilesModel (QObject *parent = 0);
 		TorrentFilesModel (int);
-		virtual ~TorrentFilesModel ();
 
 		virtual int columnCount (const QModelIndex&) const;
 		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -142,8 +121,8 @@ namespace BitTorrent
 	public slots:
 		void update ();
 	private:
-		void MkParentIfDoesntExist (const boost::filesystem::path&);
-		void UpdateSizeGraph (LeechCraft::Util::TreeItem*);
+		const TorrentNodeInfo_ptr& MkParentIfDoesntExist (const boost::filesystem::path&);
+		void UpdateSizeGraph (const TorrentNodeInfo_ptr&);
 	};
 }
 }

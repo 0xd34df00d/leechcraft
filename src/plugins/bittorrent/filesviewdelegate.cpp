@@ -34,7 +34,6 @@
 #include <QTreeView>
 #include <QtDebug>
 #include <util/util.h>
-#include <util/models/treeitem.h>
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"
 
@@ -51,8 +50,6 @@ namespace BitTorrent
 			return index.model ()->rowCount (index.sibling (index.row (), 0));
 		}
 	};
-
-	using LeechCraft::Util::TreeItem;
 
 	FilesViewDelegate::FilesViewDelegate (QTreeView *parent)
 	: QStyledItemDelegate (parent)
@@ -122,13 +119,11 @@ namespace BitTorrent
 		if (index.column () == TorrentFilesModel::ColumnPriority &&
 				!HasChildren (index))
 			qobject_cast<QSpinBox*> (editor)->
-				setValue (static_cast<TreeItem*> (index.internalPointer ())->
-						Data (1).toInt ());
+				setValue (index.data (TorrentFilesModel::RolePriority).toInt ());
 		else if (index.column () == TorrentFilesModel::ColumnPath &&
 				!HasChildren (index))
 		{
-			QVariant data = static_cast<TreeItem*> (index.internalPointer ())->
-				Data (0, TorrentFilesModel::RawDataRole);
+			const auto& data = index.data (TorrentFilesModel::RoleFullPath);
 			qobject_cast<QLineEdit*> (editor)->setText (data.toString ());
 		}
 		else
@@ -141,15 +136,14 @@ namespace BitTorrent
 		if (index.column () == TorrentFilesModel::ColumnPriority)
 		{
 			int value = qobject_cast<QSpinBox*> (editor)->value ();
-			QModelIndexList sindexes = View_->selectionModel ()->selectedRows ();
-			Q_FOREACH (QModelIndex selected, sindexes)
+			const auto& sindexes = View_->selectionModel ()->selectedRows ();
+			for (const auto& selected : sindexes)
 				model->setData (index.sibling (selected.row (), index.column ()), value);
 		}
 		else if (index.column () == TorrentFilesModel::ColumnPath)
 		{
-			QVariant oldData = static_cast<TreeItem*> (index.internalPointer ())->
-				Data (0, TorrentFilesModel::RawDataRole);
-			QString newText = qobject_cast<QLineEdit*> (editor)->text ();
+			const auto& oldData = index.data (TorrentFilesModel::RoleFullPath);
+			const auto& newText = qobject_cast<QLineEdit*> (editor)->text ();
 			if (oldData.toString () == newText)
 				return;
 
