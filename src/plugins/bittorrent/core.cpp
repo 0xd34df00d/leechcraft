@@ -457,12 +457,7 @@ namespace BitTorrent
 		if (idx < 0)
 			return 0;
 
-		auto model = new TorrentFilesModel (idx);
-		connect (model,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		return model;
+		return new TorrentFilesModel (idx);
 	}
 
 	int Core::columnCount (const QModelIndex&) const

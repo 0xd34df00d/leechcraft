@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_TORRENTFILESMODEL_H
-#define PLUGINS_BITTORRENT_TORRENTFILESMODEL_H
+#pragma once
+
 #include <unordered_map>
 #include <QAbstractItemModel>
 #include <libtorrent/torrent_info.hpp>
@@ -134,12 +134,7 @@ namespace LeechCraft
 			private:
 				void MkParentIfDoesntExist (const boost::filesystem::path&);
 				void UpdateSizeGraph (LeechCraft::Util::TreeItem*);
-			signals:
-				void gotEntity (const LeechCraft::Entity&) const;
 			};
 		};
 	};
 };
-
-#endif
-

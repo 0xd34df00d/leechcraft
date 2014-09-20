@@ -39,6 +39,7 @@
 #include <util/sys/extensionsdata.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 
 using namespace LeechCraft::Util;
@@ -494,6 +495,7 @@ namespace LeechCraft
 				if (pos == Path2TreeItem_.end ())
 					return;
 
+				const auto iem = Core::Instance ()->GetProxy ()->GetEntityManager ();
 				if (item->Data (0, RoleProgress).toDouble () != 1)
 				{
 #ifdef Q_OS_WIN32
@@ -501,7 +503,7 @@ namespace LeechCraft
 #else
 					const auto& filename = QString::fromUtf8 (pos->first.filename ().c_str ());
 #endif
-					emit gotEntity (Util::MakeNotification ("BitTorrent",
+					iem->HandleEntity (Util::MakeNotification ("BitTorrent",
 							tr ("The file %1 hasn't finished downloading yet.")
 								.arg (filename),
 							PWarning_));
@@ -513,7 +515,7 @@ namespace LeechCraft
 					const auto& e = Util::MakeEntity (QUrl::fromLocalFile (path),
 							{},
 							FromUserInitiated);
-					emit gotEntity (e);
+					iem->HandleEntity (e);
 				}
 			}
 
