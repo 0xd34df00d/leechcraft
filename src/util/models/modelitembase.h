@@ -93,6 +93,11 @@ namespace Util
 			return Children_.size ();
 		}
 
+		bool IsEmpty () const
+		{
+			return Children_.isEmpty ();
+		}
+
 		iterator EraseChild (iterator it)
 		{
 			return Children_.erase (it);
