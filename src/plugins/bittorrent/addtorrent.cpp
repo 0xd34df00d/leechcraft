@@ -27,6 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include "addtorrent.h"
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -36,7 +37,6 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "addtorrent.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
