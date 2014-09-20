@@ -81,7 +81,7 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				LeechCraft::Util::TreeItem *RootItem_;
+				Util::TreeItem *RootItem_;
 				bool AdditionDialog_;
 				Path2TreeItem_t Path2TreeItem_;
 				Path2Position_t Path2OriginalPosition_;

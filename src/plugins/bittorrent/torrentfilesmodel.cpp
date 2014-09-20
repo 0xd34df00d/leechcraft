@@ -302,42 +302,42 @@ namespace LeechCraft
 			{
 				Clear ();
 
-				libtorrent::torrent_info::file_iterator orig = begin;
-				int distance = std::distance (begin, end);
-				if (!distance)
+				FilesInTorrent_ = std::distance (begin, end);
+				if (!FilesInTorrent_)
 					return;
 
-				beginInsertRows (QModelIndex (), 0, 0);
+				beginInsertRows ({}, 0, 0);
+				Path2TreeItem_ [{}] = RootItem_;
 
-				FilesInTorrent_ = distance;
-				Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
-
-				for (int pos = 0; begin != end; ++begin, ++pos)
+				for (auto pos = begin; pos != end; ++pos)
 				{
 #if LIBTORRENT_VERSION_NUM >= 1600
-					const auto& path = boost::filesystem::path (storage.at (begin).path);
+					const auto& path = boost::filesystem::path (storage.at (pos).path);
 #else
-					const auto& path = begin->path;
+					const auto& path = pos->path;
 #endif
 					auto parentPath = path.branch_path ();
 					MkParentIfDoesntExist (path);
 
-					QList<QVariant> displayData;
+					QList<QVariant> displayData
+					{
 #ifdef Q_OS_WIN32
-					displayData << QString::fromUtf16 (reinterpret_cast<const ushort*> (path.leaf ().c_str ()))
+						QString::fromUtf16 (reinterpret_cast<const ushort*> (path.leaf ().c_str ())),
 #else
-					displayData << QString::fromUtf8 (path.leaf ().c_str ())
+						QString::fromUtf8 (path.leaf ().c_str ()),
 #endif
-						<< Util::MakePrettySize (begin->size);
+						Util::MakePrettySize (pos->size)
+					};
 
-					TreeItem *parentItem = Path2TreeItem_ [parentPath],
-							 *item = new TreeItem (displayData, parentItem);
-					item->ModifyData (2, static_cast<qulonglong> (begin->size), RawDataRole);
-					item->ModifyData (1, static_cast<int> (std::distance (orig, begin)), RolePath);
+					const auto idx = static_cast<int> (std::distance (begin, pos));
+					const auto parentItem = Path2TreeItem_ [parentPath];
+					const auto item = new TreeItem (displayData, parentItem);
+					item->ModifyData (2, static_cast<qulonglong> (pos->size), RawDataRole);
+					item->ModifyData (1, idx, RolePath);
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [path] = item;
-					Path2OriginalPosition_ [path] = pos;
+					Path2OriginalPosition_ [path] = idx;
 				}
 
 				for (int i = 0; i < RootItem_->ChildCount (); ++i)
