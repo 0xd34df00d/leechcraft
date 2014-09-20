@@ -148,9 +148,6 @@ namespace BitTorrent
 
 		int rowCount (const QModelIndex& parent) const override final
 		{
-			if (parent.column () > 0)
-				return 0;
-
 			const auto nodePtr = parent.isValid () ?
 					static_cast<T*> (parent.internalPointer ()) :
 					RootNode_.get ();
