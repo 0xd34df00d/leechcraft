@@ -105,8 +105,6 @@ namespace BitTorrent
 		void HandleFileActivated (QModelIndex) const;
 	public slots:
 		void update ();
-	private:
-		const TorrentNodeInfo_ptr& MkParentIfDoesntExist (const boost::filesystem::path&);
 	};
 }
 }

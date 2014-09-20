@@ -37,8 +37,6 @@
 #include <util/xpc/util.h>
 #include <util/sys/extensionsdata.h>
 #include <util/models/modelitembase.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 
@@ -423,31 +421,6 @@ namespace BitTorrent
 
 		const auto& files = Core::Instance ()->GetTorrentFiles (Index_);
 		UpdateFiles (base, files);
-	}
-
-	const TorrentNodeInfo_ptr& TorrentFilesModel::MkParentIfDoesntExist (const boost::filesystem::path& path)
-	{
-		const auto& parentPath = path.branch_path ();
-		const auto pos = Path2Node_.find (parentPath);
-		if (pos != Path2Node_.end ())
-			return pos->second;
-
-		const auto& parent = MkParentIfDoesntExist (parentPath);
-
-		const auto& name =
-#ifdef Q_OS_WIN32
-				QString::fromUtf16 (reinterpret_cast<const ushort*> (parentPath.leaf ().c_str ()));
-#else
-				QString::fromUtf8 (parentPath.leaf ().c_str ());
-#endif
-
-		const auto& node = parent->AppendChild (parent);
-		node->ParentPath_ = parentPath;
-		node->Name_ = name;
-		node->Icon_ = Core::Instance ()->GetProxy ()->
-				GetIconThemeManager ()->GetIcon ("document-open-folder");
-
-		return Path2Node_.insert ({ parentPath, node }).first->second;
 	}
 }
 }
