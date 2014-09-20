@@ -353,39 +353,40 @@ namespace LeechCraft
 
 				BasePath_ = basePath;
 
-				beginInsertRows (QModelIndex (), 0, 0);
+				beginInsertRows ({}, 0, 0);
 				FilesInTorrent_ = infos.size ();
-				Path2TreeItem_ [boost::filesystem::path ()] = RootItem_;
+				Path2TreeItem_ [{}] = RootItem_;
 
 				const auto& inst = Util::ExtensionsData::Instance ();
 
 				for (int i = 0; i < infos.size (); ++i)
 				{
-					FileInfo fi = infos.at (i);
-					Path2TreeItem_t::key_type parentPath = fi.Path_.branch_path ();
+					const auto& fi = infos.at (i);
+					const auto& parentPath = fi.Path_.branch_path ();
 					MkParentIfDoesntExist (fi.Path_);
 
-					QString pathStr = QString::fromUtf8 (fi.Path_.string ().c_str ());
+					const auto& pathStr = QString::fromUtf8 (fi.Path_.string ().c_str ());
 
-					QList<QVariant> displayData;
+					QList<QVariant> displayData
+					{
 #ifdef Q_OS_WIN32
-					displayData << QString::fromUtf16 (reinterpret_cast<const ushort*> (fi.Path_.leaf ().c_str ()))
+						QString::fromUtf16 (reinterpret_cast<const ushort*> (fi.Path_.leaf ().c_str ())),
 #else
-					displayData << QString::fromUtf8 (fi.Path_.leaf ().c_str ())
+						QString::fromUtf8 (fi.Path_.leaf ().c_str ()),
 #endif
-						<< QString::number (fi.Priority_)
-						<< QString::number (fi.Progress_, 'f', 3);
+						QString::number (fi.Priority_),
+						QString::number (fi.Progress_, 'f', 3)
+					};
 					qDebug () << Q_FUNC_INFO << fi.Priority_;
 
-					TreeItem *parentItem = Path2TreeItem_ [parentPath],
-							 *item = new TreeItem (displayData, parentItem);
+					const auto parentItem = Path2TreeItem_ [parentPath];
+					const auto item = new TreeItem (displayData, parentItem);
 					item->ModifyData (0, pathStr, RawDataRole);
 					item->ModifyData (2, static_cast<qulonglong> (fi.Size_), RawDataRole);
 					item->ModifyData (1, i, RolePath);
 					item->ModifyData (0, static_cast<qulonglong> (fi.Size_), RoleSize);
 					item->ModifyData (0, fi.Progress_, RoleProgress);
-					item->ModifyData (0, inst.GetExtIcon (pathStr.section ('.', -1)),
-							Qt::DecorationRole);
+					item->ModifyData (0, inst.GetExtIcon (pathStr.section ('.', -1)), Qt::DecorationRole);
 					parentItem->AppendChild (item);
 					Path2TreeItem_ [fi.Path_] = item;
 					Path2OriginalPosition_ [fi.Path_] = i;
@@ -410,7 +411,7 @@ namespace LeechCraft
 
 				for (int i = 0; i < infos.size (); ++i)
 				{
-					FileInfo fi = infos.at (i);
+					const auto& fi = infos.at (i);
 					if (!Path2TreeItem_.count (fi.Path_))
 					{
 						Path2TreeItem_.clear ();
@@ -419,7 +420,7 @@ namespace LeechCraft
 						return;
 					}
 
-					TreeItem *item = Path2TreeItem_ [fi.Path_];
+					const auto item = Path2TreeItem_ [fi.Path_];
 					item->ModifyData (ColumnProgress, QString::number (fi.Progress_, 'f', 3));
 					item->ModifyData (ColumnPath, static_cast<qulonglong> (fi.Size_), RoleSize);
 					item->ModifyData (ColumnPath, fi.Progress_, RoleProgress);
