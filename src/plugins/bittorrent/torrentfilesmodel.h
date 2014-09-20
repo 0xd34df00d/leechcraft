@@ -37,114 +37,114 @@
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class TreeItem;
-	};
-
-	namespace Plugins
-	{
-		namespace BitTorrent
-		{
-			struct Hash : public std::unary_function<boost::filesystem::path, size_t>
-			{
-				std::hash<std::string> H_;
-
-				size_t operator() (const boost::filesystem::path& p) const
-				{
-					return H_ (p.string ());
-				}
-			};
-
-			struct MyEqual : public std::binary_function<boost::filesystem::path,
-				boost::filesystem::path,
-				bool>
-			{
-				bool operator() (const boost::filesystem::path& p1,
-						const boost::filesystem::path& p2) const
-				{
-					return p1.string () == p2.string ();
-				}
-			};
-
-			typedef std::unordered_map<boost::filesystem::path,
-					LeechCraft::Util::TreeItem*,
-					Hash,
-					MyEqual> Path2TreeItem_t;
-
-			typedef std::unordered_map<boost::filesystem::path,
-					int,
-					Hash,
-					MyEqual> Path2Position_t;
-
-			class TorrentFilesModel : public QAbstractItemModel
-			{
-				Q_OBJECT
-
-				Util::TreeItem *RootItem_;
-				bool AdditionDialog_;
-				Path2TreeItem_t Path2TreeItem_;
-				Path2Position_t Path2OriginalPosition_;
-				int FilesInTorrent_;
-				boost::filesystem::path BasePath_;
-				const int Index_;
-			public:
-				enum
-				{
-					RawDataRole = Qt::UserRole + 1,
-					RoleFileIndex,
-					RoleSize,
-					RoleProgress
-				};
-
-				enum
-				{
-					ColumnPath,
-
-					/* Columns for dynamic files list.
-					 */
-					ColumnPriority,
-					ColumnProgress,
-					ColumnDynamicMax,
-
-					/* Columns for torrent add list.
-					 */
-					ColumnSize = ColumnPriority,
-					ColumnAddListMax
-				};
-
-				TorrentFilesModel (QObject *parent = 0);
-				TorrentFilesModel (int);
-				virtual ~TorrentFilesModel ();
-
-				virtual int columnCount (const QModelIndex&) const;
-				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-				virtual Qt::ItemFlags flags (const QModelIndex&) const;
-				virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-				virtual QModelIndex parent (const QModelIndex&) const;
-				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-				virtual bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole);
-
-				void Clear ();
-				void ResetFiles (libtorrent::torrent_info::file_iterator,
-						libtorrent::torrent_info::file_iterator,
-						const libtorrent::file_storage&);
-				void ResetFiles (const boost::filesystem::path&, const QList<FileInfo>&);
-				void UpdateFiles (const boost::filesystem::path&, const QList<FileInfo>&);
-				QVector<bool> GetSelectedFiles () const;
-				void MarkAll ();
-				void UnmarkAll ();
-				void MarkIndexes (const QList<QModelIndex>&);
-				void UnmarkIndexes (const QList<QModelIndex>&);
-
-				void HandleFileActivated (QModelIndex) const;
-			public slots:
-				void update ();
-			private:
-				void MkParentIfDoesntExist (const boost::filesystem::path&);
-				void UpdateSizeGraph (LeechCraft::Util::TreeItem*);
-			};
-		};
-	};
+namespace Util
+{
+	class TreeItem;
 };
+
+namespace Plugins
+{
+namespace BitTorrent
+{
+	struct Hash : public std::unary_function<boost::filesystem::path, size_t>
+	{
+		std::hash<std::string> H_;
+
+		size_t operator() (const boost::filesystem::path& p) const
+		{
+			return H_ (p.string ());
+		}
+	};
+
+	struct MyEqual : public std::binary_function<boost::filesystem::path,
+		boost::filesystem::path,
+		bool>
+	{
+		bool operator() (const boost::filesystem::path& p1,
+				const boost::filesystem::path& p2) const
+		{
+			return p1.string () == p2.string ();
+		}
+	};
+
+	typedef std::unordered_map<boost::filesystem::path,
+			LeechCraft::Util::TreeItem*,
+			Hash,
+			MyEqual> Path2TreeItem_t;
+
+	typedef std::unordered_map<boost::filesystem::path,
+			int,
+			Hash,
+			MyEqual> Path2Position_t;
+
+	class TorrentFilesModel : public QAbstractItemModel
+	{
+		Q_OBJECT
+
+		Util::TreeItem *RootItem_;
+		bool AdditionDialog_;
+		Path2TreeItem_t Path2TreeItem_;
+		Path2Position_t Path2OriginalPosition_;
+		int FilesInTorrent_;
+		boost::filesystem::path BasePath_;
+		const int Index_;
+	public:
+		enum
+		{
+			RawDataRole = Qt::UserRole + 1,
+			RoleFileIndex,
+			RoleSize,
+			RoleProgress
+		};
+
+		enum
+		{
+			ColumnPath,
+
+			/* Columns for dynamic files list.
+				*/
+			ColumnPriority,
+			ColumnProgress,
+			ColumnDynamicMax,
+
+			/* Columns for torrent add list.
+				*/
+			ColumnSize = ColumnPriority,
+			ColumnAddListMax
+		};
+
+		TorrentFilesModel (QObject *parent = 0);
+		TorrentFilesModel (int);
+		virtual ~TorrentFilesModel ();
+
+		virtual int columnCount (const QModelIndex&) const;
+		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		virtual Qt::ItemFlags flags (const QModelIndex&) const;
+		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
+		virtual QModelIndex parent (const QModelIndex&) const;
+		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+		virtual bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole);
+
+		void Clear ();
+		void ResetFiles (libtorrent::torrent_info::file_iterator,
+				libtorrent::torrent_info::file_iterator,
+				const libtorrent::file_storage&);
+		void ResetFiles (const boost::filesystem::path&, const QList<FileInfo>&);
+		void UpdateFiles (const boost::filesystem::path&, const QList<FileInfo>&);
+		QVector<bool> GetSelectedFiles () const;
+		void MarkAll ();
+		void UnmarkAll ();
+		void MarkIndexes (const QList<QModelIndex>&);
+		void UnmarkIndexes (const QList<QModelIndex>&);
+
+		void HandleFileActivated (QModelIndex) const;
+	public slots:
+		void update ();
+	private:
+		void MkParentIfDoesntExist (const boost::filesystem::path&);
+		void UpdateSizeGraph (LeechCraft::Util::TreeItem*);
+	};
+}
+}
+}
