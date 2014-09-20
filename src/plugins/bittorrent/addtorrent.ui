@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1012</width>
-    <height>591</height>
+    <height>565</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -110,6 +110,27 @@
            <widget class="QPushButton" name="UnmarkSelected_">
             <property name="text">
              <string>Unmark selected</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="ExpandAll_">
+            <property name="text">
+             <string>Expand all</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="CollapseAll_">
+            <property name="text">
+             <string>Collapse all</string>
             </property>
            </widget>
           </item>

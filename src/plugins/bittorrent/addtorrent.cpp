@@ -72,6 +72,15 @@ namespace BitTorrent
 		QHeaderView *header = FilesView_->header ();
 		header->resizeSection (0, fm.width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
 		header->resizeSection (1, fm.width ("_999.9 MB_"));
+
+		connect (ExpandAll_,
+				SIGNAL (released ()),
+				FilesView_,
+				SLOT (expandAll ()));
+		connect (CollapseAll_,
+				SIGNAL (released ()),
+				FilesView_,
+				SLOT (collapseAll ()));
 	}
 
 	void AddTorrent::Reinit ()
