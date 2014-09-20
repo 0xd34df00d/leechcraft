@@ -484,8 +484,8 @@ namespace LeechCraft
 				if (!index.isValid ())
 					return;
 
-				if (index.column ())
-					index = index.sibling (index.row (), 0);
+				if (index.column () != ColumnPath)
+					index = index.sibling (index.row (), ColumnPath);
 
 				TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
 				for (auto i = Path2TreeItem_.begin (), end = Path2TreeItem_.end (); i != end; ++i)
