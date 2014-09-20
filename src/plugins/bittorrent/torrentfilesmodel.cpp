@@ -481,7 +481,7 @@ namespace LeechCraft
 
 			void TorrentFilesModel::HandleFileActivated (QModelIndex index) const
 			{
-				if (!index.isValid ())
+				if (!index.isValid () || AdditionDialog_)
 					return;
 
 				if (index.column () != ColumnPath)
