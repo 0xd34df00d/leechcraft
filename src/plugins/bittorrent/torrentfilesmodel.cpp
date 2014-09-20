@@ -128,7 +128,6 @@ namespace BitTorrent
 					setData (this->index (i, index.column (), index), value, role);
 			else
 			{
-				qDebug () << "setting" << node->FileIndex_;
 				const auto newPriority = value.toInt ();
 				Core::Instance ()->SetFilePriority (node->FileIndex_, newPriority, Index_);
 				node->Priority_ = newPriority;
@@ -172,6 +171,7 @@ namespace BitTorrent
 
 			const auto item = parentItem->AppendChild (parentItem);
 			item->Name_ = filename;
+			item->ParentPath_ = fi.Path_.branch_path ();
 			item->Priority_ = fi.Priority_;
 			item->FileIndex_ = i;
 			item->SubtreeSize_ = fi.Size_;
