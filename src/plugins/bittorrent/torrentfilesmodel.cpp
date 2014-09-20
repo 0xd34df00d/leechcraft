@@ -123,10 +123,17 @@ namespace BitTorrent
 		const auto node = static_cast<TorrentNodeInfo*> (index.internalPointer ());
 		if (index.column () == ColumnPriority)
 		{
-			const auto newPriority = value.toInt ();
-			Core::Instance ()->SetFilePriority (node->FileIndex_, newPriority, Index_);
-			node->Priority_ = newPriority;
-			emit dataChanged (index, index);
+			if (const auto rc = rowCount (index))
+				for (int i = 0; i < rc; ++i)
+					setData (this->index (i, index.column (), index), value, role);
+			else
+			{
+				qDebug () << "setting" << node->FileIndex_;
+				const auto newPriority = value.toInt ();
+				Core::Instance ()->SetFilePriority (node->FileIndex_, newPriority, Index_);
+				node->Priority_ = newPriority;
+				emit dataChanged (index, index);
+			}
 			return true;
 		}
 		else if (index.column () == ColumnPath)
