@@ -259,15 +259,6 @@ namespace BitTorrent
 		}
 	}
 
-	void TorrentFilesModel::update ()
-	{
-		const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
-		const auto& base = handle.save_path ();
-
-		const auto& files = Core::Instance ()->GetTorrentFiles (Index_);
-		UpdateFiles (base, files);
-	}
-
 	void TorrentFilesModel::UpdateSizeGraph (const TorrentNodeInfo_ptr& node)
 	{
 		if (!node->GetRowCount ())
@@ -286,7 +277,78 @@ namespace BitTorrent
 		node->SubtreeSize_ = size;
 		node->Progress_ = size ? static_cast<double> (done) / size : 1;
 	}
-}
-}
-}
 
+	void TorrentFilesModel::ClearEmptyParents (boost::filesystem::path path)
+	{
+		const auto pos = Path2Node_.find (path);
+		if (pos == Path2Node_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown path"
+					<< path.c_str ();
+			return;
+		}
+
+		const auto& node = pos->second;
+		if (!node->IsEmpty ())
+			return;
+
+		const auto& parentNode = node->GetParent ();
+
+		const auto nodeRow = node->GetRow ();
+		const auto& parentIndex = FindIndex (path.branch_path ());
+		beginRemoveRows (parentIndex, nodeRow, nodeRow);
+		parentNode->EraseChild (parentNode->begin () + nodeRow);
+		Path2Node_.erase (pos);
+		endRemoveRows ();
+
+		ClearEmptyParents (path.branch_path ());
+	}
+
+	void TorrentFilesModel::update ()
+	{
+		const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
+		const auto& base = handle.save_path ();
+
+		const auto& files = Core::Instance ()->GetTorrentFiles (Index_);
+		UpdateFiles (base, files);
+	}
+
+	void TorrentFilesModel::handleFileRenamed (int torrent, int file, const QString& newName)
+	{
+		if (torrent != Index_)
+			return;
+
+		const auto filePos = std::find_if (Path2Node_.begin (), Path2Node_.end (),
+				[file] (const Path2Node_t::value_type& pair)
+					{ return pair.second->FileIndex_ == file; });
+		if (filePos == Path2Node_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown file index"
+					<< file
+					<< "for torrent"
+					<< torrent
+					<< "was renamed to"
+					<< newName;
+			return;
+		}
+
+		const auto node = filePos->second;
+		ClearEmptyParents (filePos->first);
+
+		const boost::filesystem::path newPath { newName.toUtf8 ().constData () };
+
+		const auto& parentNode = MkParentIfDoesntExist (newPath, true);
+
+		node->Name_ = QString::fromUtf8 (newPath.leaf ().c_str ());
+		node->Reparent (parentNode);
+
+		beginInsertRows (FindIndex (newPath.branch_path ()), parentNode->GetRowCount (), parentNode->GetRowCount ());
+		Path2Node_ [newPath] = node;
+		parentNode->AppendExisting (node);
+		endInsertRows ();
+	}
+}
+}
+}
