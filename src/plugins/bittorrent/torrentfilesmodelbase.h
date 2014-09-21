@@ -72,6 +72,11 @@ namespace BitTorrent
 		{
 			return ParentPath_ / Name_.toStdString ();
 		}
+
+		void Reparent (const std::shared_ptr<T>& newParent)
+		{
+			this->Parent_ = newParent;
+		}
 	};
 
 	template<typename T>
