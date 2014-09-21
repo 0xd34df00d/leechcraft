@@ -73,6 +73,11 @@ namespace BitTorrent
 			return ParentPath_ / Name_.toStdString ();
 		}
 
+		QString GetFullPathStr () const
+		{
+			return QString::fromUtf8 (GetFullPath ().string ().c_str ());
+		}
+
 		void Reparent (const std::shared_ptr<T>& newParent)
 		{
 			this->Parent_ = newParent;
