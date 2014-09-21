@@ -326,6 +326,20 @@ namespace Murm
 			}
 			return replacement;
 		}
+
+		template<typename T, typename R>
+		void AppendReplacements (QList<QPair<QString, QString>>& replacements,
+				const QString& name, const QList<T>& items, const R& func)
+		{
+			for (const auto& item : items)
+			{
+				const auto& id = QString ("%1_%2_%3")
+						.arg (name)
+						.arg (item.OwnerID_)
+						.arg (item.ID_);
+				replacements.append ({ id, func (item) });
+			}
+		}
 	}
 
 	void EntryBase::HandleAttaches (VkMessage *msg, const MessageInfo& info)
@@ -379,41 +393,16 @@ namespace Murm
 
 					auto body = safeMsg->GetBody ();
 
+					const auto& proxy = Account_->GetCoreProxy ();
+
 					QList<QPair<QString, QString>> replacements;
-					for (const auto& info : msgInfo.Photos_)
-					{
-						const auto& id = QString ("photostub_%1_%2")
-								.arg (info.OwnerID_)
-								.arg (info.ID_);
-						replacements.append ({ id, Photo2Replacement (info) });
-					}
-
-					for (const auto& audio : msgInfo.Audios_)
-					{
-						const auto& id = QString ("audiostub_%1_%2")
-								.arg (audio.OwnerID_)
-								.arg (audio.ID_);
-						replacements.append ({ id,
-									Audio2Replacement (audio, Account_->GetCoreProxy ()) });
-					}
-
-					for (const auto& video : msgInfo.Videos_)
-					{
-						const auto& id = QString ("videostub_%1_%2")
-								.arg (video.OwnerID_)
-								.arg (video.ID_);
-						replacements.append ({ id,
-									Video2Replacement (video, Account_->GetCoreProxy ()) });
-					}
-
-					for (const auto& repost : msgInfo.ContainedReposts_)
-					{
-						const auto& id = QString ("wallstub_%1_%2")
-								.arg (repost.OwnerID_)
-								.arg (repost.ID_);
-						const auto& repl = FullInfo2Replacement (repost, Account_->GetCoreProxy (), false);
-						replacements.append ({ id, repl });
-					}
+					AppendReplacements (replacements, "photostub", msgInfo.Photos_, &Photo2Replacement);
+					AppendReplacements (replacements, "audiostub", msgInfo.Audios_,
+							[proxy] (const AudioInfo& info) { return Audio2Replacement (info, proxy); });
+					AppendReplacements (replacements, "videostub", msgInfo.Videos_,
+							[proxy] (const VideoInfo& info) { return Video2Replacement (info, proxy); });
+					AppendReplacements (replacements, "wallstub", msgInfo.ContainedReposts_,
+							[proxy] (const FullMessageInfo& info) { return FullInfo2Replacement (info, proxy, false); });
 
 					const auto safeThis = qobject_cast<EntryBase*> (safeMsg->ParentCLEntry ());
 					safeThis->PerformReplacements (replacements, body);
