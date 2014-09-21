@@ -219,11 +219,7 @@ namespace BitTorrent
 		{
 			const auto pos = Path2Node_.find (fi.Path_);
 			if (pos == Path2Node_.end ())
-			{
-				Clear ();
-				ResetFiles (BasePath_, infos);
-				return;
-			}
+				continue;
 
 			const auto& item = pos->second;
 			item->Progress_ = fi.Progress_;
