@@ -201,6 +201,17 @@ namespace Murm
 			return result;
 		}
 
+		QString PagePreview2Replacement (const PagePreview& info)
+		{
+			QString result = "<div>";
+			result += EntryBase::tr ("Page: <a href='%1'>%2</a>")
+					.arg (info.Url_.toEncoded ().constData ())
+					.arg (info.Title_);
+			result += "</div>";
+
+			return result;
+		}
+
 		struct ContentsInfo
 		{
 			QString Contents_;
@@ -261,7 +272,7 @@ namespace Murm
 					attach.ID_ = pair.second.toString ();
 			}
 
-			QStringList photoIds, wallIds, audioIds, videoIds, docIds;
+			QStringList photoIds, wallIds, audioIds, videoIds, docIds, pageIds;
 			for (const auto& info : attaches)
 				if (info.Type_ == "photo")
 					photoIds << info.ID_;
@@ -273,12 +284,15 @@ namespace Murm
 					videoIds << info.ID_;
 				else if (info.Type_ == "doc")
 					docIds << info.ID_;
+				else if (info.Type_ == "page")
+					pageIds << info.ID_;
 
 			const auto hasAdditional = !photoIds.isEmpty () ||
 					!wallIds.isEmpty () ||
 					!audioIds.isEmpty () ||
 					!videoIds.isEmpty () ||
-					!docIds.isEmpty ();
+					!docIds.isEmpty () ||
+					!pageIds.isEmpty ();
 
 			for (const auto& id : photoIds)
 				newContents += "<div id='photostub_" + id + "'></div>";
@@ -290,6 +304,8 @@ namespace Murm
 				newContents += "<div id='videostub_" + id + "'></div>";
 			for (const auto& id : docIds)
 				newContents += "<div id='docstub_" + id + "'></div>";
+			for (const auto& id : pageIds)
+				newContents += "<div id='pagestub_" + id + "'></div>";
 
 			const auto& fwdIds = info.Params_.value ("fwd")
 					.toString ().split (',', QString::SkipEmptyParts);
@@ -318,6 +334,9 @@ namespace Murm
 
 			for (const auto& video : info.Videos_)
 				replacement += "<br/>" + Video2Replacement (video, proxy);
+
+			for (const auto& page : info.PagesPreviews_)
+				replacement += "<br/>" + PagePreview2Replacement (page);
 
 			if (!info.Audios_.empty ())
 			{
@@ -438,6 +457,7 @@ namespace Murm
 
 		QList<QPair<QString, QString>> replacements;
 		AppendReplacements (replacements, "photostub", msgInfo.Photos_, &Photo2Replacement);
+		AppendReplacements (replacements, "pagestub", msgInfo.PagesPreviews_, &PagePreview2Replacement);
 		AppendReplacements (replacements, "audiostub", msgInfo.Audios_,
 				[proxy] (const AudioInfo& info) { return Audio2Replacement (info, proxy); });
 		AppendReplacements (replacements, "videostub", msgInfo.Videos_,
