@@ -164,6 +164,19 @@ namespace Murm
 		QUrl Image_;
 	};
 
+	struct DocumentInfo
+	{
+		qlonglong OwnerID_;
+		qulonglong ID_;
+
+		QString Title_;
+		QString Extension_;
+
+		qulonglong Size_;
+
+		QUrl Url_;
+	};
+
 	struct FullMessageInfo
 	{
 		qlonglong OwnerID_;
@@ -178,6 +191,7 @@ namespace Murm
 		QList<PhotoInfo> Photos_;
 		QList<AudioInfo> Audios_;
 		QList<VideoInfo> Videos_;
+		QList<DocumentInfo> Documents_;
 		QList<FullMessageInfo> ContainedReposts_;
 		QList<FullMessageInfo> ForwardedMessages_;
 	};
