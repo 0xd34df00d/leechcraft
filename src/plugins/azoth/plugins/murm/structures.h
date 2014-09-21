@@ -177,6 +177,15 @@ namespace Murm
 		QUrl Url_;
 	};
 
+	struct PagePreview
+	{
+		qlonglong OwnerID_;
+		qulonglong ID_;
+
+		QString Title_;
+		QUrl Url_;
+	};
+
 	struct FullMessageInfo
 	{
 		qlonglong OwnerID_;
@@ -192,6 +201,7 @@ namespace Murm
 		QList<AudioInfo> Audios_;
 		QList<VideoInfo> Videos_;
 		QList<DocumentInfo> Documents_;
+		QList<PagePreview> PagesPreviews_;
 		QList<FullMessageInfo> ContainedReposts_;
 		QList<FullMessageInfo> ForwardedMessages_;
 	};
