@@ -112,6 +112,7 @@ namespace BitTorrent
 			LeechCraft::TaskParameters Parameters_;
 		};
 
+		friend struct SimpleDispatcher;
 
 		mutable QMap<libtorrent::torrent_handle, libtorrent::torrent_status> Handle2Status_;
 	public:
@@ -340,8 +341,12 @@ namespace BitTorrent
 				const boost::filesystem::path&,
 				bool,
 				bool);
+
 		void HandleSingleFinished (int);
+		void HandleFileRenamed (const libtorrent::file_renamed_alert&);
+
 		void ManipulateSettings ();
+
 		/** Returns human-readable list of tags for the given torrent.
 		 *
 		 * @param[in] torrent The ID of the torrent.
@@ -380,6 +385,7 @@ namespace BitTorrent
 				const QDateTime&, const QStringList&);
 		void taskFinished (int);
 		void taskRemoved (int);
+		void fileRenamed (int torrent, int file, const QString& newName);
 	};
 }
 }

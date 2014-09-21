@@ -447,7 +447,12 @@ namespace BitTorrent
 		if (idx < 0)
 			return 0;
 
-		return new TorrentFilesModel (idx);
+		const auto tfm = new TorrentFilesModel (idx);
+		connect (this,
+				SIGNAL (fileRenamed (int, int, QString)),
+				tfm,
+				SLOT (handleFileRenamed (int, int, QString)));
+		return tfm;
 	}
 
 	int Core::columnCount (const QModelIndex&) const
@@ -2028,6 +2033,20 @@ namespace BitTorrent
 		emit taskFinished (torrent.ID_);
 	}
 
+	void Core::HandleFileRenamed (const libtorrent::file_renamed_alert& a)
+	{
+		const auto pos = FindHandle (a.handle);
+		if (pos == Handles_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown handle";
+			return;
+		}
+
+		emit fileRenamed (std::distance (Handles_.begin (), pos),
+				a.index, QString::fromUtf8 (a.name.c_str ()));
+	}
+
 	void Core::ManipulateSettings ()
 	{
 		SetOverallDownloadRate (XmlSettingsManager::Instance ()->
@@ -2450,6 +2469,11 @@ namespace BitTorrent
 					Q_ARG (LeechCraft::Entity, n));
 		}
 
+		void operator() (const libtorrent::file_renamed_alert& a) const
+		{
+			Core::Instance ()->HandleFileRenamed (a);
+		}
+
 		void operator() (const libtorrent::file_rename_failed_alert& a) const
 		{
 			QString text = QObject::tr ("File rename failed for torrent:<br />%1<br />"
@@ -2552,6 +2576,7 @@ namespace BitTorrent
 					, libtorrent::storage_moved_failed_alert
 					, libtorrent::metadata_received_alert
 					, libtorrent::file_error_alert
+					, libtorrent::file_renamed_alert
 					, libtorrent::file_rename_failed_alert
 					, libtorrent::read_piece_alert
 					, libtorrent::state_update_alert
