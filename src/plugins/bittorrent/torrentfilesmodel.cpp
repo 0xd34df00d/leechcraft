@@ -291,7 +291,10 @@ namespace BitTorrent
 
 		const auto& node = pos->second;
 		if (!node->IsEmpty ())
+		{
+			UpdateSizeGraph (RootNode_);
 			return;
+		}
 
 		const auto& parentNode = node->GetParent ();
 
@@ -348,6 +351,8 @@ namespace BitTorrent
 		Path2Node_ [newPath] = node;
 		parentNode->AppendExisting (node);
 		endInsertRows ();
+
+		UpdateSizeGraph (RootNode_);
 	}
 }
 }
