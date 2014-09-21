@@ -384,7 +384,7 @@ namespace Murm
 					{
 						const auto& id = QString ("photostub_%1_%2")
 								.arg (info.OwnerID_)
-								.arg (info.PhotoID_);
+								.arg (info.ID_);
 						replacements.append ({ id, Photo2Replacement (info) });
 					}
 
