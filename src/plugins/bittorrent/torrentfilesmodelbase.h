@@ -170,7 +170,7 @@ namespace BitTorrent
 			return createIndex (initialNode->GetRow (), 0, initialNode.get ());
 		}
 
-		const std::shared_ptr<T>& MkParentIfDoesntExist (const boost::filesystem::path& path)
+		const std::shared_ptr<T>& MkParentIfDoesntExist (const boost::filesystem::path& path, bool announce = false)
 		{
 			const auto& parentPath = path.branch_path ();
 			const auto pos = Path2Node_.find (parentPath);
@@ -186,13 +186,20 @@ namespace BitTorrent
 					QString::fromUtf8 (parentPath.leaf ().c_str ());
 #endif
 
+			const auto& parentParentPath = parentPath.branch_path ();
+			if (announce)
+				beginInsertRows (FindIndex (parentParentPath), parent->GetRowCount (), parent->GetRowCount ());
 			const auto& node = parent->AppendChild (parent);
-			node->ParentPath_ = parentPath.branch_path ();
+			node->ParentPath_ = parentParentPath;
 			node->Name_ = name;
 			node->Icon_ = Core::Instance ()->GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("document-open-folder");
 
-			return Path2Node_.insert ({ parentPath, node }).first->second;
+			const auto& insertResult = Path2Node_.insert ({ parentPath, node });
+			if (announce)
+				endInsertRows ();
+
+			return insertResult.first->second;
 		}
 	public:
 		void Clear ()
