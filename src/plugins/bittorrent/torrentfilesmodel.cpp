@@ -85,7 +85,7 @@ namespace BitTorrent
 					node->Icon_ :
 					QIcon {};
 		case RoleFullPath:
-			return QString::fromUtf8 (node->GetFullPath ().string ().c_str ());
+			return node->GetFullPathStr ();
 		case RoleFileName:
 			return node->Name_;
 		case RoleProgress:
@@ -138,15 +138,14 @@ namespace BitTorrent
 			const auto& newPath = value.toString ();
 			if (!node->IsEmpty ())
 			{
-				const auto& curPath = QString::fromUtf8 (node->GetFullPath ().string ().c_str ());
+				const auto& curPath = node->GetFullPathStr ();
 				const auto curPathSize = curPath.size ();
 				std::function<void (TorrentNodeInfo*)> setter =
 						[this, &setter, &newPath, curPathSize] (TorrentNodeInfo *node)
 						{
 							if (node->IsEmpty ())
 							{
-								auto specificPath = QString::fromUtf8 (node->GetFullPath ()
-											.string ().c_str ());
+								auto specificPath = node->GetFullPathStr ();
 								specificPath.replace (0, curPathSize, newPath);
 								Core::Instance ()->SetFilename (node->FileIndex_, specificPath, Index_);
 							}

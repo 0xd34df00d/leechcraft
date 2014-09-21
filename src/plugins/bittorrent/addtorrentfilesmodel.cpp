@@ -66,7 +66,7 @@ namespace BitTorrent
 					node->Icon_ :
 					QIcon {};
 		case RoleFullPath:
-			return QString::fromUtf8 (node->GetFullPath ().c_str ());
+			return node->GetFullPathStr ();
 		case RoleFileName:
 			return node->Name_;
 		case RoleSize:
