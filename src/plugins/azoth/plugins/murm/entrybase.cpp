@@ -386,29 +386,32 @@ namespace Murm
 			return;
 
 		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
-				[this, safeMsg] (const FullMessageInfo& msgInfo) -> void
+				[safeMsg] (const FullMessageInfo& msgInfo) -> void
 				{
 					if (!safeMsg)
 						return;
 
-					auto body = safeMsg->GetBody ();
-
-					const auto& proxy = Account_->GetCoreProxy ();
-
-					QList<QPair<QString, QString>> replacements;
-					AppendReplacements (replacements, "photostub", msgInfo.Photos_, &Photo2Replacement);
-					AppendReplacements (replacements, "audiostub", msgInfo.Audios_,
-							[proxy] (const AudioInfo& info) { return Audio2Replacement (info, proxy); });
-					AppendReplacements (replacements, "videostub", msgInfo.Videos_,
-							[proxy] (const VideoInfo& info) { return Video2Replacement (info, proxy); });
-					AppendReplacements (replacements, "wallstub", msgInfo.ContainedReposts_,
-							[proxy] (const FullMessageInfo& info) { return FullInfo2Replacement (info, proxy, false); });
-
 					const auto safeThis = qobject_cast<EntryBase*> (safeMsg->ParentCLEntry ());
-					safeThis->PerformReplacements (replacements, body);
-
-					safeMsg->SetBody (body);
+					safeThis->HandleFullMessageInfo (msgInfo, safeMsg);
 				});
+	}
+
+	void EntryBase::HandleFullMessageInfo (const FullMessageInfo& msgInfo, VkMessage *msg)
+	{
+		const auto& proxy = Account_->GetCoreProxy ();
+
+		QList<QPair<QString, QString>> replacements;
+		AppendReplacements (replacements, "photostub", msgInfo.Photos_, &Photo2Replacement);
+		AppendReplacements (replacements, "audiostub", msgInfo.Audios_,
+				[proxy] (const AudioInfo& info) { return Audio2Replacement (info, proxy); });
+		AppendReplacements (replacements, "videostub", msgInfo.Videos_,
+				[proxy] (const VideoInfo& info) { return Video2Replacement (info, proxy); });
+		AppendReplacements (replacements, "wallstub", msgInfo.ContainedReposts_,
+				[proxy] (const FullMessageInfo& info) { return FullInfo2Replacement (info, proxy, false); });
+
+		auto body = msg->GetBody ();
+		PerformReplacements (replacements, body);
+		msg->SetBody (body);
 	}
 
 	void EntryBase::PerformReplacements (QList<QPair<QString, QString>> replacements, QString& body)

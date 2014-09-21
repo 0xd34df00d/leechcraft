@@ -44,6 +44,7 @@ namespace Murm
 	class VkAccount;
 	class VkMessage;
 	struct MessageInfo;
+	struct FullMessageInfo;
 
 	class EntryBase : public QObject
 					, public ICLEntry
@@ -70,6 +71,7 @@ namespace Murm
 	protected:
 		void HandleAttaches (VkMessage*, const MessageInfo&);
 	private:
+		void HandleFullMessageInfo (const FullMessageInfo&, VkMessage*);
 		void PerformReplacements (QList<QPair<QString, QString>>, QString&);
 	signals:
 		void gotMessage (QObject*);
