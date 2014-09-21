@@ -155,6 +155,16 @@ namespace BitTorrent
 			return nodePtr->GetRowCount ();
 		}
 
+		QModelIndex FindIndex (const boost::filesystem::path& path) const
+		{
+			const auto pos = Path2Node_.find (path);
+			if (pos == Path2Node_.end ())
+				throw std::runtime_error ("TorrentFilesModelBase::FindIndex(): unknown path " + path.string ());
+
+			const auto& initialNode = pos->second;
+			return createIndex (initialNode->GetRow (), 0, initialNode.get ());
+		}
+
 		const std::shared_ptr<T>& MkParentIfDoesntExist (const boost::filesystem::path& path)
 		{
 			const auto& parentPath = path.branch_path ();
