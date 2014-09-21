@@ -108,6 +108,11 @@ namespace Util
 			return Children_.erase (begin, end);
 		}
 
+		void AppendExisting (const T_ptr& t)
+		{
+			Children_ << t;
+		}
+
 		template<typename... Args>
 		T_ptr AppendChild (Args&&... args)
 		{
