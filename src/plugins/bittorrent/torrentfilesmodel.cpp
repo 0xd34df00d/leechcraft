@@ -85,7 +85,7 @@ namespace BitTorrent
 					node->Icon_ :
 					QIcon {};
 		case RoleFullPath:
-			return QString::fromUtf8 (node->GetFullPath ().c_str ());
+			return QString::fromUtf8 (node->GetFullPath ().string ().c_str ());
 		case RoleFileName:
 			return node->Name_;
 		case RoleProgress:
@@ -138,14 +138,15 @@ namespace BitTorrent
 			const auto& newPath = value.toString ();
 			if (!node->IsEmpty ())
 			{
-				const auto& curPath = QString::fromUtf8 (node->GetFullPath ().c_str ());
+				const auto& curPath = QString::fromUtf8 (node->GetFullPath ().string ().c_str ());
 				const auto curPathSize = curPath.size ();
 				std::function<void (TorrentNodeInfo*)> setter =
 						[this, &setter, &newPath, curPathSize] (TorrentNodeInfo *node)
 						{
 							if (node->IsEmpty ())
 							{
-								auto specificPath = QString::fromUtf8 (node->GetFullPath ().c_str ());
+								auto specificPath = QString::fromUtf8 (node->GetFullPath ()
+											.string ().c_str ());
 								specificPath.replace (0, curPathSize, newPath);
 								Core::Instance ()->SetFilename (node->FileIndex_, specificPath, Index_);
 							}
@@ -344,7 +345,7 @@ namespace BitTorrent
 
 		const auto& parentNode = MkParentIfDoesntExist (newPath, true);
 
-		node->Name_ = QString::fromUtf8 (newPath.leaf ().c_str ());
+		node->Name_ = QString::fromUtf8 (newPath.leaf ().string ().c_str ());
 		node->Reparent (parentNode);
 
 		beginInsertRows (FindIndex (newPath.branch_path ()), parentNode->GetRowCount (), parentNode->GetRowCount ());
