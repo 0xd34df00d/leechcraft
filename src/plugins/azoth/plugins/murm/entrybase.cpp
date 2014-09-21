@@ -32,6 +32,7 @@
 #include <util/util.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/qtutil.h>
+#include <util/sys/extensionsdata.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/azothutil.h>
 #include "vkaccount.h"
@@ -101,6 +102,12 @@ namespace Murm
 					.arg (fullSizeStr);
 		}
 
+		QString Icon2Img (const QIcon& icon, const QString& name)
+		{
+			const auto& data = LeechCraft::Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
+			return "<img src='" + data + "' width='16' height='16' alt='" + name + "' title='" + name + "' />";
+		}
+
 		QString Audio2Replacement (const AudioInfo& info, const ICoreProxy_ptr& proxy)
 		{
 			auto durStr = LeechCraft::Util::MakeTimeFromLong (info.Duration_);
@@ -134,11 +141,9 @@ namespace Murm
 
 			QString result;
 
-			auto addImage = [&proxy, &result] (const QString& icon, const QString& name) -> void
+			auto addImage = [&proxy, &result] (const QString& icon, const QString& name)
 			{
-				const auto& px = proxy->GetIconThemeManager ()->GetIcon (icon).pixmap (16, 16);
-				const auto& data = LeechCraft::Util::GetAsBase64Src (px.toImage ());
-				result += "<img src='" + data + "' width='16' height='16' alt='" + name + "' title='" + name + "' />";
+				result += Icon2Img (proxy->GetIconThemeManager ()->GetIcon (icon), name);
 			};
 
 			result += "<div>";
@@ -175,6 +180,24 @@ namespace Murm
 			result += "[" + LeechCraft::Util::MakeTimeFromLong (info.Duration_) + "] <br />";
 			result += "</a></div>";
 
+			return result;
+		}
+
+		QString Document2Replacement (const DocumentInfo& info, const ICoreProxy_ptr&)
+		{
+			QString result = "<div>";
+
+			const auto& icon = Util::ExtensionsData::Instance ().GetExtIcon (info.Extension_);
+			result += Icon2Img (icon, info.Extension_);
+
+			result += QString::fromUtf8 ("<a href='%1'>%2</a> — ")
+					.arg (info.Url_.toEncoded ().constData ())
+					.arg (info.Title_);
+			result += EntryBase::tr ("%1 document, size: %2")
+					.arg (info.Extension_.toUpper ())
+					.arg (Util::MakePrettySize (info.Size_));
+
+			result += "</div>";
 			return result;
 		}
 
@@ -238,7 +261,7 @@ namespace Murm
 					attach.ID_ = pair.second.toString ();
 			}
 
-			QStringList photoIds, wallIds, audioIds, videoIds;
+			QStringList photoIds, wallIds, audioIds, videoIds, docIds;
 			for (const auto& info : attaches)
 				if (info.Type_ == "photo")
 					photoIds << info.ID_;
@@ -248,11 +271,14 @@ namespace Murm
 					audioIds << info.ID_;
 				else if (info.Type_ == "video")
 					videoIds << info.ID_;
+				else if (info.Type_ == "doc")
+					docIds << info.ID_;
 
 			const auto hasAdditional = !photoIds.isEmpty () ||
 					!wallIds.isEmpty () ||
 					!audioIds.isEmpty () ||
-					!videoIds.isEmpty ();
+					!videoIds.isEmpty () ||
+					!docIds.isEmpty ();
 
 			for (const auto& id : photoIds)
 				newContents += "<div id='photostub_" + id + "'></div>";
@@ -262,6 +288,8 @@ namespace Murm
 				newContents += "<div id='audiostub_" + id + "' style='" + AudioDivStyle + "'></div>";
 			for (const auto& id : videoIds)
 				newContents += "<div id='videostub_" + id + "'></div>";
+			for (const auto& id : docIds)
+				newContents += "<div id='docstub_" + id + "'></div>";
 
 			const auto& fwdIds = info.Params_.value ("fwd")
 					.toString ().split (',', QString::SkipEmptyParts);
@@ -296,6 +324,14 @@ namespace Murm
 				replacement += "<div style='" + AudioDivStyle + "'>";
 				for (const auto& audio : info.Audios_)
 					replacement += Audio2Replacement (audio, proxy);
+				replacement += "</div>";
+			}
+
+			if (!info.Documents_.isEmpty ())
+			{
+				replacement += "<div style='" + AudioDivStyle + "'>";
+				for (const auto& doc : info.Documents_)
+					replacement += Document2Replacement (doc, proxy);
 				replacement += "</div>";
 			}
 
@@ -406,6 +442,8 @@ namespace Murm
 				[proxy] (const AudioInfo& info) { return Audio2Replacement (info, proxy); });
 		AppendReplacements (replacements, "videostub", msgInfo.Videos_,
 				[proxy] (const VideoInfo& info) { return Video2Replacement (info, proxy); });
+		AppendReplacements (replacements, "docstub", msgInfo.Documents_,
+				[proxy] (const DocumentInfo& info) { return Document2Replacement (info, proxy); });
 		AppendReplacements (replacements, "wallstub", msgInfo.ContainedReposts_,
 				[proxy] (const FullMessageInfo& info) { return FullInfo2Replacement (info, proxy, false); });
 
