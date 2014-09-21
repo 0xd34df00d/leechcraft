@@ -1333,6 +1333,19 @@ namespace Murm
 			};
 		}
 
+		DocumentInfo DocMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["owner_id"].toLongLong (),
+				map ["did"].toULongLong (),
+				map ["title"].toString (),
+				map ["ext"].toString (),
+				map ["size"].toULongLong (),
+				map ["url"].toString ()
+			};
+		}
+
 		void HandleAttachments (FullMessageInfo& info, const QVariant& attachments, Logger& logger)
 		{
 			const auto& attList = attachments.toList ();
@@ -1345,6 +1358,8 @@ namespace Murm
 					info.Audios_ << AudioMap2Info (attMap ["audio"].toMap ());
 				else if (attMap.contains ("video"))
 					info.Videos_ << VideoMap2Info (attMap ["video"].toMap ());
+				else if (attMap.contains ("doc"))
+					info.Documents_ << DocMap2Info (attMap ["doc"].toMap ());
 				else if (attMap.contains ("wall"))
 				{
 					auto wallMap = attMap ["wall"].toMap ();
