@@ -70,6 +70,16 @@ namespace BitTorrent
 		const auto node = static_cast<TorrentNodeInfo*> (index.internalPointer ());
 		switch (role)
 		{
+		case Qt::CheckStateRole:
+			if (index.column () != ColumnPath)
+				return {};
+
+			if (node->Priority_ > 0)
+				return Qt::Checked;
+			else if (node->Priority_ < 0)
+				return Qt::PartiallyChecked;
+			else
+				return Qt::Unchecked;
 		case Qt::DisplayRole:
 			switch (index.column ())
 			{
@@ -105,24 +115,29 @@ namespace BitTorrent
 		if (!index.isValid ())
 			return 0;
 
-		if (index.column () == ColumnPriority ||
-				index.column () == ColumnPath)
-			return Qt::ItemIsSelectable |
-				Qt::ItemIsEnabled |
-				Qt::ItemIsEditable;
-		else
-			return Qt::ItemIsSelectable |
-				Qt::ItemIsEnabled;
+		Qt::ItemFlags flags { Qt::ItemIsSelectable | Qt::ItemIsEnabled };
+		switch (index.column ())
+		{
+		case ColumnPath:
+			flags |= Qt::ItemIsEditable;
+			flags |= Qt::ItemIsUserCheckable;
+			break;
+		case ColumnPriority:
+			flags |= Qt::ItemIsEditable;
+			break;
+		}
+		return flags;
 	}
 
 	bool TorrentFilesModel::setData (const QModelIndex& index, const QVariant& value, int role)
 	{
-		if (!index.isValid () || role != Qt::EditRole)
+		if (!index.isValid ())
 			return false;
 
 		const auto node = static_cast<TorrentNodeInfo*> (index.internalPointer ());
-		if (index.column () == ColumnPriority)
+		switch (index.column ())
 		{
+		case ColumnPriority:
 			if (const auto rc = rowCount (index))
 				for (int i = 0; i < rc; ++i)
 					setData (this->index (i, index.column (), index), value, role);
@@ -131,40 +146,50 @@ namespace BitTorrent
 				const auto newPriority = value.toInt ();
 				Core::Instance ()->SetFilePriority (node->FileIndex_, newPriority, Index_);
 				node->Priority_ = newPriority;
-				emit dataChanged (index, index);
+				emit dataChanged (index.sibling (index.row (), ColumnPath), index);
 
 				UpdatePriorities (node);
 			}
 			return true;
-		}
-		else if (index.column () == ColumnPath)
+		case ColumnPath:
 		{
-			const auto& newPath = value.toString ();
-			if (!node->IsEmpty ())
+			switch (role)
 			{
-				const auto& curPath = node->GetFullPathStr ();
-				const auto curPathSize = curPath.size ();
-				std::function<void (TorrentNodeInfo*)> setter =
-						[this, &setter, &newPath, curPathSize] (TorrentNodeInfo *node)
-						{
-							if (node->IsEmpty ())
+			case Qt::EditRole:
+			{
+				const auto& newPath = value.toString ();
+				if (!node->IsEmpty ())
+				{
+					const auto& curPath = node->GetFullPathStr ();
+					const auto curPathSize = curPath.size ();
+					std::function<void (TorrentNodeInfo*)> setter =
+							[this, &setter, &newPath, curPathSize] (TorrentNodeInfo *node)
 							{
-								auto specificPath = node->GetFullPathStr ();
-								specificPath.replace (0, curPathSize, newPath);
-								Core::Instance ()->SetFilename (node->FileIndex_, specificPath, Index_);
-							}
-							else
-								for (const auto& subnode : *node)
-									setter (subnode.get ());
-						};
-				setter (node);
+								if (node->IsEmpty ())
+								{
+									auto specificPath = node->GetFullPathStr ();
+									specificPath.replace (0, curPathSize, newPath);
+									Core::Instance ()->SetFilename (node->FileIndex_, specificPath, Index_);
+								}
+								else
+									for (const auto& subnode : *node)
+										setter (subnode.get ());
+							};
+					setter (node);
+				}
+				else
+					Core::Instance ()->SetFilename (node->FileIndex_, newPath, Index_);
+				return true;
 			}
-			else
-				Core::Instance ()->SetFilename (node->FileIndex_, newPath, Index_);
-			return true;
+			case Qt::CheckStateRole:
+				return setData (index.sibling (index.row (), ColumnPriority),
+						value.toInt () == Qt::Checked ? 1 : 0,
+						Qt::EditRole);
+			}
 		}
-		else
-			return false;
+		}
+
+		return false;
 	}
 
 	void TorrentFilesModel::ResetFiles (const boost::filesystem::path& basePath,
@@ -300,7 +325,7 @@ namespace BitTorrent
 
 		parent->Priority_ = newPrio;
 		const auto& idx = IndexForNode (parent, ColumnPriority);
-		emit dataChanged (idx, idx);
+		emit dataChanged (idx.sibling (idx.row (), ColumnPath), idx);
 
 		UpdatePriorities (parent.get ());
 	}
