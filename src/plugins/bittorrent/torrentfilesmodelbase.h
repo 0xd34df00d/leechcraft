@@ -116,14 +116,23 @@ namespace BitTorrent
 		{
 		}
 
+		QModelIndex IndexForNode (T *node, int column = 0) const
+		{
+			return createIndex (node->GetRow (), column, node);
+		}
+
+		QModelIndex IndexForNode (const std::shared_ptr<T>& node, int column = 0) const
+		{
+			return IndexForNode (node.get (), column);
+		}
+
 		QModelIndex FindIndex (const boost::filesystem::path& path) const
 		{
 			const auto pos = Path2Node_.find (path);
 			if (pos == Path2Node_.end ())
 				throw std::runtime_error ("TorrentFilesModelBase::FindIndex(): unknown path " + path.string ());
 
-			const auto& initialNode = pos->second;
-			return createIndex (initialNode->GetRow (), 0, initialNode.get ());
+			return IndexForNode (pos->second);
 		}
 
 		const std::shared_ptr<T>& MkParentIfDoesntExist (const boost::filesystem::path& path, bool announce = false)
@@ -196,7 +205,7 @@ namespace BitTorrent
 			if (parent == RootNode_)
 				return {};
 
-			return createIndex (parent->GetRow (), 0, parent.get ());
+			return IndexForNode (parent);
 		}
 
 		int rowCount (const QModelIndex& parent) const override final
