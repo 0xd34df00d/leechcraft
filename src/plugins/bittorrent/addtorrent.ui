@@ -370,6 +370,16 @@
     <string>Unmark selected</string>
    </property>
   </action>
+  <action name="MarkExisting_">
+   <property name="text">
+    <string>Mark existing files</string>
+   </property>
+  </action>
+  <action name="MarkMissing_">
+   <property name="text">
+    <string>Mark missing files</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

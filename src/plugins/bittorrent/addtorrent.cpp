@@ -70,8 +70,14 @@ namespace BitTorrent
 				SLOT (updateAvailableSpace ()));
 
 		auto markMenu = new QMenu { Ui_.MarkMenuButton_ };
-		markMenu->addActions ({ Ui_.MarkAll_, Ui_.UnmarkAll_,
-				Ui_.MarkSelected_, Ui_.UnmarkSelected_ });
+		markMenu->addActions ({
+				Ui_.MarkAll_,
+				Ui_.UnmarkAll_,
+				Ui_.MarkSelected_,
+				Ui_.UnmarkSelected_,
+				Ui_.MarkExisting_,
+				Ui_.MarkMissing_
+			});
 		Ui_.MarkMenuButton_->setMenu (markMenu);
 
 		QFontMetrics fm = fontMetrics ();
@@ -257,6 +263,16 @@ namespace BitTorrent
 	void AddTorrent::on_UnmarkSelected__triggered ()
 	{
 		FilesModel_->UnmarkIndexes (Ui_.FilesView_->selectionModel ()->selectedRows ());
+	}
+
+	void AddTorrent::on_MarkExisting__triggered ()
+	{
+		MarkExisting ([] (bool exists) { return exists ? Qt::Checked : Qt::Unchecked; });
+	}
+
+	void AddTorrent::on_MarkMissing__triggered ()
+	{
+		MarkExisting ([] (bool exists) { return exists ? Qt::Unchecked : Qt::Checked; });
 	}
 
 	template<typename T>

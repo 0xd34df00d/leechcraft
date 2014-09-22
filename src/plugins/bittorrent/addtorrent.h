@@ -70,6 +70,8 @@ namespace BitTorrent
 		void on_UnmarkAll__triggered ();
 		void on_MarkSelected__triggered ();
 		void on_UnmarkSelected__triggered ();
+		void on_MarkExisting__triggered ();
+		void on_MarkMissing__triggered ();
 
 		void setOkEnabled ();
 		void updateAvailableSpace ();
