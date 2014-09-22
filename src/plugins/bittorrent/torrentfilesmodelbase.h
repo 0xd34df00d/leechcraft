@@ -116,6 +116,48 @@ namespace BitTorrent
 		{
 		}
 
+		QModelIndex FindIndex (const boost::filesystem::path& path) const
+		{
+			const auto pos = Path2Node_.find (path);
+			if (pos == Path2Node_.end ())
+				throw std::runtime_error ("TorrentFilesModelBase::FindIndex(): unknown path " + path.string ());
+
+			const auto& initialNode = pos->second;
+			return createIndex (initialNode->GetRow (), 0, initialNode.get ());
+		}
+
+		const std::shared_ptr<T>& MkParentIfDoesntExist (const boost::filesystem::path& path, bool announce = false)
+		{
+			const auto& parentPath = path.branch_path ();
+			const auto pos = Path2Node_.find (parentPath);
+			if (pos != Path2Node_.end ())
+				return pos->second;
+
+			const auto& parent = MkParentIfDoesntExist (parentPath);
+
+			const auto& name =
+#ifdef Q_OS_WIN32
+					QString::fromUtf16 (reinterpret_cast<const ushort*> (parentPath.leaf ().c_str ()));
+#else
+					QString::fromUtf8 (parentPath.leaf ().c_str ());
+#endif
+
+			const auto& parentParentPath = parentPath.branch_path ();
+			if (announce)
+				beginInsertRows (FindIndex (parentParentPath), parent->GetRowCount (), parent->GetRowCount ());
+			const auto& node = parent->AppendChild (parent);
+			node->ParentPath_ = parentParentPath;
+			node->Name_ = name;
+			node->Icon_ = Core::Instance ()->GetProxy ()->
+					GetIconThemeManager ()->GetIcon ("document-open-folder");
+
+			const auto& insertResult = Path2Node_.insert ({ parentPath, node });
+			if (announce)
+				endInsertRows ();
+
+			return insertResult.first->second;
+		}
+	public:
 		int columnCount (const QModelIndex&) const override final
 		{
 			return HeaderData_.size ();
@@ -165,48 +207,6 @@ namespace BitTorrent
 			return nodePtr->GetRowCount ();
 		}
 
-		QModelIndex FindIndex (const boost::filesystem::path& path) const
-		{
-			const auto pos = Path2Node_.find (path);
-			if (pos == Path2Node_.end ())
-				throw std::runtime_error ("TorrentFilesModelBase::FindIndex(): unknown path " + path.string ());
-
-			const auto& initialNode = pos->second;
-			return createIndex (initialNode->GetRow (), 0, initialNode.get ());
-		}
-
-		const std::shared_ptr<T>& MkParentIfDoesntExist (const boost::filesystem::path& path, bool announce = false)
-		{
-			const auto& parentPath = path.branch_path ();
-			const auto pos = Path2Node_.find (parentPath);
-			if (pos != Path2Node_.end ())
-				return pos->second;
-
-			const auto& parent = MkParentIfDoesntExist (parentPath);
-
-			const auto& name =
-#ifdef Q_OS_WIN32
-					QString::fromUtf16 (reinterpret_cast<const ushort*> (parentPath.leaf ().c_str ()));
-#else
-					QString::fromUtf8 (parentPath.leaf ().c_str ());
-#endif
-
-			const auto& parentParentPath = parentPath.branch_path ();
-			if (announce)
-				beginInsertRows (FindIndex (parentParentPath), parent->GetRowCount (), parent->GetRowCount ());
-			const auto& node = parent->AppendChild (parent);
-			node->ParentPath_ = parentParentPath;
-			node->Name_ = name;
-			node->Icon_ = Core::Instance ()->GetProxy ()->
-					GetIconThemeManager ()->GetIcon ("document-open-folder");
-
-			const auto& insertResult = Path2Node_.insert ({ parentPath, node });
-			if (announce)
-				endInsertRows ();
-
-			return insertResult.first->second;
-		}
-	public:
 		void Clear ()
 		{
 			if (!RootNode_->GetRowCount ())
