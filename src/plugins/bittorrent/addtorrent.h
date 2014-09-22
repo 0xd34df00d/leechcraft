@@ -74,6 +74,9 @@ namespace BitTorrent
 		void setOkEnabled ();
 		void updateAvailableSpace ();
 	private:
+		template<typename T>
+		void MarkExisting (T);
+
 		void ParseBrowsed ();
 		QPair<quint64, quint64> GetAvailableSpaceInDestination ();
 	signals:

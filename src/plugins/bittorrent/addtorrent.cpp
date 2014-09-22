@@ -259,6 +259,31 @@ namespace BitTorrent
 		FilesModel_->UnmarkIndexes (Ui_.FilesView_->selectionModel ()->selectedRows ());
 	}
 
+	template<typename T>
+	void AddTorrent::MarkExisting (T bool2mark)
+	{
+		auto rootPath = GetSavePath ();
+		if (!rootPath.endsWith ('/'))
+			rootPath += '/';
+
+		QList<QModelIndex> queue { QModelIndex {} };
+		while (!queue.isEmpty ())
+		{
+			const auto& idx = queue.takeFirst ();
+
+			if (const auto rc = FilesModel_->rowCount (idx))
+				for (int i = 0; i < rc; ++i)
+					queue << FilesModel_->index (i, 0, idx);
+			else
+			{
+				const auto& subpath = idx.data (AddTorrentFilesModel::RoleFullPath).toString ();
+
+				const bool exists = QFile::exists (rootPath + subpath);
+				FilesModel_->setData (idx, bool2mark (exists), Qt::CheckStateRole);
+			}
+		}
+	}
+
 	void AddTorrent::ParseBrowsed ()
 	{
 		const auto& filename = Ui_.TorrentFile_->text ();
