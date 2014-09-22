@@ -86,6 +86,7 @@ namespace BitTorrent
 		void HandleFileActivated (QModelIndex) const;
 	private:
 		void UpdateSizeGraph (const TorrentNodeInfo_ptr&);
+		void UpdatePriorities (TorrentNodeInfo*);
 		void ClearEmptyParents (boost::filesystem::path);
 	public slots:
 		void update ();

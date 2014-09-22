@@ -130,6 +130,8 @@ namespace BitTorrent
 				Core::Instance ()->SetFilePriority (node->FileIndex_, newPriority, Index_);
 				node->Priority_ = newPriority;
 				emit dataChanged (index, index);
+
+				UpdatePriorities (node);
 			}
 			return true;
 		}
@@ -198,6 +200,8 @@ namespace BitTorrent
 			item->Icon_ = inst.GetExtIcon (filename.section ('.', -1));
 
 			Path2Node_ [fi.Path_] = item;
+
+			UpdatePriorities (item.get ());
 		}
 
 		UpdateSizeGraph (RootNode_);
@@ -276,6 +280,27 @@ namespace BitTorrent
 
 		node->SubtreeSize_ = size;
 		node->Progress_ = size ? static_cast<double> (done) / size : 1;
+	}
+
+	void TorrentFilesModel::UpdatePriorities (TorrentNodeInfo *node)
+	{
+		const auto& parent = node->GetParent ();
+		if (node == RootNode_.get () || parent == RootNode_)
+			return;
+
+		const auto prio = node->Priority_;
+		const bool allSame = std::all_of (parent->begin (), parent->end (),
+				[prio] (const TorrentNodeInfo_ptr& child) { return child->Priority_ == prio; });
+
+		const auto newPrio = allSame ? prio : -1;
+		if (newPrio == parent->Priority_)
+			return;
+
+		parent->Priority_ = newPrio;
+		const auto& idx = IndexForNode (parent, ColumnPriority);
+		emit dataChanged (idx, idx);
+
+		UpdatePriorities (parent.get ());
 	}
 
 	void TorrentFilesModel::ClearEmptyParents (boost::filesystem::path path)
