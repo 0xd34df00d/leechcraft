@@ -51,10 +51,10 @@ namespace BitTorrent
 	: QDialog (parent)
 	, FilesModel_ (new AddTorrentFilesModel (this))
 	{
-		setupUi (this);
-		FilesView_->header ()->setStretchLastSection (true);
-		FilesView_->setModel (FilesModel_);
-		OK_->setEnabled (false);
+		Ui_.setupUi (this);
+		Ui_.FilesView_->header ()->setStretchLastSection (true);
+		Ui_.FilesView_->setModel (FilesModel_);
+		Ui_.OK_->setEnabled (false);
 		connect (this,
 				SIGNAL (on_TorrentFile__textChanged ()),
 				this,
@@ -69,33 +69,33 @@ namespace BitTorrent
 				SLOT (updateAvailableSpace ()));
 
 		QFontMetrics fm = fontMetrics ();
-		QHeaderView *header = FilesView_->header ();
+		QHeaderView *header = Ui_.FilesView_->header ();
 		header->resizeSection (0, fm.width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
 		header->resizeSection (1, fm.width ("_999.9 MB_"));
 
-		connect (ExpandAll_,
+		connect (Ui_.ExpandAll_,
 				SIGNAL (released ()),
-				FilesView_,
+				Ui_.FilesView_,
 				SLOT (expandAll ()));
-		connect (CollapseAll_,
+		connect (Ui_.CollapseAll_,
 				SIGNAL (released ()),
-				FilesView_,
+				Ui_.FilesView_,
 				SLOT (collapseAll ()));
 	}
 
 	void AddTorrent::Reinit ()
 	{
 		FilesModel_->Clear ();
-		TorrentFile_->setText ("");
-		TrackerURL_->setText (tr ("<unknown>"));
-		Size_->setText (tr ("<unknown>"));
-		Creator_->setText (tr ("<unknown>"));
-		Comment_->setText (tr ("<unknown>"));
-		Date_->setText (tr ("<unknown>"));
+		Ui_.TorrentFile_->setText ("");
+		Ui_.TrackerURL_->setText (tr ("<unknown>"));
+		Ui_.Size_->setText (tr ("<unknown>"));
+		Ui_.Creator_->setText (tr ("<unknown>"));
+		Ui_.Comment_->setText (tr ("<unknown>"));
+		Ui_.Date_->setText (tr ("<unknown>"));
 
 		const auto& dir = XmlSettingsManager::Instance ()->
 				property ("LastSaveDirectory").toString ();
-		Destination_->setText (dir);
+		Ui_.Destination_->setText (dir);
 
 		updateAvailableSpace ();
 	}
@@ -109,29 +109,29 @@ namespace BitTorrent
 
 		XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory",
 				QFileInfo (filename).absolutePath ());
-		TorrentFile_->setText (filename);
+		Ui_.TorrentFile_->setText (filename);
 
 		ParseBrowsed ();
 	}
 
 	void AddTorrent::SetSavePath (const QString& path)
 	{
-		Destination_->setText (path);
+		Ui_.Destination_->setText (path);
 	}
 
 	QString AddTorrent::GetFilename () const
 	{
-		return TorrentFile_->text ();
+		return Ui_.TorrentFile_->text ();
 	}
 
 	QString AddTorrent::GetSavePath () const
 	{
-		return Destination_->text ();
+		return Ui_.Destination_->text ();
 	}
 
 	bool AddTorrent::GetTryLive () const
 	{
-		return TryLive_->checkState () == Qt::Checked;
+		return Ui_.TryLive_->checkState () == Qt::Checked;
 	}
 
 	QVector<bool> AddTorrent::GetSelectedFiles () const
@@ -141,7 +141,7 @@ namespace BitTorrent
 
 	Core::AddType AddTorrent::GetAddType () const
 	{
-		switch (AddTypeBox_->currentIndex ())
+		switch (Ui_.AddTypeBox_->currentIndex ())
 		{
 		case 0:
 			return Core::Started;
@@ -159,7 +159,7 @@ namespace BitTorrent
 		QStringList tags;
 		Q_FOREACH (const auto& id, ids)
 			tags <<tm->GetTag (id);
-		TagsEdit_->setText (tm->Join (tags));
+		Ui_.TagsEdit_->setText (tm->Join (tags));
 	}
 
 	QStringList AddTorrent::GetTags () const
@@ -167,38 +167,38 @@ namespace BitTorrent
 		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
 
 		QStringList result;
-		for (const auto& tag : tm->Split (TagsEdit_->text ()))
+		for (const auto& tag : tm->Split (Ui_.TagsEdit_->text ()))
 			result << tm->GetID (tag);
 		return result;
 	}
 
 	Util::TagsLineEdit* AddTorrent::GetEdit ()
 	{
-		return TagsEdit_;
+		return Ui_.TagsEdit_;
 	}
 
 	void AddTorrent::setOkEnabled ()
 	{
-		OK_->setEnabled (QFileInfo (TorrentFile_->text ()).isReadable () &&
-				QFileInfo (Destination_->text ()).exists ());
+		Ui_.OK_->setEnabled (QFileInfo (Ui_.TorrentFile_->text ()).isReadable () &&
+				QFileInfo (Ui_.Destination_->text ()).exists ());
 	}
 
 	void AddTorrent::updateAvailableSpace ()
 	{
-		const QPair<quint64, quint64>& pair = GetAvailableSpaceInDestination ();
+		const auto& pair = GetAvailableSpaceInDestination ();
 		const quint64 availableSpace = pair.first;
 		const quint64 totalSpace = pair.second;
 
 		if (availableSpace != static_cast<quint64> (-1))
 		{
-			AvailSpaceLabel_->setText (tr ("%1 free").arg (Util::MakePrettySize (availableSpace)));
-			AvailSpaceBar_->show ();
-			AvailSpaceBar_->setValue (100 - 100 * availableSpace / totalSpace);
+			Ui_.AvailSpaceLabel_->setText (tr ("%1 free").arg (Util::MakePrettySize (availableSpace)));
+			Ui_.AvailSpaceBar_->show ();
+			Ui_.AvailSpaceBar_->setValue (100 - 100 * availableSpace / totalSpace);
 		}
 		else
 		{
-			AvailSpaceLabel_->setText (tr ("unknown"));
-			AvailSpaceBar_->hide ();
+			Ui_.AvailSpaceLabel_->setText (tr ("unknown"));
+			Ui_.AvailSpaceBar_->hide ();
 		}
 	}
 
@@ -215,7 +215,7 @@ namespace BitTorrent
 
 		XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory",
 				QFileInfo (filename).absolutePath ());
-		TorrentFile_->setText (filename);
+		Ui_.TorrentFile_->setText (filename);
 
 		ParseBrowsed ();
 	}
@@ -224,13 +224,13 @@ namespace BitTorrent
 	{
 		const auto& dir = QFileDialog::getExistingDirectory (this,
 				tr ("Select save directory"),
-				Destination_->text (),
+				Ui_.Destination_->text (),
 				0);
 		if (dir.isEmpty ())
 			return;
 
 		XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
-		Destination_->setText (dir);
+		Ui_.Destination_->setText (dir);
 	}
 
 	void AddTorrent::on_MarkAll__released ()
@@ -245,17 +245,17 @@ namespace BitTorrent
 
 	void AddTorrent::on_MarkSelected__released ()
 	{
-		FilesModel_->MarkIndexes (FilesView_->selectionModel ()->selectedRows ());
+		FilesModel_->MarkIndexes (Ui_.FilesView_->selectionModel ()->selectedRows ());
 	}
 
 	void AddTorrent::on_UnmarkSelected__released ()
 	{
-		FilesModel_->UnmarkIndexes (FilesView_->selectionModel ()->selectedRows ());
+		FilesModel_->UnmarkIndexes (Ui_.FilesView_->selectionModel ()->selectedRows ());
 	}
 
 	void AddTorrent::ParseBrowsed ()
 	{
-		const auto& filename = TorrentFile_->text ();
+		const auto& filename = Ui_.TorrentFile_->text ();
 		const auto& info = Core::Instance ()->GetTorrentInfo (filename);
 		if (!info.is_valid ())
 		{
@@ -267,10 +267,10 @@ namespace BitTorrent
 		}
 
 		if (info.trackers ().size ())
-			TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
+			Ui_.TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
 		else
-			TrackerURL_->setText (tr ("<no trackers>"));
-		Size_->setText (Util::MakePrettySize (info.total_size ()));
+			Ui_.TrackerURL_->setText (tr ("<no trackers>"));
+		Ui_.Size_->setText (Util::MakePrettySize (info.total_size ()));
 
 		QString creator = QString::fromUtf8 (info.creator ().c_str ()),
 				comment = QString::fromUtf8 (info.comment ().c_str ());
@@ -285,19 +285,19 @@ namespace BitTorrent
 #endif
 
 		if (!creator.isEmpty () && !creator.isNull ())
-			Creator_->setText (creator);
+			Ui_.Creator_->setText (creator);
 		else
-			Creator_->setText ("<>");
+			Ui_.Creator_->setText ("<>");
 		if (!comment.isEmpty () && !comment.isNull ())
-			Comment_->setText (comment);
+			Ui_.Comment_->setText (comment);
 		else
-			Comment_->setText ("<>");
+			Ui_.Comment_->setText ("<>");
 		if (!date.isEmpty () && !date.isNull ())
-			Date_->setText (date);
+			Ui_.Date_->setText (date);
 		else
-			Date_->setText ("<>");
+			Ui_.Date_->setText ("<>");
 		FilesModel_->ResetFiles (info.begin_files (), info.end_files (), info.files ());
-		FilesView_->expandAll ();
+		Ui_.FilesView_->expandAll ();
 	}
 
 	QPair<quint64, quint64> AddTorrent::GetAvailableSpaceInDestination ()

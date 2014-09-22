@@ -42,9 +42,11 @@ namespace BitTorrent
 {
 	class AddTorrentFilesModel;
 
-	class AddTorrent : public QDialog, private Ui::AddTorrent
+	class AddTorrent : public QDialog
 	{
 		Q_OBJECT
+
+		Ui::AddTorrent Ui_;
 
 		AddTorrentFilesModel * const FilesModel_;
 	public:
