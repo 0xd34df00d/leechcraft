@@ -76,7 +76,9 @@ namespace BitTorrent
 			case ColumnPath:
 				return node->Name_;
 			case ColumnPriority:
-				return node->Priority_;
+				return node->Priority_ >= 0 ?
+						node->Priority_ :
+						QVariant {};
 			case ColumnProgress:
 				return node->Progress_;
 			}
