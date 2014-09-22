@@ -34,6 +34,7 @@
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSortFilterProxyModel>
 #include <QMenu>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -49,13 +50,21 @@ namespace Plugins
 namespace BitTorrent
 {
 	AddTorrent::AddTorrent (QWidget *parent)
-	: QDialog (parent)
-	, FilesModel_ (new AddTorrentFilesModel (this))
+	: QDialog { parent }
+	, FilesModel_ { new AddTorrentFilesModel { this } }
+	, ProxyModel_ { new QSortFilterProxyModel { this } }
 	{
 		Ui_.setupUi (this);
-		Ui_.FilesView_->header ()->setStretchLastSection (true);
-		Ui_.FilesView_->setModel (FilesModel_);
+
+		ProxyModel_->setSourceModel (FilesModel_);
+		ProxyModel_->setSortRole (AddTorrentFilesModel::RoleSort);
+		ProxyModel_->setDynamicSortFilter (true);
+
+		Ui_.FilesView_->setModel (ProxyModel_);
+		Ui_.FilesView_->sortByColumn (0, Qt::AscendingOrder);
+
 		Ui_.OK_->setEnabled (false);
+
 		connect (this,
 				SIGNAL (on_TorrentFile__textChanged ()),
 				this,
@@ -80,10 +89,11 @@ namespace BitTorrent
 			});
 		Ui_.MarkMenuButton_->setMenu (markMenu);
 
-		QFontMetrics fm = fontMetrics ();
-		QHeaderView *header = Ui_.FilesView_->header ();
+		const auto& fm = fontMetrics ();
+		const auto header = Ui_.FilesView_->header ();
 		header->resizeSection (0, fm.width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
 		header->resizeSection (1, fm.width ("_999.9 MB_"));
+		header->setStretchLastSection (true);
 
 		connect (Ui_.ExpandAll_,
 				SIGNAL (released ()),

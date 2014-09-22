@@ -34,6 +34,8 @@
 #include "ui_addtorrent.h"
 #include "core.h"
 
+class QSortFilterProxyModel;
+
 namespace LeechCraft
 {
 namespace Plugins
@@ -49,6 +51,7 @@ namespace BitTorrent
 		Ui::AddTorrent Ui_;
 
 		AddTorrentFilesModel * const FilesModel_;
+		QSortFilterProxyModel * const ProxyModel_;
 	public:
 		AddTorrent (QWidget *parent = 0);
 		void Reinit ();
