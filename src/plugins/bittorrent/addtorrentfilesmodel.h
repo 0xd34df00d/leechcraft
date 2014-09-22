@@ -54,6 +54,7 @@ namespace BitTorrent
 			RoleFileName,
 			RoleFileIndex,
 			RoleSize,
+			RoleSort
 		};
 
 		enum

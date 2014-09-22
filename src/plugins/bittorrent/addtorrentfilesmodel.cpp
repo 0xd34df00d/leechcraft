@@ -65,6 +65,14 @@ namespace BitTorrent
 			return index.column () == ColumnPath ?
 					node->Icon_ :
 					QIcon {};
+		case RoleSort:
+			switch (index.column ())
+			{
+			case ColumnPath:
+				return node->Name_;
+			case ColumnSize:
+				return node->SubtreeSize_;
+			}
 		case RoleFullPath:
 			return node->GetFullPathStr ();
 		case RoleFileName:
