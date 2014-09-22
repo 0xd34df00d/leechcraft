@@ -34,6 +34,7 @@
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QMenu>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -67,6 +68,11 @@ namespace BitTorrent
 				SIGNAL (on_Destination__textChanged ()),
 				this,
 				SLOT (updateAvailableSpace ()));
+
+		auto markMenu = new QMenu { Ui_.MarkMenuButton_ };
+		markMenu->addActions ({ Ui_.MarkAll_, Ui_.UnmarkAll_,
+				Ui_.MarkSelected_, Ui_.UnmarkSelected_ });
+		Ui_.MarkMenuButton_->setMenu (markMenu);
 
 		QFontMetrics fm = fontMetrics ();
 		QHeaderView *header = Ui_.FilesView_->header ();
@@ -233,22 +239,22 @@ namespace BitTorrent
 		Ui_.Destination_->setText (dir);
 	}
 
-	void AddTorrent::on_MarkAll__released ()
+	void AddTorrent::on_MarkAll__triggered ()
 	{
 		FilesModel_->MarkAll ();
 	}
 
-	void AddTorrent::on_UnmarkAll__released ()
+	void AddTorrent::on_UnmarkAll__triggered ()
 	{
 		FilesModel_->UnmarkAll ();
 	}
 
-	void AddTorrent::on_MarkSelected__released ()
+	void AddTorrent::on_MarkSelected__triggered ()
 	{
 		FilesModel_->MarkIndexes (Ui_.FilesView_->selectionModel ()->selectedRows ());
 	}
 
-	void AddTorrent::on_UnmarkSelected__released ()
+	void AddTorrent::on_UnmarkSelected__triggered ()
 	{
 		FilesModel_->UnmarkIndexes (Ui_.FilesView_->selectionModel ()->selectedRows ());
 	}

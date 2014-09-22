@@ -65,10 +65,12 @@ namespace BitTorrent
 	private slots:
 		void on_TorrentBrowse__released ();
 		void on_DestinationBrowse__released ();
-		void on_MarkAll__released ();
-		void on_UnmarkAll__released ();
-		void on_MarkSelected__released ();
-		void on_UnmarkSelected__released ();
+
+		void on_MarkAll__triggered ();
+		void on_UnmarkAll__triggered ();
+		void on_MarkSelected__triggered ();
+		void on_UnmarkSelected__triggered ();
+
 		void setOkEnabled ();
 		void updateAvailableSpace ();
 	private:
