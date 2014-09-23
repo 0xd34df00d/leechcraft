@@ -191,6 +191,7 @@ namespace BitTorrent
 
 			const auto& item = parentItem->AppendChild (parentItem);
 			item->Name_ = name;
+			item->ParentPath_ = path.branch_path ();
 			item->FileIndex_ = static_cast<int> (std::distance (begin, pos));
 			item->SubtreeSize_ = pos->size;
 
