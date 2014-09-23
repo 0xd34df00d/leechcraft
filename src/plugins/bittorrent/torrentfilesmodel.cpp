@@ -157,10 +157,17 @@ namespace BitTorrent
 			{
 			case Qt::EditRole:
 			{
-				const auto& newPath = value.toString ();
+				auto newPath = value.toString ();
+				const auto& curPath = node->GetFullPathStr ();
+				if (curPath.contains ('/') && !newPath.contains ('/'))
+				{
+					auto newCurPath = curPath;
+					const auto lastIdx = newCurPath.lastIndexOf ('/');
+					newPath = newCurPath.left (lastIdx + 1) + newPath;
+				}
+
 				if (!node->IsEmpty ())
 				{
-					const auto& curPath = node->GetFullPathStr ();
 					const auto curPathSize = curPath.size ();
 					std::function<void (TorrentNodeInfo*)> setter =
 							[this, &setter, &newPath, curPathSize] (TorrentNodeInfo *node)
