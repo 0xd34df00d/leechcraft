@@ -668,9 +668,6 @@
       <property name="selectionMode">
        <enum>QAbstractItemView::ExtendedSelection</enum>
       </property>
-      <property name="rootIsDecorated">
-       <bool>false</bool>
-      </property>
      </widget>
     </item>
     <item>
