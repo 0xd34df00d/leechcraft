@@ -29,6 +29,7 @@
 
 #include "torrenttabwidget.h"
 #include <QSortFilterProxyModel>
+#include <QMenu>
 #include <QUrl>
 #include <QTimer>
 #include <util/util.h>
@@ -696,6 +697,16 @@ namespace BitTorrent
 				{},
 				TaskParameter::FromUserInitiated | TaskParameter::OnlyHandle);
 		Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
+	}
+
+	void TorrentTabWidget::on_FilesView__customContextMenuRequested (const QPoint& pos)
+	{
+		const auto& idx = Ui_.FilesView_->indexAt (pos);
+		if (!idx.isValid ())
+			return;
+
+		QMenu menu;
+		menu.exec (Ui_.FilesView_->viewport ()->mapToGlobal (pos));
 	}
 
 	void TorrentTabWidget::setTabWidgetSettings ()

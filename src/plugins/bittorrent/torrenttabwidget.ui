@@ -665,6 +665,9 @@
     </property>
     <item>
      <widget class="QTreeView" name="FilesView_">
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
       <property name="selectionMode">
        <enum>QAbstractItemView::ExtendedSelection</enum>
       </property>
@@ -781,7 +784,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>170</width>
+             <width>288</width>
              <height>366</height>
             </rect>
            </property>
@@ -1344,7 +1347,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>360</width>
+         <width>750</width>
          <height>553</height>
         </rect>
        </property>

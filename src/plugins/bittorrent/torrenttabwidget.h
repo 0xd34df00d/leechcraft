@@ -85,6 +85,9 @@ namespace BitTorrent
 		void on_DownloadingTorrents__valueChanged (int);
 		void on_UploadingTorrents__valueChanged (int);
 		void on_TorrentTags__editingFinished ();
+
+		void on_FilesView__customContextMenuRequested (const QPoint&);
+
 		void setTabWidgetSettings ();
 		void currentFileChanged (const QModelIndex&);
 
