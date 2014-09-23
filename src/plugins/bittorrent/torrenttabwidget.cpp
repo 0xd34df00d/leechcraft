@@ -706,6 +706,10 @@ namespace BitTorrent
 			return;
 
 		QMenu menu;
+
+		menu.addAction (tr ("Expand all"), Ui_.FilesView_, SLOT (expandAll ()));
+		menu.addAction (tr ("Collapse all"), Ui_.FilesView_, SLOT (collapseAll ()));
+
 		menu.exec (Ui_.FilesView_->viewport ()->mapToGlobal (pos));
 	}
 
