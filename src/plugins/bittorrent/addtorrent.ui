@@ -45,6 +45,9 @@
           <property name="text">
            <string>Browse...</string>
           </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
          </widget>
         </item>
        </layout>
@@ -160,6 +163,9 @@
            <widget class="QPushButton" name="DestinationBrowse_">
             <property name="text">
              <string>Browse...</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
