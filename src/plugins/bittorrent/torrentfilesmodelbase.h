@@ -128,6 +128,9 @@ namespace BitTorrent
 
 		QModelIndex FindIndex (const boost::filesystem::path& path) const
 		{
+			if (path.empty ())
+				return {};
+
 			const auto pos = Path2Node_.find (path);
 			if (pos == Path2Node_.end ())
 				throw std::runtime_error ("TorrentFilesModelBase::FindIndex(): unknown path " + path.string ());
