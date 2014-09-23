@@ -37,6 +37,7 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "addtorrentfilesmodel.h"
@@ -267,12 +268,16 @@ namespace BitTorrent
 
 	void AddTorrent::on_MarkSelected__triggered ()
 	{
-		FilesModel_->MarkIndexes (Ui_.FilesView_->selectionModel ()->selectedRows ());
+		const auto& indices = Util::Map (Ui_.FilesView_->selectionModel ()->selectedRows (),
+				[this] (const QModelIndex& idx) { return ProxyModel_->mapToSource (idx); });
+		FilesModel_->MarkIndexes (indices);
 	}
 
 	void AddTorrent::on_UnmarkSelected__triggered ()
 	{
-		FilesModel_->UnmarkIndexes (Ui_.FilesView_->selectionModel ()->selectedRows ());
+		const auto& indices = Util::Map (Ui_.FilesView_->selectionModel ()->selectedRows (),
+				[this] (const QModelIndex& idx) { return ProxyModel_->mapToSource (idx); });
+		FilesModel_->UnmarkIndexes (indices);
 	}
 
 	void AddTorrent::on_MarkExisting__triggered ()
