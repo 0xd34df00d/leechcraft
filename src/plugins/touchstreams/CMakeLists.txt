@@ -23,6 +23,7 @@ set (SRCS
 	albumsmanager.cpp
 	friendsmanager.cpp
 	authclosehandler.cpp
+	recsmanager.cpp
 	)
 set (RESOURCES touchstreamsresources.qrc)
 
