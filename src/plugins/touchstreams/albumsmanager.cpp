@@ -316,7 +316,6 @@ namespace TouchStreams
 		reply->deleteLater ();
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
-		auto tracksList = data ["response"].toList ();
 		HandleTracks (data ["response"]);
 
 		emit finished (this);
