@@ -93,6 +93,7 @@ namespace TouchStreams
 				Root_->removeRows (0, rc);
 
 			Friend2Item_.clear ();
+			qDeleteAll (Friend2AlbumsManager_);
 			Friend2AlbumsManager_.clear ();
 			Queue_->Clear ();
 			RequestQueue_.clear ();
@@ -323,8 +324,6 @@ namespace TouchStreams
 
 	void FriendsManager::handleAlbumsFinished (AlbumsManager *mgr)
 	{
-		mgr->deleteLater ();
-
 		const auto uid = mgr->GetUserID ();
 		if (!Friend2Item_.contains (uid))
 			return;
