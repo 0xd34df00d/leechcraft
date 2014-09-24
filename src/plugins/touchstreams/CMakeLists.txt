@@ -24,6 +24,7 @@ set (SRCS
 	friendsmanager.cpp
 	authclosehandler.cpp
 	recsmanager.cpp
+	util.cpp
 	)
 set (RESOURCES touchstreamsresources.qrc)
 

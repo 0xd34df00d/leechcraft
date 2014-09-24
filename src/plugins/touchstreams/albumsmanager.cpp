@@ -42,6 +42,7 @@
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/core/iiconthememanager.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -248,16 +249,8 @@ namespace TouchStreams
 
 	void AlbumsManager::refetchAlbums ()
 	{
-		if (!AuthMgr_->HadAuthentication ())
-		{
-			auto item = new QStandardItem (tr ("Authenticate"));
-			item->setEditable (false);
-			item->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("emblem-locked"));
-			item->setData ("auth", Media::RadioItemRole::RadioID);
-			item->setData (Media::RadioType::RadioAction, Media::RadioItemRole::ItemType);
-			AlbumsRootItem_->appendRow (item);
+		if (!CheckAuthentication (AlbumsRootItem_, AuthMgr_, Proxy_))
 			return;
-		}
 
 		RequestQueue_.append ({
 				[this] (const QString& key) -> void
