@@ -330,12 +330,6 @@ namespace TouchStreams
 		if (!Friend2Item_.contains (uid))
 			return;
 
-		if (!mgr->GetTracksCount ())
-		{
-			Root_->removeRow (Friend2Item_.take (uid)->row ());
-			return;
-		}
-
 		const auto& url = Friend2Item_ [uid]->data (PhotoUrlRole).toUrl ();
 		const auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
 		reply->setProperty ("TS/UID", uid);
