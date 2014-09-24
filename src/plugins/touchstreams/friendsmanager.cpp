@@ -165,7 +165,7 @@ namespace TouchStreams
 		const auto portion = 10;
 		for (int i = 0; i < ids.size (); i += portion)
 		{
-			const QStringList sub { Util::Map (ids.mid (i, std::min (ids.size (), i + portion)),
+			const QStringList sub { Util::Map (ids.mid (i, portion),
 						[] (qulonglong num) { return QString::number (num); }) };
 
 			const auto& code = QString (R"d(
