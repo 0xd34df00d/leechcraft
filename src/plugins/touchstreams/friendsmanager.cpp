@@ -42,6 +42,7 @@
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/prelude.h>
 #include <util/util.h>
 #include "albumsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -158,11 +159,8 @@ namespace TouchStreams
 		const auto portion = 10;
 		for (int i = 0; i < ids.size (); i += portion)
 		{
-			QStringList sub;
-			for (int j = i; j < std::min (ids.size (), i + portion); ++j)
-			{
-				sub << QString::number (ids.at (j));
-			}
+			const QStringList sub { Util::Map (ids.mid (i, std::min (ids.size (), i + portion)),
+						[] (qulonglong num) { return QString::number (num); }) };
 
 			const auto& code = QString (R"d(
 					var ids = [%1];
