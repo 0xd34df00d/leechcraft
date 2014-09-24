@@ -73,6 +73,9 @@ namespace TouchStreams
 
 		QStandardItem* GetRootItem () const;
 		QStandardItem* RefreshItems (const QList<QStandardItem*>&);
+	private slots:
+		void refetchRecs ();
+		void handleRecsFetched ();
 	};
 }
 }
