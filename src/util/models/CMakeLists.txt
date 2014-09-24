@@ -4,7 +4,6 @@ set (MODELS_SRCS
 	mergemodel.cpp
 	modeliterator.cpp
 	modelitem.cpp
-	treeitem.cpp
 	)
 
 foreach (SRC ${MODELS_SRCS})
