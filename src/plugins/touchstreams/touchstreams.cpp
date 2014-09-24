@@ -39,6 +39,7 @@
 #include "albumsmanager.h"
 #include "friendsmanager.h"
 #include "authclosehandler.h"
+#include "recsmanager.h"
 
 namespace LeechCraft
 {
@@ -68,6 +69,7 @@ namespace TouchStreams
 
 		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
 		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
+		RecsManager_ = new RecsManager ({}, AuthMgr_, Queue_, proxy, this);
 	}
 
 	void Plugin::SecondInit ()
@@ -130,7 +132,12 @@ namespace TouchStreams
 
 	QList<QStandardItem*> Plugin::GetRadioListItems () const
 	{
-		return { AlbumsMgr_->GetRootItem (), FriendsMgr_->GetRootItem () };
+		return
+		{
+			AlbumsMgr_->GetRootItem (),
+			RecsManager_->GetRootItem (),
+			FriendsMgr_->GetRootItem ()
+		};
 	}
 
 	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem *item, const QString&)
@@ -148,6 +155,7 @@ namespace TouchStreams
 	{
 		AlbumsMgr_->RefreshItems (items);
 		FriendsMgr_->RefreshItems (items);
+		RecsManager_->RefreshItems (items);
 	}
 
 	void Plugin::saveCookies (const QByteArray& cookies)

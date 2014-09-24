@@ -51,6 +51,7 @@ namespace TouchStreams
 {
 	class AlbumsManager;
 	class FriendsManager;
+	class RecsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -74,6 +75,7 @@ namespace TouchStreams
 
 		AlbumsManager *AlbumsMgr_;
 		FriendsManager *FriendsMgr_;
+		RecsManager *RecsManager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
