@@ -43,6 +43,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include "albumsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -110,12 +111,34 @@ namespace TouchStreams
 		}
 	}
 
+	void FriendsManager::ShowFriendsList (const QList<qlonglong>&, const QMap<qlonglong, QVariantMap>& map)
+	{
+		for (const auto& pair : Util::Stlize (map))
+		{
+			auto mgr = new AlbumsManager (pair.first, {}, {},
+					AuthMgr_, Queue_, Proxy_, this);
+			MakeFriendItem (mgr, pair.first, pair.second);
+		}
+	}
+
+	void FriendsManager::MakeFriendItem (AlbumsManager *mgr, qlonglong id, const QVariantMap& map)
+	{
+		Friend2AlbumsManager_ [id] = mgr;
+
+		const auto& name = map ["first_name"].toString () + " " + map ["last_name"].toString ();
+
+		auto userItem = mgr->GetRootItem ();
+		userItem->setText (name);
+		userItem->setData (QUrl::fromEncoded (map ["photo"].toByteArray ()), PhotoUrlRole);
+		userItem->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("user-identity"));
+		Root_->appendRow (userItem);
+		Friend2Item_ [id] = userItem;
+
+		handleAlbumsFinished (mgr);
+	}
+
 	void FriendsManager::refetchFriends ()
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("RequestFriendsData").toBool ())
-			return;
-
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		RequestQueue_.push_back ([this, nam] (const QString& key) -> void
 			{
@@ -156,7 +179,11 @@ namespace TouchStreams
 			user2info [id] = map;
 		}
 
-		ScheduleTracksRequests (ids, user2info);
+		if (!XmlSettingsManager::Instance ()
+				.property ("RequestFriendsData").toBool ())
+			ShowFriendsList (ids, user2info);
+		else
+			ScheduleTracksRequests (ids, user2info);
 	}
 
 	void FriendsManager::ScheduleTracksRequests (const QList<qlonglong>& ids,
@@ -286,26 +313,12 @@ namespace TouchStreams
 		for (const auto& userDataVar : data ["response"].toList ())
 		{
 			const auto& userData = userDataVar.toMap ();
-
 			const auto id = userData ["id"].toLongLong ();
-
 			const auto& map = usersMap [id];
 
 			auto mgr = new AlbumsManager (id, userData ["albums"], userData ["tracks"],
 					AuthMgr_, Queue_, Proxy_, this);
-
-			Friend2AlbumsManager_ [id] = mgr;
-
-			const auto& name = map ["first_name"].toString () + " " + map ["last_name"].toString ();
-
-			auto userItem = mgr->GetRootItem ();
-			userItem->setText (name);
-			userItem->setData (QUrl::fromEncoded (map ["photo"].toByteArray ()), PhotoUrlRole);
-			userItem->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("user-identity"));
-			Root_->appendRow (userItem);
-			Friend2Item_ [id] = userItem;
-
-			handleAlbumsFinished (mgr);
+			MakeFriendItem (mgr, id, map);
 		}
 	}
 

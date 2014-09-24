@@ -82,6 +82,8 @@ namespace TouchStreams
 		void RefreshItems (QList<QStandardItem*>);
 	private:
 		void ScheduleTracksRequests (const QList<qlonglong>&, const QMap<qlonglong, QVariantMap>&);
+		void ShowFriendsList (const QList<qlonglong>&, const QMap<qlonglong, QVariantMap>&);
+		void MakeFriendItem (AlbumsManager*, qlonglong, const QVariantMap&);
 	private slots:
 		void refetchFriends ();
 		void handleGotFriends ();
