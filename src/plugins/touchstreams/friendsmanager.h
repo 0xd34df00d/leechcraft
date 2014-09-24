@@ -80,6 +80,8 @@ namespace TouchStreams
 		QStandardItem* GetRootItem () const;
 
 		void RefreshItems (QList<QStandardItem*>);
+	private:
+		void ScheduleTracksRequests (const QList<qlonglong>&, const QMap<qlonglong, QVariantMap>&);
 	private slots:
 		void refetchFriends ();
 		void handleGotFriends ();

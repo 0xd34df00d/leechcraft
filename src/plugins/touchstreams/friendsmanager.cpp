@@ -156,6 +156,12 @@ namespace TouchStreams
 			user2info [id] = map;
 		}
 
+		ScheduleTracksRequests (ids, user2info);
+	}
+
+	void FriendsManager::ScheduleTracksRequests (const QList<qlonglong>& ids,
+			const QMap<qlonglong, QVariantMap>& user2info)
+	{
 		const auto portion = 10;
 		for (int i = 0; i < ids.size (); i += portion)
 		{
