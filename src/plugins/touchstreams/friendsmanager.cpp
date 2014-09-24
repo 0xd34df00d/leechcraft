@@ -159,11 +159,9 @@ namespace TouchStreams
 		for (int i = 0; i < ids.size (); i += portion)
 		{
 			QStringList sub;
-			QMap<qlonglong, QVariantMap> theseUsersMap;
 			for (int j = i; j < std::min (ids.size (), i + portion); ++j)
 			{
 				sub << QString::number (ids.at (j));
-				theseUsersMap [ids.at (j)] = user2info [ids.at (j)];
 			}
 
 			const auto& code = QString (R"d(
@@ -184,7 +182,7 @@ namespace TouchStreams
 					.arg (sub.size ());
 
 			auto nam = Proxy_->GetNetworkAccessManager ();
-			RequestQueue_.push_back ([this, nam, code, theseUsersMap] (const QString& key) -> void
+			RequestQueue_.push_back ([this, nam, code, user2info] (const QString& key) -> void
 				{
 					auto f = [=] (const QMap<QString, QString>& map) -> QNetworkReply*
 					{
@@ -205,7 +203,7 @@ namespace TouchStreams
 								this,
 								SLOT (handleExecuted ()));
 
-						Reply2Users_ [reply] = theseUsersMap;
+						Reply2Users_ [reply] = user2info;
 
 						return reply;
 					};
