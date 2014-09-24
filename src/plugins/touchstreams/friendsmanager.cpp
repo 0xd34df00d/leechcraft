@@ -43,7 +43,6 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/prelude.h>
-#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include "albumsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -111,13 +110,13 @@ namespace TouchStreams
 		}
 	}
 
-	void FriendsManager::ShowFriendsList (const QList<qlonglong>&, const QMap<qlonglong, QVariantMap>& map)
+	void FriendsManager::ShowFriendsList (const QList<qlonglong>& ids, const QMap<qlonglong, QVariantMap>& map)
 	{
-		for (const auto& pair : Util::Stlize (map))
+		for (const auto& id : ids)
 		{
-			auto mgr = new AlbumsManager (pair.first, {}, {},
+			auto mgr = new AlbumsManager (id, {}, {},
 					AuthMgr_, Queue_, Proxy_, this);
-			MakeFriendItem (mgr, pair.first, pair.second);
+			MakeFriendItem (mgr, id, map [id]);
 		}
 	}
 
