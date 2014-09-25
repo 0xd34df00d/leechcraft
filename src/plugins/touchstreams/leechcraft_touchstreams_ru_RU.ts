@@ -2,38 +2,73 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>LeechCraft::TouchStreams</name>
+    <message>
+        <location filename="recsmanager.cpp" line="57"/>
+        <source>VKontakte: recommendations</source>
+        <translation>В Контакте: рекомендации</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TouchStreams::AlbumsManager</name>
     <message>
-        <location filename="albumsmanager.cpp" line="69"/>
-        <location filename="albumsmanager.cpp" line="88"/>
+        <location filename="albumsmanager.cpp" line="79"/>
+        <location filename="albumsmanager.cpp" line="104"/>
         <source>VKontakte: your audio</source>
         <translation>ВКонтакте: ваши аудиозаписи</translation>
     </message>
     <message>
-        <location filename="albumsmanager.cpp" line="154"/>
+        <location filename="albumsmanager.cpp" line="171"/>
         <source>Uncategorized</source>
         <translation>Некатегоризованное</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::TouchStreams::AuthCloseHandler</name>
+    <message>
+        <location filename="authclosehandler.cpp" line="53"/>
+        <source>Shall TouchStreams ask for VKontakte authentication next time?&lt;br/&gt;&lt;br/&gt;You can always reauthenticate later.</source>
+        <oldsource>Shall TouchStreams ask for VKontakte authentication next time?&lt;br/&gt;&lt;br/&gt;You can always reauthenticate in TouchStreams settings.</oldsource>
+        <translation>Должен ли TouchStreams спросить авторизацию В Контакте в следующий раз?&lt;br/&gt;&lt;br/&gt;Вы всегда можете повторно авторизоваться позже.</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TouchStreams::FriendsManager</name>
     <message>
-        <location filename="friendsmanager.cpp" line="65"/>
+        <location filename="friendsmanager.cpp" line="69"/>
         <source>VKontakte: friends</source>
         <translation>ВКонтакте: друзья</translation>
+    </message>
+    <message>
+        <location filename="friendsmanager.cpp" line="142"/>
+        <source>Albums</source>
+        <translation>Альбомы</translation>
+    </message>
+    <message>
+        <location filename="friendsmanager.cpp" line="151"/>
+        <source>Recommendations</source>
+        <translation>Рекомендации</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::TouchStreams::Plugin</name>
     <message>
-        <location filename="touchstreams.cpp" line="97"/>
+        <location filename="touchstreams.cpp" line="96"/>
         <source>VK.com music streamer.</source>
         <translation>Стример музыки из ВКонтакте.</translation>
     </message>
     <message>
-        <location filename="touchstreams.cpp" line="112"/>
+        <location filename="touchstreams.cpp" line="111"/>
         <source>VKontakte</source>
         <translation>ВКонтакте</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="util.cpp" line="46"/>
+        <source>Authenticate</source>
+        <translation>Авторизоваться</translation>
     </message>
 </context>
 <context>
@@ -47,11 +82,6 @@
         <location filename="dummy.cpp" line="3"/>
         <source>Request friends&apos; audio tracks</source>
         <translation>Запрашивать аудиозаписи друзей</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="4"/>
-        <source>Login and allow access...</source>
-        <translation>Войти и разрешить доступ...</translation>
     </message>
 </context>
 </TS>
