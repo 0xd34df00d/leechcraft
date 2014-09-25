@@ -140,6 +140,7 @@ namespace TouchStreams
 
 		const auto albumItem = mgr->GetRootItem ();
 		albumItem->setText (tr ("Albums"));
+		albumItem->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("media-optical"));
 		handleAlbumsFinished (mgr.get ());
 		userItem->appendRow (albumItem);
 
