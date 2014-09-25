@@ -291,7 +291,7 @@ namespace LeechCraft
 
 		const QStringList& pages = sd->GetPages ();
 		int pgId = 0;
-		Q_FOREACH (const QString& page, pages)
+		for (const auto& page : pages)
 		{
 			QString itemName;
 			if (sub)
@@ -301,7 +301,9 @@ namespace LeechCraft
 			else
 				itemName = page;
 
-			auto icon = ii->GetIcon ();
+			auto icon = sd->GetPageIcon (pgId);
+			if (icon.isNull ())
+				icon = ii->GetIcon ();
 			if (icon.isNull ())
 				icon = QIcon ("lcicons:/resources/images/defaultpluginicon.svg");
 
