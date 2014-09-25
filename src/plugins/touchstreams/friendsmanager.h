@@ -52,6 +52,7 @@ class QueueManager;
 namespace TouchStreams
 {
 	class AlbumsManager;
+	class RecsManager;
 
 	class FriendsManager : public QObject
 	{
@@ -65,6 +66,7 @@ namespace TouchStreams
 
 		QHash<qulonglong, QStandardItem*> Friend2Item_;
 		QHash<qulonglong, std::shared_ptr<AlbumsManager>> Friend2AlbumsManager_;
+		QHash<qulonglong, std::shared_ptr<RecsManager>> Friend2RecsManager_;
 
 		QStandardItem *Root_;
 

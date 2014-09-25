@@ -46,6 +46,7 @@
 #include <util/util.h>
 #include "albumsmanager.h"
 #include "xmlsettingsmanager.h"
+#include "recsmanager.h"
 
 namespace LeechCraft
 {
@@ -94,6 +95,7 @@ namespace TouchStreams
 
 			Friend2Item_.clear ();
 			Friend2AlbumsManager_.clear ();
+			Friend2RecsManager_.clear ();
 			Queue_->Clear ();
 			RequestQueue_.clear ();
 
@@ -102,6 +104,13 @@ namespace TouchStreams
 		}
 
 		for (const auto& mgr : Friend2AlbumsManager_)
+		{
+			items.removeOne (mgr->RefreshItems (items));
+			if (items.isEmpty ())
+				break;
+		}
+
+		for (const auto& mgr : Friend2RecsManager_)
 		{
 			items.removeOne (mgr->RefreshItems (items));
 			if (items.isEmpty ())
@@ -122,15 +131,24 @@ namespace TouchStreams
 		Friend2AlbumsManager_ [id] = mgr;
 
 		const auto& name = map ["first_name"].toString () + " " + map ["last_name"].toString ();
-
-		auto userItem = mgr->GetRootItem ();
+		const auto& userItem = new QStandardItem { name };
 		userItem->setText (name);
 		userItem->setData (QUrl::fromEncoded (map ["photo"].toByteArray ()), PhotoUrlRole);
 		userItem->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("user-identity"));
 		Root_->appendRow (userItem);
 		Friend2Item_ [id] = userItem;
 
+		const auto albumItem = mgr->GetRootItem ();
+		albumItem->setText (tr ("Albums"));
 		handleAlbumsFinished (mgr.get ());
+		userItem->appendRow (albumItem);
+
+		const auto& recsMgr = std::make_shared<RecsManager> (id, AuthMgr_, Queue_, Proxy_);
+		Friend2RecsManager_ [id] = recsMgr;
+
+		const auto recsItem = recsMgr->GetRootItem ();
+		recsItem->setText (tr ("Recommendations"));
+		userItem->appendRow (recsItem);
 	}
 
 	void FriendsManager::refetchFriends ()
