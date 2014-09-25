@@ -127,6 +127,12 @@ namespace Util
 		SetText ({});
 	}
 
+	void FindNotification::reject ()
+	{
+		Ui_->Pattern_->clear ();
+		hide ();
+	}
+
 	void FindNotification::on_Pattern__textChanged (const QString& newText)
 	{
 		Ui_->FindButton_->setEnabled (!newText.isEmpty ());
@@ -139,12 +145,6 @@ namespace Util
 			flags |= FindBackwards;
 
 		handleNext (Ui_->Pattern_->text (), flags);
-	}
-
-	void FindNotification::reject ()
-	{
-		Ui_->Pattern_->clear ();
-		hide ();
 	}
 }
 }
