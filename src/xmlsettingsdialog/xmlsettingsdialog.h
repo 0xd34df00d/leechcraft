@@ -57,7 +57,10 @@ namespace Util
 		Q_OBJECT
 
 		QStackedWidget *Pages_;
+
 		QStringList Titles_;
+		QStringList IconNames_;
+
 		BaseSettingsManager *WorkingObject_;
 		QString DefaultLang_;
 		std::shared_ptr<QDomDocument> Document_;
@@ -165,6 +168,10 @@ namespace Util
 		 * @return The names of the pages.
 		 */
 		XMLSETTINGSMANAGER_API QStringList GetPages () const;
+
+		/** @brief Returns the icon associated with the given page.
+		 */
+		XMLSETTINGSMANAGER_API QIcon GetPageIcon (int page) const;
 
 		/** @brief Returns the human-readable label for the given
 		 * element.
