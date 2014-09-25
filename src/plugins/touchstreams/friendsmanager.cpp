@@ -101,8 +101,7 @@ namespace TouchStreams
 			return;
 		}
 
-		const auto& mgrs = Friend2AlbumsManager_.values ();
-		for (auto mgr : mgrs)
+		for (const auto& mgr : Friend2AlbumsManager_)
 		{
 			items.removeOne (mgr->RefreshItems (items));
 			if (items.isEmpty ())
