@@ -349,15 +349,18 @@ namespace Util
 
 	QIcon XmlSettingsDialog::GetPageIcon (int page) const
 	{
-		const auto& name = IconNames_.value (page);
-		if (name.isEmpty ())
-			return {};
+		for (const auto& name : IconNames_.value (page))
+		{
+			const QString themeMarker { "theme://" };
+			if (name.startsWith (themeMarker))
+				return QIcon::fromTheme (name.mid (themeMarker.size ()));
 
-		const QString themeMarker { "theme://" };
-		if (name.startsWith (themeMarker))
-			return QIcon::fromTheme (name.mid (themeMarker.size ()));
+			const QIcon icon { name };
+			if (!icon.isNull ())
+				return icon;
+		}
 
-		return QIcon { name };
+		return {};
 	}
 
 	void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
@@ -370,7 +373,11 @@ namespace Util
 	{
 		const QString& sectionTitle = GetLabel (page);
 		Titles_ << sectionTitle;
-		IconNames_ << page.attribute ("icon");
+
+		QStringList icons;
+		if (page.hasAttribute ("icon"))
+			icons << page.attribute ("icon");
+		IconNames_ << icons;
 
 		QWidget *baseWidget = new QWidget;
 		Pages_->addWidget (baseWidget);

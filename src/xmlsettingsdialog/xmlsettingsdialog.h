@@ -59,7 +59,7 @@ namespace Util
 		QStackedWidget *Pages_;
 
 		QStringList Titles_;
-		QStringList IconNames_;
+		QList<QStringList> IconNames_;
 
 		BaseSettingsManager *WorkingObject_;
 		QString DefaultLang_;
