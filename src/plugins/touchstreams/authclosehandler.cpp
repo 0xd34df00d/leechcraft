@@ -51,7 +51,7 @@ namespace TouchStreams
 		const auto res = QMessageBox::question (nullptr,
 				"LeechCraft TouchStreams",
 				tr ("Shall TouchStreams ask for VKontakte authentication next time?<br/><br/>"
-					"You can always reauthenticate in TouchStreams settings."),
+					"You can always reauthenticate later."),
 				QMessageBox::Yes | QMessageBox::No);
 		if (res != QMessageBox::No)
 			return;
