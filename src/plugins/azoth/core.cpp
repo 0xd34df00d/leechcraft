@@ -837,24 +837,24 @@ namespace Azoth
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		proxy->SetValue ("body", body);
 		emit hookFormatBodyBegin (proxy, msgObj);
-		if (!proxy->IsCancelled ())
+		if (proxy->IsCancelled ())
+			return proxy->GetReturnValue ().toString ();
+
+		proxy->FillValue ("body", body);
+
+		if (!isRich)
 		{
-			proxy->FillValue ("body", body);
-
-			if (!isRich)
-			{
-				PluginProxyObject_->FormatLinks (body);
-				body.replace ('\n', "<br />");
-				body.replace ("  ", "&nbsp; ");
-			}
-
-			body = HandleSmiles (body);
-
-			proxy.reset (new Util::DefaultHookProxy);
-			proxy->SetValue ("body", body);
-			emit hookFormatBodyEnd (proxy, msgObj);
-			proxy->FillValue ("body", body);
+			PluginProxyObject_->FormatLinks (body);
+			body.replace ('\n', "<br />");
+			body.replace ("  ", "&nbsp; ");
 		}
+
+		body = HandleSmiles (body);
+
+		proxy.reset (new Util::DefaultHookProxy);
+		proxy->SetValue ("body", body);
+		emit hookFormatBodyEnd (proxy, msgObj);
+		proxy->FillValue ("body", body);
 
 		return proxy->IsCancelled () ?
 				proxy->GetReturnValue ().toString () :
