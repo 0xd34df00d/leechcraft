@@ -79,8 +79,11 @@ namespace TouchStreams
 		return RootItem_;
 	}
 
-	QStandardItem* RecsManager::RefreshItems (const QList<QStandardItem*>&)
+	QStandardItem* RecsManager::RefreshItems (const QList<QStandardItem*>& items)
 	{
+		if (!items.contains (RootItem_))
+			return {};
+
 		refetchRecs ();
 		return RootItem_;
 	}
