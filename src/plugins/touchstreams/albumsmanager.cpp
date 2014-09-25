@@ -78,7 +78,8 @@ namespace TouchStreams
 	, Queue_ (queue)
 	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
 	{
-		AlbumsRootItem_->setIcon (QIcon (":/touchstreams/resources/images/vk.svg"));
+		static QIcon vkIcon { ":/touchstreams/resources/images/vk.svg" };
+		AlbumsRootItem_->setIcon (vkIcon);
 		AlbumsRootItem_->setEditable (false);
 
 		QTimer::singleShot (1000,
