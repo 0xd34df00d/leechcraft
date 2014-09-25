@@ -377,6 +377,14 @@ namespace Util
 		QStringList icons;
 		if (page.hasAttribute ("icon"))
 			icons << page.attribute ("icon");
+		auto iconElem = page
+				.firstChildElement ("icons")
+				.firstChildElement ("icon");
+		while (!iconElem.isNull ())
+		{
+			icons << iconElem.text ();
+			iconElem = iconElem.nextSiblingElement ("icon");
+		}
 		IconNames_ << icons;
 
 		QWidget *baseWidget = new QWidget;
