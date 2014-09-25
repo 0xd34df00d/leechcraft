@@ -64,7 +64,7 @@ namespace TouchStreams
 		QList<std::function<void (QString)>> RequestQueue_;
 
 		QHash<qulonglong, QStandardItem*> Friend2Item_;
-		QHash<qulonglong, AlbumsManager*> Friend2AlbumsManager_;
+		QHash<qulonglong, std::shared_ptr<AlbumsManager>> Friend2AlbumsManager_;
 
 		QStandardItem *Root_;
 
@@ -83,7 +83,8 @@ namespace TouchStreams
 	private:
 		void ScheduleTracksRequests (const QList<qlonglong>&, const QMap<qlonglong, QVariantMap>&);
 		void ShowFriendsList (const QList<qlonglong>&, const QMap<qlonglong, QVariantMap>&);
-		void MakeFriendItem (AlbumsManager*, qlonglong, const QVariantMap&);
+		void MakeFriendItem (qlonglong id, const QVariantMap& userInfo,
+				const QVariant& albums, const QVariant& tracks);
 	private slots:
 		void refetchFriends ();
 		void handleGotFriends ();

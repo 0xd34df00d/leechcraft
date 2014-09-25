@@ -93,7 +93,6 @@ namespace TouchStreams
 				Root_->removeRows (0, rc);
 
 			Friend2Item_.clear ();
-			qDeleteAll (Friend2AlbumsManager_);
 			Friend2AlbumsManager_.clear ();
 			Queue_->Clear ();
 			RequestQueue_.clear ();
@@ -114,15 +113,13 @@ namespace TouchStreams
 	void FriendsManager::ShowFriendsList (const QList<qlonglong>& ids, const QMap<qlonglong, QVariantMap>& map)
 	{
 		for (const auto& id : ids)
-		{
-			auto mgr = new AlbumsManager (id, {}, {},
-					AuthMgr_, Queue_, Proxy_, this);
-			MakeFriendItem (mgr, id, map [id]);
-		}
+			MakeFriendItem (id, map [id], {}, {});
 	}
 
-	void FriendsManager::MakeFriendItem (AlbumsManager *mgr, qlonglong id, const QVariantMap& map)
+	void FriendsManager::MakeFriendItem (qlonglong id, const QVariantMap& map, const QVariant& albums, const QVariant& tracks)
 	{
+		const auto& mgr = std::make_shared<AlbumsManager> (id,
+				albums, tracks, AuthMgr_, Queue_, Proxy_);
 		Friend2AlbumsManager_ [id] = mgr;
 
 		const auto& name = map ["first_name"].toString () + " " + map ["last_name"].toString ();
@@ -134,7 +131,7 @@ namespace TouchStreams
 		Root_->appendRow (userItem);
 		Friend2Item_ [id] = userItem;
 
-		handleAlbumsFinished (mgr);
+		handleAlbumsFinished (mgr.get ());
 	}
 
 	void FriendsManager::refetchFriends ()
@@ -316,9 +313,7 @@ namespace TouchStreams
 			const auto id = userData ["id"].toLongLong ();
 			const auto& map = usersMap [id];
 
-			auto mgr = new AlbumsManager (id, userData ["albums"], userData ["tracks"],
-					AuthMgr_, Queue_, Proxy_, this);
-			MakeFriendItem (mgr, id, map);
+			MakeFriendItem (id, map, userData ["albums"], userData ["tracks"]);
 		}
 	}
 
