@@ -70,5 +70,11 @@ namespace Util
 		const auto found = WebView_->page ()->findText (text, flags);
 		SetSuccessful (found);
 	}
+
+	void FindNotificationWk::reject ()
+	{
+		FindNotification::reject ();
+		WebView_->page ()->findText ("", QWebPage::HighlightAllOccurrences);
+	}
 }
 }

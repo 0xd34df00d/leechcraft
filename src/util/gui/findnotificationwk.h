@@ -78,6 +78,7 @@ namespace Util
 		static QWebPage::FindFlags ToPageFlags (FindFlags findFlags);
 	protected:
 		void handleNext (const QString& text, FindFlags flags);
+		void reject () override;
 	};
 }
 }
