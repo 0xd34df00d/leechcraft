@@ -664,68 +664,7 @@
      <number>1</number>
     </property>
     <item>
-     <widget class="QTreeView" name="FilesView_">
-      <property name="contextMenuPolicy">
-       <enum>Qt::CustomContextMenu</enum>
-      </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::ExtendedSelection</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="FileBox_">
-      <property name="title">
-       <string>File</string>
-      </property>
-      <layout class="QFormLayout" name="formLayout_11">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_98">
-         <property name="text">
-          <string>Path:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="FilePath_">
-         <property name="text">
-          <string notr="true"/>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_103">
-         <property name="text">
-          <string>Progress:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="FileProgress_">
-         <property name="text">
-          <string notr="true"/>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_104">
-         <property name="text">
-          <string>Priority:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QSpinBox" name="FilePriorityRegulator_">
-         <property name="maximum">
-          <number>7</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+     <widget class="LeechCraft::Plugins::BitTorrent::TorrentTabFilesWidget" name="FilesWidget_" native="true"/>
     </item>
    </layout>
   </widget>
@@ -2084,6 +2023,12 @@
    <class>LeechCraft::Plugins::BitTorrent::PiecesWidget</class>
    <extends>QWidget</extends>
    <header>pieceswidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::Plugins::BitTorrent::TorrentTabFilesWidget</class>
+   <extends>QWidget</extends>
+   <header>torrenttabfileswidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

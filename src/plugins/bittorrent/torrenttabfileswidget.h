@@ -29,73 +29,31 @@
 
 #pragma once
 
-#include <QTabWidget>
-#include <QAction>
-#include "ui_torrenttabwidget.h"
-
-class QSortFilterProxyModel;
+#include <QWidget>
+#include "ui_torrenttabfileswidget.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class TagsCompleter;
-}
 namespace Plugins
 {
 namespace BitTorrent
 {
-	class TorrentTabWidget : public QTabWidget
+	class TorrentTabFilesWidget : public QWidget
 	{
 		Q_OBJECT
 
-		Ui::TorrentTabWidget Ui_;
-		Util::TagsCompleter *TagsChangeCompleter_;
-		QAction *AddPeer_;
-		QAction *BanPeer_;
-		QAction *AddWebSeed_;
-		QAction *RemoveWebSeed_;
-		int Index_;
-
-		QSortFilterProxyModel *PeersSorter_;
+		Ui::TorrentTabFilesWidget Ui_;
 	public:
-		TorrentTabWidget (QWidget* = 0);
-
-		void SetChangeTrackersAction (QAction*);
+		TorrentTabFilesWidget (QWidget* = nullptr);
 
 		void SetCurrentIndex (int);
-		void InvalidateSelection ();
-		void SetOverallDownloadRateController (int);
-		void SetOverallUploadRateController (int);
-	public slots:
-		void updateTorrentStats ();
-	private:
-		void UpdateDashboard ();
-		void UpdateOverallStats ();
-		void UpdateTorrentControl ();
 	private slots:
-		void on_OverallDownloadRateController__valueChanged (int);
-		void on_OverallUploadRateController__valueChanged (int);
-		void on_TorrentDownloadRateController__valueChanged (int);
-		void on_TorrentUploadRateController__valueChanged (int);
-		void on_TorrentManaged__stateChanged (int);
-		void on_TorrentSequentialDownload__stateChanged (int);
-		void on_TorrentSuperSeeding__stateChanged (int);
-		void on_DownloadingTorrents__valueChanged (int);
-		void on_UploadingTorrents__valueChanged (int);
-		void on_TorrentTags__editingFinished ();
+		void currentFileChanged (const QModelIndex&);
+		void on_FilePriorityRegulator__valueChanged (int);
 
-		void setTabWidgetSettings ();
-
-		void on_LabelComment__linkActivated (const QString&);
-
-		void handleAddPeer ();
-		void handleBanPeer ();
-		void handleAddWebSeed ();
-
-		void currentPeerChanged (const QModelIndex&);
-		void currentWebSeedChanged (const QModelIndex&);
-		void handleRemoveWebSeed ();
+		void on_FilesView__customContextMenuRequested (const QPoint&);
+	
+		void handleFileActivated (const QModelIndex&);
 	};
 }
 }

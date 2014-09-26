@@ -29,7 +29,6 @@
 
 #include "torrenttabwidget.h"
 #include <QSortFilterProxyModel>
-#include <QMenu>
 #include <QUrl>
 #include <QTimer>
 #include <util/util.h>
@@ -39,8 +38,6 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
-#include "filesviewdelegate.h"
-#include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "peerstablinker.h"
 #include "piecesmodel.h"
@@ -72,7 +69,6 @@ namespace BitTorrent
 		header->resizeSection (2, fm.width ("1234.5678 bytes/s"));
 
 		Ui_.TorrentTags_->AddSelector ();
-		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
 
 		PeersSorter_->setDynamicSortFilter (true);
 		PeersSorter_->setSortRole (PeersModel::SortRole);
@@ -88,13 +84,6 @@ namespace BitTorrent
 				fm.width ("average.domain.name.of.a.tracker"));
 		header->resizeSection (1,
 				fm.width ("  BEP 99  "));
-
-		connect (Ui_.FilesView_,
-				SIGNAL (doubleClicked (const QModelIndex&)),
-				this,
-				SLOT (handleFileActivated (const QModelIndex&)));
-
-		currentFileChanged (QModelIndex ());
 
 		connect (Ui_.OverallDownloadRateController_,
 				SIGNAL (valueChanged (int)),
@@ -218,27 +207,15 @@ namespace BitTorrent
 		Index_ = index;
 		InvalidateSelection ();
 
+		Ui_.FilesWidget_->SetCurrentIndex (Index_);
+
 		QList<QAbstractItemModel*> oldModels;
 		oldModels << Ui_.PiecesView_->model ()
-				<< Ui_.FilesView_->model ()
 				<< PeersSorter_->sourceModel ()
 				<< Ui_.WebSeedsView_->model ();
 
 		auto piecesModel = Core::Instance ()->GetPiecesModel (Index_);
 		Ui_.PiecesView_->setModel (piecesModel);
-
-		Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel (Index_));
-		QTimer::singleShot (0,
-				Ui_.FilesView_,
-				SLOT (expandAll ()));
-		connect (Ui_.FilesView_->selectionModel (),
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-				this,
-				SLOT (currentFileChanged (const QModelIndex&)));
-
-		const auto& fm = Ui_.FilesView_->fontMetrics ();
-		auto header = Ui_.FilesView_->header ();
-		header->resizeSection (0, fm.width ("some very long file name or a directory name in a torrent file"));
 
 		PeersSorter_->setSourceModel (Core::Instance ()->GetPeersModel (Index_));
 
@@ -606,104 +583,12 @@ namespace BitTorrent
 				GetTagsManager ()->Split (Ui_.TorrentTags_->text ()), Index_);
 	}
 
-	void TorrentTabWidget::currentFileChanged (const QModelIndex& index)
-	{
-		Ui_.FilePriorityRegulator_->setEnabled (index.isValid ());
-
-		if (!index.isValid ())
-		{
-			Ui_.FilePath_->setText ("");
-			Ui_.FileProgress_->setText ("");
-			Ui_.FilePriorityRegulator_->blockSignals (true);
-			Ui_.FilePriorityRegulator_->setValue (0);
-			Ui_.FilePriorityRegulator_->blockSignals (false);
-		}
-		else
-		{
-			auto path = index.data (TorrentFilesModel::RoleFullPath).toString ();
-			path = QApplication::fontMetrics ()
-				.elidedText (path,
-						Qt::ElideLeft,
-						Ui_.FilePath_->width ());
-			Ui_.FilePath_->setText (path);
-
-			QModelIndex sindex = index.sibling (index.row (),
-					TorrentFilesModel::ColumnProgress);
-			double progress = sindex.data (TorrentFilesModel::RoleProgress).toDouble ();
-			qint64 size = sindex.data (TorrentFilesModel::RoleSize).toLongLong ();
-			qint64 done = progress * size;
-			Ui_.FileProgress_->setText (tr ("%1% (%2 of %3)")
-					.arg (progress * 100, 0, 'f', 1)
-					.arg (Util::MakePrettySize (done))
-					.arg (Util::MakePrettySize (size)));
-
-			Ui_.FilePriorityRegulator_->blockSignals (true);
-			if (index.model ()->rowCount (index))
-				Ui_.FilePriorityRegulator_->setValue (1);
-			else
-			{
-				QModelIndex prindex = index.sibling (index.row (),
-						TorrentFilesModel::ColumnPriority);
-				int priority = prindex.data ().toInt ();
-				Ui_.FilePriorityRegulator_->setValue (priority);
-			}
-			Ui_.FilePriorityRegulator_->blockSignals (false);
-		}
-	}
-
-	void TorrentTabWidget::on_FilePriorityRegulator__valueChanged (int prio)
-	{
-		QModelIndex current = Ui_.FilesView_->selectionModel ()->currentIndex ();
-
-		QModelIndexList selected = Ui_.FilesView_->selectionModel ()->selectedRows ();
-		if (!selected.contains (current))
-			selected.append (current);
-
-		struct Applier
-		{
-			Applier (TorrentFilesModel *model, const QModelIndexList& indexes, int prio)
-			{
-				Q_FOREACH (QModelIndex s, indexes)
-				{
-					int rows = s.model ()->rowCount (s);
-					if (rows)
-					{
-						QModelIndexList childs;
-						for (int i = 0; i < rows; ++i)
-							childs.append (s.child (i, TorrentFilesModel::ColumnPriority));
-						Applier (model, childs, prio);
-					}
-					else
-						model->setData (s.sibling (s.row (),
-									TorrentFilesModel::ColumnPriority), prio);
-				}
-			}
-		};
-
-		auto model = static_cast<TorrentFilesModel*> (Ui_.FilesView_->model ());
-		Applier (model, selected, prio);
-	}
-
 	void TorrentTabWidget::on_LabelComment__linkActivated (const QString& link)
 	{
 		const auto& e = Util::MakeEntity (QUrl::fromEncoded (link.toUtf8 ()),
 				{},
 				TaskParameter::FromUserInitiated | TaskParameter::OnlyHandle);
 		Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
-	}
-
-	void TorrentTabWidget::on_FilesView__customContextMenuRequested (const QPoint& pos)
-	{
-		const auto& idx = Ui_.FilesView_->indexAt (pos);
-		if (!idx.isValid ())
-			return;
-
-		QMenu menu;
-
-		menu.addAction (tr ("Expand all"), Ui_.FilesView_, SLOT (expandAll ()));
-		menu.addAction (tr ("Collapse all"), Ui_.FilesView_, SLOT (collapseAll ()));
-
-		menu.exec (Ui_.FilesView_->viewport ()->mapToGlobal (pos));
 	}
 
 	void TorrentTabWidget::setTabWidgetSettings ()
@@ -776,12 +661,6 @@ namespace BitTorrent
 		QString url = index.sibling (index.row (), 0).data ().toString ();
 		bool bep19 = index.sibling (index.row (), 1).data ().toString () == "BEP 19";
 		Core::Instance ()->RemoveWebSeed (index.data ().toString (), bep19, Index_);
-	}
-
-	void TorrentTabWidget::handleFileActivated (const QModelIndex& index)
-	{
-		auto model = static_cast<const TorrentFilesModel*> (index.model ());
-		model->HandleFileActivated (index);
 	}
 }
 }
