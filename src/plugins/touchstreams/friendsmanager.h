@@ -63,6 +63,7 @@ namespace TouchStreams
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const Queue_;
 		QList<std::function<void (QString)>> RequestQueue_;
+		const std::shared_ptr<void> RequestQueueGuard_;
 
 		QHash<qulonglong, QStandardItem*> Friend2Item_;
 		QHash<qulonglong, std::shared_ptr<AlbumsManager>> Friend2AlbumsManager_;
@@ -77,7 +78,6 @@ namespace TouchStreams
 		ReplyMaker_f CaptchaReplyMaker_;
 	public:
 		FriendsManager (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
-		~FriendsManager ();
 
 		QStandardItem* GetRootItem () const;
 

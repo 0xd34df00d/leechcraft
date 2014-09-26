@@ -61,6 +61,7 @@ namespace TouchStreams
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const Queue_;
 		QList<QPair<std::function<void (QString)>, Util::QueuePriority>> RequestQueue_;
+		const std::shared_ptr<void> RequestQueueGuard_;
 
 		struct AlbumInfo
 		{
@@ -81,7 +82,6 @@ namespace TouchStreams
 		AlbumsManager (qlonglong, Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
 		AlbumsManager (qlonglong, const QVariant& albums, const QVariant& tracks,
 				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
-		~AlbumsManager ();
 
 		QStandardItem* GetRootItem () const;
 		qlonglong GetUserID () const;

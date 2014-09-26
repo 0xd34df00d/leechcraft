@@ -59,6 +59,8 @@ namespace TouchStreams
 		const boost::optional<qlonglong> UID_;
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const QueueMgr_;
+		const std::shared_ptr<void> RequestQueueGuard_;
+
 		const ICoreProxy_ptr Proxy_;
 
 		QList<QPair<std::function<void (QString)>, Util::QueuePriority>> RequestQueue_;

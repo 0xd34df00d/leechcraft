@@ -128,38 +128,34 @@ namespace SvcAuth
 		emit gotAuthKey (Token_);
 	}
 
-	void VkAuthManager::ManageQueue (VkAuthManager::RequestQueue_ptr queue)
+	auto VkAuthManager::ManageQueue (VkAuthManager::RequestQueue_ptr queue) -> ScheduleGuard_t
 	{
 		if (!Queue_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "cannot manage request queue if queue manager wasn't set";
-			return;
+			return {};
 		}
 
 		ManagedQueues_ << queue;
+
+		return std::shared_ptr<void> { nullptr,
+				[this, queue] (void*) { ManagedQueues_.removeAll (queue); } };
 	}
 
-	void VkAuthManager::UnmanageQueue (VkAuthManager::RequestQueue_ptr queue)
-	{
-		ManagedQueues_.removeAll (queue);
-	}
-
-	void VkAuthManager::ManageQueue (VkAuthManager::PrioRequestQueue_ptr queue)
+	auto VkAuthManager::ManageQueue (VkAuthManager::PrioRequestQueue_ptr queue) -> ScheduleGuard_t
 	{
 		if (!Queue_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "cannot manage request queue if queue manager wasn't set";
-			return;
+			return {};
 		}
 
 		PrioManagedQueues_ << queue;
-	}
 
-	void VkAuthManager::UnmanageQueue (VkAuthManager::PrioRequestQueue_ptr queue)
-	{
-		PrioManagedQueues_.removeAll (queue);
+		return std::shared_ptr<void> { nullptr,
+				[this, queue] (void*) { PrioManagedQueues_.removeAll (queue); } };
 	}
 
 	void VkAuthManager::SetSilentMode (bool silent)

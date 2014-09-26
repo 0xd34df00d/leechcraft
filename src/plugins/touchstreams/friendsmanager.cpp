@@ -66,12 +66,11 @@ namespace TouchStreams
 	, Proxy_ (proxy)
 	, AuthMgr_ (authMgr)
 	, Queue_ (queueMgr)
+	, RequestQueueGuard_ (AuthMgr_->ManageQueue (&RequestQueue_))
 	, Root_ (new QStandardItem (tr ("VKontakte: friends")))
 	{
 		Root_->setIcon (QIcon (":/touchstreams/resources/images/vk.svg"));
 		Root_->setEditable (false);
-
-		AuthMgr_->ManageQueue (&RequestQueue_);
 
 		QTimer::singleShot (1000,
 				this,
@@ -169,11 +168,6 @@ namespace TouchStreams
 						SLOT (handleGotFriends ()));
 			});
 		AuthMgr_->GetAuthKey ();
-	}
-
-	FriendsManager::~FriendsManager ()
-	{
-		AuthMgr_->UnmanageQueue (&RequestQueue_);
 	}
 
 	void FriendsManager::handleGotFriends ()

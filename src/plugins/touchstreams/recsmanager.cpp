@@ -53,14 +53,13 @@ namespace TouchStreams
 	, UID_ { uid }
 	, AuthMgr_ { authMgr }
 	, QueueMgr_ { queueMgr }
+	, RequestQueueGuard_ { AuthMgr_->ManageQueue (&RequestQueue_) }
 	, Proxy_ { proxy }
 	, RootItem_ { new QStandardItem { tr ("VKontakte: recommendations") } }
 	{
 		static QIcon vkIcon { ":/touchstreams/resources/images/vk.svg" };
 		RootItem_->setIcon (vkIcon);
 		RootItem_->setEditable (false);
-
-		AuthMgr_->ManageQueue (&RequestQueue_);
 
 		if (!UID_)
 		{

@@ -76,6 +76,7 @@ namespace TouchStreams
 	, UserID_ (id)
 	, AuthMgr_ (authMgr)
 	, Queue_ (queue)
+	, RequestQueueGuard_ (AuthMgr_->ManageQueue (&RequestQueue_))
 	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
 	{
 		static QIcon vkIcon { ":/touchstreams/resources/images/vk.svg" };
@@ -85,8 +86,6 @@ namespace TouchStreams
 		QTimer::singleShot (1000,
 				this,
 				SLOT (refetchAlbums ()));
-
-		AuthMgr_->ManageQueue (&RequestQueue_);
 
 		connect (AuthMgr_,
 				SIGNAL (justAuthenticated ()),
@@ -101,18 +100,13 @@ namespace TouchStreams
 	, UserID_ (id)
 	, AuthMgr_ (authMgr)
 	, Queue_ (queue)
+	, RequestQueueGuard_ (AuthMgr_->ManageQueue (&RequestQueue_))
 	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
 	{
 		AlbumsRootItem_->setEditable (false);
-		AuthMgr_->ManageQueue (&RequestQueue_);
 
 		HandleAlbums (albums);
 		HandleTracks (tracks);
-	}
-
-	AlbumsManager::~AlbumsManager ()
-	{
-		AuthMgr_->UnmanageQueue (&RequestQueue_);
 	}
 
 	QStandardItem* AlbumsManager::GetRootItem () const
