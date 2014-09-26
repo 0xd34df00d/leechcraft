@@ -88,7 +88,7 @@ namespace Lastfmscrobble
 		{
 		case Type::Recommended:
 		{
-			auto reply = NAM_->get (QNetworkRequest (QUrl ("http://geoip.elib.ru/cgi-bin/getdata.pl")));
+			auto reply = NAM_->get (QNetworkRequest (QUrl ("http://freegeoip.net/xml/")));
 			connect (reply,
 					SIGNAL (finished ()),
 					this,
@@ -124,9 +124,9 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		auto geoElem = doc.documentElement ().firstChildElement ("GeoAddr");
-		const auto& lon = geoElem.firstChildElement ("Lon").text ();
-		const auto& lat = geoElem.firstChildElement ("Lat").text ();
+		auto geoElem = doc.documentElement ();
+		const auto& lon = geoElem.firstChildElement ("Longitude").text ();
+		const auto& lat = geoElem.firstChildElement ("Latitude").text ();
 		qDebug () << Q_FUNC_INFO
 				<< "fetched data:"
 				<< lon
