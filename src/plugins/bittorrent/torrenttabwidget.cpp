@@ -275,7 +275,6 @@ namespace BitTorrent
 		UpdateDashboard ();
 		UpdateOverallStats ();
 		UpdateTorrentControl ();
-		UpdateFilesPage ();
 	}
 
 	namespace
@@ -554,12 +553,6 @@ namespace BitTorrent
 			setText (QString::number (i->Status_.up_bandwidth_queue));
 		Ui_.LabelDownBandwidthQueue_->
 			setText (QString::number (i->Status_.down_bandwidth_queue));
-	}
-
-	void TorrentTabWidget::UpdateFilesPage ()
-	{
-		auto sel = Ui_.FilesView_->selectionModel ();
-		currentFileChanged (sel ? sel->currentIndex () : QModelIndex ());
 	}
 
 	void TorrentTabWidget::on_OverallDownloadRateController__valueChanged (int val)

@@ -73,7 +73,6 @@ namespace BitTorrent
 		void UpdateDashboard ();
 		void UpdateOverallStats ();
 		void UpdateTorrentControl ();
-		void UpdateFilesPage ();
 	private slots:
 		void on_OverallDownloadRateController__valueChanged (int);
 		void on_OverallUploadRateController__valueChanged (int);
