@@ -92,13 +92,27 @@ namespace BitTorrent
 				SIGNAL (doubleClicked (const QModelIndex&)),
 				this,
 				SLOT (handleFileActivated (const QModelIndex&)));
+
+		connect (Ui_.SearchLine_,
+				SIGNAL (textChanged (QString)),
+				ProxyModel_,
+				SLOT (setFilterFixedString (QString)));
+		connect (Ui_.SearchLine_,
+				SIGNAL (textChanged (QString)),
+				Ui_.FilesView_,
+				SLOT (expandAll ()));
 	}
 
 	void TorrentTabFilesWidget::SetCurrentIndex (int index)
 	{
 		const auto oldModel = ProxyModel_->sourceModel ();
+		ProxyModel_->setSourceModel (nullptr);
+		delete oldModel;
 
-		ProxyModel_->setSourceModel (Core::Instance ()->GetTorrentFilesModel (index));
+		Ui_.SearchLine_->clear ();
+
+		const auto newTFM = Core::Instance ()->GetTorrentFilesModel (index);
+		ProxyModel_->setSourceModel (newTFM);
 		QTimer::singleShot (0,
 				Ui_.FilesView_,
 				SLOT (expandAll ()));
@@ -106,8 +120,6 @@ namespace BitTorrent
 		const auto& fm = Ui_.FilesView_->fontMetrics ();
 		auto header = Ui_.FilesView_->header ();
 		header->resizeSection (0, fm.width ("some very long file name or a directory name in a torrent file"));
-
-		delete oldModel;
 	}
 
 	void TorrentTabFilesWidget::currentFileChanged (const QModelIndex& index)
