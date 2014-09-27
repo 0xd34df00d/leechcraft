@@ -174,35 +174,17 @@ namespace BitTorrent
 
 	void TorrentTabFilesWidget::on_FilePriorityRegulator__valueChanged (int prio)
 	{
-		QModelIndex current = Ui_.FilesView_->selectionModel ()->currentIndex ();
+		auto current = Ui_.FilesView_->selectionModel ()->currentIndex ();
 
-		QModelIndexList selected = Ui_.FilesView_->selectionModel ()->selectedRows ();
+		auto selected = Ui_.FilesView_->selectionModel ()->selectedRows ();
 		if (!selected.contains (current))
 			selected.append (current);
 
-		struct Applier
+		for (auto idx : selected)
 		{
-			Applier (TorrentFilesModel *model, const QModelIndexList& indexes, int prio)
-			{
-				Q_FOREACH (QModelIndex s, indexes)
-				{
-					int rows = s.model ()->rowCount (s);
-					if (rows)
-					{
-						QModelIndexList childs;
-						for (int i = 0; i < rows; ++i)
-							childs.append (s.child (i, TorrentFilesModel::ColumnPriority));
-						Applier (model, childs, prio);
-					}
-					else
-						model->setData (s.sibling (s.row (),
-									TorrentFilesModel::ColumnPriority), prio);
-				}
-			}
-		};
-
-		auto model = static_cast<TorrentFilesModel*> (Ui_.FilesView_->model ());
-		Applier (model, selected, prio);
+			idx = idx.sibling (idx.row (), TorrentFilesModel::ColumnPriority);
+			Ui_.FilesView_->model ()->setData (idx, prio);
+		}
 	}
 
 	void TorrentTabFilesWidget::on_FilesView__customContextMenuRequested (const QPoint& pos)
