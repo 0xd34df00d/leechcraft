@@ -187,22 +187,25 @@ namespace BitTorrent
 		if (!idx.isValid ())
 			return;
 
+		const auto itm = Core::Instance ()->GetProxy ()->GetIconThemeManager ();
+
 		QMenu menu;
 
 		const auto progress = idx.data (TorrentFilesModel::RoleProgress).toDouble ();
 		if (idx.model ()->rowCount (idx) ||
 				std::abs (progress - 1) < std::numeric_limits<double>::epsilon ())
 		{
-			const auto act = menu.addAction (tr ("Open file"));
+			const auto openAct = menu.addAction (tr ("Open file"));
+			openAct->setIcon (itm->GetIcon ("document-open"));
 			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
 				[idx, this]
 				{
 					CurrentFilesModel_->HandleFileActivated (ProxyModel_->mapToSource (idx));
 				},
-				act,
+				openAct,
 				SIGNAL (triggered ()),
-				act
+				openAct
 			};
 
 			menu.addSeparator ();
