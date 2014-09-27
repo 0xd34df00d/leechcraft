@@ -32,6 +32,8 @@
 #include <QWidget>
 #include "ui_torrenttabfileswidget.h"
 
+class QSortFilterProxyModel;
+
 namespace LeechCraft
 {
 namespace Plugins
@@ -43,6 +45,7 @@ namespace BitTorrent
 		Q_OBJECT
 
 		Ui::TorrentTabFilesWidget Ui_;
+		QSortFilterProxyModel * const ProxyModel_;
 	public:
 		TorrentTabFilesWidget (QWidget* = nullptr);
 
@@ -52,7 +55,7 @@ namespace BitTorrent
 		void on_FilePriorityRegulator__valueChanged (int);
 
 		void on_FilesView__customContextMenuRequested (const QPoint&);
-	
+
 		void handleFileActivated (const QModelIndex&);
 	};
 }

@@ -30,6 +30,7 @@
 #include "torrenttabfileswidget.h"
 #include <QMenu>
 #include <QTimer>
+#include <QSortFilterProxyModel>
 #include <util/sll/slotclosure.h>
 #include <util/util.h>
 #include "filesviewdelegate.h"
@@ -44,9 +45,19 @@ namespace BitTorrent
 {
 	TorrentTabFilesWidget::TorrentTabFilesWidget (QWidget *parent)
 	: QWidget { parent }
+	, ProxyModel_ { new QSortFilterProxyModel { this } }
 	{
 		Ui_.setupUi (this);
+
+		ProxyModel_->setDynamicSortFilter (true);
+		ProxyModel_->setSortRole (TorrentFilesModel::RoleSort);
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
+		Ui_.FilesView_->setModel (ProxyModel_);
+
+		connect (Ui_.FilesView_->selectionModel (),
+				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+				this,
+				SLOT (currentFileChanged (const QModelIndex&)));
 
 		currentFileChanged ({});
 
@@ -58,16 +69,12 @@ namespace BitTorrent
 
 	void TorrentTabFilesWidget::SetCurrentIndex (int index)
 	{
-		const auto oldModel = Ui_.FilesView_->model ();
+		const auto oldModel = ProxyModel_->sourceModel ();
 
-		Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel (index));
+		ProxyModel_->setSourceModel (Core::Instance ()->GetTorrentFilesModel (index));
 		QTimer::singleShot (0,
 				Ui_.FilesView_,
 				SLOT (expandAll ()));
-		connect (Ui_.FilesView_->selectionModel (),
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-				this,
-				SLOT (currentFileChanged (const QModelIndex&)));
 
 		const auto& fm = Ui_.FilesView_->fontMetrics ();
 		auto header = Ui_.FilesView_->header ();
