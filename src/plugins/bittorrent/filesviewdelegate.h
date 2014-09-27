@@ -48,10 +48,10 @@ namespace BitTorrent
 		FilesViewDelegate (QTreeView *parent = 0);
 		virtual ~FilesViewDelegate ();
 
-		virtual QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const;
-		virtual void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-		virtual void setEditorData (QWidget*, const QModelIndex&) const;
-		virtual void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const;
+		QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
+		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
+		void setEditorData (QWidget*, const QModelIndex&) const override;
+		void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const override;
 	};
 }
 }
