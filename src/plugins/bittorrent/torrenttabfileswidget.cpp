@@ -103,14 +103,13 @@ namespace BitTorrent
 
 	void TorrentTabFilesWidget::SetCurrentIndex (int index)
 	{
-		const auto oldModel = ProxyModel_->sourceModel ();
 		ProxyModel_->setSourceModel (nullptr);
-		delete oldModel;
+		delete CurrentFilesModel_;
 
 		Ui_.SearchLine_->clear ();
 
-		const auto newTFM = Core::Instance ()->GetTorrentFilesModel (index);
-		ProxyModel_->setSourceModel (newTFM);
+		CurrentFilesModel_ = Core::Instance ()->GetTorrentFilesModel (index);
+		ProxyModel_->setSourceModel (CurrentFilesModel_);
 		QTimer::singleShot (0,
 				Ui_.FilesView_,
 				SLOT (expandAll ()));
@@ -143,7 +142,7 @@ namespace BitTorrent
 						Ui_.FilePath_->width ());
 			Ui_.FilePath_->setText (path);
 
-			QModelIndex sindex = index.sibling (index.row (),
+			auto sindex = index.sibling (index.row (),
 					TorrentFilesModel::ColumnProgress);
 			double progress = sindex.data (TorrentFilesModel::RoleProgress).toDouble ();
 			qint64 size = sindex.data (TorrentFilesModel::RoleSize).toLongLong ();
@@ -158,7 +157,7 @@ namespace BitTorrent
 				Ui_.FilePriorityRegulator_->setValue (1);
 			else
 			{
-				QModelIndex prindex = index.sibling (index.row (),
+				auto prindex = index.sibling (index.row (),
 						TorrentFilesModel::ColumnPriority);
 				int priority = prindex.data ().toInt ();
 				Ui_.FilePriorityRegulator_->setValue (priority);

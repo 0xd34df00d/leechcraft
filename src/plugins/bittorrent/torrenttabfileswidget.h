@@ -40,12 +40,16 @@ namespace Plugins
 {
 namespace BitTorrent
 {
+	class TorrentFilesModel;
+
 	class TorrentTabFilesWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::TorrentTabFilesWidget Ui_;
 		QSortFilterProxyModel * const ProxyModel_;
+
+		TorrentFilesModel *CurrentFilesModel_ = nullptr;
 	public:
 		TorrentTabFilesWidget (QWidget* = nullptr);
 
