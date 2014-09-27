@@ -35,6 +35,7 @@ set (MURM_SRCS
 	logger.cpp
 	accountconfigdialog.cpp
 	serverhistorymanager.cpp
+	vkconnectiontunesetter.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
