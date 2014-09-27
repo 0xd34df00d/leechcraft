@@ -223,6 +223,61 @@ namespace BitTorrent
 			menu.addSeparator ();
 		}
 
+		const auto& cachedRoots = Util::Map (selected,
+				[] (const QModelIndex& idx)
+				{
+					return qMakePair (idx, idx.data (TorrentFilesModel::RoleFullPath).toString ());
+				});
+		const auto& priorityRoots = Util::Map (Util::Filter (cachedRoots,
+					[&cachedRoots] (const QPair<QModelIndex, QString>& idxPair)
+					{
+						return std::none_of (cachedRoots.begin (), cachedRoots.end (),
+								[&idxPair] (const QPair<QModelIndex, QString>& existing)
+								{
+									return idxPair.first != existing.first &&
+											idxPair.second.startsWith (existing.second);
+								});
+					}),
+				[] (const QPair<QModelIndex, QString>& idxPair)
+				{
+					return idxPair.first
+							.sibling (idxPair.first.row (), TorrentFilesModel::ColumnPriority);
+				});
+		if (!priorityRoots.isEmpty ())
+		{
+			const auto subMenu = menu.addMenu (tr ("Change priority"));
+			const QList<QPair<int, QString>> descrs
+			{
+				{ 0, tr ("File is not downloaded.") },
+				{ 1, tr ("Normal priority, download order depends on availability.") },
+				{ 2, tr ("Pieces are preferred over the pieces with same availability.") },
+				{ 3, tr ("Empty pieces are preferred just as much as partial pieces.") },
+				{ 4, tr ("Empty pieces are preferred over partial pieces with the same availability.") },
+				{ 5, tr ("Same as previous.") },
+				{ 6, tr ("Pieces are considered to have highest availability.") },
+				{ 7, tr ("Maximum file priority.") }
+			};
+
+			for (const auto& descr : descrs)
+			{
+				const auto prio = descr.first;
+
+				const auto act = subMenu->addAction (QString::number (prio) + " " + descr.second);
+
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[this, prio, openable]
+					{
+						for (const auto& idx : openable)
+							ProxyModel_->setData (idx, prio);
+					},
+					act,
+					SIGNAL (triggered ()),
+					act
+				};
+			}
+		}
+
 		menu.addAction (tr ("Expand all"), Ui_.FilesView_, SLOT (expandAll ()));
 		menu.addAction (tr ("Collapse all"), Ui_.FilesView_, SLOT (collapseAll ()));
 
