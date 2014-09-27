@@ -354,6 +354,9 @@ namespace TouchStreams
 			return;
 
 		const auto uid = reply->property ("TS/UID").toLongLong ();
+		if (!Friend2Item_.contains (uid))
+			return;
+
 		Friend2Item_ [uid]->setIcon (px);
 	}
 }
