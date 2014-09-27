@@ -121,6 +121,17 @@ namespace BitTorrent
 		header->resizeSection (0, fm.width ("some very long file name or a directory name in a torrent file"));
 	}
 
+	QList<QModelIndex> TorrentTabFilesWidget::GetSelectedIndexes () const
+	{
+		const auto selModel = Ui_.FilesView_->selectionModel ();
+
+		const auto& current = selModel->currentIndex ();
+		auto selected = selModel->selectedRows ();
+		if (!selected.contains (current))
+			selected.append (current);
+		return selected;
+	}
+
 	void TorrentTabFilesWidget::currentFileChanged (const QModelIndex& index)
 	{
 		Ui_.FilePriorityRegulator_->setEnabled (index.isValid ());
@@ -168,13 +179,7 @@ namespace BitTorrent
 
 	void TorrentTabFilesWidget::on_FilePriorityRegulator__valueChanged (int prio)
 	{
-		auto current = Ui_.FilesView_->selectionModel ()->currentIndex ();
-
-		auto selected = Ui_.FilesView_->selectionModel ()->selectedRows ();
-		if (!selected.contains (current))
-			selected.append (current);
-
-		for (auto idx : selected)
+		for (auto idx : GetSelectedIndexes ())
 		{
 			idx = idx.sibling (idx.row (), TorrentFilesModel::ColumnPriority);
 			Ui_.FilesView_->model ()->setData (idx, prio);

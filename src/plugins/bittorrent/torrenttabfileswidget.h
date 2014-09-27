@@ -54,6 +54,8 @@ namespace BitTorrent
 		TorrentTabFilesWidget (QWidget* = nullptr);
 
 		void SetCurrentIndex (int);
+	private:
+		QList<QModelIndex> GetSelectedIndexes () const;
 	private slots:
 		void currentFileChanged (const QModelIndex&);
 		void on_FilePriorityRegulator__valueChanged (int);
