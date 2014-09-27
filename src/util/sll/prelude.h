@@ -68,6 +68,14 @@ namespace Util
 		return result;
 	}
 
+	template<typename T, template<typename U> class Container, typename F>
+	auto Filter (const Container<T>& c, F f) -> Container<T>
+	{
+		Container<T> result;
+		std::copy_if (c.begin (), c.end (), std::back_inserter (result), f);
+		return result;
+	}
+
 	template<template<typename Pair, typename... Rest> class Cont, template<typename K, typename V> class Pair, typename K, typename V, typename KV, typename... Rest>
 	boost::optional<V> Lookup (const KV& key, const Cont<Pair<K, V>, Rest...>& cont)
 	{
