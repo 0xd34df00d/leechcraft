@@ -106,6 +106,16 @@ namespace BitTorrent
 			return node->SubtreeSize_;
 		case RolePriority:
 			return node->Priority_;
+		case RoleSort:
+			switch (index.column ())
+			{
+			case ColumnPath:
+				return node->Name_;
+			case ColumnPriority:
+				return node->Priority_;
+			case ColumnProgress:
+				return node->Progress_;
+			}
 		}
 		return {};
 	}
