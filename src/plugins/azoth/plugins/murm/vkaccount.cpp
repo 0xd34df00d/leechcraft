@@ -45,6 +45,7 @@
 #include "logger.h"
 #include "accountconfigdialog.h"
 #include "serverhistorymanager.h"
+#include "vkconnectiontunesetter.h"
 
 namespace LeechCraft
 {
@@ -62,6 +63,7 @@ namespace Murm
 	, Name_ (name)
 	, Logger_ (new Logger (ID_, this))
 	, Conn_ (new VkConnection (name, cookies, proxy, *Logger_))
+	, ConnTuneSetter_ (new VkConnectionTuneSetter (Conn_, proxy))
 	, GroupsMgr_ (new GroupsManager (Conn_))
 	, GeoResolver_ (new GeoResolver (Conn_, this))
 	, ServHistMgr_ (new ServerHistoryManager (this))
@@ -387,7 +389,7 @@ namespace Murm
 		if (!PublishTune_)
 			return;
 
-		Conn_->SetTune (tuneData);
+		ConnTuneSetter_->SetTune (tuneData);
 	}
 
 	QObject* VkAccount::GetSelfContact () const

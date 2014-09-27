@@ -51,6 +51,7 @@ namespace Murm
 	class VkChatEntry;
 	class VkMessage;
 	class VkConnection;
+	class VkConnectionTuneSetter;
 	class PhotoStorage;
 	class GeoResolver;
 	class GroupsManager;
@@ -86,6 +87,8 @@ namespace Murm
 		Logger * const Logger_;
 
 		VkConnection * const Conn_;
+		VkConnectionTuneSetter * const ConnTuneSetter_;
+
 		GroupsManager * const GroupsMgr_;
 		GeoResolver * const GeoResolver_;
 		ServerHistoryManager * const ServHistMgr_;

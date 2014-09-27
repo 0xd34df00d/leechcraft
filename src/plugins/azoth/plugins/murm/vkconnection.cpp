@@ -550,20 +550,6 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::SetTune (const QVariantMap& tuneData)
-	{
-		QStringList fields
-		{
-			tuneData ["artist"].toString (),
-			tuneData ["source"].toString (),
-			tuneData ["title"].toString ()
-		};
-		fields.removeAll ({});
-
-		const auto& toPublish = fields.join (QString::fromUtf8 (" — "));
-		SetStatus (toPublish);
-	}
-
 	void VkConnection::SetStatus (QString status)
 	{
 		if (status.isEmpty ())
