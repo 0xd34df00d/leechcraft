@@ -141,6 +141,20 @@ namespace BitTorrent
 			QStyledItemDelegate::setModelData (editor, model, index);
 	}
 
+	void FilesViewDelegate::updateEditorGeometry (QWidget *editor,
+			const QStyleOptionViewItem& option, const QModelIndex& index) const
+	{
+		if (index.column () != TorrentFilesModel::ColumnPath)
+		{
+			QStyledItemDelegate::updateEditorGeometry (editor, option, index);
+			return;
+		}
+
+		auto rect = option.rect;
+		rect.setX (0);
+		rect.setWidth (editor->parentWidget ()->width ());
+		editor->setGeometry (rect);
+	}
 }
 }
 }
