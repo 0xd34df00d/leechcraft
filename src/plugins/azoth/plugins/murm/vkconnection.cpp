@@ -49,16 +49,18 @@ namespace Murm
 {
 	namespace
 	{
-		const QString UserFields = "first_name,last_name,nickname,photo,photo_big,sex,"
-				"bdate,city,country,timezone,contacts,education";
+		const QString UserFields { "first_name,last_name,nickname,photo,photo_big,sex,"
+				"bdate,city,country,timezone,contacts,education" };
 
 		QStringList GetPerms ()
 		{
-			QStringList result { "messages", "notifications", "friends", "status", "photos" };
+			QStringList result { "messages", "notifications", "friends", "status", "photos", "audio" };
 			if (XmlSettingsManager::Instance ().property ("RequireOffline").toBool ())
 				result << "offline";
 			return result;
 		}
+
+		const QString CurrentAPIVersion { "5.25" };
 	}
 
 	VkConnection::VkConnection (const QString& name,
@@ -162,10 +164,10 @@ namespace Murm
 
 				auto query = "access_token=" + QUrl::toPercentEncoding (key.toUtf8 ());
 				query += '&';
-				query += type == Type::Dialog ? "uid" : "chat_id";
+				query += type == Type::Dialog ? "user_id" : "chat_id";
 				query += '=' + QByteArray::number (to);
-				query += "&type=1&";
-				query += "message=" + QUrl::toPercentEncoding (body, {}, "+");
+				query += "&type=1";
+				query += "&message=" + QUrl::toPercentEncoding (body, {}, "+");
 
 				for (auto i = params.begin (); i != params.end (); ++i)
 					query += "&" + QUrl::toPercentEncoding (i.key ()) +
@@ -196,7 +198,7 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.setActivity");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("uid", QString::number (to))
+						("user_id", QString::number (to))
 						("type", "typing");
 
 				AddParams (url, params);
@@ -233,7 +235,7 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.markAsRead");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("mids", joined);
+						("message_ids", joined);
 
 				AddParams (url, params);
 
@@ -294,7 +296,7 @@ namespace Murm
 						("access_token", key)
 						("fields", UserFields);
 				if (!joined.isEmpty ())
-					Util::UrlOperator { url} ("uids", joined);
+					Util::UrlOperator { url } ("user_ids", joined);
 
 				AddParams (url, params);
 
@@ -316,7 +318,7 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.getById");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("mid", QString::number (id))
+						("message_ids", QString::number (id))
 						("photo_sizes", "1");
 
 				AddParams (url, params);
@@ -366,7 +368,7 @@ namespace Murm
 				Util::UrlOperator { url }
 						("access_token", key)
 						("name", name)
-						("uids", joined);
+						("user_ids", joined);
 
 				AddParams (url, params);
 
@@ -390,9 +392,9 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/friends.editList");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("lid", QString::number (list.ID_))
+						("list_id", QString::number (list.ID_))
 						("name", list.Name_)
-						("uids", joined);
+						("user_ids", joined);
 
 				AddParams (url, params);
 
@@ -441,7 +443,7 @@ namespace Murm
 				Util::UrlOperator { url }
 						("access_token", key)
 						("title", title)
-						("uids", joined);
+						("user_ids", joined);
 
 				AddParams (url, params);
 
@@ -836,6 +838,7 @@ namespace Murm
 		while (!PreparedCalls_.isEmpty ())
 		{
 			auto f = PreparedCalls_.takeFirst ();
+			f.AddParam ({ "v", CurrentAPIVersion });
 			CallQueue_->Schedule ([this, f, key] () -> void
 					{
 						const auto reply = f (key);
@@ -944,7 +947,16 @@ namespace Murm
 		if (!CheckReplyData (data, reply))
 			return;
 
-		const auto id = data.toMap () ["response"].toMap () ["lid"].toULongLong ();
+		bool converted = false;
+		const auto id = data.toMap () ["response"].toMap () ["lid"].toULongLong (&converted);
+		if (!converted)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse reply"
+					<< data;
+			return;
+		}
+
 		emit addedLists ({ { id, name } });
 	}
 
@@ -960,9 +972,11 @@ namespace Murm
 			if (dateString.count ('.') == 1)
 				dateString += ".1800";
 
+			const auto& contacts = userMap ["contacts"].toMap ();
+
 			return
 			{
-				userMap ["uid"].toULongLong (),
+				userMap ["id"].toULongLong (),
 
 				userMap ["first_name"].toString (),
 				userMap ["last_name"].toString (),
@@ -975,8 +989,8 @@ namespace Murm
 
 				QDate::fromString (dateString, "d.M.yyyy"),
 
-				userMap ["home_phone"].toString (),
-				userMap ["mobile_phone"].toString (),
+				contacts ["home_phone"].toString (),
+				contacts ["mobile_phone"].toString (),
 
 				userMap ["timezone"].toInt (),
 				userMap ["country"].toInt (),
@@ -1000,7 +1014,14 @@ namespace Murm
 			return;
 
 		const auto& list = data.toMap () ["response"].toList ();
-		emit gotSelfInfo (UserMap2Info (list.value (0).toMap ()));
+		const auto& selfMap = list.value (0).toMap ();
+		if (selfMap.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null self map";
+			return;
+		}
+		emit gotSelfInfo (UserMap2Info (selfMap));
 	}
 
 	void VkConnection::handleGotFriendLists ()
@@ -1014,10 +1035,11 @@ namespace Murm
 			return;
 
 		QList<ListInfo> lists;
-		for (const auto& item : data.toMap () ["response"].toList ())
+		const auto& responseList = data.toMap () ["response"].toMap () ["items"].toList ();
+		for (const auto& item : responseList)
 		{
 			const auto& map = item.toMap ();
-			lists.append ({ map ["lid"].toULongLong (), map ["name"].toString () });
+			lists.append ({ map ["id"].toULongLong (), map ["name"].toString () });
 		}
 		emit gotLists (lists);
 
@@ -1031,7 +1053,8 @@ namespace Murm
 		{
 			QList<UserInfo> users;
 
-			for (const auto& item : data.toMap () ["response"].toList ())
+			const auto& usersList = data.toMap () ["response"].toMap () ["items"].toList ();
+			for (const auto& item : usersList)
 			{
 				const auto& userMap = item.toMap ();
 				if (userMap.contains ("deactivated"))
@@ -1062,8 +1085,7 @@ namespace Murm
 			{
 				QUrl msgUrl ("https://api.vk.com/method/messages.get");
 				Util::UrlOperator { msgUrl }
-						("access_token", key)
-						("filters", "1");
+						("access_token", key);
 				AddParams (msgUrl, params);
 				auto reply = nam->get (QNetworkRequest (msgUrl));
 				connect (reply,
@@ -1123,7 +1145,7 @@ namespace Murm
 		if (!CheckReplyData (data, reply))
 			return;
 
-		auto respList = data.toMap () ["response"].toList ();
+		auto respList = data.toMap () ["response"].toMap () ["items"].toList ();
 		if (respList.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1137,6 +1159,9 @@ namespace Murm
 		for (const auto& msgMapVar : respList)
 		{
 			const auto& map = msgMapVar.toMap ();
+			if (map ["read_state"].toULongLong ())
+				continue;
+
 			Logger_ << "got unread message:" << QVariant { map };
 
 			MessageFlags flags = MessageFlag::Unread;
@@ -1144,8 +1169,8 @@ namespace Murm
 				flags |= MessageFlag::Outbox;
 
 			infos.append  ({
-					map ["mid"].toULongLong (),
-					map ["uid"].toULongLong (),
+					map ["id"].toULongLong (),
+					map ["user_id"].toULongLong (),
 					map ["body"].toString (),
 					flags,
 					QDateTime::fromTime_t (map ["date"].toULongLong ()),
@@ -1194,7 +1219,7 @@ namespace Murm
 			users << item.toULongLong ();
 
 		emit gotChatInfo ({
-				map ["chat_id"].toULongLong (),
+				map ["id"].toULongLong (),
 				map ["title"].toString (),
 				users
 			});
@@ -1250,7 +1275,7 @@ namespace Murm
 			return;
 
 		QHash<int, QString> result;
-		for (const auto& item : data.toMap () ["response"].toList ())
+		for (const auto& item : data.toMap () ["response"].toMap () ["items"].toList ())
 		{
 			const auto& map = item.toMap ();
 			result [map ["cid"].toInt ()] = map ["name"].toString ();
@@ -1297,8 +1322,8 @@ namespace Murm
 			return
 			{
 				map ["owner_id"].toLongLong (),
-				map ["pid"].toULongLong (),
-				map ["aid"].toLongLong (),
+				map ["id"].toULongLong (),
+				map ["album_id"].toLongLong (),
 
 				thumbSrc,
 				thumbSize,
@@ -1324,7 +1349,7 @@ namespace Murm
 
 		void HandleBasicMsgInfo (FullMessageInfo& info, const QVariantMap& wallMap)
 		{
-			info.OwnerID_ = wallMap ["from_id"].toLongLong ();
+			info.OwnerID_ = wallMap ["owner_id"].toLongLong ();
 			info.ID_ = wallMap ["id"].toULongLong ();
 			info.Text_ = wallMap ["text"].toString ();
 			info.Likes_ = wallMap ["likes"].toMap () ["count"].toInt ();
@@ -1394,9 +1419,17 @@ namespace Murm
 					FullMessageInfo repost;
 					HandleBasicMsgInfo (repost, wallMap);
 
-					HandleAttachments (repost, wallMap.take ("attachments"), logger);
-					wallMap.take ("attachment");
-					logger << "attachments left:" << wallMap;
+					if (wallMap.contains ("attachments"))
+					{
+						HandleAttachments (repost, wallMap.take ("attachments"), logger);
+						logger << "attachments left:" << wallMap;
+					}
+					if (wallMap.contains ("copy_history"))
+					{
+						auto history = wallMap.take ("copy_history");
+						for (const auto& obj : history.toList ())
+							HandleAttachments (repost, obj.toMap () ["attachments"], logger);
+					}
 
 					info.ContainedReposts_.append (repost);
 				}
@@ -1436,8 +1469,10 @@ namespace Murm
 		if (!CheckReplyData (data, reply))
 			return;
 
+		Logger_ << "got message info data" << data;
+
 		FullMessageInfo info;
-		const auto& infoList = data.toMap () ["response"].toList ();
+		const auto& infoList = data.toMap () ["response"].toMap () ["items"].toList ();
 		for (const auto& item : infoList)
 		{
 			if (item.type () != QVariant::Map)
@@ -1471,7 +1506,7 @@ namespace Murm
 			return;
 
 		QList<PhotoInfo> result;
-		for (const auto& item : data.toMap () ["response"].toList ())
+		for (const auto& item : data.toMap () ["response"].toMap () ["items"].toList ())
 			result << PhotoMap2Info (item.toMap ());
 
 		setter (result);
