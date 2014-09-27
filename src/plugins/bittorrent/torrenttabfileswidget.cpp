@@ -31,6 +31,7 @@
 #include <QMenu>
 #include <QTimer>
 #include <QSortFilterProxyModel>
+#include <util/gui/clearlineeditaddon.h>
 #include <util/sll/slotclosure.h>
 #include <util/util.h>
 #include "filesviewdelegate.h"
@@ -76,6 +77,8 @@ namespace BitTorrent
 	, ProxyModel_ { new FilesProxyModel { this } }
 	{
 		Ui_.setupUi (this);
+
+		new Util::ClearLineEditAddon { Core::Instance ()->GetProxy (), Ui_.SearchLine_ };
 
 		ProxyModel_->setSortRole (TorrentFilesModel::RoleSort);
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
