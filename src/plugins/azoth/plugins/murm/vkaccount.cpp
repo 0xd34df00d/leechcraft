@@ -387,16 +387,7 @@ namespace Murm
 		if (!PublishTune_)
 			return;
 
-		QStringList fields
-		{
-			tuneData ["artist"].toString (),
-			tuneData ["source"].toString (),
-			tuneData ["title"].toString ()
-		};
-		fields.removeAll ({});
-
-		const auto& toPublish = fields.join (QString::fromUtf8 (" — "));
-		Conn_->SetStatus (toPublish);
+		Conn_->SetTune (tuneData);
 	}
 
 	QObject* VkAccount::GetSelfContact () const

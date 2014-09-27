@@ -179,6 +179,7 @@ namespace Murm
 		void RemoveChatUser (qulonglong chat, qulonglong user);
 		void SetChatTitle (qulonglong, const QString&);
 
+		void SetTune (const QVariantMap&);
 		void SetStatus (QString);
 
 		void SetStatus (const EntryStatus&, bool updateString);
