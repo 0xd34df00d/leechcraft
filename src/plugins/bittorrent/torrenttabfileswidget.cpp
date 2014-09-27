@@ -117,6 +117,8 @@ namespace BitTorrent
 				Ui_.FilesView_,
 				SLOT (expandAll ()));
 
+		Ui_.SearchLine_->setVisible (Core::Instance ()->GetTorrentFiles (index).size () > 1);
+
 		const auto& fm = Ui_.FilesView_->fontMetrics ();
 		auto header = Ui_.FilesView_->header ();
 		header->resizeSection (0, fm.width ("some very long file name or a directory name in a torrent file"));
