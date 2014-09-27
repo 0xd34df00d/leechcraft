@@ -55,8 +55,6 @@ namespace BitTorrent
 		void on_FilePriorityRegulator__valueChanged (int);
 
 		void on_FilesView__customContextMenuRequested (const QPoint&);
-
-		void handleFileActivated (const QModelIndex&);
 	};
 }
 }

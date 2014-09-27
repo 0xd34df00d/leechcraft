@@ -91,11 +91,6 @@ namespace BitTorrent
 
 		currentFileChanged ({});
 
-		connect (Ui_.FilesView_,
-				SIGNAL (doubleClicked (const QModelIndex&)),
-				this,
-				SLOT (handleFileActivated (const QModelIndex&)));
-
 		connect (Ui_.SearchLine_,
 				SIGNAL (textChanged (QString)),
 				ProxyModel_,
@@ -198,12 +193,6 @@ namespace BitTorrent
 		menu.addAction (tr ("Collapse all"), Ui_.FilesView_, SLOT (collapseAll ()));
 
 		menu.exec (Ui_.FilesView_->viewport ()->mapToGlobal (pos));
-	}
-
-	void TorrentTabFilesWidget::handleFileActivated (const QModelIndex& index)
-	{
-		auto model = static_cast<const TorrentFilesModel*> (index.model ());
-		model->HandleFileActivated (index);
 	}
 }
 }
