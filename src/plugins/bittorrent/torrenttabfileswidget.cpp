@@ -188,6 +188,26 @@ namespace BitTorrent
 			return;
 
 		QMenu menu;
+
+		const auto progress = idx.data (TorrentFilesModel::RoleProgress).toDouble ();
+		if (idx.model ()->rowCount (idx) ||
+				std::abs (progress - 1) < std::numeric_limits<double>::epsilon ())
+		{
+			const auto act = menu.addAction (tr ("Open file"));
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[idx, this]
+				{
+					CurrentFilesModel_->HandleFileActivated (ProxyModel_->mapToSource (idx));
+				},
+				act,
+				SIGNAL (triggered ()),
+				act
+			};
+
+			menu.addSeparator ();
+		}
+
 		menu.addAction (tr ("Expand all"), Ui_.FilesView_, SLOT (expandAll ()));
 		menu.addAction (tr ("Collapse all"), Ui_.FilesView_, SLOT (collapseAll ()));
 
