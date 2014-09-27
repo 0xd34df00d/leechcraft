@@ -43,13 +43,40 @@ namespace Plugins
 {
 namespace BitTorrent
 {
+	namespace
+	{
+		class FilesProxyModel : public QSortFilterProxyModel
+		{
+		public:
+			FilesProxyModel (QObject *parent)
+			: QSortFilterProxyModel { parent }
+			{
+				setDynamicSortFilter (true);
+			}
+		protected:
+			bool filterAcceptsRow (int row, const QModelIndex& parent) const override
+			{
+				const auto& idx = sourceModel ()->index (row, TorrentFilesModel::ColumnPath, parent);
+
+				if (idx.data ().toString ().contains (filterRegExp ().pattern (), Qt::CaseInsensitive))
+					return true;
+
+				const auto rc = sourceModel ()->rowCount (idx);
+				for (int i = 0; i < rc; ++i)
+					if (filterAcceptsRow (i, idx))
+						return true;
+
+				return false;
+			}
+		};
+	}
+
 	TorrentTabFilesWidget::TorrentTabFilesWidget (QWidget *parent)
 	: QWidget { parent }
-	, ProxyModel_ { new QSortFilterProxyModel { this } }
+	, ProxyModel_ { new FilesProxyModel { this } }
 	{
 		Ui_.setupUi (this);
 
-		ProxyModel_->setDynamicSortFilter (true);
 		ProxyModel_->setSortRole (TorrentFilesModel::RoleSort);
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
 		Ui_.FilesView_->setModel (ProxyModel_);
