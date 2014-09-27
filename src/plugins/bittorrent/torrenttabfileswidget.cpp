@@ -33,6 +33,7 @@
 #include <QSortFilterProxyModel>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/prelude.h>
 #include <util/util.h>
 #include "filesviewdelegate.h"
 #include "core.h"
@@ -188,25 +189,31 @@ namespace BitTorrent
 
 	void TorrentTabFilesWidget::on_FilesView__customContextMenuRequested (const QPoint& pos)
 	{
-		const auto& idx = Ui_.FilesView_->indexAt (pos);
-		if (!idx.isValid ())
-			return;
-
 		const auto itm = Core::Instance ()->GetProxy ()->GetIconThemeManager ();
 
 		QMenu menu;
 
-		const auto progress = idx.data (TorrentFilesModel::RoleProgress).toDouble ();
-		if (idx.model ()->rowCount (idx) ||
-				std::abs (progress - 1) < std::numeric_limits<double>::epsilon ())
+		const auto& selected = GetSelectedIndexes ();
+		const auto& openable = Util::Filter (selected,
+				[] (const QModelIndex& idx)
+				{
+					const auto progress = idx.data (TorrentFilesModel::RoleProgress).toDouble ();
+					return idx.model ()->rowCount (idx) ||
+							std::abs (progress - 1) < std::numeric_limits<double>::epsilon ();
+				});
+		if (!openable.isEmpty ())
 		{
-			const auto openAct = menu.addAction (tr ("Open file"));
+			const auto& openActName = openable.size () == 1 ?
+					tr ("Open file") :
+					tr ("Open %n file(s)", 0, openable.size ());
+			const auto openAct = menu.addAction (openActName);
 			openAct->setIcon (itm->GetIcon ("document-open"));
 			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
-				[idx, this]
+				[openable, this]
 				{
-					CurrentFilesModel_->HandleFileActivated (ProxyModel_->mapToSource (idx));
+					for (const auto& idx : openable)
+						CurrentFilesModel_->HandleFileActivated (ProxyModel_->mapToSource (idx));
 				},
 				openAct,
 				SIGNAL (triggered ()),
