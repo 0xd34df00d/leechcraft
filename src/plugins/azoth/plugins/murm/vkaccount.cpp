@@ -196,7 +196,8 @@ namespace Murm
 		handleMarkOnline ();
 	}
 
-	void VkAccount::Send (qulonglong to, VkConnection::Type type, VkMessage *msg)
+	void VkAccount::Send (qulonglong to, VkConnection::Type type,
+			VkMessage *msg, const QStringList& attachments)
 	{
 		QPointer<VkMessage> safeMsg { msg };
 		Conn_->SendMessage (to,
@@ -206,7 +207,8 @@ namespace Murm
 					if (safeMsg)
 						safeMsg->SetID (id);
 				},
-				type);
+				type,
+				attachments);
 	}
 
 	void VkAccount::CreateChat (const QString& name, const QList<VkEntry*>& entries)

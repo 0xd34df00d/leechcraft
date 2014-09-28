@@ -118,7 +118,8 @@ namespace Murm
 
 		void Init ();
 
-		void Send (qulonglong, VkConnection::Type, VkMessage*);
+		void Send (qulonglong, VkConnection::Type, VkMessage*,
+				const QStringList& attachments = {});
 		void CreateChat (const QString&, const QList<VkEntry*>&);
 		VkEntry* GetEntry (qulonglong) const;
 		VkEntry* FindEntryById (const QString&) const;

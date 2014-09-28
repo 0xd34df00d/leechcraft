@@ -155,7 +155,7 @@ namespace Murm
 	}
 
 	void VkConnection::SendMessage (qulonglong to, const QString& body,
-			std::function<void (qulonglong)> idSetter, Type type)
+			std::function<void (qulonglong)> idSetter, Type type, const QStringList& attachments)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
@@ -168,6 +168,9 @@ namespace Murm
 				query += '=' + QByteArray::number (to);
 				query += "&type=1";
 				query += "&message=" + QUrl::toPercentEncoding (body, {}, "+");
+
+				if (!attachments.isEmpty ())
+					query += "&attachment=" + attachments.join (",");
 
 				for (auto i = params.begin (); i != params.end (); ++i)
 					query += "&" + QUrl::toPercentEncoding (i.key ()) +
