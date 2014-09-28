@@ -55,10 +55,11 @@ namespace Murm
 		VkConnection * const Conn_;
 
 		const QString Path_;
+		const QString Comment_;
 
 		const QPointer<VkEntry> Entry_;
 	public:
-		PendingUpload (VkEntry*, const QString& path, VkAccount *acc);
+		PendingUpload (VkEntry*, const QString& path, const QString& comment, VkAccount *acc);
 
 		QString GetSourceID () const;
 		QString GetName () const;

@@ -49,13 +49,14 @@ namespace Murm
 		return true;
 	}
 
-	QObject* TransferManager::SendFile (const QString& id, const QString&, const QString& name, const QString&)
+	QObject* TransferManager::SendFile (const QString& id,
+			const QString&, const QString& name, const QString& comment)
 	{
 		const auto entry = Acc_->FindEntryById (id);
 		if (!entry)
 			return nullptr;
 
-		return new PendingUpload { entry, name, Acc_ };
+		return new PendingUpload { entry, name, comment, Acc_ };
 	}
 }
 }

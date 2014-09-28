@@ -51,7 +51,7 @@ namespace Murm
 		TransferManager (VkAccount*);
 
 		bool IsAvailable () const override;
-		QObject* SendFile (const QString& id, const QString& variant, const QString& name, const QString& comment) override;
+		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
 	signals:
 		void fileOffered (QObject*) override;
 	};

@@ -45,11 +45,13 @@ namespace Azoth
 {
 namespace Murm
 {
-	PendingUpload::PendingUpload (VkEntry *entry, const QString& path, VkAccount *acc)
+	PendingUpload::PendingUpload (VkEntry *entry,
+			const QString& path, const QString& comment, VkAccount *acc)
 	: QObject { acc }
 	, Acc_ { acc }
 	, Conn_ { acc->GetConnection () }
 	, Path_ { path }
+	, Comment_ { comment }
 	, Entry_ { entry }
 	{
 		const auto nam = acc->GetCoreProxy ()->GetNetworkAccessManager ();
@@ -207,7 +209,7 @@ namespace Murm
 		const auto& attId = "doc" + ownerId + "_" + docId;
 
 		Conn_->SendMessage (Entry_->GetInfo ().ID_,
-				{},
+				Comment_,
 				[this] (qulonglong) { emit stateChanged (TSFinished); },
 				VkConnection::Type::Dialog,
 				{ attId });
