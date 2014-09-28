@@ -27,6 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#define TORRENT_MAX_ALERT_TYPES 20
+
 #include "core.h"
 #include <memory>
 #include <numeric>
