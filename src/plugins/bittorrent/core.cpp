@@ -2513,6 +2513,21 @@ namespace BitTorrent
 			NeedToLog_ = false;
 		}
 
+		void operator() (const libtorrent::torrent_paused_alert& a) const
+		{
+			Core::Instance ()->UpdateStatus ({ a.handle.status () });
+		}
+
+		void operator() (const libtorrent::torrent_resumed_alert& a) const
+		{
+			Core::Instance ()->UpdateStatus ({ a.handle.status () });
+		}
+
+		void operator() (const libtorrent::torrent_checked_alert& a) const
+		{
+			Core::Instance ()->UpdateStatus ({ a.handle.status () });
+		}
+
 		void operator() (const libtorrent::dht_announce_alert& a) const
 		{
 			qDebug () << "<libtorrent> <DHT>"
@@ -2582,6 +2597,9 @@ namespace BitTorrent
 					, libtorrent::file_rename_failed_alert
 					, libtorrent::read_piece_alert
 					, libtorrent::state_update_alert
+					, libtorrent::torrent_paused_alert
+					, libtorrent::torrent_resumed_alert
+					, libtorrent::torrent_checked_alert
 					, libtorrent::dht_announce_alert
 					, libtorrent::dht_reply_alert
 					, libtorrent::dht_bootstrap_alert
