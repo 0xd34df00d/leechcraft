@@ -140,8 +140,40 @@ namespace Murm
 		multipart->setParent (upReply);
 	}
 
+	void PendingUpload::HandleSaved (QNetworkReply *reply)
+	{
+	}
+
 	void PendingUpload::handleUploadFinished ()
 	{
+		const auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
+
+		const auto& str = json.toMap () ["file"].toString ();
+		const auto nam = Acc_->GetCoreProxy ()->GetNetworkAccessManager ();
+		Conn_->QueueRequest ([this, nam, str] (const QString& key, const VkConnection::UrlParams_t& params)
+			{
+				QUrl url ("https://api.vk.com/method/docs.save");
+				Util::UrlOperator { url }
+						("access_token", key)
+						("file", str);
+
+				VkConnection::AddParams (url, params);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[this, reply]
+					{
+						HandleSaved (reply);
+						reply->deleteLater ();
+					},
+					reply,
+					SIGNAL (finished ()),
+					this
+				};
+				return reply;
+			});
 	}
 }
 }

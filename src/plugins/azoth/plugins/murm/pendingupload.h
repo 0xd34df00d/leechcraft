@@ -70,6 +70,7 @@ namespace Murm
 		void Abort ();
 	private:
 		void HandleGotServer (QNetworkReply*);
+		void HandleSaved (QNetworkReply*);
 	private slots:
 		void handleUploadFinished ();
 	signals:
