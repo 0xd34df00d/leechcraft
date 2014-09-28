@@ -36,6 +36,7 @@ set (MURM_SRCS
 	accountconfigdialog.cpp
 	serverhistorymanager.cpp
 	vkconnectiontunesetter.cpp
+	transfermanager.cpp
 	pendingupload.cpp
 	)
 set (MURM_FORMS
