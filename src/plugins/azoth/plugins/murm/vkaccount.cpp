@@ -261,6 +261,11 @@ namespace Murm
 		return GroupsMgr_;
 	}
 
+	Logger& VkAccount::GetLogger () const
+	{
+		return *Logger_;
+	}
+
 	QObject* VkAccount::GetQObject ()
 	{
 		return this;

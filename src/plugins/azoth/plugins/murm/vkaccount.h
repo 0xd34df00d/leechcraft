@@ -131,6 +131,8 @@ namespace Murm
 		GeoResolver* GetGeoResolver () const;
 		GroupsManager* GetGroupsManager () const;
 
+		Logger& GetLogger () const;
+
 		QObject* GetQObject ();
 		VkProtocol* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
