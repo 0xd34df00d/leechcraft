@@ -123,6 +123,8 @@ namespace Murm
 			return;
 		}
 
+		emit stateChanged (TSTransfer);
+
 		const auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType };
 		QHttpPart filePart;
 		filePart.setHeader (QNetworkRequest::ContentDispositionHeader,
