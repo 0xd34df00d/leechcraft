@@ -31,6 +31,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QStyledItemDelegate>
 #include <QSortFilterProxyModel>
 #include <QToolBar>
 #include <QMenu>
@@ -57,6 +58,36 @@ namespace Plugins
 {
 namespace BitTorrent
 {
+	namespace
+	{
+		class TorrentsListDelegate : public QStyledItemDelegate
+		{
+		public:
+			using QStyledItemDelegate::QStyledItemDelegate;
+
+			void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override
+			{
+				if (index.column () != Core::ColumnProgress)
+				{
+					QStyledItemDelegate::paint (painter, option, index);
+					return;
+				}
+
+				const auto progress = index.data (Core::SortRole).toDouble ();
+
+				QStyleOptionProgressBarV2 pbo;
+				pbo.rect = option.rect;
+				pbo.minimum = 0;
+				pbo.maximum = 1000;
+				pbo.progress = std::round (progress * 1000);
+				pbo.state = option.state;
+				pbo.text = index.data ().toString ();
+				pbo.textVisible = true;
+				QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);
+			}
+		};
+	}
+
 	TorrentTab::TorrentTab (const TabClassInfo& tc, QObject *mt)
 	: TC_ (tc)
 	, ParentMT_ (mt)
@@ -68,6 +99,8 @@ namespace BitTorrent
 		ViewFilter_->setDynamicSortFilter (true);
 		ViewFilter_->setSortRole (Core::Roles::SortRole);
 		ViewFilter_->setSourceModel (Core::Instance ());
+
+		Ui_.TorrentsView_->setItemDelegate (new TorrentsListDelegate (Ui_.TorrentsView_));
 
 		Ui_.TorrentsView_->setModel (ViewFilter_);
 		connect (Ui_.TorrentsView_->selectionModel (),
