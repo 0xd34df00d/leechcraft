@@ -222,6 +222,13 @@ namespace Murm
 		return Entries_.value (id);
 	}
 
+	VkEntry* VkAccount::FindEntryById (const QString& entryId) const
+	{
+		const auto pos = std::find_if (Entries_.begin (), Entries_.end (),
+				[&entryId] (VkEntry *entry) { return entry->GetEntryID () == entryId; });
+		return pos != Entries_.end () ? *pos : nullptr;
+	}
+
 	VkEntry* VkAccount::GetSelf () const
 	{
 		return SelfEntry_;

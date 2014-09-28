@@ -121,6 +121,7 @@ namespace Murm
 		void Send (qulonglong, VkConnection::Type, VkMessage*);
 		void CreateChat (const QString&, const QList<VkEntry*>&);
 		VkEntry* GetEntry (qulonglong) const;
+		VkEntry* FindEntryById (const QString&) const;
 		VkEntry* GetSelf () const;
 
 		ICoreProxy_ptr GetCoreProxy () const;
