@@ -547,7 +547,7 @@ namespace BitTorrent
 				{
 					if (status.paused)
 					{
-						static const auto pausedStr = tr ("paused");
+						static const auto pausedStr = tr ("Paused");
 						return pausedStr;
 					}
 
@@ -559,7 +559,7 @@ namespace BitTorrent
 				}
 				else if (status.paused)
 				{
-					static const auto idleStr = tr ("idle");
+					static const auto idleStr = tr ("Idle");
 					return idleStr;
 				}
 				else
