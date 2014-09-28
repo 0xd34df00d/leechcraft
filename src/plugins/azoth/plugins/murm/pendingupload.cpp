@@ -37,6 +37,7 @@
 #include <util/sll/urloperator.h>
 #include "vkaccount.h"
 #include "vkentry.h"
+#include "logger.h"
 
 namespace LeechCraft
 {
@@ -111,6 +112,9 @@ namespace Murm
 	void PendingUpload::HandleGotServer (QNetworkReply *reply)
 	{
 		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
+
+		Acc_->GetLogger () << "got upload server:" << json;
+
 		const QUrl uploadUrl { json.toMap () ["response"].toMap () ["upload_url"].toByteArray () };
 		if (!uploadUrl.isValid ())
 		{
@@ -146,6 +150,9 @@ namespace Murm
 			return;
 
 		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
+
+		Acc_->GetLogger () << "got document save result server:" << json;
+
 		const auto& docMap = json.toMap () ["response"].toList ().value (0).toMap ();
 
 		const auto& ownerId = docMap ["owner_id"].toString ();
@@ -163,6 +170,8 @@ namespace Murm
 	{
 		const auto reply = qobject_cast<QNetworkReply*> (sender ());
 		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
+
+		Acc_->GetLogger () << "got upload result:" << json;
 
 		const auto& str = json.toMap () ["file"].toString ();
 		const auto nam = Acc_->GetCoreProxy ()->GetNetworkAccessManager ();
