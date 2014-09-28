@@ -1328,7 +1328,7 @@ namespace Murm
 			return
 			{
 				map ["owner_id"].toLongLong (),
-				map ["aid"].toULongLong (),
+				map ["id"].toULongLong (),
 				map ["artist"].toString (),
 				map ["title"].toString (),
 				map ["duration"].toInt (),
@@ -1351,13 +1351,13 @@ namespace Murm
 			return
 			{
 				map ["owner_id"].toLongLong (),
-				map ["vid"].toULongLong (),
+				map ["id"].toULongLong (),
 				map ["access_key"].toString (),
 				map ["title"].toString (),
 				map ["description"].toString (),
 				map ["duration"].toULongLong (),
 				map ["views"].toLongLong (),
-				map ["image_big"].toString ()
+				map ["photo_320"].toString ()
 			};
 		}
 
@@ -1366,7 +1366,7 @@ namespace Murm
 			return
 			{
 				map ["owner_id"].toLongLong (),
-				map ["did"].toULongLong (),
+				map ["id"].toULongLong (),
 				map ["title"].toString (),
 				map ["ext"].toString (),
 				map ["size"].toULongLong (),
