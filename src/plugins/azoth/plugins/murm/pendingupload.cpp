@@ -111,14 +111,35 @@ namespace Murm
 
 	void PendingUpload::HandleGotServer (QNetworkReply *reply)
 	{
+		if (!Conn_->CheckFinishedReply (reply))
+			return;
+
 		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
+		try
+		{
+			Conn_->CheckReplyData (json, reply);
+		}
+		catch (const VkConnection::RecoverableException&)
+		{
+			return;
+		}
+		catch (const VkConnection::UnrecoverableException& ex)
+		{
+			emit errorAppeared (TEProtocolError,
+					tr ("Unable to get upload server from VKontakte, protocol error %1: %2.")
+						.arg (ex.GetCode ())
+						.arg (ex.GetMessage ()));
+			emit stateChanged (TSFinished);
+			return;
+		}
 
 		Acc_->GetLogger () << "got upload server:" << json;
 
 		const QUrl uploadUrl { json.toMap () ["response"].toMap () ["upload_url"].toByteArray () };
 		if (!uploadUrl.isValid ())
 		{
-			emit errorAppeared (TEProtocolError, tr ("Unable to get upload server from VKontakte"));
+			emit errorAppeared (TEProtocolError,
+					tr ("Unable to get upload server from VKontakte"));
 			emit stateChanged (TSFinished);
 			return;
 		}
@@ -139,6 +160,10 @@ namespace Murm
 		const auto nam = Acc_->GetCoreProxy ()->GetNetworkAccessManager ();
 		const auto upReply = nam->post (QNetworkRequest { uploadUrl }, multipart);
 		connect (upReply,
+				SIGNAL (uploadProgress (qint64, qint64)),
+				this,
+				SIGNAL (transferProgress (qint64, qint64)));
+		connect (upReply,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleUploadFinished ()));
@@ -151,7 +176,27 @@ namespace Murm
 		if (!Entry_)
 			return;
 
+		if (!Conn_->CheckFinishedReply (reply))
+			return;
+
 		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
+		try
+		{
+			Conn_->CheckReplyData (json, reply);
+		}
+		catch (const VkConnection::RecoverableException&)
+		{
+			return;
+		}
+		catch (const VkConnection::UnrecoverableException& ex)
+		{
+			emit errorAppeared (TEProtocolError,
+					tr ("Unable to save document, error %1: %2.")
+						.arg (ex.GetCode ())
+						.arg (ex.GetMessage ()));
+			emit stateChanged (TSFinished);
+			return;
+		}
 
 		Acc_->GetLogger () << "got document save result server:" << json;
 
@@ -171,11 +216,34 @@ namespace Murm
 	void PendingUpload::handleUploadFinished ()
 	{
 		const auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (reply->error () != QNetworkReply::NoError)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< reply->error ()
+					<< reply->errorString ();
+
+			emit errorAppeared (TEProtocolError,
+					tr ("Unable to upload document, network error %1.")
+						.arg (reply->errorString ()));
+			emit stateChanged (TSFinished);
+			return;
+		}
+
 		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
+		const auto& replyMap = json.toMap ();
 
 		Acc_->GetLogger () << "got upload result:" << json;
 
-		const auto& str = json.toMap () ["file"].toString ();
+		if (replyMap.contains ("error"))
+		{
+			emit errorAppeared (TEProtocolError,
+					tr ("Unable to upload document, server error: %1.")
+						.arg (replyMap ["error"].toString ()));
+			emit stateChanged (TSFinished);
+			return;
+		}
+
+		const auto& str = replyMap ["file"].toString ();
 		const auto nam = Acc_->GetCoreProxy ()->GetNetworkAccessManager ();
 		Conn_->QueueRequest ([this, nam, str] (const QString& key, const VkConnection::UrlParams_t& params)
 			{
