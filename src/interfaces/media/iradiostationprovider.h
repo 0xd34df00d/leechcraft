@@ -97,6 +97,10 @@ namespace Media
 		 */
 		SingleTrack,
 
+		/** @brief A root for a list of SingleTrack or TracksList items.
+		 */
+		TracksRoot,
+
 		/** @brief An action.
 		 *
 		 * Items of this type represent an action, like "Sign in to radio"
