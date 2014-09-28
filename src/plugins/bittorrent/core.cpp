@@ -278,7 +278,10 @@ namespace BitTorrent
 				<< tr ("Up speed")
 				<< tr ("Leechers")
 				<< tr ("Seeders")
-				<< tr ("Total uploaded");
+				<< tr ("Size")
+				<< tr ("Total downloaded")
+				<< tr ("Total uploaded")
+				<< tr ("Ratio");
 
 		connect (SettingsSaveTimer_.get (),
 				SIGNAL (timeout ()),
@@ -513,8 +516,19 @@ namespace BitTorrent
 				return status.num_peers - status.num_seeds;
 			case ColumnSeeders:
 				return status.num_seeds;
+			case ColumnDownloaded:
+				return static_cast<quint64> (status.all_time_download);
+			case ColumnSize:
+				return static_cast<quint64> (status.total_wanted);
 			case ColumnUploaded:
 				return static_cast<quint64> (status.all_time_upload);
+			case ColumnRatio:
+				if (status.all_time_download)
+					return static_cast<double> (status.all_time_upload) / status.all_time_download;
+
+				return status.all_time_upload ?
+						std::numeric_limits<double>::max () :
+						0;
 			default:
 				return {};
 			}
@@ -618,8 +632,22 @@ namespace BitTorrent
 				return QString::number (status.num_peers - status.num_seeds);
 			case ColumnSeeders:
 				return QString::number (status.num_seeds);
+			case ColumnDownloaded:
+				return Util::MakePrettySize (status.all_time_download);
+			case ColumnSize:
+				return Util::MakePrettySize (status.total_wanted);
 			case ColumnUploaded:
 				return Util::MakePrettySize (status.all_time_upload);
+			case ColumnRatio:
+				if (status.all_time_download)
+				{
+					const auto ratio = static_cast<double> (status.all_time_upload) / status.all_time_download;
+					return QString::number (ratio, 'f', 2);
+				}
+
+				return status.all_time_upload ?
+						QString::fromUtf8 ("∞") :
+						"0";
 			default:
 				return QVariant ();
 			}
