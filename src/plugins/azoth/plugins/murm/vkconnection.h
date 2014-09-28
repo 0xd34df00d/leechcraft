@@ -191,6 +191,9 @@ namespace Murm
 		static void AddParams (QUrl&, const UrlParams_t&);
 
 		void HandleCaptcha (const QString& cid, const QString& value);
+
+		bool CheckFinishedReply (QNetworkReply*);
+		bool CheckReplyData (const QVariant&, QNetworkReply*);
 	private:
 		void PushFriendsRequest ();
 
@@ -198,9 +201,6 @@ namespace Murm
 		RunningCalls_t::iterator FindRunning (QNetworkReply*);
 
 		void RescheduleRequest (QNetworkReply*);
-
-		bool CheckFinishedReply (QNetworkReply*);
-		bool CheckReplyData (const QVariant&, QNetworkReply*);
 	public slots:
 		void reauth ();
 	private slots:
