@@ -110,6 +110,38 @@ namespace Murm
 
 	void PendingUpload::HandleGotServer (QNetworkReply *reply)
 	{
+		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
+		const QUrl uploadUrl { json.toMap () ["response"].toMap () ["upload_url"].toByteArray () };
+		if (!uploadUrl.isValid ())
+		{
+			emit errorAppeared (TEProtocolError, tr ("Unable to get upload server from VKontakte"));
+			emit stateChanged (TSFinished);
+			return;
+		}
+
+		const auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType };
+		QHttpPart filePart;
+		filePart.setHeader (QNetworkRequest::ContentDispositionHeader,
+				QString ("form-data; name=\"file\"; filename=\"%1\"")
+					.arg (QFileInfo { Path_ }.fileName ()));
+		const auto file = new QFile { Path_ };
+		file->open (QIODevice::ReadOnly);
+		filePart.setBodyDevice (file);
+		file->setParent (multipart);
+		multipart->append (filePart);
+
+		const auto nam = Acc_->GetCoreProxy ()->GetNetworkAccessManager ();
+		const auto upReply = nam->post (QNetworkRequest { uploadUrl }, multipart);
+		connect (upReply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleUploadFinished ()));
+
+		multipart->setParent (upReply);
+	}
+
+	void PendingUpload::handleUploadFinished ()
+	{
 	}
 }
 }

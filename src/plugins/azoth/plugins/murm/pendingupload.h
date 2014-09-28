@@ -69,6 +69,8 @@ namespace Murm
 		void Abort ();
 	private:
 		void HandleGotServer (QNetworkReply*);
+	private slots:
+		void handleUploadFinished ();
 	signals:
 		void transferProgress (qint64, qint64);
 		void errorAppeared (TransferError, const QString&);
