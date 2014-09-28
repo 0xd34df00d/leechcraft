@@ -770,9 +770,10 @@ namespace Murm
 			return true;
 
 		const auto& errMap = map ["error"].toMap ();
-		const auto ec = errMap ["error_code"].toULongLong ();
+		const auto ec = errMap ["error_code"].toInt ();
+		const auto& errMsg = errMap ["error_msg"].toString ();
 
-		Logger_ << "got error:" << errMap ["error_code"].toULongLong () << errMap ["error_msg"].toString ();
+		Logger_ << "got error:" << ec << errMsg;
 		Logger_ << errMap;
 
 		switch (ec)
