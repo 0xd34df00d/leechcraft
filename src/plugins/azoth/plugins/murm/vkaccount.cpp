@@ -46,6 +46,7 @@
 #include "accountconfigdialog.h"
 #include "serverhistorymanager.h"
 #include "vkconnectiontunesetter.h"
+#include "transfermanager.h"
 
 namespace LeechCraft
 {
@@ -67,6 +68,7 @@ namespace Murm
 	, GroupsMgr_ (new GroupsManager (Conn_))
 	, GeoResolver_ (new GeoResolver (Conn_, this))
 	, ServHistMgr_ (new ServerHistoryManager (this))
+	, XFerMgr_ (new TransferManager (this))
 	{
 		connect (Conn_,
 				SIGNAL (cookiesChanged ()),
@@ -395,7 +397,7 @@ namespace Murm
 
 	QObject* VkAccount::GetTransferManager () const
 	{
-		return nullptr;
+		return XFerMgr_;
 	}
 
 	void VkAccount::PublishTune (const QMap<QString, QVariant>& tuneData)

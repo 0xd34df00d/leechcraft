@@ -58,6 +58,7 @@ namespace Murm
 	class Logger;
 	class AccountConfigDialog;
 	class ServerHistoryManager;
+	class TransferManager;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -92,6 +93,8 @@ namespace Murm
 		GroupsManager * const GroupsMgr_;
 		GeoResolver * const GeoResolver_;
 		ServerHistoryManager * const ServHistMgr_;
+
+		TransferManager * const XFerMgr_;
 
 		VkEntry *SelfEntry_ = nullptr;
 		QHash<qulonglong, VkEntry*> Entries_;
