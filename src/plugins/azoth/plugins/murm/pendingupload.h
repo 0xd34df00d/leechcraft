@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
 #include <interfaces/azoth/itransfermanager.h>
 
 class QNetworkReply;
@@ -55,7 +56,7 @@ namespace Murm
 
 		const QString Path_;
 
-		VkEntry * const Entry_;
+		const QPointer<VkEntry> Entry_;
 	public:
 		PendingUpload (VkEntry*, const QString& path, VkAccount *acc);
 

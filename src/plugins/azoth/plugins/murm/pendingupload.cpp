@@ -44,7 +44,7 @@ namespace Azoth
 {
 namespace Murm
 {
-	PendingUpload::PendingUpload (VkEntry *entry, const QString& path, VkAccount* acc)
+	PendingUpload::PendingUpload (VkEntry *entry, const QString& path, VkAccount *acc)
 	: QObject { acc }
 	, Acc_ { acc }
 	, Conn_ { acc->GetConnection () }
@@ -77,7 +77,7 @@ namespace Murm
 
 	QString PendingUpload::GetSourceID () const
 	{
-		return Entry_->GetEntryID ();
+		return Entry_ ? Entry_->GetEntryID () : QString {};
 	}
 
 	QString PendingUpload::GetName () const
