@@ -82,6 +82,7 @@ namespace TouchStreams
 		static QIcon vkIcon { ":/touchstreams/resources/images/vk.svg" };
 		AlbumsRootItem_->setIcon (vkIcon);
 		AlbumsRootItem_->setEditable (false);
+		AlbumsRootItem_->setData (Media::RadioType::TracksRoot, Media::RadioItemRole::ItemType);
 
 		QTimer::singleShot (1000,
 				this,

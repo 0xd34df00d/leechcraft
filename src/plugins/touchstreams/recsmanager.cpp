@@ -60,6 +60,7 @@ namespace TouchStreams
 		static QIcon vkIcon { ":/touchstreams/resources/images/vk.svg" };
 		RootItem_->setIcon (vkIcon);
 		RootItem_->setEditable (false);
+		RootItem_->setData (Media::RadioType::TracksRoot, Media::RadioItemRole::ItemType);
 
 		if (!UID_)
 		{

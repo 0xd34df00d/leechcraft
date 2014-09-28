@@ -71,6 +71,7 @@ namespace TouchStreams
 	{
 		Root_->setIcon (QIcon (":/touchstreams/resources/images/vk.svg"));
 		Root_->setEditable (false);
+		Root_->setData (Media::RadioType::TracksRoot, Media::RadioItemRole::ItemType);
 
 		QTimer::singleShot (1000,
 				this,
