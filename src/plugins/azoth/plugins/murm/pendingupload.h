@@ -32,6 +32,8 @@
 #include <QObject>
 #include <interfaces/azoth/itransfermanager.h>
 
+class QNetworkReply;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -39,6 +41,7 @@ namespace Azoth
 namespace Murm
 {
 	class VkAccount;
+	class VkConnection;
 	class VkEntry;
 
 	class PendingUpload : public QObject
@@ -48,6 +51,7 @@ namespace Murm
 		Q_INTERFACES (LeechCraft::Azoth::ITransferJob)
 
 		VkAccount * const Acc_;
+		VkConnection * const Conn_;
 
 		const QString Path_;
 
@@ -63,6 +67,8 @@ namespace Murm
 
 		void Accept (const QString&);
 		void Abort ();
+	private:
+		void HandleGotServer (QNetworkReply*);
 	signals:
 		void transferProgress (qint64, qint64);
 		void errorAppeared (TransferError, const QString&);

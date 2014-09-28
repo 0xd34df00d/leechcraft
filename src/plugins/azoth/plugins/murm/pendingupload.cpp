@@ -29,7 +29,12 @@
 
 #include "pendingupload.h"
 #include <QFileInfo>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QHttpMultiPart>
+#include <util/sll/parsejson.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/urloperator.h>
 #include "vkaccount.h"
 #include "vkentry.h"
 
@@ -42,9 +47,32 @@ namespace Murm
 	PendingUpload::PendingUpload (VkEntry *entry, const QString& path, VkAccount* acc)
 	: QObject { acc }
 	, Acc_ { acc }
+	, Conn_ { acc->GetConnection () }
 	, Path_ { path }
 	, Entry_ { entry }
 	{
+		const auto nam = acc->GetCoreProxy ()->GetNetworkAccessManager ();
+		Conn_->QueueRequest ([=] (const QString& key, const VkConnection::UrlParams_t& params)
+			{
+				QUrl url ("https://api.vk.com/method/docs.getUploadServer");
+				Util::UrlOperator { url } ("access_token", key);
+
+				VkConnection::AddParams (url, params);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[this, reply]
+					{
+						HandleGotServer (reply);
+						reply->deleteLater ();
+					},
+					reply,
+					SIGNAL (finished ()),
+					this
+				};
+				return reply;
+			});
 	}
 
 	QString PendingUpload::GetSourceID () const
@@ -77,6 +105,10 @@ namespace Murm
 	}
 
 	void PendingUpload::Abort ()
+	{
+	}
+
+	void PendingUpload::HandleGotServer (QNetworkReply *reply)
 	{
 	}
 }
