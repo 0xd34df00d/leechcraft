@@ -142,6 +142,21 @@ namespace Murm
 
 	void PendingUpload::HandleSaved (QNetworkReply *reply)
 	{
+		if (!Entry_)
+			return;
+
+		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
+		const auto& docMap = json.toMap () ["response"].toList ().value (0).toMap ();
+
+		const auto& ownerId = docMap ["owner_id"].toString ();
+		const auto& docId = docMap ["id"].toString ();
+		const auto& attId = "doc" + ownerId + "_" + docId;
+
+		Conn_->SendMessage (Entry_->GetInfo ().ID_,
+				{},
+				[this] (qulonglong) { emit stateChanged (TSFinished); },
+				VkConnection::Type::Dialog,
+				{ attId });
 	}
 
 	void PendingUpload::handleUploadFinished ()
