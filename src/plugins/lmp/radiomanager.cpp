@@ -107,6 +107,7 @@ namespace LMP
 						break;
 					case Media::RadioType::TracksList:
 					case Media::RadioType::SingleTrack:
+					case Media::RadioType::TracksRoot:
 						for (const auto& info : Manager_->GetSources (index))
 						{
 							urls << info.Other_ ["URL"].toUrl ();
@@ -314,6 +315,7 @@ namespace LMP
 			break;
 		case Media::RadioType::TracksList:
 		case Media::RadioType::SingleTrack:
+		case Media::RadioType::TracksRoot:
 		{
 			QList<AudioSource> sources;
 			for (const auto& info : GetSources (index))
@@ -344,6 +346,13 @@ namespace LMP
 		const auto intRadioType = index.data (Media::RadioItemRole::ItemType).toInt ();
 		switch (static_cast<Media::RadioType> (intRadioType))
 		{
+		case Media::RadioType::TracksRoot:
+		{
+			QList<Media::AudioInfo> result;
+			for (int i = 0, rc = index.model ()->rowCount (index); i < rc; ++i)
+				result += GetSources (index.model ()->index (i, 0, index));
+			return result;
+		}
 		case Media::RadioType::TracksList:
 		case Media::RadioType::SingleTrack:
 		{
