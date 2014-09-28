@@ -763,11 +763,11 @@ namespace Murm
 		return false;
 	}
 
-	bool VkConnection::CheckReplyData (const QVariant& mapVar, QNetworkReply *reply)
+	void VkConnection::CheckReplyData (const QVariant& mapVar, QNetworkReply *reply)
 	{
 		const auto& map = mapVar.toMap ();
 		if (!map.contains ("error"))
-			return true;
+			return;
 
 		const auto& errMap = map ["error"].toMap ();
 		const auto ec = errMap ["error_code"].toInt ();
@@ -781,7 +781,7 @@ namespace Murm
 		case 5:
 			RescheduleRequest (reply);
 			reauth ();
-			break;
+			throw RecoverableException {};
 		case 14:
 		{
 			const auto pos = FindRunning (reply);
@@ -799,11 +799,11 @@ namespace Murm
 
 			emit captchaNeeded (cid, QUrl::fromEncoded (img.toUtf8 ()));
 
-			break;
+			throw RecoverableException {};
 		}
 		}
 
-		return false;
+		throw UnrecoverableException { ec, errMsg };
 	}
 
 	void VkConnection::reauth ()
@@ -934,8 +934,14 @@ namespace Murm
 		const auto& name = Reply2ListName_.take (reply);
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		bool converted = false;
 		const auto id = data.toMap () ["response"].toMap () ["lid"].toULongLong (&converted);
@@ -1000,8 +1006,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		const auto& list = data.toMap () ["response"].toList ();
 		const auto& selfMap = list.value (0).toMap ();
@@ -1021,8 +1033,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		QList<ListInfo> lists;
 		const auto& responseList = data.toMap () ["response"].toMap () ["items"].toList ();
@@ -1064,8 +1082,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		const auto& users = ParseUsers (data);
 		emit gotUsers (users);
@@ -1095,8 +1119,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		const auto& str = data.toMap () ["response"].toString ();
 		QList<qulonglong> ids;
@@ -1118,8 +1148,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		const auto& users = ParseUsers (data);
 		emit gotUsers (users);
@@ -1132,8 +1168,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		auto respList = data.toMap () ["response"].toMap () ["items"].toList ();
 		if (respList.isEmpty ())
@@ -1184,8 +1226,14 @@ namespace Murm
 		auto info = Reply2ChatInfo_.take (reply);
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		info.ChatID_ = data.toMap () ["response"].toULongLong ();
 
@@ -1199,8 +1247,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		const auto& map = data.toMap () ["response"].toMap ();
 
@@ -1224,8 +1278,14 @@ namespace Murm
 		auto removeInfo = Reply2ChatRemoveInfo_.take (reply);
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		const auto& map = data.toMap ();
 		if (map ["response"].toULongLong () == 1)
@@ -1243,8 +1303,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		const auto code = data.toMap ().value ("response", -1).toULongLong ();
 		setter (code);
@@ -1261,8 +1327,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		QHash<int, QString> result;
 		for (const auto& item : data.toMap () ["response"].toMap () ["items"].toList ())
@@ -1456,8 +1528,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		Logger_ << "got message info data" << data;
 
@@ -1492,8 +1570,14 @@ namespace Murm
 			return;
 
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (!CheckReplyData (data, reply))
+		try
+		{
+			CheckReplyData (data, reply);
+		}
+		catch (const CommandException&)
+		{
 			return;
+		}
 
 		QList<PhotoInfo> result;
 		for (const auto& item : data.toMap () ["response"].toMap () ["items"].toList ())

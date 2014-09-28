@@ -101,6 +101,29 @@ namespace Murm
 				Params_ [pair.first] = pair.second;
 			}
 		};
+
+		class CommandException : public std::runtime_error
+		{
+		public:
+			CommandException (const QString&);
+		};
+
+		class RecoverableException : public CommandException
+		{
+		public:
+			RecoverableException ();
+		};
+
+		class UnrecoverableException : public CommandException
+		{
+			const int Code_;
+			const QString Msg_;
+		public:
+			UnrecoverableException (int, const QString&);
+
+			int GetCode () const;
+			const QString& GetMessage () const;
+		};
 	private:
 		QList<PreparedCall_f> PreparedCalls_;
 		LeechCraft::Util::QueueManager *CallQueue_;
@@ -193,7 +216,7 @@ namespace Murm
 		void HandleCaptcha (const QString& cid, const QString& value);
 
 		bool CheckFinishedReply (QNetworkReply*);
-		bool CheckReplyData (const QVariant&, QNetworkReply*);
+		void CheckReplyData (const QVariant&, QNetworkReply*);
 	private:
 		void PushFriendsRequest ();
 
