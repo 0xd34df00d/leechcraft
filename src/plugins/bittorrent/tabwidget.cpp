@@ -34,7 +34,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
-#include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "peerstablinker.h"
