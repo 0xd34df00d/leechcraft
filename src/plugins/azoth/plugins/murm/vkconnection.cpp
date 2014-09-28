@@ -54,7 +54,7 @@ namespace Murm
 
 		QStringList GetPerms ()
 		{
-			QStringList result { "messages", "notifications", "friends", "status", "photos", "audio" };
+			QStringList result { "messages", "notifications", "friends", "status", "photos", "audio", "docs" };
 			if (XmlSettingsManager::Instance ().property ("RequireOffline").toBool ())
 				result << "offline";
 			return result;
