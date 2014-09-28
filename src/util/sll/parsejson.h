@@ -32,6 +32,7 @@
 #include <QByteArray>
 #include <QVariant>
 #include <QIODevice>
+#include <QtDebug>
 
 #if QT_VERSION < 0x050000
 #include <qjson/parser.h>
