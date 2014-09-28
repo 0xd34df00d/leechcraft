@@ -545,6 +545,12 @@ namespace BitTorrent
 				const auto& stateStr = GetStringForState (status.state);
 				if (status.state == libtorrent::torrent_status::downloading)
 				{
+					if (status.paused)
+					{
+						static const auto pausedStr = tr ("paused");
+						return pausedStr;
+					}
+
 					const auto remaining = status.total_wanted - status.total_wanted_done;
 					const auto time = static_cast<double> (remaining) / status.download_rate;
 					return QString ("%1 (ETA: %2)")
