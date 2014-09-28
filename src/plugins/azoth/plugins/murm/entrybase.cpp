@@ -89,6 +89,15 @@ namespace Murm
 
 	namespace
 	{
+		const QString AudioDivStyle = "border-color: #CDCCCC; "
+				"margin-top: 2px; margin-bottom: 0px; "
+				"border-width: 1px; border-style: solid; border-radius: 5px; "
+				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
+		const QString RepostDivStyle = "border-color: #ABAAAA; "
+				"margin-top: 2px; margin-bottom: 0px; margin-left: 1em; margin-right: 0em; "
+				"border-width: 1px; border-style: solid; border-radius: 5px; "
+				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
+
 		QString Photo2Replacement (const PhotoInfo& info)
 		{
 			const auto& fullSizeStr = QString::number (info.FullSize_.width ()) +
@@ -146,7 +155,7 @@ namespace Murm
 				result += Icon2Img (proxy->GetIconThemeManager ()->GetIcon (icon), name);
 			};
 
-			result += "<div>";
+			result += "<div style='" + AudioDivStyle + "'>";
 			result += "<a href='";
 			result += QString::fromUtf8 (enqueueUrl.toEncoded ());
 			result += "'>";
@@ -219,15 +228,6 @@ namespace Murm
 			QStringList FwdIds_;
 		};
 
-		const QString AudioDivStyle = "border-color: #CDCCCC; "
-				"margin-top: 2px; margin-bottom: 0px; "
-				"border-width: 1px; border-style: solid; border-radius: 5px; "
-				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
-		const QString RepostDivStyle = "border-color: #ABAAAA; "
-				"margin-top: 2px; margin-bottom: 0px; margin-left: 1em; margin-right: 0em; "
-				"border-width: 1px; border-style: solid; border-radius: 5px; "
-				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
-
 		QString ProcessMessageBody (QString body)
 		{
 			QRegExp rx { "\\[([a-z]+[0-9]+)\\|(.*)\\]", Qt::CaseInsensitive, QRegExp::RegExp2 };
@@ -299,7 +299,7 @@ namespace Murm
 			for (const auto& id : wallIds)
 				newContents += "<div id='wallstub_" + id + "'></div>";
 			for (const auto& id : audioIds)
-				newContents += "<div id='audiostub_" + id + "' style='" + AudioDivStyle + "'></div>";
+				newContents += "<div id='audiostub_" + id + "'></div>";
 			for (const auto& id : videoIds)
 				newContents += "<div id='videostub_" + id + "'></div>";
 			for (const auto& id : docIds)
@@ -340,7 +340,7 @@ namespace Murm
 
 			if (!info.Audios_.empty ())
 			{
-				replacement += "<div style='" + AudioDivStyle + "'>";
+				replacement += "<div>";
 				for (const auto& audio : info.Audios_)
 					replacement += Audio2Replacement (audio, proxy);
 				replacement += "</div>";
@@ -348,7 +348,7 @@ namespace Murm
 
 			if (!info.Documents_.isEmpty ())
 			{
-				replacement += "<div style='" + AudioDivStyle + "'>";
+				replacement += "<div>";
 				for (const auto& doc : info.Documents_)
 					replacement += Document2Replacement (doc, proxy);
 				replacement += "</div>";
