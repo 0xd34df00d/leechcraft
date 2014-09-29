@@ -42,6 +42,7 @@ set (SARIN_SRCS
 	chatmessage.cpp
 	messagesmanager.cpp
 	accountconfigdialog.cpp
+	toxaccountconfiguration.cpp
 	)
 set (SARIN_FORMS
 	accregisterdetailspage.ui
