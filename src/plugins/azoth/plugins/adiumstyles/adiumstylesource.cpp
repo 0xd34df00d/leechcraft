@@ -642,7 +642,8 @@ namespace AdiumStyles
 			Coloring2Colors_ ["hash"] = Proxy_->GenerateColors ("hash", {});
 
 		// %senderColor%
-		const QString& nickColor = Proxy_->GetNickColor (senderNick, Coloring2Colors_ ["hash"]);
+		const auto& colors = Coloring2Colors_ ["hash"];
+		const auto& nickColor = Proxy_->GetNickColor (senderNick, colors);
 		templ.replace ("%senderColor%", nickColor);
 
 		// %senderColor{N}%
@@ -672,7 +673,7 @@ namespace AdiumStyles
 					.arg (senderNick)
 					.arg (body.mid (4));
 
-		body = Proxy_->FormatBody (body, msgObj);
+		body = Proxy_->FormatBody (body, msgObj, colors);
 
 		if (isHighlightMsg && !hasHighBackground)
 			body = "<span style=\"color:" + highColor +

@@ -202,7 +202,7 @@ namespace StandardStyles
 		if (body.isEmpty ())
 			body = msg->GetEscapedBody ();
 
-		body = Proxy_->FormatBody (body, msg->GetQObject ());
+		body = Proxy_->FormatBody (body, msg->GetQObject (), colors);
 
 		const QString dateBegin ("<span class='datetime'>");
 		const QString dateEnd ("</span>");

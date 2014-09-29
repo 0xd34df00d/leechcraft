@@ -198,9 +198,9 @@ namespace Azoth
 		return Core::Instance ().FormatNickname (nick, qobject_cast<IMessage*> (obj), color);
 	}
 
-	QString ProxyObject::FormatBody (QString body, QObject *obj) const
+	QString ProxyObject::FormatBody (QString body, QObject *obj, const QList<QColor>& coloring) const
 	{
-		return Core::Instance ().FormatBody (body, qobject_cast<IMessage*> (obj));
+		return Core::Instance ().FormatBody (body, qobject_cast<IMessage*> (obj), coloring);
 	}
 
 	void ProxyObject::PreprocessMessage (QObject *msgObj)

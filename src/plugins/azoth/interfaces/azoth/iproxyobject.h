@@ -253,11 +253,17 @@ namespace Azoth
 		 * This function should be used to format the body of the given
 		 * message.
 		 *
+		 * This function also accepts the list of colors used for
+		 * nick coloring in the current chat window, since the
+		 * \em body of the \em message may also be colored if it contains
+		 * other participants' nicks.
+		 *
 		 * @param[in] body The body to format.
 		 * @param[in] message The message object implementing IMessage.
+		 * @param[in] coloring The set of colors used for nick coloring.
 		 * @return The formatted body.
 		 */
-		virtual QString FormatBody (QString body, QObject *message) const = 0;
+		virtual QString FormatBody (QString body, QObject *message, const QList<QColor>& coloring) const = 0;
 
 		/** @brief Preprocesses the message before displaying it.
 		 *

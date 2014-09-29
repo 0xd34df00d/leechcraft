@@ -68,7 +68,7 @@ namespace Azoth
 		QString GetNickColor (const QString&, const QList<QColor>&) const;
 		QString FormatDate (QDateTime, QObject*) const;
 		QString FormatNickname (QString, QObject*, const QString&) const;
-		QString FormatBody (QString, QObject*) const;
+		QString FormatBody (QString, QObject*, const QList<QColor>&) const;
 		void PreprocessMessage (QObject*);
 		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const;
 		QIcon GetIconForState (State) const;

@@ -260,7 +260,7 @@ namespace Azoth
 
 		QString FormatDate (QDateTime, IMessage*);
 		QString FormatNickname (QString, IMessage*, const QString& color);
-		QString FormatBody (QString body, IMessage *msg);
+		QString FormatBody (QString body, IMessage *msg, const QList<QColor>& coloring);
 		QString HandleSmiles (QString body);
 
 		/** This function increases the number of unread messages by

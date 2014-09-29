@@ -827,7 +827,7 @@ namespace Azoth
 		return string;
 	}
 
-	QString Core::FormatBody (QString body, IMessage *msg)
+	QString Core::FormatBody (QString body, IMessage *msg, const QList<QColor>& colors)
 	{
 		QObject *msgObj = msg->GetQObject ();
 
