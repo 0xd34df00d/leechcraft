@@ -48,6 +48,9 @@ namespace Sarin
 		int ProxyPort_;
 	};
 
+	bool operator== (const ToxAccountConfiguration&, const ToxAccountConfiguration&);
+	bool operator!= (const ToxAccountConfiguration&, const ToxAccountConfiguration&);
+
 	QDataStream& operator<< (QDataStream&, const ToxAccountConfiguration&);
 	QDataStream& operator>> (QDataStream&, ToxAccountConfiguration&);
 }

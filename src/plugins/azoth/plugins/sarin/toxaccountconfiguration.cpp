@@ -37,6 +37,19 @@ namespace Azoth
 {
 namespace Sarin
 {
+	bool operator== (const ToxAccountConfiguration& c1, const ToxAccountConfiguration& c2)
+	{
+		return c1.AllowUDP_ == c2.AllowUDP_ &&
+				c1.AllowIPv6_ == c2.AllowIPv6_ &&
+				c1.ProxyPort_ == c2.ProxyPort_ &&
+				c1.ProxyHost_ == c2.ProxyHost_;
+	}
+
+	bool operator!= (const ToxAccountConfiguration& c1, const ToxAccountConfiguration& c2)
+	{
+		return !(c1 == c2);
+	}
+
 	QDataStream& operator<< (QDataStream& out, const ToxAccountConfiguration& config)
 	{
 		out << static_cast<quint8> (1)
