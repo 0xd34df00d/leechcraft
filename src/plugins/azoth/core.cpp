@@ -850,7 +850,7 @@ namespace Azoth
 				if (nickColor.isNull ())
 					continue;
 
-				if (intensity != 1)
+				if (intensity != 100)
 				{
 					QColor color { nickColor };
 					nickColor = QString ("rgba(%1, %2, %3, %4)")
