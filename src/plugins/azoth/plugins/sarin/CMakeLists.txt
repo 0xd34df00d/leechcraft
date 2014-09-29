@@ -41,9 +41,11 @@ set (SARIN_SRCS
 	threadexceptions.cpp
 	chatmessage.cpp
 	messagesmanager.cpp
+	accountconfigdialog.cpp
 	)
 set (SARIN_FORMS
 	accregisterdetailspage.ui
+	accountconfigdialog.ui
 	showtoxiddialog.ui
 	)
 #CreateTrs ("azoth_sarin" "en;ru_RU" SARIN_COMPILED_TRANSLATIONS)
