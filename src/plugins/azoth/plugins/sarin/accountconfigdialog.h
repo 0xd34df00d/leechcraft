@@ -38,6 +38,8 @@ namespace Azoth
 {
 namespace Sarin
 {
+	struct ToxAccountConfiguration;
+
 	class AccountConfigDialog : public QDialog
 	{
 		Q_OBJECT
@@ -46,11 +48,8 @@ namespace Sarin
 	public:
 		AccountConfigDialog (QDialog* = nullptr);
 
-		bool GetAllowUDP () const;
-		void SetAllowUDP (bool);
-
-		bool GetAllowIPv6 () const;
-		void SetAllowIPv6 (bool);
+		ToxAccountConfiguration GetConfig () const;
+		void SetConfig (const ToxAccountConfiguration&);
 	};
 }
 }

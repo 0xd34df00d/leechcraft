@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "accountconfigdialog.h"
+#include "toxaccountconfiguration.h"
 
 namespace LeechCraft
 {
@@ -41,24 +42,23 @@ namespace Sarin
 		Ui_.setupUi (this);
 	}
 
-	bool AccountConfigDialog::GetAllowUDP () const
+	ToxAccountConfiguration AccountConfigDialog::GetConfig () const
 	{
-		return Ui_.AllowUDP_->checkState () == Qt::Checked;
+		return
+		{
+			Ui_.AllowUDP_->checkState () == Qt::Checked,
+			Ui_.AllowIPv6_->checkState () == Qt::Checked,
+			Ui_.ProxyHost_->text ().trimmed (),
+			Ui_.ProxyPort_->value ()
+		};
 	}
 
-	void AccountConfigDialog::SetAllowUDP (bool allow)
+	void AccountConfigDialog::SetConfig (const ToxAccountConfiguration& config)
 	{
-		Ui_.AllowUDP_->setCheckState (allow ? Qt::Checked : Qt::Unchecked);
-	}
-
-	bool AccountConfigDialog::GetAllowIPv6 () const
-	{
-		return Ui_.AllowIPv6_->checkState () == Qt::Checked;
-	}
-
-	void AccountConfigDialog::SetAllowIPv6 (bool allow)
-	{
-		Ui_.AllowIPv6_->setCheckState (allow ? Qt::Checked : Qt::Unchecked);
+		Ui_.AllowUDP_->setCheckState (config.AllowUDP_ ? Qt::Checked : Qt::Unchecked);
+		Ui_.AllowIPv6_->setCheckState (config.AllowIPv6_ ? Qt::Checked : Qt::Unchecked);
+		Ui_.ProxyHost_->setText (config.ProxyHost_);
+		Ui_.ProxyPort_->setValue (config.ProxyPort_);
 	}
 }
 }
