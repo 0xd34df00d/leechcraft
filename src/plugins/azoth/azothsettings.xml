@@ -168,8 +168,12 @@
 		</tab>
 		<tab>
 			<label value="Nick coloring" />
-			<item type="checkbox" property="HighlightNicksInBody" default="false">
+			<item type="groupbox" checkable="true" property="HighlightNicksInBody" default="false">
 				<label value="Highlight nicks in message bodies" />
+				<item type="spinbox" property="HighlightNicksInBodyAlphaReduction" minimum="0" maximum="100" step="5" default="80">
+					<label value="Coloring intensity:" />
+					<suffix value="%" />
+				</item>
 			</item>
 			<item type="groupbox" checkable="true" property="OverrideHashColors">
 				<label value="Override color list" />

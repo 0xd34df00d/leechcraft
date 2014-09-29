@@ -836,6 +836,9 @@ namespace Azoth
 			if (!entry)
 				return;
 
+			const auto intensity = XmlSettingsManager::Instance ()
+					.property ("HighlightNicksInBodyAlphaReduction").toInt ();
+
 			const auto& nicks = Util::Map (entry->GetParticipants (),
 					[] (QObject *obj) { return qobject_cast<ICLEntry*> (obj)->GetEntryName (); });
 			for (const auto& nick : nicks)
@@ -843,9 +846,19 @@ namespace Azoth
 				if (!body.contains (nick))
 					continue;
 
-				const auto& nickColor = GetNickColor (nick, colors);
+				auto nickColor = GetNickColor (nick, colors);
 				if (nickColor.isNull ())
 					continue;
+
+				if (intensity != 1)
+				{
+					QColor color { nickColor };
+					nickColor = QString ("rgba(%1, %2, %3, %4)")
+							.arg (color.red ())
+							.arg (color.green ())
+							.arg (color.blue ())
+							.arg (intensity / 100.);
+				}
 
 				int pos = 0;
 				while ((pos = body.indexOf (nick, pos)) >= 0)
