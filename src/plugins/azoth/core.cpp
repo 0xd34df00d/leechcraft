@@ -860,12 +860,14 @@ namespace Azoth
 							.arg (intensity / 100.);
 				}
 
+				auto isGoodChar = [] (const QChar& c) { return c.isSpace () || c.isPunct (); };
+
 				int pos = 0;
 				while ((pos = body.indexOf (nick, pos)) >= 0)
 				{
 					const auto nickEnd = pos + nick.size ();
-					if ((pos > 0 && !body.at (pos - 1).isSpace ()) ||
-						(nickEnd + 1 < body.size () && !body.at (nickEnd + 1).isSpace ()))
+					if ((pos > 0 && !isGoodChar (body.at (pos - 1))) ||
+						(nickEnd + 1 < body.size () && !isGoodChar (body.at (nickEnd + 1))))
 					{
 						pos += nick.size ();
 						continue;
