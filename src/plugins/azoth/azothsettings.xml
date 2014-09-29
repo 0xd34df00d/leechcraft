@@ -168,6 +168,9 @@
 		</tab>
 		<tab>
 			<label value="Nick coloring" />
+			<item type="checkbox" property="HighlightNicksInBody" default="false">
+				<label value="Highlight nicks in message bodies" />
+			</item>
 			<item type="groupbox" checkable="true" property="OverrideHashColors">
 				<label value="Override color list" />
 				<item type="customwidget" name="ColorListEditor" label="own" />

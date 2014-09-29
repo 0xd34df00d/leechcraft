@@ -49,6 +49,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sys/resourceloader.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/prelude.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
@@ -827,6 +828,47 @@ namespace Azoth
 		return string;
 	}
 
+	namespace
+	{
+		void HighlightNicks (QString& body, IMessage *msg, const QList<QColor>& colors)
+		{
+			const auto entry = qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
+			if (!entry)
+				return;
+
+			const auto& nicks = Util::Map (entry->GetParticipants (),
+					[] (QObject *obj) { return qobject_cast<ICLEntry*> (obj)->GetEntryName (); });
+			for (const auto& nick : nicks)
+			{
+				if (!body.contains (nick))
+					continue;
+
+				const auto& nickColor = GetNickColor (nick, colors);
+				if (nickColor.isNull ())
+					continue;
+
+				int pos = 0;
+				while ((pos = body.indexOf (nick, pos)) >= 0)
+				{
+					const auto nickEnd = pos + nick.size ();
+					if ((pos > 0 && !body.at (pos - 1).isSpace ()) ||
+						(nickEnd + 1 < body.size () && !body.at (nickEnd + 1).isSpace ()))
+					{
+						pos += nick.size ();
+						continue;
+					}
+
+					const auto& startStr = "<span style='color: " + nickColor + "'>";
+					const QString endStr { "</span>" };
+					body.insert (nickEnd, endStr);
+					body.insert (pos, startStr);
+
+					pos += nick.size () + startStr.size () + endStr.size ();
+				}
+			}
+		}
+	}
+
 	QString Core::FormatBody (QString body, IMessage *msg, const QList<QColor>& colors)
 	{
 		QObject *msgObj = msg->GetQObject ();
@@ -850,6 +892,10 @@ namespace Azoth
 		}
 
 		body = HandleSmiles (body);
+
+		if (msg->GetMessageType () == IMessage::Type::MUCMessage &&
+				XmlSettingsManager::Instance ().property ("HighlightNicksInBody").toBool ())
+			HighlightNicks (body, msg, colors);
 
 		proxy.reset (new Util::DefaultHookProxy);
 		proxy->SetValue ("body", body);
