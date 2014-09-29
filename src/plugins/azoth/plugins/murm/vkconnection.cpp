@@ -63,6 +63,33 @@ namespace Murm
 		const QString CurrentAPIVersion { "5.25" };
 	}
 
+	VkConnection::CommandException::CommandException (const QString& str)
+	: runtime_error { str.toUtf8 ().constData () }
+	{
+	}
+
+	VkConnection::RecoverableException::RecoverableException ()
+	: CommandException { "VK connection recoverable error" }
+	{
+	}
+
+	VkConnection::UnrecoverableException::UnrecoverableException (int code, const QString& msg)
+	: CommandException { "VK connection error code " + QString::number (code) + "; " + msg }
+	, Code_ { code }
+	, Msg_ { msg }
+	{
+	}
+
+	int VkConnection::UnrecoverableException::GetCode () const
+	{
+		return Code_;
+	}
+
+	const QString& VkConnection::UnrecoverableException::GetMessage () const
+	{
+		return Msg_;
+	}
+
 	VkConnection::VkConnection (const QString& name,
 			const QByteArray& cookies, ICoreProxy_ptr proxy, Logger& logger)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager (name, "3778319",
