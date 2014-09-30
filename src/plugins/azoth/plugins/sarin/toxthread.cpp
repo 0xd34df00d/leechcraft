@@ -40,9 +40,11 @@ namespace Azoth
 {
 namespace Sarin
 {
-	ToxThread::ToxThread (const QString& name, const QByteArray& state)
+	ToxThread::ToxThread (const QString& name,
+			const QByteArray& state, const ToxAccountConfiguration& config)
 	: Name_ { name }
 	, ToxState_ { state }
+	, Config_ (config)
 	{
 	}
 

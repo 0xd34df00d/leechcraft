@@ -319,7 +319,7 @@ namespace Sarin
 
 	void ToxAccount::InitThread (const EntryStatus& status)
 	{
-		Thread_ = std::make_shared<ToxThread> (Nick_, ToxState_);
+		Thread_ = std::make_shared<ToxThread> (Nick_, ToxState_, ToxConfig_);
 		Thread_->SetStatus (status);
 		connect (Thread_.get (),
 				SIGNAL (statusChanged (EntryStatus)),

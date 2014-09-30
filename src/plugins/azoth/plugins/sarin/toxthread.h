@@ -37,6 +37,7 @@
 #include <QFuture>
 #include <interfaces/azoth/iclentry.h>
 #include "threadexceptions.h"
+#include "toxaccountconfiguration.h"
 
 typedef struct Tox Tox;
 
@@ -56,6 +57,8 @@ namespace Sarin
 
 		QByteArray ToxState_;
 
+		const ToxAccountConfiguration Config_;
+
 		EntryStatus Status_;
 
 		QList<std::function<void (Tox*)>> FQueue_;
@@ -63,7 +66,7 @@ namespace Sarin
 
 		std::shared_ptr<Tox> Tox_;
 	public:
-		ToxThread (const QString& name, const QByteArray& toxState);
+		ToxThread (const QString& name, const QByteArray& toxState, const ToxAccountConfiguration&);
 		~ToxThread ();
 
 		EntryStatus GetStatus () const;
