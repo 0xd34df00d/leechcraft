@@ -134,11 +134,12 @@ namespace Sarin
 	void ToxThread::SetStatus (const EntryStatus& status)
 	{
 		Status_ = status;
+
 		if (IsStoppable ())
 			ScheduleFunction ([status, this] (Tox *tox)
 					{
-						SetToxStatus (tox, status);
-						emit statusChanged (status);
+						if (SetToxStatus (tox, status))
+							emit statusChanged (status);
 					});
 	}
 
