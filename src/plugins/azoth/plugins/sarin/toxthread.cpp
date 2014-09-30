@@ -64,10 +64,10 @@ namespace Sarin
 	namespace
 	{
 		template<typename T>
-		void DoTox (const QString& str, T f)
+		typename std::result_of<T (const uint8_t*, size_t)>::type DoTox (const QString& str, T f)
 		{
 			const auto& strUtf8 = str.toUtf8 ();
-			f (reinterpret_cast<const uint8_t*> (strUtf8.constData ()), strUtf8.size ());
+			return f (reinterpret_cast<const uint8_t*> (strUtf8.constData ()), strUtf8.size ());
 		}
 
 		State ToxStatus2State (int toxStatus)
