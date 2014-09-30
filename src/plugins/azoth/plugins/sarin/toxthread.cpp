@@ -295,6 +295,42 @@ namespace Sarin
 				});
 	}
 
+	void ToxThread::RemoveFriend (const QByteArray& origId)
+	{
+		ScheduleFunction ([origId, this] (Tox *tox)
+				{
+					const auto& toxId = Hex2Bin (origId);
+					if (toxId.size () != TOX_CLIENT_ID_SIZE)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "invalid Tox ID"
+								<< origId;
+						return;
+					}
+
+					const auto friendNum = tox_get_friend_number (tox,
+							reinterpret_cast<const uint8_t*> (toxId.constData ()));
+					if (friendNum < 0)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unknown friend"
+								<< origId;
+						return;
+					}
+
+					if (tox_del_friend (tox, friendNum) < 0)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to delete friend"
+								<< origId;
+						return;
+					}
+
+					emit removedFriend (origId);
+					SaveState ();
+				});
+	}
+
 	QFuture<QByteArray> ToxThread::GetFriendPubkey (qint32 id)
 	{
 		return ScheduleFunction ([id] (Tox *tox)

@@ -100,6 +100,7 @@ namespace Sarin
 
 		QFuture<AddFriendResult> AddFriend (QByteArray, QString);
 		void AddFriend (QByteArray);
+		void RemoveFriend (const QByteArray&);
 
 		QFuture<QByteArray> GetFriendPubkey (qint32);
 		QFuture<FriendInfo> ResolveFriend (qint32);
@@ -126,7 +127,6 @@ namespace Sarin
 					});
 			return iface.future ();
 		}
-
 	private:
 		void SaveState ();
 
@@ -146,6 +146,7 @@ namespace Sarin
 
 		void gotFriend (qint32);
 		void gotFriendRequest (const QByteArray& pubkey, const QString& msg);
+		void removedFriend (const QByteArray& pubkey);
 
 		void friendNameChanged (const QByteArray& pubkey, const QString&);
 
