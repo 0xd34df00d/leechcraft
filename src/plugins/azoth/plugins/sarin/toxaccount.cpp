@@ -42,6 +42,7 @@
 #include "toxcontact.h"
 #include "messagesmanager.h"
 #include "chatmessage.h"
+#include "accountconfigdialog.h"
 
 namespace LeechCraft
 {
@@ -77,11 +78,12 @@ namespace Sarin
 	{
 		QByteArray ba;
 		QDataStream str { &ba, QIODevice::WriteOnly };
-		str << static_cast<quint8> (1)
+		str << static_cast<quint8> (2)
 				<< UID_
 				<< Name_
 				<< Nick_
-				<< ToxState_;
+				<< ToxState_
+				<< ToxConfig_;
 
 		return ba;
 	}
@@ -91,7 +93,7 @@ namespace Sarin
 		QDataStream str { data };
 		quint8 version = 0;
 		str >> version;
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -107,6 +109,10 @@ namespace Sarin
 		const auto acc = new ToxAccount { uid, name, proto };
 		str >> acc->Nick_
 				>> acc->ToxState_;
+
+		if (version >= 2)
+			str >> acc->ToxConfig_;
+
 		return acc;
 	}
 

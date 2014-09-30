@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
+#include "toxaccountconfiguration.h"
 
 namespace LeechCraft
 {
@@ -56,6 +57,8 @@ namespace Sarin
 
 		QString Name_;
 		QString Nick_;
+
+		ToxAccountConfiguration ToxConfig_;
 
 		QByteArray ToxState_;
 
