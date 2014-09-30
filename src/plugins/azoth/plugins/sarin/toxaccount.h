@@ -115,6 +115,8 @@ namespace Sarin
 
 		void handleGotFriend (qint32);
 		void handleGotFriendRequest (const QByteArray&, const QString&);
+		void handleRemovedFriend (const QByteArray&);
+
 		void handleFriendNameChanged (const QByteArray&, const QString&);
 		void handleFriendStatusChanged (const QByteArray&, const EntryStatus&);
 

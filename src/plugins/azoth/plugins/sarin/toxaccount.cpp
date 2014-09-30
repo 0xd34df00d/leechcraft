@@ -305,8 +305,21 @@ namespace Sarin
 		watcher->setFuture (Thread_->AddFriend (toxId.toLatin1 (), msg));
 	}
 
-	void ToxAccount::RemoveEntry (QObject*)
+	void ToxAccount::RemoveEntry (QObject *entryObj)
 	{
+		if (!Thread_)
+			return;
+
+		const auto entry = qobject_cast<ToxContact*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "is not a ToxContact";
+			return;
+		}
+
+		Thread_->RemoveFriend (entry->GetHumanReadableID ().toUtf8 ());
 	}
 
 	QObject* ToxAccount::GetTransferManager () const
@@ -347,6 +360,10 @@ namespace Sarin
 				SIGNAL (friendStatusChanged (QByteArray, EntryStatus)),
 				this,
 				SLOT (handleFriendStatusChanged (QByteArray, EntryStatus)));
+		connect (Thread_.get (),
+				SIGNAL (removedFriend (QByteArray)),
+				this,
+				SLOT (handleRemovedFriend (QByteArray)));
 
 		emit threadChanged (Thread_);
 
@@ -445,6 +462,16 @@ namespace Sarin
 			InitEntry (pubkey);
 
 		emit authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
+	}
+
+	void ToxAccount::handleRemovedFriend (const QByteArray& pubkey)
+	{
+		if (!Contacts_.contains (pubkey))
+			return;
+
+		const auto item = Contacts_.take (pubkey);
+		emit removedCLItems ({ item });
+		item->deleteLater ();
 	}
 
 	void ToxAccount::handleFriendNameChanged (const QByteArray& id, const QString& newName)
