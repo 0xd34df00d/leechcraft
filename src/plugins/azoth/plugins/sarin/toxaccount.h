@@ -45,6 +45,7 @@ namespace Sarin
 	class ToxContact;
 	class ChatMessage;
 	class MessagesManager;
+	class AccountConfigDialog;
 
 	class ToxAccount : public QObject
 					 , public IAccount
@@ -106,6 +107,8 @@ namespace Sarin
 	private:
 		void InitThread (const EntryStatus&);
 		void InitEntry (const QByteArray&);
+
+		void HandleConfigAccepted (AccountConfigDialog*);
 	private slots:
 		void handleToxIdRequested ();
 		void handleToxStateChanged (const QByteArray&);

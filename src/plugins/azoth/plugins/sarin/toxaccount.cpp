@@ -179,6 +179,17 @@ namespace Sarin
 
 	void ToxAccount::OpenConfigurationDialog ()
 	{
+		auto configDialog = new AccountConfigDialog;
+		configDialog->setAttribute (Qt::WA_DeleteOnClose);
+		configDialog->show ();
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, configDialog] { HandleConfigAccepted (configDialog); },
+			configDialog,
+			SIGNAL (accepted ()),
+			configDialog
+		};
 	}
 
 	EntryStatus ToxAccount::GetState () const
@@ -346,6 +357,16 @@ namespace Sarin
 		Contacts_ [pkey] = entry;
 
 		emit gotCLItems ({ entry });
+	}
+
+	void ToxAccount::HandleConfigAccepted (AccountConfigDialog *dialog)
+	{
+		const auto& config = dialog->GetConfig ();
+		if (config == ToxConfig_)
+			return;
+
+		ToxConfig_ = config;
+		emit accountChanged (this);
 	}
 
 	void ToxAccount::handleToxIdRequested ()
