@@ -183,6 +183,8 @@ namespace Sarin
 		configDialog->setAttribute (Qt::WA_DeleteOnClose);
 		configDialog->show ();
 
+		configDialog->SetConfig (ToxConfig_);
+
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
 			[this, configDialog] { HandleConfigAccepted (configDialog); },
