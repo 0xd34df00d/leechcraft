@@ -245,7 +245,11 @@ namespace Sarin
 		return ScheduleFunction ([toxId, msg, this] (Tox *tox)
 				{
 					if (toxId.size () != TOX_FRIEND_ADDRESS_SIZE)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "invalid Tox ID";
 						return ToxThread::AddFriendResult::InvalidId;
+					}
 
 					const auto& msgUtf8 = msg.toUtf8 ();
 					const auto addResult = tox_add_friend (tox,
@@ -254,7 +258,12 @@ namespace Sarin
 							msgUtf8.size ());
 
 					if (addResult < 0)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to add friend:"
+								<< addResult;
 						return ToxFAError2ThreadError (addResult);
+					}
 
 					SaveState ();
 
@@ -275,7 +284,11 @@ namespace Sarin
 							reinterpret_cast<const uint8_t*> (toxId.constData ()));
 
 					if (addResult < 0)
+					{
+						qDebug () << Q_FUNC_INFO
+								<< "unable to add friend";
 						return;
+					}
 
 					SaveState ();
 					emit gotFriend (addResult);
@@ -372,6 +385,7 @@ namespace Sarin
 	{
 		const auto& toxId = ToxId2HR<TOX_CLIENT_ID_SIZE> (pkey);
 		const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (data), size);
+		qDebug () << Q_FUNC_INFO << toxId << msg;
 
 		emit gotFriendRequest (toxId, msg);
 	}
@@ -380,6 +394,7 @@ namespace Sarin
 	{
 		const auto& toxId = GetFriendId (Tox_.get (), id);
 		const auto& name = QString::fromUtf8 (reinterpret_cast<const char*> (data));
+		qDebug () << Q_FUNC_INFO << toxId << name;
 		emit friendNameChanged (toxId, name);
 
 		SaveState ();
