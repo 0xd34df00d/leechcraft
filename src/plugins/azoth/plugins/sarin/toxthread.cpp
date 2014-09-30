@@ -86,10 +86,21 @@ namespace Sarin
 			}
 		}
 
-		void SetToxStatus (Tox *tox, const EntryStatus& status)
+		bool SetToxStatus (Tox *tox, const EntryStatus& status)
 		{
-			DoTox (status.StatusString_,
-					[tox] (auto bytes, auto size) { tox_set_status_message (tox, bytes, size); });
+			const auto res = DoTox (status.StatusString_,
+					[tox] (auto bytes, auto size)
+					{
+						return tox_set_status_message (tox, bytes, size);
+					});
+
+			if (res < 0)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to set status message";
+				return false;
+			}
+
 			int toxStatus = TOX_USERSTATUS_NONE;
 			switch (status.State_)
 			{
@@ -103,7 +114,15 @@ namespace Sarin
 			default:
 				break;
 			}
-			tox_set_user_status (tox, toxStatus);
+
+			if (tox_set_user_status (tox, toxStatus) < 0)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to set state";
+				return false;
+			}
+
+			return true;
 		}
 	}
 
