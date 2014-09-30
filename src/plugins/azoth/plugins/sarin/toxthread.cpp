@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "toxthread.h"
+#include <cstring>
 #include <QElapsedTimer>
 #include <QMutexLocker>
 #include <QtEndian>
@@ -374,7 +375,22 @@ namespace Sarin
 	void ToxThread::run ()
 	{
 		qDebug () << Q_FUNC_INFO;
-		Tox_ = std::shared_ptr<Tox> { tox_new (nullptr), &tox_kill };
+
+		Tox_Options opts
+		{
+			Config_.AllowIPv6_,
+			!Config_.AllowUDP_,
+			!Config_.ProxyHost_.isEmpty (),
+			{ 0 },
+			static_cast<uint16_t> (Config_.ProxyPort_)
+		};
+		if (!Config_.ProxyHost_.isEmpty ())
+		{
+			const auto size = sizeof (opts.proxy_address) / sizeof (opts.proxy_address [0]);
+			std::strncpy (opts.proxy_address, Config_.ProxyHost_.toUtf8 ().constData (), size);
+			opts.proxy_address [size - 1] = 0;
+		}
+		Tox_ = std::shared_ptr<Tox> { tox_new (&opts), &tox_kill };
 
 		DoTox (Name_,
 				[this] (const uint8_t *bytes, uint16_t size) { tox_set_name (Tox_.get (), bytes, size); });
