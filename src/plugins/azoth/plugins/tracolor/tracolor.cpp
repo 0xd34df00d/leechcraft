@@ -29,6 +29,12 @@
 
 #include "tracolor.h"
 #include <QIcon>
+#include <QtDebug>
+#include <interfaces/entitytesthandleresult.h>
+#include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
+#include <interfaces/azoth/iclentry.h>
+#include "entryeventsmanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +44,7 @@ namespace Tracolor
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		EventsManager_ = new EntryEventsManager;
 	}
 
 	void Plugin::SecondInit ()
@@ -74,6 +81,37 @@ namespace Tracolor
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
+	{
+		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
+				e.Additional_ [AN::EF::EventCategory].toString () != AN::CatEventCancel &&
+				e.Additional_.contains ("org.LC.Plugins.Azoth.SourceID");
+		return can ?
+				EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
+				EntityTestHandleResult {};
+	}
+
+	void Plugin::Handle (Entity e)
+	{
+		const auto& sourceId = e.Additional_ ["org.LC.Plugins.Azoth.SourceID"].toString ();
+		const auto& eventId = e.Additional_ [AN::EF::EventType].toString ();
+
+		EventsManager_->HandleEvent (sourceId.toUtf8 (), eventId.toUtf8 ());
+
+		if (e.Additional_.contains ("org.LC.Plugins.Azoth.SubSourceID"))
+		{
+			const auto& subId = e.Additional_ ["org.LC.Plugins.Azoth.SubSourceID"].toString ();
+			EventsManager_->HandleEvent (subId.toUtf8 (), eventId.toUtf8 ());
+		}
+	}
+
+	void Plugin::hookCollectContactIcons (IHookProxy_ptr,
+			QObject *entryObj, QList<QIcon>& icons) const
+	{
+	}
 }
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_azoth_tracolor, LeechCraft::Azoth::Tracolor::Plugin);

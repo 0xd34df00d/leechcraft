@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ientityhandler.h>
 #include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
@@ -40,15 +41,21 @@ namespace Azoth
 {
 namespace Tracolor
 {
+	class EntryEventsManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IEntityHandler
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
-				IPlugin2)
+				IPlugin2
+				IEntityHandler)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Tracolor")
+
+		EntryEventsManager *EventsManager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -59,6 +66,11 @@ namespace Tracolor
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
+	public slots:
+		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 	};
 }
 }
