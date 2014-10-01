@@ -105,7 +105,7 @@ namespace Kinotify
 				e.Additional_ ["Priority"].toInt () != PLog_ &&
 				!e.Additional_ ["Text"].toString ().isEmpty ();
 		return could ?
-				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
 				EntityTestHandleResult ();
 	}
 
