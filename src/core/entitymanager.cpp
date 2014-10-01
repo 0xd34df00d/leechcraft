@@ -33,6 +33,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include "util/util.h"
+#include "util/sll/prelude.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
 #include "interfaces/ientityhandler.h"
@@ -56,7 +57,8 @@ namespace LeechCraft
 				std::function<EntityTestHandleResult (Entity, T)> queryFunc)
 		{
 			auto pm = Core::Instance ().GetPluginManager ();
-			QObjectList result;
+			QMap<int, QObjectList> result;
+			int cutoffPriority = 0;
 			for (const auto& plugin : pm->GetAllCastableRoots<T> ())
 			{
 				EntityTestHandleResult r;
@@ -83,14 +85,29 @@ namespace LeechCraft
 					continue;
 
 				if (r.CancelOthers_)
-					result.clear ();
+					cutoffPriority = std::max (cutoffPriority, r.HandlePriority_);
 
-				result << plugin;
+				result [r.HandlePriority_] << plugin;
 
-				if (r.CancelOthers_ || (!fullScan && !result.isEmpty ()))
+				if (!fullScan)
 					break;
 			}
-			return result;
+
+			if (cutoffPriority > 0)
+				while (!result.isEmpty ())
+				{
+					if (result.begin ().key () < cutoffPriority)
+						result.erase (result.begin ());
+					else
+						break;
+				}
+
+			if (result.isEmpty ())
+				return {};
+			if (result.size () == 1)
+				return result.begin ().value ();
+
+			return Util::Concat (result.values ());
 		}
 
 		QObjectList GetObjects (const Entity& e, int *downloaders = 0, int *handlers = 0)
