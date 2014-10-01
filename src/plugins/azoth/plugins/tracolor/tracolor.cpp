@@ -109,6 +109,19 @@ namespace Tracolor
 	void Plugin::hookCollectContactIcons (IHookProxy_ptr,
 			QObject *entryObj, QList<QIcon>& icons) const
 	{
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto& sourceId = entry->GetEntryID ().toUtf8 ();
+		const auto value = EventsManager_->GetEntryEventRate (sourceId, AN::TypeIMMUCMsg.toUtf8 ());
+
+		if (!value)
+			return;
+
+		QPixmap px { 22, 22 };
+		QColor color { Qt::red };
+		color.setAlphaF (value);
+		px.fill (color);
+
+		icons.prepend ({ px });
 	}
 }
 }
