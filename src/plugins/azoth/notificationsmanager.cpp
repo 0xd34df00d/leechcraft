@@ -200,6 +200,7 @@ namespace Azoth
 		const auto count = ++UnreadCounts_ [entry];
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
+			e.Additional_ ["org.LC.Plugins.Azoth.SubSourceID"] = other->GetEntryID ();
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
 					AN::TypeIMMUCHighlight :
 					AN::TypeIMMUCMsg;
