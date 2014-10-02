@@ -193,8 +193,4 @@ public:
 
 Q_DECLARE_METATYPE (LeechCraft::JobHolderRow);
 Q_DECLARE_METATYPE (QAbstractItemModel*);
-Q_DECLARE_METATYPE (QList<QModelIndex>);
 Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");
-
-#endif
-
