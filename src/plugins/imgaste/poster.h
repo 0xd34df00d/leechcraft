@@ -38,6 +38,7 @@
 
 class QNetworkReply;
 class QNetworkAccessManager;
+class QStandardItem;
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -55,6 +56,10 @@ namespace Imgaste
 		const Worker_ptr Worker_;
 		const ICoreProxy_ptr Proxy_;
 		const DataFilterCallback_f Callback_;
+
+		QStandardItemModel * const ReprModel_;
+		const QList<QStandardItem*> ReprRow_;
+		const std::shared_ptr<void> RowRemoveGuard_;
 	public:
 		Poster (HostingService service,
 				const QByteArray& data,
@@ -66,6 +71,7 @@ namespace Imgaste
 	private slots:
 		void handleFinished ();
 		void handleError ();
+		void setUploadProgress (qint64, qint64);
 	};
 }
 }

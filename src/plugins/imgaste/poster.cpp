@@ -35,7 +35,9 @@
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/ijobholder.h>
 #include <util/xpc/util.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -54,8 +56,33 @@ namespace Imgaste
 	, Worker_ (MakeWorker (service))
 	, Proxy_ (proxy)
 	, Callback_ (callback)
+	, ReprModel_ (reprModel)
+	, ReprRow_ ([reprModel]
+			{
+				const QList<QStandardItem*> result
+				{
+					new QStandardItem { tr ("Image upload") },
+					new QStandardItem { tr ("Uploading...") },
+					new QStandardItem { }
+				};
+				reprModel->appendRow (result);
+				return result;
+			} ())
+	, RowRemoveGuard_ (nullptr, [this] (void*) { ReprModel_->removeRow (ReprRow_.first ()->row ()); })
 	{
+		for (const auto item : ReprRow_)
+		{
+			item->setEditable (false);
+			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+					CustomDataRoles::RoleJobHolderRow);
+		}
+		setUploadProgress (0, data.size ());
+
 		Reply_ = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
+		connect (Reply_,
+				SIGNAL (uploadProgress (qint64, qint64)),
+				this,
+				SLOT (setUploadProgress (qint64, qint64)));
 
 		connect (Reply_,
 				SIGNAL (finished ()),
@@ -108,6 +135,16 @@ namespace Imgaste
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 
 		deleteLater ();
+	}
+
+	void Poster::setUploadProgress (qint64 done, qint64 total)
+	{
+		const auto progItem = ReprRow_.value (JobHolderColumn::JobProgress);
+		progItem->setData (done, ProcessState::Done);
+		progItem->setData (total, ProcessState::Total);
+		progItem->setText (tr ("%1 of %2")
+				.arg (Util::MakePrettySize (done))
+				.arg (Util::MakePrettySize (total)));
 	}
 }
 }
