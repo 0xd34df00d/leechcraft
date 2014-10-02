@@ -230,7 +230,7 @@ namespace DeadLyrics
 #if QT_VERSION < 0x050000
 		url.setQueryItems ({});
 #else
-		url.setQuery ({});
+		url.setQuery (QString {});
 #endif
 		req.setRawHeader ("Referer", url.toString ().toUtf8 ());
 
