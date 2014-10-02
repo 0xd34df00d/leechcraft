@@ -106,7 +106,7 @@ target_link_libraries (leechcraft_liznoo
 install (TARGETS leechcraft_liznoo DESTINATION ${LC_PLUGINS_DEST})
 install (FILES liznoosettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_liznoo Widgets)
+FindQtLibs (leechcraft_liznoo Concurrent Widgets)
 
 if (NOT WIN32 AND NOT APPLE)
 	FindQtLibs (leechcraft_liznoo DBus)
