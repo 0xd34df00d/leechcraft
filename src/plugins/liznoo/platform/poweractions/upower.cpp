@@ -28,7 +28,8 @@
  **********************************************************************/
 
 #include "upower.h"
-#include <QtDBus/QtDBus>
+#include <QtConcurrentRun>
+#include <QtDBus>
 
 namespace LeechCraft
 {
