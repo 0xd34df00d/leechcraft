@@ -46,6 +46,9 @@ namespace Sarin
 
 		QString ProxyHost_;
 		int ProxyPort_;
+
+		ToxAccountConfiguration () = default;
+		ToxAccountConfiguration (bool, bool, const QString&, int);
 	};
 
 	bool operator== (const ToxAccountConfiguration&, const ToxAccountConfiguration&);

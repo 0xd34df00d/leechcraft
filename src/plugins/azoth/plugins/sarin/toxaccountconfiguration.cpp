@@ -37,6 +37,14 @@ namespace Azoth
 {
 namespace Sarin
 {
+	ToxAccountConfiguration::ToxAccountConfiguration (bool udp, bool ipv6, const QString& host, int port)
+	: AllowUDP_ { udp }
+	, AllowIPv6_ { ipv6 }
+	, ProxyHost_ { host }
+	, ProxyPort_ { port }
+	{
+	}
+
 	bool operator== (const ToxAccountConfiguration& c1, const ToxAccountConfiguration& c2)
 	{
 		return c1.AllowUDP_ == c2.AllowUDP_ &&
