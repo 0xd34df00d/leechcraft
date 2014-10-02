@@ -33,6 +33,10 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/idatafilter.h>
+#include <interfaces/ijobholder.h>
+
+class QAbstractItemModel;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -42,13 +46,16 @@ namespace Imgaste
 				 , public IInfo
 				 , public IEntityHandler
 				 , public IDataFilter
+				 , public IJobHolder
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler IDataFilter)
+		Q_INTERFACES (IInfo IEntityHandler IDataFilter IJobHolder)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Imgaste")
 
 		ICoreProxy_ptr Proxy_;
+
+		QStandardItemModel *ReprModel_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -63,6 +70,8 @@ namespace Imgaste
 
 		QString GetFilterVerb () const;
 		QList<FilterVariant> GetFilterVariants () const;
+
+		QAbstractItemModel* GetRepresentation () const;
 	};
 }
 }

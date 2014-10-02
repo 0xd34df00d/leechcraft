@@ -30,6 +30,7 @@
 #include "imgaste.h"
 #include <QIcon>
 #include <QBuffer>
+#include <QStandardItemModel>
 #include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "hostingservice.h"
@@ -43,6 +44,8 @@ namespace Imgaste
 	{
 		Util::InstallTranslator ("imgaste");
 		Proxy_ = proxy;
+
+		ReprModel_ = new QStandardItemModel { this };
 	}
 
 	void Plugin::SecondInit ()
@@ -134,6 +137,11 @@ namespace Imgaste
 			ToFilterVariant (HostingService::ImagebinCa),
 			ToFilterVariant (HostingService::SavepicRu)
 		};
+	}
+
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return ReprModel_;
 	}
 }
 }
