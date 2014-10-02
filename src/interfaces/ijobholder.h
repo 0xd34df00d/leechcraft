@@ -27,9 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_IJOBHOLDER_H
-#define INTERFACES_IJOBHOLDER_H
+#pragma once
+
 #include <QtPlugin>
+
+#if QT_VERSION >= 0x050000
+#include <QAbstractItemModel>
+#endif
+
 #include "interfaces/structures.h"
 
 class QModelIndex;
