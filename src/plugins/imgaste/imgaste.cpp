@@ -112,7 +112,8 @@ namespace Imgaste
 				buf.data (),
 				format,
 				Proxy_,
-				e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ());
+				e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> (),
+				ReprModel_);
 	}
 
 	QString Plugin::GetFilterVerb () const

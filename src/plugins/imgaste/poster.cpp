@@ -30,6 +30,7 @@
 #include "poster.h"
 #include <QClipboard>
 #include <QApplication>
+#include <QStandardItemModel>
 #include <QNetworkReply>
 #include <QtDebug>
 #include <interfaces/structures.h>
@@ -45,6 +46,7 @@ namespace Imgaste
 			const QString& format,
 			ICoreProxy_ptr proxy,
 			DataFilterCallback_f callback,
+			QStandardItemModel *reprModel,
 			QObject *parent)
 	: QObject (parent)
 	, Reply_ (0)
