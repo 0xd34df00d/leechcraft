@@ -238,7 +238,7 @@ namespace Metida
 				likes = rxp.cap (2).split (',');
 
 			if (rxp.capturedTexts ().count () == 1)
-				likes = { "repost", "vkontakte", "facebook",
+				likes = QStringList { "repost", "vkontakte", "facebook",
 						"google", "livejournal", "twitter", "tumblr" "surfingbird" };
 
 			Ui_.VkontakteLike_->setChecked (likes.contains ("vkontakte"));
