@@ -70,6 +70,11 @@ namespace LMP
 		LastCoverPath_ = coverPath;
 	}
 
+	QString NowPlayingPixmapHandler::GetLastCoverPath () const
+	{
+		return LastCoverPath_;
+	}
+
 	void NowPlayingPixmapHandler::handleGotArtistImage (const QString& name, const QUrl& url)
 	{
 		if (name != LastArtist_ || !url.isValid ())
