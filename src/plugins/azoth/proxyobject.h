@@ -52,40 +52,40 @@ namespace Azoth
 	public:
 		ProxyObject (QObject* = 0);
 	public slots:
-		QObject* GetSettingsManager ();
-		void SetPassword (const QString&, QObject*);
-		QString GetAccountPassword (QObject*, bool);
-		bool IsAutojoinAllowed ();
-		QString StateToString (State) const;
-		QString AuthStatusToString (AuthStatus) const;
-		AuthStatus AuthStatusFromString (const QString&) const;
-		QObject* GetAccount (const QString&) const;
-		QList<QObject*> GetAllAccounts () const;
-		QObject* GetEntry (const QString&, const QString&) const;
-		void OpenChat (const QString&, const QString&, const QString&, const QString&) const;
-		QList<QColor> GenerateColors (const QString&, QColor) const;
-		QString GetNickColor (const QString&, const QList<QColor>&) const;
-		QString FormatDate (QDateTime, QObject*) const;
-		QString FormatNickname (QString, QObject*, const QString&) const;
-		QString FormatBody (QString, QObject*, const QList<QColor>&) const;
-		void PreprocessMessage (QObject*);
-		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const;
-		QIcon GetIconForState (State) const;
-		void FormatLinks (QString&);
-		QStringList FindLinks (const QString&);
+		QObject* GetSettingsManager () override;
+		void SetPassword (const QString&, QObject*) override;
+		QString GetAccountPassword (QObject*, bool) override;
+		bool IsAutojoinAllowed () override;
+		QString StateToString (State) const override;
+		QString AuthStatusToString (AuthStatus) const override;
+		AuthStatus AuthStatusFromString (const QString&) const override;
+		QObject* GetAccount (const QString&) const override;
+		QList<QObject*> GetAllAccounts () const override;
+		QObject* GetEntry (const QString&, const QString&) const override;
+		void OpenChat (const QString&, const QString&, const QString&, const QString&) const override;
+		QList<QColor> GenerateColors (const QString&, QColor) const override;
+		QString GetNickColor (const QString&, const QList<QColor>&) const override;
+		QString FormatDate (QDateTime, QObject*) const override;
+		QString FormatNickname (QString, QObject*, const QString&) const override;
+		QString FormatBody (QString, QObject*, const QList<QColor>&) const override;
+		void PreprocessMessage (QObject*) override;
+		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const override;
+		QIcon GetIconForState (State) const override;
+		void FormatLinks (QString&) override;
+		QStringList FindLinks (const QString&) override;
 
 		QObject* CreateCoreMessage (const QString&, const QDateTime&,
-				IMessage::Type, IMessage::Direction, QObject*, QObject*);
+				IMessage::Type, IMessage::Direction, QObject*, QObject*) override;
 
-		QString ToPlainBody (QString);
+		QString ToPlainBody (QString) override;
 
-		bool IsMessageRead (QObject*);
-		void MarkMessagesAsRead (QObject*);
+		bool IsMessageRead (QObject*) override;
+		void MarkMessagesAsRead (QObject*) override;
 
-		QString PrettyPrintDateTime (const QDateTime&);
+		QString PrettyPrintDateTime (const QDateTime&) override;
 
-		boost::optional<CustomStatus> FindCustomStatus (const QString&) const;
-		QStringList GetCustomStatusNames () const;
+		boost::optional<CustomStatus> FindCustomStatus (const QString&) const override;
+		QStringList GetCustomStatusNames () const override;
 	};
 }
 }
