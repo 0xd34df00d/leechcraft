@@ -42,6 +42,7 @@ namespace Azoth
 namespace Tracolor
 {
 	class EntryEventsManager;
+	class IconsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -56,6 +57,7 @@ namespace Tracolor
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Tracolor")
 
 		EntryEventsManager *EventsManager_;
+		IconsManager *IconsManager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
