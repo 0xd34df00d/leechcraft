@@ -83,7 +83,7 @@ namespace LMP
 
 		if (Base64Px_.isEmpty ())
 		{
-			const auto maxDim = 256;
+			const auto maxDim = 384;
 
 			QImage img { PxHandler_->GetLastCoverPath () };
 			if (img.isNull ())
