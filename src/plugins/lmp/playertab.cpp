@@ -91,7 +91,6 @@ namespace LMP
 		Ui_.MainSplitter_->setStretchFactor (1, 1);
 		Ui_.RadioWidget_->SetPlayer (Player_);
 
-		NPPixmapHandler_->AddSetter ([this] (const QPixmap& px, const QString&) { Ui_.NPWidget_->SetAlbumArt (px); });
 		NPPixmapHandler_->AddSetter ([this] (const QPixmap& px, const QString& path)
 				{
 					const QPixmap& scaled = px.scaled (Ui_.NPArt_->minimumSize (),

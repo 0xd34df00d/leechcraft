@@ -57,9 +57,6 @@ namespace LMP
 				this,
 				SLOT (resetSimilarArtists ()));
 
-		auto coverGetter = [this] () { return CurrentInfo_.LocalPath_; };
-		Ui_.Art_->installEventFilter (new AALabelEventFilter (coverGetter, this));
-
 		auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
 		Ui_.PrevLyricsButton_->setIcon (mgr->GetIcon ("go-previous"));
 		Ui_.NextLyricsButton_->setIcon (mgr->GetIcon ("go-next"));
@@ -111,37 +108,9 @@ namespace LMP
 		updateLyricsSwitcher ();
 	}
 
-	void NowPlayingWidget::SetAlbumArt (const QPixmap& px)
-	{
-		Ui_.Art_->setPixmap (px.scaled (Ui_.Art_->minimumSize (),
-					Qt::KeepAspectRatio, Qt::SmoothTransformation));
-	}
-
 	void NowPlayingWidget::SetTrackInfo (const MediaInfo& info)
 	{
 		CurrentInfo_ = info;
-
-		const bool isNull = info.Title_.isEmpty () && info.Artist_.isEmpty ();
-		Ui_.TrackInfoLayout_->setEnabled (!isNull);
-
-		const QString& unknown = isNull ?
-				QString () :
-				tr ("unknown");
-		const auto& fm = fontMetrics ();
-		auto str = [&unknown, &fm] (const QString& str)
-		{
-			return str.isNull () ?
-					unknown :
-					("<strong>") + fm.elidedText (str, Qt::ElideRight, 300) + ("</strong>");
-		};
-		Ui_.ArtistName_->setText (str (info.Artist_));
-		Ui_.AlbumName_->setText (str (info.Album_));
-		Ui_.TrackName_->setText (str (info.Title_));
-
-		const auto& genres = info.Genres_.join (" / ");
-		Ui_.Genres_->setText ("<em>" + genres + "</em>");
-
-		SetStatistics (info.LocalPath_);
 
 		BioWidget_->SetCurrentArtist (info.Artist_);
 
@@ -151,23 +120,6 @@ namespace LMP
 		Ui_.LyricsBrowser_->clear ();
 		LyricsVariantPos_ = 0;
 		updateLyricsSwitcher ();
-	}
-
-	void NowPlayingWidget::SetStatistics (const QString& path)
-	{
-		auto stats = Core::Instance ().GetLocalCollection ()->GetTrackStats (path);
-		const bool valid = stats.Added_.isValid ();
-		Ui_.LastPlay_->setVisible (valid);
-		Ui_.LabelLastPlay_->setVisible (valid);
-		Ui_.StatsCount_->setVisible (valid);
-		Ui_.LabelPlaybacks_->setVisible (valid);
-		if (!valid)
-			return;
-
-		Ui_.LastPlay_->setText (FormatDateTime (stats.LastPlay_));
-		Ui_.StatsCount_->setText (tr ("%1 since %2")
-					.arg (stats.Playcount_)
-					.arg (FormatDateTime (stats.Added_)));
 	}
 
 	void NowPlayingWidget::on_PrevLyricsButton__released ()

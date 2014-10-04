@@ -65,10 +65,7 @@ namespace LMP
 		void SetSimilarArtists (Media::SimilarityInfos_t);
 		void SetLyrics (const Media::LyricsResultItem&);
 
-		void SetAlbumArt (const QPixmap&);
 		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
 	private slots:
 		void on_PrevLyricsButton__released ();
 		void on_NextLyricsButton__released ();
