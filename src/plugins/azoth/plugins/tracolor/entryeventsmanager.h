@@ -44,7 +44,12 @@ namespace Tracolor
 	{
 		Q_OBJECT
 
-		QHash<QByteArray, QHash<QByteArray, QList<QDateTime>>> EntryEvents_;
+		struct EntryEventInfo
+		{
+			QDateTime DT_;
+			double Rate_;
+		};
+		QHash<QByteArray, QHash<QByteArray, EntryEventInfo>> EntryEvents_;
 	public:
 		EntryEventsManager (QObject* = nullptr);
 

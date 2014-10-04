@@ -54,17 +54,17 @@ namespace Tracolor
 
 	void EntryEventsManager::HandleEvent (const QByteArray& entryId, const QByteArray& eventId)
 	{
-		EntryEvents_ [entryId] [eventId] << QDateTime::currentDateTime ();
+		EntryEvents_ [entryId] [eventId].DT_ = QDateTime::currentDateTime ();
 		emit entryEventRateChanged (entryId);
 	}
 
 	double EntryEventsManager::GetEntryEventRate (const QByteArray& entryId, const QByteArray& eventId) const
 	{
-		const auto& dates = EntryEvents_.value (entryId).value (eventId);
-		if (dates.isEmpty ())
+		const auto& date = EntryEvents_.value (entryId).value (eventId).DT_;
+		if (!date.isValid ())
 			return 0;
 
-		const auto diff = std::floor (dates.last ().secsTo (QDateTime::currentDateTime ()) / 60);
+		const auto diff = date.secsTo (QDateTime::currentDateTime ()) / 60.0;
 		return 1 / (diff + 1);
 	}
 }
