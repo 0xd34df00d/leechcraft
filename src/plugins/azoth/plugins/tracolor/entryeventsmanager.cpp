@@ -29,6 +29,8 @@
 
 #include "entryeventsmanager.h"
 #include <cmath>
+#include <QTimer>
+#include <util/sll/qtutil.h>
 #include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
@@ -40,11 +42,16 @@ namespace Tracolor
 	EntryEventsManager::EntryEventsManager (QObject *parent)
 	: QObject { parent }
 	{
+		auto timer = new QTimer { this };
+		timer->start (10000);
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (decayRates ()));
 	}
 
 	void EntryEventsManager::AddEntry (QObject*)
 	{
-
 	}
 
 	void EntryEventsManager::RemoveEntry (QObject *entryObj)
@@ -66,6 +73,12 @@ namespace Tracolor
 
 		const auto diff = date.secsTo (QDateTime::currentDateTime ()) / 60.0;
 		return 1 / (diff + 1);
+	}
+
+	void EntryEventsManager::decayRates ()
+	{
+		for (const auto& pair : Util::Stlize (EntryEvents_))
+			emit entryEventRateChanged (pair.first);
 	}
 }
 }

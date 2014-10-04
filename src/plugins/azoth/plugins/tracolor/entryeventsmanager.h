@@ -59,6 +59,8 @@ namespace Tracolor
 		void HandleEvent (const QByteArray& entryId, const QByteArray& eventId);
 
 		double GetEntryEventRate (const QByteArray& entryId, const QByteArray& eventId) const;
+	private slots:
+		void decayRates ();
 	signals:
 		void entryEventRateChanged (const QByteArray&);
 	};
