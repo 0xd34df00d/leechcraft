@@ -181,7 +181,7 @@ namespace Azoth
 #else
 				msgText = message.Body_.toHtmlEscaped ();
 #endif
-				ProxyObject {}.FormatLinks (msgText);
+				FormatterProxyObject {}.FormatLinks (msgText);
 				msgText.replace ('\n', "<br/>");
 			}
 

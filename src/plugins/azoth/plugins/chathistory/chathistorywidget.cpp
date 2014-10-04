@@ -164,15 +164,15 @@ namespace ChatHistory
 
 	QList<QAction*> ChatHistoryWidget::GetTabBarContextMenuActions () const
 	{
-		return QList<QAction*> ();
+		return {};
 	}
 
 	void ChatHistoryWidget::handleGotOurAccounts (const QStringList& accounts)
 	{
-		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
-		Q_FOREACH (const QString& accountID, accounts)
+		const auto proxy = Core::Instance ()->GetPluginProxy ();
+		for (const auto& accountID : accounts)
 		{
-			IAccount *account = qobject_cast<IAccount*> (proxy->GetAccount (accountID));
+			const auto account = qobject_cast<IAccount*> (proxy->GetAccount (accountID));
 			if (!account)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -192,7 +192,7 @@ namespace ChatHistory
 
 		if (EntryToFocus_)
 		{
-			IAccount *entryAcc = qobject_cast<IAccount*> (EntryToFocus_->GetParentAccount ());
+			const auto entryAcc = qobject_cast<IAccount*> (EntryToFocus_->GetParentAccount ());
 			if (!entryAcc)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -201,7 +201,7 @@ namespace ChatHistory
 				return;
 			}
 
-			const QString& id = entryAcc->GetAccountID ();
+			const auto& id = entryAcc->GetAccountID ();
 			for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
 				if (id == Ui_.AccountBox_->itemData (i).toString ())
 				{
@@ -294,6 +294,7 @@ namespace ChatHistory
 		Ui_.HistView_->clear ();
 
 		const auto& defFormat = Ui_.HistView_->currentCharFormat ();
+		auto& formatter = Core::Instance ()->GetPluginProxy ()->GetFormatterProxy ();
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
 					GetPluginProxy ()->GetEntry (entryId, accountId));
@@ -312,8 +313,7 @@ namespace ChatHistory
 		postNick.replace ('<', "&lt;");
 
 		const auto& bgColor = palette ().color (QPalette::Base);
-		const auto& colors = Core::Instance ()->
-				GetPluginProxy ()->GenerateColors ("hash", bgColor);
+		const auto& colors = formatter.GenerateColors ("hash", bgColor);
 
 		int scrollPos = -1;
 
@@ -351,8 +351,7 @@ namespace ChatHistory
 			}
 			else
 			{
-				const QString& color = Core::Instance ()->
-						GetPluginProxy ()->GetNickColor (var, colors);
+				const auto& color = formatter.GetNickColor (var, colors);
 				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
 
@@ -365,7 +364,7 @@ namespace ChatHistory
 
 				if (escape)
 					msgText.replace ('<', "&lt;");
-				Core::Instance ()->GetPluginProxy ()->FormatLinks (msgText);
+				formatter.FormatLinks (msgText);
 				if (escape)
 					msgText.replace ('\n', "<br/>");
 			}
@@ -375,8 +374,7 @@ namespace ChatHistory
 			const bool isSearchRes = SearchResultPosition_ == PerPageAmount_ - Amount_;
 			if (isChat && !isSearchRes)
 			{
-				const auto& color = Core::Instance ()->
-						GetPluginProxy ()->GetNickColor (map ["Direction"].toString (), colors);
+				const auto& color = formatter.GetNickColor (map ["Direction"].toString (), colors);
 				html.prepend ("<font color=\"" + color + "\">");
 				html += "</font>";
 			}

@@ -41,14 +41,31 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class FormatterProxyObject : public IFormatterProxyObject
+	{
+		QRegExp LinkRegexp_;
+	public:
+		FormatterProxyObject ();
+
+		QList<QColor> GenerateColors (const QString&, QColor) const override;
+		QString GetNickColor (const QString&, const QList<QColor>&) const override;
+		QString FormatDate (QDateTime, QObject*) const override;
+		QString FormatNickname (QString, QObject*, const QString&) const override;
+		QString FormatBody (QString, QObject*, const QList<QColor>&) const override;
+		void PreprocessMessage (QObject*) override;
+		void FormatLinks (QString&) override;
+		QStringList FindLinks (const QString&) override;
+	};
+
 	class ProxyObject : public QObject
 					  , public IProxyObject
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProxyObject)
 
-		QRegExp LinkRegexp_;
 		QHash<QString, AuthStatus> SerializedStr2AuthStatus_;
+
+		FormatterProxyObject Formatter_;
 	public:
 		ProxyObject (QObject* = 0);
 	public slots:
@@ -63,16 +80,8 @@ namespace Azoth
 		QList<QObject*> GetAllAccounts () const override;
 		QObject* GetEntry (const QString&, const QString&) const override;
 		void OpenChat (const QString&, const QString&, const QString&, const QString&) const override;
-		QList<QColor> GenerateColors (const QString&, QColor) const override;
-		QString GetNickColor (const QString&, const QList<QColor>&) const override;
-		QString FormatDate (QDateTime, QObject*) const override;
-		QString FormatNickname (QString, QObject*, const QString&) const override;
-		QString FormatBody (QString, QObject*, const QList<QColor>&) const override;
-		void PreprocessMessage (QObject*) override;
 		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const override;
 		QIcon GetIconForState (State) const override;
-		void FormatLinks (QString&) override;
-		QStringList FindLinks (const QString&) override;
 
 		QObject* CreateCoreMessage (const QString&, const QDateTime&,
 				IMessage::Type, IMessage::Direction, QObject*, QObject*) override;
@@ -86,6 +95,8 @@ namespace Azoth
 
 		boost::optional<CustomStatus> FindCustomStatus (const QString&) const override;
 		QStringList GetCustomStatusNames () const override;
+
+		IFormatterProxyObject& GetFormatterProxy () override;
 	};
 }
 }

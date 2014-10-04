@@ -901,7 +901,7 @@ namespace Azoth
 
 		if (!isRich)
 		{
-			PluginProxyObject_->FormatLinks (body);
+			PluginProxyObject_->GetFormatterProxy ().FormatLinks (body);
 			body.replace ('\n', "<br />");
 			body.replace ("  ", "&nbsp; ");
 		}

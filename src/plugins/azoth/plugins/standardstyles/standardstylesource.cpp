@@ -150,6 +150,7 @@ namespace StandardStyles
 	{
 		QObject *azothSettings = Proxy_->GetSettingsManager ();
 		const auto& colors = CreateColors (frame->metaData ().value ("coloring"), frame);
+		auto& formatter = Proxy_->GetFormatterProxy ();
 
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 		const bool isActiveChat = info.IsActiveChat_;
@@ -176,7 +177,7 @@ namespace StandardStyles
 				SLOT (handleMessageDestroyed ()),
 				Qt::UniqueConnection);
 
-		IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
+		const auto advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
 		if (msg->GetDirection () == IMessage::Direction::Out &&
 				advMsg &&
 				!advMsg->IsDelivered ())
@@ -193,16 +194,16 @@ namespace StandardStyles
 			Msg2Frame_ [msgObj] = frame;
 		}
 
-		const QString& nickColor = Proxy_->GetNickColor (entryName, colors);
+		const auto& nickColor = formatter.GetNickColor (entryName, colors);
 
-		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
+		const auto richMsg = qobject_cast<IRichTextMessage*> (msgObj);
 		QString body;
 		if (richMsg && info.UseRichTextBody_)
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
 			body = msg->GetEscapedBody ();
 
-		body = Proxy_->FormatBody (body, msg->GetQObject (), colors);
+		body = formatter.FormatBody (body, msg->GetQObject (), colors);
 
 		const QString dateBegin ("<span class='datetime'>");
 		const QString dateEnd ("</span>");
@@ -218,7 +219,7 @@ namespace StandardStyles
 		QString statusIconName;
 
 		QString string = dateBegin + '[' +
-				Proxy_->FormatDate (msg->GetDateTime (), msg->GetQObject ()) +
+				formatter.FormatDate (msg->GetDateTime (), msg->GetQObject ()) +
 				']' + dateEnd;
 		string.append (' ');
 		switch (msg->GetDirection ())
@@ -240,14 +241,14 @@ namespace StandardStyles
 				{
 					body = body.mid (3);
 					string.append ("* ");
-					string.append (Proxy_->FormatNickname (entryName, msg->GetQObject (), nickColor));
+					string.append (formatter.FormatNickname (entryName, msg->GetQObject (), nickColor));
 					string.append (' ');
 					divClass = "slashmechatmsg";
 				}
 				else
 				{
 					string.append (preNick);
-					string.append (Proxy_->FormatNickname (entryName, msg->GetQObject (), nickColor));
+					string.append (formatter.FormatNickname (entryName, msg->GetQObject (), nickColor));
 					string.append (postNick);
 					string.append (' ');
 					if (divClass.isEmpty ())
@@ -300,14 +301,14 @@ namespace StandardStyles
 			{
 				body = body.mid (3);
 				string.append ("* ");
-				string.append (Proxy_->FormatNickname (nick, msg->GetQObject (), nickColor));
+				string.append (formatter.FormatNickname (nick, msg->GetQObject (), nickColor));
 				string.append (' ');
 				divClass = "slashmechatmsg";
 			}
 			else
 			{
 				string.append (preNick);
-				string.append (Proxy_->FormatNickname (nick, msg->GetQObject (), nickColor));
+				string.append (formatter.FormatNickname (nick, msg->GetQObject (), nickColor));
 				string.append (postNick);
 				string.append (' ');
 			}
@@ -374,7 +375,8 @@ namespace StandardStyles
 		const auto& mangledScheme = scheme + bgColor.name ();
 
 		if (!Coloring2Colors_.contains (mangledScheme))
-			Coloring2Colors_ [mangledScheme] = Proxy_->GenerateColors (scheme, bgColor);
+			Coloring2Colors_ [mangledScheme] = Proxy_->
+					GetFormatterProxy ().GenerateColors (scheme, bgColor);
 
 		return Coloring2Colors_ [mangledScheme];
 	}

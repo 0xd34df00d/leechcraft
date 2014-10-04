@@ -128,7 +128,7 @@ namespace MuCommands
 					continue;
 				}
 
-				urls += azothProxy->FindLinks (msg->GetBody ());
+				urls += azothProxy->GetFormatterProxy ().FindLinks (msg->GetBody ());
 			}
 
 			urls.removeDuplicates ();

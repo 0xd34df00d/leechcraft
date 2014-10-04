@@ -45,6 +45,94 @@ namespace Util
 
 namespace Azoth
 {
+	class IFormatterProxyObject
+	{
+	public:
+		virtual ~IFormatterProxyObject () {}
+
+		/** @brief Generates the nickname colors for the given scheme.
+		 *
+		 * If the scheme is empty or equals "hash", then a random set of
+		 * colors is generated based on \em bg and settings.
+		 *
+		 * Otherwise, scheme is interpreted as space-separated list of
+		 * colors, either named, like "green" or "cyan", or their RGB
+		 * values in forms like "#FA12BB".
+		 *
+		 * @param[in] scheme The color scheme to use.
+		 * @param[in] bg The background color to generate colors for.
+		 * Pass an invalid color to use application palette's background.
+		 * @return The list of colors matching the given color scheme.
+		 */
+		virtual QList<QColor> GenerateColors (const QString& scheme, QColor bg) const = 0;
+
+		/** @brief Returns the color for the given nick and color set.
+		 *
+		 * This function should be used to choose a color for the given
+		 * nick. Internally, it calculates a hash from the nick and uses
+		 * it to choose a corresponding color.
+		 *
+		 * @param[in] nick The nickname for which to choose the color.
+		 * @param[in] colors The list of colors to choose from.
+		 * @return The color name to use.
+		 */
+		virtual QString GetNickColor (const QString& nick, const QList<QColor>& colors) const = 0;
+
+		/** @brief Formats the date for the given message.
+		 *
+		 * This function should be used to format the date of a
+		 * \em message when displaying it.
+		 *
+		 * @param[in] date The timestamp of the message to format.
+		 * @param[in] message The message object implementing IMessage.
+		 * @return The formatted date string.
+		 */
+		virtual QString FormatDate (QDateTime date, QObject *message) const = 0;
+
+		/** @brief Formats the nickname for the given message and color.
+		 *
+		 * This function should be used to format the nick when
+		 * displaying the given message. The color should be the one
+		 * from GetNickColor().
+		 *
+		 * @param[in] nick The nickname to format.
+		 * @param[in] message The message object implementing IMessage.
+		 * @param[in] color The color of the nickname.
+		 * @return The formatted nickname.
+		 */
+		virtual QString FormatNickname (QString nick, QObject *message, const QString& color) const = 0;
+
+		/** @brief Formats the body for the given message.
+		 *
+		 * This function should be used to format the body of the given
+		 * message.
+		 *
+		 * This function also accepts the list of colors used for
+		 * nick coloring in the current chat window, since the
+		 * \em body of the \em message may also be colored if it contains
+		 * other participants' nicks.
+		 *
+		 * @param[in] body The body to format.
+		 * @param[in] message The message object implementing IMessage.
+		 * @param[in] coloring The set of colors used for nick coloring.
+		 * @return The formatted body.
+		 */
+		virtual QString FormatBody (QString body, QObject *message, const QList<QColor>& coloring) const = 0;
+
+		/** @brief Preprocesses the message before displaying it.
+		 *
+		 * This function should be called once on each message before
+		 * displaying it.
+		 *
+		 * @param[in] message The message to preprocess.
+		 */
+		virtual void PreprocessMessage (QObject *message) = 0;
+
+		virtual void FormatLinks (QString& body) = 0;
+
+		virtual QStringList FindLinks (const QString&) = 0;
+	};
+
 	class IProxyObject
 	{
 	public:
@@ -196,91 +284,9 @@ namespace Azoth
 				const QString& message = QString (),
 				const QString& variant = QString ()) const = 0;
 
-		/** @brief Generates the nickname colors for the given scheme.
-		 *
-		 * If the scheme is empty or equals "hash", then a random set of
-		 * colors is generated based on \em bg and settings.
-		 *
-		 * Otherwise, scheme is interpreted as space-separated list of
-		 * colors, either named, like "green" or "cyan", or their RGB
-		 * values in forms like "#FA12BB".
-		 *
-		 * @param[in] scheme The color scheme to use.
-		 * @param[in] bg The background color to generate colors for.
-		 * Pass an invalid color to use application palette's background.
-		 * @return The list of colors matching the given color scheme.
-		 */
-		virtual QList<QColor> GenerateColors (const QString& scheme, QColor bg) const = 0;
-
-		/** @brief Returns the color for the given nick and color set.
-		 *
-		 * This function should be used to choose a color for the given
-		 * nick. Internally, it calculates a hash from the nick and uses
-		 * it to choose a corresponding color.
-		 *
-		 * @param[in] nick The nickname for which to choose the color.
-		 * @param[in] colors The list of colors to choose from.
-		 * @return The color name to use.
-		 */
-		virtual QString GetNickColor (const QString& nick, const QList<QColor>& colors) const = 0;
-
-		/** @brief Formats the date for the given message.
-		 *
-		 * This function should be used to format the date of a
-		 * \em message when displaying it.
-		 *
-		 * @param[in] date The timestamp of the message to format.
-		 * @param[in] message The message object implementing IMessage.
-		 * @return The formatted date string.
-		 */
-		virtual QString FormatDate (QDateTime date, QObject *message) const = 0;
-
-		/** @brief Formats the nickname for the given message and color.
-		 *
-		 * This function should be used to format the nick when
-		 * displaying the given message. The color should be the one
-		 * from GetNickColor().
-		 *
-		 * @param[in] nick The nickname to format.
-		 * @param[in] message The message object implementing IMessage.
-		 * @param[in] color The color of the nickname.
-		 * @return The formatted nickname.
-		 */
-		virtual QString FormatNickname (QString nick, QObject *message, const QString& color) const = 0;
-
-		/** @brief Formats the body for the given message.
-		 *
-		 * This function should be used to format the body of the given
-		 * message.
-		 *
-		 * This function also accepts the list of colors used for
-		 * nick coloring in the current chat window, since the
-		 * \em body of the \em message may also be colored if it contains
-		 * other participants' nicks.
-		 *
-		 * @param[in] body The body to format.
-		 * @param[in] message The message object implementing IMessage.
-		 * @param[in] coloring The set of colors used for nick coloring.
-		 * @return The formatted body.
-		 */
-		virtual QString FormatBody (QString body, QObject *message, const QList<QColor>& coloring) const = 0;
-
-		/** @brief Preprocesses the message before displaying it.
-		 *
-		 * This function should be called once on each message before
-		 * displaying it.
-		 *
-		 * @param[in] message The message to preprocess.
-		 */
-		virtual void PreprocessMessage (QObject *message) = 0;
-
 		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
 
 		virtual QIcon GetIconForState (State state) const = 0;
-
-		virtual void FormatLinks (QString& body) = 0;
-
-		virtual QStringList FindLinks (const QString&) = 0;
 
 		virtual QObject* CreateCoreMessage (const QString& body,
 				const QDateTime& date,
@@ -330,9 +336,11 @@ namespace Azoth
 		 * @sa FindCustomStatus()
 		 */
 		virtual QStringList GetCustomStatusNames () const = 0;
+
+		virtual IFormatterProxyObject& GetFormatterProxy () = 0;
 	};
 }
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProxyObject,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProxyObject/1.0");
+		"org.LeechCraft.Azoth.IProxyObject/1.0");

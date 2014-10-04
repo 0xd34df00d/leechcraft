@@ -488,6 +488,7 @@ namespace AdiumStyles
 			QWebFrame*, QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
 		const bool isHighlightMsg = info.IsHighlightMsg_;
+		auto& formatter = Proxy_->GetFormatterProxy ();
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		const bool in = msg->GetDirection () == IMessage::Direction::In;
@@ -602,7 +603,7 @@ namespace AdiumStyles
 
 		// %sender%
 		templ.replace ("%sender%",
-				Proxy_->FormatNickname (senderNick, msgObj, "%senderColor%"));
+				formatter.FormatNickname (senderNick, msgObj, "%senderColor%"));
 
 		// %service%
 		templ.replace ("%service%",
@@ -639,11 +640,11 @@ namespace AdiumStyles
 
 		// First, prepare colors
 		if (templ.contains ("%senderColor") && !Coloring2Colors_.contains ("hash"))
-			Coloring2Colors_ ["hash"] = Proxy_->GenerateColors ("hash", {});
+			Coloring2Colors_ ["hash"] = formatter.GenerateColors ("hash", {});
 
 		// %senderColor%
 		const auto& colors = Coloring2Colors_ ["hash"];
-		const auto& nickColor = Proxy_->GetNickColor (senderNick, colors);
+		const auto& nickColor = formatter.GetNickColor (senderNick, colors);
 		templ.replace ("%senderColor%", nickColor);
 
 		// %senderColor{N}%
@@ -673,7 +674,7 @@ namespace AdiumStyles
 					.arg (senderNick)
 					.arg (body.mid (4));
 
-		body = Proxy_->FormatBody (body, msgObj, colors);
+		body = formatter.FormatBody (body, msgObj, colors);
 
 		if (isHighlightMsg && !hasHighBackground)
 			body = "<span style=\"color:" + highColor +

@@ -51,10 +51,142 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	FormatterProxyObject::FormatterProxyObject ()
+	: LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))[^\\s<]+)",
+			Qt::CaseInsensitive)
+	{
+	}
+
+	QList<QColor> FormatterProxyObject::GenerateColors (const QString& scheme, QColor bg) const
+	{
+		return Azoth::GenerateColors (scheme, bg);
+	}
+
+	QString FormatterProxyObject::GetNickColor (const QString& nick, const QList<QColor>& colors) const
+	{
+		return Azoth::GetNickColor (nick, colors);
+	}
+
+	QString FormatterProxyObject::FormatDate (QDateTime dt, QObject *obj) const
+	{
+		return Core::Instance ().FormatDate (dt, qobject_cast<IMessage*> (obj));
+	}
+
+	QString FormatterProxyObject::FormatNickname (QString nick, QObject *obj, const QString& color) const
+	{
+		return Core::Instance ().FormatNickname (nick, qobject_cast<IMessage*> (obj), color);
+	}
+
+	QString FormatterProxyObject::FormatBody (QString body, QObject *obj, const QList<QColor>& coloring) const
+	{
+		return Core::Instance ().FormatBody (body, qobject_cast<IMessage*> (obj), coloring);
+	}
+
+	void FormatterProxyObject::PreprocessMessage (QObject *msgObj)
+	{
+		if (msgObj->property ("Azoth/DoNotPreprocess").toBool ())
+			return;
+
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
+		if (!msg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "message"
+					<< msgObj
+					<< "is not an IMessage";
+			return;
+		}
+
+		switch (msg->GetMessageSubType ())
+		{
+		case IMessage::SubType::ParticipantStatusChange:
+		{
+			const QString& nick = msgObj->property ("Azoth/Nick").toString ();
+			const QString& state = msgObj->property ("Azoth/TargetState").toString ();
+			const QString& text = msgObj->property ("Azoth/StatusText").toString ();
+			if (!nick.isEmpty () && !state.isEmpty ())
+			{
+				const auto& newBody = text.isEmpty () ?
+						ProxyObject::tr ("%1 changed status to %2")
+							.arg (nick)
+							.arg (state) :
+						ProxyObject::tr ("%1 changed status to %2 (%3)")
+							.arg (nick)
+							.arg (state)
+							.arg (text);
+				msg->SetBody (newBody);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+	}
+
+	const auto MaxBodySize4Links = 10 * 1024;
+
+	void FormatterProxyObject::FormatLinks (QString& body)
+	{
+		if (body.size () > MaxBodySize4Links)
+			return;
+
+		int pos = 0;
+		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+		{
+			const auto& link = LinkRegexp_.cap (1);
+			if (pos > 0 &&
+					(body.at (pos - 1) == '"' ||
+						body.at (pos - 1) == '=' ||
+						body.at (pos - 1) == '\''))
+			{
+				pos += link.size ();
+				continue;
+			}
+
+			auto trimmed = link.trimmed ();
+			if (trimmed.startsWith ("www."))
+				trimmed.prepend ("http://");
+
+			auto shortened = trimmed;
+			const auto length = XmlSettingsManager::Instance ()
+					.property ("ShortenURLLength").toInt ();
+			if (shortened.size () > length)
+				shortened = trimmed.left (length / 2) + "..." + trimmed.right (length / 2);
+
+			const auto& str = "<a href=\"" + trimmed + "\" title=\"" + trimmed + "\">" + shortened + "</a>";
+			body.replace (pos, link.length (), str);
+
+			pos += str.length ();
+		}
+	}
+
+	QStringList FormatterProxyObject::FindLinks (const QString& body)
+	{
+		QStringList result;
+
+		if (body.size () > MaxBodySize4Links)
+			return result;
+
+		int pos = 0;
+		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+		{
+			const auto& link = LinkRegexp_.cap (1);
+			if (pos > 0 &&
+					(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
+			{
+				pos += link.size ();
+				continue;
+			}
+
+			result << link.trimmed ();
+			pos += link.size ();
+		}
+
+		return result;
+	}
+
 	ProxyObject::ProxyObject (QObject* parent)
 	: QObject (parent)
-	, LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))[^\\s<]+)",
-			Qt::CaseInsensitive)
 	{
 		SerializedStr2AuthStatus_ ["None"] = ASNone;
 		SerializedStr2AuthStatus_ ["To"] = ASTo;
@@ -173,72 +305,6 @@ namespace Azoth
 		chat->selectVariant (variant);
 	}
 
-	QList<QColor> ProxyObject::GenerateColors (const QString& scheme, QColor bg) const
-	{
-		return Azoth::GenerateColors (scheme, bg);
-	}
-
-	QString ProxyObject::GetNickColor (const QString& nick, const QList<QColor>& colors) const
-	{
-		return Azoth::GetNickColor (nick, colors);
-	}
-
-	QString ProxyObject::FormatDate (QDateTime dt, QObject *obj) const
-	{
-		return Core::Instance ().FormatDate (dt, qobject_cast<IMessage*> (obj));
-	}
-
-	QString ProxyObject::FormatNickname (QString nick, QObject *obj, const QString& color) const
-	{
-		return Core::Instance ().FormatNickname (nick, qobject_cast<IMessage*> (obj), color);
-	}
-
-	QString ProxyObject::FormatBody (QString body, QObject *obj, const QList<QColor>& coloring) const
-	{
-		return Core::Instance ().FormatBody (body, qobject_cast<IMessage*> (obj), coloring);
-	}
-
-	void ProxyObject::PreprocessMessage (QObject *msgObj)
-	{
-		if (msgObj->property ("Azoth/DoNotPreprocess").toBool ())
-			return;
-
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "message"
-					<< msgObj
-					<< "is not an IMessage";
-			return;
-		}
-
-		switch (msg->GetMessageSubType ())
-		{
-		case IMessage::SubType::ParticipantStatusChange:
-		{
-			const QString& nick = msgObj->property ("Azoth/Nick").toString ();
-			const QString& state = msgObj->property ("Azoth/TargetState").toString ();
-			const QString& text = msgObj->property ("Azoth/StatusText").toString ();
-			if (!nick.isEmpty () && !state.isEmpty ())
-			{
-				const QString& newBody = text.isEmpty () ?
-						tr ("%1 changed status to %2")
-							.arg (nick)
-							.arg (state) :
-						tr ("%1 changed status to %2 (%3)")
-							.arg (nick)
-							.arg (state)
-							.arg (text);
-				msg->SetBody (newBody);
-			}
-			break;
-		}
-		default:
-			break;
-		}
-	}
-
 	Util::ResourceLoader* ProxyObject::GetResourceLoader (IProxyObject::PublicResourceLoader loader) const
 	{
 		switch (loader)
@@ -260,68 +326,6 @@ namespace Azoth
 	QIcon ProxyObject::GetIconForState (State state) const
 	{
 		return ResourcesManager::Instance ().GetIconForState (state);
-	}
-
-	const auto MaxBodySize4Links = 10 * 1024;
-
-	void ProxyObject::FormatLinks (QString& body)
-	{
-		if (body.size () > MaxBodySize4Links)
-			return;
-
-		int pos = 0;
-		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
-		{
-			const auto& link = LinkRegexp_.cap (1);
-			if (pos > 0 &&
-					(body.at (pos - 1) == '"' ||
-						body.at (pos - 1) == '=' ||
-						body.at (pos - 1) == '\''))
-			{
-				pos += link.size ();
-				continue;
-			}
-
-			auto trimmed = link.trimmed ();
-			if (trimmed.startsWith ("www."))
-				trimmed.prepend ("http://");
-
-			auto shortened = trimmed;
-			const auto length = XmlSettingsManager::Instance ()
-					.property ("ShortenURLLength").toInt ();
-			if (shortened.size () > length)
-				shortened = trimmed.left (length / 2) + "..." + trimmed.right (length / 2);
-
-			const auto& str = "<a href=\"" + trimmed + "\" title=\"" + trimmed + "\">" + shortened + "</a>";
-			body.replace (pos, link.length (), str);
-
-			pos += str.length ();
-		}
-	}
-
-	QStringList ProxyObject::FindLinks (const QString& body)
-	{
-		QStringList result;
-
-		if (body.size () > MaxBodySize4Links)
-			return result;
-
-		int pos = 0;
-		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
-		{
-			const auto& link = LinkRegexp_.cap (1);
-			if (pos > 0 &&
-					(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
-			{
-				pos += link.size ();
-				continue;
-			}
-
-			result << link.trimmed ();
-			pos += link.size ();
-		}
-
-		return result;
 	}
 
 	QObject* ProxyObject::CreateCoreMessage (const QString& body,
@@ -403,6 +407,11 @@ namespace Azoth
 		for (const auto& status : mgr->GetStates ())
 			result << status.Name_;
 		return result;
+	}
+
+	IFormatterProxyObject& ProxyObject::GetFormatterProxy ()
+	{
+		return Formatter_;
 	}
 }
 }

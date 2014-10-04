@@ -2013,7 +2013,7 @@ namespace Azoth
 			ToggleRichText_->isChecked ()
 		};
 
-		const auto& links = ProxyObject ().FindLinks (msg->GetBody ());
+		const auto& links = FormatterProxyObject {}.FindLinks (msg->GetBody ());
 		if (!links.isEmpty ())
 			LastLink_ = links.last ();
 

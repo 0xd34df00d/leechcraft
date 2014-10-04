@@ -483,8 +483,8 @@ namespace Xoox
 		}
 
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
-		proxy->PreprocessMessage (msg);
+		const auto proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
+		proxy->GetFormatterProxy ().PreprocessMessage (msg);
 
 		AllMessages_ << msg;
 		emit gotMessage (msg);
