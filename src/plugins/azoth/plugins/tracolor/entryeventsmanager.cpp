@@ -55,6 +55,7 @@ namespace Tracolor
 	void EntryEventsManager::HandleEvent (const QByteArray& entryId, const QByteArray& eventId)
 	{
 		EntryEvents_ [entryId] [eventId] << QDateTime::currentDateTime ();
+		emit entryEventRateChanged (entryId);
 	}
 
 	double EntryEventsManager::GetEntryEventRate (const QByteArray& entryId, const QByteArray& eventId) const
