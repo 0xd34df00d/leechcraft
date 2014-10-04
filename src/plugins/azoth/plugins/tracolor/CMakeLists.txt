@@ -10,6 +10,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (TRACOLOR_SRCS
 	tracolor.cpp
 	entryeventsmanager.cpp
+	iconsmanager.cpp
 	)
 #CreateTrs ("azoth_tracolor" "en;ru_RU" TRACOLOR_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_tracolor" "en;ru_RU" "${TRACOLOR_SRCS}" "" "")
