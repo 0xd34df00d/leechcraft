@@ -49,6 +49,11 @@
 #include <interfaces/media/ilyricsfinder.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+
+#ifdef ENABLE_MPRIS
+#include "mpris/instance.h"
+#endif
+
 #include "player.h"
 #include "util.h"
 #include "core.h"
@@ -63,10 +68,7 @@
 #include "seekslider.h"
 #include "palettefixerfilter.h"
 #include "npstateupdater.h"
-
-#ifdef ENABLE_MPRIS
-#include "mpris/instance.h"
-#endif
+#include "nptooltiphook.h"
 
 namespace LeechCraft
 {
@@ -98,6 +100,10 @@ namespace LMP
 					Ui_.NPArt_->setProperty ("LMP/CoverPath", path);
 				});
 
+		const auto npTooltipHook = new NPTooltipHook { NPPixmapHandler_, this };
+		Ui_.NPArt_->installEventFilter (npTooltipHook);
+		Ui_.NowPlaying_->installEventFilter (npTooltipHook);
+
 		SetupNavButtons ();
 
 		Ui_.FSBrowser_->AssociatePlayer (Player_);
@@ -108,6 +114,8 @@ namespace LMP
 		const auto updater = new NPStateUpdater { Ui_.NowPlaying_, Ui_.NPWidget_, Player_, this };
 		updater->AddPixmapHandler ([this] (const MediaInfo& info, const QString& path, const QPixmap& px)
 					{ NPPixmapHandler_->HandleSongChanged (info, path, px, !px.isNull ()); });
+		updater->AddPixmapHandler ([npTooltipHook] (const MediaInfo& info, const QString&, const QPixmap&)
+					{ npTooltipHook->SetTrackInfo (info); });
 		connect (this,
 				SIGNAL (notifyCurrentTrackRequested ()),
 				updater,
