@@ -63,7 +63,6 @@ namespace Azoth
 		QList<QObject*> GetAllAccounts () const;
 		QObject* GetEntry (const QString&, const QString&) const;
 		void OpenChat (const QString&, const QString&, const QString&, const QString&) const;
-		QString GetSelectedChatTemplate (QObject*, QWebFrame*) const;
 		QList<QColor> GenerateColors (const QString&, QColor) const;
 		QString GetNickColor (const QString&, const QList<QColor>&) const;
 		QString FormatDate (QDateTime, QObject*) const;
