@@ -37,6 +37,9 @@
 #include <QFile>
 #include <util/util.h>
 #include "nowplayingpixmaphandler.h"
+#include "core.h"
+#include "localcollection.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -52,6 +55,25 @@ namespace LMP
 	void NPTooltipHook::SetTrackInfo (const MediaInfo& info)
 	{
 		Info_ = info;
+	}
+
+	namespace
+	{
+		void SetStatistics (QString& str, const QString& path)
+		{
+			const auto& stats = Core::Instance ().GetLocalCollection ()->GetTrackStats (path);
+			const auto valid = stats.Added_.isValid ();
+			const auto& lastPlayStr = valid ?
+					FormatDateTime (stats.LastPlay_) :
+					QString {};
+			const auto& countStr = valid ?
+					NPTooltipHook::tr ("%1 since %2")
+						.arg (stats.Playcount_)
+						.arg (FormatDateTime (stats.Added_)) :
+					QString {};
+			str.replace ("${PLAYBACKS}", countStr);
+			str.replace ("${LASTPLAY}", lastPlayStr);
+		}
 	}
 
 	bool NPTooltipHook::eventFilter (QObject *obj, QEvent *event)
@@ -76,6 +98,11 @@ namespace LMP
 		QFile file { ":/lmp/resources/templates/nptooltip.html" };
 		file.open (QIODevice::ReadOnly);
 		auto str = QString::fromUtf8 (file.readAll ());
+		str.replace ("${TITLE}", Info_.Title_);
+		str.replace ("${ARTIST}", Info_.Artist_);
+		str.replace ("${ALBUM}", Info_.Album_);
+		str.replace ("${GENRE}", Info_.Genres_.join (" / "));
+		SetStatistics (str, Info_.LocalPath_);
 		str.replace ("${IMG}", Base64Px_);
 
 		const auto he = static_cast<QHelpEvent*> (event);
