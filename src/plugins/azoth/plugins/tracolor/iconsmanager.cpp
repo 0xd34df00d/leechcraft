@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "iconsmanager.h"
+#include <QPainter>
 #include <interfaces/an/constants.h>
 #include "entryeventsmanager.h"
 
@@ -73,10 +74,18 @@ namespace Tracolor
 			if (rate < std::numeric_limits<double>::epsilon () * tolerance)
 				continue;
 
-			QPixmap px { 7, 22 };
+			QPixmap px { 22, 22 };
+			px.fill (Qt::transparent);
+
 			QColor color { pair.second };
 			color.setAlphaF (rate);
-			px.fill (color);
+			{
+				QPainter p { &px };
+				p.setBrush ({ color });
+				p.setPen (Qt::NoPen);
+				p.drawEllipse ({ px.width () / 2, px.height () / 2 },
+						px.width () / 4, px.height () / 4);
+			}
 
 			icons.prepend ({ px });
 		}
