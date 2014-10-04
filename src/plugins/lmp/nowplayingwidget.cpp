@@ -153,23 +153,6 @@ namespace LMP
 		updateLyricsSwitcher ();
 	}
 
-	namespace
-	{
-		QString FormatDateTime (const QDateTime& datetime)
-		{
-			const QDateTime& current = QDateTime::currentDateTime ();
-			const int days = datetime.daysTo (current);
-			if (days > 30)
-				return QLocale ().toString (datetime, "MMMM yyyy");
-			else if (days >= 7)
-				return NowPlayingWidget::tr ("%n day(s) ago", 0, days);
-			else if (days >= 1)
-				return QLocale ().toString (datetime, "dddd");
-			else
-				return QLocale ().toString (datetime.time ());
-		}
-	}
-
 	void NowPlayingWidget::SetStatistics (const QString& path)
 	{
 		auto stats = Core::Instance ().GetLocalCollection ()->GetTrackStats (path);

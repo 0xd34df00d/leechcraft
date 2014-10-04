@@ -275,5 +275,21 @@ namespace LMP
 
 		return { isEnabled ? flagSym : disabledFlagSym, color };
 	}
+
+	QString FormatDateTime (const QDateTime& datetime)
+	{
+		const QDateTime& current = QDateTime::currentDateTime ();
+		const int days = datetime.daysTo (current);
+
+		QLocale defLocale;
+		if (days > 30)
+			return defLocale.toString (datetime, "MMMM yyyy");
+		else if (days >= 7)
+			return QObject::tr ("%n day(s) ago", 0, days);
+		else if (days >= 1)
+			return defLocale.toString (datetime, "dddd");
+		else
+			return defLocale.toString (datetime.time ());
+	}
 }
 }
