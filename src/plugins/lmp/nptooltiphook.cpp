@@ -87,7 +87,7 @@ namespace LMP
 
 			QImage img { PxHandler_->GetLastCoverPath () };
 			if (img.isNull ())
-				img = QIcon::fromTheme ("media-optical-disk").pixmap (maxDim, maxDim).toImage ();
+				img = QIcon::fromTheme ("media-optical").pixmap (maxDim, maxDim).toImage ();
 
 			if (img.width () > maxDim)
 				img = img.scaled (maxDim, maxDim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
