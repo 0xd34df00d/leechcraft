@@ -65,6 +65,8 @@ namespace SHX
 		Util::XmlSettingsDialog_ptr XSD_;
 		QHash<QProcess*, QPointer<QObject>> Process2Entry_;
 
+		StaticCommand ExecCommand_;
+
 		IProxyObject *AzothProxy_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);

@@ -4,9 +4,6 @@
 		<label value="Azoth SHX" />
 		<groupbox>
 			<label value="Behavior" />
-			<item type="lineedit" property="Marker" default="/exec ">
-				<label value="Command marker:" />
-			</item>
 			<item type="lineedit" property="Command" default="">
 				<label value="Executor:" />
 			</item>

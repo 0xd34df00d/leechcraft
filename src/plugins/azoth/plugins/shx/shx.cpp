@@ -62,6 +62,18 @@ namespace SHX
 #endif
 			XmlSettingsManager::Instance ().setProperty ("Command", cmd);
 		}
+
+		ExecCommand_ = StaticCommand
+		{
+			{ "/exec" },
+			[this] (ICLEntry *entry, const QString& text)
+			{
+				ExecuteProcess (entry, text.section (' ', 1));
+				return true;
+			},
+			tr ("Executes the given command in a shell."),
+			{}
+		};
 	}
 
 	void Plugin::SecondInit ()
@@ -107,20 +119,7 @@ namespace SHX
 
 	StaticCommands_t Plugin::GetStaticCommands (ICLEntry*)
 	{
-		const auto& marker = XmlSettingsManager::Instance ()
-				.property ("Marker").toString ();
-		StaticCommand execCommand
-		{
-			{ marker },
-			[this, marker] (ICLEntry *entry, const QString& text)
-			{
-				ExecuteProcess (entry, text.mid (marker.size () + 1));
-				return true;
-			},
-			tr ("Executes the given command in a shell."),
-			{}
-		};
-		return { execCommand };
+		return { ExecCommand_ };
 	}
 
 	void Plugin::ExecuteProcess (ICLEntry *entry, const QString& text)
