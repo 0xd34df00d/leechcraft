@@ -121,6 +121,7 @@ set (SRCS
 	hookinterconnector.cpp
 	diaginfocollector.cpp
 	npstateupdater.cpp
+	nptooltiphook.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
