@@ -2,5 +2,6 @@
   <qresource prefix="/lmp">
 	<file>resources/images/lmp.svg</file>
 	<file>resources/images/lmp_artist_browser.svg</file>
+	<file>resources/templates/nptooltip.html</file>
   </qresource>
 </RCC>
