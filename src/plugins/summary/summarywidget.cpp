@@ -355,6 +355,9 @@ namespace Summary
 				data ().value<QObject*> ());
 		QItemSelectionModel *selModel =
 				Ui_.PluginsTasksTree_->selectionModel ();
+		QModelIndexList indexes = selModel->selectedRows ();
+		action->setProperty ("SelectedRows",
+				QVariant::fromValue<QList<QModelIndex>> (indexes));
 		action->setProperty ("ItemSelectionModel",
 				QVariant::fromValue<QObject*> (selModel));
 
