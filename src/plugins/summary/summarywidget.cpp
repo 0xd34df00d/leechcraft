@@ -51,6 +51,7 @@
 #include "modeldelegate.h"
 
 Q_DECLARE_METATYPE (QMenu*)
+Q_DECLARE_METATYPE (QList<QModelIndex>)
 
 namespace LeechCraft
 {
