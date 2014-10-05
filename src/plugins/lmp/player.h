@@ -238,6 +238,8 @@ namespace LMP
 
 		void playerAvailable (bool);
 
+		void aboutToStopInternally ();
+
 		void shouldClearFiltering ();
 	};
 }
