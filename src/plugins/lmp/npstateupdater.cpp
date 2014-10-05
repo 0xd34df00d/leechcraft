@@ -30,6 +30,7 @@
 #include "npstateupdater.h"
 #include <QLabel>
 #include <util/xpc/util.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/ientitymanager.h>
 #include "player.h"
 #include "engine/sourceobject.h"
@@ -61,6 +62,14 @@ namespace LMP
 				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (update (SourceState)));
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { IgnoreNextStop_ = true; },
+			Player_,
+			SIGNAL (aboutToStopInternally ()),
+			this
+		};
 	}
 
 	void NPStateUpdater::AddPixmapHandler (const PixmapHandler_f& handler)
@@ -156,6 +165,12 @@ namespace LMP
 
 	void NPStateUpdater::update (SourceState newState)
 	{
+		if (IgnoreNextStop_ && newState == SourceState::Stopped)
+		{
+			IgnoreNextStop_ = false;
+			return;
+		}
+
 		Update (Player_->GetCurrentMediaInfo ());
 	}
 

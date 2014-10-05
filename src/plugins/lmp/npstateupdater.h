@@ -54,6 +54,8 @@ namespace LMP
 		Player * const Player_;
 
 		QString LastNotificationString_;
+
+		bool IgnoreNextStop_ = false;
 	public:
 		typedef std::function<void (MediaInfo, QString, QPixmap)> PixmapHandler_f;
 	private:
