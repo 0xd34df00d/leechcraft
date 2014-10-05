@@ -710,7 +710,8 @@ namespace LMP
 		}
 
 		const auto newNativeState = GstToState (newState);
-		if (newNativeState == OldState_)
+		if (newNativeState == OldState_ ||
+				pending != GST_STATE_VOID_PENDING)
 			return;
 
 		auto prevState = OldState_;
