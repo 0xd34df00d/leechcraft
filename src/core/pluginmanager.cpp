@@ -685,9 +685,14 @@ namespace LeechCraft
 		ScanDir (QString (INSTALL_PREFIX "/%1/leechcraft/plugins")
 				.arg (libdir));
 	#else
-		ScanDir (QString ("/usr/local/%1/leechcraft/plugins")
+		#if QT_VERSION >= 0x050000
+		const QString suffix { "-qt5" };
+		#else
+		const QString suffix {};
+		#endif
+		ScanDir (("/usr/local/%1/leechcraft/plugins" + suffix)
 				.arg (libdir));
-		ScanDir (QString ("/usr/%1/leechcraft/plugins")
+		ScanDir (("/usr/%1/leechcraft/plugins" + suffix)
 				.arg (libdir));
 	#endif
 #endif
