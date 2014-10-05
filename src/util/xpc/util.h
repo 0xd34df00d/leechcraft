@@ -36,6 +36,7 @@
 #include "xpcconfig.h"
 
 class IEntityManager;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -188,5 +189,8 @@ namespace Util
 
 	UTIL_XPC_API QVariant GetPersistentData (const QByteArray& key,
 			const ICoreProxy_ptr& proxy);
+
+	UTIL_XPC_API void SetJobHolderProgress (const QList<QStandardItem*>& row,
+			qint64 done, qint64 total, const QString& text);
 }
 }

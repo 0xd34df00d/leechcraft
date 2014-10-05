@@ -28,12 +28,14 @@
  **********************************************************************/
 
 #include "util.h"
+#include <QStandardItem>
 #include <util/util.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/ipersistentstorageplugin.h>
+#include <interfaces/ijobholder.h>
 
 Q_DECLARE_METATYPE (QVariantList*);
 
@@ -159,6 +161,15 @@ namespace Util
 				return value;
 		}
 		return {};
+	}
+
+	void SetJobHolderProgress (const QList<QStandardItem*>& row,
+			qint64 done, qint64 total, const QString& text)
+	{
+		const auto item = row.value (JobHolderColumn::JobProgress);
+		item->setText (text);
+		item->setData (done, ProcessState::Done);
+		item->setData (total, ProcessState::Total);
 	}
 }
 }
