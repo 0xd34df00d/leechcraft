@@ -42,6 +42,8 @@ namespace Zalil
 	class ServiceBase;
 	typedef std::shared_ptr<ServiceBase> ServiceBase_ptr;
 
+	class PendingUploadBase;
+
 	class ServicesManager : public QObject
 	{
 		Q_OBJECT
@@ -52,7 +54,7 @@ namespace Zalil
 		ServicesManager (const ICoreProxy_ptr&, QObject* = 0);
 
 		QStringList GetNames (const QString& file) const;
-		void Upload (const QString& file, const QString& service);
+		PendingUploadBase* Upload (const QString& file, const QString& service);
 	signals:
 		void fileUploaded (const QString&, const QUrl&);
 	};
