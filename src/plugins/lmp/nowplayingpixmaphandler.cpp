@@ -63,7 +63,7 @@ namespace LMP
 			return;
 
 		LastArtist_ = info.Artist_;
-		Q_FOREACH (const auto& setter, Setters_)
+		for (const auto& setter : Setters_)
 			setter (px, coverPath);
 
 		IsValidPixmap_ = correct;
@@ -92,7 +92,7 @@ namespace LMP
 
 	void NowPlayingPixmapHandler::handleDownloadedImage ()
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 			return;
 
@@ -102,8 +102,8 @@ namespace LMP
 		if (pixmap.isNull ())
 			return;
 
-		Q_FOREACH (const auto& setter, Setters_)
-			setter (pixmap, QString ());
+		for (const auto& setter : Setters_)
+			setter (pixmap, {});
 
 		LastCoverPath_.clear ();
 		IsValidPixmap_ = true;
