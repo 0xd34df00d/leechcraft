@@ -161,8 +161,7 @@ namespace LMP
 
 	void NPStateUpdater::update (const MediaInfo& info)
 	{
-		if (Player_->GetState () == SourceState::Stopped ||
-				info.IsUseless ())
+		if (Player_->GetState () == SourceState::Stopped)
 			return;
 
 		Update (info);
