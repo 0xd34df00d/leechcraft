@@ -32,7 +32,10 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ijobholder.h>
 #include <interfaces/iwebfilestorage.h>
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -42,6 +45,7 @@ namespace Zalil
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IJobHolder
 				 , public IWebFileStorage
 	{
 		Q_OBJECT
@@ -50,6 +54,8 @@ namespace Zalil
 		LC_PLUGIN_METADATA ("org.LeechCraft.Zalil")
 
 		std::shared_ptr<ServicesManager> Manager_;
+
+		QStandardItemModel* ReprModel_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -58,6 +64,8 @@ namespace Zalil
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QAbstractItemModel* GetRepresentation () const;
 
 		QStringList GetServiceVariants () const;
 		void UploadFile (const QString&, const QString&);

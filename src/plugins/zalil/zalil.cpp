@@ -29,6 +29,7 @@
 
 #include "zalil.h"
 #include <QIcon>
+#include <QStandardItemModel>
 #include "servicesmanager.h"
 
 namespace LeechCraft
@@ -42,6 +43,8 @@ namespace Zalil
 				SIGNAL (fileUploaded (QString, QUrl)),
 				this,
 				SIGNAL (fileUploaded (QString, QUrl)));
+
+		ReprModel_ = new QStandardItemModel { this };
 	}
 
 	void Plugin::SecondInit ()
@@ -81,6 +84,11 @@ namespace Zalil
 	void Plugin::UploadFile (const QString& filename, const QString& service)
 	{
 		Manager_->Upload (filename, service);
+	}
+
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return ReprModel_;
 	}
 }
 }
