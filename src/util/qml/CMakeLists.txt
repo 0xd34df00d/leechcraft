@@ -26,16 +26,16 @@ foreach (SRC ${QML_SRCS})
 endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 
-add_library (leechcraft-util-qml SHARED
+add_library (leechcraft-util-qml${LC_LIBSUFFIX} SHARED
 	${QML_SRCS}
 	)
-target_link_libraries (leechcraft-util-qml
+target_link_libraries (leechcraft-util-qml${LC_LIBSUFFIX}
 	${ADDITIONAL_LIBS}
-	leechcraft-util-gui
-	leechcraft-util-network
-	leechcraft-util-sys
+	leechcraft-util-gui${LC_LIBSUFFIX}
+	leechcraft-util-network${LC_LIBSUFFIX}
+	leechcraft-util-sys${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-qml PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util-qml DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-util-qml${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+install (TARGETS leechcraft-util-qml${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-qml Network Quick QuickWidgets)
+FindQtLibs (leechcraft-util-qml${LC_LIBSUFFIX} Network Quick QuickWidgets)

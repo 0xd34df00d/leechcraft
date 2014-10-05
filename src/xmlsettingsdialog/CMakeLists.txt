@@ -65,16 +65,16 @@ endforeach ()
 set (XSD_SRCS ${XSD_SRCS} PARENT_SCOPE)
 set (XSD_FORMS ${XSD_FORMS} PARENT_SCOPE)
 
-add_library (leechcraft-xsd SHARED
+add_library (leechcraft-xsd${LC_LIBSUFFIX} SHARED
 	${SRCS}
 	${UIS_H})
-target_link_libraries (leechcraft-xsd
+target_link_libraries (leechcraft-xsd${LC_LIBSUFFIX}
 	${QT_LIBRARIES}
-	leechcraft-util-sys
+	leechcraft-util-sys${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-xsd PROPERTY SOVERSION 0.3.0)
-install (TARGETS leechcraft-xsd DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-xsd${LC_LIBSUFFIX} PROPERTY SOVERSION 0.3.0)
+install (TARGETS leechcraft-xsd${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-xsd Xml Sql Widgets Script Network)
+	QT5_USE_MODULES (leechcraft-xsd${LC_LIBSUFFIX} Xml Sql Widgets Script Network)
 endif ()

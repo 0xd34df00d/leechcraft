@@ -7,13 +7,13 @@ foreach (SRC ${SHORTCUTS_SRCS})
 endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 
-add_library (leechcraft-util-shortcuts SHARED
+add_library (leechcraft-util-shortcuts${LC_LIBSUFFIX} SHARED
 	${SHORTCUTS_SRCS}
 	)
-target_link_libraries (leechcraft-util-shortcuts
-	leechcraft-util-xpc
+target_link_libraries (leechcraft-util-shortcuts${LC_LIBSUFFIX}
+	leechcraft-util-xpc${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-shortcuts PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util-shortcuts DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-util-shortcuts${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+install (TARGETS leechcraft-util-shortcuts${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-shortcuts Widgets)
+FindQtLibs (leechcraft-util-shortcuts${LC_LIBSUFFIX} Widgets)

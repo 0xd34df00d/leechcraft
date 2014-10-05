@@ -23,14 +23,14 @@ foreach (FORM ${DB_FORMS})
 endforeach ()
 set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 
-add_library (leechcraft-util-db SHARED
+add_library (leechcraft-util-db${LC_LIBSUFFIX} SHARED
 	${DB_SRCS}
 	${DB_UIS_H}
 	)
-target_link_libraries (leechcraft-util-db
-	leechcraft-xsd
+target_link_libraries (leechcraft-util-db${LC_LIBSUFFIX}
+	leechcraft-xsd${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-db PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util-db DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-util-db${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+install (TARGETS leechcraft-util-db${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-db Sql Widgets)
+FindQtLibs (leechcraft-util-db${LC_LIBSUFFIX} Sql Widgets)

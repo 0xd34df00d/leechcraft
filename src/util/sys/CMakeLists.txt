@@ -36,13 +36,13 @@ foreach (SRC ${SYS_SRCS})
 endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 
-add_library (leechcraft-util-sys SHARED
+add_library (leechcraft-util-sys${LC_LIBSUFFIX} SHARED
 	${SYS_SRCS}
 	)
-target_link_libraries (leechcraft-util-sys
+target_link_libraries (leechcraft-util-sys${LC_LIBSUFFIX}
 	${MAGIC_LIBRARIES}
 	)
-set_property (TARGET leechcraft-util-sys PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util-sys DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-util-sys${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+install (TARGETS leechcraft-util-sys${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-sys Network Widgets)
+FindQtLibs (leechcraft-util-sys${LC_LIBSUFFIX} Network Widgets)

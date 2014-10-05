@@ -11,13 +11,13 @@ foreach (SRC ${NETWORK_SRCS})
 endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 
-add_library (leechcraft-util-network SHARED
+add_library (leechcraft-util-network${LC_LIBSUFFIX} SHARED
 	${NETWORK_SRCS}
 	)
-target_link_libraries (leechcraft-util-network
-	leechcraft-util-sys
+target_link_libraries (leechcraft-util-network${LC_LIBSUFFIX}
+	leechcraft-util-sys${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-network PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util-network DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-util-network${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+install (TARGETS leechcraft-util-network${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-network Concurrent Network)
+FindQtLibs (leechcraft-util-network${LC_LIBSUFFIX} Concurrent Network)

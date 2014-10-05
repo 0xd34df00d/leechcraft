@@ -131,8 +131,10 @@ find_package (Boost REQUIRED COMPONENTS date_time filesystem program_options sys
 if (USE_QT5)
 	set (CMAKE_INCLUDE_CURRENT_DIR ON)
 	find_package (Qt5Widgets)
+	set (LC_LIBSUFFIX "-qt5")
 else ()
 	find_package (Qt4 REQUIRED)
+	set (LC_LIBSUFFIX "")
 endif ()
 
 macro (QtWrapUi outfiles)
@@ -206,7 +208,7 @@ add_subdirectory (xmlsettingsdialog)
 
 set (LEECHCRAFT_LIBRARIES
 		${LEECHCRAFT_UTIL_LIBRARIES}
-		leechcraft-xsd)
+		leechcraft-xsd${LC_LIBSUFFIX})
 
 # Various options
 option (STRICT_LICENSING "Makes LeechCraft more prepared, for example, to lacking artwork due to licensing restrictions" OFF)

@@ -32,14 +32,14 @@ foreach (FORM ${GUI_FORMS})
 endforeach ()
 set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 
-add_library (leechcraft-util-gui SHARED
+add_library (leechcraft-util-gui${LC_LIBSUFFIX} SHARED
 	${GUI_SRCS}
 	${GUI_UIS_H}
 	)
-target_link_libraries (leechcraft-util-gui
-	leechcraft-util-network
+target_link_libraries (leechcraft-util-gui${LC_LIBSUFFIX}
+	leechcraft-util-network${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-gui PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util-gui DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-util-gui${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+install (TARGETS leechcraft-util-gui${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-gui Network WebKitWidgets Widgets)
+FindQtLibs (leechcraft-util-gui${LC_LIBSUFFIX} Network WebKitWidgets Widgets)
