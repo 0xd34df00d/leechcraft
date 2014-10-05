@@ -36,7 +36,7 @@ namespace Zalil
 {
 	QString BitcheeseService::GetName () const
 	{
-		return "Bitcheese.net";
+		return "dump.bitcheese.net";
 	}
 
 	qint64 BitcheeseService::GetMaxFileSize () const
