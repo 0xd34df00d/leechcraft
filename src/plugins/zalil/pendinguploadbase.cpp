@@ -32,8 +32,12 @@
 #include <QHttpMultiPart>
 #include <QFileInfo>
 #include <QFile>
+#include <QStandardItemModel>
 #include <QtDebug>
 #include <util/sys/mimedetector.h>
+#include <util/xpc/util.h>
+#include <util/util.h>
+#include <interfaces/ijobholder.h>
 
 namespace LeechCraft
 {
@@ -42,9 +46,36 @@ namespace Zalil
 	PendingUploadBase::PendingUploadBase (const QString& filename,
 			const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject { parent }
+	, ProgressRow_
+	{
+		new QStandardItem { tr ("Uploading %1")
+			.arg (QFileInfo { filename }.fileName ()) },
+		new QStandardItem { tr ("Uploading...") },
+		new QStandardItem
+	}
+	, ProgressRowGuard_
+	{
+		nullptr,
+		[this] (void*)
+		{
+			if (const auto model = ProgressRow_.value (0)->model ())
+				model->removeRow (ProgressRow_.value (0)->row ());
+		}
+	}
 	, Filename_ { filename }
 	, Proxy_ { proxy }
 	{
+		for (const auto item : ProgressRow_)
+		{
+			item->setEditable (false);
+			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+					CustomDataRoles::RoleJobHolderRow);
+		}
+	}
+
+	const QList<QStandardItem*>& PendingUploadBase::GetReprRow () const
+	{
+		return ProgressRow_;
 	}
 
 	QHttpMultiPart* PendingUploadBase::MakeStandardMultipart ()

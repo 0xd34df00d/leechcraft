@@ -29,10 +29,13 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 
+class QStandardItem;
+class QStandardItemModel;
 class QHttpMultiPart;
 
 namespace LeechCraft
@@ -42,11 +45,16 @@ namespace Zalil
 	class PendingUploadBase : public QObject
 	{
 		Q_OBJECT
+
+		const QList<QStandardItem*> ProgressRow_;
+		const std::shared_ptr<void> ProgressRowGuard_;
 	protected:
 		const QString Filename_;
 		const ICoreProxy_ptr Proxy_;
 	public:
 		PendingUploadBase (const QString& filename, const ICoreProxy_ptr&, QObject* = nullptr);
+
+		const QList<QStandardItem*>& GetReprRow () const;
 	protected:
 		QHttpMultiPart* MakeStandardMultipart ();
 	protected slots:
