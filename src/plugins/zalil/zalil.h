@@ -49,7 +49,7 @@ namespace Zalil
 				 , public IWebFileStorage
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IWebFileStorage)
+		Q_INTERFACES (IInfo IJobHolder IWebFileStorage)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Zalil")
 
