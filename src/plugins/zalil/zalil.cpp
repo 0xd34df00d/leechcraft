@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QStandardItemModel>
 #include "servicesmanager.h"
+#include "pendinguploadbase.h"
 
 namespace LeechCraft
 {
@@ -83,7 +84,11 @@ namespace Zalil
 
 	void Plugin::UploadFile (const QString& filename, const QString& service)
 	{
-		Manager_->Upload (filename, service);
+		const auto pending = Manager_->Upload (filename, service);
+		if (!pending)
+			return;
+
+		ReprModel_->appendRow (pending->GetReprRow ());
 	}
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
