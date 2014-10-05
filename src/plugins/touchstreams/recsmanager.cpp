@@ -85,6 +85,9 @@ namespace TouchStreams
 		if (!items.contains (RootItem_))
 			return {};
 
+		if (const auto rc = RootItem_->rowCount ())
+			RootItem_->removeRows (0, rc);
+
 		refetchRecs ();
 		return RootItem_;
 	}
