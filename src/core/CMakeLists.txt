@@ -150,7 +150,13 @@ if (WIN32)
 	set (WIN_RESOURCES ../../../tools/win32/leechcraft.rc)
 endif ()
 
-add_executable (leechcraft WIN32
+if (USE_QT5)
+	set (LC_EXEC_SUFFIX "-qt5")
+else ()
+	set (LC_EXEC_SUFFIX "")
+endif ()
+
+add_executable (leechcraft${LC_EXEC_SUFFIX} WIN32
 	../config.h
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -159,18 +165,18 @@ add_executable (leechcraft WIN32
 	${WIN_RESOURCES}
 	)
 
-target_link_libraries (leechcraft
+target_link_libraries (leechcraft${LC_EXEC_SUFFIX}
 		${Boost_PROGRAM_OPTIONS_LIBRARY}
 		${LEECHCRAFT_LIBRARIES}
 		${ADDITIONAL_LIBS}
 		)
 
-install (TARGETS leechcraft DESTINATION ${LC_BINDIR})
+install (TARGETS leechcraft${LC_EXEC_SUFFIX} DESTINATION ${LC_BINDIR})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft Gui Network Widgets Xml Quick Qml Script Concurrent Svg Sql)
+FindQtLibs (leechcraft${LC_EXEC_SUFFIX} Gui Network Widgets Xml Quick Qml Script Concurrent Svg Sql)
 
 if (WITH_DBUS_LOADERS)
 	add_subdirectory (loaders/dbus)
-	FindQtLibs (leechcraft DBus)
+	FindQtLibs (leechcraft${LC_EXEC_SUFFIX} DBus)
 endif ()
