@@ -99,6 +99,10 @@ namespace Zalil
 
 	void PendingUploadBase::handleUploadProgress (qint64 done, qint64 total)
 	{
+		Util::SetJobHolderProgress (ProgressRow_, done, total,
+				tr ("%1 of %2")
+					.arg (Util::MakePrettySize (done))
+					.arg (Util::MakePrettySize (total)));
 	}
 
 	void PendingUploadBase::handleError ()
