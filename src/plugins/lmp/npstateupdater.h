@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QPixmap>
 #include "mediainfo.h"
+#include "interfaces/lmp/isourceobject.h"
 
 class QLabel;
 
@@ -68,7 +69,7 @@ namespace LMP
 	public slots:
 		void emitNotification ();
 	private slots:
-		void update ();
+		void update (SourceState);
 		void update (const MediaInfo&);
 	};
 }

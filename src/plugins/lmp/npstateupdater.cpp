@@ -60,7 +60,7 @@ namespace LMP
 		connect (Player_->GetSourceObject (),
 				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
-				SLOT (update ()));
+				SLOT (update (SourceState)));
 	}
 
 	void NPStateUpdater::AddPixmapHandler (const PixmapHandler_f& handler)
@@ -154,7 +154,7 @@ namespace LMP
 		EmitNotification (BuildNotificationText (Player_->GetCurrentMediaInfo ()), {});
 	}
 
-	void NPStateUpdater::update ()
+	void NPStateUpdater::update (SourceState newState)
 	{
 		Update (Player_->GetCurrentMediaInfo ());
 	}
