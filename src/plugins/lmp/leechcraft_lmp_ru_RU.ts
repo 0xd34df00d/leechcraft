@@ -629,18 +629,7 @@
 <context>
     <name>LeechCraft::LMP::NowPlayingWidget</name>
     <message>
-        <location filename="nowplayingwidget.cpp" line="129"/>
-        <source>unknown</source>
-        <translation>неизвестно</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.cpp" line="168"/>
-        <source>%1 since %2</source>
-        <oldsource>%n play(s) since %1</oldsource>
-        <translation>%1 с %2</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.cpp" line="196"/>
+        <location filename="nowplayingwidget.cpp" line="148"/>
         <source>showing lyrics from %3 (%1 of %2)</source>
         <translation>отображается текст с %3 (%1 из %2)</translation>
     </message>
@@ -744,77 +733,77 @@
         <translation>Эффекты</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="287"/>
+        <location filename="playertab.cpp" line="286"/>
         <source>Current song</source>
         <translation>Текущая песня</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="288"/>
+        <location filename="playertab.cpp" line="287"/>
         <source>Collection</source>
         <translation>Коллекция</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="289"/>
+        <location filename="playertab.cpp" line="288"/>
         <source>Playlists</source>
         <translation>Списки воспроизведения</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="290"/>
+        <location filename="playertab.cpp" line="289"/>
         <source>Social</source>
         <translation>Социальное</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="291"/>
+        <location filename="playertab.cpp" line="290"/>
         <source>Internet</source>
         <translation>Интернет</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="292"/>
+        <location filename="playertab.cpp" line="291"/>
         <source>Filesystem</source>
         <translation>Файловая система</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="293"/>
+        <location filename="playertab.cpp" line="292"/>
         <source>Devices</source>
         <translation>Устройства</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="313"/>
+        <location filename="playertab.cpp" line="312"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="321"/>
+        <location filename="playertab.cpp" line="320"/>
         <source>Play/Pause</source>
         <translation>Играть/Приостановить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="330"/>
+        <location filename="playertab.cpp" line="329"/>
         <source>Stop</source>
         <translation>Остановить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="338"/>
+        <location filename="playertab.cpp" line="337"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="348"/>
+        <location filename="playertab.cpp" line="347"/>
         <source>Love</source>
         <translation>Отметить как любимое</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="357"/>
+        <location filename="playertab.cpp" line="356"/>
         <source>Ban</source>
         <translation>Запретить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="393"/>
+        <location filename="playertab.cpp" line="392"/>
         <source>Close LMP</source>
         <translation>Закрыть LMP</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="478"/>
+        <location filename="playertab.cpp" line="477"/>
         <source>Open effects configuration page...</source>
         <translation>Открыть страницу настройки эффектов…</translation>
     </message>
@@ -1455,57 +1444,37 @@
 <context>
     <name>NowPlayingWidget</name>
     <message>
-        <location filename="nowplayingwidget.ui" line="86"/>
-        <source>by</source>
-        <translation>от</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.ui" line="100"/>
-        <source>from</source>
-        <translation>с</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.ui" line="128"/>
-        <source>Playbacks:</source>
-        <translation>Воспроизведений:</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.ui" line="135"/>
-        <source>Last play:</source>
-        <translation>Последнее воспроизведение:</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.ui" line="176"/>
+        <location filename="nowplayingwidget.ui" line="33"/>
         <source>Bio</source>
         <translation>Биография</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="186"/>
+        <location filename="nowplayingwidget.ui" line="43"/>
         <source>Similar artists</source>
         <translation>Похожие исполнители</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="195"/>
+        <location filename="nowplayingwidget.ui" line="52"/>
         <source>Including those in your collection</source>
         <translation>Включая те, что уже в коллекции</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="206"/>
+        <location filename="nowplayingwidget.ui" line="63"/>
         <source>Lyrics</source>
         <translation>Текст</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="240"/>
+        <location filename="nowplayingwidget.ui" line="97"/>
         <source>Previous</source>
         <translation>Предыдущий</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="247"/>
+        <location filename="nowplayingwidget.ui" line="104"/>
         <source>Next</source>
         <translation>Следующий</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="257"/>
+        <location filename="nowplayingwidget.ui" line="114"/>
         <source>Properties</source>
         <translation>Свойства</translation>
     </message>

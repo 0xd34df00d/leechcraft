@@ -621,18 +621,7 @@
 <context>
     <name>LeechCraft::LMP::NowPlayingWidget</name>
     <message>
-        <location filename="nowplayingwidget.cpp" line="129"/>
-        <source>unknown</source>
-        <translation>unknown</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.cpp" line="168"/>
-        <source>%1 since %2</source>
-        <oldsource>%n play(s) since %1</oldsource>
-        <translation>%1 since %2</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.cpp" line="196"/>
+        <location filename="nowplayingwidget.cpp" line="148"/>
         <source>showing lyrics from %3 (%1 of %2)</source>
         <translation>showing lyrics from %3 (%1 of %2)</translation>
     </message>
@@ -736,77 +725,77 @@
         <translation>Effects</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="287"/>
+        <location filename="playertab.cpp" line="286"/>
         <source>Current song</source>
         <translation>Current song</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="288"/>
+        <location filename="playertab.cpp" line="287"/>
         <source>Collection</source>
         <translation>Collection</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="289"/>
+        <location filename="playertab.cpp" line="288"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="290"/>
+        <location filename="playertab.cpp" line="289"/>
         <source>Social</source>
         <translation>Social</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="291"/>
+        <location filename="playertab.cpp" line="290"/>
         <source>Internet</source>
         <translation>Internet</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="292"/>
+        <location filename="playertab.cpp" line="291"/>
         <source>Filesystem</source>
         <translation>Filesystem</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="293"/>
+        <location filename="playertab.cpp" line="292"/>
         <source>Devices</source>
         <translation>Devices</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="313"/>
+        <location filename="playertab.cpp" line="312"/>
         <source>Previous track</source>
         <translation>Previous track</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="321"/>
+        <location filename="playertab.cpp" line="320"/>
         <source>Play/Pause</source>
         <translation>Play/Pause</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="330"/>
+        <location filename="playertab.cpp" line="329"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="338"/>
+        <location filename="playertab.cpp" line="337"/>
         <source>Next track</source>
         <translation>Next track</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="348"/>
+        <location filename="playertab.cpp" line="347"/>
         <source>Love</source>
         <translation>Love</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="357"/>
+        <location filename="playertab.cpp" line="356"/>
         <source>Ban</source>
         <translation>Ban</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="393"/>
+        <location filename="playertab.cpp" line="392"/>
         <source>Close LMP</source>
         <translation>Close LMP</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="478"/>
+        <location filename="playertab.cpp" line="477"/>
         <source>Open effects configuration page...</source>
         <translation>Open effects configuration page...</translation>
     </message>
@@ -1442,57 +1431,37 @@
 <context>
     <name>NowPlayingWidget</name>
     <message>
-        <location filename="nowplayingwidget.ui" line="86"/>
-        <source>by</source>
-        <translation>by</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.ui" line="100"/>
-        <source>from</source>
-        <translation>from</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.ui" line="128"/>
-        <source>Playbacks:</source>
-        <translation>Playbacks:</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.ui" line="135"/>
-        <source>Last play:</source>
-        <translation>Last play:</translation>
-    </message>
-    <message>
-        <location filename="nowplayingwidget.ui" line="176"/>
+        <location filename="nowplayingwidget.ui" line="33"/>
         <source>Bio</source>
         <translation>Bio</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="186"/>
+        <location filename="nowplayingwidget.ui" line="43"/>
         <source>Similar artists</source>
         <translation>Similar artists</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="195"/>
+        <location filename="nowplayingwidget.ui" line="52"/>
         <source>Including those in your collection</source>
         <translation>Including those in your collection</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="206"/>
+        <location filename="nowplayingwidget.ui" line="63"/>
         <source>Lyrics</source>
         <translation>Lyrics</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="240"/>
+        <location filename="nowplayingwidget.ui" line="97"/>
         <source>Previous</source>
         <translation>Previous</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="247"/>
+        <location filename="nowplayingwidget.ui" line="104"/>
         <source>Next</source>
         <translation>Next</translation>
     </message>
     <message>
-        <location filename="nowplayingwidget.ui" line="257"/>
+        <location filename="nowplayingwidget.ui" line="114"/>
         <source>Properties</source>
         <translation>Properties</translation>
     </message>
