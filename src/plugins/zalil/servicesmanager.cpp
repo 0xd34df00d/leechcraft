@@ -76,7 +76,14 @@ namespace Zalil
 
 		const auto pending = (*pos)->UploadFile (file);
 		if (!pending)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to upload"
+					<< file
+					<< "to"
+					<< svcName;
 			return nullptr;
+		}
 
 		connect (pending,
 				SIGNAL (fileUploaded (QString, QUrl)),
