@@ -1451,7 +1451,9 @@ namespace LMP
 
 		handleMetadata ();
 
-		EmitStateChange (Source_->GetState ());
+		const auto sourceState = Source_->GetState ();
+		if (sourceState != SourceState::Stopped)
+			EmitStateChange (sourceState);
 	}
 
 	void Player::handleMetadata ()
