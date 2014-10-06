@@ -66,38 +66,41 @@ namespace LMP
 	{
 		class Matcher
 		{
-			const QList<QPair<QString, ANFieldValue>> Fields_;
+			const QList<QPair<QString, std::function<ANFieldValue ()>>> Fields_;
 		public:
 			Matcher (const MediaInfo& info)
 			: Fields_
 			{
 				{
 					AN::Field::MediaArtist,
-					ANStringFieldValue { info.Artist_ }
+					[info] { return ANStringFieldValue { info.Artist_ }; }
 				},
 				{
 					AN::Field::MediaAlbum,
-					ANStringFieldValue { info.Album_ }
+					[info] { return ANStringFieldValue { info.Album_ }; }
 				},
 				{
 					AN::Field::MediaTitle,
-					ANStringFieldValue { info.Title_ }
+					[info] { return ANStringFieldValue { info.Title_ }; }
 				},
 				{
 					AN::Field::MediaLength,
-					ANIntFieldValue { info.Length_, ANIntFieldValue::OEqual }
+					[info] { return ANIntFieldValue { info.Length_, ANIntFieldValue::OEqual }; }
 				},
 				{
 					AN::Field::MediaPlayerURL,
-					ANStringFieldValue
+					[info]
 					{
-						[&info]
+						return ANStringFieldValue
 						{
-							auto url = info.Additional_.value ("URL").toUrl ();
-							if (url.isEmpty ())
-								url = QUrl::fromLocalFile (info.LocalPath_);
-							return url;
-						} ().toEncoded ()
+							[&info]
+							{
+								auto url = info.Additional_.value ("URL").toUrl ();
+								if (url.isEmpty ())
+									url = QUrl::fromLocalFile (info.LocalPath_);
+								return url;
+							} ().toEncoded ()
+						};
 					}
 				}
 			}
@@ -116,7 +119,7 @@ namespace LMP
 					hadAtLeastOne = true;
 
 					const auto& value = map.value (field.first).value<ANFieldValue> ();
-					if (!(value == field.second))
+					if (!(value == field.second ()))
 						return false;
 				}
 
