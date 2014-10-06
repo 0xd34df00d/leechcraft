@@ -30,12 +30,16 @@
 #include "playerrulesmanager.h"
 #include <QUrl>
 #include <QStandardItemModel>
+#include <QtConcurrentMap>
 #include <interfaces/structures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/an/ianrulesstorage.h>
 #include <interfaces/an/constants.h>
 #include <util/structuresops.h>
+#include <util/util.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include "core.h"
 #include "player.h"
 
@@ -139,19 +143,36 @@ namespace LMP
 
 		void ReapplyRules (const QList<QStandardItem*>& items, const QList<Entity>& rules)
 		{
-			qDebug () << Q_FUNC_INFO;
-			for (const auto item : items)
-			{
-				const auto& info = item->data (Player::Role::Info).value<MediaInfo> ();
+			const auto pool = QThreadPool::globalInstance ();
+			const auto maxThreads = pool->maxThreadCount ();
+			const auto activeThreads = pool->activeThreadCount ();
+			qDebug () << Q_FUNC_INFO << maxThreads << activeThreads;
+			using RulesMap_t = QMap<QStandardItem*, QList<Entity>>;
+			const auto split = Util::SplitInto (std::max (maxThreads - activeThreads, 1), items);
+			const auto& updatedItems = QtConcurrent::blockingMappedReduced (split,
+					std::function<RulesMap_t (QList<QStandardItem*>)>
+					{
+						[&rules] (QList<QStandardItem*> items) -> RulesMap_t
+						{
+							RulesMap_t map;
+							for (const auto& item : items)
+							{
+								const auto& info = item->data (Player::Role::Info).value<MediaInfo> ();
 
-				const auto& matching = FindMatching (info, rules);
-
-				const auto& current = item->data (Player::Role::MatchingRules).value<QList<Entity>> ();
-				if (current != matching)
-					item->setData (matching.isEmpty () ? QVariant {} : QVariant::fromValue (matching),
-							Player::Role::MatchingRules);
-			}
-			qDebug () << "done";
+								const auto& matching = FindMatching (info, rules);
+								const auto& current = item->data (Player::Role::MatchingRules).value<QList<Entity>> ();
+								if (current != matching)
+									map [item] = matching;
+							}
+							return map;
+						}
+					},
+					&RulesMap_t::unite
+				);
+			for (const auto& pair : Util::Stlize (updatedItems))
+				pair.first->setData (pair.second.isEmpty () ? QVariant {} : QVariant::fromValue (pair.second),
+						Player::Role::MatchingRules);
+			qDebug () << "done" << updatedItems.size ();
 		}
 	}
 
