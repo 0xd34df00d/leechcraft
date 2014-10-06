@@ -35,6 +35,7 @@
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/an/ianrulesstorage.h>
 #include <interfaces/an/constants.h>
+#include <util/structuresops.h>
 #include "core.h"
 #include "player.h"
 
@@ -138,14 +139,19 @@ namespace LMP
 
 		void ReapplyRules (const QList<QStandardItem*>& items, const QList<Entity>& rules)
 		{
+			qDebug () << Q_FUNC_INFO;
 			for (const auto item : items)
 			{
 				const auto& info = item->data (Player::Role::Info).value<MediaInfo> ();
 
 				const auto& matching = FindMatching (info, rules);
-				item->setData (matching.isEmpty () ? QVariant {} : QVariant::fromValue (matching),
-						Player::Role::MatchingRules);
+
+				const auto& current = item->data (Player::Role::MatchingRules).value<QList<Entity>> ();
+				if (current != matching)
+					item->setData (matching.isEmpty () ? QVariant {} : QVariant::fromValue (matching),
+							Player::Role::MatchingRules);
 			}
+			qDebug () << "done";
 		}
 	}
 
