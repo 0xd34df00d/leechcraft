@@ -159,13 +159,20 @@ namespace LMP
 
 			using RulesMap_t = QHash<QStandardItem*, QList<Entity>>;
 			RulesMap_t newRules;
-			for (const auto& rule : rules)
-				for (const auto item : items)
-				{
-					const auto& info = item->data (Player::Role::Info).value<MediaInfo> ();
-					if (Matches (rule, info))
-						newRules [item] << rule;
-				}
+
+			if (!rules.isEmpty ())
+			{
+				const auto& infoCache = Util::Map (items,
+						[] (QStandardItem *item)
+						{
+							return qMakePair (item, item->data (Player::Role::Info).value<MediaInfo> ());
+						});
+
+				for (const auto& rule : rules)
+					for (const auto infoCache : infoCache)
+						if (Matches (rule, infoCache.second))
+							newRules [infoCache.first] << rule;
+			}
 
 			for (const auto item : items)
 			{
