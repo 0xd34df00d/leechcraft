@@ -64,13 +64,12 @@ namespace LMP
 
 	namespace
 	{
-		bool MatchesRule (const MediaInfo& info, const Entity& rule)
+		class Matcher
 		{
-			auto url = info.Additional_.value ("URL").toUrl ();
-			if (url.isEmpty ())
-				url = QUrl::fromLocalFile (info.LocalPath_);
-
-			const QList<QPair<QString, ANFieldValue>> fields
+			const QList<QPair<QString, ANFieldValue>> Fields_;
+		public:
+			Matcher (const MediaInfo& info)
+			: Fields_
 			{
 				{
 					AN::Field::MediaArtist,
@@ -90,33 +89,47 @@ namespace LMP
 				},
 				{
 					AN::Field::MediaPlayerURL,
-					ANStringFieldValue { url.toEncoded () }
+					ANStringFieldValue
+					{
+						[&info]
+						{
+							auto url = info.Additional_.value ("URL").toUrl ();
+							if (url.isEmpty ())
+								url = QUrl::fromLocalFile (info.LocalPath_);
+							return url;
+						} ().toEncoded ()
+					}
 				}
-			};
-
-			const auto& map = rule.Additional_;
-			bool hadAtLeastOne = false;
-			for (const auto& field : fields)
+			}
 			{
-				if (!map.contains (field.first))
-					continue;
-
-				hadAtLeastOne = true;
-
-				const auto& value = map.value (field.first).value<ANFieldValue> ();
-				if (!(value == field.second))
-					return false;
 			}
 
-			return hadAtLeastOne;
-		}
+			bool operator() (const Entity& rule) const
+			{
+				const auto& map = rule.Additional_;
+				bool hadAtLeastOne = false;
+				for (const auto& field : Fields_)
+				{
+					if (!map.contains (field.first))
+						continue;
+
+					hadAtLeastOne = true;
+
+					const auto& value = map.value (field.first).value<ANFieldValue> ();
+					if (!(value == field.second))
+						return false;
+				}
+
+				return hadAtLeastOne;
+			}
+		};
 
 		QList<Entity> FindMatching (const MediaInfo& info, const QList<Entity>& rules)
 		{
 			QList<Entity> result;
-			for (const auto& rule : rules)
-				if (MatchesRule (info, rule))
-					result << rule;
+			std::copy_if (rules.begin (), rules.end (),
+					std::back_inserter (result),
+					Matcher { info });
 			return result;
 		}
 
