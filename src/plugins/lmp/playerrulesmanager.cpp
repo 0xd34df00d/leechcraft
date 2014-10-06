@@ -69,110 +69,112 @@ namespace LMP
 
 	namespace
 	{
-		class Matcher
+		struct StringMatcher : boost::static_visitor<bool>
 		{
-			const QList<QPair<QString, std::function<ANFieldValue ()>>> Fields_;
-		public:
-			Matcher (const MediaInfo& info)
-			: Fields_
-			{
-				{
-					AN::Field::MediaArtist,
-					[info] { return ANStringFieldValue { info.Artist_ }; }
-				},
-				{
-					AN::Field::MediaAlbum,
-					[info] { return ANStringFieldValue { info.Album_ }; }
-				},
-				{
-					AN::Field::MediaTitle,
-					[info] { return ANStringFieldValue { info.Title_ }; }
-				},
-				{
-					AN::Field::MediaLength,
-					[info] { return ANIntFieldValue { info.Length_, ANIntFieldValue::OEqual }; }
-				},
-				{
-					AN::Field::MediaPlayerURL,
-					[info]
-					{
-						return ANStringFieldValue
-						{
-							[&info]
-							{
-								auto url = info.Additional_.value ("URL").toUrl ();
-								if (url.isEmpty ())
-									url = QUrl::fromLocalFile (info.LocalPath_);
-								return url;
-							} ().toEncoded ()
-						};
-					}
-				}
-			}
+			const QString Value_;
+
+			StringMatcher (const QString& val)
+			: Value_ { val }
 			{
 			}
 
-			bool operator() (const Entity& rule) const
+			bool operator() (const ANStringFieldValue& value) const
 			{
-				const auto& map = rule.Additional_;
-				bool hadAtLeastOne = false;
-				for (const auto& field : Fields_)
-				{
-					if (!map.contains (field.first))
-						continue;
+				return value.Rx_.exactMatch (Value_) == value.Contains_;
+			}
 
-					hadAtLeastOne = true;
-
-					const auto& value = map.value (field.first).value<ANFieldValue> ();
-					if (!(value == field.second ()))
-						return false;
-				}
-
-				return hadAtLeastOne;
+			template<typename T>
+			bool operator() (const T&) const
+			{
+				return false;
 			}
 		};
 
-		QList<Entity> FindMatching (const MediaInfo& info, const QList<Entity>& rules)
+		struct IntMatcher : boost::static_visitor<bool>
 		{
-			QList<Entity> result;
-			std::copy_if (rules.begin (), rules.end (),
-					std::back_inserter (result),
-					Matcher { info });
-			return result;
+			const int Value_;
+
+			IntMatcher (int val)
+			: Value_ { val }
+			{
+			}
+
+			bool operator() (const ANIntFieldValue& value) const
+			{
+				return ((value.Ops_ & ANIntFieldValue::OEqual) && Value_ == value.Boundary_) ||
+						((value.Ops_ & ANIntFieldValue::OGreater) && Value_ > value.Boundary_) ||
+						((value.Ops_ & ANIntFieldValue::OLess) && Value_ < value.Boundary_);
+			}
+
+			template<typename T>
+			bool operator() (const T&) const
+			{
+				return false;
+			}
+		};
+
+		template<typename U, typename T>
+		bool MatchField (const Entity& rule, const QString& fieldId, const T& value, bool& hadSome)
+		{
+			const auto pos = rule.Additional_.find (fieldId);
+			if (pos == rule.Additional_.end ())
+				return true;
+
+			hadSome = true;
+			auto variant = pos.value ().value<ANFieldValue> ();
+			return boost::apply_visitor (U { value }, variant);
+		}
+
+		bool Matches (const Entity& rule, const MediaInfo& info)
+		{
+			bool hadSome = false;
+			auto matchStr = [&rule, &hadSome] (const QString& fieldId, const QString& value)
+			{
+				return MatchField<StringMatcher> (rule, fieldId, value, hadSome);
+			};
+			auto matchInt = [&rule, &hadSome] (const QString& fieldId, int value)
+			{
+				return MatchField<IntMatcher> (rule, fieldId, value, hadSome);
+			};
+
+			auto url = info.Additional_.value ("URL").toUrl ();
+			if (url.isEmpty ())
+				url = QUrl::fromLocalFile (info.LocalPath_);
+
+			if (!matchInt (AN::Field::MediaLength, info.Length_) ||
+					!matchStr (AN::Field::MediaArtist, info.Artist_) ||
+					!matchStr (AN::Field::MediaAlbum, info.Album_) ||
+					!matchStr (AN::Field::MediaTitle, info.Title_) ||
+					!matchStr (AN::Field::MediaPlayerURL, url.toEncoded ()))
+				return false;
+
+			return hadSome;
 		}
 
 		void ReapplyRules (const QList<QStandardItem*>& items, const QList<Entity>& rules)
 		{
-			const auto pool = QThreadPool::globalInstance ();
-			const auto maxThreads = pool->maxThreadCount ();
-			const auto activeThreads = pool->activeThreadCount ();
-			qDebug () << Q_FUNC_INFO << maxThreads << activeThreads;
-			using RulesMap_t = QMap<QStandardItem*, QList<Entity>>;
-			const auto split = Util::SplitInto (std::max (maxThreads - activeThreads, 1), items);
-			const auto& updatedItems = QtConcurrent::blockingMappedReduced (split,
-					std::function<RulesMap_t (QList<QStandardItem*>)>
-					{
-						[&rules] (QList<QStandardItem*> items) -> RulesMap_t
-						{
-							RulesMap_t map;
-							for (const auto& item : items)
-							{
-								const auto& info = item->data (Player::Role::Info).value<MediaInfo> ();
+			qDebug () << Q_FUNC_INFO;
 
-								const auto& matching = FindMatching (info, rules);
-								const auto& current = item->data (Player::Role::MatchingRules).value<QList<Entity>> ();
-								if (current != matching)
-									map [item] = matching;
-							}
-							return map;
-						}
-					},
-					&RulesMap_t::unite
-				);
-			for (const auto& pair : Util::Stlize (updatedItems))
-				pair.first->setData (pair.second.isEmpty () ? QVariant {} : QVariant::fromValue (pair.second),
-						Player::Role::MatchingRules);
-			qDebug () << "done" << updatedItems.size ();
+			using RulesMap_t = QHash<QStandardItem*, QList<Entity>>;
+			RulesMap_t newRules;
+			for (const auto& rule : rules)
+				for (const auto item : items)
+				{
+					const auto& info = item->data (Player::Role::Info).value<MediaInfo> ();
+					if (Matches (rule, info))
+						newRules [item] << rule;
+				}
+
+			for (const auto item : items)
+			{
+				const auto& matching = newRules.value (item);
+				const auto& current = item->data (Player::Role::MatchingRules).value<QList<Entity>> ();
+				if (current != matching)
+					item->setData (matching.isEmpty () ? QVariant {} : QVariant::fromValue (matching),
+							Player::Role::MatchingRules);
+			}
+
+			qDebug () << "done" << newRules.size ();
 		}
 	}
 
