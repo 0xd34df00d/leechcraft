@@ -137,15 +137,17 @@ namespace LMP
 				return MatchField<IntMatcher> (rule, fieldId, value, hadSome);
 			};
 
+			if (!matchInt (AN::Field::MediaLength, info.Length_) ||
+					!matchStr (AN::Field::MediaArtist, info.Artist_) ||
+					!matchStr (AN::Field::MediaAlbum, info.Album_) ||
+					!matchStr (AN::Field::MediaTitle, info.Title_))
+				return false;
+
 			auto url = info.Additional_.value ("URL").toUrl ();
 			if (url.isEmpty ())
 				url = QUrl::fromLocalFile (info.LocalPath_);
 
-			if (!matchInt (AN::Field::MediaLength, info.Length_) ||
-					!matchStr (AN::Field::MediaArtist, info.Artist_) ||
-					!matchStr (AN::Field::MediaAlbum, info.Album_) ||
-					!matchStr (AN::Field::MediaTitle, info.Title_) ||
-					!matchStr (AN::Field::MediaPlayerURL, url.toEncoded ()))
+			if (!matchStr (AN::Field::MediaPlayerURL, url.toEncoded ()))
 				return false;
 
 			return hadSome;
