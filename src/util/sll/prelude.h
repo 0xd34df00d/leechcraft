@@ -92,6 +92,28 @@ namespace Util
 		return result;
 	}
 
+	template<template<typename> class Container, typename T>
+	Container<Container<T>> SplitInto (size_t numChunks, const Container<T>& container)
+	{
+		Container<Container<T>> result;
+
+		const size_t chunkSize = container.size () / numChunks;
+		for (size_t i = 0; i < numChunks; ++i)
+		{
+			Container<T> subcont;
+			const auto start = container.begin () + chunkSize * i;
+			const auto end = start + chunkSize;
+			std::copy (start, end, std::back_inserter (subcont));
+			result.push_back (subcont);
+		}
+
+		const auto lastStart = container.begin () + chunkSize * numChunks;
+		const auto lastEnd = container.end ();
+		std::copy (lastStart, lastEnd, std::back_inserter (result.front ()));
+
+		return result;
+	}
+
 	template<template<typename Pair, typename... Rest> class Cont, template<typename K, typename V> class Pair, typename K, typename V, typename KV, typename... Rest>
 	boost::optional<V> Lookup (const KV& key, const Cont<Pair<K, V>, Rest...>& cont)
 	{
