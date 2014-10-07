@@ -527,8 +527,16 @@ namespace AdvancedNotifications
 
 		if (auto item = RulesModel_->item (idx))
 		{
+			disconnect (RulesModel_,
+					SIGNAL (itemChanged (QStandardItem*)),
+					this,
+					SLOT (handleItemChanged (QStandardItem*)));
 			item->setData (enabled, RulesModel::Roles::IsRuleEnabled);
 			item->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
+			connect (RulesModel_,
+					SIGNAL (itemChanged (QStandardItem*)),
+					this,
+					SLOT (handleItemChanged (QStandardItem*)));
 		}
 	}
 
