@@ -231,7 +231,7 @@ namespace Sarin
 			return;
 
 		const auto entry = qobject_cast<ToxContact*> (entryObj);
-		const auto& toxId = entry->GetHumanReadableID ().toLatin1 ();
+		const auto& toxId = entry->GetFriendId ().toLatin1 ();
 
 		Thread_->AddFriend (toxId);
 	}
