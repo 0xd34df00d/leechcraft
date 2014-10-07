@@ -172,8 +172,6 @@ namespace LMP
 
 		void ReapplyRules (const QList<QStandardItem*>& items, const QList<Entity>& rules)
 		{
-			qDebug () << Q_FUNC_INFO;
-
 			using RulesMap_t = QHash<QStandardItem*, QList<Entity>>;
 			RulesMap_t newRules;
 
@@ -202,8 +200,6 @@ namespace LMP
 					item->setData (matching.isEmpty () ? QVariant {} : QVariant::fromValue (matching),
 							Player::Role::MatchingRules);
 			}
-
-			qDebug () << "done" << newRules.size ();
 		}
 	}
 
