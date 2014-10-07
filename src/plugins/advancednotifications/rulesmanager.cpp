@@ -523,6 +523,8 @@ namespace AdvancedNotifications
 			return;
 
 		Rules_ [idx].SetEnabled (enabled);
+		SaveSettings ();
+
 		if (auto item = RulesModel_->item (idx))
 		{
 			item->setData (enabled, RulesModel::Roles::IsRuleEnabled);
