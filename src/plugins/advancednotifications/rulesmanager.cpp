@@ -519,6 +519,9 @@ namespace AdvancedNotifications
 
 	void RulesManager::setRuleEnabled (int idx, bool enabled)
 	{
+		if (Rules_ [idx].IsEnabled () == enabled)
+			return;
+
 		Rules_ [idx].SetEnabled (enabled);
 		if (auto item = RulesModel_->item (idx))
 		{
@@ -549,6 +552,7 @@ namespace AdvancedNotifications
 
 		const int idx = item->row ();
 		const bool newState = item->checkState () == Qt::Checked;
+
 		item->setData (newState, RulesModel::Roles::IsRuleEnabled);
 
 		if (newState == Rules_.at (idx).IsEnabled () ||
