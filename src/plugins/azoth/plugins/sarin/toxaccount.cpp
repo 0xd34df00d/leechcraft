@@ -461,6 +461,9 @@ namespace Sarin
 		if (!Contacts_.contains (pubkey))
 			InitEntry (pubkey);
 
+		const auto contact = Contacts_.value (pubkey);
+		contact->SetFriendId (friendId);
+
 		emit authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
 	}
 
