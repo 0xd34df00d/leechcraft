@@ -46,6 +46,16 @@ namespace Sarin
 	{
 	}
 
+	QString ToxContact::GetFriendId () const
+	{
+		return FriendId_;
+	}
+
+	void ToxContact::SetFriendId (const QString& id)
+	{
+		FriendId_ = id;
+	}
+
 	QObject* ToxContact::GetQObject ()
 	{
 		return this;
