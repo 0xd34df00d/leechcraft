@@ -145,7 +145,7 @@ namespace Sarin
 		void toxStateChanged (const QByteArray&);
 
 		void gotFriend (qint32);
-		void gotFriendRequest (const QByteArray& pubkey, const QString& msg);
+		void gotFriendRequest (const QByteArray& friendId, const QByteArray& pubkey, const QString& msg);
 		void removedFriend (const QByteArray& pubkey);
 
 		void friendNameChanged (const QByteArray& pubkey, const QString&);

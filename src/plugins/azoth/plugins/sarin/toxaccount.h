@@ -114,7 +114,7 @@ namespace Sarin
 		void handleToxStateChanged (const QByteArray&);
 
 		void handleGotFriend (qint32);
-		void handleGotFriendRequest (const QByteArray&, const QString&);
+		void handleGotFriendRequest (const QByteArray&, const QByteArray&, const QString&);
 		void handleRemovedFriend (const QByteArray&);
 
 		void handleFriendNameChanged (const QByteArray&, const QString&);
