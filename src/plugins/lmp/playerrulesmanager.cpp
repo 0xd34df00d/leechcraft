@@ -113,45 +113,62 @@ namespace LMP
 			}
 		};
 
-		template<typename U, typename T>
-		bool MatchField (const Entity& rule, const QString& fieldId, const T& value, bool& hadSome)
+		struct Matcher
 		{
-			const auto pos = rule.Additional_.find (fieldId);
-			if (pos == rule.Additional_.end ())
-				return true;
+			const QVariant LengthField_;
+			const QVariant ArtistField_;
+			const QVariant AlbumField_;
+			const QVariant TitleField_;
+			const QVariant PlayerUrlField_;
 
-			hadSome = true;
-			auto variant = pos.value ().value<ANFieldValue> ();
-			return boost::apply_visitor (U { value }, variant);
-		}
-
-		bool Matches (const Entity& rule, const MediaInfo& info)
-		{
-			bool hadSome = false;
-			auto matchStr = [&rule, &hadSome] (const QString& fieldId, const QString& value)
+			Matcher (const Entity& info)
+			: LengthField_ { info.Additional_.value (AN::Field::MediaLength) }
+			, ArtistField_ { info.Additional_.value (AN::Field::MediaArtist) }
+			, AlbumField_ { info.Additional_.value (AN::Field::MediaAlbum) }
+			, TitleField_ { info.Additional_.value (AN::Field::MediaTitle) }
+			, PlayerUrlField_ { info.Additional_.value (AN::Field::MediaPlayerURL) }
 			{
-				return MatchField<StringMatcher> (rule, fieldId, value, hadSome);
-			};
-			auto matchInt = [&rule, &hadSome] (const QString& fieldId, int value)
+			}
+
+			template<typename U, typename T>
+			static bool MatchField (const QVariant& wrapped, const T& value, bool& hadSome)
 			{
-				return MatchField<IntMatcher> (rule, fieldId, value, hadSome);
-			};
+				if (wrapped.isNull ())
+					return true;
 
-			if (!matchInt (AN::Field::MediaLength, info.Length_) ||
-					!matchStr (AN::Field::MediaArtist, info.Artist_) ||
-					!matchStr (AN::Field::MediaAlbum, info.Album_) ||
-					!matchStr (AN::Field::MediaTitle, info.Title_))
-				return false;
+				hadSome = true;
+				auto variant = wrapped.value<ANFieldValue> ();
+				return boost::apply_visitor (U { value }, variant);
+			}
 
-			auto url = info.Additional_.value ("URL").toUrl ();
-			if (url.isEmpty ())
-				url = QUrl::fromLocalFile (info.LocalPath_);
+			bool operator() (const MediaInfo& info) const
+			{
+				bool hadSome = false;
+				auto matchStr = [&hadSome] (const QVariant& var, const QString& value)
+				{
+					return MatchField<StringMatcher> (var, value, hadSome);
+				};
+				auto matchInt = [&hadSome] (const QVariant& var, int value)
+				{
+					return MatchField<IntMatcher> (var, value, hadSome);
+				};
 
-			if (!matchStr (AN::Field::MediaPlayerURL, url.toEncoded ()))
-				return false;
+				if (!matchInt (LengthField_, info.Length_) ||
+						!matchStr (ArtistField_, info.Artist_) ||
+						!matchStr (AlbumField_, info.Album_) ||
+						!matchStr (TitleField_, info.Title_))
+					return false;
 
-			return hadSome;
-		}
+				auto url = info.Additional_.value ("URL").toUrl ();
+				if (url.isEmpty ())
+					url = QUrl::fromLocalFile (info.LocalPath_);
+
+				if (!matchStr (PlayerUrlField_, url.toEncoded ()))
+					return false;
+
+				return hadSome;
+			}
+		};
 
 		void ReapplyRules (const QList<QStandardItem*>& items, const QList<Entity>& rules)
 		{
@@ -169,9 +186,12 @@ namespace LMP
 						});
 
 				for (const auto& rule : rules)
-					for (const auto infoCache : infoCache)
-						if (Matches (rule, infoCache.second))
-							newRules [infoCache.first] << rule;
+				{
+					const Matcher matcher { rule };
+					for (const auto& pair : infoCache)
+						if (matcher (pair.second))
+							newRules [pair.first] << rule;
+				}
 			}
 
 			for (const auto item : items)
