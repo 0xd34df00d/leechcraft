@@ -232,6 +232,17 @@ namespace Sarin
 
 		const auto entry = qobject_cast<ToxContact*> (entryObj);
 		const auto& toxId = entry->GetFriendId ().toLatin1 ();
+		if (toxId.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty friend ID for"
+					<< entry->GetHumanReadableID ();
+			const auto& e = Util::MakeNotification ("Azoth Sarin",
+					tr ("Unable to authorize friend: unknown friend ID."),
+					PWarning_);
+			Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
+			return;
+		}
 
 		Thread_->AddFriend (toxId);
 	}
