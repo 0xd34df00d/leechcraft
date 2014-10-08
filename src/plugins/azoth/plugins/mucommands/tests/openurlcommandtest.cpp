@@ -35,6 +35,15 @@
 
 QTEST_MAIN (LeechCraft::Azoth::MuCommands::OpenUrlCommandTest)
 
+namespace QTest
+{
+	template<>
+	char* toString (const LeechCraft::Azoth::MuCommands::OpenUrlParams_t& var)
+	{
+		return PrintVar (var);
+	}
+}
+
 namespace LeechCraft
 {
 namespace Azoth
