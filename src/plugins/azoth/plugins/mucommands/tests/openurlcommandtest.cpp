@@ -98,6 +98,20 @@ namespace MuCommands
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, (OpenUrlParams_t { UrlRange { {}, {} } }));
 	}
+
+	void OpenUrlCommandTest::openByRx ()
+	{
+		const QString command = "/openurl rx ^[a-c]$";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, OpenUrlParams_t { UrlRegExp { "^[a-c]$" } });
+	}
+
+	void OpenUrlCommandTest::openByRxSpaces ()
+	{
+		const QString command = "/openurl rx ^[a-c] space smth$";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, OpenUrlParams_t { UrlRegExp { "^[a-c] space smth$" } });
+	}
 }
 }
 }

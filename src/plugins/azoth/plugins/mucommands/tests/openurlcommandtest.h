@@ -42,10 +42,14 @@ namespace MuCommands
 		Q_OBJECT
 	private slots:
 		void openByIndex ();
+
 		void openByRange ();
 		void openByLeftOpenRange ();
 		void openByRightOpenRange ();
 		void openByFullOpenRange ();
+
+		void openByRx ();
+		void openByRxSpaces ();
 	};
 }
 }
