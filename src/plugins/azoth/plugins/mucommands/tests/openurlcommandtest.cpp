@@ -61,6 +61,34 @@ namespace MuCommands
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, OpenUrlParams_t { UrlIndex_t { 3 } });
 	}
+
+	void OpenUrlCommandTest::openByRange ()
+	{
+		const QString command = "/openurl 3:10";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, (OpenUrlParams_t { UrlRange { 3, 10 } }));
+	}
+
+	void OpenUrlCommandTest::openByLeftOpenRange ()
+	{
+		const QString command = "/openurl :10";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, (OpenUrlParams_t { UrlRange { {}, 10 } }));
+	}
+
+	void OpenUrlCommandTest::openByRightOpenRange ()
+	{
+		const QString command = "/openurl 3:";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, (OpenUrlParams_t { UrlRange { 3, {} } }));
+	}
+
+	void OpenUrlCommandTest::openByFullOpenRange ()
+	{
+		const QString command = "/openurl :";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, (OpenUrlParams_t { UrlRange { {}, {} } }));
+	}
 }
 }
 }
