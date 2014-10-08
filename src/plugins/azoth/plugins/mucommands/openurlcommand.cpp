@@ -30,6 +30,7 @@
 #include "openurlcommand.h"
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
+#include <boost/spirit/include/qi_uint.hpp>
 #include <boost/fusion/adapted.hpp>
 #include <boost/fusion/adapted/std_pair.hpp>
 #include <boost/fusion/include/std_pair.hpp>
@@ -127,10 +128,18 @@ namespace MuCommands
 		struct Parser : qi::grammar<Iter, OpenUrlParams_t ()>
 		{
 			qi::rule<Iter, OpenUrlParams_t ()> Start_;
+			qi::rule<Iter, UrlIndex_t ()> Index_;
+			qi::rule<Iter, UrlRange ()> Range_;
+			qi::rule<Iter, UrlRegExp ()> RegExp_;
 
 			Parser ()
 			: Parser::base_type { Start_ }
 			{
+				Index_ = qi::uint_;
+				Range_ = -(qi::uint_) >> qi::lit (':') >> -(qi::uint_);
+				RegExp_ = qi::lit ("rx") >> +qi::char_;
+
+				Start_ = Range_ | Index_ | RegExp_;
 			}
 		};
 
