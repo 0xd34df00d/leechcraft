@@ -137,7 +137,7 @@ namespace MuCommands
 			{
 				Index_ = qi::uint_;
 				Range_ = -(qi::uint_) >> qi::lit (':') >> -(qi::uint_);
-				RegExp_ = qi::lit ("rx") >> +qi::char_;
+				RegExp_ = qi::lit ("rx ") >> +qi::char_;
 
 				Start_ = Range_ | Index_ | RegExp_;
 			}
