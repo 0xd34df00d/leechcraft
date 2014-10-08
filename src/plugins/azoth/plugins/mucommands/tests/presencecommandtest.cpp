@@ -31,80 +31,9 @@
 #include <QtTest>
 #include <QtDebug>
 #include "presencecommand.cpp"
+#include "testutil.h"
 
 QTEST_MAIN (LeechCraft::Azoth::MuCommands::PresenceCommandTest)
-
-namespace
-{
-	template<typename T>
-	constexpr bool TestDebuggable (typename std::add_pointer<decltype (qDebug () << T {})>::type)
-	{
-		return true;
-	}
-
-	template<typename T>
-	constexpr bool TestDebuggable (...)
-	{
-		return false;
-	}
-
-	struct PrintVisitor : boost::static_visitor<QString>
-	{
-		QString operator() (const std::string& str) const
-		{
-			return QString::fromStdString (str);
-		}
-
-		template<typename T>
-		typename std::enable_if<TestDebuggable<T> (0), QString>::type operator() (const T& t) const
-		{
-			QString result;
-			QDebug { &result } << t;
-			return result;
-		}
-
-		template<typename T>
-		typename std::enable_if<!TestDebuggable<T> (0), QString>::type operator() (const T& t) const
-		{
-			QString result;
-			QDebug { &result } << typeid (t).name ();
-			return result;
-		}
-
-		template<typename T1, typename T2>
-		QString operator() (const std::pair<T1, T2>& t) const
-		{
-			QString result;
-			QDebug { &result } << "std::pair { " << (*this) (t.first) << "; " << (*this) (t.second) << " }";
-			return result;
-		}
-
-		template<typename... Args>
-		QString operator() (const boost::variant<Args...>& variant) const
-		{
-			auto result = QString { "Variant with type %1, value: { `%2` }" }
-					.arg (variant.which ())
-					.arg (boost::apply_visitor (PrintVisitor {}, variant));
-			return result;
-		}
-	};
-
-	template<typename... Args>
-	char* PrintVar (const boost::variant<Args...>& variant)
-	{
-		const auto& result = PrintVisitor {} (variant);
-		return qstrdup (result.toUtf8 ().constData ());
-	}
-}
-
-namespace QTest
-{
-	template<>
-	char* toString (const LeechCraft::Azoth::MuCommands::Status_t& acc)
-	{
-		return PrintVar (acc);
-	}
-}
 
 namespace LeechCraft
 {
