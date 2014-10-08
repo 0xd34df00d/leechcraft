@@ -28,6 +28,11 @@
  **********************************************************************/
 
 #include "openurlcommand.h"
+#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/phoenix.hpp>
+#include <boost/fusion/adapted.hpp>
+#include <boost/fusion/adapted/std_pair.hpp>
+#include <boost/fusion/include/std_pair.hpp>
 #include <QStringList>
 #include <QUrl>
 #include <util/xpc/util.h>
@@ -76,6 +81,72 @@ namespace MuCommands
 				QObject::tr ("Sorry, no links found, chat more!") :
 				QObject::tr ("Found links:") + "<ol><li>" + urls.join ("</li><li>") + "</li></ol>";
 		return { true, body };
+	}
+
+	namespace
+	{
+		using UrlIndex_t = int;
+
+		struct UrlRange
+		{
+			boost::optional<int> Start_;
+			boost::optional<int> End_;
+		};
+
+		struct UrlRegExp
+		{
+			std::string Pat_;
+		};
+
+		using OpenUrlParams_t = boost::variant<UrlIndex_t, UrlRange, UrlRegExp>;
+	}
+}
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::UrlRange,
+		(boost::optional<int>, Start_)
+		(boost::optional<int>, End_));
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::UrlRegExp,
+		(std::string, Pat_));
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+namespace MuCommands
+{
+	namespace
+	{
+		namespace ascii = boost::spirit::ascii;
+		namespace qi = boost::spirit::qi;
+		namespace phoenix = boost::phoenix;
+
+		template<typename Iter>
+		struct Parser : qi::grammar<Iter, OpenUrlParams_t ()>
+		{
+			qi::rule<Iter, OpenUrlParams_t ()> Start_;
+
+			Parser ()
+			: Parser::base_type { Start_ }
+			{
+			}
+		};
+
+		template<typename Iter>
+		OpenUrlParams_t ParseCommand (Iter begin, Iter end)
+		{
+			OpenUrlParams_t res;
+			qi::parse (begin, end, Parser<Iter> {}, res);
+			return res;
+		}
+
+		OpenUrlParams_t ParseCommand (const QString& cmd)
+		{
+			const auto& unicode = cmd.section (' ', 1).toUtf8 ();
+			return ParseCommand (unicode.begin (), unicode.end ());
+		}
 	}
 
 	bool OpenUrl (const ICoreProxy_ptr& coreProxy, IProxyObject *azothProxy,
