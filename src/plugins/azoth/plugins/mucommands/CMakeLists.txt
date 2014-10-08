@@ -44,14 +44,15 @@ FindQtLibs (leechcraft_azoth_mucommands Core Xml)
 
 if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
-	add_executable (lc_azoth_mucommands_presence_test WIN32
-		tests/presencecommandtest.cpp
-	)
-	target_link_libraries (lc_azoth_mucommands_presence_test
-		${LEECHCRAFT_LIBRARIES}
-	)
-	add_test (AzothMucommandsTest lc_azoth_mucommands_presence_test)
 
-	FindQtLibs (lc_azoth_mucommands_presence_test Test)
-	add_dependencies (lc_azoth_mucommands_presence_test leechcraft_azoth_mucommands)
+	function (AddMuCTest _execName _cppFile _testName)
+		set (_fullExecName lc_azoth_mucommands_${_execName}_test)
+		add_executable (${_fullExecName} WIN32 ${_cppFile})
+		target_link_libraries (${_fullExecName} ${LEECHCRAFT_LIBRARIES})
+		add_test (${_testName} ${_fullExecName})
+		FindQtLibs (${_fullExecName} Test)
+		add_dependencies (${_fullExecName} leechcraft_azoth_mucommands)
+	endfunction ()
+
+	AddMuCTest (presence tests/presencecommandtest.cpp AzothMuCommandsPresenceTest)
 endif ()
