@@ -37,7 +37,7 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	class CommandsTest : public QObject
+	class PresenceCommandTest : public QObject
 	{
 		Q_OBJECT
 	private slots:

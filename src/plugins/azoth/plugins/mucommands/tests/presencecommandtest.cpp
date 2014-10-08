@@ -27,12 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "commandstest.h"
+#include "presencecommandtest.h"
 #include <QtTest>
 #include <QtDebug>
 #include "presencecommand.cpp"
 
-QTEST_MAIN (LeechCraft::Azoth::MuCommands::CommandsTest)
+QTEST_MAIN (LeechCraft::Azoth::MuCommands::PresenceCommandTest)
 
 namespace
 {
@@ -119,7 +119,7 @@ namespace MuCommands
 		bool operator== (const ClearStatus&, const ClearStatus&) { return true; }
 	}
 
-	void CommandsTest::accStateChange ()
+	void PresenceCommandTest::accStateChange ()
 	{
 		const QString command = R"delim(
 /presence testacc with spaces
@@ -130,7 +130,7 @@ away
 		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
 	}
 
-	void CommandsTest::allAccStateChange()
+	void PresenceCommandTest::allAccStateChange()
 	{
 		const QString command = R"delim(
 /presence *
@@ -141,7 +141,7 @@ away
 		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
 	}
 
-	void CommandsTest::noAccStateChange()
+	void PresenceCommandTest::noAccStateChange()
 	{
 		const QString command = R"delim(
 /presence
@@ -152,7 +152,7 @@ away
 		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
 	}
 
-	void CommandsTest::accAlmostCustomStateChange ()
+	void PresenceCommandTest::accAlmostCustomStateChange ()
 	{
 		const QString command = R"delim(
 /presence testacc with spaces
@@ -163,7 +163,7 @@ some custom status
 		QCOMPARE (res.Status_, Status_t { std::string { "some custom status" } });
 	}
 
-	void CommandsTest::accCustomStateChange ()
+	void PresenceCommandTest::accCustomStateChange ()
 	{
 		const QString command = R"delim(
 /presence testacc with spaces
@@ -175,7 +175,7 @@ some custom status
 		QCOMPARE (res.Status_, Status_t { State_t { "some custom status" } });
 	}
 
-	void CommandsTest::accStatusChange ()
+	void PresenceCommandTest::accStatusChange ()
 	{
 		const QString command = R"delim(
 /presence testacc
@@ -190,7 +190,7 @@ multiline status.
 		QCOMPARE (res.Status_, expectedStatus);
 	}
 
-	void CommandsTest::accStatusChangeSameLine ()
+	void PresenceCommandTest::accStatusChangeSameLine ()
 	{
 		const QString command = R"delim(
 /presence testacc
@@ -203,7 +203,7 @@ away oh yeah i'm going away
 		QCOMPARE (res.Status_, expectedStatus);
 	}
 
-	void CommandsTest::accStatusClear ()
+	void PresenceCommandTest::accStatusClear ()
 	{
 		const QString command = R"delim(
 /presence testacc
@@ -214,7 +214,7 @@ clear
 		QCOMPARE (res.Status_, Status_t { ClearStatus {} });
 	}
 
-	void CommandsTest::accStatusChangeClearSubstr ()
+	void PresenceCommandTest::accStatusChangeClearSubstr ()
 	{
 		const QString command = R"delim(
 /presence testacc
@@ -225,7 +225,7 @@ clearr
 		QCOMPARE (res.Status_, Status_t { std::string { "clearr" } });
 	}
 
-	void CommandsTest::accMessageOnly ()
+	void PresenceCommandTest::accMessageOnly ()
 	{
 		const QString command = R"delim(
 /presence testacc with spaces
@@ -237,7 +237,7 @@ away
 		QCOMPARE (res.Status_, Status_t { std::string { "away" } });
 	}
 
-	void CommandsTest::accMultilineMessageOnly ()
+	void PresenceCommandTest::accMultilineMessageOnly ()
 	{
 
 		const QString command = R"delim(
@@ -252,7 +252,7 @@ multiline status.
 		QCOMPARE (res.Status_, expectedStatus);
 	}
 
-	void CommandsTest::chatPrStateChangeNoNL ()
+	void PresenceCommandTest::chatPrStateChangeNoNL ()
 	{
 		const QString command = R"delim(
 /chatpresence away
@@ -261,7 +261,7 @@ multiline status.
 		QCOMPARE (res.Status_, Status_t { State_t { State::SAway } });
 	}
 
-	void CommandsTest::chatPrAlmostCustomStateChangeNoNL ()
+	void PresenceCommandTest::chatPrAlmostCustomStateChangeNoNL ()
 	{
 		const QString command = R"delim(
 /chatpresence some custom status
@@ -270,7 +270,7 @@ multiline status.
 		QCOMPARE (res.Status_, Status_t { std::string { "some custom status" } });
 	}
 
-	void CommandsTest::chatPrCustomStateChangeNoNL ()
+	void PresenceCommandTest::chatPrCustomStateChangeNoNL ()
 	{
 		const QString command = R"delim(
 /chatpresence some custom status
@@ -280,7 +280,7 @@ multiline status.
 		QCOMPARE (res.Status_, Status_t { State_t { "some custom status" } });
 	}
 
-	void CommandsTest::chatPrStatusChangeNoNL ()
+	void PresenceCommandTest::chatPrStatusChangeNoNL ()
 	{
 		const QString command = R"delim(
 /chatpresence xa
@@ -292,7 +292,7 @@ multiline status.
 		QCOMPARE (res.Status_, expectedStatus);
 	}
 
-	void CommandsTest::chatPrStatusChangeSameLineNoNL ()
+	void PresenceCommandTest::chatPrStatusChangeSameLineNoNL ()
 	{
 		const QString command = R"delim(
 /chatpresence away oh yeah i'm going away

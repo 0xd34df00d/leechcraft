@@ -44,14 +44,14 @@ FindQtLibs (leechcraft_azoth_mucommands Core Xml)
 
 if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
-	add_executable (lc_azoth_mucommands_test WIN32
-		tests/commandstest.cpp
+	add_executable (lc_azoth_mucommands_presence_test WIN32
+		tests/presencecommandtest.cpp
 	)
-	target_link_libraries (lc_azoth_mucommands_test
+	target_link_libraries (lc_azoth_mucommands_presence_test
 		${LEECHCRAFT_LIBRARIES}
 	)
-	add_test (AzothMucommandsTest lc_azoth_mucommands_test)
+	add_test (AzothMucommandsTest lc_azoth_mucommands_presence_test)
 
-	FindQtLibs (lc_azoth_mucommands_test Test)
-	add_dependencies (lc_azoth_mucommands_test leechcraft_azoth_mucommands)
+	FindQtLibs (lc_azoth_mucommands_presence_test Test)
+	add_dependencies (lc_azoth_mucommands_presence_test leechcraft_azoth_mucommands)
 endif ()
