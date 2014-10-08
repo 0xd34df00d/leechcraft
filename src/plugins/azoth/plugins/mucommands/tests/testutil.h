@@ -94,9 +94,9 @@ namespace
 
 namespace QTest
 {
-	template<typename... Args>
-	char* toString (const boost::variant<Args...>& var)
+	template<>
+	char* toString (const LeechCraft::Azoth::MuCommands::Status_t& acc)
 	{
-		return PrintVar (var);
+		return PrintVar (acc);
 	}
 }
