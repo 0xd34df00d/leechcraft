@@ -127,6 +127,9 @@
 		</item>
 	</page>
 	<page>
+		<icons>
+			<icon>theme://configure-shortcuts</icon>
+		</icons>
 		<label lang="en" value="Shortcuts" />
 		<item type="customwidget" label="own" name="ShortcutManager" />
 	</page>
@@ -138,6 +141,9 @@
 		</groupbox>
 	</page>
 	<page>
+		<icons>
+			<icon>theme://preferences-system-network</icon>
+		</icons>
 		<label lang="en" value="Network" />
 		<tab>
 			<label lang="en" value="Network" />
@@ -217,6 +223,9 @@
 		</tab>
 	</page>
 	<page>
+		<icons>
+			<icon>theme://preferences-plugin</icon>
+		</icons>
 		<label lang="en" value="Plugins" />
 		<groupbox>
 			<label lang="en" value="Plugins manager" />
