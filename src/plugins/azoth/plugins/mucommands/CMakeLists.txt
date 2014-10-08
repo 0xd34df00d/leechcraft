@@ -55,4 +55,5 @@ if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
 	endfunction ()
 
 	AddMuCTest (presence tests/presencecommandtest.cpp AzothMuCommandsPresenceTest)
+	AddMuCTest (openurl tests/openurlcommandtest.cpp AzothMuCommandsOpenUrlTest)
 endif ()
