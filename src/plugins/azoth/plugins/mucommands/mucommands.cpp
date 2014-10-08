@@ -34,6 +34,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include "commands.h"
 #include "presencecommand.h"
+#include "openurlcommand.h"
 #include "descparser.h"
 
 namespace LeechCraft

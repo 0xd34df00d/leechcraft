@@ -15,6 +15,7 @@ set (MUCOMMANDS_SRCS
 	mucommands.cpp
 	commands.cpp
 	presencecommand.cpp
+	openurlcommand.cpp
 	descparser.cpp
 	)
 

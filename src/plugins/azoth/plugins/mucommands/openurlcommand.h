@@ -40,49 +40,13 @@ namespace Azoth
 {
 class IProxyObject;
 class ICLEntry;
-struct TextMorphResult;
+struct StringCommandResult;
 
 namespace MuCommands
 {
-	bool HandleNames (IProxyObject*, ICLEntry*, const QString&);
+	StringCommandResult ListUrls (IProxyObject*, ICLEntry*, const QString&);
 
-	bool ShowVCard (IProxyObject*, ICLEntry*, const QString&);
-
-	bool ShowVersion (IProxyObject*, ICLEntry*, const QString&);
-
-	bool ShowTime (IProxyObject*, ICLEntry*, const QString&);
-
-	bool Disco (IProxyObject*, ICLEntry*, const QString&);
-
-	bool JoinMuc (IProxyObject*, ICLEntry*, const QString&);
-
-	bool RejoinMuc (IProxyObject*, ICLEntry*, const QString&);
-
-	bool LeaveMuc (IProxyObject*, ICLEntry*, const QString&);
-
-	bool ChangeSubject (IProxyObject*, ICLEntry*, const QString&);
-
-	bool ChangeNick (IProxyObject*, ICLEntry*, const QString&);
-
-	bool Kick (IProxyObject*, ICLEntry*, const QString&);
-
-	bool Ban (IProxyObject*, ICLEntry*, const QString&);
-
-	bool ListPerms (IProxyObject*, ICLEntry*, const QString&);
-
-	bool SetPerm (IProxyObject*, ICLEntry*, const QString&);
-
-	bool Whois (IProxyObject*, ICLEntry*, const QString&);
-
-	bool Invite (IProxyObject*, ICLEntry*, const QString&);
-
-	bool Pm (IProxyObject*, ICLEntry*, const QString&);
-
-	bool Last (IProxyObject*, ICLEntry*, const QString&);
-
-	bool Ping (IProxyObject*, ICLEntry*, const QString&);
-
-	TextMorphResult Subst (IProxyObject*, ICLEntry*, const QString&);
+	bool OpenUrl (const ICoreProxy_ptr&, IProxyObject*, ICLEntry*, const QString&, TaskParameters);
 }
 }
 }
