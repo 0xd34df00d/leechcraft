@@ -91,12 +91,3 @@ namespace
 		return qstrdup (result.toUtf8 ().constData ());
 	}
 }
-
-namespace QTest
-{
-	template<>
-	char* toString (const LeechCraft::Azoth::MuCommands::Status_t& acc)
-	{
-		return PrintVar (acc);
-	}
-}

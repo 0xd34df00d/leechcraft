@@ -35,6 +35,15 @@
 
 QTEST_MAIN (LeechCraft::Azoth::MuCommands::PresenceCommandTest)
 
+namespace QTest
+{
+	template<>
+	char* toString (const LeechCraft::Azoth::MuCommands::Status_t& acc)
+	{
+		return PrintVar (acc);
+	}
+}
+
 namespace LeechCraft
 {
 namespace Azoth
