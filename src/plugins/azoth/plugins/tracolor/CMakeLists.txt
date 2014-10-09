@@ -11,9 +11,10 @@ set (TRACOLOR_SRCS
 	tracolor.cpp
 	entryeventsmanager.cpp
 	iconsmanager.cpp
+	xmlsettingsmanager.cpp
 	)
 #CreateTrs ("azoth_tracolor" "en;ru_RU" TRACOLOR_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("azoth_tracolor" "en;ru_RU" "${TRACOLOR_SRCS}" "" "")
+CreateTrsUpTarget ("azoth_tracolor" "en;ru_RU" "${TRACOLOR_SRCS}" "" "azothtracolorsettings.xml")
 set (TRACOLOR_RESOURCES
 #	tracolorresources.qrc
 	)
@@ -28,7 +29,7 @@ target_link_libraries (leechcraft_azoth_tracolor
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_tracolor DESTINATION ${LC_PLUGINS_DEST})
-#install (FILES azothtracolorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES azothtracolorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_azoth_tracolor Core)
 

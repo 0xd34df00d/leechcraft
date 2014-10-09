@@ -27,14 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/core/ihookproxy.h>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -42,46 +36,27 @@ namespace Azoth
 {
 namespace Tracolor
 {
-	class EntryEventsManager;
-	class IconsManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
-				 , public IEntityHandler
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo
-				IPlugin2
-				IHaveSettings
-				IEntityHandler)
+		Util::BaseSettingsManager::Init ();
+	}
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Tracolor")
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
 
-		EntryEventsManager *EventsManager_;
-		IconsManager *IconsManager_;
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 
-		Util::XmlSettingsDialog_ptr XSD_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-	public slots:
-		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Tracolor");
+		return settings;
+	}
 }
 }
 }
-

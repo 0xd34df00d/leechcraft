@@ -29,12 +29,7 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/core/ihookproxy.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -42,44 +37,16 @@ namespace Azoth
 {
 namespace Tracolor
 {
-	class EntryEventsManager;
-	class IconsManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
-				 , public IEntityHandler
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo
-				IPlugin2
-				IHaveSettings
-				IEntityHandler)
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Tracolor")
-
-		EntryEventsManager *EventsManager_;
-		IconsManager *IconsManager_;
-
-		Util::XmlSettingsDialog_ptr XSD_;
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-	public slots:
-		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }

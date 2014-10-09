@@ -30,12 +30,14 @@
 #include "tracolor.h"
 #include <QIcon>
 #include <QtDebug>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/azoth/iclentry.h>
 #include "entryeventsmanager.h"
 #include "iconsmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -47,6 +49,9 @@ namespace Tracolor
 	{
 		EventsManager_ = new EntryEventsManager;
 		IconsManager_ = new IconsManager { EventsManager_ };
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothtracolorsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -82,6 +87,11 @@ namespace Tracolor
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
