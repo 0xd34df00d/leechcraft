@@ -136,6 +136,8 @@ namespace Tracolor
 			const auto& color = Model_->item (i, 1)->text ();
 			EnabledEvents_ [id] = EventInfo { color };
 		}
+
+		emit eventsSettingsChanged ();
 	}
 
 	void EventsSettingsManager::modifyRequested (const QString&, int rowIdx, const QVariantList& datas)

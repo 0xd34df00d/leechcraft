@@ -74,6 +74,8 @@ namespace Tracolor
 	private slots:
 		void saveSettings ();
 		void handleItemChanged ();
+	signals:
+		void eventsSettingsChanged ();
 	};
 }
 }
