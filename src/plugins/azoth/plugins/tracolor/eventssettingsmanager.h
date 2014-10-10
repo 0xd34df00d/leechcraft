@@ -73,6 +73,7 @@ namespace Tracolor
 		void modifyRequested (const QString&, int, const QVariantList&);
 	private slots:
 		void saveSettings ();
+		void handleItemChanged ();
 	};
 }
 }

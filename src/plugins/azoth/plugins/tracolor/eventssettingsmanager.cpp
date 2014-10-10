@@ -56,7 +56,7 @@ namespace Tracolor
 		connect (Model_,
 				SIGNAL (itemChanged (QStandardItem*)),
 				this,
-				SLOT (saveSettings ()));
+				SLOT (handleItemChanged ()));
 
 		LoadSettings ();
 	}
@@ -146,13 +146,13 @@ namespace Tracolor
 		disconnect (Model_,
 				SIGNAL (itemChanged (QStandardItem*)),
 				this,
-				SLOT (saveSettings ()));
+				SLOT (handleItemChanged ()));
 		colorItem->setText (color.name ());
 		colorItem->setForeground (color);
 		connect (Model_,
 				SIGNAL (itemChanged (QStandardItem*)),
 				this,
-				SLOT (saveSettings ()));
+				SLOT (handleItemChanged ()));
 
 		saveSettings ();
 		RebuildEnabledEvents ();
@@ -172,6 +172,12 @@ namespace Tracolor
 			settings.setValue ("Color", Model_->item (i, 1)->text ());
 		}
 		settings.endArray ();
+	}
+
+	void EventsSettingsManager::handleItemChanged ()
+	{
+		saveSettings ();
+		RebuildEnabledEvents ();
 	}
 }
 }
