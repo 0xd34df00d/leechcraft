@@ -144,6 +144,8 @@ namespace LeechCraft
 		{
 			switch (type)
 			{
+			case DataSources::DataFieldType::None:
+				return nullptr;
 			case DataSources::DataFieldType::Integer:
 			{
 				auto sb = new QSpinBox ();
@@ -167,9 +169,12 @@ namespace LeechCraft
 				}
 				return box;
 			}
-			default:
-				return 0;
 			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unhandled editor type"
+					<< type;
+			return nullptr;
 		}
 
 		void SetData (QWidget *editor, DataSources::DataFieldType type, const QVariant& var)
@@ -187,7 +192,7 @@ namespace LeechCraft
 				qobject_cast<FilePicker*> (editor)->SetText (var.toString ());
 				break;
 			case DataSources::DataFieldType::Enum:
-				// unsupported yet
+				// TODO
 				break;
 			case DataSources::DataFieldType::None:
 				break;
@@ -198,6 +203,8 @@ namespace LeechCraft
 		{
 			switch (type)
 			{
+			case DataSources::DataFieldType::None:
+				return {};
 			case DataSources::DataFieldType::Integer:
 				return qobject_cast<QSpinBox*> (editor)->value ();
 			case DataSources::DataFieldType::String:
@@ -210,9 +217,12 @@ namespace LeechCraft
 				auto box = qobject_cast<QComboBox*> (editor);
 				return box->itemData (box->currentIndex ());
 			}
-			default:
-				return QVariant ();
 			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown field type"
+					<< type;
+			return {};
 		}
 	}
 
