@@ -30,10 +30,11 @@
 #pragma once
 
 #include <QObject>
+#include <QColor>
+#include <QMap>
 
 class QStandardItemModel;
 class QAbstractItemModel;
-class QColor;
 
 typedef QList<QVariant> QVariantList;
 
@@ -49,7 +50,16 @@ namespace Tracolor
 
 		QStandardItemModel * const Model_;
 	public:
+		struct EventInfo
+		{
+			QColor Color_;
+		};
+	private:
+		QMap<QString, EventInfo> EnabledEvents_;
+	public:
 		EventsSettingsManager (QObject* = nullptr);
+
+		QMap<QString, EventInfo> GetEnabledEvents () const;
 
 		QAbstractItemModel* GetModel () const;
 	private:
@@ -57,6 +67,8 @@ namespace Tracolor
 
 		void LoadSettings ();
 		void LoadDefaultSettings ();
+
+		void RebuildEnabledEvents ();
 	public slots:
 		void modifyRequested (const QString&, int, const QVariantList&);
 	private slots:

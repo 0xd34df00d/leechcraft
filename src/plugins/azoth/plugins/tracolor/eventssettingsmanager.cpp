@@ -61,6 +61,11 @@ namespace Tracolor
 		LoadSettings ();
 	}
 
+	QMap<QString, EventsSettingsManager::EventInfo> EventsSettingsManager::GetEnabledEvents () const
+	{
+		return EnabledEvents_;
+	}
+
 	QAbstractItemModel* EventsSettingsManager::GetModel () const
 	{
 		return Model_;
@@ -104,6 +109,8 @@ namespace Tracolor
 			AppendRow (event, QColor { color }, isEnabled);
 		}
 		settings.endArray ();
+
+		RebuildEnabledEvents ();
 	}
 
 	void EventsSettingsManager::LoadDefaultSettings ()
@@ -111,6 +118,24 @@ namespace Tracolor
 		AppendRow (AN::TypeIMMUCMsg, "green");
 		AppendRow (AN::TypeIMIncMsg, "magenta");
 		AppendRow (AN::TypeIMMUCHighlight, "red");
+
+		RebuildEnabledEvents ();
+	}
+
+	void EventsSettingsManager::RebuildEnabledEvents ()
+	{
+		EnabledEvents_.clear ();
+
+		for (int i = 0, rc = Model_->rowCount (); i < rc; ++i)
+		{
+			const auto firstItem = Model_->item (i, 0);
+			if (firstItem->checkState () != Qt::Checked)
+				continue;
+
+			const auto& id = firstItem->text ();
+			const auto& color = Model_->item (i, 1)->text ();
+			EnabledEvents_ [id] = EventInfo { color };
+		}
 	}
 
 	void EventsSettingsManager::modifyRequested (const QString&, int rowIdx, const QVariantList& datas)
@@ -130,6 +155,7 @@ namespace Tracolor
 				SLOT (saveSettings ()));
 
 		saveSettings ();
+		RebuildEnabledEvents ();
 	}
 
 	void EventsSettingsManager::saveSettings ()
