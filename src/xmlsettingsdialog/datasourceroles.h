@@ -48,7 +48,8 @@ namespace LeechCraft
 			Url,
 			LocalPath,
 			Integer,
-			Enum
+			Enum,
+			Color
 		};
 	}
 }
