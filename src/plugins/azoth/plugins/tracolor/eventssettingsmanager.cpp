@@ -53,6 +53,10 @@ namespace Tracolor
 		Model_->setHeaderData (1, Qt::Horizontal,
 				DataSources::DataFieldType::Color,
 				DataSources::DataSourceRole::FieldType);
+		connect (Model_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (saveSettings ()));
 
 		LoadSettings ();
 	}
@@ -62,7 +66,8 @@ namespace Tracolor
 		return Model_;
 	}
 
-	void EventsSettingsManager::AppendRow (const QString& eventId, const QColor& color)
+	void EventsSettingsManager::AppendRow (const QString& eventId,
+			const QColor& color, bool isEnabled)
 	{
 		const QList<QStandardItem*> row
 		{
@@ -72,7 +77,7 @@ namespace Tracolor
 		for (auto item : row)
 			item->setEditable (false);
 		row.first ()->setCheckable (true);
-		row.first ()->setCheckState (Qt::Checked);
+		row.first ()->setCheckState (isEnabled ? Qt::Checked : Qt::Unchecked);
 		row.value (1)->setForeground (color);
 		Model_->appendRow (row);
 	}
@@ -81,7 +86,7 @@ namespace Tracolor
 	{
 		QSettings settings { QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Tracolor" };
-		if (!settings.contains ("Events"))
+		if (!settings.childGroups ().contains ("Events"))
 		{
 			LoadDefaultSettings ();
 			return;
@@ -92,10 +97,11 @@ namespace Tracolor
 		{
 			settings.setArrayIndex (i);
 
-			const auto& event = settings.value ("Event").toByteArray ();
-			const auto& color = settings.value ("Color").toByteArray ();
+			const auto isEnabled = settings.value ("IsEnabled").toBool ();
+			const auto& event = settings.value ("Event").toString ();
+			const auto& color = settings.value ("Color").toString ();
 
-			AppendRow (event, QColor { color.constData () });
+			AppendRow (event, QColor { color }, isEnabled);
 		}
 		settings.endArray ();
 	}
@@ -107,16 +113,39 @@ namespace Tracolor
 		AppendRow (AN::TypeIMMUCHighlight, "red");
 	}
 
-	void EventsSettingsManager::SaveSettings () const
-	{
-	}
-
 	void EventsSettingsManager::modifyRequested (const QString&, int rowIdx, const QVariantList& datas)
 	{
 		const auto colorItem = Model_->item (rowIdx, 1);
 		const auto& color = datas.value (0).value<QColor> ();
+
+		disconnect (Model_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (saveSettings ()));
 		colorItem->setText (color.name ());
 		colorItem->setForeground (color);
+		connect (Model_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (saveSettings ()));
+
+		saveSettings ();
+	}
+
+	void EventsSettingsManager::saveSettings ()
+	{
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Tracolor" };
+		settings.beginWriteArray ("Events");
+		for (int i = 0, rc = Model_->rowCount (); i < rc; ++i)
+		{
+			settings.setArrayIndex (i);
+
+			settings.setValue ("IsEnabled", Model_->item (i, 0)->checkState () == Qt::Checked);
+			settings.setValue ("Event", Model_->item (i, 0)->text ());
+			settings.setValue ("Color", Model_->item (i, 1)->text ());
+		}
+		settings.endArray ();
 	}
 }
 }

@@ -53,13 +53,14 @@ namespace Tracolor
 
 		QAbstractItemModel* GetModel () const;
 	private:
-		void AppendRow (const QString&, const QColor&);
+		void AppendRow (const QString&, const QColor&, bool = true);
 
 		void LoadSettings ();
 		void LoadDefaultSettings ();
-		void SaveSettings () const;
 	public slots:
 		void modifyRequested (const QString&, int, const QVariantList&);
+	private slots:
+		void saveSettings ();
 	};
 }
 }
