@@ -39,6 +39,7 @@
 #include "../widgets/dataviewwidget.h"
 #include "../filepicker.h"
 #include "../itemhandlerfactory.h"
+#include "../colorpicker.h"
 #include "../datasourceroles.h"
 
 namespace LeechCraft
@@ -169,6 +170,8 @@ namespace LeechCraft
 				}
 				return box;
 			}
+			case DataSources::DataFieldType::Color:
+				return new ColorPicker;
 			}
 
 			qWarning () << Q_FUNC_INFO
@@ -194,6 +197,9 @@ namespace LeechCraft
 			case DataSources::DataFieldType::Enum:
 				// TODO
 				break;
+			case DataSources::DataFieldType::Color:
+				qobject_cast<ColorPicker*> (editor)->SetCurrentColor (var.value<QColor> ());
+				break;
 			case DataSources::DataFieldType::None:
 				break;
 			}
@@ -217,6 +223,8 @@ namespace LeechCraft
 				auto box = qobject_cast<QComboBox*> (editor);
 				return box->itemData (box->currentIndex ());
 			}
+			case DataSources::DataFieldType::Color:
+				return qobject_cast<ColorPicker*> (editor)->GetCurrentColor ();
 			}
 
 			qWarning () << Q_FUNC_INFO
