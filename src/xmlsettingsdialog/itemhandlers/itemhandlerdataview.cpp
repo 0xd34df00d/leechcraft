@@ -347,7 +347,11 @@ namespace LeechCraft
 		auto model = view->GetModel ();
 		QVariantList existingData;
 		for (int i = 0; i < model->columnCount (); ++i)
-			existingData << model->index (selected.row (), i).data ();
+		{
+			const auto& idx = model->index (selected.row (), i);
+			const auto& editVar = idx.data (Qt::EditRole);
+			existingData << (editVar.isNull () ? idx.data () : editVar);
+		}
 
 		const auto& datas = GetAddVariants (model, existingData);
 		if (datas.isEmpty ())
