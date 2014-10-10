@@ -348,6 +348,12 @@ namespace LeechCraft
 		QVariantList existingData;
 		for (int i = 0; i < model->columnCount (); ++i)
 		{
+			const auto& hData = model->headerData (i, Qt::Horizontal,
+					DataSources::DataSourceRole::FieldType);
+			const auto type = static_cast<DataSources::DataFieldType> (hData.value<int> ());
+			if (type == DataSources::DataFieldType::None)
+				continue;
+
 			const auto& idx = model->index (selected.row (), i);
 			const auto& editVar = idx.data (Qt::EditRole);
 			existingData << (editVar.isNull () ? idx.data () : editVar);
