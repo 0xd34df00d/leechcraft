@@ -38,14 +38,12 @@
 namespace LeechCraft
 {
 	ColorPicker::ColorPicker (const QString& title, QWidget *parent)
-	: QWidget (parent)
-	, Title_ (title)
+	: QWidget { parent }
+	, Title_ { title.isEmpty () ? tr ("Choose color") : title }
+	, Label_ { new QLabel { this } }
+	, ChooseButton_ { new QPushButton { tr ("Choose...") } }
 	{
-		if (Title_.isEmpty ())
-			Title_ = tr ("Choose color");
-		Label_ = new QLabel (this);
-		ChooseButton_ = new QPushButton (tr ("Choose..."));
-		QHBoxLayout *lay = new QHBoxLayout;
+		const auto lay = new QHBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
 		lay->addWidget (Label_);
 		lay->addWidget (ChooseButton_);
@@ -54,8 +52,7 @@ namespace LeechCraft
 				SIGNAL (released ()),
 				this,
 				SLOT (chooseColor ()));
-		Label_->setMinimumWidth (QApplication::fontMetrics ()
-				.width ("  #RRRRGGGGBBBB  "));
+		Label_->setMinimumWidth (QApplication::fontMetrics ().width ("  #RRRRGGGGBBBB  "));
 	}
 
 	void ColorPicker::SetCurrentColor (const QColor& color)
@@ -64,7 +61,7 @@ namespace LeechCraft
 
 		int height = QApplication::fontMetrics ().height ();
 		int width = 1.62 * height;
-		QPixmap pixmap (width, height);
+		QPixmap pixmap { width, height };
 		pixmap.fill (Color_);
 		Label_->setPixmap (pixmap);
 	}
@@ -76,7 +73,7 @@ namespace LeechCraft
 
 	void ColorPicker::chooseColor ()
 	{
-		QColor color = QColorDialog::getColor (Color_,
+		const auto& color = QColorDialog::getColor (Color_,
 				this,
 				Title_);
 
@@ -87,5 +84,4 @@ namespace LeechCraft
 		SetCurrentColor (color);
 		emit currentColorChanged (Color_);
 	}
-};
-
+}

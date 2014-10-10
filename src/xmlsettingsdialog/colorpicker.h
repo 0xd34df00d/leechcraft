@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_COLORPICKER_H
-#define XMLSETTINGSDIALOG_COLORPICKER_H
+#pragma once
+
 #include <QWidget>
 #include <QColor>
 
@@ -41,12 +41,13 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		QString Title_;
+		const QString Title_;
 		QColor Color_;
-		QLabel *Label_;
-		QPushButton *ChooseButton_;
+		QLabel * const Label_;
+		QPushButton * const ChooseButton_;
 	public:
-		ColorPicker (const QString& = QString (), QWidget* = 0);
+		ColorPicker (const QString& = {}, QWidget* = nullptr);
+
 		void SetCurrentColor (const QColor&);
 		QColor GetCurrentColor () const;
 	private slots:
@@ -54,7 +55,4 @@ namespace LeechCraft
 	signals:
 		void currentColorChanged (const QColor&);
 	};
-};
-
-#endif
-
+}
