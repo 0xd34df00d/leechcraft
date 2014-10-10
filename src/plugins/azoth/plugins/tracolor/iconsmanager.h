@@ -58,6 +58,7 @@ namespace Tracolor
 		void RegenCache (const QByteArray&);
 	private slots:
 		void handleEntryEventRateChanged (const QByteArray&);
+		void clearCaches ();
 	};
 }
 }

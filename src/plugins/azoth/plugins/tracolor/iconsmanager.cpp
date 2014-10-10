@@ -49,6 +49,10 @@ namespace Tracolor
 				SIGNAL (entryEventRateChanged (QByteArray)),
 				this,
 				SLOT (handleEntryEventRateChanged (QByteArray)));
+		connect (SettingsMgr_,
+				SIGNAL (eventsSettingsChanged ()),
+				this,
+				SLOT (clearCaches ()));
 	}
 
 	QList<QIcon> IconsManager::GetIcons (const QByteArray& entryId)
@@ -99,6 +103,11 @@ namespace Tracolor
 	void IconsManager::handleEntryEventRateChanged (const QByteArray& entryId)
 	{
 		RegenCache (entryId);
+	}
+
+	void IconsManager::clearCaches ()
+	{
+		IconsCache_.clear ();
 	}
 }
 }
