@@ -12,6 +12,7 @@ set (TRACOLOR_SRCS
 	entryeventsmanager.cpp
 	iconsmanager.cpp
 	xmlsettingsmanager.cpp
+	eventssettingsmanager.cpp
 	)
 #CreateTrs ("azoth_tracolor" "en;ru_RU" TRACOLOR_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_tracolor" "en;ru_RU" "${TRACOLOR_SRCS}" "" "azothtracolorsettings.xml")
