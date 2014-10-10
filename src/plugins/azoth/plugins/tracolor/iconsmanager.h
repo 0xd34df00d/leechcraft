@@ -40,16 +40,18 @@ namespace Azoth
 namespace Tracolor
 {
 	class EntryEventsManager;
+	class EventsSettingsManager;
 
 	class IconsManager : public QObject
 	{
 		Q_OBJECT
 
 		EntryEventsManager * const EvMgr_;
+		EventsSettingsManager * const SettingsMgr_;
 
 		QHash<QByteArray, QList<QIcon>> IconsCache_;
 	public:
-		IconsManager (EntryEventsManager*, QObject* = nullptr);
+		IconsManager (EntryEventsManager*, EventsSettingsManager*, QObject* = nullptr);
 
 		QList<QIcon> GetIcons (const QByteArray& entryId);
 	private:

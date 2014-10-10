@@ -50,7 +50,7 @@ namespace Tracolor
 	{
 		const auto eventsSettingsManager = new EventsSettingsManager;
 		EventsManager_ = new EntryEventsManager;
-		IconsManager_ = new IconsManager { EventsManager_ };
+		IconsManager_ = new IconsManager { EventsManager_, eventsSettingsManager };
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothtracolorsettings.xml");

@@ -31,6 +31,7 @@
 #include <QPainter>
 #include <interfaces/an/constants.h>
 #include "entryeventsmanager.h"
+#include "eventssettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -38,9 +39,11 @@ namespace Azoth
 {
 namespace Tracolor
 {
-	IconsManager::IconsManager (EntryEventsManager *evMgr, QObject *parent)
+	IconsManager::IconsManager (EntryEventsManager *evMgr,
+			EventsSettingsManager *settingsMgr, QObject *parent)
 	: QObject { parent }
 	, EvMgr_ { evMgr }
+	, SettingsMgr_ { settingsMgr }
 	{
 		connect (EvMgr_,
 				SIGNAL (entryEventRateChanged (QByteArray)),
