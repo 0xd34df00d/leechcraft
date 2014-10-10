@@ -242,13 +242,13 @@ namespace LeechCraft
 			{
 				const auto& hData = model->headerData (i, Qt::Horizontal,
 						DataSources::DataSourceRole::FieldType);
-				auto type = static_cast<DataSources::DataFieldType> (hData.value<int> ());
-				if (type != DataSources::DataFieldType::None)
-				{
-					const auto& name = model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
-					const auto& values = model->headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldValues);
-					infos.push_back ({ type, values, name });
-				}
+				const auto type = static_cast<DataSources::DataFieldType> (hData.value<int> ());
+				if (type == DataSources::DataFieldType::None)
+					continue;
+
+				const auto& name = model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
+				const auto& values = model->headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldValues);
+				infos.push_back ({ type, values, name });
 			}
 			return infos;
 		}
