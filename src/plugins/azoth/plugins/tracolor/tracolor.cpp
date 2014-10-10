@@ -38,6 +38,7 @@
 #include "entryeventsmanager.h"
 #include "iconsmanager.h"
 #include "xmlsettingsmanager.h"
+#include "eventssettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -47,11 +48,14 @@ namespace Tracolor
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		const auto eventsSettingsManager = new EventsSettingsManager;
 		EventsManager_ = new EntryEventsManager;
 		IconsManager_ = new IconsManager { EventsManager_ };
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothtracolorsettings.xml");
+
+		XSD_->SetDataSource ("EventsTypesDataView", eventsSettingsManager->GetModel ());
 	}
 
 	void Plugin::SecondInit ()
