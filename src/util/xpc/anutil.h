@@ -33,12 +33,21 @@
 
 class QString;
 
+template<typename K, typename V>
+class QMap;
+
 namespace LeechCraft
 {
 namespace Util
 {
 namespace AN
 {
+	/** @brief Returns the map from the category ID to its name.
+	 *
+	 * @returns The map from the category ID to its name.
+	 */
+	UTIL_XPC_API QMap<QString, QString> GetCategoryNameMap ();
+
 	/** @brief Returns the human-readable name of the event \em category.
 	 *
 	 * If the \em category is not known, this function just returns the
@@ -49,6 +58,7 @@ namespace AN
 	 * if it is not known.
 	 *
 	 * @sa GetANTypeName()
+	 * @sa GetCategoryNameMap()
 	 */
 	UTIL_XPC_API QString GetCategoryName (const QString& category);
 

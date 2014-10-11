@@ -41,7 +41,7 @@ namespace AN
 {
 	namespace LAN = LeechCraft::AN;
 
-	QString GetCategoryName (const QString& category)
+	QMap<QString, QString> GetCategoryNameMap ()
 	{
 		static const auto cat2hr = MakeMap<QString, QString> ({
 				{ LAN::CatIM, QObject::tr ("Instant messaging") },
@@ -52,7 +52,12 @@ namespace AN
 				{ LAN::CatTerminal, QObject::tr ("Terminal") },
 				{ LAN::CatGeneric, QObject::tr ("Generic") }
 			});
-		return cat2hr.value (category, category);
+		return cat2hr;
+	}
+
+	QString GetCategoryName (const QString& category)
+	{
+		return GetCategoryNameMap ().value (category, category);
 	}
 
 	QString GetTypeName (const QString& type)
