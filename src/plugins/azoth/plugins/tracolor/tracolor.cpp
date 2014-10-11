@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QtDebug>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
@@ -49,6 +50,8 @@ namespace Tracolor
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("azoth_tracolor");
+
 		const auto eventsSettingsManager = new EventsSettingsManager;
 		EventsManager_ = new EntryEventsManager;
 		IconsManager_ = new IconsManager { EventsManager_, eventsSettingsManager };
