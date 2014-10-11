@@ -6,6 +6,7 @@ set (XPC_SRCS
 	stdanfields.cpp
 	stddatafiltermenucreator.cpp
 	util.cpp
+	anutil.cpp
 	)
 
 foreach (SRC ${XPC_SRCS})
