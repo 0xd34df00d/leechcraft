@@ -32,6 +32,7 @@
 #include <QTimer>
 #include <util/sll/qtutil.h>
 #include <interfaces/azoth/iclentry.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -48,6 +49,8 @@ namespace Tracolor
 				SIGNAL (timeout ()),
 				this,
 				SLOT (decayRates ()));
+
+		XmlSettingsManager::Instance ().RegisterObject ("DecayRate", this, "decayRates");
 	}
 
 	void EntryEventsManager::AddEntry (QObject*)
@@ -71,8 +74,9 @@ namespace Tracolor
 		if (!date.isValid ())
 			return 0;
 
+		const auto k = XmlSettingsManager::Instance ().property ("DecayRate").toDouble ();
 		const auto diff = date.secsTo (QDateTime::currentDateTime ()) / 60.0;
-		return 1 / (diff + 1);
+		return 1 / (k * diff + 1);
 	}
 
 	void EntryEventsManager::decayRates ()
