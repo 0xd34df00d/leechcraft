@@ -60,9 +60,10 @@ namespace Util
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, typename std::result_of<F (T)>::type>::value, Container<typename std::result_of<F (T)>::type>>::type
+	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, typename std::result_of<F (T)>::type>::value,
+			Container<typename std::decay<typename std::result_of<F (T)>::type>::type>>::type
 	{
-		Container<typename std::result_of<F (T)>::type> result;
+		Container<typename std::decay<typename std::result_of<F (T)>::type>::type> result;
 		for (auto t : c)
 			result.push_back (f (t));
 		return result;
