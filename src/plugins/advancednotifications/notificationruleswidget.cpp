@@ -40,6 +40,9 @@
 #include <util/sys/resourceloader.h>
 #include <util/xpc/util.h>
 #include <util/xpc/stdanfields.h>
+#include <util/xpc/anutil.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
@@ -55,33 +58,6 @@ namespace AdvancedNotifications
 	, RM_ (rm)
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
-		Cat2Types_ [AN::CatIM] << AN::TypeIMAttention
-				<< AN::TypeIMIncFile
-				<< AN::TypeIMIncMsg
-				<< AN::TypeIMMUCHighlight
-				<< AN::TypeIMMUCInvite
-				<< AN::TypeIMMUCMsg
-				<< AN::TypeIMStatusChange
-				<< AN::TypeIMSubscrGrant
-				<< AN::TypeIMSubscrRequest
-				<< AN::TypeIMSubscrRevoke
-				<< AN::TypeIMSubscrSub
-				<< AN::TypeIMSubscrUnsub;
-
-		Cat2Types_ [AN::CatOrganizer] << AN::TypeOrganizerEventDue;
-
-		Cat2Types_ [AN::CatDownloads] << AN::TypeDownloadError
-				<< AN::TypeDownloadFinished;
-
-		Cat2Types_ [AN::CatPackageManager] << AN::TypePackageUpdated;
-
-		Cat2Types_ [AN::CatMediaPlayer] << AN::TypeMediaPlaybackStatus;
-		Cat2Types_ [AN::CatTerminal] << AN::TypeTerminalActivity
-				<< AN::TypeTerminalInactivity
-				<< AN::TypeTerminalBell;
-
-		Cat2Types_ [AN::CatGeneric] << AN::TypeGeneric;
-
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (RM_->GetRulesModel ());
 		Ui_.MatchesTree_->setModel (MatchesModel_);
@@ -96,9 +72,8 @@ namespace AdvancedNotifications
 				this,
 				SLOT (selectRule (QModelIndex)));
 
-		const auto& cat2hr = RM_->GetCategory2HR ();
-		for (const QString& cat : cat2hr.keys ())
-			Ui_.EventCat_->addItem (cat2hr [cat], cat);
+		for (const auto& pair : Util::Stlize (Util::AN::GetCategoryNameMap ()))
+			Ui_.EventCat_->addItem (pair.second, pair.first);
 		on_EventCat__currentIndexChanged (0);
 
 		XmlSettingsManager::Instance ().RegisterObject ("AudioTheme",
@@ -129,7 +104,7 @@ namespace AdvancedNotifications
 				types << item->data (0, Qt::UserRole).toString ();
 		}
 		if (types.isEmpty ())
-			types = Cat2Types_ [GetCurrentCat ()];
+			types = Util::AN::GetKnownEventTypes (GetCurrentCat ());
 		return types;
 	}
 
@@ -468,9 +443,9 @@ namespace AdvancedNotifications
 		const auto& catId = GetCurrentCat ();
 		Ui_.EventTypes_->clear ();
 
-		for (const QString& type : Cat2Types_ [catId])
+		for (const auto& type : Util::AN::GetKnownEventTypes (catId))
 		{
-			const QString& hr = RM_->GetType2HR () [type];
+			const auto& hr = Util::AN::GetTypeName (type);
 			QTreeWidgetItem *item = new QTreeWidgetItem (QStringList (hr));
 			item->setData (0, Qt::UserRole, type);
 			item->setCheckState (0, Qt::Unchecked);

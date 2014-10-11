@@ -53,8 +53,6 @@ namespace AdvancedNotifications
 
 		RulesManager *RM_;
 
-		QMap<QString, QStringList> Cat2Types_;
-
 		FieldMatches_t Matches_;
 		QStandardItemModel *MatchesModel_;
 	public:

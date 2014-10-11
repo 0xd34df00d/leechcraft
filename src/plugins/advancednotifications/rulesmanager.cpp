@@ -38,8 +38,10 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/stdanfields.h>
 #include <util/xpc/util.h>
+#include <util/xpc/anutil.h>
 #include <util/models/rolenamesmixin.h>
 #include "core.h"
 #include "typedmatchers.h"
@@ -92,41 +94,6 @@ namespace AdvancedNotifications
 		qRegisterMetaType<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
 		qRegisterMetaTypeStreamOperators<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
 
-		Cat2HR_ [AN::CatIM] = tr ("Instant messaging");
-		Type2HR_ [AN::TypeIMAttention] = tr ("Attention request");
-		Type2HR_ [AN::TypeIMIncFile] = tr ("Incoming file transfer request");
-		Type2HR_ [AN::TypeIMIncMsg] = tr ("Incoming chat message");
-		Type2HR_ [AN::TypeIMMUCHighlight] = tr ("MUC highlight");
-		Type2HR_ [AN::TypeIMMUCInvite] = tr ("MUC invitation");
-		Type2HR_ [AN::TypeIMMUCMsg] = tr ("General MUC message");
-		Type2HR_ [AN::TypeIMStatusChange] = tr ("Contact status change");
-		Type2HR_ [AN::TypeIMSubscrGrant] = tr ("Authorization granted");
-		Type2HR_ [AN::TypeIMSubscrRevoke] = tr ("Authorization revoked");
-		Type2HR_ [AN::TypeIMSubscrRequest] = tr ("Authorization requested");
-		Type2HR_ [AN::TypeIMSubscrSub] = tr ("Contact subscribed");
-		Type2HR_ [AN::TypeIMSubscrUnsub] = tr ("Contact unsubscribed");
-
-		Cat2HR_ [AN::CatOrganizer] = tr ("Organizer");
-		Type2HR_ [AN::TypeOrganizerEventDue] = tr ("Event is due");
-
-		Cat2HR_ [AN::CatDownloads] = tr ("Downloads");
-		Type2HR_ [AN::TypeDownloadError] = tr ("Download error");
-		Type2HR_ [AN::TypeDownloadFinished] = tr ("Download finished");
-
-		Cat2HR_ [AN::CatPackageManager] = tr ("Package manager");
-		Type2HR_ [AN::TypePackageUpdated] = tr ("Package updated");
-
-		Cat2HR_ [AN::CatMediaPlayer] = tr ("Media player");
-		Type2HR_ [AN::TypeMediaPlaybackStatus] = tr ("Media playback status changed");
-
-		Cat2HR_ [AN::CatTerminal] = tr ("Terminal");
-		Type2HR_ [AN::TypeTerminalBell] = tr ("Bell in a terminal");
-		Type2HR_ [AN::TypeTerminalActivity] = tr ("Activity in a terminal");
-		Type2HR_ [AN::TypeTerminalInactivity] = tr ("Inactivity in a terminal");
-
-		Cat2HR_ [AN::CatGeneric] = tr ("Generic");
-		Type2HR_ [AN::TypeGeneric] = tr ("Generic");
-
 		LoadSettings ();
 
 		connect (RulesModel_,
@@ -143,16 +110,6 @@ namespace AdvancedNotifications
 	QList<NotificationRule> RulesManager::GetRulesList () const
 	{
 		return Rules_;
-	}
-
-	const QMap<QString, QString>& RulesManager::GetCategory2HR () const
-	{
-		return Cat2HR_;
-	}
-
-	const QMap<QString, QString>& RulesManager::GetType2HR () const
-	{
-		return Type2HR_;
 	}
 
 	void RulesManager::SetRuleEnabled (const NotificationRule& rule, bool enabled)
@@ -458,13 +415,11 @@ namespace AdvancedNotifications
 
 	QList<QStandardItem*> RulesManager::RuleToRow (const NotificationRule& rule) const
 	{
-		QStringList hrTypes;
-		for (const QString& type : rule.GetTypes ())
-			hrTypes << Type2HR_ [type];
+		const QStringList hrTypes { Util::Map (rule.GetTypes ().toList (), Util::AN::GetTypeName) };
 
 		QList<QStandardItem*> items;
 		items << new QStandardItem (rule.GetName ());
-		items << new QStandardItem (Cat2HR_ [rule.GetCategory ()]);
+		items << new QStandardItem (Util::AN::GetCategoryName (rule.GetCategory ()));
 		items << new QStandardItem (hrTypes.join ("; "));
 
 		items.first ()->setCheckable (true);

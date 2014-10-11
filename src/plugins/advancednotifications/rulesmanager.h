@@ -49,17 +49,11 @@ namespace AdvancedNotifications
 
 		QList<NotificationRule> Rules_;
 		QStandardItemModel *RulesModel_;
-
-		QMap<QString, QString> Cat2HR_;
-		QMap<QString, QString> Type2HR_;
 	public:
 		RulesManager (QObject* = 0);
 
 		QAbstractItemModel* GetRulesModel () const;
 		QList<NotificationRule> GetRulesList () const;
-
-		const QMap<QString, QString>& GetCategory2HR () const;
-		const QMap<QString, QString>& GetType2HR () const;
 
 		void SetRuleEnabled (const NotificationRule&, bool);
 		void UpdateRule (const QModelIndex&, const NotificationRule&);
