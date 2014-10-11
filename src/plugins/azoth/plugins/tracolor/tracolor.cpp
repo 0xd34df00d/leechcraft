@@ -52,6 +52,10 @@ namespace Tracolor
 		const auto eventsSettingsManager = new EventsSettingsManager;
 		EventsManager_ = new EntryEventsManager;
 		IconsManager_ = new IconsManager { EventsManager_, eventsSettingsManager };
+		connect (IconsManager_,
+				SIGNAL (iconUpdated (QByteArray)),
+				this,
+				SLOT (handleIconsUpdated (QByteArray)));
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothtracolorsettings.xml");
@@ -137,6 +141,18 @@ namespace Tracolor
 		const auto& newIcons = IconsManager_->GetIcons (sourceId);
 		if (!newIcons.isEmpty ())
 			icons = newIcons + icons;
+	}
+
+	void Plugin::handleIconsUpdated (const QByteArray& entryId)
+	{
+		if (!AzothProxy_)
+			return;
+
+		const auto entry = AzothProxy_->GetEntry (entryId);
+		if (!entry)
+			return;
+
+		AzothProxy_->RedrawItem (entry);
 	}
 }
 }

@@ -85,6 +85,8 @@ namespace Tracolor
 	public slots:
 		void initPlugin (QObject*);
 		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
+	private slots:
+		void handleIconsUpdated (const QByteArray&);
 	};
 }
 }
