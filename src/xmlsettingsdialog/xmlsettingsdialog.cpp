@@ -555,11 +555,10 @@ namespace Util
 
 	QString XmlSettingsDialog::GetDescription (const QDomElement& item) const
 	{
-		QDomElement label = item.firstChildElement ("tooltip");
-		if (!label.isNull ())
-			return QCoreApplication::translate (qPrintable (Basename_),
-					label.text ().simplified ().toUtf8 ().constData ());
-		return QString ();
+		const auto& label = item.firstChildElement ("tooltip");
+		const auto& text = label.text ().simplified ();
+		return QCoreApplication::translate (qPrintable (Basename_),
+				text.toUtf8 ().constData ());
 	}
 
 	void XmlSettingsDialog::SetTooltip (QWidget *widget, const QDomElement& from) const
