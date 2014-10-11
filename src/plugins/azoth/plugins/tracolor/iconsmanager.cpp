@@ -107,7 +107,25 @@ namespace Tracolor
 		std::swap (oldCache, IconsCache_);
 
 		for (const auto& pair : Util::Stlize (oldCache))
+		{
 			RegenCache (pair.first);
+#ifdef USE_CPP14
+			const auto& oldEntries = pair.second;
+			const auto& newEntries = IconsCache_.value (pair.first);
+
+			const auto& stlized = Util::Stlize (newEntries);
+			if (oldEntries.size () != newEntries.size () ||
+					std::any_of (stlized.begin (), stlized.end (),
+							[&oldEntries] (const auto& newEntryPair)
+							{
+								const auto& oldEntry = oldEntries.value (newEntryPair.first);
+								const auto& newEntry = newEntryPair.second;
+								return oldEntry.Color_ != newEntry.Color_ ||
+										std::abs (oldEntry.Rate_ - newEntry.Rate_) >= 0.05;
+							}))
+				emit iconUpdated (pair.first);
+#endif
+		}
 	}
 }
 }

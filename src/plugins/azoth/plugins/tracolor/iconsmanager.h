@@ -65,6 +65,8 @@ namespace Tracolor
 	private slots:
 		void handleEntryEventRateChanged (const QByteArray&);
 		void updateCaches ();
+	signals:
+		void iconUpdated (const QByteArray&);
 	};
 }
 }
