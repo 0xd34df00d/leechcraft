@@ -35,6 +35,7 @@
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "entryeventsmanager.h"
 #include "iconsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -120,6 +121,11 @@ namespace Tracolor
 			const auto& subId = e.Additional_ ["org.LC.Plugins.Azoth.SubSourceID"].toString ();
 			EventsManager_->HandleEvent (subId.toUtf8 (), eventId.toUtf8 ());
 		}
+	}
+
+	void Plugin::initPlugin (QObject *proxyObj)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 
 	void Plugin::hookCollectContactIcons (IHookProxy_ptr,

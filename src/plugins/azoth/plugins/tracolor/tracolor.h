@@ -40,6 +40,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Tracolor
 {
 	class EntryEventsManager;
@@ -59,10 +61,12 @@ namespace Tracolor
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Tracolor")
 
-		EntryEventsManager *EventsManager_;
-		IconsManager *IconsManager_;
+		EntryEventsManager *EventsManager_ = nullptr;
+		IconsManager *IconsManager_ = nullptr;
 
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		IProxyObject *AzothProxy_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -79,6 +83,7 @@ namespace Tracolor
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
 	public slots:
+		void initPlugin (QObject*);
 		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 	};
 }
