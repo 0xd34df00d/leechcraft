@@ -138,6 +138,9 @@ namespace Tracolor
 	void Plugin::hookCollectContactIcons (IHookProxy_ptr,
 			QObject *entryObj, QList<QIcon>& icons) const
 	{
+		if (!XmlSettingsManager::Instance ().property ("EnableTracolor").toBool ())
+			return;
+
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto& sourceId = entry->GetEntryID ().toUtf8 ();
 

@@ -2,6 +2,9 @@
 <settings>
 	<page>
 		<label value="Azoth Tracolor" />
+		<item type="checkbox" property="EnableTracolor" default="false">
+			<label value="Enable Tracolor" />
+		</item>
 		<item type="doublespinbox" property="DecayRate" default="1" minimum="0.01" maximum="10">
 			<label value="Decay rate:" />
 			<tooltip>Controls the &lt;em>k&lt;/em> coefficient in the formula for opacity: &lt;em>opacity(x) = 1 / (1 + kx)&lt;/em>. Generally speaking, smaller &lt;em>k&lt;/em> means slower icons fadeout.</tooltip>
