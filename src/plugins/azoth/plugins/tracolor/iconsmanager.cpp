@@ -29,6 +29,7 @@
 
 #include "iconsmanager.h"
 #include <QPainter>
+#include <util/sll/qtutil.h>
 #include <interfaces/an/constants.h>
 #include "entryeventsmanager.h"
 #include "eventssettingsmanager.h"
@@ -67,15 +68,8 @@ namespace Tracolor
 	{
 		const auto tolerance = 10;
 
-		const QList<QPair<QString, QString>> eventsList
-		{
-			{ AN::TypeIMMUCMsg, "green" },
-			{ AN::TypeIMIncMsg, "magenta" },
-			{ AN::TypeIMMUCHighlight, "red" },
-		};
-
 		QList<QIcon> icons;
-		for (const auto& pair : eventsList)
+		for (const auto& pair : Util::Stlize (SettingsMgr_->GetEnabledEvents ()))
 		{
 			const auto rate = EvMgr_->GetEntryEventRate (entryId, pair.first.toUtf8 ());
 			if (rate < std::numeric_limits<double>::epsilon () * tolerance)
@@ -84,7 +78,7 @@ namespace Tracolor
 			QPixmap px { 22, 22 };
 			px.fill (Qt::transparent);
 
-			QColor color { pair.second };
+			QColor color { pair.second.Color_ };
 			color.setAlphaF (rate);
 			{
 				QPainter p { &px };
