@@ -55,6 +55,68 @@ namespace AN
 		return cat2hr;
 	}
 
+	QStringList GetKnownEventTypes (const QString& category)
+	{
+		static const auto cat2types = MakeMap<QString, QStringList> ({
+				{ LAN::CatIM,
+					{
+						LAN::TypeIMAttention,
+						LAN::TypeIMIncFile,
+						LAN::TypeIMIncMsg,
+						LAN::TypeIMMUCHighlight,
+						LAN::TypeIMMUCInvite,
+						LAN::TypeIMMUCMsg,
+						LAN::TypeIMStatusChange,
+						LAN::TypeIMSubscrGrant,
+						LAN::TypeIMSubscrRequest,
+						LAN::TypeIMSubscrRevoke,
+						LAN::TypeIMSubscrSub,
+						LAN::TypeIMSubscrUnsub
+					}
+				},
+				{
+					LAN::CatOrganizer,
+					{
+						LAN::TypeOrganizerEventDue
+					}
+				},
+				{
+					LAN::CatDownloads,
+					{
+						LAN::TypeDownloadError,
+						LAN::TypeDownloadFinished
+					}
+				},
+				{
+					LAN::CatPackageManager,
+					{
+						LAN::TypePackageUpdated
+					}
+				},
+				{
+					LAN::CatMediaPlayer,
+					{
+						LAN::TypeMediaPlaybackStatus
+					}
+				},
+				{
+					LAN::CatTerminal,
+					{
+						LAN::TypeTerminalActivity,
+						LAN::TypeTerminalInactivity,
+						LAN::TypeTerminalBell
+					}
+				},
+				{
+					LAN::CatGeneric,
+					{
+						LAN::TypeGeneric
+					}
+				}
+			});
+		return cat2types.value (category);
+	}
+
 	QString GetCategoryName (const QString& category)
 	{
 		return GetCategoryNameMap ().value (category, category);

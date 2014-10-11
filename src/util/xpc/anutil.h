@@ -32,6 +32,7 @@
 #include "xpcconfig.h"
 
 class QString;
+class QStringList;
 
 template<typename K, typename V>
 class QMap;
@@ -47,6 +48,16 @@ namespace AN
 	 * @returns The map from the category ID to its name.
 	 */
 	UTIL_XPC_API QMap<QString, QString> GetCategoryNameMap ();
+
+	/** @brief Returns the known events types for the given \em category.
+	 *
+	 * This function returns the list of known standard event types for
+	 * the \em category, or an empty list if the \em category is not
+	 * known.
+	 *
+	 * @return The list of events for the \em category.
+	 */
+	UTIL_XPC_API QStringList GetKnownEventTypes (const QString& category);
 
 	/** @brief Returns the human-readable name of the event \em category.
 	 *
@@ -74,7 +85,6 @@ namespace AN
 	 * @sa GetANCategoryName()
 	 */
 	UTIL_XPC_API QString GetTypeName (const QString& type);
-
 }
 }
 }
