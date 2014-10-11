@@ -30,6 +30,7 @@
 #include "iconsmanager.h"
 #include <QPainter>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include <interfaces/an/constants.h>
 #include "entryeventsmanager.h"
 #include "eventssettingsmanager.h"
@@ -53,7 +54,7 @@ namespace Tracolor
 		connect (SettingsMgr_,
 				SIGNAL (eventsSettingsChanged ()),
 				this,
-				SLOT (clearCaches ()));
+				SLOT (updateCaches ()));
 	}
 
 	QList<QIcon> IconsManager::GetIcons (const QByteArray& entryId)
@@ -61,14 +62,15 @@ namespace Tracolor
 		if (!IconsCache_.contains (entryId))
 			RegenCache (entryId);
 
-		return IconsCache_.value (entryId);
+		return Util::Map (IconsCache_.value (entryId).values (),
+				[] (const IconsCacheEntry& item) { return item.Icon_; });
 	}
 
 	void IconsManager::RegenCache (const QByteArray& entryId)
 	{
 		const auto tolerance = 10;
 
-		QList<QIcon> icons;
+		QHash<QString, IconsCacheEntry> icons;
 		for (const auto& pair : Util::Stlize (SettingsMgr_->GetEnabledEvents ()))
 		{
 			const auto rate = EvMgr_->GetEntryEventRate (entryId, pair.first.toUtf8 ());
@@ -88,7 +90,7 @@ namespace Tracolor
 						px.width () / 4, px.height () / 4);
 			}
 
-			icons.prepend ({ px });
+			icons.insert (pair.first, { px, color, rate });
 		}
 
 		IconsCache_ [entryId] = icons;
@@ -99,9 +101,13 @@ namespace Tracolor
 		RegenCache (entryId);
 	}
 
-	void IconsManager::clearCaches ()
+	void IconsManager::updateCaches ()
 	{
-		IconsCache_.clear ();
+		decltype (IconsCache_) oldCache;
+		std::swap (oldCache, IconsCache_);
+
+		for (const auto& pair : Util::Stlize (oldCache))
+			RegenCache (pair.first);
 	}
 }
 }

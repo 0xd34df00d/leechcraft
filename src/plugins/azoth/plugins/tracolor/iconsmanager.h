@@ -49,7 +49,13 @@ namespace Tracolor
 		EntryEventsManager * const EvMgr_;
 		EventsSettingsManager * const SettingsMgr_;
 
-		QHash<QByteArray, QList<QIcon>> IconsCache_;
+		struct IconsCacheEntry
+		{
+			QIcon Icon_;
+			QColor Color_;
+			double Rate_;
+		};
+		QHash<QByteArray, QHash<QString, IconsCacheEntry>> IconsCache_;
 	public:
 		IconsManager (EntryEventsManager*, EventsSettingsManager*, QObject* = nullptr);
 
@@ -58,7 +64,7 @@ namespace Tracolor
 		void RegenCache (const QByteArray&);
 	private slots:
 		void handleEntryEventRateChanged (const QByteArray&);
-		void clearCaches ();
+		void updateCaches ();
 	};
 }
 }
