@@ -96,6 +96,8 @@ namespace Azoth
 		boost::optional<CustomStatus> FindCustomStatus (const QString&) const override;
 		QStringList GetCustomStatusNames () const override;
 
+		void RedrawItem (QObject*) const override;
+
 		IFormatterProxyObject& GetFormatterProxy () override;
 	};
 }

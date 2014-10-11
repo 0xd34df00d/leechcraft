@@ -337,6 +337,8 @@ namespace Azoth
 		 */
 		virtual QStringList GetCustomStatusNames () const = 0;
 
+		virtual void RedrawItem (QObject*) const = 0;
+
 		virtual IFormatterProxyObject& GetFormatterProxy () = 0;
 	};
 }

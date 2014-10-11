@@ -409,6 +409,11 @@ namespace Azoth
 		return result;
 	}
 
+	void ProxyObject::RedrawItem (QObject *entryObj) const
+	{
+		Core::Instance ().UpdateItem (entryObj);
+	}
+
 	IFormatterProxyObject& ProxyObject::GetFormatterProxy ()
 	{
 		return Formatter_;
