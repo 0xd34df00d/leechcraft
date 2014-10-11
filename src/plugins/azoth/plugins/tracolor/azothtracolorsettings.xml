@@ -4,7 +4,7 @@
 		<label value="Azoth Tracolor" />
 		<item type="doublespinbox" property="DecayRate" default="1" minimum="0.01" maximum="10">
 			<label value="Decay rate:" />
-			<tooltip>Controls the k coefficient in the formula for opacity: opacity(x) = 1 / (1 + kx).</tooltip>
+			<tooltip>Controls the &lt;em>k&lt;/em> coefficient in the formula for opacity: &lt;em>opacity(x) = 1 / (1 + kx)&lt;/em>. Generally speaking, smaller &lt;em>k&lt;/em> means slower icons desaturation.</tooltip>
 		</item>
 		<item type="dataview" property="EventsTypesDataView">
 		</item>
