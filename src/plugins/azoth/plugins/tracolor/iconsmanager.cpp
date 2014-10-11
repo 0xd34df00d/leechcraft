@@ -34,6 +34,7 @@
 #include <interfaces/an/constants.h>
 #include "entryeventsmanager.h"
 #include "eventssettingsmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -55,6 +56,8 @@ namespace Tracolor
 				SIGNAL (eventsSettingsChanged ()),
 				this,
 				SLOT (updateCaches ()));
+
+		XmlSettingsManager::Instance ().RegisterObject ("HidingThreshold", this, "updateCaches");
 	}
 
 	QList<QIcon> IconsManager::GetIcons (const QByteArray& entryId)
@@ -70,6 +73,9 @@ namespace Tracolor
 	{
 		const auto tolerance = 10;
 
+		const auto hideThreshold = XmlSettingsManager::Instance ()
+				.property ("HidingThreshold").toInt ();
+
 		QHash<QString, IconsCacheEntry> icons;
 		for (const auto& pair : Util::Stlize (SettingsMgr_->GetEnabledEvents ()))
 		{
@@ -77,11 +83,13 @@ namespace Tracolor
 			if (rate < std::numeric_limits<double>::epsilon () * tolerance)
 				continue;
 
-			QPixmap px { 22, 22 };
-			px.fill (Qt::transparent);
-
 			QColor color { pair.second.Color_ };
 			color.setAlphaF (rate);
+			if (color.alpha () < hideThreshold)
+				continue;
+
+			QPixmap px { 22, 22 };
+			px.fill (Qt::transparent);
 			{
 				QPainter p { &px };
 				p.setBrush ({ color });
