@@ -99,6 +99,7 @@ namespace Tracolor
 	void IconsManager::handleEntryEventRateChanged (const QByteArray& entryId)
 	{
 		RegenCache (entryId);
+		emit iconUpdated (entryId);
 	}
 
 	void IconsManager::updateCaches ()
