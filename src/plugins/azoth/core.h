@@ -200,6 +200,8 @@ namespace Azoth
 		QList<IProtocol*> GetProtocols () const;
 		IAccount* GetAccount (const QByteArray&) const;
 
+		void UpdateItem (QObject*);
+
 		/** Returns the list of all groups of all chat entries.
 		 */
 		QStringList GetChatGroups () const;

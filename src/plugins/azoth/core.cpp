@@ -589,6 +589,18 @@ namespace Azoth
 		return 0;
 	}
 
+	void Core::UpdateItem (QObject *entryObj)
+	{
+		for (const auto item : Entry2Items_.value (qobject_cast<ICLEntry*> (entryObj)))
+		{
+			const auto& idx = item->index ();
+			QMetaObject::invokeMethod (CLModel_,
+					"dataChanged",
+					Q_ARG (QModelIndex, idx),
+					Q_ARG (QModelIndex, idx));
+		}
+	}
+
 	QStringList Core::GetChatGroups () const
 	{
 		QStringList result;
