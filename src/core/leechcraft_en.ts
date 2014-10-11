@@ -204,27 +204,27 @@
     <name>FindNotification</name>
     <message>
         <location filename="../util/gui/findnotification.ui" line="14"/>
-        <location filename="../util/gui/findnotification.ui" line="50"/>
+        <location filename="../util/gui/findnotification.ui" line="53"/>
         <source>Find</source>
         <translation>Find</translation>
     </message>
     <message>
-        <location filename="../util/gui/findnotification.ui" line="23"/>
+        <location filename="../util/gui/findnotification.ui" line="26"/>
         <source>Backwards</source>
         <translation>Backwards</translation>
     </message>
     <message>
-        <location filename="../util/gui/findnotification.ui" line="30"/>
+        <location filename="../util/gui/findnotification.ui" line="33"/>
         <source>Case</source>
         <translation>Case</translation>
     </message>
     <message>
-        <location filename="../util/gui/findnotification.ui" line="37"/>
+        <location filename="../util/gui/findnotification.ui" line="40"/>
         <source>Cycle</source>
         <translation>Cycle</translation>
     </message>
     <message>
-        <location filename="../util/gui/findnotification.ui" line="57"/>
+        <location filename="../util/gui/findnotification.ui" line="60"/>
         <source>Close</source>
         <translation>Close</translation>
     </message>
@@ -368,6 +368,16 @@
         <source>Tools</source>
         <translation>Tools</translation>
     </message>
+    <message>
+        <location filename="../xmlsettingsdialog/colorpicker.cpp" line="42"/>
+        <source>Choose color</source>
+        <translation>Choose color</translation>
+    </message>
+    <message>
+        <location filename="../xmlsettingsdialog/colorpicker.cpp" line="44"/>
+        <source>Choose...</source>
+        <translation>Choose...</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
@@ -398,52 +408,39 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="151"/>
+        <location filename="application.cpp" line="157"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Could not create path %1/.leechcraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="223"/>
+        <location filename="application.cpp" line="229"/>
         <source>Initializing LeechCraft...</source>
         <translation>Initializing LeechCraft...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="512"/>
+        <location filename="application.cpp" line="537"/>
         <source>Finalizing...</source>
         <translation>Finalizing...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="484"/>
+        <location filename="application.cpp" line="509"/>
         <source>Startup password</source>
         <translation>Startup password</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="485"/>
+        <location filename="application.cpp" line="510"/>
         <source>Enter startup password for LeechCraft:</source>
         <translation>Enter startup password for LeechCraft:</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="490"/>
+        <location filename="application.cpp" line="515"/>
         <source>Sorry, incorrect password</source>
         <translation>Sorry, incorrect password</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="578"/>
+        <location filename="application.cpp" line="603"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>This change requires restarting LeechCraft. Do you want to restart now?</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::ColorPicker</name>
-    <message>
-        <location filename="../xmlsettingsdialog/colorpicker.cpp" line="45"/>
-        <source>Choose color</source>
-        <translation>Choose color</translation>
-    </message>
-    <message>
-        <location filename="../xmlsettingsdialog/colorpicker.cpp" line="47"/>
-        <source>Choose...</source>
-        <translation>Choose...</translation>
     </message>
 </context>
 <context>
@@ -617,28 +614,28 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="142"/>
+        <location filename="mainwindow.cpp" line="144"/>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="404"/>
+        <location filename="mainwindow.cpp" line="406"/>
         <source>Do you really want to restart?</source>
         <translation>Do you really want to restart?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="420"/>
+        <location filename="mainwindow.cpp" line="422"/>
         <source>Do you really want to quit?</source>
         <translation>Do you really want to quit?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="425"/>
+        <location filename="mainwindow.cpp" line="427"/>
         <source>Always</source>
         <translation>Always</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="661"/>
+        <location filename="mainwindow.cpp" line="663"/>
         <source>Toggle LeechCraft window</source>
         <translation>Toggle LeechCraft window</translation>
     </message>
@@ -646,23 +643,23 @@
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
-        <location filename="networkaccessmanager.cpp" line="246"/>
-        <location filename="networkaccessmanager.cpp" line="259"/>
+        <location filename="networkaccessmanager.cpp" line="241"/>
+        <location filename="networkaccessmanager.cpp" line="254"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="297"/>
+        <location filename="networkaccessmanager.cpp" line="292"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="352"/>
+        <location filename="networkaccessmanager.cpp" line="347"/>
         <source>Could not create Core directory.</source>
         <translation>Could not create Core directory.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="360"/>
+        <location filename="networkaccessmanager.cpp" line="355"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Could not save cookies, error opening cookie file.</translation>
     </message>
@@ -715,37 +712,37 @@
         <translation>Initializing %1: stage two...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="745"/>
+        <location filename="pluginmanager.cpp" line="750"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Refusing to load plugin from %1 because it&apos;s not a file.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="759"/>
+        <location filename="pluginmanager.cpp" line="764"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
         <translation>Could not load plugin from %1: API level mismatch.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="773"/>
+        <location filename="pluginmanager.cpp" line="778"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>Could not load plugin from %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="793"/>
+        <location filename="pluginmanager.cpp" line="798"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance with exception %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="804"/>
+        <location filename="pluginmanager.cpp" line="809"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="814"/>
+        <location filename="pluginmanager.cpp" line="819"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="899"/>
+        <location filename="pluginmanager.cpp" line="904"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Plugin with ID %1 is already loaded from %2; aborting load from %3.</translation>
     </message>
@@ -784,50 +781,50 @@
 <context>
     <name>LeechCraft::SettingsTab</name>
     <message>
-        <location filename="settingstab.cpp" line="53"/>
+        <location filename="settingstab.cpp" line="54"/>
         <source>Settings bar</source>
         <translation>Settings bar</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="54"/>
+        <location filename="settingstab.cpp" line="55"/>
         <source>Back</source>
         <translation>Back</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="55"/>
+        <location filename="settingstab.cpp" line="56"/>
         <source>Apply</source>
         <translation>Apply</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="56"/>
+        <location filename="settingstab.cpp" line="57"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="133"/>
-        <location filename="settingstab.cpp" line="159"/>
-        <location filename="settingstab.cpp" line="161"/>
-        <location filename="settingstab.cpp" line="162"/>
+        <location filename="settingstab.cpp" line="142"/>
+        <location filename="settingstab.cpp" line="168"/>
+        <location filename="settingstab.cpp" line="170"/>
+        <location filename="settingstab.cpp" line="171"/>
         <source>General plugins</source>
         <translation>General plugins</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="228"/>
+        <location filename="settingstab.cpp" line="237"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="229"/>
+        <location filename="settingstab.cpp" line="238"/>
         <source>LeechCraft-wide settings dashboard</source>
         <translation>LeechCraft-wide settings dashboard</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="326"/>
+        <location filename="settingstab.cpp" line="337"/>
         <source>Search...</source>
         <translation>Search...</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="352"/>
+        <location filename="settingstab.cpp" line="363"/>
         <source>Settings for %1</source>
         <translation>Settings for %1</translation>
     </message>
@@ -863,103 +860,105 @@
 <context>
     <name>LeechCraft::SslErrorsDialog</name>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="83"/>
+        <location filename="sslerrorsdialog.cpp" line="82"/>
         <source>Certificate</source>
         <translation>Certificate</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="84"/>
+        <location filename="sslerrorsdialog.cpp" line="83"/>
         <source>(No certificate available for this error)</source>
         <translation>(No certificate available for this error)</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="88"/>
+        <location filename="sslerrorsdialog.cpp" line="87"/>
         <source>Valid:</source>
         <translation>Valid:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="89"/>
+        <location filename="sslerrorsdialog.cpp" line="91"/>
         <source>yes</source>
         <translation>yes</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="89"/>
+        <location filename="sslerrorsdialog.cpp" line="91"/>
         <source>no</source>
         <translation>no</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="90"/>
+        <location filename="sslerrorsdialog.cpp" line="93"/>
         <source>Effective date:</source>
         <translation>Effective date:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="92"/>
+        <location filename="sslerrorsdialog.cpp" line="95"/>
         <source>Expiry date:</source>
         <translation>Expiry date:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="94"/>
+        <location filename="sslerrorsdialog.cpp" line="97"/>
         <source>Version:</source>
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="96"/>
+        <location filename="sslerrorsdialog.cpp" line="99"/>
         <source>Serial number:</source>
         <translation>Serial number:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="98"/>
+        <location filename="sslerrorsdialog.cpp" line="101"/>
         <source>MD5 digest:</source>
         <translation>MD5 digest:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="100"/>
+        <location filename="sslerrorsdialog.cpp" line="103"/>
         <source>SHA1 digest:</source>
         <translation>SHA1 digest:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="104"/>
+        <location filename="sslerrorsdialog.cpp" line="107"/>
         <source>Issuer info</source>
         <translation>Issuer info</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="115"/>
-        <location filename="sslerrorsdialog.cpp" line="148"/>
+        <location filename="sslerrorsdialog.cpp" line="118"/>
+        <location filename="sslerrorsdialog.cpp" line="151"/>
         <source>Organization:</source>
         <translation>Organization:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="120"/>
-        <location filename="sslerrorsdialog.cpp" line="153"/>
+        <location filename="sslerrorsdialog.cpp" line="123"/>
+        <location filename="sslerrorsdialog.cpp" line="156"/>
         <source>Common name:</source>
         <translation>Common name:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="125"/>
-        <location filename="sslerrorsdialog.cpp" line="158"/>
+        <location filename="sslerrorsdialog.cpp" line="128"/>
+        <location filename="sslerrorsdialog.cpp" line="161"/>
         <source>Locality:</source>
         <translation>Locality:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="130"/>
-        <location filename="sslerrorsdialog.cpp" line="163"/>
+        <location filename="sslerrorsdialog.cpp" line="133"/>
+        <location filename="sslerrorsdialog.cpp" line="166"/>
         <source>Organizational unit name:</source>
         <translation>Organizational unit name:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="135"/>
-        <location filename="sslerrorsdialog.cpp" line="168"/>
+        <location filename="sslerrorsdialog.cpp" line="138"/>
+        <location filename="sslerrorsdialog.cpp" line="171"/>
         <source>Country name:</source>
         <translation>Country name:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="140"/>
-        <location filename="sslerrorsdialog.cpp" line="173"/>
+        <location filename="sslerrorsdialog.cpp" line="143"/>
+        <location filename="sslerrorsdialog.cpp" line="176"/>
         <source>State or province name:</source>
         <translation>State or province name:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="143"/>
+        <location filename="sslerrorsdialog.cpp" line="146"/>
         <source>Subject info</source>
         <translation>Subject info</translation>
     </message>
@@ -1048,12 +1047,12 @@
 <context>
     <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
     <message>
-        <location filename="../util/models/flattofoldersproxymodel.cpp" line="112"/>
+        <location filename="../util/models/flattofoldersproxymodel.cpp" line="113"/>
         <source>untagged</source>
         <translation>untagged</translation>
     </message>
     <message>
-        <location filename="../util/models/flattofoldersproxymodel.cpp" line="116"/>
+        <location filename="../util/models/flattofoldersproxymodel.cpp" line="117"/>
         <source>&lt;unknown tag&gt;</source>
         <translation>&lt;unknown tag&gt;</translation>
     </message>
@@ -1061,7 +1060,12 @@
 <context>
     <name>LeechCraft::Util::SvcAuth::VkAuthManager</name>
     <message>
-        <location filename="../util/svcauth/vkauthmanager.cpp" line="262"/>
+        <location filename="../util/svcauth/vkauthmanager.cpp" line="256"/>
+        <source>VK.com authentication for %1 failed because of error %2. Report upstream please.</source>
+        <translation>VK.com authentication for %1 failed because of error %2. Report upstream please.</translation>
+    </message>
+    <message>
+        <location filename="../util/svcauth/vkauthmanager.cpp" line="299"/>
         <source>VK.com authentication for %1</source>
         <translation>VK.com authentication for %1</translation>
     </message>
@@ -1106,47 +1110,47 @@ If you have read and really understood all these letters, click Cancel button in
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../util/util.cpp" line="62"/>
+        <location filename="../util/util.cpp" line="63"/>
         <source>Too long to show</source>
         <translation>Too long to show</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="79"/>
+        <location filename="../util/util.cpp" line="80"/>
         <source>Binary entity</source>
         <translation>Binary entity</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="82"/>
+        <location filename="../util/util.cpp" line="83"/>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
         <translation>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="89"/>
+        <location filename="../util/util.cpp" line="90"/>
         <source>&lt;br /&gt;from %1</source>
         <translation>&lt;br /&gt;from %1</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="120"/>
+        <location filename="../util/util.cpp" line="121"/>
         <source> b</source>
         <translation> b</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="125"/>
+        <location filename="../util/util.cpp" line="126"/>
         <source> KiB</source>
         <translation> KiB</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="130"/>
+        <location filename="../util/util.cpp" line="131"/>
         <source> MiB</source>
         <translation> MiB</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="135"/>
+        <location filename="../util/util.cpp" line="136"/>
         <source> GiB</source>
         <translation> GiB</translation>
     </message>
     <message numerus="yes">
-        <location filename="../util/util.cpp" line="149"/>
+        <location filename="../util/util.cpp" line="150"/>
         <source>%n day(s), </source>
         <translation>
             <numerusform>%n day, </numerusform>
@@ -1154,12 +1158,12 @@ If you have read and really understood all these letters, click Cancel button in
         </translation>
     </message>
     <message>
-        <location filename="../util/sys/paths.cpp" line="161"/>
+        <location filename="../util/sys/paths.cpp" line="179"/>
         <source>Could not cd into %1</source>
         <translation>Could not cd into %1</translation>
     </message>
     <message>
-        <location filename="../util/sys/paths.cpp" line="155"/>
+        <location filename="../util/sys/paths.cpp" line="173"/>
         <source>Could not create %1</source>
         <translation>Could not create %1</translation>
     </message>
@@ -1337,6 +1341,142 @@ If you have read and really understood all these letters, click Cancel button in
         <location filename="../util/xpc/stdanfields.cpp" line="114"/>
         <source>The terminal tab that caused the notification is active.</source>
         <translation>The terminal tab that caused the notification is active.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="47"/>
+        <source>Instant messaging</source>
+        <translation>Instant messaging</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="48"/>
+        <source>Organizer</source>
+        <translation>Organizer</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="49"/>
+        <source>Downloads</source>
+        <translation>Downloads</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="50"/>
+        <source>Package manager</source>
+        <translation>Package manager</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="51"/>
+        <source>Media player</source>
+        <translation>Media player</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="52"/>
+        <source>Terminal</source>
+        <translation>Terminal</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="53"/>
+        <location filename="../util/xpc/anutil.cpp" line="154"/>
+        <source>Generic</source>
+        <translation>Generic</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="128"/>
+        <source>Attention request</source>
+        <translation>Attention request</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="129"/>
+        <source>Incoming file transfer request</source>
+        <translation>Incoming file transfer request</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="130"/>
+        <source>Incoming chat message</source>
+        <translation>Incoming chat message</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="131"/>
+        <source>MUC highlight</source>
+        <translation>MUC highlight</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="132"/>
+        <source>MUC invitation</source>
+        <translation>MUC invitation</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="133"/>
+        <source>General MUC message</source>
+        <translation>General MUC message</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="134"/>
+        <source>Contact status change</source>
+        <translation>Contact status change</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="135"/>
+        <source>Authorization granted</source>
+        <translation>Authorization granted</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="136"/>
+        <source>Authorization revoked</source>
+        <translation>Authorization revoked</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="137"/>
+        <source>Authorization requested</source>
+        <translation>Authorization requested</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="138"/>
+        <source>Contact subscribed</source>
+        <translation>Contact subscribed</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="139"/>
+        <source>Contact unsubscribed</source>
+        <translation>Contact unsubscribed</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="141"/>
+        <source>Event is due</source>
+        <translation>Event is due</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="143"/>
+        <source>Download error</source>
+        <translation>Download error</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="144"/>
+        <source>Download finished</source>
+        <translation>Download finished</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="146"/>
+        <source>Package updated</source>
+        <translation>Package updated</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="148"/>
+        <source>Media playback status changed</source>
+        <translation>Media playback status changed</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="150"/>
+        <source>Bell in a terminal</source>
+        <translation>Bell in a terminal</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="151"/>
+        <source>Activity in a terminal</source>
+        <translation>Activity in a terminal</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="152"/>
+        <source>Inactivity in a terminal</source>
+        <translation>Inactivity in a terminal</translation>
     </message>
 </context>
 <context>

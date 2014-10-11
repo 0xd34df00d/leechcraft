@@ -298,6 +298,14 @@
         <source>Tools</source>
         <translation>Инструменты</translation>
     </message>
+    <message>
+        <source>Choose color</source>
+        <translation>Выбрать цвет</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Выбрать...</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
@@ -350,17 +358,6 @@
     <message>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>Это изменение требует перезапуска LeechCraft. Хотите перезапустить сейчас?</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::ColorPicker</name>
-    <message>
-        <source>Choose color</source>
-        <translation>Выбрать цвет</translation>
-    </message>
-    <message>
-        <source>Choose...</source>
-        <translation>Выбрать...</translation>
     </message>
 </context>
 <context>
@@ -862,6 +859,10 @@
         <source>VK.com authentication for %1</source>
         <translation>Аутентификация ВКонтакте для %1</translation>
     </message>
+    <message>
+        <source>VK.com authentication for %1 failed because of error %2. Report upstream please.</source>
+        <translation>Авторизация ВКонтакте для %1 не может быть осуществлена из-за ошибки %2. Пожалуйста, сообщите об этой ошибке.</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Util::SvcAuth::VkCaptchaDialog</name>
@@ -1085,6 +1086,114 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>The terminal tab that caused the notification is active.</source>
         <translation>Вкладка терминала, вызвавшая уведомление, активна.</translation>
+    </message>
+    <message>
+        <source>Instant messaging</source>
+        <translation>Мгновенные сообщения</translation>
+    </message>
+    <message>
+        <source>Organizer</source>
+        <translation>Органайзер</translation>
+    </message>
+    <message>
+        <source>Downloads</source>
+        <translation>Закачки</translation>
+    </message>
+    <message>
+        <source>Package manager</source>
+        <translation>Менеджер пакетов</translation>
+    </message>
+    <message>
+        <source>Media player</source>
+        <translation>Проигрыватель мультимедиа</translation>
+    </message>
+    <message>
+        <source>Terminal</source>
+        <translation>Терминал</translation>
+    </message>
+    <message>
+        <source>Generic</source>
+        <translation>Общее</translation>
+    </message>
+    <message>
+        <source>Attention request</source>
+        <translation>Запрос внимания</translation>
+    </message>
+    <message>
+        <source>Incoming file transfer request</source>
+        <translation>Входящая передача файлов</translation>
+    </message>
+    <message>
+        <source>Incoming chat message</source>
+        <translation>Входящее сообщение в чате</translation>
+    </message>
+    <message>
+        <source>MUC highlight</source>
+        <translation>Подсветка в конференции</translation>
+    </message>
+    <message>
+        <source>MUC invitation</source>
+        <translation>Приглашение в конференцию</translation>
+    </message>
+    <message>
+        <source>General MUC message</source>
+        <translation>Обычное сообщение в конференции</translation>
+    </message>
+    <message>
+        <source>Contact status change</source>
+        <translation>Изменение статуса контакта</translation>
+    </message>
+    <message>
+        <source>Authorization granted</source>
+        <translation>Получение авторизации</translation>
+    </message>
+    <message>
+        <source>Authorization revoked</source>
+        <translation>Отзыв авторизации</translation>
+    </message>
+    <message>
+        <source>Authorization requested</source>
+        <translation>Запрос авторизации</translation>
+    </message>
+    <message>
+        <source>Contact subscribed</source>
+        <translation>Контакт подписался</translation>
+    </message>
+    <message>
+        <source>Contact unsubscribed</source>
+        <translation>Контакт отписался</translation>
+    </message>
+    <message>
+        <source>Event is due</source>
+        <translation>Пришел срок события</translation>
+    </message>
+    <message>
+        <source>Download error</source>
+        <translation>Ошибка скачивания</translation>
+    </message>
+    <message>
+        <source>Download finished</source>
+        <translation>Скачивание завершено</translation>
+    </message>
+    <message>
+        <source>Package updated</source>
+        <translation>Пакет обновлен</translation>
+    </message>
+    <message>
+        <source>Media playback status changed</source>
+        <translation>Статус проигрывания медиафайла изменился</translation>
+    </message>
+    <message>
+        <source>Bell in a terminal</source>
+        <translation>Сигнал в терминале</translation>
+    </message>
+    <message>
+        <source>Activity in a terminal</source>
+        <translation>Активность в терминале</translation>
+    </message>
+    <message>
+        <source>Inactivity in a terminal</source>
+        <translation>Отсутствие активности в терминале</translation>
     </message>
 </context>
 <context>
