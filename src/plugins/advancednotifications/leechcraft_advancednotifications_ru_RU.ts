@@ -58,49 +58,49 @@
 <context>
     <name>LeechCraft::AdvancedNotifications::NotificationRulesWidget</name>
     <message>
-        <location filename="notificationruleswidget.cpp" line="112"/>
+        <location filename="notificationruleswidget.cpp" line="87"/>
         <source>Field name</source>
         <translation>Имя поля</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="113"/>
+        <location filename="notificationruleswidget.cpp" line="88"/>
         <source>Rule description</source>
         <translation>Описание правила</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="221"/>
+        <location filename="notificationruleswidget.cpp" line="196"/>
         <source>&lt;empty matcher&gt;</source>
         <translation>&lt;пустой матчер&gt;</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="264"/>
+        <location filename="notificationruleswidget.cpp" line="239"/>
         <source>Custom field %1 (%2)</source>
         <translation>Особое поле %1 (%2)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="295"/>
+        <location filename="notificationruleswidget.cpp" line="270"/>
         <source>The rule has been changed. Do you want to save it?</source>
         <oldsource>The rule has been changed. Do you want to save it</oldsource>
         <translation>Правило было изменено. Вы желаете его сохранить?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="417"/>
+        <location filename="notificationruleswidget.cpp" line="392"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
         <translation>Вы уверены, что хотите заменить все правила набором по умолчанию?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="502"/>
+        <location filename="notificationruleswidget.cpp" line="477"/>
         <source>Select audio file</source>
         <translation>Выбор аудиофайла</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="504"/>
+        <location filename="notificationruleswidget.cpp" line="479"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
         <translation>Аудиофайлы (*.ogg *.wav *.flac *.mp3);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="260"/>
-        <location filename="notificationruleswidget.cpp" line="271"/>
+        <location filename="notificationruleswidget.cpp" line="235"/>
+        <location filename="notificationruleswidget.cpp" line="246"/>
         <source>Please enter the argument:</source>
         <translation>Введите аргумент:</translation>
     </message>
@@ -121,208 +121,92 @@
 <context>
     <name>LeechCraft::AdvancedNotifications::RulesManager</name>
     <message>
-        <location filename="rulesmanager.cpp" line="94"/>
-        <source>Instant messaging</source>
-        <translation>Мгновенные сообщения</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="95"/>
-        <source>Attention request</source>
-        <translation>Запрос внимания</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="96"/>
-        <source>Incoming file transfer request</source>
-        <translation>Входящая передача файлов</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="97"/>
-        <source>Incoming chat message</source>
-        <translation>Входящее сообщение в чате</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="98"/>
-        <source>MUC highlight</source>
-        <translation>Подсветка в конференции</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="99"/>
-        <source>MUC invitation</source>
-        <translation>Приглашение в конференцию</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="100"/>
-        <source>General MUC message</source>
-        <translation>Обычное сообщение в конференции</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="101"/>
-        <source>Contact status change</source>
-        <translation>Изменение статуса контакта</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="102"/>
-        <source>Authorization granted</source>
-        <translation>Получение авторизации</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="103"/>
-        <source>Authorization revoked</source>
-        <translation>Отзыв авторизации</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="104"/>
-        <source>Authorization requested</source>
-        <translation>Запрос авторизации</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="105"/>
-        <source>Contact subscribed</source>
-        <translation>Контакт подписался</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="106"/>
-        <source>Contact unsubscribed</source>
-        <translation>Контакт отписался</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="108"/>
-        <source>Organizer</source>
-        <translation>Органайзер</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="109"/>
-        <location filename="rulesmanager.cpp" line="349"/>
+        <location filename="rulesmanager.cpp" line="307"/>
         <source>Event is due</source>
         <translation>Пришел срок события</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="111"/>
-        <source>Downloads</source>
-        <translation>Закачки</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="112"/>
-        <location filename="rulesmanager.cpp" line="363"/>
+        <location filename="rulesmanager.cpp" line="321"/>
         <source>Download error</source>
         <translation>Ошибка скачивания</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="113"/>
-        <location filename="rulesmanager.cpp" line="358"/>
+        <location filename="rulesmanager.cpp" line="316"/>
         <source>Download finished</source>
         <translation>Скачивание завершено</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="115"/>
-        <source>Package manager</source>
-        <translation>Менеджер пакетов</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="116"/>
-        <location filename="rulesmanager.cpp" line="380"/>
+        <location filename="rulesmanager.cpp" line="338"/>
         <source>Package updated</source>
         <translation>Пакет обновлен</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="118"/>
-        <source>Media player</source>
-        <translation>Проигрыватель мультимедиа</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="119"/>
-        <source>Media playback status changed</source>
-        <translation>Статус проигрывания медиафайла изменился</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="121"/>
-        <source>Terminal</source>
-        <translation>Терминал</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="122"/>
-        <source>Bell in a terminal</source>
-        <translation>Сигнал в терминале</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="123"/>
-        <source>Activity in a terminal</source>
-        <translation>Активность в терминале</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="124"/>
-        <source>Inactivity in a terminal</source>
-        <translation>Отсутствие активности в терминале</translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="126"/>
-        <location filename="rulesmanager.cpp" line="127"/>
-        <location filename="rulesmanager.cpp" line="372"/>
+        <location filename="rulesmanager.cpp" line="330"/>
         <source>Generic</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="303"/>
+        <location filename="rulesmanager.cpp" line="261"/>
         <source>Incoming chat messages</source>
         <translation>Входящие сообщения в чате</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="309"/>
+        <location filename="rulesmanager.cpp" line="267"/>
         <source>MUC highlights</source>
         <translation>Подсветки в конференциях</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="315"/>
+        <location filename="rulesmanager.cpp" line="273"/>
         <source>MUC invitations</source>
         <translation>Приглашения в конференции</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="321"/>
+        <location filename="rulesmanager.cpp" line="279"/>
         <source>Incoming file transfers</source>
         <translation>Входящие передачи файлов</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="326"/>
+        <location filename="rulesmanager.cpp" line="284"/>
         <source>Subscription requests</source>
         <translation>Запросы авторизации</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="332"/>
+        <location filename="rulesmanager.cpp" line="290"/>
         <source>Subscription changes</source>
         <translation>Изменения авторизации</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="340"/>
+        <location filename="rulesmanager.cpp" line="298"/>
         <source>Attention requests</source>
         <translation>Запросы внимания</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="392"/>
+        <location filename="rulesmanager.cpp" line="350"/>
         <source>Bell in inactive terminal</source>
         <translation>Сигнал в неактивном терминале</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="398"/>
+        <location filename="rulesmanager.cpp" line="356"/>
         <source>Activity in inactive terminal</source>
         <translation>Активность в неактивном терминале</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="404"/>
+        <location filename="rulesmanager.cpp" line="362"/>
         <source>Inactivity in inactive terminal</source>
         <translation>Отсутствие активности в неактивном терминале</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="439"/>
+        <location filename="rulesmanager.cpp" line="397"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="440"/>
+        <location filename="rulesmanager.cpp" line="398"/>
         <source>Category</source>
         <translation>Категория</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="441"/>
+        <location filename="rulesmanager.cpp" line="399"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
