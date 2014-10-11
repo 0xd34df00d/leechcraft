@@ -260,13 +260,16 @@ namespace Azoth
 
 		/** @brief Returns the entry object for the given entry ID.
 		 *
+		 * The \em accID may be empty, in which case all available
+		 * accounts are queried.
+		 *
 		 * @param[in] entryID The entry ID.
 		 * @param[in] accID The account ID to which this entry
 		 * belongs.
 		 *
 		 * @return Entry object, or NULL if no such entry exists.
 		 */
-		virtual QObject* GetEntry (const QString& entryID, const QString& accID) const = 0;
+		virtual QObject* GetEntry (const QString& entryID, const QString& accID = {}) const = 0;
 
 		/** @brief Opens the chat with the given entry.
 		 *
