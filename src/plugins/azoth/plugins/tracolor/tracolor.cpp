@@ -37,6 +37,7 @@
 #include <interfaces/an/entityfields.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
 #include "entryeventsmanager.h"
 #include "iconsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -64,6 +65,9 @@ namespace Tracolor
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothtracolorsettings.xml");
 
 		XSD_->SetDataSource ("EventsTypesDataView", eventsSettingsManager->GetModel ());
+
+		XmlSettingsManager::Instance ().RegisterObject ("EnableTracolor",
+				this, "handleEnableTracolorChanged");
 	}
 
 	void Plugin::SecondInit ()
@@ -159,6 +163,16 @@ namespace Tracolor
 			return;
 
 		AzothProxy_->RedrawItem (entry);
+	}
+
+	void Plugin::handleEnableTracolorChanged ()
+	{
+		if (!AzothProxy_)
+			return;
+
+		for (const auto accObj : AzothProxy_->GetAllAccounts ())
+			for (const auto entry : qobject_cast<IAccount*> (accObj)->GetCLEntries ())
+				AzothProxy_->RedrawItem (entry);
 	}
 }
 }
