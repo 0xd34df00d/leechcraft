@@ -103,9 +103,10 @@ namespace QRd
 	{
 		const auto& url = sender ()->property ("Poshuku/QRd/URL").toUrl ();
 
+		const auto& encoded = url.toEncoded ();
 		const std::unique_ptr<QRcode, decltype (&QRcode_free)> code
 		{
-			QRcode_encodeString (url.toEncoded ().constData (),
+			QRcode_encodeString (encoded.constData (),
 					0, QR_ECLEVEL_H, QR_MODE_8, true),
 			&QRcode_free
 		};
@@ -146,6 +147,8 @@ namespace QRd
 			image = image.scaled (fullWidth * scale, fullWidth * scale, Qt::KeepAspectRatio, Qt::FastTransformation);
 
 		auto label = new QLabel;
+		label->setWindowTitle (tr ("QR code for %1")
+				.arg (QString::fromUtf8 (encoded)));
 		label->setAttribute (Qt::WA_DeleteOnClose);
 		label->setPixmap (QPixmap::fromImage (image));
 		label->show ();
