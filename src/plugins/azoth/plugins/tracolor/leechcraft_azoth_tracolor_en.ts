@@ -4,12 +4,12 @@
 <context>
     <name>LeechCraft::Azoth::Tracolor</name>
     <message>
-        <location filename="eventssettingsmanager.cpp" line="49"/>
+        <location filename="eventssettingsmanager.cpp" line="58"/>
         <source>Event</source>
         <translation>Event</translation>
     </message>
     <message>
-        <location filename="eventssettingsmanager.cpp" line="49"/>
+        <location filename="eventssettingsmanager.cpp" line="58"/>
         <source>Color</source>
         <translation>Color</translation>
     </message>
@@ -17,7 +17,7 @@
 <context>
     <name>LeechCraft::Azoth::Tracolor::Plugin</name>
     <message>
-        <location filename="tracolor.cpp" line="89"/>
+        <location filename="tracolor.cpp" line="93"/>
         <source>Indicates contacts activity via color coding.</source>
         <translation>Indicates contacts activity via color coding.</translation>
     </message>
@@ -31,14 +31,23 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
-        <source>Decay rate:</source>
-        <translation>Decay rate:</translation>
+        <source>Enable Tracolor</source>
+        <translation>Enable Tracolor</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
-        <source>Controls the &lt;em&gt;k&lt;/em&gt; coefficient in the formula for opacity: &lt;em&gt;opacity(x) = 1 / (1 + kx)&lt;/em&gt;. Generally speaking, smaller &lt;em&gt;k&lt;/em&gt; means slower icons desaturation.</source>
-        <oldsource>Controls the &amp;lt;em&amp;gt;k&amp;lt;/em&amp;gt; coefficient in the formula for opacity: &amp;lt;em&amp;gt;opacity(x) = 1 / (1 + kx)&amp;lt;/em&amp;gt;. Generally speaking, smaller &amp;lt;em&amp;gt;k&amp;lt;/em&amp;gt; means slower icons desaturation.</oldsource>
-        <translation>Controls the &lt;em&gt;k&lt;/em&gt; coefficient in the formula for opacity: &lt;em&gt;opacity(x) = 1 / (1 + kx)&lt;/em&gt;. Generally speaking, smaller &lt;em&gt;k&lt;/em&gt; means slower icons desaturation.</translation>
+        <source>Fadeout time:</source>
+        <translation>Fadeout time:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source> min</source>
+        <translation> min</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Opacity threshold for icons hiding:</source>
+        <translation>Opacity threshold for icons hiding:</translation>
     </message>
 </context>
 </TS>
