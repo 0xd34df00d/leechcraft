@@ -213,7 +213,7 @@ namespace Murm
 		QString PagePreview2Replacement (const PagePreview& info)
 		{
 			QString result = "<div>";
-			result += EntryBase::tr ("Page: <a href='%1'>%2</a>")
+			result += EntryBase::tr ("Page:") + QString (" <a href='%1'>%2</a>")
 					.arg (info.Url_.toEncoded ().constData ())
 					.arg (info.Title_);
 			result += "</div>";
