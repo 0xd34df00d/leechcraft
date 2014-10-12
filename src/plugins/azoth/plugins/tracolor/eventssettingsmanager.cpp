@@ -42,6 +42,14 @@ namespace Azoth
 {
 namespace Tracolor
 {
+	namespace
+	{
+		enum Role
+		{
+			EventId = Qt::UserRole + 1
+		};
+	}
+
 	EventsSettingsManager::EventsSettingsManager (QObject *parent)
 	: QObject { parent }
 	, Model_ { new QStandardItemModel { this } }
@@ -81,6 +89,7 @@ namespace Tracolor
 		};
 		for (auto item : row)
 			item->setEditable (false);
+		row.first ()->setData (eventId, Role::EventId);
 		row.first ()->setCheckable (true);
 		row.first ()->setCheckState (isEnabled ? Qt::Checked : Qt::Unchecked);
 		row.value (1)->setForeground (color);
@@ -132,7 +141,7 @@ namespace Tracolor
 			if (firstItem->checkState () != Qt::Checked)
 				continue;
 
-			const auto& id = firstItem->text ();
+			const auto& id = firstItem->data (Role::EventId).toString ();
 			const auto& color = Model_->item (i, 1)->text ();
 			EnabledEvents_ [id] = EventInfo { color };
 		}
@@ -170,7 +179,7 @@ namespace Tracolor
 			settings.setArrayIndex (i);
 
 			settings.setValue ("IsEnabled", Model_->item (i, 0)->checkState () == Qt::Checked);
-			settings.setValue ("Event", Model_->item (i, 0)->text ());
+			settings.setValue ("Event", Model_->item (i, 0)->data (Role::EventId));
 			settings.setValue ("Color", Model_->item (i, 1)->text ());
 		}
 		settings.endArray ();
