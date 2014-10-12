@@ -2,7 +2,9 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_sarin)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+if (NOT USE_CPP14)
+	message (FATAL_ERROR "Azoth Sarin: this plugin cannot be built in C++11 mode, enable C++14 via -DUSE_CPP14=True or disable the module.")
+endif ()
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
