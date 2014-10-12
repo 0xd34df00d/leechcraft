@@ -5,9 +5,9 @@
 		<item type="checkbox" property="EnableTracolor" default="false">
 			<label value="Enable Tracolor" />
 		</item>
-		<item type="doublespinbox" property="DecayRate" default="1" minimum="0.01" maximum="10">
-			<label value="Decay rate:" />
-			<tooltip>Controls the &lt;em>k&lt;/em> coefficient in the formula for opacity: &lt;em>opacity(x) = 1 / (1 + kx)&lt;/em>. Generally speaking, smaller &lt;em>k&lt;/em> means slower icons fadeout.</tooltip>
+		<item type="spinbox" property="FadeoutTime" default="30" minimum="1" maximum="300">
+			<label value="Fadeout time:" />
+			<suffix value=" min" />
 		</item>
 		<item type="spinbox" property="HidingThreshold" default="5" minimum="1" maximum="255">
 			<label value="Opacity threshold for icons hiding:" />

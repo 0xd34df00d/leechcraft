@@ -50,7 +50,7 @@ namespace Tracolor
 				this,
 				SLOT (decayRates ()));
 
-		XmlSettingsManager::Instance ().RegisterObject ("DecayRate", this, "decayRates");
+		XmlSettingsManager::Instance ().RegisterObject ("FadeoutTime", this, "decayRates");
 	}
 
 	void EntryEventsManager::AddEntry (QObject*)
@@ -74,7 +74,12 @@ namespace Tracolor
 		if (!date.isValid ())
 			return 0;
 
-		const auto k = XmlSettingsManager::Instance ().property ("DecayRate").toDouble ();
+		const auto fadeTime = XmlSettingsManager::Instance ().property ("FadeoutTime").toInt ();
+		const auto minOp = XmlSettingsManager::Instance ().property ("HidingThreshold").toInt ();
+
+		// $$ k = \frac{\frac{p_{\max}}{p_{\min}} - 1}{x_0} $$
+		const auto k = ((255.0 / minOp) - 1) / fadeTime;
+
 		const auto diff = date.secsTo (QDateTime::currentDateTime ()) / 60.0;
 		return 1 / (k * diff + 1);
 	}
