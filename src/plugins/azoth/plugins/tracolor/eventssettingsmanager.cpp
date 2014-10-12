@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <util/xpc/stdanfields.h>
+#include <util/xpc/anutil.h>
 #include <interfaces/an/constants.h>
 
 namespace LeechCraft
@@ -84,7 +85,7 @@ namespace Tracolor
 	{
 		const QList<QStandardItem*> row
 		{
-			new QStandardItem { eventId },
+			new QStandardItem { Util::AN::GetTypeName (eventId) },
 			new QStandardItem { color.name () }
 		};
 		for (auto item : row)
