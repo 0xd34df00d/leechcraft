@@ -261,7 +261,7 @@ option (ENABLE_AZOTH_ROSENTHAL "Build Rosenthal, spellchecker plugin for Azoth" 
 option (ENABLE_AZOTH_SARIN "Build Sarin, Tox support for Azoth" OFF)
 option (ENABLE_AZOTH_SHX "Build ShX, shell command runner" ON)
 option (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
-option (ENABLE_AZOTH_TRACOLOR "Build support for color-indicating contacts activity tracker" OFF)
+option (ENABLE_AZOTH_TRACOLOR "Build support for color-indicating contacts activity tracker" ON)
 option (ENABLE_AZOTH_VADER "Build support for the MRIM protocol" ON)
 option (ENABLE_AZOTH_VELVETBIRD "Build libpurple support plugin" OFF)
 option (ENABLE_AZOTH_XOOX "Build Xoox, the QXmpp-aided XMPP support for Azoth" ON)
