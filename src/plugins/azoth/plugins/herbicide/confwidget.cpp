@@ -90,9 +90,6 @@ namespace Herbicide
 
 	void ConfWidget::on_QuestStyle__currentIndexChanged (int idx)
 	{
-		if (PredefinedQuests_.size () <= idx - 1 || !idx)
-			return;
-
 		Ui_.QuestVariant_->clear ();
 		for (const auto& pair : PredefinedQuests_.value (idx - 1))
 			Ui_.QuestVariant_->addItem (pair.first, pair.second);
