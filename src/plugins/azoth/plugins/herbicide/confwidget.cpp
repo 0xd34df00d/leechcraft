@@ -40,26 +40,27 @@ namespace Herbicide
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-		
+
 		LoadSettings ();
-		
-		QList<QPair<QString, QStringList>> mathQuests;
-		mathQuests << qMakePair (QString ("(cos(x))'"), QStringList ("-sin(x)"));
-		mathQuests << qMakePair (QString::fromUtf8 ("e^(iπ)"), QStringList ("-1"));
+
+		const QList<QPair<QString, QStringList>> mathQuests
+		{
+			{ "(cos(x))'", { "-sin(x)" } },
+			{ QString::fromUtf8 ("e^(iπ)"), { "-1" } }
+		};
 		PredefinedQuests_ << mathQuests;
 	}
-	
+
 	QString ConfWidget::GetQuestion () const
 	{
 		return Ui_.Question_->toPlainText ();
 	}
-	
+
 	QStringList ConfWidget::GetAnswers () const
 	{
-		return Ui_.Answers_->toPlainText ()
-			.split ('\n', QString::SkipEmptyParts);
+		return Ui_.Answers_->toPlainText ().split ('\n', QString::SkipEmptyParts);
 	}
-	
+
 	void ConfWidget::SaveSettings () const
 	{
 		XmlSettingsManager::Instance ().setProperty ("Question", GetQuestion ());
@@ -68,36 +69,35 @@ namespace Herbicide
 
 	void ConfWidget::LoadSettings ()
 	{
-		const QString& question = XmlSettingsManager::Instance ()
+		const auto& question = XmlSettingsManager::Instance ()
 				.property ("Question").toString ();
 		Ui_.Question_->setPlainText (question);
 
-		const QStringList& answers = XmlSettingsManager::Instance ()
+		const auto& answers = XmlSettingsManager::Instance ()
 				.property ("Answers").toStringList ();
 		Ui_.Answers_->setPlainText (answers.join ("\n"));
 	}
-	
+
 	void ConfWidget::accept ()
 	{
 		SaveSettings ();
 	}
-	
+
 	void ConfWidget::reject ()
 	{
 		LoadSettings ();
 	}
-	
+
 	void ConfWidget::on_QuestStyle__currentIndexChanged (int idx)
 	{
 		if (PredefinedQuests_.size () <= idx - 1 || !idx)
 			return;
-		
+
 		Ui_.QuestVariant_->clear ();
-		QPair<QString, QStringList> pair;
-		Q_FOREACH (pair, PredefinedQuests_.at (idx - 1))
+		for (const auto& pair : PredefinedQuests_.value (idx - 1))
 			Ui_.QuestVariant_->addItem (pair.first, pair.second);
 	}
-	
+
 	void ConfWidget::on_QuestVariant__currentIndexChanged (int idx)
 	{
 		Ui_.Question_->setPlainText (Ui_.QuestVariant_->currentText ());
