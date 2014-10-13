@@ -211,7 +211,7 @@ namespace Murm
 
 		const auto& varmap = replyVar.toMap ();
 
-		auto varlist = varmap ["response"].toList ();
+		auto varlist = varmap ["response"].toMap () ["items"].toList ();
 		if (varlist.isEmpty ())
 			return;
 
@@ -231,7 +231,7 @@ namespace Murm
 
 		for (const auto& var : varlist)
 		{
-			const auto& varmap = var.toMap ();
+			const auto& varmap = var.toMap () ["message"].toMap ();
 			if (varmap.isEmpty ())
 				continue;
 
@@ -239,7 +239,7 @@ namespace Murm
 			if (varmap.contains ("admin_id"))
 				continue;
 
-			const auto uid = varmap ["uid"].toULongLong ();
+			const auto uid = varmap ["user_id"].toULongLong ();
 			const auto ts = varmap ["date"].toULongLong ();
 
 			const auto entry = Acc_->GetEntry (uid);
