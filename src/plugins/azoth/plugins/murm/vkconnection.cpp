@@ -1438,7 +1438,9 @@ namespace Murm
 
 		void HandleBasicMsgInfo (FullMessageInfo& info, const QVariantMap& wallMap)
 		{
-			info.OwnerID_ = wallMap ["owner_id"].toLongLong ();
+			info.OwnerID_ = wallMap.contains ("owner_id") ?
+					wallMap ["owner_id"].toLongLong () :
+					wallMap ["to_id"].toLongLong ();
 			info.ID_ = wallMap ["id"].toULongLong ();
 			info.Text_ = wallMap ["text"].toString ();
 			info.Likes_ = wallMap ["likes"].toMap () ["count"].toInt ();
