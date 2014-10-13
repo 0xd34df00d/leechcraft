@@ -163,6 +163,8 @@ namespace Murm
 		if (replyVar.isNull ())
 			return;
 
+		Acc_->GetLogger () << replyVar;
+
 		const auto& varmap = replyVar.toMap ();
 
 		SrvHistMessages_t messages;
