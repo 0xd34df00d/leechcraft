@@ -166,7 +166,7 @@ namespace Murm
 		const auto& varmap = replyVar.toMap ();
 
 		SrvHistMessages_t messages;
-		for (const auto& var : varmap ["response"].toList ())
+		for (const auto& var : varmap ["response"].toMap () ["items"].toList ())
 		{
 			const auto& map = var.toMap ();
 			if (map.isEmpty ())
