@@ -37,6 +37,7 @@
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include "vkaccount.h"
 #include "vkentry.h"
+#include "logger.h"
 
 namespace LeechCraft
 {
@@ -208,6 +209,8 @@ namespace Murm
 		const auto& replyVar = Util::ParseJson (reply, Q_FUNC_INFO);
 		if (replyVar.isNull ())
 			return;
+
+		Acc_->GetLogger () << replyVar;
 
 		const auto& varmap = replyVar.toMap ();
 
