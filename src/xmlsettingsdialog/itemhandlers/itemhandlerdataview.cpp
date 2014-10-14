@@ -276,6 +276,14 @@ namespace LeechCraft
 			const auto name = new QLabel (info.Name_);
 			const auto editorWidget = GetEditor (info.Type_, info.ValuesInfo_);
 
+			if (info.Type_ == DataSources::Enum && info.ValuesInfo_.toList ().isEmpty ())
+			{
+				if (existing.isEmpty ())
+					return {};
+				else
+					editorWidget->setEnabled (false);
+			}
+
 			SetData (editorWidget, info.Type_, existing.value (i));
 
 			const int row = lay->rowCount ();
