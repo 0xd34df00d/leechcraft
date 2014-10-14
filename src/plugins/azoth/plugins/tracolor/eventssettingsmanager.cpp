@@ -35,6 +35,8 @@
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <util/xpc/stdanfields.h>
 #include <util/xpc/anutil.h>
+#include <util/sll/prelude.h>
+#include <util/util.h>
 #include <interfaces/an/constants.h>
 
 namespace LeechCraft
@@ -128,6 +130,7 @@ namespace Tracolor
 		settings.endArray ();
 
 		RebuildEnabledEvents ();
+		RebuildAddableEvents ();
 	}
 
 	void EventsSettingsManager::LoadDefaultSettings ()
@@ -137,6 +140,7 @@ namespace Tracolor
 		AppendRow (AN::TypeIMMUCHighlight, "red");
 
 		RebuildEnabledEvents ();
+		RebuildAddableEvents ();
 	}
 
 	void EventsSettingsManager::RebuildEnabledEvents ()
@@ -155,6 +159,32 @@ namespace Tracolor
 		}
 
 		emit eventsSettingsChanged ();
+	}
+
+	void EventsSettingsManager::RebuildAddableEvents ()
+	{
+		QStringList remainingEvents
+		{
+			AN::TypeIMMUCMsg,
+			AN::TypeIMIncMsg,
+			AN::TypeIMMUCHighlight,
+			AN::TypeIMStatusChange
+		};
+
+		for (int i = 0, rc = Model_->rowCount (); i < rc; ++i)
+			remainingEvents.removeOne (Model_->item (i)->data (Role::EventId).toString ());
+
+		const auto& map = Util::Map (remainingEvents,
+				[] (const QString& eventId) -> QVariant
+				{
+					return Util::MakeMap<QString, QVariant> ({
+							{ "Name", Util::AN::GetTypeName (eventId) },
+							{ "ID", eventId }
+						});
+				});
+		Model_->setHeaderData (0, Qt::Horizontal,
+				map,
+				DataSources::DataSourceRole::FieldValues);
 	}
 
 	void EventsSettingsManager::modifyRequested (const QString&, int rowIdx, const QVariantList& datas)
