@@ -92,6 +92,15 @@ namespace AN
 	/** @brief Another user has unsubscribed from our user.
 	 */
 	const QString TypeIMSubscrUnsub = CatIM + ".Subscr.Unsubscribed";
+	/** @brief User's tune has changed.
+	 */
+	const QString TypeIMEventTuneChange = CatIM + ".Event.Tune";
+	/** @brief User's mood has changed.
+	 */
+	const QString TypeIMEventMoodChange = CatIM + ".Event.Mood";
+	/** @brief User's activity has changed.
+	 */
+	const QString TypeIMEventActivityChange = CatIM + ".Event.Activity";
 
 	/** @brief Category of Organizer-related events.
 	 */

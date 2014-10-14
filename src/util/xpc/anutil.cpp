@@ -71,7 +71,10 @@ namespace AN
 						LAN::TypeIMSubscrRequest,
 						LAN::TypeIMSubscrRevoke,
 						LAN::TypeIMSubscrSub,
-						LAN::TypeIMSubscrUnsub
+						LAN::TypeIMSubscrUnsub,
+						LAN::TypeIMEventTuneChange,
+						LAN::TypeIMEventMoodChange,
+						LAN::TypeIMEventActivityChange
 					}
 				},
 				{
@@ -137,6 +140,9 @@ namespace AN
 				{ LAN::TypeIMSubscrRequest, QObject::tr ("Authorization requested") },
 				{ LAN::TypeIMSubscrSub, QObject::tr ("Contact subscribed") },
 				{ LAN::TypeIMSubscrUnsub, QObject::tr ("Contact unsubscribed") },
+				{ LAN::TypeIMEventTuneChange, QObject::tr ("Contact's tune changed") },
+				{ LAN::TypeIMEventMoodChange, QObject::tr ("Contact's mood changed") },
+				{ LAN::TypeIMEventActivityChange, QObject::tr ("Contact's activity changed") },
 
 				{ LAN::TypeOrganizerEventDue, QObject::tr ("Event is due") },
 
