@@ -996,18 +996,26 @@ namespace Xoox
 
 			if (bareJid == "juick@juick.com")
 			{
-				new Util::DelayedExecutor
+				const auto hasDisplayed = XmlSettingsManager::Instance ()
+						.Property ("HasDisplayedJuickDeprecation", false).toBool ();
+				if (!hasDisplayed)
 				{
-					[] () -> void
+					new Util::DelayedExecutor
 					{
-						const auto& e = Util::MakeNotification ("Azoth",
-								tr ("Using the juick.com service is discouraged. Please consider "
-									"migrating to saner alternatives, like point.im."),
-								PWarning_);
-						Core::Instance ().SendEntity (e);
-					},
-					15000
-				};
+						[]
+						{
+							const auto& e = Util::MakeNotification ("Azoth",
+									tr ("Using the juick.com service is discouraged. Please consider "
+										"migrating to saner alternatives, like point.im."),
+									PWarning_);
+							Core::Instance ().SendEntity (e);
+						},
+						15000
+					};
+
+					XmlSettingsManager::Instance ()
+							.setProperty ("HasDisplayedJuickDeprecation", true);
+				}
 			}
 		}
 		emit gotRosterItems (items);
