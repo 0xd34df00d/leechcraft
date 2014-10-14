@@ -379,9 +379,6 @@ namespace Azoth
 			return;
 		}
 
-		if (entry->GetEntryType () != ICLEntry::EntryType::Chat)
-			return;
-
 		const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		if (!LastAccountStatusChange_.contains (acc) ||
 				LastAccountStatusChange_ [acc].secsTo (QDateTime::currentDateTime ()) < 5)
