@@ -775,6 +775,10 @@ namespace OTRoid
 				SIGNAL (initiateRequested (ICLEntry*, SmpMethod, QString, QString)),
 				this,
 				SLOT (startAuth (ICLEntry*, SmpMethod, QString, QString)));
+		connect (auth,
+				SIGNAL (destroyed ()),
+				this,
+				SLOT (handleAuthDestroyed ()));
 		Auths_ [entry] = auth;
 	}
 #endif
@@ -972,6 +976,13 @@ namespace OTRoid
 					reinterpret_cast<const unsigned char*> (answer.constData ()), answer.size ());
 			break;
 		}
+	}
+
+	void OtrHandler::handleAuthDestroyed ()
+	{
+		const auto auth = static_cast<Authenticator*> (sender ());
+		const auto key = Auths_.key (auth);
+		Auths_.remove (key);
 	}
 
 	void OtrHandler::handleGotSmpReply (SmpMethod, const QString& reply, ConnContext *context)

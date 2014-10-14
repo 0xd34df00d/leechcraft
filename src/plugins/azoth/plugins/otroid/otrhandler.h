@@ -145,6 +145,7 @@ namespace OTRoid
 #if OTRL_VERSION_MAJOR >= 4
 		void handleAuthRequested ();
 		void startAuth (ICLEntry*, SmpMethod, const QString&, const QString&);
+		void handleAuthDestroyed ();
 
 		void handleGotSmpReply (SmpMethod, const QString&, ConnContext*);
 		void handleAbortSmp (ConnContext*);
