@@ -83,6 +83,13 @@ namespace Tracolor
 	void EventsSettingsManager::AppendRow (const QString& eventId,
 			const QColor& color, bool isEnabled)
 	{
+		if (eventId.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty event ID";
+			return;
+		}
+
 		const QList<QStandardItem*> row
 		{
 			new QStandardItem { Util::AN::GetTypeName (eventId) },
