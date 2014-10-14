@@ -57,7 +57,7 @@ namespace Tracolor
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Event"), tr ("Color") });
 		Model_->setHeaderData (0, Qt::Horizontal,
-				DataSources::DataFieldType::None,
+				DataSources::DataFieldType::Enum,
 				DataSources::DataSourceRole::FieldType);
 		Model_->setHeaderData (1, Qt::Horizontal,
 				DataSources::DataFieldType::Color,
@@ -160,7 +160,7 @@ namespace Tracolor
 	void EventsSettingsManager::modifyRequested (const QString&, int rowIdx, const QVariantList& datas)
 	{
 		const auto colorItem = Model_->item (rowIdx, 1);
-		const auto& color = datas.value (0).value<QColor> ();
+		const auto& color = datas.value (1).value<QColor> ();
 
 		disconnect (Model_,
 				SIGNAL (itemChanged (QStandardItem*)),
