@@ -273,16 +273,16 @@ namespace LeechCraft
 		{
 			const auto& info = infos.at (i);
 
-			QLabel *name = new QLabel (info.Name_);
+			const auto name = new QLabel (info.Name_);
+			const auto editorWidget = GetEditor (info.Type_, info.ValuesInfo_);
 
-			QWidget *w = GetEditor (info.Type_, info.ValuesInfo_);
-			SetData (w, info.Type_, existing.value (i));
+			SetData (editorWidget, info.Type_, existing.value (i));
 
 			const int row = lay->rowCount ();
 			lay->addWidget (name, row, 0, Qt::AlignRight);
-			lay->addWidget (w, row, 1);
+			lay->addWidget (editorWidget, row, 1);
 		}
-		QDialogButtonBox *buttons = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+		const auto buttons = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
 				Qt::Horizontal, &dia);
 		connect (buttons,
 				SIGNAL (accepted ()),
@@ -295,7 +295,7 @@ namespace LeechCraft
 		lay->addWidget (buttons, lay->rowCount (), 0, 1, -1);
 
 		if (dia.exec () != QDialog::Accepted)
-			return QVariantList ();
+			return {};
 
 		QVariantList datas;
 		for (int i = 0, size = infos.size (); i < size; ++i)
@@ -327,7 +327,7 @@ namespace LeechCraft
 
 	void ItemHandlerDataView::handleAddRequested ()
 	{
-		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
+		const auto view = qobject_cast<DataViewWidget*> (sender ());
 
 		auto model = view->GetModel ();
 		const auto& datas = GetAddVariants (model);
@@ -346,7 +346,7 @@ namespace LeechCraft
 
 	void ItemHandlerDataView::handleModifyRequested ()
 	{
-		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
+		const auto view = qobject_cast<DataViewWidget*> (sender ());
 
 		const auto& selected = view->GetCurrentIndex ();
 		if (!selected.isValid ())
