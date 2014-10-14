@@ -76,12 +76,15 @@ namespace Tracolor
 
 		const auto fadeTime = XmlSettingsManager::Instance ().property ("FadeoutTime").toInt ();
 		const auto minOp = XmlSettingsManager::Instance ().property ("HidingThreshold").toInt ();
-
-		// $$ k = \frac{\frac{p_{\max}}{p_{\min}} - 1}{x_0} $$
-		const auto k = ((255.0 / minOp) - 1) / fadeTime;
-
 		const auto diff = date.secsTo (QDateTime::currentDateTime ()) / 60.0;
+
+		const auto minRate = minOp / 255.0;
+		/* Hyperbolic case.
+		const auto k = (1 / minRate - 1) / fadeTime;
 		return 1 / (k * diff + 1);
+		*/
+		const auto k = (1 - minRate) / fadeTime;
+		return std::max (1 - k * diff, 0.0);
 	}
 
 	void EntryEventsManager::decayRates ()
