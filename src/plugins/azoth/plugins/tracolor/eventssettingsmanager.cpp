@@ -187,6 +187,16 @@ namespace Tracolor
 				DataSources::DataSourceRole::FieldValues);
 	}
 
+	void EventsSettingsManager::addRequested (const QString&, const QVariantList& datas)
+	{
+		AppendRow (datas.value (0).toString (), datas.value (1).value<QColor> ());
+
+		saveSettings ();
+
+		RebuildEnabledEvents ();
+		RebuildAddableEvents ();
+	}
+
 	void EventsSettingsManager::modifyRequested (const QString&, int rowIdx, const QVariantList& datas)
 	{
 		const auto colorItem = Model_->item (rowIdx, 1);

@@ -71,6 +71,7 @@ namespace Tracolor
 		void RebuildEnabledEvents ();
 		void RebuildAddableEvents ();
 	public slots:
+		void addRequested (const QString&, const QVariantList&);
 		void modifyRequested (const QString&, int, const QVariantList&);
 	private slots:
 		void saveSettings ();
