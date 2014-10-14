@@ -138,6 +138,7 @@ namespace Tracolor
 		AppendRow (AN::TypeIMMUCMsg, "green");
 		AppendRow (AN::TypeIMIncMsg, "magenta");
 		AppendRow (AN::TypeIMMUCHighlight, "red");
+		AppendRow (AN::TypeIMStatusChange, "cyan", false);
 
 		RebuildEnabledEvents ();
 		RebuildAddableEvents ();
