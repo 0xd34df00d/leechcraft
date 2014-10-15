@@ -164,7 +164,7 @@ namespace Tracolor
 
 	void EventsSettingsManager::RebuildAddableEvents ()
 	{
-		QStringList remainingEvents
+		QList<QString> remainingEvents
 		{
 			AN::TypeIMMUCMsg,
 			AN::TypeIMIncMsg,
