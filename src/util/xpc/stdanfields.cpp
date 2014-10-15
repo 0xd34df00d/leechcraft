@@ -42,6 +42,47 @@ namespace Util
 	{
 		static const auto values = MakeMap<QString, QList<ANFieldData>> ({
 				{
+					AN::TypeIMEventTuneChange,
+					{
+						{
+							AN::Field::MediaTitle,
+							QObject::tr ("Title metadata"),
+							QObject::tr ("Title of the track being played."),
+							QVariant::String,
+							{
+								AN::TypeIMEventTuneChange
+							}
+						},
+						{
+							AN::Field::MediaAlbum,
+							QObject::tr ("Album metadata"),
+							QObject::tr ("Album of the track being played."),
+							QVariant::String,
+							{
+								AN::TypeIMEventTuneChange
+							}
+						},
+						{
+							AN::Field::MediaArtist,
+							QObject::tr ("Artist metadata"),
+							QObject::tr ("Artist of the track being played."),
+							QVariant::String,
+							{
+								AN::TypeIMEventTuneChange
+							}
+						},
+						{
+							AN::Field::MediaLength,
+							QObject::tr ("Length metadata"),
+							QObject::tr ("Length of the track being played."),
+							QVariant::Int,
+							{
+								AN::TypeIMEventTuneChange
+							}
+						}
+					}
+				},
+				{
 					AN::CatMediaPlayer,
 					{
 						{
