@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QColor>
 #include <QMap>
+#include <QModelIndexList>
 
 class QStandardItemModel;
 class QAbstractItemModel;
@@ -73,6 +74,7 @@ namespace Tracolor
 	public slots:
 		void addRequested (const QString&, const QVariantList&);
 		void modifyRequested (const QString&, int, const QVariantList&);
+		void removeRequested (const QString&, const QModelIndexList&);
 	private slots:
 		void saveSettings ();
 		void handleItemChanged ();

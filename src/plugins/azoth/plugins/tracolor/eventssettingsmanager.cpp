@@ -220,6 +220,16 @@ namespace Tracolor
 		RebuildEnabledEvents ();
 	}
 
+	void EventsSettingsManager::removeRequested (const QString&, const QModelIndexList& indexes)
+	{
+		for (const auto& index : indexes)
+			Model_->removeRow (index.row ());
+
+		saveSettings ();
+		RebuildEnabledEvents ();
+		RebuildAddableEvents ();
+	}
+
 	void EventsSettingsManager::saveSettings ()
 	{
 		QSettings settings { QCoreApplication::organizationName (),
