@@ -35,11 +35,15 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/an/constants.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/imessage.h"
 #include "interfaces/azoth/iadvancedclentry.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
+#include "interfaces/azoth/isupporttune.h"
+#include "interfaces/azoth/isupportmood.h"
+#include "interfaces/azoth/isupportactivity.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "core.h"
@@ -116,6 +120,13 @@ namespace Azoth
 					SIGNAL (attentionDrawn (const QString&, const QString&)),
 					this,
 					SLOT (handleAttentionDrawn (const QString&, const QString&)));
+
+		const auto accObj = qobject_cast<ICLEntry*> (entryObj)->GetParentAccount ();
+		if (qobject_cast<ISupportTune*> (accObj))
+			connect (entryObj,
+					SIGNAL (tuneChanged (QString)),
+					this,
+					SLOT (handleTuneChanged (QString)));
 	}
 
 	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
@@ -417,6 +428,49 @@ namespace Azoth
 
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = entrySt.StatusString_;
 		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = azothProxy.StateToString (entrySt.State_);
+
+		EntityMgr_->HandleEntity (e);
+	}
+
+	namespace
+	{
+		QString GetTuneHRText (ICLEntry *entry, const QVariantMap& map)
+		{
+			const auto& entryName = entry->GetEntryName ();
+			return map.contains ("artist") ?
+					NotificationsManager::tr ("%1 is now listening to %2 by %3")
+							.arg (entryName)
+							.arg (map ["title"].toString ())
+							.arg (map ["artist"].toString ()) :
+					NotificationsManager::tr ("%1 stopped listening to music")
+							.arg (entryName);
+		}
+	}
+
+	void NotificationsManager::handleTuneChanged (const QString& variant)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (sender ());
+
+		const auto& map = entry->GetClientInfo (variant) ["user_tune"].toMap ();
+		const auto& text = GetTuneHRText (entry, map);
+
+		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		e.Mime_ += "+advanced";
+
+		BuildNotification (e, entry);
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventTuneChange;
+		e.Additional_ ["NotificationPixmap"] =
+				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
+
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+
+		e.Additional_ [AN::Field::MediaArtist] = map ["artist"];
+		e.Additional_ [AN::Field::MediaAlbum] = map ["source"];
+		e.Additional_ [AN::Field::MediaPlayerURL] = map ["URI"];
+		e.Additional_ [AN::Field::MediaTitle] = map ["title"];
+		e.Additional_ [AN::Field::MediaLength] = map ["length"];
 
 		EntityMgr_->HandleEntity (e);
 	}
