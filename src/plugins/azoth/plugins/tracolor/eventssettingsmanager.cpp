@@ -61,6 +61,9 @@ namespace Tracolor
 		Model_->setHeaderData (0, Qt::Horizontal,
 				DataSources::DataFieldType::Enum,
 				DataSources::DataSourceRole::FieldType);
+		Model_->setHeaderData (0, Qt::Horizontal,
+				true,
+				DataSources::DataSourceRole::FieldNonModifiable);
 		Model_->setHeaderData (1, Qt::Horizontal,
 				DataSources::DataFieldType::Color,
 				DataSources::DataSourceRole::FieldType);
@@ -193,7 +196,6 @@ namespace Tracolor
 		AppendRow (datas.value (0).toString (), datas.value (1).value<QColor> ());
 
 		saveSettings ();
-
 		RebuildEnabledEvents ();
 		RebuildAddableEvents ();
 	}
