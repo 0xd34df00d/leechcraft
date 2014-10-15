@@ -241,6 +241,7 @@ namespace LeechCraft
 			DataSources::DataFieldType Type_;
 			QVariant ValuesInfo_;
 			QString Name_;
+			bool IsConst_;
 		};
 
 		QList<ColumnInfo> GetColumnInfos (QAbstractItemModel *model)
@@ -256,7 +257,8 @@ namespace LeechCraft
 
 				const auto& name = model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
 				const auto& values = model->headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldValues);
-				infos.push_back ({ type, values, name });
+				const bool isConst = model->headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldNonModifiable).toBool ();
+				infos.push_back ({ type, values, name, isConst });
 			}
 			return infos;
 		}
@@ -276,17 +278,26 @@ namespace LeechCraft
 			const auto& info = infos.at (i);
 
 			const auto name = new QLabel (info.Name_);
-			const auto editorWidget = GetEditor (info.Type_, info.ValuesInfo_);
-
 			if (info.Type_ == DataSources::Enum && info.ValuesInfo_.toList ().isEmpty ())
 			{
 				if (existing.isEmpty ())
 					return {};
 				else
-					editorWidget->setEnabled (false);
+				{
+					dataWidgets << nullptr;
+					continue;
+				}
 			}
 
+			if (!existing.isEmpty () && info.IsConst_)
+			{
+				dataWidgets << nullptr;
+				continue;
+			}
+
+			const auto editorWidget = GetEditor (info.Type_, info.ValuesInfo_);
 			dataWidgets << editorWidget;
+
 			SetData (editorWidget, info.Type_, existing.value (i));
 
 			const int row = lay->rowCount ();

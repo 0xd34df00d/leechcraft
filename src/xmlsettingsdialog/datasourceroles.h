@@ -38,7 +38,8 @@ namespace LeechCraft
 		enum DataSourceRole
 		{
 			FieldType = Qt::UserRole + 1,
-			FieldValues
+			FieldValues,
+			FieldNonModifiable
 		};
 
 		enum DataFieldType
