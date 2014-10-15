@@ -269,6 +269,8 @@ namespace LeechCraft
 		QDialog dia (XSD_);
 		QGridLayout *lay = new QGridLayout ();
 		dia.setLayout (lay);
+
+		QList<QWidget*> dataWidgets;
 		for (int i = 0; i < infos.size (); ++i)
 		{
 			const auto& info = infos.at (i);
@@ -284,6 +286,7 @@ namespace LeechCraft
 					editorWidget->setEnabled (false);
 			}
 
+			dataWidgets << editorWidget;
 			SetData (editorWidget, info.Type_, existing.value (i));
 
 			const int row = lay->rowCount ();
@@ -308,8 +311,8 @@ namespace LeechCraft
 		QVariantList datas;
 		for (int i = 0, size = infos.size (); i < size; ++i)
 		{
-			auto w = lay->itemAt (2 * i + 1)->widget ();
-			datas << GetData (w, infos.at (i).Type_);
+			auto w = dataWidgets.value (i);
+			datas << (w ? GetData (w, infos.at (i).Type_) : QVariant {});
 		}
 		return datas;
 	}
