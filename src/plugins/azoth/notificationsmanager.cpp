@@ -51,6 +51,7 @@
 #include "chattabsmanager.h"
 #include "cltooltipmanager.h"
 #include "proxyobject.h"
+#include "activitydialog.h"
 
 namespace LeechCraft
 {
@@ -127,6 +128,12 @@ namespace Azoth
 					SIGNAL (tuneChanged (QString)),
 					this,
 					SLOT (handleTuneChanged (QString)));
+
+		if (qobject_cast<ISupportActivity*> (accObj))
+			connect (entryObj,
+					SIGNAL (activityChanged (QString)),
+					this,
+					SLOT (handleActivityChanged (QString)));
 	}
 
 	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
@@ -471,6 +478,66 @@ namespace Azoth
 		e.Additional_ [AN::Field::MediaPlayerURL] = map ["URI"];
 		e.Additional_ [AN::Field::MediaTitle] = map ["title"];
 		e.Additional_ [AN::Field::MediaLength] = map ["length"];
+
+		EntityMgr_->HandleEntity (e);
+	}
+
+	namespace
+	{
+		struct ActivityInfo
+		{
+			QString General_;
+			QString Specific_;
+			QString Text_;
+		};
+
+		QString GetActivityHRText (ICLEntry *entry, const ActivityInfo& info)
+		{
+			const auto& entryName = entry->GetEntryName ();
+			if (info.General_.isEmpty ())
+				return NotificationsManager::tr ("%1 is not doing anything anymore.")
+						.arg ("<em>" + entryName + "</em>");
+
+			if (info.Specific_.isEmpty ())
+				return NotificationsManager::tr ("%1 is now %2.")
+						.arg ("<em>" + entryName + "</em>")
+						.arg (ActivityDialog::ToHumanReadable (info.General_));
+
+			return NotificationsManager::tr ("%1 is now %2 (in particular, %3).")
+					.arg ("<em>" + entryName + "</em>")
+					.arg (ActivityDialog::ToHumanReadable (info.General_))
+					.arg (ActivityDialog::ToHumanReadable (info.Specific_));
+		}
+	}
+
+	void NotificationsManager::handleActivityChanged (const QString& variant)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (sender ());
+
+		const auto& map = entry->GetClientInfo (variant) ["user_activity"].toMap ();
+		const ActivityInfo info
+		{
+			map ["general"].toString (),
+			map ["specific"].toString (),
+			map ["text"].toString ()
+		};
+		const auto& text = GetActivityHRText (entry, info);
+
+		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		e.Mime_ += "+advanced";
+
+		BuildNotification (e, entry);
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventActivityChange;
+		e.Additional_ ["NotificationPixmap"] =
+				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
+
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+
+		e.Additional_ [AN::Field::IMActivityGeneral] = info.General_;
+		e.Additional_ [AN::Field::IMActivitySpecific] = info.Specific_;
+		e.Additional_ [AN::Field::IMActivityText] = info.Text_;
 
 		EntityMgr_->HandleEntity (e);
 	}
