@@ -237,6 +237,10 @@ namespace AN
 		/** @brief Whether the terminal window is active (bool).
 		 */
 		const QString TerminalActive = CatTerminal + ".Fields.Active";
+
+		const QString IMActivityGeneral = CatIM + ".Fields.Activity.General";
+		const QString IMActivitySpecific = CatIM + ".Fields.Activity.Specific";
+		const QString IMActivityText = CatIM + ".Fields.Activity.Text";
 	}
 }
 }
