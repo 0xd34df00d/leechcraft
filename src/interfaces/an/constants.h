@@ -241,6 +241,9 @@ namespace AN
 		const QString IMActivityGeneral = CatIM + ".Fields.Activity.General";
 		const QString IMActivitySpecific = CatIM + ".Fields.Activity.Specific";
 		const QString IMActivityText = CatIM + ".Fields.Activity.Text";
+
+		const QString IMMoodGeneral = CatIM + ".Fields.Mood.General";
+		const QString IMMoodText = CatIM + ".Fields.Mood.Text";
 	}
 }
 }
