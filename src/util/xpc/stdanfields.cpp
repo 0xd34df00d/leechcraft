@@ -115,6 +115,29 @@ namespace Util
 					}
 				},
 				{
+					AN::TypeIMEventMoodChange,
+					{
+						{
+							AN::Field::IMMoodGeneral,
+							QObject::tr ("Mood"),
+							QObject::tr ("The mood of the contact."),
+							QVariant::String,
+							{
+								AN::TypeIMEventMoodChange
+							}
+						},
+						{
+							AN::Field::IMMoodText,
+							QObject::tr ("Mood explanation text"),
+							QObject::tr ("The text accompanying the mood set by the contact."),
+							QVariant::String,
+							{
+								AN::TypeIMEventMoodChange
+							}
+						}
+					}
+				},
+				{
 					AN::CatMediaPlayer,
 					{
 						{
