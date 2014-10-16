@@ -52,6 +52,7 @@
 #include "cltooltipmanager.h"
 #include "proxyobject.h"
 #include "activitydialog.h"
+#include "mooddialog.h"
 
 namespace LeechCraft
 {
@@ -134,6 +135,12 @@ namespace Azoth
 					SIGNAL (activityChanged (QString)),
 					this,
 					SLOT (handleActivityChanged (QString)));
+
+		if (qobject_cast<ISupportMood*> (accObj))
+			connect (entryObj,
+					SIGNAL (moodChanged (QString)),
+					this,
+					SLOT (handleMoodChanged (QString)));
 	}
 
 	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
@@ -538,6 +545,57 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMActivityGeneral] = info.General_;
 		e.Additional_ [AN::Field::IMActivitySpecific] = info.Specific_;
 		e.Additional_ [AN::Field::IMActivityText] = info.Text_;
+
+		EntityMgr_->HandleEntity (e);
+	}
+
+	namespace
+	{
+		struct MoodInfo
+		{
+			QString General_;
+			QString Text_;
+		};
+
+		QString GetMoodHRText (ICLEntry *entry, const MoodInfo& info)
+		{
+			const auto& entryName = entry->GetEntryName ();
+			if (info.General_.isEmpty ())
+				return NotificationsManager::tr ("%1 is not in any particular mood anymore.")
+						.arg ("<em>" + entryName + "</em>");
+
+			return NotificationsManager::tr ("%1 is now %2.")
+					.arg ("<em>" + entryName + "</em>")
+					.arg (MoodDialog::ToHumanReadable (info.General_));
+		}
+	}
+
+	void NotificationsManager::handleMoodChanged (const QString& variant)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (sender ());
+
+		const auto& map = entry->GetClientInfo (variant) ["user_mood"].toMap ();
+		const MoodInfo info
+		{
+			map ["mood"].toString (),
+			map ["text"].toString ()
+		};
+		const auto& text = GetMoodHRText (entry, info);
+
+		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		e.Mime_ += "+advanced";
+
+		BuildNotification (e, entry);
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventMoodChange;
+		e.Additional_ ["NotificationPixmap"] =
+				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
+
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+
+		e.Additional_ [AN::Field::IMMoodGeneral] = info.General_;
+		e.Additional_ [AN::Field::IMMoodText] = info.Text_;
 
 		EntityMgr_->HandleEntity (e);
 	}
