@@ -83,6 +83,38 @@ namespace Util
 					}
 				},
 				{
+					AN::TypeIMEventActivityChange,
+					{
+						{
+							AN::Field::IMActivityGeneral,
+							QObject::tr ("General activity"),
+							QObject::tr ("General activity of the contact."),
+							QVariant::String,
+							{
+								AN::TypeIMEventActivityChange
+							}
+						},
+						{
+							AN::Field::IMActivitySpecific,
+							QObject::tr ("Specific activity"),
+							QObject::tr ("Specific activity of the contact within the given general activity."),
+							QVariant::String,
+							{
+								AN::TypeIMEventActivityChange
+							}
+						},
+						{
+							AN::Field::IMActivityText,
+							QObject::tr ("Activity text"),
+							QObject::tr ("The comment set by the contact."),
+							QVariant::String,
+							{
+								AN::TypeIMEventActivityChange
+							}
+						}
+					}
+				},
+				{
 					AN::CatMediaPlayer,
 					{
 						{
