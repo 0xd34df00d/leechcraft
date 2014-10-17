@@ -83,6 +83,10 @@ namespace Murm
 		Outbox = 		1 << 1,
 		Replied = 		1 << 2,
 		Important = 	1 << 3,
+		/** This doesn't really mean the same as the VK docs say on the
+		 * http://vk.com/dev/using_longpoll page. Instead, Chat flag
+		 * means that the message relates to a multiuser chat.
+		 */
 		Chat = 			1 << 4,
 		Friends = 		1 << 5,
 		Spam = 			1 << 6,
