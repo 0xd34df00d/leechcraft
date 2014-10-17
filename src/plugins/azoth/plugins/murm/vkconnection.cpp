@@ -1237,26 +1237,29 @@ namespace Murm
 				continue;
 
 			Logger_ << "got unread message:" << QVariant { map };
-			qDebug () << map.keys ();
 
 			MessageFlags flags = MessageFlag::Unread;
 			if (map ["out"].toULongLong ())
 				flags |= MessageFlag::Outbox;
-			/*
+
+			MessageInfo info
+			{
+				map ["id"].toULongLong (),
+				map ["user_id"].toULongLong (),
+				map ["body"].toString (),
+				flags,
+				QDateTime::fromTime_t (map ["date"].toULongLong ()),
+				{}
+			};
+
 			if (map.contains ("chat_id"))
 			{
-				flags |= MessageFlag::Chat;
+				info.Flags_ |= MessageFlag::Chat;
+				info.Params_ ["from"] = info.From_;
+				info.From_ = map ["chat_id"].toULongLong ();
 			}
-			*/
 
-			infos.append  ({
-					map ["id"].toULongLong (),
-					map ["user_id"].toULongLong (),
-					map ["body"].toString (),
-					flags,
-					QDateTime::fromTime_t (map ["date"].toULongLong ()),
-					{}
-				});
+			infos.append (info);
 		}
 
 		std::sort (infos.begin (), infos.end (),
