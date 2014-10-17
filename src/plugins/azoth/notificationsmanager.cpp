@@ -284,10 +284,7 @@ namespace Azoth
 					.arg (msg);
 
 		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
-		BuildNotification (e, entry);
-
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.Event/" + eventType + entry->GetEntryID ();
+		BuildNotification (e, entry, "Event");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
@@ -623,9 +620,7 @@ namespace Azoth
 					.arg (text);
 
 		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
-		BuildNotification (e, entry);
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
+		BuildNotification (e, entry, "AttentionDrawnBy");
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMAttention;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested");
@@ -665,9 +660,7 @@ namespace Azoth
 					.arg (msg);
 		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
 
-		BuildNotification (e, entry);
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ();
+		BuildNotification (e, entry, "AuthRequestFrom");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMSubscrRequest;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
