@@ -50,14 +50,14 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	void BuildNotification (Entity& e, ICLEntry *other)
+	void BuildNotification (Entity& e, ICLEntry *other, const QString& id)
 	{
 		e.Additional_ ["NotificationPixmap"] =
 				QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + other->GetEntryID ();
+				"org.LC.Plugins.Azoth." + (id.isEmpty () ? "IncomingMessageFrom/" : id) + other->GetEntryID ();
 
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (other->GetEntryName ());
 
