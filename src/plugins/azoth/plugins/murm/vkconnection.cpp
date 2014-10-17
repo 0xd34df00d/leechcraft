@@ -1173,7 +1173,9 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
+
 		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
+		Logger_ << "got users reply" << data;
 		try
 		{
 			CheckReplyData (data, reply);
