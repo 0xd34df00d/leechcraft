@@ -453,9 +453,9 @@ namespace Azoth
 			const auto& entryName = entry->GetEntryName ();
 			return map.contains ("artist") ?
 					NotificationsManager::tr ("%1 is now listening to %2 by %3")
-							.arg (entryName)
-							.arg (map ["title"].toString ())
-							.arg (map ["artist"].toString ()) :
+							.arg ("<em>" + entryName + "</em>")
+							.arg ("<em>" + map ["title"].toString () + "</em>")
+							.arg ("<em>" + map ["artist"].toString () + "</em>") :
 					NotificationsManager::tr ("%1 stopped listening to music")
 							.arg (entryName);
 		}
