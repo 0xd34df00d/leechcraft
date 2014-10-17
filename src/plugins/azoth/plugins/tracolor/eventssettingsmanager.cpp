@@ -172,7 +172,10 @@ namespace Tracolor
 			AN::TypeIMMUCMsg,
 			AN::TypeIMIncMsg,
 			AN::TypeIMMUCHighlight,
-			AN::TypeIMStatusChange
+			AN::TypeIMStatusChange,
+			AN::TypeIMEventTuneChange,
+			AN::TypeIMEventMoodChange,
+			AN::TypeIMEventActivityChange
 		};
 
 		for (int i = 0, rc = Model_->rowCount (); i < rc; ++i)
