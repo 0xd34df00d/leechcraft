@@ -598,10 +598,9 @@ namespace Murm
 
 	void VkAccount::handleMessage (const MessageInfo& info)
 	{
-		if (info.Flags_ & MessageFlag::Chat &&
-				info.Params_.contains ("from"))
+		const auto from = info.From_;
+		if (info.Flags_ & MessageFlag::Chat)
 		{
-			const auto from = info.From_ - 2000000000;
 			if (!ChatEntries_.contains (from))
 			{
 				qDebug () << Q_FUNC_INFO
@@ -625,7 +624,6 @@ namespace Murm
 		}
 		else
 		{
-			const auto from = info.From_;
 			if (!Entries_.contains (from))
 			{
 				qWarning () << Q_FUNC_INFO

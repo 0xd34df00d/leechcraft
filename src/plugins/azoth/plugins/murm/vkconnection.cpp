@@ -133,17 +133,7 @@ namespace Murm
 		Dispatcher_ [2] = [this] (const QVariantList&) {};
 		Dispatcher_ [3] = [this] (const QVariantList&) {};
 
-		Dispatcher_ [4] = [this] (const QVariantList& items)
-		{
-			emit gotMessage ({
-					items.value (1).toULongLong (),
-					items.value (3).toULongLong (),
-					items.value (6).toString (),
-					MessageFlags (items.value (2).toInt ()),
-					QDateTime::fromTime_t (items.value (4).toULongLong ()),
-					items.value (7).toMap ()
-				});
-		};
+		Dispatcher_ [4] = [this] (const QVariantList& items) { HandleMessage (items); };
 		Dispatcher_ [8] = [this] (const QVariantList& items)
 			{ emit userStateChanged (items.value (1).toLongLong () * -1, true); };
 		Dispatcher_ [9] = [this] (const QVariantList& items)
@@ -703,6 +693,30 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::HandleMessage (const QVariantList& items)
+	{
+		const auto& params = items.value (7).toMap ();
+		MessageInfo info
+		{
+			items.value (1).toULongLong (),
+			items.value (3).toULongLong (),
+			items.value (6).toString (),
+			MessageFlags { items.value (2).toInt () },
+			QDateTime::fromTime_t (items.value (4).toULongLong ()),
+			params
+		};
+
+		if (info.Params_.contains ("from"))
+		{
+			info.From_ -= 2000000000;
+			info.Flags_ |= MessageFlag::Chat;
+		}
+		else
+			info.Flags_ &= ~MessageFlag::Chat;
+
+		emit gotMessage (info);
+	}
+
 	void VkConnection::PushFriendsRequest ()
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -1223,10 +1237,17 @@ namespace Murm
 				continue;
 
 			Logger_ << "got unread message:" << QVariant { map };
+			qDebug () << map.keys ();
 
 			MessageFlags flags = MessageFlag::Unread;
 			if (map ["out"].toULongLong ())
 				flags |= MessageFlag::Outbox;
+			/*
+			if (map.contains ("chat_id"))
+			{
+				flags |= MessageFlag::Chat;
+			}
+			*/
 
 			infos.append  ({
 					map ["id"].toULongLong (),

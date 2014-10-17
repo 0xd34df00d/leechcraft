@@ -218,6 +218,8 @@ namespace Murm
 		bool Q_REQUIRED_RESULT CheckFinishedReply (QNetworkReply*);
 		void CheckReplyData (const QVariant&, QNetworkReply*);
 	private:
+		void HandleMessage (const QVariantList&);
+
 		void PushFriendsRequest ();
 
 		RunningCalls_t::const_iterator FindRunning (QNetworkReply*) const;
