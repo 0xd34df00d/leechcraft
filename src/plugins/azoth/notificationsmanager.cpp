@@ -471,7 +471,7 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (e, entry);
+		BuildNotification (e, entry, "TuneChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventTuneChange;
 		e.Additional_ ["NotificationPixmap"] =
 				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
@@ -533,7 +533,7 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (e, entry);
+		BuildNotification (e, entry, "ActivityChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventActivityChange;
 		e.Additional_ ["NotificationPixmap"] =
 				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
@@ -585,7 +585,7 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (e, entry);
+		BuildNotification (e, entry, "MoodChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventMoodChange;
 		e.Additional_ ["NotificationPixmap"] =
 				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
