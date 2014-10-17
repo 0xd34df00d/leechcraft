@@ -1084,11 +1084,10 @@ namespace Murm
 
 	namespace
 	{
-		QList<UserInfo> ParseUsers (const QVariant& data)
+		QList<UserInfo> ParseUsers (const QVariantList& usersList)
 		{
 			QList<UserInfo> users;
 
-			const auto& usersList = data.toMap () ["response"].toMap () ["items"].toList ();
 			for (const auto& item : usersList)
 			{
 				const auto& userMap = item.toMap ();
@@ -1118,7 +1117,7 @@ namespace Murm
 			return;
 		}
 
-		const auto& users = ParseUsers (data);
+		const auto& users = ParseUsers (data.toMap () ["response"].toMap () ["items"].toList ());
 		emit gotUsers (users);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -1184,7 +1183,7 @@ namespace Murm
 			return;
 		}
 
-		const auto& users = ParseUsers (data);
+		const auto& users = ParseUsers (data.toMap () ["response"].toList ());
 		emit gotUsers (users);
 	}
 
