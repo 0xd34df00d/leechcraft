@@ -138,6 +138,29 @@ namespace Util
 					}
 				},
 				{
+					AN::TypeIMEventLocationChange,
+					{
+						{
+							AN::Field::IMLocationLatitude,
+							QObject::tr ("Latitude"),
+							QObject::tr ("The latitude of the contact's current position."),
+							QVariant::Double,
+							{
+								AN::TypeIMEventLocationChange
+							}
+						},
+						{
+							AN::Field::IMLocationLongitude,
+							QObject::tr ("Longitude"),
+							QObject::tr ("The longitude of the contact's current position."),
+							QVariant::Double,
+							{
+								AN::TypeIMEventLocationChange
+							}
+						}
+					}
+				},
+				{
 					AN::CatMediaPlayer,
 					{
 						{
