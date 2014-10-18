@@ -44,6 +44,7 @@
 #include "interfaces/azoth/isupporttune.h"
 #include "interfaces/azoth/isupportmood.h"
 #include "interfaces/azoth/isupportactivity.h"
+#include "interfaces/azoth/isupportgeolocation.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "core.h"
@@ -135,6 +136,10 @@ namespace Azoth
 					SIGNAL (moodChanged (QString)),
 					this,
 					SLOT (handleMoodChanged (QString)));
+			connect (entryObj,
+					SIGNAL (locationChanged (QString)),
+					this,
+					SLOT (handleLocationChanged (QString)));
 		}
 	}
 
@@ -588,6 +593,95 @@ namespace Azoth
 
 		e.Additional_ [AN::Field::IMMoodGeneral] = info.General_;
 		e.Additional_ [AN::Field::IMMoodText] = info.Text_;
+
+		EntityMgr_->HandleEntity (e);
+	}
+
+	namespace
+	{
+		struct GeolocationInfo
+		{
+			bool IsValid_;
+			double Lon_;
+			double Lat_;
+
+			QString Country_;
+			QString Locality_;
+		};
+
+		QString GetHRLocationText (ICLEntry *entry, const GeolocationInfo& info)
+		{
+			const auto& entryName = entry->GetEntryName ();
+			if (!info.IsValid_)
+				return NotificationsManager::tr ("%1's location is not known.")
+						.arg (entryName);
+
+			const bool hasCountry = !info.Country_.isEmpty ();
+			const bool hasLocality = !info.Locality_.isEmpty ();
+			if (hasCountry && hasLocality)
+				return NotificationsManager::tr ("%1's is now in %2 (%3).")
+						.arg (entryName)
+						.arg (info.Locality_)
+						.arg (info.Country_);
+
+			if (hasCountry || hasLocality)
+				return NotificationsManager::tr ("%1's is now in %2 (%3).")
+						.arg (entryName)
+						.arg (hasCountry ? info.Country_ : info.Locality_);
+
+			return NotificationsManager::tr ("%1's location updated.")
+					.arg (entryName);
+		}
+	}
+
+	void NotificationsManager::handleLocationChanged (const QString& variant)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (sender ());
+		const auto accObj = entry->GetParentAccount ();
+		const auto isg = qobject_cast<ISupportGeolocation*> (accObj);
+		if (!isg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "account"
+					<< accObj
+					<< "does not implement ISupportGeolocation";
+			return;
+		}
+
+		const auto& infoMap = isg->GetUserGeolocationInfo (sender (), variant);
+		const auto& info = [&infoMap]
+			{
+				bool lonOk = false;
+				bool latOk = false;
+
+				GeolocationInfo info
+				{
+					true,
+					infoMap ["lon"].toDouble (&lonOk),
+					infoMap ["lat"].toDouble (&latOk),
+					infoMap ["country"].toString (),
+					infoMap ["locality"].toString ()
+				};
+				info.IsValid_ = lonOk && latOk;
+				return info;
+			} ();
+
+		const auto& text = GetHRLocationText (entry, info);
+
+		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		e.Mime_ += "+advanced";
+
+		BuildNotification (e, entry, "LocationChangeEvent");
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventLocationChange;
+		e.Additional_ ["NotificationPixmap"] =
+				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
+
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+
+		e.Additional_ [AN::Field::IMLocationLongitude] = info.Lon_;
+		e.Additional_ [AN::Field::IMLocationLatitude] = info.Lat_;
 
 		EntityMgr_->HandleEntity (e);
 	}

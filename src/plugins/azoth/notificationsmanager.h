@@ -81,6 +81,7 @@ namespace Azoth
 		void handleTuneChanged (const QString&);
 		void handleActivityChanged (const QString&);
 		void handleMoodChanged (const QString&);
+		void handleLocationChanged (const QString&);
 
 		void handleAttentionDrawn (const QString&, const QString&);
 		void handleAuthorizationRequested (QObject*, const QString&);
