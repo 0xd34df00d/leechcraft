@@ -1690,8 +1690,9 @@ namespace Azoth
 				handleFileOffered (object);
 		}
 
-#ifdef ENABLE_MEDIACALLS
 		const auto accObj = acc->GetQObject ();
+
+#ifdef ENABLE_MEDIACALLS
 		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
 				e->GetEntryType () == ICLEntry::EntryType::Chat)
 		{
