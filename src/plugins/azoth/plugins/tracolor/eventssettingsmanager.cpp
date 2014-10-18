@@ -175,7 +175,8 @@ namespace Tracolor
 			AN::TypeIMStatusChange,
 			AN::TypeIMEventTuneChange,
 			AN::TypeIMEventMoodChange,
-			AN::TypeIMEventActivityChange
+			AN::TypeIMEventActivityChange,
+			AN::TypeIMEventLocationChange
 		};
 
 		for (int i = 0, rc = Model_->rowCount (); i < rc; ++i)
