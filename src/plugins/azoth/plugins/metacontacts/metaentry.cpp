@@ -158,17 +158,17 @@ namespace Metacontacts
 	QStringList MetaEntry::Variants () const
 	{
 		QStringList result;
-		Q_FOREACH (QObject *entryObj, AvailableRealEntries_)
+		for (const auto entryObj : AvailableRealEntries_)
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-			const QString& name = entry->GetEntryName ();
-			QStringList variants = entry->Variants ();
+			const auto& name = entry->GetEntryName ();
+			auto variants = entry->Variants ();
 			if (!variants.contains (QString ()))
 				variants.prepend (QString ());
-			Q_FOREACH (const QString& var, variants)
+			for (const auto& var : variants)
 			{
-				const QString& full = name + '/' + var;
+				const auto& full = name + '/' + var;
 				if (!Variant2RealVariant_.contains (full))
 				{
 					qWarning () << Q_FUNC_INFO
@@ -199,7 +199,7 @@ namespace Metacontacts
 
 	void MetaEntry::PurgeMessages (const QDateTime& from)
 	{
-		Q_FOREACH (QObject *obj, AvailableRealEntries_)
+		for (const auto obj : AvailableRealEntries_)
 			qobject_cast<ICLEntry*> (obj)->PurgeMessages (from);
 	}
 
@@ -264,7 +264,7 @@ namespace Metacontacts
 	}
 
 	template<typename T, typename U>
-	T MetaEntry::ActWithVariant (boost::function<T (U, const QString&)> func, const QString& variant) const
+	T MetaEntry::ActWithVariant (std::function<T (U, const QString&)> func, const QString& variant) const
 	{
 		if (variant.isEmpty ())
 		{
@@ -282,7 +282,7 @@ namespace Metacontacts
 			return T ();
 		}
 
-		const QPair<QObject*, QString>& pair = Variant2RealVariant_ [variant];
+		const auto& pair = Variant2RealVariant_ [variant];
 		return func (qobject_cast<U> (pair.first), pair.second);
 	}
 

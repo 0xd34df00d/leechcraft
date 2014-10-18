@@ -27,9 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAENTRY_H
-#include <boost/function.hpp>
+#pragma once
+
+#include <functional>
 #include <QObject>
 #include <QPair>
 #include <QStringList>
@@ -104,7 +104,7 @@ namespace Metacontacts
 		void DrawAttention (const QString&, const QString&);
 	private:
 		template<typename T, typename U>
-		T ActWithVariant (boost::function<T (U, const QString&)>, const QString&) const;
+		T ActWithVariant (std::function<T (U, const QString&)>, const QString&) const;
 
 		void ConnectStandardSignals (QObject*);
 		void ConnectAdvancedSiganls (QObject*);
@@ -152,5 +152,3 @@ namespace Metacontacts
 }
 }
 }
-
-#endif
