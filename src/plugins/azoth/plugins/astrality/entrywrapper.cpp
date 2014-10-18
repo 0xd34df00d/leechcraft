@@ -165,7 +165,7 @@ namespace Astrality
 	QList<IMessage*> EntryWrapper::GetAllMessages () const
 	{
 		QList<IMessage*> result;
-		std:copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
+		std::copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
 		return result;
 	}
 
