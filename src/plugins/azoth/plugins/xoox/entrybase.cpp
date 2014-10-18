@@ -540,9 +540,18 @@ namespace Xoox
 		if (const auto tune = dynamic_cast<UserTune*> (event))
 		{
 			if (tune->IsNull ())
-				Variant2Audio_.remove (variant);
+			{
+				if (!Variant2Audio_.remove (variant))
+					return;
+			}
 			else
-				Variant2Audio_ [variant] = tune->ToAudioInfo ();
+			{
+				const auto& audioInfo = tune->ToAudioInfo ();
+				if (Variant2Audio_ [variant] == audioInfo)
+					return;
+
+				Variant2Audio_ [variant] = audioInfo;
+			}
 
 			emit tuneChanged (variant);
 			return;
