@@ -103,22 +103,6 @@ namespace Azoth
 		 */
 		virtual void attentionDrawn (const QString& text, const QString& variant) = 0;
 
-		/** @brief Notifies that entry's user mood has changed.
-		 *
-		 * The actual mood information should be contained in the map
-		 * returned from ICLEntry::GetClientInfo(). Please refer to its
-		 * documentation for information about user moods.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] variant Variant of the entry whose mood has
-		 * changed.
-		 *
-		 * @sa activityChanged(), tuneChanged()
-		 * @sa ICLEntry::GetClientInfo()
-		 */
-		virtual void moodChanged (const QString& variant) = 0;
-
 		/** @brief Notifies that entry's user activity has changed.
 		 *
 		 * The actual activity information should be contained in the
