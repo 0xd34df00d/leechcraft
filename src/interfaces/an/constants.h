@@ -241,16 +241,35 @@ namespace AN
 		 */
 		const QString TerminalActive = CatTerminal + ".Fields.Active";
 
+		/** @brief General activity name of a contact (QString).
+		 */
 		const QString IMActivityGeneral = CatIM + ".Fields.Activity.General";
+		/** @brief Specific activity name of a contact (QString).
+		 */
 		const QString IMActivitySpecific = CatIM + ".Fields.Activity.Specific";
+		/** @brief Accompanying activity text entered by a contact (QString).
+		 */
 		const QString IMActivityText = CatIM + ".Fields.Activity.Text";
 
+		/** @brief General mood name of a contact (QString).
+		 */
 		const QString IMMoodGeneral = CatIM + ".Fields.Mood.General";
+		/** @brief Accompanying mood text entered by a contact (QString).
+		 */
 		const QString IMMoodText = CatIM + ".Fields.Mood.Text";
 
+		/** @brief Longitude of a contact's position (double).
+		 */
 		const QString IMLocationLongitude = CatIM + ".Fields.Location.Longitude";
+		/** @brief Latitude of a contact's position (double).
+		 */
 		const QString IMLocationLatitude = CatIM + ".Fields.Location.Latitude";
+		/** @brief Country a contact is currently in (QString).
+		 */
 		const QString IMLocationCountry = CatIM + ".Fields.Location.Country";
+		/** @brief Exact locality, like a town or a city, a contact is
+		 * currently in (QString).
+		 */
 		const QString IMLocationLocality = CatIM + ".Fields.Location.Locality";
 	}
 }
