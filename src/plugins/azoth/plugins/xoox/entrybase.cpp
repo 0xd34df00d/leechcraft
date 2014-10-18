@@ -641,10 +641,12 @@ namespace Xoox
 				Location_ [highest] = Location_.take ({});
 			if (Variant2Audio_.contains ({}))
 				Variant2Audio_ [highest] = Variant2Audio_.take ({});
+			if (Variant2Mood_.contains ({}))
+				Variant2Mood_ [highest] = Variant2Mood_.take ({});
 			if (Variant2ClientInfo_.contains ({}))
 			{
 				const auto& info = Variant2ClientInfo_ [{}];
-				for (const auto& key : { "user_mood", "user_activity" })
+				for (const auto& key : { "user_activity" })
 					if (info.contains (key))
 						Variant2ClientInfo_ [highest] [key] = info [key];
 			}
