@@ -31,6 +31,7 @@
 
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
+#include <interfaces/azoth/iprovidecommands.h>
 
 class QString;
 
@@ -40,13 +41,12 @@ namespace Azoth
 {
 class IProxyObject;
 class ICLEntry;
-struct StringCommandResult;
 
 namespace MuCommands
 {
 	StringCommandResult ListUrls (IProxyObject*, ICLEntry*, const QString&);
 
-	bool OpenUrl (const ICoreProxy_ptr&, IProxyObject*, ICLEntry*, const QString&, TaskParameters);
+	CommandResult_t OpenUrl (const ICoreProxy_ptr&, IProxyObject*, ICLEntry*, const QString&, TaskParameters);
 }
 }
 }

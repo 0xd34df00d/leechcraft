@@ -41,7 +41,6 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iproxyobject.h>
-#include <interfaces/azoth/iprovidecommands.h>
 
 namespace LeechCraft
 {
@@ -156,43 +155,93 @@ namespace MuCommands
 			const auto& unicode = cmd.section (' ', 1).toUtf8 ();
 			return ParseCommand (unicode.begin (), unicode.end ());
 		}
+
+		struct ParseResultVisitor : public boost::static_visitor<CommandResult_t>
+		{
+			const QStringList Urls_;
+			IEntityManager * const IEM_;
+			const TaskParameters Params_;
+
+			ParseResultVisitor (const QStringList& urls, IEntityManager *iem, TaskParameters params)
+			: Urls_ { urls }
+			, IEM_ { iem }
+			, Params_ { params }
+			{
+			}
+
+			CommandResult_t operator() (UrlIndex_t idx) const
+			{
+				return (*this) ({ idx, idx });
+			}
+
+			CommandResult_t operator() (const UrlRange& range) const
+			{
+				if (Urls_.isEmpty ())
+					return true;
+
+				const auto begin = boost::get_optional_value_or (range.Start_, 1) - 1;
+				const auto end = boost::get_optional_value_or (range.End_, Urls_.size ()) - 1;
+
+				if (begin >= end)
+					return StringCommandResult
+					{
+						true,
+						QObject::tr ("Begin index should be greater than end index.")
+					};
+
+				if (end >= Urls_.size ())
+					return StringCommandResult
+					{
+						true,
+						QObject::tr ("End index is out of bounds of the URLs list.")
+					};
+
+				for (auto i = begin; i <= end; ++i)
+				{
+					const auto& url = Urls_.value (i);
+					if (url.isEmpty ())
+						continue;
+
+					const auto& entity = Util::MakeEntity (QUrl::fromEncoded (url.toUtf8 ()),
+							{},
+							Params_ | FromUserInitiated);
+					IEM_->HandleEntity (entity);
+				}
+
+				return true;
+			}
+
+			CommandResult_t operator() (const UrlRegExp& rx) const
+			{
+				const auto& matching = Urls_.filter (QRegExp { QString::fromStdString (rx.Pat_) });
+
+				for (const auto& url : matching)
+				{
+					if (url.isEmpty ())
+						continue;
+
+					const auto& entity = Util::MakeEntity (QUrl::fromEncoded (url.toUtf8 ()),
+							{},
+							Params_ | FromUserInitiated);
+					IEM_->HandleEntity (entity);
+				}
+
+				return true;
+			}
+		};
 	}
 
-	bool OpenUrl (const ICoreProxy_ptr& coreProxy, IProxyObject *azothProxy,
+	CommandResult_t OpenUrl (const ICoreProxy_ptr& coreProxy, IProxyObject *azothProxy,
 			ICLEntry *entry, const QString& text, TaskParameters params)
 	{
-		const auto& urls = GetAllUrls (azothProxy, entry);
-
-		const auto& split = text.split (' ', QString::SkipEmptyParts).mid (1);
-
-		QList<int> indexes;
-		if (split.isEmpty ())
-			indexes << urls.size () - 1;
-		else if (split.size () == 1 && split.at (0) == "*")
-			for (int i = 0; i < urls.size (); ++i)
-				indexes << i;
-
-		for (const auto& item : split)
-		{
-			bool ok = false;
-			const auto idx = item.toInt (&ok);
-			if (ok)
-				indexes << idx - 1;
-		}
-
-		const auto iem = coreProxy->GetEntityManager ();
-		for (const auto idx : indexes)
-		{
-			const auto& url = urls.value (idx);
-			if (url.isEmpty ())
-				continue;
-
-			const auto& entity = Util::MakeEntity (QUrl::fromEncoded (url.toUtf8 ()),
-					{}, params | FromUserInitiated);
-			iem->HandleEntity (entity);
-		}
-
-		return true;
+		auto parseResult = ParseCommand (text);
+		return boost::apply_visitor (ParseResultVisitor
+				{
+					GetAllUrls (azothProxy, entry),
+					coreProxy->GetEntityManager (),
+					params
+				},
+				parseResult);
 	}
 }
 }
