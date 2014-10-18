@@ -42,6 +42,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #include "interfaces/azoth/ihavecontacttune.h"
+#include "interfaces/azoth/ihavecontactmood.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -450,14 +451,21 @@ namespace Azoth
 				ActivityIconCache_ [iconName] = icon;
 			}
 		}
-		if (addInfo.contains ("user_mood"))
+		if (const auto ihcm = qobject_cast<IHaveContactMood*> (entry->GetQObject ()))
 		{
-			const QMap<QString, QVariant>& moodInfo = addInfo ["user_mood"].toMap ();
-			QString iconName = moodInfo ["mood"].toString ();
-			iconName [0] = iconName.at (0).toUpper ();
-			iconName.prepend (MoodIconset_ + '/');
+			QString iconName;
+			for (const auto& var : vars)
+			{
+				iconName = ihcm->GetUserMood (var).Mood_;
+				if (!iconName.isEmpty ())
+				{
+					iconName [0] = iconName.at (0).toUpper ();
+					iconName.prepend (MoodIconset_ + '/');
+					break;
+				}
+			}
 
-			QIcon icon = MoodIconCache_ [iconName];
+			auto icon = MoodIconCache_ [iconName];
 			if (icon.isNull ())
 				icon = QIcon (ResourcesManager::Instance ()
 						.GetResourceLoader (ResourcesManager::RLTMoodIconLoader)->

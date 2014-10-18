@@ -77,4 +77,3 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveContactMood,
 		"org.LeechCraft.Azoth.IHaveContactMood/1.0");
-
