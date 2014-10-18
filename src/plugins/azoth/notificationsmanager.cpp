@@ -47,6 +47,7 @@
 #include "interfaces/azoth/isupportactivity.h"
 #include "interfaces/azoth/isupportgeolocation.h"
 #include "interfaces/azoth/ihavecontacttune.h"
+#include "interfaces/azoth/ihavecontactmood.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "core.h"
@@ -131,10 +132,6 @@ namespace Azoth
 					this,
 					SLOT (handleActivityChanged (QString)));
 			connect (entryObj,
-					SIGNAL (moodChanged (QString)),
-					this,
-					SLOT (handleMoodChanged (QString)));
-			connect (entryObj,
 					SIGNAL (locationChanged (QString)),
 					this,
 					SLOT (handleLocationChanged (QString)));
@@ -145,6 +142,12 @@ namespace Azoth
 					SIGNAL (tuneChanged (QString)),
 					this,
 					SLOT (handleTuneChanged (QString)));
+
+		if (qobject_cast<IHaveContactMood*> (entryObj))
+			connect (entryObj,
+					SIGNAL (moodChanged (QString)),
+					this,
+					SLOT (handleMoodChanged (QString)));
 	}
 
 	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
@@ -552,35 +555,23 @@ namespace Azoth
 
 	namespace
 	{
-		struct MoodInfo
-		{
-			QString General_;
-			QString Text_;
-		};
-
 		QString GetMoodHRText (ICLEntry *entry, const MoodInfo& info)
 		{
 			const auto& entryName = entry->GetEntryName ();
-			if (info.General_.isEmpty ())
+			if (info.Mood_.isEmpty ())
 				return NotificationsManager::tr ("%1 is not in any particular mood anymore.")
 						.arg ("<em>" + entryName + "</em>");
 
 			return NotificationsManager::tr ("%1 is now %2.")
 					.arg ("<em>" + entryName + "</em>")
-					.arg (MoodDialog::ToHumanReadable (info.General_));
+					.arg (MoodDialog::ToHumanReadable (info.Mood_));
 		}
 	}
 
 	void NotificationsManager::handleMoodChanged (const QString& variant)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (sender ());
-
-		const auto& map = entry->GetClientInfo (variant) ["user_mood"].toMap ();
-		const MoodInfo info
-		{
-			map ["mood"].toString (),
-			map ["text"].toString ()
-		};
+		const auto& info = qobject_cast<IHaveContactMood*> (sender ())->GetUserMood (variant);
 		const auto& text = GetMoodHRText (entry, info);
 
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
@@ -595,7 +586,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
-		e.Additional_ [AN::Field::IMMoodGeneral] = info.General_;
+		e.Additional_ [AN::Field::IMMoodGeneral] = info.Mood_;
 		e.Additional_ [AN::Field::IMMoodText] = info.Text_;
 
 		EntityMgr_->HandleEntity (e);

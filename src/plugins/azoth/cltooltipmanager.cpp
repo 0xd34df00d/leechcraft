@@ -39,6 +39,7 @@
 #include "interfaces/azoth/iadvancedclentry.h"
 #include "interfaces/azoth/ihaveentitytime.h"
 #include "interfaces/azoth/ihavecontacttune.h"
+#include "interfaces/azoth/ihavecontactmood.h"
 #include "core.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
@@ -125,10 +126,6 @@ namespace Azoth
 					this,
 					SLOT (remakeTooltipForSender ()));
 			connect (clEntry->GetQObject (),
-					SIGNAL (moodChanged (const QString&)),
-					this,
-					SLOT (remakeTooltipForSender ()));
-			connect (clEntry->GetQObject (),
 					SIGNAL (locationChanged (const QString&)),
 					this,
 					SLOT (remakeTooltipForSender ()));
@@ -137,6 +134,12 @@ namespace Azoth
 		if (qobject_cast<IHaveContactTune*> (clEntry->GetQObject ()))
 			connect (clEntry->GetQObject (),
 					SIGNAL (tuneChanged (QString)),
+					this,
+					SLOT (remakeTooltipForSender ()));
+
+		if (qobject_cast<IHaveContactMood*> (clEntry->GetQObject ()))
+			connect (clEntry->GetQObject (),
+					SIGNAL (moodChanged (QString)),
 					this,
 					SLOT (remakeTooltipForSender ()));
 	}
@@ -152,13 +155,12 @@ namespace Azoth
 
 	namespace
 	{
-		void FormatMood (QString& tip, const QMap<QString, QVariant>& moodInfo)
+		void FormatMood (QString& tip, const MoodInfo& moodInfo)
 		{
 			tip += "<br />" + Core::tr ("Mood:") + ' ';
-			tip += MoodDialog::ToHumanReadable (moodInfo ["mood"].toString ());
-			const QString& text = moodInfo ["text"].toString ();
-			if (!text.isEmpty ())
-				tip += " (" + text + ")";
+			tip += MoodDialog::ToHumanReadable (moodInfo.Mood_);
+			if (!moodInfo.Text_.isEmpty ())
+				tip += " (" + moodInfo.Text_ + ")";
 		}
 
 		void FormatActivity (QString& tip, const QMap<QString, QVariant>& actInfo)
@@ -291,8 +293,9 @@ namespace Azoth
 
 		cleanupBR ();
 
-		const auto ihavetune = qobject_cast<IHaveContactTune*> (entry->GetQObject ());
-		for (const QString& variant : variants)
+		const auto iHaveTune = qobject_cast<IHaveContactTune*> (entry->GetQObject ());
+		const auto iHaveMood = qobject_cast<IHaveContactMood*> (entry->GetQObject ());
+		for (const auto& variant : variants)
 		{
 			const auto& info = entry->GetClientInfo (variant);
 			if (info.isEmpty ())
@@ -355,17 +358,17 @@ namespace Azoth
 				tip += "<br />" + tr ("Client time:") + ' ' + dateStr;
 			}
 
-			if (info.contains ("user_mood"))
-				FormatMood (tip, info ["user_mood"].toMap ());
 			if (info.contains ("user_activity"))
 				FormatActivity (tip, info ["user_activity"].toMap ());
-			if (ihavetune)
-				FormatTune (tip, ihavetune->GetUserTune (variant));
+			if (iHaveMood)
+				FormatMood (tip, iHaveMood->GetUserMood (variant));
+			if (iHaveTune)
+				FormatTune (tip, iHaveTune->GetUserTune (variant));
 
 			if (info.contains ("custom_user_visible_map"))
 			{
-				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
-				for (const QString& key : map.keys ())
+				const auto& map = info ["custom_user_visible_map"].toMap ();
+				for (const auto& key : map.keys ())
 					tip += "<br />" + key + ": " + Escape (map [key].toString ()) + "<br />";
 			}
 		}
