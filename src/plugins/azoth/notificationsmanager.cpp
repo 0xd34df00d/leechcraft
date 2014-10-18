@@ -36,6 +36,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/media/audiostructs.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/imessage.h"
@@ -45,6 +46,7 @@
 #include "interfaces/azoth/isupportmood.h"
 #include "interfaces/azoth/isupportactivity.h"
 #include "interfaces/azoth/isupportgeolocation.h"
+#include "interfaces/azoth/ihavecontacttune.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "core.h"
@@ -445,14 +447,14 @@ namespace Azoth
 
 	namespace
 	{
-		QString GetTuneHRText (ICLEntry *entry, const QVariantMap& map)
+		QString GetTuneHRText (ICLEntry *entry, const Media::AudioInfo& info)
 		{
 			const auto& entryName = entry->GetEntryName ();
-			return map.contains ("artist") ?
+			return !info.Title_.isEmpty () ?
 					NotificationsManager::tr ("%1 is now listening to %2 by %3")
 							.arg ("<em>" + entryName + "</em>")
-							.arg ("<em>" + map ["title"].toString () + "</em>")
-							.arg ("<em>" + map ["artist"].toString () + "</em>") :
+							.arg ("<em>" + info.Title_ + "</em>")
+							.arg ("<em>" + info.Artist_ + "</em>") :
 					NotificationsManager::tr ("%1 stopped listening to music")
 							.arg (entryName);
 		}
@@ -462,8 +464,8 @@ namespace Azoth
 	{
 		const auto entry = qobject_cast<ICLEntry*> (sender ());
 
-		const auto& map = entry->GetClientInfo (variant) ["user_tune"].toMap ();
-		const auto& text = GetTuneHRText (entry, map);
+		const auto& info = qobject_cast<IHaveContactTune*> (sender ())->GetUserTune (variant);
+		const auto& text = GetTuneHRText (entry, info);
 
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
@@ -477,11 +479,11 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
-		e.Additional_ [AN::Field::MediaArtist] = map ["artist"];
-		e.Additional_ [AN::Field::MediaAlbum] = map ["source"];
-		e.Additional_ [AN::Field::MediaPlayerURL] = map ["URI"];
-		e.Additional_ [AN::Field::MediaTitle] = map ["title"];
-		e.Additional_ [AN::Field::MediaLength] = map ["length"];
+		e.Additional_ [AN::Field::MediaArtist] = info.Artist_;
+		e.Additional_ [AN::Field::MediaAlbum] = info.Album_;
+		e.Additional_ [AN::Field::MediaPlayerURL] = info.Other_ ["URL"];
+		e.Additional_ [AN::Field::MediaTitle] = info.Title_;
+		e.Additional_ [AN::Field::MediaLength] = info.Length_;
 
 		EntityMgr_->HandleEntity (e);
 	}
