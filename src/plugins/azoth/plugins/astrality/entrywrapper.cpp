@@ -98,7 +98,7 @@ namespace Astrality
 		return this;
 	}
 
-	QObject* EntryWrapper::GetParentAccount () const
+	IAccount* EntryWrapper::GetParentAccount () const
 	{
 		return AW_;
 	}
@@ -156,17 +156,16 @@ namespace Astrality
 		return QStringList (QString ());
 	}
 
-	QObject* EntryWrapper::CreateMessage (IMessage::Type mt, const QString&, const QString& body)
+	IMessage* EntryWrapper::CreateMessage (IMessage::Type mt, const QString&, const QString& body)
 	{
 		auto messenger = AW_->GetMessenger (GetHumanReadableID ());
 		return new MsgWrapper (body, IMessage::Direction::Out, messenger, this, mt);
 	}
 
-	QList<QObject*> EntryWrapper::GetAllMessages () const
+	QList<IMessage*> EntryWrapper::GetAllMessages () const
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto msg, AllMessages_)
-			result << msg;
+		QList<IMessage*> result;
+		std:copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
 		return result;
 	}
 
