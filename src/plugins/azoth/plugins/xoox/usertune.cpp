@@ -30,6 +30,8 @@
 #include "usertune.h"
 #include <QDomElement>
 #include <QXmppElement.h>
+#include <interfaces/media/audiostructs.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -186,6 +188,21 @@ namespace Xoox
 				Title_.isEmpty () &&
 				Track_.isEmpty () &&
 				Source_.isEmpty ();
+	}
+
+	Media::AudioInfo UserTune::ToAudioInfo () const
+	{
+		return
+		{
+			GetArtist (),
+			GetSource (),
+			GetTitle (),
+			{},
+			GetLength (),
+			0,
+			GetTrack ().toInt (),
+			Util::MakeMap<QString, QVariant> ({ { "URL", GetURI () } })
+		};
 	}
 }
 }

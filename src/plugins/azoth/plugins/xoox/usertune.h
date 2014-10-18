@@ -27,11 +27,16 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_USERTUNE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_USERTUNE_H
+#pragma once
+
 #include <QString>
 #include <QUrl>
 #include "pepeventbase.h"
+
+namespace Media
+{
+	struct AudioInfo;
+}
 
 namespace LeechCraft
 {
@@ -81,9 +86,9 @@ namespace Xoox
 		void SetRating (int);
 
 		bool IsNull () const;
+
+		Media::AudioInfo ToAudioInfo () const;
 	};
 }
 }
 }
-
-#endif
