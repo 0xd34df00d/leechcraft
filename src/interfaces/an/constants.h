@@ -101,6 +101,9 @@ namespace AN
 	/** @brief User's activity has changed.
 	 */
 	const QString TypeIMEventActivityChange = CatIM + ".Event.Activity";
+	/** @brief User's location has changed.
+	 */
+	const QString TypeIMEventLocationChange = CatIM + ".Event.Location";
 
 	/** @brief Category of Organizer-related events.
 	 */
@@ -244,6 +247,11 @@ namespace AN
 
 		const QString IMMoodGeneral = CatIM + ".Fields.Mood.General";
 		const QString IMMoodText = CatIM + ".Fields.Mood.Text";
+
+		const QString IMLocationLongitude = CatIM + ".Fields.Location.Longitude";
+		const QString IMLocationLatitude = CatIM + ".Fields.Location.Latitude";
+		const QString IMLocationCountry = CatIM + ".Fields.Location.Country";
+		const QString IMLocationLocality = CatIM + ".Fields.Location.Locality";
 	}
 }
 }
