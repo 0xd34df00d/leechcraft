@@ -157,6 +157,24 @@ namespace Util
 							{
 								AN::TypeIMEventLocationChange
 							}
+						},
+						{
+							AN::Field::IMLocationCountry,
+							QObject::tr ("Country"),
+							QObject::tr ("The country the contact is currently in."),
+							QVariant::String,
+							{
+								AN::TypeIMEventLocationChange
+							}
+						},
+						{
+							AN::Field::IMLocationLocality,
+							QObject::tr ("Longitude"),
+							QObject::tr ("The the exact locality (like a city or a town) the contact is currently in."),
+							QVariant::String,
+							{
+								AN::TypeIMEventLocationChange
+							}
 						}
 					}
 				},
