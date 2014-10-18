@@ -298,8 +298,6 @@ namespace Azoth
 		for (const auto& variant : variants)
 		{
 			const auto& info = entry->GetClientInfo (variant);
-			if (info.isEmpty ())
-				continue;
 
 			tip += "<hr />";
 			if (!variant.isEmpty ())
