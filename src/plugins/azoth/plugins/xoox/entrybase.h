@@ -37,6 +37,7 @@
 #include <QXmppVCardIq.h>
 #include <QXmppVersionIq.h>
 #include <QXmppDiscoveryIq.h>
+#include <interfaces/media/audiostructs.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iadvancedclentry.h>
 #include <interfaces/azoth/imetainfoentry.h>
@@ -46,6 +47,7 @@
 #include <interfaces/azoth/ihaveentitytime.h>
 #include <interfaces/azoth/ihavepings.h>
 #include <interfaces/azoth/ihavequeriableversion.h>
+#include <interfaces/azoth/ihavecontacttune.h>
 
 class QXmppPresence;
 class QXmppVersionIq;
@@ -76,6 +78,7 @@ namespace Xoox
 					, public IMetaInfoEntry
 					, public IHaveDirectedStatus
 					, public ISupportMicroblogs
+					, public IHaveContactTune
 					, public IHaveEntityTime
 					, public IHavePings
 					, public IHaveQueriableVersion
@@ -86,6 +89,7 @@ namespace Xoox
 				LeechCraft::Azoth::IMetaInfoEntry
 				LeechCraft::Azoth::IHaveDirectedStatus
 				LeechCraft::Azoth::ISupportMicroblogs
+				LeechCraft::Azoth::IHaveContactTune
 				LeechCraft::Azoth::IHaveEntityTime
 				LeechCraft::Azoth::IHavePings
 				LeechCraft::Azoth::IHaveQueriableVersion)
@@ -112,6 +116,7 @@ namespace Xoox
 		QMap<QString, QByteArray> Variant2VerString_;
 		QMap<QString, QXmppVersionIq> Variant2Version_;
 		QMap<QString, QList<QXmppDiscoveryIq::Identity>> Variant2Identities_;
+		QMap<QString, Media::AudioInfo> Variant2Audio_;
 
 		struct EntityTimeInfo
 		{
@@ -154,6 +159,9 @@ namespace Xoox
 
 		// ISupportMicroblogs
 		void RequestLastPosts (int);
+
+		// IHaveContactTune
+		Media::AudioInfo GetUserTune (const QString&) const;
 
 		// IHaveEntityTime
 		void UpdateEntityTime ();

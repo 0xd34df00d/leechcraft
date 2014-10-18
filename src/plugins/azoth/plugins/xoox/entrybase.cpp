@@ -415,6 +415,11 @@ namespace Xoox
 	{
 	}
 
+	Media::AudioInfo EntryBase::GetUserTune (const QString& variant) const
+	{
+		return Variant2Audio_ [variant];
+	}
+
 	void EntryBase::UpdateEntityTime ()
 	{
 		const auto& now = QDateTime::currentDateTime ();
@@ -535,19 +540,9 @@ namespace Xoox
 		if (const auto tune = dynamic_cast<UserTune*> (event))
 		{
 			if (tune->IsNull ())
-				Variant2ClientInfo_ [variant].remove ("user_tune");
+				Variant2Audio_.remove (variant);
 			else
-			{
-				QMap<QString, QVariant> tuneMap;
-				tuneMap ["artist"] = tune->GetArtist ();
-				tuneMap ["source"] = tune->GetSource ();
-				tuneMap ["title"] = tune->GetTitle ();
-				tuneMap ["track"] = tune->GetTrack ();
-				tuneMap ["URI"] = tune->GetURI ();
-				tuneMap ["length"] = tune->GetLength ();
-				tuneMap ["rating"] = tune->GetRating ();
-				Variant2ClientInfo_ [variant] ["user_tune"] = tuneMap;
-			}
+				Variant2Audio_ [variant] = tune->ToAudioInfo ();
 
 			emit tuneChanged (variant);
 			return;
@@ -620,14 +615,14 @@ namespace Xoox
 		if ((!existed || wasOffline) && !vars.isEmpty ())
 		{
 			const QString& highest = vars.first ();
-			if (Location_.contains (QString ()))
-				Location_ [highest] = Location_.take (QString ());
-			if (Variant2ClientInfo_.contains (QString ()))
+			if (Location_.contains ({}))
+				Location_ [highest] = Location_.take ({});
+			if (Variant2Audio_.contains ({}))
+				Variant2Audio_ [highest] = Variant2Audio_.take ({});
+			if (Variant2ClientInfo_.contains ({}))
 			{
-				const auto& info = Variant2ClientInfo_ [QString ()];
-				QStringList toCopy;
-				toCopy << "user_tune" << "user_mood" << "user_activity";
-				Q_FOREACH (const QString& key, toCopy)
+				const auto& info = Variant2ClientInfo_ [{}];
+				for (const auto& key : { "user_mood", "user_activity" })
 					if (info.contains (key))
 						Variant2ClientInfo_ [highest] [key] = info [key];
 			}
