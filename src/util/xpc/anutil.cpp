@@ -74,7 +74,8 @@ namespace AN
 						LAN::TypeIMSubscrUnsub,
 						LAN::TypeIMEventTuneChange,
 						LAN::TypeIMEventMoodChange,
-						LAN::TypeIMEventActivityChange
+						LAN::TypeIMEventActivityChange,
+						LAN::TypeIMEventLocationChange
 					}
 				},
 				{
@@ -143,6 +144,7 @@ namespace AN
 				{ LAN::TypeIMEventTuneChange, QObject::tr ("Contact's tune changed") },
 				{ LAN::TypeIMEventMoodChange, QObject::tr ("Contact's mood changed") },
 				{ LAN::TypeIMEventActivityChange, QObject::tr ("Contact's activity changed") },
+				{ LAN::TypeIMEventLocationChange, QObject::tr ("Contact's location changed") },
 
 				{ LAN::TypeOrganizerEventDue, QObject::tr ("Event is due") },
 
