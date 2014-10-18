@@ -446,9 +446,6 @@ namespace Azoth
 		 * - user_mood
 		 *   The corresponding value is a map itself, mapping QString to
 		 *   QString.
-		 * - user_tune
-		 *   The corresponding value is a map itself, mapping QString to
-		 *   QString or int (see below).
 		 *
 		 * The map for the user_activity can have the following keys,
 		 * where the first one is required and others are optional:
@@ -472,16 +469,6 @@ namespace Azoth
 		 * information about the semantics.
 		 * Empty "mood" key means that the entity stopped publishing
 		 * mood information.
-		 *
-		 * The map for the user_tune can have the following keys:
-		 * - artist of type QString
-		 * - source of type QString (usually it will contain the album
-		 *   containing the tune)
-		 * - title of type QString
-		 * - track of type QString
-		 * - URI of type QUrl
-		 * - length of type int
-		 * - rating of type int
 		 *
 		 * @param[in] variant Variant for which to return the client
 		 * info.
