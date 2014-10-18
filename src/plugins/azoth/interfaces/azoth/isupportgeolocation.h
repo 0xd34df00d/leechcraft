@@ -38,16 +38,16 @@ namespace LeechCraft
 namespace Azoth
 {
 	/** @brief Geolocation data.
-	 * 
+	 *
 	 * Predefined fields (keys) are based on XEP-0080: User Location
 	 * (http://xmpp.org/extensions/xep-0080.html):
-	 * - accuracy (int)
+	 * - accuracy (double)
 	 *   Horizontal GPS error in meters.
-	 * - alt (int)
+	 * - alt (double)
 	 *   Altitude in meters above or below sea level.
 	 * - area (QString)
 	 *   A named area such as a campus or neighborhood.
-	 * - bearing (int)
+	 * - bearing (double)
 	 *   GPS bearing (direction in which the entity is heading to reach
 	 *   its next waypoint), measured in decimal degrees relative to
 	 *   true north.
@@ -63,12 +63,12 @@ namespace Azoth
 	 *   A natural-language name for or description of the location.
 	 * - floor (QString)
 	 *   A particular floor in a building.
-	 * - lat (int)
+	 * - lat (double)
 	 *   Latitude in decimal degrees North.
 	 * - locality (QString)
 	 *   A locality within the administrative region, such as a town or
 	 *   city.
-	 * - lon (int)
+	 * - lon (double)
 	 *   Longitude in decimal degrees East.
 	 * - postalcode (QString)
 	 *   A code used for postal delivery.
@@ -77,7 +77,7 @@ namespace Azoth
 	 *   province.
 	 * - room (QString)
 	 *   A particular room in a building.
-	 * - speed (int)
+	 * - speed (double)
 	 *   The speed at which the entity is moving, in meters per second.
 	 * - street (QString)
 	 *   A thoroughfare within the locality, or a crossing of two
@@ -93,32 +93,32 @@ namespace Azoth
 	typedef QMap<QString, QVariant> GeolocationInfo_t;
 
 	/** @brief Interface for accounts supporting geolocation data.
-	 * 
+	 *
 	 * This interface can be implemented by account objects to advertise
 	 * the support for both publishing the current user geolocation data
 	 * and fetching other users' data.
-	 * 
+	 *
 	 * The geolocation concept in Azoth is based on the XMPP XEP-0080:
 	 * User Location (http://xmpp.org/extensions/xep-0080.html).
-	 * 
+	 *
 	 * @sa IAccount
 	 */
 	class ISupportGeolocation
 	{
 	public:
 		virtual ~ISupportGeolocation () {}
-		
+
 		/** @brief Publishes the given geolocation info.
-		 * 
+		 *
 		 * If the info map is empty, geolocation info publishing should
 		 * be effectively canceled.
-		 * 
+		 *
 		 * @param[in] info The geolocation info to publish.
 		 */
 		virtual void SetGeolocationInfo (const GeolocationInfo_t& info) = 0;
-		
+
 		/** @brief Returns info for the given entry and variant.
-		 * 
+		 *
 		 * If the user identified by an entry doesn't exist, or it has
 		 * no variant, or the given combination of user and variant
 		 * doesn't publish geolocation information, an empty map should
@@ -126,7 +126,7 @@ namespace Azoth
 		 * case this function should return last published info, or info
 		 * from the highest priority variant, or whatever is
 		 * appropriate.
-		 * 
+		 *
 		 * @param[in] entry The entry for which to return the info.
 		 * @param[in] variant The variant of the entry for which to
 		 * return the info.
@@ -137,15 +137,15 @@ namespace Azoth
 				const QString& variant) const = 0;
 
 		/** @brief Notifies about info change of another entry.
-		 * 
+		 *
 		 * This signal should be emitted whenever geolocation
 		 * information is changed for the given variant of the given
 		 * contact list entry. The only exception is if the variant
 		 * goes offline. In this case, there is no need to emit this
 		 * signal.
-		 * 
+		 *
 		 * @note This function is expected to be a signal.
-		 * 
+		 *
 		 * @param[out] variant The variant for which the event occurred.
 		 * @param[out] entry The entry whose geolocation information has
 		 * been changed.
