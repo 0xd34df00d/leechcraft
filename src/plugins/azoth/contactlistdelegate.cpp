@@ -36,10 +36,12 @@
 #include <QTreeView>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <interfaces/media/audiostructs.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/isupportgeolocation.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
+#include "interfaces/azoth/ihavecontacttune.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -467,8 +469,16 @@ namespace Azoth
 				MoodIconCache_ [iconName] = icon;
 			}
 		}
-		if (addInfo.contains ("user_tune"))
-			LoadSystemIcon ("/notification_roster_tune", clientIcons);
+		if (const auto ihct = qobject_cast<IHaveContactTune*> (entry->GetQObject ()))
+		{
+			if (std::any_of (vars.begin (), vars.end (),
+					[ihct] (const QString& var)
+					{
+						const auto& info = ihct->GetUserTune (var);
+						return !info.Artist_.isEmpty () || !info.Album_.isEmpty ();
+					}))
+				LoadSystemIcon ("/notification_roster_tune", clientIcons);
+		}
 
 		if (auto geoloc = qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ()->GetQObject ()))
 		{

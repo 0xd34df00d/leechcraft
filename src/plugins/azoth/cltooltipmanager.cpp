@@ -32,11 +32,13 @@
 #include <QStandardItem>
 #include <util/util.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <interfaces/media/audiostructs.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucperms.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "interfaces/azoth/iadvancedclentry.h"
 #include "interfaces/azoth/ihaveentitytime.h"
+#include "interfaces/azoth/ihavecontacttune.h"
 #include "core.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
@@ -127,14 +129,16 @@ namespace Azoth
 					this,
 					SLOT (remakeTooltipForSender ()));
 			connect (clEntry->GetQObject (),
-					SIGNAL (tuneChanged (const QString&)),
-					this,
-					SLOT (remakeTooltipForSender ()));
-			connect (clEntry->GetQObject (),
 					SIGNAL (locationChanged (const QString&)),
 					this,
 					SLOT (remakeTooltipForSender ()));
 		}
+
+		if (qobject_cast<IHaveContactTune*> (clEntry->GetQObject ()))
+			connect (clEntry->GetQObject (),
+					SIGNAL (tuneChanged (QString)),
+					this,
+					SLOT (remakeTooltipForSender ()));
 	}
 
 	void CLTooltipManager::RemoveEntry (ICLEntry *entry)
@@ -169,11 +173,11 @@ namespace Azoth
 				tip += " (" + text + ")";
 		}
 
-		void FormatTune (QString& tip, const QMap<QString, QVariant>& tuneInfo)
+		void FormatTune (QString& tip, const Media::AudioInfo& tuneInfo)
 		{
-			const QString& artist = tuneInfo ["artist"].toString ();
-			const QString& source = tuneInfo ["source"].toString ();
-			const QString& title = tuneInfo ["title"].toString ();
+			const auto& artist = tuneInfo.Artist_;
+			const auto& source = tuneInfo.Album_;
+			const auto& title = tuneInfo.Title_;
 
 			tip += "<br />" + Core::tr ("Now listening to:") + ' ';
 			if (!artist.isEmpty () && !title.isEmpty ())
@@ -189,9 +193,8 @@ namespace Azoth
 				tip += ' ' + Core::tr ("from") +
 						" <em>" + source + "</em>";
 
-			const int length = tuneInfo ["length"].toInt ();
-			if (length)
-				tip += " (" + Util::MakeTimeFromLong (length) + ")";
+			if (tuneInfo.Length_)
+				tip += " (" + Util::MakeTimeFromLong (tuneInfo.Length_) + ")";
 		}
 
 		void FormatMucPerms (QString& tip, IMUCPerms *mucPerms, ICLEntry *entry)
@@ -288,6 +291,7 @@ namespace Azoth
 
 		cleanupBR ();
 
+		const auto ihavetune = qobject_cast<IHaveContactTune*> (entry->GetQObject ());
 		for (const QString& variant : variants)
 		{
 			const auto& info = entry->GetClientInfo (variant);
@@ -355,8 +359,8 @@ namespace Azoth
 				FormatMood (tip, info ["user_mood"].toMap ());
 			if (info.contains ("user_activity"))
 				FormatActivity (tip, info ["user_activity"].toMap ());
-			if (info.contains ("user_tune"))
-				FormatTune (tip, info ["user_tune"].toMap ());
+			if (ihavetune)
+				FormatTune (tip, ihavetune->GetUserTune (variant));
 
 			if (info.contains ("custom_user_visible_map"))
 			{
