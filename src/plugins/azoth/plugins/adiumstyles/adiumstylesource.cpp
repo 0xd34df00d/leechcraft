@@ -451,8 +451,8 @@ namespace AdiumStyles
 
 	void AdiumStyleSource::ParseGlobalTemplate (QString& result, ICLEntry *entry) const
 	{
-		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		auto extSelf = qobject_cast<IExtSelfInfoAccount*> (entry->GetParentAccount ());
+		auto acc = entry->GetParentAccount ();
+		auto extSelf = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
 
 		ICLEntry *selfEntry = extSelf ?
 				qobject_cast<ICLEntry*> (extSelf->GetSelfContact ()) :
@@ -518,16 +518,14 @@ namespace AdiumStyles
 			return templ;
 		}
 
-		IAccount *acc = other ?
-				qobject_cast<IAccount*> (other->GetParentAccount ()) :
+		auto acc = other ?
+				other->GetParentAccount () :
 				0;
 
 		if (!acc && msg->ParentCLEntry ())
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-			acc = entry ?
-					qobject_cast<IAccount*> (entry->GetParentAccount ()) :
-					0;
+			if (const auto entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ()))
+				acc = entry->GetParentAccount ();
 		}
 
 		if (!acc && !in)

@@ -190,7 +190,7 @@ namespace Azoth
 			auto muc = serializedMuc ? serializedMuc : targetMuc;
 			auto entry = serializedMuc ? targetEntry : serializedEntry;
 
-			MUCInviteDialog dia (qobject_cast<IAccount*> (entry->GetParentAccount ()));
+			MUCInviteDialog dia (entry->GetParentAccount ());
 			dia.SetID (entry->GetHumanReadableID ());
 			if (dia.exec () == QDialog::Accepted)
 				muc->InviteToMUC (dia.GetID (), dia.GetInviteMessage ());
@@ -209,8 +209,7 @@ namespace Azoth
 		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETAccount)
 			return false;
 
-		QObject *accObj = parent.data (Core::CLRAccountObject).value<QObject*> ();
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		const auto acc = parent.data (Core::CLRAccountObject).value<IAccount*> ();
 		if (!acc)
 			return false;
 

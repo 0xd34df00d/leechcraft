@@ -151,9 +151,8 @@ namespace Azoth
 
 		QStyledItemDelegate::paint (painter, o, index);
 
-		QObject *accObj = index.data (Core::CLRAccountObject).value<QObject*> ();
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
-		IExtSelfInfoAccount *extAcc = qobject_cast<IExtSelfInfoAccount*> (accObj);
+		const auto acc = index.data (Core::CLRAccountObject).value<IAccount*> ();
+		const auto extAcc = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
 
 		QIcon accIcon = extAcc ? extAcc->GetAccountIcon () : QIcon ();
 		if (accIcon.isNull ())
@@ -471,7 +470,7 @@ namespace Azoth
 		if (addInfo.contains ("user_tune"))
 			LoadSystemIcon ("/notification_roster_tune", clientIcons);
 
-		if (auto geoloc = qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ()))
+		if (auto geoloc = qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ()->GetQObject ()))
 		{
 			const auto& info = geoloc->GetUserGeolocationInfo (entry->GetQObject (), vars.value (0));
 			if (!info.isEmpty ())

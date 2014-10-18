@@ -64,7 +64,7 @@ namespace Sarin
 		void SetFriendId (const QString&);
 
 		QObject* GetQObject () override;
-		QObject* GetParentAccount () const override;
+		IAccount* GetParentAccount () const override;
 		Features GetEntryFeatures () const override;
 		EntryType GetEntryType () const override;
 
@@ -77,8 +77,8 @@ namespace Sarin
 
 		QStringList Variants () const override;
 
-		QObject* CreateMessage (IMessage::Type, const QString&, const QString&) override;
-		QList<QObject*> GetAllMessages () const override;
+		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&) override;
+		QList<IMessage*> GetAllMessages () const override;
 		void PurgeMessages (const QDateTime&) override;
 
 		void SetChatPartState (ChatPartState, const QString&) override;

@@ -100,16 +100,8 @@ namespace Azoth
 
 	void AuthorizeEntry (ICLEntry *entry)
 	{
-		IAccount *account =
-				qobject_cast<IAccount*> (entry->GetParentAccount ());
-		if (!account)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "parent account doesn't implement IAccount:"
-					<< entry->GetParentAccount ();
-			return;
-		}
-		const QString& id = entry->GetHumanReadableID ();
+		const auto account = entry->GetParentAccount ();
+		const auto& id = entry->GetHumanReadableID ();
 		account->Authorize (entry->GetQObject ());
 		account->RequestAuth (id);
 
@@ -120,15 +112,7 @@ namespace Azoth
 
 	void DenyAuthForEntry (ICLEntry *entry)
 	{
-		IAccount *account =
-				qobject_cast<IAccount*> (entry->GetParentAccount ());
-		if (!account)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "parent account doesn't implement IAccount:"
-					<< entry->GetParentAccount ();
-			return;
-		}
+		const auto account = entry->GetParentAccount ();
 		account->DenyAuth (entry->GetQObject ());
 
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",

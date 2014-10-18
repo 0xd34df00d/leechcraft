@@ -77,7 +77,7 @@ namespace Xoox
 				this,
 				SLOT (setNote ()));
 
-		GlooxAccount *account = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
+		const auto account = dynamic_cast<GlooxAccount*> (entry->GetParentAccount ());
 		UpdateNote (account, entry->GetJID ());
 
 		if (entry->GetJID () == account->GetSettings ()->GetJID ())

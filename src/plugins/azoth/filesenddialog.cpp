@@ -66,7 +66,7 @@ namespace Azoth
 			name += " (" + entry->GetHumanReadableID () + ")";
 		Ui_.TargetLabel_->setText (name);
 
-		auto acc = qobject_cast<IAccount*> (Entry_->GetParentAccount ());
+		auto acc = Entry_->GetParentAccount ();
 		auto itm = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (itm && itm->IsAvailable ())
 		{
@@ -124,7 +124,7 @@ namespace Azoth
 
 	void FileSendDialog::SendProto ()
 	{
-		auto acc = qobject_cast<IAccount*> (Entry_->GetParentAccount ());
+		auto acc = Entry_->GetParentAccount ();
 		auto xferMgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (!xferMgr)
 		{

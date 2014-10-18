@@ -53,7 +53,7 @@ namespace Acetamide
 		ChannelParticipantEntry (const QString&,
 				ChannelHandler*, IrcAccount* = 0);
 
-		QObject* GetParentCLEntry () const;
+		ICLEntry* GetParentCLEntry () const;
 
 		QString GetEntryID () const;
 		QString GetHumanReadableID () const;
@@ -61,7 +61,7 @@ namespace Acetamide
 		void SetGroups (const QStringList&);
 		QStringList Groups () const;
 
-		QObject* CreateMessage (IMessage::Type,
+		IMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 
 		QList<ChannelRole> Roles () const;

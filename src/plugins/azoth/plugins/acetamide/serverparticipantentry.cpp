@@ -50,7 +50,7 @@ namespace Acetamide
 		ServerID_ = ish->GetServerID ();
 	}
 
-	QObject* ServerParticipantEntry::GetParentCLEntry () const
+	ICLEntry* ServerParticipantEntry::GetParentCLEntry () const
 	{
 		return ISH_->GetCLEntry ();
 	}
@@ -75,7 +75,7 @@ namespace Acetamide
 	{
 	}
 
-	QObject* ServerParticipantEntry::CreateMessage (IMessage::Type,
+	IMessage* ServerParticipantEntry::CreateMessage (IMessage::Type,
 			const QString&, const QString& body)
 	{
  		IrcMessage *message = new IrcMessage (IMessage::Type::ChatMessage,
@@ -92,7 +92,8 @@ namespace Acetamide
 
 	void ServerParticipantEntry::SetMessageHistory (QObjectList messages)
 	{
-		AllMessages_ << messages;
+		for (const auto message : messages)
+			AllMessages_ << qobject_cast<IMessage*> (message);
 	}
 
 };

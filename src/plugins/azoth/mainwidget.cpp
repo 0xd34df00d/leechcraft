@@ -327,7 +327,7 @@ namespace Azoth
 					if (accCount <= 1)
 						return text;
 
-					auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+					auto acc = entry->GetParentAccount ();
 					return text + " [" + acc->GetAccountName () + "]";
 				},
 				this);
@@ -399,7 +399,7 @@ namespace Azoth
 		case Core::CLETCategory:
 		{
 			QAction *rename = new QAction (tr ("Rename group..."), this);
-			QVariant objVar = index.parent ().data (Core::CLRAccountObject);;
+			const auto& objVar = index.parent ().data (Core::CLRAccountObject);
 			rename->setProperty ("Azoth/OldGroupName", index.data ());
 			rename->setProperty ("Azoth/AccountObject", objVar);
 			connect (rename,
@@ -442,7 +442,7 @@ namespace Azoth
 		}
 		case Core::CLETAccount:
 			actions << AccountActsMgr_->GetMenuActions (menu,
-					index.data (Core::CLRAccountObject).value<QObject*> ());
+					index.data (Core::CLRAccountObject).value<IAccount*> ());
 			break;
 		default:
 			break;
@@ -563,18 +563,15 @@ namespace Azoth
 		if (newGroup.isEmpty () || newGroup == group)
 			return;
 
-		QObject *accObj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		const auto acc = sender ()->property ("Azoth/AccountObject").value<IAccount*> ();
 		if (!acc)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to cast"
-					<< accObj
-					<< "to IAccount";
+					<< "no account";
 			return;
 		}
 
-		Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+		for (const auto entryObj : acc->GetCLEntries ())
 		{
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 			if (!entry)
@@ -694,7 +691,7 @@ namespace Azoth
 
 		const auto& obj = idx.data (Core::CLREntryObject).value<QObject*> ();
 		auto entry = qobject_cast<ICLEntry*> (obj);
-		auto acc = entry ? qobject_cast<IAccount*> (entry->GetParentAccount ()) : 0;
+		auto acc = entry ? entry->GetParentAccount () : nullptr;
 		if (!entry || !acc)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -716,7 +713,7 @@ namespace Azoth
 	{
 		auto entry = qobject_cast<ICLEntry*> (obj);
 		if (entry && entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-			obj = entry->GetParentCLEntry ();
+			obj = entry->GetParentCLEntryObject ();
 
 		const bool isMUC = qobject_cast<IMUCEntry*> (obj);
 

@@ -103,9 +103,7 @@ namespace Xoox
 		if (!ParentEntry_)
 			return;
 
-		QXmppClient *client =
-				qobject_cast<GlooxAccount*> (ParentEntry_->GetParentAccount ())->
-						GetClientConnection ()->GetClient ();
+		const auto client = ParentEntry_->GetParentAccount ()->GetClientConnection ()->GetClient ();
 
 		QXmppMessage msg;
 		msg.setBody (Message_);

@@ -138,9 +138,8 @@ namespace MuCommands
 				return split;
 
 			const auto& msgs = entry->GetAllMessages ();
-			for (const auto msgObj : boost::adaptors::reverse (msgs))
+			for (const auto msg : boost::adaptors::reverse (msgs))
 			{
-				const auto msg = qobject_cast<IMessage*> (msgObj);
 				if (const auto otherPart = qobject_cast<ICLEntry*> (msg->OtherPart ()))
 				{
 					split << otherPart->GetEntryName ();
@@ -151,12 +150,10 @@ namespace MuCommands
 			return split;
 		}
 
-		ICLEntry* ResolveEntry (const QString& name, const QHash<QString, ICLEntry*>& context, QObject *accObj, ICLEntry *hint)
+		ICLEntry* ResolveEntry (const QString& name, const QHash<QString, ICLEntry*>& context, IAccount *acc, ICLEntry *hint)
 		{
 			if (context.contains (name))
 				return context.value (name);
-
-			const auto acc = qobject_cast<IAccount*> (accObj);
 
 			QList<ICLEntry*> entries;
 			for (const auto entryObj : acc->GetCLEntries ())
@@ -172,7 +169,7 @@ namespace MuCommands
 			if (!entries.isEmpty ())
 				return entries.contains (hint) ? hint : entries.first ();
 
-			if (const auto isn = qobject_cast<ISupportNonRoster*> (accObj))
+			if (const auto isn = qobject_cast<ISupportNonRoster*> (acc->GetQObject ()))
 				if (const auto entry = qobject_cast<ICLEntry*> (isn->CreateNonRosterItem (name)))
 					return entry;
 
@@ -473,7 +470,7 @@ namespace MuCommands
 
 	bool Disco (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		const auto accObj = entry->GetParentAccount ();
+		const auto accObj = entry->GetParentAccount ()->GetQObject ();
 		const auto ihsd = qobject_cast<IHaveServiceDiscovery*> (accObj);
 		if (!ihsd)
 		{
@@ -511,8 +508,7 @@ namespace MuCommands
 
 	bool JoinMuc (IProxyObject*, ICLEntry *entry, const QString& text)
 	{
-		const auto accObj = entry->GetParentAccount ();
-		const auto acc = qobject_cast<IAccount*> (accObj);
+		const auto acc = entry->GetParentAccount ();
 		const auto mucProto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
 		if (!mucProto)
 			throw CommandException { QObject::tr ("The account %1 does not support MUCs.")
@@ -528,14 +524,14 @@ namespace MuCommands
 
 		const auto imjw = qobject_cast<IMUCJoinWidget*> (jw.get ());
 		imjw->SetIdentifyingData (data);
-		imjw->Join (accObj);
+		imjw->Join (acc->GetQObject ());
 
 		return true;
 	}
 
 	bool RejoinMuc (IProxyObject*, ICLEntry *entry, const QString& text)
 	{
-		const auto accObj = entry->GetParentAccount ();
+		const auto acc = entry->GetParentAccount ();
 		const auto entryObj = entry->GetQObject ();
 		const auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
 		if (!mucEntry)
@@ -545,9 +541,8 @@ namespace MuCommands
 
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
-			[entryObj, accObj, mucData] () -> void
+			[entryObj, acc, mucData] () -> void
 			{
-				const auto acc = qobject_cast<IAccount*> (accObj);
 				if (acc->GetCLEntries ().contains (entryObj))
 					return;
 
@@ -570,7 +565,7 @@ namespace MuCommands
 					1000
 				};
 			},
-			accObj,
+			acc->GetQObject (),
 			SIGNAL (removedCLItems (QList<QObject*>)),
 			entryObj
 		};
@@ -677,7 +672,7 @@ namespace MuCommands
 			case ICLEntry::EntryType::MUC:
 				return entry;
 			case ICLEntry::EntryType::PrivateChat:
-				return qobject_cast<ICLEntry*> (entry->GetParentCLEntry ());
+				return entry->GetParentCLEntry ();
 			default:
 				return nullptr;
 			}
@@ -698,7 +693,7 @@ namespace MuCommands
 		const auto mucPerms = qobject_cast<IMUCPerms*> (mucEntry->GetQObject ());
 		if (!mucPerms)
 		{
-			const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			const auto acc = entry->GetParentAccount ();
 			const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 			InjectMessage (azothProxy, entry,
 					QObject::tr ("%1 (or its protocol %2) does not support permissions.")
@@ -810,7 +805,7 @@ namespace MuCommands
 		{
 			if (!MucPerms_)
 			{
-				const auto acc = qobject_cast<IAccount*> (Entry_->GetParentAccount ());
+				const auto acc = Entry_->GetParentAccount ();
 				const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 				InjectMessage (AzothProxy_, Entry_,
 						QObject::tr ("%1 (or its protocol %2) does not support permissions.")
@@ -1014,7 +1009,8 @@ namespace MuCommands
 
 		PerformAction ([handlePending] (ICLEntry *target, const QString& name) -> void
 				{
-					const auto isla = qobject_cast<ISupportLastActivity*> (target->GetParentAccount ());
+					const auto isla = qobject_cast<ISupportLastActivity*> (target->
+								GetParentAccount ()->GetQObject ());
 					const auto pending = isla ?
 							isla->RequestLastActivity (target->GetQObject (), {}) :
 							nullptr;
@@ -1022,7 +1018,8 @@ namespace MuCommands
 				},
 				[entry, handlePending] (const QString& name) -> void
 				{
-					const auto isla = qobject_cast<ISupportLastActivity*> (entry->GetParentAccount ());
+					const auto isla = qobject_cast<ISupportLastActivity*> (entry->
+								GetParentAccount ()->GetQObject ());
 					const auto pending = isla ?
 							isla->RequestLastActivity (name) :
 							nullptr;
@@ -1122,7 +1119,7 @@ namespace MuCommands
 			break;
 		case ICLEntry::EntryType::PrivateChat:
 			WhoisImpl (azothProxy,
-					qobject_cast<ICLEntry*> (entry->GetParentCLEntry ()),
+					entry->GetParentCLEntry (),
 					entry,
 					entry,
 					text);
@@ -1152,11 +1149,9 @@ namespace MuCommands
 			return true;
 		}
 
-		const auto msgObj = part->CreateMessage (IMessage::Type::ChatMessage,
+		const auto msg = part->CreateMessage (IMessage::Type::ChatMessage,
 				part->Variants ().value (0), message);
-		const auto msg = qobject_cast<IMessage*> (msgObj);
 		msg->Send ();
-
 		return true;
 	}
 

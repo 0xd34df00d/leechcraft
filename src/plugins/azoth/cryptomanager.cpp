@@ -162,7 +162,7 @@ namespace Azoth
 		if (!StoredPublicKeys_.contains (clEntry->GetEntryID ()))
 			return;
 
-		const auto pgp = qobject_cast<ISupportPGP*> (clEntry->GetParentAccount ());
+		const auto pgp = qobject_cast<ISupportPGP*> (clEntry->GetParentAccount ()->GetQObject ());
 		if (!pgp)
 		{
 			qWarning () << Q_FUNC_INFO

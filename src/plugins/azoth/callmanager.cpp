@@ -39,6 +39,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/iaccount.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -65,7 +66,7 @@ namespace Azoth
 	QObject* CallManager::Call (ICLEntry *entry, const QString& variant)
 	{
 #ifdef ENABLE_MEDIACALLS
-		ISupportMediaCalls *ismc = qobject_cast<ISupportMediaCalls*> (entry->GetParentAccount ());
+		const auto ismc = qobject_cast<ISupportMediaCalls*> (entry->GetParentAccount ()->GetQObject ());
 		if (!ismc)
 		{
 			qWarning () << Q_FUNC_INFO

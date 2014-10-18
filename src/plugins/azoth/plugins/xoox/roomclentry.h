@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QStringList>
@@ -38,6 +38,7 @@
 #include <interfaces/azoth/imucperms.h>
 #include <interfaces/azoth/iconfigurablemuc.h>
 #include "roomparticipantentry.h"
+#include "glooxaccount.h"
 
 class QXmppBookmarkSet;
 
@@ -47,7 +48,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class GlooxAccount;
 	class RoomPublicMessage;
 	class RoomHandler;
 
@@ -69,7 +69,7 @@ namespace Xoox
 
 		const bool IsAutojoined_;
 		GlooxAccount *Account_;
-		QList<QObject*> AllMessages_;
+		QList<IMessage*> AllMessages_;
 		RoomHandler *RH_;
 		QMap<QByteArray, QList<QByteArray>> Perms_;
 		QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
@@ -84,7 +84,7 @@ namespace Xoox
 
 		// ICLEntry
 		QObject* GetQObject ();
-		QObject* GetParentAccount () const ;
+		GlooxAccount* GetParentAccount () const ;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -94,9 +94,9 @@ namespace Xoox
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::Type,
+		IMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
-		QList<QObject*> GetAllMessages () const;
+		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;
@@ -172,5 +172,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

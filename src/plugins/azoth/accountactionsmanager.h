@@ -78,11 +78,11 @@ namespace Azoth
 		AccountActionsManager (QObject* = 0);
 
 		void SetMainWidget (QWidget*);
-		QList<QAction*> GetMenuActions (QMenu*, QObject*);
+		QList<QAction*> GetMenuActions (QMenu*, IAccount*);
 
 		QString GetStatusText (QAction*, State) const;
 	private:
-		QList<QAction*> AddMenuChangeStatus (QMenu*, QObject*);
+		QList<QAction*> AddMenuChangeStatus (QMenu*);
 		QList<QAction*> AddBMActions (QMenu*, QObject*);
 	private slots:
 		void handleChangeStatusRequested ();

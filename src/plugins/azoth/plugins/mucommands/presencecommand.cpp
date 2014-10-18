@@ -219,7 +219,7 @@ namespace MuCommands
 
 			QList<IAccount*> operator() (const CurrentAccount&) const
 			{
-				return { qobject_cast<IAccount*> (Entry_->GetParentAccount ()) };
+				return { Entry_->GetParentAccount () };
 			}
 
 			QList<IAccount*> operator() (const std::string& accName) const
@@ -318,7 +318,7 @@ namespace MuCommands
 
 		const QString variant {};
 
-		const auto& status = qobject_cast<IAccount*> (entry->GetParentAccount ())->GetState ();
+		const auto& status = entry->GetParentAccount ()->GetState ();
 		const auto& newStatus = boost::apply_visitor (StatusVisitor { proxy }, params.Status_) (status);
 
 		if (!variant.isEmpty ())

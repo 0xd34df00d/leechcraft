@@ -185,19 +185,13 @@ namespace Azoth
 		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 			return;
 
-		QObject *mucObj = entry->GetParentCLEntry ();
-		ICLEntry *muc = qobject_cast<ICLEntry*> (mucObj);
-		UpdateMUCTab (muc);
+		UpdateMUCTab (entry->GetParentCLEntry ());
 	}
 
 	void ChatTabsManager::HandleEntryRemoved (ICLEntry *entry)
 	{
 		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-		{
-			QObject *mucObj = entry->GetParentCLEntry ();
-			ICLEntry *muc = qobject_cast<ICLEntry*> (mucObj);
-			UpdateMUCTab (muc);
-		}
+			UpdateMUCTab (entry->GetParentCLEntry ());
 
 		if (!Entry2Tab_.contains (entry->GetEntryID ()))
 			return;

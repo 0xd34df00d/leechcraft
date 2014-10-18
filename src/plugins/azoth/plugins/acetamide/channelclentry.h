@@ -62,7 +62,7 @@ namespace Acetamide
 				LeechCraft::Azoth::IConfigurableMUC)
 
 		ChannelHandler *ICH_;
-		QList<QObject*> AllMessages_;
+		QList<IMessage*> AllMessages_;
 		bool IsWidgetRequest_;
 
 		QMap<QByteArray, QList<QByteArray>> Perms_;
@@ -75,7 +75,7 @@ namespace Acetamide
 		ChannelHandler* GetChannelHandler () const;
 
 		QObject* GetQObject ();
-		QObject* GetParentAccount () const;
+		IAccount* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -85,9 +85,9 @@ namespace Acetamide
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::Type,
+		IMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
-		QList<QObject*> GetAllMessages () const;
+		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		QList<QAction*> GetActions () const;

@@ -52,7 +52,7 @@ namespace Acetamide
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
 	protected:
-		QList<QObject*> AllMessages_;
+		QList<IMessage*> AllMessages_;
 		EntryStatus CurrentStatus_;
 		QList<QAction*> Actions_;
 
@@ -63,8 +63,8 @@ namespace Acetamide
 		EntryBase (IrcAccount* = 0);
 		virtual ~EntryBase ();
 
-		virtual QObject* GetQObject ();
-		virtual QList<QObject*> GetAllMessages () const;
+		QObject* GetQObject ();
+		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;

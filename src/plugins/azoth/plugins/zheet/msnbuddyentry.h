@@ -35,6 +35,7 @@
 #include <msn/buddy.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iadvancedclentry.h>
+#include "msnaccount.h"
 
 namespace MSN
 {
@@ -80,7 +81,7 @@ namespace Zheet
 
 		// ICLEntry
 		QObject* GetQObject ();
-		QObject* GetParentAccount () const;
+		MSNAccount* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -90,8 +91,8 @@ namespace Zheet
 		QStringList Groups () const;
 		void SetGroups (const QStringList& groups);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::Type, const QString&, const QString&);
-		QList<QObject*> GetAllMessages () const;
+		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&);
+		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;

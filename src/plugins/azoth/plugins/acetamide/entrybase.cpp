@@ -63,7 +63,7 @@ namespace Acetamide
 		return this;
 	}
 
-	QList<QObject*> EntryBase::GetAllMessages () const
+	QList<IMessage*> EntryBase::GetAllMessages () const
 	{
 		return AllMessages_;
 	}

@@ -44,6 +44,7 @@
 #include "capsmanager.h"
 #include "gwoptionsdialog.h"
 #include "privacylistsmanager.h"
+#include "glooxmessage.h"
 
 namespace LeechCraft
 {
@@ -206,7 +207,7 @@ namespace Xoox
 				rosterManager ().getRosterEntry (BareJID_);
 	}
 
-	QObject* GlooxCLEntry::GetParentAccount () const
+	IAccount* GlooxCLEntry::GetParentAccount () const
 	{
 		return Account_;
 	}
@@ -346,13 +347,13 @@ namespace Xoox
 				max.statusText ());
 	}
 
-	QObject* GlooxCLEntry::CreateMessage (IMessage::Type type,
+	IMessage* GlooxCLEntry::CreateMessage (IMessage::Type type,
 			const QString& variant, const QString& text)
 	{
 		if (ODS_)
 			return nullptr;
 
-		QObject *msg = Account_->CreateMessage (type, variant, text, GetJID ());
+		const auto msg = Account_->CreateMessage (type, variant, text, GetJID ());
 		AllMessages_ << msg;
 		return msg;
 	}

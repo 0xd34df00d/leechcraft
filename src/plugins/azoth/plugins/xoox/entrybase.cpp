@@ -117,9 +117,11 @@ namespace Xoox
 		return this;
 	}
 
-	QList<QObject*> EntryBase::GetAllMessages () const
+	QList<IMessage*> EntryBase::GetAllMessages () const
 	{
-		return AllMessages_;
+		QList<IMessage*> result;
+		std::copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
+		return result;
 	}
 
 	void EntryBase::PurgeMessages (const QDateTime& before)
@@ -666,7 +668,7 @@ namespace Xoox
 		if (GetEntryType () == EntryType::PrivateChat)
 			message = new GlooxMessage (IMessage::Type::StatusMessage,
 					IMessage::Direction::In,
-					qobject_cast<RoomCLEntry*> (GetParentCLEntry ())->
+					qobject_cast<RoomCLEntry*> (GetParentCLEntryObject ())->
 							GetRoomHandler ()->GetRoomJID (),
 					GetEntryName (),
 					Account_->GetClientConnection ().get ());

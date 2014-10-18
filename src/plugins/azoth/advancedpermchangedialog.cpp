@@ -45,7 +45,7 @@ namespace Azoth
 		for (const auto entry : entries)
 			names << entry->GetEntryName ();
 
-		auto perms = qobject_cast<IMUCPerms*> (entries.front ()->GetParentCLEntry ());
+		auto perms = qobject_cast<IMUCPerms*> (entries.front ()->GetParentCLEntryObject ());
 		Ui_.NameLabel_->setText (tr ("Set %1 to %2 for %3")
 					.arg (perms->GetUserString (permClass))
 					.arg (perms->GetUserString (perm))

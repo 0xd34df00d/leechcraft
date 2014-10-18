@@ -115,12 +115,11 @@ namespace Azoth
 			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 						IMessage::Type::MUCMessage :
 						IMessage::Type::ChatMessage;
-			auto msgObj = entry->CreateMessage (msgType,
+			auto msg = entry->CreateMessage (msgType,
 					chatTab->GetSelectedVariant (),
 					ContactDropFilter::tr ("This message contains inline image, enable XHTML-IM to view it."));
-			auto msg = qobject_cast<IMessage*> (msgObj);
 
-			if (IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj))
+			if (const auto richMsg = qobject_cast<IRichTextMessage*> (msg->GetQObject ()))
 			{
 				QString asBase;
 				if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
@@ -149,10 +148,9 @@ namespace Azoth
 			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 						IMessage::Type::MUCMessage :
 						IMessage::Type::ChatMessage;
-			auto msgObj = entry->CreateMessage (msgType,
+			const auto msg = entry->CreateMessage (msgType,
 					chatTab->GetSelectedVariant (),
 					url.toEncoded ());
-			auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Send ();
 		}
 
@@ -183,26 +181,21 @@ namespace Azoth
 
 					auto thisEnt = entity;
 					thisEnt.Additional_ ["DataFilter"] = verb;
-					thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue (DataFilterCallback_f {
-								[entryId, variant] (const QVariant& var) -> void
-								{
-									const auto& url = var.toUrl ();
-									if (url.isEmpty ())
-										return;
+					thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue<DataFilterCallback_f> (
+							[entryId, variant] (const QVariant& var) -> void
+							{
+								const auto& url = var.toUrl ();
+								if (url.isEmpty ())
+									return;
 
-									auto entry = GetEntry<ICLEntry> (entryId);
-									if (!entry)
-										return;
+								auto entry = GetEntry<ICLEntry> (entryId);
+								if (!entry)
+									return;
 
-									const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
-												IMessage::Type::MUCMessage :
-												IMessage::Type::ChatMessage;
-									auto msgObj = entry->CreateMessage (msgType,
-											variant,
-											url.toString ());
-									auto msg = qobject_cast<IMessage*> (msgObj);
-									msg->Send ();
-								}
+								const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
+											IMessage::Type::MUCMessage :
+											IMessage::Type::ChatMessage;
+								entry->CreateMessage (msgType, variant, url.toString ())->Send ();
 							});
 
 					functions.append ([thisEnt, obj]
@@ -299,8 +292,8 @@ namespace Azoth
 		{
 			const bool isMuc = thisEntry->GetEntryType () == ICLEntry::EntryType::MUC;
 
-			const auto entryAcc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-			const auto thisAcc = qobject_cast<IAccount*> (thisEntry->GetParentAccount ());
+			const auto entryAcc = entry->GetParentAccount ();
+			const auto thisAcc = thisEntry->GetParentAccount ();
 			if (thisAcc->GetParentProtocol () != entryAcc->GetParentProtocol ())
 				return false;
 

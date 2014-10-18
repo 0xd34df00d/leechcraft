@@ -170,15 +170,7 @@ namespace ChatHistory
 			return;
 		}
 
-		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		if (!account)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry->GetParentAccount ()
-					<< "doesn't implement IAccount";
-			return;
-		}
-
+		const auto account = entry->GetParentAccount ();
 		const QString& accId = account->GetAccountID ();
 		const QString& entryId = entry->GetEntryID ();
 		Core::Instance ()->GetChatLogs (accId, entryId, 0, num);

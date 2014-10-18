@@ -192,7 +192,7 @@ namespace ChatHistory
 
 		if (EntryToFocus_)
 		{
-			const auto entryAcc = qobject_cast<IAccount*> (EntryToFocus_->GetParentAccount ());
+			const auto entryAcc = EntryToFocus_->GetParentAccount ();
 			if (!entryAcc)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -224,7 +224,7 @@ namespace ChatHistory
 
 				if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 				{
-					const auto parent = qobject_cast<ICLEntry*> (entry->GetParentCLEntry ());
+					const auto parent = entry->GetParentCLEntry ();
 					return parent->GetEntryName () + '/' + entryName;
 				}
 				else
@@ -301,8 +301,8 @@ namespace ChatHistory
 		const QString& name = entry ?
 				entry->GetEntryName () :
 				EntryID2NameCache_.value (entryId, entryId);
-		const QString& ourName = entry ?
-				qobject_cast<IAccount*> (entry->GetParentAccount ())->GetOurNick () :
+		const auto& ourName = entry ?
+				entry->GetParentAccount ()->GetOurNick () :
 				QString ();
 
 		QString preNick = Core::Instance ()->GetPluginProxy ()->

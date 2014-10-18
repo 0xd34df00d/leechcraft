@@ -56,7 +56,7 @@ namespace Xoox
 				if (!XmlSettingsManager::Instance ().property ("RequestVersionInMUCs").toBool ())
 					return false;
 
-				auto room = qobject_cast<RoomCLEntry*> (entry->GetParentCLEntry ());
+				auto room = qobject_cast<RoomCLEntry*> (entry->GetParentCLEntryObject ());
 				if (room->GetRoomHandler ()->IsGateway ())
 					return false;
 

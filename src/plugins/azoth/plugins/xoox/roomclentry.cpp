@@ -111,7 +111,7 @@ namespace Xoox
 		return this;
 	}
 
-	QObject* RoomCLEntry::GetParentAccount () const
+	GlooxAccount* RoomCLEntry::GetParentAccount () const
 	{
 		return Account_;
 	}
@@ -163,7 +163,7 @@ namespace Xoox
 		return { "" };
 	}
 
-	QObject* RoomCLEntry::CreateMessage (IMessage::Type,
+	IMessage* RoomCLEntry::CreateMessage (IMessage::Type,
 			const QString& variant, const QString& text)
 	{
 		if (variant == "")
@@ -172,7 +172,7 @@ namespace Xoox
 			return 0;
 	}
 
-	QList<QObject*> RoomCLEntry::GetAllMessages () const
+	QList<IMessage*> RoomCLEntry::GetAllMessages () const
 	{
 		return AllMessages_;
 	}
@@ -573,9 +573,9 @@ namespace Xoox
 
 	void RoomCLEntry::MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to)
 	{
-		for (const auto msgObj : AllMessages_)
+		for (const auto msgFace : AllMessages_)
 		{
-			const auto msg = qobject_cast<RoomPublicMessage*> (msgObj);
+			const auto msg = qobject_cast<RoomPublicMessage*> (msgFace->GetQObject ());
 			if (msg->OtherPart () == from.get ())
 				msg->SetParticipantEntry (to);
 		}

@@ -62,21 +62,21 @@ namespace Murm
 		return this;
 	}
 
-	QObject* EntryBase::GetParentAccount () const
+	IAccount* EntryBase::GetParentAccount () const
 	{
 		return Account_;
 	}
 
-	QObject* EntryBase::CreateMessage (IMessage::Type type, const QString&, const QString& body)
+	IMessage* EntryBase::CreateMessage (IMessage::Type type, const QString&, const QString& body)
 	{
 		auto msg = new VkMessage (true, IMessage::Direction::Out, type, this);
 		msg->SetBody (body);
 		return msg;
 	}
 
-	QList<QObject*> EntryBase::GetAllMessages () const
+	QList<IMessage*> EntryBase::GetAllMessages () const
 	{
-		QList<QObject*> result;
+		QList<IMessage*> result;
 		for (auto obj : Messages_)
 			result << obj;
 		return result;

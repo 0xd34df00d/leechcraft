@@ -53,9 +53,8 @@ namespace MuCommands
 		QStringList GetAllUrls (IProxyObject *azothProxy, ICLEntry *entry)
 		{
 			QStringList urls;
-			for (const auto msgObj : entry->GetAllMessages ())
+			for (const auto msg : entry->GetAllMessages ())
 			{
-				const auto msg = qobject_cast<IMessage*> (msgObj);
 				switch (msg->GetMessageType ())
 				{
 				case IMessage::Type::ChatMessage:

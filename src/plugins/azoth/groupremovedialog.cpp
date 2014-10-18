@@ -74,9 +74,8 @@ namespace Azoth
 	{
 		for (auto entryObj : GetSelectedEntries ())
 		{
-			auto entry = qobject_cast<ICLEntry*> (entryObj);
-			auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-			acc->RemoveEntry (entryObj);
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
+			entry->GetParentAccount ()->RemoveEntry (entryObj);
 		}
 
 		QDialog::accept ();

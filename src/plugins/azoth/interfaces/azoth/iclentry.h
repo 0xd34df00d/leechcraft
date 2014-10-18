@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_ICLENTRY_H
-#define PLUGINS_AZOTH_INTERFACES_ICLENTRY_H
+#pragma once
+
 #include <QFlags>
 #include <QMetaType>
 #include "imessage.h"
@@ -185,7 +185,7 @@ namespace Azoth
 		 *
 		 * @return The parent account of this entry.
 		 */
-		virtual QObject* GetParentAccount () const = 0;
+		virtual IAccount* GetParentAccount () const = 0;
 
 		/** Returns the pointer to the parent CL entry, if any.
 		 *
@@ -201,9 +201,16 @@ namespace Azoth
 		 *
 		 * @return Parent CL entry if applicable, NULL otherwise.
 		 */
-		virtual QObject* GetParentCLEntry () const
+		virtual ICLEntry* GetParentCLEntry () const
 		{
-			return 0;
+			return nullptr;
+		}
+
+		QObject* GetParentCLEntryObject () const
+		{
+			if (const auto entry = GetParentCLEntry ())
+				return entry->GetQObject ();
+			return nullptr;
 		}
 
 		/** Returns the OR-ed combination of Feature flags that
@@ -338,7 +345,7 @@ namespace Azoth
 		 *
 		 * @sa Variants()
 		 */
-		virtual QObject* CreateMessage (IMessage::Type type,
+		virtual IMessage* CreateMessage (IMessage::Type type,
 				const QString& variant,
 				const QString& body) = 0;
 
@@ -352,7 +359,7 @@ namespace Azoth
 		 *
 		 * @return The list of messages.
 		 */
-		virtual QList<QObject*> GetAllMessages () const = 0;
+		virtual QList<IMessage*> GetAllMessages () const = 0;
 
 		/** @brief Purges messages before the given date.
 		 *
@@ -599,5 +606,3 @@ Q_DECLARE_METATYPE (LeechCraft::Azoth::EntryStatus);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::ICLEntry::Features);
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ICLEntry,
 		"org.Deviant.LeechCraft.Azoth.ICLEntry/1.0");
-
-#endif

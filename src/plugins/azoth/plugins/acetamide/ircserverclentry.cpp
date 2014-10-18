@@ -66,7 +66,7 @@ namespace Acetamide
 		return Account_;
 	}
 
-	QObject* IrcServerCLEntry::GetParentAccount () const
+	IAccount* IrcServerCLEntry::GetParentAccount () const
 	{
 		return Account_;
 	}
@@ -111,13 +111,13 @@ namespace Acetamide
 		return result;
 	}
 
-	QObject* IrcServerCLEntry::CreateMessage (IMessage::Type,
+	IMessage* IrcServerCLEntry::CreateMessage (IMessage::Type,
 			const QString& variant, const QString& body)
 	{
 		if (variant.isEmpty ())
 			return new ServerCommandMessage (body, this);
 		else
-			return 0;
+			return nullptr;
 	}
 
 	IMUCEntry::MUCFeatures IrcServerCLEntry::GetMUCFeatures () const

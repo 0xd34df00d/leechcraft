@@ -46,7 +46,7 @@ namespace Azoth
 		if (!entry)
 			return {};
 
-		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto acc = entry->GetParentAccount ();
 		return entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 				GetMUCStyleForAccount (acc) :
 				GetStyleForAccount (acc);

@@ -62,7 +62,7 @@ namespace VelvetBird
 		Buddy (PurpleBuddy*, Account*);
 
 		QObject* GetQObject ();
-		QObject* GetParentAccount () const;
+		IAccount* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -72,8 +72,8 @@ namespace VelvetBird
 		QStringList Groups () const;
 		void SetGroups (const QStringList& groups);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::Type type, const QString& variant, const QString& body);
-		QList<QObject*> GetAllMessages () const;
+		IMessage* CreateMessage (IMessage::Type type, const QString& variant, const QString& body);
+		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime& before);
 		void SetChatPartState (ChatPartState state, const QString& variant);
 		EntryStatus GetStatus (const QString& variant = QString ()) const;

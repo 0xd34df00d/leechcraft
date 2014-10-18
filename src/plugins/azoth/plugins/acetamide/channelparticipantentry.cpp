@@ -85,7 +85,7 @@ namespace Acetamide
 		ServerID_ = ICH_->GetParentID ();
 	}
 
-	QObject* ChannelParticipantEntry::GetParentCLEntry () const
+	ICLEntry* ChannelParticipantEntry::GetParentCLEntry () const
 	{
 		return ICH_->GetCLEntry ();
 	}
@@ -110,7 +110,7 @@ namespace Acetamide
 	{
 	}
 
-	QObject* ChannelParticipantEntry::CreateMessage (IMessage::Type,
+	IMessage* ChannelParticipantEntry::CreateMessage (IMessage::Type,
 			const QString&, const QString& body)
 	{
 		IrcMessage *message = new IrcMessage (IMessage::Type::ChatMessage,

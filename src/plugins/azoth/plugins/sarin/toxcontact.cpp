@@ -61,7 +61,7 @@ namespace Sarin
 		return this;
 	}
 
-	QObject* ToxContact::GetParentAccount () const
+	IAccount* ToxContact::GetParentAccount () const
 	{
 		return Acc_;
 	}
@@ -114,7 +114,7 @@ namespace Sarin
 		return { "" };
 	}
 
-	QObject* ToxContact::CreateMessage (IMessage::Type type, const QString&, const QString& body)
+	IMessage* ToxContact::CreateMessage (IMessage::Type type, const QString&, const QString& body)
 	{
 		if (type != IMessage::Type::ChatMessage)
 		{
@@ -127,9 +127,9 @@ namespace Sarin
 		return new ChatMessage { body, IMessage::Direction::Out, this };
 	}
 
-	QList<QObject*> ToxContact::GetAllMessages () const
+	QList<IMessage*> ToxContact::GetAllMessages () const
 	{
-		QList<QObject*> result;
+		QList<IMessage*> result;
 		std::copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
 		return result;
 	}

@@ -954,7 +954,7 @@ namespace Xoox
 		return result;
 	}
 
-	QObject* GlooxAccount::CreateMessage (IMessage::Type type,
+	GlooxMessage* GlooxAccount::CreateMessage (IMessage::Type type,
 			const QString& variant,
 			const QString& body,
 			const QString& jid)

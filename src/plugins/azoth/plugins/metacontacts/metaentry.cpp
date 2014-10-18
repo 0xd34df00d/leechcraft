@@ -34,7 +34,7 @@
 #include <QImage>
 #include <QAction>
 #include <QtDebug>
-#include <boost/concept_check.hpp>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include "metaaccount.h"
 #include "metamessage.h"
@@ -87,8 +87,8 @@ namespace Metacontacts
 		UnavailableRealEntries_.removeAll (entry->GetEntryID ());
 
 		handleRealVariantsChanged (entry->Variants (), entryObj);
-		Q_FOREACH (QObject *object, entry->GetAllMessages ())
-			handleRealGotMessage (object);
+		for (const auto msg : entry->GetAllMessages ())
+			handleRealGotMessage (msg->GetQObject ());
 
 		emit statusChanged (GetStatus (QString ()), QString ());
 
@@ -108,7 +108,7 @@ namespace Metacontacts
 		return this;
 	}
 
-	QObject* MetaEntry::GetParentAccount () const
+	IAccount* MetaEntry::GetParentAccount () const
 	{
 		return Account_;
 	}
@@ -185,14 +185,14 @@ namespace Metacontacts
 		return result;
 	}
 
-	QObject* MetaEntry::CreateMessage (IMessage::Type type, const QString& variant, const QString& body)
+	IMessage* MetaEntry::CreateMessage (IMessage::Type type, const QString& variant, const QString& body)
 	{
 		auto f = [type, body] (ICLEntry *e, const QString& v)
 				{ return e->CreateMessage (type, v, body); };
-		return ActWithVariant<QObject*, ICLEntry*> (f, variant);
+		return ActWithVariant<IMessage*, ICLEntry*> (f, variant);
 	}
 
-	QList<QObject*> MetaEntry::GetAllMessages () const
+	QList<IMessage*> MetaEntry::GetAllMessages () const
 	{
 		return Messages_;
 	}
@@ -313,8 +313,8 @@ namespace Metacontacts
 				this,
 				SIGNAL (entryGenerallyChanged ()));
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		connect (entry->GetParentAccount (),
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		connect (entry->GetParentAccount ()->GetQObject (),
 				SIGNAL (removedCLItems (QList<QObject*>)),
 				this,
 				SLOT (checkRemovedCLItems (QList<QObject*>)));
@@ -355,11 +355,11 @@ namespace Metacontacts
 
 	void MetaEntry::PerformRemoval (QObject *entryObj)
 	{
-		QObjectList::iterator i = Messages_.begin ();
+		auto i = Messages_.begin ();
 		while (i < Messages_.end ())
 		{
-			MetaMessage *metaMsg = qobject_cast<MetaMessage*> (*i);
-			IMessage *origMsg = metaMsg->GetOriginalMessage ();
+			const auto metaMsg = dynamic_cast<MetaMessage*> (*i);
+			const auto origMsg = metaMsg->GetOriginalMessage ();
 
 			if (origMsg->OtherPart () == entryObj)
 				i = Messages_.erase (i);
@@ -367,13 +367,14 @@ namespace Metacontacts
 				++i;
 		}
 
-		Q_FOREACH (const QString& var, Variant2RealVariant_.keys ())
+		for (const auto& keyValPair : Util::Stlize (Variant2RealVariant_))
 		{
-			const QPair<QObject*, QString>& pair = Variant2RealVariant_ [var];
+			const auto& var = keyValPair.first;
+			const auto& pair = keyValPair.second;
 			if (pair.first == entryObj)
 			{
 				Variant2RealVariant_.remove (var);
-				emit statusChanged (EntryStatus (SOffline, QString ()), var);
+				emit statusChanged ({ SOffline, QString () }, var);
 			}
 		}
 
@@ -423,15 +424,14 @@ namespace Metacontacts
 		MetaMessage *message = new MetaMessage (msgObj, this);
 
 		const bool shouldSort = !Messages_.isEmpty () &&
-				qobject_cast<IMessage*> (Messages_.last ())->GetDateTime () > msg->GetDateTime ();
+				Messages_.last ()->GetDateTime () > msg->GetDateTime ();
 
 		Messages_ << message;
 		if (shouldSort)
 			std::stable_sort (Messages_.begin (), Messages_.end (),
-					[] (QObject *lObj, QObject *rObj)
+					[] (IMessage *left, IMessage *right)
 					{
-						return qobject_cast<IMessage*> (lObj)->GetDateTime () <
-								qobject_cast<IMessage*> (rObj)->GetDateTime ();
+						return left->GetDateTime () < right->GetDateTime ();
 					});
 
 		emit gotMessage (message);

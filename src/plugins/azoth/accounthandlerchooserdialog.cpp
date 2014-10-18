@@ -35,36 +35,25 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	AccountHandlerChooserDialog::AccountHandlerChooserDialog (const QList<QObject*>& accounts,
+	AccountHandlerChooserDialog::AccountHandlerChooserDialog (const QList<IAccount*>& accounts,
 			const QString& text, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
 		Ui_.Text_->setText (text);
-		
-		Q_FOREACH (QObject *accObj, accounts)
-		{
-			IAccount *acc = qobject_cast<IAccount*> (accObj);
-			if (!acc)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "account doesn't implement IAccount"
-						<< accObj;
-				continue;
-			}
-			
+
+		for (const auto acc : accounts)
 			Ui_.AccountsBox_->addItem (acc->GetAccountName (),
-					QVariant::fromValue<QObject*> (accObj));
-		}
+					QVariant::fromValue<IAccount*> (acc));
 	}
-	
-	QObject* AccountHandlerChooserDialog::GetSelectedAccount () const
+
+	IAccount* AccountHandlerChooserDialog::GetSelectedAccount () const
 	{
 		const int idx = Ui_.AccountsBox_->currentIndex ();
 		if (idx < 0)
 			return 0;
-		
-		return Ui_.AccountsBox_->itemData (idx).value<QObject*> ();
+
+		return Ui_.AccountsBox_->itemData (idx).value<IAccount*> ();
 	}
 }
 }

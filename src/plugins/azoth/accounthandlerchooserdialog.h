@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ACCOUNTHANDLERCHOOSERDIALOG_H
-#define PLUGINS_AZOTH_ACCOUNTHANDLERCHOOSERDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_accounthandlerchooserdialog.h"
 
@@ -36,17 +36,17 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class IAccount;
+
 	class AccountHandlerChooserDialog : public QDialog
 	{
 		Q_OBJECT
-		
+
 		Ui::AccountHandlerChooserDialog Ui_;
 	public:
-		AccountHandlerChooserDialog (const QList<QObject*>&, const QString&, QWidget* = 0);
-		
-		QObject* GetSelectedAccount () const;
+		AccountHandlerChooserDialog (const QList<IAccount*>&, const QString&, QWidget* = 0);
+
+		IAccount* GetSelectedAccount () const;
 	};
 }
 }
-
-#endif

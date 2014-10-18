@@ -260,14 +260,16 @@ namespace Azoth
 
 		const QStringList& variants = entry->Variants ();
 
-		if (auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ()))
+		if (auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntryObject ()))
 		{
 			const QString& jid = mucEntry->GetRealID (entry->GetQObject ());
 			tip += "<br />" + tr ("Real ID:") + ' ';
 			tip += jid.isEmpty () ? tr ("unknown") : Escape (jid);
 		}
 
-		FormatMucPerms (tip, qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()), entry);
+		FormatMucPerms (tip,
+				qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ()),
+				entry);
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		proxy->SetValue ("tooltip", tip);

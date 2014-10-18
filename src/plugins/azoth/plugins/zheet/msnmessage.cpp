@@ -93,7 +93,7 @@ namespace Zheet
 	{
 		Entry_->HandleMessage (this);
 
-		auto acc = qobject_cast<MSNAccount*> (Entry_->GetParentAccount ());
+		const auto acc = Entry_->GetParentAccount ();
 		acc->GetSBManager ()->SendMessage (this, Entry_);
 	}
 

@@ -60,8 +60,8 @@ namespace Xoox
 	public:
 		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
-		QObject* GetParentAccount () const ;
-		QObject* GetParentCLEntry () const;
+		IAccount* GetParentAccount () const ;
+		ICLEntry* GetParentCLEntry () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -71,7 +71,7 @@ namespace Xoox
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::Type,
+		IMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 
 		QString GetJID () const;

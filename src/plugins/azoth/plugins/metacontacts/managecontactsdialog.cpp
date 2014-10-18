@@ -55,9 +55,9 @@ namespace Metacontacts
 				<< tr ("Protocol");
 		Model_->setHorizontalHeaderLabels (labels);
 
-		Q_FOREACH (QObject *entryObj, objects)
+		for (const auto entryObj : objects)
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 			if (!entry)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -66,10 +66,8 @@ namespace Metacontacts
 				continue;
 			}
 
-			IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-			IProtocol *proto = account ?
-					qobject_cast<IProtocol*> (account->GetParentProtocol ()) :
-					0;
+			const auto account = entry->GetParentAccount ();
+			const auto proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 
 			if (!account || !proto)
 			{

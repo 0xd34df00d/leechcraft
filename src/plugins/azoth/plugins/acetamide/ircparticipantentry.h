@@ -54,7 +54,7 @@ namespace Acetamide
 	public:
 		IrcParticipantEntry (const QString&, IrcAccount* = 0);
 
-		QObject* GetParentAccount () const;
+		IAccount* GetParentAccount () const;
 
 		ICLEntry::Features GetEntryFeatures () const;
 		ICLEntry::EntryType GetEntryType () const;
@@ -74,7 +74,7 @@ namespace Acetamide
 
 		QString GetRealName () const;
 		void SetRealName (const QString& realName);
-		
+
 		QString GetServerID () const;
 
 		bool IsPrivateChat () const;

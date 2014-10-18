@@ -227,7 +227,7 @@ namespace Vader
 		return this;
 	}
 
-	QObject* MRIMBuddy::GetParentAccount () const
+	MRIMAccount* MRIMBuddy::GetParentAccount () const
 	{
 		return A_;
 	}
@@ -288,19 +288,18 @@ namespace Vader
 				QStringList ();
 	}
 
-	QObject* MRIMBuddy::CreateMessage (IMessage::Type,
+	IMessage* MRIMBuddy::CreateMessage (IMessage::Type,
 			const QString&, const QString& body)
 	{
-		MRIMMessage *msg = new MRIMMessage (IMessage::Direction::Out, IMessage::Type::ChatMessage, this);
+		const auto msg = new MRIMMessage (IMessage::Direction::Out, IMessage::Type::ChatMessage, this);
 		msg->SetBody (body);
 		return msg;
 	}
 
-	QList<QObject*> MRIMBuddy::GetAllMessages () const
+	QList<IMessage*> MRIMBuddy::GetAllMessages () const
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto m, AllMessages_)
-			result << m;
+		QList<IMessage*> result;
+		std::copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
 		return result;
 	}
 

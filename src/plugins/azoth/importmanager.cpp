@@ -143,15 +143,12 @@ namespace Azoth
 		if (AccID2OurID_.contains (impId))
 			return AccID2OurID_ [impId];
 
-		QObjectList accObjs;
-		Q_FOREACH (IAccount *ia, accs)
-			accObjs << ia->GetQObject ();
-		AccountHandlerChooserDialog dia (accObjs,
+		AccountHandlerChooserDialog dia (accs,
 				tr ("Select account to import history from %1 into:").arg (accName));
 		if (dia.exec () != QDialog::Accepted)
 			return 0;
 
-		acc = qobject_cast<IAccount*> (dia.GetSelectedAccount ());
+		acc = dia.GetSelectedAccount ();
 		AccID2OurID_ [impId] = acc;
 		return acc;
 	}

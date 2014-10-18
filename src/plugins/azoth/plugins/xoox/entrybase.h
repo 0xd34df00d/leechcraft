@@ -92,7 +92,7 @@ namespace Xoox
 	protected:
 		GlooxAccount *Account_;
 
-		QList<QObject*> AllMessages_;
+		QList<GlooxMessage*> AllMessages_;
 		QList<GlooxMessage*> UnreadMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
@@ -129,7 +129,7 @@ namespace Xoox
 
 		// ICLEntry
 		QObject* GetQObject ();
-		QList<QObject*> GetAllMessages () const;
+		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;

@@ -55,7 +55,7 @@ namespace Acetamide
 		ServerParticipantEntry (const QString&,
 				IrcServerHandler*, IrcAccount*);
 
-		QObject* GetParentCLEntry () const;
+		ICLEntry* GetParentCLEntry () const;
 
 		QString GetEntryID () const;
 		QString GetHumanReadableID () const;
@@ -63,11 +63,10 @@ namespace Acetamide
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 
-		QObject* CreateMessage (IMessage::Type,
+		IMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 
 		void SetMessageHistory (QObjectList messages);
-	private slots:
 	};
 
 	typedef std::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;

@@ -118,7 +118,7 @@ namespace Zheet
 		return this;
 	}
 
-	QObject* MSNBuddyEntry::GetParentAccount () const
+	MSNAccount* MSNBuddyEntry::GetParentAccount () const
 	{
 		return Account_;
 	}
@@ -174,18 +174,17 @@ namespace Zheet
 				QStringList (QString ());
 	}
 
-	QObject* MSNBuddyEntry::CreateMessage (IMessage::Type type, const QString&, const QString& body)
+	IMessage* MSNBuddyEntry::CreateMessage (IMessage::Type type, const QString&, const QString& body)
 	{
 		MSNMessage *msg = new MSNMessage (IMessage::Direction::Out, type, this);
 		msg->SetBody (body);
 		return msg;
 	}
 
-	QList<QObject*> MSNBuddyEntry::GetAllMessages () const
+	QList<IMessage*> MSNBuddyEntry::GetAllMessages () const
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto msg, AllMessages_)
-			result << msg;
+		QList<IMessage*> result;
+		std::copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
 		return result;
 	}
 

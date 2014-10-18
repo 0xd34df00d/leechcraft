@@ -455,7 +455,7 @@ namespace Azoth
 
 	void Core::HandleURL (const QUrl& url, ICLEntry *source)
 	{
-		QList<QObject*> accounts;
+		QList<IAccount*> accounts;
 		for (auto obj : ProtocolPlugins_)
 		{
 			auto protoPlug = qobject_cast<IProtocolPlugin*> (obj);
@@ -484,7 +484,8 @@ namespace Azoth
 							<< "doesn't implement IProtocol";
 					continue;
 				}
-				accounts << proto->GetRegisteredAccounts ();
+				for (const auto accObj : proto->GetRegisteredAccounts ())
+					accounts << qobject_cast<IAccount*> (accObj);
 			}
 		}
 
@@ -497,17 +498,20 @@ namespace Azoth
 			accounts << source->GetParentAccount ();
 		}
 
-		QObject *selected = 0;
+		IAccount *selected = nullptr;
 
 		if (accounts.size () > 1)
 		{
-			std::auto_ptr<AccountHandlerChooserDialog> dia (new AccountHandlerChooserDialog (accounts,
-						tr ("Please select account to handle URI %1")
-							.arg (url.toString ())));
-			if (dia->exec () != QDialog::Accepted)
+			AccountHandlerChooserDialog dia
+			{
+				accounts,
+				tr ("Please select account to handle URI %1")
+					.arg (url.toString ())
+			};
+			if (dia.exec () != QDialog::Accepted)
 				return;
 
-			selected = dia->GetSelectedAccount ();
+			selected = dia.GetSelectedAccount ();
 		}
 		else
 			selected = accounts.at (0);
@@ -515,8 +519,8 @@ namespace Azoth
 		if (!selected)
 			return;
 
-		QObject *selProto = qobject_cast<IAccount*> (selected)->GetParentProtocol ();
-		qobject_cast<IURIHandler*> (selProto)->HandleURI (url, selected);
+		const auto selProto = selected->GetParentProtocol ();
+		qobject_cast<IURIHandler*> (selProto)->HandleURI (url, selected->GetQObject ());
 	}
 
 	void Core::HandleURLGeneric (QUrl url, bool raise, ICLEntry *source)
@@ -1159,29 +1163,28 @@ namespace Azoth
 		return result;
 	}
 
-	QStandardItem* Core::GetAccountItem (const QObject *accountObj)
+	QStandardItem* Core::GetAccountItem (const IAccount *account)
 	{
 		for (int i = 0, size = CLModel_->rowCount ();
 				i < size; ++i)
-			if (CLModel_->item (i)->
-						data (CLRAccountObject).value<QObject*> () ==
-					accountObj)
+		{
+			const auto& var = CLModel_->item (i)->data (CLRAccountObject);
+			if (var.value<IAccount*> () == account)
 				return CLModel_->item (i);
+		}
 		return 0;
 	}
 
-	QStandardItem* Core::GetAccountItem (const QObject *accountObj,
-			QMap<const QObject*, QStandardItem*>& accountItemCache)
+	QStandardItem* Core::GetAccountItem (const IAccount *account,
+			QMap<const IAccount*, QStandardItem*>& accountItemCache)
 	{
-		if (accountItemCache.contains (accountObj))
-			return accountItemCache [accountObj];
-		else
-		{
-			QStandardItem *accountItem = GetAccountItem (accountObj);
-			if (accountItem)
-				accountItemCache [accountObj] = accountItem;
-			return accountItem;
-		}
+		if (accountItemCache.contains (account))
+			return accountItemCache [account];
+
+		const auto accountItem = GetAccountItem (account);
+		if (accountItem)
+			accountItemCache [account] = accountItem;
+		return accountItem;
 	}
 
 	void Core::HandleStatusChanged (const EntryStatus&, ICLEntry *entry, const QString& variant)
@@ -1358,8 +1361,8 @@ namespace Azoth
 	{
 		QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
 		clItem->setEditable (false);
-		QObject *accObj = clEntry->GetParentAccount ();
-		clItem->setData (QVariant::fromValue<QObject*> (accObj),
+		const auto acc = clEntry->GetParentAccount ();
+		clItem->setData (QVariant::fromValue<IAccount*> (acc),
 				CLRAccountObject);
 		clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetQObject ()),
 				CLREntryObject);
@@ -1542,7 +1545,7 @@ namespace Azoth
 #endif
 
 		QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
-		accItem->setData (QVariant::fromValue<QObject*> (accObject), CLRAccountObject);
+		accItem->setData (QVariant::fromValue<IAccount*> (account), CLRAccountObject);
 		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount), CLREntryType);
 		const auto accState = account->GetState ().State_;
 		ItemIconManager_->SetIcon (accItem,
@@ -1655,8 +1658,8 @@ namespace Azoth
 		for (int i = 0; i < CLModel_->rowCount (); ++i)
 		{
 			QStandardItem *item = CLModel_->item (i);
-			QObject *obj = item->data (CLRAccountObject).value<QObject*> ();
-			if (obj == account)
+			const auto obj = item->data (CLRAccountObject).value<IAccount*> ();
+			if (obj == accFace)
 			{
 				ItemIconManager_->Cancel (item);
 				{
@@ -1668,7 +1671,7 @@ namespace Azoth
 		}
 
 		for (auto entry : Entry2Items_.keys ())
-			if (entry->GetParentAccount () == account)
+			if (entry->GetParentAccount () == accFace)
 				Entry2Items_.remove (entry);
 
 		NotificationsManager_->RemoveAccount (account);
@@ -1683,10 +1686,10 @@ namespace Azoth
 	{
 		ModelUpdateSafeguard outerGuard (CLModel_);
 
-		QMap<const QObject*, QStandardItem*> accountItemCache;
-		Q_FOREACH (QObject *item, items)
+		QMap<const IAccount*, QStandardItem*> accountItemCache;
+		for (const auto item : items)
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (item);
+			const auto entry = qobject_cast<ICLEntry*> (item);
 			if (!entry)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -1700,24 +1703,14 @@ namespace Azoth
 			if (Entry2Items_.contains (entry))
 				continue;
 
-			QObject *accountObj = entry->GetParentAccount ();
-			if (!accountObj)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "account object of"
-						<< item
-						<< "is null";
-				continue;
-			}
-
-			QStandardItem *accountItem = GetAccountItem (accountObj, accountItemCache);
-
+			const auto account = entry->GetParentAccount ();
+			const auto accountItem = GetAccountItem (account, accountItemCache);
 			if (!accountItem)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "could not find account item for"
 						<< item
-						<< accountObj;
+						<< account->GetAccountID ();
 				continue;
 			}
 
@@ -1817,7 +1810,7 @@ namespace Azoth
 		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
 		{
 			QStandardItem *item = CLModel_->item (i);
-			if (item->data (CLRAccountObject).value<QObject*> () != sender ())
+			if (item->data (CLRAccountObject).value<IAccount*> () != acc)
 				continue;
 
 			ItemIconManager_->SetIcon (item,
@@ -1833,10 +1826,19 @@ namespace Azoth
 
 	void Core::handleAccountRenamed (const QString& name)
 	{
+		const auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not an IAccount"
+					<< sender ();
+			return;
+		}
+
 		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
 		{
 			QStandardItem *item = CLModel_->item (i);
-			if (item->data (CLRAccountObject).value<QObject*> () != sender ())
+			if (item->data (CLRAccountObject).value<IAccount*> () != acc)
 				continue;
 
 			item->setText (name);
@@ -1939,7 +1941,7 @@ namespace Azoth
 		}
 
 		QObject *entryObj = entry->GetQObject ();
-		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		const auto mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ());
 		if (!mucPerms)
 			return;
 

@@ -56,12 +56,12 @@ namespace Xoox
 	{
 	}
 
-	QObject* RoomParticipantEntry::GetParentAccount () const
+	IAccount* RoomParticipantEntry::GetParentAccount () const
 	{
 		return Account_;
 	}
 
-	QObject* RoomParticipantEntry::GetParentCLEntry () const
+	ICLEntry* RoomParticipantEntry::GetParentCLEntry () const
 	{
 		return RoomHandler_->GetCLEntry ();
 	}
@@ -111,10 +111,10 @@ namespace Xoox
 		return { {} };
 	}
 
-	QObject* RoomParticipantEntry::CreateMessage (IMessage::Type type,
+	IMessage* RoomParticipantEntry::CreateMessage (IMessage::Type type,
 			const QString&, const QString& body)
 	{
-		GlooxMessage *msg = RoomHandler_->CreateMessage (type, Nick_, body);
+		const auto msg = RoomHandler_->CreateMessage (type, Nick_, body);
 		AllMessages_ << msg;
 		return msg;
 	}
@@ -145,12 +145,7 @@ namespace Xoox
 			std::inplace_merge (ourMessages.begin (),
 					ourMessages.begin () + size,
 					ourMessages.end (),
-					[] (T *msgObj1, T *msgObj2)
-					{
-						const auto msg1 = qobject_cast<IMessage*> (msgObj1);
-						const auto msg2 = qobject_cast<IMessage*> (msgObj2);
-						return msg1->GetDateTime () < msg2->GetDateTime ();
-					});
+					[] (T *msg1, T *msg2) { return msg1->GetDateTime () < msg2->GetDateTime (); });
 		}
 	}
 
@@ -160,7 +155,7 @@ namespace Xoox
 			return;
 
 		for (auto msg : other->AllMessages_)
-			qobject_cast<GlooxMessage*> (msg)->SetVariant (Nick_);
+			msg->SetVariant (Nick_);
 
 		MergeMessages (AllMessages_, other->AllMessages_);
 		other->AllMessages_.clear ();

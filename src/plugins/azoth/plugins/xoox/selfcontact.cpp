@@ -33,6 +33,7 @@
 #include "clientconnection.h"
 #include "vcarddialog.h"
 #include "accountsettingsholder.h"
+#include "glooxmessage.h"
 
 namespace LeechCraft
 {
@@ -52,7 +53,7 @@ namespace Xoox
 				SLOT (handleSelfVCardUpdated ()));
 	}
 
-	QObject* SelfContact::GetParentAccount () const
+	IAccount* SelfContact::GetParentAccount () const
 	{
 		return Account_;
 	}
@@ -116,10 +117,10 @@ namespace Xoox
 		return EntryBase::GetStatus (resource);
 	}
 
-	QObject* SelfContact::CreateMessage (IMessage::Type type,
+	IMessage* SelfContact::CreateMessage (IMessage::Type type,
 			const QString& variant, const QString& text)
 	{
-		QObject *msg = Account_->CreateMessage (type, variant, text, GetJID ());
+		const auto msg = Account_->CreateMessage (type, variant, text, GetJID ());
 		AllMessages_ << msg;
 		return msg;
 	}

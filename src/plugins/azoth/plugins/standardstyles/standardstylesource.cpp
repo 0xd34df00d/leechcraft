@@ -283,10 +283,10 @@ namespace StandardStyles
 				statusIconName = "notification_chat_delivery_ok";
 
 			const auto entry = other ?
-					qobject_cast<IMUCEntry*> (other->GetParentCLEntry ()) :
+					qobject_cast<IMUCEntry*> (other->GetParentCLEntryObject ()) :
 					nullptr;
 			const auto acc = other ?
-					qobject_cast<IAccount*> (other->GetParentAccount ()) :
+					other->GetParentAccount () :
 					nullptr;
 			const QString& nick = entry ?
 					entry->GetNick () :

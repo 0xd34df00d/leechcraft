@@ -91,14 +91,12 @@ namespace Autopaste
 		auto type = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 				IMessage::Type::MUCMessage :
 				IMessage::Type::ChatMessage;
-		QObject *msgObj = entry->CreateMessage (type, QString (), pasteUrl);
-		auto msg = qobject_cast<IMessage*> (msgObj);
+		const auto msg = entry->CreateMessage (type, QString (), pasteUrl);
 		if (!msg)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to cast"
-					<< msgObj
-					<< "to IMessage";
+					<< "unable to create message for"
+					<< entry->GetEntryID ();
 			return;
 		}
 		msg->Send ();

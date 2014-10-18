@@ -132,30 +132,30 @@ namespace Azoth
 						<< tr ("Account")
 						<< tr ("Groups"));
 
-		IAccount *acc = qobject_cast<IAccount*> (Entry_->GetParentAccount ());
+		const auto acc = Entry_->GetParentAccount ();
 
 		auto entries = GetEntries (acc);
 		if (Ui_.AllAccountsBox_->checkState () == Qt::Checked)
 		{
-			IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
-			Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
+			const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+			for (const auto accObj : proto->GetRegisteredAccounts ())
 			{
-				IAccount *otherAcc = qobject_cast<IAccount*> (accObj);
+				const auto otherAcc = qobject_cast<IAccount*> (accObj);
 				if (!otherAcc || otherAcc == acc)
 					continue;
 
-				auto others = GetEntries (otherAcc);
-				Q_FOREACH (const QString& key, others.keys ())
+				const auto others = GetEntries (otherAcc);
+				for (const auto& key : others.keys ())
 					entries [key] << others [key];
 			}
 		}
 
-		Q_FOREACH (const QString& group, entries.keys ())
+		for (const QString& group : entries.keys ())
 		{
 			const QString& title = group.isEmpty () ? tr ("General") : group;
 			QStandardItem *groupItem = new QStandardItem (title);
 
-			Q_FOREACH (ICLEntry *entry, entries [group])
+			for (ICLEntry *entry : entries [group])
 			{
 				QList<QStandardItem*> row;
 
@@ -169,9 +169,7 @@ namespace Azoth
 				row << itemName;
 
 				row << new QStandardItem (entry->GetHumanReadableID ());
-				const QString& accName = qobject_cast<IAccount*> (entry->
-							GetParentAccount ())->GetAccountName ();
-				row << new QStandardItem (accName);
+				row << new QStandardItem (entry->GetParentAccount ()->GetAccountName ());
 				row << new QStandardItem (entry->Groups ().join ("; "));
 
 				groupItem->appendRow (row);

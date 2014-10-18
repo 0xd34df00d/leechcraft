@@ -179,14 +179,7 @@ namespace ChatHistory
 		if (DisabledIDs_.contains (entry->GetEntryID ()))
 			return;
 
-		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "message's account doesn't implement IAccount"
-					<< entry->GetParentAccount ();
-			return;
-		}
+		const auto acc = entry->GetParentAccount ();
 
 		QVariantMap data;
 		data ["EntryID"] = entry->GetEntryID ();
@@ -203,7 +196,7 @@ namespace ChatHistory
 
 		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
-			ICLEntry *parent = qobject_cast<ICLEntry*> (entry->GetParentCLEntry ());
+			const auto parent = entry->GetParentCLEntry ();
 			data ["VisibleName"] = parent->GetEntryName () + "/" + entry->GetEntryName ();
 		}
 		else

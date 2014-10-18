@@ -304,13 +304,13 @@ namespace Azoth
 
 		/** Returns the QStandardItem for the given account.
 		 */
-		QStandardItem* GetAccountItem (const QObject *accountObj);
+		QStandardItem* GetAccountItem (const IAccount *accountObj);
 
 		/** Returns the QStandardItem for the given account and adds it
 		 * into accountItemCache.
 		 */
-		QStandardItem* GetAccountItem (const QObject *accountObj,
-				QMap<const QObject*, QStandardItem*>& accountItemCache);
+		QStandardItem* GetAccountItem (const IAccount *account,
+				QMap<const IAccount*, QStandardItem*>& accountItemCache);
 
 		/** Handles the event of status changes in a contact list entry.
 		 */

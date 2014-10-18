@@ -398,7 +398,7 @@ namespace Azoth
 			stream << QByteArray ("muctab2")
 					<< entry->GetEntryID ()
 					<< GetEntry<IMUCEntry> ()->GetIdentifyingData ()
-					<< qobject_cast<IAccount*> (entry->GetParentAccount ())->GetAccountID ();
+					<< entry->GetParentAccount ()->GetAccountID ();
 		else
 			stream << QByteArray ("chattab2")
 					<< entry->GetEntryID ()
@@ -684,20 +684,15 @@ namespace Azoth
 		proxy->FillValue ("variant", variant);
 		proxy->FillValue ("text", text);
 
-		QObject *msgObj = e->CreateMessage (type, variant, text);
-
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
+		const auto msg = e->CreateMessage (type, variant, text);
 		if (!msg)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to cast message from"
-					<< e->GetEntryID ()
-					<< "to IMessage"
-					<< msgObj;
+					<< "unable to create message to"
+					<< e->GetEntryID ();
 			return;
 		}
-
-		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
+		const auto richMsg = qobject_cast<IRichTextMessage*> (msg->GetQObject ());
 		if (richMsg &&
 				!richText.isEmpty () &&
 				ToggleRichText_->isChecked ())
@@ -771,19 +766,7 @@ namespace Azoth
 			return;
 		}
 
-		QList<IMessage*> messages;
-		for (const auto msgObj : e->GetAllMessages ())
-		{
-			const auto msg = qobject_cast<IMessage*> (msgObj);
-			if (!msg)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast message to IMessage"
-						<< msgObj;
-				continue;
-			}
-			messages << msg;
-		}
+		auto messages = e->GetAllMessages ();
 
 		const auto& dummyMsgs = DummyMsgManager::Instance ().GetIMessages (e->GetQObject ());
 		if (!dummyMsgs.isEmpty ())
@@ -837,8 +820,8 @@ namespace Azoth
 #ifdef ENABLE_CRYPT
 	void ChatTab::handleEnableEncryption ()
 	{
-		QObject *accObj = GetEntry<ICLEntry> ()->GetParentAccount ();
-		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (accObj);
+		const auto accObj = GetEntry<ICLEntry> ()->GetParentAccount ()->GetQObject ();
+		const auto pgp = qobject_cast<ISupportPGP*> (accObj);
 		if (!pgp)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1211,9 +1194,7 @@ namespace Azoth
 		void OpenChatWithText (QUrl newUrl, const QString& id, ICLEntry *own)
 		{
 			Util::UrlOperator { newUrl } -= "hrid";
-
-			IAccount *account = qobject_cast<IAccount*> (own->GetParentAccount ());
-			for (QObject *entryObj : account->GetCLEntries ())
+			for (QObject *entryObj : own->GetParentAccount ()->GetCLEntries ())
 			{
 				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 				if (!entry || entry->GetHumanReadableID () != id)
@@ -1389,29 +1370,19 @@ namespace Azoth
 		if (entryObj != GetEntry<QObject> ())
 			return;
 
-		ICLEntry *entry = GetEntry<ICLEntry> ();
-		QList<QObject*> rMsgs = entry->GetAllMessages ();
+		const auto entry = GetEntry<ICLEntry> ();
+		auto rMsgs = entry->GetAllMessages ();
 		std::reverse (rMsgs.begin (), rMsgs.end ());
 
-		Q_FOREACH (QObject *msgObj, messages)
+		for (const auto msgObj : messages)
 		{
-			IMessage *msg = qobject_cast<IMessage*> (msgObj);
-			if (!msg)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< msgObj
-						<< "doesn't implement IMessage";
-				continue;
-			}
+			const auto msg = qobject_cast<IMessage*> (msgObj);
+			const auto& dt = msg->GetDateTime ();
 
-			const QDateTime& dt = msg->GetDateTime ();
-
+			// TODO use std::any_of
 			if (std::find_if (rMsgs.begin (), rMsgs.end (),
-					[msg] (QObject *msgObj) -> bool
+					[msg] (IMessage *tMsg)
 					{
-						IMessage *tMsg = qobject_cast<IMessage*> (msgObj);
-						if (!tMsg)
-							return false;
 						return tMsg->GetDirection () == msg->GetDirection () &&
 								tMsg->GetBody () == msg->GetBody () &&
 								std::abs (tMsg->GetDateTime ().secsTo (msg->GetDateTime ())) < 5;
@@ -1494,8 +1465,7 @@ namespace Azoth
 		if (!entry)
 			return;
 
-		auto accObj = entry->GetParentAccount ();
-		if (qobject_cast<IAccount*> (accObj) != acc)
+		if (entry->GetParentAccount () != acc)
 			return;
 
 		PrepareTheme ();
@@ -1642,9 +1612,7 @@ namespace Azoth
 			infoText += " (" + e->GetHumanReadableID () + ")";
 		Ui_.EntryInfo_->setText (infoText);
 
-		const QString& accName =
-				qobject_cast<IAccount*> (e->GetParentAccount ())->
-						GetAccountName ();
+		const auto& accName = e->GetParentAccount ()->GetAccountName ();
 		Ui_.AccountName_->setText (accName);
 
 		if (GetEntry<IUpdatableChatEntry> ())
@@ -1708,8 +1676,7 @@ namespace Azoth
 	void ChatTab::InitExtraActions ()
 	{
 		ICLEntry *e = GetEntry<ICLEntry> ();
-		QObject *accObj = e->GetParentAccount ();
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		const auto acc = e->GetParentAccount ();
 		if (qobject_cast<ITransferManager*> (acc->GetTransferManager ()))
 		{
 			connect (acc->GetTransferManager (),
@@ -1724,6 +1691,7 @@ namespace Azoth
 		}
 
 #ifdef ENABLE_MEDIACALLS
+		const auto accObj = acc->GetQObject ();
 		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
 				e->GetEntryType () == ICLEntry::EntryType::Chat)
 		{

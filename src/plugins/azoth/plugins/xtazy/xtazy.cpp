@@ -160,8 +160,7 @@ namespace Xtazy
 		else
 		{
 			const auto& eId = entry->GetEntryID ();
-			const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-			const auto& accId = acc->GetAccountID ();
+			const auto& accId = entry->GetParentAccount ()->GetAccountID ();
 			new Util::DelayedExecutor
 			{
 				[this, eId, accId, songStr] { AzothProxy_->OpenChat (eId, accId, songStr); },
@@ -269,9 +268,7 @@ namespace Xtazy
 			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 					IMessage::Type::MUCMessage :
 					IMessage::Type::ChatMessage;
-			auto msgObj = entry->CreateMessage (msgType, notifee.second, encoded);
-			auto msg = qobject_cast<IMessage*> (msgObj);
-			msg->Send ();
+			entry->CreateMessage (msgType, notifee.second, encoded)->Send ();
 		}
 	}
 }

@@ -175,14 +175,14 @@ namespace Azoth
 		MW_ = mw;
 	}
 
-	QList<QAction*> AccountActionsManager::GetMenuActions (QMenu *menu, QObject *accObj)
+	QList<QAction*> AccountActionsManager::GetMenuActions (QMenu *menu, IAccount *account)
 	{
 		QList<QAction*> actions;
 
-		IAccount *account = qobject_cast<IAccount*> (accObj);
+		const auto accObj = account->GetQObject ();
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 
-		actions << AddMenuChangeStatus (menu, accObj);
+		actions << AddMenuChangeStatus (menu);
 
 		AccountJoinConference_->setEnabled (proto->GetFeatures () & IProtocol::PFMUCsJoinable);
 		actions << AccountJoinConference_;
@@ -273,7 +273,7 @@ namespace Azoth
 				.property (propName.toLatin1 ()).toString ();
 	}
 
-	QList<QAction*> AccountActionsManager::AddMenuChangeStatus (QMenu *menu, QObject*)
+	QList<QAction*> AccountActionsManager::AddMenuChangeStatus (QMenu *menu)
 	{
 		StatusMenuMgr_->UpdateCustomStatuses (MenuChangeStatus_);
 

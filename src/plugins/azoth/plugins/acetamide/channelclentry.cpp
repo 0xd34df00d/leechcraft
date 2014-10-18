@@ -123,7 +123,7 @@ namespace Acetamide
 		return this;
 	}
 
-	QObject* ChannelCLEntry::GetParentAccount () const
+	IAccount* ChannelCLEntry::GetParentAccount () const
 	{
 		return ICH_->GetChannelsManager ()->GetAccount ();
 	}
@@ -176,16 +176,16 @@ namespace Acetamide
 		return result;
 	}
 
-	QObject* ChannelCLEntry::CreateMessage (IMessage::Type,
+	IMessage* ChannelCLEntry::CreateMessage (IMessage::Type,
 			const QString& variant, const QString& body)
 	{
 		if (variant == "")
 			return new ChannelPublicMessage (body, this);
 		else
-			return 0;
+			return nullptr;
 	}
 
-	QList<QObject*> ChannelCLEntry::GetAllMessages () const
+	QList<IMessage*> ChannelCLEntry::GetAllMessages () const
 	{
 		return AllMessages_;
 	}

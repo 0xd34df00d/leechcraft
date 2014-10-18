@@ -57,8 +57,7 @@ namespace Xoox
 		Ui_.setupUi (this);
 		Ui_.PermsTree_->setModel (PermsModel_);
 
-		GlooxAccount *acc = qobject_cast<GlooxAccount*> (room->GetParentAccount ());
-		QXmppMucManager *mgr = acc->GetClientConnection ()->GetMUCManager ();
+		const auto mgr = room->GetParentAccount ()->GetClientConnection ()->GetMUCManager ();
 
 		RoomHandler_ = mgr->addRoom (JID_);
 		connect (RoomHandler_,

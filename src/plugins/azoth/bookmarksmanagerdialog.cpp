@@ -129,7 +129,7 @@ namespace Azoth
 			return;
 		}
 
-		const bool found = FocusOn (qobject_cast<IAccount*> (entry->GetParentAccount ()));
+		const bool found = FocusOn (entry->GetParentAccount ());
 
 		if (!found)
 		{

@@ -293,7 +293,7 @@ namespace Metacontacts
 
 			if (readd)
 			{
-				QObject *accObj = entry->GetParentAccount ();
+				const auto accObj = entry->GetParentAccount ()->GetQObject ();
 				QMetaObject::invokeMethod (accObj,
 						"gotCLItems",
 						Q_ARG (QList<QObject*>, { entryObj }));

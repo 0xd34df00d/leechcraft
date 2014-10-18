@@ -87,9 +87,9 @@ namespace Azoth
 
 	void GroupSendDialog::on_SendButton__released ()
 	{
-		const QString& msg = Ui_.Message_->toPlainText ();
+		const auto& msg = Ui_.Message_->toPlainText ();
 
-		Q_FOREACH (QStandardItem *item, Entry2Item_.values ())
+		for (const auto item : Entry2Item_.values ())
 		{
 			if (item->checkState () != Qt::Checked)
 				continue;
@@ -97,13 +97,7 @@ namespace Azoth
 			QObject *entryObj = item->data ().value<QObject*> ();
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-			QObject *msgObj = entry->CreateMessage (IMessage::Type::ChatMessage,
-					QString (), msg);
-			IMessage *msg = qobject_cast<IMessage*> (msgObj);
-			if (!msg)
-				continue;
-
-			msg->Send ();
+			entry->CreateMessage (IMessage::Type::ChatMessage, {}, msg)->Send ();
 			Core::Instance ().IncreaseUnreadCount (entry, -1);
 		}
 

@@ -174,22 +174,13 @@ namespace Azoth
 
 		void Remove (ICLEntry *entry)
 		{
-			auto account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-			if (!account)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< entry->GetQObject ()
-						<< "doesn't return proper IAccount:"
-						<< entry->GetParentAccount ();
-				return;
-			}
-
-			account->RemoveEntry (entry->GetQObject ());
+			entry->GetParentAccount ()->RemoveEntry (entry->GetQObject ());
 		}
 
 		QString GetMUCRealID (ICLEntry *entry)
 		{
-			const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+			const auto parentObj = entry->GetParentCLEntryObject ();
+			const auto mucEntry = qobject_cast<IMUCEntry*> (parentObj);
 			return mucEntry ?
 					mucEntry->GetRealID (entry->GetQObject ()) :
 					QString ();
@@ -241,9 +232,7 @@ namespace Azoth
 		{
 			const auto& nick = entry->GetEntryName ();
 
-			IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-
-			AddContactDialog dia (account);
+			AddContactDialog dia { entry->GetParentAccount () };
 			dia.SetContactID (GetMUCRealID (entry));
 			dia.SetNick (nick);
 			if (dia.exec () != QDialog::Accepted)
@@ -264,8 +253,8 @@ namespace Azoth
 
 		void ViewServerHistory (ICLEntry *entry, ActionsManager *mgr)
 		{
-			const auto accObj = entry->GetParentAccount ();
-			const auto ihsh = qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ());
+			const auto accObj = entry->GetParentAccount ()->GetQObject ();
+			const auto ihsh = qobject_cast<IHaveServerHistory*> (accObj);
 			if (!ihsh || !ihsh->HasFeature (ServerHistoryFeature::AccountSupportsHistory))
 				return;
 
@@ -280,8 +269,8 @@ namespace Azoth
 #ifdef ENABLE_CRYPT
 		void ManagePGP (ICLEntry *entry)
 		{
-			QObject *accObj = entry->GetParentAccount ();
-			IAccount *acc = qobject_cast<IAccount*> (accObj);
+			const auto acc = entry->GetParentAccount ();
+			const auto accObj = acc->GetQObject ();
 			ISupportPGP *pgp = qobject_cast<ISupportPGP*> (accObj);
 
 			if (!pgp)
@@ -323,7 +312,7 @@ namespace Azoth
 
 		void ShareRIEX (ICLEntry *entry)
 		{
-			auto riex = qobject_cast<ISupportRIEX*> (entry->GetParentAccount ());
+			auto riex = qobject_cast<ISupportRIEX*> (entry->GetParentAccount ()->GetQObject ());
 			if (!riex)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -339,9 +328,9 @@ namespace Azoth
 			const bool shareGroups = dia.ShouldSuggestGroups ();
 
 			QList<RIEXItem> items;
-			for (ICLEntry *toShare : dia.GetSelectedEntries ())
+			for (const auto toShare : dia.GetSelectedEntries ())
 			{
-				RIEXItem item =
+				RIEXItem item
 				{
 					RIEXItem::AAdd,
 					toShare->GetHumanReadableID (),
@@ -375,7 +364,7 @@ namespace Azoth
 		{
 			QList<QObject*> mucObjs;
 
-			const auto account = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			const auto account = entry->GetParentAccount ();
 			for (const auto entryObj : account->GetCLEntries ())
 				if (qobject_cast<ICLEntry*> (entryObj)->GetEntryType () == ICLEntry::EntryType::MUC)
 					mucObjs << entryObj;
@@ -405,7 +394,7 @@ namespace Azoth
 		{
 			auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
 
-			MUCInviteDialog dia (qobject_cast<IAccount*> (entry->GetParentAccount ()));
+			MUCInviteDialog dia { entry->GetParentAccount () };
 			if (dia.exec () != QDialog::Accepted)
 				return;
 
@@ -464,8 +453,8 @@ namespace Azoth
 				return;
 			}
 
-			auto accObj = entry->GetParentAccount ();
-			auto acc = qobject_cast<IAccount*> (accObj);
+			const auto acc = entry->GetParentAccount ();
+			const auto accObj = acc->GetQObject ();
 			auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
 			if (!proto)
 			{
@@ -535,17 +524,18 @@ namespace Azoth
 				return;
 			}
 
-			auto muc = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
-			auto mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+			const auto parentObj = entry->GetParentCLEntryObject ();
+			auto muc = qobject_cast<IMUCEntry*> (parentObj);
+			auto mucPerms = qobject_cast<IMUCPerms*> (parentObj);
 			if (!muc || !mucPerms)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< entry->GetParentCLEntry ()
+						<< parentObj
 						<< "doesn't implement IMUCEntry or IMUCPerms";
 				return;
 			}
 
-			const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			const auto acc = entry->GetParentAccount ();
 			const auto& realID = muc->GetRealID (entry->GetQObject ());
 
 			mucPerms->SetPerm (entry->GetQObject (), permClass, perm, text);
@@ -601,7 +591,7 @@ namespace Azoth
 		{
 			const auto& entry = entries.front ();
 
-			if (!qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()))
+			if (!qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ()))
 				return;
 
 			const auto& permClass = action->property ("Azoth/TargetPermClass").toByteArray ();
@@ -722,7 +712,7 @@ namespace Azoth
 
 		setter (BeforeRolesNames);
 
-		if (auto perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()))
+		if (auto perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ()))
 			for (const auto& permClass : perms->GetPossiblePerms ().keys ())
 				result << id2action.value (permClass);
 
@@ -847,11 +837,12 @@ namespace Azoth
 
 		setter (BeforeRolesNames);
 
-		if (const auto perms = qobject_cast<IMUCPerms*> (entries.front ()->GetParentCLEntry ()))
+		if (const auto perms = qobject_cast<IMUCPerms*> (entries.front ()->GetParentCLEntryObject ()))
 		{
+			// TODO use any_of
 			bool allSame = true;
 			for (const auto entry : entries)
-				if (perms != qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()))
+				if (perms != qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ()))
 				{
 					allSame = false;
 					break;
@@ -945,8 +936,7 @@ namespace Azoth
 
 		auto sm = Core::Instance ().GetShortcutManager ();
 
-		QObject *accObj = entry->GetParentAccount ();
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		const auto acc = entry->GetParentAccount ();
 
 		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetQObject ());
 
@@ -1063,7 +1053,8 @@ namespace Azoth
 					this, SLOT (handleActionNotifyBecomesOnline ()));
 		}
 
-		if (qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ()))
+		const auto accObj = entry->GetParentAccount ()->GetQObject ();
+		if (qobject_cast<IHaveServerHistory*> (accObj))
 		{
 			auto openHistory = new QAction (tr ("Open server history..."), entry->GetQObject ());
 			openHistory->setToolTip (tr ("View server history log with this contact"));
@@ -1073,7 +1064,7 @@ namespace Azoth
 		}
 
 #ifdef ENABLE_CRYPT
-		if (qobject_cast<ISupportPGP*> (entry->GetParentAccount ()))
+		if (qobject_cast<ISupportPGP*> (accObj))
 		{
 			QAction *manageGPG = new QAction (tr ("Manage PGP keys..."), entry->GetQObject ());
 			manageGPG->setProperty ("ActionIcon", "document-encrypt");
@@ -1082,7 +1073,7 @@ namespace Azoth
 		}
 #endif
 
-		if (qobject_cast<ISupportRIEX*> (entry->GetParentAccount ()))
+		if (qobject_cast<ISupportRIEX*> (accObj))
 		{
 			QAction *shareRIEX = new QAction (tr ("Share contacts..."), entry->GetQObject ());
 			Entry2Actions_ [entry] ["shareRIEX"] = shareRIEX;
@@ -1104,7 +1095,7 @@ namespace Azoth
 					<< CLEAAChatCtxtMenu;
 		}
 
-		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		const auto perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ());
 		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
 			if (perms)
@@ -1307,9 +1298,8 @@ namespace Azoth
 		if (!entry)
 			return;
 
-		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetQObject ());
-
-		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetQObject ());
+		const auto account = entry->GetParentAccount ();
 		const bool isOnline = account->GetState ().State_ != SOffline;
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
@@ -1330,7 +1320,7 @@ namespace Azoth
 
 		Entry2Actions_ [entry] ["rename"]->setEnabled (entry->GetEntryFeatures () & ICLEntry::FSupportsRenames);
 
-		if (const auto ihsh = qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ()))
+		if (const auto ihsh = qobject_cast<IHaveServerHistory*> (entry->GetParentAccount ()->GetQObject ()))
 		{
 			const bool supports = ihsh->HasFeature (ServerHistoryFeature::AccountSupportsHistory);
 			Entry2Actions_ [entry] ["view_server_history"]->setEnabled (supports);
@@ -1354,7 +1344,7 @@ namespace Azoth
 			Entry2Actions_ [entry] ["invite"]->
 					setEnabled (thisMuc->GetMUCFeatures () & IMUCEntry::MUCFCanInvite);
 
-		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		const auto mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ());
 		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
 			if (mucPerms)

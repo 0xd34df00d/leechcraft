@@ -63,10 +63,10 @@ namespace Murm
 		void Store (VkMessage*);
 
 		QObject* GetQObject ();
-		QObject* GetParentAccount () const;
+		IAccount* GetParentAccount () const;
 
-		QObject* CreateMessage (IMessage::Type type, const QString& variant, const QString& body);
-		QList<QObject*> GetAllMessages () const;
+		IMessage* CreateMessage (IMessage::Type type, const QString& variant, const QString& body);
+		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime& before);
 	protected:
 		void HandleAttaches (VkMessage*, const MessageInfo&);

@@ -142,13 +142,13 @@ namespace RIEX
 				return;
 			}
 
-			ICLEntry *entry = entries [item.ID_];
+			const auto entry = entries [item.ID_];
 			if (item.Groups_.isEmpty ())
 				acc->RemoveEntry (entry->GetQObject ());
 			else
 			{
-				QStringList newGroups = entry->Groups ();
-				Q_FOREACH (const QString& group, item.Groups_)
+				auto newGroups = entry->Groups ();
+				for (const auto& group : item.Groups_)
 					newGroups.removeAll (group);
 
 				entry->SetGroups (newGroups);
@@ -161,7 +161,7 @@ namespace RIEX
 		if (items.isEmpty () || !from)
 			return;
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (from);
+		const auto entry = qobject_cast<ICLEntry*> (from);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -170,11 +170,11 @@ namespace RIEX
 			return;
 		}
 
-		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto acc = entry->GetParentAccount ();
 		QHash<QString, ICLEntry*> clEntries;
-		Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+		for (const auto entryObj : acc->GetCLEntries ())
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 			if (!entry ||
 					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 				continue;
@@ -190,7 +190,7 @@ namespace RIEX
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		Q_FOREACH (const RIEXItem& item, dia.GetSelectedItems ())
+		for (const auto& item : dia.GetSelectedItems ())
 		{
 			switch (item.Action_)
 			{

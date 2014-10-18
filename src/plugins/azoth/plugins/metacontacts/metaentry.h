@@ -61,7 +61,7 @@ namespace Metacontacts
 		QList<QObject*> AvailableRealEntries_;
 		QMap<QString, QPair<QObject*, QString>> Variant2RealVariant_;
 
-		QList<QObject*> Messages_;
+		QList<IMessage*> Messages_;
 
 		QAction *ActionMCSep_;
 		QAction *ActionManageContacts_;
@@ -77,7 +77,7 @@ namespace Metacontacts
 
 		// ICLEntry
 		QObject* GetQObject ();
-		QObject* GetParentAccount () const;
+		IAccount* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -87,8 +87,8 @@ namespace Metacontacts
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::Type, const QString&, const QString&);
-		QList<QObject*> GetAllMessages () const;
+		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&);
+		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;

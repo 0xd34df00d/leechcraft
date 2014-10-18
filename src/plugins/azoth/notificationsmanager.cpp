@@ -401,12 +401,12 @@ namespace Azoth
 			return;
 		}
 
-		const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto acc = entry->GetParentAccount ();
 		if (!LastAccountStatusChange_.contains (acc) ||
 				LastAccountStatusChange_ [acc].secsTo (QDateTime::currentDateTime ()) < 5)
 			return;
 
-		const auto extAcc = qobject_cast<IExtSelfInfoAccount*> (entry->GetParentAccount ());
+		const auto extAcc = qobject_cast<IExtSelfInfoAccount*> (entry->GetParentAccount ()->GetQObject ());
 		if (extAcc &&
 				extAcc->GetSelfContact () == entry->GetQObject ())
 			return;
@@ -637,13 +637,13 @@ namespace Azoth
 	void NotificationsManager::handleLocationChanged (const QString& variant)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (sender ());
-		const auto accObj = entry->GetParentAccount ();
-		const auto isg = qobject_cast<ISupportGeolocation*> (accObj);
+		const auto acc = entry->GetParentAccount ();
+		const auto isg = qobject_cast<ISupportGeolocation*> (acc->GetQObject ());
 		if (!isg)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "account"
-					<< accObj
+					<< acc->GetQObject ()
 					<< "does not implement ISupportGeolocation";
 			return;
 		}

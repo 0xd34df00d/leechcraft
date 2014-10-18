@@ -348,9 +348,9 @@ namespace OTRoid
 				!Entry2Action_ [entryObj].ToggleOtr_->isChecked ())
 			return;
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto acc = entry->GetParentAccount ();
+		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
 		const auto err = otrl_message_sending (UserState_,
@@ -427,14 +427,14 @@ namespace OTRoid
 			msg->GetDirection () != IMessage::Direction::In)
 			return;
 
-		QObject *entryObj = msg->ParentCLEntry ();
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entryObj = msg->ParentCLEntry ();
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry ||
 				entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			return;
 
-		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		const auto acc = entry->GetParentAccount ();
+		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
 		OtrlTLV *tlvs = 0;
@@ -569,16 +569,11 @@ namespace OTRoid
 	{
 		if (dir == IMessage::Direction::Out)
 		{
-			QObject *msgObj = entry->CreateMessage (type, {}, body);
+			const auto msg = entry->CreateMessage (type, {}, body);
 			if (hidden)
-				msgObj->setProperty ("Azoth/HiddenMessage", true);
-
-			IMessage *msg = qobject_cast<IMessage*> (msgObj);
-			if (!msg)
-				return;
+				msg->GetQObject ()->setProperty ("Azoth/HiddenMessage", true);
 
 			msg->ToggleOTRMessage (true);
-
 			msg->Send ();
 		}
 		else
@@ -882,7 +877,7 @@ namespace OTRoid
 
 	void OtrHandler::SetOtrState (ICLEntry *entry, bool enable)
 	{
-		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto acc = entry->GetParentAccount ();
 		const auto& accId = acc->GetAccountID ();
 
 		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
@@ -949,7 +944,7 @@ namespace OTRoid
 	void OtrHandler::startAuth (ICLEntry *entry, SmpMethod method,
 			const QString& questionStr, const QString& answerStr)
 	{
-		const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto acc = entry->GetParentAccount ();
 		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		const auto context = otrl_context_find (UserState_,

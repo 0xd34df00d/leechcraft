@@ -215,7 +215,7 @@ namespace Xoox
 	QVariantMap GlooxProtocol::TryGuessMUCIdentifyingData (const QString& text, QObject *entryObj)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
+		const auto acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ()->GetQObject ());
 
 		QVariantMap result;
 		result ["AccountID"] = acc->GetAccountID ();
@@ -243,7 +243,7 @@ namespace Xoox
 			}
 			case ICLEntry::EntryType::PrivateChat:
 			{
-				const auto roomEntry = entry->GetParentCLEntry ();
+				const auto roomEntry = entry->GetParentCLEntryObject ();
 				const auto rh = qobject_cast<RoomCLEntry*> (roomEntry)->GetRoomHandler ();
 				server = rh->GetRoomJID ().section ('@', 1);
 				break;

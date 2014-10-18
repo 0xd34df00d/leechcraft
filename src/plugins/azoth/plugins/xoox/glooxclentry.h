@@ -100,7 +100,7 @@ namespace Xoox
 		QXmppRosterIq::Item GetRI () const;
 
 		// ICLEntry
-		QObject* GetParentAccount () const;
+		IAccount* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -113,7 +113,7 @@ namespace Xoox
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
 		EntryStatus GetStatus (const QString&) const;
-		QObject* CreateMessage (IMessage::Type,
+		IMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 		QList<QAction*> GetActions () const;
 

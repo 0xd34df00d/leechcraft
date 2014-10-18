@@ -53,7 +53,7 @@ namespace VelvetBird
 		return this;
 	}
 
-	QObject* Buddy::GetParentAccount () const
+	IAccount* Buddy::GetParentAccount () const
 	{
 		return Account_;
 	}
@@ -117,16 +117,15 @@ namespace VelvetBird
 		return QStringList ();
 	}
 
-	QObject* Buddy::CreateMessage (IMessage::Type, const QString&, const QString& body)
+	IMessage* Buddy::CreateMessage (IMessage::Type, const QString&, const QString& body)
 	{
 		return new ConvIMMessage (body, IMessage::Direction::Out, this);
 	}
 
-	QList<QObject*> Buddy::GetAllMessages () const
+	QList<IMessage*> Buddy::GetAllMessages () const
 	{
-		QList<QObject*> result;
-		for (auto msg : Messages_)
-			result << msg;
+		QList<IMessage*> result;
+		std::copy (Messages_.begin (), Messages_.end (), std::back_inserter (result));
 		return result;
 	}
 

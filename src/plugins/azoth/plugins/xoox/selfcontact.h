@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_SELFCONTACT_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_SELFCONTACT_H
+#pragma once
+
 #include "entrybase.h"
 
 namespace LeechCraft
@@ -49,7 +49,7 @@ namespace Xoox
 	public:
 		SelfContact (const QString&, GlooxAccount*);
 
-		QObject* GetParentAccount () const;
+		IAccount* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -60,7 +60,7 @@ namespace Xoox
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
 		EntryStatus GetStatus (const QString&) const;
-		QObject* CreateMessage (IMessage::Type,
+		IMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&);
 		QList<QAction*> GetActions () const;
 
@@ -74,5 +74,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

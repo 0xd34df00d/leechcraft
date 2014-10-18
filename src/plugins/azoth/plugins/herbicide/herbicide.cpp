@@ -36,6 +36,7 @@
 #include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iaccount.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "confwidget.h"
@@ -158,9 +159,10 @@ namespace Herbicide
 				"question to verify you are not a bot and is welcome "
 				"to communicate with me:\n%1")
 					.arg (ConfWidget_->GetQuestion ());
-		QObject *msgObj = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
-		OurMessages_ << msgObj;
-		qobject_cast<IMessage*> (msgObj)->Send ();
+
+		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
+		OurMessages_ << msg;
+		msg->Send ();
 
 		proxy->CancelDefault ();
 	}
@@ -176,12 +178,12 @@ namespace Herbicide
 		const QString& text = tr ("Nice, seems like you've answered "
 				"correctly. Please write again now what you wanted "
 				"to write.");
-		QObject *msgObj = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
-		OurMessages_ << msgObj;
-		qobject_cast<IMessage*> (msgObj)->Send ();
+		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
+		OurMessages_ << msg;
+		msg->Send ();
 
 		if (DeniedAuth_.contains (entryObj))
-			QMetaObject::invokeMethod (entry->GetParentAccount (),
+			QMetaObject::invokeMethod (entry->GetParentAccount ()->GetQObject (),
 					"authorizationRequested",
 					Q_ARG (QObject*, entryObj),
 					Q_ARG (QString, DeniedAuth_.take (entryObj)));
@@ -211,19 +213,19 @@ namespace Herbicide
 		if (!IsConfValid ())
 			return;
 
-		if (OurMessages_.contains (message))
-		{
-			OurMessages_.remove (message);
-			proxy->CancelDefault ();
-			return;
-		}
-
-		IMessage *msg = qobject_cast<IMessage*> (message);
+		const auto msg = qobject_cast<IMessage*> (message);
 		if (!msg)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< message
 					<< "doesn't implement IMessage";
+			return;
+		}
+
+		if (OurMessages_.contains (msg))
+		{
+			OurMessages_.remove (msg);
+			proxy->CancelDefault ();
 			return;
 		}
 
@@ -242,10 +244,10 @@ namespace Herbicide
 			GreetEntry (entryObj);
 		else
 		{
-			const QString& text = tr ("Sorry, you are wrong. Try again.");
-			QObject *msgObj = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
-			OurMessages_ << msgObj;
-			qobject_cast<IMessage*> (msgObj)->Send ();
+			const auto& text = tr ("Sorry, you are wrong. Try again.");
+			const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
+			OurMessages_ << msg;
+			msg->Send ();
 
 			proxy->CancelDefault ();
 		}

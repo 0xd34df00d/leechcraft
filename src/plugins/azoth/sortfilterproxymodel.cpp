@@ -155,8 +155,8 @@ namespace Azoth
 			{
 			case Core::CLETAccount:
 			{
-				QObject *acc = qobject_cast<ICLEntry*> (MUCEntry_)->GetParentAccount ();
-				return acc == idx.data (Core::CLRAccountObject).value<QObject*> ();
+				const auto acc = qobject_cast<ICLEntry*> (MUCEntry_)->GetParentAccount ();
+				return acc == idx.data (Core::CLRAccountObject).value<IAccount*> ();
 			}
 			case Core::CLETCategory:
 			{
@@ -212,11 +212,7 @@ namespace Azoth
 				return false;
 			}
 			else if (type == Core::CLETAccount)
-			{
-				const auto& accObj = idx.data (Core::CLRAccountObject).value<QObject*> ();
-				auto acc = qobject_cast<IAccount*> (accObj);
-				return acc->IsShownInRoster ();
-			}
+				return idx.data (Core::CLRAccountObject).value<IAccount*> ()->IsShownInRoster ();
 		}
 
 		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
@@ -244,7 +240,7 @@ namespace Azoth
 		if (lE->GetEntryType () == ICLEntry::EntryType::PrivateChat &&
 				rE->GetEntryType () == ICLEntry::EntryType::PrivateChat &&
 				lE->GetParentCLEntry () == rE->GetParentCLEntry ())
-			if (IMUCPerms *lp = qobject_cast<IMUCPerms*> (lE->GetParentCLEntry ()))
+			if (const auto lp = qobject_cast<IMUCPerms*> (lE->GetParentCLEntryObject ()))
 			{
 				bool less = lp->IsLessByPerm (lE->GetQObject (), rE->GetQObject ());
 				bool more = lp->IsLessByPerm (rE->GetQObject (), lE->GetQObject ());

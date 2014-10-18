@@ -54,7 +54,7 @@ namespace Acetamide
 		Actions_ << closePrivate;
 	}
 
-	QObject* IrcParticipantEntry::GetParentAccount () const
+	IAccount* IrcParticipantEntry::GetParentAccount () const
 	{
 		return Account_;
 	}
@@ -78,9 +78,9 @@ namespace Acetamide
 	{
 		Nick_ = name;
 
-		Q_FOREACH (QObject *message, AllMessages_)
+		for (const auto message : AllMessages_)
 		{
-			IrcMessage *msg = qobject_cast<IrcMessage*> (message);
+			const auto msg = dynamic_cast<IrcMessage*> (message);
 			if (!msg)
 			{
 				qWarning () << Q_FUNC_INFO

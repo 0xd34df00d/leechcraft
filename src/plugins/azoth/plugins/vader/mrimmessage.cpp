@@ -41,7 +41,7 @@ namespace Vader
 	MRIMMessage::MRIMMessage (Direction dir, Type mt, MRIMBuddy *buddy)
 	: QObject (buddy)
 	, Buddy_ (buddy)
-	, A_ (qobject_cast<MRIMAccount*> (Buddy_->GetParentAccount ()))
+	, A_ (Buddy_->GetParentAccount ())
 	, Dir_ (dir)
 	, MT_ (mt)
 	, DateTime_ (QDateTime::currentDateTime ())

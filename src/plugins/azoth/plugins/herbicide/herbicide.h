@@ -41,6 +41,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IMessage;
+
 namespace Herbicide
 {
 	class ConfWidget;
@@ -59,7 +61,7 @@ namespace Herbicide
 		ConfWidget *ConfWidget_;
 		QSet<QObject*> AskedEntries_;
 		QSet<QObject*> AllowedEntries_;
-		QSet<QObject*> OurMessages_;
+		QSet<IMessage*> OurMessages_;
 
 		QHash<QObject*, QString> DeniedAuth_;
 
