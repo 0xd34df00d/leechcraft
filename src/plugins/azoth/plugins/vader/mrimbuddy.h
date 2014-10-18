@@ -32,8 +32,10 @@
 #include <QObject>
 #include <QSet>
 #include <QImage>
+#include <interfaces/media/audiostructs.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iadvancedclentry.h>
+#include <interfaces/azoth/ihavecontacttune.h>
 #include "mrimaccount.h"
 #include "proto/contactinfo.h"
 
@@ -49,10 +51,12 @@ namespace Vader
 
 	class MRIMBuddy : public QObject
 					, public ICLEntry
+					, public IHaveContactTune
 					, public IAdvancedCLEntry
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IHaveContactTune
 				LeechCraft::Azoth::IAdvancedCLEntry)
 
 		MRIMAccount *A_;
@@ -73,6 +77,8 @@ namespace Vader
 
 		SelfAvatarFetcher *AvatarFetcher_;
 		QImage Avatar_;
+
+		Media::AudioInfo TuneInfo_;
 	public:
 		MRIMBuddy (const Proto::ContactInfo&, MRIMAccount*);
 
@@ -132,6 +138,9 @@ namespace Vader
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
 		void ChatTabClosed ();
+
+		// IHaveContactTune
+		Media::AudioInfo GetUserTune (const QString&) const;
 
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;

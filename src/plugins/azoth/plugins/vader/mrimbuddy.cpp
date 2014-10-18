@@ -95,10 +95,21 @@ namespace Vader
 
 	void MRIMBuddy::HandleTune (const QString& tune)
 	{
-		QVariantMap tuneMap;
-		tuneMap ["artist"] = tune;
-		ClientInfo_ ["user_tune"] = tuneMap;
-		emit tuneChanged (QString ());
+		TuneInfo_ = Media::AudioInfo {};
+
+		const auto& parts = tune.split ('-', QString::SkipEmptyParts);
+		if (parts.size () == 3)
+		{
+			TuneInfo_.Artist_ = parts.value (0);
+			TuneInfo_.Album_ = parts.value (1);
+			TuneInfo_.Title_ = parts.value (2);
+		}
+		else if (parts.size () == 2)
+		{
+			TuneInfo_.Artist_ = parts.value (0);
+			TuneInfo_.Title_ = parts.value (1);
+		}
+		emit tuneChanged ({});
 	}
 
 	void MRIMBuddy::HandleCPS (ChatPartState cps)
@@ -344,6 +355,11 @@ namespace Vader
 
 	void MRIMBuddy::ChatTabClosed ()
 	{
+	}
+
+	Media::AudioInfo MRIMBuddy::GetUserTune (const QString&) const
+	{
+		return TuneInfo_;
 	}
 
 	IAdvancedCLEntry::AdvancedFeatures MRIMBuddy::GetAdvancedFeatures () const
