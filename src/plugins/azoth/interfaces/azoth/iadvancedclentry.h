@@ -135,22 +135,6 @@ namespace Azoth
 		 */
 		virtual void activityChanged (const QString& variant) = 0;
 
-		/** @brief Notifies that entry's user tune has changed.
-		 *
-		 * The actual tune information should be contained in the map
-		 * returned from ICLEntry::GetClientInfo(). Please refer to its
-		 * documentation for information about user tunes.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] variant Variant of the entry whose tune has
-		 * changed.
-		 *
-		 * @sa moodChanged(), activityChanged()
-		 * @sa ICLEntry::GetClientInfo()
-		 */
-		virtual void tuneChanged (const QString& variant) = 0;
-
 		/** @brief Notifies that entry's geolocation has changed.
 		 *
 		 * The actual geolocation information could be obtained via
