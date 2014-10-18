@@ -296,7 +296,7 @@ namespace Metacontacts
 				QObject *accObj = entry->GetParentAccount ();
 				QMetaObject::invokeMethod (accObj,
 						"gotCLItems",
-						Q_ARG (QList<QObject*>, QList<QObject*> () << entryObj));
+						Q_ARG (QList<QObject*>, { entryObj }));
 			}
 		}
 
@@ -309,7 +309,7 @@ namespace Metacontacts
 		QMetaObject::invokeMethod (this,
 				"removedCLItems",
 				Qt::QueuedConnection,
-				Q_ARG (QList<QObject*>, QList<QObject*> () << real->GetQObject ()));
+				Q_ARG (QList<QObject*>, { real->GetQObject () }));
 
 		ScheduleSaveEntries ();
 	}
@@ -325,7 +325,7 @@ namespace Metacontacts
 
 		Entries_ << result;
 
-		emit gotCLItems (QList<QObject*> () << result);
+		emit gotCLItems ({ result });
 
 		return result;
 	}
