@@ -135,8 +135,8 @@ namespace MuCommands
 			Parser ()
 			: Parser::base_type { Start_ }
 			{
-				Index_ = qi::uint_;
-				Range_ = -(qi::uint_) >> qi::lit (':') >> -(qi::uint_);
+				Index_ = qi::int_;
+				Range_ = -(qi::int_) >> qi::lit (':') >> -(qi::int_);
 				RegExp_ = qi::lit ("rx ") >> +qi::char_;
 
 				Start_ = Range_ | Index_ | RegExp_;
