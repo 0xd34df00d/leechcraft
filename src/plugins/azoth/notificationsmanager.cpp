@@ -118,29 +118,24 @@ namespace Azoth
 				SLOT (handleStatusChanged (EntryStatus, QString)));
 
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
+		{
 			connect (entryObj,
 					SIGNAL (attentionDrawn (const QString&, const QString&)),
 					this,
 					SLOT (handleAttentionDrawn (const QString&, const QString&)));
-
-		const auto accObj = qobject_cast<ICLEntry*> (entryObj)->GetParentAccount ();
-		if (qobject_cast<ISupportTune*> (accObj))
 			connect (entryObj,
 					SIGNAL (tuneChanged (QString)),
 					this,
 					SLOT (handleTuneChanged (QString)));
-
-		if (qobject_cast<ISupportActivity*> (accObj))
 			connect (entryObj,
 					SIGNAL (activityChanged (QString)),
 					this,
 					SLOT (handleActivityChanged (QString)));
-
-		if (qobject_cast<ISupportMood*> (accObj))
 			connect (entryObj,
 					SIGNAL (moodChanged (QString)),
 					this,
 					SLOT (handleMoodChanged (QString)));
+		}
 	}
 
 	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
