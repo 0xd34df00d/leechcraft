@@ -420,6 +420,11 @@ namespace Xoox
 		return Variant2Audio_ [variant];
 	}
 
+	MoodInfo EntryBase::GetUserMood (const QString& variant) const
+	{
+		return Variant2Mood_ [variant];
+	}
+
 	void EntryBase::UpdateEntityTime ()
 	{
 		const auto& now = QDateTime::currentDateTime ();
@@ -524,13 +529,21 @@ namespace Xoox
 		if (const auto mood = dynamic_cast<UserMood*> (event))
 		{
 			if (mood->GetMood () == UserMood::MoodEmpty)
-				Variant2ClientInfo_ [variant].remove ("user_mood");
+			{
+				if (!Variant2Mood_.remove (variant))
+					return;
+			}
 			else
 			{
-				QMap<QString, QVariant> moodMap;
-				moodMap ["mood"] = mood->GetMoodStr ();
-				moodMap ["text"] = mood->GetText ();
-				Variant2ClientInfo_ [variant] ["user_mood"] = moodMap;
+				const MoodInfo info
+				{
+					mood->GetMoodStr (),
+					mood->GetText ()
+				};
+				if (Variant2Mood_ [variant] == info)
+					return;
+
+				Variant2Mood_ [variant] = info;
 			}
 
 			emit moodChanged (variant);
