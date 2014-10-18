@@ -40,6 +40,20 @@ namespace Azoth
 {
 namespace AzothUtil
 {
+	namespace detail
+	{
+		inline IMessage* GetIMessage (IMessage *msg)
+		{
+			return msg;
+		}
+
+		template<typename T>
+		IMessage* GetIMessage (T *msgObj)
+		{
+			return qobject_cast<IMessage*> (msgObj);
+		}
+	}
+
 	/** @brief Standard function to purge \em messages before the given
 	 * date.
 	 *
@@ -72,7 +86,7 @@ namespace AzothUtil
 
 		while (!messages.isEmpty ())
 		{
-			IMessage *msg = qobject_cast<IMessage*> (messages.at (0));
+			const auto msg = detail::GetIMessage (messages.at (0));
 			if (!msg)
 			{
 				qWarning () << Q_FUNC_INFO
