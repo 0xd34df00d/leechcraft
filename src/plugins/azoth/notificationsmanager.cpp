@@ -127,10 +127,6 @@ namespace Azoth
 					this,
 					SLOT (handleAttentionDrawn (const QString&, const QString&)));
 			connect (entryObj,
-					SIGNAL (tuneChanged (QString)),
-					this,
-					SLOT (handleTuneChanged (QString)));
-			connect (entryObj,
 					SIGNAL (activityChanged (QString)),
 					this,
 					SLOT (handleActivityChanged (QString)));
@@ -143,6 +139,12 @@ namespace Azoth
 					this,
 					SLOT (handleLocationChanged (QString)));
 		}
+
+		if (qobject_cast<IHaveContactTune*> (entryObj))
+			connect (entryObj,
+					SIGNAL (tuneChanged (QString)),
+					this,
+					SLOT (handleTuneChanged (QString)));
 	}
 
 	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
