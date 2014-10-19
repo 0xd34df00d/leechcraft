@@ -66,6 +66,9 @@ namespace Xoox
 	class GlooxMessage;
 	class VCardDialog;
 	class GlooxAccount;
+	class UserTune;
+	class UserMood;
+	class UserActivity;
 
 	/** Common base class for GlooxCLEntry, which reprensents usual
 	 * entries in the contact list, and RoomCLEntry, which represents
@@ -213,6 +216,10 @@ namespace Xoox
 		QByteArray GetVariantVerString (const QString&) const;
 		QXmppVersionIq GetClientVersion (const QString&) const;
 	private:
+		void HandleUserActivity (const UserActivity*, const QString&);
+		void HandleUserMood (const UserMood*, const QString&);
+		void HandleUserTune (const UserTune*, const QString&);
+
 		void CheckVCardUpdate (const QXmppPresence&);
 		void SetNickFromVCard (const QXmppVCardIq&);
 	private slots:

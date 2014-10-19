@@ -509,81 +509,19 @@ namespace Xoox
 
 	void EntryBase::HandlePEPEvent (QString variant, PEPEventBase *event)
 	{
-		const QStringList& vars = Variants ();
+		const auto& vars = Variants ();
 		if (!vars.isEmpty () &&
 				(!vars.contains (variant) || variant.isEmpty ()))
 			variant = vars.first ();
 
 		if (const auto activity = dynamic_cast<UserActivity*> (event))
-		{
-			if (activity->GetGeneral () == UserActivity::GeneralEmpty)
-			{
-				if (!Variant2Activity_.remove (variant))
-					return;
-			}
-			else
-			{
-				const ActivityInfo info
-				{
-					activity->GetGeneralStr (),
-					activity->GetSpecificStr (),
-					activity->GetText ()
-				};
-				if (Variant2Activity_ [variant] == info)
-					return;
-
-				Variant2Activity_ [variant] = info;
-			}
-
-			emit activityChanged (variant);
-			return;
-		}
-
+			return HandleUserActivity (activity, variant);
 		if (const auto mood = dynamic_cast<UserMood*> (event))
-		{
-			if (mood->GetMood () == UserMood::MoodEmpty)
-			{
-				if (!Variant2Mood_.remove (variant))
-					return;
-			}
-			else
-			{
-				const MoodInfo info
-				{
-					mood->GetMoodStr (),
-					mood->GetText ()
-				};
-				if (Variant2Mood_ [variant] == info)
-					return;
-
-				Variant2Mood_ [variant] = info;
-			}
-
-			emit moodChanged (variant);
-			return;
-		}
-
+			return HandleUserMood (mood, variant);
 		if (const auto tune = dynamic_cast<UserTune*> (event))
-		{
-			if (tune->IsNull ())
-			{
-				if (!Variant2Audio_.remove (variant))
-					return;
-			}
-			else
-			{
-				const auto& audioInfo = tune->ToAudioInfo ();
-				if (Variant2Audio_ [variant] == audioInfo)
-					return;
+			return HandleUserTune (tune, variant);
 
-				Variant2Audio_ [variant] = audioInfo;
-			}
-
-			emit tuneChanged (variant);
-			return;
-		}
-
-		if (UserLocation *location = dynamic_cast<UserLocation*> (event))
+		if (const auto location = dynamic_cast<UserLocation*> (event))
 		{
 			Location_ [variant] = location->GetInfo ();
 			emit locationChanged (variant, this);
@@ -602,9 +540,7 @@ namespace Xoox
 
 		qWarning () << Q_FUNC_INFO
 				<< "unhandled PEP event from"
-				<< GetJID ()
-				<< "resource"
-				<< variant;
+				<< GetJID ();
 	}
 
 	void EntryBase::HandleAttentionMessage (const QXmppMessage& msg)
@@ -890,6 +826,72 @@ namespace Xoox
 	QXmppVersionIq EntryBase::GetClientVersion (const QString& var) const
 	{
 		return Variant2Version_ [var];
+	}
+
+	void EntryBase::HandleUserActivity (const UserActivity *activity, const QString& variant)
+	{
+		if (activity->GetGeneral () == UserActivity::GeneralEmpty)
+		{
+			if (!Variant2Activity_.remove (variant))
+				return;
+		}
+		else
+		{
+			const ActivityInfo info
+			{
+				activity->GetGeneralStr (),
+				activity->GetSpecificStr (),
+				activity->GetText ()
+			};
+			if (Variant2Activity_ [variant] == info)
+				return;
+
+			Variant2Activity_ [variant] = info;
+		}
+
+		emit activityChanged (variant);
+	}
+
+	void EntryBase::HandleUserMood (const UserMood *mood, const QString& variant)
+	{
+		if (mood->GetMood () == UserMood::MoodEmpty)
+		{
+			if (!Variant2Mood_.remove (variant))
+				return;
+		}
+		else
+		{
+			const MoodInfo info
+			{
+				mood->GetMoodStr (),
+				mood->GetText ()
+			};
+			if (Variant2Mood_ [variant] == info)
+				return;
+
+			Variant2Mood_ [variant] = info;
+		}
+
+		emit moodChanged (variant);
+	}
+
+	void EntryBase::HandleUserTune (const UserTune *tune, const QString& variant)
+	{
+		if (tune->IsNull ())
+		{
+			if (!Variant2Audio_.remove (variant))
+				return;
+		}
+		else
+		{
+			const auto& audioInfo = tune->ToAudioInfo ();
+			if (Variant2Audio_ [variant] == audioInfo)
+				return;
+
+			Variant2Audio_ [variant] = audioInfo;
+		}
+
+		emit tuneChanged (variant);
 	}
 
 	void EntryBase::CheckVCardUpdate (const QXmppPresence& pres)
