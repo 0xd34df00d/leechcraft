@@ -141,10 +141,6 @@ namespace Metacontacts
 
 		// IAdvancedCLEntry
 		void attentionDrawn (const QString&, const QString&);
-		void moodChanged (const QString&);
-		void activityChanged (const QString&);
-		void tuneChanged (const QString&);
-		void locationChanged (const QString&);
 
 		// Own
 		void shouldRemoveThis ();

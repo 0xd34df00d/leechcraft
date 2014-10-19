@@ -335,22 +335,6 @@ namespace Metacontacts
 				SIGNAL (attentionDrawn (const QString&, const QString&)),
 				this,
 				SLOT (handleRealAttentionDrawn (const QString&, const QString&)));
-		connect (entryObj,
-				SIGNAL (moodChanged (const QString&)),
-				this,
-				SLOT (handleRealMoodChanged (const QString&)));
-		connect (entryObj,
-				SIGNAL (activityChanged (const QString&)),
-				this,
-				SLOT (handleRealActivityChanged (const QString&)));
-		connect (entryObj,
-				SIGNAL (tuneChanged (const QString&)),
-				this,
-				SLOT (handleRealTuneChanged (const QString&)));
-		connect (entryObj,
-				SIGNAL (locationChanged (const QString&)),
-				this,
-				SLOT (handleRealLocationChanged (const QString&)));
 	}
 
 	void MetaEntry::PerformRemoval (QObject *entryObj)
@@ -489,30 +473,6 @@ namespace Metacontacts
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		emit attentionDrawn (text, entry->GetEntryName () + '/' + var);
-	}
-
-	void MetaEntry::handleRealMoodChanged (const QString& var)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		emit moodChanged (entry->GetEntryName () + '/' + var);
-	}
-
-	void MetaEntry::handleRealActivityChanged (const QString& var)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		emit activityChanged (entry->GetEntryName () + '/' + var);
-	}
-
-	void MetaEntry::handleRealTuneChanged (const QString& var)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		emit tuneChanged (entry->GetEntryName () + '/' + var);
-	}
-
-	void MetaEntry::handleRealLocationChanged (const QString& var)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		emit locationChanged (entry->GetEntryName () + '/' + var);
 	}
 
 	void MetaEntry::checkRemovedCLItems (const QList<QObject*>& objs)
