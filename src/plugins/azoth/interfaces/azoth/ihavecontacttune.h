@@ -42,17 +42,40 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	/** @brief Interface for contacts announcing their current tune.
+	 *
+	 * This interface should be implemented by those contact list entries
+	 * (ICLEntry objects) that support providing information about their
+	 * current tune.
+	 *
+	 * Different variants of an entry (as per ICLEntry::Variants()) can
+	 * have different tunes, so exact variant is specified both when
+	 * announcing the tune change via the tuneChanged() signal and when
+	 * retrieving the tune via the GetUserTune() function.
+	 *
+	 * @sa ICLEntry
+	 * @sa IHaveContactActivity
+	 * @sa IHaveContactMood
+	 */
 	class IHaveContactTune
 	{
 	public:
 		virtual ~IHaveContactTune () {}
 
+		/** @brief Returns the user tune for the given \em variant.
+		 *
+		 * If the contact does not announce any tune on this \em variant,
+		 * an empty Media::AudioInfo structure is returned.
+		 *
+		 * @param[in] variant The variant to query
+		 * @return The information about the tune of the given
+		 * \em variant.
+		 */
 		virtual Media::AudioInfo GetUserTune (const QString& variant) const = 0;
 	protected:
-		/** @brief Notifies that entry's user tune has changed.
+		/** @brief Notifies that entry's current tune has changed.
 		 *
-		 * The actual tune information should be contained in the struct
-		 * returned from GetUserTune().
+		 * The actual tune is obtained via the GetUserTune() method.
 		 *
 		 * @note This function is expected to be a signal.
 		 *
