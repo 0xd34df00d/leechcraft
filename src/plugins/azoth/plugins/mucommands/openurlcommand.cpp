@@ -178,14 +178,24 @@ namespace MuCommands
 				if (Urls_.isEmpty ())
 					return true;
 
-				const auto begin = boost::get_optional_value_or (range.Start_, 1) - 1;
-				const auto end = boost::get_optional_value_or (range.End_, Urls_.size ()) - 1;
+				auto begin = boost::get_optional_value_or (range.Start_, 1);
+				auto end = boost::get_optional_value_or (range.End_, Urls_.size ());
 
-				if (begin >= end)
+				if (!begin || !end)
 					return StringCommandResult
 					{
 						true,
-						QObject::tr ("Begin index should be greater than end index.")
+						QObject::tr ("Indexes cannot be equal to zero.")
+					};
+
+				begin = begin > 0 ? (begin - 1) : (Urls_.size () + begin);
+				end = end > 0 ? (end - 1) : (Urls_.size () + end);
+
+				if (begin > end)
+					return StringCommandResult
+					{
+						true,
+						QObject::tr ("Begin index should not be greater than end index.")
 					};
 
 				if (end >= Urls_.size ())
