@@ -125,7 +125,8 @@ namespace XProxy
 			type = QNetworkProxy::ProxyType::NoProxy;
 			break;
 		}
-		Proxy proxy =
+
+		return
 		{
 			type,
 			Ui_.ProxyHost_->text (),
@@ -133,8 +134,6 @@ namespace XProxy
 			Ui_.ProxyUser_->text (),
 			Ui_.ProxyPassword_->text ()
 		};
-
-		return proxy;
 	}
 
 	void ProxiesConfigWidget::accept ()
