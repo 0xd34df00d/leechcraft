@@ -41,15 +41,15 @@ namespace MuCommands
 	{
 		Q_OBJECT
 	private slots:
-		void openByIndex ();
+		void parseByIndex ();
 
-		void openByRange ();
-		void openByLeftOpenRange ();
-		void openByRightOpenRange ();
-		void openByFullOpenRange ();
+		void parseByRange ();
+		void parseByLeftOpenRange ();
+		void parseByRightOpenRange ();
+		void parseByFullOpenRange ();
 
-		void openByRx ();
-		void openByRxSpaces ();
+		void parseByRx ();
+		void parseByRxSpaces ();
 	};
 }
 }

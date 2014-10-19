@@ -64,49 +64,49 @@ namespace MuCommands
 		}
 	}
 
-	void OpenUrlCommandTest::openByIndex ()
+	void OpenUrlCommandTest::parseByIndex ()
 	{
 		const QString command = "/openurl 3";
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, OpenUrlParams_t { UrlIndex_t { 3 } });
 	}
 
-	void OpenUrlCommandTest::openByRange ()
+	void OpenUrlCommandTest::parseByRange ()
 	{
 		const QString command = "/openurl 3:10";
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, (OpenUrlParams_t { UrlRange { 3, 10 } }));
 	}
 
-	void OpenUrlCommandTest::openByLeftOpenRange ()
+	void OpenUrlCommandTest::parseByLeftOpenRange ()
 	{
 		const QString command = "/openurl :10";
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, (OpenUrlParams_t { UrlRange { {}, 10 } }));
 	}
 
-	void OpenUrlCommandTest::openByRightOpenRange ()
+	void OpenUrlCommandTest::parseByRightOpenRange ()
 	{
 		const QString command = "/openurl 3:";
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, (OpenUrlParams_t { UrlRange { 3, {} } }));
 	}
 
-	void OpenUrlCommandTest::openByFullOpenRange ()
+	void OpenUrlCommandTest::parseByFullOpenRange ()
 	{
 		const QString command = "/openurl :";
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, (OpenUrlParams_t { UrlRange { {}, {} } }));
 	}
 
-	void OpenUrlCommandTest::openByRx ()
+	void OpenUrlCommandTest::parseByRx ()
 	{
 		const QString command = "/openurl rx ^[a-c]$";
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, OpenUrlParams_t { UrlRegExp { "^[a-c]$" } });
 	}
 
-	void OpenUrlCommandTest::openByRxSpaces ()
+	void OpenUrlCommandTest::parseByRxSpaces ()
 	{
 		const QString command = "/openurl rx ^[a-c] space smth$";
 		const auto& res = ParseCommand (command);
