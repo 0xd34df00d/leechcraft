@@ -439,37 +439,6 @@ namespace Azoth
 		 *   delivered to this resource unless it was explicitly created
 		 *   to be targeted at this resource.
 		 *
-		 * The following keys are optional:
-		 * - user_activity
-		 *   The corresponding value is a map itself, mapping QString to
-		 *   QString.
-		 * - user_mood
-		 *   The corresponding value is a map itself, mapping QString to
-		 *   QString.
-		 *
-		 * The map for the user_activity can have the following keys,
-		 * where the first one is required and others are optional:
-		 * - general
-		 * - specific
-		 * - additional_specific
-		 * - activity_detailed
-		 * - text
-		 * These keys and their contents are modeled after XEP-0108, so
-		 * refer to http://xmpp.org/extensions/xep-0108.html for more
-		 * information about the semantics.
-		 * Empty "general" key means that the entity stopped publishing
-		 * activity information.
-		 *
-		 * The map for the user_mood can have the following keys, where
-		 * the first one is required and others are optional:
-		 * - mood
-		 * - text
-		 * These keys and their contents are modeled after XEP-0107, so
-		 * refer to http://xmpp.org/extensions/xep-0107.html for more
-		 * information about the semantics.
-		 * Empty "mood" key means that the entity stopped publishing
-		 * mood information.
-		 *
 		 * @param[in] variant Variant for which to return the client
 		 * info.
 		 *
