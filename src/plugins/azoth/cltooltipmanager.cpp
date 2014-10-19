@@ -160,6 +160,9 @@ namespace Azoth
 	{
 		void FormatMood (QString& tip, const MoodInfo& moodInfo)
 		{
+			if (moodInfo.Mood_.isEmpty ())
+				return;
+
 			tip += "<br />" + Core::tr ("Mood:") + ' ';
 			tip += MoodDialog::ToHumanReadable (moodInfo.Mood_);
 			if (!moodInfo.Text_.isEmpty ())
@@ -168,6 +171,9 @@ namespace Azoth
 
 		void FormatActivity (QString& tip, const ActivityInfo& actInfo)
 		{
+			if (actInfo.General_.isEmpty ())
+				return;
+
 			tip += "<br />" + Core::tr ("Activity:") + ' ';
 			tip += ActivityDialog::ToHumanReadable (actInfo.General_);
 			const auto& specific = ActivityDialog::ToHumanReadable (actInfo.Specific_);
@@ -182,6 +188,9 @@ namespace Azoth
 			const auto& artist = tuneInfo.Artist_;
 			const auto& source = tuneInfo.Album_;
 			const auto& title = tuneInfo.Title_;
+
+			if (artist.isEmpty () && title.isEmpty ())
+				return;
 
 			tip += "<br />" + Core::tr ("Now listening to:") + ' ';
 			if (!artist.isEmpty () && !title.isEmpty ())
