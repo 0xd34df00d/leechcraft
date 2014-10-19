@@ -206,7 +206,7 @@ namespace XProxy
 		if (row < 0 || row >= Proxies_.size ())
 			return;
 
-		const auto& oldProxy = Proxies_.at (row);
+		const auto oldProxy = Proxies_.at (row);
 
 		const auto& proxy = EntryFromUI ();
 		Proxies_ [row] = proxy;
