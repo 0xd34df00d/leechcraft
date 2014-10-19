@@ -302,6 +302,7 @@ Rectangle {
             anchors.rightMargin: 5
             anchors.right: parent.right
             anchors.top: flickableBioText.bottom
+            anchors.topMargin: 5
             anchors.bottom: parent.bottom
 
             model: artistImagesModel
@@ -378,7 +379,7 @@ Rectangle {
             anchors.rightMargin: 5
             anchors.right: parent.right
             anchors.top: artistNameLabel.bottom
-            height: parent.height / 3
+            height: Math.min(parent.height / 3, contentHeight)
 
             contentWidth: width
             contentHeight: shortDescLabel.height + 16
