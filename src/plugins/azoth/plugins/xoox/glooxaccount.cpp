@@ -985,9 +985,6 @@ namespace Xoox
 
 	QString GlooxAccount::GetDefaultReqHost () const
 	{
-		if (!SettingsHolder_->GetHost ().isEmpty ())
-			return SettingsHolder_->GetHost ();
-
 		const auto& second = SettingsHolder_->GetJID ().split ('@', QString::SkipEmptyParts).value (1);
 		const int slIdx = second.indexOf ('/');
 		return slIdx >= 0 ? second.left (slIdx) : second;
