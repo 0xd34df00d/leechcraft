@@ -29,6 +29,9 @@
 
 #pragma once
 
+#include <QtPlugin>
+#include <QString>
+
 namespace LeechCraft
 {
 namespace Azoth
