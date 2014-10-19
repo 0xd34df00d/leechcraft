@@ -425,6 +425,11 @@ namespace Xoox
 		return Variant2Mood_ [variant];
 	}
 
+	ActivityInfo EntryBase::GetUserActivity (const QString& variant) const
+	{
+		return Variant2Activity_ [variant];
+	}
+
 	void EntryBase::UpdateEntityTime ()
 	{
 		const auto& now = QDateTime::currentDateTime ();
@@ -512,14 +517,22 @@ namespace Xoox
 		if (const auto activity = dynamic_cast<UserActivity*> (event))
 		{
 			if (activity->GetGeneral () == UserActivity::GeneralEmpty)
-				Variant2ClientInfo_ [variant].remove ("user_activity");
+			{
+				if (!Variant2Activity_.remove (variant))
+					return;
+			}
 			else
 			{
-				QMap<QString, QVariant> activityMap;
-				activityMap ["general"] = activity->GetGeneralStr ();
-				activityMap ["specific"] = activity->GetSpecificStr ();
-				activityMap ["text"] = activity->GetText ();
-				Variant2ClientInfo_ [variant] ["user_activity"] = activityMap;
+				const ActivityInfo info
+				{
+					activity->GetGeneralStr (),
+					activity->GetSpecificStr (),
+					activity->GetText ()
+				};
+				if (Variant2Activity_ [variant] == info)
+					return;
+
+				Variant2Activity_ [variant] = info;
 			}
 
 			emit activityChanged (variant);
@@ -643,13 +656,8 @@ namespace Xoox
 				Variant2Audio_ [highest] = Variant2Audio_.take ({});
 			if (Variant2Mood_.contains ({}))
 				Variant2Mood_ [highest] = Variant2Mood_.take ({});
-			if (Variant2ClientInfo_.contains ({}))
-			{
-				const auto& info = Variant2ClientInfo_ [{}];
-				for (const auto& key : { "user_activity" })
-					if (info.contains (key))
-						Variant2ClientInfo_ [highest] [key] = info [key];
-			}
+			if (Variant2Activity_.contains ({}))
+				Variant2Activity_ [highest] = Variant2Activity_.take ({});
 		}
 
 		if ((!existed || wasOffline) &&

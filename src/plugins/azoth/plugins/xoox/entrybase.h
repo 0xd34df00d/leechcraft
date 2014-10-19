@@ -49,6 +49,7 @@
 #include <interfaces/azoth/ihavequeriableversion.h>
 #include <interfaces/azoth/ihavecontacttune.h>
 #include <interfaces/azoth/ihavecontactmood.h>
+#include <interfaces/azoth/ihavecontactactivity.h>
 
 class QXmppPresence;
 class QXmppVersionIq;
@@ -81,6 +82,7 @@ namespace Xoox
 					, public ISupportMicroblogs
 					, public IHaveContactTune
 					, public IHaveContactMood
+					, public IHaveContactActivity
 					, public IHaveEntityTime
 					, public IHavePings
 					, public IHaveQueriableVersion
@@ -93,6 +95,7 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportMicroblogs
 				LeechCraft::Azoth::IHaveContactTune
 				LeechCraft::Azoth::IHaveContactMood
+				LeechCraft::Azoth::IHaveContactActivity
 				LeechCraft::Azoth::IHaveEntityTime
 				LeechCraft::Azoth::IHavePings
 				LeechCraft::Azoth::IHaveQueriableVersion)
@@ -119,8 +122,10 @@ namespace Xoox
 		QMap<QString, QByteArray> Variant2VerString_;
 		QMap<QString, QXmppVersionIq> Variant2Version_;
 		QMap<QString, QList<QXmppDiscoveryIq::Identity>> Variant2Identities_;
+
 		QMap<QString, Media::AudioInfo> Variant2Audio_;
 		QMap<QString, MoodInfo> Variant2Mood_;
+		QMap<QString, ActivityInfo> Variant2Activity_;
 
 		struct EntityTimeInfo
 		{
@@ -169,6 +174,9 @@ namespace Xoox
 
 		// IHaveContactMood
 		MoodInfo GetUserMood (const QString&) const;
+
+		// IHaveContactActivity
+		ActivityInfo GetUserActivity (const QString&) const;
 
 		// IHaveEntityTime
 		void UpdateEntityTime ();
