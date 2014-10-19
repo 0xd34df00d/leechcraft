@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_MSNBUDDYENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNBUDDYENTRY_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <interfaces/an/ianemitter.h>
@@ -120,11 +120,8 @@ namespace Zheet
 		void attentionDrawn (const QString&, const QString&);
 		void moodChanged (const QString&);
 		void activityChanged (const QString&);
-		void tuneChanged (const QString&);
 		void locationChanged (const QString&);
 	};
 }
 }
 }
-
-#endif

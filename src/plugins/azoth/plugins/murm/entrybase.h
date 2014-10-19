@@ -85,8 +85,6 @@ namespace Murm
 		void entryGenerallyChanged ();
 
 		void performJS (const QString&);
-
-		void tuneChanged (const QString&);
 	};
 }
 }
