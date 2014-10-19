@@ -43,6 +43,7 @@
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #include "interfaces/azoth/ihavecontacttune.h"
 #include "interfaces/azoth/ihavecontactmood.h"
+#include "interfaces/azoth/ihavecontactactivity.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -431,15 +432,21 @@ namespace Azoth
 			return clientIcons;
 		}
 
-		const auto& addInfo = entry->GetClientInfo (vars.first ());
-		if (addInfo.contains ("user_activity"))
+		if (const auto ihca = qobject_cast<IHaveContactActivity*> (entry->GetQObject ()))
 		{
-			const QMap<QString, QVariant>& actInfo = addInfo ["user_activity"].toMap ();
-			const QString& iconName = ActivityIconset_ + '/' +
-					GetActivityIconName (actInfo ["general"].toString (),
-							actInfo ["specific"].toString ());
+			QString iconName;
+			for (const auto& var : vars)
+			{
+				const auto& info = ihca->GetUserActivity (var);
+				iconName = GetActivityIconName (info.General_, info.Specific_);
+				if (!iconName.isEmpty ())
+				{
+					iconName.prepend (ActivityIconset_ + '/');
+					break;
+				}
+			}
 
-			QIcon icon = ActivityIconCache_ [iconName];
+			auto icon = ActivityIconCache_ [iconName];
 			if (icon.isNull ())
 				icon = QIcon (ResourcesManager::Instance ()
 						.GetResourceLoader (ResourcesManager::RLTActivityIconLoader)->

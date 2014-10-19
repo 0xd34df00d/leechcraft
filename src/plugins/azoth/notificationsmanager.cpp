@@ -48,6 +48,7 @@
 #include "interfaces/azoth/isupportgeolocation.h"
 #include "interfaces/azoth/ihavecontacttune.h"
 #include "interfaces/azoth/ihavecontactmood.h"
+#include "interfaces/azoth/ihavecontactactivity.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "core.h"
@@ -128,10 +129,6 @@ namespace Azoth
 					this,
 					SLOT (handleAttentionDrawn (const QString&, const QString&)));
 			connect (entryObj,
-					SIGNAL (activityChanged (QString)),
-					this,
-					SLOT (handleActivityChanged (QString)));
-			connect (entryObj,
 					SIGNAL (locationChanged (QString)),
 					this,
 					SLOT (handleLocationChanged (QString)));
@@ -148,6 +145,12 @@ namespace Azoth
 					SIGNAL (moodChanged (QString)),
 					this,
 					SLOT (handleMoodChanged (QString)));
+
+		if (qobject_cast<IHaveContactActivity*> (entryObj))
+			connect (entryObj,
+					SIGNAL (activityChanged (QString)),
+					this,
+					SLOT (handleActivityChanged (QString)));
 	}
 
 	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
@@ -495,13 +498,6 @@ namespace Azoth
 
 	namespace
 	{
-		struct ActivityInfo
-		{
-			QString General_;
-			QString Specific_;
-			QString Text_;
-		};
-
 		QString GetActivityHRText (ICLEntry *entry, const ActivityInfo& info)
 		{
 			const auto& entryName = entry->GetEntryName ();
@@ -524,14 +520,8 @@ namespace Azoth
 	void NotificationsManager::handleActivityChanged (const QString& variant)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (sender ());
-
-		const auto& map = entry->GetClientInfo (variant) ["user_activity"].toMap ();
-		const ActivityInfo info
-		{
-			map ["general"].toString (),
-			map ["specific"].toString (),
-			map ["text"].toString ()
-		};
+		const auto ihca = qobject_cast<IHaveContactActivity*> (sender ());
+		const auto& info = ihca->GetUserActivity (variant);
 		const auto& text = GetActivityHRText (entry, info);
 
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
