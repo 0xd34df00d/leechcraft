@@ -97,7 +97,9 @@ namespace MuCommands
 			std::string Pat_;
 		};
 
-		using OpenUrlParams_t = boost::variant<UrlIndex_t, UrlRange, UrlRegExp>;
+		struct SinceLast {};
+
+		using OpenUrlParams_t = boost::variant<SinceLast, UrlIndex_t, UrlRange, UrlRegExp>;
 	}
 }
 }
@@ -126,6 +128,7 @@ namespace MuCommands
 		struct Parser : qi::grammar<Iter, OpenUrlParams_t ()>
 		{
 			qi::rule<Iter, OpenUrlParams_t ()> Start_;
+			qi::rule<Iter, SinceLast ()> SinceLast_;
 			qi::rule<Iter, UrlIndex_t ()> Index_;
 			qi::rule<Iter, UrlRange ()> Range_;
 			qi::rule<Iter, UrlRegExp ()> RegExp_;
@@ -133,11 +136,12 @@ namespace MuCommands
 			Parser ()
 			: Parser::base_type { Start_ }
 			{
+				SinceLast_ = qi::lit ("last") > qi::attr (SinceLast {});
 				Index_ = qi::int_;
 				Range_ = -(qi::int_) >> qi::lit (':') >> -(qi::int_);
 				RegExp_ = qi::lit ("rx ") >> +qi::char_;
 
-				Start_ = Range_ | Index_ | RegExp_;
+				Start_ = SinceLast_ | Range_ | Index_ | RegExp_;
 			}
 		};
 
