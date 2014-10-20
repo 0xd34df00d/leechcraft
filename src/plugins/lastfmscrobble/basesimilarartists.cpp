@@ -76,11 +76,21 @@ namespace Lastfmscrobble
 		const int similarity = reply->property ("Similarity").toInt ();
 		const auto& similarTo = reply->property ("SimilarTo").toStringList ();
 
+		const auto& data = reply->readAll ();
+
 		QDomDocument doc;
-		if (!doc.setContent (reply->readAll ()))
+		QString errMsg;
+		int errLine = 0, errCol = 0;
+		if (!doc.setContent (data, &errMsg, &errLine, &errCol))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to parse response";
+					<< "unable to parse response:"
+					<< errMsg
+					<< "at"
+					<< errLine
+					<< ":"
+					<< errCol
+					<< data;
 			DecrementWaiting ();
 			return;
 		}
