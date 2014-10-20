@@ -62,6 +62,18 @@ namespace MuCommands
 		{
 			return r1.Pat_ == r2.Pat_;
 		}
+
+		bool operator== (const SinceLast&, const SinceLast&)
+		{
+			return true;
+		}
+	}
+
+	void OpenUrlCommandTest::parseLast ()
+	{
+		const QString command = "/openurl last";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, OpenUrlParams_t { SinceLast {} });
 	}
 
 	void OpenUrlCommandTest::parseByIndex ()

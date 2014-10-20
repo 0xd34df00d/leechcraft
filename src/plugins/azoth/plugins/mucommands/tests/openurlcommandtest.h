@@ -41,6 +41,8 @@ namespace MuCommands
 	{
 		Q_OBJECT
 	private slots:
+		void parseLast ();
+
 		void parseByIndex ();
 
 		void parseByRange ();
