@@ -45,6 +45,7 @@
 #include <QXmppVersionManager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxmessage.h"
@@ -995,17 +996,17 @@ namespace Xoox
 
 	void EntryBase::handleCommands ()
 	{
-		QString jid = GetJID ();
+		auto jid = GetJID ();
 		if (GetEntryType () != EntryType::PrivateChat)
 		{
 			QStringList commandable;
-			Q_FOREACH (const QString& var, Variant2VerString_.keys ())
+			const auto capsMgr = Account_->GetClientConnection ()->GetCapsManager ();
+			for (const auto& pair : Util::Stlize (Variant2VerString_))
 			{
-				const QStringList& caps = Account_->GetClientConnection ()->
-						GetCapsManager ()->GetRawCaps (Variant2VerString_ [var]);
+				const auto& caps = capsMgr->GetRawCaps (pair.second);
 				if (caps.isEmpty () ||
-					caps.contains (AdHocCommandManager::GetAdHocFeature ()))
-					commandable << var;
+						caps.contains (AdHocCommandManager::GetAdHocFeature ()))
+					commandable << pair.first;
 			}
 
 			if (commandable.isEmpty ())

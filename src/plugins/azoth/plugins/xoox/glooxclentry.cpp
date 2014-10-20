@@ -35,6 +35,7 @@
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/azothcommon.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -294,19 +295,17 @@ namespace Xoox
 
 		if (!ODS_)
 		{
-			const QMap<QString, QXmppPresence>& presences =
-					Account_->GetClientConnection ()->GetClient ()->
+			const auto& presences = Account_->GetClientConnection ()->GetClient ()->
 							rosterManager ().getAllPresencesForBareJid (BareJID_);
 			if (presences.size () == 1)
 				result << presences.begin ().key ();
 			else
 			{
 				QMap<int, QList<QString>> prio2res;
-				for (QMap<QString, QXmppPresence>::const_iterator i = presences.begin ();
-						i != presences.end (); ++i)
-					prio2res [i->priority ()] << i.key ();
-				Q_FOREACH (int prio, prio2res.keys ())
-					result << prio2res [prio];
+				for (const auto& pair : Util::Stlize (presences))
+					prio2res [pair.second.priority ()] << pair.first;
+				for (const auto& list : prio2res)
+					result += list;
 				std::reverse (result.begin (), result.end ());
 			}
 		}
