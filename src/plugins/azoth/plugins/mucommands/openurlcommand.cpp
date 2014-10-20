@@ -50,11 +50,19 @@ namespace MuCommands
 {
 	namespace
 	{
-		QStringList GetAllUrls (IProxyObject *azothProxy, ICLEntry *entry)
+		QStringList GetAllUrls (IProxyObject *azothProxy, ICLEntry *entry, QObject *since = nullptr)
 		{
 			QStringList urls;
-			for (const auto msg : entry->GetAllMessages ())
+
+			const auto& allMsgs = entry->GetAllMessages ();
+
+			const auto begin = since ?
+					std::find_if (allMsgs.begin (), allMsgs.end (),
+							[since] (IMessage *msg) { return msg->GetQObject () == since; }) :
+					allMsgs.begin ();
+			for (auto i = begin == allMsgs.end () ? allMsgs.begin () : begin; i != allMsgs.end (); ++i)
 			{
+				const auto msg = *i;
 				switch (msg->GetMessageType ())
 				{
 				case IMessage::Type::ChatMessage:
