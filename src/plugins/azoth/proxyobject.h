@@ -98,6 +98,8 @@ namespace Azoth
 
 		void RedrawItem (QObject*) const override;
 
+		QObject* GetFirstUnreadMessage (QObject *entryObj) const override;
+
 		IFormatterProxyObject& GetFormatterProxy () override;
 	};
 }

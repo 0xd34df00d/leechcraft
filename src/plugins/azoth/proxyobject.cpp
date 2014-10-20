@@ -414,6 +414,11 @@ namespace Azoth
 		Core::Instance ().UpdateItem (entryObj);
 	}
 
+	QObject* ProxyObject::GetFirstUnreadMessage (QObject* entryObj) const
+	{
+		return Core::Instance ().GetUnreadQueueManager ()->GetFirstUnreadMessage (entryObj);
+	}
+
 	IFormatterProxyObject& ProxyObject::GetFormatterProxy ()
 	{
 		return Formatter_;

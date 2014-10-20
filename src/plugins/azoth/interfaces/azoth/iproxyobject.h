@@ -342,6 +342,8 @@ namespace Azoth
 
 		virtual void RedrawItem (QObject*) const = 0;
 
+		virtual QObject* GetFirstUnreadMessage (QObject *entryObj) const = 0;
+
 		virtual IFormatterProxyObject& GetFormatterProxy () = 0;
 	};
 }
