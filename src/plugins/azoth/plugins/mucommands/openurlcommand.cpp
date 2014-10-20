@@ -171,13 +171,32 @@ namespace MuCommands
 		{
 			const QStringList Urls_;
 			IEntityManager * const IEM_;
+			IProxyObject * const AzothProxy_;
 			const TaskParameters Params_;
+			ICLEntry * const Entry_;
 
-			ParseResultVisitor (const QStringList& urls, IEntityManager *iem, TaskParameters params)
+			ParseResultVisitor (const QStringList& urls, IEntityManager *iem,
+					IProxyObject *azothProxy, ICLEntry *entry, TaskParameters params)
 			: Urls_ { urls }
 			, IEM_ { iem }
+			, AzothProxy_ { azothProxy }
 			, Params_ { params }
+			, Entry_ { entry }
 			{
+			}
+
+			CommandResult_t operator() (const SinceLast&) const
+			{
+				const auto last = AzothProxy_->GetFirstUnreadMessage (Entry_->GetQObject ());
+				const auto& urls = GetAllUrls (AzothProxy_, Entry_, last);
+				for (const auto& url : urls)
+				{
+					const auto& entity = Util::MakeEntity (url,
+							{},
+							Params_ | FromUserInitiated);
+					IEM_->HandleEntity (entity);
+				}
+				return true;
 			}
 
 			CommandResult_t operator() (UrlIndex_t idx) const
@@ -260,6 +279,8 @@ namespace MuCommands
 				{
 					GetAllUrls (azothProxy, entry),
 					coreProxy->GetEntityManager (),
+					azothProxy,
+					entry,
 					params
 				},
 				parseResult);
