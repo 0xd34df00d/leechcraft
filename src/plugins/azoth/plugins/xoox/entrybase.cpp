@@ -621,6 +621,14 @@ namespace Xoox
 		{
 			Variant2Version_.remove (variant);
 			Variant2ClientInfo_.remove (variant);
+			Variant2VerString_.remove (variant);
+			Variant2Identities_.remove (variant);
+
+			Variant2Audio_.remove (variant);
+			Variant2Mood_.remove (variant);
+			Variant2Activity_.remove (variant);
+
+			Variant2SecsDiff_.remove (variant);
 		}
 
 		emit statusChanged (status, variant);
