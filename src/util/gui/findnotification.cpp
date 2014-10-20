@@ -47,7 +47,8 @@ namespace Util
 
 		EscShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
 
-		new Util::ClearLineEditAddon (proxy, Ui_->Pattern_);
+		const auto addon = new Util::ClearLineEditAddon (proxy, Ui_->Pattern_);
+		addon->SetEscClearsEdit (false);
 	}
 
 	FindNotification::~FindNotification ()
