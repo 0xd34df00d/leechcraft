@@ -523,6 +523,9 @@ namespace Xoox
 
 		if (const auto location = dynamic_cast<UserLocation*> (event))
 		{
+			if (Location_ [variant] == location->GetInfo ())
+				return;
+
 			Location_ [variant] = location->GetInfo ();
 			emit locationChanged (variant, this);
 			emit locationChanged (variant);
