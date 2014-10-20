@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QSet>
+#include <QMap>
 #include <QPointer>
 
 namespace LeechCraft
@@ -43,8 +44,12 @@ namespace Azoth
 
 		QList<QPointer<QObject>> Queue_;
 		QSet<QPointer<QObject>> UnreadMessages_;
+
+		QMap<QObject*, QPointer<QObject>> Entry2FirstUnread_;
 	public:
 		UnreadQueueManager (QObject* = 0);
+
+		QObject* GetFirstUnreadMessage (QObject *entryObj) const;
 
 		void AddMessage (QObject*);
 		bool IsMessageRead (QObject*) const;

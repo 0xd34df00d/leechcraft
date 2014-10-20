@@ -49,12 +49,20 @@ namespace Azoth
 	{
 	}
 
+	QObject* UnreadQueueManager::GetFirstUnreadMessage (QObject* entryObj) const
+	{
+		return Entry2FirstUnread_.value (entryObj);
+	}
+
 	void UnreadQueueManager::AddMessage (QObject *msgObj)
 	{
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		QObject *entryObj = msg->ParentCLEntry ();
+		const auto msg = qobject_cast<IMessage*> (msgObj);
+		const auto entryObj = msg->ParentCLEntry ();
 		if (!Queue_.contains (entryObj))
+		{
 			Queue_ << entryObj;
+			Entry2FirstUnread_ [entryObj] = msgObj;
+		}
 
 		UnreadMessages_ << msgObj;
 	}
@@ -66,19 +74,18 @@ namespace Azoth
 
 	void UnreadQueueManager::ShowNext ()
 	{
-		QObject *entryObj = 0;
+		QObject *entryObj = nullptr;
 		while (!Queue_.isEmpty () && !entryObj)
 			entryObj = Queue_.takeFirst ();
 		if (!entryObj)
 			return;
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
 
-		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		const auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 		const auto idx = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (chatWidget));
-		auto mw = rootWM->GetMainWindow (idx);
-		if (mw)
+		if (const auto mw = rootWM->GetMainWindow (idx))
 		{
 			mw->show ();
 			mw->raise ();
