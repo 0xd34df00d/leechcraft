@@ -459,11 +459,11 @@ namespace Azoth
 		{
 			const auto& entryName = entry->GetEntryName ();
 			return !info.Title_.isEmpty () ?
-					NotificationsManager::tr ("%1 is now listening to %2 by %3")
+					NotificationsManager::tr ("%1 is now listening to %2 by %3.")
 							.arg ("<em>" + entryName + "</em>")
 							.arg ("<em>" + info.Title_ + "</em>")
 							.arg ("<em>" + info.Artist_ + "</em>") :
-					NotificationsManager::tr ("%1 stopped listening to music")
+					NotificationsManager::tr ("%1 stopped listening to music.")
 							.arg (entryName);
 		}
 	}
@@ -604,13 +604,13 @@ namespace Azoth
 			const bool hasCountry = !info.Country_.isEmpty ();
 			const bool hasLocality = !info.Locality_.isEmpty ();
 			if (hasCountry && hasLocality)
-				return NotificationsManager::tr ("%1's is now in %2 (%3).")
+				return NotificationsManager::tr ("%1 is now in %2 (%3).")
 						.arg (entryName)
 						.arg (info.Locality_)
 						.arg (info.Country_);
 
 			if (hasCountry || hasLocality)
-				return NotificationsManager::tr ("%1's is now in %2 (%3).")
+				return NotificationsManager::tr ("%1 is now in %2 (%3).")
 						.arg (entryName)
 						.arg (hasCountry ? info.Country_ : info.Locality_);
 
