@@ -203,6 +203,11 @@ namespace Abbrev
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 
+	void Plugin::hookChatTabCreated (IHookProxy_ptr, QObject *chatTab, QObject*, QWebView*)
+	{
+		ShortcutsMgr_->HandleTab (qobject_cast<QWidget*> (chatTab));
+	}
+
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 			QObject*, QObject *entryObj, int, QString)
 	{

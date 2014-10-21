@@ -36,6 +36,8 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iprovidecommands.h>
 
+class QWebView;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -89,6 +91,8 @@ namespace Abbrev
 	public slots:
 		void initPlugin (QObject*);
 
+		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
+				QObject*, QObject*, QWebView*);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr,
 				QObject*,
 				QObject*,
