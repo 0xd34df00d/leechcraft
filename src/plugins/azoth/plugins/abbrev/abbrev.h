@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iprovidecommands.h>
 
@@ -49,11 +50,13 @@ namespace Abbrev
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveShortcuts
 				 , public IProvideCommands
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
+				IHaveShortcuts
 				LeechCraft::Azoth::IProvideCommands)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Abbrev")
@@ -75,6 +78,9 @@ namespace Abbrev
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
 
 		StaticCommands_t GetStaticCommands (ICLEntry*);
 	private:

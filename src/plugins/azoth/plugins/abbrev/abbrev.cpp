@@ -141,6 +141,16 @@ namespace Abbrev
 		return result;
 	}
 
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return ShortcutsMgr_->GetActionInfo ();
+	}
+
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
+	{
+		ShortcutsMgr_->SetShortcut (id, seqs);
+	}
+
 	StaticCommands_t Plugin::GetStaticCommands (ICLEntry*)
 	{
 		return Commands_;
