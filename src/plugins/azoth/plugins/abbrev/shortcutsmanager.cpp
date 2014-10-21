@@ -28,7 +28,10 @@
  **********************************************************************/
 
 #include "shortcutsmanager.h"
+#include <QSignalMapper>
+#include <QTextEdit>
 #include <util/util.h>
+#include "abbrevsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,9 +39,27 @@ namespace Azoth
 {
 namespace Abbrev
 {
-	ShortcutsManager::ShortcutsManager (QObject *parent)
+	ShortcutsManager::ShortcutsManager (AbbrevsManager *abbrevs, QObject *parent)
 	: QObject { parent }
+	, Mapper_ { new QSignalMapper { this } }
+	, Abbrevs_ { abbrevs }
 	{
+		connect (Mapper_,
+				SIGNAL (mapped (QWidget*)),
+				this,
+				SLOT (handleActivated (QWidget*)));
+	}
+
+	void ShortcutsManager::HandleTab (QWidget *tab)
+	{
+		const auto shortcut = new QShortcut { tab };
+		shortcut->setKey (Sequence_);
+		connect (shortcut,
+				SIGNAL (activated ()),
+				Mapper_,
+				SLOT (map ()));
+		Mapper_->setMapping (shortcut, tab);
+		Tab2SC_ [tab] = shortcut;
 	}
 
 	QMap<QString, ActionInfo> ShortcutsManager::GetActionInfo () const
@@ -55,8 +76,34 @@ namespace Abbrev
 			});
 	}
 
-	void ShortcutsManager::SetShortcut (const QString&, const QKeySequences_t&)
+	void ShortcutsManager::SetShortcut (const QString&, const QKeySequences_t& seqs)
 	{
+		Sequence_ = seqs.value (0);
+
+		for (const auto sc : Tab2SC_)
+			sc->setKey (Sequence_);
+	}
+
+	void ShortcutsManager::handleActivated (QWidget *tab)
+	{
+		QTextEdit *edit = nullptr;
+		QMetaObject::invokeMethod (tab,
+				"getMsgEdit",
+				Q_RETURN_ARG (QTextEdit*, edit));
+		if (!edit)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to get message edit"
+					<< tab;
+			return;
+		}
+
+		const auto& text = edit->toPlainText ();
+		const auto& processed = Abbrevs_->Process (text);
+		if (text == processed)
+			return;
+
+		edit->setPlainText (processed);
 	}
 }
 }
