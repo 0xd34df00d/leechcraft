@@ -119,10 +119,6 @@ namespace Metacontacts
 		void handleRealCPSChanged (const ChatPartState&, const QString&);
 
 		void handleRealAttentionDrawn (const QString&, const QString&);
-		void handleRealMoodChanged (const QString&);
-		void handleRealActivityChanged (const QString&);
-		void handleRealTuneChanged (const QString&);
-		void handleRealLocationChanged (const QString&);
 
 		void checkRemovedCLItems (const QList<QObject*>&);
 
