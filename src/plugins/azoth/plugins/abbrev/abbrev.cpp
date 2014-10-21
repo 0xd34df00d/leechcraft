@@ -33,6 +33,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
 #include "abbrevsmanager.h"
+#include "shortcutsmanager.h"
 
 namespace LeechCraft
 {
@@ -100,6 +101,8 @@ namespace Abbrev
 					"Removes a previously added abbrevation either by its _pattern_ or by its "
 					"_index_ in the list returned by @/listabbrevs@.")
 			});
+
+		ShortcutsMgr_ = new ShortcutsManager { Manager_.get (), this };
 	}
 
 	void Plugin::SecondInit ()

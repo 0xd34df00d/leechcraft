@@ -44,6 +44,7 @@ class IProxyObject;
 namespace Abbrev
 {
 	class AbbrevsManager;
+	class ShortcutsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -62,6 +63,8 @@ namespace Abbrev
 		IProxyObject *AzothProxy_ = nullptr;
 
 		std::shared_ptr<AbbrevsManager> Manager_;
+
+		ShortcutsManager *ShortcutsMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
