@@ -109,6 +109,7 @@ namespace Abbrev
 			return;
 
 		edit->setPlainText (processed);
+		edit->moveCursor (QTextCursor::EndOfBlock, QTextCursor::MoveAnchor);
 	}
 
 	void ShortcutsManager::handleDestroyed (QObject *tabObj)
