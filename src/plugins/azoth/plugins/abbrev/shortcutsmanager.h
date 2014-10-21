@@ -63,6 +63,7 @@ namespace Abbrev
 		void SetShortcut (const QString&, const QKeySequences_t&);
 	private slots:
 		void handleActivated (QWidget*);
+		void handleDestroyed (QObject*);
 	};
 }
 }

@@ -60,6 +60,11 @@ namespace Abbrev
 				SLOT (map ()));
 		Mapper_->setMapping (shortcut, tab);
 		Tab2SC_ [tab] = shortcut;
+
+		connect (tab,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleDestroyed (QObject*)));
 	}
 
 	QMap<QString, ActionInfo> ShortcutsManager::GetActionInfo () const
@@ -104,6 +109,11 @@ namespace Abbrev
 			return;
 
 		edit->setPlainText (processed);
+	}
+
+	void ShortcutsManager::handleDestroyed (QObject *tabObj)
+	{
+		Tab2SC_.remove (static_cast<QWidget*> (tabObj));
 	}
 }
 }
