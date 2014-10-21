@@ -11,6 +11,7 @@ set (ABBREV_SRCS
 	abbrev.cpp
 	abbrevsmanager.cpp
 	abbreviation.cpp
+	shortcutsmanager.cpp
 	)
 
 CreateTrs ("azoth_abbrev" "en;ru_RU" ABBREV_COMPILED_TRANSLATIONS)
