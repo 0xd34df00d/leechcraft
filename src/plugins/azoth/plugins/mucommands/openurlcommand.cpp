@@ -60,7 +60,8 @@ namespace MuCommands
 					std::find_if (allMsgs.begin (), allMsgs.end (),
 							[since] (IMessage *msg) { return msg->GetQObject () == since; }) :
 					allMsgs.begin ();
-			for (auto i = begin == allMsgs.end () ? allMsgs.begin () : begin; i != allMsgs.end (); ++i)
+			for (auto i = begin == allMsgs.end () ? allMsgs.begin () : begin;
+					i != allMsgs.end (); ++i)
 			{
 				const auto msg = *i;
 				switch (msg->GetMessageType ())
