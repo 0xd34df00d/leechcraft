@@ -101,14 +101,19 @@ namespace MuCommands
 			boost::optional<int> End_;
 		};
 
-		struct UrlRegExp
-		{
-			std::string Pat_;
-		};
-
 		struct SinceLast {};
 
-		using OpenUrlParams_t = boost::variant<SinceLast, UrlIndex_t, UrlRange, UrlRegExp>;
+		using RxableRanges_t = boost::variant<SinceLast, UrlRange>;
+
+		using RegExpStr_t = std::string;
+
+		struct UrlComposite
+		{
+			RxableRanges_t Range_;
+			boost::optional<RegExpStr_t> Pat_;
+		};
+
+		using OpenUrlParams_t = boost::variant<UrlIndex_t, UrlComposite, std::string>;
 	}
 }
 }
@@ -118,8 +123,9 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::UrlRange,
 		(boost::optional<int>, Start_)
 		(boost::optional<int>, End_));
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::UrlRegExp,
-		(std::string, Pat_));
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::UrlComposite,
+		(LeechCraft::Azoth::MuCommands::RxableRanges_t, Range_)
+		(boost::optional<std::string>, Pat_));
 
 namespace LeechCraft
 {
@@ -136,21 +142,25 @@ namespace MuCommands
 		template<typename Iter>
 		struct Parser : qi::grammar<Iter, OpenUrlParams_t ()>
 		{
-			qi::rule<Iter, OpenUrlParams_t ()> Start_;
 			qi::rule<Iter, SinceLast ()> SinceLast_;
+			qi::rule<Iter, OpenUrlParams_t ()> Start_;
 			qi::rule<Iter, UrlIndex_t ()> Index_;
+			qi::rule<Iter, UrlComposite ()> RegExp_;
+			qi::rule<Iter, RegExpStr_t ()> RegExpPat_;
+			qi::rule<Iter, RxableRanges_t ()> RxableRanges_;
 			qi::rule<Iter, UrlRange ()> Range_;
-			qi::rule<Iter, UrlRegExp ()> RegExp_;
 
 			Parser ()
 			: Parser::base_type { Start_ }
 			{
-				SinceLast_ = qi::lit ("last") > qi::attr (SinceLast {});
 				Index_ = qi::int_;
+				SinceLast_ = qi::lit ("last") > qi::attr (SinceLast {});
 				Range_ = -(qi::int_) >> qi::lit (':') >> -(qi::int_);
-				RegExp_ = qi::lit ("rx ") >> +qi::char_;
+				RxableRanges_ = SinceLast_ | Range_;
+				RegExpPat_ = qi::lit ("rx ") >> +qi::char_;
+				RegExp_ = RxableRanges_ >> -RegExpPat_;
 
-				Start_ = SinceLast_ | Range_ | Index_ | RegExp_;
+				Start_ = RegExpPat_ | RegExp_ | Index_;
 			}
 		};
 
@@ -168,95 +178,105 @@ namespace MuCommands
 			return ParseCommand (unicode.begin (), unicode.end ());
 		}
 
+		struct RxableRangesVisitor : public boost::static_visitor<QStringList>
+		{
+			IProxyObject * const AzothProxy_;
+			ICLEntry * const Entry_;
+
+			RxableRangesVisitor (IProxyObject *azothProxy, ICLEntry *entry)
+			: AzothProxy_ { azothProxy }
+			, Entry_ { entry }
+			{
+			}
+
+			QStringList operator() (const SinceLast&) const
+			{
+				const auto last = AzothProxy_->GetFirstUnreadMessage (Entry_->GetQObject ());
+				return GetAllUrls (AzothProxy_, Entry_, last);
+			}
+
+			QStringList operator() (const UrlRange& range) const
+			{
+				const auto& allUrls = GetAllUrls (AzothProxy_, Entry_);
+				if (allUrls.isEmpty ())
+					return {};
+
+				auto begin = boost::get_optional_value_or (range.Start_, 1);
+				auto end = boost::get_optional_value_or (range.End_, allUrls.size ());
+
+				if (!begin || !end)
+					throw StringCommandResult
+					{
+						true,
+						QObject::tr ("Indexes cannot be equal to zero.")
+					};
+
+				begin = begin > 0 ? (begin - 1) : (allUrls.size () + begin);
+				end = end > 0 ? (end - 1) : (allUrls.size () + end);
+
+				if (begin > end)
+					throw StringCommandResult
+					{
+						true,
+						QObject::tr ("Begin index should not be greater than end index.")
+					};
+
+				if (end >= allUrls.size ())
+					throw StringCommandResult
+					{
+						true,
+						QObject::tr ("End index is out of bounds of the URLs list.")
+					};
+
+				QStringList result;
+				for (auto i = begin; i <= end; ++i)
+					result << allUrls.value (i);
+				return result;
+			}
+		};
+
 		struct ParseResultVisitor : public boost::static_visitor<CommandResult_t>
 		{
-			const QStringList Urls_;
 			IEntityManager * const IEM_;
 			IProxyObject * const AzothProxy_;
 			const TaskParameters Params_;
 			ICLEntry * const Entry_;
 
-			ParseResultVisitor (const QStringList& urls, IEntityManager *iem,
+			ParseResultVisitor (IEntityManager *iem,
 					IProxyObject *azothProxy, ICLEntry *entry, TaskParameters params)
-			: Urls_ { urls }
-			, IEM_ { iem }
+			: IEM_ { iem }
 			, AzothProxy_ { azothProxy }
 			, Params_ { params }
 			, Entry_ { entry }
 			{
 			}
 
-			CommandResult_t operator() (const SinceLast&) const
-			{
-				const auto last = AzothProxy_->GetFirstUnreadMessage (Entry_->GetQObject ());
-				const auto& urls = GetAllUrls (AzothProxy_, Entry_, last);
-				for (const auto& url : urls)
-				{
-					const auto& entity = Util::MakeEntity (url,
-							{},
-							Params_ | FromUserInitiated);
-					IEM_->HandleEntity (entity);
-				}
-				return true;
-			}
-
 			CommandResult_t operator() (UrlIndex_t idx) const
 			{
-				return (*this) ({ idx, idx });
+				return (*this) (UrlComposite { UrlRange { idx, idx }, {} } );
 			}
 
-			CommandResult_t operator() (const UrlRange& range) const
+			CommandResult_t operator() (const RegExpStr_t& rxStr) const
 			{
-				if (Urls_.isEmpty ())
-					return true;
+				return (*this) ({ UrlRange {}, rxStr });
+			}
 
-				auto begin = boost::get_optional_value_or (range.Start_, 1);
-				auto end = boost::get_optional_value_or (range.End_, Urls_.size ());
-
-				if (!begin || !end)
-					return StringCommandResult
-					{
-						true,
-						QObject::tr ("Indexes cannot be equal to zero.")
-					};
-
-				begin = begin > 0 ? (begin - 1) : (Urls_.size () + begin);
-				end = end > 0 ? (end - 1) : (Urls_.size () + end);
-
-				if (begin > end)
-					return StringCommandResult
-					{
-						true,
-						QObject::tr ("Begin index should not be greater than end index.")
-					};
-
-				if (end >= Urls_.size ())
-					return StringCommandResult
-					{
-						true,
-						QObject::tr ("End index is out of bounds of the URLs list.")
-					};
-
-				for (auto i = begin; i <= end; ++i)
+			CommandResult_t operator() (const UrlComposite& rx) const
+			{
+				QStringList urls;
+				try
 				{
-					const auto& url = Urls_.value (i);
-					if (url.isEmpty ())
-						continue;
-
-					const auto& entity = Util::MakeEntity (QUrl::fromEncoded (url.toUtf8 ()),
-							{},
-							Params_ | FromUserInitiated);
-					IEM_->HandleEntity (entity);
+					urls = boost::apply_visitor (RxableRangesVisitor { AzothProxy_, Entry_ }, rx.Range_);
+				}
+				catch (const StringCommandResult& res)
+				{
+					return res;
 				}
 
-				return true;
-			}
+				if (rx.Pat_)
+					urls = urls.filter (QRegExp { QString::fromStdString (*rx.Pat_) });
 
-			CommandResult_t operator() (const UrlRegExp& rx) const
-			{
-				const auto& matching = Urls_.filter (QRegExp { QString::fromStdString (rx.Pat_) });
-
-				for (const auto& url : matching)
+				for (const auto& url : urls)
 				{
 					if (url.isEmpty ())
 						continue;
@@ -278,7 +298,6 @@ namespace MuCommands
 		auto parseResult = ParseCommand (text);
 		return boost::apply_visitor (ParseResultVisitor
 				{
-					GetAllUrls (azothProxy, entry),
 					coreProxy->GetEntityManager (),
 					azothProxy,
 					entry,
