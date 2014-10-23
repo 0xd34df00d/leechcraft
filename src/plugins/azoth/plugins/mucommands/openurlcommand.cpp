@@ -164,11 +164,14 @@ namespace MuCommands
 			}
 		};
 
+		struct ParseError {};
+
 		template<typename Iter>
 		OpenUrlParams_t ParseCommand (Iter begin, Iter end)
 		{
 			OpenUrlParams_t res;
-			qi::parse (begin, end, Parser<Iter> {}, res);
+			if (!qi::parse (begin, end, Parser<Iter> {}, res))
+				throw ParseError {};
 			return res;
 		}
 
