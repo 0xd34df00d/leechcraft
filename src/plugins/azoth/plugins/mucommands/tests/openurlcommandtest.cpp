@@ -90,7 +90,8 @@ namespace MuCommands
 
 		bool operator== (const UrlComposite& r1, const UrlComposite& r2)
 		{
-			return r1.Pat_ == r2.Pat_;
+			return r1.Pat_ == r2.Pat_ &&
+					r1.Range_ == r2.Range_;
 		}
 
 		bool operator== (const SinceLast&, const SinceLast&)
