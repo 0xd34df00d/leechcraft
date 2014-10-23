@@ -163,7 +163,7 @@ namespace LMP
 			EmitNotification (text, pxInfo.PX_);
 	}
 
-	void NPStateUpdater::emitNotification ()
+	void NPStateUpdater::forceEmitNotification ()
 	{
 		EmitNotification (BuildNotificationText (Player_->GetCurrentMediaInfo ()), {});
 	}

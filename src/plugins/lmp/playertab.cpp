@@ -118,7 +118,7 @@ namespace LMP
 		connect (this,
 				SIGNAL (notifyCurrentTrackRequested ()),
 				updater,
-				SLOT (emitNotification ()));
+				SLOT (forceEmitNotification ()));
 
 		connect (Player_,
 				SIGNAL (playerAvailable (bool)),

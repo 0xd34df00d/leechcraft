@@ -70,7 +70,7 @@ namespace LMP
 		void ForceEmitNotification (const QString&, QPixmap);
 		void Update (MediaInfo);
 	public slots:
-		void emitNotification ();
+		void forceEmitNotification ();
 	private slots:
 		void update (SourceState);
 		void update (const MediaInfo&);
