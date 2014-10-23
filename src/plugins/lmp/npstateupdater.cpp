@@ -165,7 +165,9 @@ namespace LMP
 
 	void NPStateUpdater::forceEmitNotification ()
 	{
-		EmitNotification (BuildNotificationText (Player_->GetCurrentMediaInfo ()), {});
+		const auto& info = Player_->GetCurrentMediaInfo ();
+		const auto& pxInfo = GetPixmap (info);
+		ForceEmitNotification (BuildNotificationText (Player_->GetCurrentMediaInfo ()), pxInfo.PX_);
 	}
 
 	void NPStateUpdater::update (SourceState newState)
