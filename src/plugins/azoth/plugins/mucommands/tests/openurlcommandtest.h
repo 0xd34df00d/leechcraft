@@ -45,7 +45,6 @@ namespace MuCommands
 
 		void parseByIndex ();
 
-		void parseByLast ();
 		void parseByRange ();
 		void parseByLeftOpenRange ();
 		void parseByRightOpenRange ();
