@@ -67,6 +67,7 @@ namespace LMP
 	private:
 		QString BuildNotificationText (const MediaInfo&) const;
 		void EmitNotification (const QString&, QPixmap);
+		void ForceEmitNotification (const QString&, QPixmap);
 		void Update (MediaInfo);
 	public slots:
 		void emitNotification ();

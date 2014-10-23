@@ -97,6 +97,11 @@ namespace LMP
 		if (text == LastNotificationString_)
 			return;
 
+		ForceEmitNotification (text, notifyPx);
+	}
+
+	void NPStateUpdater::ForceEmitNotification (const QString& text, QPixmap notifyPx)
+	{
 		LastNotificationString_ = text;
 
 		int width = notifyPx.width ();
