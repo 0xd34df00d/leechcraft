@@ -45,6 +45,26 @@ QDebug operator<< (QDebug dbg, const boost::optional<T>& opt)
 	return dbg.space ();
 }
 
+QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlRange& r)
+{
+	dbg.nospace () << "UrlRange { start: "
+			<< r.Start_
+			<< "; end: "
+			<< r.End_
+			<< " }";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlComposite& c)
+{
+	dbg.nospace () << "UrlComposite { "
+			<< boost::apply_visitor (PrintVisitor {}, c.Range_).toUtf8 ()
+			<< "; rx: `"
+			<< boost::get_optional_value_or (c.Pat_, "").c_str ()
+			<< "` }";
+	return dbg.space ();
+}
+
 namespace QTest
 {
 	template<>
