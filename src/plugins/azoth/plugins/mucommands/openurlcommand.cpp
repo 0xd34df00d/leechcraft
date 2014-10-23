@@ -160,7 +160,7 @@ namespace MuCommands
 				RegExpPat_ = qi::lit ("rx ") >> +qi::char_;
 				RegExp_ = RxableRanges_ >> -(qi::lit (' ') >> RegExpPat_);
 
-				Start_ = RegExpPat_ | RegExp_ | Index_;
+				Start_ = (RegExpPat_ | RegExp_ | Index_) >> qi::eoi;
 			}
 		};
 
