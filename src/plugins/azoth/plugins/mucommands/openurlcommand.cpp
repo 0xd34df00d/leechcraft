@@ -158,7 +158,7 @@ namespace MuCommands
 				Range_ = -(qi::int_) >> qi::lit (':') >> -(qi::int_);
 				RxableRanges_ = SinceLast_ | Range_;
 				RegExpPat_ = qi::lit ("rx ") >> +qi::char_;
-				RegExp_ = RxableRanges_ >> -RegExpPat_;
+				RegExp_ = RxableRanges_ >> -(qi::lit (' ') >> RegExpPat_);
 
 				Start_ = RegExpPat_ | RegExp_ | Index_;
 			}
