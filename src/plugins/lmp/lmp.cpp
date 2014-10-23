@@ -450,7 +450,7 @@ namespace LMP
 
 		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_);
 		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
-		initShortcut (SLOT (notifyCurrentTrack ()), {});
+		initShortcut (SIGNAL (notifyCurrentTrackRequested ()), {});
 
 		auto proxy = Core::Instance ().GetProxy ();
 		auto setInfo = [this, proxy] (const QByteArray& method,
@@ -465,7 +465,7 @@ namespace LMP
 		setInfo (SLOT (nextTrack ()), tr ("Next track"), "media-skip-forward");
 		setInfo (SLOT (stop ()), tr ("Stop playback"), "media-playback-stop");
 		setInfo (SLOT (handleLoveTrack ()), tr ("Love track"), "emblem-favorite");
-		setInfo (SLOT (notifyCurrentTrack ()),
+		setInfo (SIGNAL (notifyCurrentTrackRequested ()),
 				tr ("Notify about current track"),
 				"dialog-information");
 		setInfo (SLOT (volumeUp ()), tr ("Increase volume"), "audio-volume-high");
