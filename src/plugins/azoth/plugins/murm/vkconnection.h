@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <stdexcept>
 #include <QObject>
 #include <QHash>
 #include <QVariantList>
