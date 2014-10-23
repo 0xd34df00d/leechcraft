@@ -113,6 +113,13 @@ namespace MuCommands
 		QCOMPARE (res, (OpenUrlParams_t { UrlIndex_t { 3 } }));
 	}
 
+	void OpenUrlCommandTest::parseByLast ()
+	{
+		const QString command = "/openurl last";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, (OpenUrlParams_t { UrlComposite { SinceLast {}, {} } }));
+	}
+
 	void OpenUrlCommandTest::parseByRange ()
 	{
 		const QString command = "/openurl 3:10";
@@ -167,6 +174,13 @@ namespace MuCommands
 		const QString command = "/openurl 3:4 rx ^[a-c] space smth$";
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, (OpenUrlParams_t { UrlComposite { UrlRange { 3, 4 }, std::string { "^[a-c] space smth$" } } }));
+	}
+
+	void OpenUrlCommandTest::parseByRxLast ()
+	{
+		const QString command = "/openurl last rx ^[a-c] space smth$";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, (OpenUrlParams_t { UrlComposite { SinceLast {}, std::string { "^[a-c] space smth$" } } }));
 	}
 }
 }
