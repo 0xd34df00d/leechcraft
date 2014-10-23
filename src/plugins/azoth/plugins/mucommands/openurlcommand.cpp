@@ -298,7 +298,21 @@ namespace MuCommands
 	CommandResult_t OpenUrl (const ICoreProxy_ptr& coreProxy, IProxyObject *azothProxy,
 			ICLEntry *entry, const QString& text, TaskParameters params)
 	{
-		auto parseResult = ParseCommand (text);
+		OpenUrlParams_t parseResult;
+		try
+		{
+			parseResult = ParseCommand (text);
+		}
+		catch (const ParseError&)
+		{
+			return StringCommandResult
+			{
+				true,
+				QObject::tr ("Unable to parse `%1`.")
+					.arg ("<em>" + text + "</em>")
+			};
+		}
+
 		return boost::apply_visitor (ParseResultVisitor
 				{
 					coreProxy->GetEntityManager (),
