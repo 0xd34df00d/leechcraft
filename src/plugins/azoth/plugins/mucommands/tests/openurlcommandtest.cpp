@@ -145,7 +145,6 @@ namespace MuCommands
 	{
 		const QString command = "/openurl rx ^[a-c]$";
 		const auto& res = ParseCommand (command);
-		//QCOMPARE (res, (OpenUrlParams_t { UrlComposite { UrlRange { {}, {} }, std::string { "^[a-c]$" } } }));
 		QCOMPARE (res, (OpenUrlParams_t { RegExpStr_t { "^[a-c]$" } }));
 	}
 
@@ -153,8 +152,21 @@ namespace MuCommands
 	{
 		const QString command = "/openurl rx ^[a-c] space smth$";
 		const auto& res = ParseCommand (command);
-		//QCOMPARE (res, (OpenUrlParams_t { UrlComposite { UrlRange { {}, {} }, std::string { "^[a-c] space smth$" } } }));
 		QCOMPARE (res, (OpenUrlParams_t { RegExpStr_t { "^[a-c] space smth$" } }));
+	}
+
+	void OpenUrlCommandTest::parseByRxRanged ()
+	{
+		const QString command = "/openurl 3:4 rx ^[a-c]$";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, (OpenUrlParams_t { UrlComposite { UrlRange { 3, 4 }, std::string { "^[a-c]$" } } }));
+	}
+
+	void OpenUrlCommandTest::parseByRxSpacesRanged ()
+	{
+		const QString command = "/openurl 3:4 rx ^[a-c] space smth$";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, (OpenUrlParams_t { UrlComposite { UrlRange { 3, 4 }, std::string { "^[a-c] space smth$" } } }));
 	}
 }
 }
