@@ -56,6 +56,9 @@ namespace MuCommands
 		void parseByRxRanged ();
 		void parseByRxSpacesRanged ();
 		void parseByRxLast ();
+
+		void failLeftover ();
+		void failLeftoverLast ();
 	};
 }
 }

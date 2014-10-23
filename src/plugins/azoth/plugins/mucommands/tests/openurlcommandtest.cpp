@@ -176,6 +176,36 @@ namespace MuCommands
 		const auto& res = ParseCommand (command);
 		QCOMPARE (res, (OpenUrlParams_t { UrlComposite { SinceLast {}, std::string { "^[a-c] space smth$" } } }));
 	}
+
+	void OpenUrlCommandTest::failLeftover()
+	{
+		const QString command = "/openurl without any rx";
+		bool caught = false;
+		try
+		{
+			ParseCommand (command);
+		}
+		catch (const ParseError&)
+		{
+			caught = true;
+		}
+		QCOMPARE (caught, caught);
+	}
+
+	void OpenUrlCommandTest::failLeftoverLast ()
+	{
+		const QString command = "/openurl last without any rx";
+		bool caught = false;
+		try
+		{
+			ParseCommand (command);
+		}
+		catch (const ParseError&)
+		{
+			caught = true;
+		}
+		QCOMPARE (caught, caught);
+	}
 }
 }
 }
