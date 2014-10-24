@@ -125,9 +125,9 @@ namespace LeechCraft
 		const auto& map = qobject_cast<Application*> (qApp)->GetVarMap ();
 		if (map.count ("plugin"))
 		{
-			const std::vector<std::string>& plugins = map ["plugin"].as<std::vector<std::string>> ();
-			Q_FOREACH (const std::string& plugin, plugins)
-				paths << QDir (QString::fromUtf8 (plugin.c_str ())).absolutePath ();
+			const auto& plugins = map ["plugin"].as<std::vector<std::string>> ();
+			for (const auto& plugin : plugins)
+				paths << QString::fromUtf8 (plugin.c_str ());
 		}
 		PluginManager_ = new PluginManager (paths, this);
 
