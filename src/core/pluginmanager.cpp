@@ -79,12 +79,20 @@ namespace LeechCraft
 			FindPlugins ();
 		else
 		{
+			const auto& allPluginsPaths = FindPluginsPaths ();
+
 			qDebug () << Q_FUNC_INFO << "explicit paths given, entering forced loading mode";
-			Q_FOREACH (const QString& path, pluginPaths)
+			for (const auto& path : pluginPaths)
 			{
-				qDebug () << "adding" << path;
-				const auto loader = MakeLoader (path);
-				PluginContainers_.push_back (loader);
+				const auto& toLoad = QFile::exists (path) ?
+						QStringList { path } :
+						allPluginsPaths.filter (path, Qt::CaseInsensitive);
+				for (const auto& single : toLoad)
+				{
+					qDebug () << "adding" << single;
+					const auto loader = MakeLoader (single);
+					PluginContainers_.push_back (loader);
+				}
 			}
 		}
 	}
