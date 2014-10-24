@@ -123,8 +123,9 @@ namespace LeechCraft
 
 		const QStringList& GetPluginLoadErrors () const;
 	private:
+		QStringList FindPluginsPaths () const;
 		void FindPlugins ();
-		void ScanDir (const QString&);
+		void ScanPlugins (const QStringList&);
 
 		/** Tries to load all the plugins and filters out those who fail
 		 * various sanity checks.

@@ -40,6 +40,7 @@
 #include <QMainWindow>
 #include <util/util.h>
 #include <util/exceptions.h>
+#include <util/sll/prelude.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
@@ -670,19 +671,32 @@ namespace LeechCraft
 		return PluginLoadErrors_;
 	}
 
-	void PluginManager::FindPlugins ()
+	QStringList PluginManager::FindPluginsPaths () const
 	{
+		QStringList result;
+
+		auto scan = [&result] (const QString& path)
+		{
 #ifdef Q_OS_WIN32
-		ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
+			const QStringList nameFilters { "*leechcraft_*.dll" };
+#else
+			const QStringList nameFilters { "*leechcraft_*" };
+#endif
+			result += Util::Map (QDir { path }.entryInfoList (nameFilters, QDir::Files),
+					[] (const QFileInfo& info) { return info.canonicalFilePath (); });
+		};
+
+#ifdef Q_OS_WIN32
+		scan (QApplication::applicationDirPath () + "/plugins/bin");
 #elif defined (Q_OS_MAC)
 		if (QApplication::arguments ().contains ("-nobundle"))
-			ScanDir ("/usr/local/lib/leechcraft/plugins");
+			scan ("/usr/local/lib/leechcraft/plugins");
 		else
-			ScanDir (QApplication::applicationDirPath () + "/../PlugIns");
+			scan (QApplication::applicationDirPath () + "/../PlugIns");
 #else
 		QString libdir (PLUGINS_LIBDIR);
 	#if defined (INSTALL_PREFIX)
-		ScanDir (QString (INSTALL_PREFIX "/%1/leechcraft/plugins")
+		scan (QString (INSTALL_PREFIX "/%1/leechcraft/plugins")
 				.arg (libdir));
 	#else
 		#if QT_VERSION >= 0x050000
@@ -690,30 +704,30 @@ namespace LeechCraft
 		#else
 		const QString suffix {};
 		#endif
-		ScanDir (("/usr/local/%1/leechcraft/plugins" + suffix)
+		scan (("/usr/local/%1/leechcraft/plugins" + suffix)
 				.arg (libdir));
-		ScanDir (("/usr/%1/leechcraft/plugins" + suffix)
+		scan (("/usr/%1/leechcraft/plugins" + suffix)
 				.arg (libdir));
 	#endif
 #endif
+
+		return result;
 	}
 
-	void PluginManager::ScanDir (const QString& dir)
+	void PluginManager::FindPlugins ()
+	{
+		ScanPlugins (FindPluginsPaths ());
+	}
+
+	void PluginManager::ScanPlugins (const QStringList& paths)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
 
-		QStringList nameFilters;
-#ifdef Q_OS_WIN32
-		nameFilters << "*leechcraft_*.dll";
-#else
-		nameFilters << "*leechcraft_*";
-#endif
-		const QDir& pluginsDir = QDir (dir);
-		Q_FOREACH (const auto& fileinfo, pluginsDir.entryInfoList (nameFilters, QDir::Files))
+		for (const QFileInfo fileinfo : paths)
 		{
-			QString name = fileinfo.canonicalFilePath ();
+			auto name = fileinfo.canonicalFilePath ();
 			settings.beginGroup (name);
 
 			const auto loader = MakeLoader (name);
