@@ -68,6 +68,7 @@ namespace Xoox
 	public:
 		AdHocNote (const QDomElement&);
 		AdHocNote (const QString& severity, const QString& text);
+		AdHocNote (Severity severity, const QString& text);
 
 		Severity GetSeverity () const;
 		const QString& GetText () const;

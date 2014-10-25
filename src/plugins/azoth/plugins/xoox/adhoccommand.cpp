@@ -87,7 +87,12 @@ namespace Xoox
 	}
 
 	AdHocNote::AdHocNote (const QString& severity, const QString& text)
-	: Severity_ { Type2Severity (severity) }
+	: AdHocNote { Type2Severity (severity), text }
+	{
+	}
+
+	AdHocNote::AdHocNote (Severity severity, const QString& text)
+	: Severity_ { severity }
 	, Text_ { text }
 	{
 	}
