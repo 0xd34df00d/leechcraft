@@ -76,7 +76,7 @@ namespace Azoth
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth"));
+		Util::InstallTranslator ("azoth");
 
 		ChatTab::SetParentMultiTabs (this);
 		ServiceDiscoveryWidget::SetParentMultiTabs (this);

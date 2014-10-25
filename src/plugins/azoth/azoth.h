@@ -30,7 +30,6 @@
 #ifndef PLUGINS_AZOTH_AZOTH_H
 #define PLUGINS_AZOTH_AZOTH_H
 #include <QObject>
-#include <QTranslator>
 #include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include <interfaces/ipluginready.h>
@@ -81,7 +80,6 @@ namespace Azoth
 
 		MainWidget *MW_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		std::auto_ptr<QTranslator> Translator_;
 
 		TabClasses_t TabClasses_;
 		TabClassInfo ServerHistoryTC_;
