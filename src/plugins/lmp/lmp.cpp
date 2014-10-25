@@ -43,6 +43,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include "gstfix.h"
 #include "playertab.h"
 #include "player.h"
@@ -224,6 +225,8 @@ namespace LMP
 
 		auto& e = GlobAction2Entity_ [id];
 		e.Additional_ ["Shortcut"] = QVariant::fromValue (sequences.value (0));
+		e.Additional_ ["AltShortcuts"] = Util::Map (sequences.mid (1),
+				&QVariant::fromValue<QKeySequence>);
 		emit gotEntity (e);
 	}
 
