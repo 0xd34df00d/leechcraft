@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDMANAGER_H
+#pragma once
+
 #include <QSet>
 #include <QXmppClientExtension.h>
 #include <QXmppDataForm.h>
@@ -61,14 +61,16 @@ namespace Xoox
 
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);
+	private:
+		void RegisterErrorHandler (const QString&);
+		void HandleError (const QXmppIq&);
 	private slots:
 		void handleItemsReceived (const QXmppDiscoveryIq&);
 	signals:
 		void gotCommands (const QString&, const QList<AdHocCommand>&);
 		void gotResult (const QString&, const AdHocResult&);
+		void gotError (const QString&, const QString&);
 	};
 }
 }
 }
-
-#endif

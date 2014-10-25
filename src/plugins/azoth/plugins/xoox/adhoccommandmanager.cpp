@@ -31,6 +31,7 @@
 #include <QXmppDiscoveryManager.h>
 #include "clientconnection.h"
 #include "util.h"
+#include "clientconnectionerrormgr.h"
 
 namespace LeechCraft
 {
@@ -56,7 +57,8 @@ namespace Xoox
 
 	void AdHocCommandManager::QueryCommands (const QString& jid)
 	{
-		ClientConn_->GetQXmppDiscoveryManager ()->requestItems (jid, NsAdHoc);
+		const auto& id = ClientConn_->GetQXmppDiscoveryManager ()->requestItems (jid, NsAdHoc);
+		RegisterErrorHandler (id);
 	}
 
 	void AdHocCommandManager::ExecuteCommand (const QString& jid,
@@ -72,8 +74,10 @@ namespace Xoox
 		iq.setTo (jid);
 		iq.setExtensions ({ command });
 
-		PendingCommands_ << iq.id ();
+		const auto& id = iq.id ();
+		PendingCommands_ << id;
 		client ()->sendPacket (iq);
+		RegisterErrorHandler (id);
 	}
 
 	void AdHocCommandManager::ProceedExecuting (const QString& jid,
@@ -101,8 +105,10 @@ namespace Xoox
 		iq.setTo (jid);
 		iq.setExtensions ({ command });
 
-		PendingCommands_ << iq.id ();
+		const auto& id = iq.id ();
+		PendingCommands_ << id;
 		client ()->sendPacket (iq);
+		RegisterErrorHandler (id);
 	}
 
 	QStringList AdHocCommandManager::discoveryFeatures () const
@@ -192,6 +198,27 @@ namespace Xoox
 		emit gotResult (elem.attribute ("from"), result);
 
 		return true;
+	}
+
+	void AdHocCommandManager::RegisterErrorHandler (const QString& id)
+	{
+		ClientConn_->GetErrorManager ()->SetErrorHandler (id,
+				[this] (const QXmppIq& iq)
+				{
+					HandleError (iq);
+					return true;
+				});
+	}
+
+	void AdHocCommandManager::HandleError (const QXmppIq& iq)
+	{
+		const auto& err = iq.error ();
+		auto errStr = ClientConn_->GetErrorManager ()->
+				HandleErrorCondition (err.condition ());
+		if (!err.text ().isEmpty ())
+			errStr += " " + tr ("Original message: %1.")
+					.arg (err.text ());
+		emit gotError (errStr, iq.id ());
 	}
 
 	void AdHocCommandManager::handleItemsReceived (const QXmppDiscoveryIq& iq)
