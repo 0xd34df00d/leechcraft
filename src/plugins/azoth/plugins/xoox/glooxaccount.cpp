@@ -72,6 +72,7 @@
 #include "pendinglastactivityrequest.h"
 #include "lastactivitymanager.h"
 #include "roomhandler.h"
+#include "clientconnectionerrormgr.h"
 
 namespace LeechCraft
 {
@@ -656,7 +657,7 @@ namespace Xoox
 				pending,
 				SLOT (handleGotLastActivity (QString, int)));
 
-		ClientConnection_->WhitelistError (id);
+		ClientConnection_->GetErrorManager ()->Whitelist (id);
 		ClientConnection_->AddCallback (id,
 				[pending] (const QXmppIq& iq)
 				{

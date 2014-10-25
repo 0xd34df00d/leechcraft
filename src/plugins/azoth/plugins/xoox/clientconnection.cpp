@@ -743,9 +743,9 @@ namespace Xoox
 		}
 	}
 
-	void ClientConnection::WhitelistError (const QString& id)
+	ClientConnectionErrorMgr* ClientConnection::GetErrorManager () const
 	{
-		ErrorMgr_->Whitelist (id, true);
+		return ErrorMgr_;
 	}
 
 	void ClientConnection::SendPacketWCallback (const QXmppIq& packet, PacketCallback_t cb)

@@ -253,7 +253,7 @@ namespace Xoox
 		void RevokeSubscription (const QString&, const QString&);
 		void Remove (GlooxCLEntry*);
 
-		void WhitelistError (const QString&);
+		ClientConnectionErrorMgr* GetErrorManager () const;
 
 		void SendPacketWCallback (const QXmppIq&, PacketCallback_t);
 		void AddCallback (const QString&, const PacketCallback_t&);

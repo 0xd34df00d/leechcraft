@@ -30,6 +30,7 @@
 #include "discomanagerwrapper.h"
 #include <QXmppDiscoveryManager.h>
 #include "clientconnection.h"
+#include "clientconnectionerrormgr.h"
 
 namespace LeechCraft
 {
@@ -59,7 +60,7 @@ namespace Xoox
 
 		const auto& id = Mgr_->requestInfo (jid, node);
 		if (report)
-			Conn_->WhitelistError (id);
+			Conn_->GetErrorManager ()->Whitelist (id);
 	}
 
 	void DiscoManagerWrapper::RequestItems (const QString& jid,
@@ -69,7 +70,7 @@ namespace Xoox
 
 		const auto& id = Mgr_->requestItems (jid, node);
 		if (report)
-			Conn_->WhitelistError (id);
+			Conn_->GetErrorManager ()->Whitelist (id);
 	}
 
 	void DiscoManagerWrapper::handleDiscoInfo (const QXmppDiscoveryIq& iq)
