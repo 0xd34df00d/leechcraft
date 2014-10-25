@@ -115,27 +115,27 @@ namespace Acetamide
 
 	void NickServIdentifyWidget::on_Add__clicked ()
 	{
-		std::auto_ptr<NewNickServIdentifyDialog> nns (new NewNickServIdentifyDialog (0));
-		if (nns->exec () == QDialog::Rejected)
+		NewNickServIdentifyDialog nns { 0 };
+		if (nns.exec () == QDialog::Rejected)
 			return;
 
 		QList<QStandardItem*> identify;
-		QStandardItem *serverItem = new QStandardItem (nns->GetServer ());
+		QStandardItem *serverItem = new QStandardItem (nns.GetServer ());
 		serverItem->setEditable (false);
-		QStandardItem *nickItem = new QStandardItem (nns->GetNickName ());
+		QStandardItem *nickItem = new QStandardItem (nns.GetNickName ());
 		nickItem->setEditable (false);
-		QStandardItem *nickServNickItem = new QStandardItem (nns->GetNickServNickName ());
+		QStandardItem *nickServNickItem = new QStandardItem (nns.GetNickServNickName ());
 		nickServNickItem->setEditable (false);
-		QStandardItem *authStringItem = new QStandardItem (nns->GetAuthString ());
+		QStandardItem *authStringItem = new QStandardItem (nns.GetAuthString ());
 		authStringItem->setEditable (false);
-		QStandardItem *authMessageItem = new QStandardItem (nns->GetAuthMessage ());
+		QStandardItem *authMessageItem = new QStandardItem (nns.GetAuthMessage ());
 		authMessageItem->setEditable (false);
 		NickServIdentify nsi;
-		nsi.Server_ = nns->GetServer ();
-		nsi.Nick_ = nns->GetNickName ();
-		nsi.NickServNick_ = nns->GetNickServNickName ();
-		nsi.AuthString_ = nns->GetAuthString ();
-		nsi.AuthMessage_ = nns->GetAuthMessage ();
+		nsi.Server_ = nns.GetServer ();
+		nsi.Nick_ = nns.GetNickName ();
+		nsi.NickServNick_ = nns.GetNickServNickName ();
+		nsi.AuthString_ = nns.GetAuthString ();
+		nsi.AuthMessage_ = nns.GetAuthMessage ();
 
 		identify << serverItem
 				<< nickItem
