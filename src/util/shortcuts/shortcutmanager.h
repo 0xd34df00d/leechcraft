@@ -78,7 +78,10 @@ namespace Util
 		QObject *ContextObj_;
 
 		QHash<QString, QList<QAction*>> Actions_;
+
 		QHash<QString, QList<QShortcut*>> Shortcuts_;
+		QHash<QShortcut*, QList<QShortcut*>> Shortcut2Subs_;
+
 		QHash<QString, Entity> Globals_;
 
 		QMap<QString, ActionInfo> ActionInfo_;

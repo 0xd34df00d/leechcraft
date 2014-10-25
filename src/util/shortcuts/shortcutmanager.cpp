@@ -118,7 +118,24 @@ namespace Util
 			act->setShortcuts (seqs);
 
 		for (auto sc : Shortcuts_ [id])
+		{
 			sc->setKey (seqs.value (0));
+			qDeleteAll (Shortcut2Subs_.take (sc));
+
+			const auto seqsSize = seqs.size ();
+			if (seqsSize > 1)
+				for (int i = 1; i < seqsSize; ++i)
+				{
+					auto subsc = new QShortcut { sc->parentWidget () };
+					subsc->setContext (sc->context ());
+					subsc->setKey (seqs.value (i));
+					connect (subsc,
+							SIGNAL (activated ()),
+							sc,
+							SIGNAL (activated ()));
+					Shortcut2Subs_ [sc] << subsc;
+				}
+		}
 
 		if (Globals_.contains (id))
 		{
@@ -151,6 +168,8 @@ namespace Util
 		auto sc = static_cast<QShortcut*> (sender ());
 		for (const auto& id : Shortcuts_.keys ())
 			Shortcuts_ [id].removeAll (sc);
+
+		qDeleteAll (Shortcut2Subs_.take (sc));
 	}
 }
 }
