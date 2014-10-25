@@ -84,7 +84,8 @@ namespace LeechCraft
 			qDebug () << Q_FUNC_INFO << "explicit paths given, entering forced loading mode";
 			for (const auto& path : pluginPaths)
 			{
-				const auto& toLoad = QFile::exists (path) ?
+				const QFileInfo fi { path };
+				const auto& toLoad = fi.isFile () && fi.isExecutable () ?
 						QStringList { path } :
 						allPluginsPaths.filter (path, Qt::CaseInsensitive);
 				for (const auto& single : toLoad)
