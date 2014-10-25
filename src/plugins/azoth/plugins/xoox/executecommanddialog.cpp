@@ -172,21 +172,24 @@ namespace Xoox
 	};
 
 	ExecuteCommandDialog::ExecuteCommandDialog (const QString& jid,
-			GlooxAccount *account, QWidget *parent)
+			GlooxAccount *account, QWidget *parent, Tag)
 	: QWizard { parent }
 	, Account_ { account }
 	, Manager_ { account->GetClientConnection ()->GetAdHocCommandManager () }
 	, JID_ { jid }
 	{
 		Ui_.setupUi (this);
-
 		setAttribute (Qt::WA_DeleteOnClose);
-
 		connect (this,
 				SIGNAL (currentIdChanged (int)),
 				this,
 				SLOT (handleCurrentChanged (int)));
+	}
 
+	ExecuteCommandDialog::ExecuteCommandDialog (const QString& jid,
+			GlooxAccount *account, QWidget *parent)
+	: ExecuteCommandDialog { jid, account, parent, Tag {} }
+	{
 		RequestCommands ();
 
 		setButtonText (QWizard::CustomButton1, tr ("Execute another command"));
@@ -201,20 +204,8 @@ namespace Xoox
 	ExecuteCommandDialog::ExecuteCommandDialog (const QString& jid,
 			const QString& command,
 			GlooxAccount *account, QWidget *parent)
-	: QWizard { parent }
-	, Account_ { account }
-	, Manager_ { account->GetClientConnection ()->GetAdHocCommandManager () }
-	, JID_ { jid }
+	: ExecuteCommandDialog { jid, account, parent, Tag {} }
 	{
-		Ui_.setupUi (this);
-
-		setAttribute (Qt::WA_DeleteOnClose);
-
-		connect (this,
-				SIGNAL (currentIdChanged (int)),
-				this,
-				SLOT (handleCurrentChanged (int)));
-
 		const int idx = addPage (new WaitPage { tr ("Please wait while "
 				"the selected command is executed.") });
 		if (currentId () != idx)

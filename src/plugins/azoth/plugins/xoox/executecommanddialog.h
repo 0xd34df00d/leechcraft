@@ -50,6 +50,9 @@ namespace Xoox
 		GlooxAccount *Account_;
 		AdHocCommandManager *Manager_;
 		QString JID_;
+
+		struct Tag {};
+		ExecuteCommandDialog (const QString&, GlooxAccount*, QWidget*, Tag);
 	public:
 		ExecuteCommandDialog (const QString&, GlooxAccount*, QWidget* = 0);
 		ExecuteCommandDialog (const QString&, const QString&, GlooxAccount*, QWidget* = 0);
