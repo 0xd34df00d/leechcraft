@@ -31,6 +31,7 @@
 #include <QAction>
 #include <QShortcut>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include "interfaces/ihaveshortcuts.h"
 #include "interfaces/core/ientitymanager.h"
 #include "interfaces/core/iiconthememanager.h"
@@ -101,6 +102,7 @@ namespace Util
 		e.Additional_ ["ActionID"] = id;
 		e.Additional_ ["Method"] = method;
 		e.Additional_ ["Shortcut"] = QVariant::fromValue (info.Seqs_.value (0));
+		e.Additional_ ["AltShortcuts"] = Util::Map (info.Seqs_.mid (1), &QVariant::fromValue<QKeySequence>);
 		Globals_ [id] = e;
 
 		ActionInfo_ [id] = info;
@@ -141,6 +143,8 @@ namespace Util
 		{
 			auto& e = Globals_ [id];
 			e.Additional_ ["Shortcut"] = QVariant::fromValue (seqs.value (0));
+			e.Additional_ ["AltShortcuts"] = Util::Map (seqs.mid (1),
+					&QVariant::fromValue<QKeySequence>);
 			CoreProxy_->GetEntityManager ()->HandleEntity (e);
 		}
 	}
