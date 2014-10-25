@@ -30,7 +30,6 @@
 #pragma once
 
 #include <memory>
-#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 
@@ -47,7 +46,6 @@ namespace DBusManager
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.DBusManager")
 
-		std::auto_ptr<QTranslator> Translator_;
 		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);

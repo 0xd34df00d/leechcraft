@@ -41,7 +41,7 @@ namespace DBusManager
 {
 	void DBusManager::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("dbusmanager"));
+		Util::InstallTranslator ("dbusmanager");
 
 		Core::Instance ().SetProxy (proxy);
 
