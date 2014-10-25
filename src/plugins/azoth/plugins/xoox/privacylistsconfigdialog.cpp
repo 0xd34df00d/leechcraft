@@ -247,15 +247,15 @@ namespace Xoox
 
 	void PrivacyListsConfigDialog::on_AddRule__released ()
 	{
-		std::auto_ptr<PrivacyListsItemDialog> dia (new PrivacyListsItemDialog);
-		if (dia->exec () != QDialog::Accepted)
+		PrivacyListsItemDialog dia;
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		const PrivacyListItem& item = dia->GetItem ();
+		const auto& item = dia.GetItem ();
 		Model_->appendRow (ToRow (item));
 
-		PrivacyList& list = Lists_ [Ui_.ConfigureList_->currentText ()];
-		QList<PrivacyListItem> items = list.GetItems ();
+		auto& list = Lists_ [Ui_.ConfigureList_->currentText ()];
+		auto items = list.GetItems ();
 		items << item;
 		list.SetItems (items);
 	}

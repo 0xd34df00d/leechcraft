@@ -152,40 +152,40 @@ namespace Xoox
 
 	void AccountSettingsHolder::OpenConfigDialog ()
 	{
-		std::auto_ptr<GlooxAccountConfigurationDialog> dia (new GlooxAccountConfigurationDialog (0));
+		GlooxAccountConfigurationDialog dia;
 		if (!JID_.isEmpty ())
-			dia->W ()->SetJID (JID_);
+			dia.W ()->SetJID (JID_);
 		if (!Nick_.isEmpty ())
-			dia->W ()->SetNick (Nick_);
+			dia.W ()->SetNick (Nick_);
 		if (!Resource_.isEmpty ())
-			dia->W ()->SetResource (Resource_);
+			dia.W ()->SetResource (Resource_);
 		if (!Host_.isEmpty ())
-			dia->W ()->SetHost (Host_);
+			dia.W ()->SetHost (Host_);
 		if (Port_ >= 0)
-			dia->W ()->SetPort (Port_);
-		dia->W ()->SetPriority (Priority_);
+			dia.W ()->SetPort (Port_);
+		dia.W ()->SetPriority (Priority_);
 
-		dia->W ()->SetKAInterval (KAParams_.first);
-		dia->W ()->SetKATimeout (KAParams_.second);
+		dia.W ()->SetKAInterval (KAParams_.first);
+		dia.W ()->SetKATimeout (KAParams_.second);
 
-		dia->W ()->SetFileLogEnabled (FileLogEnabled_);
+		dia.W ()->SetFileLogEnabled (FileLogEnabled_);
 
-		dia->W ()->SetFTMethods (GetFTMethods ());
-		dia->W ()->SetUseSOCKS5Proxy (GetUseSOCKS5Proxy ());
-		dia->W ()->SetSOCKS5Proxy (GetSOCKS5Proxy ());
-		dia->W ()->SetTLSMode (GetTLSMode ());
+		dia.W ()->SetFTMethods (GetFTMethods ());
+		dia.W ()->SetUseSOCKS5Proxy (GetUseSOCKS5Proxy ());
+		dia.W ()->SetSOCKS5Proxy (GetSOCKS5Proxy ());
+		dia.W ()->SetTLSMode (GetTLSMode ());
 
-		dia->W ()->SetStunServer (StunHost_);
-		dia->W ()->SetStunPort (StunPort_);
-		dia->W ()->SetTurnServer (TurnHost_);
-		dia->W ()->SetTurnPort (TurnPort_);
-		dia->W ()->SetTurnUser (TurnUser_);
-		dia->W ()->SetTurnPassword (TurnPass_);
+		dia.W ()->SetStunServer (StunHost_);
+		dia.W ()->SetStunPort (StunPort_);
+		dia.W ()->SetTurnServer (TurnHost_);
+		dia.W ()->SetTurnPort (TurnPort_);
+		dia.W ()->SetTurnUser (TurnUser_);
+		dia.W ()->SetTurnPassword (TurnPass_);
 
-		if (dia->exec () == QDialog::Rejected)
+		if (dia.exec () == QDialog::Rejected)
 			return;
 
-		FillSettings (dia->W ());
+		FillSettings (dia.W ());
 	}
 
 	void AccountSettingsHolder::FillSettings (GlooxAccountConfigurationWidget *w)
