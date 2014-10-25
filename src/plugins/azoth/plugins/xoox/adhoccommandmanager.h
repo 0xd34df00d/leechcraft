@@ -55,9 +55,9 @@ namespace Xoox
 
 		AdHocCommandManager (ClientConnection*);
 
-		void QueryCommands (const QString&);
-		void ExecuteCommand (const QString&, const AdHocCommand&);
-		void ProceedExecuting (const QString&, const AdHocResult&, const QString&);
+		QString QueryCommands (const QString&);
+		QString ExecuteCommand (const QString&, const AdHocCommand&);
+		QString ProceedExecuting (const QString&, const AdHocResult&, const QString&);
 
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);

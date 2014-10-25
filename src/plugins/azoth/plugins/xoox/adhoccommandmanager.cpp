@@ -55,13 +55,14 @@ namespace Xoox
 				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
 	}
 
-	void AdHocCommandManager::QueryCommands (const QString& jid)
+	QString AdHocCommandManager::QueryCommands (const QString& jid)
 	{
 		const auto& id = ClientConn_->GetQXmppDiscoveryManager ()->requestItems (jid, NsAdHoc);
 		RegisterErrorHandler (id);
+		return id;
 	}
 
-	void AdHocCommandManager::ExecuteCommand (const QString& jid,
+	QString AdHocCommandManager::ExecuteCommand (const QString& jid,
 			const AdHocCommand& cmd)
 	{
 		QXmppElement command;
@@ -78,9 +79,10 @@ namespace Xoox
 		PendingCommands_ << id;
 		client ()->sendPacket (iq);
 		RegisterErrorHandler (id);
+		return id;
 	}
 
-	void AdHocCommandManager::ProceedExecuting (const QString& jid,
+	QString AdHocCommandManager::ProceedExecuting (const QString& jid,
 			const AdHocResult& state, const QString& action)
 	{
 		QXmppElement command;
@@ -109,6 +111,7 @@ namespace Xoox
 		PendingCommands_ << id;
 		client ()->sendPacket (iq);
 		RegisterErrorHandler (id);
+		return id;
 	}
 
 	QStringList AdHocCommandManager::discoveryFeatures () const
