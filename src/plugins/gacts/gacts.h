@@ -60,6 +60,8 @@ namespace GActs
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
+	private:
+		void RegisterChildren (QxtGlobalShortcut*, const Entity&);
 	private slots:
 		void handleReceiverDeleted ();
 	};

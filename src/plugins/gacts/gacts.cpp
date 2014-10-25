@@ -96,9 +96,10 @@ namespace GActs
 		if (seq.isEmpty ())
 			return;
 
-		if (RegisteredShortcuts_.contains (id))
+		if (const auto sh = RegisteredShortcuts_.value (id))
 		{
-			RegisteredShortcuts_ [id]->setShortcut (seq);
+			sh->setShortcut (seq);
+			RegisterChildren (sh, e);
 			return;
 		}
 
@@ -116,12 +117,30 @@ namespace GActs
 				SLOT (handleReceiverDeleted ()),
 				Qt::UniqueConnection);
 
-		QxtGlobalShortcut *sh = new QxtGlobalShortcut (seq, receiver);
+		const auto sh = new QxtGlobalShortcut (seq, receiver);
 		connect (sh,
 				SIGNAL (activated ()),
 				receiver,
 				method);
 		RegisteredShortcuts_ [id] = sh;
+
+		RegisterChildren (sh, e);
+	}
+
+	void Plugin::RegisterChildren (QxtGlobalShortcut *sh, const Entity& e)
+	{
+		for (const auto& seqVar : e.Additional_ ["AltShortcuts"].toList ())
+		{
+			const auto& subseq = seqVar.value<QKeySequence> ();
+			if (subseq.isEmpty ())
+				continue;
+
+			const auto subsh = new QxtGlobalShortcut (subseq, sh);
+			connect (subsh,
+					SIGNAL (activated ()),
+					sh,
+					SIGNAL (activated ()));
+		}
 	}
 
 	void Plugin::handleReceiverDeleted ()
