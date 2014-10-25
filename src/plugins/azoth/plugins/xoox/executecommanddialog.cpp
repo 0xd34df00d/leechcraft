@@ -184,6 +184,11 @@ namespace Xoox
 				SIGNAL (currentIdChanged (int)),
 				this,
 				SLOT (handleCurrentChanged (int)));
+
+		connect (Manager_,
+				SIGNAL (gotError (QString, QString)),
+				this,
+				SLOT (handleError (QString)));
 	}
 
 	ExecuteCommandDialog::ExecuteCommandDialog (const QString& jid,
@@ -312,6 +317,14 @@ namespace Xoox
 		if (!result.GetActions ().isEmpty ())
 			addPage (new WaitPage { tr ("Please wait while action "
 						"is performed") });
+		next ();
+	}
+
+	void ExecuteCommandDialog::handleError (const QString& errStr)
+	{
+		AdHocResult result;
+		result.AddNote ({ AdHocNote::Severity::Error, errStr });
+		addPage (new CommandResultPage { result, Account_ });
 		next ();
 	}
 

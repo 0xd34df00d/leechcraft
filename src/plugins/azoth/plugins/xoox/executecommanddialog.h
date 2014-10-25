@@ -65,6 +65,8 @@ namespace Xoox
 		void handleGotCommands (const QString&, const QList<AdHocCommand>&);
 		void handleGotResult (const QString&, const AdHocResult&);
 
+		void handleError (const QString&);
+
 		void recreate ();
 	};
 }
