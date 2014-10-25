@@ -47,7 +47,7 @@ namespace vGrabber
 	{
 		Proxy_ = proxy;
 
-		Translator_.reset (Util::InstallTranslator ("vgrabber"));
+		Util::InstallTranslator ("vgrabber");
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),

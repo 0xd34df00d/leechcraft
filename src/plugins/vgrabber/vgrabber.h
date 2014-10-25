@@ -32,7 +32,6 @@
 #include <memory>
 #include <QObject>
 #include <QStringList>
-#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include <interfaces/ihavesettings.h>
@@ -53,7 +52,6 @@ namespace vGrabber
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.vGrabber")
 
-		std::auto_ptr<QTranslator> Translator_;
 		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 		ICoreProxy_ptr Proxy_;
 
