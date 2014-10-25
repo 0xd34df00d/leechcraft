@@ -67,6 +67,11 @@ namespace Xoox
 			WhitelistedErrors_ << id;
 	}
 
+	void ClientConnectionErrorMgr::SetErrorHandler (const QString& id, const ErrorHandler_f& handler)
+	{
+		ErrorHandlers_ [id] = handler;
+	}
+
 	void ClientConnectionErrorMgr::HandleIq (const QXmppIq& iq)
 	{
 		switch (iq.error ().type ())
@@ -80,6 +85,7 @@ namespace Xoox
 			break;
 		default:
 			WhitelistedErrors_.remove (iq.id ());
+			ErrorHandlers_.remove (iq.id ());
 			break;
 		}
 	}
@@ -158,6 +164,10 @@ namespace Xoox
 
 	void ClientConnectionErrorMgr::HandleError (const QXmppIq& iq)
 	{
+		if (const auto handler = ErrorHandlers_.take (iq.id ()))
+			if (handler (iq))
+				return;
+
 		const QXmppStanza::Error& error = iq.error ();
 		if (!WhitelistedErrors_.remove (iq.id ()))
 			switch (error.condition ())

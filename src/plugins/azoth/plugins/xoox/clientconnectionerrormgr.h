@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QSet>
 #include <QXmppStanza.h>
@@ -55,13 +56,20 @@ namespace Xoox
 
 		int SocketErrorAccumulator_;
 	public:
+		using ErrorHandler_f = std::function<bool (QXmppIq)>;
+	private:
+		QHash<QString, ErrorHandler_f> ErrorHandlers_;
+	public:
 		ClientConnectionErrorMgr (ClientConnection*);
 
 		void Whitelist (const QString&, bool add = true);
+		void SetErrorHandler (const QString&, const ErrorHandler_f&);
+
 		void HandleIq (const QXmppIq&);
 		void HandleMessage (const QXmppMessage&);
-	private:
+
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
+	private:
 		void HandleError (const QXmppIq&);
 	private slots:
 		void handleError (QXmppClient::Error);
