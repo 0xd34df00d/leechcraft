@@ -34,6 +34,7 @@
 #include <QtEndian>
 #include <QtDebug>
 #include <tox/tox.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -299,17 +300,7 @@ namespace Sarin
 	{
 		ScheduleFunction ([origId, this] (Tox *tox)
 				{
-					const auto& toxId = Hex2Bin (origId);
-					if (toxId.size () != TOX_CLIENT_ID_SIZE)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "invalid Tox ID"
-								<< origId;
-						return;
-					}
-
-					const auto friendNum = tox_get_friend_number (tox,
-							reinterpret_cast<const uint8_t*> (toxId.constData ()));
+					const auto friendNum = GetFriendId (tox, origId);
 					if (friendNum < 0)
 					{
 						qWarning () << Q_FUNC_INFO
