@@ -108,7 +108,7 @@ namespace Sarin
 		void ScheduleFunction (const std::function<void (Tox*)>&);
 
 		template<typename F>
-		auto ScheduleFunction (const F& func) -> typename std::enable_if<!std::is_same<decltype (func ({})), void>::value, QFuture<decltype (func ({}))>>::type
+		auto ScheduleFunction (const F& func) -> std::enable_if_t<!std::is_same<decltype (func ({})), void>::value, QFuture<decltype (func ({}))>>
 		{
 			QFutureInterface<decltype (func ({}))> iface;
 			ScheduleFunction ([iface, func] (Tox *tox) mutable
