@@ -35,6 +35,7 @@
 #include "toxaccount.h"
 #include "toxthread.h"
 #include "chatmessage.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -98,9 +99,7 @@ namespace Sarin
 		const auto& body = msg->GetBody ();
 		watcher->setFuture (thread->ScheduleFunction ([=] (Tox *tox) -> MessageSendResult
 				{
-					const auto& binPkey = QByteArray::fromHex (privkey);
-					const auto friendNum = tox_get_friend_number (tox,
-							reinterpret_cast<const uint8_t*> (binPkey.constData ()));
+					const auto friendNum = GetFriendId (tox, privkey);
 					if (friendNum < 0)
 					{
 						qWarning () << Q_FUNC_INFO
