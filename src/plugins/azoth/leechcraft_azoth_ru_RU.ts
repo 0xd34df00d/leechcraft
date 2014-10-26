@@ -1534,32 +1534,32 @@
 <context>
     <name>LeechCraft::Azoth::ChatTab</name>
     <message>
-        <location filename="chattab.cpp" line="167"/>
+        <location filename="chattab.cpp" line="166"/>
         <source>Azoth chat window</source>
         <translation>Окно разговора Azoth</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="199"/>
+        <location filename="chattab.cpp" line="198"/>
         <source>Events</source>
         <translation>События</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1529"/>
+        <location filename="chattab.cpp" line="1532"/>
         <source>Enable rich text</source>
         <translation>Включить форматированный текст</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="304"/>
+        <location filename="chattab.cpp" line="307"/>
         <source>Unable to load style, please check you&apos;ve enabled at least one styles plugin.</source>
         <translation>Невозможно загрузить стиль. Проверьте, что включён хотя бы один стилевой модуль.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="416"/>
+        <location filename="chattab.cpp" line="419"/>
         <source>Chat with %1.</source>
         <translation>Разговор с %1.</translation>
     </message>
     <message numerus="yes">
-        <location filename="chattab.cpp" line="493"/>
+        <location filename="chattab.cpp" line="496"/>
         <source>[%n participant(s)]</source>
         <translation>
             <numerusform>[%n участник]</numerusform>
@@ -1568,112 +1568,112 @@
         </translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="610"/>
+        <location filename="chattab.cpp" line="613"/>
         <source>Cannot execute %1.</source>
         <translation>Невозможно выполнить %1.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="954"/>
+        <location filename="chattab.cpp" line="957"/>
         <source>File offered: %1.</source>
         <translation>Предложен файл: %1.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1005"/>
+        <location filename="chattab.cpp" line="1008"/>
         <source>File transfer request</source>
         <translation>Запрос передачи файла</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1015"/>
+        <location filename="chattab.cpp" line="1018"/>
         <source>Select save path for incoming file</source>
         <translation>Выберите путь для сохранения входящего файла</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1169"/>
+        <location filename="chattab.cpp" line="1172"/>
         <source>participating</source>
         <translation>участвует</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1172"/>
+        <location filename="chattab.cpp" line="1175"/>
         <source>inactive</source>
         <translation>неактивен</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1175"/>
+        <location filename="chattab.cpp" line="1178"/>
         <source>composing</source>
         <translation>пишет</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1178"/>
+        <location filename="chattab.cpp" line="1181"/>
         <source>paused composing</source>
         <translation>перестал писать</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1181"/>
+        <location filename="chattab.cpp" line="1184"/>
         <source>left the conversation</source>
         <translation>покинул(а) разговор</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1274"/>
+        <location filename="chattab.cpp" line="1277"/>
         <source>%1 isn&apos;t present in this conference at the moment.</source>
         <translation>%1 в данный момент отсутствует в конференции.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1551"/>
+        <location filename="chattab.cpp" line="1554"/>
         <source>Quote selection</source>
         <translation>Процитировать выделенное</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1666"/>
+        <location filename="chattab.cpp" line="1669"/>
         <source>MUC log for %1</source>
         <translation>Журнал событий конференции %1</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1699"/>
+        <location filename="chattab.cpp" line="1702"/>
         <source>Call...</source>
         <translation>Позвонить...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="2016"/>
+        <location filename="chattab.cpp" line="2019"/>
         <source>Chat</source>
         <translation>Разговор</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1722"/>
+        <location filename="chattab.cpp" line="1725"/>
         <source>Enable encryption</source>
         <translation>Включить шифрование</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="989"/>
+        <location filename="chattab.cpp" line="992"/>
         <source>Would you like to accept or reject file transfer request for file %1?</source>
         <translation>Вы хотите принять или отклонить запрос на передачу файла %1?</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="994"/>
+        <location filename="chattab.cpp" line="997"/>
         <source>The file description is:</source>
         <translation>Описание файла:</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1927"/>
+        <location filename="chattab.cpp" line="1930"/>
         <source>%1 ended the conversation.</source>
         <translation>%1 завершил разговор.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1930"/>
+        <location filename="chattab.cpp" line="1933"/>
         <source>Conversation ended.</source>
         <translation>Разговор окончен.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="2019"/>
+        <location filename="chattab.cpp" line="2022"/>
         <source>Conference</source>
         <translation>Конференция</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="2022"/>
+        <location filename="chattab.cpp" line="2025"/>
         <source>Private chat</source>
         <translation>Приват</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="2025"/>
+        <location filename="chattab.cpp" line="2028"/>
         <source>Unauthorized user</source>
         <translation>Неавторизованный пользователь</translation>
     </message>
@@ -1681,22 +1681,32 @@
 <context>
     <name>LeechCraft::Azoth::ChatTabWebView</name>
     <message>
-        <location filename="chattabwebview.cpp" line="100"/>
+        <location filename="chattabwebview.cpp" line="102"/>
         <source>Open as URL</source>
         <translation>Открыть как URL</translation>
     </message>
     <message>
-        <location filename="chattabwebview.cpp" line="155"/>
+        <location filename="chattabwebview.cpp" line="108"/>
+        <source>Highlight all occurrences</source>
+        <translation>Подсветить все вхождения</translation>
+    </message>
+    <message>
+        <location filename="chattabwebview.cpp" line="153"/>
+        <source>Highlight the nickname</source>
+        <translation>Подсветить ник</translation>
+    </message>
+    <message>
+        <location filename="chattabwebview.cpp" line="160"/>
         <source>Open</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="chattabwebview.cpp" line="158"/>
+        <location filename="chattabwebview.cpp" line="163"/>
         <source>Save...</source>
         <translation>Сохранить...</translation>
     </message>
     <message>
-        <location filename="chattabwebview.cpp" line="161"/>
+        <location filename="chattabwebview.cpp" line="166"/>
         <source>Open externally</source>
         <translation>Открыть внешней программой</translation>
     </message>
