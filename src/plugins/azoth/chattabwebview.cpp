@@ -80,6 +80,8 @@ namespace Azoth
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
 		QPointer<QMenu> menu (new QMenu (this));
+		const std::shared_ptr<void> menuGuard { nullptr, [&menu] (void*) { delete menu; } };
+
 		const auto r = page ()->mainFrame ()->hitTestContent (e->pos ());
 
 		if (!r.linkUrl ().isEmpty ())
@@ -113,14 +115,9 @@ namespace Azoth
 			menu->addAction (pageAction (QWebPage::InspectElement));
 
 		if (menu->isEmpty ())
-		{
-			delete menu;
 			return;
-		}
 
 		menu->exec (mapToGlobal (e->pos ()));
-		if (menu)
-			delete menu;
 	}
 
 	void ChatTabWebView::HandleNick (QMenu *menu, const QUrl& nickUrl)
