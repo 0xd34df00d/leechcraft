@@ -105,6 +105,12 @@ namespace Azoth
 
 			menu->addSeparator ();
 
+			menu->addAction (tr ("Highlight all occurrences"),
+					this,
+					SLOT (handleHighlightOccurences ()))->setData (text);
+
+			menu->addSeparator ();
+
 			HandleDataFilters (menu, text);
 		}
 
@@ -201,6 +207,12 @@ namespace Azoth
 				{},
 				OnlyHandle | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
+	}
+
+	void ChatTabWebView::handleHighlightOccurences ()
+	{
+		const auto action = qobject_cast<QAction*> (sender ());
+		emit chatWindowSearchRequested (action->data ().toString ().trimmed ());
 	}
 
 	void ChatTabWebView::handleSaveLink ()

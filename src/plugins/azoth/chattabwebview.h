@@ -55,6 +55,7 @@ namespace Azoth
 		void handleOpenLink ();
 		void handleOpenExternally ();
 		void handleOpenAsURL ();
+		void handleHighlightOccurences ();
 		void handleSaveLink ();
 		void handlePageLinkClicked (const QUrl&);
 	signals:
