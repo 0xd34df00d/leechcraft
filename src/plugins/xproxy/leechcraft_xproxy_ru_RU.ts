@@ -2,9 +2,129 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>EditListsDialog</name>
+    <message>
+        <location filename="editlistsdialog.ui" line="14"/>
+        <source>Edit scripts</source>
+        <translation>Изменение списка скриптов</translation>
+    </message>
+    <message>
+        <location filename="editlistsdialog.ui" line="27"/>
+        <source>Add...</source>
+        <translation>Добавить…</translation>
+    </message>
+    <message>
+        <location filename="editlistsdialog.ui" line="34"/>
+        <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+</context>
+<context>
+    <name>EditUrlDialog</name>
+    <message>
+        <location filename="editurldialog.ui" line="14"/>
+        <source>Edit URL</source>
+        <translation>Редактирование URL</translation>
+    </message>
+    <message>
+        <location filename="editurldialog.ui" line="20"/>
+        <source>Host:</source>
+        <translation>Хост:</translation>
+    </message>
+    <message>
+        <location filename="editurldialog.ui" line="30"/>
+        <source>Host name or regular expression...</source>
+        <translation>Имя хоста или регулярное выражение…</translation>
+    </message>
+    <message>
+        <location filename="editurldialog.ui" line="37"/>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
+        <location filename="editurldialog.ui" line="47"/>
+        <source>any</source>
+        <translation>любой</translation>
+    </message>
+    <message>
+        <location filename="editurldialog.ui" line="57"/>
+        <source>Protocols:</source>
+        <translation>Протоколы:</translation>
+    </message>
+    <message>
+        <location filename="editurldialog.ui" line="64"/>
+        <source>Space-separated list of protocols...</source>
+        <translation>Разделённый пробелами список протоколов…</translation>
+    </message>
+</context>
+<context>
+    <name>EditUrlsDialog</name>
+    <message>
+        <location filename="editurlsdialog.ui" line="14"/>
+        <source>Edit URLs</source>
+        <translation>Редактирование списка URL</translation>
+    </message>
+    <message>
+        <location filename="editurlsdialog.ui" line="27"/>
+        <source>Add...</source>
+        <translation>Добавить…</translation>
+    </message>
+    <message>
+        <location filename="editurlsdialog.ui" line="34"/>
+        <source>Edit...</source>
+        <translation>Редактировать…</translation>
+    </message>
+    <message>
+        <location filename="editurlsdialog.ui" line="41"/>
+        <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::XProxy</name>
+    <message>
+        <location filename="editurlsdialog.cpp" line="62"/>
+        <source>Host</source>
+        <translation>Хост</translation>
+    </message>
+    <message>
+        <location filename="editurlsdialog.cpp" line="62"/>
+        <source>Port</source>
+        <translation>Порт</translation>
+    </message>
+    <message>
+        <location filename="editurlsdialog.cpp" line="62"/>
+        <source>Protocols</source>
+        <translation>Протоколы</translation>
+    </message>
+    <message>
+        <location filename="editlistsdialog.cpp" line="48"/>
+        <source>Script name</source>
+        <translation>Имя скрипта</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::XProxy::EditListsDialog</name>
+    <message>
+        <location filename="editlistsdialog.cpp" line="76"/>
+        <source>No new scripts can be added.</source>
+        <translation>Невозможно добавить какие-либо новые скрипты.</translation>
+    </message>
+    <message>
+        <location filename="editlistsdialog.cpp" line="85"/>
+        <source>Add a script</source>
+        <translation>Добавить скрипт</translation>
+    </message>
+    <message>
+        <location filename="editlistsdialog.cpp" line="86"/>
+        <source>Select a script or dynamic list to add:</source>
+        <translation>Выберите скрипт или динамический список для добавления:</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::XProxy::Plugin</name>
     <message>
-        <location filename="xproxy.cpp" line="84"/>
+        <location filename="xproxy.cpp" line="91"/>
         <source>Advanced proxy servers manager for LeechCraft.</source>
         <translation>Продвинутый менеджер прокси-серверов для LeechCraft.</translation>
     </message>
@@ -12,53 +132,37 @@
 <context>
     <name>LeechCraft::XProxy::ProxiesConfigWidget</name>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="58"/>
+        <location filename="proxiesconfigwidget.cpp" line="57"/>
         <source>caching HTTP</source>
         <translation>кеширующий HTTP</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="61"/>
+        <location filename="proxiesconfigwidget.cpp" line="60"/>
         <source>caching FTP</source>
         <translation>кеширующий FTP</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="64"/>
+        <location filename="proxiesconfigwidget.cpp" line="63"/>
         <source>no proxy</source>
         <translation>без прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="67"/>
+        <location filename="proxiesconfigwidget.cpp" line="66"/>
         <source>other type</source>
         <translation>другой тип</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="78"/>
-        <location filename="proxiesconfigwidget.cpp" line="85"/>
-        <source>any</source>
-        <translation>любой</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.cpp" line="223"/>
-        <source>Protocols</source>
-        <translation>Протоколы</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.cpp" line="224"/>
-        <source>Target</source>
-        <translation>Цель</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.cpp" line="225"/>
+        <location filename="proxiesconfigwidget.cpp" line="98"/>
         <source>Proxy type</source>
         <translation>Тип прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="226"/>
+        <location filename="proxiesconfigwidget.cpp" line="99"/>
         <source>Proxy target</source>
         <translation>Прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="227"/>
+        <location filename="proxiesconfigwidget.cpp" line="100"/>
         <source>User</source>
         <translation>Пользователь</translation>
     </message>
@@ -66,81 +170,64 @@
 <context>
     <name>ProxiesConfigWidget</name>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="28"/>
-        <source>Target</source>
-        <translation>Цель</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="40"/>
-        <location filename="proxiesconfigwidget.ui" line="145"/>
+        <location filename="proxiesconfigwidget.ui" line="79"/>
         <source>Host:</source>
         <translation>Хост:</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="50"/>
-        <location filename="proxiesconfigwidget.ui" line="158"/>
+        <location filename="proxiesconfigwidget.ui" line="92"/>
         <source>Port:</source>
         <translation>Порт:</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="60"/>
-        <source>any</source>
-        <translation>любой</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="70"/>
-        <source>Protocols:</source>
-        <translation>Протоколы:</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="77"/>
-        <source>Host name or regular expression...</source>
-        <translation>Имя хоста или регулярное выражение…</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="84"/>
-        <source>Space-separated list of protocols...</source>
-        <translation>Разделённый пробелами список протоколов…</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="94"/>
+        <location filename="proxiesconfigwidget.ui" line="28"/>
         <source>Proxy</source>
         <translation>Прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="106"/>
+        <location filename="proxiesconfigwidget.ui" line="40"/>
         <source>Type:</source>
         <translation>Тип:</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="137"/>
+        <location filename="proxiesconfigwidget.ui" line="71"/>
         <source>None</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="168"/>
+        <location filename="proxiesconfigwidget.ui" line="102"/>
         <source>User:</source>
         <translation>Пользователь:</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="181"/>
+        <location filename="proxiesconfigwidget.ui" line="115"/>
         <source>Password:</source>
         <translation>Пароль:</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="214"/>
+        <location filename="proxiesconfigwidget.ui" line="148"/>
         <source>Add proxy</source>
         <translation>Добавить прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="224"/>
+        <location filename="proxiesconfigwidget.ui" line="158"/>
         <source>Update proxy</source>
         <translation>Обновить прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="234"/>
+        <location filename="proxiesconfigwidget.ui" line="168"/>
         <source>Remove proxy</source>
         <translation>Удалить прокси</translation>
+    </message>
+    <message>
+        <location filename="proxiesconfigwidget.ui" line="178"/>
+        <source>Edit URLs</source>
+        <translation>Редактировать URL&apos;ы</translation>
+    </message>
+    <message>
+        <location filename="proxiesconfigwidget.ui" line="188"/>
+        <source>Edit scripts</source>
+        <translation>Редактировать скрипты</translation>
     </message>
 </context>
 <context>
