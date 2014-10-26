@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
+#pragma once
+
 #include <QWebView>
 
 namespace LeechCraft
@@ -59,8 +59,7 @@ namespace Azoth
 		void handlePageLinkClicked (const QUrl&);
 	signals:
 		void linkClicked (const QUrl&, bool);
+		void chatWindowSearchRequested (const QString&);
 	};
 }
 }
-
-#endif
