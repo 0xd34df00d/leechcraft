@@ -442,8 +442,7 @@ namespace Sarin
 			SIGNAL (finished ()),
 			watcher
 		};
-		auto future = Thread_->GetToxId ();
-		watcher->setFuture (future);
+		watcher->setFuture (Thread_->GetToxId ());
 	}
 
 	void ToxAccount::handleToxStateChanged (const QByteArray& toxState)
