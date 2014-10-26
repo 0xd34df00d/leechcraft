@@ -82,7 +82,6 @@ namespace vGrabber
 	{
 		delete Audio_;
 		delete Video_;
-		Translator_.reset ();
 	}
 
 	QByteArray vGrabber::GetUniqueID () const
