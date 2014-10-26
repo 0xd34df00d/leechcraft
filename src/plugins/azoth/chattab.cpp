@@ -87,7 +87,6 @@
 #include "zoomeventfilter.h"
 #include "callmanager.h"
 #include "callchatwidget.h"
-#include "chattabwebview.h"
 #include "msgformatterwidget.h"
 #include "actionsmanager.h"
 #include "contactdropfilter.h"
