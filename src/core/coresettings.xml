@@ -112,7 +112,7 @@
 			<item type="checkbox" property="DontAskWhenSingle" default="true">
 				<label lang="en" value="Automatically accept task when there is only one handler" />
 			</item>
-			<item type="checkbox" property="FallbackExternalHandlers" default="true">
+			<item type="checkbox" property="FallbackExternalHandlers" default="false">
 				<label value="Try external applications when no plugins can handle an entity" />
 			</item>
 			<item type="pushbutton" name="SetStartupPassword">
