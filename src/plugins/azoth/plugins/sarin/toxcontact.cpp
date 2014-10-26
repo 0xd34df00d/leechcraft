@@ -141,6 +141,7 @@ namespace Sarin
 
 	void ToxContact::SetChatPartState (ChatPartState state, const QString&)
 	{
+		Acc_->SetTypingState (Pubkey_, state == CPSComposing);
 	}
 
 	EntryStatus ToxContact::GetStatus (const QString&) const
