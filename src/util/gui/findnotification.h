@@ -129,7 +129,12 @@ namespace Util
 
 		/** @brief Sets the text in the find field.
 		 *
+		 * This does not trigger the search. To perform the search, call
+		 * findNext() after calling this method.
+		 *
 		 * @param[in] text The text to set in find field.
+		 *
+		 * @sa findNext()
 		 */
 		void SetText (const QString& text);
 
@@ -164,11 +169,23 @@ namespace Util
 		 */
 		virtual void handleNext (const QString& text, FindFlags flags) = 0;
 	public slots:
-		/** @brief Search for the next occurrence of the current search.
+		/** @brief Search for the next occurrence of the search text.
+		 *
+		 * If the text has been modified since the previous call to
+		 * either findPrevious() or findNext() either programmatically
+		 * (via SetText()) or by the user, the search will be restarted.
+		 *
+		 * @sa findPrevious()
 		 */
 		void findNext ();
 
-		/** @brief Search for the previous occurrence of the current search.
+		/** @brief Search for the previous occurrence of the search text.
+		 *
+		 * If the text has been modified since the previous call to
+		 * either findPrevious() or findNext() either programmatically
+		 * (via SetText()) or by the user, the search will be restarted.
+		 *
+		 * @sa findNext()
 		 */
 		void findPrevious ();
 
