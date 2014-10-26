@@ -133,21 +133,19 @@ namespace Azoth
 #else
 		const auto& entryIdValue = QUrlQuery { nickUrl }.queryItemValue ("entryId");
 #endif
-		const QString& entryId = QUrl::fromPercentEncoding (entryIdValue.toUtf8 ());
+		const auto& entryId = QUrl::fromPercentEncoding (entryIdValue.toUtf8 ());
 		if (entryId.isEmpty ())
 			return;
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (entryId));
+		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (entryId));
 		if (!entry)
 			return;
 
 		QList<QAction*> actions;
 
-		ActionsManager *manager = Core::Instance ().GetActionsManager ();
-		QList<QAction*> allActions = manager->GetEntryActions (entry);
-		Q_FOREACH (QAction *act, allActions)
-			if (manager->GetAreasForAction (act)
-					.contains (ActionsManager::CLEAAChatCtxtMenu))
+		const auto manager = Core::Instance ().GetActionsManager ();
+		for (const auto act : manager->GetEntryActions (entry))
+			if (manager->GetAreasForAction (act).contains (ActionsManager::CLEAAChatCtxtMenu))
 				actions << act;
 
 		menu->addActions (actions);
