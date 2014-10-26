@@ -174,6 +174,8 @@ namespace Azoth
 		void on_MUCEventsButton__toggled (bool);
 		void handleSeparateMUCLog (bool initial = false);
 
+		void handleChatWindowSearch (const QString&);
+
 		void handleEditScroll (int);
 		void messageSend ();
 		void on_MsgEdit__textChanged ();

@@ -228,6 +228,10 @@ namespace Azoth
 				SIGNAL (linkClicked (QUrl, bool)),
 				this,
 				SLOT (handleViewLinkClicked (QUrl, bool)));
+		connect (Ui_.View_,
+				SIGNAL (chatWindowSearchRequested (QString)),
+				this,
+				SLOT (handleChatWindowSearch (QString)));
 
 		TypeTimer_->setInterval (2000);
 		connect (TypeTimer_,
@@ -2122,6 +2126,14 @@ namespace Azoth
 		Ui_.MUCEventsButton_->setVisible (isSep);
 		if (!initial)
 			PrepareTheme ();
+	}
+
+	void ChatTab::handleChatWindowSearch (const QString& text)
+	{
+		ChatFinder_->SetText (text);
+		ChatFinder_->findNext ();
+
+		ChatFinder_->show ();
 	}
 
 	void ChatTab::handleEditScroll (int direction)
