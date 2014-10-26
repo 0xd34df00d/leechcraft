@@ -104,6 +104,7 @@ namespace Sarin
 		QObject* GetTransferManager () const override;
 
 		void SendMessage (const QByteArray& pkey, ChatMessage *msg);
+		void SetTypingState (const QByteArray& pkey, bool isTyping);
 	private:
 		void InitThread (const EntryStatus&);
 		void InitEntry (const QByteArray&);

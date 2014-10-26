@@ -33,6 +33,7 @@
 #include <QDataStream>
 #include <QFutureWatcher>
 #include <QtDebug>
+#include <tox/tox.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/ientitymanager.h>
@@ -43,6 +44,7 @@
 #include "messagesmanager.h"
 #include "chatmessage.h"
 #include "accountconfigdialog.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -341,6 +343,25 @@ namespace Sarin
 	void ToxAccount::SendMessage (const QByteArray& pkey, ChatMessage *message)
 	{
 		MsgsMgr_->SendMessage (pkey, message);
+	}
+
+	void ToxAccount::SetTypingState (const QByteArray& pkey, bool isTyping)
+	{
+		if (!Thread_)
+			return;
+
+		Thread_->ScheduleFunction ([pkey, isTyping] (Tox *tox)
+				{
+					const auto num = GetFriendId (tox, pkey);
+					if (num < 0)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to find user ID for"
+								<< pkey;
+						return;
+					}
+					tox_set_user_is_typing (tox, num, isTyping);
+				});
 	}
 
 	void ToxAccount::InitThread (const EntryStatus& status)
