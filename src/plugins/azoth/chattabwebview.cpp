@@ -151,6 +151,10 @@ namespace Azoth
 				actions << act;
 
 		menu->addActions (actions);
+
+		menu->addAction (tr ("Highlight the nickname"),
+				this,
+				SLOT (handleHighlightOccurences ()))->setData (entry->GetEntryName ());
 	}
 
 	void ChatTabWebView::HandleURL (QMenu *menu, const QUrl& url)
