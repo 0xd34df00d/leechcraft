@@ -42,6 +42,7 @@
 #include "chathistory.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "historyvieweventfilter.h"
 
 namespace LeechCraft
 {
@@ -85,6 +86,12 @@ namespace ChatHistory
 
 		auto proxy = Core::Instance ()->GetCoreProxy ();
 		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
+
+		const auto hvef = new HistoryViewEventFilter (Ui_.HistView_);
+		connect (hvef,
+				SIGNAL (bgLinkRequested (QUrl)),
+				this,
+				SLOT (handleBgLinkRequested (QUrl)));
 
 		SortFilter_->setDynamicSortFilter (true);
 		SortFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
@@ -601,8 +608,17 @@ namespace ChatHistory
 	void ChatHistoryWidget::on_HistView__anchorClicked (const QUrl& url)
 	{
 		emit gotEntity (Util::MakeEntity (url,
-				QString (),
+				{},
 				FromUserInitiated | OnlyHandle));
+	}
+
+	void ChatHistoryWidget::handleBgLinkRequested (const QUrl& url)
+	{
+		auto e = Util::MakeEntity (url,
+				QString (),
+				FromUserInitiated | OnlyHandle);
+		e.Additional_ ["BackgroundHandle"] = true;
+		emit gotEntity (e);
 	}
 
 	QStandardItem* ChatHistoryWidget::FindContactItem (const QString& id) const

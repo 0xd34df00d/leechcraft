@@ -114,6 +114,7 @@ namespace ChatHistory
 		void clearHistory ();
 
 		void on_HistView__anchorClicked (const QUrl&);
+		void handleBgLinkRequested (const QUrl&);
 	private:
 		QStandardItem* FindContactItem (const QString&) const;
 
