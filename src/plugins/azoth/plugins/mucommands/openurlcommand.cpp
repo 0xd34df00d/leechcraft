@@ -103,6 +103,8 @@ namespace MuCommands
 
 		struct SinceLast {};
 
+		struct JustLast {};
+
 		using RxableRanges_t = boost::variant<SinceLast, UrlRange>;
 
 		using RegExpStr_t = std::string;
@@ -113,7 +115,7 @@ namespace MuCommands
 			boost::optional<RegExpStr_t> Pat_;
 		};
 
-		using OpenUrlParams_t = boost::variant<UrlIndex_t, UrlComposite, std::string>;
+		using OpenUrlParams_t = boost::variant<UrlIndex_t, UrlComposite, RegExpStr_t, JustLast>;
 	}
 }
 }
@@ -149,6 +151,7 @@ namespace MuCommands
 			qi::rule<Iter, RegExpStr_t ()> RegExpPat_;
 			qi::rule<Iter, RxableRanges_t ()> RxableRanges_;
 			qi::rule<Iter, UrlRange ()> Range_;
+			qi::rule<Iter, JustLast ()> JustLast_;
 
 			Parser ()
 			: Parser::base_type { Start_ }
@@ -159,8 +162,9 @@ namespace MuCommands
 				RxableRanges_ = SinceLast_ | Range_;
 				RegExpPat_ = qi::lit ("rx ") >> +qi::char_;
 				RegExp_ = RxableRanges_ >> -(qi::lit (' ') >> RegExpPat_);
+				JustLast_ = qi::attr (JustLast {});
 
-				Start_ = (RegExpPat_ | RegExp_ | Index_) >> qi::eoi;
+				Start_ = (RegExpPat_ | RegExp_ | Index_ | JustLast_) >> qi::eoi;
 			}
 		};
 
@@ -257,6 +261,11 @@ namespace MuCommands
 			CommandResult_t operator() (UrlIndex_t idx) const
 			{
 				return (*this) (UrlComposite { UrlRange { idx, idx }, {} } );
+			}
+
+			CommandResult_t operator() (const JustLast&) const
+			{
+				return (*this) (-1);
 			}
 
 			CommandResult_t operator() (const RegExpStr_t& rxStr) const
