@@ -112,6 +112,13 @@ namespace MuCommands
 		QCOMPARE (res, (OpenUrlParams_t { UrlComposite { SinceLast {}, {} } }));
 	}
 
+	void OpenUrlCommandTest::parseLast ()
+	{
+		const QString command = "/openurl";
+		const auto& res = ParseCommand (command);
+		QCOMPARE (res, (OpenUrlParams_t { JustLast {} }));
+	}
+
 	void OpenUrlCommandTest::parseByIndex ()
 	{
 		const QString command = "/openurl 3";
