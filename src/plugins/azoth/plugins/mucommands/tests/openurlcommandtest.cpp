@@ -100,7 +100,7 @@ namespace MuCommands
 		}
 	}
 
-	void OpenUrlCommandTest::parseLast ()
+	void OpenUrlCommandTest::parseSinceLast ()
 	{
 		const QString command = "/openurl last";
 		const auto& res = ParseCommand (command);
