@@ -102,10 +102,11 @@ namespace MuCommands
 		};
 
 		struct SinceLast {};
+		struct All {};
 
 		struct JustLast {};
 
-		using RxableRanges_t = boost::variant<SinceLast, UrlRange>;
+		using RxableRanges_t = boost::variant<SinceLast, UrlRange, All>;
 
 		using RegExpStr_t = std::string;
 
@@ -200,6 +201,11 @@ namespace MuCommands
 			{
 				const auto last = AzothProxy_->GetFirstUnreadMessage (Entry_->GetQObject ());
 				return GetAllUrls (AzothProxy_, Entry_, last);
+			}
+
+			QStringList operator() (const All&) const
+			{
+				return GetAllUrls (AzothProxy_, Entry_);
 			}
 
 			QStringList operator() (const UrlRange& range) const
