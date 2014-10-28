@@ -146,6 +146,7 @@ namespace MuCommands
 		struct Parser : qi::grammar<Iter, OpenUrlParams_t ()>
 		{
 			qi::rule<Iter, SinceLast ()> SinceLast_;
+			qi::rule<Iter, All ()> All_;
 			qi::rule<Iter, OpenUrlParams_t ()> Start_;
 			qi::rule<Iter, UrlIndex_t ()> Index_;
 			qi::rule<Iter, UrlComposite ()> RegExp_;
@@ -159,8 +160,9 @@ namespace MuCommands
 			{
 				Index_ = qi::int_;
 				SinceLast_ = qi::lit ("last") > qi::attr (SinceLast {});
+				All_ = qi::lit ("*") > qi::attr (All {});
 				Range_ = -(qi::int_) >> qi::lit (':') >> -(qi::int_);
-				RxableRanges_ = SinceLast_ | Range_;
+				RxableRanges_ = SinceLast_ | Range_ | All_;
 				RegExpPat_ = qi::lit ("rx ") >> +qi::char_;
 				RegExp_ = RxableRanges_ >> -(qi::lit (' ') >> RegExpPat_);
 				JustLast_ = qi::attr (JustLast {});
