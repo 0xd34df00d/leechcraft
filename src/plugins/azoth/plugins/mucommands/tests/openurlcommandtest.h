@@ -44,6 +44,8 @@ namespace MuCommands
 		void parseSinceLast ();
 		void parseLast ();
 
+		void parseAll ();
+
 		void parseByIndex ();
 
 		void parseByRange ();
