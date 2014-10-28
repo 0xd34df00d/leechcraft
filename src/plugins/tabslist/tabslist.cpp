@@ -291,7 +291,7 @@ namespace TabsList
 
 		QVBoxLayout *layout = new QVBoxLayout ();
 		layout->setSpacing (1);
-		layout->setContentsMargins (1, 1, 1, 1);
+		layout->setContentsMargins (0, 0, 0, 0);
 
 		const int currentIdx = tw->CurrentIndex ();
 		QToolButton *toFocus = 0;
