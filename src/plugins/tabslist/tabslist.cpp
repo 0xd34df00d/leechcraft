@@ -294,7 +294,7 @@ namespace TabsList
 		layout->setContentsMargins (0, 0, 0, 0);
 
 		const int currentIdx = tw->CurrentIndex ();
-		QToolButton *toFocus = 0;
+		QToolButton *toFocus = nullptr;
 		QList<QToolButton*> allButtons;
 		for (int i = 0, count = tw->WidgetCount (); i < count; ++i)
 		{
