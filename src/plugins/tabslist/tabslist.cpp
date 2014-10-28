@@ -36,6 +36,8 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QKeyEvent>
+#include <QScrollArea>
+#include <QScrollBar>
 #include <QTimer>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -280,10 +282,12 @@ namespace TabsList
 		if (tw->WidgetCount () < 2)
 			return;
 
-		QWidget *widget = new QWidget (nullptr,
-				Qt::Popup | Qt::FramelessWindowHint);
-		widget->setAttribute (Qt::WA_TranslucentBackground);
-		widget->setWindowModality (Qt::ApplicationModal);
+		const auto scroll = new QScrollArea { nullptr };
+		scroll->setWindowFlags (Qt::Popup | Qt::FramelessWindowHint);
+		scroll->setAttribute (Qt::WA_TranslucentBackground);
+		scroll->setWindowModality (Qt::ApplicationModal);
+
+		const auto widget = new QWidget { nullptr };
 
 		QVBoxLayout *layout = new QVBoxLayout ();
 		layout->setSpacing (1);
@@ -308,7 +312,7 @@ namespace TabsList
 					SLOT (navigateToTab ()));
 			connect (action,
 					SIGNAL (triggered ()),
-					widget,
+					scroll,
 					SLOT (deleteLater ()));
 
 			auto button = new QToolButton ();
@@ -326,20 +330,36 @@ namespace TabsList
 			allButtons << button;
 		}
 
-		widget->installEventFilter (new ListEventFilter (allButtons, this, widget));
+		scroll->installEventFilter (new ListEventFilter (allButtons, this, scroll));
 		widget->setLayout (layout);
 		layout->update ();
 		layout->activate ();
 
 		const QRect& rect = QApplication::desktop ()->
 				screenGeometry (rootWM->GetPreferredWindow ());
-		QPoint pos = rect.center ();
+		auto pos = rect.center ();
 
-		const QSize& size = widget->sizeHint () / 2;
-		pos -= QPoint (size.width (), size.height ());
+		const auto maxHeight = rect.height () * 2 / 3;
 
-		widget->move (pos);
-		widget->show ();
+		const auto& size = widget->sizeHint ();
+		const auto trueHeight = std::min (size.height (), maxHeight);
+		const bool isScrolling = size.height () > trueHeight;
+		pos -= QPoint (size.width () / 2, trueHeight / 2);
+
+		widget->setMinimumSize (size.width (), trueHeight);
+
+		scroll->setMaximumHeight (maxHeight);
+		scroll->setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+		scroll->setMinimumHeight (trueHeight + 6);
+
+		scroll->setWidget (widget);
+
+		const auto width = scroll->sizeHint ().width () +
+				(isScrolling ? scroll->verticalScrollBar ()->width () : 0);
+		scroll->resize (width, trueHeight + 6);
+
+		scroll->move (pos);
+		scroll->show ();
 
 		if (toFocus)
 			toFocus->setFocus ();
