@@ -170,6 +170,12 @@ namespace TabsList
 						if (button->hasFocus ())
 							button->animateClick ();
 					return true;
+				case Qt::Key_Up:
+					AllButtons_.last ()->setFocus ();
+					return true;
+				case Qt::Key_Down:
+					AllButtons_.first ()->setFocus ();
+					return true;
 				case Qt::Key_PageUp:
 					PerformWithFocusButton ([this] (int idx) { MoveUp (idx, 5); });
 					break;
