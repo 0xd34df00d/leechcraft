@@ -103,6 +103,11 @@ namespace MuCommands
 		{
 			return true;
 		}
+
+		bool operator== (const All&, const All&)
+		{
+			return true;
+		}
 	}
 
 	void OpenUrlCommandTest::parseSinceLast ()
