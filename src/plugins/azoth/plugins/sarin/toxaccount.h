@@ -120,6 +120,7 @@ namespace Sarin
 
 		void handleFriendNameChanged (const QByteArray&, const QString&);
 		void handleFriendStatusChanged (const QByteArray&, const EntryStatus&);
+		void handleFriendTypingChanged (const QByteArray&, bool);
 
 		void handleInMessage (const QByteArray&, const QString&);
 	signals:

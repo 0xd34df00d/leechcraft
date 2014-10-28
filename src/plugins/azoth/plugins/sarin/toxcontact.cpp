@@ -185,6 +185,11 @@ namespace Sarin
 		emit statusChanged (Status_, Variants ().front ());
 	}
 
+	void ToxContact::SetTyping (bool isTyping)
+	{
+		emit chatPartStateChanged (isTyping ? ChatPartState::CPSComposing : ChatPartState::CPSNone, {});
+	}
+
 	void ToxContact::HandleMessage (ChatMessage *msg)
 	{
 		AllMessages_ << msg;

@@ -435,6 +435,12 @@ namespace Sarin
 		emit friendStatusChanged (id, status);
 	}
 
+	void ToxThread::HandleTypingChange (int32_t friendId, uint8_t isTyping)
+	{
+		const auto& id = GetFriendId (Tox_.get (), friendId);
+		emit friendTypingChanged (id, isTyping);
+	}
+
 	void ToxThread::run ()
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -488,6 +494,12 @@ namespace Sarin
 				[] (Tox*, int32_t friendId, uint8_t, void *udata)
 				{
 					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
+				},
+				this);
+		tox_callback_typing_change (Tox_.get (),
+				[] (Tox*, int32_t friendId, uint8_t isTyping, void *udata)
+				{
+					static_cast<ToxThread*> (udata)->HandleTypingChange (friendId, isTyping);
 				},
 				this);
 

@@ -393,6 +393,10 @@ namespace Sarin
 				this,
 				SLOT (handleFriendStatusChanged (QByteArray, EntryStatus)));
 		connect (Thread_.get (),
+				SIGNAL (friendTypingChanged (QByteArray, bool)),
+				this,
+				SLOT (handleFriendTypingChanged (QByteArray, bool)));
+		connect (Thread_.get (),
 				SIGNAL (removedFriend (QByteArray)),
 				this,
 				SLOT (handleRemovedFriend (QByteArray)));
@@ -534,6 +538,19 @@ namespace Sarin
 		}
 
 		Contacts_.value (pubkey)->SetStatus (status);
+	}
+
+	void ToxAccount::handleFriendTypingChanged (const QByteArray& pubkey, bool isTyping)
+	{
+		if (!Contacts_.contains (pubkey))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown friend status"
+					<< pubkey;
+			return;
+		}
+
+		Contacts_.value (pubkey)->SetTyping (isTyping);
 	}
 
 	void ToxAccount::handleInMessage (const QByteArray& pubkey, const QString& body)

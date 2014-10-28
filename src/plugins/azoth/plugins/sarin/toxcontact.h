@@ -93,6 +93,7 @@ namespace Sarin
 		void ChatTabClosed () override;
 
 		void SetStatus (const EntryStatus&);
+		void SetTyping (bool);
 
 		void HandleMessage (ChatMessage*);
 		void SendMessage (ChatMessage*);
