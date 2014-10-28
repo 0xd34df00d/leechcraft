@@ -169,15 +169,10 @@ namespace TabsList
 							button->animateClick ();
 					return true;
 				case Qt::Key_PageUp:
-					PerformWithFocusButton ([this] (int idx)
-							{ AllButtons_ [std::max (0, idx - 5)]->setFocus (); });
+					PerformWithFocusButton ([this] (int idx) { MoveUp (idx, 5); });
 					break;
 				case Qt::Key_PageDown:
-					PerformWithFocusButton ([this] (int idx) -> void
-							{
-								const auto last = AllButtons_.size () - 1;
-								AllButtons_ [std::min (idx + 5, last)]->setFocus ();
-							});
+					PerformWithFocusButton ([this] (int idx) { MoveDown (idx, 5); });
 					break;
 				case Qt::Key_Home:
 					AllButtons_.first ()->setFocus ();
@@ -209,6 +204,17 @@ namespace TabsList
 				return false;
 			}
 		private:
+			void MoveUp (int idx, int count) const
+			{
+				AllButtons_ [std::max (0, idx - count)]->setFocus ();
+			}
+
+			void MoveDown (int idx, int count) const
+			{
+				const auto last = AllButtons_.size () - 1;
+				AllButtons_ [std::min (idx + count, last)]->setFocus ();
+			}
+
 			template<typename T>
 			void PerformWithFocusButton (T action) const
 			{
