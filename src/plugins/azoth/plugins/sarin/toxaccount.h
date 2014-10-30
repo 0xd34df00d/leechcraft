@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/isupportmediacalls.h>
 #include "toxaccountconfiguration.h"
 
 namespace LeechCraft
@@ -49,9 +50,10 @@ namespace Sarin
 
 	class ToxAccount : public QObject
 					 , public IAccount
+					 , public ISupportMediaCalls
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount)
+		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::ISupportMediaCalls)
 
 		ToxProtocol * const Proto_;
 		const QByteArray UID_;
@@ -101,6 +103,9 @@ namespace Sarin
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&) override;
 		void RemoveEntry (QObject*) override;
 
+		MediaCallFeatures GetMediaCallFeatures () const;
+		QObject* Call (const QString& id, const QString& variant);
+
 		QObject* GetTransferManager () const override;
 
 		void SendMessage (const QByteArray& pkey, ChatMessage *msg);
@@ -139,6 +144,8 @@ namespace Sarin
 		void accountChanged (ToxAccount*);
 
 		void threadChanged (const std::shared_ptr<ToxThread>&);
+
+		void called (QObject*);
 	};
 }
 }

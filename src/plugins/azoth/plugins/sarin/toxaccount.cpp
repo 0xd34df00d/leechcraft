@@ -335,6 +335,16 @@ namespace Sarin
 		Thread_->RemoveFriend (entry->GetHumanReadableID ().toUtf8 ());
 	}
 
+	ISupportMediaCalls::MediaCallFeatures ToxAccount::GetMediaCallFeatures () const
+	{
+		return MCFSupportsAudioCalls;
+	}
+
+	QObject* ToxAccount::Call (const QString& id, const QString& variant)
+	{
+		return nullptr;
+	}
+
 	QObject* ToxAccount::GetTransferManager () const
 	{
 		return nullptr;
