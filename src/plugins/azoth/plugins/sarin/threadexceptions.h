@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QFuture>
+#include <util/sll/concurrentexception.h>
 
 namespace LeechCraft
 {
@@ -53,6 +54,16 @@ namespace Sarin
 		const char* what () const noexcept override;
 	};
 
+	class ThreadExceptionBase
+	{
+		const QByteArray Msg_;
+	public:
+		ThreadExceptionBase (const QString&);
+
+		const char* what () const noexcept;
+	};
+
+	using ThreadException = Util::ConcurrentException<ThreadExceptionBase>;
 }
 }
 }

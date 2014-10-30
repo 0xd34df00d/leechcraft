@@ -54,6 +54,16 @@ namespace Sarin
 	{
 		return Wrapped_.what ();
 	}
+
+	ThreadExceptionBase::ThreadExceptionBase (const QString& str)
+	: Msg_ { str.toUtf8 () }
+	{
+	}
+
+	const char* ThreadExceptionBase::what () const noexcept
+	{
+		return Msg_.constData ();
+	}
 }
 }
 }
