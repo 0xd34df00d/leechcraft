@@ -35,6 +35,7 @@
 #include <QtDebug>
 #include <tox/tox.h>
 #include "util.h"
+#include "callmanager.h"
 
 namespace LeechCraft
 {
@@ -460,6 +461,7 @@ namespace Sarin
 			opts.proxy_address [size - 1] = 0;
 		}
 		Tox_ = std::shared_ptr<Tox> { tox_new (&opts), &tox_kill };
+		CallManager_ = std::make_shared<CallManager> (this, Tox_.get ());
 
 		DoTox (Name_,
 				[this] (const uint8_t *bytes, uint16_t size) { tox_set_name (Tox_.get (), bytes, size); });

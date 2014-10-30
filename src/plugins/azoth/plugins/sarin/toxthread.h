@@ -47,6 +47,8 @@ namespace Azoth
 {
 namespace Sarin
 {
+	class CallManager;
+
 	class ToxThread : public QThread
 	{
 		Q_OBJECT
@@ -65,6 +67,7 @@ namespace Sarin
 		QMutex FQueueMutex_;
 
 		std::shared_ptr<Tox> Tox_;
+		std::shared_ptr<CallManager> CallManager_;
 	public:
 		ToxThread (const QString& name, const QByteArray& toxState, const ToxAccountConfiguration&);
 		~ToxThread ();
