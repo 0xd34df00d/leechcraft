@@ -35,26 +35,6 @@ namespace Azoth
 {
 namespace Sarin
 {
-	ToxException::ToxException (const std::exception& e)
-	: Wrapped_ { e }
-	{
-	}
-
-	void ToxException::raise () const
-	{
-		throw *this;
-	}
-
-	ToxException* ToxException::clone () const
-	{
-		return new ToxException { *this };
-	}
-
-	const char* ToxException::what () const noexcept
-	{
-		return Wrapped_.what ();
-	}
-
 	ThreadExceptionBase::ThreadExceptionBase (const QString& str)
 	: Msg_ { str.toUtf8 () }
 	{
