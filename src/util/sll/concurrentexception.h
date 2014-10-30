@@ -52,7 +52,7 @@ namespace Util
 
 		void raise () const override
 		{
-			throw *this;
+			throw ConcurrentException<T> { *this };
 		}
 
 		ConcurrentException<T>* clone () const override
