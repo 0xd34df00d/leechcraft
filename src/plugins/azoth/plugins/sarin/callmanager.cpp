@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "callmanager.h"
+#include "toxthread.h"
 
 namespace LeechCraft
 {
@@ -35,8 +36,9 @@ namespace Azoth
 {
 namespace Sarin
 {
-	CallManager::CallManager (Tox *tox, QObject *parent)
+	CallManager::CallManager (ToxThread *thread, Tox *tox, QObject *parent)
 	: QObject { parent }
+	, Thread_ { thread }
 	, ToxAv_ { toxav_new (tox, 64), &toxav_kill }
 	{
 	}

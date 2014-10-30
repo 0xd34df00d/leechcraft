@@ -39,13 +39,16 @@ namespace Azoth
 {
 namespace Sarin
 {
+	class ToxThread;
+
 	class CallManager : public QObject
 	{
 		Q_OBJECT
 
+		ToxThread * const Thread_;
 		std::unique_ptr<ToxAv, decltype (&toxav_kill)> ToxAv_;
 	public:
-		CallManager (Tox*, QObject* = nullptr);
+		CallManager (ToxThread*, Tox*, QObject* = nullptr);
 	};
 }
 }
