@@ -51,6 +51,21 @@ namespace Sarin
 	};
 
 	using ThreadException = Util::ConcurrentException<ThreadExceptionBase>;
+
+	class CodeExceptionBase
+	{
+		int Code_;
+
+		const QByteArray Msg_;
+	public:
+		CodeExceptionBase (int code);
+
+		const char* what () const noexcept;
+
+		int GetCode () const noexcept;
+	};
+
+	using CallInitiateException = Util::ConcurrentException<CodeExceptionBase>;
 }
 }
 }
