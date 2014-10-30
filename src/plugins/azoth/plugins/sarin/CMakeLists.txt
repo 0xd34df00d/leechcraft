@@ -71,6 +71,7 @@ add_library (leechcraft_azoth_sarin SHARED
 target_link_libraries (leechcraft_azoth_sarin
 	${LEECHCRAFT_LIBRARIES}
 	${TOXCORE_LIBRARY}
+	${TOXAV_LIBRARY}
 	${EXTRA_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_sarin DESTINATION ${LC_PLUGINS_DEST})
