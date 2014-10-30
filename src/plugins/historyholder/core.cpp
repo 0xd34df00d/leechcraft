@@ -274,21 +274,6 @@ void Core::writeSettings ()
 	WritePending_ = true;
 
 	auto watcher = new QFutureWatcher<void> ();
-	watcher->setFuture (QtConcurrent::run ([history] () -> void
-			{
-				QSettings settings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_HistoryHolder");
-				settings.beginWriteArray ("History");
-				settings.remove ("");
-				int i = 0;
-				for (const auto& e : history)
-				{
-					settings.setArrayIndex (i++);
-					settings.setValue ("Item", QVariant::fromValue (e));
-				}
-				settings.endArray ();
-			}));
-
 	new Util::OneTimeRunner
 	{
 		[this, watcher]
@@ -303,6 +288,20 @@ void Core::writeSettings ()
 		SIGNAL (finished ()),
 		watcher
 	};
+	watcher->setFuture (QtConcurrent::run ([history] () -> void
+			{
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_HistoryHolder");
+				settings.beginWriteArray ("History");
+				settings.remove ("");
+				int i = 0;
+				for (const auto& e : history)
+				{
+					settings.setArrayIndex (i++);
+					settings.setValue ("Item", QVariant::fromValue (e));
+				}
+				settings.endArray ();
+			}));
 }
 
 void Core::remove ()
