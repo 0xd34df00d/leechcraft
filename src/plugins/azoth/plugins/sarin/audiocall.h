@@ -38,16 +38,20 @@ namespace Azoth
 {
 namespace Sarin
 {
-	class Call : public QObject
-			   , public IMediaCall
+	class CallManager;
+
+	class AudioCall : public QObject
+					, public IMediaCall
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMediaCall)
 
 		const QString SourceId_;
 		const Direction Dir_;
+
+		CallManager * const CallMgr_;
 	public:
-		Call (const QString&, Direction);
+		AudioCall (const QString&, Direction, CallManager*);
 
 		Direction GetDirection () const;
 		QString GetSourceID () const;

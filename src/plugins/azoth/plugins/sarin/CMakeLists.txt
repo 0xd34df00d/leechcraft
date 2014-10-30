@@ -47,7 +47,7 @@ set (SARIN_SRCS
 	toxaccountconfiguration.cpp
 	util.cpp
 	callmanager.cpp
-	call.cpp
+	audiocall.cpp
 	)
 set (SARIN_FORMS
 	accregisterdetailspage.ui

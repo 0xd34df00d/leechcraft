@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "call.h"
+#include "audiocall.h"
 #include <QAudioFormat>
 
 namespace LeechCraft
@@ -36,41 +36,42 @@ namespace Azoth
 {
 namespace Sarin
 {
-	Call::Call (const QString& sourceId, Direction dir)
+	AudioCall::AudioCall (const QString& sourceId, Direction dir, CallManager *callMgr)
 	: SourceId_ { sourceId }
 	, Dir_ { dir }
+	, CallMgr_ { callMgr }
 	{
 	}
 
-	IMediaCall::Direction Call::GetDirection () const
+	IMediaCall::Direction AudioCall::GetDirection () const
 	{
 		return Dir_;
 	}
 
-	QString Call::GetSourceID () const
+	QString AudioCall::GetSourceID () const
 	{
 		return SourceId_;
 	}
 
-	void Call::Accept ()
+	void AudioCall::Accept ()
 	{
 	}
 
-	void Call::Hangup ()
+	void AudioCall::Hangup ()
 	{
 	}
 
-	QIODevice* Call::GetAudioDevice ()
+	QIODevice* AudioCall::GetAudioDevice ()
 	{
 		return nullptr;
 	}
 
-	QAudioFormat Call::GetAudioFormat ()
+	QAudioFormat AudioCall::GetAudioFormat ()
 	{
 		return {};
 	}
 
-	QIODevice* Call::GetVideoDevice ()
+	QIODevice* AudioCall::GetVideoDevice ()
 	{
 		return nullptr;
 	}
