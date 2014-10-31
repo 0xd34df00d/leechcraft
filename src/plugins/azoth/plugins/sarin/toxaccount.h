@@ -114,6 +114,8 @@ namespace Sarin
 		void InitThread (const EntryStatus&);
 		void InitEntry (const QByteArray&);
 
+		ToxContact* GetByAzothId (const QString&) const;
+
 		void HandleConfigAccepted (AccountConfigDialog*);
 	private slots:
 		void handleToxIdRequested ();

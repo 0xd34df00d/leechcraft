@@ -424,6 +424,16 @@ namespace Sarin
 		emit gotCLItems ({ entry });
 	}
 
+	ToxContact* ToxAccount::GetByAzothId (const QString& azothId) const
+	{
+		const auto& localId = azothId.section ('/', 1).toUtf8 ();
+		if (!Contacts_.contains (localId))
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find entry for Azoth ID"
+					<< azothId;
+		return Contacts_.value (localId);
+	}
+
 	void ToxAccount::HandleConfigAccepted (AccountConfigDialog *dialog)
 	{
 		const auto& config = dialog->GetConfig ();
