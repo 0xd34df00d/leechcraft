@@ -60,6 +60,8 @@ namespace Sarin
 	public:
 		ToxContact (const QByteArray& pubkey, ToxAccount *account);
 
+		const QByteArray& GetPubKey () const;
+
 		QString GetFriendId () const;
 		void SetFriendId (const QString&);
 

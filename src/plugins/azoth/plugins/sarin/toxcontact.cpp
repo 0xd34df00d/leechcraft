@@ -46,6 +46,11 @@ namespace Sarin
 	{
 	}
 
+	const QByteArray& ToxContact::GetPubKey () const
+	{
+		return Pubkey_;
+	}
+
 	QString ToxContact::GetFriendId () const
 	{
 		return FriendId_;
