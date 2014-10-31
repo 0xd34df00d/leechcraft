@@ -72,6 +72,8 @@ namespace Sarin
 		ToxThread (const QString& name, const QByteArray& toxState, const ToxAccountConfiguration&);
 		~ToxThread ();
 
+		CallManager* GetCallManager () const;
+
 		EntryStatus GetStatus () const;
 		void SetStatus (const EntryStatus&);
 

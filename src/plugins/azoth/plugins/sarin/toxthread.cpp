@@ -128,6 +128,11 @@ namespace Sarin
 		}
 	}
 
+	CallManager* ToxThread::GetCallManager() const
+	{
+		return CallManager_.get ();
+	}
+
 	EntryStatus ToxThread::GetStatus () const
 	{
 		return Status_;
