@@ -45,6 +45,7 @@
 #include "chatmessage.h"
 #include "accountconfigdialog.h"
 #include "util.h"
+#include "audiocall.h"
 
 namespace LeechCraft
 {
@@ -340,9 +341,25 @@ namespace Sarin
 		return MCFSupportsAudioCalls;
 	}
 
-	QObject* ToxAccount::Call (const QString& id, const QString& variant)
+	QObject* ToxAccount::Call (const QString& id, const QString&)
 	{
-		return nullptr;
+		if (!Thread_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "thread is not running";
+			return nullptr;
+		}
+
+		const auto entry = GetByAzothId (id);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find contact by"
+					<< id;
+			return nullptr;
+		}
+
+		return new AudioCall { entry->GetPubKey (), IMediaCall::DOut, Thread_->GetCallManager () };
 	}
 
 	QObject* ToxAccount::GetTransferManager () const
