@@ -116,9 +116,9 @@ namespace Sarin
 		auto ScheduleFunction (const F& func) -> std::enable_if_t<!std::is_same<decltype (func ({})), void>::value, QFuture<decltype (func ({}))>>
 		{
 			QFutureInterface<decltype (func ({}))> iface;
+			iface.reportStarted ();
 			ScheduleFunction ([iface, func] (Tox *tox) mutable
 					{
-						iface.reportStarted ();
 						try
 						{
 							const auto result = func (tox);
