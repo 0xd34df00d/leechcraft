@@ -184,6 +184,7 @@ namespace Azoth
 
 	namespace
 	{
+#ifdef ENABLE_MEDIACALLS
 		void WarnUnsupported (const QAudioDeviceInfo& info, const QAudioFormat& format, const QByteArray& dbgstr)
 		{
 			qWarning () << dbgstr
@@ -214,6 +215,7 @@ namespace Azoth
 					<< format.sampleType ();
 		}
 	}
+#endif
 
 	void CallManager::handleAudioModeChanged (QIODevice::OpenMode mode)
 	{
