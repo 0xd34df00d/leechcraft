@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QFuture>
 #include <util/sll/concurrentexception.h>
+#include <util/sll/newtype.h>
 
 namespace LeechCraft
 {
@@ -65,7 +66,8 @@ namespace Sarin
 		int GetCode () const noexcept;
 	};
 
-	using CallInitiateException = Util::ConcurrentException<CodeExceptionBase>;
+	using CallInitiateCode = Util::NewType<CodeExceptionBase, NewTypeTag>;
+	using CallInitiateException = Util::ConcurrentException<CallInitiateCode>;
 }
 }
 }
