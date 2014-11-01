@@ -72,23 +72,23 @@ namespace Azoth
 			qWarning () << Q_FUNC_INFO
 					<< entry->GetQObject ()
 					<< "parent account doesn't support media calls";
-			return 0;
+			return nullptr;
 		}
 
-		QObject *callObj = ismc->Call (entry->GetEntryID (), variant);
+		const auto callObj = ismc->Call (entry->GetEntryID (), variant);
 		if (!callObj)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "got null call obj for"
 					<< entry->GetEntryID ()
 					<< variant;
-			return 0;
+			return nullptr;
 		}
 
 		HandleCall (callObj);
 		return callObj;
 #else
-		return 0;
+		return nullptr;
 #endif
 	}
 
@@ -225,7 +225,7 @@ namespace Azoth
 						"raw audio format not supported by backend, cannot play audio");
 
 			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
-			QAudioOutput *output = new QAudioOutput (/*outInfo, */format, sender ());
+			QAudioOutput *output = new QAudioOutput (format, sender ());
 			connect (output,
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
@@ -243,7 +243,7 @@ namespace Azoth
 						"raw audio format not supported by backend, cannot record audio");
 
 			QAudioDeviceInfo inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
-			QAudioInput *input = new QAudioInput (/*inInfo, */format, sender ());
+			QAudioInput *input = new QAudioInput (format, sender ());
 			connect (input,
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
