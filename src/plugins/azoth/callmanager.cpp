@@ -187,15 +187,31 @@ namespace Azoth
 		void WarnUnsupported (const QAudioDeviceInfo& info, const QAudioFormat& format, const QByteArray& dbgstr)
 		{
 			qWarning () << dbgstr
+					<< "\n\tbyte orders:"
 					<< info.supportedByteOrders ()
+					<< "\n\tchannel counts:"
 					<< info.supportedChannelCounts ()
+					<< "\n\tcodecs:"
 					<< info.supportedCodecs ()
+					<< "\n\tfrequencies:"
 #if QT_VERSION < 0x050000
 					<< info.supportedFrequencies ()
 #else
 					<< info.supportedSampleRates ()
 #endif
+					<< "\n\tsample types:"
 					<< info.supportedSampleTypes ();
+			qWarning () << "instead we got:"
+					<< "\n\tbyte order:"
+					<< format.byteOrder ()
+					<< "\n\tchannel count:"
+					<< format.channelCount ()
+					<< "\n\tcodec:"
+					<< format.codec ()
+					<< "\n\tfrequency:"
+					<< format.sampleRate ()
+					<< "\n\tsample type:"
+					<< format.sampleType ();
 		}
 	}
 
