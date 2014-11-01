@@ -28,7 +28,10 @@
  **********************************************************************/
 
 #include "callmanager.h"
+#include <QFuture>
 #include "toxthread.h"
+#include "util.h"
+#include "threadexceptions.h"
 
 namespace LeechCraft
 {
@@ -41,6 +44,28 @@ namespace Sarin
 	, Thread_ { thread }
 	, ToxAv_ { toxav_new (tox, 64), &toxav_kill }
 	{
+	}
+
+	QFuture<CallManager::InitiateResult> CallManager::InitiateCall (const QByteArray& pkey)
+	{
+		return Thread_->ScheduleFunction ([this, pkey] (Tox *tox) -> InitiateResult
+				{
+					const auto id = GetFriendId (tox, pkey);
+					if (id < 0)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to get user ID for"
+								<< pkey;
+						throw ThreadException { tr ("Unable to get user ID.") };
+					}
+
+					int32_t callIdx = 0;
+					const auto res = toxav_call (ToxAv_.get (), &callIdx, id, &av_DefaultSettings, 15);
+					if (res < 0)
+						throw CallInitiateException (res);
+
+					return { callIdx };
+				});
 	}
 }
 }

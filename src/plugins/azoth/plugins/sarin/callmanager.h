@@ -33,6 +33,9 @@
 #include <QObject>
 #include <tox/toxav.h>
 
+template<typename T>
+class QFuture;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -49,6 +52,12 @@ namespace Sarin
 		std::unique_ptr<ToxAv, decltype (&toxav_kill)> ToxAv_;
 	public:
 		CallManager (ToxThread*, Tox*, QObject* = nullptr);
+
+		struct InitiateResult
+		{
+			int32_t CallIndex_;
+		};
+		QFuture<InitiateResult> InitiateCall (const QByteArray& pkey);
 	};
 }
 }
