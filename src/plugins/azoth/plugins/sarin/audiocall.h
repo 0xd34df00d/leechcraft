@@ -31,6 +31,10 @@
 
 #include <QObject>
 #include <interfaces/azoth/imediacall.h>
+#include "callmanager.h"
+
+template<typename T>
+class QFuture;
 
 namespace LeechCraft
 {
@@ -38,8 +42,6 @@ namespace Azoth
 {
 namespace Sarin
 {
-	class CallManager;
-
 	class AudioCall : public QObject
 					, public IMediaCall
 	{
@@ -60,8 +62,11 @@ namespace Sarin
 		QIODevice* GetAudioDevice ();
 		QAudioFormat GetAudioFormat ();
 		QIODevice* GetVideoDevice ();
+	private:
+		void InitiateCall ();
+		void HandleInitiateResult (const QFuture<CallManager::InitiateResult>&);
 	signals:
-		void stateChanged (State);
+		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
 		void audioModeChanged (QIODevice::OpenMode);
 	};
 }

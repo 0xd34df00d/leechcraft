@@ -29,6 +29,10 @@
 
 #include "audiocall.h"
 #include <QAudioFormat>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <util/sll/slotclosure.h>
+#include "threadexceptions.h"
 
 namespace LeechCraft
 {
@@ -41,6 +45,8 @@ namespace Sarin
 	, Dir_ { dir }
 	, CallMgr_ { callMgr }
 	{
+		if (dir == DOut)
+			InitiateCall ();
 	}
 
 	IMediaCall::Direction AudioCall::GetDirection () const
@@ -74,6 +80,48 @@ namespace Sarin
 	QIODevice* AudioCall::GetVideoDevice ()
 	{
 		return nullptr;
+	}
+
+	void AudioCall::InitiateCall ()
+	{
+		auto watcher = new QFutureWatcher<CallManager::InitiateResult> { this };
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[watcher, this]
+			{
+				watcher->deleteLater ();
+				HandleInitiateResult (watcher->future ());
+			},
+			watcher,
+			SIGNAL (finished ()),
+			watcher
+		};
+		watcher->setFuture (CallMgr_->InitiateCall (SourceId_.toUtf8 ()));
+	}
+
+	void AudioCall::HandleInitiateResult (const QFuture<CallManager::InitiateResult>& future)
+	{
+		try
+		{
+			const auto index = future.result ().CallIndex_;
+			qDebug () << Q_FUNC_INFO
+					<< index;
+			emit stateChanged (SActive);
+		}
+		catch (const ThreadException& ex)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got exception:"
+					<< ex.what ();
+			emit stateChanged (SFinished);
+		}
+		catch (const CallInitiateException& ex)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error initiating call:"
+					<< ex.what ();
+			emit stateChanged (SFinished);
+		}
 	}
 }
 }
