@@ -214,8 +214,8 @@ namespace Azoth
 					<< "\n\tsample type:"
 					<< format.sampleType ();
 		}
-	}
 #endif
+	}
 
 	void CallManager::handleAudioModeChanged (QIODevice::OpenMode mode)
 	{
