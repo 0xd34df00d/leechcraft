@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QAudioFormat>
 #include <interfaces/azoth/imediacall.h>
 #include "callmanager.h"
 
@@ -52,6 +53,8 @@ namespace Sarin
 		const Direction Dir_;
 
 		CallManager * const CallMgr_;
+
+		QAudioFormat Fmt_;
 	public:
 		AudioCall (const QString&, Direction, CallManager*);
 

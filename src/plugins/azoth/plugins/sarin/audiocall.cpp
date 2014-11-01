@@ -74,7 +74,7 @@ namespace Sarin
 
 	QAudioFormat AudioCall::GetAudioFormat ()
 	{
-		return {};
+		return Fmt_;
 	}
 
 	QIODevice* AudioCall::GetVideoDevice ()
@@ -99,14 +99,32 @@ namespace Sarin
 		watcher->setFuture (CallMgr_->InitiateCall (SourceId_.toUtf8 ()));
 	}
 
+	namespace
+	{
+		QAudioFormat AvCSettings2Format (const ToxAvCSettings& settings)
+		{
+			QAudioFormat fmt;
+			fmt.setChannelCount (settings.audio_channels);
+			fmt.setSampleRate (settings.audio_sample_rate);
+			fmt.setSampleSize (16);
+			fmt.setByteOrder (QAudioFormat::BigEndian);
+			fmt.setCodec ("audio/pcm");
+			fmt.setSampleType (QAudioFormat::SignedInt);
+			return fmt;
+		}
+	}
+
 	void AudioCall::HandleInitiateResult (const QFuture<CallManager::InitiateResult>& future)
 	{
 		try
 		{
-			const auto index = future.result ().CallIndex_;
+			const auto& result = future.result ();
+			const auto index = result.CallIndex_;
 			qDebug () << Q_FUNC_INFO
 					<< index;
 			emit stateChanged (SActive);
+
+			Fmt_ = AvCSettings2Format (result.CodecSettings_);
 		}
 		catch (const ThreadException& ex)
 		{
