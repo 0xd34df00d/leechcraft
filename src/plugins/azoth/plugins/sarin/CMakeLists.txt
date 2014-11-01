@@ -48,6 +48,7 @@ set (SARIN_SRCS
 	util.cpp
 	callmanager.cpp
 	audiocall.cpp
+	audiocalldevice.cpp
 	)
 set (SARIN_FORMS
 	accregisterdetailspage.ui
