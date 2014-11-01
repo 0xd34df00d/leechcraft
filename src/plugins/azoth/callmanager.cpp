@@ -182,6 +182,23 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		void WarnUnsupported (const QAudioDeviceInfo& info, const QAudioFormat& format, const QByteArray& dbgstr)
+		{
+			qWarning () << dbgstr
+					<< info.supportedByteOrders ()
+					<< info.supportedChannelCounts ()
+					<< info.supportedCodecs ()
+#if QT_VERSION < 0x050000
+					<< info.supportedFrequencies ()
+#else
+					<< info.supportedSampleRates ()
+#endif
+					<< info.supportedSampleTypes ();
+		}
+	}
+
 	void CallManager::handleAudioModeChanged (QIODevice::OpenMode mode)
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -204,16 +221,8 @@ namespace Azoth
 			qDebug () << "opening output...";
 			QAudioDeviceInfo info (QAudioDeviceInfo::defaultOutputDevice ());
 			if (!info.isFormatSupported (format))
-				qWarning () << "raw audio format not supported by backend, cannot play audio"
-						<< info.supportedByteOrders ()
-						<< info.supportedChannelCounts ()
-						<< info.supportedCodecs ()
-#if QT_VERSION < 0x050000
-						<< info.supportedFrequencies ()
-#else
-						<< info.supportedSampleRates ()
-#endif
-						<< info.supportedSampleTypes ();
+				WarnUnsupported (info, format,
+						"raw audio format not supported by backend, cannot play audio");
 
 			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
 			QAudioOutput *output = new QAudioOutput (/*outInfo, */format, sender ());
@@ -230,16 +239,8 @@ namespace Azoth
 			qDebug () << "opening input...";
 			QAudioDeviceInfo info (QAudioDeviceInfo::defaultInputDevice ());
 			if (!info.isFormatSupported (format))
-				qWarning () << "raw audio format not supported by backend, cannot record audio"
-						<< info.supportedByteOrders ()
-						<< info.supportedChannelCounts ()
-						<< info.supportedCodecs ()
-#if QT_VERSION < 0x050000
-						<< info.supportedFrequencies ()
-#else
-						<< info.supportedSampleRates ()
-#endif
-						<< info.supportedSampleTypes ();
+				WarnUnsupported (info, format,
+						"raw audio format not supported by backend, cannot record audio");
 
 			QAudioDeviceInfo inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
 			QAudioInput *input = new QAudioInput (/*inInfo, */format, sender ());
