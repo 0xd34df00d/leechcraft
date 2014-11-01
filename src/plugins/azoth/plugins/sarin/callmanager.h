@@ -56,6 +56,7 @@ namespace Sarin
 		struct InitiateResult
 		{
 			int32_t CallIndex_;
+			ToxAvCSettings CodecSettings_;
 		};
 		QFuture<InitiateResult> InitiateCall (const QByteArray& pkey);
 	};

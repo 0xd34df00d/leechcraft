@@ -64,7 +64,7 @@ namespace Sarin
 					if (res < 0)
 						throw CallInitiateException (res);
 
-					return { callIdx };
+					return { callIdx, av_DefaultSettings };
 				});
 	}
 }
