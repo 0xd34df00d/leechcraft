@@ -59,6 +59,13 @@ namespace Sarin
 			ToxAvCSettings CodecSettings_;
 		};
 		QFuture<InitiateResult> InitiateCall (const QByteArray& pkey);
+
+		struct WriteResult
+		{
+			qint64 Written_;
+			QByteArray Leftover_;
+		};
+		QFuture<WriteResult> WriteData (int32_t callIndex, const QByteArray& data);
 	};
 }
 }

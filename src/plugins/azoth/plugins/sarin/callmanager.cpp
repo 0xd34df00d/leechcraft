@@ -81,6 +81,45 @@ namespace Sarin
 					return { callIdx, av_DefaultSettings };
 				});
 	}
+
+	QFuture<CallManager::WriteResult> CallManager::WriteData (int32_t callIdx, const QByteArray& data)
+	{
+		return Thread_->ScheduleFunction ([this, data, callIdx] (Tox*) -> WriteResult
+				{
+					const auto perFrame = av_DefaultSettings.audio_frame_duration * av_DefaultSettings.audio_sample_rate * av_DefaultSettings.audio_channels / 1000;
+					const auto dataShift = perFrame * 2;
+					qDebug () << Q_FUNC_INFO << data.size () << perFrame;
+
+					int currentPos = 0;
+					for (; currentPos + dataShift < static_cast<uint> (data.size ()); currentPos += dataShift)
+					{
+						uint8_t prepared [RTP_PAYLOAD_SIZE] = { 0 };
+						const auto size = toxav_prepare_audio_frame (ToxAv_.get (), callIdx,
+								prepared, RTP_PAYLOAD_SIZE,
+								reinterpret_cast<const int16_t*> (data.constData () + currentPos), perFrame);
+						if (size < 0)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to prepare frame";
+							throw FramePrepareException { size };
+						}
+
+						const auto rc = toxav_send_audio (ToxAv_.get (), callIdx, prepared, size);
+						if (rc)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to send frame of size"
+									<< size
+									<< "; rc:"
+									<< rc;
+							throw FrameSendException { rc };
+						}
+						qDebug () << "sent frame of size" << size;
+					}
+
+					return { currentPos, data.mid (currentPos) };
+				});
+	}
 }
 }
 }
