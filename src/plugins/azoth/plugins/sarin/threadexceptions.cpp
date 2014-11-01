@@ -51,7 +51,7 @@ namespace Sarin
 	{
 	}
 
-	const char* CodeExceptionBase::what () const
+	const char* CodeExceptionBase::what () const noexcept
 	{
 		return Msg_;
 	}
