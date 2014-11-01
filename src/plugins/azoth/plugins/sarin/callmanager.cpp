@@ -62,7 +62,12 @@ namespace Sarin
 					int32_t callIdx = 0;
 					const auto res = toxav_call (ToxAv_.get (), &callIdx, id, &av_DefaultSettings, 15);
 					if (res < 0)
-						throw CallInitiateException (res);
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to initiate call:"
+								<< res;
+						throw CallInitiateException { res };
+					}
 
 					return { callIdx, av_DefaultSettings };
 				});
