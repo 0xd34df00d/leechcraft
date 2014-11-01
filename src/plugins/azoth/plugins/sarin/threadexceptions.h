@@ -67,7 +67,12 @@ namespace Sarin
 	};
 
 	using CallInitiateCode = Util::NewType<CodeExceptionBase, NewTypeTag>;
+	using FramePrepareCode = Util::NewType<CodeExceptionBase, NewTypeTag>;
+	using FrameSendCode = Util::NewType<CodeExceptionBase, NewTypeTag>;
+
 	using CallInitiateException = Util::ConcurrentException<CallInitiateCode>;
+	using FramePrepareException = Util::ConcurrentException<FramePrepareCode>;
+	using FrameSendException = Util::ConcurrentException<FrameSendCode>;
 }
 }
 }
