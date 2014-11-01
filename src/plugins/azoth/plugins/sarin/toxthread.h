@@ -124,6 +124,15 @@ namespace Sarin
 							const auto result = func (tox);
 							iface.reportFinished (&result);
 						}
+#if QT_VERSION < 0x050000
+						catch (const QtConcurrent::Exception& e)
+#else
+						catch (const QException& e)
+#endif
+						{
+							iface.reportException (e);
+							iface.reportFinished ();
+						}
 						catch (const std::exception& e)
 						{
 							iface.reportException (ToxException { e });
