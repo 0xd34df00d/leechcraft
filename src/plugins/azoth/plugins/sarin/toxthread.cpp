@@ -378,7 +378,7 @@ namespace Sarin
 				});
 	}
 
-	void ToxThread::ScheduleFunction (const std::function<void (Tox*)>& function)
+	void ToxThread::ScheduleFunctionImpl (const std::function<void (Tox*)>& function)
 	{
 		QMutexLocker locker { &FQueueMutex_ };
 		FQueue_ << function;

@@ -32,6 +32,7 @@
 #include <atomic>
 #include <memory>
 #include <functional>
+#include <type_traits>
 #include <QThread>
 #include <QMutex>
 #include <QFuture>
@@ -48,6 +49,25 @@ namespace Azoth
 namespace Sarin
 {
 	class CallManager;
+
+	namespace detail
+	{
+		template<typename R, typename F>
+		void ReportResult (QFutureInterface<R>& iface, const F& f, Tox *tox,
+				typename std::enable_if<!std::is_same<R, void>::value, void>::type* = nullptr)
+		{
+			auto result = f (tox);
+			iface.reportFinished (&result);
+		}
+
+
+		template<typename F>
+		void ReportResult (QFutureInterface<void>& iface, F& f, Tox *tox)
+		{
+			f (tox);
+			iface.reportFinished ();
+		}
+	}
 
 	class ToxThread : public QThread
 	{
@@ -110,19 +130,16 @@ namespace Sarin
 		QFuture<QByteArray> GetFriendPubkey (qint32);
 		QFuture<FriendInfo> ResolveFriend (qint32);
 
-		void ScheduleFunction (const std::function<void (Tox*)>&);
-
 		template<typename F>
-		auto ScheduleFunction (const F& func) -> std::enable_if_t<!std::is_same<decltype (func ({})), void>::value, QFuture<decltype (func ({}))>>
+		auto ScheduleFunction (const F& func)
 		{
 			QFutureInterface<decltype (func ({}))> iface;
 			iface.reportStarted ();
-			ScheduleFunction ([iface, func] (Tox *tox) mutable
+			ScheduleFunctionImpl ([iface, func] (Tox *tox) mutable
 					{
 						try
 						{
-							const auto result = func (tox);
-							iface.reportFinished (&result);
+							detail::ReportResult (iface, func, tox);
 						}
 #if QT_VERSION < 0x050000
 						catch (const QtConcurrent::Exception& e)
@@ -142,6 +159,8 @@ namespace Sarin
 			return iface.future ();
 		}
 	private:
+		void ScheduleFunctionImpl (const std::function<void (Tox*)>&);
+
 		void SaveState ();
 
 		void LoadFriends ();
