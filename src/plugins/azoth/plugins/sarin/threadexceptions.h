@@ -42,16 +42,16 @@ namespace Sarin
 {
 	using ToxException = Util::ConcurrentException<Util::ExceptionWrapperBase<std::exception>>;
 
-	class ThreadExceptionBase
+	class TextExceptionBase
 	{
 		const QByteArray Msg_;
 	public:
-		ThreadExceptionBase (const QString&);
+		TextExceptionBase (const QString& = {});
 
 		const char* what () const noexcept;
 	};
 
-	using ThreadException = Util::ConcurrentException<ThreadExceptionBase>;
+	using ThreadException = Util::ConcurrentException<Util::NewType<TextExceptionBase, NewTypeTag>>;
 
 	class CodeExceptionBase
 	{

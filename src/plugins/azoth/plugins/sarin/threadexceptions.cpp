@@ -35,12 +35,12 @@ namespace Azoth
 {
 namespace Sarin
 {
-	ThreadExceptionBase::ThreadExceptionBase (const QString& str)
+	TextExceptionBase::TextExceptionBase (const QString& str)
 	: Msg_ { str.toUtf8 () }
 	{
 	}
 
-	const char* ThreadExceptionBase::what () const noexcept
+	const char* TextExceptionBase::what () const noexcept
 	{
 		return Msg_.constData ();
 	}
