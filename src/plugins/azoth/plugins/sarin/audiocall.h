@@ -56,7 +56,7 @@ namespace Sarin
 
 		QAudioFormat Fmt_;
 	public:
-		AudioCall (const QString&, Direction, CallManager*);
+		AudioCall (const QString&, CallManager*);
 
 		Direction GetDirection () const;
 		QString GetSourceID () const;

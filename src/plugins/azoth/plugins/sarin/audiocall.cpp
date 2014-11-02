@@ -40,13 +40,12 @@ namespace Azoth
 {
 namespace Sarin
 {
-	AudioCall::AudioCall (const QString& sourceId, Direction dir, CallManager *callMgr)
+	AudioCall::AudioCall (const QString& sourceId, CallManager *callMgr)
 	: SourceId_ { sourceId }
-	, Dir_ { dir }
+	, Dir_ { DOut }
 	, CallMgr_ { callMgr }
 	{
-		if (dir == DOut)
-			InitiateCall ();
+		InitiateCall ();
 	}
 
 	IMediaCall::Direction AudioCall::GetDirection () const

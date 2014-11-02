@@ -359,7 +359,8 @@ namespace Sarin
 			return nullptr;
 		}
 
-		return new AudioCall { entry->GetPubKey (), IMediaCall::DOut, Thread_->GetCallManager () };
+		const auto call = new AudioCall { entry->GetPubKey (), Thread_->GetCallManager () };
+		return call;
 	}
 
 	QObject* ToxAccount::GetTransferManager () const
