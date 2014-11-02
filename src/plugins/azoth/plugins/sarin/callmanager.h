@@ -66,6 +66,11 @@ namespace Sarin
 			QByteArray Leftover_;
 		};
 		QFuture<WriteResult> WriteData (int32_t callIndex, const QByteArray& data);
+	private:
+		void HandleIncomingCall (int32_t callIdx);
+		void HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx);
+	signals:
+		void gotIncomingCall (const QByteArray& pubkey, int32_t callIdx);
 	};
 }
 }

@@ -29,6 +29,7 @@
 
 #include "callmanager.h"
 #include <QFuture>
+#include <util/sll/futures.h>
 #include "toxthread.h"
 #include "util.h"
 #include "threadexceptions.h"
@@ -44,6 +45,12 @@ namespace Sarin
 	, Thread_ { thread }
 	, ToxAv_ { toxav_new (tox, 64), &toxav_kill }
 	{
+		toxav_register_callstate_callback (ToxAv_.get (),
+				[] (void*, int32_t callIdx, void *udata)
+				{
+					static_cast<CallManager*> (udata)->HandleIncomingCall (callIdx);
+				},
+				av_OnInvite,
 	}
 
 	QFuture<CallManager::InitiateResult> CallManager::InitiateCall (const QByteArray& pkey)
@@ -120,6 +127,43 @@ namespace Sarin
 					return { currentPos, data.mid (currentPos) };
 				});
 	}
+	void CallManager::HandleIncomingCall (int32_t callIdx)
+	{
+		const auto friendNum = toxav_get_peer_id (ToxAv_.get (), callIdx, 0);
+		if (friendNum < 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to get friend ID for call"
+					<< callIdx;
+			return;
+		}
+
+		Util::ExecuteFuture ([this, friendNum] { return Thread_->GetFriendPubkey (friendNum); },
+				[this, callIdx] (const QByteArray& pubkey) { HandleIncomingCall (pubkey, callIdx); },
+				this);
+	}
+
+	void CallManager::HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx)
+	{
+		ToxAvCSettings settings;
+		const auto rc = toxav_get_peer_csettings (ToxAv_.get (), callIdx, 0, &settings);
+		if (rc != ErrorNone)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to get peer settings";
+			return;
+		}
+
+		if (settings.call_type == TypeVideo)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "video calls are unsupported for now";
+			return;
+		}
+
+		emit gotIncomingCall (pubkey, callIdx);
+	}
+
 }
 }
 }
