@@ -33,6 +33,7 @@
 #include <QFutureWatcher>
 #include <util/sll/slotclosure.h>
 #include "threadexceptions.h"
+#include "audiocalldevice.h"
 
 namespace LeechCraft
 {
@@ -68,7 +69,7 @@ namespace Sarin
 
 	QIODevice* AudioCall::GetAudioDevice ()
 	{
-		return nullptr;
+		return Device_.get ();
 	}
 
 	QAudioFormat AudioCall::GetAudioFormat ()
@@ -98,32 +99,14 @@ namespace Sarin
 		watcher->setFuture (CallMgr_->InitiateCall (SourceId_.toUtf8 ()));
 	}
 
-	namespace
-	{
-		QAudioFormat AvCSettings2Format (const ToxAvCSettings& settings)
-		{
-			QAudioFormat fmt;
-			fmt.setChannelCount (settings.audio_channels);
-			fmt.setSampleRate (settings.audio_sample_rate);
-			fmt.setSampleSize (16);
-			fmt.setByteOrder (QAudioFormat::BigEndian);
-			fmt.setCodec ("audio/pcm");
-			fmt.setSampleType (QAudioFormat::SignedInt);
-			return fmt;
-		}
-	}
-
 	void AudioCall::HandleInitiateResult (const QFuture<CallManager::InitiateResult>& future)
 	{
 		try
 		{
 			const auto& result = future.result ();
-			const auto index = result.CallIndex_;
-			qDebug () << Q_FUNC_INFO
-					<< index;
-			emit stateChanged (SActive);
+			CallIdx_ = result.CallIndex_;
 
-			Fmt_ = AvCSettings2Format (result.CodecSettings_);
+			MoveToActiveState (result.CodecSettings_);
 		}
 		catch (const ThreadException& ex)
 		{
@@ -139,6 +122,34 @@ namespace Sarin
 					<< ex.what ();
 			emit stateChanged (SFinished);
 		}
+	}
+
+	namespace
+	{
+		QAudioFormat AvCSettings2Format (const ToxAvCSettings& settings)
+		{
+			QAudioFormat fmt;
+			fmt.setChannelCount (settings.audio_channels);
+			fmt.setSampleRate (settings.audio_sample_rate);
+			fmt.setSampleSize (16);
+			fmt.setByteOrder (QSysInfo::ByteOrder == QSysInfo::BigEndian ?
+					QAudioFormat::BigEndian :
+					QAudioFormat::LittleEndian);
+			fmt.setCodec ("audio/pcm");
+			fmt.setSampleType (QAudioFormat::SignedInt);
+			return fmt;
+		}
+	}
+
+	void AudioCall::MoveToActiveState (const ToxAvCSettings& settings)
+	{
+		emit stateChanged (SActive);
+
+		Device_ = std::make_shared<AudioCallDevice> (CallIdx_, CallMgr_);
+		Device_->open (QIODevice::ReadWrite);
+
+		Fmt_ = AvCSettings2Format (settings);
+		emit audioModeChanged (QIODevice::ReadWrite);
 	}
 }
 }

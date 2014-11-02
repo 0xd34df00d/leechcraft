@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QAudioFormat>
 #include <interfaces/azoth/imediacall.h>
@@ -43,6 +44,8 @@ namespace Azoth
 {
 namespace Sarin
 {
+	class AudioCallDevice;
+
 	class AudioCall : public QObject
 					, public IMediaCall
 	{
@@ -54,7 +57,11 @@ namespace Sarin
 
 		CallManager * const CallMgr_;
 
+		int32_t CallIdx_ = -1;
+
 		QAudioFormat Fmt_;
+
+		std::shared_ptr<AudioCallDevice> Device_;
 	public:
 		AudioCall (const QString&, CallManager*);
 
@@ -68,6 +75,7 @@ namespace Sarin
 	private:
 		void InitiateCall ();
 		void HandleInitiateResult (const QFuture<CallManager::InitiateResult>&);
+		void MoveToActiveState (const ToxAvCSettings&);
 	signals:
 		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
 		void audioModeChanged (QIODevice::OpenMode);
