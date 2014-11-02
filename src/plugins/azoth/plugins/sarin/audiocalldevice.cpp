@@ -58,11 +58,11 @@ namespace Sarin
 	qint64 AudioCallDevice::writeData (const char *data, qint64 len)
 	{
 		const QByteArray ba { data, static_cast<int> (len) };
-		auto future = Manager_->WriteData (Idx_, LastLeftover_ + ba);
+		auto future = Manager_->WriteData (Idx_, LastWriteLeftover_ + ba);
 		try
 		{
 			const auto& result = future.result ();
-			LastLeftover_ = result.Leftover_;
+			LastWriteLeftover_ = result.Leftover_;
 			return len;
 		}
 		catch (const std::exception& e)

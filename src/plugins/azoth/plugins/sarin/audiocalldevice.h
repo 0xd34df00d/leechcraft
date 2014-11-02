@@ -44,7 +44,7 @@ namespace Sarin
 		const int32_t Idx_;
 		CallManager * const Manager_;
 
-		QByteArray LastLeftover_;
+		QByteArray LastWriteLeftover_;
 	public:
 		AudioCallDevice (int32_t, CallManager*);
 
