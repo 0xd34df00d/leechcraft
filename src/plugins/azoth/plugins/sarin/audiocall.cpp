@@ -48,6 +48,14 @@ namespace Sarin
 		InitiateCall ();
 	}
 
+	AudioCall::AudioCall (int32_t callIdx, const QString& sourceId, CallManager *callMgr)
+	: SourceId_ { sourceId }
+	, Dir_ { DIn }
+	, CallMgr_ { callMgr }
+	, CallIdx_ { callIdx }
+	{
+	}
+
 	IMediaCall::Direction AudioCall::GetDirection () const
 	{
 		return Dir_;

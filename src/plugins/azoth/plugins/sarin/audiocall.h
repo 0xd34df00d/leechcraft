@@ -72,6 +72,7 @@ namespace Sarin
 		std::shared_ptr<AudioCallDevice> Device_;
 	public:
 		AudioCall (const QString&, CallManager*);
+		AudioCall (int32_t, const QString&, CallManager*);
 
 		Direction GetDirection () const;
 		QString GetSourceID () const;
