@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "audiocall.h"
-#include <QAudioFormat>
 #include <QFuture>
 #include <QFutureWatcher>
 #include <util/sll/slotclosure.h>
@@ -126,6 +125,7 @@ namespace Sarin
 
 	namespace
 	{
+#ifdef ENABLE_MEDIACALLS
 		QAudioFormat AvCSettings2Format (const ToxAvCSettings& settings)
 		{
 			QAudioFormat fmt;
@@ -139,6 +139,12 @@ namespace Sarin
 			fmt.setSampleType (QAudioFormat::SignedInt);
 			return fmt;
 		}
+#else
+		QAudioFormat AvCSettings2Format (const ToxAvCSettings&)
+		{
+			return {};
+		}
+#endif
 	}
 
 	void AudioCall::MoveToActiveState (const ToxAvCSettings& settings)

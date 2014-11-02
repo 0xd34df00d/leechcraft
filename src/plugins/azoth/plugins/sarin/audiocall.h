@@ -31,12 +31,20 @@
 
 #include <memory>
 #include <QObject>
+
+#ifdef ENABLE_MEDIACALLS
 #include <QAudioFormat>
+#endif
+
 #include <interfaces/azoth/imediacall.h>
 #include "callmanager.h"
 
 template<typename T>
 class QFuture;
+
+#ifndef ENABLE_MEDIACALLS
+struct QAudioFormat;
+#endif
 
 namespace LeechCraft
 {
