@@ -68,6 +68,21 @@ namespace Sarin
 
 	void AudioCall::Accept ()
 	{
+		if (Dir_ == DOut)
+			return;
+
+		try
+		{
+			const auto& result = CallMgr_->AcceptCall (CallIdx_).result ();
+			MoveToActiveState (result.CodecSettings_);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+
+			emit stateChanged (IMediaCall::SFinished);
+		}
 	}
 
 	void AudioCall::Hangup ()
