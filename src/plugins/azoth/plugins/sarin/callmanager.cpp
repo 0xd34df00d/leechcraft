@@ -87,7 +87,7 @@ namespace Sarin
 		return Thread_->ScheduleFunction ([this, data, callIdx] (Tox*) -> WriteResult
 				{
 					const auto perFrame = av_DefaultSettings.audio_frame_duration * av_DefaultSettings.audio_sample_rate * av_DefaultSettings.audio_channels / 1000;
-					const auto dataShift = perFrame * 2;
+					const auto dataShift = perFrame * sizeof (int16_t);
 					qDebug () << Q_FUNC_INFO << data.size () << perFrame;
 
 					int currentPos = 0;
