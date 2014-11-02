@@ -810,8 +810,16 @@ namespace Azoth
 
 	void ChatTab::handleCall (QObject *callObj)
 	{
-		IMediaCall *call = qobject_cast<IMediaCall*> (callObj);
-		if (!call || call->GetSourceID () != EntryID_)
+		const auto call = qobject_cast<IMediaCall*> (callObj);
+		if (!call)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null call object from"
+					<< sender ();
+			return;
+		}
+
+		if (call->GetSourceID () != EntryID_)
 			return;
 
 		CallChatWidget *widget = new CallChatWidget (callObj);
