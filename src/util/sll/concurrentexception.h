@@ -44,6 +44,8 @@ namespace Util
 							  , public T
 	{
 	public:
+		ConcurrentException () = default;
+
 		template<typename... Args>
 		ConcurrentException (Args&&... args)
 		: T { std::forward<Args...> (args...) }
