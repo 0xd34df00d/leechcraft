@@ -74,6 +74,7 @@ namespace Sarin
 	using CallInitiateException = Util::ConcurrentException<CallInitiateCode>;
 	using FramePrepareException = Util::ConcurrentException<FramePrepareCode>;
 	using FrameSendException = Util::ConcurrentException<FrameSendCode>;
+	using CallAnswerException = Util::ConcurrentException<Util::NewType<CodeExceptionBase, NewTypeTag>>;
 }
 }
 }
