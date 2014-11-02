@@ -52,6 +52,7 @@ namespace Sarin
 	};
 
 	using ThreadException = Util::ConcurrentException<Util::NewType<TextExceptionBase, NewTypeTag>>;
+	using UnknownFriendException = Util::ConcurrentException<Util::NewType<TextExceptionBase, NewTypeTag>>;
 
 	class CodeExceptionBase
 	{
