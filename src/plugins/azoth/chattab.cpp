@@ -801,11 +801,8 @@ namespace Azoth
 #ifdef ENABLE_MEDIACALLS
 	void ChatTab::handleCallRequested ()
 	{
-		QObject *callObj = Core::Instance ().GetCallManager ()->
-				Call (GetEntry<ICLEntry> (), Ui_.VariantBox_->currentText ());
-		if (!callObj)
-			return;
-		handleCall (callObj);
+		const auto& variant = Ui_.VariantBox_->currentText ();
+		Core::Instance ().GetCallManager ()->Call (GetEntry<ICLEntry> (), variant);
 	}
 
 	void ChatTab::handleCall (QObject *callObj)
