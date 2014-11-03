@@ -51,6 +51,7 @@ namespace Sarin
 	public:
 		AudioCallDevice (int32_t, CallManager*);
 
+		qint64 bytesAvailable () const override;
 		bool isSequential () const override;
 	protected:
 		qint64 readData (char *data, qint64 maxlen) override;

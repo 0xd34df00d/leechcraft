@@ -48,6 +48,11 @@ namespace Sarin
 				SLOT (handleGotFrame (int32_t, QByteArray)));
 	}
 
+	qint64 AudioCallDevice::bytesAvailable () const
+	{
+		return ReadBuffer_.size () + QIODevice::bytesAvailable ();
+	}
+
 	bool AudioCallDevice::isSequential () const
 	{
 		return true;
