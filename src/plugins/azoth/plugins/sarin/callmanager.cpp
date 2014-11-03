@@ -159,6 +159,14 @@ namespace Sarin
 						throw CallAnswerException { rc };
 					}
 
+					if ((rc = toxav_prepare_transmission (ToxAv_.get (), callIdx, av_jbufdc, av_VADd, false)))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to prepare transmission:"
+								<< rc;
+						throw CallInitiateException { rc };
+					}
+
 					return { settings };
 				});
 	}
