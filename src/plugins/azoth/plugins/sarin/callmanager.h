@@ -75,8 +75,10 @@ namespace Sarin
 	private:
 		void HandleIncomingCall (int32_t callIdx);
 		void HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx);
+		void HandleAudio (int32_t call, int16_t *frames, int size);
 	signals:
 		void gotIncomingCall (const QByteArray& pubkey, int32_t callIdx);
+		void gotFrame (int32_t call, const QByteArray&);
 	};
 }
 }

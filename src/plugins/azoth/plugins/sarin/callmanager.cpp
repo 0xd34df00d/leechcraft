@@ -52,6 +52,12 @@ namespace Sarin
 				},
 				av_OnInvite,
 				this);
+		toxav_register_audio_recv_callback (ToxAv_.get (),
+				[] (ToxAv*, int32_t callIdx, int16_t *frames, int size, void *udata)
+				{
+					static_cast<CallManager*> (udata)->HandleAudio (callIdx, frames, size);
+				},
+				this);
 	}
 
 	QFuture<CallManager::InitiateResult> CallManager::InitiateCall (const QByteArray& pkey)
@@ -194,6 +200,12 @@ namespace Sarin
 		emit gotIncomingCall (pubkey, callIdx);
 	}
 
+	void CallManager::HandleAudio (int32_t call, int16_t *frames, int size)
+	{
+		qDebug () << Q_FUNC_INFO << call << size;
+		const auto& data = QByteArray { reinterpret_cast<char*> (frames), static_cast<int> (size * sizeof (int16_t)) };
+		emit gotFrame (call, data);
+	}
 }
 }
 }
