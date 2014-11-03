@@ -134,7 +134,7 @@ namespace Azoth
 		}
 
 		const auto& sourceId = mediaCall->GetSourceID ();
-		if (sourceId.contains (obj))
+		if (Entry2Calls_.value (sourceId).contains (obj))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "attempt to double-add the call"
