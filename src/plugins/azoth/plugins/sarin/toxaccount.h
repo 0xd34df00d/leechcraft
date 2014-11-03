@@ -118,6 +118,8 @@ namespace Sarin
 
 		void HandleConfigAccepted (AccountConfigDialog*);
 	private slots:
+		void handleThreadReady ();
+
 		void handleToxIdRequested ();
 		void handleToxStateChanged (const QByteArray&);
 

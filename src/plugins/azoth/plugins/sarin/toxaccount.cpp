@@ -430,6 +430,11 @@ namespace Sarin
 				this,
 				SLOT (handleRemovedFriend (QByteArray)));
 
+		connect (Thread_.get (),
+				SIGNAL (toxCreated (Tox*)),
+				this,
+				SLOT (handleThreadReady ()));
+
 		emit threadChanged (Thread_);
 
 		Thread_->start (QThread::IdlePriority);
@@ -461,6 +466,18 @@ namespace Sarin
 
 		ToxConfig_ = config;
 		emit accountChanged (this);
+	}
+
+	void ToxAccount::handleThreadReady ()
+	{
+		if (!Thread_)
+			return;
+
+		const auto callManager = Thread_->GetCallManager ();
+		connect (callManager,
+				SIGNAL (gotIncomingCall (QByteArray, int32_t)),
+				this,
+				SLOT (handleIncomingCall (QByteArray, int32_t)));
 	}
 
 	void ToxAccount::handleToxIdRequested ()
