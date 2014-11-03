@@ -65,7 +65,13 @@ namespace Sarin
 			qint64 Written_;
 			QByteArray Leftover_;
 		};
-		QFuture<WriteResult> WriteData (int32_t callIndex, const QByteArray& data);
+		QFuture<WriteResult> WriteData (int32_t callIdx, const QByteArray& data);
+
+		struct AcceptCallResult
+		{
+			ToxAvCSettings CodecSettings_;
+		};
+		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
 	private:
 		void HandleIncomingCall (int32_t callIdx);
 		void HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx);

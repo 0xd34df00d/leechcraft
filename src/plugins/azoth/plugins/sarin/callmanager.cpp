@@ -128,6 +128,35 @@ namespace Sarin
 					return { currentPos, data.mid (currentPos) };
 				});
 	}
+
+	QFuture<CallManager::AcceptCallResult> CallManager::AcceptCall (int32_t callIdx)
+	{
+		return Thread_->ScheduleFunction ([this, callIdx] (Tox*) -> AcceptCallResult
+				{
+					ToxAvCSettings settings;
+					auto rc = toxav_get_peer_csettings (ToxAv_.get (), callIdx, 0, &settings);
+					if (rc != ErrorNone)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to get peer settings for call"
+								<< callIdx
+								<< rc;
+						throw CallAnswerException { rc };
+					}
+
+					if ((rc = toxav_answer (ToxAv_.get (), callIdx, &settings)))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to answer the call"
+								<< callIdx
+								<< rc;
+						throw CallAnswerException { rc };
+					}
+
+					return { settings };
+				});
+	}
+
 	void CallManager::HandleIncomingCall (int32_t callIdx)
 	{
 		const auto friendNum = toxav_get_peer_id (ToxAv_.get (), callIdx, 0);
