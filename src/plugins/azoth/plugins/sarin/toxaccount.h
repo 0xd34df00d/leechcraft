@@ -120,6 +120,8 @@ namespace Sarin
 	private slots:
 		void handleThreadReady ();
 
+		void handleIncomingCall (const QByteArray&, int32_t);
+
 		void handleToxIdRequested ();
 		void handleToxStateChanged (const QByteArray&);
 

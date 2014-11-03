@@ -480,6 +480,13 @@ namespace Sarin
 				SLOT (handleIncomingCall (QByteArray, int32_t)));
 	}
 
+	void ToxAccount::handleIncomingCall (const QByteArray& pubkey, int32_t callIdx)
+	{
+		qDebug () << Q_FUNC_INFO << pubkey << callIdx;
+		const auto call = new AudioCall { callIdx, pubkey, Thread_->GetCallManager () };
+		emit called (call);
+	}
+
 	void ToxAccount::handleToxIdRequested ()
 	{
 		if (!Thread_)
