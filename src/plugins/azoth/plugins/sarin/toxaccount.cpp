@@ -359,7 +359,7 @@ namespace Sarin
 			return nullptr;
 		}
 
-		const auto call = new AudioCall { entry->GetPubKey (), Thread_->GetCallManager () };
+		const auto call = new AudioCall { entry, Thread_->GetCallManager () };
 		emit called (call);
 		return call;
 	}
@@ -483,7 +483,16 @@ namespace Sarin
 	void ToxAccount::handleIncomingCall (const QByteArray& pubkey, int32_t callIdx)
 	{
 		qDebug () << Q_FUNC_INFO << pubkey << callIdx;
-		const auto call = new AudioCall { callIdx, pubkey, Thread_->GetCallManager () };
+		const auto entry = Contacts_.value (pubkey);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot find entry by pubkey"
+					<< pubkey;
+			return;
+		}
+
+		const auto call = new AudioCall { callIdx, entry, Thread_->GetCallManager () };
 		emit called (call);
 	}
 
