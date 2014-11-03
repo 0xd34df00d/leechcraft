@@ -360,6 +360,7 @@ namespace Sarin
 		}
 
 		const auto call = new AudioCall { entry->GetPubKey (), Thread_->GetCallManager () };
+		emit called (call);
 		return call;
 	}
 
