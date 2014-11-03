@@ -63,7 +63,7 @@ namespace Sarin
 						qWarning () << Q_FUNC_INFO
 								<< "unable to get user ID for"
 								<< pkey;
-						throw ThreadException { tr ("Unable to get user ID.") };
+						throw UnknownFriendException { tr ("Unable to get user ID.") };
 					}
 
 					int32_t callIdx = 0;
