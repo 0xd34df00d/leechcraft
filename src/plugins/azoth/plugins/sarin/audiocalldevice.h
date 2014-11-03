@@ -41,10 +41,13 @@ namespace Sarin
 
 	class AudioCallDevice : public QIODevice
 	{
+		Q_OBJECT
+
 		const int32_t Idx_;
 		CallManager * const Manager_;
 
 		QByteArray LastWriteLeftover_;
+		QByteArray ReadBuffer_;
 	public:
 		AudioCallDevice (int32_t, CallManager*);
 
@@ -52,6 +55,8 @@ namespace Sarin
 	protected:
 		qint64 readData (char *data, qint64 maxlen) override;
 		qint64 writeData (const char *data, qint64 len) override;
+	private slots:
+		void handleGotFrame (int32_t, const QByteArray&);
 	};
 }
 }

@@ -42,6 +42,10 @@ namespace Sarin
 	: Idx_ { callIdx }
 	, Manager_ { manager }
 	{
+		connect (Manager_,
+				SIGNAL (gotFrame (int32_t, QByteArray)),
+				this,
+				SLOT (handleGotFrame (int32_t, QByteArray)));
 	}
 
 	bool AudioCallDevice::isSequential () const
@@ -76,6 +80,16 @@ namespace Sarin
 
 			return -1;
 		}
+	}
+
+	void AudioCallDevice::handleGotFrame (int32_t callIdx, const QByteArray& data)
+	{
+		if (callIdx != Idx_)
+			return;
+
+		ReadBuffer_ += data.size ();
+		qDebug () << Q_FUNC_INFO << "got frame of size" << data.size () << "; total size:" << ReadBuffer_.size ();
+		emit readyRead ();
 	}
 }
 }
