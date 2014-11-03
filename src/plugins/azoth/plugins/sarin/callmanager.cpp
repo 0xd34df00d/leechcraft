@@ -51,6 +51,7 @@ namespace Sarin
 					static_cast<CallManager*> (udata)->HandleIncomingCall (callIdx);
 				},
 				av_OnInvite,
+				this);
 	}
 
 	QFuture<CallManager::InitiateResult> CallManager::InitiateCall (const QByteArray& pkey)
