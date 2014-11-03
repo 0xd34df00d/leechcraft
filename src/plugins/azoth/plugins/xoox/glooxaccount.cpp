@@ -512,7 +512,10 @@ namespace Xoox
 		}
 		if (!var.isEmpty ())
 			target += '/' + var;
-		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
+
+		const auto call = new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
+		emit called (call);
+		return call;
 	}
 #endif
 
