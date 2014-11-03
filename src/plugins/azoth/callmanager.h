@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CALLMANAGER_H
-#define PLUGINS_AZOTH_CALLMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QHash>
 #ifdef ENABLE_MEDIACALLS
@@ -42,6 +42,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	class ICLEntry;
+	class IMediaCall;
 
 	class CallManager : public QObject
 	{
@@ -55,9 +56,9 @@ namespace Azoth
 		QObject* Call (ICLEntry*, const QString&);
 		QObjectList GetCallsForEntry (const QString&) const;
 	private:
-		void HandleCall (QObject*);
+		void HandleIncomingCall (IMediaCall*);
 	private slots:
-		void handleIncomingCall (QObject*);
+		void handleCall (QObject*);
 		void handleStateChanged (LeechCraft::Azoth::IMediaCall::State);
 		void handleAudioModeChanged (QIODevice::OpenMode);
 #ifdef ENABLE_MEDIACALLS
@@ -66,5 +67,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

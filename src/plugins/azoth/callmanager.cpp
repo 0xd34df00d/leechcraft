@@ -60,7 +60,7 @@ namespace Azoth
 		connect (account,
 				SIGNAL (called (QObject*)),
 				this,
-				SLOT (handleIncomingCall (QObject*)));
+				SLOT (handleCall (QObject*)));
 	}
 
 	QObject* CallManager::Call (ICLEntry *entry, const QString& variant)
@@ -85,7 +85,6 @@ namespace Azoth
 			return nullptr;
 		}
 
-		HandleCall (callObj);
 		return callObj;
 #else
 		return nullptr;
@@ -121,7 +120,23 @@ namespace Azoth
 	}
 #endif
 
-	void CallManager::HandleCall (QObject *obj)
+	void CallManager::HandleIncomingCall (IMediaCall *mediaCall)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (mediaCall->GetSourceID ()));
+		const auto& name = entry ?
+				entry->GetEntryName () :
+				mediaCall->GetSourceID ();
+
+		auto e = Util::MakeNotification ("Azoth",
+				tr ("Incoming call from %1").arg (name),
+				PInfo_);
+		const auto nh = new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Accept"), [mediaCall] () { mediaCall->Accept (); });
+		nh->AddFunction (tr ("Hangup"), [mediaCall] () { mediaCall->Hangup (); });
+		Core::Instance ().SendEntity (e);
+	}
+
+	void CallManager::handleCall (QObject *obj)
 	{
 		const auto mediaCall = qobject_cast<IMediaCall*> (obj);
 		if (!mediaCall)
@@ -155,28 +170,9 @@ namespace Azoth
 				SIGNAL (audioModeChanged (QIODevice::OpenMode)),
 				this,
 				SLOT (handleAudioModeChanged (QIODevice::OpenMode)));
-	}
 
-	void CallManager::handleIncomingCall (QObject *obj)
-	{
-		HandleCall (obj);
-
-		IMediaCall *call = qobject_cast<IMediaCall*> (obj);
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (call->GetSourceID ()));
-		const QString& name = entry ?
-				entry->GetEntryName () :
-				call->GetSourceID ();
-
-		Entity e = Util::MakeNotification ("Azoth",
-				tr ("Incoming call from %1").arg (name),
-				PInfo_);
-		Util::NotificationActionHandler *nh =
-				new Util::NotificationActionHandler (e, this);
-		nh->AddFunction (tr ("Accept"), [call] () { call->Accept (); });
-		nh->AddFunction (tr ("Hangup"), [call] () { call->Hangup (); });
-		Core::Instance ().SendEntity (e);
-
+		if (mediaCall->GetDirection () == IMediaCall::DIn)
+			HandleIncomingCall (mediaCall);
 	}
 
 	void CallManager::handleStateChanged (IMediaCall::State state)
