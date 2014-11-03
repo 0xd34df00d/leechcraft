@@ -46,6 +46,7 @@ namespace Sarin
 	, CoreProxy_ { proxy }
 	, ParentProtocol_ { parentPlugin }
 	{
+		qRegisterMetaType<int32_t> ("int32_t");
 		LoadAccounts ();
 	}
 
