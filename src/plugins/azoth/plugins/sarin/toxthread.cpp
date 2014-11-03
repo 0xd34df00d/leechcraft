@@ -33,6 +33,7 @@
 #include <QMutexLocker>
 #include <QtEndian>
 #include <QtDebug>
+#include <QEventLoop>
 #include <tox/tox.h>
 #include "util.h"
 #include "callmanager.h"
@@ -534,6 +535,8 @@ namespace Sarin
 				reinterpret_cast<const uint8_t*> (pubkey.constData ()));
 
 		bool wasConnected = false;
+
+		QEventLoop evLoop;
 		while (!ShouldStop_)
 		{
 			tox_do (Tox_.get ());
@@ -551,6 +554,9 @@ namespace Sarin
 
 			QElapsedTimer timer;
 			timer.start ();
+
+			evLoop.processEvents ();
+
 			decltype (FQueue_) queue;
 			{
 				QMutexLocker locker { &FQueueMutex_ };
