@@ -123,7 +123,7 @@ namespace Azoth
 
 	void CallManager::HandleCall (QObject *obj)
 	{
-		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (obj);
+		const auto mediaCall = qobject_cast<IMediaCall*> (obj);
 		if (!mediaCall)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -133,7 +133,19 @@ namespace Azoth
 			return;
 		}
 
-		Entry2Calls_ [mediaCall->GetSourceID ()] << obj;
+		const auto& sourceId = mediaCall->GetSourceID ();
+		if (sourceId.contains (obj))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "attempt to double-add the call"
+					<< obj
+					<< "from"
+					<< sourceId
+					<< sender ();
+			return;
+		}
+
+		Entry2Calls_ [sourceId] << obj;
 
 		connect (obj,
 				SIGNAL (stateChanged (LeechCraft::Azoth::IMediaCall::State)),
