@@ -33,6 +33,7 @@
 #include <util/sll/slotclosure.h>
 #include "threadexceptions.h"
 #include "audiocalldevice.h"
+#include "toxcontact.h"
 
 namespace LeechCraft
 {
@@ -40,16 +41,18 @@ namespace Azoth
 {
 namespace Sarin
 {
-	AudioCall::AudioCall (const QString& sourceId, CallManager *callMgr)
-	: SourceId_ { sourceId }
+	AudioCall::AudioCall (const ToxContact *contact, CallManager *callMgr)
+	: SourceId_ { contact->GetEntryID () }
+	, SourcePubkey_ { contact->GetPubKey () }
 	, Dir_ { DOut }
 	, CallMgr_ { callMgr }
 	{
 		InitiateCall ();
 	}
 
-	AudioCall::AudioCall (int32_t callIdx, const QString& sourceId, CallManager *callMgr)
-	: SourceId_ { sourceId }
+	AudioCall::AudioCall (int32_t callIdx, const ToxContact *contact, CallManager *callMgr)
+	: SourceId_ { contact->GetEntryID () }
+	, SourcePubkey_ { contact->GetPubKey () }
 	, Dir_ { DIn }
 	, CallMgr_ { callMgr }
 	, CallIdx_ { callIdx }
@@ -118,7 +121,7 @@ namespace Sarin
 			SIGNAL (finished ()),
 			watcher
 		};
-		watcher->setFuture (CallMgr_->InitiateCall (SourceId_.toUtf8 ()));
+		watcher->setFuture (CallMgr_->InitiateCall (SourcePubkey_.toUtf8 ()));
 	}
 
 	void AudioCall::HandleInitiateResult (const QFuture<CallManager::InitiateResult>& future)

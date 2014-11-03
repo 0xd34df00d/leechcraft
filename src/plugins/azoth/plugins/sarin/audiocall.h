@@ -53,6 +53,7 @@ namespace Azoth
 namespace Sarin
 {
 	class AudioCallDevice;
+	class ToxContact;
 
 	class AudioCall : public QObject
 					, public IMediaCall
@@ -61,6 +62,7 @@ namespace Sarin
 		Q_INTERFACES (LeechCraft::Azoth::IMediaCall)
 
 		const QString SourceId_;
+		const QString SourcePubkey_;
 		const Direction Dir_;
 
 		CallManager * const CallMgr_;
@@ -71,8 +73,8 @@ namespace Sarin
 
 		std::shared_ptr<AudioCallDevice> Device_;
 	public:
-		AudioCall (const QString&, CallManager*);
-		AudioCall (int32_t, const QString&, CallManager*);
+		AudioCall (const ToxContact*, CallManager*);
+		AudioCall (int32_t, const ToxContact*, CallManager*);
 
 		Direction GetDirection () const;
 		QString GetSourceID () const;
