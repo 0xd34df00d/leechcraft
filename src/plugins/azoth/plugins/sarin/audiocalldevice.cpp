@@ -92,7 +92,7 @@ namespace Sarin
 		if (callIdx != Idx_)
 			return;
 
-		ReadBuffer_ += data.size ();
+		ReadBuffer_ += data;
 		qDebug () << Q_FUNC_INFO << "got frame of size" << data.size () << "; total size:" << ReadBuffer_.size ();
 		emit readyRead ();
 	}
