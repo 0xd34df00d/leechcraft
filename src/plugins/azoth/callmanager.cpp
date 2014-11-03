@@ -177,7 +177,6 @@ namespace Azoth
 		nh->AddFunction (tr ("Hangup"), [call] () { call->Hangup (); });
 		Core::Instance ().SendEntity (e);
 
-		emit gotCall (obj);
 	}
 
 	void CallManager::handleStateChanged (IMediaCall::State state)

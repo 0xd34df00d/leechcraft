@@ -63,8 +63,6 @@ namespace Azoth
 #ifdef ENABLE_MEDIACALLS
 		void handleDevStateChanged (QAudio::State);
 #endif
-	signals:
-		void gotCall (QObject*);
 	};
 }
 }
