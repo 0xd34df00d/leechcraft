@@ -52,6 +52,20 @@ namespace Sarin
 				},
 				av_OnInvite,
 				this);
+		toxav_register_callstate_callback (ToxAv_.get (),
+				[] (void*, int32_t callIdx, void *udata)
+				{
+					static_cast<CallManager*> (udata)->HandleAvStart (callIdx);
+				},
+				av_OnStart,
+				this);
+		toxav_register_callstate_callback (ToxAv_.get (),
+				[] (void*, int32_t callIdx, void *udata)
+				{
+					static_cast<CallManager*> (udata)->HandleAvStart (callIdx);
+				},
+				av_OnStarting,
+				this);
 		toxav_register_audio_recv_callback (ToxAv_.get (),
 				[] (ToxAv*, int32_t callIdx, int16_t *frames, int size, void *udata)
 				{
@@ -102,7 +116,7 @@ namespace Sarin
 				{
 					const auto perFrame = av_DefaultSettings.audio_frame_duration * av_DefaultSettings.audio_sample_rate * av_DefaultSettings.audio_channels / 1000;
 					const auto dataShift = perFrame * sizeof (int16_t);
-					qDebug () << Q_FUNC_INFO << data.size () << perFrame;
+					//qDebug () << Q_FUNC_INFO << data.size () << perFrame;
 
 					int currentPos = 0;
 					for (; currentPos + dataShift < static_cast<uint> (data.size ()); currentPos += dataShift)
@@ -128,7 +142,7 @@ namespace Sarin
 									<< rc;
 							throw FrameSendException { rc };
 						}
-						qDebug () << "sent frame of size" << size;
+						//qDebug () << "sent frame of size" << size;
 					}
 
 					return { currentPos, data.mid (currentPos) };
@@ -141,7 +155,7 @@ namespace Sarin
 				{
 					ToxAvCSettings settings;
 					auto rc = toxav_get_peer_csettings (ToxAv_.get (), callIdx, 0, &settings);
-					if (rc != ErrorNone)
+					if (rc < 0)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to get peer settings for call"
@@ -149,6 +163,8 @@ namespace Sarin
 								<< rc;
 						throw CallAnswerException { rc };
 					}
+
+					qDebug () << Q_FUNC_INFO << settings.audio_channels;
 
 					if ((rc = toxav_answer (ToxAv_.get (), callIdx, &settings)))
 					{
@@ -159,7 +175,7 @@ namespace Sarin
 						throw CallAnswerException { rc };
 					}
 
-					if ((rc = toxav_prepare_transmission (ToxAv_.get (), callIdx, av_jbufdc, av_VADd, false)))
+					if (const auto rc = toxav_prepare_transmission (ToxAv_.get (), callIdx, av_jbufdc, av_VADd, false))
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to prepare transmission:"
@@ -209,7 +225,7 @@ namespace Sarin
 	{
 		ToxAvCSettings settings;
 		const auto rc = toxav_get_peer_csettings (ToxAv_.get (), callIdx, 0, &settings);
-		if (rc != ErrorNone)
+		if (rc < 0)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to get peer settings";
@@ -224,6 +240,11 @@ namespace Sarin
 		}
 
 		emit gotIncomingCall (pubkey, callIdx);
+	}
+
+	void CallManager::HandleAvStart (int32_t callIdx)
+	{
+		emit transferStarting (callIdx);
 	}
 
 	void CallManager::HandleAudio (int32_t call, int16_t *frames, int size)
