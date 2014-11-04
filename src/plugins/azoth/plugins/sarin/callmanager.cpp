@@ -171,6 +171,24 @@ namespace Sarin
 				});
 	}
 
+	QFuture<ToxAvCSettings> CallManager::QueryCodec (int32_t callIdx)
+	{
+		return Thread_->ScheduleFunction ([this, callIdx] (Tox*)
+				{
+					ToxAvCSettings settings;
+					const auto rc = toxav_get_peer_csettings (ToxAv_.get (), callIdx, 0, &settings);
+					if (rc < 0)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to get peer settings for call"
+								<< callIdx
+								<< rc;
+						throw CallAnswerException { rc };
+					}
+					return settings;
+				});
+	}
+
 	void CallManager::HandleIncomingCall (int32_t callIdx)
 	{
 		const auto friendNum = toxav_get_peer_id (ToxAv_.get (), callIdx, 0);
