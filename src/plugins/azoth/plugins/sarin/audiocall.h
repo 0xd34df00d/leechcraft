@@ -72,6 +72,8 @@ namespace Sarin
 		QAudioFormat Fmt_;
 
 		std::shared_ptr<AudioCallDevice> Device_;
+
+		AudioCall (const ToxContact*, CallManager*, Direction);
 	public:
 		AudioCall (const ToxContact*, CallManager*);
 		AudioCall (int32_t, const ToxContact*, CallManager*);

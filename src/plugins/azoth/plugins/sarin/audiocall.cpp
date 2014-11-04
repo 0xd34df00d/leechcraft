@@ -41,22 +41,24 @@ namespace Azoth
 {
 namespace Sarin
 {
-	AudioCall::AudioCall (const ToxContact *contact, CallManager *callMgr)
+	AudioCall::AudioCall (const ToxContact *contact, CallManager *callMgr, Direction dir)
 	: SourceId_ { contact->GetEntryID () }
 	, SourcePubkey_ { contact->GetPubKey () }
-	, Dir_ { DOut }
+	, Dir_ { dir }
 	, CallMgr_ { callMgr }
+	{
+	}
+
+	AudioCall::AudioCall (const ToxContact *contact, CallManager *callMgr)
+	: AudioCall { contact, callMgr, DOut }
 	{
 		InitiateCall ();
 	}
 
 	AudioCall::AudioCall (int32_t callIdx, const ToxContact *contact, CallManager *callMgr)
-	: SourceId_ { contact->GetEntryID () }
-	, SourcePubkey_ { contact->GetPubKey () }
-	, Dir_ { DIn }
-	, CallMgr_ { callMgr }
-	, CallIdx_ { callIdx }
+	: AudioCall { contact, callMgr, DIn }
 	{
+		CallIdx_ = callIdx;
 	}
 
 	IMediaCall::Direction AudioCall::GetDirection () const
