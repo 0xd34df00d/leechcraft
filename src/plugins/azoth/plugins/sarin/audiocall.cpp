@@ -30,7 +30,9 @@
 #include "audiocall.h"
 #include <QFuture>
 #include <QFutureWatcher>
+#include <plusadic/curry.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/futures.h>
 #include "threadexceptions.h"
 #include "audiocalldevice.h"
 #include "toxcontact.h"
@@ -47,6 +49,10 @@ namespace Sarin
 	, Dir_ { dir }
 	, CallMgr_ { callMgr }
 	{
+		connect (CallMgr_,
+				SIGNAL (transferStarting (int32_t)),
+				this,
+				SLOT (handleTransferStarting (int32_t)));
 	}
 
 	AudioCall::AudioCall (const ToxContact *contact, CallManager *callMgr)
@@ -78,8 +84,7 @@ namespace Sarin
 
 		try
 		{
-			const auto& result = CallMgr_->AcceptCall (CallIdx_).result ();
-			MoveToActiveState (result.CodecSettings_);
+			CallMgr_->AcceptCall (CallIdx_).result ();
 		}
 		catch (const std::exception& e)
 		{
@@ -133,7 +138,7 @@ namespace Sarin
 			const auto& result = future.result ();
 			CallIdx_ = result.CallIndex_;
 
-			MoveToActiveState (result.CodecSettings_);
+			emit stateChanged (SConnecting);
 		}
 		catch (const ThreadException& ex)
 		{
@@ -184,6 +189,17 @@ namespace Sarin
 
 		Fmt_ = AvCSettings2Format (settings);
 		emit audioModeChanged (QIODevice::ReadWrite);
+	}
+
+	void AudioCall::handleTransferStarting (int32_t callIdx)
+	{
+		if (callIdx != CallIdx_)
+			return;
+
+		qDebug () << Q_FUNC_INFO;
+		Util::ExecuteFuture ([this, callIdx] { return CallMgr_->QueryCodec (callIdx); },
+				plusadic::curry (&AudioCall::MoveToActiveState) (this),
+				this);
 	}
 }
 }

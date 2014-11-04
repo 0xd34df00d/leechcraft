@@ -89,6 +89,8 @@ namespace Sarin
 		void InitiateCall ();
 		void HandleInitiateResult (const QFuture<CallManager::InitiateResult>&);
 		void MoveToActiveState (const ToxAvCSettings&);
+	private slots:
+		void handleTransferStarting (int32_t);
 	signals:
 		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
 		void audioModeChanged (QIODevice::OpenMode);
