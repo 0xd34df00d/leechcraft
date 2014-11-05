@@ -64,7 +64,11 @@ namespace Monocle
 
 		QPointer<ArbitraryRotationWidget> ArbWidget_;
 
-		std::shared_ptr<QFutureWatcher<QImage>> RenderFuture_;
+		struct RenderInfo
+		{
+			QImage Result_;
+		};
+		std::shared_ptr<QFutureWatcher<RenderInfo>> RenderFuture_;
 	public:
 		typedef std::function<void (QRectF)> RectSetter_f;
 	private:
@@ -99,6 +103,7 @@ namespace Monocle
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
 		void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
 	private:
+		void RequestThreadedRender ();
 		bool IsDisplayed () const;
 	private slots:
 		void rotateCCW ();

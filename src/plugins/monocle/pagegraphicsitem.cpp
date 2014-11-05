@@ -171,18 +171,7 @@ namespace Monocle
 			auto backendObj = Doc_->GetBackendPlugin ();
 			if (qobject_cast<IBackendPlugin*> (backendObj)->IsThreaded ())
 			{
-				RenderFuture_.reset (new QFutureWatcher<QImage>,
-						[this] (QFutureWatcher<QImage> *watcher)
-						{
-							disconnect (watcher, 0, this, 0);
-							watcher->deleteLater ();
-						});
-				connect (RenderFuture_.get (),
-						SIGNAL (finished ()),
-						this,
-						SLOT (handlePixmapRendered ()));
-				RenderFuture_->setFuture (QtConcurrent::run ([this]
-						{ return Doc_->RenderPage (PageNum_, XScale_, YScale_); }));
+				RequestThreadedRender ();
 
 				auto size = Doc_->GetPageSize (PageNum_);
 				size.rwidth () *= XScale_;
@@ -254,6 +243,31 @@ namespace Monocle
 		rotateMenu.exec (event->screenPos ());
 	}
 
+	void PageGraphicsItem::RequestThreadedRender ()
+	{
+		RenderFuture_.reset (new QFutureWatcher<RenderInfo>,
+				[this] (QFutureWatcher<RenderInfo> *watcher)
+				{
+					disconnect (watcher, 0, this, 0);
+					watcher->deleteLater ();
+				});
+		connect (RenderFuture_.get (),
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePixmapRendered ()));
+
+		// C++14
+		auto xscale = XScale_;
+		auto yscale = YScale_;
+		RenderFuture_->setFuture (QtConcurrent::run ([this, xscale, yscale]
+				{
+					return RenderInfo
+					{
+						Doc_->RenderPage (PageNum_, yscale, yscale)
+					};
+				}));
+	}
+
 	bool PageGraphicsItem::IsDisplayed () const
 	{
 		const auto& thisMapped = mapToScene (boundingRect ()).boundingRect ();
@@ -301,9 +315,9 @@ namespace Monocle
 		if (sender () != RenderFuture_.get ())
 			return;
 
-		const auto& img = RenderFuture_->result ();
-		setPixmap (QPixmap::fromImage (img));
+		const auto& result = RenderFuture_->result ();
 
+		setPixmap (QPixmap::fromImage (result.Result_));
 		Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
 
 		RenderFuture_.reset ();
