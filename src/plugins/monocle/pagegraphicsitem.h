@@ -30,9 +30,13 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <QGraphicsPixmapItem>
 #include <QPointer>
 #include "interfaces/monocle/idocument.h"
+
+template<typename T>
+class QFutureWatcher;
 
 namespace LeechCraft
 {
@@ -59,6 +63,8 @@ namespace Monocle
 		PagesLayoutManager *LayoutManager_;
 
 		QPointer<ArbitraryRotationWidget> ArbWidget_;
+
+		std::shared_ptr<QFutureWatcher<QImage>> RenderFuture_;
 	public:
 		typedef std::function<void (QRectF)> RectSetter_f;
 	private:

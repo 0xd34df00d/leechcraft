@@ -168,13 +168,17 @@ namespace Monocle
 			auto backendObj = Doc_->GetBackendPlugin ();
 			if (qobject_cast<IBackendPlugin*> (backendObj)->IsThreaded ())
 			{
-				auto watcher = new QFutureWatcher<QImage> ();
-				connect (watcher,
+				RenderFuture_.reset (new QFutureWatcher<QImage>,
+						[this] (QFutureWatcher<QImage> *watcher)
+						{
+							disconnect (watcher, 0, this, 0);
+							watcher->deleteLater ();
+						});
+				connect (RenderFuture_.get (),
 						SIGNAL (finished ()),
 						this,
 						SLOT (handlePixmapRendered ()));
-
-				watcher->setFuture (QtConcurrent::run ([this]
+				RenderFuture_->setFuture (QtConcurrent::run ([this]
 						{ return Doc_->RenderPage (PageNum_, XScale_, YScale_); }));
 
 				auto size = Doc_->GetPageSize (PageNum_);
@@ -291,13 +295,15 @@ namespace Monocle
 
 	void PageGraphicsItem::handlePixmapRendered ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<QImage>*> (sender ());
-		watcher->deleteLater ();
+		if (sender () != RenderFuture_.get ())
+			return;
 
-		const auto& img = watcher->result ();
+		const auto& img = RenderFuture_->result ();
 		setPixmap (QPixmap::fromImage (img));
 
 		Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
+
+		RenderFuture_.reset ();
 	}
 }
 }
