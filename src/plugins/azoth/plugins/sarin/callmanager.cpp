@@ -97,14 +97,7 @@ namespace Sarin
 						throw CallInitiateException { res };
 					}
 
-					res = toxav_prepare_transmission (ToxAv_.get (), callIdx, av_jbufdc, av_VADd, false);
-					if (res < 0)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to prepare transmission:"
-								<< res;
-						throw CallInitiateException { res };
-					}
+					PrepareTransmission (callIdx);
 
 					return { callIdx, av_DefaultSettings };
 				});
@@ -175,13 +168,7 @@ namespace Sarin
 						throw CallAnswerException { rc };
 					}
 
-					if (const auto rc = toxav_prepare_transmission (ToxAv_.get (), callIdx, av_jbufdc, av_VADd, false))
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to prepare transmission:"
-								<< rc;
-						throw CallInitiateException { rc };
-					}
+					PrepareTransmission (callIdx);
 
 					return { settings };
 				});
@@ -252,6 +239,17 @@ namespace Sarin
 		qDebug () << Q_FUNC_INFO << call << size;
 		const auto& data = QByteArray { reinterpret_cast<char*> (frames), static_cast<int> (size * sizeof (int16_t)) };
 		emit gotFrame (call, data);
+	}
+
+	void CallManager::PrepareTransmission (int32_t callIdx)
+	{
+		if (const auto rc = toxav_prepare_transmission (ToxAv_.get (), callIdx, av_jbufdc, av_VADd, false))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to prepare transmission:"
+					<< rc;
+			throw CallInitiateException { rc };
+		}
 	}
 }
 }
