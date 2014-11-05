@@ -66,6 +66,9 @@ namespace Monocle
 	PageGraphicsItem::~PageGraphicsItem ()
 	{
 		Core::Instance ().GetPixmapCacheManager ()->PixmapDeleted (this);
+
+		if (RenderFuture_)
+			RenderFuture_->waitForFinished ();
 	}
 
 	void PageGraphicsItem::SetLayoutManager (PagesLayoutManager *manager)
