@@ -242,6 +242,8 @@ namespace Monocle
 
 	void DocumentTab::Remove ()
 	{
+		Scene_.clear ();
+
 		delete TOCWidget_;
 		delete BMWidget_;
 		delete ThumbsWidget_;
