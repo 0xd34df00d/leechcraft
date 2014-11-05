@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "audiocalldevice.h"
+#include <cstring>
 #include <QFuture>
 #include <QtDebug>
 #include "callmanager.h"
@@ -60,8 +61,11 @@ namespace Sarin
 
 	qint64 AudioCallDevice::readData (char *data, qint64 maxlen)
 	{
-		//qDebug () << Q_FUNC_INFO << maxlen;
-		return 0;
+		const auto len = std::min<qint64> (maxlen, ReadBuffer_.size ());
+
+		std::memcpy (data, ReadBuffer_.constData (), len);
+		ReadBuffer_.remove (0, len);
+		return len;
 	}
 
 	qint64 AudioCallDevice::writeData (const char *data, qint64 len)
