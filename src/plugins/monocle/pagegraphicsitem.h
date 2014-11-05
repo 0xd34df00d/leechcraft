@@ -67,6 +67,8 @@ namespace Monocle
 		struct RenderInfo
 		{
 			QImage Result_;
+			double XScale_;
+			double YScale_;
 		};
 		std::shared_ptr<QFutureWatcher<RenderInfo>> RenderFuture_;
 	public:

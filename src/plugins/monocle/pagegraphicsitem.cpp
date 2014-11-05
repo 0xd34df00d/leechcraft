@@ -263,7 +263,9 @@ namespace Monocle
 				{
 					return RenderInfo
 					{
-						Doc_->RenderPage (PageNum_, yscale, yscale)
+						Doc_->RenderPage (PageNum_, yscale, yscale),
+						xscale,
+						yscale
 					};
 				}));
 	}
