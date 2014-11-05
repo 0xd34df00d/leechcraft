@@ -97,8 +97,6 @@ namespace Sarin
 						throw CallInitiateException { res };
 					}
 
-					PrepareTransmission (callIdx);
-
 					return { callIdx, av_DefaultSettings };
 				});
 	}
@@ -168,8 +166,6 @@ namespace Sarin
 						throw CallAnswerException { rc };
 					}
 
-					PrepareTransmission (callIdx);
-
 					return { settings };
 				});
 	}
@@ -231,6 +227,18 @@ namespace Sarin
 
 	void CallManager::HandleAvStart (int32_t callIdx)
 	{
+		try
+		{
+			PrepareTransmission (callIdx);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to prepare transmission, so we are not gonna start:"
+					<< e.what ();
+			return;
+		}
+
 		emit transferStarting (callIdx);
 	}
 
