@@ -171,7 +171,8 @@ namespace Monocle
 			auto backendObj = Doc_->GetBackendPlugin ();
 			if (qobject_cast<IBackendPlugin*> (backendObj)->IsThreaded ())
 			{
-				RequestThreadedRender ();
+				if (!RenderFuture_)
+					RequestThreadedRender ();
 
 				auto size = Doc_->GetPageSize (PageNum_);
 				size.rwidth () *= XScale_;
@@ -318,11 +319,18 @@ namespace Monocle
 			return;
 
 		const auto& result = RenderFuture_->result ();
+		RenderFuture_.reset ();
 
 		setPixmap (QPixmap::fromImage (result.Result_));
-		Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
 
-		RenderFuture_.reset ();
+		if (std::abs (result.XScale_ - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
+			std::abs (result.YScale_ - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
+		{
+			UpdatePixmap ();
+			return;
+		}
+
+		Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
 	}
 }
 }
