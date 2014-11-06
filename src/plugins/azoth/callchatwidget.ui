@@ -42,12 +42,18 @@
      <property name="text">
       <string>Accept</string>
      </property>
+     <property name="icon">
+      <iconset theme="call-start"/>
+     </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="HangupButton_">
      <property name="text">
       <string>Hangup</string>
+     </property>
+     <property name="icon">
+      <iconset theme="call-stop"/>
      </property>
     </widget>
    </item>
