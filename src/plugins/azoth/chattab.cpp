@@ -1705,7 +1705,7 @@ namespace Azoth
 				e->GetEntryType () == ICLEntry::EntryType::Chat)
 		{
 			Call_ = new QAction (tr ("Call..."), this);
-			Call_->setProperty ("ActionIcon", "call-start");
+			Call_->setProperty ("ActionIcon", "voicecall");
 			connect (Call_,
 					SIGNAL (triggered ()),
 					this,
