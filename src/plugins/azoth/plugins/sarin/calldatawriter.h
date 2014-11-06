@@ -29,7 +29,12 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
+#include "callmanager.h"
+
+template<typename T>
+class QFutureWatcher;
 
 namespace LeechCraft
 {
@@ -47,10 +52,14 @@ namespace Sarin
 		CallManager * const Mgr_;
 
 		QByteArray Buffer_;
+
+		std::shared_ptr<QFutureWatcher<CallManager::WriteResult>> WriteWatcher_;
 	public:
 		CallDataWriter (int32_t, CallManager*, QObject* = nullptr);
 
 		qint64 WriteData (const QByteArray&);
+	private slots:
+		void handleWritten ();
 	signals:
 		void gotError (const QString&);
 	};

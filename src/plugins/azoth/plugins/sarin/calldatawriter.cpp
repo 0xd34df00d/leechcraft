@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "calldatawriter.h"
-#include <QFuture>
+#include <QFutureWatcher>
 #include "callmanager.h"
 
 namespace LeechCraft
@@ -46,12 +46,35 @@ namespace Sarin
 
 	qint64 CallDataWriter::WriteData (const QByteArray& data)
 	{
-		auto future = Mgr_->WriteData (CallIdx_, Buffer_ + data);
+		if (WriteWatcher_)
+		{
+			qDebug () << Q_FUNC_INFO << "already writing, queuing up" << data.size ();
+			Buffer_ += data;
+			return data.size ();
+		}
+
+		qDebug () << Q_FUNC_INFO << "sending" << data.size ();
+		WriteWatcher_.reset (new QFutureWatcher<CallManager::WriteResult>,
+				[] (QObject *obj) { obj->deleteLater (); });
+		connect (WriteWatcher_.get (),
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleWritten ()));
+		WriteWatcher_->setFuture (Mgr_->WriteData (CallIdx_, Buffer_ + data));
+		return data.size ();
+	}
+
+	void CallDataWriter::handleWritten ()
+	{
+		qDebug () << Q_FUNC_INFO;
+		decltype (WriteWatcher_) watcher;
+		using std::swap;
+		swap (WriteWatcher_, watcher);
+
 		try
 		{
-			const auto& result = future.result ();
-			Buffer_ = result.Leftover_;
-			return data.size ();
+			const auto& result = watcher->result ();
+			Buffer_.prepend (result.Leftover_);
 		}
 		catch (const std::exception& e)
 		{
@@ -61,8 +84,6 @@ namespace Sarin
 					<< typeid (e).name ();
 
 			emit gotError (e.what ());
-
-			return -1;
 		}
 	}
 }
