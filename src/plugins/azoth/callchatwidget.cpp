@@ -35,25 +35,25 @@ namespace LeechCraft
 namespace Azoth
 {
 	CallChatWidget::CallChatWidget (QObject *call, QWidget *parent)
-	: QWidget (parent)
-	, CallObject_ (call)
-	, Call_ (qobject_cast<IMediaCall*> (call))
+	: QWidget { parent }
+	, CallObject_ { call }
+	, Call_ { qobject_cast<IMediaCall*> (call) }
 	{
 		Ui_.setupUi (this);
-		
+
 		Ui_.StatusLabel_->setText (tr ("Initializing..."));
-		
+
 		connect (call,
 				SIGNAL (destroyed ()),
 				this,
 				SLOT (scheduleDelete ()));
-		
+
 		connect (call,
 				SIGNAL (stateChanged (LeechCraft::Azoth::IMediaCall::State)),
 				this,
 				SLOT (handleStateChanged (LeechCraft::Azoth::IMediaCall::State)));
 	}
-	
+
 	void CallChatWidget::handleStateChanged (IMediaCall::State state)
 	{
 		switch (state)
@@ -72,17 +72,17 @@ namespace Azoth
 			break;
 		}
 	}
-	
+
 	void CallChatWidget::on_AcceptButton__released ()
 	{
 		Call_->Accept ();
 	}
-	
+
 	void CallChatWidget::on_HangupButton__released ()
 	{
 		Call_->Hangup ();
 	}
-	
+
 	void CallChatWidget::scheduleDelete ()
 	{
 		Ui_.StatusLabel_->setText (tr ("No active call"));

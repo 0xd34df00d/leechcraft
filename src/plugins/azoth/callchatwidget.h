@@ -42,8 +42,8 @@ namespace Azoth
 		Q_OBJECT
 
 		Ui::CallChatWidget Ui_;
-		QObject *CallObject_;
-		IMediaCall *Call_;
+		QObject * const CallObject_;
+		IMediaCall * const Call_;
 	public:
 		CallChatWidget (QObject*, QWidget* = 0);
 	private slots:
