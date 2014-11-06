@@ -43,6 +43,9 @@ namespace Azoth
 
 		Ui_.StatusLabel_->setText (tr ("Initializing..."));
 
+		if (Call_->GetDirection () == IMediaCall::DOut)
+			Ui_.AcceptButton_->hide ();
+
 		connect (call,
 				SIGNAL (destroyed ()),
 				this,
