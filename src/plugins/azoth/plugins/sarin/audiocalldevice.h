@@ -29,7 +29,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QIODevice>
+#include "calldatawriter.h"
 
 namespace LeechCraft
 {
@@ -46,8 +48,9 @@ namespace Sarin
 		const int32_t Idx_;
 		CallManager * const Manager_;
 
-		QByteArray LastWriteLeftover_;
 		QByteArray ReadBuffer_;
+
+		std::unique_ptr<CallDataWriter> DataWriter_;
 	public:
 		AudioCallDevice (int32_t, CallManager*);
 
@@ -58,6 +61,7 @@ namespace Sarin
 		qint64 writeData (const char *data, qint64 len) override;
 	private slots:
 		void handleGotFrame (int32_t, const QByteArray&);
+		void handleWriteError (const QString&);
 	};
 }
 }

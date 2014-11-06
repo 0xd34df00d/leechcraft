@@ -42,11 +42,16 @@ namespace Sarin
 	AudioCallDevice::AudioCallDevice (int32_t callIdx, CallManager *manager)
 	: Idx_ { callIdx }
 	, Manager_ { manager }
+	, DataWriter_ { std::make_unique<CallDataWriter> (callIdx, manager) }
 	{
 		connect (Manager_,
 				SIGNAL (gotFrame (int32_t, QByteArray)),
 				this,
 				SLOT (handleGotFrame (int32_t, QByteArray)));
+		connect (DataWriter_.get (),
+				SIGNAL (gotError (QString)),
+				this,
+				SLOT (handleWriteError (QString)));
 	}
 
 	qint64 AudioCallDevice::bytesAvailable () const
@@ -70,25 +75,7 @@ namespace Sarin
 
 	qint64 AudioCallDevice::writeData (const char *data, qint64 len)
 	{
-		const QByteArray ba { data, static_cast<int> (len) };
-		auto future = Manager_->WriteData (Idx_, LastWriteLeftover_ + ba);
-		try
-		{
-			const auto& result = future.result ();
-			LastWriteLeftover_ = result.Leftover_;
-			return len;
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to send data"
-					<< e.what ()
-					<< typeid (e).name ();
-
-			setErrorString (e.what ());
-
-			return -1;
-		}
+		return DataWriter_->WriteData ({ data, static_cast<int> (len) });
 	}
 
 	void AudioCallDevice::handleGotFrame (int32_t callIdx, const QByteArray& data)
@@ -99,6 +86,11 @@ namespace Sarin
 		ReadBuffer_ += data;
 		qDebug () << Q_FUNC_INFO << "got frame of size" << data.size () << "; total size:" << ReadBuffer_.size ();
 		emit readyRead ();
+	}
+
+	void AudioCallDevice::handleWriteError (const QString& errStr)
+	{
+		setErrorString (errStr);
 	}
 }
 }
