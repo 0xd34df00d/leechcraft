@@ -38,7 +38,7 @@ namespace SeekThru
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		new Util::TagsCompleter (Ui_.Tags_, this);
+		new Util::TagsCompleter (Ui_.Tags_);
 		Ui_.Tags_->AddSelector ();
 		Ui_.Tags_->setText (text);
 	}

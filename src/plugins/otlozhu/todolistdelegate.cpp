@@ -54,7 +54,7 @@ namespace Otlozhu
 		case StorageModel::Columns::Tags:
 		{
 			auto edit = new Util::TagsLineEdit (parent);
-			new Util::TagsCompleter (edit, edit);
+			new Util::TagsCompleter (edit);
 			edit->AddSelector ();
 			edit->setText (index.data (Qt::EditRole).toString ());
 			edit->setFrame (false);

@@ -27,11 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_BOOKMARKSWIDGET_H
-#define PLUGINS_POSHUKU_BOOKMARKSWIDGET_H
+#pragma once
+
 #include <memory>
 #include <QWidget>
-#include <util/tags/tagscompleter.h>
 #include "filtermodel.h"
 #include "ui_bookmarkswidget.h"
 
@@ -51,7 +50,6 @@ namespace Poshuku
 		Ui::BookmarksWidget Ui_;
 		std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 		std::unique_ptr<FilterModel> FavoritesFilterModel_;
-		std::unique_ptr<Util::TagsCompleter> FavoritesFilterLineCompleter_;
 	public:
 		BookmarksWidget (QWidget* = 0);
 	private slots:
@@ -66,5 +64,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif

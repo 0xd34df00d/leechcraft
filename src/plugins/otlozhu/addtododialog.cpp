@@ -42,7 +42,7 @@ namespace Otlozhu
 	{
 		Ui_.setupUi (this);
 
-		new Util::TagsCompleter (Ui_.Tags_, Ui_.Tags_);
+		new Util::TagsCompleter (Ui_.Tags_);
 		Ui_.Tags_->AddSelector ();
 	}
 

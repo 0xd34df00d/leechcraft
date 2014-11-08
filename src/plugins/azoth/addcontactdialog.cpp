@@ -43,7 +43,7 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
-		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.Groups_, this);
+		const auto tc = new Util::TagsCompleter (Ui_.Groups_);
 		tc->OverrideModel (new QStringListModel (Core::Instance ().GetChatGroups (), this));
 		Ui_.Groups_->AddSelector ();
 

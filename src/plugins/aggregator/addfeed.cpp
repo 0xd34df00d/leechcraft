@@ -44,7 +44,7 @@ namespace Aggregator
 	: QDialog (parent)
 	{
 		setupUi (this);
-		new TagsCompleter (Tags_, this);
+		new TagsCompleter (Tags_);
 		Tags_->AddSelector ();
 
 		URL_->setText (url);
@@ -55,7 +55,7 @@ namespace Aggregator
 		QString result = URL_->text ().simplified ();
 		if (result.startsWith ("itpc"))
 			result.replace (0, 4, "http");
-		return result;			
+		return result;
 	}
 
 	QStringList AddFeed::GetTags () const

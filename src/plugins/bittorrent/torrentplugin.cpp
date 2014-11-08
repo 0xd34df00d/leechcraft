@@ -480,7 +480,7 @@ namespace LeechCraft
 			{
 				auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
 				AddMultipleTorrents dialog (rootWM->GetPreferredWindow ());
-				std::unique_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
+				new TagsCompleter (dialog.GetEdit ());
 				dialog.GetEdit ()->AddSelector ();
 
 				if (dialog.exec () == QDialog::Rejected)

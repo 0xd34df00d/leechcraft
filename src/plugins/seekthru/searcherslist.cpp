@@ -44,7 +44,7 @@ namespace SeekThru
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-		new Util::TagsCompleter (Ui_.Tags_, this);
+		new Util::TagsCompleter (Ui_.Tags_);
 		Ui_.Tags_->AddSelector ();
 		Ui_.SearchersView_->setModel (&Core::Instance ());
 		connect (Ui_.SearchersView_->selectionModel (),

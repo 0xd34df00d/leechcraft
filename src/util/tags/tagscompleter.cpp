@@ -39,8 +39,8 @@ using namespace LeechCraft::Util;
 
 QAbstractItemModel *LeechCraft::Util::TagsCompleter::CompletionModel_ = 0;
 
-TagsCompleter::TagsCompleter (TagsLineEdit *toComplete, QObject *parent)
-: QCompleter (parent)
+TagsCompleter::TagsCompleter (TagsLineEdit *toComplete)
+: QCompleter (toComplete)
 , Edit_ (toComplete)
 {
 	setCompletionRole (Qt::DisplayRole);

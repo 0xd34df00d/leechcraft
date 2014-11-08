@@ -30,6 +30,7 @@
 #include "bookmarkswidget.h"
 #include <QMessageBox>
 #include <util/models/flattofoldersproxymodel.h>
+#include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
@@ -65,9 +66,7 @@ namespace Poshuku
 				this,
 				SLOT (translateRemoveFavoritesItem (const QModelIndex&)));
 
-		FavoritesFilterLineCompleter_.reset (
-				new Util::TagsCompleter (Ui_.FavoritesFilterLine_, this)
-				);
+		new Util::TagsCompleter (Ui_.FavoritesFilterLine_);
 		Ui_.FavoritesFilterLine_->AddSelector ();
 		connect (Ui_.FavoritesFilterLine_,
 				SIGNAL (tagsChosen ()),

@@ -188,7 +188,7 @@ namespace Graffiti
 
 		auto model = new Util::TagsCompletionModel (this);
 		model->UpdateTags (Genres);
-		auto completer = new Util::TagsCompleter (Ui_.Genre_, this);
+		auto completer = new Util::TagsCompleter (Ui_.Genre_);
 		completer->OverrideModel (model);
 
 		Ui_.Genre_->AddSelector (genreMgr);

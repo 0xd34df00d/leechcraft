@@ -63,7 +63,7 @@ namespace Otlozhu
 	{
 		Ui_.setupUi (this);
 
-		new Util::TagsCompleter (Ui_.FilterLine_, Ui_.FilterLine_);
+		new Util::TagsCompleter (Ui_.FilterLine_);
 		Ui_.FilterLine_->AddSelector ();
 
 		Ui_.TodoTree_->setItemDelegate (new TodoListDelegate (Ui_.TodoTree_));

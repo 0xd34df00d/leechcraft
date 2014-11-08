@@ -72,8 +72,7 @@ namespace LeechCraft
 			 * completion.
 			 * @param[in] parent Parent object.
 			 */
-			UTIL_TAGS_API TagsCompleter (TagsLineEdit *line,
-					QObject *parent = 0);
+			UTIL_TAGS_API TagsCompleter (TagsLineEdit *line);
 
 			/** @brief Replaces the model this completer works with.
 			 *

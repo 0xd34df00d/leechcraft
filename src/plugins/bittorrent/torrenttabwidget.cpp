@@ -58,7 +58,7 @@ namespace BitTorrent
 	, PeersSorter_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
-		new Util::TagsCompleter (Ui_.TorrentTags_, this);
+		new Util::TagsCompleter (Ui_.TorrentTags_);
 		QFontMetrics fm = QApplication::fontMetrics ();
 		QHeaderView *header = Ui_.PerTrackerStats_->header ();
 		header->resizeSection (0, fm.width ("www.domain.name.org"));
