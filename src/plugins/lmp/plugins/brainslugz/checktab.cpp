@@ -103,6 +103,12 @@ namespace BrainSlugz
 		CheckView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider { coreProxy });
 
+#if QT_VERSION < 0x050000
+		CheckView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		CheckView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
+
 		const auto root = CheckView_->rootContext ();
 		root->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy { coreProxy->GetColorThemeManager (), this });
