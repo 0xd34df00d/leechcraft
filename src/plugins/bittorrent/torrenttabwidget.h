@@ -37,10 +37,6 @@ class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class TagsCompleter;
-}
 namespace Plugins
 {
 namespace BitTorrent
@@ -50,7 +46,6 @@ namespace BitTorrent
 		Q_OBJECT
 
 		Ui::TorrentTabWidget Ui_;
-		Util::TagsCompleter *TagsChangeCompleter_;
 		QAction *AddPeer_;
 		QAction *BanPeer_;
 		QAction *AddWebSeed_;

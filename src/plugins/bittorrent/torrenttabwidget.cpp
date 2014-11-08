@@ -54,12 +54,11 @@ namespace BitTorrent
 {
 	TorrentTabWidget::TorrentTabWidget (QWidget *parent)
 	: QTabWidget (parent)
-	, TagsChangeCompleter_ (0)
 	, Index_ (-1)
 	, PeersSorter_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
-		TagsChangeCompleter_ = new Util::TagsCompleter (Ui_.TorrentTags_, this);
+		new Util::TagsCompleter (Ui_.TorrentTags_, this);
 		QFontMetrics fm = QApplication::fontMetrics ();
 		QHeaderView *header = Ui_.PerTrackerStats_->header ();
 		header->resizeSection (0, fm.width ("www.domain.name.org"));
