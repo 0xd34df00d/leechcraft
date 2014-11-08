@@ -27,15 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_CONFIG_H
-#define XMLSETTINGSDIALOG_CONFIG_H
+#pragma once
+
 #include <QtGlobal>
 
-# if defined(leechcraft_xsd_EXPORTS)
+#if defined(leechcraft_xsd_EXPORTS) || defined(leechcraft_xsd_qt5_EXPORTS)
 #  define XMLSETTINGSMANAGER_API Q_DECL_EXPORT
 # else
 #  define XMLSETTINGSMANAGER_API Q_DECL_IMPORT
 #endif
-
-#endif
-
