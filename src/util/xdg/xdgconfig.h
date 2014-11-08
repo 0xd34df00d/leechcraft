@@ -31,7 +31,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_util_xdg_EXPORTS)
+#if defined(leechcraft_util_xdg_EXPORTS) || defined(leechcraft_util_xdg_qt5_EXPORTS)
 #  define UTIL_XDG_API Q_DECL_EXPORT
 #else
 #  define UTIL_XDG_API Q_DECL_IMPORT

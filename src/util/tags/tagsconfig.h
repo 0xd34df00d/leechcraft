@@ -31,7 +31,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_util_tags_EXPORTS)
+#if defined(leechcraft_util_tags_EXPORTS) || defined(leechcraft_util_tags_qt5_EXPORTS)
 #  define UTIL_TAGS_API Q_DECL_EXPORT
 #else
 #  define UTIL_TAGS_API Q_DECL_IMPORT

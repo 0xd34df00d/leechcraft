@@ -31,7 +31,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_util_db_EXPORTS)
+#if defined(leechcraft_util_db_EXPORTS) || defined(leechcraft_util_db_qt5_EXPORTS)
 #  define UTIL_DB_API Q_DECL_EXPORT
 #else
 #  define UTIL_DB_API Q_DECL_IMPORT

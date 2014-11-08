@@ -31,7 +31,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_util_xpc_EXPORTS)
+#if defined(leechcraft_util_xpc_EXPORTS) || defined(leechcraft_util_xpc_qt5_EXPORTS)
 #  define UTIL_XPC_API Q_DECL_EXPORT
 #else
 #  define UTIL_XPC_API Q_DECL_IMPORT

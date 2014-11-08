@@ -31,7 +31,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_util_shortcuts_EXPORTS)
+#if defined(leechcraft_util_shortcuts_EXPORTS) || defined(leechcraft_util_shortcuts_qt5_EXPORTS)
 #  define UTIL_SHORTCUTS_API Q_DECL_EXPORT
 #else
 #  define UTIL_SHORTCUTS_API Q_DECL_IMPORT

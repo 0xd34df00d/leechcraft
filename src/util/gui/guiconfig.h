@@ -31,7 +31,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_util_gui_EXPORTS)
+#if defined(leechcraft_util_gui_EXPORTS) || defined(leechcraft_util_gui_qt5_EXPORTS)
 #  define UTIL_GUI_API Q_DECL_EXPORT
 #else
 #  define UTIL_GUI_API Q_DECL_IMPORT

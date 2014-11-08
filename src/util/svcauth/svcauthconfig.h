@@ -31,7 +31,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_util_svcauth_EXPORTS)
+#if defined(leechcraft_util_svcauth_EXPORTS) || defined(leechcraft_util_svcauth_qt5_EXPORTS)
 #  define UTIL_SVCAUTH_API Q_DECL_EXPORT
 #else
 #  define UTIL_SVCAUTH_API Q_DECL_IMPORT
