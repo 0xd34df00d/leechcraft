@@ -300,6 +300,13 @@ namespace TabSessManager
 		OpenTabs (tabs);
 	}
 
+	void SessionsManager::deleteCustomSession (const QString& name)
+	{
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_TabSessManager" };
+		settings.remove (name);
+	}
+
 	void SessionsManager::handleRemoveTab (QWidget *widget)
 	{
 		for (auto& list : Tabs_)
