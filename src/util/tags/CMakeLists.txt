@@ -33,7 +33,7 @@ add_library (leechcraft-util-tags${LC_LIBSUFFIX} SHARED
 target_link_libraries (leechcraft-util-tags${LC_LIBSUFFIX}
 	leechcraft-util-gui${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-tags${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+set_property (TARGET leechcraft-util-tags${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-tags${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 FindQtLibs (leechcraft-util-tags${LC_LIBSUFFIX} Widgets)
