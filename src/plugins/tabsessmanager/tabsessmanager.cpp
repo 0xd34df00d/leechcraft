@@ -32,10 +32,8 @@
 #include <QIcon>
 #include <QTimer>
 #include <QSettings>
-#include <QCoreApplication>
+#include <QApplication>
 #include <QMenu>
-#include <QInputDialog>
-#include <QMainWindow>
 #include <QtDebug>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -44,9 +42,9 @@
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ihavetabs.h>
-#include "restoresessiondialog.h"
 #include "recinfo.h"
 #include "sessionmenumanager.h"
+#include "sessionsmanager.h"
 #include "util.h"
 
 namespace LeechCraft
@@ -57,50 +55,35 @@ namespace TabSessManager
 	{
 		Util::InstallTranslator ("tabsessmanager");
 
-		IsScheduled_ = false;
 		UncloseMenu_ = new QMenu (tr ("Unclose tabs"));
+
+		SessionsMgr_ = new SessionsManager { proxy };
 
 		SessionMenuMgr_ = new SessionMenuManager;
 		connect (SessionMenuMgr_,
 				SIGNAL (sessionRequested (QString)),
-				this,
+				SessionsMgr_,
 				SLOT (loadCustomSession (QString)));
 		connect (SessionMenuMgr_,
 				SIGNAL (saveCustomSessionRequested ()),
-				this,
+				SessionsMgr_,
 				SLOT (saveCustomSession ()));
 
+		connect (SessionsMgr_,
+				SIGNAL (gotCustomSession (QString)),
+				SessionMenuMgr_,
+				SLOT (addCustomSession (QString)));
+
 		Proxy_ = proxy;
-		IsRecovering_ = true;
 
-		const auto& roots = Proxy_->GetPluginsManager ()->
-				GetAllCastableRoots<IHaveRecoverableTabs*> ();
-		for (QObject *root : roots)
-			connect (root,
-					SIGNAL (addNewTab (const QString&, QWidget*)),
-					this,
-					SLOT (handleNewTab (const QString&, QWidget*)),
-					Qt::QueuedConnection);
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_TabSessManager");
-		for (const auto& group : settings.childGroups ())
-			SessionMenuMgr_->AddCustomSession (group);
-
-		auto rootWM = Proxy_->GetRootWindowsManager ();
-		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
-			handleWindow (i);
-
-		connect (rootWM->GetQObject (),
-				SIGNAL (windowAdded (int)),
-				this,
-				SLOT (handleWindow (int)));
+		for (const auto& name : SessionsMgr_->GetCustomSessions ())
+			SessionMenuMgr_->addCustomSession (name);
 	}
 
 	void Plugin::SecondInit ()
 	{
 		QTimer::singleShot (5000,
-				this,
+				SessionsMgr_,
 				SLOT (recover ()));
 	}
 
@@ -155,70 +138,6 @@ namespace TabSessManager
 		}
 	}
 
-	bool Plugin::eventFilter (QObject*, QEvent *e)
-	{
-		if (e->type () != QEvent::DynamicPropertyChange)
-			return false;
-
-		auto propEvent = static_cast<QDynamicPropertyChangeEvent*> (e);
-		if (propEvent->propertyName ().startsWith ("SessionData/"))
-			handleTabRecoverDataChanged ();
-
-		return false;
-	}
-
-	QByteArray Plugin::GetCurrentSession () const
-	{
-		QByteArray result;
-		QDataStream str (&result, QIODevice::WriteOnly);
-
-		int windowIndex = 0;
-		for (const auto& list : Tabs_)
-		{
-			for (auto tab : list)
-			{
-				auto rec = qobject_cast<IRecoverableTab*> (tab);
-				if (!rec)
-					continue;
-
-				auto tw = qobject_cast<ITabWidget*> (tab);
-				if (!tw)
-					continue;
-
-				auto plugin = qobject_cast<IInfo*> (tw->ParentMultiTabs ());
-				if (!plugin)
-					continue;
-
-				const auto& data = rec->GetTabRecoverData ();
-				if (data.isEmpty ())
-					continue;
-
-				QIcon forRecover = QIcon (rec->GetTabRecoverIcon ().pixmap (32, 32));
-
-				str << plugin->GetUniqueID ()
-						<< data
-						<< rec->GetTabRecoverName ()
-						<< forRecover
-						<< GetSessionProps (tab)
-						<< windowIndex;
-			}
-
-			++windowIndex;
-		}
-
-		return result;
-	}
-
-	bool Plugin::HasTab (QWidget *widget) const
-	{
-		return std::any_of (Tabs_.begin (), Tabs_.end (),
-				[widget] (const QList<QObject*>& list)
-				{
-					return std::any_of (list.begin (), list.end (),
-							[widget] (QObject *obj) { return obj == widget; });
-				});
-	}
-
 	void Plugin::hookTabIsRemoving (IHookProxy_ptr, int index, int windowId)
 	{
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
@@ -226,50 +145,7 @@ namespace TabSessManager
 		const auto widget = tabWidget->Widget (index);
 
 		handleRemoveTab (widget);
-	}
-
-	void Plugin::handleNewTab (const QString&, QWidget *widget)
-	{
-		if (HasTab (widget))
-			return;
-
-		auto rootWM = Proxy_->GetRootWindowsManager ();
-		auto windowIndex = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (widget));
-
-		if (windowIndex < 0 || windowIndex >= Tabs_.size ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown window index for"
-					<< widget;
-			return;
-		}
-
-		Tabs_ [windowIndex] << widget;
-
-		auto tab = qobject_cast<IRecoverableTab*> (widget);
-		if (!tab)
-			return;
-
-		connect (widget,
-				SIGNAL (tabRecoverDataChanged ()),
-				this,
-				SLOT (handleTabRecoverDataChanged ()));
-
-		widget->installEventFilter (this);
-
-		if (!tab->GetTabRecoverData ().isEmpty ())
-			handleTabRecoverDataChanged ();
-
-		const auto& posProp = widget->property ("TabSessManager/Position");
-		if (posProp.isValid ())
-		{
-			const auto prevPos = posProp.toInt ();
-
-			const auto tabWidget = rootWM->GetTabWidget (windowIndex);
-			const auto currentIdx = tabWidget->IndexOf (widget);
-			if (prevPos < tabWidget->WidgetCount () && currentIdx != prevPos)
-				tabWidget->MoveTab (currentIdx, prevPos);
-		}
+		SessionsMgr_->handleRemoveTab (widget);
 	}
 
 	void Plugin::handleRemoveTab (QWidget *widget)
@@ -277,14 +153,6 @@ namespace TabSessManager
 		auto tab = qobject_cast<ITabWidget*> (widget);
 		if (!tab)
 			return;
-
-		auto removeGuard = [this, widget] (void*)
-		{
-			for (auto& list : Tabs_)
-				list.removeAll (widget);
-			handleTabRecoverDataChanged ();
-		};
-		std::shared_ptr<void> guard (static_cast<void*> (0), removeGuard);
 
 		auto recTab = qobject_cast<IRecoverableTab*> (widget);
 		if (!recTab)
@@ -318,7 +186,7 @@ namespace TabSessManager
 			delete act;
 		}
 
-		const auto& fm = qApp->fontMetrics ();
+		const auto& fm = UncloseMenu_->fontMetrics ();
 		const QString& elided = fm.elidedText (recTab->GetTabRecoverName (), Qt::ElideMiddle, 300);
 		QAction *action = new QAction (recTab->GetTabRecoverIcon (), elided, this);
 		UncloseAct2Data_ [action] = info;
@@ -333,122 +201,6 @@ namespace TabSessManager
 		UncloseMenu_->insertAction (UncloseMenu_->actions ().value (0), action);
 		UncloseMenu_->setDefaultAction (action);
 		action->setShortcut (QString ("Ctrl+Shift+T"));
-	}
-
-	void Plugin::handleTabMoved (int from, int to)
-	{
-		const auto rootWM = Proxy_->GetRootWindowsManager ();
-		const auto tabWidget = qobject_cast<ICoreTabWidget*> (sender ());
-		const auto pos = rootWM->GetTabWidgetIndex (tabWidget);
-
-		auto& tabs = Tabs_ [pos];
-
-		if (std::max (from, to) >= tabs.size () ||
-			std::min (from, to) < 0)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid"
-					<< from
-					<< "->"
-					<< to
-					<< "; total tabs:"
-					<< Tabs_.size ();
-			return;
-		}
-
-		auto tab = tabs.takeAt (from);
-		tabs.insert (to, tab);
-
-		handleTabRecoverDataChanged ();
-	}
-
-	namespace
-	{
-		QHash<QObject*, QList<RecInfo>> GetTabsFromStream (QDataStream& str, ICoreProxy_ptr proxy)
-		{
-			QHash<QByteArray, QObject*> pluginCache;
-			QHash<QObject*, QList<RecInfo>> tabs;
-
-			int order = 0;
-			while (!str.atEnd ())
-			{
-				QByteArray pluginId;
-				QByteArray recData;
-				QString name;
-				QIcon icon;
-				QList<QPair<QByteArray, QVariant>> props;
-				int winId = 0;
-
-				str >> pluginId >> recData >> name >> icon >> props >> winId;
-				if (!pluginCache.contains (pluginId))
-				{
-					QObject *obj = proxy->GetPluginsManager ()->
-							GetPluginByID (pluginId);
-					pluginCache [pluginId] = obj;
-				}
-
-				QObject *plugin = pluginCache [pluginId];
-				if (!plugin)
-				{
-					qWarning () << "null plugin for" << pluginId;
-					continue;
-				}
-
-				tabs [plugin] << RecInfo { order++, recData, props, name, icon, winId };
-
-				qDebug () << Q_FUNC_INFO << "got restore data for"
-						<< pluginId << name << plugin << "; window" << winId;
-			}
-
-			Q_FOREACH (QObject *obj, tabs.keys (QList<RecInfo> ()))
-				tabs.remove (obj);
-
-			return tabs;
-		}
-
-		void AskTabs (QHash<QObject*, QList<RecInfo>>& tabs)
-		{
-			if (tabs.isEmpty ())
-				return;
-
-			RestoreSessionDialog dia;
-			dia.SetPages (tabs);
-
-			if (dia.exec () != QDialog::Accepted)
-			{
-				tabs.clear ();
-				return;
-			}
-
-			tabs = dia.GetPages ();
-		}
-
-		void OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)
-		{
-			QList<QPair<IHaveRecoverableTabs*, RecInfo>> ordered;
-			for (auto i = tabs.begin (); i != tabs.end (); ++i)
-			{
-				const auto plugin = i.key ();
-
-				auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
-				if (!ihrt)
-					continue;
-
-				for (const auto& info : i.value ())
-					ordered << qMakePair (ihrt, info);
-			}
-
-			std::sort (ordered.begin (), ordered.end (),
-					[] (decltype (ordered.at (0)) left, decltype (ordered.at (0)) right)
-						{ return left.second.Order_ < right.second.Order_; });
-
-			for (const auto& pair : ordered)
-			{
-				auto props = pair.second.Props_;
-				props.append ({ "SessionData/RootWindowIndex", pair.second.WindowID_ });
-				pair.first->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, props } });
-			}
-		}
 	}
 
 	void Plugin::handleUnclose ()
@@ -480,94 +232,6 @@ namespace TabSessManager
 		UncloseMenu_->removeAction (action);
 
 		data.Plugin_->RecoverTabs (QList<TabRecoverInfo> () << data.RecInfo_);
-	}
-
-	void Plugin::recover ()
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_TabSessManager");
-
-		QDataStream str (settings.value ("Data").toByteArray ());
-		auto tabs = GetTabsFromStream (str, Proxy_);
-
-		if (!settings.value ("CleanShutdown", false).toBool ())
-			AskTabs (tabs);
-
-		OpenTabs (tabs);
-
-		IsRecovering_ = false;
-		settings.setValue ("CleanShutdown", false);
-	}
-
-	void Plugin::handleTabRecoverDataChanged ()
-	{
-		if (IsRecovering_ || Proxy_->IsShuttingDown ())
-			return;
-
-		if (IsScheduled_)
-			return;
-
-		IsScheduled_ = true;
-		QTimer::singleShot (2000,
-				this,
-				SLOT (saveDefaultSession ()));
-	}
-
-	void Plugin::saveDefaultSession ()
-	{
-		IsScheduled_ = false;
-
-		const auto& result = GetCurrentSession ();
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_TabSessManager");
-		settings.setValue ("Data", result);
-	}
-
-	void Plugin::saveCustomSession ()
-	{
-		auto rootWM = Proxy_->GetRootWindowsManager ();
-		const QString& name = QInputDialog::getText (rootWM->GetPreferredWindow (),
-				tr ("Custom session"),
-				tr ("Enter the name of the session:"));
-		if (name.isEmpty ())
-			return;
-
-		const auto& result = GetCurrentSession ();
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_TabSessManager");
-		settings.beginGroup (name);
-		settings.setValue ("Data", result);
-		settings.endGroup ();
-
-		SessionMenuMgr_->AddCustomSession (name);
-	}
-
-	void Plugin::loadCustomSession (const QString& name)
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_TabSessManager");
-		settings.beginGroup (name);
-		QDataStream str (settings.value ("Data").toByteArray ());
-		settings.endGroup ();
-
-		auto tabs = GetTabsFromStream (str, Proxy_);
-		OpenTabs (tabs);
-	}
-
-	void Plugin::handleWindow (int index)
-	{
-		Tabs_ << QList<QObject*> ();
-		connect (Proxy_->GetRootWindowsManager ()->GetTabWidget (index)->GetQObject (),
-				SIGNAL (tabWasMoved (int, int)),
-				this,
-				SLOT (handleTabMoved (int, int)));
-	}
-
-	void Plugin::handleWindowRemoved (int index)
-	{
-		Tabs_.removeAt (index);
-		handleTabRecoverDataChanged ();
 	}
 }
 }

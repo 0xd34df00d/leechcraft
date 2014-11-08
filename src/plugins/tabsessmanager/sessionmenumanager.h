@@ -46,7 +46,8 @@ namespace TabSessManager
 		SessionMenuManager (QObject* = nullptr);
 
 		QMenu* GetSessionsMenu () const;
-		void AddCustomSession (const QString&);
+	public slots:
+		void addCustomSession (const QString&);
 	private slots:
 		void loadCustomSession ();
 	signals:

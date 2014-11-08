@@ -27,44 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sessionmenumanager.h"
-#include <QMenu>
+#pragma once
+
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace TabSessManager
 {
-	SessionMenuManager::SessionMenuManager (QObject *parent)
-	: QObject { parent }
-	, SessMgrMenu_ { new QMenu { tr ("Sessions") } }
+	class SessionsManager : public QObject
 	{
-		SessMgrMenu_->addAction (tr ("Save current session..."),
-				this,
-				SIGNAL (saveCustomSessionRequested ()));
-		SessMgrMenu_->addSeparator ();
-	}
+		Q_OBJECT
 
-	QMenu* SessionMenuManager::GetSessionsMenu () const
-	{
-		return SessMgrMenu_;
-	}
+		const ICoreProxy_ptr Proxy_;
 
-	void SessionMenuManager::addCustomSession (const QString& name)
-	{
-		const auto act = SessMgrMenu_->addAction (name,
-				this,
-				SLOT (loadCustomSession ()));
-		act->setProperty ("TabSessManager/SessName", name);
-	}
+		bool IsScheduled_ = false;
+		bool IsRecovering_ = true;
 
-	void SessionMenuManager::loadCustomSession ()
-	{
-		const QString& name = sender ()->
-				property ("TabSessManager/SessName").toString ();
-		if (name.isEmpty ())
-			return;
+		QList<QList<QObject*>> Tabs_;
+	public:
+		SessionsManager (const ICoreProxy_ptr&, QObject* = nullptr);
 
-		emit sessionRequested (name);
-	}
+		QStringList GetCustomSessions () const;
+
+		bool HasTab (QObject*);
+	protected:
+		bool eventFilter (QObject*, QEvent*);
+	private:
+		QByteArray GetCurrentSession () const;
+	public slots:
+		void recover ();
+		void handleTabRecoverDataChanged ();
+
+		void saveDefaultSession ();
+		void saveCustomSession ();
+		void loadCustomSession (const QString&);
+
+		void handleRemoveTab (QWidget*);
+	private slots:
+		void handleNewTab (const QString&, QWidget*);
+		void handleTabMoved (int, int);
+
+		void handleWindow (int);
+		void handleWindowRemoved (int);
+	signals:
+		void gotCustomSession (const QString&);
+	};
 }
 }

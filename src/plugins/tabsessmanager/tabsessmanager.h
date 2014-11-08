@@ -41,6 +41,7 @@ namespace LeechCraft
 namespace TabSessManager
 {
 	class SessionMenuManager;
+	class SessionsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -53,10 +54,6 @@ namespace TabSessManager
 		LC_PLUGIN_METADATA ("org.LeechCraft.TabSessManager")
 
 		ICoreProxy_ptr Proxy_;
-		QList<QList<QObject*>> Tabs_;
-		bool IsRecovering_;
-
-		bool IsScheduled_;
 
 		struct TabUncloseInfo
 		{
@@ -66,6 +63,8 @@ namespace TabSessManager
 		QHash<QAction*, TabUncloseInfo> UncloseAct2Data_;
 
 		QMenu *UncloseMenu_;
+
+		SessionsManager *SessionsMgr_;
 		SessionMenuManager *SessionMenuMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -79,29 +78,13 @@ namespace TabSessManager
 		QSet<QByteArray> GetPluginClasses () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	protected:
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		QByteArray GetCurrentSession () const;
-
-		bool HasTab (QWidget*) const;
 	public slots:
 		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
 				int index,
 				int windowId);
 	private slots:
-		void handleNewTab (const QString&, QWidget*);
 		void handleRemoveTab (QWidget*);
-		void handleTabMoved (int, int);
 		void handleUnclose ();
-		void recover ();
-		void handleTabRecoverDataChanged ();
-		void saveDefaultSession ();
-		void saveCustomSession ();
-		void loadCustomSession (const QString&);
-
-		void handleWindow (int);
-		void handleWindowRemoved (int);
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
