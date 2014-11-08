@@ -43,6 +43,8 @@ namespace TabSessManager
 		Q_OBJECT
 
 		QMenu * const SessMgrMenu_;
+		QMenu * const LoadSession_;
+		QMenu * const DeleteSession_;
 
 		QSet<QString> KnownSessions_;
 	public:
@@ -53,8 +55,11 @@ namespace TabSessManager
 		void addCustomSession (const QString&);
 	private slots:
 		void loadCustomSession ();
+		void deleteCustomSession ();
 	signals:
 		void sessionRequested (const QString&);
+		void deleteRequested (const QString&);
+
 		void saveCustomSessionRequested ();
 	};
 }

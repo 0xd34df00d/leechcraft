@@ -37,11 +37,13 @@ namespace TabSessManager
 	SessionMenuManager::SessionMenuManager (QObject *parent)
 	: QObject { parent }
 	, SessMgrMenu_ { new QMenu { tr ("Sessions") } }
+	, LoadSession_ { SessMgrMenu_->addMenu (tr ("Load session")) }
+	, DeleteSession_ { SessMgrMenu_->addMenu (tr ("Delete session")) }
 	{
+		SessMgrMenu_->addSeparator ();
 		SessMgrMenu_->addAction (tr ("Save current session..."),
 				this,
 				SIGNAL (saveCustomSessionRequested ()));
-		SessMgrMenu_->addSeparator ();
 	}
 
 	QMenu* SessionMenuManager::GetSessionsMenu () const
@@ -56,20 +58,33 @@ namespace TabSessManager
 
 		KnownSessions_ << name;
 
-		const auto act = SessMgrMenu_->addAction (name,
+		const auto loadAct = LoadSession_->addAction (name,
 				this,
 				SLOT (loadCustomSession ()));
-		act->setProperty ("TabSessManager/SessName", name);
+		loadAct->setProperty ("TabSessManager/SessName", name);
+
+		const auto deleteAct = DeleteSession_->addAction (name,
+				this,
+				SLOT (deleteCustomSession ()));
+		deleteAct->setProperty ("TabSessManager/SessName", name);
 	}
 
 	void SessionMenuManager::loadCustomSession ()
 	{
-		const QString& name = sender ()->
-				property ("TabSessManager/SessName").toString ();
+		const auto& name = sender ()->property ("TabSessManager/SessName").toString ();
 		if (name.isEmpty ())
 			return;
 
 		emit sessionRequested (name);
+	}
+
+	void SessionMenuManager::deleteCustomSession ()
+	{
+		const auto& name = sender ()->property ("TabSessManager/SessName").toString ();
+		if (name.isEmpty ())
+			return;
+
+		emit deleteRequested (name);
 	}
 }
 }
