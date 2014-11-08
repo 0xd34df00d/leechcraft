@@ -11,6 +11,7 @@ set (SRCS
 	tabsessmanager.cpp
 	restoresessiondialog.cpp
 	recinfo.cpp
+	sessionmenumanager.cpp
 	)
 set (FORMS
 	restoresessiondialog.ui

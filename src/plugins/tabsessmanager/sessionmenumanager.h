@@ -30,80 +30,28 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iactionsexporter.h>
-#include <interfaces/ihaverecoverabletabs.h>
-#include <interfaces/core/ihookproxy.h>
+
+class QMenu;
 
 namespace LeechCraft
 {
 namespace TabSessManager
 {
-	class SessionMenuManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IActionsExporter
+	class SessionMenuManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IActionsExporter)
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.TabSessManager")
-
-		ICoreProxy_ptr Proxy_;
-		QList<QList<QObject*>> Tabs_;
-		bool IsRecovering_;
-
-		bool IsScheduled_;
-
-		struct TabUncloseInfo
-		{
-			TabRecoverInfo RecInfo_;
-			IHaveRecoverableTabs *Plugin_;
-		};
-		QHash<QAction*, TabUncloseInfo> UncloseAct2Data_;
-
-		QMenu *UncloseMenu_;
-		SessionMenuManager *SessionMenuMgr_;
+		QMenu * const SessMgrMenu_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		SessionMenuManager (QObject* = nullptr);
 
-		QSet<QByteArray> GetPluginClasses () const;
-
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	protected:
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		QByteArray GetCurrentSession () const;
-
-		bool HasTab (QWidget*) const;
-	public slots:
-		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
-				int index,
-				int windowId);
+		QMenu* GetSessionsMenu () const;
+		void AddCustomSession (const QString&);
 	private slots:
-		void handleNewTab (const QString&, QWidget*);
-		void handleRemoveTab (QWidget*);
-		void handleTabMoved (int, int);
-		void handleUnclose ();
-		void recover ();
-		void handleTabRecoverDataChanged ();
-		void saveDefaultSession ();
-		void saveCustomSession ();
-		void loadCustomSession (const QString&);
-
-		void handleWindow (int);
-		void handleWindowRemoved (int);
+		void loadCustomSession ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void sessionRequested (const QString&);
+		void saveCustomSessionRequested ();
 	};
 }
 }

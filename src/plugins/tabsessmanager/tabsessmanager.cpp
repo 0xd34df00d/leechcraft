@@ -46,6 +46,7 @@
 #include <interfaces/ihavetabs.h>
 #include "restoresessiondialog.h"
 #include "recinfo.h"
+#include "sessionmenumanager.h"
 
 namespace LeechCraft
 {
@@ -57,6 +58,16 @@ namespace TabSessManager
 
 		IsScheduled_ = false;
 		UncloseMenu_ = new QMenu (tr ("Unclose tabs"));
+
+		SessionMenuMgr_ = new SessionMenuManager;
+		connect (SessionMenuMgr_,
+				SIGNAL (sessionRequested (QString)),
+				this,
+				SLOT (loadCustomSession (QString)));
+		connect (SessionMenuMgr_,
+				SIGNAL (saveCustomSessionRequested ()),
+				this,
+				SLOT (saveCustomSession ()));
 
 		Proxy_ = proxy;
 		IsRecovering_ = true;
@@ -70,16 +81,10 @@ namespace TabSessManager
 					SLOT (handleNewTab (const QString&, QWidget*)),
 					Qt::QueuedConnection);
 
-		SessMgrMenu_ = new QMenu (tr ("Sessions"));
-		SessMgrMenu_->addAction (tr ("Save current session..."),
-				this,
-				SLOT (saveCustomSession ()));
-		SessMgrMenu_->addSeparator ();
-
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_TabSessManager");
 		for (const auto& group : settings.childGroups ())
-			AddCustomSession (group);
+			SessionMenuMgr_->AddCustomSession (group);
 
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
@@ -137,7 +142,7 @@ namespace TabSessManager
 		QList<QAction*> result;
 		if (place == ActionsEmbedPlace::ToolsMenu)
 		{
-			result << SessMgrMenu_->menuAction ();
+			result << SessionMenuMgr_->GetSessionsMenu ()->menuAction ();
 			result << UncloseMenu_->menuAction ();
 		}
 		else if (place == ActionsEmbedPlace::CommonContextMenu)
@@ -213,14 +218,6 @@ namespace TabSessManager
 		}
 
 		return result;
-	}
-
-	void Plugin::AddCustomSession (const QString& name)
-	{
-		QAction *act = SessMgrMenu_->addAction (name,
-				this,
-				SLOT (loadCustomSession ()));
-		act->setProperty ("TabSessManager/SessName", name);
 	}
 
 	bool Plugin::HasTab (QWidget *widget) const
@@ -554,16 +551,11 @@ namespace TabSessManager
 		settings.setValue ("Data", result);
 		settings.endGroup ();
 
-		AddCustomSession (name);
+		SessionMenuMgr_->AddCustomSession (name);
 	}
 
-	void Plugin::loadCustomSession ()
+	void Plugin::loadCustomSession (const QString& name)
 	{
-		const QString& name = sender ()->
-				property ("TabSessManager/SessName").toString ();
-		if (name.isEmpty ())
-			return;
-
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_TabSessManager");
 		settings.beginGroup (name);
