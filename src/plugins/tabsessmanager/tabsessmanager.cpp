@@ -127,7 +127,7 @@ namespace TabSessManager
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return {};
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -139,15 +139,19 @@ namespace TabSessManager
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
-		QList<QAction*> result;
-		if (place == ActionsEmbedPlace::ToolsMenu)
+		switch (place)
 		{
-			result << SessionMenuMgr_->GetSessionsMenu ()->menuAction ();
-			result << UncloseMenu_->menuAction ();
+		case ActionsEmbedPlace::ToolsMenu:
+			return
+			{
+				SessionMenuMgr_->GetSessionsMenu ()->menuAction (),
+				UncloseMenu_->menuAction ()
+			};
+		case ActionsEmbedPlace::CommonContextMenu:
+			return { UncloseMenu_->menuAction () };
+		default:
+			return {};
 		}
-		else if (place == ActionsEmbedPlace::CommonContextMenu)
-			result << UncloseMenu_->menuAction ();
-		return result;
 	}
 
 	bool Plugin::eventFilter (QObject*, QEvent *e)
