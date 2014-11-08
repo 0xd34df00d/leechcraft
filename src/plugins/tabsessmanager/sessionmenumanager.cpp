@@ -29,6 +29,7 @@
 
 #include "sessionmenumanager.h"
 #include <QMenu>
+#include <util/sll/slotclosure.h>
 
 namespace LeechCraft
 {
@@ -51,6 +52,13 @@ namespace TabSessManager
 		return SessMgrMenu_;
 	}
 
+	void SessionMenuManager::DeleteSession (const QString& name)
+	{
+		emit deleteRequested (name);
+
+		KnownSessions_.remove (name);
+	}
+
 	void SessionMenuManager::addCustomSession (const QString& name)
 	{
 		if (KnownSessions_.contains (name))
@@ -58,33 +66,23 @@ namespace TabSessManager
 
 		KnownSessions_ << name;
 
-		const auto loadAct = LoadSession_->addAction (name,
-				this,
-				SLOT (loadCustomSession ()));
-		loadAct->setProperty ("TabSessManager/SessName", name);
+		const auto loadAct = LoadSession_->addAction (name);
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, name] { emit sessionRequested (name); },
+			loadAct,
+			SIGNAL (triggered ()),
+			loadAct
+		};
 
-		const auto deleteAct = DeleteSession_->addAction (name,
-				this,
-				SLOT (deleteCustomSession ()));
-		deleteAct->setProperty ("TabSessManager/SessName", name);
-	}
-
-	void SessionMenuManager::loadCustomSession ()
-	{
-		const auto& name = sender ()->property ("TabSessManager/SessName").toString ();
-		if (name.isEmpty ())
-			return;
-
-		emit sessionRequested (name);
-	}
-
-	void SessionMenuManager::deleteCustomSession ()
-	{
-		const auto& name = sender ()->property ("TabSessManager/SessName").toString ();
-		if (name.isEmpty ())
-			return;
-
-		emit deleteRequested (name);
+		const auto deleteAct = DeleteSession_->addAction (name);
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, name] { DeleteSession (name); },
+			deleteAct,
+			SIGNAL (triggered ()),
+			deleteAct
+		};
 	}
 }
 }

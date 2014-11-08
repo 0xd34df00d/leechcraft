@@ -51,11 +51,10 @@ namespace TabSessManager
 		SessionMenuManager (QObject* = nullptr);
 
 		QMenu* GetSessionsMenu () const;
+	private:
+		void DeleteSession (const QString&);
 	public slots:
 		void addCustomSession (const QString&);
-	private slots:
-		void loadCustomSession ();
-		void deleteCustomSession ();
 	signals:
 		void sessionRequested (const QString&);
 		void deleteRequested (const QString&);
