@@ -1395,8 +1395,8 @@ namespace LMP
 
 		if (!next.IsEmpty ())
 		{
-			EmitStateChange (SourceState::Stopped);
 			Source_->PrepareNextSource (next);
+			EmitStateChange (SourceState::Stopped);
 		}
 	}
 
