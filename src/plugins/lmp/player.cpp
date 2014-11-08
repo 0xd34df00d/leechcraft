@@ -130,15 +130,16 @@ namespace LMP
 	{
 		qRegisterMetaType<QList<AudioSource>> ("QList<AudioSource>");
 		qRegisterMetaType<StringPair_t> ("StringPair_t");
+		qRegisterMetaType<std::shared_ptr<std::atomic_bool>> ("std::shared_ptr<std::atomic_bool>");
 
 		connect (Source_,
 				SIGNAL (currentSourceChanged (AudioSource)),
 				this,
 				SLOT (handleCurrentSourceChanged (AudioSource)));
 		connect (Source_,
-				SIGNAL (aboutToFinish ()),
+				SIGNAL (aboutToFinish (std::shared_ptr<std::atomic_bool>)),
 				this,
-				SLOT (handleUpdateSourceQueue ()));
+				SLOT (handleUpdateSourceQueue (std::shared_ptr<std::atomic_bool>)));
 
 		XmlSettingsManager::Instance ().RegisterObject ("SingleTrackDisplayMask",
 				this, "refillPlaylist");
@@ -1357,7 +1358,7 @@ namespace LMP
 		QFile::remove (filename);
 	}
 
-	void Player::handleUpdateSourceQueue ()
+	void Player::handleUpdateSourceQueue (const std::shared_ptr<std::atomic_bool>& isTimeout)
 	{
 		const auto& current = Source_->GetCurrentSource ();
 

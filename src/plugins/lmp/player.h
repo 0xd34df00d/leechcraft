@@ -31,6 +31,8 @@
 
 #include <functional>
 #include <random>
+#include <memory>
+#include <atomic>
 #include <QObject>
 
 #ifdef ENABLE_MPRIS
@@ -218,7 +220,7 @@ namespace LMP
 		void handleGotRadioPlaylist (const QString&, const QString&);
 		void handleGotAudioInfos (const QList<Media::AudioInfo>&);
 		void postPlaylistCleanup (const QString&);
-		void handleUpdateSourceQueue ();
+		void handleUpdateSourceQueue (const std::shared_ptr<std::atomic_bool>&);
 		void handlePlaybackFinished ();
 		void handleStateChanged (SourceState, SourceState);
 		void handleCurrentSourceChanged (const AudioSource&);

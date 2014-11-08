@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <atomic>
 #include <type_traits>
 #include <QObject>
 #include <QStringList>
@@ -229,7 +230,7 @@ namespace LMP
 	signals:
 		void stateChanged (SourceState, SourceState);
 		void currentSourceChanged (const AudioSource&);
-		void aboutToFinish ();
+		void aboutToFinish (std::shared_ptr<std::atomic_bool>);
 		void finished ();
 		void metaDataChanged ();
 		void bufferStatus (int);

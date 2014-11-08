@@ -456,10 +456,12 @@ namespace LMP
 	void SourceObject::HandleAboutToFinish ()
 	{
 		qDebug () << Q_FUNC_INFO;
+		auto timeoutIndicator = std::make_shared<std::atomic_bool> (false);
+
 		NextSrcMutex_.lock ();
 		if (NextSource_.IsEmpty ())
 		{
-			emit aboutToFinish ();
+			emit aboutToFinish (timeoutIndicator);
 			NextSrcWC_.wait (&NextSrcMutex_, 500);
 		}
 		qDebug () << "wait finished; next source:" << NextSource_.ToUrl ()
@@ -470,6 +472,7 @@ namespace LMP
 
 		if (NextSource_.IsEmpty ())
 		{
+			*timeoutIndicator = true;
 			qDebug () << Q_FUNC_INFO
 					<< "no next source set, will stop playing";
 			return;
