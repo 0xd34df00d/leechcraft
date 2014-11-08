@@ -290,25 +290,21 @@ namespace TabSessManager
 
 	void SessionsManager::loadCustomSession (const QString& name)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_TabSessManager");
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_TabSessManager" };
 		settings.beginGroup (name);
-		QDataStream str (settings.value ("Data").toByteArray ());
+		QDataStream str { settings.value ("Data").toByteArray () };
 		settings.endGroup ();
 
-		auto tabs = GetTabsFromStream (str, Proxy_);
+		const auto& tabs = GetTabsFromStream (str, Proxy_);
 		OpenTabs (tabs);
 	}
 
 	void SessionsManager::handleRemoveTab (QWidget *widget)
 	{
-		auto removeGuard = [this, widget] (void*)
-		{
-			for (auto& list : Tabs_)
-				list.removeAll (widget);
-			handleTabRecoverDataChanged ();
-		};
-		std::shared_ptr<void> guard (nullptr, removeGuard);
+		for (auto& list : Tabs_)
+			list.removeAll (widget);
+		handleTabRecoverDataChanged ();
 	}
 
 	void SessionsManager::handleNewTab (const QString&, QWidget *widget)
