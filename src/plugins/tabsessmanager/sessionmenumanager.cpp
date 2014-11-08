@@ -51,6 +51,11 @@ namespace TabSessManager
 
 	void SessionMenuManager::addCustomSession (const QString& name)
 	{
+		if (KnownSessions_.contains (name))
+			return;
+
+		KnownSessions_ << name;
+
 		const auto act = SessMgrMenu_->addAction (name,
 				this,
 				SLOT (loadCustomSession ()));

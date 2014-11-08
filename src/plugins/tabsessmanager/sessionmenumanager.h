@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSet>
 
 class QMenu;
 
@@ -42,6 +43,8 @@ namespace TabSessManager
 		Q_OBJECT
 
 		QMenu * const SessMgrMenu_;
+
+		QSet<QString> KnownSessions_;
 	public:
 		SessionMenuManager (QObject* = nullptr);
 
