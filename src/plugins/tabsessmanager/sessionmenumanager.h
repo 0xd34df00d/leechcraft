@@ -57,7 +57,7 @@ namespace TabSessManager
 	public slots:
 		void addCustomSession (const QString&);
 	signals:
-		void sessionRequested (const QString&);
+		void loadRequested (const QString&);
 		void deleteRequested (const QString&);
 
 		void saveCustomSessionRequested ();

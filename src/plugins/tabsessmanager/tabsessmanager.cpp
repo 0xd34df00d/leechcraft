@@ -61,7 +61,7 @@ namespace TabSessManager
 
 		SessionMenuMgr_ = new SessionMenuManager;
 		connect (SessionMenuMgr_,
-				SIGNAL (sessionRequested (QString)),
+				SIGNAL (loadRequested (QString)),
 				SessionsMgr_,
 				SLOT (loadCustomSession (QString)));
 		connect (SessionMenuMgr_,

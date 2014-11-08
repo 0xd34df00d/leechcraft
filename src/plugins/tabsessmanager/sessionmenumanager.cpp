@@ -90,7 +90,7 @@ namespace TabSessManager
 		const auto loadAct = LoadSession_->addAction (name);
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
-			[this, name] { emit sessionRequested (name); },
+			[this, name] { emit loadRequested (name); },
 			loadAct,
 			SIGNAL (triggered ()),
 			loadAct
