@@ -57,6 +57,14 @@ namespace TabSessManager
 		emit deleteRequested (name);
 
 		KnownSessions_.remove (name);
+
+		for (const auto menu : { LoadSession_, DeleteSession_ })
+			for (const auto act : menu->actions ())
+				if (act->text () == name)
+				{
+					menu->removeAction (act);
+					break;
+				}
 	}
 
 	void SessionMenuManager::addCustomSession (const QString& name)
