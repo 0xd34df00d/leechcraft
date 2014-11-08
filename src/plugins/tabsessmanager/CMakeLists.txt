@@ -12,6 +12,7 @@ set (SRCS
 	restoresessiondialog.cpp
 	recinfo.cpp
 	sessionmenumanager.cpp
+	util.cpp
 	)
 set (FORMS
 	restoresessiondialog.ui

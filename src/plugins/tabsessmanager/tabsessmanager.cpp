@@ -47,6 +47,7 @@
 #include "restoresessiondialog.h"
 #include "recinfo.h"
 #include "sessionmenumanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -164,22 +165,6 @@ namespace TabSessManager
 			handleTabRecoverDataChanged ();
 
 		return false;
-	}
-
-	namespace
-	{
-		QList<QPair<QByteArray, QVariant>> GetSessionProps (QObject *tab)
-		{
-			QList<QPair<QByteArray, QVariant>> props;
-			Q_FOREACH (const QByteArray& propName, tab->dynamicPropertyNames ())
-			{
-				if (!propName.startsWith ("SessionData/"))
-					continue;
-
-				props << qMakePair (propName, tab->property (propName));
-			}
-			return props;
-		}
 	}
 
 	QByteArray Plugin::GetCurrentSession () const
