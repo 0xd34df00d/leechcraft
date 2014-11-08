@@ -38,6 +38,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -1393,10 +1394,28 @@ namespace LMP
 			return;
 		}
 
-		if (!next.IsEmpty ())
+		if (next.IsEmpty ())
+			return;
+
+		Source_->PrepareNextSource (next);
+		EmitStateChange (SourceState::Stopped);
+
+		if (*isTimeout)
 		{
-			Source_->PrepareNextSource (next);
-			EmitStateChange (SourceState::Stopped);
+			qWarning () << Q_FUNC_INFO
+					<< "timeout detected, scheduling playback restart";
+
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[this, next]
+				{
+					Source_->SetCurrentSource (next);
+					Source_->Play ();
+				},
+				Source_,
+				SIGNAL (stateChanged (SourceState, SourceState)),
+				Source_
+			};
 		}
 	}
 
