@@ -52,6 +52,7 @@ namespace TabSessManager
 
 		QMenu* GetSessionsMenu () const;
 	private:
+		void SetMenusEnabled (bool);
 		void DeleteSession (const QString&);
 	public slots:
 		void addCustomSession (const QString&);

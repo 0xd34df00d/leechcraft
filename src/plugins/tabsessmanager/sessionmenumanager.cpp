@@ -45,11 +45,19 @@ namespace TabSessManager
 		SessMgrMenu_->addAction (tr ("Save current session..."),
 				this,
 				SIGNAL (saveCustomSessionRequested ()));
+
+		SetMenusEnabled (false);
 	}
 
 	QMenu* SessionMenuManager::GetSessionsMenu () const
 	{
 		return SessMgrMenu_;
+	}
+
+	void SessionMenuManager::SetMenusEnabled (bool enable)
+	{
+		for (const auto menu : { LoadSession_, DeleteSession_ })
+			menu->setEnabled (enable);
 	}
 
 	void SessionMenuManager::DeleteSession (const QString& name)
@@ -65,6 +73,9 @@ namespace TabSessManager
 					menu->removeAction (act);
 					break;
 				}
+
+		if (KnownSessions_.isEmpty ())
+			SetMenusEnabled (false);
 	}
 
 	void SessionMenuManager::addCustomSession (const QString& name)
@@ -73,6 +84,8 @@ namespace TabSessManager
 			return;
 
 		KnownSessions_ << name;
+
+		SetMenusEnabled (true);
 
 		const auto loadAct = LoadSession_->addAction (name);
 		new Util::SlotClosure<Util::NoDeletePolicy>
