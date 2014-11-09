@@ -242,6 +242,8 @@ namespace Monocle
 
 	void DocumentTab::Remove ()
 	{
+		emit removeTab (this);
+
 		Scene_.clear ();
 
 		delete TOCWidget_;
@@ -250,7 +252,6 @@ namespace Monocle
 		delete DockWidget_->widget ();
 		delete DockWidget_;
 
-		emit removeTab (this);
 		deleteLater ();
 	}
 
