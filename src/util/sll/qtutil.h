@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <tuple>
 #include <boost/range.hpp>
 
 namespace LeechCraft
@@ -70,10 +71,22 @@ namespace Util
 	};
 
 	template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
-	struct StlAssocRange : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
+	struct StlAssocRange : private std::tuple<Assoc>
+						 , public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
 	{
 	public:
 		StlAssocRange (Assoc&& assoc)
+		: std::tuple<Assoc> { std::move (assoc) }
+		, boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>> { std::get<0> (*this).begin (), std::get<0> (*this).end () }
+		{
+		}
+	};
+
+	template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
+	struct StlAssocRange<Iter, Assoc&, PairType> : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
+	{
+	public:
+		StlAssocRange (Assoc& assoc)
 		: boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>> { assoc.begin (), assoc.end () }
 		{
 		}
