@@ -137,11 +137,12 @@ namespace Xtazy
 		const auto& song = Keeper_->GetCurrentSong ();
 
 		QString songStr;
-		if (!song.Title_.isEmpty () ||
-				!song.Artist_.isEmpty () ||
-				!song.Album_.isEmpty ())
+		if (!song.Title_.isEmpty () &&
+				!song.Artist_.isEmpty ())
 		{
-			songStr = XmlSettingsManager::Instance ().property ("NPCmdSubst").toString ();
+			songStr = !song.Album_.isEmpty () ?
+					XmlSettingsManager::Instance ().property ("NPCmdSubst").toString () :
+					XmlSettingsManager::Instance ().property ("NPCmdSubstWOAlbum").toString ();
 			songStr.replace ("$artist", song.Artist_);
 			songStr.replace ("$album", song.Album_);
 			songStr.replace ("$title", song.Title_);

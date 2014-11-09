@@ -11,6 +11,10 @@
 				<label value="Substitution:" />
 				<tooltip>The following placeholders can be used: $artist, $album, $title.</tooltip>
 			</item>
+			<item type="lineedit" property="NPCmdSubstWOAlbum" default="/me now playing: $artist — $title">
+				<label value="Substitution without album information:" />
+				<tooltip>The following placeholders can be used: $artist, $album, $title.</tooltip>
+			</item>
 			<item type="lineedit" property="NPCmdNoPlaying" default="/me playback is stopped :(">
 				<label value="Text when nothing is playing:" />
 			</item>
