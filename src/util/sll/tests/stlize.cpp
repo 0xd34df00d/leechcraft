@@ -71,15 +71,6 @@ namespace Util
 		QCOMPARE (list, (QStringList { "aaa", "bbb", "ccc" }));
 	}
 
-	void StlizeTest::testRvalue ()
-	{
-		QStringList list;
-		for (const auto& pair : Util::Stlize (GetSimpleMap ()))
-			list << pair.second;
-
-		QCOMPARE (list, (QStringList { "aaa", "bbb", "ccc" }));
-	}
-
 	void StlizeTest::testNonConstModify ()
 	{
 		auto getMap = []
@@ -102,6 +93,15 @@ namespace Util
 
 		QCOMPARE (list, (QStringList { "aaa", "bbb", "ccc" }));
 		QCOMPARE (true, (std::all_of (map.begin (), map.end (), [] (const QString& str) { return str.isEmpty (); })));
+	}
+
+	void StlizeTest::testRvalue ()
+	{
+		QStringList list;
+		for (const auto& pair : Util::Stlize (GetSimpleMap ()))
+			list << pair.second;
+
+		QCOMPARE (list, (QStringList { "aaa", "bbb", "ccc" }));
 	}
 }
 }

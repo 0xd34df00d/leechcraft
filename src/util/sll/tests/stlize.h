@@ -41,8 +41,8 @@ namespace Util
 	private slots:
 		void testConst ();
 		void testNonConst ();
-		void testRvalue ();
 		void testNonConstModify ();
+		void testRvalue ();
 	};
 }
 }
