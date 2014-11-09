@@ -103,6 +103,37 @@ namespace Util
 
 		QCOMPARE (list, (QStringList { "aaa", "bbb", "ccc" }));
 	}
+
+	namespace
+	{
+		QMap<int, int> GetBigMap ()
+		{
+			QMap<int, int> map;
+			for (int i = 0; i < 1500000; ++i)
+				map [i] = i * 2;
+			return map;
+		}
+	}
+
+	void StlizeTest::benchmarkPlain ()
+	{
+		const auto& map = GetBigMap ();
+		QBENCHMARK {
+			volatile int sum = 0;
+			for (auto value : map)
+				sum += value;
+		}
+	}
+
+	void StlizeTest::benchmarkStlized ()
+	{
+		const auto& map = GetBigMap ();
+		QBENCHMARK {
+			volatile int sum = 0;
+			for (const auto& pair : Util::Stlize (map))
+				sum += pair.second;
+		}
+	}
 }
 }
 
