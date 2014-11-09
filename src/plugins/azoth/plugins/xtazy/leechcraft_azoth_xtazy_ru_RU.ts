@@ -4,12 +4,22 @@
 <context>
     <name>LeechCraft::Azoth::Xtazy::Plugin</name>
     <message>
-        <location filename="xtazy.cpp" line="95"/>
+        <location filename="xtazy.cpp" line="66"/>
+        <source>Sends the metadata of the currently plaing tune to the chat.</source>
+        <translation>Отправляет информацию о текущей мелодии в чат.</translation>
+    </message>
+    <message>
+        <location filename="xtazy.cpp" line="72"/>
+        <source>Uploads the current track file to a web file storage and sends the link to the chat.</source>
+        <translation>Загружает текущий аудиофайл на какое-нибудь онлайн-хранилище и отправляет ссылку в чат.</translation>
+    </message>
+    <message>
+        <location filename="xtazy.cpp" line="106"/>
         <source>Publishes current tune.</source>
         <translation>Публикует играемую мелодию.</translation>
     </message>
     <message>
-        <location filename="xtazy.cpp" line="141"/>
+        <location filename="xtazy.cpp" line="198"/>
         <source>No web share plugins are installed. Try installing NetStoreManager, for example.</source>
         <translation>Нет установленных модулей загрузки данных. Попробуйте, например, установить NetStoreManager.</translation>
     </message>
@@ -41,16 +51,27 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
+        <source>Send text immediately</source>
+        <translation>Отправлять немедленно</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
         <source>Substitution:</source>
         <translation>Подстановка:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="8"/>
         <source>The following placeholders can be used: $artist, $album, $title.</source>
         <translation>Можно использовать следующие переменные: $artist, $album, $title.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Substitution without album information:</source>
+        <translation>Подстановка при отсутствующем альбоме:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
         <source>Text when nothing is playing:</source>
         <translation>Текст, когда ничего не проигрывается:</translation>
     </message>
