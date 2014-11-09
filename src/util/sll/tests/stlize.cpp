@@ -71,6 +71,15 @@ namespace Util
 		QCOMPARE (list, (QStringList { "aaa", "bbb", "ccc" }));
 	}
 
+	void StlizeTest::testRvalue ()
+	{
+		QStringList list;
+		for (const auto& pair : Util::Stlize (GetSimpleMap ()))
+			list << pair.second;
+
+		QCOMPARE (list, (QStringList { "aaa", "bbb", "ccc" }));
+	}
+
 	void StlizeTest::testNonConstModify ()
 	{
 		auto getMap = []
