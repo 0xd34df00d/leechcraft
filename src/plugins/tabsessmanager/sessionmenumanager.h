@@ -44,6 +44,7 @@ namespace TabSessManager
 
 		QMenu * const SessMgrMenu_;
 		QMenu * const LoadSession_;
+		QMenu * const AddSession_;
 		QMenu * const DeleteSession_;
 
 		QSet<QString> KnownSessions_;
@@ -58,6 +59,7 @@ namespace TabSessManager
 		void addCustomSession (const QString&);
 	signals:
 		void loadRequested (const QString&);
+		void addRequested (const QString&);
 		void deleteRequested (const QString&);
 
 		void saveCustomSessionRequested ();

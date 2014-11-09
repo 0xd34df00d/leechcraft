@@ -39,6 +39,7 @@ namespace TabSessManager
 	: QObject { parent }
 	, SessMgrMenu_ { new QMenu { tr ("Sessions") } }
 	, LoadSession_ { SessMgrMenu_->addMenu (tr ("Load session")) }
+	, AddSession_ { SessMgrMenu_->addMenu (tr ("Add session")) }
 	, DeleteSession_ { SessMgrMenu_->addMenu (tr ("Delete session")) }
 	{
 		SessMgrMenu_->addSeparator ();
@@ -56,7 +57,7 @@ namespace TabSessManager
 
 	void SessionMenuManager::SetMenusEnabled (bool enable)
 	{
-		for (const auto menu : { LoadSession_, DeleteSession_ })
+		for (const auto menu : { LoadSession_, AddSession_, DeleteSession_ })
 			menu->setEnabled (enable);
 	}
 
@@ -66,7 +67,7 @@ namespace TabSessManager
 
 		KnownSessions_.remove (name);
 
-		for (const auto menu : { LoadSession_, DeleteSession_ })
+		for (const auto menu : { LoadSession_, AddSession_, DeleteSession_ })
 			for (const auto act : menu->actions ())
 				if (act->text () == name)
 				{
@@ -94,6 +95,15 @@ namespace TabSessManager
 			loadAct,
 			SIGNAL (triggered ()),
 			loadAct
+		};
+
+		const auto addAct = AddSession_->addAction (name);
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, name] { emit addRequested (name); },
+			addAct,
+			SIGNAL (triggered ()),
+			addAct
 		};
 
 		const auto deleteAct = DeleteSession_->addAction (name);
