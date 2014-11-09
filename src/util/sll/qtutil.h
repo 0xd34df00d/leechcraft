@@ -48,52 +48,52 @@ namespace Util
 				boost::use_default,
 				PairType<decltype (Iter {}.key ()), decltype (Iter {}.value ())>
 			>;
+
+		template<typename Iter, template<typename, typename> class PairType>
+		class StlAssocIteratorAdaptor : public detail::IteratorAdaptorBase<StlAssocIteratorAdaptor, Iter, PairType>
+		{
+			friend class boost::iterator_core_access;
+
+			using Super_t = IteratorAdaptorBase<StlAssocIteratorAdaptor::template StlAssocIteratorAdaptor, Iter, PairType>;
+		public:
+			StlAssocIteratorAdaptor () = default;
+
+			StlAssocIteratorAdaptor (Iter it)
+			: Super_t { it }
+			{
+			}
+		private:
+			typename Super_t::reference dereference () const
+			{
+				return { this->base ().key (), this->base ().value () };
+			}
+		};
+
+		template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
+		struct StlAssocRange : private std::tuple<Assoc>
+							 , public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
+		{
+		public:
+			StlAssocRange (Assoc&& assoc)
+			: std::tuple<Assoc> { std::move (assoc) }
+			, boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>> { std::get<0> (*this).begin (), std::get<0> (*this).end () }
+			{
+			}
+		};
+
+		template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
+		struct StlAssocRange<Iter, Assoc&, PairType> : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
+		{
+		public:
+			StlAssocRange (Assoc& assoc)
+			: boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>> { assoc.begin (), assoc.end () }
+			{
+			}
+		};
 	}
 
-	template<typename Iter, template<typename, typename> class PairType>
-	class StlAssocIteratorAdaptor : public detail::IteratorAdaptorBase<StlAssocIteratorAdaptor, Iter, PairType>
-	{
-		friend class boost::iterator_core_access;
-
-		typedef detail::IteratorAdaptorBase<StlAssocIteratorAdaptor::template StlAssocIteratorAdaptor, Iter, PairType> Super_t;
-	public:
-		StlAssocIteratorAdaptor () = default;
-
-		StlAssocIteratorAdaptor (Iter it)
-		: Super_t { it }
-		{
-		}
-	private:
-		typename Super_t::reference dereference () const
-		{
-			return { this->base ().key (), this->base ().value () };
-		}
-	};
-
-	template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
-	struct StlAssocRange : private std::tuple<Assoc>
-						 , public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
-	{
-	public:
-		StlAssocRange (Assoc&& assoc)
-		: std::tuple<Assoc> { std::move (assoc) }
-		, boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>> { std::get<0> (*this).begin (), std::get<0> (*this).end () }
-		{
-		}
-	};
-
-	template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
-	struct StlAssocRange<Iter, Assoc&, PairType> : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
-	{
-	public:
-		StlAssocRange (Assoc& assoc)
-		: boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>> { assoc.begin (), assoc.end () }
-		{
-		}
-	};
-
 	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
-	auto Stlize (Assoc&& assoc) -> StlAssocRange<decltype (assoc.begin ()), Assoc, PairType>
+	auto Stlize (Assoc&& assoc) -> detail::StlAssocRange<decltype (assoc.begin ()), Assoc, PairType>
 	{
 		return { std::forward<Assoc> (assoc) };
 	}
