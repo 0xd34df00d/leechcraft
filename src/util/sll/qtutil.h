@@ -43,9 +43,9 @@ namespace Util
 		using IteratorAdaptorBase = boost::iterator_adaptor<
 				This<Iter, Assoc, PairType>,
 				Iter,
-				PairType<typename Assoc::key_type, typename Assoc::mapped_type>,
+				PairType<decltype (Iter {}.key ()), decltype (Iter {}.value ())>,
 				boost::use_default,
-				PairType<typename Assoc::key_type, typename Assoc::mapped_type>
+				PairType<decltype (Iter {}.key ()), decltype (Iter {}.value ())>
 			>;
 	}
 
@@ -54,11 +54,11 @@ namespace Util
 	{
 		friend class boost::iterator_core_access;
 
-		typedef detail::IteratorAdaptorBase<::LeechCraft::Util::StlAssocIteratorAdaptor, Iter, Assoc, PairType> Super_t;
+		typedef detail::IteratorAdaptorBase<StlAssocIteratorAdaptor::template StlAssocIteratorAdaptor, Iter, Assoc, PairType> Super_t;
 	public:
 		StlAssocIteratorAdaptor () = default;
 
-		StlAssocIteratorAdaptor (const Iter& it)
+		StlAssocIteratorAdaptor (Iter it)
 		: Super_t { it }
 		{
 		}
@@ -73,16 +73,16 @@ namespace Util
 	struct StlAssocRange : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, Assoc, PairType>>
 	{
 	public:
-		StlAssocRange (const Assoc& assoc)
+		StlAssocRange (Assoc&& assoc)
 		: boost::iterator_range<StlAssocIteratorAdaptor<Iter, Assoc, PairType>> { assoc.begin (), assoc.end () }
 		{
 		}
 	};
 
 	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
-	StlAssocRange<typename Assoc::const_iterator, Assoc, PairType> Stlize (const Assoc& assoc)
+	auto Stlize (Assoc&& assoc) -> StlAssocRange<decltype (assoc.begin ()), Assoc, PairType>
 	{
-		return { assoc };
+		return { std::forward<Assoc> (assoc) };
 	}
 }
 }
