@@ -41,9 +41,9 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupporttune.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "tracksharedialog.h"
 #include "xmlsettingsmanager.h"
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
 {
@@ -56,12 +56,9 @@ namespace Xtazy
 		Util::InstallTranslator ("azoth_xtazy");
 
 		Proxy_ = proxy;
-		AzothProxy_ = 0;
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothxtazysettings.xml");
-
-		Keeper_ = 0;
 
 		Commands_.append ({
 				{ "/np" },
@@ -213,7 +210,7 @@ namespace Xtazy
 		auto sharer = qobject_cast<IWebFileStorage*> (sharerObj);
 		sharer->UploadFile (localPath, selectedVar);
 
-		PendingUploads_ [localPath] << UploadNotifee_t (entry->GetQObject (), {});
+		PendingUploads_ [localPath].append ({ entry->GetQObject (), {} });
 
 		connect (sharerObj,
 				SIGNAL (fileUploaded (QString, QUrl)),
@@ -258,8 +255,7 @@ namespace Xtazy
 
 		const auto& encoded = url.toEncoded ();
 
-		const auto& notifees = PendingUploads_.take (filename);
-		Q_FOREACH (const auto& notifee, notifees)
+		for (const auto& notifee : PendingUploads_.take (filename))
 		{
 			auto entry = qobject_cast<ICLEntry*> (notifee.first);
 			if (!entry)

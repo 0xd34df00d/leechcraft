@@ -67,10 +67,10 @@ namespace Xtazy
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Xtazy")
 
-		IProxyObject *AzothProxy_;
+		IProxyObject *AzothProxy_ = nullptr;
 		ICoreProxy_ptr Proxy_;
 
-		Media::ICurrentSongKeeper *Keeper_;
+		Media::ICurrentSongKeeper *Keeper_ = nullptr;
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
