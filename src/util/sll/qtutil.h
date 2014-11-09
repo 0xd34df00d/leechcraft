@@ -35,24 +35,26 @@ namespace LeechCraft
 {
 namespace Util
 {
-	template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
-	class StlAssocIteratorAdaptor : public boost::iterator_adaptor<
-				StlAssocIteratorAdaptor<Iter, Assoc, PairType>,
+	namespace detail
+	{
+		template<template<typename, typename,
+					template<typename, typename> class> class This,
+				typename Iter, typename Assoc, template<typename, typename> class PairType>
+		using IteratorAdaptorBase = boost::iterator_adaptor<
+				This<Iter, Assoc, PairType>,
 				Iter,
 				PairType<typename Assoc::key_type, typename Assoc::mapped_type>,
 				boost::use_default,
 				PairType<typename Assoc::key_type, typename Assoc::mapped_type>
-			>
+			>;
+	}
+
+	template<typename Iter, typename Assoc, template<typename, typename> class PairType>
+	class StlAssocIteratorAdaptor : public detail::IteratorAdaptorBase<StlAssocIteratorAdaptor, Iter, Assoc, PairType>
 	{
 		friend class boost::iterator_core_access;
 
-		typedef boost::iterator_adaptor<
-					StlAssocIteratorAdaptor<Iter, Assoc, PairType>,
-					Iter,
-					PairType<typename Assoc::key_type, typename Assoc::mapped_type>,
-					boost::use_default,
-					PairType<typename Assoc::key_type, typename Assoc::mapped_type>
-				> Super_t;
+		typedef detail::IteratorAdaptorBase<::LeechCraft::Util::StlAssocIteratorAdaptor, Iter, Assoc, PairType> Super_t;
 	public:
 		StlAssocIteratorAdaptor () = default;
 
