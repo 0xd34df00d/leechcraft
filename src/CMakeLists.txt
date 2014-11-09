@@ -209,6 +209,8 @@ set (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_D
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")
 
+enable_testing ()
+
 add_subdirectory (util)
 add_subdirectory (xmlsettingsdialog)
 
@@ -322,8 +324,6 @@ cmake_dependent_option (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer"
 
 # Defunct
 option (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
-
-enable_testing ()
 
 function (CreateTrs PlugName Langs CompiledTranVar)
 	string (LENGTH "${PlugName}" _pnameLength)
