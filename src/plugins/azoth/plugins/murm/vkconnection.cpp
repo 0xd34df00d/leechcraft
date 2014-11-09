@@ -271,6 +271,9 @@ namespace Murm
 
 	void VkConnection::RequestGeoIds (const QList<int>& codes, GeoSetter_f setter, GeoIdType type)
 	{
+		if (codes.isEmpty ())
+			return;
+
 		const auto& joined = CommaJoin (codes);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
