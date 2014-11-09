@@ -37,11 +37,11 @@ namespace Util
 {
 	namespace detail
 	{
-		template<template<typename, typename,
+		template<template<typename,
 					template<typename, typename> class> class This,
-				typename Iter, typename Assoc, template<typename, typename> class PairType>
+				typename Iter, template<typename, typename> class PairType>
 		using IteratorAdaptorBase = boost::iterator_adaptor<
-				This<Iter, Assoc, PairType>,
+				This<Iter, PairType>,
 				Iter,
 				PairType<decltype (Iter {}.key ()), decltype (Iter {}.value ())>,
 				boost::use_default,
@@ -49,12 +49,12 @@ namespace Util
 			>;
 	}
 
-	template<typename Iter, typename Assoc, template<typename, typename> class PairType>
-	class StlAssocIteratorAdaptor : public detail::IteratorAdaptorBase<StlAssocIteratorAdaptor, Iter, Assoc, PairType>
+	template<typename Iter, template<typename, typename> class PairType>
+	class StlAssocIteratorAdaptor : public detail::IteratorAdaptorBase<StlAssocIteratorAdaptor, Iter, PairType>
 	{
 		friend class boost::iterator_core_access;
 
-		typedef detail::IteratorAdaptorBase<StlAssocIteratorAdaptor::template StlAssocIteratorAdaptor, Iter, Assoc, PairType> Super_t;
+		typedef detail::IteratorAdaptorBase<StlAssocIteratorAdaptor::template StlAssocIteratorAdaptor, Iter, PairType> Super_t;
 	public:
 		StlAssocIteratorAdaptor () = default;
 
@@ -70,11 +70,11 @@ namespace Util
 	};
 
 	template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
-	struct StlAssocRange : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, Assoc, PairType>>
+	struct StlAssocRange : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
 	{
 	public:
 		StlAssocRange (Assoc&& assoc)
-		: boost::iterator_range<StlAssocIteratorAdaptor<Iter, Assoc, PairType>> { assoc.begin (), assoc.end () }
+		: boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>> { assoc.begin (), assoc.end () }
 		{
 		}
 	};
