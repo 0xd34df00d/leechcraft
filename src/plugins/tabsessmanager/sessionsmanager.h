@@ -64,6 +64,7 @@ namespace TabSessManager
 		void saveCustomSession ();
 
 		void loadCustomSession (const QString&);
+		void addCustomSession (const QString&);
 		void deleteCustomSession (const QString&);
 
 		void handleRemoveTab (QWidget*);

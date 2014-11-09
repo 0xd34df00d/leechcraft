@@ -41,6 +41,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
+#include <util/sll/qtutil.h>
 #include "recinfo.h"
 #include "restoresessiondialog.h"
 #include "util.h"
@@ -303,6 +304,10 @@ namespace TabSessManager
 	}
 
 	void SessionsManager::loadCustomSession (const QString& name)
+	{
+	}
+
+	void SessionsManager::addCustomSession (const QString& name)
 	{
 		auto tabs = GetSession (name, Proxy_);
 
