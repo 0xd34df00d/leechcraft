@@ -1467,7 +1467,9 @@ namespace Murm
 					wallMap ["owner_id"].toLongLong () :
 					wallMap ["to_id"].toLongLong ();
 			info.ID_ = wallMap ["id"].toULongLong ();
-			info.Text_ = wallMap ["text"].toString ();
+			info.Text_ = wallMap.contains ("text") ?
+					wallMap ["text"].toString () :
+					wallMap ["body"].toString ();
 			info.Likes_ = wallMap ["likes"].toMap () ["count"].toInt ();
 			info.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
 			info.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
