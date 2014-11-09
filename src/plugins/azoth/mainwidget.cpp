@@ -158,7 +158,6 @@ namespace Azoth
 
 		FastStatusButton_->setMenu (StatusMenuMgr_->CreateMenu (this, SLOT (fastStateChangeRequested ()), this));
 		FastStatusButton_->setPopupMode (QToolButton::InstantPopup);
-		updateFastStatusButton (SOffline);
 
 		ActionDeleteSelected_ = new QAction (this);
 		ActionDeleteSelected_->setShortcut (Qt::Key_Delete);
@@ -794,6 +793,9 @@ namespace Azoth
 	void MainWidget::handleStatusIconsChanged ()
 	{
 		ActionShowOffline_->setIcon (ResourcesManager::Instance ().GetIconForState (SOffline));
+
+		if (FastStatusButton_->icon ().isNull ())
+			updateFastStatusButton (SOffline);
 	}
 
 	namespace
