@@ -65,6 +65,10 @@ namespace TabSessManager
 				SessionsMgr_,
 				SLOT (loadCustomSession (QString)));
 		connect (SessionMenuMgr_,
+				SIGNAL (addRequested (QString)),
+				SessionsMgr_,
+				SLOT (addCustomSession (QString)));
+		connect (SessionMenuMgr_,
 				SIGNAL (deleteRequested (QString)),
 				SessionsMgr_,
 				SLOT (deleteCustomSession (QString)));
