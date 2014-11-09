@@ -37,7 +37,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm</name>
     <message>
-        <location filename="serverhistorymanager.cpp" line="63"/>
+        <location filename="serverhistorymanager.cpp" line="64"/>
         <source>Contact</source>
         <translation>Контакт</translation>
     </message>

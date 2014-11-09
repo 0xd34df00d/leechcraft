@@ -37,7 +37,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm</name>
     <message>
-        <location filename="serverhistorymanager.cpp" line="63"/>
+        <location filename="serverhistorymanager.cpp" line="64"/>
         <source>Contact</source>
         <translation>Contact</translation>
     </message>
@@ -342,31 +342,37 @@
     <name>azothmurmsettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="9"/>
         <source>Azoth Murm</source>
         <translation>Azoth Murm</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="10"/>
         <source>Appearance</source>
         <translation>Appearance</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Entry name format:</source>
         <translation>Entry name format:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="12"/>
         <source>The following variables are allowed: $name, $nick, $surname.</source>
         <translation>The following variables are allowed: $name, $nick, $surname.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>Connection</source>
         <translation>Connection</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
+        <location filename="dummy.cpp" line="14"/>
         <source>Require Offline permissions to avoid reauthentification on IP change</source>
         <translation>Require Offline permissions to avoid reauthentification on IP change</translation>
     </message>
