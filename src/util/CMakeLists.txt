@@ -1,5 +1,6 @@
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
+option (ENABLE_UTIL_TESTS "Enable tests for some of the Utility components" OFF)
 option (WITH_X11 "Enable X11 support on Linux" ON)
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
 
@@ -7,6 +8,16 @@ include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	..)
+
+if (ENABLE_UTIL_TESTS)
+	function (AddSllTest _execName _cppFile _testName _depLib)
+		set (_fullExecName lc_util_${_execName}_test)
+		add_executable (${_fullExecName} WIN32 ${_cppFile})
+		add_test (${_testName} ${_fullExecName})
+		FindQtLibs (${_fullExecName} Test)
+		add_dependencies (${_fullExecName} ${_depLib})
+	endfunction ()
+endif ()
 
 set (LC_SOVERSION 0.6.75)
 
