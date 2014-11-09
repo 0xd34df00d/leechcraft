@@ -288,15 +288,24 @@ namespace TabSessManager
 		emit gotCustomSession (name);
 	}
 
+	namespace
+	{
+		QHash<QObject*, QList<RecInfo>> GetSession (const QString& name, const ICoreProxy_ptr& proxy)
+		{
+			QSettings settings { QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_TabSessManager" };
+			settings.beginGroup (name);
+			QDataStream str { settings.value ("Data").toByteArray () };
+			settings.endGroup ();
+
+			return GetTabsFromStream (str, proxy);
+		}
+	}
+
 	void SessionsManager::loadCustomSession (const QString& name)
 	{
-		QSettings settings { QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_TabSessManager" };
-		settings.beginGroup (name);
-		QDataStream str { settings.value ("Data").toByteArray () };
-		settings.endGroup ();
+		auto tabs = GetSession (name, Proxy_);
 
-		const auto& tabs = GetTabsFromStream (str, Proxy_);
 		OpenTabs (tabs);
 	}
 
