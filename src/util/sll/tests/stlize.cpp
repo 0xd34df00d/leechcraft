@@ -37,18 +37,21 @@ namespace LeechCraft
 {
 namespace Util
 {
-	void StlizeTest::testConst ()
+	namespace
 	{
-		auto getMap = []
+		QMap<int, QString> GetSimpleMap ()
 		{
 			QMap<int, QString> someMap;
 			someMap [0] = "aaa";
 			someMap [1] = "bbb";
 			someMap [2] = "ccc";
 			return someMap;
-		};
+		}
+	}
 
-		const auto& map = getMap ();
+	void StlizeTest::testConst ()
+	{
+		const auto& map = GetSimpleMap ();
 
 		QStringList list;
 		for (const auto& pair : Util::Stlize (map))
@@ -59,16 +62,7 @@ namespace Util
 
 	void StlizeTest::testNonConst ()
 	{
-		auto getMap = []
-		{
-			QMap<int, QString> someMap;
-			someMap [0] = "aaa";
-			someMap [1] = "bbb";
-			someMap [2] = "ccc";
-			return someMap;
-		};
-
-		auto map = getMap ();
+		auto map = GetSimpleMap ();
 
 		QStringList list;
 		for (const auto& pair : Util::Stlize (map))
