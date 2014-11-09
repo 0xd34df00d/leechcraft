@@ -311,6 +311,28 @@ namespace TabSessManager
 	{
 		auto tabs = GetSession (name, Proxy_);
 
+		QHash<QObject*, QSet<QByteArray>> plugin2recoveries;
+		for (const auto window : Tabs_)
+			for (const auto tab : window)
+			{
+				const auto tw = qobject_cast<ITabWidget*> (tab);
+				const auto rec = qobject_cast<IRecoverableTab*> (tab);
+				if (!tw || !rec)
+					continue;
+
+				plugin2recoveries [tw->ParentMultiTabs ()] << rec->GetTabRecoverData ();
+			}
+
+		for (const auto& pair : Util::Stlize (tabs))
+		{
+			const auto& present = plugin2recoveries.value (pair.first);
+
+			auto& recList = pair.second;
+			recList.erase (std::remove_if (recList.begin (), recList.end (),
+						[&present] (const RecInfo& info) { return present.contains (info.Data_); }),
+					recList.end ());
+		}
+
 		OpenTabs (tabs);
 	}
 
