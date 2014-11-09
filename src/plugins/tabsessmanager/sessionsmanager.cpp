@@ -305,6 +305,22 @@ namespace TabSessManager
 
 	void SessionsManager::loadCustomSession (const QString& name)
 	{
+		const auto rootMgr = Proxy_->GetRootWindowsManager ();
+		for (int i = 0; i < rootMgr->GetWindowsCount (); ++i)
+		{
+			const auto tabWidget = rootMgr->GetTabWidget (i);
+			for (int j = 0; j < tabWidget->WidgetCount (); ++j)
+			{
+				const auto tab = tabWidget->Widget (j);
+				const auto itw = qobject_cast<ITabWidget*> (tab);
+				itw->Remove ();
+			}
+
+			if (i)
+				rootMgr->GetMainWindow (i)->close ();
+		}
+
+		OpenTabs (GetSession (name, Proxy_));
 	}
 
 	void SessionsManager::addCustomSession (const QString& name)
