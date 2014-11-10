@@ -306,7 +306,7 @@ namespace TabSessManager
 	void SessionsManager::loadCustomSession (const QString& name)
 	{
 		const auto rootMgr = Proxy_->GetRootWindowsManager ();
-		for (int i = 0; i < rootMgr->GetWindowsCount (); ++i)
+		for (int i = rootMgr->GetWindowsCount () - 1; i >= 0; --i)
 		{
 			const auto tabWidget = rootMgr->GetTabWidget (i);
 			for (int j = tabWidget->WidgetCount () - 1; j >= 0; --j)
