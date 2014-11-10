@@ -29,8 +29,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <QSet>
+#include <QHash>
 
 class QMenu;
 
@@ -43,17 +44,13 @@ namespace TabSessManager
 		Q_OBJECT
 
 		QMenu * const SessMgrMenu_;
-		QMenu * const LoadSession_;
-		QMenu * const AddSession_;
-		QMenu * const DeleteSession_;
 
-		QSet<QString> KnownSessions_;
+		QHash<QString, std::shared_ptr<QMenu>> Session2Menu_;
 	public:
 		SessionMenuManager (QObject* = nullptr);
 
 		QMenu* GetSessionsMenu () const;
 	private:
-		void SetMenusEnabled (bool);
 		void DeleteSession (const QString&);
 	public slots:
 		void addCustomSession (const QString&);

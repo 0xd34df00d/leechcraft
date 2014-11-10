@@ -38,16 +38,11 @@ namespace TabSessManager
 	SessionMenuManager::SessionMenuManager (QObject *parent)
 	: QObject { parent }
 	, SessMgrMenu_ { new QMenu { tr ("Sessions") } }
-	, LoadSession_ { SessMgrMenu_->addMenu (tr ("Load session")) }
-	, AddSession_ { SessMgrMenu_->addMenu (tr ("Add session")) }
-	, DeleteSession_ { SessMgrMenu_->addMenu (tr ("Delete session")) }
 	{
-		SessMgrMenu_->addSeparator ();
 		SessMgrMenu_->addAction (tr ("Save current session..."),
 				this,
 				SIGNAL (saveCustomSessionRequested ()));
-
-		SetMenusEnabled (false);
+		SessMgrMenu_->addSeparator ();
 	}
 
 	QMenu* SessionMenuManager::GetSessionsMenu () const
@@ -55,40 +50,22 @@ namespace TabSessManager
 		return SessMgrMenu_;
 	}
 
-	void SessionMenuManager::SetMenusEnabled (bool enable)
-	{
-		for (const auto menu : { LoadSession_, AddSession_, DeleteSession_ })
-			menu->setEnabled (enable);
-	}
-
 	void SessionMenuManager::DeleteSession (const QString& name)
 	{
+		Session2Menu_.remove (name);
 		emit deleteRequested (name);
-
-		KnownSessions_.remove (name);
-
-		for (const auto menu : { LoadSession_, AddSession_, DeleteSession_ })
-			for (const auto act : menu->actions ())
-				if (act->text () == name)
-				{
-					menu->removeAction (act);
-					break;
-				}
-
-		if (KnownSessions_.isEmpty ())
-			SetMenusEnabled (false);
 	}
 
 	void SessionMenuManager::addCustomSession (const QString& name)
 	{
-		if (KnownSessions_.contains (name))
+		if (Session2Menu_.contains (name))
 			return;
 
-		KnownSessions_ << name;
+		const auto& menu = std::shared_ptr<QMenu> (SessMgrMenu_->addMenu (name),
+				[this] (QMenu *menu) { SessMgrMenu_->removeAction (menu->menuAction ()); });
+		Session2Menu_ [name] = menu;
 
-		SetMenusEnabled (true);
-
-		const auto loadAct = LoadSession_->addAction (name);
+		const auto loadAct = menu->addAction (tr ("Load"));
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, name] { emit loadRequested (name); },
@@ -97,7 +74,7 @@ namespace TabSessManager
 			loadAct
 		};
 
-		const auto addAct = AddSession_->addAction (name);
+		const auto addAct = menu->addAction (tr ("Add"));
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, name] { emit addRequested (name); },
@@ -106,7 +83,7 @@ namespace TabSessManager
 			addAct
 		};
 
-		const auto deleteAct = DeleteSession_->addAction (name);
+		const auto deleteAct = menu->addAction (tr ("Delete"));
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, name] { DeleteSession (name); },
