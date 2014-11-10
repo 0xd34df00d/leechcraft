@@ -39,9 +39,14 @@ namespace TabSessManager
 	: QObject { parent }
 	, SessMgrMenu_ { new QMenu { tr ("Sessions") } }
 	{
-		SessMgrMenu_->addAction (tr ("Save current session..."),
+		const auto saveAct = SessMgrMenu_->addAction (tr ("Save current session..."),
 				this,
 				SIGNAL (saveCustomSessionRequested ()));
+		saveAct->setProperty ("ActionIcon", "document-save-all");
+
+		SessMgrMenu_->menuAction ()->setProperty ("ActionIcon",
+				"preferences-system-session-services");
+
 		SessMgrMenu_->addSeparator ();
 	}
 
@@ -66,6 +71,7 @@ namespace TabSessManager
 		Session2Menu_ [name] = menu;
 
 		const auto loadAct = menu->addAction (tr ("Load"));
+		loadAct->setProperty ("ActionIcon", "edit-find-replace");
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, name] { emit loadRequested (name); },
@@ -75,6 +81,7 @@ namespace TabSessManager
 		};
 
 		const auto addAct = menu->addAction (tr ("Add"));
+		addAct->setProperty ("ActionIcon", "list-add");
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, name] { emit addRequested (name); },
@@ -84,6 +91,7 @@ namespace TabSessManager
 		};
 
 		const auto deleteAct = menu->addAction (tr ("Delete"));
+		deleteAct->setProperty ("ActionIcon", "list-remove");
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, name] { DeleteSession (name); },
