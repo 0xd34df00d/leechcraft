@@ -53,7 +53,6 @@ namespace Poshuku
 			RoleURL = 45
 		};
 		URLCompletionModel (QObject* = 0);
-		virtual ~URLCompletionModel ();
 
 		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;

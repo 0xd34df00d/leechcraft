@@ -45,10 +45,6 @@ namespace Poshuku
 	{
 	}
 
-	URLCompletionModel::~URLCompletionModel ()
-	{
-	}
-
 	int URLCompletionModel::columnCount (const QModelIndex&) const
 	{
 		return 1;
@@ -57,7 +53,7 @@ namespace Poshuku
 	QVariant URLCompletionModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
-			return QVariant ();
+			return {};
 
 		if (role == Qt::DisplayRole)
 			return Items_ [index.row ()].Title_ + " [" + Items_ [index.row ()].URL_ + "]";
@@ -68,7 +64,7 @@ namespace Poshuku
 		else if (role == RoleURL)
 			return Items_ [index.row ()].URL_;
 		else
-			return QVariant ();
+			return {};
 	}
 
 	Qt::ItemFlags URLCompletionModel::flags (const QModelIndex&) const
@@ -78,21 +74,21 @@ namespace Poshuku
 
 	QVariant URLCompletionModel::headerData (int, Qt::Orientation, int) const
 	{
-		return QVariant ();
+		return {};
 	}
 
 	QModelIndex URLCompletionModel::index (int row, int column,
 			const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))
-			return QModelIndex ();
+			return {};
 
 		return createIndex (row, column);
 	}
 
 	QModelIndex URLCompletionModel::parent (const QModelIndex&) const
 	{
-		return QModelIndex ();
+		return {};
 	}
 
 	int URLCompletionModel::rowCount (const QModelIndex& index) const
@@ -105,7 +101,7 @@ namespace Poshuku
 
 	void URLCompletionModel::AddItem (const QString& title, const QString& url, size_t pos)
 	{
-		HistoryItem item =
+		const HistoryItem item
 		{
 			title,
 			QDateTime (),
@@ -114,7 +110,7 @@ namespace Poshuku
 
 		pos = std::min (static_cast<size_t> (Items_.size ()), pos);
 
-		beginInsertRows (QModelIndex (), pos, pos);
+		beginInsertRows ({}, pos, pos);
 		Items_.insert (Items_.begin () + pos, item);
 		endInsertRows ();
 	}
@@ -129,18 +125,18 @@ namespace Poshuku
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		int size = Items_.size ();
 		emit hookURLCompletionNewStringRequested (proxy, this, str, size);
-		if (proxy->IsCancelled ())
+		if (!proxy->IsCancelled ())
+			return;
+
+		int newSize = Items_.size ();
+		if (newSize == size)
+			Items_.clear ();
+		else
 		{
-			int newSize = Items_.size ();
-			if (newSize == size)
-				Items_.clear ();
-			else
-			{
-				history_items_t newItems;
-				std::copy (Items_.begin (), Items_.begin () + newSize - size,
-						std::back_inserter (newItems));
-				Items_ = newItems;
-			}
+			history_items_t newItems;
+			std::copy (Items_.begin (), Items_.begin () + newSize - size,
+					std::back_inserter (newItems));
+			Items_ = newItems;
 		}
 	}
 
@@ -151,52 +147,43 @@ namespace Poshuku
 
 	void URLCompletionModel::Populate ()
 	{
-		if (!Valid_)
+		if (Valid_)
+			return;
+
+		Valid_ = true;
+
+		int size = Items_.size () - 1;
+		if (size > 0)
+			beginRemoveRows ({}, 0, size);
+		Items_.clear ();
+		if (size > 0)
+			endRemoveRows ();
+
+		if (Base_.startsWith ('!'))
 		{
-			Valid_ = true;
-
-			int size = Items_.size () - 1;
-			if (size > 0)
-				beginRemoveRows (QModelIndex (), 0, size);
-			Items_.clear ();
-			if (size > 0)
-				endRemoveRows ();
-
-			if (Base_.startsWith ('!'))
+			auto cats = Core::Instance ().GetProxy ()->GetSearchCategories ();
+			cats.sort ();
+			for (const auto& cat : cats)
+				Items_.push_back ({ cat, {}, "!" + cat });
+		}
+		else
+		{
+			try
 			{
-				QStringList cats = Core::Instance ()
-						.GetProxy ()->GetSearchCategories ();
-				cats.sort ();
-				Q_FOREACH (const QString& cat, cats)
-				{
-					HistoryItem item =
-					{
-						cat,
-						QDateTime (),
-						"!" + cat
-					};
-					Items_.push_back (item);;
-				}
+				Core::Instance ().GetStorageBackend ()->LoadResemblingHistory (Base_, Items_);
 			}
-			else
+			catch (const std::runtime_error& e)
 			{
-				try
-				{
-					Core::Instance ().GetStorageBackend ()->LoadResemblingHistory (Base_, Items_);
-				}
-				catch (const std::runtime_error& e)
-				{
-					qWarning () << Q_FUNC_INFO << e.what ();
-					Valid_ = false;
-				}
+				qWarning () << Q_FUNC_INFO << e.what ();
+				Valid_ = false;
 			}
+		}
 
-			size = Items_.size () - 1;
-			if (size >= 0)
-			{
-				beginInsertRows (QModelIndex (), 0, size);
-				endInsertRows ();
-			}
+		size = Items_.size () - 1;
+		if (size >= 0)
+		{
+			beginInsertRows ({}, 0, size);
+			endInsertRows ();
 		}
 	}
 }
