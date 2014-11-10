@@ -309,7 +309,7 @@ namespace TabSessManager
 		for (int i = 0; i < rootMgr->GetWindowsCount (); ++i)
 		{
 			const auto tabWidget = rootMgr->GetTabWidget (i);
-			for (int j = 0; j < tabWidget->WidgetCount (); ++j)
+			for (int j = tabWidget->WidgetCount () - 1; j >= 0; --j)
 			{
 				const auto tab = tabWidget->Widget (j);
 				const auto itw = qobject_cast<ITabWidget*> (tab);
