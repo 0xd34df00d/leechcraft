@@ -72,6 +72,7 @@ namespace TabSessManager
 
 		const auto loadAct = menu->addAction (tr ("Load"));
 		loadAct->setProperty ("ActionIcon", "edit-find-replace");
+		loadAct->setToolTip (tr ("Load the session, replacing all currently opened tabs."));
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, name] { emit loadRequested (name); },
@@ -82,6 +83,7 @@ namespace TabSessManager
 
 		const auto addAct = menu->addAction (tr ("Add"));
 		addAct->setProperty ("ActionIcon", "list-add");
+		loadAct->setToolTip (tr ("Add the tabs from the session to the currently open ones."));
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, name] { emit addRequested (name); },
@@ -92,6 +94,7 @@ namespace TabSessManager
 
 		const auto deleteAct = menu->addAction (tr ("Delete"));
 		deleteAct->setProperty ("ActionIcon", "list-remove");
+		deleteAct->setToolTip (tr ("Delete the session."));
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, name] { DeleteSession (name); },
