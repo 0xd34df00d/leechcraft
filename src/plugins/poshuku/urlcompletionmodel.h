@@ -27,12 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_URLCOMPLETIONMODEL_H
-#define PLUGINS_POSHUKU_URLCOMPLETIONMODEL_H
+#pragma once
+
 #include <QAbstractItemModel>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/iurlcompletionmodel.h>
 #include "historymodel.h"
+
+class QTimer;
 
 namespace LeechCraft
 {
@@ -44,9 +46,12 @@ namespace Poshuku
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Poshuku::IURLCompletionModel)
 
-		mutable bool Valid_;
+		mutable bool Valid_ = false;
 		mutable history_items_t Items_;
+
 		QString Base_;
+
+		QTimer * const ValidateTimer_;
 	public:
 		enum
 		{
@@ -65,6 +70,10 @@ namespace Poshuku
 		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 		void AddItem (const QString& title, const QString& url, size_t pos);
+	private:
+		void PopulateNonHook ();
+	private slots:
+		void validate ();
 	public slots:
 		void setBase (const QString&);
 		void handleItemAdded (const HistoryItem&);
@@ -74,10 +83,6 @@ namespace Poshuku
 				QObject *model,
 				const QString& string,
 				int historyItems);
-	private:
-		void Populate ();
 	};
 }
 }
-
-#endif

@@ -30,6 +30,8 @@
 #include "urlcompletionmodel.h"
 #include <stdexcept>
 #include <QUrl>
+#include <QTimer>
+#include <QApplication>
 #include <QtDebug>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
@@ -40,9 +42,14 @@ namespace LeechCraft
 namespace Poshuku
 {
 	URLCompletionModel::URLCompletionModel (QObject *parent)
-	: QAbstractItemModel (parent)
-	, Valid_ (false)
+	: QAbstractItemModel { parent }
+	, ValidateTimer_ { new QTimer { this } }
 	{
+		connect (ValidateTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (validate ()));
+		ValidateTimer_->setInterval (QApplication::keyboardInputInterval () / 2);
 	}
 
 	int URLCompletionModel::columnCount (const QModelIndex&) const
@@ -120,11 +127,17 @@ namespace Poshuku
 		Valid_ = false;
 		Base_ = str;
 
-		Populate ();
+		ValidateTimer_->stop ();
+		ValidateTimer_->start ();
+	}
+
+	void URLCompletionModel::validate ()
+	{
+		PopulateNonHook ();
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		int size = Items_.size ();
-		emit hookURLCompletionNewStringRequested (proxy, this, str, size);
+		emit hookURLCompletionNewStringRequested (proxy, this, Base_, size);
 		if (!proxy->IsCancelled ())
 			return;
 
@@ -145,7 +158,7 @@ namespace Poshuku
 		Valid_ = false;
 	}
 
-	void URLCompletionModel::Populate ()
+	void URLCompletionModel::PopulateNonHook ()
 	{
 		if (Valid_)
 			return;
