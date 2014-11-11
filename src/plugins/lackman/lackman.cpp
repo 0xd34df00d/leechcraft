@@ -183,8 +183,6 @@ namespace LackMan
 	{
 		Q_FOREACH (const auto& recInfo, infos)
 		{
-			qDebug () << Q_FUNC_INFO << recInfo.Data_;
-
 			if (recInfo.Data_ == "lackmantab")
 			{
 				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
