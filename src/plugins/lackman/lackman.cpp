@@ -140,7 +140,10 @@ namespace LackMan
 			connect (LackManTab_,
 					SIGNAL (removeTab (QWidget*)),
 					this,
-					SIGNAL (removeTab (QWidget*))),
+					SIGNAL (removeTab (QWidget*)));
+
+			for (const auto& pair : props)
+				LackManTab_->setProperty (pair.first, pair.second);
 
 			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
@@ -201,12 +204,7 @@ namespace LackMan
 	{
 		for (const auto& recInfo : infos)
 			if (recInfo.Data_ == "lackmantab")
-			{
-				for (const auto& pair : recInfo.DynProperties_)
-					setProperty (pair.first, pair.second);
-
-				TabOpenRequested (TabClass_.TabClass_);
-			}
+				TabOpenRequested (TabClass_.TabClass_, recInfo.DynProperties_);
 			else
 				qWarning () << Q_FUNC_INFO
 						<< "unknown context"
