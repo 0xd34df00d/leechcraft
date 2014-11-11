@@ -76,7 +76,7 @@ namespace LackMan
 
 		TabClassInfo TabClass_;
 
-		QPointer<LackManTab> LackManTab_;
+		LackManTab *LackManTab_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

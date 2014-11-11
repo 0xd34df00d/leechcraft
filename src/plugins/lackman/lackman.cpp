@@ -32,6 +32,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -132,6 +133,15 @@ namespace LackMan
 					SIGNAL (removeTab (QWidget*)),
 					this,
 					SIGNAL (removeTab (QWidget*))),
+
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[this] { LackManTab_ = nullptr; },
+				LackManTab_,
+				SIGNAL (removeTab (QWidget*)),
+				LackManTab_
+			};
+
 			emit addNewTab (GetName (), LackManTab_);
 			emit raiseTab (LackManTab_);
 		}
