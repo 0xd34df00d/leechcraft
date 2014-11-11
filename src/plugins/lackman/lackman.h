@@ -89,6 +89,8 @@ namespace LackMan
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 
+		void TabOpenRequested (const QByteArray&, const QList<QPair<QByteArray, QVariant>>&);
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
