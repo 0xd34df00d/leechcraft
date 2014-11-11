@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_LACKMAN_LACKMAN_H
-#define PLUGINS_LACKMAN_LACKMAN_H
+#pragma once
+
 #include <QWidget>
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -98,8 +98,6 @@ namespace LackMan
 		QMap<QString, ActionInfo> GetActionInfo () const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
-	private slots:
-		void openThis ();
 	signals:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
@@ -114,5 +112,3 @@ namespace LackMan
 	};
 }
 }
-
-#endif

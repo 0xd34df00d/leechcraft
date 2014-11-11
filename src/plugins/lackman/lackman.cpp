@@ -79,10 +79,13 @@ namespace LackMan
 	{
 		Core::Instance ().SecondInit ();
 
-		connect (&Core::Instance (),
-				SIGNAL (openLackmanRequested ()),
-				this,
-				SLOT (openThis ()));
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { TabOpenRequested (TabClass_.TabClass_); },
+			&Core::Instance (),
+			SIGNAL (openLackmanRequested ()),
+			this
+		};
 	}
 
 	void Plugin::Release ()
@@ -203,11 +206,6 @@ namespace LackMan
 				qWarning () << Q_FUNC_INFO
 						<< "unknown context"
 						<< recInfo.Data_;
-	}
-
-	void Plugin::openThis ()
-	{
-		TabOpenRequested (TabClass_.TabClass_);
 	}
 }
 }
