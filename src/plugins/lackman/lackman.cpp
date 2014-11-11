@@ -51,7 +51,7 @@ namespace LackMan
 		TabClass_.Description_ = GetInfo ();
 		TabClass_.Icon_ = GetIcon ();
 		TabClass_.Priority_ = 0;
-		TabClass_.Features_ = TabFeatures (TFSingle | TFByDefault | TFOpenableByRequest);
+		TabClass_.Features_ = TFSingle | TFByDefault | TFOpenableByRequest;
 
 		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
@@ -159,14 +159,14 @@ namespace LackMan
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 	{
 		if (entity.Mime_ != "x-leechcraft/package-manager-action")
-			return EntityTestHandleResult ();
+			return {};
 
 		return EntityTestHandleResult (EntityTestHandleResult::PIdeal);
 	}
 
 	void Plugin::Handle (Entity entity)
 	{
-		const QString& action = entity.Entity_.toString ();
+		const auto& action = entity.Entity_.toString ();
 		if (action == "ListPackages")
 		{
 			TabOpenRequested ("Lackman");
@@ -191,11 +191,10 @@ namespace LackMan
 
 	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
-		Q_FOREACH (const auto& recInfo, infos)
-		{
+		for (const auto& recInfo : infos)
 			if (recInfo.Data_ == "lackmantab")
 			{
-				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
+				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
 
 				TabOpenRequested (TabClass_.TabClass_);
@@ -204,7 +203,6 @@ namespace LackMan
 				qWarning () << Q_FUNC_INFO
 						<< "unknown context"
 						<< recInfo.Data_;
-		}
 	}
 
 	void Plugin::openThis ()
