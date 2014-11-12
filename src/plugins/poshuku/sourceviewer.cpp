@@ -72,7 +72,7 @@ namespace Poshuku
 		move (frect.topLeft ());
 		new HtmlHighlighter { Ui_.HtmlEdit_ };
 
-		Finder_ = new SourceFinder
+		const auto finder = new SourceFinder
 		{
 			Ui_.HtmlEdit_,
 			Core::Instance ().GetProxy ()
