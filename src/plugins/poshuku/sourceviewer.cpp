@@ -57,7 +57,7 @@ namespace Poshuku
 					tdFlags |= QTextDocument::FindCaseSensitively;
 				if (flags & FindBackwards)
 					tdFlags |= QTextDocument::FindWholeWords;
-				Edit_->find (text, tdFlags);
+				SetSuccessful (Edit_->find (text, tdFlags));
 			}
 		};
 	}
