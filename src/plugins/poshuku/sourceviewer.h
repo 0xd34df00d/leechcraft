@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_SOURCEVIEWER_H
-#define PLUGINS_POSHUKU_SOURCEVIEWER_H
+#pragma once
+
 #include <QMainWindow>
 #include "ui_sourceviewer.h"
 
@@ -43,9 +43,8 @@ namespace Poshuku
 		Ui::SourceViewer Ui_;
 	public:
 		SourceViewer (QWidget* = 0);
+
 		void SetHtml (const QString&);
 	};
 }
 }
-
-#endif

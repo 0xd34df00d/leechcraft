@@ -28,23 +28,23 @@
  **********************************************************************/
 
 #include "sourceviewer.h"
-#include "htmlhighlighter.h"
 #include <QDesktopWidget>
+#include "htmlhighlighter.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
 	SourceViewer::SourceViewer (QWidget *parent)
-	: QMainWindow (parent)
+	: QMainWindow { parent }
 	{
 		Ui_.setupUi (this);
-		QRect frect = frameGeometry ();
+		auto frect = frameGeometry ();
 		frect.moveCenter (QDesktopWidget ().availableGeometry ().center ());
 		move (frect.topLeft ());
-		new HtmlHighlighter (Ui_.HtmlEdit_);
+		new HtmlHighlighter { Ui_.HtmlEdit_ };
 	}
-	
+
 	void SourceViewer::SetHtml (const QString& html)
 	{
 		Ui_.HtmlEdit_->setPlainText (html);
