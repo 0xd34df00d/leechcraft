@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>SourceViewer</class>
- <widget class="QMainWindow" name="SourceViewer" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="SourceViewer">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,33 +10,33 @@
     <height>557</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Source viewer</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >
+  <property name="windowIcon">
+   <iconset resource="poshukuresources.qrc">
     <normaloff>:/resources/images/poshuku.svg</normaloff>:/resources/images/poshuku.svg</iconset>
   </property>
-  <widget class="QWidget" name="centralwidget" >
-   <layout class="QVBoxLayout" name="verticalLayout" >
+  <widget class="QWidget" name="CentralWidget_">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTextEdit" name="HtmlEdit_" />
+     <widget class="QTextEdit" name="HtmlEdit_"/>
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar" >
-   <property name="geometry" >
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>734</width>
-     <height>32</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
  </widget>
  <resources>
-  <include location="resources.qrc" />
+  <include location="poshukuresources.qrc"/>
  </resources>
  <connections/>
 </ui>
