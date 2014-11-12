@@ -375,8 +375,9 @@ namespace BitTorrent
 				if (file.size () > XmlSettingsManager::Instance ()->
 						property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
 				{
-					if (XmlSettingsManager::Instance ()->
-							property ("NotifyAboutTooBig").toBool ())
+					if (str.endsWith (".torrent", Qt::CaseInsensitive) &&
+							XmlSettingsManager::Instance ()->
+								property ("NotifyAboutTooBig").toBool ())
 					{
 						const QString text = tr ("Rejecting file %1 because it's "
 								"bigger than current auto limit.").arg (str);
