@@ -34,6 +34,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class FindNotification;
+}
+
 namespace Poshuku
 {
 	class SourceViewer : public QMainWindow
@@ -41,6 +46,7 @@ namespace Poshuku
 		Q_OBJECT
 
 		Ui::SourceViewer Ui_;
+		Util::FindNotification *Finder_;
 	public:
 		SourceViewer (QWidget* = 0);
 

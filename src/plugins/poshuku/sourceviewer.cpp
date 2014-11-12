@@ -29,20 +29,54 @@
 
 #include "sourceviewer.h"
 #include <QDesktopWidget>
+#include <util/gui/findnotification.h>
+#include <interfaces/core/icoreproxy.h>
 #include "htmlhighlighter.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
+	namespace
+	{
+		class SourceFinder : public Util::FindNotification
+		{
+			QTextEdit * const Edit_;
+		public:
+			SourceFinder (QTextEdit *edit, const ICoreProxy_ptr& proxy)
+			: FindNotification { proxy, edit }
+			, Edit_ { edit }
+			{
+			}
+		protected:
+			void handleNext (const QString& text, FindFlags flags)
+			{
+				QTextDocument::FindFlags tdFlags;
+				if (flags & FindCaseSensitively)
+					tdFlags |= QTextDocument::FindCaseSensitively;
+				if (flags & FindBackwards)
+					tdFlags |= QTextDocument::FindWholeWords;
+				Edit_->find (text, tdFlags);
+			}
+		};
+	}
+
 	SourceViewer::SourceViewer (QWidget *parent)
 	: QMainWindow { parent }
 	{
 		Ui_.setupUi (this);
+
 		auto frect = frameGeometry ();
 		frect.moveCenter (QDesktopWidget ().availableGeometry ().center ());
 		move (frect.topLeft ());
 		new HtmlHighlighter { Ui_.HtmlEdit_ };
+
+		Finder_ = new SourceFinder
+		{
+			Ui_.HtmlEdit_,
+			Core::Instance ().GetProxy ()
+		};
 	}
 
 	void SourceViewer::SetHtml (const QString& html)
