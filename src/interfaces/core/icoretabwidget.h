@@ -186,7 +186,7 @@ public:
 	 * @return previous widget.
 	 */
 	virtual QWidget* GetPreviousWidget () const = 0;
-
+protected:
 	/** @brief This signal is emitted after new tab was inserted.
 	 *
 	 * @param[out] index The index of new tab.
