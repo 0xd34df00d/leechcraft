@@ -264,6 +264,8 @@ namespace LMP
 
 	void Player::Enqueue (const QStringList& paths, EnqueueFlags flags)
 	{
+		UnsetRadio ();
+
 		QList<AudioSource> parsedSources;
 		for (const auto& path : paths)
 			parsedSources << AudioSource (path);
@@ -272,6 +274,8 @@ namespace LMP
 
 	void Player::Enqueue (const QList<AudioSource>& sources, EnqueueFlags flags)
 	{
+		UnsetRadio ();
+
 		if (CurrentQueue_.isEmpty ())
 			emit shouldClearFiltering ();
 
