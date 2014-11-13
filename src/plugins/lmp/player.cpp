@@ -353,10 +353,16 @@ namespace LMP
 			return;
 
 		Dequeue (GetIndexSources (index));
+
+		if (CurrentStation_)
+			UnsetRadio ();
 	}
 
 	void Player::Dequeue (const QList<AudioSource>& sources)
 	{
+		if (CurrentStation_)
+			UnsetRadio ();
+
 		for (const auto& source : sources)
 		{
 			Url2Info_.remove (source.ToUrl ());
