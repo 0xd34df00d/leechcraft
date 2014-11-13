@@ -52,12 +52,18 @@
      <property name="text">
       <string>Find</string>
      </property>
+     <property name="icon">
+      <iconset theme="edit-find"/>
+     </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="CloseButton_">
      <property name="text">
       <string>Close</string>
+     </property>
+     <property name="icon">
+      <iconset theme="window-close"/>
      </property>
     </widget>
    </item>
