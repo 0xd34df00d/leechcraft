@@ -85,7 +85,6 @@ namespace LMP
 		QList<AudioSource> CurrentOneShotQueue_;
 
 		Media::IRadioStation_ptr CurrentStation_;
-		QStandardItem *RadioItem_;
 		QHash<QUrl, MediaInfo> Url2Info_;
 
 		PlayerRulesManager * const RulesManager_;
@@ -121,6 +120,7 @@ namespace LMP
 			IsCurrent = Qt::UserRole + 1,
 			IsStop,
 			IsAlbum,
+			IsRadioItem,
 			Source,
 			Info,
 			AlbumArt,
@@ -189,6 +189,8 @@ namespace LMP
 		bool HandleCurrentStop (const AudioSource&);
 
 		void RemoveFromOneShotQueue (const AudioSource&);
+
+		QStandardItem* FindRadioItem () const;
 
 		void UnsetRadio ();
 

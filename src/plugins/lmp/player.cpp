@@ -124,7 +124,6 @@ namespace LMP
 	, Output_ (new Output (this))
 	, Path_ (new Path (Source_, Output_))
 	, PRG_ { QDateTime::currentDateTime ().toTime_t () }
-	, RadioItem_ (nullptr)
 	, RulesManager_ (new PlayerRulesManager (PlaylistModel_, this))
 	, FirstPlaylistRestore_ (true)
 	, PlayMode_ (PlayMode::Sequential)
@@ -554,9 +553,10 @@ namespace LMP
 		auto radioName = station->GetRadioName ();
 		if (radioName.isEmpty ())
 			radioName = tr ("Radio");
-		RadioItem_ = new QStandardItem (radioName);
-		RadioItem_->setEditable (false);
-		PlaylistModel_->appendRow (RadioItem_);
+		const auto radioItem = new QStandardItem (radioName);
+		radioItem->setEditable (false);
+		radioItem->setData (true, Role::IsRadioItem);
+		PlaylistModel_->appendRow (radioItem);
 	}
 
 	MediaInfo Player::GetCurrentMediaInfo () const
@@ -803,14 +803,25 @@ namespace LMP
 		Items_ [source]->setData ({}, Role::OneShotPos);
 	}
 
+	QStandardItem* Player::FindRadioItem () const
+	{
+		for (int i = 0; i < PlaylistModel_->rowCount (); ++i)
+		{
+			const auto item = PlaylistModel_->item (i);
+			if (item->data (Role::IsRadioItem).toBool ())
+				return item;
+		}
+
+		return nullptr;
+	}
+
 	void Player::UnsetRadio ()
 	{
 		if (!CurrentStation_)
 			return;
 
-		if (RadioItem_)
-			PlaylistModel_->removeRow (RadioItem_->row ());
-		RadioItem_ = 0;
+		if (const auto item = FindRadioItem ())
+			PlaylistModel_->removeRow (item->row ());
 
 		CurrentStation_.reset ();
 	}
@@ -992,8 +1003,7 @@ namespace LMP
 	{
 		if (CurrentStation_)
 		{
-			auto item = PlaylistModel_->itemFromIndex (index);
-			if (item == RadioItem_)
+			if (PlaylistModel_->itemFromIndex (index)->data (Role::IsRadioItem).toBool ())
 				return;
 			else
 				UnsetRadio ();
@@ -1449,7 +1459,7 @@ namespace LMP
 
 		QStandardItem *curItem = nullptr;
 		if (CurrentStation_)
-			curItem = RadioItem_;
+			curItem = FindRadioItem ();
 		else if (Items_.contains (source))
 			curItem = Items_ [source];
 
