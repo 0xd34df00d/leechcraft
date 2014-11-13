@@ -224,7 +224,7 @@
         <translation>Cycle</translation>
     </message>
     <message>
-        <location filename="../util/gui/findnotification.ui" line="60"/>
+        <location filename="../util/gui/findnotification.ui" line="63"/>
         <source>Close</source>
         <translation>Close</translation>
     </message>
@@ -682,67 +682,67 @@
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="74"/>
+        <location filename="pluginmanager.cpp" line="75"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="75"/>
+        <location filename="pluginmanager.cpp" line="76"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="280"/>
+        <location filename="pluginmanager.cpp" line="290"/>
         <source>The following plugins would also be disabled as the result:</source>
         <translation>The following plugins would also be disabled as the result:</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="282"/>
+        <location filename="pluginmanager.cpp" line="292"/>
         <source>Are you sure you want to disable this one?</source>
         <translation>Are you sure you want to disable this one?</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="342"/>
+        <location filename="pluginmanager.cpp" line="352"/>
         <source>Initializing %1: stage one...</source>
         <translation>Initializing %1: stage one...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="436"/>
+        <location filename="pluginmanager.cpp" line="446"/>
         <source>Initializing %1: stage two...</source>
         <translation>Initializing %1: stage two...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="750"/>
+        <location filename="pluginmanager.cpp" line="773"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Refusing to load plugin from %1 because it&apos;s not a file.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="764"/>
+        <location filename="pluginmanager.cpp" line="787"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
         <translation>Could not load plugin from %1: API level mismatch.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="778"/>
+        <location filename="pluginmanager.cpp" line="801"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>Could not load plugin from %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="798"/>
+        <location filename="pluginmanager.cpp" line="821"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance with exception %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="809"/>
+        <location filename="pluginmanager.cpp" line="832"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="819"/>
+        <location filename="pluginmanager.cpp" line="842"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="904"/>
+        <location filename="pluginmanager.cpp" line="927"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Plugin with ID %1 is already loaded from %2; aborting load from %3.</translation>
     </message>
@@ -1273,72 +1273,166 @@ If you have read and really understood all these letters, click Cancel button in
         <translation>unknown error</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="49"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="186"/>
         <source>File URL</source>
         <translation>File URL</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="50"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="187"/>
         <source>URL to the file being played.</source>
         <translation>URL to the file being played.</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="58"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="195"/>
         <source>Playback status</source>
         <translation>Playback status</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="59"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="196"/>
         <source>The status of the currently playing media file.</source>
         <translation>The status of the currently playing media file.</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="72"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="49"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="209"/>
         <source>Title metadata</source>
         <translation>Title metadata</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="73"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="50"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="210"/>
         <source>Title of the track being played.</source>
         <translation>Title of the track being played.</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="81"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="58"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="218"/>
         <source>Album metadata</source>
         <translation>Album metadata</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="82"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="59"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="219"/>
         <source>Album of the track being played.</source>
         <translation>Album of the track being played.</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="90"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="67"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="227"/>
         <source>Artist metadata</source>
         <translation>Artist metadata</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="91"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="68"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="228"/>
         <source>Artist of the track being played.</source>
         <translation>Artist of the track being played.</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="99"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="76"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="236"/>
         <source>Length metadata</source>
         <translation>Length metadata</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="100"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="77"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="237"/>
         <source>Length of the track being played.</source>
         <translation>Length of the track being played.</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="113"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="90"/>
+        <source>General activity</source>
+        <translation>General activity</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="91"/>
+        <source>General activity of the contact.</source>
+        <translation>General activity of the contact.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="99"/>
+        <source>Specific activity</source>
+        <translation>Specific activity</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="100"/>
+        <source>Specific activity of the contact within the given general activity.</source>
+        <translation>Specific activity of the contact within the given general activity.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="108"/>
+        <source>Activity text</source>
+        <translation>Activity text</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="109"/>
+        <source>The comment set by the contact.</source>
+        <translation>The comment set by the contact.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="122"/>
+        <source>Mood</source>
+        <translation>Mood</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="123"/>
+        <source>The mood of the contact.</source>
+        <translation>The mood of the contact.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="131"/>
+        <source>Mood explanation text</source>
+        <translation>Mood explanation text</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="132"/>
+        <source>The text accompanying the mood set by the contact.</source>
+        <translation>The text accompanying the mood set by the contact.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="145"/>
+        <source>Latitude</source>
+        <translation>Latitude</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="146"/>
+        <source>The latitude of the contact&apos;s current position.</source>
+        <translation>The latitude of the contact&apos;s current position.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="154"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="172"/>
+        <source>Longitude</source>
+        <translation>Longitude</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="155"/>
+        <source>The longitude of the contact&apos;s current position.</source>
+        <translation>The longitude of the contact&apos;s current position.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="163"/>
+        <source>Country</source>
+        <translation>Country</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="164"/>
+        <source>The country the contact is currently in.</source>
+        <translation>The country the contact is currently in.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="173"/>
+        <source>The the exact locality (like a city or a town) the contact is currently in.</source>
+        <translation>The the exact locality (like a city or a town) the contact is currently in.</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="250"/>
         <source>Terminal is active</source>
         <translation>Terminal is active</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="114"/>
+        <location filename="../util/xpc/stdanfields.cpp" line="251"/>
         <source>The terminal tab that caused the notification is active.</source>
         <translation>The terminal tab that caused the notification is active.</translation>
     </message>
@@ -1374,107 +1468,127 @@ If you have read and really understood all these letters, click Cancel button in
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="53"/>
-        <location filename="../util/xpc/anutil.cpp" line="154"/>
+        <location filename="../util/xpc/anutil.cpp" line="162"/>
         <source>Generic</source>
         <translation>Generic</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="128"/>
+        <location filename="../util/xpc/anutil.cpp" line="132"/>
         <source>Attention request</source>
         <translation>Attention request</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="129"/>
+        <location filename="../util/xpc/anutil.cpp" line="133"/>
         <source>Incoming file transfer request</source>
         <translation>Incoming file transfer request</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="130"/>
+        <location filename="../util/xpc/anutil.cpp" line="134"/>
         <source>Incoming chat message</source>
         <translation>Incoming chat message</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="131"/>
+        <location filename="../util/xpc/anutil.cpp" line="135"/>
         <source>MUC highlight</source>
         <translation>MUC highlight</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="132"/>
+        <location filename="../util/xpc/anutil.cpp" line="136"/>
         <source>MUC invitation</source>
         <translation>MUC invitation</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="133"/>
+        <location filename="../util/xpc/anutil.cpp" line="137"/>
         <source>General MUC message</source>
         <translation>General MUC message</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="134"/>
+        <location filename="../util/xpc/anutil.cpp" line="138"/>
         <source>Contact status change</source>
         <translation>Contact status change</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="135"/>
+        <location filename="../util/xpc/anutil.cpp" line="139"/>
         <source>Authorization granted</source>
         <translation>Authorization granted</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="136"/>
+        <location filename="../util/xpc/anutil.cpp" line="140"/>
         <source>Authorization revoked</source>
         <translation>Authorization revoked</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="137"/>
+        <location filename="../util/xpc/anutil.cpp" line="141"/>
         <source>Authorization requested</source>
         <translation>Authorization requested</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="138"/>
+        <location filename="../util/xpc/anutil.cpp" line="142"/>
         <source>Contact subscribed</source>
         <translation>Contact subscribed</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="139"/>
+        <location filename="../util/xpc/anutil.cpp" line="143"/>
         <source>Contact unsubscribed</source>
         <translation>Contact unsubscribed</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="141"/>
+        <location filename="../util/xpc/anutil.cpp" line="144"/>
+        <source>Contact&apos;s tune changed</source>
+        <translation>Contact&apos;s tune changed</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="145"/>
+        <source>Contact&apos;s mood changed</source>
+        <translation>Contact&apos;s mood changed</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="146"/>
+        <source>Contact&apos;s activity changed</source>
+        <translation>Contact&apos;s activity changed</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="147"/>
+        <source>Contact&apos;s location changed</source>
+        <translation>Contact&apos;s location changed</translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="149"/>
         <source>Event is due</source>
         <translation>Event is due</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="143"/>
+        <location filename="../util/xpc/anutil.cpp" line="151"/>
         <source>Download error</source>
         <translation>Download error</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="144"/>
+        <location filename="../util/xpc/anutil.cpp" line="152"/>
         <source>Download finished</source>
         <translation>Download finished</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="146"/>
+        <location filename="../util/xpc/anutil.cpp" line="154"/>
         <source>Package updated</source>
         <translation>Package updated</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="148"/>
+        <location filename="../util/xpc/anutil.cpp" line="156"/>
         <source>Media playback status changed</source>
         <translation>Media playback status changed</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="150"/>
+        <location filename="../util/xpc/anutil.cpp" line="158"/>
         <source>Bell in a terminal</source>
         <translation>Bell in a terminal</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="151"/>
+        <location filename="../util/xpc/anutil.cpp" line="159"/>
         <source>Activity in a terminal</source>
         <translation>Activity in a terminal</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="152"/>
+        <location filename="../util/xpc/anutil.cpp" line="160"/>
         <source>Inactivity in a terminal</source>
         <translation>Inactivity in a terminal</translation>
     </message>

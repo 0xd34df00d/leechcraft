@@ -1195,6 +1195,90 @@ LeechCraft для Windows — довольно экспериментальна�
         <source>Inactivity in a terminal</source>
         <translation>Отсутствие активности в терминале</translation>
     </message>
+    <message>
+        <source>General activity</source>
+        <translation>Общее занятие</translation>
+    </message>
+    <message>
+        <source>General activity of the contact.</source>
+        <translation>Общий тип занятий контакта.</translation>
+    </message>
+    <message>
+        <source>Specific activity</source>
+        <translation>Специфическое занятие</translation>
+    </message>
+    <message>
+        <source>Specific activity of the contact within the given general activity.</source>
+        <translation>Специфическое занятие контакта в рамках данного общего занятия.</translation>
+    </message>
+    <message>
+        <source>Activity text</source>
+        <translation>Текст занятия</translation>
+    </message>
+    <message>
+        <source>The comment set by the contact.</source>
+        <translation>Комментарий, установленный контактом.</translation>
+    </message>
+    <message>
+        <source>Mood</source>
+        <translation>Настроение</translation>
+    </message>
+    <message>
+        <source>The mood of the contact.</source>
+        <translation>Настроение контакта.</translation>
+    </message>
+    <message>
+        <source>Mood explanation text</source>
+        <translation>Пояснительный текст</translation>
+    </message>
+    <message>
+        <source>The text accompanying the mood set by the contact.</source>
+        <translation>Установленный контактом текст, поясняющий настроение.</translation>
+    </message>
+    <message>
+        <source>Latitude</source>
+        <translation>Широта</translation>
+    </message>
+    <message>
+        <source>The latitude of the contact&apos;s current position.</source>
+        <translation>Широта текущего местоположения контакта.</translation>
+    </message>
+    <message>
+        <source>Longitude</source>
+        <translation>Долгота</translation>
+    </message>
+    <message>
+        <source>The longitude of the contact&apos;s current position.</source>
+        <translation>Долгота текущего местоположения контакта.</translation>
+    </message>
+    <message>
+        <source>Country</source>
+        <translation>Страна</translation>
+    </message>
+    <message>
+        <source>The country the contact is currently in.</source>
+        <translation>Страна, в которой сейчас находится контакт.</translation>
+    </message>
+    <message>
+        <source>The the exact locality (like a city or a town) the contact is currently in.</source>
+        <translation>Конкретное место (вроде города или деревни), в котором сейчас находится контакт.</translation>
+    </message>
+    <message>
+        <source>Contact&apos;s tune changed</source>
+        <translation>Изменилась прослушиваемая контактом мелодия</translation>
+    </message>
+    <message>
+        <source>Contact&apos;s mood changed</source>
+        <translation>Изменилось настроение контакта</translation>
+    </message>
+    <message>
+        <source>Contact&apos;s activity changed</source>
+        <translation>Изменилось занятие контакта</translation>
+    </message>
+    <message>
+        <source>Contact&apos;s location changed</source>
+        <translation>Изменилось местоположение контакта</translation>
+    </message>
 </context>
 <context>
     <name>ShortcutManager</name>
