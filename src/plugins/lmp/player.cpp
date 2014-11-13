@@ -373,7 +373,7 @@ namespace LMP
 			{
 				if (parent->rowCount () == 1)
 				{
-					Q_FOREACH (const auto& key, AlbumRoots_.keys ())
+					for (const auto& key : AlbumRoots_.keys ())
 					{
 						auto& items = AlbumRoots_ [key];
 						if (!items.contains (parent))
@@ -768,12 +768,6 @@ namespace LMP
 
 		PlaylistModel_->setHorizontalHeaderLabels (QStringList (tr ("Playlist")));
 
-		std::function<QList<QPair<AudioSource, MediaInfo>> ()> worker =
-				[this, sources, sort] ()
-				{
-					return PairResolveSort (sources, Sorter_, sort);
-				};
-
 		emit playerAvailable (false);
 
 		auto watcher = new QFutureWatcher<QList<QPair<AudioSource, MediaInfo>>> ();
@@ -781,7 +775,8 @@ namespace LMP
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleSorted ()));
-		watcher->setFuture (QtConcurrent::run (worker));
+		watcher->setFuture (QtConcurrent::run ([this, sources, sort]
+					{ return PairResolveSort (sources, Sorter_, sort); }));
 	}
 
 	bool Player::HandleCurrentStop (const AudioSource& source)
@@ -1452,7 +1447,7 @@ namespace LMP
 	{
 		XmlSettingsManager::Instance ().setProperty ("LastSong", source.ToUrl ().toEncoded ());
 
-		QStandardItem *curItem = 0;
+		QStandardItem *curItem = nullptr;
 		if (CurrentStation_)
 			curItem = RadioItem_;
 		else if (Items_.contains (source))
