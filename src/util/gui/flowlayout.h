@@ -44,7 +44,7 @@ namespace Util
 	 *
 	 * @ingroup GuiUtil
 	 */
-	class UTIL_GUI_API FlowLayout : public QLayout
+	class UTIL_GUI_API FlowLayout final : public QLayout
 	{
 		QList<QLayoutItem*> ItemList_;
 		int HSpace_;
