@@ -43,7 +43,7 @@ namespace LeechCraft
 		 * destructed. Useful to automatically remove temporary files,
 		 * for example.
 		 */
-		class UTIL_SYS_API FileRemoveGuard : public QFile
+		class UTIL_SYS_API FileRemoveGuard final : public QFile
 		{
 		public:
 			/** @brief Constructs this file with the given path.
