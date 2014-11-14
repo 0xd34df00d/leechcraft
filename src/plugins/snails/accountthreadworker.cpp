@@ -906,7 +906,7 @@ namespace Snails
 			return;
 
 		const QByteArray& sid = origMsg->GetFolderID ();
-		auto folder = GetFolder (origMsg->GetFolders ().value (0), FolderMode::ReadWrite);
+		auto folder = GetFolder (origMsg->GetFolders ().value (0), FolderMode::ReadOnly);
 		if (!folder)
 			return;
 
