@@ -29,6 +29,7 @@
 
 #include "callmanager.h"
 #include <QFuture>
+#include <QElapsedTimer>
 #include <util/sll/futures.h>
 #include "toxthread.h"
 #include "util.h"
@@ -107,7 +108,6 @@ namespace Sarin
 				{
 					const auto perFrame = av_DefaultSettings.audio_frame_duration * av_DefaultSettings.audio_sample_rate * av_DefaultSettings.audio_channels / 1000;
 					const auto dataShift = perFrame * sizeof (int16_t);
-					//qDebug () << Q_FUNC_INFO << data.size () << perFrame;
 
 					int currentPos = 0;
 					for (; currentPos + dataShift < static_cast<uint> (data.size ()); currentPos += dataShift)
@@ -154,8 +154,6 @@ namespace Sarin
 								<< rc;
 						throw CallAnswerException { rc };
 					}
-
-					qDebug () << Q_FUNC_INFO << settings.audio_channels;
 
 					if ((rc = toxav_answer (ToxAv_.get (), callIdx, &settings)))
 					{
@@ -244,7 +242,6 @@ namespace Sarin
 
 	void CallManager::HandleAudio (int32_t call, int16_t *frames, int size)
 	{
-		qDebug () << Q_FUNC_INFO << call << size;
 		const QByteArray data { reinterpret_cast<char*> (frames), static_cast<int> (size * sizeof (int16_t)) };
 		emit gotFrame (call, data);
 	}
