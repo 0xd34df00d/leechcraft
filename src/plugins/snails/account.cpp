@@ -560,7 +560,6 @@ namespace Snails
 
 	void Account::getPassword (QString *outPass, Direction dir)
 	{
-		const auto& storeId = GetStoreID (dir);
 		*outPass = Util::GetPassword (GetStoreID (dir),
 				tr ("Enter password for account %1:")
 					.arg (GetName ()),
