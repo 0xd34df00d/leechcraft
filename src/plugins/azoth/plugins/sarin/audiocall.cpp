@@ -182,12 +182,12 @@ namespace Sarin
 
 	void AudioCall::MoveToActiveState (const ToxAvCSettings& settings)
 	{
-		emit stateChanged (SActive);
-
 		Device_ = std::make_shared<AudioCallDevice> (CallIdx_, CallMgr_);
 		Device_->open (QIODevice::ReadWrite);
 
 		Fmt_ = AvCSettings2Format (settings);
+
+		emit stateChanged (SActive);
 		emit audioModeChanged (QIODevice::ReadWrite);
 	}
 
