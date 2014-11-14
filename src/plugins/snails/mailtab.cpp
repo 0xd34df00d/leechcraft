@@ -834,7 +834,7 @@ namespace Snails
 		if (cur.data (MailModel::MailRole::ID).toByteArray () != msg->GetFolderID ())
 			return;
 
-		handleMailSelected ();
+		SetMessage (msg);
 	}
 }
 }
