@@ -41,10 +41,6 @@ namespace Snails
 		Ui_.BrowseToSync_->setMenu (new QMenu (tr ("Folders to sync")));
 		Ui_.OutgoingFolder_->addItem (QString ());
 
-		connect (Ui_.InType_,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (resetInPort ()));
 		connect (Ui_.InSecurityType_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
@@ -89,16 +85,6 @@ namespace Snails
 	void AccountConfigDialog::SetLogin (const QString& login)
 	{
 		Ui_.InLogin_->setText (login);
-	}
-
-	Account::InType AccountConfigDialog::GetInType () const
-	{
-		return static_cast<Account::InType> (Ui_.InType_->currentIndex ());
-	}
-
-	void AccountConfigDialog::SetInType (Account::InType type)
-	{
-		Ui_.InType_->setCurrentIndex (static_cast<int> (type));
 	}
 
 	QString AccountConfigDialog::GetInHost () const
@@ -234,26 +220,6 @@ namespace Snails
 		Ui_.SMTPAuthRequired_->setCheckState (smtp ? Qt::Checked : Qt::Unchecked);
 	}
 
-	bool AccountConfigDialog::GetAPOP () const
-	{
-		return Ui_.APOP_->checkState () == Qt::Checked;
-	}
-
-	void AccountConfigDialog::SetAPOP (bool apop)
-	{
-		Ui_.APOP_->setCheckState (apop ? Qt::Checked : Qt::Unchecked);
-	}
-
-	bool AccountConfigDialog::GetAPOPRequired () const
-	{
-		return Ui_.APOPRequired_->checkState () == Qt::Checked;
-	}
-
-	void AccountConfigDialog::SetAPOPRequired (bool req)
-	{
-		Ui_.APOPRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
-	}
-
 	void AccountConfigDialog::SetAllFolders (const QList<QStringList>& folders)
 	{
 		Q_FOREACH (const auto& f, folders)
@@ -309,17 +275,10 @@ namespace Snails
 
 	void AccountConfigDialog::resetInPort ()
 	{
-		QMap<Account::InType, QMap<int, int>> values;
-		values [Account::InType::IMAP] [0] = 465;
-		values [Account::InType::IMAP] [1] = 993;
-		values [Account::InType::IMAP] [2] = 143;
-		values [Account::InType::POP3] [0] = 995;
-		values [Account::InType::POP3] [1] = 110;
-		values [Account::InType::POP3] [2] = 110;
+		const QList<int> values { 465, 993, 143 };
 
-		const Account::InType selected = static_cast<Account::InType> (Ui_.InType_->currentIndex ());
 		const int pos = Ui_.InSecurityType_->currentIndex ();
-		Ui_.InPort_->setValue (values [selected] [pos]);
+		Ui_.InPort_->setValue (values.value (pos));
 	}
 
 	void AccountConfigDialog::rebuildFoldersToSyncLine ()

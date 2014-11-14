@@ -68,8 +68,6 @@ namespace Snails
 	, OutSecurity_ (SecurityType::SSL)
 	, OutSecurityRequired_ (false)
 	, SMTPNeedsAuth_ (true)
-	, APOP_ (false)
-	, APOPFail_ (false)
 	, FolderManager_ (new AccountFolderManager (this))
 	, FoldersModel_ (new FoldersModel (this))
 	, MailModelsManager_ (new MailModelsManager (this))
@@ -95,25 +93,7 @@ namespace Snails
 
 	QString Account::GetServer () const
 	{
-		return InType_ == InType::Maildir ?
-			QString () :
-			InHost_ + ':' + QString::number (InPort_);
-	}
-
-	QString Account::GetType () const
-	{
-		QMutexLocker l (GetMutex ());
-		switch (InType_)
-		{
-		case InType::IMAP:
-			return "IMAP";
-		case InType::POP3:
-			return "POP3";
-		case InType::Maildir:
-			return "Maildir";
-		default:
-			return "<unknown>";
-		}
+		return InHost_ + ':' + QString::number (InPort_);
 	}
 
 	AccountFolderManager* Account::GetFolderManager () const
@@ -242,7 +222,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (5);
+		out << static_cast<quint8> (1);
 		out << ID_
 			<< AccName_
 			<< Login_
@@ -254,14 +234,11 @@ namespace Snails
 			<< static_cast<qint8> (OutSecurity_)
 			<< OutSecurityRequired_
 			<< SMTPNeedsAuth_
-			<< APOP_
-			<< APOPFail_
 			<< InHost_
 			<< InPort_
 			<< OutHost_
 			<< OutPort_
 			<< OutLogin_
-			<< static_cast<quint8> (InType_)
 			<< static_cast<quint8> (OutType_)
 			<< UserName_
 			<< UserEmail_
@@ -276,10 +253,11 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version < 1 || version > 5)
+		if (version != 1)
 			throw std::runtime_error (qPrintable ("Unknown version " + QString::number (version)));
 
-		quint8 inType = 0, outType = 0;
+		quint8 outType = 0;
+		qint8 type = 0;
 
 		{
 			QMutexLocker l (GetMutex ());
@@ -288,49 +266,32 @@ namespace Snails
 				>> Login_
 				>> UseSASL_
 				>> SASLRequired_
-				>> UseTLS_;
+				>> UseTLS_
+				>> UseSSL_
+				>> InSecurityRequired_
+				>> type
+				>> OutSecurityRequired_;
 
-			if (version >= 4)
-				in >> UseSSL_;
-			else
-				UseSSL_ = !UseTLS_;
-
-			in >> InSecurityRequired_;
-
-			if (version >= 5)
-			{
-				qint8 type = 0;
-				in >> type
-					>> OutSecurityRequired_;
-				OutSecurity_ = static_cast<SecurityType> (type);
-			}
+			OutSecurity_ = static_cast<SecurityType> (type);
 
 			in >> SMTPNeedsAuth_
-				>> APOP_
-				>> APOPFail_
 				>> InHost_
 				>> InPort_
 				>> OutHost_
 				>> OutPort_
 				>> OutLogin_
-				>> inType
 				>> outType;
 
-			InType_ = static_cast<InType> (inType);
 			OutType_ = static_cast<OutType> (outType);
 
-			if (version >= 2)
-				in >> UserName_
-					>> UserEmail_;
+			in >> UserName_
+				>> UserEmail_;
 
-			if (version >= 3)
-			{
-				QByteArray fstate;
-				in >> fstate;
-				FolderManager_->Deserialize (fstate);
+			QByteArray fstate;
+			in >> fstate;
+			FolderManager_->Deserialize (fstate);
 
-				handleFoldersUpdated ();
-			}
+			handleFoldersUpdated ();
 		}
 	}
 
@@ -360,14 +321,11 @@ namespace Snails
 			dia->SetOutSecurityRequired (OutSecurityRequired_);
 
 			dia->SetSMTPAuth (SMTPNeedsAuth_);
-			dia->SetAPOP (APOP_);
-			dia->SetAPOPRequired (APOPFail_);
 			dia->SetInHost (InHost_);
 			dia->SetInPort (InPort_);
 			dia->SetOutHost (OutHost_);
 			dia->SetOutPort (OutPort_);
 			dia->SetOutLogin (OutLogin_);
-			dia->SetInType (InType_);
 			dia->SetOutType (OutType_);
 
 			const auto& folders = FolderManager_->GetFoldersPaths ();
@@ -414,14 +372,11 @@ namespace Snails
 			OutSecurityRequired_ = dia->GetOutSecurityRequired ();
 
 			SMTPNeedsAuth_ = dia->GetSMTPAuth ();
-			APOP_ = dia->GetAPOP ();
-			APOPFail_ = dia->GetAPOPRequired ();
 			InHost_ = dia->GetInHost ();
 			InPort_ = dia->GetInPort ();
 			OutHost_ = dia->GetOutHost ();
 			OutPort_ = dia->GetOutPort ();
 			OutLogin_ = dia->GetOutLogin ();
-			InType_ = dia->GetInType ();
 			OutType_ = dia->GetOutType ();
 
 			FolderManager_->ClearFolderFlags ();
@@ -461,32 +416,15 @@ namespace Snails
 	{
 		QMutexLocker l (GetMutex ());
 
-		QString result;
+		QString result { UseSSL_ ? "imaps://" : "imap://" };
+		result += Login_;
+		result += ":";
+		result.replace ('@', "%40");
 
-		switch (InType_)
-		{
-		case InType::IMAP:
-			result = UseSSL_ ? "imaps://" : "imap://";
-			break;
-		case InType::POP3:
-			result = "pop3://";
-			break;
-		case InType::Maildir:
-			result = "maildir://localhost";
-			break;
-		}
+		QString pass;
+		getPassword (&pass);
 
-		if (InType_ != InType::Maildir)
-		{
-			result += Login_;
-			result += ":";
-			result.replace ('@', "%40");
-
-			QString pass;
-			getPassword (&pass);
-
-			result += pass + '@';
-		}
+		result += pass + '@';
 
 		result += InHost_;
 

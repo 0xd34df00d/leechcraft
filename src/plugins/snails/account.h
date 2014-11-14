@@ -90,8 +90,6 @@ namespace Snails
 		bool OutSecurityRequired_;
 
 		bool SMTPNeedsAuth_;
-		bool APOP_;
-		bool APOPFail_;
 
 		QString InHost_;
 		int InPort_;
@@ -107,20 +105,12 @@ namespace Snails
 			Out
 		};
 
-		enum class InType
-		{
-			IMAP,
-			POP3,
-			Maildir
-		};
-
 		enum class OutType
 		{
 			SMTP,
 			Sendmail
 		};
 	private:
-		InType InType_;
 		OutType OutType_;
 
 		AccountFolderManager *FolderManager_;
@@ -133,7 +123,6 @@ namespace Snails
 		QByteArray GetID () const;
 		QString GetName () const;
 		QString GetServer () const;
-		QString GetType () const;
 
 		AccountFolderManager* GetFolderManager () const;
 		MailModelsManager* GetMailModelsManager () const;

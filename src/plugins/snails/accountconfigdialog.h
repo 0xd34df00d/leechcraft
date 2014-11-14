@@ -57,9 +57,6 @@ namespace Snails
 		QString GetLogin () const;
 		void SetLogin (const QString&);
 
-		Account::InType GetInType () const;
-		void SetInType (Account::InType);
-
 		QString GetInHost () const;
 		void SetInHost (const QString&);
 
@@ -98,12 +95,6 @@ namespace Snails
 
 		bool GetSMTPAuth () const;
 		void SetSMTPAuth (bool);
-
-		bool GetAPOP () const;
-		void SetAPOP (bool);
-
-		bool GetAPOPRequired () const;
-		void SetAPOPRequired (bool);
 
 		void SetAllFolders (const QList<QStringList>&);
 
