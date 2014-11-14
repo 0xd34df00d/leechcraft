@@ -69,8 +69,8 @@ namespace Media
 
 	/** @brief Pending biography request handle.
 	 *
-	 * Interface to a pending biography search in an IArtistBioFetcher. A
-	 * descendant of this class is returned from the
+	 * Interface to a pending biography search in an IArtistBioFetcher.
+	 * An object implementing this interface is returned from the
 	 * IArtistBioFetcher::RequestArtistBio() method and is used to track
 	 * the status of biography requests.
 	 *
@@ -82,7 +82,7 @@ namespace Media
 	 * <code>QObject::deleteLater()</code>, for example) after ready() or
 	 * error() signal is emitted. Thus the calling code should never
 	 * delete it explicitly, neither it should use this object after
-	 * ready() or error() signals or connect to this signals via
+	 * ready() or error() signals or connect to its signals via
 	 * <code>Qt::QueuedConnection</code>.
 	 *
 	 * @sa IArtistBioFetcher
