@@ -38,7 +38,7 @@ namespace Snails
 	class MailTreeDelegate : public QStyledItemDelegate
 	{
 	public:
-		MailTreeDelegate (QObject* = 0);
+		MailTreeDelegate (QObject* = nullptr);
 
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 	};

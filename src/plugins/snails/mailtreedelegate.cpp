@@ -37,7 +37,7 @@ namespace LeechCraft
 namespace Snails
 {
 	MailTreeDelegate::MailTreeDelegate (QObject *parent)
-	: QStyledItemDelegate (parent)
+	: QStyledItemDelegate { parent }
 	{
 	}
 
@@ -46,7 +46,7 @@ namespace Snails
 	{
 		const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
 
-		QStyleOptionViewItemV4 item = stockItem;
+		QStyleOptionViewItemV4 item { stockItem };
 		if (!isRead)
 			item.font.setBold (true);
 		QStyledItemDelegate::paint (painter, item, index);
