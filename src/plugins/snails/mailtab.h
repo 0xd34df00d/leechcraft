@@ -85,6 +85,8 @@ namespace Snails
 
 		void SetMsgActionsEnabled (bool);
 		QList<Folder> GetActualFolders () const;
+
+		void SetMessage (const Message_ptr&);
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);

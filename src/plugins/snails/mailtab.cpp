@@ -290,56 +290,6 @@ namespace Snails
 		return folders;
 	}
 
-	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
-	{
-		if (CurrAcc_)
-		{
-			disconnect (CurrAcc_.get (),
-					0,
-					this,
-					0);
-			disconnect (CurrAcc_->GetFolderManager (),
-					0,
-					this,
-					0);
-
-			MailSortFilterModel_->setSourceModel (nullptr);
-			MailModel_.reset ();
-			CurrAcc_.reset ();
-
-			rebuildOpsToFolders ();
-		}
-
-		CurrAcc_ = Core::Instance ().GetAccount (idx);
-		if (!CurrAcc_)
-			return;
-
-		connect (CurrAcc_.get (),
-				SIGNAL (messageBodyFetched (Message_ptr)),
-				this,
-				SLOT (handleMessageBodyFetched (Message_ptr)));
-
-		MailModel_.reset (CurrAcc_->GetMailModelsManager ()->CreateModel ());
-		MailSortFilterModel_->setSourceModel (MailModel_.get ());
-		MailSortFilterModel_->setDynamicSortFilter (true);
-
-		if (Ui_.TagsTree_->selectionModel ())
-			Ui_.TagsTree_->selectionModel ()->deleteLater ();
-		Ui_.TagsTree_->setModel (CurrAcc_->GetFoldersModel ());
-
-		connect (Ui_.TagsTree_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleCurrentTagChanged (QModelIndex)));
-
-		const auto fm = CurrAcc_->GetFolderManager ();
-		connect (fm,
-				SIGNAL (foldersUpdated ()),
-				this,
-				SLOT (rebuildOpsToFolders ()));
-		rebuildOpsToFolders ();
-	}
-
 	namespace
 	{
 		QString HTMLize (const QList<QPair<QString, QString>>& adds)
@@ -369,20 +319,7 @@ namespace Snails
 
 			return result.join (", ");
 		}
-	}
 
-	void MailTab::handleCurrentTagChanged (const QModelIndex& sidx)
-	{
-		const auto& folder = sidx.data (FoldersModel::Role::FolderPath).toStringList ();
-		CurrAcc_->GetMailModelsManager ()->ShowFolder (folder, MailModel_.get ());
-		Ui_.MailTree_->setCurrentIndex ({});
-
-		handleMailSelected ();
-		rebuildOpsToFolders ();
-	}
-
-	namespace
-	{
 		QString GetStyle ()
 		{
 			const auto& palette = qApp->palette ();
@@ -541,6 +478,86 @@ namespace Snails
 		}
 	}
 
+	void MailTab::SetMessage (const Message_ptr& msg)
+	{
+		const auto& html = ToHtml (msg);
+
+		Ui_.MailView_->setHtml (html);
+
+		MsgAttachments_->clear ();
+		MsgAttachmentsButton_->setEnabled (!msg->GetAttachments ().isEmpty ());
+		for (const auto& att : msg->GetAttachments ())
+		{
+			const auto& name = att.GetName () + " (" + Util::MakePrettySize (att.GetSize ()) + ")";
+			const auto act = MsgAttachments_->addAction (name,
+					this,
+					SLOT (handleAttachment ()));
+			act->setProperty ("Snails/MsgId", msg->GetFolderID ());
+			act->setProperty ("Snails/AttName", att.GetName ());
+			act->setProperty ("Snails/Folder", msg->GetFolders ().value (0));
+		}
+	}
+
+	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
+	{
+		if (CurrAcc_)
+		{
+			disconnect (CurrAcc_.get (),
+					0,
+					this,
+					0);
+			disconnect (CurrAcc_->GetFolderManager (),
+					0,
+					this,
+					0);
+
+			MailSortFilterModel_->setSourceModel (nullptr);
+			MailModel_.reset ();
+			CurrAcc_.reset ();
+
+			rebuildOpsToFolders ();
+		}
+
+		CurrAcc_ = Core::Instance ().GetAccount (idx);
+		if (!CurrAcc_)
+			return;
+
+		connect (CurrAcc_.get (),
+				SIGNAL (messageBodyFetched (Message_ptr)),
+				this,
+				SLOT (handleMessageBodyFetched (Message_ptr)));
+
+		MailModel_.reset (CurrAcc_->GetMailModelsManager ()->CreateModel ());
+		MailSortFilterModel_->setSourceModel (MailModel_.get ());
+		MailSortFilterModel_->setDynamicSortFilter (true);
+
+		if (Ui_.TagsTree_->selectionModel ())
+			Ui_.TagsTree_->selectionModel ()->deleteLater ();
+		Ui_.TagsTree_->setModel (CurrAcc_->GetFoldersModel ());
+
+		connect (Ui_.TagsTree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleCurrentTagChanged (QModelIndex)));
+
+		const auto fm = CurrAcc_->GetFolderManager ();
+		connect (fm,
+				SIGNAL (foldersUpdated ()),
+				this,
+				SLOT (rebuildOpsToFolders ()));
+		rebuildOpsToFolders ();
+	}
+
+	void MailTab::handleCurrentTagChanged (const QModelIndex& sidx)
+	{
+		const auto& folder = sidx.data (FoldersModel::Role::FolderPath).toStringList ();
+		CurrAcc_->GetMailModelsManager ()->ShowFolder (folder, MailModel_.get ());
+		Ui_.MailTree_->setCurrentIndex ({});
+
+		handleMailSelected ();
+		rebuildOpsToFolders ();
+	}
+
 	void MailTab::handleMailSelected ()
 	{
 		if (!CurrAcc_)
@@ -592,22 +609,7 @@ namespace Snails
 		else if (!msg->IsRead ())
 			CurrAcc_->SetReadStatus (true, { id }, folder);
 
-		const auto& html = ToHtml (msg);
-
-		Ui_.MailView_->setHtml (html);
-
-		MsgAttachments_->clear ();
-		MsgAttachmentsButton_->setEnabled (!msg->GetAttachments ().isEmpty ());
-		for (const auto& att : msg->GetAttachments ())
-		{
-			const auto& name = att.GetName () + " (" + Util::MakePrettySize (att.GetSize ()) + ")";
-			const auto act = MsgAttachments_->addAction (name,
-					this,
-					SLOT (handleAttachment ()));
-			act->setProperty ("Snails/MsgId", id);
-			act->setProperty ("Snails/AttName", att.GetName ());
-			act->setProperty ("Snails/Folder", folder);
-		}
+		SetMessage (msg);
 
 		CurrMsg_ = msg;
 	}
@@ -828,7 +830,7 @@ namespace Snails
 
 	void MailTab::handleMessageBodyFetched (Message_ptr msg)
 	{
-		const QModelIndex& cur = Ui_.MailTree_->currentIndex ();
+		const auto& cur = Ui_.MailTree_->currentIndex ();
 		if (cur.data (MailModel::MailRole::ID).toByteArray () != msg->GetFolderID ())
 			return;
 
