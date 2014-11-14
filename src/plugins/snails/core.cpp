@@ -83,7 +83,7 @@ namespace Snails
 		qRegisterMetaTypeStreamOperators<Folder> ();
 		qRegisterMetaTypeStreamOperators<QList<Folder>> ();
 
-		AccountsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Server"), tr ("Type") });
+		AccountsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Server") });
 
 		new Util::DelayedExecutor
 		{
@@ -177,7 +177,6 @@ namespace Snails
 		QList<QStandardItem*> row;
 		row << new QStandardItem (account->GetName ());
 		row << new QStandardItem (account->GetServer ());
-		row << new QStandardItem (account->GetType ());
 		AccountsModel_->appendRow (row);
 
 		ProgressManager_->AddAccount (account.get ());
