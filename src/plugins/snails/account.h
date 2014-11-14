@@ -72,8 +72,8 @@ namespace Snails
 		QString UserEmail_;
 
 		QString Login_;
-		bool UseSASL_;
-		bool SASLRequired_;
+		bool UseSASL_ = false;
+		bool SASLRequired_ = false;
 	public:
 		enum class SecurityType
 		{
@@ -82,14 +82,14 @@ namespace Snails
 			No
 		};
 	private:
-		bool UseTLS_;
-		bool UseSSL_;
-		bool InSecurityRequired_;
+		bool UseTLS_ = true;
+		bool UseSSL_ = false;
+		bool InSecurityRequired_ = false;
 
-		SecurityType OutSecurity_;
-		bool OutSecurityRequired_;
+		SecurityType OutSecurity_ = SecurityType::SSL;
+		bool OutSecurityRequired_ = false;
 
-		bool SMTPNeedsAuth_;
+		bool SMTPNeedsAuth_ = true;
 
 		QString InHost_;
 		int InPort_;
