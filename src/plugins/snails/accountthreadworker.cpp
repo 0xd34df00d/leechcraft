@@ -518,45 +518,6 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::FetchMessagesPOP3 ()
-	{
-		auto store = MakeStore ();
-		auto folder = store->getDefaultFolder ();
-		folder->open (vmime::net::folder::MODE_READ_WRITE);
-
-		auto messages = folder->getMessages (vmime::net::messageSet::byNumber (1, -1));
-		if (!messages.size ())
-			return;
-
-		qDebug () << "know about" << messages.size () << "messages";
-		auto desiredFlags = vmime::net::fetchAttributes::FLAGS |
-					vmime::net::fetchAttributes::SIZE |
-					vmime::net::fetchAttributes::UID |
-					vmime::net::fetchAttributes::ENVELOPE;
-		desiredFlags &= folder->getFetchCapabilities ();
-
-		qDebug () << "folder supports" << folder->getFetchCapabilities ()
-				<< "so we gonna fetch" << desiredFlags;
-
-		try
-		{
-			auto context = tr ("Fetching headers for %1")
-					.arg (A_->GetName ());
-			folder->fetchMessages (messages,
-					desiredFlags, MkPgListener (context));
-		}
-		catch (const vmime::exceptions::operation_not_supported& ons)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "fetch operation not supported:"
-					<< ons.what ();
-			return;
-		}
-
-		const auto& newMessages = FetchFullMessages (messages);
-		emit gotMsgHeaders (newMessages, { "INBOX" });
-	}
-
 	void AccountThreadWorker::FetchMessagesIMAP (const QList<QStringList>& origFolders,
 			const QByteArray& last)
 	{
@@ -896,21 +857,9 @@ namespace Snails
 
 	void AccountThreadWorker::synchronize (const QList<QStringList>& folders, const QByteArray& last)
 	{
-		switch (A_->InType_)
-		{
-		case Account::InType::POP3:
-			FetchMessagesPOP3 ();
-			break;
-		case Account::InType::IMAP:
-		{
-			const auto& store = MakeStore ();
-			SyncIMAPFolders (store);
-			FetchMessagesIMAP (folders, last);
-			break;
-		}
-		case Account::InType::Maildir:
-			break;
-		}
+		const auto& store = MakeStore ();
+		SyncIMAPFolders (store);
+		FetchMessagesIMAP (folders, last);
 	}
 
 	void AccountThreadWorker::getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot)
@@ -929,9 +878,6 @@ namespace Snails
 
 	void AccountThreadWorker::setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folderPath)
 	{
-		if (A_->InType_ == Account::InType::POP3)
-			return;
-
 		const auto& folder = GetFolder (folderPath, FolderMode::ReadWrite);
 		if (!folder)
 			return;
@@ -957,9 +903,6 @@ namespace Snails
 	void AccountThreadWorker::fetchWholeMessage (Message_ptr origMsg)
 	{
 		if (!origMsg)
-			return;
-
-		if (A_->InType_ == Account::InType::POP3)
 			return;
 
 		const QByteArray& sid = origMsg->GetFolderID ();
@@ -1013,9 +956,6 @@ namespace Snails
 	void AccountThreadWorker::fetchAttachment (Message_ptr msg,
 			const QString& attName, const QString& path)
 	{
-		if (A_->InType_ == Account::InType::POP3)
-			return;
-
 		const auto& msgId = msg->GetFolderID ();
 
 		const auto& folder = GetFolder (msg->GetFolders ().value (0), FolderMode::ReadWrite);
