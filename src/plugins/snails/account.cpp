@@ -289,64 +289,64 @@ namespace Snails
 
 	void Account::OpenConfigDialog ()
 	{
-		std::unique_ptr<AccountConfigDialog> dia (new AccountConfigDialog);
+		AccountConfigDialog dia;
 
 		{
 			QMutexLocker l (GetMutex ());
-			dia->SetName (AccName_);
-			dia->SetUserName (UserName_);
-			dia->SetUserEmail (UserEmail_);
-			dia->SetLogin (Login_);
-			dia->SetUseSASL (UseSASL_);
-			dia->SetSASLRequired (SASLRequired_);
+			dia.SetName (AccName_);
+			dia.SetUserName (UserName_);
+			dia.SetUserEmail (UserEmail_);
+			dia.SetLogin (Login_);
+			dia.SetUseSASL (UseSASL_);
+			dia.SetSASLRequired (SASLRequired_);
 
 			if (UseSSL_)
-				dia->SetInSecurity (SecurityType::SSL);
+				dia.SetInSecurity (SecurityType::SSL);
 			else if (UseTLS_)
-				dia->SetInSecurity (SecurityType::TLS);
+				dia.SetInSecurity (SecurityType::TLS);
 			else
-				dia->SetInSecurity (SecurityType::No);
+				dia.SetInSecurity (SecurityType::No);
 
-			dia->SetInSecurityRequired (InSecurityRequired_);
+			dia.SetInSecurityRequired (InSecurityRequired_);
 
-			dia->SetOutSecurity (OutSecurity_);
-			dia->SetOutSecurityRequired (OutSecurityRequired_);
+			dia.SetOutSecurity (OutSecurity_);
+			dia.SetOutSecurityRequired (OutSecurityRequired_);
 
-			dia->SetSMTPAuth (SMTPNeedsAuth_);
-			dia->SetInHost (InHost_);
-			dia->SetInPort (InPort_);
-			dia->SetOutHost (OutHost_);
-			dia->SetOutPort (OutPort_);
-			dia->SetOutLogin (OutLogin_);
-			dia->SetOutType (OutType_);
+			dia.SetSMTPAuth (SMTPNeedsAuth_);
+			dia.SetInHost (InHost_);
+			dia.SetInPort (InPort_);
+			dia.SetOutHost (OutHost_);
+			dia.SetOutPort (OutPort_);
+			dia.SetOutLogin (OutLogin_);
+			dia.SetOutType (OutType_);
 
 			const auto& folders = FolderManager_->GetFoldersPaths ();
-			dia->SetAllFolders (folders);
+			dia.SetAllFolders (folders);
 			const auto& toSync = FolderManager_->GetSyncFolders ();
 			for (const auto& folder : folders)
 			{
 				const auto flags = FolderManager_->GetFolderFlags (folder);
 				if (flags & AccountFolderManager::FolderOutgoing)
-					dia->SetOutFolder (folder);
+					dia.SetOutFolder (folder);
 			}
-			dia->SetFoldersToSync (toSync);
+			dia.SetFoldersToSync (toSync);
 		}
 
-		if (dia->exec () != QDialog::Accepted)
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		{
 			QMutexLocker l (GetMutex ());
-			AccName_ = dia->GetName ();
-			UserName_ = dia->GetUserName ();
-			UserEmail_ = dia->GetUserEmail ();
-			Login_ = dia->GetLogin ();
-			UseSASL_ = dia->GetUseSASL ();
-			SASLRequired_ = dia->GetSASLRequired ();
+			AccName_ = dia.GetName ();
+			UserName_ = dia.GetUserName ();
+			UserEmail_ = dia.GetUserEmail ();
+			Login_ = dia.GetLogin ();
+			UseSASL_ = dia.GetUseSASL ();
+			SASLRequired_ = dia.GetSASLRequired ();
 
 			UseSSL_ = false;
 			UseTLS_ = false;
-			switch (dia->GetInSecurity ())
+			switch (dia.GetInSecurity ())
 			{
 			case SecurityType::SSL:
 				UseSSL_ = true;
@@ -358,25 +358,25 @@ namespace Snails
 				break;
 			}
 
-			InSecurityRequired_ = dia->GetInSecurityRequired ();
+			InSecurityRequired_ = dia.GetInSecurityRequired ();
 
-			OutSecurity_ = dia->GetOutSecurity ();
-			OutSecurityRequired_ = dia->GetOutSecurityRequired ();
+			OutSecurity_ = dia.GetOutSecurity ();
+			OutSecurityRequired_ = dia.GetOutSecurityRequired ();
 
-			SMTPNeedsAuth_ = dia->GetSMTPAuth ();
-			InHost_ = dia->GetInHost ();
-			InPort_ = dia->GetInPort ();
-			OutHost_ = dia->GetOutHost ();
-			OutPort_ = dia->GetOutPort ();
-			OutLogin_ = dia->GetOutLogin ();
-			OutType_ = dia->GetOutType ();
+			SMTPNeedsAuth_ = dia.GetSMTPAuth ();
+			InHost_ = dia.GetInHost ();
+			InPort_ = dia.GetInPort ();
+			OutHost_ = dia.GetOutHost ();
+			OutPort_ = dia.GetOutPort ();
+			OutLogin_ = dia.GetOutLogin ();
+			OutType_ = dia.GetOutType ();
 
 			FolderManager_->ClearFolderFlags ();
-			const auto& out = dia->GetOutFolder ();
+			const auto& out = dia.GetOutFolder ();
 			if (!out.isEmpty ())
 				FolderManager_->AppendFolderFlags (out, AccountFolderManager::FolderOutgoing);
 
-			Q_FOREACH (const auto& sync, dia->GetFoldersToSync ())
+			for (const auto& sync : dia.GetFoldersToSync ())
 				FolderManager_->AppendFolderFlags (sync, AccountFolderManager::FolderSyncable);
 		}
 
