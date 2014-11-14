@@ -567,9 +567,14 @@ namespace Snails
 			return;
 		}
 
-		const auto& sidx = Ui_.MailTree_->currentIndex ();
+		const auto& folder = MailModel_->GetCurrentFolder ();
+
+		if (CurrMsg_ && !CurrMsg_->IsRead ())
+			CurrAcc_->SetReadStatus (true, { CurrMsg_->GetFolderID () }, folder);
 
 		CurrMsg_.reset ();
+
+		const auto& sidx = Ui_.MailTree_->currentIndex ();
 
 		if (!sidx.isValid () ||
 				!Ui_.MailTree_->selectionModel ()->selectedIndexes ().contains (sidx))
@@ -581,7 +586,6 @@ namespace Snails
 
 		const auto& idx = MailSortFilterModel_->mapToSource (sidx);
 		const auto& id = idx.sibling (idx.row (), 0).data (MailModel::MailRole::ID).toByteArray ();
-		const auto& folder = MailModel_->GetCurrentFolder ();
 
 		Message_ptr msg;
 		try
@@ -606,8 +610,6 @@ namespace Snails
 
 		if (!msg->IsFullyFetched ())
 			CurrAcc_->FetchWholeMessage (msg);
-		else if (!msg->IsRead ())
-			CurrAcc_->SetReadStatus (true, { id }, folder);
 
 		SetMessage (msg);
 
