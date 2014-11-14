@@ -67,21 +67,116 @@ namespace Media
 		return qHash (info.Album_.toUtf8 () + '\0' + info.Artist_.toUtf8 ());
 	}
 
-	/** @TODO
+	/** @brief Pending album art search handle.
+	 *
+	 * Interface for a pending album art search in an IAlbumArtProvider.
+	 * An object implementing this interface is returned from
+	 * IAlbumArtProvider::RequestAlbumArt() method and is used to track
+	 * the status of album art requests.
+	 *
+	 * This class has some signals (ready() and urlsReady()), and the
+	 * GetQObject() method can be used to get an object of this class as
+	 * a QObject to connect to those signals.
+	 *
+	 * The urlsReady() signal is emitted as soon as the URLs of the
+	 * album images are fetched, and then the user of this object can
+	 * either wait for the convenience ready() signal after which the
+	 * object would be destroyed, or delete the object himself.
+	 *
+	 * @note The object of this class should schedule its deletion (via
+	 * <code>QObject::deleteLater()</code>, for example) after the ready()
+	 * signal is emitted. Thus the calling code should never delete it
+	 * explicitly after this signal, neither it should use this object
+	 * after ready() signal or connect to its signals via
+	 * <code>Qt::QueuedConnection</code>.
+	 *
+	 * @sa IAlbumArtProvider
 	 */
 	class IPendingAlbumArt
 	{
 	public:
 		virtual ~IPendingAlbumArt () {}
 
+		/** @brief Returns this object as a QObject.
+		 *
+		 * This function can be used to connect to the signals of this
+		 * class.
+		 *
+		 * @return This object as a QObject.
+		 */
 		virtual QObject* GetQObject () = 0;
 
+		/** @brief Returns the information about the album.
+		 *
+		 * The returned object is invalid if called before the urlsReady()
+		 * signal is emitted.
+		 *
+		 * @return The information about the album.
+		 *
+		 * @sa urlsReady()
+		 * @sa ready()
+		 */
 		virtual AlbumInfo GetAlbumInfo () const = 0;
+
+		/** @brief Returns the fetched cover art for the album.
+		 *
+		 * The returned list is empty if called before the ready() signal
+		 * is emitted.
+		 *
+		 * @return The list of fetched cover art corresponding to this
+		 * album.
+		 *
+		 * @sa ready()
+		 */
 		virtual QList<QImage> GetImages () const = 0;
+
+		/** @brief Returns the URLs of the covert art for the album.
+		 *
+		 * The returned list is empty if called before the urlsReady()
+		 * signal is emitted.
+		 *
+		 * @return The list of covert art images URLs corresponding to
+		 * this album.
+		 */
 		virtual QList<QUrl> GetImageUrls () const = 0;
 	protected:
-		virtual void ready (const AlbumInfo&, const QList<QImage>&) = 0;
-		virtual void urlsReady (const AlbumInfo&, const QList<QUrl>&) = 0;
+		/** @brief Emitted when the album info and the cover art is ready
+		 * and fetched.
+		 *
+		 * The object will be invalid after this signal is emitted and
+		 * the event loop is run.
+		 *
+		 * If you only need the URLs of the images but not the images
+		 * themselves (like if you will show the images by URLs in a QML
+		 * view), consider deleting this object after urlsReady() signal
+		 * instead of waiting for this signal.
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] info The information about the album.
+		 * @param[out] images The images corresponding to this album.
+		 *
+		 * @sa urlsReady()
+		 */
+		virtual void ready (const AlbumInfo& info, const QList<QImage>& images) = 0;
+
+		/** @brief Emitted when the album info and the URLs of cover art
+		 * are ready.
+		 *
+		 * After emitting this signal the object will start fetching the
+		 * images at the given \em urls and emit ready() after fetching
+		 * them. If the images themselves are not required, some bandwidth
+		 * and CPU cycles can be saved by deleting the object in a slot
+		 * connected to this signal.
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] info The information about the album.
+		 * @param[out] urls The cover art corresponding to this album.
+		 *
+		 * @sa ready()
+		 */
+		virtual void urlsReady (const AlbumInfo& info, const QList<QUrl>& urls) = 0;
 	};
 
 	/** @brief Interface for plugins that can search for album art.
