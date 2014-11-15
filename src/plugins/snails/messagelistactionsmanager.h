@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include "messagelistactioninfo.h"
 
@@ -36,9 +37,13 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class MessageListActionsProvider;
+
 	class MessageListActionsManager : public QObject
 	{
 		Q_OBJECT
+
+		QList<std::shared_ptr<MessageListActionsProvider>> Providers_;
 	public:
 		MessageListActionsManager (QObject* = nullptr);
 

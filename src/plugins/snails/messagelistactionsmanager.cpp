@@ -29,19 +29,30 @@
 
 #include "messagelistactionsmanager.h"
 #include <QtDebug>
+#include "message.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
+	class MessageListActionsProvider
+	{
+	public:
+		virtual QList<MessageListActionInfo> GetMessageActions (const Message_ptr&) const = 0;
+	};
+
 	MessageListActionsManager::MessageListActionsManager (QObject *parent)
 	: QObject { parent }
 	{
+		Providers_ << std::make_shared<BugzillaProvider> ();
 	}
 
-	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const Message_ptr&) const
+	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const Message_ptr& msg) const
 	{
-		return { { tr ("Open"), QIcon::fromTheme ("document-open"), [] (const Message_ptr&) { qDebug () << "woohoo"; } } };
+		QList<MessageListActionInfo> result;
+		for (const auto provider : Providers_)
+			result += provider->GetMessageActions (msg);
+		return result;
 	}
 }
 }
