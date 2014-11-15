@@ -40,6 +40,8 @@ namespace Snails
 {
 	class MailModel : public QAbstractItemModel
 	{
+		Q_OBJECT
+
 		const QStringList Headers_;
 
 		QStringList Folder_;
@@ -101,6 +103,8 @@ namespace Snails
 		QList<QModelIndex> GetIndexes (const QByteArray& folderId, int column) const;
 		QList<QList<QModelIndex>> GetIndexes (const QByteArray& folderId, const QList<int>& columns) const;
 		Message_ptr GetMessageByFolderId (const QByteArray&) const;
+	signals:
+		void messageListUpdated ();
 	};
 }
 }

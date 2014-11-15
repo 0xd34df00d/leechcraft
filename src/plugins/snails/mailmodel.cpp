@@ -312,6 +312,8 @@ namespace Snails
 				FolderId2Nodes_ [msg->GetFolderID ()] << node;
 				endInsertRows ();
 			}
+
+		emit messageListUpdated ();
 	}
 
 	bool MailModel::Update (const Message_ptr& msg)
