@@ -30,6 +30,7 @@
 #include "mailtreedelegate.h"
 #include <QPainter>
 #include <QToolBar>
+#include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include "mailtab.h"
 #include "mailmodel.h"
@@ -67,10 +68,36 @@ namespace Snails
 		if (actionInfos.isEmpty ())
 			return nullptr;
 
+		const auto& id = index.data (MailModel::MailRole::ID).toByteArray ();
+
+		Message_ptr msg;
+		try
+		{
+			msg = Loader_ (id);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to load message"
+					<< id.toHex ()
+					<< e.what ();
+			return nullptr;
+		}
+
 		const auto container = new QToolBar { parent };
 		container->setFocusPolicy (Qt::StrongFocus);
 		for (const auto actInfo : actionInfos)
-			container->addAction (actInfo.Icon_, actInfo.Name_);
+		{
+			const auto action = container->addAction (actInfo.Icon_, actInfo.Name_);
+
+			new Util::SlotClosure<Util::NoDeletePolicy>
+			{
+				[handler = actInfo.Handler_, msg] { handler (msg); },
+				action,
+				SIGNAL (triggered ()),
+				action
+			};
+		}
 
 		return container;
 	}
