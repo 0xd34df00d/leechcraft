@@ -52,10 +52,10 @@ namespace LeechCraft
 namespace Snails
 {
 	Core::Core ()
-	: AccountsModel_ (new QStandardItemModel)
-	, Storage_ (new Storage (this))
-	, ProgressManager_ (new ProgressManager (this))
-	, MsgView_ (new Util::ResourceLoader ("snails/msgview"))
+	: AccountsModel_ { new QStandardItemModel }
+	, Storage_ { new Storage { this } }
+	, ProgressManager_ { new ProgressManager { this } }
+	, MsgView_ { new Util::ResourceLoader { "snails/msgview" } }
 	{
 #ifdef Q_OS_WIN32
 		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();

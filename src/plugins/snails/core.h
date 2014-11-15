@@ -56,11 +56,11 @@ namespace Snails
 
 		ICoreProxy_ptr Proxy_;
 
-		QStandardItemModel *AccountsModel_;
+		QStandardItemModel * const AccountsModel_;
 		QList<Account_ptr> Accounts_;
 
-		Storage *Storage_;
-		ProgressManager *ProgressManager_;
+		Storage * const Storage_;
+		ProgressManager * const ProgressManager_;
 
 		std::shared_ptr<Util::ResourceLoader> MsgView_;
 
