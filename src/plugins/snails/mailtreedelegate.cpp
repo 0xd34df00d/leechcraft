@@ -29,8 +29,11 @@
 
 #include "mailtreedelegate.h"
 #include <QPainter>
+#include <QToolBar>
+#include <util/sll/slotclosure.h>
 #include "mailtab.h"
 #include "mailmodel.h"
+#include "messagelistactioninfo.h"
 
 namespace LeechCraft
 {
@@ -50,6 +53,34 @@ namespace Snails
 		if (!isRead)
 			item.font.setBold (true);
 		QStyledItemDelegate::paint (painter, item, index);
+	}
+
+	QWidget* MailTreeDelegate::createEditor (QWidget *parent,
+			const QStyleOptionViewItem&, const QModelIndex& index) const
+	{
+		const auto& actionsVar = index.data (MailModel::MailRole::MessageActions);
+		if (actionsVar.isNull ())
+			return nullptr;
+
+		const auto& actionInfos = actionsVar.value<QList<MessageListActionInfo>> ();
+		if (actionInfos.isEmpty ())
+			return nullptr;
+
+		const auto container = new QToolBar { parent };
+		container->setFocusPolicy (Qt::StrongFocus);
+		for (const auto actInfo : actionInfos)
+			container->addAction (actInfo.Icon_, actInfo.Name_);
+
+		return container;
+	}
+
+	void MailTreeDelegate::updateEditorGeometry (QWidget *editor,
+			const QStyleOptionViewItem& option, const QModelIndex&) const
+	{
+		qobject_cast<QToolBar*> (editor)->setIconSize (option.decorationSize * 0.75);
+
+		editor->setMaximumSize (option.rect.size ());
+		editor->move (option.rect.topRight () - QPoint { editor->width (), 0 });
 	}
 }
 }
