@@ -29,16 +29,26 @@
 
 #pragma once
 
+#include <functional>
+#include <memory>
 #include <QStyledItemDelegate>
+
+class QByteArray;
 
 namespace LeechCraft
 {
 namespace Snails
 {
+	class Message;
+	using Message_ptr = std::shared_ptr<Message>;
+
+	using MessageLoader_f = std::function<Message_ptr (QByteArray)>;
+
 	class MailTreeDelegate : public QStyledItemDelegate
 	{
+		const MessageLoader_f Loader_;
 	public:
-		MailTreeDelegate (QObject* = nullptr);
+		MailTreeDelegate (const MessageLoader_f&, QObject* = nullptr);
 
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;

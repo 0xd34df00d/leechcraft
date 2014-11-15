@@ -107,7 +107,14 @@ namespace Snails
 		MailSortFilterModel_->sort (static_cast<int> (MailModel::Column::Date),
 				Qt::DescendingOrder);
 
-		const auto delegate = new MailTreeDelegate (this);
+		const auto delegate = new MailTreeDelegate ([this] (const QByteArray& id) -> Message_ptr
+				{
+					if (!CurrAcc_ || !MailModel_)
+						return {};
+					return Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (),
+							MailModel_->GetCurrentFolder (), id);
+				},
+				this);
 		Ui_.MailTree_->setItemDelegate (delegate);
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
 
