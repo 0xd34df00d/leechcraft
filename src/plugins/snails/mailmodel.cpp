@@ -271,6 +271,8 @@ namespace Snails
 		FolderId2Nodes_.clear ();
 		MsgId2FolderId_.clear ();
 		endRemoveRows ();
+
+		MsgId2Actions_.clear ();
 	}
 
 	void MailModel::Append (QList<Message_ptr> messages)
@@ -311,6 +313,10 @@ namespace Snails
 			const auto& msgId = msg->GetMessageID ();
 			if (!msgId.isEmpty ())
 				MsgId2FolderId_ [msgId] = msg->GetFolderID ();
+
+			const auto& acts = ActionsMgr_->GetMessageActions (msg);
+			if (!acts.isEmpty ())
+				MsgId2Actions_ [msg->GetFolderID ()] = acts;
 		}
 
 		for (const auto& msg : messages)

@@ -33,6 +33,7 @@
 #include <QAbstractItemModel>
 #include <QList>
 #include "message.h"
+#include "messagelistactioninfo.h"
 
 namespace LeechCraft
 {
@@ -57,6 +58,8 @@ namespace Snails
 		QList<Message_ptr> Messages_;
 		QHash<QByteArray, QList<TreeNode_ptr>> FolderId2Nodes_;
 		QHash<QByteArray, QByteArray> MsgId2FolderId_;
+
+		QHash<QByteArray, QList<MessageListActionInfo>> MsgId2Actions_;
 	public:
 		enum class Column
 		{
