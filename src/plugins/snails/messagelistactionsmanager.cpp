@@ -28,8 +28,14 @@
  **********************************************************************/
 
 #include "messagelistactionsmanager.h"
+#include <QUrl>
 #include <QtDebug>
+#include <vmime/messageIdSequence.hpp>
+#include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
+#include "core.h"
 #include "message.h"
+#include "vmimeconversions.h"
 
 namespace LeechCraft
 {
@@ -40,6 +46,58 @@ namespace Snails
 	public:
 		virtual QList<MessageListActionInfo> GetMessageActions (const Message_ptr&) const = 0;
 	};
+
+	namespace
+	{
+		class BugzillaProvider : public MessageListActionsProvider
+		{
+		public:
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg) const override
+			{
+				const auto& headers = msg->GetVmimeHeader ();
+				if (!headers)
+					return {};
+
+				const auto header = headers->findField ("X-Bugzilla-URL");
+				if (!header)
+					return {};
+
+				const auto& urlText = header->getValue<vmime::text> ();
+				if (!urlText)
+					return {};
+
+				const auto& url = StringizeCT (*urlText);
+
+				const auto& referencesField = headers->References ();
+				if (!referencesField)
+					return {};
+
+				const auto& refSeq = referencesField->getValue<vmime::messageIdSequence> ();
+				if (!refSeq)
+					return {};
+
+				const auto& ref = refSeq->getMessageIdAt (0);
+				if (!ref)
+					return {};
+
+				const auto& left = QString::fromUtf8 (ref->getLeft ().c_str ());
+				const auto bugId = left.section ('-', 1, 1);
+
+				return {
+						{
+							("Open"),
+							QIcon::fromTheme ("document-open"),
+							[url, bugId] (const Message_ptr&)
+							{
+								const QUrl fullUrl { url + "show_bug.cgi?id=" + bugId };
+								const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
+								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+							}
+						}
+					};
+			}
+		};
+	}
 
 	MessageListActionsManager::MessageListActionsManager (QObject *parent)
 	: QObject { parent }
