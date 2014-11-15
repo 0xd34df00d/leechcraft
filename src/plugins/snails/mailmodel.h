@@ -38,9 +38,12 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class MessageListActionsManager;
 	class MailModel : public QAbstractItemModel
 	{
 		Q_OBJECT
+
+		const MessageListActionsManager * const ActionsMgr_;
 
 		const QStringList Headers_;
 
@@ -75,7 +78,7 @@ namespace Snails
 			MessageActions
 		};
 
-		MailModel (QObject* = 0);
+		MailModel (const MessageListActionsManager*, QObject* = 0);
 
 		QVariant headerData (int, Qt::Orientation, int) const;
 		int columnCount (const QModelIndex& = {}) const;

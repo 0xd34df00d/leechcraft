@@ -45,7 +45,7 @@ namespace Snails
 
 	MailModel* MailModelsManager::CreateModel ()
 	{
-		auto model = new MailModel { Acc_ };
+		auto model = new MailModel { Core::Instance ().GetMessageListActionsManager (), Acc_ };
 		Models_ << model;
 
 		connect (model,

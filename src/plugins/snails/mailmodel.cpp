@@ -32,6 +32,7 @@
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
+#include "messagelistactionsmanager.h"
 
 namespace LeechCraft
 {
@@ -77,8 +78,9 @@ namespace Snails
 		}
 	};
 
-	MailModel::MailModel (QObject *parent)
+	MailModel::MailModel (const MessageListActionsManager *actsMgr, QObject *parent)
 	: QAbstractItemModel { parent }
+	, ActionsMgr_ { actsMgr }
 	, Headers_ { tr ("From"), {}, {}, {}, tr ("Subject"), tr ("Date"), tr ("Size")  }
 	, Folder_ { "INBOX" }
 	, Root_ { std::make_shared<TreeNode> () }
