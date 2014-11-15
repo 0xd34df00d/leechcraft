@@ -46,6 +46,7 @@
 #include "progressmanager.h"
 #include "accountfoldermanager.h"
 #include "composemessagetab.h"
+#include "messagelistactionsmanager.h"
 
 namespace LeechCraft
 {
@@ -56,6 +57,7 @@ namespace Snails
 	, Storage_ { new Storage { this } }
 	, ProgressManager_ { new ProgressManager { this } }
 	, MsgView_ { new Util::ResourceLoader { "snails/msgview" } }
+	, MsgListActionsMgr_ { new MessageListActionsManager }
 	{
 #ifdef Q_OS_WIN32
 		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();
@@ -144,6 +146,11 @@ namespace Snails
 	ProgressManager* Core::GetProgressManager () const
 	{
 		return ProgressManager_;
+	}
+
+	MessageListActionsManager* Core::GetMessageListActionsManager () const
+	{
+		return MsgListActionsMgr_;
 	}
 
 	QString Core::GetMsgViewTemplate () const
