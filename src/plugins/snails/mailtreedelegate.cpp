@@ -82,5 +82,13 @@ namespace Snails
 		editor->setMaximumSize (option.rect.size ());
 		editor->move (option.rect.topRight () - QPoint { editor->width (), 0 });
 	}
+
+	bool MailTreeDelegate::eventFilter (QObject *object, QEvent *event)
+	{
+		blockSignals (true);
+		const auto res = QStyledItemDelegate::eventFilter (object, event);
+		blockSignals (false);
+		return res;
+	}
 }
 }
