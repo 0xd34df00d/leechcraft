@@ -48,6 +48,7 @@ set (SRCS
 	mailmodelsmanager.cpp
 	accountdatabase.cpp
 	messagelistactioninfo.cpp
+	messagelisteditormanager.cpp
 	)
 set (FORMS
 	mailtab.ui
